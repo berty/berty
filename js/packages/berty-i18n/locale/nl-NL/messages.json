@@ -3,81 +3,61 @@
 		"getstarted": {
 			"title": "BESCHERM UW PRIVACY",
 			"desc": "gratis & veilig peer-to-peer berichten",
-			"button": "ONTDEK"
+			"create-button": "",
+			"import-button": "",
+			"link-button": ""
 		},
-		"select-mode": {
-			"title": "Kies een voorinstelling",
-			"change-later": "Je hebt een keuze om het later te veranderen!",
-			"performance": {
-				"title": "Prestaties",
-				"desc": "Eenvoudig in gebruik - alle functies",
-				"push-notif": "Ontvang push notificaties",
-				"offline-message": "Offline berichten met Bluetooth",
-				"add-contact": "Voeg eenvoudig contacten toe",
-				"fast-message": "Snelste aflevering van berichten"
+		"default-mode": {
+			"summary": {
+				"title": "",
+				"subtitle": "",
+				"first-point": "",
+				"second-point": "",
+				"back-button": "",
+				"accept-button": ""
+			}
+		},
+		"custom-mode": {
+			"summary": {
+				"title": "",
+				"subtitle": "",
+				"first-point": "",
+				"second-point": "",
+				"back-button": "",
+				"accept-button": ""
 			},
-			"high-level": {
-				"title": "Volledige Anonimiteit",
-				"desc": "Voor extreem voorzichtige gebruikers",
-				"disable-push-notif": "Push notificaties uitgeschakeld",
-				"disable-local-peer-discovery": "Lokale peer detectie uitgeschakeld",
-				"disable-local-peer-discovery-desc": "Multicast DNS & Bluetooth",
-				"disable-contact-request": "Contact verzoeken uitgeschakeld",
-				"on-same-network": "Lokaal op hetzelfde netwerk/wifi"
+			"settings": {
+				"off-grid": {
+					"title": "",
+					"ble-button": "Bluetooth Low Energy",
+					"nearby-button": "",
+					"mc-button": "",
+					"mdns-button": ""
+				},
+				"routing": {
+					"title": "",
+					"dht-button": "Gedistribueerde Hash Tabel",
+					"rdvp-button": ""
+				},
+				"access": {
+					"title": "",
+					"relay-button": "",
+					"bootstrap-button": "",
+					"replication-button": ""
+				},
+				"all-button": "",
+				"accept-button": ""
 			}
 		},
 		"create-account": {
 			"title": "Maak jouw account",
-			"desc": "Een naam is de enige informatie die vereist is",
-			"required": "Vereist",
 			"placeholder": "Kies uw bijnaam",
-			"button": "MAAK MIJN ACCOUNT",
-			"advanced": "GEAVANCEERD",
-			"import-account": "IMPORTEER ACCOUNT",
-			"link-device": "LINK APPARAAT",
-			"more": "MEER INFO",
 			"good-to-know": {
 				"title": "Goed om te weten:",
 				"first-point": "Uw account is lokaal aangemaakt",
 				"second-point": ""
 			}
 		},
-		"advanced-settings": {
-			"title": "",
-			"desc": "Vind documentatie en creëer uw eigen configuratie.",
-			"more-about": {
-				"title": "",
-				"first-paragraph": "",
-				"second-paragraph": "",
-				"third-paragraph": ""
-			},
-			"read-more": "",
-			"config-title": "Aangepaste configuraties",
-			"config-desc": "",
-			"learn-more": "Meer informatie",
-			"first-part": {
-				"title": "Nabijheid",
-				"first-button": "Bluetooth Low Energy",
-				"second-button": "Multicast DNS"
-			},
-			"second-part": {
-				"title": "Peer-naar-peer",
-				"first-button": "Gedistribueerde Hash Tabel",
-				"second-button": "TOR Activering"
-			},
-			"third-part": {
-				"title": "Diensten",
-				"network-button": "Netwerk Lijst",
-				"first-button": "Pushmeldingen",
-				"second-button": {
-					"title": "",
-					"placeholder": "Voer serveradres in"
-				},
-				"third-button": "Selecteer een gecertificeerd knooppunt"
-			},
-			"apply-changes": "VERANDEREN TOEPASSEN"
-		},
-		"exper-setup": {},
 		"generate-key": {
 			"title": "De Berty node wordt gestart…",
 			"desc": "Dit kan enkele seconden duren"
@@ -133,102 +113,54 @@
 			}
 		},
 		"suggestion-display-name-initial": "Klik hier om toe te voegen",
-		"configurations": {
-			"network": {
-				"display-name": "Netwerk configuratie",
-				"desc": "Klik hier om de netwerkconfiguratie te voltooien"
-			},
-			"notification": {
-				"display-name": "Notificatie configuratie",
-				"desc": "Klik hier voor push-notificatie configuratie"
-			},
-			"replicate": {
-				"display-name": "P2P Replicatie",
-				"desc": "Replicatie services instellen"
-			}
-		},
-		"network-options": {
-			"welcome-title": "Welkom bij de netwerkopties",
-			"full-anon-mode": "Full Anon Modus",
-			"simple-tor-compatible": "Eenvoudig TOR compatibel",
-			"allow-expert-mode": "Sta Expert Modus toe",
-			"tor-compatible": {
-				"title": "TOR Compatibel",
-				"desc": "Met deze configuratie kun je met het TOR-netwerk verbinden. Je kunt in gesprek gaan met Full Anon gebruikers zonder zelf in extreem anonieme modus te zijn."
-			},
-			"full-anon": {
-				"title": "Full Anon Modus",
-				"desc": "Deze configuratie is gebaseerd op strenge voorinstellingen die voorzien in zeer voorzichtige netwerkparameters:",
-				"no-ip": "Geen ip",
-				"no-mc": "Geen mc",
-				"tor-only": "Alleen Tor"
-			},
-			"save": "BEWAAR",
-			"skip": "OVERSLAAN EN LATER UITVOEREN"
-		},
 		"scan": {
 			"title": "Scan QR Code"
 		}
 	},
 	"settings": {
 		"home": {
-			"check-list": {
-				"title": "",
-				"avatar": {
-					"title": "Wijzig je avatar",
-					"desc": ""
-				},
-				"berty-services": {
-					"title": "",
-					"desc": ""
-				},
-				"contact": {
-					"title": "Synchroniseer met een contact",
-					"desc": ""
-				},
-				"group": {
-					"title": "Word lid of maak zelf een groep aan",
-					"desc": "Word lid of maak je eerste Berty groep aan!"
-				},
-				"message": {
-					"title": "Verstuur bericht",
-					"desc": "Zeg 'Hallo wereld' tegen een contact!"
-				},
-				"ble-message": {
-					"title": "",
-					"desc": ""
-				}
-			},
-			"edit-profile": "Mijn profiel bewerken",
-			"share-link": "",
-			"create-group": "",
-			"create-new-account": "Nieuw account aanmaken"
+			"proximity-button": "",
+			"notifications-button": "Notificaties",
+			"contact-convs-button": "",
+			"appearance-button": "",
+			"devices-button": "",
+			"accounts-button": "Accounts",
+			"network-button": "",
+			"bug-button": "",
+			"about-button": "Over Berty"
 		},
-		"network-map": {
-			"title": "Netwerk Lijst",
-			"online-peers": "Online gebruikers"
+		"about": {
+			"faq-button": "FAQ",
+			"roadmap-button": "Roadmap",
+			"policy-button": "",
+			"license-button": ""
 		},
-		"mode": {
-			"title": "Instellingen",
-			"desc": "Pas alles aan om de app te krijgen die aan je behoeften voldoet",
-			"in-app-notifications": "",
-			"dark-mode-button": "Donkere modus",
-			"devtools": "Ontwikkelaars tools",
-			"network-config": "",
-			"notification-file-saved": {
-				"title": "Gegevens opgeslagen!",
-				"desc": "Beschikbaar in de downloads map"
-			},
-			"receive-contact-requests-button": "Ontvang contactverzoeken",
-			"external-services-button": "Externe diensten",
-			"auto-replicate-button": "Automatisch repliceren",
-			"auto-replicate-button-unavailable": "Je moet minimaal een replicatieserver registreren",
-			"blocked-contacts-button": {
-				"title": "Geblokkeerde contacten",
-				"tag": "geblokkeerd"
-			},
-			"delete-account-button": "Verwijder mijn account",
-			"backup-account-button": "Maak een reservekopie van mijn account"
+		"accounts": {
+			"accounts-button": "Accounts",
+			"create-button": "",
+			"import-button": "",
+			"link-button": "",
+			"delete-button": ""
+		},
+		"appearance": {
+			"dark-button": "",
+			"editor-button": ""
+		},
+		"contact-convs": {
+			"reset-button": "",
+			"request-button": ""
+		},
+		"network": {
+			"ble-button": "Bluetooth Low Energy",
+			"mc-button": "",
+			"nearby-button": "",
+			"mdns-button": "Multicast DNS",
+			"memo-cell-button": "",
+			"medias-cell-button": "",
+			"dht-button": "Gedistribueerde Hash Tabel",
+			"rdvp-button": "",
+			"relay-button": "",
+			"bootstrap-button": ""
 		},
 		"edit-profile": {
 			"title": "Bewerk mijn profiel",
@@ -239,51 +171,8 @@
 			"name-input-placeholder": "Naam...",
 			"name-input-label": "Naam"
 		},
-		"notifications": {
-			"title": "Notificaties",
-			"enabled-desc": "Je hebt notificaties geactiveerd!",
-			"disabled-desc": "Je hebt nog niet notificaties geactiveerd voor deze app",
-			"activate-button": "Activeer notificaties",
-			"contact-request-button": {
-				"title": "Contact verzoek",
-				"desc": "Ontvang een notificatie telkens wanneer iemand je een contactverzoek stuurt"
-			},
-			"messages-notifications-button": {
-				"title": "Berichten notificaties",
-				"display-button": "Notificaties weergeven",
-				"preview-button": "Voorvertoning berichten",
-				"sound-button": "Geluid",
-				"exceptions-button": {
-					"title": "Uitzonderingen",
-					"preview-value": "Toevoegen"
-				}
-			},
-			"group-notifications-button": {
-				"title": "Groep notificaties",
-				"display-button": "Notificaties weergeven",
-				"preview-button": "Voorvertoning berichten",
-				"sound-button": "Geluid",
-				"exceptions-button": {
-					"title": "Uitzonderingen",
-					"tag": "{{count}} uitzonderingen"
-				}
-			}
-		},
-		"bluetooth": {
-			"title": "Bluetooth",
-			"desc": "Met Bluetooth kun je berichten uitwisselen zonder internettoegang, door het apparaat rechtstreeks te verbinden met peers in de buurt",
-			"activate-button": "Bluetooth activeren"
-		},
-		"mc": {
-			"activate-button": "Multipeer verbindingen activeren"
-		},
-		"nearby": {
-			"activate-button": "Activeer Android Nearby"
-		},
 		"berty-services": {
-			"header": "",
 			"title": "",
-			"recommended": "Aangeraden",
 			"desc": "",
 			"button": "",
 			"skip": "OVERSLAAN EN LATER UITVOEREN"
@@ -295,56 +184,22 @@
 			"cancel-button": "ANNULEREN",
 			"delete-button": "VERWIJDEREN"
 		},
-		"help": {
-			"title": "Help",
-			"security-privacy-button": {
-				"title": "Beveiliging & Privacy",
-				"desc": "Houd je gegevens veilig en leven privé"
-			},
-			"updates-button": "Updates",
-			"about-button": "Over Berty",
-			"account-button": "Account & Berty ID",
-			"contact-button": "Contacten & Verzoeken",
-			"message-button": "Berichten",
-			"group-button": "Groepen",
-			"settings-button": "Instellingen",
-			"ask-button": "Stel een vraag",
-			"report-button": "Rapporteer een fout"
-		},
-		"about": {
-			"title": "Over Berty",
-			"top-left-button": "Privé & Veilig",
-			"top-right-button": "Peer-to-peer netwerk",
-			"bottom-left-button": "Geen internet of data vereist",
-			"bottom-right-button": "Geen netwerk vertrouwen vereist",
-			"terms-button": "Gebruiksvoorwaarden",
-			"privacy-button": "Privacy Beleid",
-			"software-button": "Software licentie",
-			"contact-button": "Neem contact op",
-			"website-button": "Website"
-		},
-		"updates": {
-			"title": "App updates",
-			"current-tag": "Huidige"
-		},
 		"faq": {
 			"title": "FAQ"
 		},
 		"roadmap": {
 			"title": "Roadmap"
 		},
+		"privacy-policy": {
+			"title": ""
+		},
 		"devtools": {
 			"title": "Ontwikkeling tools",
 			"header-left-button": "Apparaat informatie",
 			"header-middle-button": "Nep gegevens genereren",
 			"header-right-button": "Daemon herstarten",
-			"theme-editor": "Weergave & thema editor",
 			"simulate-button": "Simuleer stream fout",
 			"simulate-js-error-button": "Simuleer JavaScript-fout",
-			"tor-button": "Tor {{option}}",
-			"tor-optional-option": "optioneel",
-			"tor-required-option": "vereist",
-			"tor-disabled-option": "uitgeschakeld",
 			"system-info-button": "Systeem informatie",
 			"debug-button": "Debug",
 			"log-button": {
@@ -379,7 +234,6 @@
 				"test": "Test, ",
 				"tried": "✔ Geprobeerd om te verzenden naar {{length}} contacten"
 			},
-			"trigger-crashlytics-button": "Trigger crashlytics crash",
 			"tyber-attach": "",
 			"tyber-host-button": {
 				"name": "",
@@ -401,16 +255,12 @@
 		},
 		"add-dev-conversations": {
 			"title": "Voeg ontwikkelaar gesprekken toe",
-			"add": "Voeg {{name}} toe",
-			"tag-bot": "Bot",
-			"tag-contact": "Contact",
-			"tag-conversation": "Groep"
+			"add": "Voeg {{name}} toe"
 		},
 		"ipfs-webui": {
 			"title": "IPFS WebUI"
 		},
 		"theme-editor": {
-			"title": "Thema editor",
 			"randomize": "Thema genereren",
 			"save": "Sla dit thema op",
 			"export": "Exporteer geselecteerde thema als bestand",
@@ -418,13 +268,21 @@
 			"import": "Een bestandsthema importeren",
 			"delete": "",
 			"bad-format-title": "",
-			"bad-format-desc": ""
+			"bad-format-desc": "",
+			"notification-file-saved": {
+				"title": "Gegevens opgeslagen!",
+				"desc": "Beschikbaar in de downloads map"
+			}
 		},
 		"my-berty-ID": {
 			"title": "",
 			"qr": "QR",
-			"fingerprint": "Vingerafdruk",
-			"devices": "Apparaten"
+			"fingerprint": "Vingerafdruk"
+		},
+		"share": {
+			"invite": "",
+			"tap-to-scan": "",
+			"create-group": ""
 		}
 	},
 	"modals": {
@@ -463,12 +321,8 @@
 		"sending": "Verzenden...",
 		"sent": "",
 		"contact-settings": {
-			"mark-button": "Markeren als geverifieerd",
-			"block-button": "Blokkeer contact",
-			"delete-button": "Verwijder contact",
 			"fingerprint": "Vingerafdruk",
 			"info": "Informatie",
-			"devices": "Apparaten",
 			"my-devices": ""
 		},
 		"multi-member": {
@@ -499,20 +353,13 @@
 			}
 		},
 		"multi-member-settings": {
-			"header-left-button": "Zoeken",
-			"header-middle-button": "Bellen",
-			"header-right-button": "Deel",
 			"media-button": "Media, links & documenten",
-			"notifications-button": "Ontvang notificaties",
 			"members-button": {
-				"title": "Leden",
-				"unknown": "Onbekend"
+				"title": "Leden"
 			},
 			"add-member-button": "Voeg deelnemer toe",
 			"invite-button": "Uitnodigen per link",
-			"save-button": "Gesprek opslaan op server",
-			"erase-button": "Gesprek wissen",
-			"leave-button": "Groep verlaten"
+			"save-button": "Gesprek opslaan op server"
 		},
 		"add-members": {
 			"members": "Leden",
@@ -544,14 +391,8 @@
 			"input-placeholder": "Voer hier in..."
 		},
 		"one-to-one-settings": {
-			"header-left-button": "Zoeken",
-			"header-middle-button": "Bellen",
-			"header-right-button": "Delen",
 			"media-button": "Media, links & documenten",
-			"notifications-button": "Ontvang notificaties",
-			"mutual-button": "Wederzijdse groepen",
-			"save-button": "Gesprek opslaan op server",
-			"erase-button": "Gesprek wissen"
+			"save-button": "Gesprek opslaan op server"
 		},
 		"replicate-group-settings": {
 			"title": "Registreer gesprek op server",
@@ -565,7 +406,6 @@
 			"camera": "Camera",
 			"files": "Bestanden",
 			"microphone": "Microfoon",
-			"search-gif": "Zoek een gif",
 			"security-access": "Toegang tot beveiliging",
 			"security-access-desc": "Tik hier om instellingen te openen om toegang tot uw",
 			"save-to-gallery": "Dit bestand opslaan in de Galerij",
@@ -606,11 +446,11 @@
 	},
 	"permission": {
 		"notification": {
-			"title": "Pushmeldingen",
+			"title": "",
 			"desc": "Berty app heeft toestemming nodig om lokale of push-meldingen te sturen. Hiermee kun je worden geïnformeerd wanneer je een bericht ontvangt."
 		},
-		"p2p": {
-			"title": "Bluetooth berichten",
+		"proximity": {
+			"title": "",
 			"android-desc": "Om offline berichten via Bluetooth te kunnen versturen met de app werkend op de achtergrond, vereist de Android API dat gebruik van de locatie wordt toegestaan. We gebruiken jouw locatiegegevens op geen enkele manier.",
 			"ios-desc": "Om offline berichten via Bluetooth uit te kunnen wisselen, heeft de iOS API toestemming nodig."
 		},
@@ -619,7 +459,7 @@
 			"desc": ""
 		},
 		"audio": {
-			"title": "Audioberichten",
+			"title": "",
 			"desc": "Om audioberichten naar je contactpersonen te versturen, moet de Berty app toegang tot je microfoon krijgen."
 		},
 		"gallery": {
@@ -636,6 +476,10 @@
 	},
 	"notification": {
 		"need-restart": {
+			"title": "",
+			"desc": ""
+		},
+		"need-restart-ble": {
 			"title": "",
 			"desc": ""
 		}
@@ -670,7 +514,6 @@
 				"action-delete": {
 					"file-exists": "Account {{accountId}} bestaat niet, maar een bestand heeft wel deze naam.",
 					"account-exists": "Account {{accountId}} bestaat momenteel.",
-					"directory-exists-load-error": "Account {{accountId}} bestaat niet, maar een map heeft wel deze naam.",
 					"fs-read-error": "Fout bij het verkrijgen van FS informatie over het account",
 					"actions-title": "Wat moeten we doen?",
 					"action-account-manager": "Verwijder het via accountmanager",
