@@ -122,7 +122,7 @@ export const OneToOne: ScreenFC<'Chat.OneToOne'> = React.memo(
 								<View
 									style={{
 										position: 'absolute',
-										top: 110, // TODO Redefine
+										top: 110 * scaleSize, // TODO Redefine
 										left: 0,
 										right: 0,
 									}}

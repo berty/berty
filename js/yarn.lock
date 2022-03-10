@@ -10842,10 +10842,9 @@ react-native-ratings@8.0.4:
   dependencies:
     lodash "^4.17.15"
 
-react-native-reanimated@^2.2.4:
-  version "2.4.1"
-  resolved "https://registry.yarnpkg.com/react-native-reanimated/-/react-native-reanimated-2.4.1.tgz#4e33876fba525ce60ac13ab3c81fc3a9f8b132fe"
-  integrity sha512-kvf7ylGlwa5hxMQ+wpPFjQrI2c6eexf53/xRo+dvXBNefGmSYaYR5sFtD0XMMzIPQlkCB9tJ0Pu9+2WCQUY7Cg==
+"react-native-reanimated@https://github.com/aeddi/react-native-reanimated/releases/download/2.3.1/react-native-reanimated-2.3.1.tgz":
+  version "2.3.1"
+  resolved "https://github.com/aeddi/react-native-reanimated/releases/download/2.3.1/react-native-reanimated-2.3.1.tgz#03eb3e557ee53313577def96c18604e85740cefb"
   dependencies:
     "@babel/plugin-transform-object-assign" "^7.10.4"
     "@types/invariant" "^2.2.35"
@@ -10945,10 +10944,10 @@ react-native-tab-view@^3.1.1:
   resolved "https://registry.yarnpkg.com/react-native-tab-view/-/react-native-tab-view-3.1.1.tgz#1f8d7a835ab4f5b1b1407ec8dddc1053b53fa3c6"
   integrity sha512-M5pRN6utQfytKWoKlKVzg5NbkYu308qNoW1khGTtEOTs1k14p2dHJ/BWOJoJYHKbPVUyZldbG9MFT7gUl4YHnw==
 
-react-native-v8@^0.64.0-patch.0:
-  version "0.64.0-patch.0"
-  resolved "https://registry.yarnpkg.com/react-native-v8/-/react-native-v8-0.64.0-patch.0.tgz#3fbc6c338b4c85e17d6829a04187bb41b3855795"
-  integrity sha512-KXOUQehA2PO8SuQcOIBe9JH/bWcErrzvaX9+TuMecGy62m0AHhkJTUz00680lF2WRAjTIufi9WR8NzyF90Mv/w==
+"react-native-v8@>=0.64.2-patch.0 <0.64.3":
+  version "0.64.2-patch.1"
+  resolved "https://registry.yarnpkg.com/react-native-v8/-/react-native-v8-0.64.2-patch.1.tgz#3d22c98a03012a830c7f88e81b83bc0263088178"
+  integrity sha512-+gm9hLXRA84vuRqTvhm2m3huUhwWr1moDB+v1P+fzBLbINLEwMxJjWTgGiKaEhupzTXbofFpG/+2qDL3hPJjJQ==
   dependencies:
     v8-android "~9.88.0"
 

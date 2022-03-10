@@ -7,6 +7,7 @@
 .projectile
 .tmp/
 *.bin
+*.swp
 core-sources.jar
 coverage.txt
 dist/

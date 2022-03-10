@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { View, TouchableOpacity, Animated } from 'react-native'
 import { SHA3 } from 'sha3'
 import palette from 'google-palette'
@@ -194,28 +194,31 @@ export const UserMessage: React.FC<{
 		replyOf &&
 		getUserMessageState(replyOf, members, convKind, undefined, undefined, colors)
 
-	const handleSelectEmoji = (emoji: string, remove: boolean = false) => {
-		client
-			?.interact({
-				conversationPublicKey: convPK,
-				type: beapi.messenger.AppMessage.Type.TypeUserReaction,
-				payload: beapi.messenger.AppMessage.UserReaction.encode({
-					emoji,
-					state: !remove,
-				}).finish(),
-				targetCid: inte?.cid,
-			})
-			.then(() => {
-				ctx.playSound('messageSent')
-			})
-			.catch((e: unknown) => {
-				console.warn('e sending message:', e)
-			})
-	}
+	const handleSelectEmoji = useCallback(
+		(emoji: string, remove: boolean = false) => {
+			client
+				?.interact({
+					conversationPublicKey: convPK,
+					type: beapi.messenger.AppMessage.Type.TypeUserReaction,
+					payload: beapi.messenger.AppMessage.UserReaction.encode({
+						emoji,
+						state: !remove,
+					}).finish(),
+					targetCid: inte?.cid,
+				})
+				.then(() => {
+					ctx.playSound('messageSent')
+				})
+				.catch((e: unknown) => {
+					console.warn('e sending message:', e)
+				})
+		},
+		[client, convPK, ctx, inte?.cid],
+	)
 
 	const isHighlight = highlightCid === inte.cid
 
-	const togglePopover = () => {
+	const togglePopover = useCallback(() => {
 		if (inte.isMine) {
 			return
 		}
@@ -231,7 +234,7 @@ export const UserMessage: React.FC<{
 				}}
 			/>,
 		)
-	}
+	}, [convPK, handleSelectEmoji, inte, msgBackgroundColor, msgTextColor, show])
 
 	return (
 		<View
