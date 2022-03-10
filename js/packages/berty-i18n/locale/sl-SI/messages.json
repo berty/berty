@@ -3,81 +3,61 @@
 		"getstarted": {
 			"title": "",
 			"desc": "",
-			"button": ""
+			"create-button": "",
+			"import-button": "",
+			"link-button": ""
 		},
-		"select-mode": {
-			"title": "",
-			"change-later": "",
-			"performance": {
+		"default-mode": {
+			"summary": {
 				"title": "",
-				"desc": "",
-				"push-notif": "",
-				"offline-message": "",
-				"add-contact": "Enostavno dodaje kontakte",
-				"fast-message": "Najhitrejše dostavljanje sporočil"
+				"subtitle": "",
+				"first-point": "",
+				"second-point": "",
+				"back-button": "",
+				"accept-button": ""
+			}
+		},
+		"custom-mode": {
+			"summary": {
+				"title": "",
+				"subtitle": "",
+				"first-point": "",
+				"second-point": "",
+				"back-button": "",
+				"accept-button": ""
 			},
-			"high-level": {
-				"title": "",
-				"desc": "",
-				"disable-push-notif": "",
-				"disable-local-peer-discovery": "",
-				"disable-local-peer-discovery-desc": "",
-				"disable-contact-request": "",
-				"on-same-network": ""
+			"settings": {
+				"off-grid": {
+					"title": "",
+					"ble-button": "",
+					"nearby-button": "",
+					"mc-button": "",
+					"mdns-button": ""
+				},
+				"routing": {
+					"title": "",
+					"dht-button": "",
+					"rdvp-button": ""
+				},
+				"access": {
+					"title": "",
+					"relay-button": "",
+					"bootstrap-button": "",
+					"replication-button": ""
+				},
+				"all-button": "",
+				"accept-button": ""
 			}
 		},
 		"create-account": {
 			"title": "",
-			"desc": "",
-			"required": "Obvezno",
 			"placeholder": "",
-			"button": "USTVARI MOJ RAČUN",
-			"advanced": "",
-			"import-account": "",
-			"link-device": "",
-			"more": "",
 			"good-to-know": {
 				"title": "",
 				"first-point": "",
 				"second-point": ""
 			}
 		},
-		"advanced-settings": {
-			"title": "",
-			"desc": "",
-			"more-about": {
-				"title": "",
-				"first-paragraph": "",
-				"second-paragraph": "",
-				"third-paragraph": ""
-			},
-			"read-more": "",
-			"config-title": "",
-			"config-desc": "",
-			"learn-more": "",
-			"first-part": {
-				"title": "",
-				"first-button": "",
-				"second-button": ""
-			},
-			"second-part": {
-				"title": "",
-				"first-button": "",
-				"second-button": ""
-			},
-			"third-part": {
-				"title": "Storitve",
-				"network-button": "Seznam omrežja",
-				"first-button": "",
-				"second-button": {
-					"title": "",
-					"placeholder": ""
-				},
-				"third-button": ""
-			},
-			"apply-changes": ""
-		},
-		"exper-setup": {},
 		"generate-key": {
 			"title": "",
 			"desc": ""
@@ -133,102 +113,54 @@
 			}
 		},
 		"suggestion-display-name-initial": "",
-		"configurations": {
-			"network": {
-				"display-name": "",
-				"desc": ""
-			},
-			"notification": {
-				"display-name": "",
-				"desc": ""
-			},
-			"replicate": {
-				"display-name": "",
-				"desc": ""
-			}
-		},
-		"network-options": {
-			"welcome-title": "",
-			"full-anon-mode": "",
-			"simple-tor-compatible": "",
-			"allow-expert-mode": "",
-			"tor-compatible": {
-				"title": "",
-				"desc": ""
-			},
-			"full-anon": {
-				"title": "",
-				"desc": "",
-				"no-ip": "",
-				"no-mc": "",
-				"tor-only": ""
-			},
-			"save": "",
-			"skip": "PRESKOČI IN NAREDI KASNEJE"
-		},
 		"scan": {
 			"title": ""
 		}
 	},
 	"settings": {
 		"home": {
-			"check-list": {
-				"title": "",
-				"avatar": {
-					"title": "",
-					"desc": ""
-				},
-				"berty-services": {
-					"title": "",
-					"desc": ""
-				},
-				"contact": {
-					"title": "",
-					"desc": ""
-				},
-				"group": {
-					"title": "",
-					"desc": ""
-				},
-				"message": {
-					"title": "",
-					"desc": ""
-				},
-				"ble-message": {
-					"title": "",
-					"desc": ""
-				}
-			},
-			"edit-profile": "Uredi profil",
-			"share-link": "",
-			"create-group": "",
-			"create-new-account": ""
+			"proximity-button": "",
+			"notifications-button": "Obvestila",
+			"contact-convs-button": "",
+			"appearance-button": "",
+			"devices-button": "",
+			"accounts-button": "",
+			"network-button": "",
+			"bug-button": "",
+			"about-button": "O Berty"
 		},
-		"network-map": {
-			"title": "Seznam omrežja",
-			"online-peers": ""
+		"about": {
+			"faq-button": "",
+			"roadmap-button": "",
+			"policy-button": "",
+			"license-button": ""
 		},
-		"mode": {
-			"title": "Nastavitve",
-			"desc": "",
-			"in-app-notifications": "",
-			"dark-mode-button": "",
-			"devtools": "Razvijalska orodja",
-			"network-config": "",
-			"notification-file-saved": {
-				"title": "",
-				"desc": ""
-			},
-			"receive-contact-requests-button": "",
-			"external-services-button": "",
-			"auto-replicate-button": "",
-			"auto-replicate-button-unavailable": "",
-			"blocked-contacts-button": {
-				"title": "",
-				"tag": ""
-			},
-			"delete-account-button": "",
-			"backup-account-button": ""
+		"accounts": {
+			"accounts-button": "",
+			"create-button": "",
+			"import-button": "",
+			"link-button": "",
+			"delete-button": ""
+		},
+		"appearance": {
+			"dark-button": "",
+			"editor-button": ""
+		},
+		"contact-convs": {
+			"reset-button": "",
+			"request-button": ""
+		},
+		"network": {
+			"ble-button": "",
+			"mc-button": "",
+			"nearby-button": "",
+			"mdns-button": "",
+			"memo-cell-button": "",
+			"medias-cell-button": "",
+			"dht-button": "",
+			"rdvp-button": "",
+			"relay-button": "",
+			"bootstrap-button": ""
 		},
 		"edit-profile": {
 			"title": "",
@@ -239,51 +171,8 @@
 			"name-input-placeholder": "Ime...",
 			"name-input-label": "Ime"
 		},
-		"notifications": {
-			"title": "Obvestila",
-			"enabled-desc": "Omogočili ste obvestila!",
-			"disabled-desc": "Niste omogočili obvestil za to aplikacijo",
-			"activate-button": "Omogočite obvestila",
-			"contact-request-button": {
-				"title": "",
-				"desc": ""
-			},
-			"messages-notifications-button": {
-				"title": "",
-				"display-button": "Prikaži obvestila",
-				"preview-button": "",
-				"sound-button": "Zvok",
-				"exceptions-button": {
-					"title": "",
-					"preview-value": "Dodaj"
-				}
-			},
-			"group-notifications-button": {
-				"title": "Skupinska obvestila",
-				"display-button": "Prikaži obvestila",
-				"preview-button": "",
-				"sound-button": "Zvok",
-				"exceptions-button": {
-					"title": "",
-					"tag": ""
-				}
-			}
-		},
-		"bluetooth": {
-			"title": "Bluetooth",
-			"desc": "",
-			"activate-button": ""
-		},
-		"mc": {
-			"activate-button": ""
-		},
-		"nearby": {
-			"activate-button": ""
-		},
 		"berty-services": {
-			"header": "",
 			"title": "",
-			"recommended": "Priporočeno",
 			"desc": "",
 			"button": "",
 			"skip": "PRESKOČI IN NAREDI KASNEJE"
@@ -295,42 +184,13 @@
 			"cancel-button": "",
 			"delete-button": "IZBRIS"
 		},
-		"help": {
-			"title": "Pomoč",
-			"security-privacy-button": {
-				"title": "Varnost in Zasebnost",
-				"desc": ""
-			},
-			"updates-button": "Posodobitve",
-			"about-button": "O Berty",
-			"account-button": "Račun in Berty ID",
-			"contact-button": "",
-			"message-button": "",
-			"group-button": "",
-			"settings-button": "Nastavitve",
-			"ask-button": "",
-			"report-button": ""
-		},
-		"about": {
-			"title": "O Berty",
-			"top-left-button": "",
-			"top-right-button": "",
-			"bottom-left-button": "",
-			"bottom-right-button": "",
-			"terms-button": "",
-			"privacy-button": "",
-			"software-button": "",
-			"contact-button": "",
-			"website-button": ""
-		},
-		"updates": {
-			"title": "",
-			"current-tag": ""
-		},
 		"faq": {
 			"title": ""
 		},
 		"roadmap": {
+			"title": ""
+		},
+		"privacy-policy": {
 			"title": ""
 		},
 		"devtools": {
@@ -338,13 +198,8 @@
 			"header-left-button": "",
 			"header-middle-button": "",
 			"header-right-button": "",
-			"theme-editor": "",
 			"simulate-button": "",
 			"simulate-js-error-button": "",
-			"tor-button": "",
-			"tor-optional-option": "neobvezno",
-			"tor-required-option": "obvezno",
-			"tor-disabled-option": "onemogočeno",
 			"system-info-button": "",
 			"debug-button": "",
 			"log-button": {
@@ -379,7 +234,6 @@
 				"test": "",
 				"tried": ""
 			},
-			"trigger-crashlytics-button": "",
 			"tyber-attach": "",
 			"tyber-host-button": {
 				"name": "",
@@ -401,16 +255,12 @@
 		},
 		"add-dev-conversations": {
 			"title": "",
-			"add": "",
-			"tag-bot": "",
-			"tag-contact": "",
-			"tag-conversation": ""
+			"add": ""
 		},
 		"ipfs-webui": {
 			"title": ""
 		},
 		"theme-editor": {
-			"title": "",
 			"randomize": "",
 			"save": "",
 			"export": "",
@@ -418,13 +268,21 @@
 			"import": "",
 			"delete": "",
 			"bad-format-title": "",
-			"bad-format-desc": ""
+			"bad-format-desc": "",
+			"notification-file-saved": {
+				"title": "",
+				"desc": ""
+			}
 		},
 		"my-berty-ID": {
 			"title": "",
 			"qr": "",
-			"fingerprint": "Prstni odtis",
-			"devices": "Naprave"
+			"fingerprint": "Prstni odtis"
+		},
+		"share": {
+			"invite": "",
+			"tap-to-scan": "",
+			"create-group": ""
 		}
 	},
 	"modals": {
@@ -463,12 +321,8 @@
 		"sending": "",
 		"sent": "",
 		"contact-settings": {
-			"mark-button": "",
-			"block-button": "",
-			"delete-button": "",
 			"fingerprint": "Prstni odtis",
 			"info": "Informacije",
-			"devices": "Naprave",
 			"my-devices": ""
 		},
 		"multi-member": {
@@ -499,20 +353,13 @@
 			}
 		},
 		"multi-member-settings": {
-			"header-left-button": "Iskanje",
-			"header-middle-button": "Klic",
-			"header-right-button": "Deli",
 			"media-button": "",
-			"notifications-button": "",
 			"members-button": {
-				"title": "Člani",
-				"unknown": ""
+				"title": "Člani"
 			},
 			"add-member-button": "",
 			"invite-button": "",
-			"save-button": "",
-			"erase-button": "",
-			"leave-button": ""
+			"save-button": ""
 		},
 		"add-members": {
 			"members": "Člani",
@@ -544,14 +391,8 @@
 			"input-placeholder": ""
 		},
 		"one-to-one-settings": {
-			"header-left-button": "Iskanje",
-			"header-middle-button": "Klic",
-			"header-right-button": "Deli",
 			"media-button": "",
-			"notifications-button": "",
-			"mutual-button": "",
-			"save-button": "",
-			"erase-button": ""
+			"save-button": ""
 		},
 		"replicate-group-settings": {
 			"title": "",
@@ -565,7 +406,6 @@
 			"camera": "",
 			"files": "",
 			"microphone": "",
-			"search-gif": "",
 			"security-access": "",
 			"security-access-desc": "",
 			"save-to-gallery": "",
@@ -609,7 +449,7 @@
 			"title": "",
 			"desc": ""
 		},
-		"p2p": {
+		"proximity": {
 			"title": "",
 			"android-desc": "",
 			"ios-desc": ""
@@ -636,6 +476,10 @@
 	},
 	"notification": {
 		"need-restart": {
+			"title": "",
+			"desc": ""
+		},
+		"need-restart-ble": {
 			"title": "",
 			"desc": ""
 		}
@@ -670,7 +514,6 @@
 				"action-delete": {
 					"file-exists": "",
 					"account-exists": "",
-					"directory-exists-load-error": "",
 					"fs-read-error": "",
 					"actions-title": "",
 					"action-account-manager": "",
