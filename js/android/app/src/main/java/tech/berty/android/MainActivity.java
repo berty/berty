@@ -2,6 +2,7 @@ package tech.berty.android;
 
 import android.os.Bundle; // needed by react-native-bootsplash
 
+import expo.modules.ReactActivityDelegateWrapper;
 import com.facebook.react.ReactActivity;
 import com.zoontek.rnbootsplash.RNBootSplash; // needed by react-native-bootsplash
 import com.facebook.react.ReactActivityDelegate;
@@ -33,13 +34,16 @@ public class MainActivity extends ReactActivity implements LifecycleObserver {
         return "Berty";
     }
 
+    @Override
     protected ReactActivityDelegate createReactActivityDelegate() {
-        return new ReactActivityDelegate(this, getMainComponentName()) {
-            @Override
-            protected ReactRootView createRootView() {
-            return new RNGestureHandlerEnabledRootView(MainActivity.this);
+        return new ReactActivityDelegateWrapper(this,
+            new ReactActivityDelegate(this, getMainComponentName()) {
+                @Override
+                protected ReactRootView createRootView() {
+                    return new RNGestureHandlerEnabledRootView(MainActivity.this);
+                }
             }
-        };
+        );
     }
 
     public static AppState getAppState() {

@@ -48,9 +48,9 @@ static void InitializeFlipper(UIApplication *application) {
     }
   }
 
-  RCTBridge *bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:launchOptions];
-  RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:bridge
-                                                   moduleName:@"Berty"
+RCTBridge *bridge = [self.reactDelegate createBridgeWithDelegate:self launchOptions:launchOptions];
+RCTRootView *rootView = [self.reactDelegate createRootViewWithBridge:bridge
+                                            moduleName:@"Berty"
                                             initialProperties:nil];
 
   // Sync languages settings with app extension
@@ -78,10 +78,11 @@ static void InitializeFlipper(UIApplication *application) {
   }
 
   self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
-  UIViewController *rootViewController = [UIViewController new];
+  UIViewController *rootViewController = [self.reactDelegate createRootViewController];
   rootViewController.view = rootView;
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
+  [super application:application didFinishLaunchingWithOptions:launchOptions];
 
   [RNBootSplash initWithStoryboard:@"BootSplash" rootView:rootView]; // needed by react-native-bootsplash
 

@@ -29,6 +29,7 @@
     "buffer": "^6.0.3",
     "case": "^1.6.3",
     "emoji-datasource": "^7.0.2",
+    "expo": "^44.0.6",
     "faker": "^5.2.0",
     "google-palette": "^1.1.0",
     "google-protobuf": "^3.19.1",

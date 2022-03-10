@@ -18,3 +18,6 @@ include ':react-native-share'
 project(':react-native-share').projectDir = new File(rootProject.projectDir,    '../node_modules/react-native-share/android')
 
 include ':app'
+
+apply from: new File(["node", "--print", "require.resolve('../package.json')"].execute(null, rootDir).text.trim(), "../node_modules/expo/scripts/autolinking.gradle")
+useExpoModules()

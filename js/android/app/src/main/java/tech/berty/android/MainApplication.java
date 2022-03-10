@@ -16,6 +16,10 @@ import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.soloader.SoLoader;
 
+import android.content.res.Configuration;
+import expo.modules.ApplicationLifecycleDispatcher;
+import expo.modules.ReactNativeHostWrapper;
+
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
@@ -37,7 +41,7 @@ public class MainApplication extends Application implements ReactApplication, Li
     private static AppState appState = AppState.Foreground;
 
     private final ReactNativeHost mReactNativeHost =
-        new ReactNativeHost(this) {
+        new ReactNativeHostWrapper(this, new ReactNativeHost(this) {
             @Override
             public boolean getUseDeveloperSupport() {
                 return BuildConfig.DEBUG;
@@ -60,7 +64,7 @@ public class MainApplication extends Application implements ReactApplication, Li
             protected String getJSMainModuleName() {
                 return "index";
             }
-        };
+        });
 
 
 
@@ -95,6 +99,9 @@ public class MainApplication extends Application implements ReactApplication, Li
 
         // register for lifecycle events
         ProcessLifecycleOwner.get().getLifecycle().addObserver(this);
+
+        // init expo
+        ApplicationLifecycleDispatcher.onApplicationCreate(this);
     }
 
     /**
@@ -126,5 +133,11 @@ public class MainApplication extends Application implements ReactApplication, Li
                 e.printStackTrace();
             }
         }
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        ApplicationLifecycleDispatcher.onConfigurationChanged(this, newConfig);
     }
 }
