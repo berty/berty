@@ -3,81 +3,61 @@
 		"getstarted": {
 			"title": "",
 			"desc": "",
-			"button": ""
+			"create-button": "",
+			"import-button": "",
+			"link-button": ""
 		},
-		"select-mode": {
-			"title": "Vali eelseadistus",
-			"change-later": "Valikut on võimalik hiljem muuta!",
-			"performance": {
-				"title": "Jõudlus",
-				"desc": "Lihtne kasutada - Kõik võimalused",
-				"push-notif": "Saa tõukemärguandeid",
-				"offline-message": "Võrgu ühenduseta sõnumid Bluetooth abil",
-				"add-contact": "Lihtne kontaktide lisamine",
-				"fast-message": "Kiireim sõnumite saatmine"
+		"default-mode": {
+			"summary": {
+				"title": "",
+				"subtitle": "",
+				"first-point": "",
+				"second-point": "",
+				"back-button": "",
+				"accept-button": ""
+			}
+		},
+		"custom-mode": {
+			"summary": {
+				"title": "",
+				"subtitle": "",
+				"first-point": "",
+				"second-point": "",
+				"back-button": "",
+				"accept-button": ""
 			},
-			"high-level": {
-				"title": "Täielik Anonüümsus",
-				"desc": "Äärmiselt ettevaatlikule kasutajatele",
-				"disable-push-notif": "Tõukemärguanded välja lülitatud",
-				"disable-local-peer-discovery": "Kohalike seadmete avastamine välja lülitatud",
-				"disable-local-peer-discovery-desc": "Multicast DNS & Bluetooth",
-				"disable-contact-request": "Kontaktiks liitumine välja lülitatud",
-				"on-same-network": "Töötab samas võrgus"
+			"settings": {
+				"off-grid": {
+					"title": "",
+					"ble-button": "",
+					"nearby-button": "",
+					"mc-button": "",
+					"mdns-button": ""
+				},
+				"routing": {
+					"title": "",
+					"dht-button": "",
+					"rdvp-button": ""
+				},
+				"access": {
+					"title": "",
+					"relay-button": "",
+					"bootstrap-button": "",
+					"replication-button": ""
+				},
+				"all-button": "",
+				"accept-button": ""
 			}
 		},
 		"create-account": {
 			"title": "Loo konto",
-			"desc": "Nimi on ainuke nõutud väli",
-			"required": "Kohustuslik",
 			"placeholder": "",
-			"button": "Loo Konto",
-			"advanced": "",
-			"import-account": "",
-			"link-device": "",
-			"more": "",
 			"good-to-know": {
 				"title": "",
 				"first-point": "",
 				"second-point": ""
 			}
 		},
-		"advanced-settings": {
-			"title": "",
-			"desc": "",
-			"more-about": {
-				"title": "",
-				"first-paragraph": "",
-				"second-paragraph": "",
-				"third-paragraph": ""
-			},
-			"read-more": "",
-			"config-title": "",
-			"config-desc": "",
-			"learn-more": "",
-			"first-part": {
-				"title": "",
-				"first-button": "",
-				"second-button": ""
-			},
-			"second-part": {
-				"title": "",
-				"first-button": "",
-				"second-button": ""
-			},
-			"third-part": {
-				"title": "Teenused",
-				"network-button": "",
-				"first-button": "",
-				"second-button": {
-					"title": "",
-					"placeholder": ""
-				},
-				"third-button": ""
-			},
-			"apply-changes": ""
-		},
-		"exper-setup": {},
 		"generate-key": {
 			"title": "Käivitan Berty sõlme…",
 			"desc": "Võib minna mõni hetk aega"
@@ -133,102 +113,54 @@
 			}
 		},
 		"suggestion-display-name-initial": "Lisamiseks vajuta siia",
-		"configurations": {
-			"network": {
-				"display-name": "Võrgu Sätted",
-				"desc": "Võrgu sätete kinnitamiseks vajuta siia"
-			},
-			"notification": {
-				"display-name": "Teavituste Sätted",
-				"desc": "Tõukemärguannete seadistuseks vajuta siia"
-			},
-			"replicate": {
-				"display-name": "",
-				"desc": ""
-			}
-		},
-		"network-options": {
-			"welcome-title": "Tere tulemast Võrgu Sätete lehele",
-			"full-anon-mode": "Täieliku Anonüümsuse režiim",
-			"simple-tor-compatible": "Lihtsustatud TOR Ühilduv",
-			"allow-expert-mode": "Luba Ekspert režiimi",
-			"tor-compatible": {
-				"title": "TOR Ühilduv",
-				"desc": ""
-			},
-			"full-anon": {
-				"title": "Täieliku Anonüümsuse režiim",
-				"desc": "",
-				"no-ip": "",
-				"no-mc": "",
-				"tor-only": ""
-			},
-			"save": "",
-			"skip": "JÄTA VAHELE JA JÄTKA TEINE KORD"
-		},
 		"scan": {
 			"title": ""
 		}
 	},
 	"settings": {
 		"home": {
-			"check-list": {
-				"title": "",
-				"avatar": {
-					"title": "",
-					"desc": ""
-				},
-				"berty-services": {
-					"title": "",
-					"desc": ""
-				},
-				"contact": {
-					"title": "",
-					"desc": ""
-				},
-				"group": {
-					"title": "",
-					"desc": ""
-				},
-				"message": {
-					"title": "",
-					"desc": ""
-				},
-				"ble-message": {
-					"title": "",
-					"desc": ""
-				}
-			},
-			"edit-profile": "",
-			"share-link": "",
-			"create-group": "",
-			"create-new-account": "Loo uus konto"
+			"proximity-button": "",
+			"notifications-button": "Teavitused",
+			"contact-convs-button": "",
+			"appearance-button": "",
+			"devices-button": "",
+			"accounts-button": "",
+			"network-button": "",
+			"bug-button": "",
+			"about-button": ""
 		},
-		"network-map": {
-			"title": "",
-			"online-peers": ""
+		"about": {
+			"faq-button": "",
+			"roadmap-button": "",
+			"policy-button": "",
+			"license-button": ""
 		},
-		"mode": {
-			"title": "",
-			"desc": "",
-			"in-app-notifications": "",
-			"dark-mode-button": "",
-			"devtools": "",
-			"network-config": "",
-			"notification-file-saved": {
-				"title": "",
-				"desc": ""
-			},
-			"receive-contact-requests-button": "",
-			"external-services-button": "",
-			"auto-replicate-button": "",
-			"auto-replicate-button-unavailable": "",
-			"blocked-contacts-button": {
-				"title": "",
-				"tag": ""
-			},
-			"delete-account-button": "",
-			"backup-account-button": ""
+		"accounts": {
+			"accounts-button": "",
+			"create-button": "",
+			"import-button": "",
+			"link-button": "",
+			"delete-button": ""
+		},
+		"appearance": {
+			"dark-button": "",
+			"editor-button": ""
+		},
+		"contact-convs": {
+			"reset-button": "",
+			"request-button": ""
+		},
+		"network": {
+			"ble-button": "",
+			"mc-button": "",
+			"nearby-button": "",
+			"mdns-button": "",
+			"memo-cell-button": "",
+			"medias-cell-button": "",
+			"dht-button": "",
+			"rdvp-button": "",
+			"relay-button": "",
+			"bootstrap-button": ""
 		},
 		"edit-profile": {
 			"title": "",
@@ -239,51 +171,8 @@
 			"name-input-placeholder": "",
 			"name-input-label": "Nimi"
 		},
-		"notifications": {
-			"title": "Teavitused",
-			"enabled-desc": "",
-			"disabled-desc": "",
-			"activate-button": "",
-			"contact-request-button": {
-				"title": "",
-				"desc": ""
-			},
-			"messages-notifications-button": {
-				"title": "",
-				"display-button": "",
-				"preview-button": "",
-				"sound-button": "",
-				"exceptions-button": {
-					"title": "",
-					"preview-value": ""
-				}
-			},
-			"group-notifications-button": {
-				"title": "",
-				"display-button": "",
-				"preview-button": "",
-				"sound-button": "",
-				"exceptions-button": {
-					"title": "",
-					"tag": ""
-				}
-			}
-		},
-		"bluetooth": {
-			"title": "Bluetooth",
-			"desc": "",
-			"activate-button": ""
-		},
-		"mc": {
-			"activate-button": ""
-		},
-		"nearby": {
-			"activate-button": ""
-		},
 		"berty-services": {
-			"header": "",
 			"title": "",
-			"recommended": "Soovituslikud",
 			"desc": "",
 			"button": "",
 			"skip": "JÄTA VAHELE JA JÄTKA TEINE KORD"
@@ -295,42 +184,13 @@
 			"cancel-button": "",
 			"delete-button": ""
 		},
-		"help": {
-			"title": "",
-			"security-privacy-button": {
-				"title": "",
-				"desc": ""
-			},
-			"updates-button": "",
-			"about-button": "",
-			"account-button": "",
-			"contact-button": "",
-			"message-button": "",
-			"group-button": "",
-			"settings-button": "",
-			"ask-button": "",
-			"report-button": ""
-		},
-		"about": {
-			"title": "",
-			"top-left-button": "",
-			"top-right-button": "",
-			"bottom-left-button": "",
-			"bottom-right-button": "",
-			"terms-button": "",
-			"privacy-button": "",
-			"software-button": "",
-			"contact-button": "",
-			"website-button": ""
-		},
-		"updates": {
-			"title": "",
-			"current-tag": ""
-		},
 		"faq": {
 			"title": ""
 		},
 		"roadmap": {
+			"title": ""
+		},
+		"privacy-policy": {
 			"title": ""
 		},
 		"devtools": {
@@ -338,13 +198,8 @@
 			"header-left-button": "",
 			"header-middle-button": "",
 			"header-right-button": "",
-			"theme-editor": "",
 			"simulate-button": "",
 			"simulate-js-error-button": "",
-			"tor-button": "",
-			"tor-optional-option": "",
-			"tor-required-option": "",
-			"tor-disabled-option": "",
 			"system-info-button": "",
 			"debug-button": "",
 			"log-button": {
@@ -379,7 +234,6 @@
 				"test": "",
 				"tried": ""
 			},
-			"trigger-crashlytics-button": "",
 			"tyber-attach": "",
 			"tyber-host-button": {
 				"name": "",
@@ -401,16 +255,12 @@
 		},
 		"add-dev-conversations": {
 			"title": "",
-			"add": "",
-			"tag-bot": "",
-			"tag-contact": "",
-			"tag-conversation": ""
+			"add": ""
 		},
 		"ipfs-webui": {
 			"title": ""
 		},
 		"theme-editor": {
-			"title": "",
 			"randomize": "",
 			"save": "",
 			"export": "",
@@ -418,13 +268,21 @@
 			"import": "",
 			"delete": "",
 			"bad-format-title": "",
-			"bad-format-desc": ""
+			"bad-format-desc": "",
+			"notification-file-saved": {
+				"title": "",
+				"desc": ""
+			}
 		},
 		"my-berty-ID": {
 			"title": "",
 			"qr": "",
-			"fingerprint": "",
-			"devices": ""
+			"fingerprint": ""
+		},
+		"share": {
+			"invite": "",
+			"tap-to-scan": "",
+			"create-group": ""
 		}
 	},
 	"modals": {
@@ -463,12 +321,8 @@
 		"sending": "",
 		"sent": "",
 		"contact-settings": {
-			"mark-button": "",
-			"block-button": "",
-			"delete-button": "",
 			"fingerprint": "",
 			"info": "",
-			"devices": "",
 			"my-devices": ""
 		},
 		"multi-member": {
@@ -499,20 +353,13 @@
 			}
 		},
 		"multi-member-settings": {
-			"header-left-button": "Otsing",
-			"header-middle-button": "",
-			"header-right-button": "",
 			"media-button": "",
-			"notifications-button": "",
 			"members-button": {
-				"title": "",
-				"unknown": ""
+				"title": ""
 			},
 			"add-member-button": "",
 			"invite-button": "",
-			"save-button": "",
-			"erase-button": "",
-			"leave-button": ""
+			"save-button": ""
 		},
 		"add-members": {
 			"members": "",
@@ -544,14 +391,8 @@
 			"input-placeholder": ""
 		},
 		"one-to-one-settings": {
-			"header-left-button": "Otsing",
-			"header-middle-button": "",
-			"header-right-button": "",
 			"media-button": "",
-			"notifications-button": "",
-			"mutual-button": "",
-			"save-button": "",
-			"erase-button": ""
+			"save-button": ""
 		},
 		"replicate-group-settings": {
 			"title": "",
@@ -565,7 +406,6 @@
 			"camera": "",
 			"files": "",
 			"microphone": "",
-			"search-gif": "",
 			"security-access": "",
 			"security-access-desc": "",
 			"save-to-gallery": "",
@@ -609,7 +449,7 @@
 			"title": "",
 			"desc": ""
 		},
-		"p2p": {
+		"proximity": {
 			"title": "",
 			"android-desc": "",
 			"ios-desc": ""
@@ -636,6 +476,10 @@
 	},
 	"notification": {
 		"need-restart": {
+			"title": "",
+			"desc": ""
+		},
+		"need-restart-ble": {
 			"title": "",
 			"desc": ""
 		}
@@ -670,7 +514,6 @@
 				"action-delete": {
 					"file-exists": "",
 					"account-exists": "",
-					"directory-exists-load-error": "",
 					"fs-read-error": "",
 					"actions-title": "",
 					"action-account-manager": "",
