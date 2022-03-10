@@ -117,9 +117,9 @@ const ModalContext = createContext<{
 export const ConversationModalProvider: FC = ({ children }) => {
 	const [stack, setStack] = useState<stackType[]>([])
 
-	const handleDeleteModal = (idToRemove: string) => {
+	const handleDeleteModal = useCallback((idToRemove: string) => {
 		setStack(previous => previous.filter(({ id }) => id !== idToRemove))
-	}
+	}, [])
 
 	const show = useCallback((component: ReactNode) => {
 		setStack(previous => [

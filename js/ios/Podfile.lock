@@ -411,7 +411,7 @@ PODS:
     - React-Core
   - RNPermissions (3.1.0):
     - React-Core
-  - RNReanimated (2.4.1):
+  - RNReanimated (2.3.1):
     - DoubleConversion
     - FBLazyVector
     - FBReactNativeSpec
@@ -448,7 +448,7 @@ PODS:
     - React
   - RNVectorIcons (9.0.0):
     - React-Core
-  - TOCropViewController (2.6.0)
+  - TOCropViewController (2.6.1)
   - Yoga (1.14.0)
   - YogaKit (1.18.1):
     - Yoga (~> 1.14)
@@ -771,12 +771,12 @@ SPEC CHECKSUMS:
   RNImageCropPicker: 448d3c6e923fde3466b49caf3c2457c2a0ba02dd
   RNInAppBrowser: 3ff3a3b8f458aaf25aaee879d057352862edf357
   RNPermissions: 4b54095940aea8c03fa3e6c92d4ac3647b31ed4e
-  RNReanimated: 58e7b950e0172235ff8296dd39ec145f9577e301
+  RNReanimated: 7f143675d94978c3555345d5bfa8ed6ae800c5d3
   RNScreens: 4d79118be80f79fa1f4aa131909a1d6e86280af3
   RNShare: edd621a71124961e29a7ba43a84bd1c6f9980d88
   RNSVG: 551acb6562324b1d52a4e0758f7ca0ec234e278f
   RNVectorIcons: 4143ba35feebab8fdbe6bc43d1e776b393d47ac8
-  TOCropViewController: 3105367e808b7d3d886a74ff59bf4804e7d3ab38
+  TOCropViewController: edfd4f25713d56905ad1e0b9f5be3fbe0f59c863
   Yoga: 575c581c63e0d35c9a83f4b46d01d63abc1100ac
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 

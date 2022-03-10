@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { NativeSyntheticEvent, TextInputSelectionChangeEventData, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import ImagePicker from 'react-native-image-crop-picker'
@@ -74,7 +74,10 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 		const isFake = !!(conversation as any)?.fake
 		const sendEnabled = !sending && !!(!isFake && (message || mediaCids.length > 0))
 		const horizontalGutter = 8 * scaleSize
-		const showQuickButtons = !disabled && !sending && !message && mediaCids.length <= 0
+		const showQuickButtons = useMemo(
+			() => !disabled && !sending && !message && mediaCids.length <= 0,
+			[disabled, mediaCids.length, message, sending],
+		)
 
 		// callbacks
 
