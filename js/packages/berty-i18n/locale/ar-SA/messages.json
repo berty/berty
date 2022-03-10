@@ -3,81 +3,61 @@
 		"getstarted": {
 			"title": "",
 			"desc": "",
-			"button": ""
+			"create-button": "",
+			"import-button": "",
+			"link-button": ""
 		},
-		"select-mode": {
-			"title": "اختر الإعداد المسبق",
-			"change-later": "سيكون لديك خيار لتغيير ذلك لاحقاً!",
-			"performance": {
-				"title": "الأداء",
-				"desc": "سهل الاستخدام - جميع الميزات",
-				"push-notif": "تلقي الإشعارات",
-				"offline-message": "إرسال غير متصل/ بالبلوتوث",
-				"add-contact": "إضافة جهات الاتصال بسهولة",
-				"fast-message": "أسرع توصيل للرسائل"
+		"default-mode": {
+			"summary": {
+				"title": "",
+				"subtitle": "",
+				"first-point": "",
+				"second-point": "",
+				"back-button": "",
+				"accept-button": ""
+			}
+		},
+		"custom-mode": {
+			"summary": {
+				"title": "",
+				"subtitle": "",
+				"first-point": "",
+				"second-point": "",
+				"back-button": "",
+				"accept-button": ""
 			},
-			"high-level": {
-				"title": "إخفاء الهوية بالكامل",
-				"desc": "للمستخدمين الأكثر حذراً",
-				"disable-push-notif": "تم تعطيل الإشعارات",
-				"disable-local-peer-discovery": "اكتشاف الأقران المحلي معطل",
-				"disable-local-peer-discovery-desc": "DNS متعدد و البلوتوث",
-				"disable-contact-request": "تم تعطيل طلبات الاتصال",
-				"on-same-network": "محلي على نفس الشبكة/واى فاى"
+			"settings": {
+				"off-grid": {
+					"title": "",
+					"ble-button": "",
+					"nearby-button": "",
+					"mc-button": "",
+					"mdns-button": ""
+				},
+				"routing": {
+					"title": "",
+					"dht-button": "",
+					"rdvp-button": ""
+				},
+				"access": {
+					"title": "",
+					"relay-button": "",
+					"bootstrap-button": "",
+					"replication-button": ""
+				},
+				"all-button": "",
+				"accept-button": ""
 			}
 		},
 		"create-account": {
 			"title": "أنشئ حسابك",
-			"desc": "الاسم هو المعلومات الوحيدة المطلوبة",
-			"required": "مطلوب",
 			"placeholder": "",
-			"button": "إنشاء حسابي",
-			"advanced": "",
-			"import-account": "",
-			"link-device": "",
-			"more": "",
 			"good-to-know": {
 				"title": "",
 				"first-point": "",
 				"second-point": ""
 			}
 		},
-		"advanced-settings": {
-			"title": "",
-			"desc": "",
-			"more-about": {
-				"title": "",
-				"first-paragraph": "",
-				"second-paragraph": "",
-				"third-paragraph": ""
-			},
-			"read-more": "",
-			"config-title": "",
-			"config-desc": "",
-			"learn-more": "",
-			"first-part": {
-				"title": "",
-				"first-button": "",
-				"second-button": ""
-			},
-			"second-part": {
-				"title": "",
-				"first-button": "",
-				"second-button": ""
-			},
-			"third-part": {
-				"title": "الخدمات",
-				"network-button": "قائمة الشبكات",
-				"first-button": "",
-				"second-button": {
-					"title": "",
-					"placeholder": ""
-				},
-				"third-button": ""
-			},
-			"apply-changes": ""
-		},
-		"exper-setup": {},
 		"generate-key": {
 			"title": "بدء تشغيل عقدة برتي…",
 			"desc": "قد يستغرق هذا بضع ثوان"
@@ -133,102 +113,54 @@
 			}
 		},
 		"suggestion-display-name-initial": "انقر هنا للإضافة",
-		"configurations": {
-			"network": {
-				"display-name": "اعدادات الشبكة",
-				"desc": "انقر هنا لإنهاء اعدادات الشبكة"
-			},
-			"notification": {
-				"display-name": "اعدادات الإشعارات",
-				"desc": "انقر هنا لضبط الإشعارات"
-			},
-			"replicate": {
-				"display-name": "",
-				"desc": ""
-			}
-		},
-		"network-options": {
-			"welcome-title": "مرحباً بك في خيارات الشبكات",
-			"full-anon-mode": "وضع الإخفاء الكامل",
-			"simple-tor-compatible": "",
-			"allow-expert-mode": "السماح بوضع الخبراء",
-			"tor-compatible": {
-				"title": "متوافق مع تور",
-				"desc": ""
-			},
-			"full-anon": {
-				"title": "وضع الإخفاء الكامل",
-				"desc": "",
-				"no-ip": "لا يوجد ip",
-				"no-mc": "",
-				"tor-only": "تور فقط"
-			},
-			"save": "احفظ",
-			"skip": "اختراع و هذه الأشرطة"
-		},
 		"scan": {
 			"title": ""
 		}
 	},
 	"settings": {
 		"home": {
-			"check-list": {
-				"title": "",
-				"avatar": {
-					"title": "غيّر الصورة الشخصية",
-					"desc": ""
-				},
-				"berty-services": {
-					"title": "",
-					"desc": ""
-				},
-				"contact": {
-					"title": "",
-					"desc": ""
-				},
-				"group": {
-					"title": "",
-					"desc": ""
-				},
-				"message": {
-					"title": "",
-					"desc": ""
-				},
-				"ble-message": {
-					"title": "",
-					"desc": ""
-				}
-			},
-			"edit-profile": "تعديل الملف الشخصي",
-			"share-link": "",
-			"create-group": "",
-			"create-new-account": "إنشاء حساب جديد"
+			"proximity-button": "",
+			"notifications-button": "الإشعارات",
+			"contact-convs-button": "",
+			"appearance-button": "",
+			"devices-button": "",
+			"accounts-button": "",
+			"network-button": "",
+			"bug-button": "",
+			"about-button": "حول برتي"
 		},
-		"network-map": {
-			"title": "قائمة الشبكات",
-			"online-peers": "الأقران على الإنترنت"
+		"about": {
+			"faq-button": "",
+			"roadmap-button": "",
+			"policy-button": "",
+			"license-button": ""
 		},
-		"mode": {
-			"title": "الإعدادات",
-			"desc": "تخصيص كل شيء للحصول على التطبيق الذي يلائم احتياجاتك",
-			"in-app-notifications": "",
-			"dark-mode-button": "",
-			"devtools": "أدوات التطوير",
-			"network-config": "",
-			"notification-file-saved": {
-				"title": "",
-				"desc": ""
-			},
-			"receive-contact-requests-button": "",
-			"external-services-button": "الخدمات الخارجية",
-			"auto-replicate-button": "",
-			"auto-replicate-button-unavailable": "",
-			"blocked-contacts-button": {
-				"title": "",
-				"tag": ""
-			},
-			"delete-account-button": "",
-			"backup-account-button": ""
+		"accounts": {
+			"accounts-button": "",
+			"create-button": "",
+			"import-button": "",
+			"link-button": "",
+			"delete-button": ""
+		},
+		"appearance": {
+			"dark-button": "",
+			"editor-button": ""
+		},
+		"contact-convs": {
+			"reset-button": "",
+			"request-button": ""
+		},
+		"network": {
+			"ble-button": "",
+			"mc-button": "",
+			"nearby-button": "",
+			"mdns-button": "",
+			"memo-cell-button": "",
+			"medias-cell-button": "",
+			"dht-button": "",
+			"rdvp-button": "",
+			"relay-button": "",
+			"bootstrap-button": ""
 		},
 		"edit-profile": {
 			"title": "",
@@ -239,51 +171,8 @@
 			"name-input-placeholder": "",
 			"name-input-label": "الاسم"
 		},
-		"notifications": {
-			"title": "الإشعارات",
-			"enabled-desc": "",
-			"disabled-desc": "",
-			"activate-button": "",
-			"contact-request-button": {
-				"title": "",
-				"desc": ""
-			},
-			"messages-notifications-button": {
-				"title": "إشعارات الرسائل",
-				"display-button": "عرض الإشعارات",
-				"preview-button": "معاينة الرسائل",
-				"sound-button": "صوت",
-				"exceptions-button": {
-					"title": "الاستثناءات",
-					"preview-value": "إضافة"
-				}
-			},
-			"group-notifications-button": {
-				"title": "إشعارات المجموعات",
-				"display-button": "عرض الإشعارات",
-				"preview-button": "معاينة الرسائل",
-				"sound-button": "صوت",
-				"exceptions-button": {
-					"title": "الاستثناءات",
-					"tag": ""
-				}
-			}
-		},
-		"bluetooth": {
-			"title": "البلوتوث",
-			"desc": "",
-			"activate-button": ""
-		},
-		"mc": {
-			"activate-button": "تنشيط الاتصال المتعدد الأقران"
-		},
-		"nearby": {
-			"activate-button": ""
-		},
 		"berty-services": {
-			"header": "",
 			"title": "",
-			"recommended": "موصى",
 			"desc": "",
 			"button": "",
 			"skip": "اختراع و هذه الأشرطة"
@@ -295,42 +184,13 @@
 			"cancel-button": "لالغاء",
 			"delete-button": "إزالة"
 		},
-		"help": {
-			"title": "مساعدة",
-			"security-privacy-button": {
-				"title": "الأمان والخصوصية",
-				"desc": "حافظ على سلامة بياناتك و حياتك الخاصة"
-			},
-			"updates-button": "التحديثات",
-			"about-button": "حول برتي",
-			"account-button": "حساب و معرف برتي",
-			"contact-button": "طلب الاتصال",
-			"message-button": "الرسائل",
-			"group-button": "المجموعات",
-			"settings-button": "الإعدادات",
-			"ask-button": "طرح سؤالاً",
-			"report-button": "أبلغ عن خلل"
-		},
-		"about": {
-			"title": "حول برتي",
-			"top-left-button": "الخاص و الآمن",
-			"top-right-button": "أقران إلى شبكة الأقران",
-			"bottom-left-button": "لا حاجة إلى الإنترنت أو البيانات",
-			"bottom-right-button": "لا توجد شبكة ثقة مطلوبة",
-			"terms-button": "",
-			"privacy-button": "",
-			"software-button": "",
-			"contact-button": "",
-			"website-button": ""
-		},
-		"updates": {
-			"title": "",
-			"current-tag": ""
-		},
 		"faq": {
 			"title": ""
 		},
 		"roadmap": {
+			"title": ""
+		},
+		"privacy-policy": {
 			"title": ""
 		},
 		"devtools": {
@@ -338,13 +198,8 @@
 			"header-left-button": "",
 			"header-middle-button": "توليد بيانات مزيفة",
 			"header-right-button": "إعادة تشغيل الرديمون",
-			"theme-editor": "",
 			"simulate-button": "",
 			"simulate-js-error-button": "",
-			"tor-button": "",
-			"tor-optional-option": "",
-			"tor-required-option": "",
-			"tor-disabled-option": "",
 			"system-info-button": "معلومات النظام",
 			"debug-button": "",
 			"log-button": {
@@ -379,7 +234,6 @@
 				"test": "",
 				"tried": ""
 			},
-			"trigger-crashlytics-button": "",
 			"tyber-attach": "",
 			"tyber-host-button": {
 				"name": "",
@@ -401,16 +255,12 @@
 		},
 		"add-dev-conversations": {
 			"title": "إضافة محادثات Dev",
-			"add": "إضافة {{name}}",
-			"tag-bot": "Bot",
-			"tag-contact": "الاتصال",
-			"tag-conversation": "مجموعة"
+			"add": "إضافة {{name}}"
 		},
 		"ipfs-webui": {
 			"title": "IPFS WebUI"
 		},
 		"theme-editor": {
-			"title": "",
 			"randomize": "",
 			"save": "",
 			"export": "",
@@ -418,13 +268,21 @@
 			"import": "",
 			"delete": "",
 			"bad-format-title": "",
-			"bad-format-desc": ""
+			"bad-format-desc": "",
+			"notification-file-saved": {
+				"title": "",
+				"desc": ""
+			}
 		},
 		"my-berty-ID": {
 			"title": "",
 			"qr": "QR",
-			"fingerprint": "بصمة",
-			"devices": "الأجهزة"
+			"fingerprint": "بصمة"
+		},
+		"share": {
+			"invite": "",
+			"tap-to-scan": "",
+			"create-group": ""
 		}
 	},
 	"modals": {
@@ -463,12 +321,8 @@
 		"sending": "",
 		"sent": "",
 		"contact-settings": {
-			"mark-button": "",
-			"block-button": "",
-			"delete-button": "",
 			"fingerprint": "بصمة",
 			"info": "",
-			"devices": "الأجهزة",
 			"my-devices": ""
 		},
 		"multi-member": {
@@ -499,20 +353,13 @@
 			}
 		},
 		"multi-member-settings": {
-			"header-left-button": "البحث",
-			"header-middle-button": "اتصل",
-			"header-right-button": "مشاركة",
 			"media-button": "الوسائط والروابط والمستندات",
-			"notifications-button": "",
 			"members-button": {
-				"title": "",
-				"unknown": ""
+				"title": ""
 			},
 			"add-member-button": "",
 			"invite-button": "",
-			"save-button": "",
-			"erase-button": "",
-			"leave-button": ""
+			"save-button": ""
 		},
 		"add-members": {
 			"members": "",
@@ -544,14 +391,8 @@
 			"input-placeholder": ""
 		},
 		"one-to-one-settings": {
-			"header-left-button": "البحث",
-			"header-middle-button": "اتصل",
-			"header-right-button": "مشاركة",
 			"media-button": "الوسائط والروابط والمستندات",
-			"notifications-button": "",
-			"mutual-button": "",
-			"save-button": "",
-			"erase-button": ""
+			"save-button": ""
 		},
 		"replicate-group-settings": {
 			"title": "",
@@ -565,7 +406,6 @@
 			"camera": "الكاميرا",
 			"files": "الملفات",
 			"microphone": "الميكروفون",
-			"search-gif": "",
 			"security-access": "",
 			"security-access-desc": "",
 			"save-to-gallery": "",
@@ -609,7 +449,7 @@
 			"title": "",
 			"desc": ""
 		},
-		"p2p": {
+		"proximity": {
 			"title": "",
 			"android-desc": "",
 			"ios-desc": ""
@@ -636,6 +476,10 @@
 	},
 	"notification": {
 		"need-restart": {
+			"title": "",
+			"desc": ""
+		},
+		"need-restart-ble": {
 			"title": "",
 			"desc": ""
 		}
@@ -670,7 +514,6 @@
 				"action-delete": {
 					"file-exists": "",
 					"account-exists": "",
-					"directory-exists-load-error": "",
 					"fs-read-error": "",
 					"actions-title": "",
 					"action-account-manager": "",
