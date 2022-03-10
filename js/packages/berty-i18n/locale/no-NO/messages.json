@@ -3,81 +3,61 @@
 		"getstarted": {
 			"title": "",
 			"desc": "",
-			"button": ""
+			"create-button": "",
+			"import-button": "",
+			"link-button": ""
 		},
-		"select-mode": {
-			"title": "",
-			"change-later": "",
-			"performance": {
-				"title": "Ytelse",
-				"desc": "Enkelt å bruke - Alle funksjoner",
-				"push-notif": "Motta push-varsler",
-				"offline-message": "",
-				"add-contact": "Legg til kontakter enkelt",
-				"fast-message": "Raskeste levering av meldinger"
-			},
-			"high-level": {
+		"default-mode": {
+			"summary": {
 				"title": "",
-				"desc": "",
-				"disable-push-notif": "Push-varsler deaktivert",
-				"disable-local-peer-discovery": "Lokalt funn av likemenn deaktivert",
-				"disable-local-peer-discovery-desc": "",
-				"disable-contact-request": "Kontaktforespørsler deaktivert",
-				"on-same-network": ""
+				"subtitle": "",
+				"first-point": "",
+				"second-point": "",
+				"back-button": "",
+				"accept-button": ""
+			}
+		},
+		"custom-mode": {
+			"summary": {
+				"title": "",
+				"subtitle": "",
+				"first-point": "",
+				"second-point": "",
+				"back-button": "",
+				"accept-button": ""
+			},
+			"settings": {
+				"off-grid": {
+					"title": "",
+					"ble-button": "",
+					"nearby-button": "",
+					"mc-button": "",
+					"mdns-button": ""
+				},
+				"routing": {
+					"title": "",
+					"dht-button": "",
+					"rdvp-button": ""
+				},
+				"access": {
+					"title": "",
+					"relay-button": "",
+					"bootstrap-button": "",
+					"replication-button": ""
+				},
+				"all-button": "",
+				"accept-button": ""
 			}
 		},
 		"create-account": {
 			"title": "Opprett din konto",
-			"desc": "Et navn er den eneste påkrevde informasjonen",
-			"required": "Obligatorisk",
 			"placeholder": "",
-			"button": "OPPRETT MIN KONTO",
-			"advanced": "",
-			"import-account": "",
-			"link-device": "",
-			"more": "",
 			"good-to-know": {
 				"title": "",
 				"first-point": "",
 				"second-point": ""
 			}
 		},
-		"advanced-settings": {
-			"title": "",
-			"desc": "",
-			"more-about": {
-				"title": "",
-				"first-paragraph": "",
-				"second-paragraph": "",
-				"third-paragraph": ""
-			},
-			"read-more": "",
-			"config-title": "",
-			"config-desc": "",
-			"learn-more": "",
-			"first-part": {
-				"title": "",
-				"first-button": "",
-				"second-button": "Multicast DNS"
-			},
-			"second-part": {
-				"title": "",
-				"first-button": "",
-				"second-button": ""
-			},
-			"third-part": {
-				"title": "Tjenester",
-				"network-button": "Liste over nettverk",
-				"first-button": "",
-				"second-button": {
-					"title": "",
-					"placeholder": ""
-				},
-				"third-button": ""
-			},
-			"apply-changes": ""
-		},
-		"exper-setup": {},
 		"generate-key": {
 			"title": "Starter Berty-noden…",
 			"desc": "Dette kan ta noen få sekunder"
@@ -133,102 +113,54 @@
 			}
 		},
 		"suggestion-display-name-initial": "",
-		"configurations": {
-			"network": {
-				"display-name": "",
-				"desc": ""
-			},
-			"notification": {
-				"display-name": "",
-				"desc": ""
-			},
-			"replicate": {
-				"display-name": "",
-				"desc": ""
-			}
-		},
-		"network-options": {
-			"welcome-title": "",
-			"full-anon-mode": "",
-			"simple-tor-compatible": "",
-			"allow-expert-mode": "",
-			"tor-compatible": {
-				"title": "",
-				"desc": ""
-			},
-			"full-anon": {
-				"title": "",
-				"desc": "",
-				"no-ip": "",
-				"no-mc": "",
-				"tor-only": ""
-			},
-			"save": "",
-			"skip": "HOPP OVER OG GJØR DETTE SENERE"
-		},
 		"scan": {
 			"title": ""
 		}
 	},
 	"settings": {
 		"home": {
-			"check-list": {
-				"title": "",
-				"avatar": {
-					"title": "",
-					"desc": ""
-				},
-				"berty-services": {
-					"title": "",
-					"desc": ""
-				},
-				"contact": {
-					"title": "",
-					"desc": ""
-				},
-				"group": {
-					"title": "",
-					"desc": ""
-				},
-				"message": {
-					"title": "",
-					"desc": ""
-				},
-				"ble-message": {
-					"title": "",
-					"desc": ""
-				}
-			},
-			"edit-profile": "Rediger profil",
-			"share-link": "",
-			"create-group": "",
-			"create-new-account": ""
+			"proximity-button": "",
+			"notifications-button": "Varsler",
+			"contact-convs-button": "",
+			"appearance-button": "",
+			"devices-button": "",
+			"accounts-button": "",
+			"network-button": "",
+			"bug-button": "",
+			"about-button": "Om Berty"
 		},
-		"network-map": {
-			"title": "Liste over nettverk",
-			"online-peers": "Likemenn på nett"
+		"about": {
+			"faq-button": "",
+			"roadmap-button": "",
+			"policy-button": "",
+			"license-button": ""
 		},
-		"mode": {
-			"title": "Innstillinger",
-			"desc": "Tilpass alt for å få appen som passer dine behov",
-			"in-app-notifications": "",
-			"dark-mode-button": "Mørk-modus",
-			"devtools": "Verktøy for utviklere",
-			"network-config": "",
-			"notification-file-saved": {
-				"title": "",
-				"desc": ""
-			},
-			"receive-contact-requests-button": "Motta kontaktforespørsler",
-			"external-services-button": "Eksterne tjenester",
-			"auto-replicate-button": "Automatisk gjenskaping",
-			"auto-replicate-button-unavailable": "",
-			"blocked-contacts-button": {
-				"title": "Blokkerte kontakter",
-				"tag": "blokkert"
-			},
-			"delete-account-button": "Slett min konto",
-			"backup-account-button": "Sikkerhetskopier kontoen min"
+		"accounts": {
+			"accounts-button": "",
+			"create-button": "",
+			"import-button": "",
+			"link-button": "",
+			"delete-button": ""
+		},
+		"appearance": {
+			"dark-button": "",
+			"editor-button": ""
+		},
+		"contact-convs": {
+			"reset-button": "",
+			"request-button": ""
+		},
+		"network": {
+			"ble-button": "",
+			"mc-button": "",
+			"nearby-button": "",
+			"mdns-button": "Multicast DNS",
+			"memo-cell-button": "",
+			"medias-cell-button": "",
+			"dht-button": "",
+			"rdvp-button": "",
+			"relay-button": "",
+			"bootstrap-button": ""
 		},
 		"edit-profile": {
 			"title": "Rediger min profil",
@@ -239,51 +171,8 @@
 			"name-input-placeholder": "Navn...",
 			"name-input-label": "Navn"
 		},
-		"notifications": {
-			"title": "Varsler",
-			"enabled-desc": "Du har aktivert varsler!",
-			"disabled-desc": "Du har ikke aktivert varsler for denne appen",
-			"activate-button": "Aktiver varsler",
-			"contact-request-button": {
-				"title": "Kontaktforespørsel",
-				"desc": "Motta et varsel hver gang noen sender deg en kontaktforespørsel"
-			},
-			"messages-notifications-button": {
-				"title": "Meldingsvarsler",
-				"display-button": "Vis varsler",
-				"preview-button": "Forhåndsvisning av meldinger",
-				"sound-button": "Lyd",
-				"exceptions-button": {
-					"title": "Unntak",
-					"preview-value": "Legg til"
-				}
-			},
-			"group-notifications-button": {
-				"title": "Gruppevarsler",
-				"display-button": "Vis varsler",
-				"preview-button": "Forhåndsvisning av meldinger",
-				"sound-button": "Lyd",
-				"exceptions-button": {
-					"title": "Unntak",
-					"tag": "{{count}} unntak"
-				}
-			}
-		},
-		"bluetooth": {
-			"title": "Bluetooth",
-			"desc": "",
-			"activate-button": ""
-		},
-		"mc": {
-			"activate-button": "Aktiver tilkobling for flere personer"
-		},
-		"nearby": {
-			"activate-button": ""
-		},
 		"berty-services": {
-			"header": "",
 			"title": "",
-			"recommended": "Anbefalt",
 			"desc": "",
 			"button": "",
 			"skip": "HOPP OVER OG GJØR DETTE SENERE"
@@ -295,42 +184,13 @@
 			"cancel-button": "AVBRYT",
 			"delete-button": "SLETT"
 		},
-		"help": {
-			"title": "Hjelp",
-			"security-privacy-button": {
-				"title": "Sikkerhet & Personvern",
-				"desc": "Hold dataene dine trygge og livet ditt privat"
-			},
-			"updates-button": "Oppdateringer",
-			"about-button": "Om Berty",
-			"account-button": "Konto & Berty ID",
-			"contact-button": "Kontakter & Forespørsler",
-			"message-button": "Meldinger",
-			"group-button": "Grupper",
-			"settings-button": "Innstillinger",
-			"ask-button": "Still et spørsmål",
-			"report-button": "Rapporter en feil"
-		},
-		"about": {
-			"title": "Om Berty",
-			"top-left-button": "Privat & Sikkert",
-			"top-right-button": "Nettverk mellom likemenn",
-			"bottom-left-button": "Verken internett eller data kreves",
-			"bottom-right-button": "Ingen tillit til nettverk nødvendig",
-			"terms-button": "Vilkår for bruk",
-			"privacy-button": "Retningslinjer for personvern",
-			"software-button": "Programvarelisens",
-			"contact-button": "Kontakt oss",
-			"website-button": "Nettside"
-		},
-		"updates": {
-			"title": "App-oppdateringer",
-			"current-tag": "Gjeldende"
-		},
 		"faq": {
 			"title": ""
 		},
 		"roadmap": {
+			"title": ""
+		},
+		"privacy-policy": {
 			"title": ""
 		},
 		"devtools": {
@@ -338,13 +198,8 @@
 			"header-left-button": "Infoer om enheten",
 			"header-middle-button": "Generer falsk data",
 			"header-right-button": "Restart daemon",
-			"theme-editor": "",
 			"simulate-button": "Simuler stream-feil",
 			"simulate-js-error-button": "",
-			"tor-button": "Tor {{option}}",
-			"tor-optional-option": "valgfritt",
-			"tor-required-option": "obligatorisk",
-			"tor-disabled-option": "deaktivert",
 			"system-info-button": "System-info",
 			"debug-button": "Feilsøk",
 			"log-button": {
@@ -379,7 +234,6 @@
 				"test": "Test, ",
 				"tried": "✔ Prøvde å sende til {{length}} kontakter"
 			},
-			"trigger-crashlytics-button": "",
 			"tyber-attach": "",
 			"tyber-host-button": {
 				"name": "",
@@ -401,16 +255,12 @@
 		},
 		"add-dev-conversations": {
 			"title": "Legg til utviklersamtaler",
-			"add": "Legg til {{name}}",
-			"tag-bot": "Bot",
-			"tag-contact": "Kontakt",
-			"tag-conversation": "Gruppe"
+			"add": "Legg til {{name}}"
 		},
 		"ipfs-webui": {
 			"title": "IPFS WebUI"
 		},
 		"theme-editor": {
-			"title": "",
 			"randomize": "",
 			"save": "",
 			"export": "",
@@ -418,13 +268,21 @@
 			"import": "",
 			"delete": "",
 			"bad-format-title": "",
-			"bad-format-desc": ""
+			"bad-format-desc": "",
+			"notification-file-saved": {
+				"title": "",
+				"desc": ""
+			}
 		},
 		"my-berty-ID": {
 			"title": "",
 			"qr": "QR",
-			"fingerprint": "Fingeravtrykk",
-			"devices": "Enheter"
+			"fingerprint": "Fingeravtrykk"
+		},
+		"share": {
+			"invite": "",
+			"tap-to-scan": "",
+			"create-group": ""
 		}
 	},
 	"modals": {
@@ -463,12 +321,8 @@
 		"sending": "Sender...",
 		"sent": "",
 		"contact-settings": {
-			"mark-button": "Marker som verifisert",
-			"block-button": "Blokker kontakt",
-			"delete-button": "Slett kontakt",
 			"fingerprint": "Fingeravtrykk",
 			"info": "Infoer",
-			"devices": "Enheter",
 			"my-devices": ""
 		},
 		"multi-member": {
@@ -499,20 +353,13 @@
 			}
 		},
 		"multi-member-settings": {
-			"header-left-button": "Søk",
-			"header-middle-button": "Ring",
-			"header-right-button": "Del",
 			"media-button": "Medier, lenker & dokumenter",
-			"notifications-button": "Motta varsler",
 			"members-button": {
-				"title": "Medlemmer",
-				"unknown": "Ukjent"
+				"title": "Medlemmer"
 			},
 			"add-member-button": "Legg til medlem",
 			"invite-button": "Inviter via lenke",
-			"save-button": "Lagre samtale på serveren",
-			"erase-button": "Slett samtale",
-			"leave-button": "Forlat gruppen"
+			"save-button": "Lagre samtale på serveren"
 		},
 		"add-members": {
 			"members": "Medlemmer",
@@ -544,14 +391,8 @@
 			"input-placeholder": ""
 		},
 		"one-to-one-settings": {
-			"header-left-button": "Søk",
-			"header-middle-button": "Ring",
-			"header-right-button": "Del",
 			"media-button": "Medier, lenker & dokumenter",
-			"notifications-button": "Motta varsler",
-			"mutual-button": "Fellesgrupper",
-			"save-button": "Lagre samtale på serveren",
-			"erase-button": "Slett samtale"
+			"save-button": "Lagre samtale på serveren"
 		},
 		"replicate-group-settings": {
 			"title": "Registrer samtale på serveren",
@@ -565,7 +406,6 @@
 			"camera": "Kamera",
 			"files": "Filer",
 			"microphone": "Mikrofon",
-			"search-gif": "Søk etter en gif",
 			"security-access": "Sikkerhetstilgang",
 			"security-access-desc": "Trykk her for å åpne innstillingen for å gi tilgang til din",
 			"save-to-gallery": "Lagre denne filen i Galleriet",
@@ -609,7 +449,7 @@
 			"title": "",
 			"desc": ""
 		},
-		"p2p": {
+		"proximity": {
 			"title": "",
 			"android-desc": "",
 			"ios-desc": ""
@@ -636,6 +476,10 @@
 	},
 	"notification": {
 		"need-restart": {
+			"title": "",
+			"desc": ""
+		},
+		"need-restart-ble": {
 			"title": "",
 			"desc": ""
 		}
@@ -670,7 +514,6 @@
 				"action-delete": {
 					"file-exists": "",
 					"account-exists": "",
-					"directory-exists-load-error": "",
 					"fs-read-error": "",
 					"actions-title": "",
 					"action-account-manager": "",
