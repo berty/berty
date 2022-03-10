@@ -6372,6 +6372,13 @@ expo-keep-awake@~10.0.2:
   resolved "https://registry.yarnpkg.com/expo-keep-awake/-/expo-keep-awake-10.0.2.tgz#706bda839782bb3e8ad4cbe43bde471a56368813"
   integrity sha512-Ro1lgyKldbFs4mxhWM+goX9sg0S2SRR8FiJJeOvaRzf8xNhrZfWA00Zpr+/3ocCoWQ3eEL+X9UF4PXXHf0KoOg==
 
+expo-mail-composer@~11.1.0:
+  version "11.1.1"
+  resolved "https://registry.yarnpkg.com/expo-mail-composer/-/expo-mail-composer-11.1.1.tgz#0762a925704a8e14febb0a517473909c25d1fc18"
+  integrity sha512-wxS9HtVkMONhiNJaoBmX9QdcrBlrtOz/VCY2DlkckNIz3nK+34pxTSeIJL6CiknzKWfP4/houjRvn7ywn2Zcyg==
+  dependencies:
+    query-string "^6.2.0"
+
 expo-modules-autolinking@0.5.5:
   version "0.5.5"
   resolved "https://registry.yarnpkg.com/expo-modules-autolinking/-/expo-modules-autolinking-0.5.5.tgz#6bcc42072dcbdfca79d207b7f549f1fdb54a2b74"
@@ -10438,6 +10445,16 @@ qrcode@^1.4.4:
     isarray "^2.0.1"
     pngjs "^3.3.0"
     yargs "^13.2.4"
+
+query-string@^6.2.0:
+  version "6.14.1"
+  resolved "https://registry.yarnpkg.com/query-string/-/query-string-6.14.1.tgz#7ac2dca46da7f309449ba0f86b1fd28255b0c86a"
+  integrity sha512-XDxAeVmpfu1/6IjyT/gXHOl+S0vQ9owggJ30hhWKdHAsNPOcasn5o9BW0eejZqL2e4vMjhAxoW3jVHcD6mbcYw==
+  dependencies:
+    decode-uri-component "^0.2.0"
+    filter-obj "^1.1.0"
+    split-on-first "^1.0.0"
+    strict-uri-encode "^2.0.0"
 
 query-string@^7.0.0:
   version "7.0.1"
