@@ -6,12 +6,9 @@ import (
 	"fmt"
 
 	"github.com/libp2p/go-eventbus"
-	"go.uber.org/zap"
 
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
-
-	"berty.tech/go-orbit-db/stores"
 )
 
 func checkParametersConsistency(sinceID, untilID []byte, sinceNow, untilNow, reverseOrder bool) error {
@@ -103,8 +100,6 @@ func (s *service) GroupMetadataList(req *protocoltypes.GroupMetadataList_Request
 	}
 
 	// Subscribe to new metadata events and stream them if requested
-	listPreviouseMetadataDone := false
-	bufferMetadata := []*protocoltypes.GroupMetadataEvent{}
 	for {
 		var event interface{}
 		select {
@@ -114,43 +109,16 @@ func (s *service) GroupMetadataList(req *protocoltypes.GroupMetadataList_Request
 		case event = <-newEvents:
 		}
 
-		var metadatas []*protocoltypes.GroupMetadataEvent
-		switch evt := event.(type) {
-		case stores.EventReplicated:
-			entries := evt.Entries
-			metadatas = []*protocoltypes.GroupMetadataEvent{}
-			cg.logger.Info("receving replicated metadata events", zap.Int("metadatas", len(entries)))
-			for _, entry := range entries {
-				msg, _, err := cg.MetadataStore().openMetadataEntry(entry)
-				if err != nil {
-					s.logger.Error("unable to open metadata", zap.Error(err))
-					continue
-				}
-
-				metadatas = append(metadatas, msg)
-			}
-
-			if !listPreviouseMetadataDone {
-				bufferMetadata = append(bufferMetadata, metadatas...)
-				continue
-			}
-
-		case protocoltypes.GroupMetadataEvent:
-			if evt.EventContext == nil {
-				listPreviouseMetadataDone = true
-				metadatas = bufferMetadata
-			} else {
-				metadatas = []*protocoltypes.GroupMetadataEvent{&evt}
-			}
+		msg := event.(protocoltypes.GroupMetadataEvent)
+		if msg.EventContext == nil {
+			continue
 		}
 
-		for _, msg := range metadatas {
-			if err := sub.Send(msg); err != nil {
-				return err
-			}
+		if err := sub.Send(&msg); err != nil {
+			return err
 		}
 
-		cg.logger.Info("service - metadata store - sent event from log subscription", zap.Int("metadatas", len(metadatas)))
+		cg.logger.Info("service - metadata store - sent 1 event from log subscription")
 	}
 }
 
@@ -174,7 +142,6 @@ func (s *service) GroupMessageList(req *protocoltypes.GroupMessageList_Request, 
 	var newEvents <-chan interface{}
 	if req.UntilID == nil && !req.UntilNow {
 		sub, err := cg.MessageStore().EventBus().Subscribe([]interface{}{
-			new(stores.EventReplicated),
 			new(protocoltypes.GroupMessageEvent),
 		}, eventbus.BufSize(32))
 		if err != nil {
@@ -223,7 +190,6 @@ func (s *service) GroupMessageList(req *protocoltypes.GroupMessageList_Request, 
 
 	// Subscribe to new message events and stream them if requested
 	// listPreviouseMessageDone := false
-	bufferMessage := []*protocoltypes.GroupMessageEvent{}
 	for {
 		var event interface{}
 		select {
@@ -233,46 +199,15 @@ func (s *service) GroupMessageList(req *protocoltypes.GroupMessageList_Request, 
 		case event = <-newEvents:
 		}
 
-		var messages []*protocoltypes.GroupMessageEvent
-		switch evt := event.(type) {
-		case stores.EventReplicated:
-			entries := evt.Entries
-			messages = []*protocoltypes.GroupMessageEvent{}
-			for _, entry := range entries {
-				if err := cg.MessageStore().addToMessageQueue(ctx, entry); err != nil {
-					s.logger.Error("unable to add message to queue", zap.Error(err))
-				}
-				// msg, err := cg.MessageStore().openMessage(ctx, entry, false)
-				// if err != nil {
-				// 	s.logger.Error("unable to open message", zap.Error(err))
-				// 	continue
-				// } else {
-				// 	messages = append(messages, msg)
-				// }
-			}
-
+		msg := event.(protocoltypes.GroupMessageEvent)
+		if msg.EventContext == nil {
 			continue
-
-			// if !listPreviouseMessageDone {
-			// 	bufferMessage = append(bufferMessage, messages...)
-			// 	continue
-			// }
-
-		case protocoltypes.GroupMessageEvent:
-			if evt.EventContext == nil {
-				// listPreviouseMessageDone = true
-				messages = bufferMessage
-			} else {
-				messages = []*protocoltypes.GroupMessageEvent{&evt}
-			}
 		}
 
-		for _, msg := range messages {
-			if err := sub.Send(msg); err != nil {
-				return err
-			}
+		if err := sub.Send(&msg); err != nil {
+			return err
 		}
 
-		cg.logger.Info("service - message store - sent event from log subscription", zap.Int("messages", len(messages)))
+		cg.logger.Info("service - message store - sent 1 event from log subscription")
 	}
 }

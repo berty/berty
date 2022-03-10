@@ -102,9 +102,10 @@ func openMetadataEntry(log ipfslog.Log, e ipfslog.Entry, g *protocoltypes.Group,
 	return metaEvent, event, err
 }
 
-func (m *MetadataStore) openMetadataEntry(e ipfslog.Entry) (*protocoltypes.GroupMetadataEvent, proto.Message, error) {
-	return openMetadataEntry(m.OpLog(), e, m.g, m.devKS)
-}
+// not used
+// func (m *MetadataStore) openMetadataEntry(e ipfslog.Entry) (*protocoltypes.GroupMetadataEvent, proto.Message, error) {
+// 	return openMetadataEntry(m.OpLog(), e, m.g, m.devKS)
+// }
 
 // FIXME: use iterator instead to reduce resource usage (require go-ipfs-log improvements)
 func (m *MetadataStore) ListEvents(ctx context.Context, since, until []byte, reverse bool) (<-chan *protocoltypes.GroupMetadataEvent, error) {

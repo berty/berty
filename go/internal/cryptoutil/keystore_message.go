@@ -62,6 +62,16 @@ func (m *MessageKeystore) GetDeviceChainKey(ctx context.Context, groupPK, pk cry
 	return ds, nil
 }
 
+func (m *MessageKeystore) HasSecretForRawDevicePK(ctx context.Context, groupPK, devicePK []byte) (has bool) {
+	if m == nil {
+		return false
+	}
+
+	key := idForCurrentCK(groupPK, devicePK)
+	has, _ = m.store.Has(ctx, key)
+	return
+}
+
 func (m *MessageKeystore) delPrecomputedKey(ctx context.Context, groupPK, device crypto.PubKey, counter uint64) error {
 	if m == nil {
 		return errcode.ErrInvalidInput
@@ -435,7 +445,6 @@ func (m *MessageKeystore) OpenEnvelope(
 	msg, attachmentsCIDs, err := m.OpenEnvelopePayload(ctx, env, headers, g, ownPK, id)
 	if err != nil {
 		return nil, nil, nil, errcode.TODO.Wrap(err)
-
 	}
 
 	return headers, msg, attachmentsCIDs, nil

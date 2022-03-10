@@ -2,11 +2,13 @@ package bertyprotocol
 
 import (
 	"container/heap"
+	"sync"
+
+	"github.com/ipfs/go-cid"
+	"github.com/libp2p/go-libp2p-core/crypto"
 
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
 	"berty.tech/go-orbit-db/stores/operation"
-	"github.com/ipfs/go-cid"
-	"github.com/libp2p/go-libp2p-core/crypto"
 )
 
 // An Item is something we manage in a priority queue.
@@ -24,7 +26,8 @@ func (m *messageCacheItem) Counter() uint64 {
 
 // A priorityMessageQueue implements heap.Interface and holds Items.
 type priorityMessageQueue struct {
-	messages []*messageCacheItem
+	messages   []*messageCacheItem
+	muMessages sync.RWMutex
 }
 
 func newPriorityMessageQueue() *priorityMessageQueue {
@@ -36,21 +39,38 @@ func newPriorityMessageQueue() *priorityMessageQueue {
 }
 
 func (pq *priorityMessageQueue) Add(m *messageCacheItem) {
+	pq.muMessages.Lock()
 	heap.Push(pq, m)
+	pq.muMessages.Unlock()
 }
 
-func (pq *priorityMessageQueue) Next() *messageCacheItem {
-	return heap.Pop(pq).(*messageCacheItem)
+func (pq *priorityMessageQueue) Next() (item *messageCacheItem) {
+	pq.muMessages.Lock()
+	if len(pq.messages) > 0 {
+		item = heap.Pop(pq).(*messageCacheItem)
+	}
+	pq.muMessages.Unlock()
+	return
 }
 
-func (pq *priorityMessageQueue) Len() int { return len(pq.messages) }
+func (pq *priorityMessageQueue) Size() (l int) {
+	pq.muMessages.RLock()
+	l = pq.Len()
+	pq.muMessages.RUnlock()
+	return
+}
+
+func (pq *priorityMessageQueue) Len() (l int) {
+	l = len(pq.messages)
+	return
+}
 
 func (pq *priorityMessageQueue) Less(i, j int) bool {
 	// We want Pop to give us the lowest, not highest, priority so we use lower than here.
 	return pq.messages[i].Counter() < pq.messages[j].Counter()
 }
 
-func (pq priorityMessageQueue) Swap(i, j int) {
+func (pq *priorityMessageQueue) Swap(i, j int) {
 	pq.messages[i], pq.messages[j] = pq.messages[j], pq.messages[i]
 }
 

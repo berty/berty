@@ -8,7 +8,6 @@ import (
 
 	"github.com/gogo/protobuf/proto"
 	"github.com/libp2p/go-libp2p-core/crypto"
-	"github.com/libp2p/go-libp2p-core/event"
 	"go.uber.org/zap"
 
 	"berty.tech/berty/v2/go/internal/cryptoutil"
@@ -44,7 +43,6 @@ type metadataStoreIndex struct {
 	ownMemberDevice          *cryptoutil.MemberDevice
 	deviceKeystore           cryptoutil.DeviceKeystore
 	ctx                      context.Context
-	eventEmitter             event.Emitter
 	lock                     sync.RWMutex
 	logger                   *zap.Logger
 }

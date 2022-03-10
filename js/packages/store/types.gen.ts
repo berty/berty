@@ -130,7 +130,6 @@ export type MessengerMethodsHooks = {
 		reply: beapi.messenger.InstanceShareableBertyID.IReply | null
 		done: boolean
 		called: boolean
-		loading: boolean
 	}
 	useShareableBertyGroup: () => {
 		error: any
@@ -138,7 +137,6 @@ export type MessengerMethodsHooks = {
 		reply: beapi.messenger.ShareableBertyGroup.IReply | null
 		done: boolean
 		called: boolean
-		loading: boolean
 	}
 	useDevShareInstanceBertyID: () => {
 		error: any
@@ -146,7 +144,6 @@ export type MessengerMethodsHooks = {
 		reply: beapi.messenger.DevShareInstanceBertyID.IReply | null
 		done: boolean
 		called: boolean
-		loading: boolean
 	}
 	useParseDeepLink: () => {
 		error: any
@@ -154,7 +151,6 @@ export type MessengerMethodsHooks = {
 		reply: beapi.messenger.ParseDeepLink.IReply | null
 		done: boolean
 		called: boolean
-		loading: boolean
 	}
 	useSendContactRequest: () => {
 		error: any
@@ -162,7 +158,6 @@ export type MessengerMethodsHooks = {
 		reply: beapi.messenger.SendContactRequest.IReply | null
 		done: boolean
 		called: boolean
-		loading: boolean
 	}
 	useSendReplyOptions: () => {
 		error: any
@@ -170,7 +165,6 @@ export type MessengerMethodsHooks = {
 		reply: beapi.messenger.SendReplyOptions.IReply | null
 		done: boolean
 		called: boolean
-		loading: boolean
 	}
 	useSystemInfo: () => {
 		error: any
@@ -178,7 +172,6 @@ export type MessengerMethodsHooks = {
 		reply: beapi.messenger.SystemInfo.IReply | null
 		done: boolean
 		called: boolean
-		loading: boolean
 	}
 	useConversationCreate: () => {
 		error: any
@@ -186,7 +179,6 @@ export type MessengerMethodsHooks = {
 		reply: beapi.messenger.ConversationCreate.IReply | null
 		done: boolean
 		called: boolean
-		loading: boolean
 	}
 	useConversationJoin: () => {
 		error: any
@@ -194,7 +186,6 @@ export type MessengerMethodsHooks = {
 		reply: beapi.messenger.ConversationJoin.IReply | null
 		done: boolean
 		called: boolean
-		loading: boolean
 	}
 	useAccountGet: () => {
 		error: any
@@ -202,7 +193,6 @@ export type MessengerMethodsHooks = {
 		reply: beapi.messenger.AccountGet.IReply | null
 		done: boolean
 		called: boolean
-		loading: boolean
 	}
 	useAccountUpdate: () => {
 		error: any
@@ -210,7 +200,6 @@ export type MessengerMethodsHooks = {
 		reply: beapi.messenger.AccountUpdate.IReply | null
 		done: boolean
 		called: boolean
-		loading: boolean
 	}
 	useContactRequest: () => {
 		error: any
@@ -218,7 +207,6 @@ export type MessengerMethodsHooks = {
 		reply: beapi.messenger.ContactRequest.IReply | null
 		done: boolean
 		called: boolean
-		loading: boolean
 	}
 	useContactAccept: () => {
 		error: any
@@ -226,7 +214,6 @@ export type MessengerMethodsHooks = {
 		reply: beapi.messenger.ContactAccept.IReply | null
 		done: boolean
 		called: boolean
-		loading: boolean
 	}
 	useInteract: () => {
 		error: any
@@ -234,7 +221,6 @@ export type MessengerMethodsHooks = {
 		reply: beapi.messenger.Interact.IReply | null
 		done: boolean
 		called: boolean
-		loading: boolean
 	}
 	useConversationOpen: () => {
 		error: any
@@ -242,7 +228,6 @@ export type MessengerMethodsHooks = {
 		reply: beapi.messenger.ConversationOpen.IReply | null
 		done: boolean
 		called: boolean
-		loading: boolean
 	}
 	useConversationClose: () => {
 		error: any
@@ -250,7 +235,6 @@ export type MessengerMethodsHooks = {
 		reply: beapi.messenger.ConversationClose.IReply | null
 		done: boolean
 		called: boolean
-		loading: boolean
 	}
 	useConversationLoad: () => {
 		error: any
@@ -258,7 +242,6 @@ export type MessengerMethodsHooks = {
 		reply: beapi.messenger.ConversationLoad.IReply | null
 		done: boolean
 		called: boolean
-		loading: boolean
 	}
 	useReplicationServiceRegisterGroup: () => {
 		error: any
@@ -266,7 +249,6 @@ export type MessengerMethodsHooks = {
 		reply: beapi.messenger.ReplicationServiceRegisterGroup.IReply | null
 		done: boolean
 		called: boolean
-		loading: boolean
 	}
 	useReplicationSetAutoEnable: () => {
 		error: any
@@ -274,7 +256,6 @@ export type MessengerMethodsHooks = {
 		reply: beapi.messenger.ReplicationSetAutoEnable.IReply | null
 		done: boolean
 		called: boolean
-		loading: boolean
 	}
 	useBannerQuote: () => {
 		error: any
@@ -282,7 +263,6 @@ export type MessengerMethodsHooks = {
 		reply: beapi.messenger.BannerQuote.IReply | null
 		done: boolean
 		called: boolean
-		loading: boolean
 	}
 	useMediaGetRelated: () => {
 		error: any
@@ -290,7 +270,6 @@ export type MessengerMethodsHooks = {
 		reply: beapi.messenger.MediaGetRelated.IReply | null
 		done: boolean
 		called: boolean
-		loading: boolean
 	}
 	useMessageSearch: () => {
 		error: any
@@ -298,7 +277,6 @@ export type MessengerMethodsHooks = {
 		reply: beapi.messenger.MessageSearch.IReply | null
 		done: boolean
 		called: boolean
-		loading: boolean
 	}
 	useTyberHostAttach: () => {
 		error: any
@@ -306,7 +284,6 @@ export type MessengerMethodsHooks = {
 		reply: beapi.messenger.TyberHostAttach.IReply | null
 		done: boolean
 		called: boolean
-		loading: boolean
 	}
 	usePushSetAutoShare: () => {
 		error: any
@@ -314,7 +291,6 @@ export type MessengerMethodsHooks = {
 		reply: beapi.messenger.PushSetAutoShare.IReply | null
 		done: boolean
 		called: boolean
-		loading: boolean
 	}
 	usePushShareTokenForConversation: () => {
 		error: any
@@ -322,7 +298,6 @@ export type MessengerMethodsHooks = {
 		reply: beapi.messenger.PushShareTokenForConversation.IReply | null
 		done: boolean
 		called: boolean
-		loading: boolean
 	}
 	usePushReceive: () => {
 		error: any
@@ -330,7 +305,6 @@ export type MessengerMethodsHooks = {
 		reply: beapi.messenger.PushReceive.IReply | null
 		done: boolean
 		called: boolean
-		loading: boolean
 	}
 	useInteractionReactionsForEmoji: () => {
 		error: any
@@ -348,7 +322,6 @@ export type ProtocolMethodsHooks = {
 		reply: beapi.protocol.InstanceGetConfiguration.IReply | null
 		done: boolean
 		called: boolean
-		loading: boolean
 	}
 	useContactRequestReference: () => {
 		error: any
@@ -356,7 +329,6 @@ export type ProtocolMethodsHooks = {
 		reply: beapi.protocol.ContactRequestReference.IReply | null
 		done: boolean
 		called: boolean
-		loading: boolean
 	}
 	useContactRequestDisable: () => {
 		error: any
@@ -364,7 +336,6 @@ export type ProtocolMethodsHooks = {
 		reply: beapi.protocol.ContactRequestDisable.IReply | null
 		done: boolean
 		called: boolean
-		loading: boolean
 	}
 	useContactRequestEnable: () => {
 		error: any
@@ -372,7 +343,6 @@ export type ProtocolMethodsHooks = {
 		reply: beapi.protocol.ContactRequestEnable.IReply | null
 		done: boolean
 		called: boolean
-		loading: boolean
 	}
 	useContactRequestResetReference: () => {
 		error: any
@@ -380,7 +350,6 @@ export type ProtocolMethodsHooks = {
 		reply: beapi.protocol.ContactRequestResetReference.IReply | null
 		done: boolean
 		called: boolean
-		loading: boolean
 	}
 	useContactRequestSend: () => {
 		error: any
@@ -388,7 +357,6 @@ export type ProtocolMethodsHooks = {
 		reply: beapi.protocol.ContactRequestSend.IReply | null
 		done: boolean
 		called: boolean
-		loading: boolean
 	}
 	useContactRequestAccept: () => {
 		error: any
@@ -396,7 +364,6 @@ export type ProtocolMethodsHooks = {
 		reply: beapi.protocol.ContactRequestAccept.IReply | null
 		done: boolean
 		called: boolean
-		loading: boolean
 	}
 	useContactRequestDiscard: () => {
 		error: any
@@ -404,7 +371,6 @@ export type ProtocolMethodsHooks = {
 		reply: beapi.protocol.ContactRequestDiscard.IReply | null
 		done: boolean
 		called: boolean
-		loading: boolean
 	}
 	useContactBlock: () => {
 		error: any
@@ -412,7 +378,6 @@ export type ProtocolMethodsHooks = {
 		reply: beapi.protocol.ContactBlock.IReply | null
 		done: boolean
 		called: boolean
-		loading: boolean
 	}
 	useContactUnblock: () => {
 		error: any
@@ -420,7 +385,6 @@ export type ProtocolMethodsHooks = {
 		reply: beapi.protocol.ContactUnblock.IReply | null
 		done: boolean
 		called: boolean
-		loading: boolean
 	}
 	useContactAliasKeySend: () => {
 		error: any
@@ -428,7 +392,6 @@ export type ProtocolMethodsHooks = {
 		reply: beapi.protocol.ContactAliasKeySend.IReply | null
 		done: boolean
 		called: boolean
-		loading: boolean
 	}
 	useMultiMemberGroupCreate: () => {
 		error: any
@@ -436,7 +399,6 @@ export type ProtocolMethodsHooks = {
 		reply: beapi.protocol.MultiMemberGroupCreate.IReply | null
 		done: boolean
 		called: boolean
-		loading: boolean
 	}
 	useMultiMemberGroupJoin: () => {
 		error: any
@@ -444,7 +406,6 @@ export type ProtocolMethodsHooks = {
 		reply: beapi.protocol.MultiMemberGroupJoin.IReply | null
 		done: boolean
 		called: boolean
-		loading: boolean
 	}
 	useMultiMemberGroupLeave: () => {
 		error: any
@@ -452,7 +413,6 @@ export type ProtocolMethodsHooks = {
 		reply: beapi.protocol.MultiMemberGroupLeave.IReply | null
 		done: boolean
 		called: boolean
-		loading: boolean
 	}
 	useMultiMemberGroupAliasResolverDisclose: () => {
 		error: any
@@ -460,7 +420,6 @@ export type ProtocolMethodsHooks = {
 		reply: beapi.protocol.MultiMemberGroupAliasResolverDisclose.IReply | null
 		done: boolean
 		called: boolean
-		loading: boolean
 	}
 	useMultiMemberGroupAdminRoleGrant: () => {
 		error: any
@@ -468,7 +427,6 @@ export type ProtocolMethodsHooks = {
 		reply: beapi.protocol.MultiMemberGroupAdminRoleGrant.IReply | null
 		done: boolean
 		called: boolean
-		loading: boolean
 	}
 	useMultiMemberGroupInvitationCreate: () => {
 		error: any
@@ -476,7 +434,6 @@ export type ProtocolMethodsHooks = {
 		reply: beapi.protocol.MultiMemberGroupInvitationCreate.IReply | null
 		done: boolean
 		called: boolean
-		loading: boolean
 	}
 	useAppMetadataSend: () => {
 		error: any
@@ -484,7 +441,6 @@ export type ProtocolMethodsHooks = {
 		reply: beapi.protocol.AppMetadataSend.IReply | null
 		done: boolean
 		called: boolean
-		loading: boolean
 	}
 	useAppMessageSend: () => {
 		error: any
@@ -492,7 +448,6 @@ export type ProtocolMethodsHooks = {
 		reply: beapi.protocol.AppMessageSend.IReply | null
 		done: boolean
 		called: boolean
-		loading: boolean
 	}
 	useGroupInfo: () => {
 		error: any
@@ -500,7 +455,6 @@ export type ProtocolMethodsHooks = {
 		reply: beapi.protocol.GroupInfo.IReply | null
 		done: boolean
 		called: boolean
-		loading: boolean
 	}
 	useActivateGroup: () => {
 		error: any
@@ -508,7 +462,6 @@ export type ProtocolMethodsHooks = {
 		reply: beapi.protocol.ActivateGroup.IReply | null
 		done: boolean
 		called: boolean
-		loading: boolean
 	}
 	useDeactivateGroup: () => {
 		error: any
@@ -516,7 +469,6 @@ export type ProtocolMethodsHooks = {
 		reply: beapi.protocol.DeactivateGroup.IReply | null
 		done: boolean
 		called: boolean
-		loading: boolean
 	}
 	useDebugGroup: () => {
 		error: any
@@ -524,7 +476,6 @@ export type ProtocolMethodsHooks = {
 		reply: beapi.protocol.DebugGroup.IReply | null
 		done: boolean
 		called: boolean
-		loading: boolean
 	}
 	useDebugAuthServiceSetToken: () => {
 		error: any
@@ -532,7 +483,6 @@ export type ProtocolMethodsHooks = {
 		reply: beapi.protocol.DebugAuthServiceSetToken.IReply | null
 		done: boolean
 		called: boolean
-		loading: boolean
 	}
 	useSystemInfo: () => {
 		error: any
@@ -540,7 +490,6 @@ export type ProtocolMethodsHooks = {
 		reply: beapi.protocol.SystemInfo.IReply | null
 		done: boolean
 		called: boolean
-		loading: boolean
 	}
 	useAuthServiceInitFlow: () => {
 		error: any
@@ -548,7 +497,6 @@ export type ProtocolMethodsHooks = {
 		reply: beapi.protocol.AuthServiceInitFlow.IReply | null
 		done: boolean
 		called: boolean
-		loading: boolean
 	}
 	useAuthServiceCompleteFlow: () => {
 		error: any
@@ -556,7 +504,6 @@ export type ProtocolMethodsHooks = {
 		reply: beapi.protocol.AuthServiceCompleteFlow.IReply | null
 		done: boolean
 		called: boolean
-		loading: boolean
 	}
 	useReplicationServiceRegisterGroup: () => {
 		error: any
@@ -564,7 +511,6 @@ export type ProtocolMethodsHooks = {
 		reply: beapi.protocol.ReplicationServiceRegisterGroup.IReply | null
 		done: boolean
 		called: boolean
-		loading: boolean
 	}
 	usePeerList: () => {
 		error: any
@@ -572,7 +518,6 @@ export type ProtocolMethodsHooks = {
 		reply: beapi.protocol.PeerList.IReply | null
 		done: boolean
 		called: boolean
-		loading: boolean
 	}
 	usePushReceive: () => {
 		error: any
@@ -580,7 +525,6 @@ export type ProtocolMethodsHooks = {
 		reply: beapi.protocol.PushReceive.IReply | null
 		done: boolean
 		called: boolean
-		loading: boolean
 	}
 	usePushSend: () => {
 		error: any
@@ -588,7 +532,6 @@ export type ProtocolMethodsHooks = {
 		reply: beapi.protocol.PushSend.IReply | null
 		done: boolean
 		called: boolean
-		loading: boolean
 	}
 	usePushShareToken: () => {
 		error: any
@@ -596,7 +539,6 @@ export type ProtocolMethodsHooks = {
 		reply: beapi.protocol.PushShareToken.IReply | null
 		done: boolean
 		called: boolean
-		loading: boolean
 	}
 	usePushSetDeviceToken: () => {
 		error: any
@@ -604,7 +546,6 @@ export type ProtocolMethodsHooks = {
 		reply: beapi.protocol.PushSetDeviceToken.IReply | null
 		done: boolean
 		called: boolean
-		loading: boolean
 	}
 	usePushSetServer: () => {
 		error: any
@@ -612,6 +553,5 @@ export type ProtocolMethodsHooks = {
 		reply: beapi.protocol.PushSetServer.IReply | null
 		done: boolean
 		called: boolean
-		loading: boolean
 	}
 }

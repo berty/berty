@@ -151,7 +151,7 @@ func FillMessageKeysHolderUsingNewData(ctx context.Context, gc *GroupContext) <-
 
 			// A new chainKey is registered, check if cached messages can be opened with it
 			if rawPK, err := pk.Raw(); err == nil {
-				gc.MessageStore().ProcessMessageQueueForDevicePK(ctx, rawPK)
+				gc.MessageStore().ProcessMessageQueueForDevicePK(rawPK)
 			}
 
 			ch <- pk

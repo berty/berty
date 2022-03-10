@@ -175,7 +175,7 @@ func Test_Add_Messages_To_Cache(t *testing.T) {
 	for i := 0; i < entriesCount; i++ {
 		select {
 		case <-cadded.Out():
-		case <-time.After(time.Second):
+		case <-time.After(time.Second * 5):
 			require.FailNow(t, "timeout while waiting for replicated event")
 			return
 		}
@@ -184,9 +184,9 @@ func Test_Add_Messages_To_Cache(t *testing.T) {
 
 	// time.Sleep(time.Millisecond * 500)
 
-	device, ok := peers[1].GC.MessageStore().GetCacheForDevicePK(dPK0Raw)
+	size, ok := peers[1].GC.MessageStore().CacheSizeForDevicePK(dPK0Raw)
 	require.True(t, ok)
-	require.Equal(t, entriesCount, device.queue.Len())
+	require.Equal(t, entriesCount, size)
 
 	err = peers[1].MKS.RegisterChainKey(ctx, peers[0].GC.Group(), dPK0, ds0, false)
 	require.NoError(t, err)
@@ -195,7 +195,7 @@ func Test_Add_Messages_To_Cache(t *testing.T) {
 		new(protocoltypes.GroupMessageEvent), eventbus.BufSize(entriesCount))
 	require.NoError(t, err)
 
-	peers[1].GC.MessageStore().ProcessMessageQueueForDevicePK(ctx, dPK0Raw)
+	peers[1].GC.MessageStore().ProcessMessageQueueForDevicePK(dPK0Raw)
 
 	// check that all events has been received on peer 2
 	for i := 0; i < entriesCount; i++ {
@@ -208,10 +208,16 @@ func Test_Add_Messages_To_Cache(t *testing.T) {
 	}
 	cevent.Close()
 
-	require.Equal(t, 0, device.queue.Len())
+	size, ok = peers[1].GC.MessageStore().CacheSizeForDevicePK(dPK0Raw)
+	require.True(t, ok)
+	require.Equal(t, 0, size)
 	require.Equal(t, 0, bufferCount(peers[1].GC.MessageStore().cache[string(dPK0Raw)]))
 
 	_, err = peers[0].GC.MessageStore().AddMessage(ctx, testMsg1, nil)
 	require.NoError(t, err)
-	// 	require.Equal(t, 0, bufferCount(peers[1].GC.MessageStore().cache[string(dPK0Raw)]))
+
+	size, ok = peers[1].GC.MessageStore().CacheSizeForDevicePK(dPK0Raw)
+	require.True(t, ok)
+	require.Equal(t, 0, size)
+
 }
