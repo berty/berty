@@ -3,81 +3,61 @@
 		"getstarted": {
 			"title": "",
 			"desc": "",
-			"button": ""
+			"create-button": "",
+			"import-button": "",
+			"link-button": ""
 		},
-		"select-mode": {
-			"title": "",
-			"change-later": "",
-			"performance": {
-				"title": "Výkon",
-				"desc": "Jednoduché použití - všechny funkce",
-				"push-notif": "Přijímat push oznámení",
-				"offline-message": "",
-				"add-contact": "Jednoduché přidání kontaktů",
-				"fast-message": "Nejrychlejší doručování zpráv"
-			},
-			"high-level": {
+		"default-mode": {
+			"summary": {
 				"title": "",
-				"desc": "",
-				"disable-push-notif": "Push oznámení zakázána",
-				"disable-local-peer-discovery": "Lokální vyhledávání uživatelů je zakázáno",
-				"disable-local-peer-discovery-desc": "",
-				"disable-contact-request": "Žádosti o kontakty jsou zakázány",
-				"on-same-network": ""
+				"subtitle": "",
+				"first-point": "",
+				"second-point": "",
+				"back-button": "",
+				"accept-button": ""
+			}
+		},
+		"custom-mode": {
+			"summary": {
+				"title": "",
+				"subtitle": "",
+				"first-point": "",
+				"second-point": "",
+				"back-button": "",
+				"accept-button": ""
+			},
+			"settings": {
+				"off-grid": {
+					"title": "",
+					"ble-button": "",
+					"nearby-button": "",
+					"mc-button": "",
+					"mdns-button": ""
+				},
+				"routing": {
+					"title": "",
+					"dht-button": "",
+					"rdvp-button": ""
+				},
+				"access": {
+					"title": "",
+					"relay-button": "",
+					"bootstrap-button": "",
+					"replication-button": ""
+				},
+				"all-button": "",
+				"accept-button": ""
 			}
 		},
 		"create-account": {
 			"title": "Vytvořit účet",
-			"desc": "Jméno je jediná požadovaná informace",
-			"required": "Povinné",
 			"placeholder": "",
-			"button": "VYTVOŘIT ÚČET",
-			"advanced": "",
-			"import-account": "",
-			"link-device": "",
-			"more": "",
 			"good-to-know": {
 				"title": "",
 				"first-point": "",
 				"second-point": ""
 			}
 		},
-		"advanced-settings": {
-			"title": "",
-			"desc": "",
-			"more-about": {
-				"title": "",
-				"first-paragraph": "",
-				"second-paragraph": "",
-				"third-paragraph": ""
-			},
-			"read-more": "",
-			"config-title": "",
-			"config-desc": "",
-			"learn-more": "",
-			"first-part": {
-				"title": "",
-				"first-button": "",
-				"second-button": "Multicast DNS"
-			},
-			"second-part": {
-				"title": "",
-				"first-button": "",
-				"second-button": ""
-			},
-			"third-part": {
-				"title": "Služby",
-				"network-button": "Seznam sítí",
-				"first-button": "",
-				"second-button": {
-					"title": "",
-					"placeholder": ""
-				},
-				"third-button": ""
-			},
-			"apply-changes": ""
-		},
-		"exper-setup": {},
 		"generate-key": {
 			"title": "Spouštění Berty uzlu…",
 			"desc": "Může to chvíli trvat"
@@ -133,102 +113,54 @@
 			}
 		},
 		"suggestion-display-name-initial": "",
-		"configurations": {
-			"network": {
-				"display-name": "",
-				"desc": ""
-			},
-			"notification": {
-				"display-name": "",
-				"desc": ""
-			},
-			"replicate": {
-				"display-name": "",
-				"desc": ""
-			}
-		},
-		"network-options": {
-			"welcome-title": "",
-			"full-anon-mode": "",
-			"simple-tor-compatible": "",
-			"allow-expert-mode": "",
-			"tor-compatible": {
-				"title": "",
-				"desc": ""
-			},
-			"full-anon": {
-				"title": "",
-				"desc": "",
-				"no-ip": "",
-				"no-mc": "",
-				"tor-only": ""
-			},
-			"save": "",
-			"skip": "PŘESKOČIT A NECHAT NA POZDĚJI"
-		},
 		"scan": {
 			"title": ""
 		}
 	},
 	"settings": {
 		"home": {
-			"check-list": {
-				"title": "",
-				"avatar": {
-					"title": "",
-					"desc": ""
-				},
-				"berty-services": {
-					"title": "",
-					"desc": ""
-				},
-				"contact": {
-					"title": "",
-					"desc": ""
-				},
-				"group": {
-					"title": "",
-					"desc": ""
-				},
-				"message": {
-					"title": "",
-					"desc": ""
-				},
-				"ble-message": {
-					"title": "",
-					"desc": ""
-				}
-			},
-			"edit-profile": "Upravit profil",
-			"share-link": "",
-			"create-group": "",
-			"create-new-account": ""
+			"proximity-button": "",
+			"notifications-button": "Oznámení",
+			"contact-convs-button": "",
+			"appearance-button": "",
+			"devices-button": "",
+			"accounts-button": "",
+			"network-button": "",
+			"bug-button": "",
+			"about-button": "O projektu Berty"
 		},
-		"network-map": {
-			"title": "Seznam sítí",
-			"online-peers": "Online uživatelé"
+		"about": {
+			"faq-button": "",
+			"roadmap-button": "",
+			"policy-button": "",
+			"license-button": ""
 		},
-		"mode": {
-			"title": "Nastavení",
-			"desc": "Zde si můžete všechno přizpůsobit, aby aplikace lépe vyhovovala vašim potřebám",
-			"in-app-notifications": "",
-			"dark-mode-button": "Tmavý režim",
-			"devtools": "Nástroje pro vývojáře",
-			"network-config": "",
-			"notification-file-saved": {
-				"title": "",
-				"desc": ""
-			},
-			"receive-contact-requests-button": "Přijímat žádosti o kontakt",
-			"external-services-button": "Externí služby",
-			"auto-replicate-button": "Automaticky kopírovat",
-			"auto-replicate-button-unavailable": "",
-			"blocked-contacts-button": {
-				"title": "Blokované kontakty",
-				"tag": "blokováno"
-			},
-			"delete-account-button": "Odstranit účet",
-			"backup-account-button": "Zálohovat účet"
+		"accounts": {
+			"accounts-button": "",
+			"create-button": "",
+			"import-button": "",
+			"link-button": "",
+			"delete-button": ""
+		},
+		"appearance": {
+			"dark-button": "",
+			"editor-button": ""
+		},
+		"contact-convs": {
+			"reset-button": "",
+			"request-button": ""
+		},
+		"network": {
+			"ble-button": "",
+			"mc-button": "",
+			"nearby-button": "",
+			"mdns-button": "Multicast DNS",
+			"memo-cell-button": "",
+			"medias-cell-button": "",
+			"dht-button": "",
+			"rdvp-button": "",
+			"relay-button": "",
+			"bootstrap-button": ""
 		},
 		"edit-profile": {
 			"title": "Upravit profil",
@@ -239,51 +171,8 @@
 			"name-input-placeholder": "Jméno...",
 			"name-input-label": "Jméno"
 		},
-		"notifications": {
-			"title": "Oznámení",
-			"enabled-desc": "Aktivovali jste oznámení!",
-			"disabled-desc": "Pro tuto aplikaci nemáte zapnutá oznámení",
-			"activate-button": "Zapnout oznámení",
-			"contact-request-button": {
-				"title": "Žádost o kontakt",
-				"desc": "Dostávat oznámení o každé žádosti o kontakt"
-			},
-			"messages-notifications-button": {
-				"title": "Oznámení o zprávách",
-				"display-button": "Zobrazit oznámení",
-				"preview-button": "Náhled zpráv",
-				"sound-button": "Zvuk",
-				"exceptions-button": {
-					"title": "Výjimky",
-					"preview-value": "Přidat"
-				}
-			},
-			"group-notifications-button": {
-				"title": "Skupinová oznámení",
-				"display-button": "Zobrazit oznámení",
-				"preview-button": "Náhled zpráv",
-				"sound-button": "Zvuk",
-				"exceptions-button": {
-					"title": "Výjimky",
-					"tag": "{{count}} výjimka"
-				}
-			}
-		},
-		"bluetooth": {
-			"title": "Bluetooth",
-			"desc": "",
-			"activate-button": ""
-		},
-		"mc": {
-			"activate-button": "Aktivovat propojení více uživatelů"
-		},
-		"nearby": {
-			"activate-button": ""
-		},
 		"berty-services": {
-			"header": "",
 			"title": "",
-			"recommended": "Doporučené",
 			"desc": "",
 			"button": "",
 			"skip": "PŘESKOČIT A NECHAT NA POZDĚJI"
@@ -295,42 +184,13 @@
 			"cancel-button": "ZRUŠIT",
 			"delete-button": "ODSTRANIT"
 		},
-		"help": {
-			"title": "Nápověda",
-			"security-privacy-button": {
-				"title": "Zabezpečení & soukromí",
-				"desc": "Udržujte svá data v bezpečí a svůj život v soukromí"
-			},
-			"updates-button": "Aktualizace",
-			"about-button": "O projektu Berty",
-			"account-button": "Účet & Berty ID",
-			"contact-button": "Kontakty & žádosti",
-			"message-button": "Zprávy",
-			"group-button": "Skupiny",
-			"settings-button": "Nastavení",
-			"ask-button": "Zeptat se",
-			"report-button": "Nahlásit chybu"
-		},
-		"about": {
-			"title": "O projektu Berty",
-			"top-left-button": "Soukromí & zabezpečení",
-			"top-right-button": "Peer-to-peer síť",
-			"bottom-left-button": "Není vyžadováno internetové či datové připojení",
-			"bottom-right-button": "Nemusíte důvěřovat síti",
-			"terms-button": "Podmínky používání",
-			"privacy-button": "Zásady ochrany soukromí",
-			"software-button": "Licence softwaru",
-			"contact-button": "Kontaktujte nás",
-			"website-button": "Web"
-		},
-		"updates": {
-			"title": "Aktualizace aplikace",
-			"current-tag": "Současná"
-		},
 		"faq": {
 			"title": ""
 		},
 		"roadmap": {
+			"title": ""
+		},
+		"privacy-policy": {
 			"title": ""
 		},
 		"devtools": {
@@ -338,13 +198,8 @@
 			"header-left-button": "Informace o zařízení",
 			"header-middle-button": "Vytvořit falešná data",
 			"header-right-button": "Restartovat démona",
-			"theme-editor": "",
 			"simulate-button": "Simulovat chybu streamu",
 			"simulate-js-error-button": "",
-			"tor-button": "",
-			"tor-optional-option": "nepovinné",
-			"tor-required-option": "povinné",
-			"tor-disabled-option": "zakázaný",
 			"system-info-button": "Systémové informace",
 			"debug-button": "Debugging",
 			"log-button": {
@@ -379,7 +234,6 @@
 				"test": "Test, ",
 				"tried": "✔ Proběhl pokus o odeslání {{length}} kontaktů"
 			},
-			"trigger-crashlytics-button": "",
 			"tyber-attach": "",
 			"tyber-host-button": {
 				"name": "",
@@ -401,16 +255,12 @@
 		},
 		"add-dev-conversations": {
 			"title": "Přidání vývojářských konverzací",
-			"add": "Přidat {{name}}",
-			"tag-bot": "Bot",
-			"tag-contact": "Kontakt",
-			"tag-conversation": "Skupina"
+			"add": "Přidat {{name}}"
 		},
 		"ipfs-webui": {
 			"title": "IPFS WebUI"
 		},
 		"theme-editor": {
-			"title": "",
 			"randomize": "",
 			"save": "",
 			"export": "",
@@ -418,13 +268,21 @@
 			"import": "",
 			"delete": "",
 			"bad-format-title": "",
-			"bad-format-desc": ""
+			"bad-format-desc": "",
+			"notification-file-saved": {
+				"title": "",
+				"desc": ""
+			}
 		},
 		"my-berty-ID": {
 			"title": "",
 			"qr": "QR",
-			"fingerprint": "Otisk",
-			"devices": "Zařízení"
+			"fingerprint": "Otisk"
+		},
+		"share": {
+			"invite": "",
+			"tap-to-scan": "",
+			"create-group": ""
 		}
 	},
 	"modals": {
@@ -463,12 +321,8 @@
 		"sending": "Odesílání...",
 		"sent": "",
 		"contact-settings": {
-			"mark-button": "Označit jako ověřené",
-			"block-button": "Zablokovat kontakt",
-			"delete-button": "Odstranit kontakt",
 			"fingerprint": "Otisk",
 			"info": "Informace",
-			"devices": "Zařízení",
 			"my-devices": ""
 		},
 		"multi-member": {
@@ -499,20 +353,13 @@
 			}
 		},
 		"multi-member-settings": {
-			"header-left-button": "Vyhledat",
-			"header-middle-button": "",
-			"header-right-button": "Sdílet",
 			"media-button": "Média, odkazy a dokumentace",
-			"notifications-button": "Přijímat oznámení",
 			"members-button": {
-				"title": "Členové",
-				"unknown": "Neznámý"
+				"title": "Členové"
 			},
 			"add-member-button": "Přidat člena",
 			"invite-button": "Pozvat pomocí odkazu",
-			"save-button": "Uložit konverzaci na server",
-			"erase-button": "Smazat konverzaci",
-			"leave-button": "Opustit skupinu"
+			"save-button": "Uložit konverzaci na server"
 		},
 		"add-members": {
 			"members": "Členové",
@@ -544,14 +391,8 @@
 			"input-placeholder": ""
 		},
 		"one-to-one-settings": {
-			"header-left-button": "Vyhledat",
-			"header-middle-button": "",
-			"header-right-button": "Sdílet",
 			"media-button": "Média, odkazy a dokumentace",
-			"notifications-button": "Přijímat oznámení",
-			"mutual-button": "",
-			"save-button": "Uložit konverzaci na server",
-			"erase-button": "Smazat konverzaci"
+			"save-button": "Uložit konverzaci na server"
 		},
 		"replicate-group-settings": {
 			"title": "Ukládání konverzace na server",
@@ -565,7 +406,6 @@
 			"camera": "Kamera",
 			"files": "Soubory",
 			"microphone": "Mikrofon",
-			"search-gif": "Vyhledat gif",
 			"security-access": "Zabezpečený přístup",
 			"security-access-desc": "Klepnutím sem otevřete nastavení pro povolení přístupu k",
 			"save-to-gallery": "Uložit tento soubor do galerie",
@@ -609,7 +449,7 @@
 			"title": "",
 			"desc": ""
 		},
-		"p2p": {
+		"proximity": {
 			"title": "",
 			"android-desc": "",
 			"ios-desc": ""
@@ -636,6 +476,10 @@
 	},
 	"notification": {
 		"need-restart": {
+			"title": "",
+			"desc": ""
+		},
+		"need-restart-ble": {
 			"title": "",
 			"desc": ""
 		}
@@ -670,7 +514,6 @@
 				"action-delete": {
 					"file-exists": "",
 					"account-exists": "",
-					"directory-exists-load-error": "",
 					"fs-read-error": "",
 					"actions-title": "",
 					"action-account-manager": "",
