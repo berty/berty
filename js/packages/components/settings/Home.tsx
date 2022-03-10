@@ -143,6 +143,22 @@ export const Home: ScreenFC<'Settings.Home'> = withInAppNotification(
 			[ctx, dispatch, selectedAccount, showNotification, t],
 		)
 
+		const getOffGridCommunicationValue = React.useCallback(() => {
+			if (
+				blePerm === 'granted' &&
+				networkConfig?.bluetoothLe === beapi.account.NetworkConfig.Flag.Enabled
+			) {
+				if (Platform.OS === 'android') {
+					return networkConfig?.androidNearby === beapi.account.NetworkConfig.Flag.Enabled
+				} else if (Platform.OS === 'ios') {
+					return (
+						networkConfig?.appleMultipeerConnectivity === beapi.account.NetworkConfig.Flag.Enabled
+					)
+				}
+			}
+			return false
+		}, [blePerm, networkConfig])
+
 		return (
 			<View style={{ backgroundColor: colors['secondary-background'], flex: 1, paddingTop: 20 }}>
 				<ScrollView
@@ -158,9 +174,7 @@ export const Home: ScreenFC<'Settings.Home'> = withInAppNotification(
 								icon='bluetooth'
 								toggle={{
 									enable: true,
-									value:
-										blePerm === 'granted' &&
-										networkConfig?.bluetoothLe === beapi.account.NetworkConfig.Flag.Enabled,
+									value: getOffGridCommunicationValue(),
 									action: async () => {
 										if (Platform.OS === 'ios') {
 											await checkBlePermission({
@@ -171,17 +185,23 @@ export const Home: ScreenFC<'Settings.Home'> = withInAppNotification(
 												changedKey: ['bluetoothLe', 'appleMultipeerConnectivity'],
 												navigate,
 												accept: async () => {
-													const newValue =
+													let newValue
+													newValue =
 														networkConfig?.bluetoothLe === beapi.account.NetworkConfig.Flag.Enabled
 															? beapi.account.NetworkConfig.Flag.Disabled
 															: beapi.account.NetworkConfig.Flag.Enabled
-													dispatch(
-														setCurrentNetworkConfig({
-															...networkConfig,
-															bluetoothLe: newValue,
-															appleMultipeerConnectivity: newValue,
-														}),
-													)
+													if (newValue === beapi.account.NetworkConfig.Flag.Disabled) {
+														newValue =
+															networkConfig?.appleMultipeerConnectivity ===
+															beapi.account.NetworkConfig.Flag.Enabled
+																? beapi.account.NetworkConfig.Flag.Disabled
+																: beapi.account.NetworkConfig.Flag.Enabled
+													}
+													setNewConfig({
+														...networkConfig,
+														bluetoothLe: newValue,
+														appleMultipeerConnectivity: newValue,
+													})
 												},
 											})
 										}
@@ -194,17 +214,23 @@ export const Home: ScreenFC<'Settings.Home'> = withInAppNotification(
 												changedKey: ['bluetoothLe', 'androidNearby'],
 												navigate,
 												accept: async () => {
-													const newValue =
+													let newValue
+													newValue =
 														networkConfig?.bluetoothLe === beapi.account.NetworkConfig.Flag.Enabled
 															? beapi.account.NetworkConfig.Flag.Disabled
 															: beapi.account.NetworkConfig.Flag.Enabled
-													dispatch(
-														setCurrentNetworkConfig({
-															...networkConfig,
-															bluetoothLe: newValue,
-															androidNearby: newValue,
-														}),
-													)
+													if (newValue === beapi.account.NetworkConfig.Flag.Disabled) {
+														newValue =
+															networkConfig?.androidNearby ===
+															beapi.account.NetworkConfig.Flag.Enabled
+																? beapi.account.NetworkConfig.Flag.Disabled
+																: beapi.account.NetworkConfig.Flag.Enabled
+													}
+													setNewConfig({
+														...networkConfig,
+														bluetoothLe: newValue,
+														androidNearby: newValue,
+													})
 												},
 											})
 										}
