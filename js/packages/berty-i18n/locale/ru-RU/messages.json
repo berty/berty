@@ -3,81 +3,61 @@
 		"getstarted": {
 			"title": "Защити свою конфедециальность",
 			"desc": "Бесплатное и защищённое сквозное общение",
-			"button": "ВЗГЛЯНИ"
+			"create-button": "",
+			"import-button": "",
+			"link-button": ""
 		},
-		"select-mode": {
-			"title": "Выберите шаблон",
-			"change-later": "Вы сможете изменить это позже!",
-			"performance": {
-				"title": "Скорость",
-				"desc": "Простота в использовании, все функции",
-				"push-notif": "Получать push-уведомления",
-				"offline-message": "Офлайн переписки через Bluetooth",
-				"add-contact": "Легко добавляйте контакте",
-				"fast-message": "Наибыстрейшая доставка сообщений"
+		"default-mode": {
+			"summary": {
+				"title": "",
+				"subtitle": "",
+				"first-point": "",
+				"second-point": "",
+				"back-button": "",
+				"accept-button": ""
+			}
+		},
+		"custom-mode": {
+			"summary": {
+				"title": "",
+				"subtitle": "",
+				"first-point": "",
+				"second-point": "",
+				"back-button": "",
+				"accept-button": ""
 			},
-			"high-level": {
-				"title": "Максимальная анонимность",
-				"desc": "Для очень осторожных пользователей",
-				"disable-push-notif": "Push-уведомления отключены",
-				"disable-local-peer-discovery": "Обнаружение узлов рядом отключено",
-				"disable-local-peer-discovery-desc": "Multicast DNS и Bluetooth",
-				"disable-contact-request": "Запросы в контакты отключены",
-				"on-same-network": "Локально в одинаковой сети/Wi-Fi"
+			"settings": {
+				"off-grid": {
+					"title": "",
+					"ble-button": "",
+					"nearby-button": "",
+					"mc-button": "",
+					"mdns-button": ""
+				},
+				"routing": {
+					"title": "",
+					"dht-button": "",
+					"rdvp-button": ""
+				},
+				"access": {
+					"title": "",
+					"relay-button": "",
+					"bootstrap-button": "",
+					"replication-button": ""
+				},
+				"all-button": "",
+				"accept-button": ""
 			}
 		},
 		"create-account": {
 			"title": "Создайте свой аккаунт",
-			"desc": "Необходимо указать только имя",
-			"required": "Обязательно",
 			"placeholder": "Выбери себе никнейм",
-			"button": "СОЗДАТЬ МОЙ АККАУНТ",
-			"advanced": "Дополнительно",
-			"import-account": "Импортировать аккаунт",
-			"link-device": "Подключить устройство",
-			"more": "Больше информации",
 			"good-to-know": {
 				"title": "Хорошо знать:",
 				"first-point": "Твой аккаунт создан локально",
-				"second-point": "Никнейм необязателен и может быть в дальнейшем изменён"
+				"second-point": ""
 			}
 		},
-		"advanced-settings": {
-			"title": "Другие настройки",
-			"desc": "Посмотри документацию и задай свои собственные настройки.",
-			"more-about": {
-				"title": "",
-				"first-paragraph": "",
-				"second-paragraph": "",
-				"third-paragraph": ""
-			},
-			"read-more": "",
-			"config-title": "",
-			"config-desc": "",
-			"learn-more": "",
-			"first-part": {
-				"title": "",
-				"first-button": "",
-				"second-button": "Multicast DNS"
-			},
-			"second-part": {
-				"title": "",
-				"first-button": "",
-				"second-button": ""
-			},
-			"third-part": {
-				"title": "Сервисы",
-				"network-button": "Список сетей",
-				"first-button": "Push-уведомления",
-				"second-button": {
-					"title": "",
-					"placeholder": ""
-				},
-				"third-button": ""
-			},
-			"apply-changes": ""
-		},
-		"exper-setup": {},
 		"generate-key": {
 			"title": "Запуск узла Berty…",
 			"desc": "Это может занять несколько секунд"
@@ -128,107 +108,59 @@
 				"fifth-bullet-point": "Вы не можете удалить участника из этой группы"
 			},
 			"conversations": {
-				"request-sent": "Запрос отправлен. Ожидание...",
+				"request-sent": "",
 				"draft": "Черновик: {{message}}"
 			}
 		},
 		"suggestion-display-name-initial": "Нажмите здесь, чтобы добавить",
-		"configurations": {
-			"network": {
-				"display-name": "Конфигурация сети",
-				"desc": "Нажмите здесь, чтобы завершить конфигурацию сети"
-			},
-			"notification": {
-				"display-name": "Конфигурация уведомлений",
-				"desc": "Нажмите здесь, чтобы просмотреть конфигурацию push-уведомлений"
-			},
-			"replicate": {
-				"display-name": "Репликация P2P",
-				"desc": "Настроить службы репликации"
-			}
-		},
-		"network-options": {
-			"welcome-title": "Добро пожаловать в параметры сети",
-			"full-anon-mode": "Полный анонимный режим",
-			"simple-tor-compatible": "Совместимость с Simple TOR",
-			"allow-expert-mode": "Разрешить экспертный режим",
-			"tor-compatible": {
-				"title": "Совместимость с TOR",
-				"desc": "Эта конфигурация позволит вам подключаться к сети Tor и обсуждать с полностью анонимными пользователями, не находясь при этом в крайне анонимном режиме."
-			},
-			"full-anon": {
-				"title": "Полный анонимный режим",
-				"desc": "Эта конфигурация основана на радикальных предустановках, обеспечивающих крайне осторожные параметры сети:",
-				"no-ip": "Нет IP",
-				"no-mc": "Без микрофона",
-				"tor-only": "Только Tor"
-			},
-			"save": "СОХРАНИТЬ",
-			"skip": "ПРОПУСТИТЬ И НАСТРОИТЬ ПОЗЖЕ"
-		},
 		"scan": {
 			"title": "Сканирование QR-кода"
 		}
 	},
 	"settings": {
 		"home": {
-			"check-list": {
-				"title": "",
-				"avatar": {
-					"title": "Изменить свой аватар",
-					"desc": ""
-				},
-				"berty-services": {
-					"title": "",
-					"desc": ""
-				},
-				"contact": {
-					"title": "Синхронизировать с контактом",
-					"desc": ""
-				},
-				"group": {
-					"title": "Присоединиться или создать группу",
-					"desc": "Давайте создадим или присоединимся к вашей первой группе Berty!"
-				},
-				"message": {
-					"title": "Отправить сообщение",
-					"desc": "Скажите 'Привет мир' контакту!"
-				},
-				"ble-message": {
-					"title": "Отправить сообщение без интернета",
-					"desc": ""
-				}
-			},
-			"edit-profile": "Редактировать профиль",
-			"share-link": "",
-			"create-group": "",
-			"create-new-account": "Создать новый аккаунт"
+			"proximity-button": "",
+			"notifications-button": "Уведомления",
+			"contact-convs-button": "",
+			"appearance-button": "",
+			"devices-button": "",
+			"accounts-button": "Аккаунты",
+			"network-button": "",
+			"bug-button": "",
+			"about-button": "О Berty"
 		},
-		"network-map": {
-			"title": "Список сетей",
-			"online-peers": "Узлы онлайн"
+		"about": {
+			"faq-button": "ЧАВО",
+			"roadmap-button": "",
+			"policy-button": "",
+			"license-button": ""
 		},
-		"mode": {
-			"title": "Настройки",
-			"desc": "Просигнализируйте всё, чтобы приложение подходило под ваши нужды",
-			"in-app-notifications": "",
-			"dark-mode-button": "Тёмная тема",
-			"devtools": "Инструменты для разработчиков",
-			"network-config": "",
-			"notification-file-saved": {
-				"title": "Данные сохранены!",
-				"desc": "Доступно в каталоге загрузок"
-			},
-			"receive-contact-requests-button": "Получать запросы в контакты",
-			"external-services-button": "Внешние сервисы",
-			"auto-replicate-button": "Автоматическое сохранение",
-			"auto-replicate-button-unavailable": "Сначала необходимо зарегистрировать как минимум один сервер репликации",
-			"blocked-contacts-button": {
-				"title": "Заблокированные контакты",
-				"tag": "заблокировано"
-			},
-			"delete-account-button": "Удалить мой аккаунт",
-			"backup-account-button": "Резервное копирование моего аккаунта"
+		"accounts": {
+			"accounts-button": "Аккаунты",
+			"create-button": "",
+			"import-button": "",
+			"link-button": "",
+			"delete-button": ""
+		},
+		"appearance": {
+			"dark-button": "",
+			"editor-button": ""
+		},
+		"contact-convs": {
+			"reset-button": "",
+			"request-button": ""
+		},
+		"network": {
+			"ble-button": "",
+			"mc-button": "",
+			"nearby-button": "",
+			"mdns-button": "Multicast DNS",
+			"memo-cell-button": "",
+			"medias-cell-button": "",
+			"dht-button": "",
+			"rdvp-button": "",
+			"relay-button": "",
+			"bootstrap-button": ""
 		},
 		"edit-profile": {
 			"title": "Редактировать мой профиль",
@@ -239,51 +171,8 @@
 			"name-input-placeholder": "Имя...",
 			"name-input-label": "Имя"
 		},
-		"notifications": {
-			"title": "Уведомления",
-			"enabled-desc": "Вы активировали уведомления!",
-			"disabled-desc": "Вы не активировали уведомления для этого приложения",
-			"activate-button": "Активировать уведомления",
-			"contact-request-button": {
-				"title": "Запрос в контакты",
-				"desc": "Получать уведомление каждый раз, когда кто-то посылает вам запрос в контакты"
-			},
-			"messages-notifications-button": {
-				"title": "Уведомления о сообщениях",
-				"display-button": "Показывать уведомления",
-				"preview-button": "Предпросмотр сообщений",
-				"sound-button": "Звук",
-				"exceptions-button": {
-					"title": "Исключения",
-					"preview-value": "Добавить"
-				}
-			},
-			"group-notifications-button": {
-				"title": "Уведомления групп",
-				"display-button": "Показывать уведомления",
-				"preview-button": "Предпросмотр сообщений",
-				"sound-button": "Звук",
-				"exceptions-button": {
-					"title": "Исключения",
-					"tag": "{{count}} исключение"
-				}
-			}
-		},
-		"bluetooth": {
-			"title": "Bluetooth",
-			"desc": "Bluetooth позволяет обмениваться сообщениями с помощью Berty без доступа к Интернету, напрямую подключая ваше устройство к ближайшим узлам",
-			"activate-button": "Активировать Bluetooth"
-		},
-		"mc": {
-			"activate-button": "Активировать Multipeer Connectivity"
-		},
-		"nearby": {
-			"activate-button": "Активировать Android поблизости"
-		},
 		"berty-services": {
-			"header": "",
 			"title": "",
-			"recommended": "Рекомендуется",
 			"desc": "",
 			"button": "",
 			"skip": "ПРОПУСТИТЬ И НАСТРОИТЬ ПОЗЖЕ"
@@ -295,42 +184,13 @@
 			"cancel-button": "ОТМЕНА",
 			"delete-button": "УДАЛИТЬ"
 		},
-		"help": {
-			"title": "Помощь",
-			"security-privacy-button": {
-				"title": "Безопасность и приватность",
-				"desc": "Держите ваши данные в безопасности и сохраняйте приватность"
-			},
-			"updates-button": "Обновления",
-			"about-button": "О Berty",
-			"account-button": "Аккаунт и Berty ID",
-			"contact-button": "Контакте и запросы",
-			"message-button": "Сообщения",
-			"group-button": "Группы",
-			"settings-button": "Настройки",
-			"ask-button": "Задать вопрос",
-			"report-button": "Сообщить об ошибке"
-		},
-		"about": {
-			"title": "О Berty",
-			"top-left-button": "Приватный и безопасный",
-			"top-right-button": "P2P сеть",
-			"bottom-left-button": "Интернет и мобильная связь не обязательны",
-			"bottom-right-button": "Доверие в сети не обязательно",
-			"terms-button": "Условия пользования",
-			"privacy-button": "Политика конфиденциальности",
-			"software-button": "Лицензия программного обеспечения",
-			"contact-button": "Свяжитесь с нами",
-			"website-button": "Веб-сайт"
-		},
-		"updates": {
-			"title": "Обновления приложения",
-			"current-tag": "Текущая"
-		},
 		"faq": {
 			"title": "ЧАВО"
 		},
 		"roadmap": {
+			"title": ""
+		},
+		"privacy-policy": {
 			"title": ""
 		},
 		"devtools": {
@@ -338,13 +198,8 @@
 			"header-left-button": "Информация об устройстве",
 			"header-middle-button": "Сгенерировать фальшивые данные",
 			"header-right-button": "Перезапустить демон",
-			"theme-editor": "Внешний вид и редактор темы",
 			"simulate-button": "Симулировать ошибки в передаче данных",
 			"simulate-js-error-button": "Имитация ошибки JavaScript",
-			"tor-button": "Tor {{option}}",
-			"tor-optional-option": "необязательно",
-			"tor-required-option": "обязательно",
-			"tor-disabled-option": "отключено",
 			"system-info-button": "Информация о системе",
 			"debug-button": "Дебаг",
 			"log-button": {
@@ -379,7 +234,6 @@
 				"test": "Тест, ",
 				"tried": "✔ Выполнены попытки отправки {{length}} контакту(ам)"
 			},
-			"trigger-crashlytics-button": "Сбой триггера crashlytics",
 			"tyber-attach": "Добавить Tyber в {{host}}",
 			"tyber-host-button": {
 				"name": "Tyber",
@@ -401,16 +255,12 @@
 		},
 		"add-dev-conversations": {
 			"title": "Добавить dev беседы",
-			"add": "Добавить {{name}}",
-			"tag-bot": "Бот",
-			"tag-contact": "Контакт",
-			"tag-conversation": "Группа"
+			"add": "Добавить {{name}}"
 		},
 		"ipfs-webui": {
 			"title": "IPFS WebUI"
 		},
 		"theme-editor": {
-			"title": "Редактор темы",
 			"randomize": "Сгенерировать тему",
 			"save": "Сохранить эту тему",
 			"export": "Экспортировать выбранную тему в файл",
@@ -418,13 +268,21 @@
 			"import": "Импортировать файл темы",
 			"delete": "",
 			"bad-format-title": "",
-			"bad-format-desc": ""
+			"bad-format-desc": "",
+			"notification-file-saved": {
+				"title": "Данные сохранены!",
+				"desc": "Доступно в каталоге загрузок"
+			}
 		},
 		"my-berty-ID": {
 			"title": "",
 			"qr": "QR",
-			"fingerprint": "Отпечаток",
-			"devices": "Устройства"
+			"fingerprint": "Отпечаток"
+		},
+		"share": {
+			"invite": "",
+			"tap-to-scan": "",
+			"create-group": ""
 		}
 	},
 	"modals": {
@@ -463,12 +321,8 @@
 		"sending": "Отправка...",
 		"sent": "",
 		"contact-settings": {
-			"mark-button": "Отметить как подтверждённый",
-			"block-button": "Заблокировать контакт",
-			"delete-button": "Удалить контакт",
 			"fingerprint": "Отпечаток",
 			"info": "Информация",
-			"devices": "Устройства",
 			"my-devices": ""
 		},
 		"multi-member": {
@@ -495,24 +349,17 @@
 			"title": "Устройства",
 			"push": {
 				"enabled": "",
-				"not-enabled": ""
+				"not-enabled": "Push-уведомления отключены"
 			}
 		},
 		"multi-member-settings": {
-			"header-left-button": "Поиск",
-			"header-middle-button": "Позвонить",
-			"header-right-button": "Поделиться",
 			"media-button": "Медиа, ссылки и документы",
-			"notifications-button": "Получать уведомления",
 			"members-button": {
-				"title": "Участники",
-				"unknown": "Неизвестный"
+				"title": "Участники"
 			},
 			"add-member-button": "Добавить участника",
 			"invite-button": "Пригласить по ссылке",
-			"save-button": "Сохранить беседу на сервере",
-			"erase-button": "Очистить беседу",
-			"leave-button": "Покинуть группу"
+			"save-button": "Сохранить беседу на сервере"
 		},
 		"add-members": {
 			"members": "Участники",
@@ -544,14 +391,8 @@
 			"input-placeholder": "Введите здесь..."
 		},
 		"one-to-one-settings": {
-			"header-left-button": "Поиск",
-			"header-middle-button": "Позвонить",
-			"header-right-button": "Поделиться",
 			"media-button": "Медиа, ссылки и документы",
-			"notifications-button": "Получать уведомления",
-			"mutual-button": "Общие группы",
-			"save-button": "Сохранить беседу на сервере",
-			"erase-button": "Очистить беседу"
+			"save-button": "Сохранить беседу на сервере"
 		},
 		"replicate-group-settings": {
 			"title": "Зарегистрировать беседу на сервере",
@@ -565,7 +406,6 @@
 			"camera": "Камера",
 			"files": "Файлы",
 			"microphone": "Микрофон",
-			"search-gif": "Искать gif",
 			"security-access": "Доступ безопасности",
 			"security-access-desc": "Нажмите здесь, чтобы открыть настройки доступа к: ",
 			"save-to-gallery": "Сохранить этот файл в Галерею",
@@ -606,11 +446,11 @@
 	},
 	"permission": {
 		"notification": {
-			"title": "Push-уведомления",
+			"title": "",
 			"desc": "Приложению Berty необходимо ваше разрешение на отправку локальных или push-уведомлений. Это позволит вам быть в курсе, когда вы получите сообщение."
 		},
-		"p2p": {
-			"title": "Общение через Bluetooth",
+		"proximity": {
+			"title": "",
 			"android-desc": "Для обмена сообщениями в автономном режиме через Bluetooth, даже когда приложение находится в фоновом режиме, API Android требует разрешения на определение местоположения. Мы никак не используем данные о вашем местоположении.",
 			"ios-desc": "Для обмена сообщениями в автономном режиме через Bluetooth требуется разрешение API iOS."
 		},
@@ -619,7 +459,7 @@
 			"desc": ""
 		},
 		"audio": {
-			"title": "Аудиосообщения",
+			"title": "",
 			"desc": "Чтобы отправить аудиосообщение контактам, необходимо разрешить приложению Berty использовать микрофон."
 		},
 		"gallery": {
@@ -637,7 +477,11 @@
 	"notification": {
 		"need-restart": {
 			"title": "",
-			"desc": "Для такого вида уведомлений необходимо перезапустить приложение, чтобы сохранить эти поля!"
+			"desc": ""
+		},
+		"need-restart-ble": {
+			"title": "",
+			"desc": ""
 		}
 	},
 	"error": {
@@ -670,7 +514,6 @@
 				"action-delete": {
 					"file-exists": "Аккаунт {{accountId}} не существует, однако файл имеет это имя.",
 					"account-exists": "Аккаунт {{accountId}} уже существует.",
-					"directory-exists-load-error": "Аккаунт {{accountId}} не существует, однако в каталоге есть это имя.",
 					"fs-read-error": "Ошибка при получении информации об аккаунте",
 					"actions-title": "Что нужно делать?",
 					"action-account-manager": "Удалить через менеджер аккаунтов",
