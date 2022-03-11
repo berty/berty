@@ -144,23 +144,23 @@
 		},
 		"appearance": {
 			"dark-button": "Dark Mode",
-			"editor-button": ""
+			"editor-button": "Theme Editor"
 		},
 		"contact-convs": {
-			"reset-button": "",
-			"request-button": ""
+			"reset-button": "Reset my contact link/QR Code",
+			"request-button": "Allow incoming contact requests"
 		},
 		"network": {
-			"ble-button": "",
-			"mc-button": "",
-			"nearby-button": "",
-			"mdns-button": "",
-			"memo-cell-button": "",
-			"medias-cell-button": "",
-			"dht-button": "",
-			"rdvp-button": "",
-			"relay-button": "",
-			"bootstrap-button": ""
+			"ble-button": "Bluetooth Low Energy",
+			"mc-button": "Multipeer Connectivity",
+			"nearby-button": "Android Nearby",
+			"mdns-button": "Multicast DNS",
+			"memo-cell-button": "Load voice memo on cellular",
+			"medias-cell-button": "Load medias on cellular",
+			"dht-button": "Distributed Hash Table",
+			"rdvp-button": "Rendezvous Point Nodes",
+			"relay-button": "Relay Nodes",
+			"bootstrap-button": "Bootstrap Nodes"
 		},
 		"edit-profile": {
 			"title": "Edit my profile",
@@ -191,7 +191,7 @@
 			"title": "Roadmap"
 		},
 		"privacy-policy": {
-			"title": ""
+			"title": "Bootstrap Nodes"
 		},
 		"devtools": {
 			"title": "Dev tools",
@@ -270,8 +270,8 @@
 			"bad-format-title": "Bad theme format",
 			"bad-format-desc": "Incorrect format for theme file",
 			"notification-file-saved": {
-				"title": "",
-				"desc": ""
+				"title": "Data saved!",
+				"desc": "Available in downloads directory"
 			}
 		},
 		"my-berty-ID": {
@@ -280,9 +280,9 @@
 			"fingerprint": "Fingerprint"
 		},
 		"share": {
-			"invite": "",
-			"tap-to-scan": "",
-			"create-group": ""
+			"invite": "Invite",
+			"tap-to-scan": "Tap to scan",
+			"create-group": "Create group"
 		}
 	},
 	"modals": {
@@ -330,7 +330,7 @@
 		},
 		"push-notifications": {
 			"enable": "Enable push notifications",
-			"enabled": "",
+			"enabled": "Push notifications enabled",
 			"unsupported": "Notifications unsupported",
 			"check-device-settings": "This conversation is set to receive push notifications, but alerts have been disabled in the system settings of your device",
 			"warning-disable": {
@@ -339,17 +339,17 @@
 				"accept": "Activate",
 				"refuse": "Skip"
 			},
-			"why-cant-disable": "",
+			"why-cant-disable": "Can't disable push notifications per conversation.",
 			"errors": {
 				"no-token": "Your device is not compatible with push notifications",
-				"no-server": ""
+				"no-server": "You must register a push relay first"
 			}
 		},
 		"devices": {
 			"title": "Devices",
 			"push": {
 				"enabled": "Push notifications enabled",
-				"not-enabled": ""
+				"not-enabled": "Push notifications disabled"
 			}
 		},
 		"multi-member-settings": {
@@ -446,25 +446,25 @@
 	},
 	"permission": {
 		"notification": {
-			"title": "",
+			"title": "Push Notifications",
 			"desc": "Berty app need your permission to send you local or push notifications. This will allow you to be inform when you receive a message."
 		},
 		"proximity": {
-			"title": "",
-			"android-desc": "",
-			"ios-desc": ""
+			"title": "Bluetooth Messaging",
+			"android-desc": "To exchange messages offline via Bluetooth even when the app is in the background, the Android API requires the location permission to be granted. We do not use your location data in any way.",
+			"ios-desc": "To exchange messages offline via Bluetooth, the iOS API requires permission to be granted."
 		},
 		"camera": {
 			"title": "Camera",
 			"desc": "Do you want to authorize the camera to take pictures or scan QR codes?"
 		},
 		"audio": {
-			"title": "",
+			"title": "Audio Messages",
 			"desc": "To send audio message to your contacts, you need to allow microphone permission to Berty app."
 		},
 		"gallery": {
-			"title": "",
-			"desc": ""
+			"title": "Image Messaging",
+			"desc": "To send images to your contacts, you must authorize Berty to access photos and other media stored on your device."
 		},
 		"button-labels": {
 			"allow": "Allow",
@@ -477,11 +477,11 @@
 	"notification": {
 		"need-restart": {
 			"title": "Restart required",
-			"desc": ""
+			"desc": "Restart Berty to save your data and enable notifications!"
 		},
 		"need-restart-ble": {
-			"title": "",
-			"desc": ""
+			"title": "Restart required",
+			"desc": "Restart Berty and enable Bluetooth in system settings!"
 		}
 	},
 	"error": {
@@ -493,7 +493,7 @@
 		"wtf-screen": {
 			"title": "What's the Fail?",
 			"desc": "Application just crashed.",
-			"desc-report": ""
+			"desc-report": "Click the button to quit and restart the app."
 		},
 		"sorry-screen": {
 			"title": "Sorry for this bug!",
