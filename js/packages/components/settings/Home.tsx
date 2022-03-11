@@ -97,18 +97,33 @@ export const Home: ScreenFC<'Settings.Home'> = withInAppNotification(
 		const networkConfig = useSelector(selectCurrentNetworkConfig)
 		const dispatch = useDispatch()
 
-		const generateEmail = async () => {
+		const generateEmail = React.useCallback(async () => {
 			const systemInfo = await messengerClient?.systemInfo({})
-			MailComposer.composeAsync({
-				recipients: ['bugs@berty.tech'],
-				subject: 'Bug report',
-				body:
-					'You can describe your bug here.\n---\n' +
-					JSON.stringify(systemInfo, null, 2) +
-					'\n' +
-					JSON.stringify(networkConfig, null, 2),
-			})
-		}
+			try {
+				let result = await MailComposer.composeAsync({
+					recipients: ['bugs@berty.tech'],
+					subject: 'Bug report',
+					body:
+						'You can describe your bug here.\n---\n' +
+						JSON.stringify(systemInfo, null, 2) +
+						'\n' +
+						JSON.stringify(networkConfig, null, 2),
+				})
+				if (result.status === MailComposer.MailComposerStatus.UNDETERMINED) {
+					showNotification({
+						title: t('notification.submit-failed.title'),
+						message: t('notification.submit-failed.desc'),
+						additionalProps: { type: 'message' },
+					})
+				}
+			} catch (err) {
+				showNotification({
+					title: t('notification.submit-failed.title'),
+					message: t('notification.submit-failed.desc'),
+					additionalProps: { type: 'message' },
+				})
+			}
+		}, [messengerClient, networkConfig, showNotification, t])
 
 		// get network config of the account at the mount of the component
 		useMountEffect(() => {

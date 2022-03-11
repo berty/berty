@@ -482,6 +482,10 @@
 		"need-restart-ble": {
 			"title": "Redémarrage nécessaire",
 			"desc": ""
+		},
+		"submit-failed": {
+			"title": "Impossible de reporter un bug",
+			"desc": "Aucune application de mail disponible"
 		}
 	},
 	"error": {
