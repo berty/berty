@@ -133,33 +133,33 @@
 			"faq-button": "FAQ",
 			"roadmap-button": "Roadmap",
 			"policy-button": "Politique de confidentialité",
-			"license-button": ""
+			"license-button": "Licences Open Source"
 		},
 		"accounts": {
 			"accounts-button": "Comptes",
 			"create-button": "Créer un nouveau compte",
 			"import-button": "Importer un compte",
 			"link-button": "Lier cet appareil",
-			"delete-button": ""
+			"delete-button": "Supprimer ce compte"
 		},
 		"appearance": {
-			"dark-button": "",
-			"editor-button": ""
+			"dark-button": "Mode Sombre",
+			"editor-button": "Éditeur de thème"
 		},
 		"contact-convs": {
-			"reset-button": "",
-			"request-button": ""
+			"reset-button": "Réinitialiser mon lien/code QR de contact",
+			"request-button": "Autoriser les demandes de contact entrantes"
 		},
 		"network": {
 			"ble-button": "Bluetooth faible consommation d'énergie",
-			"mc-button": "",
-			"nearby-button": "",
+			"mc-button": "Connectivité multi-pair",
+			"nearby-button": "Android Nearby",
 			"mdns-button": "Multicast DNS",
 			"memo-cell-button": "",
-			"medias-cell-button": "",
+			"medias-cell-button": "Charger les médias via réseau cellulaire",
 			"dht-button": "Tableau distribué de hachage",
 			"rdvp-button": "",
-			"relay-button": "",
+			"relay-button": "Nœuds de relais",
 			"bootstrap-button": ""
 		},
 		"edit-profile": {
@@ -172,9 +172,9 @@
 			"name-input-label": "Nom"
 		},
 		"berty-services": {
-			"title": "",
+			"title": "Services Berty",
 			"desc": "",
-			"button": "",
+			"button": "Activer les services Berty",
 			"skip": "PASSER ET FAIRE ÇA PLUS TARD"
 		},
 		"delete-account": {
@@ -191,7 +191,7 @@
 			"title": "Roadmap"
 		},
 		"privacy-policy": {
-			"title": ""
+			"title": "Politique de confidentialité"
 		},
 		"devtools": {
 			"title": "Outils Dev",
@@ -280,8 +280,8 @@
 			"fingerprint": "Empreinte numérique"
 		},
 		"share": {
-			"invite": "",
-			"tap-to-scan": "",
+			"invite": "Inviter",
+			"tap-to-scan": "Appuyer pour scanner",
 			"create-group": "Créer un groupe"
 		}
 	},
@@ -372,12 +372,12 @@
 		"one-to-one": {
 			"contact-request-box": {
 				"title": "DEMANDE DE CONTACT",
-				"group-invitation": "",
+				"group-invitation": "INVITATION DE GROUPE",
 				"refuse-button": "REFUSER",
 				"accept-button": "ACCEPTER",
 				"accepted-button": "ACCEPTÉ",
 				"error": "",
-				"you-invited": "",
+				"you-invited": "Vous avez invité",
 				"this-contact": "ce contact",
 				"to-a-group": "à un groupe ! 💌"
 			},
@@ -446,11 +446,11 @@
 	},
 	"permission": {
 		"notification": {
-			"title": "",
+			"title": "Notifications push",
 			"desc": "L'application Berty a besoin de votre autorisation pour vous envoyer des notifications locales ou push. Cela vous permettra d'être informé lorsque vous recevrez un message."
 		},
 		"proximity": {
-			"title": "",
+			"title": "Messagerie Bluetooth",
 			"android-desc": "Pour échanger des messages hors ligne via Bluetooth, même lorsque l'application est en arrière-plan, l'API Android nécessite l'autorisation de localisation. Nous n'utilisons pas vos données de localisation de quelque manière que ce soit.",
 			"ios-desc": "Pour échanger des messages hors ligne via Bluetooth, l'API d’iOS nécessite une autorisation."
 		},
