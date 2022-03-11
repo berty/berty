@@ -3,50 +3,50 @@
 		"getstarted": {
 			"title": "PROTECT YOUR PRIVACY",
 			"desc": "free & secure peer-to-peer messaging",
-			"create-button": "Create an account",
-			"import-button": "Import an account",
-			"link-button": "Link this device"
+			"create-button": "",
+			"import-button": "",
+			"link-button": ""
 		},
 		"default-mode": {
 			"summary": {
-				"title": "Default Mode",
-				"subtitle": "Get Started Quickly",
-				"first-point": "Start with presets that offer a privacy/comfort balance that suits most. Berty nodes are used to improve performance and asynchronous communication.",
-				"second-point": "For a custom privacy/comfort balance, select Custom Mode.",
-				"back-button": "Back",
-				"accept-button": "Let's go"
+				"title": "",
+				"subtitle": "",
+				"first-point": "",
+				"second-point": "",
+				"back-button": "",
+				"accept-button": ""
 			}
 		},
 		"custom-mode": {
 			"summary": {
-				"title": "Custom Mode",
-				"subtitle": "Custom Privacy/Comfort Balance",
-				"first-point": "In this mode, adjust all settings individually to create the balance of privacy and comfort that works for you.",
-				"second-point": "For a turnkey experience, select Default Mode.",
-				"back-button": "Back",
-				"accept-button": "Proceed"
+				"title": "",
+				"subtitle": "",
+				"first-point": "",
+				"second-point": "",
+				"back-button": "",
+				"accept-button": ""
 			},
 			"settings": {
 				"off-grid": {
-					"title": "Off-Grid Communication",
-					"ble-button": "Bluetooth Low Energy",
-					"nearby-button": "Android Nearby",
-					"mc-button": "Apple Multipeer Connectivity",
-					"mdns-button": "Multicast DNS (LAN)"
+					"title": "",
+					"ble-button": "",
+					"nearby-button": "",
+					"mc-button": "",
+					"mdns-button": ""
 				},
 				"routing": {
-					"title": "Routing",
-					"dht-button": "Distributed Hash Table",
-					"rdvp-button": "Rendezvous Point Nodes"
+					"title": "",
+					"dht-button": "",
+					"rdvp-button": ""
 				},
 				"access": {
-					"title": "Network Accessibility",
-					"relay-button": "Relay Nodes (TURN)",
-					"bootstrap-button": "Bootstrap Nodes",
-					"replication-button": "Replication Nodes"
+					"title": "",
+					"relay-button": "",
+					"bootstrap-button": "",
+					"replication-button": ""
 				},
-				"all-button": "All",
-				"accept-button": "Let's go"
+				"all-button": "",
+				"accept-button": ""
 			}
 		},
 		"create-account": {
@@ -55,7 +55,7 @@
 			"good-to-know": {
 				"title": "Good to know:",
 				"first-point": "Your account is created locally",
-				"second-point": "Nickname is optional and can be changed later"
+				"second-point": ""
 			}
 		},
 		"generate-key": {
@@ -108,7 +108,7 @@
 				"fifth-bullet-point": "You cannot remove a member from this group"
 			},
 			"conversations": {
-				"request-sent": "Request sent. Pending...",
+				"request-sent": "",
 				"draft": "Draft: {{message}}"
 			}
 		},
@@ -119,48 +119,48 @@
 	},
 	"settings": {
 		"home": {
-			"proximity-button": "Off-Grid Communication",
-			"notifications-button": "Notifications",
-			"contact-convs-button": "Contact and conversations",
-			"appearance-button": "Appearence",
-			"devices-button": "Devices and backup",
-			"accounts-button": "Accounts",
-			"network-button": "Network",
-			"bug-button": "Submit a bug",
-			"about-button": "About Berty"
+			"proximity-button": "",
+			"notifications-button": "",
+			"contact-convs-button": "",
+			"appearance-button": "",
+			"devices-button": "",
+			"accounts-button": "",
+			"network-button": "",
+			"bug-button": "",
+			"about-button": ""
 		},
 		"about": {
-			"faq-button": "FAQ",
-			"roadmap-button": "Roadmap",
-			"policy-button": "Privacy Policy",
-			"license-button": "Open Source Licenses"
+			"faq-button": "",
+			"roadmap-button": "",
+			"policy-button": "",
+			"license-button": ""
 		},
 		"accounts": {
-			"accounts-button": "Accounts",
-			"create-button": "Create an account",
-			"import-button": "Import an account",
-			"link-button": "Link another device",
-			"delete-button": "Delete this account"
+			"accounts-button": "",
+			"create-button": "",
+			"import-button": "",
+			"link-button": "",
+			"delete-button": ""
 		},
 		"appearance": {
-			"dark-button": "Dark Mode",
-			"editor-button": "Theme Editor"
+			"dark-button": "",
+			"editor-button": ""
 		},
 		"contact-convs": {
-			"reset-button": "Reset my contact link/QR Code",
-			"request-button": "Allow incoming contact requests"
+			"reset-button": "",
+			"request-button": ""
 		},
 		"network": {
-			"ble-button": "Bluetooth Low Energy",
-			"mc-button": "Multipeer Connectivity",
-			"nearby-button": "Android Nearby",
-			"mdns-button": "Multicast DNS",
-			"memo-cell-button": "Load voice memo on cellular",
-			"medias-cell-button": "Load medias on cellular",
-			"dht-button": "Distributed Hash Table",
-			"rdvp-button": "Rendezvous Point Nodes",
-			"relay-button": "Relay Nodes",
-			"bootstrap-button": "Bootstrap Nodes"
+			"ble-button": "",
+			"mc-button": "",
+			"nearby-button": "",
+			"mdns-button": "",
+			"memo-cell-button": "",
+			"medias-cell-button": "",
+			"dht-button": "",
+			"rdvp-button": "",
+			"relay-button": "",
+			"bootstrap-button": ""
 		},
 		"edit-profile": {
 			"title": "Edit my profile",
@@ -172,9 +172,9 @@
 			"name-input-label": "Name"
 		},
 		"berty-services": {
-			"title": "Berty Services",
-			"desc": " Activating Berty Services will allow you to receive push notifications via Berty Technologies' servers and grant you access to its nodes for conversation replication.",
-			"button": "Use Berty Services",
+			"title": "",
+			"desc": "",
+			"button": "",
 			"skip": "SKIP AND DO THIS LATER"
 		},
 		"delete-account": {
@@ -191,7 +191,7 @@
 			"title": "Roadmap"
 		},
 		"privacy-policy": {
-			"title": "Privacy Policy"
+			"title": ""
 		},
 		"devtools": {
 			"title": "Dev tools",
@@ -270,8 +270,8 @@
 			"bad-format-title": "Bad theme format",
 			"bad-format-desc": "Incorrect format for theme file",
 			"notification-file-saved": {
-				"title": "Data saved!",
-				"desc": "Available in downloads directory"
+				"title": "",
+				"desc": ""
 			}
 		},
 		"my-berty-ID": {
@@ -280,9 +280,9 @@
 			"fingerprint": "Fingerprint"
 		},
 		"share": {
-			"invite": "Invite",
-			"tap-to-scan": "Tap to scan",
-			"create-group": "Create group"
+			"invite": "",
+			"tap-to-scan": "",
+			"create-group": ""
 		}
 	},
 	"modals": {
@@ -330,7 +330,7 @@
 		},
 		"push-notifications": {
 			"enable": "Enable push notifications",
-			"enabled": "Push notifications enabled",
+			"enabled": "",
 			"unsupported": "Notifications unsupported",
 			"check-device-settings": "This conversation is set to receive push notifications, but alerts have been disabled in the system settings of your device",
 			"warning-disable": {
@@ -339,17 +339,17 @@
 				"accept": "Activate",
 				"refuse": "Skip"
 			},
-			"why-cant-disable": "Can't disable push notifications per conversation.",
+			"why-cant-disable": "",
 			"errors": {
 				"no-token": "Your device is not compatible with push notifications",
-				"no-server": "You must register a push relay first"
+				"no-server": ""
 			}
 		},
 		"devices": {
 			"title": "Devices",
 			"push": {
 				"enabled": "Push notifications enabled",
-				"not-enabled": "Push notifications disabled"
+				"not-enabled": ""
 			}
 		},
 		"multi-member-settings": {
@@ -446,25 +446,25 @@
 	},
 	"permission": {
 		"notification": {
-			"title": "Push Notifications",
+			"title": "",
 			"desc": "Berty app need your permission to send you local or push notifications. This will allow you to be inform when you receive a message."
 		},
 		"proximity": {
-			"title": "Bluetooth Messaging",
-			"android-desc": "To exchange messages offline via Bluetooth even when the app is in the background, the Android API requires the location permission to be granted. We do not use your location data in any way.",
-			"ios-desc": "To exchange messages offline via Bluetooth, the iOS API requires permission to be granted."
+			"title": "",
+			"android-desc": "",
+			"ios-desc": ""
 		},
 		"camera": {
 			"title": "Camera",
 			"desc": "Do you want to authorize the camera to take pictures or scan QR codes?"
 		},
 		"audio": {
-			"title": "Audio Messages",
+			"title": "",
 			"desc": "To send audio message to your contacts, you need to allow microphone permission to Berty app."
 		},
 		"gallery": {
-			"title": "Image Messaging",
-			"desc": "To send images to your contacts, you must authorize Berty to access photos and other media stored on your device."
+			"title": "",
+			"desc": ""
 		},
 		"button-labels": {
 			"allow": "Allow",
@@ -477,11 +477,11 @@
 	"notification": {
 		"need-restart": {
 			"title": "Restart required",
-			"desc": "Restart Berty to save your data and enable notifications!"
+			"desc": ""
 		},
 		"need-restart-ble": {
-			"title": "Restart required",
-			"desc": "Restart Berty and enable Bluetooth in system settings!"
+			"title": "",
+			"desc": ""
 		}
 	},
 	"error": {
@@ -493,7 +493,7 @@
 		"wtf-screen": {
 			"title": "What's the Fail?",
 			"desc": "Application just crashed.",
-			"desc-report": "Click the button to quit and restart the app."
+			"desc-report": ""
 		},
 		"sorry-screen": {
 			"title": "Sorry for this bug!",
