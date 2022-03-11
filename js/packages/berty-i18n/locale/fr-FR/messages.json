@@ -3,81 +3,61 @@
 		"getstarted": {
 			"title": "PROTÉGEZ VOTRE VIE PRIVÉE",
 			"desc": "messagerie P2P gratuite et sécurisée",
-			"button": "DÉCOUVRIR"
+			"create-button": "",
+			"import-button": "",
+			"link-button": ""
 		},
-		"select-mode": {
-			"title": "Choisir un pré-réglage",
-			"change-later": "Vous aurez le choix de le modifier plus tard !",
-			"performance": {
-				"title": "Performance",
-				"desc": "Utilisation simple - Toutes les options",
-				"push-notif": "Recevoir les notifications push",
-				"offline-message": "Messagerie hors-ligne grâce au Bluetooth",
-				"add-contact": "Ajout facile de contacts",
-				"fast-message": "Messagerie instantanée"
+		"default-mode": {
+			"summary": {
+				"title": "",
+				"subtitle": "",
+				"first-point": "",
+				"second-point": "",
+				"back-button": "",
+				"accept-button": ""
+			}
+		},
+		"custom-mode": {
+			"summary": {
+				"title": "",
+				"subtitle": "",
+				"first-point": "",
+				"second-point": "",
+				"back-button": "",
+				"accept-button": ""
 			},
-			"high-level": {
-				"title": "Anonymat complet",
-				"desc": "Pour les utilisateurs extrêmement prudents",
-				"disable-push-notif": "Notifications push désactivées",
-				"disable-local-peer-discovery": "Découverte de nœuds locaux désactivée",
-				"disable-local-peer-discovery-desc": "Multicast DNS et Bluetooth",
-				"disable-contact-request": "Demande d'ami désactivée",
-				"on-same-network": "Local sur le même réseau/Wi-Fi"
+			"settings": {
+				"off-grid": {
+					"title": "",
+					"ble-button": "Bluetooth faible consommation d'énergie",
+					"nearby-button": "",
+					"mc-button": "",
+					"mdns-button": ""
+				},
+				"routing": {
+					"title": "",
+					"dht-button": "Tableau distribué de hachage",
+					"rdvp-button": ""
+				},
+				"access": {
+					"title": "",
+					"relay-button": "",
+					"bootstrap-button": "",
+					"replication-button": ""
+				},
+				"all-button": "",
+				"accept-button": ""
 			}
 		},
 		"create-account": {
 			"title": "Créer votre compte",
-			"desc": "Seul le nom est requis",
-			"required": "Requis",
 			"placeholder": "Choisissez votre pseudo",
-			"button": "CRÉER MON COMPTE",
-			"advanced": "AVANCÉ",
-			"import-account": "IMPORTER UN COMPTE",
-			"link-device": "LIER UN APPAREIL",
-			"more": "PLUS D'INFOS",
 			"good-to-know": {
 				"title": "Bon à savoir :",
 				"first-point": "Votre compte est créé localement",
-				"second-point": "Le pseudo est facultatif et peut être modifié"
+				"second-point": ""
 			}
 		},
-		"advanced-settings": {
-			"title": "Paramètres avancés",
-			"desc": "Trouvez de la documentation et créez votre propre configuration.",
-			"more-about": {
-				"title": "Bienvenue dans les paramètres avancés",
-				"first-paragraph": "Créez la configuration parfaitement adaptée à vos besoins.",
-				"second-paragraph": "Vous verrez l'ensemble des options disponibles contrôlant ce qu'il se passe sous le capot.",
-				"third-paragraph": "Vous trouverez aussi un lien vers des ressources pour le bidouiller. Réservé aux experts !"
-			},
-			"read-more": "En savoir plus sur les paramètres avancés",
-			"config-title": "Configurations personnalisées",
-			"config-desc": "3 étapes de configuration de l'application. Personnalisez tout maintenant !",
-			"learn-more": "En savoir plus",
-			"first-part": {
-				"title": "Proximité",
-				"first-button": "Bluetooth faible consommation d'énergie",
-				"second-button": "Multicast DNS"
-			},
-			"second-part": {
-				"title": "Pair à pair",
-				"first-button": "Tableau distribué de hachage",
-				"second-button": "Activation TOR"
-			},
-			"third-part": {
-				"title": "Services",
-				"network-button": "Réseaux",
-				"first-button": "Notifications push",
-				"second-button": {
-					"title": "Configurez votre propre nœud",
-					"placeholder": "Entrez l'adresse du serveur"
-				},
-				"third-button": "Sélectionner un nœud certifié"
-			},
-			"apply-changes": "APPLIQUER LES CHANGEMENTS"
-		},
-		"exper-setup": {},
 		"generate-key": {
 			"title": "Démarrage du nœud Berty…",
 			"desc": "Cette tâche peut prendre quelques secondes"
@@ -128,107 +108,59 @@
 				"fifth-bullet-point": "Vous ne pouvez pas retirer un membre de ce groupe"
 			},
 			"conversations": {
-				"request-sent": "La demande a été envoyée. En attente...",
+				"request-sent": "",
 				"draft": "Brouillon : {{message}}"
 			}
 		},
 		"suggestion-display-name-initial": "Cliquer ici pour ajouter",
-		"configurations": {
-			"network": {
-				"display-name": "Configuration réseau",
-				"desc": "Cliquez ici pour finaliser la configuration réseau"
-			},
-			"notification": {
-				"display-name": "Configuration des notifications",
-				"desc": "Cliquez ici pour configurer les notifications push"
-			},
-			"replicate": {
-				"display-name": "Réplication P2P",
-				"desc": "Configurer des services de réplication"
-			}
-		},
-		"network-options": {
-			"welcome-title": "Bienvenue dans les Options Réseaux",
-			"full-anon-mode": "Mode Anonymat complet",
-			"simple-tor-compatible": "Simplement compatible avec TOR",
-			"allow-expert-mode": "Autoriser le mode Expert",
-			"tor-compatible": {
-				"title": "Compatible avec TOR",
-				"desc": "Cette configuration vous permettra de vous connecter au réseau Tor et de discuter avec les utilisateurs de Full Anon sans être vous-même dans un mode anonyme extrême."
-			},
-			"full-anon": {
-				"title": "Mode Anonymat complet",
-				"desc": "Cette configuration est basée sur des préréglages radicaux fournissant des paramètres de réseaux extrêmement prudents :",
-				"no-ip": "Sans adresse IP",
-				"no-mc": "Pas de Bluetooth",
-				"tor-only": "Tor uniquement"
-			},
-			"save": "SAUVEGARDER",
-			"skip": "PASSER ET FAIRE ÇA PLUS TARD"
-		},
 		"scan": {
 			"title": "Scan QR Code"
 		}
 	},
 	"settings": {
 		"home": {
-			"check-list": {
-				"title": "Liste des tâches de bienvenue {{tasksDone}}/{{totalTasks}}",
-				"avatar": {
-					"title": "Changer votre avatar",
-					"desc": ""
-				},
-				"berty-services": {
-					"title": "Activer les services Berty",
-					"desc": "Améliorez vos performances réseau en utilisant les services de Berty Tech organisation à but non lucrative."
-				},
-				"contact": {
-					"title": "Synchroniser avec un contact",
-					"desc": "Scannez un QR code pour ajouter votre premier contact !"
-				},
-				"group": {
-					"title": "Rejoindre ou créer un groupe",
-					"desc": "Crée ou rejoins ton premier groupe Berty !"
-				},
-				"message": {
-					"title": "Envoyer le message",
-					"desc": "Dites « Bonjour » à un contact !"
-				},
-				"ble-message": {
-					"title": "Envoyer un message sans internet",
-					"desc": ""
-				}
-			},
-			"edit-profile": "Modifier mon profil",
-			"share-link": "Partager le lien",
-			"create-group": "Créer un groupe",
-			"create-new-account": "Créer un nouveau compte"
+			"proximity-button": "",
+			"notifications-button": "Notifications",
+			"contact-convs-button": "",
+			"appearance-button": "",
+			"devices-button": "",
+			"accounts-button": "Comptes",
+			"network-button": "",
+			"bug-button": "",
+			"about-button": "À propos de Berty"
 		},
-		"network-map": {
-			"title": "Réseaux",
-			"online-peers": "Pairs en ligne"
+		"about": {
+			"faq-button": "FAQ",
+			"roadmap-button": "Roadmap",
+			"policy-button": "",
+			"license-button": ""
 		},
-		"mode": {
-			"title": "Paramètres",
-			"desc": "Personnalisez l'app pour qu'elle corresponde à vos besoins",
-			"in-app-notifications": "Notifications dans l'application",
-			"dark-mode-button": "Mode foncé",
-			"devtools": "Devtools",
-			"network-config": "Configuration du réseau",
-			"notification-file-saved": {
-				"title": "Données sauvegardées !",
-				"desc": "Disponible dans le répertoire des téléchargements"
-			},
-			"receive-contact-requests-button": "Recevoir les demandes de contact",
-			"external-services-button": "Services externes",
-			"auto-replicate-button": "Réplication automatique",
-			"auto-replicate-button-unavailable": "Vous devez d'abord inscrire au moins un serveur de réplication",
-			"blocked-contacts-button": {
-				"title": "Contacts bloqués",
-				"tag": "bloqué"
-			},
-			"delete-account-button": "Supprimer mon compte",
-			"backup-account-button": "Créer une sauvegarde du compte"
+		"accounts": {
+			"accounts-button": "Comptes",
+			"create-button": "",
+			"import-button": "",
+			"link-button": "",
+			"delete-button": ""
+		},
+		"appearance": {
+			"dark-button": "",
+			"editor-button": ""
+		},
+		"contact-convs": {
+			"reset-button": "",
+			"request-button": ""
+		},
+		"network": {
+			"ble-button": "Bluetooth faible consommation d'énergie",
+			"mc-button": "",
+			"nearby-button": "",
+			"mdns-button": "Multicast DNS",
+			"memo-cell-button": "",
+			"medias-cell-button": "",
+			"dht-button": "Tableau distribué de hachage",
+			"rdvp-button": "",
+			"relay-button": "",
+			"bootstrap-button": ""
 		},
 		"edit-profile": {
 			"title": "Modifier mon profil",
@@ -239,53 +171,10 @@
 			"name-input-placeholder": "Nom...",
 			"name-input-label": "Nom"
 		},
-		"notifications": {
-			"title": "Notifications",
-			"enabled-desc": "Vous avez activé les notifications !",
-			"disabled-desc": "Vous n'avez pas activé les notifications pour cette application",
-			"activate-button": "Activer les notifications",
-			"contact-request-button": {
-				"title": "Demande de contact",
-				"desc": "Recevoir une notification chaque fois que quelqu'un vous envoie une demande de contact"
-			},
-			"messages-notifications-button": {
-				"title": "Notifications de messages",
-				"display-button": "Afficher les notifications",
-				"preview-button": "Aperçu des messages",
-				"sound-button": "Sons",
-				"exceptions-button": {
-					"title": "Exceptions",
-					"preview-value": "Ajouter"
-				}
-			},
-			"group-notifications-button": {
-				"title": "Notifications de groupes",
-				"display-button": "Afficher les notifications",
-				"preview-button": "Aperçu des messages",
-				"sound-button": "Sons",
-				"exceptions-button": {
-					"title": "Exceptions",
-					"tag": "{{count}} exception"
-				}
-			}
-		},
-		"bluetooth": {
-			"title": "Bluetooth",
-			"desc": "Bluetooth vous permet d'échanger des messages en utilisant Berty sans accès à internet en connectant votre appareil directement avec les pairs à proximité",
-			"activate-button": "Activer le Bluetooth"
-		},
-		"mc": {
-			"activate-button": "Activer la connectivité multi-pair"
-		},
-		"nearby": {
-			"activate-button": "Activer Android Nearby"
-		},
 		"berty-services": {
-			"header": "Activer les services Berty",
-			"title": "Services Berty",
-			"recommended": "Recommandé",
-			"desc": " L'activation des services Berty vous permettra de recevoir des notifications push via les serveurs Berty Technologies et vous donnera accès à ses nœuds pour la réplication des conversations.",
-			"button": "Utiliser les services de Berty",
+			"title": "",
+			"desc": "",
+			"button": "",
 			"skip": "PASSER ET FAIRE ÇA PLUS TARD"
 		},
 		"delete-account": {
@@ -295,56 +184,22 @@
 			"cancel-button": "ANNULER",
 			"delete-button": "SUPPRIMER"
 		},
-		"help": {
-			"title": "Aide",
-			"security-privacy-button": {
-				"title": "Sécurité et confidentialité",
-				"desc": "Gardez vos données en sécurité et votre vie privée"
-			},
-			"updates-button": "Mises à jour",
-			"about-button": "À propos de Berty",
-			"account-button": "Compte & ID Berty",
-			"contact-button": "Contacts et requêtes",
-			"message-button": "Messages",
-			"group-button": "Groupes",
-			"settings-button": "Paramètres",
-			"ask-button": "Poser une question",
-			"report-button": "Signaler un bug"
-		},
-		"about": {
-			"title": "À propos de Berty",
-			"top-left-button": "Privé & sécurisé",
-			"top-right-button": "Réseau pair à pair",
-			"bottom-left-button": "Internet n'est pas nécessaire",
-			"bottom-right-button": "Pas de confiance dans le réseau nécessaire",
-			"terms-button": "Conditions d'utilisation",
-			"privacy-button": "Politique de confidentialité",
-			"software-button": "Licence logicielle",
-			"contact-button": "Contactez-nous",
-			"website-button": "Site web"
-		},
-		"updates": {
-			"title": "Mises à jour de l'application",
-			"current-tag": "Actuelle"
-		},
 		"faq": {
 			"title": "FAQ"
 		},
 		"roadmap": {
 			"title": "Roadmap"
 		},
+		"privacy-policy": {
+			"title": ""
+		},
 		"devtools": {
 			"title": "Outils Dev",
 			"header-left-button": "Infos sur l'appareil",
 			"header-middle-button": "Générer de fausses données",
 			"header-right-button": "Redémarrer le démon",
-			"theme-editor": "Apparence et éditeur de thème",
 			"simulate-button": "Simuler une erreur de stream",
 			"simulate-js-error-button": "Simuler une erreur JavaScript",
-			"tor-button": "Tor {{option}}",
-			"tor-optional-option": "optionnel",
-			"tor-required-option": "requis",
-			"tor-disabled-option": "désactivé",
 			"system-info-button": "Infos système",
 			"debug-button": "Debug",
 			"log-button": {
@@ -379,7 +234,6 @@
 				"test": "Test, ",
 				"tried": "✔ Tentative d'envoi aux {{length}} contacts"
 			},
-			"trigger-crashlytics-button": "Déclenchement de crashlytics",
 			"tyber-attach": "Attacher Tyber à {{host}}",
 			"tyber-host-button": {
 				"name": "Tyber",
@@ -401,16 +255,12 @@
 		},
 		"add-dev-conversations": {
 			"title": "Ajouter conversations de dev",
-			"add": "Ajouter {{name}}",
-			"tag-bot": "Bot",
-			"tag-contact": "Contact",
-			"tag-conversation": "Groupe"
+			"add": "Ajouter {{name}}"
 		},
 		"ipfs-webui": {
 			"title": "Interface web IPFS"
 		},
 		"theme-editor": {
-			"title": "Éditeur de thème",
 			"randomize": "Générer un thème",
 			"save": "Enregistrez ce thème",
 			"export": "Exporter le thème sélectionné sous forme de fichier",
@@ -418,19 +268,21 @@
 			"import": "Importer un fichier de thème",
 			"delete": "Supprimer tous les thèmes non par défaut",
 			"bad-format-title": "Format de thème incorrect",
-			"bad-format-desc": "Format incorrect pour le fichier du thème"
+			"bad-format-desc": "Format incorrect pour le fichier du thème",
+			"notification-file-saved": {
+				"title": "Données sauvegardées !",
+				"desc": "Disponible dans le répertoire des téléchargements"
+			}
 		},
 		"my-berty-ID": {
 			"title": "Mon identifiant Berty",
 			"qr": "QR",
-			"fingerprint": "Empreinte numérique",
-			"devices": "Appareils"
+			"fingerprint": "Empreinte numérique"
 		},
 		"share": {
-			"invite": "Inviter",
-			"tap-to-scan": "Scanner",
-			"create-group": "Créer un groupe",
-			"create-feed-channel": "Créer un channel"
+			"invite": "",
+			"tap-to-scan": "",
+			"create-group": "Créer un groupe"
 		}
 	},
 	"modals": {
@@ -469,12 +321,8 @@
 		"sending": "Envoi...",
 		"sent": "Envoyé",
 		"contact-settings": {
-			"mark-button": "Marquer comme vérifié",
-			"block-button": "Bloquer le contact",
-			"delete-button": "Supprimer le contact",
 			"fingerprint": "Empreinte digitale",
 			"info": "Infos",
-			"devices": "Appareils",
 			"my-devices": "Mes appareils"
 		},
 		"multi-member": {
@@ -505,20 +353,13 @@
 			}
 		},
 		"multi-member-settings": {
-			"header-left-button": "Rechercher",
-			"header-middle-button": "Appel",
-			"header-right-button": "Partager",
 			"media-button": "Médias, liens & documents",
-			"notifications-button": "Recevoir les notifications",
 			"members-button": {
-				"title": "Membres",
-				"unknown": "Inconnu"
+				"title": "Membres"
 			},
 			"add-member-button": "Ajouter un membre",
 			"invite-button": "Inviter par lien",
-			"save-button": "Enregistrer la conversation sur un serveur",
-			"erase-button": "Effacer la conversation",
-			"leave-button": "Quitter le groupe"
+			"save-button": "Enregistrer la conversation sur un serveur"
 		},
 		"add-members": {
 			"members": "Membres",
@@ -550,14 +391,8 @@
 			"input-placeholder": "Écrivez ici..."
 		},
 		"one-to-one-settings": {
-			"header-left-button": "Rechercher",
-			"header-middle-button": "Appel",
-			"header-right-button": "Partager",
 			"media-button": "Médias, liens & documents",
-			"notifications-button": "Recevoir les notifications",
-			"mutual-button": "Groupes communs",
-			"save-button": "Enregistrer la conversation sur un serveur",
-			"erase-button": "Effacer la conversation"
+			"save-button": "Enregistrer la conversation sur un serveur"
 		},
 		"replicate-group-settings": {
 			"title": "Enregistrer la conversation sur un serveur",
@@ -571,7 +406,6 @@
 			"camera": "Caméra",
 			"files": "Fichiers",
 			"microphone": "Microphone",
-			"search-gif": "Chercher un gif",
 			"security-access": "Accès sécurisé",
 			"security-access-desc": "Appuyez ici pour ouvrir le paramètre pour autoriser l'accès à votre",
 			"save-to-gallery": "Enregistrer ce fichier dans la galerie",
@@ -612,11 +446,11 @@
 	},
 	"permission": {
 		"notification": {
-			"title": "Notifications push",
+			"title": "",
 			"desc": "L'application Berty a besoin de votre autorisation pour vous envoyer des notifications locales ou push. Cela vous permettra d'être informé lorsque vous recevrez un message."
 		},
-		"p2p": {
-			"title": "Messagerie Bluetooth",
+		"proximity": {
+			"title": "",
 			"android-desc": "Pour échanger des messages hors ligne via Bluetooth, même lorsque l'application est en arrière-plan, l'API Android nécessite l'autorisation de localisation. Nous n'utilisons pas vos données de localisation de quelque manière que ce soit.",
 			"ios-desc": "Pour échanger des messages hors ligne via Bluetooth, l'API d’iOS nécessite une autorisation."
 		},
@@ -625,7 +459,7 @@
 			"desc": ""
 		},
 		"audio": {
-			"title": "Messages audio",
+			"title": "",
 			"desc": "Pour envoyer des messages audio à vos contacts, vous devez autoriser l'application Berty à accéder au microphone."
 		},
 		"gallery": {
@@ -643,7 +477,11 @@
 	"notification": {
 		"need-restart": {
 			"title": "",
-			"desc": "Pour ce type de notification, vous devez redémarrer votre application !"
+			"desc": ""
+		},
+		"need-restart-ble": {
+			"title": "",
+			"desc": ""
 		}
 	},
 	"error": {
@@ -655,7 +493,7 @@
 		"wtf-screen": {
 			"title": "Quelle est l'erreur ?",
 			"desc": "L'application vient de planter.",
-			"desc-report": "Cliquez sur le bouton pour quitter et redémarrer l'application."
+			"desc-report": ""
 		},
 		"sorry-screen": {
 			"title": "Désolé pour ce bug !",
@@ -676,7 +514,6 @@
 				"action-delete": {
 					"file-exists": "Le compte {{accountId}} n'existe pas, mais un fichier porte ce nom.",
 					"account-exists": "Le compte {{accountId}} existe déjà.",
-					"directory-exists-load-error": "Le compte {{accountId}} n'existe pas, mais un répertoire porte ce nom.",
 					"fs-read-error": "Erreur lors de l'obtention des informations FS sur le compte",
 					"actions-title": "Que devrions-nous faire?",
 					"action-account-manager": "Supprimer via le gestionnaire de compte",
