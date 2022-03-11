@@ -29,6 +29,8 @@ import {
 	setCurrentNetworkConfig,
 } from '@berty-tech/redux/reducers/networkConfig.reducer'
 import * as MailComposer from 'expo-mail-composer'
+import { messengerMethodsHooks } from '@berty-tech/store/methods'
+import { selectDevMode, setDevMode } from '@berty-tech/redux/reducers/accountSettings.reducer'
 
 const ProfileButton: React.FC<{}> = () => {
 	const [{ padding, margin, border }, { scaleSize }] = useStyles()
@@ -93,9 +95,13 @@ export const Home: ScreenFC<'Settings.Home'> = withInAppNotification(
 		const selectedAccount = useSelector(selectSelectedAccount)
 		const ctx = useMessengerContext()
 
+		const dispatch = useDispatch()
 		const blePerm = useSelector(selectBlePerm)
 		const networkConfig = useSelector(selectCurrentNetworkConfig)
-		const dispatch = useDispatch()
+		const devMode = useSelector(selectDevMode)
+
+		const [nbClick, setNbClick] = React.useState<number>(0)
+		const { call, called, reply } = messengerMethodsHooks.useSystemInfo()
 
 		const generateEmail = React.useCallback(async () => {
 			var systemInfo = await messengerClient?.systemInfo({})
@@ -162,6 +168,13 @@ export const Home: ScreenFC<'Settings.Home'> = withInAppNotification(
 			}
 			f()
 		})
+
+		// call systemInfo
+		React.useEffect(() => {
+			if (!called) {
+				call()
+			}
+		}, [call, called])
 
 		// setNewConfig function: update the state + update the network config in the account service + show notif to restart app
 		const setNewConfig = React.useCallback(
@@ -342,6 +355,36 @@ export const Home: ScreenFC<'Settings.Home'> = withInAppNotification(
 							onPress={() => navigate('Settings.AboutBerty')}
 						/>
 					</Section>
+					{reply && (
+						<Section>
+							<ButtonSettingV2
+								text={t('settings.home.version-button', {
+									version: reply.messenger?.process?.version,
+								})}
+								icon='github'
+								onPress={() => {
+									if (devMode) {
+										return
+									}
+									if (nbClick + 1 === 10) {
+										dispatch(setDevMode())
+									}
+									setNbClick(nbClick + 1)
+								}}
+								disabledArrowIcon
+								activeOpacity={1}
+								last={!devMode}
+							/>
+							{devMode && (
+								<ButtonSettingV2
+									text={t('settings.home.devtools-button')}
+									icon='code'
+									last
+									onPress={() => navigate('Settings.DevTools')}
+								/>
+							)}
+						</Section>
+					)}
 				</ScrollView>
 			</View>
 		)

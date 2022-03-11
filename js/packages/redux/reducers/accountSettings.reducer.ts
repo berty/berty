@@ -13,10 +13,11 @@ const makeRoot = <T>(val: T) => ({
 })
 
 export type AccountSettingsState = {
+	devMode: boolean
 	language?: string
 }
 
-const newAccountSettingsState = (): AccountSettingsState => ({})
+const newAccountSettingsState = (): AccountSettingsState => ({ devMode: false })
 
 const initialState = newAccountSettingsState()
 
@@ -33,6 +34,7 @@ type LocalRootState = typeof rootInitialState
 const selectSlice = (state: LocalRootState) => state[sliceName]
 
 export const selectAccountLanguage = (state: LocalRootState) => selectSlice(state).language
+export const selectDevMode = (state: LocalRootState) => selectSlice(state).devMode
 
 /**
  *
@@ -47,9 +49,12 @@ const slice = createSlice({
 		setAccountLanguage(state: LocalState, { payload }: PayloadAction<string | undefined>) {
 			state.language = payload
 		},
+		setDevMode(state) {
+			state.devMode = true
+		},
 	},
 })
 
-export const { setAccountLanguage } = slice.actions
+export const { setAccountLanguage, setDevMode } = slice.actions
 
 export default makeRoot(slice.reducer)

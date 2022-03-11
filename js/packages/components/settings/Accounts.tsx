@@ -110,13 +110,13 @@ export const Accounts: ScreenFC<'Settings.Accounts'> = () => {
 				contentContainerStyle={{ paddingBottom: 12 * scaleSize }}
 				showsVerticalScrollIndicator={false}
 			>
-				<Section>
+				{/* <Section>
 					<ButtonSettingV2 text='Backup' last />
-				</Section>
+				</Section> */}
 				<Section>
 					<ButtonSettingV2
 						text={t('settings.accounts.accounts-button')}
-						arrowIcon='arrow-ios-downward'
+						arrowIcon={!accountsCollapse ? 'arrow-downward' : 'arrow-forward'}
 						onPress={() => setAccountsCollapse(!accountsCollapse)}
 						last
 					/>

@@ -38,6 +38,7 @@ export const ButtonSettingV2: React.FC<{
 	text: string
 	icon?: string
 	arrowIcon?: string
+	disabledArrowIcon?: boolean
 	onPress?: (...args: any) => void
 	toggle?: {
 		enable: boolean
@@ -47,16 +48,19 @@ export const ButtonSettingV2: React.FC<{
 	color?: string
 	pack?: string
 	disabled?: boolean
+	activeOpacity?: number
 	last?: boolean
 }> = ({
 	text,
 	icon,
 	arrowIcon = 'arrow-ios-forward',
+	disabledArrowIcon = false,
 	onPress,
 	color,
 	toggle,
 	pack = 'feather',
 	disabled = false,
+	activeOpacity = 0.2,
 	last = false,
 }) => {
 	const [{ padding, margin, opacity }, { scaleSize }] = useStyles()
@@ -72,7 +76,7 @@ export const ButtonSettingV2: React.FC<{
 		<>
 			<TouchableOpacity
 				onPress={!disabled ? onPress : () => {}}
-				activeOpacity={disabled ? disabledOpacity : 0.2}
+				activeOpacity={disabled ? disabledOpacity : activeOpacity}
 				style={[
 					padding.vertical.medium,
 					padding.horizontal.medium,
@@ -107,7 +111,7 @@ export const ButtonSettingV2: React.FC<{
 					</View>
 				</View>
 
-				{toggle?.enable && !disabled ? (
+				{toggle?.enable && !disabled && (
 					<Toggle
 						style={padding.right.scale(5)}
 						status='primary'
@@ -118,7 +122,8 @@ export const ButtonSettingV2: React.FC<{
 							}
 						}}
 					/>
-				) : (
+				)}
+				{!disabledArrowIcon && !toggle && (
 					<Icon
 						name={arrowIcon}
 						width={20 * scaleSize}
