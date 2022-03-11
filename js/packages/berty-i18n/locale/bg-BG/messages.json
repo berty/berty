@@ -3,81 +3,61 @@
 		"getstarted": {
 			"title": "",
 			"desc": "",
-			"button": ""
+			"create-button": "",
+			"import-button": "",
+			"link-button": ""
 		},
-		"select-mode": {
-			"title": "",
-			"change-later": "",
-			"performance": {
-				"title": "Производителност",
-				"desc": "Лесен за употреба - Всички функционалности",
-				"push-notif": "Получаване на push известия",
-				"offline-message": "",
-				"add-contact": "Добави лесно контакти",
-				"fast-message": "Най-бърза доставка на съобщения"
-			},
-			"high-level": {
+		"default-mode": {
+			"summary": {
 				"title": "",
-				"desc": "",
-				"disable-push-notif": "Известията са забранени",
-				"disable-local-peer-discovery": "Локално откриване на Peers e забранено",
-				"disable-local-peer-discovery-desc": "",
-				"disable-contact-request": "Заявките за контакт са деактивирани",
-				"on-same-network": ""
+				"subtitle": "",
+				"first-point": "",
+				"second-point": "",
+				"back-button": "",
+				"accept-button": ""
+			}
+		},
+		"custom-mode": {
+			"summary": {
+				"title": "",
+				"subtitle": "",
+				"first-point": "",
+				"second-point": "",
+				"back-button": "",
+				"accept-button": ""
+			},
+			"settings": {
+				"off-grid": {
+					"title": "",
+					"ble-button": "",
+					"nearby-button": "",
+					"mc-button": "",
+					"mdns-button": ""
+				},
+				"routing": {
+					"title": "",
+					"dht-button": "",
+					"rdvp-button": ""
+				},
+				"access": {
+					"title": "",
+					"relay-button": "",
+					"bootstrap-button": "",
+					"replication-button": ""
+				},
+				"all-button": "",
+				"accept-button": ""
 			}
 		},
 		"create-account": {
 			"title": "Създадете собствена сметка",
-			"desc": "Името е единствената необходима информация",
-			"required": "Задължително",
 			"placeholder": "",
-			"button": "Създай моя акаунт",
-			"advanced": "",
-			"import-account": "",
-			"link-device": "",
-			"more": "",
 			"good-to-know": {
 				"title": "",
 				"first-point": "",
 				"second-point": ""
 			}
 		},
-		"advanced-settings": {
-			"title": "",
-			"desc": "",
-			"more-about": {
-				"title": "",
-				"first-paragraph": "",
-				"second-paragraph": "",
-				"third-paragraph": ""
-			},
-			"read-more": "",
-			"config-title": "",
-			"config-desc": "",
-			"learn-more": "",
-			"first-part": {
-				"title": "",
-				"first-button": "",
-				"second-button": "Multicast DNS"
-			},
-			"second-part": {
-				"title": "",
-				"first-button": "",
-				"second-button": ""
-			},
-			"third-part": {
-				"title": "Услуги",
-				"network-button": "Списък от мрежи",
-				"first-button": "",
-				"second-button": {
-					"title": "",
-					"placeholder": ""
-				},
-				"third-button": ""
-			},
-			"apply-changes": ""
-		},
-		"exper-setup": {},
 		"generate-key": {
 			"title": "Стартиране на Berty node…",
 			"desc": "Това може да отнеме няколко секунди"
@@ -133,102 +113,54 @@
 			}
 		},
 		"suggestion-display-name-initial": "",
-		"configurations": {
-			"network": {
-				"display-name": "",
-				"desc": ""
-			},
-			"notification": {
-				"display-name": "",
-				"desc": ""
-			},
-			"replicate": {
-				"display-name": "",
-				"desc": ""
-			}
-		},
-		"network-options": {
-			"welcome-title": "",
-			"full-anon-mode": "",
-			"simple-tor-compatible": "",
-			"allow-expert-mode": "",
-			"tor-compatible": {
-				"title": "",
-				"desc": ""
-			},
-			"full-anon": {
-				"title": "",
-				"desc": "",
-				"no-ip": "",
-				"no-mc": "",
-				"tor-only": ""
-			},
-			"save": "",
-			"skip": "ПРОПУСНИ И ОСТАВИ ЗА ПО-КЪСНО"
-		},
 		"scan": {
 			"title": ""
 		}
 	},
 	"settings": {
 		"home": {
-			"check-list": {
-				"title": "",
-				"avatar": {
-					"title": "",
-					"desc": ""
-				},
-				"berty-services": {
-					"title": "",
-					"desc": ""
-				},
-				"contact": {
-					"title": "",
-					"desc": ""
-				},
-				"group": {
-					"title": "",
-					"desc": ""
-				},
-				"message": {
-					"title": "",
-					"desc": ""
-				},
-				"ble-message": {
-					"title": "",
-					"desc": ""
-				}
-			},
-			"edit-profile": "Редакция на профила",
-			"share-link": "",
-			"create-group": "",
-			"create-new-account": ""
+			"proximity-button": "",
+			"notifications-button": "Известия",
+			"contact-convs-button": "",
+			"appearance-button": "",
+			"devices-button": "",
+			"accounts-button": "",
+			"network-button": "",
+			"bug-button": "",
+			"about-button": "Относно Berty"
 		},
-		"network-map": {
-			"title": "Списък от мрежи",
-			"online-peers": "Онлайн peers"
+		"about": {
+			"faq-button": "",
+			"roadmap-button": "",
+			"policy-button": "",
+			"license-button": ""
 		},
-		"mode": {
-			"title": "Настройки",
-			"desc": "Персонализирайте всичко, за да получите приложението, което отговаря на вашите нужди",
-			"in-app-notifications": "",
-			"dark-mode-button": "Тъмен режим",
-			"devtools": "Инструмени за програмисти",
-			"network-config": "",
-			"notification-file-saved": {
-				"title": "",
-				"desc": ""
-			},
-			"receive-contact-requests-button": "Получавайте заявки за контакт",
-			"external-services-button": "Външни услуги",
-			"auto-replicate-button": "Автоматична репликация",
-			"auto-replicate-button-unavailable": "",
-			"blocked-contacts-button": {
-				"title": "Блокирай контакт",
-				"tag": "блокиран"
-			},
-			"delete-account-button": "Изтрий акаунта ми",
-			"backup-account-button": "Направи резервно копие"
+		"accounts": {
+			"accounts-button": "",
+			"create-button": "",
+			"import-button": "",
+			"link-button": "",
+			"delete-button": ""
+		},
+		"appearance": {
+			"dark-button": "",
+			"editor-button": ""
+		},
+		"contact-convs": {
+			"reset-button": "",
+			"request-button": ""
+		},
+		"network": {
+			"ble-button": "",
+			"mc-button": "",
+			"nearby-button": "",
+			"mdns-button": "Multicast DNS",
+			"memo-cell-button": "",
+			"medias-cell-button": "",
+			"dht-button": "",
+			"rdvp-button": "",
+			"relay-button": "",
+			"bootstrap-button": ""
 		},
 		"edit-profile": {
 			"title": "Редактирай моя профил",
@@ -239,51 +171,8 @@
 			"name-input-placeholder": "Име...",
 			"name-input-label": "Име"
 		},
-		"notifications": {
-			"title": "Известия",
-			"enabled-desc": "Известията са активирани!",
-			"disabled-desc": "Не си активирал известия за приложението",
-			"activate-button": "Активирай известията",
-			"contact-request-button": {
-				"title": "Искане за контакт",
-				"desc": "Получавай известие всеки път когато някой ти изпрати заявка за контакт"
-			},
-			"messages-notifications-button": {
-				"title": "Известия за съобщения",
-				"display-button": "Покажи известията",
-				"preview-button": "Преглед на съобщения",
-				"sound-button": "Звук",
-				"exceptions-button": {
-					"title": "Изключения",
-					"preview-value": "Добави"
-				}
-			},
-			"group-notifications-button": {
-				"title": "Групови известия",
-				"display-button": "Покажи известията",
-				"preview-button": "Преглед на съобщенията",
-				"sound-button": "Звук",
-				"exceptions-button": {
-					"title": "Изключения",
-					"tag": "{{count}} изключение"
-				}
-			}
-		},
-		"bluetooth": {
-			"title": "Bluetooth",
-			"desc": "",
-			"activate-button": ""
-		},
-		"mc": {
-			"activate-button": "Активирай Multipeer Connectivity"
-		},
-		"nearby": {
-			"activate-button": ""
-		},
 		"berty-services": {
-			"header": "",
 			"title": "",
-			"recommended": "Препоръчително",
 			"desc": "",
 			"button": "",
 			"skip": "ПРОПУСНИ И ОСТАВИ ЗА ПО-КЪСНО"
@@ -295,42 +184,13 @@
 			"cancel-button": "ОТКАЗ",
 			"delete-button": "ИЗТРИИ"
 		},
-		"help": {
-			"title": "Помощ",
-			"security-privacy-button": {
-				"title": "Сигурност и поверителност",
-				"desc": "Пазете данните си в безопасност и живота си частен"
-			},
-			"updates-button": "Ъпдейти",
-			"about-button": "Относно Berty",
-			"account-button": "Акаунт & Bertly ID",
-			"contact-button": "Контакти и заявки",
-			"message-button": "Съобщения",
-			"group-button": "Групи",
-			"settings-button": "Настройки",
-			"ask-button": "Задай въпрос",
-			"report-button": "Съобщи за bug"
-		},
-		"about": {
-			"title": "Относно Berty",
-			"top-left-button": "Частно и сигурно",
-			"top-right-button": "Peer to peer мрежа",
-			"bottom-left-button": "Не се изисква интернет или данни",
-			"bottom-right-button": "Не се изисква доверие в мрежата",
-			"terms-button": "Политика за употреба",
-			"privacy-button": "Политика за поверителонст",
-			"software-button": "Софтуерен лиценз",
-			"contact-button": "Свържи се с нас",
-			"website-button": "Уебсайт"
-		},
-		"updates": {
-			"title": "Нови версии",
-			"current-tag": "Текущо"
-		},
 		"faq": {
 			"title": ""
 		},
 		"roadmap": {
+			"title": ""
+		},
+		"privacy-policy": {
 			"title": ""
 		},
 		"devtools": {
@@ -338,13 +198,8 @@
 			"header-left-button": "Информация за устройства",
 			"header-middle-button": "Генерирай фалшиви данни",
 			"header-right-button": "Рестартирай daemon-а",
-			"theme-editor": "",
 			"simulate-button": "Симулирай грешка в потока",
 			"simulate-js-error-button": "",
-			"tor-button": "Tor {{option}}",
-			"tor-optional-option": "незадължително",
-			"tor-required-option": "задължително",
-			"tor-disabled-option": "изключено",
 			"system-info-button": "Система информация",
 			"debug-button": "Debug",
 			"log-button": {
@@ -379,7 +234,6 @@
 				"test": "Тест, ",
 				"tried": "✔ Опитах да изпратя до {{length}} контакти"
 			},
-			"trigger-crashlytics-button": "",
 			"tyber-attach": "",
 			"tyber-host-button": {
 				"name": "",
@@ -401,16 +255,12 @@
 		},
 		"add-dev-conversations": {
 			"title": "Добавете разговори за разработчици",
-			"add": "Добави {{name}}",
-			"tag-bot": "Бот",
-			"tag-contact": "Контакт",
-			"tag-conversation": "Група"
+			"add": "Добави {{name}}"
 		},
 		"ipfs-webui": {
 			"title": "IPFS WebUI"
 		},
 		"theme-editor": {
-			"title": "",
 			"randomize": "",
 			"save": "",
 			"export": "",
@@ -418,13 +268,21 @@
 			"import": "",
 			"delete": "",
 			"bad-format-title": "",
-			"bad-format-desc": ""
+			"bad-format-desc": "",
+			"notification-file-saved": {
+				"title": "",
+				"desc": ""
+			}
 		},
 		"my-berty-ID": {
 			"title": "",
 			"qr": "QR",
-			"fingerprint": "Fingerprint",
-			"devices": "Устройства"
+			"fingerprint": "Fingerprint"
+		},
+		"share": {
+			"invite": "",
+			"tap-to-scan": "",
+			"create-group": ""
 		}
 	},
 	"modals": {
@@ -463,12 +321,8 @@
 		"sending": "Изпращане...",
 		"sent": "",
 		"contact-settings": {
-			"mark-button": "Маркирай като верифициран",
-			"block-button": "Блокирай контакт",
-			"delete-button": "Изтрий контакт",
 			"fingerprint": "Fingerprint",
 			"info": "Информация",
-			"devices": "Устройства",
 			"my-devices": ""
 		},
 		"multi-member": {
@@ -495,24 +349,17 @@
 			"title": "Устройства",
 			"push": {
 				"enabled": "",
-				"not-enabled": ""
+				"not-enabled": "Известията са забранени"
 			}
 		},
 		"multi-member-settings": {
-			"header-left-button": "Търсене",
-			"header-middle-button": "Обаждане",
-			"header-right-button": "Сподели",
 			"media-button": "Медия, линкове & документи",
-			"notifications-button": "Получи известия",
 			"members-button": {
-				"title": "Участници",
-				"unknown": "Неизвестен"
+				"title": "Участници"
 			},
 			"add-member-button": "Добави участник",
 			"invite-button": "Покани чрез линк",
-			"save-button": "Запази разговора на сървъра",
-			"erase-button": "Изтрии разговора",
-			"leave-button": "Напусни групата"
+			"save-button": "Запази разговора на сървъра"
 		},
 		"add-members": {
 			"members": "Участници",
@@ -544,14 +391,8 @@
 			"input-placeholder": ""
 		},
 		"one-to-one-settings": {
-			"header-left-button": "Търсене",
-			"header-middle-button": "Обаждане",
-			"header-right-button": "Сподели",
 			"media-button": "Медия, линкове & документи",
-			"notifications-button": "Получаване на известия",
-			"mutual-button": "Споделени групи",
-			"save-button": "Запази разговора на сървъра",
-			"erase-button": "Изтрии разговора"
+			"save-button": "Запази разговора на сървъра"
 		},
 		"replicate-group-settings": {
 			"title": "Запази разговора на сървъра",
@@ -565,7 +406,6 @@
 			"camera": "Камера",
 			"files": "Файлове",
 			"microphone": "Микрофон",
-			"search-gif": "Търсене за gif",
 			"security-access": "Сигурен Достъп",
 			"security-access-desc": "Натисни тук за да отвориш настройките за да разрешид достъп до твойте",
 			"save-to-gallery": "Запази този файл в галерията",
@@ -609,7 +449,7 @@
 			"title": "",
 			"desc": ""
 		},
-		"p2p": {
+		"proximity": {
 			"title": "",
 			"android-desc": "",
 			"ios-desc": ""
@@ -636,6 +476,10 @@
 	},
 	"notification": {
 		"need-restart": {
+			"title": "",
+			"desc": ""
+		},
+		"need-restart-ble": {
 			"title": "",
 			"desc": ""
 		}
@@ -670,7 +514,6 @@
 				"action-delete": {
 					"file-exists": "",
 					"account-exists": "",
-					"directory-exists-load-error": "",
 					"fs-read-error": "",
 					"actions-title": "",
 					"action-account-manager": "",
