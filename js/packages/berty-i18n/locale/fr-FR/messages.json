@@ -3,28 +3,28 @@
 		"getstarted": {
 			"title": "PROTÉGEZ VOTRE VIE PRIVÉE",
 			"desc": "messagerie P2P gratuite et sécurisée",
-			"create-button": "",
-			"import-button": "",
-			"link-button": ""
+			"create-button": "Créer un nouveau compte",
+			"import-button": "Importer un compte",
+			"link-button": "Lier cet appareil"
 		},
 		"default-mode": {
 			"summary": {
-				"title": "",
-				"subtitle": "",
-				"first-point": "",
-				"second-point": "",
-				"back-button": "",
-				"accept-button": ""
+				"title": "Mode par défaut",
+				"subtitle": "Démarrer rapidement",
+				"first-point": "Commencer par des préréglages qui offrent un équilibre entre intimité et confort qui convient au plus grand nombre. Les nœuds Berty sont utilisés pour améliorer les performances et la communication asynchrone.",
+				"second-point": "Pour un équilibre de vie privée/confort personnalisé, sélectionnez le Mode Personnalisé.",
+				"back-button": "Retour",
+				"accept-button": "C'est parti"
 			}
 		},
 		"custom-mode": {
 			"summary": {
-				"title": "",
-				"subtitle": "",
+				"title": "Mode personnalisé",
+				"subtitle": "Ratio confort et confidentialité personnalisé",
 				"first-point": "",
 				"second-point": "",
-				"back-button": "",
-				"accept-button": ""
+				"back-button": "Retour",
+				"accept-button": "Procéder"
 			},
 			"settings": {
 				"off-grid": {
@@ -35,7 +35,7 @@
 					"mdns-button": ""
 				},
 				"routing": {
-					"title": "",
+					"title": "Routage",
 					"dht-button": "Tableau distribué de hachage",
 					"rdvp-button": ""
 				},
@@ -45,7 +45,7 @@
 					"bootstrap-button": "",
 					"replication-button": ""
 				},
-				"all-button": "",
+				"all-button": "Tout",
 				"accept-button": ""
 			}
 		},
@@ -126,20 +126,20 @@
 			"devices-button": "",
 			"accounts-button": "Comptes",
 			"network-button": "",
-			"bug-button": "",
+			"bug-button": "Soumettre un bug",
 			"about-button": "À propos de Berty"
 		},
 		"about": {
 			"faq-button": "FAQ",
 			"roadmap-button": "Roadmap",
-			"policy-button": "",
+			"policy-button": "Politique de confidentialité",
 			"license-button": ""
 		},
 		"accounts": {
 			"accounts-button": "Comptes",
-			"create-button": "",
-			"import-button": "",
-			"link-button": "",
+			"create-button": "Créer un nouveau compte",
+			"import-button": "Importer un compte",
+			"link-button": "Lier cet appareil",
 			"delete-button": ""
 		},
 		"appearance": {
