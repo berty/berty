@@ -3,50 +3,50 @@
 		"getstarted": {
 			"title": "PROTECT YOUR PRIVACY",
 			"desc": "free & secure peer-to-peer messaging",
-			"create-button": "",
-			"import-button": "",
-			"link-button": ""
+			"create-button": "Create an account",
+			"import-button": "Import an account",
+			"link-button": "Link this device"
 		},
 		"default-mode": {
 			"summary": {
-				"title": "",
-				"subtitle": "",
-				"first-point": "",
-				"second-point": "",
-				"back-button": "",
-				"accept-button": ""
+				"title": "Default Mode",
+				"subtitle": "Get Started Quickly",
+				"first-point": "Start with presets that offer a privacy/comfort balance that suits most. Berty nodes are used to improve performance and asynchronous communication.",
+				"second-point": "For a custom privacy/comfort balance, select Custom Mode.",
+				"back-button": "Back",
+				"accept-button": "Let's go"
 			}
 		},
 		"custom-mode": {
 			"summary": {
-				"title": "",
-				"subtitle": "",
-				"first-point": "",
-				"second-point": "",
-				"back-button": "",
-				"accept-button": ""
+				"title": "Custom Mode",
+				"subtitle": "Custom Privacy/Comfort Balance",
+				"first-point": "In this mode, adjust all settings individually to create the balance of privacy and comfort that works for you.",
+				"second-point": "For a turnkey experience, select Default Mode.",
+				"back-button": "Back",
+				"accept-button": "Proceed"
 			},
 			"settings": {
 				"off-grid": {
-					"title": "",
-					"ble-button": "",
-					"nearby-button": "",
-					"mc-button": "",
-					"mdns-button": ""
+					"title": "Off-Grid Communication",
+					"ble-button": "Bluetooth Low Energy",
+					"nearby-button": "Android Nearby",
+					"mc-button": "Apple Multipeer Connectivity",
+					"mdns-button": "Multicast DNS (LAN)"
 				},
 				"routing": {
-					"title": "",
-					"dht-button": "",
-					"rdvp-button": ""
+					"title": "Routing",
+					"dht-button": "Distributed Hash Table",
+					"rdvp-button": "Rendezvous Point Nodes"
 				},
 				"access": {
-					"title": "",
-					"relay-button": "",
-					"bootstrap-button": "",
-					"replication-button": ""
+					"title": "Network Accessibility",
+					"relay-button": "Relay Nodes (TURN)",
+					"bootstrap-button": "Bootstrap Nodes",
+					"replication-button": "Replication Nodes"
 				},
-				"all-button": "",
-				"accept-button": ""
+				"all-button": "All",
+				"accept-button": "Let's go"
 			}
 		},
 		"create-account": {
@@ -55,7 +55,7 @@
 			"good-to-know": {
 				"title": "Good to know:",
 				"first-point": "Your account is created locally",
-				"second-point": ""
+				"second-point": "Nickname is optional and can be changed later"
 			}
 		},
 		"generate-key": {
@@ -108,7 +108,7 @@
 				"fifth-bullet-point": "You cannot remove a member from this group"
 			},
 			"conversations": {
-				"request-sent": "",
+				"request-sent": "Request sent. Pending...",
 				"draft": "Draft: {{message}}"
 			}
 		},
@@ -119,31 +119,31 @@
 	},
 	"settings": {
 		"home": {
-			"proximity-button": "",
-			"notifications-button": "",
-			"contact-convs-button": "",
-			"appearance-button": "",
-			"devices-button": "",
-			"accounts-button": "",
-			"network-button": "",
-			"bug-button": "",
-			"about-button": ""
+			"proximity-button": "Off-Grid Communication",
+			"notifications-button": "Notifications",
+			"contact-convs-button": "Contact and conversations",
+			"appearance-button": "Appearence",
+			"devices-button": "Devices and backup",
+			"accounts-button": "Accounts",
+			"network-button": "Network",
+			"bug-button": "Submit a bug",
+			"about-button": "About Berty"
 		},
 		"about": {
-			"faq-button": "",
-			"roadmap-button": "",
-			"policy-button": "",
-			"license-button": ""
+			"faq-button": "FAQ",
+			"roadmap-button": "Roadmap",
+			"policy-button": "Privacy Policy",
+			"license-button": "Open Source Licenses"
 		},
 		"accounts": {
-			"accounts-button": "",
-			"create-button": "",
-			"import-button": "",
-			"link-button": "",
-			"delete-button": ""
+			"accounts-button": "Accounts",
+			"create-button": "Create an account",
+			"import-button": "Import an account",
+			"link-button": "Link another device",
+			"delete-button": "Delete this account"
 		},
 		"appearance": {
-			"dark-button": "",
+			"dark-button": "Dark Mode",
 			"editor-button": ""
 		},
 		"contact-convs": {
@@ -172,9 +172,9 @@
 			"name-input-label": "Name"
 		},
 		"berty-services": {
-			"title": "",
-			"desc": "",
-			"button": "",
+			"title": "Berty Services",
+			"desc": " Activating Berty Services will allow you to receive push notifications via Berty Technologies' servers and grant you access to its nodes for conversation replication.",
+			"button": "Use Berty Services",
 			"skip": "SKIP AND DO THIS LATER"
 		},
 		"delete-account": {
