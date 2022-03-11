@@ -42,7 +42,7 @@
       "bodyWithDisplayNameAndEmoji": "%[1]v reagerade med %[2]v till ditt meddelande"
     },
     "groupInvitation": {
-      "bodyWithGroupName": "Bjöd in dig till gruppen '%[1]v'"
+      "bodyWithGroupName": ""
     },
     "unknown": {
       "body": ""

@@ -3,81 +3,61 @@
 		"getstarted": {
 			"title": "",
 			"desc": "",
-			"button": ""
+			"create-button": "",
+			"import-button": "",
+			"link-button": ""
 		},
-		"select-mode": {
-			"title": "Wybierz ustawienie",
-			"change-later": "Będziesz mógł, aby zmienić to później!",
-			"performance": {
-				"title": "Wydajność",
-				"desc": "Łatwy w obsłudze - wszystkie funkcje",
-				"push-notif": "Otrzymuj powiadomienia push",
-				"offline-message": "Wiadomości offline z Bluetooth",
-				"add-contact": "Dodaj łatwo kontakty",
-				"fast-message": "Najszybsze dostarczenie wiadomości"
+		"default-mode": {
+			"summary": {
+				"title": "",
+				"subtitle": "",
+				"first-point": "",
+				"second-point": "",
+				"back-button": "",
+				"accept-button": ""
+			}
+		},
+		"custom-mode": {
+			"summary": {
+				"title": "",
+				"subtitle": "",
+				"first-point": "",
+				"second-point": "",
+				"back-button": "",
+				"accept-button": ""
 			},
-			"high-level": {
-				"title": "Pełna anonimowość",
-				"desc": "Dla bardzo ostrożnych użytkowników",
-				"disable-push-notif": "Powiadomienia push wyłączone",
-				"disable-local-peer-discovery": "Wykrywanie lokalnych peerów wyłączone",
-				"disable-local-peer-discovery-desc": "Multiemisja DNS & Bluetooth",
-				"disable-contact-request": "Prośby kontaktów wyłączone",
-				"on-same-network": "Lokalnie w tej samej sieci/wifi"
+			"settings": {
+				"off-grid": {
+					"title": "",
+					"ble-button": "",
+					"nearby-button": "",
+					"mc-button": "",
+					"mdns-button": ""
+				},
+				"routing": {
+					"title": "",
+					"dht-button": "",
+					"rdvp-button": ""
+				},
+				"access": {
+					"title": "",
+					"relay-button": "",
+					"bootstrap-button": "",
+					"replication-button": ""
+				},
+				"all-button": "",
+				"accept-button": ""
 			}
 		},
 		"create-account": {
 			"title": "Utwórz swoje konto",
-			"desc": "Nazwa to jedyna wymagana informacja",
-			"required": "Wymagane",
 			"placeholder": "",
-			"button": "UTWÓRZ MOJE KONTO",
-			"advanced": "",
-			"import-account": "",
-			"link-device": "",
-			"more": "",
 			"good-to-know": {
 				"title": "",
 				"first-point": "",
 				"second-point": ""
 			}
 		},
-		"advanced-settings": {
-			"title": "",
-			"desc": "",
-			"more-about": {
-				"title": "",
-				"first-paragraph": "",
-				"second-paragraph": "",
-				"third-paragraph": ""
-			},
-			"read-more": "",
-			"config-title": "",
-			"config-desc": "",
-			"learn-more": "",
-			"first-part": {
-				"title": "",
-				"first-button": "",
-				"second-button": "Multiemisja DNS"
-			},
-			"second-part": {
-				"title": "",
-				"first-button": "",
-				"second-button": ""
-			},
-			"third-part": {
-				"title": "Usługi",
-				"network-button": "Lista sieci",
-				"first-button": "",
-				"second-button": {
-					"title": "",
-					"placeholder": ""
-				},
-				"third-button": ""
-			},
-			"apply-changes": ""
-		},
-		"exper-setup": {},
 		"generate-key": {
 			"title": "Uruchamianie węzła Berty…",
 			"desc": "To może potrwać kilka sekund"
@@ -133,102 +113,54 @@
 			}
 		},
 		"suggestion-display-name-initial": "Kliknij tutaj, aby dodać",
-		"configurations": {
-			"network": {
-				"display-name": "Konfiguracja sieci",
-				"desc": "Kliknij tutaj, aby zakończyć konfigurację sieci"
-			},
-			"notification": {
-				"display-name": "Konfiguracja powiadomień",
-				"desc": "Kliknij tutaj, dla konfiguracji powiadomień push"
-			},
-			"replicate": {
-				"display-name": "",
-				"desc": ""
-			}
-		},
-		"network-options": {
-			"welcome-title": "Witaj w opcjach sieci",
-			"full-anon-mode": "Tryb w pełni anonimowy",
-			"simple-tor-compatible": "Kompatybilny z prostym TOR",
-			"allow-expert-mode": "Zezwól na tryb eksperta",
-			"tor-compatible": {
-				"title": "Kompatybilny z TOR",
-				"desc": "Ta konfiguracja pozwoli Ci połączyć się z siecią Tor i rozmawiać z pełnoprawnymi anonimowymi użytkownikami, nie będąc w trybie ekstremalnie anonimowym."
-			},
-			"full-anon": {
-				"title": "Tryb w pełni anonimowy",
-				"desc": "Ta konfiguracja opiera się na ustawieniach radykalnych, zawierająca parametry sieci:",
-				"no-ip": "Brak ip",
-				"no-mc": "Brak mc",
-				"tor-only": "Tylko Tor"
-			},
-			"save": "ZAPISZ",
-			"skip": "POMIŃ I ZRÓB TO PÓŹNIEJ"
-		},
 		"scan": {
 			"title": ""
 		}
 	},
 	"settings": {
 		"home": {
-			"check-list": {
-				"title": "",
-				"avatar": {
-					"title": "",
-					"desc": ""
-				},
-				"berty-services": {
-					"title": "",
-					"desc": ""
-				},
-				"contact": {
-					"title": "",
-					"desc": ""
-				},
-				"group": {
-					"title": "",
-					"desc": ""
-				},
-				"message": {
-					"title": "",
-					"desc": ""
-				},
-				"ble-message": {
-					"title": "",
-					"desc": ""
-				}
-			},
-			"edit-profile": "Edytuj profil",
-			"share-link": "",
-			"create-group": "",
-			"create-new-account": "Utwórz nowe konto"
+			"proximity-button": "",
+			"notifications-button": "Powiadomienia",
+			"contact-convs-button": "",
+			"appearance-button": "",
+			"devices-button": "",
+			"accounts-button": "Konta",
+			"network-button": "",
+			"bug-button": "",
+			"about-button": "O Berty"
 		},
-		"network-map": {
-			"title": "Lista sieci",
-			"online-peers": "Peery online"
+		"about": {
+			"faq-button": "",
+			"roadmap-button": "",
+			"policy-button": "",
+			"license-button": ""
 		},
-		"mode": {
-			"title": "Ustawienia",
-			"desc": "Dostosuj wszystko, aby uzyskać aplikację, która pasuje do Twoich potrzeb",
-			"in-app-notifications": "",
-			"dark-mode-button": "Tryb ciemny",
-			"devtools": "Narzędzia Deweloperskie",
-			"network-config": "",
-			"notification-file-saved": {
-				"title": "",
-				"desc": ""
-			},
-			"receive-contact-requests-button": "Otrzymuj prośby o kontakt",
-			"external-services-button": "Zewnętrzne usługi",
-			"auto-replicate-button": "Automatyczna replikacja",
-			"auto-replicate-button-unavailable": "",
-			"blocked-contacts-button": {
-				"title": "Zablokowane kontakty",
-				"tag": "zablokowane"
-			},
-			"delete-account-button": "Usuń moje konto",
-			"backup-account-button": "Kopia zapasowa mojego konta"
+		"accounts": {
+			"accounts-button": "Konta",
+			"create-button": "",
+			"import-button": "",
+			"link-button": "",
+			"delete-button": ""
+		},
+		"appearance": {
+			"dark-button": "",
+			"editor-button": ""
+		},
+		"contact-convs": {
+			"reset-button": "",
+			"request-button": ""
+		},
+		"network": {
+			"ble-button": "",
+			"mc-button": "",
+			"nearby-button": "",
+			"mdns-button": "Multiemisja DNS",
+			"memo-cell-button": "",
+			"medias-cell-button": "",
+			"dht-button": "",
+			"rdvp-button": "",
+			"relay-button": "",
+			"bootstrap-button": ""
 		},
 		"edit-profile": {
 			"title": "Edytuj mój profil",
@@ -239,51 +171,8 @@
 			"name-input-placeholder": "Nazwa...",
 			"name-input-label": "Nazwa"
 		},
-		"notifications": {
-			"title": "Powiadomienia",
-			"enabled-desc": "Aktywowałeś powiadomienia!",
-			"disabled-desc": "Nie aktywowałeś powiadomień dla tej aplikacji",
-			"activate-button": "Aktywuj powiadomienia",
-			"contact-request-button": {
-				"title": "Prośba o kontakt",
-				"desc": "Otrzymuj powiadomienie za każdym razem, gdy ktoś wyśle Ci prośbę o kontakt"
-			},
-			"messages-notifications-button": {
-				"title": "Powiadomienia wiadomości",
-				"display-button": "Pokaż powiadomienia",
-				"preview-button": "Podgląd wiadomości",
-				"sound-button": "Dźwięk",
-				"exceptions-button": {
-					"title": "Wyjątki",
-					"preview-value": "Dodaj"
-				}
-			},
-			"group-notifications-button": {
-				"title": "Powiadomienia grup",
-				"display-button": "Pokaż powiadomienia",
-				"preview-button": "Podgląd wiadomości",
-				"sound-button": "Dźwięk",
-				"exceptions-button": {
-					"title": "Wyjątki",
-					"tag": "{{count}} wyjątek"
-				}
-			}
-		},
-		"bluetooth": {
-			"title": "Bluetooth",
-			"desc": "",
-			"activate-button": ""
-		},
-		"mc": {
-			"activate-button": "Aktywuj połączenia z wieloma peerami"
-		},
-		"nearby": {
-			"activate-button": "Aktywuj Android Nearby"
-		},
 		"berty-services": {
-			"header": "",
 			"title": "",
-			"recommended": "Zalecane",
 			"desc": "",
 			"button": "",
 			"skip": "POMIŃ I ZRÓB TO PÓŹNIEJ"
@@ -295,42 +184,13 @@
 			"cancel-button": "ANULUJ",
 			"delete-button": "USUŃ"
 		},
-		"help": {
-			"title": "Pomoc",
-			"security-privacy-button": {
-				"title": "Bezpieczeństwo i prywatność",
-				"desc": "Zachowaj bezpieczeństwo swoich danych i prywatność"
-			},
-			"updates-button": "Aktualizacje",
-			"about-button": "O Berty",
-			"account-button": "Konto i Berty ID",
-			"contact-button": "Kontakty i prośby",
-			"message-button": "Wiadomości",
-			"group-button": "Grupy",
-			"settings-button": "Ustawienia",
-			"ask-button": "Zadaj pytanie",
-			"report-button": "Zgłoś błąd"
-		},
-		"about": {
-			"title": "O Berty",
-			"top-left-button": "Prywatna i bezpieczna",
-			"top-right-button": "Sieć peer to peer",
-			"bottom-left-button": "Internet lub dane nie są wymagane",
-			"bottom-right-button": "Nie jest wymagane zaufanie do sieci",
-			"terms-button": "Warunki użytkowania",
-			"privacy-button": "Polityka prywatności",
-			"software-button": "Licencja oprogramowania",
-			"contact-button": "Skontaktuj się z nami",
-			"website-button": "Strona internetowa"
-		},
-		"updates": {
-			"title": "Aktualizacje aplikacji",
-			"current-tag": "Bieżąca"
-		},
 		"faq": {
 			"title": ""
 		},
 		"roadmap": {
+			"title": ""
+		},
+		"privacy-policy": {
 			"title": ""
 		},
 		"devtools": {
@@ -338,13 +198,8 @@
 			"header-left-button": "Informacje o urządzeniu",
 			"header-middle-button": "Generuj fałszywe dane",
 			"header-right-button": "Zrestartuj daemon",
-			"theme-editor": "",
 			"simulate-button": "Symuluj błąd strumienia",
 			"simulate-js-error-button": "Symuluj błąd JavaScript",
-			"tor-button": "Tor {{option}}",
-			"tor-optional-option": "opcjonalnie",
-			"tor-required-option": "wymagane",
-			"tor-disabled-option": "wyłączone",
 			"system-info-button": "Informacje systemowe",
 			"debug-button": "Debuguj",
 			"log-button": {
@@ -379,7 +234,6 @@
 				"test": "Test, ",
 				"tried": "✔ Próbowano wysłać do {{length}} kontaktów"
 			},
-			"trigger-crashlytics-button": "",
 			"tyber-attach": "",
 			"tyber-host-button": {
 				"name": "",
@@ -401,16 +255,12 @@
 		},
 		"add-dev-conversations": {
 			"title": "Dodaj rozmowy deweloperskie",
-			"add": "Dodaj {{name}}",
-			"tag-bot": "Bot",
-			"tag-contact": "Kontakt",
-			"tag-conversation": "Grupa"
+			"add": "Dodaj {{name}}"
 		},
 		"ipfs-webui": {
 			"title": "IPFS WebUI"
 		},
 		"theme-editor": {
-			"title": "",
 			"randomize": "",
 			"save": "",
 			"export": "",
@@ -418,13 +268,21 @@
 			"import": "",
 			"delete": "",
 			"bad-format-title": "",
-			"bad-format-desc": ""
+			"bad-format-desc": "",
+			"notification-file-saved": {
+				"title": "",
+				"desc": ""
+			}
 		},
 		"my-berty-ID": {
 			"title": "",
 			"qr": "QR",
-			"fingerprint": "Odcisk palca",
-			"devices": "Urządzenia"
+			"fingerprint": "Odcisk palca"
+		},
+		"share": {
+			"invite": "",
+			"tap-to-scan": "",
+			"create-group": ""
 		}
 	},
 	"modals": {
@@ -463,12 +321,8 @@
 		"sending": "Wysyłanie...",
 		"sent": "",
 		"contact-settings": {
-			"mark-button": "Zaznacz jako zweryfikowane",
-			"block-button": "Zablokuj kontakt",
-			"delete-button": "Usuń kontakt",
 			"fingerprint": "Odcisk palca",
 			"info": "Informacje",
-			"devices": "Urządzenia",
 			"my-devices": ""
 		},
 		"multi-member": {
@@ -495,24 +349,17 @@
 			"title": "Urządzenia",
 			"push": {
 				"enabled": "",
-				"not-enabled": ""
+				"not-enabled": "Powiadomienia push wyłączone"
 			}
 		},
 		"multi-member-settings": {
-			"header-left-button": "Szukaj",
-			"header-middle-button": "Połączenie",
-			"header-right-button": "Udostępnij",
 			"media-button": "Multimedia, linki i dokumenty",
-			"notifications-button": "Otrzymuj powiadomienia",
 			"members-button": {
-				"title": "Członkowie",
-				"unknown": "Nieznane"
+				"title": "Członkowie"
 			},
 			"add-member-button": "Dodaj członka",
 			"invite-button": "Zaproś przez link",
-			"save-button": "Zapisz konwersację na serwerze",
-			"erase-button": "Usuń konwersację",
-			"leave-button": "Opuść grupę"
+			"save-button": "Zapisz konwersację na serwerze"
 		},
 		"add-members": {
 			"members": "Członkowie",
@@ -544,14 +391,8 @@
 			"input-placeholder": "Wpisz tutaj..."
 		},
 		"one-to-one-settings": {
-			"header-left-button": "Szukaj",
-			"header-middle-button": "Połączenie",
-			"header-right-button": "Udostępnij",
 			"media-button": "Multimedia, linki i dokumenty",
-			"notifications-button": "Otrzymuj powiadomienia",
-			"mutual-button": "Wspólne grupy",
-			"save-button": "Zapisz konwersację na serwerze",
-			"erase-button": "Usuń konwersację"
+			"save-button": "Zapisz konwersację na serwerze"
 		},
 		"replicate-group-settings": {
 			"title": "Zarejestruj konwersację na serwerze",
@@ -565,7 +406,6 @@
 			"camera": "Aparat",
 			"files": "Pliki",
 			"microphone": "Mikrofon",
-			"search-gif": "Wyszukaj gif",
 			"security-access": "Dostęp do zabezpieczeń",
 			"security-access-desc": "Dotknij tutaj, żeby otworzyć ustawienie, aby zezwolić na dostęp do Twojego",
 			"save-to-gallery": "Zapisz ten plik w galerii",
@@ -609,7 +449,7 @@
 			"title": "",
 			"desc": ""
 		},
-		"p2p": {
+		"proximity": {
 			"title": "",
 			"android-desc": "",
 			"ios-desc": ""
@@ -636,6 +476,10 @@
 	},
 	"notification": {
 		"need-restart": {
+			"title": "",
+			"desc": ""
+		},
+		"need-restart-ble": {
 			"title": "",
 			"desc": ""
 		}
@@ -670,7 +514,6 @@
 				"action-delete": {
 					"file-exists": "Konto {{accountId}} nie istnieje, jednak plik ma taką nazwę.",
 					"account-exists": "Konto {{accountId}} aktualnie istnieje.",
-					"directory-exists-load-error": "Konto {{accountId}} nie istnieje, jednak katalog ma taką nazwę.",
 					"fs-read-error": "Błąd podczas uzyskiwania informacji FS o koncie",
 					"actions-title": "Co powinniśmy zrobić?",
 					"action-account-manager": "Usuń go poprzez menedżera kont",

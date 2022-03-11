@@ -3,81 +3,61 @@
 		"getstarted": {
 			"title": "保护您的隐私！",
 			"desc": "免费和安全的点对点消息传递",
-			"button": "发现"
+			"create-button": "创建帐户",
+			"import-button": "导入帐户",
+			"link-button": "连接此设备"
 		},
-		"select-mode": {
-			"title": "选择预设",
-			"change-later": "你可以选择稍后更改！",
-			"performance": {
-				"title": "性能",
-				"desc": "简单使用 - 所有功能",
-				"push-notif": "接收新消息通知",
-				"offline-message": "蓝牙离线消息",
-				"add-contact": "添加联系人",
-				"fast-message": "快速发送消息"
+		"default-mode": {
+			"summary": {
+				"title": "默认模式",
+				"subtitle": "快速开始",
+				"first-point": "从提供最适合的隐私/舒适平衡的预设开始。 Berty 节点用于提高性能和异步通信。",
+				"second-point": "如需自定义隐私/舒适度平衡，请选择自定义模式。",
+				"back-button": "返回",
+				"accept-button": "开始"
+			}
+		},
+		"custom-mode": {
+			"summary": {
+				"title": "自定义模式",
+				"subtitle": "自定义隐私/舒适度平衡",
+				"first-point": "在此模式下，单独调整所有设置以创建适合您的隐私和舒适的平衡。",
+				"second-point": "要获得turnkey experience，请选择默认模式。",
+				"back-button": "返回",
+				"accept-button": "继续"
 			},
-			"high-level": {
-				"title": "完全匿名",
-				"desc": "对于谨慎的用户",
-				"disable-push-notif": "已禁用新消息通知",
-				"disable-local-peer-discovery": "本地对等用户发现已禁用",
-				"disable-local-peer-discovery-desc": "多点广播DNS和蓝牙",
-				"disable-contact-request": "已禁用联系人请求",
-				"on-same-network": "本地网络/wifi"
+			"settings": {
+				"off-grid": {
+					"title": "离线通讯",
+					"ble-button": "低功耗蓝牙",
+					"nearby-button": "附近的安卓",
+					"mc-button": "苹果多点连接",
+					"mdns-button": "多播 DNS (LAN)"
+				},
+				"routing": {
+					"title": "路由",
+					"dht-button": "分布式哈希表",
+					"rdvp-button": "Rendezvous 节点"
+				},
+				"access": {
+					"title": "网络辅助",
+					"relay-button": "中继节点 (TURN)",
+					"bootstrap-button": "引导节点",
+					"replication-button": "复制节点"
+				},
+				"all-button": "全部",
+				"accept-button": "开始"
 			}
 		},
 		"create-account": {
 			"title": "创建您的帐号",
-			"desc": "名称是唯一需要的信息",
-			"required": "必需的",
 			"placeholder": "选择您的昵称",
-			"button": "创建我的帐户",
-			"advanced": "高级选项",
-			"import-account": "导入账户",
-			"link-device": "连接设备",
-			"more": "更多信息",
 			"good-to-know": {
 				"title": "知道：",
 				"first-point": "您的帐户已在本地创建",
-				"second-point": "昵称是可选的，可以编辑"
+				"second-point": "昵称是可选的，可以稍后更改"
 			}
 		},
-		"advanced-settings": {
-			"title": "高级设置",
-			"desc": "查找文档并创建您自己的配置。",
-			"more-about": {
-				"title": "",
-				"first-paragraph": "",
-				"second-paragraph": "",
-				"third-paragraph": ""
-			},
-			"read-more": "阅读更多关于高级设置的信息",
-			"config-title": "自定义配置",
-			"config-desc": "应用程序配置的 3 个步骤。 现在自定义一切！",
-			"learn-more": "了解更多",
-			"first-part": {
-				"title": "邻近",
-				"first-button": "低功耗蓝牙",
-				"second-button": "多播DNS"
-			},
-			"second-part": {
-				"title": "点对点",
-				"first-button": "分布式哈希表",
-				"second-button": "TOR 激活"
-			},
-			"third-part": {
-				"title": "服务",
-				"network-button": "网络列表",
-				"first-button": "推送通知",
-				"second-button": {
-					"title": "设置您自己的节点",
-					"placeholder": "输入服务器地址"
-				},
-				"third-button": "选择认证节点"
-			},
-			"apply-changes": "应用更改"
-		},
-		"exper-setup": {},
 		"generate-key": {
 			"title": "正在启动 Berty 节点…",
 			"desc": "这可能需要几秒钟"
@@ -89,7 +69,7 @@
 		},
 		"web-views": {
 			"title": "WebViews",
-			"desc": "",
+			"desc": "我们准备好加载WebView。你还想打开它吗？",
 			"first-button": "取消",
 			"second-button": "是"
 		}
@@ -128,107 +108,59 @@
 				"fifth-bullet-point": "您不能从此群组中删除成员"
 			},
 			"conversations": {
-				"request-sent": "请求已发送，等待中...",
+				"request-sent": "请求已发送，正在等待...",
 				"draft": "草稿: {{message}}"
 			}
 		},
 		"suggestion-display-name-initial": "单击这里添加",
-		"configurations": {
-			"network": {
-				"display-name": "网络设置",
-				"desc": "点击此处完成网络设置"
-			},
-			"notification": {
-				"display-name": "通知设置",
-				"desc": "点击此处查看通知设置"
-			},
-			"replicate": {
-				"display-name": "P2P 复制",
-				"desc": "设置复制服务"
-			}
-		},
-		"network-options": {
-			"welcome-title": "欢迎使用网络设置",
-			"full-anon-mode": "完全匿名模式",
-			"simple-tor-compatible": "简单兼容TOR",
-			"allow-expert-mode": "允许专家模式",
-			"tor-compatible": {
-				"title": "兼容TOR",
-				"desc": "此配置将允许您连接到Tor网络并与完全匿名的用户进行讨论，而无需处于极端匿名模式"
-			},
-			"full-anon": {
-				"title": "完全匿名模式",
-				"desc": "此配置基于基本预设，提供极为谨慎的网络参数:",
-				"no-ip": "无 ip",
-				"no-mc": "无 mc",
-				"tor-only": "仅Tor"
-			},
-			"save": "保存",
-			"skip": "跳过并稍后再做"
-		},
 		"scan": {
 			"title": "扫描二维码"
 		}
 	},
 	"settings": {
 		"home": {
-			"check-list": {
-				"title": "欢迎检查清单 {{tasksDone}}/{{totalTasks}}",
-				"avatar": {
-					"title": "更改您的头像",
-					"desc": ""
-				},
-				"berty-services": {
-					"title": "激活 Berty 服务",
-					"desc": "通过使用由 Berty Tech 非营利机构提供的服务，提高您的网络性能。"
-				},
-				"contact": {
-					"title": "同步联系人",
-					"desc": ""
-				},
-				"group": {
-					"title": "加入或创建一个组",
-					"desc": "让我们创建或加入您的第一个Berty小组！"
-				},
-				"message": {
-					"title": "发送信息",
-					"desc": "对联系人说“你好，世界”！"
-				},
-				"ble-message": {
-					"title": "在没有互联网的情况下发送消息",
-					"desc": ""
-				}
-			},
-			"edit-profile": "编辑个人信息",
-			"share-link": "分享链接",
-			"create-group": "创建群組",
-			"create-new-account": "创建新账号"
+			"proximity-button": "离线通讯",
+			"notifications-button": "消息通知",
+			"contact-convs-button": "联系和对话",
+			"appearance-button": "外观",
+			"devices-button": "设备和备份",
+			"accounts-button": "账户",
+			"network-button": "网络",
+			"bug-button": "提交错误",
+			"about-button": "关于 Berty"
 		},
-		"network-map": {
-			"title": "网络列表",
-			"online-peers": "在线节点"
+		"about": {
+			"faq-button": "常见问题",
+			"roadmap-button": "路线图",
+			"policy-button": "隐私政策",
+			"license-button": "开源许可证"
 		},
-		"mode": {
-			"title": "设置",
-			"desc": "所有功能皆可自定义",
-			"in-app-notifications": "应用内部通知",
-			"dark-mode-button": "暗色模式",
-			"devtools": "开发工具",
-			"network-config": "网络配置",
-			"notification-file-saved": {
-				"title": "数据已保存！",
-				"desc": "在下载目录中可用"
-			},
-			"receive-contact-requests-button": "接收联系人请求",
-			"external-services-button": "外部服务",
-			"auto-replicate-button": "自动复制",
-			"auto-replicate-button-unavailable": "您必须先注册至少一个复制服务器",
-			"blocked-contacts-button": {
-				"title": "已屏蔽的联系人",
-				"tag": "已屏蔽"
-			},
-			"delete-account-button": "删除我的帐户",
-			"backup-account-button": "备份我的帐户"
+		"accounts": {
+			"accounts-button": "账户",
+			"create-button": "创建帐户",
+			"import-button": "导入帐户",
+			"link-button": "连接其他设备",
+			"delete-button": "删除此帐户"
+		},
+		"appearance": {
+			"dark-button": "暗色模式",
+			"editor-button": "主题编辑器"
+		},
+		"contact-convs": {
+			"reset-button": "重置我的联系链接/二维码",
+			"request-button": "允许收到联系人请求"
+		},
+		"network": {
+			"ble-button": "低功耗蓝牙",
+			"mc-button": "多节点连接",
+			"nearby-button": "附近的安卓",
+			"mdns-button": "多播DNS",
+			"memo-cell-button": "在蜂窝上加载语音备忘录",
+			"medias-cell-button": "在蜂窝网络上加载媒体",
+			"dht-button": "分布式哈希表",
+			"rdvp-button": "Rendezvous 节点",
+			"relay-button": "中继节点",
+			"bootstrap-button": "引导节点"
 		},
 		"edit-profile": {
 			"title": "编辑我的资料",
@@ -239,52 +171,9 @@
 			"name-input-placeholder": "名",
 			"name-input-label": "名称"
 		},
-		"notifications": {
-			"title": "消息通知",
-			"enabled-desc": "您已激活通知！",
-			"disabled-desc": "您还没有激活此应用的通知",
-			"activate-button": "启用通知",
-			"contact-request-button": {
-				"title": "联系人请求",
-				"desc": "每次有人向您发送联系人请求时都会收到通知"
-			},
-			"messages-notifications-button": {
-				"title": "消息通知",
-				"display-button": "显示通知",
-				"preview-button": "预览信息",
-				"sound-button": "提示音",
-				"exceptions-button": {
-					"title": "例外",
-					"preview-value": "添加"
-				}
-			},
-			"group-notifications-button": {
-				"title": "群组通知",
-				"display-button": "显示通知",
-				"preview-button": "预览信息",
-				"sound-button": "提示音",
-				"exceptions-button": {
-					"title": "例外",
-					"tag": "{{count}} 个例外"
-				}
-			}
-		},
-		"bluetooth": {
-			"title": "蓝牙",
-			"desc": "蓝牙允许您通过直接连接您的设备与附近的对等设备来使用Berty交换消息，而无需访问互联网",
-			"activate-button": "激活蓝牙"
-		},
-		"mc": {
-			"activate-button": "激活多节点连接"
-		},
-		"nearby": {
-			"activate-button": "激活附近的 Android 设备"
-		},
 		"berty-services": {
-			"header": "活跃的 Berty 服务",
 			"title": "Berty 服务",
-			"recommended": "推荐的",
-			"desc": "",
+			"desc": " 激活 Berty 服务将允许您通过 Berty Technologies 服务器接收推送通知，并授权您访问其节点以复制对话。",
 			"button": "使用 Berty 服务",
 			"skip": "跳过并稍后再做"
 		},
@@ -295,56 +184,22 @@
 			"cancel-button": "取消",
 			"delete-button": "删除"
 		},
-		"help": {
-			"title": "帮助",
-			"security-privacy-button": {
-				"title": "安全与隐私",
-				"desc": "保护您的数据和隐私"
-			},
-			"updates-button": "更新",
-			"about-button": "关于 Berty",
-			"account-button": "账户 与 Berty ID",
-			"contact-button": "联系人与请求",
-			"message-button": "消息",
-			"group-button": "组",
-			"settings-button": "设置",
-			"ask-button": "提问题",
-			"report-button": "报告 bug"
-		},
-		"about": {
-			"title": "关于 Berty",
-			"top-left-button": "隐私与安全",
-			"top-right-button": "点对点网络",
-			"bottom-left-button": "无需互联网或移动流量",
-			"bottom-right-button": "无需可信的安全网络",
-			"terms-button": "使用条款",
-			"privacy-button": "隐私策略",
-			"software-button": "软件许可",
-			"contact-button": "联系我们",
-			"website-button": "网站"
-		},
-		"updates": {
-			"title": "应用更新",
-			"current-tag": "当前的"
-		},
 		"faq": {
 			"title": "常见问题"
 		},
 		"roadmap": {
 			"title": "路线图"
 		},
+		"privacy-policy": {
+			"title": "隐私政策"
+		},
 		"devtools": {
 			"title": "开发工具",
 			"header-left-button": "设备信息",
 			"header-middle-button": "生成伪数据",
 			"header-right-button": "重启守护进程",
-			"theme-editor": "外观与主题编辑器",
 			"simulate-button": "模拟流错误",
 			"simulate-js-error-button": "模拟 JavaScript 错误",
-			"tor-button": "Tor{{option}}",
-			"tor-optional-option": "可选",
-			"tor-required-option": "必需的",
-			"tor-disabled-option": "已禁用",
 			"system-info-button": "系统信息",
 			"debug-button": "Debug",
 			"log-button": {
@@ -379,7 +234,6 @@
 				"test": "测试， ",
 				"tried": ": very_check_mark: 正在尝试向 {{length}} 联系人发送"
 			},
-			"trigger-crashlytics-button": "触发崩溃问题",
 			"tyber-attach": "Tyber 附加到 {{host}}",
 			"tyber-host-button": {
 				"name": "Tyber",
@@ -401,30 +255,34 @@
 		},
 		"add-dev-conversations": {
 			"title": "添加开发者会话",
-			"add": "添加 {{name}}",
-			"tag-bot": "机器人",
-			"tag-contact": "联系人",
-			"tag-conversation": "组"
+			"add": "添加 {{name}}"
 		},
 		"ipfs-webui": {
 			"title": "IPFS WebUI"
 		},
 		"theme-editor": {
-			"title": "主题编辑器",
 			"randomize": "生成主题",
 			"save": "保存主题",
 			"export": "将选定主题导出为文件",
 			"share": "将选定主题作为文件分享",
 			"import": "导入主题文件",
-			"delete": "",
-			"bad-format-title": "",
-			"bad-format-desc": ""
+			"delete": "删除所有非默认主题",
+			"bad-format-title": "主题格式错误",
+			"bad-format-desc": "主题文件格式错误",
+			"notification-file-saved": {
+				"title": "数据已保存！",
+				"desc": "在下载目录中可用"
+			}
 		},
 		"my-berty-ID": {
 			"title": "我的 Berty ID",
 			"qr": "二维码",
-			"fingerprint": "指纹",
-			"devices": "设备"
+			"fingerprint": "指纹"
+		},
+		"share": {
+			"invite": "邀请",
+			"tap-to-scan": "点击扫描",
+			"create-group": "创建群組"
 		}
 	},
 	"modals": {
@@ -448,7 +306,7 @@
 			"info": "信息",
 			"devices": "设备",
 			"join": "加入此群组",
-			"password-label": "",
+			"password-label": "输入群组密码",
 			"password-placeholder": "密码..."
 		},
 		"save-theme": {
@@ -463,56 +321,45 @@
 		"sending": "正在发送...",
 		"sent": "已发送",
 		"contact-settings": {
-			"mark-button": "标记为已验证",
-			"block-button": "屏蔽联系人",
-			"delete-button": "删除联系人",
 			"fingerprint": "指纹",
 			"info": "信息",
-			"devices": "设备",
 			"my-devices": "我的设备"
 		},
 		"multi-member": {
 			"input-placeholder": "在此输入..."
 		},
 		"push-notifications": {
-			"enable": "",
-			"enabled": "",
-			"unsupported": "",
-			"check-device-settings": "",
+			"enable": "开启推送通知",
+			"enabled": "已启用推送通知",
+			"unsupported": "不支持通知",
+			"check-device-settings": "此对话设置为接收推送通知，但您设备的系统设置中已禁用通知",
 			"warning-disable": {
 				"title": "您想要激活此功能吗？",
-				"subtitle": "",
+				"subtitle": "开启后，无法为特定对话禁用推送通知。",
 				"accept": "启用",
 				"refuse": "跳过"
 			},
-			"why-cant-disable": "",
+			"why-cant-disable": "无法禁用每个对话的推送通知。",
 			"errors": {
-				"no-token": "",
-				"no-server": ""
+				"no-token": "您的设备与推送通知不兼容",
+				"no-server": "您必须先注册一个推送中继"
 			}
 		},
 		"devices": {
 			"title": "设备",
 			"push": {
-				"enabled": "",
-				"not-enabled": ""
+				"enabled": "已启用推送通知",
+				"not-enabled": "已禁用新消息通知"
 			}
 		},
 		"multi-member-settings": {
-			"header-left-button": "搜索",
-			"header-middle-button": "呼叫",
-			"header-right-button": "分享",
 			"media-button": "媒体、 链接和文档",
-			"notifications-button": "接收新消息通知",
 			"members-button": {
-				"title": "成员",
-				"unknown": "未知的"
+				"title": "成员"
 			},
 			"add-member-button": "添加成员",
 			"invite-button": "通过链接邀请",
-			"save-button": "在服务器上保存对话",
-			"erase-button": "清除对话",
-			"leave-button": "离开群组"
+			"save-button": "在服务器上保存对话"
 		},
 		"add-members": {
 			"members": "成员",
@@ -525,14 +372,14 @@
 		"one-to-one": {
 			"contact-request-box": {
 				"title": "联系人请求",
-				"group-invitation": "",
+				"group-invitation": "群组链接",
 				"refuse-button": "拒绝",
 				"accept-button": "接受",
 				"accepted-button": "已接受",
-				"error": "",
-				"you-invited": "",
-				"this-contact": "",
-				"to-a-group": ""
+				"error": "将您添加到群组时出错☹️ 我们的错误！",
+				"you-invited": "你已邀请",
+				"this-contact": "此联系人",
+				"to-a-group": "到一个群组！💌"
 			},
 			"infos-chat": {
 				"connection-confirmed": "👋 Berty 连接已确认! 🎉",
@@ -544,14 +391,8 @@
 			"input-placeholder": "在此输入..."
 		},
 		"one-to-one-settings": {
-			"header-left-button": "搜索",
-			"header-middle-button": "呼叫",
-			"header-right-button": "分享",
 			"media-button": "媒体、 链接和文档",
-			"notifications-button": "接收新消息通知",
-			"mutual-button": "相互组",
-			"save-button": "在服务器上保存对话",
-			"erase-button": "清除对话"
+			"save-button": "在服务器上保存对话"
 		},
 		"replicate-group-settings": {
 			"title": "在服务器上注册会话",
@@ -565,7 +406,6 @@
 			"camera": "摄像头",
 			"files": "文件",
 			"microphone": "麦克风",
-			"search-gif": "搜索 gif图",
 			"security-access": "安全访问",
 			"security-access-desc": "点击此处以设置您的访问权限",
 			"save-to-gallery": "将此文件保存到相册",
@@ -590,7 +430,7 @@
 			"show-less": "显示剩余"
 		},
 		"emojis": {
-			"matching": ""
+			"matching": "表情符号匹配"
 		}
 	},
 	"audio": {
@@ -609,22 +449,22 @@
 			"title": "推送通知",
 			"desc": "Berty app 需要您的许可才能向您发送本地或推送通知。这将允许您在收到消息时收到通知。"
 		},
-		"p2p": {
+		"proximity": {
 			"title": "蓝牙消息",
 			"android-desc": "要通过蓝牙离线交换消息，即使应用程序在后台，Android API也需要授予位置权限。我们不会以任何方式使用您的位置数据。",
 			"ios-desc": "要通过蓝牙离线交换消息，iOS API需要授予权限。"
 		},
 		"camera": {
 			"title": "摄像头",
-			"desc": ""
+			"desc": "是否要授权相机拍照或扫描二维码？"
 		},
 		"audio": {
 			"title": "音频消息",
 			"desc": "若要向您的联系人发送音频信息，您需要允许Berty 应用程序获得麦克风权限。"
 		},
 		"gallery": {
-			"title": "",
-			"desc": ""
+			"title": "图片消息",
+			"desc": "要将图像发送给您的联系人，您必须授权 Berty 访问存储在您设备上的照片和其他媒体。"
 		},
 		"button-labels": {
 			"allow": "允许",
@@ -636,8 +476,12 @@
 	},
 	"notification": {
 		"need-restart": {
-			"title": "",
-			"desc": "对于此类通知，您必须重新启动应用程序以保存这些内容！"
+			"title": "需要重新启动",
+			"desc": "重新启动 Berty 以保存您的数据并启用通知！"
+		},
+		"need-restart-ble": {
+			"title": "需要重新启动",
+			"desc": "重启 Berty 并在系统设置中启用蓝牙！"
 		}
 	},
 	"error": {
@@ -670,7 +514,6 @@
 				"action-delete": {
 					"file-exists": "帐户 {{accountId}} 不存在，但文件有此名称。",
 					"account-exists": "帐户 {{accountId}} 当前存在。",
-					"directory-exists-load-error": "帐户 {{accountId}} 不存在，但目录有此名称。",
 					"fs-read-error": "获取有关帐户的FS信息时出错",
 					"actions-title": "我们应该怎么做？",
 					"action-account-manager": "通过帐户管理器删除",

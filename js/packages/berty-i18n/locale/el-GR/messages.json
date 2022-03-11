@@ -3,81 +3,61 @@
 		"getstarted": {
 			"title": "",
 			"desc": "",
-			"button": ""
+			"create-button": "",
+			"import-button": "",
+			"link-button": ""
 		},
-		"select-mode": {
-			"title": "",
-			"change-later": "",
-			"performance": {
-				"title": "Απόδοση",
-				"desc": "Εύκολο στη χρήση - Όλες οι δυνατότητες",
-				"push-notif": "Λήψη ειδοποιήσεων",
-				"offline-message": "",
-				"add-contact": "Εύκολη προσθήκη επαφών",
-				"fast-message": "Ταχύτερη παράδοση μηνυμάτων"
-			},
-			"high-level": {
+		"default-mode": {
+			"summary": {
 				"title": "",
-				"desc": "",
-				"disable-push-notif": "Προώθηση ειδοποιήσεων ανενεργές",
-				"disable-local-peer-discovery": "Το τοπικό peer είναι απενεργοποιημένο",
-				"disable-local-peer-discovery-desc": "",
-				"disable-contact-request": "Τα αιτήματα επαφής απενεργοποιήθηκαν",
-				"on-same-network": ""
+				"subtitle": "",
+				"first-point": "",
+				"second-point": "",
+				"back-button": "",
+				"accept-button": ""
+			}
+		},
+		"custom-mode": {
+			"summary": {
+				"title": "",
+				"subtitle": "",
+				"first-point": "",
+				"second-point": "",
+				"back-button": "",
+				"accept-button": ""
+			},
+			"settings": {
+				"off-grid": {
+					"title": "",
+					"ble-button": "",
+					"nearby-button": "",
+					"mc-button": "",
+					"mdns-button": ""
+				},
+				"routing": {
+					"title": "",
+					"dht-button": "",
+					"rdvp-button": ""
+				},
+				"access": {
+					"title": "",
+					"relay-button": "",
+					"bootstrap-button": "",
+					"replication-button": ""
+				},
+				"all-button": "",
+				"accept-button": ""
 			}
 		},
 		"create-account": {
 			"title": "Δημιουργία λογαριασμού",
-			"desc": "Απαιτείται μόνο το όνομα",
-			"required": "Απαιτείται",
 			"placeholder": "",
-			"button": "ΔΗΜΙΟΥΡΓΙΑ ΛΟΓΑΡΙΑΣΜΟΥ",
-			"advanced": "",
-			"import-account": "",
-			"link-device": "",
-			"more": "",
 			"good-to-know": {
 				"title": "",
 				"first-point": "",
 				"second-point": ""
 			}
 		},
-		"advanced-settings": {
-			"title": "",
-			"desc": "",
-			"more-about": {
-				"title": "",
-				"first-paragraph": "",
-				"second-paragraph": "",
-				"third-paragraph": ""
-			},
-			"read-more": "",
-			"config-title": "",
-			"config-desc": "",
-			"learn-more": "",
-			"first-part": {
-				"title": "",
-				"first-button": "",
-				"second-button": ""
-			},
-			"second-part": {
-				"title": "",
-				"first-button": "",
-				"second-button": ""
-			},
-			"third-part": {
-				"title": "Υπηρεσίες",
-				"network-button": "",
-				"first-button": "",
-				"second-button": {
-					"title": "",
-					"placeholder": ""
-				},
-				"third-button": ""
-			},
-			"apply-changes": ""
-		},
-		"exper-setup": {},
 		"generate-key": {
 			"title": "Έναρξη του κόμβου Berty…",
 			"desc": "Αυτό μπορεί να διαρκέσει μερικά δευτερόλεπτα"
@@ -128,107 +108,59 @@
 				"fifth-bullet-point": "Δεν μπορείτε να αφαιρέσετε ένα μέλος από αυτήν την ομάδα"
 			},
 			"conversations": {
-				"request-sent": "Το αίτημα έχει αποσταλεί. Σε εκκρεμότητα...",
+				"request-sent": "",
 				"draft": "Πρόχειρο: {{message}}"
 			}
 		},
 		"suggestion-display-name-initial": "Πατήστε εδώ για προσθήκη",
-		"configurations": {
-			"network": {
-				"display-name": "Ρυθμίσεις Δικτύου",
-				"desc": "Πατήστε εδώ για να ολοκληρώσετε τις ρυθμίσεις δικτύου"
-			},
-			"notification": {
-				"display-name": "Ρυθμίσεις Ειδοποιήσεων",
-				"desc": "Πατήστε εδώ για ρυθμίσεις ειδοποιήσεων (push-notification)"
-			},
-			"replicate": {
-				"display-name": "",
-				"desc": ""
-			}
-		},
-		"network-options": {
-			"welcome-title": "",
-			"full-anon-mode": "Πλήρης Λειτουργία Anon",
-			"simple-tor-compatible": "Απλό Συμβατό Σύστημα TOR",
-			"allow-expert-mode": "",
-			"tor-compatible": {
-				"title": "Συμβατό Σύστημα TOR",
-				"desc": ""
-			},
-			"full-anon": {
-				"title": "Πλήρης Λειτουργία Anon",
-				"desc": "",
-				"no-ip": "",
-				"no-mc": "",
-				"tor-only": ""
-			},
-			"save": "ΑΠΟΘΗΚΕΥΣΗ",
-			"skip": "ΠΑΡΑΛΕΙΨΗ ΓΙΑ ΑΡΓΟΤΕΡΑ"
-		},
 		"scan": {
 			"title": "Σάρωση του κωδικού QR (QR Code)"
 		}
 	},
 	"settings": {
 		"home": {
-			"check-list": {
-				"title": "",
-				"avatar": {
-					"title": "Αλλαγή avatar",
-					"desc": ""
-				},
-				"berty-services": {
-					"title": "",
-					"desc": ""
-				},
-				"contact": {
-					"title": "",
-					"desc": ""
-				},
-				"group": {
-					"title": "",
-					"desc": ""
-				},
-				"message": {
-					"title": "",
-					"desc": ""
-				},
-				"ble-message": {
-					"title": "",
-					"desc": ""
-				}
-			},
-			"edit-profile": "",
-			"share-link": "",
-			"create-group": "",
-			"create-new-account": ""
+			"proximity-button": "",
+			"notifications-button": "Ειδοποιήσεις",
+			"contact-convs-button": "",
+			"appearance-button": "",
+			"devices-button": "",
+			"accounts-button": "",
+			"network-button": "",
+			"bug-button": "",
+			"about-button": "Σχετικά με το Berty"
 		},
-		"network-map": {
-			"title": "",
-			"online-peers": ""
+		"about": {
+			"faq-button": "Συχνές Ερωτήσεις",
+			"roadmap-button": "",
+			"policy-button": "",
+			"license-button": ""
 		},
-		"mode": {
-			"title": "",
-			"desc": "",
-			"in-app-notifications": "",
-			"dark-mode-button": "",
-			"devtools": "",
-			"network-config": "",
-			"notification-file-saved": {
-				"title": "",
-				"desc": ""
-			},
-			"receive-contact-requests-button": "",
-			"external-services-button": "",
-			"auto-replicate-button": "",
-			"auto-replicate-button-unavailable": "",
-			"blocked-contacts-button": {
-				"title": "",
-				"tag": ""
-			},
-			"delete-account-button": "",
-			"backup-account-button": ""
+		"accounts": {
+			"accounts-button": "",
+			"create-button": "",
+			"import-button": "",
+			"link-button": "",
+			"delete-button": ""
+		},
+		"appearance": {
+			"dark-button": "",
+			"editor-button": ""
+		},
+		"contact-convs": {
+			"reset-button": "",
+			"request-button": ""
+		},
+		"network": {
+			"ble-button": "",
+			"mc-button": "",
+			"nearby-button": "",
+			"mdns-button": "",
+			"memo-cell-button": "",
+			"medias-cell-button": "",
+			"dht-button": "",
+			"rdvp-button": "",
+			"relay-button": "",
+			"bootstrap-button": ""
 		},
 		"edit-profile": {
 			"title": "",
@@ -239,51 +171,8 @@
 			"name-input-placeholder": "Όνομα...",
 			"name-input-label": "Όνομα"
 		},
-		"notifications": {
-			"title": "Ειδοποιήσεις",
-			"enabled-desc": "Έχετε ενεργοποιήσει τις ειδοποιήσεις!",
-			"disabled-desc": "Δεν έχετε ενεργοποιήσει τις ειδοποιήσεις για αυτήν την εφαρμογή",
-			"activate-button": "Ενεργοποίηση ειδοποιήσεων",
-			"contact-request-button": {
-				"title": "Αίτημα επαφής",
-				"desc": "Ειδοποίηση κάθε φορά που κάποιος σας στέλνει αίτημα επαφής"
-			},
-			"messages-notifications-button": {
-				"title": "Μηνύματα ειδοποιήσεων",
-				"display-button": "Εμφάνιση ειδοποιήσεων",
-				"preview-button": "Προεπισκόπηση μηνυμάτων",
-				"sound-button": "Ήχος",
-				"exceptions-button": {
-					"title": "Εξαιρέσεις",
-					"preview-value": "Προσθήκη"
-				}
-			},
-			"group-notifications-button": {
-				"title": "Ομαδοποιημένες ειδοποιήσεις",
-				"display-button": "Εμφάνιση ειδοποιήσεων",
-				"preview-button": "Προεπισκόπηση μηνυμάτων",
-				"sound-button": "Ήχος",
-				"exceptions-button": {
-					"title": "Εξαιρέσεις",
-					"tag": "{{count}} εξαίρεση"
-				}
-			}
-		},
-		"bluetooth": {
-			"title": "Bluetooth",
-			"desc": "Το Bluetooth σας επιτρέπει να ανταλλάξετε μηνύματα χρησιμοποιώντας το Berty χωρίς πρόσβαση στο διαδίκτυο συνδέοντας τη συσκευή σας απευθείας με τους κοντινούς χρήστες",
-			"activate-button": "Ενεργοποίηση Bluetooth"
-		},
-		"mc": {
-			"activate-button": ""
-		},
-		"nearby": {
-			"activate-button": ""
-		},
 		"berty-services": {
-			"header": "",
 			"title": "",
-			"recommended": "Προτεινόμενο",
 			"desc": "",
 			"button": "",
 			"skip": "ΠΑΡΑΛΕΙΨΗ ΓΙΑ ΑΡΓΟΤΕΡΑ"
@@ -295,42 +184,13 @@
 			"cancel-button": "ΑΚΥΡΟ",
 			"delete-button": ""
 		},
-		"help": {
-			"title": "",
-			"security-privacy-button": {
-				"title": "",
-				"desc": ""
-			},
-			"updates-button": "",
-			"about-button": "",
-			"account-button": "",
-			"contact-button": "",
-			"message-button": "",
-			"group-button": "",
-			"settings-button": "",
-			"ask-button": "Κάντε μια ερώτηση",
-			"report-button": "Αναφορά σφάλματος"
-		},
-		"about": {
-			"title": "Σχετικά με το Berty",
-			"top-left-button": "",
-			"top-right-button": "",
-			"bottom-left-button": "",
-			"bottom-right-button": "",
-			"terms-button": "",
-			"privacy-button": "",
-			"software-button": "",
-			"contact-button": "",
-			"website-button": "Ιστοσελίδα"
-		},
-		"updates": {
-			"title": "Ενημερώσεις εφαρμογής",
-			"current-tag": ""
-		},
 		"faq": {
 			"title": "Συχνές Ερωτήσεις"
 		},
 		"roadmap": {
+			"title": ""
+		},
+		"privacy-policy": {
 			"title": ""
 		},
 		"devtools": {
@@ -338,13 +198,8 @@
 			"header-left-button": "",
 			"header-middle-button": "",
 			"header-right-button": "",
-			"theme-editor": "",
 			"simulate-button": "",
 			"simulate-js-error-button": "",
-			"tor-button": "",
-			"tor-optional-option": "",
-			"tor-required-option": "",
-			"tor-disabled-option": "",
 			"system-info-button": "",
 			"debug-button": "",
 			"log-button": {
@@ -379,7 +234,6 @@
 				"test": "",
 				"tried": ""
 			},
-			"trigger-crashlytics-button": "",
 			"tyber-attach": "",
 			"tyber-host-button": {
 				"name": "",
@@ -401,16 +255,12 @@
 		},
 		"add-dev-conversations": {
 			"title": "",
-			"add": "",
-			"tag-bot": "",
-			"tag-contact": "",
-			"tag-conversation": ""
+			"add": ""
 		},
 		"ipfs-webui": {
 			"title": ""
 		},
 		"theme-editor": {
-			"title": "",
 			"randomize": "",
 			"save": "",
 			"export": "",
@@ -418,13 +268,21 @@
 			"import": "",
 			"delete": "",
 			"bad-format-title": "",
-			"bad-format-desc": ""
+			"bad-format-desc": "",
+			"notification-file-saved": {
+				"title": "",
+				"desc": ""
+			}
 		},
 		"my-berty-ID": {
 			"title": "",
 			"qr": "",
-			"fingerprint": "",
-			"devices": ""
+			"fingerprint": ""
+		},
+		"share": {
+			"invite": "",
+			"tap-to-scan": "",
+			"create-group": ""
 		}
 	},
 	"modals": {
@@ -463,12 +321,8 @@
 		"sending": "",
 		"sent": "",
 		"contact-settings": {
-			"mark-button": "",
-			"block-button": "",
-			"delete-button": "",
 			"fingerprint": "",
 			"info": "",
-			"devices": "",
 			"my-devices": ""
 		},
 		"multi-member": {
@@ -495,24 +349,17 @@
 			"title": "",
 			"push": {
 				"enabled": "",
-				"not-enabled": ""
+				"not-enabled": "Προώθηση ειδοποιήσεων ανενεργές"
 			}
 		},
 		"multi-member-settings": {
-			"header-left-button": "",
-			"header-middle-button": "",
-			"header-right-button": "",
 			"media-button": "",
-			"notifications-button": "",
 			"members-button": {
-				"title": "",
-				"unknown": ""
+				"title": ""
 			},
 			"add-member-button": "",
 			"invite-button": "",
-			"save-button": "",
-			"erase-button": "",
-			"leave-button": ""
+			"save-button": ""
 		},
 		"add-members": {
 			"members": "",
@@ -544,14 +391,8 @@
 			"input-placeholder": ""
 		},
 		"one-to-one-settings": {
-			"header-left-button": "",
-			"header-middle-button": "",
-			"header-right-button": "",
 			"media-button": "",
-			"notifications-button": "",
-			"mutual-button": "",
-			"save-button": "",
-			"erase-button": ""
+			"save-button": ""
 		},
 		"replicate-group-settings": {
 			"title": "",
@@ -565,7 +406,6 @@
 			"camera": "",
 			"files": "",
 			"microphone": "",
-			"search-gif": "",
 			"security-access": "",
 			"security-access-desc": "",
 			"save-to-gallery": "",
@@ -609,7 +449,7 @@
 			"title": "",
 			"desc": ""
 		},
-		"p2p": {
+		"proximity": {
 			"title": "",
 			"android-desc": "",
 			"ios-desc": ""
@@ -636,6 +476,10 @@
 	},
 	"notification": {
 		"need-restart": {
+			"title": "",
+			"desc": ""
+		},
+		"need-restart-ble": {
 			"title": "",
 			"desc": ""
 		}
@@ -670,7 +514,6 @@
 				"action-delete": {
 					"file-exists": "",
 					"account-exists": "",
-					"directory-exists-load-error": "",
 					"fs-read-error": "",
 					"actions-title": "",
 					"action-account-manager": "",

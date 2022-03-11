@@ -2,7 +2,7 @@
   "auth": {
     "services": {
       "rpl": {
-        "name": "",
+        "name": "Réplication",
         "description": "",
         "benefitBadge": "Performance"
       },
@@ -20,7 +20,7 @@
   "push": {
     "message": {},
     "error": {
-      "title": ""
+      "title": "Échec du déchiffrement des messages push"
     },
     "voiceMessage": {
       "bodyWithNumberOfMedia_one": "Envoyé un message vocal",
@@ -35,8 +35,8 @@
       "bodyWithNumberOfMedia_other": "A envoyé '%[1]v' photos"
     },
     "media": {
-      "bodyWithNumberOfMedia_one": "",
-      "bodyWithNumberOfMedia_other": ""
+      "bodyWithNumberOfMedia_one": "Média envoyé",
+      "bodyWithNumberOfMedia_other": "A envoyé '%[1]v' médias"
     },
     "reaction": {
       "bodyWithDisplayNameAndEmoji": "%[1]v a réagi avec %[2]v à votre message"
