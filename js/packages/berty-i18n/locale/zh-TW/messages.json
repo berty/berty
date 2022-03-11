@@ -3,81 +3,61 @@
 		"getstarted": {
 			"title": "",
 			"desc": "",
-			"button": ""
+			"create-button": "",
+			"import-button": "",
+			"link-button": ""
 		},
-		"select-mode": {
-			"title": "選擇預設",
-			"change-later": "你可以選擇稍後更改它！",
-			"performance": {
-				"title": "性能",
-				"desc": "簡單使用 - 所有功能",
-				"push-notif": "接收新消息通知",
-				"offline-message": "藍牙離線消息",
-				"add-contact": "添加聯繫人",
-				"fast-message": "快速發送消息"
+		"default-mode": {
+			"summary": {
+				"title": "",
+				"subtitle": "",
+				"first-point": "",
+				"second-point": "",
+				"back-button": "",
+				"accept-button": ""
+			}
+		},
+		"custom-mode": {
+			"summary": {
+				"title": "",
+				"subtitle": "",
+				"first-point": "",
+				"second-point": "",
+				"back-button": "",
+				"accept-button": ""
 			},
-			"high-level": {
-				"title": "完全匿名",
-				"desc": "對于謹慎的用戶",
-				"disable-push-notif": "已禁用新消息通知",
-				"disable-local-peer-discovery": "本地對等用戶發現已禁用",
-				"disable-local-peer-discovery-desc": "多點廣播DNS和藍牙",
-				"disable-contact-request": "已禁用聯繫人請求",
-				"on-same-network": "同一本地網絡/wifi"
+			"settings": {
+				"off-grid": {
+					"title": "",
+					"ble-button": "",
+					"nearby-button": "",
+					"mc-button": "",
+					"mdns-button": ""
+				},
+				"routing": {
+					"title": "",
+					"dht-button": "",
+					"rdvp-button": ""
+				},
+				"access": {
+					"title": "",
+					"relay-button": "",
+					"bootstrap-button": "",
+					"replication-button": ""
+				},
+				"all-button": "",
+				"accept-button": ""
 			}
 		},
 		"create-account": {
 			"title": "創建您的帳戶",
-			"desc": "名稱是唯一需要的信息",
-			"required": "必需的",
 			"placeholder": "",
-			"button": "創建我的帳戶",
-			"advanced": "",
-			"import-account": "",
-			"link-device": "",
-			"more": "",
 			"good-to-know": {
 				"title": "",
 				"first-point": "",
 				"second-point": ""
 			}
 		},
-		"advanced-settings": {
-			"title": "",
-			"desc": "",
-			"more-about": {
-				"title": "",
-				"first-paragraph": "",
-				"second-paragraph": "",
-				"third-paragraph": ""
-			},
-			"read-more": "",
-			"config-title": "",
-			"config-desc": "",
-			"learn-more": "",
-			"first-part": {
-				"title": "",
-				"first-button": "",
-				"second-button": "多播DNS"
-			},
-			"second-part": {
-				"title": "",
-				"first-button": "",
-				"second-button": ""
-			},
-			"third-part": {
-				"title": "服務",
-				"network-button": "網絡列表",
-				"first-button": "推送通知",
-				"second-button": {
-					"title": "",
-					"placeholder": ""
-				},
-				"third-button": ""
-			},
-			"apply-changes": ""
-		},
-		"exper-setup": {},
 		"generate-key": {
 			"title": "正在啟動 Berty 節點…",
 			"desc": "這可能需要幾秒鐘"
@@ -133,102 +113,54 @@
 			}
 		},
 		"suggestion-display-name-initial": "單擊這裡以添加",
-		"configurations": {
-			"network": {
-				"display-name": "網絡設置",
-				"desc": "點擊此處完成網絡設置"
-			},
-			"notification": {
-				"display-name": "通知設置",
-				"desc": "點擊此處查看通知推送設置"
-			},
-			"replicate": {
-				"display-name": "",
-				"desc": ""
-			}
-		},
-		"network-options": {
-			"welcome-title": "歡迎使用網絡設置",
-			"full-anon-mode": "完全匿名模式",
-			"simple-tor-compatible": "簡單TOR兼容",
-			"allow-expert-mode": "允許專家模式",
-			"tor-compatible": {
-				"title": "兼容TOR",
-				"desc": "此配置將允許您連接到Tor網絡並與完全匿名的用戶進行討論，而無需處於極端匿名模式。"
-			},
-			"full-anon": {
-				"title": "完全匿名模式",
-				"desc": "此配置基於基本預設，提供極為謹慎的網絡參數:",
-				"no-ip": "無 ip",
-				"no-mc": "無 mc",
-				"tor-only": "僅Tor"
-			},
-			"save": "保存",
-			"skip": "跳過並稍後再做"
-		},
 		"scan": {
 			"title": ""
 		}
 	},
 	"settings": {
 		"home": {
-			"check-list": {
-				"title": "",
-				"avatar": {
-					"title": "",
-					"desc": ""
-				},
-				"berty-services": {
-					"title": "",
-					"desc": ""
-				},
-				"contact": {
-					"title": "",
-					"desc": ""
-				},
-				"group": {
-					"title": "",
-					"desc": ""
-				},
-				"message": {
-					"title": "",
-					"desc": ""
-				},
-				"ble-message": {
-					"title": "",
-					"desc": ""
-				}
-			},
-			"edit-profile": "編輯個人信息",
-			"share-link": "",
-			"create-group": "",
-			"create-new-account": "創建新賬戶"
+			"proximity-button": "",
+			"notifications-button": "消息通知",
+			"contact-convs-button": "",
+			"appearance-button": "",
+			"devices-button": "",
+			"accounts-button": "賬戶",
+			"network-button": "",
+			"bug-button": "",
+			"about-button": "關於 Berty"
 		},
-		"network-map": {
-			"title": "網絡列表",
-			"online-peers": "在線節點"
+		"about": {
+			"faq-button": "",
+			"roadmap-button": "",
+			"policy-button": "",
+			"license-button": ""
 		},
-		"mode": {
-			"title": "設置",
-			"desc": "所有功能皆可自定義使其符合您的需求",
-			"in-app-notifications": "",
-			"dark-mode-button": "暗色模式",
-			"devtools": "開發工具",
-			"network-config": "",
-			"notification-file-saved": {
-				"title": "數據已保存！",
-				"desc": "在下載目錄中可用"
-			},
-			"receive-contact-requests-button": "接收聯繫人請求",
-			"external-services-button": "外部服務",
-			"auto-replicate-button": "自動複製",
-			"auto-replicate-button-unavailable": "您必須先註冊至少一個複製服務器",
-			"blocked-contacts-button": {
-				"title": "已屏蔽的聯繫人",
-				"tag": "已屏蔽"
-			},
-			"delete-account-button": "刪除我的帳戶",
-			"backup-account-button": "備份我的帳戶"
+		"accounts": {
+			"accounts-button": "賬戶",
+			"create-button": "",
+			"import-button": "",
+			"link-button": "",
+			"delete-button": ""
+		},
+		"appearance": {
+			"dark-button": "",
+			"editor-button": ""
+		},
+		"contact-convs": {
+			"reset-button": "",
+			"request-button": ""
+		},
+		"network": {
+			"ble-button": "",
+			"mc-button": "",
+			"nearby-button": "",
+			"mdns-button": "多播DNS",
+			"memo-cell-button": "",
+			"medias-cell-button": "",
+			"dht-button": "",
+			"rdvp-button": "",
+			"relay-button": "",
+			"bootstrap-button": ""
 		},
 		"edit-profile": {
 			"title": "編輯我的資料",
@@ -239,51 +171,8 @@
 			"name-input-placeholder": "名...",
 			"name-input-label": "名稱"
 		},
-		"notifications": {
-			"title": "消息通知",
-			"enabled-desc": "您已激活通知！",
-			"disabled-desc": "您還沒有激活此應用的通知",
-			"activate-button": "啟用通知",
-			"contact-request-button": {
-				"title": "聯繫請求",
-				"desc": "每次有人向您發送聯繫人請求時都會收到通知"
-			},
-			"messages-notifications-button": {
-				"title": "消息通知",
-				"display-button": "顯示通知",
-				"preview-button": "預覽信息",
-				"sound-button": "提示音",
-				"exceptions-button": {
-					"title": "例外",
-					"preview-value": "添加"
-				}
-			},
-			"group-notifications-button": {
-				"title": "群組通知",
-				"display-button": "顯示通知",
-				"preview-button": "預覽信息",
-				"sound-button": "提示音",
-				"exceptions-button": {
-					"title": "例外",
-					"tag": "{{count}} 個例外"
-				}
-			}
-		},
-		"bluetooth": {
-			"title": "藍牙",
-			"desc": "藍牙允許您通過直接連接您的設備與附近的對等設備來使用Berty交換消息，而無需訪問互聯網",
-			"activate-button": "激活藍牙"
-		},
-		"mc": {
-			"activate-button": "激活多節點連接"
-		},
-		"nearby": {
-			"activate-button": "激活 Android Nearby"
-		},
 		"berty-services": {
-			"header": "",
 			"title": "",
-			"recommended": "推薦",
 			"desc": "",
 			"button": "",
 			"skip": "跳過並稍後再做"
@@ -295,42 +184,13 @@
 			"cancel-button": "取消",
 			"delete-button": "刪除"
 		},
-		"help": {
-			"title": "幫助",
-			"security-privacy-button": {
-				"title": "安全與隱私",
-				"desc": "保護您的數據和隱私"
-			},
-			"updates-button": "更新",
-			"about-button": "關於 Berty",
-			"account-button": "賬戶 與 Berty ID",
-			"contact-button": "聯繫人與請求",
-			"message-button": "消息",
-			"group-button": "組",
-			"settings-button": "設置",
-			"ask-button": "提問題",
-			"report-button": "報告 bug"
-		},
-		"about": {
-			"title": "關於 Berty",
-			"top-left-button": "隱私與安全",
-			"top-right-button": "點對點網絡",
-			"bottom-left-button": "無需互聯網或移動流量",
-			"bottom-right-button": "無需安全可信的網絡",
-			"terms-button": "使用條款",
-			"privacy-button": "隱私策略",
-			"software-button": "軟件許可",
-			"contact-button": "聯繫我們",
-			"website-button": "網站"
-		},
-		"updates": {
-			"title": "應用更新",
-			"current-tag": "當前的"
-		},
 		"faq": {
 			"title": ""
 		},
 		"roadmap": {
+			"title": ""
+		},
+		"privacy-policy": {
 			"title": ""
 		},
 		"devtools": {
@@ -338,13 +198,8 @@
 			"header-left-button": "設備信息",
 			"header-middle-button": "生成偽數據",
 			"header-right-button": "重啟守護進程",
-			"theme-editor": "外觀與主題編輯器",
 			"simulate-button": "模擬流錯誤",
 			"simulate-js-error-button": "模擬 JavaScript 錯誤",
-			"tor-button": "Tor{{option}}",
-			"tor-optional-option": "可選",
-			"tor-required-option": "必需的",
-			"tor-disabled-option": "已禁用",
 			"system-info-button": "系統信息",
 			"debug-button": "Debug",
 			"log-button": {
@@ -379,7 +234,6 @@
 				"test": "測試， ",
 				"tried": "✔ 正在嘗試向 {{length}} 聯繫人發送"
 			},
-			"trigger-crashlytics-button": "觸發崩潰問題",
 			"tyber-attach": "Tyber 附加到 {{host}}",
 			"tyber-host-button": {
 				"name": "Tyber",
@@ -401,16 +255,12 @@
 		},
 		"add-dev-conversations": {
 			"title": "添加開發者會話",
-			"add": "添加 {{name}}",
-			"tag-bot": "機器人",
-			"tag-contact": "聯繫人",
-			"tag-conversation": "組"
+			"add": "添加 {{name}}"
 		},
 		"ipfs-webui": {
 			"title": "IPFS WebUI"
 		},
 		"theme-editor": {
-			"title": "主題編輯器",
 			"randomize": "生成主題",
 			"save": "保存主題",
 			"export": "將選定主題導出為文件",
@@ -418,13 +268,21 @@
 			"import": "導入主題文件",
 			"delete": "",
 			"bad-format-title": "",
-			"bad-format-desc": ""
+			"bad-format-desc": "",
+			"notification-file-saved": {
+				"title": "數據已保存！",
+				"desc": "在下載目錄中可用"
+			}
 		},
 		"my-berty-ID": {
 			"title": "",
 			"qr": "二維碼",
-			"fingerprint": "指紋",
-			"devices": "設備"
+			"fingerprint": "指紋"
+		},
+		"share": {
+			"invite": "",
+			"tap-to-scan": "",
+			"create-group": ""
 		}
 	},
 	"modals": {
@@ -463,12 +321,8 @@
 		"sending": "正在發送...",
 		"sent": "",
 		"contact-settings": {
-			"mark-button": "標記為已驗證",
-			"block-button": "屏蔽聯繫人",
-			"delete-button": "刪除聯繫人",
 			"fingerprint": "指紋",
 			"info": "信息",
-			"devices": "設備",
 			"my-devices": ""
 		},
 		"multi-member": {
@@ -495,24 +349,17 @@
 			"title": "設備",
 			"push": {
 				"enabled": "",
-				"not-enabled": ""
+				"not-enabled": "已禁用新消息通知"
 			}
 		},
 		"multi-member-settings": {
-			"header-left-button": "搜索",
-			"header-middle-button": "呼叫",
-			"header-right-button": "分享",
 			"media-button": "媒體、 鏈接和文檔",
-			"notifications-button": "接收消息通知",
 			"members-button": {
-				"title": "成員",
-				"unknown": "未知"
+				"title": "成員"
 			},
 			"add-member-button": "添加成員",
 			"invite-button": "通過鏈接邀請",
-			"save-button": "在服務器上保存對話",
-			"erase-button": "清除對話",
-			"leave-button": "離開群組"
+			"save-button": "在服務器上保存對話"
 		},
 		"add-members": {
 			"members": "成員",
@@ -544,14 +391,8 @@
 			"input-placeholder": "在此輸入..."
 		},
 		"one-to-one-settings": {
-			"header-left-button": "搜索",
-			"header-middle-button": "呼叫",
-			"header-right-button": "分享",
 			"media-button": "媒體、 鏈接和文檔",
-			"notifications-button": "接收消息通知",
-			"mutual-button": "相互組",
-			"save-button": "在服務器上保存對話",
-			"erase-button": "清除對話"
+			"save-button": "在服務器上保存對話"
 		},
 		"replicate-group-settings": {
 			"title": "在服務器上註冊會話",
@@ -565,7 +406,6 @@
 			"camera": "攝像頭",
 			"files": "文件",
 			"microphone": "麥克風",
-			"search-gif": "搜索 gif",
 			"security-access": "安全訪問",
 			"security-access-desc": "點擊此處以設置您的訪問權限",
 			"save-to-gallery": "將此文件保存到相冊",
@@ -606,10 +446,10 @@
 	},
 	"permission": {
 		"notification": {
-			"title": "推送通知",
+			"title": "",
 			"desc": "Berty app 需要您的許可才能向您發送本地或推送通知。這將允許您在收到消息時收到通知。"
 		},
-		"p2p": {
+		"proximity": {
 			"title": "",
 			"android-desc": "",
 			"ios-desc": ""
@@ -619,7 +459,7 @@
 			"desc": ""
 		},
 		"audio": {
-			"title": "音頻消息",
+			"title": "",
 			"desc": "若要向您的聯繫人發送音頻信息，您需要允許Berty 應用程序獲得麥克風權限。"
 		},
 		"gallery": {
@@ -636,6 +476,10 @@
 	},
 	"notification": {
 		"need-restart": {
+			"title": "",
+			"desc": ""
+		},
+		"need-restart-ble": {
 			"title": "",
 			"desc": ""
 		}
@@ -670,7 +514,6 @@
 				"action-delete": {
 					"file-exists": "帳戶 {{accountId}} 不存在，但文件有此名稱。",
 					"account-exists": "帳戶 {{accountId}} 當前存在。",
-					"directory-exists-load-error": "帳戶 {{accountId}} 不存在，但目錄有此名稱。",
 					"fs-read-error": "獲取有關帳戶的FS信息時出錯",
 					"actions-title": "我們應該怎麼做？",
 					"action-account-manager": "通過帳戶管理器刪除它",
