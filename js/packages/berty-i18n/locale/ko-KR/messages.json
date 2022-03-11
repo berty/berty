@@ -3,81 +3,61 @@
 		"getstarted": {
 			"title": "",
 			"desc": "",
-			"button": ""
+			"create-button": "",
+			"import-button": "",
+			"link-button": ""
 		},
-		"select-mode": {
-			"title": "프리셋을 선택하세요",
-			"change-later": "나중에 변경할 수 있어요!",
-			"performance": {
-				"title": "성능",
-				"desc": "쉬운 사용법 - 모든 기능",
-				"push-notif": "푸시 알림 수신하기",
-				"offline-message": "",
-				"add-contact": "쉽게 연락처 추가하기",
-				"fast-message": "가장 빠른 메시지 전송"
+		"default-mode": {
+			"summary": {
+				"title": "",
+				"subtitle": "",
+				"first-point": "",
+				"second-point": "",
+				"back-button": "",
+				"accept-button": ""
+			}
+		},
+		"custom-mode": {
+			"summary": {
+				"title": "",
+				"subtitle": "",
+				"first-point": "",
+				"second-point": "",
+				"back-button": "",
+				"accept-button": ""
 			},
-			"high-level": {
-				"title": "익명성 최대화",
-				"desc": "",
-				"disable-push-notif": "알림 수신 해제됨",
-				"disable-local-peer-discovery": "주변 탐색 해제됨",
-				"disable-local-peer-discovery-desc": "",
-				"disable-contact-request": "연락처 요청 해제됨",
-				"on-same-network": ""
+			"settings": {
+				"off-grid": {
+					"title": "",
+					"ble-button": "",
+					"nearby-button": "",
+					"mc-button": "",
+					"mdns-button": ""
+				},
+				"routing": {
+					"title": "",
+					"dht-button": "",
+					"rdvp-button": ""
+				},
+				"access": {
+					"title": "",
+					"relay-button": "",
+					"bootstrap-button": "",
+					"replication-button": ""
+				},
+				"all-button": "",
+				"accept-button": ""
 			}
 		},
 		"create-account": {
 			"title": "계정 만들기",
-			"desc": "이름만 있으면 됩니다",
-			"required": "필요",
 			"placeholder": "",
-			"button": "내 계정 만들기",
-			"advanced": "",
-			"import-account": "",
-			"link-device": "",
-			"more": "",
 			"good-to-know": {
 				"title": "",
 				"first-point": "",
 				"second-point": ""
 			}
 		},
-		"advanced-settings": {
-			"title": "",
-			"desc": "",
-			"more-about": {
-				"title": "",
-				"first-paragraph": "",
-				"second-paragraph": "",
-				"third-paragraph": ""
-			},
-			"read-more": "",
-			"config-title": "",
-			"config-desc": "",
-			"learn-more": "",
-			"first-part": {
-				"title": "",
-				"first-button": "",
-				"second-button": "Multicast DNS"
-			},
-			"second-part": {
-				"title": "",
-				"first-button": "",
-				"second-button": ""
-			},
-			"third-part": {
-				"title": "서비스",
-				"network-button": "",
-				"first-button": "",
-				"second-button": {
-					"title": "",
-					"placeholder": ""
-				},
-				"third-button": ""
-			},
-			"apply-changes": ""
-		},
-		"exper-setup": {},
 		"generate-key": {
 			"title": "Berty 노드 실행 중...",
 			"desc": "몇 초가 걸릴 수 있습니다"
@@ -133,102 +113,54 @@
 			}
 		},
 		"suggestion-display-name-initial": "여기를 눌러 추가",
-		"configurations": {
-			"network": {
-				"display-name": "네트워크 설정",
-				"desc": "여기를 눌러 네트워크 설정 끝내기"
-			},
-			"notification": {
-				"display-name": "알림 설정",
-				"desc": "여기를 눌러 푸시 알림 설정하기"
-			},
-			"replicate": {
-				"display-name": "",
-				"desc": ""
-			}
-		},
-		"network-options": {
-			"welcome-title": "",
-			"full-anon-mode": "",
-			"simple-tor-compatible": "",
-			"allow-expert-mode": "",
-			"tor-compatible": {
-				"title": "",
-				"desc": ""
-			},
-			"full-anon": {
-				"title": "",
-				"desc": "",
-				"no-ip": "",
-				"no-mc": "",
-				"tor-only": ""
-			},
-			"save": "",
-			"skip": "넘기고 다음에 하기"
-		},
 		"scan": {
 			"title": ""
 		}
 	},
 	"settings": {
 		"home": {
-			"check-list": {
-				"title": "",
-				"avatar": {
-					"title": "",
-					"desc": ""
-				},
-				"berty-services": {
-					"title": "",
-					"desc": ""
-				},
-				"contact": {
-					"title": "",
-					"desc": ""
-				},
-				"group": {
-					"title": "",
-					"desc": ""
-				},
-				"message": {
-					"title": "",
-					"desc": ""
-				},
-				"ble-message": {
-					"title": "",
-					"desc": ""
-				}
-			},
-			"edit-profile": "프로필 수정",
-			"share-link": "",
-			"create-group": "",
-			"create-new-account": "새 계정 만들기"
+			"proximity-button": "",
+			"notifications-button": "알림",
+			"contact-convs-button": "",
+			"appearance-button": "",
+			"devices-button": "",
+			"accounts-button": "계정",
+			"network-button": "",
+			"bug-button": "",
+			"about-button": "Berty에 대해"
 		},
-		"network-map": {
-			"title": "",
-			"online-peers": ""
+		"about": {
+			"faq-button": "",
+			"roadmap-button": "",
+			"policy-button": "",
+			"license-button": ""
 		},
-		"mode": {
-			"title": "설정",
-			"desc": "",
-			"in-app-notifications": "",
-			"dark-mode-button": "다크모드",
-			"devtools": "",
-			"network-config": "",
-			"notification-file-saved": {
-				"title": "",
-				"desc": ""
-			},
-			"receive-contact-requests-button": "",
-			"external-services-button": "외부 서비스",
-			"auto-replicate-button": "자동 복제",
-			"auto-replicate-button-unavailable": "",
-			"blocked-contacts-button": {
-				"title": "",
-				"tag": ""
-			},
-			"delete-account-button": "계정 삭제",
-			"backup-account-button": "계정 백업"
+		"accounts": {
+			"accounts-button": "계정",
+			"create-button": "",
+			"import-button": "",
+			"link-button": "",
+			"delete-button": ""
+		},
+		"appearance": {
+			"dark-button": "",
+			"editor-button": ""
+		},
+		"contact-convs": {
+			"reset-button": "",
+			"request-button": ""
+		},
+		"network": {
+			"ble-button": "",
+			"mc-button": "",
+			"nearby-button": "",
+			"mdns-button": "Multicast DNS",
+			"memo-cell-button": "",
+			"medias-cell-button": "",
+			"dht-button": "",
+			"rdvp-button": "",
+			"relay-button": "",
+			"bootstrap-button": ""
 		},
 		"edit-profile": {
 			"title": "프로필 수정",
@@ -239,51 +171,8 @@
 			"name-input-placeholder": "이름...",
 			"name-input-label": "이름"
 		},
-		"notifications": {
-			"title": "알림",
-			"enabled-desc": "알림을 활성화했어요!",
-			"disabled-desc": "알림이 꺼져 있어요",
-			"activate-button": "알림 켜기",
-			"contact-request-button": {
-				"title": "",
-				"desc": ""
-			},
-			"messages-notifications-button": {
-				"title": "",
-				"display-button": "알림 표시",
-				"preview-button": "메세지 미리보기",
-				"sound-button": "소리",
-				"exceptions-button": {
-					"title": "예외",
-					"preview-value": "추가"
-				}
-			},
-			"group-notifications-button": {
-				"title": "그룹 알림",
-				"display-button": "알림 표시",
-				"preview-button": "메세지 미리보기",
-				"sound-button": "소리",
-				"exceptions-button": {
-					"title": "예외",
-					"tag": "예외 {{count}} 개"
-				}
-			}
-		},
-		"bluetooth": {
-			"title": "블루투스",
-			"desc": "",
-			"activate-button": "블루투스 활성화"
-		},
-		"mc": {
-			"activate-button": ""
-		},
-		"nearby": {
-			"activate-button": ""
-		},
 		"berty-services": {
-			"header": "",
 			"title": "",
-			"recommended": "권장",
 			"desc": "",
 			"button": "",
 			"skip": "넘기고 다음에 하기"
@@ -295,42 +184,13 @@
 			"cancel-button": "취소하기",
 			"delete-button": "삭제하기"
 		},
-		"help": {
-			"title": "지원",
-			"security-privacy-button": {
-				"title": "보안 및 개인정보",
-				"desc": ""
-			},
-			"updates-button": "",
-			"about-button": "Berty에 대해",
-			"account-button": "",
-			"contact-button": "",
-			"message-button": "메세지",
-			"group-button": "그룹",
-			"settings-button": "설정",
-			"ask-button": "질문하기",
-			"report-button": "버그 신고하기"
-		},
-		"about": {
-			"title": "Berty에 대해",
-			"top-left-button": "",
-			"top-right-button": "P2P 네트워크",
-			"bottom-left-button": "인터넷 연결 필요 없음",
-			"bottom-right-button": "신뢰할 수 없는 네트워크에서도 안전함",
-			"terms-button": "이용약관",
-			"privacy-button": "개인정보보호정책",
-			"software-button": "소프트웨어 사용권",
-			"contact-button": "문의하기",
-			"website-button": "웹사이트"
-		},
-		"updates": {
-			"title": "앱 업데이트",
-			"current-tag": ""
-		},
 		"faq": {
 			"title": ""
 		},
 		"roadmap": {
+			"title": ""
+		},
+		"privacy-policy": {
 			"title": ""
 		},
 		"devtools": {
@@ -338,13 +198,8 @@
 			"header-left-button": "장치 정보",
 			"header-middle-button": "모조 데이터 생성",
 			"header-right-button": "데몬 재시작",
-			"theme-editor": "",
 			"simulate-button": "",
 			"simulate-js-error-button": "",
-			"tor-button": "",
-			"tor-optional-option": "선택사항",
-			"tor-required-option": "필요",
-			"tor-disabled-option": "꺼짐",
 			"system-info-button": "시스템 정보",
 			"debug-button": "디버그",
 			"log-button": {
@@ -379,7 +234,6 @@
 				"test": "",
 				"tried": ""
 			},
-			"trigger-crashlytics-button": "",
 			"tyber-attach": "",
 			"tyber-host-button": {
 				"name": "",
@@ -401,16 +255,12 @@
 		},
 		"add-dev-conversations": {
 			"title": "",
-			"add": "",
-			"tag-bot": "",
-			"tag-contact": "",
-			"tag-conversation": ""
+			"add": ""
 		},
 		"ipfs-webui": {
 			"title": "IPFS 웹 UI"
 		},
 		"theme-editor": {
-			"title": "",
 			"randomize": "",
 			"save": "",
 			"export": "",
@@ -418,13 +268,21 @@
 			"import": "",
 			"delete": "",
 			"bad-format-title": "",
-			"bad-format-desc": ""
+			"bad-format-desc": "",
+			"notification-file-saved": {
+				"title": "",
+				"desc": ""
+			}
 		},
 		"my-berty-ID": {
 			"title": "",
 			"qr": "QR",
-			"fingerprint": "지문",
-			"devices": "장치"
+			"fingerprint": "지문"
+		},
+		"share": {
+			"invite": "",
+			"tap-to-scan": "",
+			"create-group": ""
 		}
 	},
 	"modals": {
@@ -463,12 +321,8 @@
 		"sending": "보내는 중...",
 		"sent": "",
 		"contact-settings": {
-			"mark-button": "",
-			"block-button": "",
-			"delete-button": "",
 			"fingerprint": "지문",
 			"info": "정보",
-			"devices": "장치",
 			"my-devices": ""
 		},
 		"multi-member": {
@@ -495,24 +349,17 @@
 			"title": "장치",
 			"push": {
 				"enabled": "",
-				"not-enabled": ""
+				"not-enabled": "알림 수신 해제됨"
 			}
 		},
 		"multi-member-settings": {
-			"header-left-button": "검색",
-			"header-middle-button": "호출",
-			"header-right-button": "공유",
 			"media-button": "미디어, 링크 및 문서",
-			"notifications-button": "알림 수신하기",
 			"members-button": {
-				"title": "멤버",
-				"unknown": "알 수 없음"
+				"title": "멤버"
 			},
 			"add-member-button": "멤버 추가",
 			"invite-button": "링크로 초대",
-			"save-button": "서버에 대화내역 저장하기",
-			"erase-button": "대화내역 지우기",
-			"leave-button": "그룹 떠나기"
+			"save-button": "서버에 대화내역 저장하기"
 		},
 		"add-members": {
 			"members": "멤버",
@@ -544,14 +391,8 @@
 			"input-placeholder": "여기에 입력..."
 		},
 		"one-to-one-settings": {
-			"header-left-button": "검색",
-			"header-middle-button": "호출",
-			"header-right-button": "공유",
 			"media-button": "미디어, 링크 및 문서",
-			"notifications-button": "알림 수신하기",
-			"mutual-button": "",
-			"save-button": "서버에 대화내역 저장하기",
-			"erase-button": "대화내역 지우기"
+			"save-button": "서버에 대화내역 저장하기"
 		},
 		"replicate-group-settings": {
 			"title": "",
@@ -565,7 +406,6 @@
 			"camera": "",
 			"files": "",
 			"microphone": "",
-			"search-gif": "",
 			"security-access": "",
 			"security-access-desc": "",
 			"save-to-gallery": "",
@@ -609,7 +449,7 @@
 			"title": "",
 			"desc": ""
 		},
-		"p2p": {
+		"proximity": {
 			"title": "",
 			"android-desc": "",
 			"ios-desc": ""
@@ -636,6 +476,10 @@
 	},
 	"notification": {
 		"need-restart": {
+			"title": "",
+			"desc": ""
+		},
+		"need-restart-ble": {
 			"title": "",
 			"desc": ""
 		}
@@ -670,7 +514,6 @@
 				"action-delete": {
 					"file-exists": "",
 					"account-exists": "",
-					"directory-exists-load-error": "",
 					"fs-read-error": "",
 					"actions-title": "",
 					"action-account-manager": "",
