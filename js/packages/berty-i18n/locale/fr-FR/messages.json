@@ -28,11 +28,11 @@
 			},
 			"settings": {
 				"off-grid": {
-					"title": "",
+					"title": "Communication hors ligne",
 					"ble-button": "Bluetooth faible consommation d'énergie",
 					"nearby-button": "",
-					"mc-button": "",
-					"mdns-button": ""
+					"mc-button": "Apple Multipeer Connectivity",
+					"mdns-button": "Multicast DNS (LAN)"
 				},
 				"routing": {
 					"title": "Routage",
@@ -40,13 +40,13 @@
 					"rdvp-button": ""
 				},
 				"access": {
-					"title": "",
-					"relay-button": "",
+					"title": "Accessibilité réseau",
+					"relay-button": "Nœuds de relais (TURN)",
 					"bootstrap-button": "",
-					"replication-button": ""
+					"replication-button": "Nœuds de réplication"
 				},
 				"all-button": "Tout",
-				"accept-button": ""
+				"accept-button": "C'est parti"
 			}
 		},
 		"create-account": {
@@ -55,7 +55,7 @@
 			"good-to-know": {
 				"title": "Bon à savoir :",
 				"first-point": "Votre compte est créé localement",
-				"second-point": ""
+				"second-point": "Le surnom est optionnel et peut être modifié plus tard"
 			}
 		},
 		"generate-key": {
@@ -108,7 +108,7 @@
 				"fifth-bullet-point": "Vous ne pouvez pas retirer un membre de ce groupe"
 			},
 			"conversations": {
-				"request-sent": "",
+				"request-sent": "Demande envoyée. En attente...",
 				"draft": "Brouillon : {{message}}"
 			}
 		},
@@ -121,11 +121,11 @@
 		"home": {
 			"proximity-button": "",
 			"notifications-button": "Notifications",
-			"contact-convs-button": "",
-			"appearance-button": "",
+			"contact-convs-button": "Contacts et conversations",
+			"appearance-button": "Apparence",
 			"devices-button": "",
 			"accounts-button": "Comptes",
-			"network-button": "",
+			"network-button": "Réseau",
 			"bug-button": "Soumettre un bug",
 			"about-button": "À propos de Berty"
 		},
@@ -155,7 +155,7 @@
 			"mc-button": "Connectivité multi-pair",
 			"nearby-button": "Android Nearby",
 			"mdns-button": "Multicast DNS",
-			"memo-cell-button": "",
+			"memo-cell-button": "Charger les mémos vocaux via réseau cellulaire",
 			"medias-cell-button": "Charger les médias via réseau cellulaire",
 			"dht-button": "Tableau distribué de hachage",
 			"rdvp-button": "",
@@ -456,10 +456,10 @@
 		},
 		"camera": {
 			"title": "Caméra",
-			"desc": ""
+			"desc": "Voulez-vous autoriser l'appareil photo à prendre des photos ou à scanner des codes QR ?"
 		},
 		"audio": {
-			"title": "",
+			"title": "Messages audio",
 			"desc": "Pour envoyer des messages audio à vos contacts, vous devez autoriser l'application Berty à accéder au microphone."
 		},
 		"gallery": {
@@ -476,11 +476,11 @@
 	},
 	"notification": {
 		"need-restart": {
-			"title": "",
+			"title": "Redémarrage nécessaire",
 			"desc": ""
 		},
 		"need-restart-ble": {
-			"title": "",
+			"title": "Redémarrage nécessaire",
 			"desc": ""
 		}
 	},
@@ -493,7 +493,7 @@
 		"wtf-screen": {
 			"title": "Quelle est l'erreur ?",
 			"desc": "L'application vient de planter.",
-			"desc-report": ""
+			"desc-report": "Cliquez sur le bouton pour quitter et redémarrer l'application."
 		},
 		"sorry-screen": {
 			"title": "Désolé pour ce bug !",
