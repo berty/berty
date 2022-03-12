@@ -21,8 +21,8 @@
 			"summary": {
 				"title": "Mode personnalisé",
 				"subtitle": "Ratio confort et confidentialité personnalisé",
-				"first-point": "",
-				"second-point": "",
+				"first-point": "Dans ce mode, ajustez tous les paramètres individuellement pour créer l'équilibre entre intimité et confort qui vous convient.",
+				"second-point": "Pour une expérience clé en main, sélectionnez le mode par défaut.",
 				"back-button": "Retour",
 				"accept-button": "Procéder"
 			},
@@ -30,19 +30,19 @@
 				"off-grid": {
 					"title": "Communication hors ligne",
 					"ble-button": "Bluetooth faible consommation d'énergie",
-					"nearby-button": "",
+					"nearby-button": "Android à proximité",
 					"mc-button": "Apple Multipeer Connectivity",
 					"mdns-button": "Multicast DNS (LAN)"
 				},
 				"routing": {
 					"title": "Routage",
 					"dht-button": "Tableau distribué de hachage",
-					"rdvp-button": ""
+					"rdvp-button": "Nœuds de point de rendez-vous"
 				},
 				"access": {
 					"title": "Accessibilité réseau",
 					"relay-button": "Nœuds de relais (TURN)",
-					"bootstrap-button": "",
+					"bootstrap-button": "Nœuds d'amorçage",
 					"replication-button": "Nœuds de réplication"
 				},
 				"all-button": "Tout",
@@ -119,11 +119,11 @@
 	},
 	"settings": {
 		"home": {
-			"proximity-button": "",
+			"proximity-button": "Communication hors-ligne",
 			"notifications-button": "Notifications",
 			"contact-convs-button": "Contacts et conversations",
 			"appearance-button": "Apparence",
-			"devices-button": "",
+			"devices-button": "Périphériques et sauvegarde",
 			"accounts-button": "Comptes",
 			"network-button": "Réseau",
 			"bug-button": "Soumettre un bug",
@@ -158,9 +158,9 @@
 			"memo-cell-button": "Charger les mémos vocaux via réseau cellulaire",
 			"medias-cell-button": "Charger les médias via réseau cellulaire",
 			"dht-button": "Tableau distribué de hachage",
-			"rdvp-button": "",
+			"rdvp-button": "Nœuds de point de rendez-vous",
 			"relay-button": "Nœuds de relais",
-			"bootstrap-button": ""
+			"bootstrap-button": "Nœuds d'amorçage"
 		},
 		"edit-profile": {
 			"title": "Modifier mon profil",
@@ -173,7 +173,7 @@
 		},
 		"berty-services": {
 			"title": "Services Berty",
-			"desc": "",
+			"desc": "L'activation des services Berty vous permettra de recevoir des notifications push via les serveurs de Berty Technologies et vous donnera accès à ses nœuds pour la réplication des conversations.",
 			"button": "Activer les services Berty",
 			"skip": "PASSER ET FAIRE ÇA PLUS TARD"
 		},
@@ -332,17 +332,17 @@
 			"enable": "Activer les notifications push",
 			"enabled": "Les notifications push sont activées",
 			"unsupported": "Notifications non prises en charge",
-			"check-device-settings": "",
+			"check-device-settings": "Cette conversation est configurée pour recevoir des notifications push, mais les alertes ont été désactivées dans les paramètres système de votre appareil",
 			"warning-disable": {
-				"title": "",
-				"subtitle": "",
+				"title": "Voulez-vous activer cette fonctionnalité ?",
+				"subtitle": "Une fois activées, les notifications push ne peuvent pas être désactivées pour une conversation spécifique.",
 				"accept": "Activer",
 				"refuse": "Ignorer"
 			},
-			"why-cant-disable": "",
+			"why-cant-disable": "Impossible de désactiver les notifications push par conversation.",
 			"errors": {
-				"no-token": "",
-				"no-server": ""
+				"no-token": "Votre appareil n'est pas compatible avec les notifications push",
+				"no-server": "Vous devez d'abord enregistrer un relais push"
 			}
 		},
 		"devices": {
@@ -376,7 +376,7 @@
 				"refuse-button": "REFUSER",
 				"accept-button": "ACCEPTER",
 				"accepted-button": "ACCEPTÉ",
-				"error": "",
+				"error": "Erreur lors de votre ajout au groupe ☹️ Notre mal !",
 				"you-invited": "Vous avez invité",
 				"this-contact": "ce contact",
 				"to-a-group": "à un groupe ! 💌"
@@ -430,7 +430,7 @@
 			"show-less": "Afficher moins"
 		},
 		"emojis": {
-			"matching": ""
+			"matching": "Correspondance de smileys"
 		}
 	},
 	"audio": {
@@ -463,8 +463,8 @@
 			"desc": "Pour envoyer des messages audio à vos contacts, vous devez autoriser l'application Berty à accéder au microphone."
 		},
 		"gallery": {
-			"title": "",
-			"desc": ""
+			"title": "Messagerie d'images",
+			"desc": "Pour envoyer des images à vos contacts, vous devez autoriser Berty à accéder aux photos et autres médias stockés sur votre appareil."
 		},
 		"button-labels": {
 			"allow": "Autoriser",
@@ -477,11 +477,11 @@
 	"notification": {
 		"need-restart": {
 			"title": "Redémarrage nécessaire",
-			"desc": ""
+			"desc": "Redémarrez Berty pour sauvegarder vos données et activer les notifications !"
 		},
 		"need-restart-ble": {
 			"title": "Redémarrage nécessaire",
-			"desc": ""
+			"desc": "Redémarrez Berty et activez le Bluetooth dans les paramètres système !"
 		}
 	},
 	"error": {
