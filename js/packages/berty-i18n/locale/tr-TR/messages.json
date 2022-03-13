@@ -3,33 +3,33 @@
 		"getstarted": {
 			"title": "GİZLİLİĞİNİZİ KORUYUN",
 			"desc": "ücretsiz & güvenli eşler arası mesajlaşma",
-			"create-button": "",
-			"import-button": "",
-			"link-button": ""
+			"create-button": "Yeni bir hesap oluştur",
+			"import-button": "Hesabı içeri aktar",
+			"link-button": "Bu cihazı bağla"
 		},
 		"default-mode": {
 			"summary": {
-				"title": "",
-				"subtitle": "",
+				"title": "Varsayılan Mod",
+				"subtitle": "Hızlıca Başla",
 				"first-point": "",
 				"second-point": "",
-				"back-button": "",
-				"accept-button": ""
+				"back-button": "Geri",
+				"accept-button": "Başlayalım"
 			}
 		},
 		"custom-mode": {
 			"summary": {
-				"title": "",
-				"subtitle": "",
-				"first-point": "",
+				"title": "Özelleştirilmiş Mod",
+				"subtitle": "Özelleştirilmiş Gizlilik/Konfor Dengesi",
+				"first-point": "Bu modda tüm ayarları gizlilik ve konfor dengesi sana uygun hale gelene kadar değiştir.",
 				"second-point": "",
-				"back-button": "",
-				"accept-button": ""
+				"back-button": "Geri",
+				"accept-button": "İleri"
 			},
 			"settings": {
 				"off-grid": {
 					"title": "",
-					"ble-button": "",
+					"ble-button": "Bluetooth Düşük Enerji",
 					"nearby-button": "",
 					"mc-button": "",
 					"mdns-button": ""
@@ -40,13 +40,13 @@
 					"rdvp-button": ""
 				},
 				"access": {
-					"title": "",
+					"title": "Ağ Erişilebilirliği",
 					"relay-button": "",
 					"bootstrap-button": "",
 					"replication-button": ""
 				},
-				"all-button": "",
-				"accept-button": ""
+				"all-button": "Hepsi",
+				"accept-button": "Başlayalım"
 			}
 		},
 		"create-account": {
@@ -55,7 +55,7 @@
 			"good-to-know": {
 				"title": "Bilmeniz gerekenler:",
 				"first-point": "Hesabınız yerel olarak oluşturuldu",
-				"second-point": ""
+				"second-point": "Takma ad isteğe bağlı ve sonradan değiştirilebilir"
 			}
 		},
 		"generate-key": {
@@ -69,7 +69,7 @@
 		},
 		"web-views": {
 			"title": "",
-			"desc": "",
+			"desc": "Ağ üzerinde webview yüklemelerine hazırlık yapıyoruz. Hala açmak istiyor musun?",
 			"first-button": "İptal",
 			"second-button": "Evet"
 		}
@@ -101,14 +101,14 @@
 			"create-group-finalize": {
 				"placeholder": "Grup ismi",
 				"about": "Grup Hakkında",
-				"first-bullet-point": "",
-				"second-bullet-point": "",
+				"first-bullet-point": "Tüm grup üyeleri ismi değiştirebilir ve yeni üye davet edebilir",
+				"second-bullet-point": "Bağlantı ile yeni üye davet edebilirsin",
 				"third-bullet-point": "Bu gruptan ayrılabilirsiniz",
 				"fourth-bullet-point": "Bu grubu silemezsiniz",
 				"fifth-bullet-point": "Bu gruptan bir üye silemezsiniz"
 			},
 			"conversations": {
-				"request-sent": "",
+				"request-sent": "İstek gönderildi. Bekliyor...",
 				"draft": ""
 			}
 		},
@@ -122,28 +122,28 @@
 			"proximity-button": "",
 			"notifications-button": "Bildirimler",
 			"contact-convs-button": "",
-			"appearance-button": "",
-			"devices-button": "",
+			"appearance-button": "Görünüş",
+			"devices-button": "Cihazlar ve yedekleme",
 			"accounts-button": "Hesaplar",
-			"network-button": "",
-			"bug-button": "",
+			"network-button": "Ağ",
+			"bug-button": "Hata bildir",
 			"about-button": "Berty Hakkında"
 		},
 		"about": {
 			"faq-button": "SSS",
-			"roadmap-button": "",
-			"policy-button": "",
-			"license-button": ""
+			"roadmap-button": "Yol haritası",
+			"policy-button": "Gizlilik Politikası",
+			"license-button": "Açık Kaynak Lisansları"
 		},
 		"accounts": {
 			"accounts-button": "Hesaplar",
-			"create-button": "",
-			"import-button": "",
-			"link-button": "",
-			"delete-button": ""
+			"create-button": "Yeni hesap oluştur",
+			"import-button": "Hesabı içeri aktar",
+			"link-button": "Farklı bir cihaz bağla",
+			"delete-button": "Bu hesabı sil"
 		},
 		"appearance": {
-			"dark-button": "",
+			"dark-button": "Karanlık Mod",
 			"editor-button": ""
 		},
 		"contact-convs": {
@@ -329,26 +329,26 @@
 			"input-placeholder": "Buraya yaz..."
 		},
 		"push-notifications": {
-			"enable": "",
-			"enabled": "",
-			"unsupported": "",
+			"enable": "Bildirimleri aç",
+			"enabled": "Bildirimler açık",
+			"unsupported": "Bildirimler desteklenmiyor",
 			"check-device-settings": "",
 			"warning-disable": {
-				"title": "",
+				"title": "Bu özelliği aktifleştirmek istiyor musun?",
 				"subtitle": "",
-				"accept": "",
-				"refuse": ""
+				"accept": "Aktifleştir",
+				"refuse": "Geç"
 			},
 			"why-cant-disable": "",
 			"errors": {
-				"no-token": "",
+				"no-token": "Cihazın bildirimleri desteklemiyor",
 				"no-server": ""
 			}
 		},
 		"devices": {
 			"title": "Aygıtlar",
 			"push": {
-				"enabled": "",
+				"enabled": "Bildirimler açık",
 				"not-enabled": "Anlık bildirimler devre dışı"
 			}
 		},
@@ -372,12 +372,12 @@
 		"one-to-one": {
 			"contact-request-box": {
 				"title": "KİŞİ İSTEĞİ",
-				"group-invitation": "",
+				"group-invitation": "GRUP DAVETİ",
 				"refuse-button": "REDDET",
 				"accept-button": "KABUL ET",
 				"accepted-button": "KABUL EDİLDİ",
-				"error": "",
-				"you-invited": "",
+				"error": "Seni gruba eklerken hatayla karşılaştık ☹️ Bizim hatamız!",
+				"you-invited": "Sen davet ettin",
 				"this-contact": "",
 				"to-a-group": ""
 			},
@@ -416,7 +416,7 @@
 		},
 		"shared-medias": {
 			"title": "Paylaşılan medyalar",
-			"medias": "",
+			"medias": "Medya",
 			"links": "Bağlantılar",
 			"documents": "Belgeler"
 		},
@@ -426,7 +426,7 @@
 			"replied-to": "Yanıtlandı"
 		},
 		"user-message": {
-			"read-more": "",
+			"read-more": "Daha fazla",
 			"show-less": "Daha az göster"
 		},
 		"emojis": {
@@ -446,11 +446,11 @@
 	},
 	"permission": {
 		"notification": {
-			"title": "",
+			"title": "Bildirimler",
 			"desc": ""
 		},
 		"proximity": {
-			"title": "",
+			"title": "Bluetooth Mesajlaşma",
 			"android-desc": "",
 			"ios-desc": ""
 		},
@@ -459,11 +459,11 @@
 			"desc": ""
 		},
 		"audio": {
-			"title": "",
+			"title": "Sesli Mesajlar",
 			"desc": "Kişilerinize sesli mesaj göndermek için Berty uygulamasına mikrofona erişimi izni tanımalısınız."
 		},
 		"gallery": {
-			"title": "",
+			"title": "Fotoğrafla Mesajlaşma",
 			"desc": ""
 		},
 		"button-labels": {
@@ -476,12 +476,12 @@
 	},
 	"notification": {
 		"need-restart": {
-			"title": "",
-			"desc": ""
+			"title": "Yeniden başlatma gerekli",
+			"desc": "Verilerini kaydetmek ve bildirimleri açmak için Berty'i yeniden başlat!"
 		},
 		"need-restart-ble": {
-			"title": "",
-			"desc": ""
+			"title": "Yeniden başlatma gerekli",
+			"desc": "Berty'i yeniden başlat ve sistem ayarlarından Bluetooth'u aktifleştir!"
 		}
 	},
 	"error": {
@@ -493,7 +493,7 @@
 		"wtf-screen": {
 			"title": "Hata nedir?",
 			"desc": "Uygulama az önce çöktü.",
-			"desc-report": ""
+			"desc-report": "Uygulamadan çıkıp yeniden başlatmak için butona tıklayın."
 		},
 		"sorry-screen": {
 			"title": "Bu hata için üzgünüm!",
