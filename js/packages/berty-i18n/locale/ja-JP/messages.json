@@ -482,6 +482,10 @@
 		"need-restart-ble": {
 			"title": "",
 			"desc": ""
+		},
+		"submit-failed": {
+			"title": "",
+			"desc": ""
 		}
 	},
 	"error": {
