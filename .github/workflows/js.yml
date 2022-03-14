@@ -57,7 +57,7 @@ jobs:
         env:
           CI: true
       - name: Look for i18n dead keys
-        run: bash tool/check-dead-i18n/check.sh
+        run: ./tool/check-dead-i18n/check.js
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v2.1.0
         with:
