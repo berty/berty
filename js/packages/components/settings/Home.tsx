@@ -14,6 +14,7 @@ import {
 	useMessengerContext,
 	useMountEffect,
 	useThemeColor,
+	useMessengerClient,
 } from '@berty-tech/store'
 import { useAccount } from '@berty-tech/react-redux'
 import { selectSelectedAccount } from '@berty-tech/redux/reducers/ui.reducer'
@@ -27,6 +28,7 @@ import {
 	setBlePerm,
 	setCurrentNetworkConfig,
 } from '@berty-tech/redux/reducers/networkConfig.reducer'
+import * as MailComposer from 'expo-mail-composer'
 
 const ProfileButton: React.FC<{}> = () => {
 	const [{ padding, margin, border }, { scaleSize }] = useStyles()
@@ -86,6 +88,7 @@ export const Home: ScreenFC<'Settings.Home'> = withInAppNotification(
 		const colors = useThemeColor()
 		const { navigate } = useNavigation()
 		const { t }: { t: any } = useTranslation()
+		const messengerClient = useMessengerClient()
 
 		const selectedAccount = useSelector(selectSelectedAccount)
 		const ctx = useMessengerContext()
@@ -93,6 +96,44 @@ export const Home: ScreenFC<'Settings.Home'> = withInAppNotification(
 		const blePerm = useSelector(selectBlePerm)
 		const networkConfig = useSelector(selectCurrentNetworkConfig)
 		const dispatch = useDispatch()
+
+		const generateEmail = React.useCallback(async () => {
+			var systemInfo = await messengerClient?.systemInfo({})
+			// Delete useless / intrusive infos
+			delete systemInfo?.protocol?.process?.hostName
+			delete systemInfo?.protocol?.process?.systemUsername
+			delete systemInfo?.messenger?.process?.hostName
+			delete systemInfo?.messenger?.process?.systemUsername
+			try {
+				let result = await MailComposer.composeAsync({
+					recipients: ['bugs@berty.tech'],
+					subject: 'Bug report',
+					body: `You can describe your bug here.
+						--------------------------------
+						${JSON.stringify(
+							{
+								systemInfo: systemInfo,
+								networkConfig: networkConfig,
+							},
+							null,
+							2,
+						)}`,
+				})
+				if (result.status === MailComposer.MailComposerStatus.UNDETERMINED) {
+					showNotification({
+						title: t('notification.submit-failed.title'),
+						message: t('notification.submit-failed.desc'),
+						additionalProps: { type: 'message' },
+					})
+				}
+			} catch (err) {
+				showNotification({
+					title: t('notification.submit-failed.title'),
+					message: t('notification.submit-failed.desc'),
+					additionalProps: { type: 'message' },
+				})
+			}
+		}, [messengerClient, networkConfig, showNotification, t])
 
 		// get network config of the account at the mount of the component
 		useMountEffect(() => {
@@ -263,13 +304,11 @@ export const Home: ScreenFC<'Settings.Home'> = withInAppNotification(
 						)}
 					</Section>
 					<Section>
-						{/*
 						<ButtonSettingV2
 							text={t('settings.home.bug-button')}
 							icon='mail'
-							onPress={() => console.log('TODO')}
+							onPress={() => generateEmail()}
 						/>
-						*/}
 						<ButtonSettingV2
 							text={t('settings.home.about-button')}
 							icon='info'

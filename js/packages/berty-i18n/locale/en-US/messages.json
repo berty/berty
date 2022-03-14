@@ -482,6 +482,10 @@
 		"need-restart-ble": {
 			"title": "Restart required",
 			"desc": "Restart Berty and enable Bluetooth in system settings!"
+		},
+		"submit-failed": {
+			"title": "Cannot submit a bug",
+			"desc": "Mail app missing"
 		}
 	},
 	"error": {

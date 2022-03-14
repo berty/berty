@@ -76,6 +76,7 @@ const methodsHooks = (name, svcType, prefix) => {
 			reply: ${prefix}.${method.name}.IReply | null
 			done: boolean
 			called: boolean
+			loading: boolean
 		},`)
 	})
 	console.log('}')

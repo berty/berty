@@ -1,9 +1,18 @@
+require File.join(File.dirname(`node --print "require.resolve('expo/package.json')"`), "scripts/autolinking")
 require_relative '../node_modules/react-native/scripts/react_native_pods'
 require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
 
 platform :ios, '12.0'
 
 target 'Berty' do
+  use_expo_modules!
+  post_integrate do |installer|
+    begin
+      expo_patch_react_imports!(installer)
+    rescue => e
+      Pod::UI.warn e
+    end
+  end
   config = use_native_modules!
 
 use_react_native!(

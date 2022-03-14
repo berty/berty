@@ -338,6 +338,7 @@ export type MessengerMethodsHooks = {
 		reply: beapi.messenger.InteractionReactionsForEmoji.IReply | null
 		done: boolean
 		called: boolean
+		loading: boolean
 	}
 }
 export type ProtocolMethodsHooks = {

@@ -181,6 +181,8 @@ targets:
       link: true
     - framework: ./Frameworks/Bertybridge.xcframework
       embed: false
+    - framework: "${SRCROOT}/../node_modules/expo-file-system/ios/EXFileSystem.xcframework"
+      embed: false
 
     preBuildScripts:
     - name: Copy GoogleService
