@@ -482,6 +482,10 @@
 		"need-restart-ble": {
 			"title": "Redémarrage nécessaire",
 			"desc": "Redémarrez Berty et activez le Bluetooth dans les paramètres système !"
+		},
+		"submit-failed": {
+			"title": "",
+			"desc": ""
 		}
 	},
 	"error": {
