@@ -1,61 +1,61 @@
 {
 	"onboarding": {
 		"getstarted": {
-			"title": "",
-			"desc": "",
-			"create-button": "",
-			"import-button": "",
-			"link-button": ""
+			"title": "Védd meg adataid",
+			"desc": "ingyenes & biztonságos ponttól-pontig üzenetküldés",
+			"create-button": "Fiók létrehozása",
+			"import-button": "Fiók importálása",
+			"link-button": "Eszköz összekapcsolása"
 		},
 		"default-mode": {
 			"summary": {
-				"title": "",
-				"subtitle": "",
-				"first-point": "",
-				"second-point": "",
-				"back-button": "",
-				"accept-button": ""
+				"title": "Alapértelmezett mód",
+				"subtitle": "Kezdje el gyorsan",
+				"first-point": "Kezdje az előre beállított beállításokkal, amelyek a leginkább megfelelőbb a magánélet/kényelem arányában. A Berty csomópontokat a teljesítmény és az aszinkron kommunikáció javítására használja.",
+				"second-point": "Az egyéni adatvédelmi/használati módhoz, válaszd az Egyéni módot.",
+				"back-button": "Vissza",
+				"accept-button": "Kezdés"
 			}
 		},
 		"custom-mode": {
 			"summary": {
-				"title": "",
-				"subtitle": "",
-				"first-point": "",
-				"second-point": "",
-				"back-button": "",
-				"accept-button": ""
+				"title": "Egyéni mód",
+				"subtitle": "Egyéni Adatvédelem/Használati mód",
+				"first-point": "Ebben az üzemmódban minden beállítást egyénileg állítson be, hogy létrehozza a magánélet és a használati mód arányát.",
+				"second-point": "A kulcsrakész élményhez válassza az Alapértelmezett módot.",
+				"back-button": "Vissza",
+				"accept-button": "Folytatás"
 			},
 			"settings": {
 				"off-grid": {
-					"title": "",
-					"ble-button": "",
-					"nearby-button": "",
-					"mc-button": "",
-					"mdns-button": ""
+					"title": "Hálózaton kívüli kommunikáció",
+					"ble-button": "Bluetooth alacsony energiaszint",
+					"nearby-button": "Android a közelben",
+					"mc-button": "Több-pontú Apple csatlakoztathatóság",
+					"mdns-button": "Csoportos DNS (LAN)"
 				},
 				"routing": {
-					"title": "",
-					"dht-button": "",
-					"rdvp-button": ""
+					"title": "Útválasztás",
+					"dht-button": "Elosztott hash-tábla",
+					"rdvp-button": "Találkozási csomópontok"
 				},
 				"access": {
-					"title": "",
-					"relay-button": "",
-					"bootstrap-button": "",
-					"replication-button": ""
+					"title": "Hálózati hozzáférhetőség",
+					"relay-button": "Közvetítő csomópontok (TURN)",
+					"bootstrap-button": "Rendszertöltő csomópontok",
+					"replication-button": "Replikációs csomópontok"
 				},
-				"all-button": "",
-				"accept-button": ""
+				"all-button": "Összes",
+				"accept-button": "Kezdés"
 			}
 		},
 		"create-account": {
 			"title": "Fiók létrehozása",
-			"placeholder": "",
+			"placeholder": "Válaszd ki a beceneved",
 			"good-to-know": {
-				"title": "",
-				"first-point": "",
-				"second-point": ""
+				"title": "Jobb ha tudod:",
+				"first-point": "Fiókja helyileg jön létre",
+				"second-point": "A becenév opcionális és később is megváltoztatható"
 			}
 		},
 		"generate-key": {
@@ -68,10 +68,10 @@
 			"button": "BERTY HASZNÁLATÁNAK KEZDÉSE"
 		},
 		"web-views": {
-			"title": "",
-			"desc": "",
+			"title": "Webes nézetek",
+			"desc": "Felkészültünk a webes nézetre való betöltésre a hálózaton. Továbbra is meg akarod nyitni?",
 			"first-button": "Mégse",
-			"second-button": ""
+			"second-button": "Igen"
 		}
 	},
 	"main": {
@@ -108,7 +108,7 @@
 				"fifth-bullet-point": "Nem dobhat ki egy csoporttagot ebből a csoportból"
 			},
 			"conversations": {
-				"request-sent": "",
+				"request-sent": "Kérés elküldve. Függőben...",
 				"draft": "Vázlat: {{message}}"
 			}
 		},
@@ -119,25 +119,25 @@
 	},
 	"settings": {
 		"home": {
-			"proximity-button": "",
+			"proximity-button": "Hálózaton kívüli kommunikáció",
 			"notifications-button": "Értesítések",
-			"contact-convs-button": "",
-			"appearance-button": "",
-			"devices-button": "",
+			"contact-convs-button": "Kapcsolat és beszélgetések",
+			"appearance-button": "Megjelenítés",
+			"devices-button": "Eszközök és biztonsági mentés",
 			"accounts-button": "Fiókok",
-			"network-button": "",
-			"bug-button": "",
+			"network-button": "Hálózat",
+			"bug-button": "Hibabejelentés",
 			"about-button": "Berty-ről"
 		},
 		"about": {
-			"faq-button": "",
-			"roadmap-button": "",
-			"policy-button": "",
-			"license-button": ""
+			"faq-button": "GYIK",
+			"roadmap-button": "Útvonal",
+			"policy-button": "Adatvédelmi irányelvek",
+			"license-button": "Nyílt forráskódú licencek"
 		},
 		"accounts": {
 			"accounts-button": "Fiókok",
-			"create-button": "",
+			"create-button": "Fiók létrehozása",
 			"import-button": "",
 			"link-button": "",
 			"delete-button": ""
@@ -378,8 +378,8 @@
 				"accepted-button": "ELFOGADVA",
 				"error": "",
 				"you-invited": "",
-				"this-contact": "",
-				"to-a-group": ""
+				"this-contact": "ez a kapcsolat",
+				"to-a-group": "csoportba"
 			},
 			"infos-chat": {
 				"connection-confirmed": "👋 Berty kapcsolat megerősítve! 🎉",
@@ -402,7 +402,7 @@
 		},
 		"files": {
 			"gallery": "Galéria",
-			"no-images": "",
+			"no-images": "Nincsenek képek",
 			"camera": "Kamera",
 			"files": "Fájlok",
 			"microphone": "Mikrofon",
@@ -426,11 +426,11 @@
 			"replied-to": "Válaszolt neki"
 		},
 		"user-message": {
-			"read-more": "",
-			"show-less": ""
+			"read-more": "Tudj meg többet",
+			"show-less": "Kevesebb mutatása"
 		},
 		"emojis": {
-			"matching": ""
+			"matching": "Emoji-k összevetése"
 		}
 	},
 	"audio": {
@@ -446,25 +446,25 @@
 	},
 	"permission": {
 		"notification": {
-			"title": "",
+			"title": "Értesítések",
 			"desc": "Berty-nek szükesége van az engedélyére, hogy helyi vagy push értesítéseket küldjön. Így értesül majd új üzenetk érkezéséről."
 		},
 		"proximity": {
-			"title": "",
+			"title": "Bluetooth Üzenetküldés",
 			"android-desc": "A hálózat nélküli Bluetooth-on keresztül, az alkalmazás háttérbehelyezésekor történő üzenetváltáshoz az Android API-nak szüksége van a lokalizáció használatának egedélyezésére. Elhelyezkedési adatait nem használjuk.",
 			"ios-desc": "Az internet nélküli, Bluetoothon keresztül való kommunikáláshoz, az iOS API-nak szüksége van az engedélyére."
 		},
 		"camera": {
 			"title": "Kamera",
-			"desc": ""
+			"desc": "Szeretné engedélyezni a kamerát képek készítésére vagy QR-kódok beolvasására?"
 		},
 		"audio": {
-			"title": "",
+			"title": "Hangüzenetek",
 			"desc": "A hangüzenetek küldéséhez engedélyeznie kell a mikrofon használatát."
 		},
 		"gallery": {
-			"title": "",
-			"desc": ""
+			"title": "Képüzenetek",
+			"desc": "Ha képeket szeretne küldeni a kapcsolatainak, engedélyeznie kell a Berty számára, hogy hozzáférjen az eszközén tárolt fényképekhez és egyéb médiához."
 		},
 		"button-labels": {
 			"allow": "Engedélyezni",
@@ -476,12 +476,16 @@
 	},
 	"notification": {
 		"need-restart": {
-			"title": "",
-			"desc": ""
+			"title": "Újraindítás szükséges",
+			"desc": "Indítsa újra a Bertyt az adatok mentéséhez és az értesítések engedélyezéséhez!"
 		},
 		"need-restart-ble": {
-			"title": "",
-			"desc": ""
+			"title": "Újraindítás szükséges",
+			"desc": "Indítsa újra a Berty-t, és engedélyezze a Bluetooth kapcsolatot a rendszerbeállításokban!"
+		},
+		"submit-failed": {
+			"title": "Hibabejelentés nem lehetséges",
+			"desc": "A Levelező alkalmazás hiányzik"
 		}
 	},
 	"error": {
@@ -493,13 +497,13 @@
 		"wtf-screen": {
 			"title": "Mi a probléma?",
 			"desc": "Az app éppen összeomlott.",
-			"desc-report": ""
+			"desc-report": "Kattintson a gombra az alkalmazásból való kilépéshez és újraindításához."
 		},
 		"sorry-screen": {
 			"title": "Elnézést a hibáért!",
 			"desc": "Ez biztos Francis hibája, a Berty gyakornok fejlesztőjének, aki bizonyosan hibázott. Micsoda bunkó ez a Francis!",
 			"desc-em": "* Hát, oké, Francis nincs a Berty-nél.",
-			"desc-report": ""
+			"desc-report": "Kattintson a gombra az alkalmazásból való kilépéshez és újraindításához."
 		}
 	},
 	"debug": {
@@ -526,10 +530,10 @@
 					"action-cancel": "Mégse"
 				},
 				"status": {
-					"datastore-found": "",
-					"datastore-not-found": "",
-					"ipfs-repo-found": "",
-					"ipfs-repo-not-found": "",
+					"datastore-found": "Talált adattár",
+					"datastore-not-found": "Nincs található adattár",
+					"ipfs-repo-found": "Talált IPFS-tároló",
+					"ipfs-repo-not-found": "Nincs található IPFS-tároló",
 					"messenger-db-found": "Messenger DB megtalálva",
 					"messenger-db-not-found": "Messenger DB nem található"
 				},
