@@ -482,6 +482,10 @@
 		"need-restart-ble": {
 			"title": "需要重新启动",
 			"desc": "重启 Berty 并在系统设置中启用蓝牙！"
+		},
+		"submit-failed": {
+			"title": "",
+			"desc": ""
 		}
 	},
 	"error": {
