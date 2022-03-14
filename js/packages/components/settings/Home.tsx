@@ -98,16 +98,26 @@ export const Home: ScreenFC<'Settings.Home'> = withInAppNotification(
 		const dispatch = useDispatch()
 
 		const generateEmail = React.useCallback(async () => {
-			const systemInfo = await messengerClient?.systemInfo({})
+			var systemInfo = await messengerClient?.systemInfo({})
+			// Delete useless / intrusive infos
+			delete systemInfo?.protocol?.process?.hostName
+			delete systemInfo?.protocol?.process?.systemUsername
+			delete systemInfo?.messenger?.process?.hostName
+			delete systemInfo?.messenger?.process?.systemUsername
 			try {
 				let result = await MailComposer.composeAsync({
 					recipients: ['bugs@berty.tech'],
 					subject: 'Bug report',
-					body:
-						'You can describe your bug here.\n---\n' +
-						JSON.stringify(systemInfo, null, 2) +
-						'\n' +
-						JSON.stringify(networkConfig, null, 2),
+					body: `You can describe your bug here.
+						--------------------------------
+						${JSON.stringify(
+							{
+								systemInfo: systemInfo,
+								networkConfig: networkConfig,
+							},
+							null,
+							2,
+						)}`,
 				})
 				if (result.status === MailComposer.MailComposerStatus.UNDETERMINED) {
 					showNotification({
