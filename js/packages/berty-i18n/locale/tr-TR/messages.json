@@ -482,6 +482,10 @@
 		"need-restart-ble": {
 			"title": "Yeniden başlatma gerekli",
 			"desc": "Berty'i yeniden başlat ve sistem ayarlarından Bluetooth'u aktifleştir!"
+		},
+		"submit-failed": {
+			"title": "",
+			"desc": ""
 		}
 	},
 	"error": {
