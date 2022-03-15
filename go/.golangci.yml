@@ -19,7 +19,12 @@ linters-settings:
   misspell:
     locale: US
   gci:
-    local-prefixes: berty.tech
+    sections:
+      - standard
+      - default
+      - prefix(berty.tech)
+      # - prefix(github.com/libp2p)
+      # - prefix(github.com/ipfs)
 
 linters:
   disable-all: true

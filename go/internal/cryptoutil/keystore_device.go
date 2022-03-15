@@ -28,7 +28,6 @@ type DeviceKeystore interface {
 	ContactGroupPrivKey(pk crypto.PubKey) (crypto.PrivKey, error)
 	MemberDeviceForGroup(g *protocoltypes.Group) (*OwnMemberDevice, error)
 	RestoreAccountKeys(accountKey crypto.PrivKey, accountProofKey crypto.PrivKey) error
-
 	AttachmentPrivKey(cid []byte) (crypto.PrivKey, error)
 	AttachmentPrivKeyPut(cid []byte, sk crypto.PrivKey) error
 	AttachmentSecret(cid []byte) ([]byte, error)

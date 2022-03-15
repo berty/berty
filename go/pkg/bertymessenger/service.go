@@ -13,7 +13,6 @@ import (
 	"time"
 
 	sqlite "github.com/flyingtime/gorm-sqlcipher"
-
 	// nolint:staticcheck // cannot use the new protobuf API while keeping gogoproto
 	"github.com/golang/protobuf/proto"
 	ipfscid "github.com/ipfs/go-cid"

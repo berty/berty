@@ -11,7 +11,6 @@ import (
 
 type Service interface {
 	BridgeServiceServer
-
 	ServiceClientRegister
 
 	Close() error
