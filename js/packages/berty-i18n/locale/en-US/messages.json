@@ -484,8 +484,8 @@
 			"desc": "Restart Berty and enable Bluetooth in system settings!"
 		},
 		"submit-failed": {
-			"title": "",
-			"desc": ""
+			"title": "Bug can not be submitted",
+			"desc": "Mail application is missing"
 		}
 	},
 	"error": {
