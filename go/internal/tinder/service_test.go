@@ -12,8 +12,8 @@ import (
 	"github.com/libp2p/go-libp2p-core/host"
 	idisc "github.com/libp2p/go-libp2p-discovery"
 	mocknet "github.com/libp2p/go-libp2p/p2p/net/mock"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/tj/assert"
 
 	"berty.tech/berty/v2/go/internal/testutil"
 )
