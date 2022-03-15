@@ -82,6 +82,9 @@ lint: go.lint
 .PHONY: lint
 
 
+lint.fix: go.fmt
+.PHONY: lint.fix
+
 ##
 ## Other rules
 ##
@@ -93,7 +96,6 @@ go.tidy: pb.generate
 	$(call check-program, $(GO))
 	GO111MODULE=on $(GO) mod tidy
 .PHONY: go.tidy
-
 
 go.lint: pb.generate
 	$(call check-program, golangci-lint)
@@ -220,7 +222,8 @@ generate_local:
 
 
 go.fmt:
-	go run github.com/daixiang0/gci -w -local berty.tech .
+	go run github.com/daixiang0/gci write \
+		--Section Standard --Section Default --Section 'Prefix(berty.tech)' .
 	go run mvdan.cc/gofumpt -w -s .
 .PHONY: go.fmt
 

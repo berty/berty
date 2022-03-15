@@ -15,8 +15,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/tj/assert"
 	"google.golang.org/grpc"
 
 	"berty.tech/berty/v2/go/internal/grpcutil"

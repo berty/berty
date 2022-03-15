@@ -12,7 +12,6 @@ import (
 	"time"
 
 	"github.com/atotto/clipboard"
-
 	// nolint:staticcheck // cannot use the new protobuf API while keeping gogoproto
 	"github.com/golang/protobuf/proto"
 	"github.com/ipfs/go-cid"

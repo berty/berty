@@ -8,8 +8,8 @@ import (
 	"testing"
 
 	"github.com/mdp/qrterminal"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/tj/assert"
 	"moul.io/srand"
 	"moul.io/u"
 

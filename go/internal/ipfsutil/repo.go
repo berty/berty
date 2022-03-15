@@ -15,7 +15,6 @@ import (
 	"github.com/pkg/errors"
 
 	"berty.tech/berty/v2/go/pkg/errcode"
-
 	// nolint:staticcheck
 	encrepo "berty.tech/go-ipfs-repo-encrypted"
 )

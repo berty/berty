@@ -19,7 +19,7 @@ require (
 	github.com/buicongtan1997/protoc-gen-swagger-config v0.0.0-20190801162412-b6396e884596
 	github.com/campoy/embedmd v1.0.0
 	github.com/cenkalti/backoff v2.2.1+incompatible
-	github.com/daixiang0/gci v0.2.9
+	github.com/daixiang0/gci v0.3.2
 	github.com/denisbrodbeck/machineid v1.0.1
 	github.com/dgraph-io/ristretto v0.0.3 // indirect
 	github.com/eknkc/basex v1.0.1
@@ -91,7 +91,6 @@ require (
 	github.com/skip2/go-qrcode v0.0.0-20200617195104-da1b6568686e
 	github.com/stretchr/testify v1.7.0
 	github.com/tailscale/depaware v0.0.0-20210622194025-720c4b409502
-	github.com/tj/assert v0.0.3
 	github.com/whyrusleeping/cbor-gen v0.0.0-20210713220151-be142a5ae1a8 // indirect
 	github.com/zcalusic/sysinfo v0.0.0-20200820110305-ef1bb2697bc2
 	go.uber.org/goleak v1.1.11
