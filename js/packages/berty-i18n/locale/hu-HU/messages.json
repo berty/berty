@@ -1,7 +1,7 @@
 {
 	"onboarding": {
 		"getstarted": {
-			"title": "Védd meg adataid",
+			"title": "Védd meg adataidat",
 			"desc": "ingyenes & biztonságos ponttól-pontig üzenetküldés",
 			"create-button": "Fiók létrehozása",
 			"import-button": "Fiók importálása",
@@ -138,29 +138,29 @@
 		"accounts": {
 			"accounts-button": "Fiókok",
 			"create-button": "Fiók létrehozása",
-			"import-button": "",
-			"link-button": "",
-			"delete-button": ""
+			"import-button": "Fiók importálása",
+			"link-button": "Eszköz összekapcsolása",
+			"delete-button": "Fiók törlése"
 		},
 		"appearance": {
-			"dark-button": "",
-			"editor-button": ""
+			"dark-button": "Sötét mód",
+			"editor-button": "Téma testreszabása"
 		},
 		"contact-convs": {
-			"reset-button": "",
-			"request-button": ""
+			"reset-button": "Állítsa vissza a kapcsolatfelvételi linket / QR-kódot",
+			"request-button": "Bejövő kapcsolatfelvételi kérések engedélyezése"
 		},
 		"network": {
-			"ble-button": "",
-			"mc-button": "",
-			"nearby-button": "",
+			"ble-button": "Bluetooth alacsony energiaszint",
+			"mc-button": "Több-pontú Apple csatlakoztathatóság",
+			"nearby-button": "Android a közelben",
 			"mdns-button": "Multicast DNS",
-			"memo-cell-button": "",
-			"medias-cell-button": "",
-			"dht-button": "",
-			"rdvp-button": "",
-			"relay-button": "",
-			"bootstrap-button": ""
+			"memo-cell-button": "Hangjegyzet betöltése mobilra",
+			"medias-cell-button": "Média anyagok betöltése mobilra",
+			"dht-button": "Elosztott hash-tábla",
+			"rdvp-button": "Találkozási csomópontok",
+			"relay-button": "Közvetítő csomópontok",
+			"bootstrap-button": "Beöltő csomópontok"
 		},
 		"edit-profile": {
 			"title": "Fiók szerkesztése",
@@ -172,9 +172,9 @@
 			"name-input-label": "Név"
 		},
 		"berty-services": {
-			"title": "",
-			"desc": "",
-			"button": "",
+			"title": "Berty szolgáltatások",
+			"desc": "A Berty szolgáltatások aktiválása lehetővé teszik, hogy push értesítéseket kapjon a Berty Technologies szerverein keresztül, és hozzáférést biztosítson a csomópontokhoz a beszélgetés felállításához.",
+			"button": "Berty szolgáltatások használata",
 			"skip": "KIHAGYJA ÉS KÉSŐBB CSINÁLJA MEG"
 		},
 		"delete-account": {
@@ -185,13 +185,13 @@
 			"delete-button": "TÖRLÉS"
 		},
 		"faq": {
-			"title": ""
+			"title": "GYIK"
 		},
 		"roadmap": {
-			"title": ""
+			"title": "Útvonal"
 		},
 		"privacy-policy": {
-			"title": ""
+			"title": "Adatvédelmi irányelvek"
 		},
 		"devtools": {
 			"title": "Fejlesztői eszközök",
@@ -234,7 +234,7 @@
 				"test": "Teszt, ",
 				"tried": "✔ {{length}} ismerősnek próbálkozott elküldeni"
 			},
-			"tyber-attach": "",
+			"tyber-attach": "csatlakozik a kiszolgálóhoz",
 			"tyber-host-button": {
 				"name": "Tyber",
 				"bullet-point": "Módosítás után indítsa újra az alkalmazást"
@@ -266,23 +266,23 @@
 			"export": "Téma mentése mint fájl (exportálásra)",
 			"share": "Téma megosztása mint fájl",
 			"import": "Téma fájl importálása",
-			"delete": "",
-			"bad-format-title": "",
-			"bad-format-desc": "",
+			"delete": "Törölje az összes nem alapértelmezett témát",
+			"bad-format-title": "Rossz témaformátum",
+			"bad-format-desc": "Nem megfelelő formátum a témafájlhoz",
 			"notification-file-saved": {
 				"title": "Adatok elmentve!",
 				"desc": "Elérhető a letöltések mappában"
 			}
 		},
 		"my-berty-ID": {
-			"title": "",
+			"title": "A Berty azonosítóm",
 			"qr": "QR",
 			"fingerprint": "Ujjlenyomat"
 		},
 		"share": {
-			"invite": "",
-			"tap-to-scan": "",
-			"create-group": ""
+			"invite": "Meghívás",
+			"tap-to-scan": "Koppintson a szkenneléshez",
+			"create-group": "Csoport létrehozás"
 		}
 	},
 	"modals": {
@@ -305,9 +305,9 @@
 			"fingerprint": "Ujjlenyomat",
 			"info": "Infók",
 			"devices": "Eszközök",
-			"join": "",
-			"password-label": "",
-			"password-placeholder": ""
+			"join": "Csatlakozás a csoporthoz",
+			"password-label": "Csoport jelszó megadása",
+			"password-placeholder": "Jelszó..."
 		},
 		"save-theme": {
 			"title": "Téma mentése",
@@ -319,36 +319,36 @@
 	},
 	"chat": {
 		"sending": "Küldés...",
-		"sent": "",
+		"sent": "Elküldött",
 		"contact-settings": {
 			"fingerprint": "Ujjlenyomat",
 			"info": "Infók",
-			"my-devices": ""
+			"my-devices": "Eszközeim"
 		},
 		"multi-member": {
 			"input-placeholder": "Írjon ide..."
 		},
 		"push-notifications": {
-			"enable": "",
-			"enabled": "",
-			"unsupported": "",
-			"check-device-settings": "",
+			"enable": "Felugró értesítések bekapcsolása",
+			"enabled": "Felugró értesítések engedélyezése",
+			"unsupported": "Az értesítések nem támogatottak",
+			"check-device-settings": "Ez a beszélgetés felugró értesítések fogadására van beállítva, de a riasztások le vannak tiltva az eszköz rendszerbeállításaiban",
 			"warning-disable": {
-				"title": "",
-				"subtitle": "",
-				"accept": "",
-				"refuse": ""
+				"title": "Aktiválja ezt a funkciót?",
+				"subtitle": "Ha engedélyezve van, akkor a felugró értesítéseket nem lehet letiltani egy adott beszélgetésnél.",
+				"accept": "Aktiválás",
+				"refuse": "Kihagyás"
 			},
-			"why-cant-disable": "",
+			"why-cant-disable": "A beszélgetésenkénti felugró értesítések nem kapcsolhatóak ki.",
 			"errors": {
-				"no-token": "",
-				"no-server": ""
+				"no-token": "Eszköze nem kompatibilis a felugró értesítésekkel",
+				"no-server": "Először regisztrálnia kell egy felugrü közvetítőt"
 			}
 		},
 		"devices": {
 			"title": "Eszközök",
 			"push": {
-				"enabled": "",
+				"enabled": "Felugró értesítések engedélyezése",
 				"not-enabled": "Értesítések letiltva"
 			}
 		},
@@ -372,12 +372,12 @@
 		"one-to-one": {
 			"contact-request-box": {
 				"title": "KAPCSOLAT KÉRÉS",
-				"group-invitation": "",
+				"group-invitation": "Csoportós meghívó",
 				"refuse-button": "ELUTASÍTÁS",
 				"accept-button": "ELFOGADÁS",
 				"accepted-button": "ELFOGADVA",
-				"error": "",
-				"you-invited": "",
+				"error": "Hiba történt a csoportba való felvételkor ☹️ A mi hibánk!",
+				"you-invited": "Meghívtál",
 				"this-contact": "ez a kapcsolat",
 				"to-a-group": "csoportba"
 			},
