@@ -342,6 +342,7 @@ export const openingClients = async (
 		precancel = true
 	}
 
+	console.log('GHEEERe')
 	messengerClient
 		.eventStream({ shallowAmount: 20 })
 		.then(async stream => {
@@ -353,25 +354,32 @@ export const openingClients = async (
 			stream.onMessage((msg, err) => {
 				try {
 					if (err) {
+						console.log('CACA:', msg?.event, err)
 						if (
 							err?.EOF ||
 							(err instanceof GRPCError &&
 								(err?.grpcErrorCode() === beapi.bridge.GRPCErrCode.CANCELED ||
 									err?.grpcErrorCode() === beapi.bridge.GRPCErrCode.UNAVAILABLE))
 						) {
+							if (err instanceof GRPCError) {
+								console.log('CACA:', err, err?.grpcErrorCode())
+							}
 							return
 						}
 						console.warn('events stream onMessage error:', err)
 						dispatch({ type: MessengerActions.SetStreamError, payload: { error: err } })
 					}
 
+					console.log('CACA0')
 					const evt = msg?.event
+					console.log('Event:', msg?.event)
 					if (!evt || evt.type === null || evt.type === undefined) {
 						console.warn('received empty or undefined event')
 						return
 					}
 
 					const action = streamEventToReduxAction(evt)
+					console.log('Action', action)
 					if (action?.type === 'messenger/Notified') {
 						const enumName =
 							beapi.messenger.StreamEvent.Notified.Type[

@@ -28,7 +28,6 @@ const DefaultModeBody: React.FC = () => {
 		// with an empty accountId the function returns default config
 		const defaultConfig = await accountService.networkConfigGet({ accountId: '' })
 		if (defaultConfig.currentConfig) {
-			console.log('configForPreset', defaultConfig.currentConfig)
 			setIsPressed(true)
 			await ctx.createNewAccount(defaultConfig.currentConfig)
 		}
@@ -168,7 +167,7 @@ const DefaultModeBody: React.FC = () => {
 							border.radius.medium,
 							{ width: 170 * scaleSize, backgroundColor: '#3744DD' },
 						]}
-						onPress={onPress}
+						onPress={async () => await onPress()}
 					>
 						{isPressed ? (
 							<ActivityIndicator color={colors['reverted-main-text']} />

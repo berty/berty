@@ -6,8 +6,6 @@ import {
 	RESULTS,
 	openSettings,
 	PermissionStatus,
-	request,
-	PERMISSIONS,
 } from '@berty-tech/polyfill/react-native-permissions'
 
 import { useStyles } from '@berty-tech/styles'
@@ -306,11 +304,7 @@ export const BlePermission: ScreenFC<'Main.BlePermission'> = ({ route: { params 
 	const handleRequestPermission = React.useCallback(async () => {
 		try {
 			// request the permission
-			const status = await request(
-				Platform.OS === 'ios'
-					? PERMISSIONS.IOS.BLUETOOTH_PERIPHERAL
-					: PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
-			)
+			const status = await requestPermission('proximity')
 			// set new Ble status for toggle's condition in settings
 			dispatch(setBlePerm(status))
 			// check status

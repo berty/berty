@@ -2,9 +2,7 @@ import React from 'react'
 import { ScrollView, TouchableOpacity, View, Platform } from 'react-native'
 import { Icon, Text } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
-import { withInAppNotification } from 'react-native-in-app-notification'
 import { useDispatch, useSelector } from 'react-redux'
-import { check, PERMISSIONS } from 'react-native-permissions'
 
 import beapi from '@berty-tech/api'
 import { useStyles } from '@berty-tech/styles'
@@ -18,7 +16,8 @@ import {
 } from '@berty-tech/store'
 import { useAccount } from '@berty-tech/react-redux'
 import { selectSelectedAccount } from '@berty-tech/redux/reducers/ui.reducer'
-import { checkBlePermission } from '@berty-tech/rnutil/checkPermissions'
+import { checkBlePermission, getPermissionStatus } from '@berty-tech/rnutil/checkPermissions'
+import { withInAppNotification } from '@berty-tech/polyfill/react-native-in-app-notification'
 
 import { AccountAvatar } from '../avatars'
 import { ButtonSettingV2, Section } from '../shared-components'
@@ -156,11 +155,10 @@ export const Home: ScreenFC<'Settings.Home'> = withInAppNotification(
 		// get OS status permission
 		useMountEffect(() => {
 			const f = async () => {
-				const status = await check(
-					Platform.OS === 'ios'
-						? PERMISSIONS.IOS.BLUETOOTH_PERIPHERAL
-						: PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
-				)
+				if (Platform.OS === 'web') {
+					return
+				}
+				const status = await getPermissionStatus('proximity')
 				dispatch(setBlePerm(status))
 			}
 			f()

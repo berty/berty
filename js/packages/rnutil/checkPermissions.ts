@@ -1,6 +1,4 @@
 import { Linking, Platform } from 'react-native'
-
-import beapi from '@berty-tech/api'
 import {
 	check,
 	checkNotifications,
@@ -11,20 +9,31 @@ import {
 	requestNotifications,
 	RESULTS,
 } from '@berty-tech/polyfill/react-native-permissions'
+import beapi from '@berty-tech/api'
 
 export type PermissionType = 'proximity' | 'audio' | 'notification' | 'camera' | 'gallery'
 
-export const permissionsByDevice: Record<string, Permission> = {
-	proximity:
-		Platform.OS === 'ios'
-			? PERMISSIONS.IOS.BLUETOOTH_PERIPHERAL
-			: PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
-	camera: Platform.OS === 'ios' ? PERMISSIONS.IOS.CAMERA : PERMISSIONS.ANDROID.CAMERA,
-	audio: Platform.OS === 'ios' ? PERMISSIONS.IOS.MICROPHONE : PERMISSIONS.ANDROID.RECORD_AUDIO,
-	gallery:
-		Platform.OS === 'ios'
-			? PERMISSIONS.IOS.PHOTO_LIBRARY
-			: PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE,
+export const permissionsByDevice: Record<string, Permission | undefined> = {
+	proximity: Platform.select({
+		ios: PERMISSIONS?.IOS?.BLUETOOTH_PERIPHERAL,
+		android: PERMISSIONS?.ANDROID?.ACCESS_FINE_LOCATION,
+		web: undefined,
+	}),
+	camera: Platform.select({
+		ios: PERMISSIONS?.IOS?.CAMERA,
+		android: PERMISSIONS?.ANDROID?.CAMERA,
+		web: undefined,
+	}),
+	audio: Platform.select({
+		ios: PERMISSIONS?.IOS?.MICROPHONE,
+		android: PERMISSIONS?.ANDROID?.RECORD_AUDIO,
+		web: undefined,
+	}),
+	gallery: Platform.select({
+		ios: PERMISSIONS?.IOS?.PHOTO_LIBRARY,
+		android: PERMISSIONS?.ANDROID?.READ_EXTERNAL_STORAGE,
+		web: undefined,
+	}),
 }
 
 export const getPermissionStatus = async (
@@ -33,13 +42,11 @@ export const getPermissionStatus = async (
 	if (permissionType === 'notification') {
 		return (await checkNotifications()).status
 	}
-
-	const permName = permissionsByDevice[permissionType]
-	if (permName === undefined) {
-		return RESULTS.BLOCKED
+	const permission = permissionsByDevice[permissionType]
+	if (!permission) {
+		return RESULTS.UNAVAILABLE
 	}
-
-	return await check(permissionsByDevice[permissionType]!)
+	return await check(permission)
 }
 
 export const requestPermission = async (
@@ -48,13 +55,11 @@ export const requestPermission = async (
 	if (permissionType === 'notification') {
 		return (await requestNotifications(['alert', 'sound'])).status
 	}
-
-	const permName = permissionsByDevice[permissionType]
-	if (permName === undefined) {
-		return RESULTS.BLOCKED
+	const permission = permissionsByDevice[permissionType]
+	if (!permission) {
+		return RESULTS.UNAVAILABLE
 	}
-
-	return await request(permissionsByDevice[permissionType]!)
+	return await request(permission)
 }
 
 export const checkPermissions = async (

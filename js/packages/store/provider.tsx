@@ -145,7 +145,7 @@ export const MessengerProvider: React.FC<{ daemonAddress: string }> = ({
 
 	const callbackCreateNewAccount = useCallback(
 		(newConfig?: beapi.account.INetworkConfig) =>
-			createNewAccount(embedded, reduxDispatch, newConfig),
+			createNewAccount(embedded, dispatch, reduxDispatch, newConfig),
 		[embedded, reduxDispatch],
 	)
 
@@ -189,30 +189,6 @@ export const MessengerProvider: React.FC<{ daemonAddress: string }> = ({
 		[state.persistentOptions],
 	)
 
-<<<<<<< HEAD
-=======
-	useEffect(() => {
-		if (selectedAccount === null) {
-			console.log('no account id supplied')
-			setNetworkConfig({})
-			return
-		}
-
-		const f = async () => {
-			const netConf = await accountService.networkConfigGet({
-				accountId: selectedAccount,
-			})
-			if (!netConf.currentConfig) {
-				return
-			}
-
-			setNetworkConfig(netConf.currentConfig)
-		}
-
-		f().catch(e => console.warn(e))
-	}, [selectedAccount])
-
->>>>>>> 0c9530372 (chore: add react native web)
 	return (
 		<MessengerContext.Provider
 			value={{

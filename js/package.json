@@ -71,7 +71,7 @@
     "react-native-permissions": "^3.1.0",
     "react-native-popover-view": "^4.1.0",
     "react-native-progress": "^5.0.0",
-    "react-native-qrcode-scanner": "^1.6.0",
+    "react-native-qrcode-scanner": "^1.5.5",
     "react-native-qrcode-svg": "git+https://github.com/sakul-budhathoki/react-native-qrcode-svg.git#feat/circles",
     "react-native-reanimated": "https://github.com/aeddi/react-native-reanimated/releases/download/2.3.1/react-native-reanimated-2.3.1.tgz",
     "react-native-restart": "^0.0.22",

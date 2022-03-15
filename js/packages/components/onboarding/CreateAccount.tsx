@@ -1,12 +1,12 @@
 import LottieView from 'lottie-react-native'
-import React, { useState } from 'react'
+import React from 'react'
 import { Platform, Vibration } from 'react-native'
 import { useTranslation } from 'react-i18next'
 import { StatusBar, Text, View } from 'react-native'
 import { useHeaderHeight } from '@react-navigation/elements'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
-import { ScreenFC, useNavigation } from '@berty-tech/navigation'
+import { ScreenFC } from '@berty-tech/navigation'
 import {
 	useMessengerContext,
 	useMountEffect,
@@ -28,7 +28,6 @@ const CreateAccountBody = () => {
 	const { t } = useTranslation()
 	const headerHeight = useHeaderHeight()
 	const insets = useSafeAreaInsets()
-	const { navigate } = useNavigation()
 
 	useMountEffect(() => {
 		ctx
@@ -52,9 +51,9 @@ const CreateAccountBody = () => {
 					loop={false}
 					onAnimationFinish={async () => {
 						Vibration.vibrate(500)
-						Platform.OS === 'web'
-							? navigate('Onboarding.SetupFinished')
-							: await rnutil.checkPermissions('proximity')
+						if (Platform.OS !== 'web') {
+							await rnutil.checkPermissions('proximity')
+						}
 					}}
 					style={{ position: 'absolute', width: '100%' }}
 				/>
