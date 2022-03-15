@@ -1012,10 +1012,10 @@ func constructorFactoryGroupMetadata(s *BertyOrbitDB, logger *zap.Logger) iface.
 				var entry ipfslog.Entry
 
 				switch evt := e.(type) {
-				case *stores.EventWrite:
+				case stores.EventWrite:
 					entry = evt.Entry
 
-				case *stores.EventReplicateProgress:
+				case stores.EventReplicateProgress:
 					entry = evt.Entry
 
 				default:
@@ -1051,14 +1051,14 @@ func constructorFactoryGroupMetadata(s *BertyOrbitDB, logger *zap.Logger) iface.
 			}
 		}()
 
+		// Enable logs in the metadata index
+		store.setLogger(logger)
+
 		options.Index = newMetadataIndex(ctx, store, g, md.Public(), s.deviceKeystore)
 
 		if err := store.InitBaseStore(ctx, ipfs, identity, addr, options); err != nil {
 			return nil, errcode.ErrOrbitDBInit.Wrap(err)
 		}
-
-		// Enable logs in the metadata index
-		store.setLogger(logger)
 
 		return store, nil
 	}

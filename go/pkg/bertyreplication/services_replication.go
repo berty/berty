@@ -153,7 +153,7 @@ const (
 )
 
 func (s *replicationService) updateGroupDB(evt events.Event, store iface.Store, groupPK string, field groupInfoUpdatedStore) {
-	_, ok := evt.(*stores.EventReplicated)
+	_, ok := evt.(stores.EventReplicated)
 	if !ok {
 		return
 	}

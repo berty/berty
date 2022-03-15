@@ -287,10 +287,10 @@ func constructorFactoryGroupMessage(s *BertyOrbitDB, logger *zap.Logger) iface.S
 				entry := ipfslog.Entry(nil)
 
 				switch evt := e.(type) {
-				case *stores.EventWrite:
+				case stores.EventWrite:
 					entry = evt.Entry
 
-				case *stores.EventReplicateProgress:
+				case stores.EventReplicateProgress:
 					entry = evt.Entry
 				}
 

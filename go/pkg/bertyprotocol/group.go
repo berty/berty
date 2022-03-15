@@ -268,7 +268,7 @@ func TagGroupContextPeers(ctx context.Context, gc *GroupContext, ipfsCoreAPI ipf
 	chSub1 := gc.metadataStore.Subscribe(ctx)
 	go func() {
 		for e := range chSub1 {
-			if evt, ok := e.(*stores.EventNewPeer); ok {
+			if evt, ok := e.(stores.EventNewPeer); ok {
 				ipfsCoreAPI.ConnMgr().TagPeer(evt.Peer, fmt.Sprintf("grp_%s", id), weight)
 			}
 		}
@@ -277,7 +277,7 @@ func TagGroupContextPeers(ctx context.Context, gc *GroupContext, ipfsCoreAPI ipf
 	chSub2 := gc.messageStore.Subscribe(ctx)
 	go func() {
 		for e := range chSub2 {
-			if evt, ok := e.(*stores.EventNewPeer); ok {
+			if evt, ok := e.(stores.EventNewPeer); ok {
 				ipfsCoreAPI.ConnMgr().TagPeer(evt.Peer, fmt.Sprintf("grp_%s", id), weight)
 			}
 		}

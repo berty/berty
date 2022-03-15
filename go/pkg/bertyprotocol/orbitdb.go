@@ -22,6 +22,8 @@ import (
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
 	"berty.tech/berty/v2/go/pkg/tyber"
+	ipfslog "berty.tech/go-ipfs-log"
+	"berty.tech/go-ipfs-log/entry"
 	"berty.tech/go-ipfs-log/identityprovider"
 	orbitdb "berty.tech/go-orbit-db"
 	"berty.tech/go-orbit-db/baseorbitdb"
@@ -275,8 +277,18 @@ func (s *BertyOrbitDB) setHeadsForGroup(ctx context.Context, g *protocoltypes.Gr
 		return errcode.ErrInternal.Wrap(fmt.Errorf("metadata store is nil"))
 	}
 
-	messagesImpl.Replicator().Load(ctx, messageHeads)
-	metaImpl.Replicator().Load(ctx, metaHeads)
+	messageHeadsEntries := make([]ipfslog.Entry, len(messageHeads))
+	for i, h := range messageHeads {
+		messageHeadsEntries[i] = &entry.Entry{Hash: h}
+	}
+
+	messagesImpl.Replicator().Load(ctx, messageHeadsEntries)
+
+	metaHeadsEntries := make([]ipfslog.Entry, len(metaHeads))
+	for i, h := range metaHeads {
+		metaHeadsEntries[i] = &entry.Entry{Hash: h}
+	}
+	metaImpl.Replicator().Load(ctx, metaHeadsEntries)
 
 	return nil
 }

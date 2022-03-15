@@ -94,7 +94,7 @@ func (s *service) GroupMetadataList(req *protocoltypes.GroupMetadataList_Request
 	if req.UntilID == nil && !req.UntilNow {
 		for event := range newEvents {
 			if !firstReplicatedFound {
-				if _, ok := event.(*stores.EventReplicated); ok {
+				if _, ok := event.(stores.EventReplicated); ok {
 					if err := listPreviousMessages(); err != nil {
 						return err
 					}
@@ -189,7 +189,7 @@ func (s *service) GroupMessageList(req *protocoltypes.GroupMessageList_Request, 
 	if req.UntilID == nil && !req.UntilNow {
 		for event := range newEvents {
 			if !firstReplicatedFound {
-				if _, ok := event.(*stores.EventReplicated); ok {
+				if _, ok := event.(stores.EventReplicated); ok {
 					if err := listPreviousMessages(); err != nil {
 						return err
 					}
