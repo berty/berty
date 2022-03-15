@@ -267,7 +267,7 @@ func (c *contactRequestsManager) metadataWatcher(ctx context.Context) {
 	}
 	c.lock.Unlock()
 
-	chSub := c.metadataStore.Subscribe(ctx)
+	chSub := c.metadataStore.Subscribe(ctx) // nolint:staticcheck
 	go func() {
 		for evt := range chSub {
 			e, ok := evt.(*protocoltypes.GroupMetadataEvent)

@@ -107,7 +107,7 @@ func metadataStoreListSecrets(ctx context.Context, gc *GroupContext) map[crypto.
 func FillMessageKeysHolderUsingNewData(ctx context.Context, gc *GroupContext) <-chan crypto.PubKey {
 	m := gc.MetadataStore()
 	ch := make(chan crypto.PubKey)
-	sub := m.Subscribe(ctx)
+	sub := m.Subscribe(ctx) // nolint:staticcheck
 
 	go func() {
 		for evt := range sub {
@@ -265,7 +265,7 @@ func ActivateGroupContext(ctx context.Context, gc *GroupContext, contact crypto.
 func TagGroupContextPeers(ctx context.Context, gc *GroupContext, ipfsCoreAPI ipfsutil.ExtendedCoreAPI, weight int) {
 	id := gc.Group().GroupIDAsString()
 
-	chSub1 := gc.metadataStore.Subscribe(ctx)
+	chSub1 := gc.metadataStore.Subscribe(ctx) // nolint:staticcheck
 	go func() {
 		for e := range chSub1 {
 			if evt, ok := e.(stores.EventNewPeer); ok {
@@ -274,7 +274,7 @@ func TagGroupContextPeers(ctx context.Context, gc *GroupContext, ipfsCoreAPI ipf
 		}
 	}()
 
-	chSub2 := gc.messageStore.Subscribe(ctx)
+	chSub2 := gc.messageStore.Subscribe(ctx) // nolint:staticcheck
 	go func() {
 		for e := range chSub2 {
 			if evt, ok := e.(stores.EventNewPeer); ok {
@@ -332,7 +332,7 @@ func SendSecretsToExistingMembers(ctx context.Context, gctx *GroupContext, conta
 
 func WatchNewMembersAndSendSecrets(ctx context.Context, logger *zap.Logger, gctx *GroupContext) <-chan crypto.PubKey {
 	ch := make(chan crypto.PubKey)
-	sub := gctx.MetadataStore().Subscribe(ctx)
+	sub := gctx.MetadataStore().Subscribe(ctx) // nolint:staticcheck
 
 	go func() {
 		for evt := range sub {

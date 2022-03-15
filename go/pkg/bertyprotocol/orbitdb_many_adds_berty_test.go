@@ -70,7 +70,7 @@ func testAddBerty(ctx context.Context, t *testing.T, node ipfsutil.CoreAPIMock, 
 
 	// Watch for incoming new messages
 	go func() {
-		for e := range gc.MessageStore().Subscribe(ctx) {
+		for e := range gc.MessageStore().Subscribe(ctx) { // nolint:staticcheck
 			_, ok := e.(*protocoltypes.GroupMessageEvent)
 			if !ok {
 				continue

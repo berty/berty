@@ -1006,7 +1006,7 @@ func constructorFactoryGroupMetadata(s *BertyOrbitDB, logger *zap.Logger) iface.
 			return store, nil
 		}
 
-		chSub := store.Subscribe(ctx)
+		chSub := store.Subscribe(ctx) // nolint:staticcheck
 		go func() {
 			for e := range chSub {
 				var entry ipfslog.Entry
@@ -1043,11 +1043,11 @@ func constructorFactoryGroupMetadata(s *BertyOrbitDB, logger *zap.Logger) iface.
 					tyber.UpdateTraceName(fmt.Sprintf("Received %s from %s group %s", strings.TrimPrefix(metaEvent.GetMetadata().GetEventType().String(), "EventType"), shortGroupType, b64GroupPK)),
 				)
 
-				store.Emit(ctx, &EventMetadataReceived{
+				store.Emit(ctx, &EventMetadataReceived{ // nolint:staticcheck
 					MetaEvent: metaEvent,
 					Event:     event,
 				})
-				store.Emit(ctx, metaEvent)
+				store.Emit(ctx, metaEvent) // nolint:staticcheck
 			}
 		}()
 

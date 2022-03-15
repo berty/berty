@@ -87,7 +87,7 @@ func (m *MessageStore) openMessageCacheForPK(ctx context.Context, devicePK []byt
 				buffer = buffer.Next()
 				continue
 			}
-			m.Emit(ctx, evt)
+			m.Emit(ctx, evt) // nolint:staticcheck
 			buffer.Value = nil
 			buffer = buffer.Next()
 		}
@@ -281,7 +281,7 @@ func constructorFactoryGroupMessage(s *BertyOrbitDB, logger *zap.Logger) iface.S
 			return store, nil
 		}
 
-		chSub := store.Subscribe(ctx)
+		chSub := store.Subscribe(ctx) // nolint:staticcheck
 		go func() {
 			for e := range chSub {
 				entry := ipfslog.Entry(nil)
@@ -323,7 +323,7 @@ func constructorFactoryGroupMessage(s *BertyOrbitDB, logger *zap.Logger) iface.S
 					tyber.FormatStepLogFields(ctx, []tyber.Detail{{Name: "Payload", Description: string(messageEvent.Message)}}, tyber.EndTrace)...,
 				)
 
-				store.Emit(ctx, messageEvent)
+				store.Emit(ctx, messageEvent) // nolint:staticcheck
 			}
 		}()
 
