@@ -68,6 +68,11 @@ jobs:
           persist-credentials: false
           ref: ${{ github.event.pull_request.head.sha }} # see https://github.com/actions/checkout/issues/299
 
+      - name: Load variables from file
+        uses: antifree/json-to-variables@v1.0.1
+        with:
+          filename: .github/workflows/variables.json
+
       - name: Post-checkout cleanup
         if: ${{ matrix.selfhosted }}
         run: |
@@ -107,15 +112,15 @@ jobs:
         uses: actions/cache@v2.1.6
         with:
           path: ~/go/pkg/mod
-          key: ${{ runner.os }}-go-${{ matrix.golang }}-${{ secrets.CACHE_VERSION }}-${{ hashFiles('go/**/go.sum') }}
-          restore-keys: ${{ runner.os }}-go-${{ matrix.golang }}-${{ secrets.CACHE_VERSION }}-
+          key: ${{ runner.os }}-go-${{ matrix.golang }}-${{ env.json_cache-version_go }}-${{ hashFiles('go/**/go.sum') }}
+          restore-keys: ${{ runner.os }}-go-${{ matrix.golang }}-${{ env.json_cache-version_go }}-
 
       - name: Cache Node modules
         uses: actions/cache@v2.1.6
         with:
           path: js/node_modules
-          key: ${{ runner.OS }}-node-${{ matrix.node }}-${{ secrets.CACHE_VERSION }}-${{ hashFiles('js/yarn.lock') }}
-          restore-keys: ${{ runner.OS }}-node-${{ matrix.node }}-${{ secrets.CACHE_VERSION }}-
+          key: ${{ runner.OS }}-node-${{ matrix.node }}-${{ env.json_cache-version_node }}-${{ hashFiles('js/yarn.lock') }}
+          restore-keys: ${{ runner.OS }}-node-${{ matrix.node }}-${{ env.json_cache-version_node }}-
 
       - name: Cache Bertybridge framework
         uses: n0izn0iz/mkache@5cedaeaf0b39a9220ae5a815cac8d2a924cee3ef
@@ -141,15 +146,15 @@ jobs:
         uses: actions/cache@v2.1.6
         with:
           path: js/vendor/xcodegen
-          key: ios-xcodegen-${{ matrix.xcode }}-${{ secrets.CACHE_VERSION }}-${{ hashFiles('js/XcodeGen.version') }}
-          restore-keys: ios-xcodegen-${{ matrix.xcode }}-${{ secrets.CACHE_VERSION }}-
+          key: ios-xcodegen-${{ matrix.xcode }}-${{ env.json_cache-version_xcodegen }}-${{ hashFiles('js/XcodeGen.version') }}
+          restore-keys: ios-xcodegen-${{ matrix.xcode }}-${{ env.json_cache-version_xcodegen }}-
 
       - name: Cache XCode project
         uses: actions/cache@v2.1.6
         with:
           path: js/ios/Berty.xcodeproj
-          key: ios-xcodeproj-${{ matrix.xcode }}-${{ secrets.CACHE_VERSION }}-${{ hashFiles('js/ios/*.yaml') }}
-          restore-keys: ios-xcodeproj-${{ matrix.xcode }}-${{ secrets.CACHE_VERSION }}-
+          key: ios-xcodeproj-${{ matrix.xcode }}-${{ env.json_cache-version_xcodeproj }}-${{ hashFiles('js/ios/*.yaml') }}
+          restore-keys: ios-xcodeproj-${{ matrix.xcode }}-${{ env.json_cache-version_xcodeproj }}-
 
       - name: Cache Pods and XCode workspace
         uses: actions/cache@v2.1.6
@@ -157,8 +162,8 @@ jobs:
           path: |
             js/ios/Berty.xcworkspace
             js/ios/Pods
-          key: ios-xcodeworkspace-${{ matrix.xcode }}-${{ secrets.CACHE_VERSION }}-${{ hashFiles('js/ios/Podfile.lock', 'js/yarn.lock') }}
-          restore-keys: ios-xcodeworkspace-${{ matrix.xcode }}-${{ secrets.CACHE_VERSION }}-
+          key: ios-xcodeworkspace-${{ matrix.xcode }}-${{ env.json_cache-version_xcodeworkspace }}-${{ hashFiles('js/ios/Podfile.lock', 'js/yarn.lock') }}
+          restore-keys: ios-xcodeworkspace-${{ matrix.xcode }}-${{ env.json_cache-version_xcodeworkspace }}-
 
       - name: Setup macOS keychain
         working-directory: tool/build/dummy-identity

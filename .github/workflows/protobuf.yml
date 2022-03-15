@@ -134,6 +134,11 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Load variables from file
+        uses: antifree/json-to-variables@v1.0.1
+        with:
+          filename: .github/workflows/variables.json
+
       - name: Use Node.js ${{ matrix.node }}
         uses: actions/setup-node@v3
         with:
@@ -146,8 +151,8 @@ jobs:
         uses: actions/cache@v2.1.6
         with:
           path: js/node_modules
-          key:          ${{ runner.OS }}-genjs-${{ matrix.node}}-${{ secrets.CACHE_VERSION }}-${{ hashFiles('js/yarn.lock') }}
-          restore-keys: ${{ runner.OS }}-genjs-${{ matrix.node}}-${{ secrets.CACHE_VERSION }}-
+          key:          ${{ runner.OS }}-genjs-${{ matrix.node}}-${{ env.json_cache-version_node }}-${{ hashFiles('js/yarn.lock') }}
+          restore-keys: ${{ runner.OS }}-genjs-${{ matrix.node}}-${{ env.json_cache-version_node }}-
 
       - name: "Fetch deps"
         # FIXME: find a way of only downloading the required packages or install them directly in the bertytech/protoc image

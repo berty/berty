@@ -14,6 +14,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+      - name: Load variables from file
+        uses: antifree/json-to-variables@v1.0.1
+        with:
+          filename: .github/workflows/variables.json
       - name: Unshallow
         run: git fetch --prune --unshallow
       - name: Run Semantic Release
@@ -37,8 +41,8 @@ jobs:
         uses: actions/cache@v2.1.6
         with:
           path: ~/go/pkg/mod
-          key:          ${{ runner.os }}-go-${{ matrix.golang }}-${{ secrets.CACHE_VERSION }}-${{ hashFiles('**/go.sum') }}
-          restore-keys: ${{ runner.os }}-go-${{ matrix.golang }}-${{ secrets.CACHE_VERSION }}-
+          key:          ${{ runner.os }}-go-${{ matrix.golang }}-${{ env.json_cache-version_go }}-${{ hashFiles('**/go.sum') }}
+          restore-keys: ${{ runner.os }}-go-${{ matrix.golang }}-${{ env.json_cache-version_go }}-
       - name: Run GoReleaser
         if: steps.semantic.outputs.new-release-published == 'true'
         uses: goreleaser/goreleaser-action@v2.9.1

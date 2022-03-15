@@ -51,6 +51,10 @@ jobs:
           echo "::set-output name=runUrl::https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
       - name: Checkout
         uses: actions/checkout@v3
+      - name: Load variables from file
+        uses: antifree/json-to-variables@v1.0.1
+        with:
+          filename: .github/workflows/variables.json
       - name: Set up Go
         uses: actions/setup-go@v2
         with:
@@ -59,8 +63,8 @@ jobs:
         uses: actions/cache@v2.1.6
         with:
           path: ~/go/pkg/mod
-          key:          ${{ runner.os }}-go-${{ matrix.golang }}-${{ secrets.CACHE_VERSION }}-${{ hashFiles('**/go.sum') }}
-          restore-keys: ${{ runner.os }}-go-${{ matrix.golang }}-${{ secrets.CACHE_VERSION }}-
+          key:          ${{ runner.os }}-go-${{ matrix.golang }}-${{ env.json_cache-version_go }}-${{ hashFiles('**/go.sum') }}
+          restore-keys: ${{ runner.os }}-go-${{ matrix.golang }}-${{ env.json_cache-version_go }}-
       - name: Avoid triggering make generate
         run: touch go/gen.sum
       - name: Fetch dependencies
@@ -134,6 +138,10 @@ jobs:
           echo "::set-output name=runUrl::https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
       - name: Checkout
         uses: actions/checkout@v3
+      - name: Load variables from file
+        uses: antifree/json-to-variables@v1.0.1
+        with:
+          filename: .github/workflows/variables.json
       - name: Set up Go
         uses: actions/setup-go@v2
         with:
@@ -142,8 +150,8 @@ jobs:
         uses: actions/cache@v2.1.6
         with:
           path: ~/go/pkg/mod
-          key:          ${{ runner.os }}-go-${{ matrix.golang}}-${{ secrets.CACHE_VERSION }}-${{ hashFiles('**/go.sum') }}
-          restore-keys: ${{ runner.os }}-go-${{ matrix.golang}}-${{ secrets.CACHE_VERSION }}-
+          key:          ${{ runner.os }}-go-${{ matrix.golang}}-${{ env.json_cache-version_go }}-${{ hashFiles('**/go.sum') }}
+          restore-keys: ${{ runner.os }}-go-${{ matrix.golang}}-${{ env.json_cache-version_go }}-
       - name: Avoid triggering make generate
         run: touch go/gen.sum
       - name: Fetch dependencies
