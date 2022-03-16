@@ -998,7 +998,7 @@ func constructorFactoryGroupMetadata(s *BertyOrbitDB, logger *zap.Logger) iface.
 		}
 
 		if replication {
-			options.Index = basestore.NewBaseIndex
+			options.Index = basestore.NewNoopIndex
 			if err := store.InitBaseStore(ctx, ipfs, identity, addr, options); err != nil {
 				return nil, errcode.ErrOrbitDBInit.Wrap(err)
 			}

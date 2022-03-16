@@ -271,7 +271,7 @@ func constructorFactoryGroupMessage(s *BertyOrbitDB, logger *zap.Logger) iface.S
 			cache:  make(map[string]*ring.Ring),
 		}
 
-		options.Index = basestore.NewBaseIndex
+		options.Index = basestore.NewNoopIndex
 
 		if err := store.InitBaseStore(ctx, ipfs, identity, addr, options); err != nil {
 			return nil, errcode.ErrOrbitDBInit.Wrap(err)
@@ -335,7 +335,7 @@ func (m *MessageStore) GetMessageByCID(c cid.Cid) (*protocoltypes.MessageEnvelop
 	m.cacheLock.Lock()
 	defer m.cacheLock.Unlock()
 
-	logEntry, ok := m.OpLog().Values().Get(c.String())
+	logEntry, ok := m.OpLog().Get(c)
 	if !ok {
 		return nil, nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("unable to find message entry"))
 	}

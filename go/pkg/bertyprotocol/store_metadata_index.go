@@ -65,7 +65,7 @@ func (m *metadataStoreIndex) UpdateIndex(log ipfslog.Log, _ []ipfslog.Entry) err
 	m.lock.Lock()
 	defer m.lock.Unlock()
 
-	entries := log.Values().Slice()
+	entries := log.GetEntries().Slice()
 
 	// Resetting state
 	m.contacts = map[string]*AccountContact{}
