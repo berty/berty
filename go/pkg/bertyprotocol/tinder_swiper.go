@@ -2,7 +2,6 @@ package bertyprotocol
 
 import (
 	"context"
-	"sync"
 	"time"
 
 	"github.com/libp2p/go-libp2p-core/peer"
@@ -15,13 +14,11 @@ import (
 )
 
 type Swiper struct {
-	muTopics sync.Mutex
-	topics   map[string]*pubsub.Topic
+	topics map[string]*pubsub.Topic
 
 	interval time.Duration
 
 	logger *zap.Logger
-	pubsub *pubsub.PubSub
 	disc   tinder.UnregisterDiscovery
 }
 
@@ -81,8 +78,8 @@ func (s *Swiper) WatchTopic(ctx context.Context, topic, seed []byte, out chan<- 
 // watch looks for peers providing a resource
 func (s *Swiper) Announce(ctx context.Context, topic, seed []byte) {
 	var currentTopic string
-	var periodEnd time.Time = time.Now()
 
+	periodEnd := time.Now()
 	go func() {
 		for {
 			if time.Now().After(periodEnd) || currentTopic == "" {
@@ -107,7 +104,6 @@ func (s *Swiper) Announce(ctx context.Context, topic, seed []byte) {
 					// if no ttl is set, wait 10 seconds before retrying
 					ttl = time.Second * 10
 				}
-
 			}
 
 			select {
@@ -116,7 +112,6 @@ func (s *Swiper) Announce(ctx context.Context, topic, seed []byte) {
 			case <-time.After(time.Until(periodEnd)):
 			case <-time.After(ttl):
 			}
-
 		}
 	}()
 }
