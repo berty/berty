@@ -11,6 +11,7 @@ import (
 
 	"berty.tech/berty/v2/go/internal/logutil"
 	"berty.tech/berty/v2/go/internal/rendezvous"
+	"berty.tech/berty/v2/go/internal/tinder"
 )
 
 type Swiper struct {
@@ -21,94 +22,40 @@ type Swiper struct {
 
 	logger *zap.Logger
 	pubsub *pubsub.PubSub
+	disc   tinder.UnregisterDiscovery
 }
 
-func NewSwiper(logger *zap.Logger, ps *pubsub.PubSub, interval time.Duration) *Swiper {
+func NewSwiper(logger *zap.Logger, disc tinder.UnregisterDiscovery, interval time.Duration) *Swiper {
 	return &Swiper{
-		logger:   logger,
-		pubsub:   ps,
+		logger:   logger.Named("swiper"),
 		topics:   make(map[string]*pubsub.Topic),
 		interval: interval,
+		disc:     disc,
 	}
-}
-
-func (s *Swiper) topicJoin(topic string, opts ...pubsub.TopicOpt) (*pubsub.Topic, error) {
-	s.muTopics.Lock()
-	defer s.muTopics.Unlock()
-
-	var err error
-
-	t, ok := s.topics[topic]
-	if ok {
-		return t, nil
-	}
-
-	if t, err = s.pubsub.Join(topic, opts...); err != nil {
-		return nil, err
-	}
-
-	if _, err = t.Relay(); err != nil {
-		t.Close()
-		return nil, err
-	}
-
-	s.topics[topic] = t
-	return t, nil
-}
-
-func (s *Swiper) topicLeave(topic string) (err error) {
-	s.muTopics.Lock()
-	if t, ok := s.topics[topic]; ok {
-		err = t.Close()
-		delete(s.topics, topic)
-	}
-	s.muTopics.Unlock()
-	return
 }
 
 // watchUntilDeadline looks for peers providing a resource for a given period
 func (s *Swiper) watchUntilDeadline(ctx context.Context, out chan<- peer.AddrInfo, topic string, end time.Time) error {
 	s.logger.Debug("start watching", logutil.PrivateString("topic", topic))
-	tp, err := s.topicJoin(topic)
-	if err != nil {
-		return err
-	}
-
-	te, err := tp.EventHandler()
-	if err != nil {
-		return err
-	}
 
 	ctx, cancel := context.WithDeadline(ctx, end)
 	defer cancel()
-	defer func() {
-		if err := s.topicLeave(topic); err != nil {
-			s.logger.Debug("unable to leave topic properly", zap.Error(err))
-		}
-	}()
 
 	s.logger.Debug("start watch event handler")
-	for {
-		pe, _ := te.NextPeerEvent(ctx)
-		if ctx.Err() != nil {
+	cc := s.FindPeers(ctx, topic)
+	for peer := range cc {
+		s.logger.Debug("swiper found peer on topic",
+			logutil.PrivateString("topic", topic),
+			logutil.PrivateString("peer", peer.ID.String()),
+		)
+		select {
+		case <-ctx.Done():
 			return ctx.Err()
-		}
-
-		s.logger.Debug("event received")
-		switch pe.Type {
-		case pubsub.PeerJoin:
-			s.logger.Debug("peer joined topic",
-				logutil.PrivateString("topic", topic),
-				logutil.PrivateString("peer", pe.Peer.ShortString()),
-			)
-			select {
-			case <-ctx.Done():
-				return ctx.Err()
-			case out <- peer.AddrInfo{ID: pe.Peer}:
-			}
-		case pubsub.PeerLeave:
+		case out <- peer:
 		}
 	}
+
+	return nil
 }
 
 // WatchTopic looks for peers providing a resource.
@@ -119,13 +66,8 @@ func (s *Swiper) WatchTopic(ctx context.Context, topic, seed []byte, out chan<- 
 		roundedTime := rendezvous.RoundTimePeriod(time.Now(), s.interval)
 		topicForTime := rendezvous.GenerateRendezvousPointForPeriod(topic, seed, roundedTime)
 		periodEnd := rendezvous.NextTimePeriod(roundedTime, s.interval)
-		err := s.watchUntilDeadline(ctx, out, string(topicForTime), periodEnd)
-		switch err {
-		case nil:
-		case context.DeadlineExceeded, context.Canceled:
-			s.logger.Debug("watch until deadline", zap.Error(err))
-		default:
-			s.logger.Error("watch until deadline", zap.Error(err))
+		if err := s.watchUntilDeadline(ctx, out, string(topicForTime), periodEnd); err != nil {
+			s.logger.Debug("watch until deadline ended", zap.Error(err))
 		}
 
 		select {
@@ -139,33 +81,72 @@ func (s *Swiper) WatchTopic(ctx context.Context, topic, seed []byte, out chan<- 
 // watch looks for peers providing a resource
 func (s *Swiper) Announce(ctx context.Context, topic, seed []byte) {
 	var currentTopic string
-	s.logger.Debug("start watch announce")
+	var periodEnd time.Time = time.Now()
 
 	go func() {
-		ctx, cancel := context.WithCancel(ctx)
-		defer cancel()
-
 		for {
-			if currentTopic != "" {
-				if err := s.topicLeave(currentTopic); err != nil {
-					s.logger.Warn("failed to start close current topic", zap.Error(err))
-				}
+			if time.Now().After(periodEnd) || currentTopic == "" {
+				roundedTime := rendezvous.RoundTimePeriod(time.Now(), s.interval)
+				currentTopic = string(rendezvous.GenerateRendezvousPointForPeriod(topic, seed, roundedTime))
+				periodEnd = rendezvous.NextTimePeriod(roundedTime, s.interval)
 			}
 
-			roundedTime := rendezvous.RoundTimePeriod(time.Now(), s.interval)
-			currentTopic = string(rendezvous.GenerateRendezvousPointForPeriod(topic, seed, roundedTime))
-			_, err := s.topicJoin(currentTopic)
-			if err != nil {
-				s.logger.Error("failed to announce topic", zap.Error(err))
+			s.logger.Debug("self announcing")
+			ttl, err := s.disc.Advertise(ctx, currentTopic)
+			switch err {
+			case context.Canceled, context.DeadlineExceeded:
 				return
+			case nil:
+				// if no error and no ttl is set, wait 1 minutes before retrying
+				if ttl == 0 {
+					ttl = time.Minute
+				}
+			default:
+				s.logger.Error("failed to announce topic", zap.Error(err))
+				if ttl == 0 {
+					// if no ttl is set, wait 10 seconds before retrying
+					ttl = time.Second * 10
+				}
+
 			}
 
-			periodEnd := rendezvous.NextTimePeriod(roundedTime, s.interval)
 			select {
 			case <-ctx.Done():
 				return
 			case <-time.After(time.Until(periodEnd)):
+			case <-time.After(ttl):
 			}
+
 		}
 	}()
+}
+
+func (s *Swiper) FindPeers(ctx context.Context, ns string) <-chan peer.AddrInfo {
+	out := make(chan peer.AddrInfo)
+
+	go func() {
+		defer close(out)
+		for {
+			// use find peers while keeping his context
+			cpeer, err := s.disc.FindPeers(ctx, ns, tinder.WatchdogDiscoverKeepContext)
+			if err != nil {
+				s.logger.Error("failed find peers", zap.String("topic", ns), zap.Error(err))
+				return
+			}
+
+			for peer := range cpeer {
+				select {
+				case out <- peer:
+				case <-ctx.Done():
+					return
+				}
+			}
+
+			// prevent to loop at the speed of light in case of FindPeers
+			// failing to handle context/channel correctly
+			<-time.After(time.Second)
+		}
+	}()
+
+	return out
 }
