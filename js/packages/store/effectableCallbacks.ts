@@ -1,3 +1,5 @@
+import { Platform } from 'react-native'
+
 import beapi from '@berty-tech/api'
 import { persistor, resetAccountStore } from '@berty-tech/redux/store'
 import { useAppDispatch } from '@berty-tech/react-redux'
@@ -132,6 +134,7 @@ export const createAccount = async (
 		}
 		resp = await accountService.createAccount({
 			networkConfig,
+			sessionKind: Platform.OS === 'web' ? 'desktop-electron' : null,
 		})
 		persistor.persist()
 	} catch (e) {
