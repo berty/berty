@@ -53,3 +53,14 @@ doctor:
 doctor.verbose:
 	cd go && $(MAKE) doctor.verbose
 .PHONY: doctor.verbose
+
+
+clean:
+	-cd tool/berty-mini-local-helper; $(MAKE) clean
+	-cd tool/tyber; $(MAKE) clean
+	-cd tool/deployments/welcomebot; $(MAKE) clean
+	-cd tool/deployments/testbot; $(MAKE) clean
+	-cd go; $(MAKE) clean
+	-cd docs; $(MAKE) clean
+	-cd js; $(MAKE) clean
+.PHONY: clean
