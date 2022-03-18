@@ -14,14 +14,36 @@ const makeRoot = <T>(val: T) => ({
 	[sliceName]: val,
 })
 
+export type ConfigListType = {
+	url: string
+	alias: string | null
+	isEnabled: boolean
+	isEditable: boolean
+}
+
 export type NetworkConfigState = {
 	currentConfig: beapi.account.INetworkConfig
 	blePerm: PermissionStatus
+	bootstrap: ConfigListType[]
+	rendezvous: ConfigListType[]
+	staticRelay: ConfigListType[]
 }
+
+const initialNode = [
+	{
+		url: ':default:',
+		alias: 'Berty Default',
+		isEnabled: true,
+		isEditable: false,
+	},
+]
 
 const newNetworkConfigState = (): NetworkConfigState => ({
 	currentConfig: {},
 	blePerm: 'unavailable',
+	bootstrap: initialNode,
+	rendezvous: initialNode,
+	staticRelay: initialNode,
 })
 
 const initialState = newNetworkConfigState()
@@ -42,6 +64,31 @@ export const selectBlePerm = (state: LocalRootState) => selectSlice(state).blePe
 export const selectCurrentNetworkConfig = (state: LocalRootState) =>
 	selectSlice(state).currentConfig
 
+export const selectRendezvous = (state: LocalRootState) => selectSlice(state).rendezvous
+
+export const selectBootstrap = (state: LocalRootState) => selectSlice(state).bootstrap
+
+export const selectStaticRelay = (state: LocalRootState) => selectSlice(state).staticRelay
+
+export const selectParsedLocalNetworkConfig = (
+	state: LocalRootState,
+): beapi.account.INetworkConfig => {
+	const currentConfig: beapi.account.INetworkConfig = beapi.account.NetworkConfig.fromObject({
+		...selectSlice(state).currentConfig,
+		rendezvous: selectSlice(state)
+			.rendezvous.filter(obj => obj.isEnabled)
+			.map(obj => obj.url),
+		bootstrap: selectSlice(state)
+			.bootstrap.filter(obj => obj.isEnabled)
+			.map(obj => obj.url),
+		staticRelay: selectSlice(state)
+			.staticRelay.filter(obj => obj.isEnabled)
+			.map(obj => obj.url),
+	})
+
+	return currentConfig
+}
+
 /**
  *
  * Actions
@@ -61,9 +108,99 @@ const slice = createSlice({
 		) {
 			state.currentConfig = payload
 		},
+		addToRendezvous(state, { payload }: PayloadAction<{ url: string; alias: string }>) {
+			state.rendezvous.push({ ...payload, isEditable: true, isEnabled: false })
+		},
+		addToBootstrap(state, { payload }: PayloadAction<{ url: string; alias: string }>) {
+			state.bootstrap.push({ ...payload, isEditable: true, isEnabled: false })
+		},
+		addToStaticRelay(state, { payload }: PayloadAction<{ url: string; alias: string }>) {
+			state.staticRelay.push({ ...payload, isEditable: true, isEnabled: false })
+		},
+		removeFromRendezvous(state, { payload }: PayloadAction<string>) {
+			state.rendezvous = state.rendezvous.filter(({ url }) => url !== payload)
+		},
+		removeFromBootstrap(state, { payload }: PayloadAction<string>) {
+			state.bootstrap = state.bootstrap.filter(({ url }) => url !== payload)
+		},
+		removeFromStaticRelay(state, { payload }: PayloadAction<string>) {
+			state.staticRelay = state.staticRelay.filter(({ url }) => url !== payload)
+		},
+		modifyFromRendezvous(
+			state,
+			{
+				payload: { url, changes },
+			}: PayloadAction<{ url: string; changes: Partial<ConfigListType> }>,
+		) {
+			const index = state.rendezvous.findIndex(obj => obj.url === url)
+			if (index === -1) {
+				return
+			}
+			state.rendezvous[index] = { ...state.rendezvous[index], ...changes }
+		},
+		modifyFromBootstrap(
+			state,
+			{
+				payload: { url, changes },
+			}: PayloadAction<{ url: string; changes: Partial<ConfigListType> }>,
+		) {
+			const index = state.bootstrap.findIndex(obj => obj.url === url)
+			if (index === -1) {
+				return
+			}
+			state.bootstrap[index] = { ...state.bootstrap[index], ...changes }
+		},
+		modifyFromStaticRelay(
+			state,
+			{
+				payload: { url, changes },
+			}: PayloadAction<{ url: string; changes: Partial<ConfigListType> }>,
+		) {
+			const index = state.staticRelay.findIndex(obj => obj.url === url)
+			if (index === -1) {
+				return
+			}
+			state.staticRelay[index] = { ...state.staticRelay[index], ...changes }
+		},
+		toggleFromRendezvous(state, { payload: url }: PayloadAction<string>) {
+			const index = state.rendezvous.findIndex(obj => obj.url === url)
+			if (index === -1) {
+				return
+			}
+			state.rendezvous[index].isEnabled = !state.rendezvous[index].isEnabled
+		},
+		toggleFromBootstrap(state, { payload: url }: PayloadAction<string>) {
+			const index = state.bootstrap.findIndex(obj => obj.url === url)
+			if (index === -1) {
+				return
+			}
+			state.bootstrap[index].isEnabled = !state.bootstrap[index].isEnabled
+		},
+		toggleFromStaticRelay(state, { payload: url }: PayloadAction<string>) {
+			const index = state.staticRelay.findIndex(obj => obj.url === url)
+			if (index === -1) {
+				return
+			}
+			state.staticRelay[index].isEnabled = !state.staticRelay[index].isEnabled
+		},
 	},
 })
 
-export const { setBlePerm, setCurrentNetworkConfig } = slice.actions
+export const {
+	setBlePerm,
+	setCurrentNetworkConfig,
+	addToRendezvous,
+	addToBootstrap,
+	addToStaticRelay,
+	modifyFromRendezvous,
+	modifyFromBootstrap,
+	modifyFromStaticRelay,
+	removeFromRendezvous,
+	removeFromBootstrap,
+	removeFromStaticRelay,
+	toggleFromRendezvous,
+	toggleFromBootstrap,
+	toggleFromStaticRelay,
+} = slice.actions
 
 export default makeRoot(slice.reducer)

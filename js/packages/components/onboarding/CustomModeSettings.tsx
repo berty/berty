@@ -21,10 +21,35 @@ import {
 	useThemeColor,
 } from '@berty-tech/store'
 import { useStyles } from '@berty-tech/styles'
+import { useAppDispatch, useAppSelector } from '@berty-tech/react-redux'
+import {
+	addToBootstrap,
+	addToRendezvous,
+	modifyFromBootstrap,
+	modifyFromRendezvous,
+	modifyFromStaticRelay,
+	removeFromBootstrap,
+	removeFromRendezvous,
+	removeFromStaticRelay,
+	selectBootstrap,
+	selectCurrentNetworkConfig,
+	selectParsedLocalNetworkConfig,
+	selectRendezvous,
+	selectStaticRelay,
+	setCurrentNetworkConfig,
+	toggleFromBootstrap,
+	toggleFromRendezvous,
+	toggleFromStaticRelay,
+} from '@berty-tech/redux/reducers/networkConfig.reducer'
 
 import { ButtonSetting } from '../shared-components'
 import { Toggle } from '../shared-components/Toggle'
 import { checkBlePermission } from '@berty-tech/rnutil/checkPermissions'
+import { Accordion, AccordionAddItem, AccordionItem } from './OnBoardingAccorion'
+import { AccordionEdit } from '../modals/AccordionEdit.modal'
+import { AccordionAdd } from '../modals/AccordionAdd.modal'
+import { useModal } from '../providers/modal.provider'
+import { useDispatch } from 'react-redux'
 
 const ConfigPart: React.FC<{
 	title: string
@@ -93,13 +118,12 @@ const ConfigPart: React.FC<{
 	)
 }
 
-const Proximity: React.FC<{
-	setNewConfig: React.Dispatch<beapi.account.INetworkConfig>
-	newConfig: beapi.account.INetworkConfig
-}> = ({ setNewConfig, newConfig }) => {
+const Proximity: React.FC = () => {
 	const colors = useThemeColor()
 	const { t } = useTranslation()
 	const { navigate } = useNavigation()
+	const dispatch = useDispatch()
+	const currentNetworkConfig = useAppSelector(selectCurrentNetworkConfig)
 
 	return (
 		<View>
@@ -113,13 +137,13 @@ const Proximity: React.FC<{
 				backgroundColor={colors['input-background']}
 				toggled
 				toggleStatus='secondary'
-				varToggle={newConfig?.bluetoothLe === beapi.account.NetworkConfig.Flag.Enabled}
+				varToggle={currentNetworkConfig?.bluetoothLe === beapi.account.NetworkConfig.Flag.Enabled}
 				actionToggle={async () => {
 					await checkBlePermission({
 						setNetworkConfig: async (newConfig: beapi.account.INetworkConfig) => {
-							setNewConfig(newConfig)
+							dispatch(setCurrentNetworkConfig(newConfig))
 						},
-						networkConfig: newConfig,
+						networkConfig: currentNetworkConfig,
 						changedKey: ['bluetoothLe'],
 						navigate,
 					})
@@ -137,14 +161,15 @@ const Proximity: React.FC<{
 					toggled
 					toggleStatus='secondary'
 					varToggle={
-						newConfig?.appleMultipeerConnectivity === beapi.account.NetworkConfig.Flag.Enabled
+						currentNetworkConfig?.appleMultipeerConnectivity ===
+						beapi.account.NetworkConfig.Flag.Enabled
 					}
 					actionToggle={async () => {
 						await checkBlePermission({
 							setNetworkConfig: async (newConfig: beapi.account.INetworkConfig) => {
-								setNewConfig(newConfig)
+								dispatch(setCurrentNetworkConfig(newConfig))
 							},
-							networkConfig: newConfig,
+							networkConfig: currentNetworkConfig,
 							changedKey: ['appleMultipeerConnectivity'],
 							navigate,
 						})
@@ -162,13 +187,15 @@ const Proximity: React.FC<{
 					backgroundColor={colors['input-background']}
 					toggled
 					toggleStatus='secondary'
-					varToggle={newConfig?.androidNearby === beapi.account.NetworkConfig.Flag.Enabled}
+					varToggle={
+						currentNetworkConfig?.androidNearby === beapi.account.NetworkConfig.Flag.Enabled
+					}
 					actionToggle={async () => {
 						await checkBlePermission({
 							setNetworkConfig: async (newConfig: beapi.account.INetworkConfig) => {
-								setNewConfig(newConfig)
+								dispatch(setCurrentNetworkConfig(newConfig))
 							},
-							networkConfig: newConfig,
+							networkConfig: currentNetworkConfig,
 							changedKey: ['androidNearby'],
 							navigate,
 						})
@@ -185,27 +212,31 @@ const Proximity: React.FC<{
 				backgroundColor={colors['input-background']}
 				toggled
 				toggleStatus='secondary'
-				varToggle={newConfig?.mdns === beapi.account.NetworkConfig.Flag.Enabled}
+				varToggle={currentNetworkConfig?.mdns === beapi.account.NetworkConfig.Flag.Enabled}
 				actionToggle={async () => {
-					setNewConfig({
-						...newConfig,
-						mdns:
-							newConfig?.mdns === beapi.account.NetworkConfig.Flag.Enabled
-								? beapi.account.NetworkConfig.Flag.Disabled
-								: beapi.account.NetworkConfig.Flag.Enabled,
-					})
+					dispatch(
+						setCurrentNetworkConfig({
+							...currentNetworkConfig,
+							mdns:
+								currentNetworkConfig?.mdns === beapi.account.NetworkConfig.Flag.Enabled
+									? beapi.account.NetworkConfig.Flag.Disabled
+									: beapi.account.NetworkConfig.Flag.Enabled,
+						}),
+					)
 				}}
 			/>
 		</View>
 	)
 }
 
-const Routing: React.FC<{
-	setNewConfig: React.Dispatch<beapi.account.INetworkConfig>
-	newConfig: beapi.account.INetworkConfig
-}> = ({ setNewConfig, newConfig }) => {
+const Routing: React.FC = () => {
 	const colors = useThemeColor()
 	const { t } = useTranslation()
+	const dispatch = useAppDispatch()
+	const { hide, show } = useModal()
+	const rendezvous = useAppSelector(selectRendezvous)
+	const currentNetworkConfig = useAppSelector(selectCurrentNetworkConfig)
+
 	return (
 		<View>
 			<ButtonSetting
@@ -218,83 +249,219 @@ const Routing: React.FC<{
 				backgroundColor={colors['input-background']}
 				toggled
 				toggleStatus='secondary'
-				varToggle={newConfig?.dht === beapi.account.NetworkConfig.DHTFlag.DHTClient}
+				varToggle={currentNetworkConfig?.dht === beapi.account.NetworkConfig.DHTFlag.DHTClient}
 				actionToggle={async () => {
-					setNewConfig({
-						...newConfig,
-						dht:
-							newConfig?.dht === beapi.account.NetworkConfig.DHTFlag.DHTClient
-								? beapi.account.NetworkConfig.DHTFlag.DHTDisabled
-								: beapi.account.NetworkConfig.DHTFlag.DHTClient,
-					})
+					dispatch(
+						setCurrentNetworkConfig({
+							...currentNetworkConfig,
+							dht:
+								currentNetworkConfig?.dht === beapi.account.NetworkConfig.DHTFlag.DHTClient
+									? beapi.account.NetworkConfig.DHTFlag.DHTDisabled
+									: beapi.account.NetworkConfig.DHTFlag.DHTClient,
+						}),
+					)
 				}}
 			/>
-			{/*
-			<ButtonSetting
-				name={t('onboarding.custom-mode.settings.routing.rdvp-button')}
-				color={colors['main-text']}
-				icon='privacy'
-				iconPack='custom'
-				iconColor='#6E6DFF'
-				actionIconColor={colors['main-text']}
-				backgroundColor={colors['input-background']}
-			/>
-			*/}
+			<Accordion title={t('onboarding.custom-mode.settings.routing.rdvp-button')} icon='privacy'>
+				{(rendezvous || []).map(({ alias, url, isEnabled, isEditable }, index) => (
+					<AccordionItem
+						key={`rendezvous-item-${index}`}
+						toggle={isEnabled}
+						value={alias}
+						onToggleChange={isEditable ? () => dispatch(toggleFromRendezvous(url)) : undefined}
+						onPressModify={
+							isEditable
+								? () =>
+										show(
+											<AccordionEdit
+												title={t('onboarding.custom-mode.settings.modals.edit.title.rdvp')}
+												onEdit={data => {
+													dispatch(modifyFromRendezvous({ url, changes: data }))
+													hide()
+												}}
+												onDelete={() => {
+													dispatch(removeFromRendezvous(url))
+													hide()
+												}}
+												defaultAlias={alias}
+												defaultUrl={url}
+												alreadyExistingUrls={rendezvous
+													.map(({ url }) => url)
+													.filter((url): url is string => url !== undefined)}
+												alreadyExistingAliases={rendezvous
+													.map(({ alias }) => alias)
+													.filter((alias): alias is string => alias !== undefined)}
+											/>,
+										)
+								: undefined
+						}
+					/>
+				))}
+				<AccordionAddItem
+					onPress={() =>
+						show(
+							<AccordionAdd
+								title={t('onboarding.custom-mode.settings.modals.add.title.rdvp')}
+								onSubmit={data => {
+									dispatch(addToRendezvous(data))
+									hide()
+								}}
+								alreadyExistingAliases={rendezvous
+									.map(({ alias }) => alias)
+									.filter((alias): alias is string => alias !== undefined)}
+								alreadyExistingUrls={rendezvous
+									.map(({ url }) => url)
+									.filter((url): url is string => url !== undefined)}
+							/>,
+						)
+					}
+				/>
+			</Accordion>
 		</View>
 	)
 }
 
-// const Access: React.FC<{
-// 	setNewConfig: React.Dispatch<beapi.account.INetworkConfig>
-// 	newConfig: beapi.account.INetworkConfig
-// }> = (/*{ newConfig }*/) => {
-// 	const colors = useThemeColor()
-// 	const navigation = useNavigation()
-// 	const { t } = useTranslation()
+const Access: React.FC = () => {
+	// const colors = useThemeColor()
+	// const navigation = useNavigation()
+	// const { t } = useTranslation()
+	const dispatch = useAppDispatch()
+	const { t } = useTranslation()
+	const { hide, show } = useModal()
+	const bootstrap = useAppSelector(selectBootstrap)
+	const staticRelay = useAppSelector(selectStaticRelay)
 
-// 	return (
-// 		<View>
-// 			<ButtonSetting
-// 				name={t('onboarding.custom-mode.settings.access.relay-button')}
-// 				icon='earth'
-// 				iconPack='custom'
-// 				color={colors['main-text']}
-// 				iconColor='#6E6DFF'
-// 				actionIconColor={colors['main-text']}
-// 				backgroundColor={colors['input-background']}
-// 				onPress={() => navigation.navigate('Settings.NetworkMap')}
-// 			/>
-// 			<ButtonSetting
-// 				name={t('onboarding.custom-mode.settings.access.bootstrap-button')}
-// 				icon='earth'
-// 				iconPack='custom'
-// 				color={colors['main-text']}
-// 				iconColor='#6E6DFF'
-// 				actionIconColor={colors['main-text']}
-// 				backgroundColor={colors['input-background']}
-// 				onPress={() => navigation.navigate('Settings.NetworkMap')}
-// 			/>
-// 			<ButtonSetting
-// 				name={t('onboarding.custom-mode.settings.access.replication-button')}
-// 				icon='earth'
-// 				iconPack='custom'
-// 				color={colors['main-text']}
-// 				iconColor='#6E6DFF'
-// 				actionIconColor={colors['main-text']}
-// 				backgroundColor={colors['input-background']}
-// 				onPress={() => navigation.navigate('Settings.NetworkMap')}
-// 			/>
-// 		</View>
-// 	)
-// }
+	return (
+		<View>
+			<Accordion title={t('onboarding.custom-mode.settings.access.relay-button')} icon='earth'>
+				{(staticRelay || []).map(({ alias, url, isEnabled, isEditable }, index) => (
+					<AccordionItem
+						key={`rendezvous-item-${index}`}
+						toggle={isEnabled}
+						value={alias}
+						onToggleChange={isEditable ? () => dispatch(toggleFromStaticRelay(url)) : undefined}
+						onPressModify={
+							isEditable
+								? () =>
+										show(
+											<AccordionEdit
+												title={t('onboarding.custom-mode.settings.modals.edit.title.relay')}
+												onEdit={data => {
+													dispatch(modifyFromStaticRelay({ url, changes: data }))
+													hide()
+												}}
+												onDelete={() => {
+													dispatch(removeFromStaticRelay(url))
+													hide()
+												}}
+												defaultAlias={alias}
+												defaultUrl={url}
+												alreadyExistingUrls={staticRelay
+													.map(({ url }) => url)
+													.filter((url): url is string => url !== undefined)}
+												alreadyExistingAliases={staticRelay
+													.map(({ alias }) => alias)
+													.filter((alias): alias is string => alias !== undefined)}
+											/>,
+										)
+								: undefined
+						}
+					/>
+				))}
+				<AccordionAddItem
+					onPress={() =>
+						show(
+							<AccordionAdd
+								title={t('onboarding.custom-mode.settings.modals.add.title.relay')}
+								onSubmit={data => {
+									dispatch(addToRendezvous(data))
+									hide()
+								}}
+								alreadyExistingAliases={staticRelay
+									.map(({ alias }) => alias)
+									.filter((alias): alias is string => alias !== undefined)}
+								alreadyExistingUrls={staticRelay
+									.map(({ url }) => url)
+									.filter((url): url is string => url !== undefined)}
+							/>,
+						)
+					}
+				/>
+			</Accordion>
+			<Accordion title={t('onboarding.custom-mode.settings.access.bootstrap-button')} icon='earth'>
+				{(staticRelay || []).map(({ alias, url, isEnabled, isEditable }, index) => (
+					<AccordionItem
+						key={`rendezvous-item-${index}`}
+						toggle={isEnabled}
+						value={alias}
+						onToggleChange={isEditable ? () => dispatch(toggleFromBootstrap(url)) : undefined}
+						onPressModify={
+							isEditable
+								? () =>
+										show(
+											<AccordionEdit
+												title={t('onboarding.custom-mode.settings.modals.edit.title.bootstrap')}
+												onEdit={data => {
+													dispatch(modifyFromBootstrap({ url, changes: data }))
+													hide()
+												}}
+												onDelete={() => {
+													dispatch(removeFromBootstrap(url))
+													hide()
+												}}
+												defaultAlias={alias}
+												defaultUrl={url}
+												alreadyExistingUrls={bootstrap
+													.map(({ url }) => url)
+													.filter((url): url is string => url !== undefined)}
+												alreadyExistingAliases={bootstrap
+													.map(({ alias }) => alias)
+													.filter((alias): alias is string => alias !== undefined)}
+											/>,
+										)
+								: undefined
+						}
+					/>
+				))}
+				<AccordionAddItem
+					onPress={() =>
+						show(
+							<AccordionAdd
+								title={t('onboarding.custom-mode.settings.modals.add.title.bootstrap')}
+								onSubmit={data => {
+									dispatch(addToBootstrap(data))
+									hide()
+								}}
+								alreadyExistingAliases={bootstrap
+									.map(({ alias }) => alias)
+									.filter((alias): alias is string => alias !== undefined)}
+								alreadyExistingUrls={bootstrap
+									.map(({ url }) => url)
+									.filter((url): url is string => url !== undefined)}
+							/>,
+						)
+					}
+				/>
+			</Accordion>
+			{/* <ButtonSetting
+				name={t('onboarding.custom-mode.settings.access.replication-button')}
+				icon='earth'
+				iconPack='custom'
+				color={colors['main-text']}
+				iconColor='#6E6DFF'
+				actionIconColor={colors['main-text']}
+				backgroundColor={colors['input-background']}
+				onPress={() => navigation.navigate('Settings.NetworkMap')}
+			/> */}
+		</View>
+	)
+}
 
-const CustomConfig: React.FC<{
-	setNewConfig: React.Dispatch<beapi.account.INetworkConfig>
-	newConfig: beapi.account.INetworkConfig
-}> = ({ setNewConfig, newConfig }) => {
+const CustomConfig: React.FC = () => {
 	const [{ margin, padding, border }] = useStyles()
 	const { t } = useTranslation()
 	const colors = useThemeColor()
+
 	return (
 		<View>
 			<View
@@ -305,7 +472,7 @@ const CustomConfig: React.FC<{
 				]}
 			>
 				<ConfigPart title={t('onboarding.custom-mode.settings.off-grid.title')} icon='proximity' />
-				<Proximity setNewConfig={setNewConfig} newConfig={newConfig} />
+				<Proximity />
 			</View>
 			<View
 				style={[
@@ -316,9 +483,9 @@ const CustomConfig: React.FC<{
 				]}
 			>
 				<ConfigPart title={t('onboarding.custom-mode.settings.routing.title')} icon='peer' />
-				<Routing setNewConfig={setNewConfig} newConfig={newConfig} />
+				<Routing />
 			</View>
-			{/*
+
 			<View
 				style={[
 					margin.top.medium,
@@ -332,30 +499,30 @@ const CustomConfig: React.FC<{
 					icon='services'
 					iconSize={50}
 				/>
-				<Access setNewConfig={setNewConfig} newConfig={newConfig} />
+				<Access />
 			</View>
-				*/}
 		</View>
 	)
 }
 
-const ApplyChanges: React.FC<{ newConfig: beapi.account.INetworkConfig | null }> = ({
-	newConfig,
-}) => {
+const ApplyChanges: React.FC = () => {
 	const [{ padding, border, text }] = useStyles()
 	const colors = useThemeColor()
 	const ctx = useMessengerContext()
 	const [isPressed, setIsPressed] = React.useState<boolean>(false)
 	const { t } = useTranslation()
+	const currentNetworkConfig = useAppSelector(selectCurrentNetworkConfig)
+	const parsedLocalNetworkConfig = useAppSelector(selectParsedLocalNetworkConfig)
 
 	return (
 		<View style={{ alignSelf: 'center', flex: 1 }}>
 			<View style={[padding.medium]}>
 				<TouchableOpacity
 					onPress={async () => {
-						if (newConfig) {
+						if (currentNetworkConfig) {
 							setIsPressed(true)
-							await ctx.createNewAccount(newConfig)
+							console.log({ parsedLocalNetworkConfig })
+							await ctx.createNewAccount(parsedLocalNetworkConfig)
 						}
 					}}
 					style={[
@@ -382,12 +549,11 @@ const ApplyChanges: React.FC<{ newConfig: beapi.account.INetworkConfig | null }>
 	)
 }
 
-const EnableDisableAll: React.FC<{
-	setNewConfig: React.Dispatch<beapi.account.INetworkConfig | null>
-}> = ({ setNewConfig }) => {
+const EnableDisableAll: React.FC = () => {
 	const [{ padding, border }] = useStyles()
 	const colors = useThemeColor()
 	const [isToggled, setIsToggled] = React.useState(false)
+	const dispatch = useAppDispatch()
 	const { t } = useTranslation()
 	const { navigate } = useNavigation()
 
@@ -438,27 +604,31 @@ const EnableDisableAll: React.FC<{
 							if (Platform.OS === 'ios') {
 								await checkBlePermission({
 									setNetworkConfig: async (newConfig: beapi.account.INetworkConfig) => {
-										setNewConfig(newConfig)
+										dispatch(setCurrentNetworkConfig(newConfig))
 									},
 									networkConfig: enableWithoutBle,
 									changedKey: ['bluetoothLe', 'appleMultipeerConnectivity'],
 									navigate,
-									deny: async () => setNewConfig(enableWithoutBle),
+									deny: async () => {
+										dispatch(setCurrentNetworkConfig(enableWithoutBle))
+									},
 								})
 							}
 							if (Platform.OS === 'android') {
 								await checkBlePermission({
 									setNetworkConfig: async (newConfig: beapi.account.INetworkConfig) => {
-										setNewConfig(newConfig)
+										dispatch(setCurrentNetworkConfig(newConfig))
 									},
 									networkConfig: enableWithoutBle,
 									changedKey: ['bluetoothLe', 'androidNearby'],
 									navigate,
-									deny: async () => setNewConfig(enableWithoutBle),
+									deny: async () => {
+										dispatch(setCurrentNetworkConfig(enableWithoutBle))
+									},
 								})
 							}
 						} else {
-							setNewConfig(disable)
+							dispatch(setCurrentNetworkConfig(disable))
 						}
 					}}
 				/>
@@ -470,14 +640,14 @@ const EnableDisableAll: React.FC<{
 export const CustomModeSettings: ScreenFC<'Onboarding.CustomModeSettings'> = () => {
 	const colors = useThemeColor()
 	const [{ padding }] = useStyles()
-	const [newConfig, setNewConfig] = React.useState<beapi.account.INetworkConfig | null>(null)
+	const dispatch = useAppDispatch()
 
 	useMountEffect(() => {
 		const getNetworkConfig = async () => {
 			// with an empty accountId the function returns default config
 			const defaultConfig = await accountService.networkConfigGet({ accountId: '' })
 			if (defaultConfig.currentConfig) {
-				setNewConfig(defaultConfig?.currentConfig)
+				dispatch(setCurrentNetworkConfig(defaultConfig?.currentConfig))
 			}
 		}
 
@@ -492,10 +662,10 @@ export const CustomModeSettings: ScreenFC<'Onboarding.CustomModeSettings'> = () 
 				contentContainerStyle={[padding.medium]}
 				showsVerticalScrollIndicator={false}
 			>
-				{newConfig && <CustomConfig setNewConfig={setNewConfig} newConfig={newConfig} />}
+				<CustomConfig />
 				<View style={{ flexDirection: 'row', alignItems: 'center' }}>
-					{newConfig && <EnableDisableAll setNewConfig={setNewConfig} />}
-					<ApplyChanges newConfig={newConfig} />
+					<EnableDisableAll />
+					<ApplyChanges />
 				</View>
 			</ScrollView>
 		</SafeAreaView>

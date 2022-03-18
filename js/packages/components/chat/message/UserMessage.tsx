@@ -1,9 +1,8 @@
-import React, { useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { View, TouchableOpacity, Animated } from 'react-native'
 import { SHA3 } from 'sha3'
 import palette from 'google-palette'
 import { Text, Icon } from '@ui-kitten/components'
-import Popover from 'react-native-popover-view'
 import { PanGestureHandler, State } from 'react-native-gesture-handler'
 import { useTranslation } from 'react-i18next'
 
@@ -18,6 +17,7 @@ import {
 } from '@berty-tech/store'
 import { useStyles } from '@berty-tech/styles'
 import {
+	useAppDispatch,
 	useAppSelector,
 	useInteractionAuthor,
 	useLastConvInteraction,
@@ -29,10 +29,12 @@ import { HyperlinkUserMessage, TimestampStatusUserMessage } from './UserMessageC
 import { PictureMessage } from './PictureMessage'
 import { AudioMessage } from './AudioMessage'
 import { FileMessage } from './FileMessage'
-import { useReplyReaction } from '../ReplyReactionContext'
-import PopoverView from './Popover'
 import { getMediaTypeFromMedias } from '../../utils'
-import { Reactions } from './Reactions'
+// import { Reactions } from './Reactions'
+import { MessageMenu } from '../modals/MessageMenu.modal'
+import { useModal } from '../../providers/modal.provider'
+import { setActiveReplyInteraction } from '@berty-tech/redux/reducers/chatInputs.reducer'
+// import { EmojiKeyboard } from '../modals/EmojiKeyboard.modal'
 
 const pal = palette('tol-rainbow', 256)
 const AVATAR_SIZE = 30
@@ -170,17 +172,10 @@ export const UserMessage: React.FC<{
 	const colors = useThemeColor()
 	const { t } = useTranslation()
 	const [animatedValue] = useState(new Animated.Value(0))
-	const [messageLayoutWidth, setMessageLayoutWidth] = useState(0)
-
-	const {
-		activePopoverCid,
-		setActivePopoverCid,
-		setActiveReplyInte,
-		setActiveEmojiKeyboardCid,
-		highlightCid,
-		setHighlightCid,
-		setIsActivePopoverOnKeyboardClose,
-	} = useReplyReaction()
+	// const [messageLayoutWidth, setMessageLayoutWidth] = useState(0)
+	const { show } = useModal()
+	const dispatch = useAppDispatch()
+	const [highlightCid, setHighlightCid] = useState<string | undefined | null>()
 
 	const {
 		name,
@@ -199,45 +194,47 @@ export const UserMessage: React.FC<{
 		replyOf &&
 		getUserMessageState(replyOf, members, convKind, undefined, undefined, colors)
 
-	const togglePopover = () => {
+	const handleSelectEmoji = useCallback(
+		(emoji: string, remove: boolean = false) => {
+			client
+				?.interact({
+					conversationPublicKey: convPK,
+					type: beapi.messenger.AppMessage.Type.TypeUserReaction,
+					payload: beapi.messenger.AppMessage.UserReaction.encode({
+						emoji,
+						state: !remove,
+					}).finish(),
+					targetCid: inte?.cid,
+				})
+				.then(() => {
+					ctx.playSound('messageSent')
+				})
+				.catch((e: unknown) => {
+					console.warn('e sending message:', e)
+				})
+		},
+		[client, convPK, ctx, inte?.cid],
+	)
+
+	const isHighlight = highlightCid === inte.cid
+
+	const togglePopover = useCallback(() => {
 		if (inte.isMine) {
 			return
 		}
-		if (activePopoverCid === inte.cid) {
-			setActivePopoverCid(null)
-		} else if ((animatedValue as any)._value === 0) {
-			setActivePopoverCid(inte.cid)
-		}
-		Animated.timing(animatedValue, {
-			toValue: 0,
-			duration: 50,
-			useNativeDriver: false,
-		}).start(() => {})
-	}
-
-	const handleSelectEmoji = (emoji: string, remove: boolean = false) => {
-		client
-			?.interact({
-				conversationPublicKey: convPK,
-				type: beapi.messenger.AppMessage.Type.TypeUserReaction,
-				payload: beapi.messenger.AppMessage.UserReaction.encode({
-					emoji,
-					state: !remove,
-				}).finish(),
-				targetCid: inte?.cid,
-			})
-			.then(() => {
-				ctx.playSound('messageSent')
-				setActivePopoverCid(null)
-				setActiveEmojiKeyboardCid(null)
-				console.log('succeeded to remove emoji', emoji)
-			})
-			.catch((e: unknown) => {
-				console.warn('e sending message:', e)
-			})
-	}
-
-	const isHighlight = highlightCid === inte.cid
+		show(
+			<MessageMenu
+				convPk={convPK}
+				cid={inte.cid!}
+				onSelectEmoji={handleSelectEmoji}
+				replyInteraction={{
+					...inte,
+					backgroundColor: msgBackgroundColor,
+					textColor: msgTextColor,
+				}}
+			/>,
+		)
+	}, [convPK, handleSelectEmoji, inte, msgBackgroundColor, msgTextColor, show])
 
 	return (
 		<View
@@ -372,11 +369,16 @@ export const UserMessage: React.FC<{
 							onHandlerStateChange={event => {
 								if (event.nativeEvent.oldState === State.ACTIVE) {
 									if (event.nativeEvent.translationX > 120) {
-										setActiveReplyInte({
-											...inte,
-											backgroundColor: msgBackgroundColor,
-											textColor: msgTextColor,
-										})
+										dispatch(
+											setActiveReplyInteraction({
+												convPK,
+												activeReplyInteraction: {
+													...inte,
+													backgroundColor: msgBackgroundColor,
+													textColor: msgTextColor,
+												},
+											}),
+										)
 										Animated.timing(animatedValue, {
 											toValue: 0,
 											duration: 50,
@@ -427,137 +429,98 @@ export const UserMessage: React.FC<{
 										width={30}
 										fill={colors['negative-asset']}
 										onPress={() => {
-											setActiveReplyInte({
-												...inte,
-												backgroundColor: msgBackgroundColor,
-												textColor: msgTextColor,
-											})
-											setActivePopoverCid(null)
-											Animated.timing(animatedValue, {
-												toValue: 0,
-												duration: 100,
-												useNativeDriver: false,
-											}).start()
+											dispatch(
+												setActiveReplyInteraction({
+													convPK,
+													activeReplyInteraction: {
+														...inte,
+														backgroundColor: msgBackgroundColor,
+														textColor: msgTextColor,
+													},
+												}),
+											)
 										}}
 									/>
 								</Animated.View>
-								<Popover
-									isVisible={activePopoverCid === inte.cid}
-									popoverStyle={{
-										backgroundColor: 'transparent',
-										borderWidth: 0,
-										shadowColor: 'transparent',
-									}}
-									backgroundStyle={{ backgroundColor: 'transparent' }}
-									arrowStyle={{ backgroundColor: 'transparent' }}
-									onRequestClose={() => {
-										setActivePopoverCid(null)
-									}}
-									from={
-										<TouchableOpacity
-											onLayout={event => {
-												setMessageLayoutWidth(event.nativeEvent.layout.width)
-											}}
-											disabled={inte.isMine}
-											activeOpacity={0.9}
-											onLongPress={togglePopover}
-											style={{ marginBottom: inte?.reactions?.length ? 10 : 0 }}
-										>
-											<>
-												{!!inte.medias?.length && (
-													<View
-														style={[
-															isFollowedMessage && {
-																marginLeft: (AVATAR_SIZE + AVATAR_SPACE_RIGHT) * scaleSize,
-															},
-															previousMessage?.medias?.[0]?.mimeType
-																? margin.top.tiny
-																: margin.top.small,
-															nextMessage?.medias?.[0]?.mimeType
-																? margin.bottom.tiny
-																: margin.bottom.small,
-														]}
-													>
-														{(() => {
-															if (inte.medias[0]?.mimeType?.startsWith('image')) {
-																return (
-																	<PictureMessage
-																		medias={inte.medias}
-																		onLongPress={togglePopover}
-																		isHighlight={isHighlight}
-																	/>
-																)
-															} else if (inte.medias[0]?.mimeType?.startsWith('audio')) {
-																return (
-																	<AudioMessage
-																		medias={inte.medias}
-																		onLongPress={togglePopover}
-																		isHighlight={isHighlight}
-																		isMine={!!inte.isMine}
-																	/>
-																)
-															} else {
-																return (
-																	<FileMessage
-																		medias={inte.medias}
-																		onLongPress={togglePopover}
-																		isHighlight={isHighlight}
-																	/>
-																)
-															}
-														})()}
-													</View>
-												)}
-												{!!(!inte.medias?.length || inte.payload?.body) && (
-													<HyperlinkUserMessage
-														inte={inte}
-														msgBorderColor={msgBorderColor}
-														isFollowedMessage={isFollowedMessage}
-														msgBackgroundColor={msgBackgroundColor}
-														msgTextColor={msgTextColor}
-														isHighlight={isHighlight}
-													/>
-												)}
-											</>
-										</TouchableOpacity>
-									}
+								<TouchableOpacity
+									// onLayout={event => {
+									// 	setMessageLayoutWidth(event.nativeEvent.layout.width)
+									// }}
+									disabled={inte.isMine}
+									activeOpacity={0.9}
+									onLongPress={togglePopover}
+									style={{ marginBottom: inte?.reactions?.length ? 10 : 0 }}
 								>
-									<PopoverView
-										onReply={() => {
-											setActivePopoverCid(null)
-											setTimeout(() => {
-												setActiveReplyInte({
-													...inte,
-													backgroundColor: msgBackgroundColor,
-													textColor: msgTextColor,
-												})
-											}, 500)
-										}}
-										onEmojiKeyboard={() => {
-											setActivePopoverCid(null)
-											setActiveEmojiKeyboardCid(inte.cid)
-											setIsActivePopoverOnKeyboardClose(true)
-										}}
-										onSelectEmoji={handleSelectEmoji}
-									/>
-								</Popover>
+									<>
+										{!!inte.medias?.length && (
+											<View
+												style={[
+													isFollowedMessage && {
+														marginLeft: (AVATAR_SIZE + AVATAR_SPACE_RIGHT) * scaleSize,
+													},
+													previousMessage?.medias?.[0]?.mimeType
+														? margin.top.tiny
+														: margin.top.small,
+													nextMessage?.medias?.[0]?.mimeType
+														? margin.bottom.tiny
+														: margin.bottom.small,
+												]}
+											>
+												{(() => {
+													if (inte.medias[0]?.mimeType?.startsWith('image')) {
+														return (
+															<PictureMessage
+																medias={inte.medias}
+																onLongPress={togglePopover}
+																isHighlight={isHighlight}
+															/>
+														)
+													} else if (inte.medias[0]?.mimeType?.startsWith('audio')) {
+														return (
+															<AudioMessage
+																medias={inte.medias}
+																onLongPress={togglePopover}
+																isHighlight={isHighlight}
+																isMine={!!inte.isMine}
+															/>
+														)
+													} else {
+														return (
+															<FileMessage
+																medias={inte.medias}
+																onLongPress={togglePopover}
+																isHighlight={isHighlight}
+															/>
+														)
+													}
+												})()}
+											</View>
+										)}
+										{!!(!inte.medias?.length || inte.payload?.body) && (
+											<HyperlinkUserMessage
+												inte={inte}
+												msgBorderColor={msgBorderColor}
+												isFollowedMessage={isFollowedMessage}
+												msgBackgroundColor={msgBackgroundColor}
+												msgTextColor={msgTextColor}
+												isHighlight={isHighlight}
+											/>
+										)}
+									</>
+								</TouchableOpacity>
 							</Animated.View>
 						</PanGestureHandler>
-
-						{activePopoverCid === inte.cid && <Popover />}
-						{!!inte?.reactions?.length && !!messageLayoutWidth && (
+						{/* {!!messageLayoutWidth && (
 							<Reactions
 								convPk={convPK}
-								reactions={inte.reactions}
+								reactions={inte.reactions || []}
 								cid={inte.cid!}
 								onEmojiKeyboard={() => {
-									setActivePopoverCid(null)
-									setActiveEmojiKeyboardCid(inte.cid)
-									setIsActivePopoverOnKeyboardClose(false)
+									show(<EmojiKeyboard conversationPublicKey={convPK} targetCid={inte.cid!} />)
 								}}
 								onRemoveEmoji={handleSelectEmoji}
 							/>
-						)}
+						)} */}
 					</View>
 					{!isWithinCollapseDuration && (
 						<TimestampStatusUserMessage

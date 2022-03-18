@@ -1,19 +1,9 @@
 import React, { useState } from 'react'
-import {
-	TouchableOpacity,
-	View,
-	Platform,
-	TextInput,
-	StyleSheet,
-	Text,
-	Keyboard,
-} from 'react-native'
+import { TouchableOpacity, View, Platform, TextInput, Text, Keyboard } from 'react-native'
 import { Icon } from '@ui-kitten/components'
 import { useFocusEffect } from '@react-navigation/native'
 import { useTranslation } from 'react-i18next'
-import EmojiBoard from 'react-native-emoji-board'
 import AndroidKeyboardAdjust from 'react-native-android-keyboard-adjust'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useHeaderHeight } from '@react-navigation/elements'
 
 import { useStyles } from '@berty-tech/styles'
@@ -21,7 +11,6 @@ import { ScreenFC } from '@berty-tech/navigation'
 import {
 	useReadEffect,
 	useNotificationsInhibitor,
-	useMessengerContext,
 	useThemeColor,
 	pbDateToNum,
 	useMessengerClient,
@@ -32,7 +21,6 @@ import { useConversation, useLastConvInteraction } from '@berty-tech/react-redux
 
 import { ChatDate } from './common'
 import { MultiMemberAvatar } from '../avatars'
-import { ReplyReactionProvider } from './ReplyReactionContext'
 import { MessageList } from './MessageList'
 import { ChatFooter } from './footer/ChatFooter'
 
@@ -59,8 +47,6 @@ export const MultiMember: ScreenFC<'Chat.Group'> = ({ route: { params }, navigat
 	useReadEffect(params.convId, 1000)
 	const conv = useConversation(params?.convId)
 	const { t } = useTranslation()
-	const ctx = useMessengerContext()
-	const insets = useSafeAreaInsets()
 	const client = useMessengerClient()
 
 	const [editValue, setEditValue] = useState(conv?.displayName || '')
@@ -187,108 +173,50 @@ export const MultiMember: ScreenFC<'Chat.Group'> = ({ route: { params }, navigat
 			keyboardVerticalOffset={headerHeight}
 			style={[{ flex: 1, backgroundColor: colors['main-background'] }]}
 		>
-			<ReplyReactionProvider>
-				{({
-					activeEmojiKeyboardCid,
-					setActiveEmojiKeyboardCid,
-					setActivePopoverCid,
-					isActivePopoverOnKeyboardClose,
-				}: any) => {
-					const onRemoveEmojiBoard = () => {
-						if (isActivePopoverOnKeyboardClose) {
-							setActivePopoverCid(activeEmojiKeyboardCid)
-						}
-						setActiveEmojiKeyboardCid(null)
-					}
-					return (
-						<View style={[flex.tiny, { backgroundColor: colors['main-background'] }]}>
-							{Platform.OS === 'ios' ? (
-								<View style={[flex.tiny]}>
-									<MessageList id={params?.convId} {...{ setStickyDate, setShowStickyDate }} />
-									<ChatFooter
-										convPK={params?.convId}
-										placeholder={t('chat.multi-member.input-placeholder')}
-									/>
-									{!!stickyDate && !!showStickyDate && (
-										<View
-											style={{
-												position: 'absolute',
-												top: 110,
-												left: 0,
-												right: 0,
-											}}
-										>
-											<ChatDate date={pbDateToNum(stickyDate)} />
-										</View>
-									)}
-								</View>
-							) : (
-								<>
-									<MessageList id={params?.convId} {...{ setStickyDate, setShowStickyDate }} />
-									<ChatFooter
-										convPK={params?.convId}
-										placeholder={t('chat.multi-member.input-placeholder')}
-									/>
-									{!!stickyDate && !!showStickyDate && (
-										<View
-											style={{
-												position: 'absolute',
-												top: 110,
-												left: 0,
-												right: 0,
-											}}
-										>
-											<ChatDate date={pbDateToNum(stickyDate)} />
-										</View>
-									)}
-								</>
-							)}
-
-							{!!activeEmojiKeyboardCid && (
-								<View style={StyleSheet.absoluteFill}>
-									<TouchableOpacity
-										style={[StyleSheet.absoluteFill, { flex: 1 }]}
-										activeOpacity={0.9}
-										onPress={onRemoveEmojiBoard}
-									/>
-									<EmojiBoard
-										showBoard={true}
-										onClick={(emoji: any) => {
-											client
-												?.interact({
-													conversationPublicKey: conv?.publicKey,
-													type: beapi.messenger.AppMessage.Type.TypeUserReaction,
-													payload: beapi.messenger.AppMessage.UserReaction.encode({
-														emoji: `:${emoji.name}:`,
-														state: true,
-													}).finish(),
-													targetCid: activeEmojiKeyboardCid,
-												})
-												.then(() => {
-													ctx.playSound('messageSent')
-													setActivePopoverCid(null)
-													setActiveEmojiKeyboardCid(null)
-												})
-												.catch((e: unknown) => {
-													console.warn('e sending message:', e)
-												})
-										}}
-										onRemove={() => {
-											setActivePopoverCid(activeEmojiKeyboardCid)
-											setActiveEmojiKeyboardCid(null)
-										}}
-										containerStyle={{
-											position: 'absolute',
-											bottom: 0,
-											paddingBottom: insets.bottom,
-										}}
-									/>
-								</View>
-							)}
-						</View>
-					)
-				}}
-			</ReplyReactionProvider>
+			<View style={[flex.tiny, { backgroundColor: colors['main-background'] }]}>
+				{Platform.OS === 'ios' ? (
+					<View style={[flex.tiny]}>
+						<MessageList id={params?.convId} {...{ setStickyDate, setShowStickyDate }} />
+						<ChatFooter
+							convPK={params?.convId}
+							placeholder={t('chat.multi-member.input-placeholder')}
+						/>
+						{!!stickyDate && !!showStickyDate && (
+							<View
+								style={{
+									position: 'absolute',
+									top: 110,
+									left: 0,
+									right: 0,
+								}}
+							>
+								<ChatDate date={pbDateToNum(stickyDate)} />
+							</View>
+						)}
+					</View>
+				) : (
+					<>
+						<MessageList id={params?.convId} {...{ setStickyDate, setShowStickyDate }} />
+						<ChatFooter
+							convPK={params?.convId}
+							placeholder={t('chat.multi-member.input-placeholder')}
+						/>
+						{!!stickyDate && !!showStickyDate && (
+							<View
+								style={{
+									position: 'absolute',
+									top: 110,
+									left: 0,
+									right: 0,
+								}}
+							>
+								<ChatDate date={pbDateToNum(stickyDate)} />
+							</View>
+						)}
+					</>
+				)}
+			</View>
+			)
 		</IOSOnlyKeyboardAvoidingView>
 	)
 }

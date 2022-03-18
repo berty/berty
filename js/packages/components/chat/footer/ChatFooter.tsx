@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { NativeSyntheticEvent, TextInputSelectionChangeEventData, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import ImagePicker from 'react-native-image-crop-picker'
@@ -9,7 +9,9 @@ import { useTranslation } from 'react-i18next'
 import { Maybe, useMessengerClient, useMessengerContext, useThemeColor } from '@berty-tech/store'
 import { useStyles } from '@berty-tech/styles'
 import {
+	removeActiveReplyInteraction,
 	resetChatInput,
+	selectActiveReplyInteraction,
 	selectChatInputMediaList,
 	selectChatInputText,
 	setChatInputText,
@@ -26,12 +28,12 @@ import {
 	setChatInputSelection,
 } from '@berty-tech/redux/reducers/chatInputsVolatile.reducer'
 
-import { useReplyReaction } from '../ReplyReactionContext'
 import { CameraButton, MoreButton, RecordButton, SendButton } from './ChatFooterButtons'
 import { ChatTextInput } from './ChatTextInput'
 import { RecordComponent } from './record/RecordComponent'
-import { AddFileMenu } from './file-uploads/AddFileMenu'
+import { AddFileMenu } from '../modals/add-file-modal/AddFileMenu.modal'
 import { EmojiBanner } from './emojis/EmojiBanner'
+import { useModal } from '../../providers/modal.provider'
 
 export type ChatFooterProps = {
 	convPK: string
@@ -56,24 +58,26 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 		const mediaCids = useAppSelector(state => selectChatInputMediaList(state, convPK))
 		const colors = useThemeColor()
 		const { navigate } = useNavigation()
-		const { activeReplyInte, setActiveReplyInte } = useReplyReaction() // FIXME: move to redux
+		const activeReplyInte = useAppSelector(state => selectActiveReplyInteraction(state, convPK))
 		const [, { scaleSize }] = useStyles()
 		const messengerClient = useMessengerClient()
 		const ctx = useMessengerContext()
 		const conversation = useConversation(convPK)
 		const insets = useSafeAreaInsets()
 		const addedMedias = useMedias(mediaCids)
+		const { hide, show } = useModal()
 
 		// local
 		const isFocused = useAppSelector(state => selectChatInputIsFocused(state, convPK))
-		const [addFileMenuVisible, setAddFileMenuVisible] = React.useState(false)
 
 		// computed
 		const isFake = !!(conversation as any)?.fake
 		const sendEnabled = !sending && !!(!isFake && (message || mediaCids.length > 0))
 		const horizontalGutter = 8 * scaleSize
-		const showQuickButtons =
-			!disabled && !sending && !message && !isFocused && mediaCids.length <= 0
+		const showQuickButtons = useMemo(
+			() => !disabled && !sending && !message && mediaCids.length <= 0,
+			[disabled, mediaCids.length, message, sending],
+		)
 
 		// callbacks
 
@@ -90,7 +94,6 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 					const medias = [...addedMedias, ...additionalMedia].filter(
 						m => m?.cid,
 					) as beapi.messenger.IMedia[]
-					console.log('media', medias)
 					const reply = await messengerClient.interact({
 						conversationPublicKey: convPK,
 						type: beapi.messenger.AppMessage.Type.TypeUserMessage,
@@ -112,7 +115,7 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 						type: 'messenger/InteractionUpdated',
 						payload: { interaction: optimisticInteraction },
 					})
-					setActiveReplyInte()
+					dispatch(removeActiveReplyInteraction({ convPK }))
 					dispatch(resetChatInput(convPK))
 					ctx.playSound('messageSent')
 				} catch (e) {
@@ -121,14 +124,13 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 				}
 			},
 			[
-				message,
+				activeReplyInte?.cid,
+				addedMedias,
 				convPK,
 				ctx,
-				activeReplyInte?.cid,
-				setActiveReplyInte,
 				dispatch,
+				message,
 				messengerClient,
-				addedMedias,
 				setSending,
 			],
 		)
@@ -146,9 +148,9 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 				if (newMedias) {
 					await sendMessageBouncy(newMedias)
 				}
-				setAddFileMenuVisible(false)
+				hide()
 			},
-			[sendMessageBouncy],
+			[hide, sendMessageBouncy],
 		)
 
 		const prepareMediaAndSend = React.useCallback(
@@ -222,8 +224,19 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 		}, [navigate, prepareMediaAndSend])
 
 		const handlePressMore = React.useCallback(() => {
-			setAddFileMenuVisible(true)
-		}, [setAddFileMenuVisible])
+			show(
+				<AddFileMenu
+					onClose={handleCloseFileMenu}
+					setSending={val => {
+						setSending(val)
+						if (val) {
+							hide()
+						}
+					}}
+					sending={sending}
+				/>,
+			)
+		}, [handleCloseFileMenu, hide, sending, setSending, show])
 
 		const handleTextChange = React.useCallback(
 			(text: string) => {
@@ -255,24 +268,13 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 					style={{
 						paddingLeft: 10 * scaleSize,
 						paddingTop: 10 * scaleSize,
-						paddingBottom: (isFocused ? 0 : insets.bottom) || 18 * scaleSize,
+						paddingBottom: insets.bottom || 18 * scaleSize,
 						justifyContent: 'flex-end',
 						alignItems: 'center',
 						minHeight: 65 * scaleSize,
 						backgroundColor: colors['main-background'],
 					}}
 				>
-					<AddFileMenu
-						visible={addFileMenuVisible}
-						onClose={handleCloseFileMenu}
-						setSending={val => {
-							setSending(val)
-							if (val) {
-								setAddFileMenuVisible(false)
-							}
-						}}
-						sending={sending}
-					/>
 					<RecordComponent
 						component={recordIcon}
 						convPk={convPK}
@@ -303,6 +305,7 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 								onChangeText={handleTextChange}
 								onSelectionChange={handleSelectionChange}
 								value={message}
+								convPK={convPK}
 							/>
 							<View style={{ marginLeft: horizontalGutter }}>
 								{showQuickButtons ? (

@@ -29,16 +29,19 @@ import {
 	setCurrentNetworkConfig,
 } from '@berty-tech/redux/reducers/networkConfig.reducer'
 import * as MailComposer from 'expo-mail-composer'
+import { useModal } from '../providers/modal.provider'
+import { EditProfile } from '../modals'
 
 const ProfileButton: React.FC<{}> = () => {
 	const [{ padding, margin, border }, { scaleSize }] = useStyles()
 	const colors = useThemeColor()
 	const account = useAccount()
 	const { navigate } = useNavigation()
+	const { show } = useModal()
 
 	return (
 		<TouchableOpacity
-			onPress={() => navigate('Modals.EditProfile')}
+			onPress={() => show(<EditProfile />)}
 			style={[
 				margin.horizontal.medium,
 				padding.medium,

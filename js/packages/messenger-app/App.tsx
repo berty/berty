@@ -14,11 +14,12 @@ import { MessengerProvider, useMountEffect, useThemeColor } from '@berty-tech/st
 import { isReadyRef, navigationRef } from '@berty-tech/navigation'
 import { Navigation } from '@berty-tech/navigation/stacks'
 import { Provider as StyleProvider } from '@berty-tech/styles'
-import NotificationProvider from '@berty-tech/components/NotificationProvider'
+import NotificationProvider from '@berty-tech/components/providers/notification.provider'
 // import { StickMusicPlayer } from '@berty-tech/components/shared-components/StickyMusicPlayer'
-import { MusicPlayerProvider } from '@berty-tech/components/music-player'
+import { MusicPlayerProvider } from '@berty-tech/components/providers/musicPlayer.provider'
 import { ErrorScreen } from '@berty-tech/components/error'
 import reduxStore from '@berty-tech/redux/store'
+import { ModalProvider } from '@berty-tech/components/providers/modal.provider'
 
 import { FeatherIconsPack } from './feather-icons'
 import { CustomIconsPack } from './custom-icons'
@@ -62,8 +63,10 @@ export const App: React.FC = () => {
 											<StreamGate>
 												<ListGate>
 													<MusicPlayerProvider>
-														{/*<StickMusicPlayer />*/}
-														<Navigation />
+														<ModalProvider>
+															{/*<StickMusicPlayer />*/}
+															<Navigation />
+														</ModalProvider>
 													</MusicPlayerProvider>
 												</ListGate>
 											</StreamGate>

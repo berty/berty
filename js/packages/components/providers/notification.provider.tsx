@@ -9,7 +9,7 @@ import beapi from '@berty-tech/api'
 import { useNavigation } from '@berty-tech/navigation'
 import { useConversationsDict } from '@berty-tech/react-redux'
 
-import NotificationBody from './NotificationBody'
+import NotificationBody from '../NotificationBody'
 
 export const PushNotificationBridge: React.FC = withInAppNotification(
 	({ showNotification }: any) => {

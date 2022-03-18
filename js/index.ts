@@ -4,6 +4,7 @@
 
 import 'node-libs-react-native/globals'
 import 'react-native-gesture-handler'
+import 'react-native-reanimated'
 import { AppRegistry, NativeModules } from 'react-native'
 import protobuf from 'protobufjs'
 

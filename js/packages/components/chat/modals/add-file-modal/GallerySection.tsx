@@ -35,7 +35,7 @@ export const GallerySection: React.FC<{
 		null,
 	)
 
-	const [loading, setLoading] = useState(true)
+	const [loading, setLoading] = useState<boolean>(true)
 
 	const [galleryContents, setGalleryContents] = useState<
 		(beapi.messenger.IMedia & { uri: string })[]
@@ -143,7 +143,7 @@ export const GallerySection: React.FC<{
 					}
 				}}
 				scrollEventThrottle={400}
-				style={[{ maxHeight: 150 }, padding.medium]}
+				style={[padding.medium]}
 				contentContainerStyle={{
 					flexDirection: 'row',
 					flexWrap: 'wrap',

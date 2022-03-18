@@ -1,0 +1,19 @@
+diff --git a/node_modules/react-native-reanimated/src/reanimated2/core.ts b/node_modules/react-native-reanimated/src/reanimated2/core.ts
+index 2e0c38a..42a0faf 100644
+--- a/node_modules/react-native-reanimated/src/reanimated2/core.ts
++++ b/node_modules/react-native-reanimated/src/reanimated2/core.ts
+@@ -383,9 +383,11 @@ if (!NativeReanimatedModule.useOnlyV1) {
+         info: runOnJS(capturableConsole.info),
+       };
+       _setGlobalConsole(console);
+-      global.performance = {
+-        now: global._chronoNow,
+-      };
++			if(global.performance == null) {
++				global.performance = {
++					now: global._chronoNow,
++				};
++			}
+     })();
+   }
+ }

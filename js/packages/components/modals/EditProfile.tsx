@@ -1,4 +1,4 @@
-import React, { useReducer } from 'react'
+import React, { FC, useReducer } from 'react'
 import {
 	ActivityIndicator,
 	Image,
@@ -6,21 +6,19 @@ import {
 	StyleSheet,
 	TouchableOpacity,
 	View,
-	KeyboardAvoidingView,
 } from 'react-native'
 import { Icon, Input, Text } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 import ImagePicker, { ImageOrVideo } from 'react-native-image-crop-picker'
 
-import { defaultStylesDeclaration, useStyles } from '@berty-tech/styles'
+import { useStyles } from '@berty-tech/styles'
 import { useMessengerClient, useMessengerContext, useThemeColor } from '@berty-tech/store'
 import { useAccount } from '@berty-tech/react-redux'
-import { ScreenFC, useNavigation } from '@berty-tech/navigation'
-import { StackActions } from '@react-navigation/native'
 
 import { AccountAvatar } from '../avatars'
 import { useSelector } from 'react-redux'
 import { selectSelectedAccount } from '@berty-tech/redux/reducers/ui.reducer'
+import { useModal } from '../providers/modal.provider'
 
 //
 // Edit Profile
@@ -86,9 +84,9 @@ const EditMyProfile: React.FC = () => {
 	const ctx = useMessengerContext()
 	const colors = useThemeColor()
 	const { t }: any = useTranslation()
-	const navigation = useNavigation()
 	const client = useMessengerClient()
 	const selectedAccount = useSelector(selectSelectedAccount)
+	const { hide } = useModal()
 
 	const account = useAccount()
 
@@ -126,13 +124,10 @@ const EditMyProfile: React.FC = () => {
 			let updated = false
 
 			if (state.pic) {
-				console.log('opening stream', state.pic)
 				const stream = await client?.mediaPrepare({})
 				if (!stream) {
 					throw new Error('failed to open prepareAttachment stream')
 				}
-
-				console.log('sending header')
 				await stream.emit({
 					info: {
 						mimeType: state.pic.mime,
@@ -141,16 +136,10 @@ const EditMyProfile: React.FC = () => {
 					},
 					uri: avatarURI,
 				})
-
-				console.log('closing send')
 				const reply = await stream.stopAndRecv()
-				console.log('got reply')
 				if (!reply?.cid) {
 					throw new Error('invalid PrepareAttachment reply, missing cid')
 				}
-
-				console.log('done', reply.cid)
-
 				update.avatarCid = reply.cid
 				updated = true
 			}
@@ -169,8 +158,7 @@ const EditMyProfile: React.FC = () => {
 					avatarCid: update.avatarCid,
 				})
 			}
-
-			navigation.dispatch(StackActions.pop(1))
+			hide()
 		} catch (err) {
 			console.warn(err)
 			localDispatch({ type: 'SET_ERROR', err })
@@ -256,7 +244,17 @@ const EditMyProfile: React.FC = () => {
 	}
 
 	return (
-		<View style={[margin.vertical.big]}>
+		<View>
+			<Text
+				style={[
+					margin.medium,
+					margin.bottom.huge,
+					text.align.center,
+					{ color: colors['main-text'] },
+				]}
+			>
+				{t('settings.edit-profile.title')}
+			</Text>
 			<View style={[row.left]}>
 				<Pressable onPress={handlePicturePressed}>{image}</Pressable>
 				<View style={[flex.tiny, margin.left.big]}>
@@ -339,73 +337,22 @@ const EditMyProfile: React.FC = () => {
 	)
 }
 
-const Header: React.FC = () => {
-	const colors = useThemeColor()
-	const { t }: any = useTranslation()
-	const [{ text }] = useStyles()
-
-	return (
-		<>
-			<View style={{ height: 30, alignItems: 'center', justifyContent: 'center' }}>
-				<View
-					style={{
-						backgroundColor: `${colors['secondary-text']}90`,
-						width: 50,
-						height: 4,
-						borderRadius: 2,
-					}}
-				/>
-			</View>
-			<View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-				<Text
-					style={[
-						text.size.big,
-						{
-							fontWeight: '700',
-							lineHeight: 40,
-							color: colors['main-text'],
-						},
-					]}
-				>
-					{t('settings.edit-profile.title') as any}
-				</Text>
-				<Icon name='edit-outline' width={28} height={28} fill={colors['background-header']} />
-			</View>
-		</>
-	)
-}
-
-export const EditProfile: ScreenFC<'Modals.EditProfile'> = () => {
+export const EditProfile: FC = () => {
 	const [{ padding }] = useStyles()
 	const colors = useThemeColor()
-	const navigation = useNavigation()
 
 	return (
-		<Pressable
-			onPress={() => navigation.dispatch(StackActions.pop(1))}
+		<View
 			style={[
-				StyleSheet.absoluteFill,
 				{
-					justifyContent: 'flex-end',
-					backgroundColor: `${defaultStylesDeclaration.colors.default.black}80`,
+					backgroundColor: colors['main-background'],
+					borderTopLeftRadius: 30,
+					borderTopRightRadius: 30,
 				},
+				padding.horizontal.big,
 			]}
 		>
-			<KeyboardAvoidingView behavior='padding'>
-				<View
-					style={[
-						{
-							backgroundColor: colors['main-background'],
-							borderTopLeftRadius: 30,
-							borderTopRightRadius: 30,
-						},
-						padding.horizontal.big,
-					]}
-				>
-					<Header />
-					<EditMyProfile />
-				</View>
-			</KeyboardAvoidingView>
-		</Pressable>
+			<EditMyProfile />
+		</View>
 	)
 }

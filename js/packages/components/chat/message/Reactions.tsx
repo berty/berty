@@ -1,15 +1,17 @@
+import React, { createRef, FC, useCallback, useEffect, useState } from 'react'
+import { Text, View } from 'react-native'
+import { FlatList, ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
+
 import { berty } from '@berty-tech/api/root.pb'
 import { getEmojiByName } from '@berty-tech/components/utils'
 import { useMessengerClient, useThemeColor } from '@berty-tech/store'
 import { useStyles } from '@berty-tech/styles'
-import React, { createRef, FC, useCallback, useEffect, useState } from 'react'
-import { Text, View } from 'react-native'
 import AddEmojiIcon from '@berty-tech/assets/add_emoji.svg'
 import AnimatedNumber from '@berty-tech/components/shared-components/AnimatedNumber'
-import { FlatList, ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
 import { useConversationMembersDict } from '@berty-tech/react-redux'
 import { ContactAvatar } from '@berty-tech/components/avatars'
-import { useConversationModal } from '../ConversationModalContext'
+
+import { useModal } from '../../providers/modal.provider'
 
 const MemberItem: React.FC<{ member: any; divider: boolean }> = ({ member, divider = true }) => {
 	const [{ row, margin, padding, border }, { scaleSize }] = useStyles()
@@ -183,7 +185,7 @@ export const Reactions: FC<{
 }> = ({ reactions, onEmojiKeyboard, onRemoveEmoji, cid, convPk }) => {
 	const [{ margin, padding, border, text }] = useStyles()
 	const colors = useThemeColor()
-	const { show } = useConversationModal()
+	const { show } = useModal()
 
 	if (!reactions.length) {
 		return null

@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import { Player } from '@react-native-community/audio-toolkit'
 
-import { getSource } from './utils'
+import { getSource } from '../utils'
 import { useSelector } from 'react-redux'
 import { selectProtocolClient } from '@berty-tech/redux/reducers/ui.reducer'
 
