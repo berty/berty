@@ -135,11 +135,11 @@ func TestScenario_MessageSeveralMultiMemberGroups(t *testing.T) {
 
 func TestScenario_AddContact(t *testing.T) {
 	cases := []testCase{
-		{"2 clients/connectAll", 2, bertyprotocol.ConnectAll, testutil.Fast, testutil.Flappy, time.Second * 20}, // marked as "flappy" because it failed multiple times on the CI recently
-		{"3 clients/connectAll", 3, bertyprotocol.ConnectAll, testutil.Fast, testutil.Flappy, time.Second * 20}, // marked as "flappy" because it failed multiple times on the CI recently
-		{"5 clients/connectAll", 5, bertyprotocol.ConnectAll, testutil.Slow, testutil.Flappy, time.Second * 30}, // marked as "flappy" because it failed multiple times on the CI recently
-		{"8 clients/connectAll", 8, bertyprotocol.ConnectAll, testutil.Slow, testutil.Flappy, time.Second * 40}, // marked as "flappy" because it failed multiple times on the CI recently
-		{"10 clients/connectAll", 10, bertyprotocol.ConnectAll, testutil.Slow, testutil.Broken, time.Second * 60},
+		{"2 clients/connectAll", 2, bertyprotocol.ConnectAll, testutil.Fast, testutil.Stable, time.Second * 20},
+		{"3 clients/connectAll", 3, bertyprotocol.ConnectAll, testutil.Fast, testutil.Stable, time.Second * 20},
+		{"5 clients/connectAll", 5, bertyprotocol.ConnectAll, testutil.Slow, testutil.Flappy, time.Second * 30},
+		{"8 clients/connectAll", 8, bertyprotocol.ConnectAll, testutil.Slow, testutil.Flappy, time.Second * 40},
+		{"10 clients/connectAll", 10, bertyprotocol.ConnectAll, testutil.Slow, testutil.Flappy, time.Second * 60},
 	}
 
 	testingScenario(t, cases, func(ctx context.Context, t *testing.T, tps ...*bertyprotocol.TestingProtocol) {
@@ -745,7 +745,7 @@ func addAsContact(ctx context.Context, t *testing.T, senders, receivers []*berty
 			})
 
 			// Check if sender and receiver are the same account, should return the right error and skip
-			if bytes.Compare(senderCfg.AccountPK, receiverCfg.AccountPK) == 0 {
+			if bytes.Equal(senderCfg.AccountPK, receiverCfg.AccountPK) {
 				require.Equal(t, errcode.LastCode(err), errcode.ErrContactRequestSameAccount)
 				continue
 			}
@@ -804,7 +804,7 @@ func addAsContact(ctx context.Context, t *testing.T, senders, receivers []*berty
 
 				require.NoError(t, err)
 
-				if bytes.Compare(senderCfg.AccountPK, req.ContactPK) == 0 {
+				if bytes.Equal(senderCfg.AccountPK, req.ContactPK) {
 					found = true
 					break
 				}

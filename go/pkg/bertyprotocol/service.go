@@ -240,7 +240,7 @@ func New(ctx context.Context, opts Opts) (_ Service, err error) {
 	opts.Logger.Debug("Opened account group", tyber.FormatStepLogFields(ctx, []tyber.Detail{{Name: "AccountGroup", Description: acc.group.String()}})...)
 
 	if opts.TinderDriver != nil {
-		s := NewSwiper(opts.Logger, opts.PubSub, opts.RendezvousRotationBase)
+		s := NewSwiper(opts.Logger, opts.TinderDriver, opts.RendezvousRotationBase)
 		opts.Logger.Debug("Tinder swiper is enabled", tyber.FormatStepLogFields(ctx, []tyber.Detail{})...)
 
 		if err := initContactRequestsManager(ctx, s, acc.metadataStore, opts.IpfsCoreAPI, opts.Logger); err != nil {

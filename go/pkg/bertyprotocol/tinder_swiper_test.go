@@ -73,8 +73,8 @@ func TestAnnounceWatchForPeriod(t *testing.T) {
 			err = mn.ConnectAllButSelf()
 			require.NoError(t, err)
 
-			swiperA := NewSwiper(opts.Logger, apiA.PubSub(), time.Hour)
-			swiperB := NewSwiper(opts.Logger, apiB.PubSub(), time.Hour)
+			swiperA := NewSwiper(opts.Logger, apiA.Tinder(), time.Hour)
+			swiperB := NewSwiper(opts.Logger, apiB.Tinder(), time.Hour)
 
 			swiperA.Announce(ctx, tc.topicA, tc.seedA)
 
