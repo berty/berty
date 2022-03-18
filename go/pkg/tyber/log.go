@@ -6,12 +6,14 @@ import (
 	"go.uber.org/zap"
 )
 
+const tyberLogNS = "tyber"
+
 func LogError(ctx context.Context, logger *zap.Logger, text string, err error, mutators ...StepMutator) error {
 	if logger == nil {
 		return err
 	}
 
-	logger.Error(
+	logger.Named(tyberLogNS).Error(
 		text,
 		FormatStepLogFields(ctx, []Detail{{Name: "Error", Description: err.Error()}}, mutators...)...,
 	)
@@ -25,13 +27,13 @@ func LogFatalError(ctx context.Context, logger *zap.Logger, text string, err err
 }
 
 func LogTraceEnd(ctx context.Context, logger *zap.Logger, text string, mutators ...StepMutator) {
-	logger.Debug(text, FormatStepLogFields(ctx, []Detail{}, append(mutators, EndTrace)...)...)
+	logger.Named(tyberLogNS).Debug(text, FormatStepLogFields(ctx, []Detail{}, append(mutators, EndTrace)...)...)
 }
 
 func LogTraceStart(ctx context.Context, logger *zap.Logger, text string) {
-	logger.Debug(text, FormatTraceLogFields(ctx)...)
+	logger.Named(tyberLogNS).Debug(text, FormatTraceLogFields(ctx)...)
 }
 
 func LogStep(ctx context.Context, logger *zap.Logger, text string, mutators ...StepMutator) {
-	logger.Debug(text, FormatStepLogFields(ctx, []Detail{}, mutators...)...)
+	logger.Named(tyberLogNS).Debug(text, FormatStepLogFields(ctx, []Detail{}, mutators...)...)
 }
