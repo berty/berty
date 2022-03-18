@@ -1,10 +1,19 @@
 import { default as pb } from './root.pb'
 
+const account = pb.lookup('berty.account.v1')
+const bridge = pb.lookup('berty.bridge.v1')
+const messenger = pb.lookup('.berty.messenger.v1')
+const protocol = pb.lookup('.berty.protocol.v1')
+const push = pb.lookup('.berty.push.v1')
+const errcode = pb.lookup('.berty.errcode')
+
+export { account, bridge, messenger, protocol, push, errcode }
+
 export default {
-	account: pb.lookup('berty.account.v1'),
-	bridge: pb.lookup('berty.bridge.v1'),
-	messenger: pb.lookup('.berty.messenger.v1'),
-	protocol: pb.lookup('.berty.protocol.v1'),
-	push: pb.lookup('.berty.push.v1'),
-	errcode: pb.lookup('.berty.errcode'),
+	account,
+	bridge,
+	messenger,
+	protocol,
+	push,
+	errcode,
 }

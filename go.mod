@@ -79,6 +79,7 @@ require (
 	github.com/multiformats/go-multistream v0.2.2
 	github.com/mutecomm/go-sqlcipher/v4 v4.4.2
 	github.com/oklog/run v1.1.0
+	github.com/otiai10/copy v1.7.0
 	github.com/pborman/uuid v1.2.1 // indirect
 	github.com/peterbourgon/ff/v3 v3.0.0
 	github.com/phayes/freeport v0.0.0-20180830031419-95f893ade6f2
