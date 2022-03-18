@@ -10,6 +10,7 @@ import {
 	RESULTS,
 } from 'react-native-permissions'
 import beapi from '@berty/api'
+import { Camera } from 'expo-camera'
 
 export enum PermissionType {
 	proximity = 'proximity',
@@ -45,8 +46,13 @@ export const permissionsByDevice: Record<string, Permission | undefined> = {
 export const getPermissionStatus = async (
 	permissionType: PermissionType,
 ): Promise<PermissionStatus> => {
-	if (permissionType === 'notification') {
+	if (permissionType === PermissionType.notification) {
 		return (await checkNotifications()).status
+	}
+	if (permissionType === PermissionType.camera && Platform.OS === 'web') {
+		return (await Camera.requestCameraPermissionsAsync()).status === 'granted'
+			? RESULTS.GRANTED
+			: RESULTS.DENIED
 	}
 	const permission = permissionsByDevice[permissionType]
 	if (!permission) {
@@ -58,8 +64,13 @@ export const getPermissionStatus = async (
 export const requestPermission = async (
 	permissionType: PermissionType,
 ): Promise<PermissionStatus> => {
-	if (permissionType === 'notification') {
+	if (permissionType === PermissionType.notification) {
 		return (await requestNotifications(['alert', 'sound'])).status
+	}
+	if (permissionType === PermissionType.camera) {
+		return (await Camera.requestCameraPermissionsAsync()).status === 'granted'
+			? RESULTS.GRANTED
+			: RESULTS.DENIED
 	}
 	const permission = permissionsByDevice[permissionType]
 	if (!permission) {
@@ -78,9 +89,9 @@ export const checkPermissions = async (
 		onSuccess?: (() => Promise<void>) | (() => void)
 	},
 ): Promise<PermissionStatus | undefined> => {
-	if (Platform.OS === 'web') {
-		return RESULTS.DENIED
-	}
+	// if (Platform.OS === 'web') {
+	// 	return RESULTS.DENIED
+	// }
 	let status
 	try {
 		status = await getPermissionStatus(permissionType)
@@ -90,7 +101,8 @@ export const checkPermissions = async (
 
 	if (
 		(status === RESULTS.DENIED || status === RESULTS.BLOCKED) &&
-		options?.navigateToPermScreenOnProblem
+		options?.navigateToPermScreenOnProblem &&
+		Platform.OS !== 'web'
 	) {
 		options.navigate('Main.Permissions', {
 			permissionType,

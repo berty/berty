@@ -183,6 +183,8 @@ targets:
       embed: false
     - framework: "${SRCROOT}/../node_modules/expo-file-system/ios/EXFileSystem.xcframework"
       embed: false
+    - framework: "${SRCROOT}/../node_modules/expo-camera/ios/EXCamera.xcframework"
+      embed: false
 
     preBuildScripts:
     - name: Copy GoogleService

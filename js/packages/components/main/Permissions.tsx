@@ -68,7 +68,7 @@ export const Permissions: ScreenFC<'Main.Permissions'> = ({ route: { params }, n
 			if (permissionStatus === RESULTS.BLOCKED) {
 				return openSettings()
 			}
-			if (permissionType === 'notification') {
+			if (permissionType === PermissionType.notification) {
 				try {
 					dispatch(
 						setPersistentOption({
@@ -83,7 +83,7 @@ export const Permissions: ScreenFC<'Main.Permissions'> = ({ route: { params }, n
 						}),
 					)
 				} catch (err) {
-					console.warn('request notification permisison err:', err)
+					console.warn('request notification permission err:', err)
 				}
 			} else if (permissionType === PermissionType.proximity) {
 				if (selectedAccount) {
@@ -268,7 +268,7 @@ export const Permissions: ScreenFC<'Main.Permissions'> = ({ route: { params }, n
 							textAlign: 'center',
 						}}
 					>
-						{permissionType === 'notification' && !selectedAccount
+						{permissionType === PermissionType.notification && !selectedAccount
 							? t('permission.skip')
 							: t('permission.cancel')}
 					</UnifiedText>

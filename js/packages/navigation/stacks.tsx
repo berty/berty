@@ -60,21 +60,6 @@ const BackgroundHeaderScreenOptions: (
 	}
 }
 
-const SecondaryBackgroundHeaderScreenOptions: (
-	additionalProps?: NativeStackNavigationOptions,
-) => NativeStackNavigationOptions = additionalProps => {
-	const colors = useThemeColor()
-	return {
-		headerStyle: {
-			backgroundColor: colors['secondary-background-header'],
-		},
-		headerTintColor: colors['reverted-main-text'],
-		headerBackTitleVisible: false,
-		headerShadowVisible: false,
-		...additionalProps,
-	}
-}
-
 const AltBackgroundHeaderScreenOptions: (
 	additionalProps?: NativeStackNavigationOptions,
 ) => NativeStackNavigationOptions = additionalProps => {
@@ -300,24 +285,6 @@ export const Navigation: React.FC = React.memo(() => {
 					headerShown: false,
 					title: t('main.home.requests.page-title'),
 				}}
-			/>
-			<NavigationStack.Screen
-				name={'Main.Scan'}
-				component={Components.Main.Scan}
-				options={SecondaryBackgroundHeaderScreenOptions({
-					title: t('main.scan.title'),
-					headerRight: () => (
-						<Icon
-							name='qr'
-							pack='custom'
-							width={35 * scaleSize}
-							height={35 * scaleSize}
-							fill={colors['reverted-main-text']}
-						/>
-					),
-					...CustomTitleStyle(),
-					presentation: 'formSheet',
-				})}
 			/>
 			<NavigationStack.Screen
 				name={'Main.Permissions'}
