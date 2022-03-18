@@ -63,6 +63,14 @@ help:
 	@echo "  metro.start          Start React-Native Metro (app debug)"
 	@echo "  regenerate           Clean and generate Protobuf files"
 	@echo "  test                 Run tests"
+	@echo "  depcheck             Run unused dependencies check"
+
+#### Deps check
+
+.PHONY: depcheck
+depcheck: node_modules
+	$(call check-program, yarn)
+	npx depcheck --skip-missing --ignore-bin-package
 
 #### Test
 

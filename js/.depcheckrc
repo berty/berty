@@ -1,0 +1,14 @@
+ignores: [
+    "babel-*",
+    "react-native-v8",
+    "v8-android-jit",
+    "react-native-interactable",
+    "postinstall-postinstall",
+    "buffer",
+    "@babel/runtime",
+    "@types/color",
+    "@types/jest",
+    "eslint-config-react-app",
+    "metro-react-native-babel-preset"
+]
+skip-missing: true
