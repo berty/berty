@@ -54,13 +54,13 @@ jobs:
           filename: .github/workflows/utils/variables.json
 
       - name: Setup Go
-        if: github.event.inputs.go == true
+        if: github.event.inputs.go == 'true'
         uses: actions/setup-go@v2
         with:
           go-version: ${{ matrix.golang }}
 
       - name: Cache Go modules
-        if: github.event.inputs.go == true
+        if: github.event.inputs.go == 'true'
         uses: actions/cache@v2.1.6
         with:
           path: ~/go/pkg/mod
@@ -68,18 +68,18 @@ jobs:
           restore-keys: ${{ runner.os }}-go-${{ matrix.golang }}-${{ env.json_cache-version_go }}-
 
       - name: Install Go modules
-        if: github.event.inputs.go == true
+        if: github.event.inputs.go == 'true'
         working-directory: go
         run: go mod tidy
 
       - name: Setup Node
-        if: github.event.inputs.node == true
+        if: github.event.inputs.node == 'true'
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node }}
 
       - name: Cache Node modules
-        if: github.event.inputs.node == true
+        if: github.event.inputs.node == 'true'
         uses: actions/cache@v2.1.6
         with:
           path: js/node_modules
@@ -87,11 +87,13 @@ jobs:
           restore-keys: ${{ runner.OS }}-node-${{ matrix.node }}-${{ env.json_cache-version_node }}-
 
       - name: Install Node modules
-        if: github.event.inputs.node == true
+        if: github.event.inputs.node == 'true'
         working-directory: js
         run: make node_modules
 
       - name: Setup tmate session
         timeout-minutes: ${{ github.event.inputs.timeout }}
         uses: mxschmitt/action-tmate@v3
+        with:
+          limit-access-to-actor: true
 

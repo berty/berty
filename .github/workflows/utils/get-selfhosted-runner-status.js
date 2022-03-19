@@ -74,7 +74,6 @@ async function isDC4RunnerAvailable(token) {
 	try {
 		const json = await getDC4RunnersStatus(token);
 		const stat = JSON.parse(json);
-		console.debug("status: " + JSON.stringify(stat, undefined, 2));
 
 		for (const runner of stat.runners) {
 			if (runner.status === "online" && runner.busy === false) return true;
