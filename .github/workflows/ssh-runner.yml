@@ -1,0 +1,97 @@
+name: SSH on runner
+on:
+  workflow_dispatch:
+    inputs:
+      timeout:
+        description: 'SSH timeout'
+        required: true
+        default: '15'
+        type: choice
+        options:
+        - '15'
+        - '30'
+        - '45'
+        - '60'
+        - '120'
+      os:
+        description: 'Operating System'
+        required: true
+        default: ubuntu-latest
+        type: choice
+        options:
+        - ubuntu-latest
+        - macos-latest
+        - windows-latest
+      node:
+        description: 'Setup NodeJS'
+        required: true
+        default: true
+        type: boolean
+      go:
+        description: 'Setup Golang'
+        required: true
+        default: true
+        type: boolean
+
+jobs:
+  setup-ssh:
+    name: Setup runner and open SSH endpoint
+    runs-on: ${{ github.event.inputs.os }}
+    strategy:
+      matrix:
+        golang: ["1.17.x"]
+        node: ["17.x"]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Load variables from file
+        uses: antifree/json-to-variables@v1.0.1
+        with:
+          filename: .github/workflows/utils/variables.json
+
+      - name: Setup Go
+        if: github.event.inputs.go == true
+        uses: actions/setup-go@v2
+        with:
+          go-version: ${{ matrix.golang }}
+
+      - name: Cache Go modules
+        if: github.event.inputs.go == true
+        uses: actions/cache@v2.1.6
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ matrix.golang }}-${{ env.json_cache-version_go }}-${{ hashFiles('go/**/go.sum') }}
+          restore-keys: ${{ runner.os }}-go-${{ matrix.golang }}-${{ env.json_cache-version_go }}-
+
+      - name: Install Go modules
+        if: github.event.inputs.go == true
+        working-directory: go
+        run: go mod tidy
+
+      - name: Setup Node
+        if: github.event.inputs.node == true
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: Cache Node modules
+        if: github.event.inputs.node == true
+        uses: actions/cache@v2.1.6
+        with:
+          path: js/node_modules
+          key: ${{ runner.OS }}-node-${{ matrix.node }}-${{ env.json_cache-version_node }}-${{ hashFiles('js/yarn.lock') }}
+          restore-keys: ${{ runner.OS }}-node-${{ matrix.node }}-${{ env.json_cache-version_node }}-
+
+      - name: Install Node modules
+        if: github.event.inputs.node == true
+        working-directory: js
+        run: make node_modules
+
+      - name: Setup tmate session
+        timeout-minutes: ${{ github.event.inputs.timeout }}
+        uses: mxschmitt/action-tmate@v3
+
