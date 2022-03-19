@@ -50,7 +50,7 @@ jobs:
           #    all            pick all the runner configurations (in parallel)
           #    optimized      pick a dc4 runner if available or fallback on github one
           #
-          node .github/workflows/mac-runner-matrix-builder.js optimized "${{ secrets.SELFHOSTED_STATUS_CHECK_TOKEN }}"
+          node .github/workflows/utils/mac-runner-matrix-builder.js optimized "${{ secrets.SELFHOSTED_STATUS_CHECK_TOKEN }}"
 
   build-macos-app:
     name: "Build electron app (macos)"
@@ -68,7 +68,7 @@ jobs:
       - name: Load variables from file
         uses: antifree/json-to-variables@v1.0.1
         with:
-          filename: .github/workflows/variables.json
+          filename: .github/workflows/utils/variables.json
       - name: Use Node.js ${{ matrix.node }}
         uses: actions/setup-node@v3
         with:
