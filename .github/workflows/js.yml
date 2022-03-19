@@ -31,7 +31,7 @@ jobs:
       - name: Load variables from file
         uses: antifree/json-to-variables@v1.0.1
         with:
-          filename: .github/workflows/variables.json
+          filename: .github/workflows/utils/variables.json
       - name: Use Node.js ${{ matrix.node }}
         uses: actions/setup-node@v3
         with:

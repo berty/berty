@@ -1,0 +1,26 @@
+name: Cancel
+on:
+  workflow_run:
+    workflows: [
+      "Android",
+      "CodeQL",
+      "Dependent Issues",
+      "Go",
+      "Integration",
+      "iOS",
+      "JS",
+      "macOS Release",
+      "Protobuf",
+    ]
+    types:
+      - requested
+
+jobs:
+  cancel_pr_prev_push:
+    name: Cancel previous runs on PR update
+    if: ${{ github.event_name == 'workflow_run' }}
+    runs-on: ubuntu-latest
+    steps:
+    - uses: styfle/cancel-workflow-action@0.9.1
+      with:
+        workflow_id: ${{ github.event.workflow.id }}

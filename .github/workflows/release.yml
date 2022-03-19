@@ -17,7 +17,7 @@ jobs:
       - name: Load variables from file
         uses: antifree/json-to-variables@v1.0.1
         with:
-          filename: .github/workflows/variables.json
+          filename: .github/workflows/utils/variables.json
       - name: Unshallow
         run: git fetch --prune --unshallow
       - name: Run Semantic Release

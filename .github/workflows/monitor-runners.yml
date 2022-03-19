@@ -1,0 +1,45 @@
+name: Monitor self-hosted runners
+on:
+  schedule:
+    # Every weekday at 12:00pm
+    - cron:  '0 12 * * 1-5'
+  workflow_dispatch:
+
+jobs:
+  check:
+    name: Monitor and send alert
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get self-hosted runner status
+        id: monitor
+        continue-on-error: true
+        run: |
+          COUNT=$(node .github/workflows/utils/get-selfhosted-runner-status.js "${{ secrets.SELFHOSTED_STATUS_CHECK_TOKEN }}" online)
+          echo "Online self-hosted runners: $COUNT"
+
+          # If all runners are online, return success
+          if [[ ! COUNT =~ ^All \(\d+\/\d+\)$ ]]; then exit 0; fi
+
+          # Else, set outputs and fail
+          DETAIL=$(node .github/workflows/utils/get-selfhosted-runner-status.js "${{ secrets.SELFHOSTED_STATUS_CHECK_TOKEN }}")
+          echo "Detailed status: $DETAIL"
+          echo "::set-output name=count::$COUNT"
+          echo "::set-output name=detail::$DETAIL"
+          exit 1
+
+      - name: Send alert by mail if needed
+        uses: dawidd6/action-send-mail@v3
+        if: steps.monitor.outcome == 'failure' #&& github.event_name == 'schedule'
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          username: ${{secrets.PNJ_MAIL_USERNAME}}
+          password: ${{secrets.PNJ_MAIL_PASSWORD}}
+          subject: Self-Hosted Offline Alert
+          to: infra@berty.tech
+          from: Github Actions
+          priority: high
+          body: |
+            Online self-hosted runners: ${{ steps.monitor.outputs.count }}
+            Detail:
+              ${{ steps.monitor.outputs.detail }}

@@ -30,12 +30,35 @@ on:
       - ".github/workflows/js.yml"
 
 jobs:
+  mac_runner_matrix_builder:
+    name: macOS matrix builder
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 1
+      - id: set-matrix
+        run: |
+          # usage: node .github/workflows/mac-runner-matrix-builder.js STRATEGY
+          #
+          #  STRATEGY
+          #    random         pick a random runner configuration
+          #    dc4            pick the dc4 runner configuration
+          #    github         pick the github runner configuration
+          #    all            pick all the runner configurations (in parallel)
+          #    optimized      pick a dc4 runner if available or fallback on github one
+          #
+          node .github/workflows/utils/mac-runner-matrix-builder.js optimized "${{ secrets.SELFHOSTED_STATUS_CHECK_TOKEN }}"
+
   build-macos-app:
     name: "Build electron app (macos)"
-    runs-on: macos-latest
+    needs: mac_runner_matrix_builder
+    runs-on: ${{ matrix.runner }}
     strategy:
-      matrix:
-        golang: ['1.17.x']
+      fail-fast: false
+      matrix: ${{fromJson(needs.mac_runner_matrix_builder.outputs.matrix)}}
     env:
       OS: macos-latest
       GOLANG: ${{ matrix.golang }}
@@ -45,7 +68,7 @@ jobs:
       - name: Load variables from file
         uses: antifree/json-to-variables@v1.0.1
         with:
-          filename: .github/workflows/variables.json
+          filename: .github/workflows/utils/variables.json
       - name: Use Node.js ${{ matrix.node }}
         uses: actions/setup-node@v3
         with:

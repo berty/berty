@@ -41,10 +41,9 @@ jobs:
           #    dc4            pick the dc4 runner configuration
           #    github         pick the github runner configuration
           #    all            pick all the runner configurations (in parallel)
-          #    optimized      WIP
+          #    optimized      pick a dc4 runner if available or fallback on github one
           #
-          # TODO: use a github action secret to pass the builder strategy dynamically
-          node .github/workflows/mac-runner-matrix-builder.js github
+          node .github/workflows/utils/mac-runner-matrix-builder.js optimized "${{ secrets.SELFHOSTED_STATUS_CHECK_TOKEN }}"
 
   build:
     needs: mac_runner_matrix_builder
@@ -71,7 +70,7 @@ jobs:
       - name: Load variables from file
         uses: antifree/json-to-variables@v1.0.1
         with:
-          filename: .github/workflows/variables.json
+          filename: .github/workflows/utils/variables.json
 
       - name: Post-checkout cleanup
         if: ${{ matrix.selfhosted }}

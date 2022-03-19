@@ -35,7 +35,7 @@ jobs:
       - name: Load variables from file
         uses: antifree/json-to-variables@v1.0.1
         with:
-          filename: .github/workflows/variables.json
+          filename: .github/workflows/utils/variables.json
       - name: Install libgl
         run: |
           sudo apt update
@@ -96,7 +96,7 @@ jobs:
       - name: Load variables from file
         uses: antifree/json-to-variables@v1.0.1
         with:
-          filename: .github/workflows/variables.json
+          filename: .github/workflows/utils/variables.json
       - name: Set up Go
         uses: actions/setup-go@v2
         with:
@@ -146,7 +146,7 @@ jobs:
       - name: Load variables from file
         uses: antifree/json-to-variables@v1.0.1
         with:
-          filename: .github/workflows/variables.json
+          filename: .github/workflows/utils/variables.json
       - name: Set up Go
         uses: actions/setup-go@v2
         with:
@@ -206,7 +206,7 @@ jobs:
       - name: Load variables from file
         uses: antifree/json-to-variables@v1.0.1
         with:
-          filename: .github/workflows/variables.json
+          filename: .github/workflows/utils/variables.json
       - name: Set up Go
         uses: actions/setup-go@v2
         with:
@@ -264,7 +264,7 @@ jobs:
       - name: Load variables from file
         uses: antifree/json-to-variables@v1.0.1
         with:
-          filename: .github/workflows/variables.json
+          filename: .github/workflows/utils/variables.json
       - name: Set up Go
         uses: actions/setup-go@v2
         with:
