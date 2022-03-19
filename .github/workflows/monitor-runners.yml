@@ -24,7 +24,7 @@ jobs:
           echo "Online self-hosted runners: $COUNT"
 
           # If all runners are online, return success
-          if [[ ! "$COUNT" =~ ^All \(\d+\/\d+\)$ ]]; then exit 0; fi
+          if [[ ! "$COUNT" =~ ^All[[:space:]]\([[:digit:]]+\/[[:digit:]]+\)$ ]]; then exit 0; fi
 
           # Else, set outputs and fail
           DETAIL=$(node .github/workflows/utils/get-selfhosted-runner-status.js "${{ secrets.SELFHOSTED_STATUS_CHECK_TOKEN }}")
