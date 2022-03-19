@@ -1,12 +1,10 @@
-/* eslint-disable */
+import { berty } from './root.pb'
 
-import pb from './root.pb'
-
-import account = pb.berty.account.v1
-import bridge = pb.berty.bridge.v1
-import push = pb.berty.push.v1
-import messenger = pb.berty.messenger.v1
-import protocol = pb.berty.protocol.v1
-import errcode = pb.berty.errcode
+import account = berty.account.v1
+import bridge = berty.bridge.v1
+import push = berty.push.v1
+import messenger = berty.messenger.v1
+import protocol = berty.protocol.v1
+import errcode = berty.errcode
 
 export { account, messenger, push, protocol, errcode, bridge }

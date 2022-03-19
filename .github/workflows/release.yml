@@ -41,7 +41,7 @@ jobs:
         uses: actions/cache@v2.1.6
         with:
           path: ~/go/pkg/mod
-          key:          ${{ runner.os }}-go-${{ matrix.golang }}-${{ env.json_cache-version_go }}-${{ hashFiles('**/go.sum') }}
+          key: ${{ runner.os }}-go-${{ matrix.golang }}-${{ env.json_cache-version_go }}-${{ hashFiles('**/go.sum') }}
           restore-keys: ${{ runner.os }}-go-${{ matrix.golang }}-${{ env.json_cache-version_go }}-
       - name: Run GoReleaser
         if: steps.semantic.outputs.new-release-published == 'true'
@@ -59,3 +59,15 @@ jobs:
           url=https://proxy.golang.org/${package}/@v/${version}.info
           set -x +e
           curl -i $url
+
+      # Next step also sets up a .npmrc file for automatic publishing to npm
+      - uses: actions/setup-node@v2
+        if: steps.semantic.outputs.new-release-published == 'true'
+        with:
+          node-version: "14.x"
+          registry-url: "https://registry.npmjs.org"
+      - name: "Publish npm package: @berty/api"
+        if: steps.semantic.outputs.new-release-published == 'true'
+        run: go run ./go/cmd/publish-npm-package -path=js/packages/api -version=${{ steps.semantic.outputs.release-version }}
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

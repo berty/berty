@@ -1,0 +1,21 @@
+{
+  "name": "@berty/api",
+  "version": "{{ .Version }}",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "repository": "https://github.com/berty/berty",
+  "homepage": "https://github.com/berty/berty/tree/master/js/packages/api#readme",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "prepublish": "tsc && cp ./*.d.ts ./dist"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "protobufjs": "^6.11.2"
+  },
+  "devDependencies": {
+    "typescript": "^4.6.2"
+  }
+}
