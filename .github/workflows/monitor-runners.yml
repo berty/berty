@@ -10,6 +10,12 @@ jobs:
     name: Monitor and send alert
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
       - name: Get self-hosted runner status
         id: monitor
         continue-on-error: true
@@ -29,7 +35,7 @@ jobs:
 
       - name: Send alert by mail if needed
         uses: dawidd6/action-send-mail@v3
-        if: steps.monitor.outcome == 'failure' #&& github.event_name == 'schedule'
+        if: steps.monitor.outcome == 'failure' && github.event_name == 'schedule'
         with:
           server_address: smtp.gmail.com
           server_port: 465
