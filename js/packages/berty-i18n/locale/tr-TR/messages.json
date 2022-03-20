@@ -11,8 +11,8 @@
 			"summary": {
 				"title": "Varsayılan Mod",
 				"subtitle": "Hızlıca Başla",
-				"first-point": "",
-				"second-point": "",
+				"first-point": "Senin için en uygun olan gizlilik/konfor dengesiyle başla. Berty düğümleri performans arttırmak ve asenkron iletişim sağlamak için kullanılır.",
+				"second-point": "Özelleştirilmiş gizlilik/konfor dengesi için, özelleştirme modunu seç.",
 				"back-button": "Geri",
 				"accept-button": "Başlayalım"
 			}
@@ -22,21 +22,21 @@
 				"title": "Özelleştirilmiş Mod",
 				"subtitle": "Özelleştirilmiş Gizlilik/Konfor Dengesi",
 				"first-point": "Bu modda tüm ayarları gizlilik ve konfor dengesi sana uygun hale gelene kadar değiştir.",
-				"second-point": "",
+				"second-point": "Hemen başlamak için, varsayılan modu seç.",
 				"back-button": "Geri",
 				"accept-button": "İleri"
 			},
 			"settings": {
 				"off-grid": {
-					"title": "",
+					"title": "Bağımsız İletişim",
 					"ble-button": "Bluetooth Düşük Enerji",
-					"nearby-button": "",
-					"mc-button": "",
-					"mdns-button": ""
+					"nearby-button": "Yakınlardaki Android",
+					"mc-button": "Apple Çok Eşli Bağlantı",
+					"mdns-button": "Çok yönlü yayın DNS (LAN)"
 				},
 				"routing": {
-					"title": "",
-					"dht-button": "",
+					"title": "Yönlendirme",
+					"dht-button": "Dağıtık Hash Tablosu",
 					"rdvp-button": ""
 				},
 				"access": {
@@ -68,11 +68,11 @@
 					},
 					"buttons": {
 						"add": "Ekle",
-						"edit": "",
-						"delete": ""
+						"edit": "Düzenle",
+						"delete": "Sil"
 					},
-					"multiaddress": "",
-					"alias": ""
+					"multiaddress": "Çoklu adres",
+					"alias": "Takma ad"
 				},
 				"all-button": "Hepsi",
 				"accept-button": "Başlayalım"
@@ -97,7 +97,7 @@
 			"button": "BERTY KULLANMAYA BAŞLA"
 		},
 		"web-views": {
-			"title": "",
+			"title": "WebViewlar",
 			"desc": "Ağ üzerinde webview yüklemelerine hazırlık yapıyoruz. Hala açmak istiyor musun?",
 			"first-button": "İptal",
 			"second-button": "Evet"
@@ -148,9 +148,9 @@
 	},
 	"settings": {
 		"home": {
-			"proximity-button": "",
+			"proximity-button": "Bağımsız İletişim",
 			"notifications-button": "Bildirimler",
-			"contact-convs-button": "",
+			"contact-convs-button": "Bağlantı ve sohbetler",
 			"appearance-button": "Görünüş",
 			"devices-button": "Cihazlar ve yedekleme",
 			"accounts-button": "Hesaplar",
@@ -173,20 +173,20 @@
 		},
 		"appearance": {
 			"dark-button": "Karanlık Mod",
-			"editor-button": ""
+			"editor-button": "Tema Düzenleyici"
 		},
 		"contact-convs": {
-			"reset-button": "",
-			"request-button": ""
+			"reset-button": "Bağlantı linkimi sıfırla/QR Kod",
+			"request-button": "Gelen bağlantı isteklerine izin ver"
 		},
 		"network": {
-			"ble-button": "",
-			"mc-button": "",
-			"nearby-button": "",
+			"ble-button": "Bluetooth Düşük Enerji",
+			"mc-button": "Çok Eşli Bağlantı",
+			"nearby-button": "Android Nearby",
 			"mdns-button": "Çok yönlü yayın DNS",
 			"memo-cell-button": "",
-			"medias-cell-button": "",
-			"dht-button": "",
+			"medias-cell-button": "Medyaları hücresel veri ile yükle",
+			"dht-button": "Dağıtık Hash Tablosu",
 			"rdvp-button": "",
 			"relay-button": "",
 			"bootstrap-button": ""
@@ -201,9 +201,9 @@
 			"name-input-label": "İsim"
 		},
 		"berty-services": {
-			"title": "",
+			"title": "Berty Servisleri",
 			"desc": "",
-			"button": "",
+			"button": "Berty Servislerini Kullan",
 			"skip": "ATLA VE DAHA SONRA YAP"
 		},
 		"delete-account": {
@@ -217,10 +217,10 @@
 			"title": "SSS"
 		},
 		"roadmap": {
-			"title": ""
+			"title": "Yol haritası"
 		},
 		"privacy-policy": {
-			"title": ""
+			"title": "Gizlilik Politikası"
 		},
 		"devtools": {
 			"title": "Geliştirici araçları",
@@ -242,7 +242,7 @@
 			"add-dev-conversations-button": "Geliştirici konuşmalarını ekle",
 			"share-button": {
 				"title": "ID'yi Discord'da paylaş",
-				"alert-title": "",
+				"alert-title": "QR kodunuzu Berty Discord'unda \"#dev-logs\" ile paylaşmak ister misiniz?",
 				"alert-message": "Bu diğer çalışanların QR kodunuzu taramasını veya kişi linkinizi kopyalamasını sağlayacaktır.",
 				"alert-accept-button": "Evet 👍",
 				"alert-cancel-button": "Hayır"
@@ -514,7 +514,7 @@
 		},
 		"submit-failed": {
 			"title": "",
-			"desc": ""
+			"desc": "Mail uygulaması bulunamıyor"
 		}
 	},
 	"error": {
