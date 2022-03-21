@@ -1,10 +1,14 @@
 import React, { ComponentProps } from 'react'
-import { ScrollView, View } from 'react-native'
-import { useTranslation } from 'react-i18next'
-import { Layout } from '@ui-kitten/components'
 
-import { useStyles } from '@berty-tech/styles'
+import { Layout } from '@ui-kitten/components'
+import { useTranslation } from 'react-i18next'
+import { ScrollView, View } from 'react-native'
+import { useSelector } from 'react-redux'
+
+import beapi from '@berty-tech/api'
 import { ScreenFC } from '@berty-tech/navigation'
+import { useConversation } from '@berty-tech/react-redux'
+import { selectProtocolClient } from '@berty-tech/redux/reducers/ui.reducer'
 import {
 	Maybe,
 	useThemeColor,
@@ -14,12 +18,9 @@ import {
 	replicateGroup,
 	useMessengerClient,
 } from '@berty-tech/store'
-import beapi from '@berty-tech/api'
-import { useConversation } from '@berty-tech/react-redux'
+import { useStyles } from '@berty-tech/styles'
 
 import { ButtonSetting, FactionButtonSetting } from '../shared-components'
-import { useSelector } from 'react-redux'
-import { selectProtocolClient } from '@berty-tech/redux/reducers/ui.reducer'
 
 enum replicationServerStatus {
 	KnownServerEnabled,

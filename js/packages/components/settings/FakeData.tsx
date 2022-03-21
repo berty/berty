@@ -1,10 +1,10 @@
 import React from 'react'
-import { View, ScrollView } from 'react-native'
+
 import { Layout } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
+import { View, ScrollView } from 'react-native'
 
 import { ScreenFC } from '@berty-tech/navigation'
-import { useStyles } from '@berty-tech/styles'
 import {
 	useGenerateFakeContacts,
 	useGenerateFakeMultiMembers,
@@ -12,6 +12,7 @@ import {
 	// useGenerateFakeMessages,
 	useThemeColor,
 } from '@berty-tech/store'
+import { useStyles } from '@berty-tech/styles'
 
 import { ButtonSetting } from '../shared-components/SettingsButtons'
 

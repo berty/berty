@@ -1,13 +1,14 @@
 import React from 'react'
-import QRCode from 'react-native-qrcode-svg'
-import { Share, TouchableOpacity, View, Text, StatusBar } from 'react-native'
+
 import { Icon, Layout } from '@ui-kitten/components'
+import { Share, TouchableOpacity, View, Text, StatusBar } from 'react-native'
+import QRCode from 'react-native-qrcode-svg'
 
 import beapi from '@berty-tech/api'
 import { ScreenFC } from '@berty-tech/navigation'
+import { useAccount, useConversation } from '@berty-tech/react-redux'
 import { useStylesBertyId, useThemeColor } from '@berty-tech/store'
 import { useStyles } from '@berty-tech/styles'
-import { useAccount, useConversation } from '@berty-tech/react-redux'
 
 import { MultiMemberAvatar } from '../avatars'
 import logo from '../main/1_berty_picto.png'

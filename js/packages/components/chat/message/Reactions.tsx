@@ -1,15 +1,16 @@
 import React, { createRef, FC, useCallback, useEffect, useState } from 'react'
+
 import { Text, View } from 'react-native'
 import { FlatList, ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
 
 import { berty } from '@berty-tech/api/root.pb'
+import AddEmojiIcon from '@berty-tech/assets/add_emoji.svg'
+import { ContactAvatar } from '@berty-tech/components/avatars'
+import AnimatedNumber from '@berty-tech/components/shared-components/AnimatedNumber'
 import { getEmojiByName } from '@berty-tech/components/utils'
+import { useConversationMembersDict } from '@berty-tech/react-redux'
 import { useMessengerClient, useThemeColor } from '@berty-tech/store'
 import { useStyles } from '@berty-tech/styles'
-import AddEmojiIcon from '@berty-tech/assets/add_emoji.svg'
-import AnimatedNumber from '@berty-tech/components/shared-components/AnimatedNumber'
-import { useConversationMembersDict } from '@berty-tech/react-redux'
-import { ContactAvatar } from '@berty-tech/components/avatars'
 
 import { useModal } from '../../providers/modal.provider'
 

@@ -1,8 +1,10 @@
 import React from 'react'
-import { View, StatusBar } from 'react-native'
+
 import { Text } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
+import { View, StatusBar } from 'react-native'
 
+import { ScreenFC } from '@berty-tech/navigation'
 import {
 	storageSet,
 	GlobalPersistentOptionsKeys,
@@ -11,11 +13,10 @@ import {
 	useMessengerContext,
 } from '@berty-tech/store'
 import { useStyles } from '@berty-tech/styles'
-import { ScreenFC } from '@berty-tech/navigation'
 
+import { importAccountFromDocumentPicker } from '../pickerUtils'
 import Logo from './berty_gradient_square.svg'
 import Button from './Button'
-import { importAccountFromDocumentPicker } from '../pickerUtils'
 
 export const GetStarted: ScreenFC<'Onboarding.GetStarted'> = ({ navigation: { navigate } }) => {
 	useNotificationsInhibitor(() => true)

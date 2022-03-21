@@ -1,4 +1,7 @@
 import React, { FC, useReducer } from 'react'
+
+import { Icon, Input, Text } from '@ui-kitten/components'
+import { useTranslation } from 'react-i18next'
 import {
 	ActivityIndicator,
 	Image,
@@ -7,17 +10,15 @@ import {
 	TouchableOpacity,
 	View,
 } from 'react-native'
-import { Icon, Input, Text } from '@ui-kitten/components'
-import { useTranslation } from 'react-i18next'
 import ImagePicker, { ImageOrVideo } from 'react-native-image-crop-picker'
+import { useSelector } from 'react-redux'
 
-import { useStyles } from '@berty-tech/styles'
-import { useMessengerClient, useMessengerContext, useThemeColor } from '@berty-tech/store'
 import { useAccount } from '@berty-tech/react-redux'
+import { selectSelectedAccount } from '@berty-tech/redux/reducers/ui.reducer'
+import { useMessengerClient, useMessengerContext, useThemeColor } from '@berty-tech/store'
+import { useStyles } from '@berty-tech/styles'
 
 import { AccountAvatar } from '../avatars'
-import { useSelector } from 'react-redux'
-import { selectSelectedAccount } from '@berty-tech/redux/reducers/ui.reducer'
 import { useModal } from '../providers/modal.provider'
 
 //

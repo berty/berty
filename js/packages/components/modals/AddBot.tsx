@@ -1,15 +1,17 @@
 import React, { useEffect } from 'react'
-import { View, TouchableOpacity, Text as TextNative, StyleSheet } from 'react-native'
-import { Text, Icon } from '@ui-kitten/components'
-import { BlurView } from '@react-native-community/blur'
+
 import { Buffer } from 'buffer'
 
-import { useStyles } from '@berty-tech/styles'
-import messengerMethodsHooks from '@berty-tech/store/methods'
-import { useMessengerContext, useThemeColor, PersistentOptionsKeys } from '@berty-tech/store'
+import { BlurView } from '@react-native-community/blur'
+import { Text, Icon } from '@ui-kitten/components'
+import { View, TouchableOpacity, Text as TextNative, StyleSheet } from 'react-native'
 
-import Avatar from './Buck_Berty_Icon_Card.svg'
+import { useMessengerContext, useThemeColor, PersistentOptionsKeys } from '@berty-tech/store'
+import messengerMethodsHooks from '@berty-tech/store/methods'
+import { useStyles } from '@berty-tech/styles'
+
 import { base64ToURLBase64 } from '../utils'
+import Avatar from './Buck_Berty_Icon_Card.svg'
 
 export const useStylesDefaultModal = () => {
 	const [{ width, border, padding, margin }] = useStyles()

@@ -1,5 +1,4 @@
 import GoBridge from './GoBridge'
-
 import BridgeLogger from './logger'
 const BridgeConsole = {
 	...console,

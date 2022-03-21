@@ -1,6 +1,7 @@
 import React from 'react'
-import { TouchableOpacity } from 'react-native'
+
 import { Text, Icon } from '@ui-kitten/components'
+import { TouchableOpacity } from 'react-native'
 
 import { useStyles } from '@berty-tech/styles'
 

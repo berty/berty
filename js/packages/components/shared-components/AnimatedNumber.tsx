@@ -1,4 +1,5 @@
 import React, { FC, useCallback, useEffect, useRef, useState } from 'react'
+
 import { Text, View } from 'react-native'
 import Animated, { EasingNode } from 'react-native-reanimated'
 

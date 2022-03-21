@@ -1,10 +1,14 @@
 import React, { useState } from 'react'
-import { Linking, View, TouchableOpacity } from 'react-native'
-import Hyperlink from 'react-native-hyperlink'
+
 import { Icon, Text } from '@ui-kitten/components'
 import linkify from 'linkify-it'
+import { useTranslation } from 'react-i18next'
+import { Linking, View, TouchableOpacity } from 'react-native'
+import Hyperlink from 'react-native-hyperlink'
 import tlds from 'tlds'
 
+import { WelshMessengerServiceClient } from '@berty-tech/grpc-bridge/welsh-clients.gen'
+import { useNavigation } from '@berty-tech/navigation'
 import {
 	Maybe,
 	useMessengerClient,
@@ -14,11 +18,8 @@ import {
 	ParsedInteraction,
 } from '@berty-tech/store'
 import { useStyles } from '@berty-tech/styles'
-import { WelshMessengerServiceClient } from '@berty-tech/grpc-bridge/welsh-clients.gen'
-import { useNavigation } from '@berty-tech/navigation'
 
 import { timeFormat } from '../../helpers'
-import { useTranslation } from 'react-i18next'
 
 const READ_MORE_MESSAGE_LENGTH = 325
 const READ_MORE_SUBSTR_LENGTH = 300

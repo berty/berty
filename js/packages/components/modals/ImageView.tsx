@@ -1,14 +1,15 @@
 import React, { useState } from 'react'
-import { View, Modal, TouchableOpacity, Image } from 'react-native'
+
+import CameraRoll from '@react-native-community/cameraroll'
 import { Text, Icon } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
-import CameraRoll from '@react-native-community/cameraroll'
-import Share from 'react-native-share'
+import { View, Modal, TouchableOpacity, Image } from 'react-native'
 import ImageViewer from 'react-native-image-zoom-viewer'
+import Share from 'react-native-share'
 
-import { useStyles } from '@berty-tech/styles'
-import { useThemeColor } from '@berty-tech/store'
 import { ScreenFC, useNavigation } from '@berty-tech/navigation'
+import { useThemeColor } from '@berty-tech/store'
+import { useStyles } from '@berty-tech/styles'
 
 import { ForwardToBertyContactModal } from './ForwardToBertyContactModal'
 

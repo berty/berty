@@ -1,4 +1,8 @@
 import React, { useEffect, useState } from 'react'
+
+import CameraRoll from '@react-native-community/cameraroll'
+import { Icon } from '@ui-kitten/components'
+import { useTranslation } from 'react-i18next'
 import {
 	TouchableOpacity,
 	View,
@@ -8,14 +12,11 @@ import {
 	ActivityIndicator,
 	Text,
 } from 'react-native'
-import { Icon } from '@ui-kitten/components'
-import CameraRoll from '@react-native-community/cameraroll'
 import RNFS from 'react-native-fs'
-import { useTranslation } from 'react-i18next'
 
-import { useStyles } from '@berty-tech/styles'
-import { useThemeColor } from '@berty-tech/store/hooks'
 import beapi from '@berty-tech/api'
+import { useThemeColor } from '@berty-tech/store/hooks'
+import { useStyles } from '@berty-tech/styles'
 
 import { ImageCounter } from '../../ImageCounter'
 

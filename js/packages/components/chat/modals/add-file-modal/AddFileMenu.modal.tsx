@@ -1,20 +1,21 @@
 import React, { useCallback, useState } from 'react'
-import { View, Platform } from 'react-native'
-import { useTranslation } from 'react-i18next'
-import DocumentPicker from 'react-native-document-picker'
-import { RESULTS } from 'react-native-permissions'
-import ImagePicker from 'react-native-image-crop-picker'
-import getPath from '@flyerhq/react-native-android-uri-path'
 
-import { useMessengerClient, useThemeColor } from '@berty-tech/store'
+import getPath from '@flyerhq/react-native-android-uri-path'
+import { useTranslation } from 'react-i18next'
+import { View, Platform } from 'react-native'
+import DocumentPicker from 'react-native-document-picker'
+import ImagePicker from 'react-native-image-crop-picker'
+import { RESULTS } from 'react-native-permissions'
+
 import beapi from '@berty-tech/api'
 import { useNavigation } from '@berty-tech/navigation'
 import { checkPermissions } from '@berty-tech/rnutil/checkPermissions'
+import { useMessengerClient, useThemeColor } from '@berty-tech/store'
 
-import { ListItemMenu } from './ListItemMenu'
 import { GallerySection } from './GallerySection'
-import { TabItems } from './types'
+import { ListItemMenu } from './ListItemMenu'
 import { SecurityAccess } from './SecurityAccess'
+import { TabItems } from './types'
 
 const amap = async <T extends any, C extends (value: T) => any>(arr: T[], cb: C) =>
 	Promise.all(arr.map(cb))

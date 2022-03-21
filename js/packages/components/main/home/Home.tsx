@@ -1,4 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
+
+import { Icon } from '@ui-kitten/components'
+import pickBy from 'lodash/pickBy'
 import { useTranslation } from 'react-i18next'
 import {
 	ScrollView,
@@ -8,30 +11,28 @@ import {
 	TouchableOpacity,
 	SafeAreaView,
 } from 'react-native'
-import pickBy from 'lodash/pickBy'
-import { Icon } from '@ui-kitten/components'
+import { useSelector } from 'react-redux'
 
-import { ScreenFC } from '@berty-tech/navigation'
-import { useMessengerContext, useNotificationsInhibitor, useThemeColor } from '@berty-tech/store'
 import beapi from '@berty-tech/api'
-import { useStyles } from '@berty-tech/styles'
 import { AddBot } from '@berty-tech/components/modals'
+import { ScreenFC } from '@berty-tech/navigation'
 import {
 	useContactsDict,
 	useConversationsDict,
 	useIncomingContactRequests,
 	useAllConversations,
 } from '@berty-tech/react-redux'
+import { selectClient } from '@berty-tech/redux/reducers/ui.reducer'
+import { useMessengerContext, useNotificationsInhibitor, useThemeColor } from '@berty-tech/store'
+import { useStyles } from '@berty-tech/styles'
 
 import { useLayout } from '../../hooks'
 import EmptyChat from '../empty_chat.svg'
-import { IncomingRequests } from './Requests'
 import { Conversations } from './Conversations'
-import { SearchComponent } from './Search'
 import { HomeHeader } from './Header'
 import { MultiAccount } from './MultiAccount'
-import { useSelector } from 'react-redux'
-import { selectClient } from '@berty-tech/redux/reducers/ui.reducer'
+import { IncomingRequests } from './Requests'
+import { SearchComponent } from './Search'
 
 const T = beapi.messenger.StreamEvent.Notified.Type
 

@@ -1,10 +1,11 @@
 import React from 'react'
-import { ScrollView, View } from 'react-native'
-import { useTranslation } from 'react-i18next'
 
-import { useStyles } from '@berty-tech/styles'
+import { useTranslation } from 'react-i18next'
+import { ScrollView, View } from 'react-native'
+
 import { ScreenFC } from '@berty-tech/navigation'
 import { useThemeColor } from '@berty-tech/store'
+import { useStyles } from '@berty-tech/styles'
 
 import { ButtonSettingV2, Section } from '../shared-components'
 

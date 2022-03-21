@@ -1,9 +1,10 @@
 import React from 'react'
-import { StatusBar } from 'react-native'
-import { Layout } from '@ui-kitten/components'
 
-import { useThemeColor } from '@berty-tech/store'
+import { Layout } from '@ui-kitten/components'
+import { StatusBar } from 'react-native'
+
 import { ScreenFC } from '@berty-tech/navigation'
+import { useThemeColor } from '@berty-tech/store'
 
 import { WebViews as SharedWebViews } from '../shared-components'
 

@@ -1,16 +1,17 @@
 import React from 'react'
-import { ScrollView, TouchableOpacity, View } from 'react-native'
-import { useTranslation } from 'react-i18next'
+
 import { Icon, Text } from '@ui-kitten/components'
+import { useTranslation } from 'react-i18next'
+import { ScrollView, TouchableOpacity, View } from 'react-native'
 
 import beapi from '@berty-tech/api'
+import { useNavigation } from '@berty-tech/navigation'
 import {
 	useMessengerClient,
 	useMessengerContext,
 	useThemeColor,
 	pbDateToNum,
 } from '@berty-tech/store'
-import { useNavigation } from '@berty-tech/navigation'
 import { useStyles } from '@berty-tech/styles'
 
 import { ContactAvatar } from '../../avatars'

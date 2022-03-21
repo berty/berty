@@ -1,14 +1,15 @@
 import React from 'react'
-import { View } from 'react-native'
-import { Icon, Text } from '@ui-kitten/components'
 
-import { useStyles } from '@berty-tech/styles'
-import { useThemeColor } from '@berty-tech/store/hooks'
+import { Icon, Text } from '@ui-kitten/components'
+import { View } from 'react-native'
+
 import beapi from '@berty-tech/api'
 import { pbDateToNum } from '@berty-tech/store/convert'
+import { useThemeColor } from '@berty-tech/store/hooks'
+import { InteractionMonitorMetadata } from '@berty-tech/store/types.gen'
+import { useStyles } from '@berty-tech/styles'
 
 import { timeFormat } from '../../helpers'
-import { InteractionMonitorMetadata } from '@berty-tech/store/types.gen'
 
 const eventMonitorTypes = beapi.protocol.MonitorGroup.TypeEventMonitor
 

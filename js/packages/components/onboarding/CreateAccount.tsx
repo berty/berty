@@ -1,11 +1,13 @@
-import LottieView from 'lottie-react-native'
 import React from 'react'
+
+import { useHeaderHeight } from '@react-navigation/elements'
+import LottieView from 'lottie-react-native'
 import { useTranslation } from 'react-i18next'
 import { StatusBar, Text, View } from 'react-native'
-import { useHeaderHeight } from '@react-navigation/elements'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import { ScreenFC } from '@berty-tech/navigation'
+import { IOSOnlyKeyboardAvoidingView } from '@berty-tech/rnutil/keyboardAvoiding'
 import {
 	useMessengerContext,
 	useMountEffect,
@@ -13,7 +15,6 @@ import {
 	useThemeColor,
 } from '@berty-tech/store'
 import { useStyles } from '@berty-tech/styles'
-import { IOSOnlyKeyboardAvoidingView } from '@berty-tech/rnutil/keyboardAvoiding'
 
 import { CreateAccountBox } from './CreateAccountBox'
 import OnboardingWrapper from './OnboardingWrapper'

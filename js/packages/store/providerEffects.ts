@@ -1,4 +1,5 @@
 import { EventEmitter } from 'events'
+
 import cloneDeep from 'lodash/cloneDeep'
 import { Platform } from 'react-native'
 import RNFS from 'react-native-fs'
@@ -10,25 +11,8 @@ import { Service } from '@berty-tech/grpc-bridge'
 import { logger } from '@berty-tech/grpc-bridge/middleware'
 import { bridge as rpcBridge, grpcweb as rpcWeb } from '@berty-tech/grpc-bridge/rpc'
 import { ServiceClientType } from '@berty-tech/grpc-bridge/welsh-clients.gen'
-import store, { AppDispatch, persistor } from '@berty-tech/redux/store'
 import { useAppDispatch } from '@berty-tech/react-redux'
 import { streamEventToAction as streamEventToReduxAction } from '@berty-tech/redux/messengerActions'
-
-import { accountService, storageGet, storageRemove } from './accountService'
-import { defaultPersistentOptions } from './context'
-import { closeAccountWithProgress, refreshAccountList } from './effectableCallbacks'
-import ExternalTransport from './externalTransport'
-import { updateAccount } from './providerCallbacks'
-import { requestAndPersistPushToken } from './services'
-import {
-	GlobalPersistentOptionsKeys,
-	MessengerActions,
-	PersistentOptions,
-	PersistentOptionsKeys,
-	reducerAction,
-	StreamInProgress,
-} from './types'
-import { storageKeyForAccount } from './utils'
 import { resetTheme } from '@berty-tech/redux/reducers/theme.reducer'
 import {
 	bridgeClosed,
@@ -45,6 +29,23 @@ import {
 	setStateStreamDone,
 	setStateStreamInProgress,
 } from '@berty-tech/redux/reducers/ui.reducer'
+import store, { AppDispatch, persistor } from '@berty-tech/redux/store'
+
+import { accountService, storageGet, storageRemove } from './accountService'
+import { defaultPersistentOptions } from './context'
+import { closeAccountWithProgress, refreshAccountList } from './effectableCallbacks'
+import ExternalTransport from './externalTransport'
+import { updateAccount } from './providerCallbacks'
+import { requestAndPersistPushToken } from './services'
+import {
+	GlobalPersistentOptionsKeys,
+	MessengerActions,
+	PersistentOptions,
+	PersistentOptionsKeys,
+	reducerAction,
+	StreamInProgress,
+} from './types'
+import { storageKeyForAccount } from './utils'
 
 export const openAccountWithProgress = async (
 	dispatch: (arg0: reducerAction) => void,

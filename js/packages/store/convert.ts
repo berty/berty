@@ -1,4 +1,5 @@
 import { Buffer } from 'buffer'
+
 import Long from 'long'
 
 import beapi from '@berty-tech/api'

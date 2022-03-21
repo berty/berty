@@ -9,6 +9,7 @@ import {
 	requestNotifications,
 	RESULTS,
 } from 'react-native-permissions'
+
 import beapi from '@berty-tech/api'
 
 export type PermissionType = 'proximity' | 'audio' | 'notification' | 'camera' | 'gallery'

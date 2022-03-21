@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react'
-import { TouchableOpacity } from 'react-native'
-import { Text, Icon } from '@ui-kitten/components'
 
+import { Text, Icon } from '@ui-kitten/components'
+import { TouchableOpacity } from 'react-native'
+import { useSelector } from 'react-redux'
+
+import { selectProtocolClient } from '@berty-tech/redux/reducers/ui.reducer'
 import { useThemeColor } from '@berty-tech/store'
 import { useStyles } from '@berty-tech/styles'
 
 import { getSource } from '../../utils'
-import { useSelector } from 'react-redux'
-import { selectProtocolClient } from '@berty-tech/redux/reducers/ui.reducer'
 
 export const FileMessage: React.FC<{
 	medias: any

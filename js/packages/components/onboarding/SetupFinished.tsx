@@ -1,3 +1,10 @@
+import React, { useState } from 'react'
+
+import { CommonActions } from '@react-navigation/native'
+import LottieView from 'lottie-react-native'
+import { useTranslation } from 'react-i18next'
+import { ActivityIndicator as Spinner, StatusBar, Vibration, View } from 'react-native'
+
 import { dispatch as navDispatch, ScreenFC } from '@berty-tech/navigation'
 import {
 	PersistentOptionsKeys,
@@ -5,11 +12,7 @@ import {
 	useNotificationsInhibitor,
 	useThemeColor,
 } from '@berty-tech/store'
-import { CommonActions } from '@react-navigation/native'
-import LottieView from 'lottie-react-native'
-import React, { useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import { ActivityIndicator as Spinner, StatusBar, Vibration, View } from 'react-native'
+
 import OnboardingWrapper from './OnboardingWrapper'
 import SwiperCard from './SwiperCard'
 

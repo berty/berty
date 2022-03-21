@@ -1,4 +1,6 @@
 import React from 'react'
+
+import { Icon } from '@ui-kitten/components'
 import {
 	TouchableOpacity,
 	Text,
@@ -6,7 +8,6 @@ import {
 	View,
 	ActivityIndicator,
 } from 'react-native'
-import { Icon } from '@ui-kitten/components'
 
 import { useThemeColor } from '@berty-tech/store'
 import { useStyles } from '@berty-tech/styles'

@@ -1,15 +1,16 @@
 import React from 'react'
-import { TouchableOpacity, View, Text } from 'react-native'
+
 import { CommonActions } from '@react-navigation/native'
+import { TouchableOpacity, View, Text } from 'react-native'
 
 import beapi from '@berty-tech/api'
-import { useStyles } from '@berty-tech/styles'
-import { useThemeColor } from '@berty-tech/store'
 import { dispatch } from '@berty-tech/navigation'
 import { useConversation } from '@berty-tech/react-redux'
+import { useThemeColor } from '@berty-tech/store'
+import { useStyles } from '@berty-tech/styles'
 
-import { useStylesNotification } from './common'
 import { ConversationAvatar } from '../avatars'
+import { useStylesNotification } from './common'
 
 const MessageReceived: React.FC<any> = ({ onClose, title, message, ...props }) => {
 	const [{ text }] = useStyles()

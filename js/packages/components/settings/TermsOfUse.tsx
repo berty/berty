@@ -1,10 +1,11 @@
 import React from 'react'
-import { View, ScrollView } from 'react-native'
-import { Layout, Text } from '@ui-kitten/components'
 
-import { useStyles } from '@berty-tech/styles'
-import { useThemeColor } from '@berty-tech/store/hooks'
+import { Layout, Text } from '@ui-kitten/components'
+import { View, ScrollView } from 'react-native'
+
 import { ScreenFC } from '@berty-tech/navigation'
+import { useThemeColor } from '@berty-tech/store/hooks'
+import { useStyles } from '@berty-tech/styles'
 
 //
 // TermsOfUse

@@ -1,12 +1,12 @@
-import { StyleSheet } from 'react-native'
-import mem from 'mem'
 import mapValues from 'lodash/mapValues'
+import mem from 'mem'
+import { StyleSheet } from 'react-native'
 
-import { Declaration, Styles, ColorsStyles } from './types'
 import { initialScaleSize, initialFontScale, initialScaleHeight } from './constant'
+import { mapBorder } from './map-border'
 import { mapColorsDeclaration } from './map-colors'
 import { mapSides } from './map-sides'
-import { mapBorder } from './map-border'
+import { Declaration, Styles, ColorsStyles } from './types'
 
 export const defaultStylesDeclaration: Declaration = {
 	colors: {

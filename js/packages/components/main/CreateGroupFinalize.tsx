@@ -1,20 +1,21 @@
 import React, { useState } from 'react'
-import { View, TouchableOpacity, TextInput, StyleSheet, ScrollView } from 'react-native'
+
 import { Layout, Text, Icon } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
+import { View, TouchableOpacity, TextInput, StyleSheet, ScrollView } from 'react-native'
 
-import { useStyles } from '@berty-tech/styles'
-import messengerMethodsHooks from '@berty-tech/store/methods'
-import { useMessengerContext, useThemeColor } from '@berty-tech/store'
 import { useNavigation } from '@berty-tech/navigation'
-import { selectInvitationListMembers } from '@berty-tech/redux/reducers/groupCreationForm.reducer'
 import { useAppDispatch, useAppSelector } from '@berty-tech/react-redux'
+import { selectInvitationListMembers } from '@berty-tech/redux/reducers/groupCreationForm.reducer'
+import { IOSOnlyKeyboardAvoidingView } from '@berty-tech/rnutil/keyboardAvoiding'
+import { useMessengerContext, useThemeColor } from '@berty-tech/store'
+import messengerMethodsHooks from '@berty-tech/store/methods'
+import { useStyles } from '@berty-tech/styles'
 
-import { FooterCreateGroup } from './CreateGroupFooter'
-import { Header } from './CreateGroupAddMembers'
 import { ButtonSettingItem } from '../shared-components/SettingsButtons'
 import { MemberList } from './CreateGroupAddMembers'
-import { IOSOnlyKeyboardAvoidingView } from '@berty-tech/rnutil/keyboardAvoiding'
+import { Header } from './CreateGroupAddMembers'
+import { FooterCreateGroup } from './CreateGroupFooter'
 
 const useStylesCreateGroup = () => {
 	const [{ padding, height, width, absolute, border, column, text }, { scaleSize }] = useStyles()

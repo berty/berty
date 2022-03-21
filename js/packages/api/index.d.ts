@@ -1,5 +1,4 @@
 import { berty } from './root.pb'
-
 import account = berty.account.v1
 import bridge = berty.bridge.v1
 import push = berty.push.v1

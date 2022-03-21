@@ -1,12 +1,21 @@
 import React, { useCallback, useState } from 'react'
-import { View, TouchableOpacity, Animated } from 'react-native'
-import { SHA3 } from 'sha3'
-import palette from 'google-palette'
+
 import { Text, Icon } from '@ui-kitten/components'
-import { PanGestureHandler, State } from 'react-native-gesture-handler'
+import palette from 'google-palette'
 import { useTranslation } from 'react-i18next'
+import { View, TouchableOpacity, Animated } from 'react-native'
+import { PanGestureHandler, State } from 'react-native-gesture-handler'
+import { SHA3 } from 'sha3'
 
 import beapi from '@berty-tech/api'
+import {
+	useAppDispatch,
+	useAppSelector,
+	useInteractionAuthor,
+	useLastConvInteraction,
+} from '@berty-tech/react-redux'
+import { setActiveReplyInteraction } from '@berty-tech/redux/reducers/chatInputs.reducer'
+import { selectInteraction } from '@berty-tech/redux/reducers/messenger.reducer'
 import {
 	useMessengerContext,
 	useThemeColor,
@@ -16,24 +25,17 @@ import {
 	useMessengerClient,
 } from '@berty-tech/store'
 import { useStyles } from '@berty-tech/styles'
-import {
-	useAppDispatch,
-	useAppSelector,
-	useInteractionAuthor,
-	useLastConvInteraction,
-} from '@berty-tech/react-redux'
-import { selectInteraction } from '@berty-tech/redux/reducers/messenger.reducer'
 
 import { MemberAvatar } from '../../avatars'
-import { HyperlinkUserMessage, TimestampStatusUserMessage } from './UserMessageComponents'
-import { PictureMessage } from './PictureMessage'
+import { useModal } from '../../providers/modal.provider'
+import { getMediaTypeFromMedias } from '../../utils'
+import { MessageMenu } from '../modals/MessageMenu.modal'
 import { AudioMessage } from './AudioMessage'
 import { FileMessage } from './FileMessage'
-import { getMediaTypeFromMedias } from '../../utils'
+import { PictureMessage } from './PictureMessage'
+import { HyperlinkUserMessage, TimestampStatusUserMessage } from './UserMessageComponents'
 // import { Reactions } from './Reactions'
-import { MessageMenu } from '../modals/MessageMenu.modal'
-import { useModal } from '../../providers/modal.provider'
-import { setActiveReplyInteraction } from '@berty-tech/redux/reducers/chatInputs.reducer'
+
 // import { EmojiKeyboard } from '../modals/EmojiKeyboard.modal'
 
 const pal = palette('tol-rainbow', 256)

@@ -1,9 +1,17 @@
 import React from 'react'
-import { GestureResponderEvent, ScrollView, Text, TouchableOpacity, View } from 'react-native'
+
 import { Icon } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
+import { GestureResponderEvent, ScrollView, Text, TouchableOpacity, View } from 'react-native'
+import { useSelector } from 'react-redux'
 
-import { useStyles } from '@berty-tech/styles'
+import beapi from '@berty-tech/api'
+import { importAccountFromDocumentPicker } from '@berty-tech/components/pickerUtils'
+import { useAppDispatch } from '@berty-tech/react-redux'
+import {
+	selectSelectedAccount,
+	setStateOnBoardingReady,
+} from '@berty-tech/redux/reducers/ui.reducer'
 import {
 	useMessengerContext,
 	closeAccountWithProgress,
@@ -11,16 +19,9 @@ import {
 	pbDateToNum,
 	Maybe,
 } from '@berty-tech/store'
-import { importAccountFromDocumentPicker } from '@berty-tech/components/pickerUtils'
-import { useAppDispatch } from '@berty-tech/react-redux'
-import beapi from '@berty-tech/api'
+import { useStyles } from '@berty-tech/styles'
 
 import { GenericAvatar } from '../../avatars'
-import {
-	selectSelectedAccount,
-	setStateOnBoardingReady,
-} from '@berty-tech/redux/reducers/ui.reducer'
-import { useSelector } from 'react-redux'
 
 const AccountButton: React.FC<{
 	name: string | null | undefined

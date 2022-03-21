@@ -1,26 +1,27 @@
 import React, { useState } from 'react'
-import { Keyboard, TouchableOpacity, View } from 'react-native'
+
+import { useHeaderHeight } from '@react-navigation/elements'
 import { useFocusEffect } from '@react-navigation/native'
 import { useTranslation } from 'react-i18next'
+import { Keyboard, TouchableOpacity, View } from 'react-native'
 import AndroidKeyboardAdjust from 'react-native-android-keyboard-adjust'
-import { useHeaderHeight } from '@react-navigation/elements'
 
-import { useStyles } from '@berty-tech/styles'
-import { ScreenFC } from '@berty-tech/navigation'
 import beapi from '@berty-tech/api'
+import { ScreenFC } from '@berty-tech/navigation'
+import { CustomTitleStyle } from '@berty-tech/navigation/stacks'
+import { useContact, useConversation } from '@berty-tech/react-redux'
+import { IOSOnlyKeyboardAvoidingView } from '@berty-tech/rnutil/keyboardAvoiding'
 import {
 	useReadEffect,
 	useNotificationsInhibitor,
 	useThemeColor,
 	pbDateToNum,
 } from '@berty-tech/store'
-import { CustomTitleStyle } from '@berty-tech/navigation/stacks'
-import { IOSOnlyKeyboardAvoidingView } from '@berty-tech/rnutil/keyboardAvoiding'
-import { useContact, useConversation } from '@berty-tech/react-redux'
+import { useStyles } from '@berty-tech/styles'
 
 import { ContactAvatar } from '../avatars'
-import { ChatDate } from './common'
 import { MessageList } from '../chat/MessageList'
+import { ChatDate } from './common'
 import { ChatFooter } from './footer/ChatFooter'
 
 //

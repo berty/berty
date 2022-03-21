@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react'
+
 import { Vibration } from 'react-native'
-import GestureRecognizer from 'react-native-swipe-gestures'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import GestureRecognizer from 'react-native-swipe-gestures'
 
 import beapi from '@berty-tech/api'
-import { useStyles } from '@berty-tech/styles'
 import {
 	usePersistentOptions,
 	useMessengerContext,
@@ -12,6 +12,7 @@ import {
 	NotificationsInhibitor,
 	SoundKey,
 } from '@berty-tech/store'
+import { useStyles } from '@berty-tech/styles'
 
 import { usePrevious } from './hooks'
 import notifications, { DefaultNotification } from './notifications'

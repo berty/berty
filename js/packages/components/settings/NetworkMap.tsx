@@ -1,4 +1,7 @@
 import React, { useEffect, useState } from 'react'
+
+import { Layout, Text, Icon } from '@ui-kitten/components'
+import { useTranslation } from 'react-i18next'
 import {
 	ScrollView,
 	View,
@@ -7,14 +10,12 @@ import {
 	TouchableOpacity,
 	StatusBar,
 } from 'react-native'
-import { Layout, Text, Icon } from '@ui-kitten/components'
-import { useTranslation } from 'react-i18next'
 
 import beapi from '@berty-tech/api'
 import { ScreenFC } from '@berty-tech/navigation'
-import { useStyles } from '@berty-tech/styles'
 import { useThemeColor, pbDateToNum } from '@berty-tech/store'
 import { protocolMethodsHooks } from '@berty-tech/store/methods'
+import { useStyles } from '@berty-tech/styles'
 
 import { usePrevious } from '../hooks'
 

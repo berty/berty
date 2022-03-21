@@ -1,11 +1,13 @@
 import React from 'react'
-import { View, Modal, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native'
-import { Text } from '@ui-kitten/components'
-import { useTranslation } from 'react-i18next'
+
 import { Buffer } from 'buffer'
 
-import { useStyles } from '@berty-tech/styles'
+import { Text } from '@ui-kitten/components'
+import { useTranslation } from 'react-i18next'
+import { View, Modal, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native'
+
 import beapi from '@berty-tech/api'
+import { useAllConversations, useOneToOneContact } from '@berty-tech/react-redux'
 import {
 	useMessengerContext,
 	useThemeColor,
@@ -13,7 +15,7 @@ import {
 	Maybe,
 	prepareMediaBytes,
 } from '@berty-tech/store'
-import { useAllConversations, useOneToOneContact } from '@berty-tech/react-redux'
+import { useStyles } from '@berty-tech/styles'
 
 import { ConversationAvatar } from '../avatars'
 

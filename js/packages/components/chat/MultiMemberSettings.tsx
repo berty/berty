@@ -1,20 +1,21 @@
 import React, { ComponentProps, useState } from 'react'
-import { View, ScrollView, Share, StatusBar, TouchableOpacity } from 'react-native'
+
 import { Layout, Text } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
+import { View, ScrollView, Share, StatusBar, TouchableOpacity } from 'react-native'
 import ImagePicker, { ImageOrVideo } from 'react-native-image-crop-picker'
 import QRCode from 'react-native-qrcode-svg'
 
 import beapi from '@berty-tech/api'
-import { useStyles } from '@berty-tech/styles'
-import { ScreenFC, useNavigation } from '@berty-tech/navigation'
-import { Maybe, useMessengerClient, useThemeColor } from '@berty-tech/store'
-import { useConversationMembersDict, useConversation } from '@berty-tech/react-redux'
-
-import { ButtonSetting, FactionButtonSetting } from '../shared-components/SettingsButtons'
-import logo from '../main/1_berty_picto.png'
-import { MemberAvatar, MultiMemberAvatar } from '../avatars'
 import EnableNotificationsButton from '@berty-tech/components/chat/EnableNotificationsButton'
+import { ScreenFC, useNavigation } from '@berty-tech/navigation'
+import { useConversationMembersDict, useConversation } from '@berty-tech/react-redux'
+import { Maybe, useMessengerClient, useThemeColor } from '@berty-tech/store'
+import { useStyles } from '@berty-tech/styles'
+
+import { MemberAvatar, MultiMemberAvatar } from '../avatars'
+import logo from '../main/1_berty_picto.png'
+import { ButtonSetting, FactionButtonSetting } from '../shared-components/SettingsButtons'
 
 const GroupChatSettingsHeader: React.FC<{ publicKey: Maybe<string> }> = ({ publicKey }) => {
 	const conv = useConversation(publicKey)

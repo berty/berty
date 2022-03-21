@@ -1,14 +1,24 @@
 import React from 'react'
-import { ScrollView, TouchableOpacity, View, Text, Platform } from 'react-native'
+
 import { Icon } from '@ui-kitten/components'
+import * as MailComposer from 'expo-mail-composer'
 import { useTranslation } from 'react-i18next'
+import { ScrollView, TouchableOpacity, View, Text, Platform } from 'react-native'
 import { withInAppNotification } from 'react-native-in-app-notification'
-import { useDispatch, useSelector } from 'react-redux'
 import { check, PERMISSIONS } from 'react-native-permissions'
+import { useDispatch, useSelector } from 'react-redux'
 
 import beapi from '@berty-tech/api'
-import { useStyles } from '@berty-tech/styles'
 import { ScreenFC, useNavigation } from '@berty-tech/navigation'
+import { useAccount } from '@berty-tech/react-redux'
+import {
+	selectBlePerm,
+	selectCurrentNetworkConfig,
+	setBlePerm,
+	setCurrentNetworkConfig,
+} from '@berty-tech/redux/reducers/networkConfig.reducer'
+import { selectSelectedAccount } from '@berty-tech/redux/reducers/ui.reducer'
+import { checkBlePermission } from '@berty-tech/rnutil/checkPermissions'
 import {
 	accountService,
 	useMessengerContext,
@@ -16,21 +26,12 @@ import {
 	useThemeColor,
 	useMessengerClient,
 } from '@berty-tech/store'
-import { useAccount } from '@berty-tech/react-redux'
-import { selectSelectedAccount } from '@berty-tech/redux/reducers/ui.reducer'
-import { checkBlePermission } from '@berty-tech/rnutil/checkPermissions'
+import { useStyles } from '@berty-tech/styles'
 
 import { AccountAvatar } from '../avatars'
-import { ButtonSettingV2, Section } from '../shared-components'
-import {
-	selectBlePerm,
-	selectCurrentNetworkConfig,
-	setBlePerm,
-	setCurrentNetworkConfig,
-} from '@berty-tech/redux/reducers/networkConfig.reducer'
-import * as MailComposer from 'expo-mail-composer'
-import { useModal } from '../providers/modal.provider'
 import { EditProfile } from '../modals'
+import { useModal } from '../providers/modal.provider'
+import { ButtonSettingV2, Section } from '../shared-components'
 
 const ProfileButton: React.FC<{}> = () => {
 	const [{ padding, margin, border }, { scaleSize }] = useStyles()

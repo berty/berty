@@ -1,9 +1,10 @@
 import React from 'react'
-import { View, TouchableOpacity, ActivityIndicator } from 'react-native'
-import { Text, Icon } from '@ui-kitten/components'
 
-import { useStyles } from '@berty-tech/styles'
+import { Text, Icon } from '@ui-kitten/components'
+import { View, TouchableOpacity, ActivityIndicator } from 'react-native'
+
 import { useThemeColor } from '@berty-tech/store/hooks'
+import { useStyles } from '@berty-tech/styles'
 
 type FooterCreateGroupProps = {
 	title: string

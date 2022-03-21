@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react'
-import { View, TouchableOpacity, Image, ActivityIndicator } from 'react-native'
 
+import { View, TouchableOpacity, Image, ActivityIndicator } from 'react-native'
+import { useSelector } from 'react-redux'
+
+import { useNavigation } from '@berty-tech/navigation'
+import { selectProtocolClient } from '@berty-tech/redux/reducers/ui.reducer'
 import { useThemeColor } from '@berty-tech/store'
 import { useStyles } from '@berty-tech/styles'
-import { useNavigation } from '@berty-tech/navigation'
 
 import { getSource } from '../../utils'
 import { ImageCounter } from '../ImageCounter'
-import { useSelector } from 'react-redux'
-import { selectProtocolClient } from '@berty-tech/redux/reducers/ui.reducer'
 
 export const PictureMessage: React.FC<{
 	medias: any

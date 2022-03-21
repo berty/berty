@@ -1,16 +1,17 @@
 import React, { useState } from 'react'
-import { View, StyleProp, TouchableOpacity, ViewStyle } from 'react-native'
-import { Text, Icon } from '@ui-kitten/components'
 
-import { useThemeColor } from '@berty-tech/store/hooks'
-import { useStyles, ColorsTypes } from '@berty-tech/styles'
+import { Text, Icon } from '@ui-kitten/components'
+import { View, StyleProp, TouchableOpacity, ViewStyle } from 'react-native'
+
 import { Toggle } from '@berty-tech/components/shared-components/Toggle'
 import { useContact } from '@berty-tech/react-redux'
+import { useThemeColor } from '@berty-tech/store/hooks'
+import { useStyles, ColorsTypes } from '@berty-tech/styles'
 
-import { TabBar } from './TabBar'
+import { ContactAvatar } from '../avatars'
 import { FingerprintContent } from './FingerprintContent'
 import { Modal } from './Modal'
-import { ContactAvatar } from '../avatars'
+import { TabBar } from './TabBar'
 
 //
 // RequestButtons

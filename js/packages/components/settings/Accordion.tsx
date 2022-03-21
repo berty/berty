@@ -1,9 +1,11 @@
 import React, { useState, useRef, FC, useCallback, useMemo } from 'react'
+
 import { Divider, Icon, Text } from '@ui-kitten/components'
 import { View, Animated, Easing, TouchableOpacity, Text as NativeText } from 'react-native'
 
 import { useThemeColor } from '@berty-tech/store'
 import { useStyles } from '@berty-tech/styles'
+
 import { Toggle } from '../shared-components/Toggle'
 
 const heightButton = 55

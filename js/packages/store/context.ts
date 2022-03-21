@@ -1,4 +1,5 @@
 import { createContext, useContext } from 'react'
+
 import { Platform } from 'react-native'
 
 import { globals } from '@berty-tech/config'

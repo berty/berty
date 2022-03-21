@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react'
-import { View } from 'react-native'
+
 import { useTranslation } from 'react-i18next'
-import { ButtonDropDown } from '@berty-tech/components/shared-components'
+import { View } from 'react-native'
+import { useSelector } from 'react-redux'
+
 import { berty } from '@berty-tech/api/root.pb'
-import { useStyles } from '@berty-tech/styles'
+import { ButtonDropDown } from '@berty-tech/components/shared-components'
+import { selectClient } from '@berty-tech/redux/reducers/ui.reducer'
 import {
 	getDevicesForConversationAndMember,
 	getSharedPushTokensForConversation,
 } from '@berty-tech/store'
-import { useSelector } from 'react-redux'
-import { selectClient } from '@berty-tech/redux/reducers/ui.reducer'
+import { useStyles } from '@berty-tech/styles'
 
 const UserDevicesList: React.FC<{ memberPk: string; conversationPk: string }> = ({
 	memberPk,

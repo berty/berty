@@ -1,5 +1,5 @@
-import { Platform } from 'react-native'
 import getPath from '@flyerhq/react-native-android-uri-path'
+import { Platform } from 'react-native'
 import DocumentPicker from 'react-native-document-picker'
 
 import { MessengerState } from '@berty-tech/store'

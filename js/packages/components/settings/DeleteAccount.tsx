@@ -1,4 +1,8 @@
 import React, { useState } from 'react'
+
+import { useNavigation as useReactNavigation } from '@react-navigation/core'
+import { Text, Icon } from '@ui-kitten/components'
+import { useTranslation } from 'react-i18next'
 import {
 	View,
 	StyleSheet,
@@ -8,13 +12,10 @@ import {
 	StatusBar,
 	Text as TextNative,
 } from 'react-native'
-import { Text, Icon } from '@ui-kitten/components'
-import { useTranslation } from 'react-i18next'
-import { useNavigation as useReactNavigation } from '@react-navigation/core'
 
-import { useStyles } from '@berty-tech/styles'
-import { useMessengerContext, useThemeColor } from '@berty-tech/store'
 import { ScreenFC } from '@berty-tech/navigation'
+import { useMessengerContext, useThemeColor } from '@berty-tech/store'
+import { useStyles } from '@berty-tech/styles'
 
 const useStylesDeleteAccount = () => {
 	const [{ width, height, border, text, padding, margin }] = useStyles()

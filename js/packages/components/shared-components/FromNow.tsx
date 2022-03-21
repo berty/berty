@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+
 import moment from 'moment'
 
 const FromNow: React.FC<{ date: number; interval?: number }> = ({ date, interval = 30000 }) => {

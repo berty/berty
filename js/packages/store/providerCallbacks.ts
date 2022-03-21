@@ -1,17 +1,17 @@
 import beapi from '@berty-tech/api'
 import { useAppDispatch } from '@berty-tech/react-redux'
+import { setNextAccount, setStateOnBoardingReady } from '@berty-tech/redux/reducers/ui.reducer'
 
-import { storageKeyForAccount } from './utils'
-import { Maybe } from './hooks'
+import { accountService, storageRemove, storageGet, storageSet } from './accountService'
+import { defaultPersistentOptions } from './context'
 import {
 	refreshAccountList,
 	closeAccountWithProgress,
 	importAccountWithProgress,
 } from './effectableCallbacks'
-import { defaultPersistentOptions } from './context'
-import { accountService, storageRemove, storageGet, storageSet } from './accountService'
+import { Maybe } from './hooks'
 import { MessengerActions, PersistentOptionsUpdate, reducerAction } from './types'
-import { setNextAccount, setStateOnBoardingReady } from '@berty-tech/redux/reducers/ui.reducer'
+import { storageKeyForAccount } from './utils'
 
 export const importAccount = async (
 	embedded: boolean,

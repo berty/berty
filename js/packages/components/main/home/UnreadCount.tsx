@@ -1,6 +1,7 @@
 import React from 'react'
-import { View } from 'react-native'
+
 import { Text } from '@ui-kitten/components'
+import { View } from 'react-native'
 
 import { useThemeColor } from '@berty-tech/store/hooks'
 import { useStyles } from '@berty-tech/styles'

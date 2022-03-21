@@ -1,13 +1,16 @@
 import React, { useState } from 'react'
-import { TouchableOpacity, View, Platform, TextInput, Text, Keyboard } from 'react-native'
-import { Icon } from '@ui-kitten/components'
-import { useFocusEffect } from '@react-navigation/native'
-import { useTranslation } from 'react-i18next'
-import AndroidKeyboardAdjust from 'react-native-android-keyboard-adjust'
-import { useHeaderHeight } from '@react-navigation/elements'
 
-import { useStyles } from '@berty-tech/styles'
+import { useHeaderHeight } from '@react-navigation/elements'
+import { useFocusEffect } from '@react-navigation/native'
+import { Icon } from '@ui-kitten/components'
+import { useTranslation } from 'react-i18next'
+import { TouchableOpacity, View, Platform, TextInput, Text, Keyboard } from 'react-native'
+import AndroidKeyboardAdjust from 'react-native-android-keyboard-adjust'
+
+import beapi from '@berty-tech/api'
 import { ScreenFC } from '@berty-tech/navigation'
+import { useConversation, useLastConvInteraction } from '@berty-tech/react-redux'
+import { IOSOnlyKeyboardAvoidingView } from '@berty-tech/rnutil/keyboardAvoiding'
 import {
 	useReadEffect,
 	useNotificationsInhibitor,
@@ -15,14 +18,12 @@ import {
 	pbDateToNum,
 	useMessengerClient,
 } from '@berty-tech/store'
-import beapi from '@berty-tech/api'
-import { IOSOnlyKeyboardAvoidingView } from '@berty-tech/rnutil/keyboardAvoiding'
-import { useConversation, useLastConvInteraction } from '@berty-tech/react-redux'
+import { useStyles } from '@berty-tech/styles'
 
-import { ChatDate } from './common'
 import { MultiMemberAvatar } from '../avatars'
-import { MessageList } from './MessageList'
+import { ChatDate } from './common'
 import { ChatFooter } from './footer/ChatFooter'
+import { MessageList } from './MessageList'
 
 //
 // MultiMember

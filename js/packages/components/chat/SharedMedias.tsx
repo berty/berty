@@ -1,4 +1,8 @@
 import React, { useState, useEffect } from 'react'
+
+import { Text, Icon } from '@ui-kitten/components'
+import LinkifyIt from 'linkify-it'
+import { useTranslation } from 'react-i18next'
 import {
 	View,
 	ScrollView,
@@ -10,17 +14,16 @@ import {
 	Linking,
 	Share,
 } from 'react-native'
-import { Text, Icon } from '@ui-kitten/components'
-import { useTranslation } from 'react-i18next'
-import { TabView, SceneMap } from 'react-native-tab-view'
-import tlds from 'tlds'
-import LinkifyIt from 'linkify-it'
-import Hyperlink from 'react-native-hyperlink'
 import RNFS from 'react-native-fs'
+import Hyperlink from 'react-native-hyperlink'
+import { TabView, SceneMap } from 'react-native-tab-view'
+import { useSelector } from 'react-redux'
+import tlds from 'tlds'
 
 import beapi from '@berty-tech/api'
-import { useStyles } from '@berty-tech/styles'
 import { ScreenFC } from '@berty-tech/navigation'
+import { useConversationInteractions } from '@berty-tech/react-redux'
+import { selectProtocolClient } from '@berty-tech/redux/reducers/ui.reducer'
 import {
 	useMessengerClient,
 	useThemeColor,
@@ -28,13 +31,11 @@ import {
 	retrieveMediaBytes,
 	Maybe,
 } from '@berty-tech/store'
-import { useConversationInteractions } from '@berty-tech/react-redux'
+import { useStyles } from '@berty-tech/styles'
 
-import { getSource } from '../utils'
-import { timeFormat } from '../helpers'
 import { isBertyDeepLink } from '../chat/message/UserMessageComponents'
-import { useSelector } from 'react-redux'
-import { selectProtocolClient } from '@berty-tech/redux/reducers/ui.reducer'
+import { timeFormat } from '../helpers'
+import { getSource } from '../utils'
 
 const initialLayout = { width: Dimensions.get('window').width }
 const linkify = LinkifyIt().tlds(tlds, true)

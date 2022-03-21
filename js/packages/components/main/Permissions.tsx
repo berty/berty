@@ -1,7 +1,8 @@
 import React, { useCallback, useEffect, useRef } from 'react'
-import { Text, TouchableOpacity, Platform, View, AppState, StatusBar } from 'react-native'
+
 import LottieView, { AnimatedLottieViewProps } from 'lottie-react-native'
 import { useTranslation } from 'react-i18next'
+import { Text, TouchableOpacity, Platform, View, AppState, StatusBar } from 'react-native'
 import {
 	RESULTS,
 	openSettings,
@@ -9,25 +10,25 @@ import {
 	request,
 	PERMISSIONS,
 } from 'react-native-permissions'
+import { useDispatch, useSelector } from 'react-redux'
 
-import { useStyles } from '@berty-tech/styles'
+import beapi from '@berty-tech/api'
+import audioLottie from '@berty-tech/assets/audio-lottie.json'
+import cameraLottie from '@berty-tech/assets/camera-lottie.json'
+import notificationLottie from '@berty-tech/assets/notification-lottie.json'
+import proximityLottie from '@berty-tech/assets/proximity-lottie.json'
+import { ScreenFC, useNavigation } from '@berty-tech/navigation'
+import { setBlePerm } from '@berty-tech/redux/reducers/networkConfig.reducer'
+import { selectSelectedAccount } from '@berty-tech/redux/reducers/ui.reducer'
+import rnutil from '@berty-tech/rnutil'
+import { PermissionType, requestPermission } from '@berty-tech/rnutil/checkPermissions'
 import {
 	accountService,
 	PersistentOptionsKeys,
 	useMessengerContext,
 	useThemeColor,
 } from '@berty-tech/store'
-import audioLottie from '@berty-tech/assets/audio-lottie.json'
-import cameraLottie from '@berty-tech/assets/camera-lottie.json'
-import notificationLottie from '@berty-tech/assets/notification-lottie.json'
-import proximityLottie from '@berty-tech/assets/proximity-lottie.json'
-import beapi from '@berty-tech/api'
-import { ScreenFC, useNavigation } from '@berty-tech/navigation'
-import rnutil from '@berty-tech/rnutil'
-import { useDispatch, useSelector } from 'react-redux'
-import { selectSelectedAccount } from '@berty-tech/redux/reducers/ui.reducer'
-import { PermissionType, requestPermission } from '@berty-tech/rnutil/checkPermissions'
-import { setBlePerm } from '@berty-tech/redux/reducers/networkConfig.reducer'
+import { useStyles } from '@berty-tech/styles'
 
 const animations: Record<PermissionType, AnimatedLottieViewProps['source']> = {
 	audio: audioLottie,

@@ -1,10 +1,18 @@
 import React, { useState, useEffect } from 'react'
-import { Text, Alert } from 'react-native'
-import { useSelector } from 'react-redux'
-import { useTranslation } from 'react-i18next'
-import { RESULTS, PermissionStatus, checkNotifications } from 'react-native-permissions'
 
+import { useTranslation } from 'react-i18next'
+import { Text, Alert } from 'react-native'
+import { RESULTS, PermissionStatus, checkNotifications } from 'react-native-permissions'
+import { useSelector } from 'react-redux'
+
+import beapi from '@berty-tech/api'
+import { berty } from '@berty-tech/api/root.pb'
 import { ButtonSetting } from '@berty-tech/components/shared-components'
+import { GRPCError } from '@berty-tech/grpc-bridge'
+import { useNavigation } from '@berty-tech/navigation'
+import { useConversation } from '@berty-tech/react-redux'
+import { selectClient, selectProtocolClient } from '@berty-tech/redux/reducers/ui.reducer'
+import rnutil from '@berty-tech/rnutil'
 import {
 	getSharedPushTokensForConversation,
 	requestAndPersistPushToken,
@@ -12,14 +20,7 @@ import {
 	serviceTypes,
 	useAccountServices,
 } from '@berty-tech/store'
-import rnutil from '@berty-tech/rnutil'
-import { useNavigation } from '@berty-tech/navigation'
 import { useStyles } from '@berty-tech/styles'
-import beapi from '@berty-tech/api'
-import { GRPCError } from '@berty-tech/grpc-bridge'
-import { selectClient, selectProtocolClient } from '@berty-tech/redux/reducers/ui.reducer'
-import { berty } from '@berty-tech/api/root.pb'
-import { useConversation } from '@berty-tech/react-redux'
 
 const EnableNotificationsButton: React.FC<{
 	conversationPk: string

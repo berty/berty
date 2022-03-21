@@ -1,4 +1,5 @@
 import React, { FC } from 'react'
+
 import { View } from 'react-native'
 import EmojiBoard from 'react-native-emoji-board'
 

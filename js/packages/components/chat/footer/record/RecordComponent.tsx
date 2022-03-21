@@ -1,4 +1,10 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
+
+import { Recorder } from '@react-native-community/audio-toolkit'
+import { useNavigation } from '@react-navigation/native'
+import { Icon } from '@ui-kitten/components'
+import Long from 'long'
+import { useTranslation } from 'react-i18next'
 import { Animated, Text, TouchableOpacity, Vibration, View } from 'react-native'
 import {
 	LongPressGestureHandler,
@@ -6,21 +12,16 @@ import {
 	LongPressGestureHandlerStateChangeEvent,
 	State,
 } from 'react-native-gesture-handler'
-import { Recorder } from '@react-native-community/audio-toolkit'
-import { useTranslation } from 'react-i18next'
-import { Icon } from '@ui-kitten/components'
-import { useNavigation } from '@react-navigation/native'
 import { RESULTS } from 'react-native-permissions'
-import Long from 'long'
 
-import { WelshMessengerServiceClient } from '@berty-tech/grpc-bridge/welsh-clients.gen'
-import { useStyles } from '@berty-tech/styles'
 import beapi from '@berty-tech/api'
-import { playSound } from '@berty-tech/store/sounds'
-import { useMessengerClient, useThemeColor } from '@berty-tech/store'
-import rnutil from '@berty-tech/rnutil'
-import { AppDispatch } from '@berty-tech/redux/store'
+import { WelshMessengerServiceClient } from '@berty-tech/grpc-bridge/welsh-clients.gen'
 import { useAppDispatch } from '@berty-tech/react-redux'
+import { AppDispatch } from '@berty-tech/redux/store'
+import rnutil from '@berty-tech/rnutil'
+import { useMessengerClient, useThemeColor } from '@berty-tech/store'
+import { playSound } from '@berty-tech/store/sounds'
+import { useStyles } from '@berty-tech/styles'
 
 import {
 	limitIntensities,
@@ -29,8 +30,8 @@ import {
 	volumeValueLowest,
 	volumeValuePrecision,
 } from '../../audioMessageCommon'
-import { RecordingComponent } from './RecordingComponent'
 import { PreviewComponent } from './PreviewComponent'
+import { RecordingComponent } from './RecordingComponent'
 
 enum MicPermStatus {
 	UNDEFINED = 0,

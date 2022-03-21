@@ -2,8 +2,8 @@ import { Buffer } from 'buffer'
 
 import beapi from '@berty-tech/api'
 import { Service } from '@berty-tech/grpc-bridge'
-import rpcBridge from '@berty-tech/grpc-bridge/rpc/rpc.bridge'
 import { logger } from '@berty-tech/grpc-bridge/middleware'
+import rpcBridge from '@berty-tech/grpc-bridge/rpc/rpc.bridge'
 
 export const accountService = Service(
 	beapi.account.AccountService,

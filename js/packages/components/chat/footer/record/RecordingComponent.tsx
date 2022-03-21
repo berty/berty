@@ -1,11 +1,12 @@
 import React from 'react'
-import { Animated, Text, TouchableOpacity, View } from 'react-native'
-import { useTranslation } from 'react-i18next'
-import moment from 'moment'
-import { Icon } from '@ui-kitten/components'
 
-import { useStyles } from '@berty-tech/styles'
+import { Icon } from '@ui-kitten/components'
+import moment from 'moment'
+import { useTranslation } from 'react-i18next'
+import { Animated, Text, TouchableOpacity, View } from 'react-native'
+
 import { useThemeColor } from '@berty-tech/store/hooks'
+import { useStyles } from '@berty-tech/styles'
 
 import { RecordingState } from '../../audioMessageCommon'
 import { SendButton } from '../ChatFooterButtons'

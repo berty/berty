@@ -1,13 +1,14 @@
 import React, { FC, useCallback, useState } from 'react'
-import { View } from 'react-native'
 
 import { Text } from '@ui-kitten/components'
+import { multiaddr } from 'multiaddr'
+import { useTranslation } from 'react-i18next'
+import { View } from 'react-native'
+
 import Button from '@berty-tech/components/onboarding/Button'
 import { TextInput } from '@berty-tech/components/shared-components/TextInput'
 import { useThemeColor } from '@berty-tech/store'
 import { useStyles } from '@berty-tech/styles'
-import { multiaddr } from 'multiaddr'
-import { useTranslation } from 'react-i18next'
 
 export const AccordionAdd: FC<{
 	title: string

@@ -1,4 +1,6 @@
 import React from 'react'
+
+import { Icon } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 import {
 	SafeAreaView,
@@ -10,17 +12,10 @@ import {
 	Platform,
 	ActivityIndicator,
 } from 'react-native'
-import { Icon } from '@ui-kitten/components'
+import { useDispatch } from 'react-redux'
 
 import beapi from '@berty-tech/api'
 import { ScreenFC, useNavigation } from '@berty-tech/navigation'
-import {
-	accountService,
-	useMessengerContext,
-	useMountEffect,
-	useThemeColor,
-} from '@berty-tech/store'
-import { useStyles } from '@berty-tech/styles'
 import { useAppDispatch, useAppSelector } from '@berty-tech/react-redux'
 import {
 	addToBootstrap,
@@ -41,15 +36,21 @@ import {
 	toggleFromRendezvous,
 	toggleFromStaticRelay,
 } from '@berty-tech/redux/reducers/networkConfig.reducer'
+import { checkBlePermission } from '@berty-tech/rnutil/checkPermissions'
+import {
+	accountService,
+	useMessengerContext,
+	useMountEffect,
+	useThemeColor,
+} from '@berty-tech/store'
+import { useStyles } from '@berty-tech/styles'
 
+import { AccordionAdd } from '../modals/AccordionAdd.modal'
+import { AccordionEdit } from '../modals/AccordionEdit.modal'
+import { useModal } from '../providers/modal.provider'
 import { ButtonSetting } from '../shared-components'
 import { Toggle } from '../shared-components/Toggle'
-import { checkBlePermission } from '@berty-tech/rnutil/checkPermissions'
 import { Accordion, AccordionAddItem, AccordionItem } from './OnBoardingAccorion'
-import { AccordionEdit } from '../modals/AccordionEdit.modal'
-import { AccordionAdd } from '../modals/AccordionAdd.modal'
-import { useModal } from '../providers/modal.provider'
-import { useDispatch } from 'react-redux'
 
 const ConfigPart: React.FC<{
 	title: string

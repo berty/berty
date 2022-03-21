@@ -1,6 +1,10 @@
 import React, { useCallback, useEffect, useState } from 'react'
+
 import { EventEmitter } from 'events'
 
+import { useSelector } from 'react-redux'
+
+import beapi from '@berty-tech/api'
 import {
 	useAppDispatch,
 	useAppSelector,
@@ -8,9 +12,25 @@ import {
 	useConversationsDict,
 } from '@berty-tech/react-redux'
 import { selectAccountLanguage } from '@berty-tech/redux/reducers/accountSettings.reducer'
+import {
+	selectAppState,
+	selectClearClients,
+	selectClient,
+	selectEmbedded,
+	selectProtocolClient,
+	selectSelectedAccount,
+} from '@berty-tech/redux/reducers/ui.reducer'
 
-import beapi from '@berty-tech/api'
 import { MessengerContext, initialState } from './context'
+import { createNewAccount, getUsername } from './effectableCallbacks'
+import {
+	setPersistentOption,
+	importAccount,
+	updateAccount,
+	switchAccount,
+	deleteAccount,
+	restart,
+} from './providerCallbacks'
 import {
 	initialLaunch,
 	openingDaemon,
@@ -23,27 +43,9 @@ import {
 	updateAccountsPreReady,
 	syncAccountLanguage,
 } from './providerEffects'
-import {
-	setPersistentOption,
-	importAccount,
-	updateAccount,
-	switchAccount,
-	deleteAccount,
-	restart,
-} from './providerCallbacks'
-import { createNewAccount, getUsername } from './effectableCallbacks'
 import { reducer } from './reducer'
 import { playSound } from './sounds'
 import { PersistentOptionsKeys, SoundKey } from './types'
-import { useSelector } from 'react-redux'
-import {
-	selectAppState,
-	selectClearClients,
-	selectClient,
-	selectEmbedded,
-	selectProtocolClient,
-	selectSelectedAccount,
-} from '@berty-tech/redux/reducers/ui.reducer'
 
 export const MessengerProvider: React.FC<{ daemonAddress: string }> = ({
 	children,

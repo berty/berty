@@ -1,15 +1,16 @@
 import React, { useMemo } from 'react'
-import { View, TouchableWithoutFeedback, TouchableOpacity, ActivityIndicator } from 'react-native'
-import { Icon, Text } from '@ui-kitten/components'
 
+import { Icon, Text } from '@ui-kitten/components'
+import { View, TouchableWithoutFeedback, TouchableOpacity, ActivityIndicator } from 'react-native'
+import { useSelector } from 'react-redux'
+
+import beapi from '@berty-tech/api'
+import { useMusicPlayer } from '@berty-tech/components/providers/musicPlayer.provider'
+import { selectProtocolClient } from '@berty-tech/redux/reducers/ui.reducer'
 import { useThemeColor } from '@berty-tech/store/hooks'
 import { useStyles } from '@berty-tech/styles'
-import { useMusicPlayer } from '@berty-tech/components/providers/musicPlayer.provider'
-import beapi from '@berty-tech/api'
 
 import { normalizeVolumeIntensities, WaveForm } from '../audioMessageCommon'
-import { useSelector } from 'react-redux'
-import { selectProtocolClient } from '@berty-tech/redux/reducers/ui.reducer'
 
 const AudioPreview: React.FC<{
 	media: beapi.messenger.IMedia

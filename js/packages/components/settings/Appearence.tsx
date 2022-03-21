@@ -1,11 +1,12 @@
 import React from 'react'
-import { ScrollView, View } from 'react-native'
+
 // import { useSelector, useDispatch } from 'react-redux'
 import { useTranslation } from 'react-i18next'
+import { ScrollView, View } from 'react-native'
 
-import { useStyles } from '@berty-tech/styles'
 import { ScreenFC, useNavigation } from '@berty-tech/navigation'
 import { useThemeColor } from '@berty-tech/store'
+import { useStyles } from '@berty-tech/styles'
 // import { selectThemeIsDark, toggleDarkTheme } from '@berty-tech/redux/reducers/theme.reducer'
 
 import { ButtonSettingV2, Section } from '../shared-components'

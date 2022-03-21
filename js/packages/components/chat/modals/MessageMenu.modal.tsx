@@ -1,17 +1,18 @@
 import React, { FC } from 'react'
-import { View, Text, TouchableOpacity } from 'react-native'
-import { Icon } from '@ui-kitten/components'
 
-import { getEmojiByName } from '@berty-tech/components/utils'
-import { useThemeColor } from '@berty-tech/store'
-import { useStyles } from '@berty-tech/styles'
+import { Icon } from '@ui-kitten/components'
+import { View, Text, TouchableOpacity } from 'react-native'
+
 import AddEmojiIcon from '@berty-tech/assets/add_emoji.svg'
 import { useLayout } from '@berty-tech/components/hooks'
+import { getEmojiByName } from '@berty-tech/components/utils'
 import { useAppDispatch } from '@berty-tech/react-redux'
 import {
 	ReplyTargetInteraction,
 	setActiveReplyInteraction,
 } from '@berty-tech/redux/reducers/chatInputs.reducer'
+import { useThemeColor } from '@berty-tech/store'
+import { useStyles } from '@berty-tech/styles'
 
 import { useModal } from '../../providers/modal.provider'
 import { EmojiKeyboard } from './EmojiKeyboard.modal'

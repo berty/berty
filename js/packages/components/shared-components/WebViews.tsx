@@ -1,4 +1,8 @@
 import React from 'react'
+
+import { BlurView } from '@react-native-community/blur'
+import { Text, Icon } from '@ui-kitten/components'
+import { useTranslation } from 'react-i18next'
 import {
 	StyleSheet,
 	View,
@@ -8,14 +12,11 @@ import {
 	Platform,
 	ActivityIndicator,
 } from 'react-native'
-import { Text, Icon } from '@ui-kitten/components'
 import { WebView } from 'react-native-webview'
-import { BlurView } from '@react-native-community/blur'
 
-import { useThemeColor } from '@berty-tech/store'
 import { useNavigation } from '@berty-tech/navigation'
+import { useThemeColor } from '@berty-tech/store'
 import { useStyles } from '@berty-tech/styles'
-import { useTranslation } from 'react-i18next'
 
 export const useStylesModalWebView = () => {
 	const [{ width, border, padding, margin }] = useStyles()

@@ -1,4 +1,5 @@
 import React, { FC } from 'react'
+
 import { TextInputProps, TextInput as RNTextInput, View, Text, ViewProps } from 'react-native'
 
 import { useThemeColor } from '@berty-tech/store'

@@ -1,15 +1,16 @@
+import React from 'react'
+
+import { Icon } from '@ui-kitten/components'
 import LottieView from 'lottie-react-native'
 import { useTranslation } from 'react-i18next'
-import React from 'react'
 import { StatusBar, Text, View } from 'react-native'
+import { TouchableOpacity } from 'react-native-gesture-handler'
 
 import { ScreenFC, useNavigation } from '@berty-tech/navigation'
 import { useNotificationsInhibitor, useThemeColor } from '@berty-tech/store'
 import { useStyles } from '@berty-tech/styles'
 
 import OnboardingWrapper from './OnboardingWrapper'
-import { Icon } from '@ui-kitten/components'
-import { TouchableOpacity } from 'react-native-gesture-handler'
 
 const CustomModeBody: React.FC = () => {
 	const { goBack } = useNavigation()

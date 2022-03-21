@@ -1,9 +1,11 @@
 import React, { useState, useRef, FC, useMemo, useCallback } from 'react'
-import { View, Animated, Easing, TouchableOpacity } from 'react-native'
+
 import { Divider, Icon } from '@ui-kitten/components'
+import { View, Animated, Easing, TouchableOpacity } from 'react-native'
 
 import { useThemeColor } from '@berty-tech/store'
 import { useStyles } from '@berty-tech/styles'
+
 import { ButtonSetting } from '../shared-components'
 
 const heightButton = 55

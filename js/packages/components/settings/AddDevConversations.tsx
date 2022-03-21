@@ -1,14 +1,15 @@
 import React from 'react'
-import { View, ScrollView } from 'react-native'
+
 import { Layout } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
+import { View, ScrollView } from 'react-native'
 
-import { useStyles } from '@berty-tech/styles'
 import { globals } from '@berty-tech/config'
+import { ScreenFC, useNavigation } from '@berty-tech/navigation'
 import { useThemeColor } from '@berty-tech/store/hooks'
+import { useStyles } from '@berty-tech/styles'
 
 import { ButtonSetting } from '../shared-components/SettingsButtons'
-import { ScreenFC, useNavigation } from '@berty-tech/navigation'
 
 type ValueOf<T> = T[keyof T]
 

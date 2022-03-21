@@ -1,11 +1,12 @@
 import { useReducer, useCallback } from 'react'
 
+import { useSelector } from 'react-redux'
+
 import beapi from '@berty-tech/api'
+import { WelshMessengerServiceClient } from '@berty-tech/grpc-bridge/welsh-clients.gen'
+import { selectClient } from '@berty-tech/redux/reducers/ui.reducer'
 
 import { MessengerMethodsHooks, ProtocolMethodsHooks } from './types.gen'
-import { useSelector } from 'react-redux'
-import { selectClient } from '@berty-tech/redux/reducers/ui.reducer'
-import { WelshMessengerServiceClient } from '@berty-tech/grpc-bridge/welsh-clients.gen'
 
 const initialState: MethodState<any> = {
 	error: null,

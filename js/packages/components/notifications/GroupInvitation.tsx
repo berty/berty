@@ -1,11 +1,12 @@
 import React from 'react'
-import { TouchableOpacity, View, Text } from 'react-native'
-import { CommonActions } from '@react-navigation/native'
 
-import { useStyles } from '@berty-tech/styles'
-import { useThemeColor } from '@berty-tech/store'
-import { useConversation } from '@berty-tech/react-redux'
+import { CommonActions } from '@react-navigation/native'
+import { TouchableOpacity, View, Text } from 'react-native'
+
 import { dispatch } from '@berty-tech/navigation'
+import { useConversation } from '@berty-tech/react-redux'
+import { useThemeColor } from '@berty-tech/store'
+import { useStyles } from '@berty-tech/styles'
 
 import { useStylesNotification, NotificationTmpLogo } from './common'
 

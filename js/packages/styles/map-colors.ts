@@ -1,5 +1,5 @@
-import { StyleSheet } from 'react-native'
 import _ from 'lodash'
+import { StyleSheet } from 'react-native'
 
 import { Colors, ColorsDeclaration, ColorsBrightness, ColorsStyles } from './types'
 

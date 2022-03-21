@@ -1,16 +1,17 @@
 import React from 'react'
-import { View, TouchableOpacity, StatusBar, SafeAreaView } from 'react-native'
+
 import { Text, Icon } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
+import { View, TouchableOpacity, StatusBar, SafeAreaView } from 'react-native'
 import { setJSExceptionHandler } from 'react-native-exception-handler'
 import RNRestart from 'react-native-restart'
+import { useSelector } from 'react-redux'
 
-import { useStyles } from '@berty-tech/styles'
+import { selectEmbedded } from '@berty-tech/redux/reducers/ui.reducer'
 import { useThemeColor, useMessengerContext } from '@berty-tech/store'
+import { useStyles } from '@berty-tech/styles'
 
 import AppInspector from './debug/AppInspector'
-import { useSelector } from 'react-redux'
-import { selectEmbedded } from '@berty-tech/redux/reducers/ui.reducer'
 
 const Label: React.FC<{ title: string; type: 'error' }> = ({ title, type }) => {
 	const [{ padding, border }] = useStyles()

@@ -1,7 +1,10 @@
+import React from 'react'
+
+import { Text, TouchableOpacity, View } from 'react-native'
+
 import { useThemeColor } from '@berty-tech/store/hooks'
 import { useStyles } from '@berty-tech/styles'
-import React from 'react'
-import { Text, TouchableOpacity, View } from 'react-native'
+
 import { Card } from '../shared-components/Card'
 import Button from './Button'
 

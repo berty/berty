@@ -1,11 +1,12 @@
 import React from 'react'
-import { View, ScrollView } from 'react-native'
+
 import { Layout } from '@ui-kitten/components'
+import { View, ScrollView } from 'react-native'
 import { WebView } from 'react-native-webview'
 
-import { useStyles } from '@berty-tech/styles'
 import { ScreenFC } from '@berty-tech/navigation'
 import { useThemeColor } from '@berty-tech/store'
+import { useStyles } from '@berty-tech/styles'
 
 //
 // IpfsWebUI

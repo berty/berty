@@ -1,4 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
+
+import { useTranslation } from 'react-i18next'
 import {
 	View,
 	Text,
@@ -9,8 +11,8 @@ import {
 	StyleSheet,
 	StatusBar,
 } from 'react-native'
+import { NativeModules } from 'react-native'
 import RNFS from 'react-native-fs'
-import { useTranslation } from 'react-i18next'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 import beapi from '@berty-tech/api'
@@ -18,7 +20,6 @@ import { GRPCError, Service } from '@berty-tech/grpc-bridge'
 import { bridge as rpcBridge } from '@berty-tech/grpc-bridge/rpc'
 import { pbDateToNum, useMessengerContext } from '@berty-tech/store'
 
-import { NativeModules } from 'react-native'
 const { RootDir } = NativeModules
 
 export const accountService = Service(beapi.account.AccountService, rpcBridge, null)

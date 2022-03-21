@@ -1,7 +1,8 @@
 import React from 'react'
-import { View } from 'react-native'
-import { Text } from '@ui-kitten/components'
+
 import { Dictionary } from '@reduxjs/toolkit'
+import { Text } from '@ui-kitten/components'
+import { View } from 'react-native'
 
 import beapi from '@berty-tech/api'
 import {

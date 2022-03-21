@@ -1,10 +1,11 @@
 import React from 'react'
-import { Animated, Easing, View, ViewToken } from 'react-native'
+
 import { Text } from '@ui-kitten/components'
 import moment from 'moment'
+import { Animated, Easing, View, ViewToken } from 'react-native'
 
-import { useStyles } from '@berty-tech/styles'
 import { useThemeColor } from '@berty-tech/store'
+import { useStyles } from '@berty-tech/styles'
 
 import { timeFormat } from '../helpers'
 

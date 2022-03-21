@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { StyleSheet, Platform } from 'react-native'
 import mem from 'mem'
+import { StyleSheet, Platform } from 'react-native'
 
-import { Declaration, Sizes } from './types'
-import { mapSizes, mapBorderSidesSizes } from './map-sides'
-import { mapColorsDeclaration } from './map-colors'
 import { initialScaleSize } from './constant'
+import { mapColorsDeclaration } from './map-colors'
+import { mapSizes, mapBorderSidesSizes } from './map-sides'
+import { Declaration, Sizes } from './types'
 
 export const mapBorderRadiusSides = (
 	decl: Declaration,

@@ -1,6 +1,9 @@
-import { Platform } from 'react-native'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { Platform } from 'react-native'
 
+import beapi from '@berty-tech/api'
+import { globals } from '@berty-tech/config'
+import { ServiceClientType } from '@berty-tech/grpc-bridge/welsh-clients.gen'
 import {
 	NotificationsInhibitor,
 	PersistentOptions,
@@ -9,9 +12,6 @@ import {
 	StreamInProgress,
 	UpdatesProfileNotification,
 } from '@berty-tech/store'
-import { globals } from '@berty-tech/config'
-import beapi from '@berty-tech/api'
-import { ServiceClientType } from '@berty-tech/grpc-bridge/welsh-clients.gen'
 
 /**
  *

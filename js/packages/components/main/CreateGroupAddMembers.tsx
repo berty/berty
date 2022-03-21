@@ -1,4 +1,7 @@
 import React from 'react'
+
+import { Layout, Icon } from '@ui-kitten/components'
+import { useTranslation } from 'react-i18next'
 import {
 	View,
 	ScrollView,
@@ -7,24 +10,22 @@ import {
 	TouchableWithoutFeedback,
 	StatusBar,
 } from 'react-native'
-import { Layout, Icon } from '@ui-kitten/components'
-import { useTranslation } from 'react-i18next'
-
-import { useNavigation } from '@berty-tech/navigation'
-import { useStyles } from '@berty-tech/styles'
-import { useThemeColor } from '@berty-tech/store'
-
-import { ContactPicker } from '../shared-components'
-import { FooterCreateGroup } from './CreateGroupFooter'
-import { ContactAvatar } from '../avatars'
 import { useDispatch, useSelector } from 'react-redux'
+
+import { berty } from '@berty-tech/api/root.pb'
+import { useNavigation } from '@berty-tech/navigation'
+import { useAllContacts } from '@berty-tech/react-redux'
 import {
 	removeMemberFromInvitationListById,
 	selectInvitationListMembers,
 } from '@berty-tech/redux/reducers/groupCreationForm.reducer'
 import { AppDispatch } from '@berty-tech/redux/store'
-import { berty } from '@berty-tech/api/root.pb'
-import { useAllContacts } from '@berty-tech/react-redux'
+import { useThemeColor } from '@berty-tech/store'
+import { useStyles } from '@berty-tech/styles'
+
+import { ContactAvatar } from '../avatars'
+import { ContactPicker } from '../shared-components'
+import { FooterCreateGroup } from './CreateGroupFooter'
 
 export const Header: React.FC<{
 	title: string

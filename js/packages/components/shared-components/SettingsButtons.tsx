@@ -1,4 +1,6 @@
 import React, { ReactNode, useEffect, useState } from 'react'
+
+import { Text, Icon } from '@ui-kitten/components'
 import {
 	View,
 	TouchableOpacity,
@@ -8,11 +10,10 @@ import {
 	TextInput,
 	ScrollView,
 } from 'react-native'
-import { Text, Icon } from '@ui-kitten/components'
 
-import { useStyles } from '@berty-tech/styles'
-import { useThemeColor } from '@berty-tech/store/hooks'
 import { Toggle } from '@berty-tech/components/shared-components/Toggle'
+import { useThemeColor } from '@berty-tech/store/hooks'
+import { useStyles } from '@berty-tech/styles'
 
 export const Section: React.FC<{}> = ({ children }) => {
 	const [{ margin, border, padding }] = useStyles()

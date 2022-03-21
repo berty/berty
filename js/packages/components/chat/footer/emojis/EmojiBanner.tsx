@@ -1,22 +1,23 @@
 import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { Text, View, Animated, LayoutChangeEvent } from 'react-native'
-import { TouchableHighlight, TouchableOpacity } from 'react-native-gesture-handler'
-import { useTranslation } from 'react-i18next'
 
 import { Divider, Icon } from '@ui-kitten/components'
-import { useThemeColor } from '@berty-tech/store'
-import { useStyles } from '@berty-tech/styles'
+import { useTranslation } from 'react-i18next'
+import { Text, View, Animated, LayoutChangeEvent } from 'react-native'
+import { TouchableHighlight, TouchableOpacity } from 'react-native-gesture-handler'
+
+import { emojis, getEmojiByName } from '@berty-tech/components/utils'
+import { useAppDispatch, useAppSelector } from '@berty-tech/react-redux'
 import {
 	selectChatInputText,
 	setChatInputText,
 } from '@berty-tech/redux/reducers/chatInputs.reducer'
-import { useAppDispatch, useAppSelector } from '@berty-tech/react-redux'
-import { emojis, getEmojiByName } from '@berty-tech/components/utils'
-import { Emoji } from '@berty-tech/styles/types'
 import {
 	selectChatInputIsFocused,
 	selectChatInputSelection,
 } from '@berty-tech/redux/reducers/chatInputsVolatile.reducer'
+import { useThemeColor } from '@berty-tech/store'
+import { useStyles } from '@berty-tech/styles'
+import { Emoji } from '@berty-tech/styles/types'
 
 type Word = {
 	word: string

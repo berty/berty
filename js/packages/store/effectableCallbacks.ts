@@ -1,14 +1,14 @@
 import beapi from '@berty-tech/api'
-import { persistor, resetAccountStore } from '@berty-tech/redux/store'
 import { useAppDispatch } from '@berty-tech/react-redux'
-
-import { reducerAction, MessengerActions, StreamInProgress } from './types'
-import { accountService } from './accountService'
 import {
 	setCreatedAccount,
 	setStateStreamDone,
 	setStateStreamInProgress,
 } from '@berty-tech/redux/reducers/ui.reducer'
+import { persistor, resetAccountStore } from '@berty-tech/redux/store'
+
+import { accountService } from './accountService'
+import { reducerAction, MessengerActions, StreamInProgress } from './types'
 
 export const closeAccountWithProgress = async (
 	dispatch: (arg0: reducerAction) => void,

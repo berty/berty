@@ -1,12 +1,13 @@
 import React, { useState } from 'react'
-import { View, StyleSheet, TouchableOpacity } from 'react-native'
+
 import { Text, Icon } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
+import { View, StyleSheet, TouchableOpacity } from 'react-native'
 
-import { useStyles } from '@berty-tech/styles'
 import beapi from '@berty-tech/api'
-import { useThemeColor } from '@berty-tech/store'
 import { useNavigation } from '@berty-tech/navigation'
+import { useThemeColor } from '@berty-tech/store'
+import { useStyles } from '@berty-tech/styles'
 
 //
 // Scan Invalid

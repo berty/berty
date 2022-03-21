@@ -1,10 +1,14 @@
 import React from 'react'
-import { ActivityIndicator, TouchableHighlight, View, ViewProps, ViewStyle } from 'react-native'
+
 import { Icon, Text } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
+import { ActivityIndicator, TouchableHighlight, View, ViewProps, ViewStyle } from 'react-native'
 
-import { defaultStylesDeclaration, useStyles } from '@berty-tech/styles'
 import beapi from '@berty-tech/api'
+import { useNavigation } from '@berty-tech/navigation'
+import { useAppSelector, useOneToOneContact, useLastConvInteraction } from '@berty-tech/react-redux'
+import { selectChatInputText } from '@berty-tech/redux/reducers/chatInputs.reducer'
+import { selectChatInputIsSending } from '@berty-tech/redux/reducers/chatInputsVolatile.reducer'
 import {
 	pbDateToNum,
 	useThemeColor,
@@ -12,14 +16,11 @@ import {
 	Suggestion,
 	Configuration,
 } from '@berty-tech/store'
-import { useNavigation } from '@berty-tech/navigation'
-import { useAppSelector, useOneToOneContact, useLastConvInteraction } from '@berty-tech/react-redux'
-import { selectChatInputText } from '@berty-tech/redux/reducers/chatInputs.reducer'
+import { defaultStylesDeclaration, useStyles } from '@berty-tech/styles'
 
 import { ConversationAvatar, HardcodedAvatar, HardcodedAvatarKey } from '../../avatars'
 import { timeFormat } from '../../helpers'
 import { UnreadCount } from './UnreadCount'
-import { selectChatInputIsSending } from '@berty-tech/redux/reducers/chatInputsVolatile.reducer'
 
 type AddBotCallback = React.Dispatch<
 	React.SetStateAction<{

@@ -1,10 +1,12 @@
-import { Service } from '..'
-import rpcNative from './rpc.native'
-import beapi from '@berty-tech/api'
-import { getServiceName } from './utils'
 import * as pbjs from 'protobufjs'
-import { ServiceClientType } from '../welsh-clients.gen'
+
+import beapi from '@berty-tech/api'
+
+import { Service } from '..'
 import { GRPCError, EOF } from '../error'
+import { ServiceClientType } from '../welsh-clients.gen'
+import rpcNative from './rpc.native'
+import { getServiceName } from './utils'
 
 const ErrStreamClientAlreadyStarted = new GRPCError({
 	grpcErrorCode: beapi.bridge.GRPCErrCode.CANCELED,

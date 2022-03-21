@@ -1,7 +1,8 @@
 import React from 'react'
-import { StatusBar } from 'react-native'
-import { ApplicationProvider } from '@ui-kitten/components'
+
 import { mapping, light } from '@eva-design/eva'
+import { ApplicationProvider } from '@ui-kitten/components'
+import { StatusBar } from 'react-native'
 
 export const Provider: React.FC = ({ children }) => (
 	<>

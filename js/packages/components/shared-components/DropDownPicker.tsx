@@ -1,8 +1,10 @@
+import React, { useState } from 'react'
+
+import { Icon, Text } from '@ui-kitten/components'
+import { Animated, Easing, TouchableOpacity, View } from 'react-native'
+
 import { useThemeColor } from '@berty-tech/store/hooks'
 import { useStyles } from '@berty-tech/styles'
-import { Icon, Text } from '@ui-kitten/components'
-import React, { useState } from 'react'
-import { Animated, Easing, TouchableOpacity, View } from 'react-native'
 
 export type Item = {
 	label: string

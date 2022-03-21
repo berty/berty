@@ -1,23 +1,23 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import { persistStore, persistReducer, PersistorOptions } from 'redux-persist'
-import persistStorage from './persistStorage'
 
-import newGroupRootReducer, {
-	sliceName as newGroupSliceName,
-} from './reducers/groupCreationForm.reducer'
+import persistStorage from './persistStorage'
+import accountSettingsRootReducer, {
+	sliceName as accountSettingsSliceName,
+} from './reducers/accountSettings.reducer'
 import chatInputsRootReducer, {
 	sliceName as chatInputsSliceName,
 } from './reducers/chatInputs.reducer'
 import chatInputsVolatileRootReducer from './reducers/chatInputsVolatile.reducer'
-import accountSettingsRootReducer, {
-	sliceName as accountSettingsSliceName,
-} from './reducers/accountSettings.reducer'
-import themeReducer, { sliceName as themeSliceName } from './reducers/theme.reducer'
-import uiReducer from './reducers/ui.reducer'
+import newGroupRootReducer, {
+	sliceName as newGroupSliceName,
+} from './reducers/groupCreationForm.reducer'
 import messengerRootReducer from './reducers/messenger.reducer'
 import networkConfigReducer, {
 	sliceName as networkConfigSliceName,
 } from './reducers/networkConfig.reducer'
+import themeReducer, { sliceName as themeSliceName } from './reducers/theme.reducer'
+import uiReducer from './reducers/ui.reducer'
 
 const persistConfig = {
 	key: 'persistStore',

@@ -1,17 +1,14 @@
 import React, { useEffect } from 'react'
-import { ScrollView, View, Platform } from 'react-native'
-import { useTranslation } from 'react-i18next'
+
 import { useHeaderHeight } from '@react-navigation/elements'
+import { useTranslation } from 'react-i18next'
+import { ScrollView, View, Platform } from 'react-native'
 import { withInAppNotification } from 'react-native-in-app-notification'
+import { useDispatch, useSelector } from 'react-redux'
 
 import beapi from '@berty-tech/api'
-import { useStyles } from '@berty-tech/styles'
 import { ScreenFC, useNavigation } from '@berty-tech/navigation'
-import { accountService, useMessengerContext, useThemeColor } from '@berty-tech/store'
-import { selectSelectedAccount } from '@berty-tech/redux/reducers/ui.reducer'
-import { useDispatch, useSelector } from 'react-redux'
-import { IOSOnlyKeyboardAvoidingView } from '@berty-tech/rnutil/keyboardAvoiding'
-import { checkBlePermission } from '@berty-tech/rnutil/checkPermissions'
+import { useAppSelector } from '@berty-tech/react-redux'
 import {
 	addToBootstrap,
 	addToRendezvous,
@@ -33,13 +30,17 @@ import {
 	toggleFromRendezvous,
 	toggleFromStaticRelay,
 } from '@berty-tech/redux/reducers/networkConfig.reducer'
-import { useAppSelector } from '@berty-tech/react-redux'
+import { selectSelectedAccount } from '@berty-tech/redux/reducers/ui.reducer'
+import { checkBlePermission } from '@berty-tech/rnutil/checkPermissions'
+import { IOSOnlyKeyboardAvoidingView } from '@berty-tech/rnutil/keyboardAvoiding'
+import { accountService, useMessengerContext, useThemeColor } from '@berty-tech/store'
+import { useStyles } from '@berty-tech/styles'
 
-import { AccordionV2, AccordionAddItemV2, AccordionItemV2 } from './Accordion'
-import { useModal } from '../providers/modal.provider'
 import { AccordionAdd } from '../modals/AccordionAdd.modal'
 import { AccordionEdit } from '../modals/AccordionEdit.modal'
+import { useModal } from '../providers/modal.provider'
 import { ButtonSettingV2, Section } from '../shared-components'
+import { AccordionV2, AccordionAddItemV2, AccordionItemV2 } from './Accordion'
 
 const Proximity: React.FC<{
 	setNewConfig: (newConfig: beapi.account.INetworkConfig) => Promise<void>

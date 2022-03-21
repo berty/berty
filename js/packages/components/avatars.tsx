@@ -1,22 +1,23 @@
 import React from 'react'
-import { Image, View, ViewStyle, Text, TouchableOpacity } from 'react-native'
-import palette from 'google-palette'
-import { SHA3 } from 'sha3'
-import { withBadge } from 'react-native-elements'
 
-import { useStyles } from '@berty-tech/styles'
-import { Maybe, useMessengerContext, useThemeColor } from '@berty-tech/store'
-import { navigate } from '@berty-tech/navigation'
+import palette from 'google-palette'
+import { Image, View, ViewStyle, Text, TouchableOpacity } from 'react-native'
+import { withBadge } from 'react-native-elements'
+import { SHA3 } from 'sha3'
+
 import beapi from '@berty-tech/api'
-import PinkBotAvatar from '@berty-tech/assets/berty_bot_pink_bg.png'
-import GreenDevAvatar from '@berty-tech/assets/berty_dev_green_bg.png'
 import OrangeBotAvatar from '@berty-tech/assets/berty_bot_orange_bg.png'
+import PinkBotAvatar from '@berty-tech/assets/berty_bot_pink_bg.png'
 import BlueDevAvatar from '@berty-tech/assets/berty_dev_blue_bg.png'
+import GreenDevAvatar from '@berty-tech/assets/berty_dev_green_bg.png'
+import { navigate } from '@berty-tech/navigation'
 import { useAccount, useContact, useConversation, useMember } from '@berty-tech/react-redux'
+import { Maybe, useMessengerContext, useThemeColor } from '@berty-tech/store'
+import { useStyles } from '@berty-tech/styles'
 
 import AttachmentImage from './AttachmentImage'
-import GroupAvatar from './main/Avatar_Group_Copy_19.png'
 import Logo from './main/1_berty_picto.svg'
+import GroupAvatar from './main/Avatar_Group_Copy_19.png'
 
 export type AvatarStyle = Omit<
 	ViewStyle,

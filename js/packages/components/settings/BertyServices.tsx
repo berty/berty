@@ -1,8 +1,11 @@
 import React from 'react'
-import { StatusBar, View } from 'react-native'
+
 import { useTranslation } from 'react-i18next'
+import { StatusBar, View } from 'react-native'
+import { useSelector } from 'react-redux'
 
 import { ScreenFC, useNavigation } from '@berty-tech/navigation'
+import { selectProtocolClient } from '@berty-tech/redux/reducers/ui.reducer'
 import {
 	servicesAuthViaDefault,
 	useAccountServices,
@@ -12,10 +15,8 @@ import {
 	useThemeColor,
 } from '@berty-tech/store'
 
-import SwiperCard from '../onboarding/SwiperCard'
 import OnboardingWrapper from '../onboarding/OnboardingWrapper'
-import { useSelector } from 'react-redux'
-import { selectProtocolClient } from '@berty-tech/redux/reducers/ui.reducer'
+import SwiperCard from '../onboarding/SwiperCard'
 
 const ServicesAuthBody: React.FC<{ next: () => void }> = ({ next }) => {
 	const ctx = useMessengerContext()

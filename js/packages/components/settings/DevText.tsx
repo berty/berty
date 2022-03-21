@@ -1,4 +1,5 @@
 import React from 'react'
+
 import { Text, ScrollView } from 'react-native'
 
 import { ScreenFC } from '@berty-tech/navigation'

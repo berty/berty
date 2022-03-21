@@ -1,11 +1,13 @@
-import base64 from 'base64-js'
 import { Buffer } from 'buffer'
+
+import base64 from 'base64-js'
 import { Alert, PermissionsAndroid, NativeModules, Platform } from 'react-native'
 import RNFS from 'react-native-fs'
 import InAppBrowser, { RedirectResult } from 'react-native-inappbrowser-reborn'
 import Share from 'react-native-share'
 
 import beapi from '@berty-tech/api'
+import { berty } from '@berty-tech/api/root.pb'
 import { Service } from '@berty-tech/grpc-bridge'
 import * as middleware from '@berty-tech/grpc-bridge/middleware'
 import { bridge as rpcBridge } from '@berty-tech/grpc-bridge/rpc'
@@ -15,7 +17,6 @@ import {
 } from '@berty-tech/grpc-bridge/welsh-clients.gen'
 import { useAccount } from '@berty-tech/react-redux'
 
-import { berty } from '@berty-tech/api/root.pb'
 const { PushTokenRequester } = NativeModules
 
 export enum serviceTypes {

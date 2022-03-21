@@ -1,11 +1,13 @@
 import React, { useState } from 'react'
-import { View, ScrollView } from 'react-native'
+
 import { Layout, Input } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
+import { View, ScrollView } from 'react-native'
 import { withInAppNotification } from 'react-native-in-app-notification'
+import { useSelector } from 'react-redux'
 
-import { useStyles } from '@berty-tech/styles'
 import { ScreenFC } from '@berty-tech/navigation'
+import { selectProtocolClient } from '@berty-tech/redux/reducers/ui.reducer'
 import {
 	useMessengerContext,
 	useThemeColor,
@@ -14,11 +16,10 @@ import {
 	useAccountServices,
 	serviceNames,
 } from '@berty-tech/store'
+import { useStyles } from '@berty-tech/styles'
 
-import { ButtonSetting, FactionButtonSetting } from '../shared-components'
 import { showNeedRestartNotification } from '../helpers'
-import { useSelector } from 'react-redux'
-import { selectProtocolClient } from '@berty-tech/redux/reducers/ui.reducer'
+import { ButtonSetting, FactionButtonSetting } from '../shared-components'
 
 const BodyServicesAuth = withInAppNotification(({ showNotification }: any) => {
 	const [{ flex, padding, margin }] = useStyles()

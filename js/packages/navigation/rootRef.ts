@@ -1,6 +1,7 @@
 import React from 'react'
-import { NavigationAction } from '@react-navigation/routers'
+
 import { NavigationContainerRef } from '@react-navigation/native'
+import { NavigationAction } from '@react-navigation/routers'
 
 import { ScreensParams } from './types'
 

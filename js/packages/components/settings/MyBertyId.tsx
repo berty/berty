@@ -1,18 +1,19 @@
 import React, { useState } from 'react'
-import { View, TouchableOpacity, Share, StatusBar } from 'react-native'
-import { Layout, Text, Icon } from '@ui-kitten/components'
-import QRCode from 'react-native-qrcode-svg'
-import { useTranslation } from 'react-i18next'
 
-import { useStyles } from '@berty-tech/styles'
-import { useStylesBertyId, useThemeColor } from '@berty-tech/store'
+import { Layout, Text, Icon } from '@ui-kitten/components'
+import { useTranslation } from 'react-i18next'
+import { View, TouchableOpacity, Share, StatusBar } from 'react-native'
+import QRCode from 'react-native-qrcode-svg'
+
 import { ScreenFC } from '@berty-tech/navigation'
 import { useAccount } from '@berty-tech/react-redux'
+import { useStylesBertyId, useThemeColor } from '@berty-tech/store'
+import { useStyles } from '@berty-tech/styles'
 
-import { TabBar } from '../shared-components/TabBar'
-import { FingerprintContent } from '../shared-components/FingerprintContent'
-import logo from '../main/1_berty_picto.png'
 import { AccountAvatar } from '../avatars'
+import logo from '../main/1_berty_picto.png'
+import { FingerprintContent } from '../shared-components/FingerprintContent'
+import { TabBar } from '../shared-components/TabBar'
 
 //
 // Settings My Berty ID Vue

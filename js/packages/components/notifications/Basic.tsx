@@ -1,8 +1,9 @@
 import React from 'react'
+
 import { TouchableOpacity, View, Text } from 'react-native'
 
-import { useStyles } from '@berty-tech/styles'
 import { useThemeColor } from '@berty-tech/store/hooks'
+import { useStyles } from '@berty-tech/styles'
 
 import { useStylesNotification, NotificationTmpLogo } from './common'
 

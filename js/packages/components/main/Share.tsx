@@ -1,23 +1,24 @@
 import React, { FC, ReactNode, useCallback, useEffect, useState } from 'react'
-import { View, Vibration, StatusBar, Text, Share, ScrollView } from 'react-native'
-import { Layout } from '@ui-kitten/components'
-import QRCodeScanner from 'react-native-qrcode-scanner'
 
+import { useFocusEffect } from '@react-navigation/core'
+import { Layout } from '@ui-kitten/components'
+import { useTranslation } from 'react-i18next'
+import { View, Vibration, StatusBar, Text, Share, ScrollView } from 'react-native'
+import QRCodeScanner from 'react-native-qrcode-scanner'
+import QRCode from 'react-native-qrcode-svg'
+
+import { ScreenFC, useNavigation } from '@berty-tech/navigation'
+import { useAccount } from '@berty-tech/react-redux'
+import { checkPermissions } from '@berty-tech/rnutil/checkPermissions'
+import { useMessengerClient } from '@berty-tech/store'
 import { useThemeColor } from '@berty-tech/store/hooks'
 import { useStyles } from '@berty-tech/styles'
-import { ScreenFC, useNavigation } from '@berty-tech/navigation'
-import { useFocusEffect } from '@react-navigation/core'
-import { useAccount } from '@berty-tech/react-redux'
-import { useMessengerClient } from '@berty-tech/store'
 
-import ScanTarget from './scan_target.svg'
-import QRCode from 'react-native-qrcode-svg'
-import { LoaderDots } from '../gates'
 import { AccountAvatar } from '../avatars'
+import { LoaderDots } from '../gates'
 import logo from '../main/1_berty_picto.png'
-import { useTranslation } from 'react-i18next'
 import { ButtonSetting, ButtonSettingRow } from '../shared-components'
-import { checkPermissions } from '@berty-tech/rnutil/checkPermissions'
+import ScanTarget from './scan_target.svg'
 
 const QrCode: FC<{ size: number }> = ({ size }) => {
 	const client = useMessengerClient()

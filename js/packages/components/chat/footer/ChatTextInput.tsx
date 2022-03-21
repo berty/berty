@@ -1,16 +1,17 @@
 import React, { ComponentProps } from 'react'
-import { NativeModules, TextInput, View, Text, Platform } from 'react-native'
-import { useTranslation } from 'react-i18next'
+
 import { Icon } from '@ui-kitten/components'
+import { useTranslation } from 'react-i18next'
+import { NativeModules, TextInput, View, Text, Platform } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 
-import { Maybe, useThemeColor } from '@berty-tech/store'
-import { useStyles } from '@berty-tech/styles'
 import { useAppDispatch, useAppSelector, useInteractionAuthor } from '@berty-tech/react-redux'
 import {
 	removeActiveReplyInteraction,
 	selectActiveReplyInteraction,
 } from '@berty-tech/redux/reducers/chatInputs.reducer'
+import { Maybe, useThemeColor } from '@berty-tech/store'
+import { useStyles } from '@berty-tech/styles'
 
 import { getMediaTypeFromMedias } from '../../utils'
 

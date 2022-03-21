@@ -1,4 +1,7 @@
 import React from 'react'
+
+import { BlurView } from '@react-native-community/blur'
+import { Icon } from '@ui-kitten/components'
 import {
 	TouchableOpacity,
 	TouchableWithoutFeedback,
@@ -6,13 +9,11 @@ import {
 	StyleSheet,
 	ViewStyle,
 } from 'react-native'
-import { BlurView } from '@react-native-community/blur'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { Icon } from '@ui-kitten/components'
 
-import { useStyles } from '@berty-tech/styles'
 import { useNavigation } from '@berty-tech/navigation'
 import { useThemeColor } from '@berty-tech/store/hooks'
+import { useStyles } from '@berty-tech/styles'
 
 //
 // Modal => Modals on screens requests

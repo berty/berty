@@ -1,11 +1,32 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { Alert, ScrollView, StatusBar, Vibration, View } from 'react-native'
-import { Layout } from '@ui-kitten/components'
-import { useTranslation } from 'react-i18next'
-import { Player } from '@react-native-community/audio-toolkit'
-import Long from 'long'
-import { withInAppNotification } from 'react-native-in-app-notification'
 
+import { Player } from '@react-native-community/audio-toolkit'
+import { Layout } from '@ui-kitten/components'
+import Long from 'long'
+import { useTranslation } from 'react-i18next'
+import { Alert, ScrollView, StatusBar, Vibration, View } from 'react-native'
+import { withInAppNotification } from 'react-native-in-app-notification'
+import { useSelector } from 'react-redux'
+
+import beapi from '@berty-tech/api'
+import i18n from '@berty-tech/berty-i18n'
+import { languages } from '@berty-tech/berty-i18n/locale/languages'
+import GoBridge from '@berty-tech/go-bridge'
+import { Service } from '@berty-tech/grpc-bridge'
+import * as middleware from '@berty-tech/grpc-bridge/middleware'
+import { bridge as rpcBridge } from '@berty-tech/grpc-bridge/rpc'
+import { ScreenFC, useNavigation } from '@berty-tech/navigation'
+import {
+	useAllConversations,
+	useAllInteractions,
+	useAppDispatch,
+	useAppSelector,
+	useContactsDict,
+	useConversationsDict,
+	useAccount,
+} from '@berty-tech/react-redux'
+import { setAccountLanguage } from '@berty-tech/redux/reducers/accountSettings.reducer'
+import { selectEmbedded } from '@berty-tech/redux/reducers/ui.reducer'
 import {
 	defaultPersistentOptions,
 	GlobalPersistentOptionsKeys,
@@ -17,37 +38,17 @@ import {
 	useMessengerContext,
 	useThemeColor,
 } from '@berty-tech/store'
-import { useStyles } from '@berty-tech/styles'
-import { ScreenFC, useNavigation } from '@berty-tech/navigation'
-import * as middleware from '@berty-tech/grpc-bridge/middleware'
-import beapi from '@berty-tech/api'
-import { bridge as rpcBridge } from '@berty-tech/grpc-bridge/rpc'
-import { Service } from '@berty-tech/grpc-bridge'
-import GoBridge from '@berty-tech/go-bridge'
 import messengerMethodsHooks from '@berty-tech/store/methods'
-import { languages } from '@berty-tech/berty-i18n/locale/languages'
-import i18n from '@berty-tech/berty-i18n'
-import { setAccountLanguage } from '@berty-tech/redux/reducers/accountSettings.reducer'
-import {
-	useAllConversations,
-	useAllInteractions,
-	useAppDispatch,
-	useAppSelector,
-	useContactsDict,
-	useConversationsDict,
-	useAccount,
-} from '@berty-tech/react-redux'
+import { useStyles } from '@berty-tech/styles'
 
+import { showNeedRestartNotification } from '../helpers'
+import { DropDownPicker, Item } from '../shared-components/DropDownPicker'
 import {
 	ButtonSetting,
 	ButtonSettingItem,
 	ButtonSettingRow,
 	StringOptionInput,
 } from '../shared-components/SettingsButtons'
-import { showNeedRestartNotification } from '../helpers'
-import { DropDownPicker, Item } from '../shared-components/DropDownPicker'
-import { useSelector } from 'react-redux'
-import { selectEmbedded } from '@berty-tech/redux/reducers/ui.reducer'
 
 //
 // DevTools

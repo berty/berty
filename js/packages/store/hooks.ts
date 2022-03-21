@@ -1,22 +1,10 @@
 import React, { EffectCallback, useEffect } from 'react'
+
 import { useNavigation } from '@react-navigation/native'
+import { useSelector } from 'react-redux'
 
 import beapi from '@berty-tech/api'
-import colors from '@berty-tech/styles/colors.json'
-import darkTheme from '@berty-tech/styles/darktheme-default.json'
 import { useAllConversations, useAllContacts, useConversation } from '@berty-tech/react-redux'
-import { useStyles } from '@berty-tech/styles'
-
-import { useMessengerContext } from './context'
-import {
-	MessengerActions,
-	NotificationsInhibitor,
-	PersistentOptionsKeys,
-	UpdatesProfileNotification,
-} from './types'
-import { fakeContacts, fakeMultiMemberConversations } from './faker'
-import { ParsedInteraction } from './types.gen'
-import { useSelector } from 'react-redux'
 import {
 	selectThemeCollection,
 	selectThemeIsDark,
@@ -28,6 +16,19 @@ import {
 	selectAppState,
 	selectClient,
 } from '@berty-tech/redux/reducers/ui.reducer'
+import { useStyles } from '@berty-tech/styles'
+import colors from '@berty-tech/styles/colors.json'
+import darkTheme from '@berty-tech/styles/darktheme-default.json'
+
+import { useMessengerContext } from './context'
+import { fakeContacts, fakeMultiMemberConversations } from './faker'
+import {
+	MessengerActions,
+	NotificationsInhibitor,
+	PersistentOptionsKeys,
+	UpdatesProfileNotification,
+} from './types'
+import { ParsedInteraction } from './types.gen'
 
 export type Maybe<T> = T | null | undefined
 

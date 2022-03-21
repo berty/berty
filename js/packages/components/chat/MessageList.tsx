@@ -1,4 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
+
+import moment from 'moment'
 import {
 	ActivityIndicator,
 	ActivityIndicatorProps,
@@ -6,9 +8,13 @@ import {
 	ListRenderItem,
 	View,
 } from 'react-native'
-import moment from 'moment'
 
-import { useStyles } from '@berty-tech/styles'
+import beapi from '@berty-tech/api'
+import {
+	useConversationInteractions,
+	useConversationMembersDict,
+	useConversation,
+} from '@berty-tech/react-redux'
 import {
 	fetchMore,
 	pbDateToNum,
@@ -16,17 +22,12 @@ import {
 	useMessengerClient,
 	useThemeColor,
 } from '@berty-tech/store'
-import beapi from '@berty-tech/api'
-import {
-	useConversationInteractions,
-	useConversationMembersDict,
-	useConversation,
-} from '@berty-tech/react-redux'
+import { useStyles } from '@berty-tech/styles'
 
 import { InfosChat } from '../InfosChat'
-import { Message } from './message'
 import { ChatDate, updateStickyDate } from './common'
 import { InfosMultiMember } from './InfosMultiMember'
+import { Message } from './message'
 
 const CenteredActivityIndicator: React.FC<ActivityIndicatorProps> = React.memo(props => {
 	const { ...propsToPass } = props

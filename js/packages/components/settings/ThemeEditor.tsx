@@ -1,21 +1,16 @@
 import React from 'react'
-import { useTranslation } from 'react-i18next'
-import { Layout } from '@ui-kitten/components'
-import { Platform, ScrollView, StatusBar, View } from 'react-native'
-import RNFS from 'react-native-fs'
-import Share from 'react-native-share'
+
 import getPath from '@flyerhq/react-native-android-uri-path'
-import { withInAppNotification } from 'react-native-in-app-notification'
+import { Layout } from '@ui-kitten/components'
+import { useTranslation } from 'react-i18next'
+import { Platform, ScrollView, StatusBar, View } from 'react-native'
 import DocumentPicker from 'react-native-document-picker'
-
-import { useStyles } from '@berty-tech/styles'
-import { useThemeColor, createAndSaveFile } from '@berty-tech/store'
-import { ScreenFC } from '@berty-tech/navigation'
-
-import { ButtonSetting } from '../shared-components'
-import { DropDownPicker } from '../shared-components/DropDownPicker'
-import ThemeColorName from '../modals/ThemeColorName'
+import RNFS from 'react-native-fs'
+import { withInAppNotification } from 'react-native-in-app-notification'
+import Share from 'react-native-share'
 import { useDispatch, useSelector } from 'react-redux'
+
+import { ScreenFC } from '@berty-tech/navigation'
 import {
 	deleteAddedThemes,
 	importTheme,
@@ -25,6 +20,12 @@ import {
 	selectThemeSelected,
 	setTheme,
 } from '@berty-tech/redux/reducers/theme.reducer'
+import { useThemeColor, createAndSaveFile } from '@berty-tech/store'
+import { useStyles } from '@berty-tech/styles'
+
+import ThemeColorName from '../modals/ThemeColorName'
+import { ButtonSetting } from '../shared-components'
+import { DropDownPicker } from '../shared-components/DropDownPicker'
 
 const openThemeColorFile = async () => {
 	try {

@@ -1,13 +1,15 @@
 import React, { useMemo } from 'react'
-import { NativeSyntheticEvent, TextInputSelectionChangeEventData, View } from 'react-native'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import ImagePicker from 'react-native-image-crop-picker'
-import { RESULTS } from 'react-native-permissions'
+
 import Long from 'long'
 import { useTranslation } from 'react-i18next'
+import { NativeSyntheticEvent, TextInputSelectionChangeEventData, View } from 'react-native'
+import ImagePicker from 'react-native-image-crop-picker'
+import { RESULTS } from 'react-native-permissions'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
-import { Maybe, useMessengerClient, useMessengerContext, useThemeColor } from '@berty-tech/store'
-import { useStyles } from '@berty-tech/styles'
+import beapi from '@berty-tech/api'
+import { useNavigation } from '@berty-tech/navigation'
+import { useAppDispatch, useAppSelector, useMedias, useConversation } from '@berty-tech/react-redux'
 import {
 	removeActiveReplyInteraction,
 	resetChatInput,
@@ -16,10 +18,6 @@ import {
 	selectChatInputText,
 	setChatInputText,
 } from '@berty-tech/redux/reducers/chatInputs.reducer'
-import beapi from '@berty-tech/api'
-import { useNavigation } from '@berty-tech/navigation'
-import rnutil from '@berty-tech/rnutil'
-import { useAppDispatch, useAppSelector, useMedias, useConversation } from '@berty-tech/react-redux'
 import {
 	selectChatInputIsFocused,
 	selectChatInputIsSending,
@@ -27,13 +25,16 @@ import {
 	setChatInputIsSending,
 	setChatInputSelection,
 } from '@berty-tech/redux/reducers/chatInputsVolatile.reducer'
+import rnutil from '@berty-tech/rnutil'
+import { Maybe, useMessengerClient, useMessengerContext, useThemeColor } from '@berty-tech/store'
+import { useStyles } from '@berty-tech/styles'
 
+import { useModal } from '../../providers/modal.provider'
+import { AddFileMenu } from '../modals/add-file-modal/AddFileMenu.modal'
 import { CameraButton, MoreButton, RecordButton, SendButton } from './ChatFooterButtons'
 import { ChatTextInput } from './ChatTextInput'
-import { RecordComponent } from './record/RecordComponent'
-import { AddFileMenu } from '../modals/add-file-modal/AddFileMenu.modal'
 import { EmojiBanner } from './emojis/EmojiBanner'
-import { useModal } from '../../providers/modal.provider'
+import { RecordComponent } from './record/RecordComponent'
 
 export type ChatFooterProps = {
 	convPK: string

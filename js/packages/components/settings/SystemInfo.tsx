@@ -1,12 +1,13 @@
 import React from 'react'
-import { View, ScrollView, ActivityIndicator, TouchableOpacity } from 'react-native'
+
 import { Layout, Text, Icon } from '@ui-kitten/components'
+import { View, ScrollView, ActivityIndicator, TouchableOpacity } from 'react-native'
 
 import beapi from '@berty-tech/api'
-import { useStyles } from '@berty-tech/styles'
 import { ScreenFC } from '@berty-tech/navigation'
-import messengerMethodsHooks from '@berty-tech/store/methods'
 import { useMountEffect, useThemeColor, accountService } from '@berty-tech/store'
+import messengerMethodsHooks from '@berty-tech/store/methods'
+import { useStyles } from '@berty-tech/styles'
 
 export const SystemInfo: ScreenFC<'Settings.SystemInfo'> = ({ navigation }) => {
 	const [{ padding }, { scaleSize }] = useStyles()

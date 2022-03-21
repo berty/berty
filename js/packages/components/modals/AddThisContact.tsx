@@ -1,20 +1,22 @@
 import React, { useState } from 'react'
-import { View, TouchableOpacity, TextInput, Text as TextNative } from 'react-native'
+
 import { Buffer } from 'buffer'
+
 import { CommonActions } from '@react-navigation/native'
 import { Text, Icon } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
+import { View, TouchableOpacity, TextInput, Text as TextNative } from 'react-native'
 
-import { useStyles } from '@berty-tech/styles'
-import messengerMethodsHooks from '@berty-tech/store/methods'
-import { useMessengerContext, useThemeColor } from '@berty-tech/store'
-import { dispatch as navDispatch } from '@berty-tech/navigation/rootRef'
 import { useNavigation } from '@berty-tech/navigation'
+import { dispatch as navDispatch } from '@berty-tech/navigation/rootRef'
 import { useAppDispatch, useContactConversation } from '@berty-tech/react-redux'
+import { useMessengerContext, useThemeColor } from '@berty-tech/store'
+import messengerMethodsHooks from '@berty-tech/store/methods'
+import { useStyles } from '@berty-tech/styles'
 
 import { ContactAvatar } from '../avatars'
-import { TabBar } from '../shared-components/TabBar'
 import { FingerprintContent } from '../shared-components/FingerprintContent'
+import { TabBar } from '../shared-components/TabBar'
 import InvalidScan from './InvalidScan'
 
 const useStylesModal = () => {

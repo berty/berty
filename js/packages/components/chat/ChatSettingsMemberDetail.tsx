@@ -1,16 +1,17 @@
 import React, { ComponentProps } from 'react'
-import { View, ScrollView, StatusBar } from 'react-native'
+
 import { Layout } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
+import { View, ScrollView, StatusBar } from 'react-native'
 
-import { useStyles } from '@berty-tech/styles'
-import { ScreenFC } from '@berty-tech/navigation'
-import { Maybe, useThemeColor } from '@berty-tech/store'
-import { useMember } from '@berty-tech/react-redux'
-
-import { FactionButtonSetting } from '../shared-components/SettingsButtons'
-import { MemberAvatar } from '../avatars'
 import UserDevicesList from '@berty-tech/components/chat/DeviceList'
+import { ScreenFC } from '@berty-tech/navigation'
+import { useMember } from '@berty-tech/react-redux'
+import { Maybe, useThemeColor } from '@berty-tech/store'
+import { useStyles } from '@berty-tech/styles'
+
+import { MemberAvatar } from '../avatars'
+import { FactionButtonSetting } from '../shared-components/SettingsButtons'
 
 const ChatSettingsMemberDetailHeader: React.FC<{
 	convId: Maybe<string>

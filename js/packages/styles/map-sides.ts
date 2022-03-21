@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import Case from 'case'
-import { StyleSheet } from 'react-native'
 import mem from 'mem'
+import { StyleSheet } from 'react-native'
 
-import { SizesDeclaration, ScaleSizes } from './types'
 import { initialScaleSize } from './constant'
+import { SizesDeclaration, ScaleSizes } from './types'
 
 export const mapSideSize = (type: string, side: string, value: number): any => ({
 	[Case.camel(`${type}_${side}`)]: value,

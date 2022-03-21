@@ -111,6 +111,7 @@
     "babel-plugin-transform-remove-console": "^6.9.4",
     "eslint": "^7.14.0",
     "eslint-config-react-app": "^7.0.0",
+    "eslint-plugin-import": "^2.25.4",
     "jest": "^27.4.5",
     "metro-config": "^0.66.2",
     "metro-react-native-babel-preset": "^0.66.2",

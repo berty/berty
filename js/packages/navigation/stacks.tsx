@@ -1,22 +1,23 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { Linking } from 'react-native'
-import { useTranslation } from 'react-i18next'
+
+import { CommonActions, NavigationProp, useNavigation } from '@react-navigation/native'
 import {
 	createNativeStackNavigator,
 	NativeStackNavigationOptions,
 } from '@react-navigation/native-stack'
-import { CommonActions, NavigationProp, useNavigation } from '@react-navigation/native'
 import { Icon } from '@ui-kitten/components'
 import mapValues from 'lodash/mapValues'
+import { useTranslation } from 'react-i18next'
+import { Linking } from 'react-native'
+import { useSelector } from 'react-redux'
 
 import * as RawComponents from '@berty-tech/components'
+import { MESSENGER_APP_STATE, selectAppState } from '@berty-tech/redux/reducers/ui.reducer'
 import { useMessengerContext, useThemeColor } from '@berty-tech/store'
 import { useStyles } from '@berty-tech/styles'
 
 import { dispatch } from './rootRef'
 import { ScreensParams } from './types'
-import { useSelector } from 'react-redux'
-import { MESSENGER_APP_STATE, selectAppState } from '@berty-tech/redux/reducers/ui.reducer'
 
 export const CustomTitleStyle: () => any = () => {
 	const [{ text }] = useStyles()
