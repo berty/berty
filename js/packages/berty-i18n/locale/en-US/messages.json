@@ -48,31 +48,31 @@
 				"modals": {
 					"add": {
 						"title": {
-							"relay": "",
-							"bootstrap": "",
-							"rdvp": ""
+							"relay": "Add a relay node (TURN)",
+							"bootstrap": "Add a bootstrap node",
+							"rdvp": "Add a RDVP node"
 						}
 					},
 					"edit": {
 						"title": {
-							"relay": "",
-							"bootstrap": "",
-							"rdvp": ""
+							"relay": "Edit a relay node (TURN)",
+							"bootstrap": "Edit a bootstrap node",
+							"rdvp": "Edit a RDVP node"
 						}
 					},
 					"errors": {
-						"alias-already-exists": "",
-						"multiaddr-alread-exists": "",
-						"multiaddr-bad-format": "",
-						"multiaddr-p2p": ""
+						"alias-already-exists": "Alias already exists",
+						"multiaddr-alread-exists": "Multiaddress already exists",
+						"multiaddr-bad-format": "Bad format of multiaddress",
+						"multiaddr-p2p": "The multiaddress should contain a p2p"
 					},
 					"buttons": {
-						"add": "",
-						"edit": "",
-						"delete": ""
+						"add": "Add",
+						"edit": "Edit",
+						"delete": "Delete"
 					},
-					"multiaddress": "",
-					"alias": ""
+					"multiaddress": "Multiaddress",
+					"alias": "Alias"
 				},
 				"all-button": "All",
 				"accept-button": "Let's go"
