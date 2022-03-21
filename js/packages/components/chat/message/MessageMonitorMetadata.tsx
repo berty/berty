@@ -52,9 +52,9 @@ export const MessageMonitorMetadata: React.FC<{ inte: InteractionMonitorMetadata
 			break
 		case eventMonitorTypes.TypeEventMonitorPeerLeave:
 			if (me.peerLeave?.isSelf) {
-				monitorPayloadTitle = 'you just leaved this group'
+				monitorPayloadTitle = 'you just left this group'
 			} else {
-				monitorPayloadTitle = `peer leaved ${me.peerLeave?.peerId?.substr(
+				monitorPayloadTitle = `peer left ${me.peerLeave?.peerId?.substr(
 					me.peerLeave.peerId.length - 10,
 				)}`
 			}
