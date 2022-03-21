@@ -587,6 +587,20 @@ func (m *Manager) configIPFSRouting(h host.Host, r p2p_routing.Routing) error {
 	// configure tinder drivers
 	var drivers []*tinder.Driver
 
+	// localdiscovery driver
+	// {
+	// 	localDiscovery := tinder.NewLocalDiscovery(logger, h, rng)
+
+	// 	filter := tinder.PublicAddrsOnly
+	// 	if m.Node.Protocol.DisableDiscoverFilterAddrs {
+	// 		filter = tinder.NoFilter
+	// 	}
+
+	// 	drivers = append(drivers,
+	// 		tinder.NewDriverFromUnregisterDiscovery("localdiscovery", localDiscovery, filter))
+	// 	drivers = append(drivers)
+	// }
+
 	// rdvp driver
 	if m.Node.Protocol.TinderRDVPDriver {
 		rdvpfilter := tinder.PublicAddrsOnly

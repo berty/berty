@@ -67,7 +67,7 @@ var _ UnregisterDiscovery = (*localDiscovery)(nil)
 
 func NewLocalDiscovery(logger *zap.Logger, host host.Host, rng *mrand.Rand) UnregisterDiscovery {
 	ld := &localDiscovery{
-		logger:    logger.Named("tinder/localDiscovery"),
+		logger:    logger.Named("localDiscovery"),
 		host:      host,
 		rng:       rng,
 		peerCache: make(map[string]*pCache),
