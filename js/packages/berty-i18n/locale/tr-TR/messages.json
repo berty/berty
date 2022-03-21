@@ -559,8 +559,8 @@
 					"action-cancel": "İptal"
 				},
 				"status": {
-					"datastore-found": "",
-					"datastore-not-found": "",
+					"datastore-found": "Veri deposu bulundu",
+					"datastore-not-found": "Veri deposu bulunamadı",
 					"ipfs-repo-found": "",
 					"ipfs-repo-not-found": "",
 					"messenger-db-found": "Haberci DB bulundu",
