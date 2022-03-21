@@ -18,10 +18,13 @@ import messengerRootReducer from './reducers/messenger.reducer'
 import networkConfigReducer, {
 	sliceName as networkConfigSliceName,
 } from './reducers/networkConfig.reducer'
+import createMigrate from 'redux-persist/lib/createMigrate'
+import { reduxPersistMigrations } from './migrations'
 
 const persistConfig = {
 	key: 'persistStore',
 	storage: persistStorage,
+	version: 0,
 	whitelist: [
 		newGroupSliceName,
 		chatInputsSliceName,
@@ -29,6 +32,7 @@ const persistConfig = {
 		themeSliceName,
 		networkConfigSliceName,
 	],
+	migrate: createMigrate(reduxPersistMigrations, { debug: true }),
 }
 
 const rootReducer = combineReducers({

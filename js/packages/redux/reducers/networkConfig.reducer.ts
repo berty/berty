@@ -29,7 +29,7 @@ export type NetworkConfigState = {
 	staticRelay: ConfigListType[]
 }
 
-const initialNode = [
+export const initialNode = [
 	{
 		url: ':default:',
 		alias: 'Berty Default',

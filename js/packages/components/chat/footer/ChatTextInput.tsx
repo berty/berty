@@ -14,7 +14,7 @@ import {
 
 import { getMediaTypeFromMedias } from '../../utils'
 
-export const ReplyMessageBar: React.FC = () => {
+export const ReplyMessageBar: React.FC<{ convPK: string }> = ({ convPK }) => {
 	const [{ border, text }] = useStyles()
 	const colors = useThemeColor()
 	const { t } = useTranslation()

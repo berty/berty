@@ -9,7 +9,6 @@ import { ScreenFC, useNavigation } from '@berty-tech/navigation'
 import { accountService, useMessengerContext, useThemeColor } from '@berty-tech/store'
 import { withInAppNotification } from '@berty-tech/polyfill/react-native-in-app-notification'
 
-import { ButtonSettingV2, Section } from '../shared-components'
 import { selectSelectedAccount } from '@berty-tech/redux/reducers/ui.reducer'
 import { useDispatch, useSelector } from 'react-redux'
 import { IOSOnlyKeyboardAvoidingView } from '@berty-tech/rnutil/keyboardAvoiding'

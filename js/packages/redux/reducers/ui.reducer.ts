@@ -338,7 +338,7 @@ const slice = createSlice({
 		setCreatedAccount(state: UiState, { payload }: PayloadAction<{ accountId: string | null }>) {
 			state.nextSelectedAccount = payload?.accountId
 			state.appState = MESSENGER_APP_STATE.OPENING_WAITING_FOR_CLIENTS
-			setStateClosedFn(state)
+			// setStateClosedFn(state)
 		},
 		setStateStreamInProgress(state: UiState, { payload }: PayloadAction<StreamInProgress | null>) {
 			state.streamInProgress = payload
