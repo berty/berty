@@ -93,22 +93,23 @@ type Manager struct {
 	Node struct {
 		Preset   string `json:"preset"`
 		Protocol struct {
-			SwarmListeners    string `json:"SwarmListeners,omitempty"`
-			IPFSAPIListeners  string `json:"IPFSAPIListeners,omitempty"`
-			IPFSWebUIListener string `json:"IPFSWebUIListener,omitempty"`
-			Announce          string `json:"Announce,omitempty"`
-			Bootstrap         string `json:"Bootstrap,omitempty"`
-			DHT               string `json:"DHT,omitempty"`
-			DHTRandomWalk     bool   `json:"DHTRandomWalk,omitempty"`
-			NoAnnounce        string `json:"NoAnnounce,omitempty"`
-			TinderDiscover    bool   `json:"TinderDiscover,omitempty"`
-			TinderDHTDriver   bool   `json:"TinderDHTDriver,omitempty"`
-			TinderRDVPDriver  bool   `json:"TinderRDVPDriver,omitempty"`
-			AutoRelay         bool   `json:"Relay,omitempty"`
-			StaticRelays      string `json:"StaticRelays,omitempty"`
-			LowWatermark      int    `json:"LowWatermark,omitempty"`
-			HighWatermark     int    `json:"HighWatermark,omitempty"`
-			MDNS              struct {
+			SwarmListeners             string `json:"SwarmListeners,omitempty"`
+			IPFSAPIListeners           string `json:"IPFSAPIListeners,omitempty"`
+			IPFSWebUIListener          string `json:"IPFSWebUIListener,omitempty"`
+			Announce                   string `json:"Announce,omitempty"`
+			Bootstrap                  string `json:"Bootstrap,omitempty"`
+			DHT                        string `json:"DHT,omitempty"`
+			DHTRandomWalk              bool   `json:"DHTRandomWalk,omitempty"`
+			NoAnnounce                 string `json:"NoAnnounce,omitempty"`
+			TinderDiscover             bool   `json:"TinderDiscover,omitempty"`
+			TinderDHTDriver            bool   `json:"TinderDHTDriver,omitempty"`
+			TinderRDVPDriver           bool   `json:"TinderRDVPDriver,omitempty"`
+			TinderLocalDiscoveryDriver bool   `json:"TinderLocalDiscoveryDriver,omitempty"`
+			AutoRelay                  bool   `json:"Relay,omitempty"`
+			StaticRelays               string `json:"StaticRelays,omitempty"`
+			LowWatermark               int    `json:"LowWatermark,omitempty"`
+			HighWatermark              int    `json:"HighWatermark,omitempty"`
+			MDNS                       struct {
 				Enable       bool `json:"Enable,omitempty"`
 				DriverLocker sync.Locker
 				NetAddrs     ipfsutil.NetAddrs

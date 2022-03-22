@@ -24,6 +24,8 @@ import (
 	msmux "github.com/multiformats/go-multistream"
 	"go.uber.org/zap"
 
+	nearby "berty.tech/berty/v2/go/internal/androidnearby"
+	ble "berty.tech/berty/v2/go/internal/ble-driver"
 	"berty.tech/berty/v2/go/internal/logutil"
 	mc "berty.tech/berty/v2/go/internal/multipeer-connectivity-driver"
 )
@@ -287,7 +289,7 @@ func (ld *localDiscovery) Connected(net network.Network, c network.Conn) {
 	ctx := context.Background() // FIXME: since go-libp2p-core@0.8.0 adds support for passed context on new call, we should think if we have a better context to pass here
 	go func() {
 		// addrfactory in tinder
-		if manet.IsPrivateAddr(c.RemoteMultiaddr()) || mafmt.Base(mc.ProtocolCode).Matches(c.RemoteMultiaddr()) {
+		if manet.IsPrivateAddr(c.RemoteMultiaddr()) || mafmt.Base(ble.ProtocolCode).Matches(c.RemoteMultiaddr()) || mafmt.Base(mc.ProtocolCode).Matches(c.RemoteMultiaddr()) || mafmt.Base(nearby.ProtocolCode).Matches(c.RemoteMultiaddr()) {
 			if err := ld.sendLocalRecord(ctx, c); err != nil {
 				return
 			}
