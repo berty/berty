@@ -216,7 +216,6 @@ export const MultiMember: ScreenFC<'Chat.Group'> = ({ route: { params }, navigat
 					</>
 				)}
 			</View>
-			)
 		</IOSOnlyKeyboardAvoidingView>
 	)
 }
