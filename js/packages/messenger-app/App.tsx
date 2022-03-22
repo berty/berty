@@ -21,6 +21,7 @@ import reduxStore from '@berty-tech/redux/store'
 
 import { FeatherIconsPack } from './feather-icons'
 import { CustomIconsPack } from './custom-icons'
+import { ModalProvider } from '@berty-tech/components/providers/modal.provider'
 
 const BootSplashInhibitor: React.FC = () => {
 	useMountEffect(() => {
@@ -62,7 +63,9 @@ export const App: React.FC = () => {
 											<StreamGate>
 												<ListGate>
 													<MusicPlayerProvider>
-														<Navigation />
+														<ModalProvider>
+															<Navigation />
+														</ModalProvider>
 													</MusicPlayerProvider>
 												</ListGate>
 											</StreamGate>
