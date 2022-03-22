@@ -286,6 +286,7 @@ func (ld *localDiscovery) ListenClose(network.Network, ma.Multiaddr) {}
 func (ld *localDiscovery) Connected(net network.Network, c network.Conn) {
 	ctx := context.Background() // FIXME: since go-libp2p-core@0.8.0 adds support for passed context on new call, we should think if we have a better context to pass here
 	go func() {
+		// addrfactory in tinder
 		if manet.IsPrivateAddr(c.RemoteMultiaddr()) || mafmt.Base(mc.ProtocolCode).Matches(c.RemoteMultiaddr()) {
 			if err := ld.sendLocalRecord(ctx, c); err != nil {
 				return
