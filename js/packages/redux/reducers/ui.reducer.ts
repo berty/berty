@@ -167,15 +167,23 @@ const setStateOpeningFn = (state: UiState) => {
 }
 
 const setStateClosedFn = (state: UiState) => {
-	state.accounts = state.accounts
-	state.embedded = state.embedded
-	state.daemonAddress = state.daemonAddress
-	changeAppState(state, MESSENGER_APP_STATE.CLOSED)
+	Object.keys(initialState).map(k => {
+		if (['accounts', 'embedded', 'daemonAddress', 'nextSelectedAccount'].indexOf(k) !== -1) {
+			return
+		}
+
+		// @ts-ignore
+		state[k] = initialState[k]
+	})
+
 	state.nextSelectedAccount = state.embedded ? state.nextSelectedAccount : '0'
 
 	if (state.nextSelectedAccount !== null) {
 		setStateOpeningFn(state)
+		return
 	}
+
+	changeAppState(state, MESSENGER_APP_STATE.CLOSED)
 }
 
 const changeAppState = (
@@ -281,7 +289,7 @@ const slice = createSlice({
 		setCreatedAccount(state: UiState, { payload }: PayloadAction<{ accountId: string | null }>) {
 			state.nextSelectedAccount = payload?.accountId
 			state.appState = MESSENGER_APP_STATE.OPENING_WAITING_FOR_CLIENTS
-			// setStateClosedFn(state)
+			setStateClosedFn(state)
 		},
 		setStateStreamInProgress(state: UiState, { payload }: PayloadAction<StreamInProgress | null>) {
 			state.streamInProgress = payload
