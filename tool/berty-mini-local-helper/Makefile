@@ -14,6 +14,10 @@ tail:
 	@touch $(TMPDIR)/berty-mini-$(ID).log
 	tail -f $(TMPDIR)/berty-mini-$(ID).log
 
+log-path:
+	@realpath $(TMPDIR)/berty-mini-$(ID).log
+
+
 .PHONY: log-stats
 log-stats:
 	@touch $(TMPDIR)/berty-mini-$(ID).log

@@ -11,6 +11,7 @@ type tinderOption string
 const (
 	optionKeepContext  tinderOption = "keepctx"
 	optionFilterDriver tinderOption = "filterdriver"
+	optionWithDeadline tinderOption = "filterdriver"
 )
 
 func WatchdogDiscoverKeepContextOption(opts *p2p_discovery.Options) error {

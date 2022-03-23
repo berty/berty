@@ -150,6 +150,8 @@
     - [MultiMemberGroupLeave.Reply](#berty.protocol.v1.MultiMemberGroupLeave.Reply)
     - [MultiMemberGroupLeave.Request](#berty.protocol.v1.MultiMemberGroupLeave.Request)
     - [MultiMemberInitialMember](#berty.protocol.v1.MultiMemberInitialMember)
+    - [OrbitDBMessageHeads](#berty.protocol.v1.OrbitDBMessageHeads)
+    - [OrbitDBMessageHeads.Box](#berty.protocol.v1.OrbitDBMessageHeads.Box)
     - [OutOfStoreMessage](#berty.protocol.v1.OutOfStoreMessage)
     - [PeerList](#berty.protocol.v1.PeerList)
     - [PeerList.Peer](#berty.protocol.v1.PeerList.Peer)
@@ -1329,6 +1331,25 @@ MultiMemberInitialMember indicates that a member is the group creator, this even
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | member_pk | [bytes](#bytes) |  | member_pk is the public key of the member who is the group creator |
+
+<a name="berty.protocol.v1.OrbitDBMessageHeads"></a>
+
+### OrbitDBMessageHeads
+OrbitDBMessageHeads is the payload sent on orbitdb to share peer&#39;s heads
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| sealed_box | [bytes](#bytes) |  | sealed box should contain encrypted Box |
+| raw_rotation | [bytes](#bytes) |  | current topic used |
+
+<a name="berty.protocol.v1.OrbitDBMessageHeads.Box"></a>
+
+### OrbitDBMessageHeads.Box
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| address | [string](#string) |  |  |
+| heads | [bytes](#bytes) |  |  |
 
 <a name="berty.protocol.v1.OutOfStoreMessage"></a>
 

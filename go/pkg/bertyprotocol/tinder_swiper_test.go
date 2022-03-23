@@ -12,6 +12,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"berty.tech/berty/v2/go/internal/ipfsutil"
+	"berty.tech/berty/v2/go/internal/rendezvous"
 	"berty.tech/berty/v2/go/internal/testutil"
 )
 
@@ -73,8 +74,11 @@ func TestAnnounceWatchForPeriod(t *testing.T) {
 			err = mn.ConnectAllButSelf()
 			require.NoError(t, err)
 
-			swiperA := NewSwiper(opts.Logger, apiA.Tinder(), time.Hour)
-			swiperB := NewSwiper(opts.Logger, apiB.Tinder(), time.Hour)
+			rpA := rendezvous.NewRotationPoint(time.Hour)
+			rpB := rendezvous.NewRotationPoint(time.Hour)
+
+			swiperA := NewSwiper(opts.Logger, apiA.Tinder(), rpA)
+			swiperB := NewSwiper(opts.Logger, apiB.Tinder(), rpB)
 
 			swiperA.Announce(ctx, tc.topicA, tc.seedA)
 
@@ -85,6 +89,7 @@ func TestAnnounceWatchForPeriod(t *testing.T) {
 			go swiperB.WatchTopic(ctx, tc.topicB, tc.seedB, ch, doneFn)
 
 			var foundPeers int
+		loop:
 			for foundPeers = 0; foundPeers < tc.expectedPeersFound; foundPeers++ {
 				select {
 				case <-ctx.Done():
