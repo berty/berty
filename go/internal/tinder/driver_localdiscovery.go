@@ -1,13 +1,11 @@
 package tinder
 
-// localdiscovery isn't use for now since most of the job is done by pubsub,
-// keep it here in case we need it
-
 import (
+	"container/list"
 	"context"
-	"errors"
-	"io"
-	"math"
+	"encoding/hex"
+	"fmt"
+	"math/rand"
 	mrand "math/rand"
 	"sync"
 	"time"
@@ -17,11 +15,9 @@ import (
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-libp2p-core/peer"
-	"github.com/libp2p/go-libp2p-core/protocol"
+	protocol "github.com/libp2p/go-libp2p-core/protocol"
 	ma "github.com/multiformats/go-multiaddr"
-	mafmt "github.com/multiformats/go-multiaddr-fmt"
 	manet "github.com/multiformats/go-multiaddr/net"
-	msmux "github.com/multiformats/go-multistream"
 	"go.uber.org/zap"
 
 	nearby "berty.tech/berty/v2/go/internal/androidnearby"
@@ -35,372 +31,336 @@ const recProtocolID = protocol.ID("berty/p2p/localrecord")
 // LocalDiscoveryName is the name of the localdiscovery driver
 const LocalDiscoveryName = "localdiscovery"
 
-type localDiscovery struct {
-	logger       *zap.Logger
-	host         host.Host
-	peerCache    map[string]*pCache
-	peerCacheMux sync.RWMutex
-	rng          *mrand.Rand
-	rngMux       sync.Mutex
+const (
+	minTTL   = 7200 * time.Second
+	maxLimit = 1000
+)
+
+type LocalDiscovery struct {
+	h      host.Host
+	logger *zap.Logger
+
+	rootctx context.Context
+
+	recs   map[string]time.Time
+	muRecs sync.RWMutex
+
+	cache    map[string]*linkedCache
+	muCaches sync.Mutex
 }
 
-type pCache struct {
-	recs map[peer.ID]*pRecord
-	mux  sync.RWMutex
+type linkedCache struct {
+	sync.Locker
+	watcher int
+	peers   map[peer.ID]*peer.AddrInfo
+	queue   *list.List
+	cond    *sync.Cond
 }
 
-type pRecord struct {
-	peer   peer.AddrInfo
-	expire int64
+type recCache struct {
+	topic  string
+	peer   *peer.AddrInfo
+	expire time.Time
 }
 
-type StreamWrapper struct {
-	network.Stream
-	io.ReadWriter
+func newLinkedCache() *linkedCache {
+	locker := sync.Mutex{}
+	return &linkedCache{
+		queue:  list.New(),
+		Locker: &locker,
+		cond:   sync.NewCond(&locker),
+	}
 }
-
-// LocalDiscovery is a discovery.Discovery
-// https://github.com/libp2p/go-libp2p-core/blob/master/discovery/discovery.go
-var _ discovery.Discovery = (*localDiscovery)(nil)
-
-// LocalDiscovery is a network.Notifiee
-// https://github.com/libp2p/go-libp2p-core/blob/master/network/notifee.go
-var _ network.Notifiee = (*localDiscovery)(nil)
-
-// LocalDiscovery is a Driver
-var _ UnregisterDiscovery = (*localDiscovery)(nil)
 
 func NewLocalDiscovery(logger *zap.Logger, host host.Host, rng *mrand.Rand) UnregisterDiscovery {
-	ld := &localDiscovery{
-		logger:    logger.Named("localDiscovery"),
-		host:      host,
-		rng:       rng,
-		peerCache: make(map[string]*pCache),
+	ld := &LocalDiscovery{
+		logger: logger.Named("localdisc"),
+		h:      host,
+		recs:   make(map[string]time.Time),
+		cache:  make(map[string]*linkedCache),
 	}
-	host.Network().Notify(ld)
+
 	host.SetStreamHandler(recProtocolID, ld.handleStream)
+	host.Network().Notify(ld)
 	return ld
 }
 
-func (ld *localDiscovery) getCache(cid string) (c *pCache, ok bool) {
-	ld.peerCacheMux.RLock()
-	c, ok = ld.peerCache[cid]
-	ld.peerCacheMux.RUnlock()
-	return
-}
-
-// Delete expired entries of a CID in the peer cache
-func (ld *localDiscovery) cleanPeerCache(cid string) {
-	currentTime := time.Now().Unix()
-
-	_, ok := ld.getCache(cid)
-	if ok {
-		ld.peerCacheMux.Lock()
-		cache, ok := ld.peerCache[cid]
-		if ok {
-			cache.mux.Lock()
-			for p := range cache.recs {
-				expire := cache.recs[p].expire
-				if expire < currentTime {
-					delete(cache.recs, p)
-				}
-			}
-			cache.mux.Unlock()
-			if len(cache.recs) == 0 {
-				delete(ld.peerCache, cid)
-			}
-		}
-		ld.peerCacheMux.Unlock()
-	}
-}
-
-// Update the peer cache
-func (ld *localDiscovery) updatePeerCache(cid string, peerID peer.ID, addrInfo peer.AddrInfo, expire int64) {
-	cache, ok := ld.getCache(cid)
-	if !ok {
-		ld.peerCacheMux.Lock()
-		cache, ok = ld.peerCache[cid]
-		if !ok {
-			cache = &pCache{recs: make(map[peer.ID]*pRecord)}
-			ld.peerCache[cid] = cache
-		}
-		ld.peerCacheMux.Unlock()
-	}
-	cache.mux.Lock()
-	cache.recs[peerID] = &pRecord{peer: addrInfo, expire: expire}
-	cache.mux.Unlock()
-}
-
-// Return the cache size of a cid
-func (ld *localDiscovery) peerCacheLen(cid string) (size int) {
-	cache, ok := ld.getCache(cid)
-	if ok {
-		cache.mux.RLock()
-		size = len(cache.recs)
-		cache.mux.RUnlock()
-	}
-	return
-}
-
-// Delete an entry of the peer cache
-func (ld *localDiscovery) deletePeerCacheEntry(cid string, peerID peer.ID) error {
-	cache, ok := ld.getCache(cid)
-	if ok {
-		cache.mux.Lock()
-		_, ok := cache.recs[peerID]
-		if ok {
-			delete(cache.recs, peerID)
-		}
-		cache.mux.Unlock()
-		if len(cache.recs) == 0 {
-			ld.peerCacheMux.Lock()
-			delete(ld.peerCache, cid)
-			ld.peerCacheMux.Unlock()
-		}
-	} else {
-		ld.logger.Error("CID not found from the local peer cache")
-		return errors.New("delete failed: CID not found")
-	}
-	return nil
-}
-
-// Implementation of the discovery.Discovery interface
-func (ld *localDiscovery) Advertise(ctx context.Context, cid string, opts ...discovery.Option) (time.Duration, error) {
+func (ld *LocalDiscovery) Advertise(ctx context.Context, cid string, opts ...discovery.Option) (time.Duration, error) {
 	// Get options
 	var options discovery.Options
 	err := options.Apply(opts...)
 	if err != nil {
-		return 0, err
+		return minTTL, err
 	}
 
-	const maxLimit = 1000
 	limit := options.Limit
 	if limit == 0 || limit > maxLimit {
 		limit = maxLimit
 	}
 
 	ttl := options.Ttl
-	var ttlSeconds int
-
-	if ttl == 0 {
-		ttlSeconds = 7200
-	} else {
-		ttlSeconds = int(math.Round(ttl.Seconds()))
+	if ttl <= minTTL {
+		ttl = minTTL
 	}
 
-	// delete expired entries before adding a new entry
-	ld.cleanPeerCache(cid)
-	peerCacheLen := ld.peerCacheLen(cid)
-	// Discover new records if we don't have enough
-	if peerCacheLen < limit {
-		currentTime := time.Now().Unix()
-		expire := int64(ttlSeconds) + currentTime
-		ld.updatePeerCache(cid, ld.host.ID(), ld.host.Peerstore().PeerInfo(ld.host.ID()), expire)
-	} else {
-		ld.logger.Info("localDiscovery: Advertise limit reached")
+	expire := time.Now().Add(ttl)
+
+	ld.muRecs.Lock()
+	rec, isNew := ld.recs[cid]
+	if !isNew {
+		rec = expire
+		ld.recs[cid] = rec
+	}
+	ld.muRecs.Unlock()
+
+	ld.logger.Debug("advertise", zap.String("ns", hex.EncodeToString([]byte(cid))))
+
+	if isNew {
+		// if this cid is new, send it to already connected proximity peers
+		records := []*Record{{Cid: cid, Expire: expire.Unix()}}
+		ld.sendRecordsToProximityPeers(ctx, &Records{Records: records})
 	}
 
-	return time.Duration(ttlSeconds) * time.Second, nil
+	return ttl, nil
 }
 
-// Implementation of the discovery.Discovery interface
-// Looking for in the peer cache if there is any peer for that CID
-func (ld *localDiscovery) FindPeers(ctx context.Context, cid string, opts ...discovery.Option) (<-chan peer.AddrInfo, error) {
+func (ld *LocalDiscovery) FindPeers(ctx context.Context, cid string, opts ...discovery.Option) (<-chan peer.AddrInfo, error) {
+	ld.logger.Debug("starting find peers")
+
+	cpeer := make(chan peer.AddrInfo)
+
 	// Get options
 	var options discovery.Options
 	err := options.Apply(opts...)
 	if err != nil {
-		return nil, err
+		close(cpeer)
+		return cpeer, err
 	}
 
-	const maxLimit = 1000
 	limit := options.Limit
 	if limit == 0 || limit > maxLimit {
 		limit = maxLimit
 	}
 
-	// Get cached peers
-	cache, ok := ld.getCache(cid)
+	ld.muCaches.Lock()
+	cachelist, ok := ld.cache[cid]
 	if !ok {
-		// This CID is unknown, so return a empty chan
-		chPeer := make(chan peer.AddrInfo)
-		close(chPeer)
-		return chPeer, nil
+		cachelist = newLinkedCache()
+		ld.cache[cid] = cachelist
 	}
+	ld.muCaches.Unlock()
 
-	// Remove all expired entries from cache
-	ld.cleanPeerCache(cid)
-
-	cache.mux.Lock()
-	defer cache.mux.Unlock()
-
-	// Randomize and fill channel with available records
-	count := len(cache.recs)
-	if limit < count {
-		count = limit
-	}
-
-	chPeer := make(chan peer.AddrInfo, count)
-
-	ld.rngMux.Lock()
-	perm := ld.rng.Perm(len(cache.recs))[0:count]
-	ld.rngMux.Unlock()
-
-	permSet := make(map[int]int)
-	for i, v := range perm {
-		permSet[v] = i
-	}
-
-	sendLst := make([]*peer.AddrInfo, count)
-	iter := 0
-	for k := range cache.recs {
-		if sendIndex, ok := permSet[iter]; ok {
-			sendLst[sendIndex] = &cache.recs[k].peer
-		}
-		iter++
-	}
-
-	for _, send := range sendLst {
-		chPeer <- *send
-	}
-
-	close(chPeer)
-	return chPeer, err
-}
-
-// Implementation of the Driver interface
-// Remove the entry from the local peer cache
-func (ld *localDiscovery) Unregister(ctx context.Context, cid string) error {
-	err := ld.deletePeerCacheEntry(cid, ld.host.ID())
-	return err
-}
-
-// Implementation of the Driver interface
-func (*localDiscovery) Name() string { return "localDiscovery" }
-
-// Implementation of the network.Notifiee interface
-// Called when network starts listening on an addr
-func (ld *localDiscovery) Listen(network.Network, ma.Multiaddr) {}
-
-// Implementation of the network.Notifiee interface
-// Called when network stops listening on an addr
-func (ld *localDiscovery) ListenClose(network.Network, ma.Multiaddr) {}
-
-func isProximityProtocol(addr ma.Multiaddr) bool {
-	return mafmt.Base(ble.ProtocolCode).Matches(addr) || mafmt.Base(mc.ProtocolCode).Matches(addr) || mafmt.Base(nearby.ProtocolCode).Matches(addr)
-}
-
-// Implementation of the network.Notifiee interface
-// Called when a connection is opened by discovery.Discoverer's FindPeers()
-func (ld *localDiscovery) Connected(net network.Network, c network.Conn) {
-	ctx := context.Background() // FIXME: since go-libp2p-core@0.8.0 adds support for passed context on new call, we should think if we have a better context to pass here
+	ctx, cancel := context.WithCancel(ctx)
 	go func() {
-		// addrfactory in tinder
-		if manet.IsPrivateAddr(c.RemoteMultiaddr()) || isProximityProtocol(c.RemoteMultiaddr()) {
-			if err := ld.sendLocalRecord(ctx, c); err != nil {
-				return
-			}
-		}
+		<-ctx.Done()
+		cancel()
+		cachelist.cond.Broadcast()
 	}()
+
+	current := cachelist.queue.Front()
+	counter := 0
+
+	go func() {
+		cachelist.Lock()
+		cachelist.watcher++
+		for ctx.Err() == nil && counter <= limit {
+			if current == nil {
+				cachelist.cond.Wait()
+				current = cachelist.queue.Back()
+				continue
+			}
+
+			next := current.Next()
+			rec := current.Value.(*recCache)
+			if time.Now().After(rec.expire) {
+				delete(cachelist.peers, rec.peer.ID)
+				cachelist.queue.Remove(current)
+			} else {
+				select {
+				case cpeer <- *rec.peer:
+					counter++
+				case <-ctx.Done():
+				}
+			}
+
+			current = next
+		}
+		cachelist.watcher--
+		close(cpeer)
+		cachelist.Unlock()
+	}()
+
+	return cpeer, nil
 }
 
-// Send records only owned by the local peer
-func (ld *localDiscovery) sendLocalRecord(ctx context.Context, c network.Conn) error {
-	// Open a multiplexed stream
-	s, err := c.NewStream(ctx)
-	if err != nil {
-		ld.logger.Error("localDiscovery: sendLocalRecord", zap.Error(err))
-		return err
-	}
-	lzcon := msmux.NewMSSelect(s, string(recProtocolID))
-	sw := &StreamWrapper{
-		Stream:     s,
-		ReadWriter: lzcon,
-	}
+func (ld *LocalDiscovery) getLocalReccord() *Records {
+	records := []*Record{}
+	now := time.Now()
 
-	// Fill the protobuf Records struct
-	lr := &Records{Records: []*Record{}}
-	ld.peerCacheMux.RLock()
-	for c := range ld.peerCache {
-		ld.peerCache[c].mux.RLock()
-		if rec, ok := ld.peerCache[c].recs[ld.host.ID()]; ok {
-			record := &Record{Cid: c, Expire: rec.expire}
-			lr.Records = append(lr.Records, record)
+	ld.muRecs.Lock()
+	for cid, expire := range ld.recs {
+		// if expired remove from cache
+		if now.After(expire) {
+			delete(ld.recs, cid)
+			continue
 		}
-		ld.peerCache[c].mux.RUnlock()
-	}
-	ld.peerCacheMux.RUnlock()
 
-	pbw := ggio.NewDelimitedWriter(sw)
-	if err := pbw.WriteMsg(lr); err != nil {
-		ld.logger.Error("localDiscovery: sendLocalRecord", zap.Error(err))
-		return err
+		records = append(records, &Record{
+			Cid:    cid,
+			Expire: expire.Unix(),
+		})
+	}
+	ld.muRecs.Unlock()
+
+	// @TODO(gfanton): is that really necessary
+	rand.Shuffle(len(records), func(i, j int) {
+		records[i], records[j] = records[j], records[i]
+	})
+
+	return &Records{Records: records}
+}
+
+func (ld *LocalDiscovery) Unregister(ctx context.Context, cid string) error {
+	ld.muRecs.Lock()
+	delete(ld.recs, cid)
+	ld.muRecs.Unlock()
+	return nil
+}
+
+func (ld *LocalDiscovery) sendRecordsToProximityPeers(ctx context.Context, records *Records) error {
+	conns := ld.h.Network().Conns()
+	wg := sync.WaitGroup{}
+
+	for _, c := range conns {
+		if !manet.IsPrivateAddr(c.RemoteMultiaddr()) && !isProximityProtocol(c.RemoteMultiaddr()) {
+			continue
+		}
+
+		wg.Add(1)
+		go func(c network.Conn) {
+			if err := ld.sendRecordsTo(ctx, c.RemotePeer(), records); err != nil {
+				ld.logger.Error("unable to send records to newly connected peer",
+					zap.Error(err), zap.Stringer("peer", c.RemotePeer()))
+			}
+
+			wg.Done()
+		}(c)
 	}
 
-	s.Close()
+	wg.Wait()
 
 	return nil
 }
 
 // Called when is a stream is opened by a remote peer
 // Receive remote peer cache and put it in our local cache
-func (ld *localDiscovery) handleStream(s network.Stream) {
-	pbr := ggio.NewDelimitedReader(s, network.MessageSizeMax)
-	for {
-		lr := &Records{}
-		switch err := pbr.ReadMsg(lr); err {
-		case io.EOF:
-			s.Close()
-			return
-		case nil: // do noting, everything fine
-		default:
-			_ = s.Reset()
-			ld.logger.Error("localDiscovery: handleStream: invalid local record", zap.Error(err))
-			return
+func (ld *LocalDiscovery) handleStream(s network.Stream) {
+	defer s.Reset()
+
+	reader := ggio.NewDelimitedReader(s, network.MessageSizeMax)
+	records := Records{}
+	if err := reader.ReadMsg(&records); err != nil {
+		ld.logger.Error("handleStream receive an invalid local record", zap.Error(err))
+		return
+	}
+
+	pid := ld.h.Peerstore().PeerInfo(s.Conn().RemotePeer())
+
+	// fill the remote cache
+	for _, record := range records.Records {
+		expire := time.Unix(record.Expire, 0)
+		ld.logger.Debug("saving remote record in cache",
+			logutil.PrivateString("remoteID", s.Conn().RemotePeer().String()),
+			logutil.PrivateString("CID", record.Cid),
+			zap.Time("expire", expire))
+
+		ld.muCaches.Lock()
+		cache, ok := ld.cache[record.Cid]
+		if !ok {
+			cache = newLinkedCache()
+			ld.cache[record.Cid] = cache
+		}
+		ld.muCaches.Unlock()
+
+		rec := &recCache{
+			peer:   &pid,
+			topic:  record.Cid,
+			expire: expire,
 		}
 
-		// fill the remote cache
-		for _, rec := range lr.Records {
-			ld.logger.Debug("saving remote record in cache",
-				logutil.PrivateString("remoteID", s.Conn().RemotePeer().String()),
-				logutil.PrivateString("CID", rec.Cid),
-				zap.Int64("expire", rec.Expire))
-			cache, ok := ld.getCache(rec.Cid)
-			if !ok {
-				ld.peerCacheMux.Lock()
-				cache, ok = ld.peerCache[rec.Cid]
-				if !ok {
-					cache = &pCache{recs: make(map[peer.ID]*pRecord)}
-					ld.peerCache[rec.Cid] = cache
-				}
-				ld.peerCacheMux.Unlock()
-			}
-			cache.mux.Lock()
-			addrInfo := ld.host.Peerstore().PeerInfo(s.Conn().RemotePeer())
-			cache.recs[s.Conn().RemotePeer()] = &pRecord{peer: addrInfo, expire: rec.Expire}
-			cache.mux.Unlock()
+		cache.Lock()
+
+		if p, ok := cache.peers[pid.ID]; ok {
+			p.Addrs = pid.Addrs
+		} else {
+			cache.queue.PushBack(rec)
 		}
+
+		if cache.watcher > 0 {
+			cache.cond.Broadcast()
+		}
+		cache.Unlock()
 	}
 }
 
+func (ld *LocalDiscovery) sendRecordsTo(ctx context.Context, p peer.ID, records *Records) error {
+	s, err := ld.h.NewStream(ctx, p, recProtocolID)
+	if err != nil {
+		return fmt.Errorf("unable to create stream %w", err)
+	}
+	defer s.Close()
+
+	pbw := ggio.NewDelimitedWriter(s)
+	if err := pbw.WriteMsg(records); err != nil {
+		return fmt.Errorf("write error: %w", err)
+	}
+
+	return nil
+}
+
+func (ld *LocalDiscovery) Connected(net network.Network, c network.Conn) {
+	// addrfactory in tinder
+	if manet.IsPrivateAddr(c.RemoteMultiaddr()) || isProximityProtocol(c.RemoteMultiaddr()) {
+		go func() {
+			ctx := context.Background()
+
+			time.Sleep(time.Second)
+
+			records := ld.getLocalReccord()
+			if err := ld.sendRecordsTo(ctx, c.RemotePeer(), records); err != nil {
+				ld.logger.Error("unable to send records to newly connected peer", zap.Error(err), zap.Stringer("peer", c.RemotePeer()))
+			}
+		}()
+	}
+}
+
+func isProximityProtocol(addr ma.Multiaddr) bool {
+	for _, p := range addr.Protocols() {
+		switch p.Code {
+		case ble.ProtocolCode, mc.ProtocolCode, nearby.ProtocolCode:
+			return true
+		default:
+		}
+	}
+	return false
+}
+
+// Implementation of the network.Notifiee interface
+// Called when network starts listening on an addr
+func (ld *LocalDiscovery) Listen(network.Network, ma.Multiaddr) {}
+
+// Implementation of the network.Notifiee interface
+// Called when network stops listening on an addr
+func (ld *LocalDiscovery) ListenClose(network.Network, ma.Multiaddr) {}
+
 // Implementation of the network.Notifiee interface
 // Called when a connection closed
-func (ld *localDiscovery) Disconnected(network.Network, network.Conn) {}
+func (ld *LocalDiscovery) Disconnected(network.Network, network.Conn) {}
 
 // Implementation of the network.Notifiee interface
 // Called when a stream opened
-func (ld *localDiscovery) OpenedStream(network.Network, network.Stream) {}
+func (ld *LocalDiscovery) OpenedStream(network.Network, network.Stream) {}
 
 // Implementation of the network.Notifiee interface
 // Called when a stream closed
-func (ld *localDiscovery) ClosedStream(network.Network, network.Stream) {}
-
-// Implementation of the io.ReadWriter interface
-func (s *StreamWrapper) Read(b []byte) (int, error) {
-	return s.ReadWriter.Read(b)
-}
-
-// Implementation of the io.ReadWriter interface
-func (s *StreamWrapper) Write(b []byte) (int, error) {
-	return s.ReadWriter.Write(b)
-}
+func (ld *LocalDiscovery) ClosedStream(network.Network, network.Stream) {}
