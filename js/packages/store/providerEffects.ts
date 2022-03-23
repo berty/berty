@@ -254,28 +254,22 @@ export const openingDaemon = async (
 		bridgeOpts = cloneDeep(GoBridgeDefaultOpts)
 	}
 
+	let openedAccount: beapi.account.GetOpenedAccount.Reply
+
 	try {
-		const rep = await accountService.getGRPCListenerAddrs({})
-		// account already open
-		if (Platform.OS === 'web') {
-			const openedAccount = await accountService.getOpenedAccount({})
-			if (openedAccount.accountId === '' || (openedAccount.listeners || []).length === 0) {
-				throw new Error('account not opened (web)')
+		openedAccount = await accountService.getOpenedAccount({})
+
+		if (openedAccount.accountId !== selectedAccount) {
+			if (openedAccount.accountId !== '') {
+				await accountService.closeAccount({})
 			}
-			console.log('service has grpc listeners for messenger/protocol services')
-			store.dispatch(setStateOpeningClients())
-		} else {
-			if (rep.entries?.length > 0) {
-				console.log('service has grpc listeners')
-				store.dispatch(setStateOpeningClients())
-			} else {
-				throw Error('account not opened')
-			}
+
+			await openAccountWithProgress(dispatch, bridgeOpts, selectedAccount)
 		}
+
+		store.dispatch(setStateOpeningClients())
 	} catch (e) {
 		console.log(`account seems to be unopened yet ${e}`)
-		// account not open
-		await openAccountWithProgress(dispatch, bridgeOpts, selectedAccount)
 	}
 }
 
