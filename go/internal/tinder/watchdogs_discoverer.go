@@ -2,6 +2,7 @@ package tinder
 
 import (
 	"context"
+	"fmt"
 	"reflect"
 	"sync"
 	"time"
@@ -63,21 +64,13 @@ func newWatchdogsDiscoverer(ctx context.Context, l *zap.Logger, h host.Host, res
 	}, nil
 }
 
-func WatchdogDiscoverKeepContext(opts *p2p_discovery.Options) error {
-	if opts.Other == nil {
-		opts.Other = make(map[interface{}]interface{})
-	}
-	opts.Other["keepctx"] = true
-	return nil
-}
-
 func (w *watchdogsDiscoverer) FindPeers(ctx context.Context, ns string, opts ...p2p_discovery.Option) (<-chan p2p_peer.AddrInfo, error) {
 	var options p2p_discovery.Options
 	if err := options.Apply(opts...); err != nil {
 		return nil, err
 	}
 
-	if _, ok := options.Other["keepctx"]; !ok {
+	if _, ok := options.Other[optionKeepContext]; !ok {
 		// override context with our context
 		ctx = w.rootctx
 	}
@@ -147,6 +140,18 @@ func (s *multiDriverDiscoverer) ProtectPeer(id p2p_peer.ID) {
 }
 
 func (s *multiDriverDiscoverer) FindPeers(ctx context.Context, ns string, opts ...p2p_discovery.Option) (<-chan p2p_peer.AddrInfo, error) {
+	var options p2p_discovery.Options
+	if err := options.Apply(opts...); err != nil {
+		return nil, err
+	}
+
+	var filters []string
+	if f, ok := options.Other[optionFilterDriver]; ok {
+		if filters, ok = f.([]string); !ok {
+			return nil, fmt.Errorf("unable to parse filter driver option")
+		}
+	}
+
 	s.logger.Debug("find peers started", logutil.PrivateString("key", ns), zap.Int("drivers", len(s.drivers)))
 
 	cc := make(chan p2p_peer.AddrInfo)
@@ -158,6 +163,10 @@ func (s *multiDriverDiscoverer) FindPeers(ctx context.Context, ns string, opts .
 	ctx, cancel := context.WithCancel(ctx)
 	cdrivers := []*driverChan{}
 	for _, driver := range s.drivers {
+		if shoudlFilterDriver(driver.Name, filters) {
+			continue
+		}
+
 		ch, err := driver.FindPeers(ctx, ns, opts...)
 		if err != nil {
 			s.logger.Warn("failed to run find peers",

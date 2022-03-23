@@ -24,11 +24,16 @@ import (
 	msmux "github.com/multiformats/go-multistream"
 	"go.uber.org/zap"
 
+	nearby "berty.tech/berty/v2/go/internal/androidnearby"
+	ble "berty.tech/berty/v2/go/internal/ble-driver"
 	"berty.tech/berty/v2/go/internal/logutil"
 	mc "berty.tech/berty/v2/go/internal/multipeer-connectivity-driver"
 )
 
 const recProtocolID = protocol.ID("berty/p2p/localrecord")
+
+// LocalDiscoveryName is the name of the localdiscovery driver
+const LocalDiscoveryName = "localdiscovery"
 
 type localDiscovery struct {
 	logger       *zap.Logger
@@ -67,7 +72,7 @@ var _ UnregisterDiscovery = (*localDiscovery)(nil)
 
 func NewLocalDiscovery(logger *zap.Logger, host host.Host, rng *mrand.Rand) UnregisterDiscovery {
 	ld := &localDiscovery{
-		logger:    logger.Named("tinder/localDiscovery"),
+		logger:    logger.Named("localDiscovery"),
 		host:      host,
 		rng:       rng,
 		peerCache: make(map[string]*pCache),
@@ -281,12 +286,17 @@ func (ld *localDiscovery) Listen(network.Network, ma.Multiaddr) {}
 // Called when network stops listening on an addr
 func (ld *localDiscovery) ListenClose(network.Network, ma.Multiaddr) {}
 
+func isProximityProtocol(addr ma.Multiaddr) bool {
+	return mafmt.Base(ble.ProtocolCode).Matches(addr) || mafmt.Base(mc.ProtocolCode).Matches(addr) || mafmt.Base(nearby.ProtocolCode).Matches(addr)
+}
+
 // Implementation of the network.Notifiee interface
 // Called when a connection is opened by discovery.Discoverer's FindPeers()
 func (ld *localDiscovery) Connected(net network.Network, c network.Conn) {
 	ctx := context.Background() // FIXME: since go-libp2p-core@0.8.0 adds support for passed context on new call, we should think if we have a better context to pass here
 	go func() {
-		if manet.IsPrivateAddr(c.RemoteMultiaddr()) || mafmt.Base(mc.ProtocolCode).Matches(c.RemoteMultiaddr()) {
+		// addrfactory in tinder
+		if manet.IsPrivateAddr(c.RemoteMultiaddr()) || isProximityProtocol(c.RemoteMultiaddr()) {
 			if err := ld.sendLocalRecord(ctx, c); err != nil {
 				return
 			}

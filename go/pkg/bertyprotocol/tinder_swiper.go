@@ -123,7 +123,7 @@ func (s *Swiper) FindPeers(ctx context.Context, ns string) <-chan peer.AddrInfo 
 		defer close(out)
 		for {
 			// use find peers while keeping his context
-			cpeer, err := s.disc.FindPeers(ctx, ns, tinder.WatchdogDiscoverKeepContext)
+			cpeer, err := s.disc.FindPeers(ctx, ns, tinder.WatchdogDiscoverKeepContextOption)
 			if err != nil {
 				s.logger.Error("failed find peers", zap.String("topic", ns), zap.Error(err))
 				return

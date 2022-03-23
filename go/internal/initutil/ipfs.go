@@ -74,6 +74,7 @@ const (
 	FlagNameP2PTinderDiscover             = "p2p.tinder-discover"
 	FlagNameP2PTinderDHTDriver            = "p2p.tinder-dht-driver"
 	FlagNameP2PTinderRDVPDriver           = "p2p.tinder-rdvp-driver"
+	FlagNameP2PTinderLocalDiscoveryDriver = "p2p.tinder-localdiscovery-driver"
 	FlagNameP2PDisableDiscoverAddrsFilter = "p2p.disc-disable-filter"
 
 	FlagValueP2PDHTDisabled   = "none"
@@ -101,6 +102,7 @@ func (m *Manager) SetupLocalIPFSFlags(fs *flag.FlagSet) {
 	fs.BoolVar(&m.Node.Protocol.TinderDiscover, FlagNameP2PTinderDiscover, true, "if true enable tinder discovery")
 	fs.BoolVar(&m.Node.Protocol.TinderDHTDriver, FlagNameP2PTinderDHTDriver, true, "if true dht driver will be enable for tinder")
 	fs.BoolVar(&m.Node.Protocol.TinderRDVPDriver, FlagNameP2PTinderRDVPDriver, true, "if true rdvp driver will be enable for tinder")
+	fs.BoolVar(&m.Node.Protocol.TinderLocalDiscoveryDriver, FlagNameP2PTinderLocalDiscoveryDriver, true, "if true localdiscovery driver will be enable for tinder")
 	fs.BoolVar(&m.Node.Protocol.DisableDiscoverFilterAddrs, FlagNameP2PDisableDiscoverAddrsFilter, false, "dont filter private addrs on discovery service")
 	fs.BoolVar(&m.Node.Protocol.AutoRelay, "p2p.autorelay", true, "enable autorelay, force private reachability")
 	fs.StringVar(&m.Node.Protocol.StaticRelays, FlagNameP2PStaticRelays, KeywordDefault, "list of static relay maddrs, `:default:` will use statics relays from the config")
@@ -524,6 +526,7 @@ func (m *Manager) setupIPFSConfig(cfg *ipfs_cfg.Config) ([]libp2p.Option, error)
 		cfg.Swarm.RelayClient.Enabled = ipfs_cfg.True
 	} else {
 		cfg.Swarm.RelayClient.Enabled = ipfs_cfg.False
+		cfg.Swarm.Transports.Network.Relay = ipfs_cfg.False
 	}
 
 	pis, err := m.getStaticRelays()
@@ -586,6 +589,19 @@ func (m *Manager) configIPFSRouting(h host.Host, r p2p_routing.Routing) error {
 
 	// configure tinder drivers
 	var drivers []*tinder.Driver
+
+	// localdiscovery driver
+	if m.Node.Protocol.TinderLocalDiscoveryDriver {
+		localDiscovery := tinder.NewLocalDiscovery(logger, h, rng)
+
+		filter := tinder.PrivateAddrOnly
+		if m.Node.Protocol.DisableDiscoverFilterAddrs {
+			filter = tinder.NoFilter
+		}
+
+		drivers = append(drivers,
+			tinder.NewDriverFromUnregisterDiscovery(tinder.LocalDiscoveryName, localDiscovery, filter))
+	}
 
 	// rdvp driver
 	if m.Node.Protocol.TinderRDVPDriver {
@@ -668,7 +684,9 @@ func (m *Manager) configIPFSRouting(h host.Host, r p2p_routing.Routing) error {
 	}
 
 	if m.Node.Protocol.TinderDiscover {
-		popts = append(popts, pubsub.WithDiscovery(m.Node.Protocol.discovery, pubsub.WithDiscoverConnector(backoffconnector)))
+		// filter localdiscovery from drivers since pubsub automatically share topic between connected peers
+		driverFilter := tinder.NewFilterDriverDiscovery(m.Node.Protocol.discovery, tinder.LocalDiscoveryName)
+		popts = append(popts, pubsub.WithDiscovery(driverFilter, pubsub.WithDiscoverConnector(backoffconnector)))
 	} else {
 		advertiseOnly := tinder.DriverDiscovery{
 			Discoverer: tinder.NoopDiscovery,
