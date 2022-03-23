@@ -98,16 +98,17 @@ func (wa *watchdogsAdvertiser) advertises(ctx context.Context, ns string, opts .
 		return
 	}
 
-	var filter []string
-	if f, ok := options.Other["driverfilter"]; ok {
-		filter = f.([]string)
+	var filters []string
+	if f, ok := options.Other[optionFilterDriver]; ok {
+		if filters, ok = f.([]string); !ok {
+			wa.logger.Error("unable to parse filter driver option")
+			return
+		}
 	}
 
 	for _, d := range wa.drivers {
-		for _, v := range filter {
-			if d.Name == v {
-				continue
-			}
+		if shoudlFilterDriver(d.Name, filters) {
+			continue
 		}
 
 		go wa.advertise(ctx, d, ns, opts...)

@@ -652,12 +652,10 @@ func (m *Manager) configIPFSRouting(h host.Host, r p2p_routing.Routing) error {
 		},
 	}
 
-	tinderService, err := tinder.NewService(tinderOpts, h, drivers...)
+	m.Node.Protocol.discovery, err = tinder.NewService(tinderOpts, h, drivers...)
 	if err != nil {
 		return errcode.ErrIPFSSetupHost.Wrap(err)
 	}
-
-	m.Node.Protocol.discovery = tinder.NewFilterService(tinderService, []string{tinder.LocalDiscoveryName})
 
 	// @FIXME(gfanton): hacky way to to handle close on context done
 	go func() {
@@ -686,7 +684,9 @@ func (m *Manager) configIPFSRouting(h host.Host, r p2p_routing.Routing) error {
 	}
 
 	if m.Node.Protocol.TinderDiscover {
-		popts = append(popts, pubsub.WithDiscovery(m.Node.Protocol.discovery, pubsub.WithDiscoverConnector(backoffconnector)))
+		// filter localdiscovery from drivers since pubsub automatically share topic between connected peers
+		driverFilter := tinder.NewFilterDriverDiscovery(m.Node.Protocol.discovery, tinder.LocalDiscoveryName)
+		popts = append(popts, pubsub.WithDiscovery(driverFilter, pubsub.WithDiscoverConnector(backoffconnector)))
 	} else {
 		advertiseOnly := tinder.DriverDiscovery{
 			Discoverer: tinder.NoopDiscovery,
