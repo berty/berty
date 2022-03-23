@@ -92,7 +92,24 @@ func (wa *watchdogsAdvertiser) unregister(ctx context.Context, ns string) {
 }
 
 func (wa *watchdogsAdvertiser) advertises(ctx context.Context, ns string, opts ...p2p_discovery.Option) {
+	var options p2p_discovery.Options
+	if err := options.Apply(opts...); err != nil {
+		wa.logger.Warn("unable to apply options", zap.Error(err))
+		return
+	}
+
+	var filter []string
+	if f, ok := options.Other["driverfilter"]; !ok {
+		filter = f.([]string)
+	}
+
 	for _, d := range wa.drivers {
+		for _, v := range filter {
+			if d.Name == v {
+				continue
+			}
+		}
+
 		go wa.advertise(ctx, d, ns, opts...)
 	}
 }

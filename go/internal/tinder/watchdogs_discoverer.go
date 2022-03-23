@@ -71,6 +71,16 @@ func WatchdogDiscoverKeepContext(opts *p2p_discovery.Options) error {
 	return nil
 }
 
+func FilterDriver(drivers []string) p2p_discovery.Option {
+	return func(opts *p2p_discovery.Options) error {
+		if opts.Other == nil {
+			opts.Other = make(map[interface{}]interface{})
+		}
+		opts.Other["driverfilter"] = drivers
+		return nil
+	}
+}
+
 func (w *watchdogsDiscoverer) FindPeers(ctx context.Context, ns string, opts ...p2p_discovery.Option) (<-chan p2p_peer.AddrInfo, error) {
 	var options p2p_discovery.Options
 	if err := options.Apply(opts...); err != nil {
@@ -147,6 +157,16 @@ func (s *multiDriverDiscoverer) ProtectPeer(id p2p_peer.ID) {
 }
 
 func (s *multiDriverDiscoverer) FindPeers(ctx context.Context, ns string, opts ...p2p_discovery.Option) (<-chan p2p_peer.AddrInfo, error) {
+	var options p2p_discovery.Options
+	if err := options.Apply(opts...); err != nil {
+		return nil, err
+	}
+
+	var filter []string
+	if f, ok := options.Other["driverfilter"]; !ok {
+		filter = f.([]string)
+	}
+
 	s.logger.Debug("find peers started", logutil.PrivateString("key", ns), zap.Int("drivers", len(s.drivers)))
 
 	cc := make(chan p2p_peer.AddrInfo)
@@ -158,6 +178,12 @@ func (s *multiDriverDiscoverer) FindPeers(ctx context.Context, ns string, opts .
 	ctx, cancel := context.WithCancel(ctx)
 	cdrivers := []*driverChan{}
 	for _, driver := range s.drivers {
+		for _, v := range filter {
+			if driver.Name == v {
+				continue
+			}
+		}
+
 		ch, err := driver.FindPeers(ctx, ns, opts...)
 		if err != nil {
 			s.logger.Warn("failed to run find peers",

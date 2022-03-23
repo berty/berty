@@ -31,6 +31,7 @@ import (
 )
 
 const recProtocolID = protocol.ID("berty/p2p/localrecord")
+const LocalDiscoveryName = "localdiscovery"
 
 type localDiscovery struct {
 	logger       *zap.Logger

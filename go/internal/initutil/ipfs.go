@@ -600,7 +600,7 @@ func (m *Manager) configIPFSRouting(h host.Host, r p2p_routing.Routing) error {
 		}
 
 		drivers = append(drivers,
-			tinder.NewDriverFromUnregisterDiscovery("localdiscovery", localDiscovery, filter))
+			tinder.NewDriverFromUnregisterDiscovery(tinder.LocalDiscoveryName, localDiscovery, filter))
 	}
 
 	// rdvp driver
@@ -652,10 +652,12 @@ func (m *Manager) configIPFSRouting(h host.Host, r p2p_routing.Routing) error {
 		},
 	}
 
-	m.Node.Protocol.discovery, err = tinder.NewService(tinderOpts, h, drivers...)
+	tinderService, err := tinder.NewService(tinderOpts, h, drivers...)
 	if err != nil {
 		return errcode.ErrIPFSSetupHost.Wrap(err)
 	}
+
+	m.Node.Protocol.discovery = tinder.NewFilterService(tinderService, []string{tinder.LocalDiscoveryName})
 
 	// @FIXME(gfanton): hacky way to to handle close on context done
 	go func() {
