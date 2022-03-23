@@ -19,13 +19,11 @@ export type MessengerState = {
 	addNotificationListener: (cb: (evt: any) => void) => void
 	removeNotificationListener: (cb: (...args: any[]) => void) => void
 	notificationsInhibitors: NotificationsInhibitor[]
-	persistentOptions: PersistentOptions
 	accounts: beapi.account.IAccountMetadata[]
 	dispatch: Dispatch<{
 		type: MessengerActions
 		payload?: any
 	}>
-	setPersistentOption: (arg0: PersistentOptionsUpdate) => Promise<void>
 	createNewAccount: (arg0?: beapi.account.INetworkConfig) => Promise<void>
 	importAccount: (arg0: string) => Promise<void>
 	switchAccount: (arg0: string) => Promise<void>
@@ -50,141 +48,10 @@ export type MessengerState = {
 	setHandledLink: (value: boolean) => void
 }
 
-export enum PersistentOptionsKeys {
-	Notifications = 'notifications',
-	Suggestions = 'suggestions',
-	Debug = 'debug',
-	Log = 'log',
-	Configurations = 'configurations',
-	LogFilters = 'logFilters',
-	TyberHost = 'tyberHost',
-	OnBoardingFinished = 'onBoardingFinished',
-	ProfileNotification = 'profileNotification',
-}
-
 export enum GlobalPersistentOptionsKeys {
 	TyberHost = 'global-storage_tyber-host',
 	DisplayName = 'displayName',
 	IsNewAccount = 'isNewAccount',
-}
-
-export type PersistentOptionsNotifications = {
-	enable: boolean
-}
-
-export type Suggestion = {
-	link: string
-	displayName: string
-	// added | skipped | unread
-	state: string
-	pk: string
-	icon: string
-}
-
-export type PersistentOptionsSuggestions = {
-	[key: string]: Suggestion
-}
-
-export type PersistentOptionsBLE = {
-	enable: boolean
-}
-
-export type PersistentOptionsMC = {
-	enable: boolean
-}
-
-export type PersistentOptionsNearby = {
-	enable: boolean
-}
-
-export type PersistentOptionsDebug = {
-	enable: boolean
-}
-
-export type PersistentOptionsLog = {
-	format: string
-}
-
-export type Configuration = {
-	key: 'network' | 'notification' | 'replicate'
-	displayName: string
-	desc: string
-	icon: string
-	state: 'added' | 'skipped' | 'unread'
-	color: string
-}
-
-export type PersistentOptionsConfigurations = { [key: string]: Configuration }
-
-export type PersistentOptionsPreset = {
-	value: 'performance' | 'fullAnonymity'
-}
-
-export type PersistentOptionsLogFilters = {
-	format: string
-}
-
-export type PersistentOptionsTyberHost = {
-	address: string
-}
-
-export type PersistentOptionsOnBoardingFinished = {
-	isFinished: boolean
-}
-
-export const UpdatesProfileNotification = 'updates'
-export type PersistentOptionsProfileNotification = {
-	[UpdatesProfileNotification]: number
-}
-
-export type PersistentOptionsUpdate =
-	| {
-			type: typeof PersistentOptionsKeys.Notifications
-			payload: Partial<PersistentOptionsNotifications>
-	  }
-	| {
-			type: typeof PersistentOptionsKeys.Suggestions
-			payload: Partial<PersistentOptionsSuggestions>
-	  }
-	| {
-			type: typeof PersistentOptionsKeys.Debug
-			payload: Partial<PersistentOptionsDebug>
-	  }
-	| {
-			type: typeof PersistentOptionsKeys.Log
-			payload: Partial<PersistentOptionsLog>
-	  }
-	| {
-			type: typeof PersistentOptionsKeys.Configurations
-			payload: Partial<PersistentOptionsConfigurations>
-	  }
-	| {
-			type: typeof PersistentOptionsKeys.LogFilters
-			payload: PersistentOptionsLogFilters
-	  }
-	| {
-			type: typeof PersistentOptionsKeys.TyberHost
-			payload: PersistentOptionsTyberHost
-	  }
-	| {
-			type: typeof PersistentOptionsKeys.OnBoardingFinished
-			payload: PersistentOptionsOnBoardingFinished
-	  }
-	| {
-			type: typeof PersistentOptionsKeys.ProfileNotification
-			payload: PersistentOptionsProfileNotification
-	  }
-
-export type PersistentOptions = {
-	[PersistentOptionsKeys.Notifications]: PersistentOptionsNotifications
-	[PersistentOptionsKeys.Suggestions]: PersistentOptionsSuggestions
-	[PersistentOptionsKeys.Debug]: PersistentOptionsDebug
-	[PersistentOptionsKeys.Log]: PersistentOptionsLog
-	[PersistentOptionsKeys.Configurations]: PersistentOptionsConfigurations
-	[PersistentOptionsKeys.LogFilters]: PersistentOptionsLogFilters
-	[PersistentOptionsKeys.TyberHost]: PersistentOptionsTyberHost
-	[PersistentOptionsKeys.OnBoardingFinished]: PersistentOptionsOnBoardingFinished
-	[PersistentOptionsKeys.ProfileNotification]: PersistentOptionsProfileNotification
 }
 
 export enum MessengerActions {

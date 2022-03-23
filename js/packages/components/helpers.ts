@@ -1,10 +1,6 @@
 import moment from 'moment'
 
-import {
-	MessengerState,
-	PersistentOptionsKeys,
-	UpdatesProfileNotification,
-} from '@berty-tech/store/types'
+import { MessengerState } from '@berty-tech/store/types'
 
 export const promiseResolved = (): Promise<void> => new Promise((res): any => setTimeout(res, 1000))
 
@@ -83,23 +79,5 @@ export const showNeedRestartNotification = (showNotification: any, ctx: Messenge
 			await ctx.restart()
 		},
 		additionalProps: { type: 'message' },
-	})
-}
-
-export const readProfileNotification = async (
-	ctx: MessengerState,
-	type: typeof UpdatesProfileNotification,
-) => {
-	const profileNotifs = ctx.persistentOptions[PersistentOptionsKeys.ProfileNotification]
-	const numberNotifs = profileNotifs[UpdatesProfileNotification]
-	if (numberNotifs === 0) {
-		return
-	}
-	await ctx.setPersistentOption({
-		type: PersistentOptionsKeys.ProfileNotification,
-		payload: {
-			...profileNotifs,
-			[type]: numberNotifs - 1,
-		},
 	})
 }

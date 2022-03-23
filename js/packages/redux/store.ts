@@ -18,6 +18,9 @@ import messengerRootReducer from './reducers/messenger.reducer'
 import networkConfigReducer, {
 	sliceName as networkConfigSliceName,
 } from './reducers/networkConfig.reducer'
+import persistentOptionsReducer, {
+	sliceName as persistentOptionsSliceName,
+} from './reducers/persistentOptions.reducer'
 import createMigrate from 'redux-persist/lib/createMigrate'
 import { reduxPersistMigrations } from './migrations'
 
@@ -31,6 +34,7 @@ const persistConfig = {
 		accountSettingsSliceName,
 		themeSliceName,
 		networkConfigSliceName,
+		persistentOptionsSliceName,
 	],
 	migrate: createMigrate(reduxPersistMigrations, { debug: true }),
 }
@@ -44,6 +48,7 @@ const rootReducer = combineReducers({
 	...themeReducer,
 	...uiReducer,
 	...networkConfigReducer,
+	...persistentOptionsReducer,
 })
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)

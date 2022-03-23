@@ -8,12 +8,7 @@ import { useAllConversations, useAllContacts, useConversation } from '@berty-tec
 import { useStyles } from '@berty-tech/styles'
 
 import { useMessengerContext } from './context'
-import {
-	MessengerActions,
-	NotificationsInhibitor,
-	PersistentOptionsKeys,
-	UpdatesProfileNotification,
-} from './types'
+import { MessengerActions, NotificationsInhibitor } from './types'
 import { fakeContacts, fakeMultiMemberConversations } from './faker'
 import { ParsedInteraction } from './types.gen'
 import { useSelector } from 'react-redux'
@@ -28,6 +23,11 @@ import {
 	selectAppState,
 	selectClient,
 } from '@berty-tech/redux/reducers/ui.reducer'
+import {
+	PersistentOptionsKeys,
+	selectPersistentOptions,
+	UpdatesProfileNotification,
+} from '@berty-tech/redux/reducers/persistentOptions.reducer'
 
 export type Maybe<T> = T | null | undefined
 
@@ -82,11 +82,6 @@ export const useMessengerClient = () => {
 	return useSelector(selectClient)
 }
 
-export const usePersistentOptions = () => {
-	const ctx = useMessengerContext()
-	return ctx.persistentOptions || {}
-}
-
 export const useThemeColor = (): ThemeType => {
 	const appState = useSelector(selectAppState)
 	const themeIsDark = useSelector(selectThemeIsDark)
@@ -114,8 +109,8 @@ export const useThemeColor = (): ThemeType => {
 }
 
 export const useProfileNotification = () => {
-	const ctx = useMessengerContext()
-	const profileNotifs = ctx.persistentOptions[PersistentOptionsKeys.ProfileNotification]
+	const persistentOptions = useSelector(selectPersistentOptions)
+	const profileNotifs = persistentOptions[PersistentOptionsKeys.ProfileNotification]
 	return profileNotifs[UpdatesProfileNotification]
 }
 

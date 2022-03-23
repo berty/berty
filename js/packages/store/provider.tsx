@@ -24,7 +24,6 @@ import {
 	syncAccountLanguage,
 } from './providerEffects'
 import {
-	setPersistentOption,
 	importAccount,
 	updateAccount,
 	switchAccount,
@@ -34,7 +33,7 @@ import {
 import { createNewAccount, getUsername } from './effectableCallbacks'
 import { reducer } from './reducer'
 import { playSound } from './sounds'
-import { PersistentOptionsKeys, SoundKey } from './types'
+import { SoundKey } from './types'
 import { useSelector } from 'react-redux'
 import {
 	selectAppState,
@@ -44,6 +43,10 @@ import {
 	selectProtocolClient,
 	selectSelectedAccount,
 } from '@berty-tech/redux/reducers/ui.reducer'
+import {
+	selectPersistentOptions,
+	PersistentOptionsKeys,
+} from '@berty-tech/redux/reducers/persistentOptions.reducer'
 
 export const MessengerProvider: React.FC<{ daemonAddress: string }> = ({
 	children,
@@ -63,6 +66,7 @@ export const MessengerProvider: React.FC<{ daemonAddress: string }> = ({
 	const client = useSelector(selectClient)
 	const embedded = useSelector(selectEmbedded)
 	const selectedAccount = useSelector(selectSelectedAccount)
+	const persistentOptions = useSelector(selectPersistentOptions)
 
 	useEffect(() => {
 		console.log(`State change: ${appState}\n`)
@@ -93,8 +97,8 @@ export const MessengerProvider: React.FC<{ daemonAddress: string }> = ({
 	const conversations = useConversationsDict()
 
 	useEffect(() => {
-		openingCloseConvos(appState, client, conversations, state.persistentOptions)
-	}, [appState, client, conversations, state.persistentOptions])
+		openingCloseConvos(appState, client, conversations, persistentOptions)
+	}, [appState, client, conversations, persistentOptions])
 
 	const accountLanguage = useAppSelector(selectAccountLanguage)
 	useEffect(() => {
@@ -158,11 +162,6 @@ export const MessengerProvider: React.FC<{ daemonAddress: string }> = ({
 		return getUsername()
 	}, [])
 
-	const callbackSetPersistentOption = useCallback(
-		action => setPersistentOption(dispatch, selectedAccount, action),
-		[selectedAccount],
-	)
-
 	const callbackAddNotificationListener = useCallback(
 		cb => {
 			eventEmitter.addListener('notification', cb)
@@ -181,12 +180,12 @@ export const MessengerProvider: React.FC<{ daemonAddress: string }> = ({
 
 	const callbackPlaySound = useCallback(
 		(sound: SoundKey) => {
-			if (state.persistentOptions[PersistentOptionsKeys.Notifications].enable) {
+			if (persistentOptions[PersistentOptionsKeys.Notifications].enable) {
 				playSound(sound)
 			}
 			return
 		},
-		[state.persistentOptions],
+		[persistentOptions],
 	)
 
 	return (
@@ -196,7 +195,6 @@ export const MessengerProvider: React.FC<{ daemonAddress: string }> = ({
 				dispatch,
 				addNotificationListener: callbackAddNotificationListener,
 				removeNotificationListener: callbackRemoveNotificationListener,
-				setPersistentOption: callbackSetPersistentOption,
 				createNewAccount: callbackCreateNewAccount,
 				importAccount: callbackImportAccount,
 				switchAccount: callbackSwitchAccount,

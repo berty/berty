@@ -5,10 +5,8 @@ import { useTranslation } from 'react-i18next'
 import Long from 'long'
 
 import {
-	defaultPersistentOptions,
 	GlobalPersistentOptionsKeys,
 	MessengerActions,
-	PersistentOptionsKeys,
 	storageGet,
 	storageSet,
 	useMessengerClient,
@@ -48,6 +46,12 @@ import { DropDownPicker, Item } from '../shared-components/DropDownPicker'
 import { useSelector } from 'react-redux'
 import { selectEmbedded } from '@berty-tech/redux/reducers/ui.reducer'
 import { withInAppNotification } from '@berty-tech/polyfill/react-native-in-app-notification'
+import {
+	defaultPersistentOptions,
+	PersistentOptionsKeys,
+	selectPersistentOptions,
+	setPersistentOption,
+} from '@berty-tech/redux/reducers/persistentOptions.reducer'
 
 //
 // DevTools
@@ -341,6 +345,7 @@ const BodyDevTools: React.FC<{}> = withInAppNotification(({ showNotification }: 
 	const [, setRerender] = useState(0)
 	const colors = useThemeColor()
 	const dispatch = useAppDispatch()
+	const persistentOptions = useSelector(selectPersistentOptions)
 	const embedded = useSelector(selectEmbedded)
 	const client = useMessengerClient()
 
@@ -430,37 +435,43 @@ const BodyDevTools: React.FC<{}> = withInAppNotification(({ showNotification }: 
 				iconSize={30}
 				iconColor={colors['alt-secondary-background-header']}
 				toggled
-				varToggle={ctx?.persistentOptions.debug.enable}
-				actionToggle={async () => {
-					await ctx.setPersistentOption({
-						type: PersistentOptionsKeys.Debug,
-						payload: {
-							enable: !ctx.persistentOptions?.debug.enable,
-						},
-					})
+				varToggle={persistentOptions.debug.enable}
+				actionToggle={() => {
+					dispatch(
+						setPersistentOption({
+							type: PersistentOptionsKeys.Debug,
+							payload: {
+								enable: persistentOptions?.debug.enable,
+							},
+						}),
+					)
 				}}
 			/>
 			<StringOptionInput
 				name={t('settings.devtools.log-button.name')}
 				bulletPointValue={t('settings.devtools.log-button.bullet-point')}
-				getOptionValue={() => ctx.persistentOptions.log.format}
+				getOptionValue={() => persistentOptions.log.format}
 				setOptionValue={val => {
-					ctx.setPersistentOption({
-						type: PersistentOptionsKeys.Log,
-						payload: { format: val },
-					})
+					dispatch(
+						setPersistentOption({
+							type: PersistentOptionsKeys.Log,
+							payload: { format: val },
+						}),
+					)
 					showNeedRestartNotification(showNotification, ctx, t)
 				}}
 			/>
 			<StringOptionInput
 				name={t('settings.devtools.log-filters-button.name')}
 				bulletPointValue={t('settings.devtools.log-filters-button.bullet-point')}
-				getOptionValue={() => ctx.persistentOptions.logFilters.format}
+				getOptionValue={() => persistentOptions.logFilters.format}
 				setOptionValue={val => {
-					ctx.setPersistentOption({
-						type: PersistentOptionsKeys.LogFilters,
-						payload: { format: val },
-					})
+					dispatch(
+						setPersistentOption({
+							type: PersistentOptionsKeys.LogFilters,
+							payload: { format: val },
+						}),
+					)
 					showNeedRestartNotification(showNotification, ctx, t)
 				}}
 			/>

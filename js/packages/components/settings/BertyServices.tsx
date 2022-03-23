@@ -6,8 +6,6 @@ import { ScreenFC, useNavigation } from '@berty-tech/navigation'
 import {
 	servicesAuthViaDefault,
 	useAccountServices,
-	PersistentOptionsKeys,
-	useMessengerContext,
 	useNotificationsInhibitor,
 	useThemeColor,
 } from '@berty-tech/store'
@@ -16,9 +14,16 @@ import SwiperCard from '../onboarding/SwiperCard'
 import OnboardingWrapper from '../onboarding/OnboardingWrapper'
 import { useSelector } from 'react-redux'
 import { selectProtocolClient } from '@berty-tech/redux/reducers/ui.reducer'
+import {
+	PersistentOptionsKeys,
+	selectPersistentOptions,
+	setPersistentOption,
+} from '@berty-tech/redux/reducers/persistentOptions.reducer'
+import { useAppDispatch } from '@berty-tech/react-redux'
 
 const ServicesAuthBody: React.FC<{ next: () => void }> = ({ next }) => {
-	const ctx = useMessengerContext()
+	const persistentOptions = useSelector(selectPersistentOptions)
+	const dispatch = useAppDispatch()
 	const accountServices = useAccountServices() || []
 	const { t }: any = useTranslation()
 	const { goBack } = useNavigation()
@@ -37,16 +42,18 @@ const ServicesAuthBody: React.FC<{ next: () => void }> = ({ next }) => {
 								onPress: async () => {
 									try {
 										await servicesAuthViaDefault(protocolClient)
-										await ctx.setPersistentOption({
-											type: PersistentOptionsKeys.Configurations,
-											payload: {
-												...ctx.persistentOptions.configurations,
-												replicate: {
-													...ctx.persistentOptions.configurations.replicate,
-													state: 'added',
+										dispatch(
+											setPersistentOption({
+												type: PersistentOptionsKeys.Configurations,
+												payload: {
+													...persistentOptions.configurations,
+													replicate: {
+														...persistentOptions.configurations.replicate,
+														state: 'added',
+													},
 												},
-											},
-										})
+											}),
+										)
 										goBack()
 									} catch (e) {
 										console.log(e)
@@ -56,8 +63,8 @@ const ServicesAuthBody: React.FC<{ next: () => void }> = ({ next }) => {
 				}
 				skip={{
 					text: t('settings.berty-services.skip'),
-					onPress: async () => {
-						await next()
+					onPress: () => {
+						next()
 					},
 				}}
 			/>
@@ -67,7 +74,8 @@ const ServicesAuthBody: React.FC<{ next: () => void }> = ({ next }) => {
 
 export const BertyServices: ScreenFC<'Settings.BertyServices'> = ({ navigation: { goBack } }) => {
 	useNotificationsInhibitor(() => true)
-	const { persistentOptions, setPersistentOption } = useMessengerContext()
+	const persistentOptions = useSelector(selectPersistentOptions)
+	const dispatch = useAppDispatch()
 	const colors = useThemeColor()
 
 	return (
@@ -75,17 +83,19 @@ export const BertyServices: ScreenFC<'Settings.BertyServices'> = ({ navigation: 
 			<StatusBar backgroundColor={colors['background-header']} barStyle='light-content' />
 			<View style={{ flex: 1, flexDirection: 'row', alignItems: 'flex-end' }}>
 				<ServicesAuthBody
-					next={async () => {
-						await setPersistentOption({
-							type: PersistentOptionsKeys.Configurations,
-							payload: {
-								...persistentOptions.configurations,
-								replicate: {
-									...persistentOptions.configurations.replicate,
-									state: 'skipped',
+					next={() => {
+						dispatch(
+							setPersistentOption({
+								type: PersistentOptionsKeys.Configurations,
+								payload: {
+									...persistentOptions.configurations,
+									replicate: {
+										...persistentOptions.configurations.replicate,
+										state: 'skipped',
+									},
 								},
-							},
-						})
+							}),
+						)
 						goBack()
 					}}
 				/>

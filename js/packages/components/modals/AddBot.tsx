@@ -5,11 +5,18 @@ import { Buffer } from 'buffer'
 
 import { useStyles } from '@berty-tech/styles'
 import messengerMethodsHooks from '@berty-tech/store/methods'
-import { useMessengerContext, useThemeColor, PersistentOptionsKeys } from '@berty-tech/store'
+import { useThemeColor } from '@berty-tech/store'
 import { BlurView } from '@berty-tech/polyfill/react-native-community-blur'
 
 import Avatar from './Buck_Berty_Icon_Card.svg'
 import { base64ToURLBase64 } from '../utils'
+import { useSelector } from 'react-redux'
+import {
+	PersistentOptionsKeys,
+	selectPersistentOptions,
+	setPersistentOption,
+} from '@berty-tech/redux/reducers/persistentOptions.reducer'
+import { useAppDispatch } from '@berty-tech/react-redux'
 
 export const useStylesDefaultModal = () => {
 	const [{ width, border, padding, margin }] = useStyles()
@@ -49,7 +56,8 @@ export const AddBotBody: React.FC<{
 	const [{ row, text, margin, padding, border, opacity }, { scaleHeight }] = useStyles()
 	const colors = useThemeColor()
 	const _styles = useStylesDefaultModal()
-	const { setPersistentOption, persistentOptions } = useMessengerContext()
+	const persistentOptions = useSelector(selectPersistentOptions)
+	const dispatch = useAppDispatch()
 	const { call: requestContact, done, error } = messengerMethodsHooks.useContactRequest()
 	const {
 		reply: pdlReply,
@@ -168,17 +176,19 @@ export const AddBotBody: React.FC<{
 							_styles.skipButton,
 							{ flexDirection: 'row', justifyContent: 'center' },
 						]}
-						onPress={async () => {
-							await setPersistentOption({
-								type: PersistentOptionsKeys.Suggestions,
-								payload: {
-									...persistentOptions.suggestions,
-									[displayName]: {
-										...persistentOptions.suggestions[displayName],
-										state: 'skipped',
+						onPress={() => {
+							dispatch(
+								setPersistentOption({
+									type: PersistentOptionsKeys.Suggestions,
+									payload: {
+										...persistentOptions.suggestions,
+										[displayName]: {
+											...persistentOptions.suggestions[displayName],
+											state: 'skipped',
+										},
 									},
-								},
-							})
+								}),
+							)
 							closeModal()
 						}}
 					>
@@ -211,22 +221,24 @@ export const AddBotBody: React.FC<{
 								backgroundColor: colors['positive-asset'],
 							},
 						]}
-						onPress={async () => {
+						onPress={() => {
 							if (pdlDone && !pdlError && pdlReply.link?.bertyId?.accountPk) {
-								await setPersistentOption({
-									type: PersistentOptionsKeys.Suggestions,
-									payload: {
-										...persistentOptions.suggestions,
-										[displayName]: {
-											...persistentOptions.suggestions[displayName],
-											state: 'added',
-											pk: base64ToURLBase64(
-												Buffer.from(pdlReply.link.bertyId.accountPk).toString('base64'),
-											),
+								dispatch(
+									setPersistentOption({
+										type: PersistentOptionsKeys.Suggestions,
+										payload: {
+											...persistentOptions.suggestions,
+											[displayName]: {
+												...persistentOptions.suggestions[displayName],
+												state: 'added',
+												pk: base64ToURLBase64(
+													Buffer.from(pdlReply.link.bertyId.accountPk).toString('base64'),
+												),
+											},
 										},
-									},
-								})
-								await requestContact({
+									}),
+								)
+								requestContact({
 									link,
 								})
 							}

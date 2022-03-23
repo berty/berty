@@ -20,7 +20,6 @@ import {
 } from '@berty-tech/grpc-bridge/welsh-clients.gen'
 
 import { accountService, convertMAddr, storageGet, storageRemove } from './accountService'
-import { defaultPersistentOptions } from './context'
 import { closeAccountWithProgress, refreshAccountList } from './effectableCallbacks'
 import ExternalTransport from './externalTransport'
 import { updateAccount } from './providerCallbacks'
@@ -28,8 +27,6 @@ import { requestAndPersistPushToken } from './services'
 import {
 	GlobalPersistentOptionsKeys,
 	MessengerActions,
-	PersistentOptions,
-	PersistentOptionsKeys,
 	reducerAction,
 	StreamInProgress,
 } from './types'
@@ -51,6 +48,11 @@ import {
 	setStateStreamInProgress,
 } from '@berty-tech/redux/reducers/ui.reducer'
 import { deserializeFromBase64 } from '@berty-tech/grpc-bridge/rpc/utils'
+import {
+	defaultPersistentOptions,
+	PersistentOptions,
+	PersistentOptionsKeys,
+} from '@berty-tech/redux/reducers/persistentOptions.reducer'
 
 export const openAccountWithProgress = async (
 	dispatch: (arg0: reducerAction) => void,
@@ -102,39 +104,6 @@ export const openAccountWithProgress = async (
 	}
 }
 
-const getPersistentOptions = async (
-	dispatch: (arg0: reducerAction) => void,
-	selectedAccount: string | null,
-) => {
-	if (selectedAccount === null) {
-		console.warn('getPersistentOptions / no account opened')
-		return
-	}
-
-	try {
-		let opts = defaultPersistentOptions()
-		console.log('begin to get persistent data')
-		let storedOpts = await storageGet(storageKeyForAccount(selectedAccount))
-		console.log('end to get persistent data')
-
-		if (storedOpts) {
-			const parsed = JSON.parse(storedOpts)
-
-			for (let key of Object.values(PersistentOptionsKeys)) {
-				opts[key] = { ...opts[key], ...(parsed[key] || {}) }
-			}
-		}
-
-		dispatch({
-			type: MessengerActions.SetPersistentOption,
-			payload: opts,
-		})
-	} catch (e) {
-		console.warn('store getPersistentOptions Failed:', e)
-		return
-	}
-}
-
 export const initBridge = async () => {
 	try {
 		console.log('bridge methods: ', Object.keys(GoBridge))
@@ -182,6 +151,39 @@ export const initialLaunch = async (dispatch: (arg0: reducerAction) => void, emb
 	}
 
 	f().catch(e => console.warn(e))
+}
+
+const getPersistentOptions = async (
+	dispatch: (arg0: reducerAction) => void,
+	selectedAccount: string | null,
+) => {
+	if (selectedAccount === null) {
+		console.warn('getPersistentOptions / no account opened')
+		return
+	}
+
+	try {
+		let opts = defaultPersistentOptions()
+		console.log('begin to get persistent data')
+		let storedOpts = await storageGet(storageKeyForAccount(selectedAccount))
+		console.log('end to get persistent data')
+
+		if (storedOpts) {
+			const parsed = JSON.parse(storedOpts)
+
+			for (let key of Object.values(PersistentOptionsKeys)) {
+				opts[key] = { ...opts[key], ...(parsed[key] || {}) }
+			}
+		}
+
+		dispatch({
+			type: MessengerActions.SetPersistentOption,
+			payload: opts,
+		})
+	} catch (e) {
+		console.warn('store getPersistentOptions Failed:', e)
+		return
+	}
 }
 
 // handle state openingGettingLocalSettings

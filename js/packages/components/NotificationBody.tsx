@@ -6,7 +6,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import beapi from '@berty-tech/api'
 import { useStyles } from '@berty-tech/styles'
 import {
-	usePersistentOptions,
 	useMessengerContext,
 	useThemeColor,
 	NotificationsInhibitor,
@@ -15,6 +14,8 @@ import {
 
 import { usePrevious } from './hooks'
 import notifications, { DefaultNotification } from './notifications'
+import { useSelector } from 'react-redux'
+import { selectPersistentOptions } from '@berty-tech/redux/reducers/persistentOptions.reducer'
 
 const NotificationContents: React.FC<{
 	additionalProps: { type: beapi.messenger.StreamEvent.Notified.Type }
@@ -71,7 +72,7 @@ const GatedNotificationBody: React.FC<any> = props => {
 	const justOpened = props.isOpen && !prevProps?.isOpen
 
 	const ctx = useMessengerContext()
-	const persistentOptions = usePersistentOptions()
+	const persistentOptions = useSelector(selectPersistentOptions)
 
 	const notif = props.additionalProps as beapi.messenger.StreamEvent.INotified | undefined
 

@@ -5,13 +5,7 @@ import { useTranslation } from 'react-i18next'
 
 import { defaultStylesDeclaration, useStyles } from '@berty-tech/styles'
 import beapi from '@berty-tech/api'
-import {
-	pbDateToNum,
-	useThemeColor,
-	ParsedInteraction,
-	Suggestion,
-	Configuration,
-} from '@berty-tech/store'
+import { pbDateToNum, useThemeColor, ParsedInteraction } from '@berty-tech/store'
 import { useNavigation } from '@berty-tech/navigation'
 import { useAppSelector, useOneToOneContact, useLastConvInteraction } from '@berty-tech/react-redux'
 import { selectChatInputText } from '@berty-tech/redux/reducers/chatInputs.reducer'
@@ -20,6 +14,7 @@ import { ConversationAvatar, HardcodedAvatar, HardcodedAvatarKey } from '../../a
 import { timeFormat } from '../../helpers'
 import { UnreadCount } from './UnreadCount'
 import { selectChatInputIsSending } from '@berty-tech/redux/reducers/chatInputsVolatile.reducer'
+import { Suggestion, Configuration } from '@berty-tech/redux/reducers/persistentOptions.reducer'
 
 type AddBotCallback = React.Dispatch<
 	React.SetStateAction<{
