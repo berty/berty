@@ -31,6 +31,8 @@ import (
 )
 
 const recProtocolID = protocol.ID("berty/p2p/localrecord")
+
+// LocalDiscoveryName is the name of the localdiscovery driver
 const LocalDiscoveryName = "localdiscovery"
 
 type localDiscovery struct {
