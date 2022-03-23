@@ -28,8 +28,6 @@ import tech.berty.notification.NotificationPackage;
 import tech.berty.notification.NotificationService;
 import tech.berty.rootdir.RootDirPackage;
 
-import com.wix.interactable.Interactable; // remove when https://github.com/wix/react-native-interactable/pull/288 is merged
-
 public class MainApplication extends Application implements ReactApplication, LifecycleObserver {
     private static final String TAG = "MainApplication";
 
@@ -56,7 +54,6 @@ public class MainApplication extends Application implements ReactApplication, Li
                 packages.add(new NotificationPackage());
                 packages.add(new RootDirPackage());
                 packages.add(new GoBridgePackage());
-                packages.add(new Interactable()); // remove when https://github.com/wix/react-native-interactable/pull/288 is merged
                 return packages;
             }
 

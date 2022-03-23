@@ -1,4 +1,4 @@
-apply plugin: "com.android.application"
+apply plugin: 'com.android.application'
 
 // TODO: remove this after closed beta
 apply plugin: 'com.google.gms.google-services'
@@ -234,14 +234,11 @@ android {
         exclude "**/libjsc.so"
         // Fix for react-native-reanimated using v8
         pickFirst "**/libv8executor.so"
-        pickFirst "**/libreactnativejni.so"
-        pickFirst "**/libglog.so"
-        pickFirst "**/libfolly_json.so"
     }
 }
 
 // Auto-build gomobile.aar by running Makefile rule
-task makeDeps(description: 'Build gomobile.arr (Berty go core)') {
+task makeDeps(description: 'Build gomobile.aar (Berty go core)') {
     outputs.files fileTree(dir: "${rootDir.getPath()}/libs", include: ["*.jar", "*.aar"])
 
     doLast {
@@ -279,11 +276,9 @@ dependencies {
     implementation 'com.google.firebase:firebase-messaging'
 
     // Add v8-android - prebuilt libv8android.so into APK
-    implementation 'org.chromium:v8-android:9.93.+'
+    implementation 'org.chromium:v8-android:9.88.+'
 
     implementation 'androidx.viewpager2:viewpager2:1.0.0'
-
-    implementation project(path: ":react-native-interactable") // remove when https://github.com/wix/react-native-interactable/pull/288 is merged
 
     implementation 'com.facebook.fresco:animated-gif:2.0.0' // For animated GIF support
 
