@@ -6,19 +6,38 @@ before:
     - go mod download
 builds:
   -
+    id: berty
     env:
       - CGO_ENABLED=1
     goos:
       - linux
-      #- darwin
-      #- windows
-    goarch:
-      - amd64
+      - darwin
+      - windows
     dir: go/cmd/berty
     ignore:
       -
         goos: darwin
         goarch: 386
+      -
+        goos: windows
+        goarch: 386
+      -
+        goos: linux
+        goarch: 386
+    flags:
+      - "-a"
+    ldflags:
+      - '-X berty.tech/berty/v2/go/pkg/bertyversion.VcsRef=$(VCS_REF) -X berty.tech/berty/v2/go/pkg/bertyversion.Version=$(VERSION)'
+  -
+    id: bertyguy
+    binary: bertygui
+    env:
+      - CGO_ENABLED=1
+    goos:
+      - linux
+    goarch:
+      - amd64
+    dir: go/cmd/berty
     flags:
       - "-a"
       - "-tags=bertygui"
