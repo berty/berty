@@ -99,7 +99,7 @@ func (wa *watchdogsAdvertiser) advertises(ctx context.Context, ns string, opts .
 	}
 
 	var filter []string
-	if f, ok := options.Other["driverfilter"]; !ok {
+	if f, ok := options.Other["driverfilter"]; ok {
 		filter = f.([]string)
 	}
 
