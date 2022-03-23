@@ -601,7 +601,6 @@ func (m *Manager) configIPFSRouting(h host.Host, r p2p_routing.Routing) error {
 
 		drivers = append(drivers,
 			tinder.NewDriverFromUnregisterDiscovery("localdiscovery", localDiscovery, filter))
-		drivers = append(drivers)
 	}
 
 	// rdvp driver
