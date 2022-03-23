@@ -11,6 +11,7 @@ import (
 	"github.com/ipfs/go-datastore"
 	ds_sync "github.com/ipfs/go-datastore/sync"
 	coreapi "github.com/ipfs/interface-go-ipfs-core"
+	"github.com/libp2p/go-eventbus"
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
@@ -461,6 +462,7 @@ func (s *BertyOrbitDB) storeForGroup(ctx context.Context, o iface.BaseOrbitDB, g
 		s.rotationInterval.RegisterRotation(time.Now(), addr.String(), key)
 	}
 
+	options.EventBus = eventbus.NewBus()
 	store, err := o.Open(ctx, name, options)
 	if err != nil {
 		return nil, errcode.ErrOrbitDBOpen.Wrap(err)

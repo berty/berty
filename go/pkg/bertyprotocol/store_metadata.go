@@ -1083,10 +1083,7 @@ func constructorFactoryGroupMetadata(s *BertyOrbitDB, logger *zap.Logger) iface.
 				recvEvent := EventMetadataReceived{
 					MetaEvent: metaEvent,
 					Event:     event,
-				})
-				store.Emit(ctx, metaEvent) // nolint:staticcheck
-			}
-		}()
+				}
 
 				if err := store.emitters.metadataReceived.Emit(recvEvent); err != nil {
 					store.logger.Warn("unable to emit recv event", zap.Error(err))

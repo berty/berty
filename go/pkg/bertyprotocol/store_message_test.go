@@ -219,5 +219,4 @@ func Test_Add_Messages_To_Cache(t *testing.T) {
 	size, ok = peers[1].GC.MessageStore().CacheSizeForDevicePK(dPK0Raw)
 	require.True(t, ok)
 	require.Equal(t, 0, size)
-
 }

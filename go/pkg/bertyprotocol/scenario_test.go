@@ -135,8 +135,8 @@ func TestScenario_MessageSeveralMultiMemberGroups(t *testing.T) {
 
 func TestScenario_AddContact(t *testing.T) {
 	cases := []testCase{
-		{"2 clients/connectAll", 2, bertyprotocol.ConnectAll, testutil.Fast, testutil.Stable, time.Second * 20},
-		{"3 clients/connectAll", 3, bertyprotocol.ConnectAll, testutil.Fast, testutil.Stable, time.Second * 20},
+		{"2 clients/connectAll", 2, bertyprotocol.ConnectAll, testutil.Fast, testutil.Flappy, time.Second * 20},
+		{"3 clients/connectAll", 3, bertyprotocol.ConnectAll, testutil.Fast, testutil.Flappy, time.Second * 20},
 		{"5 clients/connectAll", 5, bertyprotocol.ConnectAll, testutil.Slow, testutil.Flappy, time.Second * 30},
 		{"8 clients/connectAll", 8, bertyprotocol.ConnectAll, testutil.Slow, testutil.Flappy, time.Second * 40},
 		{"10 clients/connectAll", 10, bertyprotocol.ConnectAll, testutil.Slow, testutil.Flappy, time.Second * 60},
