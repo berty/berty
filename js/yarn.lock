@@ -2284,11 +2284,6 @@
     lodash.pick "^4.4.0"
     lodash.template "^4.5.0"
 
-"@flyerhq/react-native-android-uri-path@2.1.3":
-  version "2.1.3"
-  resolved "https://registry.yarnpkg.com/@flyerhq/react-native-android-uri-path/-/react-native-android-uri-path-2.1.3.tgz#4767bb18c4b5a5a191f88e59598d987858d4f393"
-  integrity sha512-jn1gmFbxYbmCQ5aGcr3IArgyo0A34YIAYG5cszhNK3YJjTr12MuqPGltWz293Q+zve34i8ydh1xRTIJcLeBjZA==
-
 "@gorhom/bottom-sheet@^4":
   version "4.1.5"
   resolved "https://registry.yarnpkg.com/@gorhom/bottom-sheet/-/bottom-sheet-4.1.5.tgz#35341d45799de28082c380db6639537b04fa0b26"
@@ -6378,7 +6373,7 @@ expo-error-recovery@~3.0.5:
   resolved "https://registry.yarnpkg.com/expo-error-recovery/-/expo-error-recovery-3.0.5.tgz#1802b733e998606a8fcfb0abe6682c334319ef75"
   integrity sha512-VM6OOecjt0aPu5/eCdGGJfNjvAZIemaQym0JF/+SA5IlLiPpEfbVCDTO/5yiS8Zb5fKpeABx+GCRmtfnFqvRRw==
 
-expo-file-system@~13.1.3:
+expo-file-system@^13.1.4, expo-file-system@~13.1.3:
   version "13.1.4"
   resolved "https://registry.yarnpkg.com/expo-file-system/-/expo-file-system-13.1.4.tgz#08fc20d49b2182e1fd195d95c40cf7eddfe7bd91"
   integrity sha512-/C2FKCzrdWuEt4m8Pzl9J4MhKgfU0denVLbqoKjidv8DnsLQrscFNlLhXuiooqWwsxB2OWAtGEVnPGJBWVuNEQ==

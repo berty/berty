@@ -13,7 +13,6 @@ declare module 'react-native-flags'
 declare module 'react-native-emoji-board'
 declare module 'react-native-android-keyboard-adjust'
 declare module 'emoji-datasource'
-declare module '@flyerhq/react-native-android-uri-path'
 declare module 'eventemitter3'
 
 declare module 'google-palette' {

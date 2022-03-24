@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next'
 import { Layout } from '@ui-kitten/components'
 import { Platform, ScrollView, StatusBar, View } from 'react-native'
 import Share from '@berty-tech/polyfill/react-native-share'
-import getPath from '@flyerhq/react-native-android-uri-path'
 import DocumentPicker from 'react-native-document-picker'
 
 import { useStyles } from '@berty-tech/styles'
@@ -25,6 +24,7 @@ import {
 	selectThemeSelected,
 	setTheme,
 } from '@berty-tech/redux/reducers/theme.reducer'
+import { getPath } from '@berty-tech/rnutil/getPath'
 
 const openThemeColorFile = async () => {
 	try {
@@ -41,8 +41,8 @@ const openThemeColorFile = async () => {
 }
 
 const importColorThemeFileFromStorage = async (uri: string): Promise<string> => {
-	const file = Platform.OS === 'android' ? getPath(uri) : uri.replace(/^file:\/\//, '')
-	const theme = await RNFS.readFile(file, 'utf8')
+	const file = Platform.OS === 'android' ? await getPath(uri) : uri
+	const theme = await RNFS.readFile(file.replace(/^file:\/\//, ''), 'utf8')
 	return theme
 }
 

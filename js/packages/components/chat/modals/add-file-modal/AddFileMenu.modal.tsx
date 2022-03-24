@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next'
 import DocumentPicker from 'react-native-document-picker'
 import { RESULTS } from '@berty-tech/polyfill/react-native-permissions'
 import ImagePicker from '@berty-tech/polyfill/react-native-image-crop-picker'
-import getPath from '@flyerhq/react-native-android-uri-path'
 
 import { useMessengerClient, useThemeColor } from '@berty-tech/store'
 import beapi from '@berty-tech/api'
@@ -15,6 +14,7 @@ import { ListItemMenu } from './ListItemMenu'
 import { GallerySection } from './GallerySection'
 import { TabItems } from './types'
 import { SecurityAccess } from './SecurityAccess'
+import { getPath } from '@berty-tech/rnutil/getPath'
 
 const amap = async <T extends any, C extends (value: T) => any>(arr: T[], cb: C) =>
 	Promise.all(arr.map(cb))
@@ -185,7 +185,7 @@ export const AddFileMenu: React.FC<{
 					})
 					let uri = res.uri
 					if (Platform.OS === 'android') {
-						uri = 'file://' + getPath(uri)
+						uri = await getPath(uri)
 					}
 					prepareMediaAndSend([
 						{
