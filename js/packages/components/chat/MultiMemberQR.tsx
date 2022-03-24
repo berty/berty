@@ -7,7 +7,7 @@ import beapi from '@berty-tech/api'
 import { ScreenFC } from '@berty-tech/navigation'
 import { useStylesBertyId, useThemeColor } from '@berty-tech/store'
 import { useStyles } from '@berty-tech/styles'
-import { useAccount, useConversation } from '@berty-tech/react-redux'
+import { useConversation } from '@berty-tech/react-redux'
 
 import { MultiMemberAvatar } from '../avatars'
 import logo from '../main/1_berty_picto.png'
@@ -80,12 +80,10 @@ export const SelectedContent: React.FC<{ conv: beapi.messenger.IConversation }> 
 	)
 }
 
-const BertyIdShare: React.FC = () => {
+const BertyIdShare: React.FC<{ url?: string | null }> = ({ url }) => {
 	const [{ row, border, flex }] = useStyles()
 	const colors = useThemeColor()
 	const { styleBertyIdButton, iconShareSize } = useStylesBertyId(styleBertyIdOptions)
-	const account = useAccount()
-	const url = account.link
 	if (!url) {
 		return null
 	}
@@ -137,7 +135,7 @@ const MultiMemberComponent: React.FC<{ conv: beapi.messenger.IConversation }> = 
 			]}
 		>
 			<SelectedContent conv={conv} />
-			<BertyIdShare />
+			<BertyIdShare url={conv.link} />
 		</View>
 	)
 }
