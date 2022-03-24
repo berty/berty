@@ -214,8 +214,6 @@ func (s *service) SystemInfo(ctx context.Context, request *protocoltypes.SystemI
 		AccountMetadata: &protocoltypes.SystemInfo_OrbitDB_ReplicationStatus{
 			Progress: int64(status.GetProgress()),
 			Maximum:  int64(status.GetMax()),
-			Buffered: int64(status.GetBuffered()),
-			Queued:   int64(status.GetQueued()),
 		},
 	}
 	// FIXME: compute more stores

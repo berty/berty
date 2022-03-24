@@ -129,14 +129,14 @@ func (s *replicationService) GroupSubscribe(group *protocoltypes.Group, pkStr st
 	}
 
 	go func() {
-		ch := metadataStore.Subscribe(s.ctx)
+		ch := metadataStore.Subscribe(s.ctx) // nolint:staticcheck
 		for evt := range ch {
 			s.updateGroupDB(evt, metadataStore, pkStr, updatedMetaStore)
 		}
 	}()
 
 	go func() {
-		ch := messageStore.Subscribe(s.ctx)
+		ch := messageStore.Subscribe(s.ctx) // nolint:staticcheck
 		for evt := range ch {
 			s.updateGroupDB(evt, messageStore, pkStr, updatedMessageStore)
 		}
@@ -153,7 +153,7 @@ const (
 )
 
 func (s *replicationService) updateGroupDB(evt events.Event, store iface.Store, groupPK string, field groupInfoUpdatedStore) {
-	_, ok := evt.(*stores.EventReplicated)
+	_, ok := evt.(stores.EventReplicated)
 	if !ok {
 		return
 	}

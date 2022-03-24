@@ -87,7 +87,7 @@ func (m *MessageStore) openMessageCacheForPK(ctx context.Context, devicePK []byt
 				buffer = buffer.Next()
 				continue
 			}
-			m.Emit(ctx, evt)
+			m.Emit(ctx, evt) // nolint:staticcheck
 			buffer.Value = nil
 			buffer = buffer.Next()
 		}
@@ -271,7 +271,7 @@ func constructorFactoryGroupMessage(s *BertyOrbitDB, logger *zap.Logger) iface.S
 			cache:  make(map[string]*ring.Ring),
 		}
 
-		options.Index = basestore.NewBaseIndex
+		options.Index = basestore.NewNoopIndex
 
 		if err := store.InitBaseStore(ctx, ipfs, identity, addr, options); err != nil {
 			return nil, errcode.ErrOrbitDBInit.Wrap(err)
@@ -281,16 +281,16 @@ func constructorFactoryGroupMessage(s *BertyOrbitDB, logger *zap.Logger) iface.S
 			return store, nil
 		}
 
-		chSub := store.Subscribe(ctx)
+		chSub := store.Subscribe(ctx) // nolint:staticcheck
 		go func() {
 			for e := range chSub {
 				entry := ipfslog.Entry(nil)
 
 				switch evt := e.(type) {
-				case *stores.EventWrite:
+				case stores.EventWrite:
 					entry = evt.Entry
 
-				case *stores.EventReplicateProgress:
+				case stores.EventReplicateProgress:
 					entry = evt.Entry
 				}
 
@@ -323,7 +323,7 @@ func constructorFactoryGroupMessage(s *BertyOrbitDB, logger *zap.Logger) iface.S
 					tyber.FormatStepLogFields(ctx, []tyber.Detail{{Name: "Payload", Description: string(messageEvent.Message)}}, tyber.EndTrace)...,
 				)
 
-				store.Emit(ctx, messageEvent)
+				store.Emit(ctx, messageEvent) // nolint:staticcheck
 			}
 		}()
 
@@ -335,7 +335,7 @@ func (m *MessageStore) GetMessageByCID(c cid.Cid) (*protocoltypes.MessageEnvelop
 	m.cacheLock.Lock()
 	defer m.cacheLock.Unlock()
 
-	logEntry, ok := m.OpLog().Values().Get(c.String())
+	logEntry, ok := m.OpLog().Get(c)
 	if !ok {
 		return nil, nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("unable to find message entry"))
 	}

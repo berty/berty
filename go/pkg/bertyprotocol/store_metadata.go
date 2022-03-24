@@ -998,7 +998,7 @@ func constructorFactoryGroupMetadata(s *BertyOrbitDB, logger *zap.Logger) iface.
 		}
 
 		if replication {
-			options.Index = basestore.NewBaseIndex
+			options.Index = basestore.NewNoopIndex
 			if err := store.InitBaseStore(ctx, ipfs, identity, addr, options); err != nil {
 				return nil, errcode.ErrOrbitDBInit.Wrap(err)
 			}
@@ -1006,16 +1006,16 @@ func constructorFactoryGroupMetadata(s *BertyOrbitDB, logger *zap.Logger) iface.
 			return store, nil
 		}
 
-		chSub := store.Subscribe(ctx)
+		chSub := store.Subscribe(ctx) // nolint:staticcheck
 		go func() {
 			for e := range chSub {
 				var entry ipfslog.Entry
 
 				switch evt := e.(type) {
-				case *stores.EventWrite:
+				case stores.EventWrite:
 					entry = evt.Entry
 
-				case *stores.EventReplicateProgress:
+				case stores.EventReplicateProgress:
 					entry = evt.Entry
 
 				default:
@@ -1043,22 +1043,22 @@ func constructorFactoryGroupMetadata(s *BertyOrbitDB, logger *zap.Logger) iface.
 					tyber.UpdateTraceName(fmt.Sprintf("Received %s from %s group %s", strings.TrimPrefix(metaEvent.GetMetadata().GetEventType().String(), "EventType"), shortGroupType, b64GroupPK)),
 				)
 
-				store.Emit(ctx, &EventMetadataReceived{
+				store.Emit(ctx, &EventMetadataReceived{ // nolint:staticcheck
 					MetaEvent: metaEvent,
 					Event:     event,
 				})
-				store.Emit(ctx, metaEvent)
+				store.Emit(ctx, metaEvent) // nolint:staticcheck
 			}
 		}()
+
+		// Enable logs in the metadata index
+		store.setLogger(logger)
 
 		options.Index = newMetadataIndex(ctx, store, g, md.Public(), s.deviceKeystore)
 
 		if err := store.InitBaseStore(ctx, ipfs, identity, addr, options); err != nil {
 			return nil, errcode.ErrOrbitDBInit.Wrap(err)
 		}
-
-		// Enable logs in the metadata index
-		store.setLogger(logger)
 
 		return store, nil
 	}

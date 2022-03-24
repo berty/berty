@@ -24,7 +24,7 @@ func inviteAllPeersToGroup(ctx context.Context, t *testing.T, peers []*mockedPee
 			defer cancel()
 			eventReceived := 0
 
-			for e := range p.GC.MetadataStore().Subscribe(ctx) {
+			for e := range p.GC.MetadataStore().Subscribe(ctx) { // nolint:staticcheck
 				switch e.(type) {
 				case *protocoltypes.GroupMetadataEvent:
 					casted, _ := e.(*protocoltypes.GroupMetadataEvent)
@@ -79,7 +79,7 @@ func waitForBertyEventType(ctx context.Context, t *testing.T, ms *MetadataStore,
 
 	handledEvents := map[string]struct{}{}
 
-	for evt := range ms.Subscribe(ctx) {
+	for evt := range ms.Subscribe(ctx) { // nolint:staticcheck
 		switch evt.(type) {
 		case *protocoltypes.GroupMetadataEvent:
 			if evt.(*protocoltypes.GroupMetadataEvent).Metadata.EventType != eventType {

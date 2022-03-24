@@ -53,7 +53,7 @@ func (s *service) GroupMetadataList(req *protocoltypes.GroupMetadataList_Request
 
 	// Subscribe to new metadata events if requested
 	if req.UntilID == nil && !req.UntilNow {
-		newEvents = cg.MetadataStore().Subscribe(sub.Context())
+		newEvents = cg.MetadataStore().Subscribe(sub.Context()) // nolint:staticcheck
 	}
 
 	listPreviousMessages := func() error {
@@ -94,7 +94,7 @@ func (s *service) GroupMetadataList(req *protocoltypes.GroupMetadataList_Request
 	if req.UntilID == nil && !req.UntilNow {
 		for event := range newEvents {
 			if !firstReplicatedFound {
-				if _, ok := event.(*stores.EventReplicated); ok {
+				if _, ok := event.(stores.EventReplicated); ok {
 					if err := listPreviousMessages(); err != nil {
 						return err
 					}
@@ -148,7 +148,7 @@ func (s *service) GroupMessageList(req *protocoltypes.GroupMessageList_Request, 
 
 	// Subscribe to new message events if requested
 	if req.UntilID == nil && !req.UntilNow {
-		newEvents = cg.MessageStore().Subscribe(sub.Context())
+		newEvents = cg.MessageStore().Subscribe(sub.Context()) // nolint:staticcheck
 	}
 
 	listPreviousMessages := func() error {
@@ -189,7 +189,7 @@ func (s *service) GroupMessageList(req *protocoltypes.GroupMessageList_Request, 
 	if req.UntilID == nil && !req.UntilNow {
 		for event := range newEvents {
 			if !firstReplicatedFound {
-				if _, ok := event.(*stores.EventReplicated); ok {
+				if _, ok := event.(stores.EventReplicated); ok {
 					if err := listPreviousMessages(); err != nil {
 						return err
 					}

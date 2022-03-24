@@ -44,7 +44,7 @@ type metadataStoreIndex struct {
 	ownMemberDevice          *cryptoutil.MemberDevice
 	deviceKeystore           cryptoutil.DeviceKeystore
 	ctx                      context.Context
-	eventEmitter             events.EmitterInterface
+	eventEmitter             events.EmitterInterface // nolint:staticcheck
 	lock                     sync.RWMutex
 	logger                   *zap.Logger
 }
@@ -65,7 +65,7 @@ func (m *metadataStoreIndex) UpdateIndex(log ipfslog.Log, _ []ipfslog.Entry) err
 	m.lock.Lock()
 	defer m.lock.Unlock()
 
-	entries := log.Values().Slice()
+	entries := log.GetEntries().Slice()
 
 	// Resetting state
 	m.contacts = map[string]*AccountContact{}
@@ -881,6 +881,7 @@ func (m *metadataStoreIndex) postHandlerSentAliases() error {
 	return nil
 }
 
+// nolint:staticcheck
 // newMetadataIndex returns a new index to manage the list of the group members
 func newMetadataIndex(ctx context.Context, eventEmitter events.EmitterInterface, g *protocoltypes.Group, md *cryptoutil.MemberDevice, devKS cryptoutil.DeviceKeystore) iface.IndexConstructor {
 	return func(publicKey []byte) iface.StoreIndex {
