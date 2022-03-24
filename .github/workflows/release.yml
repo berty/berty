@@ -3,54 +3,62 @@ on:
   push:
     branches:
       - master
+  pull_request:
+    paths:
+      - "go/**"
+      - "!go/**.md"
+      - ".goreleaser"
+      - "go.*"
+      - "**.go"
+      - ".github/workflows/release.yml"
 
 jobs:
-  release:
-    name: releaser
+  semantic-release:
+    name: semantic release
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        golang: [1.18.x]
+    outputs:
+      new-release-published: ${{ steps.semantic-echo.outputs.new-release-published }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Load variables from file
-        uses: antifree/json-to-variables@v1.0.1
-        with:
-          filename: .github/workflows/utils/variables.json
+
       - name: Unshallow
         run: git fetch --prune --unshallow
+
       - name: Run Semantic Release
         id: semantic
         uses: docker://ghcr.io/codfish/semantic-release-action:v1
+        with:
+          branches: |
+            ['master']
+          plugins: |
+            [
+              '@semantic-release/commit-analyzer',
+              '@semantic-release/release-notes-generator',
+              '@semantic-release/github'
+            ]
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Install libgl
-        if: steps.semantic.outputs.new-release-published == 'true'
+
+      - name: Export Semantic Release
+        id: semantic-echo
         run: |
-          sudo apt update
-          sudo apt install -f
-          sudo apt install -f -y libgl1-mesa-glx libgl1-mesa-dev xorg-dev
-      - name: Set up Go
+          echo "::set-output name=new-release-published::${{steps.semantic.outputs.new-release-published}}"
+
+      # Next step also sets up a .npmrc file for automatic publishing to npm
+
+      - uses: actions/setup-node@v2
         if: steps.semantic.outputs.new-release-published == 'true'
-        uses: actions/setup-go@v2
         with:
-          go-version: ${{ matrix.golang }}
-      - name: Cache Go modules
+          node-version: "14.x"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: "Publish npm package: @berty/api"
         if: steps.semantic.outputs.new-release-published == 'true'
-        uses: actions/cache@v2.1.6
-        with:
-          path: ~/go/pkg/mod
-          key: ${{ runner.os }}-go-${{ matrix.golang }}-${{ env.json_cache-version_go }}-${{ hashFiles('**/go.sum') }}
-          restore-keys: ${{ runner.os }}-go-${{ matrix.golang }}-${{ env.json_cache-version_go }}-
-      - name: Run GoReleaser
-        if: steps.semantic.outputs.new-release-published == 'true'
-        uses: goreleaser/goreleaser-action@v2.9.1
-        with:
-          version: latest
-          args: release --rm-dist
+        run: go run ./go/cmd/publish-npm-package -path=js/packages/api -version=${{ steps.semantic.outputs.release-version }}
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
       - name: Register version on pkg.go.dev
         if: steps.semantic.outputs.new-release-published == 'true'
         run: |
@@ -60,14 +68,73 @@ jobs:
           set -x +e
           curl -i $url
 
-      # Next step also sets up a .npmrc file for automatic publishing to npm
-      - uses: actions/setup-node@v2
-        if: steps.semantic.outputs.new-release-published == 'true'
+  build-asset:
+    needs: semantic-release
+    name: build asset
+    runs-on: ${{ matrix.config.runs-on }}
+    strategy:
+      matrix:
+        config: [
+          {runs-on: 'ubuntu-latest',  goos: 'linux',   golang: '1.17.x'},
+          {runs-on: 'macos-latest',  goos: 'darwin',  golang: '1.17.x'},
+          {runs-on: 'windows-latest', goos: 'windows', golang: '1.17.x'},
+          # TODO: bertyguy
+        ]
+    env:
+      OSXCROSS_DIR: /home/runner/work/osxcross
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Load variables from file
+        uses: antifree/json-to-variables@v1.0.1
         with:
-          node-version: "14.x"
-          registry-url: "https://registry.npmjs.org"
-      - name: "Publish npm package: @berty/api"
-        if: steps.semantic.outputs.new-release-published == 'true'
-        run: go run ./go/cmd/publish-npm-package -path=js/packages/api -version=${{ steps.semantic.outputs.release-version }}
+          filename: .github/workflows/utils/variables.json
+
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: ${{ matrix.config.golang }}
+
+      - name: Cache Go modules
+        uses: actions/cache@v2
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ matrix.config.golang }}-${{ env.json_cache-version_go }}-${{ hashFiles('**/go.sum') }}
+          restore-keys: ${{ runner.os }}-go-${{ matrix.config.golang }}-${{ env.json_cache-version_go }}-
+
+      - name: Install Linux Dependencies
+        if: matrix.config.goos == 'linux'
+        run: |
+          echo 'deb http://security.ubuntu.com/ubuntu bionic-security main' | sudo tee -a /etc/apt/sources.list
+          sudo apt update
+          sudo apt-cache policy libssl1.0-dev
+          sudo apt install -f libssl1.0-dev
+          sudo apt install -f gcc-multilib g++-multilib gcc-mingw-w64 clang
+          sudo apt install -f -y libgl1-mesa-glx libgl1-mesa-dev xorg-dev
+          mkdir ../../osxcross
+          git clone https://github.com/plentico/osxcross-target.git ../../osxcross/target
+
+      - name: "Run GoReleaser (DryRun)"
+        uses: goreleaser/goreleaser-action@v2
+        if: needs.semantic-release.outputs.new-release-published != true
+        with:
+          version: latest
+          args: release --rm-dist -f .github/workflows/utils/.goreleaser.${{ matrix.config.goos }}.yml --skip-publish
+
+      - name: "Run GoReleaser (Publish)"
+        uses: goreleaser/goreleaser-action@v2
+        if: needs.semantic-release.outputs.new-release-published == true
+        with:
+          version: latest
+          args: release --rm-dist -f .github/workflows/utils/.goreleaser.${{ matrix.config.goos }}.yml
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: "Dist/ directory listing (Posix)"
+        if: matrix.config.goos != 'windows'
+        run: ls -lah dist
+
+      - name: "Dist/ directory listing (Windows)"
+        if: matrix.config.goos == 'windows'
+        run: Get-ChildItem -Recurse dist
