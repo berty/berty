@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import { View, ScrollView } from 'react-native'
 import { Layout, Input } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
-import { withInAppNotification } from 'react-native-in-app-notification'
 
 import { useStyles } from '@berty-tech/styles'
 import { ScreenFC } from '@berty-tech/navigation'
@@ -14,6 +13,7 @@ import {
 	useAccountServices,
 	serviceNames,
 } from '@berty-tech/store'
+import { withInAppNotification } from '@berty-tech/polyfill/react-native-in-app-notification'
 
 import { ButtonSetting, FactionButtonSetting } from '../shared-components'
 import { showNeedRestartNotification } from '../helpers'

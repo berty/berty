@@ -123,6 +123,9 @@ __generated__/
 # osx
 dist/
 osx/Berty.app
+
+# watchman
+.watchman-cookie*
 *.pb.*
 *.gen.*
 /packages/web-dev-app/

@@ -18,7 +18,6 @@ if (typeof Buffer === 'undefined') {
 	global.Buffer = require('buffer').Buffer
 }
 
-// if dev mode, redirect console output to native logger
 if (!__DEV__) {
 	global.console = BridgeLogger(NativeModules.GoBridge)
 	global.console.info('native bridge logger enabled')

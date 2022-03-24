@@ -1,7 +1,7 @@
 import { grpc } from '@improbable-eng/grpc-web'
 import { getServiceName } from './utils'
 import * as pb from 'protobufjs'
-import { newGRPCError } from '../error'
+import { newGRPCError, EOF } from '../error'
 
 class LazyMessage extends pb.Message implements grpc.ProtobufMessage {
 	buf: Uint8Array
@@ -80,26 +80,48 @@ const stream =
 		const client = grpc.client(methodDesc, options)
 		return new Promise(resolve => {
 			const stream = {
+				resolve: null as ((_: unknown) => void) | null,
+				reject: null as ((_: unknown) => void) | null,
 				onMessage: (callback: (message: Uint8Array | null, error: Error | null) => void) => {
 					client.onMessage((message: grpc.ProtobufMessage): void => {
 						callback(message.serializeBinary(), null)
 					})
-					client.onEnd((code: grpc.Code, message: string /*, metadata: grpc.Metadata*/) => {
-						const error = newGRPCError(code, message)
-						callback(null, error)
+					client.onEnd((code: grpc.Code, message: string /*, metadata: grpc.Metadata */) => {
+						// TODO: dig why Internal Error is throw on grpcWeb
+						const messagesToCheck = [
+							'Response closed without grpc-status (Trailers provided)',
+							'Response closed without grpc-status (Headers only)',
+						]
+						const codesToCheck = [grpc.Code.Unknown, grpc.Code.Internal]
+						if (codesToCheck.indexOf(code) !== -1 && messagesToCheck.indexOf(message) !== -1) {
+							callback(null, EOF)
+							if (stream.resolve) {
+								stream.resolve(null)
+							}
+						} else {
+							callback(null, code === grpc.Code.OK ? EOF : newGRPCError(code, message))
+							if (code === grpc.Code.OK && stream.resolve) {
+								stream.resolve(null)
+							} else if (code !== grpc.Code.OK && stream.reject) {
+								stream.reject(newGRPCError(code, message))
+							}
+						}
 					})
 				},
 				emit: async (request: Uint8Array) => {
 					client.send(LazyMessage.deserializeBinary(request))
 				},
-				start: () => {
-					client.start(new grpc.Metadata(metadata))
-					if (!methodDesc.requestStream) {
-						client.send(LazyMessage.deserializeBinary(request))
-						client.finishSend()
-					}
-					return () => client.close()
-				},
+				start: () =>
+					new Promise((resolve, reject) => {
+						stream.resolve = resolve
+						stream.reject = reject
+						client.start(new grpc.Metadata(metadata))
+						if (!methodDesc.requestStream) {
+							client.send(LazyMessage.deserializeBinary(request))
+							client.finishSend()
+						}
+						return () => client.close()
+					}),
 				stop: async () => {
 					if (methodDesc.requestStream) {
 						client.finishSend()

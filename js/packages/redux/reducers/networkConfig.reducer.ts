@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { PermissionStatus } from 'react-native-permissions'
+import { PermissionStatus } from '@berty-tech/polyfill/react-native-permissions'
 
 import beapi from '@berty-tech/api'
 /**
@@ -29,7 +29,7 @@ export type NetworkConfigState = {
 	staticRelay: ConfigListType[]
 }
 
-const initialNode = [
+export const initialNode = [
 	{
 		url: ':default:',
 		alias: 'Berty Default',

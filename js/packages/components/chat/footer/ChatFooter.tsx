@@ -1,8 +1,7 @@
 import React, { useMemo } from 'react'
 import { NativeSyntheticEvent, TextInputSelectionChangeEventData, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import ImagePicker from 'react-native-image-crop-picker'
-import { RESULTS } from 'react-native-permissions'
+import { RESULTS } from '@berty-tech/polyfill/react-native-permissions'
 import Long from 'long'
 import { useTranslation } from 'react-i18next'
 
@@ -27,6 +26,7 @@ import {
 	setChatInputIsSending,
 	setChatInputSelection,
 } from '@berty-tech/redux/reducers/chatInputsVolatile.reducer'
+import ImagePicker from '@berty-tech/polyfill/react-native-image-crop-picker'
 
 import { CameraButton, MoreButton, RecordButton, SendButton } from './ChatFooterButtons'
 import { ChatTextInput } from './ChatTextInput'
@@ -211,13 +211,15 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 					cropping: false,
 				})
 
-				await prepareMediaAndSend([
-					{
-						filename: '',
-						uri: image.path || image.sourceURL || '',
-						mimeType: image.mime,
-					},
-				])
+				if (image) {
+					await prepareMediaAndSend([
+						{
+							filename: '',
+							uri: image.path || image.sourceURL || '',
+							mimeType: image.mime,
+						},
+					])
+				}
 			} catch (err) {
 				console.warn('failed to send quick picture:', err)
 			}

@@ -2,10 +2,9 @@ import React from 'react'
 import { Image, View, ViewStyle, Text, TouchableOpacity } from 'react-native'
 import palette from 'google-palette'
 import { SHA3 } from 'sha3'
-import { withBadge } from 'react-native-elements'
 
 import { useStyles } from '@berty-tech/styles'
-import { Maybe, useMessengerContext, useThemeColor } from '@berty-tech/store'
+import { Maybe, useThemeColor } from '@berty-tech/store'
 import { navigate } from '@berty-tech/navigation'
 import beapi from '@berty-tech/api'
 import PinkBotAvatar from '@berty-tech/assets/berty_bot_pink_bg.png'
@@ -13,10 +12,12 @@ import GreenDevAvatar from '@berty-tech/assets/berty_dev_green_bg.png'
 import OrangeBotAvatar from '@berty-tech/assets/berty_bot_orange_bg.png'
 import BlueDevAvatar from '@berty-tech/assets/berty_dev_blue_bg.png'
 import { useAccount, useContact, useConversation, useMember } from '@berty-tech/react-redux'
+import { selectPersistentOptions } from '@berty-tech/redux/reducers/persistentOptions.reducer'
 
 import AttachmentImage from './AttachmentImage'
 import GroupAvatar from './main/Avatar_Group_Copy_19.png'
 import Logo from './main/1_berty_picto.svg'
+import { useSelector } from 'react-redux'
 
 export type AvatarStyle = Omit<
 	ViewStyle,
@@ -232,8 +233,8 @@ export const ContactAvatar: React.FC<{
 	pressable?: boolean
 }> = React.memo(({ publicKey, size, style, fallbackNameSeed, pressable }) => {
 	const contact = useContact(publicKey)
-	const ctx = useMessengerContext()
-	const suggestion = Object.values(ctx.persistentOptions?.suggestions).find(v => v.pk === publicKey)
+	const persistentOptions = useSelector(selectPersistentOptions)
+	const suggestion = Object.values(persistentOptions?.suggestions).find(v => v.pk === publicKey)
 	if (suggestion) {
 		return (
 			<HardcodedAvatar
@@ -282,13 +283,11 @@ export const MultiMemberAvatar: React.FC<{
 	fallbackNameSeed?: Maybe<string>
 	pressable?: boolean
 }> = React.memo(({ size, style, publicKey, fallbackNameSeed, pressable }) => {
-	const ctx = useMessengerContext()
+	const persistentOptions = useSelector(selectPersistentOptions)
 	const conv = useConversation(publicKey)
 	// this useMemo prevents flickering
 	return React.useMemo(() => {
-		const suggestion = Object.values(ctx.persistentOptions?.suggestions).find(
-			v => v.pk === publicKey,
-		)
+		const suggestion = Object.values(persistentOptions?.suggestions).find(v => v.pk === publicKey)
 		let content: React.ReactElement
 		if (suggestion) {
 			content = (
@@ -311,18 +310,15 @@ export const MultiMemberAvatar: React.FC<{
 				/>
 			)
 		}
-		const badgeSize = size / 3
-		class GroupBadge extends React.Component {
-			render = () => <HardcodedAvatar size={badgeSize} name={'group'} />
-		}
+
+		// TODO: diff a OneToOne conversation icon and a MultiMember conversation icon
 		const Avatar = () => content
-		const WrappedAvatar = withBadge('', { Component: GroupBadge })(Avatar)
-		return <WrappedAvatar />
+		return <Avatar />
 	}, [
 		conv?.avatarCid,
 		conv?.displayName,
-		ctx.persistentOptions?.suggestions,
 		fallbackNameSeed,
+		persistentOptions?.suggestions,
 		pressable,
 		publicKey,
 		size,
@@ -336,7 +332,7 @@ export const ConversationAvatar: React.FC<{
 	style?: AvatarStyle
 }> = React.memo(({ publicKey, size, style }) => {
 	const conv = useConversation(publicKey)
-	const ctx = useMessengerContext()
+	const persistentOptions = useSelector(selectPersistentOptions)
 
 	if (conv) {
 		if (conv.type === beapi.messenger.Conversation.Type.MultiMemberType) {
@@ -346,7 +342,7 @@ export const ConversationAvatar: React.FC<{
 		}
 	}
 
-	const suggestion = Object.values(ctx.persistentOptions?.suggestions).find(v => v.pk === publicKey)
+	const suggestion = Object.values(persistentOptions?.suggestions).find(v => v.pk === publicKey)
 	if (suggestion) {
 		return <HardcodedAvatar size={size} style={style} name={suggestion.icon as any} />
 	}

@@ -6,17 +6,10 @@ import {
 	RESULTS,
 	openSettings,
 	PermissionStatus,
-	request,
-	PERMISSIONS,
-} from 'react-native-permissions'
+} from '@berty-tech/polyfill/react-native-permissions'
 
 import { useStyles } from '@berty-tech/styles'
-import {
-	accountService,
-	PersistentOptionsKeys,
-	useMessengerContext,
-	useThemeColor,
-} from '@berty-tech/store'
+import { accountService, useThemeColor } from '@berty-tech/store'
 import audioLottie from '@berty-tech/assets/audio-lottie.json'
 import cameraLottie from '@berty-tech/assets/camera-lottie.json'
 import notificationLottie from '@berty-tech/assets/notification-lottie.json'
@@ -28,6 +21,12 @@ import { useDispatch, useSelector } from 'react-redux'
 import { selectSelectedAccount } from '@berty-tech/redux/reducers/ui.reducer'
 import { PermissionType, requestPermission } from '@berty-tech/rnutil/checkPermissions'
 import { setBlePerm } from '@berty-tech/redux/reducers/networkConfig.reducer'
+import {
+	PersistentOptionsKeys,
+	selectPersistentOptions,
+	setPersistentOption,
+} from '@berty-tech/redux/reducers/persistentOptions.reducer'
+import { useAppDispatch } from '@berty-tech/react-redux'
 
 const animations: Record<PermissionType, AnimatedLottieViewProps['source']> = {
 	audio: audioLottie,
@@ -42,7 +41,8 @@ export const Permissions: ScreenFC<'Main.Permissions'> = ({ route: { params }, n
 	const [{ text, border }] = useStyles()
 	const colors = useThemeColor()
 	const { t }: { t: any } = useTranslation()
-	const { persistentOptions, setPersistentOption } = useMessengerContext()
+	const persistentOptions = useSelector(selectPersistentOptions)
+	const dispatch = useAppDispatch()
 	const selectedAccount = useSelector(selectSelectedAccount)
 	const { permissionType, permissionStatus, navigateNext, onComplete } = params
 
@@ -73,16 +73,18 @@ export const Permissions: ScreenFC<'Main.Permissions'> = ({ route: { params }, n
 			}
 			if (permissionType === 'notification') {
 				try {
-					await setPersistentOption({
-						type: PersistentOptionsKeys.Configurations,
-						payload: {
-							...persistentOptions.configurations,
-							notification: {
-								...persistentOptions.configurations.notification,
-								state: status === RESULTS.GRANTED ? 'added' : 'skipped',
+					dispatch(
+						setPersistentOption({
+							type: PersistentOptionsKeys.Configurations,
+							payload: {
+								...persistentOptions.configurations,
+								notification: {
+									...persistentOptions.configurations.notification,
+									state: status === RESULTS.GRANTED ? 'added' : 'skipped',
+								},
 							},
-						},
-					})
+						}),
+					)
 				} catch (err) {
 					console.warn('request notification permisison err:', err)
 				}
@@ -119,12 +121,12 @@ export const Permissions: ScreenFC<'Main.Permissions'> = ({ route: { params }, n
 		}
 		await handleOnComplete(status)
 	}, [
+		dispatch,
 		handleOnComplete,
 		permissionStatus,
 		permissionType,
 		persistentOptions.configurations,
 		selectedAccount,
-		setPersistentOption,
 	])
 
 	const handleAppStateChange = useCallback(
@@ -306,11 +308,7 @@ export const BlePermission: ScreenFC<'Main.BlePermission'> = ({ route: { params 
 	const handleRequestPermission = React.useCallback(async () => {
 		try {
 			// request the permission
-			const status = await request(
-				Platform.OS === 'ios'
-					? PERMISSIONS.IOS.BLUETOOTH_PERIPHERAL
-					: PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
-			)
+			const status = await requestPermission('proximity')
 			// set new Ble status for toggle's condition in settings
 			dispatch(setBlePerm(status))
 			// check status

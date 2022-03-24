@@ -2,9 +2,8 @@ import React, { useCallback, useState } from 'react'
 import { View, Platform } from 'react-native'
 import { useTranslation } from 'react-i18next'
 import DocumentPicker from 'react-native-document-picker'
-import { RESULTS } from 'react-native-permissions'
-import ImagePicker from 'react-native-image-crop-picker'
-import getPath from '@flyerhq/react-native-android-uri-path'
+import { RESULTS } from '@berty-tech/polyfill/react-native-permissions'
+import ImagePicker from '@berty-tech/polyfill/react-native-image-crop-picker'
 
 import { useMessengerClient, useThemeColor } from '@berty-tech/store'
 import beapi from '@berty-tech/api'
@@ -15,6 +14,7 @@ import { ListItemMenu } from './ListItemMenu'
 import { GallerySection } from './GallerySection'
 import { TabItems } from './types'
 import { SecurityAccess } from './SecurityAccess'
+import { getPath } from '@berty-tech/rnutil/getPath'
 
 const amap = async <T extends any, C extends (value: T) => any>(arr: T[], cb: C) =>
 	Promise.all(arr.map(cb))
@@ -143,6 +143,28 @@ export const AddFileMenu: React.FC<{
 					console.warn('camera permission:', status)
 					return
 				}
+				try {
+					await ImagePicker.clean()
+				} catch (err) {
+					console.warn('failed to clean image picker:', err)
+				}
+				try {
+					const image = await ImagePicker.openCamera({
+						cropping: false,
+					})
+
+					if (image) {
+						prepareMediaAndSend([
+							{
+								filename: '',
+								uri: image.path || image.sourceURL || '',
+								mimeType: image.mime,
+							},
+						])
+					}
+				} catch (err) {
+					console.log(err)
+				}
 			},
 		},
 		{
@@ -163,7 +185,7 @@ export const AddFileMenu: React.FC<{
 					})
 					let uri = res.uri
 					if (Platform.OS === 'android') {
-						uri = 'file://' + getPath(uri)
+						uri = await getPath(uri)
 					}
 					prepareMediaAndSend([
 						{

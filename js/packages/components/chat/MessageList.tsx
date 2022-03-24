@@ -5,6 +5,7 @@ import {
 	FlatList,
 	ListRenderItem,
 	View,
+	Platform,
 } from 'react-native'
 import moment from 'moment'
 
@@ -218,6 +219,7 @@ export const MessageList: React.FC<{
 				initialNumToRender={20}
 				onScrollBeginDrag={handleScrollBeginDrag}
 				onScrollEndDrag={handleScrollEndDrag}
+				disableVirtualization={Platform.OS === 'web'}
 			/>
 		</View>
 	)

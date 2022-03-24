@@ -9,11 +9,11 @@ import {
 } from 'react-native'
 import { Icon, Input, Text } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
-import ImagePicker, { ImageOrVideo } from 'react-native-image-crop-picker'
 
 import { useStyles } from '@berty-tech/styles'
 import { useMessengerClient, useMessengerContext, useThemeColor } from '@berty-tech/store'
 import { useAccount } from '@berty-tech/react-redux'
+import ImagePicker, { ImageOrVideo } from '@berty-tech/polyfill/react-native-image-crop-picker'
 
 import { AccountAvatar } from '../avatars'
 import { useSelector } from 'react-redux'

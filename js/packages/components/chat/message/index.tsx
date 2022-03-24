@@ -4,19 +4,18 @@ import { Text } from '@ui-kitten/components'
 import { Dictionary } from '@reduxjs/toolkit'
 
 import beapi from '@berty-tech/api'
-import {
-	pbDateToNum,
-	ParsedInteraction,
-	PersistentOptionsKeys,
-	useMessengerContext,
-	useThemeColor,
-} from '@berty-tech/store'
+import { pbDateToNum, ParsedInteraction, useThemeColor } from '@berty-tech/store'
 import { useStyles } from '@berty-tech/styles'
 
 import { timeFormat } from '../../helpers'
 import { MessageInvitation } from './MessageInvitation'
 import { MessageMonitorMetadata } from './MessageMonitorMetadata'
 import { UserMessage } from './UserMessage'
+import { useSelector } from 'react-redux'
+import {
+	PersistentOptionsKeys,
+	selectPersistentOptions,
+} from '@berty-tech/redux/reducers/persistentOptions.reducer'
 
 //
 // Message => All messages (group/contact)
@@ -33,7 +32,7 @@ export const Message: React.FC<{
 	scrollToCid: (cid: string) => void
 }> = React.memo(
 	({ inte, convKind, members, previousMessage, nextMessage, convPK, replyOf, scrollToCid }) => {
-		const ctx = useMessengerContext()
+		const persistentOptions = useSelector(selectPersistentOptions)
 		const [{ text, padding }] = useStyles()
 		const colors = useThemeColor()
 
@@ -83,7 +82,7 @@ export const Message: React.FC<{
 			)
 		} else if (
 			inte.type === beapi.messenger.AppMessage.Type.TypeMonitorMetadata &&
-			ctx?.persistentOptions[PersistentOptionsKeys.Debug].enable
+			persistentOptions[PersistentOptionsKeys.Debug].enable
 		) {
 			return <MessageMonitorMetadata inte={inte} />
 		} else {

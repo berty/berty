@@ -1,15 +1,6 @@
-import { Platform } from 'react-native'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
-import {
-	NotificationsInhibitor,
-	PersistentOptions,
-	PersistentOptionsKeys,
-	PersistentOptionsSuggestions,
-	StreamInProgress,
-	UpdatesProfileNotification,
-} from '@berty-tech/store'
-import { globals } from '@berty-tech/config'
+import { NotificationsInhibitor, StreamInProgress } from '@berty-tech/store'
 import beapi from '@berty-tech/api'
 import { ServiceClientType } from '@berty-tech/grpc-bridge/welsh-clients.gen'
 
@@ -18,49 +9,6 @@ import { ServiceClientType } from '@berty-tech/grpc-bridge/welsh-clients.gen'
  * Types
  *
  */
-
-export const defaultPersistentOptions = (): PersistentOptions => {
-	let suggestions: PersistentOptionsSuggestions = {}
-	Object.values(globals.berty.contacts).forEach(async value => {
-		if (value.suggestion) {
-			suggestions = {
-				...suggestions,
-				[value.name]: {
-					link: value.link,
-					displayName: value.name,
-					state: 'unread',
-					pk: '',
-					icon: value.icon,
-				},
-			}
-		}
-	})
-	return {
-		[PersistentOptionsKeys.Notifications]: {
-			enable: true,
-		},
-		[PersistentOptionsKeys.Suggestions]: suggestions,
-		[PersistentOptionsKeys.Debug]: {
-			enable: false,
-		},
-		[PersistentOptionsKeys.Log]: {
-			format: 'json',
-		},
-		[PersistentOptionsKeys.Configurations]: {},
-		[PersistentOptionsKeys.LogFilters]: {
-			format: '*:bty*',
-		},
-		[PersistentOptionsKeys.TyberHost]: {
-			address: Platform.OS === 'android' ? '10.0.2.2:4242' : '127.0.0.1:4242',
-		},
-		[PersistentOptionsKeys.OnBoardingFinished]: {
-			isFinished: false,
-		},
-		[PersistentOptionsKeys.ProfileNotification]: {
-			[UpdatesProfileNotification]: 0,
-		},
-	}
-}
 
 export type UiState = {
 	appState: MESSENGER_APP_STATE[keyof MESSENGER_APP_STATE]
@@ -71,7 +19,6 @@ export type UiState = {
 	streamError: unknown
 	streamInProgress: StreamInProgress | null
 	notificationsInhibitors: NotificationsInhibitor[]
-	persistentOptions: PersistentOptions
 	daemonAddress: string
 	clearClients: (() => Promise<void>) | (() => void) | null
 	embedded: boolean
@@ -189,7 +136,6 @@ const initialState: UiState = {
 	streamError: null,
 	streamInProgress: null,
 	notificationsInhibitors: [],
-	persistentOptions: defaultPersistentOptions(),
 	daemonAddress: '',
 	clearClients: null,
 	embedded: true,
@@ -221,15 +167,23 @@ const setStateOpeningFn = (state: UiState) => {
 }
 
 const setStateClosedFn = (state: UiState) => {
-	state.accounts = state.accounts
-	state.embedded = state.embedded
-	state.daemonAddress = state.daemonAddress
-	changeAppState(state, MESSENGER_APP_STATE.CLOSED)
+	Object.keys(initialState).map(k => {
+		if (['accounts', 'embedded', 'daemonAddress', 'nextSelectedAccount'].indexOf(k) !== -1) {
+			return
+		}
+
+		// @ts-ignore
+		state[k] = initialState[k]
+	})
+
 	state.nextSelectedAccount = state.embedded ? state.nextSelectedAccount : '0'
 
 	if (state.nextSelectedAccount !== null) {
 		setStateOpeningFn(state)
+		return
 	}
+
+	changeAppState(state, MESSENGER_APP_STATE.CLOSED)
 }
 
 const changeAppState = (
@@ -262,9 +216,6 @@ const slice = createSlice({
 		deleteFakeData() {},
 		setDaemonAddress(state: UiState, { payload: { value } }: PayloadAction<{ value: string }>) {
 			state.daemonAddress = value
-		},
-		setPersistentOptions(state: UiState, { payload }: PayloadAction<PersistentOptions>) {
-			state.persistentOptions = payload
 		},
 		setStateOpeningListingEvents(
 			state: UiState,
@@ -403,9 +354,6 @@ export const selectEmbedded = (state: LocalRootState): boolean => selectSlice(st
 export const selectDaemonAddress = (state: LocalRootState): string =>
 	selectSlice(state).daemonAddress
 
-export const selectPersistentOptions = (state: LocalRootState): PersistentOptions =>
-	selectSlice(state).persistentOptions
-
 export const selectDebugMode = (state: LocalRootState): boolean => selectSlice(state).debugMode
 
 export const selectStreamInProgress = (state: LocalRootState): StreamInProgress | null =>
@@ -428,7 +376,6 @@ export const {
 	// addFakeData,
 	deleteFakeData,
 	setDaemonAddress,
-	setPersistentOptions,
 	setStateOpeningListingEvents,
 	setStateClosed,
 	setNextAccount,

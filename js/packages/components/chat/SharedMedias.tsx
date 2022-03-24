@@ -16,7 +16,6 @@ import { TabView, SceneMap } from 'react-native-tab-view'
 import tlds from 'tlds'
 import LinkifyIt from 'linkify-it'
 import Hyperlink from 'react-native-hyperlink'
-import RNFS from 'react-native-fs'
 
 import beapi from '@berty-tech/api'
 import { useStyles } from '@berty-tech/styles'
@@ -29,6 +28,7 @@ import {
 	Maybe,
 } from '@berty-tech/store'
 import { useConversationInteractions } from '@berty-tech/react-redux'
+import RNFS from '@berty-tech/polyfill/rnfs'
 
 import { getSource } from '../utils'
 import { timeFormat } from '../helpers'

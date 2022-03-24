@@ -5,31 +5,31 @@ import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { NavigationContainer } from '@react-navigation/native'
 import RNBootSplash from 'react-native-bootsplash'
 import { Provider as ReduxProvider } from 'react-redux'
-import { View } from 'react-native'
+import { Platform, View } from 'react-native'
 
 import '@berty-tech/berty-i18n'
 import { Provider as ThemeProvider } from '@berty-tech/components/theme'
 import { StreamGate, ListGate } from '@berty-tech/components/gates'
-import { MessengerProvider, useMountEffect, useThemeColor } from '@berty-tech/store'
+import { MessengerProvider, useThemeColor, useMountEffect } from '@berty-tech/store'
 import { isReadyRef, navigationRef } from '@berty-tech/navigation'
 import { Navigation } from '@berty-tech/navigation/stacks'
 import { Provider as StyleProvider } from '@berty-tech/styles'
 import NotificationProvider from '@berty-tech/components/providers/notification.provider'
-// import { StickMusicPlayer } from '@berty-tech/components/shared-components/StickyMusicPlayer'
 import { MusicPlayerProvider } from '@berty-tech/components/providers/musicPlayer.provider'
 import { ErrorScreen } from '@berty-tech/components/error'
 import reduxStore from '@berty-tech/redux/store'
-import { ModalProvider } from '@berty-tech/components/providers/modal.provider'
 
 import { FeatherIconsPack } from './feather-icons'
 import { CustomIconsPack } from './custom-icons'
+import { ModalProvider } from '@berty-tech/components/providers/modal.provider'
 
-const BootSplashInhibitor: React.FC = React.memo(() => {
+const BootSplashInhibitor: React.FC = () => {
 	useMountEffect(() => {
 		RNBootSplash.hide({ fade: true })
 	})
-	return null
-})
+
+	return <></>
+}
 
 const Background: React.FC = ({ children }) => {
 	const colors = useThemeColor()
@@ -59,12 +59,11 @@ export const App: React.FC = () => {
 										}}
 									>
 										<NotificationProvider>
-											<BootSplashInhibitor />
+											{Platform.OS !== 'web' ? <BootSplashInhibitor /> : null}
 											<StreamGate>
 												<ListGate>
 													<MusicPlayerProvider>
 														<ModalProvider>
-															{/*<StickMusicPlayer />*/}
 															<Navigation />
 														</ModalProvider>
 													</MusicPlayerProvider>

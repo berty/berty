@@ -1,15 +1,22 @@
 import React, { useEffect } from 'react'
 import { View, TouchableOpacity, Text as TextNative, StyleSheet } from 'react-native'
 import { Text, Icon } from '@ui-kitten/components'
-import { BlurView } from '@react-native-community/blur'
 import { Buffer } from 'buffer'
 
 import { useStyles } from '@berty-tech/styles'
 import messengerMethodsHooks from '@berty-tech/store/methods'
-import { useMessengerContext, useThemeColor, PersistentOptionsKeys } from '@berty-tech/store'
+import { useThemeColor } from '@berty-tech/store'
+import { BlurView } from '@berty-tech/polyfill/react-native-community-blur'
 
 import Avatar from './Buck_Berty_Icon_Card.svg'
 import { base64ToURLBase64 } from '../utils'
+import { useSelector } from 'react-redux'
+import {
+	PersistentOptionsKeys,
+	selectPersistentOptions,
+	setPersistentOption,
+} from '@berty-tech/redux/reducers/persistentOptions.reducer'
+import { useAppDispatch } from '@berty-tech/react-redux'
 
 export const useStylesDefaultModal = () => {
 	const [{ width, border, padding, margin }] = useStyles()
@@ -41,132 +48,137 @@ export const useStylesDefaultModal = () => {
 	}
 }
 
-export const AddBotBody: React.FC<{ displayName: string; link: string; closeModal: () => void }> =
-	({ displayName, link, closeModal }) => {
-		const [{ row, text, margin, padding, border, opacity }, { scaleHeight }] = useStyles()
-		const colors = useThemeColor()
-		const _styles = useStylesDefaultModal()
-		const { setPersistentOption, persistentOptions } = useMessengerContext()
-		const { call: requestContact, done, error } = messengerMethodsHooks.useContactRequest()
-		const {
-			reply: pdlReply,
-			error: pdlError,
-			call,
-			done: pdlDone,
-		} = messengerMethodsHooks.useParseDeepLink()
+export const AddBotBody: React.FC<{
+	displayName: string
+	link: string
+	closeModal: () => void
+}> = ({ displayName, link, closeModal }) => {
+	const [{ row, text, margin, padding, border, opacity }, { scaleHeight }] = useStyles()
+	const colors = useThemeColor()
+	const _styles = useStylesDefaultModal()
+	const persistentOptions = useSelector(selectPersistentOptions)
+	const dispatch = useAppDispatch()
+	const { call: requestContact, done, error } = messengerMethodsHooks.useContactRequest()
+	const {
+		reply: pdlReply,
+		error: pdlError,
+		call,
+		done: pdlDone,
+	} = messengerMethodsHooks.useParseDeepLink()
 
-		useEffect(() => {
-			call({ link })
-		}, [call, link])
+	useEffect(() => {
+		call({ link })
+	}, [call, link])
 
-		useEffect(() => {
-			if (done && !error) {
-				closeModal()
-			}
-		}, [done, error, closeModal])
+	useEffect(() => {
+		if (done && !error) {
+			closeModal()
+		}
+	}, [done, error, closeModal])
 
-		return pdlReply?.link?.bertyId?.accountPk ? (
+	return pdlReply?.link?.bertyId?.accountPk ? (
+		<View
+			style={[
+				{
+					justifyContent: 'center',
+					alignItems: 'center',
+					height: 250 * scaleHeight,
+					top: '25%',
+				},
+				margin.big,
+			]}
+		>
 			<View
 				style={[
 					{
+						width: 110 * scaleHeight,
+						height: 110 * scaleHeight,
+						backgroundColor: colors['main-background'],
 						justifyContent: 'center',
 						alignItems: 'center',
-						height: 250 * scaleHeight,
-						top: '25%',
+						position: 'relative',
+						top: 50 * scaleHeight,
+						zIndex: 1,
+						elevation: 7,
+						shadowOpacity: 0.1,
+						shadowRadius: 5,
+						shadowColor: colors.shadow,
+						shadowOffset: { width: 0, height: 3 },
 					},
-					margin.big,
+					border.radius.scale(60),
 				]}
 			>
-				<View
-					style={[
-						{
-							width: 110 * scaleHeight,
-							height: 110 * scaleHeight,
-							backgroundColor: colors['main-background'],
-							justifyContent: 'center',
-							alignItems: 'center',
-							position: 'relative',
-							top: 50 * scaleHeight,
-							zIndex: 1,
-							elevation: 7,
-							shadowOpacity: 0.1,
-							shadowRadius: 5,
-							shadowColor: colors.shadow,
-							shadowOffset: { width: 0, height: 3 },
-						},
-						border.radius.scale(60),
-					]}
-				>
-					<Avatar width={125 * scaleHeight} height={125 * scaleHeight} />
-				</View>
-				<View
-					style={[
-						padding.horizontal.medium,
-						padding.bottom.medium,
-						border.radius.large,
-						border.shadow.huge,
-						{ backgroundColor: colors['main-background'], shadowColor: colors.shadow },
-					]}
-				>
-					<View style={[margin.top.scale(70 * scaleHeight)]}>
-						<Icon
-							name='info-outline'
-							fill={colors['background-header']}
-							width={60 * scaleHeight}
-							height={60 * scaleHeight}
-							style={[row.item.justify, padding.top.large]}
-						/>
+				<Avatar width={125 * scaleHeight} height={125 * scaleHeight} />
+			</View>
+			<View
+				style={[
+					padding.horizontal.medium,
+					padding.bottom.medium,
+					border.radius.large,
+					border.shadow.huge,
+					{ backgroundColor: colors['main-background'], shadowColor: colors.shadow },
+				]}
+			>
+				<View style={[margin.top.scale(70 * scaleHeight)]}>
+					<Icon
+						name='info-outline'
+						fill={colors['background-header']}
+						width={60 * scaleHeight}
+						height={60 * scaleHeight}
+						style={[row.item.justify, padding.top.large]}
+					/>
+					<TextNative
+						style={[
+							text.align.center,
+							padding.top.small,
+							text.size.large,
+							text.bold.medium,
+							{ fontFamily: 'Open Sans', color: colors['main-text'] },
+						]}
+					>
+						{`👋 ADD ${displayName}?`}
+					</TextNative>
+					<Text style={[text.align.center, padding.top.scale(20), padding.horizontal.medium]}>
 						<TextNative
 							style={[
-								text.align.center,
-								padding.top.small,
-								text.size.large,
-								text.bold.medium,
+								text.bold.small,
+								text.size.medium,
 								{ fontFamily: 'Open Sans', color: colors['main-text'] },
 							]}
 						>
-							{`👋 ADD ${displayName}?`}
+							You don't have any contacts yet would you like to add the
 						</TextNative>
-						<Text style={[text.align.center, padding.top.scale(20), padding.horizontal.medium]}>
-							<TextNative
-								style={[
-									text.bold.small,
-									text.size.medium,
-									{ fontFamily: 'Open Sans', color: colors['main-text'] },
-								]}
-							>
-								You don't have any contacts yet would you like to add the
-							</TextNative>
-							<TextNative
-								style={[
-									text.bold.medium,
-									text.size.medium,
-									{ fontFamily: 'Open Sans', color: colors['main-text'] },
-								]}
-							>
-								{` ${displayName} `}
-							</TextNative>
-							<TextNative
-								style={[
-									text.bold.small,
-									text.size.medium,
-									{ fontFamily: 'Open Sans', color: colors['main-text'] },
-								]}
-							>
-								to discover and test conversations?
-							</TextNative>
-						</Text>
-					</View>
-					<View style={[row.center, padding.top.medium]}>
-						<TouchableOpacity
+						<TextNative
 							style={[
-								margin.bottom.medium,
-								opacity(0.5),
-								_styles.skipButton,
-								{ flexDirection: 'row', justifyContent: 'center' },
+								text.bold.medium,
+								text.size.medium,
+								{ fontFamily: 'Open Sans', color: colors['main-text'] },
 							]}
-							onPress={async () => {
-								await setPersistentOption({
+						>
+							{` ${displayName} `}
+						</TextNative>
+						<TextNative
+							style={[
+								text.bold.small,
+								text.size.medium,
+								{ fontFamily: 'Open Sans', color: colors['main-text'] },
+							]}
+						>
+							to discover and test conversations?
+						</TextNative>
+					</Text>
+				</View>
+				<View style={[row.center, padding.top.medium]}>
+					<TouchableOpacity
+						style={[
+							margin.bottom.medium,
+							opacity(0.5),
+							_styles.skipButton,
+							{ flexDirection: 'row', justifyContent: 'center' },
+						]}
+						onPress={() => {
+							dispatch(
+								setPersistentOption({
 									type: PersistentOptionsKeys.Suggestions,
 									payload: {
 										...persistentOptions.suggestions,
@@ -175,42 +187,44 @@ export const AddBotBody: React.FC<{ displayName: string; link: string; closeModa
 											state: 'skipped',
 										},
 									},
-								})
-								closeModal()
-							}}
-						>
-							<Icon
-								name='close'
-								width={30}
-								height={30}
-								fill={colors['negative-asset']}
-								style={row.item.justify}
-							/>
-							<TextNative
-								style={[
-									padding.left.small,
-									row.item.justify,
-									text.size.medium,
-									text.bold.medium,
-									{ fontFamily: 'Open Sans', color: colors['negative-asset'] },
-								]}
-							>
-								SKIP
-							</TextNative>
-						</TouchableOpacity>
-						<TouchableOpacity
+								}),
+							)
+							closeModal()
+						}}
+					>
+						<Icon
+							name='close'
+							width={30}
+							height={30}
+							fill={colors['negative-asset']}
+							style={row.item.justify}
+						/>
+						<TextNative
 							style={[
-								margin.bottom.medium,
-								_styles.addButton,
-								{
-									flexDirection: 'row',
-									justifyContent: 'center',
-									backgroundColor: colors['positive-asset'],
-								},
+								padding.left.small,
+								row.item.justify,
+								text.size.scale(16),
+								text.bold.medium,
+								{ fontFamily: 'Open Sans', color: colors['negative-asset'] },
 							]}
-							onPress={async () => {
-								if (pdlDone && !pdlError && pdlReply.link?.bertyId?.accountPk) {
-									await setPersistentOption({
+						>
+							SKIP
+						</TextNative>
+					</TouchableOpacity>
+					<TouchableOpacity
+						style={[
+							margin.bottom.medium,
+							_styles.addButton,
+							{
+								flexDirection: 'row',
+								justifyContent: 'center',
+								backgroundColor: colors['positive-asset'],
+							},
+						]}
+						onPress={() => {
+							if (pdlDone && !pdlError && pdlReply.link?.bertyId?.accountPk) {
+								dispatch(
+									setPersistentOption({
 										type: PersistentOptionsKeys.Suggestions,
 										payload: {
 											...persistentOptions.suggestions,
@@ -222,37 +236,38 @@ export const AddBotBody: React.FC<{ displayName: string; link: string; closeModa
 												),
 											},
 										},
-									})
-									await requestContact({
-										link,
-									})
-								}
-							}}
+									}),
+								)
+								requestContact({
+									link,
+								})
+							}
+						}}
+					>
+						<Icon
+							name='checkmark-outline'
+							width={30}
+							height={30}
+							fill={colors['background-header']}
+							style={row.item.justify}
+						/>
+						<TextNative
+							style={[
+								padding.left.small,
+								row.item.justify,
+								text.size.scale(16),
+								text.bold.medium,
+								{ color: colors['background-header'] },
+							]}
 						>
-							<Icon
-								name='checkmark-outline'
-								width={30}
-								height={30}
-								fill={colors['background-header']}
-								style={row.item.justify}
-							/>
-							<TextNative
-								style={[
-									padding.left.small,
-									row.item.justify,
-									text.size.medium,
-									text.bold.medium,
-									{ color: colors['background-header'] },
-								]}
-							>
-								ADD !
-							</TextNative>
-						</TouchableOpacity>
-					</View>
+							ADD !
+						</TextNative>
+					</TouchableOpacity>
 				</View>
 			</View>
-		) : null
-	}
+		</View>
+	) : null
+}
 
 export const AddBot: React.FC<{ displayName: string; link: string; closeModal: () => void }> = ({
 	link,

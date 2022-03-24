@@ -32,7 +32,6 @@ export const GetStarted: ScreenFC<'Onboarding.GetStarted'> = ({ navigation: { na
 			]}
 		>
 			<StatusBar backgroundColor={colors['main-background']} barStyle='dark-content' />
-			{/* <View style={[flex.medium]} /> */}
 			<View style={[margin.bottom.big, { flexDirection: 'row', justifyContent: 'center' }]}>
 				<Logo />
 			</View>

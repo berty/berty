@@ -1,0 +1,21 @@
+diff --git a/node_modules/@ui-kitten/components/ui/popover/popover.component.d.ts b/node_modules/@ui-kitten/components/ui/popover/popover.component.d.ts
+index aaf4232..e212cf8 100644
+--- a/node_modules/@ui-kitten/components/ui/popover/popover.component.d.ts
++++ b/node_modules/@ui-kitten/components/ui/popover/popover.component.d.ts
+@@ -4,13 +4,11 @@
+  * Licensed under the MIT License. See License.txt in the project root for license information.
+  */
+ import React from 'react';
+-import { Frame, RenderFCProp, Overwrite } from '../../devsupport';
++import { Frame, RenderFCProp } from '../../devsupport';
+ import { ModalProps } from '../modal/modal.component';
+ import { PopoverViewProps } from './popoverView.component';
+-declare type PopoverModalProps = Overwrite<ModalProps, {
+-    children?: React.ReactElement;
+-}>;
+-export interface PopoverProps extends PopoverViewProps, PopoverModalProps {
++
++export interface PopoverProps extends PopoverViewProps, ModalProps {
+     anchor: RenderFCProp;
+     fullWidth?: boolean;
+ }

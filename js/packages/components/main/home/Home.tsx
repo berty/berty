@@ -12,7 +12,7 @@ import pickBy from 'lodash/pickBy'
 import { Icon } from '@ui-kitten/components'
 
 import { ScreenFC } from '@berty-tech/navigation'
-import { useMessengerContext, useNotificationsInhibitor, useThemeColor } from '@berty-tech/store'
+import { useNotificationsInhibitor, useThemeColor } from '@berty-tech/store'
 import beapi from '@berty-tech/api'
 import { useStyles } from '@berty-tech/styles'
 import { AddBot } from '@berty-tech/components/modals'
@@ -32,6 +32,7 @@ import { HomeHeader } from './Header'
 import { MultiAccount } from './MultiAccount'
 import { useSelector } from 'react-redux'
 import { selectClient } from '@berty-tech/redux/reducers/ui.reducer'
+import { selectPersistentOptions } from '@berty-tech/redux/reducers/persistentOptions.reducer'
 
 const T = beapi.messenger.StreamEvent.Notified.Type
 
@@ -114,11 +115,11 @@ export const Home: ScreenFC<'Main.Home'> = ({ navigation: { navigate } }) => {
 		[lowSearchText],
 	)
 
-	const ctx = useMessengerContext()
-	const suggestions = Object.values(ctx.persistentOptions?.suggestions).filter(
+	const persistentOptions = useSelector(selectPersistentOptions)
+	const suggestions = Object.values(persistentOptions?.suggestions).filter(
 		(i: any) => i.state === 'unread',
 	)
-	const configurations = Object.values(ctx.persistentOptions?.configurations).filter(
+	const configurations = Object.values(persistentOptions?.configurations).filter(
 		(i: any) => i.state === 'unread',
 	)
 	const hasSuggestion: number = suggestions.length

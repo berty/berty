@@ -1,10 +1,10 @@
 import { dispatch as navDispatch, ScreenFC } from '@berty-tech/navigation'
+import { useAppDispatch } from '@berty-tech/react-redux'
 import {
 	PersistentOptionsKeys,
-	useMessengerContext,
-	useNotificationsInhibitor,
-	useThemeColor,
-} from '@berty-tech/store'
+	setPersistentOption,
+} from '@berty-tech/redux/reducers/persistentOptions.reducer'
+import { useNotificationsInhibitor, useThemeColor } from '@berty-tech/store'
 import { CommonActions } from '@react-navigation/native'
 import LottieView from 'lottie-react-native'
 import React, { useState } from 'react'
@@ -21,7 +21,7 @@ const SetupFinishedBody = () => {
 	const [isFinished, setIsFinished] = useState(false)
 	const [isAccount, setIsAccount] = useState(false)
 	const client = {}
-	const { setPersistentOption } = useMessengerContext()
+	const dispatch = useAppDispatch()
 
 	return isAccount ? (
 		<>
@@ -82,13 +82,15 @@ const SetupFinishedBody = () => {
 					desc={t('onboarding.setup-finished.desc')}
 					button={{
 						text: t('onboarding.setup-finished.button'),
-						onPress: async () => {
-							await setPersistentOption({
-								type: PersistentOptionsKeys.OnBoardingFinished,
-								payload: {
-									isFinished: true,
-								},
-							})
+						onPress: () => {
+							dispatch(
+								setPersistentOption({
+									type: PersistentOptionsKeys.OnBoardingFinished,
+									payload: {
+										isFinished: true,
+									},
+								}),
+							)
 							setIsFinished(true)
 							Vibration.vibrate([500])
 							setTimeout(

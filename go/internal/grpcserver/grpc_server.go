@@ -122,6 +122,7 @@ func InitGRPCServer(workers *run.Group, opts *GRPCOpts) (*grpc.Server, *grpcgw.S
 				return server.Serve(l)
 			}, func(error) {
 				l.Close()
+				server.Close()
 				logger.Debug("closing done", logutil.PrivateString("maddr", maddrStr))
 			})
 		}

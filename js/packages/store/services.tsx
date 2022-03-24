@@ -1,9 +1,8 @@
 import base64 from 'base64-js'
 import { Buffer } from 'buffer'
 import { Alert, PermissionsAndroid, NativeModules, Platform } from 'react-native'
-import RNFS from 'react-native-fs'
-import InAppBrowser, { RedirectResult } from 'react-native-inappbrowser-reborn'
-import Share from 'react-native-share'
+import InAppBrowser, { RedirectResult } from '@berty-tech/polyfill/react-native-inappbrowser-reborn'
+import Share from '@berty-tech/polyfill/react-native-share'
 
 import beapi from '@berty-tech/api'
 import { Service } from '@berty-tech/grpc-bridge'
@@ -14,6 +13,7 @@ import {
 	WelshMessengerServiceClient,
 } from '@berty-tech/grpc-bridge/welsh-clients.gen'
 import { useAccount } from '@berty-tech/react-redux'
+import RNFS from '@berty-tech/polyfill/rnfs'
 
 import { berty } from '@berty-tech/api/root.pb'
 const { PushTokenRequester } = NativeModules

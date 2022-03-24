@@ -1,95 +1,92 @@
+import { Platform } from 'react-native'
+
 import beapi from '@berty-tech/api'
 import { persistor, resetAccountStore } from '@berty-tech/redux/store'
 import { useAppDispatch } from '@berty-tech/react-redux'
-
-import { reducerAction, MessengerActions, StreamInProgress } from './types'
-import { accountService } from './accountService'
 import {
 	setCreatedAccount,
 	setStateStreamDone,
 	setStateStreamInProgress,
 } from '@berty-tech/redux/reducers/ui.reducer'
 
+import { reducerAction, MessengerActions, StreamInProgress } from './types'
+import { accountService } from './accountService'
+
 export const closeAccountWithProgress = async (
 	dispatch: (arg0: reducerAction) => void,
 	reduxDispatch: ReturnType<typeof useAppDispatch>,
 ) => {
-	await accountService
-		.closeAccountWithProgress({})
-		.then(async stream => {
-			stream.onMessage((msg, err) => {
-				if (err) {
-					if (err.EOF) {
-						console.log('Node is closed')
-					} else {
-						console.warn('Error while closing node:', err)
-					}
-					reduxDispatch(resetAccountStore())
-					reduxDispatch(setStateStreamDone())
-					return
+	try {
+		const stream = await accountService.closeAccountWithProgress({})
+		stream.onMessage((msg, err) => {
+			if (err) {
+				if (err.EOF) {
+					console.log('Node is closed')
+				} else {
+					console.warn('Error while closing node:', err)
 				}
+				reduxDispatch(resetAccountStore())
+				reduxDispatch(setStateStreamDone())
+				return
+			}
+			if (msg?.progress?.state !== 'done') {
+				const progress = msg?.progress
+				if (progress) {
+					const payload: StreamInProgress = {
+						msg: progress,
+						stream: 'Close account',
+					}
+					reduxDispatch(setStateStreamInProgress(payload))
+				}
+			}
+		})
+		await persistor.flush()
+		persistor.pause()
+		await stream.start()
+	} catch (err) {
+		console.warn('Failed to close node:', err)
+		reduxDispatch(resetAccountStore())
+		dispatch({
+			type: MessengerActions.SetStreamError,
+			payload: { error: new Error(`Failed to close node: ${err}`) },
+		})
+	}
+}
+
+export const importAccountWithProgress = (
+	path: string,
+	dispatch: ReturnType<typeof useAppDispatch>,
+) =>
+	new Promise<beapi.account.ImportAccountWithProgress.Reply | null>(async resolve => {
+		let metaMsg: beapi.account.ImportAccountWithProgress.Reply | null = null
+		try {
+			const stream = await accountService.importAccountWithProgress({ backupPath: path })
+			stream.onMessage(async (msg, _) => {
 				if (msg?.progress?.state !== 'done') {
 					const progress = msg?.progress
 					if (progress) {
 						const payload: StreamInProgress = {
 							msg: progress,
-							stream: 'Close account',
+							stream: 'Import account',
 						}
-						reduxDispatch(setStateStreamInProgress(payload))
+						dispatch(setStateStreamInProgress(payload))
 					}
+				} else {
+					dispatch(setStateStreamDone())
+					resolve(metaMsg)
+				}
+				if (msg?.accountMetadata) {
+					metaMsg = msg
 				}
 			})
-			await persistor.flush()
-			persistor.pause()
 			await stream.start()
-		})
-		.catch(err => {
-			console.warn('Failed to close node:', err)
-			reduxDispatch(resetAccountStore())
+		} catch (err) {
 			dispatch({
 				type: MessengerActions.SetStreamError,
-				payload: { error: new Error(`Failed to close node: ${err}`) },
+				payload: { error: new Error(`Failed to import account: ${err}`) },
 			})
-		})
-}
-
-export const importAccountWithProgress = async (
-	path: string,
-	dispatch: (arg0: reducerAction) => void,
-	reduxDispatch: ReturnType<typeof useAppDispatch>,
-) =>
-	new Promise<beapi.account.ImportAccountWithProgress.Reply | null>(resolve => {
-		let metaMsg: beapi.account.ImportAccountWithProgress.Reply | null = null
-		accountService
-			.importAccountWithProgress({ backupPath: path })
-			.then(async stream => {
-				stream.onMessage(async (msg, _) => {
-					if (msg?.progress?.state !== 'done') {
-						const progress = msg?.progress
-						if (progress) {
-							const payload: StreamInProgress = {
-								msg: progress,
-								stream: 'Import account',
-							}
-							reduxDispatch(setStateStreamInProgress(payload))
-						}
-					} else {
-						reduxDispatch(setStateStreamDone)
-						resolve(metaMsg)
-					}
-					if (msg?.accountMetadata) {
-						metaMsg = msg
-					}
-				})
-				await stream.start()
-			})
-			.catch(err => {
-				dispatch({
-					type: MessengerActions.SetStreamError,
-					payload: { error: new Error(`Failed to import account: ${err}`) },
-				})
-				resolve(null)
-			})
+			resolve(null)
+		}
 	})
 
 export const refreshAccountList = async (
@@ -137,6 +134,7 @@ export const createAccount = async (
 		}
 		resp = await accountService.createAccount({
 			networkConfig,
+			sessionKind: Platform.OS === 'web' ? 'desktop-electron' : null,
 		})
 		persistor.persist()
 	} catch (e) {

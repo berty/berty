@@ -1,6 +1,6 @@
 import React, { FC } from 'react'
 import { View } from 'react-native'
-import EmojiBoard from 'react-native-emoji-board'
+import EmojiBoard from '@berty-tech/polyfill/react-native-emoji-board'
 
 import beapi from '@berty-tech/api'
 import { useMessengerClient, useMessengerContext, useThemeColor } from '@berty-tech/store'

@@ -1,6 +1,15 @@
 import React from 'react'
-import { ActivityIndicator, Button, Text, TextInput, View, Image, StatusBar } from 'react-native'
-import * as Progress from 'react-native-progress'
+import {
+	ActivityIndicator,
+	Button,
+	Text,
+	TextInput,
+	View,
+	Image,
+	StatusBar,
+	Platform,
+} from 'react-native'
+import * as Progress from '@berty-tech/polyfill/react-native-progress'
 
 import { useMessengerContext, useThemeColor, MessengerActions } from '@berty-tech/store'
 import { useStyles } from '@berty-tech/styles'
@@ -88,7 +97,11 @@ const StreamInProgressCmp: React.FC<{}> = () => {
 				>
 					{stream?.msg.completed || '0'} / {stream?.msg.total || '6'}
 				</Text>
-				<Progress.Bar progress={stream?.msg.progress || 0} width={200} color='#3946E1' />
+				{Platform.OS === 'web' ? (
+					<ActivityIndicator size='large' />
+				) : (
+					<Progress.Bar progress={stream?.msg.progress || 0} width={200} color='#3946E1' />
+				)}
 			</View>
 		</View>
 	)

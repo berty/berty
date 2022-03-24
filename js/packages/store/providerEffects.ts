@@ -1,21 +1,25 @@
 import { EventEmitter } from 'events'
 import cloneDeep from 'lodash/cloneDeep'
 import { Platform } from 'react-native'
-import RNFS from 'react-native-fs'
+import { grpc } from '@improbable-eng/grpc-web'
 
 import beapi from '@berty-tech/api'
 import i18n, { osLanguage } from '@berty-tech/berty-i18n'
 import GoBridge, { GoBridgeDefaultOpts, GoBridgeOpts } from '@berty-tech/go-bridge'
-import { Service } from '@berty-tech/grpc-bridge'
+import { GRPCError, Service } from '@berty-tech/grpc-bridge'
 import { logger } from '@berty-tech/grpc-bridge/middleware'
 import { bridge as rpcBridge, grpcweb as rpcWeb } from '@berty-tech/grpc-bridge/rpc'
 import { ServiceClientType } from '@berty-tech/grpc-bridge/welsh-clients.gen'
 import store, { AppDispatch, persistor } from '@berty-tech/redux/store'
 import { useAppDispatch } from '@berty-tech/react-redux'
 import { streamEventToAction as streamEventToReduxAction } from '@berty-tech/redux/messengerActions'
+import RNFS from '@berty-tech/polyfill/rnfs'
+import {
+	WelshMessengerServiceClient,
+	WelshProtocolServiceClient,
+} from '@berty-tech/grpc-bridge/welsh-clients.gen'
 
-import { accountService, storageGet, storageRemove } from './accountService'
-import { defaultPersistentOptions } from './context'
+import { accountService, convertMAddr, storageGet, storageRemove } from './accountService'
 import { closeAccountWithProgress, refreshAccountList } from './effectableCallbacks'
 import ExternalTransport from './externalTransport'
 import { updateAccount } from './providerCallbacks'
@@ -23,8 +27,6 @@ import { requestAndPersistPushToken } from './services'
 import {
 	GlobalPersistentOptionsKeys,
 	MessengerActions,
-	PersistentOptions,
-	PersistentOptionsKeys,
 	reducerAction,
 	StreamInProgress,
 } from './types'
@@ -45,6 +47,12 @@ import {
 	setStateStreamDone,
 	setStateStreamInProgress,
 } from '@berty-tech/redux/reducers/ui.reducer'
+import { deserializeFromBase64 } from '@berty-tech/grpc-bridge/rpc/utils'
+import {
+	defaultPersistentOptions,
+	PersistentOptions,
+	PersistentOptionsKeys,
+} from '@berty-tech/redux/reducers/persistentOptions.reducer'
 
 export const openAccountWithProgress = async (
 	dispatch: (arg0: reducerAction) => void,
@@ -52,77 +60,47 @@ export const openAccountWithProgress = async (
 	selectedAccount: string | null,
 ) => {
 	console.log('Opening account', selectedAccount)
-	await accountService
-		.openAccountWithProgress({
+	try {
+		const stream = await accountService.openAccountWithProgress({
 			args: bridgeOpts.cliArgs,
 			accountId: selectedAccount?.toString(),
+			sessionKind: Platform.OS === 'web' ? 'desktop-electron' : null,
 		})
-		.then(async stream => {
-			stream.onMessage((msg, err) => {
-				if (err?.EOF) {
-					console.log('activating persist with account:', selectedAccount?.toString())
-					persistor.persist()
-					store.dispatch(setStateStreamDone())
-					return
-				}
-				if (err && !err.OK) {
-					console.warn('open account error:', err)
-					store.dispatch(setStateStreamDone())
-					return
-				}
-				if (msg?.progress?.state !== 'done') {
-					const progress = msg?.progress
-					if (progress) {
-						const payload: StreamInProgress = {
-							msg: progress,
-							stream: 'Open account',
-						}
-						store.dispatch(setStateStreamInProgress(payload))
-					}
-				}
-			})
-			await stream.start()
-			console.log('node is opened')
-			store.dispatch(setStateOpeningClients())
-		})
-		.catch(err => {
-			dispatch({
-				type: MessengerActions.SetStreamError,
-				payload: { error: new Error(`Failed to start node: ${err}`) },
-			})
-		})
-}
-
-const getPersistentOptions = async (
-	dispatch: (arg0: reducerAction) => void,
-	selectedAccount: string | null,
-) => {
-	if (selectedAccount === null) {
-		console.warn('getPersistentOptions / no account opened')
-		return
-	}
-
-	try {
-		let opts = defaultPersistentOptions()
-		console.log('begin to get persistent data')
-		let storedOpts = await storageGet(storageKeyForAccount(selectedAccount))
-		console.log('end to get persistent data')
-
-		if (storedOpts) {
-			const parsed = JSON.parse(storedOpts)
-
-			for (let key of Object.values(PersistentOptionsKeys)) {
-				opts[key] = { ...opts[key], ...(parsed[key] || {}) }
+		stream.onMessage((msg, err) => {
+			if (err?.EOF) {
+				console.log('activating persist with account:', selectedAccount?.toString())
+				persistor.persist()
+				console.log('opening account: stream closed')
+				store.dispatch(setStateStreamDone())
+				store.dispatch(setStateOpeningClients())
+				return
 			}
-		}
-
-		dispatch({
-			type: MessengerActions.SetPersistentOption,
-			payload: opts,
+			if (err && !err.OK) {
+				console.warn('open account error:', err.error.errorCode)
+				dispatch({
+					type: MessengerActions.SetStreamError,
+					payload: { error: new Error(`Failed to start node: ${err}`) },
+				})
+				return
+			}
+			if (msg?.progress?.state !== 'done') {
+				const progress = msg?.progress
+				if (progress) {
+					const payload: StreamInProgress = {
+						msg: progress,
+						stream: 'Open account',
+					}
+					store.dispatch(setStateStreamInProgress(payload))
+				}
+			}
 		})
-	} catch (e) {
-		console.warn('store getPersistentOptions Failed:', e)
-		return
+		await stream.start()
+		console.log('node is opened')
+	} catch (err) {
+		dispatch({
+			type: MessengerActions.SetStreamError,
+			payload: { error: new Error(`Failed to start node: ${err}`) },
+		})
 	}
 }
 
@@ -173,6 +151,39 @@ export const initialLaunch = async (dispatch: (arg0: reducerAction) => void, emb
 	}
 
 	f().catch(e => console.warn(e))
+}
+
+const getPersistentOptions = async (
+	dispatch: (arg0: reducerAction) => void,
+	selectedAccount: string | null,
+) => {
+	if (selectedAccount === null) {
+		console.warn('getPersistentOptions / no account opened')
+		return
+	}
+
+	try {
+		let opts = defaultPersistentOptions()
+		console.log('begin to get persistent data')
+		let storedOpts = await storageGet(storageKeyForAccount(selectedAccount))
+		console.log('end to get persistent data')
+
+		if (storedOpts) {
+			const parsed = JSON.parse(storedOpts)
+
+			for (let key of Object.values(PersistentOptionsKeys)) {
+				opts[key] = { ...opts[key], ...(parsed[key] || {}) }
+			}
+		}
+
+		dispatch({
+			type: MessengerActions.SetPersistentOption,
+			payload: opts,
+		})
+	} catch (e) {
+		console.warn('store getPersistentOptions Failed:', e)
+		return
+	}
 }
 
 // handle state openingGettingLocalSettings
@@ -243,16 +254,23 @@ export const openingDaemon = async (
 		bridgeOpts = cloneDeep(GoBridgeDefaultOpts)
 	}
 
-	accountService
-		.getGRPCListenerAddrs({})
-		.then(() => {
-			// account already open
-			store.dispatch(setStateOpeningClients())
-		})
-		.catch(async () => {
-			// account not open
+	let openedAccount: beapi.account.GetOpenedAccount.Reply
+
+	try {
+		openedAccount = await accountService.getOpenedAccount({})
+
+		if (openedAccount.accountId !== selectedAccount) {
+			if (openedAccount.accountId !== '') {
+				await accountService.closeAccount({})
+			}
+
 			await openAccountWithProgress(dispatch, bridgeOpts, selectedAccount)
-		})
+		}
+
+		store.dispatch(setStateOpeningClients())
+	} catch (e) {
+		console.log(`account seems to be unopened yet ${e}`)
+	}
 }
 
 // handle state OpeningWaitingForClients
@@ -281,9 +299,35 @@ export const openingClients = async (
 		rpc = rpcWeb(opts)
 	}
 
-	const messengerClient = Service(beapi.messenger.MessengerService, rpc, logger.create('MESSENGER'))
+	let messengerClient, protocolClient
 
-	const protocolClient = Service(beapi.protocol.ProtocolService, rpc, logger.create('PROTOCOL'))
+	if (Platform.OS === 'web') {
+		const openedAccount = await accountService?.getOpenedAccount({})
+		const url = convertMAddr(openedAccount?.listeners || [])
+
+		if (url === null) {
+			console.error('unable to find service address')
+			return
+		}
+
+		const opts = {
+			transport: grpc.CrossBrowserHttpTransport({ withCredentials: false }),
+			host: url,
+		}
+
+		protocolClient = Service(
+			beapi.protocol.ProtocolService,
+			rpcWeb(opts),
+		) as unknown as WelshProtocolServiceClient
+
+		messengerClient = Service(
+			beapi.messenger.MessengerService,
+			rpcWeb(opts),
+		) as unknown as WelshMessengerServiceClient
+	} else {
+		messengerClient = Service(beapi.messenger.MessengerService, rpc, logger.create('MESSENGER'))
+		protocolClient = Service(beapi.protocol.ProtocolService, rpc, logger.create('PROTOCOL'))
+	}
 
 	if (Platform.OS === 'ios' || Platform.OS === 'android') {
 		requestAndPersistPushToken(protocolClient).catch(e => console.warn(e))
@@ -293,6 +337,8 @@ export const openingClients = async (
 	let cancel = () => {
 		precancel = true
 	}
+
+	console.log('GHEEERe')
 	messengerClient
 		.eventStream({ shallowAmount: 20 })
 		.then(async stream => {
@@ -304,24 +350,32 @@ export const openingClients = async (
 			stream.onMessage((msg, err) => {
 				try {
 					if (err) {
+						console.log('CACA:', msg?.event, err)
 						if (
 							err?.EOF ||
-							err?.grpcErrorCode() === beapi.bridge.GRPCErrCode.CANCELED ||
-							err?.grpcErrorCode() === beapi.bridge.GRPCErrCode.UNAVAILABLE
+							(err instanceof GRPCError &&
+								(err?.grpcErrorCode() === beapi.bridge.GRPCErrCode.CANCELED ||
+									err?.grpcErrorCode() === beapi.bridge.GRPCErrCode.UNAVAILABLE))
 						) {
+							if (err instanceof GRPCError) {
+								console.log('CACA:', err, err?.grpcErrorCode())
+							}
 							return
 						}
 						console.warn('events stream onMessage error:', err)
 						dispatch({ type: MessengerActions.SetStreamError, payload: { error: err } })
 					}
 
+					console.log('CACA0')
 					const evt = msg?.event
+					console.log('Event:', msg?.event)
 					if (!evt || evt.type === null || evt.type === undefined) {
 						console.warn('received empty or undefined event')
 						return
 					}
 
 					const action = streamEventToReduxAction(evt)
+					console.log('Action', action)
 					if (action?.type === 'messenger/Notified') {
 						const enumName =
 							beapi.messenger.StreamEvent.Notified.Type[
@@ -337,6 +391,9 @@ export const openingClients = async (
 						if (!pbobj) {
 							console.warn('failed to find a protobuf object matching the notification type')
 							return
+						}
+						if (typeof action.payload.payload === 'string') {
+							action.payload.payload = deserializeFromBase64(action.payload.payload)
 						}
 						action.payload.payload =
 							action.payload.payload === undefined ? {} : pbobj.decode(action.payload.payload)
@@ -356,7 +413,7 @@ export const openingClients = async (
 			await stream.start()
 		})
 		.catch(err => {
-			if (err?.EOF) {
+			if (err instanceof GRPCError && err?.EOF) {
 				console.info('end of the events stream')
 				store.dispatch(setStateClosed())
 			} else {
@@ -364,7 +421,6 @@ export const openingClients = async (
 				dispatch({ type: MessengerActions.SetStreamError, payload: { error: err } })
 			}
 		})
-
 	reduxDispatch(
 		setStateOpeningListingEvents({ messengerClient, protocolClient, clearClients: () => cancel() }),
 	)
@@ -417,10 +473,7 @@ export const updateAccountsPreReady = async (
 	await storageRemove(GlobalPersistentOptionsKeys.DisplayName)
 	await storageRemove(GlobalPersistentOptionsKeys.IsNewAccount)
 	if (displayName) {
-		await client
-			?.accountUpdate({ displayName })
-			.then(async () => {})
-			.catch(err => console.error(err))
+		await client?.accountUpdate({ displayName }).catch(err => console.error(err))
 		// update account in bertyaccount
 		await updateAccount(embedded, dispatch, {
 			accountName: displayName,

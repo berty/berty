@@ -223,6 +223,7 @@ export const IncomingRequests: React.FC<any> = ({ items, onLayout }) => {
 	const [{ padding, text, row }, { scaleSize }] = useStyles()
 	const colors = useThemeColor()
 	const { t }: any = useTranslation()
+
 	return items?.length ? (
 		<View
 			onLayout={onLayout}

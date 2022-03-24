@@ -8,9 +8,8 @@ import {
 	closeAccountWithProgress,
 	importAccountWithProgress,
 } from './effectableCallbacks'
-import { defaultPersistentOptions } from './context'
-import { accountService, storageRemove, storageGet, storageSet } from './accountService'
-import { MessengerActions, PersistentOptionsUpdate, reducerAction } from './types'
+import { accountService, storageRemove } from './accountService'
+import { reducerAction } from './types'
 import { setNextAccount, setStateOnBoardingReady } from '@berty-tech/redux/reducers/ui.reducer'
 
 export const importAccount = async (
@@ -28,7 +27,7 @@ export const importAccount = async (
 
 	try {
 		await closeAccountWithProgress(dispatch, reduxDispatch)
-		resp = await importAccountWithProgress(path, dispatch, reduxDispatch)
+		resp = await importAccountWithProgress(path, reduxDispatch)
 	} catch (e) {
 		console.warn('unable to import account', e)
 		return
@@ -157,40 +156,4 @@ export const restart = async (
 		return
 	}
 	reduxDispatch(setNextAccount(accountID))
-}
-
-export const setPersistentOption = async (
-	dispatch: (arg0: reducerAction) => void,
-	selectedAccount: string | null,
-	action: PersistentOptionsUpdate,
-) => {
-	if (selectedAccount === null) {
-		console.warn('no account opened')
-		return
-	}
-
-	try {
-		let opts = {}
-		let persistOpts = await storageGet(storageKeyForAccount(selectedAccount))
-
-		if (persistOpts) {
-			opts = JSON.parse(persistOpts)
-		}
-
-		const updatedPersistOpts = {
-			...defaultPersistentOptions(),
-			...opts,
-			[action.type]: action.payload,
-		}
-
-		await storageSet(storageKeyForAccount(selectedAccount), JSON.stringify(updatedPersistOpts))
-
-		dispatch({
-			type: MessengerActions.SetPersistentOption,
-			payload: updatedPersistOpts,
-		})
-	} catch (e) {
-		console.warn('store setPersistentOption Failed:', e)
-		return
-	}
 }

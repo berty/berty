@@ -466,7 +466,6 @@ node_modules: package.json
 electron-app/node_modules: electron-app/package.json
 	$(call check-program, yarn)
 	cd ./electron-app && yarn $(if $(filter $(CI), true), --frozen-lockfile --network-timeout 1200000 --network-concurrency 1)
-	echo 'SKIP_PREFLIGHT_CHECK=true' >> ./electron-app/.env
 	touch $@
 
 .PHONY: electron.mac

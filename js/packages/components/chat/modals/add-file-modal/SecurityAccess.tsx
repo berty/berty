@@ -1,11 +1,12 @@
 import React, { useEffect, useCallback } from 'react'
 import { View, TouchableOpacity, AppState, Platform } from 'react-native'
-import { check, RESULTS, PERMISSIONS, openSettings } from 'react-native-permissions'
+import { RESULTS, openSettings } from '@berty-tech/polyfill/react-native-permissions'
 import { useTranslation } from 'react-i18next'
 import { Text, Icon } from '@ui-kitten/components'
 
 import { useStyles } from '@berty-tech/styles'
 import { useThemeColor } from '@berty-tech/store/hooks'
+import { getPermissionStatus } from '@berty-tech/rnutil/checkPermissions'
 
 import { TabItems } from './types'
 
@@ -22,9 +23,7 @@ export const SecurityAccess: React.FC<{ close: () => void; activeTab: TabItems }
 			if (state === 'active') {
 				if (activeTab === TabItems.Camera) {
 					try {
-						const status = await check(
-							Platform.OS === 'android' ? PERMISSIONS.ANDROID.CAMERA : PERMISSIONS.IOS.CAMERA,
-						)
+						const status = await getPermissionStatus('camera')
 						if (status === RESULTS.GRANTED) {
 							close()
 						}
@@ -33,7 +32,7 @@ export const SecurityAccess: React.FC<{ close: () => void; activeTab: TabItems }
 					}
 				} else if (activeTab === TabItems.Gallery && Platform.OS === 'ios') {
 					try {
-						const status = await check(PERMISSIONS.IOS.PHOTO_LIBRARY)
+						const status = await getPermissionStatus('gallery')
 
 						if (status === RESULTS.GRANTED) {
 							close()
@@ -41,9 +40,7 @@ export const SecurityAccess: React.FC<{ close: () => void; activeTab: TabItems }
 					} catch (err) {}
 				} else if (activeTab === TabItems.Record) {
 					try {
-						const status = await check(
-							Platform.OS === 'ios' ? PERMISSIONS.IOS.MICROPHONE : PERMISSIONS.ANDROID.RECORD_AUDIO,
-						)
+						const status = await getPermissionStatus('audio')
 
 						if (status === RESULTS.GRANTED) {
 							close()

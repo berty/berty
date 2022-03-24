@@ -9,7 +9,6 @@ import {
 	StyleSheet,
 	StatusBar,
 } from 'react-native'
-import RNFS from 'react-native-fs'
 import { useTranslation } from 'react-i18next'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
@@ -17,6 +16,7 @@ import beapi from '@berty-tech/api'
 import { GRPCError, Service } from '@berty-tech/grpc-bridge'
 import { bridge as rpcBridge } from '@berty-tech/grpc-bridge/rpc'
 import { pbDateToNum, useMessengerContext } from '@berty-tech/store'
+import RNFS from '@berty-tech/polyfill/rnfs'
 
 import { NativeModules } from 'react-native'
 const { RootDir } = NativeModules
@@ -239,15 +239,15 @@ const accountAction = async (
 }
 
 // const ExportAllAppData = () => {
-//	const { t }: { t: any } = useTranslation()
-//
-//	return (
-//		<TouchableOpacity style={{ flex: 1 }}>
-//			<View style={[styles.button]}>
-//				<Text style={[styles.text, styles.bold]}>{t('debug.inspector.dump.button')}</Text>
-//			</View>
-//		</TouchableOpacity>
-//	)
+// 	const { t }: { t: any } = useTranslation()
+
+// 	return (
+// 		<TouchableOpacity style={{ flex: 1 }}>
+// 			<View style={[styles.button]}>
+// 				<Text style={[styles.text, styles.bold]}>{t('debug.inspector.dump.button')}</Text>
+// 			</View>
+// 		</TouchableOpacity>
+// 	)
 // }
 
 const AccountsInspector: React.FC<{
