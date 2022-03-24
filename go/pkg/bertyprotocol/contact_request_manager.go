@@ -299,7 +299,7 @@ func (c *contactRequestsManager) incomingHandler(stream network.Stream) (err err
 	defer func() { endSection(err, "", tyber.ForceReopen) }()
 
 	defer func() {
-		if closeErr := ipfsutil.FullClose(stream); closeErr != nil {
+		if closeErr := stream.Reset(); closeErr != nil {
 			endSection(closeErr, "Failed to close stream with other peer", tyber.ForceReopen)
 		}
 	}()
@@ -344,7 +344,7 @@ func (c *contactRequestsManager) incomingHandler(stream network.Stream) (err err
 
 func (c *contactRequestsManager) performSend(ctx context.Context, otherPK crypto.PubKey, stream network.Stream) error {
 	defer func() {
-		if err := ipfsutil.FullClose(stream); err != nil {
+		if err := stream.Close(); err != nil {
 			c.logger.Warn("error while closing stream with other peer", zap.Error(err))
 		}
 	}()
