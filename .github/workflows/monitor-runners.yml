@@ -29,8 +29,10 @@ jobs:
           # Else, set outputs and fail
           DETAIL=$(node .github/workflows/utils/get-selfhosted-runner-status.js "${{ secrets.SELFHOSTED_STATUS_CHECK_TOKEN }}")
           echo "Detailed status: $DETAIL"
-          echo "::set-output name=count::$COUNT"
-          echo "::set-output name=detail::$DETAIL"
+          echo "COUNT=$COUNT" >> $GITHUB_ENV
+          echo "DETAIL<<EOF" >> $GITHUB_ENV
+          echo "$DETAIL" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
           exit 1
 
       - name: Send alert by mail if needed
@@ -46,6 +48,6 @@ jobs:
           from: Github Actions
           priority: high
           body: |
-            Online self-hosted runners: ${{ steps.monitor.outputs.count }}
+            Online self-hosted runners: ${{ env.COUNT }}
             Detail:
-              ${{ steps.monitor.outputs.detail }}
+              ${{ env.DETAIL }}
