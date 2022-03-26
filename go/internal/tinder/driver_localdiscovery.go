@@ -12,6 +12,7 @@ import (
 
 	ggio "github.com/gogo/protobuf/io"
 	"github.com/libp2p/go-libp2p-core/discovery"
+	"github.com/libp2p/go-libp2p-core/event"
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/network"
 	"github.com/libp2p/go-libp2p-core/peer"
@@ -37,10 +38,11 @@ const (
 )
 
 type LocalDiscovery struct {
+	rootctx    context.Context
+	rootcancel context.CancelFunc
+
 	h      host.Host
 	logger *zap.Logger
-
-	rootctx context.Context
 
 	recs   map[string]time.Time
 	muRecs sync.RWMutex
@@ -72,8 +74,12 @@ func newLinkedCache() *linkedCache {
 	}
 }
 
-func NewLocalDiscovery(logger *zap.Logger, host host.Host, rng *mrand.Rand) UnregisterDiscovery {
+func NewLocalDiscovery(logger *zap.Logger, host host.Host, rng *mrand.Rand) (*LocalDiscovery, error) {
+	ctx, cancel := context.WithCancel(context.Background())
 	ld := &LocalDiscovery{
+		rootctx:    ctx,
+		rootcancel: cancel,
+
 		logger: logger.Named("localdisc"),
 		h:      host,
 		recs:   make(map[string]time.Time),
@@ -81,8 +87,16 @@ func NewLocalDiscovery(logger *zap.Logger, host host.Host, rng *mrand.Rand) Unre
 	}
 
 	host.SetStreamHandler(recProtocolID, ld.handleStream)
-	host.Network().Notify(ld)
-	return ld
+	if err := ld.monitorConnection(ctx); err != nil {
+		return nil, fmt.Errorf("unable to monitor connection: %w", err)
+	}
+
+	return ld, nil
+}
+
+func (ld *LocalDiscovery) Close() error {
+	ld.rootcancel()
+	return nil
 }
 
 func (ld *LocalDiscovery) Advertise(ctx context.Context, cid string, opts ...discovery.Option) (time.Duration, error) {
@@ -126,7 +140,6 @@ func (ld *LocalDiscovery) Advertise(ctx context.Context, cid string, opts ...dis
 
 func (ld *LocalDiscovery) FindPeers(ctx context.Context, cid string, opts ...discovery.Option) (<-chan peer.AddrInfo, error) {
 	ld.logger.Debug("starting find peers")
-
 	cpeer := make(chan peer.AddrInfo)
 
 	// Get options
@@ -150,7 +163,7 @@ func (ld *LocalDiscovery) FindPeers(ctx context.Context, cid string, opts ...dis
 	}
 	ld.muCaches.Unlock()
 
-	ctx, cancel := context.WithCancel(ctx)
+	ctx, cancel := context.WithTimeout(ctx, time.Second*10)
 	go func() {
 		<-ctx.Done()
 		cancel()
@@ -323,9 +336,6 @@ func (ld *LocalDiscovery) Connected(net network.Network, c network.Conn) {
 	if manet.IsPrivateAddr(c.RemoteMultiaddr()) || isProximityProtocol(c.RemoteMultiaddr()) {
 		go func() {
 			ctx := context.Background()
-
-			time.Sleep(time.Second)
-
 			records := ld.getLocalReccord()
 			if err := ld.sendRecordsTo(ctx, c.RemotePeer(), records); err != nil {
 				ld.logger.Error("unable to send records to newly connected peer", zap.Error(err), zap.Stringer("peer", c.RemotePeer()))
@@ -345,22 +355,48 @@ func isProximityProtocol(addr ma.Multiaddr) bool {
 	return false
 }
 
-// Implementation of the network.Notifiee interface
-// Called when network starts listening on an addr
-func (ld *LocalDiscovery) Listen(network.Network, ma.Multiaddr) {}
+func (ld *LocalDiscovery) monitorConnection(ctx context.Context) error {
+	sub, err := ld.h.EventBus().Subscribe(new(event.EvtPeerConnectednessChanged))
+	if err != nil {
+		return fmt.Errorf("unable to subscribe to `EvtPeerConnectednessChanged`: %w", err)
+	}
 
-// Implementation of the network.Notifiee interface
-// Called when network stops listening on an addr
-func (ld *LocalDiscovery) ListenClose(network.Network, ma.Multiaddr) {}
+	go func() {
+		defer sub.Close()
+		for {
+			var e interface{}
+			select {
+			case e = <-sub.Out():
+			case <-ctx.Done():
+				return
+			}
 
-// Implementation of the network.Notifiee interface
-// Called when a connection closed
-func (ld *LocalDiscovery) Disconnected(network.Network, network.Conn) {}
+			evt := e.(event.EvtPeerConnectednessChanged)
 
-// Implementation of the network.Notifiee interface
-// Called when a stream opened
-func (ld *LocalDiscovery) OpenedStream(network.Network, network.Stream) {}
+			// check if we use a proximity addrs with this peer
+			conns := ld.h.Network().ConnsToPeer(evt.Peer)
+			isProximity := true
+			for _, conn := range conns {
+				if manet.IsPrivateAddr(conn.RemoteMultiaddr()) && isProximityProtocol(conn.RemoteMultiaddr()) {
+					isProximity = true
+					break
+				}
+			}
 
-// Implementation of the network.Notifiee interface
-// Called when a stream closed
-func (ld *LocalDiscovery) ClosedStream(network.Network, network.Stream) {}
+			if isProximity {
+				go func() {
+					records := ld.getLocalReccord()
+					if err := ld.sendRecordsTo(ctx, evt.Peer, records); err != nil {
+						ld.logger.Error("unable to send local record",
+							logutil.PrivateString("peer", evt.Peer.String()),
+							zap.Int("records", len(records.Records)),
+							zap.Error(err))
+					}
+				}()
+			}
+
+		}
+	}()
+
+	return nil
+}
