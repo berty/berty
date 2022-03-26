@@ -61,6 +61,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: Unshallow
+        run: git fetch --prune --unshallow
+
       - uses: actions/setup-node@v2
         if: needs.semantic-release.outputs.new-release-published == 'true'
         with:
@@ -111,6 +114,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+
+      - name: Unshallow
+        run: git fetch --prune --unshallow
 
       - name: Load variables from file
         uses: antifree/json-to-variables@v1.0.1
