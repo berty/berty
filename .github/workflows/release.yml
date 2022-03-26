@@ -5,12 +5,17 @@ on:
       - master
   pull_request:
     paths:
+      # Go
       - "go/**"
       - "!go/**.md"
       - ".goreleaser"
       - "go.*"
       - "**.go"
+      # CI
       - ".github/workflows/release.yml"
+      - "tool/publish-npm-package"
+      # NPM package
+      - "./js/packages/api"
 
 jobs:
   semantic-release:
@@ -18,6 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       new-release-published: ${{ steps.semantic-echo.outputs.new-release-published }}
+      release-version: ${{ steps.semantic-echo.outputs.release-version }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -44,29 +50,49 @@ jobs:
         id: semantic-echo
         run: |
           echo "::set-output name=new-release-published::${{steps.semantic.outputs.new-release-published}}"
+          echo "::set-output name=release-version::${{steps.semantic.outputs.release-version}}"
 
-      # Next step also sets up a .npmrc file for automatic publishing to npm
+
+  post-semantic-release:
+    needs: semantic-release
+    #if: needs.semantic-release.outputs.new-release-published == true
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
 
       - uses: actions/setup-node@v2
-        if: steps.semantic.outputs.new-release-published == 'true'
+        if: needs.semantic-release.outputs.new-release-published == 'true'
         with:
           node-version: "14.x"
           registry-url: "https://registry.npmjs.org"
 
-      - name: "Publish npm package: @berty/api"
-        if: steps.semantic.outputs.new-release-published == 'true'
-        run: go run ./go/cmd/publish-npm-package -path=js/packages/api -version=${{ steps.semantic.outputs.release-version }}
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.17.x
+
+      - name: "Publish npm package: @berty/api (Real)"
+        if: needs.semantic-release.outputs.new-release-published == 'true'
+        run: cd tool && go run ./publish-npm-package -path=../js/packages/api -version=${{ needs.semantic-release.outputs.release-version }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        continue-on-error: true
+      # Next step also sets up a .npmrc file for automatic publishing to npm
+
+      - name: "Publish npm package: @berty/api (DryRun)"
+        if: needs.semantic-release.outputs.new-release-published != 'true'
+        run: cd tool && go run ./publish-npm-package -path=../js/packages/api -version=0.0.0 -dry-run
 
       - name: Register version on pkg.go.dev
-        if: steps.semantic.outputs.new-release-published == 'true'
+        if: needs.semantic-release.outputs.new-release-published == 'true'
         run: |
           package=$(cat go.mod | grep ^module | awk '{print $2}')
-          version=v${{ steps.semantic.outputs.release-version }}
+          version=v${{ needs.semantic-release.outputs.release-version }}
           url=https://proxy.golang.org/${package}/@v/${version}.info
           set -x +e
           curl -i $url
+
 
   build-asset:
     needs: semantic-release

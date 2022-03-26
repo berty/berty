@@ -28,6 +28,7 @@ type packageJSONVars struct {
 func errMain() error {
 	pathFlag := flag.String("path", "", "path to the package to be published")
 	versionFlag := flag.String("version", "", "version to publish")
+	dryrunFlag := flag.Bool("dry-run", false, "do not publish at the end")
 	flag.Parse()
 
 	path := *pathFlag
@@ -111,15 +112,17 @@ func errMain() error {
 	}
 	logger.Info("Installed node modules")
 
-	pubcmd := exec.Command("npm", "publish")
-	pubcmd.Dir = buildDir
-	pubcmd.Stderr = os.Stderr
-	pubcmd.Stdin = os.Stdin
-	pubcmd.Stdout = os.Stdout
-	if err := pubcmd.Run(); err != nil {
-		return errors.Wrap(err, "run npm publish")
+	if !*dryrunFlag {
+		pubcmd := exec.Command("npm", "publish")
+		pubcmd.Dir = buildDir
+		pubcmd.Stderr = os.Stderr
+		pubcmd.Stdin = os.Stdin
+		pubcmd.Stdout = os.Stdout
+		if err := pubcmd.Run(); err != nil {
+			return errors.Wrap(err, "run npm publish")
+		}
+		logger.Info("Published module!")
 	}
-	logger.Info("Published module!")
 
 	if err := os.RemoveAll(buildDir); err != nil {
 		logger.Error("Failed to remove build directory", zap.Error(err))
