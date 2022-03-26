@@ -106,8 +106,8 @@ func (ld *LocalDiscovery) Advertise(ctx context.Context, cid string, opts ...dis
 	expire := time.Now().Add(ttl)
 
 	ld.muRecs.Lock()
-	rec, isNew := ld.recs[cid]
-	if !isNew {
+	rec, exist := ld.recs[cid]
+	if !exist {
 		rec = expire
 		ld.recs[cid] = rec
 	}
@@ -115,7 +115,7 @@ func (ld *LocalDiscovery) Advertise(ctx context.Context, cid string, opts ...dis
 
 	ld.logger.Debug("advertise", zap.String("ns", hex.EncodeToString([]byte(cid))))
 
-	if isNew {
+	if !exist {
 		// if this cid is new, send it to already connected proximity peers
 		records := []*Record{{Cid: cid, Expire: expire.Unix()}}
 		ld.sendRecordsToProximityPeers(ctx, &Records{Records: records})
@@ -212,7 +212,7 @@ func (ld *LocalDiscovery) getLocalReccord() *Records {
 	}
 	ld.muRecs.Unlock()
 
-	// @TODO(gfanton): is that really necessary
+	// @TODO(gfanton): is that really necessary ?
 	rand.Shuffle(len(records), func(i, j int) {
 		records[i], records[j] = records[j], records[i]
 	})
@@ -288,8 +288,8 @@ func (ld *LocalDiscovery) handleStream(s network.Stream) {
 			expire: expire,
 		}
 
+		// update the given cache addrs and signal to other routine that we got an update
 		cache.Lock()
-
 		if p, ok := cache.peers[pid.ID]; ok {
 			p.Addrs = pid.Addrs
 		} else {
