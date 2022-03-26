@@ -40,7 +40,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        golang: [1.16.x]
+        golang: [1.17.x]
     env:
       OS: ubuntu-latest
       GOLANG: ${{ matrix.golang }}
@@ -97,7 +97,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        golang: [1.16.x]
+        golang: [1.17.x]
     env:
       OS: ubuntu-latest
       GOLANG: ${{ matrix.golang }}
@@ -127,7 +127,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        golang: [1.16.x]
+        golang: [1.17.x]
     env:
       OS: ubuntu-latest
       GOLANG: ${{ matrix.golang }}

@@ -8,7 +8,6 @@ on:
     paths:
       - "go/**"
       - "!go/**.md"
-      - ".goreleaser"
       - "go.*"
       - "**.go"
       - ".github/workflows/go.yml"
@@ -16,49 +15,11 @@ on:
     paths:
       - "go/**"
       - "!go/**.md"
-      - ".goreleaser"
       - "go.*"
       - "**.go"
       - ".github/workflows/go.yml"
 
 jobs:
-  goreleaser-dryrun:
-    name: "GoReleaser (dry-run)"
-    runs-on: ubuntu-latest
-    needs: golangci-lint
-    strategy:
-      matrix:
-        golang: ['1.17.x']
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Load variables from file
-        uses: antifree/json-to-variables@v1.0.1
-        with:
-          filename: .github/workflows/utils/variables.json
-      - name: Install libgl
-        run: |
-          sudo apt update
-          sudo apt install -f
-          sudo apt install -f -y libgl1-mesa-glx libgl1-mesa-dev xorg-dev
-      - name: Set up Go
-        uses: actions/setup-go@v2
-        with:
-          go-version: ${{ matrix.golang }}
-      - name: Cache Go modules
-        uses: actions/cache@v2.1.6
-        with:
-          path: ~/go/pkg/mod
-          key:          ${{ runner.os }}-go-${{ matrix.golang }}-${{ env.json_cache-version_go }}-${{ hashFiles('**/go.sum') }}
-          restore-keys: ${{ runner.os }}-go-${{ matrix.golang }}-${{ env.json_cache-version_go }}-
-      - name: Run GoReleaser (Dry Run)
-        uses: goreleaser/goreleaser-action@v2.9.1
-        with:
-          version: latest
-          args: release --rm-dist --snapshot --skip-publish
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
   golangci-lint:
     name: "GolangCI-lint"
     runs-on: ubuntu-latest
