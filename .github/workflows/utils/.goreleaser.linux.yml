@@ -2,7 +2,7 @@ changelog:
   skip: true
 
 checksum:
-  name_template: '{{.ProjectName}}_checksums_linux.txt'
+  name_template: '{{.ProjectName}}_linux_checksums.txt'
 
 env:
   - GO111MODULE=on
