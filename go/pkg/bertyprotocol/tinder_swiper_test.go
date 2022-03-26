@@ -74,8 +74,8 @@ func TestAnnounceWatchForPeriod(t *testing.T) {
 			err = mn.ConnectAllButSelf()
 			require.NoError(t, err)
 
-			rpA := rendezvous.NewRotationPoint(time.Hour)
-			rpB := rendezvous.NewRotationPoint(time.Hour)
+			rpA := rendezvous.NewRotationInterval(time.Hour)
+			rpB := rendezvous.NewRotationInterval(time.Hour)
 
 			swiperA := NewSwiper(opts.Logger, apiA.Tinder(), rpA)
 			swiperB := NewSwiper(opts.Logger, apiB.Tinder(), rpB)
@@ -89,11 +89,12 @@ func TestAnnounceWatchForPeriod(t *testing.T) {
 			go swiperB.WatchTopic(ctx, tc.topicB, tc.seedB, ch, doneFn)
 
 			var foundPeers int
+
 		loop:
 			for foundPeers = 0; foundPeers < tc.expectedPeersFound; foundPeers++ {
 				select {
 				case <-ctx.Done():
-					break
+					break loop
 				case <-ch:
 				}
 			}

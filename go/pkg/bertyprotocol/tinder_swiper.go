@@ -16,13 +16,13 @@ import (
 type Swiper struct {
 	topics map[string]*pubsub.Topic
 
-	rp *rendezvous.RotationPoint
+	rp *rendezvous.RotationInterval
 
 	logger *zap.Logger
 	disc   tinder.UnregisterDiscovery
 }
 
-func NewSwiper(logger *zap.Logger, disc tinder.UnregisterDiscovery, rp *rendezvous.RotationPoint) *Swiper {
+func NewSwiper(logger *zap.Logger, disc tinder.UnregisterDiscovery, rp *rendezvous.RotationInterval) *Swiper {
 	return &Swiper{
 		logger: logger.Named("swiper"),
 		topics: make(map[string]*pubsub.Topic),

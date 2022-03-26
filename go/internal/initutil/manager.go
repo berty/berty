@@ -153,7 +153,7 @@ type Manager struct {
 			requiredByClient           bool
 			ipfsWebUICleanup           func()
 			orbitDB                    *bertyprotocol.BertyOrbitDB
-			rotationPoint              *rendezvous.RotationPoint
+			rotationInterval              *rendezvous.RotationInterval
 		}
 		Messenger struct {
 			DisableGroupMonitor  bool   `json:"DisableGroupMonitor,omitempty"`

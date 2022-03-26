@@ -1,7 +1,6 @@
 package rendezvous
 
 import (
-	"context"
 	"fmt"
 	"sync"
 	"time"
@@ -12,11 +11,7 @@ var (
 	MinimumDelayRotation = time.Minute
 )
 
-type RendezVousPoint interface {
-	RegisterRotation(ctx context.Context, at time.Time, topic string, seed []byte)
-}
-
-type RotationPoint struct {
+type RotationInterval struct {
 	interval time.Duration
 
 	cacheTopics    map[string]*Point
@@ -24,38 +19,40 @@ type RotationPoint struct {
 	muCache        sync.RWMutex
 }
 
-func NewStaticRotation() *RotationPoint {
-	return NewRotationPoint(time.Hour * 24 * 360)
+func NewStaticRotationInterval() *RotationInterval {
+	// from https://stackoverflow.com/a/32620397
+	maxTime := time.Unix(1<<63-62135596801, 999999999)
+	return NewRotationInterval(time.Until(maxTime))
 }
 
-func NewRotationPoint(interval time.Duration) *RotationPoint {
-	return &RotationPoint{
+func NewRotationInterval(interval time.Duration) *RotationInterval {
+	return &RotationInterval{
 		interval:       interval,
 		cacheTopics:    make(map[string]*Point),
 		cacheRotations: make(map[string]*Point),
 	}
 }
 
-func (r *RotationPoint) RegisterRotation(at time.Time, topic string, seed []byte) {
+func (r *RotationInterval) RegisterRotation(at time.Time, topic string, seed []byte) {
 	point := r.NewRendezvousPointForPeriod(at, topic, seed)
 	r.muCache.Lock()
 	r.registerPoint(point)
 	r.muCache.Unlock()
 }
 
-func (r *RotationPoint) RoundTimePeriod(at time.Time) time.Time {
+func (r *RotationInterval) RoundTimePeriod(at time.Time) time.Time {
 	return RoundTimePeriod(at, r.interval)
 }
 
-func (r *RotationPoint) NextTimePeriod(at time.Time) time.Time {
+func (r *RotationInterval) NextTimePeriod(at time.Time) time.Time {
 	return NextTimePeriod(at, r.interval)
 }
 
-func (r *RotationPoint) PointForRawRotation(rotation []byte) (*Point, error) {
+func (r *RotationInterval) PointForRawRotation(rotation []byte) (*Point, error) {
 	return r.PointForRotation(string(rotation))
 }
 
-func (r *RotationPoint) PointForRotation(rotation string) (*Point, error) {
+func (r *RotationInterval) PointForRotation(rotation string) (*Point, error) {
 	r.muCache.Lock()
 	defer r.muCache.Unlock()
 
@@ -70,7 +67,7 @@ func (r *RotationPoint) PointForRotation(rotation string) (*Point, error) {
 	return nil, fmt.Errorf("unable to get rendez vous, no matching rotation registered")
 }
 
-func (r *RotationPoint) PointForTopic(topic string) (*Point, error) {
+func (r *RotationInterval) PointForTopic(topic string) (*Point, error) {
 	r.muCache.Lock()
 	defer r.muCache.Unlock()
 
@@ -85,7 +82,7 @@ func (r *RotationPoint) PointForTopic(topic string) (*Point, error) {
 	return nil, fmt.Errorf("unable to get rendezvous point, no matching topic registered")
 }
 
-func (r *RotationPoint) NewRendezvousPointForPeriod(at time.Time, topic string, seed []byte) (point *Point) {
+func (r *RotationInterval) NewRendezvousPointForPeriod(at time.Time, topic string, seed []byte) (point *Point) {
 	at = r.RoundTimePeriod(at)
 	rotation := GenerateRendezvousPointForPeriod([]byte(topic), seed, at)
 
@@ -99,23 +96,22 @@ func (r *RotationPoint) NewRendezvousPointForPeriod(at time.Time, topic string, 
 	}
 }
 
-func (r *RotationPoint) registerPoint(point *Point) {
+func (r *RotationInterval) registerPoint(point *Point) {
 	keytopic, keyrotation := point.keys()
 	r.cacheTopics[keytopic] = point
 	r.cacheRotations[keyrotation] = point
 }
 
-func (r *RotationPoint) rotate(old *Point, graceperiod time.Duration) *Point {
+func (r *RotationInterval) rotate(old *Point, graceperiod time.Duration) *Point {
 	new := old.NextPoint()
 
 	// register new point
 	r.registerPoint(new)
 
 	cleanuptime := time.Until(new.Deadline().Add(graceperiod))
-	if graceperiod < 0 {
-		graceperiod = 0
+	if cleanuptime < 0 {
+		cleanuptime = 0
 	}
-
 	// cleanup after the grace period
 	time.AfterFunc(cleanuptime, func() {
 		r.muCache.Lock()
@@ -128,7 +124,7 @@ func (r *RotationPoint) rotate(old *Point, graceperiod time.Duration) *Point {
 }
 
 type Point struct {
-	rp       *RotationPoint
+	rp       *RotationInterval
 	topic    string
 	rotation []byte
 	seed     []byte

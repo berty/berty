@@ -704,7 +704,7 @@ func (m *Manager) configIPFSRouting(h host.Host, r p2p_routing.Routing) error {
 		}
 	}
 
-	rp, err := m.getRotationPoint()
+	rp, err := m.getRotationInterval()
 	if err != nil {
 		return errcode.ErrIPFSSetupHost.Wrap(err)
 	}

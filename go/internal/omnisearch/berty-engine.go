@@ -20,7 +20,7 @@ type bertyEngine struct {
 }
 
 func NewEngine(ctx context.Context, h host.Host, disc tinder.UnregisterDiscovery) (Engine, error) {
-	rp := rendezvous.NewRotationPoint(time.Hour * 24)
+	rp := rendezvous.NewRotationInterval(time.Hour * 24)
 	return &bertyEngine{s: bertyprotocol.NewSwiper(zap.NewNop(), disc, rp)}, nil
 }
 

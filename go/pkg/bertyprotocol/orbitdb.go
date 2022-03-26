@@ -49,10 +49,10 @@ type loggable interface {
 
 type NewOrbitDBOptions struct {
 	baseorbitdb.NewOrbitDBOptions
-	Datastore       datastore.Batching
-	MessageKeystore *cryptoutil.MessageKeystore
-	DeviceKeystore  cryptoutil.DeviceKeystore
-	RotationPoint   *rendezvous.RotationPoint
+	Datastore        datastore.Batching
+	MessageKeystore  *cryptoutil.MessageKeystore
+	DeviceKeystore   cryptoutil.DeviceKeystore
+	RotationInterval *rendezvous.RotationInterval
 }
 
 func (n *NewOrbitDBOptions) applyDefaults() {
@@ -76,14 +76,14 @@ func (n *NewOrbitDBOptions) applyDefaults() {
 		n.DeviceKeystore = cryptoutil.NewDeviceKeystore(ipfsutil.NewDatastoreKeystore(datastoreutil.NewNamespacedDatastore(n.Datastore, datastore.NewKey(NamespaceDeviceKeystore))), nil)
 	}
 
-	if n.RotationPoint == nil {
-		n.RotationPoint = rendezvous.NewStaticRotation()
+	if n.RotationInterval == nil {
+		n.RotationInterval = rendezvous.NewStaticRotationInterval()
 	}
 }
 
 type BertyOrbitDB struct {
 	baseorbitdb.BaseOrbitDB
-	rotationPoint    *rendezvous.RotationPoint
+	rotationInterval *rendezvous.RotationInterval
 	groups           sync.Map // map[string]*protocoltypes.Group
 	groupContexts    sync.Map // map[string]*GroupContext
 	groupsSigPubKey  sync.Map // map[string]crypto.PubKey
@@ -158,7 +158,7 @@ func NewBertyOrbitDB(ctx context.Context, ipfs coreapi.CoreAPI, options *NewOrbi
 		options.PubSub = pubsubcoreapi.NewPubSub(ipfs, self.ID(), time.Second, options.Logger, options.Tracer)
 	}
 
-	mm := NewRotationMessageMarshaler(options.RotationPoint)
+	mm := NewRotationMessageMarshaler(options.RotationInterval)
 	if options.MessageMarshaler == nil {
 		options.MessageMarshaler = mm
 	}
@@ -174,7 +174,7 @@ func NewBertyOrbitDB(ctx context.Context, ipfs coreapi.CoreAPI, options *NewOrbi
 		keyStore:         ks,
 		deviceKeystore:   options.DeviceKeystore,
 		messageKeystore:  options.MessageKeystore,
-		rotationPoint:    options.RotationPoint,
+		rotationInterval: options.RotationInterval,
 		pubSub:           options.PubSub,
 	}
 
@@ -458,7 +458,7 @@ func (s *BertyOrbitDB) storeForGroup(ctx context.Context, o iface.BaseOrbitDB, g
 		options.IO = cborIO
 
 		s.messageMarshaler.RegisterSharedKeyForTopic(addr.String(), sk)
-		s.rotationPoint.RegisterRotation(time.Now(), addr.String(), key)
+		s.rotationInterval.RegisterRotation(time.Now(), addr.String(), key)
 	}
 
 	store, err := o.Open(ctx, name, options)

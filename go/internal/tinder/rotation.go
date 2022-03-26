@@ -5,25 +5,25 @@ import (
 	"fmt"
 	"time"
 
-	"berty.tech/berty/v2/go/internal/rendezvous"
 	"github.com/libp2p/go-libp2p-core/discovery"
-	p2p_discovery "github.com/libp2p/go-libp2p-core/discovery"
 	p2p_peer "github.com/libp2p/go-libp2p-core/peer"
+
+	"berty.tech/berty/v2/go/internal/rendezvous"
 )
 
 type rotation struct {
 	disc discovery.Discovery
-	rp   *rendezvous.RotationPoint
+	rp   *rendezvous.RotationInterval
 }
 
-func NewRotationDiscovery(disc discovery.Discovery, rp *rendezvous.RotationPoint) discovery.Discovery {
+func NewRotationDiscovery(disc discovery.Discovery, rp *rendezvous.RotationInterval) discovery.Discovery {
 	return &rotation{
 		disc: disc,
 		rp:   rp,
 	}
 }
 
-func (r *rotation) Advertise(ctx context.Context, ns string, opts ...p2p_discovery.Option) (time.Duration, error) {
+func (r *rotation) Advertise(ctx context.Context, ns string, opts ...discovery.Option) (time.Duration, error) {
 	point, err := r.rp.PointForTopic(ns)
 	if err != nil {
 		return 0, fmt.Errorf("unable to get rotation point for topic: %w", err)
@@ -41,7 +41,7 @@ func (r *rotation) Advertise(ctx context.Context, ns string, opts ...p2p_discove
 	return ttl, nil
 }
 
-func (r *rotation) FindPeers(ctx context.Context, ns string, opts ...p2p_discovery.Option) (<-chan p2p_peer.AddrInfo, error) {
+func (r *rotation) FindPeers(ctx context.Context, ns string, opts ...discovery.Option) (<-chan p2p_peer.AddrInfo, error) {
 	point, err := r.rp.PointForTopic(ns)
 	if err != nil {
 		c := make(chan p2p_peer.AddrInfo)

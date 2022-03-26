@@ -15,12 +15,12 @@ import (
 )
 
 type RotationMessageMarshaler struct {
-	rp    *rendezvous.RotationPoint
+	rp    *rendezvous.RotationInterval
 	sks   map[string]enc.SharedKey
 	musks sync.RWMutex
 }
 
-func NewRotationMessageMarshaler(rp *rendezvous.RotationPoint) *RotationMessageMarshaler {
+func NewRotationMessageMarshaler(rp *rendezvous.RotationInterval) *RotationMessageMarshaler {
 	return &RotationMessageMarshaler{
 		sks: make(map[string]enc.SharedKey),
 		rp:  rp,
