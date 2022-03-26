@@ -33,6 +33,7 @@ jobs:
         with:
           fetch-depth: 1
       - id: set-matrix
+        name: Generate dynamic build matrix (optimized)
         run: |
           # usage: node .github/workflows/mac-runner-matrix-builder.js STRATEGY
           #
