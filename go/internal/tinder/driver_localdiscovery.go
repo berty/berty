@@ -6,7 +6,6 @@ import (
 	"encoding/hex"
 	"fmt"
 	"math/rand"
-	mrand "math/rand"
 	"sync"
 	"time"
 
@@ -47,16 +46,15 @@ type LocalDiscovery struct {
 	recs   map[string]time.Time
 	muRecs sync.RWMutex
 
-	cache    map[string]*linkedCache
+	caches   map[string]*linkedCache
 	muCaches sync.Mutex
 }
 
 type linkedCache struct {
 	sync.Locker
-	watcher int
-	peers   map[peer.ID]*peer.AddrInfo
-	queue   *list.List
-	cond    *sync.Cond
+	recs  map[peer.ID]*recCache
+	queue *list.List
+	cond  *sync.Cond
 }
 
 type recCache struct {
@@ -74,7 +72,7 @@ func newLinkedCache() *linkedCache {
 	}
 }
 
-func NewLocalDiscovery(logger *zap.Logger, host host.Host, rng *mrand.Rand) (*LocalDiscovery, error) {
+func NewLocalDiscovery(logger *zap.Logger, host host.Host, rng *rand.Rand) (*LocalDiscovery, error) {
 	ctx, cancel := context.WithCancel(context.Background())
 	ld := &LocalDiscovery{
 		rootctx:    ctx,
@@ -83,7 +81,7 @@ func NewLocalDiscovery(logger *zap.Logger, host host.Host, rng *mrand.Rand) (*Lo
 		logger: logger.Named("localdisc"),
 		h:      host,
 		recs:   make(map[string]time.Time),
-		cache:  make(map[string]*linkedCache),
+		caches: make(map[string]*linkedCache),
 	}
 
 	host.SetStreamHandler(recProtocolID, ld.handleStream)
@@ -120,20 +118,20 @@ func (ld *LocalDiscovery) Advertise(ctx context.Context, cid string, opts ...dis
 	expire := time.Now().Add(ttl)
 
 	ld.muRecs.Lock()
-	rec, exist := ld.recs[cid]
-	if !exist {
-		rec = expire
-		ld.recs[cid] = rec
+	_, exist := ld.recs[cid]
+	if !exist && len(ld.recs) > limit {
+		ld.muRecs.Unlock()
+		return minTTL, fmt.Errorf("unable to add record, reached limit of %d", limit)
 	}
+
+	ld.recs[cid] = expire
 	ld.muRecs.Unlock()
 
 	ld.logger.Debug("advertise", zap.String("ns", hex.EncodeToString([]byte(cid))))
 
-	if !exist {
-		// if this cid is new, send it to already connected proximity peers
-		records := []*Record{{Cid: cid, Expire: expire.Unix()}}
-		ld.sendRecordsToProximityPeers(ctx, &Records{Records: records})
-	}
+	// send it to already connected proximity peers
+	records := []*Record{{Cid: cid, Expire: expire.Unix()}}
+	ld.sendRecordsToProximityPeers(ctx, &Records{Records: records})
 
 	return ttl, nil
 }
@@ -156,10 +154,10 @@ func (ld *LocalDiscovery) FindPeers(ctx context.Context, cid string, opts ...dis
 	}
 
 	ld.muCaches.Lock()
-	cachelist, ok := ld.cache[cid]
+	cache, ok := ld.caches[cid]
 	if !ok {
-		cachelist = newLinkedCache()
-		ld.cache[cid] = cachelist
+		cache = newLinkedCache()
+		ld.caches[cid] = cache
 	}
 	ld.muCaches.Unlock()
 
@@ -167,27 +165,27 @@ func (ld *LocalDiscovery) FindPeers(ctx context.Context, cid string, opts ...dis
 	go func() {
 		<-ctx.Done()
 		cancel()
-		cachelist.cond.Broadcast()
+		cache.cond.Broadcast()
 	}()
 
-	current := cachelist.queue.Front()
+	current := cache.queue.Front()
 	counter := 0
 
 	go func() {
-		cachelist.Lock()
-		cachelist.watcher++
+		cache.Lock()
 		for ctx.Err() == nil && counter <= limit {
 			if current == nil {
-				cachelist.cond.Wait()
-				current = cachelist.queue.Back()
+				// wait for new elements in the list
+				cache.cond.Wait()
+				current = cache.queue.Back()
 				continue
 			}
 
 			next := current.Next()
 			rec := current.Value.(*recCache)
 			if time.Now().After(rec.expire) {
-				delete(cachelist.peers, rec.peer.ID)
-				cachelist.queue.Remove(current)
+				delete(cache.recs, rec.peer.ID)
+				cache.queue.Remove(current)
 			} else {
 				select {
 				case cpeer <- *rec.peer:
@@ -196,11 +194,11 @@ func (ld *LocalDiscovery) FindPeers(ctx context.Context, cid string, opts ...dis
 				}
 			}
 
+			// move our pointer forward
 			current = next
 		}
-		cachelist.watcher--
 		close(cpeer)
-		cachelist.Unlock()
+		cache.Unlock()
 	}()
 
 	return cpeer, nil
@@ -225,11 +223,6 @@ func (ld *LocalDiscovery) getLocalReccord() *Records {
 	}
 	ld.muRecs.Unlock()
 
-	// @TODO(gfanton): is that really necessary ?
-	rand.Shuffle(len(records), func(i, j int) {
-		records[i], records[j] = records[j], records[i]
-	})
-
 	return &Records{Records: records}
 }
 
@@ -240,7 +233,7 @@ func (ld *LocalDiscovery) Unregister(ctx context.Context, cid string) error {
 	return nil
 }
 
-func (ld *LocalDiscovery) sendRecordsToProximityPeers(ctx context.Context, records *Records) error {
+func (ld *LocalDiscovery) sendRecordsToProximityPeers(ctx context.Context, records *Records) {
 	conns := ld.h.Network().Conns()
 	wg := sync.WaitGroup{}
 
@@ -261,14 +254,12 @@ func (ld *LocalDiscovery) sendRecordsToProximityPeers(ctx context.Context, recor
 	}
 
 	wg.Wait()
-
-	return nil
 }
 
 // Called when is a stream is opened by a remote peer
 // Receive remote peer cache and put it in our local cache
 func (ld *LocalDiscovery) handleStream(s network.Stream) {
-	defer s.Reset()
+	defer s.Reset() // nolint:errcheck
 
 	reader := ggio.NewDelimitedReader(s, network.MessageSizeMax)
 	records := Records{}
@@ -288,10 +279,10 @@ func (ld *LocalDiscovery) handleStream(s network.Stream) {
 			zap.Time("expire", expire))
 
 		ld.muCaches.Lock()
-		cache, ok := ld.cache[record.Cid]
+		cache, ok := ld.caches[record.Cid]
 		if !ok {
 			cache = newLinkedCache()
-			ld.cache[record.Cid] = cache
+			ld.caches[record.Cid] = cache
 		}
 		ld.muCaches.Unlock()
 
@@ -301,17 +292,16 @@ func (ld *LocalDiscovery) handleStream(s network.Stream) {
 			expire: expire,
 		}
 
-		// update the given cache addrs and signal to other routine that we got an update
+		// update the given cache record and signal to other routine that we got an update
 		cache.Lock()
-		if p, ok := cache.peers[pid.ID]; ok {
-			p.Addrs = pid.Addrs
+		if cacheRec, ok := cache.recs[pid.ID]; ok {
+			cacheRec.peer = &pid
+			cacheRec.expire = expire
 		} else {
 			cache.queue.PushBack(rec)
 		}
 
-		if cache.watcher > 0 {
-			cache.cond.Broadcast()
-		}
+		cache.cond.Broadcast()
 		cache.Unlock()
 	}
 }
@@ -394,7 +384,6 @@ func (ld *LocalDiscovery) monitorConnection(ctx context.Context) error {
 					}
 				}()
 			}
-
 		}
 	}()
 

@@ -603,7 +603,7 @@ func (m *Manager) configIPFSRouting(h host.Host, r p2p_routing.Routing) error {
 		}
 
 		drivers = append(drivers,
-			tinder.NewDriverFromUnregisterDiscovery(tinder.LocalDiscoveryName, localDiscovery, filter))
+			tinder.NewDriverFromUnregisterDiscovery(tinder.LocalDiscoveryName, m.Node.Protocol.localdisc, filter))
 	}
 
 	// rdvp driver
@@ -663,6 +663,13 @@ func (m *Manager) configIPFSRouting(h host.Host, r p2p_routing.Routing) error {
 	// @FIXME(gfanton): hacky way to to handle close on context done
 	go func() {
 		<-m.getContext().Done()
+
+		m.Node.Protocol.discovery.Close()
+
+		if m.Node.Protocol.localdisc != nil {
+			m.Node.Protocol.localdisc.Close()
+		}
+
 		if m.Node.Protocol.MDNS.Enable && m.Node.Protocol.MDNS.DriverLocker != nil {
 			m.Node.Protocol.MDNS.DriverLocker.Unlock()
 		}

@@ -76,7 +76,6 @@ require (
 	github.com/multiformats/go-multiaddr-dns v0.3.1
 	github.com/multiformats/go-multiaddr-fmt v0.1.0
 	github.com/multiformats/go-multihash v0.1.0
-	github.com/multiformats/go-multistream v0.2.2
 	github.com/mutecomm/go-sqlcipher/v4 v4.4.2
 	github.com/oklog/run v1.1.0
 	github.com/otiai10/copy v1.7.0
