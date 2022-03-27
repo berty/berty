@@ -3,47 +3,76 @@
 		"getstarted": {
 			"title": "PROTEJA SUA PRIVACIDADE",
 			"desc": "mensagem peer-to-peer gratuita e segura",
-			"create-button": "",
-			"import-button": "",
-			"link-button": ""
+			"create-button": "Criar uma nova conta",
+			"import-button": "Importar uma conta",
+			"link-button": "Vincular este dispositivo"
 		},
 		"default-mode": {
 			"summary": {
-				"title": "",
-				"subtitle": "",
-				"first-point": "",
-				"second-point": "",
-				"back-button": "",
-				"accept-button": ""
+				"title": "Modo Padrão",
+				"subtitle": "Comece rapidamente",
+				"first-point": "Comece com predefinições que oferecem um equilíbrio de privacidade/conforto que mais se adequa a você. Pontos de conexão Berty são usados para melhorar o desempenho e a comunicação assíncrona.",
+				"second-point": "Para um equilíbrio de privacidade/conforto personalizado, selecione o Modo personalizado.",
+				"back-button": "Voltar",
+				"accept-button": "Vamos lá"
 			}
 		},
 		"custom-mode": {
 			"summary": {
-				"title": "",
-				"subtitle": "",
-				"first-point": "",
-				"second-point": "",
-				"back-button": "",
-				"accept-button": ""
+				"title": "Modo personalizado",
+				"subtitle": "Customizar Privacidade/Conforto",
+				"first-point": "Neste modo, ajuste todas as configurações individualmente para criar o equilíbrio de privacidade e conforto que funciona para você.",
+				"second-point": "Para uma experiência segura, selecione o Modo Padrão.",
+				"back-button": "Voltar",
+				"accept-button": "Continuar"
 			},
 			"settings": {
 				"off-grid": {
-					"title": "",
+					"title": "Comunicação Off-Grid",
 					"ble-button": "Bluetooth de Baixa Energia",
-					"nearby-button": "",
-					"mc-button": "",
-					"mdns-button": ""
+					"nearby-button": "Android nas proximidades",
+					"mc-button": "Conectividade Multipares da Apple",
+					"mdns-button": "Multicast DNS (LAN)"
 				},
 				"routing": {
-					"title": "",
+					"title": "Roteamento",
 					"dht-button": "Tabela Hash Distribuída",
 					"rdvp-button": ""
 				},
 				"access": {
-					"title": "",
-					"relay-button": "",
-					"bootstrap-button": "",
-					"replication-button": ""
+					"title": "Acessibilidade de rede",
+					"relay-button": "Nós de retransmissão (TURN)",
+					"bootstrap-button": "Pontos de inicialização",
+					"replication-button": "Pontos de replicação"
+				},
+				"modals": {
+					"add": {
+						"title": {
+							"relay": "Adicionar um ponto de retransmissão (TURN)",
+							"bootstrap": "Adicionar um ponto de inicialização",
+							"rdvp": "Adicionar um ponto RDVP"
+						}
+					},
+					"edit": {
+						"title": {
+							"relay": "",
+							"bootstrap": "",
+							"rdvp": ""
+						}
+					},
+					"errors": {
+						"alias-already-exists": "",
+						"multiaddr-alread-exists": "",
+						"multiaddr-bad-format": "",
+						"multiaddr-p2p": ""
+					},
+					"buttons": {
+						"add": "Adicionar",
+						"edit": "",
+						"delete": ""
+					},
+					"multiaddress": "",
+					"alias": ""
 				},
 				"all-button": "",
 				"accept-button": ""
@@ -480,6 +509,10 @@
 			"desc": ""
 		},
 		"need-restart-ble": {
+			"title": "",
+			"desc": ""
+		},
+		"submit-failed": {
 			"title": "",
 			"desc": ""
 		}
