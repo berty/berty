@@ -142,6 +142,7 @@ type Manager struct {
 			ipfsNode                   *core.IpfsNode
 			ipfsAPI                    ipfsutil.ExtendedCoreAPI
 			mdnsService                p2p_mdns.Service
+			localdisc                  *tinder.LocalDiscovery
 			pubsub                     *pubsub.PubSub
 			discovery                  tinder.Service
 			server                     bertyprotocol.Service
@@ -383,6 +384,9 @@ func (m *Manager) Close(prog *progress.Progress) error {
 	prog.Get("close-tinder-service").SetAsCurrent()
 	if m.Node.Protocol.server != nil {
 		m.Node.Protocol.discovery.Close()
+		if m.Node.Protocol.localdisc != nil {
+			m.Node.Protocol.localdisc.Close()
+		}
 	}
 
 	prog.Get("close-mdns-service").SetAsCurrent()
