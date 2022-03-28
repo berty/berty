@@ -1,13 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import {
-	ScrollView,
-	View,
-	Text as TextNative,
-	ActivityIndicator,
-	TouchableOpacity,
-	StatusBar,
-} from 'react-native'
-import { Layout, Text, Icon } from '@ui-kitten/components'
+import { ScrollView, View, ActivityIndicator, TouchableOpacity, StatusBar } from 'react-native'
+import { Layout, Icon } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 
 import beapi from '@berty/api'
@@ -17,6 +10,7 @@ import { useThemeColor, pbDateToNum } from '@berty/store'
 import { protocolMethodsHooks } from '@berty/store/methods'
 
 import { usePrevious } from '../hooks'
+import { BText } from '../shared-components/BText'
 
 const PeerItem: React.FC<{ item: beapi.protocol.PeerList.IPeer; highlighted: boolean }> = ({
 	item,
@@ -83,10 +77,10 @@ const PeerItem: React.FC<{ item: beapi.protocol.PeerList.IPeer; highlighted: boo
 						  })
 						: null}
 				</View>
-				<Text style={[text.align.center, { flex: 4 }]}>{id?.substr(0, 9)}</Text>
-				<Text numberOfLines={1} style={[text.align.center, { flex: 3 }]}>
+				<BText style={[text.align.center, { flex: 4 }]}>{id?.substring(0, 9)}</BText>
+				<BText numberOfLines={1} style={[text.align.center, { flex: 3 }]}>
 					{minLatency ? minLatency + 'ms' : '?'}
-				</Text>
+				</BText>
 				<TouchableOpacity
 					style={[row.center, { flex: 1 }]}
 					onPress={() => setIsDropdown(!isDropdown)}
@@ -101,7 +95,7 @@ const PeerItem: React.FC<{ item: beapi.protocol.PeerList.IPeer; highlighted: boo
 			</View>
 			{isDropdown && (
 				<View style={[padding.small]}>
-					<Text>{JSON.stringify(item, null, 2)}</Text>
+					<BText>{JSON.stringify(item, null, 2)}</BText>
 				</View>
 			)}
 		</View>
@@ -162,15 +156,15 @@ const NetworkMapBody: React.FC<{ peers: beapi.protocol.PeerList.IReply | null }>
 			{sortPeers?.length ? (
 				<View>
 					<View style={[margin.medium]}>
-						<TextNative
+						<BText
 							style={[
-								{ fontFamily: 'Open Sans', color: colors['alt-secondary-background-header'] },
+								{ color: colors['alt-secondary-background-header'] },
 								text.bold.medium,
 								text.size.large,
 							]}
 						>
 							{`${t('settings.network-map.online-peers')} ${sortPeers.length}`}
-						</TextNative>
+						</BText>
 						<View
 							style={{
 								flexDirection: 'row',
@@ -181,19 +175,16 @@ const NetworkMapBody: React.FC<{ peers: beapi.protocol.PeerList.IReply | null }>
 						>
 							<View style={{ flexDirection: 'row', alignItems: 'center' }}>
 								<Icon name='berty' pack='custom' width={25} height={25} />
-								<TextNative
+								<BText
 									style={[
-										{
-											fontFamily: 'Open Sans',
-											color: colors['alt-secondary-background-header'],
-										},
+										{ color: colors['alt-secondary-background-header'] },
 										text.bold.medium,
 										text.size.large,
 										margin.left.tiny,
 									]}
 								>
 									{typesPeers?.berty}
-								</TextNative>
+								</BText>
 							</View>
 							<View style={{ flexDirection: 'row', alignItems: 'center' }}>
 								<Icon
@@ -203,19 +194,16 @@ const NetworkMapBody: React.FC<{ peers: beapi.protocol.PeerList.IReply | null }>
 									width={25}
 									height={25}
 								/>
-								<TextNative
+								<BText
 									style={[
-										{
-											fontFamily: 'Open Sans',
-											color: colors['alt-secondary-background-header'],
-										},
+										{ color: colors['alt-secondary-background-header'] },
 										text.bold.medium,
 										text.size.large,
 										margin.left.tiny,
 									]}
 								>
 									{typesPeers?.quic}
-								</TextNative>
+								</BText>
 							</View>
 							<View style={{ flexDirection: 'row', alignItems: 'center' }}>
 								<Icon
@@ -224,19 +212,16 @@ const NetworkMapBody: React.FC<{ peers: beapi.protocol.PeerList.IReply | null }>
 									width={25}
 									height={25}
 								/>
-								<TextNative
+								<BText
 									style={[
-										{
-											fontFamily: 'Open Sans',
-											color: colors['alt-secondary-background-header'],
-										},
+										{ color: colors['alt-secondary-background-header'] },
 										text.bold.medium,
 										text.size.large,
 										margin.left.tiny,
 									]}
 								>
 									{typesPeers?.ble}
-								</TextNative>
+								</BText>
 							</View>
 						</View>
 					</View>

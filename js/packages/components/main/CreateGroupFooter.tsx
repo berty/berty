@@ -1,9 +1,10 @@
 import React from 'react'
 import { View, TouchableOpacity, ActivityIndicator } from 'react-native'
-import { Text, Icon } from '@ui-kitten/components'
+import { Icon } from '@ui-kitten/components'
 
 import { useStyles } from '@berty/styles'
 import { useThemeColor } from '@berty/store/hooks'
+import { BText } from '../shared-components/BText'
 
 type FooterCreateGroupProps = {
 	title: string
@@ -55,7 +56,7 @@ export const FooterCreateGroup: React.FC<FooterCreateGroupProps> = ({
 					{loading ? (
 						<ActivityIndicator color={colors['background-header']} />
 					) : (
-						<Text
+						<BText
 							style={[
 								text.bold.medium,
 								text.align.center,
@@ -64,7 +65,7 @@ export const FooterCreateGroup: React.FC<FooterCreateGroupProps> = ({
 							]}
 						>
 							{title}
-						</Text>
+						</BText>
 					)}
 				</View>
 				{icon && !loading && (

@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
-import { View, TouchableOpacity, TextInput, Text as TextNative } from 'react-native'
+import { View, TouchableOpacity, TextInput } from 'react-native'
 import { Buffer } from 'buffer'
 import { CommonActions } from '@react-navigation/native'
-import { Text, Icon } from '@ui-kitten/components'
+import { Icon } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 
 import { useStyles } from '@berty/styles'
@@ -16,6 +16,7 @@ import { ContactAvatar } from '../avatars'
 import { TabBar } from '../shared-components/TabBar'
 import { FingerprintContent } from '../shared-components/FingerprintContent'
 import InvalidScan from './InvalidScan'
+import { BText } from '../shared-components/BText'
 
 const useStylesModal = () => {
 	const [{ width, border, height, opacity }] = useStyles()
@@ -49,7 +50,9 @@ const SelectedContent = ({
 			return <FingerprintContent seed={pubKey} isEncrypted={isEncrypted} />
 		default:
 			return (
-				<Text style={[padding.horizontal.medium]}>Error: Unknown content name "{contentName}"</Text>
+				<BText style={[padding.horizontal.medium]}>
+					Error: Unknown content name "{contentName}"
+				</BText>
 			)
 	}
 }
@@ -126,7 +129,7 @@ const AddThisContact: React.FC<{
 					/>
 				</View>
 				<View style={[padding.top.scale(55)]}>
-					<Text style={{ textAlign: 'center' }}>{displayName}</Text>
+					<BText style={{ textAlign: 'center' }}>{displayName}</BText>
 					<TabBar
 						tabs={[
 							{
@@ -169,10 +172,9 @@ const AddThisContact: React.FC<{
 							]}
 						>
 							<Icon name='info-outline' fill={colors['background-header']} width={15} height={15} />
-							<TextNative
+							<BText
 								style={[
 									{
-										fontFamily: 'Open Sans',
 										color: colors['background-header'],
 										paddingLeft: 5,
 									},
@@ -182,7 +184,7 @@ const AddThisContact: React.FC<{
 								]}
 							>
 								Enter the contact password
-							</TextNative>
+							</BText>
 						</View>
 						<View
 							style={[
@@ -220,9 +222,9 @@ const AddThisContact: React.FC<{
 							{ backgroundColor: colors['positive-asset'] },
 						]}
 					>
-						<Text style={{ textAlign: 'center', color: colors['background-header'] }}>
+						<BText style={{ textAlign: 'center', color: colors['background-header'] }}>
 							ADD THIS CONTACT
-						</Text>
+						</BText>
 					</TouchableOpacity>
 				</View>
 			</View>

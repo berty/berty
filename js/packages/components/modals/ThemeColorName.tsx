@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, TouchableOpacity, Text as TextNative, StyleSheet, TextInput } from 'react-native'
+import { View, TouchableOpacity, StyleSheet, TextInput } from 'react-native'
 import { Icon } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 import { useDispatch } from 'react-redux'
@@ -11,6 +11,7 @@ import { BlurView } from '@berty/polyfill/react-native-community-blur'
 
 import Avatar from './Buck_Berty_Icon_Card.svg'
 import { useStylesDefaultModal } from './AddBot'
+import { BText } from '../shared-components/BText'
 
 export const ThemeColorBody: React.FC<{ closeModal: () => void }> = ({ closeModal }) => {
 	const [themeName, setThemeName] = React.useState<string>('')
@@ -64,30 +65,14 @@ export const ThemeColorBody: React.FC<{ closeModal: () => void }> = ({ closeModa
 				]}
 			>
 				<View style={[margin.top.scale(70 * scaleHeight)]}>
-					<TextNative
-						style={[
-							text.align.center,
-							padding.top.small,
-							text.size.large,
-							text.bold.medium,
-							{ fontFamily: 'Open Sans', color: colors['main-text'] },
-						]}
-					>
+					<BText style={[text.align.center, padding.top.small, text.size.large, text.bold.medium]}>
 						{`🎨 ${t('modals.save-theme.title')}`}
-					</TextNative>
+					</BText>
 					<View
 						style={[padding.top.scale(20), padding.horizontal.medium, { flexDirection: 'column' }]}
 					>
 						<View>
-							<TextNative
-								style={[
-									text.bold.small,
-									text.size.medium,
-									{ fontFamily: 'Open Sans', color: colors['main-text'] },
-								]}
-							>
-								{t('modals.save-theme.desc')}
-							</TextNative>
+							<BText style={[text.bold.small]}>{t('modals.save-theme.desc')}</BText>
 						</View>
 						<View
 							style={[
@@ -134,17 +119,16 @@ export const ThemeColorBody: React.FC<{ closeModal: () => void }> = ({ closeModa
 							fill={colors['negative-asset']}
 							style={row.item.justify}
 						/>
-						<TextNative
+						<BText
 							style={[
 								padding.left.small,
 								row.item.justify,
-								text.size.medium,
 								text.bold.medium,
-								{ fontFamily: 'Open Sans', color: colors['negative-asset'] },
+								{ color: colors['negative-asset'] },
 							]}
 						>
 							{t('modals.save-theme.cancel')}
-						</TextNative>
+						</BText>
 					</TouchableOpacity>
 					<TouchableOpacity
 						style={[
@@ -169,17 +153,16 @@ export const ThemeColorBody: React.FC<{ closeModal: () => void }> = ({ closeModa
 							fill={colors['background-header']}
 							style={row.item.justify}
 						/>
-						<TextNative
+						<BText
 							style={[
 								padding.left.small,
 								row.item.justify,
-								text.size.medium,
 								text.bold.medium,
 								{ color: colors['background-header'] },
 							]}
 						>
 							{t('modals.save-theme.add')}
-						</TextNative>
+						</BText>
 					</TouchableOpacity>
 				</View>
 			</View>

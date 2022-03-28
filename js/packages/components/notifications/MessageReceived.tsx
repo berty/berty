@@ -1,19 +1,18 @@
 import React from 'react'
-import { TouchableOpacity, View, Text } from 'react-native'
+import { TouchableOpacity, View } from 'react-native'
 import { CommonActions } from '@react-navigation/native'
 
 import beapi from '@berty/api'
 import { useStyles } from '@berty/styles'
-import { useThemeColor } from '@berty/store'
 import { dispatch } from '@berty/navigation'
 import { useConversation } from '@berty/react-redux'
 
 import { useStylesNotification } from './common'
 import { ConversationAvatar } from '../avatars'
+import { BText } from '../shared-components/BText'
 
 const MessageReceived: React.FC<any> = ({ onClose, title, message, ...props }) => {
 	const [{ text }] = useStyles()
-	const colors = useThemeColor()
 	const _styles = useStylesNotification()
 
 	const { payload } = props?.additionalProps?.payload || {}
@@ -59,12 +58,12 @@ const MessageReceived: React.FC<any> = ({ onClose, title, message, ...props }) =
 			<View style={_styles.innerTouchable}>
 				<ConversationAvatar publicKey={payload.conversation?.publicKey} size={40} />
 				<View style={_styles.titleAndTextWrapper}>
-					<Text numberOfLines={1} style={[text.bold.medium, { color: colors['main-text'] }]}>
+					<BText numberOfLines={1} style={[text.bold.medium]}>
 						{title}
-					</Text>
-					<Text numberOfLines={1} ellipsizeMode='tail' style={{ color: colors['main-text'] }}>
+					</BText>
+					<BText numberOfLines={1} ellipsizeMode='tail'>
 						{message}
-					</Text>
+					</BText>
 				</View>
 			</View>
 		</TouchableOpacity>

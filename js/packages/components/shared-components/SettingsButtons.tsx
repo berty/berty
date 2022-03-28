@@ -8,11 +8,12 @@ import {
 	TextInput,
 	ScrollView,
 } from 'react-native'
-import { Text, Icon } from '@ui-kitten/components'
+import { Icon } from '@ui-kitten/components'
 
 import { useStyles } from '@berty/styles'
 import { useThemeColor } from '@berty/store/hooks'
 import { Toggle } from '@berty/components/shared-components/Toggle'
+import { BText } from './BText'
 
 export const Section: React.FC<{}> = ({ children }) => {
 	const [{ margin, border, padding }] = useStyles()
@@ -103,7 +104,7 @@ export const ButtonSettingV2: React.FC<{
 							{ height: heightButton, flexDirection: 'row', alignItems: 'center' },
 						]}
 					>
-						<Text>{text}</Text>
+						<BText>{text}</BText>
 					</View>
 				</View>
 
@@ -293,7 +294,7 @@ export const ButtonSetting: React.FC<SettingButtonProps> = ({
 						<View>{/*<CircleAvatar avatarUri={image} withCircle={false} size={35} />*/}</View>
 					)}
 					<View>
-						<Text
+						<BText
 							numberOfLines={2}
 							style={[
 								padding.left.small,
@@ -303,7 +304,7 @@ export const ButtonSetting: React.FC<SettingButtonProps> = ({
 							]}
 						>
 							{name}
-						</Text>
+						</BText>
 					</View>
 				</View>
 				<View style={[row.center, { alignItems: 'center' }]}>
@@ -335,7 +336,7 @@ export const ButtonSetting: React.FC<SettingButtonProps> = ({
 										fill={state.stateIconColor}
 									/>
 								)}
-								<Text
+								<BText
 									style={[
 										text.align.center,
 										text.size.tiny,
@@ -344,15 +345,15 @@ export const ButtonSetting: React.FC<SettingButtonProps> = ({
 									]}
 								>
 									{state.value}
-								</Text>
+								</BText>
 							</View>
 						</View>
 					) : null}
 					{previewValue && (
 						<View>
-							<Text style={[padding.right.small, text.bold.medium, { color: previewValueColor }]}>
+							<BText style={[padding.right.small, text.bold.medium, { color: previewValueColor }]}>
 								{previewValue}
-							</Text>
+							</BText>
 						</View>
 					)}
 					{rightComponent}
@@ -466,7 +467,7 @@ export const FactionButtonSetting: React.FC<FactionButtonSettingProps> = ({
 								</View>
 							)}
 							<View>
-								<Text style={[padding.left.small, text.size.medium]}>{name}</Text>
+								<BText style={[padding.left.small, text.size.medium]}>{name}</BText>
 							</View>
 						</View>
 						<View>
@@ -504,7 +505,7 @@ export const FactionButtonSetting: React.FC<FactionButtonSettingProps> = ({
 												fill={state.stateIconColor}
 											/>
 										)}
-										<Text
+										<BText
 											style={[
 												row.item.justify,
 												text.size.tiny,
@@ -513,7 +514,7 @@ export const FactionButtonSetting: React.FC<FactionButtonSettingProps> = ({
 											]}
 										>
 											{state.value}
-										</Text>
+										</BText>
 									</View>
 								</View>
 							)}
@@ -672,18 +673,12 @@ export const ButtonSettingRow: React.FC<ButtonSettingRowProps> = ({
 					) : (
 						<>
 							<Icon name={obj.icon} width={30} height={30} fill={obj.color} />
-							<Text
-								style={[
-									text.align.center,
-									text.size.medium,
-									styleText,
-									_styles.textPadding,
-									{ color: colors['main-text'] },
-								]}
+							<BText
+								style={[text.align.center, text.size.medium, styleText, _styles.textPadding]}
 								numberOfLines={numberOfLines}
 							>
 								{obj.name}
-							</Text>
+							</BText>
 						</>
 					)}
 				</TouchableOpacity>
@@ -740,9 +735,9 @@ export const ButtonSettingItem: React.FC<ButtonSettingItem> = ({
 				height={iconSize}
 				fill={iconColor || colors['positive-asset']}
 			/>
-			<Text style={[text.bold.medium, _styles.updateFeatureText, { color }, styleText]}>
+			<BText style={[text.bold.medium, _styles.updateFeatureText, { color }, styleText]}>
 				{value}
-			</Text>
+			</BText>
 		</View>
 	)
 }
@@ -771,9 +766,9 @@ export const ButtonDropDown: React.FC<{ title: string; body: string }> = ({ titl
 			}}
 		>
 			<View style={[padding.right.small, { flex: 1, overflow: 'hidden' }]}>
-				<Text style={[{ marginBottom: 12 }, text.size.medium]}>{title}</Text>
+				<BText style={[{ marginBottom: 12 }, text.size.medium]}>{title}</BText>
 				<Animated.View style={{ maxHeight: animateHeight }}>
-					<Text style={[margin.top.small, text.size.medium]}>{body}</Text>
+					<BText style={[margin.top.small, text.size.medium]}>{body}</BText>
 				</Animated.View>
 			</View>
 			<TouchableOpacity

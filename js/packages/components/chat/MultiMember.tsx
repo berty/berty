@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { TouchableOpacity, View, Platform, TextInput, Text, Keyboard } from 'react-native'
+import { TouchableOpacity, View, Platform, TextInput, Keyboard } from 'react-native'
 import { Icon } from '@ui-kitten/components'
 import { useFocusEffect } from '@react-navigation/native'
 import { useTranslation } from 'react-i18next'
@@ -23,6 +23,7 @@ import { ChatDate } from './common'
 import { MultiMemberAvatar } from '../avatars'
 import { MessageList } from './MessageList'
 import { ChatFooter } from './footer/ChatFooter'
+import { BText } from '../shared-components/BText'
 
 //
 // MultiMember
@@ -133,20 +134,12 @@ export const MultiMember: ScreenFC<'Chat.Group'> = ({ route: { params }, navigat
 					</View>
 				) : (
 					<TouchableOpacity onLongPress={() => setIsEdit(true)}>
-						<Text
+						<BText
 							numberOfLines={1}
-							style={[
-								text.align.center,
-								text.size.large,
-								{
-									color: colors['main-text'],
-									fontFamily: 'Open Sans',
-									fontWeight: '700',
-								},
-							]}
+							style={[text.align.center, text.size.large, { fontWeight: '700' }]}
 						>
 							{conv?.displayName || ''}
-						</Text>
+						</BText>
 					</TouchableOpacity>
 				)
 			},

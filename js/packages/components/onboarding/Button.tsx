@@ -1,8 +1,9 @@
 import React from 'react'
-import { Text, TouchableOpacity, ViewStyle } from 'react-native'
+import { TouchableOpacity, ViewStyle } from 'react-native'
 
 import { useStyles } from '@berty/styles'
 import { useThemeColor } from '@berty/store/hooks'
+import { BText } from '../shared-components/BText'
 
 const Button: React.FC<{
 	children: string
@@ -37,9 +38,8 @@ const Button: React.FC<{
 			]}
 			onPress={onPress}
 		>
-			<Text
+			<BText
 				style={[
-					text.size.medium,
 					text.align.center,
 					text.bold.medium,
 					{
@@ -50,7 +50,7 @@ const Button: React.FC<{
 				]}
 			>
 				{children}
-			</Text>
+			</BText>
 		</TouchableOpacity>
 	)
 }

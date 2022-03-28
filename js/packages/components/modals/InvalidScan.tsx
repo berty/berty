@@ -1,12 +1,13 @@
 import React, { useState } from 'react'
 import { View, StyleSheet, TouchableOpacity } from 'react-native'
-import { Text, Icon } from '@ui-kitten/components'
+import { Icon } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 
 import { useStyles } from '@berty/styles'
 import beapi from '@berty/api'
 import { useThemeColor } from '@berty/store'
 import { useNavigation } from '@berty/navigation'
+import { BText } from '../shared-components/BText'
 
 //
 // Scan Invalid
@@ -69,9 +70,9 @@ const InvalidScanHeader: React.FC<{ title: string }> = ({ title }) => {
 				/>
 			</View>
 			<View>
-				<Text style={[text.bold.medium, text.align.center, { color: colors['warning-asset'] }]}>
+				<BText style={[text.bold.medium, text.align.center, { color: colors['warning-asset'] }]}>
 					{title}
-				</Text>
+				</BText>
 			</View>
 		</View>
 	)
@@ -90,7 +91,7 @@ const InvalidScanError: React.FC<{ error: string }> = ({ error }) => {
 				{ backgroundColor: `${colors['secondary-background-header']}40` },
 			]}
 		>
-			<Text
+			<BText
 				style={[
 					text.align.center,
 					text.bold.medium,
@@ -99,7 +100,7 @@ const InvalidScanError: React.FC<{ error: string }> = ({ error }) => {
 				]}
 			>
 				{error}
-			</Text>
+			</BText>
 		</View>
 	)
 }
@@ -130,7 +131,7 @@ const InvalidScanDismissButton: React.FC = () => {
 					fill={colors['secondary-text']}
 					style={row.item.justify}
 				/>
-				<Text
+				<BText
 					style={[
 						padding.left.small,
 						row.item.justify,
@@ -139,7 +140,7 @@ const InvalidScanDismissButton: React.FC = () => {
 					]}
 				>
 					{t('modals.invalid-scan.dismiss-button')}
-				</Text>
+				</BText>
 			</TouchableOpacity>
 		</View>
 	)

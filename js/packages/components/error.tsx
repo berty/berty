@@ -1,6 +1,6 @@
 import React from 'react'
 import { View, TouchableOpacity, StatusBar, SafeAreaView } from 'react-native'
-import { Text, Icon } from '@ui-kitten/components'
+import { Icon } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 import { setJSExceptionHandler } from 'react-native-exception-handler'
 import RNRestart from 'react-native-restart'
@@ -11,6 +11,7 @@ import { useThemeColor, useMessengerContext } from '@berty/store'
 import AppInspector from './debug/AppInspector'
 import { useSelector } from 'react-redux'
 import { selectEmbedded } from '@berty/redux/reducers/ui.reducer'
+import { BText } from './shared-components/BText'
 
 const Label: React.FC<{ title: string; type: 'error' }> = ({ title, type }) => {
 	const [{ padding, border }] = useStyles()
@@ -37,7 +38,7 @@ const Label: React.FC<{ title: string; type: 'error' }> = ({ title, type }) => {
 				{ backgroundColor: generatedColors.background },
 			]}
 		>
-			<Text style={[{ color: generatedColors.text, textTransform: 'uppercase' }]}>{title}</Text>
+			<BText style={[{ color: generatedColors.text, textTransform: 'uppercase' }]}>{title}</BText>
 		</View>
 	)
 }
@@ -76,7 +77,7 @@ const RestartButton: React.FC = () => {
 				},
 			]}
 		>
-			<Text
+			<BText
 				style={{
 					color: colors['background-header'],
 					fontWeight: '700',
@@ -84,7 +85,7 @@ const RestartButton: React.FC = () => {
 				}}
 			>
 				{t('error.restart-app')}
-			</Text>
+			</BText>
 		</TouchableOpacity>
 	)
 }
@@ -105,9 +106,9 @@ const ErrorDetails: React.FC<{ error: Error }> = ({ error }) => {
 					height={25 * scaleSize}
 					fill={colors['background-header']}
 				/>
-				<Text>Details</Text>
+				<BText>Details</BText>
 			</TouchableOpacity>
-			{collapsed || <Text>{error.message}</Text>}
+			{collapsed || <BText>{error.message}</BText>}
 		</View>
 	)
 }
@@ -178,11 +179,11 @@ const WTFScreen: React.FC<ErrorScreenProps> = ({ error }) => {
 						marginRight: 20,
 					}}
 				/>
-				<Text style={{ color: colors['background-header'], fontSize: 30, fontWeight: '700' }}>
+				<BText style={{ color: colors['background-header'], fontSize: 30, fontWeight: '700' }}>
 					WTF?!
-				</Text>
+				</BText>
 			</View>
-			<Text
+			<BText
 				style={[
 					{
 						color: colors['secondary-text'],
@@ -194,13 +195,13 @@ const WTFScreen: React.FC<ErrorScreenProps> = ({ error }) => {
 				]}
 			>
 				{t('error.wtf-screen.title')}
-			</Text>
-			<Text style={{ color: colors['secondary-text'], textAlign: 'center', lineHeight: 24 }}>
+			</BText>
+			<BText style={{ color: colors['secondary-text'], textAlign: 'center', lineHeight: 24 }}>
 				{t('error.wtf-screen.desc')}
-			</Text>
-			<Text style={{ color: colors['secondary-text'], textAlign: 'center', lineHeight: 24 }}>
+			</BText>
+			<BText style={{ color: colors['secondary-text'], textAlign: 'center', lineHeight: 24 }}>
 				{t('error.wtf-screen.desc-report')}
-			</Text>
+			</BText>
 		</ErrorScreenContainer>
 	)
 }
@@ -221,7 +222,7 @@ const SorryScreen: React.FC<ErrorScreenProps> = ({ error }) => {
 				style={[margin.top.large]}
 			/>
 			<View style={{ marginHorizontal: -15 }}>
-				<Text
+				<BText
 					style={[
 						{
 							color: colors['secondary-text'],
@@ -233,11 +234,11 @@ const SorryScreen: React.FC<ErrorScreenProps> = ({ error }) => {
 					]}
 				>
 					{t('error.sorry-screen.title')}
-				</Text>
-				<Text style={{ color: colors['secondary-text'], textAlign: 'center', lineHeight: 24 }}>
+				</BText>
+				<BText style={{ color: colors['secondary-text'], textAlign: 'center', lineHeight: 24 }}>
 					{t('error.sorry-screen.desc')}
-				</Text>
-				<Text
+				</BText>
+				<BText
 					style={[
 						margin.top.large,
 						{
@@ -249,8 +250,8 @@ const SorryScreen: React.FC<ErrorScreenProps> = ({ error }) => {
 					]}
 				>
 					{t('error.sorry-screen.desc-em')}
-				</Text>
-				<Text
+				</BText>
+				<BText
 					style={{
 						color: colors['secondary-text'],
 						textAlign: 'center',
@@ -259,7 +260,7 @@ const SorryScreen: React.FC<ErrorScreenProps> = ({ error }) => {
 					}}
 				>
 					{t('error.sorry-screen.desc-report')}
-				</Text>
+				</BText>
 			</View>
 		</ErrorScreenContainer>
 	)

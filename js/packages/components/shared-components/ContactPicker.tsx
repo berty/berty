@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { ScrollView, TextInput, TouchableOpacity, View } from 'react-native'
-import { CheckBox, Icon, Text } from '@ui-kitten/components'
+import { CheckBox, Icon } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 
 import beapi from '@berty/api'
@@ -16,6 +16,7 @@ import {
 } from '@berty/redux/reducers/groupCreationForm.reducer'
 import { berty } from '@berty/api/root.pb'
 import { useAppDispatch, useAppSelector, useContactSearchResults } from '@berty/react-redux'
+import { BText } from './BText'
 
 // Styles
 const useStylesCreateGroup = () => {
@@ -39,9 +40,8 @@ type ContactItemProps = {
 }
 
 const ContactItem: React.FC<ContactItemProps> = ({ contact, added, separateBar = true }) => {
-	const [{ row, margin, padding, text }, { scaleSize }] = useStyles()
+	const [{ row, margin, padding }, { scaleSize }] = useStyles()
 	const _styles = useStylesCreateGroup()
-	const colors = useThemeColor()
 	const dispatch = useAppDispatch()
 
 	return (
@@ -58,17 +58,12 @@ const ContactItem: React.FC<ContactItemProps> = ({ contact, added, separateBar =
 			>
 				<View style={[row.left, row.item.justify, padding.vertical.small, { flexShrink: 1 }]}>
 					<ContactAvatar size={50 * scaleSize} publicKey={contact.publicKey} />
-					<Text
+					<BText
 						numberOfLines={1}
-						style={[
-							text.size.medium,
-							margin.left.medium,
-							row.item.justify,
-							{ flexShrink: 1, color: colors['main-text'] },
-						]}
+						style={[margin.left.medium, row.item.justify, { flexShrink: 1 }]}
 					>
 						{contact.displayName!}
-					</Text>
+					</BText>
 				</View>
 				<View style={[row.item.justify]}>
 					<CheckBox

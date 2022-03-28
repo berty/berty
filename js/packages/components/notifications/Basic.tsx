@@ -1,14 +1,13 @@
 import React from 'react'
-import { TouchableOpacity, View, Text } from 'react-native'
+import { TouchableOpacity, View } from 'react-native'
 
 import { useStyles } from '@berty/styles'
-import { useThemeColor } from '@berty/store/hooks'
 
 import { useStylesNotification, NotificationTmpLogo } from './common'
+import { BText } from '../shared-components/BText'
 
 const Basic: React.FC<any> = ({ onPress, onClose, title, message }) => {
 	const [{ text }] = useStyles()
-	const colors = useThemeColor()
 	const _styles = useStylesNotification()
 
 	return (
@@ -23,12 +22,12 @@ const Basic: React.FC<any> = ({ onPress, onClose, title, message }) => {
 			<View style={_styles.innerTouchable}>
 				<NotificationTmpLogo />
 				<View style={_styles.titleAndTextWrapper}>
-					<Text numberOfLines={1} style={[text.bold.medium, { color: colors['main-text'] }]}>
+					<BText numberOfLines={1} style={[text.bold.medium]}>
 						{title}
-					</Text>
-					<Text numberOfLines={1} ellipsizeMode='tail' style={{ color: colors['main-text'] }}>
+					</BText>
+					<BText numberOfLines={1} ellipsizeMode='tail'>
 						{message}
-					</Text>
+					</BText>
 				</View>
 			</View>
 		</TouchableOpacity>

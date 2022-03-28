@@ -1,6 +1,5 @@
 import React from 'react'
 import { View } from 'react-native'
-import { Text } from '@ui-kitten/components'
 import { Dictionary } from '@reduxjs/toolkit'
 
 import beapi from '@berty/api'
@@ -16,6 +15,7 @@ import {
 	PersistentOptionsKeys,
 	selectPersistentOptions,
 } from '@berty/redux/reducers/persistentOptions.reducer'
+import { BText } from '../../shared-components/BText'
 
 //
 // Message => All messages (group/contact)
@@ -75,7 +75,7 @@ export const Message: React.FC<{
 			return (
 				<>
 					<View style={viewStyle}>
-						<Text style={textStyle}>{sentDate ? timeFormat.fmtTimestamp3(sentDate) : ''}</Text>
+						<BText style={textStyle}>{sentDate ? timeFormat.fmtTimestamp3(sentDate) : ''}</BText>
 					</View>
 					<MessageInvitation message={inte} />
 				</>

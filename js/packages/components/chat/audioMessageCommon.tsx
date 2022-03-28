@@ -1,9 +1,10 @@
 import React from 'react'
 import moment from 'moment'
-import { View, Text, ViewStyle } from 'react-native'
+import { View, ViewStyle } from 'react-native'
 
 import { useThemeColor } from '@berty/store'
 import { useStyles } from '@berty/styles'
+import { BText } from '../shared-components/BText'
 
 export const volumeValueLowest = -160
 export const volumeValuePrecision = 100000
@@ -118,9 +119,9 @@ export const WaveForm: React.FC<{
 					)
 				})}
 			</View>
-			<Text style={[{ color }, margin.small, text.size.tiny]}>
+			<BText style={[{ color }, margin.small, text.size.tiny]}>
 				{moment.utc(duration).format('mm:ss')}
-			</Text>
+			</BText>
 		</View>
 	)
 }

@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import { TouchableOpacity, View, TransformsStyle } from 'react-native'
-import { Text, Icon } from '@ui-kitten/components'
+import { Icon } from '@ui-kitten/components'
 
 import { useStyles } from '@berty/styles'
 import { useThemeColor } from '@berty/store/hooks'
+import { BText } from './BText'
 
 // Types
 type TabItemProps = {
@@ -91,7 +92,7 @@ const TabBarItem: React.FC<TabItemProps> = ({
 						height={25}
 					/>
 				</View>
-				<Text
+				<BText
 					style={[
 						text.bold.medium,
 						text.align.center,
@@ -100,7 +101,7 @@ const TabBarItem: React.FC<TabItemProps> = ({
 					]}
 				>
 					{name}
-				</Text>
+				</BText>
 			</View>
 			<View
 				style={[

@@ -1,5 +1,5 @@
 import React from 'react'
-import { GestureResponderEvent, ScrollView, Text, TouchableOpacity, View } from 'react-native'
+import { GestureResponderEvent, ScrollView, TouchableOpacity, View } from 'react-native'
 import { Icon } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 
@@ -18,6 +18,7 @@ import beapi from '@berty/api'
 import { GenericAvatar } from '../../avatars'
 import { selectSelectedAccount, setStateOnBoardingReady } from '@berty/redux/reducers/ui.reducer'
 import { useSelector } from 'react-redux'
+import { BText } from '@berty-tech/components/shared-components/BText'
 
 const AccountButton: React.FC<{
 	name: string | null | undefined
@@ -58,17 +59,11 @@ const AccountButton: React.FC<{
 			>
 				<View style={{ flexDirection: 'row', alignItems: 'center' }}>
 					{avatar}
-					<Text
-						style={[
-							padding.left.medium,
-							text.bold.small,
-							text.align.center,
-							text.size.scale(17),
-							{ fontFamily: 'Open Sans', color: colors['main-text'] },
-						]}
+					<BText
+						style={[padding.left.medium, text.bold.small, text.align.center, text.size.scale(17)]}
 					>
 						{name}
-					</Text>
+					</BText>
 				</View>
 				<Icon name='arrow-ios-downward' width={30} height={30} fill={colors['main-text']} />
 			</View>

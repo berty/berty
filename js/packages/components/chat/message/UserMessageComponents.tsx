@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Linking, View, TouchableOpacity } from 'react-native'
 import Hyperlink from 'react-native-hyperlink'
-import { Icon, Text } from '@ui-kitten/components'
+import { Icon } from '@ui-kitten/components'
 import linkify from 'linkify-it'
 import tlds from 'tlds'
 
@@ -19,6 +19,7 @@ import { useNavigation } from '@berty/navigation'
 
 import { timeFormat } from '../../helpers'
 import { useTranslation } from 'react-i18next'
+import { BText } from '../../shared-components/BText'
 
 const READ_MORE_MESSAGE_LENGTH = 325
 const READ_MORE_SUBSTR_LENGTH = 300
@@ -122,27 +123,17 @@ export const HyperlinkUserMessage: React.FC<{
 					linkStyle={{ textDecorationLine: 'underline' }}
 					linkify={linkify_conf}
 				>
-					<Text
-						style={[
-							text.size.small,
-							{
-								fontSize: 17,
-								color: msgTextColor,
-								lineHeight: 17,
-								fontWeight: '400',
-							},
-						]}
-					>
+					<BText style={{ fontSize: 17, color: msgTextColor, lineHeight: 17, fontWeight: '400' }}>
 						{message && message.length > READ_MORE_MESSAGE_LENGTH
 							? isReadMore
 								? message?.substring(0, READ_MORE_SUBSTR_LENGTH).concat('...')
 								: message
 							: message || ''}
-					</Text>
+					</BText>
 
 					{message && message.length > READ_MORE_MESSAGE_LENGTH ? (
 						<TouchableOpacity onPress={() => setReadMore(!isReadMore)}>
-							<Text
+							<BText
 								style={[
 									margin.top.tiny,
 									text.size.small,
@@ -152,13 +143,13 @@ export const HyperlinkUserMessage: React.FC<{
 								<>
 									{isReadMore ? t('chat.user-message.read-more') : t('chat.user-message.show-less')}
 								</>
-							</Text>
+							</BText>
 						</TouchableOpacity>
 					) : null}
 				</Hyperlink>
 			) : (
 				// using the previous jsx with an empty body crashes the render
-				<Text />
+				<BText />
 			)}
 		</View>
 	)
@@ -186,9 +177,9 @@ export const TimestampStatusUserMessage: React.FC<{
 				inte.isMine && row.item.bottom,
 			]}
 		>
-			<Text style={[styles.dateMessage, isFollowedMessage && margin.left.scale(35)]}>
+			<BText style={[styles.dateMessage, isFollowedMessage && margin.left.scale(35)]}>
 				{sentDate > 0 ? timeFormat.fmtTimestamp3(sentDate) : ''}
-			</Text>
+			</BText>
 			{!cmd && lastInte?.cid === inte.cid && (
 				<>
 					{inte.isMine && (
@@ -201,9 +192,9 @@ export const TimestampStatusUserMessage: React.FC<{
 						/>
 					)}
 					{inte.isMine && (
-						<Text style={styles.stateMessageValueMe}>
+						<BText style={styles.stateMessageValueMe}>
 							{t(inte.acknowledged ? 'chat.sent' : 'chat.sending').toLowerCase()}
-						</Text>
+						</BText>
 					)}
 				</>
 			)}

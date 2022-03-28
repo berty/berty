@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { View, ScrollView, ActivityIndicator, StatusBar, Text } from 'react-native'
+import { View, ScrollView, ActivityIndicator, StatusBar } from 'react-native'
 import { useTranslation } from 'react-i18next'
 
 import { useStyles } from '@berty/styles'
@@ -11,6 +11,7 @@ import { FingerprintContent } from '../shared-components/FingerprintContent'
 import { TabBar } from '../shared-components/TabBar'
 import { ContactAvatar } from '../avatars'
 import UserDevicesList from '@berty/components/chat/DeviceList'
+import { BText } from '../shared-components/BText'
 
 const ContactSettingsHeaderContent: React.FC = ({ children }) => {
 	const [{ margin }] = useStyles()
@@ -25,11 +26,11 @@ const InfoTab: React.FC<{ contactPk: string }> = ({ contactPk }) => {
 
 	return (
 		<>
-			<Text style={[text.bold.small, padding.left.small]}>{contact?.displayName || ''}</Text>
+			<BText style={[text.bold.small, padding.left.small]}>{contact?.displayName || ''}</BText>
 			<UserDevicesList conversationPk={contact?.conversationPublicKey || ''} memberPk={contactPk} />
-			<Text style={[text.bold.small, padding.left.small]}>
+			<BText style={[text.bold.small, padding.left.small]}>
 				{t('chat.contact-settings.my-devices')}
-			</Text>
+			</BText>
 			<UserDevicesList
 				conversationPk={contact?.conversationPublicKey || ''}
 				memberPk={conv?.localMemberPublicKey || ''}
@@ -48,7 +49,7 @@ const SelectedContent: React.FC<{ contentName: string; publicKey: string }> = ({
 		case 'info':
 			return <InfoTab contactPk={publicKey} />
 		default:
-			return <Text>Error: Unknown content name "{contentName}"</Text>
+			return <BText>Error: Unknown content name "{contentName}"</BText>
 	}
 }
 
@@ -72,16 +73,9 @@ const ContactSettingsHeader: React.FC<{ contact: any }> = ({ contact }) => {
 					<ContactAvatar size={100} publicKey={contact.publicKey} />
 				</View>
 				<View style={[padding.horizontal.medium, padding.bottom.medium, padding.top.scale(65)]}>
-					<Text
-						style={[
-							text.size.big,
-							text.align.center,
-							text.bold.small,
-							{ color: colors['main-text'] },
-						]}
-					>
+					<BText style={[text.size.big, text.align.center, text.bold.small]}>
 						{contact.displayName}
-					</Text>
+					</BText>
 					<TabBar
 						tabs={[
 							{

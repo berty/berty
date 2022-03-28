@@ -1,5 +1,5 @@
 import React, { ComponentProps } from 'react'
-import { NativeModules, TextInput, View, Text, Platform } from 'react-native'
+import { NativeModules, TextInput, View, Platform } from 'react-native'
 import { useTranslation } from 'react-i18next'
 import { Icon } from '@ui-kitten/components'
 import { TouchableOpacity } from 'react-native-gesture-handler'
@@ -13,6 +13,7 @@ import {
 } from '@berty/redux/reducers/chatInputs.reducer'
 
 import { getMediaTypeFromMedias } from '../../utils'
+import { BText } from '../../shared-components/BText'
 
 export const ReplyMessageBar: React.FC<{ convPK: string }> = ({ convPK }) => {
 	const [{ border, text }] = useStyles()
@@ -60,13 +61,13 @@ export const ReplyMessageBar: React.FC<{ convPK: string }> = ({ convPK }) => {
 					borderRadius: 20,
 				}}
 			>
-				<Text numberOfLines={1} style={[text.size.tiny, { color: colors['background-header'] }]}>
+				<BText numberOfLines={1} style={[text.size.tiny, { color: colors['background-header'] }]}>
 					{t('chat.reply.replying-to')} {replyTargetAuthor?.displayName || ''}
-				</Text>
+				</BText>
 			</View>
 
 			{activeReplyInteraction?.payload?.body ? (
-				<Text
+				<BText
 					numberOfLines={1}
 					style={[
 						text.size.small,
@@ -77,7 +78,7 @@ export const ReplyMessageBar: React.FC<{ convPK: string }> = ({ convPK }) => {
 					]}
 				>
 					{activeReplyInteraction?.payload?.body}
-				</Text>
+				</BText>
 			) : (
 				<View
 					style={{
@@ -93,7 +94,7 @@ export const ReplyMessageBar: React.FC<{ convPK: string }> = ({ convPK }) => {
 						fill={activeReplyInteraction?.textColor}
 						style={{ marginTop: 4 }}
 					/>
-					<Text
+					<BText
 						numberOfLines={1}
 						style={[
 							text.size.small,
@@ -105,7 +106,7 @@ export const ReplyMessageBar: React.FC<{ convPK: string }> = ({ convPK }) => {
 						]}
 					>
 						{t(`medias.${getMediaTypeFromMedias(activeReplyInteraction?.medias)}`)}
-					</Text>
+					</BText>
 				</View>
 			)}
 			<TouchableOpacity

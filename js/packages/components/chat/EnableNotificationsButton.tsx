@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Text, Alert } from 'react-native'
+import { Alert } from 'react-native'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 
@@ -24,6 +24,7 @@ import { GRPCError } from '@berty/grpc-bridge'
 import { selectClient, selectProtocolClient } from '@berty/redux/reducers/ui.reducer'
 import { berty } from '@berty/api/root.pb'
 import { useConversation } from '@berty/react-redux'
+import { BText } from '../shared-components/BText'
 
 const EnableNotificationsButton: React.FC<{
 	conversationPk: string
@@ -81,9 +82,9 @@ const EnableNotificationsButton: React.FC<{
 				/>
 				{(notificationPermStatus === RESULTS.BLOCKED ||
 					notificationPermStatus === RESULTS.DENIED) && (
-					<Text style={[padding.left.small, padding.right.small, padding.top.small]}>
+					<BText style={[padding.left.small, padding.right.small, padding.top.small]}>
 						{t('chat.push-notifications.check-device-settings')}
-					</Text>
+					</BText>
 				)}
 			</>
 		)

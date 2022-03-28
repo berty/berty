@@ -1,10 +1,11 @@
 import React, { useState, useRef, FC, useCallback, useMemo } from 'react'
-import { Divider, Icon, Text } from '@ui-kitten/components'
+import { Divider, Icon } from '@ui-kitten/components'
 import { View, Animated, Easing, TouchableOpacity, Text as NativeText } from 'react-native'
 
 import { useThemeColor } from '@berty/store'
 import { useStyles } from '@berty/styles'
 import { Toggle } from '../shared-components/Toggle'
+import { BText } from '../shared-components/BText'
 
 const heightButton = 55
 
@@ -179,7 +180,7 @@ export const AccordionV2: FC<{
 							{ height: heightButton, flexDirection: 'row', alignItems: 'center' },
 						]}
 					>
-						<Text>{title}</Text>
+						<BText>{title}</BText>
 					</View>
 					<View style={{ flex: 1 }} />
 					<Animated.View style={{ transform: [{ rotateZ: arrowAngle }] }}>

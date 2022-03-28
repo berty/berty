@@ -1,5 +1,5 @@
 import React, { FC } from 'react'
-import { View, Text, TouchableOpacity } from 'react-native'
+import { View, TouchableOpacity } from 'react-native'
 import { Icon } from '@ui-kitten/components'
 
 import { getEmojiByName } from '@berty/components/utils'
@@ -15,6 +15,7 @@ import {
 
 import { useModal } from '../../providers/modal.provider'
 import { EmojiKeyboard } from './EmojiKeyboard.modal'
+import { BText } from '@berty-tech/components/shared-components/BText'
 
 const emojis = [
 	':+1:',
@@ -78,7 +79,7 @@ export const MessageMenu: FC<{
 								hide()
 							}}
 						>
-							<Text>{`${getEmojiByName(emoji as string)}`}</Text>
+							<BText>{`${getEmojiByName(emoji as string)}`}</BText>
 						</TouchableOpacity>
 					))}
 					<TouchableOpacity
@@ -116,7 +117,7 @@ export const MessageMenu: FC<{
 						height={30}
 						width={30}
 					/>
-					<Text style={{ color: colors['main-text'] }}>{title}</Text>
+					<BText>{title}</BText>
 				</TouchableOpacity>
 			))}
 		</View>

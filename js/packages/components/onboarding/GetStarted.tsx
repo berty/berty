@@ -1,6 +1,5 @@
 import React from 'react'
 import { View, StatusBar } from 'react-native'
-import { Text } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 
 import {
@@ -16,6 +15,7 @@ import { ScreenFC } from '@berty/navigation'
 import Logo from './berty_gradient_square.svg'
 import Button from './Button'
 import { importAccountFromDocumentPicker } from '../pickerUtils'
+import { BText } from '../shared-components/BText'
 
 export const GetStarted: ScreenFC<'Onboarding.GetStarted'> = ({ navigation: { navigate } }) => {
 	useNotificationsInhibitor(() => true)
@@ -37,7 +37,7 @@ export const GetStarted: ScreenFC<'Onboarding.GetStarted'> = ({ navigation: { na
 			</View>
 			<View>
 				<View>
-					<Text
+					<BText
 						style={[
 							padding.horizontal.medium,
 							text.align.center,
@@ -50,10 +50,10 @@ export const GetStarted: ScreenFC<'Onboarding.GetStarted'> = ({ navigation: { na
 						]}
 					>
 						{t('onboarding.getstarted.title') as any}
-					</Text>
+					</BText>
 				</View>
 				<View style={[margin.top.small]}>
-					<Text
+					<BText
 						style={[
 							padding.horizontal.medium,
 							text.align.center,
@@ -61,12 +61,11 @@ export const GetStarted: ScreenFC<'Onboarding.GetStarted'> = ({ navigation: { na
 							{
 								fontStyle: 'italic',
 								fontWeight: '400',
-								color: colors['main-text'],
 							},
 						]}
 					>
 						{t('onboarding.getstarted.desc') as any}
-					</Text>
+					</BText>
 				</View>
 				<View style={[margin.top.big]}>
 					<Button

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { TouchableOpacity } from 'react-native'
-import { Text, Icon } from '@ui-kitten/components'
+import { Icon } from '@ui-kitten/components'
 
 import { useThemeColor } from '@berty/store'
 import { useStyles } from '@berty/styles'
@@ -8,6 +8,7 @@ import { useStyles } from '@berty/styles'
 import { getSource } from '../../utils'
 import { useSelector } from 'react-redux'
 import { selectProtocolClient } from '@berty/redux/reducers/ui.reducer'
+import { BText } from '../../shared-components/BText'
 
 export const FileMessage: React.FC<{
 	medias: any
@@ -61,7 +62,7 @@ export const FileMessage: React.FC<{
 				width={20}
 				fill={isHighlight ? colors['background-header'] : colors['secondary-text']}
 			/>
-			<Text
+			<BText
 				style={[
 					{
 						fontStyle: 'italic',
@@ -74,9 +75,9 @@ export const FileMessage: React.FC<{
 				]}
 			>
 				{medias[0].filename}
-			</Text>
+			</BText>
 			{(isDownloaded || isLoading) && (
-				<Text style={[margin.left.tiny]}>({isDownloaded ? 'Downloaded' : 'Downloading'})</Text>
+				<BText style={[margin.left.tiny]}>({isDownloaded ? 'Downloaded' : 'Downloading'})</BText>
 			)}
 		</TouchableOpacity>
 	)

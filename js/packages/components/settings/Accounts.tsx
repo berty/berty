@@ -1,5 +1,5 @@
 import React from 'react'
-import { ScrollView, View, TouchableOpacity, Text } from 'react-native'
+import { ScrollView, View, TouchableOpacity } from 'react-native'
 import { useTranslation } from 'react-i18next'
 
 import beapi from '@berty/api'
@@ -17,6 +17,7 @@ import { selectSelectedAccount, setStateOnBoardingReady } from '@berty/redux/red
 import { useDispatch, useSelector } from 'react-redux'
 import { importAccountFromDocumentPicker } from '../pickerUtils'
 import { GenericAvatar } from '../avatars'
+import { BText } from '../shared-components/BText'
 
 const AccountButton: React.FC<beapi.account.IAccountMetadata> = ({
 	avatarCid,
@@ -83,7 +84,7 @@ const AccountButton: React.FC<beapi.account.IAccountMetadata> = ({
 						{ height: heightButton, flexDirection: 'row', alignItems: 'center' },
 					]}
 				>
-					<Text>{name}</Text>
+					<BText>{name}</BText>
 				</View>
 			</View>
 		</TouchableOpacity>

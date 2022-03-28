@@ -1,10 +1,11 @@
 import React from 'react'
-import { View, Text as TextNative } from 'react-native'
+import { View } from 'react-native'
 import { Icon } from '@ui-kitten/components'
 
 import { useStyles } from '@berty/styles'
 import messengerMethodsHooks from '@berty/store/methods'
 import { useThemeColor } from '@berty/store/hooks'
+import { BText } from './BText'
 
 const useStylesHint = () => {
 	const [{ text, opacity, margin }, { fontScale }] = useStyles()
@@ -39,7 +40,7 @@ export const HintBody = () => {
 
 	return !bannerQuote?.quote ? null : (
 		<View style={[padding.horizontal.medium, { bottom: 0 }]}>
-			<TextNative
+			<BText
 				style={[
 					text.align.center,
 					row.item.justify,
@@ -47,14 +48,13 @@ export const HintBody = () => {
 					opacity(0.8),
 					text.bold.medium,
 					{
-						fontFamily: 'Open Sans',
 						color: `${colors['secondary-text']}90`,
 						marginHorizontal: _landingIconSize * scaleSize, // room for speech bubble icon
 					},
 				]}
 			>
 				{'Quote of the day'}
-			</TextNative>
+			</BText>
 			<Icon
 				name='quote'
 				pack='custom'
@@ -67,21 +67,21 @@ export const HintBody = () => {
 					{ position: 'absolute', bottom: 20 * scaleSize, right: 60 * scaleSize },
 				]}
 			/>
-			<TextNative style={[searchHintBodyText, { color: `${colors['secondary-text']}90` }]}>
+			<BText style={[searchHintBodyText, { color: `${colors['secondary-text']}90` }]}>
 				{bannerQuote?.quote || ''}
-			</TextNative>
+			</BText>
 			{bannerQuote?.author && (
 				<View style={[{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }]}>
-					<TextNative
+					<BText
 						style={[
 							text.size.scale(15),
 							text.bold.small,
 							opacity(0.8),
-							{ fontFamily: 'Open Sans', color: `${colors['secondary-text']}90` },
+							{ color: `${colors['secondary-text']}90` },
 						]}
 					>
 						{'— ' + bannerQuote?.author}
-					</TextNative>
+					</BText>
 				</View>
 			)}
 		</View>

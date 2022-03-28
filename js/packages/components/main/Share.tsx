@@ -1,5 +1,5 @@
 import React, { FC, ReactNode, useCallback, useEffect, useState } from 'react'
-import { View, Vibration, StatusBar, Text, Share, ScrollView } from 'react-native'
+import { View, Vibration, StatusBar, Share, ScrollView } from 'react-native'
 import { Layout } from '@ui-kitten/components'
 
 import { useThemeColor } from '@berty/store/hooks'
@@ -18,6 +18,7 @@ import logo from '../main/1_berty_picto.png'
 import { useTranslation } from 'react-i18next'
 import { ButtonSetting, ButtonSettingRow } from '../shared-components'
 import { checkPermissions } from '@berty/rnutil/checkPermissions'
+import { BText } from '../shared-components/BText'
 
 const QrCode: FC<{ size: number }> = ({ size }) => {
 	const client = useMessengerClient()
@@ -108,8 +109,7 @@ const ScanBody: FC<{ visible: boolean }> = ({ visible = true }) => {
 }
 
 const ShareQr: FC = () => {
-	const [{ margin, text }, { windowWidth, windowHeight, scaleSize }] = useStyles()
-	const colors = useThemeColor()
+	const [{ margin }, { windowWidth, windowHeight, scaleSize }] = useStyles()
 	const account = useAccount()
 	const qrCodeSize = Math.min(windowHeight, windowWidth) * 0.45
 
@@ -125,9 +125,7 @@ const ShareQr: FC = () => {
 				<View style={[margin.right.small]}>
 					<AccountAvatar size={24 * scaleSize} />
 				</View>
-				<Text style={[text.size.medium, { color: colors['main-text'] }]}>
-					{account.displayName || ''}
-				</Text>
+				<BText>{account.displayName || ''}</BText>
 			</View>
 			<QrCode size={qrCodeSize} />
 		</View>

@@ -1,7 +1,7 @@
 import LottieView from 'lottie-react-native'
 import { useTranslation } from 'react-i18next'
 import React from 'react'
-import { ActivityIndicator, StatusBar, Text, View } from 'react-native'
+import { ActivityIndicator, StatusBar, View } from 'react-native'
 
 import { ScreenFC, useNavigation } from '@berty/navigation'
 import {
@@ -15,6 +15,7 @@ import { useStyles } from '@berty/styles'
 import OnboardingWrapper from './OnboardingWrapper'
 import { Icon } from '@ui-kitten/components'
 import { TouchableOpacity } from 'react-native-gesture-handler'
+import { BText } from '../shared-components/BText'
 
 const DefaultModeBody: React.FC = () => {
 	const ctx = useMessengerContext()
@@ -78,53 +79,30 @@ const DefaultModeBody: React.FC = () => {
 							width={23}
 							fill={colors['background-header']}
 						/>
-						<Text
-							style={[
-								{
-									fontFamily: 'Open Sans',
-									fontWeight: '700',
-									color: colors['background-header'],
-									fontSize: 24 * scaleSize,
-								},
-							]}
+						<BText
+							style={{
+								fontWeight: '700',
+								color: colors['background-header'],
+								fontSize: 24 * scaleSize,
+							}}
 						>
 							{t('onboarding.default-mode.summary.title')}
-						</Text>
+						</BText>
 					</View>
 					<View style={[margin.top.medium]}>
-						<Text
-							style={[
-								text.size.medium,
-								{
-									textAlign: 'center',
-									fontFamily: 'Open Sans',
-									fontWeight: '600',
-									color: colors['main-text'],
-								},
-							]}
-						>
+						<BText style={{ textAlign: 'center', fontWeight: '600' }}>
 							{t('onboarding.default-mode.summary.subtitle')}
-						</Text>
+						</BText>
 					</View>
 					<View style={[margin.top.medium]}>
-						<Text
-							style={[
-								text.size.medium,
-								{ fontFamily: 'Open Sans', textAlign: 'center', color: colors['main-text'] },
-							]}
-						>
+						<BText style={{ textAlign: 'center' }}>
 							{t('onboarding.default-mode.summary.first-point')}
-						</Text>
+						</BText>
 					</View>
 					<View style={[margin.top.medium]}>
-						<Text
-							style={[
-								text.size.medium,
-								{ fontFamily: 'Open Sans', textAlign: 'center', color: colors['main-text'] },
-							]}
-						>
+						<BText style={{ textAlign: 'center' }}>
 							{t('onboarding.default-mode.summary.second-point')}
-						</Text>
+						</BText>
 					</View>
 				</View>
 				<View
@@ -146,20 +124,19 @@ const DefaultModeBody: React.FC = () => {
 						]}
 						onPress={() => goBack()}
 					>
-						<Text
+						<BText
 							style={[
 								text.size.medium,
 								{
 									textTransform: 'uppercase',
 									color: colors['background-header'],
-									fontFamily: 'Open Sans',
 									fontWeight: '700',
 									textAlign: 'center',
 								},
 							]}
 						>
 							{t('onboarding.default-mode.summary.back-button')}
-						</Text>
+						</BText>
 					</TouchableOpacity>
 					<TouchableOpacity
 						style={[
@@ -172,20 +149,16 @@ const DefaultModeBody: React.FC = () => {
 						{isPressed ? (
 							<ActivityIndicator color={colors['reverted-main-text']} />
 						) : (
-							<Text
-								style={[
-									text.size.medium,
-									{
-										textTransform: 'uppercase',
-										color: colors['reverted-main-text'],
-										fontFamily: 'Open Sans',
-										fontWeight: '700',
-										textAlign: 'center',
-									},
-								]}
+							<BText
+								style={{
+									textTransform: 'uppercase',
+									color: colors['reverted-main-text'],
+									fontWeight: '700',
+									textAlign: 'center',
+								}}
 							>
 								{t('onboarding.default-mode.summary.accept-button')}
-							</Text>
+							</BText>
 						)}
 					</TouchableOpacity>
 				</View>

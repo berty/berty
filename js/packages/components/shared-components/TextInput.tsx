@@ -1,8 +1,9 @@
 import React, { FC } from 'react'
-import { TextInputProps, TextInput as RNTextInput, View, Text, ViewProps } from 'react-native'
+import { TextInputProps, TextInput as RNTextInput, View, ViewProps } from 'react-native'
 
 import { useThemeColor } from '@berty/store'
 import { useStyles } from '@berty/styles'
+import { BText } from './BText'
 
 export const TextInput: FC<
 	TextInputProps & { containerStyle: ViewProps | ViewProps[]; error: string | null }
@@ -31,7 +32,7 @@ export const TextInput: FC<
 			/>
 			{error ? (
 				<View style={[padding.top.small, padding.horizontal.small]}>
-					<Text style={[text.color.red, text.size.small]}>{error}</Text>
+					<BText style={[text.color.red, text.size.small]}>{error}</BText>
 				</View>
 			) : null}
 		</View>

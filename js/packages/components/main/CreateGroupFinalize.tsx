@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { View, TouchableOpacity, TextInput, StyleSheet, ScrollView } from 'react-native'
-import { Layout, Text, Icon } from '@ui-kitten/components'
+import { Layout, Icon } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 
 import { useStyles } from '@berty/styles'
@@ -15,6 +15,7 @@ import { Header } from './CreateGroupAddMembers'
 import { ButtonSettingItem } from '../shared-components/SettingsButtons'
 import { MemberList } from './CreateGroupAddMembers'
 import { IOSOnlyKeyboardAvoidingView } from '@berty/rnutil/keyboardAvoiding'
+import { BText } from '../shared-components/BText'
 
 const useStylesCreateGroup = () => {
 	const [{ padding, height, width, absolute, border, column, text }, { scaleSize }] = useStyles()
@@ -131,16 +132,9 @@ const GroupInfo: React.FC<GroupInfoProps> = ({ onGroupNameChange }) => {
 							fill={colors['background-header']}
 							style={row.item.justify}
 						/>
-						<Text
-							style={[
-								margin.left.medium,
-								row.item.justify,
-								_styles.groupInfoAboutGroupsText,
-								{ color: colors['main-text'] },
-							]}
-						>
+						<BText style={[margin.left.medium, row.item.justify, _styles.groupInfoAboutGroupsText]}>
 							{t('main.home.create-group-finalize.about')}
-						</Text>
+						</BText>
 					</View>
 				</View>
 				<View style={[margin.top.medium, _stylesCreateGroup.groupInfoAboutGroupsItems]}>

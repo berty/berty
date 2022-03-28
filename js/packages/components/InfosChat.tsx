@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
-import { Text as TextNative, View } from 'react-native'
+import { View } from 'react-native'
 import { useTranslation } from 'react-i18next'
-import { Icon, Text } from '@ui-kitten/components'
+import { Icon } from '@ui-kitten/components'
 
 import beapi from '@berty/api'
 import { useStyles } from '@berty/styles'
@@ -13,6 +13,7 @@ import { ContactAvatar } from './avatars'
 import { MessageSystemWrapper } from './chat/message/MessageSystemWrapper'
 import { MessageInvitationButton } from './chat/message/MessageInvitation'
 import { ChatDate } from './chat/common'
+import { BText } from './shared-components/BText'
 
 const useStylesOneToOne = () => {
 	const [{ text }] = useStyles()
@@ -44,9 +45,9 @@ const InfosContactState: React.FC<{ state: any }> = ({ state }) => {
 			]}
 		>
 			<Icon name='info-outline' fill={textColor} width={25} height={25} />
-			<Text style={[text.italic, text.bold.small, padding.left.small, { color: textColor }]}>
+			<BText style={[text.italic, text.bold.small, padding.left.small, { color: textColor }]}>
 				{state}
-			</Text>
+			</BText>
 		</View>
 	)
 }
@@ -70,30 +71,27 @@ const ContactRequestBox: React.FC<{ contact: beapi.messenger.IContact; isAccepte
 	return (
 		<View>
 			<View style={[row.left, flex.align.center, flex.justify.center]}>
-				<TextNative
+				<BText
 					style={[
-						text.size.medium,
 						text.bold.medium,
-						{ fontFamily: 'Open Sans', color: colors['main-text'] },
 					]}
 				>
 					{t('chat.one-to-one.contact-request-box.title')}
-				</TextNative>
+				</BText>
 			</View>
 			<View style={[margin.top.small, flex.align.center, flex.justify.center]}>
 				<View style={margin.bottom.small}>
 					<ContactAvatar publicKey={publicKey} size={40} />
 				</View>
-				<TextNative
+				<BText
 					style={[
 						text.size.small,
 						text.bold.small,
 						margin.bottom.small,
-						{ fontFamily: 'Open Sans', color: colors['main-text'] },
 					]}
 				>
 					{displayName}
-				</TextNative>
+				</BText>
 			</View>
 			<View style={[row.center, flex.justify.spaceEvenly, flex.align.center, margin.top.medium]}>
 				<MessageInvitationButton
@@ -159,11 +157,11 @@ export const InfosChat: React.FC<beapi.messenger.IConversation> = ({
 			<ChatDate date={createdDate} />
 			{!isIncoming ? (
 				<MessageSystemWrapper styleContainer={[margin.bottom.small, margin.top.large]}>
-					<Text style={[text.align.center, { color: textColor }]}>
+					<BText style={[text.align.center, { color: textColor }]}>
 						{isAccepted
 							? t('chat.one-to-one.infos-chat.connection-confirmed')
 							: t('chat.one-to-one.infos-chat.request-sent')}
-					</Text>
+					</BText>
 				</MessageSystemWrapper>
 			) : (
 				<MessageSystemWrapper>
@@ -173,9 +171,9 @@ export const InfosChat: React.FC<beapi.messenger.IConversation> = ({
 			{!isAccepted && contact?.state !== beapi.messenger.Contact.State.Undefined && (
 				<>
 					<View style={[flex.align.center]}>
-						<Text style={[margin.top.tiny, dateMessage]}>
+						<BText style={[margin.top.tiny, dateMessage]}>
 							{timeFormat.fmtTimestamp1(pbDateToNum(createdDate))}
-						</Text>
+						</BText>
 					</View>
 					<InfosContactState
 						state={

@@ -1,6 +1,5 @@
 import React, { useMemo } from 'react'
-import { SectionList, Text as TextNative, TouchableHighlight, View } from 'react-native'
-import { Text } from '@ui-kitten/components'
+import { SectionList, TouchableHighlight, View } from 'react-native'
 import { EdgeInsets } from 'react-native-safe-area-context'
 import { useTranslation } from 'react-i18next'
 
@@ -13,6 +12,7 @@ import { useContact, useConversationInteractions, useConversation } from '@berty
 import { HintBody } from '../../shared-components'
 import { timeFormat } from '../../helpers'
 import { ContactAvatar, ConversationAvatar } from '../../avatars'
+import { BText } from '../../shared-components/BText'
 
 // Styles
 
@@ -72,16 +72,16 @@ const MessageSearchResult: React.FC<{
 			if (lastStart < i) {
 				const plainPart = message.substr(lastStart, i - lastStart)
 				parts[partsCounter] = (
-					<Text key={partsCounter} style={style}>
+					<BText key={partsCounter} style={style}>
 						{plainPart}
-					</Text>
+					</BText>
 				)
 				partsCounter++
 			}
 			parts[partsCounter] = (
-				<Text key={partsCounter} style={highlightStyle}>
+				<BText key={partsCounter} style={highlightStyle}>
 					{searchTarget}
-				</Text>
+				</BText>
 			)
 			partsCounter++
 			i += searchText.length
@@ -93,9 +93,9 @@ const MessageSearchResult: React.FC<{
 	if (lastStart !== message.length) {
 		const plainPart = message.substr(lastStart)
 		parts[partsCounter] = (
-			<Text key={partsCounter} style={style}>
+			<BText key={partsCounter} style={style}>
 				{plainPart}
-			</Text>
+			</BText>
 		)
 		lastStart = message.length
 		partsCounter++
@@ -222,17 +222,17 @@ const SearchResultItem: React.FC<SearchItemProps> = ({ data, kind, searchText = 
 				return null
 		}
 		return (
-			<Text numberOfLines={1} style={plainMessageText}>
+			<BText numberOfLines={1} style={plainMessageText}>
 				<>{content}</>
-			</Text>
+			</BText>
 		)
 	}
 
 	const TimeStamp = () => {
 		return (
-			<Text style={[padding.left.small, text.size.small, text.color.grey]}>
+			<BText style={[padding.left.small, text.size.small, text.color.grey]}>
 				{timeFormat.fmtTimestamp1(date)}
-			</Text>
+			</BText>
 		)
 	}
 
@@ -262,7 +262,7 @@ const SearchResultItem: React.FC<SearchItemProps> = ({ data, kind, searchText = 
 				{avatar}
 				<View style={[flex.medium, column.justify, padding.left.medium]}>
 					<View style={[margin.right.big]}>
-						<Text numberOfLines={1} style={[column.item.fill, text.bold.medium]}>
+						<BText numberOfLines={1} style={[column.item.fill, text.bold.medium]}>
 							{kind === SearchResultKind.Interaction ? (
 								name
 							) : (
@@ -273,7 +273,7 @@ const SearchResultItem: React.FC<SearchItemProps> = ({ data, kind, searchText = 
 									highlightStyle={nameHighlightText}
 								/>
 							)}
-						</Text>
+						</BText>
 						<MessageDisplay />
 					</View>
 				</View>
@@ -409,15 +409,7 @@ export const SearchComponent: React.FC<{
 									]}
 								/>
 							</View>
-							<TextNative
-								style={[
-									text.size.scale(25),
-									text.bold.medium,
-									{ fontFamily: 'Open Sans', color: colors['main-text'] },
-								]}
-							>
-								{title}
-							</TextNative>
+							<BText style={[text.size.scale(25), text.bold.medium]}>{title}</BText>
 						</View>
 					</View>
 				) : null
@@ -435,20 +427,9 @@ export const SearchComponent: React.FC<{
 			<View style={[margin.top.scale(60)]}>
 				<HintBody />
 			</View>
-			<TextNative
-				style={[
-					margin.top.scale(60),
-					text.size.big,
-					text.bold.small,
-					text.align.center,
-					{
-						fontFamily: 'Open Sans',
-						color: colors['main-text'],
-					},
-				]}
-			>
+			<BText style={[margin.top.scale(60), text.size.big, text.bold.small, text.align.center]}>
 				{t('main.home.search.no-results')}
-			</TextNative>
+			</BText>
 		</View>
 	)
 }

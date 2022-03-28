@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import { ActivityIndicator, Text as TextNative, TouchableOpacity, View } from 'react-native'
-import { Icon, Text } from '@ui-kitten/components'
+import { ActivityIndicator, TouchableOpacity, View } from 'react-native'
+import { Icon } from '@ui-kitten/components'
 import { Buffer } from 'buffer'
 import { useTranslation } from 'react-i18next'
 import { useNavigation } from '@berty/navigation'
@@ -14,6 +14,7 @@ import { useOneToOneContact, useConversation } from '@berty/react-redux'
 import { MessageSystemWrapper } from './MessageSystemWrapper'
 import { MultiMemberAvatar } from '../../avatars'
 import { base64ToURLBase64 } from '../../utils'
+import { BText } from '../../shared-components/BText'
 
 export const MessageInvitationButton: React.FC<{
 	onPress?: any
@@ -61,17 +62,9 @@ export const MessageInvitationButton: React.FC<{
 				) : (
 					<Icon name={icon} width={24} height={24} fill={color} style={[opacity(styleOpacity)]} />
 				)}
-				<TextNative
-					style={[
-						text.align.center,
-						text.size.medium,
-						text.bold.medium,
-						opacity(styleOpacity),
-						{ fontFamily: 'Open Sans', color },
-					]}
-				>
+				<BText style={[text.align.center, text.bold.medium, opacity(styleOpacity), { color }]}>
 					{title}
-				</TextNative>
+				</BText>
 			</View>
 		</TouchableOpacity>
 	)
@@ -83,11 +76,11 @@ const MessageInvitationSent: React.FC<{ message: InteractionGroupInvitation }> =
 
 	const conversationContact = useOneToOneContact(message.conversationPublicKey || '')
 	return (
-		<Text style={[text.size.scale(14), text.align.center]}>
+		<BText style={[text.size.scale(14), text.align.center]}>
 			{`${t('chat.one-to-one.contact-request-box.you-invited')} ${
 				conversationContact?.displayName || t('chat.one-to-one.contact-request-box.this-contact')
 			} ${t('chat.one-to-one.contact-request-box.to-a-group')}`}
-		</Text>
+		</BText>
 	)
 }
 
@@ -162,30 +155,15 @@ const MessageInvitationReceived: React.FC<{ message: InteractionGroupInvitation 
 	return (
 		<>
 			<View style={[row.left, flex.align.center, flex.justify.center]}>
-				<TextNative
-					style={[
-						text.size.medium,
-						text.bold.medium,
-						{ fontFamily: 'Open Sans', color: colors['main-text'] },
-					]}
-				>
+				<BText style={[text.bold.medium]}>
 					{t('chat.one-to-one.contact-request-box.group-invitation')}
-				</TextNative>
+				</BText>
 			</View>
 			<View style={[margin.top.small, flex.align.center, flex.justify.center]}>
 				<View style={margin.bottom.small}>
 					<MultiMemberAvatar publicKey={convPk} size={40} fallbackNameSeed={displayName} />
 				</View>
-				<TextNative
-					style={[
-						text.size.small,
-						text.bold.small,
-						margin.bottom.small,
-						{ fontFamily: 'Open Sans', color: colors['main-text'] },
-					]}
-				>
-					{displayName}
-				</TextNative>
+				<BText style={[text.size.small, text.bold.small, margin.bottom.small]}>{displayName}</BText>
 			</View>
 			<View style={[row.center, flex.justify.spaceEvenly, flex.align.center, margin.top.medium]}>
 				<MessageInvitationButton
@@ -226,7 +204,7 @@ const MessageInvitationReceived: React.FC<{ message: InteractionGroupInvitation 
 				/>
 			</View>
 			{error && (
-				<Text
+				<BText
 					style={[
 						margin.top.small,
 						margin.horizontal.small,
@@ -237,7 +215,7 @@ const MessageInvitationReceived: React.FC<{ message: InteractionGroupInvitation 
 					]}
 				>
 					{t('chat.one-to-one.contact-request-box.error')}
-				</Text>
+				</BText>
 			)}
 		</>
 	)

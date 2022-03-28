@@ -1,12 +1,13 @@
 import React from 'react'
 import { View, ScrollView, ActivityIndicator, TouchableOpacity } from 'react-native'
-import { Layout, Text, Icon } from '@ui-kitten/components'
+import { Layout, Icon } from '@ui-kitten/components'
 
 import beapi from '@berty/api'
 import { useStyles } from '@berty/styles'
 import { ScreenFC } from '@berty/navigation'
 import messengerMethodsHooks from '@berty/store/methods'
 import { useMountEffect, useThemeColor, accountService } from '@berty/store'
+import { BText } from '../shared-components/BText'
 
 export const SystemInfo: ScreenFC<'Settings.SystemInfo'> = ({ navigation }) => {
 	const [{ padding }, { scaleSize }] = useStyles()
@@ -54,14 +55,14 @@ export const SystemInfo: ScreenFC<'Settings.SystemInfo'> = ({ navigation }) => {
 				{done ? (
 					error ? (
 						<View style={{ alignItems: 'center', justifyContent: 'center', marginTop: 100 }}>
-							<Text style={{ color: colors['warning-asset'] }}>{error.toString()}</Text>
+							<BText style={{ color: colors['warning-asset'] }}>{error.toString()}</BText>
 						</View>
 					) : (
-						<Text selectable={true} style={{ height: '95%' }}>
+						<BText selectable={true} style={{ height: '95%' }}>
 							{JSON.stringify(systemInfo, null, 2)}
 							{'\n'}
 							{JSON.stringify(networkConfig, null, 2)}
-						</Text>
+						</BText>
 					)
 				) : (
 					<View style={{ alignItems: 'center', justifyContent: 'center', marginTop: 100 }}>

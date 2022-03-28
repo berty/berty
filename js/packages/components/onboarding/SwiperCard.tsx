@@ -1,7 +1,8 @@
 import { useThemeColor } from '@berty/store/hooks'
 import { useStyles } from '@berty/styles'
 import React from 'react'
-import { Text, TouchableOpacity, View } from 'react-native'
+import { TouchableOpacity, View } from 'react-native'
+import { BText } from '../shared-components/BText'
 import { Card } from '../shared-components/Card'
 import Button from './Button'
 
@@ -22,12 +23,12 @@ const SwiperCard: React.FC<{
 
 	return (
 		<View>
-			<Text style={[text.size.large, text.align.center, { color: colors['reverted-main-text'] }]}>
+			<BText style={[text.size.large, text.align.center, { color: colors['reverted-main-text'] }]}>
 				{header}
-			</Text>
+			</BText>
 			<Card style={[{ backgroundColor: colors['main-background'], shadowColor: colors.shadow }]}>
 				<View style={[padding.medium]}>
-					<Text
+					<BText
 						style={[
 							text.size.huge,
 							padding.top.medium,
@@ -37,18 +38,18 @@ const SwiperCard: React.FC<{
 						]}
 					>
 						{title}
-					</Text>
+					</BText>
 					{desc ? (
-						<Text
+						<BText
 							style={[
 								text.size.small,
 								padding.vertical.medium,
 								text.align.center,
-								{ color: colors['secondary-text'], fontFamily: 'Open Sans' },
+								{ color: colors['secondary-text'] },
 							]}
 						>
 							{desc}
-						</Text>
+						</BText>
 					) : null}
 					{children}
 					{button ? (
@@ -64,11 +65,11 @@ const SwiperCard: React.FC<{
 
 					{skip ? (
 						<TouchableOpacity style={[margin.top.medium]} onPress={skip.onPress}>
-							<Text
+							<BText
 								style={[text.size.small, text.align.center, { color: colors['secondary-text'] }]}
 							>
 								{skip.text}
-							</Text>
+							</BText>
 						</TouchableOpacity>
 					) : null}
 				</View>

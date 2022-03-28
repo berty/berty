@@ -10,7 +10,7 @@ import {
 	Linking,
 	Share,
 } from 'react-native'
-import { Text, Icon } from '@ui-kitten/components'
+import { Icon } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 import { TabView, SceneMap } from 'react-native-tab-view'
 import tlds from 'tlds'
@@ -35,6 +35,7 @@ import { timeFormat } from '../helpers'
 import { isBertyDeepLink } from '../chat/message/UserMessageComponents'
 import { useSelector } from 'react-redux'
 import { selectProtocolClient } from '@berty/redux/reducers/ui.reducer'
+import { BText } from '../shared-components/BText'
 
 const initialLayout = { width: Dimensions.get('window').width }
 const linkify = LinkifyIt().tlds(tlds, true)
@@ -161,9 +162,9 @@ export const SharedMedias: ScreenFC<'Chat.SharedMedias'> = ({
 	const mediaView = () => (
 		<ScrollView contentContainerStyle={[padding.medium]}>
 			{!pictures.length && (
-				<Text style={[text.align.center, margin.left.small, text.size.scale(18)]}>
+				<BText style={[text.align.center, margin.left.small, text.size.scale(18)]}>
 					No records found
-				</Text>
+				</BText>
 			)}
 
 			<View
@@ -205,9 +206,9 @@ export const SharedMedias: ScreenFC<'Chat.SharedMedias'> = ({
 	const documentsView = () => (
 		<ScrollView contentContainerStyle={[padding.medium]}>
 			{!documents.length && (
-				<Text style={[text.align.center, margin.left.small, text.size.scale(18)]}>
+				<BText style={[text.align.center, margin.left.small, text.size.scale(18)]}>
 					No records found
-				</Text>
+				</BText>
 			)}
 
 			<View style={{}}>
@@ -254,17 +255,17 @@ export const SharedMedias: ScreenFC<'Chat.SharedMedias'> = ({
 								fill={colors['secondary-text']}
 								style={margin.right.small}
 							/>
-							<Text
+							<BText
 								style={{
 									fontStyle: 'italic',
 									textDecorationLine: 'underline',
 								}}
 							>
 								{doc.displayName || doc.filename || 'document'}
-							</Text>
+							</BText>
 						</TouchableOpacity>
 
-						<Text style={[text.size.small]}>{timeFormat.fmtTimestamp3(doc.sentDate)}</Text>
+						<BText style={[text.size.small]}>{timeFormat.fmtTimestamp3(doc.sentDate)}</BText>
 					</View>
 				))}
 			</View>
@@ -274,9 +275,9 @@ export const SharedMedias: ScreenFC<'Chat.SharedMedias'> = ({
 	const linksView = () => (
 		<ScrollView contentContainerStyle={[padding.medium]}>
 			{!links.length && (
-				<Text style={[text.align.center, margin.left.small, text.size.scale(18)]}>
+				<BText style={[text.align.center, margin.left.small, text.size.scale(18)]}>
 					No records found
-				</Text>
+				</BText>
 			)}
 
 			<View style={{}}>
@@ -299,18 +300,18 @@ export const SharedMedias: ScreenFC<'Chat.SharedMedias'> = ({
 							linkStyle={{ textDecorationLine: 'underline' }}
 							linkify={linkify}
 						>
-							<Text
+							<BText
 								style={{
 									color: colors['background-header'],
 								}}
 							>
 								{url}
-							</Text>
+							</BText>
 						</Hyperlink>
 
-						<Text style={[text.size.small, { marginTop: 8 }]}>
+						<BText style={[text.size.small, { marginTop: 8 }]}>
 							{timeFormat.fmtTimestamp3(sentDate)}
-						</Text>
+						</BText>
 					</View>
 				))}
 			</View>
@@ -359,7 +360,7 @@ export const SharedMedias: ScreenFC<'Chat.SharedMedias'> = ({
 								fill={colors['background-header']}
 								{...tab.icon}
 							/>
-							<Text
+							<BText
 								style={[
 									margin.left.small,
 									text.size.scale(activeIndex === index ? 17 : 16),
@@ -367,7 +368,7 @@ export const SharedMedias: ScreenFC<'Chat.SharedMedias'> = ({
 								]}
 							>
 								{tab.title}
-							</Text>
+							</BText>
 						</TouchableOpacity>
 					))}
 				</View>

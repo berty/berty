@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef } from 'react'
-import { Text, TouchableOpacity, Platform, View, AppState, StatusBar } from 'react-native'
+import { TouchableOpacity, Platform, View, AppState, StatusBar } from 'react-native'
 import LottieView, { AnimatedLottieViewProps } from 'lottie-react-native'
 import { useTranslation } from 'react-i18next'
 import { RESULTS, openSettings, PermissionStatus } from '@berty/polyfill/react-native-permissions'
@@ -23,6 +23,7 @@ import {
 	setPersistentOption,
 } from '@berty/redux/reducers/persistentOptions.reducer'
 import { useAppDispatch } from '@berty/react-redux'
+import { BText } from '../shared-components/BText'
 
 const animations: Record<PermissionType, AnimatedLottieViewProps['source']> = {
 	audio: audioLottie,
@@ -171,7 +172,7 @@ export const Permissions: ScreenFC<'Main.Permissions'> = ({ route: { params }, n
 					},
 				]}
 			>
-				<Text
+				<BText
 					style={[
 						text.size.huge,
 						text.bold.medium,
@@ -189,17 +190,8 @@ export const Permissions: ScreenFC<'Main.Permissions'> = ({ route: { params }, n
 						permission.gallery.title
 					*/}
 					{t(`permission.${permissionType}.title`)}
-				</Text>
-				<Text
-					style={[
-						text.size.medium,
-						{
-							lineHeight: 25,
-							marginTop: 20,
-							color: colors['main-text'],
-						},
-					]}
-				>
+				</BText>
+				<BText style={{ lineHeight: 25, marginTop: 20 }}>
 					{/* Ignore check for i18n missing keys
 						permission.notification.desc
 						permission.camera.desc
@@ -211,20 +203,19 @@ export const Permissions: ScreenFC<'Main.Permissions'> = ({ route: { params }, n
 							? t('permission.proximity.ios-desc')
 							: t('permission.proximity.android-desc')
 						: t(`permission.${permissionType}.desc`)}
-				</Text>
+				</BText>
 				{permissionStatus === RESULTS.BLOCKED && (
-					<Text
+					<BText
 						style={[
 							text.size.scale(17),
 							{
 								lineHeight: 25,
 								marginTop: 10,
-								color: colors['main-text'],
 							},
 						]}
 					>
 						{t('permission.settings-text', { title: t(`permission.${permissionType}.title`) })}
-					</Text>
+					</BText>
 				)}
 				<View
 					style={{
@@ -244,7 +235,7 @@ export const Permissions: ScreenFC<'Main.Permissions'> = ({ route: { params }, n
 						}}
 						activeOpacity={0.9}
 					>
-						<Text
+						<BText
 							style={[
 								text.size.scale(18),
 								{
@@ -262,7 +253,7 @@ export const Permissions: ScreenFC<'Main.Permissions'> = ({ route: { params }, n
 									permissionStatus === RESULTS.BLOCKED ? 'settings' : 'allow'
 								}`,
 							)}
-						</Text>
+						</BText>
 					</TouchableOpacity>
 				</View>
 				<TouchableOpacity
@@ -275,7 +266,7 @@ export const Permissions: ScreenFC<'Main.Permissions'> = ({ route: { params }, n
 						}
 					}}
 				>
-					<Text
+					<BText
 						style={{
 							marginTop: 16,
 							color: colors['secondary-text'],
@@ -286,7 +277,7 @@ export const Permissions: ScreenFC<'Main.Permissions'> = ({ route: { params }, n
 						{permissionType === 'notification' && !selectedAccount
 							? t('permission.skip')
 							: t('permission.cancel')}
-					</Text>
+					</BText>
 				</TouchableOpacity>
 			</View>
 		</View>
@@ -348,7 +339,7 @@ export const BlePermission: ScreenFC<'Main.BlePermission'> = ({ route: { params 
 					},
 				]}
 			>
-				<Text
+				<BText
 					style={[
 						text.size.huge,
 						text.bold.medium,
@@ -359,14 +350,12 @@ export const BlePermission: ScreenFC<'Main.BlePermission'> = ({ route: { params 
 					]}
 				>
 					{t('permission.proximity.title')}
-				</Text>
-				<Text
+				</BText>
+				<BText
 					style={[
-						text.size.medium,
 						{
 							lineHeight: 25,
 							marginTop: 20,
-							color: colors['main-text'],
 							textAlign: 'center',
 						},
 					]}
@@ -374,7 +363,7 @@ export const BlePermission: ScreenFC<'Main.BlePermission'> = ({ route: { params 
 					{Platform.OS === 'ios'
 						? t('permission.proximity.ios-desc')
 						: t('permission.proximity.android-desc')}
-				</Text>
+				</BText>
 				<View
 					style={{
 						width: '100%',
@@ -395,7 +384,7 @@ export const BlePermission: ScreenFC<'Main.BlePermission'> = ({ route: { params 
 						}}
 						activeOpacity={0.9}
 					>
-						<Text
+						<BText
 							style={[
 								text.size.scale(18),
 								{
@@ -405,7 +394,7 @@ export const BlePermission: ScreenFC<'Main.BlePermission'> = ({ route: { params 
 							]}
 						>
 							{t('permission.button-labels.allow')}
-						</Text>
+						</BText>
 					</TouchableOpacity>
 				</View>
 				<TouchableOpacity
@@ -414,7 +403,7 @@ export const BlePermission: ScreenFC<'Main.BlePermission'> = ({ route: { params 
 						goBack()
 					}}
 				>
-					<Text
+					<BText
 						style={{
 							marginTop: 16,
 							color: colors['secondary-text'],
@@ -423,7 +412,7 @@ export const BlePermission: ScreenFC<'Main.BlePermission'> = ({ route: { params 
 						}}
 					>
 						{t('permission.skip')}
-					</Text>
+					</BText>
 				</TouchableOpacity>
 			</View>
 		</View>

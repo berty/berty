@@ -2,7 +2,6 @@ import React from 'react'
 import {
 	ActivityIndicator,
 	Button,
-	Text,
 	TextInput,
 	View,
 	Image,
@@ -24,6 +23,7 @@ import {
 	selectMessengerIsReadyingBasics,
 	selectStreamInProgress,
 } from '@berty/redux/reducers/ui.reducer'
+import { BText } from './shared-components/BText'
 
 export const LoaderDots: React.FC = () => {
 	const colors = useThemeColor()
@@ -56,13 +56,11 @@ const StreamInProgressCmp: React.FC<{}> = () => {
 		<View style={{ backgroundColor: colors['main-background'], flex: 1 }}>
 			<StatusBar backgroundColor={colors['main-background']} barStyle='dark-content' />
 
-			<Text
+			<BText
 				style={[
 					text.bold.small,
 					text.align.center,
 					{
-						fontFamily: 'Open Sans',
-						color: colors['main-text'],
 						position: 'absolute',
 						top: 60 * scaleSize,
 						left: 0,
@@ -71,7 +69,7 @@ const StreamInProgressCmp: React.FC<{}> = () => {
 				]}
 			>
 				{stream?.stream || 'Test'}
-			</Text>
+			</BText>
 			<View
 				style={{
 					flex: 1,
@@ -79,24 +77,10 @@ const StreamInProgressCmp: React.FC<{}> = () => {
 					justifyContent: 'center',
 				}}
 			>
-				<Text
-					style={[
-						text.bold.small,
-						text.align.center,
-						{ fontFamily: 'Open Sans', color: colors['main-text'] },
-					]}
-				>
-					{stream?.msg.doing || 'Doing'}
-				</Text>
-				<Text
-					style={[
-						text.bold.small,
-						text.align.center,
-						{ fontFamily: 'Open Sans', color: colors['main-text'] },
-					]}
-				>
+				<BText style={[text.bold.small, text.align.center]}>{stream?.msg.doing || 'Doing'}</BText>
+				<BText style={[text.bold.small, text.align.center]}>
 					{stream?.msg.completed || '0'} / {stream?.msg.total || '6'}
-				</Text>
+				</BText>
 				{Platform.OS === 'web' ? (
 					<ActivityIndicator size='large' />
 				) : (
@@ -135,10 +119,10 @@ export const StreamGate: React.FC = ({ children }) => {
 				]}
 			>
 				<StatusBar backgroundColor={colors['main-background']} barStyle='dark-content' />
-				<Text style={{ color: colors['warning-asset'] }}>{streamError.toString()}</Text>
-				<Text style={{ marginTop: gutter }}>
+				<BText style={{ color: colors['warning-asset'] }}>{streamError.toString()}</BText>
+				<BText style={{ marginTop: gutter }}>
 					Likely couldn't connect to the node, or the connection dropped
-				</Text>
+				</BText>
 				{embedded || (
 					<>
 						<TextInput
@@ -209,7 +193,7 @@ const DeleteProgressScreen = () => {
 				},
 			]}
 		>
-			<Text>{text}</Text>
+			<BText>{text}</BText>
 			<ActivityIndicator style={{ marginTop: gutter }} size='large' />
 		</View>
 	)

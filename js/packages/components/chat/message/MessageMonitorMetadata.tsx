@@ -1,6 +1,6 @@
 import React from 'react'
 import { View } from 'react-native'
-import { Icon, Text } from '@ui-kitten/components'
+import { Icon } from '@ui-kitten/components'
 
 import { useStyles } from '@berty/styles'
 import { useThemeColor } from '@berty/store/hooks'
@@ -9,6 +9,7 @@ import { pbDateToNum } from '@berty/store/convert'
 
 import { timeFormat } from '../../helpers'
 import { InteractionMonitorMetadata } from '@berty/store/types.gen'
+import { BText } from '../../shared-components/BText'
 
 const eventMonitorTypes = beapi.protocol.MonitorGroup.TypeEventMonitor
 
@@ -78,43 +79,41 @@ export const MessageMonitorMetadata: React.FC<{ inte: InteractionMonitorMetadata
 				>
 					<Icon name='monitor-outline' fill={colors['background-header']} width={25} height={25} />
 				</View>
-				<Text
+				<BText
 					style={[
-						{ textAlign: 'left', fontFamily: 'Open Sans', color: colors['background-header'] },
+						{ textAlign: 'left', color: colors['background-header'] },
 						text.bold.small,
 						text.italic,
-						text.size.medium,
 					]}
 				>
 					{monitorPayloadTitle}
-				</Text>
+				</BText>
 
 				{monitorPayloadSubtitle &&
 					monitorPayloadSubtitle.map((subtitle: string, index: number) => (
-						<Text
+						<BText
 							key={index}
 							style={[
-								{ textAlign: 'left', fontFamily: 'Open Sans', color: colors['background-header'] },
+								{ textAlign: 'left', color: colors['background-header'] },
 								text.bold.small,
 								text.italic,
-								text.size.medium,
 								margin.top.tiny,
 							]}
 						>
 							{subtitle}
-						</Text>
+						</BText>
 					))}
 			</View>
-			<Text
+			<BText
 				style={[
-					{ fontFamily: 'Open Sans', alignSelf: 'flex-end', color: colors['background-header'] },
+					{ alignSelf: 'flex-end', color: colors['background-header'] },
 					text.bold.small,
 					text.italic,
 					text.size.small,
 				]}
 			>
 				{timeFormat.fmtTimestamp3(sentDate)}
-			</Text>
+			</BText>
 		</View>
 	)
 }

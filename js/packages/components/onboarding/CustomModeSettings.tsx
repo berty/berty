@@ -4,7 +4,6 @@ import {
 	SafeAreaView,
 	ScrollView,
 	StatusBar,
-	Text,
 	TouchableOpacity,
 	View,
 	Platform,
@@ -45,6 +44,7 @@ import { AccordionEdit } from '../modals/AccordionEdit.modal'
 import { AccordionAdd } from '../modals/AccordionAdd.modal'
 import { useModal } from '../providers/modal.provider'
 import { useDispatch } from 'react-redux'
+import { BText } from '../shared-components/BText'
 
 const ConfigPart: React.FC<{
 	title: string
@@ -81,11 +81,10 @@ const ConfigPart: React.FC<{
 					/>
 				</View>
 				<View style={{ flex: 6, justifyContent: 'center' }}>
-					<Text
+					<BText
 						style={[
 							text.size.big,
 							{
-								fontFamily: 'Open Sans',
 								fontWeight: '700',
 								color: colors['background-header'],
 								alignSelf: 'center',
@@ -93,7 +92,7 @@ const ConfigPart: React.FC<{
 						]}
 					>
 						{title}
-					</Text>
+					</BText>
 				</View>
 				<TouchableOpacity
 					style={{ flex: 1 }}
@@ -501,7 +500,7 @@ const CustomConfig: React.FC = () => {
 }
 
 const ApplyChanges: React.FC = () => {
-	const [{ padding, border, text }] = useStyles()
+	const [{ padding, border }] = useStyles()
 	const colors = useThemeColor()
 	const ctx = useMessengerContext()
 	const [isPressed, setIsPressed] = React.useState<boolean>(false)
@@ -529,14 +528,9 @@ const ApplyChanges: React.FC = () => {
 					{isPressed ? (
 						<ActivityIndicator color={colors['reverted-main-text']} />
 					) : (
-						<Text
-							style={[
-								text.size.medium,
-								{ fontFamily: 'Open Sans', fontWeight: '700', color: colors['reverted-main-text'] },
-							]}
-						>
+						<BText style={[{ fontWeight: '700', color: colors['reverted-main-text'] }]}>
 							{t('onboarding.custom-mode.settings.accept-button')}
-						</Text>
+						</BText>
 					)}
 				</TouchableOpacity>
 			</View>
@@ -585,9 +579,9 @@ const EnableDisableAll: React.FC = () => {
 				},
 			]}
 		>
-			<Text style={{ fontFamily: 'Open Sans', color: colors['reverted-main-text'] }}>
+			<BText style={{ color: colors['reverted-main-text'] }}>
 				{t('onboarding.custom-mode.settings.all-button')}
-			</Text>
+			</BText>
 			<View style={[padding.small]}>
 				<Toggle
 					checked={isToggled}

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Image, View, ViewStyle, Text, TouchableOpacity } from 'react-native'
+import { Image, View, ViewStyle, TouchableOpacity } from 'react-native'
 import palette from 'google-palette'
 import { SHA3 } from 'sha3'
 
@@ -18,6 +18,7 @@ import AttachmentImage from './AttachmentImage'
 import GroupAvatar from './main/Avatar_Group_Copy_19.png'
 import Logo from './main/1_berty_picto.svg'
 import { useSelector } from 'react-redux'
+import { BText } from './shared-components/BText'
 
 export type AvatarStyle = Omit<
 	ViewStyle,
@@ -212,7 +213,7 @@ export const NameAvatar: React.FC<{
 				},
 			]}
 		>
-			<Text
+			<BText
 				style={{
 					color: colors['reverted-main-text'],
 					fontSize: size * 0.5,
@@ -220,7 +221,7 @@ export const NameAvatar: React.FC<{
 				}}
 			>
 				{char}
-			</Text>
+			</BText>
 		</View>
 	)
 })

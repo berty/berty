@@ -1,10 +1,10 @@
 import React from 'react'
 import { View } from 'react-native'
-import { Text } from '@ui-kitten/components'
 import { SHA3 } from 'sha3'
 
 import { useStyles } from '@berty/styles'
 import { Maybe, useThemeColor } from '@berty/store'
+import { BText } from './BText'
 
 //
 // FingerprintContent => Generally on TabBar there is a TabItem Fingerpint that show this component
@@ -28,7 +28,7 @@ const FingerprintContentText: React.FC<FingerprintContentProps> = ({ fingerprint
 	const colors = useThemeColor()
 	const _styles = useStylesFingerprintContent()
 	return (
-		<Text
+		<BText
 			style={[
 				text.bold.medium,
 				_styles.fingerprintContentText,
@@ -36,7 +36,7 @@ const FingerprintContentText: React.FC<FingerprintContentProps> = ({ fingerprint
 			]}
 		>
 			{fingerprint.toUpperCase()}
-		</Text>
+		</BText>
 	)
 }
 
@@ -61,13 +61,13 @@ export const FingerprintContent: React.FC<{ seed: Maybe<string>; isEncrypted?: b
 
 	if (isEncrypted) {
 		return (
-			<Text style={{ textAlign: 'center' }}>
+			<BText style={{ textAlign: 'center' }}>
 				This conversation is totally encrypted, title included.
-			</Text>
+			</BText>
 		)
 	}
 	if (!seed) {
-		return <Text style={{ textAlign: 'center' }}>No seed</Text>
+		return <BText style={{ textAlign: 'center' }}>No seed</BText>
 	}
 	const digest = new SHA3(256).update(seed).digest('hex')
 	return (

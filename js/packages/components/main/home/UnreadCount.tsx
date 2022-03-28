@@ -1,9 +1,9 @@
 import React from 'react'
 import { View } from 'react-native'
-import { Text } from '@ui-kitten/components'
 
 import { useThemeColor } from '@berty/store/hooks'
 import { useStyles } from '@berty/styles'
+import { BText } from '../../shared-components/BText'
 
 export const UnreadCount: React.FC<{ value: number; isConvBadge?: boolean }> = ({
 	value,
@@ -26,7 +26,7 @@ export const UnreadCount: React.FC<{ value: number; isConvBadge?: boolean }> = (
 				paddingHorizontal: 2 * scaleSize,
 			}}
 		>
-			<Text
+			<BText
 				style={{
 					color: colors['reverted-main-text'],
 					fontWeight: '700',
@@ -36,7 +36,7 @@ export const UnreadCount: React.FC<{ value: number; isConvBadge?: boolean }> = (
 				}}
 			>
 				{value.toString()}
-			</Text>
+			</BText>
 		</View>
 	) : null
 }

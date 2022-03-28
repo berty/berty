@@ -1,5 +1,5 @@
 import React from 'react'
-import { Animated, Text, TouchableOpacity, View } from 'react-native'
+import { Animated, TouchableOpacity, View } from 'react-native'
 import { useTranslation } from 'react-i18next'
 import moment from 'moment'
 import { Icon } from '@ui-kitten/components'
@@ -9,6 +9,7 @@ import { useThemeColor } from '@berty/store/hooks'
 
 import { RecordingState } from '../../audioMessageCommon'
 import { SendButton } from '../ChatFooterButtons'
+import { BText } from '../../../shared-components/BText'
 
 export const RecordingComponent: React.FC<{
 	recordingState: RecordingState
@@ -54,9 +55,9 @@ export const RecordingComponent: React.FC<{
 						border.radius.small,
 					]}
 				>
-					<Text style={{ color: colors['reverted-main-text'] }}>
+					<BText style={{ color: colors['reverted-main-text'] }}>
 						{moment.utc(timer).format('mm:ss')}
-					</Text>
+					</BText>
 				</View>
 				<Animated.View
 					style={[
@@ -97,27 +98,13 @@ export const RecordingComponent: React.FC<{
 					]}
 				>
 					{recordingState !== RecordingState.RECORDING_LOCKED ? (
-						<Text
-							style={{
-								color: colors['main-text'],
-								fontWeight: 'bold',
-								fontFamily: 'Open Sans',
-								padding: 5,
-							}}
-						>
+						<BText style={{ fontWeight: 'bold', padding: 5 }}>
 							{t('audio.record.slide-to-cancel')}
-						</Text>
+						</BText>
 					) : (
-						<Text
-							style={{
-								color: colors['main-text'],
-								fontWeight: 'bold',
-								fontFamily: 'Open Sans',
-								padding: 5,
-							}}
-						>
+						<BText style={{ fontWeight: 'bold', padding: 5 }}>
 							{t('audio.record.cancel-button')}
-						</Text>
+						</BText>
 					)}
 				</TouchableOpacity>
 				{recordingState === RecordingState.RECORDING_LOCKED && (

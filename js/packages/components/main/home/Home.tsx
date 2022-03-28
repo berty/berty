@@ -1,13 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import {
-	ScrollView,
-	Text as TextNative,
-	View,
-	StatusBar,
-	TouchableOpacity,
-	SafeAreaView,
-} from 'react-native'
+import { ScrollView, View, StatusBar, TouchableOpacity, SafeAreaView } from 'react-native'
 import pickBy from 'lodash/pickBy'
 import { Icon } from '@ui-kitten/components'
 
@@ -33,6 +26,7 @@ import { MultiAccount } from './MultiAccount'
 import { useSelector } from 'react-redux'
 import { selectClient } from '@berty/redux/reducers/ui.reducer'
 import { selectPersistentOptions } from '@berty/redux/reducers/persistentOptions.reducer'
+import { BText } from '../../shared-components/BText'
 
 const T = beapi.messenger.StreamEvent.Notified.Type
 
@@ -280,7 +274,7 @@ export const Home: ScreenFC<'Main.Home'> = ({ navigation: { navigate } }) => {
 								<View style={[flex.justify.center, flex.align.center, margin.top.scale(60)]}>
 									<View>
 										<EmptyChat width={350 * scaleSize} height={350 * scaleHeight} />
-										<TextNative
+										<BText
 											style={[
 												text.align.center,
 												text.color.grey,
@@ -290,7 +284,7 @@ export const Home: ScreenFC<'Main.Home'> = ({ navigation: { navigate } }) => {
 											]}
 										>
 											{t('main.home.no-contacts')}
-										</TextNative>
+										</BText>
 									</View>
 								</View>
 							</View>

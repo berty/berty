@@ -1,20 +1,13 @@
 import React, { useState } from 'react'
-import {
-	View,
-	StyleSheet,
-	TouchableOpacity,
-	TextInput,
-	Vibration,
-	StatusBar,
-	Text as TextNative,
-} from 'react-native'
-import { Text, Icon } from '@ui-kitten/components'
+import { View, StyleSheet, TouchableOpacity, TextInput, Vibration, StatusBar } from 'react-native'
+import { Icon } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 import { useNavigation as useReactNavigation } from '@react-navigation/core'
 
 import { useStyles } from '@berty/styles'
 import { useMessengerContext, useThemeColor } from '@berty/store'
 import { ScreenFC } from '@berty/navigation'
+import { BText } from '../shared-components/BText'
 
 const useStylesDeleteAccount = () => {
 	const [{ width, height, border, text, padding, margin }] = useStyles()
@@ -78,7 +71,7 @@ const DeleteAccountHeader: React.FC<{ title: string }> = ({ title }) => {
 				/>
 			</View>
 			<View>
-				<TextNative
+				<BText
 					style={[
 						text.bold.medium,
 						text.size.huge,
@@ -87,7 +80,7 @@ const DeleteAccountHeader: React.FC<{ title: string }> = ({ title }) => {
 					]}
 				>
 					{title}
-				</TextNative>
+				</BText>
 			</View>
 		</View>
 	)
@@ -99,7 +92,7 @@ const DeleteAccountError: React.FC<{ error: string }> = ({ error }) => {
 
 	return (
 		<View style={[padding.medium, margin.top.large]}>
-			<Text
+			<BText
 				style={[
 					text.align.center,
 					text.bold.medium,
@@ -107,7 +100,7 @@ const DeleteAccountError: React.FC<{ error: string }> = ({ error }) => {
 				]}
 			>
 				{error}
-			</Text>
+			</BText>
 		</View>
 	)
 }
@@ -128,7 +121,7 @@ const DeleteAccountContent: React.FC<{}> = () => {
 		<>
 			<DeleteAccountError error={t('settings.delete-account.first-desc')} />
 			<View style={[padding.horizontal.medium, padding.bottom.medium]}>
-				<Text
+				<BText
 					style={[
 						text.align.center,
 						text.bold.small,
@@ -136,7 +129,7 @@ const DeleteAccountContent: React.FC<{}> = () => {
 					]}
 				>
 					{t('settings.delete-account.desc')}
-				</Text>
+				</BText>
 			</View>
 			<View style={[column.justify]}>
 				<TextInput
@@ -164,7 +157,7 @@ const DeleteAccountContent: React.FC<{}> = () => {
 							fill={colors['secondary-text']}
 							style={row.item.justify}
 						/>
-						<Text
+						<BText
 							style={[
 								padding.left.small,
 								row.item.justify,
@@ -173,7 +166,7 @@ const DeleteAccountContent: React.FC<{}> = () => {
 							]}
 						>
 							{t('settings.delete-account.cancel-button')}
-						</Text>
+						</BText>
 					</TouchableOpacity>
 					<TouchableOpacity
 						style={[
@@ -195,7 +188,7 @@ const DeleteAccountContent: React.FC<{}> = () => {
 							fill={colors['secondary-background-header']}
 							style={row.item.justify}
 						/>
-						<Text
+						<BText
 							style={[
 								padding.left.small,
 								row.item.justify,
@@ -204,7 +197,7 @@ const DeleteAccountContent: React.FC<{}> = () => {
 							]}
 						>
 							{t('settings.delete-account.delete-button')}
-						</Text>
+						</BText>
 					</TouchableOpacity>
 				</View>
 			</View>

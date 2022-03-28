@@ -2,7 +2,7 @@ import LottieView from 'lottie-react-native'
 import React from 'react'
 import { Platform, Vibration } from 'react-native'
 import { useTranslation } from 'react-i18next'
-import { StatusBar, Text, View } from 'react-native'
+import { StatusBar, View } from 'react-native'
 import { useHeaderHeight } from '@react-navigation/elements'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
@@ -19,6 +19,7 @@ import { IOSOnlyKeyboardAvoidingView } from '@berty/rnutil/keyboardAvoiding'
 import { CreateAccountBox } from './CreateAccountBox'
 import OnboardingWrapper from './OnboardingWrapper'
 import rnutil from '@berty/rnutil'
+import { BText } from '../shared-components/BText'
 
 const CreateAccountBody = () => {
 	const ctx = useMessengerContext()
@@ -77,15 +78,11 @@ const CreateAccountBody = () => {
 			>
 				<View style={{ flexDirection: 'row', alignItems: 'center' }}>
 					<View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
-						<Text style={[{ fontFamily: 'Open Sans', fontWeight: '600' }]}>
+						<BText style={[{ fontWeight: '600' }]}>
 							{t('onboarding.create-account.good-to-know.title')}
-						</Text>
-						<Text style={{ fontFamily: 'Open Sans' }}>
-							{t('onboarding.create-account.good-to-know.first-point')}
-						</Text>
-						<Text style={{ fontFamily: 'Open Sans' }}>
-							{t('onboarding.create-account.good-to-know.second-point')}
-						</Text>
+						</BText>
+						<BText>{t('onboarding.create-account.good-to-know.first-point')}</BText>
+						<BText>{t('onboarding.create-account.good-to-know.second-point')}</BText>
 					</View>
 				</View>
 			</View>

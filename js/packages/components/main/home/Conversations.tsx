@@ -1,6 +1,6 @@
 import React from 'react'
 import { ActivityIndicator, TouchableHighlight, View, ViewProps, ViewStyle } from 'react-native'
-import { Icon, Text } from '@ui-kitten/components'
+import { Icon } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 
 import { defaultStylesDeclaration, useStyles } from '@berty/styles'
@@ -15,6 +15,7 @@ import { timeFormat } from '../../helpers'
 import { UnreadCount } from './UnreadCount'
 import { selectChatInputIsSending } from '@berty/redux/reducers/chatInputsVolatile.reducer'
 import { Suggestion, Configuration } from '@berty/redux/reducers/persistentOptions.reducer'
+import { BText } from '../../shared-components/BText'
 
 type AddBotCallback = React.Dispatch<
 	React.SetStateAction<{
@@ -196,9 +197,9 @@ const ConversationsItem: React.FC<
 								flexShrink: 1,
 							}}
 						>
-							<Text numberOfLines={1} style={[text.size.medium, { color: colors['main-text'] }]}>
+							<BText numberOfLines={1}>
 								{fake ? `FAKE - ${userDisplayName}` : userDisplayName}
-							</Text>
+							</BText>
 						</View>
 						{/* Timestamp and unread count */}
 						<View
@@ -212,17 +213,15 @@ const ConversationsItem: React.FC<
 							<>
 								<UnreadCount value={unreadCount || 0} isConvBadge />
 								{displayDate && (
-									<Text
+									<BText
 										style={[
 											padding.left.small,
 											text.size.small,
-											unreadCount
-												? [text.bold.medium, { color: colors['main-text'] }]
-												: { color: colors['secondary-text'] },
+											unreadCount ? [text.bold.medium] : { color: colors['secondary-text'] },
 										]}
 									>
 										{timeFormat.fmtTimestamp1(displayDate)}
-									</Text>
+									</BText>
 								)}
 							</>
 						</View>
@@ -245,7 +244,7 @@ const ConversationsItem: React.FC<
 								style={[margin.right.tiny]}
 							/>
 						)}
-						<Text
+						<BText
 							numberOfLines={1}
 							style={[
 								{
@@ -258,13 +257,11 @@ const ConversationsItem: React.FC<
 											: 'normal',
 								},
 								text.size.small,
-								unreadCount
-									? [text.bold.medium, { color: colors['main-text'] }]
-									: { color: colors['secondary-text'] },
+								unreadCount ? [text.bold.medium] : { color: colors['secondary-text'] },
 							]}
 						>
 							{description || ''}
-						</Text>
+						</BText>
 
 						{/* Message status */}
 						<View
@@ -355,9 +352,7 @@ const SuggestionsItem: React.FC<{
 									flexShrink: 1,
 								}}
 							>
-								<Text numberOfLines={1} style={[text.size.medium, { color: colors['main-text'] }]}>
-									{displayName}
-								</Text>
+								<BText numberOfLines={1}>{displayName}</BText>
 							</View>
 						</View>
 						<View
@@ -369,7 +364,7 @@ const SuggestionsItem: React.FC<{
 								},
 							]}
 						>
-							<Text
+							<BText
 								numberOfLines={1}
 								style={[
 									{ flexGrow: 2, flexShrink: 1 },
@@ -378,7 +373,7 @@ const SuggestionsItem: React.FC<{
 								]}
 							>
 								{desc}
-							</Text>
+							</BText>
 							{/* Message status */}
 							<View
 								style={[

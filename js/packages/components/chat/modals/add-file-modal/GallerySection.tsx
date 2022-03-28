@@ -6,7 +6,6 @@ import {
 	Image,
 	Platform,
 	ActivityIndicator,
-	Text,
 } from 'react-native'
 import { Icon } from '@ui-kitten/components'
 import CameraRoll from '@berty/polyfill/react-native-community-cameraroll'
@@ -18,6 +17,7 @@ import beapi from '@berty/api'
 import RNFS from '@berty/polyfill/rnfs'
 
 import { ImageCounter } from '../../ImageCounter'
+import { BText } from '../../../shared-components/BText'
 
 const GALLERY_IMAGE_PER_PAGE = 30
 
@@ -155,7 +155,7 @@ export const GallerySection: React.FC<{
 				{loading ? (
 					<ActivityIndicator />
 				) : (
-					galleryContents.length <= 0 && <Text>{t('chat.files.no-images')}</Text>
+					galleryContents.length <= 0 && <BText>{t('chat.files.no-images')}</BText>
 				)}
 				{galleryContents.map(content => (
 					<TouchableOpacity

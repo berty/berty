@@ -1,6 +1,6 @@
 import React from 'react'
 import { ScrollView, TouchableOpacity, View, Platform } from 'react-native'
-import { Icon, Text } from '@ui-kitten/components'
+import { Icon } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 
@@ -30,6 +30,7 @@ import {
 import * as MailComposer from 'expo-mail-composer'
 import { useModal } from '../providers/modal.provider'
 import { EditProfile } from '../modals'
+import { BText } from '../shared-components/BText'
 
 const ProfileButton: React.FC<{}> = () => {
 	const [{ padding, margin, border }, { scaleSize }] = useStyles()
@@ -54,9 +55,9 @@ const ProfileButton: React.FC<{}> = () => {
 			<View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
 				<View style={{ flexDirection: 'row', alignItems: 'center' }}>
 					<AccountAvatar size={50 * scaleSize} />
-					<Text style={[padding.left.medium, { fontFamily: 'Open Sans', fontWeight: '600' }]}>
+					<BText style={[padding.left.medium, { fontWeight: '600' }]}>
 						{account.displayName || ''}
-					</Text>
+					</BText>
 				</View>
 				<TouchableOpacity
 					style={[
