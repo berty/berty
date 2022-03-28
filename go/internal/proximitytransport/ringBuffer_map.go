@@ -109,7 +109,6 @@ func (rbm *RingBufferMap) Delete(peerID string) {
 		rbm.logger.Debug("RingBufferMap: Delete: cache found", logutil.PrivateString("peerID", peerID))
 
 		delete(rbm.cache, peerID)
-		rbm.Unlock()
 	}
 	rbm.Unlock()
 }
