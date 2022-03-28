@@ -67,6 +67,7 @@ func newLinkedCache() *linkedCache {
 	locker := sync.Mutex{}
 	return &linkedCache{
 		queue:  list.New(),
+		recs:   make(map[peer.ID]*recCache),
 		Locker: &locker,
 		cond:   sync.NewCond(&locker),
 	}
@@ -298,6 +299,7 @@ func (ld *LocalDiscovery) handleStream(s network.Stream) {
 			cacheRec.peer = &pid
 			cacheRec.expire = expire
 		} else {
+			cache.recs[pid.ID] = rec
 			cache.queue.PushBack(rec)
 		}
 
