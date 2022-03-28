@@ -62,6 +62,10 @@ jobs:
           CI: true
       - name: Look for i18n dead keys
         run: ./tool/check-dead-i18n/check.js
+      - name: Building web client
+        run: |
+          cd js
+          make web.build
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v2.1.0
         with:

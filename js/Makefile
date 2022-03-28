@@ -103,6 +103,10 @@ endif
 	rm -rf /tmp/metro-bundler-cache-*
 	rm -rf .eslintcache
 
+	# Web files
+	rm -rf web/node_modules
+	rm -rf web/build
+
 	# Android files
 	rm -rf android/.gradle
 	rm -rf android/build
@@ -265,10 +269,15 @@ android.reverse_tcp:
 
 #### Web
 
-.PHONY: web-dev-app.start
-web-dev-app.start:
+.PHONY: web.start
+web.start: web/node_modules
 	$(call check-program, yarn)
-	cd packages/web-dev-app && yarn && yarn start
+	cd web && yarn && yarn start
+
+.PHONY: web.build
+web.build: web/node_modules
+	$(call check-program, yarn)
+	cd web && yarn && yarn build
 
 #### React
 
@@ -459,6 +468,11 @@ android/libs/gobridge.aar: $(bridge_src)
 node_modules: package.json
 	$(call check-program, yarn)
 	yarn $(if $(filter $(CI), true), --frozen-lockfile --network-timeout 1200000 --network-concurrency 1)
+	touch $@
+
+web/node_modules: node_modules web/package.json
+	$(call check-program, yarn)
+	cd web && yarn $(if $(filter $(CI), true), --frozen-lockfile --network-timeout 1200000 --network-concurrency 1)
 	touch $@
 
 ### Electron
