@@ -45,6 +45,35 @@
 					"bootstrap-button": "引导节点",
 					"replication-button": "复制节点"
 				},
+				"modals": {
+					"add": {
+						"title": {
+							"relay": "添加中继节点 (TURN)",
+							"bootstrap": "添加引导节点",
+							"rdvp": "添加 RDVP 节点"
+						}
+					},
+					"edit": {
+						"title": {
+							"relay": "编辑中继节点 (TURN)",
+							"bootstrap": "编辑引导节点",
+							"rdvp": "编辑 RDVP 节点"
+						}
+					},
+					"errors": {
+						"alias-already-exists": "别名已存在",
+						"multiaddr-alread-exists": "多地址已存在",
+						"multiaddr-bad-format": "多地址格式错误",
+						"multiaddr-p2p": "多地址应该包含一个p2p"
+					},
+					"buttons": {
+						"add": "添加",
+						"edit": "编辑",
+						"delete": "删除"
+					},
+					"multiaddress": "多地址",
+					"alias": "别名"
+				},
 				"all-button": "全部",
 				"accept-button": "开始"
 			}
@@ -482,6 +511,10 @@
 		"need-restart-ble": {
 			"title": "需要重新启动",
 			"desc": "重启 Berty 并在系统设置中启用蓝牙！"
+		},
+		"submit-failed": {
+			"title": "无法提交bug",
+			"desc": "缺少邮件应用"
 		}
 	},
 	"error": {
