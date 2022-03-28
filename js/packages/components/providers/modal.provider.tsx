@@ -89,14 +89,6 @@ const BottomSheetModal = forwardRef(
 			useBottomSheetDynamicSnapPoints(snapPoints)
 		const insets = useSafeAreaInsets()
 		const keyboardHeight = useKeyboardHeight()
-		const handleSheetChanges = useCallback(
-			(index: number) => {
-				if (index === -1) {
-					onClose()
-				}
-			},
-			[onClose],
-		)
 
 		return (
 			<View
@@ -124,7 +116,7 @@ const BottomSheetModal = forwardRef(
 					contentHeight={animatedContentHeight}
 					enablePanDownToClose={true}
 					enableHandlePanningGesture={Platform.OS === 'ios'}
-					onChange={handleSheetChanges}
+					onClose={onClose}
 					handleIndicatorStyle={
 						Platform.OS === 'android' ? { backgroundColor: 'transparent' } : undefined
 					}
