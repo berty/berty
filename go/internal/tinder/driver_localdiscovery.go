@@ -365,11 +365,16 @@ func (ld *LocalDiscovery) monitorConnection(ctx context.Context) error {
 
 			evt := e.(event.EvtPeerConnectednessChanged)
 
+			// send record to connected peer only
+			if evt.Connectedness != network.Connected {
+				continue
+			}
+
 			// check if we use a proximity addrs with this peer
 			conns := ld.h.Network().ConnsToPeer(evt.Peer)
-			isProximity := true
+			isProximity := false
 			for _, conn := range conns {
-				if manet.IsPrivateAddr(conn.RemoteMultiaddr()) && isProximityProtocol(conn.RemoteMultiaddr()) {
+				if manet.IsPrivateAddr(conn.RemoteMultiaddr()) || isProximityProtocol(conn.RemoteMultiaddr()) {
 					isProximity = true
 					break
 				}
