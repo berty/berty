@@ -1,8 +1,11 @@
-import React from 'react'
+import React, { ForwardedRef, forwardRef, useImperativeHandle } from 'react'
+import { ScrollViewProps, View, ViewProps } from 'react-native'
+import { ScrollView } from 'react-native-gesture-handler'
+import ImportedBottomSheet from '@gorhom/bottom-sheet'
 
-const BottomSheet = () => <></>
-
-export const BottomSheetView = () => <></>
+import { useStyles } from '@berty-tech/styles'
+import { useLayout } from '@berty-tech/components/hooks'
+import { useThemeColor } from '@berty-tech/store'
 
 export const useBottomSheetDynamicSnapPoints = (_snapPoints: string[]) => {
 	return {
@@ -20,5 +23,48 @@ export const useBottomSheetDynamicSnapPoints = (_snapPoints: string[]) => {
 		},
 	}
 }
+
+type BottomSheetProps = ViewProps & { onClose: () => void }
+
+const BottomSheet = forwardRef(
+	({ onClose, ...props }: BottomSheetProps, ref: ForwardedRef<ImportedBottomSheet>) => {
+		useImperativeHandle(ref, () => ({
+			snapToIndex: () => {},
+			snapToPosition: () => {},
+			expand: () => {},
+			collapse: () => {},
+			close: onClose,
+			forceClose: () => {},
+		}))
+		const [{ padding, border }, { windowHeight }] = useStyles()
+		const colors = useThemeColor()
+		const [layout, onLayout] = useLayout()
+
+		return (
+			<View
+				{...props}
+				onLayout={onLayout}
+				style={[
+					padding.horizontal.medium,
+					padding.bottom.medium,
+					border.radius.large,
+					border.shadow.huge,
+					{
+						backgroundColor: colors['main-background'],
+						shadowColor: colors.shadow,
+						zIndex: 100,
+						position: 'absolute',
+						alignSelf: 'center',
+						top: windowHeight * 0.5 - layout.height * 0.5,
+					},
+				]}
+			/>
+		)
+	},
+)
+
+export const BottomSheetView = (props: ViewProps) => <View {...props} />
+
+export const BottomSheetScrollView = (props: ScrollViewProps) => <ScrollView {...props} />
 
 export default BottomSheet
