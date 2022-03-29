@@ -21,8 +21,8 @@ import { bridge as rpcBridge } from '@berty/grpc-bridge/rpc'
 import { Service } from '@berty/grpc-bridge'
 import GoBridge from '@berty/go-bridge'
 import messengerMethodsHooks from '@berty/store/methods'
-import { languages } from '@berty/berty-i18n/locale/languages'
-import i18n from '@berty/berty-i18n'
+import { languages } from '@berty/i18n/locale/languages'
+import i18n from '@berty/i18n'
 import { setAccountLanguage } from '@berty/redux/reducers/accountSettings.reducer'
 import {
 	useAllConversations,

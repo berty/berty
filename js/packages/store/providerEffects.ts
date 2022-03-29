@@ -4,7 +4,7 @@ import { Platform } from 'react-native'
 import { grpc } from '@improbable-eng/grpc-web'
 
 import beapi from '@berty/api'
-import i18n, { osLanguage } from '@berty/berty-i18n'
+import i18n, { osLanguage } from '@berty/i18n'
 import GoBridge, { GoBridgeDefaultOpts, GoBridgeOpts } from '@berty/go-bridge'
 import { GRPCError, Service } from '@berty/grpc-bridge'
 import { logger } from '@berty/grpc-bridge/middleware'

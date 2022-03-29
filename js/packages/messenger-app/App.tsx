@@ -7,7 +7,7 @@ import RNBootSplash from 'react-native-bootsplash'
 import { Provider as ReduxProvider } from 'react-redux'
 import { Platform, View } from 'react-native'
 
-import '@berty/berty-i18n'
+import '@berty/i18n'
 import { Provider as ThemeProvider } from '@berty/components/theme'
 import { StreamGate, ListGate } from '@berty/components/gates'
 import { MessengerProvider, useThemeColor, useMountEffect } from '@berty/store'

@@ -25,7 +25,7 @@ This folder contains most of the Typescript and Javascript code needed for the B
 | --------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
 | [api/](https://github.com/berty/berty/tree/master/js/packages/api)          | Interfaces with the [Berty golang services](https://github.com/berty/berty/tree/master/go/pkg) |
 | [messenger-app/](./packages/messenger-app/)                                         | Berty Messenger react root                                                                 |
-| [berty-i18n/](./packages/berty-i18n)                                        | Locale support files                                                                           |
+| [i18n/](./packages/i18n)                                        | Locale support files                                                                           |
 | [components](./packages/components) | React Native components |
 | [go-bridge/](./packages/go-bridge)                                          | Berty daemon native module
 | [grpc-bridge/](./packages/grpc-bridge)                                      | Collection of grpc utilities used to interface with the daemon                                                                   |
