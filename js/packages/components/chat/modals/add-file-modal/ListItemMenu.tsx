@@ -2,7 +2,7 @@ import React from 'react'
 import { TouchableOpacity } from 'react-native'
 import { Text, Icon } from '@ui-kitten/components'
 
-import { useStyles } from '@berty-tech/styles'
+import { useStyles } from '@berty/styles'
 
 export const ListItemMenu: React.FC<{
 	title: string

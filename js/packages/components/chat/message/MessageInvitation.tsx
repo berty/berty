@@ -3,13 +3,13 @@ import { ActivityIndicator, Text as TextNative, TouchableOpacity, View } from 'r
 import { Icon, Text } from '@ui-kitten/components'
 import { Buffer } from 'buffer'
 import { useTranslation } from 'react-i18next'
-import { useNavigation } from '@berty-tech/navigation'
+import { useNavigation } from '@berty/navigation'
 import { CommonActions } from '@react-navigation/native'
 
-import { useMessengerClient, useThemeColor } from '@berty-tech/store'
-import { useStyles } from '@berty-tech/styles'
-import { InteractionGroupInvitation } from '@berty-tech/store/types.gen'
-import { useOneToOneContact, useConversation } from '@berty-tech/react-redux'
+import { useMessengerClient, useThemeColor } from '@berty/store'
+import { useStyles } from '@berty/styles'
+import { InteractionGroupInvitation } from '@berty/store/types.gen'
+import { useOneToOneContact, useConversation } from '@berty/react-redux'
 
 import { MessageSystemWrapper } from './MessageSystemWrapper'
 import { MultiMemberAvatar } from '../../avatars'

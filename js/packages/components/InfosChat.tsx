@@ -3,15 +3,10 @@ import { Text as TextNative, View } from 'react-native'
 import { useTranslation } from 'react-i18next'
 import { Icon, Text } from '@ui-kitten/components'
 
-import beapi from '@berty-tech/api'
-import { useStyles } from '@berty-tech/styles'
-import {
-	pbDateToNum,
-	useMessengerClient,
-	useThemeColor,
-	useMessengerContext,
-} from '@berty-tech/store'
-import { useOneToOneContact } from '@berty-tech/react-redux'
+import beapi from '@berty/api'
+import { useStyles } from '@berty/styles'
+import { pbDateToNum, useMessengerClient, useThemeColor, useMessengerContext } from '@berty/store'
+import { useOneToOneContact } from '@berty/react-redux'
 
 import { timeFormat } from './helpers'
 import { ContactAvatar } from './avatars'

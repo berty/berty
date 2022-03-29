@@ -1,7 +1,7 @@
 import { Buffer } from 'buffer'
 
-import beapi from '@berty-tech/api'
-import { WelshMessengerServiceClient } from '@berty-tech/grpc-bridge/welsh-clients.gen'
+import beapi from '@berty/api'
+import { WelshMessengerServiceClient } from '@berty/grpc-bridge/welsh-clients.gen'
 
 export const prepareMediaBytes = async (
 	client: WelshMessengerServiceClient,

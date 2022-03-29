@@ -3,8 +3,8 @@ import { View } from 'react-native'
 import { Text } from '@ui-kitten/components'
 import { SHA3 } from 'sha3'
 
-import { useStyles } from '@berty-tech/styles'
-import { Maybe, useThemeColor } from '@berty-tech/store'
+import { useStyles } from '@berty/styles'
+import { Maybe, useThemeColor } from '@berty/store'
 
 //
 // FingerprintContent => Generally on TabBar there is a TabItem Fingerpint that show this component

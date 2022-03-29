@@ -21,7 +21,7 @@ module.exports = {
 			return webpackConfig;
 		},
 		alias: {
-			'@berty-tech': path.join(path.resolve(__dirname, '../packages/')),
+			'@berty': path.join(path.resolve(__dirname, '../packages/')),
 		},
 	}
 }

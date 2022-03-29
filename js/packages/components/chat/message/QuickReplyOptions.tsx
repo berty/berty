@@ -3,10 +3,10 @@ import { TouchableOpacity, View } from 'react-native'
 import { Text } from '@ui-kitten/components'
 import Long from 'long'
 
-import beapi from '@berty-tech/api'
-import { useStyles } from '@berty-tech/styles'
-import { useThemeColor, useMessengerClient } from '@berty-tech/store'
-import { useAppDispatch } from '@berty-tech/react-redux'
+import beapi from '@berty/api'
+import { useStyles } from '@berty/styles'
+import { useThemeColor, useMessengerClient } from '@berty/store'
+import { useAppDispatch } from '@berty/react-redux'
 
 const QuickReplyOption: React.FC<{
 	convPk: string

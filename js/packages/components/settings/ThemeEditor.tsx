@@ -2,14 +2,14 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Layout } from '@ui-kitten/components'
 import { Platform, ScrollView, StatusBar, View } from 'react-native'
-import Share from '@berty-tech/polyfill/react-native-share'
+import Share from '@berty/polyfill/react-native-share'
 import DocumentPicker from 'react-native-document-picker'
 
-import { useStyles } from '@berty-tech/styles'
-import { useThemeColor, createAndSaveFile } from '@berty-tech/store'
-import { ScreenFC } from '@berty-tech/navigation'
-import RNFS from '@berty-tech/polyfill/rnfs'
-import { withInAppNotification } from '@berty-tech/polyfill/react-native-in-app-notification'
+import { useStyles } from '@berty/styles'
+import { useThemeColor, createAndSaveFile } from '@berty/store'
+import { ScreenFC } from '@berty/navigation'
+import RNFS from '@berty/polyfill/rnfs'
+import { withInAppNotification } from '@berty/polyfill/react-native-in-app-notification'
 
 import { ButtonSetting } from '../shared-components'
 import { DropDownPicker } from '../shared-components/DropDownPicker'
@@ -23,8 +23,8 @@ import {
 	selectThemeCollectionAsItem,
 	selectThemeSelected,
 	setTheme,
-} from '@berty-tech/redux/reducers/theme.reducer'
-import { getPath } from '@berty-tech/rnutil/getPath'
+} from '@berty/redux/reducers/theme.reducer'
+import { getPath } from '@berty/rnutil/getPath'
 
 const openThemeColorFile = async () => {
 	try {

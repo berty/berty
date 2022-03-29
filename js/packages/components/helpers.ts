@@ -1,6 +1,6 @@
 import moment from 'moment'
 
-import { MessengerState } from '@berty-tech/store/types'
+import { MessengerState } from '@berty/store/types'
 
 export const promiseResolved = (): Promise<void> => new Promise((res): any => setTimeout(res, 1000))
 

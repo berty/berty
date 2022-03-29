@@ -1,6 +1,6 @@
 import { Buffer } from 'buffer'
 
-import beapi from '@berty-tech/api'
+import beapi from '@berty/api'
 
 import { messengerActions } from './messengerActions.gen'
 

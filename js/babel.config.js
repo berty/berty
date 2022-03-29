@@ -10,7 +10,7 @@ module.exports = {
 			'module-resolver',
 			{
 				alias: {
-					'@berty-tech': './packages/',
+					'@berty': './packages/',
 				},
 			},
 		],

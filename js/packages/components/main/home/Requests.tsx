@@ -3,15 +3,10 @@ import { ScrollView, TouchableOpacity, View } from 'react-native'
 import { useTranslation } from 'react-i18next'
 import { Icon, Text } from '@ui-kitten/components'
 
-import beapi from '@berty-tech/api'
-import {
-	useMessengerClient,
-	useMessengerContext,
-	useThemeColor,
-	pbDateToNum,
-} from '@berty-tech/store'
-import { useNavigation } from '@berty-tech/navigation'
-import { useStyles } from '@berty-tech/styles'
+import beapi from '@berty/api'
+import { useMessengerClient, useMessengerContext, useThemeColor, pbDateToNum } from '@berty/store'
+import { useNavigation } from '@berty/navigation'
+import { useStyles } from '@berty/styles'
 
 import { ContactAvatar } from '../../avatars'
 import FromNow from '../../shared-components/FromNow'

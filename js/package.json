@@ -1,5 +1,5 @@
 {
-  "name": "@berty-tech/js",
+  "name": "@berty/js",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -142,7 +142,7 @@
     "moduleNameMapper": {
       "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/assetsTransformer.js",
       "\\.(css|less)$": "<rootDir>/assetsTransformer.js",
-      "@berty-tech/(.*)": "<rootDir>/packages/$1"
+      "@berty/(.*)": "<rootDir>/packages/$1"
     },
     "setupFiles": [
       "./jest-setup.js"

@@ -12,10 +12,10 @@ import {
 	pbDateToNum,
 	InteractionUserMessage,
 	ParsedInteraction,
-} from '@berty-tech/store'
-import { useStyles } from '@berty-tech/styles'
-import { WelshMessengerServiceClient } from '@berty-tech/grpc-bridge/welsh-clients.gen'
-import { useNavigation } from '@berty-tech/navigation'
+} from '@berty/store'
+import { useStyles } from '@berty/styles'
+import { WelshMessengerServiceClient } from '@berty/grpc-bridge/welsh-clients.gen'
+import { useNavigation } from '@berty/navigation'
 
 import { timeFormat } from '../../helpers'
 import { useTranslation } from 'react-i18next'

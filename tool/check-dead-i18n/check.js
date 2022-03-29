@@ -7,7 +7,7 @@ const path = require("path");
 // Global const
 const scriptDir = __dirname;
 const packagesDir = path.join(scriptDir, "../../js/packages");
-const i18nDir = path.join(packagesDir, "berty-i18n/locale");
+const i18nDir = path.join(packagesDir, "i18n/locale");
 const i18nJSON = path.join(i18nDir, "en-US/messages.json");
 const assetsDir = path.join(packagesDir, "assets");
 const onboardAssetsDir = path.join(

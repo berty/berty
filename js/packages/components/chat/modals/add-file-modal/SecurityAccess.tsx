@@ -1,12 +1,12 @@
 import React, { useEffect, useCallback } from 'react'
 import { View, TouchableOpacity, AppState, Platform } from 'react-native'
-import { RESULTS, openSettings } from '@berty-tech/polyfill/react-native-permissions'
+import { RESULTS, openSettings } from '@berty/polyfill/react-native-permissions'
 import { useTranslation } from 'react-i18next'
 import { Text, Icon } from '@ui-kitten/components'
 
-import { useStyles } from '@berty-tech/styles'
-import { useThemeColor } from '@berty-tech/store/hooks'
-import { getPermissionStatus } from '@berty-tech/rnutil/checkPermissions'
+import { useStyles } from '@berty/styles'
+import { useThemeColor } from '@berty/store/hooks'
+import { getPermissionStatus } from '@berty/rnutil/checkPermissions'
 
 import { TabItems } from './types'
 

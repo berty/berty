@@ -10,14 +10,14 @@ import {
 import { Icon, Input, Text } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 
-import { useStyles } from '@berty-tech/styles'
-import { useMessengerClient, useMessengerContext, useThemeColor } from '@berty-tech/store'
-import { useAccount } from '@berty-tech/react-redux'
-import ImagePicker, { ImageOrVideo } from '@berty-tech/polyfill/react-native-image-crop-picker'
+import { useStyles } from '@berty/styles'
+import { useMessengerClient, useMessengerContext, useThemeColor } from '@berty/store'
+import { useAccount } from '@berty/react-redux'
+import ImagePicker, { ImageOrVideo } from '@berty/polyfill/react-native-image-crop-picker'
 
 import { AccountAvatar } from '../avatars'
 import { useSelector } from 'react-redux'
-import { selectSelectedAccount } from '@berty-tech/redux/reducers/ui.reducer'
+import { selectSelectedAccount } from '@berty/redux/reducers/ui.reducer'
 import { useModal } from '../providers/modal.provider'
 
 //

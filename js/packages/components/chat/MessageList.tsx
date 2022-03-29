@@ -9,20 +9,20 @@ import {
 } from 'react-native'
 import moment from 'moment'
 
-import { useStyles } from '@berty-tech/styles'
+import { useStyles } from '@berty/styles'
 import {
 	fetchMore,
 	pbDateToNum,
 	ParsedInteraction,
 	useMessengerClient,
 	useThemeColor,
-} from '@berty-tech/store'
-import beapi from '@berty-tech/api'
+} from '@berty/store'
+import beapi from '@berty/api'
 import {
 	useConversationInteractions,
 	useConversationMembersDict,
 	useConversation,
-} from '@berty-tech/react-redux'
+} from '@berty/react-redux'
 
 import { InfosChat } from '../InfosChat'
 import { Message } from './message'

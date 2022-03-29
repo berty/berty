@@ -4,19 +4,16 @@ import { TouchableHighlight, TouchableOpacity } from 'react-native-gesture-handl
 import { useTranslation } from 'react-i18next'
 
 import { Divider, Icon } from '@ui-kitten/components'
-import { useThemeColor } from '@berty-tech/store'
-import { useStyles } from '@berty-tech/styles'
-import {
-	selectChatInputText,
-	setChatInputText,
-} from '@berty-tech/redux/reducers/chatInputs.reducer'
-import { useAppDispatch, useAppSelector } from '@berty-tech/react-redux'
-import { emojis, getEmojiByName } from '@berty-tech/components/utils'
-import { Emoji } from '@berty-tech/styles/types'
+import { useThemeColor } from '@berty/store'
+import { useStyles } from '@berty/styles'
+import { selectChatInputText, setChatInputText } from '@berty/redux/reducers/chatInputs.reducer'
+import { useAppDispatch, useAppSelector } from '@berty/react-redux'
+import { emojis, getEmojiByName } from '@berty/components/utils'
+import { Emoji } from '@berty/styles/types'
 import {
 	selectChatInputIsFocused,
 	selectChatInputSelection,
-} from '@berty-tech/redux/reducers/chatInputsVolatile.reducer'
+} from '@berty/redux/reducers/chatInputsVolatile.reducer'
 
 type Word = {
 	word: string

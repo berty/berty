@@ -1,8 +1,8 @@
 import React, { FC } from 'react'
 import { TextInputProps, TextInput as RNTextInput, View, Text, ViewProps } from 'react-native'
 
-import { useThemeColor } from '@berty-tech/store'
-import { useStyles } from '@berty-tech/styles'
+import { useThemeColor } from '@berty/store'
+import { useStyles } from '@berty/styles'
 
 export const TextInput: FC<
 	TextInputProps & { containerStyle: ViewProps | ViewProps[]; error: string | null }

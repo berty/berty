@@ -12,18 +12,18 @@ import {
 	useMessengerClient,
 	useMessengerContext,
 	useThemeColor,
-} from '@berty-tech/store'
-import { useStyles } from '@berty-tech/styles'
-import { ScreenFC, useNavigation } from '@berty-tech/navigation'
-import * as middleware from '@berty-tech/grpc-bridge/middleware'
-import beapi from '@berty-tech/api'
-import { bridge as rpcBridge } from '@berty-tech/grpc-bridge/rpc'
-import { Service } from '@berty-tech/grpc-bridge'
-import GoBridge from '@berty-tech/go-bridge'
-import messengerMethodsHooks from '@berty-tech/store/methods'
-import { languages } from '@berty-tech/berty-i18n/locale/languages'
-import i18n from '@berty-tech/berty-i18n'
-import { setAccountLanguage } from '@berty-tech/redux/reducers/accountSettings.reducer'
+} from '@berty/store'
+import { useStyles } from '@berty/styles'
+import { ScreenFC, useNavigation } from '@berty/navigation'
+import * as middleware from '@berty/grpc-bridge/middleware'
+import beapi from '@berty/api'
+import { bridge as rpcBridge } from '@berty/grpc-bridge/rpc'
+import { Service } from '@berty/grpc-bridge'
+import GoBridge from '@berty/go-bridge'
+import messengerMethodsHooks from '@berty/store/methods'
+import { languages } from '@berty/i18n/locale/languages'
+import i18n from '@berty/i18n'
+import { setAccountLanguage } from '@berty/redux/reducers/accountSettings.reducer'
 import {
 	useAllConversations,
 	useAllInteractions,
@@ -32,8 +32,8 @@ import {
 	useContactsDict,
 	useConversationsDict,
 	useAccount,
-} from '@berty-tech/react-redux'
-import { Player } from '@berty-tech/polyfill/react-native-community-audio-toolkit-player'
+} from '@berty/react-redux'
+import { Player } from '@berty/polyfill/react-native-community-audio-toolkit-player'
 
 import {
 	ButtonSetting,
@@ -44,14 +44,14 @@ import {
 import { showNeedRestartNotification } from '../helpers'
 import { DropDownPicker, Item } from '../shared-components/DropDownPicker'
 import { useSelector } from 'react-redux'
-import { selectEmbedded } from '@berty-tech/redux/reducers/ui.reducer'
-import { withInAppNotification } from '@berty-tech/polyfill/react-native-in-app-notification'
+import { selectEmbedded } from '@berty/redux/reducers/ui.reducer'
+import { withInAppNotification } from '@berty/polyfill/react-native-in-app-notification'
 import {
 	defaultPersistentOptions,
 	PersistentOptionsKeys,
 	selectPersistentOptions,
 	setPersistentOption,
-} from '@berty-tech/redux/reducers/persistentOptions.reducer'
+} from '@berty/redux/reducers/persistentOptions.reducer'
 
 //
 // DevTools

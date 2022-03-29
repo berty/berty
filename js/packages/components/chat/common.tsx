@@ -3,8 +3,8 @@ import { Animated, Easing, View, ViewToken } from 'react-native'
 import { Text } from '@ui-kitten/components'
 import moment from 'moment'
 
-import { useStyles } from '@berty-tech/styles'
-import { useThemeColor } from '@berty-tech/store'
+import { useStyles } from '@berty/styles'
+import { useThemeColor } from '@berty/store'
 
 import { timeFormat } from '../helpers'
 

@@ -4,19 +4,14 @@ import { useFocusEffect } from '@react-navigation/native'
 import { useTranslation } from 'react-i18next'
 import { useHeaderHeight } from '@react-navigation/elements'
 
-import { useStyles } from '@berty-tech/styles'
-import { ScreenFC } from '@berty-tech/navigation'
-import beapi from '@berty-tech/api'
-import {
-	useReadEffect,
-	useNotificationsInhibitor,
-	useThemeColor,
-	pbDateToNum,
-} from '@berty-tech/store'
-import { CustomTitleStyle } from '@berty-tech/navigation/stacks'
-import { IOSOnlyKeyboardAvoidingView } from '@berty-tech/rnutil/keyboardAvoiding'
-import { useContact, useConversation } from '@berty-tech/react-redux'
-import AndroidKeyboardAdjust from '@berty-tech/polyfill/react-native-android-keyboard-adjust'
+import { useStyles } from '@berty/styles'
+import { ScreenFC } from '@berty/navigation'
+import beapi from '@berty/api'
+import { useReadEffect, useNotificationsInhibitor, useThemeColor, pbDateToNum } from '@berty/store'
+import { CustomTitleStyle } from '@berty/navigation/stacks'
+import { IOSOnlyKeyboardAvoidingView } from '@berty/rnutil/keyboardAvoiding'
+import { useContact, useConversation } from '@berty/react-redux'
+import AndroidKeyboardAdjust from '@berty/polyfill/react-native-android-keyboard-adjust'
 
 import { ContactAvatar } from '../avatars'
 import { ChatDate } from './common'

@@ -1,4 +1,4 @@
-import GoBridge from '@berty-tech/go-bridge'
+import GoBridge from '@berty/go-bridge'
 import {
 	serializeToBase64,
 	deserializeFromBase64,

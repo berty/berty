@@ -1,8 +1,8 @@
 import { Platform } from 'react-native'
 import DocumentPicker from 'react-native-document-picker'
 
-import { MessengerState } from '@berty-tech/store'
-import { getPath } from '@berty-tech/rnutil/getPath'
+import { MessengerState } from '@berty/store'
+import { getPath } from '@berty/rnutil/getPath'
 
 export const importAccountFromDocumentPicker = async (ctx: MessengerState) => {
 	try {

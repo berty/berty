@@ -1,8 +1,8 @@
 import React from 'react'
 import { Text, TouchableOpacity, ViewStyle } from 'react-native'
 
-import { useStyles } from '@berty-tech/styles'
-import { useThemeColor } from '@berty-tech/store/hooks'
+import { useStyles } from '@berty/styles'
+import { useThemeColor } from '@berty/store/hooks'
 
 const Button: React.FC<{
 	children: string

@@ -12,9 +12,9 @@ import { Text, Icon } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 import { useNavigation as useReactNavigation } from '@react-navigation/core'
 
-import { useStyles } from '@berty-tech/styles'
-import { useMessengerContext, useThemeColor } from '@berty-tech/store'
-import { ScreenFC } from '@berty-tech/navigation'
+import { useStyles } from '@berty/styles'
+import { useMessengerContext, useThemeColor } from '@berty/store'
+import { ScreenFC } from '@berty/navigation'
 
 const useStylesDeleteAccount = () => {
 	const [{ width, height, border, text, padding, margin }] = useStyles()

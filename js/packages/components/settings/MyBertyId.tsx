@@ -1,13 +1,13 @@
 import React, { useState } from 'react'
 import { View, TouchableOpacity, Share, StatusBar } from 'react-native'
 import { Layout, Text, Icon } from '@ui-kitten/components'
-import QRCode from '@berty-tech/polyfill/react-native-qrcode-svg'
+import QRCode from '@berty/polyfill/react-native-qrcode-svg'
 import { useTranslation } from 'react-i18next'
 
-import { useStyles } from '@berty-tech/styles'
-import { useStylesBertyId, useThemeColor } from '@berty-tech/store'
-import { ScreenFC } from '@berty-tech/navigation'
-import { useAccount } from '@berty-tech/react-redux'
+import { useStyles } from '@berty/styles'
+import { useStylesBertyId, useThemeColor } from '@berty/store'
+import { ScreenFC } from '@berty/navigation'
+import { useAccount } from '@berty/react-redux'
 
 import { TabBar } from '../shared-components/TabBar'
 import { FingerprintContent } from '../shared-components/FingerprintContent'

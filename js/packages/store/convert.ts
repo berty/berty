@@ -1,7 +1,7 @@
 import { Buffer } from 'buffer'
 import Long from 'long'
 
-import beapi from '@berty-tech/api'
+import beapi from '@berty/api'
 
 import { ParsedInteraction } from './types.gen'
 

@@ -3,9 +3,9 @@ import { View } from 'react-native'
 import { Text } from '@ui-kitten/components'
 import { Dictionary } from '@reduxjs/toolkit'
 
-import beapi from '@berty-tech/api'
-import { pbDateToNum, ParsedInteraction, useThemeColor } from '@berty-tech/store'
-import { useStyles } from '@berty-tech/styles'
+import beapi from '@berty/api'
+import { pbDateToNum, ParsedInteraction, useThemeColor } from '@berty/store'
+import { useStyles } from '@berty/styles'
 
 import { timeFormat } from '../../helpers'
 import { MessageInvitation } from './MessageInvitation'
@@ -15,7 +15,7 @@ import { useSelector } from 'react-redux'
 import {
 	PersistentOptionsKeys,
 	selectPersistentOptions,
-} from '@berty-tech/redux/reducers/persistentOptions.reducer'
+} from '@berty/redux/reducers/persistentOptions.reducer'
 
 //
 // Message => All messages (group/contact)

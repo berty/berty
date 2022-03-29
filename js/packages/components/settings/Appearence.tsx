@@ -3,10 +3,10 @@ import { ScrollView, View } from 'react-native'
 // import { useSelector, useDispatch } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 
-import { useStyles } from '@berty-tech/styles'
-import { ScreenFC, useNavigation } from '@berty-tech/navigation'
-import { useThemeColor } from '@berty-tech/store'
-// import { selectThemeIsDark, toggleDarkTheme } from '@berty-tech/redux/reducers/theme.reducer'
+import { useStyles } from '@berty/styles'
+import { ScreenFC, useNavigation } from '@berty/navigation'
+import { useThemeColor } from '@berty/store'
+// import { selectThemeIsDark, toggleDarkTheme } from '@berty/redux/reducers/theme.reducer'
 
 import { ButtonSettingV2, Section } from '../shared-components'
 

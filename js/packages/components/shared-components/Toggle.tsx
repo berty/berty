@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { TouchableOpacity, Animated, ViewStyle } from 'react-native'
 import { Icon } from '@ui-kitten/components'
 
-import { useThemeColor } from '@berty-tech/store/hooks'
+import { useThemeColor } from '@berty/store/hooks'
 
 const TOGGLE_WIDTH = 50
 const CIRCLE_WIDTH = 25

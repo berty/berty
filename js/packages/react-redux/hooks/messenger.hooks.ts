@@ -1,8 +1,8 @@
 import { useMemo } from 'react'
 
-import * as m from '@berty-tech/redux/reducers/messenger.reducer'
-import beapi from '@berty-tech/api'
-import { ParsedInteraction } from '@berty-tech/store'
+import * as m from '@berty/redux/reducers/messenger.reducer'
+import beapi from '@berty/api'
+import { ParsedInteraction } from '@berty/store'
 
 import { useAppSelector } from '../core'
 

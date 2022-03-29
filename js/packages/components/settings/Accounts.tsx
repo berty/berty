@@ -2,21 +2,18 @@ import React from 'react'
 import { ScrollView, View, TouchableOpacity, Text } from 'react-native'
 import { useTranslation } from 'react-i18next'
 
-import beapi from '@berty-tech/api'
-import { useStyles } from '@berty-tech/styles'
-import { ScreenFC, useNavigation } from '@berty-tech/navigation'
+import beapi from '@berty/api'
+import { useStyles } from '@berty/styles'
+import { ScreenFC, useNavigation } from '@berty/navigation'
 import {
 	useMessengerContext,
 	useThemeColor,
 	pbDateToNum,
 	closeAccountWithProgress,
-} from '@berty-tech/store'
+} from '@berty/store'
 
 import { ButtonSettingV2, Section } from '../shared-components'
-import {
-	selectSelectedAccount,
-	setStateOnBoardingReady,
-} from '@berty-tech/redux/reducers/ui.reducer'
+import { selectSelectedAccount, setStateOnBoardingReady } from '@berty/redux/reducers/ui.reducer'
 import { useDispatch, useSelector } from 'react-redux'
 import { importAccountFromDocumentPicker } from '../pickerUtils'
 import { GenericAvatar } from '../avatars'

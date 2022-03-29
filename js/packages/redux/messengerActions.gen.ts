@@ -1,6 +1,6 @@
 import { createAction } from '@reduxjs/toolkit'
 
-import beapi from '@berty-tech/api'
+import beapi from '@berty/api'
 
 export const messengerActions = {
 	[beapi.messenger.StreamEvent.Type.TypeListEnded]: createAction<

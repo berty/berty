@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
-import beapi from '@berty-tech/api'
+import beapi from '@berty/api'
 
 /**
  *

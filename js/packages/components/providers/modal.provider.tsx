@@ -17,7 +17,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import BottomSheet, {
 	BottomSheetView,
 	useBottomSheetDynamicSnapPoints,
-} from '@berty-tech/polyfill/bottom-sheet'
+} from '@berty/polyfill/bottom-sheet'
 
 const useKeyboardHeight = (platforms: string[] = ['ios', 'android']) => {
 	const [keyboardHeight, setKeyboardHeight] = useState<number>(0)

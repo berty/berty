@@ -2,15 +2,15 @@ import React, { useState } from 'react'
 import { View, ScrollView, ActivityIndicator, StatusBar, Text } from 'react-native'
 import { useTranslation } from 'react-i18next'
 
-import { useStyles } from '@berty-tech/styles'
-import { useThemeColor } from '@berty-tech/store'
-import { ScreenFC } from '@berty-tech/navigation'
-import { useContact, useConversation } from '@berty-tech/react-redux'
+import { useStyles } from '@berty/styles'
+import { useThemeColor } from '@berty/store'
+import { ScreenFC } from '@berty/navigation'
+import { useContact, useConversation } from '@berty/react-redux'
 
 import { FingerprintContent } from '../shared-components/FingerprintContent'
 import { TabBar } from '../shared-components/TabBar'
 import { ContactAvatar } from '../avatars'
-import UserDevicesList from '@berty-tech/components/chat/DeviceList'
+import UserDevicesList from '@berty/components/chat/DeviceList'
 
 const ContactSettingsHeaderContent: React.FC = ({ children }) => {
 	const [{ margin }] = useStyles()

@@ -3,21 +3,21 @@ import cloneDeep from 'lodash/cloneDeep'
 import { Platform } from 'react-native'
 import { grpc } from '@improbable-eng/grpc-web'
 
-import beapi from '@berty-tech/api'
-import i18n, { osLanguage } from '@berty-tech/berty-i18n'
-import GoBridge, { GoBridgeDefaultOpts, GoBridgeOpts } from '@berty-tech/go-bridge'
-import { GRPCError, Service } from '@berty-tech/grpc-bridge'
-import { logger } from '@berty-tech/grpc-bridge/middleware'
-import { bridge as rpcBridge, grpcweb as rpcWeb } from '@berty-tech/grpc-bridge/rpc'
-import { ServiceClientType } from '@berty-tech/grpc-bridge/welsh-clients.gen'
-import store, { AppDispatch, persistor } from '@berty-tech/redux/store'
-import { useAppDispatch } from '@berty-tech/react-redux'
-import { streamEventToAction as streamEventToReduxAction } from '@berty-tech/redux/messengerActions'
-import RNFS from '@berty-tech/polyfill/rnfs'
+import beapi from '@berty/api'
+import i18n, { osLanguage } from '@berty/i18n'
+import GoBridge, { GoBridgeDefaultOpts, GoBridgeOpts } from '@berty/go-bridge'
+import { GRPCError, Service } from '@berty/grpc-bridge'
+import { logger } from '@berty/grpc-bridge/middleware'
+import { bridge as rpcBridge, grpcweb as rpcWeb } from '@berty/grpc-bridge/rpc'
+import { ServiceClientType } from '@berty/grpc-bridge/welsh-clients.gen'
+import store, { AppDispatch, persistor } from '@berty/redux/store'
+import { useAppDispatch } from '@berty/react-redux'
+import { streamEventToAction as streamEventToReduxAction } from '@berty/redux/messengerActions'
+import RNFS from '@berty/polyfill/rnfs'
 import {
 	WelshMessengerServiceClient,
 	WelshProtocolServiceClient,
-} from '@berty-tech/grpc-bridge/welsh-clients.gen'
+} from '@berty/grpc-bridge/welsh-clients.gen'
 
 import { accountService, convertMAddr, storageGet, storageRemove } from './accountService'
 import { closeAccountWithProgress, refreshAccountList } from './effectableCallbacks'
@@ -31,7 +31,7 @@ import {
 	StreamInProgress,
 } from './types'
 import { storageKeyForAccount } from './utils'
-import { resetTheme } from '@berty-tech/redux/reducers/theme.reducer'
+import { resetTheme } from '@berty/redux/reducers/theme.reducer'
 import {
 	bridgeClosed,
 	MESSENGER_APP_STATE,
@@ -46,13 +46,13 @@ import {
 	setStateReady,
 	setStateStreamDone,
 	setStateStreamInProgress,
-} from '@berty-tech/redux/reducers/ui.reducer'
-import { deserializeFromBase64 } from '@berty-tech/grpc-bridge/rpc/utils'
+} from '@berty/redux/reducers/ui.reducer'
+import { deserializeFromBase64 } from '@berty/grpc-bridge/rpc/utils'
 import {
 	defaultPersistentOptions,
 	PersistentOptions,
 	PersistentOptionsKeys,
-} from '@berty-tech/redux/reducers/persistentOptions.reducer'
+} from '@berty/redux/reducers/persistentOptions.reducer'
 
 export const openAccountWithProgress = async (
 	dispatch: (arg0: reducerAction) => void,

@@ -2,9 +2,9 @@ import React from 'react'
 import { View, ScrollView } from 'react-native'
 import { Layout, Text } from '@ui-kitten/components'
 
-import { useStyles } from '@berty-tech/styles'
-import { useThemeColor } from '@berty-tech/store/hooks'
-import { ScreenFC } from '@berty-tech/navigation'
+import { useStyles } from '@berty/styles'
+import { useThemeColor } from '@berty/store/hooks'
+import { ScreenFC } from '@berty/navigation'
 
 //
 // TermsOfUse

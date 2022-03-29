@@ -2,13 +2,13 @@ import React from 'react'
 import { View } from 'react-native'
 import { Icon, Text } from '@ui-kitten/components'
 
-import { useStyles } from '@berty-tech/styles'
-import { useThemeColor } from '@berty-tech/store/hooks'
-import beapi from '@berty-tech/api'
-import { pbDateToNum } from '@berty-tech/store/convert'
+import { useStyles } from '@berty/styles'
+import { useThemeColor } from '@berty/store/hooks'
+import beapi from '@berty/api'
+import { pbDateToNum } from '@berty/store/convert'
 
 import { timeFormat } from '../../helpers'
-import { InteractionMonitorMetadata } from '@berty-tech/store/types.gen'
+import { InteractionMonitorMetadata } from '@berty/store/types.gen'
 
 const eventMonitorTypes = beapi.protocol.MonitorGroup.TypeEventMonitor
 

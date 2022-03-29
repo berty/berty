@@ -4,18 +4,18 @@ import { Layout, Text } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 import Clipboard from '@react-native-clipboard/clipboard'
 
-import beapi from '@berty-tech/api'
-import QRCode from '@berty-tech/polyfill/react-native-qrcode-svg'
-import { useStyles } from '@berty-tech/styles'
-import { ScreenFC, useNavigation } from '@berty-tech/navigation'
-import { Maybe, useMessengerClient, useThemeColor } from '@berty-tech/store'
-import { useConversationMembersDict, useConversation } from '@berty-tech/react-redux'
+import beapi from '@berty/api'
+import QRCode from '@berty/polyfill/react-native-qrcode-svg'
+import { useStyles } from '@berty/styles'
+import { ScreenFC, useNavigation } from '@berty/navigation'
+import { Maybe, useMessengerClient, useThemeColor } from '@berty/store'
+import { useConversationMembersDict, useConversation } from '@berty/react-redux'
 
 import { ButtonSetting, FactionButtonSetting } from '../shared-components/SettingsButtons'
 import logo from '../main/1_berty_picto.png'
 import { MemberAvatar, MultiMemberAvatar } from '../avatars'
-import EnableNotificationsButton from '@berty-tech/components/chat/EnableNotificationsButton'
-import ImagePicker, { ImageOrVideo } from '@berty-tech/polyfill/react-native-image-crop-picker'
+import EnableNotificationsButton from '@berty/components/chat/EnableNotificationsButton'
+import ImagePicker, { ImageOrVideo } from '@berty/polyfill/react-native-image-crop-picker'
 
 const GroupChatSettingsHeader: React.FC<{ publicKey: Maybe<string> }> = ({ publicKey }) => {
 	const conv = useConversation(publicKey)

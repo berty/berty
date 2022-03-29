@@ -8,8 +8,8 @@ import {
 } from 'react-native'
 import { Icon } from '@ui-kitten/components'
 
-import { useThemeColor } from '@berty-tech/store'
-import { useStyles } from '@berty-tech/styles'
+import { useThemeColor } from '@berty/store'
+import { useStyles } from '@berty/styles'
 
 export const chatInputButtonSizeMultiplier = 36
 

@@ -12,16 +12,11 @@ import {
 } from 'react-native'
 import { Icon } from '@ui-kitten/components'
 
-import beapi from '@berty-tech/api'
-import { ScreenFC, useNavigation } from '@berty-tech/navigation'
-import {
-	accountService,
-	useMessengerContext,
-	useMountEffect,
-	useThemeColor,
-} from '@berty-tech/store'
-import { useStyles } from '@berty-tech/styles'
-import { useAppDispatch, useAppSelector } from '@berty-tech/react-redux'
+import beapi from '@berty/api'
+import { ScreenFC, useNavigation } from '@berty/navigation'
+import { accountService, useMessengerContext, useMountEffect, useThemeColor } from '@berty/store'
+import { useStyles } from '@berty/styles'
+import { useAppDispatch, useAppSelector } from '@berty/react-redux'
 import {
 	addToBootstrap,
 	addToRendezvous,
@@ -40,11 +35,11 @@ import {
 	toggleFromBootstrap,
 	toggleFromRendezvous,
 	toggleFromStaticRelay,
-} from '@berty-tech/redux/reducers/networkConfig.reducer'
+} from '@berty/redux/reducers/networkConfig.reducer'
 
 import { ButtonSetting } from '../shared-components'
 import { Toggle } from '../shared-components/Toggle'
-import { checkBlePermission } from '@berty-tech/rnutil/checkPermissions'
+import { checkBlePermission } from '@berty/rnutil/checkPermissions'
 import { Accordion, AccordionAddItem, AccordionItem } from './OnBoardingAccorion'
 import { AccordionEdit } from '../modals/AccordionEdit.modal'
 import { AccordionAdd } from '../modals/AccordionAdd.modal'

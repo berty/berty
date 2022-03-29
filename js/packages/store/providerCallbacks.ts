@@ -1,5 +1,5 @@
-import beapi from '@berty-tech/api'
-import { useAppDispatch } from '@berty-tech/react-redux'
+import beapi from '@berty/api'
+import { useAppDispatch } from '@berty/react-redux'
 
 import { storageKeyForAccount } from './utils'
 import { Maybe } from './hooks'
@@ -10,7 +10,7 @@ import {
 } from './effectableCallbacks'
 import { accountService, storageRemove } from './accountService'
 import { reducerAction } from './types'
-import { setNextAccount, setStateOnBoardingReady } from '@berty-tech/redux/reducers/ui.reducer'
+import { setNextAccount, setStateOnBoardingReady } from '@berty/redux/reducers/ui.reducer'
 
 export const importAccount = async (
 	embedded: boolean,

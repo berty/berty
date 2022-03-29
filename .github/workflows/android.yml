@@ -19,7 +19,7 @@ on:
       - "go.*"
       - "**.go"
       - "js/**"
-      - "!js/packages/berty-i18n/locale/*/*.json"
+      - "!js/packages/i18n/locale/*/*.json"
       - ".github/workflows/android.yml"
 
 jobs:

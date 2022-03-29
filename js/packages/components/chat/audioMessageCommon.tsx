@@ -2,8 +2,8 @@ import React from 'react'
 import moment from 'moment'
 import { View, Text, ViewStyle } from 'react-native'
 
-import { useThemeColor } from '@berty-tech/store'
-import { useStyles } from '@berty-tech/styles'
+import { useThemeColor } from '@berty/store'
+import { useStyles } from '@berty/styles'
 
 export const volumeValueLowest = -160
 export const volumeValuePrecision = 100000

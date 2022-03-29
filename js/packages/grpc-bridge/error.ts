@@ -1,4 +1,4 @@
-import beapi from '@berty-tech/api'
+import beapi from '@berty/api'
 import { reduce } from 'lodash'
 
 class GRPCError extends Error {

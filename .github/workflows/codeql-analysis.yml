@@ -20,7 +20,7 @@ on:
       - 'go.*'
       - '**.go'
       - 'js/**'
-      - '!js/packages/berty-i18n/locale/*/*.json'
+      - '!js/packages/i18n/locale/*/*.json'
       - '.github/workflows/codeql-analysis.yml'
   pull_request:
     # The branches below must be a subset of the branches above
@@ -31,7 +31,7 @@ on:
       - 'go.*'
       - '**.go'
       - 'js/**'
-      - '!js/packages/berty-i18n/locale/*/*.json'
+      - '!js/packages/i18n/locale/*/*.json'
       - '.github/workflows/codeql-analysis.yml'
 
   schedule:

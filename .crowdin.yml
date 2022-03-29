@@ -13,8 +13,8 @@ Signed-off-by: Berty Assistant <22729528+berty-assistant@users.noreply.github.co
 
 files: [
   {
-  "source" : "/js/packages/berty-i18n/locale/en-US/messages.json",
-  "translation" : "/js/packages/berty-i18n/locale/%locale%/%original_file_name%",
+  "source" : "/js/packages/i18n/locale/en-US/messages.json",
+  "translation" : "/js/packages/i18n/locale/%locale%/%original_file_name%",
   },
   {
   "source" : "/go/localization/locales/en-US/localization.json",
