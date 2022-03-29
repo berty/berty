@@ -3,9 +3,9 @@ import { ScrollViewProps, View, ViewProps } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
 import ImportedBottomSheet from '@gorhom/bottom-sheet'
 
-import { useStyles } from '@berty-tech/styles'
-import { useLayout } from '@berty-tech/components/hooks'
-import { useThemeColor } from '@berty-tech/store'
+import { useStyles } from '@berty/styles'
+import { useLayout } from '@berty/components/hooks'
+import { useThemeColor } from '@berty/store'
 
 export const useBottomSheetDynamicSnapPoints = (_snapPoints: string[]) => {
 	return {

@@ -15,9 +15,11 @@ import React, {
 import { Keyboard, Platform, TouchableWithoutFeedback, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import BottomSheet, {
-	BottomSheetView,
 	useBottomSheetDynamicSnapPoints,
+	BottomSheetScrollView,
 } from '@berty/polyfill/bottom-sheet'
+import { useStyles } from '@berty/styles'
+import { useAnimatedStyle } from 'react-native-reanimated'
 
 const useKeyboardHeight = (platforms: string[] = ['ios', 'android']) => {
 	const [keyboardHeight, setKeyboardHeight] = useState<number>(0)
@@ -89,6 +91,17 @@ const BottomSheetModal = forwardRef(
 			useBottomSheetDynamicSnapPoints(snapPoints)
 		const insets = useSafeAreaInsets()
 		const keyboardHeight = useKeyboardHeight()
+		const [, { windowHeight }] = useStyles()
+
+		const scrollViewAnimatedStyles = useAnimatedStyle(() => {
+			const contentHeight = animatedContentHeight.value
+			const handleHeight = animatedHandleHeight.value
+			const bottomSheetHeight = handleHeight + contentHeight
+
+			return {
+				height: bottomSheetHeight > windowHeight ? windowHeight - handleHeight : bottomSheetHeight,
+			}
+		})
 
 		return (
 			<View
@@ -120,6 +133,7 @@ const BottomSheetModal = forwardRef(
 					handleIndicatorStyle={
 						Platform.OS === 'android' ? { backgroundColor: 'transparent' } : undefined
 					}
+					bottomInset={insets.bottom}
 					style={{
 						shadowColor: '#000',
 						shadowOffset: {
@@ -132,13 +146,12 @@ const BottomSheetModal = forwardRef(
 						zIndex: 100,
 					}}
 				>
-					<BottomSheetView
-						style={{ paddingBottom: insets?.bottom, flex: 1 }}
-						onLayout={handleContentLayout}
-					>
-						{children}
-						<View style={{ height: keyboardHeight }} />
-					</BottomSheetView>
+					<BottomSheetScrollView style={scrollViewAnimatedStyles}>
+						<View onLayout={handleContentLayout}>
+							{children}
+							<View style={{ height: keyboardHeight, paddingBottom: insets.bottom }} />
+						</View>
+					</BottomSheetScrollView>
 				</BottomSheet>
 			</View>
 		)
@@ -170,9 +183,6 @@ export const ModalProvider: FC = ({ children }) => {
 	}, [])
 
 	const hide = useCallback((closeAll: boolean = false) => {
-		// stack is an empty array in this function, idk why
-		// stack is available in setState callback
-		// temporary fix
 		setStack(previous => {
 			if (closeAll) {
 				previous.forEach(({ ref }) => {
