@@ -209,16 +209,7 @@ func (m *MessageStore) processMessageLoop(ctx context.Context) error {
 				}
 
 				if err := m.processMessage(ctx, ownPK, message); err != nil {
-					if errcode.Is(err, errcode.ErrCryptoDecryptPayload) {
-						m.logger.Warn("unable to open envelope, adding envelope to cache for later process", zap.Error(err))
-						// if failed to decrypt add to queue, for later process
-
-						device.queue.Add(message)
-						_ = m.emitters.groupCacheMessage.Emit(*message)
-					} else {
-						m.logger.Error("unable to prcess message", zap.Error(err))
-					}
-
+					m.logger.Error("unable to process message", zap.Error(err))
 					return
 				} else if next := device.queue.Next(); next != nil {
 					m.cmessage <- next
