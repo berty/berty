@@ -2,23 +2,24 @@ import React, { FC, ReactNode, useCallback, useEffect, useState } from 'react'
 import { View, Vibration, StatusBar, Share, ScrollView, Platform } from 'react-native'
 import { Layout } from '@ui-kitten/components'
 import Clipboard from '@react-native-clipboard/clipboard'
+import { RESULTS } from 'react-native-permissions'
+import { useTranslation } from 'react-i18next'
+import { useFocusEffect } from '@react-navigation/core'
 
 import { useThemeColor } from '@berty/store/hooks'
 import { useStyles } from '@berty/styles'
 import { ScreenFC, useNavigation } from '@berty/navigation'
-import { useFocusEffect } from '@react-navigation/core'
 import { useAccount } from '@berty/react-redux'
 import { useMessengerClient } from '@berty/store'
 import QRCode from '@berty/polyfill/react-native-qrcode-svg'
 import QRCodeScanner from '@berty/polyfill/react-native-qrcode-scanner'
+import { checkPermissions, PermissionType } from '@berty/rnutil/checkPermissions'
 
 import ScanTarget from './scan_target.svg'
 import { LoaderDots } from '../gates'
 import { AccountAvatar } from '../avatars'
 import logo from '../main/1_berty_picto.png'
-import { useTranslation } from 'react-i18next'
 import { ButtonSetting, ButtonSettingRow } from '../shared-components'
-import { checkPermissions } from '@berty/rnutil/checkPermissions'
 import { UnifiedText } from '../shared-components/UnifiedText'
 
 const QrCode: FC<{ size: number }> = ({ size }) => {
@@ -183,16 +184,19 @@ export const ShareModal: ScreenFC<'Main.Share'> = () => {
 	const account = useAccount()
 	const url = account.link
 
-	const askCameraPermissions = useCallback(async () => {
-		await checkPermissions('camera', {
-			navigate,
-			navigateToPermScreenOnProblem: true,
-		})
-	}, [navigate])
+	// const status = await checkPermissions(PermissionType.camera, {
+	// 	navigate,
+	// 	navigateToPermScreenOnProblem: true,
+	// })
+
+	const initScanner = useCallback(async () => {
+		const status = await checkPermissions(PermissionType.camera)
+		setIsScannerSelected(status !== RESULTS.DENIED && status !== RESULTS.BLOCKED)
+	}, [])
 
 	useEffect(() => {
-		askCameraPermissions()
-	}, [askCameraPermissions])
+		initScanner()
+	}, [initScanner])
 
 	useFocusEffect(
 		useCallback(() => {
@@ -203,14 +207,23 @@ export const ShareModal: ScreenFC<'Main.Share'> = () => {
 		}, []),
 	)
 
-	const toggleScanner = useCallback(
-		() => setIsScannerSelected(!isScannerSelected),
-		[isScannerSelected],
-	)
+	const toggleScanner = useCallback(async () => {
+		if (!isScannerSelected) {
+			const status = await checkPermissions(PermissionType.camera, {
+				navigate,
+				navigateToPermScreenOnProblem: true,
+				onSuccess: () => setIsScannerSelected(true),
+			})
+			if (status === RESULTS.DENIED || status === RESULTS.BLOCKED) {
+				return
+			}
+		}
+		setIsScannerSelected(!isScannerSelected)
+	}, [isScannerSelected, navigate])
 
 	const handleSwitchQr = useCallback(async () => {
 		if (!isScannerSelected) {
-			await checkPermissions('camera', {
+			await checkPermissions(PermissionType.camera, {
 				navigate,
 				navigateToPermScreenOnProblem: true,
 				onComplete: () => {

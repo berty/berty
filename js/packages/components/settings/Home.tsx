@@ -1,8 +1,9 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { ScrollView, TouchableOpacity, View, Platform } from 'react-native'
 import { Icon } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
+import * as MailComposer from 'expo-mail-composer'
 
 import beapi from '@berty/api'
 import { useStyles } from '@berty/styles'
@@ -14,23 +15,28 @@ import {
 	useThemeColor,
 	useMessengerClient,
 } from '@berty/store'
-import { useAccount } from '@berty/react-redux'
+import { useAccount, useAppSelector } from '@berty/react-redux'
 import { selectSelectedAccount } from '@berty/redux/reducers/ui.reducer'
-import { checkBlePermission, getPermissionStatus } from '@berty/rnutil/checkPermissions'
+import {
+	checkBlePermission,
+	getPermissionStatus,
+	PermissionType,
+} from '@berty/rnutil/checkPermissions'
 import { withInAppNotification } from '@berty/polyfill/react-native-in-app-notification'
-
-import { AccountAvatar } from '../avatars'
-import { ButtonSettingV2, Section } from '../shared-components'
+import store from '@berty/redux/store'
 import {
 	selectBlePerm,
 	selectCurrentNetworkConfig,
+	selectParsedLocalNetworkConfig,
 	setBlePerm,
 	setCurrentNetworkConfig,
 } from '@berty/redux/reducers/networkConfig.reducer'
-import * as MailComposer from 'expo-mail-composer'
+
 import { useModal } from '../providers/modal.provider'
 import { EditProfile } from '../modals'
 import { UnifiedText } from '../shared-components/UnifiedText'
+import { AccountAvatar } from '../avatars'
+import { ButtonSettingV2, Section } from '../shared-components'
 
 const ProfileButton: React.FC<{}> = () => {
 	const [{ padding, margin, border, text }, { scaleSize }] = useStyles()
@@ -93,11 +99,12 @@ export const Home: ScreenFC<'Settings.Home'> = withInAppNotification(
 		const { t }: { t: any } = useTranslation()
 		const messengerClient = useMessengerClient()
 
-		const selectedAccount = useSelector(selectSelectedAccount)
+		const selectedAccount = useAppSelector(selectSelectedAccount)
+
 		const ctx = useMessengerContext()
 
-		const blePerm = useSelector(selectBlePerm)
-		const networkConfig = useSelector(selectCurrentNetworkConfig)
+		const blePerm = useAppSelector(selectBlePerm)
+		const networkConfig = useAppSelector(selectCurrentNetworkConfig)
 		const dispatch = useDispatch()
 
 		const generateEmail = React.useCallback(async () => {
@@ -138,6 +145,20 @@ export const Home: ScreenFC<'Settings.Home'> = withInAppNotification(
 			}
 		}, [messengerClient, networkConfig, showNotification, t])
 
+		useEffect(() => {
+			return () => {
+				// we should use an useAppSelector for getting this value
+				// but the value doesn't seem to be updated in the useEffect return callback
+				const parsedLocalNetworkConfig = selectParsedLocalNetworkConfig(store.getState())
+				const currentNetworkConfig = selectCurrentNetworkConfig(store.getState())
+
+				if (JSON.stringify(parsedLocalNetworkConfig) !== JSON.stringify(currentNetworkConfig)) {
+					setNewConfig(parsedLocalNetworkConfig)
+				}
+			}
+			// eslint-disable-next-line react-hooks/exhaustive-deps
+		}, [])
+
 		// get network config of the account at the mount of the component
 		useMountEffect(() => {
 			const f = async () => {
@@ -159,7 +180,7 @@ export const Home: ScreenFC<'Settings.Home'> = withInAppNotification(
 				if (Platform.OS === 'web') {
 					return
 				}
-				const status = await getPermissionStatus('proximity')
+				const status = await getPermissionStatus(PermissionType.proximity)
 				dispatch(setBlePerm(status))
 			}
 			f()
@@ -168,22 +189,17 @@ export const Home: ScreenFC<'Settings.Home'> = withInAppNotification(
 		// setNewConfig function: update the state + update the network config in the account service + show notif to restart app
 		const setNewConfig = React.useCallback(
 			async (newConfig: beapi.account.INetworkConfig) => {
-				dispatch(setCurrentNetworkConfig(newConfig))
-
-				await accountService.networkConfigSet({
-					accountId: selectedAccount,
-					config: newConfig,
-				})
-				showNotification({
-					title: t('notification.need-restart-ble.title'),
-					message: t('notification.need-restart-ble.desc'),
-					onPress: async () => {
-						await ctx.restart()
-					},
-					additionalProps: { type: 'message' },
-				})
+				await accountService
+					.networkConfigSet({
+						accountId: selectedAccount,
+						config: newConfig,
+					})
+					.then(() => {
+						dispatch(setCurrentNetworkConfig(newConfig))
+						ctx.restart()
+					})
 			},
-			[ctx, dispatch, selectedAccount, showNotification, t],
+			[ctx, dispatch, selectedAccount],
 		)
 
 		const getOffGridCommunicationValue = React.useCallback(() => {
@@ -240,18 +256,20 @@ export const Home: ScreenFC<'Settings.Home'> = withInAppNotification(
 																? beapi.account.NetworkConfig.Flag.Disabled
 																: beapi.account.NetworkConfig.Flag.Enabled
 													}
-													setNewConfig({
-														...networkConfig,
-														bluetoothLe: newValue,
-														appleMultipeerConnectivity: newValue,
-													})
+													dispatch(
+														setCurrentNetworkConfig({
+															...networkConfig,
+															bluetoothLe: newValue,
+															appleMultipeerConnectivity: newValue,
+														}),
+													)
 												},
 											})
 										}
 										if (Platform.OS === 'android') {
 											await checkBlePermission({
 												setNetworkConfig: async (newConfig: beapi.account.INetworkConfig) => {
-													setNewConfig(newConfig)
+													dispatch(setCurrentNetworkConfig(newConfig))
 												},
 												networkConfig,
 												changedKey: ['bluetoothLe', 'androidNearby'],
@@ -269,11 +287,13 @@ export const Home: ScreenFC<'Settings.Home'> = withInAppNotification(
 																? beapi.account.NetworkConfig.Flag.Disabled
 																: beapi.account.NetworkConfig.Flag.Enabled
 													}
-													setNewConfig({
-														...networkConfig,
-														bluetoothLe: newValue,
-														androidNearby: newValue,
-													})
+													dispatch(
+														setCurrentNetworkConfig({
+															...networkConfig,
+															bluetoothLe: newValue,
+															androidNearby: newValue,
+														}),
+													)
 												},
 											})
 										}

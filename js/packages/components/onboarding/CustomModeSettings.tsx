@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { createRef, RefObject } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
 	SafeAreaView,
@@ -19,6 +19,8 @@ import { useAppDispatch, useAppSelector } from '@berty/react-redux'
 import {
 	addToBootstrap,
 	addToRendezvous,
+	disableEveryNodeLists,
+	enableEveryNodeLists,
 	modifyFromBootstrap,
 	modifyFromRendezvous,
 	modifyFromStaticRelay,
@@ -38,13 +40,24 @@ import {
 
 import { ButtonSetting } from '../shared-components'
 import { Toggle } from '../shared-components/Toggle'
-import { checkBlePermission } from '@berty/rnutil/checkPermissions'
-import { Accordion, AccordionAddItem, AccordionItem } from './OnBoardingAccorion'
+import {
+	checkBlePermission,
+	getPermissionStatus,
+	PermissionType,
+} from '@berty/rnutil/checkPermissions'
+import { Accordion, AccordionAddItem, AccordionItem, AccordionRef } from './Accordion'
 import { AccordionEdit } from '../modals/AccordionEdit.modal'
 import { AccordionAdd } from '../modals/AccordionAdd.modal'
 import { useModal } from '../providers/modal.provider'
 import { useDispatch } from 'react-redux'
 import { UnifiedText } from '../shared-components/UnifiedText'
+import { RESULTS } from 'react-native-permissions'
+
+type AccordionRefsType = {
+	relay: RefObject<AccordionRef>
+	rdvp: RefObject<AccordionRef>
+	bootstrap: RefObject<AccordionRef>
+}
 
 const ConfigPart: React.FC<{
 	title: string
@@ -223,7 +236,7 @@ const Proximity: React.FC = () => {
 	)
 }
 
-const Routing: React.FC = () => {
+const Routing: React.FC<{ accordionRefs: AccordionRefsType }> = ({ accordionRefs }) => {
 	const colors = useThemeColor()
 	const { t } = useTranslation()
 	const dispatch = useAppDispatch()
@@ -256,13 +269,17 @@ const Routing: React.FC = () => {
 					)
 				}}
 			/>
-			<Accordion title={t('onboarding.custom-mode.settings.routing.rdvp-button')} icon='privacy'>
+			<Accordion
+				title={t('onboarding.custom-mode.settings.routing.rdvp-button')}
+				icon='privacy'
+				ref={accordionRefs.rdvp}
+			>
 				{(rendezvous || []).map(({ alias, url, isEnabled, isEditable }, index) => (
 					<AccordionItem
 						key={`rendezvous-item-${index}`}
 						toggle={isEnabled}
 						value={alias}
-						onToggleChange={isEditable ? () => dispatch(toggleFromRendezvous(url)) : undefined}
+						onToggleChange={() => dispatch(toggleFromRendezvous(url))}
 						onPressModify={
 							isEditable
 								? () =>
@@ -315,7 +332,7 @@ const Routing: React.FC = () => {
 	)
 }
 
-const Access: React.FC = () => {
+const Access: React.FC<{ accordionRefs: AccordionRefsType }> = ({ accordionRefs }) => {
 	// const colors = useThemeColor()
 	// const navigation = useNavigation()
 	// const { t } = useTranslation()
@@ -327,13 +344,17 @@ const Access: React.FC = () => {
 
 	return (
 		<View>
-			<Accordion title={t('onboarding.custom-mode.settings.access.relay-button')} icon='earth'>
+			<Accordion
+				title={t('onboarding.custom-mode.settings.access.relay-button')}
+				icon='earth'
+				ref={accordionRefs.relay}
+			>
 				{(staticRelay || []).map(({ alias, url, isEnabled, isEditable }, index) => (
 					<AccordionItem
 						key={`rendezvous-item-${index}`}
 						toggle={isEnabled}
 						value={alias}
-						onToggleChange={isEditable ? () => dispatch(toggleFromStaticRelay(url)) : undefined}
+						onToggleChange={() => dispatch(toggleFromStaticRelay(url))}
 						onPressModify={
 							isEditable
 								? () =>
@@ -382,13 +403,17 @@ const Access: React.FC = () => {
 					}
 				/>
 			</Accordion>
-			<Accordion title={t('onboarding.custom-mode.settings.access.bootstrap-button')} icon='earth'>
-				{(staticRelay || []).map(({ alias, url, isEnabled, isEditable }, index) => (
+			<Accordion
+				title={t('onboarding.custom-mode.settings.access.bootstrap-button')}
+				icon='earth'
+				ref={accordionRefs.bootstrap}
+			>
+				{(bootstrap || []).map(({ alias, url, isEnabled, isEditable }, index) => (
 					<AccordionItem
 						key={`rendezvous-item-${index}`}
 						toggle={isEnabled}
 						value={alias}
-						onToggleChange={isEditable ? () => dispatch(toggleFromBootstrap(url)) : undefined}
+						onToggleChange={() => dispatch(toggleFromBootstrap(url))}
 						onPressModify={
 							isEditable
 								? () =>
@@ -451,7 +476,7 @@ const Access: React.FC = () => {
 	)
 }
 
-const CustomConfig: React.FC = () => {
+const CustomConfig: React.FC<{ accordionRefs: AccordionRefsType }> = ({ accordionRefs }) => {
 	const [{ margin, padding, border }] = useStyles()
 	const { t } = useTranslation()
 	const colors = useThemeColor()
@@ -477,7 +502,7 @@ const CustomConfig: React.FC = () => {
 				]}
 			>
 				<ConfigPart title={t('onboarding.custom-mode.settings.routing.title')} icon='peer' />
-				<Routing />
+				<Routing accordionRefs={accordionRefs} />
 			</View>
 
 			<View
@@ -493,7 +518,7 @@ const CustomConfig: React.FC = () => {
 					icon='services'
 					iconSize={50}
 				/>
-				<Access />
+				<Access accordionRefs={accordionRefs} />
 			</View>
 		</View>
 	)
@@ -515,7 +540,6 @@ const ApplyChanges: React.FC = () => {
 					onPress={async () => {
 						if (currentNetworkConfig) {
 							setIsPressed(true)
-							console.log({ parsedLocalNetworkConfig })
 							await ctx.createNewAccount(parsedLocalNetworkConfig)
 						}
 					}}
@@ -538,7 +562,7 @@ const ApplyChanges: React.FC = () => {
 	)
 }
 
-const EnableDisableAll: React.FC = () => {
+const EnableDisableAll: React.FC<{ accordionRefs: AccordionRefsType }> = ({ accordionRefs }) => {
 	const [{ padding, border }] = useStyles()
 	const colors = useThemeColor()
 	const [isToggled, setIsToggled] = React.useState(false)
@@ -591,17 +615,21 @@ const EnableDisableAll: React.FC = () => {
 						setIsToggled(toToggled)
 						if (toToggled) {
 							if (Platform.OS === 'ios') {
-								await checkBlePermission({
-									setNetworkConfig: async (newConfig: beapi.account.INetworkConfig) => {
-										dispatch(setCurrentNetworkConfig(newConfig))
-									},
-									networkConfig: enableWithoutBle,
-									changedKey: ['bluetoothLe', 'appleMultipeerConnectivity'],
-									navigate,
-									deny: async () => {
-										dispatch(setCurrentNetworkConfig(enableWithoutBle))
-									},
-								})
+								// TODO: dig why (on iOS) when i accept the request the status is unavailable
+								const status = await getPermissionStatus(PermissionType.proximity)
+								status === RESULTS.UNAVAILABLE
+									? dispatch(setCurrentNetworkConfig(enableWithoutBle))
+									: await checkBlePermission({
+											setNetworkConfig: async (newConfig: beapi.account.INetworkConfig) => {
+												dispatch(setCurrentNetworkConfig(newConfig))
+											},
+											networkConfig: enableWithoutBle,
+											changedKey: ['bluetoothLe', 'appleMultipeerConnectivity'],
+											navigate,
+											deny: async () => {
+												dispatch(setCurrentNetworkConfig(enableWithoutBle))
+											},
+									  })
 							}
 							if (Platform.OS === 'android') {
 								await checkBlePermission({
@@ -616,8 +644,12 @@ const EnableDisableAll: React.FC = () => {
 									},
 								})
 							}
+
+							Object.values(accordionRefs).forEach(ref => ref.current?.open())
+							setTimeout(() => dispatch(enableEveryNodeLists()), 300)
 						} else {
 							dispatch(setCurrentNetworkConfig(disable))
+							dispatch(disableEveryNodeLists())
 						}
 					}}
 				/>
@@ -630,6 +662,11 @@ export const CustomModeSettings: ScreenFC<'Onboarding.CustomModeSettings'> = () 
 	const colors = useThemeColor()
 	const [{ padding }] = useStyles()
 	const dispatch = useAppDispatch()
+	const accordionRefs: AccordionRefsType = {
+		relay: createRef<AccordionRef>(),
+		rdvp: createRef<AccordionRef>(),
+		bootstrap: createRef<AccordionRef>(),
+	}
 
 	useMountEffect(() => {
 		const getNetworkConfig = async () => {
@@ -651,9 +688,9 @@ export const CustomModeSettings: ScreenFC<'Onboarding.CustomModeSettings'> = () 
 				contentContainerStyle={[padding.medium]}
 				showsVerticalScrollIndicator={false}
 			>
-				<CustomConfig />
+				<CustomConfig accordionRefs={accordionRefs} />
 				<View style={{ flexDirection: 'row', alignItems: 'center' }}>
-					<EnableDisableAll />
+					<EnableDisableAll accordionRefs={accordionRefs} />
 					<ApplyChanges />
 				</View>
 			</ScrollView>

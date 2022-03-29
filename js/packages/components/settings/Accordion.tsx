@@ -109,7 +109,7 @@ export const AccordionV2: FC<{
 	title: string
 	icon?: string
 }> = ({ title, icon, children }) => {
-	const [{ margin, padding }, { scaleSize }] = useStyles()
+	const [{ margin, padding, border }, { scaleSize }] = useStyles()
 	const colors = useThemeColor()
 	const [open, setOpen] = useState(false)
 	const animatedController = useRef(new Animated.Value(0)).current
@@ -184,7 +184,7 @@ export const AccordionV2: FC<{
 					</View>
 					<View style={{ flex: 1 }} />
 					<Animated.View style={{ transform: [{ rotateZ: arrowAngle }] }}>
-						<AccordionIconV2 name='arrow-ios-forward' fill={colors['secondary-background']} />
+						<AccordionIconV2 name='arrow-ios-forward' fill={colors['main-text']} />
 					</Animated.View>
 				</View>
 			</TouchableOpacity>
@@ -195,12 +195,16 @@ export const AccordionV2: FC<{
 				}}
 			>
 				<View
-					style={{
-						position: 'absolute',
-						bottom: 0,
-						right: 0,
-						left: 0,
-					}}
+					style={[
+						border.radius.bottom.medium,
+						{
+							position: 'absolute',
+							bottom: 0,
+							right: 0,
+							left: 0,
+							overflow: 'hidden',
+						},
+					]}
 					onLayout={event => setBodySectionHeight(event.nativeEvent.layout.height)}
 				>
 					{children}

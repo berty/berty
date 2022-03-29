@@ -183,6 +183,16 @@ const slice = createSlice({
 			}
 			state.staticRelay[index].isEnabled = !state.staticRelay[index].isEnabled
 		},
+		enableEveryNodeLists(state) {
+			;[...state.bootstrap, ...state.rendezvous, ...state.staticRelay].forEach(
+				obj => (obj.isEnabled = true),
+			)
+		},
+		disableEveryNodeLists(state) {
+			;[...state.bootstrap, ...state.rendezvous, ...state.staticRelay].forEach(
+				obj => (obj.isEnabled = false),
+			)
+		},
 	},
 })
 
@@ -201,6 +211,8 @@ export const {
 	toggleFromRendezvous,
 	toggleFromBootstrap,
 	toggleFromStaticRelay,
+	enableEveryNodeLists,
+	disableEveryNodeLists,
 } = slice.actions
 
 export default makeRoot(slice.reducer)

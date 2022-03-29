@@ -8,15 +8,14 @@ import {
 import { CommonActions, NavigationProp, useNavigation } from '@react-navigation/native'
 import { Icon } from '@ui-kitten/components'
 import mapValues from 'lodash/mapValues'
+import { useSelector } from 'react-redux'
 
 import * as RawComponents from '@berty/components'
 import { useMessengerContext, useThemeColor } from '@berty/store'
 import { useStyles } from '@berty/styles'
-
-import { dispatch } from './rootRef'
-import { ScreensParams } from './types'
-import { useSelector } from 'react-redux'
 import { MESSENGER_APP_STATE, selectAppState } from '@berty/redux/reducers/ui.reducer'
+
+import { ScreensParams } from './types'
 
 export const CustomTitleStyle: () => any = () => {
 	const [{ text }] = useStyles()
@@ -162,6 +161,7 @@ export const Navigation: React.FC = React.memo(() => {
 	const colors = useThemeColor()
 	const [, { scaleSize }] = useStyles()
 	const { t }: any = useTranslation()
+	const { dispatch } = useNavigation()
 
 	useEffect(() => {
 		console.log('context app State', appState)
@@ -190,7 +190,7 @@ export const Navigation: React.FC = React.memo(() => {
 				}
 				return
 		}
-	}, [appState])
+	}, [appState, dispatch])
 
 	return (
 		<NavigationStack.Navigator
@@ -343,6 +343,7 @@ export const Navigation: React.FC = React.memo(() => {
 				options={BackgroundHeaderScreenOptions({
 					title: t('main.home.title'),
 					headerTitle: () => <></>,
+					presentation: 'formSheet',
 				})}
 			/>
 			{/* CreateGroup */}
@@ -493,6 +494,7 @@ export const Navigation: React.FC = React.memo(() => {
 					headerTintColor: colors['main-text'],
 					headerBackTitleVisible: false,
 					title: t('settings.network.title'),
+					presentation: 'formSheet',
 				}}
 			/>
 			<NavigationStack.Screen

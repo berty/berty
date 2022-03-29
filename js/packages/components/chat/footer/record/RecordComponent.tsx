@@ -32,6 +32,7 @@ import {
 import { RecordingComponent } from './RecordingComponent'
 import { PreviewComponent } from './PreviewComponent'
 import { UnifiedText } from '../../../shared-components/UnifiedText'
+import { PermissionType } from '@berty/rnutil/checkPermissions'
 
 enum MicPermStatus {
 	UNDEFINED = 0,
@@ -45,7 +46,7 @@ const voiceMemoSampleRate = 22050
 const voiceMemoFormat = 'aac'
 
 const acquireMicPerm = async (navigate: any): Promise<MicPermStatus> => {
-	const permissionStatus = await rnutil.checkPermissions('audio', {
+	const permissionStatus = await rnutil.checkPermissions(PermissionType.audio, {
 		navigate,
 		navigateToPermScreenOnProblem: true,
 	})

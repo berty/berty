@@ -133,7 +133,6 @@ const BottomSheetModal = forwardRef(
 					handleIndicatorStyle={
 						Platform.OS === 'android' ? { backgroundColor: 'transparent' } : undefined
 					}
-					bottomInset={insets.bottom}
 					style={{
 						shadowColor: '#000',
 						shadowOffset: {

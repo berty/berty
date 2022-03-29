@@ -8,7 +8,7 @@ import ImagePicker from '@berty/polyfill/react-native-image-crop-picker'
 import { useMessengerClient, useThemeColor } from '@berty/store'
 import beapi from '@berty/api'
 import { useNavigation } from '@berty/navigation'
-import { checkPermissions } from '@berty/rnutil/checkPermissions'
+import { checkPermissions, PermissionType } from '@berty/rnutil/checkPermissions'
 
 import { ListItemMenu } from './ListItemMenu'
 import { GallerySection } from './GallerySection'
@@ -107,7 +107,7 @@ export const AddFileMenu: React.FC<{
 			},
 			title: t('chat.files.gallery'),
 			onPress: async () => {
-				const status = await checkPermissions('gallery', {
+				const status = await checkPermissions(PermissionType.gallery, {
 					navigate,
 					navigateToPermScreenOnProblem: true,
 					onComplete: () => {
@@ -130,7 +130,7 @@ export const AddFileMenu: React.FC<{
 			},
 			title: t('chat.files.camera'),
 			onPress: async () => {
-				const status = await checkPermissions('camera', {
+				const status = await checkPermissions(PermissionType.camera, {
 					navigate,
 					navigateToPermScreenOnProblem: true,
 					onComplete: () => {
