@@ -1,4 +1,3 @@
-import { Platform } from 'react-native'
 import base64 from 'base64-js'
 import * as pb from 'protobufjs'
 
@@ -13,15 +12,6 @@ export const getServiceName = <T extends pb.Method>(method: T) => {
 	}
 	return fullName
 }
-
-// CONST
-export const isWeb = Platform.OS === 'web'
-export const isElectron = !!(
-	isWeb &&
-	window.navigator &&
-	window.navigator.userAgent &&
-	window.navigator.userAgent.toLowerCase().indexOf('electron') !== -1
-)
 
 // Error
 export const ErrorStreamNotImplemented = new Error('stream service not implemented')
