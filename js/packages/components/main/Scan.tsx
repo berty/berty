@@ -10,7 +10,7 @@ import { useStyles } from '@berty/styles'
 import ScanTarget from './scan_target.svg'
 import { ScreenFC } from '@berty/navigation'
 import { useFocusEffect } from '@react-navigation/core'
-import { BText } from '../shared-components/BText'
+import { UnifiedText } from '../shared-components/UnifiedText'
 
 //
 // Scan => Scan QrCode of an other contact
@@ -94,9 +94,9 @@ const ScanInfosText: React.FC<{ textProps: string }> = ({ textProps }) => {
 					{ backgroundColor: colors['reverted-main-text'] },
 				]}
 			/>
-			<BText style={[text.bold.small, row.item.justify, { color: colors['reverted-main-text'] }]}>
+			<UnifiedText style={[text.light, row.item.justify, { color: colors['reverted-main-text'] }]}>
 				{textProps}
-			</BText>
+			</UnifiedText>
 		</View>
 	)
 }

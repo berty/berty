@@ -25,8 +25,7 @@ export const CustomTitleStyle: () => any = () => {
 		text.size.large,
 		{
 			headerTitleStyle: {
-				fontFamily: 'Open Sans',
-				fontWeight: '700',
+				...text.bold,
 			},
 		},
 	]

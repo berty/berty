@@ -14,7 +14,7 @@ import {
 	selectChatInputIsFocused,
 	selectChatInputSelection,
 } from '@berty/redux/reducers/chatInputsVolatile.reducer'
-import { BText } from '../../../shared-components/BText'
+import { UnifiedText } from '../../../shared-components/UnifiedText'
 
 type Word = {
 	word: string
@@ -203,9 +203,9 @@ export const EmojiBanner: FC<{
 						]}
 					>
 						<View style={{ flex: 1 }}>
-							<BText style={[textStyle.bold.medium]}>
+							<UnifiedText style={[textStyle.bold]}>
 								{`${t('chat.emojis.matching')}: ${currentWord.word.substring(1)}`}
-							</BText>
+							</UnifiedText>
 						</View>
 						<View
 							style={[
@@ -258,9 +258,9 @@ export const EmojiBanner: FC<{
 										backgroundColor: colors['main-background'],
 									}}
 								>
-									<BText style={[padding.left.medium]}>{`${getEmojiByName(
+									<UnifiedText style={[padding.left.medium]}>{`${getEmojiByName(
 										short_name,
-									)} :${short_name}:`}</BText>
+									)} :${short_name}:`}</UnifiedText>
 								</View>
 								<Divider style={{ backgroundColor: `${colors['background-header']}30` }} />
 							</View>

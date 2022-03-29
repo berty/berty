@@ -23,7 +23,7 @@ import {
 	setPersistentOption,
 } from '@berty/redux/reducers/persistentOptions.reducer'
 import { useAppDispatch } from '@berty/react-redux'
-import { BText } from '../shared-components/BText'
+import { UnifiedText } from '../shared-components/UnifiedText'
 
 const animations: Record<PermissionType, AnimatedLottieViewProps['source']> = {
 	audio: audioLottie,
@@ -172,10 +172,10 @@ export const Permissions: ScreenFC<'Main.Permissions'> = ({ route: { params }, n
 					},
 				]}
 			>
-				<BText
+				<UnifiedText
 					style={[
 						text.size.huge,
-						text.bold.medium,
+						text.bold,
 						{
 							color: colors['background-header'],
 							textAlign: 'center',
@@ -190,8 +190,8 @@ export const Permissions: ScreenFC<'Main.Permissions'> = ({ route: { params }, n
 						permission.gallery.title
 					*/}
 					{t(`permission.${permissionType}.title`)}
-				</BText>
-				<BText style={{ lineHeight: 25, marginTop: 20 }}>
+				</UnifiedText>
+				<UnifiedText style={{ lineHeight: 25, marginTop: 20 }}>
 					{/* Ignore check for i18n missing keys
 						permission.notification.desc
 						permission.camera.desc
@@ -203,9 +203,9 @@ export const Permissions: ScreenFC<'Main.Permissions'> = ({ route: { params }, n
 							? t('permission.proximity.ios-desc')
 							: t('permission.proximity.android-desc')
 						: t(`permission.${permissionType}.desc`)}
-				</BText>
+				</UnifiedText>
 				{permissionStatus === RESULTS.BLOCKED && (
-					<BText
+					<UnifiedText
 						style={[
 							text.size.scale(17),
 							{
@@ -215,7 +215,7 @@ export const Permissions: ScreenFC<'Main.Permissions'> = ({ route: { params }, n
 						]}
 					>
 						{t('permission.settings-text', { title: t(`permission.${permissionType}.title`) })}
-					</BText>
+					</UnifiedText>
 				)}
 				<View
 					style={{
@@ -235,14 +235,8 @@ export const Permissions: ScreenFC<'Main.Permissions'> = ({ route: { params }, n
 						}}
 						activeOpacity={0.9}
 					>
-						<BText
-							style={[
-								text.size.scale(18),
-								{
-									fontWeight: '700',
-									color: colors['reverted-main-text'],
-								},
-							]}
+						<UnifiedText
+							style={[text.size.scale(18), text.bold, { color: colors['reverted-main-text'] }]}
 						>
 							{/* Ignore check for i18n missing keys
 								permission.button-labels.settings
@@ -253,7 +247,7 @@ export const Permissions: ScreenFC<'Main.Permissions'> = ({ route: { params }, n
 									permissionStatus === RESULTS.BLOCKED ? 'settings' : 'allow'
 								}`,
 							)}
-						</BText>
+						</UnifiedText>
 					</TouchableOpacity>
 				</View>
 				<TouchableOpacity
@@ -266,7 +260,7 @@ export const Permissions: ScreenFC<'Main.Permissions'> = ({ route: { params }, n
 						}
 					}}
 				>
-					<BText
+					<UnifiedText
 						style={{
 							marginTop: 16,
 							color: colors['secondary-text'],
@@ -277,7 +271,7 @@ export const Permissions: ScreenFC<'Main.Permissions'> = ({ route: { params }, n
 						{permissionType === 'notification' && !selectedAccount
 							? t('permission.skip')
 							: t('permission.cancel')}
-					</BText>
+					</UnifiedText>
 				</TouchableOpacity>
 			</View>
 		</View>
@@ -339,10 +333,10 @@ export const BlePermission: ScreenFC<'Main.BlePermission'> = ({ route: { params 
 					},
 				]}
 			>
-				<BText
+				<UnifiedText
 					style={[
 						text.size.huge,
-						text.bold.medium,
+						text.bold,
 						{
 							color: colors['background-header'],
 							textAlign: 'center',
@@ -350,8 +344,8 @@ export const BlePermission: ScreenFC<'Main.BlePermission'> = ({ route: { params 
 					]}
 				>
 					{t('permission.proximity.title')}
-				</BText>
-				<BText
+				</UnifiedText>
+				<UnifiedText
 					style={[
 						{
 							lineHeight: 25,
@@ -363,7 +357,7 @@ export const BlePermission: ScreenFC<'Main.BlePermission'> = ({ route: { params 
 					{Platform.OS === 'ios'
 						? t('permission.proximity.ios-desc')
 						: t('permission.proximity.android-desc')}
-				</BText>
+				</UnifiedText>
 				<View
 					style={{
 						width: '100%',
@@ -384,17 +378,11 @@ export const BlePermission: ScreenFC<'Main.BlePermission'> = ({ route: { params 
 						}}
 						activeOpacity={0.9}
 					>
-						<BText
-							style={[
-								text.size.scale(18),
-								{
-									fontWeight: '700',
-									color: colors['reverted-main-text'],
-								},
-							]}
+						<UnifiedText
+							style={[text.size.scale(18), text.bold, { color: colors['reverted-main-text'] }]}
 						>
 							{t('permission.button-labels.allow')}
-						</BText>
+						</UnifiedText>
 					</TouchableOpacity>
 				</View>
 				<TouchableOpacity
@@ -403,7 +391,7 @@ export const BlePermission: ScreenFC<'Main.BlePermission'> = ({ route: { params 
 						goBack()
 					}}
 				>
-					<BText
+					<UnifiedText
 						style={{
 							marginTop: 16,
 							color: colors['secondary-text'],
@@ -412,7 +400,7 @@ export const BlePermission: ScreenFC<'Main.BlePermission'> = ({ route: { params 
 						}}
 					>
 						{t('permission.skip')}
-					</BText>
+					</UnifiedText>
 				</TouchableOpacity>
 			</View>
 		</View>

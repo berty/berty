@@ -26,7 +26,7 @@ import { MultiAccount } from './MultiAccount'
 import { useSelector } from 'react-redux'
 import { selectClient } from '@berty/redux/reducers/ui.reducer'
 import { selectPersistentOptions } from '@berty/redux/reducers/persistentOptions.reducer'
-import { BText } from '../../shared-components/BText'
+import { UnifiedText } from '../../shared-components/UnifiedText'
 
 const T = beapi.messenger.StreamEvent.Notified.Type
 
@@ -274,17 +274,17 @@ export const Home: ScreenFC<'Main.Home'> = ({ navigation: { navigate } }) => {
 								<View style={[flex.justify.center, flex.align.center, margin.top.scale(60)]}>
 									<View>
 										<EmptyChat width={350 * scaleSize} height={350 * scaleHeight} />
-										<BText
+										<UnifiedText
 											style={[
 												text.align.center,
 												text.color.grey,
-												text.bold.small,
+												text.light,
 												opacity(0.3),
 												margin.top.big,
 											]}
 										>
 											{t('main.home.no-contacts')}
-										</BText>
+										</UnifiedText>
 									</View>
 								</View>
 							</View>

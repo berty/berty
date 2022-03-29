@@ -3,7 +3,7 @@ import { TouchableOpacity, ViewStyle } from 'react-native'
 
 import { useStyles } from '@berty/styles'
 import { useThemeColor } from '@berty/store/hooks'
-import { BText } from '../shared-components/BText'
+import { UnifiedText } from '../shared-components/UnifiedText'
 
 const Button: React.FC<{
 	children: string
@@ -38,10 +38,10 @@ const Button: React.FC<{
 			]}
 			onPress={onPress}
 		>
-			<BText
+			<UnifiedText
 				style={[
 					text.align.center,
-					text.bold.medium,
+					text.bold,
 					{
 						color:
 							status === 'primary' ? colors['reverted-main-text'] : colors['background-header'],
@@ -50,7 +50,7 @@ const Button: React.FC<{
 				]}
 			>
 				{children}
-			</BText>
+			</UnifiedText>
 		</TouchableOpacity>
 	)
 }

@@ -10,12 +10,12 @@ import { useStyles } from '@berty/styles'
 import OnboardingWrapper from './OnboardingWrapper'
 import { Icon } from '@ui-kitten/components'
 import { TouchableOpacity } from 'react-native-gesture-handler'
-import { BText } from '../shared-components/BText'
+import { UnifiedText } from '../shared-components/UnifiedText'
 
 const CustomModeBody: React.FC = () => {
 	const { goBack } = useNavigation()
 	const colors = useThemeColor()
-	const [{ padding, border, margin }, { scaleSize }] = useStyles()
+	const [{ padding, border, margin, text }, { scaleSize }] = useStyles()
 	const { navigate } = useNavigation()
 	const { t }: { t: any } = useTranslation()
 
@@ -55,32 +55,32 @@ const CustomModeBody: React.FC = () => {
 							width={23}
 							fill={colors['background-header']}
 						/>
-						<BText
+						<UnifiedText
 							style={[
+								text.bold,
 								{
-									fontWeight: '700',
 									color: colors['background-header'],
 									fontSize: 24 * scaleSize,
 								},
 							]}
 						>
 							{t('onboarding.custom-mode.summary.title')}
-						</BText>
+						</UnifiedText>
 					</View>
 					<View style={[margin.top.medium]}>
-						<BText style={{ textAlign: 'center', fontWeight: '600' }}>
+						<UnifiedText style={[text.bold, { textAlign: 'center' }]}>
 							{t('onboarding.custom-mode.summary.subtitle')}
-						</BText>
+						</UnifiedText>
 					</View>
 					<View style={[margin.top.medium]}>
-						<BText style={{ textAlign: 'center' }}>
+						<UnifiedText style={{ textAlign: 'center' }}>
 							{t('onboarding.custom-mode.summary.first-point')}
-						</BText>
+						</UnifiedText>
 					</View>
 					<View style={[margin.top.medium]}>
-						<BText style={[{ textAlign: 'center' }]}>
+						<UnifiedText style={[{ textAlign: 'center' }]}>
 							{t('onboarding.custom-mode.summary.second-point')}
-						</BText>
+						</UnifiedText>
 					</View>
 				</View>
 				<View
@@ -102,16 +102,18 @@ const CustomModeBody: React.FC = () => {
 						]}
 						onPress={() => goBack()}
 					>
-						<BText
-							style={{
-								textTransform: 'uppercase',
-								color: colors['background-header'],
-								fontWeight: '700',
-								textAlign: 'center',
-							}}
+						<UnifiedText
+							style={[
+								text.bold,
+								{
+									textTransform: 'uppercase',
+									color: colors['background-header'],
+									textAlign: 'center',
+								},
+							]}
 						>
 							{t('onboarding.custom-mode.summary.back-button')}
-						</BText>
+						</UnifiedText>
 					</TouchableOpacity>
 					<TouchableOpacity
 						style={[
@@ -123,16 +125,18 @@ const CustomModeBody: React.FC = () => {
 							navigate('Onboarding.CustomModeSettings')
 						}}
 					>
-						<BText
-							style={{
-								textTransform: 'uppercase',
-								color: colors['reverted-main-text'],
-								fontWeight: '700',
-								textAlign: 'center',
-							}}
+						<UnifiedText
+							style={[
+								text.bold,
+								{
+									textTransform: 'uppercase',
+									color: colors['reverted-main-text'],
+									textAlign: 'center',
+								},
+							]}
 						>
 							{t('onboarding.custom-mode.summary.accept-button')}
-						</BText>
+						</UnifiedText>
 					</TouchableOpacity>
 				</View>
 			</View>

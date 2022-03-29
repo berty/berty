@@ -11,7 +11,7 @@ import { useThemeColor } from '@berty/store'
 import { ScreenFC, useNavigation } from '@berty/navigation'
 
 import { ForwardToBertyContactModal } from './ForwardToBertyContactModal'
-import { BText } from '../shared-components/BText'
+import { UnifiedText } from '../shared-components/UnifiedText'
 
 export const ImageView: ScreenFC<'Modals.ImageView'> = ({
 	route: {
@@ -127,7 +127,7 @@ export const ImageView: ScreenFC<'Modals.ImageView'> = ({
 						>
 							{MENU_LIST.map(item => (
 								<TouchableOpacity key={item.title} onPress={item.onPress} style={[padding.medium]}>
-									<BText style={{ textAlign: 'center' }}>{item.title}</BText>
+									<UnifiedText style={{ textAlign: 'center' }}>{item.title}</UnifiedText>
 								</TouchableOpacity>
 							))}
 						</View>
@@ -155,7 +155,7 @@ export const ImageView: ScreenFC<'Modals.ImageView'> = ({
 							{ backgroundColor: colors['main-background'] },
 						]}
 					>
-						<BText style={{ color: 'black' }}>{message}</BText>
+						<UnifiedText style={{ color: 'black' }}>{message}</UnifiedText>
 					</View>
 				</View>
 			)}

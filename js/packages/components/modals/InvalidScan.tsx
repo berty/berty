@@ -7,7 +7,7 @@ import { useStyles } from '@berty/styles'
 import beapi from '@berty/api'
 import { useThemeColor } from '@berty/store'
 import { useNavigation } from '@berty/navigation'
-import { BText } from '../shared-components/BText'
+import { UnifiedText } from '../shared-components/UnifiedText'
 
 //
 // Scan Invalid
@@ -70,9 +70,9 @@ const InvalidScanHeader: React.FC<{ title: string }> = ({ title }) => {
 				/>
 			</View>
 			<View>
-				<BText style={[text.bold.medium, text.align.center, { color: colors['warning-asset'] }]}>
+				<UnifiedText style={[text.bold, text.align.center, { color: colors['warning-asset'] }]}>
 					{title}
-				</BText>
+				</UnifiedText>
 			</View>
 		</View>
 	)
@@ -91,16 +91,16 @@ const InvalidScanError: React.FC<{ error: string }> = ({ error }) => {
 				{ backgroundColor: `${colors['secondary-background-header']}40` },
 			]}
 		>
-			<BText
+			<UnifiedText
 				style={[
 					text.align.center,
-					text.bold.medium,
+					text.bold,
 					_invalidScanStyles.errorText,
 					{ color: colors['secondary-background-header'] },
 				]}
 			>
 				{error}
-			</BText>
+			</UnifiedText>
 		</View>
 	)
 }
@@ -131,7 +131,7 @@ const InvalidScanDismissButton: React.FC = () => {
 					fill={colors['secondary-text']}
 					style={row.item.justify}
 				/>
-				<BText
+				<UnifiedText
 					style={[
 						padding.left.small,
 						row.item.justify,
@@ -140,7 +140,7 @@ const InvalidScanDismissButton: React.FC = () => {
 					]}
 				>
 					{t('modals.invalid-scan.dismiss-button')}
-				</BText>
+				</UnifiedText>
 			</TouchableOpacity>
 		</View>
 	)

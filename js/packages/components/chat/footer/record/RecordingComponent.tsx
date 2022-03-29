@@ -9,7 +9,7 @@ import { useThemeColor } from '@berty/store/hooks'
 
 import { RecordingState } from '../../audioMessageCommon'
 import { SendButton } from '../ChatFooterButtons'
-import { BText } from '../../../shared-components/BText'
+import { UnifiedText } from '../../../shared-components/UnifiedText'
 
 export const RecordingComponent: React.FC<{
 	recordingState: RecordingState
@@ -18,7 +18,7 @@ export const RecordingComponent: React.FC<{
 	setHelpMessageValue: ({ message, delay }: { message: string; delay?: number | undefined }) => void
 	timer: number
 }> = ({ recordingState, recordingColorVal, setRecordingState, setHelpMessageValue, timer }) => {
-	const [{ border, padding, margin }, { scaleSize }] = useStyles()
+	const [{ border, padding, margin, text }, { scaleSize }] = useStyles()
 	const colors = useThemeColor()
 	const { t } = useTranslation()
 
@@ -55,9 +55,9 @@ export const RecordingComponent: React.FC<{
 						border.radius.small,
 					]}
 				>
-					<BText style={{ color: colors['reverted-main-text'] }}>
+					<UnifiedText style={{ color: colors['reverted-main-text'] }}>
 						{moment.utc(timer).format('mm:ss')}
-					</BText>
+					</UnifiedText>
 				</View>
 				<Animated.View
 					style={[
@@ -98,13 +98,13 @@ export const RecordingComponent: React.FC<{
 					]}
 				>
 					{recordingState !== RecordingState.RECORDING_LOCKED ? (
-						<BText style={{ fontWeight: 'bold', padding: 5 }}>
+						<UnifiedText style={[text.bold, { padding: 5 }]}>
 							{t('audio.record.slide-to-cancel')}
-						</BText>
+						</UnifiedText>
 					) : (
-						<BText style={{ fontWeight: 'bold', padding: 5 }}>
+						<UnifiedText style={[text.bold, { padding: 5 }]}>
 							{t('audio.record.cancel-button')}
-						</BText>
+						</UnifiedText>
 					)}
 				</TouchableOpacity>
 				{recordingState === RecordingState.RECORDING_LOCKED && (

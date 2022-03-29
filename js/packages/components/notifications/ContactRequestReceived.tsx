@@ -7,7 +7,7 @@ import { dispatch } from '@berty/navigation'
 import { useConversation } from '@berty/react-redux'
 
 import { useStylesNotification, NotificationTmpLogo } from './common'
-import { BText } from '../shared-components/BText'
+import { UnifiedText } from '../shared-components/UnifiedText'
 
 const ContactRequestReceived: React.FC<any> = ({ onClose, title, message, ...props }) => {
 	const [{ text }] = useStyles()
@@ -49,12 +49,12 @@ const ContactRequestReceived: React.FC<any> = ({ onClose, title, message, ...pro
 			<View style={_styles.innerTouchable}>
 				<NotificationTmpLogo />
 				<View style={_styles.titleAndTextWrapper}>
-					<BText numberOfLines={1} style={[text.bold.medium]}>
+					<UnifiedText numberOfLines={1} style={[text.bold]}>
 						{title}
-					</BText>
-					<BText numberOfLines={1} ellipsizeMode='tail'>
+					</UnifiedText>
+					<UnifiedText numberOfLines={1} ellipsizeMode='tail'>
 						{message}
-					</BText>
+					</UnifiedText>
 				</View>
 			</View>
 		</TouchableOpacity>

@@ -5,7 +5,7 @@ import { Layout } from '@ui-kitten/components'
 import { useStyles } from '@berty/styles'
 import { useThemeColor } from '@berty/store/hooks'
 import { ScreenFC } from '@berty/navigation'
-import { BText } from '../shared-components/BText'
+import { UnifiedText } from '../shared-components/UnifiedText'
 
 //
 // TermsOfUse
@@ -21,8 +21,8 @@ const BodyTermsOfUseItem: React.FC<BodyTermsOfUseItemProps> = ({ textProps, titl
 	const [{ margin, text }] = useStyles()
 	return (
 		<View style={[margin.top.big]}>
-			{title && <BText style={[text.bold.medium]}>{title}</BText>}
-			<BText style={[text.size.small]}>{textProps}</BText>
+			{title && <UnifiedText style={[text.bold]}>{title}</UnifiedText>}
+			<UnifiedText style={[text.size.small]}>{textProps}</UnifiedText>
 		</View>
 	)
 }

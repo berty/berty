@@ -15,7 +15,7 @@ import { useNavigation } from '@berty/navigation'
 import { useStyles } from '@berty/styles'
 import { BlurView } from '@berty/polyfill/react-native-community-blur'
 import { WebView } from '@berty/polyfill/react-native-webview'
-import { BText } from './BText'
+import { UnifiedText } from './UnifiedText'
 
 export const useStylesModalWebView = () => {
 	const [{ width, border, padding, margin }] = useStyles()
@@ -84,11 +84,11 @@ export const ModalWebviewBody: React.FC<{
 						height={60 * scaleHeight}
 						style={[row.item.justify, padding.top.large]}
 					/>
-					<BText style={[text.align.center, padding.top.small, text.size.large, text.bold.medium]}>
+					<UnifiedText style={[text.align.center, padding.top.small, text.size.large, text.bold]}>
 						{t('onboarding.web-views.title')}
-					</BText>
+					</UnifiedText>
 					<Text style={[text.align.center, padding.top.scale(20), padding.horizontal.medium]}>
-						<BText style={[text.bold.small]}>{t('onboarding.web-views.desc')}</BText>
+						<UnifiedText style={[text.light]}>{t('onboarding.web-views.desc')}</UnifiedText>
 					</Text>
 				</View>
 				<View style={[row.center, padding.top.medium]}>
@@ -110,9 +110,9 @@ export const ModalWebviewBody: React.FC<{
 							fill={colors['negative-asset']}
 							style={row.item.justify}
 						/>
-						<BText style={[padding.left.small, row.item.justify, text.bold.medium]}>
+						<UnifiedText style={[padding.left.small, row.item.justify, text.bold]}>
 							{t('onboarding.web-views.first-button')}
-						</BText>
+						</UnifiedText>
 					</TouchableOpacity>
 					<TouchableOpacity
 						style={[
@@ -136,16 +136,16 @@ export const ModalWebviewBody: React.FC<{
 							fill={colors['background-header']}
 							style={row.item.justify}
 						/>
-						<BText
+						<UnifiedText
 							style={[
 								padding.left.small,
 								row.item.justify,
-								text.bold.medium,
+								text.bold,
 								{ color: colors['background-header'] },
 							]}
 						>
 							{t('onboarding.web-views.second-button')}
-						</BText>
+						</UnifiedText>
 					</TouchableOpacity>
 				</View>
 			</View>

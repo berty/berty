@@ -19,7 +19,7 @@ import { AccountAvatar } from '../avatars'
 import { useSelector } from 'react-redux'
 import { selectSelectedAccount } from '@berty/redux/reducers/ui.reducer'
 import { useModal } from '../providers/modal.provider'
-import { BText } from '../shared-components/BText'
+import { UnifiedText } from '../shared-components/UnifiedText'
 
 //
 // Edit Profile
@@ -246,9 +246,9 @@ const EditMyProfile: React.FC = () => {
 
 	return (
 		<View>
-			<BText style={[margin.medium, margin.bottom.huge, text.align.center]}>
+			<UnifiedText style={[margin.medium, margin.bottom.huge, text.align.center]}>
 				{t('settings.edit-profile.title')}
-			</BText>
+			</UnifiedText>
 			<View style={[row.left]}>
 				<Pressable onPress={handlePicturePressed}>{image}</Pressable>
 				<View style={[flex.tiny, margin.left.big]}>
@@ -269,19 +269,19 @@ const EditMyProfile: React.FC = () => {
 						height={20}
 						fill={colors['background-header']}
 					/>
-					<BText
+					<UnifiedText
 						style={[margin.left.medium, text.size.scale(11), { color: colors['secondary-text'] }]}
 					>
 						{t('settings.edit-profile.qr-will-update') as any}
-					</BText>
+					</UnifiedText>
 				</View>
 				<View style={[padding.top.small, row.left]}>
 					<Icon name='close-outline' width={20} height={20} fill={colors['warning-asset']} />
-					<BText
+					<UnifiedText
 						style={[margin.left.medium, text.size.scale(11), { color: colors['secondary-text'] }]}
 					>
 						{t('settings.edit-profile.ocr-wont-update') as any}
-					</BText>
+					</UnifiedText>
 				</View>
 			</View>
 			{state.err ? (
@@ -293,7 +293,9 @@ const EditMyProfile: React.FC = () => {
 						marginBottom: 18,
 					}}
 				>
-					<BText style={{ color: colors['warning-asset'] }}>🚧 {state.err.toString()} 🚧</BText>
+					<UnifiedText style={{ color: colors['warning-asset'] }}>
+						🚧 {state.err.toString()} 🚧
+					</UnifiedText>
 				</View>
 			) : undefined}
 			<TouchableOpacity disabled={state.saving} onPress={handleSave}>
@@ -309,10 +311,10 @@ const EditMyProfile: React.FC = () => {
 					{state.saving ? (
 						<ActivityIndicator color={colors['secondary-text']} />
 					) : (
-						<BText
+						<UnifiedText
 							style={[
 								text.align.center,
-								text.bold.medium,
+								text.bold,
 								{
 									textTransform: 'uppercase',
 									color: colors['background-header'],
@@ -322,7 +324,7 @@ const EditMyProfile: React.FC = () => {
 							{(state.name && state.name !== account.displayName) || state.pic
 								? t('settings.edit-profile.save')
 								: (t('settings.edit-profile.cancel') as any)}
-						</BText>
+						</UnifiedText>
 					)}
 				</View>
 			</TouchableOpacity>

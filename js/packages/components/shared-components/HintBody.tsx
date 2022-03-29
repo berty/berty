@@ -5,21 +5,20 @@ import { Icon } from '@ui-kitten/components'
 import { useStyles } from '@berty/styles'
 import messengerMethodsHooks from '@berty/store/methods'
 import { useThemeColor } from '@berty/store/hooks'
-import { BText } from './BText'
+import { UnifiedText } from './UnifiedText'
 
 const useStylesHint = () => {
 	const [{ text, opacity, margin }, { fontScale }] = useStyles()
-	const colors = useThemeColor()
 
 	return {
 		searchHintBodyText: [
 			text.align.center,
 			text.size.medium,
-			text.bold.small,
+			text.light,
 			opacity(0.8),
 			margin.top.large,
 			margin.bottom.small,
-			{ fontFamily: 'Open Sans', lineHeight: 20 * fontScale, color: colors['main-text'] },
+			{ lineHeight: 20 * fontScale },
 		],
 	}
 }
@@ -40,13 +39,13 @@ export const HintBody = () => {
 
 	return !bannerQuote?.quote ? null : (
 		<View style={[padding.horizontal.medium, { bottom: 0 }]}>
-			<BText
+			<UnifiedText
 				style={[
 					text.align.center,
 					row.item.justify,
 					text.size.big,
 					opacity(0.8),
-					text.bold.medium,
+					text.bold,
 					{
 						color: `${colors['secondary-text']}90`,
 						marginHorizontal: _landingIconSize * scaleSize, // room for speech bubble icon
@@ -54,7 +53,7 @@ export const HintBody = () => {
 				]}
 			>
 				{'Quote of the day'}
-			</BText>
+			</UnifiedText>
 			<Icon
 				name='quote'
 				pack='custom'
@@ -67,21 +66,21 @@ export const HintBody = () => {
 					{ position: 'absolute', bottom: 20 * scaleSize, right: 60 * scaleSize },
 				]}
 			/>
-			<BText style={[searchHintBodyText, { color: `${colors['secondary-text']}90` }]}>
+			<UnifiedText style={[searchHintBodyText, { color: `${colors['secondary-text']}90` }]}>
 				{bannerQuote?.quote || ''}
-			</BText>
+			</UnifiedText>
 			{bannerQuote?.author && (
 				<View style={[{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }]}>
-					<BText
+					<UnifiedText
 						style={[
 							text.size.scale(15),
-							text.bold.small,
+							text.light,
 							opacity(0.8),
 							{ color: `${colors['secondary-text']}90` },
 						]}
 					>
 						{'— ' + bannerQuote?.author}
-					</BText>
+					</UnifiedText>
 				</View>
 			)}
 		</View>

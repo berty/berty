@@ -4,7 +4,7 @@ import { View, ViewStyle } from 'react-native'
 
 import { useThemeColor } from '@berty/store'
 import { useStyles } from '@berty/styles'
-import { BText } from '../shared-components/BText'
+import { UnifiedText } from '../shared-components/UnifiedText'
 
 export const volumeValueLowest = -160
 export const volumeValuePrecision = 100000
@@ -119,9 +119,9 @@ export const WaveForm: React.FC<{
 					)
 				})}
 			</View>
-			<BText style={[{ color }, margin.small, text.size.tiny]}>
+			<UnifiedText style={[{ color }, margin.small, text.size.tiny]}>
 				{moment.utc(duration).format('mm:ss')}
-			</BText>
+			</UnifiedText>
 		</View>
 	)
 }

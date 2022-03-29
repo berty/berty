@@ -15,7 +15,7 @@ import { ScreenFC } from '@berty/navigation'
 import Logo from './berty_gradient_square.svg'
 import Button from './Button'
 import { importAccountFromDocumentPicker } from '../pickerUtils'
-import { BText } from '../shared-components/BText'
+import { UnifiedText } from '../shared-components/UnifiedText'
 
 export const GetStarted: ScreenFC<'Onboarding.GetStarted'> = ({ navigation: { navigate } }) => {
 	useNotificationsInhibitor(() => true)
@@ -37,35 +37,24 @@ export const GetStarted: ScreenFC<'Onboarding.GetStarted'> = ({ navigation: { na
 			</View>
 			<View>
 				<View>
-					<BText
+					<UnifiedText
 						style={[
 							padding.horizontal.medium,
 							text.align.center,
-							text.align.bottom,
 							text.size.large,
-							{
-								fontWeight: '700',
-								color: colors['background-header'],
-							},
+							text.bold,
+							{ color: colors['background-header'] },
 						]}
 					>
 						{t('onboarding.getstarted.title') as any}
-					</BText>
+					</UnifiedText>
 				</View>
 				<View style={[margin.top.small]}>
-					<BText
-						style={[
-							padding.horizontal.medium,
-							text.align.center,
-							text.align.bottom,
-							{
-								fontStyle: 'italic',
-								fontWeight: '400',
-							},
-						]}
+					<UnifiedText
+						style={[padding.horizontal.medium, text.align.center, text.align.bottom, text.italic]}
 					>
 						{t('onboarding.getstarted.desc') as any}
-					</BText>
+					</UnifiedText>
 				</View>
 				<View style={[margin.top.big]}>
 					<Button

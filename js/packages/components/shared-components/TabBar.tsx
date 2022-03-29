@@ -4,7 +4,7 @@ import { Icon } from '@ui-kitten/components'
 
 import { useStyles } from '@berty/styles'
 import { useThemeColor } from '@berty/store/hooks'
-import { BText } from './BText'
+import { UnifiedText } from './UnifiedText'
 
 // Types
 type TabItemProps = {
@@ -92,16 +92,16 @@ const TabBarItem: React.FC<TabItemProps> = ({
 						height={25}
 					/>
 				</View>
-				<BText
+				<UnifiedText
 					style={[
-						text.bold.medium,
+						text.bold,
 						text.align.center,
 						_styles.tabItemName,
 						{ color: enable ? colors['background-header'] : colors['main-text'] },
 					]}
 				>
 					{name}
-				</BText>
+				</UnifiedText>
 			</View>
 			<View
 				style={[

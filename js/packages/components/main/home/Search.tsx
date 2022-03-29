@@ -12,7 +12,7 @@ import { useContact, useConversationInteractions, useConversation } from '@berty
 import { HintBody } from '../../shared-components'
 import { timeFormat } from '../../helpers'
 import { ContactAvatar, ConversationAvatar } from '../../avatars'
-import { BText } from '../../shared-components/BText'
+import { UnifiedText } from '../../shared-components/UnifiedText'
 
 // Styles
 
@@ -26,11 +26,11 @@ const useStylesSearch = () => {
 		searchResultHighlightText: [
 			text.size.small,
 			background.light.yellow,
-			text.bold.medium,
+			text.bold,
 			{ color: colors['secondary-text'], backgroundColor: `${colors['secondary-text']}30` },
 		],
 		nameHighlightText: [
-			text.bold.medium,
+			text.bold,
 			{ color: colors['secondary-text'], backgroundColor: `${colors['secondary-text']}30` },
 		],
 		plainMessageText: [text.size.small, { color: colors['secondary-text'] }],
@@ -72,16 +72,16 @@ const MessageSearchResult: React.FC<{
 			if (lastStart < i) {
 				const plainPart = message.substr(lastStart, i - lastStart)
 				parts[partsCounter] = (
-					<BText key={partsCounter} style={style}>
+					<UnifiedText key={partsCounter} style={style}>
 						{plainPart}
-					</BText>
+					</UnifiedText>
 				)
 				partsCounter++
 			}
 			parts[partsCounter] = (
-				<BText key={partsCounter} style={highlightStyle}>
+				<UnifiedText key={partsCounter} style={highlightStyle}>
 					{searchTarget}
-				</BText>
+				</UnifiedText>
 			)
 			partsCounter++
 			i += searchText.length
@@ -93,9 +93,9 @@ const MessageSearchResult: React.FC<{
 	if (lastStart !== message.length) {
 		const plainPart = message.substr(lastStart)
 		parts[partsCounter] = (
-			<BText key={partsCounter} style={style}>
+			<UnifiedText key={partsCounter} style={style}>
 				{plainPart}
-			</BText>
+			</UnifiedText>
 		)
 		lastStart = message.length
 		partsCounter++
@@ -222,17 +222,17 @@ const SearchResultItem: React.FC<SearchItemProps> = ({ data, kind, searchText = 
 				return null
 		}
 		return (
-			<BText numberOfLines={1} style={plainMessageText}>
+			<UnifiedText numberOfLines={1} style={plainMessageText}>
 				<>{content}</>
-			</BText>
+			</UnifiedText>
 		)
 	}
 
 	const TimeStamp = () => {
 		return (
-			<BText style={[padding.left.small, text.size.small, text.color.grey]}>
+			<UnifiedText style={[padding.left.small, text.size.small, text.color.grey]}>
 				{timeFormat.fmtTimestamp1(date)}
-			</BText>
+			</UnifiedText>
 		)
 	}
 
@@ -262,18 +262,18 @@ const SearchResultItem: React.FC<SearchItemProps> = ({ data, kind, searchText = 
 				{avatar}
 				<View style={[flex.medium, column.justify, padding.left.medium]}>
 					<View style={[margin.right.big]}>
-						<BText numberOfLines={1} style={[column.item.fill, text.bold.medium]}>
+						<UnifiedText numberOfLines={1} style={[column.item.fill, text.bold]}>
 							{kind === SearchResultKind.Interaction ? (
 								name
 							) : (
 								<MessageSearchResult
 									message={name}
 									searchText={searchText}
-									style={[text.bold.medium]}
+									style={[text.bold]}
 									highlightStyle={nameHighlightText}
 								/>
 							)}
-						</BText>
+						</UnifiedText>
 						<MessageDisplay />
 					</View>
 				</View>
@@ -409,7 +409,7 @@ export const SearchComponent: React.FC<{
 									]}
 								/>
 							</View>
-							<BText style={[text.size.scale(25), text.bold.medium]}>{title}</BText>
+							<UnifiedText style={[text.size.scale(25), text.bold]}>{title}</UnifiedText>
 						</View>
 					</View>
 				) : null
@@ -427,9 +427,9 @@ export const SearchComponent: React.FC<{
 			<View style={[margin.top.scale(60)]}>
 				<HintBody />
 			</View>
-			<BText style={[margin.top.scale(60), text.size.big, text.bold.small, text.align.center]}>
+			<UnifiedText style={[margin.top.scale(60), text.size.big, text.light, text.align.center]}>
 				{t('main.home.search.no-results')}
-			</BText>
+			</UnifiedText>
 		</View>
 	)
 }

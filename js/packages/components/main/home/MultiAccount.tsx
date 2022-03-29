@@ -18,7 +18,7 @@ import beapi from '@berty/api'
 import { GenericAvatar } from '../../avatars'
 import { selectSelectedAccount, setStateOnBoardingReady } from '@berty/redux/reducers/ui.reducer'
 import { useSelector } from 'react-redux'
-import { BText } from '@berty-tech/components/shared-components/BText'
+import { UnifiedText } from '@berty-tech/components/shared-components/UnifiedText'
 
 const AccountButton: React.FC<{
 	name: string | null | undefined
@@ -59,11 +59,11 @@ const AccountButton: React.FC<{
 			>
 				<View style={{ flexDirection: 'row', alignItems: 'center' }}>
 					{avatar}
-					<BText
-						style={[padding.left.medium, text.bold.small, text.align.center, text.size.scale(17)]}
+					<UnifiedText
+						style={[padding.left.medium, text.light, text.align.center, text.size.scale(17)]}
 					>
 						{name}
-					</BText>
+					</UnifiedText>
 				</View>
 				<Icon name='arrow-ios-downward' width={30} height={30} fill={colors['main-text']} />
 			</View>

@@ -6,7 +6,7 @@ import { ChatDate } from '@berty/components/chat/common'
 import { useStyles } from '@berty/styles'
 import beapi from '@berty/api'
 import { useThemeColor } from '@berty/store/hooks'
-import { BText } from '../shared-components/BText'
+import { UnifiedText } from '../shared-components/UnifiedText'
 
 export const InfosMultiMember: React.FC<beapi.messenger.IConversation> = ({
 	createdDate: createdDateStr,
@@ -19,7 +19,9 @@ export const InfosMultiMember: React.FC<beapi.messenger.IConversation> = ({
 		<View style={[flex.align.center, flex.justify.center]}>
 			<ChatDate date={createdDate} />
 			<MessageSystemWrapper styleContainer={[margin.top.large, margin.bottom.medium]}>
-				<BText style={[text.align.center, { color: textColor }]}>Group joined! 👍</BText>
+				<UnifiedText style={[text.align.center, { color: textColor }]}>
+					Group joined! 👍
+				</UnifiedText>
 			</MessageSystemWrapper>
 		</View>
 	)

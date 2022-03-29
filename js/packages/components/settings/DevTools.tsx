@@ -103,7 +103,7 @@ const HeaderDevTools: React.FC<{}> = () => {
 					},
 				]}
 				style={[_styles.buttonRowMarginTop]}
-				styleText={[text.bold.medium]}
+				styleText={[text.bold]}
 			/>
 		</View>
 	)
@@ -613,7 +613,7 @@ const BodyDevTools: React.FC<{}> = withInAppNotification(({ showNotification }: 
 					},
 				]}
 				style={[_styles.buttonRowMarginTop]}
-				styleText={[text.bold.medium]}
+				styleText={[text.bold]}
 			/>
 		</View>
 	)

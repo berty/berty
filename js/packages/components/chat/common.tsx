@@ -6,7 +6,7 @@ import { useStyles } from '@berty/styles'
 import { useThemeColor } from '@berty/store'
 
 import { timeFormat } from '../helpers'
-import { BText } from '../shared-components/BText'
+import { UnifiedText } from '../shared-components/UnifiedText'
 
 //
 // ChatFooter => Textinput for type message
@@ -71,7 +71,9 @@ export const ChatDate: React.FC<ChatDateProps> = React.memo(({ date }) => {
 	const textColor = colors['secondary-text']
 	return (
 		<View style={[row.item.justify, border.radius.medium, _styles.date, { backgroundColor }]}>
-			<BText style={[_styles.dateText, { color: textColor }]}>{timeFormat.fmtTimestamp2(date)}</BText>
+			<UnifiedText style={[_styles.dateText, { color: textColor }]}>
+				{timeFormat.fmtTimestamp2(date)}
+			</UnifiedText>
 		</View>
 	)
 })

@@ -133,7 +133,7 @@ const Proximity: React.FC<{
 // 	setNewConfig: (newConfig: beapi.account.INetworkConfig) => Promise<void>
 // 	obj: string
 // }> = ({ setNewConfig, obj }) => {
-// 	const [{ border, padding, margin }, { scaleSize }] = useStyles()
+// 	const [{ border, padding, margin, text }, { scaleSize }] = useStyles()
 // 	const colors = useThemeColor()
 // 	const [input, setInput] = React.useState<string>('')
 // 	const networkConfig = useSelector(selectNetworkConfig)
@@ -174,7 +174,7 @@ const Proximity: React.FC<{
 // 				<TextInput
 // 					value={input}
 // 					placeholderTextColor={`${colors['main-text']}50`}
-// 					style={[margin.left.small, { fontFamily: 'Open Sans', fontWeight: '600', padding: 0 }]}
+// 					style={[margin.left.small, text.bold, { padding: 0 }]}
 // 					onChangeText={(text: string) => {
 // 						setInput(text)
 // 					}}

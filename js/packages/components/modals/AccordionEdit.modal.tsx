@@ -7,7 +7,7 @@ import { useThemeColor } from '@berty/store'
 import { useStyles } from '@berty/styles'
 import { useTranslation } from 'react-i18next'
 import { multiaddr } from 'multiaddr'
-import { BText } from '../shared-components/BText'
+import { UnifiedText } from '../shared-components/UnifiedText'
 
 export const AccordionEdit: FC<{
 	title: string
@@ -73,7 +73,7 @@ export const AccordionEdit: FC<{
 
 	return (
 		<View style={{ backgroundColor: colors['main-background'] }}>
-			{title ? <BText style={[margin.medium, text.align.center]}>{title}</BText> : null}
+			{title ? <UnifiedText style={[margin.medium, text.align.center]}>{title}</UnifiedText> : null}
 			<TextInput
 				autoCapitalize='none'
 				autoCorrect={false}

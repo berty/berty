@@ -24,7 +24,7 @@ import { GRPCError } from '@berty/grpc-bridge'
 import { selectClient, selectProtocolClient } from '@berty/redux/reducers/ui.reducer'
 import { berty } from '@berty/api/root.pb'
 import { useConversation } from '@berty/react-redux'
-import { BText } from '../shared-components/BText'
+import { UnifiedText } from '../shared-components/UnifiedText'
 
 const EnableNotificationsButton: React.FC<{
 	conversationPk: string
@@ -82,9 +82,9 @@ const EnableNotificationsButton: React.FC<{
 				/>
 				{(notificationPermStatus === RESULTS.BLOCKED ||
 					notificationPermStatus === RESULTS.DENIED) && (
-					<BText style={[padding.left.small, padding.right.small, padding.top.small]}>
+					<UnifiedText style={[padding.left.small, padding.right.small, padding.top.small]}>
 						{t('chat.push-notifications.check-device-settings')}
-					</BText>
+					</UnifiedText>
 				)}
 			</>
 		)

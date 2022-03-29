@@ -8,7 +8,7 @@ import { useStyles } from '@berty/styles'
 import { getSource } from '../../utils'
 import { useSelector } from 'react-redux'
 import { selectProtocolClient } from '@berty/redux/reducers/ui.reducer'
-import { BText } from '../../shared-components/BText'
+import { UnifiedText } from '../../shared-components/UnifiedText'
 
 export const FileMessage: React.FC<{
 	medias: any
@@ -62,7 +62,7 @@ export const FileMessage: React.FC<{
 				width={20}
 				fill={isHighlight ? colors['background-header'] : colors['secondary-text']}
 			/>
-			<BText
+			<UnifiedText
 				style={[
 					{
 						fontStyle: 'italic',
@@ -75,9 +75,11 @@ export const FileMessage: React.FC<{
 				]}
 			>
 				{medias[0].filename}
-			</BText>
+			</UnifiedText>
 			{(isDownloaded || isLoading) && (
-				<BText style={[margin.left.tiny]}>({isDownloaded ? 'Downloaded' : 'Downloading'})</BText>
+				<UnifiedText style={[margin.left.tiny]}>
+					({isDownloaded ? 'Downloaded' : 'Downloading'})
+				</UnifiedText>
 			)}
 		</TouchableOpacity>
 	)

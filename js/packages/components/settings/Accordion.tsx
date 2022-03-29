@@ -5,7 +5,7 @@ import { View, Animated, Easing, TouchableOpacity, Text as NativeText } from 're
 import { useThemeColor } from '@berty/store'
 import { useStyles } from '@berty/styles'
 import { Toggle } from '../shared-components/Toggle'
-import { BText } from '../shared-components/BText'
+import { UnifiedText } from '../shared-components/UnifiedText'
 
 const heightButton = 55
 
@@ -180,7 +180,7 @@ export const AccordionV2: FC<{
 							{ height: heightButton, flexDirection: 'row', alignItems: 'center' },
 						]}
 					>
-						<BText>{title}</BText>
+						<UnifiedText>{title}</UnifiedText>
 					</View>
 					<View style={{ flex: 1 }} />
 					<Animated.View style={{ transform: [{ rotateZ: arrowAngle }] }}>

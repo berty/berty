@@ -15,7 +15,7 @@ import { useStyles } from '@berty/styles'
 import OnboardingWrapper from './OnboardingWrapper'
 import { Icon } from '@ui-kitten/components'
 import { TouchableOpacity } from 'react-native-gesture-handler'
-import { BText } from '../shared-components/BText'
+import { UnifiedText } from '../shared-components/UnifiedText'
 
 const DefaultModeBody: React.FC = () => {
 	const ctx = useMessengerContext()
@@ -79,30 +79,32 @@ const DefaultModeBody: React.FC = () => {
 							width={23}
 							fill={colors['background-header']}
 						/>
-						<BText
-							style={{
-								fontWeight: '700',
-								color: colors['background-header'],
-								fontSize: 24 * scaleSize,
-							}}
+						<UnifiedText
+							style={[
+								text.bold,
+								{
+									color: colors['background-header'],
+									fontSize: 24 * scaleSize,
+								},
+							]}
 						>
 							{t('onboarding.default-mode.summary.title')}
-						</BText>
+						</UnifiedText>
 					</View>
 					<View style={[margin.top.medium]}>
-						<BText style={{ textAlign: 'center', fontWeight: '600' }}>
+						<UnifiedText style={[text.bold, { textAlign: 'center' }]}>
 							{t('onboarding.default-mode.summary.subtitle')}
-						</BText>
+						</UnifiedText>
 					</View>
 					<View style={[margin.top.medium]}>
-						<BText style={{ textAlign: 'center' }}>
+						<UnifiedText style={{ textAlign: 'center' }}>
 							{t('onboarding.default-mode.summary.first-point')}
-						</BText>
+						</UnifiedText>
 					</View>
 					<View style={[margin.top.medium]}>
-						<BText style={{ textAlign: 'center' }}>
+						<UnifiedText style={{ textAlign: 'center' }}>
 							{t('onboarding.default-mode.summary.second-point')}
-						</BText>
+						</UnifiedText>
 					</View>
 				</View>
 				<View
@@ -124,19 +126,18 @@ const DefaultModeBody: React.FC = () => {
 						]}
 						onPress={() => goBack()}
 					>
-						<BText
+						<UnifiedText
 							style={[
-								text.size.medium,
+								text.bold,
 								{
 									textTransform: 'uppercase',
 									color: colors['background-header'],
-									fontWeight: '700',
 									textAlign: 'center',
 								},
 							]}
 						>
 							{t('onboarding.default-mode.summary.back-button')}
-						</BText>
+						</UnifiedText>
 					</TouchableOpacity>
 					<TouchableOpacity
 						style={[
@@ -149,16 +150,18 @@ const DefaultModeBody: React.FC = () => {
 						{isPressed ? (
 							<ActivityIndicator color={colors['reverted-main-text']} />
 						) : (
-							<BText
-								style={{
-									textTransform: 'uppercase',
-									color: colors['reverted-main-text'],
-									fontWeight: '700',
-									textAlign: 'center',
-								}}
+							<UnifiedText
+								style={[
+									text.bold,
+									{
+										textTransform: 'uppercase',
+										color: colors['reverted-main-text'],
+										textAlign: 'center',
+									},
+								]}
 							>
 								{t('onboarding.default-mode.summary.accept-button')}
-							</BText>
+							</UnifiedText>
 						)}
 					</TouchableOpacity>
 				</View>

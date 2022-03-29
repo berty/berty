@@ -11,7 +11,7 @@ import { useConversation } from '@berty/react-redux'
 
 import { MultiMemberAvatar } from '../avatars'
 import logo from '../main/1_berty_picto.png'
-import { BText } from '../shared-components/BText'
+import { UnifiedText } from '../shared-components/UnifiedText'
 
 const styleBertyIdOptions = {
 	iconIdSize: 30,
@@ -52,9 +52,9 @@ export const SelectedContent: React.FC<{ conv: beapi.messenger.IConversation }> 
 				>
 					<MultiMemberAvatar publicKey={conv?.publicKey} size={requestAvatarSize} />
 				</View>
-				<BText style={[text.bold.small, text.align.center, text.size.large]}>
+				<UnifiedText style={[text.light, text.align.center, text.size.large]}>
 					{conv?.displayName}
-				</BText>
+				</UnifiedText>
 			</View>
 			<View style={[padding.horizontal.big, { top: -30 }]}>
 				<View style={[column.item.center]}>

@@ -4,7 +4,7 @@ import { Icon } from '@ui-kitten/components'
 
 import { useThemeColor } from '@berty/store'
 import { useStyles } from '@berty/styles'
-import { BText } from '../../shared-components/BText'
+import { UnifiedText } from '../../shared-components/UnifiedText'
 
 export const chatInputButtonSizeMultiplier = 36
 
@@ -105,7 +105,7 @@ export const MoreButton: React.FC<{
 			onPress={onPress}
 			disabled={disabled}
 		>
-			{!!n && <BText>{n}</BText>}
+			{!!n && <UnifiedText>{n}</UnifiedText>}
 			<Icon
 				name='plus'
 				width={26 * scaleSize}

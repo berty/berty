@@ -13,7 +13,7 @@ import { Icon } from '@ui-kitten/components'
 import { useStyles } from '@berty/styles'
 import { useThemeColor } from '@berty/store/hooks'
 import { Toggle } from '@berty/components/shared-components/Toggle'
-import { BText } from './BText'
+import { UnifiedText } from './UnifiedText'
 
 export const Section: React.FC<{}> = ({ children }) => {
 	const [{ margin, border, padding }] = useStyles()
@@ -104,7 +104,7 @@ export const ButtonSettingV2: React.FC<{
 							{ height: heightButton, flexDirection: 'row', alignItems: 'center' },
 						]}
 					>
-						<BText>{text}</BText>
+						<UnifiedText>{text}</UnifiedText>
 					</View>
 				</View>
 
@@ -294,7 +294,7 @@ export const ButtonSetting: React.FC<SettingButtonProps> = ({
 						<View>{/*<CircleAvatar avatarUri={image} withCircle={false} size={35} />*/}</View>
 					)}
 					<View>
-						<BText
+						<UnifiedText
 							numberOfLines={2}
 							style={[
 								padding.left.small,
@@ -304,7 +304,7 @@ export const ButtonSetting: React.FC<SettingButtonProps> = ({
 							]}
 						>
 							{name}
-						</BText>
+						</UnifiedText>
 					</View>
 				</View>
 				<View style={[row.center, { alignItems: 'center' }]}>
@@ -336,24 +336,19 @@ export const ButtonSetting: React.FC<SettingButtonProps> = ({
 										fill={state.stateIconColor}
 									/>
 								)}
-								<BText
-									style={[
-										text.align.center,
-										text.size.tiny,
-										text.bold.medium,
-										{ color: state.color },
-									]}
+								<UnifiedText
+									style={[text.align.center, text.size.tiny, text.bold, { color: state.color }]}
 								>
 									{state.value}
-								</BText>
+								</UnifiedText>
 							</View>
 						</View>
 					) : null}
 					{previewValue && (
 						<View>
-							<BText style={[padding.right.small, text.bold.medium, { color: previewValueColor }]}>
+							<UnifiedText style={[padding.right.small, text.bold, { color: previewValueColor }]}>
 								{previewValue}
-							</BText>
+							</UnifiedText>
 						</View>
 					)}
 					{rightComponent}
@@ -467,7 +462,7 @@ export const FactionButtonSetting: React.FC<FactionButtonSettingProps> = ({
 								</View>
 							)}
 							<View>
-								<BText style={[padding.left.small, text.size.medium]}>{name}</BText>
+								<UnifiedText style={[padding.left.small, text.size.medium]}>{name}</UnifiedText>
 							</View>
 						</View>
 						<View>
@@ -505,16 +500,11 @@ export const FactionButtonSetting: React.FC<FactionButtonSettingProps> = ({
 												fill={state.stateIconColor}
 											/>
 										)}
-										<BText
-											style={[
-												row.item.justify,
-												text.size.tiny,
-												text.bold.medium,
-												{ color: state.color },
-											]}
+										<UnifiedText
+											style={[row.item.justify, text.size.tiny, text.bold, { color: state.color }]}
 										>
 											{state.value}
-										</BText>
+										</UnifiedText>
 									</View>
 								</View>
 							)}
@@ -673,12 +663,12 @@ export const ButtonSettingRow: React.FC<ButtonSettingRowProps> = ({
 					) : (
 						<>
 							<Icon name={obj.icon} width={30} height={30} fill={obj.color} />
-							<BText
+							<UnifiedText
 								style={[text.align.center, text.size.medium, styleText, _styles.textPadding]}
 								numberOfLines={numberOfLines}
 							>
 								{obj.name}
-							</BText>
+							</UnifiedText>
 						</>
 					)}
 				</TouchableOpacity>
@@ -735,9 +725,9 @@ export const ButtonSettingItem: React.FC<ButtonSettingItem> = ({
 				height={iconSize}
 				fill={iconColor || colors['positive-asset']}
 			/>
-			<BText style={[text.bold.medium, _styles.updateFeatureText, { color }, styleText]}>
+			<UnifiedText style={[text.bold, _styles.updateFeatureText, { color }, styleText]}>
 				{value}
-			</BText>
+			</UnifiedText>
 		</View>
 	)
 }
@@ -766,9 +756,9 @@ export const ButtonDropDown: React.FC<{ title: string; body: string }> = ({ titl
 			}}
 		>
 			<View style={[padding.right.small, { flex: 1, overflow: 'hidden' }]}>
-				<BText style={[{ marginBottom: 12 }, text.size.medium]}>{title}</BText>
+				<UnifiedText style={[{ marginBottom: 12 }, text.size.medium]}>{title}</UnifiedText>
 				<Animated.View style={{ maxHeight: animateHeight }}>
-					<BText style={[margin.top.small, text.size.medium]}>{body}</BText>
+					<UnifiedText style={[margin.top.small, text.size.medium]}>{body}</UnifiedText>
 				</Animated.View>
 			</View>
 			<TouchableOpacity
@@ -854,7 +844,7 @@ export const StringOptionInput: React.FC<{
 						onChangeText={t => setValue(t)}
 						value={value}
 						style={[
-							text.bold.small,
+							text.light,
 							text.size.medium,
 							flex.scale(8),
 							{

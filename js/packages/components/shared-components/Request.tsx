@@ -11,7 +11,7 @@ import { TabBar } from './TabBar'
 import { FingerprintContent } from './FingerprintContent'
 import { Modal } from './Modal'
 import { ContactAvatar } from '../avatars'
-import { BText } from './BText'
+import { UnifiedText } from './UnifiedText'
 
 // Types
 
@@ -65,7 +65,9 @@ const RequestButtonItem: React.FC<RequestButtonItemProps> = ({
 				fill={iconColor}
 				style={[row.item.justify]}
 			/>
-			<BText style={[text.bold.medium, row.item.justify, { color: titleColor }]}>{title}</BText>
+			<UnifiedText style={[text.bold, row.item.justify, { color: titleColor }]}>
+				{title}
+			</UnifiedText>
 		</TouchableOpacity>
 	)
 }
@@ -105,9 +107,9 @@ export const RequestAvatar: React.FC<RequestAvatarProps> = ({
 	return (
 		<View style={[row.left, flex.tiny, { justifyContent: 'center' }, style]}>
 			<View style={[flex.tiny, row.item.bottom, row.center]}>
-				<BText style={[text.size.big, text.align.center, text.color.black]} numberOfLines={1}>
+				<UnifiedText style={[text.size.big, text.align.center, text.color.black]} numberOfLines={1}>
 					{name}
-				</BText>
+				</UnifiedText>
 				{isVerified && (
 					<Icon
 						style={[margin.left.small]}
@@ -148,23 +150,20 @@ export const MarkAsVerified: React.FC<{}> = () => {
 						fill={isToggled ? colors['background-header'] : colors['input-background']}
 						style={[column.item.center]}
 					/>
-					<BText style={[padding.left.small, column.item.center]}>Mark as verified</BText>
+					<UnifiedText style={[padding.left.small, column.item.center]}>
+						Mark as verified
+					</UnifiedText>
 				</View>
 				<View style={column.item.center}>
 					<Toggle status='primary' checked={isToggled} onChange={handleToggled} />
 				</View>
 			</View>
-			<BText
-				style={[
-					margin.top.medium,
-					text.bold.medium,
-					text.size.tiny,
-					{ color: colors['secondary-text'] },
-				]}
+			<UnifiedText
+				style={[margin.top.medium, text.bold, text.size.tiny, { color: colors['secondary-text'] }]}
 			>
 				Compare the fingerprint displayed above with the one on Caterpillar’s phone. If they are
 				identical, end-to-end encryption is guaranted on you can mark this contact as verified.
-			</BText>
+			</UnifiedText>
 		</View>
 	)
 }
@@ -216,7 +215,7 @@ const SelectedContent = ({
 				</View>
 			)
 		default:
-			return <BText>Error: Unknown content name "{contentName}"</BText>
+			return <UnifiedText>Error: Unknown content name "{contentName}"</UnifiedText>
 	}
 }
 
@@ -242,9 +241,9 @@ const BodyRequest: React.FC<BodyRequestProps> = ({
 				<ContactAvatar publicKey={contactPublicKey} size={140} />
 			</View>
 			<View style={[padding.horizontal.medium, padding.top.scale(75)]}>
-				<BText style={[padding.vertical.tiny, text.align.center, text.size.big]}>
+				<UnifiedText style={[padding.vertical.tiny, text.align.center, text.size.big]}>
 					{contact?.displayName || ''}
-				</BText>
+				</UnifiedText>
 				<TabBar
 					tabs={[
 						{ key: 'fingerprint', name: 'Fingerprint', icon: 'fingerprint', iconPack: 'custom' },

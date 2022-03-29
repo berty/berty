@@ -15,7 +15,7 @@ import { TabBar } from '../shared-components/TabBar'
 import { FingerprintContent } from '../shared-components/FingerprintContent'
 import InvalidScan from './InvalidScan'
 import { MultiMemberAvatar } from '../avatars'
-import { BText } from '../shared-components/BText'
+import { UnifiedText } from '../shared-components/UnifiedText'
 
 const useStylesModal = () => {
 	const [{ width, border, height, opacity }] = useStyles()
@@ -49,9 +49,9 @@ const SelectedContent = ({
 			return <FingerprintContent seed={pubKey} isEncrypted={isEncrypted} />
 		default:
 			return (
-				<BText style={[padding.horizontal.medium]}>
+				<UnifiedText style={[padding.horizontal.medium]}>
 					Error: Unknown content name "{contentName}"
-				</BText>
+				</UnifiedText>
 			)
 	}
 }
@@ -127,7 +127,7 @@ export const ManageGroupInvitation: React.FC<{
 					/>
 				</View>
 				<View style={[padding.top.scale(55)]}>
-					<BText style={{ textAlign: 'center' }}>{displayName}</BText>
+					<UnifiedText style={{ textAlign: 'center' }}>{displayName}</UnifiedText>
 					<TabBar
 						tabs={[
 							{
@@ -170,7 +170,7 @@ export const ManageGroupInvitation: React.FC<{
 							]}
 						>
 							<Icon name='info-outline' fill={colors['background-header']} width={15} height={15} />
-							<BText
+							<UnifiedText
 								style={[
 									{
 										color: colors['background-header'],
@@ -178,11 +178,11 @@ export const ManageGroupInvitation: React.FC<{
 									},
 									text.size.small,
 									text.align.center,
-									text.bold.small,
+									text.light,
 								]}
 							>
 								{t('modals.group-invitation.password-label')}
-							</BText>
+							</UnifiedText>
 						</View>
 						<View
 							style={[
@@ -200,7 +200,7 @@ export const ManageGroupInvitation: React.FC<{
 								onChangeText={setPassword}
 								autoCapitalize='none'
 								editable={true}
-								style={[{ fontFamily: 'Open Sans' }, text.bold.small, { width: '100%' }]}
+								style={[{ fontFamily: 'Open Sans' }, text.light, { width: '100%' }]}
 								placeholder={t('modals.group-invitation.password-placeholder')}
 							/>
 						</View>
@@ -220,9 +220,9 @@ export const ManageGroupInvitation: React.FC<{
 							{ backgroundColor: colors['positive-asset'] },
 						]}
 					>
-						<BText style={{ textAlign: 'center', color: colors['background-header'] }}>
+						<UnifiedText style={{ textAlign: 'center', color: colors['background-header'] }}>
 							{t('modals.group-invitation.join')}
-						</BText>
+						</UnifiedText>
 					</TouchableOpacity>
 				</View>
 			</View>

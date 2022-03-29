@@ -15,7 +15,7 @@ import { Header } from './CreateGroupAddMembers'
 import { ButtonSettingItem } from '../shared-components/SettingsButtons'
 import { MemberList } from './CreateGroupAddMembers'
 import { IOSOnlyKeyboardAvoidingView } from '@berty/rnutil/keyboardAvoiding'
-import { BText } from '../shared-components/BText'
+import { UnifiedText } from '../shared-components/UnifiedText'
 
 const useStylesCreateGroup = () => {
 	const [{ padding, height, width, absolute, border, column, text }, { scaleSize }] = useStyles()
@@ -99,7 +99,7 @@ const GroupInfo: React.FC<GroupInfoProps> = ({ onGroupNameChange }) => {
 					<TextInput
 						style={[
 							margin.left.small,
-							text.bold.small,
+							text.light,
 							text.size.medium,
 							{
 								fontFamily: 'Open Sans',
@@ -132,9 +132,11 @@ const GroupInfo: React.FC<GroupInfoProps> = ({ onGroupNameChange }) => {
 							fill={colors['background-header']}
 							style={row.item.justify}
 						/>
-						<BText style={[margin.left.medium, row.item.justify, _styles.groupInfoAboutGroupsText]}>
+						<UnifiedText
+							style={[margin.left.medium, row.item.justify, _styles.groupInfoAboutGroupsText]}
+						>
 							{t('main.home.create-group-finalize.about')}
-						</BText>
+						</UnifiedText>
 					</View>
 				</View>
 				<View style={[margin.top.medium, _stylesCreateGroup.groupInfoAboutGroupsItems]}>

@@ -12,7 +12,7 @@ import { useContact, useConversation } from '@berty/react-redux'
 import { ButtonSetting } from '../shared-components/SettingsButtons'
 import { ContactAvatar } from '../avatars'
 import EnableNotificationsButton from '@berty/components/chat/EnableNotificationsButton'
-import { BText } from '../shared-components/BText'
+import { UnifiedText } from '../shared-components/UnifiedText'
 
 const OneToOneHeader: React.FC<{ contact: any }> = ({ contact }) => {
 	const [{ text, padding, flex }, { scaleSize }] = useStyles()
@@ -21,7 +21,7 @@ const OneToOneHeader: React.FC<{ contact: any }> = ({ contact }) => {
 	return (
 		<View style={[flex.large, { alignItems: 'center' }]}>
 			<ContactAvatar size={100 * scaleSize} publicKey={contact.publicKey} pressable />
-			<BText
+			<UnifiedText
 				numberOfLines={1}
 				style={[
 					text.size.scale(18),
@@ -31,7 +31,7 @@ const OneToOneHeader: React.FC<{ contact: any }> = ({ contact }) => {
 				]}
 			>
 				{contact.displayName}
-			</BText>
+			</UnifiedText>
 		</View>
 	)
 }

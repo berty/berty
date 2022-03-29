@@ -18,7 +18,7 @@ import logo from '../main/1_berty_picto.png'
 import { useTranslation } from 'react-i18next'
 import { ButtonSetting, ButtonSettingRow } from '../shared-components'
 import { checkPermissions } from '@berty/rnutil/checkPermissions'
-import { BText } from '../shared-components/BText'
+import { UnifiedText } from '../shared-components/UnifiedText'
 
 const QrCode: FC<{ size: number }> = ({ size }) => {
 	const client = useMessengerClient()
@@ -125,7 +125,7 @@ const ShareQr: FC = () => {
 				<View style={[margin.right.small]}>
 					<AccountAvatar size={24 * scaleSize} />
 				</View>
-				<BText>{account.displayName || ''}</BText>
+				<UnifiedText>{account.displayName || ''}</UnifiedText>
 			</View>
 			<QrCode size={qrCodeSize} />
 		</View>

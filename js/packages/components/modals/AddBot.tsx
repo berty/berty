@@ -17,7 +17,7 @@ import {
 	setPersistentOption,
 } from '@berty/redux/reducers/persistentOptions.reducer'
 import { useAppDispatch } from '@berty/react-redux'
-import { BText } from '../shared-components/BText'
+import { UnifiedText } from '../shared-components/UnifiedText'
 
 export const useStylesDefaultModal = () => {
 	const [{ width, border, padding, margin }] = useStyles()
@@ -128,15 +128,15 @@ export const AddBotBody: React.FC<{
 						height={60 * scaleHeight}
 						style={[row.item.justify, padding.top.large]}
 					/>
-					<BText style={[text.align.center, padding.top.small, text.size.large, text.bold.medium]}>
+					<UnifiedText style={[text.align.center, padding.top.small, text.size.large, text.bold]}>
 						{`👋 ADD ${displayName}?`}
-					</BText>
+					</UnifiedText>
 					<Text style={[text.align.center, padding.top.scale(20), padding.horizontal.medium]}>
-						<BText style={[text.bold.small]}>
+						<UnifiedText style={[text.light]}>
 							You don't have any contacts yet would you like to add the
-						</BText>
-						<BText style={[text.bold.medium]}>{` ${displayName} `}</BText>
-						<BText style={[text.bold.small]}>to discover and test conversations?</BText>
+						</UnifiedText>
+						<UnifiedText style={[text.bold]}>{` ${displayName} `}</UnifiedText>
+						<UnifiedText style={[text.light]}>to discover and test conversations?</UnifiedText>
 					</Text>
 				</View>
 				<View style={[row.center, padding.top.medium]}>
@@ -170,17 +170,17 @@ export const AddBotBody: React.FC<{
 							fill={colors['negative-asset']}
 							style={row.item.justify}
 						/>
-						<BText
+						<UnifiedText
 							style={[
 								padding.left.small,
 								row.item.justify,
 								text.size.scale(16),
-								text.bold.medium,
+								text.bold,
 								{ color: colors['negative-asset'] },
 							]}
 						>
 							SKIP
-						</BText>
+						</UnifiedText>
 					</TouchableOpacity>
 					<TouchableOpacity
 						style={[
@@ -222,17 +222,17 @@ export const AddBotBody: React.FC<{
 							fill={colors['background-header']}
 							style={row.item.justify}
 						/>
-						<BText
+						<UnifiedText
 							style={[
 								padding.left.small,
 								row.item.justify,
 								text.size.scale(16),
-								text.bold.medium,
+								text.bold,
 								{ color: colors['background-header'] },
 							]}
 						>
 							ADD !
-						</BText>
+						</UnifiedText>
 					</TouchableOpacity>
 				</View>
 			</View>

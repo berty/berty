@@ -6,7 +6,7 @@ import beapi from '@berty/api'
 import { useStyles } from '@berty/styles'
 import { useThemeColor, useMessengerClient } from '@berty/store'
 import { useAppDispatch } from '@berty/react-redux'
-import { BText } from '../../shared-components/BText'
+import { UnifiedText } from '../../shared-components/UnifiedText'
 
 const QuickReplyOption: React.FC<{
 	convPk: string
@@ -60,7 +60,9 @@ const QuickReplyOption: React.FC<{
 					{ borderColor: colors['secondary-text'] },
 				]}
 			>
-				<BText style={{ color: colors['secondary-text'] }}>{option.display || ''}</BText>
+				<UnifiedText style={{ color: colors['secondary-text'] }}>
+					{option.display || ''}
+				</UnifiedText>
 			</View>
 		</TouchableOpacity>
 	)

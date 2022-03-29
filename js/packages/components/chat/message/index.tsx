@@ -15,7 +15,7 @@ import {
 	PersistentOptionsKeys,
 	selectPersistentOptions,
 } from '@berty/redux/reducers/persistentOptions.reducer'
-import { BText } from '../../shared-components/BText'
+import { UnifiedText } from '../../shared-components/UnifiedText'
 
 //
 // Message => All messages (group/contact)
@@ -43,10 +43,10 @@ export const Message: React.FC<{
 			() => [
 				inte?.isMine ? text.align.right : text.align.left,
 				text.size.tiny,
-				text.bold.small,
+				text.light,
 				{ color: textColor },
 			],
-			[text.size, inte?.isMine, text.align.right, text.align.left, text.bold.small, textColor],
+			[text.size, inte?.isMine, text.align.right, text.align.left, text.light, textColor],
 		)
 
 		const viewStyle = React.useMemo(() => [padding.horizontal.medium], [padding.horizontal.medium])
@@ -75,7 +75,9 @@ export const Message: React.FC<{
 			return (
 				<>
 					<View style={viewStyle}>
-						<BText style={textStyle}>{sentDate ? timeFormat.fmtTimestamp3(sentDate) : ''}</BText>
+						<UnifiedText style={textStyle}>
+							{sentDate ? timeFormat.fmtTimestamp3(sentDate) : ''}
+						</UnifiedText>
 					</View>
 					<MessageInvitation message={inte} />
 				</>

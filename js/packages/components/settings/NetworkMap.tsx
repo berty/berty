@@ -10,7 +10,7 @@ import { useThemeColor, pbDateToNum } from '@berty/store'
 import { protocolMethodsHooks } from '@berty/store/methods'
 
 import { usePrevious } from '../hooks'
-import { BText } from '../shared-components/BText'
+import { UnifiedText } from '../shared-components/UnifiedText'
 
 const PeerItem: React.FC<{ item: beapi.protocol.PeerList.IPeer; highlighted: boolean }> = ({
 	item,
@@ -77,10 +77,10 @@ const PeerItem: React.FC<{ item: beapi.protocol.PeerList.IPeer; highlighted: boo
 						  })
 						: null}
 				</View>
-				<BText style={[text.align.center, { flex: 4 }]}>{id?.substring(0, 9)}</BText>
-				<BText numberOfLines={1} style={[text.align.center, { flex: 3 }]}>
+				<UnifiedText style={[text.align.center, { flex: 4 }]}>{id?.substring(0, 9)}</UnifiedText>
+				<UnifiedText numberOfLines={1} style={[text.align.center, { flex: 3 }]}>
 					{minLatency ? minLatency + 'ms' : '?'}
-				</BText>
+				</UnifiedText>
 				<TouchableOpacity
 					style={[row.center, { flex: 1 }]}
 					onPress={() => setIsDropdown(!isDropdown)}
@@ -95,7 +95,7 @@ const PeerItem: React.FC<{ item: beapi.protocol.PeerList.IPeer; highlighted: boo
 			</View>
 			{isDropdown && (
 				<View style={[padding.small]}>
-					<BText>{JSON.stringify(item, null, 2)}</BText>
+					<UnifiedText>{JSON.stringify(item, null, 2)}</UnifiedText>
 				</View>
 			)}
 		</View>
@@ -156,15 +156,15 @@ const NetworkMapBody: React.FC<{ peers: beapi.protocol.PeerList.IReply | null }>
 			{sortPeers?.length ? (
 				<View>
 					<View style={[margin.medium]}>
-						<BText
+						<UnifiedText
 							style={[
 								{ color: colors['alt-secondary-background-header'] },
-								text.bold.medium,
+								text.bold,
 								text.size.large,
 							]}
 						>
 							{`${t('settings.network-map.online-peers')} ${sortPeers.length}`}
-						</BText>
+						</UnifiedText>
 						<View
 							style={{
 								flexDirection: 'row',
@@ -175,16 +175,16 @@ const NetworkMapBody: React.FC<{ peers: beapi.protocol.PeerList.IReply | null }>
 						>
 							<View style={{ flexDirection: 'row', alignItems: 'center' }}>
 								<Icon name='berty' pack='custom' width={25} height={25} />
-								<BText
+								<UnifiedText
 									style={[
 										{ color: colors['alt-secondary-background-header'] },
-										text.bold.medium,
+										text.bold,
 										text.size.large,
 										margin.left.tiny,
 									]}
 								>
 									{typesPeers?.berty}
-								</BText>
+								</UnifiedText>
 							</View>
 							<View style={{ flexDirection: 'row', alignItems: 'center' }}>
 								<Icon
@@ -194,16 +194,16 @@ const NetworkMapBody: React.FC<{ peers: beapi.protocol.PeerList.IReply | null }>
 									width={25}
 									height={25}
 								/>
-								<BText
+								<UnifiedText
 									style={[
 										{ color: colors['alt-secondary-background-header'] },
-										text.bold.medium,
+										text.bold,
 										text.size.large,
 										margin.left.tiny,
 									]}
 								>
 									{typesPeers?.quic}
-								</BText>
+								</UnifiedText>
 							</View>
 							<View style={{ flexDirection: 'row', alignItems: 'center' }}>
 								<Icon
@@ -212,16 +212,16 @@ const NetworkMapBody: React.FC<{ peers: beapi.protocol.PeerList.IReply | null }>
 									width={25}
 									height={25}
 								/>
-								<BText
+								<UnifiedText
 									style={[
 										{ color: colors['alt-secondary-background-header'] },
-										text.bold.medium,
+										text.bold,
 										text.size.large,
 										margin.left.tiny,
 									]}
 								>
 									{typesPeers?.ble}
-								</BText>
+								</UnifiedText>
 							</View>
 						</View>
 					</View>

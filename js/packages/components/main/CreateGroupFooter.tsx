@@ -4,7 +4,7 @@ import { Icon } from '@ui-kitten/components'
 
 import { useStyles } from '@berty/styles'
 import { useThemeColor } from '@berty/store/hooks'
-import { BText } from '../shared-components/BText'
+import { UnifiedText } from '../shared-components/UnifiedText'
 
 type FooterCreateGroupProps = {
 	title: string
@@ -56,16 +56,16 @@ export const FooterCreateGroup: React.FC<FooterCreateGroupProps> = ({
 					{loading ? (
 						<ActivityIndicator color={colors['background-header']} />
 					) : (
-						<BText
+						<UnifiedText
 							style={[
-								text.bold.medium,
+								text.bold,
 								text.align.center,
 								_styles.footerCreateGroupText,
 								{ color: colors['background-header'] },
 							]}
 						>
 							{title}
-						</BText>
+						</UnifiedText>
 					)}
 				</View>
 				{icon && !loading && (

@@ -17,7 +17,7 @@ import { selectSelectedAccount, setStateOnBoardingReady } from '@berty/redux/red
 import { useDispatch, useSelector } from 'react-redux'
 import { importAccountFromDocumentPicker } from '../pickerUtils'
 import { GenericAvatar } from '../avatars'
-import { BText } from '../shared-components/BText'
+import { UnifiedText } from '../shared-components/UnifiedText'
 
 const AccountButton: React.FC<beapi.account.IAccountMetadata> = ({
 	avatarCid,
@@ -84,7 +84,7 @@ const AccountButton: React.FC<beapi.account.IAccountMetadata> = ({
 						{ height: heightButton, flexDirection: 'row', alignItems: 'center' },
 					]}
 				>
-					<BText>{name}</BText>
+					<UnifiedText>{name}</UnifiedText>
 				</View>
 			</View>
 		</TouchableOpacity>

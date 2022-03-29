@@ -4,7 +4,7 @@ import { TouchableOpacity, View } from 'react-native'
 import { useStyles } from '@berty/styles'
 
 import { useStylesNotification, NotificationTmpLogo } from './common'
-import { BText } from '../shared-components/BText'
+import { UnifiedText } from '../shared-components/UnifiedText'
 
 const Basic: React.FC<any> = ({ onPress, onClose, title, message }) => {
 	const [{ text }] = useStyles()
@@ -22,12 +22,12 @@ const Basic: React.FC<any> = ({ onPress, onClose, title, message }) => {
 			<View style={_styles.innerTouchable}>
 				<NotificationTmpLogo />
 				<View style={_styles.titleAndTextWrapper}>
-					<BText numberOfLines={1} style={[text.bold.medium]}>
+					<UnifiedText numberOfLines={1} style={[text.bold]}>
 						{title}
-					</BText>
-					<BText numberOfLines={1} ellipsizeMode='tail'>
+					</UnifiedText>
+					<UnifiedText numberOfLines={1} ellipsizeMode='tail'>
 						{message}
-					</BText>
+					</UnifiedText>
 				</View>
 			</View>
 		</TouchableOpacity>

@@ -11,7 +11,7 @@ import { useStyles } from '@berty/styles'
 import { ContactAvatar } from '../../avatars'
 import FromNow from '../../shared-components/FromNow'
 import { UnreadCount } from './UnreadCount'
-import { BText } from '../../shared-components/BText'
+import { UnifiedText } from '../../shared-components/UnifiedText'
 
 const useStylesContactRequest: any = () => {
 	const [{ border, padding, margin, width, height, row, flex }] = useStyles()
@@ -122,9 +122,9 @@ const ContactRequest: React.FC<beapi.messenger.IContact> = ({
 					minHeight: 0,
 				}}
 			>
-				<BText style={[text.align.center, text.bold.small, text.size.scale(14)]} numberOfLines={2}>
+				<UnifiedText style={[text.align.center, text.light, text.size.scale(14)]} numberOfLines={2}>
 					{displayName || ''}
-				</BText>
+				</UnifiedText>
 			</View>
 			<View
 				style={{
@@ -135,7 +135,7 @@ const ContactRequest: React.FC<beapi.messenger.IContact> = ({
 					minHeight: 0,
 				}}
 			>
-				<BText
+				<UnifiedText
 					style={[
 						text.size.tiny,
 						text.align.center,
@@ -146,8 +146,8 @@ const ContactRequest: React.FC<beapi.messenger.IContact> = ({
 					]}
 				>
 					{t('main.home.requests.card-title')}
-				</BText>
-				<BText
+				</UnifiedText>
+				<UnifiedText
 					style={[
 						text.size.tiny,
 						text.align.center,
@@ -158,7 +158,7 @@ const ContactRequest: React.FC<beapi.messenger.IContact> = ({
 					]}
 				>
 					<FromNow date={createdDate} />
-				</BText>
+				</UnifiedText>
 			</View>
 			<View style={buttonsWrapper}>
 				<TouchableOpacity
@@ -192,7 +192,7 @@ const ContactRequest: React.FC<beapi.messenger.IContact> = ({
 						width={17 * scaleSize}
 						height={17 * scaleSize}
 					/>
-					<BText
+					<UnifiedText
 						style={[
 							text.size.tiny,
 							padding.horizontal.tiny,
@@ -200,7 +200,7 @@ const ContactRequest: React.FC<beapi.messenger.IContact> = ({
 						]}
 					>
 						{t('main.home.requests.accept')}
-					</BText>
+					</UnifiedText>
 				</TouchableOpacity>
 			</View>
 		</TouchableOpacity>
@@ -219,17 +219,17 @@ export const IncomingRequests: React.FC<any> = ({ items, onLayout }) => {
 		>
 			<View>
 				<View style={[row.left]}>
-					<BText
+					<UnifiedText
 						style={[
 							text.size.huge,
-							text.bold.medium,
+							text.bold,
 							padding.horizontal.medium,
 							padding.bottom.small,
 							{ color: colors['reverted-main-text'] },
 						]}
 					>
 						{t('main.home.requests.title')}
-					</BText>
+					</UnifiedText>
 					<View style={{ position: 'relative', top: -2 * scaleSize, left: -(23 * scaleSize) }}>
 						<UnreadCount value={items.length} />
 					</View>

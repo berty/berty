@@ -9,7 +9,7 @@ import { pbDateToNum } from '@berty/store/convert'
 
 import { timeFormat } from '../../helpers'
 import { InteractionMonitorMetadata } from '@berty/store/types.gen'
-import { BText } from '../../shared-components/BText'
+import { UnifiedText } from '../../shared-components/UnifiedText'
 
 const eventMonitorTypes = beapi.protocol.MonitorGroup.TypeEventMonitor
 
@@ -79,41 +79,38 @@ export const MessageMonitorMetadata: React.FC<{ inte: InteractionMonitorMetadata
 				>
 					<Icon name='monitor-outline' fill={colors['background-header']} width={25} height={25} />
 				</View>
-				<BText
-					style={[
-						{ textAlign: 'left', color: colors['background-header'] },
-						text.bold.small,
-						text.italic,
-					]}
+				<UnifiedText
+					style={[text.lightItalic, { textAlign: 'left', color: colors['background-header'] }]}
 				>
 					{monitorPayloadTitle}
-				</BText>
+				</UnifiedText>
 
 				{monitorPayloadSubtitle &&
 					monitorPayloadSubtitle.map((subtitle: string, index: number) => (
-						<BText
+						<UnifiedText
 							key={index}
 							style={[
-								{ textAlign: 'left', color: colors['background-header'] },
-								text.bold.small,
-								text.italic,
+								{
+									textAlign: 'left',
+									color: colors['background-header'],
+								},
+								text.lightItalic,
 								margin.top.tiny,
 							]}
 						>
 							{subtitle}
-						</BText>
+						</UnifiedText>
 					))}
 			</View>
-			<BText
+			<UnifiedText
 				style={[
 					{ alignSelf: 'flex-end', color: colors['background-header'] },
-					text.bold.small,
-					text.italic,
+					text.lightItalic,
 					text.size.small,
 				]}
 			>
 				{timeFormat.fmtTimestamp3(sentDate)}
-			</BText>
+			</UnifiedText>
 		</View>
 	)
 }

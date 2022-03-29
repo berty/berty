@@ -13,7 +13,7 @@ import { TabBar } from '../shared-components/TabBar'
 import { FingerprintContent } from '../shared-components/FingerprintContent'
 import logo from '../main/1_berty_picto.png'
 import { AccountAvatar } from '../avatars'
-import { BText } from '../shared-components/BText'
+import { UnifiedText } from '../shared-components/UnifiedText'
 
 //
 // Settings My Berty ID Vue
@@ -44,7 +44,7 @@ const ContactRequestQR = () => {
 	const { qrCodeSize } = useStylesBertyId(styleBertyIdOptions)
 
 	if (!account.link) {
-		return <BText>Internal error</BText>
+		return <UnifiedText>Internal error</UnifiedText>
 	}
 	// I would like to use binary mode in QR but the scanner used seems to not support it, extended tests were done
 	return (
@@ -67,7 +67,7 @@ const Fingerprint: React.FC = () => {
 	const { bertyIdContentScaleFactor } = useStylesBertyId(styleBertyIdOptions)
 
 	if (!account) {
-		return <BText>Client not initialized</BText>
+		return <UnifiedText>Client not initialized</UnifiedText>
 	}
 	return (
 		<View
@@ -93,7 +93,7 @@ const SelectedContent: React.FC<{ contentName: string }> = ({ contentName }) => 
 		case 'fingerprint':
 			return <Fingerprint />
 		default:
-			return <BText>Error: Unknown content name "{contentName}"</BText>
+			return <UnifiedText>Error: Unknown content name "{contentName}"</UnifiedText>
 	}
 }
 

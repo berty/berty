@@ -16,7 +16,7 @@ import logo from '../main/1_berty_picto.png'
 import { MemberAvatar, MultiMemberAvatar } from '../avatars'
 import EnableNotificationsButton from '@berty/components/chat/EnableNotificationsButton'
 import ImagePicker, { ImageOrVideo } from '@berty/polyfill/react-native-image-crop-picker'
-import { BText } from '../shared-components/BText'
+import { UnifiedText } from '../shared-components/UnifiedText'
 
 const GroupChatSettingsHeader: React.FC<{ publicKey: Maybe<string> }> = ({ publicKey }) => {
 	const conv = useConversation(publicKey)
@@ -110,7 +110,7 @@ const GroupChatSettingsHeader: React.FC<{ publicKey: Maybe<string> }> = ({ publi
 					>
 						<MultiMemberAvatar publicKey={publicKey} size={80} />
 					</TouchableOpacity>
-					<BText style={[text.size.small]}>{conv?.displayName || ''}</BText>
+					<UnifiedText style={[text.size.small]}>{conv?.displayName || ''}</UnifiedText>
 					<View style={[padding.top.scale(18 * scaleHeight)]}>
 						{conv?.link ? (
 							<QRCode

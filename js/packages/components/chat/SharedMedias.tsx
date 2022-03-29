@@ -35,7 +35,7 @@ import { timeFormat } from '../helpers'
 import { isBertyDeepLink } from '../chat/message/UserMessageComponents'
 import { useSelector } from 'react-redux'
 import { selectProtocolClient } from '@berty/redux/reducers/ui.reducer'
-import { BText } from '../shared-components/BText'
+import { UnifiedText } from '../shared-components/UnifiedText'
 
 const initialLayout = { width: Dimensions.get('window').width }
 const linkify = LinkifyIt().tlds(tlds, true)
@@ -162,9 +162,9 @@ export const SharedMedias: ScreenFC<'Chat.SharedMedias'> = ({
 	const mediaView = () => (
 		<ScrollView contentContainerStyle={[padding.medium]}>
 			{!pictures.length && (
-				<BText style={[text.align.center, margin.left.small, text.size.scale(18)]}>
+				<UnifiedText style={[text.align.center, margin.left.small, text.size.scale(18)]}>
 					No records found
-				</BText>
+				</UnifiedText>
 			)}
 
 			<View
@@ -206,9 +206,9 @@ export const SharedMedias: ScreenFC<'Chat.SharedMedias'> = ({
 	const documentsView = () => (
 		<ScrollView contentContainerStyle={[padding.medium]}>
 			{!documents.length && (
-				<BText style={[text.align.center, margin.left.small, text.size.scale(18)]}>
+				<UnifiedText style={[text.align.center, margin.left.small, text.size.scale(18)]}>
 					No records found
-				</BText>
+				</UnifiedText>
 			)}
 
 			<View style={{}}>
@@ -255,17 +255,14 @@ export const SharedMedias: ScreenFC<'Chat.SharedMedias'> = ({
 								fill={colors['secondary-text']}
 								style={margin.right.small}
 							/>
-							<BText
-								style={{
-									fontStyle: 'italic',
-									textDecorationLine: 'underline',
-								}}
-							>
+							<UnifiedText style={[text.italic, { textDecorationLine: 'underline' }]}>
 								{doc.displayName || doc.filename || 'document'}
-							</BText>
+							</UnifiedText>
 						</TouchableOpacity>
 
-						<BText style={[text.size.small]}>{timeFormat.fmtTimestamp3(doc.sentDate)}</BText>
+						<UnifiedText style={[text.size.small]}>
+							{timeFormat.fmtTimestamp3(doc.sentDate)}
+						</UnifiedText>
 					</View>
 				))}
 			</View>
@@ -275,9 +272,9 @@ export const SharedMedias: ScreenFC<'Chat.SharedMedias'> = ({
 	const linksView = () => (
 		<ScrollView contentContainerStyle={[padding.medium]}>
 			{!links.length && (
-				<BText style={[text.align.center, margin.left.small, text.size.scale(18)]}>
+				<UnifiedText style={[text.align.center, margin.left.small, text.size.scale(18)]}>
 					No records found
-				</BText>
+				</UnifiedText>
 			)}
 
 			<View style={{}}>
@@ -300,18 +297,18 @@ export const SharedMedias: ScreenFC<'Chat.SharedMedias'> = ({
 							linkStyle={{ textDecorationLine: 'underline' }}
 							linkify={linkify}
 						>
-							<BText
+							<UnifiedText
 								style={{
 									color: colors['background-header'],
 								}}
 							>
 								{url}
-							</BText>
+							</UnifiedText>
 						</Hyperlink>
 
-						<BText style={[text.size.small, { marginTop: 8 }]}>
+						<UnifiedText style={[text.size.small, { marginTop: 8 }]}>
 							{timeFormat.fmtTimestamp3(sentDate)}
-						</BText>
+						</UnifiedText>
 					</View>
 				))}
 			</View>
@@ -360,7 +357,7 @@ export const SharedMedias: ScreenFC<'Chat.SharedMedias'> = ({
 								fill={colors['background-header']}
 								{...tab.icon}
 							/>
-							<BText
+							<UnifiedText
 								style={[
 									margin.left.small,
 									text.size.scale(activeIndex === index ? 17 : 16),
@@ -368,7 +365,7 @@ export const SharedMedias: ScreenFC<'Chat.SharedMedias'> = ({
 								]}
 							>
 								{tab.title}
-							</BText>
+							</UnifiedText>
 						</TouchableOpacity>
 					))}
 				</View>

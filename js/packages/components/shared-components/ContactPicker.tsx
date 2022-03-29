@@ -16,7 +16,7 @@ import {
 } from '@berty/redux/reducers/groupCreationForm.reducer'
 import { berty } from '@berty/api/root.pb'
 import { useAppDispatch, useAppSelector, useContactSearchResults } from '@berty/react-redux'
-import { BText } from './BText'
+import { UnifiedText } from './UnifiedText'
 
 // Styles
 const useStylesCreateGroup = () => {
@@ -58,12 +58,12 @@ const ContactItem: React.FC<ContactItemProps> = ({ contact, added, separateBar =
 			>
 				<View style={[row.left, row.item.justify, padding.vertical.small, { flexShrink: 1 }]}>
 					<ContactAvatar size={50 * scaleSize} publicKey={contact.publicKey} />
-					<BText
+					<UnifiedText
 						numberOfLines={1}
 						style={[margin.left.medium, row.item.justify, { flexShrink: 1 }]}
 					>
 						{contact.displayName!}
-					</BText>
+					</UnifiedText>
 				</View>
 				<View style={[row.item.justify]}>
 					<CheckBox

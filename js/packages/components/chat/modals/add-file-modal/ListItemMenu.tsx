@@ -3,7 +3,7 @@ import { TouchableOpacity } from 'react-native'
 import { Icon } from '@ui-kitten/components'
 
 import { useStyles } from '@berty/styles'
-import { BText } from '../../../shared-components/BText'
+import { UnifiedText } from '../../../shared-components/UnifiedText'
 
 export const ListItemMenu: React.FC<{
 	title: string
@@ -24,7 +24,7 @@ export const ListItemMenu: React.FC<{
 			style={[padding.vertical.medium, margin.horizontal.big, { alignItems: 'center' }]}
 		>
 			<Icon {...iconProps} height={iconProps.height || 50} width={iconProps.width || 50} />
-			<BText style={[text.align.center, margin.top.small]}>{title}</BText>
+			<UnifiedText style={[text.align.center, margin.top.small]}>{title}</UnifiedText>
 		</TouchableOpacity>
 	)
 }

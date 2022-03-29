@@ -10,7 +10,7 @@ import beapi from '@berty/api'
 import { normalizeVolumeIntensities, WaveForm } from '../audioMessageCommon'
 import { useSelector } from 'react-redux'
 import { selectProtocolClient } from '@berty/redux/reducers/ui.reducer'
-import { BText } from '../../shared-components/BText'
+import { UnifiedText } from '../../shared-components/UnifiedText'
 
 const AudioPreview: React.FC<{
 	media: beapi.messenger.IMedia
@@ -43,13 +43,13 @@ const AudioPreview: React.FC<{
 	if (normalizedIntensities === null) {
 		return (
 			<View style={[{ flex: 1 }, padding.horizontal.small, margin.right.small]}>
-				<BText
+				<UnifiedText
 					style={{ color: colors['reverted-main-text'] }}
 					numberOfLines={1}
 					ellipsizeMode='tail'
 				>
 					{media.displayName || media.filename || 'audio'}
-				</BText>
+				</UnifiedText>
 			</View>
 		)
 	}

@@ -16,7 +16,7 @@ import { ContactAvatar } from '../avatars'
 import { TabBar } from '../shared-components/TabBar'
 import { FingerprintContent } from '../shared-components/FingerprintContent'
 import InvalidScan from './InvalidScan'
-import { BText } from '../shared-components/BText'
+import { UnifiedText } from '../shared-components/UnifiedText'
 
 const useStylesModal = () => {
 	const [{ width, border, height, opacity }] = useStyles()
@@ -50,9 +50,9 @@ const SelectedContent = ({
 			return <FingerprintContent seed={pubKey} isEncrypted={isEncrypted} />
 		default:
 			return (
-				<BText style={[padding.horizontal.medium]}>
+				<UnifiedText style={[padding.horizontal.medium]}>
 					Error: Unknown content name "{contentName}"
-				</BText>
+				</UnifiedText>
 			)
 	}
 }
@@ -129,7 +129,7 @@ const AddThisContact: React.FC<{
 					/>
 				</View>
 				<View style={[padding.top.scale(55)]}>
-					<BText style={{ textAlign: 'center' }}>{displayName}</BText>
+					<UnifiedText style={{ textAlign: 'center' }}>{displayName}</UnifiedText>
 					<TabBar
 						tabs={[
 							{
@@ -172,19 +172,19 @@ const AddThisContact: React.FC<{
 							]}
 						>
 							<Icon name='info-outline' fill={colors['background-header']} width={15} height={15} />
-							<BText
+							<UnifiedText
 								style={[
 									{
 										color: colors['background-header'],
 										paddingLeft: 5,
 									},
 									text.align.center,
-									text.bold.small,
+									text.light,
 									text.size.small,
 								]}
 							>
 								Enter the contact password
-							</BText>
+							</UnifiedText>
 						</View>
 						<View
 							style={[
@@ -202,7 +202,7 @@ const AddThisContact: React.FC<{
 								onChangeText={setPassword}
 								autoCapitalize='none'
 								editable={true}
-								style={[{ fontFamily: 'Open Sans' }, text.bold.small]}
+								style={[{ fontFamily: 'Open Sans' }, text.light]}
 								placeholder='Password...'
 							/>
 						</View>
@@ -222,9 +222,9 @@ const AddThisContact: React.FC<{
 							{ backgroundColor: colors['positive-asset'] },
 						]}
 					>
-						<BText style={{ textAlign: 'center', color: colors['background-header'] }}>
+						<UnifiedText style={{ textAlign: 'center', color: colors['background-header'] }}>
 							ADD THIS CONTACT
-						</BText>
+						</UnifiedText>
 					</TouchableOpacity>
 				</View>
 			</View>

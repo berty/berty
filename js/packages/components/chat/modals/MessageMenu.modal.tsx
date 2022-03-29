@@ -15,7 +15,7 @@ import {
 
 import { useModal } from '../../providers/modal.provider'
 import { EmojiKeyboard } from './EmojiKeyboard.modal'
-import { BText } from '@berty-tech/components/shared-components/BText'
+import { UnifiedText } from '@berty-tech/components/shared-components/UnifiedText'
 
 const emojis = [
 	':+1:',
@@ -79,7 +79,7 @@ export const MessageMenu: FC<{
 								hide()
 							}}
 						>
-							<BText>{`${getEmojiByName(emoji as string)}`}</BText>
+							<UnifiedText>{`${getEmojiByName(emoji as string)}`}</UnifiedText>
 						</TouchableOpacity>
 					))}
 					<TouchableOpacity
@@ -117,7 +117,7 @@ export const MessageMenu: FC<{
 						height={30}
 						width={30}
 					/>
-					<BText>{title}</BText>
+					<UnifiedText>{title}</UnifiedText>
 				</TouchableOpacity>
 			))}
 		</View>

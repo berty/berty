@@ -17,7 +17,7 @@ import beapi from '@berty/api'
 import RNFS from '@berty/polyfill/rnfs'
 
 import { ImageCounter } from '../../ImageCounter'
-import { BText } from '../../../shared-components/BText'
+import { UnifiedText } from '../../../shared-components/UnifiedText'
 
 const GALLERY_IMAGE_PER_PAGE = 30
 
@@ -155,7 +155,7 @@ export const GallerySection: React.FC<{
 				{loading ? (
 					<ActivityIndicator />
 				) : (
-					galleryContents.length <= 0 && <BText>{t('chat.files.no-images')}</BText>
+					galleryContents.length <= 0 && <UnifiedText>{t('chat.files.no-images')}</UnifiedText>
 				)}
 				{galleryContents.map(content => (
 					<TouchableOpacity

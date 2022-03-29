@@ -14,7 +14,7 @@ import { useOneToOneContact, useConversation } from '@berty/react-redux'
 import { MessageSystemWrapper } from './MessageSystemWrapper'
 import { MultiMemberAvatar } from '../../avatars'
 import { base64ToURLBase64 } from '../../utils'
-import { BText } from '../../shared-components/BText'
+import { UnifiedText } from '../../shared-components/UnifiedText'
 
 export const MessageInvitationButton: React.FC<{
 	onPress?: any
@@ -62,9 +62,9 @@ export const MessageInvitationButton: React.FC<{
 				) : (
 					<Icon name={icon} width={24} height={24} fill={color} style={[opacity(styleOpacity)]} />
 				)}
-				<BText style={[text.align.center, text.bold.medium, opacity(styleOpacity), { color }]}>
+				<UnifiedText style={[text.align.center, text.bold, opacity(styleOpacity), { color }]}>
 					{title}
-				</BText>
+				</UnifiedText>
 			</View>
 		</TouchableOpacity>
 	)
@@ -76,11 +76,11 @@ const MessageInvitationSent: React.FC<{ message: InteractionGroupInvitation }> =
 
 	const conversationContact = useOneToOneContact(message.conversationPublicKey || '')
 	return (
-		<BText style={[text.size.scale(14), text.align.center]}>
+		<UnifiedText style={[text.size.scale(14), text.align.center]}>
 			{`${t('chat.one-to-one.contact-request-box.you-invited')} ${
 				conversationContact?.displayName || t('chat.one-to-one.contact-request-box.this-contact')
 			} ${t('chat.one-to-one.contact-request-box.to-a-group')}`}
-		</BText>
+		</UnifiedText>
 	)
 }
 
@@ -155,15 +155,17 @@ const MessageInvitationReceived: React.FC<{ message: InteractionGroupInvitation 
 	return (
 		<>
 			<View style={[row.left, flex.align.center, flex.justify.center]}>
-				<BText style={[text.bold.medium]}>
+				<UnifiedText style={[text.bold]}>
 					{t('chat.one-to-one.contact-request-box.group-invitation')}
-				</BText>
+				</UnifiedText>
 			</View>
 			<View style={[margin.top.small, flex.align.center, flex.justify.center]}>
 				<View style={margin.bottom.small}>
 					<MultiMemberAvatar publicKey={convPk} size={40} fallbackNameSeed={displayName} />
 				</View>
-				<BText style={[text.size.small, text.bold.small, margin.bottom.small]}>{displayName}</BText>
+				<UnifiedText style={[text.size.small, text.light, margin.bottom.small]}>
+					{displayName}
+				</UnifiedText>
 			</View>
 			<View style={[row.center, flex.justify.spaceEvenly, flex.align.center, margin.top.medium]}>
 				<MessageInvitationButton
@@ -204,18 +206,18 @@ const MessageInvitationReceived: React.FC<{ message: InteractionGroupInvitation 
 				/>
 			</View>
 			{error && (
-				<BText
+				<UnifiedText
 					style={[
 						margin.top.small,
 						margin.horizontal.small,
 						text.size.small,
-						text.bold.small,
+						text.light,
 						text.align.center,
 						{ color: colors['warning-asset'] },
 					]}
 				>
 					{t('chat.one-to-one.contact-request-box.error')}
-				</BText>
+				</UnifiedText>
 			)}
 		</>
 	)

@@ -31,7 +31,7 @@ import {
 } from '../../audioMessageCommon'
 import { RecordingComponent } from './RecordingComponent'
 import { PreviewComponent } from './PreviewComponent'
-import { BText } from '../../../shared-components/BText'
+import { UnifiedText } from '../../../shared-components/UnifiedText'
 
 enum MicPermStatus {
 	UNDEFINED = 0,
@@ -514,7 +514,7 @@ export const RecordComponent: React.FC<{
 							margin.right.small,
 						]}
 					>
-						<BText style={{ color: colors['reverted-main-text'] }}>{helpMessage}</BText>
+						<UnifiedText style={{ color: colors['reverted-main-text'] }}>{helpMessage}</UnifiedText>
 					</View>
 				</TouchableOpacity>
 			)}

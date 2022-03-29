@@ -11,7 +11,7 @@ import { BlurView } from '@berty/polyfill/react-native-community-blur'
 
 import Avatar from './Buck_Berty_Icon_Card.svg'
 import { useStylesDefaultModal } from './AddBot'
-import { BText } from '../shared-components/BText'
+import { UnifiedText } from '../shared-components/UnifiedText'
 
 export const ThemeColorBody: React.FC<{ closeModal: () => void }> = ({ closeModal }) => {
 	const [themeName, setThemeName] = React.useState<string>('')
@@ -65,14 +65,14 @@ export const ThemeColorBody: React.FC<{ closeModal: () => void }> = ({ closeModa
 				]}
 			>
 				<View style={[margin.top.scale(70 * scaleHeight)]}>
-					<BText style={[text.align.center, padding.top.small, text.size.large, text.bold.medium]}>
+					<UnifiedText style={[text.align.center, padding.top.small, text.size.large, text.bold]}>
 						{`🎨 ${t('modals.save-theme.title')}`}
-					</BText>
+					</UnifiedText>
 					<View
 						style={[padding.top.scale(20), padding.horizontal.medium, { flexDirection: 'column' }]}
 					>
 						<View>
-							<BText style={[text.bold.small]}>{t('modals.save-theme.desc')}</BText>
+							<UnifiedText style={[text.light]}>{t('modals.save-theme.desc')}</UnifiedText>
 						</View>
 						<View
 							style={[
@@ -87,7 +87,7 @@ export const ThemeColorBody: React.FC<{ closeModal: () => void }> = ({ closeModa
 								multiline
 								onChange={({ nativeEvent }) => setThemeName(nativeEvent.text)}
 								style={[
-									text.bold.small,
+									text.light,
 									{
 										fontFamily: 'Open Sans',
 										color: colors['background-header'],
@@ -119,16 +119,16 @@ export const ThemeColorBody: React.FC<{ closeModal: () => void }> = ({ closeModa
 							fill={colors['negative-asset']}
 							style={row.item.justify}
 						/>
-						<BText
+						<UnifiedText
 							style={[
 								padding.left.small,
 								row.item.justify,
-								text.bold.medium,
+								text.bold,
 								{ color: colors['negative-asset'] },
 							]}
 						>
 							{t('modals.save-theme.cancel')}
-						</BText>
+						</UnifiedText>
 					</TouchableOpacity>
 					<TouchableOpacity
 						style={[
@@ -153,16 +153,16 @@ export const ThemeColorBody: React.FC<{ closeModal: () => void }> = ({ closeModa
 							fill={colors['background-header']}
 							style={row.item.justify}
 						/>
-						<BText
+						<UnifiedText
 							style={[
 								padding.left.small,
 								row.item.justify,
-								text.bold.medium,
+								text.bold,
 								{ color: colors['background-header'] },
 							]}
 						>
 							{t('modals.save-theme.add')}
-						</BText>
+						</UnifiedText>
 					</TouchableOpacity>
 				</View>
 			</View>

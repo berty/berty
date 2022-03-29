@@ -94,16 +94,12 @@ export const mapDeclarationWithDims = (
 		border: mapBorder(decl, { scaleSize }),
 		text: {
 			color: mapColorsDeclaration(decl.colors, v => ({ color: v })),
-			bold: {
-				...StyleSheet.create({
-					// default is '600'
-					small: { fontWeight: '500' },
-					medium: { fontWeight: 'bold' }, // '700'
-					huge: { fontWeight: '900' },
-				}),
-			},
 			...StyleSheet.create({
-				italic: { fontStyle: 'italic' },
+				italic: { fontFamily: 'Italic Open Sans' },
+				bold: { fontFamily: 'Bold Open Sans' },
+				extraBold: { fontFamily: 'Extra Bold Open Sans' },
+				light: { fontFamily: 'Light Open Sans' },
+				lightItalic: { fontFamily: 'Light Italic Open Sans' },
 			}),
 			size: {
 				...StyleSheet.create({

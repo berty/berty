@@ -11,7 +11,7 @@ import { FingerprintContent } from '../shared-components/FingerprintContent'
 import { TabBar } from '../shared-components/TabBar'
 import { ContactAvatar } from '../avatars'
 import UserDevicesList from '@berty/components/chat/DeviceList'
-import { BText } from '../shared-components/BText'
+import { UnifiedText } from '../shared-components/UnifiedText'
 
 const ContactSettingsHeaderContent: React.FC = ({ children }) => {
 	const [{ margin }] = useStyles()
@@ -26,11 +26,13 @@ const InfoTab: React.FC<{ contactPk: string }> = ({ contactPk }) => {
 
 	return (
 		<>
-			<BText style={[text.bold.small, padding.left.small]}>{contact?.displayName || ''}</BText>
+			<UnifiedText style={[text.light, padding.left.small]}>
+				{contact?.displayName || ''}
+			</UnifiedText>
 			<UserDevicesList conversationPk={contact?.conversationPublicKey || ''} memberPk={contactPk} />
-			<BText style={[text.bold.small, padding.left.small]}>
+			<UnifiedText style={[text.light, padding.left.small]}>
 				{t('chat.contact-settings.my-devices')}
-			</BText>
+			</UnifiedText>
 			<UserDevicesList
 				conversationPk={contact?.conversationPublicKey || ''}
 				memberPk={conv?.localMemberPublicKey || ''}
@@ -49,7 +51,7 @@ const SelectedContent: React.FC<{ contentName: string; publicKey: string }> = ({
 		case 'info':
 			return <InfoTab contactPk={publicKey} />
 		default:
-			return <BText>Error: Unknown content name "{contentName}"</BText>
+			return <UnifiedText>Error: Unknown content name "{contentName}"</UnifiedText>
 	}
 }
 
@@ -73,9 +75,9 @@ const ContactSettingsHeader: React.FC<{ contact: any }> = ({ contact }) => {
 					<ContactAvatar size={100} publicKey={contact.publicKey} />
 				</View>
 				<View style={[padding.horizontal.medium, padding.bottom.medium, padding.top.scale(65)]}>
-					<BText style={[text.size.big, text.align.center, text.bold.small]}>
+					<UnifiedText style={[text.size.big, text.align.center, text.light]}>
 						{contact.displayName}
-					</BText>
+					</UnifiedText>
 					<TabBar
 						tabs={[
 							{

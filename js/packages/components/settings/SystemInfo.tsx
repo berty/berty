@@ -7,7 +7,7 @@ import { useStyles } from '@berty/styles'
 import { ScreenFC } from '@berty/navigation'
 import messengerMethodsHooks from '@berty/store/methods'
 import { useMountEffect, useThemeColor, accountService } from '@berty/store'
-import { BText } from '../shared-components/BText'
+import { UnifiedText } from '../shared-components/UnifiedText'
 
 export const SystemInfo: ScreenFC<'Settings.SystemInfo'> = ({ navigation }) => {
 	const [{ padding }, { scaleSize }] = useStyles()
@@ -55,14 +55,16 @@ export const SystemInfo: ScreenFC<'Settings.SystemInfo'> = ({ navigation }) => {
 				{done ? (
 					error ? (
 						<View style={{ alignItems: 'center', justifyContent: 'center', marginTop: 100 }}>
-							<BText style={{ color: colors['warning-asset'] }}>{error.toString()}</BText>
+							<UnifiedText style={{ color: colors['warning-asset'] }}>
+								{error.toString()}
+							</UnifiedText>
 						</View>
 					) : (
-						<BText selectable={true} style={{ height: '95%' }}>
+						<UnifiedText selectable={true} style={{ height: '95%' }}>
 							{JSON.stringify(systemInfo, null, 2)}
 							{'\n'}
 							{JSON.stringify(networkConfig, null, 2)}
-						</BText>
+						</UnifiedText>
 					)
 				) : (
 					<View style={{ alignItems: 'center', justifyContent: 'center', marginTop: 100 }}>

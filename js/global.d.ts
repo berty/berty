@@ -4,6 +4,7 @@ declare module '*.svg' {
 	const content: React.FC<SvgProps>
 	export default content
 }
+declare module '*.ttf'
 
 declare var __DEV__: boolean | undefined
 

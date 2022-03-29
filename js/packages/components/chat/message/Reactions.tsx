@@ -12,7 +12,7 @@ import { useConversationMembersDict } from '@berty/react-redux'
 import { ContactAvatar } from '@berty/components/avatars'
 
 import { useModal } from '../../providers/modal.provider'
-import { BText } from '../../shared-components/BText'
+import { UnifiedText } from '../../shared-components/UnifiedText'
 
 const MemberItem: React.FC<{ member: any; divider: boolean }> = ({ member, divider = true }) => {
 	const [{ row, margin, padding, border }, { scaleSize }] = useStyles()
@@ -22,9 +22,12 @@ const MemberItem: React.FC<{ member: any; divider: boolean }> = ({ member, divid
 		<View>
 			<View style={[row.left, row.item.justify, padding.vertical.small, { flexShrink: 1 }]}>
 				<ContactAvatar size={50 * scaleSize} publicKey={member?.publicKey} />
-				<BText numberOfLines={1} style={[margin.left.small, row.item.justify, { flexShrink: 1 }]}>
+				<UnifiedText
+					numberOfLines={1}
+					style={[margin.left.small, row.item.justify, { flexShrink: 1 }]}
+				>
 					{member?.displayName!}
-				</BText>
+				</UnifiedText>
 			</View>
 			{divider && (
 				<View style={[border.scale(0.6), { borderColor: `${colors['secondary-text']}90` }]} />
@@ -118,13 +121,15 @@ const ReactionList: FC<{
 							}
 						}}
 					>
-						<BText style={[padding.right.small]}>{`${getEmojiByName(emoji as string)}`}</BText>
+						<UnifiedText style={[padding.right.small]}>{`${getEmojiByName(
+							emoji as string,
+						)}`}</UnifiedText>
 						<AnimatedNumber
 							number={count as unknown as number}
 							fontStyle={[
 								text.size.small,
+								text.bold,
 								{
-									fontWeight: 'bold',
 									color:
 										currentEmoji === emoji
 											? colors['main-background']
@@ -137,18 +142,16 @@ const ReactionList: FC<{
 			</ScrollView>
 			<View style={{ height: 300 }}>
 				<View>
-					<BText
+					<UnifiedText
 						style={[
 							padding.medium,
 							text.size.small,
-							{
-								fontWeight: 'bold',
-								color: colors['background-header'],
-							},
+							text.bold,
+							{ color: colors['background-header'] },
 						]}
 					>
 						{currentEmoji}
-					</BText>
+					</UnifiedText>
 				</View>
 				<FlatList
 					data={userList}
@@ -217,9 +220,9 @@ export const Reactions: FC<{
 								},
 							]}
 						>
-							<BText style={[text.size.tiny, { marginHorizontal: 2 }]}>
+							<UnifiedText style={[text.size.tiny, { marginHorizontal: 2 }]}>
 								{`${getEmojiByName(emoji as string)}`}
-							</BText>
+							</UnifiedText>
 							<AnimatedNumber
 								number={count as unknown as number}
 								fontStyle={[

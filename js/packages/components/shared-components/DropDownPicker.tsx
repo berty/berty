@@ -3,7 +3,7 @@ import { useStyles } from '@berty/styles'
 import { Icon } from '@ui-kitten/components'
 import React, { useState } from 'react'
 import { Animated, Easing, TouchableOpacity, View } from 'react-native'
-import { BText } from './BText'
+import { UnifiedText } from './UnifiedText'
 
 export type Item = {
 	label: string
@@ -97,9 +97,9 @@ export const DropDownPicker: React.FC<{
 					</View>
 				) : null}
 				{placeholder && !selectedItem?.label ? (
-					<BText style={{ color: `${colors['main-text']}50` }}>{placeholder}</BText>
+					<UnifiedText style={{ color: `${colors['main-text']}50` }}>{placeholder}</UnifiedText>
 				) : (
-					<BText>{selectedItem?.label}</BText>
+					<UnifiedText>{selectedItem?.label}</UnifiedText>
 				)}
 				<View style={[{ flex: 1, alignItems: 'flex-end' }]}>
 					<Animated.View style={[{ transform: [{ rotate: rotateAnimation }] }]}>
@@ -123,7 +123,7 @@ export const DropDownPicker: React.FC<{
 						style={[padding.medium, { flexDirection: 'row', alignItems: 'center' }]}
 						key={key}
 					>
-						<BText key={item.value}>{item.label}</BText>
+						<UnifiedText key={item.value}>{item.label}</UnifiedText>
 						<View
 							style={[
 								border.medium,

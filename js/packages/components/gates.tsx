@@ -23,7 +23,7 @@ import {
 	selectMessengerIsReadyingBasics,
 	selectStreamInProgress,
 } from '@berty/redux/reducers/ui.reducer'
-import { BText } from './shared-components/BText'
+import { UnifiedText } from './shared-components/UnifiedText'
 
 export const LoaderDots: React.FC = () => {
 	const colors = useThemeColor()
@@ -56,9 +56,9 @@ const StreamInProgressCmp: React.FC<{}> = () => {
 		<View style={{ backgroundColor: colors['main-background'], flex: 1 }}>
 			<StatusBar backgroundColor={colors['main-background']} barStyle='dark-content' />
 
-			<BText
+			<UnifiedText
 				style={[
-					text.bold.small,
+					text.light,
 					text.align.center,
 					{
 						position: 'absolute',
@@ -69,7 +69,7 @@ const StreamInProgressCmp: React.FC<{}> = () => {
 				]}
 			>
 				{stream?.stream || 'Test'}
-			</BText>
+			</UnifiedText>
 			<View
 				style={{
 					flex: 1,
@@ -77,10 +77,12 @@ const StreamInProgressCmp: React.FC<{}> = () => {
 					justifyContent: 'center',
 				}}
 			>
-				<BText style={[text.bold.small, text.align.center]}>{stream?.msg.doing || 'Doing'}</BText>
-				<BText style={[text.bold.small, text.align.center]}>
+				<UnifiedText style={[text.light, text.align.center]}>
+					{stream?.msg.doing || 'Doing'}
+				</UnifiedText>
+				<UnifiedText style={[text.light, text.align.center]}>
 					{stream?.msg.completed || '0'} / {stream?.msg.total || '6'}
-				</BText>
+				</UnifiedText>
 				{Platform.OS === 'web' ? (
 					<ActivityIndicator size='large' />
 				) : (
@@ -119,10 +121,12 @@ export const StreamGate: React.FC = ({ children }) => {
 				]}
 			>
 				<StatusBar backgroundColor={colors['main-background']} barStyle='dark-content' />
-				<BText style={{ color: colors['warning-asset'] }}>{streamError.toString()}</BText>
-				<BText style={{ marginTop: gutter }}>
+				<UnifiedText style={{ color: colors['warning-asset'] }}>
+					{streamError.toString()}
+				</UnifiedText>
+				<UnifiedText style={{ marginTop: gutter }}>
 					Likely couldn't connect to the node, or the connection dropped
-				</BText>
+				</UnifiedText>
 				{embedded || (
 					<>
 						<TextInput
@@ -193,7 +197,7 @@ const DeleteProgressScreen = () => {
 				},
 			]}
 		>
-			<BText>{text}</BText>
+			<UnifiedText>{text}</UnifiedText>
 			<ActivityIndicator style={{ marginTop: gutter }} size='large' />
 		</View>
 	)

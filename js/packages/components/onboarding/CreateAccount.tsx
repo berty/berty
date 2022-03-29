@@ -19,11 +19,11 @@ import { IOSOnlyKeyboardAvoidingView } from '@berty/rnutil/keyboardAvoiding'
 import { CreateAccountBox } from './CreateAccountBox'
 import OnboardingWrapper from './OnboardingWrapper'
 import rnutil from '@berty/rnutil'
-import { BText } from '../shared-components/BText'
+import { UnifiedText } from '../shared-components/UnifiedText'
 
 const CreateAccountBody = () => {
 	const ctx = useMessengerContext()
-	const [{ padding, margin, border }] = useStyles()
+	const [{ padding, margin, border, text }] = useStyles()
 	const colors = useThemeColor()
 	const [defaultName, setDefaultName] = React.useState('')
 	const { t } = useTranslation()
@@ -78,11 +78,11 @@ const CreateAccountBody = () => {
 			>
 				<View style={{ flexDirection: 'row', alignItems: 'center' }}>
 					<View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
-						<BText style={[{ fontWeight: '600' }]}>
+						<UnifiedText style={[text.bold]}>
 							{t('onboarding.create-account.good-to-know.title')}
-						</BText>
-						<BText>{t('onboarding.create-account.good-to-know.first-point')}</BText>
-						<BText>{t('onboarding.create-account.good-to-know.second-point')}</BText>
+						</UnifiedText>
+						<UnifiedText>{t('onboarding.create-account.good-to-know.first-point')}</UnifiedText>
+						<UnifiedText>{t('onboarding.create-account.good-to-know.second-point')}</UnifiedText>
 					</View>
 				</View>
 			</View>

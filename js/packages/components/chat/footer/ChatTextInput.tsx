@@ -13,7 +13,7 @@ import {
 } from '@berty/redux/reducers/chatInputs.reducer'
 
 import { getMediaTypeFromMedias } from '../../utils'
-import { BText } from '../../shared-components/BText'
+import { UnifiedText } from '../../shared-components/UnifiedText'
 
 export const ReplyMessageBar: React.FC<{ convPK: string }> = ({ convPK }) => {
 	const [{ border, text }] = useStyles()
@@ -61,13 +61,16 @@ export const ReplyMessageBar: React.FC<{ convPK: string }> = ({ convPK }) => {
 					borderRadius: 20,
 				}}
 			>
-				<BText numberOfLines={1} style={[text.size.tiny, { color: colors['background-header'] }]}>
+				<UnifiedText
+					numberOfLines={1}
+					style={[text.size.tiny, { color: colors['background-header'] }]}
+				>
 					{t('chat.reply.replying-to')} {replyTargetAuthor?.displayName || ''}
-				</BText>
+				</UnifiedText>
 			</View>
 
 			{activeReplyInteraction?.payload?.body ? (
-				<BText
+				<UnifiedText
 					numberOfLines={1}
 					style={[
 						text.size.small,
@@ -78,7 +81,7 @@ export const ReplyMessageBar: React.FC<{ convPK: string }> = ({ convPK }) => {
 					]}
 				>
 					{activeReplyInteraction?.payload?.body}
-				</BText>
+				</UnifiedText>
 			) : (
 				<View
 					style={{
@@ -94,7 +97,7 @@ export const ReplyMessageBar: React.FC<{ convPK: string }> = ({ convPK }) => {
 						fill={activeReplyInteraction?.textColor}
 						style={{ marginTop: 4 }}
 					/>
-					<BText
+					<UnifiedText
 						numberOfLines={1}
 						style={[
 							text.size.small,
@@ -106,7 +109,7 @@ export const ReplyMessageBar: React.FC<{ convPK: string }> = ({ convPK }) => {
 						]}
 					>
 						{t(`medias.${getMediaTypeFromMedias(activeReplyInteraction?.medias)}`)}
-					</BText>
+					</UnifiedText>
 				</View>
 			)}
 			<TouchableOpacity
@@ -193,7 +196,7 @@ export const ChatTextInput: React.FC<{
 					blurOnSubmit={false}
 					onChangeText={onChangeText}
 					style={[
-						text.bold.small,
+						text.light,
 						{
 							maxHeight: 150 * scaleSize,
 							color: disabled ? colors['secondary-text'] : colors['main-text'],

@@ -23,6 +23,14 @@ import { FeatherIconsPack } from './feather-icons'
 import { CustomIconsPack } from './custom-icons'
 import { ModalProvider } from '@berty/components/providers/modal.provider'
 
+import * as Font from 'expo-font'
+
+import BoldOpenSans from '../../assets/font/OpenSans-Bold.ttf'
+import LightOpenSans from '../../assets/font/OpenSans-Light.ttf'
+import LightItalicOpenSans from '../../assets/font/OpenSans-LightItalic.ttf'
+import SemiBoldOpenSans from '../../assets/font/OpenSans-SemiBold.ttf'
+import SemiBoldItalicOpenSans from '../../assets/font/OpenSans-SemiBoldItalic.ttf'
+
 const BootSplashInhibitor: React.FC = () => {
 	useMountEffect(() => {
 		RNBootSplash.hide({ fade: true })
@@ -36,12 +44,61 @@ const Background: React.FC = ({ children }) => {
 	return <View style={{ flex: 1, backgroundColor: colors['main-background'] }}>{children}</View>
 }
 
+// load Open Sans font for web
+const useFonts = () => {
+	const [isFontLoaded, setIsFontLoaded] = React.useState(false)
+
+	const loadFontAsync = React.useCallback(async () => {
+		try {
+			await Font.loadAsync({
+				'Bold Open Sans': {
+					uri: BoldOpenSans,
+					display: Font.FontDisplay.SWAP,
+				},
+				'Light Open Sans': {
+					uri: LightOpenSans,
+					display: Font.FontDisplay.SWAP,
+				},
+				'Light Italic Open Sans': {
+					uri: LightItalicOpenSans,
+					display: Font.FontDisplay.SWAP,
+				},
+				'Open Sans': {
+					uri: SemiBoldOpenSans,
+					display: Font.FontDisplay.SWAP,
+				},
+				'Italic Open Sans': {
+					uri: SemiBoldItalicOpenSans,
+					display: Font.FontDisplay.SWAP,
+				},
+			})
+			setIsFontLoaded(true)
+		} catch (error) {
+			console.log('Font Load Error:', error)
+		}
+	}, [])
+
+	useMountEffect(() => {
+		loadFontAsync()
+	})
+
+	return {
+		isFontLoaded,
+	}
+}
+
 export const App: React.FC = () => {
+	const { isFontLoaded } = useFonts()
+
 	useMountEffect(() => {
 		return () => {
 			isReadyRef.current = false
 		}
 	})
+
+	if (!isFontLoaded) {
+		return null
+	}
 
 	return (
 		<SafeAreaProvider>

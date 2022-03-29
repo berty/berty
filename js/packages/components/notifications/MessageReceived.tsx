@@ -9,7 +9,7 @@ import { useConversation } from '@berty/react-redux'
 
 import { useStylesNotification } from './common'
 import { ConversationAvatar } from '../avatars'
-import { BText } from '../shared-components/BText'
+import { UnifiedText } from '../shared-components/UnifiedText'
 
 const MessageReceived: React.FC<any> = ({ onClose, title, message, ...props }) => {
 	const [{ text }] = useStyles()
@@ -58,12 +58,12 @@ const MessageReceived: React.FC<any> = ({ onClose, title, message, ...props }) =
 			<View style={_styles.innerTouchable}>
 				<ConversationAvatar publicKey={payload.conversation?.publicKey} size={40} />
 				<View style={_styles.titleAndTextWrapper}>
-					<BText numberOfLines={1} style={[text.bold.medium]}>
+					<UnifiedText numberOfLines={1} style={[text.bold]}>
 						{title}
-					</BText>
-					<BText numberOfLines={1} ellipsizeMode='tail'>
+					</UnifiedText>
+					<UnifiedText numberOfLines={1} ellipsizeMode='tail'>
 						{message}
-					</BText>
+					</UnifiedText>
 				</View>
 			</View>
 		</TouchableOpacity>

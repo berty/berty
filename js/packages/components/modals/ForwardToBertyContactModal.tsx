@@ -15,7 +15,7 @@ import {
 import { useAllConversations, useOneToOneContact } from '@berty/react-redux'
 
 import { ConversationAvatar } from '../avatars'
-import { BText } from '../shared-components/BText'
+import { UnifiedText } from '../shared-components/UnifiedText'
 
 const Item: React.FC<{ conversation: beapi.messenger.IConversation; image: any }> = React.memo(
 	({ conversation, image }) => {
@@ -73,7 +73,7 @@ const Item: React.FC<{ conversation: beapi.messenger.IConversation; image: any }
 			>
 				<View style={{ flexDirection: 'row', alignItems: 'center' }}>
 					<ConversationAvatar size={40} publicKey={conversation.publicKey} />
-					<BText style={[margin.left.small]}>{userDisplayName || undefined}</BText>
+					<UnifiedText style={[margin.left.small]}>{userDisplayName || undefined}</UnifiedText>
 				</View>
 				<TouchableOpacity
 					style={[
@@ -88,9 +88,9 @@ const Item: React.FC<{ conversation: beapi.messenger.IConversation; image: any }
 					{sending ? (
 						<ActivityIndicator color={colors['reverted-main-text']} />
 					) : (
-						<BText style={{ color: colors['reverted-main-text'] }}>
+						<UnifiedText style={{ color: colors['reverted-main-text'] }}>
 							<>{t('chat.files.forward')}</>
-						</BText>
+						</UnifiedText>
 					)}
 				</TouchableOpacity>
 			</View>
