@@ -3,10 +3,10 @@ import { Icon } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 import { TextInput, View } from 'react-native'
 
-import { GlobalPersistentOptionsKeys, storageSet, useThemeColor } from '@berty-tech/store'
-import { useStyles } from '@berty-tech/styles'
-import { useNavigation } from '@berty-tech/navigation'
-import { useAccount } from '@berty-tech/react-redux'
+import { GlobalPersistentOptionsKeys, storageSet, useThemeColor } from '@berty/store'
+import { useStyles } from '@berty/styles'
+import { useNavigation } from '@berty/navigation'
+import { useAccount } from '@berty/react-redux'
 
 import SwiperCard from './SwiperCard'
 

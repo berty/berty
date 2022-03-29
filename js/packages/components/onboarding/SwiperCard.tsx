@@ -1,5 +1,5 @@
-import { useThemeColor } from '@berty-tech/store/hooks'
-import { useStyles } from '@berty-tech/styles'
+import { useThemeColor } from '@berty/store/hooks'
+import { useStyles } from '@berty/styles'
 import React from 'react'
 import { Text, TouchableOpacity, View } from 'react-native'
 import { Card } from '../shared-components/Card'

@@ -9,14 +9,14 @@ import { CommonActions, NavigationProp, useNavigation } from '@react-navigation/
 import { Icon } from '@ui-kitten/components'
 import mapValues from 'lodash/mapValues'
 
-import * as RawComponents from '@berty-tech/components'
-import { useMessengerContext, useThemeColor } from '@berty-tech/store'
-import { useStyles } from '@berty-tech/styles'
+import * as RawComponents from '@berty/components'
+import { useMessengerContext, useThemeColor } from '@berty/store'
+import { useStyles } from '@berty/styles'
 
 import { dispatch } from './rootRef'
 import { ScreensParams } from './types'
 import { useSelector } from 'react-redux'
-import { MESSENGER_APP_STATE, selectAppState } from '@berty-tech/redux/reducers/ui.reducer'
+import { MESSENGER_APP_STATE, selectAppState } from '@berty/redux/reducers/ui.reducer'
 
 export const CustomTitleStyle: () => any = () => {
 	const [{ text }] = useStyles()

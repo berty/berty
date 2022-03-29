@@ -11,17 +11,17 @@ import {
 import pickBy from 'lodash/pickBy'
 import { Icon } from '@ui-kitten/components'
 
-import { ScreenFC } from '@berty-tech/navigation'
-import { useNotificationsInhibitor, useThemeColor } from '@berty-tech/store'
-import beapi from '@berty-tech/api'
-import { useStyles } from '@berty-tech/styles'
-import { AddBot } from '@berty-tech/components/modals'
+import { ScreenFC } from '@berty/navigation'
+import { useNotificationsInhibitor, useThemeColor } from '@berty/store'
+import beapi from '@berty/api'
+import { useStyles } from '@berty/styles'
+import { AddBot } from '@berty/components/modals'
 import {
 	useContactsDict,
 	useConversationsDict,
 	useIncomingContactRequests,
 	useAllConversations,
-} from '@berty-tech/react-redux'
+} from '@berty/react-redux'
 
 import { useLayout } from '../../hooks'
 import EmptyChat from '../empty_chat.svg'
@@ -31,8 +31,8 @@ import { SearchComponent } from './Search'
 import { HomeHeader } from './Header'
 import { MultiAccount } from './MultiAccount'
 import { useSelector } from 'react-redux'
-import { selectClient } from '@berty-tech/redux/reducers/ui.reducer'
-import { selectPersistentOptions } from '@berty-tech/redux/reducers/persistentOptions.reducer'
+import { selectClient } from '@berty/redux/reducers/ui.reducer'
+import { selectPersistentOptions } from '@berty/redux/reducers/persistentOptions.reducer'
 
 const T = beapi.messenger.StreamEvent.Notified.Type
 

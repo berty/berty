@@ -6,10 +6,10 @@ import {
 	useAppSelector,
 	useAccount,
 	useConversationsDict,
-} from '@berty-tech/react-redux'
-import { selectAccountLanguage } from '@berty-tech/redux/reducers/accountSettings.reducer'
+} from '@berty/react-redux'
+import { selectAccountLanguage } from '@berty/redux/reducers/accountSettings.reducer'
 
-import beapi from '@berty-tech/api'
+import beapi from '@berty/api'
 import { MessengerContext, initialState } from './context'
 import {
 	initialLaunch,
@@ -42,11 +42,11 @@ import {
 	selectEmbedded,
 	selectProtocolClient,
 	selectSelectedAccount,
-} from '@berty-tech/redux/reducers/ui.reducer'
+} from '@berty/redux/reducers/ui.reducer'
 import {
 	selectPersistentOptions,
 	PersistentOptionsKeys,
-} from '@berty-tech/redux/reducers/persistentOptions.reducer'
+} from '@berty/redux/reducers/persistentOptions.reducer'
 
 export const MessengerProvider: React.FC<{ daemonAddress: string }> = ({
 	children,

@@ -1,8 +1,8 @@
-import pb from '@berty-tech/api/root.pb'
+import pb from '@berty/api/root.pb'
 
 console.log("import { createAction } from '@reduxjs/toolkit'")
 
-console.log("\nimport beapi from '@berty-tech/api'")
+console.log("\nimport beapi from '@berty/api'")
 
 const enumType = 'berty.messenger.v1.StreamEvent.Type'
 const prefix = 'beapi.messenger.StreamEvent'

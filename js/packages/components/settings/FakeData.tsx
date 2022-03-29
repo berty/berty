@@ -3,15 +3,15 @@ import { View, ScrollView } from 'react-native'
 import { Layout } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 
-import { ScreenFC } from '@berty-tech/navigation'
-import { useStyles } from '@berty-tech/styles'
+import { ScreenFC } from '@berty/navigation'
+import { useStyles } from '@berty/styles'
 import {
 	useGenerateFakeContacts,
 	useGenerateFakeMultiMembers,
 	useDeleteFakeData,
 	// useGenerateFakeMessages,
 	useThemeColor,
-} from '@berty-tech/store'
+} from '@berty/store'
 
 import { ButtonSetting } from '../shared-components/SettingsButtons'
 

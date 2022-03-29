@@ -1,8 +1,8 @@
 import React from 'react'
 import { View } from 'react-native'
 
-import { useStyles } from '@berty-tech/styles'
-import { useThemeColor } from '@berty-tech/store/hooks'
+import { useStyles } from '@berty/styles'
+import { useThemeColor } from '@berty/store/hooks'
 
 import Logo from '../../main/1_berty_picto.svg'
 

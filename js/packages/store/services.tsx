@@ -1,21 +1,21 @@
 import base64 from 'base64-js'
 import { Buffer } from 'buffer'
 import { Alert, PermissionsAndroid, NativeModules, Platform } from 'react-native'
-import InAppBrowser, { RedirectResult } from '@berty-tech/polyfill/react-native-inappbrowser-reborn'
-import Share from '@berty-tech/polyfill/react-native-share'
+import InAppBrowser, { RedirectResult } from '@berty/polyfill/react-native-inappbrowser-reborn'
+import Share from '@berty/polyfill/react-native-share'
 
-import beapi from '@berty-tech/api'
-import { Service } from '@berty-tech/grpc-bridge'
-import * as middleware from '@berty-tech/grpc-bridge/middleware'
-import { bridge as rpcBridge } from '@berty-tech/grpc-bridge/rpc'
+import beapi from '@berty/api'
+import { Service } from '@berty/grpc-bridge'
+import * as middleware from '@berty/grpc-bridge/middleware'
+import { bridge as rpcBridge } from '@berty/grpc-bridge/rpc'
 import {
 	ServiceClientType,
 	WelshMessengerServiceClient,
-} from '@berty-tech/grpc-bridge/welsh-clients.gen'
-import { useAccount } from '@berty-tech/react-redux'
-import RNFS from '@berty-tech/polyfill/rnfs'
+} from '@berty/grpc-bridge/welsh-clients.gen'
+import { useAccount } from '@berty/react-redux'
+import RNFS from '@berty/polyfill/rnfs'
 
-import { berty } from '@berty-tech/api/root.pb'
+import { berty } from '@berty/api/root.pb'
 const { PushTokenRequester } = NativeModules
 
 export enum serviceTypes {

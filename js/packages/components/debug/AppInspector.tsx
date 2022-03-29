@@ -12,11 +12,11 @@ import {
 import { useTranslation } from 'react-i18next'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
-import beapi from '@berty-tech/api'
-import { GRPCError, Service } from '@berty-tech/grpc-bridge'
-import { bridge as rpcBridge } from '@berty-tech/grpc-bridge/rpc'
-import { pbDateToNum, useMessengerContext } from '@berty-tech/store'
-import RNFS from '@berty-tech/polyfill/rnfs'
+import beapi from '@berty/api'
+import { GRPCError, Service } from '@berty/grpc-bridge'
+import { bridge as rpcBridge } from '@berty/grpc-bridge/rpc'
+import { pbDateToNum, useMessengerContext } from '@berty/store'
+import RNFS from '@berty/polyfill/rnfs'
 
 import { NativeModules } from 'react-native'
 const { RootDir } = NativeModules

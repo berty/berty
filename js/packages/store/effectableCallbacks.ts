@@ -1,13 +1,13 @@
 import { Platform } from 'react-native'
 
-import beapi from '@berty-tech/api'
-import { persistor, resetAccountStore } from '@berty-tech/redux/store'
-import { useAppDispatch } from '@berty-tech/react-redux'
+import beapi from '@berty/api'
+import { persistor, resetAccountStore } from '@berty/redux/store'
+import { useAppDispatch } from '@berty/react-redux'
 import {
 	setCreatedAccount,
 	setStateStreamDone,
 	setStateStreamInProgress,
-} from '@berty-tech/redux/reducers/ui.reducer'
+} from '@berty/redux/reducers/ui.reducer'
 
 import { reducerAction, MessengerActions, StreamInProgress } from './types'
 import { accountService } from './accountService'

@@ -1,12 +1,12 @@
 import React, { useMemo } from 'react'
 import { NativeSyntheticEvent, TextInputSelectionChangeEventData, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import { RESULTS } from '@berty-tech/polyfill/react-native-permissions'
+import { RESULTS } from '@berty/polyfill/react-native-permissions'
 import Long from 'long'
 import { useTranslation } from 'react-i18next'
 
-import { Maybe, useMessengerClient, useMessengerContext, useThemeColor } from '@berty-tech/store'
-import { useStyles } from '@berty-tech/styles'
+import { Maybe, useMessengerClient, useMessengerContext, useThemeColor } from '@berty/store'
+import { useStyles } from '@berty/styles'
 import {
 	removeActiveReplyInteraction,
 	resetChatInput,
@@ -14,19 +14,19 @@ import {
 	selectChatInputMediaList,
 	selectChatInputText,
 	setChatInputText,
-} from '@berty-tech/redux/reducers/chatInputs.reducer'
-import beapi from '@berty-tech/api'
-import { useNavigation } from '@berty-tech/navigation'
-import rnutil from '@berty-tech/rnutil'
-import { useAppDispatch, useAppSelector, useMedias, useConversation } from '@berty-tech/react-redux'
+} from '@berty/redux/reducers/chatInputs.reducer'
+import beapi from '@berty/api'
+import { useNavigation } from '@berty/navigation'
+import rnutil from '@berty/rnutil'
+import { useAppDispatch, useAppSelector, useMedias, useConversation } from '@berty/react-redux'
 import {
 	selectChatInputIsFocused,
 	selectChatInputIsSending,
 	setChatInputIsFocused,
 	setChatInputIsSending,
 	setChatInputSelection,
-} from '@berty-tech/redux/reducers/chatInputsVolatile.reducer'
-import ImagePicker from '@berty-tech/polyfill/react-native-image-crop-picker'
+} from '@berty/redux/reducers/chatInputsVolatile.reducer'
+import ImagePicker from '@berty/polyfill/react-native-image-crop-picker'
 
 import { CameraButton, MoreButton, RecordButton, SendButton } from './ChatFooterButtons'
 import { ChatTextInput } from './ChatTextInput'

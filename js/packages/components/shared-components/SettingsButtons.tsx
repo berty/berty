@@ -10,9 +10,9 @@ import {
 } from 'react-native'
 import { Text, Icon } from '@ui-kitten/components'
 
-import { useStyles } from '@berty-tech/styles'
-import { useThemeColor } from '@berty-tech/store/hooks'
-import { Toggle } from '@berty-tech/components/shared-components/Toggle'
+import { useStyles } from '@berty/styles'
+import { useThemeColor } from '@berty/store/hooks'
+import { Toggle } from '@berty/components/shared-components/Toggle'
 
 export const Section: React.FC<{}> = ({ children }) => {
 	const [{ margin, border, padding }] = useStyles()

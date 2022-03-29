@@ -3,10 +3,10 @@ import { View, StyleSheet, TouchableOpacity } from 'react-native'
 import { Text, Icon } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 
-import { useStyles } from '@berty-tech/styles'
-import beapi from '@berty-tech/api'
-import { useThemeColor } from '@berty-tech/store'
-import { useNavigation } from '@berty-tech/navigation'
+import { useStyles } from '@berty/styles'
+import beapi from '@berty/api'
+import { useThemeColor } from '@berty/store'
+import { useNavigation } from '@berty/navigation'
 
 //
 // Scan Invalid

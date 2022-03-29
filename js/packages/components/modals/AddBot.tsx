@@ -3,10 +3,10 @@ import { View, TouchableOpacity, Text as TextNative, StyleSheet } from 'react-na
 import { Text, Icon } from '@ui-kitten/components'
 import { Buffer } from 'buffer'
 
-import { useStyles } from '@berty-tech/styles'
-import messengerMethodsHooks from '@berty-tech/store/methods'
-import { useThemeColor } from '@berty-tech/store'
-import { BlurView } from '@berty-tech/polyfill/react-native-community-blur'
+import { useStyles } from '@berty/styles'
+import messengerMethodsHooks from '@berty/store/methods'
+import { useThemeColor } from '@berty/store'
+import { BlurView } from '@berty/polyfill/react-native-community-blur'
 
 import Avatar from './Buck_Berty_Icon_Card.svg'
 import { base64ToURLBase64 } from '../utils'
@@ -15,8 +15,8 @@ import {
 	PersistentOptionsKeys,
 	selectPersistentOptions,
 	setPersistentOption,
-} from '@berty-tech/redux/reducers/persistentOptions.reducer'
-import { useAppDispatch } from '@berty-tech/react-redux'
+} from '@berty/redux/reducers/persistentOptions.reducer'
+import { useAppDispatch } from '@berty/react-redux'
 
 export const useStylesDefaultModal = () => {
 	const [{ width, border, padding, margin }] = useStyles()

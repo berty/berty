@@ -1,4 +1,4 @@
-import beapi from '@berty-tech/api'
+import beapi from '@berty/api'
 
 export type StreamEventPayloadType<T> = T extends beapi.messenger.StreamEvent.Type.Undefined
 	? undefined

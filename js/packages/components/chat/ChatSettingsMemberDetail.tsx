@@ -3,14 +3,14 @@ import { View, ScrollView, StatusBar } from 'react-native'
 import { Layout } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 
-import { useStyles } from '@berty-tech/styles'
-import { ScreenFC } from '@berty-tech/navigation'
-import { Maybe, useThemeColor } from '@berty-tech/store'
-import { useMember } from '@berty-tech/react-redux'
+import { useStyles } from '@berty/styles'
+import { ScreenFC } from '@berty/navigation'
+import { Maybe, useThemeColor } from '@berty/store'
+import { useMember } from '@berty/react-redux'
 
 import { FactionButtonSetting } from '../shared-components/SettingsButtons'
 import { MemberAvatar } from '../avatars'
-import UserDevicesList from '@berty-tech/components/chat/DeviceList'
+import UserDevicesList from '@berty/components/chat/DeviceList'
 
 const ChatSettingsMemberDetailHeader: React.FC<{
 	convId: Maybe<string>

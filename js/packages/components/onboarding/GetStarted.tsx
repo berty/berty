@@ -9,9 +9,9 @@ import {
 	useNotificationsInhibitor,
 	useThemeColor,
 	useMessengerContext,
-} from '@berty-tech/store'
-import { useStyles } from '@berty-tech/styles'
-import { ScreenFC } from '@berty-tech/navigation'
+} from '@berty/store'
+import { useStyles } from '@berty/styles'
+import { ScreenFC } from '@berty/navigation'
 
 import Logo from './berty_gradient_square.svg'
 import Button from './Button'

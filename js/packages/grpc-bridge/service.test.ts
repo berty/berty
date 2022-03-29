@@ -1,5 +1,5 @@
 import 'react-native'
-import beapi from '@berty-tech/api'
+import beapi from '@berty/api'
 
 import { createService } from './service'
 import rpcNoop from './rpc/rpc.noop'

@@ -1,5 +1,5 @@
-import { useThemeColor } from '@berty-tech/store/hooks'
-import { useStyles } from '@berty-tech/styles'
+import { useThemeColor } from '@berty/store/hooks'
+import { useStyles } from '@berty/styles'
 import { Icon, Text } from '@ui-kitten/components'
 import React, { useState } from 'react'
 import { Animated, Easing, TouchableOpacity, View } from 'react-native'

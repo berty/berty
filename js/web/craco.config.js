@@ -63,7 +63,7 @@ module.exports = {
 			return webpackConfig
 		},
 		alias: {
-			'@berty-tech': path.join(path.resolve(__dirname, '../packages/')),
+			'@berty': path.join(path.resolve(__dirname, '../packages/')),
 			'react': path.resolve(path.resolve(__dirname, './node_modules/react')),
 			'^react-native$': path.resolve(path.resolve(__dirname, './node_modules/react-native')),
 			'react-native-svg': path.resolve(path.resolve(__dirname, './node_modules/react-native-svg-web')),

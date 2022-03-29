@@ -4,20 +4,20 @@ import { Icon, Text } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 
-import beapi from '@berty-tech/api'
-import { useStyles } from '@berty-tech/styles'
-import { ScreenFC, useNavigation } from '@berty-tech/navigation'
+import beapi from '@berty/api'
+import { useStyles } from '@berty/styles'
+import { ScreenFC, useNavigation } from '@berty/navigation'
 import {
 	accountService,
 	useMessengerContext,
 	useMountEffect,
 	useThemeColor,
 	useMessengerClient,
-} from '@berty-tech/store'
-import { useAccount } from '@berty-tech/react-redux'
-import { selectSelectedAccount } from '@berty-tech/redux/reducers/ui.reducer'
-import { checkBlePermission, getPermissionStatus } from '@berty-tech/rnutil/checkPermissions'
-import { withInAppNotification } from '@berty-tech/polyfill/react-native-in-app-notification'
+} from '@berty/store'
+import { useAccount } from '@berty/react-redux'
+import { selectSelectedAccount } from '@berty/redux/reducers/ui.reducer'
+import { checkBlePermission, getPermissionStatus } from '@berty/rnutil/checkPermissions'
+import { withInAppNotification } from '@berty/polyfill/react-native-in-app-notification'
 
 import { AccountAvatar } from '../avatars'
 import { ButtonSettingV2, Section } from '../shared-components'
@@ -26,7 +26,7 @@ import {
 	selectCurrentNetworkConfig,
 	setBlePerm,
 	setCurrentNetworkConfig,
-} from '@berty-tech/redux/reducers/networkConfig.reducer'
+} from '@berty/redux/reducers/networkConfig.reducer'
 import * as MailComposer from 'expo-mail-composer'
 import { useModal } from '../providers/modal.provider'
 import { EditProfile } from '../modals'

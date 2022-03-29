@@ -3,15 +3,15 @@ import { ScrollView, View, StatusBar, TouchableOpacity } from 'react-native'
 import { Icon, Text } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 
-import beapi from '@berty-tech/api'
-import { ScreenFC } from '@berty-tech/navigation'
-import { useThemeColor } from '@berty-tech/store'
-import { useStyles } from '@berty-tech/styles'
-import { useContact, useConversation } from '@berty-tech/react-redux'
+import beapi from '@berty/api'
+import { ScreenFC } from '@berty/navigation'
+import { useThemeColor } from '@berty/store'
+import { useStyles } from '@berty/styles'
+import { useContact, useConversation } from '@berty/react-redux'
 
 import { ButtonSetting } from '../shared-components/SettingsButtons'
 import { ContactAvatar } from '../avatars'
-import EnableNotificationsButton from '@berty-tech/components/chat/EnableNotificationsButton'
+import EnableNotificationsButton from '@berty/components/chat/EnableNotificationsButton'
 
 const OneToOneHeader: React.FC<{ contact: any }> = ({ contact }) => {
 	const [{ text, padding, flex }, { scaleSize }] = useStyles()

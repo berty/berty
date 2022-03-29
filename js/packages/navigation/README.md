@@ -1,11 +1,11 @@
-# `@berty-tech/navigation`
+# `@berty/navigation`
 
 > TODO: description
 
 ## Usage
 
 ```
-const bertyNavigation = require('@berty-tech/navigation');
+const bertyNavigation = require('@berty/navigation');
 
 // TODO: DEMONSTRATE API
 ```

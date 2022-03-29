@@ -1,11 +1,11 @@
 import React, { EffectCallback, useEffect } from 'react'
 import { useNavigation } from '@react-navigation/native'
 
-import beapi from '@berty-tech/api'
-import colors from '@berty-tech/styles/colors.json'
-import darkTheme from '@berty-tech/styles/darktheme-default.json'
-import { useAllConversations, useAllContacts, useConversation } from '@berty-tech/react-redux'
-import { useStyles } from '@berty-tech/styles'
+import beapi from '@berty/api'
+import colors from '@berty/styles/colors.json'
+import darkTheme from '@berty/styles/darktheme-default.json'
+import { useAllConversations, useAllContacts, useConversation } from '@berty/react-redux'
+import { useStyles } from '@berty/styles'
 
 import { useMessengerContext } from './context'
 import { MessengerActions, NotificationsInhibitor } from './types'
@@ -17,17 +17,13 @@ import {
 	selectThemeIsDark,
 	selectThemeSelected,
 	ThemeType,
-} from '@berty-tech/redux/reducers/theme.reducer'
-import {
-	MESSENGER_APP_STATE,
-	selectAppState,
-	selectClient,
-} from '@berty-tech/redux/reducers/ui.reducer'
+} from '@berty/redux/reducers/theme.reducer'
+import { MESSENGER_APP_STATE, selectAppState, selectClient } from '@berty/redux/reducers/ui.reducer'
 import {
 	PersistentOptionsKeys,
 	selectPersistentOptions,
 	UpdatesProfileNotification,
-} from '@berty-tech/redux/reducers/persistentOptions.reducer'
+} from '@berty/redux/reducers/persistentOptions.reducer'
 
 export type Maybe<T> = T | null | undefined
 

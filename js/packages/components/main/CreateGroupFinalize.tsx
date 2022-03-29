@@ -3,18 +3,18 @@ import { View, TouchableOpacity, TextInput, StyleSheet, ScrollView } from 'react
 import { Layout, Text, Icon } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 
-import { useStyles } from '@berty-tech/styles'
-import messengerMethodsHooks from '@berty-tech/store/methods'
-import { useMessengerContext, useThemeColor } from '@berty-tech/store'
-import { useNavigation } from '@berty-tech/navigation'
-import { selectInvitationListMembers } from '@berty-tech/redux/reducers/groupCreationForm.reducer'
-import { useAppDispatch, useAppSelector } from '@berty-tech/react-redux'
+import { useStyles } from '@berty/styles'
+import messengerMethodsHooks from '@berty/store/methods'
+import { useMessengerContext, useThemeColor } from '@berty/store'
+import { useNavigation } from '@berty/navigation'
+import { selectInvitationListMembers } from '@berty/redux/reducers/groupCreationForm.reducer'
+import { useAppDispatch, useAppSelector } from '@berty/react-redux'
 
 import { FooterCreateGroup } from './CreateGroupFooter'
 import { Header } from './CreateGroupAddMembers'
 import { ButtonSettingItem } from '../shared-components/SettingsButtons'
 import { MemberList } from './CreateGroupAddMembers'
-import { IOSOnlyKeyboardAvoidingView } from '@berty-tech/rnutil/keyboardAvoiding'
+import { IOSOnlyKeyboardAvoidingView } from '@berty/rnutil/keyboardAvoiding'
 
 const useStylesCreateGroup = () => {
 	const [{ padding, height, width, absolute, border, column, text }, { scaleSize }] = useStyles()

@@ -4,13 +4,13 @@ import { useTranslation } from 'react-i18next'
 import { Icon } from '@ui-kitten/components'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 
-import { Maybe, useMountEffect, useThemeColor } from '@berty-tech/store'
-import { useStyles } from '@berty-tech/styles'
-import { useAppDispatch, useAppSelector, useInteractionAuthor } from '@berty-tech/react-redux'
+import { Maybe, useMountEffect, useThemeColor } from '@berty/store'
+import { useStyles } from '@berty/styles'
+import { useAppDispatch, useAppSelector, useInteractionAuthor } from '@berty/react-redux'
 import {
 	removeActiveReplyInteraction,
 	selectActiveReplyInteraction,
-} from '@berty-tech/redux/reducers/chatInputs.reducer'
+} from '@berty/redux/reducers/chatInputs.reducer'
 
 import { getMediaTypeFromMedias } from '../../utils'
 

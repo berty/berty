@@ -6,19 +6,19 @@ import { StatusBar, Text, View } from 'react-native'
 import { useHeaderHeight } from '@react-navigation/elements'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
-import { ScreenFC } from '@berty-tech/navigation'
+import { ScreenFC } from '@berty/navigation'
 import {
 	useMessengerContext,
 	useMountEffect,
 	useNotificationsInhibitor,
 	useThemeColor,
-} from '@berty-tech/store'
-import { useStyles } from '@berty-tech/styles'
-import { IOSOnlyKeyboardAvoidingView } from '@berty-tech/rnutil/keyboardAvoiding'
+} from '@berty/store'
+import { useStyles } from '@berty/styles'
+import { IOSOnlyKeyboardAvoidingView } from '@berty/rnutil/keyboardAvoiding'
 
 import { CreateAccountBox } from './CreateAccountBox'
 import OnboardingWrapper from './OnboardingWrapper'
-import rnutil from '@berty-tech/rnutil'
+import rnutil from '@berty/rnutil'
 
 const CreateAccountBody = () => {
 	const ctx = useMessengerContext()

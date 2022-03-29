@@ -10,11 +10,11 @@ import {
 import { Layout, Text, Icon } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 
-import beapi from '@berty-tech/api'
-import { ScreenFC } from '@berty-tech/navigation'
-import { useStyles } from '@berty-tech/styles'
-import { useThemeColor, pbDateToNum } from '@berty-tech/store'
-import { protocolMethodsHooks } from '@berty-tech/store/methods'
+import beapi from '@berty/api'
+import { ScreenFC } from '@berty/navigation'
+import { useStyles } from '@berty/styles'
+import { useThemeColor, pbDateToNum } from '@berty/store'
+import { protocolMethodsHooks } from '@berty/store/methods'
 
 import { usePrevious } from '../hooks'
 

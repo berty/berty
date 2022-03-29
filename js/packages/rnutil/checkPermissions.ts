@@ -8,8 +8,8 @@ import {
 	request,
 	requestNotifications,
 	RESULTS,
-} from '@berty-tech/polyfill/react-native-permissions'
-import beapi from '@berty-tech/api'
+} from '@berty/polyfill/react-native-permissions'
+import beapi from '@berty/api'
 
 export type PermissionType = 'proximity' | 'audio' | 'notification' | 'camera' | 'gallery'
 

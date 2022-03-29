@@ -2,19 +2,19 @@ import React, { useCallback, useState } from 'react'
 import { View, Platform } from 'react-native'
 import { useTranslation } from 'react-i18next'
 import DocumentPicker from 'react-native-document-picker'
-import { RESULTS } from '@berty-tech/polyfill/react-native-permissions'
-import ImagePicker from '@berty-tech/polyfill/react-native-image-crop-picker'
+import { RESULTS } from '@berty/polyfill/react-native-permissions'
+import ImagePicker from '@berty/polyfill/react-native-image-crop-picker'
 
-import { useMessengerClient, useThemeColor } from '@berty-tech/store'
-import beapi from '@berty-tech/api'
-import { useNavigation } from '@berty-tech/navigation'
-import { checkPermissions } from '@berty-tech/rnutil/checkPermissions'
+import { useMessengerClient, useThemeColor } from '@berty/store'
+import beapi from '@berty/api'
+import { useNavigation } from '@berty/navigation'
+import { checkPermissions } from '@berty/rnutil/checkPermissions'
 
 import { ListItemMenu } from './ListItemMenu'
 import { GallerySection } from './GallerySection'
 import { TabItems } from './types'
 import { SecurityAccess } from './SecurityAccess'
-import { getPath } from '@berty-tech/rnutil/getPath'
+import { getPath } from '@berty/rnutil/getPath'
 
 const amap = async <T extends any, C extends (value: T) => any>(arr: T[], cb: C) =>
 	Promise.all(arr.map(cb))

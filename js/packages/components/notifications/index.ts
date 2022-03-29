@@ -1,4 +1,4 @@
-import beapi from '@berty-tech/api'
+import beapi from '@berty/api'
 
 import Basic from './Basic'
 import ContactRequestReceived from './ContactRequestReceived'

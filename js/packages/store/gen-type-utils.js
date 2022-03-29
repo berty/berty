@@ -1,4 +1,4 @@
-import pb from '@berty-tech/api/root.pb'
+import pb from '@berty/api/root.pb'
 
 const enumMapping = (name, enumType, prefix, resolvedPrefix = '') => {
 	const enumTypeParts = enumType.split('.')
@@ -17,7 +17,7 @@ const enumMapping = (name, enumType, prefix, resolvedPrefix = '') => {
 	console.log('never')
 }
 
-console.log("import beapi from '@berty-tech/api'")
+console.log("import beapi from '@berty/api'")
 
 enumMapping(
 	'StreamEventPayloadType',

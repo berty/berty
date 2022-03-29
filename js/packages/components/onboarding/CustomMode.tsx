@@ -3,9 +3,9 @@ import { useTranslation } from 'react-i18next'
 import React from 'react'
 import { StatusBar, Text, View } from 'react-native'
 
-import { ScreenFC, useNavigation } from '@berty-tech/navigation'
-import { useNotificationsInhibitor, useThemeColor } from '@berty-tech/store'
-import { useStyles } from '@berty-tech/styles'
+import { ScreenFC, useNavigation } from '@berty/navigation'
+import { useNotificationsInhibitor, useThemeColor } from '@berty/store'
+import { useStyles } from '@berty/styles'
 
 import OnboardingWrapper from './OnboardingWrapper'
 import { Icon } from '@ui-kitten/components'

@@ -1,6 +1,6 @@
 import { Dispatch } from 'react'
 
-import beapi from '@berty-tech/api'
+import beapi from '@berty/api'
 
 // returns true if the notification should be inhibited
 export type NotificationsInhibitor = (

@@ -1,10 +1,10 @@
-import { dispatch as navDispatch, ScreenFC } from '@berty-tech/navigation'
-import { useAppDispatch } from '@berty-tech/react-redux'
+import { dispatch as navDispatch, ScreenFC } from '@berty/navigation'
+import { useAppDispatch } from '@berty/react-redux'
 import {
 	PersistentOptionsKeys,
 	setPersistentOption,
-} from '@berty-tech/redux/reducers/persistentOptions.reducer'
-import { useNotificationsInhibitor, useThemeColor } from '@berty-tech/store'
+} from '@berty/redux/reducers/persistentOptions.reducer'
+import { useNotificationsInhibitor, useThemeColor } from '@berty/store'
 import { CommonActions } from '@react-navigation/native'
 import LottieView from 'lottie-react-native'
 import React, { useState } from 'react'

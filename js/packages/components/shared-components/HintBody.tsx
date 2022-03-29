@@ -2,9 +2,9 @@ import React from 'react'
 import { View, Text as TextNative } from 'react-native'
 import { Icon } from '@ui-kitten/components'
 
-import { useStyles } from '@berty-tech/styles'
-import messengerMethodsHooks from '@berty-tech/store/methods'
-import { useThemeColor } from '@berty-tech/store/hooks'
+import { useStyles } from '@berty/styles'
+import messengerMethodsHooks from '@berty/store/methods'
+import { useThemeColor } from '@berty/store/hooks'
 
 const useStylesHint = () => {
 	const [{ text, opacity, margin }, { fontScale }] = useStyles()

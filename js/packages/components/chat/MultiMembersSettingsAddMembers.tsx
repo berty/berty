@@ -5,17 +5,12 @@ import { Icon, Layout } from '@ui-kitten/components'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Long from 'long'
 
-import beapi from '@berty-tech/api'
-import { ScreenFC } from '@berty-tech/navigation'
-import { useStyles } from '@berty-tech/styles'
-import { useMessengerClient, useThemeColor } from '@berty-tech/store'
-import { selectInvitationListMembers } from '@berty-tech/redux/reducers/groupCreationForm.reducer'
-import {
-	useAllContacts,
-	useAppDispatch,
-	useAppSelector,
-	useConversation,
-} from '@berty-tech/react-redux'
+import beapi from '@berty/api'
+import { ScreenFC } from '@berty/navigation'
+import { useStyles } from '@berty/styles'
+import { useMessengerClient, useThemeColor } from '@berty/store'
+import { selectInvitationListMembers } from '@berty/redux/reducers/groupCreationForm.reducer'
+import { useAllContacts, useAppDispatch, useAppSelector, useConversation } from '@berty/react-redux'
 
 import { FooterCreateGroup } from '../main/CreateGroupFooter'
 import { Header, MemberList } from '../main/CreateGroupAddMembers'

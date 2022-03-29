@@ -1,6 +1,6 @@
 import { Service } from '..'
 import rpcNative from './rpc.native'
-import beapi from '@berty-tech/api'
+import beapi from '@berty/api'
 import { getServiceName } from './utils'
 import * as pbjs from 'protobufjs'
 import { ServiceClientType } from '../welsh-clients.gen'

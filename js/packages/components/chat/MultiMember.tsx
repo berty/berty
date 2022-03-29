@@ -5,19 +5,19 @@ import { useFocusEffect } from '@react-navigation/native'
 import { useTranslation } from 'react-i18next'
 import { useHeaderHeight } from '@react-navigation/elements'
 
-import { useStyles } from '@berty-tech/styles'
-import { ScreenFC } from '@berty-tech/navigation'
+import { useStyles } from '@berty/styles'
+import { ScreenFC } from '@berty/navigation'
 import {
 	useReadEffect,
 	useNotificationsInhibitor,
 	useThemeColor,
 	pbDateToNum,
 	useMessengerClient,
-} from '@berty-tech/store'
-import beapi from '@berty-tech/api'
-import { IOSOnlyKeyboardAvoidingView } from '@berty-tech/rnutil/keyboardAvoiding'
-import { useConversation, useLastConvInteraction } from '@berty-tech/react-redux'
-import AndroidKeyboardAdjust from '@berty-tech/polyfill/react-native-android-keyboard-adjust'
+} from '@berty/store'
+import beapi from '@berty/api'
+import { IOSOnlyKeyboardAvoidingView } from '@berty/rnutil/keyboardAvoiding'
+import { useConversation, useLastConvInteraction } from '@berty/react-redux'
+import AndroidKeyboardAdjust from '@berty/polyfill/react-native-android-keyboard-adjust'
 
 import { ChatDate } from './common'
 import { MultiMemberAvatar } from '../avatars'

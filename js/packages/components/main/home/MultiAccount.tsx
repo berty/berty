@@ -3,23 +3,20 @@ import { GestureResponderEvent, ScrollView, Text, TouchableOpacity, View } from 
 import { Icon } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 
-import { useStyles } from '@berty-tech/styles'
+import { useStyles } from '@berty/styles'
 import {
 	useMessengerContext,
 	closeAccountWithProgress,
 	useThemeColor,
 	pbDateToNum,
 	Maybe,
-} from '@berty-tech/store'
-import { importAccountFromDocumentPicker } from '@berty-tech/components/pickerUtils'
-import { useAppDispatch } from '@berty-tech/react-redux'
-import beapi from '@berty-tech/api'
+} from '@berty/store'
+import { importAccountFromDocumentPicker } from '@berty/components/pickerUtils'
+import { useAppDispatch } from '@berty/react-redux'
+import beapi from '@berty/api'
 
 import { GenericAvatar } from '../../avatars'
-import {
-	selectSelectedAccount,
-	setStateOnBoardingReady,
-} from '@berty-tech/redux/reducers/ui.reducer'
+import { selectSelectedAccount, setStateOnBoardingReady } from '@berty/redux/reducers/ui.reducer'
 import { useSelector } from 'react-redux'
 
 const AccountButton: React.FC<{

@@ -4,16 +4,16 @@ import { Text } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 import { Buffer } from 'buffer'
 
-import { useStyles } from '@berty-tech/styles'
-import beapi from '@berty-tech/api'
+import { useStyles } from '@berty/styles'
+import beapi from '@berty/api'
 import {
 	useMessengerContext,
 	useThemeColor,
 	useMessengerClient,
 	Maybe,
 	prepareMediaBytes,
-} from '@berty-tech/store'
-import { useAllConversations, useOneToOneContact } from '@berty-tech/react-redux'
+} from '@berty/store'
+import { useAllConversations, useOneToOneContact } from '@berty/react-redux'
 
 import { ConversationAvatar } from '../avatars'
 

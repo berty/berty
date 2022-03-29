@@ -2,15 +2,15 @@ import React from 'react'
 import { EmitterSubscription, NativeEventEmitter, NativeModules, Platform } from 'react-native'
 import { CommonActions } from '@react-navigation/native'
 
-import { useMessengerContext } from '@berty-tech/store/context'
-import { accountService } from '@berty-tech/store'
-import beapi from '@berty-tech/api'
-import { useNavigation } from '@berty-tech/navigation'
-import { useConversationsDict } from '@berty-tech/react-redux'
+import { useMessengerContext } from '@berty/store/context'
+import { accountService } from '@berty/store'
+import beapi from '@berty/api'
+import { useNavigation } from '@berty/navigation'
+import { useConversationsDict } from '@berty/react-redux'
 import {
 	InAppNotificationProvider,
 	withInAppNotification,
-} from '@berty-tech/polyfill/react-native-in-app-notification'
+} from '@berty/polyfill/react-native-in-app-notification'
 
 import NotificationBody from '../NotificationBody'
 

@@ -11,16 +11,16 @@ import { Layout, Icon } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { useNavigation } from '@berty-tech/navigation'
-import { useStyles } from '@berty-tech/styles'
-import { useThemeColor } from '@berty-tech/store'
+import { useNavigation } from '@berty/navigation'
+import { useStyles } from '@berty/styles'
+import { useThemeColor } from '@berty/store'
 import {
 	removeMemberFromInvitationListById,
 	selectInvitationListMembers,
-} from '@berty-tech/redux/reducers/groupCreationForm.reducer'
-import { AppDispatch } from '@berty-tech/redux/store'
-import { berty } from '@berty-tech/api/root.pb'
-import { useAllContacts } from '@berty-tech/react-redux'
+} from '@berty/redux/reducers/groupCreationForm.reducer'
+import { AppDispatch } from '@berty/redux/store'
+import { berty } from '@berty/api/root.pb'
+import { useAllContacts } from '@berty/react-redux'
 
 import { ContactPicker } from '../shared-components'
 import { FooterCreateGroup } from './CreateGroupFooter'

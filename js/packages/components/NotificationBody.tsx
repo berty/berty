@@ -1,21 +1,16 @@
 import React, { useEffect } from 'react'
 import { Vibration } from 'react-native'
-import GestureRecognizer from '@berty-tech/polyfill/react-native-swipe-gestures'
+import GestureRecognizer from '@berty/polyfill/react-native-swipe-gestures'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
-import beapi from '@berty-tech/api'
-import { useStyles } from '@berty-tech/styles'
-import {
-	useMessengerContext,
-	useThemeColor,
-	NotificationsInhibitor,
-	SoundKey,
-} from '@berty-tech/store'
+import beapi from '@berty/api'
+import { useStyles } from '@berty/styles'
+import { useMessengerContext, useThemeColor, NotificationsInhibitor, SoundKey } from '@berty/store'
 
 import { usePrevious } from './hooks'
 import notifications, { DefaultNotification } from './notifications'
 import { useSelector } from 'react-redux'
-import { selectPersistentOptions } from '@berty-tech/redux/reducers/persistentOptions.reducer'
+import { selectPersistentOptions } from '@berty/redux/reducers/persistentOptions.reducer'
 
 const NotificationContents: React.FC<{
 	additionalProps: { type: beapi.messenger.StreamEvent.Notified.Type }

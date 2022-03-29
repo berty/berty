@@ -6,7 +6,7 @@ import { Text, Icon } from '@ui-kitten/components'
 import { PanGestureHandler, State } from 'react-native-gesture-handler'
 import { useTranslation } from 'react-i18next'
 
-import beapi from '@berty-tech/api'
+import beapi from '@berty/api'
 import {
 	useMessengerContext,
 	useThemeColor,
@@ -14,15 +14,15 @@ import {
 	ParsedInteraction,
 	pbDateToNum,
 	useMessengerClient,
-} from '@berty-tech/store'
-import { useStyles } from '@berty-tech/styles'
+} from '@berty/store'
+import { useStyles } from '@berty/styles'
 import {
 	useAppDispatch,
 	useAppSelector,
 	useInteractionAuthor,
 	useLastConvInteraction,
-} from '@berty-tech/react-redux'
-import { selectInteraction } from '@berty-tech/redux/reducers/messenger.reducer'
+} from '@berty/react-redux'
+import { selectInteraction } from '@berty/redux/reducers/messenger.reducer'
 
 import { MemberAvatar } from '../../avatars'
 import { HyperlinkUserMessage, TimestampStatusUserMessage } from './UserMessageComponents'
@@ -33,7 +33,7 @@ import { getMediaTypeFromMedias } from '../../utils'
 // import { Reactions } from './Reactions'
 import { MessageMenu } from '../modals/MessageMenu.modal'
 import { useModal } from '../../providers/modal.provider'
-import { setActiveReplyInteraction } from '@berty-tech/redux/reducers/chatInputs.reducer'
+import { setActiveReplyInteraction } from '@berty/redux/reducers/chatInputs.reducer'
 // import { EmojiKeyboard } from '../modals/EmojiKeyboard.modal'
 
 const pal = palette('tol-rainbow', 256)

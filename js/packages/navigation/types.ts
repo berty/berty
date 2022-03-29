@@ -1,9 +1,9 @@
 import React from 'react'
-import { PermissionStatus } from '@berty-tech/polyfill/react-native-permissions'
+import { PermissionStatus } from '@berty/polyfill/react-native-permissions'
 
-import beapi from '@berty-tech/api'
+import beapi from '@berty/api'
 import { StackScreenProps } from '@react-navigation/stack'
-import { PermissionType } from '@berty-tech/rnutil/checkPermissions'
+import { PermissionType } from '@berty/rnutil/checkPermissions'
 
 export type ScreensParams = {
 	// Onboarding

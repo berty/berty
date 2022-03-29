@@ -4,9 +4,9 @@ import { useTranslation } from 'react-i18next'
 import LottieView from 'lottie-react-native'
 import { Icon } from '@ui-kitten/components'
 
-import { useStyles } from '@berty-tech/styles'
-import { useProfileNotification, useThemeColor } from '@berty-tech/store'
-import { useNavigation } from '@berty-tech/navigation'
+import { useStyles } from '@berty/styles'
+import { useProfileNotification, useThemeColor } from '@berty/store'
+import { useNavigation } from '@berty/navigation'
 
 import { AccountAvatar } from '../../avatars'
 import { UnreadCount } from '../../main/home/UnreadCount'

@@ -9,11 +9,11 @@ import {
 	StatusBar,
 	Platform,
 } from 'react-native'
-import * as Progress from '@berty-tech/polyfill/react-native-progress'
+import * as Progress from '@berty/polyfill/react-native-progress'
 
-import { useMessengerContext, useThemeColor, MessengerActions } from '@berty-tech/store'
-import { useStyles } from '@berty-tech/styles'
-import source from '@berty-tech/assets/loader_dots.gif'
+import { useMessengerContext, useThemeColor, MessengerActions } from '@berty/store'
+import { useStyles } from '@berty/styles'
+import source from '@berty/assets/loader_dots.gif'
 import { useSelector } from 'react-redux'
 import {
 	MESSENGER_APP_STATE,
@@ -23,7 +23,7 @@ import {
 	selectMessengerIsDeletingState,
 	selectMessengerIsReadyingBasics,
 	selectStreamInProgress,
-} from '@berty-tech/redux/reducers/ui.reducer'
+} from '@berty/redux/reducers/ui.reducer'
 
 export const LoaderDots: React.FC = () => {
 	const colors = useThemeColor()

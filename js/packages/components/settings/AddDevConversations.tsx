@@ -3,12 +3,12 @@ import { View, ScrollView } from 'react-native'
 import { Layout } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 
-import { useStyles } from '@berty-tech/styles'
-import { globals } from '@berty-tech/config'
-import { useThemeColor } from '@berty-tech/store/hooks'
+import { useStyles } from '@berty/styles'
+import { globals } from '@berty/config'
+import { useThemeColor } from '@berty/store/hooks'
 
 import { ButtonSetting } from '../shared-components/SettingsButtons'
-import { ScreenFC, useNavigation } from '@berty-tech/navigation'
+import { ScreenFC, useNavigation } from '@berty/navigation'
 
 type ValueOf<T> = T[keyof T]
 

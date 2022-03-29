@@ -7,7 +7,7 @@ import {
 	StyleSheet,
 } from 'react-native'
 
-import { useThemeColor } from '@berty-tech/store/hooks'
+import { useThemeColor } from '@berty/store/hooks'
 
 const style = StyleSheet.create({
 	default: {

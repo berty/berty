@@ -4,8 +4,8 @@ import { useTranslation } from 'react-i18next'
 import moment from 'moment'
 import { Icon } from '@ui-kitten/components'
 
-import { useStyles } from '@berty-tech/styles'
-import { useThemeColor } from '@berty-tech/store/hooks'
+import { useStyles } from '@berty/styles'
+import { useThemeColor } from '@berty/store/hooks'
 
 import { RecordingState } from '../../audioMessageCommon'
 import { SendButton } from '../ChatFooterButtons'

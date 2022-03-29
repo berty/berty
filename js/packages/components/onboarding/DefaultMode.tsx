@@ -3,14 +3,14 @@ import { useTranslation } from 'react-i18next'
 import React from 'react'
 import { ActivityIndicator, StatusBar, Text, View } from 'react-native'
 
-import { ScreenFC, useNavigation } from '@berty-tech/navigation'
+import { ScreenFC, useNavigation } from '@berty/navigation'
 import {
 	accountService,
 	useMessengerContext,
 	useNotificationsInhibitor,
 	useThemeColor,
-} from '@berty-tech/store'
-import { useStyles } from '@berty-tech/styles'
+} from '@berty/store'
+import { useStyles } from '@berty/styles'
 
 import OnboardingWrapper from './OnboardingWrapper'
 import { Icon } from '@ui-kitten/components'

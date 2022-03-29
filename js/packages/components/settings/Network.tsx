@@ -3,16 +3,16 @@ import { ScrollView, View, Platform } from 'react-native'
 import { useTranslation } from 'react-i18next'
 import { useHeaderHeight } from '@react-navigation/elements'
 
-import beapi from '@berty-tech/api'
-import { useStyles } from '@berty-tech/styles'
-import { ScreenFC, useNavigation } from '@berty-tech/navigation'
-import { accountService, useMessengerContext, useThemeColor } from '@berty-tech/store'
-import { withInAppNotification } from '@berty-tech/polyfill/react-native-in-app-notification'
+import beapi from '@berty/api'
+import { useStyles } from '@berty/styles'
+import { ScreenFC, useNavigation } from '@berty/navigation'
+import { accountService, useMessengerContext, useThemeColor } from '@berty/store'
+import { withInAppNotification } from '@berty/polyfill/react-native-in-app-notification'
 
-import { selectSelectedAccount } from '@berty-tech/redux/reducers/ui.reducer'
+import { selectSelectedAccount } from '@berty/redux/reducers/ui.reducer'
 import { useDispatch, useSelector } from 'react-redux'
-import { IOSOnlyKeyboardAvoidingView } from '@berty-tech/rnutil/keyboardAvoiding'
-import { checkBlePermission } from '@berty-tech/rnutil/checkPermissions'
+import { IOSOnlyKeyboardAvoidingView } from '@berty/rnutil/keyboardAvoiding'
+import { checkBlePermission } from '@berty/rnutil/checkPermissions'
 import {
 	addToBootstrap,
 	addToRendezvous,
@@ -33,8 +33,8 @@ import {
 	toggleFromBootstrap,
 	toggleFromRendezvous,
 	toggleFromStaticRelay,
-} from '@berty-tech/redux/reducers/networkConfig.reducer'
-import { useAppSelector } from '@berty-tech/react-redux'
+} from '@berty/redux/reducers/networkConfig.reducer'
+import { useAppSelector } from '@berty/react-redux'
 
 import { AccordionV2, AccordionAddItemV2, AccordionItemV2 } from './Accordion'
 import { useModal } from '../providers/modal.provider'

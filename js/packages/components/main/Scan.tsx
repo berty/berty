@@ -1,14 +1,14 @@
 import React, { useCallback, useState } from 'react'
 import { View, TextInput, Button, Vibration, Text as TextNative, StatusBar } from 'react-native'
 import { Layout } from '@ui-kitten/components'
-import QRCodeScanner from '@berty-tech/polyfill/react-native-qrcode-scanner'
+import QRCodeScanner from '@berty/polyfill/react-native-qrcode-scanner'
 
-import { useNavigation } from '@berty-tech/navigation'
-import { useThemeColor } from '@berty-tech/store/hooks'
-import { useStyles } from '@berty-tech/styles'
+import { useNavigation } from '@berty/navigation'
+import { useThemeColor } from '@berty/store/hooks'
+import { useStyles } from '@berty/styles'
 
 import ScanTarget from './scan_target.svg'
-import { ScreenFC } from '@berty-tech/navigation'
+import { ScreenFC } from '@berty/navigation'
 import { useFocusEffect } from '@react-navigation/core'
 
 //

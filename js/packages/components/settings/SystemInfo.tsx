@@ -2,11 +2,11 @@ import React from 'react'
 import { View, ScrollView, ActivityIndicator, TouchableOpacity } from 'react-native'
 import { Layout, Text, Icon } from '@ui-kitten/components'
 
-import beapi from '@berty-tech/api'
-import { useStyles } from '@berty-tech/styles'
-import { ScreenFC } from '@berty-tech/navigation'
-import messengerMethodsHooks from '@berty-tech/store/methods'
-import { useMountEffect, useThemeColor, accountService } from '@berty-tech/store'
+import beapi from '@berty/api'
+import { useStyles } from '@berty/styles'
+import { ScreenFC } from '@berty/navigation'
+import messengerMethodsHooks from '@berty/store/methods'
+import { useMountEffect, useThemeColor, accountService } from '@berty/store'
 
 export const SystemInfo: ScreenFC<'Settings.SystemInfo'> = ({ navigation }) => {
 	const [{ padding }, { scaleSize }] = useStyles()

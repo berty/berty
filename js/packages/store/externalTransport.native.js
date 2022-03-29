@@ -1,3 +1,3 @@
-import { WebsocketTransport } from '@berty-tech/grpc-bridge'
+import { WebsocketTransport } from '@berty/grpc-bridge'
 
 export default WebsocketTransport

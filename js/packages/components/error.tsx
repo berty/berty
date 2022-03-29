@@ -5,12 +5,12 @@ import { useTranslation } from 'react-i18next'
 import { setJSExceptionHandler } from 'react-native-exception-handler'
 import RNRestart from 'react-native-restart'
 
-import { useStyles } from '@berty-tech/styles'
-import { useThemeColor, useMessengerContext } from '@berty-tech/store'
+import { useStyles } from '@berty/styles'
+import { useThemeColor, useMessengerContext } from '@berty/store'
 
 import AppInspector from './debug/AppInspector'
 import { useSelector } from 'react-redux'
-import { selectEmbedded } from '@berty-tech/redux/reducers/ui.reducer'
+import { selectEmbedded } from '@berty/redux/reducers/ui.reducer'
 
 const Label: React.FC<{ title: string; type: 'error' }> = ({ title, type }) => {
 	const [{ padding, border }] = useStyles()

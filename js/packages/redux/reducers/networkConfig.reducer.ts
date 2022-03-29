@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { PermissionStatus } from '@berty-tech/polyfill/react-native-permissions'
+import { PermissionStatus } from '@berty/polyfill/react-native-permissions'
 
-import beapi from '@berty-tech/api'
+import beapi from '@berty/api'
 /**
  *
  * State
