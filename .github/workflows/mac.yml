@@ -103,7 +103,7 @@ jobs:
         run: npm install -g yarn
       - name: Install electron app deps (node_modules)
         working-directory: js
-        run: make node_modules && make electron-app/node_modules
+        run: make node_modules && make web/node_modules
       - name: Build the app (PR)
         if: github.event_name == 'pull_request'
         env:
@@ -120,6 +120,6 @@ jobs:
       - name: Upload the Archive
         uses: actions/upload-artifact@v2
         with:
-          path: js/electron-app/dist/Berty.dmg
+          path: js/web/dist/Berty.dmg
           name: berty-yolo-${{github.sha}}.unsigned-dmg
           if-no-files-found: error

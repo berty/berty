@@ -477,16 +477,12 @@ web/node_modules: node_modules web/package.json
 
 ### Electron
 
-electron-app/node_modules: electron-app/package.json
-	$(call check-program, yarn)
-	cd ./electron-app && yarn $(if $(filter $(CI), true), --frozen-lockfile --network-timeout 1200000 --network-concurrency 1)
-	touch $@
-
 .PHONY: electron.mac
-electron.mac: electron-app/package.json
+electron.mac: web/package.json
 	cd ../go && $(MAKE) install
-	rm -rf ./electron-app/resources/mac/berty
-	mkdir -p ./electron-app/resources/mac/
-	ln `$(GO) env GOPATH`/bin/berty ./electron-app/resources/mac/berty
-	cd ./electron-app && yarn install
-	cd ./electron-app && yarn run dist:mac -- -c.buildVersion=$(shell echo -n $(shell git rev-list HEAD | wc -l)) -c.extraMetadata.version=$(VERSION)
+	rm -rf ./web/resources/mac/berty
+	mkdir -p ./web/resources/mac/
+	ln `$(GO) env GOPATH`/bin/berty ./web/resources/mac/berty
+	cd ./web && yarn install
+	cd ./web && yarn build
+	cd ./web && yarn run dist:mac -- -c.buildVersion=$(shell echo -n $(shell git rev-list HEAD | wc -l)) -c.extraMetadata.version=$(VERSION)
