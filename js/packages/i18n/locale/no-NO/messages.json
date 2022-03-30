@@ -1,0 +1,596 @@
+{
+	"onboarding": {
+		"getstarted": {
+			"title": "",
+			"desc": "",
+			"create-button": "",
+			"import-button": "",
+			"link-button": ""
+		},
+		"default-mode": {
+			"summary": {
+				"title": "",
+				"subtitle": "",
+				"first-point": "",
+				"second-point": "",
+				"back-button": "",
+				"accept-button": ""
+			}
+		},
+		"custom-mode": {
+			"summary": {
+				"title": "",
+				"subtitle": "",
+				"first-point": "",
+				"second-point": "",
+				"back-button": "",
+				"accept-button": ""
+			},
+			"settings": {
+				"off-grid": {
+					"title": "",
+					"ble-button": "",
+					"nearby-button": "",
+					"mc-button": "",
+					"mdns-button": ""
+				},
+				"routing": {
+					"title": "",
+					"dht-button": "",
+					"rdvp-button": ""
+				},
+				"access": {
+					"title": "",
+					"relay-button": "",
+					"bootstrap-button": "",
+					"replication-button": ""
+				},
+				"modals": {
+					"add": {
+						"title": {
+							"relay": "",
+							"bootstrap": "",
+							"rdvp": ""
+						}
+					},
+					"edit": {
+						"title": {
+							"relay": "",
+							"bootstrap": "",
+							"rdvp": ""
+						}
+					},
+					"errors": {
+						"alias-already-exists": "",
+						"multiaddr-alread-exists": "",
+						"multiaddr-bad-format": "",
+						"multiaddr-p2p": ""
+					},
+					"buttons": {
+						"add": "Legg til",
+						"edit": "",
+						"delete": ""
+					},
+					"multiaddress": "",
+					"alias": ""
+				},
+				"all-button": "",
+				"accept-button": ""
+			}
+		},
+		"create-account": {
+			"title": "Opprett din konto",
+			"placeholder": "",
+			"good-to-know": {
+				"title": "",
+				"first-point": "",
+				"second-point": ""
+			}
+		},
+		"generate-key": {
+			"title": "Starter Berty-noden…",
+			"desc": "Dette kan ta noen få sekunder"
+		},
+		"setup-finished": {
+			"title": "Oppsett fullført!",
+			"desc": "Du kan nå bruke appen, legge til kontakter, og snakke fritt og privat med dem",
+			"button": "BEGYNN Å BRUKE BERTY"
+		},
+		"web-views": {
+			"title": "",
+			"desc": "",
+			"first-button": "Avbryt",
+			"second-button": ""
+		}
+	},
+	"main": {
+		"home": {
+			"requests": {
+				"title": "Forespørsler",
+				"accept": "Godta",
+				"card-title": "Kontaktforespørsel!"
+			},
+			"input-placeholder": "Søk med nøkkelord",
+			"no-contacts": "Du har ingen kontakter eller samtaler enda",
+			"search": {
+				"no-results": "Fant ingen resultater"
+			},
+			"multi-account": {
+				"create-button": "",
+				"import-button": ""
+			},
+			"create-group": {
+				"title": "",
+				"add-members": "",
+				"group-info": "",
+				"search-placeholder": "Søk",
+				"continue": "",
+				"create-group": ""
+			},
+			"create-group-finalize": {
+				"placeholder": "",
+				"about": "",
+				"first-bullet-point": "",
+				"second-bullet-point": "",
+				"third-bullet-point": "",
+				"fourth-bullet-point": "",
+				"fifth-bullet-point": ""
+			},
+			"conversations": {
+				"request-sent": "",
+				"draft": ""
+			}
+		},
+		"suggestion-display-name-initial": "",
+		"scan": {
+			"title": ""
+		}
+	},
+	"settings": {
+		"home": {
+			"proximity-button": "",
+			"notifications-button": "Varsler",
+			"contact-convs-button": "",
+			"appearance-button": "",
+			"devices-button": "",
+			"accounts-button": "",
+			"network-button": "",
+			"bug-button": "",
+			"about-button": "Om Berty"
+		},
+		"about": {
+			"faq-button": "",
+			"roadmap-button": "",
+			"policy-button": "",
+			"license-button": ""
+		},
+		"accounts": {
+			"accounts-button": "",
+			"create-button": "",
+			"import-button": "",
+			"link-button": "",
+			"delete-button": ""
+		},
+		"appearance": {
+			"dark-button": "",
+			"editor-button": ""
+		},
+		"contact-convs": {
+			"reset-button": "",
+			"request-button": ""
+		},
+		"network": {
+			"ble-button": "",
+			"mc-button": "",
+			"nearby-button": "",
+			"mdns-button": "Multicast DNS",
+			"memo-cell-button": "",
+			"medias-cell-button": "",
+			"dht-button": "",
+			"rdvp-button": "",
+			"relay-button": "",
+			"bootstrap-button": ""
+		},
+		"edit-profile": {
+			"title": "Rediger min profil",
+			"qr-will-update": "Din Berty ID (QR-kode) vil bli oppdatert",
+			"ocr-wont-update": "Dine pågående kontaktforespørsler vil ikke bli oppdatert",
+			"save": "Lagre endringer",
+			"cancel": "Avbryt",
+			"name-input-placeholder": "Navn...",
+			"name-input-label": "Navn"
+		},
+		"berty-services": {
+			"title": "",
+			"desc": "",
+			"button": "",
+			"skip": "HOPP OVER OG GJØR DETTE SENERE"
+		},
+		"delete-account": {
+			"title": "Slett konto!",
+			"first-desc": "Er du sikker på at du vil slette din konto?",
+			"desc": "Vennligst skriv \"slett\" for å bekrefte",
+			"cancel-button": "AVBRYT",
+			"delete-button": "SLETT"
+		},
+		"faq": {
+			"title": ""
+		},
+		"roadmap": {
+			"title": ""
+		},
+		"privacy-policy": {
+			"title": ""
+		},
+		"devtools": {
+			"title": "Verktøy for utviklere",
+			"header-left-button": "Infoer om enheten",
+			"header-middle-button": "Generer falsk data",
+			"header-right-button": "Restart daemon",
+			"simulate-button": "Simuler stream-feil",
+			"simulate-js-error-button": "",
+			"system-info-button": "System-info",
+			"debug-button": "Feilsøk",
+			"log-button": {
+				"name": "",
+				"bullet-point": ""
+			},
+			"log-filters-button": {
+				"name": "",
+				"bullet-point": ""
+			},
+			"add-dev-conversations-button": "Legg til utviklersamtaler",
+			"share-button": {
+				"title": "Del ID på Discord",
+				"alert-title": "",
+				"alert-message": "Dette vil tillate andre ansatte til å skanne QR-koden din eller kopiere kontaktlenken din.",
+				"alert-accept-button": "Yep 👍",
+				"alert-cancel-button": "Nei"
+			},
+			"native-bridge-button": "Test Original Bro",
+			"dump-account-button": "Dump konto",
+			"dump-contacts-button": "Dump kontakter",
+			"dump-conversations-button": "Dump samtaler",
+			"dump-interactions-button": "Dump interaksjoner",
+			"dump-members-button": "Dump medlemmer",
+			"stop-node-button": "Stopp node",
+			"local-grpc-button": "lokal gRPC",
+			"console-logs-button": "Konsoll-logger",
+			"ipfs-webui-button": "IPFS WebUI",
+			"send-to-all-button": {
+				"title": "Send meldinger til alle kontakter",
+				"sending": "Sender...",
+				"test": "Test, ",
+				"tried": "✔ Prøvde å sende til {{length}} kontakter"
+			},
+			"tyber-attach": "",
+			"tyber-host-button": {
+				"name": "",
+				"bullet-point": ""
+			},
+			"footer-left-button": "Infoer om enheten",
+			"footer-middle-button": "List opp hendelser",
+			"footer-right-button": "Restart daemon"
+		},
+		"system-info": {
+			"title": "System-info"
+		},
+		"fake-data": {
+			"title": "Generer falske data",
+			"contacts-button": "Gen. falske kontakter",
+			"multi-members-button": "Gen. falske multi-medlemmer",
+			"messages-button": "Gen. falske meldinger",
+			"delete-button": "Slett falske data"
+		},
+		"add-dev-conversations": {
+			"title": "Legg til utviklersamtaler",
+			"add": "Legg til {{name}}"
+		},
+		"ipfs-webui": {
+			"title": "IPFS WebUI"
+		},
+		"theme-editor": {
+			"randomize": "",
+			"save": "",
+			"export": "",
+			"share": "",
+			"import": "",
+			"delete": "",
+			"bad-format-title": "",
+			"bad-format-desc": "",
+			"notification-file-saved": {
+				"title": "",
+				"desc": ""
+			}
+		},
+		"my-berty-ID": {
+			"title": "",
+			"qr": "QR",
+			"fingerprint": "Fingeravtrykk"
+		},
+		"share": {
+			"invite": "",
+			"tap-to-scan": "",
+			"create-group": ""
+		}
+	},
+	"modals": {
+		"manage-deep-link": {
+			"invalid-link": "Ugyldig lenke!",
+			"invalid-qr": "Ugyldig QR-kode!",
+			"error": "Feil!",
+			"contact-already-added": "Kontakten er allerede lagt til",
+			"contact-already-added-message": "Du kan ikke legge til samme kontakt flere ganger"
+		},
+		"invalid-scan": {
+			"dismiss-button": "AVVIS"
+		},
+		"add-this-contact": {
+			"fingerprint": "Fingeravtrykk",
+			"info": "Info",
+			"devices": "Enheter"
+		},
+		"group-invitation": {
+			"fingerprint": "Fingeravtrykk",
+			"info": "Infoer",
+			"devices": "Enheter",
+			"join": "",
+			"password-label": "",
+			"password-placeholder": ""
+		},
+		"save-theme": {
+			"title": "",
+			"desc": "",
+			"placeholder": "",
+			"cancel": "AVBRYT",
+			"add": ""
+		}
+	},
+	"chat": {
+		"sending": "Sender...",
+		"sent": "",
+		"contact-settings": {
+			"fingerprint": "Fingeravtrykk",
+			"info": "Infoer",
+			"my-devices": ""
+		},
+		"multi-member": {
+			"input-placeholder": ""
+		},
+		"push-notifications": {
+			"enable": "",
+			"enabled": "",
+			"unsupported": "",
+			"check-device-settings": "",
+			"warning-disable": {
+				"title": "",
+				"subtitle": "",
+				"accept": "",
+				"refuse": ""
+			},
+			"why-cant-disable": "",
+			"errors": {
+				"no-token": "",
+				"no-server": ""
+			}
+		},
+		"devices": {
+			"title": "Enheter",
+			"push": {
+				"enabled": "",
+				"not-enabled": "Push-varsler deaktivert"
+			}
+		},
+		"multi-member-settings": {
+			"media-button": "Medier, lenker & dokumenter",
+			"members-button": {
+				"title": "Medlemmer"
+			},
+			"add-member-button": "Legg til medlem",
+			"invite-button": "Inviter via lenke",
+			"save-button": "Lagre samtale på serveren"
+		},
+		"add-members": {
+			"members": "Medlemmer",
+			"contacts": "",
+			"add": ""
+		},
+		"multi-member-qr": {
+			"title": "QR-Gruppe"
+		},
+		"one-to-one": {
+			"contact-request-box": {
+				"title": "KONTAKTFORESPØRSEL",
+				"group-invitation": "",
+				"refuse-button": "NEKT",
+				"accept-button": "GODTA",
+				"accepted-button": "GODTATT",
+				"error": "",
+				"you-invited": "",
+				"this-contact": "",
+				"to-a-group": ""
+			},
+			"infos-chat": {
+				"connection-confirmed": "👋 Berty-tilkobling bekreftet! 🎉",
+				"request-sent": "Forespørsel sendt ✈",
+				"incoming": "Godta denne forespørselen for å svare!",
+				"outgoing": "Venter på ditt kontaktsvar for å tilkoble!"
+			},
+			"incoming-input-placeholder": "Godta forespørselen for å skrive her...",
+			"input-placeholder": ""
+		},
+		"one-to-one-settings": {
+			"media-button": "Medier, lenker & dokumenter",
+			"save-button": "Lagre samtale på serveren"
+		},
+		"replicate-group-settings": {
+			"title": "Registrer samtale på serveren",
+			"no-registered-button": "Ingen gjenskapingstjeneste registrert",
+			"connect-button": "Koble til Berty-opererte tjenester",
+			"manage-add-button": "Administrer eller legg til tjenester"
+		},
+		"files": {
+			"gallery": "Galleri",
+			"no-images": "",
+			"camera": "Kamera",
+			"files": "Filer",
+			"microphone": "Mikrofon",
+			"security-access": "Sikkerhetstilgang",
+			"security-access-desc": "Trykk her for å åpne innstillingen for å gi tilgang til din",
+			"save-to-gallery": "Lagre denne filen i Galleriet",
+			"share": "Del",
+			"forward-berty": "Videresend til Berty-contact",
+			"forward": "Videresend",
+			"image-saved": "Bilde lagret i Galleriet"
+		},
+		"shared-medias": {
+			"title": "",
+			"medias": "",
+			"links": "",
+			"documents": ""
+		},
+		"reply": {
+			"response-to": "",
+			"replying-to": "",
+			"replied-to": ""
+		},
+		"user-message": {
+			"read-more": "",
+			"show-less": ""
+		},
+		"emojis": {
+			"matching": ""
+		}
+	},
+	"audio": {
+		"record": {
+			"tooltip": {
+				"usage": "",
+				"not-sent": "",
+				"permission-denied": ""
+			},
+			"slide-to-cancel": "",
+			"cancel-button": "Avbryt"
+		}
+	},
+	"permission": {
+		"notification": {
+			"title": "",
+			"desc": ""
+		},
+		"proximity": {
+			"title": "",
+			"android-desc": "",
+			"ios-desc": ""
+		},
+		"camera": {
+			"title": "Kamera",
+			"desc": ""
+		},
+		"audio": {
+			"title": "",
+			"desc": ""
+		},
+		"gallery": {
+			"title": "",
+			"desc": ""
+		},
+		"button-labels": {
+			"allow": "",
+			"settings": ""
+		},
+		"skip": "HOPP OVER",
+		"cancel": "AVBRYT",
+		"settings-text": ""
+	},
+	"notification": {
+		"need-restart": {
+			"title": "",
+			"desc": ""
+		},
+		"need-restart-ble": {
+			"title": "",
+			"desc": ""
+		},
+		"submit-failed": {
+			"title": "",
+			"desc": ""
+		}
+	},
+	"error": {
+		"labels": {
+			"bug": "",
+			"crash": ""
+		},
+		"restart-app": "",
+		"wtf-screen": {
+			"title": "",
+			"desc": "",
+			"desc-report": ""
+		},
+		"sorry-screen": {
+			"title": "",
+			"desc": "",
+			"desc-em": "",
+			"desc-report": ""
+		}
+	},
+	"debug": {
+		"inspector": {
+			"show-button": "",
+			"hide-button": "",
+			"title": "",
+			"accounts": {
+				"title": "",
+				"unsupported-remote-mode": "",
+				"data-not-found": "",
+				"action-delete": {
+					"file-exists": "",
+					"account-exists": "",
+					"fs-read-error": "",
+					"actions-title": "",
+					"action-account-manager": "",
+					"action-account-manager-confirm": "",
+					"action-force-delete": "",
+					"action-force-delete-confirm": "",
+					"error-close": "",
+					"error-delete": "",
+					"success-feedback": "",
+					"action-cancel": "Avbryt"
+				},
+				"status": {
+					"datastore-found": "",
+					"datastore-not-found": "",
+					"ipfs-repo-found": "",
+					"ipfs-repo-not-found": "",
+					"messenger-db-found": "",
+					"messenger-db-not-found": ""
+				},
+				"infos": {
+					"aligned": {
+						"name": "",
+						"created": "",
+						"opened": "",
+						"error": ""
+					}
+				}
+			},
+			"errors": {
+				"title": "",
+				"header-reported": "",
+				"header-all-clear": "",
+				"listing-files-failed": "",
+				"listing-accounts-failed": "",
+				"listing-accounts-failed-grpc": ""
+			},
+			"dump": {
+				"button": ""
+			},
+			"refresh": "",
+			"confirm-alert": {
+				"button-confirm": "",
+				"button-cancel": "Avbryt"
+			}
+		}
+	}
+}
