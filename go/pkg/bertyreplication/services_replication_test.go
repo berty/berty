@@ -509,7 +509,7 @@ func TestReplicationService_Flow(t *testing.T) {
 
 			for i := 0; i < messageAmount; {
 				select {
-				case <-time.After(time.Second * 2):
+				case <-time.After(time.Second * 5):
 					cerr <- fmt.Errorf("timeout while waiting for event")
 					return
 				case evt = <-sub2a.Out():
@@ -558,7 +558,7 @@ func TestReplicationService_Flow(t *testing.T) {
 
 			for i := 0; i < messageAmount; {
 				select {
-				case <-time.After(time.Second * 2):
+				case <-time.After(time.Second * 5):
 					cerr <- fmt.Errorf("timeout while waiting for event")
 					return
 				case evt = <-sub2a.Out():
@@ -571,6 +571,9 @@ func TestReplicationService_Flow(t *testing.T) {
 		}()
 
 		err = mn.LinkAll()
+		require.NoError(t, err)
+
+		err = mn.ConnectAllButSelf()
 		require.NoError(t, err)
 
 		err = <-cerr
