@@ -1,0 +1,596 @@
+{
+	"onboarding": {
+		"getstarted": {
+			"title": "PROTEJA SUA PRIVACIDADE",
+			"desc": "mensagem peer-to-peer gratuita e segura",
+			"create-button": "Criar uma nova conta",
+			"import-button": "Importar uma conta",
+			"link-button": "Vincular este dispositivo"
+		},
+		"default-mode": {
+			"summary": {
+				"title": "Modo Padrão",
+				"subtitle": "Comece rapidamente",
+				"first-point": "Comece com predefinições que oferecem um equilíbrio de privacidade/conforto que mais se adequa a você. Pontos de conexão Berty são usados para melhorar o desempenho e a comunicação assíncrona.",
+				"second-point": "Para um equilíbrio de privacidade/conforto personalizado, selecione o Modo personalizado.",
+				"back-button": "Voltar",
+				"accept-button": "Vamos lá"
+			}
+		},
+		"custom-mode": {
+			"summary": {
+				"title": "Modo personalizado",
+				"subtitle": "Customizar Privacidade/Conforto",
+				"first-point": "Neste modo, ajuste todas as configurações individualmente para criar o equilíbrio de privacidade e conforto que funciona para você.",
+				"second-point": "Para uma experiência segura, selecione o Modo Padrão.",
+				"back-button": "Voltar",
+				"accept-button": "Continuar"
+			},
+			"settings": {
+				"off-grid": {
+					"title": "Comunicação Off-Grid",
+					"ble-button": "Bluetooth de Baixa Energia",
+					"nearby-button": "Android nas proximidades",
+					"mc-button": "Conectividade Multipares da Apple",
+					"mdns-button": "Multicast DNS (LAN)"
+				},
+				"routing": {
+					"title": "Roteamento",
+					"dht-button": "Tabela Hash Distribuída",
+					"rdvp-button": ""
+				},
+				"access": {
+					"title": "Acessibilidade de rede",
+					"relay-button": "Nós de retransmissão (TURN)",
+					"bootstrap-button": "Pontos de inicialização",
+					"replication-button": "Pontos de replicação"
+				},
+				"modals": {
+					"add": {
+						"title": {
+							"relay": "Adicionar um ponto de retransmissão (TURN)",
+							"bootstrap": "Adicionar um ponto de inicialização",
+							"rdvp": "Adicionar um ponto RDVP"
+						}
+					},
+					"edit": {
+						"title": {
+							"relay": "",
+							"bootstrap": "",
+							"rdvp": ""
+						}
+					},
+					"errors": {
+						"alias-already-exists": "",
+						"multiaddr-alread-exists": "",
+						"multiaddr-bad-format": "",
+						"multiaddr-p2p": ""
+					},
+					"buttons": {
+						"add": "Adicionar",
+						"edit": "",
+						"delete": ""
+					},
+					"multiaddress": "",
+					"alias": ""
+				},
+				"all-button": "",
+				"accept-button": ""
+			}
+		},
+		"create-account": {
+			"title": "Criar sua conta",
+			"placeholder": "Escolha seu apelido",
+			"good-to-know": {
+				"title": "É bom saber:",
+				"first-point": "Sua conta é criada localmente",
+				"second-point": ""
+			}
+		},
+		"generate-key": {
+			"title": "Iniciando o nó do Berty…",
+			"desc": "Isto pode levar alguns segundos"
+		},
+		"setup-finished": {
+			"title": "Configuração finalizada!",
+			"desc": "Agora você pode usar o aplicativo, comece a adicionar contatos e conversar de forma livre e privada com eles",
+			"button": "COMECE A USAR O BERTY"
+		},
+		"web-views": {
+			"title": "WebViews",
+			"desc": "",
+			"first-button": "Cancelar",
+			"second-button": "Sim"
+		}
+	},
+	"main": {
+		"home": {
+			"requests": {
+				"title": "Solicitações",
+				"accept": "Aceitar",
+				"card-title": "Solicitação de contato!"
+			},
+			"input-placeholder": "Pesquisar palavra-chave",
+			"no-contacts": "Você não tem nenhum contato ou conversa ainda",
+			"search": {
+				"no-results": "Nenhum resultado encontrado"
+			},
+			"multi-account": {
+				"create-button": "Criar nova conta",
+				"import-button": "Importar conta"
+			},
+			"create-group": {
+				"title": "Novo Grupo",
+				"add-members": "Adicionar membros",
+				"group-info": "Informações do grupo",
+				"search-placeholder": "Pesquisar",
+				"continue": "CONTINUAR",
+				"create-group": "CRIAR UM GRUPO"
+			},
+			"create-group-finalize": {
+				"placeholder": "Nome do grupo",
+				"about": "",
+				"first-bullet-point": "",
+				"second-bullet-point": "",
+				"third-bullet-point": "",
+				"fourth-bullet-point": "Você não pode excluir este grupo",
+				"fifth-bullet-point": ""
+			},
+			"conversations": {
+				"request-sent": "",
+				"draft": ""
+			}
+		},
+		"suggestion-display-name-initial": "Clique aqui para adicionar",
+		"scan": {
+			"title": "Escanear código QR"
+		}
+	},
+	"settings": {
+		"home": {
+			"proximity-button": "",
+			"notifications-button": "Notificações",
+			"contact-convs-button": "",
+			"appearance-button": "",
+			"devices-button": "",
+			"accounts-button": "Contas",
+			"network-button": "",
+			"bug-button": "",
+			"about-button": "Sobre Berty"
+		},
+		"about": {
+			"faq-button": "",
+			"roadmap-button": "",
+			"policy-button": "",
+			"license-button": ""
+		},
+		"accounts": {
+			"accounts-button": "Contas",
+			"create-button": "",
+			"import-button": "",
+			"link-button": "",
+			"delete-button": ""
+		},
+		"appearance": {
+			"dark-button": "",
+			"editor-button": ""
+		},
+		"contact-convs": {
+			"reset-button": "",
+			"request-button": ""
+		},
+		"network": {
+			"ble-button": "Bluetooth de Baixa Energia",
+			"mc-button": "",
+			"nearby-button": "",
+			"mdns-button": "DNS Multicast",
+			"memo-cell-button": "",
+			"medias-cell-button": "",
+			"dht-button": "Tabela Hash Distribuída",
+			"rdvp-button": "",
+			"relay-button": "",
+			"bootstrap-button": ""
+		},
+		"edit-profile": {
+			"title": "Editar meu perfil",
+			"qr-will-update": "Seu ID Berty (código QR) será atualizado",
+			"ocr-wont-update": "As suas solicitações de contato pendentes não serão atualizadas",
+			"save": "Salvar alterações",
+			"cancel": "Cancelar",
+			"name-input-placeholder": "Nome...",
+			"name-input-label": "Nome"
+		},
+		"berty-services": {
+			"title": "",
+			"desc": "",
+			"button": "",
+			"skip": "PULAR E FAZER MAIS TARDE"
+		},
+		"delete-account": {
+			"title": "Apagar conta!",
+			"first-desc": "Você tem certeza que deseja apagar sua conta?",
+			"desc": "Por favor, digite \"apagar\" para confirmar",
+			"cancel-button": "CANCELAR",
+			"delete-button": "APAGAR"
+		},
+		"faq": {
+			"title": ""
+		},
+		"roadmap": {
+			"title": ""
+		},
+		"privacy-policy": {
+			"title": ""
+		},
+		"devtools": {
+			"title": "Ferramentas de desenvolvedor",
+			"header-left-button": "Informações do dispositivo",
+			"header-middle-button": "Gerar dados falsos",
+			"header-right-button": "Reiniciar daemon",
+			"simulate-button": "Simular erro de transmissão",
+			"simulate-js-error-button": "Simular erro de JavaScript",
+			"system-info-button": "Informações do sistema",
+			"debug-button": "Debug",
+			"log-button": {
+				"name": "",
+				"bullet-point": ""
+			},
+			"log-filters-button": {
+				"name": "",
+				"bullet-point": ""
+			},
+			"add-dev-conversations-button": "Adicionar conversas de desenvolvimento",
+			"share-button": {
+				"title": "Compartilhar ID no Discord",
+				"alert-title": "",
+				"alert-message": "Isto permitirá que outros funcionários digitalizem seu código QR ou copiem seu link de contato.",
+				"alert-accept-button": "Sim 👍",
+				"alert-cancel-button": "Não"
+			},
+			"native-bridge-button": "Testar Ponte Nativa",
+			"dump-account-button": "Despejar conta",
+			"dump-contacts-button": "Despejar contatos",
+			"dump-conversations-button": "Despejar conversas",
+			"dump-interactions-button": "Despejar interações",
+			"dump-members-button": "Despejar membros",
+			"stop-node-button": "Parar nó",
+			"local-grpc-button": "gRPC local",
+			"console-logs-button": "Registros da console",
+			"ipfs-webui-button": "WebUI do IPFS",
+			"send-to-all-button": {
+				"title": "Enviar mensagens para todos os contatos",
+				"sending": "Enviando...",
+				"test": "Teste, ",
+				"tried": "✔ Tentou enviar para {{length}} contatos"
+			},
+			"tyber-attach": "",
+			"tyber-host-button": {
+				"name": "",
+				"bullet-point": ""
+			},
+			"footer-left-button": "Informações do dispositivo",
+			"footer-middle-button": "Listar eventos",
+			"footer-right-button": "Reiniciar daemon"
+		},
+		"system-info": {
+			"title": "Informações do sistema"
+		},
+		"fake-data": {
+			"title": "Gerar dados falsos",
+			"contacts-button": "Gerar contatos falsos",
+			"multi-members-button": "Gerar multi-membros falsos",
+			"messages-button": "Gerar mensagens falsas",
+			"delete-button": "Apagar dados falsos"
+		},
+		"add-dev-conversations": {
+			"title": "Adicionar conversas de desenvolvimento",
+			"add": "Adicionar {{name}}"
+		},
+		"ipfs-webui": {
+			"title": "WebUI do IPFS"
+		},
+		"theme-editor": {
+			"randomize": "",
+			"save": "",
+			"export": "",
+			"share": "",
+			"import": "",
+			"delete": "",
+			"bad-format-title": "",
+			"bad-format-desc": "",
+			"notification-file-saved": {
+				"title": "",
+				"desc": ""
+			}
+		},
+		"my-berty-ID": {
+			"title": "",
+			"qr": "QR",
+			"fingerprint": "Impressão digital"
+		},
+		"share": {
+			"invite": "",
+			"tap-to-scan": "",
+			"create-group": ""
+		}
+	},
+	"modals": {
+		"manage-deep-link": {
+			"invalid-link": "Link inválido!",
+			"invalid-qr": "Código QR inválido!",
+			"error": "Erro!",
+			"contact-already-added": "Contato já adicionado",
+			"contact-already-added-message": "Você não pode adicionar o mesmo contato várias vezes"
+		},
+		"invalid-scan": {
+			"dismiss-button": "DISPENSAR"
+		},
+		"add-this-contact": {
+			"fingerprint": "Impressão digital",
+			"info": "Informações",
+			"devices": "Dispositivos"
+		},
+		"group-invitation": {
+			"fingerprint": "Impressão digital",
+			"info": "Informações",
+			"devices": "Dispositivos",
+			"join": "",
+			"password-label": "",
+			"password-placeholder": ""
+		},
+		"save-theme": {
+			"title": "",
+			"desc": "",
+			"placeholder": "Nome do tema...",
+			"cancel": "CANCELAR",
+			"add": ""
+		}
+	},
+	"chat": {
+		"sending": "Enviando...",
+		"sent": "",
+		"contact-settings": {
+			"fingerprint": "Impressão digital",
+			"info": "Informações",
+			"my-devices": ""
+		},
+		"multi-member": {
+			"input-placeholder": "Digite aqui..."
+		},
+		"push-notifications": {
+			"enable": "",
+			"enabled": "",
+			"unsupported": "",
+			"check-device-settings": "",
+			"warning-disable": {
+				"title": "",
+				"subtitle": "",
+				"accept": "",
+				"refuse": ""
+			},
+			"why-cant-disable": "",
+			"errors": {
+				"no-token": "",
+				"no-server": ""
+			}
+		},
+		"devices": {
+			"title": "Dispositivos",
+			"push": {
+				"enabled": "",
+				"not-enabled": "Notificação de push desativada"
+			}
+		},
+		"multi-member-settings": {
+			"media-button": "Mídias, links e documentos",
+			"members-button": {
+				"title": "Membros"
+			},
+			"add-member-button": "Adicionar membro",
+			"invite-button": "Convidar por link",
+			"save-button": "Salvar conversa no servidor"
+		},
+		"add-members": {
+			"members": "Membros",
+			"contacts": "Contatos",
+			"add": ""
+		},
+		"multi-member-qr": {
+			"title": "Grupo QR"
+		},
+		"one-to-one": {
+			"contact-request-box": {
+				"title": "SOLICITAÇÃO DE CONTATO",
+				"group-invitation": "",
+				"refuse-button": "RECUSAR",
+				"accept-button": "ACEITAR",
+				"accepted-button": "ACEITO",
+				"error": "",
+				"you-invited": "",
+				"this-contact": "",
+				"to-a-group": ""
+			},
+			"infos-chat": {
+				"connection-confirmed": "👋 Conexão Berty confirmada! 🎉",
+				"request-sent": "Solicitação Enviada ✈",
+				"incoming": "Aceite esta solicitação para responder!",
+				"outgoing": "Aguardando pela resposta do seu contacto para conectar!"
+			},
+			"incoming-input-placeholder": "Aceite o pedido para escrever aqui...",
+			"input-placeholder": "Digite aqui..."
+		},
+		"one-to-one-settings": {
+			"media-button": "Mídias, links e documentos",
+			"save-button": "Salvar conversa no servidor"
+		},
+		"replicate-group-settings": {
+			"title": "Registrar conversa no servidor",
+			"no-registered-button": "Nenhum serviço de replicação registrado",
+			"connect-button": "Conectar-se a serviços operados pelo Berty",
+			"manage-add-button": "Gerenciar ou adicionar serviços"
+		},
+		"files": {
+			"gallery": "Galeria",
+			"no-images": "",
+			"camera": "Câmera",
+			"files": "Ficheiros",
+			"microphone": "Microfone",
+			"security-access": "Acesso de Segurança",
+			"security-access-desc": "Toque aqui para abrir a definição para permitir acesso ao seu",
+			"save-to-gallery": "Salvar arquivo na Galeria",
+			"share": "Compartilhar",
+			"forward-berty": "Encaminhar para contato Berty",
+			"forward": "Encaminhar",
+			"image-saved": "Imagem salva na Galeria"
+		},
+		"shared-medias": {
+			"title": "Mídias compartilhadas",
+			"medias": "Mídias",
+			"links": "",
+			"documents": "Documentos"
+		},
+		"reply": {
+			"response-to": "",
+			"replying-to": "",
+			"replied-to": "Respondeu para"
+		},
+		"user-message": {
+			"read-more": "",
+			"show-less": ""
+		},
+		"emojis": {
+			"matching": ""
+		}
+	},
+	"audio": {
+		"record": {
+			"tooltip": {
+				"usage": "Segure para gravar, solte para enviar",
+				"not-sent": "A mensagem de áudio não foi enviada",
+				"permission-denied": "O app não tem permissão para gravar som"
+			},
+			"slide-to-cancel": "<< Deslize para cancelar",
+			"cancel-button": "Cancelar"
+		}
+	},
+	"permission": {
+		"notification": {
+			"title": "",
+			"desc": ""
+		},
+		"proximity": {
+			"title": "",
+			"android-desc": "",
+			"ios-desc": ""
+		},
+		"camera": {
+			"title": "Câmera",
+			"desc": ""
+		},
+		"audio": {
+			"title": "",
+			"desc": ""
+		},
+		"gallery": {
+			"title": "",
+			"desc": ""
+		},
+		"button-labels": {
+			"allow": "",
+			"settings": ""
+		},
+		"skip": "PULAR",
+		"cancel": "CANCELAR",
+		"settings-text": ""
+	},
+	"notification": {
+		"need-restart": {
+			"title": "",
+			"desc": ""
+		},
+		"need-restart-ble": {
+			"title": "",
+			"desc": ""
+		},
+		"submit-failed": {
+			"title": "",
+			"desc": ""
+		}
+	},
+	"error": {
+		"labels": {
+			"bug": "",
+			"crash": ""
+		},
+		"restart-app": "Reiniciar o aplicativo",
+		"wtf-screen": {
+			"title": "",
+			"desc": "O aplicativo simplesmente travou.",
+			"desc-report": ""
+		},
+		"sorry-screen": {
+			"title": "",
+			"desc": "",
+			"desc-em": "",
+			"desc-report": ""
+		}
+	},
+	"debug": {
+		"inspector": {
+			"show-button": "",
+			"hide-button": "Fechar",
+			"title": "",
+			"accounts": {
+				"title": "Contas",
+				"unsupported-remote-mode": "",
+				"data-not-found": "",
+				"action-delete": {
+					"file-exists": "",
+					"account-exists": "Conta {{accountId}} atualmente existente.",
+					"fs-read-error": "",
+					"actions-title": "O que devemos fazer?",
+					"action-account-manager": "",
+					"action-account-manager-confirm": "Confirmar a exclusão da conta",
+					"action-force-delete": "",
+					"action-force-delete-confirm": "",
+					"error-close": "",
+					"error-delete": "",
+					"success-feedback": "Conta excluída",
+					"action-cancel": "Cancelar"
+				},
+				"status": {
+					"datastore-found": "",
+					"datastore-not-found": "",
+					"ipfs-repo-found": "",
+					"ipfs-repo-not-found": "",
+					"messenger-db-found": "",
+					"messenger-db-not-found": ""
+				},
+				"infos": {
+					"aligned": {
+						"name": "Nome: {{name}}",
+						"created": "Criado: {{created}}",
+						"opened": "Aberto:  {{opened}}",
+						"error": "Erro: {{error}}"
+					}
+				}
+			},
+			"errors": {
+				"title": "Erros",
+				"header-reported": "Erro relatado:",
+				"header-all-clear": "Nenhum erro relatado",
+				"listing-files-failed": "Erro ao listar conteúdos do diretório",
+				"listing-accounts-failed": "Erro ao listar contas",
+				"listing-accounts-failed-grpc": ""
+			},
+			"dump": {
+				"button": ""
+			},
+			"refresh": "Atualizar",
+			"confirm-alert": {
+				"button-confirm": "Confirmar",
+				"button-cancel": "Cancelar"
+			}
+		}
+	}
+}
