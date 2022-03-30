@@ -1029,8 +1029,8 @@ func constructorFactoryGroupMetadata(s *BertyOrbitDB, logger *zap.Logger) iface.
 
 		chSub, err := store.eventBus.Subscribe([]interface{}{
 			new(stores.EventWrite),
-			new(stores.EventReplicateProgress),
-		})
+			new(stores.EventReplicated),
+		}, eventbus.BufSize(128))
 		if err != nil {
 			return nil, fmt.Errorf("unable to subscribe to store events")
 		}
@@ -1049,48 +1049,46 @@ func constructorFactoryGroupMetadata(s *BertyOrbitDB, logger *zap.Logger) iface.
 					return
 				}
 
-				var entry ipfslog.Entry
+				var entries []ipfslog.Entry
 
 				switch evt := e.(type) {
 				case stores.EventWrite:
-					entry = evt.Entry
+					entries = []ipfslog.Entry{evt.Entry}
 
-				case stores.EventReplicateProgress:
-					entry = evt.Entry
+				case stores.EventReplicated:
+					entries = evt.Entries
 				}
 
-				if entry == nil {
-					continue
-				}
+				for _, entry := range entries {
+					ctx = tyber.ContextWithConstantTraceID(ctx, "msgrcvd-"+entry.GetHash().String())
+					tyber.LogTraceStart(ctx, store.logger, fmt.Sprintf("Received metadata from %s group %s", shortGroupType, b64GroupPK))
 
-				ctx = tyber.ContextWithConstantTraceID(ctx, "msgrcvd-"+entry.GetHash().String())
-				tyber.LogTraceStart(ctx, store.logger, fmt.Sprintf("Received metadata from %s group %s", shortGroupType, b64GroupPK))
+					metaEvent, event, err := openMetadataEntry(store.OpLog(), entry, g, store.devKS)
+					if err != nil {
+						_ = tyber.LogFatalError(ctx, store.logger, "Unable to open metadata event", err, tyber.WithDetail("RawEvent", fmt.Sprint(e)), tyber.ForceReopen)
+						continue
+					}
 
-				metaEvent, event, err := openMetadataEntry(store.OpLog(), entry, g, store.devKS)
-				if err != nil {
-					_ = tyber.LogFatalError(ctx, store.logger, "Unable to open metadata event", err, tyber.WithDetail("RawEvent", fmt.Sprint(e)), tyber.ForceReopen)
-					continue
-				}
+					tyber.LogStep(ctx, store.logger, "Opened metadata store event",
+						tyber.ForceReopen,
+						tyber.EndTrace,
+						tyber.WithJSONDetail("MetaEvent", metaEvent),
+						tyber.WithJSONDetail("Event", event),
+						tyber.UpdateTraceName(fmt.Sprintf("Received %s from %s group %s", strings.TrimPrefix(metaEvent.GetMetadata().GetEventType().String(), "EventType"), shortGroupType, b64GroupPK)),
+					)
 
-				tyber.LogStep(ctx, store.logger, "Opened metadata store event",
-					tyber.ForceReopen,
-					tyber.EndTrace,
-					tyber.WithJSONDetail("MetaEvent", metaEvent),
-					tyber.WithJSONDetail("Event", event),
-					tyber.UpdateTraceName(fmt.Sprintf("Received %s from %s group %s", strings.TrimPrefix(metaEvent.GetMetadata().GetEventType().String(), "EventType"), shortGroupType, b64GroupPK)),
-				)
+					recvEvent := EventMetadataReceived{
+						MetaEvent: metaEvent,
+						Event:     event,
+					}
 
-				recvEvent := EventMetadataReceived{
-					MetaEvent: metaEvent,
-					Event:     event,
-				}
+					if err := store.emitters.metadataReceived.Emit(recvEvent); err != nil {
+						store.logger.Warn("unable to emit recv event", zap.Error(err))
+					}
 
-				if err := store.emitters.metadataReceived.Emit(recvEvent); err != nil {
-					store.logger.Warn("unable to emit recv event", zap.Error(err))
-				}
-
-				if err := store.emitters.groupMetadata.Emit(*metaEvent); err != nil {
-					store.logger.Warn("unable to emit group metadata event", zap.Error(err))
+					if err := store.emitters.groupMetadata.Emit(*metaEvent); err != nil {
+						store.logger.Warn("unable to emit group metadata event", zap.Error(err))
+					}
 				}
 			}
 		}()

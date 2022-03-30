@@ -428,8 +428,8 @@ func constructorFactoryGroupMessage(s *BertyOrbitDB, logger *zap.Logger) iface.S
 
 		chSub, err := store.EventBus().Subscribe([]interface{}{
 			new(stores.EventWrite),
-			new(stores.EventReplicateProgress),
-		})
+			new(stores.EventReplicated),
+		}, eventbus.BufSize(128))
 		if err != nil {
 			return nil, fmt.Errorf("unable to subscribe to store events")
 		}
@@ -444,26 +444,27 @@ func constructorFactoryGroupMessage(s *BertyOrbitDB, logger *zap.Logger) iface.S
 					return
 				}
 
-				var entry ipfslog.Entry
+				var entries []ipfslog.Entry
 
 				switch evt := e.(type) {
 				case stores.EventWrite:
-					entry = evt.Entry
+					entries = []ipfslog.Entry{evt.Entry}
 
-				case stores.EventReplicateProgress:
-					entry = evt.Entry
+				case stores.EventReplicated:
+					entries = evt.Entries
 				}
 
-				ctx = tyber.ContextWithConstantTraceID(ctx, "msgrcvd-"+entry.GetHash().String())
-				store.logger.Debug("Received message store event", tyber.FormatTraceLogFields(ctx)...)
+				for _, entry := range entries {
+					ctx = tyber.ContextWithConstantTraceID(ctx, "msgrcvd-"+entry.GetHash().String())
+					store.logger.Debug("Received message store event", tyber.FormatTraceLogFields(ctx)...)
+					store.logger.Debug(
+						"Message store event",
+						tyber.FormatStepLogFields(ctx, []tyber.Detail{{Name: "RawEvent", Description: fmt.Sprint(e)}})...,
+					)
 
-				store.logger.Debug(
-					"Message store event",
-					tyber.FormatStepLogFields(ctx, []tyber.Detail{{Name: "RawEvent", Description: fmt.Sprint(e)}})...,
-				)
-
-				if err := store.addToMessageQueue(ctx, entry); err != nil {
-					logger.Error("unable to add message to queue", zap.Error(err))
+					if err := store.addToMessageQueue(ctx, entry); err != nil {
+						logger.Error("unable to add message to queue", zap.Error(err))
+					}
 				}
 			}
 		}()
