@@ -1,0 +1,596 @@
+{
+	"onboarding": {
+		"getstarted": {
+			"title": "GİZLİLİĞİNİZİ KORUYUN",
+			"desc": "ücretsiz & güvenli eşler arası mesajlaşma",
+			"create-button": "Yeni bir hesap oluştur",
+			"import-button": "Hesabı içeri aktar",
+			"link-button": "Bu cihazı bağla"
+		},
+		"default-mode": {
+			"summary": {
+				"title": "Varsayılan Mod",
+				"subtitle": "Hızlıca Başla",
+				"first-point": "Senin için en uygun olan gizlilik/konfor dengesiyle başla. Berty düğümleri performans arttırmak ve asenkron iletişim sağlamak için kullanılır.",
+				"second-point": "Özelleştirilmiş gizlilik/konfor dengesi için, özelleştirme modunu seç.",
+				"back-button": "Geri",
+				"accept-button": "Başlayalım"
+			}
+		},
+		"custom-mode": {
+			"summary": {
+				"title": "Özelleştirilmiş Mod",
+				"subtitle": "Özelleştirilmiş Gizlilik/Konfor Dengesi",
+				"first-point": "Bu modda tüm ayarları gizlilik ve konfor dengesi sana uygun hale gelene kadar değiştir.",
+				"second-point": "Hemen başlamak için, varsayılan modu seç.",
+				"back-button": "Geri",
+				"accept-button": "İleri"
+			},
+			"settings": {
+				"off-grid": {
+					"title": "Bağımsız İletişim",
+					"ble-button": "Bluetooth Düşük Enerji",
+					"nearby-button": "Yakınlardaki Android",
+					"mc-button": "Apple Çok Eşli Bağlantı",
+					"mdns-button": "Çok yönlü yayın DNS (LAN)"
+				},
+				"routing": {
+					"title": "Yönlendirme",
+					"dht-button": "Dağıtık Hash Tablosu",
+					"rdvp-button": ""
+				},
+				"access": {
+					"title": "Ağ Erişilebilirliği",
+					"relay-button": "",
+					"bootstrap-button": "",
+					"replication-button": ""
+				},
+				"modals": {
+					"add": {
+						"title": {
+							"relay": "",
+							"bootstrap": "",
+							"rdvp": ""
+						}
+					},
+					"edit": {
+						"title": {
+							"relay": "",
+							"bootstrap": "",
+							"rdvp": ""
+						}
+					},
+					"errors": {
+						"alias-already-exists": "",
+						"multiaddr-alread-exists": "",
+						"multiaddr-bad-format": "",
+						"multiaddr-p2p": ""
+					},
+					"buttons": {
+						"add": "Ekle",
+						"edit": "Düzenle",
+						"delete": "Sil"
+					},
+					"multiaddress": "Çoklu adres",
+					"alias": "Takma ad"
+				},
+				"all-button": "Hepsi",
+				"accept-button": "Başlayalım"
+			}
+		},
+		"create-account": {
+			"title": "Hesabınızı oluşturun",
+			"placeholder": "Takma adınızı seçin",
+			"good-to-know": {
+				"title": "Bilmeniz gerekenler:",
+				"first-point": "Hesabınız yerel olarak oluşturuldu",
+				"second-point": "Takma ad isteğe bağlı ve sonradan değiştirilebilir"
+			}
+		},
+		"generate-key": {
+			"title": "Berty düğümü(node) başlatılıyor…",
+			"desc": "Bu birkaç saniye sürebilir"
+		},
+		"setup-finished": {
+			"title": "Kurulum bitti!",
+			"desc": "Artık uygulamayı kullanabilir, kişi eklemeye başlayabilir ve onlarla özgürce ve özel olarak konuşabilirsiniz",
+			"button": "BERTY KULLANMAYA BAŞLA"
+		},
+		"web-views": {
+			"title": "WebViewlar",
+			"desc": "Ağ üzerinde webview yüklemelerine hazırlık yapıyoruz. Hala açmak istiyor musun?",
+			"first-button": "İptal",
+			"second-button": "Evet"
+		}
+	},
+	"main": {
+		"home": {
+			"requests": {
+				"title": "İstekler",
+				"accept": "Onayla",
+				"card-title": "Kişi isteği!"
+			},
+			"input-placeholder": "Arama yap",
+			"no-contacts": "Şimdilik herhangi bir kişi veya chat'in yok",
+			"search": {
+				"no-results": "Sonuç bulunamadı"
+			},
+			"multi-account": {
+				"create-button": "Yeni hesap oluştur",
+				"import-button": "Hesabı içeri aktar"
+			},
+			"create-group": {
+				"title": "Yeni Grup",
+				"add-members": "Üyeler ekle",
+				"group-info": "Grup bilgisi",
+				"search-placeholder": "Sorgula",
+				"continue": "DEVAM ET",
+				"create-group": "YENİ BİR GRUP YARAT"
+			},
+			"create-group-finalize": {
+				"placeholder": "Grup ismi",
+				"about": "Grup Hakkında",
+				"first-bullet-point": "Tüm grup üyeleri ismi değiştirebilir ve yeni üye davet edebilir",
+				"second-bullet-point": "Bağlantı ile yeni üye davet edebilirsin",
+				"third-bullet-point": "Bu gruptan ayrılabilirsiniz",
+				"fourth-bullet-point": "Bu grubu silemezsiniz",
+				"fifth-bullet-point": "Bu gruptan bir üye silemezsiniz"
+			},
+			"conversations": {
+				"request-sent": "İstek gönderildi. Bekliyor...",
+				"draft": ""
+			}
+		},
+		"suggestion-display-name-initial": "Eklemek için buraya tıkla",
+		"scan": {
+			"title": "QR Kod Tarat"
+		}
+	},
+	"settings": {
+		"home": {
+			"proximity-button": "Bağımsız İletişim",
+			"notifications-button": "Bildirimler",
+			"contact-convs-button": "Bağlantı ve sohbetler",
+			"appearance-button": "Görünüş",
+			"devices-button": "Cihazlar ve yedekleme",
+			"accounts-button": "Hesaplar",
+			"network-button": "Ağ",
+			"bug-button": "Hata bildir",
+			"about-button": "Berty Hakkında"
+		},
+		"about": {
+			"faq-button": "SSS",
+			"roadmap-button": "Yol haritası",
+			"policy-button": "Gizlilik Politikası",
+			"license-button": "Açık Kaynak Lisansları"
+		},
+		"accounts": {
+			"accounts-button": "Hesaplar",
+			"create-button": "Yeni hesap oluştur",
+			"import-button": "Hesabı içeri aktar",
+			"link-button": "Farklı bir cihaz bağla",
+			"delete-button": "Bu hesabı sil"
+		},
+		"appearance": {
+			"dark-button": "Karanlık Mod",
+			"editor-button": "Tema Düzenleyici"
+		},
+		"contact-convs": {
+			"reset-button": "Bağlantı linkimi sıfırla/QR Kod",
+			"request-button": "Gelen bağlantı isteklerine izin ver"
+		},
+		"network": {
+			"ble-button": "Bluetooth Düşük Enerji",
+			"mc-button": "Çok Eşli Bağlantı",
+			"nearby-button": "Android Nearby",
+			"mdns-button": "Çok yönlü yayın DNS",
+			"memo-cell-button": "",
+			"medias-cell-button": "Medyaları hücresel veri ile yükle",
+			"dht-button": "Dağıtık Hash Tablosu",
+			"rdvp-button": "",
+			"relay-button": "",
+			"bootstrap-button": ""
+		},
+		"edit-profile": {
+			"title": "Profilimi düzenle",
+			"qr-will-update": "Berty ID'niz (QR kodu) güncellenecek",
+			"ocr-wont-update": "Bekleyen iletişim istekleriniz güncellenmeyecek",
+			"save": "Değişiklikleri kaydet",
+			"cancel": "İptal",
+			"name-input-placeholder": "İsim...",
+			"name-input-label": "İsim"
+		},
+		"berty-services": {
+			"title": "Berty Servisleri",
+			"desc": "",
+			"button": "Berty Servislerini Kullan",
+			"skip": "ATLA VE DAHA SONRA YAP"
+		},
+		"delete-account": {
+			"title": "Hesabı sil!",
+			"first-desc": "Hesabınızı silmek istediğinizden emin misiniz?",
+			"desc": "Lütfen onaylamak için delete yazın",
+			"cancel-button": "İPTAL ET",
+			"delete-button": "SİL"
+		},
+		"faq": {
+			"title": "SSS"
+		},
+		"roadmap": {
+			"title": "Yol haritası"
+		},
+		"privacy-policy": {
+			"title": "Gizlilik Politikası"
+		},
+		"devtools": {
+			"title": "Geliştirici araçları",
+			"header-left-button": "Aygıt bilgileri",
+			"header-middle-button": "Sahte bilgi oluştur",
+			"header-right-button": "Arka plan programını yeniden başlat",
+			"simulate-button": "Akış hatasını taklit et",
+			"simulate-js-error-button": "Javascript hatasını taklit et",
+			"system-info-button": "Sistem bilgisi",
+			"debug-button": "Hata ayıklama",
+			"log-button": {
+				"name": "Günlük biçimi",
+				"bullet-point": "Bu alanı değiştirdikten sonra uygulamayı yeniden başlatın"
+			},
+			"log-filters-button": {
+				"name": "Günlük filtreleri",
+				"bullet-point": "Bu alanı değiştirdikten sonra uygulamayı yeniden başlatın"
+			},
+			"add-dev-conversations-button": "Geliştirici konuşmalarını ekle",
+			"share-button": {
+				"title": "ID'yi Discord'da paylaş",
+				"alert-title": "QR kodunuzu Berty Discord'unda \"#dev-logs\" ile paylaşmak ister misiniz?",
+				"alert-message": "Bu diğer çalışanların QR kodunuzu taramasını veya kişi linkinizi kopyalamasını sağlayacaktır.",
+				"alert-accept-button": "Evet 👍",
+				"alert-cancel-button": "Hayır"
+			},
+			"native-bridge-button": "Yerel Köprüyü Test Et",
+			"dump-account-button": "Hesabı dök",
+			"dump-contacts-button": "Kişileri dök",
+			"dump-conversations-button": "Konuşmaları dök",
+			"dump-interactions-button": "Etkileşimleri dök",
+			"dump-members-button": "Üyeleri dök",
+			"stop-node-button": "Boğumu durdur",
+			"local-grpc-button": "yerel gRPC",
+			"console-logs-button": "Konsol günlükleri",
+			"ipfs-webui-button": "IPFS WebUI",
+			"send-to-all-button": {
+				"title": "Bütün kişilere mesaj gönder",
+				"sending": "Gönderiliyor...",
+				"test": "Test, ",
+				"tried": "✔{{length}} kişiye gönderme denendi"
+			},
+			"tyber-attach": "",
+			"tyber-host-button": {
+				"name": "",
+				"bullet-point": "Bu alanı değiştirdikten sonra uygulamayı yeniden başlatın"
+			},
+			"footer-left-button": "Aygıt bilgileri",
+			"footer-middle-button": "Olayları listele",
+			"footer-right-button": "Arka plan programını yeniden başlat"
+		},
+		"system-info": {
+			"title": "Sistem bilgisi"
+		},
+		"fake-data": {
+			"title": "Sahte bilgi oluştur",
+			"contacts-button": "Sahte kişiler oluştur",
+			"multi-members-button": "Sahte çoklu-üyeler oluştur",
+			"messages-button": "Sahte mesajlar oluştur",
+			"delete-button": "Sahte bilgiyi sil"
+		},
+		"add-dev-conversations": {
+			"title": "Geliştirici konuşmaları ekle",
+			"add": "Ekle {{name}}"
+		},
+		"ipfs-webui": {
+			"title": "IPFS WebUI"
+		},
+		"theme-editor": {
+			"randomize": "Tema oluştur",
+			"save": "Bu temayı kaydet",
+			"export": "",
+			"share": "",
+			"import": "",
+			"delete": "",
+			"bad-format-title": "",
+			"bad-format-desc": "",
+			"notification-file-saved": {
+				"title": "Data kaydedildi!",
+				"desc": ""
+			}
+		},
+		"my-berty-ID": {
+			"title": "",
+			"qr": "QR",
+			"fingerprint": "Parmak izi"
+		},
+		"share": {
+			"invite": "",
+			"tap-to-scan": "",
+			"create-group": "Grup yarat"
+		}
+	},
+	"modals": {
+		"manage-deep-link": {
+			"invalid-link": "Geçersiz link!",
+			"invalid-qr": "Geçersiz QR kodu!",
+			"error": "Hata!",
+			"contact-already-added": "Kişi zaten eklendi",
+			"contact-already-added-message": "Aynı kişiyi birden fazla defa ekleyemezsiniz"
+		},
+		"invalid-scan": {
+			"dismiss-button": "YOKSAY"
+		},
+		"add-this-contact": {
+			"fingerprint": "Parmak izi",
+			"info": "Bilgi",
+			"devices": "Aygıtlar"
+		},
+		"group-invitation": {
+			"fingerprint": "Parmak izi",
+			"info": "Bilgiler",
+			"devices": "Aygıtlar",
+			"join": "BU GRUBA KATIL",
+			"password-label": "",
+			"password-placeholder": "Parola..."
+		},
+		"save-theme": {
+			"title": "",
+			"desc": "Lütfen temanız için bir isim seçin!",
+			"placeholder": "Tema adı...",
+			"cancel": "İPTAL ET",
+			"add": "EKLE!"
+		}
+	},
+	"chat": {
+		"sending": "Gönderiliyor...",
+		"sent": "Gönderildi",
+		"contact-settings": {
+			"fingerprint": "Parmak izi",
+			"info": "Bilgiler",
+			"my-devices": ""
+		},
+		"multi-member": {
+			"input-placeholder": "Buraya yaz..."
+		},
+		"push-notifications": {
+			"enable": "Bildirimleri aç",
+			"enabled": "Bildirimler açık",
+			"unsupported": "Bildirimler desteklenmiyor",
+			"check-device-settings": "",
+			"warning-disable": {
+				"title": "Bu özelliği aktifleştirmek istiyor musun?",
+				"subtitle": "",
+				"accept": "Aktifleştir",
+				"refuse": "Geç"
+			},
+			"why-cant-disable": "",
+			"errors": {
+				"no-token": "Cihazın bildirimleri desteklemiyor",
+				"no-server": ""
+			}
+		},
+		"devices": {
+			"title": "Aygıtlar",
+			"push": {
+				"enabled": "Bildirimler açık",
+				"not-enabled": "Anlık bildirimler devre dışı"
+			}
+		},
+		"multi-member-settings": {
+			"media-button": "Medyalar, linkler & dosyalar",
+			"members-button": {
+				"title": "Üyeler"
+			},
+			"add-member-button": "Üye ekle",
+			"invite-button": "Link ile davet et",
+			"save-button": "Konuşmayı sunucuya kaydet"
+		},
+		"add-members": {
+			"members": "Üyeler",
+			"contacts": "Kişiler",
+			"add": "Ekle!"
+		},
+		"multi-member-qr": {
+			"title": "QR Grubu"
+		},
+		"one-to-one": {
+			"contact-request-box": {
+				"title": "KİŞİ İSTEĞİ",
+				"group-invitation": "GRUP DAVETİ",
+				"refuse-button": "REDDET",
+				"accept-button": "KABUL ET",
+				"accepted-button": "KABUL EDİLDİ",
+				"error": "Seni gruba eklerken hatayla karşılaştık ☹️ Bizim hatamız!",
+				"you-invited": "Sen davet ettin",
+				"this-contact": "",
+				"to-a-group": ""
+			},
+			"infos-chat": {
+				"connection-confirmed": "👋 Berty bağlantısı onaylandı! 🎉",
+				"request-sent": "İstek Gönderildi ✈",
+				"incoming": "Cevap vermek için bu isteği kabul edin!",
+				"outgoing": "Bağlanmak için kişinizin yanıtı bekleniyor!"
+			},
+			"incoming-input-placeholder": "Buraya yazmak için isteği kabul et...",
+			"input-placeholder": "Buraya yaz..."
+		},
+		"one-to-one-settings": {
+			"media-button": "Medyalar, linkler & dosyalar",
+			"save-button": "Konuşmayı sunucuya kaydet"
+		},
+		"replicate-group-settings": {
+			"title": "Konuşmayı sunucuya kaydet",
+			"no-registered-button": "Hiçbir çoğaltma servisi kaydedilmedi",
+			"connect-button": "Berty tarafından işletilen servislere bağlan",
+			"manage-add-button": "Servisleri ekle veya yönet"
+		},
+		"files": {
+			"gallery": "Galeri",
+			"no-images": "",
+			"camera": "Kamera",
+			"files": "Dosyalar",
+			"microphone": "Mikrofon",
+			"security-access": "Güvenlik Erişimi",
+			"security-access-desc": "Hesabınıza erişime izin vermek üzere ayarı açmak için dokunun",
+			"save-to-gallery": "Bu dosyayı galeriye kaydet",
+			"share": "Paylaş",
+			"forward-berty": "Berty kişisine ilet",
+			"forward": "İlet",
+			"image-saved": "Resim galeriye kaydedildi"
+		},
+		"shared-medias": {
+			"title": "Paylaşılan medyalar",
+			"medias": "Medya",
+			"links": "Bağlantılar",
+			"documents": "Belgeler"
+		},
+		"reply": {
+			"response-to": "Yanıtla",
+			"replying-to": "Yanıtlıyorsun",
+			"replied-to": "Yanıtlandı"
+		},
+		"user-message": {
+			"read-more": "Daha fazla",
+			"show-less": "Daha az göster"
+		},
+		"emojis": {
+			"matching": ""
+		}
+	},
+	"audio": {
+		"record": {
+			"tooltip": {
+				"usage": "Kaydetmek için basılı tut, göndermek için bırak",
+				"not-sent": "Sesli mesaj gönderilemedi",
+				"permission-denied": "Uygulamanın ses kaydetme yetkisi yok"
+			},
+			"slide-to-cancel": "<< İptal için kaydırın",
+			"cancel-button": "İptal"
+		}
+	},
+	"permission": {
+		"notification": {
+			"title": "Bildirimler",
+			"desc": ""
+		},
+		"proximity": {
+			"title": "Bluetooth Mesajlaşma",
+			"android-desc": "",
+			"ios-desc": ""
+		},
+		"camera": {
+			"title": "Kamera",
+			"desc": ""
+		},
+		"audio": {
+			"title": "Sesli Mesajlar",
+			"desc": "Kişilerinize sesli mesaj göndermek için Berty uygulamasına mikrofona erişimi izni tanımalısınız."
+		},
+		"gallery": {
+			"title": "Fotoğrafla Mesajlaşma",
+			"desc": ""
+		},
+		"button-labels": {
+			"allow": "İzin ver",
+			"settings": "Ayarlara Git"
+		},
+		"skip": "ATLA",
+		"cancel": "İPTAL ET",
+		"settings-text": ""
+	},
+	"notification": {
+		"need-restart": {
+			"title": "Yeniden başlatma gerekli",
+			"desc": "Verilerini kaydetmek ve bildirimleri açmak için Berty'i yeniden başlat!"
+		},
+		"need-restart-ble": {
+			"title": "Yeniden başlatma gerekli",
+			"desc": "Berty'i yeniden başlat ve sistem ayarlarından Bluetooth'u aktifleştir!"
+		},
+		"submit-failed": {
+			"title": "",
+			"desc": "Mail uygulaması bulunamıyor"
+		}
+	},
+	"error": {
+		"labels": {
+			"bug": "Hata algılandı",
+			"crash": "Kilitlenme algılandı"
+		},
+		"restart-app": "Uygulamayı yeniden başlatın",
+		"wtf-screen": {
+			"title": "Hata nedir?",
+			"desc": "Uygulama az önce çöktü.",
+			"desc-report": "Uygulamadan çıkıp yeniden başlatmak için butona tıklayın."
+		},
+		"sorry-screen": {
+			"title": "Bu hata için üzgünüm!",
+			"desc": "Bu Francis'in hatası, Berty'de geliştirici stajyer bir hata yapmış olması gereken. Bu Francis ne kadar aptal!",
+			"desc-em": "Pekala, tamam, Berty takımında Francis yok.",
+			"desc-report": "Uygulamadan çıkıp yeniden başlatmak için düğmeye basın."
+		}
+	},
+	"debug": {
+		"inspector": {
+			"show-button": "Uygulama denetçisini göster",
+			"hide-button": "Kapat",
+			"title": "Müfettiş",
+			"accounts": {
+				"title": "Hesaplar",
+				"unsupported-remote-mode": "Uzak seçenekte hesap denetçisi desteklenmez",
+				"data-not-found": "Hesap listede değil",
+				"action-delete": {
+					"file-exists": "Hesap mevcut değil{{accountId}}, ancak bu dosyada bir isim var.",
+					"account-exists": "{{accountId}} Hesabı şuanda mevcut.",
+					"fs-read-error": "Hesapla ilgili Yazı tipi boyutu bilgisi alınırken hata oluştu",
+					"actions-title": "Ne yapmalıyız?",
+					"action-account-manager": "Hesap yöneticisiyle sil",
+					"action-account-manager-confirm": "Hesabın silinmesini onayla",
+					"action-force-delete": "Silmeye zorla",
+					"action-force-delete-confirm": "Hesabın zorla silinmesini onayla",
+					"error-close": "Hesabı kapatırken hata",
+					"error-delete": "Hesabı silerken hata",
+					"success-feedback": "Hesap silindi",
+					"action-cancel": "İptal"
+				},
+				"status": {
+					"datastore-found": "Veri deposu bulundu",
+					"datastore-not-found": "Veri deposu bulunamadı",
+					"ipfs-repo-found": "",
+					"ipfs-repo-not-found": "",
+					"messenger-db-found": "Haberci DB bulundu",
+					"messenger-db-not-found": "Haberci DB bulunmadı"
+				},
+				"infos": {
+					"aligned": {
+						"name": "İsim: {{name}}",
+						"created": "Oluşturuldu: {{created}}",
+						"opened": "Açıldı:  {{opened}}",
+						"error": "Hata: {{error}}"
+					}
+				}
+			},
+			"errors": {
+				"title": "Hatalar",
+				"header-reported": "Hata raporu:",
+				"header-all-clear": "Hiçbir hata raporlanmadı",
+				"listing-files-failed": "Dizin içeriklerini listelerken hata",
+				"listing-accounts-failed": "Hesapları listelerken hata",
+				"listing-accounts-failed-grpc": "Hesapları listelerken GRPC hatası"
+			},
+			"dump": {
+				"button": "Uygulama durumunu dök"
+			},
+			"refresh": "Yenile",
+			"confirm-alert": {
+				"button-confirm": "Onayla",
+				"button-cancel": "İptal"
+			}
+		}
+	}
+}
