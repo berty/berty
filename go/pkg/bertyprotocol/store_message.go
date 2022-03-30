@@ -163,7 +163,7 @@ func (m *MessageStore) processMessage(ctx context.Context, ownPK crypto.PubKey, 
 	return nil
 }
 
-func (m *MessageStore) processMessageLoop(ctx context.Context) error {
+func (m *MessageStore) processMessageLoop(ctx context.Context) {
 	var ownPK crypto.PubKey
 	var rawOwnPK []byte
 	md, inErr := m.devKS.MemberDeviceForGroup(m.g)
@@ -179,7 +179,7 @@ func (m *MessageStore) processMessageLoop(ctx context.Context) error {
 		select {
 		case message = <-m.cmessage:
 		case <-ctx.Done():
-			return nil
+			return
 		}
 
 		devicepk := string(message.headers.DevicePK)
@@ -402,9 +402,8 @@ func constructorFactoryGroupMessage(s *BertyOrbitDB, logger *zap.Logger) iface.S
 		}
 
 		go func() {
-			if err := store.processMessageLoop(ctx); err != nil && err != context.Canceled {
-				logger.Error("process message loop error", zap.Error(err))
-			}
+			store.processMessageLoop(ctx)
+			logger.Debug("store message process loop ended", zap.Error(ctx.Err()))
 		}()
 
 		if store.emitters.groupMessage, err = store.eventBus.Emitter(new(protocoltypes.GroupMessageEvent)); err != nil {
