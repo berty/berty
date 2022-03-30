@@ -23,8 +23,10 @@ import (
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
 	"berty.tech/berty/v2/go/pkg/tyber"
 	ipfslog "berty.tech/go-ipfs-log"
+	"berty.tech/go-ipfs-log/enc"
 	"berty.tech/go-ipfs-log/entry"
 	"berty.tech/go-ipfs-log/identityprovider"
+	"berty.tech/go-ipfs-log/io"
 	orbitdb "berty.tech/go-orbit-db"
 	"berty.tech/go-orbit-db/baseorbitdb"
 	"berty.tech/go-orbit-db/iface"
@@ -47,10 +49,10 @@ type loggable interface {
 
 type NewOrbitDBOptions struct {
 	baseorbitdb.NewOrbitDBOptions
-	Datastore              datastore.Batching
-	MessageKeystore        *cryptoutil.MessageKeystore
-	DeviceKeystore         cryptoutil.DeviceKeystore
-	RendezvousRotationBase time.Duration
+	Datastore        datastore.Batching
+	MessageKeystore  *cryptoutil.MessageKeystore
+	DeviceKeystore   cryptoutil.DeviceKeystore
+	RotationInterval *rendezvous.RotationInterval
 }
 
 func (n *NewOrbitDBOptions) applyDefaults() {
@@ -74,20 +76,22 @@ func (n *NewOrbitDBOptions) applyDefaults() {
 		n.DeviceKeystore = cryptoutil.NewDeviceKeystore(ipfsutil.NewDatastoreKeystore(datastoreutil.NewNamespacedDatastore(n.Datastore, datastore.NewKey(NamespaceDeviceKeystore))), nil)
 	}
 
-	if n.RendezvousRotationBase.Nanoseconds() <= 0 {
-		n.RendezvousRotationBase = rendezvous.DefaultRotationInterval
+	if n.RotationInterval == nil {
+		n.RotationInterval = rendezvous.NewStaticRotationInterval()
 	}
 }
 
 type BertyOrbitDB struct {
 	baseorbitdb.BaseOrbitDB
-	groups          sync.Map // map[string]*protocoltypes.Group
-	groupContexts   sync.Map // map[string]*GroupContext
-	groupsSigPubKey sync.Map // map[string]crypto.PubKey
-	keyStore        *BertySignedKeyStore
-	messageKeystore *cryptoutil.MessageKeystore
-	deviceKeystore  cryptoutil.DeviceKeystore
-	pubSub          *PubSubWithRotation
+	rotationInterval *rendezvous.RotationInterval
+	groups           sync.Map // map[string]*protocoltypes.Group
+	groupContexts    sync.Map // map[string]*GroupContext
+	groupsSigPubKey  sync.Map // map[string]crypto.PubKey
+	keyStore         *BertySignedKeyStore
+	messageKeystore  *cryptoutil.MessageKeystore
+	deviceKeystore   cryptoutil.DeviceKeystore
+	pubSub           iface.PubSubInterface
+	messageMarshaler *RotationMessageMarshaler
 }
 
 func (s *BertyOrbitDB) registerGroupPrivateKey(g *protocoltypes.Group) error {
@@ -154,8 +158,10 @@ func NewBertyOrbitDB(ctx context.Context, ipfs coreapi.CoreAPI, options *NewOrbi
 		options.PubSub = pubsubcoreapi.NewPubSub(ipfs, self.ID(), time.Second, options.Logger, options.Tracer)
 	}
 
-	pubSub := NewPubSubWithRotation(options.PubSub, options.RendezvousRotationBase)
-	options.PubSub = pubSub
+	mm := NewRotationMessageMarshaler(options.RotationInterval)
+	if options.MessageMarshaler == nil {
+		options.MessageMarshaler = mm
+	}
 
 	orbitDB, err := baseorbitdb.NewOrbitDB(ctx, ipfs, &options.NewOrbitDBOptions)
 	if err != nil {
@@ -163,11 +169,13 @@ func NewBertyOrbitDB(ctx context.Context, ipfs coreapi.CoreAPI, options *NewOrbi
 	}
 
 	bertyDB := &BertyOrbitDB{
-		BaseOrbitDB:     orbitDB,
-		keyStore:        ks,
-		deviceKeystore:  options.DeviceKeystore,
-		messageKeystore: options.MessageKeystore,
-		pubSub:          pubSub,
+		messageMarshaler: mm,
+		BaseOrbitDB:      orbitDB,
+		keyStore:         ks,
+		deviceKeystore:   options.DeviceKeystore,
+		messageKeystore:  options.MessageKeystore,
+		rotationInterval: options.RotationInterval,
+		pubSub:           options.PubSub,
 	}
 
 	if err := bertyDB.RegisterAccessControllerType(NewSimpleAccessController); err != nil {
@@ -426,11 +434,6 @@ func (s *BertyOrbitDB) storeForGroup(ctx context.Context, o iface.BaseOrbitDB, g
 
 	l.Debug("Opening store", tyber.FormatStepLogFields(ctx, []tyber.Detail{{Name: "Group", Description: g.String()}, {Name: "Options", Description: fmt.Sprint(options)}}, tyber.Status(tyber.Running))...)
 
-	linkKey, err := cryptoutil.GetLinkKeyArray(g)
-	if err != nil {
-		return nil, err
-	}
-
 	options.StoreType = &storeType
 	name := fmt.Sprintf("%s_%s", g.GroupIDAsString(), storeType)
 
@@ -438,7 +441,25 @@ func (s *BertyOrbitDB) storeForGroup(ctx context.Context, o iface.BaseOrbitDB, g
 	if err != nil {
 		return nil, err
 	}
-	s.pubSub.RegisterGroupLinkKey(addr.String(), linkKey[:])
+
+	linkKey, err := cryptoutil.GetLinkKeyArray(g)
+	if err != nil {
+		return nil, err
+	}
+
+	if key := linkKey[:]; len(key) > 0 {
+		sk, err := enc.NewSecretbox(key)
+		if err != nil {
+			return nil, err
+		}
+
+		cborIO := io.CBOR()
+		cborIO.ApplyOptions(&io.CBOROptions{LinkKey: sk})
+		options.IO = cborIO
+
+		s.messageMarshaler.RegisterSharedKeyForTopic(addr.String(), sk)
+		s.rotationInterval.RegisterRotation(time.Now(), addr.String(), key)
+	}
 
 	store, err := o.Open(ctx, name, options)
 	if err != nil {

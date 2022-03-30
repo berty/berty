@@ -5964,6 +5964,49 @@ export namespace berty {
                 public static toObject(message: berty.protocol.v1.FirstLastCounters, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
+
+            interface IOrbitDBMessageHeads {
+                sealedBox?: (Uint8Array|null);
+                rawRotation?: (Uint8Array|null);
+            }
+
+            class OrbitDBMessageHeads implements IOrbitDBMessageHeads {
+
+                public sealedBox: Uint8Array;
+                public rawRotation: Uint8Array;
+                public static create(properties?: berty.protocol.v1.IOrbitDBMessageHeads): berty.protocol.v1.OrbitDBMessageHeads;
+                public static encode(message: berty.protocol.v1.IOrbitDBMessageHeads, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.protocol.v1.IOrbitDBMessageHeads, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.OrbitDBMessageHeads;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.OrbitDBMessageHeads;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.protocol.v1.OrbitDBMessageHeads;
+                public static toObject(message: berty.protocol.v1.OrbitDBMessageHeads, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            namespace OrbitDBMessageHeads {
+
+                interface IBox {
+                    address?: (string|null);
+                    heads?: (Uint8Array|null);
+                }
+
+                class Box implements IBox {
+
+                    public address: string;
+                    public heads: Uint8Array;
+                    public static create(properties?: berty.protocol.v1.OrbitDBMessageHeads.IBox): berty.protocol.v1.OrbitDBMessageHeads.Box;
+                    public static encode(message: berty.protocol.v1.OrbitDBMessageHeads.IBox, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.OrbitDBMessageHeads.IBox, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.OrbitDBMessageHeads.Box;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.OrbitDBMessageHeads.Box;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.OrbitDBMessageHeads.Box;
+                    public static toObject(message: berty.protocol.v1.OrbitDBMessageHeads.Box, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+            }
         }
     }
 

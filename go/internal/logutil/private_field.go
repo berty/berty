@@ -113,6 +113,10 @@ func SetGlobal(namespace []byte, enabled bool) {
 	mu.Unlock()
 }
 
+func DisablePrivateFields() {
+	SetGlobal(nil, false)
+}
+
 func init() { // nolint:gochecknoinits
 	namespace := make([]byte, 32)
 	_, err := crand.Reader.Read(namespace)

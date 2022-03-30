@@ -1,4 +1,4 @@
 5122f0d9c2729b20daf544f3016312baae1bbffe  Makefile
 6a09900bef584e88887cfa6824ba17fb49fcf5c1  ../api/messengertypes.proto
+9688d248d51fd8bd1e520a3a1c1811118003c06b  ../api/protocoltypes.proto
 d986b56aadb37b2e818ebb822e66c281f2c8e2e4  ../api/accounttypes.proto
-f51dcb8b9bfb1f4f8d9a809cf8eaab1349ca6814  ../api/protocoltypes.proto

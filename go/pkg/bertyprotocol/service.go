@@ -23,7 +23,6 @@ import (
 	"berty.tech/berty/v2/go/internal/cryptoutil"
 	"berty.tech/berty/v2/go/internal/datastoreutil"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
-	"berty.tech/berty/v2/go/internal/rendezvous"
 	"berty.tech/berty/v2/go/internal/tinder"
 	"berty.tech/berty/v2/go/pkg/bertypush"
 	"berty.tech/berty/v2/go/pkg/bertyversion"
@@ -71,23 +70,22 @@ type service struct {
 
 // Opts contains optional configuration flags for building a new Client
 type Opts struct {
-	Logger                 *zap.Logger
-	IpfsCoreAPI            ipfsutil.ExtendedCoreAPI
-	DeviceKeystore         cryptoutil.DeviceKeystore
-	DatastoreDir           string
-	RootDatastore          ds.Batching
-	GroupDatastore         *cryptoutil.GroupDatastore
-	AccountCache           ds.Batching
-	MessageKeystore        *cryptoutil.MessageKeystore
-	OrbitDB                *BertyOrbitDB
-	TinderDriver           tinder.UnregisterDiscovery
-	RendezvousRotationBase time.Duration
-	Host                   host.Host
-	PubSub                 *pubsub.PubSub
-	GRPCInsecureMode       bool
-	LocalOnly              bool
-	close                  func() error
-	PushKey                *[cryptoutil.KeySize]byte
+	Logger           *zap.Logger
+	IpfsCoreAPI      ipfsutil.ExtendedCoreAPI
+	DeviceKeystore   cryptoutil.DeviceKeystore
+	DatastoreDir     string
+	RootDatastore    ds.Batching
+	GroupDatastore   *cryptoutil.GroupDatastore
+	AccountCache     ds.Batching
+	MessageKeystore  *cryptoutil.MessageKeystore
+	OrbitDB          *BertyOrbitDB
+	TinderDriver     tinder.UnregisterDiscovery
+	Host             host.Host
+	PubSub           *pubsub.PubSub
+	GRPCInsecureMode bool
+	LocalOnly        bool
+	close            func() error
+	PushKey          *[cryptoutil.KeySize]byte
 }
 
 func (opts *Opts) applyPushDefaults() error {
@@ -142,10 +140,6 @@ func (opts *Opts) applyDefaults(ctx context.Context) error {
 		opts.DeviceKeystore = cryptoutil.NewDeviceKeystore(ks, nil)
 	}
 
-	if opts.RendezvousRotationBase.Nanoseconds() <= 0 {
-		opts.RendezvousRotationBase = rendezvous.DefaultRotationInterval
-	}
-
 	if opts.IpfsCoreAPI == nil {
 		dsync := ds_sync.MutexWrap(ds.NewMapDatastore())
 		repo, err := ipfsutil.CreateMockedRepo(dsync)
@@ -190,9 +184,8 @@ func (opts *Opts) applyDefaults(ctx context.Context) error {
 				Directory: &orbitDirectory,
 				Logger:    opts.Logger,
 			},
-			Datastore:              datastoreutil.NewNamespacedDatastore(opts.RootDatastore, ds.NewKey(NamespaceOrbitDBDatastore)),
-			DeviceKeystore:         opts.DeviceKeystore,
-			RendezvousRotationBase: opts.RendezvousRotationBase,
+			Datastore:      datastoreutil.NewNamespacedDatastore(opts.RootDatastore, ds.NewKey(NamespaceOrbitDBDatastore)),
+			DeviceKeystore: opts.DeviceKeystore,
 		}
 
 		if opts.Host != nil {
@@ -240,7 +233,7 @@ func New(ctx context.Context, opts Opts) (_ Service, err error) {
 	opts.Logger.Debug("Opened account group", tyber.FormatStepLogFields(ctx, []tyber.Detail{{Name: "AccountGroup", Description: acc.group.String()}})...)
 
 	if opts.TinderDriver != nil {
-		s := NewSwiper(opts.Logger, opts.TinderDriver, opts.RendezvousRotationBase)
+		s := NewSwiper(opts.Logger, opts.TinderDriver, opts.OrbitDB.rotationInterval)
 		opts.Logger.Debug("Tinder swiper is enabled", tyber.FormatStepLogFields(ctx, []tyber.Detail{})...)
 
 		if err := initContactRequestsManager(ctx, s, acc.metadataStore, opts.IpfsCoreAPI, opts.Logger); err != nil {

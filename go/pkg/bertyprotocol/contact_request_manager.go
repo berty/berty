@@ -171,6 +171,7 @@ func (c *contactRequestsManager) enqueueRequest(tctx context.Context, contact *p
 		updateCh:   make(chan *pendingRequestDetails),
 		cancelFunc: reqCancel,
 	}
+
 	go func() {
 		for {
 			select {
@@ -350,12 +351,13 @@ func (c *contactRequestsManager) performSend(ctx context.Context, otherPK crypto
 	}()
 
 	c.lock.Lock()
-	if c.metadataStore.checkContactStatus(otherPK, protocoltypes.ContactStateAdded) {
+	ok := c.metadataStore.checkContactStatus(otherPK, protocoltypes.ContactStateAdded)
+	c.lock.Unlock()
+
+	if ok {
 		// Nothing to do, contact has already been requested
-		c.lock.Unlock()
 		return nil
 	}
-	c.lock.Unlock()
 
 	_, contact := c.metadataStore.GetIncomingContactRequestsStatus()
 	if contact == nil {

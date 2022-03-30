@@ -9,12 +9,32 @@ import (
 	"berty.tech/berty/v2/go/internal/cryptoutil"
 	"berty.tech/berty/v2/go/internal/datastoreutil"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
+	"berty.tech/berty/v2/go/internal/rendezvous"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/go-orbit-db/baseorbitdb"
 	"berty.tech/go-orbit-db/pubsub/directchannel"
 	"berty.tech/go-orbit-db/pubsub/pubsubraw"
 )
+
+func (m *Manager) GetRotationInterval() (rp *rendezvous.RotationInterval, err error) {
+	m.mutex.Lock()
+	rp, err = m.getRotationInterval()
+	m.mutex.Unlock()
+	return
+}
+
+func (m *Manager) getRotationInterval() (*rendezvous.RotationInterval, error) {
+	if m.Node.Protocol.rotationInterval == nil {
+		rendezvousRotationBase, err := m.GetRendezvousRotationBase()
+		if err != nil {
+			return nil, errcode.ErrDeserialization.Wrap(err)
+		}
+		m.Node.Protocol.rotationInterval = rendezvous.NewRotationInterval(rendezvousRotationBase)
+	}
+
+	return m.Node.Protocol.rotationInterval, nil
+}
 
 func (m *Manager) getOrbitDB() (*bertyprotocol.BertyOrbitDB, error) {
 	m.applyDefaults()
@@ -53,9 +73,9 @@ func (m *Manager) getOrbitDB() (*bertyprotocol.BertyOrbitDB, error) {
 		cache    = bertyprotocol.NewOrbitDatastoreCache(rootDS)
 	)
 
-	rendezvousRotationBase, err := m.GetRendezvousRotationBase()
+	rp, err := m.getRotationInterval()
 	if err != nil {
-		return nil, errcode.ErrDeserialization.Wrap(err)
+		return nil, errcode.TODO.Wrap(err)
 	}
 
 	opts := &bertyprotocol.NewOrbitDBOptions{
@@ -65,9 +85,9 @@ func (m *Manager) getOrbitDB() (*bertyprotocol.BertyOrbitDB, error) {
 			Logger:               logger,
 			DirectChannelFactory: directchannel.InitDirectChannelFactory(logger.Named("odb-dc"), node.PeerHost),
 		},
-		Datastore:              rootDS,
-		DeviceKeystore:         deviceKS,
-		RendezvousRotationBase: rendezvousRotationBase,
+		Datastore:        rootDS,
+		DeviceKeystore:   deviceKS,
+		RotationInterval: rp,
 	}
 
 	if node.PubSub != nil {

@@ -3921,6 +3921,32 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     id: 2
                   }
                 }
+              },
+              OrbitDBMessageHeads: {
+                fields: {
+                  sealedBox: {
+                    type: "bytes",
+                    id: 2
+                  },
+                  rawRotation: {
+                    type: "bytes",
+                    id: 3
+                  }
+                },
+                nested: {
+                  Box: {
+                    fields: {
+                      address: {
+                        type: "string",
+                        id: 1
+                      },
+                      heads: {
+                        type: "bytes",
+                        id: 2
+                      }
+                    }
+                  }
+                }
               }
             }
           }

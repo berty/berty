@@ -9,6 +9,7 @@ import (
 	"github.com/libp2p/go-libp2p-core/peer"
 	"go.uber.org/zap"
 
+	"berty.tech/berty/v2/go/internal/rendezvous"
 	"berty.tech/berty/v2/go/internal/tinder"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
@@ -19,7 +20,8 @@ type bertyEngine struct {
 }
 
 func NewEngine(ctx context.Context, h host.Host, disc tinder.UnregisterDiscovery) (Engine, error) {
-	return &bertyEngine{s: bertyprotocol.NewSwiper(zap.NewNop(), disc, time.Hour*24)}, nil
+	rp := rendezvous.NewRotationInterval(time.Hour * 24)
+	return &bertyEngine{s: bertyprotocol.NewSwiper(zap.NewNop(), disc, rp)}, nil
 }
 
 func (p *bertyEngine) Search(octx context.Context, gwg *sync.WaitGroup, rc chan<- *ResultReturn, previous *ResultReturn) {

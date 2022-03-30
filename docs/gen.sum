@@ -6,7 +6,7 @@ a9eed0caefc2bb169f2a7c3a9a5238ac19c2d953  ../api/accounttypes.yaml
 9f42025e90b2e6da94afacf69ec9e5cb0b0d010a  ../api/errcode.proto
 6a09900bef584e88887cfa6824ba17fb49fcf5c1  ../api/messengertypes.proto
 4b51d3591f078dca7203adf8488b1ebe6f90d85b  ../api/messengertypes.yaml
-f51dcb8b9bfb1f4f8d9a809cf8eaab1349ca6814  ../api/protocoltypes.proto
+9688d248d51fd8bd1e520a3a1c1811118003c06b  ../api/protocoltypes.proto
 da5bd1312cf80e89c0d78f67aeaede38c53c9a75  ../api/protocoltypes.yaml
 50992f4b6a9afb23b8dc3ee482bd10b48a445f45  ../api/pushtypes.proto
 00284c7d54f219f2d66852350c00cbff87a14620  ../api/pushtypes.yaml

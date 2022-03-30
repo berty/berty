@@ -31,6 +31,7 @@ import (
 	"berty.tech/berty/v2/go/internal/logutil"
 	"berty.tech/berty/v2/go/internal/notification"
 	proximity "berty.tech/berty/v2/go/internal/proximitytransport"
+	"berty.tech/berty/v2/go/internal/rendezvous"
 	"berty.tech/berty/v2/go/internal/tinder"
 	"berty.tech/berty/v2/go/pkg/bertymessenger"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
@@ -152,6 +153,7 @@ type Manager struct {
 			requiredByClient           bool
 			ipfsWebUICleanup           func()
 			orbitDB                    *bertyprotocol.BertyOrbitDB
+			rotationInterval           *rendezvous.RotationInterval
 		}
 		Messenger struct {
 			DisableGroupMonitor  bool   `json:"DisableGroupMonitor,omitempty"`

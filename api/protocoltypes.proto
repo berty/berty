@@ -1487,8 +1487,21 @@ message PushSetServer {
   message Reply {}
 }
 
-
 message FirstLastCounters {
   uint64 first = 1;
   uint64 last = 2;
+}
+
+// OrbitDBMessageHeads is the payload sent on orbitdb to share peer's heads
+message OrbitDBMessageHeads {
+  message Box {
+    string address = 1;
+    bytes heads = 2;
+  }
+
+  // sealed box should contain encrypted Box
+  bytes sealed_box = 2;
+
+  // current topic used
+  bytes raw_rotation = 3;
 }

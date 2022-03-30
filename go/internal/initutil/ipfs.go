@@ -20,6 +20,7 @@ import (
 	ipfs_p2p "github.com/ipfs/go-ipfs/core/node/libp2p"
 	ipfs_repo "github.com/ipfs/go-ipfs/repo"
 	libp2p "github.com/libp2p/go-libp2p"
+	p2p_disc "github.com/libp2p/go-libp2p-core/discovery"
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/peer"
 	peerstore "github.com/libp2p/go-libp2p-core/peerstore"
@@ -106,7 +107,7 @@ func (m *Manager) SetupLocalIPFSFlags(fs *flag.FlagSet) {
 	fs.BoolVar(&m.Node.Protocol.DisableDiscoverFilterAddrs, FlagNameP2PDisableDiscoverAddrsFilter, false, "dont filter private addrs on discovery service")
 	fs.BoolVar(&m.Node.Protocol.AutoRelay, "p2p.autorelay", true, "enable autorelay, force private reachability")
 	fs.StringVar(&m.Node.Protocol.StaticRelays, FlagNameP2PStaticRelays, KeywordDefault, "list of static relay maddrs, `:default:` will use statics relays from the config")
-	fs.DurationVar(&m.Node.Protocol.MinBackoff, "p2p.min-backoff", time.Minute, "minimum p2p backoff duration")
+	fs.DurationVar(&m.Node.Protocol.MinBackoff, "p2p.min-backoff", time.Second, "minimum p2p backoff duration")
 	fs.DurationVar(&m.Node.Protocol.MaxBackoff, "p2p.max-backoff", time.Minute*10, "maximum p2p backoff duration")
 	fs.DurationVar(&m.Node.Protocol.PollInterval, "p2p.poll-interval", pubsub.DiscoveryPollInterval, "how long the discovery system will waits for more peers")
 	fs.StringVar(&m.Node.Protocol.RdvpMaddrs, FlagNameP2PRDVP, KeywordDefault, "list of rendezvous point maddr, `:dev:` will add the default devs servers, `:none:` will disable rdvp")
@@ -692,17 +693,24 @@ func (m *Manager) configIPFSRouting(h host.Host, r p2p_routing.Routing) error {
 		pt.EventTracerOption(),
 	}
 
+	var disc p2p_disc.Discovery
 	if m.Node.Protocol.TinderDiscover {
 		// filter localdiscovery from drivers since pubsub automatically share topic between connected peers
-		driverFilter := tinder.NewFilterDriverDiscovery(m.Node.Protocol.discovery, tinder.LocalDiscoveryName)
-		popts = append(popts, pubsub.WithDiscovery(driverFilter, pubsub.WithDiscoverConnector(backoffconnector)))
+		disc = tinder.NewFilterDriverDiscovery(m.Node.Protocol.discovery, tinder.LocalDiscoveryName)
 	} else {
-		advertiseOnly := tinder.DriverDiscovery{
+		disc = tinder.DriverDiscovery{
 			Discoverer: tinder.NoopDiscovery,
 			Advertiser: m.Node.Protocol.discovery,
 		}
-		popts = append(popts, pubsub.WithDiscovery(advertiseOnly, pubsub.WithDiscoverConnector(backoffconnector)))
 	}
+
+	rp, err := m.getRotationInterval()
+	if err != nil {
+		return errcode.ErrIPFSSetupHost.Wrap(err)
+	}
+
+	disc = tinder.NewRotationDiscovery(disc, rp)
+	popts = append(popts, pubsub.WithDiscovery(disc, pubsub.WithDiscoverConnector(backoffconnector)))
 
 	// pubsub.DiscoveryPollInterval = m.Node.Protocol.PollInterval
 	m.Node.Protocol.pubsub, err = pubsub.NewGossipSub(m.getContext(), h, popts...)
