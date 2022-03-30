@@ -10,8 +10,8 @@ const noDaemon = process.env.NO_DAEMON === 'true';
 
 const createWindow = (): void => {
 	const mainWindow = new BrowserWindow({
-		height: 600,
-		width: 800,
+		height: 800,
+		width: 420,
 		webPreferences: {
 			nodeIntegration: false,
 			nodeIntegrationInWorker: true,
@@ -26,7 +26,7 @@ const createWindow = (): void => {
 			mainWindow.loadURL(`http://localhost:3002#${accountListener}`)
 				.catch(err => console.log('An error occurred: ', err));
 
-			mainWindow.webContents.openDevTools();
+			mainWindow.webContents.openDevTools({ mode: 'detach' });
 
 	} else {
 		mainWindow.loadFile(path.join('build', 'index.html'), {hash: accountListener}).catch(err => console.log('An error occurred: ', err));
