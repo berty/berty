@@ -179,7 +179,7 @@ func (m *MessageStore) processMessageLoop(ctx context.Context) error {
 		select {
 		case message = <-m.cmessage:
 		case <-ctx.Done():
-			return ctx.Err()
+			return nil
 		}
 
 		devicepk := string(message.headers.DevicePK)
@@ -402,7 +402,7 @@ func constructorFactoryGroupMessage(s *BertyOrbitDB, logger *zap.Logger) iface.S
 		}
 
 		go func() {
-			if err := store.processMessageLoop(ctx); err != nil {
+			if err := store.processMessageLoop(ctx); err != nil && err != context.Canceled {
 				logger.Error("process message loop error", zap.Error(err))
 			}
 		}()
