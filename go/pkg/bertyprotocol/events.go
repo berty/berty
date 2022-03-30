@@ -58,6 +58,8 @@ func newEventContext(eventID cid.Cid, parentIDs []cid.Cid, g *protocoltypes.Grou
 	}
 }
 
+// FIXME(gfanton): getParentsCID use a lot of ressources
+// nolint:unused
 func getParentsForCID(log ipfslog.Log, c cid.Cid) []cid.Cid {
 	if log == nil {
 		// TODO: this should not happen
@@ -87,7 +89,7 @@ func getParentsForCID(log ipfslog.Log, c cid.Cid) []cid.Cid {
 	return ret
 }
 
-func newGroupMetadataEventFromEntry(log ipfslog.Log, e ipfslog.Entry, metadata *protocoltypes.GroupMetadata, event proto.Message, g *protocoltypes.Group, attachmentsCIDs [][]byte) (*protocoltypes.GroupMetadataEvent, error) {
+func newGroupMetadataEventFromEntry(_ ipfslog.Log, e ipfslog.Entry, metadata *protocoltypes.GroupMetadata, event proto.Message, g *protocoltypes.Group, attachmentsCIDs [][]byte) (*protocoltypes.GroupMetadataEvent, error) {
 	// TODO: if parent is a merge node we should return the next nodes of it
 
 	eventBytes, err := proto.Marshal(event)
@@ -95,7 +97,9 @@ func newGroupMetadataEventFromEntry(log ipfslog.Log, e ipfslog.Entry, metadata *
 		return nil, errcode.ErrSerialization
 	}
 
-	evtCtx := newEventContext(e.GetHash(), getParentsForCID(log, e.GetHash()), g, attachmentsCIDs)
+	// TODO(gfanton): getParentsCID use a lot of ressources, disable it until we need it
+	// evtCtx := newEventContext(e.GetHash(), getParentsForCID(log, e.GetHash()), g, attachmentsCIDs)
+	evtCtx := newEventContext(e.GetHash(), []cid.Cid{}, g, attachmentsCIDs)
 
 	gme := protocoltypes.GroupMetadataEvent{
 		EventContext: evtCtx,
