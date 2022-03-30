@@ -1,0 +1,596 @@
+{
+	"onboarding": {
+		"getstarted": {
+			"title": "",
+			"desc": "",
+			"create-button": "",
+			"import-button": "",
+			"link-button": ""
+		},
+		"default-mode": {
+			"summary": {
+				"title": "",
+				"subtitle": "",
+				"first-point": "",
+				"second-point": "",
+				"back-button": "",
+				"accept-button": ""
+			}
+		},
+		"custom-mode": {
+			"summary": {
+				"title": "",
+				"subtitle": "",
+				"first-point": "",
+				"second-point": "",
+				"back-button": "",
+				"accept-button": ""
+			},
+			"settings": {
+				"off-grid": {
+					"title": "",
+					"ble-button": "",
+					"nearby-button": "",
+					"mc-button": "",
+					"mdns-button": ""
+				},
+				"routing": {
+					"title": "",
+					"dht-button": "",
+					"rdvp-button": ""
+				},
+				"access": {
+					"title": "",
+					"relay-button": "",
+					"bootstrap-button": "",
+					"replication-button": ""
+				},
+				"modals": {
+					"add": {
+						"title": {
+							"relay": "",
+							"bootstrap": "",
+							"rdvp": ""
+						}
+					},
+					"edit": {
+						"title": {
+							"relay": "",
+							"bootstrap": "",
+							"rdvp": ""
+						}
+					},
+					"errors": {
+						"alias-already-exists": "",
+						"multiaddr-alread-exists": "",
+						"multiaddr-bad-format": "",
+						"multiaddr-p2p": ""
+					},
+					"buttons": {
+						"add": "추가",
+						"edit": "",
+						"delete": ""
+					},
+					"multiaddress": "",
+					"alias": ""
+				},
+				"all-button": "",
+				"accept-button": ""
+			}
+		},
+		"create-account": {
+			"title": "계정 만들기",
+			"placeholder": "",
+			"good-to-know": {
+				"title": "",
+				"first-point": "",
+				"second-point": ""
+			}
+		},
+		"generate-key": {
+			"title": "Berty 노드 실행 중...",
+			"desc": "몇 초가 걸릴 수 있습니다"
+		},
+		"setup-finished": {
+			"title": "설정이 끝났어요!",
+			"desc": "",
+			"button": "Berty 사용해보기"
+		},
+		"web-views": {
+			"title": "",
+			"desc": "",
+			"first-button": "취소",
+			"second-button": ""
+		}
+	},
+	"main": {
+		"home": {
+			"requests": {
+				"title": "요청",
+				"accept": "",
+				"card-title": ""
+			},
+			"input-placeholder": "",
+			"no-contacts": "",
+			"search": {
+				"no-results": "결과 없음"
+			},
+			"multi-account": {
+				"create-button": "새 계정 만들기",
+				"import-button": "기존 계정 가져오기"
+			},
+			"create-group": {
+				"title": "새 그룹 만들기",
+				"add-members": "멤버 추가",
+				"group-info": "그룹 정보",
+				"search-placeholder": "검색",
+				"continue": "다음",
+				"create-group": "만들기"
+			},
+			"create-group-finalize": {
+				"placeholder": "",
+				"about": "",
+				"first-bullet-point": "",
+				"second-bullet-point": "",
+				"third-bullet-point": "",
+				"fourth-bullet-point": "",
+				"fifth-bullet-point": ""
+			},
+			"conversations": {
+				"request-sent": "",
+				"draft": ""
+			}
+		},
+		"suggestion-display-name-initial": "여기를 눌러 추가",
+		"scan": {
+			"title": ""
+		}
+	},
+	"settings": {
+		"home": {
+			"proximity-button": "",
+			"notifications-button": "알림",
+			"contact-convs-button": "",
+			"appearance-button": "",
+			"devices-button": "",
+			"accounts-button": "계정",
+			"network-button": "",
+			"bug-button": "",
+			"about-button": "Berty에 대해"
+		},
+		"about": {
+			"faq-button": "",
+			"roadmap-button": "",
+			"policy-button": "",
+			"license-button": ""
+		},
+		"accounts": {
+			"accounts-button": "계정",
+			"create-button": "",
+			"import-button": "",
+			"link-button": "",
+			"delete-button": ""
+		},
+		"appearance": {
+			"dark-button": "",
+			"editor-button": ""
+		},
+		"contact-convs": {
+			"reset-button": "",
+			"request-button": ""
+		},
+		"network": {
+			"ble-button": "",
+			"mc-button": "",
+			"nearby-button": "",
+			"mdns-button": "Multicast DNS",
+			"memo-cell-button": "",
+			"medias-cell-button": "",
+			"dht-button": "",
+			"rdvp-button": "",
+			"relay-button": "",
+			"bootstrap-button": ""
+		},
+		"edit-profile": {
+			"title": "프로필 수정",
+			"qr-will-update": "",
+			"ocr-wont-update": "",
+			"save": "변경사항 저장",
+			"cancel": "취소",
+			"name-input-placeholder": "이름...",
+			"name-input-label": "이름"
+		},
+		"berty-services": {
+			"title": "",
+			"desc": "",
+			"button": "",
+			"skip": "넘기고 다음에 하기"
+		},
+		"delete-account": {
+			"title": "계정 삭제!",
+			"first-desc": "정말로 계정을 삭제해도 괜찮을까요?",
+			"desc": "삭제하려면 delete를 입력하세요",
+			"cancel-button": "취소하기",
+			"delete-button": "삭제하기"
+		},
+		"faq": {
+			"title": ""
+		},
+		"roadmap": {
+			"title": ""
+		},
+		"privacy-policy": {
+			"title": ""
+		},
+		"devtools": {
+			"title": "개발 도구",
+			"header-left-button": "장치 정보",
+			"header-middle-button": "모조 데이터 생성",
+			"header-right-button": "데몬 재시작",
+			"simulate-button": "",
+			"simulate-js-error-button": "",
+			"system-info-button": "시스템 정보",
+			"debug-button": "디버그",
+			"log-button": {
+				"name": "로그 형식",
+				"bullet-point": "변경 후 재시작 필요"
+			},
+			"log-filters-button": {
+				"name": "로그 필터",
+				"bullet-point": "변경 후 재시작 필요"
+			},
+			"add-dev-conversations-button": "",
+			"share-button": {
+				"title": "디스코드에 ID 공유",
+				"alert-title": "",
+				"alert-message": "",
+				"alert-accept-button": "좋아요 👍",
+				"alert-cancel-button": "아뇨"
+			},
+			"native-bridge-button": "네이티브 브릿지 테스트",
+			"dump-account-button": "",
+			"dump-contacts-button": "",
+			"dump-conversations-button": "",
+			"dump-interactions-button": "",
+			"dump-members-button": "",
+			"stop-node-button": "",
+			"local-grpc-button": "",
+			"console-logs-button": "",
+			"ipfs-webui-button": "IPFS 웹 UI",
+			"send-to-all-button": {
+				"title": "모든 연락처에 메세지 보내기",
+				"sending": "보내는 중...",
+				"test": "",
+				"tried": ""
+			},
+			"tyber-attach": "",
+			"tyber-host-button": {
+				"name": "",
+				"bullet-point": "변경 후 재시작 필요"
+			},
+			"footer-left-button": "장치 정보",
+			"footer-middle-button": "",
+			"footer-right-button": "데몬 재시작"
+		},
+		"system-info": {
+			"title": "시스템 정보"
+		},
+		"fake-data": {
+			"title": "모조 데이터 생성",
+			"contacts-button": "",
+			"multi-members-button": "",
+			"messages-button": "",
+			"delete-button": ""
+		},
+		"add-dev-conversations": {
+			"title": "",
+			"add": ""
+		},
+		"ipfs-webui": {
+			"title": "IPFS 웹 UI"
+		},
+		"theme-editor": {
+			"randomize": "",
+			"save": "",
+			"export": "",
+			"share": "",
+			"import": "",
+			"delete": "",
+			"bad-format-title": "",
+			"bad-format-desc": "",
+			"notification-file-saved": {
+				"title": "",
+				"desc": ""
+			}
+		},
+		"my-berty-ID": {
+			"title": "",
+			"qr": "QR",
+			"fingerprint": "지문"
+		},
+		"share": {
+			"invite": "",
+			"tap-to-scan": "",
+			"create-group": ""
+		}
+	},
+	"modals": {
+		"manage-deep-link": {
+			"invalid-link": "잘못된 링크!",
+			"invalid-qr": "잘못된 QR 코드!",
+			"error": "오류!",
+			"contact-already-added": "이미 있는 연락처예요",
+			"contact-already-added-message": "같은 연락처는 또 추가할 수 없어요"
+		},
+		"invalid-scan": {
+			"dismiss-button": "닫기"
+		},
+		"add-this-contact": {
+			"fingerprint": "지문",
+			"info": "정보",
+			"devices": "장치"
+		},
+		"group-invitation": {
+			"fingerprint": "지문",
+			"info": "정보",
+			"devices": "장치",
+			"join": "",
+			"password-label": "",
+			"password-placeholder": ""
+		},
+		"save-theme": {
+			"title": "",
+			"desc": "",
+			"placeholder": "",
+			"cancel": "취소하기",
+			"add": ""
+		}
+	},
+	"chat": {
+		"sending": "보내는 중...",
+		"sent": "",
+		"contact-settings": {
+			"fingerprint": "지문",
+			"info": "정보",
+			"my-devices": ""
+		},
+		"multi-member": {
+			"input-placeholder": "여기에 입력..."
+		},
+		"push-notifications": {
+			"enable": "",
+			"enabled": "",
+			"unsupported": "",
+			"check-device-settings": "",
+			"warning-disable": {
+				"title": "",
+				"subtitle": "",
+				"accept": "",
+				"refuse": ""
+			},
+			"why-cant-disable": "",
+			"errors": {
+				"no-token": "",
+				"no-server": ""
+			}
+		},
+		"devices": {
+			"title": "장치",
+			"push": {
+				"enabled": "",
+				"not-enabled": "알림 수신 해제됨"
+			}
+		},
+		"multi-member-settings": {
+			"media-button": "미디어, 링크 및 문서",
+			"members-button": {
+				"title": "멤버"
+			},
+			"add-member-button": "멤버 추가",
+			"invite-button": "링크로 초대",
+			"save-button": "서버에 대화내역 저장하기"
+		},
+		"add-members": {
+			"members": "멤버",
+			"contacts": "",
+			"add": ""
+		},
+		"multi-member-qr": {
+			"title": ""
+		},
+		"one-to-one": {
+			"contact-request-box": {
+				"title": "",
+				"group-invitation": "",
+				"refuse-button": "거절",
+				"accept-button": "수락",
+				"accepted-button": "수락함",
+				"error": "",
+				"you-invited": "",
+				"this-contact": "",
+				"to-a-group": ""
+			},
+			"infos-chat": {
+				"connection-confirmed": "👋 Berty 연결을 확인했어요! 🎉",
+				"request-sent": "요청 보냄 ✈",
+				"incoming": "",
+				"outgoing": ""
+			},
+			"incoming-input-placeholder": "",
+			"input-placeholder": "여기에 입력..."
+		},
+		"one-to-one-settings": {
+			"media-button": "미디어, 링크 및 문서",
+			"save-button": "서버에 대화내역 저장하기"
+		},
+		"replicate-group-settings": {
+			"title": "",
+			"no-registered-button": "",
+			"connect-button": "",
+			"manage-add-button": ""
+		},
+		"files": {
+			"gallery": "",
+			"no-images": "",
+			"camera": "",
+			"files": "",
+			"microphone": "",
+			"security-access": "",
+			"security-access-desc": "",
+			"save-to-gallery": "",
+			"share": "공유",
+			"forward-berty": "",
+			"forward": "",
+			"image-saved": ""
+		},
+		"shared-medias": {
+			"title": "",
+			"medias": "",
+			"links": "",
+			"documents": ""
+		},
+		"reply": {
+			"response-to": "",
+			"replying-to": "",
+			"replied-to": ""
+		},
+		"user-message": {
+			"read-more": "",
+			"show-less": ""
+		},
+		"emojis": {
+			"matching": ""
+		}
+	},
+	"audio": {
+		"record": {
+			"tooltip": {
+				"usage": "",
+				"not-sent": "",
+				"permission-denied": ""
+			},
+			"slide-to-cancel": "",
+			"cancel-button": "취소"
+		}
+	},
+	"permission": {
+		"notification": {
+			"title": "",
+			"desc": ""
+		},
+		"proximity": {
+			"title": "",
+			"android-desc": "",
+			"ios-desc": ""
+		},
+		"camera": {
+			"title": "",
+			"desc": ""
+		},
+		"audio": {
+			"title": "",
+			"desc": ""
+		},
+		"gallery": {
+			"title": "",
+			"desc": ""
+		},
+		"button-labels": {
+			"allow": "",
+			"settings": ""
+		},
+		"skip": "넘기기",
+		"cancel": "취소하기",
+		"settings-text": ""
+	},
+	"notification": {
+		"need-restart": {
+			"title": "",
+			"desc": ""
+		},
+		"need-restart-ble": {
+			"title": "",
+			"desc": ""
+		},
+		"submit-failed": {
+			"title": "",
+			"desc": ""
+		}
+	},
+	"error": {
+		"labels": {
+			"bug": "",
+			"crash": ""
+		},
+		"restart-app": "",
+		"wtf-screen": {
+			"title": "",
+			"desc": "",
+			"desc-report": ""
+		},
+		"sorry-screen": {
+			"title": "죄송해요!",
+			"desc": "",
+			"desc-em": "",
+			"desc-report": ""
+		}
+	},
+	"debug": {
+		"inspector": {
+			"show-button": "",
+			"hide-button": "닫기",
+			"title": "",
+			"accounts": {
+				"title": "계정",
+				"unsupported-remote-mode": "",
+				"data-not-found": "",
+				"action-delete": {
+					"file-exists": "",
+					"account-exists": "",
+					"fs-read-error": "",
+					"actions-title": "",
+					"action-account-manager": "",
+					"action-account-manager-confirm": "",
+					"action-force-delete": "강제로 삭제하기",
+					"action-force-delete-confirm": "",
+					"error-close": "",
+					"error-delete": "",
+					"success-feedback": "",
+					"action-cancel": "취소하기"
+				},
+				"status": {
+					"datastore-found": "",
+					"datastore-not-found": "",
+					"ipfs-repo-found": "",
+					"ipfs-repo-not-found": "",
+					"messenger-db-found": "",
+					"messenger-db-not-found": ""
+				},
+				"infos": {
+					"aligned": {
+						"name": "",
+						"created": "",
+						"opened": "",
+						"error": ""
+					}
+				}
+			},
+			"errors": {
+				"title": "",
+				"header-reported": "",
+				"header-all-clear": "",
+				"listing-files-failed": "",
+				"listing-accounts-failed": "",
+				"listing-accounts-failed-grpc": ""
+			},
+			"dump": {
+				"button": ""
+			},
+			"refresh": "",
+			"confirm-alert": {
+				"button-confirm": "",
+				"button-cancel": "취소"
+			}
+		}
+	}
+}
