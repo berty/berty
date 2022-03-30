@@ -1,0 +1,596 @@
+{
+	"onboarding": {
+		"getstarted": {
+			"title": "PROTECT YOUR PRIVACY",
+			"desc": "free & secure peer-to-peer messaging",
+			"create-button": "Create an account",
+			"import-button": "Import an account",
+			"link-button": "Link this device"
+		},
+		"default-mode": {
+			"summary": {
+				"title": "Default Mode",
+				"subtitle": "Get Started Quickly",
+				"first-point": "Start with presets that offer a privacy/comfort balance that suits most. Berty nodes are used to improve performance and asynchronous communication.",
+				"second-point": "For a custom privacy/comfort balance, select Custom Mode.",
+				"back-button": "Back",
+				"accept-button": "Let's go"
+			}
+		},
+		"custom-mode": {
+			"summary": {
+				"title": "Custom Mode",
+				"subtitle": "Custom Privacy/Comfort Balance",
+				"first-point": "In this mode, adjust all settings individually to create the balance of privacy and comfort that works for you.",
+				"second-point": "For a turnkey experience, select Default Mode.",
+				"back-button": "Back",
+				"accept-button": "Proceed"
+			},
+			"settings": {
+				"off-grid": {
+					"title": "Off-Grid Communication",
+					"ble-button": "Bluetooth Low Energy",
+					"nearby-button": "Android Nearby",
+					"mc-button": "Apple Multipeer Connectivity",
+					"mdns-button": "Multicast DNS (LAN)"
+				},
+				"routing": {
+					"title": "Routing",
+					"dht-button": "Distributed Hash Table",
+					"rdvp-button": "Rendezvous Point Nodes"
+				},
+				"access": {
+					"title": "Network Accessibility",
+					"relay-button": "Relay Nodes (TURN)",
+					"bootstrap-button": "Bootstrap Nodes",
+					"replication-button": "Replication Nodes"
+				},
+				"modals": {
+					"add": {
+						"title": {
+							"relay": "Add a relay node (TURN)",
+							"bootstrap": "Add a bootstrap node",
+							"rdvp": "Add a RDVP node"
+						}
+					},
+					"edit": {
+						"title": {
+							"relay": "Edit a relay node (TURN)",
+							"bootstrap": "Edit a bootstrap node",
+							"rdvp": "Edit a RDVP node"
+						}
+					},
+					"errors": {
+						"alias-already-exists": "Alias already exists",
+						"multiaddr-alread-exists": "Multiaddress already exists",
+						"multiaddr-bad-format": "Bad format of multiaddress",
+						"multiaddr-p2p": "The multiaddress should contain a p2p"
+					},
+					"buttons": {
+						"add": "Add",
+						"edit": "Edit",
+						"delete": "Delete"
+					},
+					"multiaddress": "Multiaddress",
+					"alias": "Alias"
+				},
+				"all-button": "All",
+				"accept-button": "Let's go"
+			}
+		},
+		"create-account": {
+			"title": "Create your account",
+			"placeholder": "Choose your nickname",
+			"good-to-know": {
+				"title": "Good to know:",
+				"first-point": "Your account is created locally",
+				"second-point": "Nickname is optional and can be changed later"
+			}
+		},
+		"generate-key": {
+			"title": "Starting the Berty node…",
+			"desc": "This might take a few seconds"
+		},
+		"setup-finished": {
+			"title": "Setup finished!",
+			"desc": "You can now use the app, start adding contacts and talk freely and privately with them",
+			"button": "START USING BERTY"
+		},
+		"web-views": {
+			"title": "WebViews",
+			"desc": "We are getting ready to load webviews on the network. Do you still want to open it?",
+			"first-button": "Cancel",
+			"second-button": "Yes"
+		}
+	},
+	"main": {
+		"home": {
+			"requests": {
+				"title": "Requests",
+				"accept": "Accept",
+				"card-title": "Contact request!"
+			},
+			"input-placeholder": "Search keyword",
+			"no-contacts": "You don't have any contacts or chat yet",
+			"search": {
+				"no-results": "No results found"
+			},
+			"multi-account": {
+				"create-button": "Create new account",
+				"import-button": "Import account"
+			},
+			"create-group": {
+				"title": "New Group",
+				"add-members": "Add members",
+				"group-info": "Group info",
+				"search-placeholder": "Search",
+				"continue": "CONTINUE",
+				"create-group": "CREATE A GROUP"
+			},
+			"create-group-finalize": {
+				"placeholder": "Group name",
+				"about": "About groups",
+				"first-bullet-point": "Anyone in the group can rename it or invite new members",
+				"second-bullet-point": "You can invite members by link",
+				"third-bullet-point": "You can leave this group",
+				"fourth-bullet-point": "You cannot delete this group",
+				"fifth-bullet-point": "You cannot remove a member from this group"
+			},
+			"conversations": {
+				"request-sent": "Request sent. Pending...",
+				"draft": "Draft: {{message}}"
+			}
+		},
+		"suggestion-display-name-initial": "Click here to add",
+		"scan": {
+			"title": "Scan QR Code"
+		}
+	},
+	"settings": {
+		"home": {
+			"proximity-button": "Off-Grid Communication",
+			"notifications-button": "Notifications",
+			"contact-convs-button": "Contact and conversations",
+			"appearance-button": "Appearence",
+			"devices-button": "Devices and backup",
+			"accounts-button": "Accounts",
+			"network-button": "Network",
+			"bug-button": "Submit a bug",
+			"about-button": "About Berty"
+		},
+		"about": {
+			"faq-button": "FAQ",
+			"roadmap-button": "Roadmap",
+			"policy-button": "Privacy Policy",
+			"license-button": "Open Source Licenses"
+		},
+		"accounts": {
+			"accounts-button": "Accounts",
+			"create-button": "Create an account",
+			"import-button": "Import an account",
+			"link-button": "Link another device",
+			"delete-button": "Delete this account"
+		},
+		"appearance": {
+			"dark-button": "Dark Mode",
+			"editor-button": "Theme Editor"
+		},
+		"contact-convs": {
+			"reset-button": "Reset my contact link/QR Code",
+			"request-button": "Allow incoming contact requests"
+		},
+		"network": {
+			"ble-button": "Bluetooth Low Energy",
+			"mc-button": "Multipeer Connectivity",
+			"nearby-button": "Android Nearby",
+			"mdns-button": "Multicast DNS",
+			"memo-cell-button": "Load voice memo on cellular",
+			"medias-cell-button": "Load medias on cellular",
+			"dht-button": "Distributed Hash Table",
+			"rdvp-button": "Rendezvous Point Nodes",
+			"relay-button": "Relay Nodes",
+			"bootstrap-button": "Bootstrap Nodes"
+		},
+		"edit-profile": {
+			"title": "Edit my profile",
+			"qr-will-update": "Your Berty ID (QR code) will be updated",
+			"ocr-wont-update": "Your pending contact requests won’t be updated",
+			"save": "Save changes",
+			"cancel": "Cancel",
+			"name-input-placeholder": "Name...",
+			"name-input-label": "Name"
+		},
+		"berty-services": {
+			"title": "Berty Services",
+			"desc": " Activating Berty Services will allow you to receive push notifications via Berty Technologies' servers and grant you access to its nodes for conversation replication.",
+			"button": "Use Berty Services",
+			"skip": "SKIP AND DO THIS LATER"
+		},
+		"delete-account": {
+			"title": "Delete account!",
+			"first-desc": "Are you sure you want to delete your account?",
+			"desc": "Please type delete to confirm",
+			"cancel-button": "CANCEL",
+			"delete-button": "DELETE"
+		},
+		"faq": {
+			"title": "FAQ"
+		},
+		"roadmap": {
+			"title": "Roadmap"
+		},
+		"privacy-policy": {
+			"title": "Privacy Policy"
+		},
+		"devtools": {
+			"title": "Dev tools",
+			"header-left-button": "Device infos",
+			"header-middle-button": "Generate fake data",
+			"header-right-button": "Restart daemon",
+			"simulate-button": "Simulate stream error",
+			"simulate-js-error-button": "Simulate JavaScript error",
+			"system-info-button": "System info",
+			"debug-button": "Debug",
+			"log-button": {
+				"name": "Log format",
+				"bullet-point": "Restart app after changing this field"
+			},
+			"log-filters-button": {
+				"name": "Log filters",
+				"bullet-point": "Restart app after changing this field"
+			},
+			"add-dev-conversations-button": "Add dev conversations",
+			"share-button": {
+				"title": "Share ID on discord",
+				"alert-title": "Do you want to share your QR code to \"#dev-logs\" on the Berty Discord server?",
+				"alert-message": "This will allow other staff to scan your QR code or copy your contact link.",
+				"alert-accept-button": "Yep 👍",
+				"alert-cancel-button": "Nope"
+			},
+			"native-bridge-button": "Test Native Bridge",
+			"dump-account-button": "Dump account",
+			"dump-contacts-button": "Dump contacts",
+			"dump-conversations-button": "Dump conversations",
+			"dump-interactions-button": "Dump interactions",
+			"dump-members-button": "Dump members",
+			"stop-node-button": "Stop node",
+			"local-grpc-button": "local gRPC",
+			"console-logs-button": "Console logs",
+			"ipfs-webui-button": "IPFS WebUI",
+			"send-to-all-button": {
+				"title": "Send messages to all contacts",
+				"sending": "Sending...",
+				"test": "Test, ",
+				"tried": "✔ Tried sending to {{length}} contacts"
+			},
+			"tyber-attach": "Tyber attach to {{host}}",
+			"tyber-host-button": {
+				"name": "Tyber",
+				"bullet-point": "Restart app after changing this field"
+			},
+			"footer-left-button": "Device infos",
+			"footer-middle-button": "List events",
+			"footer-right-button": "Restart daemon"
+		},
+		"system-info": {
+			"title": "System info"
+		},
+		"fake-data": {
+			"title": "Generate fake data",
+			"contacts-button": "Gen fake contacts",
+			"multi-members-button": "Gen fake multi-members",
+			"messages-button": "Gen fake messages",
+			"delete-button": "Delete fake data"
+		},
+		"add-dev-conversations": {
+			"title": "Add dev conversations",
+			"add": "Add {{name}}"
+		},
+		"ipfs-webui": {
+			"title": "IPFS WebUI"
+		},
+		"theme-editor": {
+			"randomize": "Generate theme",
+			"save": "Save this theme",
+			"export": "Export selected theme as file",
+			"share": "Share selected theme as file",
+			"import": "Import a file theme",
+			"delete": "Delete all non-default themes",
+			"bad-format-title": "Bad theme format",
+			"bad-format-desc": "Incorrect format for theme file",
+			"notification-file-saved": {
+				"title": "Data saved!",
+				"desc": "Available in downloads directory"
+			}
+		},
+		"my-berty-ID": {
+			"title": "My Berty ID",
+			"qr": "QR",
+			"fingerprint": "Fingerprint"
+		},
+		"share": {
+			"invite": "Invite",
+			"tap-to-scan": "Tap to scan",
+			"create-group": "Create group"
+		}
+	},
+	"modals": {
+		"manage-deep-link": {
+			"invalid-link": "Invalid link!",
+			"invalid-qr": "Invalid QR code!",
+			"error": "Error!",
+			"contact-already-added": "Contact already added",
+			"contact-already-added-message": "You can't add same contact multiple times"
+		},
+		"invalid-scan": {
+			"dismiss-button": "DISMISS"
+		},
+		"add-this-contact": {
+			"fingerprint": "Fingerprint",
+			"info": "Info",
+			"devices": "Devices"
+		},
+		"group-invitation": {
+			"fingerprint": "Fingerprint",
+			"info": "Infos",
+			"devices": "Devices",
+			"join": "JOIN THIS GROUP",
+			"password-label": "Enter group password",
+			"password-placeholder": "Password..."
+		},
+		"save-theme": {
+			"title": "Saving theme",
+			"desc": "Please choose a name for your theme!",
+			"placeholder": "Theme name...",
+			"cancel": "CANCEL",
+			"add": "ADD!"
+		}
+	},
+	"chat": {
+		"sending": "Sending...",
+		"sent": "Sent",
+		"contact-settings": {
+			"fingerprint": "Fingerprint",
+			"info": "Infos",
+			"my-devices": "My devices"
+		},
+		"multi-member": {
+			"input-placeholder": "Type here..."
+		},
+		"push-notifications": {
+			"enable": "Enable push notifications",
+			"enabled": "Push notifications enabled",
+			"unsupported": "Notifications unsupported",
+			"check-device-settings": "This conversation is set to receive push notifications, but alerts have been disabled in the system settings of your device",
+			"warning-disable": {
+				"title": "Do you want to activate this feature?",
+				"subtitle": "Once enabled, push notifications can't be disabled for a specific conversation.",
+				"accept": "Activate",
+				"refuse": "Skip"
+			},
+			"why-cant-disable": "Can't disable push notifications per conversation.",
+			"errors": {
+				"no-token": "Your device is not compatible with push notifications",
+				"no-server": "You must register a push relay first"
+			}
+		},
+		"devices": {
+			"title": "Devices",
+			"push": {
+				"enabled": "Push notifications enabled",
+				"not-enabled": "Push notifications disabled"
+			}
+		},
+		"multi-member-settings": {
+			"media-button": "Medias, links & docs",
+			"members-button": {
+				"title": "Members"
+			},
+			"add-member-button": "Add member",
+			"invite-button": "Invite by link",
+			"save-button": "Save conversation on server"
+		},
+		"add-members": {
+			"members": "Members",
+			"contacts": "Contacts",
+			"add": "Add!"
+		},
+		"multi-member-qr": {
+			"title": "QR Group"
+		},
+		"one-to-one": {
+			"contact-request-box": {
+				"title": "CONTACT REQUEST",
+				"group-invitation": "GROUP INVITATION",
+				"refuse-button": "REFUSE",
+				"accept-button": "ACCEPT",
+				"accepted-button": "ACCEPTED",
+				"error": "Error adding you to the group ☹️ Our bad!",
+				"you-invited": "You invited",
+				"this-contact": "this contact",
+				"to-a-group": "to a group! 💌"
+			},
+			"infos-chat": {
+				"connection-confirmed": "👋 Berty connection confirmed! 🎉",
+				"request-sent": "Request Sent ✈",
+				"incoming": "Accept this request to reply!",
+				"outgoing": "Waiting for your contact reply to connect!"
+			},
+			"incoming-input-placeholder": "Accept the request to write here...",
+			"input-placeholder": "Type here..."
+		},
+		"one-to-one-settings": {
+			"media-button": "Medias, links & docs",
+			"save-button": "Save conversation on server"
+		},
+		"replicate-group-settings": {
+			"title": "Register conversation on server",
+			"no-registered-button": "No replication service registered",
+			"connect-button": "Connect to Berty operated services",
+			"manage-add-button": "Manage or add services"
+		},
+		"files": {
+			"gallery": "Gallery",
+			"no-images": "No images",
+			"camera": "Camera",
+			"files": "Files",
+			"microphone": "Microphone",
+			"security-access": "Security Access",
+			"security-access-desc": "Tap here to open setting to allow access to your",
+			"save-to-gallery": "Save this file in Gallery",
+			"share": "Share",
+			"forward-berty": "Forward to Berty contact",
+			"forward": "Forward",
+			"image-saved": "Image saved in Gallery"
+		},
+		"shared-medias": {
+			"title": "Shared medias",
+			"medias": "Medias",
+			"links": "Links",
+			"documents": "Documents"
+		},
+		"reply": {
+			"response-to": "Response to",
+			"replying-to": "You're replying to",
+			"replied-to": "Replied to"
+		},
+		"user-message": {
+			"read-more": "Read more",
+			"show-less": "Show less"
+		},
+		"emojis": {
+			"matching": "Emojis matching"
+		}
+	},
+	"audio": {
+		"record": {
+			"tooltip": {
+				"usage": "Hold to record, release to send",
+				"not-sent": "Audio message has not been sent",
+				"permission-denied": "App is not allowed to record sound"
+			},
+			"slide-to-cancel": "<< Slide to cancel",
+			"cancel-button": "Cancel"
+		}
+	},
+	"permission": {
+		"notification": {
+			"title": "Push Notifications",
+			"desc": "Berty app need your permission to send you local or push notifications. This will allow you to be inform when you receive a message."
+		},
+		"proximity": {
+			"title": "Bluetooth Messaging",
+			"android-desc": "To exchange messages offline via Bluetooth even when the app is in the background, the Android API requires the location permission to be granted. We do not use your location data in any way.",
+			"ios-desc": "To exchange messages offline via Bluetooth, the iOS API requires permission to be granted."
+		},
+		"camera": {
+			"title": "Camera",
+			"desc": "Do you want to authorize the camera to take pictures or scan QR codes?"
+		},
+		"audio": {
+			"title": "Audio Messages",
+			"desc": "To send audio message to your contacts, you need to allow microphone permission to Berty app."
+		},
+		"gallery": {
+			"title": "Image Messaging",
+			"desc": "To send images to your contacts, you must authorize Berty to access photos and other media stored on your device."
+		},
+		"button-labels": {
+			"allow": "Allow",
+			"settings": "Go to Settings"
+		},
+		"skip": "SKIP",
+		"cancel": "CANCEL",
+		"settings-text": "You can enable {{title}} permission from Settings."
+	},
+	"notification": {
+		"need-restart": {
+			"title": "Restart required",
+			"desc": "Restart Berty to save your data and enable notifications!"
+		},
+		"need-restart-ble": {
+			"title": "Restart required",
+			"desc": "Restart Berty and enable Bluetooth in system settings!"
+		},
+		"submit-failed": {
+			"title": "Bug can not be submitted",
+			"desc": "Mail application is missing"
+		}
+	},
+	"error": {
+		"labels": {
+			"bug": "Bug detected",
+			"crash": "Crash detected"
+		},
+		"restart-app": "Restart the app",
+		"wtf-screen": {
+			"title": "What's the Fail?",
+			"desc": "Application just crashed.",
+			"desc-report": "Click the button to quit and restart the app."
+		},
+		"sorry-screen": {
+			"title": "Sorry for this bug!",
+			"desc": "It's the fault of Francis, intern developer at Berty, who must have made a mistake. What a jerk this Francis!",
+			"desc-em": "*Well, okay, there's no Francis at Berty's team.",
+			"desc-report": "Click on the button to quit and restart the app."
+		}
+	},
+	"debug": {
+		"inspector": {
+			"show-button": "Show app inspector",
+			"hide-button": "Close",
+			"title": "Inspector",
+			"accounts": {
+				"title": "Accounts",
+				"unsupported-remote-mode": "Accounts inspector not supported in remote mode",
+				"data-not-found": "Account not in list",
+				"action-delete": {
+					"file-exists": "Account {{accountId}} does not exists, a file has this name though.",
+					"account-exists": "Account {{accountId}} currently exists.",
+					"fs-read-error": "Error while getting FS info about account",
+					"actions-title": "What should we do?",
+					"action-account-manager": "Delete it via account manager",
+					"action-account-manager-confirm": "Confirm deletion of account",
+					"action-force-delete": "Force delete it",
+					"action-force-delete-confirm": "Confirm force deletion of account",
+					"error-close": "Error while closing account",
+					"error-delete": "Error while deleting account",
+					"success-feedback": "Account deleted",
+					"action-cancel": "Cancel"
+				},
+				"status": {
+					"datastore-found": "Datastore found",
+					"datastore-not-found": "Datastore not found",
+					"ipfs-repo-found": "IPFS repository found",
+					"ipfs-repo-not-found": "IPFS repository not found",
+					"messenger-db-found": "Messenger DB found",
+					"messenger-db-not-found": "Messenger DB not found"
+				},
+				"infos": {
+					"aligned": {
+						"name": "Name: {{name}}",
+						"created": "Created: {{created}}",
+						"opened": "Opened:  {{opened}}",
+						"error": "Error: {{error}}"
+					}
+				}
+			},
+			"errors": {
+				"title": "Errors",
+				"header-reported": "Error reported:",
+				"header-all-clear": "No error reported",
+				"listing-files-failed": "Error while listing directory contents",
+				"listing-accounts-failed": "Error while listing accounts",
+				"listing-accounts-failed-grpc": "GRPC Error while listing accounts"
+			},
+			"dump": {
+				"button": "Dump app state"
+			},
+			"refresh": "Refresh",
+			"confirm-alert": {
+				"button-confirm": "Confirm",
+				"button-cancel": "Cancel"
+			}
+		}
+	}
+}
