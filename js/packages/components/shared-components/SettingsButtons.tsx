@@ -56,7 +56,7 @@ export const ButtonSettingV2: React.FC<{
 	onPress,
 	color,
 	toggle,
-	pack = 'feather',
+	pack,
 	disabled = false,
 	last = false,
 }) => {

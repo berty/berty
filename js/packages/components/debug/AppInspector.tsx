@@ -19,7 +19,7 @@ import RNFS from '@berty/polyfill/rnfs'
 
 import { NativeModules } from 'react-native'
 import { UnifiedText } from '../shared-components/UnifiedText'
-import { useStyles } from '@berty-tech/styles'
+import { useStyles } from '@berty/styles'
 const { RootDir } = NativeModules
 
 export const accountService = Service(beapi.account.AccountService, rpcBridge, null)

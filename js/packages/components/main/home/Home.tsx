@@ -27,6 +27,7 @@ import { useSelector } from 'react-redux'
 import { selectClient } from '@berty/redux/reducers/ui.reducer'
 import { selectPersistentOptions } from '@berty/redux/reducers/persistentOptions.reducer'
 import { UnifiedText } from '../../shared-components/UnifiedText'
+import { ButtonSettingV2 } from '@berty/components/shared-components'
 
 const T = beapi.messenger.StreamEvent.Notified.Type
 
@@ -96,7 +97,7 @@ export const Home: ScreenFC<'Main.Home'> = ({ navigation: { navigate } }) => {
 
 	const client = useSelector(selectClient)
 
-	const [{ text, opacity, flex, margin }, { scaleSize, scaleHeight }] = useStyles()
+	const [{ text, opacity, flex, margin, border }, { scaleSize, scaleHeight }] = useStyles()
 	const colors = useThemeColor()
 	const { t }: any = useTranslation()
 
@@ -252,15 +253,31 @@ export const Home: ScreenFC<'Main.Home'> = ({ navigation: { navigate } }) => {
 					isMultiAccount={isLongPress}
 				/>
 				{searchText?.length ? (
-					<SearchComponent
-						insets={null}
-						conversations={searchConversations}
-						contacts={searchContacts}
-						interactions={searchInteractions.current}
-						value={searchText}
-						hasResults={hasResults}
-						earliestInteractionCID={earliestResult}
-					/>
+					<>
+						{(searchText.startsWith('https://berty.tech/id') ||
+							searchText.startsWith('berty://')) && (
+							<View style={[{ flexDirection: 'row', justifyContent: 'center' }]}>
+								<View style={[border.shadow.large, border.radius.medium]}>
+									<ButtonSettingV2
+										text='Open Berty Link'
+										icon='external-link-outline'
+										onPress={() =>
+											navigate('Modals.ManageDeepLink', { type: 'link', value: searchText })
+										}
+									/>
+								</View>
+							</View>
+						)}
+						<SearchComponent
+							insets={null}
+							conversations={searchConversations}
+							contacts={searchContacts}
+							interactions={searchInteractions.current}
+							value={searchText}
+							hasResults={hasResults}
+							earliestInteractionCID={earliestResult}
+						/>
+					</>
 				) : (
 					<View style={{ height: '100%' }}>
 						<Conversations

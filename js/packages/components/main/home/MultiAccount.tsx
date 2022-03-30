@@ -18,7 +18,7 @@ import beapi from '@berty/api'
 import { GenericAvatar } from '../../avatars'
 import { selectSelectedAccount, setStateOnBoardingReady } from '@berty/redux/reducers/ui.reducer'
 import { useSelector } from 'react-redux'
-import { UnifiedText } from '@berty-tech/components/shared-components/UnifiedText'
+import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 
 const AccountButton: React.FC<{
 	name: string | null | undefined

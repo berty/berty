@@ -1,5 +1,5 @@
-import { useThemeColor } from '@berty-tech/store'
-import { useStyles } from '@berty-tech/styles'
+import { useThemeColor } from '@berty/store'
+import { useStyles } from '@berty/styles'
 import React from 'react'
 import { Text, TextProps } from 'react-native'
 

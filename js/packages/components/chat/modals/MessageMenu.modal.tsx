@@ -15,7 +15,7 @@ import {
 
 import { useModal } from '../../providers/modal.provider'
 import { EmojiKeyboard } from './EmojiKeyboard.modal'
-import { UnifiedText } from '@berty-tech/components/shared-components/UnifiedText'
+import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 
 const emojis = [
 	':+1:',

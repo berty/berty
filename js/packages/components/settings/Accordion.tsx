@@ -1,6 +1,6 @@
 import React, { useState, useRef, FC, useCallback, useMemo } from 'react'
 import { Divider, Icon } from '@ui-kitten/components'
-import { View, Animated, Easing, TouchableOpacity, Text as NativeText } from 'react-native'
+import { View, Animated, Easing, TouchableOpacity } from 'react-native'
 
 import { useThemeColor } from '@berty/store'
 import { useStyles } from '@berty/styles'
@@ -57,7 +57,7 @@ export const AccordionItemV2: FC<{
 							{ height: heightButton, flexDirection: 'row', alignItems: 'center' },
 						]}
 					>
-						<NativeText>{value}</NativeText>
+						<UnifiedText>{value}</UnifiedText>
 					</View>
 				</View>
 				<View style={{ flexDirection: 'row', alignItems: 'center' }}>

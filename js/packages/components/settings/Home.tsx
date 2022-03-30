@@ -214,7 +214,7 @@ export const Home: ScreenFC<'Settings.Home'> = withInAppNotification(
 						{networkConfig && (
 							<ButtonSettingV2
 								text={t('settings.home.proximity-button')}
-								icon='bluetooth'
+								icon='bluetooth-outline'
 								toggle={{
 									enable: true,
 									value: getOffGridCommunicationValue(),
@@ -295,7 +295,7 @@ export const Home: ScreenFC<'Settings.Home'> = withInAppNotification(
 					*/}
 						<ButtonSettingV2
 							text={t('settings.home.appearance-button')}
-							icon='eye'
+							icon='eye-outline'
 							onPress={() => navigate('Settings.Appearence')}
 						/>
 						{/*
@@ -317,13 +317,13 @@ export const Home: ScreenFC<'Settings.Home'> = withInAppNotification(
 					*/}
 						<ButtonSettingV2
 							text={t('settings.home.accounts-button')}
-							icon='user'
+							icon='person-outline'
 							onPress={() => navigate('Settings.Accounts')}
 						/>
 						{networkConfig && (
 							<ButtonSettingV2
 								text={t('settings.home.network-button')}
-								icon='wifi'
+								icon='wifi-outline'
 								last
 								onPress={() => {
 									navigate('Settings.Network')
@@ -334,12 +334,12 @@ export const Home: ScreenFC<'Settings.Home'> = withInAppNotification(
 					<Section>
 						<ButtonSettingV2
 							text={t('settings.home.bug-button')}
-							icon='mail'
+							icon='email-outline'
 							onPress={() => generateEmail()}
 						/>
 						<ButtonSettingV2
 							text={t('settings.home.about-button')}
-							icon='info'
+							icon='info-outline'
 							last
 							onPress={() => navigate('Settings.AboutBerty')}
 						/>
