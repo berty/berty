@@ -1,0 +1,596 @@
+{
+	"onboarding": {
+		"getstarted": {
+			"title": "",
+			"desc": "",
+			"create-button": "",
+			"import-button": "",
+			"link-button": ""
+		},
+		"default-mode": {
+			"summary": {
+				"title": "",
+				"subtitle": "",
+				"first-point": "",
+				"second-point": "",
+				"back-button": "",
+				"accept-button": ""
+			}
+		},
+		"custom-mode": {
+			"summary": {
+				"title": "",
+				"subtitle": "",
+				"first-point": "",
+				"second-point": "",
+				"back-button": "",
+				"accept-button": ""
+			},
+			"settings": {
+				"off-grid": {
+					"title": "",
+					"ble-button": "",
+					"nearby-button": "",
+					"mc-button": "",
+					"mdns-button": ""
+				},
+				"routing": {
+					"title": "",
+					"dht-button": "",
+					"rdvp-button": ""
+				},
+				"access": {
+					"title": "",
+					"relay-button": "",
+					"bootstrap-button": "",
+					"replication-button": ""
+				},
+				"modals": {
+					"add": {
+						"title": {
+							"relay": "",
+							"bootstrap": "",
+							"rdvp": ""
+						}
+					},
+					"edit": {
+						"title": {
+							"relay": "",
+							"bootstrap": "",
+							"rdvp": ""
+						}
+					},
+					"errors": {
+						"alias-already-exists": "",
+						"multiaddr-alread-exists": "",
+						"multiaddr-bad-format": "",
+						"multiaddr-p2p": ""
+					},
+					"buttons": {
+						"add": "إضافة",
+						"edit": "",
+						"delete": ""
+					},
+					"multiaddress": "",
+					"alias": ""
+				},
+				"all-button": "",
+				"accept-button": ""
+			}
+		},
+		"create-account": {
+			"title": "أنشئ حسابك",
+			"placeholder": "",
+			"good-to-know": {
+				"title": "",
+				"first-point": "",
+				"second-point": ""
+			}
+		},
+		"generate-key": {
+			"title": "بدء تشغيل عقدة برتي…",
+			"desc": "قد يستغرق هذا بضع ثوان"
+		},
+		"setup-finished": {
+			"title": "تم الإعداد!",
+			"desc": "يمكنك الآن استخدام التطبيق، بدء إضافة جهات الاتصال والتحدث معهم بحرية وبشكل خاص",
+			"button": "ابدأ استخدام البيرتي"
+		},
+		"web-views": {
+			"title": "",
+			"desc": "",
+			"first-button": "",
+			"second-button": ""
+		}
+	},
+	"main": {
+		"home": {
+			"requests": {
+				"title": "الطلبات",
+				"accept": "قبول",
+				"card-title": "طلب الاتصال!"
+			},
+			"input-placeholder": "البحث عن الكلمات الرئيسية",
+			"no-contacts": "ليس لديك أي جهات اتصال أو محادثة حتى الآن",
+			"search": {
+				"no-results": "لا توجد نتائج"
+			},
+			"multi-account": {
+				"create-button": "إنشاء حساب جديد",
+				"import-button": "استيراد الحساب"
+			},
+			"create-group": {
+				"title": "مجموعة جديدة",
+				"add-members": "إضافة أعضاء",
+				"group-info": "معلومات المجموعة",
+				"search-placeholder": "البحث",
+				"continue": "متابعة",
+				"create-group": "إنشاء مجموعة"
+			},
+			"create-group-finalize": {
+				"placeholder": "اسم المجموعة",
+				"about": "حول المجموعات",
+				"first-bullet-point": "يمكن لأي شخص في المجموعة إعادة تسميتها و دعوة أعضاء جدد",
+				"second-bullet-point": "يمكنك دعوة الأعضاء عن طريق رابط",
+				"third-bullet-point": "يمكنك مغادرة هذه المجموعة",
+				"fourth-bullet-point": "لا يمكنك حذف هذه المجموعة",
+				"fifth-bullet-point": "لا يمكنك إزالة عضو من هذه المجموعة"
+			},
+			"conversations": {
+				"request-sent": "",
+				"draft": "مسودة: {{message}}"
+			}
+		},
+		"suggestion-display-name-initial": "انقر هنا للإضافة",
+		"scan": {
+			"title": ""
+		}
+	},
+	"settings": {
+		"home": {
+			"proximity-button": "",
+			"notifications-button": "الإشعارات",
+			"contact-convs-button": "",
+			"appearance-button": "",
+			"devices-button": "",
+			"accounts-button": "",
+			"network-button": "",
+			"bug-button": "",
+			"about-button": "حول برتي"
+		},
+		"about": {
+			"faq-button": "",
+			"roadmap-button": "",
+			"policy-button": "",
+			"license-button": ""
+		},
+		"accounts": {
+			"accounts-button": "",
+			"create-button": "",
+			"import-button": "",
+			"link-button": "",
+			"delete-button": ""
+		},
+		"appearance": {
+			"dark-button": "",
+			"editor-button": ""
+		},
+		"contact-convs": {
+			"reset-button": "",
+			"request-button": ""
+		},
+		"network": {
+			"ble-button": "",
+			"mc-button": "",
+			"nearby-button": "",
+			"mdns-button": "",
+			"memo-cell-button": "",
+			"medias-cell-button": "",
+			"dht-button": "",
+			"rdvp-button": "",
+			"relay-button": "",
+			"bootstrap-button": ""
+		},
+		"edit-profile": {
+			"title": "",
+			"qr-will-update": "",
+			"ocr-wont-update": "",
+			"save": "",
+			"cancel": "",
+			"name-input-placeholder": "",
+			"name-input-label": "الاسم"
+		},
+		"berty-services": {
+			"title": "",
+			"desc": "",
+			"button": "",
+			"skip": "اختراع و هذه الأشرطة"
+		},
+		"delete-account": {
+			"title": "حذف الحساب!",
+			"first-desc": "هل أنت متأكد من أنك تريد حذف حسابك؟",
+			"desc": "الرجاء كتابة \"حذف\" للتأكيد",
+			"cancel-button": "لالغاء",
+			"delete-button": "إزالة"
+		},
+		"faq": {
+			"title": ""
+		},
+		"roadmap": {
+			"title": ""
+		},
+		"privacy-policy": {
+			"title": ""
+		},
+		"devtools": {
+			"title": "",
+			"header-left-button": "",
+			"header-middle-button": "توليد بيانات مزيفة",
+			"header-right-button": "إعادة تشغيل الرديمون",
+			"simulate-button": "",
+			"simulate-js-error-button": "",
+			"system-info-button": "معلومات النظام",
+			"debug-button": "",
+			"log-button": {
+				"name": "",
+				"bullet-point": ""
+			},
+			"log-filters-button": {
+				"name": "",
+				"bullet-point": ""
+			},
+			"add-dev-conversations-button": "إضافة محادثات Dev",
+			"share-button": {
+				"title": "",
+				"alert-title": "",
+				"alert-message": "",
+				"alert-accept-button": "",
+				"alert-cancel-button": ""
+			},
+			"native-bridge-button": "",
+			"dump-account-button": "",
+			"dump-contacts-button": "",
+			"dump-conversations-button": "",
+			"dump-interactions-button": "",
+			"dump-members-button": "",
+			"stop-node-button": "",
+			"local-grpc-button": "",
+			"console-logs-button": "",
+			"ipfs-webui-button": "IPFS WebUI",
+			"send-to-all-button": {
+				"title": "",
+				"sending": "",
+				"test": "",
+				"tried": ""
+			},
+			"tyber-attach": "",
+			"tyber-host-button": {
+				"name": "",
+				"bullet-point": ""
+			},
+			"footer-left-button": "",
+			"footer-middle-button": "قائمة الأحداث",
+			"footer-right-button": "إعادة تشغيل الرديمون"
+		},
+		"system-info": {
+			"title": "معلومات النظام"
+		},
+		"fake-data": {
+			"title": "توليد بيانات مزيفة",
+			"contacts-button": "جهات الاتصال المزيفة",
+			"multi-members-button": "متعدد الأعضاء المزيفين من الجينز",
+			"messages-button": "رسائل جيين مزيفة",
+			"delete-button": "حذف البيانات المزيفة"
+		},
+		"add-dev-conversations": {
+			"title": "إضافة محادثات Dev",
+			"add": "إضافة {{name}}"
+		},
+		"ipfs-webui": {
+			"title": "IPFS WebUI"
+		},
+		"theme-editor": {
+			"randomize": "",
+			"save": "",
+			"export": "",
+			"share": "",
+			"import": "",
+			"delete": "",
+			"bad-format-title": "",
+			"bad-format-desc": "",
+			"notification-file-saved": {
+				"title": "",
+				"desc": ""
+			}
+		},
+		"my-berty-ID": {
+			"title": "",
+			"qr": "QR",
+			"fingerprint": "بصمة"
+		},
+		"share": {
+			"invite": "",
+			"tap-to-scan": "",
+			"create-group": ""
+		}
+	},
+	"modals": {
+		"manage-deep-link": {
+			"invalid-link": "رابط غير صالح!",
+			"invalid-qr": "Invalid QR code!",
+			"error": "خطأ!",
+			"contact-already-added": "تمت إضافة جهة الاتصال مسبقاً",
+			"contact-already-added-message": "لا يمكنك إضافة نفس جهة الاتصال عدة مرات"
+		},
+		"invalid-scan": {
+			"dismiss-button": ""
+		},
+		"add-this-contact": {
+			"fingerprint": "بصمة",
+			"info": "معلومات",
+			"devices": "الأجهزة"
+		},
+		"group-invitation": {
+			"fingerprint": "بصمة",
+			"info": "",
+			"devices": "الأجهزة",
+			"join": "",
+			"password-label": "",
+			"password-placeholder": ""
+		},
+		"save-theme": {
+			"title": "",
+			"desc": "",
+			"placeholder": "",
+			"cancel": "لالغاء",
+			"add": ""
+		}
+	},
+	"chat": {
+		"sending": "",
+		"sent": "",
+		"contact-settings": {
+			"fingerprint": "بصمة",
+			"info": "",
+			"my-devices": ""
+		},
+		"multi-member": {
+			"input-placeholder": ""
+		},
+		"push-notifications": {
+			"enable": "",
+			"enabled": "",
+			"unsupported": "",
+			"check-device-settings": "",
+			"warning-disable": {
+				"title": "",
+				"subtitle": "",
+				"accept": "",
+				"refuse": ""
+			},
+			"why-cant-disable": "",
+			"errors": {
+				"no-token": "",
+				"no-server": ""
+			}
+		},
+		"devices": {
+			"title": "الأجهزة",
+			"push": {
+				"enabled": "",
+				"not-enabled": "تم تعطيل الإشعارات"
+			}
+		},
+		"multi-member-settings": {
+			"media-button": "الوسائط والروابط والمستندات",
+			"members-button": {
+				"title": ""
+			},
+			"add-member-button": "",
+			"invite-button": "",
+			"save-button": ""
+		},
+		"add-members": {
+			"members": "",
+			"contacts": "",
+			"add": ""
+		},
+		"multi-member-qr": {
+			"title": ""
+		},
+		"one-to-one": {
+			"contact-request-box": {
+				"title": "",
+				"group-invitation": "",
+				"refuse-button": "",
+				"accept-button": "الموافقة",
+				"accepted-button": "",
+				"error": "",
+				"you-invited": "",
+				"this-contact": "",
+				"to-a-group": ""
+			},
+			"infos-chat": {
+				"connection-confirmed": "",
+				"request-sent": "",
+				"incoming": "",
+				"outgoing": ""
+			},
+			"incoming-input-placeholder": "",
+			"input-placeholder": ""
+		},
+		"one-to-one-settings": {
+			"media-button": "الوسائط والروابط والمستندات",
+			"save-button": ""
+		},
+		"replicate-group-settings": {
+			"title": "",
+			"no-registered-button": "",
+			"connect-button": "",
+			"manage-add-button": ""
+		},
+		"files": {
+			"gallery": "",
+			"no-images": "",
+			"camera": "الكاميرا",
+			"files": "الملفات",
+			"microphone": "الميكروفون",
+			"security-access": "",
+			"security-access-desc": "",
+			"save-to-gallery": "",
+			"share": "مشاركة",
+			"forward-berty": "ارسال إلى جهة اتصال برتي",
+			"forward": "ارسال",
+			"image-saved": ""
+		},
+		"shared-medias": {
+			"title": "",
+			"medias": "",
+			"links": "",
+			"documents": ""
+		},
+		"reply": {
+			"response-to": "",
+			"replying-to": "",
+			"replied-to": ""
+		},
+		"user-message": {
+			"read-more": "",
+			"show-less": ""
+		},
+		"emojis": {
+			"matching": ""
+		}
+	},
+	"audio": {
+		"record": {
+			"tooltip": {
+				"usage": "",
+				"not-sent": "",
+				"permission-denied": ""
+			},
+			"slide-to-cancel": "",
+			"cancel-button": ""
+		}
+	},
+	"permission": {
+		"notification": {
+			"title": "",
+			"desc": ""
+		},
+		"proximity": {
+			"title": "",
+			"android-desc": "",
+			"ios-desc": ""
+		},
+		"camera": {
+			"title": "الكاميرا",
+			"desc": ""
+		},
+		"audio": {
+			"title": "",
+			"desc": ""
+		},
+		"gallery": {
+			"title": "",
+			"desc": ""
+		},
+		"button-labels": {
+			"allow": "",
+			"settings": ""
+		},
+		"skip": "تخطي",
+		"cancel": "لالغاء",
+		"settings-text": ""
+	},
+	"notification": {
+		"need-restart": {
+			"title": "",
+			"desc": ""
+		},
+		"need-restart-ble": {
+			"title": "",
+			"desc": ""
+		},
+		"submit-failed": {
+			"title": "",
+			"desc": ""
+		}
+	},
+	"error": {
+		"labels": {
+			"bug": "",
+			"crash": ""
+		},
+		"restart-app": "",
+		"wtf-screen": {
+			"title": "",
+			"desc": "",
+			"desc-report": ""
+		},
+		"sorry-screen": {
+			"title": "",
+			"desc": "",
+			"desc-em": "",
+			"desc-report": ""
+		}
+	},
+	"debug": {
+		"inspector": {
+			"show-button": "",
+			"hide-button": "",
+			"title": "",
+			"accounts": {
+				"title": "",
+				"unsupported-remote-mode": "",
+				"data-not-found": "",
+				"action-delete": {
+					"file-exists": "",
+					"account-exists": "",
+					"fs-read-error": "",
+					"actions-title": "",
+					"action-account-manager": "",
+					"action-account-manager-confirm": "",
+					"action-force-delete": "",
+					"action-force-delete-confirm": "",
+					"error-close": "",
+					"error-delete": "",
+					"success-feedback": "",
+					"action-cancel": ""
+				},
+				"status": {
+					"datastore-found": "",
+					"datastore-not-found": "",
+					"ipfs-repo-found": "",
+					"ipfs-repo-not-found": "",
+					"messenger-db-found": "",
+					"messenger-db-not-found": ""
+				},
+				"infos": {
+					"aligned": {
+						"name": "",
+						"created": "",
+						"opened": "",
+						"error": ""
+					}
+				}
+			},
+			"errors": {
+				"title": "",
+				"header-reported": "",
+				"header-all-clear": "",
+				"listing-files-failed": "",
+				"listing-accounts-failed": "",
+				"listing-accounts-failed-grpc": ""
+			},
+			"dump": {
+				"button": ""
+			},
+			"refresh": "",
+			"confirm-alert": {
+				"button-confirm": "",
+				"button-cancel": ""
+			}
+		}
+	}
+}
