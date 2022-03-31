@@ -69,3 +69,7 @@ indent_style = space
 block_comment_start = /**
 block_comment = *
 block_comment_end = */
+
+[js/packages/i18n/locale/**/*.{json,yml}]
+indent_size = 2
+indent_style = tab
