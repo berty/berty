@@ -10,13 +10,11 @@ This folder contains most of the Typescript and Javascript code needed for the B
   - [Packages](#---packages)
   - [Usage](#usage)
     - [Running the mobile apps for development](#running-the-mobile-apps-for-development)
-    - [Running the web dev app](#running-the-web-dev-app)
   - [Requirements](#requirements)
     - [Requirements for working on iOS and Android apps](#requirements-for-working-on-ios-and-android-apps)
     - [General React Native requirements](#general-react-native-requirements)
     - [iOS dev requirements](#ios-dev-requirements)
     - [Android dev requirements](#android-dev-requirements)
-    - [web-dev-app requirements](#web-dev-app-requirements)
   - [Known issues and troubleshooting](#known-issues-and-troubleshooting)
 
 ## 📦 Packages
@@ -32,7 +30,6 @@ This folder contains most of the Typescript and Javascript code needed for the B
 | [navigation/](./packages/navigation)                                        | Berty Messenger + react-native-navigation                                                     |
 | [store/](./packages/store)                                                  | App state control using React hooks and Context |
 | [styles/](./packages/styles)                                                | Generates StyleSheet utilities and styles that conform to our design specs                     |
-| [web-dev-app/](./packages/web-dev-app)                                      | A minimal React web app that allows us to easily test our `store` functionality (currently not supported)   |
 
 ## 🔨 Usage
 
@@ -79,33 +76,6 @@ $ ANDROID_DEVICE=__ANDROID_DEVICE_ID_2__ make android.debug
 💡 You can check available Android Virtual Devices with `adb devices`
 ```
 
-### Running the web dev app
-
-🚧 This debugging tool is primarily used internally and not actively maintained except by developers for their own usage.
-
-TODO: This is currently not working, we need to port the transpiler config and catch up
-
-#### 1. Requirements
-
-- `yarn`
-- `npx`
-
-#### 2. Run required services
-
-- `cd packages/web-dev-app && yarn && yarn start`
-- `BERTY_DAEMON_PORT=1337 make daemon.start`
-- `BERTY_DAEMON_PORT=1338 make daemon.start`
-
-#### 3. Navigate to the app
-
-`yarn start` should have opened a browser tab already but if that's not the case, navigate to `localhost:3000`
-
-#### 4. Create an account and choose a daemon
-
-In the app's ui, you have to choose a daemon port when you create your account, if you started the services using the commands above, you will have a service on port `1337` and one on port `1338`
-
-You can use one normal tab and one private tab to have two accounts at the same time
-
 ## 🧳 Requirements
 
 ### Requirements for working on iOS and Android apps
@@ -142,9 +112,3 @@ You can use one normal tab and one private tab to have two accounts at the same 
 - **Java 8**. If you already have another version of Java, you can use a version manager and Homebrew to add another installation. Some nice instructions are given [here](https://java.christmas/2019/16).
 
 💡 Check you can run all the commands `sdkmanager`, `emulator`, `ndk-bundle`, and `adb` (these are binaries in `$ANDROID_HOME` subfolders)
-
-### web-dev-app requirements
-
-- The [yarn package manager](https://classic.yarnpkg.com/en/)
-
-## 🚧 Known issues and troubleshooting

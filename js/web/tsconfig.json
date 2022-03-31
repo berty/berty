@@ -2,9 +2,6 @@
   "include": [
     "src"
   ],
-  "exclude": [
-    "../packages/web-dev-app"
-  ],
   "compilerOptions": {
     "target": "es5",
     "lib": [
@@ -28,6 +25,6 @@
     "noFallthroughCasesInSwitch": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,
-    "strict": true,
+    "strict": true
   }
 }

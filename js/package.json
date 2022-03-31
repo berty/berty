@@ -127,13 +127,11 @@
     ],
     "testPathIgnorePatterns": [
       "/node_modules/",
-      "/packages/web-dev-app/",
       ".gomobile-cache/",
       "web/"
     ],
     "modulePathIgnorePatterns": [
       "/node_modules/",
-      "/packages/web-dev-app/",
       ".gomobile-cache/",
       "web/"
     ],
