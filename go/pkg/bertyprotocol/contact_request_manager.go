@@ -289,7 +289,6 @@ func (c *contactRequestsManager) metadataWatcher(ctx context.Context) {
 			e := evt.(protocoltypes.GroupMetadataEvent)
 			c.lock.Lock()
 			if handler, ok := handlers[e.Metadata.EventType]; ok {
-				c.logger.Debug("METADATA WATCHER", zap.String("event", e.Metadata.EventType.String()))
 				if err := handler(&e); err != nil {
 					c.logger.Error("error while handling metadata store event", zap.Error(err))
 				}
