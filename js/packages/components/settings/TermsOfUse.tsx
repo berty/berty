@@ -1,10 +1,11 @@
 import React from 'react'
 import { View, ScrollView } from 'react-native'
-import { Layout, Text } from '@ui-kitten/components'
+import { Layout } from '@ui-kitten/components'
 
 import { useStyles } from '@berty/styles'
 import { useThemeColor } from '@berty/store/hooks'
 import { ScreenFC } from '@berty/navigation'
+import { UnifiedText } from '../shared-components/UnifiedText'
 
 //
 // TermsOfUse
@@ -16,22 +17,12 @@ type BodyTermsOfUseItemProps = {
 	title?: string
 }
 
-// Styles
-const useStylesTermsOfUse = () => {
-	const [{ text }] = useStyles()
-	return {
-		itemTitleText: text.size.medium,
-		itemText: text.size.small,
-	}
-}
-
 const BodyTermsOfUseItem: React.FC<BodyTermsOfUseItemProps> = ({ textProps, title = null }) => {
-	const _styles = useStylesTermsOfUse()
 	const [{ margin, text }] = useStyles()
 	return (
 		<View style={[margin.top.big]}>
-			{title && <Text style={[text.bold.medium, _styles.itemTitleText]}>{title}</Text>}
-			<Text style={[_styles.itemText]}>{textProps}</Text>
+			{title && <UnifiedText style={[text.bold]}>{title}</UnifiedText>}
+			<UnifiedText style={[text.size.small]}>{textProps}</UnifiedText>
 		</View>
 	)
 }

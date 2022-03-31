@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import { TouchableOpacity, View, TransformsStyle } from 'react-native'
-import { Text, Icon } from '@ui-kitten/components'
+import { Icon } from '@ui-kitten/components'
 
 import { useStyles } from '@berty/styles'
 import { useThemeColor } from '@berty/store/hooks'
+import { UnifiedText } from './UnifiedText'
 
 // Types
 type TabItemProps = {
@@ -91,16 +92,16 @@ const TabBarItem: React.FC<TabItemProps> = ({
 						height={25}
 					/>
 				</View>
-				<Text
+				<UnifiedText
 					style={[
-						text.bold.medium,
+						text.bold,
 						text.align.center,
 						_styles.tabItemName,
 						{ color: enable ? colors['background-header'] : colors['main-text'] },
 					]}
 				>
 					{name}
-				</Text>
+				</UnifiedText>
 			</View>
 			<View
 				style={[

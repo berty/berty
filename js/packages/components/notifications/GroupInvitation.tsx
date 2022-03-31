@@ -1,17 +1,16 @@
 import React from 'react'
-import { TouchableOpacity, View, Text } from 'react-native'
+import { TouchableOpacity, View } from 'react-native'
 import { CommonActions } from '@react-navigation/native'
 
 import { useStyles } from '@berty/styles'
-import { useThemeColor } from '@berty/store'
 import { useConversation } from '@berty/react-redux'
 import { dispatch } from '@berty/navigation'
 
 import { useStylesNotification, NotificationTmpLogo } from './common'
+import { UnifiedText } from '../shared-components/UnifiedText'
 
 const GroupInvitation: React.FC<any> = ({ onClose, title, message, ...props }) => {
 	const [{ text }] = useStyles()
-	const colors = useThemeColor()
 	const _styles = useStylesNotification()
 
 	const { payload } = props?.additionalProps?.payload || {}
@@ -50,12 +49,12 @@ const GroupInvitation: React.FC<any> = ({ onClose, title, message, ...props }) =
 			<View style={_styles.innerTouchable}>
 				<NotificationTmpLogo />
 				<View style={_styles.titleAndTextWrapper}>
-					<Text numberOfLines={1} style={[text.bold.medium, { color: colors['main-text'] }]}>
+					<UnifiedText numberOfLines={1} style={[text.bold]}>
 						{title}
-					</Text>
-					<Text numberOfLines={1} ellipsizeMode='tail' style={{ color: colors['main-text'] }}>
+					</UnifiedText>
+					<UnifiedText numberOfLines={1} ellipsizeMode='tail'>
 						{message}
-					</Text>
+					</UnifiedText>
 				</View>
 			</View>
 		</TouchableOpacity>

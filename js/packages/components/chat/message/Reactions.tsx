@@ -1,5 +1,5 @@
 import React, { createRef, FC, useCallback, useEffect, useState } from 'react'
-import { Text, View } from 'react-native'
+import { View } from 'react-native'
 import { FlatList, ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
 
 import { berty } from '@berty/api/root.pb'
@@ -12,6 +12,7 @@ import { useConversationMembersDict } from '@berty/react-redux'
 import { ContactAvatar } from '@berty/components/avatars'
 
 import { useModal } from '../../providers/modal.provider'
+import { UnifiedText } from '../../shared-components/UnifiedText'
 
 const MemberItem: React.FC<{ member: any; divider: boolean }> = ({ member, divider = true }) => {
 	const [{ row, margin, padding, border }, { scaleSize }] = useStyles()
@@ -21,16 +22,12 @@ const MemberItem: React.FC<{ member: any; divider: boolean }> = ({ member, divid
 		<View>
 			<View style={[row.left, row.item.justify, padding.vertical.small, { flexShrink: 1 }]}>
 				<ContactAvatar size={50 * scaleSize} publicKey={member?.publicKey} />
-				<Text
+				<UnifiedText
 					numberOfLines={1}
-					style={[
-						margin.left.small,
-						row.item.justify,
-						{ flexShrink: 1, color: colors['main-text'] },
-					]}
+					style={[margin.left.small, row.item.justify, { flexShrink: 1 }]}
 				>
 					{member?.displayName!}
-				</Text>
+				</UnifiedText>
 			</View>
 			{divider && (
 				<View style={[border.scale(0.6), { borderColor: `${colors['secondary-text']}90` }]} />
@@ -124,13 +121,15 @@ const ReactionList: FC<{
 							}
 						}}
 					>
-						<Text style={[padding.right.small]}>{`${getEmojiByName(emoji as string)}`}</Text>
+						<UnifiedText style={[padding.right.small]}>{`${getEmojiByName(
+							emoji as string,
+						)}`}</UnifiedText>
 						<AnimatedNumber
 							number={count as unknown as number}
 							fontStyle={[
 								text.size.small,
+								text.bold,
 								{
-									fontWeight: 'bold',
 									color:
 										currentEmoji === emoji
 											? colors['main-background']
@@ -143,18 +142,16 @@ const ReactionList: FC<{
 			</ScrollView>
 			<View style={{ height: 300 }}>
 				<View>
-					<Text
+					<UnifiedText
 						style={[
 							padding.medium,
 							text.size.small,
-							{
-								fontWeight: 'bold',
-								color: colors['background-header'],
-							},
+							text.bold,
+							{ color: colors['background-header'] },
 						]}
 					>
 						{currentEmoji}
-					</Text>
+					</UnifiedText>
 				</View>
 				<FlatList
 					data={userList}
@@ -223,23 +220,14 @@ export const Reactions: FC<{
 								},
 							]}
 						>
-							<Text
-								style={[
-									text.size.tiny,
-									{
-										marginHorizontal: 2,
-									},
-								]}
-							>
+							<UnifiedText style={[text.size.tiny, { marginHorizontal: 2 }]}>
 								{`${getEmojiByName(emoji as string)}`}
-							</Text>
+							</UnifiedText>
 							<AnimatedNumber
 								number={count as unknown as number}
 								fontStyle={[
 									text.size.tiny,
-									{
-										color: ownState ? colors['main-background'] : colors['background-header'],
-									},
+									{ color: ownState ? colors['main-background'] : colors['background-header'] },
 								]}
 							/>
 						</View>

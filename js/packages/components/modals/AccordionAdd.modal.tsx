@@ -1,13 +1,13 @@
 import React, { FC, useCallback, useState } from 'react'
 import { View } from 'react-native'
 
-import { Text } from '@ui-kitten/components'
 import Button from '@berty/components/onboarding/Button'
 import { TextInput } from '@berty/components/shared-components/TextInput'
 import { useThemeColor } from '@berty/store'
 import { useStyles } from '@berty/styles'
 import { multiaddr } from 'multiaddr'
 import { useTranslation } from 'react-i18next'
+import { UnifiedText } from '../shared-components/UnifiedText'
 
 export const AccordionAdd: FC<{
 	title: string
@@ -57,16 +57,9 @@ export const AccordionAdd: FC<{
 	return (
 		<View style={{ backgroundColor: colors['main-background'] }}>
 			{title ? (
-				<Text
-					style={[
-						margin.medium,
-						margin.bottom.big,
-						text.align.center,
-						{ color: colors['main-text'] },
-					]}
-				>
+				<UnifiedText style={[margin.medium, margin.bottom.big, text.align.center]}>
 					{title}
-				</Text>
+				</UnifiedText>
 			) : null}
 			<TextInput
 				autoCapitalize='none'

@@ -1,7 +1,8 @@
 import { useThemeColor } from '@berty/store/hooks'
 import { useStyles } from '@berty/styles'
 import React from 'react'
-import { Text, TouchableOpacity, View } from 'react-native'
+import { TouchableOpacity, View } from 'react-native'
+import { UnifiedText } from '../shared-components/UnifiedText'
 import { Card } from '../shared-components/Card'
 import Button from './Button'
 
@@ -22,33 +23,35 @@ const SwiperCard: React.FC<{
 
 	return (
 		<View>
-			<Text style={[text.size.large, text.align.center, { color: colors['reverted-main-text'] }]}>
+			<UnifiedText
+				style={[text.size.large, text.align.center, { color: colors['reverted-main-text'] }]}
+			>
 				{header}
-			</Text>
+			</UnifiedText>
 			<Card style={[{ backgroundColor: colors['main-background'], shadowColor: colors.shadow }]}>
 				<View style={[padding.medium]}>
-					<Text
+					<UnifiedText
 						style={[
 							text.size.huge,
 							padding.top.medium,
 							text.align.center,
-							text.bold.medium,
+							text.bold,
 							{ lineHeight: 25, color: colors['background-header'] },
 						]}
 					>
 						{title}
-					</Text>
+					</UnifiedText>
 					{desc ? (
-						<Text
+						<UnifiedText
 							style={[
 								text.size.small,
 								padding.vertical.medium,
 								text.align.center,
-								{ color: colors['secondary-text'], fontFamily: 'Open Sans' },
+								{ color: colors['secondary-text'] },
 							]}
 						>
 							{desc}
-						</Text>
+						</UnifiedText>
 					) : null}
 					{children}
 					{button ? (
@@ -64,11 +67,11 @@ const SwiperCard: React.FC<{
 
 					{skip ? (
 						<TouchableOpacity style={[margin.top.medium]} onPress={skip.onPress}>
-							<Text
+							<UnifiedText
 								style={[text.size.small, text.align.center, { color: colors['secondary-text'] }]}
 							>
 								{skip.text}
-							</Text>
+							</UnifiedText>
 						</TouchableOpacity>
 					) : null}
 				</View>

@@ -1,13 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import {
-	ScrollView,
-	Text as TextNative,
-	View,
-	StatusBar,
-	TouchableOpacity,
-	SafeAreaView,
-} from 'react-native'
+import { ScrollView, View, StatusBar, TouchableOpacity, SafeAreaView } from 'react-native'
 import pickBy from 'lodash/pickBy'
 import { Icon } from '@ui-kitten/components'
 
@@ -33,6 +26,8 @@ import { MultiAccount } from './MultiAccount'
 import { useSelector } from 'react-redux'
 import { selectClient } from '@berty/redux/reducers/ui.reducer'
 import { selectPersistentOptions } from '@berty/redux/reducers/persistentOptions.reducer'
+import { UnifiedText } from '../../shared-components/UnifiedText'
+import { ButtonSettingV2 } from '@berty/components/shared-components'
 
 const T = beapi.messenger.StreamEvent.Notified.Type
 
@@ -102,7 +97,7 @@ export const Home: ScreenFC<'Main.Home'> = ({ navigation: { navigate } }) => {
 
 	const client = useSelector(selectClient)
 
-	const [{ text, opacity, flex, margin }, { scaleSize, scaleHeight }] = useStyles()
+	const [{ text, opacity, flex, margin, border }, { scaleSize, scaleHeight }] = useStyles()
 	const colors = useThemeColor()
 	const { t }: any = useTranslation()
 
@@ -258,15 +253,31 @@ export const Home: ScreenFC<'Main.Home'> = ({ navigation: { navigate } }) => {
 					isMultiAccount={isLongPress}
 				/>
 				{searchText?.length ? (
-					<SearchComponent
-						insets={null}
-						conversations={searchConversations}
-						contacts={searchContacts}
-						interactions={searchInteractions.current}
-						value={searchText}
-						hasResults={hasResults}
-						earliestInteractionCID={earliestResult}
-					/>
+					<>
+						{(searchText.startsWith('https://berty.tech/id') ||
+							searchText.startsWith('berty://')) && (
+							<View style={[{ flexDirection: 'row', justifyContent: 'center' }]}>
+								<View style={[border.shadow.large, border.radius.medium]}>
+									<ButtonSettingV2
+										text='Open Berty Link'
+										icon='external-link-outline'
+										onPress={() =>
+											navigate('Modals.ManageDeepLink', { type: 'link', value: searchText })
+										}
+									/>
+								</View>
+							</View>
+						)}
+						<SearchComponent
+							insets={null}
+							conversations={searchConversations}
+							contacts={searchContacts}
+							interactions={searchInteractions.current}
+							value={searchText}
+							hasResults={hasResults}
+							earliestInteractionCID={earliestResult}
+						/>
+					</>
 				) : (
 					<View style={{ height: '100%' }}>
 						<Conversations
@@ -280,17 +291,17 @@ export const Home: ScreenFC<'Main.Home'> = ({ navigation: { navigate } }) => {
 								<View style={[flex.justify.center, flex.align.center, margin.top.scale(60)]}>
 									<View>
 										<EmptyChat width={350 * scaleSize} height={350 * scaleHeight} />
-										<TextNative
+										<UnifiedText
 											style={[
 												text.align.center,
 												text.color.grey,
-												text.bold.small,
+												text.light,
 												opacity(0.3),
 												margin.top.big,
 											]}
 										>
 											{t('main.home.no-contacts')}
-										</TextNative>
+										</UnifiedText>
 									</View>
 								</View>
 							</View>

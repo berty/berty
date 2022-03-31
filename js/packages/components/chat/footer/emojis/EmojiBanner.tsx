@@ -1,5 +1,5 @@
 import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { Text, View, Animated, LayoutChangeEvent } from 'react-native'
+import { View, Animated, LayoutChangeEvent } from 'react-native'
 import { TouchableHighlight, TouchableOpacity } from 'react-native-gesture-handler'
 import { useTranslation } from 'react-i18next'
 
@@ -14,6 +14,7 @@ import {
 	selectChatInputIsFocused,
 	selectChatInputSelection,
 } from '@berty/redux/reducers/chatInputsVolatile.reducer'
+import { UnifiedText } from '../../../shared-components/UnifiedText'
 
 type Word = {
 	word: string
@@ -202,9 +203,9 @@ export const EmojiBanner: FC<{
 						]}
 					>
 						<View style={{ flex: 1 }}>
-							<Text style={[textStyle.bold.medium, { color: colors['main-text'] }]}>
+							<UnifiedText style={[textStyle.bold]}>
 								{`${t('chat.emojis.matching')}: ${currentWord.word.substring(1)}`}
-							</Text>
+							</UnifiedText>
 						</View>
 						<View
 							style={[
@@ -257,9 +258,9 @@ export const EmojiBanner: FC<{
 										backgroundColor: colors['main-background'],
 									}}
 								>
-									<Text
-										style={[padding.left.medium, { color: colors['main-text'] }]}
-									>{`${getEmojiByName(short_name)} :${short_name}:`}</Text>
+									<UnifiedText style={[padding.left.medium]}>{`${getEmojiByName(
+										short_name,
+									)} :${short_name}:`}</UnifiedText>
 								</View>
 								<Divider style={{ backgroundColor: `${colors['background-header']}30` }} />
 							</View>

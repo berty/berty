@@ -1,8 +1,9 @@
 import React from 'react'
 import { TouchableOpacity } from 'react-native'
-import { Text, Icon } from '@ui-kitten/components'
+import { Icon } from '@ui-kitten/components'
 
 import { useStyles } from '@berty/styles'
+import { UnifiedText } from '../../../shared-components/UnifiedText'
 
 export const ListItemMenu: React.FC<{
 	title: string
@@ -23,7 +24,7 @@ export const ListItemMenu: React.FC<{
 			style={[padding.vertical.medium, margin.horizontal.big, { alignItems: 'center' }]}
 		>
 			<Icon {...iconProps} height={iconProps.height || 50} width={iconProps.width || 50} />
-			<Text style={[text.align.center, margin.top.small]}>{title}</Text>
+			<UnifiedText style={[text.align.center, margin.top.small]}>{title}</UnifiedText>
 		</TouchableOpacity>
 	)
 }

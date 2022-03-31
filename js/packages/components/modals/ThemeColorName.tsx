@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, TouchableOpacity, Text as TextNative, StyleSheet, TextInput } from 'react-native'
+import { View, TouchableOpacity, StyleSheet, TextInput } from 'react-native'
 import { Icon } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 import { useDispatch } from 'react-redux'
@@ -11,6 +11,7 @@ import { BlurView } from '@berty/polyfill/react-native-community-blur'
 
 import Avatar from './Buck_Berty_Icon_Card.svg'
 import { useStylesDefaultModal } from './AddBot'
+import { UnifiedText } from '../shared-components/UnifiedText'
 
 export const ThemeColorBody: React.FC<{ closeModal: () => void }> = ({ closeModal }) => {
 	const [themeName, setThemeName] = React.useState<string>('')
@@ -64,30 +65,14 @@ export const ThemeColorBody: React.FC<{ closeModal: () => void }> = ({ closeModa
 				]}
 			>
 				<View style={[margin.top.scale(70 * scaleHeight)]}>
-					<TextNative
-						style={[
-							text.align.center,
-							padding.top.small,
-							text.size.large,
-							text.bold.medium,
-							{ fontFamily: 'Open Sans', color: colors['main-text'] },
-						]}
-					>
+					<UnifiedText style={[text.align.center, padding.top.small, text.size.large, text.bold]}>
 						{`🎨 ${t('modals.save-theme.title')}`}
-					</TextNative>
+					</UnifiedText>
 					<View
 						style={[padding.top.scale(20), padding.horizontal.medium, { flexDirection: 'column' }]}
 					>
 						<View>
-							<TextNative
-								style={[
-									text.bold.small,
-									text.size.medium,
-									{ fontFamily: 'Open Sans', color: colors['main-text'] },
-								]}
-							>
-								{t('modals.save-theme.desc')}
-							</TextNative>
+							<UnifiedText style={[text.light]}>{t('modals.save-theme.desc')}</UnifiedText>
 						</View>
 						<View
 							style={[
@@ -102,7 +87,7 @@ export const ThemeColorBody: React.FC<{ closeModal: () => void }> = ({ closeModa
 								multiline
 								onChange={({ nativeEvent }) => setThemeName(nativeEvent.text)}
 								style={[
-									text.bold.small,
+									text.light,
 									{
 										fontFamily: 'Open Sans',
 										color: colors['background-header'],
@@ -134,17 +119,16 @@ export const ThemeColorBody: React.FC<{ closeModal: () => void }> = ({ closeModa
 							fill={colors['negative-asset']}
 							style={row.item.justify}
 						/>
-						<TextNative
+						<UnifiedText
 							style={[
 								padding.left.small,
 								row.item.justify,
-								text.size.medium,
-								text.bold.medium,
-								{ fontFamily: 'Open Sans', color: colors['negative-asset'] },
+								text.bold,
+								{ color: colors['negative-asset'] },
 							]}
 						>
 							{t('modals.save-theme.cancel')}
-						</TextNative>
+						</UnifiedText>
 					</TouchableOpacity>
 					<TouchableOpacity
 						style={[
@@ -169,17 +153,16 @@ export const ThemeColorBody: React.FC<{ closeModal: () => void }> = ({ closeModa
 							fill={colors['background-header']}
 							style={row.item.justify}
 						/>
-						<TextNative
+						<UnifiedText
 							style={[
 								padding.left.small,
 								row.item.justify,
-								text.size.medium,
-								text.bold.medium,
+								text.bold,
 								{ color: colors['background-header'] },
 							]}
 						>
 							{t('modals.save-theme.add')}
-						</TextNative>
+						</UnifiedText>
 					</TouchableOpacity>
 				</View>
 			</View>

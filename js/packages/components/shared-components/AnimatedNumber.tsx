@@ -1,6 +1,7 @@
 import React, { FC, useCallback, useEffect, useRef, useState } from 'react'
-import { Text, View } from 'react-native'
+import { View } from 'react-native'
 import Animated, { EasingNode } from 'react-native-reanimated'
+import { UnifiedText } from './UnifiedText'
 
 const NUMBERS: number[] = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 
@@ -65,13 +66,15 @@ export const AnimatedNumber: FC<{
 		<>
 			{numberHeight !== 0 && (
 				<View style={{ flexDirection: 'row' }}>
-					{number < 0 && <Text style={[fontStyle, { height: numberHeight }]}>{'-'}</Text>}
+					{number < 0 && (
+						<UnifiedText style={[fontStyle, { height: numberHeight }]}>{'-'}</UnifiedText>
+					)}
 					{animateToNumbersArr.map((n, index) => {
 						if (typeof n === 'string') {
 							return (
-								<Text key={index} style={[fontStyle, { height: numberHeight }]}>
+								<UnifiedText key={index} style={[fontStyle, { height: numberHeight }]}>
 									{n}
-								</Text>
+								</UnifiedText>
 							)
 						}
 
@@ -90,7 +93,9 @@ export const AnimatedNumber: FC<{
 								>
 									{NUMBERS.map((number, i) => (
 										<View style={{ flexDirection: 'row' }} key={i}>
-											<Text style={[fontStyle, { height: numberHeight }]}>{number}</Text>
+											<UnifiedText style={[fontStyle, { height: numberHeight }]}>
+												{number}
+											</UnifiedText>
 										</View>
 									))}
 								</Animated.View>
@@ -99,12 +104,12 @@ export const AnimatedNumber: FC<{
 					})}
 				</View>
 			)}
-			<Text
+			<UnifiedText
 				style={[fontStyle, { position: 'absolute', top: -999999 }]}
 				onLayout={e => setNumberHeight(e.nativeEvent.layout.height)}
 			>
 				{0}
-			</Text>
+			</UnifiedText>
 		</>
 	)
 }

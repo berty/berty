@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { Linking, Platform } from 'react-native'
+import { Linking, Platform, TouchableOpacity } from 'react-native'
 import { useTranslation } from 'react-i18next'
 import {
 	createNativeStackNavigator,
@@ -25,8 +25,7 @@ export const CustomTitleStyle: () => any = () => {
 		text.size.large,
 		{
 			headerTitleStyle: {
-				fontFamily: 'Open Sans',
-				fontWeight: '700',
+				...text.bold,
 			},
 		},
 	]
@@ -198,6 +197,19 @@ export const Navigation: React.FC = React.memo(() => {
 			initialRouteName={
 				appState === MESSENGER_APP_STATE.GET_STARTED ? 'Onboarding.GetStarted' : 'Main.Home'
 			}
+			screenOptions={{
+				headerLeft:
+					Platform.OS === 'web'
+						? props => (
+								<TouchableOpacity
+									style={{ justifyContent: 'center' }}
+									onPress={() => dispatch(CommonActions.goBack())}
+								>
+									<Icon name='arrow-back' width={24} height={24} fill={props.tintColor} />
+								</TouchableOpacity>
+						  )
+						: undefined,
+			}}
 		>
 			{/* OnBoarding */}
 			<NavigationStack.Screen
@@ -436,6 +448,7 @@ export const Navigation: React.FC = React.memo(() => {
 					headerStyle: {
 						backgroundColor: colors['secondary-background'],
 					},
+
 					headerTintColor: colors['main-text'],
 					headerBackTitleVisible: false,
 					title: 'Settings',

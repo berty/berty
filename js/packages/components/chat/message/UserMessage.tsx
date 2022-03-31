@@ -2,7 +2,7 @@ import React, { useCallback, useState } from 'react'
 import { View, TouchableOpacity, Animated } from 'react-native'
 import { SHA3 } from 'sha3'
 import palette from 'google-palette'
-import { Text, Icon } from '@ui-kitten/components'
+import { Icon } from '@ui-kitten/components'
 import { PanGestureHandler, State } from 'react-native-gesture-handler'
 import { useTranslation } from 'react-i18next'
 
@@ -34,6 +34,7 @@ import { getMediaTypeFromMedias } from '../../utils'
 import { MessageMenu } from '../modals/MessageMenu.modal'
 import { useModal } from '../../providers/modal.provider'
 import { setActiveReplyInteraction } from '@berty/redux/reducers/chatInputs.reducer'
+import { UnifiedText } from '../../shared-components/UnifiedText'
 // import { EmojiKeyboard } from '../modals/EmojiKeyboard.modal'
 
 const pal = palette('tol-rainbow', 256)
@@ -268,16 +269,16 @@ export const UserMessage: React.FC<{
 				<View style={{ alignItems: inte?.isMine ? 'flex-end' : 'flex-start' }}>
 					{!inte.isMine && isGroup && !isFollowupMessage && (
 						<View style={[isFollowedMessage && margin.left.scale(40)]}>
-							<Text
+							<UnifiedText
 								style={[
-									text.bold.medium,
+									text.bold,
 									margin.bottom.tiny,
 									_styles.personNameInGroup,
 									{ color: msgSenderColor },
 								]}
 							>
 								{name}
-							</Text>
+							</UnifiedText>
 						</View>
 					)}
 
@@ -304,14 +305,14 @@ export const UserMessage: React.FC<{
 									zIndex: 2,
 								}}
 							>
-								<Text
+								<UnifiedText
 									numberOfLines={1}
 									style={[text.size.tiny, { color: colors['background-header'] }]}
 								>
 									<>
 										{t('chat.reply.replied-to')} {repliedTo?.displayName || ''}
 									</>
-								</Text>
+								</UnifiedText>
 							</View>
 
 							<TouchableOpacity
@@ -333,7 +334,7 @@ export const UserMessage: React.FC<{
 									},
 								]}
 							>
-								<Text
+								<UnifiedText
 									numberOfLines={1}
 									style={[text.size.tiny, { color: repliedToColors?.msgTextColor, lineHeight: 17 }]}
 								>
@@ -342,7 +343,7 @@ export const UserMessage: React.FC<{
 										`${t('chat.reply.response-to')} ${t(
 											`medias.${getMediaTypeFromMedias(replyOf?.medias)}`,
 										)}`}
-								</Text>
+								</UnifiedText>
 							</TouchableOpacity>
 						</View>
 					)}

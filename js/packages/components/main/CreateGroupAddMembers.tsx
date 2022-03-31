@@ -3,7 +3,6 @@ import {
 	View,
 	ScrollView,
 	TouchableOpacity,
-	Text as TextNative,
 	TouchableWithoutFeedback,
 	StatusBar,
 } from 'react-native'
@@ -25,6 +24,7 @@ import { useAllContacts } from '@berty/react-redux'
 import { ContactPicker } from '../shared-components'
 import { FooterCreateGroup } from './CreateGroupFooter'
 import { ContactAvatar } from '../avatars'
+import { UnifiedText } from '../shared-components/UnifiedText'
 
 export const Header: React.FC<{
 	title: string
@@ -76,16 +76,9 @@ export const Header: React.FC<{
 						/>
 						<View style={[margin.top.small]}>
 							<View style={[row.fill, padding.horizontal.medium, padding.top.small]}>
-								<TextNative
-									style={[
-										text.bold.medium,
-										text.size.scale(25),
-										column.item.center,
-										{ color: colors['main-text'] },
-									]}
-								>
+								<UnifiedText style={[text.bold, text.size.scale(25), column.item.center]}>
 									{title}
-								</TextNative>
+								</UnifiedText>
 								{icon && (
 									<Icon
 										name={icon}
@@ -116,18 +109,18 @@ const MemberItem: React.FC<{
 		<View style={[padding.horizontal.medium, maxWidth(100)]}>
 			<View style={[column.top, padding.top.small]}>
 				<ContactAvatar size={70 * scaleSize} publicKey={member.publicKey} />
-				<TextNative
+				<UnifiedText
 					numberOfLines={1}
 					style={[
 						column.item.center,
 						padding.top.tiny,
-						text.bold.medium,
+						text.bold,
 						text.align.center,
 						{ color: colors['reverted-main-text'] },
 					]}
 				>
 					{member.displayName}
-				</TextNative>
+				</UnifiedText>
 			</View>
 			<TouchableOpacity
 				style={[

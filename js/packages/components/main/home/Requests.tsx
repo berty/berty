@@ -1,7 +1,7 @@
 import React from 'react'
 import { ScrollView, TouchableOpacity, View } from 'react-native'
 import { useTranslation } from 'react-i18next'
-import { Icon, Text } from '@ui-kitten/components'
+import { Icon } from '@ui-kitten/components'
 
 import beapi from '@berty/api'
 import { useMessengerClient, useMessengerContext, useThemeColor, pbDateToNum } from '@berty/store'
@@ -11,6 +11,7 @@ import { useStyles } from '@berty/styles'
 import { ContactAvatar } from '../../avatars'
 import FromNow from '../../shared-components/FromNow'
 import { UnreadCount } from './UnreadCount'
+import { UnifiedText } from '../../shared-components/UnifiedText'
 
 const useStylesContactRequest: any = () => {
 	const [{ border, padding, margin, width, height, row, flex }] = useStyles()
@@ -121,17 +122,9 @@ const ContactRequest: React.FC<beapi.messenger.IContact> = ({
 					minHeight: 0,
 				}}
 			>
-				<Text
-					style={[
-						text.align.center,
-						text.bold.small,
-						text.size.scale(14),
-						{ color: colors['main-text'] },
-					]}
-					numberOfLines={2}
-				>
+				<UnifiedText style={[text.align.center, text.light, text.size.scale(14)]} numberOfLines={2}>
 					{displayName || ''}
-				</Text>
+				</UnifiedText>
 			</View>
 			<View
 				style={{
@@ -142,7 +135,7 @@ const ContactRequest: React.FC<beapi.messenger.IContact> = ({
 					minHeight: 0,
 				}}
 			>
-				<Text
+				<UnifiedText
 					style={[
 						text.size.tiny,
 						text.align.center,
@@ -153,8 +146,8 @@ const ContactRequest: React.FC<beapi.messenger.IContact> = ({
 					]}
 				>
 					{t('main.home.requests.card-title')}
-				</Text>
-				<Text
+				</UnifiedText>
+				<UnifiedText
 					style={[
 						text.size.tiny,
 						text.align.center,
@@ -165,7 +158,7 @@ const ContactRequest: React.FC<beapi.messenger.IContact> = ({
 					]}
 				>
 					<FromNow date={createdDate} />
-				</Text>
+				</UnifiedText>
 			</View>
 			<View style={buttonsWrapper}>
 				<TouchableOpacity
@@ -199,7 +192,7 @@ const ContactRequest: React.FC<beapi.messenger.IContact> = ({
 						width={17 * scaleSize}
 						height={17 * scaleSize}
 					/>
-					<Text
+					<UnifiedText
 						style={[
 							text.size.tiny,
 							padding.horizontal.tiny,
@@ -207,7 +200,7 @@ const ContactRequest: React.FC<beapi.messenger.IContact> = ({
 						]}
 					>
 						{t('main.home.requests.accept')}
-					</Text>
+					</UnifiedText>
 				</TouchableOpacity>
 			</View>
 		</TouchableOpacity>
@@ -226,17 +219,17 @@ export const IncomingRequests: React.FC<any> = ({ items, onLayout }) => {
 		>
 			<View>
 				<View style={[row.left]}>
-					<Text
+					<UnifiedText
 						style={[
 							text.size.huge,
-							text.bold.medium,
+							text.bold,
 							padding.horizontal.medium,
 							padding.bottom.small,
 							{ color: colors['reverted-main-text'] },
 						]}
 					>
 						{t('main.home.requests.title')}
-					</Text>
+					</UnifiedText>
 					<View style={{ position: 'relative', top: -2 * scaleSize, left: -(23 * scaleSize) }}>
 						<UnreadCount value={items.length} />
 					</View>

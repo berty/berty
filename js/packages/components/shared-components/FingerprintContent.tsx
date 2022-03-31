@@ -1,10 +1,10 @@
 import React from 'react'
 import { View } from 'react-native'
-import { Text } from '@ui-kitten/components'
 import { SHA3 } from 'sha3'
 
 import { useStyles } from '@berty/styles'
 import { Maybe, useThemeColor } from '@berty/store'
+import { UnifiedText } from './UnifiedText'
 
 //
 // FingerprintContent => Generally on TabBar there is a TabItem Fingerpint that show this component
@@ -28,15 +28,15 @@ const FingerprintContentText: React.FC<FingerprintContentProps> = ({ fingerprint
 	const colors = useThemeColor()
 	const _styles = useStylesFingerprintContent()
 	return (
-		<Text
+		<UnifiedText
 			style={[
-				text.bold.medium,
+				text.bold,
 				_styles.fingerprintContentText,
-				{ fontFamily: 'Courier', color: colors['background-header'] },
+				{ fontFamily: 'Courier, monospace', color: colors['background-header'] },
 			]}
 		>
 			{fingerprint.toUpperCase()}
-		</Text>
+		</UnifiedText>
 	)
 }
 
@@ -61,13 +61,13 @@ export const FingerprintContent: React.FC<{ seed: Maybe<string>; isEncrypted?: b
 
 	if (isEncrypted) {
 		return (
-			<Text style={{ textAlign: 'center' }}>
+			<UnifiedText style={{ textAlign: 'center' }}>
 				This conversation is totally encrypted, title included.
-			</Text>
+			</UnifiedText>
 		)
 	}
 	if (!seed) {
-		return <Text style={{ textAlign: 'center' }}>No seed</Text>
+		return <UnifiedText style={{ textAlign: 'center' }}>No seed</UnifiedText>
 	}
 	const digest = new SHA3(256).update(seed).digest('hex')
 	return (

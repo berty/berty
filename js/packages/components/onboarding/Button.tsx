@@ -1,8 +1,9 @@
 import React from 'react'
-import { Text, TouchableOpacity, ViewStyle } from 'react-native'
+import { TouchableOpacity, ViewStyle } from 'react-native'
 
 import { useStyles } from '@berty/styles'
 import { useThemeColor } from '@berty/store/hooks'
+import { UnifiedText } from '../shared-components/UnifiedText'
 
 const Button: React.FC<{
 	children: string
@@ -37,11 +38,10 @@ const Button: React.FC<{
 			]}
 			onPress={onPress}
 		>
-			<Text
+			<UnifiedText
 				style={[
-					text.size.medium,
 					text.align.center,
-					text.bold.medium,
+					text.bold,
 					{
 						color:
 							status === 'primary' ? colors['reverted-main-text'] : colors['background-header'],
@@ -50,7 +50,7 @@ const Button: React.FC<{
 				]}
 			>
 				{children}
-			</Text>
+			</UnifiedText>
 		</TouchableOpacity>
 	)
 }

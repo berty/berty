@@ -1,5 +1,5 @@
 import React, { ComponentProps } from 'react'
-import { NativeModules, TextInput, View, Text, Platform } from 'react-native'
+import { NativeModules, TextInput, View, Platform } from 'react-native'
 import { useTranslation } from 'react-i18next'
 import { Icon } from '@ui-kitten/components'
 import { TouchableOpacity } from 'react-native-gesture-handler'
@@ -13,6 +13,7 @@ import {
 } from '@berty/redux/reducers/chatInputs.reducer'
 
 import { getMediaTypeFromMedias } from '../../utils'
+import { UnifiedText } from '../../shared-components/UnifiedText'
 
 export const ReplyMessageBar: React.FC<{ convPK: string }> = ({ convPK }) => {
 	const [{ border, text }] = useStyles()
@@ -60,13 +61,16 @@ export const ReplyMessageBar: React.FC<{ convPK: string }> = ({ convPK }) => {
 					borderRadius: 20,
 				}}
 			>
-				<Text numberOfLines={1} style={[text.size.tiny, { color: colors['background-header'] }]}>
+				<UnifiedText
+					numberOfLines={1}
+					style={[text.size.tiny, { color: colors['background-header'] }]}
+				>
 					{t('chat.reply.replying-to')} {replyTargetAuthor?.displayName || ''}
-				</Text>
+				</UnifiedText>
 			</View>
 
 			{activeReplyInteraction?.payload?.body ? (
-				<Text
+				<UnifiedText
 					numberOfLines={1}
 					style={[
 						text.size.small,
@@ -77,7 +81,7 @@ export const ReplyMessageBar: React.FC<{ convPK: string }> = ({ convPK }) => {
 					]}
 				>
 					{activeReplyInteraction?.payload?.body}
-				</Text>
+				</UnifiedText>
 			) : (
 				<View
 					style={{
@@ -93,7 +97,7 @@ export const ReplyMessageBar: React.FC<{ convPK: string }> = ({ convPK }) => {
 						fill={activeReplyInteraction?.textColor}
 						style={{ marginTop: 4 }}
 					/>
-					<Text
+					<UnifiedText
 						numberOfLines={1}
 						style={[
 							text.size.small,
@@ -105,7 +109,7 @@ export const ReplyMessageBar: React.FC<{ convPK: string }> = ({ convPK }) => {
 						]}
 					>
 						{t(`medias.${getMediaTypeFromMedias(activeReplyInteraction?.medias)}`)}
-					</Text>
+					</UnifiedText>
 				</View>
 			)}
 			<TouchableOpacity
@@ -192,7 +196,7 @@ export const ChatTextInput: React.FC<{
 					blurOnSubmit={false}
 					onChangeText={onChangeText}
 					style={[
-						text.bold.small,
+						text.light,
 						{
 							maxHeight: 150 * scaleSize,
 							color: disabled ? colors['secondary-text'] : colors['main-text'],

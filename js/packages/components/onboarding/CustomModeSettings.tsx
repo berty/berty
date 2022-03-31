@@ -4,7 +4,6 @@ import {
 	SafeAreaView,
 	ScrollView,
 	StatusBar,
-	Text,
 	TouchableOpacity,
 	View,
 	Platform,
@@ -45,6 +44,7 @@ import { AccordionEdit } from '../modals/AccordionEdit.modal'
 import { AccordionAdd } from '../modals/AccordionAdd.modal'
 import { useModal } from '../providers/modal.provider'
 import { useDispatch } from 'react-redux'
+import { UnifiedText } from '../shared-components/UnifiedText'
 
 const ConfigPart: React.FC<{
 	title: string
@@ -81,19 +81,18 @@ const ConfigPart: React.FC<{
 					/>
 				</View>
 				<View style={{ flex: 6, justifyContent: 'center' }}>
-					<Text
+					<UnifiedText
 						style={[
 							text.size.big,
+							text.bold,
 							{
-								fontFamily: 'Open Sans',
-								fontWeight: '700',
 								color: colors['background-header'],
 								alignSelf: 'center',
 							},
 						]}
 					>
 						{title}
-					</Text>
+					</UnifiedText>
 				</View>
 				<TouchableOpacity
 					style={{ flex: 1 }}
@@ -529,14 +528,9 @@ const ApplyChanges: React.FC = () => {
 					{isPressed ? (
 						<ActivityIndicator color={colors['reverted-main-text']} />
 					) : (
-						<Text
-							style={[
-								text.size.medium,
-								{ fontFamily: 'Open Sans', fontWeight: '700', color: colors['reverted-main-text'] },
-							]}
-						>
+						<UnifiedText style={[text.bold, { color: colors['reverted-main-text'] }]}>
 							{t('onboarding.custom-mode.settings.accept-button')}
-						</Text>
+						</UnifiedText>
 					)}
 				</TouchableOpacity>
 			</View>
@@ -585,9 +579,9 @@ const EnableDisableAll: React.FC = () => {
 				},
 			]}
 		>
-			<Text style={{ fontFamily: 'Open Sans', color: colors['reverted-main-text'] }}>
+			<UnifiedText style={{ color: colors['reverted-main-text'] }}>
 				{t('onboarding.custom-mode.settings.all-button')}
-			</Text>
+			</UnifiedText>
 			<View style={[padding.small]}>
 				<Toggle
 					checked={isToggled}

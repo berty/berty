@@ -1,12 +1,12 @@
 import React from 'react'
 import { Animated, Easing, View, ViewToken } from 'react-native'
-import { Text } from '@ui-kitten/components'
 import moment from 'moment'
 
 import { useStyles } from '@berty/styles'
 import { useThemeColor } from '@berty/store'
 
 import { timeFormat } from '../helpers'
+import { UnifiedText } from '../shared-components/UnifiedText'
 
 //
 // ChatFooter => Textinput for type message
@@ -71,7 +71,9 @@ export const ChatDate: React.FC<ChatDateProps> = React.memo(({ date }) => {
 	const textColor = colors['secondary-text']
 	return (
 		<View style={[row.item.justify, border.radius.medium, _styles.date, { backgroundColor }]}>
-			<Text style={[_styles.dateText, { color: textColor }]}>{timeFormat.fmtTimestamp2(date)}</Text>
+			<UnifiedText style={[_styles.dateText, { color: textColor }]}>
+				{timeFormat.fmtTimestamp2(date)}
+			</UnifiedText>
 		</View>
 	)
 })

@@ -1,15 +1,15 @@
 import React from 'react'
 import { View } from 'react-native'
-import { Text } from '@ui-kitten/components'
 
 import { useThemeColor } from '@berty/store/hooks'
 import { useStyles } from '@berty/styles'
+import { UnifiedText } from '../../shared-components/UnifiedText'
 
 export const UnreadCount: React.FC<{ value: number; isConvBadge?: boolean }> = ({
 	value,
 	isConvBadge = false,
 }) => {
-	const [{}, { scaleSize }] = useStyles()
+	const [{ text }, { scaleSize }] = useStyles()
 	const colors = useThemeColor()
 	const dimension = isConvBadge ? 15 : 18
 	const fontSize = isConvBadge ? 10 : 13
@@ -26,17 +26,19 @@ export const UnreadCount: React.FC<{ value: number; isConvBadge?: boolean }> = (
 				paddingHorizontal: 2 * scaleSize,
 			}}
 		>
-			<Text
-				style={{
-					color: colors['reverted-main-text'],
-					fontWeight: '700',
-					textAlign: 'center',
-					fontSize: fontSize * scaleSize,
-					lineHeight: lineHeight * scaleSize,
-				}}
+			<UnifiedText
+				style={[
+					text.bold,
+					{
+						color: colors['reverted-main-text'],
+						textAlign: 'center',
+						fontSize: fontSize * scaleSize,
+						lineHeight: lineHeight * scaleSize,
+					},
+				]}
 			>
 				{value.toString()}
-			</Text>
+			</UnifiedText>
 		</View>
 	) : null
 }

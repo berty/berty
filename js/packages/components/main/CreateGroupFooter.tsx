@@ -1,9 +1,10 @@
 import React from 'react'
 import { View, TouchableOpacity, ActivityIndicator } from 'react-native'
-import { Text, Icon } from '@ui-kitten/components'
+import { Icon } from '@ui-kitten/components'
 
 import { useStyles } from '@berty/styles'
 import { useThemeColor } from '@berty/store/hooks'
+import { UnifiedText } from '../shared-components/UnifiedText'
 
 type FooterCreateGroupProps = {
 	title: string
@@ -55,16 +56,16 @@ export const FooterCreateGroup: React.FC<FooterCreateGroupProps> = ({
 					{loading ? (
 						<ActivityIndicator color={colors['background-header']} />
 					) : (
-						<Text
+						<UnifiedText
 							style={[
-								text.bold.medium,
+								text.bold,
 								text.align.center,
 								_styles.footerCreateGroupText,
 								{ color: colors['background-header'] },
 							]}
 						>
 							{title}
-						</Text>
+						</UnifiedText>
 					)}
 				</View>
 				{icon && !loading && (

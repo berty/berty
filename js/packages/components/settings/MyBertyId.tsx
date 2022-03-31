@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { View, TouchableOpacity, Share, StatusBar } from 'react-native'
-import { Layout, Text, Icon } from '@ui-kitten/components'
+import { Layout, Icon } from '@ui-kitten/components'
 import QRCode from '@berty/polyfill/react-native-qrcode-svg'
 import { useTranslation } from 'react-i18next'
 
@@ -13,6 +13,7 @@ import { TabBar } from '../shared-components/TabBar'
 import { FingerprintContent } from '../shared-components/FingerprintContent'
 import logo from '../main/1_berty_picto.png'
 import { AccountAvatar } from '../avatars'
+import { UnifiedText } from '../shared-components/UnifiedText'
 
 //
 // Settings My Berty ID Vue
@@ -43,7 +44,7 @@ const ContactRequestQR = () => {
 	const { qrCodeSize } = useStylesBertyId(styleBertyIdOptions)
 
 	if (!account.link) {
-		return <Text>Internal error</Text>
+		return <UnifiedText>Internal error</UnifiedText>
 	}
 	// I would like to use binary mode in QR but the scanner used seems to not support it, extended tests were done
 	return (
@@ -66,7 +67,7 @@ const Fingerprint: React.FC = () => {
 	const { bertyIdContentScaleFactor } = useStylesBertyId(styleBertyIdOptions)
 
 	if (!account) {
-		return <Text>Client not initialized</Text>
+		return <UnifiedText>Client not initialized</UnifiedText>
 	}
 	return (
 		<View
@@ -92,7 +93,7 @@ const SelectedContent: React.FC<{ contentName: string }> = ({ contentName }) => 
 		case 'fingerprint':
 			return <Fingerprint />
 		default:
-			return <Text>Error: Unknown content name "{contentName}"</Text>
+			return <UnifiedText>Error: Unknown content name "{contentName}"</UnifiedText>
 	}
 }
 

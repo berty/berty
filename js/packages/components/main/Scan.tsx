@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react'
-import { View, TextInput, Button, Vibration, Text as TextNative, StatusBar } from 'react-native'
+import { View, TextInput, Button, Vibration, StatusBar } from 'react-native'
 import { Layout } from '@ui-kitten/components'
 import QRCodeScanner from '@berty/polyfill/react-native-qrcode-scanner'
 
@@ -10,6 +10,7 @@ import { useStyles } from '@berty/styles'
 import ScanTarget from './scan_target.svg'
 import { ScreenFC } from '@berty/navigation'
 import { useFocusEffect } from '@react-navigation/core'
+import { UnifiedText } from '../shared-components/UnifiedText'
 
 //
 // Scan => Scan QrCode of an other contact
@@ -93,16 +94,9 @@ const ScanInfosText: React.FC<{ textProps: string }> = ({ textProps }) => {
 					{ backgroundColor: colors['reverted-main-text'] },
 				]}
 			/>
-			<TextNative
-				style={[
-					text.bold.small,
-					text.size.medium,
-					row.item.justify,
-					{ fontFamily: 'Open Sans', color: colors['reverted-main-text'] },
-				]}
-			>
+			<UnifiedText style={[text.light, row.item.justify, { color: colors['reverted-main-text'] }]}>
 				{textProps}
-			</TextNative>
+			</UnifiedText>
 		</View>
 	)
 }

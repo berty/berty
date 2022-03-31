@@ -1,7 +1,8 @@
 import React from 'react'
-import { Text, ScrollView } from 'react-native'
+import { ScrollView } from 'react-native'
 
 import { ScreenFC } from '@berty/navigation'
+import { UnifiedText } from '../shared-components/UnifiedText'
 
 export const DevText: ScreenFC<'Settings.DevText'> = ({
 	route: {
@@ -10,7 +11,7 @@ export const DevText: ScreenFC<'Settings.DevText'> = ({
 }) => {
 	return (
 		<ScrollView>
-			<Text selectable={true}>{text}</Text>
+			<UnifiedText selectable={true}>{text}</UnifiedText>
 		</ScrollView>
 	)
 }

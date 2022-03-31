@@ -1,12 +1,12 @@
 import React from 'react'
 import { TouchableOpacity, View } from 'react-native'
-import { Text } from '@ui-kitten/components'
 import Long from 'long'
 
 import beapi from '@berty/api'
 import { useStyles } from '@berty/styles'
 import { useThemeColor, useMessengerClient } from '@berty/store'
 import { useAppDispatch } from '@berty/react-redux'
+import { UnifiedText } from '../../shared-components/UnifiedText'
 
 const QuickReplyOption: React.FC<{
 	convPk: string
@@ -60,7 +60,9 @@ const QuickReplyOption: React.FC<{
 					{ borderColor: colors['secondary-text'] },
 				]}
 			>
-				<Text style={{ color: colors['secondary-text'] }}>{option.display || ''}</Text>
+				<UnifiedText style={{ color: colors['secondary-text'] }}>
+					{option.display || ''}
+				</UnifiedText>
 			</View>
 		</TouchableOpacity>
 	)

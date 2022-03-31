@@ -1,15 +1,10 @@
 import React from 'react'
-import {
-	TouchableOpacity,
-	Text,
-	TouchableOpacityProps,
-	View,
-	ActivityIndicator,
-} from 'react-native'
+import { TouchableOpacity, TouchableOpacityProps, View, ActivityIndicator } from 'react-native'
 import { Icon } from '@ui-kitten/components'
 
 import { useThemeColor } from '@berty/store'
 import { useStyles } from '@berty/styles'
+import { UnifiedText } from '../../shared-components/UnifiedText'
 
 export const chatInputButtonSizeMultiplier = 36
 
@@ -110,7 +105,7 @@ export const MoreButton: React.FC<{
 			onPress={onPress}
 			disabled={disabled}
 		>
-			{!!n && <Text>{n}</Text>}
+			{!!n && <UnifiedText>{n}</UnifiedText>}
 			<Icon
 				name='plus'
 				width={26 * scaleSize}

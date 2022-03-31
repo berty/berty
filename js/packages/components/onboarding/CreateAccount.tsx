@@ -2,7 +2,7 @@ import LottieView from 'lottie-react-native'
 import React from 'react'
 import { Platform, Vibration } from 'react-native'
 import { useTranslation } from 'react-i18next'
-import { StatusBar, Text, View } from 'react-native'
+import { StatusBar, View } from 'react-native'
 import { useHeaderHeight } from '@react-navigation/elements'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
@@ -19,10 +19,11 @@ import { IOSOnlyKeyboardAvoidingView } from '@berty/rnutil/keyboardAvoiding'
 import { CreateAccountBox } from './CreateAccountBox'
 import OnboardingWrapper from './OnboardingWrapper'
 import rnutil from '@berty/rnutil'
+import { UnifiedText } from '../shared-components/UnifiedText'
 
 const CreateAccountBody = () => {
 	const ctx = useMessengerContext()
-	const [{ padding, margin, border }] = useStyles()
+	const [{ padding, margin, border, text }] = useStyles()
 	const colors = useThemeColor()
 	const [defaultName, setDefaultName] = React.useState('')
 	const { t } = useTranslation()
@@ -77,15 +78,11 @@ const CreateAccountBody = () => {
 			>
 				<View style={{ flexDirection: 'row', alignItems: 'center' }}>
 					<View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
-						<Text style={[{ fontFamily: 'Open Sans', fontWeight: '600' }]}>
+						<UnifiedText style={[text.bold]}>
 							{t('onboarding.create-account.good-to-know.title')}
-						</Text>
-						<Text style={{ fontFamily: 'Open Sans' }}>
-							{t('onboarding.create-account.good-to-know.first-point')}
-						</Text>
-						<Text style={{ fontFamily: 'Open Sans' }}>
-							{t('onboarding.create-account.good-to-know.second-point')}
-						</Text>
+						</UnifiedText>
+						<UnifiedText>{t('onboarding.create-account.good-to-know.first-point')}</UnifiedText>
+						<UnifiedText>{t('onboarding.create-account.good-to-know.second-point')}</UnifiedText>
 					</View>
 				</View>
 			</View>

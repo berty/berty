@@ -1,6 +1,6 @@
 import React from 'react'
 import { ActivityIndicator, TouchableHighlight, View, ViewProps, ViewStyle } from 'react-native'
-import { Icon, Text } from '@ui-kitten/components'
+import { Icon } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 
 import { defaultStylesDeclaration, useStyles } from '@berty/styles'
@@ -15,6 +15,7 @@ import { timeFormat } from '../../helpers'
 import { UnreadCount } from './UnreadCount'
 import { selectChatInputIsSending } from '@berty/redux/reducers/chatInputsVolatile.reducer'
 import { Suggestion, Configuration } from '@berty/redux/reducers/persistentOptions.reducer'
+import { UnifiedText } from '../../shared-components/UnifiedText'
 
 type AddBotCallback = React.Dispatch<
 	React.SetStateAction<{
@@ -196,9 +197,9 @@ const ConversationsItem: React.FC<
 								flexShrink: 1,
 							}}
 						>
-							<Text numberOfLines={1} style={[text.size.medium, { color: colors['main-text'] }]}>
+							<UnifiedText numberOfLines={1}>
 								{fake ? `FAKE - ${userDisplayName}` : userDisplayName}
-							</Text>
+							</UnifiedText>
 						</View>
 						{/* Timestamp and unread count */}
 						<View
@@ -212,17 +213,15 @@ const ConversationsItem: React.FC<
 							<>
 								<UnreadCount value={unreadCount || 0} isConvBadge />
 								{displayDate && (
-									<Text
+									<UnifiedText
 										style={[
 											padding.left.small,
 											text.size.small,
-											unreadCount
-												? [text.bold.medium, { color: colors['main-text'] }]
-												: { color: colors['secondary-text'] },
+											unreadCount ? [text.bold] : { color: colors['secondary-text'] },
 										]}
 									>
 										{timeFormat.fmtTimestamp1(displayDate)}
-									</Text>
+									</UnifiedText>
 								)}
 							</>
 						</View>
@@ -245,26 +244,19 @@ const ConversationsItem: React.FC<
 								style={[margin.right.tiny]}
 							/>
 						)}
-						<Text
+						<UnifiedText
 							numberOfLines={1}
 							style={[
-								{
-									flexGrow: 2,
-									flexShrink: 1,
-									fontStyle:
-										chatInputText ||
-										lastInte?.type === beapi.messenger.AppMessage.Type.TypeGroupInvitation
-											? 'italic'
-											: 'normal',
-								},
+								{ flexGrow: 2, flexShrink: 1 },
+								(chatInputText ||
+									lastInte?.type === beapi.messenger.AppMessage.Type.TypeGroupInvitation) &&
+									text.italic,
 								text.size.small,
-								unreadCount
-									? [text.bold.medium, { color: colors['main-text'] }]
-									: { color: colors['secondary-text'] },
+								unreadCount ? [text.bold] : { color: colors['secondary-text'] },
 							]}
 						>
 							{description || ''}
-						</Text>
+						</UnifiedText>
 
 						{/* Message status */}
 						<View
@@ -355,9 +347,7 @@ const SuggestionsItem: React.FC<{
 									flexShrink: 1,
 								}}
 							>
-								<Text numberOfLines={1} style={[text.size.medium, { color: colors['main-text'] }]}>
-									{displayName}
-								</Text>
+								<UnifiedText numberOfLines={1}>{displayName}</UnifiedText>
 							</View>
 						</View>
 						<View
@@ -369,7 +359,7 @@ const SuggestionsItem: React.FC<{
 								},
 							]}
 						>
-							<Text
+							<UnifiedText
 								numberOfLines={1}
 								style={[
 									{ flexGrow: 2, flexShrink: 1 },
@@ -378,7 +368,7 @@ const SuggestionsItem: React.FC<{
 								]}
 							>
 								{desc}
-							</Text>
+							</UnifiedText>
 							{/* Message status */}
 							<View
 								style={[

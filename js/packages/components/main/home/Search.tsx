@@ -1,6 +1,5 @@
 import React, { useMemo } from 'react'
-import { SectionList, Text as TextNative, TouchableHighlight, View } from 'react-native'
-import { Text } from '@ui-kitten/components'
+import { SectionList, TouchableHighlight, View } from 'react-native'
 import { EdgeInsets } from 'react-native-safe-area-context'
 import { useTranslation } from 'react-i18next'
 
@@ -13,6 +12,7 @@ import { useContact, useConversationInteractions, useConversation } from '@berty
 import { HintBody } from '../../shared-components'
 import { timeFormat } from '../../helpers'
 import { ContactAvatar, ConversationAvatar } from '../../avatars'
+import { UnifiedText } from '../../shared-components/UnifiedText'
 
 // Styles
 
@@ -26,11 +26,11 @@ const useStylesSearch = () => {
 		searchResultHighlightText: [
 			text.size.small,
 			background.light.yellow,
-			text.bold.medium,
+			text.bold,
 			{ color: colors['secondary-text'], backgroundColor: `${colors['secondary-text']}30` },
 		],
 		nameHighlightText: [
-			text.bold.medium,
+			text.bold,
 			{ color: colors['secondary-text'], backgroundColor: `${colors['secondary-text']}30` },
 		],
 		plainMessageText: [text.size.small, { color: colors['secondary-text'] }],
@@ -72,16 +72,16 @@ const MessageSearchResult: React.FC<{
 			if (lastStart < i) {
 				const plainPart = message.substr(lastStart, i - lastStart)
 				parts[partsCounter] = (
-					<Text key={partsCounter} style={style}>
+					<UnifiedText key={partsCounter} style={style}>
 						{plainPart}
-					</Text>
+					</UnifiedText>
 				)
 				partsCounter++
 			}
 			parts[partsCounter] = (
-				<Text key={partsCounter} style={highlightStyle}>
+				<UnifiedText key={partsCounter} style={highlightStyle}>
 					{searchTarget}
-				</Text>
+				</UnifiedText>
 			)
 			partsCounter++
 			i += searchText.length
@@ -93,9 +93,9 @@ const MessageSearchResult: React.FC<{
 	if (lastStart !== message.length) {
 		const plainPart = message.substr(lastStart)
 		parts[partsCounter] = (
-			<Text key={partsCounter} style={style}>
+			<UnifiedText key={partsCounter} style={style}>
 				{plainPart}
-			</Text>
+			</UnifiedText>
 		)
 		lastStart = message.length
 		partsCounter++
@@ -222,17 +222,17 @@ const SearchResultItem: React.FC<SearchItemProps> = ({ data, kind, searchText = 
 				return null
 		}
 		return (
-			<Text numberOfLines={1} style={plainMessageText}>
+			<UnifiedText numberOfLines={1} style={plainMessageText}>
 				<>{content}</>
-			</Text>
+			</UnifiedText>
 		)
 	}
 
 	const TimeStamp = () => {
 		return (
-			<Text style={[padding.left.small, text.size.small, text.color.grey]}>
+			<UnifiedText style={[padding.left.small, text.size.small, text.color.grey]}>
 				{timeFormat.fmtTimestamp1(date)}
-			</Text>
+			</UnifiedText>
 		)
 	}
 
@@ -262,18 +262,18 @@ const SearchResultItem: React.FC<SearchItemProps> = ({ data, kind, searchText = 
 				{avatar}
 				<View style={[flex.medium, column.justify, padding.left.medium]}>
 					<View style={[margin.right.big]}>
-						<Text numberOfLines={1} style={[column.item.fill, text.bold.medium]}>
+						<UnifiedText numberOfLines={1} style={[column.item.fill, text.bold]}>
 							{kind === SearchResultKind.Interaction ? (
 								name
 							) : (
 								<MessageSearchResult
 									message={name}
 									searchText={searchText}
-									style={[text.bold.medium]}
+									style={[text.bold]}
 									highlightStyle={nameHighlightText}
 								/>
 							)}
-						</Text>
+						</UnifiedText>
 						<MessageDisplay />
 					</View>
 				</View>
@@ -409,15 +409,7 @@ export const SearchComponent: React.FC<{
 									]}
 								/>
 							</View>
-							<TextNative
-								style={[
-									text.size.scale(25),
-									text.bold.medium,
-									{ fontFamily: 'Open Sans', color: colors['main-text'] },
-								]}
-							>
-								{title}
-							</TextNative>
+							<UnifiedText style={[text.size.scale(25), text.bold]}>{title}</UnifiedText>
 						</View>
 					</View>
 				) : null
@@ -435,20 +427,9 @@ export const SearchComponent: React.FC<{
 			<View style={[margin.top.scale(60)]}>
 				<HintBody />
 			</View>
-			<TextNative
-				style={[
-					margin.top.scale(60),
-					text.size.big,
-					text.bold.small,
-					text.align.center,
-					{
-						fontFamily: 'Open Sans',
-						color: colors['main-text'],
-					},
-				]}
-			>
+			<UnifiedText style={[margin.top.scale(60), text.size.big, text.light, text.align.center]}>
 				{t('main.home.search.no-results')}
-			</TextNative>
+			</UnifiedText>
 		</View>
 	)
 }

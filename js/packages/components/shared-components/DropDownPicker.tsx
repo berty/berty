@@ -1,8 +1,9 @@
 import { useThemeColor } from '@berty/store/hooks'
 import { useStyles } from '@berty/styles'
-import { Icon, Text } from '@ui-kitten/components'
+import { Icon } from '@ui-kitten/components'
 import React, { useState } from 'react'
 import { Animated, Easing, TouchableOpacity, View } from 'react-native'
+import { UnifiedText } from './UnifiedText'
 
 export type Item = {
 	label: string
@@ -26,7 +27,7 @@ export const DropDownPicker: React.FC<{
 	placeholder = null,
 	mode = 'languages',
 }) => {
-	const [{ padding, border, opacity, text, margin }, { scaleSize }] = useStyles()
+	const [{ padding, border, opacity, margin }, { scaleSize }] = useStyles()
 	const colors = useThemeColor()
 
 	const [isOpen, setOpen] = useState(false)
@@ -96,13 +97,9 @@ export const DropDownPicker: React.FC<{
 					</View>
 				) : null}
 				{placeholder && !selectedItem?.label ? (
-					<Text style={[text.size.medium, { color: `${colors['main-text']}50` }]}>
-						{placeholder}
-					</Text>
+					<UnifiedText style={{ color: `${colors['main-text']}50` }}>{placeholder}</UnifiedText>
 				) : (
-					<Text style={[text.size.medium, { color: colors['main-text'] }]}>
-						{selectedItem?.label}
-					</Text>
+					<UnifiedText>{selectedItem?.label}</UnifiedText>
 				)}
 				<View style={[{ flex: 1, alignItems: 'flex-end' }]}>
 					<Animated.View style={[{ transform: [{ rotate: rotateAnimation }] }]}>
@@ -126,9 +123,7 @@ export const DropDownPicker: React.FC<{
 						style={[padding.medium, { flexDirection: 'row', alignItems: 'center' }]}
 						key={key}
 					>
-						<Text style={[text.size.medium, { color: colors['main-text'] }]} key={item.value}>
-							{item.label}
-						</Text>
+						<UnifiedText key={item.value}>{item.label}</UnifiedText>
 						<View
 							style={[
 								border.medium,

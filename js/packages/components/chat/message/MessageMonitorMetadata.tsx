@@ -1,6 +1,6 @@
 import React from 'react'
 import { View } from 'react-native'
-import { Icon, Text } from '@ui-kitten/components'
+import { Icon } from '@ui-kitten/components'
 
 import { useStyles } from '@berty/styles'
 import { useThemeColor } from '@berty/store/hooks'
@@ -9,6 +9,7 @@ import { pbDateToNum } from '@berty/store/convert'
 
 import { timeFormat } from '../../helpers'
 import { InteractionMonitorMetadata } from '@berty/store/types.gen'
+import { UnifiedText } from '../../shared-components/UnifiedText'
 
 const eventMonitorTypes = beapi.protocol.MonitorGroup.TypeEventMonitor
 
@@ -78,43 +79,38 @@ export const MessageMonitorMetadata: React.FC<{ inte: InteractionMonitorMetadata
 				>
 					<Icon name='monitor-outline' fill={colors['background-header']} width={25} height={25} />
 				</View>
-				<Text
-					style={[
-						{ textAlign: 'left', fontFamily: 'Open Sans', color: colors['background-header'] },
-						text.bold.small,
-						text.italic,
-						text.size.medium,
-					]}
+				<UnifiedText
+					style={[text.lightItalic, { textAlign: 'left', color: colors['background-header'] }]}
 				>
 					{monitorPayloadTitle}
-				</Text>
+				</UnifiedText>
 
 				{monitorPayloadSubtitle &&
 					monitorPayloadSubtitle.map((subtitle: string, index: number) => (
-						<Text
+						<UnifiedText
 							key={index}
 							style={[
-								{ textAlign: 'left', fontFamily: 'Open Sans', color: colors['background-header'] },
-								text.bold.small,
-								text.italic,
-								text.size.medium,
+								{
+									textAlign: 'left',
+									color: colors['background-header'],
+								},
+								text.lightItalic,
 								margin.top.tiny,
 							]}
 						>
 							{subtitle}
-						</Text>
+						</UnifiedText>
 					))}
 			</View>
-			<Text
+			<UnifiedText
 				style={[
-					{ fontFamily: 'Open Sans', alignSelf: 'flex-end', color: colors['background-header'] },
-					text.bold.small,
-					text.italic,
+					{ alignSelf: 'flex-end', color: colors['background-header'] },
+					text.lightItalic,
 					text.size.small,
 				]}
 			>
 				{timeFormat.fmtTimestamp3(sentDate)}
-			</Text>
+			</UnifiedText>
 		</View>
 	)
 }

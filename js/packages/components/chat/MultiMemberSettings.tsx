@@ -1,6 +1,6 @@
 import React, { ComponentProps, useState } from 'react'
 import { View, ScrollView, Share, StatusBar, TouchableOpacity, Platform } from 'react-native'
-import { Layout, Text } from '@ui-kitten/components'
+import { Layout } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 import Clipboard from '@react-native-clipboard/clipboard'
 
@@ -16,6 +16,7 @@ import logo from '../main/1_berty_picto.png'
 import { MemberAvatar, MultiMemberAvatar } from '../avatars'
 import EnableNotificationsButton from '@berty/components/chat/EnableNotificationsButton'
 import ImagePicker, { ImageOrVideo } from '@berty/polyfill/react-native-image-crop-picker'
+import { UnifiedText } from '../shared-components/UnifiedText'
 
 const GroupChatSettingsHeader: React.FC<{ publicKey: Maybe<string> }> = ({ publicKey }) => {
 	const conv = useConversation(publicKey)
@@ -109,9 +110,7 @@ const GroupChatSettingsHeader: React.FC<{ publicKey: Maybe<string> }> = ({ publi
 					>
 						<MultiMemberAvatar publicKey={publicKey} size={80} />
 					</TouchableOpacity>
-					<Text style={[text.size.small, { color: colors['main-text'] }]}>
-						{conv?.displayName || ''}
-					</Text>
+					<UnifiedText style={[text.size.small]}>{conv?.displayName || ''}</UnifiedText>
 					<View style={[padding.top.scale(18 * scaleHeight)]}>
 						{conv?.link ? (
 							<QRCode

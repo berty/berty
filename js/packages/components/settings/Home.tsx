@@ -1,6 +1,6 @@
 import React from 'react'
 import { ScrollView, TouchableOpacity, View, Platform } from 'react-native'
-import { Icon, Text } from '@ui-kitten/components'
+import { Icon } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 
@@ -30,9 +30,10 @@ import {
 import * as MailComposer from 'expo-mail-composer'
 import { useModal } from '../providers/modal.provider'
 import { EditProfile } from '../modals'
+import { UnifiedText } from '../shared-components/UnifiedText'
 
 const ProfileButton: React.FC<{}> = () => {
-	const [{ padding, margin, border }, { scaleSize }] = useStyles()
+	const [{ padding, margin, border, text }, { scaleSize }] = useStyles()
 	const colors = useThemeColor()
 	const account = useAccount()
 	const { navigate } = useNavigation()
@@ -54,9 +55,9 @@ const ProfileButton: React.FC<{}> = () => {
 			<View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
 				<View style={{ flexDirection: 'row', alignItems: 'center' }}>
 					<AccountAvatar size={50 * scaleSize} />
-					<Text style={[padding.left.medium, { fontFamily: 'Open Sans', fontWeight: '600' }]}>
+					<UnifiedText style={[padding.left.medium, text.bold]}>
 						{account.displayName || ''}
-					</Text>
+					</UnifiedText>
 				</View>
 				<TouchableOpacity
 					style={[
@@ -213,7 +214,7 @@ export const Home: ScreenFC<'Settings.Home'> = withInAppNotification(
 						{networkConfig && (
 							<ButtonSettingV2
 								text={t('settings.home.proximity-button')}
-								icon='bluetooth'
+								icon='bluetooth-outline'
 								toggle={{
 									enable: true,
 									value: getOffGridCommunicationValue(),
@@ -294,7 +295,7 @@ export const Home: ScreenFC<'Settings.Home'> = withInAppNotification(
 					*/}
 						<ButtonSettingV2
 							text={t('settings.home.appearance-button')}
-							icon='eye'
+							icon='eye-outline'
 							onPress={() => navigate('Settings.Appearence')}
 						/>
 						{/*
@@ -316,13 +317,13 @@ export const Home: ScreenFC<'Settings.Home'> = withInAppNotification(
 					*/}
 						<ButtonSettingV2
 							text={t('settings.home.accounts-button')}
-							icon='user'
+							icon='person-outline'
 							onPress={() => navigate('Settings.Accounts')}
 						/>
 						{networkConfig && (
 							<ButtonSettingV2
 								text={t('settings.home.network-button')}
-								icon='wifi'
+								icon='wifi-outline'
 								last
 								onPress={() => {
 									navigate('Settings.Network')
@@ -333,12 +334,12 @@ export const Home: ScreenFC<'Settings.Home'> = withInAppNotification(
 					<Section>
 						<ButtonSettingV2
 							text={t('settings.home.bug-button')}
-							icon='mail'
+							icon='email-outline'
 							onPress={() => generateEmail()}
 						/>
 						<ButtonSettingV2
 							text={t('settings.home.about-button')}
-							icon='info'
+							icon='info-outline'
 							last
 							onPress={() => navigate('Settings.AboutBerty')}
 						/>

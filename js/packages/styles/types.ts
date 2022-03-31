@@ -66,29 +66,14 @@ export type AlignVertical<T> = {
 export type AlignTypes = [AlignHorizontalTypes, AlignVerticalTypes]
 export type Align<T> = AlignHorizontal<T> & AlignVertical<T>
 
-export type BoldDeclarationTypes =
-	| 'normal'
-	| 'bold'
-	| '100'
-	| '200'
-	| '300'
-	| '400'
-	| '500'
-	| '600'
-	| '700'
-	| '800'
-	| '900'
-export type BoldDeclaration<T> = {
-	small: T
-	medium: T
-	huge: T
-}
-
 export type Text = {
 	color: Colors<{}> & ColorsBrightness<{}>
 	size: Sizes<{}>
-	bold: BoldDeclaration<{ fontWeight: BoldDeclarationTypes }>
+	light: {}
+	lightItalic: {}
+	bold: {}
 	italic: {}
+	extraBold: {}
 	align: Align<{}>
 }
 

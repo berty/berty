@@ -1,24 +1,24 @@
 import React from 'react'
-import { View, Text as TextNative } from 'react-native'
+import { View } from 'react-native'
 import { Icon } from '@ui-kitten/components'
 
 import { useStyles } from '@berty/styles'
 import messengerMethodsHooks from '@berty/store/methods'
 import { useThemeColor } from '@berty/store/hooks'
+import { UnifiedText } from './UnifiedText'
 
 const useStylesHint = () => {
 	const [{ text, opacity, margin }, { fontScale }] = useStyles()
-	const colors = useThemeColor()
 
 	return {
 		searchHintBodyText: [
 			text.align.center,
 			text.size.medium,
-			text.bold.small,
+			text.light,
 			opacity(0.8),
 			margin.top.large,
 			margin.bottom.small,
-			{ fontFamily: 'Open Sans', lineHeight: 20 * fontScale, color: colors['main-text'] },
+			{ lineHeight: 20 * fontScale },
 		],
 	}
 }
@@ -39,22 +39,21 @@ export const HintBody = () => {
 
 	return !bannerQuote?.quote ? null : (
 		<View style={[padding.horizontal.medium, { bottom: 0 }]}>
-			<TextNative
+			<UnifiedText
 				style={[
 					text.align.center,
 					row.item.justify,
 					text.size.big,
 					opacity(0.8),
-					text.bold.medium,
+					text.bold,
 					{
-						fontFamily: 'Open Sans',
 						color: `${colors['secondary-text']}90`,
 						marginHorizontal: _landingIconSize * scaleSize, // room for speech bubble icon
 					},
 				]}
 			>
 				{'Quote of the day'}
-			</TextNative>
+			</UnifiedText>
 			<Icon
 				name='quote'
 				pack='custom'
@@ -67,21 +66,21 @@ export const HintBody = () => {
 					{ position: 'absolute', bottom: 20 * scaleSize, right: 60 * scaleSize },
 				]}
 			/>
-			<TextNative style={[searchHintBodyText, { color: `${colors['secondary-text']}90` }]}>
+			<UnifiedText style={[searchHintBodyText, { color: `${colors['secondary-text']}90` }]}>
 				{bannerQuote?.quote || ''}
-			</TextNative>
+			</UnifiedText>
 			{bannerQuote?.author && (
 				<View style={[{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }]}>
-					<TextNative
+					<UnifiedText
 						style={[
 							text.size.scale(15),
-							text.bold.small,
+							text.light,
 							opacity(0.8),
-							{ fontFamily: 'Open Sans', color: `${colors['secondary-text']}90` },
+							{ color: `${colors['secondary-text']}90` },
 						]}
 					>
 						{'— ' + bannerQuote?.author}
-					</TextNative>
+					</UnifiedText>
 				</View>
 			)}
 		</View>

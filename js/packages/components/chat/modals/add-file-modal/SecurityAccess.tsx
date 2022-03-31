@@ -2,13 +2,14 @@ import React, { useEffect, useCallback } from 'react'
 import { View, TouchableOpacity, AppState, Platform } from 'react-native'
 import { RESULTS, openSettings } from '@berty/polyfill/react-native-permissions'
 import { useTranslation } from 'react-i18next'
-import { Text, Icon } from '@ui-kitten/components'
+import { Icon } from '@ui-kitten/components'
 
 import { useStyles } from '@berty/styles'
 import { useThemeColor } from '@berty/store/hooks'
 import { getPermissionStatus } from '@berty/rnutil/checkPermissions'
 
 import { TabItems } from './types'
+import { UnifiedText } from '../../../shared-components/UnifiedText'
 
 export const SecurityAccess: React.FC<{ close: () => void; activeTab: TabItems }> = ({
 	activeTab,
@@ -112,7 +113,7 @@ export const SecurityAccess: React.FC<{ close: () => void; activeTab: TabItems }
 					border.radius.top.large,
 				]}
 			>
-				<Text style={{ textAlign: 'center' }}>{t('chat.files.security-access')}</Text>
+				<UnifiedText style={{ textAlign: 'center' }}>{t('chat.files.security-access')}</UnifiedText>
 				<TouchableOpacity
 					onPress={close}
 					style={{
@@ -145,7 +146,7 @@ export const SecurityAccess: React.FC<{ close: () => void; activeTab: TabItems }
 					width={36 * scaleSize}
 					pack='custom'
 				/>
-				<Text
+				<UnifiedText
 					style={[
 						margin.tiny,
 						padding.horizontal.large,
@@ -154,7 +155,7 @@ export const SecurityAccess: React.FC<{ close: () => void; activeTab: TabItems }
 					]}
 				>
 					{t('chat.files.security-access-desc')} {t(activeTabConfig.title)}
-				</Text>
+				</UnifiedText>
 			</TouchableOpacity>
 		</View>
 	)

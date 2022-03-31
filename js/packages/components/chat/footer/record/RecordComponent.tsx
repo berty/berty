@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { Animated, Platform, Text, TouchableOpacity, Vibration, View } from 'react-native'
+import { Animated, Platform, TouchableOpacity, Vibration, View } from 'react-native'
 import {
 	LongPressGestureHandler,
 	LongPressGestureHandlerGestureEvent,
@@ -31,6 +31,7 @@ import {
 } from '../../audioMessageCommon'
 import { RecordingComponent } from './RecordingComponent'
 import { PreviewComponent } from './PreviewComponent'
+import { UnifiedText } from '../../../shared-components/UnifiedText'
 
 enum MicPermStatus {
 	UNDEFINED = 0,
@@ -330,7 +331,9 @@ export const RecordComponent: React.FC<{
 
 					if (err !== null) {
 						if (duration) {
-							if (duration >= minAudioDuration) sendComplete({ duration, start: recordingStart })
+							if (duration >= minAudioDuration) {
+								sendComplete({ duration, start: recordingStart })
+							}
 						} else {
 							console.warn(err)
 						}
@@ -511,7 +514,7 @@ export const RecordComponent: React.FC<{
 							margin.right.small,
 						]}
 					>
-						<Text style={{ color: colors['reverted-main-text'] }}>{helpMessage}</Text>
+						<UnifiedText style={{ color: colors['reverted-main-text'] }}>{helpMessage}</UnifiedText>
 					</View>
 				</TouchableOpacity>
 			)}

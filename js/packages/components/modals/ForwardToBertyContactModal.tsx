@@ -1,6 +1,5 @@
 import React from 'react'
 import { View, Modal, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native'
-import { Text } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 import { Buffer } from 'buffer'
 
@@ -16,6 +15,7 @@ import {
 import { useAllConversations, useOneToOneContact } from '@berty/react-redux'
 
 import { ConversationAvatar } from '../avatars'
+import { UnifiedText } from '../shared-components/UnifiedText'
 
 const Item: React.FC<{ conversation: beapi.messenger.IConversation; image: any }> = React.memo(
 	({ conversation, image }) => {
@@ -73,9 +73,7 @@ const Item: React.FC<{ conversation: beapi.messenger.IConversation; image: any }
 			>
 				<View style={{ flexDirection: 'row', alignItems: 'center' }}>
 					<ConversationAvatar size={40} publicKey={conversation.publicKey} />
-					<Text style={[{ color: colors['main-text'] }, margin.left.small]}>
-						{userDisplayName || undefined}
-					</Text>
+					<UnifiedText style={[margin.left.small]}>{userDisplayName || undefined}</UnifiedText>
 				</View>
 				<TouchableOpacity
 					style={[
@@ -90,9 +88,9 @@ const Item: React.FC<{ conversation: beapi.messenger.IConversation; image: any }
 					{sending ? (
 						<ActivityIndicator color={colors['reverted-main-text']} />
 					) : (
-						<Text style={{ color: colors['reverted-main-text'] }}>
+						<UnifiedText style={{ color: colors['reverted-main-text'] }}>
 							<>{t('chat.files.forward')}</>
-						</Text>
+						</UnifiedText>
 					)}
 				</TouchableOpacity>
 			</View>

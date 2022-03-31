@@ -1,7 +1,7 @@
 import LottieView from 'lottie-react-native'
 import { useTranslation } from 'react-i18next'
 import React from 'react'
-import { StatusBar, Text, View } from 'react-native'
+import { StatusBar, View } from 'react-native'
 
 import { ScreenFC, useNavigation } from '@berty/navigation'
 import { useNotificationsInhibitor, useThemeColor } from '@berty/store'
@@ -10,6 +10,7 @@ import { useStyles } from '@berty/styles'
 import OnboardingWrapper from './OnboardingWrapper'
 import { Icon } from '@ui-kitten/components'
 import { TouchableOpacity } from 'react-native-gesture-handler'
+import { UnifiedText } from '../shared-components/UnifiedText'
 
 const CustomModeBody: React.FC = () => {
 	const { goBack } = useNavigation()
@@ -54,53 +55,32 @@ const CustomModeBody: React.FC = () => {
 							width={23}
 							fill={colors['background-header']}
 						/>
-						<Text
+						<UnifiedText
 							style={[
+								text.bold,
 								{
-									fontFamily: 'Open Sans',
-									fontWeight: '700',
 									color: colors['background-header'],
 									fontSize: 24 * scaleSize,
 								},
 							]}
 						>
 							{t('onboarding.custom-mode.summary.title')}
-						</Text>
+						</UnifiedText>
 					</View>
 					<View style={[margin.top.medium]}>
-						<Text
-							style={[
-								text.size.medium,
-								{
-									textAlign: 'center',
-									fontFamily: 'Open Sans',
-									fontWeight: '600',
-									color: colors['main-text'],
-								},
-							]}
-						>
+						<UnifiedText style={[text.bold, { textAlign: 'center' }]}>
 							{t('onboarding.custom-mode.summary.subtitle')}
-						</Text>
+						</UnifiedText>
 					</View>
 					<View style={[margin.top.medium]}>
-						<Text
-							style={[
-								text.size.medium,
-								{ fontFamily: 'Open Sans', textAlign: 'center', color: colors['main-text'] },
-							]}
-						>
+						<UnifiedText style={{ textAlign: 'center' }}>
 							{t('onboarding.custom-mode.summary.first-point')}
-						</Text>
+						</UnifiedText>
 					</View>
 					<View style={[margin.top.medium]}>
-						<Text
-							style={[
-								text.size.medium,
-								{ fontFamily: 'Open Sans', textAlign: 'center', color: colors['main-text'] },
-							]}
-						>
+						<UnifiedText style={[{ textAlign: 'center' }]}>
 							{t('onboarding.custom-mode.summary.second-point')}
-						</Text>
+						</UnifiedText>
 					</View>
 				</View>
 				<View
@@ -122,20 +102,18 @@ const CustomModeBody: React.FC = () => {
 						]}
 						onPress={() => goBack()}
 					>
-						<Text
+						<UnifiedText
 							style={[
-								text.size.medium,
+								text.bold,
 								{
 									textTransform: 'uppercase',
 									color: colors['background-header'],
-									fontFamily: 'Open Sans',
-									fontWeight: '700',
 									textAlign: 'center',
 								},
 							]}
 						>
 							{t('onboarding.custom-mode.summary.back-button')}
-						</Text>
+						</UnifiedText>
 					</TouchableOpacity>
 					<TouchableOpacity
 						style={[
@@ -147,20 +125,18 @@ const CustomModeBody: React.FC = () => {
 							navigate('Onboarding.CustomModeSettings')
 						}}
 					>
-						<Text
+						<UnifiedText
 							style={[
-								text.size.medium,
+								text.bold,
 								{
 									textTransform: 'uppercase',
 									color: colors['reverted-main-text'],
-									fontFamily: 'Open Sans',
-									fontWeight: '700',
 									textAlign: 'center',
 								},
 							]}
 						>
 							{t('onboarding.custom-mode.summary.accept-button')}
-						</Text>
+						</UnifiedText>
 					</TouchableOpacity>
 				</View>
 			</View>

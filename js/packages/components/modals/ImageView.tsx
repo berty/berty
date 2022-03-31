@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { View, Modal, TouchableOpacity, Image } from 'react-native'
-import { Text, Icon } from '@ui-kitten/components'
+import { Icon } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 import CameraRoll from '@berty/polyfill/react-native-community-cameraroll'
 import Share from '@berty/polyfill/react-native-share'
@@ -11,6 +11,7 @@ import { useThemeColor } from '@berty/store'
 import { ScreenFC, useNavigation } from '@berty/navigation'
 
 import { ForwardToBertyContactModal } from './ForwardToBertyContactModal'
+import { UnifiedText } from '../shared-components/UnifiedText'
 
 export const ImageView: ScreenFC<'Modals.ImageView'> = ({
 	route: {
@@ -126,7 +127,7 @@ export const ImageView: ScreenFC<'Modals.ImageView'> = ({
 						>
 							{MENU_LIST.map(item => (
 								<TouchableOpacity key={item.title} onPress={item.onPress} style={[padding.medium]}>
-									<Text style={{ textAlign: 'center' }}>{item.title}</Text>
+									<UnifiedText style={{ textAlign: 'center' }}>{item.title}</UnifiedText>
 								</TouchableOpacity>
 							))}
 						</View>
@@ -154,7 +155,7 @@ export const ImageView: ScreenFC<'Modals.ImageView'> = ({
 							{ backgroundColor: colors['main-background'] },
 						]}
 					>
-						<Text style={{ color: 'black' }}>{message}</Text>
+						<UnifiedText style={{ color: 'black' }}>{message}</UnifiedText>
 					</View>
 				</View>
 			)}

@@ -10,7 +10,7 @@ import {
 	Linking,
 	Share,
 } from 'react-native'
-import { Text, Icon } from '@ui-kitten/components'
+import { Icon } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 import { TabView, SceneMap } from 'react-native-tab-view'
 import tlds from 'tlds'
@@ -35,6 +35,7 @@ import { timeFormat } from '../helpers'
 import { isBertyDeepLink } from '../chat/message/UserMessageComponents'
 import { useSelector } from 'react-redux'
 import { selectProtocolClient } from '@berty/redux/reducers/ui.reducer'
+import { UnifiedText } from '../shared-components/UnifiedText'
 
 const initialLayout = { width: Dimensions.get('window').width }
 const linkify = LinkifyIt().tlds(tlds, true)
@@ -161,9 +162,9 @@ export const SharedMedias: ScreenFC<'Chat.SharedMedias'> = ({
 	const mediaView = () => (
 		<ScrollView contentContainerStyle={[padding.medium]}>
 			{!pictures.length && (
-				<Text style={[text.align.center, margin.left.small, text.size.scale(18)]}>
+				<UnifiedText style={[text.align.center, margin.left.small, text.size.scale(18)]}>
 					No records found
-				</Text>
+				</UnifiedText>
 			)}
 
 			<View
@@ -205,9 +206,9 @@ export const SharedMedias: ScreenFC<'Chat.SharedMedias'> = ({
 	const documentsView = () => (
 		<ScrollView contentContainerStyle={[padding.medium]}>
 			{!documents.length && (
-				<Text style={[text.align.center, margin.left.small, text.size.scale(18)]}>
+				<UnifiedText style={[text.align.center, margin.left.small, text.size.scale(18)]}>
 					No records found
-				</Text>
+				</UnifiedText>
 			)}
 
 			<View style={{}}>
@@ -254,17 +255,14 @@ export const SharedMedias: ScreenFC<'Chat.SharedMedias'> = ({
 								fill={colors['secondary-text']}
 								style={margin.right.small}
 							/>
-							<Text
-								style={{
-									fontStyle: 'italic',
-									textDecorationLine: 'underline',
-								}}
-							>
+							<UnifiedText style={[text.italic, { textDecorationLine: 'underline' }]}>
 								{doc.displayName || doc.filename || 'document'}
-							</Text>
+							</UnifiedText>
 						</TouchableOpacity>
 
-						<Text style={[text.size.small]}>{timeFormat.fmtTimestamp3(doc.sentDate)}</Text>
+						<UnifiedText style={[text.size.small]}>
+							{timeFormat.fmtTimestamp3(doc.sentDate)}
+						</UnifiedText>
 					</View>
 				))}
 			</View>
@@ -274,9 +272,9 @@ export const SharedMedias: ScreenFC<'Chat.SharedMedias'> = ({
 	const linksView = () => (
 		<ScrollView contentContainerStyle={[padding.medium]}>
 			{!links.length && (
-				<Text style={[text.align.center, margin.left.small, text.size.scale(18)]}>
+				<UnifiedText style={[text.align.center, margin.left.small, text.size.scale(18)]}>
 					No records found
-				</Text>
+				</UnifiedText>
 			)}
 
 			<View style={{}}>
@@ -299,18 +297,18 @@ export const SharedMedias: ScreenFC<'Chat.SharedMedias'> = ({
 							linkStyle={{ textDecorationLine: 'underline' }}
 							linkify={linkify}
 						>
-							<Text
+							<UnifiedText
 								style={{
 									color: colors['background-header'],
 								}}
 							>
 								{url}
-							</Text>
+							</UnifiedText>
 						</Hyperlink>
 
-						<Text style={[text.size.small, { marginTop: 8 }]}>
+						<UnifiedText style={[text.size.small, { marginTop: 8 }]}>
 							{timeFormat.fmtTimestamp3(sentDate)}
-						</Text>
+						</UnifiedText>
 					</View>
 				))}
 			</View>
@@ -359,7 +357,7 @@ export const SharedMedias: ScreenFC<'Chat.SharedMedias'> = ({
 								fill={colors['background-header']}
 								{...tab.icon}
 							/>
-							<Text
+							<UnifiedText
 								style={[
 									margin.left.small,
 									text.size.scale(activeIndex === index ? 17 : 16),
@@ -367,7 +365,7 @@ export const SharedMedias: ScreenFC<'Chat.SharedMedias'> = ({
 								]}
 							>
 								{tab.title}
-							</Text>
+							</UnifiedText>
 						</TouchableOpacity>
 					))}
 				</View>

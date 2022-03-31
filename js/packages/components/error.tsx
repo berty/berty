@@ -1,6 +1,6 @@
 import React from 'react'
 import { View, TouchableOpacity, StatusBar, SafeAreaView } from 'react-native'
-import { Text, Icon } from '@ui-kitten/components'
+import { Icon } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 import { setJSExceptionHandler } from 'react-native-exception-handler'
 import RNRestart from 'react-native-restart'
@@ -11,6 +11,7 @@ import { useThemeColor, useMessengerContext } from '@berty/store'
 import AppInspector from './debug/AppInspector'
 import { useSelector } from 'react-redux'
 import { selectEmbedded } from '@berty/redux/reducers/ui.reducer'
+import { UnifiedText } from './shared-components/UnifiedText'
 
 const Label: React.FC<{ title: string; type: 'error' }> = ({ title, type }) => {
 	const [{ padding, border }] = useStyles()
@@ -37,7 +38,9 @@ const Label: React.FC<{ title: string; type: 'error' }> = ({ title, type }) => {
 				{ backgroundColor: generatedColors.background },
 			]}
 		>
-			<Text style={[{ color: generatedColors.text, textTransform: 'uppercase' }]}>{title}</Text>
+			<UnifiedText style={[{ color: generatedColors.text, textTransform: 'uppercase' }]}>
+				{title}
+			</UnifiedText>
 		</View>
 	)
 }
@@ -56,7 +59,7 @@ const Body: React.FC<{ children: React.ReactElement[] }> = ({ children }) => {
 }
 
 const RestartButton: React.FC = () => {
-	const [{ border, margin, padding }] = useStyles()
+	const [{ border, margin, padding, text }] = useStyles()
 	const colors = useThemeColor()
 	const { t }: { t: any } = useTranslation()
 
@@ -76,15 +79,11 @@ const RestartButton: React.FC = () => {
 				},
 			]}
 		>
-			<Text
-				style={{
-					color: colors['background-header'],
-					fontWeight: '700',
-					textTransform: 'uppercase',
-				}}
+			<UnifiedText
+				style={[text.bold, { color: colors['background-header'], textTransform: 'uppercase' }]}
 			>
 				{t('error.restart-app')}
-			</Text>
+			</UnifiedText>
 		</TouchableOpacity>
 	)
 }
@@ -105,9 +104,9 @@ const ErrorDetails: React.FC<{ error: Error }> = ({ error }) => {
 					height={25 * scaleSize}
 					fill={colors['background-header']}
 				/>
-				<Text>Details</Text>
+				<UnifiedText>Details</UnifiedText>
 			</TouchableOpacity>
-			{collapsed || <Text>{error.message}</Text>}
+			{collapsed || <UnifiedText>{error.message}</UnifiedText>}
 		</View>
 	)
 }
@@ -153,7 +152,7 @@ type ErrorScreenProps = {
 }
 
 const WTFScreen: React.FC<ErrorScreenProps> = ({ error }) => {
-	const [{ margin }] = useStyles()
+	const [{ margin, text }] = useStyles()
 	const colors = useThemeColor()
 	const { t }: { t: any } = useTranslation()
 	return (
@@ -178,35 +177,32 @@ const WTFScreen: React.FC<ErrorScreenProps> = ({ error }) => {
 						marginRight: 20,
 					}}
 				/>
-				<Text style={{ color: colors['background-header'], fontSize: 30, fontWeight: '700' }}>
+				<UnifiedText style={[text.bold, { color: colors['background-header'], fontSize: 30 }]}>
 					WTF?!
-				</Text>
+				</UnifiedText>
 			</View>
-			<Text
+			<UnifiedText
 				style={[
-					{
-						color: colors['secondary-text'],
-						fontWeight: '700',
-						textAlign: 'center',
-					},
+					text.bold,
+					{ color: colors['secondary-text'], textAlign: 'center' },
 					margin.top.big,
 					margin.bottom.small,
 				]}
 			>
 				{t('error.wtf-screen.title')}
-			</Text>
-			<Text style={{ color: colors['secondary-text'], textAlign: 'center', lineHeight: 24 }}>
+			</UnifiedText>
+			<UnifiedText style={{ color: colors['secondary-text'], textAlign: 'center', lineHeight: 24 }}>
 				{t('error.wtf-screen.desc')}
-			</Text>
-			<Text style={{ color: colors['secondary-text'], textAlign: 'center', lineHeight: 24 }}>
+			</UnifiedText>
+			<UnifiedText style={{ color: colors['secondary-text'], textAlign: 'center', lineHeight: 24 }}>
 				{t('error.wtf-screen.desc-report')}
-			</Text>
+			</UnifiedText>
 		</ErrorScreenContainer>
 	)
 }
 
 const SorryScreen: React.FC<ErrorScreenProps> = ({ error }) => {
-	const [{ margin }] = useStyles()
+	const [{ margin, text }] = useStyles()
 	const colors = useThemeColor()
 	const { t }: { t: any } = useTranslation()
 
@@ -221,11 +217,11 @@ const SorryScreen: React.FC<ErrorScreenProps> = ({ error }) => {
 				style={[margin.top.large]}
 			/>
 			<View style={{ marginHorizontal: -15 }}>
-				<Text
+				<UnifiedText
 					style={[
+						text.bold,
 						{
 							color: colors['secondary-text'],
-							fontWeight: '700',
 							textAlign: 'center',
 						},
 						margin.top.big,
@@ -233,33 +229,37 @@ const SorryScreen: React.FC<ErrorScreenProps> = ({ error }) => {
 					]}
 				>
 					{t('error.sorry-screen.title')}
-				</Text>
-				<Text style={{ color: colors['secondary-text'], textAlign: 'center', lineHeight: 24 }}>
+				</UnifiedText>
+				<UnifiedText
+					style={{ color: colors['secondary-text'], textAlign: 'center', lineHeight: 24 }}
+				>
 					{t('error.sorry-screen.desc')}
-				</Text>
-				<Text
+				</UnifiedText>
+				<UnifiedText
 					style={[
 						margin.top.large,
+						text.italic,
 						{
 							color: colors['secondary-text'],
 							textAlign: 'center',
 							lineHeight: 24,
-							fontStyle: 'italic',
 						},
 					]}
 				>
 					{t('error.sorry-screen.desc-em')}
-				</Text>
-				<Text
-					style={{
-						color: colors['secondary-text'],
-						textAlign: 'center',
-						lineHeight: 24,
-						fontWeight: '700',
-					}}
+				</UnifiedText>
+				<UnifiedText
+					style={[
+						text.bold,
+						{
+							color: colors['secondary-text'],
+							textAlign: 'center',
+							lineHeight: 24,
+						},
+					]}
 				>
 					{t('error.sorry-screen.desc-report')}
-				</Text>
+				</UnifiedText>
 			</View>
 		</ErrorScreenContainer>
 	)

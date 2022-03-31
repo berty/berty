@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { View, TouchableOpacity, Text as TextNative, StyleSheet } from 'react-native'
+import { View, TouchableOpacity, StyleSheet } from 'react-native'
 import { Text, Icon } from '@ui-kitten/components'
 import { Buffer } from 'buffer'
 
@@ -17,6 +17,7 @@ import {
 	setPersistentOption,
 } from '@berty/redux/reducers/persistentOptions.reducer'
 import { useAppDispatch } from '@berty/react-redux'
+import { UnifiedText } from '../shared-components/UnifiedText'
 
 export const useStylesDefaultModal = () => {
 	const [{ width, border, padding, margin }] = useStyles()
@@ -127,45 +128,15 @@ export const AddBotBody: React.FC<{
 						height={60 * scaleHeight}
 						style={[row.item.justify, padding.top.large]}
 					/>
-					<TextNative
-						style={[
-							text.align.center,
-							padding.top.small,
-							text.size.large,
-							text.bold.medium,
-							{ fontFamily: 'Open Sans', color: colors['main-text'] },
-						]}
-					>
+					<UnifiedText style={[text.align.center, padding.top.small, text.size.large, text.bold]}>
 						{`👋 ADD ${displayName}?`}
-					</TextNative>
+					</UnifiedText>
 					<Text style={[text.align.center, padding.top.scale(20), padding.horizontal.medium]}>
-						<TextNative
-							style={[
-								text.bold.small,
-								text.size.medium,
-								{ fontFamily: 'Open Sans', color: colors['main-text'] },
-							]}
-						>
+						<UnifiedText style={[text.light]}>
 							You don't have any contacts yet would you like to add the
-						</TextNative>
-						<TextNative
-							style={[
-								text.bold.medium,
-								text.size.medium,
-								{ fontFamily: 'Open Sans', color: colors['main-text'] },
-							]}
-						>
-							{` ${displayName} `}
-						</TextNative>
-						<TextNative
-							style={[
-								text.bold.small,
-								text.size.medium,
-								{ fontFamily: 'Open Sans', color: colors['main-text'] },
-							]}
-						>
-							to discover and test conversations?
-						</TextNative>
+						</UnifiedText>
+						<UnifiedText style={[text.bold]}>{` ${displayName} `}</UnifiedText>
+						<UnifiedText style={[text.light]}>to discover and test conversations?</UnifiedText>
 					</Text>
 				</View>
 				<View style={[row.center, padding.top.medium]}>
@@ -199,17 +170,17 @@ export const AddBotBody: React.FC<{
 							fill={colors['negative-asset']}
 							style={row.item.justify}
 						/>
-						<TextNative
+						<UnifiedText
 							style={[
 								padding.left.small,
 								row.item.justify,
 								text.size.scale(16),
-								text.bold.medium,
-								{ fontFamily: 'Open Sans', color: colors['negative-asset'] },
+								text.bold,
+								{ color: colors['negative-asset'] },
 							]}
 						>
 							SKIP
-						</TextNative>
+						</UnifiedText>
 					</TouchableOpacity>
 					<TouchableOpacity
 						style={[
@@ -251,17 +222,17 @@ export const AddBotBody: React.FC<{
 							fill={colors['background-header']}
 							style={row.item.justify}
 						/>
-						<TextNative
+						<UnifiedText
 							style={[
 								padding.left.small,
 								row.item.justify,
 								text.size.scale(16),
-								text.bold.medium,
+								text.bold,
 								{ color: colors['background-header'] },
 							]}
 						>
 							ADD !
-						</TextNative>
+						</UnifiedText>
 					</TouchableOpacity>
 				</View>
 			</View>

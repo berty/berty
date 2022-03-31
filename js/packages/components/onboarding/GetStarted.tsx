@@ -1,6 +1,5 @@
 import React from 'react'
 import { View, StatusBar } from 'react-native'
-import { Text } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 
 import {
@@ -16,6 +15,7 @@ import { ScreenFC } from '@berty/navigation'
 import Logo from './berty_gradient_square.svg'
 import Button from './Button'
 import { importAccountFromDocumentPicker } from '../pickerUtils'
+import { UnifiedText } from '../shared-components/UnifiedText'
 
 export const GetStarted: ScreenFC<'Onboarding.GetStarted'> = ({ navigation: { navigate } }) => {
 	useNotificationsInhibitor(() => true)
@@ -37,36 +37,24 @@ export const GetStarted: ScreenFC<'Onboarding.GetStarted'> = ({ navigation: { na
 			</View>
 			<View>
 				<View>
-					<Text
+					<UnifiedText
 						style={[
 							padding.horizontal.medium,
 							text.align.center,
-							text.align.bottom,
 							text.size.large,
-							{
-								fontWeight: '700',
-								color: colors['background-header'],
-							},
+							text.bold,
+							{ color: colors['background-header'] },
 						]}
 					>
 						{t('onboarding.getstarted.title') as any}
-					</Text>
+					</UnifiedText>
 				</View>
 				<View style={[margin.top.small]}>
-					<Text
-						style={[
-							padding.horizontal.medium,
-							text.align.center,
-							text.align.bottom,
-							{
-								fontStyle: 'italic',
-								fontWeight: '400',
-								color: colors['main-text'],
-							},
-						]}
+					<UnifiedText
+						style={[padding.horizontal.medium, text.align.center, text.align.bottom, text.italic]}
 					>
 						{t('onboarding.getstarted.desc') as any}
-					</Text>
+					</UnifiedText>
 				</View>
 				<View style={[margin.top.big]}>
 					<Button
