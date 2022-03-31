@@ -10,6 +10,7 @@ import (
 
 	"github.com/ipfs/go-datastore"
 	dssync "github.com/ipfs/go-datastore/sync"
+	"github.com/libp2p/go-libp2p-core/event"
 	mocknet "github.com/libp2p/go-libp2p/p2p/net/mock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -348,6 +349,8 @@ func TestReplicationService_ReplicateGroupStats_ReplicateGlobalStats(t *testing.
 }
 
 func TestReplicationService_Flow(t *testing.T) {
+	testutil.FilterSpeed(t, testutil.Slow)
+
 	logger, cleanup := testutil.Logger(t)
 	defer cleanup()
 	ctx, cancel := context.WithCancel(context.Background())
@@ -424,86 +427,168 @@ func TestReplicationService_Flow(t *testing.T) {
 	require.NoError(t, err)
 
 	t.Log(" --- Register group on replication service ---")
+	{
+		ctx = context.WithValue(ctx, authtypes.ContextTokenHashField, "token1")
+		ctx = context.WithValue(ctx, authtypes.ContextTokenIssuerField, "issuer1")
 
-	ctx = context.WithValue(ctx, authtypes.ContextTokenHashField, "token1")
-	ctx = context.WithValue(ctx, authtypes.ContextTokenIssuerField, "issuer1")
-
-	// TODO: handle auth
-	_, err = replPeer.Service.ReplicateGroup(ctx, &replicationtypes.ReplicationServiceReplicateGroup_Request{
-		Group: groupReplicable,
-	})
-	require.NoError(t, err)
-
-	t.Log(" --- Registered group on replication service ---")
-	t.Log(" --- Sending sync messages ---")
-
-	_, err = g1a.MetadataStore().SendAppMetadata(ctx, []byte("From 1 - 1"), nil)
-	require.NoError(t, err)
-
-	_, err = g2a.MetadataStore().SendAppMetadata(ctx, []byte("From 2 - 1"), nil)
-	require.NoError(t, err)
-
-	t.Log(" --- Sent sync messages ---")
-
-	time.Sleep(time.Millisecond * 1000)
-
-	evts1, err := g1a.MetadataStore().ListEvents(ctx, nil, nil, false)
-	require.NoError(t, err)
-	ops1 := testutil.TestFilterAppMetadata(t, evts1)
-	require.NoError(t, err)
-
-	evts2, err := g2a.MetadataStore().ListEvents(ctx, nil, nil, false)
-	require.NoError(t, err)
-	ops2 := testutil.TestFilterAppMetadata(t, evts2)
-	require.NoError(t, err)
-
-	assert.Equal(t, 2, len(ops1))
-	assert.Equal(t, 2, len(ops2))
-
-	odb2.Close()
-	cleanupAPI2()
-
-	t.Log(" --- Closed peer 2 ---")
-	t.Log(" --- Sending async messages ---")
-
-	for i := 0; i < 50; i++ {
-		_, err = g1a.MetadataStore().SendAppMetadata(ctx, []byte(fmt.Sprintf("From 1 - 2: %d", i)), nil)
+		// TODO: handle auth
+		_, err = replPeer.Service.ReplicateGroup(ctx, &replicationtypes.ReplicationServiceReplicateGroup_Request{
+			Group: groupReplicable,
+		})
 		require.NoError(t, err)
 	}
+	t.Log(" --- Registered group on replication service ---")
 
-	time.Sleep(time.Millisecond * 500)
+	t.Log(" --- Sending sync messages ---")
+	{
+		sub1a, err := g1a.MetadataStore().EventBus().Subscribe(new(protocoltypes.GroupMetadataEvent))
+		require.NoError(t, err)
 
+		sub2a, err := g2a.MetadataStore().EventBus().Subscribe(new(protocoltypes.GroupMetadataEvent))
+		require.NoError(t, err)
+
+		_, err = g1a.MetadataStore().SendAppMetadata(ctx, []byte("From 1 - 1"), nil)
+		require.NoError(t, err)
+
+		_, err = g2a.MetadataStore().SendAppMetadata(ctx, []byte("From 2 - 1"), nil)
+		require.NoError(t, err)
+
+		var evt interface{}
+		subs := []event.Subscription{sub1a, sub2a}
+		for _, sub := range subs {
+			for i := 0; i < 2; {
+				select {
+				case <-time.After(time.Second * 2):
+					require.FailNow(t, "timeout while waiting for message")
+				case evt = <-sub.Out():
+				}
+
+				if evt.(protocoltypes.GroupMetadataEvent).Metadata.EventType == protocoltypes.EventTypeGroupMetadataPayloadSent {
+					i++
+				}
+			}
+			sub.Close()
+		}
+
+		// wait for event to be fully replicated
+		// @FIXME(gfanton) this should not happen, edit metadatastore to emit when
+		// event has been replicated only ?
+		time.Sleep(time.Second)
+
+		evts1, err := g1a.MetadataStore().ListEvents(ctx, nil, nil, false)
+		require.NoError(t, err)
+		ops1 := testutil.TestFilterAppMetadata(t, evts1)
+		require.NoError(t, err)
+
+		evts2, err := g2a.MetadataStore().ListEvents(ctx, nil, nil, false)
+		require.NoError(t, err)
+		ops2 := testutil.TestFilterAppMetadata(t, evts2)
+		require.NoError(t, err)
+
+		assert.Equal(t, 2, len(ops1))
+		assert.Equal(t, 2, len(ops2))
+
+		odb2.Close()
+		cleanupAPI2()
+
+	}
+	t.Log(" --- Sent sync messages ---")
+	t.Log(" --- Closed peer 2 ---")
+
+	const messageAmount = 50
+
+	t.Log(" --- Sending async messages ---")
+	{
+
+		sub2a, err := g1a.MetadataStore().EventBus().Subscribe(new(protocoltypes.GroupMetadataEvent))
+		require.NoError(t, err)
+
+		cerr := make(chan error)
+		go func() {
+			var evt interface{}
+			defer close(cerr)
+			defer sub2a.Close()
+
+			for i := 0; i < messageAmount; {
+				select {
+				case <-time.After(time.Second * 5):
+					cerr <- fmt.Errorf("timeout while waiting for event")
+					return
+				case evt = <-sub2a.Out():
+				}
+
+				if evt.(protocoltypes.GroupMetadataEvent).Metadata.EventType == protocoltypes.EventTypeGroupMetadataPayloadSent {
+					i++
+				}
+			}
+		}()
+
+		for i := 0; i < messageAmount; i++ {
+			_, err = g1a.MetadataStore().SendAppMetadata(ctx, []byte(fmt.Sprintf("From 1 - 2: %d", i)), nil)
+			require.NoError(t, err)
+		}
+
+		err = <-cerr
+		require.NoError(t, err)
+
+		odb1.Close()
+		cleanupAPI1()
+	}
 	t.Log(" --- Sent async messages, should be replicated on service ---")
-
-	odb1.Close()
-	cleanupAPI1()
-
 	t.Log(" --- Closed peer 1 ---")
 
-	api2, cleanupAPI2 = ipfsutil.TestingCoreAPIUsingMockNet(ctx, t, ipfsOpts2)
-	defer cleanupAPI2()
-
 	t.Log(" --- Opening peer 2, and its db ---")
+	{
+		api2, cleanupAPI2 = ipfsutil.TestingCoreAPIUsingMockNet(ctx, t, ipfsOpts2)
+		defer cleanupAPI2()
 
-	odb2 = bertyprotocol.NewTestOrbitDB(ctx, t, logger, api2, ipfsOpts2.Datastore)
-	defer odb2.Close()
+		odb2 = bertyprotocol.NewTestOrbitDB(ctx, t, logger, api2, ipfsOpts2.Datastore)
+		defer odb2.Close()
 
-	err = mn.LinkAll()
-	require.NoError(t, err)
+		g2a, err = odb2.OpenGroup(ctx, gA, nil)
+		require.NoError(t, err)
 
-	g2a, err = odb2.OpenGroup(ctx, gA, nil)
-	require.NoError(t, err)
+		sub2a, err := g2a.MetadataStore().EventBus().Subscribe(new(protocoltypes.GroupMetadataEvent))
+		require.NoError(t, err)
 
-	time.Sleep(2000 * time.Millisecond)
+		cerr := make(chan error)
+		go func() {
+			var evt interface{}
 
-	t.Log(" --- Waited for peer 2 to replicate data ---")
+			defer close(cerr)
+			defer sub2a.Close()
 
-	evts2, err = g2a.MetadataStore().ListEvents(ctx, nil, nil, false)
-	require.NoError(t, err)
-	ops2 = testutil.TestFilterAppMetadata(t, evts2)
-	require.NoError(t, err)
+			for i := 0; i < messageAmount; {
+				select {
+				case <-time.After(time.Second * 5):
+					cerr <- fmt.Errorf("timeout while waiting for event")
+					return
+				case evt = <-sub2a.Out():
+				}
 
-	// assert.Equal(t, 3, len(ops2))
+				if evt.(protocoltypes.GroupMetadataEvent).Metadata.EventType == protocoltypes.EventTypeGroupMetadataPayloadSent {
+					i++
+				}
+			}
+		}()
+
+		err = mn.LinkAll()
+		require.NoError(t, err)
+
+		err = mn.ConnectAllButSelf()
+		require.NoError(t, err)
+
+		err = <-cerr
+		require.NoError(t, err)
+
+		t.Log(" --- Waited for peer 2 to replicate data ---")
+
+		evts2, err := g2a.MetadataStore().ListEvents(ctx, nil, nil, false)
+		require.NoError(t, err)
+		ops2 := testutil.TestFilterAppMetadata(t, evts2)
+		require.NoError(t, err)
+		assert.Equal(t, messageAmount+2, len(ops2)) // ammount of message + 2 sync
+	}
 }
 
 func TestReplicationService_InvalidFlow(t *testing.T) {

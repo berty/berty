@@ -131,6 +131,7 @@ func (hc *handshakeContext) receiveResponderAccept() error {
 	if err != nil {
 		return errcode.ErrHandshakeResponderAcceptBoxKeyGen.Wrap(err)
 	}
+
 	respBytes, _ := box.OpenAfterPrecomputation(
 		nil,
 		boxEnvelope.Box,

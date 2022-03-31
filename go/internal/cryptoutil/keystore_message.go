@@ -62,6 +62,16 @@ func (m *MessageKeystore) GetDeviceChainKey(ctx context.Context, groupPK, pk cry
 	return ds, nil
 }
 
+func (m *MessageKeystore) HasSecretForRawDevicePK(ctx context.Context, groupPK, devicePK []byte) (has bool) {
+	if m == nil {
+		return false
+	}
+
+	key := idForCurrentCK(groupPK, devicePK)
+	has, _ = m.store.Has(ctx, key)
+	return
+}
+
 func (m *MessageKeystore) delPrecomputedKey(ctx context.Context, groupPK, device crypto.PubKey, counter uint64) error {
 	if m == nil {
 		return errcode.ErrInvalidInput
@@ -381,14 +391,50 @@ func (m *MessageKeystore) putKeyForCID(ctx context.Context, id cid.Cid, key *[32
 	return nil
 }
 
-func (m *MessageKeystore) OpenEnvelope(ctx context.Context, g *protocoltypes.Group, ownPK crypto.PubKey, data []byte, id cid.Cid) (*protocoltypes.MessageHeaders, *protocoltypes.EncryptedMessage, [][]byte, error) {
-	if m == nil || g == nil {
-		return nil, nil, nil, errcode.ErrInvalidInput
-	}
-
+func (m *MessageKeystore) OpenEnvelopePayload(
+	ctx context.Context,
+	env *protocoltypes.MessageEnvelope,
+	headers *protocoltypes.MessageHeaders,
+	g *protocoltypes.Group,
+	ownPK crypto.PubKey,
+	id cid.Cid,
+) (*protocoltypes.EncryptedMessage, [][]byte, error) {
 	gPK, err := g.GetPubKey()
 	if err != nil {
-		return nil, nil, nil, errcode.ErrDeserialization.Wrap(err)
+		return nil, nil, errcode.ErrDeserialization.Wrap(err)
+	}
+
+	msgBytes, decryptInfo, err := m.OpenPayload(ctx, id, gPK, env.Message, headers)
+	if err != nil {
+		return nil, nil, errcode.ErrCryptoDecryptPayload.Wrap(err)
+	}
+
+	if err := m.PostDecryptActions(ctx, decryptInfo, g, ownPK, headers); err != nil {
+		return nil, nil, errcode.TODO.Wrap(err)
+	}
+
+	var msg protocoltypes.EncryptedMessage
+	err = msg.Unmarshal(msgBytes)
+	if err != nil {
+		return nil, nil, errcode.ErrDeserialization.Wrap(err)
+	}
+
+	attachmentsCIDs, err := AttachmentCIDSliceDecrypt(g, env.GetEncryptedAttachmentCIDs())
+	if err != nil {
+		return nil, nil, errcode.ErrCryptoDecrypt.Wrap(err)
+	}
+
+	return &msg, attachmentsCIDs, nil
+}
+
+func (m *MessageKeystore) OpenEnvelope(
+	ctx context.Context,
+	g *protocoltypes.Group,
+	ownPK crypto.PubKey,
+	data []byte, id cid.Cid,
+) (*protocoltypes.MessageHeaders, *protocoltypes.EncryptedMessage, [][]byte, error) {
+	if m == nil || g == nil {
+		return nil, nil, nil, errcode.ErrInvalidInput
 	}
 
 	env, headers, err := OpenEnvelopeHeaders(data, g)
@@ -396,27 +442,12 @@ func (m *MessageKeystore) OpenEnvelope(ctx context.Context, g *protocoltypes.Gro
 		return nil, nil, nil, errcode.ErrCryptoDecrypt.Wrap(err)
 	}
 
-	msgBytes, decryptInfo, err := m.OpenPayload(ctx, id, gPK, env.Message, headers)
+	msg, attachmentsCIDs, err := m.OpenEnvelopePayload(ctx, env, headers, g, ownPK, id)
 	if err != nil {
-		return headers, nil, nil, errcode.ErrCryptoDecryptPayload.Wrap(err)
-	}
-
-	if err := m.PostDecryptActions(ctx, decryptInfo, g, ownPK, headers); err != nil {
 		return nil, nil, nil, errcode.TODO.Wrap(err)
 	}
 
-	var msg protocoltypes.EncryptedMessage
-	err = msg.Unmarshal(msgBytes)
-	if err != nil {
-		return nil, nil, nil, errcode.ErrDeserialization.Wrap(err)
-	}
-
-	attachmentsCIDs, err := AttachmentCIDSliceDecrypt(g, env.GetEncryptedAttachmentCIDs())
-	if err != nil {
-		return nil, nil, nil, errcode.ErrCryptoDecrypt.Wrap(err)
-	}
-
-	return headers, &msg, attachmentsCIDs, nil
+	return headers, msg, attachmentsCIDs, nil
 }
 
 func (m *MessageKeystore) OpenPayload(ctx context.Context, id cid.Cid, groupPK crypto.PubKey, payload []byte, headers *protocoltypes.MessageHeaders) ([]byte, *DecryptInfo, error) {

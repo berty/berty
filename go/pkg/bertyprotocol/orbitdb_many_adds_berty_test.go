@@ -19,11 +19,12 @@ import (
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/internal/testutil"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
+	"berty.tech/go-orbit-db/iface"
 )
 
 func testAddBerty(ctx context.Context, t *testing.T, node ipfsutil.CoreAPIMock, g *protocoltypes.Group, pathBase string, storageKey []byte, storageSalt []byte, amountToAdd, amountCurrentlyPresent int) {
 	t.Helper()
-	testutil.FilterSpeed(t, testutil.Slow)
+	testutil.FilterSpeed(t, testutil.Fast)
 	t.Logf("TestAddBerty: amountToAdd: %d, amountCurrentlyPresent: %d\n", amountToAdd, amountCurrentlyPresent)
 
 	api := node.API()
@@ -43,12 +44,17 @@ func testAddBerty(ctx context.Context, t *testing.T, node ipfsutil.CoreAPIMock, 
 
 	defer testutil.Close(t, baseDS)
 
-	odb, err := NewBertyOrbitDB(ctx, api, &NewOrbitDBOptions{Datastore: baseDS})
+	odb, err := NewBertyOrbitDB(ctx, api, &NewOrbitDBOptions{
+		Datastore: baseDS,
+	})
 	require.NoError(t, err)
 
 	defer testutil.Close(t, odb)
 
-	gc, err := odb.OpenGroup(ctx, g, nil)
+	replicate := false
+	gc, err := odb.OpenGroup(ctx, g, &iface.CreateDBOptions{
+		Replicate: &replicate,
+	})
 	require.NoError(t, err)
 
 	defer testutil.Close(t, gc)
@@ -68,22 +74,19 @@ func testAddBerty(ctx context.Context, t *testing.T, node ipfsutil.CoreAPIMock, 
 		amountCurrentlyFound++
 	}
 
+	sub, err := gc.MessageStore().EventBus().Subscribe(new(protocoltypes.GroupMessageEvent))
+	require.NoError(t, err)
+	defer sub.Close()
+
 	// Watch for incoming new messages
 	go func() {
-		for e := range gc.MessageStore().Subscribe(ctx) { // nolint:staticcheck
-			_, ok := e.(*protocoltypes.GroupMessageEvent)
-			if !ok {
-				continue
-			}
-
+		for range sub.Out() {
 			wg.Done()
 		}
 	}()
 
 	_, err = gc.MetadataStore().AddDeviceToGroup(ctx)
 	require.NoError(t, err)
-
-	<-time.After(time.Millisecond * 2000)
 
 	for i := 0; i < amountToAdd; i++ {
 		_, err := gc.MessageStore().AddMessage(ctx, []byte(fmt.Sprintf("%d", i)), nil)

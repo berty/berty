@@ -353,18 +353,16 @@ func (v *groupView) loop(ctx context.Context) {
 			for {
 				evt, err = cl.Recv()
 				if err != nil {
-					if err == io.EOF {
-						return
+					if err != io.EOF {
+						v.syncMessages <- &historyMessage{
+							messageType: messageTypeError,
+							payload:     []byte(err.Error()),
+						}
 					}
-
-					// @TODO: Log this
-					v.syncMessages <- &historyMessage{
-						messageType: messageTypeError,
-						payload:     []byte(err.Error()),
-					}
-					continue
+					return
 				}
 
+				// @TODO: Log this
 				metadataEventHandler(ctx, v, evt, false, v.logger)
 			}
 		}()

@@ -107,15 +107,25 @@ func metadataStoreListSecrets(ctx context.Context, gc *GroupContext) map[crypto.
 func FillMessageKeysHolderUsingNewData(ctx context.Context, gc *GroupContext) <-chan crypto.PubKey {
 	m := gc.MetadataStore()
 	ch := make(chan crypto.PubKey)
-	sub := m.Subscribe(ctx) // nolint:staticcheck
+	sub, err := m.EventBus().Subscribe(new(protocoltypes.GroupMetadataEvent))
+	if err != nil {
+		m.logger.Warn("unable to subscribe to events", zap.Error(err))
+		close(ch)
+		return ch
+	}
 
 	go func() {
-		for evt := range sub {
-			e, ok := evt.(*protocoltypes.GroupMetadataEvent)
-			if !ok {
-				continue
+		defer close(ch)
+		defer sub.Close()
+		for {
+			var evt interface{}
+			select {
+			case <-ctx.Done():
+				return
+			case evt = <-sub.Out():
 			}
 
+			e := evt.(protocoltypes.GroupMetadataEvent)
 			if e.Metadata.EventType != protocoltypes.EventTypeGroupDeviceSecretAdded {
 				continue
 			}
@@ -141,13 +151,11 @@ func FillMessageKeysHolderUsingNewData(ctx context.Context, gc *GroupContext) <-
 
 			// A new chainKey is registered, check if cached messages can be opened with it
 			if rawPK, err := pk.Raw(); err == nil {
-				go gc.MessageStore().openMessageCacheForPK(ctx, rawPK)
+				gc.MessageStore().ProcessMessageQueueForDevicePK(ctx, rawPK)
 			}
 
 			ch <- pk
 		}
-
-		close(ch)
 	}()
 
 	return ch
@@ -265,21 +273,34 @@ func ActivateGroupContext(ctx context.Context, gc *GroupContext, contact crypto.
 func TagGroupContextPeers(ctx context.Context, gc *GroupContext, ipfsCoreAPI ipfsutil.ExtendedCoreAPI, weight int) {
 	id := gc.Group().GroupIDAsString()
 
-	chSub1 := gc.metadataStore.Subscribe(ctx) // nolint:staticcheck
-	go func() {
-		for e := range chSub1 {
-			if evt, ok := e.(stores.EventNewPeer); ok {
-				ipfsCoreAPI.ConnMgr().TagPeer(evt.Peer, fmt.Sprintf("grp_%s", id), weight)
-			}
-		}
-	}()
+	chSub1, err := gc.metadataStore.EventBus().Subscribe(new(stores.EventNewPeer))
+	if err != nil {
+		gc.logger.Warn("unable to subscribe to metadata event new peer")
+		return
+	}
 
-	chSub2 := gc.messageStore.Subscribe(ctx) // nolint:staticcheck
+	chSub2, err := gc.messageStore.EventBus().Subscribe(new(stores.EventNewPeer))
+	if err != nil {
+		gc.logger.Warn("unable to subscribe to message event new peer")
+		return
+	}
+
 	go func() {
-		for e := range chSub2 {
-			if evt, ok := e.(stores.EventNewPeer); ok {
-				ipfsCoreAPI.ConnMgr().TagPeer(evt.Peer, fmt.Sprintf("grp_%s", id), weight)
+		defer chSub1.Close()
+		defer chSub2.Close()
+
+		for {
+			var e interface{}
+
+			select {
+			case e = <-chSub1.Out():
+			case e = <-chSub2.Out():
+			case <-ctx.Done():
+				return
 			}
+
+			evt := e.(stores.EventNewPeer)
+			ipfsCoreAPI.ConnMgr().TagPeer(evt.Peer, fmt.Sprintf("grp_%s", id), weight)
 		}
 	}()
 }
@@ -332,15 +353,25 @@ func SendSecretsToExistingMembers(ctx context.Context, gctx *GroupContext, conta
 
 func WatchNewMembersAndSendSecrets(ctx context.Context, logger *zap.Logger, gctx *GroupContext) <-chan crypto.PubKey {
 	ch := make(chan crypto.PubKey)
-	sub := gctx.MetadataStore().Subscribe(ctx) // nolint:staticcheck
+	sub, err := gctx.MetadataStore().EventBus().Subscribe(new(protocoltypes.GroupMetadataEvent))
+	if err != nil {
+		logger.Warn("unable to subscribe to group metadata", zap.Error(err))
+		close(ch)
+		return ch
+	}
 
 	go func() {
-		for evt := range sub {
-			e, ok := evt.(*protocoltypes.GroupMetadataEvent)
-			if !ok {
-				continue
+		defer close(ch)
+		defer sub.Close()
+		for {
+			var evt interface{}
+			select {
+			case evt = <-sub.Out():
+			case <-ctx.Done():
+				return
 			}
 
+			e := evt.(protocoltypes.GroupMetadataEvent)
 			if e.Metadata.EventType != protocoltypes.EventTypeGroupMemberDeviceAdded {
 				continue
 			}
@@ -365,8 +396,6 @@ func WatchNewMembersAndSendSecrets(ctx context.Context, logger *zap.Logger, gctx
 
 			ch <- memberPK
 		}
-
-		close(ch)
 	}()
 
 	return ch

@@ -14,12 +14,10 @@ import (
 	logac "berty.tech/go-ipfs-log/accesscontroller"
 	"berty.tech/go-ipfs-log/identityprovider"
 	"berty.tech/go-orbit-db/accesscontroller"
-	"berty.tech/go-orbit-db/events"
 	"berty.tech/go-orbit-db/iface"
 )
 
 type simpleAccessController struct {
-	events.EventEmitter
 	allowedKeys map[string][]string
 	logger      *zap.Logger
 	lock        sync.RWMutex
