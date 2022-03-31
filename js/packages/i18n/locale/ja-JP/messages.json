@@ -3,15 +3,15 @@
 		"getstarted": {
 			"title": "プライバシーを保護",
 			"desc": "無料で安全に P2P メッセージをやりとりする",
-			"create-button": "",
-			"import-button": "",
+			"create-button": "アカウントを作成",
+			"import-button": "アカウントをインポート",
 			"link-button": ""
 		},
 		"default-mode": {
 			"summary": {
 				"title": "",
 				"subtitle": "",
-				"first-point": "",
+				"first-point": "最もプライバシー/快適性のバランスの取れたプリセットから始めましょう。Berty ノードはパフォーマンスと非同期通信を改善するために使用されます。",
 				"second-point": "",
 				"back-button": "",
 				"accept-button": ""
@@ -30,9 +30,9 @@
 				"off-grid": {
 					"title": "",
 					"ble-button": "Bluetooth Low Energy",
-					"nearby-button": "",
+					"nearby-button": "Android Nearby",
 					"mc-button": "",
-					"mdns-button": ""
+					"mdns-button": "Multicast DNS (LAN)"
 				},
 				"routing": {
 					"title": "",
@@ -68,13 +68,13 @@
 					},
 					"buttons": {
 						"add": "追加",
-						"edit": "",
-						"delete": ""
+						"edit": "編集",
+						"delete": "削除"
 					},
 					"multiaddress": "",
 					"alias": ""
 				},
-				"all-button": "",
+				"all-button": "すべて",
 				"accept-button": ""
 			}
 		},
