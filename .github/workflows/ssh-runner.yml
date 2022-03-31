@@ -2,17 +2,6 @@ name: SSH on runner
 on:
   workflow_dispatch:
     inputs:
-      timeout:
-        description: 'SSH timeout'
-        required: true
-        default: '15'
-        type: choice
-        options:
-        - '15'
-        - '30'
-        - '45'
-        - '60'
-        - '120'
       os:
         description: 'Operating System'
         required: true
@@ -91,8 +80,10 @@ jobs:
         working-directory: js
         run: make node_modules
 
+      - name: Install emacs
+        run: sudo apt-get install -y emacs
+
       - name: Setup tmate session
-        timeout-minutes: ${{ github.event.inputs.timeout }}
         uses: mxschmitt/action-tmate@v3
         with:
           limit-access-to-actor: true
