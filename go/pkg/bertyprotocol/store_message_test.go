@@ -195,7 +195,7 @@ func Test_Add_Messages_To_Cache(t *testing.T) {
 		new(protocoltypes.GroupMessageEvent), eventbus.BufSize(entriesCount))
 	require.NoError(t, err)
 
-	peers[1].GC.MessageStore().ProcessMessageQueueForDevicePK(dPK0Raw)
+	peers[1].GC.MessageStore().ProcessMessageQueueForDevicePK(ctx, dPK0Raw)
 
 	// check that all events has been received on peer 2
 	for i := 0; i < entriesCount; i++ {

@@ -349,6 +349,8 @@ func TestReplicationService_ReplicateGroupStats_ReplicateGlobalStats(t *testing.
 }
 
 func TestReplicationService_Flow(t *testing.T) {
+	testutil.FilterSpeed(t, testutil.Slow)
+
 	logger, cleanup := testutil.Logger(t)
 	defer cleanup()
 	ctx, cancel := context.WithCancel(context.Background())

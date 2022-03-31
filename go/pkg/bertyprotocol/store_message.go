@@ -119,13 +119,16 @@ func (m *MessageStore) CacheSizeForDevicePK(devicePK []byte) (size int, ok bool)
 	return
 }
 
-func (m *MessageStore) ProcessMessageQueueForDevicePK(devicePK []byte) {
+func (m *MessageStore) ProcessMessageQueueForDevicePK(ctx context.Context, devicePK []byte) {
 	m.muDeviceCaches.Lock()
 	device, ok := m.deviceCaches[string(devicePK)]
 	if ok {
-		device.hasSecret = true
-		if next := device.queue.Next(); next != nil {
-			m.cmessage <- next
+		if device.hasSecret = m.mks.HasSecretForRawDevicePK(ctx, m.g.PublicKey, devicePK); device.hasSecret {
+			if next := device.queue.Next(); next != nil {
+				m.cmessage <- next
+			}
+		} else {
+			m.logger.Error("unable to process message, no secret found for device pk", logutil.PrivateBinary("devicepk", devicePK))
 		}
 	}
 	m.muDeviceCaches.Unlock()
@@ -209,8 +212,16 @@ func (m *MessageStore) processMessageLoop(ctx context.Context) {
 				}
 
 				if err := m.processMessage(ctx, ownPK, message); err != nil {
-					m.logger.Error("unable to process message", zap.Error(err))
-					return
+					if errcode.Is(err, errcode.ErrCryptoDecryptPayload) {
+						// @FIXME(gfanton): this should not happen
+						m.logger.Warn("unable to open envelope, adding envelope to cache for later process", zap.Error(err))
+
+						// if failed to decrypt add to queue, for later process
+						device.queue.Add(message)
+						_ = m.emitters.groupCacheMessage.Emit(*message)
+					} else {
+						m.logger.Error("unable to prcess message", zap.Error(err))
+					}
 				} else if next := device.queue.Next(); next != nil {
 					m.cmessage <- next
 				}
