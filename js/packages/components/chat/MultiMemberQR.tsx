@@ -1,7 +1,8 @@
 import React from 'react'
 import QRCode from '@berty/polyfill/react-native-qrcode-svg'
-import { Share, TouchableOpacity, View, StatusBar } from 'react-native'
+import { Share, TouchableOpacity, View, StatusBar, Platform } from 'react-native'
 import { Icon, Layout } from '@ui-kitten/components'
+import Clipboard from '@react-native-clipboard/clipboard'
 
 import beapi from '@berty/api'
 import { ScreenFC } from '@berty/navigation'
@@ -92,7 +93,11 @@ const BertyIdShare: React.FC<{ url?: string | null }> = ({ url }) => {
 			onPress={async () => {
 				try {
 					console.log('sharing', url)
-					await Share.share({ url, message: url })
+					if (Platform.OS === 'web') {
+						Clipboard.setString(url)
+					} else {
+						await Share.share({ url, message: url })
+					}
 				} catch (e) {
 					console.error(e)
 				}
