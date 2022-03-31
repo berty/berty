@@ -158,8 +158,6 @@ lint: node_modules
 	cp .gitignore .eslintignore
 	echo '*.pb.*' >> .eslintignore
 	echo '*.gen.*' >> .eslintignore
-	# ignore web-dev-app until it's integrated with new tools config
-	echo '/packages/web-dev-app/' >> .eslintignore
 	npx eslint --cache --quiet --ext=.js,.jsx,.ts,.tsx .
 	npx tsc # check static typing
 
@@ -169,8 +167,6 @@ lint.fix: node_modules
 	cp .gitignore .eslintignore
 	echo '*.pb.*' >> .eslintignore
 	echo '*.gen.*' >> .eslintignore
-	# ignore web-dev-app until it's integrated with new tools config
-	echo '/packages/web-dev-app/' >> .eslintignore
 	npx eslint --cache --quiet --ext=.js,.jsx,.ts,.tsx --fix .
 	npx tsc # check static typing
 
@@ -478,7 +474,7 @@ web/node_modules: node_modules web/package.json
 ### Electron
 
 .PHONY: electron.mac
-electron.mac: web/package.json
+electron.mac: web/node_modules
 	cd ../go && $(MAKE) install
 	rm -rf ./web/resources/mac/berty
 	mkdir -p ./web/resources/mac/

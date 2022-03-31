@@ -23,6 +23,6 @@ module.exports = {
 		extraNodeModules: require('node-libs-react-native'),
 		assetExts: defaultAssetExts.filter(ext => ext !== 'svg'),
 		sourceExts: [...defaultSourceExts, 'svg'],
-		blacklistRE: exclusionList([/\.gomobile-cache\/.*/, /^web\/.*/, /electron-app\/.*/]),
+		blacklistRE: exclusionList([/\.gomobile-cache\/.*/, /^web\/.*/]),
 	},
 }

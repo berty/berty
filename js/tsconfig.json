@@ -5,9 +5,7 @@
 		"packages"
 	],
 	"exclude": [
-		"packages/web-dev-app",
-		"web",
-		"electron-app"
+		"web"
 	],
 	"compilerOptions": {
 		/* Basic Options */
