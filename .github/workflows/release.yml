@@ -129,7 +129,7 @@ jobs:
           go-version: ${{ matrix.config.golang }}
 
       - name: Cache Go modules
-        uses: actions/cache@v2
+        uses: actions/cache@v3.0.1
         with:
           path: ~/go/pkg/mod
           key: ${{ runner.os }}-go-${{ matrix.config.golang }}-${{ env.json_cache-version_go }}-${{ hashFiles('**/go.sum') }}
