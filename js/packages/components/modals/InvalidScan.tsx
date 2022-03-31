@@ -37,7 +37,7 @@ const useStylesInvalidScan = () => {
 const _invalidScanStyles = StyleSheet.create({
 	errorText: {
 		fontSize: 14,
-		fontFamily: 'Courier',
+		fontFamily: 'Courier, monospace',
 	},
 	body: {
 		bottom: 78,

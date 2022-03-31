@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
 	},
 	text: {
 		color: '#00ff00',
-		fontFamily: Platform.OS === 'ios' ? 'Courier New' : 'monospace',
+		fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
 	},
 	header1: { fontSize: 38 },
 	header2: { fontSize: 22 },

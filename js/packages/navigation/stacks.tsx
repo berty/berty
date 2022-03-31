@@ -200,12 +200,12 @@ export const Navigation: React.FC = React.memo(() => {
 			screenOptions={{
 				headerLeft:
 					Platform.OS === 'web'
-						? () => (
+						? props => (
 								<TouchableOpacity
 									style={{ justifyContent: 'center' }}
 									onPress={() => dispatch(CommonActions.goBack())}
 								>
-									<Icon name='arrow-back' width={24} height={24} fill={colors['main-text']} />
+									<Icon name='arrow-back' width={24} height={24} fill={props.tintColor} />
 								</TouchableOpacity>
 						  )
 						: undefined,

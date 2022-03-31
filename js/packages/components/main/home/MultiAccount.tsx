@@ -59,9 +59,7 @@ const AccountButton: React.FC<{
 			>
 				<View style={{ flexDirection: 'row', alignItems: 'center' }}>
 					{avatar}
-					<UnifiedText
-						style={[padding.left.medium, text.light, text.align.center, text.size.scale(17)]}
-					>
+					<UnifiedText style={[padding.left.medium, text.align.center, text.size.scale(17)]}>
 						{name}
 					</UnifiedText>
 				</View>

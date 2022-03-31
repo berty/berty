@@ -58,7 +58,6 @@ const StreamInProgressCmp: React.FC<{}> = () => {
 
 			<UnifiedText
 				style={[
-					text.light,
 					text.align.center,
 					{
 						position: 'absolute',
@@ -77,10 +76,8 @@ const StreamInProgressCmp: React.FC<{}> = () => {
 					justifyContent: 'center',
 				}}
 			>
-				<UnifiedText style={[text.light, text.align.center]}>
-					{stream?.msg.doing || 'Doing'}
-				</UnifiedText>
-				<UnifiedText style={[text.light, text.align.center]}>
+				<UnifiedText style={[text.align.center]}>{stream?.msg.doing || 'Doing'}</UnifiedText>
+				<UnifiedText style={[text.align.center]}>
 					{stream?.msg.completed || '0'} / {stream?.msg.total || '6'}
 				</UnifiedText>
 				{Platform.OS === 'web' ? (
