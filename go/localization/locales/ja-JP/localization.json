@@ -12,7 +12,7 @@
         "benefitBadge": "パフォーマンス"
       }
     },
-    "pageTitle": "",
+    "pageTitle": "Berty サービス",
     "connectButton_one": "",
     "connectButton_other": "",
     "privacyPolicyLabel": "プライバシーポリシー"
@@ -35,14 +35,14 @@
       "bodyWithNumberOfMedia_other": "%[1] 件の写真を送信しました"
     },
     "media": {
-      "bodyWithNumberOfMedia_one": "",
+      "bodyWithNumberOfMedia_one": "メディアを送信しました",
       "bodyWithNumberOfMedia_other": ""
     },
     "reaction": {
       "bodyWithDisplayNameAndEmoji": "%[1]v が %[2]v でメッセージに反応しました"
     },
     "groupInvitation": {
-      "bodyWithGroupName": ""
+      "bodyWithGroupName": "%[1]v に招待されました"
     },
     "unknown": {
       "body": ""
@@ -51,7 +51,7 @@
       "body": ""
     },
     "memberNameChanged": {
-      "body": ""
+      "body": "表示する名前を更新しました"
     },
     "memberPictureChanged": {
       "body": ""
