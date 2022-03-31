@@ -1,11 +1,11 @@
-import { dispatch as navDispatch, ScreenFC } from '@berty/navigation'
+import { ScreenFC } from '@berty/navigation'
 import { useAppDispatch } from '@berty/react-redux'
 import {
-	PersistentOptionsKeys,
 	setPersistentOption,
+	PersistentOptionsKeys,
 } from '@berty/redux/reducers/persistentOptions.reducer'
+import { setStateReady } from '@berty/redux/reducers/ui.reducer'
 import { useNotificationsInhibitor, useThemeColor } from '@berty/store'
-import { CommonActions } from '@react-navigation/native'
 import LottieView from 'lottie-react-native'
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -83,25 +83,17 @@ const SetupFinishedBody = () => {
 					button={{
 						text: t('onboarding.setup-finished.button'),
 						onPress: () => {
-							dispatch(
-								setPersistentOption({
-									type: PersistentOptionsKeys.OnBoardingFinished,
-									payload: {
-										isFinished: true,
-									},
-								}),
-							)
 							setIsFinished(true)
 							Vibration.vibrate([500])
-							setTimeout(
-								() =>
-									navDispatch(
-										CommonActions.reset({
-											routes: [{ name: 'Main.Home' }],
-										}),
-									),
-								1500,
-							)
+							setTimeout(() => {
+								dispatch(
+									setPersistentOption({
+										type: PersistentOptionsKeys.OnBoardingFinished,
+										payload: true,
+									}),
+								)
+								dispatch(setStateReady())
+							}, 1500)
 						},
 					}}
 				/>

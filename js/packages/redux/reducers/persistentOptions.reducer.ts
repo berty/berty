@@ -14,7 +14,6 @@ export enum PersistentOptionsKeys {
 	LogFilters = 'logFilters',
 	TyberHost = 'tyberHost',
 	OnBoardingFinished = 'onBoardingFinished',
-	ProfileNotification = 'profileNotification',
 }
 
 export type PersistentOptionsNotifications = {
@@ -77,14 +76,7 @@ export type PersistentOptionsTyberHost = {
 	address: string
 }
 
-export type PersistentOptionsOnBoardingFinished = {
-	isFinished: boolean
-}
-
-export const UpdatesProfileNotification = 'updates'
-export type PersistentOptionsProfileNotification = {
-	[UpdatesProfileNotification]: number
-}
+export type PersistentOptionsOnBoardingFinished = boolean
 
 export type PersistentOptionsUpdate =
 	| {
@@ -119,10 +111,6 @@ export type PersistentOptionsUpdate =
 			type: typeof PersistentOptionsKeys.OnBoardingFinished
 			payload: PersistentOptionsOnBoardingFinished
 	  }
-	| {
-			type: typeof PersistentOptionsKeys.ProfileNotification
-			payload: PersistentOptionsProfileNotification
-	  }
 
 export type PersistentOptions = {
 	[PersistentOptionsKeys.Notifications]: PersistentOptionsNotifications
@@ -133,7 +121,6 @@ export type PersistentOptions = {
 	[PersistentOptionsKeys.LogFilters]: PersistentOptionsLogFilters
 	[PersistentOptionsKeys.TyberHost]: PersistentOptionsTyberHost
 	[PersistentOptionsKeys.OnBoardingFinished]: PersistentOptionsOnBoardingFinished
-	[PersistentOptionsKeys.ProfileNotification]: PersistentOptionsProfileNotification
 }
 
 export const defaultPersistentOptions = (): PersistentOptions => {
@@ -170,12 +157,7 @@ export const defaultPersistentOptions = (): PersistentOptions => {
 		[PersistentOptionsKeys.TyberHost]: {
 			address: Platform.OS === 'android' ? '10.0.2.2:4242' : '127.0.0.1:4242',
 		},
-		[PersistentOptionsKeys.OnBoardingFinished]: {
-			isFinished: false,
-		},
-		[PersistentOptionsKeys.ProfileNotification]: {
-			[UpdatesProfileNotification]: 0,
-		},
+		[PersistentOptionsKeys.OnBoardingFinished]: false,
 	}
 }
 
@@ -202,6 +184,12 @@ const slice = createSlice({
 				[payload.type]: payload.payload,
 			}
 		},
+		setAllPersistentOptions(
+			state: PersistentOptions,
+			{ payload }: PayloadAction<PersistentOptions>,
+		) {
+			state = payload
+		},
 	},
 })
 
@@ -209,6 +197,6 @@ const selectSlice = (state: LocalRootState) => state[sliceName]
 
 export const selectPersistentOptions = (state: LocalRootState) => selectSlice(state)
 
-export const { setPersistentOption } = slice.actions
+export const { setPersistentOption, setAllPersistentOptions } = slice.actions
 
 export default makeRoot(slice.reducer)

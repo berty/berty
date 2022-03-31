@@ -52,6 +52,7 @@ import {
 	defaultPersistentOptions,
 	PersistentOptions,
 	PersistentOptionsKeys,
+	setAllPersistentOptions,
 } from '@berty/redux/reducers/persistentOptions.reducer'
 
 export const openAccountWithProgress = async (
@@ -153,10 +154,7 @@ export const initialLaunch = async (dispatch: (arg0: reducerAction) => void, emb
 	f().catch(e => console.warn(e))
 }
 
-const getPersistentOptions = async (
-	dispatch: (arg0: reducerAction) => void,
-	selectedAccount: string | null,
-) => {
+const getPersistentOptions = async (dispatch: AppDispatch, selectedAccount: string | null) => {
 	if (selectedAccount === null) {
 		console.warn('getPersistentOptions / no account opened')
 		return
@@ -164,7 +162,7 @@ const getPersistentOptions = async (
 
 	try {
 		let opts = defaultPersistentOptions()
-		console.log('begin to get persistent data')
+		console.log('begin to get persistent data', selectedAccount)
 		let storedOpts = await storageGet(storageKeyForAccount(selectedAccount))
 		console.log('end to get persistent data')
 
@@ -172,14 +170,10 @@ const getPersistentOptions = async (
 			const parsed = JSON.parse(storedOpts)
 
 			for (let key of Object.values(PersistentOptionsKeys)) {
-				opts[key] = { ...opts[key], ...(parsed[key] || {}) }
+				opts[key] = { ...(opts[key] as object), ...(parsed[key] || {}) }
 			}
 		}
-
-		dispatch({
-			type: MessengerActions.SetPersistentOption,
-			payload: opts,
-		})
+		dispatch(setAllPersistentOptions(opts))
 	} catch (e) {
 		console.warn('store getPersistentOptions Failed:', e)
 		return
@@ -188,7 +182,7 @@ const getPersistentOptions = async (
 
 // handle state openingGettingLocalSettings
 export const openingLocalSettings = async (
-	dispatch: (arg0: reducerAction) => void,
+	dispatch: AppDispatch,
 	appState: MESSENGER_APP_STATE[keyof MESSENGER_APP_STATE],
 	selectedAccount: string | null,
 ) => {
@@ -439,7 +433,8 @@ export const openingCloseConvos = async (
 			console.warn(`failed to close conversation "${conv.displayName}",`, e)
 		})
 	}
-	persistentOptions.onBoardingFinished.isFinished
+	console.log('persitentOptions::', persistentOptions.onBoardingFinished)
+	persistentOptions.onBoardingFinished
 		? store.dispatch(setStateReady())
 		: store.dispatch(setStatePreReady())
 }
@@ -463,7 +458,7 @@ export const updateAccountsPreReady = async (
 	}
 	const displayName = await storageGet(GlobalPersistentOptionsKeys.DisplayName)
 	await storageRemove(GlobalPersistentOptionsKeys.DisplayName)
-	await storageRemove(GlobalPersistentOptionsKeys.IsNewAccount)
+	console.log('PRE_READY::', displayName)
 	if (displayName) {
 		await client?.accountUpdate({ displayName }).catch(err => console.error(err))
 		// update account in bertyaccount

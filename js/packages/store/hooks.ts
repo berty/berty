@@ -19,11 +19,6 @@ import {
 	ThemeType,
 } from '@berty/redux/reducers/theme.reducer'
 import { MESSENGER_APP_STATE, selectAppState, selectClient } from '@berty/redux/reducers/ui.reducer'
-import {
-	PersistentOptionsKeys,
-	selectPersistentOptions,
-	UpdatesProfileNotification,
-} from '@berty/redux/reducers/persistentOptions.reducer'
 
 export type Maybe<T> = T | null | undefined
 
@@ -102,12 +97,6 @@ export const useThemeColor = (): ThemeType => {
 		}
 		return collectionColors
 	}, [appState, themeCollection, themeIsDark, themeSelected])
-}
-
-export const useProfileNotification = () => {
-	const persistentOptions = useSelector(selectPersistentOptions)
-	const profileNotifs = persistentOptions[PersistentOptionsKeys.ProfileNotification]
-	return profileNotifs[UpdatesProfileNotification]
 }
 
 //

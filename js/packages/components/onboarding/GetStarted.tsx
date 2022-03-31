@@ -2,13 +2,7 @@ import React from 'react'
 import { View, StatusBar } from 'react-native'
 import { useTranslation } from 'react-i18next'
 
-import {
-	storageSet,
-	GlobalPersistentOptionsKeys,
-	useNotificationsInhibitor,
-	useThemeColor,
-	useMessengerContext,
-} from '@berty/store'
+import { useNotificationsInhibitor, useThemeColor, useMessengerContext } from '@berty/store'
 import { useStyles } from '@berty/styles'
 import { ScreenFC } from '@berty/navigation'
 
@@ -59,7 +53,6 @@ export const GetStarted: ScreenFC<'Onboarding.GetStarted'> = ({ navigation: { na
 				<View style={[margin.top.big]}>
 					<Button
 						onPress={async () => {
-							await storageSet(GlobalPersistentOptionsKeys.IsNewAccount, 'isNew')
 							navigate('Onboarding.CreateAccount')
 						}}
 					>

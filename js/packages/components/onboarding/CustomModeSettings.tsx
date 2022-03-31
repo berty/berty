@@ -515,7 +515,6 @@ const ApplyChanges: React.FC = () => {
 					onPress={async () => {
 						if (currentNetworkConfig) {
 							setIsPressed(true)
-							console.log({ parsedLocalNetworkConfig })
 							await ctx.createNewAccount(parsedLocalNetworkConfig)
 						}
 					}}

@@ -91,8 +91,8 @@ export const MessengerProvider: React.FC<{ daemonAddress: string }> = ({
 	}, [appState, initialListComplete])
 
 	useEffect(() => {
-		openingLocalSettings(dispatch, appState, selectedAccount)
-	}, [appState, selectedAccount])
+		openingLocalSettings(reduxDispatch, appState, selectedAccount)
+	}, [reduxDispatch, appState, selectedAccount])
 
 	const conversations = useConversationsDict()
 
