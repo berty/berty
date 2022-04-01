@@ -1,6 +1,7 @@
 {
 	"onboarding": {
 		"getstarted": {
+			"screenTitle": "",
 			"title": "プライバシーを保護",
 			"desc": "無料で安全に P2P メッセージをやりとりする",
 			"create-button": "アカウントを作成",
@@ -10,6 +11,7 @@
 		"default-mode": {
 			"summary": {
 				"title": "",
+				"screenTitle": "",
 				"subtitle": "",
 				"first-point": "最もプライバシー/快適性のバランスの取れたプリセットから始めましょう。Berty ノードはパフォーマンスと非同期通信を改善するために使用されます。",
 				"second-point": "",
@@ -19,6 +21,7 @@
 		},
 		"custom-mode": {
 			"summary": {
+				"screenTitle": "",
 				"title": "",
 				"subtitle": "",
 				"first-point": "",
@@ -97,7 +100,7 @@
 			"button": "Bertyを使用開始"
 		},
 		"web-views": {
-			"title": "WebViews",
+			"title": "",
 			"desc": "",
 			"first-button": "キャンセル",
 			"second-button": "はい"
@@ -105,6 +108,7 @@
 	},
 	"main": {
 		"home": {
+			"title": "",
 			"requests": {
 				"title": "リクエスト",
 				"accept": "承認",
@@ -148,6 +152,7 @@
 	},
 	"settings": {
 		"home": {
+			"title": "設定",
 			"proximity-button": "",
 			"notifications-button": "通知",
 			"contact-convs-button": "",
@@ -159,27 +164,43 @@
 			"about-button": "Bertyについて"
 		},
 		"about": {
+			"title": "Bertyについて",
 			"faq-button": "よくある質問",
 			"roadmap-button": "ロードマップ",
 			"policy-button": "",
-			"license-button": ""
+			"license-button": "",
+			"terms-of-use": "利用規約"
 		},
 		"accounts": {
+			"title": "アカウント",
 			"accounts-button": "アカウント",
 			"create-button": "",
 			"import-button": "",
 			"link-button": "",
-			"delete-button": ""
+			"delete-button": "",
+			"delete-title": ""
 		},
 		"appearance": {
+			"title": "",
 			"dark-button": "",
-			"editor-button": ""
+			"editor-button": "",
+			"theme-editor": {
+				"title": ""
+			}
 		},
 		"contact-convs": {
+			"title": "",
 			"reset-button": "",
 			"request-button": ""
 		},
+		"devices-backup": {
+			"title": ""
+		},
+		"security": {
+			"title": ""
+		},
 		"network": {
+			"title": "",
 			"ble-button": "Bluetooth Low Energy",
 			"mc-button": "",
 			"nearby-button": "",
@@ -190,6 +211,9 @@
 			"rdvp-button": "",
 			"relay-button": "",
 			"bootstrap-button": ""
+		},
+		"notifications": {
+			"title": "通知"
 		},
 		"edit-profile": {
 			"title": "プロフィールを編集",
@@ -382,6 +406,7 @@
 			}
 		},
 		"multi-member-settings": {
+			"title": "",
 			"media-button": "メディア、リンク & ドキュメント",
 			"members-button": {
 				"title": "メンバー"
@@ -420,6 +445,7 @@
 			"input-placeholder": "ここに入力..."
 		},
 		"one-to-one-settings": {
+			"title": "",
 			"media-button": "メディア、リンク & ドキュメント",
 			"save-button": "会話をサーバーに保存"
 		},
