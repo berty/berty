@@ -1,6 +1,7 @@
 {
 	"onboarding": {
 		"getstarted": {
+			"screenTitle": "",
 			"title": "GİZLİLİĞİNİZİ KORUYUN",
 			"desc": "ücretsiz & güvenli eşler arası mesajlaşma",
 			"create-button": "Yeni bir hesap oluştur",
@@ -10,6 +11,7 @@
 		"default-mode": {
 			"summary": {
 				"title": "Varsayılan Mod",
+				"screenTitle": "",
 				"subtitle": "Hızlıca Başla",
 				"first-point": "Senin için en uygun olan gizlilik/konfor dengesiyle başla. Berty düğümleri performans arttırmak ve asenkron iletişim sağlamak için kullanılır.",
 				"second-point": "Özelleştirilmiş gizlilik/konfor dengesi için, özelleştirme modunu seç.",
@@ -19,6 +21,7 @@
 		},
 		"custom-mode": {
 			"summary": {
+				"screenTitle": "",
 				"title": "Özelleştirilmiş Mod",
 				"subtitle": "Özelleştirilmiş Gizlilik/Konfor Dengesi",
 				"first-point": "Bu modda tüm ayarları gizlilik ve konfor dengesi sana uygun hale gelene kadar değiştir.",
@@ -97,14 +100,15 @@
 			"button": "BERTY KULLANMAYA BAŞLA"
 		},
 		"web-views": {
-			"title": "WebViewlar",
-			"desc": "Ağ üzerinde webview yüklemelerine hazırlık yapıyoruz. Hala açmak istiyor musun?",
+			"title": "",
+			"desc": "",
 			"first-button": "İptal",
 			"second-button": "Evet"
 		}
 	},
 	"main": {
 		"home": {
+			"title": "",
 			"requests": {
 				"title": "İstekler",
 				"accept": "Onayla",
@@ -148,10 +152,11 @@
 	},
 	"settings": {
 		"home": {
+			"title": "Ayarlar",
 			"proximity-button": "Bağımsız İletişim",
 			"notifications-button": "Bildirimler",
 			"contact-convs-button": "Bağlantı ve sohbetler",
-			"appearance-button": "Görünüş",
+			"appearance-button": "",
 			"devices-button": "Cihazlar ve yedekleme",
 			"accounts-button": "Hesaplar",
 			"network-button": "Ağ",
@@ -159,27 +164,43 @@
 			"about-button": "Berty Hakkında"
 		},
 		"about": {
+			"title": "Berty hakkında",
 			"faq-button": "SSS",
 			"roadmap-button": "Yol haritası",
 			"policy-button": "Gizlilik Politikası",
-			"license-button": "Açık Kaynak Lisansları"
+			"license-button": "Açık Kaynak Lisansları",
+			"terms-of-use": "Kullanım şartları"
 		},
 		"accounts": {
+			"title": "Hesaplar",
 			"accounts-button": "Hesaplar",
 			"create-button": "Yeni hesap oluştur",
 			"import-button": "Hesabı içeri aktar",
 			"link-button": "Farklı bir cihaz bağla",
-			"delete-button": "Bu hesabı sil"
+			"delete-button": "Bu hesabı sil",
+			"delete-title": ""
 		},
 		"appearance": {
+			"title": "",
 			"dark-button": "Karanlık Mod",
-			"editor-button": "Tema Düzenleyici"
+			"editor-button": "Tema Düzenleyici",
+			"theme-editor": {
+				"title": "Tema Düzenleyici"
+			}
 		},
 		"contact-convs": {
+			"title": "",
 			"reset-button": "Bağlantı linkimi sıfırla/QR Kod",
 			"request-button": "Gelen bağlantı isteklerine izin ver"
 		},
+		"devices-backup": {
+			"title": ""
+		},
+		"security": {
+			"title": ""
+		},
 		"network": {
+			"title": "Ağ",
 			"ble-button": "Bluetooth Düşük Enerji",
 			"mc-button": "Çok Eşli Bağlantı",
 			"nearby-button": "Android Nearby",
@@ -190,6 +211,9 @@
 			"rdvp-button": "",
 			"relay-button": "",
 			"bootstrap-button": ""
+		},
+		"notifications": {
+			"title": "Bildirimler"
 		},
 		"edit-profile": {
 			"title": "Profilimi düzenle",
@@ -382,6 +406,7 @@
 			}
 		},
 		"multi-member-settings": {
+			"title": "",
 			"media-button": "Medyalar, linkler & dosyalar",
 			"members-button": {
 				"title": "Üyeler"
@@ -420,6 +445,7 @@
 			"input-placeholder": "Buraya yaz..."
 		},
 		"one-to-one-settings": {
+			"title": "",
 			"media-button": "Medyalar, linkler & dosyalar",
 			"save-button": "Konuşmayı sunucuya kaydet"
 		},
