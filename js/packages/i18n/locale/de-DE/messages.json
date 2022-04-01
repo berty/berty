@@ -1,6 +1,7 @@
 {
 	"onboarding": {
 		"getstarted": {
+			"screenTitle": "",
 			"title": "SCHÜTZE DEINE PRIVATSPHÄRE",
 			"desc": "kostenloses und sicheres Peer-to-Peer-Messaging",
 			"create-button": "",
@@ -10,6 +11,7 @@
 		"default-mode": {
 			"summary": {
 				"title": "",
+				"screenTitle": "",
 				"subtitle": "",
 				"first-point": "",
 				"second-point": "",
@@ -19,6 +21,7 @@
 		},
 		"custom-mode": {
 			"summary": {
+				"screenTitle": "",
 				"title": "",
 				"subtitle": "",
 				"first-point": "",
@@ -97,7 +100,7 @@
 			"button": "Fertig - Berty benutzen"
 		},
 		"web-views": {
-			"title": "WebViews",
+			"title": "",
 			"desc": "",
 			"first-button": "Abbrechen",
 			"second-button": "Ja"
@@ -105,6 +108,7 @@
 	},
 	"main": {
 		"home": {
+			"title": "",
 			"requests": {
 				"title": "Anfragen",
 				"accept": "Akzeptieren",
@@ -148,6 +152,7 @@
 	},
 	"settings": {
 		"home": {
+			"title": "Einstellungen",
 			"proximity-button": "",
 			"notifications-button": "Benachrichtigungen",
 			"contact-convs-button": "",
@@ -159,27 +164,43 @@
 			"about-button": "Über Berty"
 		},
 		"about": {
+			"title": "Über Berty",
 			"faq-button": "FAQ",
 			"roadmap-button": "Roadmap",
 			"policy-button": "",
-			"license-button": ""
+			"license-button": "",
+			"terms-of-use": "Nutzungsbedingungen"
 		},
 		"accounts": {
+			"title": "Konten",
 			"accounts-button": "Konten",
 			"create-button": "",
 			"import-button": "",
 			"link-button": "",
-			"delete-button": ""
+			"delete-button": "",
+			"delete-title": ""
 		},
 		"appearance": {
+			"title": "",
 			"dark-button": "",
-			"editor-button": ""
+			"editor-button": "",
+			"theme-editor": {
+				"title": ""
+			}
 		},
 		"contact-convs": {
+			"title": "",
 			"reset-button": "",
 			"request-button": ""
 		},
+		"devices-backup": {
+			"title": ""
+		},
+		"security": {
+			"title": ""
+		},
 		"network": {
+			"title": "",
 			"ble-button": "Bluetooth Low Energy",
 			"mc-button": "",
 			"nearby-button": "",
@@ -190,6 +211,9 @@
 			"rdvp-button": "",
 			"relay-button": "",
 			"bootstrap-button": ""
+		},
+		"notifications": {
+			"title": "Benachrichtigungen"
 		},
 		"edit-profile": {
 			"title": "Profil bearbeiten",
@@ -382,6 +406,7 @@
 			}
 		},
 		"multi-member-settings": {
+			"title": "",
 			"media-button": "Medien, Links & Dokumente",
 			"members-button": {
 				"title": "Mitglieder"
@@ -420,6 +445,7 @@
 			"input-placeholder": "Hier eingeben..."
 		},
 		"one-to-one-settings": {
+			"title": "",
 			"media-button": "Medien, Links & Dokumente",
 			"save-button": "Unterhaltung auf Server speichern"
 		},
