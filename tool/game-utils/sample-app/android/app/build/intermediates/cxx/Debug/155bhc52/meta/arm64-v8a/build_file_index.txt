@@ -1,0 +1,1 @@
+/Users/clegirar/.go/src/berty.tech/berty/tool/game-utils/sample-app/android/app/src/main/jni/Android.mk

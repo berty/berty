@@ -1,0 +1,55 @@
+{
+  "name": "React-cxxreact",
+  "version": "0.68.1",
+  "summary": "-",
+  "homepage": "https://reactnative.dev/",
+  "license": "MIT",
+  "authors": "Facebook, Inc. and its affiliates",
+  "platforms": {
+    "ios": "11.0",
+    "tvos": "11.0"
+  },
+  "source": {
+    "git": "https://github.com/facebook/react-native.git",
+    "tag": "v0.68.1"
+  },
+  "source_files": "*.{cpp,h}",
+  "exclude_files": "SampleCxxModule.*",
+  "compiler_flags": "-DFOLLY_NO_CONFIG -DFOLLY_MOBILE=1 -DFOLLY_USE_LIBCPP=1 -Wno-comma -Wno-shorten-64-to-32 -Wno-documentation",
+  "pod_target_xcconfig": {
+    "HEADER_SEARCH_PATHS": "\"$(PODS_ROOT)/boost\" \"$(PODS_ROOT)/RCT-Folly\" \"$(PODS_ROOT)/DoubleConversion\""
+  },
+  "header_dir": "cxxreact",
+  "dependencies": {
+    "boost": [
+      "1.76.0"
+    ],
+    "DoubleConversion": [
+
+    ],
+    "RCT-Folly": [
+      "2021.06.28.00-v2"
+    ],
+    "glog": [
+
+    ],
+    "React-jsinspector": [
+      "0.68.1"
+    ],
+    "React-callinvoker": [
+      "0.68.1"
+    ],
+    "React-runtimeexecutor": [
+      "0.68.1"
+    ],
+    "React-perflogger": [
+      "0.68.1"
+    ],
+    "React-jsi": [
+      "0.68.1"
+    ],
+    "React-logger": [
+      "0.68.1"
+    ]
+  }
+}

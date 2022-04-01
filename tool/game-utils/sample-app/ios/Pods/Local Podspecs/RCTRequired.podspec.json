@@ -1,0 +1,17 @@
+{
+  "name": "RCTRequired",
+  "version": "0.68.1",
+  "summary": "-",
+  "homepage": "https://reactnative.dev/",
+  "license": "MIT",
+  "authors": "Facebook, Inc. and its affiliates",
+  "platforms": {
+    "ios": "11.0"
+  },
+  "source": {
+    "git": "https://github.com/facebook/react-native.git",
+    "tag": "v0.68.1"
+  },
+  "source_files": "**/*.{c,h,m,mm,cpp}",
+  "header_dir": "RCTRequired"
+}

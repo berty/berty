@@ -14,6 +14,7 @@
     "@eva-design/eva": "^2.1.0",
     "@gorhom/bottom-sheet": "^4",
     "@improbable-eng/grpc-web": "^0.15.0",
+    "@react-native-async-storage/async-storage": "^1.17.2",
     "@react-native-clipboard/clipboard": "^1.9.0",
     "@react-native-community/audio-toolkit": "^2.0.3",
     "@react-native-community/blur": "^3.6.0",

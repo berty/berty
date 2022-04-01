@@ -1,0 +1,1 @@
+../../../../FlipperKit/iOS/Plugins/FlipperKitPluginUtils/FlipperKitLayoutIOSDescriptors/FlipperKitLayoutIOSDescriptors/SKApplicationDescriptor.h

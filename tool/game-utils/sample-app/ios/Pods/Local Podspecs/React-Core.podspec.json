@@ -1,0 +1,195 @@
+{
+  "name": "React-Core",
+  "version": "0.68.1",
+  "summary": "The core of React Native.",
+  "homepage": "https://reactnative.dev/",
+  "license": "MIT",
+  "authors": "Facebook, Inc. and its affiliates",
+  "platforms": {
+    "ios": "11.0"
+  },
+  "source": {
+    "git": "https://github.com/facebook/react-native.git",
+    "tag": "v0.68.1"
+  },
+  "resource_bundles": {
+    "AccessibilityResources": [
+      "React/AccessibilityResources/*.lproj"
+    ]
+  },
+  "compiler_flags": "-DFOLLY_NO_CONFIG -DFOLLY_MOBILE=1 -DFOLLY_USE_LIBCPP=1 -Wno-comma -Wno-shorten-64-to-32 -Wno-documentation",
+  "header_dir": "React",
+  "frameworks": "JavaScriptCore",
+  "pod_target_xcconfig": {
+    "HEADER_SEARCH_PATHS": "\"$(PODS_TARGET_SRCROOT)/ReactCommon\" \"$(PODS_ROOT)/boost\" \"$(PODS_ROOT)/DoubleConversion\" \"$(PODS_ROOT)/RCT-Folly\" \"${PODS_ROOT}/Headers/Public/React-hermes\" \"${PODS_ROOT}/Headers/Public/hermes-engine\" \"${PODS_ROOT}/Headers/Public/FlipperKit\" \"$(PODS_ROOT)/Headers/Public/ReactCommon\" \"$(PODS_ROOT)/Headers/Public/React-RCTFabric\"",
+    "DEFINES_MODULE": "YES"
+  },
+  "user_target_xcconfig": {
+    "HEADER_SEARCH_PATHS": "\"$(PODS_ROOT)/Headers/Private/React-Core\""
+  },
+  "default_subspecs": "Default",
+  "dependencies": {
+    "RCT-Folly": [
+      "2021.06.28.00-v2"
+    ],
+    "React-cxxreact": [
+      "0.68.1"
+    ],
+    "React-perflogger": [
+      "0.68.1"
+    ],
+    "React-jsi": [
+      "0.68.1"
+    ],
+    "React-jsiexecutor": [
+      "0.68.1"
+    ],
+    "Yoga": [
+
+    ],
+    "glog": [
+
+    ]
+  },
+  "subspecs": [
+    {
+      "name": "Default",
+      "source_files": "React/**/*.{c,h,m,mm,S,cpp}",
+      "exclude_files": [
+        "React/CoreModules/**/*",
+        "React/DevSupport/**/*",
+        "React/Fabric/**/*",
+        "React/FBReactNativeSpec/**/*",
+        "React/Tests/**/*",
+        "React/Inspector/**/*"
+      ],
+      "private_header_files": "React/Cxx*/*.h"
+    },
+    {
+      "name": "DevSupport",
+      "source_files": [
+        "React/DevSupport/*.{h,mm,m}",
+        "React/Inspector/*.{h,mm,m}"
+      ],
+      "dependencies": {
+        "React-Core/Default": [
+          "0.68.1"
+        ],
+        "React-Core/RCTWebSocket": [
+          "0.68.1"
+        ],
+        "React-jsinspector": [
+          "0.68.1"
+        ]
+      }
+    },
+    {
+      "name": "RCTWebSocket",
+      "source_files": "Libraries/WebSocket/*.{h,m}",
+      "dependencies": {
+        "React-Core/Default": [
+          "0.68.1"
+        ]
+      }
+    },
+    {
+      "name": "CoreModulesHeaders",
+      "source_files": "React/CoreModules/**/*.h",
+      "dependencies": {
+        "React-Core/Default": [
+
+        ]
+      }
+    },
+    {
+      "name": "RCTActionSheetHeaders",
+      "source_files": "Libraries/ActionSheetIOS/*.h",
+      "dependencies": {
+        "React-Core/Default": [
+
+        ]
+      }
+    },
+    {
+      "name": "RCTAnimationHeaders",
+      "source_files": "Libraries/NativeAnimation/{Drivers/*,Nodes/*,*}.{h}",
+      "dependencies": {
+        "React-Core/Default": [
+
+        ]
+      }
+    },
+    {
+      "name": "RCTBlobHeaders",
+      "source_files": "Libraries/Blob/{RCTBlobManager,RCTFileReaderModule}.h",
+      "dependencies": {
+        "React-Core/Default": [
+
+        ]
+      }
+    },
+    {
+      "name": "RCTImageHeaders",
+      "source_files": "Libraries/Image/*.h",
+      "dependencies": {
+        "React-Core/Default": [
+
+        ]
+      }
+    },
+    {
+      "name": "RCTLinkingHeaders",
+      "source_files": "Libraries/LinkingIOS/*.h",
+      "dependencies": {
+        "React-Core/Default": [
+
+        ]
+      }
+    },
+    {
+      "name": "RCTNetworkHeaders",
+      "source_files": "Libraries/Network/*.h",
+      "dependencies": {
+        "React-Core/Default": [
+
+        ]
+      }
+    },
+    {
+      "name": "RCTPushNotificationHeaders",
+      "source_files": "Libraries/PushNotificationIOS/*.h",
+      "dependencies": {
+        "React-Core/Default": [
+
+        ]
+      }
+    },
+    {
+      "name": "RCTSettingsHeaders",
+      "source_files": "Libraries/Settings/*.h",
+      "dependencies": {
+        "React-Core/Default": [
+
+        ]
+      }
+    },
+    {
+      "name": "RCTTextHeaders",
+      "source_files": "Libraries/Text/**/*.h",
+      "dependencies": {
+        "React-Core/Default": [
+
+        ]
+      }
+    },
+    {
+      "name": "RCTVibrationHeaders",
+      "source_files": "Libraries/Vibration/*.h",
+      "dependencies": {
+        "React-Core/Default": [
+
+        ]
+      }
+    }
+  ]
+}

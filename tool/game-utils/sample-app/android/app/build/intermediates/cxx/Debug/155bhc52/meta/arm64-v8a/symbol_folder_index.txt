@@ -1,0 +1,1 @@
+/Users/clegirar/.go/src/berty.tech/berty/tool/game-utils/sample-app/android/app/build/intermediates/cxx/Debug/155bhc52/obj/local/arm64-v8a

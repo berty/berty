@@ -1,0 +1,6 @@
+module Pods_miniGame_miniGameTests {
+  umbrella header "Pods-miniGame-miniGameTests-umbrella.h"
+
+  export *
+  module * { export * }
+}

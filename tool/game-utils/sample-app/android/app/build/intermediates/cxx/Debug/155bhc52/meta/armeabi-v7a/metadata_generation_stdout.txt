@@ -1,0 +1,2 @@
+Android NDK: ERROR:/Users/clegirar/.go/src/berty.tech/berty/tool/game-utils/sample-app/android/app/src/main/jni/Android.mk:fb: LOCAL_SRC_FILES points to a missing file    
+Android NDK: Check that /Users/clegirar/.go/src/berty.tech/berty/tool/game-utils/sample-app/android/app/build/react-ndk/exported/armeabi-v7a/libfb.so exists  or that its path is correct   

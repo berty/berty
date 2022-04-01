@@ -1,0 +1,1 @@
+../../../FlipperKit/iOS/FlipperKit/FlipperWebSocket.h
