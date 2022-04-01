@@ -3,12 +3,12 @@
     "services": {
       "rpl": {
         "name": "Réplication",
-        "description": "",
+        "description": "Ce service répliquera automatiquement vos conversations pour fournir à votre appareil les performances réseau les plus efficaces.",
         "benefitBadge": "Performance"
       },
       "psh": {
         "name": "Notifications push",
-        "description": "",
+        "description": "Ce service permet à votre appareil de recevoir des notifications push pour les messages entrants.",
         "benefitBadge": "Performance"
       }
     },
