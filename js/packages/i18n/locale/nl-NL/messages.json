@@ -1,6 +1,7 @@
 {
 	"onboarding": {
 		"getstarted": {
+			"screenTitle": "",
 			"title": "BESCHERM UW PRIVACY",
 			"desc": "gratis & veilig peer-to-peer berichten",
 			"create-button": "",
@@ -10,6 +11,7 @@
 		"default-mode": {
 			"summary": {
 				"title": "",
+				"screenTitle": "",
 				"subtitle": "",
 				"first-point": "",
 				"second-point": "",
@@ -19,6 +21,7 @@
 		},
 		"custom-mode": {
 			"summary": {
+				"screenTitle": "",
 				"title": "",
 				"subtitle": "",
 				"first-point": "",
@@ -105,6 +108,7 @@
 	},
 	"main": {
 		"home": {
+			"title": "",
 			"requests": {
 				"title": "Aanvragen",
 				"accept": "Accepteren",
@@ -148,6 +152,7 @@
 	},
 	"settings": {
 		"home": {
+			"title": "Instellingen",
 			"proximity-button": "",
 			"notifications-button": "Notificaties",
 			"contact-convs-button": "",
@@ -159,27 +164,43 @@
 			"about-button": "Over Berty"
 		},
 		"about": {
+			"title": "Over Berty",
 			"faq-button": "FAQ",
 			"roadmap-button": "Roadmap",
 			"policy-button": "",
-			"license-button": ""
+			"license-button": "",
+			"terms-of-use": "Gebruiksvoorwaarden"
 		},
 		"accounts": {
+			"title": "Accounts",
 			"accounts-button": "Accounts",
 			"create-button": "",
 			"import-button": "",
 			"link-button": "",
-			"delete-button": ""
+			"delete-button": "",
+			"delete-title": ""
 		},
 		"appearance": {
+			"title": "",
 			"dark-button": "",
-			"editor-button": ""
+			"editor-button": "",
+			"theme-editor": {
+				"title": ""
+			}
 		},
 		"contact-convs": {
+			"title": "",
 			"reset-button": "",
 			"request-button": ""
 		},
+		"devices-backup": {
+			"title": ""
+		},
+		"security": {
+			"title": ""
+		},
 		"network": {
+			"title": "",
 			"ble-button": "Bluetooth Low Energy",
 			"mc-button": "",
 			"nearby-button": "",
@@ -190,6 +211,9 @@
 			"rdvp-button": "",
 			"relay-button": "",
 			"bootstrap-button": ""
+		},
+		"notifications": {
+			"title": "Notificaties"
 		},
 		"edit-profile": {
 			"title": "Bewerk mijn profiel",
@@ -382,6 +406,7 @@
 			}
 		},
 		"multi-member-settings": {
+			"title": "",
 			"media-button": "Media, links & documenten",
 			"members-button": {
 				"title": "Leden"
@@ -420,6 +445,7 @@
 			"input-placeholder": "Voer hier in..."
 		},
 		"one-to-one-settings": {
+			"title": "",
 			"media-button": "Media, links & documenten",
 			"save-button": "Gesprek opslaan op server"
 		},
