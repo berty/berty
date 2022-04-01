@@ -1,6 +1,7 @@
 {
 	"onboarding": {
 		"getstarted": {
+			"screenTitle": "",
 			"title": "保护您的隐私！",
 			"desc": "免费和安全的点对点消息传递",
 			"create-button": "创建帐户",
@@ -10,6 +11,7 @@
 		"default-mode": {
 			"summary": {
 				"title": "默认模式",
+				"screenTitle": "",
 				"subtitle": "快速开始",
 				"first-point": "从提供最适合的隐私/舒适平衡的预设开始。 Berty 节点用于提高性能和异步通信。",
 				"second-point": "如需自定义隐私/舒适度平衡，请选择自定义模式。",
@@ -19,6 +21,7 @@
 		},
 		"custom-mode": {
 			"summary": {
+				"screenTitle": "",
 				"title": "自定义模式",
 				"subtitle": "自定义隐私/舒适度平衡",
 				"first-point": "在此模式下，单独调整所有设置以创建适合您的隐私和舒适的平衡。",
@@ -97,14 +100,15 @@
 			"button": "开始使用 Berty"
 		},
 		"web-views": {
-			"title": "WebViews",
-			"desc": "我们准备好加载WebView。你还想打开它吗？",
+			"title": "",
+			"desc": "",
 			"first-button": "取消",
 			"second-button": "是"
 		}
 	},
 	"main": {
 		"home": {
+			"title": "",
 			"requests": {
 				"title": "请求",
 				"accept": "同意",
@@ -148,10 +152,11 @@
 	},
 	"settings": {
 		"home": {
+			"title": "设置",
 			"proximity-button": "离线通讯",
 			"notifications-button": "消息通知",
 			"contact-convs-button": "联系和对话",
-			"appearance-button": "外观",
+			"appearance-button": "",
 			"devices-button": "设备和备份",
 			"accounts-button": "账户",
 			"network-button": "网络",
@@ -159,27 +164,43 @@
 			"about-button": "关于 Berty"
 		},
 		"about": {
+			"title": "关于 Berty",
 			"faq-button": "常见问题",
 			"roadmap-button": "路线图",
 			"policy-button": "隐私政策",
-			"license-button": "开源许可证"
+			"license-button": "开源许可证",
+			"terms-of-use": "使用条款"
 		},
 		"accounts": {
+			"title": "账户",
 			"accounts-button": "账户",
 			"create-button": "创建帐户",
 			"import-button": "导入帐户",
 			"link-button": "连接其他设备",
-			"delete-button": "删除此帐户"
+			"delete-button": "删除此帐户",
+			"delete-title": ""
 		},
 		"appearance": {
+			"title": "",
 			"dark-button": "暗色模式",
-			"editor-button": "主题编辑器"
+			"editor-button": "主题编辑器",
+			"theme-editor": {
+				"title": "主题编辑器"
+			}
 		},
 		"contact-convs": {
+			"title": "",
 			"reset-button": "重置我的联系链接/二维码",
 			"request-button": "允许收到联系人请求"
 		},
+		"devices-backup": {
+			"title": ""
+		},
+		"security": {
+			"title": ""
+		},
 		"network": {
+			"title": "网络",
 			"ble-button": "低功耗蓝牙",
 			"mc-button": "多节点连接",
 			"nearby-button": "附近的安卓",
@@ -190,6 +211,9 @@
 			"rdvp-button": "Rendezvous 节点",
 			"relay-button": "中继节点",
 			"bootstrap-button": "引导节点"
+		},
+		"notifications": {
+			"title": "消息通知"
 		},
 		"edit-profile": {
 			"title": "编辑我的资料",
@@ -382,6 +406,7 @@
 			}
 		},
 		"multi-member-settings": {
+			"title": "",
 			"media-button": "媒体、 链接和文档",
 			"members-button": {
 				"title": "成员"
@@ -420,6 +445,7 @@
 			"input-placeholder": "在此输入..."
 		},
 		"one-to-one-settings": {
+			"title": "",
 			"media-button": "媒体、 链接和文档",
 			"save-button": "在服务器上保存对话"
 		},
