@@ -9,6 +9,7 @@ import {
 	Dimensions,
 	Linking,
 	Share,
+	Platform,
 } from 'react-native'
 import { Icon } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
@@ -16,6 +17,7 @@ import { TabView, SceneMap } from 'react-native-tab-view'
 import tlds from 'tlds'
 import LinkifyIt from 'linkify-it'
 import Hyperlink from 'react-native-hyperlink'
+import Clipboard from '@react-native-clipboard/clipboard'
 
 import beapi from '@berty/api'
 import { useStyles } from '@berty/styles'
@@ -235,7 +237,12 @@ export const SharedMedias: ScreenFC<'Chat.SharedMedias'> = ({
 								try {
 									console.log('will share', data.length / 1000 / 1000, 'MB')
 									await RNFS.writeFile(tmpFilename, data.toString('base64'), 'base64')
-									await Share.share({ url: 'file://' + tmpFilename })
+									const url = 'file://' + tmpFilename
+									if (Platform.OS === 'web') {
+										Clipboard.setString(url)
+									} else {
+										await Share.share({ url })
+									}
 								} catch (err: any) {
 									if (!(typeof err?.message === 'string' && err.message.contains('cancelled'))) {
 										console.warn('failed to write shareable file: ', err)

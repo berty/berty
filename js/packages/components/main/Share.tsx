@@ -1,6 +1,7 @@
 import React, { FC, ReactNode, useCallback, useEffect, useState } from 'react'
-import { View, Vibration, StatusBar, Share, ScrollView } from 'react-native'
+import { View, Vibration, StatusBar, Share, ScrollView, Platform } from 'react-native'
 import { Layout } from '@ui-kitten/components'
+import Clipboard from '@react-native-clipboard/clipboard'
 
 import { useThemeColor } from '@berty/store/hooks'
 import { useStyles } from '@berty/styles'
@@ -257,7 +258,11 @@ export const ShareModal: ScreenFC<'Main.Share'> = () => {
 								onPress: async () => {
 									if (url) {
 										try {
-											await Share.share({ url, message: url })
+											if (Platform.OS === 'web') {
+												Clipboard.setString(url)
+											} else {
+												await Share.share({ url, message: url })
+											}
 										} catch (e) {
 											console.error(e)
 										}
