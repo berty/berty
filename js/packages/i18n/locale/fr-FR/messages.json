@@ -1,6 +1,7 @@
 {
 	"onboarding": {
 		"getstarted": {
+			"screenTitle": "",
 			"title": "PROTÉGEZ VOTRE VIE PRIVÉE",
 			"desc": "messagerie P2P gratuite et sécurisée",
 			"create-button": "Créer un nouveau compte",
@@ -10,6 +11,7 @@
 		"default-mode": {
 			"summary": {
 				"title": "Mode par défaut",
+				"screenTitle": "",
 				"subtitle": "Démarrer rapidement",
 				"first-point": "Commencer par des préréglages qui offrent un équilibre entre intimité et confort qui convient au plus grand nombre. Les nœuds Berty sont utilisés pour améliorer les performances et la communication asynchrone.",
 				"second-point": "Pour un équilibre de vie privée/confort personnalisé, sélectionnez le Mode Personnalisé.",
@@ -19,6 +21,7 @@
 		},
 		"custom-mode": {
 			"summary": {
+				"screenTitle": "",
 				"title": "Mode personnalisé",
 				"subtitle": "Ratio confort et confidentialité personnalisé",
 				"first-point": "Dans ce mode, ajustez tous les paramètres individuellement pour créer l'équilibre entre intimité et confort qui vous convient.",
@@ -97,14 +100,15 @@
 			"button": "LANCER BERTY"
 		},
 		"web-views": {
-			"title": "WebViews",
-			"desc": "Des données seront chargées depuis internet, voulez vous toujours ouvrir le contenu ?",
+			"title": "",
+			"desc": "",
 			"first-button": "Annuler",
 			"second-button": "Oui"
 		}
 	},
 	"main": {
 		"home": {
+			"title": "",
 			"requests": {
 				"title": "Requêtes",
 				"accept": "Accepter",
@@ -148,10 +152,11 @@
 	},
 	"settings": {
 		"home": {
+			"title": "Paramètres",
 			"proximity-button": "Communication hors-ligne",
 			"notifications-button": "Notifications",
 			"contact-convs-button": "Contacts et conversations",
-			"appearance-button": "Apparence",
+			"appearance-button": "",
 			"devices-button": "Périphériques et sauvegarde",
 			"accounts-button": "Comptes",
 			"network-button": "Réseau",
@@ -159,27 +164,43 @@
 			"about-button": "À propos de Berty"
 		},
 		"about": {
+			"title": "À propos de Berty",
 			"faq-button": "FAQ",
 			"roadmap-button": "Roadmap",
 			"policy-button": "Politique de confidentialité",
-			"license-button": "Licences Open Source"
+			"license-button": "Licences Open Source",
+			"terms-of-use": "Conditions d'utilisation"
 		},
 		"accounts": {
+			"title": "Comptes",
 			"accounts-button": "Comptes",
 			"create-button": "Créer un nouveau compte",
 			"import-button": "Importer un compte",
 			"link-button": "Lier cet appareil",
-			"delete-button": "Supprimer ce compte"
+			"delete-button": "Supprimer ce compte",
+			"delete-title": ""
 		},
 		"appearance": {
+			"title": "",
 			"dark-button": "Mode Sombre",
-			"editor-button": "Éditeur de thème"
+			"editor-button": "Éditeur de thème",
+			"theme-editor": {
+				"title": "Éditeur de thème"
+			}
 		},
 		"contact-convs": {
+			"title": "",
 			"reset-button": "Réinitialiser mon lien/code QR de contact",
 			"request-button": "Autoriser les demandes de contact entrantes"
 		},
+		"devices-backup": {
+			"title": ""
+		},
+		"security": {
+			"title": ""
+		},
 		"network": {
+			"title": "Réseau",
 			"ble-button": "Bluetooth faible consommation d'énergie",
 			"mc-button": "Connectivité multi-pair",
 			"nearby-button": "Android Nearby",
@@ -190,6 +211,9 @@
 			"rdvp-button": "Nœuds de point de rendez-vous",
 			"relay-button": "Nœuds de relais",
 			"bootstrap-button": "Nœuds d'amorçage"
+		},
+		"notifications": {
+			"title": "Notifications"
 		},
 		"edit-profile": {
 			"title": "Modifier mon profil",
@@ -382,6 +406,7 @@
 			}
 		},
 		"multi-member-settings": {
+			"title": "",
 			"media-button": "Médias, liens & documents",
 			"members-button": {
 				"title": "Membres"
@@ -420,6 +445,7 @@
 			"input-placeholder": "Écrivez ici..."
 		},
 		"one-to-one-settings": {
+			"title": "",
 			"media-button": "Médias, liens & documents",
 			"save-button": "Enregistrer la conversation sur un serveur"
 		},
