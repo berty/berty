@@ -10,7 +10,7 @@ import { useThemeColor } from '@berty/store'
 
 import { ButtonSettingV2, Section } from '../shared-components'
 
-export const Appearence: ScreenFC<'Settings.Appearence'> = () => {
+export const Appearance: ScreenFC<'Settings.Appearance'> = () => {
 	const [{}, { scaleSize }] = useStyles()
 	const colors = useThemeColor()
 	// const isDark = useSelector(selectThemeIsDark)

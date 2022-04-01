@@ -296,7 +296,7 @@ export const Home: ScreenFC<'Settings.Home'> = withInAppNotification(
 						<ButtonSettingV2
 							text={t('settings.home.appearance-button')}
 							icon='eye-outline'
-							onPress={() => navigate('Settings.Appearence')}
+							onPress={() => navigate('Settings.Appearance')}
 						/>
 						{/*
 					<ButtonSettingV2

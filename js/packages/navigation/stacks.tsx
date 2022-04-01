@@ -215,7 +215,7 @@ export const Navigation: React.FC = React.memo(() => {
 			<NavigationStack.Screen
 				name={'Onboarding.GetStarted'}
 				component={Components.Onboarding.GetStarted}
-				options={{ headerShown: false }}
+				options={{ headerShown: false, title: t('onboarding.getstarted.screenTitle') }}
 			/>
 			<NavigationStack.Screen
 				name={'Onboarding.CreateAccount'}
@@ -226,13 +226,14 @@ export const Navigation: React.FC = React.memo(() => {
 					},
 					headerTintColor: colors['reverted-main-text'],
 					headerBackTitleVisible: false,
-					title: '',
+					title: t('onboarding.getstarted.create-button'),
+					headerTitle: () => <></>,
 				}}
 			/>
 			<NavigationStack.Screen
 				name={'Onboarding.SetupFinished'}
 				component={Components.Onboarding.SetupFinished}
-				options={{ headerShown: false }}
+				options={{ headerShown: false, title: t('onboarding.setup-finished.title') }}
 			/>
 			<NavigationStack.Screen
 				name={'Onboarding.CustomModeSettings'}
@@ -243,13 +244,19 @@ export const Navigation: React.FC = React.memo(() => {
 					},
 					headerTintColor: colors['reverted-main-text'],
 					headerBackTitleVisible: false,
-					title: '',
+					title: t('onboarding.custom-mode.summary.screenTitle'),
+					headerTitle: () => <></>,
 				}}
 			/>
 			<NavigationStack.Screen
 				name={'Onboarding.WebViews'}
 				component={Components.Onboarding.WebViews}
-				options={{ title: '', headerBackTitle: '', headerTintColor: colors['main-text'] }}
+				options={{
+					title: t('onboarding.web-views.title'),
+					headerTitle: () => <></>,
+					headerBackTitle: '',
+					headerTintColor: colors['main-text'],
+				}}
 			/>
 			<NavigationStack.Screen
 				name={'Onboarding.DefaultMode'}
@@ -260,7 +267,8 @@ export const Navigation: React.FC = React.memo(() => {
 					},
 					headerTintColor: colors['reverted-main-text'],
 					headerBackTitleVisible: false,
-					title: '',
+					title: t('onboarding.default-mode.summary.screenTitle'),
+					headerTitle: () => <></>,
 				}}
 			/>
 			<NavigationStack.Screen
@@ -272,18 +280,26 @@ export const Navigation: React.FC = React.memo(() => {
 					},
 					headerTintColor: colors['reverted-main-text'],
 					headerBackTitleVisible: false,
-					title: '',
+					title: t('onboarding.custom-mode.summary.screenTitle'),
+					headerTitle: () => <></>,
 				}}
 			/>
 			{/* Main */}
 			<NavigationStack.Screen
 				name={'Main.Home'}
 				component={Components.Main.Home}
-				options={{ headerShown: false }}
+				options={{
+					headerShown: false,
+					title: t('main.home.title'),
+				}}
 			/>
 			<NavigationStack.Screen
 				name={'Main.ContactRequest'}
 				component={Components.Main.ContactRequest}
+				options={{
+					headerShown: false,
+					title: t('main.home.requests.page-title'),
+				}}
 			/>
 			<NavigationStack.Screen
 				name={'Main.Scan'}
@@ -306,18 +322,27 @@ export const Navigation: React.FC = React.memo(() => {
 			<NavigationStack.Screen
 				name={'Main.Permissions'}
 				component={Components.Main.Permissions}
-				options={{ headerShown: false, presentation: 'formSheet' }}
+				options={{
+					headerShown: false,
+					presentation: 'formSheet',
+					title: t('permission.request.title'),
+				}}
 			/>
 			<NavigationStack.Screen
 				name={'Main.BlePermission'}
 				component={Components.Main.BlePermission}
-				options={{ headerShown: false, presentation: 'formSheet' }}
+				options={{
+					headerShown: false,
+					presentation: 'formSheet',
+					title: t('permission.proximity.title'),
+				}}
 			/>
 			<NavigationStack.Screen
 				name={'Main.Share'}
 				component={Components.Main.ShareModal}
 				options={BackgroundHeaderScreenOptions({
-					title: '',
+					title: t('main.home.title'),
+					headerTitle: () => <></>,
 				})}
 			/>
 			{/* CreateGroup */}
@@ -376,7 +401,8 @@ export const Navigation: React.FC = React.memo(() => {
 				name={'Chat.OneToOneSettings'}
 				component={Components.Chat.OneToOneSettings}
 				options={BackgroundHeaderScreenOptions({
-					title: '',
+					title: t('chat.one-to-one-settings.title'),
+					headerTitle: () => <></>,
 					presentation: 'formSheet',
 				})}
 			/>
@@ -384,7 +410,8 @@ export const Navigation: React.FC = React.memo(() => {
 				name={'Chat.ContactSettings'}
 				component={Components.Chat.ContactSettings}
 				options={BackgroundHeaderScreenOptions({
-					title: '',
+					title: t('chat.one-to-one-settings.title'),
+					headerTitle: () => <></>,
 					presentation: 'formSheet',
 				})}
 			/>
@@ -392,7 +419,8 @@ export const Navigation: React.FC = React.memo(() => {
 				name={'Group.MultiMemberSettings'}
 				component={Components.Chat.MultiMemberSettings}
 				options={BackgroundHeaderScreenOptions({
-					title: '',
+					title: t('chat.multi-member-settings.title'),
+					headerTitle: () => <></>,
 					presentation: 'formSheet',
 				})}
 			/>
@@ -400,7 +428,8 @@ export const Navigation: React.FC = React.memo(() => {
 				name={'Group.ChatSettingsMemberDetail'}
 				component={Components.Chat.ChatSettingsMemberDetail}
 				options={BackgroundHeaderScreenOptions({
-					title: '',
+					title: t('chat.multi-member-settings.title'),
+					headerTitle: () => <></>,
 					presentation: 'formSheet',
 				})}
 			/>
@@ -451,7 +480,7 @@ export const Navigation: React.FC = React.memo(() => {
 
 					headerTintColor: colors['main-text'],
 					headerBackTitleVisible: false,
-					title: 'Settings',
+					title: t('settings.home.title'),
 				}}
 			/>
 			<NavigationStack.Screen
@@ -463,7 +492,7 @@ export const Navigation: React.FC = React.memo(() => {
 					},
 					headerTintColor: colors['main-text'],
 					headerBackTitleVisible: false,
-					title: 'Network',
+					title: t('settings.network.title'),
 				}}
 			/>
 			<NavigationStack.Screen
@@ -473,7 +502,7 @@ export const Navigation: React.FC = React.memo(() => {
 					headerStyle: {
 						backgroundColor: colors['secondary-background'],
 					},
-					title: 'Notifications',
+					title: t('settings.notifications.title'),
 					presentation: 'formSheet',
 				}}
 			/>
@@ -484,18 +513,18 @@ export const Navigation: React.FC = React.memo(() => {
 					headerStyle: {
 						backgroundColor: colors['secondary-background'],
 					},
-					title: 'Contact and Conversations',
+					title: t('settings.contact-convs.title'),
 					presentation: 'formSheet',
 				}}
 			/>
 			<NavigationStack.Screen
-				name={'Settings.Appearence'}
-				component={Components.Settings.Appearence}
+				name={'Settings.Appearance'}
+				component={Components.Settings.Appearance}
 				options={{
 					headerStyle: {
 						backgroundColor: colors['secondary-background'],
 					},
-					title: 'Appearence',
+					title: t('settings.appearance.title'),
 					presentation: 'formSheet',
 				}}
 			/>
@@ -507,7 +536,7 @@ export const Navigation: React.FC = React.memo(() => {
 						backgroundColor: colors['alt-secondary-background-header'],
 					},
 					headerTintColor: colors['reverted-main-text'],
-					title: 'ThemeEditor',
+					title: t('settings.appearance.theme-editor.title'),
 					presentation: 'formSheet',
 				}}
 			/>
@@ -518,7 +547,7 @@ export const Navigation: React.FC = React.memo(() => {
 					headerStyle: {
 						backgroundColor: colors['secondary-background'],
 					},
-					title: 'Devices and Backup',
+					title: t('settings.devices-backup.title'),
 					presentation: 'formSheet',
 				}}
 			/>
@@ -529,7 +558,7 @@ export const Navigation: React.FC = React.memo(() => {
 					headerStyle: {
 						backgroundColor: colors['secondary-background'],
 					},
-					title: 'Security',
+					title: t('settings.security.title'),
 					presentation: 'formSheet',
 				}}
 			/>
@@ -540,7 +569,7 @@ export const Navigation: React.FC = React.memo(() => {
 					headerStyle: {
 						backgroundColor: colors['secondary-background'],
 					},
-					title: 'Accounts',
+					title: t('settings.accounts.title'),
 					presentation: 'formSheet',
 				}}
 			/>
@@ -551,7 +580,7 @@ export const Navigation: React.FC = React.memo(() => {
 					headerStyle: {
 						backgroundColor: colors['secondary-background'],
 					},
-					title: 'About Berty',
+					title: t('settings.about.title'),
 					presentation: 'formSheet',
 				}}
 			/>
@@ -568,7 +597,7 @@ export const Navigation: React.FC = React.memo(() => {
 				name={'Settings.TermsOfUse'}
 				component={Components.Settings.TermsOfUse}
 				options={BackgroundHeaderScreenOptions({
-					title: 'Terms of use',
+					title: t('settings.about.terms-of-use'),
 					...CustomTitleStyle(),
 					presentation: 'formSheet',
 				})}
@@ -597,6 +626,7 @@ export const Navigation: React.FC = React.memo(() => {
 				options={{
 					headerShown: false,
 					presentation: 'formSheet',
+					title: t('settings.accounts.delete-title'),
 				}}
 			/>
 			<NavigationStack.Screen
@@ -656,7 +686,11 @@ export const Navigation: React.FC = React.memo(() => {
 			<NavigationStack.Screen
 				name={'Settings.BertyServices'}
 				component={Components.Settings.BertyServices}
-				options={{ headerShown: false, presentation: 'formSheet' }}
+				options={{
+					headerShown: false,
+					presentation: 'formSheet',
+					title: t('settings.berty-services.title'),
+				}}
 			/>
 			<NavigationStack.Screen
 				name={'Settings.Roadmap'}
