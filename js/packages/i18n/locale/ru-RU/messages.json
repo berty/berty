@@ -1,6 +1,7 @@
 {
 	"onboarding": {
 		"getstarted": {
+			"screenTitle": "",
 			"title": "Защити свою конфедециальность",
 			"desc": "Бесплатное и защищённое сквозное общение",
 			"create-button": "",
@@ -10,6 +11,7 @@
 		"default-mode": {
 			"summary": {
 				"title": "",
+				"screenTitle": "",
 				"subtitle": "",
 				"first-point": "",
 				"second-point": "",
@@ -19,6 +21,7 @@
 		},
 		"custom-mode": {
 			"summary": {
+				"screenTitle": "",
 				"title": "",
 				"subtitle": "",
 				"first-point": "",
@@ -105,6 +108,7 @@
 	},
 	"main": {
 		"home": {
+			"title": "",
 			"requests": {
 				"title": "Запросы",
 				"accept": "Принять",
@@ -148,6 +152,7 @@
 	},
 	"settings": {
 		"home": {
+			"title": "Настройки",
 			"proximity-button": "",
 			"notifications-button": "Уведомления",
 			"contact-convs-button": "",
@@ -159,27 +164,43 @@
 			"about-button": "О Berty"
 		},
 		"about": {
+			"title": "О Berty",
 			"faq-button": "ЧАВО",
 			"roadmap-button": "",
 			"policy-button": "",
-			"license-button": ""
+			"license-button": "",
+			"terms-of-use": "Условия пользования"
 		},
 		"accounts": {
+			"title": "Аккаунты",
 			"accounts-button": "Аккаунты",
 			"create-button": "",
 			"import-button": "",
 			"link-button": "",
-			"delete-button": ""
+			"delete-button": "",
+			"delete-title": ""
 		},
 		"appearance": {
+			"title": "",
 			"dark-button": "",
-			"editor-button": ""
+			"editor-button": "",
+			"theme-editor": {
+				"title": ""
+			}
 		},
 		"contact-convs": {
+			"title": "",
 			"reset-button": "",
 			"request-button": ""
 		},
+		"devices-backup": {
+			"title": ""
+		},
+		"security": {
+			"title": ""
+		},
 		"network": {
+			"title": "",
 			"ble-button": "",
 			"mc-button": "",
 			"nearby-button": "",
@@ -190,6 +211,9 @@
 			"rdvp-button": "",
 			"relay-button": "",
 			"bootstrap-button": ""
+		},
+		"notifications": {
+			"title": "Уведомления"
 		},
 		"edit-profile": {
 			"title": "Редактировать мой профиль",
@@ -382,6 +406,7 @@
 			}
 		},
 		"multi-member-settings": {
+			"title": "",
 			"media-button": "Медиа, ссылки и документы",
 			"members-button": {
 				"title": "Участники"
@@ -420,6 +445,7 @@
 			"input-placeholder": "Введите здесь..."
 		},
 		"one-to-one-settings": {
+			"title": "",
 			"media-button": "Медиа, ссылки и документы",
 			"save-button": "Сохранить беседу на сервере"
 		},
