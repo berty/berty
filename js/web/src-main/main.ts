@@ -1,12 +1,19 @@
-import {app, BrowserWindow} from 'electron';
+import {app, dialog, BrowserWindow} from 'electron';
 import path from 'path';
 import {spawn} from 'child_process';
 import {platform} from 'os';
+import contextMenu from 'electron-context-menu';
 
 const isDev = process.env.NODE_ENV === 'development';
 const accountListener = process.env.ACCOUNT_LISTENER || '/ip4/127.0.0.1/tcp/9092/grpcws';
 const protocolListener = process.env.PROTOCOL_LISTENER || '/ip4/127.0.0.1/tcp/9091/grpcws';
 const noDaemon = process.env.NO_DAEMON === 'true';
+
+app.name = 'Berty'
+
+contextMenu({
+	showSaveImageAs: true
+});
 
 const createWindow = (): void => {
 	const mainWindow = new BrowserWindow({
@@ -18,7 +25,8 @@ const createWindow = (): void => {
 			nodeIntegrationInSubFrames: true,
 			enableRemoteModule: true,
 			contextIsolation: true,
-			preload: path.join(__dirname, 'preload.js')
+			preload: path.join(__dirname, 'preload.js'),
+			spellcheck: true,
 		}
 	});
 
@@ -48,6 +56,8 @@ app.on('window-all-closed', () => {
 });
 
 if (!noDaemon) {
+	const startedAt = Date.now()
+
 	let execPath = ''
 	if (isDev) {
 		switch (platform()) {
@@ -83,6 +93,10 @@ if (!noDaemon) {
 	});
 
 	bertyDaemon.on('exit', (code) => {
+		if (code !== 0 && (Date.now() - startedAt) < 2000) {
+			dialog.showErrorBox('Unable to start app', 'Another Berty daemon is probably running, check logs for more details')
+		}
+
 		console.log(`child process exited with code ${code}`);
 		app.quit()
 	});
