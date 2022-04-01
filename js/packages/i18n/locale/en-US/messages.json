@@ -1,6 +1,7 @@
 {
 	"onboarding": {
 		"getstarted": {
+			"screenTitle": "",
 			"title": "PROTECT YOUR PRIVACY",
 			"desc": "free & secure peer-to-peer messaging",
 			"create-button": "Create an account",
@@ -10,6 +11,7 @@
 		"default-mode": {
 			"summary": {
 				"title": "Default Mode",
+				"screenTitle": "",
 				"subtitle": "Get Started Quickly",
 				"first-point": "Start with presets that offer a privacy/comfort balance that suits most. Berty nodes are used to improve performance and asynchronous communication.",
 				"second-point": "For a custom privacy/comfort balance, select Custom Mode.",
@@ -19,6 +21,7 @@
 		},
 		"custom-mode": {
 			"summary": {
+				"screenTitle": "",
 				"title": "Custom Mode",
 				"subtitle": "Custom Privacy/Comfort Balance",
 				"first-point": "In this mode, adjust all settings individually to create the balance of privacy and comfort that works for you.",
@@ -97,14 +100,15 @@
 			"button": "START USING BERTY"
 		},
 		"web-views": {
-			"title": "WebViews",
-			"desc": "We are getting ready to load webviews on the network. Do you still want to open it?",
+			"title": "",
+			"desc": "",
 			"first-button": "Cancel",
 			"second-button": "Yes"
 		}
 	},
 	"main": {
 		"home": {
+			"title": "",
 			"requests": {
 				"title": "Requests",
 				"accept": "Accept",
@@ -148,10 +152,11 @@
 	},
 	"settings": {
 		"home": {
+			"title": "",
 			"proximity-button": "Off-Grid Communication",
 			"notifications-button": "Notifications",
 			"contact-convs-button": "Contact and conversations",
-			"appearance-button": "Appearence",
+			"appearance-button": "",
 			"devices-button": "Devices and backup",
 			"accounts-button": "Accounts",
 			"network-button": "Network",
@@ -159,27 +164,43 @@
 			"about-button": "About Berty"
 		},
 		"about": {
+			"title": "",
 			"faq-button": "FAQ",
 			"roadmap-button": "Roadmap",
 			"policy-button": "Privacy Policy",
-			"license-button": "Open Source Licenses"
+			"license-button": "Open Source Licenses",
+			"terms-of-use": ""
 		},
 		"accounts": {
+			"title": "",
 			"accounts-button": "Accounts",
 			"create-button": "Create an account",
 			"import-button": "Import an account",
 			"link-button": "Link another device",
-			"delete-button": "Delete this account"
+			"delete-button": "Delete this account",
+			"delete-title": ""
 		},
 		"appearance": {
+			"title": "",
 			"dark-button": "Dark Mode",
-			"editor-button": "Theme Editor"
+			"editor-button": "Theme Editor",
+			"theme-editor": {
+				"title": ""
+			}
 		},
 		"contact-convs": {
+			"title": "",
 			"reset-button": "Reset my contact link/QR Code",
 			"request-button": "Allow incoming contact requests"
 		},
+		"devices-backup": {
+			"title": ""
+		},
+		"security": {
+			"title": ""
+		},
 		"network": {
+			"title": "",
 			"ble-button": "Bluetooth Low Energy",
 			"mc-button": "Multipeer Connectivity",
 			"nearby-button": "Android Nearby",
@@ -190,6 +211,9 @@
 			"rdvp-button": "Rendezvous Point Nodes",
 			"relay-button": "Relay Nodes",
 			"bootstrap-button": "Bootstrap Nodes"
+		},
+		"notifications": {
+			"title": ""
 		},
 		"edit-profile": {
 			"title": "Edit my profile",
@@ -382,6 +406,7 @@
 			}
 		},
 		"multi-member-settings": {
+			"title": "",
 			"media-button": "Medias, links & docs",
 			"members-button": {
 				"title": "Members"
@@ -420,6 +445,7 @@
 			"input-placeholder": "Type here..."
 		},
 		"one-to-one-settings": {
+			"title": "",
 			"media-button": "Medias, links & docs",
 			"save-button": "Save conversation on server"
 		},
