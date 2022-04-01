@@ -135,6 +135,7 @@ type Manager struct {
 			DevicePushKeyPath      string        `json:"DevicePushKeyPath,omitempty"`
 			ServiceInsecureMode    bool          `json:"ServiceInsecureMode,omitempty"`
 			RendezvousRotationBase time.Duration `json:"RendezvousRotationBase,omitempty"`
+			EnableHolePunching     bool          `json:"EnableHolePunching,omitempty"`
 
 			// internal
 			DisableDiscoverFilterAddrs bool

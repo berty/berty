@@ -116,6 +116,7 @@ func (m *Manager) SetupLocalIPFSFlags(fs *flag.FlagSet) {
 	fs.BoolVar(&m.Node.Protocol.MultipeerConnectivity, FlagNameP2PMultipeerConnectivity, false, "if true Multipeer Connectivity will be enabled")
 	fs.BoolVar(&m.Node.Protocol.DisableIPFSNetwork, "p2p.disable-ipfs-network", false, "disable as much networking feature as possible, useful during development")
 	fs.DurationVar(&m.Node.Protocol.RendezvousRotationBase, "node.rdv-rotation", rendezvous.DefaultRotationInterval, "rendezvous rotation base for node")
+	fs.BoolVar(&m.Node.Protocol.EnableHolePunching, "p2p.hole-punching", true, "enable decentralised hole punching (DCUtR)")
 
 	m.longHelp = append(m.longHelp, [2]string{
 		"-p2p.swarm-listeners=:default:,CUSTOM",
@@ -467,6 +468,7 @@ func (m *Manager) setupIPFSConfig(cfg *ipfs_cfg.Config) ([]libp2p.Option, error)
 		cfg.Pubsub.Enabled = ipfs_cfg.False
 		cfg.Swarm.RelayClient.Enabled = ipfs_cfg.False
 		cfg.Swarm.RelayService.Enabled = ipfs_cfg.False
+		cfg.Swarm.EnableHolePunching = ipfs_cfg.False
 
 		// Disable MDNS
 		cfg.Discovery.MDNS.Enabled = false
@@ -528,6 +530,21 @@ func (m *Manager) setupIPFSConfig(cfg *ipfs_cfg.Config) ([]libp2p.Option, error)
 	} else {
 		cfg.Swarm.RelayClient.Enabled = ipfs_cfg.False
 		cfg.Swarm.Transports.Network.Relay = ipfs_cfg.False
+	}
+
+	if m.Node.Protocol.EnableHolePunching {
+		switch cfg.Swarm.RelayClient.Enabled {
+		case ipfs_cfg.Default:
+			cfg.Swarm.RelayClient.Enabled = ipfs_cfg.True
+
+			// Enable holepunching too
+			fallthrough
+		case ipfs_cfg.True:
+			cfg.Swarm.EnableHolePunching = ipfs_cfg.True
+			p2popts = append(p2popts, libp2p.EnableHolePunching())
+		case ipfs_cfg.False:
+			logger.Warn("hole-punching requires autorelay client to be enabled")
+		}
 	}
 
 	pis, err := m.getStaticRelays()
