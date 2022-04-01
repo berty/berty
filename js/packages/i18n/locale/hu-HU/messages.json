@@ -1,6 +1,7 @@
 {
 	"onboarding": {
 		"getstarted": {
+			"screenTitle": "",
 			"title": "Védd meg adataidat",
 			"desc": "ingyenes & biztonságos ponttól-pontig üzenetküldés",
 			"create-button": "Fiók létrehozása",
@@ -10,6 +11,7 @@
 		"default-mode": {
 			"summary": {
 				"title": "Alapértelmezett mód",
+				"screenTitle": "",
 				"subtitle": "Kezdje el gyorsan",
 				"first-point": "Kezdje az előre beállított beállításokkal, amelyek a leginkább megfelelőbb a magánélet/kényelem arányában. A Berty csomópontokat a teljesítmény és az aszinkron kommunikáció javítására használja.",
 				"second-point": "Az egyéni adatvédelmi/használati módhoz, válaszd az Egyéni módot.",
@@ -19,6 +21,7 @@
 		},
 		"custom-mode": {
 			"summary": {
+				"screenTitle": "",
 				"title": "Egyéni mód",
 				"subtitle": "Egyéni Adatvédelem/Használati mód",
 				"first-point": "Ebben az üzemmódban minden beállítást egyénileg állítson be, hogy létrehozza a magánélet és a használati mód arányát.",
@@ -97,14 +100,15 @@
 			"button": "BERTY HASZNÁLATÁNAK KEZDÉSE"
 		},
 		"web-views": {
-			"title": "Webes nézetek",
-			"desc": "Felkészültünk a webes nézetre való betöltésre a hálózaton. Továbbra is meg akarod nyitni?",
+			"title": "",
+			"desc": "",
 			"first-button": "Mégse",
 			"second-button": "Igen"
 		}
 	},
 	"main": {
 		"home": {
+			"title": "",
 			"requests": {
 				"title": "Kérések",
 				"accept": "Elfogadás",
@@ -148,10 +152,11 @@
 	},
 	"settings": {
 		"home": {
+			"title": "Beállítások",
 			"proximity-button": "Hálózaton kívüli kommunikáció",
 			"notifications-button": "Értesítések",
 			"contact-convs-button": "Kapcsolat és beszélgetések",
-			"appearance-button": "Megjelenítés",
+			"appearance-button": "",
 			"devices-button": "Eszközök és biztonsági mentés",
 			"accounts-button": "Fiókok",
 			"network-button": "Hálózat",
@@ -159,27 +164,43 @@
 			"about-button": "Berty-ről"
 		},
 		"about": {
+			"title": "Berty-ről",
 			"faq-button": "GYIK",
 			"roadmap-button": "Útvonal",
 			"policy-button": "Adatvédelmi irányelvek",
-			"license-button": "Nyílt forráskódú licencek"
+			"license-button": "Nyílt forráskódú licencek",
+			"terms-of-use": "Felhasználási feltételek"
 		},
 		"accounts": {
+			"title": "Fiókok",
 			"accounts-button": "Fiókok",
 			"create-button": "Fiók létrehozása",
 			"import-button": "Fiók importálása",
 			"link-button": "Eszköz összekapcsolása",
-			"delete-button": "Fiók törlése"
+			"delete-button": "Fiók törlése",
+			"delete-title": ""
 		},
 		"appearance": {
+			"title": "",
 			"dark-button": "Sötét mód",
-			"editor-button": "Téma testreszabása"
+			"editor-button": "Téma testreszabása",
+			"theme-editor": {
+				"title": "Téma testreszabása"
+			}
 		},
 		"contact-convs": {
+			"title": "",
 			"reset-button": "Állítsa vissza a kapcsolatfelvételi linket / QR-kódot",
 			"request-button": "Bejövő kapcsolatfelvételi kérések engedélyezése"
 		},
+		"devices-backup": {
+			"title": ""
+		},
+		"security": {
+			"title": ""
+		},
 		"network": {
+			"title": "Hálózat",
 			"ble-button": "Bluetooth alacsony energiaszint",
 			"mc-button": "Több-pontú Apple csatlakoztathatóság",
 			"nearby-button": "Android a közelben",
@@ -190,6 +211,9 @@
 			"rdvp-button": "Találkozási csomópontok",
 			"relay-button": "Közvetítő csomópontok",
 			"bootstrap-button": "Beöltő csomópontok"
+		},
+		"notifications": {
+			"title": "Értesítések"
 		},
 		"edit-profile": {
 			"title": "Fiók szerkesztése",
@@ -382,6 +406,7 @@
 			}
 		},
 		"multi-member-settings": {
+			"title": "",
 			"media-button": "Képek, linkek és dokumentumok",
 			"members-button": {
 				"title": "Tagok"
@@ -420,6 +445,7 @@
 			"input-placeholder": "Írjon ide..."
 		},
 		"one-to-one-settings": {
+			"title": "",
 			"media-button": "Képek, linkek és dokumentumok",
 			"save-button": "Beszélgetés mentése szerverre"
 		},
