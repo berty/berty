@@ -146,7 +146,7 @@ func Test_Add_Messages_To_Cache(t *testing.T) {
 	require.NoError(t, err)
 
 	cadded, err := peers[1].GC.MessageStore().EventBus().Subscribe(
-		new(messageCacheItem), eventbus.BufSize(entriesCount))
+		new(messageItem), eventbus.BufSize(entriesCount))
 	require.NoError(t, err)
 
 	for i := 0; i < entriesCount; i++ {

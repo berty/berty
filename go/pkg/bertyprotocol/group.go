@@ -169,9 +169,14 @@ func FillMessageKeysHolderUsingPreviousData(ctx context.Context, gc *GroupContex
 		for pk, sec := range publishedSecrets {
 			if err := gc.MessageKeystore().RegisterChainKey(ctx, gc.Group(), pk, sec, gc.DevicePubKey().Equals(pk)); err != nil {
 				gc.logger.Error("unable to register chain key", zap.Error(err))
-			} else {
-				ch <- pk
+				continue
 			}
+			// A new chainKey is registered, check if cached messages can be opened with it
+			if rawPK, err := pk.Raw(); err == nil {
+				gc.MessageStore().ProcessMessageQueueForDevicePK(ctx, rawPK)
+			}
+
+			ch <- pk
 		}
 
 		close(ch)

@@ -51,7 +51,7 @@ type MessageStore struct {
 
 	deviceCaches   map[string]*groupCache
 	muDeviceCaches sync.RWMutex
-	cmessage       chan *messageCacheItem
+	cmessage       chan *messageItem
 	// muProcess       sync.RWMutex
 
 	cache     map[string]*ring.Ring
@@ -83,24 +83,26 @@ func (m *MessageStore) openMessage(ctx context.Context, e ipfslog.Entry) (*proto
 		ownPK = md.PrivateDevice().GetPublic()
 	}
 
-	headers, msg, attachmentsCIDs, err := m.mks.OpenEnvelope(ctx, m.g, ownPK, op.GetValue(), e.GetHash())
+	env, headers, err := cryptoutil.OpenEnvelopeHeaders(op.GetValue(), m.g)
 	if err != nil {
-		m.logger.Error("unable to open envelope", zap.Error(err))
-		return nil, err
+		return nil, errcode.ErrCryptoDecrypt.Wrap(err)
 	}
 
-	err = m.devKS.AttachmentSecretSlicePut(attachmentsCIDs, msg.GetProtocolMetadata().GetAttachmentsSecrets())
-	if err != nil {
-		m.logger.Error("unable to put attachments keys in keystore", zap.Error(err))
-		return nil, err
+	if !m.mks.HasSecretForRawDevicePK(ctx, m.g.PublicKey, headers.DevicePK) {
+		if err := m.addToMessageQueue(ctx, e); err != nil {
+			m.logger.Error("unable to add message to cache", zap.Error(err))
+		}
+
+		return nil, fmt.Errorf("no secret for device")
 	}
 
-	eventContext := newEventContext(e.GetHash(), e.GetNext(), m.g, attachmentsCIDs)
-	return &protocoltypes.GroupMessageEvent{
-		EventContext: eventContext,
-		Headers:      headers,
-		Message:      msg.GetPlaintext(),
-	}, err
+	return m.processMessage(ctx, ownPK, &messageItem{
+		op:      op,
+		env:     env,
+		headers: headers,
+		ownPK:   ownPK,
+		hash:    e.GetHash(),
+	})
 }
 
 type groupCache struct {
@@ -121,24 +123,21 @@ func (m *MessageStore) CacheSizeForDevicePK(devicePK []byte) (size int, ok bool)
 
 func (m *MessageStore) ProcessMessageQueueForDevicePK(ctx context.Context, devicePK []byte) {
 	m.muDeviceCaches.Lock()
-	device, ok := m.deviceCaches[string(devicePK)]
-	if ok {
-		if device.hasSecret = m.mks.HasSecretForRawDevicePK(ctx, m.g.PublicKey, devicePK); device.hasSecret {
-			if next := device.queue.Next(); next != nil {
-				m.cmessage <- next
-			}
-		} else {
+	if device, ok := m.deviceCaches[string(devicePK)]; ok {
+		if device.hasSecret = m.mks.HasSecretForRawDevicePK(ctx, m.g.PublicKey, devicePK); !device.hasSecret {
 			m.logger.Error("unable to process message, no secret found for device pk", logutil.PrivateBinary("devicepk", devicePK))
+		} else if next := device.queue.Next(); next != nil {
+			m.cmessage <- next
 		}
 	}
 	m.muDeviceCaches.Unlock()
 }
 
-func (m *MessageStore) processMessage(ctx context.Context, ownPK crypto.PubKey, message *messageCacheItem) error {
+func (m *MessageStore) processMessage(ctx context.Context, ownPK crypto.PubKey, message *messageItem) (*protocoltypes.GroupMessageEvent, error) {
 	// process message
 	msg, attachmentsCIDs, err := m.mks.OpenEnvelopePayload(ctx, message.env, message.headers, m.g, ownPK, message.hash)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	err = m.devKS.AttachmentSecretSlicePut(attachmentsCIDs, msg.GetProtocolMetadata().GetAttachmentsSecrets())
@@ -153,17 +152,11 @@ func (m *MessageStore) processMessage(ctx context.Context, ownPK crypto.PubKey, 
 
 	entry := message.op.GetEntry()
 	eventContext := newEventContext(entry.GetHash(), entry.GetNext(), m.g, attachmentsCIDs)
-	evt := protocoltypes.GroupMessageEvent{
+	return &protocoltypes.GroupMessageEvent{
 		EventContext: eventContext,
 		Headers:      message.headers,
 		Message:      msg.GetPlaintext(),
-	}
-
-	if err := m.emitters.groupMessage.Emit(evt); err != nil {
-		m.logger.Warn("unable to emit group message event", zap.Error(err))
-	}
-
-	return nil
+	}, nil
 }
 
 func (m *MessageStore) processMessageLoop(ctx context.Context) {
@@ -178,7 +171,7 @@ func (m *MessageStore) processMessageLoop(ctx context.Context) {
 	semProcess := semaphore.NewWeighted(32)
 
 	for {
-		var message *messageCacheItem
+		var message *messageItem
 		select {
 		case message = <-m.cmessage:
 		case <-ctx.Done():
@@ -200,36 +193,52 @@ func (m *MessageStore) processMessageLoop(ctx context.Context) {
 			m.deviceCaches[devicepk] = device
 		}
 
+		// check for device secret, if unavailable add message to cache queue
 		if !device.hasSecret {
 			device.queue.Add(message)
 			_ = m.emitters.groupCacheMessage.Emit(*message)
-		} else {
-			go func() {
-				// wait for a process slot
-				if err := semProcess.Acquire(ctx, 1); err != nil {
-					m.logger.Error("unable to acquire lock", zap.Error(err))
-					return
-				}
-
-				if err := m.processMessage(ctx, ownPK, message); err != nil {
-					if errcode.Is(err, errcode.ErrCryptoDecryptPayload) {
-						// @FIXME(gfanton): this should not happen
-						m.logger.Warn("unable to open envelope, adding envelope to cache for later process", zap.Error(err))
-
-						// if failed to decrypt add to queue, for later process
-						device.queue.Add(message)
-						_ = m.emitters.groupCacheMessage.Emit(*message)
-					} else {
-						m.logger.Error("unable to prcess message", zap.Error(err))
-					}
-				} else if next := device.queue.Next(); next != nil {
-					m.cmessage <- next
-				}
-
-				// release a process slot
-				semProcess.Release(1)
-			}()
+			m.muDeviceCaches.Unlock()
+			continue
 		}
+
+		// start process routine
+		go func() {
+			// wait for a process slot
+			if err := semProcess.Acquire(ctx, 1); err != nil {
+				m.logger.Error("unable to acquire lock", zap.Error(err))
+				return
+			}
+
+			// defer release a process slot
+			defer semProcess.Release(1)
+
+			// process the message
+			evt, err := m.processMessage(ctx, ownPK, message)
+			if err != nil {
+				if errcode.Is(err, errcode.ErrCryptoDecryptPayload) {
+					// @FIXME(gfanton): this should not happen
+					m.logger.Warn("unable to open envelope, adding envelope to cache for later process", zap.Error(err))
+
+					// if failed to decrypt add to queue, for later process
+					device.queue.Add(message)
+					_ = m.emitters.groupCacheMessage.Emit(*message)
+				} else {
+					m.logger.Error("unable to prcess message", zap.Error(err))
+				}
+
+				return
+			}
+
+			// emit new message event
+			if err := m.emitters.groupMessage.Emit(*evt); err != nil {
+				m.logger.Warn("unable to emit group message event", zap.Error(err))
+			}
+
+			if next := device.queue.Next(); next != nil {
+				m.cmessage <- next
+			}
+		}()
+
 		m.muDeviceCaches.Unlock()
 	}
 }
@@ -255,7 +264,7 @@ func (m *MessageStore) addToMessageQueue(ctx context.Context, e ipfslog.Entry) e
 		return errcode.ErrCryptoDecrypt.Wrap(err)
 	}
 
-	msg := &messageCacheItem{
+	msg := &messageItem{
 		hash:    e.GetHash(),
 		env:     env,
 		headers: headers,
@@ -405,7 +414,7 @@ func constructorFactoryGroupMessage(s *BertyOrbitDB, logger *zap.Logger) iface.S
 			eventBus:     options.EventBus,
 			devKS:        s.deviceKeystore,
 			mks:          s.messageKeystore,
-			cmessage:     make(chan *messageCacheItem),
+			cmessage:     make(chan *messageItem),
 			g:            g,
 			logger:       logger,
 			deviceCaches: make(map[string]*groupCache),
@@ -422,7 +431,7 @@ func constructorFactoryGroupMessage(s *BertyOrbitDB, logger *zap.Logger) iface.S
 		}
 
 		// for debug/test purpose
-		if store.emitters.groupCacheMessage, err = store.eventBus.Emitter(new(messageCacheItem)); err != nil {
+		if store.emitters.groupCacheMessage, err = store.eventBus.Emitter(new(messageItem)); err != nil {
 			return nil, errcode.ErrOrbitDBInit.Wrap(err)
 		}
 
