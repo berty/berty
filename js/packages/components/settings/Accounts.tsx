@@ -1,5 +1,5 @@
 import React from 'react'
-import { ScrollView, View, TouchableOpacity } from 'react-native'
+import { ScrollView, View, TouchableOpacity, Platform } from 'react-native'
 import { useTranslation } from 'react-i18next'
 
 import beapi from '@berty/api'
@@ -112,24 +112,26 @@ export const Accounts: ScreenFC<'Settings.Accounts'> = withInAppNotification(
 					contentContainerStyle={{ paddingBottom: 12 * scaleSize }}
 					showsVerticalScrollIndicator={false}
 				>
-					<Section>
-						<ButtonSettingV2
-							text={t('settings.accounts.backup-button')}
-							last
-							onPress={async () => {
-								try {
-									await exportAccountToFile(selectedAccount)
-									showNotification({
-										title: t('settings.accounts.backup-notif-title'),
-										message: t('settings.accounts.backup-notif-desc'),
-										additionalProps: { type: 'message' },
-									})
-								} catch (e) {
-									console.warn('account backup failed:', e)
-								}
-							}}
-						/>
-					</Section>
+					{Platform.OS !== 'web' && (
+						<Section>
+							<ButtonSettingV2
+								text={t('settings.accounts.backup-button')}
+								last
+								onPress={async () => {
+									try {
+										await exportAccountToFile(selectedAccount)
+										showNotification({
+											title: t('settings.accounts.backup-notif-title'),
+											message: t('settings.accounts.backup-notif-desc'),
+											additionalProps: { type: 'message' },
+										})
+									} catch (e) {
+										console.warn('account backup failed:', e)
+									}
+								}}
+							/>
+						</Section>
+					)}
 					<Section>
 						<ButtonSettingV2
 							text={t('settings.accounts.accounts-button')}

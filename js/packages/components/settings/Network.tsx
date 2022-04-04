@@ -52,23 +52,25 @@ const Proximity: React.FC<{
 
 	return (
 		<Section>
-			<ButtonSettingV2
-				text={t('settings.network.ble-button')}
-				toggle={{
-					enable: true,
-					value:
-						blePerm === 'granted' &&
-						networkConfig?.bluetoothLe === beapi.account.NetworkConfig.Flag.Enabled,
-					action: async () => {
-						await checkBlePermission({
-							setNetworkConfig: setNewConfig,
-							networkConfig,
-							changedKey: ['bluetoothLe'],
-							navigate,
-						})
-					},
-				}}
-			/>
+			{Platform.OS !== 'web' && (
+				<ButtonSettingV2
+					text={t('settings.network.ble-button')}
+					toggle={{
+						enable: true,
+						value:
+							blePerm === 'granted' &&
+							networkConfig?.bluetoothLe === beapi.account.NetworkConfig.Flag.Enabled,
+						action: async () => {
+							await checkBlePermission({
+								setNetworkConfig: setNewConfig,
+								networkConfig,
+								changedKey: ['bluetoothLe'],
+								navigate,
+							})
+						},
+					}}
+				/>
+			)}
 			{Platform.OS === 'ios' && (
 				<ButtonSettingV2
 					text={t('settings.network.mc-button')}

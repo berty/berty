@@ -499,7 +499,9 @@ export const RecordComponent: React.FC<{
 		],
 	)
 
-	return (
+	return Platform.OS === 'web' ? (
+		<View style={[padding.left.scale(10), { flex: 1 }]}>{children}</View>
+	) : (
 		<View style={[{ flexDirection: 'row' }]}>
 			{helpMessage !== '' && (
 				<TouchableOpacity
