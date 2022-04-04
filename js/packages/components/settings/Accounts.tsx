@@ -10,6 +10,7 @@ import {
 	useThemeColor,
 	pbDateToNum,
 	closeAccountWithProgress,
+	exportAccountToFile,
 } from '@berty/store'
 
 import { ButtonSettingV2, Section } from '../shared-components'
@@ -98,6 +99,7 @@ export const Accounts: ScreenFC<'Settings.Accounts'> = () => {
 	const reduxDispatch = useDispatch()
 	const { navigate } = useNavigation()
 	const { t }: { t: any } = useTranslation()
+	const selectedAccount = useSelector(selectSelectedAccount)
 
 	const [accountsCollapse, setAccountsCollapse] = React.useState<boolean>(true)
 
@@ -109,7 +111,11 @@ export const Accounts: ScreenFC<'Settings.Accounts'> = () => {
 				showsVerticalScrollIndicator={false}
 			>
 				<Section>
-					<ButtonSettingV2 text='Backup' last />
+					<ButtonSettingV2
+						text='Backup'
+						last
+						onPress={() => exportAccountToFile(selectedAccount)}
+					/>
 				</Section>
 				<Section>
 					<ButtonSettingV2
