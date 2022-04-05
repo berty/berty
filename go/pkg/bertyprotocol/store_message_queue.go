@@ -12,7 +12,7 @@ import (
 )
 
 // An Item is something we manage in a priority queue.
-type messageCacheItem struct {
+type messageItem struct {
 	op      operation.Operation
 	env     *protocoltypes.MessageEnvelope
 	headers *protocoltypes.MessageHeaders
@@ -20,34 +20,34 @@ type messageCacheItem struct {
 	hash    cid.Cid
 }
 
-func (m *messageCacheItem) Counter() uint64 {
+func (m *messageItem) Counter() uint64 {
 	return m.headers.Counter
 }
 
 // A priorityMessageQueue implements heap.Interface and holds Items.
 type priorityMessageQueue struct {
-	messages   []*messageCacheItem
+	messages   []*messageItem
 	muMessages sync.RWMutex
 }
 
 func newPriorityMessageQueue() *priorityMessageQueue {
 	queue := &priorityMessageQueue{
-		messages: []*messageCacheItem{},
+		messages: []*messageItem{},
 	}
 	heap.Init(queue)
 	return queue
 }
 
-func (pq *priorityMessageQueue) Add(m *messageCacheItem) {
+func (pq *priorityMessageQueue) Add(m *messageItem) {
 	pq.muMessages.Lock()
 	heap.Push(pq, m)
 	pq.muMessages.Unlock()
 }
 
-func (pq *priorityMessageQueue) Next() (item *messageCacheItem) {
+func (pq *priorityMessageQueue) Next() (item *messageItem) {
 	pq.muMessages.Lock()
 	if len(pq.messages) > 0 {
-		item = heap.Pop(pq).(*messageCacheItem)
+		item = heap.Pop(pq).(*messageItem)
 	}
 	pq.muMessages.Unlock()
 	return
@@ -75,7 +75,7 @@ func (pq *priorityMessageQueue) Swap(i, j int) {
 }
 
 func (pq *priorityMessageQueue) Push(x interface{}) {
-	pq.messages = append(pq.messages, x.(*messageCacheItem))
+	pq.messages = append(pq.messages, x.(*messageItem))
 }
 
 func (pq *priorityMessageQueue) Pop() (item interface{}) {
