@@ -211,7 +211,6 @@ func Test_Add_Messages_To_Cache(t *testing.T) {
 	size, ok = peers[1].GC.MessageStore().CacheSizeForDevicePK(dPK0Raw)
 	require.True(t, ok)
 	require.Equal(t, 0, size)
-	require.Equal(t, 0, bufferCount(peers[1].GC.MessageStore().cache[string(dPK0Raw)]))
 
 	_, err = peers[0].GC.MessageStore().AddMessage(ctx, testMsg1, nil)
 	require.NoError(t, err)
