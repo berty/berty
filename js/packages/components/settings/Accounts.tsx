@@ -153,12 +153,16 @@ export const Accounts: ScreenFC<'Settings.Accounts'> = withInAppNotification(
 								await closeAccountWithProgress(ctx.dispatch, reduxDispatch)
 								reduxDispatch(setStateOnBoardingReady())
 							}}
+							last={Platform.OS === 'web'}
 						/>
-						<ButtonSettingV2
-							text={t('settings.accounts.import-button')}
-							onPress={async () => await importAccountFromDocumentPicker(ctx)}
-						/>
-						<ButtonSettingV2 text={t('settings.accounts.link-button')} disabled last />
+						{Platform.OS !== 'web' && (
+							<ButtonSettingV2
+								text={t('settings.accounts.import-button')}
+								onPress={async () => await importAccountFromDocumentPicker(ctx)}
+								last
+							/>
+						)}
+						{/* <ButtonSettingV2 text={t('settings.accounts.link-button')} disabled last /> */}
 					</Section>
 					<Section>
 						<ButtonSettingV2

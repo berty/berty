@@ -7,13 +7,15 @@ import { useThemeColor } from '@berty/store'
 
 import { WebViews } from '../shared-components'
 
+export const PrivacyPolicyURL = 'https://berty.tech/privacy-policy#'
+
 export const PrivacyPolicy: ScreenFC<'Settings.PrivacyPolicy'> = () => {
 	const colors = useThemeColor()
 
 	return (
 		<Layout style={{ flex: 1, backgroundColor: colors['main-background'] }}>
 			<StatusBar barStyle='dark-content' />
-			<WebViews url='https://berty.tech/privacy-policy#' />
+			<WebViews url={PrivacyPolicyURL} />
 		</Layout>
 	)
 }

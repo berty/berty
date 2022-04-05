@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, StatusBar } from 'react-native'
+import { View, StatusBar, Platform } from 'react-native'
 import { useTranslation } from 'react-i18next'
 
 import {
@@ -65,14 +65,16 @@ export const GetStarted: ScreenFC<'Onboarding.GetStarted'> = ({ navigation: { na
 					>
 						{t('onboarding.getstarted.create-button') as any}
 					</Button>
-					<Button
-						status='secondary'
-						onPress={async () => {
-							importAccountFromDocumentPicker(ctx)
-						}}
-					>
-						{t('onboarding.getstarted.import-button') as any}
-					</Button>
+					{Platform.OS !== 'web' && (
+						<Button
+							status='secondary'
+							onPress={async () => {
+								importAccountFromDocumentPicker(ctx)
+							}}
+						>
+							{t('onboarding.getstarted.import-button') as any}
+						</Button>
+					)}
 					{/*
 					<Button status='secondary' onPress={() => {}}>
 						{t('onboarding.getstarted.link-button') as any}

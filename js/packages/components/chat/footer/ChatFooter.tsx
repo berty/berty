@@ -80,7 +80,7 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 		const sendEnabled = !sending && !!(!isFake && (message || mediaCids.length > 0))
 		const horizontalGutter = 8 * scaleSize
 		const showQuickButtons = useMemo(
-			() => !disabled && !sending && !message && mediaCids.length <= 0,
+			() => !disabled && !sending && !message && mediaCids.length <= 0 && Platform.OS !== 'web',
 			[disabled, mediaCids.length, message, sending],
 		)
 
