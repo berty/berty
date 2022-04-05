@@ -1,11 +1,11 @@
 {
 	"onboarding": {
 		"getstarted": {
-			"screenTitle": "",
+			"screenTitle": "Bescherm uw privacy",
 			"title": "BESCHERM UW PRIVACY",
 			"desc": "gratis & veilig peer-to-peer berichten",
-			"create-button": "",
-			"import-button": "",
+			"create-button": "Maak een nieuw account",
+			"import-button": "Importeer een account",
 			"link-button": ""
 		},
 		"default-mode": {
@@ -15,7 +15,7 @@
 				"subtitle": "",
 				"first-point": "",
 				"second-point": "",
-				"back-button": "",
+				"back-button": "Terug",
 				"accept-button": ""
 			}
 		},
@@ -103,12 +103,12 @@
 			"title": "",
 			"desc": "",
 			"first-button": "Annuleren",
-			"second-button": ""
+			"second-button": "Ja"
 		}
 	},
 	"main": {
 		"home": {
-			"title": "",
+			"title": "Berty",
 			"requests": {
 				"title": "Aanvragen",
 				"accept": "Accepteren",
