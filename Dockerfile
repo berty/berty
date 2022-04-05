@@ -16,7 +16,7 @@ WORKDIR         /go/src/berty.tech/berty/go
 RUN             make go.install
 
 # minimalist runtime
-FROM            alpine:3.15.2
+FROM            alpine:3.15.4
 RUN             apk add --no-cache ncurses
 LABEL           org.label-schema.build-date=$BUILD_DATE \
                 org.label-schema.name="berty" \
