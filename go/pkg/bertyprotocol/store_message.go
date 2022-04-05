@@ -2,7 +2,6 @@ package bertyprotocol
 
 import (
 	"bytes"
-	"container/ring"
 	"context"
 	"encoding/base64"
 	"fmt"
@@ -53,9 +52,6 @@ type MessageStore struct {
 	muDeviceCaches sync.RWMutex
 	cmessage       chan *messageItem
 	// muProcess       sync.RWMutex
-
-	cache     map[string]*ring.Ring
-	cacheLock sync.Mutex
 }
 
 func (m *MessageStore) setLogger(l *zap.Logger) {
@@ -418,7 +414,6 @@ func constructorFactoryGroupMessage(s *BertyOrbitDB, logger *zap.Logger) iface.S
 			g:            g,
 			logger:       logger,
 			deviceCaches: make(map[string]*groupCache),
-			cache:        make(map[string]*ring.Ring),
 		}
 
 		go func() {
@@ -493,9 +488,6 @@ func constructorFactoryGroupMessage(s *BertyOrbitDB, logger *zap.Logger) iface.S
 }
 
 func (m *MessageStore) GetMessageByCID(c cid.Cid) (*protocoltypes.MessageEnvelope, *protocoltypes.MessageHeaders, error) {
-	m.cacheLock.Lock()
-	defer m.cacheLock.Unlock()
-
 	logEntry, ok := m.OpLog().Get(c)
 	if !ok {
 		return nil, nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("unable to find message entry"))
