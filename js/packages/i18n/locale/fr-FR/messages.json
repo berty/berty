@@ -1,7 +1,7 @@
 {
 	"onboarding": {
 		"getstarted": {
-			"screenTitle": "",
+			"screenTitle": "Protégez votre vie privée",
 			"title": "PROTÉGEZ VOTRE VIE PRIVÉE",
 			"desc": "messagerie P2P gratuite et sécurisée",
 			"create-button": "Créer un nouveau compte",
@@ -11,7 +11,7 @@
 		"default-mode": {
 			"summary": {
 				"title": "Mode par défaut",
-				"screenTitle": "",
+				"screenTitle": "Créez votre compte",
 				"subtitle": "Démarrer rapidement",
 				"first-point": "Commencer par des préréglages qui offrent un équilibre entre intimité et confort qui convient au plus grand nombre. Les nœuds Berty sont utilisés pour améliorer les performances et la communication asynchrone.",
 				"second-point": "Pour un équilibre de vie privée/confort personnalisé, sélectionnez le Mode Personnalisé.",
@@ -21,7 +21,7 @@
 		},
 		"custom-mode": {
 			"summary": {
-				"screenTitle": "",
+				"screenTitle": "Créer un compte - Personnaliser les paramètres",
 				"title": "Mode personnalisé",
 				"subtitle": "Ratio confort et confidentialité personnalisé",
 				"first-point": "Dans ce mode, ajustez tous les paramètres individuellement pour créer l'équilibre entre intimité et confort qui vous convient.",
@@ -100,15 +100,15 @@
 			"button": "LANCER BERTY"
 		},
 		"web-views": {
-			"title": "",
-			"desc": "",
+			"title": "Autorisation de contenu Web",
+			"desc": "Berty est sur le point de charger le contenu depuis le Web. Voulez-vous ouvrir cette page ?",
 			"first-button": "Annuler",
 			"second-button": "Oui"
 		}
 	},
 	"main": {
 		"home": {
-			"title": "",
+			"title": "Berty",
 			"requests": {
 				"title": "Requêtes",
 				"accept": "Accepter",
