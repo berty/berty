@@ -67,7 +67,7 @@ jobs:
           cd js
           make web.build
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v2.1.0
+        uses: codecov/codecov-action@v3
         with:
           file: ./js/coverage/coverage-final.json
           flags: js.unittests
