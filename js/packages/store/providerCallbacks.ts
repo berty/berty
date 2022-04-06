@@ -11,6 +11,10 @@ import {
 import { accountService, storageRemove } from './accountService'
 import { reducerAction } from './types'
 import { setNextAccount, setStateOnBoardingReady } from '@berty/redux/reducers/ui.reducer'
+import {
+	PersistentOptionsKeys,
+	setPersistentOption,
+} from '@berty/redux/reducers/persistentOptions.reducer'
 
 export const importAccount = async (
 	embedded: boolean,
@@ -28,6 +32,14 @@ export const importAccount = async (
 	try {
 		await closeAccountWithProgress(dispatch, reduxDispatch)
 		resp = await importAccountWithProgress(path, reduxDispatch)
+		reduxDispatch(
+			setPersistentOption({
+				type: PersistentOptionsKeys.OnBoardingFinished,
+				payload: {
+					isFinished: true,
+				},
+			}),
+		)
 	} catch (e) {
 		console.warn('unable to import account', e)
 		return

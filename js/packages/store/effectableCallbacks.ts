@@ -59,6 +59,7 @@ export const importAccountWithProgress = (
 ) =>
 	new Promise<beapi.account.ImportAccountWithProgress.Reply | null>(async resolve => {
 		let metaMsg: beapi.account.ImportAccountWithProgress.Reply | null = null
+		let done = false
 		try {
 			const stream = await accountService.importAccountWithProgress({ backupPath: path })
 			stream.onMessage(async (msg, _) => {
@@ -71,12 +72,14 @@ export const importAccountWithProgress = (
 						}
 						dispatch(setStateStreamInProgress(payload))
 					}
-				} else {
+				}
+
+				metaMsg = msg?.accountMetadata ? msg : metaMsg
+				done = msg?.progress?.state === 'done' || done
+
+				if (done && metaMsg) {
 					dispatch(setStateStreamDone())
 					resolve(metaMsg)
-				}
-				if (msg?.accountMetadata) {
-					metaMsg = msg
 				}
 			})
 			await stream.start()

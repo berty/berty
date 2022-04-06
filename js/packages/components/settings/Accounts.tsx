@@ -10,6 +10,7 @@ import {
 	useThemeColor,
 	pbDateToNum,
 	closeAccountWithProgress,
+	exportAccountToFile,
 } from '@berty/store'
 
 import { ButtonSettingV2, Section } from '../shared-components'
@@ -18,6 +19,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { importAccountFromDocumentPicker } from '../pickerUtils'
 import { GenericAvatar } from '../avatars'
 import { UnifiedText } from '../shared-components/UnifiedText'
+import { withInAppNotification } from '@berty/polyfill/react-native-in-app-notification'
 
 const AccountButton: React.FC<beapi.account.IAccountMetadata> = ({
 	avatarCid,
@@ -91,62 +93,80 @@ const AccountButton: React.FC<beapi.account.IAccountMetadata> = ({
 	)
 }
 
-export const Accounts: ScreenFC<'Settings.Accounts'> = () => {
-	const [{}, { scaleSize }] = useStyles()
-	const colors = useThemeColor()
-	const ctx = useMessengerContext()
-	const reduxDispatch = useDispatch()
-	const { navigate } = useNavigation()
-	const { t }: { t: any } = useTranslation()
+export const Accounts: ScreenFC<'Settings.Accounts'> = withInAppNotification(
+	({ showNotification }: any) => {
+		const [{}, { scaleSize }] = useStyles()
+		const colors = useThemeColor()
+		const ctx = useMessengerContext()
+		const reduxDispatch = useDispatch()
+		const { navigate } = useNavigation()
+		const { t }: { t: any } = useTranslation()
+		const selectedAccount = useSelector(selectSelectedAccount)
 
-	const [accountsCollapse, setAccountsCollapse] = React.useState<boolean>(true)
+		const [accountsCollapse, setAccountsCollapse] = React.useState<boolean>(true)
 
-	return (
-		<View style={{ backgroundColor: colors['secondary-background'], flex: 1 }}>
-			<ScrollView
-				bounces={false}
-				contentContainerStyle={{ paddingBottom: 12 * scaleSize }}
-				showsVerticalScrollIndicator={false}
-			>
-				<Section>
-					<ButtonSettingV2 text='Backup' last />
-				</Section>
-				<Section>
-					<ButtonSettingV2
-						text={t('settings.accounts.accounts-button')}
-						arrowIcon='arrow-ios-downward'
-						onPress={() => setAccountsCollapse(!accountsCollapse)}
-						last
-					/>
-					{!accountsCollapse &&
-						ctx.accounts
-							.sort((a, b) => pbDateToNum(a.creationDate) - pbDateToNum(b.creationDate))
-							.map(account => {
-								return <AccountButton key={account.accountId} {...account} />
-							})}
-				</Section>
-				<Section>
-					<ButtonSettingV2
-						text={t('settings.accounts.create-button')}
-						onPress={async () => {
-							await closeAccountWithProgress(ctx.dispatch, reduxDispatch)
-							reduxDispatch(setStateOnBoardingReady())
-						}}
-					/>
-					<ButtonSettingV2
-						text={t('settings.accounts.import-button')}
-						onPress={async () => await importAccountFromDocumentPicker(ctx)}
-					/>
-					<ButtonSettingV2 text={t('settings.accounts.link-button')} disabled last />
-				</Section>
-				<Section>
-					<ButtonSettingV2
-						text={t('settings.accounts.delete-button')}
-						onPress={() => navigate('Settings.DeleteAccount')}
-						last
-					/>
-				</Section>
-			</ScrollView>
-		</View>
-	)
-}
+		return (
+			<View style={{ backgroundColor: colors['secondary-background'], flex: 1 }}>
+				<ScrollView
+					bounces={false}
+					contentContainerStyle={{ paddingBottom: 12 * scaleSize }}
+					showsVerticalScrollIndicator={false}
+				>
+					<Section>
+						<ButtonSettingV2
+							text={t('settings.accounts.backup-button')}
+							last
+							onPress={async () => {
+								try {
+									await exportAccountToFile(selectedAccount)
+									showNotification({
+										title: t('settings.accounts.backup-notif-title'),
+										message: t('settings.accounts.backup-notif-desc'),
+										additionalProps: { type: 'message' },
+									})
+								} catch (e) {
+									console.warn('account backup failed:', e)
+								}
+							}}
+						/>
+					</Section>
+					<Section>
+						<ButtonSettingV2
+							text={t('settings.accounts.accounts-button')}
+							arrowIcon='arrow-ios-downward'
+							onPress={() => setAccountsCollapse(!accountsCollapse)}
+							last
+						/>
+						{!accountsCollapse &&
+							ctx.accounts
+								.sort((a, b) => pbDateToNum(a.creationDate) - pbDateToNum(b.creationDate))
+								.map(account => {
+									return <AccountButton key={account.accountId} {...account} />
+								})}
+					</Section>
+					<Section>
+						<ButtonSettingV2
+							text={t('settings.accounts.create-button')}
+							onPress={async () => {
+								await closeAccountWithProgress(ctx.dispatch, reduxDispatch)
+								reduxDispatch(setStateOnBoardingReady())
+							}}
+						/>
+						<ButtonSettingV2
+							text={t('settings.accounts.import-button')}
+							onPress={async () => await importAccountFromDocumentPicker(ctx)}
+						/>
+						<ButtonSettingV2 text={t('settings.accounts.link-button')} disabled last />
+					</Section>
+					<Section>
+						<ButtonSettingV2
+							text={t('settings.accounts.delete-button')}
+							onPress={() => navigate('Settings.DeleteAccount')}
+							last
+						/>
+					</Section>
+				</ScrollView>
+			</View>
+		)
+	},
+)

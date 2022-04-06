@@ -173,6 +173,9 @@
 		},
 		"accounts": {
 			"title": "Accounts",
+			"backup-button": "Backup",
+			"backup-notif-title": "Success",
+			"backup-notif-desc": "Account was correctly backup!",
 			"accounts-button": "Accounts",
 			"create-button": "Create an account",
 			"import-button": "Import an account",

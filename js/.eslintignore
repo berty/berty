@@ -128,4 +128,3 @@ osx/Berty.app
 .watchman-cookie*
 *.pb.*
 *.gen.*
-/packages/web-dev-app/
