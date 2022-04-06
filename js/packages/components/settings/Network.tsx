@@ -51,25 +51,27 @@ const Proximity: React.FC = () => {
 
 	return (
 		<Section>
-			<ButtonSettingV2
-				text={t('settings.network.ble-button')}
-				toggle={{
-					enable: true,
-					value:
-						blePerm === 'granted' &&
-						networkConfig?.bluetoothLe === beapi.account.NetworkConfig.Flag.Enabled,
-					action: async () => {
-						await checkBlePermission({
-							setNetworkConfig: async newConfig => {
-								dispatch(setCurrentNetworkConfig(newConfig))
-							},
-							networkConfig,
-							changedKey: ['bluetoothLe'],
-							navigate,
-						})
-					},
-				}}
-			/>
+			{Platform.OS !== 'web' && (
+				<ButtonSettingV2
+					text={t('settings.network.ble-button')}
+					toggle={{
+						enable: true,
+						value:
+							blePerm === 'granted' &&
+							networkConfig?.bluetoothLe === beapi.account.NetworkConfig.Flag.Enabled,
+						action: async () => {
+							await checkBlePermission({
+								setNetworkConfig: async newConfig => {
+									dispatch(setCurrentNetworkConfig(newConfig))
+								},
+								networkConfig,
+								changedKey: ['bluetoothLe'],
+								navigate,
+							})
+						},
+					}}
+				/>
+			)}
 			{Platform.OS === 'ios' && (
 				<ButtonSettingV2
 					text={t('settings.network.mc-button')}
@@ -135,122 +137,6 @@ const Proximity: React.FC = () => {
 		</Section>
 	)
 }
-
-// const InputSetting: React.FC<{
-// 	setNewConfig: (newConfig: beapi.account.INetworkConfig) => Promise<void>
-// 	obj: string
-// }> = ({ setNewConfig, obj }) => {
-// 	const [{ border, padding, margin, text }, { scaleSize }] = useStyles()
-// 	const colors = useThemeColor()
-// 	const [input, setInput] = React.useState<string>('')
-// 	const networkConfig = useSelector(selectNetworkConfig)
-
-// 	const heightButton = 55
-
-// 	return (
-// 		<View
-// 			style={[
-// 				padding.horizontal.medium,
-// 				{
-// 					flex: 1,
-// 					flexDirection: 'row',
-// 					justifyContent: 'space-between',
-// 					alignItems: 'center',
-// 				},
-// 			]}
-// 		>
-// 			<View
-// 				style={[
-// 					border.radius.medium,
-// 					{
-// 						height: heightButton * scaleSize,
-// 						backgroundColor: colors['main-background'],
-// 						flexDirection: 'row',
-// 						alignItems: 'center',
-// 					},
-// 				]}
-// 			>
-// 				<Icon
-// 					width={20 * scaleSize}
-// 					height={20 * scaleSize}
-// 					fill={colors['background-header']}
-// 					name='server'
-// 					pack='feather'
-// 				/>
-
-// 				<TextInput
-// 					value={input}
-// 					placeholderTextColor={`${colors['main-text']}50`}
-// 					style={[margin.left.small, text.bold, { padding: 0 }]}
-// 					onChangeText={(text: string) => {
-// 						setInput(text)
-// 					}}
-// 				/>
-// 			</View>
-// 			<TouchableOpacity
-// 				onPress={() => {
-// 					const item = input
-// 					const newArray = networkConfig?.rendezvous
-// 					if (!newArray) {
-// 						return
-// 					}
-// 					newArray.push(item)
-// 					setNewConfig({
-// 						...networkConfig,
-// 						[obj]: newArray,
-// 					})
-// 				}}
-// 			>
-// 				<Icon
-// 					name='plus-circle'
-// 					width={23 * scaleSize}
-// 					height={23 * scaleSize}
-// 					pack='feather'
-// 					fill={colors['background-header']}
-// 				/>
-// 			</TouchableOpacity>
-// 		</View>
-// 	)
-// }
-
-// const CustomItem: React.FC<{
-// 	value: string
-// 	toggle: boolean
-// 	onToggleChange: () => void
-// }> = ({ value, toggle, onToggleChange }) => {
-// 	const [{ margin, padding }, { scaleSize }] = useStyles()
-// 	const colors = useThemeColor()
-// 	const heightButton = 55
-// 	return (
-// 		<>
-// 			<View
-// 				style={[
-// 					padding.horizontal.medium,
-// 					{
-// 						flex: 1,
-// 						flexDirection: 'row',
-// 						alignItems: 'center',
-// 						justifyContent: 'space-between',
-// 					},
-// 				]}
-// 			>
-// 				<View style={{ height: heightButton * scaleSize, marginLeft: 30 }}>
-// 					<View
-// 						style={[
-// 							margin.left.small,
-// 							{ height: heightButton, flexDirection: 'row', alignItems: 'center' },
-// 						]}
-// 					>
-// 						<Text>{value}</Text>
-// 					</View>
-// 				</View>
-// 				<Toggle status='primary' checked={toggle} onChange={onToggleChange} />
-// 			</View>
-
-// 			<View style={{ flex: 1, height: 1, backgroundColor: colors['secondary-background'] }} />
-// 		</>
-// 	)
-// }
 
 export const NetworkBody: React.FC = () => {
 	const [{}, { scaleSize }] = useStyles()

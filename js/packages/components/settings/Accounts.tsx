@@ -1,5 +1,5 @@
 import React from 'react'
-import { ScrollView, View, TouchableOpacity } from 'react-native'
+import { ScrollView, View, TouchableOpacity, Platform } from 'react-native'
 import { useTranslation } from 'react-i18next'
 
 import beapi from '@berty/api'
@@ -10,6 +10,7 @@ import {
 	useThemeColor,
 	pbDateToNum,
 	closeAccountWithProgress,
+	exportAccountToFile,
 } from '@berty/store'
 
 import { ButtonSettingV2, Section } from '../shared-components'
@@ -19,6 +20,7 @@ import { importAccountFromDocumentPicker } from '../pickerUtils'
 import { GenericAvatar } from '../avatars'
 import { UnifiedText } from '../shared-components/UnifiedText'
 import { AccordionV2 } from './Accordion'
+import { withInAppNotification } from '@berty/polyfill/react-native-in-app-notification'
 
 const AccountButton: React.FC<beapi.account.IAccountMetadata> = ({
 	avatarCid,
@@ -47,17 +49,6 @@ const AccountButton: React.FC<beapi.account.IAccountMetadata> = ({
 		return
 	}, [accountId, ctx, isHandlingPress, selectedAccount])
 
-	// 	<View
-	// 	style={[
-	// 		padding.horizontal.medium,
-	// 		{
-	// 			flex: 1,
-	// 			flexDirection: 'row',
-	// 			alignItems: 'center',
-	// 			justifyContent: 'space-between',
-	// 		},
-	// 	]}
-	// >
 	return (
 		<TouchableOpacity
 			onPress={handlePress}
@@ -102,55 +93,79 @@ const AccountButton: React.FC<beapi.account.IAccountMetadata> = ({
 	)
 }
 
-export const Accounts: ScreenFC<'Settings.Accounts'> = () => {
-	const [{}, { scaleSize }] = useStyles()
-	const colors = useThemeColor()
-	const ctx = useMessengerContext()
-	const reduxDispatch = useDispatch()
-	const { navigate } = useNavigation()
-	const { t }: { t: any } = useTranslation()
+export const Accounts: ScreenFC<'Settings.Accounts'> = withInAppNotification(
+	({ showNotification }: any) => {
+		const [{}, { scaleSize }] = useStyles()
+		const colors = useThemeColor()
+		const ctx = useMessengerContext()
+		const reduxDispatch = useDispatch()
+		const { navigate } = useNavigation()
+		const { t }: { t: any } = useTranslation()
+		const selectedAccount = useSelector(selectSelectedAccount)
 
-	return (
-		<View style={{ backgroundColor: colors['secondary-background'], flex: 1 }}>
-			<ScrollView
-				bounces={false}
-				contentContainerStyle={{ paddingBottom: 12 * scaleSize }}
-				showsVerticalScrollIndicator={false}
-			>
-				<Section>
-					<ButtonSettingV2 text='Backup' last />
-				</Section>
-				<Section>
-					<AccordionV2 title={t('settings.accounts.accounts-button')}>
-						{ctx.accounts
-							.sort((a, b) => pbDateToNum(a.creationDate) - pbDateToNum(b.creationDate))
-							.map(account => {
-								return <AccountButton key={account.accountId} {...account} />
-							})}
-					</AccordionV2>
-				</Section>
-				<Section>
-					<ButtonSettingV2
-						text={t('settings.accounts.create-button')}
-						onPress={async () => {
-							await closeAccountWithProgress(ctx.dispatch, reduxDispatch)
-							reduxDispatch(setStateOnBoardingReady())
-						}}
-					/>
-					<ButtonSettingV2
-						text={t('settings.accounts.import-button')}
-						onPress={async () => await importAccountFromDocumentPicker(ctx)}
-					/>
-					<ButtonSettingV2 text={t('settings.accounts.link-button')} disabled last />
-				</Section>
-				<Section>
-					<ButtonSettingV2
-						text={t('settings.accounts.delete-button')}
-						onPress={() => navigate('Settings.DeleteAccount')}
-						last
-					/>
-				</Section>
-			</ScrollView>
-		</View>
-	)
-}
+		return (
+			<View style={{ backgroundColor: colors['secondary-background'], flex: 1 }}>
+				<ScrollView
+					bounces={false}
+					contentContainerStyle={{ paddingBottom: 12 * scaleSize }}
+					showsVerticalScrollIndicator={false}
+				>
+					{Platform.OS !== 'web' && (
+						<Section>
+							<ButtonSettingV2
+								text={t('settings.accounts.backup-button')}
+								last
+								onPress={async () => {
+									try {
+										await exportAccountToFile(selectedAccount)
+										showNotification({
+											title: t('settings.accounts.backup-notif-title'),
+											message: t('settings.accounts.backup-notif-desc'),
+											additionalProps: { type: 'message' },
+										})
+									} catch (e) {
+										console.warn('account backup failed:', e)
+									}
+								}}
+							/>
+						</Section>
+					)}
+					<Section>
+						<AccordionV2 title={t('settings.accounts.accounts-button')}>
+							{ctx.accounts
+								.sort((a, b) => pbDateToNum(a.creationDate) - pbDateToNum(b.creationDate))
+								.map(account => {
+									return <AccountButton key={account.accountId} {...account} />
+								})}
+						</AccordionV2>
+					</Section>
+					<Section>
+						<ButtonSettingV2
+							text={t('settings.accounts.create-button')}
+							onPress={async () => {
+								await closeAccountWithProgress(ctx.dispatch, reduxDispatch)
+								reduxDispatch(setStateOnBoardingReady())
+							}}
+							last={Platform.OS === 'web'}
+						/>
+						{Platform.OS !== 'web' && (
+							<ButtonSettingV2
+								text={t('settings.accounts.import-button')}
+								onPress={async () => await importAccountFromDocumentPicker(ctx)}
+								last
+							/>
+						)}
+						{/* <ButtonSettingV2 text={t('settings.accounts.link-button')} disabled last /> */}
+					</Section>
+					<Section>
+						<ButtonSettingV2
+							text={t('settings.accounts.delete-button')}
+							onPress={() => navigate('Settings.DeleteAccount')}
+							last
+						/>
+					</Section>
+				</ScrollView>
+			</View>
+		)
+	},
+)
