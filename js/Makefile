@@ -60,6 +60,7 @@ help:
 	@echo "  ios.release          Launch iOS app in release mode          IOS_DEVICE=<virtual/real device>"
 	@echo "  lint                 Run eslint"
 	@echo "  lint.fix             Run eslint and fix errors"
+	@echo "  unused								Run ts-unused-exports"
 	@echo "  metro.start          Start React-Native Metro (app debug)"
 	@echo "  regenerate           Clean and generate Protobuf files"
 	@echo "  test                 Run tests"
@@ -169,6 +170,12 @@ lint.fix: node_modules
 	echo '*.gen.*' >> .eslintignore
 	npx eslint --cache --quiet --ext=.js,.jsx,.ts,.tsx --fix .
 	npx tsc # check static typing
+
+#### Unused exports
+
+.PHONY: unused
+unused: node_modules
+	./node_modules/.bin/ts-unused-exports ./tsconfig.json
 
 ###################
 # Build/Run rules #

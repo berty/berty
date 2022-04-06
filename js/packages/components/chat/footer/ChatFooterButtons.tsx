@@ -6,7 +6,7 @@ import { useThemeColor } from '@berty/store'
 import { useStyles } from '@berty/styles'
 import { UnifiedText } from '../../shared-components/UnifiedText'
 
-export const chatInputButtonSizeMultiplier = 36
+const chatInputButtonSizeMultiplier = 36
 
 export const ChatInputButton: React.FC<{
 	iconName: string
