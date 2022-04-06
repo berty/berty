@@ -211,7 +211,7 @@ export const Home: ScreenFC<'Settings.Home'> = withInAppNotification(
 				>
 					<ProfileButton />
 					<Section>
-						{networkConfig && (
+						{Platform.OS !== 'web' && networkConfig && (
 							<ButtonSettingV2
 								text={t('settings.home.proximity-button')}
 								icon='bluetooth-outline'

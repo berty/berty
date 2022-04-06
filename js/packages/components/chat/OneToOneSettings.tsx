@@ -1,5 +1,5 @@
 import React, { ComponentProps } from 'react'
-import { ScrollView, View, StatusBar, TouchableOpacity } from 'react-native'
+import { ScrollView, View, StatusBar, TouchableOpacity, Platform } from 'react-native'
 import { Icon } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 
@@ -51,8 +51,8 @@ const OneToOneBody: React.FC<{
 				icon='image-outline'
 				onPress={() => navigation.navigate('Chat.SharedMedias', { convPk: publicKey })}
 			/>
-			<EnableNotificationsButton conversationPk={publicKey} />
-			{!isIncoming && (
+			{Platform.OS !== 'web' && <EnableNotificationsButton conversationPk={publicKey} />}
+			{!isIncoming && Platform.OS !== 'web' && (
 				<ButtonSetting
 					name={t('chat.one-to-one-settings.save-button')}
 					icon='cloud-upload-outline'

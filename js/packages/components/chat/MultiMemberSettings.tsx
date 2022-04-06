@@ -147,7 +147,7 @@ const MultiMemberSettingsBody: React.FC<{
 				icon='image-outline'
 				onPress={() => navigation.navigate('Chat.SharedMedias', { convPk: publicKey })}
 			/>
-			<EnableNotificationsButton conversationPk={publicKey} />
+			{Platform.OS !== 'web' && <EnableNotificationsButton conversationPk={publicKey} />}
 			<FactionButtonSetting
 				name={`${t('chat.multi-member-settings.members-button.title')} (${membersCount})`}
 				icon='users'
@@ -243,15 +243,17 @@ const MultiMemberSettingsBody: React.FC<{
 				}
 				disabled={!link || undefined}
 			/>
-			<ButtonSetting
-				name={t('chat.multi-member-settings.save-button')}
-				icon='cloud-upload-outline'
-				iconSize={30}
-				actionIcon='arrow-ios-forward'
-				onPress={() => {
-					navigation.navigate('Chat.ReplicateGroupSettings', { convId: publicKey })
-				}}
-			/>
+			{Platform.OS !== 'web' && (
+				<ButtonSetting
+					name={t('chat.multi-member-settings.save-button')}
+					icon='cloud-upload-outline'
+					iconSize={30}
+					actionIcon='arrow-ios-forward'
+					onPress={() => {
+						navigation.navigate('Chat.ReplicateGroupSettings', { convId: publicKey })
+					}}
+				/>
+			)}
 		</View>
 	)
 }

@@ -7,13 +7,15 @@ import { ScreenFC } from '@berty/navigation'
 
 import { WebViews } from '../shared-components'
 
+export const RoadmapURL = 'https://guide.berty.tech/roadmap'
+
 export const Roadmap: ScreenFC<'Settings.Roadmap'> = () => {
 	const colors = useThemeColor()
 
 	return (
 		<Layout style={{ flex: 1, backgroundColor: colors['main-background'] }}>
 			<StatusBar barStyle='light-content' />
-			<WebViews url='https://guide.berty.tech/roadmap' />
+			<WebViews url={RoadmapURL} />
 		</Layout>
 	)
 }

@@ -6,6 +6,7 @@ import {
 	StatusBar,
 	Platform,
 	ActivityIndicator,
+	Linking,
 } from 'react-native'
 import { Text, Icon } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
@@ -194,7 +195,11 @@ export const WebViews: React.FC<{ url: string }> = ({ url }) => {
 		if (!isAccept && !isModal) {
 			goBack()
 		}
-	}, [isAccept, isModal, goBack])
+		if (isAccept && !isModal && Platform.OS === 'web') {
+			Linking.openURL(url)
+			goBack()
+		}
+	}, [isAccept, isModal, goBack, url])
 
 	return (
 		<>
@@ -202,7 +207,7 @@ export const WebViews: React.FC<{ url: string }> = ({ url }) => {
 			{isLoading === true && (
 				<ActivityIndicator size='large' style={{ flex: 1 }} color={colors['main-text']} />
 			)}
-			{isAccept && !isModal ? (
+			{isAccept && !isModal && Platform.OS !== 'web' ? (
 				<WebView
 					onLoadStart={() => setIsLoading(true)}
 					onLoadEnd={() => setIsLoading(false)}

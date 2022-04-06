@@ -1,5 +1,10 @@
 import React, { useMemo } from 'react'
-import { NativeSyntheticEvent, TextInputSelectionChangeEventData, View } from 'react-native'
+import {
+	NativeSyntheticEvent,
+	Platform,
+	TextInputSelectionChangeEventData,
+	View,
+} from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { RESULTS } from '@berty/polyfill/react-native-permissions'
 import Long from 'long'
@@ -75,7 +80,7 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 		const sendEnabled = !sending && !!(!isFake && (message || mediaCids.length > 0))
 		const horizontalGutter = 8 * scaleSize
 		const showQuickButtons = useMemo(
-			() => !disabled && !sending && !message && mediaCids.length <= 0,
+			() => !disabled && !sending && !message && mediaCids.length <= 0 && Platform.OS !== 'web',
 			[disabled, mediaCids.length, message, sending],
 		)
 
@@ -293,11 +298,13 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 							}}
 						>
 							<View style={{ marginRight: horizontalGutter }}>
-								<MoreButton
-									n={mediaCids.length}
-									onPress={handlePressMore}
-									disabled={disabled || sending}
-								/>
+								{Platform.OS !== 'web' && (
+									<MoreButton
+										n={mediaCids.length}
+										onPress={handlePressMore}
+										disabled={disabled || sending}
+									/>
+								)}
 							</View>
 							<ChatTextInput
 								disabled={(!isFocused && sending) || disabled}
@@ -311,9 +318,13 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 							/>
 							<View style={{ marginLeft: horizontalGutter }}>
 								{showQuickButtons ? (
-									<View style={{ marginRight: horizontalGutter }}>
-										<CameraButton onPress={handlePressCamera} />
-									</View>
+									<>
+										{Platform.OS !== 'web' && (
+											<View style={{ marginRight: horizontalGutter }}>
+												<CameraButton onPress={handlePressCamera} />
+											</View>
+										)}
+									</>
 								) : (
 									<SendButton onPress={handlePressSend} disabled={!sendEnabled} loading={sending} />
 								)}
