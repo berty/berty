@@ -213,7 +213,7 @@
 			"bootstrap-button": "Bootstrap Nodes"
 		},
 		"notifications": {
-			"title": ""
+			"title": "Notifications"
 		},
 		"edit-profile": {
 			"title": "Edit my profile",
@@ -406,7 +406,7 @@
 			}
 		},
 		"multi-member-settings": {
-			"title": "",
+			"title": "Conversation settings",
 			"media-button": "Medias, links & docs",
 			"members-button": {
 				"title": "Members"
@@ -445,7 +445,7 @@
 			"input-placeholder": "Type here..."
 		},
 		"one-to-one-settings": {
-			"title": "",
+			"title": "Conversation settings",
 			"media-button": "Medias, links & docs",
 			"save-button": "Save conversation on server"
 		},
