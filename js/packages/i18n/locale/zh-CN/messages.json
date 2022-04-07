@@ -173,6 +173,9 @@
 		},
 		"accounts": {
 			"title": "账户",
+			"backup-button": "",
+			"backup-notif-title": "",
+			"backup-notif-desc": "",
 			"accounts-button": "账户",
 			"create-button": "创建帐户",
 			"import-button": "导入帐户",
