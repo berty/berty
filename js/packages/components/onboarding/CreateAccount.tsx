@@ -20,6 +20,7 @@ import { CreateAccountBox } from './CreateAccountBox'
 import OnboardingWrapper from './OnboardingWrapper'
 import rnutil from '@berty/rnutil'
 import { UnifiedText } from '../shared-components/UnifiedText'
+import { PermissionType } from '@berty/rnutil/checkPermissions'
 
 const CreateAccountBody = () => {
 	const ctx = useMessengerContext()
@@ -53,7 +54,7 @@ const CreateAccountBody = () => {
 					onAnimationFinish={async () => {
 						Vibration.vibrate(500)
 						if (Platform.OS !== 'web') {
-							await rnutil.checkPermissions('proximity')
+							await rnutil.checkPermissions(PermissionType.proximity)
 						}
 					}}
 					style={{ position: 'absolute', width: '100%' }}

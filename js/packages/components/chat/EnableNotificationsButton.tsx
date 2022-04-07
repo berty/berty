@@ -25,6 +25,7 @@ import { selectClient, selectProtocolClient } from '@berty/redux/reducers/ui.red
 import { berty } from '@berty/api/root.pb'
 import { useConversation } from '@berty/react-redux'
 import { UnifiedText } from '../shared-components/UnifiedText'
+import { PermissionType } from '@berty/rnutil/checkPermissions'
 
 const EnableNotificationsButton: React.FC<{
 	conversationPk: string
@@ -111,10 +112,10 @@ const EnableNotificationsButton: React.FC<{
 			onPress={async () => {
 				try {
 					// Get or ask for permission
-					const status = await rnutil.checkPermissions('notification')
+					const status = await rnutil.checkPermissions(PermissionType.notification)
 					if (status !== RESULTS.GRANTED && status !== RESULTS.LIMITED) {
 						await new Promise(resolve =>
-							rnutil.checkPermissions('notification', {
+							rnutil.checkPermissions(PermissionType.notification, {
 								navigate,
 								navigateToPermScreenOnProblem: true,
 								onComplete: () =>

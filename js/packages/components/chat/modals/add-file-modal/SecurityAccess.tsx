@@ -6,7 +6,7 @@ import { Icon } from '@ui-kitten/components'
 
 import { useStyles } from '@berty/styles'
 import { useThemeColor } from '@berty/store/hooks'
-import { getPermissionStatus } from '@berty/rnutil/checkPermissions'
+import { getPermissionStatus, PermissionType } from '@berty/rnutil/checkPermissions'
 
 import { TabItems } from './types'
 import { UnifiedText } from '../../../shared-components/UnifiedText'
@@ -24,7 +24,7 @@ export const SecurityAccess: React.FC<{ close: () => void; activeTab: TabItems }
 			if (state === 'active') {
 				if (activeTab === TabItems.Camera) {
 					try {
-						const status = await getPermissionStatus('camera')
+						const status = await getPermissionStatus(PermissionType.camera)
 						if (status === RESULTS.GRANTED) {
 							close()
 						}
@@ -33,7 +33,7 @@ export const SecurityAccess: React.FC<{ close: () => void; activeTab: TabItems }
 					}
 				} else if (activeTab === TabItems.Gallery && Platform.OS === 'ios') {
 					try {
-						const status = await getPermissionStatus('gallery')
+						const status = await getPermissionStatus(PermissionType.gallery)
 
 						if (status === RESULTS.GRANTED) {
 							close()
@@ -41,7 +41,7 @@ export const SecurityAccess: React.FC<{ close: () => void; activeTab: TabItems }
 					} catch (err) {}
 				} else if (activeTab === TabItems.Record) {
 					try {
-						const status = await getPermissionStatus('audio')
+						const status = await getPermissionStatus(PermissionType.audio)
 
 						if (status === RESULTS.GRANTED) {
 							close()

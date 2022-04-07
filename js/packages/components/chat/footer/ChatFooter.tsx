@@ -39,6 +39,7 @@ import { RecordComponent } from './record/RecordComponent'
 import { AddFileMenu } from '../modals/add-file-modal/AddFileMenu.modal'
 import { EmojiBanner } from './emojis/EmojiBanner'
 import { useModal } from '../../providers/modal.provider'
+import { PermissionType } from '@berty/rnutil/checkPermissions'
 
 export type ChatFooterProps = {
 	convPK: string
@@ -198,7 +199,7 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 		)
 
 		const handlePressCamera = React.useCallback(async () => {
-			const permissionStatus = await rnutil.checkPermissions('camera', {
+			const permissionStatus = await rnutil.checkPermissions(PermissionType.camera, {
 				navigate,
 				navigateToPermScreenOnProblem: true,
 			})

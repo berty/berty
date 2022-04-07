@@ -11,7 +11,13 @@ import {
 } from '@berty/polyfill/react-native-permissions'
 import beapi from '@berty/api'
 
-export type PermissionType = 'proximity' | 'audio' | 'notification' | 'camera' | 'gallery'
+export enum PermissionType {
+	proximity = 'proximity',
+	audio = 'audio',
+	notification = 'notification',
+	camera = 'camera',
+	gallery = 'gallery',
+}
 
 export const permissionsByDevice: Record<string, Permission | undefined> = {
 	proximity: Platform.select({

@@ -19,6 +19,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { importAccountFromDocumentPicker } from '../pickerUtils'
 import { GenericAvatar } from '../avatars'
 import { UnifiedText } from '../shared-components/UnifiedText'
+import { AccordionV2 } from './Accordion'
 import { withInAppNotification } from '@berty/polyfill/react-native-in-app-notification'
 
 const AccountButton: React.FC<beapi.account.IAccountMetadata> = ({
@@ -32,7 +33,7 @@ const AccountButton: React.FC<beapi.account.IAccountMetadata> = ({
 	const colors = useThemeColor()
 	const selectedAccount = useSelector(selectSelectedAccount)
 	const selected = selectedAccount === accountId
-	const [{ padding, border, margin }, { scaleSize }] = useStyles()
+	const [{ padding, margin }, { scaleSize }] = useStyles()
 
 	const heightButton = 50
 
@@ -53,9 +54,8 @@ const AccountButton: React.FC<beapi.account.IAccountMetadata> = ({
 			onPress={handlePress}
 			style={[
 				padding.left.scale(40),
-				border.radius.medium,
 				{
-					height: heightButton,
+					height: heightButton * scaleSize,
 					backgroundColor: error
 						? colors['secondary-text']
 						: selected
@@ -103,8 +103,6 @@ export const Accounts: ScreenFC<'Settings.Accounts'> = withInAppNotification(
 		const { t }: { t: any } = useTranslation()
 		const selectedAccount = useSelector(selectSelectedAccount)
 
-		const [accountsCollapse, setAccountsCollapse] = React.useState<boolean>(true)
-
 		return (
 			<View style={{ backgroundColor: colors['secondary-background'], flex: 1 }}>
 				<ScrollView
@@ -133,18 +131,13 @@ export const Accounts: ScreenFC<'Settings.Accounts'> = withInAppNotification(
 						</Section>
 					)}
 					<Section>
-						<ButtonSettingV2
-							text={t('settings.accounts.accounts-button')}
-							arrowIcon='arrow-ios-downward'
-							onPress={() => setAccountsCollapse(!accountsCollapse)}
-							last
-						/>
-						{!accountsCollapse &&
-							ctx.accounts
+						<AccordionV2 title={t('settings.accounts.accounts-button')}>
+							{ctx.accounts
 								.sort((a, b) => pbDateToNum(a.creationDate) - pbDateToNum(b.creationDate))
 								.map(account => {
 									return <AccountButton key={account.accountId} {...account} />
 								})}
+						</AccordionV2>
 					</Section>
 					<Section>
 						<ButtonSettingV2

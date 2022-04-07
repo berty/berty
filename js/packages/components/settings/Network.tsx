@@ -2,15 +2,14 @@ import React, { useEffect } from 'react'
 import { ScrollView, View, Platform } from 'react-native'
 import { useTranslation } from 'react-i18next'
 import { useHeaderHeight } from '@react-navigation/elements'
+import { useDispatch, useSelector } from 'react-redux'
 
 import beapi from '@berty/api'
 import { useStyles } from '@berty/styles'
 import { ScreenFC, useNavigation } from '@berty/navigation'
 import { accountService, useMessengerContext, useThemeColor } from '@berty/store'
-import { withInAppNotification } from '@berty/polyfill/react-native-in-app-notification'
 
 import { selectSelectedAccount } from '@berty/redux/reducers/ui.reducer'
-import { useDispatch, useSelector } from 'react-redux'
 import { IOSOnlyKeyboardAvoidingView } from '@berty/rnutil/keyboardAvoiding'
 import { checkBlePermission } from '@berty/rnutil/checkPermissions'
 import {
@@ -34,21 +33,21 @@ import {
 	toggleFromRendezvous,
 	toggleFromStaticRelay,
 } from '@berty/redux/reducers/networkConfig.reducer'
-import { useAppSelector } from '@berty/react-redux'
+import store from '@berty/redux/store'
+import { useAppDispatch, useAppSelector } from '@berty/react-redux'
 
 import { AccordionV2, AccordionAddItemV2, AccordionItemV2 } from './Accordion'
-import { useModal } from '../providers/modal.provider'
+import { ModalProvider, useModal } from '../providers/modal.provider'
 import { AccordionAdd } from '../modals/AccordionAdd.modal'
 import { AccordionEdit } from '../modals/AccordionEdit.modal'
 import { ButtonSettingV2, Section } from '../shared-components'
 
-const Proximity: React.FC<{
-	setNewConfig: (newConfig: beapi.account.INetworkConfig) => Promise<void>
-}> = ({ setNewConfig }) => {
+const Proximity: React.FC = () => {
 	const { navigate } = useNavigation()
 	const { t }: { t: any } = useTranslation()
 	const blePerm = useSelector(selectBlePerm)
 	const networkConfig = useSelector(selectCurrentNetworkConfig)
+	const dispatch = useAppDispatch()
 
 	return (
 		<Section>
@@ -62,7 +61,9 @@ const Proximity: React.FC<{
 							networkConfig?.bluetoothLe === beapi.account.NetworkConfig.Flag.Enabled,
 						action: async () => {
 							await checkBlePermission({
-								setNetworkConfig: setNewConfig,
+								setNetworkConfig: async newConfig => {
+									dispatch(setCurrentNetworkConfig(newConfig))
+								},
 								networkConfig,
 								changedKey: ['bluetoothLe'],
 								navigate,
@@ -82,7 +83,9 @@ const Proximity: React.FC<{
 								beapi.account.NetworkConfig.Flag.Enabled,
 						action: async () => {
 							await checkBlePermission({
-								setNetworkConfig: setNewConfig,
+								setNetworkConfig: async newConfig => {
+									dispatch(setCurrentNetworkConfig(newConfig))
+								},
 								networkConfig,
 								changedKey: ['appleMultipeerConnectivity'],
 								navigate,
@@ -101,7 +104,9 @@ const Proximity: React.FC<{
 							networkConfig?.androidNearby === beapi.account.NetworkConfig.Flag.Enabled,
 						action: async () => {
 							await checkBlePermission({
-								setNetworkConfig: setNewConfig,
+								setNetworkConfig: async newConfig => {
+									dispatch(setCurrentNetworkConfig(newConfig))
+								},
 								networkConfig,
 								changedKey: ['androidNearby'],
 								navigate,
@@ -116,13 +121,15 @@ const Proximity: React.FC<{
 					enable: true,
 					value: networkConfig?.mdns === beapi.account.NetworkConfig.Flag.Enabled,
 					action: async () => {
-						setNewConfig({
-							...networkConfig,
-							mdns:
-								networkConfig?.mdns === beapi.account.NetworkConfig.Flag.Enabled
-									? beapi.account.NetworkConfig.Flag.Disabled
-									: beapi.account.NetworkConfig.Flag.Enabled,
-						})
+						dispatch(
+							setCurrentNetworkConfig({
+								...networkConfig,
+								mdns:
+									networkConfig?.mdns === beapi.account.NetworkConfig.Flag.Enabled
+										? beapi.account.NetworkConfig.Flag.Disabled
+										: beapi.account.NetworkConfig.Flag.Enabled,
+							}),
+						)
 					},
 				}}
 				last
@@ -131,123 +138,7 @@ const Proximity: React.FC<{
 	)
 }
 
-// const InputSetting: React.FC<{
-// 	setNewConfig: (newConfig: beapi.account.INetworkConfig) => Promise<void>
-// 	obj: string
-// }> = ({ setNewConfig, obj }) => {
-// 	const [{ border, padding, margin, text }, { scaleSize }] = useStyles()
-// 	const colors = useThemeColor()
-// 	const [input, setInput] = React.useState<string>('')
-// 	const networkConfig = useSelector(selectNetworkConfig)
-
-// 	const heightButton = 55
-
-// 	return (
-// 		<View
-// 			style={[
-// 				padding.horizontal.medium,
-// 				{
-// 					flex: 1,
-// 					flexDirection: 'row',
-// 					justifyContent: 'space-between',
-// 					alignItems: 'center',
-// 				},
-// 			]}
-// 		>
-// 			<View
-// 				style={[
-// 					border.radius.medium,
-// 					{
-// 						height: heightButton * scaleSize,
-// 						backgroundColor: colors['main-background'],
-// 						flexDirection: 'row',
-// 						alignItems: 'center',
-// 					},
-// 				]}
-// 			>
-// 				<Icon
-// 					width={20 * scaleSize}
-// 					height={20 * scaleSize}
-// 					fill={colors['background-header']}
-// 					name='server'
-// 					pack='feather'
-// 				/>
-
-// 				<TextInput
-// 					value={input}
-// 					placeholderTextColor={`${colors['main-text']}50`}
-// 					style={[margin.left.small, text.bold, { padding: 0 }]}
-// 					onChangeText={(text: string) => {
-// 						setInput(text)
-// 					}}
-// 				/>
-// 			</View>
-// 			<TouchableOpacity
-// 				onPress={() => {
-// 					const item = input
-// 					const newArray = networkConfig?.rendezvous
-// 					if (!newArray) {
-// 						return
-// 					}
-// 					newArray.push(item)
-// 					setNewConfig({
-// 						...networkConfig,
-// 						[obj]: newArray,
-// 					})
-// 				}}
-// 			>
-// 				<Icon
-// 					name='plus-circle'
-// 					width={23 * scaleSize}
-// 					height={23 * scaleSize}
-// 					pack='feather'
-// 					fill={colors['background-header']}
-// 				/>
-// 			</TouchableOpacity>
-// 		</View>
-// 	)
-// }
-
-// const CustomItem: React.FC<{
-// 	value: string
-// 	toggle: boolean
-// 	onToggleChange: () => void
-// }> = ({ value, toggle, onToggleChange }) => {
-// 	const [{ margin, padding }, { scaleSize }] = useStyles()
-// 	const colors = useThemeColor()
-// 	const heightButton = 55
-// 	return (
-// 		<>
-// 			<View
-// 				style={[
-// 					padding.horizontal.medium,
-// 					{
-// 						flex: 1,
-// 						flexDirection: 'row',
-// 						alignItems: 'center',
-// 						justifyContent: 'space-between',
-// 					},
-// 				]}
-// 			>
-// 				<View style={{ height: heightButton * scaleSize, marginLeft: 30 }}>
-// 					<View
-// 						style={[
-// 							margin.left.small,
-// 							{ height: heightButton, flexDirection: 'row', alignItems: 'center' },
-// 						]}
-// 					>
-// 						<Text>{value}</Text>
-// 					</View>
-// 				</View>
-// 				<Toggle status='primary' checked={toggle} onChange={onToggleChange} />
-// 			</View>
-
-// 			<View style={{ flex: 1, height: 1, backgroundColor: colors['secondary-background'] }} />
-// 		</>
-// 	)
-// }
-
-export const NetworkBody: React.FC = withInAppNotification(({ showNotification }: any) => {
+export const NetworkBody: React.FC = () => {
 	const [{}, { scaleSize }] = useStyles()
 	const colors = useThemeColor()
 	const selectedAccount = useSelector(selectSelectedAccount)
@@ -260,10 +151,7 @@ export const NetworkBody: React.FC = withInAppNotification(({ showNotification }
 	const bootstrap = useAppSelector(selectBootstrap)
 	const staticRelay = useAppSelector(selectStaticRelay)
 
-	const parsedLocalNetworkConfig = useAppSelector(selectParsedLocalNetworkConfig)
-	const currentNetworkConfig = useAppSelector(selectCurrentNetworkConfig)
-
-	// setNewConfig function: update the state + update the network config in the account service + show notif to restart app
+	// setNewConfig function: update the state + update the network config in the account service
 	const setNewConfig = React.useCallback(
 		async (newConfig: beapi.account.INetworkConfig) => {
 			await accountService
@@ -271,25 +159,23 @@ export const NetworkBody: React.FC = withInAppNotification(({ showNotification }
 					accountId: selectedAccount,
 					config: newConfig,
 				})
-				.then(() => dispatch(setCurrentNetworkConfig(newConfig)))
-			showNotification({
-				title: t('notification.need-restart-ble.title'),
-				message: t('notification.need-restart-ble.desc'),
-				onPress: async () => {
-					await ctx.restart()
-				},
-				additionalProps: { type: 'message' },
-			})
+				.then(() => {
+					dispatch(setCurrentNetworkConfig(newConfig))
+					ctx.restart()
+				})
 		},
-		[dispatch, selectedAccount, showNotification, t, ctx],
+		[ctx, dispatch, selectedAccount],
 	)
 
 	useEffect(() => {
 		return () => {
-			console.log('trying to save')
+			// we should use an useAppSelector for getting this value
+			// but the value doesn't seem to be updated in the useEffect return callback
+			const parsedLocalNetworkConfig = selectParsedLocalNetworkConfig(store.getState())
+			const currentNetworkConfig = selectCurrentNetworkConfig(store.getState())
+
 			if (JSON.stringify(parsedLocalNetworkConfig) !== JSON.stringify(currentNetworkConfig)) {
 				setNewConfig(parsedLocalNetworkConfig)
-				console.log('saving')
 			}
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -316,7 +202,7 @@ export const NetworkBody: React.FC = withInAppNotification(({ showNotification }
 					/>
 				</Section>
 				*/}
-				<Proximity setNewConfig={setNewConfig} />
+				<Proximity />
 				<Section>
 					<ButtonSettingV2
 						text={t('settings.network.dht-button')}
@@ -324,13 +210,15 @@ export const NetworkBody: React.FC = withInAppNotification(({ showNotification }
 							enable: true,
 							value: networkConfig?.dht === beapi.account.NetworkConfig.DHTFlag.DHTClient,
 							action: async () => {
-								setNewConfig({
-									...networkConfig,
-									dht:
-										networkConfig?.dht === beapi.account.NetworkConfig.DHTFlag.DHTClient
-											? beapi.account.NetworkConfig.DHTFlag.DHTDisabled
-											: beapi.account.NetworkConfig.DHTFlag.DHTClient,
-								})
+								dispatch(
+									setCurrentNetworkConfig({
+										...networkConfig,
+										dht:
+											networkConfig?.dht === beapi.account.NetworkConfig.DHTFlag.DHTClient
+												? beapi.account.NetworkConfig.DHTFlag.DHTDisabled
+												: beapi.account.NetworkConfig.DHTFlag.DHTClient,
+									}),
+								)
 							},
 						}}
 					/>
@@ -340,7 +228,7 @@ export const NetworkBody: React.FC = withInAppNotification(({ showNotification }
 								key={`rendezvous-item-${index}`}
 								toggle={isEnabled}
 								value={alias}
-								onToggleChange={isEditable ? () => dispatch(toggleFromRendezvous(url)) : undefined}
+								onToggleChange={() => dispatch(toggleFromRendezvous(url))}
 								onPressModify={
 									isEditable
 										? () =>
@@ -397,7 +285,7 @@ export const NetworkBody: React.FC = withInAppNotification(({ showNotification }
 								key={`rendezvous-item-${index}`}
 								toggle={isEnabled}
 								value={alias}
-								onToggleChange={isEditable ? () => dispatch(toggleFromStaticRelay(url)) : undefined}
+								onToggleChange={() => dispatch(toggleFromStaticRelay(url))}
 								onPressModify={
 									isEditable
 										? () =>
@@ -452,7 +340,7 @@ export const NetworkBody: React.FC = withInAppNotification(({ showNotification }
 								key={`rendezvous-item-${index}`}
 								toggle={isEnabled}
 								value={alias}
-								onToggleChange={isEditable ? () => dispatch(toggleFromBootstrap(url)) : undefined}
+								onToggleChange={() => dispatch(toggleFromBootstrap(url))}
 								onPressModify={
 									isEditable
 										? () =>
@@ -505,18 +393,20 @@ export const NetworkBody: React.FC = withInAppNotification(({ showNotification }
 			</ScrollView>
 		</View>
 	)
-})
+}
 
 export const Network: ScreenFC<'Settings.Network'> = () => {
 	const headerHeight = useHeaderHeight()
 
 	return (
-		<IOSOnlyKeyboardAvoidingView
-			behavior='padding'
-			keyboardVerticalOffset={headerHeight}
-			style={[{ flex: 1 }]}
-		>
-			<NetworkBody />
-		</IOSOnlyKeyboardAvoidingView>
+		<ModalProvider>
+			<IOSOnlyKeyboardAvoidingView
+				behavior='padding'
+				keyboardVerticalOffset={headerHeight}
+				style={[{ flex: 1 }]}
+			>
+				<NetworkBody />
+			</IOSOnlyKeyboardAvoidingView>
+		</ModalProvider>
 	)
 }

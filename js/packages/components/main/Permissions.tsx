@@ -85,7 +85,7 @@ export const Permissions: ScreenFC<'Main.Permissions'> = ({ route: { params }, n
 				} catch (err) {
 					console.warn('request notification permisison err:', err)
 				}
-			} else if (permissionType === 'proximity') {
+			} else if (permissionType === PermissionType.proximity) {
 				if (selectedAccount) {
 					const currentConfig = await accountService.networkConfigGet({
 						accountId: selectedAccount,
@@ -198,7 +198,7 @@ export const Permissions: ScreenFC<'Main.Permissions'> = ({ route: { params }, n
 						permission.audio.desc
 						permission.gallery.desc
 					*/}
-					{permissionType === 'proximity'
+					{permissionType === PermissionType.proximity
 						? Platform.OS === 'ios'
 							? t('permission.proximity.ios-desc')
 							: t('permission.proximity.android-desc')
@@ -289,7 +289,7 @@ export const BlePermission: ScreenFC<'Main.BlePermission'> = ({ route: { params 
 	const handleRequestPermission = React.useCallback(async () => {
 		try {
 			// request the permission
-			const status = await requestPermission('proximity')
+			const status = await requestPermission(PermissionType.proximity)
 			// set new Ble status for toggle's condition in settings
 			dispatch(setBlePerm(status))
 			// check status

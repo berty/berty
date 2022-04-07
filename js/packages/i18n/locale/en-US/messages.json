@@ -173,9 +173,6 @@
 		},
 		"accounts": {
 			"title": "Accounts",
-			"backup-button": "Backup",
-			"backup-notif-title": "Success",
-			"backup-notif-desc": "Account was correctly backup!",
 			"accounts-button": "Accounts",
 			"create-button": "Create an account",
 			"import-button": "Import an account",
@@ -536,10 +533,6 @@
 		"need-restart": {
 			"title": "Restart required",
 			"desc": "Restart Berty to save your data and enable notifications!"
-		},
-		"need-restart-ble": {
-			"title": "Restart required",
-			"desc": "Restart Berty and enable Bluetooth in system settings!"
 		},
 		"submit-failed": {
 			"title": "Cannot submit a bug",
