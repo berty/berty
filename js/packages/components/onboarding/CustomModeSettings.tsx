@@ -51,7 +51,7 @@ import { AccordionAdd } from '../modals/AccordionAdd.modal'
 import { useModal } from '../providers/modal.provider'
 import { useDispatch } from 'react-redux'
 import { UnifiedText } from '../shared-components/UnifiedText'
-import { RESULTS } from 'react-native-permissions'
+import { RESULTS } from '@berty/polyfill/react-native-permissions'
 
 type AccordionRefsType = {
 	relay: RefObject<AccordionRef>

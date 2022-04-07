@@ -2,7 +2,7 @@ import React, { FC, ReactNode, useCallback, useEffect, useState } from 'react'
 import { View, Vibration, StatusBar, Share, ScrollView, Platform } from 'react-native'
 import { Layout } from '@ui-kitten/components'
 import Clipboard from '@react-native-clipboard/clipboard'
-import { RESULTS } from 'react-native-permissions'
+import { RESULTS } from '@berty/polyfill/react-native-permissions'
 import { useTranslation } from 'react-i18next'
 import { useFocusEffect } from '@react-navigation/core'
 
