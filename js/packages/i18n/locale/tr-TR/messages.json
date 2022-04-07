@@ -173,6 +173,9 @@
 		},
 		"accounts": {
 			"title": "Hesaplar",
+			"backup-button": "",
+			"backup-notif-title": "",
+			"backup-notif-desc": "",
 			"accounts-button": "Hesaplar",
 			"create-button": "Yeni hesap oluştur",
 			"import-button": "Hesabı içeri aktar",
