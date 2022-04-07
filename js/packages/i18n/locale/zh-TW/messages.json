@@ -173,6 +173,9 @@
 		},
 		"accounts": {
 			"title": "賬戶",
+			"backup-button": "",
+			"backup-notif-title": "",
+			"backup-notif-desc": "",
 			"accounts-button": "賬戶",
 			"create-button": "",
 			"import-button": "",
