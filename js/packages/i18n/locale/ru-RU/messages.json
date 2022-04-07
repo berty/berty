@@ -59,7 +59,7 @@
 					"edit": {
 						"title": {
 							"relay": "",
-							"bootstrap": "",
+							"bootstrap": "Редактировать стартовый узел",
 							"rdvp": ""
 						}
 					},
@@ -173,6 +173,9 @@
 		},
 		"accounts": {
 			"title": "Аккаунты",
+			"backup-button": "",
+			"backup-notif-title": "",
+			"backup-notif-desc": "",
 			"accounts-button": "Аккаунты",
 			"create-button": "Создать аккаунт",
 			"import-button": "Импортировать аккаунт",
