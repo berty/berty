@@ -4,7 +4,7 @@ import { View } from 'react-native'
 import { useStyles } from '@berty/styles'
 import { useThemeColor } from '@berty/store/hooks'
 
-import Logo from '../../main/1_berty_picto.svg'
+import Logo from '@berty/assets/logo/1_berty_picto.svg'
 
 const MessageSystemLogo = () => {
 	const [{ border, flex, margin, width, height }, { scaleSize }] = useStyles()

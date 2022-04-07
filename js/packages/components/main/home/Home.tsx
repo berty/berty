@@ -17,7 +17,7 @@ import {
 } from '@berty/hooks'
 
 import { useLayout } from '../../hooks'
-import EmptyChat from '../empty_chat.svg'
+import EmptyChat from '@berty/assets/logo/empty_chat.svg'
 import { IncomingRequests } from './Requests'
 import { Conversations } from './Conversations'
 import { SearchComponent } from './Search'

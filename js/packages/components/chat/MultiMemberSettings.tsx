@@ -12,7 +12,7 @@ import { Maybe, useMessengerClient, useThemeColor } from '@berty/store'
 import { useConversationMembersDict, useConversation } from '@berty/hooks'
 
 import { ButtonSetting, FactionButtonSetting } from '../shared-components/SettingsButtons'
-import logo from '../main/1_berty_picto.png'
+import logo from '@berty/assets/images/1_berty_picto.png'
 import { MemberAvatar, MultiMemberAvatar } from '../avatars'
 import EnableNotificationsButton from '@berty/components/chat/EnableNotificationsButton'
 import ImagePicker, { ImageOrVideo } from 'react-native-image-crop-picker'

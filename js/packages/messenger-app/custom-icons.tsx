@@ -1,92 +1,57 @@
 import React from 'react'
 import { SvgProps } from 'react-native-svg'
 
-import Fingerprint from './custom-icons-svgs/fingerprint.svg'
-import QRCode from './custom-icons-svgs/qr.svg'
-import Share from './custom-icons-svgs/share.svg'
-import Id from './custom-icons-svgs/id.svg'
-import Bubble from './custom-icons-svgs/bubble.svg'
-import Users from './custom-icons-svgs/users.svg'
-import UserPlus from './custom-icons-svgs/user-plus.svg'
-import Quote from './custom-icons-svgs/quote.svg'
-import Earth from './custom-icons-svgs/earth.svg'
-import Network from './custom-icons-svgs/chart-network-light.svg'
-import Plus from './custom-icons-svgs/plus.svg'
-import AccountBerty from './custom-icons-svgs/account-berty.svg'
-import Tor from './custom-icons-svgs/Tor.svg'
-import Berty from './custom-icons-svgs/berty_picto.svg'
-import AddNewGroup from './custom-icons-svgs/add-new-group.svg'
-import Microphone from './custom-icons-svgs/microphone.svg'
-import Play from './custom-icons-svgs/play-player.svg'
-import Pause from './custom-icons-svgs/pause-player.svg'
-import Camera from './custom-icons-svgs/camera.svg'
-import CameraOutline from './custom-icons-svgs/camera-outline.svg'
-import Files from './custom-icons-svgs/files.svg'
-import Gallery from './custom-icons-svgs/gallery.svg'
-import Gif from './custom-icons-svgs/gif.svg'
-import WrongMan from './custom-icons-svgs/wrong-man.svg'
-import Privacy from './custom-icons-svgs/privacy.svg'
-import COGChip from './custom-icons-svgs/cog-chip.svg'
-import PrivacyModeBackground from './custom-icons-svgs/privacy-mode-bg.svg'
-import MicrophoneFooter from './custom-icons-svgs/microphone-footer.svg'
-import CameraFooter from './custom-icons-svgs/camera-footer.svg'
-import Bertyzzz from './custom-icons-svgs/bertyzzz.svg'
-import Volume from './custom-icons-svgs/volume.svg'
-import Prev from './custom-icons-svgs/prev.svg'
-import Next from './custom-icons-svgs/next.svg'
-import Settings from './custom-icons-svgs/settings.svg'
-import Config from './custom-icons-svgs/config.svg'
-import Proximity from './custom-icons-svgs/proximity.svg'
-import Peer from './custom-icons-svgs/peer.svg'
-import Services from './custom-icons-svgs/services.svg'
-import ExpertBluetooth from './custom-icons-svgs/expert-bluetooth.svg'
-import ExpertSetting from './custom-icons-svgs/expert-mdns.svg'
-import ExpertPushNotif from './custom-icons-svgs/expert-push-notif.svg'
-import ExpertNode from './custom-icons-svgs/expert-node.svg'
+import Fingerprint from '@berty/assets/custom-icons/fingerprint.svg'
+import QRCode from '@berty/assets/custom-icons/qr.svg'
+import Share from '@berty/assets/custom-icons/share.svg'
+
+import Users from '@berty/assets/custom-icons/users.svg'
+import UserPlus from '@berty/assets/custom-icons/user-plus.svg'
+import Quote from '@berty/assets/custom-icons/quote.svg'
+import Earth from '@berty/assets/custom-icons/earth.svg'
+import Network from '@berty/assets/custom-icons/chart-network-light.svg'
+import Berty from '@berty/assets/custom-icons/berty_picto.svg'
+import Microphone from '@berty/assets/custom-icons/microphone.svg'
+import Play from '@berty/assets/custom-icons/play-player.svg'
+import Pause from '@berty/assets/custom-icons/pause-player.svg'
+import Camera from '@berty/assets/custom-icons/camera.svg'
+import CameraOutline from '@berty/assets/custom-icons/camera-outline.svg'
+import Files from '@berty/assets/custom-icons/files.svg'
+import Gallery from '@berty/assets/custom-icons/gallery.svg'
+import WrongMan from '@berty/assets/custom-icons/wrong-man.svg'
+import Privacy from '@berty/assets/custom-icons/privacy.svg'
+import MicrophoneFooter from '@berty/assets/custom-icons/microphone-footer.svg'
+import Proximity from '@berty/assets/custom-icons/proximity.svg'
+import Peer from '@berty/assets/custom-icons/peer.svg'
+import Services from '@berty/assets/custom-icons/services.svg'
+import ExpertBluetooth from '@berty/assets/custom-icons/expert-bluetooth.svg'
+import ExpertSetting from '@berty/assets/custom-icons/expert-mdns.svg'
 
 const iconsMap: { [key: string]: React.FC<SvgProps> } = {
 	fingerprint: Fingerprint,
 	qr: QRCode,
-	'add-new-group': AddNewGroup,
 	share: Share,
-	bubble: Bubble,
-	id: Id,
 	users: Users,
 	'user-plus': UserPlus,
 	quote: Quote,
 	earth: Earth,
 	network: Network,
-	tor: Tor,
 	berty: Berty,
-	plus: Plus,
-	'account-berty': AccountBerty,
 	microphone: Microphone,
 	play: Play,
 	pause: Pause,
 	camera: Camera,
 	gallery: Gallery,
 	files: Files,
-	gif: Gif,
 	'camera-outline': CameraOutline,
 	'wrong-man': WrongMan,
 	privacy: Privacy,
-	'cog-chip': COGChip,
-	'privacy-bg': PrivacyModeBackground,
 	'microphone-footer': MicrophoneFooter,
-	'camera-footer': CameraFooter,
-	bertyzzz: Bertyzzz,
-	volume: Volume,
-	prev: Prev,
-	next: Next,
-	settings: Settings,
-	config: Config,
 	proximity: Proximity,
 	peer: Peer,
 	services: Services,
 	'expert-ble': ExpertBluetooth,
 	'expert-setting': ExpertSetting,
-	'expert-push-notif': ExpertPushNotif,
-	'expert-node': ExpertNode,
 }
 
 const CustomIcon: React.FC<{

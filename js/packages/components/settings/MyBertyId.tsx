@@ -12,7 +12,7 @@ import { useAccount } from '@berty/hooks'
 
 import { TabBar } from '../shared-components/TabBar'
 import { FingerprintContent } from '../shared-components/FingerprintContent'
-import logo from '../main/1_berty_picto.png'
+import logo from '@berty/assets/images/1_berty_picto.png'
 import { AccountAvatar } from '../avatars'
 import { UnifiedText } from '../shared-components/UnifiedText'
 

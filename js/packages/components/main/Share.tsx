@@ -16,10 +16,10 @@ import { useMessengerClient } from '@berty/store'
 import QRCode from 'react-native-qrcode-svg'
 import { checkPermissions, PermissionType } from '@berty/rnutil/checkPermissions'
 
-import ScanTarget from './scan_target.svg'
+import ScanTarget from '@berty/assets/logo/scan_target.svg'
 import { LoaderDots } from '../gates'
 import { AccountAvatar } from '../avatars'
-import logo from '../main/1_berty_picto.png'
+import logo from '@berty/assets/images/1_berty_picto.png'
 import { ButtonSetting, ButtonSettingRow } from '../shared-components'
 import { UnifiedText } from '../shared-components/UnifiedText'
 

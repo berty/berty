@@ -25,11 +25,11 @@ import { ModalProvider } from '@berty/components/providers/modal.provider'
 
 import * as Font from 'expo-font'
 
-import BoldOpenSans from '../../assets/font/OpenSans-Bold.ttf'
-import LightOpenSans from '../../assets/font/OpenSans-Light.ttf'
-import LightItalicOpenSans from '../../assets/font/OpenSans-LightItalic.ttf'
-import SemiBoldOpenSans from '../../assets/font/OpenSans-SemiBold.ttf'
-import SemiBoldItalicOpenSans from '../../assets/font/OpenSans-SemiBoldItalic.ttf'
+import BoldOpenSans from '@berty/assets/font/OpenSans-Bold.ttf'
+import LightOpenSans from '@berty/assets/font/OpenSans-Light.ttf'
+import LightItalicOpenSans from '@berty/assets/font/OpenSans-LightItalic.ttf'
+import SemiBoldOpenSans from '@berty/assets/font/OpenSans-SemiBold.ttf'
+import SemiBoldItalicOpenSans from '@berty/assets/font/OpenSans-SemiBoldItalic.ttf'
 
 const BootSplashInhibitor: React.FC = () => {
 	useMountEffect(() => {

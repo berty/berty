@@ -89,7 +89,7 @@ export const HomeHeader: React.FC<
 								<LottieView
 									ref={animate}
 									style={{ width: 40 }}
-									source={require('../berty_logo_animated.json')}
+									source={require('@berty/assets/lottie/berty_logo_animated.json')}
 									loop={false}
 								/>
 							</TouchableOpacity>

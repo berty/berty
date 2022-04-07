@@ -11,7 +11,7 @@ import { useStyles } from '@berty/styles'
 import { useConversation } from '@berty/hooks'
 
 import { MultiMemberAvatar } from '../avatars'
-import logo from '../main/1_berty_picto.png'
+import logo from '@berty/assets/images/1_berty_picto.png'
 import { UnifiedText } from '../shared-components/UnifiedText'
 
 const styleBertyIdOptions = {

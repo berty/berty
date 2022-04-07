@@ -5,7 +5,7 @@ import { Icon } from '@ui-kitten/components'
 import { getEmojiByName } from '@berty/components/utils'
 import { useThemeColor } from '@berty/store'
 import { useStyles } from '@berty/styles'
-import AddEmojiIcon from '@berty/assets/add_emoji.svg'
+import AddEmojiIcon from '@berty/assets/logo/add_emoji.svg'
 import { useLayout } from '@berty/components/hooks'
 import { useAppDispatch } from '@berty/hooks'
 import {
