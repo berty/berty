@@ -173,6 +173,9 @@
 		},
 		"accounts": {
 			"title": "Cuentas",
+			"backup-button": "",
+			"backup-notif-title": "",
+			"backup-notif-desc": "",
 			"accounts-button": "Cuentas",
 			"create-button": "",
 			"import-button": "",
