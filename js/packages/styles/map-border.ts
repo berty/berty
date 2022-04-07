@@ -7,7 +7,7 @@ import { mapSizes, mapBorderSidesSizes } from './map-sides'
 import { mapColorsDeclaration } from './map-colors'
 import { initialScaleSize } from './constant'
 
-export const mapBorderRadiusSides = (
+const mapBorderRadiusSides = (
 	decl: Declaration,
 	{ scaleSize } = { scaleSize: initialScaleSize },
 ): any => {
@@ -53,7 +53,7 @@ export const mapBorderRadiusSides = (
 	}
 }
 
-export const mapBorderShadowIOS = (
+const mapBorderShadowIOS = (
 	decl: Declaration,
 	_defaultValues = {
 		shadowOpacity: 0.2,
@@ -79,7 +79,7 @@ export const mapBorderShadowIOS = (
 	),
 })
 
-export const mapBorderShadowAndroid = (): Sizes<{}> => ({
+const mapBorderShadowAndroid = (): Sizes<{}> => ({
 	...StyleSheet.create({
 		tiny: { elevation: 1 },
 		medium: { elevation: 2 },

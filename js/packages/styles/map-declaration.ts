@@ -58,7 +58,7 @@ export const defaultStylesDeclaration: Declaration = {
 	},
 }
 
-export const mapDeclarationWithDims = (
+const mapDeclarationWithDims = (
 	decl: Declaration,
 	{ fontScale, scaleSize } = {
 		fontScale: initialFontScale,

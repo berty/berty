@@ -7,7 +7,7 @@ import { useThemeColor } from '@berty/store'
 
 import { WebViews } from '../shared-components'
 
-export const PrivacyPolicyURL = 'https://berty.tech/privacy-policy#'
+const PrivacyPolicyURL = 'https://berty.tech/privacy-policy#'
 
 export const PrivacyPolicy: ScreenFC<'Settings.PrivacyPolicy'> = () => {
 	const colors = useThemeColor()

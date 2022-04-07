@@ -119,7 +119,6 @@ const slice = createSlice({
 export const {
 	resetChatInput,
 	setChatInputText,
-	addChatInputMedia,
 	setActiveReplyInteraction,
 	removeActiveReplyInteraction,
 } = slice.actions

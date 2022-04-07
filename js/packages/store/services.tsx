@@ -28,7 +28,7 @@ export const serviceNames: { [key: string]: string } = {
 	[serviceTypes.Push]: 'Push notifications', // TODO: i18n
 }
 
-export const bertyOperatedServer = 'https://services.berty.tech/'
+const bertyOperatedServer = 'https://services.berty.tech/'
 
 export const useAccountServices = (): Array<beapi.messenger.IServiceToken> => {
 	const account = useAccount()

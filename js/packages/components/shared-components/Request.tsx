@@ -72,7 +72,7 @@ const RequestButtonItem: React.FC<RequestButtonItemProps> = ({
 	)
 }
 
-export const RequestButtons: React.FC<RequestButtonsProps> = ({ buttons = null }) => {
+const RequestButtons: React.FC<RequestButtonsProps> = ({ buttons = null }) => {
 	const [{ row, padding, margin }] = useStyles()
 	return (
 		<View style={[row.left, padding.medium, margin.top.medium]}>
@@ -81,50 +81,7 @@ export const RequestButtons: React.FC<RequestButtonsProps> = ({ buttons = null }
 	)
 }
 
-//
-// RequestAvatar => (Group and contact)
-//
-
-// Types
-type RequestAvatarProps = {
-	seed?: string
-	name: string
-	size?: number
-	secondAvatarUri?: string
-	isGroup?: boolean
-	style?: StyleProp<any>
-	isVerified?: boolean
-}
-
-export const RequestAvatar: React.FC<RequestAvatarProps> = ({
-	name,
-	style = null,
-	isVerified = false,
-}) => {
-	const [{ row, flex, text, margin }] = useStyles()
-	const colors = useThemeColor()
-
-	return (
-		<View style={[row.left, flex.tiny, { justifyContent: 'center' }, style]}>
-			<View style={[flex.tiny, row.item.bottom, row.center]}>
-				<UnifiedText style={[text.size.big, text.align.center, text.color.black]} numberOfLines={1}>
-					{name}
-				</UnifiedText>
-				{isVerified && (
-					<Icon
-						style={[margin.left.small]}
-						name='checkmark-circle-2'
-						width={20}
-						height={20}
-						fill={colors['background-header']}
-					/>
-				)}
-			</View>
-		</View>
-	)
-}
-
-export const MarkAsVerified: React.FC<{}> = () => {
+const MarkAsVerified: React.FC<{}> = () => {
 	const [isToggled, setIsToggled] = useState(false)
 
 	const handleToggled = () => setIsToggled(!isToggled)

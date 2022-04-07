@@ -1,5 +1,5 @@
 import React from 'react'
-import { Animated, Easing, View, ViewToken } from 'react-native'
+import { View, ViewToken } from 'react-native'
 import moment from 'moment'
 
 import { useStyles } from '@berty/styles'
@@ -7,43 +7,6 @@ import { useThemeColor } from '@berty/store'
 
 import { timeFormat } from '../helpers'
 import { UnifiedText } from '../shared-components/UnifiedText'
-
-//
-// ChatFooter => Textinput for type message
-//
-
-const aDuration = 200
-
-// create interpolations
-export const createAnimationInterpolation = (
-	value: Animated.Value,
-	outputRange: number[],
-	inputRange?: number[],
-) => {
-	return value.interpolate({
-		inputRange: inputRange || [0, 1],
-		outputRange,
-	})
-}
-
-// create animations
-export const createAnimationTiming = (
-	value: Animated.Value,
-	toValue:
-		| number
-		| Animated.Value
-		| Animated.ValueXY
-		| { x: number; y: number }
-		| Animated.AnimatedInterpolation,
-	duration?: number,
-) => {
-	return Animated.timing(value, {
-		toValue,
-		duration: duration || aDuration,
-		easing: Easing.linear,
-		useNativeDriver: false,
-	})
-}
 
 //
 // DateChat

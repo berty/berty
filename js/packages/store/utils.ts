@@ -24,7 +24,7 @@ export const prepareMediaBytes = async (
 	return resp.cid
 }
 
-export type MediaBytesReply = { info: beapi.messenger.IMedia; data: Buffer }
+type MediaBytesReply = { info: beapi.messenger.IMedia; data: Buffer }
 
 export const retrieveMediaBytes = async (
 	client: WelshMessengerServiceClient,

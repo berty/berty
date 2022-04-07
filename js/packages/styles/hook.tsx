@@ -23,13 +23,13 @@ const defaultStyles = mapScaledDeclarationWithDims(defaultStylesDeclaration, {
 	scaleHeight: initialScaleHeight,
 })
 
-export type SetStylesDeclaration = (
+type SetStylesDeclaration = (
 	decl: Declaration,
 	setStyles: React.Dispatch<React.SetStateAction<Styles>>,
 	{ fontScale, scaleSize, scaleHeight }: ScaleSizes,
 ) => void
 
-export const setStylesDeclaration: SetStylesDeclaration = (
+const setStylesDeclaration: SetStylesDeclaration = (
 	decl,
 	setStyles,
 	{ fontScale, scaleSize, scaleHeight } = {
@@ -39,7 +39,7 @@ export const setStylesDeclaration: SetStylesDeclaration = (
 	},
 ) => setStyles(mapScaledDeclarationWithDims(decl, { fontScale, scaleSize, scaleHeight }))
 
-export const ctx = createContext<
+const ctx = createContext<
 	[
 		Styles,
 		{
@@ -122,7 +122,6 @@ export const Provider: React.FC = ({ children }) => {
 		</ctx.Provider>
 	)
 }
-export const Consumer = ctx.Consumer
 
 export const useStyles = () => {
 	return useContext(ctx)

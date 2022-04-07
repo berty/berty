@@ -175,7 +175,7 @@ lint.fix: node_modules
 
 .PHONY: unused
 unused: node_modules
-	./node_modules/.bin/ts-unused-exports ./tsconfig.json
+	./node_modules/.bin/ts-unused-exports ./tsconfig.json --excludePathsFromReport="grpc-bridge;go-bridge;api;polyfill" --ignoreTestFiles --ignoreFiles=.*gen
 
 ###################
 # Build/Run rules #

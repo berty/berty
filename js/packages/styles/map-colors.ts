@@ -3,16 +3,15 @@ import _ from 'lodash'
 
 import { Colors, ColorsDeclaration, ColorsBrightness, ColorsStyles } from './types'
 
-export const mapColor = <T extends {}>(v: string, map: (v: string) => T, opacity = '') =>
-	map(v + opacity)
+const mapColor = <T extends {}>(v: string, map: (v: string) => T, opacity = '') => map(v + opacity)
 
-export const mapColorsDeclarationBasic = <T extends {}>(
+const mapColorsDeclarationBasic = <T extends {}>(
 	decl: Colors<string>,
 	map: (v: string) => T,
 	opacity?: string,
 ): Colors<T> => StyleSheet.create(_.mapValues(decl, v => mapColor(v, map, opacity)))
 
-export const mapColorsDeclarationStylesBasic = <T extends {}>(
+const mapColorsDeclarationStylesBasic = <T extends {}>(
 	decl: ColorsDeclaration,
 	map: (value: string) => T,
 	opacity?: string,

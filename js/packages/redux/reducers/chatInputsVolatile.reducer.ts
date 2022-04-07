@@ -8,9 +8,9 @@ import { resetChatInput } from './chatInputs.reducer'
  *
  */
 
-export const sliceName = 'chatInputsVolatile'
+const sliceName = 'chatInputsVolatile'
 
-export type ChatInputSelectionType = { start: number; end: number } | null
+type ChatInputSelectionType = { start: number; end: number } | null
 
 type ChatInputVolatileState = {
 	id: string
@@ -119,11 +119,6 @@ const slice = createSlice({
 	},
 })
 
-export const {
-	setChatInputSending,
-	setChatInputSelection,
-	setChatInputIsFocused,
-	setChatInputIsSending,
-} = slice.actions
+export const { setChatInputSelection, setChatInputIsFocused, setChatInputIsSending } = slice.actions
 
 export default makeRoot(slice.reducer)

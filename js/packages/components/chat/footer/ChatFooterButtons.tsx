@@ -8,7 +8,7 @@ import { UnifiedText } from '../../shared-components/UnifiedText'
 
 const chatInputButtonSizeMultiplier = 36
 
-export const ChatInputButton: React.FC<{
+const ChatInputButton: React.FC<{
 	iconName: string
 	iconPack?: string
 	onPress?: TouchableOpacityProps['onPress']

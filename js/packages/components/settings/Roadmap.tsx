@@ -7,7 +7,7 @@ import { ScreenFC } from '@berty/navigation'
 
 import { WebViews } from '../shared-components'
 
-export const RoadmapURL = 'https://guide.berty.tech/roadmap'
+const RoadmapURL = 'https://guide.berty.tech/roadmap'
 
 export const Roadmap: ScreenFC<'Settings.Roadmap'> = () => {
 	const colors = useThemeColor()

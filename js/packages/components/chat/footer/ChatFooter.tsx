@@ -47,7 +47,7 @@ import { EmojiBanner } from './emojis/EmojiBanner'
 import { useModal } from '../../providers/modal.provider'
 import { PermissionType } from '@berty/rnutil/checkPermissions'
 
-export type ChatFooterProps = {
+type ChatFooterProps = {
 	convPK: string
 	disabled?: Maybe<boolean>
 	placeholder?: Maybe<string>

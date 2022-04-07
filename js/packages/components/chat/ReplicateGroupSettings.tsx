@@ -180,5 +180,3 @@ export const ReplicateGroupSettings: ScreenFC<'Chat.ReplicateGroupSettings'> = (
 		</Layout>
 	)
 }
-
-export default ReplicateGroupSettings

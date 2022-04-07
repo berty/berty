@@ -29,6 +29,4 @@ export const initialState = {
 
 export const MessengerContext = createContext<MessengerState>(initialState)
 
-export default MessengerContext
-
 export const useMessengerContext = (): MessengerState => useContext(MessengerContext)

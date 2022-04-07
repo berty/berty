@@ -11,72 +11,70 @@ import { InAppNotificationProvider, withInAppNotification } from 'react-native-i
 
 import NotificationBody from '../NotificationBody'
 
-export const PushNotificationBridge: React.FC = withInAppNotification(
-	({ showNotification }: any) => {
-		const conversations = useConversationsDict()
-		const { navigate, dispatch } = useNavigation()
+const PushNotificationBridge: React.FC = withInAppNotification(({ showNotification }: any) => {
+	const conversations = useConversationsDict()
+	const { navigate, dispatch } = useNavigation()
 
-		React.useEffect(() => {
-			const pushNotifListener = async (data: any) => {
-				const push = await accountService.pushReceive({
-					payload: data,
-					tokenType:
-						Platform.OS === 'ios'
-							? beapi.push.PushServiceTokenType.PushTokenApplePushNotificationService
-							: beapi.push.PushServiceTokenType.PushTokenFirebaseCloudMessaging,
-				})
-				if (!push.pushData?.alreadyReceived) {
-					const convPK = push.pushData?.conversationPublicKey
-					if (convPK) {
-						const conv = conversations[convPK]
-						showNotification({
-							title: push.push?.title,
-							message: push.push?.body,
-							onPress: () => {
-								dispatch(
-									CommonActions.reset({
-										routes: [
-											{ name: 'Main.Home' },
-											{
-												name:
-													conv?.type === beapi.messenger.Conversation.Type.MultiMemberType
-														? 'Chat.Group'
-														: 'Chat.OneToOne',
-												params: {
-													convId: convPK,
-												},
+	React.useEffect(() => {
+		const pushNotifListener = async (data: any) => {
+			const push = await accountService.pushReceive({
+				payload: data,
+				tokenType:
+					Platform.OS === 'ios'
+						? beapi.push.PushServiceTokenType.PushTokenApplePushNotificationService
+						: beapi.push.PushServiceTokenType.PushTokenFirebaseCloudMessaging,
+			})
+			if (!push.pushData?.alreadyReceived) {
+				const convPK = push.pushData?.conversationPublicKey
+				if (convPK) {
+					const conv = conversations[convPK]
+					showNotification({
+						title: push.push?.title,
+						message: push.push?.body,
+						onPress: () => {
+							dispatch(
+								CommonActions.reset({
+									routes: [
+										{ name: 'Main.Home' },
+										{
+											name:
+												conv?.type === beapi.messenger.Conversation.Type.MultiMemberType
+													? 'Chat.Group'
+													: 'Chat.OneToOne',
+											params: {
+												convId: convPK,
 											},
-										],
-									}),
-								)
-							},
-							additionalProps: { type: 'message' },
-						})
-					}
+										},
+									],
+								}),
+							)
+						},
+						additionalProps: { type: 'message' },
+					})
 				}
 			}
-			let eventListener: EmitterSubscription | undefined
-			if (NativeModules.EventEmitter) {
-				try {
-					eventListener = new NativeEventEmitter(NativeModules.EventEmitter).addListener(
-						'onPushReceived',
-						pushNotifListener,
-					)
-				} catch (e) {
-					console.warn('Push notif add listener failed: ' + e)
-				}
+		}
+		let eventListener: EmitterSubscription | undefined
+		if (NativeModules.EventEmitter) {
+			try {
+				eventListener = new NativeEventEmitter(NativeModules.EventEmitter).addListener(
+					'onPushReceived',
+					pushNotifListener,
+				)
+			} catch (e) {
+				console.warn('Push notif add listener failed: ' + e)
 			}
-			return () => {
-				try {
-					eventListener?.remove() // Unsubscribe from native event emitter
-				} catch (e) {
-					console.warn('Push notif remove listener failed: ' + e)
-				}
+		}
+		return () => {
+			try {
+				eventListener?.remove() // Unsubscribe from native event emitter
+			} catch (e) {
+				console.warn('Push notif remove listener failed: ' + e)
 			}
-		}, [conversations, dispatch, navigate, showNotification])
-		return null
-	},
-)
+		}
+	}, [conversations, dispatch, navigate, showNotification])
+	return null
+})
 
 const NotificationBridge: React.FC = withInAppNotification(({ showNotification }: any) => {
 	const { addNotificationListener, removeNotificationListener } = useMessengerContext()

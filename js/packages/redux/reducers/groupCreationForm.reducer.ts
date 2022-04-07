@@ -8,7 +8,7 @@ import beapi from '@berty/api'
  *
  */
 
-export type GroupCreationState = {
+type GroupCreationState = {
 	members: beapi.messenger.IContact[]
 }
 

@@ -12,7 +12,7 @@ const makeRoot = <T>(val: T) => ({
 	[sliceName]: val,
 })
 
-export type AccountSettingsState = {
+type AccountSettingsState = {
 	language?: string
 }
 

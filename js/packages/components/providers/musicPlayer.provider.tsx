@@ -8,9 +8,9 @@ import { selectProtocolClient } from '@berty/redux/reducers/ui.reducer'
 
 type PlayerType = Player | undefined
 
-export class EndError extends Error {}
+class EndError extends Error {}
 
-export interface PlayerItemMetadata {
+interface PlayerItemMetadata {
 	id: String
 	title?: String
 	subtitle?: String
@@ -39,7 +39,7 @@ const INITIAL_PLAYER_VALUE: PlayerState = {
 	metadata: INITIAL_PLAYER_METADATA,
 }
 
-export const MusicPlayerContext = createContext<{
+const MusicPlayerContext = createContext<{
 	player: PlayerState
 	load: (cid: string, mimeType: string) => void
 	unload: () => void

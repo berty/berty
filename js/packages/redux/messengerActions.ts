@@ -4,7 +4,7 @@ import beapi from '@berty/api'
 
 import { messengerActions } from './messengerActions.gen'
 
-export type MessengerAction = ReturnType<typeof messengerActions[keyof typeof messengerActions]>
+type MessengerAction = ReturnType<typeof messengerActions[keyof typeof messengerActions]>
 
 export const streamEventToAction: (
 	evt: beapi.messenger.IStreamEvent,
@@ -41,5 +41,3 @@ export const streamEventToAction: (
 		payload: eventPayload,
 	}
 }
-
-export { messengerActions }

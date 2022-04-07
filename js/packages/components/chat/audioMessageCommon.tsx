@@ -9,7 +9,6 @@ import { UnifiedText } from '../shared-components/UnifiedText'
 export const volumeValueLowest = -160
 export const volumeValuePrecision = 100000
 export const volumeValuesAttached = 100
-export const voiceMemoFilename = 'audio_memo.aac'
 
 export enum RecordingState {
 	UNDEFINED = 0,
@@ -57,7 +56,7 @@ export const limitIntensities = (intensities: Array<number>, max: number): Array
 	return normalizedIntensities
 }
 
-export const volumeValueShown = 50
+const volumeValueShown = 50
 
 export const normalizeVolumeIntensities = (intensities: Array<number>) => {
 	const min = Math.min(...intensities)

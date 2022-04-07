@@ -2,23 +2,6 @@ import moment from 'moment'
 
 import { MessengerState } from '@berty/store/types'
 
-export const promiseResolved = (): Promise<void> => new Promise((res): any => setTimeout(res, 1000))
-
-export const randomItem = <T extends unknown>(arr: Array<T>): T =>
-	arr[Math.floor(Math.random() * 1000) % arr.length]
-
-export const randomValue = <T extends { [name: string]: any }>(obj: T): any =>
-	obj[randomItem(Object.keys(obj))]
-
-export const randomLength = (mod = 20): number => Math.floor(Math.random() * 1000) % mod
-export const randomArray = <T extends unknown>(mod: number): Array<T> =>
-	new Array(randomLength(mod)).fill({})
-
-export const timestamp = (date: Date): any => ({
-	seconds: Math.floor(date.getTime() / 1000),
-	nanos: (date.getTime() % 1000) * 1000,
-})
-
 const getValidDateMoment = (date: number | Date): moment.Moment => {
 	const mDate = moment(date)
 	return mDate.isValid() ? mDate : moment(0)
@@ -67,9 +50,6 @@ const fmtTimestamp3 = (date: number | Date): string => {
 }
 
 export const timeFormat = { fmtTimestamp1, fmtTimestamp2, fmtTimestamp3 }
-
-export const strToTimestamp = (dateStr?: string): number =>
-	new Date(parseInt(dateStr || '0', 10)).getTime()
 
 export const showNeedRestartNotification = (showNotification: any, ctx: MessengerState, t: any) => {
 	showNotification({

@@ -18,7 +18,7 @@ const usePrevious = (value: number) => {
 	return ref.current
 }
 
-export const AnimatedNumber: FC<{
+const AnimatedNumber: FC<{
 	number: number
 	fontStyle?: any
 	animationDuration?: number

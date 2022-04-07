@@ -1,7 +1,7 @@
 import { MessengerState, reducerAction } from '../types'
 import { uiReducerActions } from './uiReducer'
 
-export const reducerActions: {
+const reducerActions: {
 	[key: string]: (oldState: MessengerState, action: reducerAction) => MessengerState
 } = {
 	...uiReducerActions,
