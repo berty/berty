@@ -1,57 +1,32 @@
 import React from 'react'
-import { SvgProps } from 'react-native-svg'
+import { Platform } from 'react-native'
+import { createIconSet } from 'react-native-vector-icons'
 
-import Berty from '@berty/assets/custom-icons/berty_picto.svg'
-import CameraOutline from '@berty/assets/custom-icons/camera-outline.svg'
-import Camera from '@berty/assets/custom-icons/camera.svg'
-import Network from '@berty/assets/custom-icons/chart-network-light.svg'
-import Earth from '@berty/assets/custom-icons/earth.svg'
-import ExpertBluetooth from '@berty/assets/custom-icons/expert-bluetooth.svg'
-import ExpertSetting from '@berty/assets/custom-icons/expert-mdns.svg'
-import Files from '@berty/assets/custom-icons/files.svg'
-import Fingerprint from '@berty/assets/custom-icons/fingerprint.svg'
-import Gallery from '@berty/assets/custom-icons/gallery.svg'
-import MicrophoneFooter from '@berty/assets/custom-icons/microphone-footer.svg'
-import Microphone from '@berty/assets/custom-icons/microphone.svg'
-import Pause from '@berty/assets/custom-icons/pause-player.svg'
-import Peer from '@berty/assets/custom-icons/peer.svg'
-import Play from '@berty/assets/custom-icons/play-player.svg'
-import Privacy from '@berty/assets/custom-icons/privacy.svg'
-import Proximity from '@berty/assets/custom-icons/proximity.svg'
-import QRCode from '@berty/assets/custom-icons/qr.svg'
-import Quote from '@berty/assets/custom-icons/quote.svg'
-import Services from '@berty/assets/custom-icons/services.svg'
-import Share from '@berty/assets/custom-icons/share.svg'
-import UserPlus from '@berty/assets/custom-icons/user-plus.svg'
-import Users from '@berty/assets/custom-icons/users.svg'
-import WrongMan from '@berty/assets/custom-icons/wrong-man.svg'
+import glyphMap from '@berty/assets/font/CustomIcons.gen.json'
+import iconFont from '@berty/assets/font/CustomIcons.gen.ttf'
 
-const iconsMap: { [key: string]: React.FC<SvgProps> } = {
-	fingerprint: Fingerprint,
-	qr: QRCode,
-	share: Share,
-	users: Users,
-	'user-plus': UserPlus,
-	quote: Quote,
-	earth: Earth,
-	network: Network,
-	berty: Berty,
-	microphone: Microphone,
-	play: Play,
-	pause: Pause,
-	camera: Camera,
-	gallery: Gallery,
-	files: Files,
-	'camera-outline': CameraOutline,
-	'wrong-man': WrongMan,
-	privacy: Privacy,
-	'microphone-footer': MicrophoneFooter,
-	proximity: Proximity,
-	peer: Peer,
-	services: Services,
-	'expert-ble': ExpertBluetooth,
-	'expert-setting': ExpertSetting,
+// fix random icons on web
+if (Platform.OS === 'web') {
+	// generate font
+	const iconFontStyles = `@font-face {
+		src: url(${iconFont});
+		font-family: CustomIcons;
+	}`
+
+	// create stylesheet
+	const style = document.createElement('style')
+	style.appendChild(document.createTextNode(iconFontStyles))
+
+	// inject stylesheet
+	document.head.appendChild(style)
 }
+
+const parsedGlyphMap: Record<string, number> = {}
+for (const key in glyphMap) {
+	parsedGlyphMap[key] = Number((glyphMap as Record<string, string>)[key].replace(/\\/g, '0x'))
+}
+
+const Icon = createIconSet(parsedGlyphMap, 'Custom Icons')
 
 const CustomIcon: React.FC<{
 	name: string
@@ -59,13 +34,9 @@ const CustomIcon: React.FC<{
 	height: number
 	fill: string
 	style: any
-}> = ({ name, width, height, fill, style = [] }) => {
-	const Icon = iconsMap[name]
-	if (!Icon) {
-		return null
-	}
-	return <Icon width={width} height={height} color={fill} style={style} />
-}
+}> = ({ name, width, fill, style = [] }) => (
+	<Icon name={name} size={width} color={fill} style={style} />
+)
 
 const IconProvider = (name: string) => ({
 	toReactElement: (props: any) => CustomIcon({ name, ...props }),

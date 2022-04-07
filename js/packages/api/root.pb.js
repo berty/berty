@@ -1156,6 +1156,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   hidePreview: {
                     type: "bool",
                     id: 7
+                  },
+                  conversationIdentifier: {
+                    type: "string",
+                    id: 8
                   }
                 }
               }

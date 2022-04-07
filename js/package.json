@@ -107,6 +107,7 @@
     "eslint": "^7.14.0",
     "eslint-config-react-app": "^7.0.0",
     "eslint-plugin-import": "^2.26.0",
+    "icon-font-generator": "^2.1.11",
     "jest": "^27.4.5",
     "jest-expo": "^44.0.1",
     "metro-config": "^0.66.2",

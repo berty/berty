@@ -8,6 +8,7 @@ import RNBootSplash from 'react-native-bootsplash'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { Provider as ReduxProvider } from 'react-redux'
 
+import CustomIcons from '@berty/assets/font/CustomIcons.gen.ttf'
 import BoldOpenSans from '@berty/assets/font/OpenSans-Bold.ttf'
 import LightOpenSans from '@berty/assets/font/OpenSans-Light.ttf'
 import LightItalicOpenSans from '@berty/assets/font/OpenSans-LightItalic.ttf'
@@ -67,6 +68,10 @@ const useFonts = () => {
 				},
 				'Italic Open Sans': {
 					uri: SemiBoldItalicOpenSans,
+					display: Font.FontDisplay.SWAP,
+				},
+				'Custom Icons': {
+					uri: CustomIcons,
 					display: Font.FontDisplay.SWAP,
 				},
 			})

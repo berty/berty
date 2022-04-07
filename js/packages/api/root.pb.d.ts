@@ -1823,6 +1823,7 @@ export namespace berty {
                 deepLink?: (string|null);
                 muted?: (boolean|null);
                 hidePreview?: (boolean|null);
+                conversationIdentifier?: (string|null);
             }
 
             class FormatedPush implements IFormatedPush {
@@ -1834,6 +1835,7 @@ export namespace berty {
                 public deepLink: string;
                 public muted: boolean;
                 public hidePreview: boolean;
+                public conversationIdentifier: string;
                 public static create(properties?: berty.push.v1.IFormatedPush): berty.push.v1.FormatedPush;
                 public static encode(message: berty.push.v1.IFormatedPush, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.push.v1.IFormatedPush, writer?: $protobuf.Writer): $protobuf.Writer;
