@@ -173,9 +173,6 @@
 		},
 		"accounts": {
 			"title": "Аккаунты",
-			"backup-button": "",
-			"backup-notif-title": "",
-			"backup-notif-desc": "",
 			"accounts-button": "Аккаунты",
 			"create-button": "Создать аккаунт",
 			"import-button": "Импортировать аккаунт",
@@ -536,10 +533,6 @@
 		"need-restart": {
 			"title": "Требуется перезагрузка приложения",
 			"desc": "Перезапусти Berty, чтобы сохранить данные и включить уведомления!"
-		},
-		"need-restart-ble": {
-			"title": "Требуется перезагрузка приложения",
-			"desc": "Перезапусти Berty и включи Bluetooth в системных настройках!"
 		},
 		"submit-failed": {
 			"title": "Не удаётся сообщить об ошибке",
