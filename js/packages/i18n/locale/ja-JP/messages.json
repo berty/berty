@@ -173,9 +173,6 @@
 		},
 		"accounts": {
 			"title": "アカウント",
-			"backup-button": "",
-			"backup-notif-title": "",
-			"backup-notif-desc": "",
 			"accounts-button": "アカウント",
 			"create-button": "",
 			"import-button": "",
@@ -534,10 +531,6 @@
 	},
 	"notification": {
 		"need-restart": {
-			"title": "",
-			"desc": ""
-		},
-		"need-restart-ble": {
 			"title": "",
 			"desc": ""
 		},
