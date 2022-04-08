@@ -173,9 +173,6 @@
 		},
 		"accounts": {
 			"title": "Fiókok",
-			"backup-button": "",
-			"backup-notif-title": "",
-			"backup-notif-desc": "",
 			"accounts-button": "Fiókok",
 			"create-button": "Fiók létrehozása",
 			"import-button": "Fiók importálása",
@@ -536,10 +533,6 @@
 		"need-restart": {
 			"title": "Újraindítás szükséges",
 			"desc": "Indítsa újra a Bertyt az adatok mentéséhez és az értesítések engedélyezéséhez!"
-		},
-		"need-restart-ble": {
-			"title": "Újraindítás szükséges",
-			"desc": "Indítsa újra a Berty-t, és engedélyezze a Bluetooth kapcsolatot a rendszerbeállításokban!"
 		},
 		"submit-failed": {
 			"title": "Hibabejelentés nem lehetséges",
