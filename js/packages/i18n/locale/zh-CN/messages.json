@@ -173,9 +173,6 @@
 		},
 		"accounts": {
 			"title": "账户",
-			"backup-button": "",
-			"backup-notif-title": "",
-			"backup-notif-desc": "",
 			"accounts-button": "账户",
 			"create-button": "创建帐户",
 			"import-button": "导入帐户",
@@ -536,10 +533,6 @@
 		"need-restart": {
 			"title": "需要重新启动",
 			"desc": "重新启动 Berty 以保存您的数据并启用通知！"
-		},
-		"need-restart-ble": {
-			"title": "需要重新启动",
-			"desc": "重启 Berty 并在系统设置中启用蓝牙！"
 		},
 		"submit-failed": {
 			"title": "无法提交bug",
