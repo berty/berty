@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { View, TouchableOpacity, Share, StatusBar, Platform } from 'react-native'
 import { Layout, Icon } from '@ui-kitten/components'
-import QRCode from '@berty/polyfill/react-native-qrcode-svg'
+import QRCode from 'react-native-qrcode-svg'
 import { useTranslation } from 'react-i18next'
 import Clipboard from '@react-native-clipboard/clipboard'
 

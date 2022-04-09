@@ -6,7 +6,7 @@ import { Icon } from '@ui-kitten/components'
 import { playSoundFile } from '@berty/store/sounds'
 import { useStyles } from '@berty/styles'
 import { useThemeColor } from '@berty/store/hooks'
-import { readFile } from '@berty/polyfill/rnfs'
+import { readFile } from 'react-native-fs'
 
 import {
 	limitIntensities,

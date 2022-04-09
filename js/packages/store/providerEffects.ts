@@ -13,7 +13,7 @@ import { ServiceClientType } from '@berty/grpc-bridge/welsh-clients.gen'
 import store, { AppDispatch, persistor } from '@berty/redux/store'
 import { useAppDispatch } from '@berty/react-redux'
 import { streamEventToAction as streamEventToReduxAction } from '@berty/redux/messengerActions'
-import RNFS from '@berty/polyfill/rnfs'
+import RNFS from 'react-native-fs'
 import {
 	WelshMessengerServiceClient,
 	WelshProtocolServiceClient,

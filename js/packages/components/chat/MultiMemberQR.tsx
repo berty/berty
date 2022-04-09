@@ -1,5 +1,5 @@
 import React from 'react'
-import QRCode from '@berty/polyfill/react-native-qrcode-svg'
+import QRCode from 'react-native-qrcode-svg'
 import { Share, TouchableOpacity, View, StatusBar, Platform } from 'react-native'
 import { Icon, Layout } from '@ui-kitten/components'
 import Clipboard from '@react-native-clipboard/clipboard'

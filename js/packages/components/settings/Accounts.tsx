@@ -20,7 +20,7 @@ import { importAccountFromDocumentPicker } from '../pickerUtils'
 import { GenericAvatar } from '../avatars'
 import { UnifiedText } from '../shared-components/UnifiedText'
 import { AccordionV2 } from './Accordion'
-import { withInAppNotification } from '@berty/polyfill/react-native-in-app-notification'
+import { withInAppNotification } from 'react-native-in-app-notification'
 
 const AccountButton: React.FC<beapi.account.IAccountMetadata> = ({
 	avatarCid,

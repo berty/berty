@@ -17,7 +17,7 @@ import {
 import beapi from '@berty/api'
 import { IOSOnlyKeyboardAvoidingView } from '@berty/rnutil/keyboardAvoiding'
 import { useConversation, useLastConvInteraction } from '@berty/react-redux'
-import AndroidKeyboardAdjust from '@berty/polyfill/react-native-android-keyboard-adjust'
+import AndroidKeyboardAdjust from 'react-native-android-keyboard-adjust'
 
 import { ChatDate } from './common'
 import { MultiMemberAvatar } from '../avatars'

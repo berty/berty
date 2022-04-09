@@ -1,4 +1,4 @@
-export default {
+const exported = {
 	isAvailable: async () => {
 		return false
 	},
@@ -7,6 +7,7 @@ export default {
 	},
 }
 
+export default exported
 export interface RedirectResult {
 	type: 'success'
 	url: string

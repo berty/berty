@@ -13,7 +13,7 @@ import { useTranslation } from 'react-i18next'
 import { useStyles } from '@berty/styles'
 import { useMessengerClient, useMessengerContext, useThemeColor } from '@berty/store'
 import { useAccount } from '@berty/react-redux'
-import ImagePicker, { ImageOrVideo } from '@berty/polyfill/react-native-image-crop-picker'
+import ImagePicker, { ImageOrVideo } from 'react-native-image-crop-picker'
 
 import { AccountAvatar } from '../avatars'
 import { useSelector } from 'react-redux'

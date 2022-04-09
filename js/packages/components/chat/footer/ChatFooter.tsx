@@ -6,7 +6,7 @@ import {
 	View,
 } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import { RESULTS } from '@berty/polyfill/react-native-permissions'
+import { RESULTS } from 'react-native-permissions'
 import Long from 'long'
 import { useTranslation } from 'react-i18next'
 
@@ -31,7 +31,7 @@ import {
 	setChatInputIsSending,
 	setChatInputSelection,
 } from '@berty/redux/reducers/chatInputsVolatile.reducer'
-import ImagePicker from '@berty/polyfill/react-native-image-crop-picker'
+import ImagePicker from 'react-native-image-crop-picker'
 
 import { CameraButton, MoreButton, RecordButton, SendButton } from './ChatFooterButtons'
 import { ChatTextInput } from './ChatTextInput'

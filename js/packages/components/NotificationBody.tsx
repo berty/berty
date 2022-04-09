@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { Vibration } from 'react-native'
-import GestureRecognizer from '@berty/polyfill/react-native-swipe-gestures'
+import GestureRecognizer from 'react-native-swipe-gestures'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import beapi from '@berty/api'

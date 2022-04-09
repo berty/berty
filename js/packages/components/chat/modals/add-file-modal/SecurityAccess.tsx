@@ -1,6 +1,6 @@
 import React, { useEffect, useCallback } from 'react'
 import { View, TouchableOpacity, AppState, Platform } from 'react-native'
-import { RESULTS, openSettings } from '@berty/polyfill/react-native-permissions'
+import { RESULTS, openSettings } from 'react-native-permissions'
 import { useTranslation } from 'react-i18next'
 import { Icon } from '@ui-kitten/components'
 

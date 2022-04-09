@@ -15,7 +15,7 @@ import beapi from '@berty/api'
 import { GRPCError, Service } from '@berty/grpc-bridge'
 import { bridge as rpcBridge } from '@berty/grpc-bridge/rpc'
 import { pbDateToNum, useMessengerContext } from '@berty/store'
-import RNFS from '@berty/polyfill/rnfs'
+import RNFS from 'react-native-fs'
 
 import { NativeModules } from 'react-native'
 import { UnifiedText } from '../shared-components/UnifiedText'

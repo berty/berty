@@ -1,6 +1,6 @@
-import { PhotoIdentifiersPage } from '@react-native-community/cameraroll/typings/CameraRoll'
+import { PhotoIdentifiersPage } from '../../../../../node_modules/@react-native-community/cameraroll/typings/CameraRoll' // import from original module
 
-export default {
+const exported = {
 	async getPhotos(_opts: any): Promise<PhotoIdentifiersPage> {
 		return {
 			edges: [],
@@ -13,3 +13,5 @@ export default {
 		throw new Error('not supported on this platform')
 	},
 }
+
+export default exported

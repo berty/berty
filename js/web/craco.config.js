@@ -1,6 +1,28 @@
 const path = require('path')
 const webpack = require('webpack')
 
+const polyfillModules = [
+	'@gorhom/bottom-sheet',
+	'@react-native-community/audio-toolkit',
+	'@react-native-community/blur',
+	'@react-native-community/cameraroll',
+	'react-native-android-keyboard-adjust',
+	'react-native-emoji-board',
+	'react-native-fs',
+	'react-native-image-crop-picker',
+	'react-native-image-zoom-viewer',
+	'react-native-in-app-notification',
+	'react-native-inappbrowser-reborn',
+	'react-native-permissions',
+	'react-native-progress',
+	'react-native-qrcode-scanner',
+	'react-native-qrcode-svg',
+	'react-native-share',
+	'react-native-swipe-gestures',
+	'react-native-vector-icons',
+	'react-native-webview',
+]
+
 module.exports = {
 	babel: {
 		plugins: ['@babel/plugin-proposal-optional-chaining']
@@ -64,6 +86,7 @@ module.exports = {
 		},
 		alias: {
 			'@berty': path.join(path.resolve(__dirname, '../packages/')),
+			...(Object.fromEntries(polyfillModules.map(name => [name, path.join(path.resolve(__dirname, `./src/polyfill/${name}/`))]))),
 			'react': path.resolve(path.resolve(__dirname, './node_modules/react')),
 			'^react-native$': path.resolve(path.resolve(__dirname, './node_modules/react-native')),
 			'react-native-svg': path.resolve(path.resolve(__dirname, './node_modules/react-native-svg-web')),

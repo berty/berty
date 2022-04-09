@@ -17,7 +17,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import BottomSheet, {
 	useBottomSheetDynamicSnapPoints,
 	BottomSheetScrollView,
-} from '@berty/polyfill/bottom-sheet'
+} from '@gorhom/bottom-sheet'
 import { useStyles } from '@berty/styles'
 import { useAnimatedStyle } from 'react-native-reanimated'
 

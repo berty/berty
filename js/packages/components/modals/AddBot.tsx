@@ -6,7 +6,7 @@ import { Buffer } from 'buffer'
 import { useStyles } from '@berty/styles'
 import messengerMethodsHooks from '@berty/store/methods'
 import { useThemeColor } from '@berty/store'
-import { BlurView } from '@berty/polyfill/react-native-community-blur'
+import { BlurView } from '@react-native-community/blur'
 
 import Avatar from './Buck_Berty_Icon_Card.svg'
 import { base64ToURLBase64 } from '../utils'

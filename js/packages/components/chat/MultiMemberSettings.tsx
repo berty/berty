@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next'
 import Clipboard from '@react-native-clipboard/clipboard'
 
 import beapi from '@berty/api'
-import QRCode from '@berty/polyfill/react-native-qrcode-svg'
+import QRCode from 'react-native-qrcode-svg'
 import { useStyles } from '@berty/styles'
 import { ScreenFC, useNavigation } from '@berty/navigation'
 import { Maybe, useMessengerClient, useThemeColor } from '@berty/store'
@@ -15,7 +15,7 @@ import { ButtonSetting, FactionButtonSetting } from '../shared-components/Settin
 import logo from '../main/1_berty_picto.png'
 import { MemberAvatar, MultiMemberAvatar } from '../avatars'
 import EnableNotificationsButton from '@berty/components/chat/EnableNotificationsButton'
-import ImagePicker, { ImageOrVideo } from '@berty/polyfill/react-native-image-crop-picker'
+import ImagePicker, { ImageOrVideo } from 'react-native-image-crop-picker'
 import { UnifiedText } from '../shared-components/UnifiedText'
 
 const GroupChatSettingsHeader: React.FC<{ publicKey: Maybe<string> }> = ({ publicKey }) => {

@@ -6,11 +6,11 @@ import {
 	LongPressGestureHandlerStateChangeEvent,
 	State,
 } from 'react-native-gesture-handler'
-import { Recorder } from '@berty/polyfill/react-native-community-audio-toolkit-recorder'
+import { Recorder } from '@react-native-community/audio-toolkit'
 import { useTranslation } from 'react-i18next'
 import { Icon } from '@ui-kitten/components'
 import { useNavigation } from '@react-navigation/native'
-import { RESULTS } from '@berty/polyfill/react-native-permissions'
+import { RESULTS } from 'react-native-permissions'
 import Long from 'long'
 
 import { WelshMessengerServiceClient } from '@berty/grpc-bridge/welsh-clients.gen'
