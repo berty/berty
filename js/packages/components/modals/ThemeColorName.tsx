@@ -7,7 +7,7 @@ import { useDispatch } from 'react-redux'
 import { useStyles } from '@berty/styles'
 import { useThemeColor } from '@berty/store'
 import { saveTheme } from '@berty/redux/reducers/theme.reducer'
-import { BlurView } from '@berty/polyfill/react-native-community-blur'
+import { BlurView } from '@react-native-community/blur'
 
 import Avatar from './Buck_Berty_Icon_Card.svg'
 import { useStylesDefaultModal } from './AddBot'

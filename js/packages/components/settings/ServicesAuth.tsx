@@ -13,7 +13,7 @@ import {
 	useAccountServices,
 	serviceNames,
 } from '@berty/store'
-import { withInAppNotification } from '@berty/polyfill/react-native-in-app-notification'
+import { withInAppNotification } from 'react-native-in-app-notification'
 
 import { ButtonSetting, FactionButtonSetting } from '../shared-components'
 import { showNeedRestartNotification } from '../helpers'

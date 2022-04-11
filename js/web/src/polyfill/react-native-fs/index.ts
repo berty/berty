@@ -57,7 +57,7 @@ export const write = async (
 	throw new Error('unsupported')
 }
 
-export default {
+const exported = {
 	DownloadDirectoryPath,
 	TemporaryDirectoryPath,
 	writeFile,
@@ -69,3 +69,5 @@ export default {
 	copyFile,
 	write,
 }
+
+export default exported

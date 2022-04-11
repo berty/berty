@@ -42,6 +42,9 @@ const applyDefaultsOptions = (opts: any | null | undefined): any => {
 }
 
 export class Player extends EventEmitter {
+	path: string
+	options: any
+
 	/**
 	 * Initialize the player for playback of song in path.
 	 *

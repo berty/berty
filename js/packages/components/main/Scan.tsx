@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react'
 import { View, TextInput, Button, Vibration, StatusBar } from 'react-native'
 import { Layout } from '@ui-kitten/components'
-import QRCodeScanner from '@berty/polyfill/react-native-qrcode-scanner'
+import QRCodeScanner from 'react-native-qrcode-scanner'
 
 import { useNavigation } from '@berty/navigation'
 import { useThemeColor } from '@berty/store/hooks'

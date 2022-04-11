@@ -8,7 +8,7 @@ import {
 	request,
 	requestNotifications,
 	RESULTS,
-} from '@berty/polyfill/react-native-permissions'
+} from 'react-native-permissions'
 import beapi from '@berty/api'
 
 export enum PermissionType {

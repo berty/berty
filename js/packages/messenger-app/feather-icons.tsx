@@ -1,5 +1,5 @@
 import React from 'react'
-import Icon from '@berty/polyfill/react-native-vector-icons-feather'
+import Icon from 'react-native-vector-icons/Feather'
 
 const FeatherIcon: React.FC<{
 	name: string

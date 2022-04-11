@@ -11,11 +11,7 @@ import {
 	serviceTypes,
 	useAccountServices,
 } from '@berty/store'
-import {
-	checkNotifications,
-	RESULTS,
-	PermissionStatus,
-} from '@berty/polyfill/react-native-permissions'
+import { checkNotifications, RESULTS, PermissionStatus } from 'react-native-permissions'
 import rnutil from '@berty/rnutil'
 import { useNavigation } from '@berty/navigation'
 import { useStyles } from '@berty/styles'

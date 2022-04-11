@@ -8,13 +8,13 @@ import {
 	ActivityIndicator,
 } from 'react-native'
 import { Icon } from '@ui-kitten/components'
-import CameraRoll from '@berty/polyfill/react-native-community-cameraroll'
+import CameraRoll from '@react-native-community/cameraroll'
 import { useTranslation } from 'react-i18next'
 
 import { useStyles } from '@berty/styles'
 import { useThemeColor } from '@berty/store/hooks'
 import beapi from '@berty/api'
-import RNFS from '@berty/polyfill/rnfs'
+import RNFS from 'react-native-fs'
 
 import { ImageCounter } from '../../ImageCounter'
 import { UnifiedText } from '../../../shared-components/UnifiedText'

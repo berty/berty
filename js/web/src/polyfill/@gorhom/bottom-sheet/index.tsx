@@ -1,11 +1,11 @@
 import React, { ForwardedRef, forwardRef, useImperativeHandle } from 'react'
 import { ScrollViewProps, View, ViewProps } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
-import ImportedBottomSheet from '@gorhom/bottom-sheet'
+import ImportedBottomSheet from '../../../../../node_modules/@gorhom/bottom-sheet' // import from original bottom-sheet
 
-import { useStyles } from '@berty/styles'
-import { useLayout } from '@berty/components/hooks'
-import { useThemeColor } from '@berty/store'
+import { useStyles } from '../../../../../packages/styles'
+import { useLayout } from '../../../../../packages/components/hooks'
+import { useThemeColor } from '../../../../../packages/store'
 
 export const useBottomSheetDynamicSnapPoints = (_snapPoints: string[]) => {
 	return {

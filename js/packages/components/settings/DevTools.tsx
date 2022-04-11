@@ -33,7 +33,7 @@ import {
 	useConversationsDict,
 	useAccount,
 } from '@berty/react-redux'
-import { Player } from '@berty/polyfill/react-native-community-audio-toolkit-player'
+import { Player } from '@react-native-community/audio-toolkit'
 
 import {
 	ButtonSetting,
@@ -45,7 +45,7 @@ import { showNeedRestartNotification } from '../helpers'
 import { DropDownPicker, Item } from '../shared-components/DropDownPicker'
 import { useSelector } from 'react-redux'
 import { selectEmbedded } from '@berty/redux/reducers/ui.reducer'
-import { withInAppNotification } from '@berty/polyfill/react-native-in-app-notification'
+import { withInAppNotification } from 'react-native-in-app-notification'
 import {
 	defaultPersistentOptions,
 	PersistentOptionsKeys,

@@ -22,7 +22,7 @@ import {
 	getPermissionStatus,
 	PermissionType,
 } from '@berty/rnutil/checkPermissions'
-import { withInAppNotification } from '@berty/polyfill/react-native-in-app-notification'
+import { withInAppNotification } from 'react-native-in-app-notification'
 import store from '@berty/redux/store'
 import {
 	selectBlePerm,

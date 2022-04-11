@@ -7,10 +7,7 @@ import { accountService } from '@berty/store'
 import beapi from '@berty/api'
 import { useNavigation } from '@berty/navigation'
 import { useConversationsDict } from '@berty/react-redux'
-import {
-	InAppNotificationProvider,
-	withInAppNotification,
-} from '@berty/polyfill/react-native-in-app-notification'
+import { InAppNotificationProvider, withInAppNotification } from 'react-native-in-app-notification'
 
 import NotificationBody from '../NotificationBody'
 

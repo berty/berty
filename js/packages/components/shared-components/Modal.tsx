@@ -12,7 +12,7 @@ import { Icon } from '@ui-kitten/components'
 import { useStyles } from '@berty/styles'
 import { useNavigation } from '@berty/navigation'
 import { useThemeColor } from '@berty/store/hooks'
-import { BlurView } from '@berty/polyfill/react-native-community-blur'
+import { BlurView } from '@react-native-community/blur'
 
 //
 // Modal => Modals on screens requests

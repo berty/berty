@@ -30,7 +30,7 @@ import {
 	Maybe,
 } from '@berty/store'
 import { useConversationInteractions } from '@berty/react-redux'
-import RNFS from '@berty/polyfill/rnfs'
+import RNFS from 'react-native-fs'
 
 import { getSource } from '../utils'
 import { timeFormat } from '../helpers'

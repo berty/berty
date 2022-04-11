@@ -10,7 +10,7 @@ import { useThemeColor } from '@berty/store'
 import beapi from '@berty/api'
 import messengerMethodsHooks from '@berty/store/methods'
 import { useConversationsDict } from '@berty/react-redux'
-import { BlurView } from '@berty/polyfill/react-native-community-blur'
+import { BlurView } from '@react-native-community/blur'
 
 import { ManageGroupInvitation } from './ManageGroupInvitation'
 import AddThisContact from './AddThisContact'

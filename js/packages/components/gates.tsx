@@ -8,7 +8,7 @@ import {
 	StatusBar,
 	Platform,
 } from 'react-native'
-import * as Progress from '@berty/polyfill/react-native-progress'
+import * as Progress from 'react-native-progress'
 
 import { useMessengerContext, useThemeColor, MessengerActions } from '@berty/store'
 import { useStyles } from '@berty/styles'

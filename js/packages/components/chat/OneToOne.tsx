@@ -11,7 +11,7 @@ import { useReadEffect, useNotificationsInhibitor, useThemeColor, pbDateToNum } 
 import { CustomTitleStyle } from '@berty/navigation/stacks'
 import { IOSOnlyKeyboardAvoidingView } from '@berty/rnutil/keyboardAvoiding'
 import { useContact, useConversation } from '@berty/react-redux'
-import AndroidKeyboardAdjust from '@berty/polyfill/react-native-android-keyboard-adjust'
+import AndroidKeyboardAdjust from 'react-native-android-keyboard-adjust'
 
 import { ContactAvatar } from '../avatars'
 import { ChatDate } from './common'

@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useRef } from 'react'
 import { TouchableOpacity, Platform, View, AppState, StatusBar } from 'react-native'
 import LottieView, { AnimatedLottieViewProps } from 'lottie-react-native'
 import { useTranslation } from 'react-i18next'
-import { RESULTS, openSettings, PermissionStatus } from '@berty/polyfill/react-native-permissions'
+import { RESULTS, openSettings, PermissionStatus } from 'react-native-permissions'
 
 import { useStyles } from '@berty/styles'
 import { accountService, useThemeColor } from '@berty/store'
