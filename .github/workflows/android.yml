@@ -45,7 +45,7 @@ jobs:
           filename: .github/workflows/utils/variables.json
 
       - name: Setup Go
-        uses: actions/setup-go@v2
+        uses: actions/setup-go@v3
         with:
           go-version: ${{ matrix.golang }}
 

@@ -30,7 +30,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Set up Go
-        uses: actions/setup-go@v2
+        uses: actions/setup-go@v3
         with:
           go-version: ${{ matrix.golang }}
       - name: golangci-lint
@@ -68,7 +68,7 @@ jobs:
         with:
           filename: .github/workflows/utils/variables.json
       - name: Set up Go
-        uses: actions/setup-go@v2
+        uses: actions/setup-go@v3
         with:
           go-version: ${{ matrix.golang }}
       - name: Cache Go modules
@@ -118,7 +118,7 @@ jobs:
         with:
           filename: .github/workflows/utils/variables.json
       - name: Set up Go
-        uses: actions/setup-go@v2
+        uses: actions/setup-go@v3
         with:
           go-version: ${{ matrix.golang }}
       - name: Cache Go modules
@@ -178,7 +178,7 @@ jobs:
         with:
           filename: .github/workflows/utils/variables.json
       - name: Set up Go
-        uses: actions/setup-go@v2
+        uses: actions/setup-go@v3
         with:
           go-version: ${{ matrix.golang }}
       - name: Cache Go modules
@@ -236,7 +236,7 @@ jobs:
         with:
           filename: .github/workflows/utils/variables.json
       - name: Set up Go
-        uses: actions/setup-go@v2
+        uses: actions/setup-go@v3
         with:
           go-version: ${{ matrix.golang }}
       - name: Cache Go modules

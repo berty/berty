@@ -71,7 +71,7 @@ jobs:
           registry-url: "https://registry.npmjs.org"
 
       - name: Set up Go
-        uses: actions/setup-go@v2
+        uses: actions/setup-go@v3
         with:
           go-version: 1.17.x
 
@@ -124,7 +124,7 @@ jobs:
           filename: .github/workflows/utils/variables.json
 
       - name: Set up Go
-        uses: actions/setup-go@v2
+        uses: actions/setup-go@v3
         with:
           go-version: ${{ matrix.config.golang }}
 
