@@ -43,7 +43,7 @@ require (
 	github.com/ipfs-shipyard/gomobile-ipfs/go v0.0.0-20220121164338-5af8e0f4276a
 	github.com/ipfs/go-cid v0.1.0
 	github.com/ipfs/go-datastore v0.5.1
-	github.com/ipfs/go-ipfs v0.11.0
+	github.com/ipfs/go-ipfs v0.12.2
 	github.com/ipfs/go-ipfs-config v0.19.0
 	github.com/ipfs/go-ipfs-files v0.0.9
 	github.com/ipfs/go-ipfs-keystore v0.0.2
