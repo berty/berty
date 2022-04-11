@@ -30,6 +30,8 @@ import { PictureMessage } from './PictureMessage'
 import { AudioMessage } from './AudioMessage'
 import { FileMessage } from './FileMessage'
 import { getMediaTypeFromMedias } from '../../utils'
+// We have delete this component cause unusable but we can find it here if we need: https://github.com/berty/berty/blob/38913ed828/js/packages/components/chat/message/Reactions.tsx
+// and a component dependencie https://github.com/berty/berty/blob/38913ed828f11799bb5f4471d1cb31dc182d9ed5/js/packages/components/shared-components/AnimatedNumber.tsx
 // import { Reactions } from './Reactions'
 import { MessageMenu } from '../modals/MessageMenu.modal'
 import { useModal } from '../../providers/modal.provider'

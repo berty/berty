@@ -357,12 +357,12 @@ export const selectEmbedded = (state: LocalRootState): boolean => selectSlice(st
 // export const selectDaemonAddress = (state: LocalRootState): string =>
 // 	selectSlice(state).daemonAddress
 
-// export const selectDebugMode = (state: LocalRootState): boolean => selectSlice(state).debugMode
+export const selectDebugMode = (state: LocalRootState): boolean => selectSlice(state).debugMode
 
 export const selectStreamInProgress = (state: LocalRootState): StreamInProgress | null =>
 	selectSlice(state).streamInProgress
 
-// export const selectStreamError = (state: LocalRootState): any => selectSlice(state).streamError
+export const selectStreamError = (state: LocalRootState): any => selectSlice(state).streamError
 
 // export const selectNotificationsInhibitors = (state: LocalRootState): NotificationsInhibitor[] =>
 // 	selectSlice(state).notificationsInhibitors
