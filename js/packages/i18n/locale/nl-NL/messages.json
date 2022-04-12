@@ -145,10 +145,7 @@
 				"draft": "Concept: {{message}}"
 			}
 		},
-		"suggestion-display-name-initial": "Klik hier om toe te voegen",
-		"scan": {
-			"title": "Scan QR Code"
-		}
+		"suggestion-display-name-initial": "Klik hier om toe te voegen"
 	},
 	"settings": {
 		"home": {
