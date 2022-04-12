@@ -145,10 +145,7 @@
 				"draft": ""
 			}
 		},
-		"suggestion-display-name-initial": "Clique aqui para adicionar",
-		"scan": {
-			"title": "Escanear código QR"
-		}
+		"suggestion-display-name-initial": "Clique aqui para adicionar"
 	},
 	"settings": {
 		"home": {
