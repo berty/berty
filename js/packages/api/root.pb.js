@@ -1136,6 +1136,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   deepLink: {
                     type: "string",
                     id: 5
+                  },
+                  alreadyReceived: {
+                    type: "bool",
+                    id: 6
                   }
                 }
               }

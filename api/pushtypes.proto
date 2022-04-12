@@ -130,4 +130,5 @@ message FormatedPush {
   string subtitle = 3;
   string body = 4;
   string deep_link = 5;
+  bool already_received = 6;
 }

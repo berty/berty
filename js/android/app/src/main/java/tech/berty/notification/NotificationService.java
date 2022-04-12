@@ -36,7 +36,7 @@ import java.util.Map;
 public class NotificationService extends FirebaseMessagingService {
     private static final String TAG = "NotificationService";
     private final static LoggerDriver logger = new LoggerDriver("tech.berty.notif", "gomobile");
-    private PushStandalone push;
+    private final PushStandalone push;
 
     public static Task<String> getToken() {
         return FirebaseMessaging.getInstance().getToken();
@@ -75,7 +75,7 @@ public class NotificationService extends FirebaseMessagingService {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
         String deeplink = fpush.getDeepLink();
-        if (deeplink != "") {
+        if (!deeplink.equals("")) {
             intent.setData(Uri.parse(deeplink));
         }
 
@@ -90,7 +90,7 @@ public class NotificationService extends FirebaseMessagingService {
             .setContentIntent(pendingIntent);
 
         String subtitle = fpush.getSubtitle();
-        if (subtitle != "") {
+        if (!subtitle.equals("")) {
             builder.setSubText(subtitle);
         }
 
@@ -145,9 +145,11 @@ public class NotificationService extends FirebaseMessagingService {
                     } else {
                         format = bridge.pushDecrypt(data);
                     }
-                    this.createPushNotification(format);
+                    if (!format.getAlreadyReceived()) {
+                        this.createPushNotification(format);
+                    }
                 } catch (Exception e) {
-                    Log.d(TAG, "Decrypt push error: " + e.toString());
+                    Log.d(TAG, "Decrypt push error: " + e);
                 }
             }
         }
