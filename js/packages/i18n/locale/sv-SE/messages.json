@@ -145,10 +145,7 @@
 				"draft": "Utkast: {{message}}"
 			}
 		},
-		"suggestion-display-name-initial": "Klicka här för att lägga till",
-		"scan": {
-			"title": "Skanna QR-kod"
-		}
+		"suggestion-display-name-initial": "Klicka här för att lägga till"
 	},
 	"settings": {
 		"home": {
