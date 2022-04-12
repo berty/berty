@@ -1,0 +1,650 @@
+diff --git a/node_modules/@react-native-community/audio-toolkit/CHANGELOG.md b/node_modules/@react-native-community/audio-toolkit/CHANGELOG.md
+index e28dab5..c68675a 100644
+--- a/node_modules/@react-native-community/audio-toolkit/CHANGELOG.md
++++ b/node_modules/@react-native-community/audio-toolkit/CHANGELOG.md
+@@ -4,7 +4,13 @@ All notable changes to this project will be documented in this file.
+ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
+ 
+ ## Unreleased
++### Added
++- Add inline base64 audio URL support
++- Add ability to generate metering events while recording, which measure sound input levels
+ 
++### Fixed
++- Android: Fixed a compatibility issue on Android where on some Android models (e.g. HUAWEI) a -38 error is generated
++- iOS: Fixed duration not being provided until getCurrentTime is called
+ 
+ ## [2.0.3] - 2020-03-23
+ ### Added
+diff --git a/node_modules/@react-native-community/audio-toolkit/android/src/main/java/com/reactnativecommunity/rctaudiotoolkit/AudioPlayerModule.java b/node_modules/@react-native-community/audio-toolkit/android/src/main/java/com/reactnativecommunity/rctaudiotoolkit/AudioPlayerModule.java
+index f9bc7b5..1a320db 100644
+--- a/node_modules/@react-native-community/audio-toolkit/android/src/main/java/com/reactnativecommunity/rctaudiotoolkit/AudioPlayerModule.java
++++ b/node_modules/@react-native-community/audio-toolkit/android/src/main/java/com/reactnativecommunity/rctaudiotoolkit/AudioPlayerModule.java
+@@ -41,6 +41,7 @@ public class AudioPlayerModule extends ReactContextBaseJavaModule implements Med
+     Map<Integer, Boolean> playerAutoDestroy = new HashMap<>();
+     Map<Integer, Boolean> playerContinueInBackground = new HashMap<>();
+     Map<Integer, Callback> playerSeekCallback = new HashMap<>();
++    Map<Integer, Float> playerSpeed = new HashMap<>();
+ 
+     boolean looping = false;
+     private ReactApplicationContext context;
+@@ -174,7 +175,7 @@ public class AudioPlayerModule extends ReactContextBaseJavaModule implements Med
+         }
+ 
+         int resId = this.context.getResources().getIdentifier(fileNameWithoutExt,
+-            "raw", this.context.getPackageName());
++                "raw", this.context.getPackageName());
+         if (resId != 0) {
+             return Uri.parse("android.resource://" + this.context.getPackageName() + "/" + resId);
+         }
+@@ -193,6 +194,7 @@ public class AudioPlayerModule extends ReactContextBaseJavaModule implements Med
+             this.playerAutoDestroy.remove(playerId);
+             this.playerContinueInBackground.remove(playerId);
+             this.playerSeekCallback.remove(playerId);
++            this.playerSpeed.remove(playerId);
+ 
+             WritableMap data = new WritableNativeMap();
+             data.putString("message", "Destroyed player");
+@@ -251,8 +253,6 @@ public class AudioPlayerModule extends ReactContextBaseJavaModule implements Med
+         destroy(playerId);
+         this.lastPlayerId = playerId;
+ 
+-        Uri uri = uriFromPath(path);
+-
+         //MediaPlayer player = MediaPlayer.create(this.context, uri, null, attributes);
+         MediaPlayer player = new MediaPlayer();
+ 
+@@ -264,13 +264,23 @@ public class AudioPlayerModule extends ReactContextBaseJavaModule implements Med
+ 
+         player.setAudioAttributes(attributes);
+         */
+-
+-        try {
+-            Log.d(LOG_TAG, uri.getPath());
+-            player.setDataSource(this.context, uri);
+-        } catch (IOException e) {
+-            callback.invoke(errObj("invalidpath", e.toString()));
+-            return;
++        if (path.startsWith("data:audio/")) {
++            // Inline data
++             try {
++                 player.setDataSource(path);
++             } catch (IOException e) {
++                callback.invoke(errObj("invalidpath", e.toString()));
++                return;
++            }
++        } else {
++            try {
++                Uri uri = uriFromPath(path);
++                Log.d(LOG_TAG, uri.getPath());
++                player.setDataSource(this.context, uri);
++            } catch (IOException e) {
++                callback.invoke(errObj("invalidpath", e.toString()));
++                return;
++            }
+         }
+ 
+         player.setOnErrorListener(this);
+@@ -355,16 +365,13 @@ public class AudioPlayerModule extends ReactContextBaseJavaModule implements Med
+         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && (options.hasKey("speed") || options.hasKey("pitch"))) {
+             PlaybackParams params = new PlaybackParams();
+ 
+-            boolean needToPauseAfterSet = false;
+             if (options.hasKey("speed") && !options.isNull("speed")) {
+                 // If the player wasn't already playing, then setting the speed value to a non-zero value
+-                // will start it playing and we don't want that so we need to make sure to pause it straight
+-                // after setting the speed value
+-                boolean wasAlreadyPlaying = player.isPlaying();
++                // will start it playing and we don't want that so we store and apply it later
+                 float speedValue = (float) options.getDouble("speed");
+-                needToPauseAfterSet = !wasAlreadyPlaying && speedValue != 0.0f;
+-
+-                params.setSpeed(speedValue);
++                this.playerSpeed.put(playerId, speedValue);
++                // Apply param only if isPlaying. If not, we defer it on start
++                if (player.isPlaying()) params.setSpeed(speedValue);
+             }
+ 
+             if (options.hasKey("pitch") && !options.isNull("pitch")) {
+@@ -372,10 +379,6 @@ public class AudioPlayerModule extends ReactContextBaseJavaModule implements Med
+             }
+ 
+             player.setPlaybackParams(params);
+-
+-            if (needToPauseAfterSet) {
+-                player.pause();
+-            }
+         }
+ 
+         callback.invoke();
+@@ -393,7 +396,23 @@ public class AudioPlayerModule extends ReactContextBaseJavaModule implements Med
+             if (!this.mixWithOthers) {
+                 this.mAudioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+             }
+-            player.start();
++
++            // Let's start using setSpeed when supported
++            Float speedValue = this.playerSpeed.get(playerId);
++            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && speedValue != null) {
++                PlaybackParams params = new PlaybackParams();
++                params.setSpeed(speedValue);
++                player.setPlaybackParams(params);
++
++                // Check if device is honoring android spec: when setSpeed player should start
++                // https://developer.android.com/reference/android/media/MediaPlayer#setPlaybackParams(android.media.PlaybackParams)
++                // If that is not happening, explicitly call start
++                if (!player.isPlaying()) {
++                    player.start();
++                }
++            } else {
++                player.start();
++            }
+ 
+             callback.invoke(null, getInfo(player));
+         } catch (Exception e) {
+diff --git a/node_modules/@react-native-community/audio-toolkit/android/src/main/java/com/reactnativecommunity/rctaudiotoolkit/AudioRecorderModule.java b/node_modules/@react-native-community/audio-toolkit/android/src/main/java/com/reactnativecommunity/rctaudiotoolkit/AudioRecorderModule.java
+index 657e8d4..944808e 100644
+--- a/node_modules/@react-native-community/audio-toolkit/android/src/main/java/com/reactnativecommunity/rctaudiotoolkit/AudioRecorderModule.java
++++ b/node_modules/@react-native-community/audio-toolkit/android/src/main/java/com/reactnativecommunity/rctaudiotoolkit/AudioRecorderModule.java
+@@ -2,8 +2,6 @@ package com.reactnativecommunity.rctaudiotoolkit;
+ 
+ import android.annotation.TargetApi;
+ import android.media.MediaRecorder;
+-import android.os.Build;
+-import android.os.Environment;
+ import android.util.Log;
+ import android.net.Uri;
+ import android.webkit.URLUtil;
+@@ -11,7 +9,6 @@ import android.content.ContextWrapper;
+ 
+ import com.facebook.react.bridge.Arguments;
+ import com.facebook.react.bridge.ReactApplicationContext;
+-import com.facebook.react.bridge.ReactContext;
+ import com.facebook.react.bridge.ReactContextBaseJavaModule;
+ import com.facebook.react.bridge.ReactMethod;
+ import com.facebook.react.bridge.Callback;
+@@ -23,11 +20,12 @@ import com.facebook.react.modules.core.DeviceEventManagerModule;
+ import java.io.IOException;
+ import java.io.File;
+ import java.lang.Thread;
+-import java.net.URISyntaxException;
+ import java.util.HashMap;
+ import java.util.Map;
+ import java.util.Map.Entry;
+ import java.util.Objects;
++import java.util.Timer;
++import java.util.TimerTask;
+ 
+ public class AudioRecorderModule extends ReactContextBaseJavaModule implements
+         MediaRecorder.OnInfoListener, MediaRecorder.OnErrorListener {
+@@ -37,6 +35,11 @@ public class AudioRecorderModule extends ReactContextBaseJavaModule implements
+     Map<Integer, Boolean> recorderAutoDestroy = new HashMap<>();
+ 
+     private ReactApplicationContext context;
++    private Timer meteringUpdateTimer;
++    private int meteringFrameId = 0;
++    private Integer meteringRecorderId = null;
++    private MediaRecorder meteringRecorder = null;
++    private int meteringInterval = 0;
+ 
+     public AudioRecorderModule(ReactApplicationContext reactContext) {
+         super(reactContext);
+@@ -141,6 +144,43 @@ public class AudioRecorderModule extends ReactContextBaseJavaModule implements
+         return uri;
+     }
+     
++    // metering methods
++    private void startMeteringTimer(int monitorInterval) {
++        meteringUpdateTimer = new Timer();
++        meteringUpdateTimer.scheduleAtFixedRate(new TimerTask() {
++            @Override
++            public void run() {
++                if (meteringRecorderId != null && meteringRecorder != null) {
++                    try {
++                        WritableMap body = Arguments.createMap();
++                        body.putDouble("id", meteringFrameId++);
++
++                        int amplitude = meteringRecorder.getMaxAmplitude();
++                        if (amplitude == 0) {
++                            body.putInt("value", -160);
++                            body.putInt("rawValue", 0);
++                        } else {
++                            body.putInt("rawValue", amplitude);
++                            body.putInt("value", (int) (20 * Math.log10(((double) amplitude) / 32767d)));
++                        }
++                        emitEvent(meteringRecorderId, "meter", body);
++                    } catch (Exception e) { 
++                        Log.e(LOG_TAG, e.toString());
++                    }
++                }
++            }
++        }, 0, monitorInterval);
++    }
++
++    private void stopMeteringTimer() {
++        if (meteringUpdateTimer != null) {
++            meteringUpdateTimer.cancel();
++            meteringUpdateTimer.purge();
++            meteringUpdateTimer = null;
++            meteringFrameId = 0;
++        }
++    }
++
+     @ReactMethod
+     public void destroy(Integer recorderId, Callback callback) {
+         MediaRecorder recorder = this.recorderPool.get(recorderId);
+@@ -149,6 +189,10 @@ public class AudioRecorderModule extends ReactContextBaseJavaModule implements
+             recorder.release();
+             this.recorderPool.remove(recorderId);
+             this.recorderAutoDestroy.remove(recorderId);
++            if (recorderId == meteringRecorderId) {
++                meteringRecorderId = null;
++                meteringRecorder = null;
++            }
+ 
+             WritableMap data = new WritableNativeMap();
+             data.putString("message", "Destroyed recorder");
+@@ -240,6 +284,20 @@ public class AudioRecorderModule extends ReactContextBaseJavaModule implements
+         } catch (IOException e) {
+             callback.invoke(errObj("preparefail", e.toString()));
+         }
++
++        if (options.hasKey("meteringInterval")) {
++            int meteringInterval = options.getInt("meteringInterval");
++            if (meteringRecorderId != null) {
++                Log.i(LOG_TAG, "multiple recorder metering are not currently supporter. Metering will be active on the last recorder.");
++            }
++            if (meteringInterval <= 0) {
++                Log.w(LOG_TAG, "metering interval must be grater then 0. Ignoring metering");
++            } else {
++                meteringRecorder = recorder;
++                meteringRecorderId = recorderId;
++                this.meteringInterval = meteringInterval;
++            }
++        }
+     }
+ 
+     @ReactMethod
+@@ -251,6 +309,9 @@ public class AudioRecorderModule extends ReactContextBaseJavaModule implements
+         }
+ 
+         try {
++            if (recorderId == meteringRecorderId) {
++                startMeteringTimer(meteringInterval);
++            }
+             recorder.start();
+ 
+             callback.invoke();
+@@ -268,6 +329,9 @@ public class AudioRecorderModule extends ReactContextBaseJavaModule implements
+         }
+ 
+         try {
++            if (recorderId == meteringRecorderId) {
++                stopMeteringTimer();
++            }
+             recorder.stop();
+             if (this.recorderAutoDestroy.get(recorderId)) {
+                 Log.d(LOG_TAG, "Autodestroying recorder...");
+@@ -288,7 +352,6 @@ public class AudioRecorderModule extends ReactContextBaseJavaModule implements
+         pause24(recorderId,callback);
+     }
+ 
+-
+     @TargetApi(24)
+     private void pause24(Integer recorderId, Callback callback) {
+         MediaRecorder recorder = this.recorderPool.get(recorderId);
+@@ -298,6 +361,9 @@ public class AudioRecorderModule extends ReactContextBaseJavaModule implements
+         }
+ 
+         try {
++            if (recorderId == meteringRecorderId) {
++                stopMeteringTimer();
++            }
+             recorder.pause();
+             if (this.recorderAutoDestroy.get(recorderId)) {
+                 Log.d(LOG_TAG, "Autodestroying recorder...");
+@@ -352,6 +418,5 @@ public class AudioRecorderModule extends ReactContextBaseJavaModule implements
+         data.putString("message", "Android MediaRecorder info");
+ 
+         emitEvent(recorderId, "info", data);
+-
+     }
+ }
+diff --git a/node_modules/@react-native-community/audio-toolkit/ios/ReactNativeAudioToolkit/ReactNativeAudioToolkit/AudioPlayer.m b/node_modules/@react-native-community/audio-toolkit/ios/ReactNativeAudioToolkit/ReactNativeAudioToolkit/AudioPlayer.m
+index ec74835..e3d024d 100644
+--- a/node_modules/@react-native-community/audio-toolkit/ios/ReactNativeAudioToolkit/ReactNativeAudioToolkit/AudioPlayer.m
++++ b/node_modules/@react-native-community/audio-toolkit/ios/ReactNativeAudioToolkit/ReactNativeAudioToolkit/AudioPlayer.m
+@@ -16,7 +16,6 @@
+ #import "ReactPlayerItem.h"
+ #import <AVFoundation/AVPlayer.h>
+ #import <AVFoundation/AVPlayerItem.h>
+-#import <AVFoundation/AVAsset.h>
+ 
+ 
+ @interface AudioPlayer ()
+@@ -103,17 +102,31 @@ RCT_EXPORT_METHOD(prepare:(nonnull NSNumber*)playerId
+         return;
+     }
+ 
+-    // Try to find the correct file
+-    NSURL *url = [self findUrlForPath:path];
+-    if (!url) {
+-        NSDictionary* dict = [Helpers errObjWithCode:@"invalidpath" withMessage:@"No file found at path"];
++    ReactPlayerItem *item;
++    if ([path hasPrefix:@"data:audio/"]) {
++        // Inline data
++        NSData *data = [Helpers decodeBase64DataUrl:path];
++        if (!data) {
++            NSDictionary* dict = [Helpers errObjWithCode:@"invalidpath" withMessage:@"Invalid data:audio URL"];
++            callback(@[dict]);
++            return;
++        }
++        item = (ReactPlayerItem *)[ReactPlayerItem playerItemWithData: data];
++     } else {
++        // Try to find the correct file
++        NSURL *url = [self findUrlForPath:path];
++        if (!url) {
++            NSDictionary* dict = [Helpers errObjWithCode:@"invalidpath" withMessage:@"No file found at path"];
++            callback(@[dict]);
++            return;
++        }
++        item = (ReactPlayerItem *)[ReactPlayerItem playerItemWithURL: url];
++    }
++    if (!item) {
++        NSDictionary* dict = [Helpers errObjWithCode:@"preparefail" withMessage:@"Error initializing player item"];
+         callback(@[dict]);
+         return;
+     }
+-    
+-    // Load asset from the url
+-    AVURLAsset *asset = [AVURLAsset assetWithURL: url];
+-    ReactPlayerItem *item = (ReactPlayerItem *)[ReactPlayerItem playerItemWithAsset: asset];
+     item.reactPlayerId = playerId;
+     
+     // Add notification to know when file has stopped playing
+@@ -220,7 +233,7 @@ RCT_EXPORT_METHOD(prepare:(nonnull NSNumber*)playerId
+     // Callback when ready / failed
+     if (player.currentItem.status == AVPlayerStatusReadyToPlay) {
+         player.automaticallyWaitsToMinimizeStalling = false;
+-        callback(@[[NSNull null]]);
++        callback(@[[NSNull null], @{@"duration": @(CMTimeGetSeconds(player.currentItem.asset.duration) * 1000)}]);
+     } else {
+         NSDictionary* dict = [Helpers errObjWithCode:@"preparefail"
+                                          withMessage:[NSString stringWithFormat:@"Preparing player failed"]];
+diff --git a/node_modules/@react-native-community/audio-toolkit/ios/ReactNativeAudioToolkit/ReactNativeAudioToolkit/AudioRecorder.m b/node_modules/@react-native-community/audio-toolkit/ios/ReactNativeAudioToolkit/ReactNativeAudioToolkit/AudioRecorder.m
+index 80d71e8..fe012eb 100644
+--- a/node_modules/@react-native-community/audio-toolkit/ios/ReactNativeAudioToolkit/ReactNativeAudioToolkit/AudioRecorder.m
++++ b/node_modules/@react-native-community/audio-toolkit/ios/ReactNativeAudioToolkit/ReactNativeAudioToolkit/AudioRecorder.m
+@@ -21,11 +21,19 @@
+ 
+ @end
+ 
+-@implementation AudioRecorder
++@implementation AudioRecorder {
++    id _meteringUpdateTimer;
++    int _meteringFrameId;
++    int _meteringUpdateInterval;
++    NSNumber *_meteringRecorderId;
++    AVAudioRecorder *_meteringRecorder;
++    NSDate *_prevMeteringUpdateTime;
++}
+ 
+ @synthesize bridge = _bridge;
+ 
+ - (void)dealloc {
++    [self stopMeteringTimer];
+     AVAudioSession *audioSession = [AVAudioSession sharedInstance];
+     NSError *error = nil;
+     [audioSession setActive:NO error:&error];
+@@ -47,6 +55,53 @@
+     return [[_recorderPool allKeysForObject:recorder] firstObject];
+ }
+ 
++#pragma mark - Metering functions
++
++- (void)stopMeteringTimer {
++    [_meteringUpdateTimer invalidate];
++    _meteringFrameId = 0;
++    _prevMeteringUpdateTime = nil;
++    _meteringRecorderId = nil;
++    _meteringRecorder = nil;
++}
++
++- (void)startMeteringTimer:(int)monitorInterval {
++    _meteringUpdateInterval = monitorInterval;
++
++    [self stopMeteringTimer];
++
++    _meteringUpdateTimer = [CADisplayLink displayLinkWithTarget:self selector:@selector(sendMeteringUpdate)];
++    [_meteringUpdateTimer addToRunLoop:[NSRunLoop mainRunLoop] forMode:NSDefaultRunLoopMode];
++}
++
++- (void)sendMeteringUpdate {
++    if (!_meteringRecorder) {
++        [self stopMeteringTimer];
++        return;
++    }
++    if (!_meteringRecorder.isRecording) {
++        return;
++    }
++
++    if (_prevMeteringUpdateTime == nil ||
++     (([_prevMeteringUpdateTime timeIntervalSinceNow] * -1000.0) >= _meteringUpdateInterval)) {
++        _meteringFrameId++;
++        NSMutableDictionary *body = [[NSMutableDictionary alloc] init];
++        [body setObject:[NSNumber numberWithFloat:_meteringFrameId] forKey:@"id"];
++
++        [_meteringRecorder updateMeters];
++        float _currentLevel = [_meteringRecorder averagePowerForChannel: 0];
++        [body setObject:[NSNumber numberWithFloat:_currentLevel] forKey:@"value"];
++        [body setObject:[NSNumber numberWithFloat:_currentLevel] forKey:@"rawValue"];
++        NSString *eventName = [NSString stringWithFormat:@"RCTAudioRecorderEvent:%@", _meteringRecorderId];
++        [self.bridge.eventDispatcher sendAppEventWithName:eventName
++                                                     body:@{@"event" : @"meter",
++                                                            @"data" : body
++                                                          }];
++        _prevMeteringUpdateTime = [NSDate date];
++    }
++}
++
+ #pragma mark - React exposed functions
+ 
+ RCT_EXPORT_MODULE();
+@@ -127,6 +182,16 @@ RCT_EXPORT_METHOD(prepare:(nonnull NSNumber *)recorderId
+         return;
+     }
+     
++    NSNumber *meteringInterval = [options objectForKey:@"meteringInterval"];
++    if (meteringInterval) {
++        recorder.meteringEnabled = YES;
++        [self startMeteringTimer:[meteringInterval intValue]];
++        if (_meteringRecorderId != nil)
++            NSLog(@"multiple recorder metering are not currently supporter. Metering will be active on the last recorder.");
++        _meteringRecorderId = recorderId;
++        _meteringRecorder = recorder;
++    }
++    
+     callback(@[[NSNull null], filePath]);
+ }
+ 
+@@ -155,6 +220,9 @@ RCT_EXPORT_METHOD(stop:(nonnull NSNumber *)recorderId withCallback:(RCTResponseS
+         callback(@[dict]);
+         return;
+     }
++    if (recorderId == _meteringRecorderId) {
++        [self stopMeteringTimer];
++    }
+     callback(@[[NSNull null]]);
+ }
+ 
+diff --git a/node_modules/@react-native-community/audio-toolkit/ios/ReactNativeAudioToolkit/ReactNativeAudioToolkit/Helpers.h b/node_modules/@react-native-community/audio-toolkit/ios/ReactNativeAudioToolkit/ReactNativeAudioToolkit/Helpers.h
+index 0e177e1..c39db09 100644
+--- a/node_modules/@react-native-community/audio-toolkit/ios/ReactNativeAudioToolkit/ReactNativeAudioToolkit/Helpers.h
++++ b/node_modules/@react-native-community/audio-toolkit/ios/ReactNativeAudioToolkit/ReactNativeAudioToolkit/Helpers.h
+@@ -17,4 +17,6 @@
+ 
+ +(NSDictionary *)recorderSettingsFromOptions:(NSDictionary *)options;
+ 
+++(NSData *)decodeBase64DataUrl:(NSString*)url;
++
+ @end
+diff --git a/node_modules/@react-native-community/audio-toolkit/ios/ReactNativeAudioToolkit/ReactNativeAudioToolkit/Helpers.m b/node_modules/@react-native-community/audio-toolkit/ios/ReactNativeAudioToolkit/ReactNativeAudioToolkit/Helpers.m
+index 6f36ba0..8871be7 100644
+--- a/node_modules/@react-native-community/audio-toolkit/ios/ReactNativeAudioToolkit/ReactNativeAudioToolkit/Helpers.m
++++ b/node_modules/@react-native-community/audio-toolkit/ios/ReactNativeAudioToolkit/ReactNativeAudioToolkit/Helpers.m
+@@ -77,4 +77,21 @@
+     return recordSettings;
+ }
+ 
+++(NSData *)decodeBase64DataUrl:(NSString*)url {
++    NSRange b64r = [url rangeOfString:@";base64,"];
++    if (b64r.location == NSNotFound) {
++        NSLog(@"decodeBase64DataUrl - base64 not found in data: url");
++        return nil;
++    }
++    NSInteger idx = b64r.location + @";base64,".length;
++    NSString *b64string = [url substringFromIndex:idx];
++    NSData *b64decoded = [[NSData alloc] initWithBase64EncodedString:b64string options:NSASCIIStringEncoding];
++    if (b64decoded == nil) {
++        NSLog(@"decodeBase64DataUrl - error decoding base64 data");
++        return nil;
++    }
++    
++    return b64decoded;
++}
++
+ @end
+diff --git a/node_modules/@react-native-community/audio-toolkit/ios/ReactNativeAudioToolkit/ReactNativeAudioToolkit/ReactPlayerItem.h b/node_modules/@react-native-community/audio-toolkit/ios/ReactNativeAudioToolkit/ReactNativeAudioToolkit/ReactPlayerItem.h
+index 11ec4ec..e55eb74 100644
+--- a/node_modules/@react-native-community/audio-toolkit/ios/ReactNativeAudioToolkit/ReactNativeAudioToolkit/ReactPlayerItem.h
++++ b/node_modules/@react-native-community/audio-toolkit/ios/ReactNativeAudioToolkit/ReactNativeAudioToolkit/ReactPlayerItem.h
+@@ -10,7 +10,9 @@
+ 
+ #import <AVFoundation/AVFoundation.h>
+ @class ReactPlayer;
+-@interface ReactPlayerItem : AVPlayerItem
++@interface ReactPlayerItem : AVPlayerItem <AVAssetResourceLoaderDelegate>
++
+++ (instancetype)playerItemWithData:(NSData *)data;
+ 
+ @property (nonatomic, strong) NSNumber *reactPlayerId;
+ 
+diff --git a/node_modules/@react-native-community/audio-toolkit/ios/ReactNativeAudioToolkit/ReactNativeAudioToolkit/ReactPlayerItem.m b/node_modules/@react-native-community/audio-toolkit/ios/ReactNativeAudioToolkit/ReactNativeAudioToolkit/ReactPlayerItem.m
+index 2529f81..c352b60 100644
+--- a/node_modules/@react-native-community/audio-toolkit/ios/ReactNativeAudioToolkit/ReactNativeAudioToolkit/ReactPlayerItem.m
++++ b/node_modules/@react-native-community/audio-toolkit/ios/ReactNativeAudioToolkit/ReactNativeAudioToolkit/ReactPlayerItem.m
+@@ -10,14 +10,94 @@
+ 
+ #import "ReactPlayerItem.h"
+ 
+-@implementation ReactPlayerItem
++@implementation ReactPlayerItem {
++    NSData *_data;
++}
+ 
+ - (void)dealloc {
+     self.reactPlayerId = nil;
++    _data = nil;
+ }
+ 
+-+ (instancetype)playerItemWithAsset:(AVAsset *)asset {
+++ (instancetype)playerItemWithURL:(NSURL *)url {
++    AVURLAsset *asset = [AVURLAsset assetWithURL: url];
+     return [[self alloc] initWithAsset:asset];
+ }
+ 
+++ (instancetype)playerItemWithData:(NSData *)data {
++    AVURLAsset *asset = [AVURLAsset assetWithURL:[NSURL URLWithString:@"data:"]];
++    ReactPlayerItem *rpi = [[self alloc] initWithAsset:asset];
++    dispatch_queue_t queue = dispatch_queue_create("assetQueue", nil);
++    [asset.resourceLoader setDelegate:rpi queue:queue];
++    rpi->_data = data;
++    return rpi;
++}
++
++#pragma mark - AVAssetResourceLoaderDelegate
++
++- (BOOL)resourceLoader:(AVAssetResourceLoader *)resourceLoader shouldWaitForRenewalOfRequestedResource:(AVAssetResourceRenewalRequest *)renewalRequest {
++  return [self loadingRequestHandling:renewalRequest];
++}
++
++- (BOOL)resourceLoader:(AVAssetResourceLoader *)resourceLoader shouldWaitForLoadingOfRequestedResource:(AVAssetResourceLoadingRequest *)loadingRequest {
++    return [self loadingRequestHandling:loadingRequest];;
++}
++
++- (void)resourceLoader:(AVAssetResourceLoader *)resourceLoader
++    didCancelLoadingRequest:(AVAssetResourceLoadingRequest *)loadingRequest {
++  NSLog(@"didCancelLoadingRequest");
++}
++
++- (BOOL)loadingRequestHandling:(AVAssetResourceLoadingRequest *)loadingRequest {
++    NSLog(@"loadingRequestHandling");
++    
++    if (loadingRequest.contentInformationRequest != nil) {
++        // Fill up contentInformationRequest end return
++        loadingRequest.contentInformationRequest.contentType = @"public.mp3";
++        loadingRequest.contentInformationRequest.contentLength = _data.length;
++        [loadingRequest.contentInformationRequest setByteRangeAccessSupported:YES];
++        [loadingRequest finishLoading];
++        return YES;
++    }
++    
++    // Slice data as requested
++    AVAssetResourceLoadingDataRequest *dataRequest = loadingRequest.dataRequest;
++    
++    long long startOffset = dataRequest.requestedOffset;
++    if (dataRequest.currentOffset != 0) {
++        startOffset = dataRequest.currentOffset;
++    }
++    NSUInteger unreadBytes = _data.length - startOffset;
++    NSUInteger numberOfBytesToRespondWith = dataRequest.requestedLength >= unreadBytes ? unreadBytes : dataRequest.requestedLength;
++    NSRange r = {startOffset, numberOfBytesToRespondWith};
++    NSData *data = [_data subdataWithRange:r];
++    
++    // Provide sliced data
++    if(data){
++        [dataRequest respondWithData:data];
++        [loadingRequest finishLoading];
++        return YES;
++    }
++
++    NSError *error = [NSError errorWithDomain: @"ReactPlayerItem"
++                                         code: -1
++                                     userInfo: @{NSLocalizedDescriptionKey: @"loadingRequestHandling - error providing data"}
++                      ];
++
++    [loadingRequest finishLoadingWithError:error];
++
++    return NO;
++}
++
++#pragma mark - utilities
++
+++ (NSData *)base64DataFromBase64String: (NSString *)base64String {
++    if (base64String != nil) {
++        // NSData from the Base64 encoded str
++        NSData *base64Data = [[NSData alloc] initWithBase64EncodedString:base64String options:NSASCIIStringEncoding];
++        return base64Data;
++    }
++    return nil;
++}
++
+ @end
+diff --git a/node_modules/@react-native-community/audio-toolkit/typings/index.d.ts b/node_modules/@react-native-community/audio-toolkit/typings/index.d.ts
+index 90a83cd..2f58e97 100644
+--- a/node_modules/@react-native-community/audio-toolkit/typings/index.d.ts
++++ b/node_modules/@react-native-community/audio-toolkit/typings/index.d.ts
+@@ -254,6 +254,13 @@ interface RecorderOptions {
+      * (Default: 'medium')
+      */
+     quality: string;
++
++    /**
++     * Optional argument to activate metering events.
++     * This will cause a 'meter' event to fire every given milliseconds,
++     * e.g. 250 will fire 4 time in a second.
++     */
++    meteringInterval: number;
+ }
+ 
+ /**
