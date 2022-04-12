@@ -145,10 +145,7 @@
 				"draft": "下書き: {{message}}"
 			}
 		},
-		"suggestion-display-name-initial": "追加するにはここをクリック",
-		"scan": {
-			"title": "QR コードの読み取り"
-		}
+		"suggestion-display-name-initial": "追加するにはここをクリック"
 	},
 	"settings": {
 		"home": {
