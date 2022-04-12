@@ -145,10 +145,7 @@
 				"draft": "Πρόχειρο: {{message}}"
 			}
 		},
-		"suggestion-display-name-initial": "Πατήστε εδώ για προσθήκη",
-		"scan": {
-			"title": "Σάρωση του κωδικού QR (QR Code)"
-		}
+		"suggestion-display-name-initial": "Πατήστε εδώ για προσθήκη"
 	},
 	"settings": {
 		"home": {
