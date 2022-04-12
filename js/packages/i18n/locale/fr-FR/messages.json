@@ -145,10 +145,7 @@
 				"draft": "Brouillon : {{message}}"
 			}
 		},
-		"suggestion-display-name-initial": "Cliquer ici pour ajouter",
-		"scan": {
-			"title": "Scan QR Code"
-		}
+		"suggestion-display-name-initial": "Cliquer ici pour ajouter"
 	},
 	"settings": {
 		"home": {
