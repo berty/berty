@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { MutableRefObject, useMemo } from 'react'
 import {
 	NativeSyntheticEvent,
 	Platform,
@@ -10,7 +10,13 @@ import { RESULTS } from 'react-native-permissions'
 import Long from 'long'
 import { useTranslation } from 'react-i18next'
 
-import { Maybe, useMessengerClient, useMessengerContext, useThemeColor } from '@berty/store'
+import {
+	Maybe,
+	useMessengerClient,
+	useMessengerContext,
+	useMountEffect,
+	useThemeColor,
+} from '@berty/store'
 import { useStyles } from '@berty/styles'
 import {
 	removeActiveReplyInteraction,
@@ -50,6 +56,18 @@ export type ChatFooterProps = {
 const amap = async <T extends any, C extends (value: T) => any>(arr: T[], cb: C) =>
 	Promise.all(arr.map(cb))
 
+function useStateWithRef<T>(defaultValue: T): [T, (val: T) => void, MutableRefObject<T>] {
+	const [_state, _setState] = React.useState<T>(defaultValue)
+	const _ref = React.useRef<T>(defaultValue)
+
+	const setState = React.useCallback((value: T) => {
+		_setState(value)
+		_ref.current = value
+	}, [])
+
+	return [_state, setState, _ref]
+}
+
 export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 	({ placeholder, convPK, disabled }) => {
 		// external
@@ -60,7 +78,10 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 			(isSending: boolean) => dispatch(setChatInputIsSending({ convPK, isSending })),
 			[dispatch, convPK],
 		)
-		const message = useAppSelector(state => selectChatInputText(state, convPK))
+
+		const draftMessage = useAppSelector(state => selectChatInputText(state, convPK))
+		const [message, setMessage, messageRef] = useStateWithRef(draftMessage)
+
 		const mediaCids = useAppSelector(state => selectChatInputMediaList(state, convPK))
 		const colors = useThemeColor()
 		const { navigate } = useNavigation()
@@ -72,8 +93,6 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 		const insets = useSafeAreaInsets()
 		const addedMedias = useMedias(mediaCids)
 		const { hide, show } = useModal()
-
-		// local
 		const isFocused = useAppSelector(state => selectChatInputIsFocused(state, convPK))
 
 		// computed
@@ -123,6 +142,7 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 					})
 					dispatch(removeActiveReplyInteraction({ convPK }))
 					dispatch(resetChatInput(convPK))
+					setMessage('')
 					ctx.playSound('messageSent')
 				} catch (e) {
 					console.warn('e sending message:', e)
@@ -138,6 +158,7 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 				message,
 				messengerClient,
 				setSending,
+				setMessage,
 			],
 		)
 
@@ -251,10 +272,21 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 				if (sending) {
 					return
 				}
-				dispatch(setChatInputText({ convPK, text }))
+				setMessage(text)
 			},
-			[dispatch, sending, convPK],
+			[sending, setMessage],
 		)
+
+		useMountEffect(() => {
+			// Saving the draft is debounced because doing encryption + storage on every keystroke takes too much cpu
+			const interval = setInterval(() => {
+				dispatch(setChatInputText({ convPK, text: messageRef.current }))
+			}, 5000)
+			return () => {
+				clearInterval(interval)
+				dispatch(setChatInputText({ convPK, text: messageRef.current }))
+			}
+		})
 
 		const handleSelectionChange = React.useCallback(
 			(e: NativeSyntheticEvent<TextInputSelectionChangeEventData>) => {
