@@ -145,10 +145,7 @@
 				"draft": "Vázlat: {{message}}"
 			}
 		},
-		"suggestion-display-name-initial": "Kattintson ide a hozzáadáshoz",
-		"scan": {
-			"title": "QR-kód másolása"
-		}
+		"suggestion-display-name-initial": "Kattintson ide a hozzáadáshoz"
 	},
 	"settings": {
 		"home": {
