@@ -145,10 +145,7 @@
 				"draft": ""
 			}
 		},
-		"suggestion-display-name-initial": "Eklemek için buraya tıkla",
-		"scan": {
-			"title": "QR Kod Tarat"
-		}
+		"suggestion-display-name-initial": "Eklemek için buraya tıkla"
 	},
 	"settings": {
 		"home": {
