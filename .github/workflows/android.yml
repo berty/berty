@@ -106,7 +106,7 @@ jobs:
           ################################################
 
       - name: Upload the APK
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           path: ${{ github.workspace }}/universal.apk
           name: berty-universal-${{github.sha}}.apk

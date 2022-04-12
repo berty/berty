@@ -118,7 +118,7 @@ jobs:
         working-directory: js
         run: make electron.mac
       - name: Upload the Archive
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           path: js/web/dist/Berty.dmg
           name: berty-yolo-${{github.sha}}.unsigned-dmg
