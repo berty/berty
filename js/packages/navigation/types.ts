@@ -21,7 +21,6 @@ export type ScreensParams = {
 
 	'Main.Home': undefined
 	'Main.ContactRequest': { contactId: string }
-	'Main.Scan': undefined
 	'Main.BlePermission': {
 		accept: () => Promise<void>
 		deny: () => Promise<void>

@@ -1,6 +1,5 @@
 export { Home } from './home/Home'
 export { ContactRequest } from './ContactRequest'
-export { Scan } from './Scan'
 export { CreateGroupAddMembers } from './CreateGroupAddMembers'
 export { CreateGroupFinalize } from './CreateGroupFinalize'
 export { Permissions, BlePermission } from './Permissions'

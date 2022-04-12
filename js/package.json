@@ -30,6 +30,8 @@
     "case": "^1.6.3",
     "emoji-datasource": "^7.0.2",
     "expo": "^44.0.6",
+    "expo-barcode-scanner": "~11.2.0",
+    "expo-camera": "^12.1.2",
     "expo-file-system": "^13.1.4",
     "expo-font": "~10.0.4",
     "expo-mail-composer": "~11.1.0",
@@ -48,7 +50,6 @@
     "react-native": "0.64.2",
     "react-native-android-keyboard-adjust": "^1.2.0",
     "react-native-bootsplash": "^3.2.6",
-    "react-native-camera": "^4.2.1",
     "react-native-document-picker": "^7.1.1",
     "react-native-emoji-board": "^1.2.1",
     "react-native-exception-handler": "^2.10.9",
@@ -63,7 +64,6 @@
     "react-native-pager-view": "5.4.9",
     "react-native-permissions": "^3.1.0",
     "react-native-progress": "^5.0.0",
-    "react-native-qrcode-scanner": "^1.5.5",
     "react-native-qrcode-svg": "git+https://github.com/sakul-budhathoki/react-native-qrcode-svg.git#feat/circles",
     "react-native-reanimated": "https://github.com/aeddi/react-native-reanimated/releases/download/2.4.1/react-native-reanimated-2.4.1.tgz",
     "react-native-restart": "^0.0.22",
@@ -107,6 +107,7 @@
     "eslint": "^7.14.0",
     "eslint-config-react-app": "^7.0.0",
     "jest": "^27.4.5",
+    "jest-expo": "^44.0.1",
     "metro-config": "^0.66.2",
     "metro-react-native-babel-preset": "^0.66.2",
     "patch-package": "^6.4.7",
@@ -116,7 +117,7 @@
     "typescript": "^4.5.4"
   },
   "jest": {
-    "preset": "react-native",
+    "preset": "jest-expo",
     "moduleFileExtensions": [
       "ts",
       "tsx",

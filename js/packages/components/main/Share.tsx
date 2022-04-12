@@ -5,6 +5,8 @@ import Clipboard from '@react-native-clipboard/clipboard'
 import { RESULTS } from 'react-native-permissions'
 import { useTranslation } from 'react-i18next'
 import { useFocusEffect } from '@react-navigation/core'
+import { BarCodeScanner } from 'expo-barcode-scanner'
+import { Camera } from 'expo-camera'
 
 import { useThemeColor } from '@berty/store/hooks'
 import { useStyles } from '@berty/styles'
@@ -12,7 +14,6 @@ import { ScreenFC, useNavigation } from '@berty/navigation'
 import { useAccount } from '@berty/react-redux'
 import { useMessengerClient } from '@berty/store'
 import QRCode from 'react-native-qrcode-svg'
-import QRCodeScanner from 'react-native-qrcode-scanner'
 import { checkPermissions, PermissionType } from '@berty/rnutil/checkPermissions'
 
 import ScanTarget from './scan_target.svg'
@@ -82,26 +83,29 @@ const ScanBody: FC<{ visible: boolean }> = ({ visible = true }) => {
 				flex.justify.center,
 				border.radius.medium,
 				{
+					overflow: 'hidden',
 					height: qrScanSize,
 					aspectRatio: 1,
+					position: 'relative',
 				},
 			]}
 		>
 			{visible && (
-				<QRCodeScanner
-					onRead={({ data, type }) => {
-						if ((type as string) === 'QR_CODE' || (type as string) === 'org.iso.QRCode') {
+				<Camera
+					onBarCodeScanned={({ data, type }) => {
+						if ((type as string) === 'qr') {
 							// I would like to use binary mode in QR but this scanner seems to not support it, extended tests were done
 							navigation.navigate('Modals.ManageDeepLink', { type: 'qr', value: data })
 							Vibration.vibrate(1000)
 						}
 					}}
-					cameraProps={{ captureAudio: false }}
-					containerStyle={[
-						border.radius.medium,
-						{ width: '100%', height: '100%', overflow: 'hidden' },
-					]}
-					cameraStyle={{ width: '100%', height: '100%', aspectRatio: 1 }}
+					barCodeScannerSettings={{
+						barCodeTypes: [BarCodeScanner.Constants.BarCodeType.qr],
+					}}
+					style={{
+						height: '100%',
+						width: '100%',
+					}}
 				/>
 			)}
 
