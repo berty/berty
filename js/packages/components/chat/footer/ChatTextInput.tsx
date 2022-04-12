@@ -1,16 +1,17 @@
 import React, { ComponentProps } from 'react'
-import { NativeModules, TextInput, View, Platform } from 'react-native'
+import { TextInput, View, Platform } from 'react-native'
 import { useTranslation } from 'react-i18next'
 import { Icon } from '@ui-kitten/components'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 
-import { Maybe, useMountEffect, useThemeColor } from '@berty/store'
+import { Maybe, useThemeColor } from '@berty/store'
 import { useStyles } from '@berty/styles'
 import { useAppDispatch, useAppSelector, useInteractionAuthor } from '@berty/hooks'
 import {
 	removeActiveReplyInteraction,
 	selectActiveReplyInteraction,
 } from '@berty/redux/reducers/chatInputs.reducer'
+import { isTablet } from '@berty/rnutil/constants'
 
 import { getMediaTypeFromMedias } from '../../utils'
 import { UnifiedText } from '../../shared-components/UnifiedText'
@@ -152,17 +153,6 @@ export const ChatTextInput: React.FC<{
 		const [{ text }, { scaleSize }] = useStyles()
 		const colors = useThemeColor()
 		const [isFocused, setIsFocused] = React.useState<boolean>(false)
-		const [isTablet, setIsTablet] = React.useState<boolean>(false)
-
-		useMountEffect(() => {
-			if (Platform.OS !== 'web') {
-				const {
-					PlatformConstants: { interfaceIdiom: deviceType },
-				} = NativeModules
-
-				setIsTablet(deviceType === 'pad')
-			}
-		})
 
 		return (
 			<View
