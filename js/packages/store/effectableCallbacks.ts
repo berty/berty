@@ -12,6 +12,12 @@ import {
 import { reducerAction, MessengerActions, StreamInProgress } from './types'
 import { accountService } from './accountService'
 
+/*
+
+These callbacks were in providerCallbacks.tsx but they are splited here because of dependencies cycles
+
+*/
+
 export const closeAccountWithProgress = async (
 	dispatch: (arg0: reducerAction) => void,
 	reduxDispatch: ReturnType<typeof useAppDispatch>,
