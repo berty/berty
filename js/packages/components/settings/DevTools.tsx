@@ -44,7 +44,7 @@ import {
 import { showNeedRestartNotification } from '../helpers'
 import { DropDownPicker, Item } from '../shared-components/DropDownPicker'
 import { useSelector } from 'react-redux'
-import { selectEmbedded, setDebugMode } from '@berty/redux/reducers/ui.reducer'
+import { selectEmbedded, setDebugMode, setStreamError } from '@berty/redux/reducers/ui.reducer'
 import { withInAppNotification } from 'react-native-in-app-notification'
 import {
 	defaultPersistentOptions,
@@ -412,12 +412,7 @@ const BodyDevTools: React.FC<{}> = withInAppNotification(({ showNotification }: 
 				icon='alert-triangle-outline'
 				iconSize={30}
 				iconColor={colors['alt-secondary-background-header']}
-				onPress={() =>
-					ctx.dispatch({
-						type: MessengerActions.SetStreamError,
-						payload: { error: t('settings.devtools.simulate-button') },
-					})
-				}
+				onPress={() => dispatch(setStreamError({ error: t('settings.devtools.simulate-button') }))}
 			/>
 			<ButtonSetting
 				name={t('settings.devtools.simulate-js-error-button')}

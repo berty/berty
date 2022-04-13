@@ -2,7 +2,6 @@ import { createContext, useContext } from 'react'
 import { MessengerState } from './types'
 
 export const initialState = {
-	streamError: null,
 	addNotificationListener: () => {},
 	removeNotificationListener: () => {},
 	notificationsInhibitors: [],

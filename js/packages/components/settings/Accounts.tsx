@@ -143,7 +143,7 @@ export const Accounts: ScreenFC<'Settings.Accounts'> = withInAppNotification(
 						<ButtonSettingV2
 							text={t('settings.accounts.create-button')}
 							onPress={async () => {
-								await closeAccountWithProgress(ctx.dispatch, reduxDispatch)
+								await closeAccountWithProgress(reduxDispatch)
 								reduxDispatch(setStateOnBoardingReady())
 							}}
 							last={Platform.OS === 'web'}

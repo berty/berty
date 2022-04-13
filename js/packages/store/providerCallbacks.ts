@@ -30,7 +30,7 @@ export const importAccount = async (
 	let resp: beapi.account.ImportAccountWithProgress.Reply | null
 
 	try {
-		await closeAccountWithProgress(dispatch, reduxDispatch)
+		await closeAccountWithProgress(reduxDispatch)
 		resp = await importAccountWithProgress(path, reduxDispatch)
 		reduxDispatch(
 			setPersistentOption({
@@ -91,21 +91,20 @@ export const updateAccount = async (
 
 export const switchAccount = async (
 	embedded: boolean,
-	dispatch: (arg0: reducerAction) => void,
 	accountID: string,
-	reduxDispatch: ReturnType<typeof useAppDispatch>,
+	dispatch: ReturnType<typeof useAppDispatch>,
 ) => {
 	if (!embedded) {
 		return
 	}
 
 	try {
-		await closeAccountWithProgress(dispatch, reduxDispatch)
+		await closeAccountWithProgress(dispatch)
 	} catch (e) {
 		console.warn('unable to close account', e)
 		return
 	}
-	reduxDispatch(setNextAccount(accountID))
+	dispatch(setNextAccount(accountID))
 }
 
 export const deleteAccount = async (
@@ -118,7 +117,7 @@ export const deleteAccount = async (
 		return
 	}
 	// close current account service
-	await closeAccountWithProgress(dispatch, reduxDispatch)
+	await closeAccountWithProgress(reduxDispatch)
 	let accounts: beapi.account.IAccountMetadata[] = []
 	if (selectedAccount !== null) {
 		// delete account service and account data storage
@@ -153,19 +152,18 @@ export const deleteAccount = async (
 
 export const restart = async (
 	embedded: boolean,
-	dispatch: (arg0: reducerAction) => void,
 	accountID: Maybe<string>,
-	reduxDispatch: ReturnType<typeof useAppDispatch>,
+	dispatch: ReturnType<typeof useAppDispatch>,
 ) => {
 	if (!embedded) {
 		return
 	}
 
 	try {
-		await closeAccountWithProgress(dispatch, reduxDispatch)
+		await closeAccountWithProgress(dispatch)
 	} catch (e) {
 		console.warn('unable to close account')
 		return
 	}
-	reduxDispatch(setNextAccount(accountID))
+	dispatch(setNextAccount(accountID))
 }

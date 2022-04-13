@@ -46,6 +46,7 @@ import {
 	setStateReady,
 	setStateStreamDone,
 	setStateStreamInProgress,
+	setStreamError,
 } from '@berty/redux/reducers/ui.reducer'
 import { deserializeFromBase64 } from '@berty/grpc-bridge/rpc/utils'
 import {
@@ -55,7 +56,6 @@ import {
 } from '@berty/redux/reducers/persistentOptions.reducer'
 
 export const openAccountWithProgress = async (
-	dispatch: (arg0: reducerAction) => void,
 	bridgeOpts: GoBridgeOpts,
 	selectedAccount: string | null,
 ) => {
@@ -77,10 +77,7 @@ export const openAccountWithProgress = async (
 			}
 			if (err && !err.OK) {
 				console.warn('open account error:', err.error.errorCode)
-				dispatch({
-					type: MessengerActions.SetStreamError,
-					payload: { error: new Error(`Failed to start node: ${err}`) },
-				})
+				store.dispatch(setStreamError({ error: new Error(`Failed to start node: ${err}`) }))
 				return
 			}
 			if (msg?.progress?.state !== 'done') {
@@ -97,10 +94,7 @@ export const openAccountWithProgress = async (
 		await stream.start()
 		console.log('node is opened')
 	} catch (err) {
-		dispatch({
-			type: MessengerActions.SetStreamError,
-			payload: { error: new Error(`Failed to start node: ${err}`) },
-		})
+		store.dispatch(setStreamError({ error: new Error(`Failed to start node: ${err}`) }))
 	}
 }
 
@@ -206,7 +200,6 @@ export const openingLocalSettings = async (
 
 // handle state OpeningWaitingForDaemon
 export const openingDaemon = async (
-	dispatch: (arg0: reducerAction) => void,
 	appState: MESSENGER_APP_STATE[keyof MESSENGER_APP_STATE],
 	selectedAccount: string | null,
 ) => {
@@ -264,7 +257,7 @@ export const openingDaemon = async (
 				await accountService.closeAccount({})
 			}
 
-			await openAccountWithProgress(dispatch, bridgeOpts, selectedAccount)
+			await openAccountWithProgress(bridgeOpts, selectedAccount)
 		}
 
 		store.dispatch(setStateOpeningClients())
@@ -358,7 +351,7 @@ export const openingClients = async (
 							return
 						}
 						console.warn('events stream onMessage error:', err)
-						dispatch({ type: MessengerActions.SetStreamError, payload: { error: err } })
+						store.dispatch(setStreamError({ error: err }))
 					}
 
 					const evt = msg?.event
@@ -410,7 +403,7 @@ export const openingClients = async (
 				store.dispatch(setStateClosed())
 			} else {
 				console.warn('events stream error:', err)
-				dispatch({ type: MessengerActions.SetStreamError, payload: { error: err } })
+				store.dispatch(setStreamError({ error: err }))
 			}
 		})
 	reduxDispatch(
@@ -485,7 +478,6 @@ export const updateAccountsPreReady = async (
 export const closingDaemon = (
 	appState: MESSENGER_APP_STATE[keyof MESSENGER_APP_STATE],
 	clearClients: (() => Promise<void>) | (() => void) | null,
-	dispatch: (arg0: reducerAction) => void,
 	reduxDispatch: ReturnType<typeof useAppDispatch>,
 ) => {
 	if (
@@ -500,7 +492,7 @@ export const closingDaemon = (
 				if (clearClients) {
 					await clearClients()
 				}
-				await closeAccountWithProgress(dispatch, reduxDispatch)
+				await closeAccountWithProgress(reduxDispatch)
 			} catch (e) {
 				console.warn('unable to stop protocol', e)
 			}

@@ -3,11 +3,6 @@ import { MessengerActions, MessengerState, reducerAction } from '../types'
 export const uiReducerActions: {
 	[key: string]: (oldState: MessengerState, action: reducerAction) => MessengerState
 } = {
-	[MessengerActions.SetStreamError]: (oldState, action) => ({
-		...oldState,
-		streamError: action.payload.error,
-	}),
-
 	[MessengerActions.AddFakeData]: (oldState, action) => {
 		let fakeInteractions: { [key: string]: any[] } = {}
 		for (const inte of action.payload.interactions || []) {
