@@ -44,7 +44,7 @@ import {
 import { showNeedRestartNotification } from '../helpers'
 import { DropDownPicker, Item } from '../shared-components/DropDownPicker'
 import { useSelector } from 'react-redux'
-import { selectEmbedded } from '@berty/redux/reducers/ui.reducer'
+import { selectEmbedded, setDebugMode } from '@berty/redux/reducers/ui.reducer'
 import { withInAppNotification } from 'react-native-in-app-notification'
 import {
 	defaultPersistentOptions,
@@ -586,7 +586,7 @@ const BodyDevTools: React.FC<{}> = withInAppNotification(({ showNotification }: 
 				iconSize={30}
 				iconColor={colors['alt-secondary-background-header']}
 				actionIcon='arrow-ios-forward'
-				onPress={() => ctx.setDebugMode(true)}
+				onPress={() => dispatch(setDebugMode(true))}
 			/>
 			<ButtonSettingRow
 				state={[

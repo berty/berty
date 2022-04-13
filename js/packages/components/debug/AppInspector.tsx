@@ -10,16 +10,19 @@ import {
 } from 'react-native'
 import { useTranslation } from 'react-i18next'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import RNFS from 'react-native-fs'
+import { NativeModules } from 'react-native'
 
 import beapi from '@berty/api'
 import { GRPCError, Service } from '@berty/grpc-bridge'
 import { bridge as rpcBridge } from '@berty/grpc-bridge/rpc'
-import { pbDateToNum, useMessengerContext } from '@berty/store'
-import RNFS from 'react-native-fs'
-
-import { NativeModules } from 'react-native'
-import { UnifiedText } from '../shared-components/UnifiedText'
+import { pbDateToNum } from '@berty/store'
 import { useStyles } from '@berty/styles'
+import { useAppDispatch } from '@berty/hooks'
+import { setDebugMode } from '@berty/redux/reducers/ui.reducer'
+
+import { UnifiedText } from '../shared-components/UnifiedText'
+
 const { RootDir } = NativeModules
 
 export const accountService = Service(beapi.account.AccountService, rpcBridge, null)
@@ -400,8 +403,8 @@ const AppInspector: React.FC<{ embedded: boolean; error: Error | null }> = ({
 }) => {
 	const [lastUpdate, setLastUpdate] = useState(Date.now())
 	const { t }: { t: any } = useTranslation()
-	const { setDebugMode } = useMessengerContext()
 	const [{ text }] = useStyles()
+	const dispatch = useAppDispatch()
 
 	const refresh = useCallback(() => setLastUpdate(Date.now()), [setLastUpdate])
 
@@ -455,7 +458,7 @@ const AppInspector: React.FC<{ embedded: boolean; error: Error | null }> = ({
 						</View>
 					</TouchableOpacity>
 					{/*<ExportAllAppData />*/}
-					<TouchableOpacity onPress={() => setDebugMode(false)} style={{ flex: 1 }}>
+					<TouchableOpacity onPress={() => dispatch(setDebugMode(false))} style={{ flex: 1 }}>
 						<View style={[styles.footerButton]}>
 							<UnifiedText style={[styles.text, text.bold, { textAlign: 'center' }]}>
 								{t('debug.inspector.hide-button')}

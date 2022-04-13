@@ -42,8 +42,6 @@ export type MessengerState = {
 		targetCID: string,
 		emoji: string,
 	) => Promise<beapi.messenger.Interact.Reply> | undefined
-	debugMode: boolean
-	setDebugMode: (value: boolean) => void
 	handledLink: boolean
 	setHandledLink: (value: boolean) => void
 }

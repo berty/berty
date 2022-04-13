@@ -301,6 +301,9 @@ const slice = createSlice({
 		setStateOnBoardingReady(state: UiState) {
 			state.appState = MESSENGER_APP_STATE.GET_STARTED
 		},
+		setDebugMode(state: UiState, { payload }: PayloadAction<boolean>) {
+			state.debugMode = payload
+		},
 	},
 })
 
@@ -393,6 +396,7 @@ export const {
 	setStateStreamInProgress,
 	setStateStreamDone,
 	setStateOnBoardingReady,
+	setDebugMode,
 } = slice.actions
 
 export default makeRoot(slice.reducer)
