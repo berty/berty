@@ -7,9 +7,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import beapi from '@berty/api'
 import { useStyles } from '@berty/styles'
 import { ScreenFC, useNavigation } from '@berty/navigation'
-import { accountService, useMessengerContext, useThemeColor } from '@berty/store'
-
-import { selectSelectedAccount } from '@berty/redux/reducers/ui.reducer'
+import { useThemeColor } from '@berty/store'
 import { IOSOnlyKeyboardAvoidingView } from '@berty/rnutil/keyboardAvoiding'
 import { checkBlePermission } from '@berty/rnutil/checkPermissions'
 import {
@@ -34,7 +32,7 @@ import {
 	toggleFromStaticRelay,
 } from '@berty/redux/reducers/networkConfig.reducer'
 import store from '@berty/redux/store'
-import { useAppDispatch, useAppSelector } from '@berty/hooks'
+import { useAppDispatch, useAppSelector, useSetNetworkConfig } from '@berty/hooks'
 
 import { AccordionV2, AccordionAddItemV2, AccordionItemV2 } from './Accordion'
 import { ModalProvider, useModal } from '../providers/modal.provider'
@@ -141,9 +139,7 @@ const Proximity: React.FC = () => {
 const NetworkBody: React.FC = () => {
 	const [{}, { scaleSize }] = useStyles()
 	const colors = useThemeColor()
-	const selectedAccount = useSelector(selectSelectedAccount)
 	const { t } = useTranslation()
-	const ctx = useMessengerContext()
 	const dispatch = useDispatch()
 	const networkConfig = useSelector(selectCurrentNetworkConfig)
 	const { show, hide } = useModal()
@@ -152,20 +148,7 @@ const NetworkBody: React.FC = () => {
 	const staticRelay = useAppSelector(selectStaticRelay)
 
 	// setNewConfig function: update the state + update the network config in the account service
-	const setNewConfig = React.useCallback(
-		async (newConfig: beapi.account.INetworkConfig) => {
-			await accountService
-				.networkConfigSet({
-					accountId: selectedAccount,
-					config: newConfig,
-				})
-				.then(() => {
-					dispatch(setCurrentNetworkConfig(newConfig))
-					ctx.restart()
-				})
-		},
-		[ctx, dispatch, selectedAccount],
-	)
+	const setNewConfig = useSetNetworkConfig()
 
 	useEffect(() => {
 		return () => {

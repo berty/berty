@@ -1,7 +1,5 @@
 import moment from 'moment'
 
-import { MessengerState } from '@berty/store/types'
-
 const getValidDateMoment = (date: number | Date): moment.Moment => {
 	const mDate = moment(date)
 	return mDate.isValid() ? mDate : moment(0)
@@ -51,12 +49,16 @@ const fmtTimestamp3 = (date: number | Date): string => {
 
 export const timeFormat = { fmtTimestamp1, fmtTimestamp2, fmtTimestamp3 }
 
-export const showNeedRestartNotification = (showNotification: any, ctx: MessengerState, t: any) => {
+export const showNeedRestartNotification = (
+	showNotification: any,
+	restart: () => Promise<void>,
+	t: any,
+) => {
 	showNotification({
 		title: t('notification.need-restart.title'),
 		message: t('notification.need-restart.desc'),
 		onPress: async () => {
-			await ctx.restart()
+			await restart()
 		},
 		additionalProps: { type: 'message' },
 	})

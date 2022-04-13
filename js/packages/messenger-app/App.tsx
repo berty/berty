@@ -10,7 +10,7 @@ import { Platform, View } from 'react-native'
 import '@berty/i18n'
 import { Provider as ThemeProvider } from '@berty/components/theme'
 import { StreamGate, ListGate } from '@berty/components/gates'
-import { MessengerProvider, useThemeColor, useMountEffect } from '@berty/store'
+import { MessengerEffects, useThemeColor, useMountEffect } from '@berty/store'
 import { isReadyRef, navigationRef } from '@berty/navigation'
 import { Navigation } from '@berty/navigation/stacks'
 import { Provider as StyleProvider } from '@berty/styles'
@@ -104,34 +104,33 @@ const App: React.FC = () => {
 		<SafeAreaProvider>
 			<StyleProvider>
 				<ReduxProvider store={reduxStore}>
-					<MessengerProvider>
-						<IconRegistry icons={[EvaIconsPack, FeatherIconsPack, CustomIconsPack]} />
-						<ThemeProvider>
-							<Background>
-								<ErrorScreen>
-									<NavigationContainer
-										ref={navigationRef}
-										onReady={() => {
-											isReadyRef.current = true
-										}}
-									>
-										<NotificationProvider>
-											{Platform.OS !== 'web' ? <BootSplashInhibitor /> : null}
-											<StreamGate>
-												<ListGate>
-													<MusicPlayerProvider>
-														<ModalProvider>
-															<Navigation />
-														</ModalProvider>
-													</MusicPlayerProvider>
-												</ListGate>
-											</StreamGate>
-										</NotificationProvider>
-									</NavigationContainer>
-								</ErrorScreen>
-							</Background>
-						</ThemeProvider>
-					</MessengerProvider>
+					<MessengerEffects />
+					<IconRegistry icons={[EvaIconsPack, FeatherIconsPack, CustomIconsPack]} />
+					<ThemeProvider>
+						<Background>
+							<ErrorScreen>
+								<NavigationContainer
+									ref={navigationRef}
+									onReady={() => {
+										isReadyRef.current = true
+									}}
+								>
+									<NotificationProvider>
+										{Platform.OS !== 'web' ? <BootSplashInhibitor /> : null}
+										<StreamGate>
+											<ListGate>
+												<MusicPlayerProvider>
+													<ModalProvider>
+														<Navigation />
+													</ModalProvider>
+												</MusicPlayerProvider>
+											</ListGate>
+										</StreamGate>
+									</NotificationProvider>
+								</NavigationContainer>
+							</ErrorScreen>
+						</Background>
+					</ThemeProvider>
 				</ReduxProvider>
 			</StyleProvider>
 		</SafeAreaProvider>

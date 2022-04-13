@@ -8,14 +8,8 @@ import * as MailComposer from 'expo-mail-composer'
 import beapi from '@berty/api'
 import { useStyles } from '@berty/styles'
 import { ScreenFC, useNavigation } from '@berty/navigation'
-import {
-	accountService,
-	useMessengerContext,
-	useMountEffect,
-	useThemeColor,
-	useMessengerClient,
-} from '@berty/store'
-import { useAccount, useAppSelector } from '@berty/hooks'
+import { accountService, useMountEffect, useThemeColor, useMessengerClient } from '@berty/store'
+import { useAccount, useAppSelector, useSetNetworkConfig } from '@berty/hooks'
 import { selectSelectedAccount } from '@berty/redux/reducers/ui.reducer'
 import {
 	checkBlePermission,
@@ -98,11 +92,7 @@ export const Home: ScreenFC<'Settings.Home'> = withInAppNotification(
 		const { navigate } = useNavigation()
 		const { t }: { t: any } = useTranslation()
 		const messengerClient = useMessengerClient()
-
 		const selectedAccount = useAppSelector(selectSelectedAccount)
-
-		const ctx = useMessengerContext()
-
 		const blePerm = useAppSelector(selectBlePerm)
 		const networkConfig = useAppSelector(selectCurrentNetworkConfig)
 		const dispatch = useDispatch()
@@ -187,20 +177,7 @@ export const Home: ScreenFC<'Settings.Home'> = withInAppNotification(
 		})
 
 		// setNewConfig function: update the state + update the network config in the account service + show notif to restart app
-		const setNewConfig = React.useCallback(
-			async (newConfig: beapi.account.INetworkConfig) => {
-				await accountService
-					.networkConfigSet({
-						accountId: selectedAccount,
-						config: newConfig,
-					})
-					.then(() => {
-						dispatch(setCurrentNetworkConfig(newConfig))
-						ctx.restart()
-					})
-			},
-			[ctx, dispatch, selectedAccount],
-		)
+		const setNewConfig = useSetNetworkConfig()
 
 		const getOffGridCommunicationValue = React.useCallback(() => {
 			if (

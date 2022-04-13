@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 
 import { useAppDispatch, useAppSelector, useAccount, useConversationsDict } from '@berty/hooks'
@@ -15,7 +15,6 @@ import {
 import { selectPersistentOptions } from '@berty/redux/reducers/persistentOptions.reducer'
 import { EventEmitterContext } from '@berty/contexts/eventEmitter.context'
 
-import { MessengerContext } from './context'
 import {
 	initialLaunch,
 	openingDaemon,
@@ -27,10 +26,9 @@ import {
 	deletingStorage,
 	updateAccountsPreReady,
 	syncAccountLanguage,
-} from './providerEffects'
-import { restart } from './providerCallbacks'
+} from './effectsImplem'
 
-export const MessengerProvider: React.FC = ({ children }) => {
+export const MessengerEffects: React.FC = () => {
 	const dispatch = useAppDispatch()
 	const eventEmitter = useContext(EventEmitterContext)
 	const appState = useSelector(selectAppState)
@@ -93,18 +91,5 @@ export const MessengerProvider: React.FC = ({ children }) => {
 		return deletingStorage(appState, embedded, selectedAccount)
 	}, [appState, selectedAccount, embedded])
 
-	const callbackRestart = useCallback(
-		() => restart(embedded, selectedAccount, dispatch),
-		[selectedAccount, embedded, dispatch],
-	)
-
-	return (
-		<MessengerContext.Provider
-			value={{
-				restart: callbackRestart,
-			}}
-		>
-			{children}
-		</MessengerContext.Provider>
-	)
+	return null
 }

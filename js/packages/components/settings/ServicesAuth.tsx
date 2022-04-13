@@ -2,23 +2,23 @@ import React, { useState } from 'react'
 import { View, ScrollView } from 'react-native'
 import { Layout, Input } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
+import { withInAppNotification } from 'react-native-in-app-notification'
+import { useSelector } from 'react-redux'
 
 import { useStyles } from '@berty/styles'
 import { ScreenFC } from '@berty/navigation'
 import {
-	useMessengerContext,
 	useThemeColor,
 	servicesAuthViaURL,
 	servicesAuthViaDefault,
 	useAccountServices,
 	serviceNames,
 } from '@berty/store'
-import { withInAppNotification } from 'react-native-in-app-notification'
+import { selectProtocolClient } from '@berty/redux/reducers/ui.reducer'
+import { useRestart } from '@berty/hooks'
 
 import { ButtonSetting, FactionButtonSetting } from '../shared-components'
 import { showNeedRestartNotification } from '../helpers'
-import { useSelector } from 'react-redux'
-import { selectProtocolClient } from '@berty/redux/reducers/ui.reducer'
 
 const BodyServicesAuth = withInAppNotification(({ showNotification }: any) => {
 	const [{ flex, padding, margin }] = useStyles()
@@ -26,7 +26,7 @@ const BodyServicesAuth = withInAppNotification(({ showNotification }: any) => {
 	const { t }: any = useTranslation()
 	const protocolClient = useSelector(selectProtocolClient)
 	const [url, setURL] = useState('')
-	const ctx = useMessengerContext()
+	const restart = useRestart()
 	const accountServices = useAccountServices()
 
 	return (
@@ -66,7 +66,7 @@ const BodyServicesAuth = withInAppNotification(({ showNotification }: any) => {
 					onPress={async () => {
 						try {
 							await servicesAuthViaURL(protocolClient, url)
-							showNeedRestartNotification(showNotification, ctx, t)
+							showNeedRestartNotification(showNotification, restart, t)
 						} catch (e) {
 							// ignoring
 						}

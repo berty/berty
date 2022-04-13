@@ -9,12 +9,12 @@ import {
 	Platform,
 } from 'react-native'
 import * as Progress from 'react-native-progress'
+import { useSelector } from 'react-redux'
 
 import { useAppDispatch } from '@berty/hooks'
-import { useMessengerContext, useThemeColor } from '@berty/store'
+import { useThemeColor } from '@berty/store'
 import { useStyles } from '@berty/styles'
 import source from '@berty/assets/loader_dots.gif'
-import { useSelector } from 'react-redux'
 import {
 	selectDaemonAddress,
 	selectEmbedded,
@@ -25,7 +25,7 @@ import {
 	setDaemonAddress,
 } from '@berty/redux/reducers/ui.reducer'
 import { UnifiedText } from './shared-components/UnifiedText'
-import { useDeleteAccount } from '@berty/hooks/accounts.hooks'
+import { useDeleteAccount, useRestart } from '@berty/hooks'
 
 export const LoaderDots: React.FC = () => {
 	const colors = useThemeColor()
@@ -95,13 +95,13 @@ const StreamInProgressCmp: React.FC<{}> = () => {
 const gutter = 50
 
 export const StreamGate: React.FC = ({ children }) => {
-	const { restart } = useMessengerContext()
 	const streamInProgress = useSelector(selectStreamInProgress)
 	const embedded = useSelector(selectEmbedded)
 	const streamError = useSelector(selectStreamError)
 	const deleteAccount = useDeleteAccount()
 	const daemonAddress = useSelector(selectDaemonAddress)
 	const dispatch = useAppDispatch()
+	const restart = useRestart()
 
 	const [newAddress, setNewAddress] = React.useState(daemonAddress)
 	const colors = useThemeColor()

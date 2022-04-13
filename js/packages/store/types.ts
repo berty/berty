@@ -10,10 +10,6 @@ export type StreamInProgress = {
 	stream: string
 }
 
-export type MessengerState = {
-	restart: () => Promise<void>
-}
-
 export enum GlobalPersistentOptionsKeys {
 	TyberHost = 'global-storage_tyber-host',
 	DisplayName = 'displayName',

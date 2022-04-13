@@ -19,8 +19,7 @@ import {
 } from '@berty/grpc-bridge/welsh-clients.gen'
 
 import { accountService, convertMAddr, storageGet, storageRemove } from './accountService'
-import { closeAccountWithProgress, refreshAccountList } from './effectableCallbacks'
-import { updateAccount } from './providerCallbacks'
+import { updateAccount, closeAccountWithProgress, refreshAccountList } from './accountUtils'
 import { requestAndPersistPushToken } from './services'
 import { GlobalPersistentOptionsKeys, StreamInProgress } from './types'
 import { storageKeyForAccount } from './utils'
