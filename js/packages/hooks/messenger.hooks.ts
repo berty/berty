@@ -4,7 +4,7 @@ import * as m from '@berty/redux/reducers/messenger.reducer'
 import beapi from '@berty/api'
 import { ParsedInteraction } from '@berty/store'
 
-import { useAppSelector } from '../core'
+import { useAppSelector } from './core'
 
 export const useAccount = () => {
 	return useAppSelector(m.selectAccount)

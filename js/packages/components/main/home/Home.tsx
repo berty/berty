@@ -14,7 +14,7 @@ import {
 	useConversationsDict,
 	useIncomingContactRequests,
 	useAllConversations,
-} from '@berty/react-redux'
+} from '@berty/hooks'
 
 import { useLayout } from '../../hooks'
 import EmptyChat from '../empty_chat.svg'

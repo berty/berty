@@ -20,7 +20,7 @@ import { playSound } from '@berty/store/sounds'
 import { useMessengerClient, useThemeColor } from '@berty/store'
 import rnutil from '@berty/rnutil'
 import { AppDispatch } from '@berty/redux/store'
-import { useAppDispatch } from '@berty/react-redux'
+import { useAppDispatch } from '@berty/hooks'
 
 import {
 	limitIntensities,

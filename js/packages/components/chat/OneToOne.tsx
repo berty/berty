@@ -10,7 +10,7 @@ import beapi from '@berty/api'
 import { useReadEffect, useNotificationsInhibitor, useThemeColor, pbDateToNum } from '@berty/store'
 import { CustomTitleStyle } from '@berty/navigation/stacks'
 import { IOSOnlyKeyboardAvoidingView } from '@berty/rnutil/keyboardAvoiding'
-import { useContact, useConversation } from '@berty/react-redux'
+import { useContact, useConversation } from '@berty/hooks'
 import AndroidKeyboardAdjust from 'react-native-android-keyboard-adjust'
 
 import { ContactAvatar } from '../avatars'

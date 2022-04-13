@@ -19,7 +19,7 @@ import beapi from '@berty/api'
 import { GRPCError } from '@berty/grpc-bridge'
 import { selectClient, selectProtocolClient } from '@berty/redux/reducers/ui.reducer'
 import { berty } from '@berty/api/root.pb'
-import { useConversation } from '@berty/react-redux'
+import { useConversation } from '@berty/hooks'
 import { UnifiedText } from '../shared-components/UnifiedText'
 import { PermissionType } from '@berty/rnutil/checkPermissions'
 

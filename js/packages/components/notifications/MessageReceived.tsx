@@ -5,7 +5,7 @@ import { CommonActions } from '@react-navigation/native'
 import beapi from '@berty/api'
 import { useStyles } from '@berty/styles'
 import { dispatch } from '@berty/navigation'
-import { useConversation } from '@berty/react-redux'
+import { useConversation } from '@berty/hooks'
 
 import { useStylesNotification } from './common'
 import { ConversationAvatar } from '../avatars'

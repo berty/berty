@@ -8,7 +8,7 @@ import { useMessengerClient, useThemeColor } from '@berty/store'
 import { useStyles } from '@berty/styles'
 import AddEmojiIcon from '@berty/assets/add_emoji.svg'
 import AnimatedNumber from '@berty/components/shared-components/AnimatedNumber'
-import { useConversationMembersDict } from '@berty/react-redux'
+import { useConversationMembersDict } from '@berty/hooks'
 import { ContactAvatar } from '@berty/components/avatars'
 
 import { useModal } from '../../providers/modal.provider'

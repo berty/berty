@@ -29,7 +29,7 @@ import {
 	retrieveMediaBytes,
 	Maybe,
 } from '@berty/store'
-import { useConversationInteractions } from '@berty/react-redux'
+import { useConversationInteractions } from '@berty/hooks'
 import RNFS from 'react-native-fs'
 
 import { getSource } from '../utils'

@@ -15,7 +15,7 @@ import {
 	selectInvitationListMembers,
 } from '@berty/redux/reducers/groupCreationForm.reducer'
 import { berty } from '@berty/api/root.pb'
-import { useAppDispatch, useAppSelector, useContactSearchResults } from '@berty/react-redux'
+import { useAppDispatch, useAppSelector, useContactSearchResults } from '@berty/hooks'
 import { UnifiedText } from './UnifiedText'
 
 // Styles

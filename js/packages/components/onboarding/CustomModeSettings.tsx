@@ -15,7 +15,7 @@ import beapi from '@berty/api'
 import { ScreenFC, useNavigation } from '@berty/navigation'
 import { accountService, useMessengerContext, useMountEffect, useThemeColor } from '@berty/store'
 import { useStyles } from '@berty/styles'
-import { useAppDispatch, useAppSelector } from '@berty/react-redux'
+import { useAppDispatch, useAppSelector } from '@berty/hooks'
 import {
 	addToBootstrap,
 	addToRendezvous,

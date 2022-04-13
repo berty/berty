@@ -4,7 +4,7 @@ import { useNavigation } from '@react-navigation/native'
 import beapi from '@berty/api'
 import colors from '@berty/styles/colors.json'
 import darkTheme from '@berty/styles/darktheme-default.json'
-import { useAllConversations, useAllContacts, useConversation } from '@berty/react-redux'
+import { useAllConversations, useAllContacts, useConversation } from '@berty/hooks'
 import { useStyles } from '@berty/styles'
 
 import { useMessengerContext } from './context'

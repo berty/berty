@@ -23,7 +23,7 @@ import {
 import beapi from '@berty/api'
 import { useNavigation } from '@berty/navigation'
 import rnutil from '@berty/rnutil'
-import { useAppDispatch, useAppSelector, useMedias, useConversation } from '@berty/react-redux'
+import { useAppDispatch, useAppSelector, useMedias, useConversation } from '@berty/hooks'
 import {
 	selectChatInputIsFocused,
 	selectChatInputIsSending,

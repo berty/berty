@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next'
 import { useStyles } from '@berty/styles'
 import { ScreenFC } from '@berty/navigation'
 import { Maybe, useThemeColor } from '@berty/store'
-import { useMember } from '@berty/react-redux'
+import { useMember } from '@berty/hooks'
 
 import { FactionButtonSetting } from '../shared-components/SettingsButtons'
 import { MemberAvatar } from '../avatars'

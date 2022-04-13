@@ -3,7 +3,7 @@ import { TouchableOpacity, View } from 'react-native'
 import { CommonActions } from '@react-navigation/native'
 
 import { useStyles } from '@berty/styles'
-import { useConversation } from '@berty/react-redux'
+import { useConversation } from '@berty/hooks'
 import { dispatch } from '@berty/navigation'
 
 import { useStylesNotification, NotificationTmpLogo } from './common'

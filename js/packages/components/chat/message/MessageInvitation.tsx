@@ -9,7 +9,7 @@ import { CommonActions } from '@react-navigation/native'
 import { useMessengerClient, useThemeColor } from '@berty/store'
 import { useStyles } from '@berty/styles'
 import { InteractionGroupInvitation } from '@berty/store/types.gen'
-import { useOneToOneContact, useConversation } from '@berty/react-redux'
+import { useOneToOneContact, useConversation } from '@berty/hooks'
 
 import { MessageSystemWrapper } from './MessageSystemWrapper'
 import { MultiMemberAvatar } from '../../avatars'

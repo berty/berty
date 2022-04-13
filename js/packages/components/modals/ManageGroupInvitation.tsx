@@ -9,7 +9,7 @@ import { useStyles } from '@berty/styles'
 import messengerMethodsHooks from '@berty/store/methods'
 import { dispatch as navDispatch } from '@berty/navigation/rootRef'
 import { useThemeColor } from '@berty/store'
-import { useAppDispatch, useConversation } from '@berty/react-redux'
+import { useAppDispatch, useConversation } from '@berty/hooks'
 
 import { TabBar } from '../shared-components/TabBar'
 import { FingerprintContent } from '../shared-components/FingerprintContent'

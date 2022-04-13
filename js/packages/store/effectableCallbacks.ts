@@ -2,7 +2,7 @@ import { Platform } from 'react-native'
 
 import beapi from '@berty/api'
 import { persistor, resetAccountStore } from '@berty/redux/store'
-import { useAppDispatch } from '@berty/react-redux'
+import { useAppDispatch } from '@berty/hooks'
 import {
 	setCreatedAccount,
 	setStateStreamDone,

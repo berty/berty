@@ -32,7 +32,7 @@ import {
 	useContactsDict,
 	useConversationsDict,
 	useAccount,
-} from '@berty/react-redux'
+} from '@berty/hooks'
 import { Player } from '@react-native-community/audio-toolkit'
 
 import {

@@ -1,5 +1,5 @@
 import { dispatch as navDispatch, ScreenFC } from '@berty/navigation'
-import { useAppDispatch } from '@berty/react-redux'
+import { useAppDispatch } from '@berty/hooks'
 import {
 	PersistentOptionsKeys,
 	setPersistentOption,

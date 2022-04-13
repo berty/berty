@@ -11,7 +11,7 @@ import { logger } from '@berty/grpc-bridge/middleware'
 import { bridge as rpcBridge, grpcweb as rpcWeb } from '@berty/grpc-bridge/rpc'
 import { ServiceClientType } from '@berty/grpc-bridge/welsh-clients.gen'
 import store, { AppDispatch, persistor } from '@berty/redux/store'
-import { useAppDispatch } from '@berty/react-redux'
+import { useAppDispatch } from '@berty/hooks'
 import { streamEventToAction as streamEventToReduxAction } from '@berty/redux/messengerActions'
 import RNFS from 'react-native-fs'
 import {

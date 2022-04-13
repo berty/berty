@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { useStyles } from '@berty/styles'
 import { useThemeColor } from '@berty/store'
 import { ScreenFC } from '@berty/navigation'
-import { useContact, useConversation } from '@berty/react-redux'
+import { useContact, useConversation } from '@berty/hooks'
 
 import { FingerprintContent } from '../shared-components/FingerprintContent'
 import { TabBar } from '../shared-components/TabBar'

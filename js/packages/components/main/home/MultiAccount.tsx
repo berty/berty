@@ -12,7 +12,7 @@ import {
 	Maybe,
 } from '@berty/store'
 import { importAccountFromDocumentPicker } from '@berty/components/pickerUtils'
-import { useAppDispatch } from '@berty/react-redux'
+import { useAppDispatch } from '@berty/hooks'
 import beapi from '@berty/api'
 
 import { GenericAvatar } from '../../avatars'
