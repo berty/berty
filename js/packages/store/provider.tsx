@@ -71,7 +71,7 @@ export const MessengerProvider: React.FC<{ daemonAddress: string }> = ({
 	}, [embedded])
 
 	useEffect(() => {
-		openingDaemon(dispatch, appState, selectedAccount)
+		openingDaemon(appState, selectedAccount)
 	}, [embedded, appState, selectedAccount])
 
 	useEffect(() => {
@@ -114,7 +114,7 @@ export const MessengerProvider: React.FC<{ daemonAddress: string }> = ({
 	}, [appState, client, selectedAccount, account, protocolClient, embedded, dispatch])
 
 	useEffect(() => {
-		return closingDaemon(appState, clearClients, dispatch, reduxDispatch)
+		return closingDaemon(appState, clearClients, reduxDispatch)
 	}, [clearClients, appState, reduxDispatch])
 
 	useEffect(() => {
@@ -127,7 +127,7 @@ export const MessengerProvider: React.FC<{ daemonAddress: string }> = ({
 	)
 
 	const callbackRestart = useCallback(
-		() => restart(embedded, dispatch, selectedAccount, reduxDispatch),
+		() => restart(embedded, selectedAccount, reduxDispatch),
 		[selectedAccount, embedded, reduxDispatch],
 	)
 
@@ -137,7 +137,7 @@ export const MessengerProvider: React.FC<{ daemonAddress: string }> = ({
 	)
 
 	const callbackSwitchAccount = useCallback(
-		(account: string) => switchAccount(embedded, dispatch, account, reduxDispatch),
+		(account: string) => switchAccount(embedded, account, reduxDispatch),
 		[embedded, reduxDispatch],
 	)
 

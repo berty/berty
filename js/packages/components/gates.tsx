@@ -21,6 +21,7 @@ import {
 	selectMessengerisClosing,
 	selectMessengerIsDeletingState,
 	selectMessengerIsReadyingBasics,
+	selectStreamError,
 	selectStreamInProgress,
 } from '@berty/redux/reducers/ui.reducer'
 import { UnifiedText } from './shared-components/UnifiedText'
@@ -93,9 +94,10 @@ const StreamInProgressCmp: React.FC<{}> = () => {
 const gutter = 50
 
 export const StreamGate: React.FC = ({ children }) => {
-	const { streamError, daemonAddress, dispatch, deleteAccount, restart } = useMessengerContext()
+	const { daemonAddress, dispatch, deleteAccount, restart } = useMessengerContext()
 	const streamInProgress = useSelector(selectStreamInProgress)
 	const embedded = useSelector(selectEmbedded)
+	const streamError = useSelector(selectStreamError)
 
 	const [newAddress, setNewAddress] = React.useState(daemonAddress)
 	const colors = useThemeColor()

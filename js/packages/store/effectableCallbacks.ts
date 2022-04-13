@@ -7,6 +7,7 @@ import {
 	setCreatedAccount,
 	setStateStreamDone,
 	setStateStreamInProgress,
+	setStreamError,
 } from '@berty/redux/reducers/ui.reducer'
 
 import { reducerAction, MessengerActions, StreamInProgress } from './types'
@@ -18,10 +19,7 @@ These callbacks were in providerCallbacks.tsx but they are splited here because 
 
 */
 
-export const closeAccountWithProgress = async (
-	dispatch: (arg0: reducerAction) => void,
-	reduxDispatch: ReturnType<typeof useAppDispatch>,
-) => {
+export const closeAccountWithProgress = async (dispatch: ReturnType<typeof useAppDispatch>) => {
 	try {
 		const stream = await accountService.closeAccountWithProgress({})
 		stream.onMessage((msg, err) => {
@@ -31,8 +29,8 @@ export const closeAccountWithProgress = async (
 				} else {
 					console.warn('Error while closing node:', err)
 				}
-				reduxDispatch(resetAccountStore())
-				reduxDispatch(setStateStreamDone())
+				dispatch(resetAccountStore())
+				dispatch(setStateStreamDone())
 				return
 			}
 			if (msg?.progress?.state !== 'done') {
@@ -42,7 +40,7 @@ export const closeAccountWithProgress = async (
 						msg: progress,
 						stream: 'Close account',
 					}
-					reduxDispatch(setStateStreamInProgress(payload))
+					dispatch(setStateStreamInProgress(payload))
 				}
 			}
 		})
@@ -51,11 +49,8 @@ export const closeAccountWithProgress = async (
 		await stream.start()
 	} catch (err) {
 		console.warn('Failed to close node:', err)
-		reduxDispatch(resetAccountStore())
-		dispatch({
-			type: MessengerActions.SetStreamError,
-			payload: { error: new Error(`Failed to close node: ${err}`) },
-		})
+		dispatch(resetAccountStore())
+		dispatch(setStreamError({ error: new Error(`Failed to close node: ${err}`) }))
 	}
 }
 
@@ -90,10 +85,7 @@ export const importAccountWithProgress = (
 			})
 			await stream.start()
 		} catch (err) {
-			dispatch({
-				type: MessengerActions.SetStreamError,
-				payload: { error: new Error(`Failed to import account: ${err}`) },
-			})
+			dispatch(setStreamError({ error: new Error(`Failed to import account: ${err}`) }))
 			resolve(null)
 		}
 	})

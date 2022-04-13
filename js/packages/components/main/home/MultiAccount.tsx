@@ -73,9 +73,8 @@ export const MultiAccount: React.FC<{ onPress: () => void }> = ({ onPress }) => 
 	const ctx = useMessengerContext()
 	const [{ padding }, { scaleSize }] = useStyles()
 	const colors = useThemeColor()
-	const { dispatch } = useMessengerContext()
 	const { t } = useTranslation()
-	const reduxDispatch = useAppDispatch()
+	const dispatch = useAppDispatch()
 	const selectedAccount = useSelector(selectSelectedAccount)
 
 	const [isHandlingPress, setIsHandlingPress] = React.useState(false)
@@ -132,8 +131,8 @@ export const MultiAccount: React.FC<{ onPress: () => void }> = ({ onPress }) => 
 				<AccountButton
 					name={t('main.home.multi-account.create-button')}
 					onPress={async () => {
-						await closeAccountWithProgress(dispatch, reduxDispatch)
-						reduxDispatch(setStateOnBoardingReady())
+						await closeAccountWithProgress(dispatch)
+						dispatch(setStateOnBoardingReady())
 					}}
 					avatar={
 						<View
