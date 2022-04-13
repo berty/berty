@@ -1,5 +1,5 @@
 import beapi from '@berty/api'
-import { useAppDispatch } from '@berty/react-redux'
+import { useAppDispatch } from '@berty/hooks'
 
 import { storageKeyForAccount } from './utils'
 import { Maybe } from './hooks'

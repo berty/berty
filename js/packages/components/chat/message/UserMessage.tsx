@@ -21,7 +21,7 @@ import {
 	useAppSelector,
 	useInteractionAuthor,
 	useLastConvInteraction,
-} from '@berty/react-redux'
+} from '@berty/hooks'
 import { selectInteraction } from '@berty/redux/reducers/messenger.reducer'
 
 import { MemberAvatar } from '../../avatars'

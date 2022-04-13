@@ -34,7 +34,7 @@ import {
 	toggleFromStaticRelay,
 } from '@berty/redux/reducers/networkConfig.reducer'
 import store from '@berty/redux/store'
-import { useAppDispatch, useAppSelector } from '@berty/react-redux'
+import { useAppDispatch, useAppSelector } from '@berty/hooks'
 
 import { AccordionV2, AccordionAddItemV2, AccordionItemV2 } from './Accordion'
 import { ModalProvider, useModal } from '../providers/modal.provider'

@@ -9,7 +9,7 @@ import { ScreenFC, useNavigation } from '@berty/navigation'
 import { useThemeColor } from '@berty/store'
 import beapi from '@berty/api'
 import messengerMethodsHooks from '@berty/store/methods'
-import { useConversationsDict } from '@berty/react-redux'
+import { useConversationsDict } from '@berty/hooks'
 import { BlurView } from '@react-native-community/blur'
 
 import { ManageGroupInvitation } from './ManageGroupInvitation'

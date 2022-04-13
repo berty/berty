@@ -8,7 +8,7 @@ import Clipboard from '@react-native-clipboard/clipboard'
 import { useStyles } from '@berty/styles'
 import { useStylesBertyId, useThemeColor } from '@berty/store'
 import { ScreenFC } from '@berty/navigation'
-import { useAccount } from '@berty/react-redux'
+import { useAccount } from '@berty/hooks'
 
 import { TabBar } from '../shared-components/TabBar'
 import { FingerprintContent } from '../shared-components/FingerprintContent'

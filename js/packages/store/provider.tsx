@@ -1,12 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { EventEmitter } from 'events'
 
-import {
-	useAppDispatch,
-	useAppSelector,
-	useAccount,
-	useConversationsDict,
-} from '@berty/react-redux'
+import { useAppDispatch, useAppSelector, useAccount, useConversationsDict } from '@berty/hooks'
 import { selectAccountLanguage } from '@berty/redux/reducers/accountSettings.reducer'
 
 import beapi from '@berty/api'

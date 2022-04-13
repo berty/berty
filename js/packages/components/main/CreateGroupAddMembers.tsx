@@ -19,7 +19,7 @@ import {
 } from '@berty/redux/reducers/groupCreationForm.reducer'
 import { AppDispatch } from '@berty/redux/store'
 import { berty } from '@berty/api/root.pb'
-import { useAllContacts } from '@berty/react-redux'
+import { useAllContacts } from '@berty/hooks'
 
 import { ContactPicker } from '../shared-components'
 import { FooterCreateGroup } from './CreateGroupFooter'

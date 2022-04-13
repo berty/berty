@@ -6,7 +6,7 @@ import { Icon } from '@ui-kitten/components'
 import beapi from '@berty/api'
 import { useStyles } from '@berty/styles'
 import { pbDateToNum, useMessengerClient, useThemeColor, useMessengerContext } from '@berty/store'
-import { useOneToOneContact } from '@berty/react-redux'
+import { useOneToOneContact } from '@berty/hooks'
 
 import { timeFormat } from './helpers'
 import { ContactAvatar } from './avatars'

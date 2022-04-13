@@ -7,7 +7,7 @@ import { useThemeColor } from '@berty/store'
 import { useStyles } from '@berty/styles'
 import AddEmojiIcon from '@berty/assets/add_emoji.svg'
 import { useLayout } from '@berty/components/hooks'
-import { useAppDispatch } from '@berty/react-redux'
+import { useAppDispatch } from '@berty/hooks'
 import {
 	ReplyTargetInteraction,
 	setActiveReplyInteraction,

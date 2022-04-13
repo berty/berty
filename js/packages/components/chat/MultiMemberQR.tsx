@@ -8,7 +8,7 @@ import beapi from '@berty/api'
 import { ScreenFC } from '@berty/navigation'
 import { useStylesBertyId, useThemeColor } from '@berty/store'
 import { useStyles } from '@berty/styles'
-import { useConversation } from '@berty/react-redux'
+import { useConversation } from '@berty/hooks'
 
 import { MultiMemberAvatar } from '../avatars'
 import logo from '../main/1_berty_picto.png'

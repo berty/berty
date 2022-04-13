@@ -10,7 +10,7 @@ import { ScreenFC } from '@berty/navigation'
 import { useStyles } from '@berty/styles'
 import { useMessengerClient, useThemeColor } from '@berty/store'
 import { selectInvitationListMembers } from '@berty/redux/reducers/groupCreationForm.reducer'
-import { useAllContacts, useAppDispatch, useAppSelector, useConversation } from '@berty/react-redux'
+import { useAllContacts, useAppDispatch, useAppSelector, useConversation } from '@berty/hooks'
 
 import { FooterCreateGroup } from '../main/CreateGroupFooter'
 import { Header, MemberList } from '../main/CreateGroupAddMembers'

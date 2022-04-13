@@ -7,7 +7,7 @@ import { Divider, Icon } from '@ui-kitten/components'
 import { useThemeColor } from '@berty/store'
 import { useStyles } from '@berty/styles'
 import { selectChatInputText, setChatInputText } from '@berty/redux/reducers/chatInputs.reducer'
-import { useAppDispatch, useAppSelector } from '@berty/react-redux'
+import { useAppDispatch, useAppSelector } from '@berty/hooks'
 import { emojis, getEmojiByName } from '@berty/components/utils'
 import { Emoji } from '@berty/styles/types'
 import {

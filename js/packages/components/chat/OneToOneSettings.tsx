@@ -7,7 +7,7 @@ import beapi from '@berty/api'
 import { ScreenFC } from '@berty/navigation'
 import { useThemeColor } from '@berty/store'
 import { useStyles } from '@berty/styles'
-import { useContact, useConversation } from '@berty/react-redux'
+import { useContact, useConversation } from '@berty/hooks'
 
 import { ButtonSetting } from '../shared-components/SettingsButtons'
 import { ContactAvatar } from '../avatars'

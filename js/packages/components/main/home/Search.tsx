@@ -7,7 +7,7 @@ import beapi from '@berty/api'
 import { useNavigation } from '@berty/navigation'
 import { useStyles } from '@berty/styles'
 import { useThemeColor, parseInteraction, pbDateToNum, ParsedInteraction } from '@berty/store'
-import { useContact, useConversationInteractions, useConversation } from '@berty/react-redux'
+import { useContact, useConversationInteractions, useConversation } from '@berty/hooks'
 
 import { HintBody } from '../../shared-components'
 import { timeFormat } from '../../helpers'

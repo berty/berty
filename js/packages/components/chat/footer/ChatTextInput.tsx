@@ -6,7 +6,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler'
 
 import { Maybe, useMountEffect, useThemeColor } from '@berty/store'
 import { useStyles } from '@berty/styles'
-import { useAppDispatch, useAppSelector, useInteractionAuthor } from '@berty/react-redux'
+import { useAppDispatch, useAppSelector, useInteractionAuthor } from '@berty/hooks'
 import {
 	removeActiveReplyInteraction,
 	selectActiveReplyInteraction,

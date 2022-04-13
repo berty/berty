@@ -11,7 +11,7 @@ import PinkBotAvatar from '@berty/assets/berty_bot_pink_bg.png'
 import GreenDevAvatar from '@berty/assets/berty_dev_green_bg.png'
 import OrangeBotAvatar from '@berty/assets/berty_bot_orange_bg.png'
 import BlueDevAvatar from '@berty/assets/berty_dev_blue_bg.png'
-import { useAccount, useContact, useConversation, useMember } from '@berty/react-redux'
+import { useAccount, useContact, useConversation, useMember } from '@berty/hooks'
 import { selectPersistentOptions } from '@berty/redux/reducers/persistentOptions.reducer'
 
 import AttachmentImage from './AttachmentImage'

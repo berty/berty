@@ -22,7 +22,7 @@ import {
 	useConversationInteractions,
 	useConversationMembersDict,
 	useConversation,
-} from '@berty/react-redux'
+} from '@berty/hooks'
 
 import { InfosChat } from '../InfosChat'
 import { Message } from './message'

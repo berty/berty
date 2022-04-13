@@ -8,7 +8,7 @@ import messengerMethodsHooks from '@berty/store/methods'
 import { useMessengerContext, useThemeColor } from '@berty/store'
 import { useNavigation } from '@berty/navigation'
 import { selectInvitationListMembers } from '@berty/redux/reducers/groupCreationForm.reducer'
-import { useAppDispatch, useAppSelector } from '@berty/react-redux'
+import { useAppDispatch, useAppSelector } from '@berty/hooks'
 
 import { FooterCreateGroup } from './CreateGroupFooter'
 import { Header } from './CreateGroupAddMembers'

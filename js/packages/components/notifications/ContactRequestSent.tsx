@@ -4,7 +4,7 @@ import { CommonActions } from '@react-navigation/native'
 
 import { useStyles } from '@berty/styles'
 import { dispatch } from '@berty/navigation'
-import { useConversation } from '@berty/react-redux'
+import { useConversation } from '@berty/hooks'
 
 import { useStylesNotification, NotificationTmpLogo } from './common'
 import { UnifiedText } from '../shared-components/UnifiedText'

@@ -12,7 +12,7 @@ import {
 	Maybe,
 	prepareMediaBytes,
 } from '@berty/store'
-import { useAllConversations, useOneToOneContact } from '@berty/react-redux'
+import { useAllConversations, useOneToOneContact } from '@berty/hooks'
 
 import { ConversationAvatar } from '../avatars'
 import { UnifiedText } from '../shared-components/UnifiedText'

@@ -5,7 +5,7 @@ import Long from 'long'
 import beapi from '@berty/api'
 import { useStyles } from '@berty/styles'
 import { useThemeColor, useMessengerClient } from '@berty/store'
-import { useAppDispatch } from '@berty/react-redux'
+import { useAppDispatch } from '@berty/hooks'
 import { UnifiedText } from '../../shared-components/UnifiedText'
 
 const QuickReplyOption: React.FC<{

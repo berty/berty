@@ -19,7 +19,7 @@ import {
 	selectPersistentOptions,
 	setPersistentOption,
 } from '@berty/redux/reducers/persistentOptions.reducer'
-import { useAppDispatch } from '@berty/react-redux'
+import { useAppDispatch } from '@berty/hooks'
 
 const ServicesAuthBody: React.FC<{ next: () => void }> = ({ next }) => {
 	const persistentOptions = useSelector(selectPersistentOptions)

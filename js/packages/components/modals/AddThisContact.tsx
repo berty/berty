@@ -10,7 +10,7 @@ import messengerMethodsHooks from '@berty/store/methods'
 import { useMessengerContext, useThemeColor } from '@berty/store'
 import { dispatch as navDispatch } from '@berty/navigation/rootRef'
 import { useNavigation } from '@berty/navigation'
-import { useAppDispatch, useContactConversation } from '@berty/react-redux'
+import { useAppDispatch, useContactConversation } from '@berty/hooks'
 
 import { ContactAvatar } from '../avatars'
 import { TabBar } from '../shared-components/TabBar'

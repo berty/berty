@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Image, ImageProps, ActivityIndicator, View, TouchableOpacity } from 'react-native'
 
 import { useNavigation } from '@berty/navigation'
-import { useMedia } from '@berty/react-redux'
+import { useMedia } from '@berty/hooks'
 
 import { getSource } from './utils'
 import { useSelector } from 'react-redux'

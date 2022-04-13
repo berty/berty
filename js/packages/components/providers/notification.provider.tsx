@@ -6,7 +6,7 @@ import { useMessengerContext } from '@berty/store/context'
 import { accountService } from '@berty/store'
 import beapi from '@berty/api'
 import { useNavigation } from '@berty/navigation'
-import { useConversationsDict } from '@berty/react-redux'
+import { useConversationsDict } from '@berty/hooks'
 import { InAppNotificationProvider, withInAppNotification } from 'react-native-in-app-notification'
 
 import NotificationBody from '../NotificationBody'

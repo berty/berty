@@ -15,7 +15,7 @@ import {
 	useThemeColor,
 	useMessengerClient,
 } from '@berty/store'
-import { useAccount, useAppSelector } from '@berty/react-redux'
+import { useAccount, useAppSelector } from '@berty/hooks'
 import { selectSelectedAccount } from '@berty/redux/reducers/ui.reducer'
 import {
 	checkBlePermission,

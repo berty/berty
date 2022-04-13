@@ -9,7 +9,7 @@ import QRCode from 'react-native-qrcode-svg'
 import { useStyles } from '@berty/styles'
 import { ScreenFC, useNavigation } from '@berty/navigation'
 import { Maybe, useMessengerClient, useThemeColor } from '@berty/store'
-import { useConversationMembersDict, useConversation } from '@berty/react-redux'
+import { useConversationMembersDict, useConversation } from '@berty/hooks'
 
 import { ButtonSetting, FactionButtonSetting } from '../shared-components/SettingsButtons'
 import logo from '../main/1_berty_picto.png'

@@ -6,7 +6,7 @@ import { TextInput, View } from 'react-native'
 import { GlobalPersistentOptionsKeys, storageSet, useThemeColor } from '@berty/store'
 import { useStyles } from '@berty/styles'
 import { useNavigation } from '@berty/navigation'
-import { useAccount } from '@berty/react-redux'
+import { useAccount } from '@berty/hooks'
 
 import SwiperCard from './SwiperCard'
 

@@ -22,7 +22,7 @@ import {
 	selectPersistentOptions,
 	setPersistentOption,
 } from '@berty/redux/reducers/persistentOptions.reducer'
-import { useAppDispatch } from '@berty/react-redux'
+import { useAppDispatch } from '@berty/hooks'
 import { UnifiedText } from '../shared-components/UnifiedText'
 
 const animations: Record<PermissionType, AnimatedLottieViewProps['source']> = {

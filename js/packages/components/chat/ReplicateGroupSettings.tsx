@@ -15,7 +15,7 @@ import {
 	useMessengerClient,
 } from '@berty/store'
 import beapi from '@berty/api'
-import { useConversation } from '@berty/react-redux'
+import { useConversation } from '@berty/hooks'
 
 import { ButtonSetting, FactionButtonSetting } from '../shared-components'
 import { useSelector } from 'react-redux'

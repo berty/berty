@@ -5,7 +5,7 @@ import { Icon } from '@ui-kitten/components'
 import { useThemeColor } from '@berty/store/hooks'
 import { useStyles, ColorsTypes } from '@berty/styles'
 import { Toggle } from '@berty/components/shared-components/Toggle'
-import { useContact } from '@berty/react-redux'
+import { useContact } from '@berty/hooks'
 
 import { TabBar } from './TabBar'
 import { FingerprintContent } from './FingerprintContent'

@@ -12,10 +12,10 @@ import {
 	ServiceClientType,
 	WelshMessengerServiceClient,
 } from '@berty/grpc-bridge/welsh-clients.gen'
-import { useAccount } from '@berty/react-redux'
+import { useAccount } from '@berty/hooks'
 import RNFS from 'react-native-fs'
-
 import { berty } from '@berty/api/root.pb'
+
 const { PushTokenRequester } = NativeModules
 
 export enum serviceTypes {
