@@ -5,8 +5,8 @@ import { Icon } from '@ui-kitten/components'
 
 import beapi from '@berty/api'
 import { useStyles } from '@berty/styles'
-import { pbDateToNum, useMessengerClient, useThemeColor, useMessengerContext } from '@berty/store'
-import { useOneToOneContact } from '@berty/hooks'
+import { useOneToOneContact, usePlaySound } from '@berty/hooks'
+import { pbDateToNum, useMessengerClient, useThemeColor } from '@berty/store'
 
 import { timeFormat } from './helpers'
 import { ContactAvatar } from './avatars'
@@ -62,7 +62,7 @@ const ContactRequestBox: React.FC<{ contact: beapi.messenger.IContact; isAccepte
 	const { t }: any = useTranslation()
 
 	const [accepting, setAccepting] = useState(false)
-	const { playSound } = useMessengerContext()
+	const playSound = usePlaySound()
 
 	const client = useMessengerClient()
 	const decline = () => {}

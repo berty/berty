@@ -1,10 +1,20 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { EventEmitter } from 'events'
+import { useSelector } from 'react-redux'
 
 import { useAppDispatch, useAppSelector, useAccount, useConversationsDict } from '@berty/hooks'
 import { selectAccountLanguage } from '@berty/redux/reducers/accountSettings.reducer'
-
 import beapi from '@berty/api'
+import {
+	selectAppState,
+	selectClearClients,
+	selectClient,
+	selectEmbedded,
+	selectProtocolClient,
+	selectSelectedAccount,
+} from '@berty/redux/reducers/ui.reducer'
+import { selectPersistentOptions } from '@berty/redux/reducers/persistentOptions.reducer'
+
 import { MessengerContext, initialState } from './context'
 import {
 	initialLaunch,
@@ -27,21 +37,6 @@ import {
 } from './providerCallbacks'
 import { createNewAccount, getUsername } from './effectableCallbacks'
 import { reducer } from './reducer'
-import { playSound } from './sounds'
-import { SoundKey } from './types'
-import { useSelector } from 'react-redux'
-import {
-	selectAppState,
-	selectClearClients,
-	selectClient,
-	selectEmbedded,
-	selectProtocolClient,
-	selectSelectedAccount,
-} from '@berty/redux/reducers/ui.reducer'
-import {
-	selectPersistentOptions,
-	PersistentOptionsKeys,
-} from '@berty/redux/reducers/persistentOptions.reducer'
 
 export const MessengerProvider: React.FC<{ daemonAddress: string }> = ({
 	children,
@@ -170,16 +165,6 @@ export const MessengerProvider: React.FC<{ daemonAddress: string }> = ({
 		[eventEmitter],
 	)
 
-	const callbackPlaySound = useCallback(
-		(sound: SoundKey) => {
-			if (persistentOptions[PersistentOptionsKeys.Notifications].enable) {
-				playSound(sound)
-			}
-			return
-		},
-		[persistentOptions],
-	)
-
 	return (
 		<MessengerContext.Provider
 			value={{
@@ -194,7 +179,6 @@ export const MessengerProvider: React.FC<{ daemonAddress: string }> = ({
 				deleteAccount: callbackDeleteAccount,
 				getUsername: callbackGetUsername,
 				restart: callbackRestart,
-				playSound: callbackPlaySound,
 				handledLink,
 				setHandledLink,
 			}}

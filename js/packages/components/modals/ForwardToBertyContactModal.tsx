@@ -5,14 +5,8 @@ import { Buffer } from 'buffer'
 
 import { useStyles } from '@berty/styles'
 import beapi from '@berty/api'
-import {
-	useMessengerContext,
-	useThemeColor,
-	useMessengerClient,
-	Maybe,
-	prepareMediaBytes,
-} from '@berty/store'
-import { useAllConversations, useOneToOneContact } from '@berty/hooks'
+import { useThemeColor, useMessengerClient, Maybe, prepareMediaBytes } from '@berty/store'
+import { useAllConversations, useOneToOneContact, usePlaySound } from '@berty/hooks'
 
 import { ConversationAvatar } from '../avatars'
 import { UnifiedText } from '../shared-components/UnifiedText'
@@ -21,7 +15,7 @@ const Item: React.FC<{ conversation: beapi.messenger.IConversation; image: any }
 	({ conversation, image }) => {
 		const [{ border, padding, margin }] = useStyles()
 		const colors = useThemeColor()
-		const ctx = useMessengerContext()
+		const playSound = usePlaySound()
 		const client = useMessengerClient()
 		const contact = useOneToOneContact(conversation.publicKey || '')
 		const [sending, setSending] = React.useState(false)
@@ -48,7 +42,7 @@ const Item: React.FC<{ conversation: beapi.messenger.IConversation; image: any }
 					payload: buf,
 					mediaCids: [cid],
 				})
-				ctx.playSound('messageSent')
+				playSound('messageSent')
 			} catch (err) {
 				console.warn('error sending message:', err)
 			}

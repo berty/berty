@@ -4,9 +4,10 @@ import { useTranslation } from 'react-i18next'
 import { Icon } from '@ui-kitten/components'
 
 import beapi from '@berty/api'
-import { useMessengerClient, useMessengerContext, useThemeColor, pbDateToNum } from '@berty/store'
+import { useMessengerClient, useThemeColor, pbDateToNum } from '@berty/store'
 import { useNavigation } from '@berty/navigation'
 import { useStyles } from '@berty/styles'
+import { usePlaySound } from '@berty/hooks'
 
 import { ContactAvatar } from '../../avatars'
 import FromNow from '../../shared-components/FromNow'
@@ -84,7 +85,7 @@ const ContactRequest: React.FC<beapi.messenger.IContact> = ({
 	conversationPublicKey,
 	createdDate: createdDateStr,
 }) => {
-	const ctx = useMessengerContext()
+	const playSound = usePlaySound()
 	const client = useMessengerClient()
 	const decline: any = () => {} // Messenger.useDiscardContactRequest()
 	const { navigate } = useNavigation()
@@ -181,7 +182,7 @@ const ContactRequest: React.FC<beapi.messenger.IContact> = ({
 						client
 							?.contactAccept({ publicKey })
 							.then(() => {
-								ctx.playSound('contactRequestAccepted')
+								playSound('contactRequestAccepted')
 							})
 							.catch((err: any) => console.warn('Failed to accept contact request:', err))
 					}

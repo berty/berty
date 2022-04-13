@@ -3,8 +3,9 @@ import { View } from 'react-native'
 import EmojiBoard from 'react-native-emoji-board'
 
 import beapi from '@berty/api'
-import { useMessengerClient, useMessengerContext, useThemeColor } from '@berty/store'
+import { useMessengerClient, useThemeColor } from '@berty/store'
 import { useStyles } from '@berty/styles'
+import { usePlaySound } from '@berty/hooks'
 
 import { useModal } from '../../providers/modal.provider'
 
@@ -13,7 +14,7 @@ export const EmojiKeyboard: FC<{ conversationPublicKey: string; targetCid: strin
 	targetCid,
 }) => {
 	const client = useMessengerClient()
-	const ctx = useMessengerContext()
+	const playSound = usePlaySound()
 	const { hideAll } = useModal()
 	const colors = useThemeColor()
 	const [{ padding }] = useStyles()
@@ -35,7 +36,7 @@ export const EmojiKeyboard: FC<{ conversationPublicKey: string; targetCid: strin
 							targetCid,
 						})
 						.then(() => {
-							ctx.playSound('messageSent')
+							playSound('messageSent')
 							hideAll()
 						})
 						.catch((e: unknown) => {
