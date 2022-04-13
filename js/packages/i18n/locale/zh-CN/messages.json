@@ -1,7 +1,7 @@
 {
 	"onboarding": {
 		"getstarted": {
-			"screenTitle": "",
+			"screenTitle": "保护您的隐私",
 			"title": "保护您的隐私！",
 			"desc": "免费和安全的点对点消息传递",
 			"create-button": "创建帐户",
@@ -11,7 +11,7 @@
 		"default-mode": {
 			"summary": {
 				"title": "默认模式",
-				"screenTitle": "",
+				"screenTitle": "创建账户",
 				"subtitle": "快速开始",
 				"first-point": "从提供最适合的隐私/舒适平衡的预设开始。 Berty 节点用于提高性能和异步通信。",
 				"second-point": "如需自定义隐私/舒适度平衡，请选择自定义模式。",
@@ -21,7 +21,7 @@
 		},
 		"custom-mode": {
 			"summary": {
-				"screenTitle": "",
+				"screenTitle": "创建账户 - 自定义设置",
 				"title": "自定义模式",
 				"subtitle": "自定义隐私/舒适度平衡",
 				"first-point": "在此模式下，单独调整所有设置以创建适合您的隐私和舒适的平衡。",
@@ -100,15 +100,15 @@
 			"button": "开始使用 Berty"
 		},
 		"web-views": {
-			"title": "",
-			"desc": "",
+			"title": "网页内容权限",
+			"desc": "Berty 即将从网络加载内容。您想要打开此页面吗？",
 			"first-button": "取消",
 			"second-button": "是"
 		}
 	},
 	"main": {
 		"home": {
-			"title": "",
+			"title": "Berty",
 			"requests": {
 				"title": "请求",
 				"accept": "同意",
@@ -153,7 +153,7 @@
 			"proximity-button": "离线通讯",
 			"notifications-button": "消息通知",
 			"contact-convs-button": "联系和对话",
-			"appearance-button": "",
+			"appearance-button": "外观",
 			"devices-button": "设备和备份",
 			"accounts-button": "账户",
 			"network-button": "网络",
@@ -175,10 +175,10 @@
 			"import-button": "导入帐户",
 			"link-button": "连接其他设备",
 			"delete-button": "删除此帐户",
-			"delete-title": ""
+			"delete-title": "账户删除"
 		},
 		"appearance": {
-			"title": "",
+			"title": "外观",
 			"dark-button": "暗色模式",
 			"editor-button": "主题编辑器",
 			"theme-editor": {
@@ -186,15 +186,15 @@
 			}
 		},
 		"contact-convs": {
-			"title": "",
+			"title": "联系人和对话",
 			"reset-button": "重置我的联系链接/二维码",
 			"request-button": "允许收到联系人请求"
 		},
 		"devices-backup": {
-			"title": ""
+			"title": "设备和备份"
 		},
 		"security": {
-			"title": ""
+			"title": "安全"
 		},
 		"network": {
 			"title": "网络",
@@ -403,7 +403,7 @@
 			}
 		},
 		"multi-member-settings": {
-			"title": "",
+			"title": "对话设置",
 			"media-button": "媒体、 链接和文档",
 			"members-button": {
 				"title": "成员"
@@ -442,7 +442,7 @@
 			"input-placeholder": "在此输入..."
 		},
 		"one-to-one-settings": {
-			"title": "",
+			"title": "对话设置",
 			"media-button": "媒体、 链接和文档",
 			"save-button": "在服务器上保存对话"
 		},
