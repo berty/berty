@@ -18,9 +18,7 @@ export const initialState = {
 		return null
 	},
 	restart: async () => {},
-	setDebugMode: () => {},
 	playSound: () => {},
-	debugMode: true,
 	accounts: [],
 	addReaction: () => undefined,
 	removeReaction: () => undefined,

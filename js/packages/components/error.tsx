@@ -6,11 +6,11 @@ import { setJSExceptionHandler } from 'react-native-exception-handler'
 import RNRestart from 'react-native-restart'
 
 import { useStyles } from '@berty/styles'
-import { useThemeColor, useMessengerContext } from '@berty/store'
+import { useThemeColor } from '@berty/store'
+import { useAppSelector } from '@berty/hooks'
+import { selectDebugMode, selectEmbedded } from '@berty/redux/reducers/ui.reducer'
 
 import AppInspector from './debug/AppInspector'
-import { useSelector } from 'react-redux'
-import { selectEmbedded } from '@berty/redux/reducers/ui.reducer'
 import { UnifiedText } from './shared-components/UnifiedText'
 
 const Label: React.FC<{ title: string; type: 'error' }> = ({ title, type }) => {
@@ -270,8 +270,8 @@ export const ErrorScreen: React.FC = ({ children }) => {
 
 	const [error, setError] = React.useState<Error | null>(null)
 
-	const { debugMode } = useMessengerContext()
-	const embedded = useSelector(selectEmbedded)
+	const debugMode = useAppSelector(selectDebugMode)
+	const embedded = useAppSelector(selectEmbedded)
 
 	const errorHandler = (err: Error) => {
 		setError(err)

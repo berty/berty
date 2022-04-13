@@ -53,7 +53,6 @@ export const MessengerProvider: React.FC<{ daemonAddress: string }> = ({
 		daemonAddress,
 	})
 	const [eventEmitter] = React.useState(new EventEmitter())
-	const [debugMode, setDebugMode] = React.useState(false)
 	const [handledLink, setHandledLink] = useState<boolean>(false)
 	const appState = useSelector(selectAppState)
 	const clearClients = useSelector(selectClearClients)
@@ -171,8 +170,6 @@ export const MessengerProvider: React.FC<{ daemonAddress: string }> = ({
 		[eventEmitter],
 	)
 
-	const callbackSetDebugMode = useCallback((value: boolean) => setDebugMode(value), [])
-
 	const callbackPlaySound = useCallback(
 		(sound: SoundKey) => {
 			if (persistentOptions[PersistentOptionsKeys.Notifications].enable) {
@@ -197,9 +194,7 @@ export const MessengerProvider: React.FC<{ daemonAddress: string }> = ({
 				deleteAccount: callbackDeleteAccount,
 				getUsername: callbackGetUsername,
 				restart: callbackRestart,
-				debugMode: debugMode,
 				playSound: callbackPlaySound,
-				setDebugMode: callbackSetDebugMode,
 				handledLink,
 				setHandledLink,
 			}}
