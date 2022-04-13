@@ -139,7 +139,7 @@ const initialState: UiState = {
 	daemonAddress: '',
 	clearClients: null,
 	embedded: true,
-	debugMode: true,
+	debugMode: false,
 	accounts: [],
 	networkConfig: {},
 	handledLink: false,
