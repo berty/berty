@@ -6,7 +6,6 @@ import Long from 'long'
 
 import {
 	GlobalPersistentOptionsKeys,
-	MessengerActions,
 	storageGet,
 	storageSet,
 	useMessengerClient,
@@ -45,7 +44,13 @@ import {
 import { showNeedRestartNotification } from '../helpers'
 import { DropDownPicker, Item } from '../shared-components/DropDownPicker'
 import { useSelector } from 'react-redux'
-import { selectEmbedded, setDebugMode, setStreamError } from '@berty/redux/reducers/ui.reducer'
+import {
+	selectDaemonAddress,
+	selectEmbedded,
+	setDaemonAddress,
+	setDebugMode,
+	setStreamError,
+} from '@berty/redux/reducers/ui.reducer'
 import { withInAppNotification } from 'react-native-in-app-notification'
 import {
 	defaultPersistentOptions,
@@ -349,6 +354,7 @@ const BodyDevTools: React.FC<{}> = withInAppNotification(({ showNotification }: 
 	const persistentOptions = useSelector(selectPersistentOptions)
 	const embedded = useSelector(selectEmbedded)
 	const client = useMessengerClient()
+	const daemonAddress = useSelector(selectDaemonAddress)
 
 	const addTyberHost = useCallback(
 		(host: string, addresses: string[]) => {
@@ -530,7 +536,7 @@ const BodyDevTools: React.FC<{}> = withInAppNotification(({ showNotification }: 
 				iconColor={colors['alt-secondary-background-header']}
 				onPress={() => GoBridge.closeBridge()}
 			/>
-			{!embedded && ctx.daemonAddress !== 'http://localhost:1338' && (
+			{!embedded && daemonAddress !== 'http://localhost:1338' && (
 				<ButtonSetting
 					name='Switch to 1338 node'
 					icon='folder-outline'
@@ -538,10 +544,7 @@ const BodyDevTools: React.FC<{}> = withInAppNotification(({ showNotification }: 
 					iconColor={colors['alt-secondary-background-header']}
 					actionIcon='arrow-ios-forward'
 					onPress={() => {
-						ctx.dispatch({
-							type: MessengerActions.SetDaemonAddress,
-							payload: { value: 'http://localhost:1338' },
-						})
+						dispatch(setDaemonAddress({ value: 'http://localhost:1338' }))
 					}}
 				/>
 			)}

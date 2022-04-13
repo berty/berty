@@ -5,7 +5,6 @@ export const initialState: MessengerState = {
 	addNotificationListener: () => {},
 	removeNotificationListener: () => {},
 	notificationsInhibitors: [],
-	daemonAddress: '',
 	dispatch: () => {},
 	getUsername: async () => {
 		return null

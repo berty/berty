@@ -10,16 +10,19 @@ import {
 } from 'react-native'
 import * as Progress from 'react-native-progress'
 
-import { useMessengerContext, useThemeColor, MessengerActions } from '@berty/store'
+import { useAppDispatch } from '@berty/hooks'
+import { useMessengerContext, useThemeColor } from '@berty/store'
 import { useStyles } from '@berty/styles'
 import source from '@berty/assets/loader_dots.gif'
 import { useSelector } from 'react-redux'
 import {
+	selectDaemonAddress,
 	selectEmbedded,
 	selectMessengerisClosing,
 	selectMessengerIsReadyingBasics,
 	selectStreamError,
 	selectStreamInProgress,
+	setDaemonAddress,
 } from '@berty/redux/reducers/ui.reducer'
 import { UnifiedText } from './shared-components/UnifiedText'
 import { useDeleteAccount } from '@berty/hooks/accounts.hooks'
@@ -92,16 +95,18 @@ const StreamInProgressCmp: React.FC<{}> = () => {
 const gutter = 50
 
 export const StreamGate: React.FC = ({ children }) => {
-	const { daemonAddress, dispatch, restart } = useMessengerContext()
+	const { restart } = useMessengerContext()
 	const streamInProgress = useSelector(selectStreamInProgress)
 	const embedded = useSelector(selectEmbedded)
 	const streamError = useSelector(selectStreamError)
 	const deleteAccount = useDeleteAccount()
+	const daemonAddress = useSelector(selectDaemonAddress)
+	const dispatch = useAppDispatch()
 
 	const [newAddress, setNewAddress] = React.useState(daemonAddress)
 	const colors = useThemeColor()
 	const changeAddress = React.useCallback(() => {
-		dispatch({ type: MessengerActions.SetDaemonAddress, payload: { value: newAddress } })
+		dispatch(setDaemonAddress({ value: newAddress }))
 	}, [dispatch, newAddress])
 
 	if (streamError && !streamInProgress) {

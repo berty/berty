@@ -14,7 +14,6 @@ export type StreamInProgress = {
 }
 
 export type MessengerState = {
-	daemonAddress: string
 	addNotificationListener: (cb: (evt: any) => void) => void
 	removeNotificationListener: (cb: (...args: any[]) => void) => void
 	notificationsInhibitors: NotificationsInhibitor[]
@@ -47,7 +46,6 @@ export enum GlobalPersistentOptionsKeys {
 export enum MessengerActions {
 	AddFakeData = 'ADD_FAKE_DATA',
 	DeleteFakeData = 'DELETE_FAKE_DATA',
-	SetDaemonAddress = 'SET_DAEMON_ADDRESS',
 	SetPersistentOption = 'SET_PERSISTENT_OPTION',
 	SetNextAccount = 'SET_NEXT_ACCOUNT',
 	SetStateClosed = 'SET_STATE_CLOSED',
