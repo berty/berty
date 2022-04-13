@@ -5,6 +5,7 @@ import (
 
 	"go.uber.org/zap"
 
+	"berty.tech/berty/v2/go/internal/messengerdb"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
@@ -18,13 +19,14 @@ type messengerPushReceiver struct {
 	logger       *zap.Logger
 	pushHandler  PushHandler
 	eventHandler EventHandler
+	db           *messengerdb.DBWrapper
 }
 
 type MessengerPushReceiver interface {
 	PushReceive(ctx context.Context, input []byte) (*messengertypes.PushReceive_Reply, error)
 }
 
-func NewPushReceiver(pushHandler PushHandler, evtHandler EventHandler, logger *zap.Logger) MessengerPushReceiver {
+func NewPushReceiver(pushHandler PushHandler, evtHandler EventHandler, db *messengerdb.DBWrapper, logger *zap.Logger) MessengerPushReceiver {
 	if logger == nil {
 		logger = zap.NewNop()
 	}
@@ -33,6 +35,7 @@ func NewPushReceiver(pushHandler PushHandler, evtHandler EventHandler, logger *z
 		logger:       logger,
 		pushHandler:  pushHandler,
 		eventHandler: evtHandler,
+		db:           db,
 	}
 }
 
@@ -47,11 +50,19 @@ func (m *messengerPushReceiver) PushReceive(ctx context.Context, input []byte) (
 		return nil, errcode.ErrInternal.Wrap(err)
 	}
 
+	accountMuted, conversationMuted, err := m.db.GetMuteStatusForConversation(i.ConversationPublicKey)
+	if err != nil {
+		accountMuted = true
+		conversationMuted = true
+	}
+
 	return &messengertypes.PushReceive_Reply{
 		Data: &messengertypes.PushReceivedData{
-			ProtocolData:    clear,
-			Interaction:     i,
-			AlreadyReceived: clear.AlreadyReceived || !isNew,
+			ProtocolData:      clear,
+			Interaction:       i,
+			AlreadyReceived:   clear.AlreadyReceived || !isNew,
+			ConversationMuted: conversationMuted,
+			AccountMuted:      accountMuted,
 		},
 	}, nil
 }

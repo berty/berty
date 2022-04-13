@@ -385,17 +385,10 @@
 			"input-placeholder": "Type here..."
 		},
 		"push-notifications": {
-			"enable": "Enable push notifications",
-			"enabled": "Push notifications enabled",
+			"title": "Notifications",
 			"unsupported": "Notifications unsupported",
 			"check-device-settings": "This conversation is set to receive push notifications, but alerts have been disabled in the system settings of your device",
-			"warning-disable": {
-				"title": "Do you want to activate this feature?",
-				"subtitle": "Once enabled, push notifications can't be disabled for a specific conversation.",
-				"accept": "Activate",
-				"refuse": "Skip"
-			},
-			"why-cant-disable": "Can't disable push notifications per conversation.",
+			"check-account-settings": "Notifications are disabled, check your account settings",
 			"errors": {
 				"no-token": "Your device is not compatible with push notifications",
 				"no-server": "You must register a push relay first"

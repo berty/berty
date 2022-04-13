@@ -61,6 +61,8 @@ func PushEnrich(rawPushData *messengertypes.PushReceivedData, accountData *accou
 		PayloadAttrsJSON:        "{}",
 		DeepLink:                link,
 		AlreadyReceived:         rawPushData.AlreadyReceived,
+		AccountMuted:            rawPushData.AccountMuted,
+		ConversationMuted:       rawPushData.ConversationMuted,
 	}
 
 	if rawPushData.Interaction.Member != nil {
@@ -247,6 +249,8 @@ func PushDecrypt(ctx context.Context, rootDir string, input []byte, opts *PushDe
 			}
 			defer dbCleanup()
 
+			wrappedDB := messengerdb.NewDBWrapper(db, opts.Logger)
+
 			pushHandler, err := NewPushHandler(&PushHandlerOpts{
 				Logger:        opts.Logger,
 				RootDatastore: rootDS,
@@ -256,8 +260,8 @@ func PushDecrypt(ctx context.Context, rootDir string, input []byte, opts *PushDe
 				return nil, errcode.ErrInternal.Wrap(fmt.Errorf("unable to initialize push handler: %w", err))
 			}
 
-			evtHandler := messengerpayloads.NewEventHandler(ctx, messengerdb.NewDBWrapper(db, opts.Logger), nil, messengertypes.NewPostActionsServiceNoop(), opts.Logger, nil, false)
-			pushReceiver := NewPushReceiver(pushHandler, evtHandler, opts.Logger)
+			evtHandler := messengerpayloads.NewEventHandler(ctx, wrappedDB, nil, messengertypes.NewPostActionsServiceNoop(), opts.Logger, nil, false)
+			pushReceiver := NewPushReceiver(pushHandler, evtHandler, wrappedDB, opts.Logger)
 
 			reply, err = pushReceiver.PushReceive(ctx, input)
 			if err != nil {

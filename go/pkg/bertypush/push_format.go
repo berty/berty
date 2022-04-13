@@ -108,7 +108,7 @@ func FormatDecryptedPush(decrypted *pushtypes.DecryptedPush, printer *message.Pr
 		fmtpush.Body = err.Error()
 	}
 
-	fmtpush.AlreadyReceived = decrypted.AlreadyReceived
+	fmtpush.Muted = decrypted.AlreadyReceived || decrypted.AccountMuted || decrypted.ConversationMuted
 
 	return fmtpush
 }

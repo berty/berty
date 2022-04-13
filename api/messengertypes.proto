@@ -52,12 +52,14 @@ service MessengerService {
   rpc ConversationJoin(ConversationJoin.Request) returns (ConversationJoin.Reply);
   rpc AccountGet(AccountGet.Request) returns (AccountGet.Reply);
   rpc AccountUpdate(AccountUpdate.Request) returns (AccountUpdate.Reply);
+  rpc AccountMute(AccountMute.Request) returns (AccountMute.Reply);
   rpc ContactRequest(ContactRequest.Request) returns (ContactRequest.Reply);
   rpc ContactAccept(ContactAccept.Request) returns (ContactAccept.Reply);
   rpc Interact(Interact.Request) returns (Interact.Reply);
   rpc ConversationOpen(ConversationOpen.Request) returns (ConversationOpen.Reply);
   rpc ConversationClose(ConversationClose.Request) returns (ConversationClose.Reply);
   rpc ConversationLoad(ConversationLoad.Request) returns (ConversationLoad.Reply);
+  rpc ConversationMute(ConversationMute.Request) returns (ConversationMute.Reply);
 
   // ServicesTokenList Retrieves the list of service server tokens
   rpc ServicesTokenList(protocol.v1.ServicesTokenList.Request) returns (stream protocol.v1.ServicesTokenList.Reply);
@@ -147,6 +149,16 @@ message ConversationClose {
 message ConversationLoad {
   message Request {
     PaginatedInteractionsOptions options = 1;
+  }
+  message Reply {}
+}
+
+message ConversationMute {
+  message Request {
+    string group_pk = 1 [(gogoproto.customname) = "GroupPK"];
+    int64 muted_until = 2;
+    bool unmute = 3;
+    bool mute_forever = 4;
   }
   message Reply {}
 }
@@ -420,6 +432,7 @@ message Account {
   bool auto_share_push_token_flag = 8;
   bytes device_push_token = 9;
   bytes device_push_server = 10;
+  int64 muted_until = 11;
 }
 
 message ServiceToken {
@@ -542,6 +555,7 @@ message Conversation {
   int64 info_date = 18;
   string shared_push_token_identifier = 19;
   string local_member_public_key = 20;
+  int64 muted_until = 21;
 }
 
 message ConversationReplicationInfo {
@@ -707,6 +721,15 @@ message AccountUpdate {
   message Request {
     string display_name = 1;
     string avatar_cid = 2 [(gogoproto.moretags) = "gorm:\"column:avatar_cid\"", (gogoproto.customname) = "AvatarCID"];
+  }
+  message Reply {}
+}
+
+message AccountMute {
+  message Request {
+    int64 muted_until = 1;
+    bool unmute = 2;
+    bool mute_forever = 3;
   }
   message Reply {}
 }
@@ -920,6 +943,8 @@ message PushReceivedData {
   protocol.v1.PushReceive.Reply protocol_data = 1;
   Interaction interaction = 2;
   bool already_received = 3;
+  bool account_muted = 4;
+  bool conversation_muted = 5;
 }
 
 message PushReceive {

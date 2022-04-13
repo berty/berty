@@ -212,6 +212,14 @@ export type MessengerMethodsHooks = {
 		called: boolean
 		loading: boolean
 	}
+	useAccountMute: () => {
+		error: any
+		call: (req?: beapi.messenger.AccountMute.IRequest) => void
+		reply: beapi.messenger.AccountMute.IReply | null
+		done: boolean
+		called: boolean
+		loading: boolean
+	}
 	useContactRequest: () => {
 		error: any
 		call: (req?: beapi.messenger.ContactRequest.IRequest) => void
@@ -256,6 +264,14 @@ export type MessengerMethodsHooks = {
 		error: any
 		call: (req?: beapi.messenger.ConversationLoad.IRequest) => void
 		reply: beapi.messenger.ConversationLoad.IReply | null
+		done: boolean
+		called: boolean
+		loading: boolean
+	}
+	useConversationMute: () => {
+		error: any
+		call: (req?: beapi.messenger.ConversationMute.IRequest) => void
+		reply: beapi.messenger.ConversationMute.IReply | null
 		done: boolean
 		called: boolean
 		loading: boolean

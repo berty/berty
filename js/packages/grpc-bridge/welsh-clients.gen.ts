@@ -118,12 +118,14 @@ export interface WelshMessengerServiceClient {
 	conversationJoin: UnaryType<beapi.messenger.MessengerService['conversationJoin']>
 	accountGet: UnaryType<beapi.messenger.MessengerService['accountGet']>
 	accountUpdate: UnaryType<beapi.messenger.MessengerService['accountUpdate']>
+	accountMute: UnaryType<beapi.messenger.MessengerService['accountMute']>
 	contactRequest: UnaryType<beapi.messenger.MessengerService['contactRequest']>
 	contactAccept: UnaryType<beapi.messenger.MessengerService['contactAccept']>
 	interact: UnaryType<beapi.messenger.MessengerService['interact']>
 	conversationOpen: UnaryType<beapi.messenger.MessengerService['conversationOpen']>
 	conversationClose: UnaryType<beapi.messenger.MessengerService['conversationClose']>
 	conversationLoad: UnaryType<beapi.messenger.MessengerService['conversationLoad']>
+	conversationMute: UnaryType<beapi.messenger.MessengerService['conversationMute']>
 	servicesTokenList: ResponseStreamType<beapi.messenger.MessengerService['servicesTokenList']>
 	replicationServiceRegisterGroup: UnaryType<
 		beapi.messenger.MessengerService['replicationServiceRegisterGroup']

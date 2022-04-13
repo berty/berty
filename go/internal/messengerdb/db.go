@@ -1838,3 +1838,31 @@ func (d *DBWrapper) GetInteractionReactionsForEmoji(cid string, emoji string) ([
 	}
 	return reactions, nil
 }
+
+func (d *DBWrapper) MuteConversation(pk string, until int64) error {
+	return d.db.Model(&messengertypes.Conversation{}).Where(&messengertypes.Conversation{PublicKey: pk}).Update("muted_until", until).Error
+}
+
+func (d *DBWrapper) MuteAccount(until int64) error {
+	return d.db.Model(&messengertypes.Account{}).Where("1 = 1").Update("muted_until", until).Error
+}
+
+func (d *DBWrapper) GetMuteStatusForConversation(key string) (accountMuted bool, conversationMuted bool, err error) {
+	var mutedUntil int64
+
+	err = d.db.Model(&messengertypes.Account{}).Where("1 = 1").Pluck("muted_until", &mutedUntil).Error
+	if err != nil {
+		return false, false, errcode.ErrDBRead.Wrap(err)
+	}
+
+	accountMuted = mutedUntil > time.Now().UnixNano()/1000
+
+	err = d.db.Model(&messengertypes.Conversation{}).Where("public_key = ?", key).Pluck("muted_until", &mutedUntil).Error
+	if err != nil {
+		return false, false, errcode.ErrDBRead.Wrap(err)
+	}
+
+	conversationMuted = mutedUntil > time.Now().UnixNano()/1000
+
+	return accountMuted, conversationMuted, nil
+}

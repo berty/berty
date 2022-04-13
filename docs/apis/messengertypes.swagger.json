@@ -43,6 +43,38 @@
         ]
       }
     },
+    "/berty.messenger.v1/MessengerService/AccountMute": {
+      "post": {
+        "operationId": "MessengerService_AccountMute",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1AccountMuteReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1AccountMuteRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MessengerService"
+        ]
+      }
+    },
     "/berty.messenger.v1/MessengerService/AccountUpdate": {
       "post": {
         "operationId": "MessengerService_AccountUpdate",
@@ -292,6 +324,38 @@
             "required": true,
             "schema": {
               "$ref": "#/definitions/v1ConversationLoadRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MessengerService"
+        ]
+      }
+    },
+    "/berty.messenger.v1/MessengerService/ConversationMute": {
+      "post": {
+        "operationId": "MessengerService_ConversationMute",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ConversationMuteReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1ConversationMuteRequest"
             }
           }
         ],
@@ -1724,6 +1788,10 @@
         "device_push_server": {
           "type": "string",
           "format": "byte"
+        },
+        "muted_until": {
+          "type": "string",
+          "format": "int64"
         }
       }
     },
@@ -1933,6 +2001,24 @@
     },
     "v1AccountGetRequest": {
       "type": "object"
+    },
+    "v1AccountMuteReply": {
+      "type": "object"
+    },
+    "v1AccountMuteRequest": {
+      "type": "object",
+      "properties": {
+        "muted_until": {
+          "type": "string",
+          "format": "int64"
+        },
+        "unmute": {
+          "type": "boolean"
+        },
+        "mute_forever": {
+          "type": "boolean"
+        }
+      }
     },
     "v1AccountUpdateReply": {
       "type": "object"
@@ -2187,6 +2273,10 @@
         },
         "local_member_public_key": {
           "type": "string"
+        },
+        "muted_until": {
+          "type": "string",
+          "format": "int64"
         }
       }
     },
@@ -2247,6 +2337,27 @@
       "properties": {
         "options": {
           "$ref": "#/definitions/v1PaginatedInteractionsOptions"
+        }
+      }
+    },
+    "v1ConversationMuteReply": {
+      "type": "object"
+    },
+    "v1ConversationMuteRequest": {
+      "type": "object",
+      "properties": {
+        "group_pk": {
+          "type": "string"
+        },
+        "muted_until": {
+          "type": "string",
+          "format": "int64"
+        },
+        "unmute": {
+          "type": "boolean"
+        },
+        "mute_forever": {
+          "type": "boolean"
         }
       }
     },
@@ -2909,6 +3020,12 @@
           "$ref": "#/definitions/v1Interaction"
         },
         "already_received": {
+          "type": "boolean"
+        },
+        "account_muted": {
+          "type": "boolean"
+        },
+        "conversation_muted": {
           "type": "boolean"
         }
       }

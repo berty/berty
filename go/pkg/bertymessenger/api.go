@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"math"
 	"net"
 	"net/url"
 	"os"
@@ -1450,6 +1451,64 @@ func (svc *service) ConversationLoad(ctx context.Context, request *messengertype
 	}
 
 	return &messengertypes.ConversationLoad_Reply{}, nil
+}
+
+func (svc *service) ConversationMute(ctx context.Context, request *messengertypes.ConversationMute_Request) (*messengertypes.ConversationMute_Reply, error) {
+	if request.MuteForever {
+		request.MutedUntil = math.MaxInt64
+	}
+
+	if (request.Unmute && request.MutedUntil > 0) || (!request.Unmute && request.MutedUntil <= 0) {
+		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("can't mute and unmute a conversation simultaneously"))
+	}
+
+	if request.Unmute {
+		request.MutedUntil = 0
+	}
+
+	if err := svc.db.MuteConversation(request.GroupPK, request.MutedUntil); err != nil {
+		return nil, errcode.ErrInternal.Wrap(err)
+	}
+
+	conversation, err := svc.db.GetConversationByPK(request.GroupPK)
+	if err != nil {
+		return nil, errcode.ErrInternal.Wrap(err)
+	}
+
+	if err := svc.dispatcher.StreamEvent(messengertypes.StreamEvent_TypeConversationUpdated, &messengertypes.StreamEvent_ConversationUpdated{Conversation: conversation}, false); err != nil {
+		return nil, errcode.ErrInternal.Wrap(err)
+	}
+
+	return &messengertypes.ConversationMute_Reply{}, nil
+}
+
+func (svc *service) AccountMute(ctx context.Context, request *messengertypes.AccountMute_Request) (*messengertypes.AccountMute_Reply, error) {
+	if request.MuteForever {
+		request.MutedUntil = math.MaxInt64
+	}
+
+	if (request.Unmute && request.MutedUntil > 0) || (!request.Unmute && request.MutedUntil <= 0) {
+		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("can't mute and unmute a conversation simultaneously"))
+	}
+
+	if request.Unmute {
+		request.MutedUntil = 0
+	}
+
+	if err := svc.db.MuteAccount(request.MutedUntil); err != nil {
+		return nil, errcode.ErrInternal.Wrap(err)
+	}
+
+	account, err := svc.db.GetAccount()
+	if err != nil {
+		return nil, errcode.ErrInternal.Wrap(err)
+	}
+
+	if err := svc.dispatcher.StreamEvent(messengertypes.StreamEvent_TypeAccountUpdated, &messengertypes.StreamEvent_AccountUpdated{Account: account}, false); err != nil {
+		return nil, errcode.TODO.Wrap(err)
+	}
+
+	return &messengertypes.AccountMute_Reply{}, nil
 }
 
 func (svc *service) MediaGetRelated(ctx context.Context, request *messengertypes.MediaGetRelated_Request) (*messengertypes.MediaGetRelated_Reply, error) {

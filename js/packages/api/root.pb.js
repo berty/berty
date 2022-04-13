@@ -1093,6 +1093,14 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   alreadyReceived: {
                     type: "bool",
                     id: 10
+                  },
+                  accountMuted: {
+                    type: "bool",
+                    id: 11
+                  },
+                  conversationMuted: {
+                    type: "bool",
+                    id: 12
                   }
                 },
                 nested: {
@@ -1137,7 +1145,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     type: "string",
                     id: 5
                   },
-                  alreadyReceived: {
+                  muted: {
                     type: "bool",
                     id: 6
                   }
@@ -4534,6 +4542,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     requestType: "AccountUpdate.Request",
                     responseType: "AccountUpdate.Reply"
                   },
+                  AccountMute: {
+                    requestType: "AccountMute.Request",
+                    responseType: "AccountMute.Reply"
+                  },
                   ContactRequest: {
                     requestType: "ContactRequest.Request",
                     responseType: "ContactRequest.Reply"
@@ -4557,6 +4569,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   ConversationLoad: {
                     requestType: "ConversationLoad.Request",
                     responseType: "ConversationLoad.Reply"
+                  },
+                  ConversationMute: {
+                    requestType: "ConversationMute.Request",
+                    responseType: "ConversationMute.Reply"
                   },
                   ServicesTokenList: {
                     requestType: "protocol.v1.ServicesTokenList.Request",
@@ -4715,6 +4731,37 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       options: {
                         type: "PaginatedInteractionsOptions",
                         id: 1
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {}
+                  }
+                }
+              },
+              ConversationMute: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      groupPk: {
+                        type: "string",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "GroupPK"
+                        }
+                      },
+                      mutedUntil: {
+                        type: "int64",
+                        id: 2
+                      },
+                      unmute: {
+                        type: "bool",
+                        id: 3
+                      },
+                      muteForever: {
+                        type: "bool",
+                        id: 4
                       }
                     }
                   },
@@ -5422,6 +5469,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   devicePushServer: {
                     type: "bytes",
                     id: 10
+                  },
+                  mutedUntil: {
+                    type: "int64",
+                    id: 11
                   }
                 }
               },
@@ -5817,6 +5868,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   localMemberPublicKey: {
                     type: "string",
                     id: 20
+                  },
+                  mutedUntil: {
+                    type: "int64",
+                    id: 21
                   }
                 },
                 nested: {
@@ -6294,6 +6349,30 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                           "(gogoproto.moretags)": "gorm:column:avatar_cid",
                           "(gogoproto.customname)": "AvatarCID"
                         }
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {}
+                  }
+                }
+              },
+              AccountMute: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      mutedUntil: {
+                        type: "int64",
+                        id: 1
+                      },
+                      unmute: {
+                        type: "bool",
+                        id: 2
+                      },
+                      muteForever: {
+                        type: "bool",
+                        id: 3
                       }
                     }
                   },
@@ -6844,6 +6923,14 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   alreadyReceived: {
                     type: "bool",
                     id: 3
+                  },
+                  accountMuted: {
+                    type: "bool",
+                    id: 4
+                  },
+                  conversationMuted: {
+                    type: "bool",
+                    id: 5
                   }
                 }
               },

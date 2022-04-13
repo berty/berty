@@ -145,7 +145,7 @@ public class NotificationService extends FirebaseMessagingService {
                     } else {
                         format = bridge.pushDecrypt(data);
                     }
-                    if (!format.getAlreadyReceived()) {
+                    if (!format.getMuted()) {
                         this.createPushNotification(format);
                     }
                 } catch (Exception e) {
