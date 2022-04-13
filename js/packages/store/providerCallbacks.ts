@@ -9,19 +9,14 @@ import {
 	importAccountWithProgress,
 } from './effectableCallbacks'
 import { accountService, storageRemove } from './accountService'
-import { reducerAction } from './types'
 import { setNextAccount, setStateOnBoardingReady } from '@berty/redux/reducers/ui.reducer'
 import {
 	PersistentOptionsKeys,
 	setPersistentOption,
 } from '@berty/redux/reducers/persistentOptions.reducer'
+import store from '@berty/redux/store'
 
-export const importAccount = async (
-	embedded: boolean,
-	dispatch: (arg0: reducerAction) => void,
-	path: string,
-	reduxDispatch: ReturnType<typeof useAppDispatch>,
-) => {
+export const importAccount = async (embedded: boolean, path: string) => {
 	if (!embedded) {
 		return
 	}
@@ -30,9 +25,9 @@ export const importAccount = async (
 	let resp: beapi.account.ImportAccountWithProgress.Reply | null
 
 	try {
-		await closeAccountWithProgress(reduxDispatch)
-		resp = await importAccountWithProgress(path, reduxDispatch)
-		reduxDispatch(
+		await closeAccountWithProgress(store.dispatch)
+		resp = await importAccountWithProgress(path, store.dispatch)
+		store.dispatch(
 			setPersistentOption({
 				type: PersistentOptionsKeys.OnBoardingFinished,
 				payload: {
@@ -53,16 +48,15 @@ export const importAccount = async (
 		throw new Error('no account id returned')
 	}
 
-	await refreshAccountList(embedded, dispatch)
+	await refreshAccountList(embedded)
 
-	reduxDispatch(setNextAccount(resp.accountMetadata.accountId))
+	store.dispatch(setNextAccount(resp.accountMetadata.accountId))
 }
 
-export const updateAccount = async (
-	embedded: boolean,
-	dispatch: (arg0: reducerAction) => void,
-	payload: any,
-) => {
+/**
+ * updates the AccountService account
+ */
+export const updateAccount = async (embedded: boolean, payload: any) => {
 	if (!embedded) {
 		return
 	}
@@ -86,7 +80,7 @@ export const updateAccount = async (
 		return
 	}
 
-	await refreshAccountList(embedded, dispatch)
+	await refreshAccountList(embedded)
 }
 
 export const switchAccount = async (
@@ -109,7 +103,6 @@ export const switchAccount = async (
 
 export const deleteAccount = async (
 	embedded: boolean,
-	dispatch: (arg0: reducerAction) => void,
 	selectedAccount: string | null,
 	reduxDispatch: ReturnType<typeof useAppDispatch>,
 ) => {
@@ -123,7 +116,7 @@ export const deleteAccount = async (
 		// delete account service and account data storage
 		await accountService.deleteAccount({ accountId: selectedAccount })
 		await storageRemove(storageKeyForAccount(selectedAccount))
-		accounts = await refreshAccountList(embedded, dispatch)
+		accounts = await refreshAccountList(embedded)
 	} else {
 		console.warn('state.selectedAccount is null and this should not occur')
 	}

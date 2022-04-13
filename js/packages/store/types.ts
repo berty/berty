@@ -18,16 +18,10 @@ export type MessengerState = {
 	addNotificationListener: (cb: (evt: any) => void) => void
 	removeNotificationListener: (cb: (...args: any[]) => void) => void
 	notificationsInhibitors: NotificationsInhibitor[]
-	accounts: beapi.account.IAccountMetadata[]
 	dispatch: Dispatch<{
 		type: MessengerActions
 		payload?: any
 	}>
-	createNewAccount: (arg0?: beapi.account.INetworkConfig) => Promise<void>
-	importAccount: (arg0: string) => Promise<void>
-	switchAccount: (arg0: string) => Promise<void>
-	updateAccount: (arg0: any) => Promise<void>
-	deleteAccount: () => Promise<void>
 	getUsername: () => Promise<beapi.account.GetUsername.Reply | null>
 	restart: () => Promise<void>
 	addReaction: (

@@ -1,16 +1,17 @@
 import { Platform } from 'react-native'
 
 import beapi from '@berty/api'
-import { persistor, resetAccountStore } from '@berty/redux/store'
+import store, { persistor, resetAccountStore } from '@berty/redux/store'
 import { useAppDispatch } from '@berty/hooks'
 import {
+	setAccounts,
 	setCreatedAccount,
 	setStateStreamDone,
 	setStateStreamInProgress,
 	setStreamError,
 } from '@berty/redux/reducers/ui.reducer'
 
-import { reducerAction, MessengerActions, StreamInProgress } from './types'
+import { StreamInProgress } from './types'
 import { accountService } from './accountService'
 
 /*
@@ -92,7 +93,6 @@ export const importAccountWithProgress = (
 
 export const refreshAccountList = async (
 	embedded: boolean,
-	dispatch: (arg0: reducerAction) => void,
 ): Promise<beapi.account.IAccountMetadata[]> => {
 	try {
 		if (embedded) {
@@ -102,14 +102,14 @@ export const refreshAccountList = async (
 				return []
 			}
 
-			dispatch({ type: MessengerActions.SetAccounts, payload: resp.accounts })
+			store.dispatch(setAccounts(resp.accounts))
 
 			return resp.accounts
 		}
 
 		let accounts = [{ accountId: '0', name: 'remote server account' }]
 
-		dispatch({ type: MessengerActions.SetAccounts, payload: accounts })
+		store.dispatch(setAccounts(accounts))
 
 		return accounts
 	} catch (e) {
@@ -120,7 +120,6 @@ export const refreshAccountList = async (
 
 const createAccount = async (
 	embedded: boolean,
-	dispatch: (arg0: reducerAction) => void,
 	reduxDispatch: ReturnType<typeof useAppDispatch>,
 	config?: beapi.account.INetworkConfig,
 ) => {
@@ -146,7 +145,7 @@ const createAccount = async (
 		throw new Error('no account id returned')
 	}
 
-	await refreshAccountList(embedded, dispatch)
+	await refreshAccountList(embedded)
 	reduxDispatch(
 		setCreatedAccount({
 			accountId: resp.accountMetadata.accountId,
@@ -156,7 +155,6 @@ const createAccount = async (
 
 export const createNewAccount = async (
 	embedded: boolean,
-	dispatch: (arg0: reducerAction) => void,
 	reduxDispatch: ReturnType<typeof useAppDispatch>,
 	config?: beapi.account.INetworkConfig,
 ) => {
@@ -165,7 +163,7 @@ export const createNewAccount = async (
 	}
 
 	try {
-		await createAccount(embedded, dispatch, reduxDispatch, config)
+		await createAccount(embedded, reduxDispatch, config)
 	} catch (e) {
 		console.warn('unable to create account', e)
 		return

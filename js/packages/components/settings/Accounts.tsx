@@ -6,21 +6,27 @@ import beapi from '@berty/api'
 import { useStyles } from '@berty/styles'
 import { ScreenFC, useNavigation } from '@berty/navigation'
 import {
-	useMessengerContext,
 	useThemeColor,
 	pbDateToNum,
 	closeAccountWithProgress,
 	exportAccountToFile,
+	refreshAccountList,
 } from '@berty/store'
 
 import { ButtonSettingV2, Section } from '../shared-components'
-import { selectSelectedAccount, setStateOnBoardingReady } from '@berty/redux/reducers/ui.reducer'
+import {
+	selectAccounts,
+	selectEmbedded,
+	selectSelectedAccount,
+	setStateOnBoardingReady,
+} from '@berty/redux/reducers/ui.reducer'
 import { useDispatch, useSelector } from 'react-redux'
 import { importAccountFromDocumentPicker } from '../pickerUtils'
 import { GenericAvatar } from '../avatars'
 import { UnifiedText } from '../shared-components/UnifiedText'
 import { AccordionV2 } from './Accordion'
 import { withInAppNotification } from 'react-native-in-app-notification'
+import { useSwitchAccount } from '@berty/hooks'
 
 const AccountButton: React.FC<beapi.account.IAccountMetadata> = ({
 	avatarCid,
@@ -29,11 +35,11 @@ const AccountButton: React.FC<beapi.account.IAccountMetadata> = ({
 	accountId,
 	error,
 }) => {
-	const ctx = useMessengerContext()
 	const colors = useThemeColor()
 	const selectedAccount = useSelector(selectSelectedAccount)
 	const selected = selectedAccount === accountId
 	const [{ padding, margin }, { scaleSize }] = useStyles()
+	const switchAccount = useSwitchAccount()
 
 	const heightButton = 50
 
@@ -44,10 +50,10 @@ const AccountButton: React.FC<beapi.account.IAccountMetadata> = ({
 		}
 		setIsHandlingPress(true)
 		if (selectedAccount !== accountId) {
-			return ctx.switchAccount(accountId || '')
+			return switchAccount(accountId || '')
 		}
 		return
-	}, [accountId, ctx, isHandlingPress, selectedAccount])
+	}, [accountId, switchAccount, isHandlingPress, selectedAccount])
 
 	return (
 		<TouchableOpacity
@@ -97,11 +103,16 @@ export const Accounts: ScreenFC<'Settings.Accounts'> = withInAppNotification(
 	({ showNotification }: any) => {
 		const [{}, { scaleSize }] = useStyles()
 		const colors = useThemeColor()
-		const ctx = useMessengerContext()
-		const reduxDispatch = useDispatch()
+		const dispatch = useDispatch()
 		const { navigate } = useNavigation()
 		const { t }: { t: any } = useTranslation()
 		const selectedAccount = useSelector(selectSelectedAccount)
+		const accounts = useSelector(selectAccounts)
+		const embedded = useSelector(selectEmbedded)
+
+		React.useEffect(() => {
+			refreshAccountList(embedded)
+		}, [embedded])
 
 		return (
 			<View style={{ backgroundColor: colors['secondary-background'], flex: 1 }}>
@@ -132,7 +143,7 @@ export const Accounts: ScreenFC<'Settings.Accounts'> = withInAppNotification(
 					)}
 					<Section>
 						<AccordionV2 title={t('settings.accounts.accounts-button')}>
-							{ctx.accounts
+							{[...accounts]
 								.sort((a, b) => pbDateToNum(a.creationDate) - pbDateToNum(b.creationDate))
 								.map(account => {
 									return <AccountButton key={account.accountId} {...account} />
@@ -143,15 +154,15 @@ export const Accounts: ScreenFC<'Settings.Accounts'> = withInAppNotification(
 						<ButtonSettingV2
 							text={t('settings.accounts.create-button')}
 							onPress={async () => {
-								await closeAccountWithProgress(reduxDispatch)
-								reduxDispatch(setStateOnBoardingReady())
+								await closeAccountWithProgress(dispatch)
+								dispatch(setStateOnBoardingReady())
 							}}
 							last={Platform.OS === 'web'}
 						/>
 						{Platform.OS !== 'web' && (
 							<ButtonSettingV2
 								text={t('settings.accounts.import-button')}
-								onPress={async () => await importAccountFromDocumentPicker(ctx)}
+								onPress={async () => await importAccountFromDocumentPicker(embedded)}
 								last
 							/>
 						)}

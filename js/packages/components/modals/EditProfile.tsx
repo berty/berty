@@ -11,8 +11,8 @@ import { Icon, Input } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 
 import { useStyles } from '@berty/styles'
-import { useMessengerClient, useMessengerContext, useThemeColor } from '@berty/store'
-import { useAccount } from '@berty/hooks'
+import { useMessengerClient, useThemeColor } from '@berty/store'
+import { useAccount, useUpdateAccount } from '@berty/hooks'
 import ImagePicker, { ImageOrVideo } from 'react-native-image-crop-picker'
 
 import { AccountAvatar } from '../avatars'
@@ -82,12 +82,12 @@ const initialState: State = {
 }
 
 const EditMyProfile: React.FC = () => {
-	const ctx = useMessengerContext()
 	const colors = useThemeColor()
 	const { t }: any = useTranslation()
 	const client = useMessengerClient()
 	const selectedAccount = useSelector(selectSelectedAccount)
 	const { hide } = useModal()
+	const updateAccount = useUpdateAccount()
 
 	const account = useAccount()
 
@@ -154,7 +154,7 @@ const EditMyProfile: React.FC = () => {
 				// update account in bertymessenger
 				await client?.accountUpdate(update)
 				// update account in bertyaccount
-				await ctx.updateAccount({
+				await updateAccount({
 					accountId: selectedAccount,
 					avatarCid: update.avatarCid,
 				})

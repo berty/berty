@@ -4,20 +4,18 @@ import { Icon } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 
 import { useStyles } from '@berty/styles'
-import {
-	useMessengerContext,
-	closeAccountWithProgress,
-	useThemeColor,
-	pbDateToNum,
-	Maybe,
-} from '@berty/store'
+import { closeAccountWithProgress, useThemeColor, pbDateToNum, Maybe } from '@berty/store'
 import { importAccountFromDocumentPicker } from '@berty/components/pickerUtils'
-import { useAppDispatch } from '@berty/hooks'
+import { useAppDispatch, useAppSelector, useSwitchAccount } from '@berty/hooks'
 import beapi from '@berty/api'
 
 import { GenericAvatar } from '../../avatars'
-import { selectSelectedAccount, setStateOnBoardingReady } from '@berty/redux/reducers/ui.reducer'
-import { useSelector } from 'react-redux'
+import {
+	selectAccounts,
+	selectEmbedded,
+	selectSelectedAccount,
+	setStateOnBoardingReady,
+} from '@berty/redux/reducers/ui.reducer'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 
 const AccountButton: React.FC<{
@@ -70,12 +68,14 @@ const AccountButton: React.FC<{
 }
 
 export const MultiAccount: React.FC<{ onPress: () => void }> = ({ onPress }) => {
-	const ctx = useMessengerContext()
 	const [{ padding }, { scaleSize }] = useStyles()
 	const colors = useThemeColor()
 	const { t } = useTranslation()
 	const dispatch = useAppDispatch()
-	const selectedAccount = useSelector(selectSelectedAccount)
+	const selectedAccount = useAppSelector(selectSelectedAccount)
+	const switchAccount = useSwitchAccount()
+	const accounts = useAppSelector(selectAccounts)
+	const embedded = useAppSelector(selectEmbedded)
 
 	const [isHandlingPress, setIsHandlingPress] = React.useState(false)
 	const handlePress = async (account: beapi.account.IAccountMetadata) => {
@@ -84,7 +84,7 @@ export const MultiAccount: React.FC<{ onPress: () => void }> = ({ onPress }) => 
 		}
 		setIsHandlingPress(true)
 		if (selectedAccount !== account.accountId) {
-			return ctx.switchAccount(account.accountId || '')
+			return switchAccount(account.accountId || '')
 		} else if (selectedAccount === account.accountId && !account.error) {
 			return onPress()
 		}
@@ -103,7 +103,7 @@ export const MultiAccount: React.FC<{ onPress: () => void }> = ({ onPress }) => 
 				contentContainerStyle={{ paddingBottom: 10 }}
 				showsVerticalScrollIndicator={false}
 			>
-				{ctx.accounts
+				{[...accounts]
 					.sort((a, b) => pbDateToNum(a.creationDate) - pbDateToNum(b.creationDate))
 					.map(account => {
 						return (
@@ -156,7 +156,7 @@ export const MultiAccount: React.FC<{ onPress: () => void }> = ({ onPress }) => 
 				/>
 				<AccountButton
 					name={t('main.home.multi-account.import-button')}
-					onPress={() => importAccountFromDocumentPicker(ctx)}
+					onPress={() => importAccountFromDocumentPicker(embedded)}
 					avatar={
 						<View
 							style={{

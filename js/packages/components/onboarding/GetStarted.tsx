@@ -7,7 +7,6 @@ import {
 	GlobalPersistentOptionsKeys,
 	useNotificationsInhibitor,
 	useThemeColor,
-	useMessengerContext,
 } from '@berty/store'
 import { useStyles } from '@berty/styles'
 import { ScreenFC } from '@berty/navigation'
@@ -16,13 +15,15 @@ import Logo from './berty_gradient_square.svg'
 import Button from './Button'
 import { importAccountFromDocumentPicker } from '../pickerUtils'
 import { UnifiedText } from '../shared-components/UnifiedText'
+import { useAppSelector } from '@berty/hooks'
+import { selectEmbedded } from '@berty/redux/reducers/ui.reducer'
 
 export const GetStarted: ScreenFC<'Onboarding.GetStarted'> = ({ navigation: { navigate } }) => {
 	useNotificationsInhibitor(() => true)
 	const [{ margin, padding, text }] = useStyles()
 	const colors = useThemeColor()
-	const { t }: any = useTranslation()
-	const ctx = useMessengerContext()
+	const { t } = useTranslation<'translation', string>()
+	const embedded = useAppSelector(selectEmbedded)
 
 	return (
 		<View
@@ -46,14 +47,14 @@ export const GetStarted: ScreenFC<'Onboarding.GetStarted'> = ({ navigation: { na
 							{ color: colors['background-header'] },
 						]}
 					>
-						{t('onboarding.getstarted.title') as any}
+						{t('onboarding.getstarted.title')}
 					</UnifiedText>
 				</View>
 				<View style={[margin.top.small]}>
 					<UnifiedText
 						style={[padding.horizontal.medium, text.align.center, text.align.bottom, text.italic]}
 					>
-						{t('onboarding.getstarted.desc') as any}
+						{t('onboarding.getstarted.desc')}
 					</UnifiedText>
 				</View>
 				<View style={[margin.top.big]}>
@@ -63,21 +64,21 @@ export const GetStarted: ScreenFC<'Onboarding.GetStarted'> = ({ navigation: { na
 							navigate('Onboarding.CreateAccount')
 						}}
 					>
-						{t('onboarding.getstarted.create-button') as any}
+						{t('onboarding.getstarted.create-button')}
 					</Button>
 					{Platform.OS !== 'web' && (
 						<Button
 							status='secondary'
 							onPress={async () => {
-								importAccountFromDocumentPicker(ctx)
+								await importAccountFromDocumentPicker(embedded)
 							}}
 						>
-							{t('onboarding.getstarted.import-button') as any}
+							{t('onboarding.getstarted.import-button')}
 						</Button>
 					)}
 					{/*
 					<Button status='secondary' onPress={() => {}}>
-						{t('onboarding.getstarted.link-button') as any}
+						{t('onboarding.getstarted.link-button')}
 					</Button>
 					*/}
 				</View>
