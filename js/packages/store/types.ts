@@ -22,7 +22,6 @@ export type MessengerState = {
 		type: MessengerActions
 		payload?: any
 	}>
-	getUsername: () => Promise<beapi.account.GetUsername.Reply | null>
 	restart: () => Promise<void>
 	addReaction: (
 		convPK: string,

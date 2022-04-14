@@ -8,10 +8,10 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import { ScreenFC } from '@berty/navigation'
 import {
-	useMessengerContext,
 	useMountEffect,
 	useNotificationsInhibitor,
 	useThemeColor,
+	accountService,
 } from '@berty/store'
 import { useStyles } from '@berty/styles'
 import { IOSOnlyKeyboardAvoidingView } from '@berty/rnutil/keyboardAvoiding'
@@ -23,7 +23,6 @@ import { UnifiedText } from '../shared-components/UnifiedText'
 import { PermissionType } from '@berty/rnutil/checkPermissions'
 
 const CreateAccountBody = () => {
-	const ctx = useMessengerContext()
 	const [{ padding, margin, border, text }] = useStyles()
 	const colors = useThemeColor()
 	const [defaultName, setDefaultName] = React.useState('')
@@ -32,8 +31,8 @@ const CreateAccountBody = () => {
 	const insets = useSafeAreaInsets()
 
 	useMountEffect(() => {
-		ctx
-			.getUsername()
+		accountService
+			.getUsername({})
 			.then(reply => reply && setDefaultName(reply.username))
 			.catch(err2 => console.warn('Failed to fetch username:', err2))
 	})

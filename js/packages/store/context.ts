@@ -7,9 +7,6 @@ export const initialState: MessengerState = {
 	notificationsInhibitors: [],
 	daemonAddress: '',
 	dispatch: () => {},
-	getUsername: async () => {
-		return null
-	},
 	restart: async () => {},
 	addReaction: () => undefined,
 	removeReaction: () => undefined,

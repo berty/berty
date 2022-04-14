@@ -28,7 +28,6 @@ import {
 	syncAccountLanguage,
 } from './providerEffects'
 import { restart } from './providerCallbacks'
-import { getUsername } from './effectableCallbacks'
 import { reducer } from './reducer'
 
 export const MessengerProvider: React.FC<{ daemonAddress: string }> = ({
@@ -106,10 +105,6 @@ export const MessengerProvider: React.FC<{ daemonAddress: string }> = ({
 		[selectedAccount, embedded, reduxDispatch],
 	)
 
-	const callbackGetUsername = useCallback(() => {
-		return getUsername()
-	}, [])
-
 	const callbackAddNotificationListener = useCallback(
 		cb => {
 			eventEmitter.addListener('notification', cb)
@@ -131,7 +126,6 @@ export const MessengerProvider: React.FC<{ daemonAddress: string }> = ({
 				dispatch,
 				addNotificationListener: callbackAddNotificationListener,
 				removeNotificationListener: callbackRemoveNotificationListener,
-				getUsername: callbackGetUsername,
 				restart: callbackRestart,
 				handledLink,
 				setHandledLink,
