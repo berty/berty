@@ -11,9 +11,15 @@ import mapValues from 'lodash/mapValues'
 import { useSelector } from 'react-redux'
 
 import * as RawComponents from '@berty/components'
-import { useMessengerContext, useThemeColor } from '@berty/store'
+import { useThemeColor } from '@berty/store'
 import { useStyles } from '@berty/styles'
-import { MESSENGER_APP_STATE, selectAppState } from '@berty/redux/reducers/ui.reducer'
+import {
+	MESSENGER_APP_STATE,
+	selectAppState,
+	selectHandledLink,
+	setHandledLink,
+} from '@berty/redux/reducers/ui.reducer'
+import { useAppDispatch } from '@berty/hooks'
 
 import { ScreensParams } from './types'
 
@@ -111,14 +117,15 @@ function useLinking(): [string | null, unknown] {
 const DeepLinkBridge: React.FC = React.memo(() => {
 	const [url, error] = useLinking()
 	const navigation = useNavigation<NavigationProp<ScreensParams>>()
-	const ctx = useMessengerContext()
+	const dispatch = useAppDispatch()
+	const handledLink = useSelector(selectHandledLink)
 
 	useEffect(() => {
-		if (!ctx.handledLink && url && !error && !(url as string).startsWith('berty://services-auth')) {
-			ctx.setHandledLink(true)
+		if (!handledLink && url && !error && !(url as string).startsWith('berty://services-auth')) {
+			dispatch(setHandledLink(true))
 			navigation.navigate('Modals.ManageDeepLink', { type: 'link', value: url })
 		}
-	}, [ctx, error, navigation, url])
+	}, [dispatch, handledLink, error, navigation, url])
 
 	return null
 })
