@@ -4,7 +4,6 @@ import beapi from '@berty/api'
 
 // returns true if the notification should be inhibited
 export type NotificationsInhibitor = (
-	ctx: MessengerState,
 	evt: beapi.messenger.StreamEvent.INotified,
 ) => boolean | 'sound-only'
 
@@ -14,7 +13,6 @@ export type StreamInProgress = {
 }
 
 export type MessengerState = {
-	notificationsInhibitors: NotificationsInhibitor[]
 	dispatch: Dispatch<{
 		type: MessengerActions
 		payload?: any
@@ -57,8 +55,6 @@ export enum MessengerActions {
 	SetStateOnBoardingReady = 'SET_ON_BOARDING_READY',
 	SetAccounts = 'SET_ACCOUNTS',
 	BridgeClosed = 'BRIDGE_CLOSED',
-	AddNotificationInhibitor = 'ADD_NOTIFICATION_INHIBITOR',
-	RemoveNotificationInhibitor = 'REMOVE_NOTIFICATION_INHIBITOR',
 }
 
 export declare type reducerAction = {

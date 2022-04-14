@@ -4,7 +4,7 @@ import { useNavigation } from '@react-navigation/native'
 import beapi from '@berty/api'
 import colors from '@berty/styles/colors.json'
 import darkTheme from '@berty/styles/darktheme-default.json'
-import { useAllConversations, useAllContacts, useConversation } from '@berty/hooks'
+import { useAllConversations, useAllContacts, useConversation, useAppDispatch } from '@berty/hooks'
 import { useStyles } from '@berty/styles'
 
 import { useMessengerContext } from './context'
@@ -18,7 +18,13 @@ import {
 	selectThemeSelected,
 	ThemeType,
 } from '@berty/redux/reducers/theme.reducer'
-import { MESSENGER_APP_STATE, selectAppState, selectClient } from '@berty/redux/reducers/ui.reducer'
+import {
+	addNotificationInhibitor,
+	MESSENGER_APP_STATE,
+	removeNotificationInhibitor,
+	selectAppState,
+	selectClient,
+} from '@berty/redux/reducers/ui.reducer'
 import {
 	PersistentOptionsKeys,
 	selectPersistentOptions,
@@ -184,23 +190,16 @@ export const useDeleteFakeData = () => {
 		})
 }
 
-const useDispatch = () => {
-	const ctx = useMessengerContext()
-	return ctx.dispatch
-}
-
 export const useNotificationsInhibitor = (inhibitor: Maybe<NotificationsInhibitor>) => {
-	const dispatch = useDispatch()
+	const dispatch = useAppDispatch()
 	const navigation = useNavigation()
 	useMountEffect(() => {
 		if (!inhibitor) {
 			return
 		}
 
-		const inhibit = () =>
-			dispatch({ type: MessengerActions.AddNotificationInhibitor, payload: { inhibitor } })
-		const revert = () =>
-			dispatch({ type: MessengerActions.RemoveNotificationInhibitor, payload: { inhibitor } })
+		const inhibit = () => dispatch(addNotificationInhibitor({ inhibitor }))
+		const revert = () => dispatch(removeNotificationInhibitor({ inhibitor }))
 
 		const unsubscribeBlur = navigation.addListener('blur', revert)
 		const unsubscribeFocus = navigation.addListener('focus', inhibit)

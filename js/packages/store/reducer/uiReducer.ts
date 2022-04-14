@@ -43,25 +43,4 @@ export const uiReducerActions: {
 		...oldState,
 		accounts: action.payload,
 	}),
-	[MessengerActions.AddNotificationInhibitor]: (oldState, action) => {
-		if (oldState.notificationsInhibitors.includes(action.payload.inhibitor)) {
-			return oldState
-		}
-		return {
-			...oldState,
-			notificationsInhibitors: [...oldState.notificationsInhibitors, action.payload.inhibitor],
-		}
-	},
-
-	[MessengerActions.RemoveNotificationInhibitor]: (oldState, action) => {
-		if (!oldState.notificationsInhibitors.includes(action.payload.inhibitor)) {
-			return oldState
-		}
-		return {
-			...oldState,
-			notificationsInhibitors: oldState.notificationsInhibitors.filter(
-				inh => inh !== action.payload.inhibitor,
-			),
-		}
-	},
 }
