@@ -1,1 +1,0 @@
-../../../../FlipperKit/iOS/Plugins/FlipperKitPluginUtils/FlipperKitLayoutHelpers/FlipperKitLayoutHelpers/UIColor+SKSonarValueCoder.h

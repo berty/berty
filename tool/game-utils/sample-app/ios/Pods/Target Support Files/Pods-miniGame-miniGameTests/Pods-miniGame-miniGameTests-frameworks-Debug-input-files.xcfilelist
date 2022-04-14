@@ -1,4 +1,0 @@
-${PODS_ROOT}/Target Support Files/Pods-miniGame-miniGameTests/Pods-miniGame-miniGameTests-frameworks.sh
-${PODS_XCFRAMEWORKS_BUILD_DIR}/Flipper-DoubleConversion/double-conversion.framework/double-conversion
-${PODS_XCFRAMEWORKS_BUILD_DIR}/Flipper-Glog/glog.framework/glog
-${PODS_XCFRAMEWORKS_BUILD_DIR}/OpenSSL-Universal/OpenSSL.framework/OpenSSL

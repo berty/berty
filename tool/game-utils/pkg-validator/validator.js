@@ -98,8 +98,8 @@ const manifestSpecs = [
 ];
 
 const iconSpecs = {
-	width: 512,
-	height: 512,
+	width: 256,
+	height: 256,
 	type: "image/png",
 };
 

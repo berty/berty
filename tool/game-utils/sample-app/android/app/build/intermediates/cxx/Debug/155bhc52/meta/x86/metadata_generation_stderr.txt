@@ -1,2 +1,0 @@
-fcntl(): Bad file descriptor
-/Users/clegirar/Library/Android/sdk/ndk/21.4.7075529/build/core/prebuilt-library.mk:45: *** Android NDK: Aborting    .  Stop.

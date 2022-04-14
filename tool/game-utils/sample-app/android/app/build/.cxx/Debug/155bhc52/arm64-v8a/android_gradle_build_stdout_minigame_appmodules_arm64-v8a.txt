@@ -1,6 +1,0 @@
-[arm64-v8a] Compile++      : minigame_appmodules <= OnLoad.cpp
-[arm64-v8a] Compile++      : minigame_appmodules <= MainComponentsRegistry.cpp
-[arm64-v8a] Compile++      : minigame_appmodules <= MainApplicationTurboModuleManagerDelegate.cpp
-[arm64-v8a] Compile++      : minigame_appmodules <= MainApplicationModuleProvider.cpp
-[arm64-v8a] Prebuilt       : libfbjni.so <= /Users/clegirar/.go/src/berty.tech/berty/tool/game-utils/sample-app/android/../node_modules/react-native/ReactAndroid/src/main/jni/first-party/fbjni/jni/arm64-v8a/
-[arm64-v8a] SharedLibrary  : libminigame_appmodules.so

@@ -1,1 +1,0 @@
-../../../../../build/generated/ios/FBReactNativeSpec/FBReactNativeSpec.h
