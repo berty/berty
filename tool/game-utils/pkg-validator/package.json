@@ -1,0 +1,15 @@
+{
+  "dependencies": {},
+  "devDependencies": {
+    "ansi-styles": "5.2.0",
+    "filesize": "^8.0.7",
+    "gzip-js": "^0.3.2",
+    "image-size": "^1.0.1",
+    "image-type": "^4.1.0",
+    "open": "^8.4.0",
+    "read-chunk": "3.2.0",
+    "semver": "^7.3.7",
+    "valid-url": "^1.0.9",
+    "yesno": "^0.3.1"
+  }
+}

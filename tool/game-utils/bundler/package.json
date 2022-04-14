@@ -1,5 +1,7 @@
 {
   "devDependencies": {
+    "ansi-styles": "5.2.0",
+    "filesize": "^8.0.7",
     "gzip-js": "^0.3.2",
     "inliner": "^1.13.1"
   }
