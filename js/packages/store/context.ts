@@ -2,8 +2,6 @@ import { createContext, useContext } from 'react'
 import { MessengerState } from './types'
 
 export const initialState: MessengerState = {
-	addNotificationListener: () => {},
-	removeNotificationListener: () => {},
 	notificationsInhibitors: [],
 	dispatch: () => {},
 	restart: async () => {},
