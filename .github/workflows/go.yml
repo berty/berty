@@ -156,7 +156,7 @@ jobs:
           GO_TEST_OPTS: -test.timeout=1200s -count=1 -race -cover -tags "fts5 sqlite sqlite_unlock_notify" -coverprofile=coverage.txt -covermode=atomic
         run: make go.unittest
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v2.1.0
+        uses: codecov/codecov-action@v3.0.0
         with:
           file: ./go/coverage.txt
           flags: go.unittests
@@ -211,7 +211,7 @@ jobs:
       #    TEST_SPEED: any
       #  run: go.exe test ./... -buildmode=exe -v -timeout=1200s -count=1 -tags "fts5 sqlite sqlite_unlock_notify" -race -cover -coverprofile=coverage.txt -covermode=atomic
       #- name: Upload coverage to Codecov
-      #  uses: codecov/codecov-action@v2.1.0
+      #  uses: codecov/codecov-action@v3.0.0
       #  with:
       #    file: ./coverage.txt
       #    flags: unittests
@@ -274,7 +274,7 @@ jobs:
           GO_TEST_OPTS: -test.timeout=1200s -count=1 -race -cover -tags "fts5 sqlite sqlite_unlock_notify" -coverprofile=coverage.txt -covermode=atomic
         run: make go.unittest
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v2.1.0
+        uses: codecov/codecov-action@v3.0.0
         with:
           file: ./go/coverage.txt
           flags: go.unittests
