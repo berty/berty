@@ -93,7 +93,7 @@ const ScanBody: FC<{ visible: boolean }> = ({ visible = true }) => {
 			{visible && (
 				<Camera
 					onBarCodeScanned={({ data, type }) => {
-						if ((type as string) === 'qr') {
+						if (type === BarCodeScanner.Constants.BarCodeType.qr) {
 							// I would like to use binary mode in QR but this scanner seems to not support it, extended tests were done
 							navigation.navigate('Modals.ManageDeepLink', { type: 'qr', value: data })
 							Vibration.vibrate(1000)
