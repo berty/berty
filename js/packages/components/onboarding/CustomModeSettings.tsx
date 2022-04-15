@@ -13,9 +13,9 @@ import { Icon } from '@ui-kitten/components'
 
 import beapi from '@berty/api'
 import { ScreenFC, useNavigation } from '@berty/navigation'
-import { accountService, useMessengerContext, useMountEffect, useThemeColor } from '@berty/store'
+import { accountService, useMountEffect, useThemeColor } from '@berty/store'
 import { useStyles } from '@berty/styles'
-import { useAppDispatch, useAppSelector } from '@berty/hooks'
+import { useAppDispatch, useAppSelector, useCreateNewAccount } from '@berty/hooks'
 import {
 	addToBootstrap,
 	addToRendezvous,
@@ -527,11 +527,11 @@ const CustomConfig: React.FC<{ accordionRefs: AccordionRefsType }> = ({ accordio
 const ApplyChanges: React.FC = () => {
 	const [{ padding, border, text }] = useStyles()
 	const colors = useThemeColor()
-	const ctx = useMessengerContext()
 	const [isPressed, setIsPressed] = React.useState<boolean>(false)
 	const { t } = useTranslation()
 	const currentNetworkConfig = useAppSelector(selectCurrentNetworkConfig)
 	const parsedLocalNetworkConfig = useAppSelector(selectParsedLocalNetworkConfig)
+	const createNewAccount = useCreateNewAccount()
 
 	return (
 		<View style={{ alignSelf: 'center', flex: 1 }}>
@@ -540,7 +540,7 @@ const ApplyChanges: React.FC = () => {
 					onPress={async () => {
 						if (currentNetworkConfig) {
 							setIsPressed(true)
-							await ctx.createNewAccount(parsedLocalNetworkConfig)
+							await createNewAccount(parsedLocalNetworkConfig)
 						}
 					}}
 					style={[

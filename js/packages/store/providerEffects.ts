@@ -114,7 +114,7 @@ const initBridge = async () => {
 export const initialLaunch = async (dispatch: (arg0: reducerAction) => void, embedded: boolean) => {
 	await initBridge()
 	const f = async () => {
-		const accounts = await refreshAccountList(embedded, dispatch)
+		const accounts = await refreshAccountList(embedded)
 
 		if (Object.keys(accounts).length > 0) {
 			let accountSelected: any = null
@@ -441,7 +441,6 @@ export const updateAccountsPreReady = async (
 	account: beapi.messenger.IAccount | null | undefined,
 	protocolClient: ServiceClientType<beapi.protocol.ProtocolService> | null,
 	embedded: boolean,
-	dispatch: (arg0: reducerAction) => void,
 ) => {
 	if (appState !== MESSENGER_APP_STATE.PRE_READY) {
 		return
@@ -452,7 +451,7 @@ export const updateAccountsPreReady = async (
 	if (displayName) {
 		await client?.accountUpdate({ displayName }).catch(err => console.error(err))
 		// update account in bertyaccount
-		await updateAccount(embedded, dispatch, {
+		await updateAccount(embedded, {
 			accountName: displayName,
 			accountId: selectedAccount,
 			publicKey: account?.publicKey,
@@ -512,7 +511,7 @@ export const deletingStorage = (
 		if (selectedAccount !== null) {
 			await accountService.deleteAccount({ accountId: selectedAccount })
 			await storageRemove(storageKeyForAccount(selectedAccount))
-			await refreshAccountList(embedded, dispatch)
+			await refreshAccountList(embedded)
 		} else {
 			console.warn('state.selectedAccount is null and this should not occur')
 		}

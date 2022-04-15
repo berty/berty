@@ -5,9 +5,10 @@ import { useTranslation } from 'react-i18next'
 import { useNavigation as useReactNavigation } from '@react-navigation/core'
 
 import { useStyles } from '@berty/styles'
-import { useMessengerContext, useThemeColor } from '@berty/store'
+import { useThemeColor } from '@berty/store'
 import { ScreenFC } from '@berty/navigation'
 import { UnifiedText } from '../shared-components/UnifiedText'
+import { useDeleteAccount } from '@berty/hooks'
 
 const useStylesDeleteAccount = () => {
 	const [{ width, height, border, text, padding, margin }] = useStyles()
@@ -104,7 +105,7 @@ const DeleteAccountError: React.FC<{ error: string }> = ({ error }) => {
 const DELETE_STR = 'delete'
 
 const DeleteAccountContent: React.FC<{}> = () => {
-	const { deleteAccount } = useMessengerContext()
+	const deleteAccount = useDeleteAccount()
 	const _styles = useStylesDeleteAccount()
 	const [{ row, margin, border, padding, text, column }] = useStyles()
 	const colors = useThemeColor()

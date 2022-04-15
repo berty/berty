@@ -22,6 +22,7 @@ import {
 	selectStreamInProgress,
 } from '@berty/redux/reducers/ui.reducer'
 import { UnifiedText } from './shared-components/UnifiedText'
+import { useDeleteAccount } from '@berty/hooks/accounts.hooks'
 
 export const LoaderDots: React.FC = () => {
 	const colors = useThemeColor()
@@ -91,10 +92,11 @@ const StreamInProgressCmp: React.FC<{}> = () => {
 const gutter = 50
 
 export const StreamGate: React.FC = ({ children }) => {
-	const { daemonAddress, dispatch, deleteAccount, restart } = useMessengerContext()
+	const { daemonAddress, dispatch, restart } = useMessengerContext()
 	const streamInProgress = useSelector(selectStreamInProgress)
 	const embedded = useSelector(selectEmbedded)
 	const streamError = useSelector(selectStreamError)
+	const deleteAccount = useDeleteAccount()
 
 	const [newAddress, setNewAddress] = React.useState(daemonAddress)
 	const colors = useThemeColor()

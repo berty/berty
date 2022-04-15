@@ -4,35 +4,31 @@ import React from 'react'
 import { ActivityIndicator, StatusBar, View } from 'react-native'
 
 import { ScreenFC, useNavigation } from '@berty/navigation'
-import {
-	accountService,
-	useMessengerContext,
-	useNotificationsInhibitor,
-	useThemeColor,
-} from '@berty/store'
+import { accountService, useNotificationsInhibitor, useThemeColor } from '@berty/store'
 import { useStyles } from '@berty/styles'
 
 import OnboardingWrapper from './OnboardingWrapper'
 import { Icon } from '@ui-kitten/components'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { UnifiedText } from '../shared-components/UnifiedText'
+import { useCreateNewAccount } from '@berty/hooks'
 
 const DefaultModeBody: React.FC = () => {
-	const ctx = useMessengerContext()
 	const { goBack } = useNavigation()
 	const colors = useThemeColor()
 	const [{ padding, border, margin, text }, { scaleSize }] = useStyles()
 	const [isPressed, setIsPressed] = React.useState<boolean>(false)
 	const { t }: { t: any } = useTranslation()
+	const createNewAccount = useCreateNewAccount()
 
 	const onPress = React.useCallback(async () => {
 		// with an empty accountId the function returns default config
 		const defaultConfig = await accountService.networkConfigGet({ accountId: '' })
 		if (defaultConfig.currentConfig) {
 			setIsPressed(true)
-			await ctx.createNewAccount(defaultConfig.currentConfig)
+			await createNewAccount(defaultConfig.currentConfig)
 		}
-	}, [ctx])
+	}, [createNewAccount])
 
 	return (
 		<View style={[{ flex: 1 }]}>

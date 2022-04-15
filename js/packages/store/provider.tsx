@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux'
 
 import { useAppDispatch, useAppSelector, useAccount, useConversationsDict } from '@berty/hooks'
 import { selectAccountLanguage } from '@berty/redux/reducers/accountSettings.reducer'
-import beapi from '@berty/api'
 import {
 	selectAppState,
 	selectClearClients,
@@ -28,14 +27,8 @@ import {
 	updateAccountsPreReady,
 	syncAccountLanguage,
 } from './providerEffects'
-import {
-	importAccount,
-	updateAccount,
-	switchAccount,
-	deleteAccount,
-	restart,
-} from './providerCallbacks'
-import { createNewAccount, getUsername } from './effectableCallbacks'
+import { restart } from './providerCallbacks'
+import { getUsername } from './effectableCallbacks'
 import { reducer } from './reducer'
 
 export const MessengerProvider: React.FC<{ daemonAddress: string }> = ({
@@ -97,15 +90,7 @@ export const MessengerProvider: React.FC<{ daemonAddress: string }> = ({
 	const account = useAccount()
 
 	useEffect(() => {
-		updateAccountsPreReady(
-			appState,
-			client,
-			selectedAccount,
-			account,
-			protocolClient,
-			embedded,
-			dispatch,
-		)
+		updateAccountsPreReady(appState, client, selectedAccount, account, protocolClient, embedded)
 	}, [appState, client, selectedAccount, account, protocolClient, embedded, dispatch])
 
 	useEffect(() => {
@@ -116,35 +101,9 @@ export const MessengerProvider: React.FC<{ daemonAddress: string }> = ({
 		return deletingStorage(appState, dispatch, embedded, selectedAccount)
 	}, [appState, selectedAccount, embedded])
 
-	const callbackImportAccount = useCallback(
-		(path: string) => importAccount(embedded, dispatch, path, reduxDispatch),
-		[embedded, reduxDispatch],
-	)
-
 	const callbackRestart = useCallback(
 		() => restart(embedded, selectedAccount, reduxDispatch),
 		[selectedAccount, embedded, reduxDispatch],
-	)
-
-	const callbackDeleteAccount = useCallback(
-		() => deleteAccount(embedded, dispatch, selectedAccount, reduxDispatch),
-		[embedded, selectedAccount, reduxDispatch],
-	)
-
-	const callbackSwitchAccount = useCallback(
-		(account: string) => switchAccount(embedded, account, reduxDispatch),
-		[embedded, reduxDispatch],
-	)
-
-	const callbackCreateNewAccount = useCallback(
-		(newConfig?: beapi.account.INetworkConfig) =>
-			createNewAccount(embedded, dispatch, reduxDispatch, newConfig),
-		[embedded, reduxDispatch],
-	)
-
-	const callbackUpdateAccount = useCallback(
-		(payload: any) => updateAccount(embedded, dispatch, payload),
-		[embedded],
 	)
 
 	const callbackGetUsername = useCallback(() => {
@@ -172,11 +131,6 @@ export const MessengerProvider: React.FC<{ daemonAddress: string }> = ({
 				dispatch,
 				addNotificationListener: callbackAddNotificationListener,
 				removeNotificationListener: callbackRemoveNotificationListener,
-				createNewAccount: callbackCreateNewAccount,
-				importAccount: callbackImportAccount,
-				switchAccount: callbackSwitchAccount,
-				updateAccount: callbackUpdateAccount,
-				deleteAccount: callbackDeleteAccount,
 				getUsername: callbackGetUsername,
 				restart: callbackRestart,
 				handledLink,
