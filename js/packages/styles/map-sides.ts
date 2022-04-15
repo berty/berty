@@ -6,11 +6,11 @@ import mem from 'mem'
 import { SizesDeclaration, ScaleSizes } from './types'
 import { initialScaleSize } from './constant'
 
-export const mapSideSize = (type: string, side: string, value: number): any => ({
+const mapSideSize = (type: string, side: string, value: number): any => ({
 	[Case.camel(`${type}_${side}`)]: value,
 })
 
-export const mapSideSizes = (decl: SizesDeclaration<number>, type: string, side: string): any => ({
+const mapSideSizes = (decl: SizesDeclaration<number>, type: string, side: string): any => ({
 	...StyleSheet.create({
 		tiny: mapSideSize(type, side, decl.tiny),
 		small: mapSideSize(type, side, decl.small),

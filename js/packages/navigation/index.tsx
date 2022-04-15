@@ -1,3 +1,3 @@
 export * from './hook'
-export * from './types'
+export type { ScreenFC } from './types'
 export * from './rootRef'

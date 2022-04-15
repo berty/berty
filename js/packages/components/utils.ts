@@ -4,7 +4,6 @@ import emojiSource from 'emoji-datasource'
 import 'string.fromcodepoint'
 
 import { WelshProtocolServiceClient } from '@berty/grpc-bridge/welsh-clients.gen'
-import { useEffect, useRef } from 'react'
 import { Emoji } from '@berty/styles/types'
 
 let cache: { cid: string; prom: Promise<string> }[] = []
@@ -72,7 +71,7 @@ export const getMediaTypeFromMedias = (
 
 export const emojis: Emoji[] = emojiSource
 
-export const toEmoji = (code: any) => {
+const toEmoji = (code: any) => {
 	return String.fromCodePoint(...code.split('-').map((u: string) => '0x' + u))
 }
 
@@ -82,23 +81,4 @@ export const getEmojiByName = (name: string) => {
 		return
 	}
 	return toEmoji(requiredSource?.unified)
-}
-
-export const useTimeout = (callback: () => void, delay: number | null) => {
-	const savedCallback = useRef(callback)
-
-	// Remember the latest callback if it changes.
-	useEffect(() => {
-		savedCallback.current = callback
-	}, [callback])
-
-	// Set up the timeout.
-	useEffect(() => {
-		// Don't schedule if no delay is specified.
-		if (delay === null) {
-			return
-		}
-		const id = setTimeout(() => savedCallback.current(), delay)
-		return () => clearTimeout(id)
-	}, [delay])
 }

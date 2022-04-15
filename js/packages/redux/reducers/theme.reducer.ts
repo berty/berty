@@ -37,11 +37,11 @@ export type ThemeType = {
 	shadow: string
 	'secondary-background'?: string
 }
-export type ThemeDefinition = { colors: ThemeType }
+type ThemeDefinition = { colors: ThemeType }
 
-export type ThemeCollectionType = Partial<Record<AVAILABLE_THEMES | string, ThemeDefinition>>
+type ThemeCollectionType = Partial<Record<AVAILABLE_THEMES | string, ThemeDefinition>>
 
-export type ThemeState = {
+type ThemeState = {
 	selected: keyof AVAILABLE_THEMES | string
 	collection: ThemeCollectionType
 	isDark: boolean
@@ -152,14 +152,7 @@ const slice = createSlice({
 	},
 })
 
-export const {
-	toggleDarkTheme,
-	setTheme,
-	randomizeTheme,
-	saveTheme,
-	importTheme,
-	deleteAddedThemes,
-	resetTheme,
-} = slice.actions
+export const { setTheme, randomizeTheme, saveTheme, importTheme, deleteAddedThemes, resetTheme } =
+	slice.actions
 
 export default makeRoot(slice.reducer)

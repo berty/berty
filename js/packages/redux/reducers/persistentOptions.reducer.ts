@@ -17,7 +17,7 @@ export enum PersistentOptionsKeys {
 	ProfileNotification = 'profileNotification',
 }
 
-export type PersistentOptionsNotifications = {
+type PersistentOptionsNotifications = {
 	enable: boolean
 }
 
@@ -30,27 +30,15 @@ export type Suggestion = {
 	icon: string
 }
 
-export type PersistentOptionsSuggestions = {
+type PersistentOptionsSuggestions = {
 	[key: string]: Suggestion
 }
 
-export type PersistentOptionsBLE = {
+type PersistentOptionsDebug = {
 	enable: boolean
 }
 
-export type PersistentOptionsMC = {
-	enable: boolean
-}
-
-export type PersistentOptionsNearby = {
-	enable: boolean
-}
-
-export type PersistentOptionsDebug = {
-	enable: boolean
-}
-
-export type PersistentOptionsLog = {
+type PersistentOptionsLog = {
 	format: string
 }
 
@@ -63,30 +51,26 @@ export type Configuration = {
 	color: string
 }
 
-export type PersistentOptionsConfigurations = { [key: string]: Configuration }
+type PersistentOptionsConfigurations = { [key: string]: Configuration }
 
-export type PersistentOptionsPreset = {
-	value: 'performance' | 'fullAnonymity'
-}
-
-export type PersistentOptionsLogFilters = {
+type PersistentOptionsLogFilters = {
 	format: string
 }
 
-export type PersistentOptionsTyberHost = {
+type PersistentOptionsTyberHost = {
 	address: string
 }
 
-export type PersistentOptionsOnBoardingFinished = {
+type PersistentOptionsOnBoardingFinished = {
 	isFinished: boolean
 }
 
 export const UpdatesProfileNotification = 'updates'
-export type PersistentOptionsProfileNotification = {
+type PersistentOptionsProfileNotification = {
 	[UpdatesProfileNotification]: number
 }
 
-export type PersistentOptionsUpdate =
+type PersistentOptionsUpdate =
 	| {
 			type: typeof PersistentOptionsKeys.Notifications
 			payload: Partial<PersistentOptionsNotifications>

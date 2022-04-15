@@ -13,7 +13,7 @@ import Avatar from './Buck_Berty_Icon_Card.svg'
 import { useStylesDefaultModal } from './AddBot'
 import { UnifiedText } from '../shared-components/UnifiedText'
 
-export const ThemeColorBody: React.FC<{ closeModal: () => void }> = ({ closeModal }) => {
+const ThemeColorBody: React.FC<{ closeModal: () => void }> = ({ closeModal }) => {
 	const [themeName, setThemeName] = React.useState<string>('')
 	const [{ row, text, margin, padding, border, opacity }, { scaleHeight, scaleSize }] = useStyles()
 	const colors = useThemeColor()
@@ -198,5 +198,3 @@ export const ThemeColorName: React.FC<{ closeModal: () => void }> = ({ closeModa
 		</View>
 	)
 }
-
-export default ThemeColorName

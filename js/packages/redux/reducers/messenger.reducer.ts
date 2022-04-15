@@ -78,7 +78,7 @@ const getEntitiesInitialState = () => ({
 	medias: mediasAdapter.getInitialState(),
 })
 
-export type MessengerState = ReturnType<typeof getEntitiesInitialState> & {
+type MessengerState = ReturnType<typeof getEntitiesInitialState> & {
 	account: beapi.messenger.IAccount
 	initialListComplete: boolean
 }
@@ -95,7 +95,7 @@ const initialState: MessengerState = {
  *
  */
 
-export const sliceName = 'messenger'
+const sliceName = 'messenger'
 
 const makeRoot = <T>(val: T) => ({
 	[sliceName]: val,
@@ -359,11 +359,11 @@ export const selectConversationMembersDict = (state: LocalRootState, convPk: str
 	return membersSelectors.selectEntities(bucket?.members || initialMembers)
 }
 
-export const selectConversationMembers = (state: LocalRootState, convPk: string) => {
-	const slice = selectSlice(state)
-	const bucket = membersBucketsSelectors.selectById(slice.membersBuckets, convPk)
-	return membersSelectors.selectAll(bucket?.members || initialMembers)
-}
+// export const selectConversationMembers = (state: LocalRootState, convPk: string) => {
+// 	const slice = selectSlice(state)
+// 	const bucket = membersBucketsSelectors.selectById(slice.membersBuckets, convPk)
+// 	return membersSelectors.selectAll(bucket?.members || initialMembers)
+// }
 
 export const selectMember = (state: LocalRootState, convPk: string, memberPk: string) => {
 	const slice = selectSlice(state)

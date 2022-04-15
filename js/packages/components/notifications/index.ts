@@ -20,5 +20,3 @@ const notifications = {
 export default notifications
 
 export { Basic as DefaultNotification }
-
-export type NotificationKey = keyof typeof notifications

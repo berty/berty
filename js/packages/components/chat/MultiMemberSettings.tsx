@@ -233,7 +233,7 @@ const MultiMemberSettingsBody: React.FC<{
 									if (Platform.OS === 'web') {
 										Clipboard.setString(link)
 									} else {
-										await Share.share({ url: link })
+										await Share.share({ url: link, message: link })
 									}
 								} catch (e) {
 									console.error(e)

@@ -20,7 +20,7 @@ import Logo from './main/1_berty_picto.svg'
 import { useSelector } from 'react-redux'
 import { UnifiedText } from './shared-components/UnifiedText'
 
-export type AvatarStyle = Omit<
+type AvatarStyle = Omit<
 	ViewStyle,
 	'borderRadius' | 'width' | 'height' | 'alignItems' | 'justifyContent'
 >
@@ -185,7 +185,7 @@ export const AccountAvatar: React.FC<{
 	)
 })
 
-export const NameAvatar: React.FC<{
+const NameAvatar: React.FC<{
 	colorSeed: Maybe<string>
 	size: number
 	style?: AvatarStyle

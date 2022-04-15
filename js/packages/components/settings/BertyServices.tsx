@@ -103,5 +103,3 @@ export const BertyServices: ScreenFC<'Settings.BertyServices'> = ({ navigation: 
 		</OnboardingWrapper>
 	)
 }
-
-export default BertyServices

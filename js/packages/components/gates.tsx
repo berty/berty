@@ -15,11 +15,8 @@ import { useStyles } from '@berty/styles'
 import source from '@berty/assets/loader_dots.gif'
 import { useSelector } from 'react-redux'
 import {
-	MESSENGER_APP_STATE,
-	selectAppState,
 	selectEmbedded,
 	selectMessengerisClosing,
-	selectMessengerIsDeletingState,
 	selectMessengerIsReadyingBasics,
 	selectStreamError,
 	selectStreamInProgress,
@@ -169,45 +166,4 @@ export const ListGate: React.FC = ({ children }) => {
 		)
 	}
 	return <LoaderDots />
-}
-
-const DeleteProgressScreen = () => {
-	const appState = useSelector(selectAppState)
-	let text = 'Unknown state'
-	switch (appState) {
-		case MESSENGER_APP_STATE.DELETING_CLOSING_DAEMON:
-			text = 'Stopping node..'
-			break
-		case MESSENGER_APP_STATE.DELETING_CLEARING_STORAGE:
-			text = 'Clearing storage..'
-			break
-	}
-
-	return (
-		<View
-			style={[
-				{
-					padding: gutter,
-					alignItems: 'center',
-					justifyContent: 'center',
-					paddingBottom: 30,
-					height: '100%',
-					width: '100%',
-				},
-			]}
-		>
-			<UnifiedText>{text}</UnifiedText>
-			<ActivityIndicator style={{ marginTop: gutter }} size='large' />
-		</View>
-	)
-}
-
-export const DeleteGate: React.FC = ({ children }) => {
-	const isDeletingState = useSelector(selectMessengerIsDeletingState)
-
-	if (isDeletingState) {
-		return <DeleteProgressScreen />
-	} else {
-		return <>{children}</>
-	}
 }

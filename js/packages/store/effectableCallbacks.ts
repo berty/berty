@@ -118,7 +118,7 @@ export const refreshAccountList = async (
 	}
 }
 
-export const createAccount = async (
+const createAccount = async (
 	embedded: boolean,
 	dispatch: (arg0: reducerAction) => void,
 	reduxDispatch: ReturnType<typeof useAppDispatch>,

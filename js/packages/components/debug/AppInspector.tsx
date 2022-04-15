@@ -25,7 +25,7 @@ import { UnifiedText } from '../shared-components/UnifiedText'
 
 const { RootDir } = NativeModules
 
-export const accountService = Service(beapi.account.AccountService, rpcBridge, null)
+const accountService = Service(beapi.account.AccountService, rpcBridge, null)
 
 const styles = StyleSheet.create({
 	safeViewContainer: {

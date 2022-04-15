@@ -16,7 +16,7 @@ import { isTablet } from '@berty/rnutil/constants'
 import { getMediaTypeFromMedias } from '../../utils'
 import { UnifiedText } from '../../shared-components/UnifiedText'
 
-export const ReplyMessageBar: React.FC<{ convPK: string }> = ({ convPK }) => {
+const ReplyMessageBar: React.FC<{ convPK: string }> = ({ convPK }) => {
 	const [{ border, text }] = useStyles()
 	const colors = useThemeColor()
 	const { t } = useTranslation()

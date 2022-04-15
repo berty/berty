@@ -340,5 +340,3 @@ export const Home: ScreenFC<'Main.Home'> = ({ navigation: { navigate } }) => {
 		</View>
 	)
 }
-
-export default Home

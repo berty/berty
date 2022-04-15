@@ -184,5 +184,3 @@ export const SetupFinished: ScreenFC<'Onboarding.SetupFinished'> = () => {
 		</OnboardingWrapper>
 	)
 }
-
-export default SetupFinished

@@ -87,7 +87,7 @@ const useFonts = () => {
 	}
 }
 
-export const App: React.FC = () => {
+const App: React.FC = () => {
 	const { isFontLoaded } = useFonts()
 
 	useMountEffect(() => {

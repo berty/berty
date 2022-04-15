@@ -253,5 +253,3 @@ export const ManageGroupInvitation: React.FC<{
 		</View>
 	)
 }
-
-export default ManageGroupInvitation

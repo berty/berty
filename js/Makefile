@@ -60,6 +60,7 @@ help:
 	@echo "  ios.release          Launch iOS app in release mode          IOS_DEVICE=<virtual/real device>"
 	@echo "  lint                 Run eslint"
 	@echo "  lint.fix             Run eslint and fix errors"
+	@echo "  js.unused_exports    Run ts-unused-exports"
 	@echo "  metro.start          Start React-Native Metro (app debug)"
 	@echo "  regenerate           Clean and generate Protobuf files"
 	@echo "  test                 Run tests"
@@ -169,6 +170,13 @@ lint.fix: node_modules
 	echo '*.gen.*' >> .eslintignore
 	npx eslint --cache --quiet --ext=.js,.jsx,.ts,.tsx --fix .
 	npx tsc # check static typing
+
+#### Look for js Unused exports
+
+.PHONY: js.unused_exports
+js.unused_exports: node_modules
+	$(call check-program, npx)
+	npx ts-unused-exports ./tsconfig.json --excludePathsFromReport="grpc-bridge;go-bridge;api;polyfill" --ignoreTestFiles --ignoreFiles=.*gen
 
 ###################
 # Build/Run rules #

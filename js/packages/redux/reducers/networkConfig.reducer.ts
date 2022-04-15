@@ -14,14 +14,14 @@ const makeRoot = <T>(val: T) => ({
 	[sliceName]: val,
 })
 
-export type ConfigListType = {
+type ConfigListType = {
 	url: string
 	alias: string | null
 	isEnabled: boolean
 	isEditable: boolean
 }
 
-export type NetworkConfigState = {
+type NetworkConfigState = {
 	currentConfig: beapi.account.INetworkConfig
 	blePerm: PermissionStatus
 	bootstrap: ConfigListType[]

@@ -49,7 +49,7 @@ export const useStylesDefaultModal = () => {
 	}
 }
 
-export const AddBotBody: React.FC<{
+const AddBotBody: React.FC<{
 	displayName: string
 	link: string
 	closeModal: () => void
@@ -270,5 +270,3 @@ export const AddBot: React.FC<{ displayName: string; link: string; closeModal: (
 		</View>
 	)
 }
-
-export default AddBot

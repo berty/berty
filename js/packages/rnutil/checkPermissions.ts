@@ -20,7 +20,7 @@ export enum PermissionType {
 	gallery = 'gallery',
 }
 
-export const permissionsByDevice: Record<string, Permission | undefined> = {
+const permissionsByDevice: Record<string, Permission | undefined> = {
 	proximity: Platform.select({
 		ios: PERMISSIONS?.IOS?.BLUETOOTH_PERIPHERAL,
 		android: PERMISSIONS?.ANDROID?.ACCESS_FINE_LOCATION,

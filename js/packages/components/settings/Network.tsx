@@ -138,7 +138,7 @@ const Proximity: React.FC = () => {
 	)
 }
 
-export const NetworkBody: React.FC = () => {
+const NetworkBody: React.FC = () => {
 	const [{}, { scaleSize }] = useStyles()
 	const colors = useThemeColor()
 	const selectedAccount = useSelector(selectSelectedAccount)

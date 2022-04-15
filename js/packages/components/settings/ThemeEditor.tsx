@@ -13,7 +13,7 @@ import { withInAppNotification } from 'react-native-in-app-notification'
 
 import { ButtonSetting } from '../shared-components'
 import { DropDownPicker } from '../shared-components/DropDownPicker'
-import ThemeColorName from '../modals/ThemeColorName'
+import { ThemeColorName } from '../modals/ThemeColorName'
 import { useDispatch, useSelector } from 'react-redux'
 import {
 	deleteAddedThemes,

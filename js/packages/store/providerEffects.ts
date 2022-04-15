@@ -21,7 +21,6 @@ import {
 
 import { accountService, convertMAddr, storageGet, storageRemove } from './accountService'
 import { closeAccountWithProgress, refreshAccountList } from './effectableCallbacks'
-import ExternalTransport from './externalTransport'
 import { updateAccount } from './providerCallbacks'
 import { requestAndPersistPushToken } from './services'
 import {
@@ -55,7 +54,7 @@ import {
 	PersistentOptionsKeys,
 } from '@berty/redux/reducers/persistentOptions.reducer'
 
-export const openAccountWithProgress = async (
+const openAccountWithProgress = async (
 	bridgeOpts: GoBridgeOpts,
 	selectedAccount: string | null,
 ) => {
@@ -98,7 +97,7 @@ export const openAccountWithProgress = async (
 	}
 }
 
-export const initBridge = async () => {
+const initBridge = async () => {
 	try {
 		console.log('bridge methods: ', Object.keys(GoBridge))
 		await GoBridge.initBridge()
@@ -281,17 +280,6 @@ export const openingClients = async (
 
 	console.log('starting stream')
 
-	let rpc
-	if (embedded) {
-		rpc = rpcBridge
-	} else {
-		const opts = {
-			transport: ExternalTransport(),
-			host: daemonAddress,
-		}
-		rpc = rpcWeb(opts)
-	}
-
 	let messengerClient, protocolClient
 
 	if (Platform.OS === 'web') {
@@ -318,8 +306,12 @@ export const openingClients = async (
 			rpcWeb(opts),
 		) as unknown as WelshMessengerServiceClient
 	} else {
-		messengerClient = Service(beapi.messenger.MessengerService, rpc, logger.create('MESSENGER'))
-		protocolClient = Service(beapi.protocol.ProtocolService, rpc, logger.create('PROTOCOL'))
+		messengerClient = Service(
+			beapi.messenger.MessengerService,
+			rpcBridge,
+			logger.create('MESSENGER'),
+		)
+		protocolClient = Service(beapi.protocol.ProtocolService, rpcBridge, logger.create('PROTOCOL'))
 	}
 
 	if (Platform.OS === 'ios' || Platform.OS === 'android') {

@@ -10,7 +10,7 @@ import { ServiceClientType } from '@berty/grpc-bridge/welsh-clients.gen'
  *
  */
 
-export type UiState = {
+type UiState = {
 	appState: MESSENGER_APP_STATE[keyof MESSENGER_APP_STATE]
 	selectedAccount: string | null
 	nextSelectedAccount: string | null
@@ -104,7 +104,7 @@ const expectedAppStateChanges: {
 	],
 }
 
-export const isExpectedAppStateChange = (
+const isExpectedAppStateChange = (
 	former: MESSENGER_APP_STATE[keyof MESSENGER_APP_STATE],
 	next: MESSENGER_APP_STATE[keyof MESSENGER_APP_STATE],
 ): boolean => {
@@ -121,7 +121,7 @@ export const isExpectedAppStateChange = (
  *
  */
 
-export const sliceName = 'ui'
+const sliceName = 'ui'
 
 const makeRoot = <T>(val: T) => ({
 	[sliceName]: val,
@@ -315,9 +315,9 @@ const slice = createSlice({
 
 const selectSlice = (state: LocalRootState) => state[sliceName]
 
-export const selectMessengerIsDeletingState = (state: LocalRootState): boolean =>
-	selectSlice(state).appState === MESSENGER_APP_STATE.DELETING_CLEARING_STORAGE ||
-	selectSlice(state).appState === MESSENGER_APP_STATE.DELETING_CLOSING_DAEMON
+// export const selectMessengerIsDeletingState = (state: LocalRootState): boolean =>
+// 	selectSlice(state).appState === MESSENGER_APP_STATE.DELETING_CLEARING_STORAGE ||
+// 	selectSlice(state).appState === MESSENGER_APP_STATE.DELETING_CLOSING_DAEMON
 
 export const selectMessengerisClosing = (state: LocalRootState): boolean =>
 	selectSlice(state).appState === MESSENGER_APP_STATE.DELETING_CLEARING_STORAGE ||
@@ -349,13 +349,13 @@ export const selectProtocolClient = (
 	state: LocalRootState,
 ): ServiceClientType<beapi.protocol.ProtocolService> | null => selectSlice(state).protocolClient
 
-export const selectNetworkConfig = (state: LocalRootState): beapi.account.INetworkConfig =>
-	selectSlice(state).networkConfig
+// export const selectNetworkConfig = (state: LocalRootState): beapi.account.INetworkConfig =>
+// 	selectSlice(state).networkConfig
 
 export const selectEmbedded = (state: LocalRootState): boolean => selectSlice(state).embedded
 
-export const selectDaemonAddress = (state: LocalRootState): string =>
-	selectSlice(state).daemonAddress
+// export const selectDaemonAddress = (state: LocalRootState): string =>
+// 	selectSlice(state).daemonAddress
 
 export const selectDebugMode = (state: LocalRootState): boolean => selectSlice(state).debugMode
 
@@ -364,39 +364,32 @@ export const selectStreamInProgress = (state: LocalRootState): StreamInProgress 
 
 export const selectStreamError = (state: LocalRootState): any => selectSlice(state).streamError
 
-export const selectNotificationsInhibitors = (state: LocalRootState): NotificationsInhibitor[] =>
-	selectSlice(state).notificationsInhibitors
+// export const selectNotificationsInhibitors = (state: LocalRootState): NotificationsInhibitor[] =>
+// 	selectSlice(state).notificationsInhibitors
 
-export const selectAccounts = (state: LocalRootState): beapi.account.IAccountMetadata[] =>
-	selectSlice(state).accounts
+// export const selectAccounts = (state: LocalRootState): beapi.account.IAccountMetadata[] =>
+// 	selectSlice(state).accounts
 
 export const selectClearClients = (
 	state: LocalRootState,
 ): (() => Promise<void>) | (() => void) | null => selectSlice(state).clearClients
 
 export const {
-	setStreamError,
-	// addFakeData,
-	deleteFakeData,
-	setDaemonAddress,
 	setStateOpeningListingEvents,
 	setStateClosed,
 	setNextAccount,
-	setStateOpening,
 	setStateOpeningClients,
 	setStateOpeningGettingLocalSettings,
 	setStateOpeningMarkConversationsClosed,
 	setStatePreReady,
 	setStateReady,
-	setAccounts,
 	bridgeClosed,
-	addNotificationInhibitor,
-	removeNotificationInhibitor,
 	setCreatedAccount,
 	setStateStreamInProgress,
 	setStateStreamDone,
 	setStateOnBoardingReady,
 	setDebugMode,
+	setStreamError,
 } = slice.actions
 
 export default makeRoot(slice.reducer)

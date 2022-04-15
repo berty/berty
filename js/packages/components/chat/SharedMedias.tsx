@@ -241,7 +241,7 @@ export const SharedMedias: ScreenFC<'Chat.SharedMedias'> = ({
 									if (Platform.OS === 'web') {
 										Clipboard.setString(url)
 									} else {
-										await Share.share({ url })
+										await Share.share({ url, message: url })
 									}
 								} catch (err: any) {
 									if (!(typeof err?.message === 'string' && err.message.contains('cancelled'))) {

@@ -103,7 +103,7 @@ const makeServiceHooks = <S>(service: S) =>
 		{},
 	)
 
-export const messengerMethodsHooks: MessengerMethodsHooks = makeServiceHooks(
+const messengerMethodsHooks: MessengerMethodsHooks = makeServiceHooks(
 	beapi.messenger.MessengerService,
 ) as any
 

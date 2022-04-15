@@ -1,6 +1,5 @@
-import { useMemo } from 'react'
-
 import * as m from '@berty/redux/reducers/messenger.reducer'
+import { useMemo } from 'react'
 import beapi from '@berty/api'
 import { ParsedInteraction } from '@berty/store'
 
@@ -105,9 +104,7 @@ export const useContactSearchResults = (searchText: string | null | undefined) =
 	}, [searchText, contacts])
 }
 
-export type InteractionFilter = Parameters<
-	ReturnType<typeof useConversationInteractions>['find']
->[0]
+type InteractionFilter = Parameters<ReturnType<typeof useConversationInteractions>['find']>[0]
 
 export const useLastConvInteraction = (
 	convPublicKey: string | null | undefined,

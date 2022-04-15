@@ -7,7 +7,7 @@ import { useThemeColor } from '@berty/store'
 
 import { WebViews } from '../shared-components'
 
-export const FaqURL = 'https://guide.berty.tech/faq'
+const FaqURL = 'https://guide.berty.tech/faq'
 
 export const Faq: ScreenFC<'Settings.Faq'> = () => {
 	const colors = useThemeColor()

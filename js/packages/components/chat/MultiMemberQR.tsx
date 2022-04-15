@@ -22,7 +22,7 @@ const styleBertyIdOptions = {
 	avatarSize: 80,
 }
 
-export const SelectedContent: React.FC<{ conv: beapi.messenger.IConversation }> = ({ conv }) => {
+const SelectedContent: React.FC<{ conv: beapi.messenger.IConversation }> = ({ conv }) => {
 	const [{ padding, margin, border, column, text }] = useStyles()
 	const { qrCodeSize, requestAvatarSize, styleBertyIdContent } =
 		useStylesBertyId(styleBertyIdOptions)

@@ -94,6 +94,6 @@ export type ScreensParams = {
 	'Modals.EditProfile': undefined
 }
 
-export type ScreenProps<T extends keyof ScreensParams> = StackScreenProps<ScreensParams, T>
+type ScreenProps<T extends keyof ScreensParams> = StackScreenProps<ScreensParams, T>
 
 export type ScreenFC<T extends keyof ScreensParams> = React.FC<ScreenProps<T>>
