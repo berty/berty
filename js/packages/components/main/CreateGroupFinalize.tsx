@@ -5,10 +5,10 @@ import { useTranslation } from 'react-i18next'
 
 import { useStyles } from '@berty/styles'
 import messengerMethodsHooks from '@berty/store/methods'
-import { useMessengerContext, useThemeColor } from '@berty/store'
+import { useThemeColor } from '@berty/store'
 import { useNavigation } from '@berty/navigation'
 import { selectInvitationListMembers } from '@berty/redux/reducers/groupCreationForm.reducer'
-import { useAppDispatch, useAppSelector } from '@berty/hooks'
+import { useAppDispatch, useAppSelector, usePlaySound } from '@berty/hooks'
 
 import { FooterCreateGroup } from './CreateGroupFooter'
 import { Header } from './CreateGroupAddMembers'
@@ -186,7 +186,7 @@ export const CreateGroupFinalize: React.FC = () => {
 	)
 	const [{ flex, padding }] = useStyles()
 	const colors = useThemeColor()
-	const ctx = useMessengerContext()
+	const playSound = usePlaySound()
 	const { t }: { t: any } = useTranslation()
 
 	React.useEffect(() => {
@@ -231,7 +231,7 @@ export const CreateGroupFinalize: React.FC = () => {
 								title={t('main.home.create-group.create-group')}
 								action={() => {
 									createGroup()
-									ctx.playSound('groupCreated')
+									playSound('groupCreated')
 								}}
 								loading={loading}
 							/>

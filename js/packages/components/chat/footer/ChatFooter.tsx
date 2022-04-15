@@ -10,13 +10,7 @@ import { RESULTS } from 'react-native-permissions'
 import Long from 'long'
 import { useTranslation } from 'react-i18next'
 
-import {
-	Maybe,
-	useMessengerClient,
-	useMessengerContext,
-	useMountEffect,
-	useThemeColor,
-} from '@berty/store'
+import { Maybe, useMessengerClient, useMountEffect, useThemeColor } from '@berty/store'
 import { useStyles } from '@berty/styles'
 import {
 	removeActiveReplyInteraction,
@@ -29,7 +23,13 @@ import {
 import beapi from '@berty/api'
 import { useNavigation } from '@berty/navigation'
 import rnutil from '@berty/rnutil'
-import { useAppDispatch, useAppSelector, useMedias, useConversation } from '@berty/hooks'
+import {
+	useAppDispatch,
+	useAppSelector,
+	useMedias,
+	useConversation,
+	usePlaySound,
+} from '@berty/hooks'
 import {
 	selectChatInputIsFocused,
 	selectChatInputIsSending,
@@ -88,7 +88,7 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 		const activeReplyInte = useAppSelector(state => selectActiveReplyInteraction(state, convPK))
 		const [, { scaleSize }] = useStyles()
 		const messengerClient = useMessengerClient()
-		const ctx = useMessengerContext()
+		const playSound = usePlaySound()
 		const conversation = useConversation(convPK)
 		const insets = useSafeAreaInsets()
 		const addedMedias = useMedias(mediaCids)
@@ -143,7 +143,7 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 					dispatch(removeActiveReplyInteraction({ convPK }))
 					dispatch(resetChatInput(convPK))
 					setMessage('')
-					ctx.playSound('messageSent')
+					playSound('messageSent')
 				} catch (e) {
 					console.warn('e sending message:', e)
 					setSending(false)
@@ -153,7 +153,7 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 				activeReplyInte?.cid,
 				addedMedias,
 				convPK,
-				ctx,
+				playSound,
 				dispatch,
 				message,
 				messengerClient,

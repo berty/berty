@@ -30,7 +30,6 @@ export type MessengerState = {
 	deleteAccount: () => Promise<void>
 	getUsername: () => Promise<beapi.account.GetUsername.Reply | null>
 	restart: () => Promise<void>
-	playSound: (arg0: SoundKey) => void
 	addReaction: (
 		convPK: string,
 		targetCID: string,

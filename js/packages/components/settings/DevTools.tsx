@@ -32,6 +32,7 @@ import {
 	useContactsDict,
 	useConversationsDict,
 	useAccount,
+	usePlaySound,
 } from '@berty/hooks'
 import { Player } from '@react-native-community/audio-toolkit'
 
@@ -309,7 +310,7 @@ const DumpMembers: React.FC = () => {
 }
 
 const PlaySound: React.FC = () => {
-	const { playSound } = useMessengerContext()
+	const playSound = usePlaySound()
 	const colors = useThemeColor()
 
 	return (

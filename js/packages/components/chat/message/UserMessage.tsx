@@ -8,7 +8,6 @@ import { useTranslation } from 'react-i18next'
 
 import beapi from '@berty/api'
 import {
-	useMessengerContext,
 	useThemeColor,
 	InteractionUserMessage,
 	ParsedInteraction,
@@ -21,6 +20,7 @@ import {
 	useAppSelector,
 	useInteractionAuthor,
 	useLastConvInteraction,
+	usePlaySound,
 } from '@berty/hooks'
 import { selectInteraction } from '@berty/redux/reducers/messenger.reducer'
 
@@ -169,7 +169,7 @@ export const UserMessage: React.FC<{
 	)
 	const repliedTo = useInteractionAuthor(replyOf?.conversationPublicKey || '', replyOf?.cid || '')
 	const _styles = useStylesMessage()
-	const ctx = useMessengerContext()
+	const playSound = usePlaySound()
 	const client = useMessengerClient()
 	const [{ row, margin, padding, column, text, border }, { scaleSize }] = useStyles()
 	const colors = useThemeColor()
@@ -210,13 +210,13 @@ export const UserMessage: React.FC<{
 					targetCid: inte?.cid,
 				})
 				.then(() => {
-					ctx.playSound('messageSent')
+					playSound('messageSent')
 				})
 				.catch((e: unknown) => {
 					console.warn('e sending message:', e)
 				})
 		},
-		[client, convPK, ctx, inte?.cid],
+		[client, convPK, playSound, inte?.cid],
 	)
 
 	const isHighlight = highlightCid === inte.cid

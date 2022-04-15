@@ -6,11 +6,12 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import beapi from '@berty/api'
 import { useStyles } from '@berty/styles'
 import { useMessengerContext, useThemeColor, NotificationsInhibitor, SoundKey } from '@berty/store'
+import { selectPersistentOptions } from '@berty/redux/reducers/persistentOptions.reducer'
+import { usePlaySound } from '@berty/hooks'
 
 import { usePrevious } from './hooks'
 import notifications, { DefaultNotification } from './notifications'
 import { useSelector } from 'react-redux'
-import { selectPersistentOptions } from '@berty/redux/reducers/persistentOptions.reducer'
 
 const NotificationContents: React.FC<{
 	additionalProps: { type: beapi.messenger.StreamEvent.Notified.Type }
@@ -67,6 +68,7 @@ const GatedNotificationBody: React.FC<any> = props => {
 	const justOpened = props.isOpen && !prevProps?.isOpen
 
 	const ctx = useMessengerContext()
+	const playSound = usePlaySound()
 	const persistentOptions = useSelector(selectPersistentOptions)
 
 	const notif = props.additionalProps as beapi.messenger.StreamEvent.INotified | undefined
@@ -88,9 +90,9 @@ const GatedNotificationBody: React.FC<any> = props => {
 		const sound: SoundKey | undefined = notifsSounds[notifType]
 		if (justOpened && sound && (!inhibit || inhibit === 'sound-only')) {
 			Vibration.vibrate(400)
-			ctx.playSound(sound)
+			playSound(sound)
 		}
-	}, [ctx, notifType, justOpened, inhibit])
+	}, [playSound, notifType, justOpened, inhibit])
 
 	if (!isValid || inhibit) {
 		if (props.isOpen) {
