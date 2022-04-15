@@ -170,6 +170,9 @@
 		},
 		"accounts": {
 			"title": "Fiókok",
+			"backup-button": "",
+			"backup-notif-title": "",
+			"backup-notif-desc": "",
 			"accounts-button": "Fiókok",
 			"create-button": "Fiók létrehozása",
 			"import-button": "Fiók importálása",
