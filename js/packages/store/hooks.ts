@@ -7,8 +7,7 @@ import darkTheme from '@berty/styles/darktheme-default.json'
 import { useAllConversations, useAllContacts, useConversation, useAppDispatch } from '@berty/hooks'
 import { useStyles } from '@berty/styles'
 
-import { useMessengerContext } from './context'
-import { MessengerActions, NotificationsInhibitor } from './types'
+import { NotificationsInhibitor } from './types'
 import { fakeContacts, fakeMultiMemberConversations } from './faker'
 import { ParsedInteraction } from './types.gen'
 import { useSelector } from 'react-redux'
@@ -122,31 +121,31 @@ export const useProfileNotification = () => {
 
 // Generate n fake conversations with n fake contacts, one UserMessage per conv
 export const useGenerateFakeContacts = () => {
-	const ctx = useMessengerContext()
+	//const ctx = useMessengerContext()
 	const contacts = useAllContacts()
 	const prevFakeCount: number = contacts.reduce((r, c) => ((c as any)?.fake ? r + 1 : r), 0)
 	return (length = 10) => {
-		const payload = fakeContacts(length, prevFakeCount)
-		ctx.dispatch({
+		/*const payload =*/ fakeContacts(length, prevFakeCount)
+		/*ctx.dispatch({
 			type: MessengerActions.AddFakeData,
 			payload,
-		})
+		})*/
 	}
 }
 
 export const useGenerateFakeMultiMembers = () => {
-	const ctx = useMessengerContext()
+	//const ctx = useMessengerContext()
 	const prevFakeCount = useAllConversations().reduce(
 		(r, c) =>
 			(c as any).fake && c?.type === beapi.messenger.Conversation.Type.MultiMemberType ? r + 1 : r,
 		0,
 	)
 	return (length = 10) => {
-		const payload = fakeMultiMemberConversations(length, prevFakeCount)
-		ctx.dispatch({
+		/*const payload =*/ fakeMultiMemberConversations(length, prevFakeCount)
+		/*ctx.dispatch({
 			type: MessengerActions.AddFakeData,
 			payload,
-		})
+		})*/
 	}
 }
 
@@ -183,11 +182,12 @@ export const useGenerateFakeMultiMembers = () => {
 
 // Delete all fake data
 export const useDeleteFakeData = () => {
-	const ctx = useMessengerContext()
-	return () =>
-		ctx.dispatch({
+	/*const ctx = useMessengerContext()*/
+	return () => {
+		/*ctx.dispatch({
 			type: MessengerActions.DeleteFakeData,
-		})
+		})*/
+	}
 }
 
 export const useNotificationsInhibitor = (inhibitor: Maybe<NotificationsInhibitor>) => {

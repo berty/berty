@@ -27,12 +27,11 @@ export const useSwitchAccount = () => {
 }
 
 export const useCreateNewAccount = () => {
-	const reduxDispatch = useAppDispatch()
+	const dispatch = useAppDispatch()
 	const embedded = useAppSelector(selectEmbedded)
 	return useCallback(
-		(newConfig?: beapi.account.INetworkConfig) =>
-			createNewAccount(embedded, reduxDispatch, newConfig),
-		[embedded, reduxDispatch],
+		(newConfig?: beapi.account.INetworkConfig) => createNewAccount(embedded, dispatch, newConfig),
+		[embedded, dispatch],
 	)
 }
 

@@ -11,7 +11,6 @@ import { logger } from '@berty/grpc-bridge/middleware'
 import { bridge as rpcBridge, grpcweb as rpcWeb } from '@berty/grpc-bridge/rpc'
 import { ServiceClientType } from '@berty/grpc-bridge/welsh-clients.gen'
 import store, { AppDispatch, persistor } from '@berty/redux/store'
-import { useAppDispatch } from '@berty/hooks'
 import { streamEventToAction as streamEventToReduxAction } from '@berty/redux/messengerActions'
 import RNFS from 'react-native-fs'
 import {
@@ -23,12 +22,7 @@ import { accountService, convertMAddr, storageGet, storageRemove } from './accou
 import { closeAccountWithProgress, refreshAccountList } from './effectableCallbacks'
 import { updateAccount } from './providerCallbacks'
 import { requestAndPersistPushToken } from './services'
-import {
-	GlobalPersistentOptionsKeys,
-	MessengerActions,
-	reducerAction,
-	StreamInProgress,
-} from './types'
+import { GlobalPersistentOptionsKeys, StreamInProgress } from './types'
 import { storageKeyForAccount } from './utils'
 import { resetTheme } from '@berty/redux/reducers/theme.reducer'
 import {
@@ -48,11 +42,7 @@ import {
 	setStreamError,
 } from '@berty/redux/reducers/ui.reducer'
 import { deserializeFromBase64 } from '@berty/grpc-bridge/rpc/utils'
-import {
-	defaultPersistentOptions,
-	PersistentOptions,
-	PersistentOptionsKeys,
-} from '@berty/redux/reducers/persistentOptions.reducer'
+import { PersistentOptions } from '@berty/redux/reducers/persistentOptions.reducer'
 
 const openAccountWithProgress = async (
 	bridgeOpts: GoBridgeOpts,
@@ -111,7 +101,7 @@ const initBridge = async () => {
 	}
 }
 
-export const initialLaunch = async (dispatch: (arg0: reducerAction) => void, embedded: boolean) => {
+export const initialLaunch = async (embedded: boolean) => {
 	await initBridge()
 	const f = async () => {
 		const accounts = await refreshAccountList(embedded)
@@ -146,51 +136,15 @@ export const initialLaunch = async (dispatch: (arg0: reducerAction) => void, emb
 	f().catch(e => console.warn(e))
 }
 
-const getPersistentOptions = async (
-	dispatch: (arg0: reducerAction) => void,
-	selectedAccount: string | null,
-) => {
-	if (selectedAccount === null) {
-		console.warn('getPersistentOptions / no account opened')
-		return
-	}
-
-	try {
-		let opts = defaultPersistentOptions()
-		console.log('begin to get persistent data')
-		let storedOpts = await storageGet(storageKeyForAccount(selectedAccount))
-		console.log('end to get persistent data')
-
-		if (storedOpts) {
-			const parsed = JSON.parse(storedOpts)
-
-			for (let key of Object.values(PersistentOptionsKeys)) {
-				opts[key] = { ...opts[key], ...(parsed[key] || {}) }
-			}
-		}
-
-		dispatch({
-			type: MessengerActions.SetPersistentOption,
-			payload: opts,
-		})
-	} catch (e) {
-		console.warn('store getPersistentOptions Failed:', e)
-		return
-	}
-}
-
 // handle state openingGettingLocalSettings
 export const openingLocalSettings = async (
-	dispatch: (arg0: reducerAction) => void,
 	appState: MESSENGER_APP_STATE[keyof MESSENGER_APP_STATE],
-	selectedAccount: string | null,
 ) => {
 	if (appState !== MESSENGER_APP_STATE.OPENING_GETTING_LOCAL_SETTINGS) {
 		return
 	}
 
 	try {
-		await getPersistentOptions(dispatch, selectedAccount)
 		store.dispatch(setStateOpeningMarkConversationsClosed())
 	} catch (e) {
 		console.warn('unable to get persistent options', e)
@@ -267,12 +221,11 @@ export const openingDaemon = async (
 
 // handle state OpeningWaitingForClients
 export const openingClients = async (
-	dispatch: (arg0: reducerAction) => void,
 	appState: MESSENGER_APP_STATE[keyof MESSENGER_APP_STATE],
 	eventEmitter: EventEmitter,
 	daemonAddress: string,
 	embedded: boolean,
-	reduxDispatch: AppDispatch,
+	dispatch: AppDispatch,
 ): Promise<void> => {
 	if (appState !== MESSENGER_APP_STATE.OPENING_WAITING_FOR_CLIENTS) {
 		return
@@ -381,7 +334,7 @@ export const openingClients = async (
 						})
 					}
 					if (action) {
-						reduxDispatch(action)
+						dispatch(action)
 					}
 				} catch (err) {
 					console.warn('failed to handle stream event (', msg?.event, '):', err)
@@ -398,7 +351,7 @@ export const openingClients = async (
 				store.dispatch(setStreamError({ error: err }))
 			}
 		})
-	reduxDispatch(
+	dispatch(
 		setStateOpeningListingEvents({ messengerClient, protocolClient, clearClients: () => cancel() }),
 	)
 }
@@ -469,7 +422,7 @@ export const updateAccountsPreReady = async (
 export const closingDaemon = (
 	appState: MESSENGER_APP_STATE[keyof MESSENGER_APP_STATE],
 	clearClients: (() => Promise<void>) | (() => void) | null,
-	reduxDispatch: ReturnType<typeof useAppDispatch>,
+	dispatch: AppDispatch,
 ) => {
 	if (
 		appState !== MESSENGER_APP_STATE.CLOSING_DAEMON &&
@@ -483,11 +436,11 @@ export const closingDaemon = (
 				if (clearClients) {
 					await clearClients()
 				}
-				await closeAccountWithProgress(reduxDispatch)
+				await closeAccountWithProgress(dispatch)
 			} catch (e) {
 				console.warn('unable to stop protocol', e)
 			}
-			reduxDispatch(bridgeClosed())
+			dispatch(bridgeClosed())
 		}
 
 		f().catch(e => {
@@ -499,7 +452,6 @@ export const closingDaemon = (
 // handle state DeletingClearingStorage
 export const deletingStorage = (
 	appState: MESSENGER_APP_STATE[keyof MESSENGER_APP_STATE],
-	dispatch: (arg0: reducerAction) => void,
 	embedded: boolean,
 	selectedAccount: string | null,
 ) => {

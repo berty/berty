@@ -1,8 +1,7 @@
 import { Platform } from 'react-native'
 
 import beapi from '@berty/api'
-import store, { persistor, resetAccountStore } from '@berty/redux/store'
-import { useAppDispatch } from '@berty/hooks'
+import store, { AppDispatch, persistor, resetAccountStore } from '@berty/redux/store'
 import {
 	setAccounts,
 	setCreatedAccount,
@@ -20,7 +19,7 @@ These callbacks were in providerCallbacks.tsx but they are splited here because 
 
 */
 
-export const closeAccountWithProgress = async (dispatch: ReturnType<typeof useAppDispatch>) => {
+export const closeAccountWithProgress = async (dispatch: AppDispatch) => {
 	try {
 		const stream = await accountService.closeAccountWithProgress({})
 		stream.onMessage((msg, err) => {
@@ -55,10 +54,7 @@ export const closeAccountWithProgress = async (dispatch: ReturnType<typeof useAp
 	}
 }
 
-export const importAccountWithProgress = (
-	path: string,
-	dispatch: ReturnType<typeof useAppDispatch>,
-) =>
+export const importAccountWithProgress = (path: string, dispatch: AppDispatch) =>
 	new Promise<beapi.account.ImportAccountWithProgress.Reply | null>(async resolve => {
 		let metaMsg: beapi.account.ImportAccountWithProgress.Reply | null = null
 		let done = false
@@ -120,7 +116,7 @@ export const refreshAccountList = async (
 
 const createAccount = async (
 	embedded: boolean,
-	reduxDispatch: ReturnType<typeof useAppDispatch>,
+	dispatch: AppDispatch,
 	config?: beapi.account.INetworkConfig,
 ) => {
 	let resp: beapi.account.CreateAccount.Reply
@@ -146,7 +142,7 @@ const createAccount = async (
 	}
 
 	await refreshAccountList(embedded)
-	reduxDispatch(
+	dispatch(
 		setCreatedAccount({
 			accountId: resp.accountMetadata.accountId,
 		}),
@@ -155,7 +151,7 @@ const createAccount = async (
 
 export const createNewAccount = async (
 	embedded: boolean,
-	reduxDispatch: ReturnType<typeof useAppDispatch>,
+	dispatch: AppDispatch,
 	config?: beapi.account.INetworkConfig,
 ) => {
 	if (!embedded) {
@@ -163,7 +159,7 @@ export const createNewAccount = async (
 	}
 
 	try {
-		await createAccount(embedded, reduxDispatch, config)
+		await createAccount(embedded, dispatch, config)
 	} catch (e) {
 		console.warn('unable to create account', e)
 		return

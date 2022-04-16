@@ -1,5 +1,4 @@
 import beapi from '@berty/api'
-import { useAppDispatch } from '@berty/hooks'
 
 import { storageKeyForAccount } from './utils'
 import { Maybe } from './hooks'
@@ -14,7 +13,7 @@ import {
 	PersistentOptionsKeys,
 	setPersistentOption,
 } from '@berty/redux/reducers/persistentOptions.reducer'
-import store from '@berty/redux/store'
+import store, { AppDispatch } from '@berty/redux/store'
 
 export const importAccount = async (embedded: boolean, path: string) => {
 	if (!embedded) {
@@ -86,7 +85,7 @@ export const updateAccount = async (embedded: boolean, payload: any) => {
 export const switchAccount = async (
 	embedded: boolean,
 	accountID: string,
-	dispatch: ReturnType<typeof useAppDispatch>,
+	dispatch: AppDispatch,
 ) => {
 	if (!embedded) {
 		return
@@ -104,13 +103,13 @@ export const switchAccount = async (
 export const deleteAccount = async (
 	embedded: boolean,
 	selectedAccount: string | null,
-	reduxDispatch: ReturnType<typeof useAppDispatch>,
+	dispatch: AppDispatch,
 ) => {
 	if (!embedded) {
 		return
 	}
 	// close current account service
-	await closeAccountWithProgress(reduxDispatch)
+	await closeAccountWithProgress(dispatch)
 	let accounts: beapi.account.IAccountMetadata[] = []
 	if (selectedAccount !== null) {
 		// delete account service and account data storage
@@ -123,7 +122,7 @@ export const deleteAccount = async (
 
 	if (!Object.values(accounts).length) {
 		// reset to OnBoarding
-		reduxDispatch(setStateOnBoardingReady())
+		dispatch(setStateOnBoardingReady())
 	} else {
 		// open the last opened if an other account exist
 		let accountSelected: beapi.account.IAccountMetadata | null = null
@@ -139,14 +138,14 @@ export const deleteAccount = async (
 				accountSelected = account
 			}
 		}
-		reduxDispatch(setNextAccount(accountSelected?.accountId))
+		dispatch(setNextAccount(accountSelected?.accountId))
 	}
 }
 
 export const restart = async (
 	embedded: boolean,
 	accountID: Maybe<string>,
-	dispatch: ReturnType<typeof useAppDispatch>,
+	dispatch: AppDispatch,
 ) => {
 	if (!embedded) {
 		return
