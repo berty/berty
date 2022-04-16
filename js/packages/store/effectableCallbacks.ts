@@ -169,8 +169,3 @@ export const createNewAccount = async (
 		return
 	}
 }
-
-export const getUsername = async () => {
-	const username = await accountService.getUsername({})
-	return username || null
-}
