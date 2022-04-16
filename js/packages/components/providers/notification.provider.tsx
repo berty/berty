@@ -1,13 +1,13 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { EmitterSubscription, NativeEventEmitter, NativeModules, Platform } from 'react-native'
 import { CommonActions } from '@react-navigation/native'
+import { InAppNotificationProvider, withInAppNotification } from 'react-native-in-app-notification'
 
-import { useMessengerContext } from '@berty/store/context'
 import { accountService } from '@berty/store'
 import beapi from '@berty/api'
 import { useNavigation } from '@berty/navigation'
 import { useConversationsDict } from '@berty/hooks'
-import { InAppNotificationProvider, withInAppNotification } from 'react-native-in-app-notification'
+import { EventEmitterContext } from '@berty/contexts/eventEmitter.context'
 
 import NotificationBody from '../NotificationBody'
 
@@ -77,7 +77,7 @@ const PushNotificationBridge: React.FC = withInAppNotification(({ showNotificati
 })
 
 const NotificationBridge: React.FC = withInAppNotification(({ showNotification }: any) => {
-	const { addNotificationListener, removeNotificationListener } = useMessengerContext()
+	const eventEmitter = useContext(EventEmitterContext)
 
 	React.useEffect(() => {
 		const inAppNotifListener = (evt: any) => {
@@ -89,16 +89,20 @@ const NotificationBridge: React.FC = withInAppNotification(({ showNotification }
 			})
 		}
 
+		let added = false
 		try {
-			addNotificationListener(inAppNotifListener)
+			eventEmitter.addListener('notification', inAppNotifListener)
+			added = true
 		} catch (e) {
 			console.log('Error: Push notif add listener failed: ' + e)
 		}
 
 		return () => {
-			removeNotificationListener(() => console.log('DELETE inAppNotifListener'))
+			if (added) {
+				eventEmitter.removeListener('notification', inAppNotifListener)
+			}
 		}
-	}, [showNotification, addNotificationListener, removeNotificationListener])
+	}, [showNotification, eventEmitter])
 	return null
 })
 

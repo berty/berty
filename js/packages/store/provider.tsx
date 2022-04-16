@@ -1,5 +1,4 @@
-import React, { useCallback, useEffect } from 'react'
-import { EventEmitter } from 'events'
+import React, { useCallback, useContext, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 
 import { useAppDispatch, useAppSelector, useAccount, useConversationsDict } from '@berty/hooks'
@@ -14,6 +13,7 @@ import {
 	selectDaemonAddress,
 } from '@berty/redux/reducers/ui.reducer'
 import { selectPersistentOptions } from '@berty/redux/reducers/persistentOptions.reducer'
+import { EventEmitterContext } from '@berty/contexts/eventEmitter.context'
 
 import { MessengerContext, initialState } from './context'
 import {
@@ -36,7 +36,7 @@ export const MessengerProvider: React.FC = ({ children }) => {
 	const [state, dispatch] = React.useReducer(reducer, {
 		...initialState,
 	})
-	const [eventEmitter] = React.useState(new EventEmitter())
+	const eventEmitter = useContext(EventEmitterContext)
 	const appState = useSelector(selectAppState)
 	const clearClients = useSelector(selectClearClients)
 	const protocolClient = useSelector(selectProtocolClient)
@@ -102,27 +102,11 @@ export const MessengerProvider: React.FC = ({ children }) => {
 		[selectedAccount, embedded, reduxDispatch],
 	)
 
-	const callbackAddNotificationListener = useCallback(
-		cb => {
-			eventEmitter.addListener('notification', cb)
-		},
-		[eventEmitter],
-	)
-
-	const callbackRemoveNotificationListener = useCallback(
-		cb => {
-			eventEmitter.removeListener('notification', cb)
-		},
-		[eventEmitter],
-	)
-
 	return (
 		<MessengerContext.Provider
 			value={{
 				...state,
 				dispatch,
-				addNotificationListener: callbackAddNotificationListener,
-				removeNotificationListener: callbackRemoveNotificationListener,
 				restart: callbackRestart,
 			}}
 		>

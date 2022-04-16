@@ -14,8 +14,6 @@ export type StreamInProgress = {
 }
 
 export type MessengerState = {
-	addNotificationListener: (cb: (evt: any) => void) => void
-	removeNotificationListener: (cb: (...args: any[]) => void) => void
 	notificationsInhibitors: NotificationsInhibitor[]
 	dispatch: Dispatch<{
 		type: MessengerActions
