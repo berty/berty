@@ -136,7 +136,7 @@ const initialState: UiState = {
 	streamError: null,
 	streamInProgress: null,
 	notificationsInhibitors: [],
-	daemonAddress: '',
+	daemonAddress: 'http://localhost:1337', // daemonAddress is the mobile discrete (not embedded) daemon address
 	clearClients: null,
 	embedded: true,
 	debugMode: false,
@@ -354,8 +354,8 @@ export const selectProtocolClient = (
 
 export const selectEmbedded = (state: LocalRootState): boolean => selectSlice(state).embedded
 
-// export const selectDaemonAddress = (state: LocalRootState): string =>
-// 	selectSlice(state).daemonAddress
+export const selectDaemonAddress = (state: LocalRootState): string =>
+	selectSlice(state).daemonAddress
 
 export const selectDebugMode = (state: LocalRootState): boolean => selectSlice(state).debugMode
 
@@ -391,6 +391,7 @@ export const {
 	setDebugMode,
 	setStreamError,
 	setAccounts,
+	setDaemonAddress,
 } = slice.actions
 
 export default makeRoot(slice.reducer)

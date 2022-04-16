@@ -104,7 +104,7 @@ const App: React.FC = () => {
 		<SafeAreaProvider>
 			<StyleProvider>
 				<ReduxProvider store={reduxStore}>
-					<MessengerProvider daemonAddress='http://localhost:1337'>
+					<MessengerProvider>
 						<IconRegistry icons={[EvaIconsPack, FeatherIconsPack, CustomIconsPack]} />
 						<ThemeProvider>
 							<Background>

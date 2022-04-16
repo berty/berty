@@ -11,6 +11,7 @@ import {
 	selectEmbedded,
 	selectProtocolClient,
 	selectSelectedAccount,
+	selectDaemonAddress,
 } from '@berty/redux/reducers/ui.reducer'
 import { selectPersistentOptions } from '@berty/redux/reducers/persistentOptions.reducer'
 
@@ -30,14 +31,10 @@ import {
 import { restart } from './providerCallbacks'
 import { reducer } from './reducer'
 
-export const MessengerProvider: React.FC<{ daemonAddress: string }> = ({
-	children,
-	daemonAddress,
-}) => {
+export const MessengerProvider: React.FC = ({ children }) => {
 	const reduxDispatch = useAppDispatch()
 	const [state, dispatch] = React.useReducer(reducer, {
 		...initialState,
-		daemonAddress,
 	})
 	const [eventEmitter] = React.useState(new EventEmitter())
 	const [handledLink, setHandledLink] = useState<boolean>(false)
@@ -48,6 +45,7 @@ export const MessengerProvider: React.FC<{ daemonAddress: string }> = ({
 	const embedded = useSelector(selectEmbedded)
 	const selectedAccount = useSelector(selectSelectedAccount)
 	const persistentOptions = useSelector(selectPersistentOptions)
+	const daemonAddress = useSelector(selectDaemonAddress)
 
 	useEffect(() => {
 		console.log(`State change: ${appState}\n`)

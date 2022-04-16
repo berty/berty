@@ -1,4 +1,4 @@
-export { GlobalPersistentOptionsKeys, MessengerActions } from './types'
+export { GlobalPersistentOptionsKeys } from './types'
 export type { NotificationsInhibitor, StreamInProgress, SoundKey } from './types'
 export { accountService, storageSet, storageGet } from './accountService'
 export { useMessengerContext } from './context'

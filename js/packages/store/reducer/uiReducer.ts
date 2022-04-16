@@ -35,11 +35,6 @@ export const uiReducerActions: {
 		),*/
 	}),
 
-	[MessengerActions.SetDaemonAddress]: (oldState, action) => ({
-		...oldState,
-		daemonAddress: action.payload.value,
-	}),
-
 	[MessengerActions.SetPersistentOption]: (oldState, action) => ({
 		...oldState,
 		persistentOptions: action.payload,
