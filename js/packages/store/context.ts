@@ -9,8 +9,6 @@ export const initialState: MessengerState = {
 	restart: async () => {},
 	addReaction: () => undefined,
 	removeReaction: () => undefined,
-	handledLink: false,
-	setHandledLink: () => {},
 }
 
 export const MessengerContext = createContext<MessengerState>(initialState)

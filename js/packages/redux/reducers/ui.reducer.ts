@@ -304,6 +304,9 @@ const slice = createSlice({
 		setDebugMode(state: UiState, { payload }: PayloadAction<boolean>) {
 			state.debugMode = payload
 		},
+		setHandledLink(state: UiState, { payload }: PayloadAction<boolean>) {
+			state.handledLink = payload
+		},
 	},
 })
 
@@ -374,6 +377,8 @@ export const selectClearClients = (
 	state: LocalRootState,
 ): (() => Promise<void>) | (() => void) | null => selectSlice(state).clearClients
 
+export const selectHandledLink = (state: LocalRootState) => selectSlice(state).handledLink
+
 export const {
 	setStateOpeningListingEvents,
 	setStateClosed,
@@ -392,6 +397,7 @@ export const {
 	setStreamError,
 	setAccounts,
 	setDaemonAddress,
+	setHandledLink,
 } = slice.actions
 
 export default makeRoot(slice.reducer)

@@ -32,8 +32,6 @@ export type MessengerState = {
 		targetCID: string,
 		emoji: string,
 	) => Promise<beapi.messenger.Interact.Reply> | undefined
-	handledLink: boolean
-	setHandledLink: (value: boolean) => void
 }
 
 export enum GlobalPersistentOptionsKeys {

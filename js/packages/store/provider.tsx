@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import { EventEmitter } from 'events'
 import { useSelector } from 'react-redux'
 
@@ -37,7 +37,6 @@ export const MessengerProvider: React.FC = ({ children }) => {
 		...initialState,
 	})
 	const [eventEmitter] = React.useState(new EventEmitter())
-	const [handledLink, setHandledLink] = useState<boolean>(false)
 	const appState = useSelector(selectAppState)
 	const clearClients = useSelector(selectClearClients)
 	const protocolClient = useSelector(selectProtocolClient)
@@ -125,8 +124,6 @@ export const MessengerProvider: React.FC = ({ children }) => {
 				addNotificationListener: callbackAddNotificationListener,
 				removeNotificationListener: callbackRemoveNotificationListener,
 				restart: callbackRestart,
-				handledLink,
-				setHandledLink,
 			}}
 		>
 			{children}
