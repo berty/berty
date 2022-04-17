@@ -5,13 +5,13 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import beapi from '@berty/api'
 import { useStyles } from '@berty/styles'
-import { useMessengerContext, useThemeColor, NotificationsInhibitor, SoundKey } from '@berty/store'
+import { useThemeColor, NotificationsInhibitor, SoundKey } from '@berty/store'
 import { selectPersistentOptions } from '@berty/redux/reducers/persistentOptions.reducer'
-import { usePlaySound } from '@berty/hooks'
+import { useAppSelector, usePlaySound } from '@berty/hooks'
+import { selectNotificationsInhibitors } from '@berty/redux/reducers/ui.reducer'
 
 import { usePrevious } from './hooks'
 import notifications, { DefaultNotification } from './notifications'
-import { useSelector } from 'react-redux'
 
 const NotificationContents: React.FC<{
 	additionalProps: { type: beapi.messenger.StreamEvent.Notified.Type }
@@ -67,18 +67,18 @@ const GatedNotificationBody: React.FC<any> = props => {
 	const prevProps = usePrevious(props)
 	const justOpened = props.isOpen && !prevProps?.isOpen
 
-	const ctx = useMessengerContext()
+	const notificationsInhibitors = useAppSelector(selectNotificationsInhibitors)
 	const playSound = usePlaySound()
-	const persistentOptions = useSelector(selectPersistentOptions)
+	const persistentOptions = useAppSelector(selectPersistentOptions)
 
 	const notif = props.additionalProps as beapi.messenger.StreamEvent.INotified | undefined
 
 	const isValid = notif && props.isOpen && persistentOptions?.notifications?.enable
 
 	const inhibit = isValid
-		? ctx.notificationsInhibitors.reduce<ReturnType<NotificationsInhibitor>>((r, inh) => {
+		? notificationsInhibitors.reduce<ReturnType<NotificationsInhibitor>>((r, inh) => {
 				if (r === false) {
-					return inh(ctx, notif as any)
+					return inh(notif as any)
 				}
 				return r
 		  }, false)

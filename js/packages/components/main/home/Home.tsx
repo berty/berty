@@ -69,7 +69,7 @@ const FooterButton: React.FC<{
 }
 
 export const Home: ScreenFC<'Main.Home'> = ({ navigation: { navigate } }) => {
-	useNotificationsInhibitor((_ctx, notif) =>
+	useNotificationsInhibitor(notif =>
 		[
 			T.TypeMessageReceived,
 			T.TypeContactRequestReceived,

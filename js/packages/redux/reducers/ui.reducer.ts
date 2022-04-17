@@ -367,8 +367,8 @@ export const selectStreamInProgress = (state: LocalRootState): StreamInProgress 
 
 export const selectStreamError = (state: LocalRootState): any => selectSlice(state).streamError
 
-// export const selectNotificationsInhibitors = (state: LocalRootState): NotificationsInhibitor[] =>
-// 	selectSlice(state).notificationsInhibitors
+export const selectNotificationsInhibitors = (state: LocalRootState): NotificationsInhibitor[] =>
+	selectSlice(state).notificationsInhibitors
 
 export const selectAccounts = (state: LocalRootState): beapi.account.IAccountMetadata[] =>
 	selectSlice(state).accounts
@@ -398,6 +398,8 @@ export const {
 	setAccounts,
 	setDaemonAddress,
 	setHandledLink,
+	addNotificationInhibitor,
+	removeNotificationInhibitor,
 } = slice.actions
 
 export default makeRoot(slice.reducer)

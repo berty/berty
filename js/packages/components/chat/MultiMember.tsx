@@ -34,7 +34,7 @@ import { UnifiedText } from '../shared-components/UnifiedText'
 const NT = beapi.messenger.StreamEvent.Notified.Type
 
 export const MultiMember: ScreenFC<'Chat.Group'> = ({ route: { params }, navigation }) => {
-	useNotificationsInhibitor((_ctx, notif) => {
+	useNotificationsInhibitor(notif => {
 		if (
 			notif.type === NT.TypeMessageReceived &&
 			(notif.payload as any)?.payload?.interaction?.conversationPublicKey === params?.convId

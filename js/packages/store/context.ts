@@ -2,7 +2,6 @@ import { createContext, useContext } from 'react'
 import { MessengerState } from './types'
 
 export const initialState: MessengerState = {
-	notificationsInhibitors: [],
 	dispatch: () => {},
 	restart: async () => {},
 	addReaction: () => undefined,
