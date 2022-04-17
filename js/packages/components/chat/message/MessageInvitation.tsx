@@ -17,12 +17,12 @@ import { base64ToURLBase64 } from '../../utils'
 import { UnifiedText } from '../../shared-components/UnifiedText'
 
 export const MessageInvitationButton: React.FC<{
-	onPress?: any
+	onPress?: () => void
 	activeOpacity: any
 	backgroundColor: any
 	icon: any
 	color: any
-	title: any
+	title: string
 	styleOpacity?: any
 	disabled?: boolean
 	loading?: boolean
@@ -62,7 +62,14 @@ export const MessageInvitationButton: React.FC<{
 				) : (
 					<Icon name={icon} width={24} height={24} fill={color} style={[opacity(styleOpacity)]} />
 				)}
-				<UnifiedText style={[text.align.center, text.bold, opacity(styleOpacity), { color }]}>
+				<UnifiedText
+					style={[
+						text.align.center,
+						text.bold,
+						opacity(styleOpacity),
+						{ color, textTransform: 'uppercase' },
+					]}
+				>
 					{title}
 				</UnifiedText>
 			</View>
@@ -155,7 +162,7 @@ const MessageInvitationReceived: React.FC<{ message: InteractionGroupInvitation 
 	return (
 		<>
 			<View style={[row.left, flex.align.center, flex.justify.center]}>
-				<UnifiedText style={[text.bold]}>
+				<UnifiedText style={[text.bold, { textTransform: 'uppercase' }]}>
 					{t('chat.one-to-one.contact-request-box.group-invitation')}
 				</UnifiedText>
 			</View>

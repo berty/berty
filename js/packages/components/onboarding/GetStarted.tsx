@@ -44,7 +44,7 @@ export const GetStarted: ScreenFC<'Onboarding.GetStarted'> = ({ navigation: { na
 							text.align.center,
 							text.size.large,
 							text.bold,
-							{ color: colors['background-header'] },
+							{ color: colors['background-header'], textTransform: 'uppercase' },
 						]}
 					>
 						{t('onboarding.getstarted.title')}

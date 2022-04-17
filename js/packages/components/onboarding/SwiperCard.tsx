@@ -1,7 +1,7 @@
 import { useThemeColor } from '@berty/store/hooks'
 import { useStyles } from '@berty/styles'
-import React from 'react'
-import { TouchableOpacity, View } from 'react-native'
+import React, { ComponentProps } from 'react'
+import { TextStyle, TouchableOpacity, View } from 'react-native'
 import { UnifiedText } from '../shared-components/UnifiedText'
 import { Card } from '../shared-components/Card'
 import Button from './Button'
@@ -10,13 +10,13 @@ const SwiperCard: React.FC<{
 	title: string
 	desc?: string
 	header?: string
-	button?: { text: string; onPress: () => Promise<void> | void; status?: 'primary' | 'secondary' }
+	button?: {
+		text: string
+	} & ComponentProps<typeof Button>
 	secondButton?: {
 		text: string
-		onPress: () => Promise<void> | void
-		status?: 'primary' | 'secondary'
-	}
-	skip?: { text: string; onPress: () => void }
+	} & ComponentProps<typeof Button>
+	skip?: { text: string; onPress: () => void; textStyle: TextStyle | TextStyle[] }
 }> = ({ children, desc, header, title, button, skip, secondButton }) => {
 	const [{ text, padding, margin }] = useStyles()
 	const colors = useThemeColor()
@@ -54,21 +54,18 @@ const SwiperCard: React.FC<{
 						</UnifiedText>
 					) : null}
 					{children}
-					{button ? (
-						<Button status={button.status} onPress={button.onPress}>
-							{button.text}
-						</Button>
-					) : null}
-					{secondButton ? (
-						<Button status={secondButton.status} onPress={secondButton.onPress}>
-							{secondButton.text}
-						</Button>
-					) : null}
+					{button ? <Button {...button}>{button.text}</Button> : null}
+					{secondButton ? <Button {...secondButton}>{secondButton.text}</Button> : null}
 
 					{skip ? (
 						<TouchableOpacity style={[margin.top.medium]} onPress={skip.onPress}>
 							<UnifiedText
-								style={[text.size.small, text.align.center, { color: colors['secondary-text'] }]}
+								style={[
+									text.size.small,
+									text.align.center,
+									{ color: colors['secondary-text'] },
+									skip.textStyle,
+								]}
 							>
 								{skip.text}
 							</UnifiedText>

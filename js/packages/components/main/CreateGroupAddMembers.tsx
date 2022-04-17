@@ -195,6 +195,7 @@ export const CreateGroupAddMembers: React.FC = () => {
 			</View>
 			<FooterCreateGroup
 				title={t('main.home.create-group.continue')}
+				titleStyle={{ textTransform: 'uppercase' }}
 				icon='arrow-forward-outline'
 				action={() => navigation.navigate('Main.CreateGroupFinalize')}
 			/>

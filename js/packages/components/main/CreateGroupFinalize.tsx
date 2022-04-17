@@ -229,6 +229,7 @@ export const CreateGroupFinalize: React.FC = () => {
 							<GroupInfo onGroupNameChange={setGroupName} />
 							<FooterCreateGroup
 								title={t('main.home.create-group.create-group')}
+								titleStyle={{ textTransform: 'uppercase' }}
 								action={() => {
 									createGroup()
 									playSound('groupCreated')
