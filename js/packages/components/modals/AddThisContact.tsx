@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next'
 
 import { useStyles } from '@berty/styles'
 import messengerMethodsHooks from '@berty/store/methods'
-import { useMessengerContext, useThemeColor } from '@berty/store'
+import { useThemeColor } from '@berty/store'
 import { dispatch as navDispatch } from '@berty/navigation/rootRef'
 import { useNavigation } from '@berty/navigation'
 import { useAppDispatch, useContactConversation } from '@berty/hooks'
@@ -71,7 +71,6 @@ const AddThisContact: React.FC<{
 	const [selectedContent, setSelectedContent] = useState('fingerprint')
 	const _styles = useStylesModal()
 	const { t } = useTranslation()
-	const ctx = useMessengerContext()
 	const dispatch = useAppDispatch()
 	const { dispatch: navigationDispatch } = useNavigation()
 	const convId = useContactConversation(publicKey)?.publicKey
@@ -88,7 +87,7 @@ const AddThisContact: React.FC<{
 				}),
 			)
 		}
-	}, [ctx, done, error, dispatch])
+	}, [done, error, dispatch])
 	if (convId) {
 		navigationDispatch(
 			CommonActions.reset({

@@ -15,7 +15,7 @@ import {
 import { selectPersistentOptions } from '@berty/redux/reducers/persistentOptions.reducer'
 import { EventEmitterContext } from '@berty/contexts/eventEmitter.context'
 
-import { MessengerContext, initialState } from './context'
+import { MessengerContext } from './context'
 import {
 	initialLaunch,
 	openingDaemon,
@@ -29,13 +29,9 @@ import {
 	syncAccountLanguage,
 } from './providerEffects'
 import { restart } from './providerCallbacks'
-import { reducer } from './reducer'
 
 export const MessengerProvider: React.FC = ({ children }) => {
-	const reduxDispatch = useAppDispatch()
-	const [state, dispatch] = React.useReducer(reducer, {
-		...initialState,
-	})
+	const dispatch = useAppDispatch()
 	const eventEmitter = useContext(EventEmitterContext)
 	const appState = useSelector(selectAppState)
 	const clearClients = useSelector(selectClearClients)
@@ -51,7 +47,7 @@ export const MessengerProvider: React.FC = ({ children }) => {
 	}, [appState])
 
 	useEffect(() => {
-		initialLaunch(dispatch, embedded)
+		initialLaunch(embedded)
 	}, [embedded])
 
 	useEffect(() => {
@@ -59,8 +55,8 @@ export const MessengerProvider: React.FC = ({ children }) => {
 	}, [embedded, appState, selectedAccount])
 
 	useEffect(() => {
-		openingClients(dispatch, appState, eventEmitter, daemonAddress, embedded, reduxDispatch)
-	}, [daemonAddress, embedded, eventEmitter, appState, selectedAccount, reduxDispatch])
+		openingClients(appState, eventEmitter, daemonAddress, embedded, dispatch)
+	}, [daemonAddress, embedded, eventEmitter, appState, selectedAccount, dispatch])
 
 	const initialListComplete = useAppSelector(state => state.messenger.initialListComplete)
 
@@ -69,8 +65,8 @@ export const MessengerProvider: React.FC = ({ children }) => {
 	}, [appState, initialListComplete])
 
 	useEffect(() => {
-		openingLocalSettings(dispatch, appState, selectedAccount)
-	}, [appState, selectedAccount])
+		openingLocalSettings(appState)
+	}, [appState])
 
 	const conversations = useConversationsDict()
 
@@ -87,26 +83,24 @@ export const MessengerProvider: React.FC = ({ children }) => {
 
 	useEffect(() => {
 		updateAccountsPreReady(appState, client, selectedAccount, account, protocolClient, embedded)
-	}, [appState, client, selectedAccount, account, protocolClient, embedded, dispatch])
+	}, [appState, client, selectedAccount, account, protocolClient, embedded])
 
 	useEffect(() => {
-		return closingDaemon(appState, clearClients, reduxDispatch)
-	}, [clearClients, appState, reduxDispatch])
+		return closingDaemon(appState, clearClients, dispatch)
+	}, [clearClients, appState, dispatch])
 
 	useEffect(() => {
-		return deletingStorage(appState, dispatch, embedded, selectedAccount)
+		return deletingStorage(appState, embedded, selectedAccount)
 	}, [appState, selectedAccount, embedded])
 
 	const callbackRestart = useCallback(
-		() => restart(embedded, selectedAccount, reduxDispatch),
-		[selectedAccount, embedded, reduxDispatch],
+		() => restart(embedded, selectedAccount, dispatch),
+		[selectedAccount, embedded, dispatch],
 	)
 
 	return (
 		<MessengerContext.Provider
 			value={{
-				...state,
-				dispatch,
 				restart: callbackRestart,
 			}}
 		>
