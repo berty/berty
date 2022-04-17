@@ -31,7 +31,6 @@ import {
 	toggleFromRendezvous,
 	toggleFromStaticRelay,
 } from '@berty/redux/reducers/networkConfig.reducer'
-import store from '@berty/redux/store'
 import { useAppDispatch, useAppSelector, useSetNetworkConfig } from '@berty/hooks'
 
 import { AccordionV2, AccordionAddItemV2, AccordionItemV2 } from './Accordion'
@@ -146,23 +145,6 @@ const NetworkBody: React.FC = () => {
 	const rendezvous = useAppSelector(selectRendezvous)
 	const bootstrap = useAppSelector(selectBootstrap)
 	const staticRelay = useAppSelector(selectStaticRelay)
-
-	// setNewConfig function: update the state + update the network config in the account service
-	const setNewConfig = useSetNetworkConfig()
-
-	useEffect(() => {
-		return () => {
-			// we should use an useAppSelector for getting this value
-			// but the value doesn't seem to be updated in the useEffect return callback
-			const parsedLocalNetworkConfig = selectParsedLocalNetworkConfig(store.getState())
-			const currentNetworkConfig = selectCurrentNetworkConfig(store.getState())
-
-			if (JSON.stringify(parsedLocalNetworkConfig) !== JSON.stringify(currentNetworkConfig)) {
-				setNewConfig(parsedLocalNetworkConfig)
-			}
-		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [])
 
 	return (
 		<View style={{ backgroundColor: colors['secondary-background'], flex: 1 }}>
@@ -380,6 +362,7 @@ const NetworkBody: React.FC = () => {
 
 export const Network: ScreenFC<'Settings.Network'> = () => {
 	const headerHeight = useHeaderHeight()
+	useSyncNetworkConfigOnScreenRemoved()
 
 	return (
 		<ModalProvider>
@@ -392,4 +375,24 @@ export const Network: ScreenFC<'Settings.Network'> = () => {
 			</IOSOnlyKeyboardAvoidingView>
 		</ModalProvider>
 	)
+}
+
+/**
+ * If the network config was changed in the UI,
+ * updates the node network config when the screen is removed
+ **/
+const useSyncNetworkConfigOnScreenRemoved = () => {
+	const navigation = useNavigation()
+	const parsedLocalNetworkConfig = useAppSelector(selectParsedLocalNetworkConfig)
+	const networkConfig = useSelector(selectCurrentNetworkConfig)
+	const setNetworkConfig = useSetNetworkConfig()
+	useEffect(() => {
+		if (JSON.stringify(parsedLocalNetworkConfig) !== JSON.stringify(networkConfig)) {
+			const effect = () => setNetworkConfig(parsedLocalNetworkConfig)
+			navigation.addListener('beforeRemove', effect)
+			return () => {
+				navigation.removeListener('beforeRemove', effect)
+			}
+		}
+	}, [navigation, parsedLocalNetworkConfig, networkConfig, setNetworkConfig])
 }
