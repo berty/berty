@@ -2,7 +2,7 @@ import { Platform } from 'react-native'
 import DocumentPicker from 'react-native-document-picker'
 
 import { getPath } from '@berty/rnutil/getPath'
-import { importAccount } from '@berty/store/providerCallbacks'
+import { importAccount } from '@berty/store/accountUtils'
 
 export const importAccountFromDocumentPicker = async (embedded: boolean) => {
 	try {

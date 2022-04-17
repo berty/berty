@@ -9,7 +9,6 @@ import {
 	storageGet,
 	storageSet,
 	useMessengerClient,
-	useMessengerContext,
 	useThemeColor,
 } from '@berty/store'
 import { useStyles } from '@berty/styles'
@@ -32,6 +31,7 @@ import {
 	useConversationsDict,
 	useAccount,
 	usePlaySound,
+	useRestart,
 } from '@berty/hooks'
 import { Player } from '@react-native-community/audio-toolkit'
 
@@ -345,7 +345,6 @@ const BodyDevTools: React.FC<{}> = withInAppNotification(({ showNotification }: 
 	const [{ padding, flex, margin, text }] = useStyles()
 	const { navigate } = useNavigation()
 	const navigation = useNavigation()
-	const ctx = useMessengerContext()
 	const { t } = useTranslation()
 	const tyberHosts = useRef<{ [key: string]: string[] }>({})
 	const [, setRerender] = useState(0)
@@ -354,6 +353,7 @@ const BodyDevTools: React.FC<{}> = withInAppNotification(({ showNotification }: 
 	const persistentOptions = useSelector(selectPersistentOptions)
 	const embedded = useSelector(selectEmbedded)
 	const client = useMessengerClient()
+	const restart = useRestart()
 	const daemonAddress = useSelector(selectDaemonAddress)
 
 	const addTyberHost = useCallback(
@@ -460,7 +460,7 @@ const BodyDevTools: React.FC<{}> = withInAppNotification(({ showNotification }: 
 							payload: { format: val },
 						}),
 					)
-					showNeedRestartNotification(showNotification, ctx, t)
+					showNeedRestartNotification(showNotification, restart, t)
 				}}
 			/>
 			<StringOptionInput
@@ -474,7 +474,7 @@ const BodyDevTools: React.FC<{}> = withInAppNotification(({ showNotification }: 
 							payload: { format: val },
 						}),
 					)
-					showNeedRestartNotification(showNotification, ctx, t)
+					showNeedRestartNotification(showNotification, restart, t)
 				}}
 			/>
 			<StringOptionInput
@@ -486,7 +486,7 @@ const BodyDevTools: React.FC<{}> = withInAppNotification(({ showNotification }: 
 				}
 				setOptionValue={async val => {
 					await storageSet(GlobalPersistentOptionsKeys.TyberHost, val)
-					showNeedRestartNotification(showNotification, ctx, t)
+					showNeedRestartNotification(showNotification, restart, t)
 				}}
 			/>
 			{Object.entries(tyberHosts.current).map(([hostname, ipAddresses]) => (
