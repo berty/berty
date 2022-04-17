@@ -168,6 +168,11 @@ export const restart = async (
 
 export const closeAccountWithProgress = async (dispatch: AppDispatch) => {
 	try {
+		console.log('flushing redux persistence')
+		await persistor.flush()
+		console.log('flushed redux persistence')
+		persistor.pause()
+		console.log('paused redux persistence')
 		const stream = await accountService.closeAccountWithProgress({})
 		stream.onMessage((msg, err) => {
 			if (err) {
@@ -191,8 +196,6 @@ export const closeAccountWithProgress = async (dispatch: AppDispatch) => {
 				}
 			}
 		})
-		await persistor.flush()
-		persistor.pause()
 		await stream.start()
 	} catch (err) {
 		console.warn('Failed to close node:', err)
