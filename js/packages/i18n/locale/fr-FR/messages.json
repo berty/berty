@@ -153,7 +153,7 @@
 			"proximity-button": "Communication hors-ligne",
 			"notifications-button": "Notifications",
 			"contact-convs-button": "Contacts et conversations",
-			"appearance-button": "",
+			"appearance-button": "Apparence",
 			"devices-button": "Périphériques et sauvegarde",
 			"accounts-button": "Comptes",
 			"network-button": "Réseau",
@@ -194,10 +194,10 @@
 			"request-button": "Autoriser les demandes de contact entrantes"
 		},
 		"devices-backup": {
-			"title": ""
+			"title": "Périphériques et Sauvegarde"
 		},
 		"security": {
-			"title": ""
+			"title": "Sécurité"
 		},
 		"network": {
 			"title": "Réseau",
@@ -406,7 +406,7 @@
 			}
 		},
 		"multi-member-settings": {
-			"title": "",
+			"title": "Paramètres de la conversation",
 			"media-button": "Médias, liens & documents",
 			"members-button": {
 				"title": "Membres"
@@ -445,7 +445,7 @@
 			"input-placeholder": "Écrivez ici..."
 		},
 		"one-to-one-settings": {
-			"title": "",
+			"title": "Paramètres de la conversation",
 			"media-button": "Médias, liens & documents",
 			"save-button": "Enregistrer la conversation sur un serveur"
 		},
