@@ -9,11 +9,11 @@ import { useThemeColor } from '@berty/store'
 import { useStyles } from '@berty/contexts/styles'
 import { useContact, useConversation } from '@berty/hooks'
 
-import { ButtonSetting } from '../shared-components/SettingsButtons'
-import { ContactAvatar } from '../avatars'
+import { ButtonSetting } from '@berty/components/shared-components/SettingsButtons'
+import { ContactAvatar } from '@berty/components/avatars'
 import EnableNotificationsButton from '@berty/components/chat/EnableNotificationsButton'
-import { UnifiedText } from '../shared-components/UnifiedText'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
+import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 
 const OneToOneHeader: React.FC<{ contact: any }> = ({ contact }) => {
 	const { text, padding, flex } = useStyles()

@@ -17,7 +17,7 @@ import {
 import beapi from '@berty/api'
 import { useConversation } from '@berty/hooks'
 
-import { ButtonSetting, FactionButtonSetting } from '../shared-components'
+import { ButtonSetting, FactionButtonSetting } from '@berty/components/shared-components'
 import { useSelector } from 'react-redux'
 import { selectProtocolClient } from '@berty/redux/reducers/ui.reducer'
 

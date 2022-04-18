@@ -3,20 +3,22 @@ import { View, ScrollView, Share, StatusBar, TouchableOpacity, Platform } from '
 import { Layout } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 import Clipboard from '@react-native-clipboard/clipboard'
+import QRCode from 'react-native-qrcode-svg'
+import ImagePicker, { ImageOrVideo } from 'react-native-image-crop-picker'
 
 import beapi from '@berty/api'
-import QRCode from 'react-native-qrcode-svg'
 import { useStyles } from '@berty/contexts/styles'
 import { ScreenFC, useNavigation } from '@berty/navigation'
 import { Maybe, useMessengerClient, useThemeColor } from '@berty/store'
 import { useConversationMembersDict, useConversation } from '@berty/hooks'
-
-import { ButtonSetting, FactionButtonSetting } from '../shared-components/SettingsButtons'
+import {
+	ButtonSetting,
+	FactionButtonSetting,
+} from '@berty/components/shared-components/SettingsButtons'
 import logo from '@berty/assets/images/1_berty_picto.png'
-import { MemberAvatar, MultiMemberAvatar } from '../avatars'
+import { MemberAvatar, MultiMemberAvatar } from '@berty/components/avatars'
 import EnableNotificationsButton from '@berty/components/chat/EnableNotificationsButton'
-import ImagePicker, { ImageOrVideo } from 'react-native-image-crop-picker'
-import { UnifiedText } from '../shared-components/UnifiedText'
+import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 
 const GroupChatSettingsHeader: React.FC<{ publicKey: Maybe<string> }> = ({ publicKey }) => {

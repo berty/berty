@@ -10,7 +10,7 @@ import { Icon } from '@ui-kitten/components'
 import mapValues from 'lodash/mapValues'
 import { useSelector } from 'react-redux'
 
-import * as RawComponents from '@berty/components'
+import * as RawComponents from '@berty/screens'
 import { useThemeColor } from '@berty/store'
 import { useStyles } from '@berty/contexts/styles'
 import {

@@ -9,11 +9,10 @@ import { ScreenFC } from '@berty/navigation'
 import { useStylesBertyId, useThemeColor } from '@berty/store'
 import { useStyles } from '@berty/contexts/styles'
 import { useConversation } from '@berty/hooks'
-import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
+import { MultiMemberAvatar } from '@berty/components/avatars'
+import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import logo from '@berty/assets/images/1_berty_picto.png'
-
-import { MultiMemberAvatar } from '../avatars'
-import { UnifiedText } from '../shared-components/UnifiedText'
+import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 
 const styleBertyIdOptions = {
 	iconIdSize: 30,

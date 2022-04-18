@@ -20,11 +20,11 @@ import { useConversation, useLastConvInteraction } from '@berty/hooks'
 import AndroidKeyboardAdjust from 'react-native-android-keyboard-adjust'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 
-import { ChatDate } from './common'
-import { MultiMemberAvatar } from '../avatars'
-import { MessageList } from './MessageList'
-import { ChatFooter } from './footer/ChatFooter'
-import { UnifiedText } from '../shared-components/UnifiedText'
+import { ChatDate } from '@berty/components/chat/common'
+import { MultiMemberAvatar } from '@berty/components/avatars'
+import { MessageList } from '@berty/components/chat/MessageList'
+import { ChatFooter } from '@berty/components/chat/footer/ChatFooter'
+import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 
 //
 // MultiMember

@@ -12,9 +12,9 @@ import { useMessengerClient, useThemeColor } from '@berty/store'
 import { selectInvitationListMembers } from '@berty/redux/reducers/groupCreationForm.reducer'
 import { useAllContacts, useAppDispatch, useAppSelector, useConversation } from '@berty/hooks'
 
-import { FooterCreateGroup } from '../main/CreateGroupFooter'
-import { Header, MemberList } from '../main/CreateGroupAddMembers'
-import { ContactPicker } from '../shared-components'
+import { FooterCreateGroup } from '@berty/components/main/CreateGroupFooter'
+import { Header, MemberList } from '@berty/components/main/CreateGroupAddMembers'
+import { ContactPicker } from '@berty/components/shared-components'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 
 export const MultiMemberSettingsAddMembers: ScreenFC<'Group.MultiMemberSettingsAddMembers'> = ({

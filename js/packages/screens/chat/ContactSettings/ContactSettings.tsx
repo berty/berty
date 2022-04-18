@@ -7,11 +7,11 @@ import { useThemeColor } from '@berty/store'
 import { ScreenFC } from '@berty/navigation'
 import { useContact, useConversation } from '@berty/hooks'
 
-import { FingerprintContent } from '../shared-components/FingerprintContent'
-import { TabBar } from '../shared-components/TabBar'
-import { ContactAvatar } from '../avatars'
+import { FingerprintContent } from '@berty/components/shared-components/FingerprintContent'
+import { TabBar } from '@berty/components/shared-components/TabBar'
+import { ContactAvatar } from '@berty/components/avatars'
 import UserDevicesList from '@berty/components/chat/DeviceList'
-import { UnifiedText } from '../shared-components/UnifiedText'
+import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 
 const ContactSettingsHeaderContent: React.FC = ({ children }) => {
 	const { margin } = useStyles()

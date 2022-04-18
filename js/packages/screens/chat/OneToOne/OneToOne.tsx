@@ -13,10 +13,10 @@ import { IOSOnlyKeyboardAvoidingView } from '@berty/rnutil/keyboardAvoiding'
 import { useContact, useConversation } from '@berty/hooks'
 import AndroidKeyboardAdjust from 'react-native-android-keyboard-adjust'
 
-import { ContactAvatar } from '../avatars'
-import { ChatDate } from './common'
-import { MessageList } from '../chat/MessageList'
-import { ChatFooter } from './footer/ChatFooter'
+import { ContactAvatar } from '@berty/components/avatars'
+import { ChatDate } from '@berty/components/chat/common'
+import { MessageList } from '@berty/components/chat/MessageList'
+import { ChatFooter } from '@berty/components/chat/footer/ChatFooter'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 
 //

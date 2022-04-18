@@ -32,12 +32,12 @@ import {
 import { useConversationInteractions } from '@berty/hooks'
 import RNFS from 'react-native-fs'
 
-import { getSource } from '../utils'
-import { timeFormat } from '../helpers'
-import { isBertyDeepLink } from '../chat/message/UserMessageComponents'
+import { getSource } from '@berty/components/utils'
+import { timeFormat } from '@berty/components/helpers'
+import { isBertyDeepLink } from '@berty/components/chat/message/UserMessageComponents'
 import { useSelector } from 'react-redux'
 import { selectProtocolClient } from '@berty/redux/reducers/ui.reducer'
-import { UnifiedText } from '../shared-components/UnifiedText'
+import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 
 const initialLayout = { width: Dimensions.get('window').width }
 const linkify = LinkifyIt().tlds(tlds, true)

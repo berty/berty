@@ -8,8 +8,8 @@ import { ScreenFC } from '@berty/navigation'
 import { Maybe, useThemeColor } from '@berty/store'
 import { useMember } from '@berty/hooks'
 
-import { FactionButtonSetting } from '../shared-components/SettingsButtons'
-import { MemberAvatar } from '../avatars'
+import { FactionButtonSetting } from '@berty/components/shared-components/SettingsButtons'
+import { MemberAvatar } from '@berty/components/avatars'
 import UserDevicesList from '@berty/components/chat/DeviceList'
 
 const ChatSettingsMemberDetailHeader: React.FC<{
