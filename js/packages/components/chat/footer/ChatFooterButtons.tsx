@@ -3,8 +3,9 @@ import { TouchableOpacity, TouchableOpacityProps, View, ActivityIndicator } from
 import { Icon } from '@ui-kitten/components'
 
 import { useThemeColor } from '@berty/store'
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 import { UnifiedText } from '../../shared-components/UnifiedText'
+import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 
 const chatInputButtonSizeMultiplier = 36
 
@@ -18,7 +19,7 @@ const ChatInputButton: React.FC<{
 	vOffset?: number
 	loading?: boolean
 }> = React.memo(({ onPress, disabled, iconName, iconPack, size, iconRatio, vOffset, loading }) => {
-	const [, { scaleSize }] = useStyles()
+	const { scaleSize } = useAppDimensions()
 	const colors = useThemeColor()
 
 	if (size === undefined) {
@@ -88,7 +89,8 @@ export const MoreButton: React.FC<{
 	disabled?: boolean
 }> = React.memo(({ n, onPress, disabled }) => {
 	const colors = useThemeColor()
-	const [{ padding, border }, { scaleSize }] = useStyles()
+	const { padding, border } = useStyles()
+	const { scaleSize } = useAppDimensions()
 	return (
 		<TouchableOpacity
 			style={[

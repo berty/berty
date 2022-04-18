@@ -4,7 +4,7 @@ import { CheckBox, Icon } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 
 import beapi from '@berty/api'
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 import { useThemeColor } from '@berty/store/hooks'
 
 import { ContactAvatar } from '../avatars'
@@ -17,10 +17,11 @@ import {
 import { berty } from '@berty/api/root.pb'
 import { useAppDispatch, useAppSelector, useContactSearchResults } from '@berty/hooks'
 import { UnifiedText } from './UnifiedText'
+import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 
 // Styles
 const useStylesCreateGroup = () => {
-	const [{ border }] = useStyles()
+	const { border } = useStyles()
 	const colors = useThemeColor()
 
 	return {
@@ -40,7 +41,8 @@ type ContactItemProps = {
 }
 
 const ContactItem: React.FC<ContactItemProps> = ({ contact, added, separateBar = true }) => {
-	const [{ row, margin, padding }, { scaleSize }] = useStyles()
+	const { row, margin, padding } = useStyles()
+	const { scaleSize } = useAppDimensions()
 	const _styles = useStylesCreateGroup()
 	const dispatch = useAppDispatch()
 
@@ -84,7 +86,8 @@ const ContactItem: React.FC<ContactItemProps> = ({ contact, added, separateBar =
 }
 
 export const ContactPicker: React.FC<ContactPickerProps> = ({ accountContacts }) => {
-	const [{ padding, row, margin, border }, { scaleHeight, scaleSize }] = useStyles()
+	const { padding, row, margin, border } = useStyles()
+	const { scaleHeight, scaleSize } = useAppDimensions()
 	const colors = useThemeColor()
 	const [searchText, setSearchText] = useState('')
 	const searchContacts = useContactSearchResults(searchText)

@@ -3,7 +3,7 @@ import { TouchableOpacity, View } from 'react-native'
 import { CommonActions } from '@react-navigation/native'
 
 import beapi from '@berty/api'
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 import { dispatch } from '@berty/navigation'
 import { useConversation } from '@berty/hooks'
 
@@ -12,7 +12,7 @@ import { ConversationAvatar } from '../avatars'
 import { UnifiedText } from '../shared-components/UnifiedText'
 
 const MessageReceived: React.FC<any> = ({ onClose, title, message, ...props }) => {
-	const [{ text }] = useStyles()
+	const { text } = useStyles()
 	const _styles = useStylesNotification()
 
 	const { payload } = props?.additionalProps?.payload || {}

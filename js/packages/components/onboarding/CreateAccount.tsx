@@ -13,7 +13,7 @@ import {
 	useThemeColor,
 	accountService,
 } from '@berty/store'
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 import { IOSOnlyKeyboardAvoidingView } from '@berty/rnutil/keyboardAvoiding'
 
 import { CreateAccountBox } from './CreateAccountBox'
@@ -23,7 +23,7 @@ import { UnifiedText } from '../shared-components/UnifiedText'
 import { PermissionType } from '@berty/rnutil/checkPermissions'
 
 const CreateAccountBody = () => {
-	const [{ padding, margin, border, text }] = useStyles()
+	const { padding, margin, border, text } = useStyles()
 	const colors = useThemeColor()
 	const [defaultName, setDefaultName] = React.useState('')
 	const { t } = useTranslation()

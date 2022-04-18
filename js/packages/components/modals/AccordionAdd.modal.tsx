@@ -4,7 +4,7 @@ import { View } from 'react-native'
 import Button from '@berty/components/onboarding/Button'
 import { TextInput } from '@berty/components/shared-components/TextInput'
 import { useThemeColor } from '@berty/store'
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 import { multiaddr } from 'multiaddr'
 import { useTranslation } from 'react-i18next'
 import { UnifiedText } from '../shared-components/UnifiedText'
@@ -15,7 +15,7 @@ export const AccordionAdd: FC<{
 	alreadyExistingUrls?: string[]
 	onSubmit: (data: { alias: string; url: string }) => void
 }> = ({ title, onSubmit, alreadyExistingAliases, alreadyExistingUrls }) => {
-	const [{ margin, text }] = useStyles()
+	const { margin, text } = useStyles()
 	const colors = useThemeColor()
 	const [alias, setAlias] = useState<string>('')
 	const [url, setUrl] = useState<string>('')

@@ -6,16 +6,18 @@ import { useTranslation } from 'react-i18next'
 import beapi from '@berty/api'
 import { ScreenFC } from '@berty/navigation'
 import { useThemeColor } from '@berty/store'
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 import { useContact, useConversation } from '@berty/hooks'
 
 import { ButtonSetting } from '../shared-components/SettingsButtons'
 import { ContactAvatar } from '../avatars'
 import EnableNotificationsButton from '@berty/components/chat/EnableNotificationsButton'
 import { UnifiedText } from '../shared-components/UnifiedText'
+import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 
 const OneToOneHeader: React.FC<{ contact: any }> = ({ contact }) => {
-	const [{ text, padding, flex }, { scaleSize }] = useStyles()
+	const { text, padding, flex } = useStyles()
+	const { scaleSize } = useAppDimensions()
 	const colors = useThemeColor()
 
 	return (
@@ -41,7 +43,7 @@ const OneToOneBody: React.FC<{
 	isIncoming: boolean
 	navigation: ComponentProps<typeof OneToOneSettings>['navigation']
 }> = ({ publicKey, isIncoming, navigation }) => {
-	const [{ padding }] = useStyles()
+	const { padding } = useStyles()
 	const { t } = useTranslation()
 
 	return (
@@ -71,7 +73,8 @@ export const OneToOneSettings: ScreenFC<'Chat.OneToOneSettings'> = ({
 	route: { params },
 	navigation,
 }) => {
-	const [{ padding }, { scaleSize }] = useStyles()
+	const { padding } = useStyles()
+	const { scaleSize } = useAppDimensions()
 	const colors = useThemeColor()
 	const { convId } = params
 	const conv = useConversation(convId)

@@ -3,7 +3,7 @@ import { View, ScrollView, StatusBar } from 'react-native'
 import { Layout } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 import { ScreenFC } from '@berty/navigation'
 import { Maybe, useThemeColor } from '@berty/store'
 import { useMember } from '@berty/hooks'
@@ -17,7 +17,7 @@ const ChatSettingsMemberDetailHeader: React.FC<{
 	memberPk: Maybe<string>
 }> = ({ convId, memberPk }) => {
 	const member = useMember(convId, memberPk)
-	const [{ padding, row, absolute, border }] = useStyles()
+	const { padding, row, absolute, border } = useStyles()
 
 	return (
 		<View style={[padding.medium, padding.top.scale(50)]}>
@@ -35,7 +35,7 @@ const ChatSettingsMemberDetailBody: React.FC<{
 	memberPk: string
 	navigation: ComponentProps<typeof ChatSettingsMemberDetail>['navigation']
 }> = ({ convId, memberPk }) => {
-	const [{ padding, margin }] = useStyles()
+	const { padding, margin } = useStyles()
 	const { t } = useTranslation()
 
 	return (
@@ -59,7 +59,7 @@ export const ChatSettingsMemberDetail: ScreenFC<'Group.ChatSettingsMemberDetail'
 	const { convId, memberPk, displayName } = route.params
 	const member = useMember(convId, memberPk)
 	const colors = useThemeColor()
-	const [{ padding }] = useStyles()
+	const { padding } = useStyles()
 
 	React.useLayoutEffect(() => {
 		navigation.setOptions({

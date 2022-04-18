@@ -4,7 +4,7 @@ import EmojiBoard from 'react-native-emoji-board'
 
 import beapi from '@berty/api'
 import { useMessengerClient, useThemeColor } from '@berty/store'
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 import { usePlaySound } from '@berty/hooks'
 
 import { useModal } from '../../providers/modal.provider'
@@ -17,7 +17,7 @@ export const EmojiKeyboard: FC<{ conversationPublicKey: string; targetCid: strin
 	const playSound = usePlaySound()
 	const { hideAll } = useModal()
 	const colors = useThemeColor()
-	const [{ padding }] = useStyles()
+	const { padding } = useStyles()
 
 	return (
 		<View style={[padding.top.small]}>

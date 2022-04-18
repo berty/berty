@@ -3,7 +3,7 @@ import { View, ScrollView } from 'react-native'
 import { Layout } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 import { globals } from '@berty/config'
 import { useThemeColor } from '@berty/store/hooks'
 
@@ -75,7 +75,7 @@ const Button: React.FC<ValueType> = ({ kind: rawKind, name, link }) => {
 }
 
 const BodyAddContactList = () => {
-	const [{ padding, flex, margin }] = useStyles()
+	const { padding, flex, margin } = useStyles()
 
 	return (
 		<View style={[padding.medium, flex.tiny, margin.bottom.small]}>

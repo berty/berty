@@ -13,13 +13,14 @@ import {
 	InteractionUserMessage,
 	ParsedInteraction,
 } from '@berty/store'
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 import { WelshMessengerServiceClient } from '@berty/grpc-bridge/welsh-clients.gen'
 import { useNavigation } from '@berty/navigation'
 
 import { timeFormat } from '../../helpers'
 import { useTranslation } from 'react-i18next'
 import { UnifiedText } from '../../shared-components/UnifiedText'
+import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 
 const READ_MORE_MESSAGE_LENGTH = 325
 const READ_MORE_SUBSTR_LENGTH = 300
@@ -29,7 +30,7 @@ const additionalTlds = ['crypto']
 const linkify_conf = linkify().tlds([...tlds, ...additionalTlds], true)
 
 const useStylesMessage = () => {
-	const [{ text, padding }] = useStyles()
+	const { text, padding } = useStyles()
 	const colors = useThemeColor()
 	return {
 		dateMessage: [text.size.tiny, text.light, { color: colors['secondary-text'] }],
@@ -79,7 +80,8 @@ export const HyperlinkUserMessage: React.FC<{
 	const client = useMessengerClient()
 	const colors = useThemeColor()
 	const navigation = useNavigation()
-	const [{ margin, padding, column, border, text }, { scaleSize }] = useStyles()
+	const { margin, padding, column, border, text } = useStyles()
+	const { scaleSize } = useAppDimensions()
 	const [isReadMore, setReadMore] = useState<boolean>(true)
 	const { t } = useTranslation()
 
@@ -162,7 +164,8 @@ export const TimestampStatusUserMessage: React.FC<{
 	cmd: any
 }> = ({ inte, lastInte, isFollowedMessage, cmd }) => {
 	const sentDate = pbDateToNum(inte.sentDate)
-	const [{ row, margin, padding, flex }, { scaleSize }] = useStyles()
+	const { row, margin, padding, flex } = useStyles()
+	const { scaleSize } = useAppDimensions()
 	const colors = useThemeColor()
 	const styles = useStylesMessage()
 	const { t } = useTranslation()

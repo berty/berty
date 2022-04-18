@@ -7,11 +7,12 @@ import Clipboard from '@react-native-clipboard/clipboard'
 import beapi from '@berty/api'
 import { ScreenFC } from '@berty/navigation'
 import { useStylesBertyId, useThemeColor } from '@berty/store'
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 import { useConversation } from '@berty/hooks'
+import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
+import logo from '@berty/assets/images/1_berty_picto.png'
 
 import { MultiMemberAvatar } from '../avatars'
-import logo from '@berty/assets/images/1_berty_picto.png'
 import { UnifiedText } from '../shared-components/UnifiedText'
 
 const styleBertyIdOptions = {
@@ -23,7 +24,7 @@ const styleBertyIdOptions = {
 }
 
 const SelectedContent: React.FC<{ conv: beapi.messenger.IConversation }> = ({ conv }) => {
-	const [{ padding, margin, border, column, text }] = useStyles()
+	const { padding, margin, border, column, text } = useStyles()
 	const { qrCodeSize, requestAvatarSize, styleBertyIdContent } =
 		useStylesBertyId(styleBertyIdOptions)
 
@@ -76,7 +77,7 @@ const SelectedContent: React.FC<{ conv: beapi.messenger.IConversation }> = ({ co
 }
 
 const BertyIdShare: React.FC<{ url?: string | null }> = ({ url }) => {
-	const [{ row, border, flex }] = useStyles()
+	const { row, border, flex } = useStyles()
 	const colors = useThemeColor()
 	const { styleBertyIdButton, iconShareSize } = useStylesBertyId(styleBertyIdOptions)
 	if (!url) {
@@ -118,7 +119,8 @@ const BertyIdShare: React.FC<{ url?: string | null }> = ({ url }) => {
 }
 
 const MultiMemberComponent: React.FC<{ conv: beapi.messenger.IConversation }> = ({ conv }) => {
-	const [{ padding }, { scaleSize }] = useStyles()
+	const { padding } = useStyles()
+	const { scaleSize } = useAppDimensions()
 	const colors = useThemeColor()
 
 	return (

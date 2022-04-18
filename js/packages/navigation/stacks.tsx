@@ -12,7 +12,7 @@ import { useSelector } from 'react-redux'
 
 import * as RawComponents from '@berty/components'
 import { useThemeColor } from '@berty/store'
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 import {
 	MESSENGER_APP_STATE,
 	selectAppState,
@@ -22,9 +22,10 @@ import {
 import { useAppDispatch } from '@berty/hooks'
 
 import { ScreensParams } from './types'
+import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 
 export const CustomTitleStyle: () => any = () => {
-	const [{ text }] = useStyles()
+	const { text } = useStyles()
 
 	return [
 		text.size.large,
@@ -151,7 +152,7 @@ const NavigationStack = createNativeStackNavigator<ScreensParams>()
 export const Navigation: React.FC = React.memo(() => {
 	const appState = useSelector(selectAppState)
 	const colors = useThemeColor()
-	const [, { scaleSize }] = useStyles()
+	const { scaleSize } = useAppDimensions()
 	const { t }: any = useTranslation()
 	const { dispatch } = useNavigation()
 

@@ -4,7 +4,7 @@ import emojiSource from 'emoji-datasource'
 import 'string.fromcodepoint'
 
 import { WelshProtocolServiceClient } from '@berty/grpc-bridge/welsh-clients.gen'
-import { Emoji } from '@berty/styles/types'
+import { Emoji } from '@berty/contexts/styles/types'
 
 let cache: { cid: string; prom: Promise<string> }[] = []
 

@@ -3,7 +3,7 @@ import { ActivityIndicator, TouchableHighlight, View, ViewProps, ViewStyle } fro
 import { Icon } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 
-import { defaultStylesDeclaration, useStyles } from '@berty/styles'
+import { useStyles, defaultStylesDeclaration } from '@berty/contexts/styles'
 import beapi from '@berty/api'
 import { pbDateToNum, useThemeColor, ParsedInteraction } from '@berty/store'
 import { useNavigation } from '@berty/navigation'
@@ -16,6 +16,7 @@ import { UnreadCount } from './UnreadCount'
 import { selectChatInputIsSending } from '@berty/redux/reducers/chatInputsVolatile.reducer'
 import { Suggestion, Configuration } from '@berty/redux/reducers/persistentOptions.reducer'
 import { UnifiedText } from '../../shared-components/UnifiedText'
+import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 
 type AddBotCallback = React.Dispatch<
 	React.SetStateAction<{
@@ -81,7 +82,8 @@ const ConversationsItem: React.FC<
 	const isAccepted = contact && contact.state === beapi.messenger.Contact.State.Accepted
 	const isIncoming = contact && contact.state === beapi.messenger.Contact.State.IncomingRequest
 
-	const [{ row, border, flex, padding, text, opacity, margin }, { scaleSize }] = useStyles()
+	const { row, border, flex, padding, text, opacity, margin } = useStyles()
+	const { scaleSize } = useAppDimensions()
 	const colors = useThemeColor()
 	const { navigate } = useNavigation()
 	const chatInputText = useAppSelector(state => selectChatInputText(state, publicKey))
@@ -296,7 +298,8 @@ const SuggestionsItem: React.FC<{
 	isLast?: boolean
 	style?: ViewStyle
 }> = React.memo(({ displayName, desc, link, addBot, icon, style, isLast = false }) => {
-	const [{ row, border, flex, padding, text, margin }, { scaleSize }] = useStyles()
+	const { row, border, flex, padding, text, margin } = useStyles()
+	const { scaleSize } = useAppDimensions()
 	const colors = useThemeColor()
 
 	return (
@@ -404,7 +407,7 @@ export const Conversations: React.FC<
 		addBot: AddBotCallback
 	}
 > = React.memo(({ items, suggestions, configurations, addBot }) => {
-	const [{ padding }] = useStyles()
+	const { padding } = useStyles()
 	const { t } = useTranslation()
 	const colors = useThemeColor()
 

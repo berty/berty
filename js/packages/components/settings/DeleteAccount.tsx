@@ -4,14 +4,14 @@ import { Icon } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 import { useNavigation as useReactNavigation } from '@react-navigation/core'
 
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 import { useThemeColor } from '@berty/store'
 import { ScreenFC } from '@berty/navigation'
 import { UnifiedText } from '../shared-components/UnifiedText'
 import { useDeleteAccount } from '@berty/hooks'
 
 const useStylesDeleteAccount = () => {
-	const [{ width, height, border, text, padding, margin }] = useStyles()
+	const { width, height, border, text, padding, margin } = useStyles()
 	const colors = useThemeColor()
 
 	return {
@@ -48,7 +48,7 @@ const _deleteAccountStyles = StyleSheet.create({
 
 const DeleteAccountHeader: React.FC<{ title: string }> = ({ title }) => {
 	const _styles = useStylesDeleteAccount()
-	const [{ margin, text, border, row, column }] = useStyles()
+	const { margin, text, border, row, column } = useStyles()
 	const colors = useThemeColor()
 
 	return (
@@ -88,7 +88,7 @@ const DeleteAccountHeader: React.FC<{ title: string }> = ({ title }) => {
 }
 
 const DeleteAccountError: React.FC<{ error: string }> = ({ error }) => {
-	const [{ padding, margin, text }] = useStyles()
+	const { padding, margin, text } = useStyles()
 	const colors = useThemeColor()
 
 	return (
@@ -107,7 +107,7 @@ const DELETE_STR = 'delete'
 const DeleteAccountContent: React.FC<{}> = () => {
 	const deleteAccount = useDeleteAccount()
 	const _styles = useStylesDeleteAccount()
-	const [{ row, margin, border, padding, text, column }] = useStyles()
+	const { row, margin, border, padding, text, column } = useStyles()
 	const colors = useThemeColor()
 	const navigation = useReactNavigation()
 	const { t }: any = useTranslation()
@@ -200,7 +200,7 @@ const DeleteAccountContent: React.FC<{}> = () => {
 
 export const DeleteAccount: ScreenFC<'Settings.DeleteAccount'> = () => {
 	const [layout, setLayout] = useState(0)
-	const [{ padding, border }] = useStyles()
+	const { padding, border } = useStyles()
 	const colors = useThemeColor()
 	const { t }: any = useTranslation()
 

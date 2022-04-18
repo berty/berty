@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { TouchableOpacity, View, TransformsStyle } from 'react-native'
 import { Icon } from '@ui-kitten/components'
 
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 import { useThemeColor } from '@berty/store/hooks'
 import { UnifiedText } from './UnifiedText'
 
@@ -33,7 +33,7 @@ type TabBarProps = {
 
 // Styles
 const useStylesTab = () => {
-	const [{ text, opacity, border }] = useStyles()
+	const { text, opacity, border } = useStyles()
 	const colors = useThemeColor()
 
 	return {
@@ -64,7 +64,7 @@ const TabBarItem: React.FC<TabItemProps> = ({
 	buttonDisabled = false,
 }) => {
 	const _styles = useStylesTab()
-	const [{ flex, text, padding }] = useStyles()
+	const { flex, text, padding } = useStyles()
 	const colors = useThemeColor()
 
 	return (
@@ -117,7 +117,7 @@ const TabBarItem: React.FC<TabItemProps> = ({
 // TabBarList
 export const TabBar: React.FC<TabBarProps> = ({ tabs, onTabChange }) => {
 	const [selectedTab, setEnable] = useState(tabs[0].key)
-	const [{ margin, row }] = useStyles()
+	const { margin, row } = useStyles()
 
 	useEffect(() => {
 		if (typeof onTabChange === 'function') {

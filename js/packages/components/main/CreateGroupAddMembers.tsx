@@ -11,7 +11,7 @@ import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { useNavigation } from '@berty/navigation'
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 import { useThemeColor } from '@berty/store'
 import {
 	removeMemberFromInvitationListById,
@@ -25,6 +25,7 @@ import { ContactPicker } from '../shared-components'
 import { FooterCreateGroup } from './CreateGroupFooter'
 import { ContactAvatar } from '../avatars'
 import { UnifiedText } from '../shared-components/UnifiedText'
+import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 
 export const Header: React.FC<{
 	title: string
@@ -44,8 +45,8 @@ export const Header: React.FC<{
 	onPress = null,
 	style = null,
 }) => {
-	const [{ height, border, margin, row, padding, text, column, opacity }, { scaleHeight }] =
-		useStyles()
+	const { height, border, margin, row, padding, text, column, opacity } = useStyles()
+	const { scaleHeight } = useAppDimensions()
 	const colors = useThemeColor()
 
 	return (
@@ -101,7 +102,8 @@ export const Header: React.FC<{
 const MemberItem: React.FC<{
 	member: berty.messenger.v1.IContact
 }> = ({ member }) => {
-	const [{ padding, column, text, row, maxWidth, border }, { scaleSize }] = useStyles()
+	const { padding, column, text, row, maxWidth, border } = useStyles()
+	const { scaleSize } = useAppDimensions()
 	const colors = useThemeColor()
 	const dispatch = useDispatch<AppDispatch>()
 
@@ -152,7 +154,7 @@ const MemberItem: React.FC<{
 }
 
 export const MemberList = () => {
-	const [{ padding }] = useStyles()
+	const { padding } = useStyles()
 	const members = useSelector(selectInvitationListMembers)
 
 	return (
@@ -171,7 +173,8 @@ export const MemberList = () => {
 }
 
 export const CreateGroupAddMembers: React.FC = () => {
-	const [{ flex, margin }, { scaleHeight }] = useStyles()
+	const { flex, margin } = useStyles()
+	const { scaleHeight } = useAppDimensions()
 	const colors = useThemeColor()
 	const navigation = useNavigation()
 	const { t } = useTranslation()

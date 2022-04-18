@@ -2,13 +2,15 @@ import React from 'react'
 import { View } from 'react-native'
 import { Icon } from '@ui-kitten/components'
 
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 import messengerMethodsHooks from '@berty/store/methods'
 import { useThemeColor } from '@berty/store/hooks'
 import { UnifiedText } from './UnifiedText'
+import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 
 const useStylesHint = () => {
-	const [{ text, opacity, margin }, { fontScale }] = useStyles()
+	const { text, opacity, margin } = useStyles()
+	const { fontScale } = useAppDimensions()
 
 	return {
 		searchHintBodyText: [
@@ -26,7 +28,8 @@ const useStylesHint = () => {
 const _landingIconSize = 30
 
 export const HintBody = () => {
-	const [{ padding, opacity, row, text }, { scaleSize }] = useStyles()
+	const { padding, opacity, row, text } = useStyles()
+	const { scaleSize } = useAppDimensions()
 	const colors = useThemeColor()
 	const { searchHintBodyText } = useStylesHint()
 

@@ -1,4 +1,5 @@
-export { useStyles, Provider } from './hook'
+export { useStyles, StyleProvider } from './styles.context'
+export { AppDimensionsProvider } from '../app-dimensions.context'
 export type { ColorsTypes } from './types'
 export { defaultStylesDeclaration } from './map-declaration'
 export * from './helpers'

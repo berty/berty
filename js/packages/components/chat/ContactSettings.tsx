@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { View, ScrollView, ActivityIndicator, StatusBar } from 'react-native'
 import { useTranslation } from 'react-i18next'
 
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 import { useThemeColor } from '@berty/store'
 import { ScreenFC } from '@berty/navigation'
 import { useContact, useConversation } from '@berty/hooks'
@@ -14,7 +14,7 @@ import UserDevicesList from '@berty/components/chat/DeviceList'
 import { UnifiedText } from '../shared-components/UnifiedText'
 
 const ContactSettingsHeaderContent: React.FC = ({ children }) => {
-	const [{ margin }] = useStyles()
+	const { margin } = useStyles()
 	return <View style={[margin.top.big]}>{children}</View>
 }
 
@@ -22,7 +22,7 @@ const InfoTab: React.FC<{ contactPk: string }> = ({ contactPk }) => {
 	const { t } = useTranslation()
 	const contact = useContact(contactPk)
 	const conv = useConversation(contact?.conversationPublicKey || '')
-	const [{ text, padding }] = useStyles()
+	const { text, padding } = useStyles()
 
 	return (
 		<>
@@ -56,7 +56,7 @@ const SelectedContent: React.FC<{ contentName: string; publicKey: string }> = ({
 }
 
 const ContactSettingsHeader: React.FC<{ contact: any }> = ({ contact }) => {
-	const [{ border, padding, row, absolute, text }] = useStyles()
+	const { border, padding, row, absolute, text } = useStyles()
 	const colors = useThemeColor()
 	const { t } = useTranslation()
 	const [selectedContent, setSelectedContent] = useState('fingerprint')
@@ -110,7 +110,7 @@ export const ContactSettings: ScreenFC<'Chat.ContactSettings'> = ({
 	const { contactId } = route.params
 	const colors = useThemeColor()
 	const contact = useContact(contactId)
-	const [{ padding }] = useStyles()
+	const { padding } = useStyles()
 	if (!contact) {
 		goBack()
 		return (

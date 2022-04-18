@@ -3,7 +3,7 @@ import { TouchableOpacity } from 'react-native'
 import { Icon } from '@ui-kitten/components'
 
 import { useThemeColor } from '@berty/store'
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 
 import { getSource } from '../../utils'
 import { useSelector } from 'react-redux'
@@ -21,7 +21,7 @@ export const FileMessage: React.FC<{
 	const [, setSource] = useState('')
 	const [isLoading, setLoading] = useState(false)
 	const [isDownloaded] = useState(false)
-	const [{ margin }] = useStyles()
+	const { margin } = useStyles()
 
 	useEffect(() => {
 		if (!protocolClient) {

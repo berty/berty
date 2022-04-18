@@ -11,7 +11,7 @@ import Long from 'long'
 import { useTranslation } from 'react-i18next'
 
 import { Maybe, useMessengerClient, useMountEffect, useThemeColor } from '@berty/store'
-import { useStyles } from '@berty/styles'
+
 import {
 	removeActiveReplyInteraction,
 	resetChatInput,
@@ -46,6 +46,7 @@ import { AddFileMenu } from '../modals/add-file-modal/AddFileMenu.modal'
 import { EmojiBanner } from './emojis/EmojiBanner'
 import { useModal } from '../../providers/modal.provider'
 import { PermissionType } from '@berty/rnutil/checkPermissions'
+import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 
 type ChatFooterProps = {
 	convPK: string
@@ -86,7 +87,7 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 		const colors = useThemeColor()
 		const { navigate } = useNavigation()
 		const activeReplyInte = useAppSelector(state => selectActiveReplyInteraction(state, convPK))
-		const [, { scaleSize }] = useStyles()
+		const { scaleSize } = useAppDimensions()
 		const messengerClient = useMessengerClient()
 		const playSound = usePlaySound()
 		const conversation = useConversation(convPK)

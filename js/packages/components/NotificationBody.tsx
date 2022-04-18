@@ -4,7 +4,7 @@ import GestureRecognizer from 'react-native-swipe-gestures'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import beapi from '@berty/api'
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 import { useThemeColor, NotificationsInhibitor, SoundKey } from '@berty/store'
 import { selectPersistentOptions } from '@berty/redux/reducers/persistentOptions.reducer'
 import { useAppSelector, usePlaySound } from '@berty/hooks'
@@ -24,7 +24,7 @@ const NotificationContents: React.FC<{
 }
 
 const NotificationBody: React.FC<any> = props => {
-	const [{ border, flex, column }] = useStyles()
+	const { border, flex, column } = useStyles()
 	const colors = useThemeColor()
 	const insets = useSafeAreaInsets()
 

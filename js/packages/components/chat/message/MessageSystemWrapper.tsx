@@ -1,13 +1,15 @@
 import React from 'react'
 import { View } from 'react-native'
 
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 import { useThemeColor } from '@berty/store/hooks'
+import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 
 import Logo from '@berty/assets/logo/1_berty_picto.svg'
 
 const MessageSystemLogo = () => {
-	const [{ border, flex, margin, width, height }, { scaleSize }] = useStyles()
+	const { border, flex, margin, width, height } = useStyles()
+	const { scaleSize } = useAppDimensions()
 	const colors = useThemeColor()
 	const logoDiameter = 28
 	const diffSize = 6
@@ -48,7 +50,7 @@ export const MessageSystemWrapper: React.FC<{
 	styleContainer?: any
 	logo?: boolean
 }> = ({ children, styleContainer = {}, logo = true }) => {
-	const [{ padding, border, margin, width }] = useStyles()
+	const { padding, border, margin, width } = useStyles()
 	const colors = useThemeColor()
 	const logoDiameter = 28
 	return (

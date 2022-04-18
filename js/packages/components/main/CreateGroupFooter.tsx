@@ -2,9 +2,10 @@ import React from 'react'
 import { View, TouchableOpacity, ActivityIndicator, TextStyle } from 'react-native'
 import { Icon } from '@ui-kitten/components'
 
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 import { useThemeColor } from '@berty/store/hooks'
 import { UnifiedText } from '../shared-components/UnifiedText'
+import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 
 type FooterCreateGroupProps = {
 	title: string
@@ -15,7 +16,7 @@ type FooterCreateGroupProps = {
 }
 
 const useStylesCreateGroup = () => {
-	const [{ border, text }] = useStyles()
+	const { border, text } = useStyles()
 	return {
 		footerCreateGroupButton: border.radius.small,
 		footerCreateGroupText: text.size.medium,
@@ -29,7 +30,8 @@ export const FooterCreateGroup: React.FC<FooterCreateGroupProps> = ({
 	action,
 	loading,
 }) => {
-	const [{ row, padding, text }, { scaleSize }] = useStyles()
+	const { row, padding, text } = useStyles()
+	const { scaleSize } = useAppDimensions()
 	const colors = useThemeColor()
 	const _styles = useStylesCreateGroup()
 

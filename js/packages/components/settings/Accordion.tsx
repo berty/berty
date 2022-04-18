@@ -3,9 +3,10 @@ import { Divider, Icon } from '@ui-kitten/components'
 import { View, Animated, Easing, TouchableOpacity } from 'react-native'
 
 import { useThemeColor } from '@berty/store'
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 import { Toggle } from '../shared-components/Toggle'
 import { UnifiedText } from '../shared-components/UnifiedText'
+import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 
 const heightButton = 55
 
@@ -16,7 +17,7 @@ const AccordionIconV2: FC<{ name: string; pack?: string; fill?: string; size?: n
 	size = 20,
 }) => {
 	const colors = useThemeColor()
-	const [, { scaleSize }] = useStyles()
+	const { scaleSize } = useAppDimensions()
 
 	return (
 		<Icon
@@ -35,7 +36,8 @@ export const AccordionItemV2: FC<{
 	onToggleChange?: (list: any) => void
 	onPressModify?: () => void
 }> = ({ value, toggle, onToggleChange, onPressModify }) => {
-	const [{ margin, padding }, { scaleSize }] = useStyles()
+	const { margin, padding } = useStyles()
+	const { scaleSize } = useAppDimensions()
 
 	return (
 		<>
@@ -77,7 +79,8 @@ export const AccordionItemV2: FC<{
 export const AccordionAddItemV2: FC<{
 	onPress: () => void
 }> = ({ onPress }) => {
-	const [{ padding }, { scaleSize }] = useStyles()
+	const { padding } = useStyles()
+	const { scaleSize } = useAppDimensions()
 
 	return (
 		<>
@@ -109,7 +112,8 @@ export const AccordionV2: FC<{
 	title: string
 	icon?: string
 }> = ({ title, icon, children }) => {
-	const [{ margin, padding, border }, { scaleSize }] = useStyles()
+	const { margin, padding, border } = useStyles()
+	const { scaleSize } = useAppDimensions()
 	const colors = useThemeColor()
 	const [open, setOpen] = useState(false)
 	const animatedController = useRef(new Animated.Value(0)).current

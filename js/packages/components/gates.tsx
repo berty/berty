@@ -13,7 +13,6 @@ import { useSelector } from 'react-redux'
 
 import { useAppDispatch } from '@berty/hooks'
 import { useThemeColor } from '@berty/store'
-import { useStyles } from '@berty/styles'
 import source from '@berty/assets/images/loader_dots.gif'
 import {
 	selectDaemonAddress,
@@ -24,8 +23,11 @@ import {
 	selectStreamInProgress,
 	setDaemonAddress,
 } from '@berty/redux/reducers/ui.reducer'
-import { UnifiedText } from './shared-components/UnifiedText'
+import { useStyles } from '@berty/contexts/styles'
+import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useDeleteAccount, useRestart } from '@berty/hooks'
+
+import { UnifiedText } from './shared-components/UnifiedText'
 
 export const LoaderDots: React.FC = () => {
 	const colors = useThemeColor()
@@ -50,7 +52,8 @@ export const LoaderDots: React.FC = () => {
 }
 
 const StreamInProgressCmp: React.FC<{}> = () => {
-	const [{ text }, { scaleSize }] = useStyles()
+	const { text } = useStyles()
+	const { scaleSize } = useAppDimensions()
 	const colors = useThemeColor()
 	const stream = useSelector(selectStreamInProgress)
 

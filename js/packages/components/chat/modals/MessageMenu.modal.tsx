@@ -4,8 +4,8 @@ import { Icon } from '@ui-kitten/components'
 
 import { getEmojiByName } from '@berty/components/utils'
 import { useThemeColor } from '@berty/store'
-import { useStyles } from '@berty/styles'
 import AddEmojiIcon from '@berty/assets/logo/add_emoji.svg'
+import { useStyles } from '@berty/contexts/styles'
 import { useLayout } from '@berty/components/hooks'
 import { useAppDispatch } from '@berty/hooks'
 import {
@@ -16,6 +16,7 @@ import {
 import { useModal } from '../../providers/modal.provider'
 import { EmojiKeyboard } from './EmojiKeyboard.modal'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
+import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 
 const emojis = [
 	':+1:',
@@ -40,7 +41,8 @@ export const MessageMenu: FC<{
 	replyInteraction: ReplyTargetInteraction
 }> = ({ convPk, cid, onSelectEmoji, replyInteraction }) => {
 	const colors = useThemeColor()
-	const [{ padding, border, margin }, { windowWidth }] = useStyles()
+	const { padding, border, margin } = useStyles()
+	const { windowWidth } = useAppDimensions()
 	const [layout, onLayout] = useLayout()
 	const { show, hide } = useModal()
 	const emojisToDisplay: number = (Math.floor(windowWidth / layout.width) - 1) * 0.6

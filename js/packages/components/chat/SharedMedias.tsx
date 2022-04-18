@@ -20,7 +20,7 @@ import Hyperlink from 'react-native-hyperlink'
 import Clipboard from '@react-native-clipboard/clipboard'
 
 import beapi from '@berty/api'
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 import { ScreenFC } from '@berty/navigation'
 import {
 	useMessengerClient,
@@ -60,7 +60,7 @@ export const SharedMedias: ScreenFC<'Chat.SharedMedias'> = ({
 	},
 	navigation: { navigate },
 }) => {
-	const [{ flex, margin, text, padding, border }] = useStyles()
+	const { flex, margin, text, padding, border } = useStyles()
 	const colors = useThemeColor()
 	const { t }: { t: any } = useTranslation()
 	const [activeIndex, setActiveIndex] = useState(0)

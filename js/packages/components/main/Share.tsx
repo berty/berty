@@ -9,7 +9,7 @@ import { BarCodeScanner } from 'expo-barcode-scanner'
 import { Camera } from 'expo-camera'
 
 import { useThemeColor } from '@berty/store/hooks'
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 import { ScreenFC, useNavigation } from '@berty/navigation'
 import { useAccount } from '@berty/hooks'
 import { useMessengerClient } from '@berty/store'
@@ -22,6 +22,7 @@ import { AccountAvatar } from '../avatars'
 import logo from '@berty/assets/images/1_berty_picto.png'
 import { ButtonSetting, ButtonSettingRow } from '../shared-components'
 import { UnifiedText } from '../shared-components/UnifiedText'
+import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 
 const QrCode: FC<{ size: number }> = ({ size }) => {
 	const client = useMessengerClient()
@@ -64,10 +65,8 @@ const QrCode: FC<{ size: number }> = ({ size }) => {
 
 const ScanBody: FC<{ visible: boolean }> = ({ visible = true }) => {
 	const navigation = useNavigation()
-	const [
-		{ background, margin, flex, column, border },
-		{ windowHeight, windowWidth, isGteIpadSize, fontScale },
-	] = useStyles()
+	const { background, margin, flex, column, border } = useStyles()
+	const { windowHeight, windowWidth, isGteIpadSize, fontScale } = useAppDimensions()
 
 	const qrScanSize = isGteIpadSize
 		? Math.min(windowHeight, windowWidth) * 0.5
@@ -115,7 +114,8 @@ const ScanBody: FC<{ visible: boolean }> = ({ visible = true }) => {
 }
 
 const ShareQr: FC = () => {
-	const [{ margin }, { windowWidth, windowHeight, scaleSize }] = useStyles()
+	const { margin } = useStyles()
+	const { windowWidth, windowHeight, scaleSize } = useAppDimensions()
 	const account = useAccount()
 	const qrCodeSize = Math.min(windowHeight, windowWidth) * 0.45
 
@@ -140,8 +140,8 @@ const ShareQr: FC = () => {
 
 const ShareContainer: FC<{ element: ReactNode }> = ({ element, children }) => {
 	const colors = useThemeColor()
-	const [{ padding, border, margin }, { windowWidth, windowHeight, isGteIpadSize, fontScale }] =
-		useStyles()
+	const { padding, border, margin } = useStyles()
+	const { windowWidth, windowHeight, isGteIpadSize, fontScale } = useAppDimensions()
 
 	const containerSize = isGteIpadSize
 		? Math.min(windowHeight, windowWidth) * 0.5
@@ -179,7 +179,7 @@ const ShareContainer: FC<{ element: ReactNode }> = ({ element, children }) => {
 }
 
 export const ShareModal: ScreenFC<'Main.Share'> = () => {
-	const [{ flex, margin, height, width }] = useStyles()
+	const { flex, margin, height, width } = useStyles()
 	const colors = useThemeColor()
 	const [isScannerVisible, setIsScannerVisible] = useState<boolean>(true)
 	const [isScannerSelected, setIsScannerSelected] = useState<boolean>(false)

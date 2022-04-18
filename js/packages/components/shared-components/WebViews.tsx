@@ -13,13 +13,14 @@ import { useTranslation } from 'react-i18next'
 
 import { useThemeColor } from '@berty/store'
 import { useNavigation } from '@berty/navigation'
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 import { BlurView } from '@react-native-community/blur'
 import { WebView } from 'react-native-webview'
 import { UnifiedText } from './UnifiedText'
+import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 
 export const useStylesModalWebView = () => {
-	const [{ width, border, padding, margin }] = useStyles()
+	const { width, border, padding, margin } = useStyles()
 	const colors = useThemeColor()
 
 	return {
@@ -52,7 +53,8 @@ export const ModalWebviewBody: React.FC<{
 	closeModal: () => void
 	accept: () => void
 }> = ({ closeModal, accept }) => {
-	const [{ row, text, margin, padding, border, opacity }, { scaleHeight }] = useStyles()
+	const { row, text, margin, padding, border, opacity } = useStyles()
+	const { scaleHeight } = useAppDimensions()
 	const colors = useThemeColor()
 	const _styles = useStylesModalWebView()
 	const { t } = useTranslation()
@@ -158,7 +160,7 @@ const ModalWebview: React.FC<{
 	closeModal: React.Dispatch<React.SetStateAction<boolean>>
 	accept: React.Dispatch<React.SetStateAction<boolean>>
 }> = ({ closeModal, accept }) => {
-	const [{}, { windowHeight }] = useStyles()
+	const { windowHeight } = useAppDimensions()
 
 	return (
 		<View style={[StyleSheet.absoluteFill, { elevation: 6, zIndex: 6 }]}>

@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { ScreenFC } from '@berty/navigation'
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 import { useThemeColor } from '@berty/store'
 import messengerMethodsHooks from '@berty/store/methods'
 
@@ -12,7 +12,7 @@ import { Request } from '../shared-components/Request'
 //
 
 const useStylesContactRequest = () => {
-	const [{ border, padding, margin, background }] = useStyles()
+	const { border, padding, margin, background } = useStyles()
 	return {
 		firstRequestButton: [
 			border.color.light.grey,

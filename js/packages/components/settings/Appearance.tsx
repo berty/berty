@@ -3,15 +3,15 @@ import { ScrollView, View } from 'react-native'
 // import { useSelector, useDispatch } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 
-import { useStyles } from '@berty/styles'
 import { ScreenFC, useNavigation } from '@berty/navigation'
 import { useThemeColor } from '@berty/store'
 // import { selectThemeIsDark, toggleDarkTheme } from '@berty/redux/reducers/theme.reducer'
 
 import { ButtonSettingV2, Section } from '../shared-components'
+import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 
 export const Appearance: ScreenFC<'Settings.Appearance'> = () => {
-	const [{}, { scaleSize }] = useStyles()
+	const { scaleSize } = useAppDimensions()
 	const colors = useThemeColor()
 	// const isDark = useSelector(selectThemeIsDark)
 	// const dispatch = useDispatch()

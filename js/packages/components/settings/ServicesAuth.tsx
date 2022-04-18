@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { withInAppNotification } from 'react-native-in-app-notification'
 import { useSelector } from 'react-redux'
 
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 import { ScreenFC } from '@berty/navigation'
 import {
 	useThemeColor,
@@ -21,7 +21,7 @@ import { ButtonSetting, FactionButtonSetting } from '../shared-components'
 import { showNeedRestartNotification } from '../helpers'
 
 const BodyServicesAuth = withInAppNotification(({ showNotification }: any) => {
-	const [{ flex, padding, margin }] = useStyles()
+	const { flex, padding, margin } = useStyles()
 	const colors = useThemeColor()
 	const { t }: any = useTranslation()
 	const protocolClient = useSelector(selectProtocolClient)

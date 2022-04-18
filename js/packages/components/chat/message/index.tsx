@@ -4,7 +4,7 @@ import { Dictionary } from '@reduxjs/toolkit'
 
 import beapi from '@berty/api'
 import { pbDateToNum, ParsedInteraction, useThemeColor } from '@berty/store'
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 
 import { timeFormat } from '../../helpers'
 import { MessageInvitation } from './MessageInvitation'
@@ -33,7 +33,7 @@ export const Message: React.FC<{
 }> = React.memo(
 	({ inte, convKind, members, previousMessage, nextMessage, convPK, replyOf, scrollToCid }) => {
 		const persistentOptions = useSelector(selectPersistentOptions)
-		const [{ text, padding }] = useStyles()
+		const { text, padding } = useStyles()
 		const colors = useThemeColor()
 
 		const sentDate = pbDateToNum(inte?.sentDate)

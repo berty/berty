@@ -3,7 +3,7 @@ import moment from 'moment'
 import { View, ViewStyle } from 'react-native'
 
 import { useThemeColor } from '@berty/store'
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 import { UnifiedText } from '../shared-components/UnifiedText'
 
 export const volumeValueLowest = -160
@@ -80,7 +80,7 @@ export const WaveForm: React.FC<{
 		() => normalizeVolumeIntensities(intensities),
 		[intensities],
 	)
-	const [{ margin, text }] = useStyles()
+	const { margin, text } = useStyles()
 	const colors = useThemeColor()
 	if (color === undefined) {
 		color = colors['reverted-main-text']

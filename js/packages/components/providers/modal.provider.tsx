@@ -18,8 +18,9 @@ import BottomSheet, {
 	useBottomSheetDynamicSnapPoints,
 	BottomSheetScrollView,
 } from '@gorhom/bottom-sheet'
-import { useStyles } from '@berty/styles'
+
 import { useAnimatedStyle } from 'react-native-reanimated'
+import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 
 const useKeyboardHeight = (platforms: string[] = ['ios', 'android']) => {
 	const [keyboardHeight, setKeyboardHeight] = useState<number>(0)
@@ -91,7 +92,7 @@ const BottomSheetModal = forwardRef(
 			useBottomSheetDynamicSnapPoints(snapPoints)
 		const insets = useSafeAreaInsets()
 		const keyboardHeight = useKeyboardHeight()
-		const [, { windowHeight }] = useStyles()
+		const { windowHeight } = useAppDimensions()
 
 		const scrollViewAnimatedStyles = useAnimatedStyle(() => {
 			const contentHeight = animatedContentHeight.value

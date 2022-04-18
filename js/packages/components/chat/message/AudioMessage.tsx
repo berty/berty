@@ -3,7 +3,7 @@ import { View, TouchableWithoutFeedback, TouchableOpacity, ActivityIndicator } f
 import { Icon } from '@ui-kitten/components'
 
 import { useThemeColor } from '@berty/store/hooks'
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 import { useMusicPlayer } from '@berty/components/providers/musicPlayer.provider'
 import beapi from '@berty/api'
 
@@ -11,13 +11,14 @@ import { normalizeVolumeIntensities, WaveForm } from '../audioMessageCommon'
 import { useSelector } from 'react-redux'
 import { selectProtocolClient } from '@berty/redux/reducers/ui.reducer'
 import { UnifiedText } from '../../shared-components/UnifiedText'
+import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 
 const AudioPreview: React.FC<{
 	media: beapi.messenger.IMedia
 	currentTime?: number
 }> = React.memo(({ media, currentTime = 0 }) => {
 	const colors = useThemeColor()
-	const [{ padding, margin }] = useStyles()
+	const { padding, margin } = useStyles()
 
 	const [normalizedIntensities, duration] = useMemo(() => {
 		if (!media.metadataBytes) {
@@ -67,7 +68,8 @@ export const AudioMessage: React.FC<{
 }> = ({ medias, onLongPress, isHighlight, isMine }) => {
 	const colors = useThemeColor()
 	const protocolClient = useSelector(selectProtocolClient)
-	const [{ padding, border, margin }, { windowWidth, scaleSize }] = useStyles()
+	const { padding, border, margin } = useStyles()
+	const { windowWidth, scaleSize } = useAppDimensions()
 	const {
 		player: globalPlayer,
 		load: globalPlayerLoad,

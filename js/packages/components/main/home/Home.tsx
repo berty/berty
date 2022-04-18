@@ -7,7 +7,7 @@ import { Icon } from '@ui-kitten/components'
 import { ScreenFC } from '@berty/navigation'
 import { useNotificationsInhibitor, useThemeColor } from '@berty/store'
 import beapi from '@berty/api'
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 import { AddBot } from '@berty/components/modals'
 import {
 	useContactsDict,
@@ -28,6 +28,7 @@ import { selectClient } from '@berty/redux/reducers/ui.reducer'
 import { selectPersistentOptions } from '@berty/redux/reducers/persistentOptions.reducer'
 import { UnifiedText } from '../../shared-components/UnifiedText'
 import { ButtonSettingV2 } from '@berty/components/shared-components'
+import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 
 const T = beapi.messenger.StreamEvent.Notified.Type
 
@@ -37,7 +38,7 @@ const FooterButton: React.FC<{
 	backgroundColor: string
 	onPress: () => Promise<void> | void
 }> = ({ name, fill, backgroundColor, onPress }) => {
-	const [{}, { scaleSize }] = useStyles()
+	const { scaleSize } = useAppDimensions()
 	const colors = useThemeColor()
 
 	return (
@@ -97,7 +98,8 @@ export const Home: ScreenFC<'Main.Home'> = ({ navigation: { navigate } }) => {
 
 	const client = useSelector(selectClient)
 
-	const [{ text, opacity, flex, margin, border }, { scaleSize, scaleHeight }] = useStyles()
+	const { text, opacity, flex, margin, border } = useStyles()
+	const { scaleSize, scaleHeight } = useAppDimensions()
 	const colors = useThemeColor()
 	const { t }: any = useTranslation()
 

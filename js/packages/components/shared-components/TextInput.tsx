@@ -2,13 +2,13 @@ import React, { FC } from 'react'
 import { TextInputProps, TextInput as RNTextInput, View, ViewProps } from 'react-native'
 
 import { useThemeColor } from '@berty/store'
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 import { UnifiedText } from './UnifiedText'
 
 export const TextInput: FC<
 	TextInputProps & { containerStyle: ViewProps | ViewProps[]; error: string | null }
 > = ({ style, containerStyle, error, ...props }) => {
-	const [{ text, padding, border }] = useStyles()
+	const { text, padding, border } = useStyles()
 	const colors = useThemeColor()
 
 	return (

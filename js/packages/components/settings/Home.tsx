@@ -6,7 +6,7 @@ import { useDispatch } from 'react-redux'
 import * as MailComposer from 'expo-mail-composer'
 
 import beapi from '@berty/api'
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 import { ScreenFC, useNavigation } from '@berty/navigation'
 import { accountService, useMountEffect, useThemeColor, useMessengerClient } from '@berty/store'
 import { useAccount, useAppSelector, useSyncNetworkConfigOnScreenRemoved } from '@berty/hooks'
@@ -30,9 +30,11 @@ import { EditProfile } from '../modals'
 import { UnifiedText } from '../shared-components/UnifiedText'
 import { AccountAvatar } from '../avatars'
 import { ButtonSettingV2, Section } from '../shared-components'
+import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 
 const ProfileButton: React.FC<{}> = () => {
-	const [{ padding, margin, border, text }, { scaleSize }] = useStyles()
+	const { padding, margin, border, text } = useStyles()
+	const { scaleSize } = useAppDimensions()
 	const colors = useThemeColor()
 	const account = useAccount()
 	const { navigate } = useNavigation()
@@ -86,7 +88,7 @@ const ProfileButton: React.FC<{}> = () => {
 
 export const Home: ScreenFC<'Settings.Home'> = withInAppNotification(
 	({ showNotification }: any) => {
-		const [{}, { scaleSize }] = useStyles()
+		const { scaleSize } = useAppDimensions()
 		const colors = useThemeColor()
 		const { navigate } = useNavigation()
 		const { t }: { t: any } = useTranslation()

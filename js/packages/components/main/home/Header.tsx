@@ -4,12 +4,13 @@ import { useTranslation } from 'react-i18next'
 import LottieView from 'lottie-react-native'
 import { Icon } from '@ui-kitten/components'
 
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 import { useProfileNotification, useThemeColor } from '@berty/store'
 import { useNavigation } from '@berty/navigation'
 
 import { AccountAvatar } from '../../avatars'
 import { UnreadCount } from '../../main/home/UnreadCount'
+import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 
 export const HomeHeader: React.FC<
 	ViewProps & {
@@ -34,7 +35,8 @@ export const HomeHeader: React.FC<
 	onLongPress,
 	isMultiAccount,
 }) => {
-	const [{ border, width, height, padding, text, margin, row }, { scaleSize }] = useStyles()
+	const { border, width, height, padding, text, margin, row } = useStyles()
+	const { scaleSize } = useAppDimensions()
 	const colors = useThemeColor()
 	const { navigate } = useNavigation()
 	const notifs = useProfileNotification()

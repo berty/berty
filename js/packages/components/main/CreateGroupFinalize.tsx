@@ -3,7 +3,7 @@ import { View, TouchableOpacity, TextInput, StyleSheet, ScrollView } from 'react
 import { Layout, Icon } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 import messengerMethodsHooks from '@berty/store/methods'
 import { useThemeColor } from '@berty/store'
 import { useNavigation } from '@berty/navigation'
@@ -16,9 +16,11 @@ import { ButtonSettingItem } from '../shared-components/SettingsButtons'
 import { MemberList } from './CreateGroupAddMembers'
 import { IOSOnlyKeyboardAvoidingView } from '@berty/rnutil/keyboardAvoiding'
 import { UnifiedText } from '../shared-components/UnifiedText'
+import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 
 const useStylesCreateGroup = () => {
-	const [{ padding, height, width, absolute, border, column, text }, { scaleSize }] = useStyles()
+	const { padding, height, width, absolute, border, column, text } = useStyles()
+	const { scaleSize } = useAppDimensions()
 	const colors = useThemeColor()
 
 	return {
@@ -62,7 +64,8 @@ const _stylesCreateGroup = StyleSheet.create({
 type GroupInfoProps = { onGroupNameChange: (name: string) => void }
 
 const GroupInfo: React.FC<GroupInfoProps> = ({ onGroupNameChange }) => {
-	const [{ row, column, margin, flex, border, padding, text }, { scaleSize }] = useStyles()
+	const { row, column, margin, flex, border, padding, text } = useStyles()
+	const { scaleSize } = useAppDimensions()
 	const colors = useThemeColor()
 	const { t }: { t: any } = useTranslation()
 	const _styles = useStylesCreateGroup()
@@ -184,7 +187,7 @@ export const CreateGroupFinalize: React.FC = () => {
 		() => call({ displayName: groupName, contactsToInvite: members.map(m => m.publicKey) as any }),
 		[groupName, members, call],
 	)
-	const [{ flex, padding }] = useStyles()
+	const { flex, padding } = useStyles()
 	const colors = useThemeColor()
 	const playSound = usePlaySound()
 	const { t }: { t: any } = useTranslation()

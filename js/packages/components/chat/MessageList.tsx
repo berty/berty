@@ -9,7 +9,7 @@ import {
 } from 'react-native'
 import moment from 'moment'
 
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 import {
 	fetchMore,
 	pbDateToNum,
@@ -23,6 +23,7 @@ import {
 	useConversationMembersDict,
 	useConversation,
 } from '@berty/hooks'
+import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 
 import { InfosChat } from '../InfosChat'
 import { Message } from './message'
@@ -42,7 +43,7 @@ const DateSeparator: React.FC<{
 	current: ParsedInteraction
 	next?: ParsedInteraction
 }> = React.memo(({ current, next }) => {
-	const [{ margin }] = useStyles()
+	const { margin } = useStyles()
 
 	if (!next) {
 		return null
@@ -72,7 +73,8 @@ export const MessageList: React.FC<{
 	setStickyDate: any
 	setShowStickyDate: any
 }> = React.memo(({ id, scrollToMessage: _scrollToMessage, setStickyDate, setShowStickyDate }) => {
-	const [{ overflow, row, flex }, { scaleHeight }] = useStyles()
+	const { overflow, row, flex } = useStyles()
+	const { scaleHeight } = useAppDimensions()
 	const colors = useThemeColor()
 	const conversation = useConversation(id)
 	const messengerClient = useMessengerClient()

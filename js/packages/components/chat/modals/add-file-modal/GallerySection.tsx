@@ -11,7 +11,7 @@ import { Icon } from '@ui-kitten/components'
 import CameraRoll from '@react-native-community/cameraroll'
 import { useTranslation } from 'react-i18next'
 
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 import { useThemeColor } from '@berty/store/hooks'
 import beapi from '@berty/api'
 import RNFS from 'react-native-fs'
@@ -24,7 +24,7 @@ const GALLERY_IMAGE_PER_PAGE = 30
 export const GallerySection: React.FC<{
 	prepareMediaAndSend: (media: beapi.messenger.IMedia[]) => void
 }> = ({ prepareMediaAndSend }) => {
-	const [{ border, padding, margin }] = useStyles()
+	const { border, padding, margin } = useStyles()
 	const colors = useThemeColor()
 	const { t }: { t: any } = useTranslation()
 

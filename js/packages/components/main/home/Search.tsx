@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next'
 
 import beapi from '@berty/api'
 import { useNavigation } from '@berty/navigation'
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 import { useThemeColor, parseInteraction, pbDateToNum, ParsedInteraction } from '@berty/store'
 import { useContact, useConversationInteractions, useConversation } from '@berty/hooks'
 
@@ -19,7 +19,7 @@ import { UnifiedText } from '../../shared-components/UnifiedText'
 const _resultAvatarSize = 45
 
 const useStylesSearch = () => {
-	const [{ text, background }] = useStyles()
+	const { text, background } = useStyles()
 	const colors = useThemeColor()
 
 	return {
@@ -105,7 +105,7 @@ const MessageSearchResult: React.FC<{
 }
 
 const SearchResultItem: React.FC<SearchItemProps> = ({ data, kind, searchText = '' }) => {
-	const [{ color, row, padding, flex, column, text, margin, border }] = useStyles()
+	const { color, row, padding, flex, column, text, margin, border } = useStyles()
 	const { plainMessageText, searchResultHighlightText, nameHighlightText } = useStylesSearch()
 	const { navigate } = useNavigation()
 
@@ -341,7 +341,7 @@ export const SearchComponent: React.FC<{
 	value,
 	earliestInteractionCID: _earliestInteractionCID,
 }) => {
-	const [{ height, width, padding, text, border, margin }] = useStyles()
+	const { height, width, padding, text, border, margin } = useStyles()
 	const colors = useThemeColor()
 	const { t } = useTranslation()
 	const validInsets = useMemo(() => insets || { top: 0, bottom: 0, left: 0, right: 0 }, [insets])

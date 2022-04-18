@@ -4,17 +4,19 @@ import { useTranslation } from 'react-i18next'
 import { TextInput, View } from 'react-native'
 
 import { GlobalPersistentOptionsKeys, storageSet, useThemeColor } from '@berty/store'
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 import { useNavigation } from '@berty/navigation'
 import { useAccount } from '@berty/hooks'
 
 import SwiperCard from './SwiperCard'
+import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 
 export const CreateAccountBox: React.FC<{
 	defaultName: string
 }> = ({ defaultName }) => {
 	const [name, setName] = React.useState(defaultName || '')
-	const [{ text, padding, margin, border }, { scaleSize }] = useStyles()
+	const { text, padding, margin, border } = useStyles()
+	const { scaleSize } = useAppDimensions()
 	const colors = useThemeColor()
 	const { t } = useTranslation()
 	const { navigate } = useNavigation()

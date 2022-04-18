@@ -7,7 +7,7 @@ import Long from 'long'
 
 import beapi from '@berty/api'
 import { ScreenFC } from '@berty/navigation'
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 import { useMessengerClient, useThemeColor } from '@berty/store'
 import { selectInvitationListMembers } from '@berty/redux/reducers/groupCreationForm.reducer'
 import { useAllContacts, useAppDispatch, useAppSelector, useConversation } from '@berty/hooks'
@@ -15,12 +15,14 @@ import { useAllContacts, useAppDispatch, useAppSelector, useConversation } from 
 import { FooterCreateGroup } from '../main/CreateGroupFooter'
 import { Header, MemberList } from '../main/CreateGroupAddMembers'
 import { ContactPicker } from '../shared-components'
+import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 
 export const MultiMemberSettingsAddMembers: ScreenFC<'Group.MultiMemberSettingsAddMembers'> = ({
 	route,
 	navigation,
 }) => {
-	const [{ flex, margin }, { scaleHeight, scaleSize }] = useStyles()
+	const { flex, margin } = useStyles()
+	const { scaleHeight, scaleSize } = useAppDimensions()
 	const colors = useThemeColor()
 	const { t } = useTranslation()
 	const client = useMessengerClient()

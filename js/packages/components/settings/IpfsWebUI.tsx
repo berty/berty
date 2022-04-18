@@ -3,7 +3,7 @@ import { View, ScrollView } from 'react-native'
 import { Layout } from '@ui-kitten/components'
 import { WebView } from 'react-native-webview'
 
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 import { ScreenFC } from '@berty/navigation'
 import { useThemeColor } from '@berty/store'
 
@@ -12,7 +12,7 @@ import { useThemeColor } from '@berty/store'
 //
 
 const BodyIpfsWebUI: React.FC<{}> = () => {
-	const [{ padding, flex, margin }] = useStyles()
+	const { padding, flex, margin } = useStyles()
 	return (
 		<View style={[padding.medium, flex.tiny, margin.bottom.small]}>
 			<WebView

@@ -2,7 +2,7 @@ import React from 'react'
 import { View, ViewToken } from 'react-native'
 import moment from 'moment'
 
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 import { useThemeColor } from '@berty/store'
 
 import { timeFormat } from '../helpers'
@@ -19,7 +19,7 @@ type ChatDateProps = {
 
 // Styles
 const useStylesChatDate = () => {
-	const [{ padding, text }] = useStyles()
+	const { padding, text } = useStyles()
 	return {
 		date: [padding.horizontal.scale(8), padding.vertical.scale(2)],
 		dateText: [text.size.small, text.align.center],
@@ -28,7 +28,7 @@ const useStylesChatDate = () => {
 
 export const ChatDate: React.FC<ChatDateProps> = React.memo(({ date }) => {
 	const _styles = useStylesChatDate()
-	const [{ border, row }] = useStyles()
+	const { border, row } = useStyles()
 	const colors = useThemeColor()
 	const backgroundColor = colors['input-background']
 	const textColor = colors['secondary-text']

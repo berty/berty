@@ -3,7 +3,7 @@ import { GestureResponderEvent, ScrollView, TouchableOpacity, View } from 'react
 import { Icon } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 import { closeAccountWithProgress, useThemeColor, pbDateToNum, Maybe } from '@berty/store'
 import { importAccountFromDocumentPicker } from '@berty/components/pickerUtils'
 import { useAppDispatch, useAppSelector, useSwitchAccount } from '@berty/hooks'
@@ -17,6 +17,7 @@ import {
 	setStateOnBoardingReady,
 } from '@berty/redux/reducers/ui.reducer'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
+import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 
 const AccountButton: React.FC<{
 	name: string | null | undefined
@@ -25,7 +26,7 @@ const AccountButton: React.FC<{
 	selected?: boolean
 	incompatible?: Maybe<string>
 }> = ({ name, onPress, avatar, selected = false, incompatible = null }) => {
-	const [{ margin, text, padding, border }] = useStyles()
+	const { margin, text, padding, border } = useStyles()
 	const colors = useThemeColor()
 
 	return (
@@ -68,7 +69,8 @@ const AccountButton: React.FC<{
 }
 
 export const MultiAccount: React.FC<{ onPress: () => void }> = ({ onPress }) => {
-	const [{ padding }, { scaleSize }] = useStyles()
+	const { padding } = useStyles()
+	const { scaleSize } = useAppDimensions()
 	const colors = useThemeColor()
 	const { t } = useTranslation()
 	const dispatch = useAppDispatch()

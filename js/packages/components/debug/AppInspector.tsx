@@ -17,7 +17,7 @@ import beapi from '@berty/api'
 import { GRPCError, Service } from '@berty/grpc-bridge'
 import { bridge as rpcBridge } from '@berty/grpc-bridge/rpc'
 import { pbDateToNum } from '@berty/store'
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 import { useAppDispatch } from '@berty/hooks'
 import { setDebugMode } from '@berty/redux/reducers/ui.reducer'
 
@@ -258,7 +258,7 @@ const AccountsInspector: React.FC<{
 		[key: string]: beapi.account.IAccountMetadata
 	}>({})
 	const { t }: { t: any } = useTranslation()
-	const [{ text }] = useStyles()
+	const { text } = useStyles()
 
 	useEffect(
 		() => fetchFSAccountList(updateAccountFSFiles, t),
@@ -403,7 +403,7 @@ const AppInspector: React.FC<{ embedded: boolean; error: Error | null }> = ({
 }) => {
 	const [lastUpdate, setLastUpdate] = useState(Date.now())
 	const { t }: { t: any } = useTranslation()
-	const [{ text }] = useStyles()
+	const { text } = useStyles()
 	const dispatch = useAppDispatch()
 
 	const refresh = useCallback(() => setLastUpdate(Date.now()), [setLastUpdate])

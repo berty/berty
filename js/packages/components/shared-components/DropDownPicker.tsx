@@ -1,9 +1,10 @@
 import { useThemeColor } from '@berty/store/hooks'
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 import { Icon } from '@ui-kitten/components'
 import React, { useState } from 'react'
 import { Animated, Easing, TouchableOpacity, View } from 'react-native'
 import { UnifiedText } from './UnifiedText'
+import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 
 export type Item = {
 	label: string
@@ -27,7 +28,8 @@ export const DropDownPicker: React.FC<{
 	placeholder = null,
 	mode = 'languages',
 }) => {
-	const [{ padding, border, opacity, margin }, { scaleSize }] = useStyles()
+	const { padding, border, opacity, margin } = useStyles()
+	const { scaleSize } = useAppDimensions()
 	const colors = useThemeColor()
 
 	const [isOpen, setOpen] = useState(false)

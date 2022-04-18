@@ -14,7 +14,7 @@ import {
 	pbDateToNum,
 	useMessengerClient,
 } from '@berty/store'
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 import {
 	useAppDispatch,
 	useAppSelector,
@@ -37,6 +37,7 @@ import { MessageMenu } from '../modals/MessageMenu.modal'
 import { useModal } from '../../providers/modal.provider'
 import { setActiveReplyInteraction } from '@berty/redux/reducers/chatInputs.reducer'
 import { UnifiedText } from '../../shared-components/UnifiedText'
+import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 // import { EmojiKeyboard } from '../modals/EmojiKeyboard.modal'
 
 const pal = palette('tol-rainbow', 256)
@@ -44,7 +45,7 @@ const AVATAR_SIZE = 30
 const AVATAR_SPACE_RIGHT = 5
 
 const useStylesMessage = () => {
-	const [{ row, text, width }] = useStyles()
+	const { row, text, width } = useStyles()
 	return {
 		isMeMessage: [row.item.bottom, { maxWidth: '90%' }],
 		isOtherMessage: [row.item.top, { maxWidth: '90%' }],
@@ -171,7 +172,8 @@ export const UserMessage: React.FC<{
 	const _styles = useStylesMessage()
 	const playSound = usePlaySound()
 	const client = useMessengerClient()
-	const [{ row, margin, padding, column, text, border }, { scaleSize }] = useStyles()
+	const { row, margin, padding, column, text, border } = useStyles()
+	const { scaleSize } = useAppDimensions()
 	const colors = useThemeColor()
 	const { t } = useTranslation()
 	const [animatedValue] = useState(new Animated.Value(0))

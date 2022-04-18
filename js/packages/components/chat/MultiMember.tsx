@@ -5,7 +5,7 @@ import { useFocusEffect } from '@react-navigation/native'
 import { useTranslation } from 'react-i18next'
 import { useHeaderHeight } from '@react-navigation/elements'
 
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 import { ScreenFC } from '@berty/navigation'
 import {
 	useReadEffect,
@@ -18,6 +18,7 @@ import beapi from '@berty/api'
 import { IOSOnlyKeyboardAvoidingView } from '@berty/rnutil/keyboardAvoiding'
 import { useConversation, useLastConvInteraction } from '@berty/hooks'
 import AndroidKeyboardAdjust from 'react-native-android-keyboard-adjust'
+import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 
 import { ChatDate } from './common'
 import { MultiMemberAvatar } from '../avatars'
@@ -43,7 +44,8 @@ export const MultiMember: ScreenFC<'Chat.Group'> = ({ route: { params }, navigat
 		}
 		return false
 	})
-	const [{ flex, opacity, border, padding, text }, { scaleSize }] = useStyles()
+	const { flex, opacity, border, padding, text } = useStyles()
+	const { scaleSize } = useAppDimensions()
 	const colors = useThemeColor()
 	useReadEffect(params.convId, 1000)
 	const conv = useConversation(params?.convId)

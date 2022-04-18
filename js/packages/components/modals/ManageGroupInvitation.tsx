@@ -5,7 +5,7 @@ import { Icon } from '@ui-kitten/components'
 import { CommonActions, useNavigation } from '@react-navigation/native'
 import { useTranslation } from 'react-i18next'
 
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 import messengerMethodsHooks from '@berty/store/methods'
 import { dispatch as navDispatch } from '@berty/navigation/rootRef'
 import { useThemeColor } from '@berty/store'
@@ -18,7 +18,7 @@ import { MultiMemberAvatar } from '../avatars'
 import { UnifiedText } from '../shared-components/UnifiedText'
 
 const useStylesModal = () => {
-	const [{ width, border, height, opacity }] = useStyles()
+	const { width, border, height, opacity } = useStyles()
 	return {
 		closeRequest: [width(45), height(45), border.radius.scale(22.5)],
 		closeRequestIcon: opacity(0.5),
@@ -26,7 +26,7 @@ const useStylesModal = () => {
 }
 
 const BodyManageGroupInvitationContent: React.FC<{}> = ({ children }) => {
-	const [{ margin }] = useStyles()
+	const { margin } = useStyles()
 	return (
 		<View style={[margin.top.big]}>
 			<View>{children}</View>
@@ -43,7 +43,7 @@ const SelectedContent = ({
 	pubKey: string
 	isEncrypted: boolean
 }) => {
-	const [{ padding }] = useStyles()
+	const { padding } = useStyles()
 	switch (contentName.toLowerCase()) {
 		case 'fingerprint':
 			return <FingerprintContent seed={pubKey} isEncrypted={isEncrypted} />
@@ -65,7 +65,7 @@ export const ManageGroupInvitation: React.FC<{
 }> = ({ link, type, displayName, publicKey, isPassword }) => {
 	const navigation = useNavigation()
 	const { call: joinConversation, done, error } = messengerMethodsHooks.useConversationJoin()
-	const [{ row, text, column, flex, absolute, padding, border, margin }] = useStyles()
+	const { row, text, column, flex, absolute, padding, border, margin } = useStyles()
 	const colors = useThemeColor()
 	const [selectedContent, setSelectedContent] = useState('fingerprint')
 	const _styles = useStylesModal()

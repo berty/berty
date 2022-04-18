@@ -1,10 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
-import { randomizeThemeColor } from '@berty/styles'
-import defaultTheme from '@berty/styles/colors.json'
-import pinkTheme from '@berty/styles/pinktheme-default.json'
-import darkTheme from '@berty/styles/darktheme-default.json'
-import darkLFTheme from '@berty/styles/DarkLF-theme.json'
+import { randomizeThemeColor } from '@berty/contexts/styles'
+import defaultTheme from '@berty/assets/themes/default-theme.json'
+import pinkTheme from '@berty/assets/themes/pink-theme.json'
+import darkTheme from '@berty/assets/themes/dark-theme.json'
+import darkLFTheme from '@berty/assets/themes/DarkLF-theme.json'
 
 /**
  *
