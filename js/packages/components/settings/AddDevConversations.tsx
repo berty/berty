@@ -7,7 +7,7 @@ import { useStyles } from '@berty/styles'
 import { globals } from '@berty/config'
 import { useThemeColor } from '@berty/store/hooks'
 
-import { ButtonSetting } from '../shared-components/SettingsButtons'
+import { ButtonSetting, SettingButtonStateType } from '../shared-components/SettingsButtons'
 import { ScreenFC, useNavigation } from '@berty/navigation'
 
 type ValueOf<T> = T[keyof T]
@@ -26,38 +26,25 @@ const Button: React.FC<ValueType> = ({ kind: rawKind, name, link }) => {
 
 	const kind = uncap(rawKind)
 
-	const text = t('settings.add-dev-conversations.tag-' + kind)
-	console.log('kind', kind)
-	let state
-	switch (kind) {
-		case 'bot':
-			state = {
-				value: text,
+	/* Ignore check for i18n missing keys
+			settings.add-dev-conversations.tag-bot
+			settings.add-dev-conversations.tag-contact
+			settings.add-dev-conversations.tag-conversation
+	*/
+
+	const state: SettingButtonStateType = ['bot', 'contact', 'conversation'].includes(kind)
+		? {
+				value: t(
+					`settings.add-dev-conversations.tag-${kind as 'bot' | 'contact' | 'conversation'}`,
+				),
 				color: colors['background-header'],
 				bgColor: colors['positive-asset'],
-			}
-			break
-		case 'contact':
-			state = {
-				value: text,
-				color: colors['background-header'],
-				bgColor: colors['positive-asset'],
-			}
-			break
-		case 'conversation':
-			state = {
-				value: text,
-				color: colors['background-header'],
-				bgColor: colors['positive-asset'],
-			}
-			break
-		default:
-			state = {
+		  }
+		: {
 				value: 'unknown',
 				color: colors['secondary-text'],
 				bgColor: colors['main-background'],
-			}
-	}
+		  }
 
 	return (
 		<ButtonSetting

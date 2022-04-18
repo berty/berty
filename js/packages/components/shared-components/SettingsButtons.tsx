@@ -140,6 +140,18 @@ export const ButtonSettingV2: React.FC<{
 //
 
 // Type
+
+export type SettingButtonStateType = {
+	value: string
+	color: string
+	bgColor: string
+	icon?: string
+	iconSize?: number
+	iconColor?: string
+	stateIcon?: string
+	stateIconColor?: string
+}
+
 type SettingButtonProps = {
 	name: string
 	color?: string
@@ -151,16 +163,7 @@ type SettingButtonProps = {
 	iconPack?: string
 	iconDependToggle?: boolean
 	children?: React.ReactNode
-	state?: {
-		value: string
-		color: string
-		bgColor: string
-		icon?: string
-		iconSize?: number
-		iconColor?: string
-		stateIcon?: string
-		stateIconColor?: string
-	}
+	state?: SettingButtonStateType
 	alone?: boolean
 	toggled?: boolean
 	actionIcon?: string | null

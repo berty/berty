@@ -22,7 +22,7 @@ export const GetStarted: ScreenFC<'Onboarding.GetStarted'> = ({ navigation: { na
 	useNotificationsInhibitor(() => true)
 	const [{ margin, padding, text }] = useStyles()
 	const colors = useThemeColor()
-	const { t } = useTranslation<'translation', string>()
+	const { t } = useTranslation()
 	const embedded = useAppSelector(selectEmbedded)
 
 	return (

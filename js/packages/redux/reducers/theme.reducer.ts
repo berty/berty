@@ -34,7 +34,7 @@ export type ThemeType = {
 	'negative-asset': string
 	'warning-asset': string
 	'input-background': string
-	shadow: string
+	shadow?: string
 	'secondary-background'?: string
 }
 type ThemeDefinition = { colors: ThemeType }
