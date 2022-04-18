@@ -28,8 +28,7 @@ import {
 	removeFromRendezvous,
 	removeFromStaticRelay,
 	selectBootstrap,
-	selectCurrentNetworkConfig,
-	selectParsedLocalNetworkConfig,
+	selectEditedNetworkConfig,
 	selectRendezvous,
 	selectStaticRelay,
 	setCurrentNetworkConfig,
@@ -130,7 +129,7 @@ const Proximity: React.FC = () => {
 	const { t } = useTranslation()
 	const { navigate } = useNavigation()
 	const dispatch = useDispatch()
-	const currentNetworkConfig = useAppSelector(selectCurrentNetworkConfig)
+	const currentNetworkConfig = useAppSelector(selectEditedNetworkConfig)
 
 	return (
 		<View>
@@ -242,7 +241,7 @@ const Routing: React.FC<{ accordionRefs: AccordionRefsType }> = ({ accordionRefs
 	const dispatch = useAppDispatch()
 	const { hide, show } = useModal()
 	const rendezvous = useAppSelector(selectRendezvous)
-	const currentNetworkConfig = useAppSelector(selectCurrentNetworkConfig)
+	const currentNetworkConfig = useAppSelector(selectEditedNetworkConfig)
 
 	return (
 		<View>
@@ -529,8 +528,7 @@ const ApplyChanges: React.FC = () => {
 	const colors = useThemeColor()
 	const [isPressed, setIsPressed] = React.useState<boolean>(false)
 	const { t } = useTranslation()
-	const currentNetworkConfig = useAppSelector(selectCurrentNetworkConfig)
-	const parsedLocalNetworkConfig = useAppSelector(selectParsedLocalNetworkConfig)
+	const currentNetworkConfig = useAppSelector(selectEditedNetworkConfig)
 	const createNewAccount = useCreateNewAccount()
 
 	return (
@@ -540,7 +538,7 @@ const ApplyChanges: React.FC = () => {
 					onPress={async () => {
 						if (currentNetworkConfig) {
 							setIsPressed(true)
-							await createNewAccount(parsedLocalNetworkConfig)
+							await createNewAccount(currentNetworkConfig)
 						}
 					}}
 					style={[

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { ScrollView, TouchableOpacity, View, Platform } from 'react-native'
 import { Icon } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
@@ -9,7 +9,7 @@ import beapi from '@berty/api'
 import { useStyles } from '@berty/styles'
 import { ScreenFC, useNavigation } from '@berty/navigation'
 import { accountService, useMountEffect, useThemeColor, useMessengerClient } from '@berty/store'
-import { useAccount, useAppSelector, useSetNetworkConfig } from '@berty/hooks'
+import { useAccount, useAppSelector, useSyncNetworkConfigOnScreenRemoved } from '@berty/hooks'
 import { selectSelectedAccount } from '@berty/redux/reducers/ui.reducer'
 import {
 	checkBlePermission,
@@ -17,13 +17,12 @@ import {
 	PermissionType,
 } from '@berty/rnutil/checkPermissions'
 import { withInAppNotification } from 'react-native-in-app-notification'
-import store from '@berty/redux/store'
 import {
 	selectBlePerm,
-	selectCurrentNetworkConfig,
-	selectParsedLocalNetworkConfig,
+	selectEditedNetworkConfig,
 	setBlePerm,
 	setCurrentNetworkConfig,
+	setNodeNetworkConfig,
 } from '@berty/redux/reducers/networkConfig.reducer'
 
 import { useModal } from '../providers/modal.provider'
@@ -94,7 +93,7 @@ export const Home: ScreenFC<'Settings.Home'> = withInAppNotification(
 		const messengerClient = useMessengerClient()
 		const selectedAccount = useAppSelector(selectSelectedAccount)
 		const blePerm = useAppSelector(selectBlePerm)
-		const networkConfig = useAppSelector(selectCurrentNetworkConfig)
+		const networkConfig = useAppSelector(selectEditedNetworkConfig)
 		const dispatch = useDispatch()
 
 		const generateEmail = React.useCallback(async () => {
@@ -135,19 +134,7 @@ export const Home: ScreenFC<'Settings.Home'> = withInAppNotification(
 			}
 		}, [messengerClient, networkConfig, showNotification, t])
 
-		useEffect(() => {
-			return () => {
-				// we should use an useAppSelector for getting this value
-				// but the value doesn't seem to be updated in the useEffect return callback
-				const parsedLocalNetworkConfig = selectParsedLocalNetworkConfig(store.getState())
-				const currentNetworkConfig = selectCurrentNetworkConfig(store.getState())
-
-				if (JSON.stringify(parsedLocalNetworkConfig) !== JSON.stringify(currentNetworkConfig)) {
-					setNewConfig(parsedLocalNetworkConfig)
-				}
-			}
-			// eslint-disable-next-line react-hooks/exhaustive-deps
-		}, [])
+		useSyncNetworkConfigOnScreenRemoved()
 
 		// get network config of the account at the mount of the component
 		useMountEffect(() => {
@@ -157,6 +144,7 @@ export const Home: ScreenFC<'Settings.Home'> = withInAppNotification(
 				})
 				if (netConf.currentConfig) {
 					dispatch(setCurrentNetworkConfig(netConf.currentConfig))
+					dispatch(setNodeNetworkConfig(netConf.currentConfig))
 					return
 				}
 			}
@@ -175,9 +163,6 @@ export const Home: ScreenFC<'Settings.Home'> = withInAppNotification(
 			}
 			f()
 		})
-
-		// setNewConfig function: update the state + update the network config in the account service + show notif to restart app
-		const setNewConfig = useSetNetworkConfig()
 
 		const getOffGridCommunicationValue = React.useCallback(() => {
 			if (
