@@ -1,7 +1,7 @@
 {
 	"onboarding": {
 		"getstarted": {
-			"screenTitle": "",
+			"screenTitle": "Protect your privacy",
 			"title": "PROTECT YOUR PRIVACY",
 			"desc": "free & secure peer-to-peer messaging",
 			"create-button": "Create an account",
@@ -11,7 +11,7 @@
 		"default-mode": {
 			"summary": {
 				"title": "Default Mode",
-				"screenTitle": "",
+				"screenTitle": "Create account",
 				"subtitle": "Get Started Quickly",
 				"first-point": "Start with presets that offer a privacy/comfort balance that suits most. Berty nodes are used to improve performance and asynchronous communication.",
 				"second-point": "For a custom privacy/comfort balance, select Custom Mode.",
@@ -21,7 +21,7 @@
 		},
 		"custom-mode": {
 			"summary": {
-				"screenTitle": "",
+				"screenTitle": "Create account - Customize settings",
 				"title": "Custom Mode",
 				"subtitle": "Custom Privacy/Comfort Balance",
 				"first-point": "In this mode, adjust all settings individually to create the balance of privacy and comfort that works for you.",
@@ -100,15 +100,15 @@
 			"button": "START USING BERTY"
 		},
 		"web-views": {
-			"title": "",
-			"desc": "",
+			"title": "Web content permission",
+			"desc": "Berty is about to load content from the web. Do you want to open this page?",
 			"first-button": "Cancel",
 			"second-button": "Yes"
 		}
 	},
 	"main": {
 		"home": {
-			"title": "",
+			"title": "Berty",
 			"requests": {
 				"title": "Requests",
 				"accept": "Accept",
@@ -149,11 +149,11 @@
 	},
 	"settings": {
 		"home": {
-			"title": "",
+			"title": "Settings",
 			"proximity-button": "Off-Grid Communication",
 			"notifications-button": "Notifications",
 			"contact-convs-button": "Contact and conversations",
-			"appearance-button": "",
+			"appearance-button": "Appearance",
 			"devices-button": "Devices and backup",
 			"accounts-button": "Accounts",
 			"network-button": "Network",
@@ -161,46 +161,46 @@
 			"about-button": "About Berty"
 		},
 		"about": {
-			"title": "",
+			"title": "About Berty",
 			"faq-button": "FAQ",
 			"roadmap-button": "Roadmap",
 			"policy-button": "Privacy Policy",
 			"license-button": "Open Source Licenses",
-			"terms-of-use": ""
+			"terms-of-use": "Terms of use"
 		},
 		"accounts": {
-			"title": "",
-			"backup-button": "",
-			"backup-notif-title": "",
-			"backup-notif-desc": "",
+			"title": "Accounts",
+			"backup-button": "Backup",
+			"backup-notif-title": "Success",
+			"backup-notif-desc": "Account has been backed up!",
 			"accounts-button": "Accounts",
 			"create-button": "Create an account",
 			"import-button": "Import an account",
 			"link-button": "Link another device",
 			"delete-button": "Delete this account",
-			"delete-title": ""
+			"delete-title": "Account deletion"
 		},
 		"appearance": {
-			"title": "",
+			"title": "Appearance",
 			"dark-button": "Dark Mode",
 			"editor-button": "Theme Editor",
 			"theme-editor": {
-				"title": ""
+				"title": "Theme Editor"
 			}
 		},
 		"contact-convs": {
-			"title": "",
+			"title": "Contact and Conversations",
 			"reset-button": "Reset my contact link/QR Code",
 			"request-button": "Allow incoming contact requests"
 		},
 		"devices-backup": {
-			"title": ""
+			"title": "Devices and Backup"
 		},
 		"security": {
-			"title": ""
+			"title": "Security"
 		},
 		"network": {
-			"title": "",
+			"title": "Network",
 			"ble-button": "Bluetooth Low Energy",
 			"mc-button": "Multipeer Connectivity",
 			"nearby-button": "Android Nearby",
