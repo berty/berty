@@ -97,7 +97,7 @@
 		"setup-finished": {
 			"title": "Seadistamine valmis!",
 			"desc": "Võid hakata rakendust kohe kasutama, alusta kontaktide lisamisega ja suhtle nendega vabalt ja privaatselt",
-			"button": "ALUSTA BERTY KASUTAMIST"
+			"button": ""
 		},
 		"web-views": {
 			"title": "",
@@ -128,8 +128,8 @@
 				"add-members": "Lisa liikmeid",
 				"group-info": "Grupi info",
 				"search-placeholder": "Otsing",
-				"continue": "JÄTKA",
-				"create-group": "LOO GRUPP"
+				"continue": "",
+				"create-group": ""
 			},
 			"create-group-finalize": {
 				"placeholder": "",
@@ -228,7 +228,7 @@
 			"title": "",
 			"desc": "",
 			"button": "",
-			"skip": "JÄTA VAHELE JA JÄTKA TEINE KORD"
+			"skip": ""
 		},
 		"delete-account": {
 			"title": "",
@@ -428,7 +428,7 @@
 				"title": "",
 				"group-invitation": "",
 				"refuse-button": "",
-				"accept-button": "",
+				"accept-button": "Võta vastu",
 				"accepted-button": "",
 				"error": "",
 				"you-invited": "",
