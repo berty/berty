@@ -2,7 +2,7 @@
 	"onboarding": {
 		"getstarted": {
 			"screenTitle": "",
-			"title": "SKYDDA DIN INTEGRITET",
+			"title": "",
 			"desc": "gratis & säker peer-to-peer kommunikation",
 			"create-button": "Skapa nytt konto",
 			"import-button": "Importera konto",
@@ -97,7 +97,7 @@
 		"setup-finished": {
 			"title": "Genomgång slutförd!",
 			"desc": "Du kan nu använda appen, börja lägga till kontakter och prata fritt med dem utan övervakning",
-			"button": "BÖRJA ANVÄNDA BERTY"
+			"button": ""
 		},
 		"web-views": {
 			"title": "",
@@ -128,8 +128,8 @@
 				"add-members": "Lägg till medlemmar",
 				"group-info": "Gruppinformation",
 				"search-placeholder": "Sök",
-				"continue": "FORTSÄTT",
-				"create-group": "SKAPA EN GRUPP"
+				"continue": "",
+				"create-group": ""
 			},
 			"create-group-finalize": {
 				"placeholder": "Gruppnamn",
@@ -228,14 +228,14 @@
 			"title": "",
 			"desc": "",
 			"button": "",
-			"skip": "HOPPA ÖVER OCH GÖR SENARE"
+			"skip": "Hoppa över och gör detta senare"
 		},
 		"delete-account": {
 			"title": "Radera konto!",
 			"first-desc": "Är du säker på att du vill radera ditt konto?",
 			"desc": "Vänligen skriv \"delete\" för att bekräfta",
-			"cancel-button": "AVBRYT",
-			"delete-button": "RADERA KONTO"
+			"cancel-button": "Avbryt",
+			"delete-button": ""
 		},
 		"faq": {
 			"title": "Vanliga frågor"
@@ -347,7 +347,7 @@
 			"contact-already-added-message": "Du kan inte lägga till samma kontakt flera gånger"
 		},
 		"invalid-scan": {
-			"dismiss-button": "AVFÄRDA"
+			"dismiss-button": ""
 		},
 		"add-this-contact": {
 			"fingerprint": "Fingeravtryck",
@@ -358,7 +358,7 @@
 			"fingerprint": "Fingeravtryck",
 			"info": "Detaljer",
 			"devices": "Enheter",
-			"join": "GÅ MED I GRUPPEN",
+			"join": "",
 			"password-label": "",
 			"password-placeholder": "Lösenord..."
 		},
@@ -366,8 +366,8 @@
 			"title": "Sparar temat",
 			"desc": "Vänligen välj ett namn för ditt tema!",
 			"placeholder": "Temats namn...",
-			"cancel": "AVBRYT",
-			"add": "LÄGG TILL!"
+			"cancel": "Avbryt",
+			"add": "Lägg till!"
 		}
 	},
 	"chat": {
@@ -425,11 +425,11 @@
 		},
 		"one-to-one": {
 			"contact-request-box": {
-				"title": "KONTAKTFÖRFRÅGAN",
+				"title": "Kontaktförfrågan",
 				"group-invitation": "",
-				"refuse-button": "NEKA",
-				"accept-button": "GODTA",
-				"accepted-button": "GOTTAGEN",
+				"refuse-button": "",
+				"accept-button": "Acceptera",
+				"accepted-button": "",
 				"error": "",
 				"you-invited": "",
 				"this-contact": "",
@@ -525,8 +525,8 @@
 			"allow": "Tillåt",
 			"settings": "Gå till inställningar"
 		},
-		"skip": "HOPPA ÖVER",
-		"cancel": "AVBRYT",
+		"skip": "",
+		"cancel": "Avbryt",
 		"settings-text": "Du kan aktivera {{title}} behörighet från inställningar."
 	},
 	"notification": {
