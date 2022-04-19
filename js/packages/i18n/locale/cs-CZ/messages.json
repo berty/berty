@@ -97,7 +97,7 @@
 		"setup-finished": {
 			"title": "Nastavení dokončeno!",
 			"desc": "Teď už můžete aplikaci používat. Můžete začít přidávat kontakty a svobodně a soukromě s nimi komunikovat",
-			"button": "ZAČÍT POUŽÍVAT BERTY"
+			"button": ""
 		},
 		"web-views": {
 			"title": "",
@@ -228,14 +228,14 @@
 			"title": "",
 			"desc": "",
 			"button": "",
-			"skip": "PŘESKOČIT A NECHAT NA POZDĚJI"
+			"skip": ""
 		},
 		"delete-account": {
 			"title": "Smazat účet!",
 			"first-desc": "Opravdu chcete smazat svůj účet?",
 			"desc": "",
-			"cancel-button": "ZRUŠIT",
-			"delete-button": "ODSTRANIT"
+			"cancel-button": "Zrušit",
+			"delete-button": ""
 		},
 		"faq": {
 			"title": ""
@@ -347,7 +347,7 @@
 			"contact-already-added-message": ""
 		},
 		"invalid-scan": {
-			"dismiss-button": "ZAHODIT"
+			"dismiss-button": ""
 		},
 		"add-this-contact": {
 			"fingerprint": "Otisk",
@@ -366,7 +366,7 @@
 			"title": "",
 			"desc": "",
 			"placeholder": "",
-			"cancel": "ZRUŠIT",
+			"cancel": "Zrušit",
 			"add": ""
 		}
 	},
@@ -425,11 +425,11 @@
 		},
 		"one-to-one": {
 			"contact-request-box": {
-				"title": "ŽÁDOST O KONTAKT",
+				"title": "Žádost o kontakt",
 				"group-invitation": "",
-				"refuse-button": "ODMÍTNOUT",
-				"accept-button": "PŘIJMOUT",
-				"accepted-button": "PŘIJATO",
+				"refuse-button": "",
+				"accept-button": "Přijmout",
+				"accepted-button": "",
 				"error": "",
 				"you-invited": "",
 				"this-contact": "",
@@ -525,8 +525,8 @@
 			"allow": "",
 			"settings": ""
 		},
-		"skip": "PŘESKOČIT",
-		"cancel": "ZRUŠIT",
+		"skip": "",
+		"cancel": "Zrušit",
 		"settings-text": ""
 	},
 	"notification": {
