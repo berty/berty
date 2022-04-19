@@ -2,7 +2,7 @@
 	"onboarding": {
 		"getstarted": {
 			"screenTitle": "",
-			"title": "PROTEJA SUA PRIVACIDADE",
+			"title": "",
 			"desc": "mensagem peer-to-peer gratuita e segura",
 			"create-button": "Criar uma nova conta",
 			"import-button": "Importar uma conta",
@@ -97,7 +97,7 @@
 		"setup-finished": {
 			"title": "Configuração finalizada!",
 			"desc": "Agora você pode usar o aplicativo, comece a adicionar contatos e conversar de forma livre e privada com eles",
-			"button": "COMECE A USAR O BERTY"
+			"button": ""
 		},
 		"web-views": {
 			"title": "",
@@ -128,8 +128,8 @@
 				"add-members": "Adicionar membros",
 				"group-info": "Informações do grupo",
 				"search-placeholder": "Pesquisar",
-				"continue": "CONTINUAR",
-				"create-group": "CRIAR UM GRUPO"
+				"continue": "",
+				"create-group": ""
 			},
 			"create-group-finalize": {
 				"placeholder": "Nome do grupo",
@@ -228,14 +228,14 @@
 			"title": "",
 			"desc": "",
 			"button": "",
-			"skip": "PULAR E FAZER MAIS TARDE"
+			"skip": ""
 		},
 		"delete-account": {
 			"title": "Apagar conta!",
 			"first-desc": "Você tem certeza que deseja apagar sua conta?",
 			"desc": "Por favor, digite \"apagar\" para confirmar",
-			"cancel-button": "CANCELAR",
-			"delete-button": "APAGAR"
+			"cancel-button": "Cancelar",
+			"delete-button": ""
 		},
 		"faq": {
 			"title": ""
@@ -347,7 +347,7 @@
 			"contact-already-added-message": "Você não pode adicionar o mesmo contato várias vezes"
 		},
 		"invalid-scan": {
-			"dismiss-button": "DISPENSAR"
+			"dismiss-button": ""
 		},
 		"add-this-contact": {
 			"fingerprint": "Impressão digital",
@@ -366,7 +366,7 @@
 			"title": "",
 			"desc": "",
 			"placeholder": "Nome do tema...",
-			"cancel": "CANCELAR",
+			"cancel": "Cancelar",
 			"add": ""
 		}
 	},
@@ -425,11 +425,11 @@
 		},
 		"one-to-one": {
 			"contact-request-box": {
-				"title": "SOLICITAÇÃO DE CONTATO",
+				"title": "Solicitação de contato",
 				"group-invitation": "",
-				"refuse-button": "RECUSAR",
-				"accept-button": "ACEITAR",
-				"accepted-button": "ACEITO",
+				"refuse-button": "",
+				"accept-button": "Aceitar",
+				"accepted-button": "",
 				"error": "",
 				"you-invited": "",
 				"this-contact": "",
@@ -525,8 +525,8 @@
 			"allow": "",
 			"settings": ""
 		},
-		"skip": "PULAR",
-		"cancel": "CANCELAR",
+		"skip": "",
+		"cancel": "Cancelar",
 		"settings-text": ""
 	},
 	"notification": {
