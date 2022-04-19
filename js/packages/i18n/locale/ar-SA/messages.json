@@ -97,7 +97,7 @@
 		"setup-finished": {
 			"title": "تم الإعداد!",
 			"desc": "يمكنك الآن استخدام التطبيق، بدء إضافة جهات الاتصال والتحدث معهم بحرية وبشكل خاص",
-			"button": "ابدأ استخدام البيرتي"
+			"button": ""
 		},
 		"web-views": {
 			"title": "",
@@ -128,8 +128,8 @@
 				"add-members": "إضافة أعضاء",
 				"group-info": "معلومات المجموعة",
 				"search-placeholder": "البحث",
-				"continue": "متابعة",
-				"create-group": "إنشاء مجموعة"
+				"continue": "",
+				"create-group": ""
 			},
 			"create-group-finalize": {
 				"placeholder": "اسم المجموعة",
@@ -228,14 +228,14 @@
 			"title": "",
 			"desc": "",
 			"button": "",
-			"skip": "اختراع و هذه الأشرطة"
+			"skip": ""
 		},
 		"delete-account": {
 			"title": "حذف الحساب!",
 			"first-desc": "هل أنت متأكد من أنك تريد حذف حسابك؟",
 			"desc": "الرجاء كتابة \"حذف\" للتأكيد",
-			"cancel-button": "لالغاء",
-			"delete-button": "إزالة"
+			"cancel-button": "",
+			"delete-button": ""
 		},
 		"faq": {
 			"title": ""
@@ -366,7 +366,7 @@
 			"title": "",
 			"desc": "",
 			"placeholder": "",
-			"cancel": "لالغاء",
+			"cancel": "",
 			"add": ""
 		}
 	},
@@ -428,7 +428,7 @@
 				"title": "",
 				"group-invitation": "",
 				"refuse-button": "",
-				"accept-button": "الموافقة",
+				"accept-button": "قبول",
 				"accepted-button": "",
 				"error": "",
 				"you-invited": "",
@@ -525,8 +525,8 @@
 			"allow": "",
 			"settings": ""
 		},
-		"skip": "تخطي",
-		"cancel": "لالغاء",
+		"skip": "",
+		"cancel": "",
 		"settings-text": ""
 	},
 	"notification": {
