@@ -97,7 +97,7 @@
 		"setup-finished": {
 			"title": "Configuração finalizada!",
 			"desc": "A app está pronta a ser usada, adicione contactos e converse livremente e em privado com eles",
-			"button": "COMECE A USAR O BERTY"
+			"button": ""
 		},
 		"web-views": {
 			"title": "",
@@ -128,8 +128,8 @@
 				"add-members": "Adicionar membros",
 				"group-info": "Informação do Grupo",
 				"search-placeholder": "Pesquisar",
-				"continue": "CONTINUAR",
-				"create-group": "CRIAR UM GRUPO"
+				"continue": "",
+				"create-group": ""
 			},
 			"create-group-finalize": {
 				"placeholder": "",
@@ -228,13 +228,13 @@
 			"title": "",
 			"desc": "",
 			"button": "",
-			"skip": "SALTAR E FAZER MAIS TARDE"
+			"skip": ""
 		},
 		"delete-account": {
 			"title": "",
 			"first-desc": "",
 			"desc": "",
-			"cancel-button": "",
+			"cancel-button": "Cancelar",
 			"delete-button": ""
 		},
 		"faq": {
@@ -366,7 +366,7 @@
 			"title": "",
 			"desc": "",
 			"placeholder": "",
-			"cancel": "",
+			"cancel": "Cancelar",
 			"add": ""
 		}
 	},
@@ -425,7 +425,7 @@
 		},
 		"one-to-one": {
 			"contact-request-box": {
-				"title": "",
+				"title": "Pedido de contacto",
 				"group-invitation": "",
 				"refuse-button": "",
 				"accept-button": "",
@@ -526,7 +526,7 @@
 			"settings": ""
 		},
 		"skip": "",
-		"cancel": "",
+		"cancel": "Cancelar",
 		"settings-text": ""
 	},
 	"notification": {
