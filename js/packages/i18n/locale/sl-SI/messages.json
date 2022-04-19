@@ -97,7 +97,7 @@
 		"setup-finished": {
 			"title": "Nastavljanje končano!",
 			"desc": "Sedaj lahko začnete uporabljati aplikacijo, dodajate kontakte ter se z njimi pogovarjate prosto in privatno",
-			"button": "ZAČNITE UPORABLJATI BERTY"
+			"button": ""
 		},
 		"web-views": {
 			"title": "",
@@ -228,14 +228,14 @@
 			"title": "",
 			"desc": "",
 			"button": "",
-			"skip": "PRESKOČI IN NAREDI KASNEJE"
+			"skip": ""
 		},
 		"delete-account": {
 			"title": "Izbriši račun!",
 			"first-desc": "",
 			"desc": "",
-			"cancel-button": "",
-			"delete-button": "IZBRIS"
+			"cancel-button": "Prekini",
+			"delete-button": ""
 		},
 		"faq": {
 			"title": ""
@@ -366,7 +366,7 @@
 			"title": "",
 			"desc": "",
 			"placeholder": "",
-			"cancel": "",
+			"cancel": "Prekini",
 			"add": ""
 		}
 	},
@@ -428,7 +428,7 @@
 				"title": "",
 				"group-invitation": "",
 				"refuse-button": "",
-				"accept-button": "",
+				"accept-button": "Sprejmi",
 				"accepted-button": "",
 				"error": "",
 				"you-invited": "",
@@ -526,7 +526,7 @@
 			"settings": ""
 		},
 		"skip": "",
-		"cancel": "",
+		"cancel": "Prekini",
 		"settings-text": ""
 	},
 	"notification": {
