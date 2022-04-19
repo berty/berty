@@ -2,7 +2,7 @@
 	"onboarding": {
 		"getstarted": {
 			"screenTitle": "",
-			"title": "PROTEGE TU PRIVACIDAD",
+			"title": "",
 			"desc": "mensajería peer-to-peer gratuita y segura",
 			"create-button": "",
 			"import-button": "",
@@ -97,7 +97,7 @@
 		"setup-finished": {
 			"title": "¡Configuración finalizada!",
 			"desc": "Ahora puedes usar la aplicación, empieza a añadir contactos y habla libre y en privado con ellos",
-			"button": "INICIAR USANDO BERTY"
+			"button": ""
 		},
 		"web-views": {
 			"title": "",
@@ -128,8 +128,8 @@
 				"add-members": "Agregar usuarios",
 				"group-info": "Información del grupo",
 				"search-placeholder": "Buscar",
-				"continue": "CONTINUAR",
-				"create-group": "CREAR UN GRUPO"
+				"continue": "",
+				"create-group": ""
 			},
 			"create-group-finalize": {
 				"placeholder": "Nombre del grupo",
@@ -228,14 +228,14 @@
 			"title": "",
 			"desc": "",
 			"button": "",
-			"skip": "SALTAR Y HACER MÁS TARDE"
+			"skip": "Omitir y hacer esto más tarde"
 		},
 		"delete-account": {
 			"title": "¡Eliminar cuenta!",
 			"first-desc": "¿Está seguro que desea eliminar su cuenta?",
 			"desc": "Por favor, escriba borrar para confirmar",
-			"cancel-button": "CANCELAR",
-			"delete-button": "ELIMINAR"
+			"cancel-button": "Cancelar",
+			"delete-button": ""
 		},
 		"faq": {
 			"title": "PREGUNTAS FRECUENTES"
@@ -347,7 +347,7 @@
 			"contact-already-added-message": "No puedes añadir el mismo contacto varias veces"
 		},
 		"invalid-scan": {
-			"dismiss-button": "CERRAR"
+			"dismiss-button": ""
 		},
 		"add-this-contact": {
 			"fingerprint": "Huella digital",
@@ -358,7 +358,7 @@
 			"fingerprint": "Huella digital",
 			"info": "Información",
 			"devices": "Dispositivos",
-			"join": "UNIR A ESTE GRUPO",
+			"join": "",
 			"password-label": "",
 			"password-placeholder": "Contraseña..."
 		},
@@ -366,8 +366,8 @@
 			"title": "Guardar tema",
 			"desc": "¡Por favor, elija un nombre para su tema!",
 			"placeholder": "Nombre del tema...",
-			"cancel": "CANCELAR",
-			"add": "¡AÑADIR!"
+			"cancel": "Cancelar",
+			"add": "Añadir!"
 		}
 	},
 	"chat": {
@@ -425,11 +425,11 @@
 		},
 		"one-to-one": {
 			"contact-request-box": {
-				"title": "SOLICITUD DE CONTACTO",
+				"title": "Solicitud de contacto",
 				"group-invitation": "",
-				"refuse-button": "RECHAZAR",
-				"accept-button": "ACEPTAR",
-				"accepted-button": "ACEPTADO",
+				"refuse-button": "",
+				"accept-button": "Aceptar",
+				"accepted-button": "",
 				"error": "",
 				"you-invited": "",
 				"this-contact": "",
@@ -525,8 +525,8 @@
 			"allow": "Permitir",
 			"settings": "Ir a Ajustes"
 		},
-		"skip": "SALTAR",
-		"cancel": "CANCELAR",
+		"skip": "Omitir",
+		"cancel": "Cancelar",
 		"settings-text": "Puedes habilitar el permiso {{title}} desde la configuración."
 	},
 	"notification": {
