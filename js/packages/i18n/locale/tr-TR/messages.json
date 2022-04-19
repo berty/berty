@@ -2,7 +2,7 @@
 	"onboarding": {
 		"getstarted": {
 			"screenTitle": "",
-			"title": "GİZLİLİĞİNİZİ KORUYUN",
+			"title": "",
 			"desc": "ücretsiz & güvenli eşler arası mesajlaşma",
 			"create-button": "Yeni bir hesap oluştur",
 			"import-button": "Hesabı içeri aktar",
@@ -97,7 +97,7 @@
 		"setup-finished": {
 			"title": "Kurulum bitti!",
 			"desc": "Artık uygulamayı kullanabilir, kişi eklemeye başlayabilir ve onlarla özgürce ve özel olarak konuşabilirsiniz",
-			"button": "BERTY KULLANMAYA BAŞLA"
+			"button": ""
 		},
 		"web-views": {
 			"title": "",
@@ -128,8 +128,8 @@
 				"add-members": "Üyeler ekle",
 				"group-info": "Grup bilgisi",
 				"search-placeholder": "Sorgula",
-				"continue": "DEVAM ET",
-				"create-group": "YENİ BİR GRUP YARAT"
+				"continue": "",
+				"create-group": ""
 			},
 			"create-group-finalize": {
 				"placeholder": "Grup ismi",
@@ -228,14 +228,14 @@
 			"title": "Berty Servisleri",
 			"desc": "",
 			"button": "Berty Servislerini Kullan",
-			"skip": "ATLA VE DAHA SONRA YAP"
+			"skip": ""
 		},
 		"delete-account": {
 			"title": "Hesabı sil!",
 			"first-desc": "Hesabınızı silmek istediğinizden emin misiniz?",
 			"desc": "Lütfen onaylamak için delete yazın",
-			"cancel-button": "İPTAL ET",
-			"delete-button": "SİL"
+			"cancel-button": "İptal",
+			"delete-button": "Sil"
 		},
 		"faq": {
 			"title": "SSS"
@@ -347,7 +347,7 @@
 			"contact-already-added-message": "Aynı kişiyi birden fazla defa ekleyemezsiniz"
 		},
 		"invalid-scan": {
-			"dismiss-button": "YOKSAY"
+			"dismiss-button": ""
 		},
 		"add-this-contact": {
 			"fingerprint": "Parmak izi",
@@ -358,7 +358,7 @@
 			"fingerprint": "Parmak izi",
 			"info": "Bilgiler",
 			"devices": "Aygıtlar",
-			"join": "BU GRUBA KATIL",
+			"join": "",
 			"password-label": "",
 			"password-placeholder": "Parola..."
 		},
@@ -366,8 +366,8 @@
 			"title": "",
 			"desc": "Lütfen temanız için bir isim seçin!",
 			"placeholder": "Tema adı...",
-			"cancel": "İPTAL ET",
-			"add": "EKLE!"
+			"cancel": "İptal",
+			"add": "Ekle!"
 		}
 	},
 	"chat": {
@@ -425,11 +425,11 @@
 		},
 		"one-to-one": {
 			"contact-request-box": {
-				"title": "KİŞİ İSTEĞİ",
-				"group-invitation": "GRUP DAVETİ",
-				"refuse-button": "REDDET",
-				"accept-button": "KABUL ET",
-				"accepted-button": "KABUL EDİLDİ",
+				"title": "Kişi isteği",
+				"group-invitation": "",
+				"refuse-button": "",
+				"accept-button": "Onayla",
+				"accepted-button": "",
 				"error": "Seni gruba eklerken hatayla karşılaştık ☹️ Bizim hatamız!",
 				"you-invited": "Sen davet ettin",
 				"this-contact": "",
@@ -525,8 +525,8 @@
 			"allow": "İzin ver",
 			"settings": "Ayarlara Git"
 		},
-		"skip": "ATLA",
-		"cancel": "İPTAL ET",
+		"skip": "Geç",
+		"cancel": "İptal",
 		"settings-text": ""
 	},
 	"notification": {
