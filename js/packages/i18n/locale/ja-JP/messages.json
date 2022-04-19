@@ -2,7 +2,7 @@
 	"onboarding": {
 		"getstarted": {
 			"screenTitle": "",
-			"title": "プライバシーを保護",
+			"title": "",
 			"desc": "無料で安全に P2P メッセージをやりとりする",
 			"create-button": "アカウントを作成",
 			"import-button": "アカウントをインポート",
@@ -97,7 +97,7 @@
 		"setup-finished": {
 			"title": "セットアップが完了しました!",
 			"desc": "アプリが使えるようになりました。連絡先に相手を追加すると、自由かつプライベートに話せます。",
-			"button": "Bertyを使用開始"
+			"button": ""
 		},
 		"web-views": {
 			"title": "",
@@ -128,8 +128,8 @@
 				"add-members": "メンバーを追加",
 				"group-info": "グループの情報",
 				"search-placeholder": "検索",
-				"continue": "続行",
-				"create-group": "グループを作成"
+				"continue": "",
+				"create-group": ""
 			},
 			"create-group-finalize": {
 				"placeholder": "グループ名",
@@ -228,7 +228,7 @@
 			"title": "",
 			"desc": "",
 			"button": "",
-			"skip": "スキップして後で実行する"
+			"skip": ""
 		},
 		"delete-account": {
 			"title": "アカウントを削除します!",
@@ -347,7 +347,7 @@
 			"contact-already-added-message": "同じ連絡先を複数追加することはできません"
 		},
 		"invalid-scan": {
-			"dismiss-button": "却下"
+			"dismiss-button": ""
 		},
 		"add-this-contact": {
 			"fingerprint": "識別情報（フィンガープリント）",
@@ -358,7 +358,7 @@
 			"fingerprint": "識別情報（フィンガープリント）",
 			"info": "各種情報",
 			"devices": "デバイス",
-			"join": "このグループに参加する",
+			"join": "",
 			"password-label": "",
 			"password-placeholder": "パスワード..."
 		},
@@ -427,9 +427,9 @@
 			"contact-request-box": {
 				"title": "連絡先リクエスト",
 				"group-invitation": "",
-				"refuse-button": "拒否",
+				"refuse-button": "",
 				"accept-button": "承認",
-				"accepted-button": "承認済み",
+				"accepted-button": "",
 				"error": "",
 				"you-invited": "",
 				"this-contact": "",
@@ -525,7 +525,7 @@
 			"allow": "許可する",
 			"settings": "設定に移動"
 		},
-		"skip": "スキップする",
+		"skip": "",
 		"cancel": "キャンセル",
 		"settings-text": "設定画面から {{title}} の権限を有効にできます。"
 	},
