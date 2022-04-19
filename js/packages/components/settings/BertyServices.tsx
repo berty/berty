@@ -63,6 +63,7 @@ const ServicesAuthBody: React.FC<{ next: () => void }> = ({ next }) => {
 				}
 				skip={{
 					text: t('settings.berty-services.skip'),
+					textStyle: { textTransform: 'uppercase' },
 					onPress: () => {
 						next()
 					},

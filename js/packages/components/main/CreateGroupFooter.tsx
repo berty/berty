@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, TouchableOpacity, ActivityIndicator } from 'react-native'
+import { View, TouchableOpacity, ActivityIndicator, TextStyle } from 'react-native'
 import { Icon } from '@ui-kitten/components'
 
 import { useStyles } from '@berty/styles'
@@ -8,6 +8,7 @@ import { UnifiedText } from '../shared-components/UnifiedText'
 
 type FooterCreateGroupProps = {
 	title: string
+	titleStyle?: TextStyle | TextStyle[]
 	icon?: string
 	action?: any
 	loading?: boolean
@@ -23,6 +24,7 @@ const useStylesCreateGroup = () => {
 
 export const FooterCreateGroup: React.FC<FooterCreateGroupProps> = ({
 	title,
+	titleStyle,
 	icon,
 	action,
 	loading,
@@ -62,6 +64,7 @@ export const FooterCreateGroup: React.FC<FooterCreateGroupProps> = ({
 								text.align.center,
 								_styles.footerCreateGroupText,
 								{ color: colors['background-header'] },
+								titleStyle,
 							]}
 						>
 							{title}

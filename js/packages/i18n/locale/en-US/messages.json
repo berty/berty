@@ -2,7 +2,7 @@
 	"onboarding": {
 		"getstarted": {
 			"screenTitle": "Protect your privacy",
-			"title": "PROTECT YOUR PRIVACY",
+			"title": "Protect your privacy",
 			"desc": "free & secure peer-to-peer messaging",
 			"create-button": "Create an account",
 			"import-button": "Import an account",
@@ -97,7 +97,7 @@
 		"setup-finished": {
 			"title": "Setup finished!",
 			"desc": "You can now use the app, start adding contacts and talk freely and privately with them",
-			"button": "START USING BERTY"
+			"button": "Start using berty"
 		},
 		"web-views": {
 			"title": "Web content permission",
@@ -128,8 +128,8 @@
 				"add-members": "Add members",
 				"group-info": "Group info",
 				"search-placeholder": "Search",
-				"continue": "CONTINUE",
-				"create-group": "CREATE A GROUP"
+				"continue": "Continue",
+				"create-group": "Create a group"
 			},
 			"create-group-finalize": {
 				"placeholder": "Group name",
@@ -228,14 +228,14 @@
 			"title": "Berty Services",
 			"desc": " Activating Berty Services will allow you to receive push notifications via Berty Technologies' servers and grant you access to its nodes for conversation replication.",
 			"button": "Use Berty Services",
-			"skip": "SKIP AND DO THIS LATER"
+			"skip": "Skip and do this later"
 		},
 		"delete-account": {
 			"title": "Delete account!",
 			"first-desc": "Are you sure you want to delete your account?",
 			"desc": "Please type delete to confirm",
-			"cancel-button": "CANCEL",
-			"delete-button": "DELETE"
+			"cancel-button": "Cancel",
+			"delete-button": "Delete"
 		},
 		"faq": {
 			"title": "FAQ"
@@ -347,7 +347,7 @@
 			"contact-already-added-message": "You can't add same contact multiple times"
 		},
 		"invalid-scan": {
-			"dismiss-button": "DISMISS"
+			"dismiss-button": "Dismiss"
 		},
 		"add-this-contact": {
 			"fingerprint": "Fingerprint",
@@ -358,7 +358,7 @@
 			"fingerprint": "Fingerprint",
 			"info": "Infos",
 			"devices": "Devices",
-			"join": "JOIN THIS GROUP",
+			"join": "Join this group",
 			"password-label": "Enter group password",
 			"password-placeholder": "Password..."
 		},
@@ -366,8 +366,8 @@
 			"title": "Saving theme",
 			"desc": "Please choose a name for your theme!",
 			"placeholder": "Theme name...",
-			"cancel": "CANCEL",
-			"add": "ADD!"
+			"cancel": "Cancel",
+			"add": "Add!"
 		}
 	},
 	"chat": {
@@ -425,11 +425,11 @@
 		},
 		"one-to-one": {
 			"contact-request-box": {
-				"title": "CONTACT REQUEST",
-				"group-invitation": "GROUP INVITATION",
-				"refuse-button": "REFUSE",
-				"accept-button": "ACCEPT",
-				"accepted-button": "ACCEPTED",
+				"title": "Contact request",
+				"group-invitation": "Group invitation",
+				"refuse-button": "Refuse",
+				"accept-button": "Accept",
+				"accepted-button": "Accepted",
 				"error": "Error adding you to the group ☹️ Our bad!",
 				"you-invited": "You invited",
 				"this-contact": "this contact",
@@ -525,8 +525,8 @@
 			"allow": "Allow",
 			"settings": "Go to Settings"
 		},
-		"skip": "SKIP",
-		"cancel": "CANCEL",
+		"skip": "Skip",
+		"cancel": "Cancel",
 		"settings-text": "You can enable {{title}} permission from Settings."
 	},
 	"notification": {

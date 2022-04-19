@@ -220,7 +220,13 @@ export const ManageGroupInvitation: React.FC<{
 							{ backgroundColor: colors['positive-asset'] },
 						]}
 					>
-						<UnifiedText style={{ textAlign: 'center', color: colors['background-header'] }}>
+						<UnifiedText
+							style={{
+								textAlign: 'center',
+								color: colors['background-header'],
+								textTransform: 'uppercase',
+							}}
+						>
 							{t('modals.group-invitation.join')}
 						</UnifiedText>
 					</TouchableOpacity>

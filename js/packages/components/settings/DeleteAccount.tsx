@@ -155,7 +155,7 @@ const DeleteAccountContent: React.FC<{}> = () => {
 								padding.left.small,
 								row.item.justify,
 								_styles.dismissText,
-								{ color: colors['secondary-text'] },
+								{ color: colors['secondary-text'], textTransform: 'uppercase' },
 							]}
 						>
 							{t('settings.delete-account.cancel-button')}
@@ -186,7 +186,7 @@ const DeleteAccountContent: React.FC<{}> = () => {
 								padding.left.small,
 								row.item.justify,
 								_styles.dismissText,
-								{ color: colors['secondary-background-header'] },
+								{ color: colors['secondary-background-header'], textTransform: 'uppercase' },
 							]}
 						>
 							{t('settings.delete-account.delete-button')}

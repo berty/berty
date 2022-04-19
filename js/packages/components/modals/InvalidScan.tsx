@@ -136,7 +136,7 @@ const InvalidScanDismissButton: React.FC = () => {
 						padding.left.small,
 						row.item.justify,
 						_styles.dismissText,
-						{ color: colors['secondary-text'] },
+						{ color: colors['secondary-text'], textTransform: 'uppercase' },
 					]}
 				>
 					{t('modals.invalid-scan.dismiss-button')}

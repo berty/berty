@@ -71,7 +71,7 @@ const ContactRequestBox: React.FC<{ contact: beapi.messenger.IContact; isAccepte
 	return (
 		<View>
 			<View style={[row.left, flex.align.center, flex.justify.center]}>
-				<UnifiedText style={[text.bold]}>
+				<UnifiedText style={[text.bold, { textTransform: 'uppercase' }]}>
 					{t('chat.one-to-one.contact-request-box.title')}
 				</UnifiedText>
 			</View>

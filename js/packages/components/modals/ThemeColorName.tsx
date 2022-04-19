@@ -124,7 +124,7 @@ const ThemeColorBody: React.FC<{ closeModal: () => void }> = ({ closeModal }) =>
 								padding.left.small,
 								row.item.justify,
 								text.bold,
-								{ color: colors['negative-asset'] },
+								{ color: colors['negative-asset'], textTransform: 'uppercase' },
 							]}
 						>
 							{t('modals.save-theme.cancel')}
@@ -158,7 +158,7 @@ const ThemeColorBody: React.FC<{ closeModal: () => void }> = ({ closeModal }) =>
 								padding.left.small,
 								row.item.justify,
 								text.bold,
-								{ color: colors['background-header'] },
+								{ color: colors['background-header'], textTransform: 'uppercase' },
 							]}
 						>
 							{t('modals.save-theme.add')}
