@@ -128,8 +128,8 @@
 				"add-members": "",
 				"group-info": "",
 				"search-placeholder": "ძებნა",
-				"continue": "გაგრძელება",
-				"create-group": "ჯგუფის შექმნა"
+				"continue": "",
+				"create-group": ""
 			},
 			"create-group-finalize": {
 				"placeholder": "",
@@ -228,7 +228,7 @@
 			"title": "",
 			"desc": "",
 			"button": "",
-			"skip": "გამოტოვეთ და გააკეთეთ მოგვიანებით"
+			"skip": ""
 		},
 		"delete-account": {
 			"title": "",
