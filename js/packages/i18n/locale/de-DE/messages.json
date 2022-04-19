@@ -2,7 +2,7 @@
 	"onboarding": {
 		"getstarted": {
 			"screenTitle": "",
-			"title": "SCHÜTZE DEINE PRIVATSPHÄRE",
+			"title": "",
 			"desc": "kostenloses und sicheres Peer-to-Peer-Messaging",
 			"create-button": "",
 			"import-button": "",
@@ -97,7 +97,7 @@
 		"setup-finished": {
 			"title": "Einrichtung abgeschlossen!",
 			"desc": "Sie können jetzt die App benutzen, Kontakte hinzufügen und sich frei und privat mit ihnen unterhalten",
-			"button": "Fertig - Berty benutzen"
+			"button": ""
 		},
 		"web-views": {
 			"title": "",
@@ -128,8 +128,8 @@
 				"add-members": "Mitglied hinzufügen",
 				"group-info": "Gruppen informationen",
 				"search-placeholder": "Suchen",
-				"continue": "Fortfahren",
-				"create-group": "Gruppe erstellen"
+				"continue": "",
+				"create-group": ""
 			},
 			"create-group-finalize": {
 				"placeholder": "Gruppenname",
@@ -228,14 +228,14 @@
 			"title": "",
 			"desc": "",
 			"button": "",
-			"skip": "ÜBERSPRINGEN UND DIES SPÄTER ERLEDIGEN"
+			"skip": ""
 		},
 		"delete-account": {
 			"title": "Mein Konto löschen!",
 			"first-desc": "Sind Sie sicher, dass Sie Ihr Konto löschen möchten?",
 			"desc": "Bitte löschen zum Bestätigen eingeben",
 			"cancel-button": "Abbrechen",
-			"delete-button": "Löschen"
+			"delete-button": ""
 		},
 		"faq": {
 			"title": "FAQ"
@@ -347,7 +347,7 @@
 			"contact-already-added-message": "Sie können den gleichen Kontakt nicht mehrmals hinzufügen"
 		},
 		"invalid-scan": {
-			"dismiss-button": "Schließen"
+			"dismiss-button": ""
 		},
 		"add-this-contact": {
 			"fingerprint": "Fingerabdruck",
@@ -358,7 +358,7 @@
 			"fingerprint": "Fingerabdruck",
 			"info": "Infos",
 			"devices": "Geräte",
-			"join": "TRITT DER GRUPPE BEI",
+			"join": "",
 			"password-label": "",
 			"password-placeholder": "Passwort..."
 		},
@@ -367,7 +367,7 @@
 			"desc": "Bitte wählen Sie einen Namen für Ihr Theme!",
 			"placeholder": "Theme-Name...",
 			"cancel": "Abbrechen",
-			"add": "HINZUFÜGEN!"
+			"add": "Hinzufügen!"
 		}
 	},
 	"chat": {
@@ -425,11 +425,11 @@
 		},
 		"one-to-one": {
 			"contact-request-box": {
-				"title": "KONTAKT-ANFRAGE",
+				"title": "Kontaktanfrage",
 				"group-invitation": "",
-				"refuse-button": "Ablehnen",
-				"accept-button": "Annehmen",
-				"accepted-button": "Angenommen",
+				"refuse-button": "",
+				"accept-button": "Akzeptieren",
+				"accepted-button": "",
 				"error": "",
 				"you-invited": "",
 				"this-contact": "",
