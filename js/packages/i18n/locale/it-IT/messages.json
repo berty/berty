@@ -2,7 +2,7 @@
 	"onboarding": {
 		"getstarted": {
 			"screenTitle": "",
-			"title": "PROTEGGI LA TUA PRIVACY",
+			"title": "",
 			"desc": "",
 			"create-button": "",
 			"import-button": "",
@@ -97,7 +97,7 @@
 		"setup-finished": {
 			"title": "Installazione terminata!",
 			"desc": "Ora è possibile utilizzare l'app, iniziare ad aggiungere contatti e parlare liberamente e privatamente con essi",
-			"button": "INIZIA A USARE BERTY"
+			"button": ""
 		},
 		"web-views": {
 			"title": "",
@@ -128,8 +128,8 @@
 				"add-members": "Aggiungi membri",
 				"group-info": "Info gruppo",
 				"search-placeholder": "Cerca",
-				"continue": "CONTINUA",
-				"create-group": "CREA UN GRUPPO"
+				"continue": "",
+				"create-group": ""
 			},
 			"create-group-finalize": {
 				"placeholder": "Nome gruppo",
@@ -228,14 +228,14 @@
 			"title": "",
 			"desc": "",
 			"button": "",
-			"skip": "SALTA E FALLO DOPO"
+			"skip": ""
 		},
 		"delete-account": {
 			"title": "Elimina account!",
 			"first-desc": "Sei sicuro di voler eliminare il tuo account?",
 			"desc": "Digita \"delete\" per confermare",
-			"cancel-button": "ANNULLA",
-			"delete-button": "ELIMINA"
+			"cancel-button": "Annulla",
+			"delete-button": ""
 		},
 		"faq": {
 			"title": ""
@@ -347,7 +347,7 @@
 			"contact-already-added-message": "Non è possibile aggiungere più volte lo stesso contatto"
 		},
 		"invalid-scan": {
-			"dismiss-button": "RIGETTA"
+			"dismiss-button": ""
 		},
 		"add-this-contact": {
 			"fingerprint": "Impronta",
@@ -366,8 +366,8 @@
 			"title": "Salvataggio tema",
 			"desc": "Scegli un nome per il tuo tema!",
 			"placeholder": "Nome tema...",
-			"cancel": "ANNULLA",
-			"add": "AGGIUNGI!"
+			"cancel": "Annulla",
+			"add": "Aggiungi!"
 		}
 	},
 	"chat": {
@@ -425,11 +425,11 @@
 		},
 		"one-to-one": {
 			"contact-request-box": {
-				"title": "RICHIESTA DI CONTATTO",
+				"title": "Richiesta di contatto",
 				"group-invitation": "",
-				"refuse-button": "RIFIUTA",
-				"accept-button": "ACCETTA",
-				"accepted-button": "ACCETTATO",
+				"refuse-button": "",
+				"accept-button": "Accetta",
+				"accepted-button": "",
 				"error": "",
 				"you-invited": "",
 				"this-contact": "",
@@ -525,8 +525,8 @@
 			"allow": "Consenti",
 			"settings": "Vai alle impostazioni"
 		},
-		"skip": "SALTA",
-		"cancel": "ANNULLA",
+		"skip": "",
+		"cancel": "Annulla",
 		"settings-text": "Puoi abilitare il permesso {{title}} dalle Impostazioni."
 	},
 	"notification": {
