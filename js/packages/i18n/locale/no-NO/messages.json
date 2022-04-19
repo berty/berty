@@ -97,7 +97,7 @@
 		"setup-finished": {
 			"title": "Oppsett fullført!",
 			"desc": "Du kan nå bruke appen, legge til kontakter, og snakke fritt og privat med dem",
-			"button": "BEGYNN Å BRUKE BERTY"
+			"button": ""
 		},
 		"web-views": {
 			"title": "",
@@ -228,14 +228,14 @@
 			"title": "",
 			"desc": "",
 			"button": "",
-			"skip": "HOPP OVER OG GJØR DETTE SENERE"
+			"skip": ""
 		},
 		"delete-account": {
 			"title": "Slett konto!",
 			"first-desc": "Er du sikker på at du vil slette din konto?",
 			"desc": "Vennligst skriv \"slett\" for å bekrefte",
-			"cancel-button": "AVBRYT",
-			"delete-button": "SLETT"
+			"cancel-button": "Avbryt",
+			"delete-button": ""
 		},
 		"faq": {
 			"title": ""
@@ -347,7 +347,7 @@
 			"contact-already-added-message": "Du kan ikke legge til samme kontakt flere ganger"
 		},
 		"invalid-scan": {
-			"dismiss-button": "AVVIS"
+			"dismiss-button": ""
 		},
 		"add-this-contact": {
 			"fingerprint": "Fingeravtrykk",
@@ -366,7 +366,7 @@
 			"title": "",
 			"desc": "",
 			"placeholder": "",
-			"cancel": "AVBRYT",
+			"cancel": "Avbryt",
 			"add": ""
 		}
 	},
@@ -425,11 +425,11 @@
 		},
 		"one-to-one": {
 			"contact-request-box": {
-				"title": "KONTAKTFORESPØRSEL",
+				"title": "Kontaktforespørsel",
 				"group-invitation": "",
-				"refuse-button": "NEKT",
-				"accept-button": "GODTA",
-				"accepted-button": "GODTATT",
+				"refuse-button": "",
+				"accept-button": "Godta",
+				"accepted-button": "",
 				"error": "",
 				"you-invited": "",
 				"this-contact": "",
@@ -525,8 +525,8 @@
 			"allow": "",
 			"settings": ""
 		},
-		"skip": "HOPP OVER",
-		"cancel": "AVBRYT",
+		"skip": "",
+		"cancel": "Avbryt",
 		"settings-text": ""
 	},
 	"notification": {
