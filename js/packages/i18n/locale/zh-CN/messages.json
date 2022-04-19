@@ -2,7 +2,7 @@
 	"onboarding": {
 		"getstarted": {
 			"screenTitle": "保护您的隐私",
-			"title": "保护您的隐私！",
+			"title": "保护您的隐私",
 			"desc": "免费和安全的点对点消息传递",
 			"create-button": "创建帐户",
 			"import-button": "导入帐户",
@@ -97,7 +97,7 @@
 		"setup-finished": {
 			"title": "设置完成！",
 			"desc": "您现在可以使用该应用，开始添加联系人以及与他们自由私下聊天",
-			"button": "开始使用 Berty"
+			"button": ""
 		},
 		"web-views": {
 			"title": "网页内容权限",
@@ -128,8 +128,8 @@
 				"add-members": "添加新成员",
 				"group-info": "群组信息",
 				"search-placeholder": "搜索",
-				"continue": "继续",
-				"create-group": "创建群组"
+				"continue": "",
+				"create-group": ""
 			},
 			"create-group-finalize": {
 				"placeholder": "群组名称",
@@ -228,7 +228,7 @@
 			"title": "Berty 服务",
 			"desc": " 激活 Berty 服务将允许您通过 Berty Technologies 服务器接收推送通知，并授权您访问其节点以复制对话。",
 			"button": "使用 Berty 服务",
-			"skip": "跳过并稍后再做"
+			"skip": "跳过并稍后执行此操作"
 		},
 		"delete-account": {
 			"title": "删除帐户！",
@@ -347,7 +347,7 @@
 			"contact-already-added-message": "您不能多次添加同一个联系人"
 		},
 		"invalid-scan": {
-			"dismiss-button": "忽略"
+			"dismiss-button": ""
 		},
 		"add-this-contact": {
 			"fingerprint": "指纹",
@@ -358,7 +358,7 @@
 			"fingerprint": "指纹",
 			"info": "信息",
 			"devices": "设备",
-			"join": "加入此群组",
+			"join": "",
 			"password-label": "输入群组密码",
 			"password-placeholder": "密码..."
 		},
@@ -426,10 +426,10 @@
 		"one-to-one": {
 			"contact-request-box": {
 				"title": "联系人请求",
-				"group-invitation": "群组链接",
-				"refuse-button": "拒绝",
-				"accept-button": "接受",
-				"accepted-button": "已接受",
+				"group-invitation": "",
+				"refuse-button": "",
+				"accept-button": "同意",
+				"accepted-button": "",
 				"error": "将您添加到群组时出错☹️ 我们的错误！",
 				"you-invited": "你已邀请",
 				"this-contact": "此联系人",
