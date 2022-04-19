@@ -2,7 +2,7 @@
 	"onboarding": {
 		"getstarted": {
 			"screenTitle": "Bescherm uw privacy",
-			"title": "BESCHERM UW PRIVACY",
+			"title": "Bescherm uw privacy",
 			"desc": "gratis & veilig peer-to-peer berichten",
 			"create-button": "Maak een nieuw account",
 			"import-button": "Importeer een account",
@@ -97,7 +97,7 @@
 		"setup-finished": {
 			"title": "Setup voltooid!",
 			"desc": "Je kunt nu de app gebruiken, begin met het toevoegen van contacten om vrij en privé te communiceren",
-			"button": "GEBRUIK BERTY"
+			"button": ""
 		},
 		"web-views": {
 			"title": "",
@@ -128,8 +128,8 @@
 				"add-members": "Deelnemers toevoegen",
 				"group-info": "Groep info",
 				"search-placeholder": "Zoeken",
-				"continue": "DOORGAAN",
-				"create-group": "MAAK EEN GROEP"
+				"continue": "",
+				"create-group": ""
 			},
 			"create-group-finalize": {
 				"placeholder": "Groepsnaam",
@@ -228,14 +228,14 @@
 			"title": "",
 			"desc": "",
 			"button": "",
-			"skip": "OVERSLAAN EN LATER UITVOEREN"
+			"skip": "Sla dit over en doe dit later"
 		},
 		"delete-account": {
 			"title": "Account verwijderen!",
 			"first-desc": "Weet je zeker dat je je account wilt verwijderen?",
 			"desc": "Typ verwijder om te bevestigen",
-			"cancel-button": "ANNULEREN",
-			"delete-button": "VERWIJDEREN"
+			"cancel-button": "Annuleren",
+			"delete-button": ""
 		},
 		"faq": {
 			"title": "FAQ"
@@ -347,7 +347,7 @@
 			"contact-already-added-message": "Je kan niet meerdere keren hetzelfde contact toevoegen"
 		},
 		"invalid-scan": {
-			"dismiss-button": "Sluit"
+			"dismiss-button": ""
 		},
 		"add-this-contact": {
 			"fingerprint": "Vingerafdruk",
@@ -358,7 +358,7 @@
 			"fingerprint": "Vingerafdruk",
 			"info": "Informatie",
 			"devices": "Apparaten",
-			"join": "WORD LID VAN DEZE GROEP",
+			"join": "",
 			"password-label": "",
 			"password-placeholder": "Wachtwoord..."
 		},
@@ -366,8 +366,8 @@
 			"title": "Thema opslaan",
 			"desc": "Kies een naam voor je thema!",
 			"placeholder": "Thema naam...",
-			"cancel": "ANNULEREN",
-			"add": "TOEVOEGEN!"
+			"cancel": "Annuleren",
+			"add": "Toevoegen!"
 		}
 	},
 	"chat": {
@@ -425,11 +425,11 @@
 		},
 		"one-to-one": {
 			"contact-request-box": {
-				"title": "CONTACT VERZOEK",
+				"title": "Contact verzoek",
 				"group-invitation": "",
-				"refuse-button": "WEIGEREN",
-				"accept-button": "ACCEPTEREN",
-				"accepted-button": "GEACCEPTEERD",
+				"refuse-button": "",
+				"accept-button": "Accepteren",
+				"accepted-button": "",
 				"error": "",
 				"you-invited": "",
 				"this-contact": "",
@@ -525,8 +525,8 @@
 			"allow": "Toestaan",
 			"settings": "Ga naar Instellingen"
 		},
-		"skip": "OVERSLAAN",
-		"cancel": "ANNULEREN",
+		"skip": "",
+		"cancel": "Annuleren",
 		"settings-text": "Je kunt {{title}} rechten inschakelen via de Instellingen."
 	},
 	"notification": {
