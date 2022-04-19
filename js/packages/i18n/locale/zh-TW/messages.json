@@ -97,7 +97,7 @@
 		"setup-finished": {
 			"title": "設置完成！",
 			"desc": "您現在可以使用該應用，開始添加聯繫人以及與他們自由私下聊天",
-			"button": "開始使用 Berty"
+			"button": ""
 		},
 		"web-views": {
 			"title": "",
@@ -128,8 +128,8 @@
 				"add-members": "添加成員",
 				"group-info": "群組信息",
 				"search-placeholder": "搜索",
-				"continue": "繼續",
-				"create-group": "創建群組"
+				"continue": "",
+				"create-group": ""
 			},
 			"create-group-finalize": {
 				"placeholder": "群組名稱",
@@ -228,14 +228,14 @@
 			"title": "",
 			"desc": "",
 			"button": "",
-			"skip": "跳過並稍後再做"
+			"skip": ""
 		},
 		"delete-account": {
 			"title": "刪除帳戶！",
 			"first-desc": "您確定要刪除您的帳戶嗎？",
 			"desc": "請輸入delete以確認",
 			"cancel-button": "取消",
-			"delete-button": "刪除"
+			"delete-button": ""
 		},
 		"faq": {
 			"title": ""
@@ -347,7 +347,7 @@
 			"contact-already-added-message": "您不能多次添加同一個聯繫人"
 		},
 		"invalid-scan": {
-			"dismiss-button": "忽略"
+			"dismiss-button": ""
 		},
 		"add-this-contact": {
 			"fingerprint": "指紋",
@@ -425,11 +425,11 @@
 		},
 		"one-to-one": {
 			"contact-request-box": {
-				"title": "聯繫人請求",
+				"title": "聯繫請求",
 				"group-invitation": "",
-				"refuse-button": "拒絕",
-				"accept-button": "接受",
-				"accepted-button": "已接受",
+				"refuse-button": "",
+				"accept-button": "同意",
+				"accepted-button": "",
 				"error": "",
 				"you-invited": "",
 				"this-contact": "",
@@ -525,7 +525,7 @@
 			"allow": "允許",
 			"settings": "轉到設置"
 		},
-		"skip": "跳過",
+		"skip": "",
 		"cancel": "取消",
 		"settings-text": "您可以在設置中啟用 {{title}} 權限。"
 	},
