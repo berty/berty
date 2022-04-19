@@ -2,7 +2,7 @@
 	"onboarding": {
 		"getstarted": {
 			"screenTitle": "Protégez votre vie privée",
-			"title": "PROTÉGEZ VOTRE VIE PRIVÉE",
+			"title": "Protégez votre vie privée",
 			"desc": "messagerie P2P gratuite et sécurisée",
 			"create-button": "Créer un nouveau compte",
 			"import-button": "Importer un compte",
@@ -97,7 +97,7 @@
 		"setup-finished": {
 			"title": "Configuration terminée !",
 			"desc": "Vous pouvez dés maintenant utiliser l'application, ajoutez vos contacts et parler en toute tranquillité avec eux",
-			"button": "LANCER BERTY"
+			"button": ""
 		},
 		"web-views": {
 			"title": "Autorisation de contenu Web",
@@ -128,8 +128,8 @@
 				"add-members": "Ajouter des membres",
 				"group-info": "Informations du groupe",
 				"search-placeholder": "Rechercher",
-				"continue": "CONTINUER",
-				"create-group": "CRÉER UN GROUPE"
+				"continue": "",
+				"create-group": ""
 			},
 			"create-group-finalize": {
 				"placeholder": "Nom du groupe",
@@ -170,18 +170,18 @@
 		},
 		"accounts": {
 			"title": "Comptes",
-			"backup-button": "",
-			"backup-notif-title": "",
-			"backup-notif-desc": "",
+			"backup-button": "Sauvegarde",
+			"backup-notif-title": "Réussite",
+			"backup-notif-desc": "Le compte a été sauvegardé !",
 			"accounts-button": "Comptes",
 			"create-button": "Créer un nouveau compte",
 			"import-button": "Importer un compte",
 			"link-button": "Lier cet appareil",
 			"delete-button": "Supprimer ce compte",
-			"delete-title": ""
+			"delete-title": "Supprimer le compte"
 		},
 		"appearance": {
-			"title": "",
+			"title": "Apparence",
 			"dark-button": "Mode Sombre",
 			"editor-button": "Éditeur de thème",
 			"theme-editor": {
@@ -189,7 +189,7 @@
 			}
 		},
 		"contact-convs": {
-			"title": "",
+			"title": "Contacts et Conversations",
 			"reset-button": "Réinitialiser mon lien/code QR de contact",
 			"request-button": "Autoriser les demandes de contact entrantes"
 		},
@@ -228,14 +228,14 @@
 			"title": "Services Berty",
 			"desc": "L'activation des services Berty vous permettra de recevoir des notifications push via les serveurs de Berty Technologies et vous donnera accès à ses nœuds pour la réplication des conversations.",
 			"button": "Activer les services Berty",
-			"skip": "PASSER ET FAIRE ÇA PLUS TARD"
+			"skip": "Ignorer pour le moment"
 		},
 		"delete-account": {
 			"title": "Supprimer le compte !",
 			"first-desc": "Êtes-vous sûr de vouloir supprimer votre compte ?",
 			"desc": "Veuillez saisir \"delete\" pour confirmer",
-			"cancel-button": "ANNULER",
-			"delete-button": "SUPPRIMER"
+			"cancel-button": "Annuler",
+			"delete-button": "Supprimer"
 		},
 		"faq": {
 			"title": "FAQ"
@@ -347,7 +347,7 @@
 			"contact-already-added-message": "Vous ne pouvez pas ajouter le même contact plusieurs fois"
 		},
 		"invalid-scan": {
-			"dismiss-button": "ANNULER"
+			"dismiss-button": ""
 		},
 		"add-this-contact": {
 			"fingerprint": "Empreinte numérique",
@@ -358,7 +358,7 @@
 			"fingerprint": "Empreinte digitale",
 			"info": "Infos",
 			"devices": "Appareils",
-			"join": "REJOINDRE CE GROUPE",
+			"join": "",
 			"password-label": "Saisir le mot de passe du groupe",
 			"password-placeholder": "Mot de passe..."
 		},
@@ -366,8 +366,8 @@
 			"title": "Sauvegarde du thème",
 			"desc": "Veuillez choisir un nom pour votre thème !",
 			"placeholder": "Nom du thème...",
-			"cancel": "ANNULER",
-			"add": "AJOUTER!"
+			"cancel": "Annuler",
+			"add": "Ajouter!"
 		}
 	},
 	"chat": {
@@ -425,11 +425,11 @@
 		},
 		"one-to-one": {
 			"contact-request-box": {
-				"title": "DEMANDE DE CONTACT",
-				"group-invitation": "INVITATION DE GROUPE",
-				"refuse-button": "REFUSER",
-				"accept-button": "ACCEPTER",
-				"accepted-button": "ACCEPTÉ",
+				"title": "Demande de contact",
+				"group-invitation": "",
+				"refuse-button": "",
+				"accept-button": "Accepter",
+				"accepted-button": "",
 				"error": "Erreur lors de votre ajout au groupe ☹️ Notre mal !",
 				"you-invited": "Vous avez invité",
 				"this-contact": "ce contact",
@@ -525,8 +525,8 @@
 			"allow": "Autoriser",
 			"settings": "Accéder aux paramètres"
 		},
-		"skip": "PASSER",
-		"cancel": "ANNULER",
+		"skip": "Ignorer",
+		"cancel": "Annuler",
 		"settings-text": "Vous pouvez activer la permission {{title}} à partir des paramètres."
 	},
 	"notification": {
