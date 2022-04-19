@@ -2,7 +2,7 @@
 	"onboarding": {
 		"getstarted": {
 			"screenTitle": "",
-			"title": "Védd meg adataidat",
+			"title": "",
 			"desc": "ingyenes & biztonságos ponttól-pontig üzenetküldés",
 			"create-button": "Fiók létrehozása",
 			"import-button": "Fiók importálása",
@@ -97,7 +97,7 @@
 		"setup-finished": {
 			"title": "A beállítás befejeződött!",
 			"desc": "Mostantól használhatja az alkalmazást, elkezdheti hozzáadni a névjegyeket, majd szabadon és privát módon beszélgethet velük",
-			"button": "BERTY HASZNÁLATÁNAK KEZDÉSE"
+			"button": ""
 		},
 		"web-views": {
 			"title": "",
@@ -128,8 +128,8 @@
 				"add-members": "Tag hozzáadása",
 				"group-info": "Csoport infó",
 				"search-placeholder": "Keresés",
-				"continue": "FOLYTATÁS",
-				"create-group": "CSOPORT LÉTREHOZÁSA"
+				"continue": "",
+				"create-group": ""
 			},
 			"create-group-finalize": {
 				"placeholder": "Csoport neve",
@@ -228,14 +228,14 @@
 			"title": "Berty szolgáltatások",
 			"desc": "A Berty szolgáltatások aktiválása lehetővé teszik, hogy push értesítéseket kapjon a Berty Technologies szerverein keresztül, és hozzáférést biztosítson a csomópontokhoz a beszélgetés felállításához.",
 			"button": "Berty szolgáltatások használata",
-			"skip": "KIHAGYJA ÉS KÉSŐBB CSINÁLJA MEG"
+			"skip": ""
 		},
 		"delete-account": {
 			"title": "Fiók törlése!",
 			"first-desc": "Biztosan törölné a fiókját?",
 			"desc": "A megerősítéshez írja be hogy \"delete\"",
-			"cancel-button": "MÉGSE",
-			"delete-button": "TÖRLÉS"
+			"cancel-button": "Mégse",
+			"delete-button": ""
 		},
 		"faq": {
 			"title": "GYIK"
@@ -347,7 +347,7 @@
 			"contact-already-added-message": "Többször nem adhatja hozzá ugyanazt a névjegyet"
 		},
 		"invalid-scan": {
-			"dismiss-button": "ELUTASÍTÁS"
+			"dismiss-button": ""
 		},
 		"add-this-contact": {
 			"fingerprint": "Ujjlenyomat",
@@ -358,7 +358,7 @@
 			"fingerprint": "Ujjlenyomat",
 			"info": "Infók",
 			"devices": "Eszközök",
-			"join": "Csatlakozás a csoporthoz",
+			"join": "",
 			"password-label": "Csoport jelszó megadása",
 			"password-placeholder": "Jelszó..."
 		},
@@ -366,7 +366,7 @@
 			"title": "Téma mentése",
 			"desc": "Kérjük adjon a témának nevet!",
 			"placeholder": "A téma neve...",
-			"cancel": "MÉGSE",
+			"cancel": "Mégse",
 			"add": "Hozzáadás!"
 		}
 	},
@@ -425,11 +425,11 @@
 		},
 		"one-to-one": {
 			"contact-request-box": {
-				"title": "KAPCSOLAT KÉRÉS",
-				"group-invitation": "Csoportós meghívó",
-				"refuse-button": "ELUTASÍTÁS",
-				"accept-button": "ELFOGADÁS",
-				"accepted-button": "ELFOGADVA",
+				"title": "Kapcsolat felkérés",
+				"group-invitation": "",
+				"refuse-button": "",
+				"accept-button": "Elfogadás",
+				"accepted-button": "",
 				"error": "Hiba történt a csoportba való felvételkor ☹️ A mi hibánk!",
 				"you-invited": "Meghívtál",
 				"this-contact": "ez a kapcsolat",
@@ -525,8 +525,8 @@
 			"allow": "Engedélyezni",
 			"settings": "Ugorj a beállításokhoz"
 		},
-		"skip": "TOVÁBB",
-		"cancel": "MÉGSE",
+		"skip": "Kihagyás",
+		"cancel": "Mégse",
 		"settings-text": "A Beállítások menüből engedélyezheti a {{title}}."
 	},
 	"notification": {
