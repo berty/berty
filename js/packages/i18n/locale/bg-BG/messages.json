@@ -97,7 +97,7 @@
 		"setup-finished": {
 			"title": "Настройката приключи!",
 			"desc": "Вече можете да използвате приложението, да започнете да добавяте контакти и да говорите свободно и насаме с тях",
-			"button": "ЗАПОЧНИ РАБОТА С BERTY"
+			"button": ""
 		},
 		"web-views": {
 			"title": "",
@@ -228,14 +228,14 @@
 			"title": "",
 			"desc": "",
 			"button": "",
-			"skip": "ПРОПУСНИ И ОСТАВИ ЗА ПО-КЪСНО"
+			"skip": ""
 		},
 		"delete-account": {
 			"title": "Изтрии акаунт!",
 			"first-desc": "Наистина ли искате да изтриете акаунта си?",
 			"desc": "Напиши delete за потвърждение",
-			"cancel-button": "ОТКАЗ",
-			"delete-button": "ИЗТРИИ"
+			"cancel-button": "Отказ",
+			"delete-button": ""
 		},
 		"faq": {
 			"title": ""
@@ -347,7 +347,7 @@
 			"contact-already-added-message": "Не може да добавиш същия контакт няколко пъти"
 		},
 		"invalid-scan": {
-			"dismiss-button": "ОК"
+			"dismiss-button": ""
 		},
 		"add-this-contact": {
 			"fingerprint": "Fingerprint",
@@ -366,7 +366,7 @@
 			"title": "",
 			"desc": "",
 			"placeholder": "",
-			"cancel": "ОТКАЗ",
+			"cancel": "Отказ",
 			"add": ""
 		}
 	},
@@ -425,11 +425,11 @@
 		},
 		"one-to-one": {
 			"contact-request-box": {
-				"title": "ЗАЯВКА ЗА КОНТАКТ",
+				"title": "Искане за контакт",
 				"group-invitation": "",
-				"refuse-button": "ОТКАЖИ",
-				"accept-button": "ПРИЕМИ",
-				"accepted-button": "ПРИЕТ",
+				"refuse-button": "",
+				"accept-button": "Приеми",
+				"accepted-button": "",
 				"error": "",
 				"you-invited": "",
 				"this-contact": "",
@@ -525,8 +525,8 @@
 			"allow": "",
 			"settings": ""
 		},
-		"skip": "ПРОПУСНИ",
-		"cancel": "ОТКАЗ",
+		"skip": "",
+		"cancel": "Отказ",
 		"settings-text": ""
 	},
 	"notification": {
