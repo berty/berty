@@ -11,7 +11,7 @@ import {
 import { useStyles } from '@berty/styles'
 import { ScreenFC } from '@berty/navigation'
 
-import Logo from './berty_gradient_square.svg'
+import Logo from '@berty/assets/logo/berty_gradient_square.svg'
 import Button from './Button'
 import { importAccountFromDocumentPicker } from '../pickerUtils'
 import { UnifiedText } from '../shared-components/UnifiedText'

@@ -14,7 +14,7 @@ import { useSelector } from 'react-redux'
 import { useAppDispatch } from '@berty/hooks'
 import { useThemeColor } from '@berty/store'
 import { useStyles } from '@berty/styles'
-import source from '@berty/assets/loader_dots.gif'
+import source from '@berty/assets/images/loader_dots.gif'
 import {
 	selectDaemonAddress,
 	selectEmbedded,

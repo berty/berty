@@ -8,7 +8,7 @@ import messengerMethodsHooks from '@berty/store/methods'
 import { useThemeColor } from '@berty/store'
 import { BlurView } from '@react-native-community/blur'
 
-import Avatar from './Buck_Berty_Icon_Card.svg'
+import Avatar from '@berty/assets/logo/buck_berty_icon_card.svg'
 import { base64ToURLBase64 } from '../utils'
 import { useSelector } from 'react-redux'
 import {

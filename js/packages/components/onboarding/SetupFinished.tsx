@@ -27,7 +27,7 @@ const SetupFinishedBody = () => {
 		<>
 			{isFinished && (
 				<LottieView
-					source={require('./confetti.json')}
+					source={require('@berty/assets/lottie/confetti-lottie.json')}
 					autoPlay
 					loop={false}
 					style={{
