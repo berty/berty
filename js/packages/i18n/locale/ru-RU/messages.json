@@ -2,7 +2,7 @@
 	"onboarding": {
 		"getstarted": {
 			"screenTitle": "Защити свою приватность",
-			"title": "ЗАЩИТИ СВОЮ КОНФЕДЕЦИАЛЬНОСТЬ",
+			"title": "Защити свою приватность",
 			"desc": "бесплатное и защищённое сквозное общение",
 			"create-button": "Создать аккаунт",
 			"import-button": "Импортировать аккаунт",
@@ -97,7 +97,7 @@
 		"setup-finished": {
 			"title": "Настройка завершена!",
 			"desc": "Теперь вы можете использовать приложение, начните добавлять контакты и общайтесь с ними свободно и приватно",
-			"button": "НАЧАТЬ ИСПОЛЬЗОВАТЬ BERTY"
+			"button": ""
 		},
 		"web-views": {
 			"title": "Доступ к веб-контенту",
@@ -128,8 +128,8 @@
 				"add-members": "Добавить участника",
 				"group-info": "Информация о группе",
 				"search-placeholder": "Поиск",
-				"continue": "ПРОДОЛЖИТЬ",
-				"create-group": "СОЗДАТЬ ГРУППУ"
+				"continue": "",
+				"create-group": ""
 			},
 			"create-group-finalize": {
 				"placeholder": "Название группы",
@@ -228,14 +228,14 @@
 			"title": "Сервисы Berty",
 			"desc": "",
 			"button": "Использовать Сервисы Berty",
-			"skip": "ПРОПУСТИТЬ И НАСТРОИТЬ ПОЗЖЕ"
+			"skip": ""
 		},
 		"delete-account": {
 			"title": "Удалить аккаунт!",
 			"first-desc": "Вы уверены, что хотите удалить свой аккаунт?",
 			"desc": "Пожалуйста, напишите \"удалить\", чтобы подтвердить",
-			"cancel-button": "ОТМЕНА",
-			"delete-button": "УДАЛИТЬ"
+			"cancel-button": "Отменить",
+			"delete-button": "Удалить"
 		},
 		"faq": {
 			"title": "ЧАВО"
@@ -347,7 +347,7 @@
 			"contact-already-added-message": "Нельзя добавить один и тот же контакт несколько раз"
 		},
 		"invalid-scan": {
-			"dismiss-button": "ОТКЛОНИТЬ"
+			"dismiss-button": ""
 		},
 		"add-this-contact": {
 			"fingerprint": "Отпечаток",
@@ -358,7 +358,7 @@
 			"fingerprint": "Отпечаток",
 			"info": "Информация",
 			"devices": "Устройства",
-			"join": "ПРИСОЕДИНИТЬСЯ К ГРУППЕ",
+			"join": "",
 			"password-label": "Введи пароль группы",
 			"password-placeholder": "Пароль..."
 		},
@@ -366,8 +366,8 @@
 			"title": "Сохранение темы",
 			"desc": "Пожалуйста, выберите имя для вашей темы!",
 			"placeholder": "Название темы...",
-			"cancel": "ОТМЕНА",
-			"add": "ДОБАВИТЬ!"
+			"cancel": "Отменить",
+			"add": "Добавить!"
 		}
 	},
 	"chat": {
@@ -425,11 +425,11 @@
 		},
 		"one-to-one": {
 			"contact-request-box": {
-				"title": "ЗАПРОС В КОНТАКТЫ",
+				"title": "Запрос в контакты",
 				"group-invitation": "",
-				"refuse-button": "ОТКЛОНИТЬ",
-				"accept-button": "ПРИНЯТЬ",
-				"accepted-button": "ПРИНЯТЫЙ",
+				"refuse-button": "",
+				"accept-button": "Принять",
+				"accepted-button": "",
 				"error": "Ошибка добавления тебя в группу ☹️ Наш косяк!",
 				"you-invited": "Ты приглашён",
 				"this-contact": "этот контакт",
@@ -525,8 +525,8 @@
 			"allow": "Разрешить",
 			"settings": "Перейти в настройки"
 		},
-		"skip": "ПРОПУСТИТЬ",
-		"cancel": "ОТМЕНА",
+		"skip": "Пропустить",
+		"cancel": "Отменить",
 		"settings-text": "Вы можете включить разрешение {{title}} в настройках."
 	},
 	"notification": {
