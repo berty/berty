@@ -125,7 +125,7 @@ var templateAuthTokenServerAuthorizeButton = `<!DOCTYPE html>
            <label class="title">
               <h2>
               {{ if eq $singleService 1 }}
-                <input type="hidden" name="{{ $key }}}_selected" value="1">
+                <input type="hidden" name="{{ $key }}_selected" value="1">
               {{ else }}
                 <input type="checkbox" name="{{ $key }}_selected" value="1" checked>
               {{ end }}
