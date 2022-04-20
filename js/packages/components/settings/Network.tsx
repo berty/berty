@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { ScrollView, View, Platform } from 'react-native'
 import { useTranslation } from 'react-i18next'
 import { useHeaderHeight } from '@react-navigation/elements'
@@ -22,8 +22,7 @@ import {
 	removeFromStaticRelay,
 	selectBlePerm,
 	selectBootstrap,
-	selectCurrentNetworkConfig,
-	selectParsedLocalNetworkConfig,
+	selectEditedNetworkConfig,
 	selectRendezvous,
 	selectStaticRelay,
 	setCurrentNetworkConfig,
@@ -31,7 +30,7 @@ import {
 	toggleFromRendezvous,
 	toggleFromStaticRelay,
 } from '@berty/redux/reducers/networkConfig.reducer'
-import { useAppDispatch, useAppSelector, useSetNetworkConfig } from '@berty/hooks'
+import { useAppDispatch, useAppSelector, useSyncNetworkConfigOnScreenRemoved } from '@berty/hooks'
 
 import { AccordionV2, AccordionAddItemV2, AccordionItemV2 } from './Accordion'
 import { ModalProvider, useModal } from '../providers/modal.provider'
@@ -43,7 +42,7 @@ const Proximity: React.FC = () => {
 	const { navigate } = useNavigation()
 	const { t }: { t: any } = useTranslation()
 	const blePerm = useSelector(selectBlePerm)
-	const networkConfig = useSelector(selectCurrentNetworkConfig)
+	const networkConfig = useSelector(selectEditedNetworkConfig)
 	const dispatch = useAppDispatch()
 
 	return (
@@ -140,7 +139,7 @@ const NetworkBody: React.FC = () => {
 	const colors = useThemeColor()
 	const { t } = useTranslation()
 	const dispatch = useDispatch()
-	const networkConfig = useSelector(selectCurrentNetworkConfig)
+	const networkConfig = useSelector(selectEditedNetworkConfig)
 	const { show, hide } = useModal()
 	const rendezvous = useAppSelector(selectRendezvous)
 	const bootstrap = useAppSelector(selectBootstrap)
@@ -375,24 +374,4 @@ export const Network: ScreenFC<'Settings.Network'> = () => {
 			</IOSOnlyKeyboardAvoidingView>
 		</ModalProvider>
 	)
-}
-
-/**
- * If the network config was changed in the UI,
- * updates the node network config when the screen is removed
- **/
-const useSyncNetworkConfigOnScreenRemoved = () => {
-	const navigation = useNavigation()
-	const parsedLocalNetworkConfig = useAppSelector(selectParsedLocalNetworkConfig)
-	const networkConfig = useSelector(selectCurrentNetworkConfig)
-	const setNetworkConfig = useSetNetworkConfig()
-	useEffect(() => {
-		if (JSON.stringify(parsedLocalNetworkConfig) !== JSON.stringify(networkConfig)) {
-			const effect = () => setNetworkConfig(parsedLocalNetworkConfig)
-			navigation.addListener('beforeRemove', effect)
-			return () => {
-				navigation.removeListener('beforeRemove', effect)
-			}
-		}
-	}, [navigation, parsedLocalNetworkConfig, networkConfig, setNetworkConfig])
 }

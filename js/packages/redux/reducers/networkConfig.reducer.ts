@@ -22,6 +22,7 @@ type ConfigListType = {
 }
 
 type NetworkConfigState = {
+	nodeConfig: beapi.account.INetworkConfig
 	currentConfig: beapi.account.INetworkConfig
 	blePerm: PermissionStatus
 	bootstrap: ConfigListType[]
@@ -39,6 +40,7 @@ export const initialNode = [
 ]
 
 const newNetworkConfigState = (): NetworkConfigState => ({
+	nodeConfig: {},
 	currentConfig: {},
 	blePerm: 'unavailable',
 	bootstrap: initialNode,
@@ -61,8 +63,6 @@ type LocalRootState = typeof rootInitialState
 const selectSlice = (state: LocalRootState) => state[sliceName]
 
 export const selectBlePerm = (state: LocalRootState) => selectSlice(state).blePerm
-export const selectCurrentNetworkConfig = (state: LocalRootState) =>
-	selectSlice(state).currentConfig
 
 export const selectRendezvous = (state: LocalRootState) => selectSlice(state).rendezvous
 
@@ -70,9 +70,9 @@ export const selectBootstrap = (state: LocalRootState) => selectSlice(state).boo
 
 export const selectStaticRelay = (state: LocalRootState) => selectSlice(state).staticRelay
 
-export const selectParsedLocalNetworkConfig = (
-	state: LocalRootState,
-): beapi.account.INetworkConfig => {
+export const selectNodeNetworkConfig = (state: LocalRootState) => selectSlice(state).nodeConfig
+
+export const selectEditedNetworkConfig = (state: LocalRootState): beapi.account.INetworkConfig => {
 	const currentConfig: beapi.account.INetworkConfig = beapi.account.NetworkConfig.fromObject({
 		...selectSlice(state).currentConfig,
 		rendezvous: selectSlice(state)
@@ -107,6 +107,21 @@ const slice = createSlice({
 			{ payload }: PayloadAction<beapi.account.INetworkConfig>,
 		) {
 			state.currentConfig = payload
+			state.rendezvous.forEach(val => {
+				val.isEnabled = !!payload.rendezvous?.includes(val.url)
+			})
+			state.bootstrap.forEach(val => {
+				val.isEnabled = !!payload.bootstrap?.includes(val.url)
+			})
+			state.staticRelay.forEach(val => {
+				val.isEnabled = !!payload.staticRelay?.includes(val.url)
+			})
+		},
+		setNodeNetworkConfig(
+			state: LocalState,
+			{ payload }: PayloadAction<beapi.account.INetworkConfig>,
+		) {
+			state.nodeConfig = payload
 		},
 		addToRendezvous(state, { payload }: PayloadAction<{ url: string; alias: string }>) {
 			state.rendezvous.push({ ...payload, isEditable: true, isEnabled: false })
@@ -199,6 +214,7 @@ const slice = createSlice({
 export const {
 	setBlePerm,
 	setCurrentNetworkConfig,
+	setNodeNetworkConfig,
 	addToRendezvous,
 	addToBootstrap,
 	addToStaticRelay,
