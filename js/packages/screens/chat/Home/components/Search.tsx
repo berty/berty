@@ -8,11 +8,10 @@ import { useNavigation } from '@berty/navigation'
 import { useStyles } from '@berty/contexts/styles'
 import { useThemeColor, parseInteraction, pbDateToNum, ParsedInteraction } from '@berty/store'
 import { useContact, useConversationInteractions, useConversation } from '@berty/hooks'
-
-import { HintBody } from '../../shared-components'
-import { timeFormat } from '../../helpers'
-import { ContactAvatar, ConversationAvatar } from '../../avatars'
-import { UnifiedText } from '../../shared-components/UnifiedText'
+import { HintBody } from '@berty/components/shared-components'
+import { timeFormat } from '@berty/components/helpers'
+import { ContactAvatar, ConversationAvatar } from '@berty/components/avatars'
+import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 
 // Styles
 

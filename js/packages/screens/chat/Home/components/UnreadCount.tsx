@@ -3,7 +3,7 @@ import { View } from 'react-native'
 
 import { useThemeColor } from '@berty/store/hooks'
 import { useStyles } from '@berty/contexts/styles'
-import { UnifiedText } from '../../shared-components/UnifiedText'
+import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 
 export const UnreadCount: React.FC<{ value: number; isConvBadge?: boolean }> = ({

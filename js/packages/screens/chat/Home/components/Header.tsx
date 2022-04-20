@@ -7,10 +7,10 @@ import { Icon } from '@ui-kitten/components'
 import { useStyles } from '@berty/contexts/styles'
 import { useProfileNotification, useThemeColor } from '@berty/store'
 import { useNavigation } from '@berty/navigation'
-
-import { AccountAvatar } from '../../avatars'
-import { UnreadCount } from '../../main/home/UnreadCount'
+import { AccountAvatar } from '@berty/components/avatars'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
+
+import { UnreadCount } from './UnreadCount'
 
 export const HomeHeader: React.FC<
 	ViewProps & {

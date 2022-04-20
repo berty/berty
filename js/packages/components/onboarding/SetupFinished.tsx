@@ -98,7 +98,7 @@ const SetupFinishedBody = () => {
 								() =>
 									navDispatch(
 										CommonActions.reset({
-											routes: [{ name: 'Main.Home' }],
+											routes: [{ name: 'Chat.Home' }],
 										}),
 									),
 								1500,

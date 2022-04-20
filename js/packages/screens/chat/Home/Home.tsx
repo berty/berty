@@ -3,32 +3,32 @@ import { useTranslation } from 'react-i18next'
 import { ScrollView, View, StatusBar, TouchableOpacity, SafeAreaView } from 'react-native'
 import pickBy from 'lodash/pickBy'
 import { Icon } from '@ui-kitten/components'
+import { useSelector } from 'react-redux'
 
 import { ScreenFC } from '@berty/navigation'
 import { useNotificationsInhibitor, useThemeColor } from '@berty/store'
 import beapi from '@berty/api'
 import { useStyles } from '@berty/contexts/styles'
-import { AddBot } from '@berty/components/modals'
 import {
 	useContactsDict,
 	useConversationsDict,
 	useIncomingContactRequests,
 	useAllConversations,
 } from '@berty/hooks'
-
-import { useLayout } from '../../hooks'
+import { useLayout } from '@berty/components/hooks'
 import EmptyChat from '@berty/assets/logo/empty_chat.svg'
-import { IncomingRequests } from './Requests'
-import { Conversations } from './Conversations'
-import { SearchComponent } from './Search'
-import { HomeHeader } from './Header'
-import { MultiAccount } from './MultiAccount'
-import { useSelector } from 'react-redux'
 import { selectClient } from '@berty/redux/reducers/ui.reducer'
 import { selectPersistentOptions } from '@berty/redux/reducers/persistentOptions.reducer'
-import { UnifiedText } from '../../shared-components/UnifiedText'
+import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { ButtonSettingV2 } from '@berty/components/shared-components'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
+
+import { IncomingRequests } from './components/Requests'
+import { Conversations } from './components/Conversations'
+import { SearchComponent } from './components/Search'
+import { HomeHeader } from './components/Header'
+import { MultiAccount } from './components/MultiAccount'
+import { AddBot } from './components/AddBot'
 
 const T = beapi.messenger.StreamEvent.Notified.Type
 
@@ -69,7 +69,7 @@ const FooterButton: React.FC<{
 	)
 }
 
-export const Home: ScreenFC<'Main.Home'> = ({ navigation: { navigate } }) => {
+export const Home: ScreenFC<'Chat.Home'> = ({ navigation: { navigate } }) => {
 	useNotificationsInhibitor(notif =>
 		[
 			T.TypeMessageReceived,

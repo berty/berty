@@ -138,7 +138,7 @@ const MessageInvitationReceived: React.FC<{ message: InteractionGroupInvitation 
 					dispatch(
 						CommonActions.reset({
 							routes: [
-								{ name: 'Main.Home' },
+								{ name: 'Chat.Home' },
 								{
 									name: 'Chat.Group',
 									params: {

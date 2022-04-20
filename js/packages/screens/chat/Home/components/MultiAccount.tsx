@@ -8,8 +8,7 @@ import { closeAccountWithProgress, useThemeColor, pbDateToNum, Maybe } from '@be
 import { importAccountFromDocumentPicker } from '@berty/components/pickerUtils'
 import { useAppDispatch, useAppSelector, useSwitchAccount } from '@berty/hooks'
 import beapi from '@berty/api'
-
-import { GenericAvatar } from '../../avatars'
+import { GenericAvatar } from '@berty/components/avatars'
 import {
 	selectAccounts,
 	selectEmbedded,

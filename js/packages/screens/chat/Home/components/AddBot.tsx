@@ -9,46 +9,16 @@ import { useThemeColor } from '@berty/store'
 import { BlurView } from '@react-native-community/blur'
 
 import Avatar from '@berty/assets/logo/buck_berty_icon_card.svg'
-import { base64ToURLBase64 } from '../utils'
+import { base64ToURLBase64 } from '@berty/components/utils'
 import { useSelector } from 'react-redux'
 import {
 	PersistentOptionsKeys,
 	selectPersistentOptions,
 	setPersistentOption,
 } from '@berty/redux/reducers/persistentOptions.reducer'
-import { useAppDispatch } from '@berty/hooks'
-import { UnifiedText } from '../shared-components/UnifiedText'
+import { useAppDispatch, useStylesDefaultModal } from '@berty/hooks'
+import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
-
-export const useStylesDefaultModal = () => {
-	const { width, border, padding, margin } = useStyles()
-	const colors = useThemeColor()
-
-	return {
-		skipButton: [
-			border.scale(2),
-			border.radius.small,
-			margin.top.scale(15),
-			padding.left.small,
-			padding.right.medium,
-			padding.top.small,
-			padding.bottom.small,
-			width(120),
-			{ borderColor: colors['negative-asset'] },
-		],
-		addButton: [
-			border.scale(2),
-			border.radius.small,
-			margin.top.scale(15),
-			padding.left.small,
-			padding.right.medium,
-			padding.top.small,
-			padding.bottom.small,
-			width(120),
-			{ borderColor: colors['positive-asset'] },
-		],
-	}
-}
 
 const AddBotBody: React.FC<{
 	displayName: string

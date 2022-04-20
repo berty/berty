@@ -19,7 +19,7 @@ export type ScreensParams = {
 
 	// Main
 
-	'Main.Home': undefined
+	'Chat.Home': undefined
 	'Main.ContactRequest': { contactId: string }
 	'Main.BlePermission': {
 		accept: () => Promise<void>

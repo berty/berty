@@ -99,7 +99,7 @@ export const ManageDeepLink: ScreenFC<'Modals.ManageDeepLink'> = ({ route: { par
 				dispatch(
 					CommonActions.reset({
 						routes: [
-							{ name: 'Main.Home' },
+							{ name: 'Chat.Home' },
 							{
 								name:
 									conv?.type === beapi.messenger.Conversation.Type.MultiMemberType

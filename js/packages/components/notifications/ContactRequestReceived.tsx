@@ -21,7 +21,7 @@ const ContactRequestReceived: React.FC<any> = ({ onClose, title, message, ...pro
 			dispatch(
 				CommonActions.reset({
 					routes: [
-						{ name: 'Main.Home' },
+						{ name: 'Chat.Home' },
 						{
 							name: 'Chat.OneToOne',
 							params: {

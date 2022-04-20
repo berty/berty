@@ -162,7 +162,7 @@ export const Navigation: React.FC = React.memo(() => {
 			case MESSENGER_APP_STATE.READY:
 				dispatch(
 					CommonActions.reset({
-						routes: [{ name: 'Main.Home' }],
+						routes: [{ name: 'Chat.Home' }],
 					}),
 				)
 				return
@@ -188,7 +188,7 @@ export const Navigation: React.FC = React.memo(() => {
 	return (
 		<NavigationStack.Navigator
 			initialRouteName={
-				appState === MESSENGER_APP_STATE.GET_STARTED ? 'Onboarding.GetStarted' : 'Main.Home'
+				appState === MESSENGER_APP_STATE.GET_STARTED ? 'Onboarding.GetStarted' : 'Chat.Home'
 			}
 			screenOptions={{
 				headerLeft:
@@ -279,8 +279,8 @@ export const Navigation: React.FC = React.memo(() => {
 			/>
 			{/* Main */}
 			<NavigationStack.Screen
-				name={'Main.Home'}
-				component={Components.Main.Home}
+				name={'Chat.Home'}
+				component={Components.Chat.Home}
 				options={{
 					headerShown: false,
 					title: t('main.home.title'),

@@ -26,7 +26,7 @@ const MessageReceived: React.FC<any> = ({ onClose, title, message, ...props }) =
 			dispatch(
 				CommonActions.reset({
 					routes: [
-						{ name: 'Main.Home' },
+						{ name: 'Chat.Home' },
 						{
 							name:
 								payload.conversation.type === beapi.messenger.Conversation.Type.ContactType

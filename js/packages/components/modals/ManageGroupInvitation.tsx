@@ -82,7 +82,7 @@ export const ManageGroupInvitation: React.FC<{
 		if (done && !error) {
 			navDispatch(
 				CommonActions.reset({
-					routes: [{ name: 'Main.Home' }],
+					routes: [{ name: 'Chat.Home' }],
 				}),
 			)
 		}
@@ -91,7 +91,7 @@ export const ManageGroupInvitation: React.FC<{
 		navigationDispatch(
 			CommonActions.reset({
 				routes: [
-					{ name: 'Main.Home' },
+					{ name: 'Chat.Home' },
 					{
 						name: 'Chat.Group',
 						params: {

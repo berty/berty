@@ -8,12 +8,12 @@ import { useMessengerClient, useThemeColor, pbDateToNum } from '@berty/store'
 import { useNavigation } from '@berty/navigation'
 import { useStyles } from '@berty/contexts/styles'
 import { usePlaySound } from '@berty/hooks'
-
-import { ContactAvatar } from '../../avatars'
-import FromNow from '../../shared-components/FromNow'
-import { UnreadCount } from './UnreadCount'
-import { UnifiedText } from '../../shared-components/UnifiedText'
+import { ContactAvatar } from '@berty/components/avatars'
+import FromNow from '@berty/components/shared-components/FromNow'
+import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
+
+import { UnreadCount } from './UnreadCount'
 
 const useStylesContactRequest: any = () => {
 	const { border, padding, margin, width, height, row, flex } = useStyles()

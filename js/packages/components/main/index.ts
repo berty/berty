@@ -1,4 +1,3 @@
-export { Home } from './home/Home'
 export { ContactRequest } from './ContactRequest'
 export { CreateGroupAddMembers } from './CreateGroupAddMembers'
 export { CreateGroupFinalize } from './CreateGroupFinalize'

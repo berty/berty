@@ -9,14 +9,14 @@ import { pbDateToNum, useThemeColor, ParsedInteraction } from '@berty/store'
 import { useNavigation } from '@berty/navigation'
 import { useAppSelector, useOneToOneContact, useLastConvInteraction } from '@berty/hooks'
 import { selectChatInputText } from '@berty/redux/reducers/chatInputs.reducer'
-
-import { ConversationAvatar, HardcodedAvatar, HardcodedAvatarKey } from '../../avatars'
-import { timeFormat } from '../../helpers'
-import { UnreadCount } from './UnreadCount'
+import { ConversationAvatar, HardcodedAvatar, HardcodedAvatarKey } from '@berty/components/avatars'
+import { timeFormat } from '@berty/components/helpers'
 import { selectChatInputIsSending } from '@berty/redux/reducers/chatInputsVolatile.reducer'
 import { Suggestion, Configuration } from '@berty/redux/reducers/persistentOptions.reducer'
-import { UnifiedText } from '../../shared-components/UnifiedText'
+import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
+
+import { UnreadCount } from './UnreadCount'
 
 type AddBotCallback = React.Dispatch<
 	React.SetStateAction<{

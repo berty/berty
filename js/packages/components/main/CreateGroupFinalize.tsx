@@ -201,7 +201,7 @@ export const CreateGroupFinalize: React.FC = () => {
 					index: 0,
 					routes: [
 						{
-							name: 'Main.Home',
+							name: 'Chat.Home',
 						},
 						{
 							name: 'Chat.Group',

@@ -10,9 +10,9 @@ import { saveTheme } from '@berty/redux/reducers/theme.reducer'
 import { BlurView } from '@react-native-community/blur'
 
 import Avatar from '@berty/assets/logo/buck_berty_icon_card.svg'
-import { useStylesDefaultModal } from './AddBot'
 import { UnifiedText } from '../shared-components/UnifiedText'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
+import { useStylesDefaultModal } from '@berty/hooks'
 
 const ThemeColorBody: React.FC<{ closeModal: () => void }> = ({ closeModal }) => {
 	const [themeName, setThemeName] = React.useState<string>('')
