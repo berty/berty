@@ -1,28 +1,28 @@
 {
 	"onboarding": {
 		"getstarted": {
-			"screenTitle": "",
-			"title": "",
-			"desc": "",
-			"create-button": "",
-			"import-button": "",
-			"link-button": ""
+			"screenTitle": "Защитете Вашата лична информация",
+			"title": "Защитете Вашата лична информация",
+			"desc": "Безплатни и защитени директни съобщения",
+			"create-button": "Създайте акаунт",
+			"import-button": "Заредете съществуващ акаунт",
+			"link-button": "Свържете това устройство"
 		},
 		"default-mode": {
 			"summary": {
-				"title": "",
-				"screenTitle": "",
+				"title": "Режим по подразбиране",
+				"screenTitle": "Създайте акаунт",
 				"subtitle": "",
-				"first-point": "",
-				"second-point": "",
-				"back-button": "",
-				"accept-button": ""
+				"first-point": "Започнете с настройки, които предлагат балансирани защита и удобство подходящи за повечето потребители. Berty клетки ще бъдат ползвани за подобряване на скоростта и асинхронна комуникация.",
+				"second-point": "За специфични настройки на баланса между защита и удобство, изберете Персонализиран Режим.",
+				"back-button": "Назад",
+				"accept-button": "Продължи"
 			}
 		},
 		"custom-mode": {
 			"summary": {
-				"screenTitle": "",
-				"title": "",
+				"screenTitle": "Създай акаунт - Специфични настройки",
+				"title": "Персонализиран Режим",
 				"subtitle": "",
 				"first-point": "",
 				"second-point": "",
