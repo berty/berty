@@ -104,7 +104,7 @@ export const checkPermissions = async (
 		options?.navigateToPermScreenOnProblem &&
 		Platform.OS !== 'web'
 	) {
-		options.navigate('Main.Permissions', {
+		options.navigate('Chat.Permissions', {
 			permissionType,
 			permissionStatus: status,
 			navigateNext: options?.navigateNext,
@@ -168,7 +168,7 @@ export const checkBlePermission = async (options: {
 				break
 			case 'denied':
 				// status is denied at the first launch of the app (https://github.com/zoontek/react-native-permissions#understanding-permission-flow)
-				navigate('Main.BlePermission', {
+				navigate('Chat.BlePermission', {
 					accept: handleAccept,
 					deny: handleDeny,
 				})

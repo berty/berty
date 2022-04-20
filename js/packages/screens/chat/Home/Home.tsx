@@ -322,7 +322,7 @@ export const Home: ScreenFC<'Chat.Home'> = ({ navigation: { navigate } }) => {
 					name='plus'
 					fill={colors['reverted-main-text']}
 					backgroundColor={colors['background-header']}
-					onPress={() => navigate('Main.Share')}
+					onPress={() => navigate('Chat.Share')}
 				/>
 			</View>
 			{isLongPress ? (

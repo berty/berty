@@ -6,16 +6,15 @@ import { useTranslation } from 'react-i18next'
 import { useStyles } from '@berty/contexts/styles'
 import messengerMethodsHooks from '@berty/store/methods'
 import { useThemeColor } from '@berty/store'
-import { useNavigation } from '@berty/navigation'
+import { ScreenFC, useNavigation } from '@berty/navigation'
 import { selectInvitationListMembers } from '@berty/redux/reducers/groupCreationForm.reducer'
 import { useAppDispatch, useAppSelector, usePlaySound } from '@berty/hooks'
-
-import { FooterCreateGroup } from './CreateGroupFooter'
-import { Header } from './CreateGroupAddMembers'
-import { ButtonSettingItem } from '../shared-components/SettingsButtons'
-import { MemberList } from './CreateGroupAddMembers'
+import { FooterCreateGroup } from '@berty/components/create-group/CreateGroupFooter'
+import { ButtonSettingItem } from '@berty/components/shared-components/SettingsButtons'
 import { IOSOnlyKeyboardAvoidingView } from '@berty/rnutil/keyboardAvoiding'
-import { UnifiedText } from '../shared-components/UnifiedText'
+import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
+import { Header } from '@berty/components/create-group/CreateGroupHeader'
+import { MemberList } from '@berty/components/create-group/CreateGroupMemberList'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 
 const useStylesCreateGroup = () => {
@@ -176,7 +175,7 @@ const GroupInfo: React.FC<GroupInfoProps> = ({ onGroupNameChange }) => {
 	)
 }
 
-export const CreateGroupFinalize: React.FC = () => {
+export const CreateGroupFinalize: ScreenFC<'Chat.CreateGroupFinalize'> = () => {
 	const { goBack, reset } = useNavigation()
 	const [groupName, setGroupName] = useState('New group')
 	const { call, error, done, reply, loading } = messengerMethodsHooks.useConversationCreate()

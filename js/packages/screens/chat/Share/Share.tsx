@@ -17,11 +17,11 @@ import QRCode from 'react-native-qrcode-svg'
 import { checkPermissions, PermissionType } from '@berty/rnutil/checkPermissions'
 
 import ScanTarget from '@berty/assets/logo/scan_target.svg'
-import { LoaderDots } from '../gates'
-import { AccountAvatar } from '../avatars'
+import { LoaderDots } from '@berty/components/gates'
+import { AccountAvatar } from '@berty/components/avatars'
 import logo from '@berty/assets/images/1_berty_picto.png'
-import { ButtonSetting, ButtonSettingRow } from '../shared-components'
-import { UnifiedText } from '../shared-components/UnifiedText'
+import { ButtonSetting, ButtonSettingRow } from '@berty/components/shared-components'
+import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 
 const QrCode: FC<{ size: number }> = ({ size }) => {
@@ -178,7 +178,7 @@ const ShareContainer: FC<{ element: ReactNode }> = ({ element, children }) => {
 	)
 }
 
-export const ShareModal: ScreenFC<'Main.Share'> = () => {
+export const ShareModal: ScreenFC<'Chat.Share'> = () => {
 	const { flex, margin, height, width } = useStyles()
 	const colors = useThemeColor()
 	const [isScannerVisible, setIsScannerVisible] = useState<boolean>(true)
@@ -292,7 +292,7 @@ export const ShareModal: ScreenFC<'Main.Share'> = () => {
 				<View style={[margin.horizontal.medium]}>
 					<ButtonSetting
 						name={t('settings.share.create-group')}
-						onPress={() => navigate('Main.CreateGroupAddMembers')}
+						onPress={() => navigate('Chat.CreateGroupAddMembers')}
 					/>
 				</View>
 			</ScrollView>

@@ -7,11 +7,11 @@ import { useStyles, ColorsTypes } from '@berty/contexts/styles'
 import { Toggle } from '@berty/components/shared-components/Toggle'
 import { useContact } from '@berty/hooks'
 
-import { TabBar } from './TabBar'
-import { FingerprintContent } from './FingerprintContent'
-import { Modal } from './Modal'
-import { ContactAvatar } from '../avatars'
-import { UnifiedText } from './UnifiedText'
+import { TabBar } from '@berty/components/shared-components/TabBar'
+import { FingerprintContent } from '@berty/components/shared-components/FingerprintContent'
+import { Modal } from '@berty/components/shared-components/Modal'
+import { ContactAvatar } from '@berty/components/avatars'
+import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 
 // Types
 

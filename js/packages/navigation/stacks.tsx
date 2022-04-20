@@ -277,7 +277,7 @@ export const Navigation: React.FC = React.memo(() => {
 					headerTitle: () => <></>,
 				}}
 			/>
-			{/* Main */}
+			{/* Chat */}
 			<NavigationStack.Screen
 				name={'Chat.Home'}
 				component={Components.Chat.Home}
@@ -287,16 +287,16 @@ export const Navigation: React.FC = React.memo(() => {
 				}}
 			/>
 			<NavigationStack.Screen
-				name={'Main.ContactRequest'}
-				component={Components.Main.ContactRequest}
+				name={'Chat.ContactRequest'}
+				component={Components.Chat.ContactRequest}
 				options={{
 					headerShown: false,
 					title: t('main.home.requests.page-title'),
 				}}
 			/>
 			<NavigationStack.Screen
-				name={'Main.Permissions'}
-				component={Components.Main.Permissions}
+				name={'Chat.Permissions'}
+				component={Components.Chat.Permissions}
 				options={{
 					headerShown: false,
 					presentation: 'formSheet',
@@ -304,8 +304,8 @@ export const Navigation: React.FC = React.memo(() => {
 				}}
 			/>
 			<NavigationStack.Screen
-				name={'Main.BlePermission'}
-				component={Components.Main.BlePermission}
+				name={'Chat.BlePermission'}
+				component={Components.Chat.BlePermission}
 				options={{
 					headerShown: false,
 					presentation: 'formSheet',
@@ -313,18 +313,17 @@ export const Navigation: React.FC = React.memo(() => {
 				}}
 			/>
 			<NavigationStack.Screen
-				name={'Main.Share'}
-				component={Components.Main.ShareModal}
+				name={'Chat.Share'}
+				component={Components.Chat.ShareModal}
 				options={BackgroundHeaderScreenOptions({
 					title: t('main.home.title'),
 					headerTitle: () => <></>,
 					presentation: 'formSheet',
 				})}
 			/>
-			{/* CreateGroup */}
 			<NavigationStack.Screen
-				name={'Main.CreateGroupAddMembers'}
-				component={Components.Main.CreateGroupAddMembers}
+				name={'Chat.CreateGroupAddMembers'}
+				component={Components.Chat.CreateGroupAddMembers}
 				options={BackgroundHeaderScreenOptions({
 					title: t('main.home.create-group.title'),
 					headerRight: () => (
@@ -341,8 +340,8 @@ export const Navigation: React.FC = React.memo(() => {
 				})}
 			/>
 			<NavigationStack.Screen
-				name={'Main.CreateGroupFinalize'}
-				component={Components.Main.CreateGroupFinalize}
+				name={'Chat.CreateGroupFinalize'}
+				component={Components.Chat.CreateGroupFinalize}
 				options={BackgroundHeaderScreenOptions({
 					title: t('main.home.create-group.title'),
 					headerRight: () => (
@@ -358,7 +357,6 @@ export const Navigation: React.FC = React.memo(() => {
 					presentation: 'formSheet',
 				})}
 			/>
-			{/* Chat */}
 			<NavigationStack.Screen
 				name={'Chat.OneToOne'}
 				component={Components.Chat.OneToOne}
@@ -419,7 +417,7 @@ export const Navigation: React.FC = React.memo(() => {
 				})}
 			/>
 			<NavigationStack.Screen
-				name={'Group.MultiMemberSettingsAddMembers'}
+				name={'Chat.MultiMemberSettingsAddMembers'}
 				component={Components.Chat.MultiMemberSettingsAddMembers}
 				options={BackgroundHeaderScreenOptions({
 					title: t('chat.add-members.members'),

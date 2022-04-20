@@ -5,7 +5,7 @@ import { useStyles } from '@berty/contexts/styles'
 import { useThemeColor } from '@berty/store'
 import messengerMethodsHooks from '@berty/store/methods'
 
-import { Request } from '../shared-components/Request'
+import { Request } from './components/Request'
 
 //
 // ContactRequest => Accept/Refuse
@@ -30,7 +30,7 @@ const useStylesContactRequest = () => {
 	}
 }
 
-export const ContactRequest: ScreenFC<'Main.ContactRequest'> = ({
+export const ContactRequest: ScreenFC<'Chat.ContactRequest'> = ({
 	route: { params },
 	navigation: { goBack },
 }) => {

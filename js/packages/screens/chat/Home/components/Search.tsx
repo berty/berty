@@ -241,7 +241,7 @@ const SearchResultItem: React.FC<SearchItemProps> = ({ data, kind, searchText = 
 			onPress={() => {
 				if (!conv) {
 					if (data.state === beapi.messenger.Contact.State.IncomingRequest) {
-						navigate('Main.ContactRequest', { contactId: data.publicKey })
+						navigate('Chat.ContactRequest', { contactId: data.publicKey })
 					}
 					return
 				}

@@ -224,7 +224,7 @@ const MultiMemberSettingsBody: React.FC<{
 				icon='user-plus'
 				iconPack='custom'
 				onPress={() =>
-					navigation.navigate('Group.MultiMemberSettingsAddMembers', { convPK: publicKey })
+					navigation.navigate('Chat.MultiMemberSettingsAddMembers', { convPK: publicKey })
 				}
 			/>
 			<ButtonSetting

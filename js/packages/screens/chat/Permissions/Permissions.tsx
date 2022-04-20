@@ -3,6 +3,7 @@ import { TouchableOpacity, Platform, View, AppState, StatusBar } from 'react-nat
 import LottieView, { AnimatedLottieViewProps } from 'lottie-react-native'
 import { useTranslation } from 'react-i18next'
 import { RESULTS, openSettings, PermissionStatus } from 'react-native-permissions'
+import { useSelector } from 'react-redux'
 
 import { useStyles } from '@berty/contexts/styles'
 import { accountService, useThemeColor } from '@berty/store'
@@ -11,19 +12,17 @@ import cameraLottie from '@berty/assets/lottie/camera-lottie.json'
 import notificationLottie from '@berty/assets/lottie/notification-lottie.json'
 import proximityLottie from '@berty/assets/lottie/proximity-lottie.json'
 import beapi from '@berty/api'
-import { ScreenFC, useNavigation } from '@berty/navigation'
+import { ScreenFC } from '@berty/navigation'
 import rnutil from '@berty/rnutil'
-import { useDispatch, useSelector } from 'react-redux'
 import { selectSelectedAccount } from '@berty/redux/reducers/ui.reducer'
 import { PermissionType, requestPermission } from '@berty/rnutil/checkPermissions'
-import { setBlePerm } from '@berty/redux/reducers/networkConfig.reducer'
 import {
 	PersistentOptionsKeys,
 	selectPersistentOptions,
 	setPersistentOption,
 } from '@berty/redux/reducers/persistentOptions.reducer'
 import { useAppDispatch } from '@berty/hooks'
-import { UnifiedText } from '../shared-components/UnifiedText'
+import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 
 const animations: Record<PermissionType, AnimatedLottieViewProps['source']> = {
 	audio: audioLottie,
@@ -33,7 +32,7 @@ const animations: Record<PermissionType, AnimatedLottieViewProps['source']> = {
 	gallery: cameraLottie, // get a lottie file for gallery
 }
 
-export const Permissions: ScreenFC<'Main.Permissions'> = ({ route: { params }, navigation }) => {
+export const Permissions: ScreenFC<'Chat.Permissions'> = ({ route: { params }, navigation }) => {
 	const appState = useRef(AppState.currentState)
 	const { text, border } = useStyles()
 	const colors = useThemeColor()
@@ -271,135 +270,6 @@ export const Permissions: ScreenFC<'Main.Permissions'> = ({ route: { params }, n
 						{permissionType === PermissionType.notification && !selectedAccount
 							? t('permission.skip')
 							: t('permission.cancel')}
-					</UnifiedText>
-				</TouchableOpacity>
-			</View>
-		</View>
-	)
-}
-
-export const BlePermission: ScreenFC<'Main.BlePermission'> = ({ route: { params } }) => {
-	const { accept, deny } = params
-	const { text, border } = useStyles()
-	const colors = useThemeColor()
-	const { t }: { t: any } = useTranslation()
-	const { goBack } = useNavigation()
-	const dispatch = useDispatch()
-
-	const handleRequestPermission = React.useCallback(async () => {
-		try {
-			// request the permission
-			const status = await requestPermission(PermissionType.proximity)
-			// set new Ble status for toggle's condition in settings
-			dispatch(setBlePerm(status))
-			// check status
-			switch (status) {
-				case 'granted':
-					await accept()
-					break
-				case 'unavailable':
-					// TODO: dig why (on iOS) when i accept the request the status is unavailable
-					await accept()
-					break
-				case 'blocked':
-					await deny()
-					break
-			}
-			goBack()
-		} catch (err) {
-			console.warn('handleRequestPermission error:', err)
-		}
-	}, [accept, deny, dispatch, goBack])
-
-	return (
-		<View style={{ flex: 1, backgroundColor: colors['background-header'] }}>
-			<StatusBar backgroundColor={colors['background-header']} barStyle='light-content' />
-			<View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-				<LottieView
-					source={animations.proximity}
-					autoPlay
-					style={{
-						marginVertical: 10,
-					}}
-				/>
-			</View>
-			<View
-				style={[
-					border.radius.top.large,
-					{
-						paddingVertical: 24,
-						paddingHorizontal: 32,
-						backgroundColor: colors['main-background'],
-					},
-				]}
-			>
-				<UnifiedText
-					style={[
-						text.size.huge,
-						text.bold,
-						{
-							color: colors['background-header'],
-							textAlign: 'center',
-						},
-					]}
-				>
-					{t('permission.proximity.title')}
-				</UnifiedText>
-				<UnifiedText
-					style={[
-						{
-							lineHeight: 25,
-							marginTop: 20,
-							textAlign: 'center',
-						},
-					]}
-				>
-					{Platform.OS === 'ios'
-						? t('permission.proximity.ios-desc')
-						: t('permission.proximity.android-desc')}
-				</UnifiedText>
-				<View
-					style={{
-						width: '100%',
-						paddingHorizontal: 20,
-					}}
-				>
-					<TouchableOpacity
-						onPress={async () => {
-							await handleRequestPermission()
-						}}
-						style={{
-							backgroundColor: colors['background-header'],
-							paddingVertical: 16,
-							alignItems: 'center',
-							borderRadius: 12,
-							marginTop: 20,
-							width: '100%',
-						}}
-						activeOpacity={0.9}
-					>
-						<UnifiedText
-							style={[text.size.scale(18), text.bold, { color: colors['reverted-main-text'] }]}
-						>
-							{t('permission.button-labels.allow')}
-						</UnifiedText>
-					</TouchableOpacity>
-				</View>
-				<TouchableOpacity
-					onPress={async () => {
-						await deny()
-						goBack()
-					}}
-				>
-					<UnifiedText
-						style={{
-							marginTop: 16,
-							color: colors['secondary-text'],
-							textTransform: 'uppercase',
-							textAlign: 'center',
-						}}
-					>
-						{t('permission.skip')}
 					</UnifiedText>
 				</TouchableOpacity>
 			</View>
