@@ -308,7 +308,10 @@
 		},
 		"add-dev-conversations": {
 			"title": "",
-			"add": ""
+			"add": "",
+			"tag-bot": "",
+			"tag-contact": "",
+			"tag-conversation": ""
 		},
 		"ipfs-webui": {
 			"title": ""
@@ -473,7 +476,10 @@
 			"title": "",
 			"medias": "",
 			"links": "",
-			"documents": ""
+			"documents": "",
+			"file": "",
+			"picture": "",
+			"audio": ""
 		},
 		"reply": {
 			"response-to": "",
