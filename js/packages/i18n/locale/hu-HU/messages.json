@@ -308,7 +308,10 @@
 		},
 		"add-dev-conversations": {
 			"title": "Fejlesztői beszélgetés hozzáadása",
-			"add": "{{name}} hozzáadása"
+			"add": "{{name}} hozzáadása",
+			"tag-bot": "Bot",
+			"tag-contact": "Kapcsolat",
+			"tag-conversation": ""
 		},
 		"ipfs-webui": {
 			"title": "IPFS WebUI"
@@ -473,7 +476,10 @@
 			"title": "Megosztott médiák",
 			"medias": "Médiák",
 			"links": "Hivatkozások",
-			"documents": "Dokumentumok"
+			"documents": "Dokumentumok",
+			"file": "",
+			"picture": "",
+			"audio": ""
 		},
 		"reply": {
 			"response-to": "Válasz neki",
