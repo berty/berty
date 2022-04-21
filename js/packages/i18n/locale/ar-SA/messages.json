@@ -308,7 +308,10 @@
 		},
 		"add-dev-conversations": {
 			"title": "إضافة محادثات Dev",
-			"add": "إضافة {{name}}"
+			"add": "إضافة {{name}}",
+			"tag-bot": "Bot",
+			"tag-contact": "الاتصال",
+			"tag-conversation": ""
 		},
 		"ipfs-webui": {
 			"title": "IPFS WebUI"
@@ -473,7 +476,10 @@
 			"title": "",
 			"medias": "",
 			"links": "",
-			"documents": ""
+			"documents": "",
+			"file": "",
+			"picture": "",
+			"audio": ""
 		},
 		"reply": {
 			"response-to": "",
