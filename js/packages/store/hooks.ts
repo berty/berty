@@ -105,7 +105,7 @@ export const useThemeColor = (): ThemeType => {
 				break
 			}
 		}
-		return collectionColors
+		return collectionColors as ThemeType
 	}, [appState, themeCollection, themeIsDark, themeSelected])
 }
 

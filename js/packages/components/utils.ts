@@ -56,10 +56,12 @@ export const getSource = async (
 	return cached.prom
 }
 
+type MediaElementType = 'file' | 'picture' | 'audio'
+
 export const getMediaTypeFromMedias = (
 	medias: beapi.messenger.Interaction['medias'] | null | undefined,
-): string => {
-	let type = 'file'
+) => {
+	let type: MediaElementType = 'file'
 	if (medias?.[0]?.mimeType?.startsWith('image')) {
 		type = 'picture'
 	} else if (medias?.[0]?.mimeType?.startsWith('audio')) {

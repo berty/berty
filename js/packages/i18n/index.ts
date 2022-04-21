@@ -4,6 +4,12 @@ import { initReactI18next } from 'react-i18next'
 
 import { languages } from './locale/languages'
 
+declare module 'react-i18next' {
+	interface CustomTypeOptions {
+		resources: typeof languages['en-US']
+	}
+}
+
 const fallbackLang = 'en-US'
 
 export const osLanguage = (() => {

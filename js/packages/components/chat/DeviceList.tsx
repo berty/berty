@@ -61,10 +61,7 @@ const UserDevicesList: React.FC<{ memberPk: string; conversationPk: string }> = 
 						/>
 
 						<ButtonDropDown
-							title={
-								m?.memberPublicKey?.substring(0, cutoff) ||
-								t('chat.multi-member-settings.members-devices-button.unknown')
-							}
+							title={m?.memberPublicKey?.substring(0, cutoff) || ''}
 							body={
 								tokensMap[m?.publicKey || '']
 									? [

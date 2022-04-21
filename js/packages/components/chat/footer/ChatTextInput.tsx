@@ -110,7 +110,12 @@ const ReplyMessageBar: React.FC<{ convPK: string }> = ({ convPK }) => {
 							},
 						]}
 					>
-						{t(`medias.${getMediaTypeFromMedias(activeReplyInteraction?.medias)}`)}
+						{/* Ignore check for i18n missing keys
+							chat.shared-medias.file
+							chat.shared-medias.picture
+							chat.shared-medias.audio
+						*/}
+						{t(`chat.shared-medias.${getMediaTypeFromMedias(activeReplyInteraction?.medias)}`)}
 					</UnifiedText>
 				</View>
 			)}

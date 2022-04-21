@@ -345,7 +345,7 @@ export const UserMessage: React.FC<{
 									{(replyOf?.type === beapi.messenger.AppMessage.Type.TypeUserMessage &&
 										replyOf?.payload?.body) ||
 										`${t('chat.reply.response-to')} ${t(
-											`medias.${getMediaTypeFromMedias(replyOf?.medias)}`,
+											`chat.shared-medias.${getMediaTypeFromMedias(replyOf?.medias)}`,
 										)}`}
 								</UnifiedText>
 							</TouchableOpacity>
