@@ -308,7 +308,10 @@
 		},
 		"add-dev-conversations": {
 			"title": "Voeg ontwikkelaar gesprekken toe",
-			"add": "Voeg {{name}} toe"
+			"add": "Voeg {{name}} toe",
+			"tag-bot": "Bot",
+			"tag-contact": "Contact",
+			"tag-conversation": ""
 		},
 		"ipfs-webui": {
 			"title": "IPFS WebUI"
@@ -473,7 +476,10 @@
 			"title": "Gedeelde media",
 			"medias": "Media",
 			"links": "Koppelingen",
-			"documents": "Documenten"
+			"documents": "Documenten",
+			"file": "",
+			"picture": "",
+			"audio": ""
 		},
 		"reply": {
 			"response-to": "Reactie op",
