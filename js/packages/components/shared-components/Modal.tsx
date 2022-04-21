@@ -9,7 +9,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Icon } from '@ui-kitten/components'
 
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 import { useNavigation } from '@berty/navigation'
 import { useThemeColor } from '@berty/store/hooks'
 import { BlurView } from '@react-native-community/blur'
@@ -29,7 +29,7 @@ type ModalProps = {
 
 // Styles
 const useStylesModal = () => {
-	const [{ width, border, height, opacity }] = useStyles()
+	const { width, border, height, opacity } = useStyles()
 	return {
 		closeRequest: [width(45), height(45), border.radius.scale(22.5)],
 		closeRequestIcon: opacity(0.5),
@@ -45,7 +45,7 @@ export const Modal: React.FC<ModalProps> = ({
 }) => {
 	const { goBack } = useNavigation()
 	const _styles = useStylesModal()
-	const [{ margin, border, column, row, padding }] = useStyles()
+	const { margin, border, column, row, padding } = useStyles()
 	const colors = useThemeColor()
 
 	return (

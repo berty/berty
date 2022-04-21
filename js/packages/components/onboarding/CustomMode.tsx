@@ -5,17 +5,19 @@ import { StatusBar, View } from 'react-native'
 
 import { ScreenFC, useNavigation } from '@berty/navigation'
 import { useNotificationsInhibitor, useThemeColor } from '@berty/store'
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 
 import OnboardingWrapper from './OnboardingWrapper'
 import { Icon } from '@ui-kitten/components'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { UnifiedText } from '../shared-components/UnifiedText'
+import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 
 const CustomModeBody: React.FC = () => {
 	const { goBack } = useNavigation()
 	const colors = useThemeColor()
-	const [{ padding, border, margin, text }, { scaleSize }] = useStyles()
+	const { padding, border, margin, text } = useStyles()
+	const { scaleSize } = useAppDimensions()
 	const { navigate } = useNavigation()
 	const { t }: { t: any } = useTranslation()
 

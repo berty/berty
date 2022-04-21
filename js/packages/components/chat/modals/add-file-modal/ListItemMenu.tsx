@@ -2,7 +2,7 @@ import React from 'react'
 import { TouchableOpacity } from 'react-native'
 import { Icon } from '@ui-kitten/components'
 
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 import { UnifiedText } from '../../../shared-components/UnifiedText'
 
 export const ListItemMenu: React.FC<{
@@ -16,7 +16,7 @@ export const ListItemMenu: React.FC<{
 		pack?: string
 	}
 }> = ({ title, iconProps, onPress }) => {
-	const [{ padding, text, margin }] = useStyles()
+	const { padding, text, margin } = useStyles()
 
 	return (
 		<TouchableOpacity

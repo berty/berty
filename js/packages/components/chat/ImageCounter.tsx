@@ -2,12 +2,12 @@ import React from 'react'
 import { View } from 'react-native'
 import { Icon } from '@ui-kitten/components'
 
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 import { useThemeColor } from '@berty/store/hooks'
 import { UnifiedText } from '../shared-components/UnifiedText'
 
 export const ImageCounter: React.FC<{ count: number }> = ({ count }) => {
-	const [{ border, padding }] = useStyles()
+	const { border, padding } = useStyles()
 	const colors = useThemeColor()
 
 	return (

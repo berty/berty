@@ -6,7 +6,7 @@ import CameraRoll from '@react-native-community/cameraroll'
 import Share from 'react-native-share'
 import ImageViewer from 'react-native-image-zoom-viewer'
 
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 import { useThemeColor } from '@berty/store'
 import { ScreenFC, useNavigation } from '@berty/navigation'
 
@@ -18,7 +18,7 @@ export const ImageView: ScreenFC<'Modals.ImageView'> = ({
 		params: { images, previewOnly = false },
 	},
 }) => {
-	const [{ border, padding }] = useStyles()
+	const { border, padding } = useStyles()
 	const colors = useThemeColor()
 	const { t }: { t: any } = useTranslation()
 	const { goBack } = useNavigation()

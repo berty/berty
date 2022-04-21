@@ -5,16 +5,17 @@ import { useTranslation } from 'react-i18next'
 
 import { Divider, Icon } from '@ui-kitten/components'
 import { useThemeColor } from '@berty/store'
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 import { selectChatInputText, setChatInputText } from '@berty/redux/reducers/chatInputs.reducer'
 import { useAppDispatch, useAppSelector } from '@berty/hooks'
 import { emojis, getEmojiByName } from '@berty/components/utils'
-import { Emoji } from '@berty/styles/types'
 import {
 	selectChatInputIsFocused,
 	selectChatInputSelection,
 } from '@berty/redux/reducers/chatInputsVolatile.reducer'
 import { UnifiedText } from '../../../shared-components/UnifiedText'
+import { Emoji } from '@berty/contexts/styles/types'
+import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 
 type Word = {
 	word: string
@@ -29,7 +30,8 @@ export const EmojiBanner: FC<{
 }> = ({ convPk, activationNumber = 2, emojisToDisplay = 5 }) => {
 	const { t } = useTranslation()
 	const colors = useThemeColor()
-	const [{ padding, border, text: textStyle }, { scaleSize }] = useStyles()
+	const { padding, border, text: textStyle } = useStyles()
+	const { scaleSize } = useAppDimensions()
 	const slideAnim = useRef(new Animated.Value(1000)).current // 1000 in order to make the modal not visible before the first render
 	const collapseAnim = useRef(new Animated.Value(0)).current
 	const selection = useAppSelector(state => selectChatInputSelection(state, convPk))

@@ -5,16 +5,17 @@ import { useTranslation } from 'react-i18next'
 import { setJSExceptionHandler } from 'react-native-exception-handler'
 import RNRestart from 'react-native-restart'
 
-import { useStyles } from '@berty/styles'
 import { useThemeColor } from '@berty/store'
 import { useAppSelector } from '@berty/hooks'
 import { selectDebugMode, selectEmbedded } from '@berty/redux/reducers/ui.reducer'
+import { useStyles } from '@berty/contexts/styles'
+import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 
 import AppInspector from './debug/AppInspector'
 import { UnifiedText } from './shared-components/UnifiedText'
 
 const Label: React.FC<{ title: string; type: 'error' }> = ({ title, type }) => {
-	const [{ padding, border }] = useStyles()
+	const { padding, border } = useStyles()
 	const colors = useThemeColor()
 
 	let generatedColors = {
@@ -46,7 +47,7 @@ const Label: React.FC<{ title: string; type: 'error' }> = ({ title, type }) => {
 }
 
 const Body: React.FC<{ children: React.ReactElement[] }> = ({ children }) => {
-	const [{ border, padding }] = useStyles()
+	const { border, padding } = useStyles()
 	const colors = useThemeColor()
 
 	return (
@@ -59,7 +60,7 @@ const Body: React.FC<{ children: React.ReactElement[] }> = ({ children }) => {
 }
 
 const RestartButton: React.FC = () => {
-	const [{ border, margin, padding, text }] = useStyles()
+	const { border, margin, padding, text } = useStyles()
 	const colors = useThemeColor()
 	const { t }: { t: any } = useTranslation()
 
@@ -90,7 +91,8 @@ const RestartButton: React.FC = () => {
 
 const ErrorDetails: React.FC<{ error: Error }> = ({ error }) => {
 	const [collapsed, setCollapsed] = React.useState(true)
-	const [{ margin }, { scaleSize }] = useStyles()
+	const { margin } = useStyles()
+	const { scaleSize } = useAppDimensions()
 	const colors = useThemeColor()
 	const handlePress = React.useCallback(() => {
 		setCollapsed(!collapsed)
@@ -116,7 +118,7 @@ const ErrorScreenContainer: React.FC<{
 	children: React.ReactElement[]
 	error: Error
 }> = ({ labelTitle, children, error }) => {
-	const [{ padding }] = useStyles()
+	const { padding } = useStyles()
 	const colors = useThemeColor()
 
 	return (
@@ -152,7 +154,7 @@ type ErrorScreenProps = {
 }
 
 const WTFScreen: React.FC<ErrorScreenProps> = ({ error }) => {
-	const [{ margin, text }] = useStyles()
+	const { margin, text } = useStyles()
 	const colors = useThemeColor()
 	const { t }: { t: any } = useTranslation()
 	return (
@@ -202,7 +204,7 @@ const WTFScreen: React.FC<ErrorScreenProps> = ({ error }) => {
 }
 
 const SorryScreen: React.FC<ErrorScreenProps> = ({ error }) => {
-	const [{ margin, text }] = useStyles()
+	const { margin, text } = useStyles()
 	const colors = useThemeColor()
 	const { t }: { t: any } = useTranslation()
 

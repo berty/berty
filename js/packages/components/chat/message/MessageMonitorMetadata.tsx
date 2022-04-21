@@ -2,7 +2,7 @@ import React from 'react'
 import { View } from 'react-native'
 import { Icon } from '@ui-kitten/components'
 
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 import { useThemeColor } from '@berty/store/hooks'
 import beapi from '@berty/api'
 import { pbDateToNum } from '@berty/store/convert'
@@ -16,7 +16,7 @@ const eventMonitorTypes = beapi.protocol.MonitorGroup.TypeEventMonitor
 export const MessageMonitorMetadata: React.FC<{ inte: InteractionMonitorMetadata }> = ({
 	inte,
 }) => {
-	const [{ padding, text, margin }] = useStyles()
+	const { padding, text, margin } = useStyles()
 	const colors = useThemeColor()
 	const sentDate = pbDateToNum(inte?.sentDate)
 

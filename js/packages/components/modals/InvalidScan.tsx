@@ -3,7 +3,7 @@ import { View, StyleSheet, TouchableOpacity } from 'react-native'
 import { Icon } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 import beapi from '@berty/api'
 import { useThemeColor } from '@berty/store'
 import { useNavigation } from '@berty/navigation'
@@ -15,7 +15,7 @@ import { UnifiedText } from '../shared-components/UnifiedText'
 
 // Styles
 const useStylesInvalidScan = () => {
-	const [{ width, height, border, text, padding, margin }] = useStyles()
+	const { width, height, border, text, padding, margin } = useStyles()
 	const colors = useThemeColor()
 
 	return {
@@ -46,7 +46,7 @@ const _invalidScanStyles = StyleSheet.create({
 
 const InvalidScanHeader: React.FC<{ title: string }> = ({ title }) => {
 	const _styles = useStylesInvalidScan()
-	const [{ margin, text, border, row, column }] = useStyles()
+	const { margin, text, border, row, column } = useStyles()
 	const colors = useThemeColor()
 
 	return (
@@ -79,7 +79,7 @@ const InvalidScanHeader: React.FC<{ title: string }> = ({ title }) => {
 }
 
 const InvalidScanError: React.FC<{ error: string }> = ({ error }) => {
-	const [{ border, padding, margin, text }] = useStyles()
+	const { border, padding, margin, text } = useStyles()
 	const colors = useThemeColor()
 
 	return (
@@ -107,7 +107,7 @@ const InvalidScanError: React.FC<{ error: string }> = ({ error }) => {
 
 const InvalidScanDismissButton: React.FC = () => {
 	const _styles = useStylesInvalidScan()
-	const [{ row, margin, padding }] = useStyles()
+	const { row, margin, padding } = useStyles()
 	const colors = useThemeColor()
 	const navigation = useNavigation()
 	const { t }: any = useTranslation()
@@ -148,7 +148,7 @@ const InvalidScanDismissButton: React.FC = () => {
 
 const InvalidScan: React.FC<{ type: string; error: any }> = ({ type, error }) => {
 	const [layout, setLayout] = useState<number>()
-	const [{ padding, border }] = useStyles()
+	const { padding, border } = useStyles()
 	const colors = useThemeColor()
 	const { t }: any = useTranslation()
 

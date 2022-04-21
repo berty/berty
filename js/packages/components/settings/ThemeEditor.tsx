@@ -5,7 +5,7 @@ import { Platform, ScrollView, StatusBar, View } from 'react-native'
 import Share from 'react-native-share'
 import DocumentPicker from 'react-native-document-picker'
 
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 import { useThemeColor, createAndSaveFile } from '@berty/store'
 import { ScreenFC } from '@berty/navigation'
 import RNFS from 'react-native-fs'
@@ -144,7 +144,7 @@ const BodyFileThemeEditor: React.FC<{}> = withInAppNotification(({ showNotificat
 
 const BodyThemeEditor: React.FC<{ openModal: () => void }> = ({ openModal }) => {
 	const colors = useThemeColor()
-	const [{ padding }] = useStyles()
+	const { padding } = useStyles()
 	const { t } = useTranslation()
 	const dispatch = useDispatch()
 	const items = useSelector(selectThemeCollectionAsItem)

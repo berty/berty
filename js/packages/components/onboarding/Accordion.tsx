@@ -13,8 +13,9 @@ import { View, Animated, Easing, TouchableOpacity } from 'react-native'
 import { Divider, Icon } from '@ui-kitten/components'
 
 import { useThemeColor } from '@berty/store'
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 import { ButtonSetting } from '../shared-components'
+import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 
 const heightButton = 55
 
@@ -25,7 +26,7 @@ const AccordionIcon: FC<{ name: string; pack?: string; fill?: string; size?: num
 	size = 20,
 }) => {
 	const colors = useThemeColor()
-	const [, { scaleSize }] = useStyles()
+	const { scaleSize } = useAppDimensions()
 
 	return (
 		<Icon
@@ -45,7 +46,7 @@ export const AccordionItem: FC<{
 	onPressModify?: () => void
 }> = ({ value, toggle, onToggleChange, onPressModify }) => {
 	const colors = useThemeColor()
-	const [{ padding }] = useStyles()
+	const { padding } = useStyles()
 
 	return (
 		<>
@@ -73,7 +74,8 @@ export const AccordionItem: FC<{
 export const AccordionAddItem: FC<{
 	onPress: () => void
 }> = ({ onPress }) => {
-	const [{ padding }, { scaleSize }] = useStyles()
+	const { padding } = useStyles()
+	const { scaleSize } = useAppDimensions()
 
 	return (
 		<>
@@ -111,7 +113,8 @@ export type AccordionRef = { open: () => void; close: () => void }
 
 export const Accordion = forwardRef(
 	({ title, icon, children }: AccordionProps, ref: ForwardedRef<AccordionRef>) => {
-		const [{ margin, padding, border }, { scaleSize }] = useStyles()
+		const { margin, padding, border } = useStyles()
+		const { scaleSize } = useAppDimensions()
 		const colors = useThemeColor()
 		const [open, setOpen] = useState(false)
 		const animatedController = useRef(new Animated.Value(0)).current

@@ -4,9 +4,9 @@ import { useTranslation } from 'react-i18next'
 import { Icon } from '@ui-kitten/components'
 
 import beapi from '@berty/api'
-import { useStyles } from '@berty/styles'
 import { useOneToOneContact, usePlaySound } from '@berty/hooks'
 import { pbDateToNum, useMessengerClient, useThemeColor } from '@berty/store'
+import { useStyles } from '@berty/contexts/styles'
 
 import { timeFormat } from './helpers'
 import { ContactAvatar } from './avatars'
@@ -16,7 +16,7 @@ import { ChatDate } from './chat/common'
 import { UnifiedText } from './shared-components/UnifiedText'
 
 const useStylesOneToOne = () => {
-	const [{ text }] = useStyles()
+	const { text } = useStyles()
 	const colors = useThemeColor()
 
 	return {
@@ -25,7 +25,7 @@ const useStylesOneToOne = () => {
 }
 
 const InfosContactState: React.FC<{ state: any }> = ({ state }) => {
-	const [{ text, border, padding, margin }] = useStyles()
+	const { text, border, padding, margin } = useStyles()
 	const colors = useThemeColor()
 
 	const textColor = colors['background-header']
@@ -57,7 +57,7 @@ const ContactRequestBox: React.FC<{ contact: beapi.messenger.IContact; isAccepte
 	isAccepted,
 }) => {
 	const { publicKey, displayName } = contact
-	const [{ row, flex, text, margin }] = useStyles()
+	const { row, flex, text, margin } = useStyles()
 	const colors = useThemeColor()
 	const { t }: any = useTranslation()
 
@@ -130,7 +130,7 @@ export const InfosChat: React.FC<beapi.messenger.IConversation> = ({
 	createdDate: createdDateStr,
 	publicKey,
 }) => {
-	const [{ flex, text, padding, margin }] = useStyles()
+	const { flex, text, padding, margin } = useStyles()
 	const colors = useThemeColor()
 	const { t }: any = useTranslation()
 

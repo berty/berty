@@ -3,7 +3,6 @@ import { Image, View, ViewStyle, TouchableOpacity } from 'react-native'
 import palette from 'google-palette'
 import { SHA3 } from 'sha3'
 
-import { useStyles } from '@berty/styles'
 import { Maybe, useThemeColor } from '@berty/store'
 import { navigate } from '@berty/navigation'
 import beapi from '@berty/api'
@@ -12,6 +11,7 @@ import PinkBotAvatar from '@berty/assets/images/berty_bot_pink_bg.png'
 import GreenDevAvatar from '@berty/assets/images/berty_dev_green_bg.png'
 import OrangeBotAvatar from '@berty/assets/images/berty_bot_orange_bg.png'
 import BlueDevAvatar from '@berty/assets/images/berty_dev_blue_bg.png'
+import { useStyles } from '@berty/contexts/styles'
 import { selectPersistentOptions } from '@berty/redux/reducers/persistentOptions.reducer'
 
 import AttachmentImage from './AttachmentImage'
@@ -36,7 +36,7 @@ export const GenericAvatar: React.FC<{
 	nameSeed: Maybe<string>
 	pressable?: boolean
 }> = React.memo(({ cid, size, colorSeed, style, isEditable = false, nameSeed, pressable }) => {
-	const [{ border }] = useStyles()
+	const { border } = useStyles()
 	const colors = useThemeColor()
 
 	const padding = Math.round(size / 28)

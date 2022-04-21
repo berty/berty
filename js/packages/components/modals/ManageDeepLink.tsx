@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { Buffer } from 'buffer'
 import { CommonActions } from '@react-navigation/native'
 
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 import { ScreenFC, useNavigation } from '@berty/navigation'
 import { useThemeColor } from '@berty/store'
 import beapi from '@berty/api'
@@ -19,7 +19,7 @@ import InvalidScan from './InvalidScan'
 
 export const ManageDeepLink: ScreenFC<'Modals.ManageDeepLink'> = ({ route: { params } }) => {
 	const colors = useThemeColor()
-	const [{ border }] = useStyles()
+	const { border } = useStyles()
 	const { reply: pdlReply, error, call, done, called } = messengerMethodsHooks.useParseDeepLink()
 	const [content, setContent] = React.useState<JSX.Element | null>()
 	const { dispatch } = useNavigation()

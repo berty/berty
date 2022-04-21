@@ -4,7 +4,7 @@ import { Icon } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 import { useDispatch } from 'react-redux'
 
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 import { useThemeColor } from '@berty/store'
 import { saveTheme } from '@berty/redux/reducers/theme.reducer'
 import { BlurView } from '@react-native-community/blur'
@@ -12,10 +12,12 @@ import { BlurView } from '@react-native-community/blur'
 import Avatar from '@berty/assets/logo/buck_berty_icon_card.svg'
 import { useStylesDefaultModal } from './AddBot'
 import { UnifiedText } from '../shared-components/UnifiedText'
+import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 
 const ThemeColorBody: React.FC<{ closeModal: () => void }> = ({ closeModal }) => {
 	const [themeName, setThemeName] = React.useState<string>('')
-	const [{ row, text, margin, padding, border, opacity }, { scaleHeight, scaleSize }] = useStyles()
+	const { row, text, margin, padding, border, opacity } = useStyles()
+	const { scaleHeight, scaleSize } = useAppDimensions()
 	const colors = useThemeColor()
 	const _styles = useStylesDefaultModal()
 	const { t } = useTranslation()
@@ -171,7 +173,7 @@ const ThemeColorBody: React.FC<{ closeModal: () => void }> = ({ closeModal }) =>
 }
 
 export const ThemeColorName: React.FC<{ closeModal: () => void }> = ({ closeModal }) => {
-	const [{}, { windowHeight }] = useStyles()
+	const { windowHeight } = useAppDimensions()
 
 	return (
 		<View style={[StyleSheet.absoluteFill, { elevation: 6, zIndex: 6 }]}>

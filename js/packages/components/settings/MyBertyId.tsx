@@ -5,7 +5,7 @@ import QRCode from 'react-native-qrcode-svg'
 import { useTranslation } from 'react-i18next'
 import Clipboard from '@react-native-clipboard/clipboard'
 
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 import { useStylesBertyId, useThemeColor } from '@berty/store'
 import { ScreenFC } from '@berty/navigation'
 import { useAccount } from '@berty/hooks'
@@ -15,6 +15,7 @@ import { FingerprintContent } from '../shared-components/FingerprintContent'
 import logo from '@berty/assets/images/1_berty_picto.png'
 import { AccountAvatar } from '../avatars'
 import { UnifiedText } from '../shared-components/UnifiedText'
+import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 
 //
 // Settings My Berty ID Vue
@@ -29,7 +30,7 @@ const styleBertyIdOptions = {
 }
 
 const BertyIdContent: React.FC<{}> = ({ children }) => {
-	const [{ column }] = useStyles()
+	const { column } = useStyles()
 
 	return (
 		<View>
@@ -40,7 +41,7 @@ const BertyIdContent: React.FC<{}> = ({ children }) => {
 
 const ContactRequestQR = () => {
 	const account = useAccount()
-	const [{ padding }] = useStyles()
+	const { padding } = useStyles()
 	const colors = useThemeColor()
 	const { qrCodeSize } = useStylesBertyId(styleBertyIdOptions)
 
@@ -64,7 +65,8 @@ const ContactRequestQR = () => {
 
 const Fingerprint: React.FC = () => {
 	const account = useAccount()
-	const [{ padding }, { windowHeight, windowWidth, isGteIpadSize }] = useStyles()
+	const { padding } = useStyles()
+	const { windowHeight, windowWidth, isGteIpadSize } = useAppDimensions()
 	const { bertyIdContentScaleFactor } = useStylesBertyId(styleBertyIdOptions)
 
 	if (!account) {
@@ -99,7 +101,8 @@ const SelectedContent: React.FC<{ contentName: string }> = ({ contentName }) => 
 }
 
 const BertIdBody: React.FC = () => {
-	const [{ border, margin, padding }, { scaleSize }] = useStyles()
+	const { border, margin, padding } = useStyles()
+	const { scaleSize } = useAppDimensions()
 	const colors = useThemeColor()
 
 	const { styleBertyIdContent, requestAvatarSize } = useStylesBertyId(styleBertyIdOptions)
@@ -143,7 +146,7 @@ const BertIdBody: React.FC = () => {
 }
 
 const BertyIdShare: React.FC = () => {
-	const [{ row, border, flex }] = useStyles()
+	const { row, border, flex } = useStyles()
 	const colors = useThemeColor()
 	const { styleBertyIdButton, iconShareSize } = useStylesBertyId(styleBertyIdOptions)
 	const account = useAccount()
@@ -186,7 +189,7 @@ const BertyIdShare: React.FC = () => {
 }
 
 const MyBertyIdComponent: React.FC = () => {
-	const [{ padding }] = useStyles()
+	const { padding } = useStyles()
 	const colors = useThemeColor()
 
 	return (

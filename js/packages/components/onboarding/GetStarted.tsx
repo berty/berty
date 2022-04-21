@@ -8,7 +8,7 @@ import {
 	useNotificationsInhibitor,
 	useThemeColor,
 } from '@berty/store'
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 import { ScreenFC } from '@berty/navigation'
 
 import Logo from '@berty/assets/logo/berty_gradient_square.svg'
@@ -20,7 +20,7 @@ import { selectEmbedded } from '@berty/redux/reducers/ui.reducer'
 
 export const GetStarted: ScreenFC<'Onboarding.GetStarted'> = ({ navigation: { navigate } }) => {
 	useNotificationsInhibitor(() => true)
-	const [{ margin, padding, text }] = useStyles()
+	const { margin, padding, text } = useStyles()
 	const colors = useThemeColor()
 	const { t } = useTranslation<'translation', string>()
 	const embedded = useAppSelector(selectEmbedded)

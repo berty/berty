@@ -5,7 +5,7 @@ import { Icon } from '@ui-kitten/components'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 
 import { Maybe, useThemeColor } from '@berty/store'
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 import { useAppDispatch, useAppSelector, useInteractionAuthor } from '@berty/hooks'
 import {
 	removeActiveReplyInteraction,
@@ -15,9 +15,10 @@ import { isTablet } from '@berty/rnutil/constants'
 
 import { getMediaTypeFromMedias } from '../../utils'
 import { UnifiedText } from '../../shared-components/UnifiedText'
+import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 
 const ReplyMessageBar: React.FC<{ convPK: string }> = ({ convPK }) => {
-	const [{ border, text }] = useStyles()
+	const { border, text } = useStyles()
 	const colors = useThemeColor()
 	const { t } = useTranslation()
 	const dispatch = useAppDispatch()
@@ -150,7 +151,8 @@ export const ChatTextInput: React.FC<{
 		onSelectionChange,
 		convPK,
 	}) => {
-		const [{ text }, { scaleSize }] = useStyles()
+		const { text } = useStyles()
+		const { scaleSize } = useAppDimensions()
 		const colors = useThemeColor()
 		const [isFocused, setIsFocused] = React.useState<boolean>(false)
 

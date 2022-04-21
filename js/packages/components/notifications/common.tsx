@@ -1,13 +1,13 @@
 import React from 'react'
 import { View } from 'react-native'
 
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 import { useThemeColor } from '@berty/store/hooks'
 
 import Logo from '@berty/assets/logo/1_berty_picto.svg'
 
 export const useStylesNotification = () => {
-	const [{ flex }] = useStyles()
+	const { flex } = useStyles()
 	return {
 		touchable: [flex.tiny, flex.direction.row, { paddingHorizontal: 10 }],
 		innerTouchable: [flex.direction.row, { padding: 15, flexGrow: 0, flexShrink: 1 }],

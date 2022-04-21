@@ -2,7 +2,7 @@ import React from 'react'
 import { View } from 'react-native'
 import { SHA3 } from 'sha3'
 
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 import { Maybe, useThemeColor } from '@berty/store'
 import { UnifiedText } from './UnifiedText'
 
@@ -17,14 +17,14 @@ type FingerprintContentProps = {
 
 // Style
 const useStylesFingerprintContent = () => {
-	const [{ text }] = useStyles()
+	const { text } = useStyles()
 	return {
 		fingerprintContentText: text.size.small,
 	}
 }
 
 const FingerprintContentText: React.FC<FingerprintContentProps> = ({ fingerprint }) => {
-	const [{ text }] = useStyles()
+	const { text } = useStyles()
 	const colors = useThemeColor()
 	const _styles = useStylesFingerprintContent()
 	return (
@@ -41,7 +41,7 @@ const FingerprintContentText: React.FC<FingerprintContentProps> = ({ fingerprint
 }
 
 const FingerprintContentFaction: React.FC<{ digestPart: string }> = ({ digestPart }) => {
-	const [{ row }] = useStyles()
+	const { row } = useStyles()
 	return (
 		<View style={[row.fill]}>
 			<FingerprintContentText fingerprint={digestPart.substr(0, 4)} />
@@ -56,7 +56,7 @@ export const FingerprintContent: React.FC<{ seed: Maybe<string>; isEncrypted?: b
 	seed,
 	isEncrypted,
 }) => {
-	const [{ column, border, padding }] = useStyles()
+	const { column, border, padding } = useStyles()
 	const colors = useThemeColor()
 
 	if (isEncrypted) {

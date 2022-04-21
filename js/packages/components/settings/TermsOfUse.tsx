@@ -2,7 +2,7 @@ import React from 'react'
 import { View, ScrollView } from 'react-native'
 import { Layout } from '@ui-kitten/components'
 
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 import { useThemeColor } from '@berty/store/hooks'
 import { ScreenFC } from '@berty/navigation'
 import { UnifiedText } from '../shared-components/UnifiedText'
@@ -18,7 +18,7 @@ type BodyTermsOfUseItemProps = {
 }
 
 const BodyTermsOfUseItem: React.FC<BodyTermsOfUseItemProps> = ({ textProps, title = null }) => {
-	const [{ margin, text }] = useStyles()
+	const { margin, text } = useStyles()
 	return (
 		<View style={[margin.top.big]}>
 			{title && <UnifiedText style={[text.bold]}>{title}</UnifiedText>}
@@ -28,7 +28,7 @@ const BodyTermsOfUseItem: React.FC<BodyTermsOfUseItemProps> = ({ textProps, titl
 }
 
 const BodyTermsOfUse: React.FC<{}> = () => {
-	const [{ padding, flex, margin }] = useStyles()
+	const { padding, flex, margin } = useStyles()
 	return (
 		<View
 			style={[

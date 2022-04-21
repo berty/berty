@@ -4,7 +4,7 @@ import { useFocusEffect } from '@react-navigation/native'
 import { useTranslation } from 'react-i18next'
 import { useHeaderHeight } from '@react-navigation/elements'
 
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 import { ScreenFC } from '@berty/navigation'
 import beapi from '@berty/api'
 import { useReadEffect, useNotificationsInhibitor, useThemeColor, pbDateToNum } from '@berty/store'
@@ -17,6 +17,7 @@ import { ContactAvatar } from '../avatars'
 import { ChatDate } from './common'
 import { MessageList } from '../chat/MessageList'
 import { ChatFooter } from './footer/ChatFooter'
+import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 
 //
 // Chat
@@ -38,7 +39,8 @@ export const OneToOne: ScreenFC<'Chat.OneToOne'> = React.memo(
 			return false
 		})
 
-		const [{ opacity, flex }, { scaleSize }] = useStyles()
+		const { opacity, flex } = useStyles()
+		const { scaleSize } = useAppDimensions()
 		const colors = useThemeColor()
 		useReadEffect(params?.convId, 1000)
 		const { t } = useTranslation()

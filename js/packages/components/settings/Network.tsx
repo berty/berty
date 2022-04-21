@@ -5,7 +5,7 @@ import { useHeaderHeight } from '@react-navigation/elements'
 import { useDispatch, useSelector } from 'react-redux'
 
 import beapi from '@berty/api'
-import { useStyles } from '@berty/styles'
+
 import { ScreenFC, useNavigation } from '@berty/navigation'
 import { useThemeColor } from '@berty/store'
 import { IOSOnlyKeyboardAvoidingView } from '@berty/rnutil/keyboardAvoiding'
@@ -37,6 +37,7 @@ import { ModalProvider, useModal } from '../providers/modal.provider'
 import { AccordionAdd } from '../modals/AccordionAdd.modal'
 import { AccordionEdit } from '../modals/AccordionEdit.modal'
 import { ButtonSettingV2, Section } from '../shared-components'
+import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 
 const Proximity: React.FC = () => {
 	const { navigate } = useNavigation()
@@ -135,7 +136,7 @@ const Proximity: React.FC = () => {
 }
 
 const NetworkBody: React.FC = () => {
-	const [{}, { scaleSize }] = useStyles()
+	const { scaleSize } = useAppDimensions()
 	const colors = useThemeColor()
 	const { t } = useTranslation()
 	const dispatch = useDispatch()

@@ -1,14 +1,14 @@
 import React from 'react'
 import { ScrollView, View } from 'react-native'
 
-import { useStyles } from '@berty/styles'
 import { ScreenFC } from '@berty/navigation'
 import { useThemeColor } from '@berty/store'
 
 import { ButtonSettingV2, Section } from '../shared-components'
+import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 
 export const Security: ScreenFC<'Settings.Security'> = () => {
-	const [{}, { scaleSize }] = useStyles()
+	const { scaleSize } = useAppDimensions()
 	const colors = useThemeColor()
 
 	return (

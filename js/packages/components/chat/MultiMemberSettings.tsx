@@ -6,7 +6,7 @@ import Clipboard from '@react-native-clipboard/clipboard'
 
 import beapi from '@berty/api'
 import QRCode from 'react-native-qrcode-svg'
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 import { ScreenFC, useNavigation } from '@berty/navigation'
 import { Maybe, useMessengerClient, useThemeColor } from '@berty/store'
 import { useConversationMembersDict, useConversation } from '@berty/hooks'
@@ -17,12 +17,13 @@ import { MemberAvatar, MultiMemberAvatar } from '../avatars'
 import EnableNotificationsButton from '@berty/components/chat/EnableNotificationsButton'
 import ImagePicker, { ImageOrVideo } from 'react-native-image-crop-picker'
 import { UnifiedText } from '../shared-components/UnifiedText'
+import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 
 const GroupChatSettingsHeader: React.FC<{ publicKey: Maybe<string> }> = ({ publicKey }) => {
 	const conv = useConversation(publicKey)
 	const [picture, setPicture] = useState<ImageOrVideo | undefined>(undefined)
-	const [{ text, padding, border, row }, { scaleSize, scaleHeight, windowWidth, windowHeight }] =
-		useStyles()
+	const { text, padding, border, row } = useStyles()
+	const { scaleSize, scaleHeight, windowWidth, windowHeight } = useAppDimensions()
 	const colors = useThemeColor()
 	const qrCodeSize = Math.min(windowHeight, windowWidth) * 0.4
 	const { navigate } = useNavigation()
@@ -134,7 +135,8 @@ const MultiMemberSettingsBody: React.FC<{
 	link: string
 	navigation: ComponentProps<typeof MultiMemberSettings>['navigation']
 }> = ({ publicKey, link, navigation }) => {
-	const [{ padding, margin }, { scaleSize }] = useStyles()
+	const { padding, margin } = useStyles()
+	const { scaleSize } = useAppDimensions()
 	const members = useConversationMembersDict(publicKey)
 	const membersCount = Object.values(members).length
 	const { t } = useTranslation()
@@ -265,7 +267,7 @@ export const MultiMemberSettings: ScreenFC<'Group.MultiMemberSettings'> = ({
 	const { convId } = route.params
 	const conv = useConversation(convId)
 	const colors = useThemeColor()
-	const [{ padding }] = useStyles()
+	const { padding } = useStyles()
 
 	if (!conv) {
 		navigation.goBack()

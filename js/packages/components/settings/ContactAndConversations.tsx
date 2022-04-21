@@ -3,15 +3,15 @@ import { ScrollView, View } from 'react-native'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
-import { useStyles } from '@berty/styles'
 import { ScreenFC } from '@berty/navigation'
 import { selectSelectedAccount } from '@berty/redux/reducers/ui.reducer'
 import { exportAccountToFile, useThemeColor } from '@berty/store'
 
 import { ButtonSettingV2, Section } from '../shared-components'
+import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 
 export const ContactAndConversations: ScreenFC<'Settings.ContactAndConversations'> = () => {
-	const [{}, { scaleSize }] = useStyles()
+	const { scaleSize } = useAppDimensions()
 	const colors = useThemeColor()
 	const { t }: { t: any } = useTranslation()
 	const selectedAccount = useSelector(selectSelectedAccount)

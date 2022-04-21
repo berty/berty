@@ -3,7 +3,7 @@ import { ScrollView, View } from 'react-native'
 import { useTranslation } from 'react-i18next'
 import { Layout } from '@ui-kitten/components'
 
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 import { ScreenFC } from '@berty/navigation'
 import {
 	Maybe,
@@ -101,7 +101,7 @@ const ReplicateGroupContent: React.FC<{
 	const client = useMessengerClient()
 	const conversation = useConversation(conversationPublicKey)
 	const services = useAccountServices()
-	const [{ margin, flex, padding }] = useStyles()
+	const { margin, flex, padding } = useStyles()
 	const colors = useThemeColor()
 	const { t } = useTranslation()
 	const protocolClient = useSelector(selectProtocolClient)
@@ -164,7 +164,7 @@ export const ReplicateGroupSettings: ScreenFC<'Chat.ReplicateGroupSettings'> = (
 	navigation,
 }) => {
 	const { convId } = route.params
-	const [{ padding }] = useStyles()
+	const { padding } = useStyles()
 	const conv = useConversation(convId)
 
 	if (!conv) {

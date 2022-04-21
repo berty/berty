@@ -6,6 +6,7 @@ import { NavigationContainer } from '@react-navigation/native'
 import RNBootSplash from 'react-native-bootsplash'
 import { Provider as ReduxProvider } from 'react-redux'
 import { Platform, View } from 'react-native'
+import * as Font from 'expo-font'
 
 import '@berty/i18n'
 import { Provider as ThemeProvider } from '@berty/components/theme'
@@ -13,23 +14,20 @@ import { StreamGate, ListGate } from '@berty/components/gates'
 import { MessengerEffects, useThemeColor, useMountEffect } from '@berty/store'
 import { isReadyRef, navigationRef } from '@berty/navigation'
 import { Navigation } from '@berty/navigation/stacks'
-import { Provider as StyleProvider } from '@berty/styles'
 import NotificationProvider from '@berty/components/providers/notification.provider'
 import { MusicPlayerProvider } from '@berty/components/providers/musicPlayer.provider'
 import { ErrorScreen } from '@berty/components/error'
 import reduxStore from '@berty/redux/store'
-
-import { FeatherIconsPack } from './feather-icons'
-import { CustomIconsPack } from './custom-icons'
 import { ModalProvider } from '@berty/components/providers/modal.provider'
-
-import * as Font from 'expo-font'
-
+import { AppDimensionsProvider, StyleProvider } from '@berty/contexts/styles'
 import BoldOpenSans from '@berty/assets/font/OpenSans-Bold.ttf'
 import LightOpenSans from '@berty/assets/font/OpenSans-Light.ttf'
 import LightItalicOpenSans from '@berty/assets/font/OpenSans-LightItalic.ttf'
 import SemiBoldOpenSans from '@berty/assets/font/OpenSans-SemiBold.ttf'
 import SemiBoldItalicOpenSans from '@berty/assets/font/OpenSans-SemiBoldItalic.ttf'
+
+import { FeatherIconsPack } from './feather-icons'
+import { CustomIconsPack } from './custom-icons'
 
 const BootSplashInhibitor: React.FC = () => {
 	useMountEffect(() => {
@@ -102,37 +100,39 @@ const App: React.FC = () => {
 
 	return (
 		<SafeAreaProvider>
-			<StyleProvider>
-				<ReduxProvider store={reduxStore}>
-					<MessengerEffects />
-					<IconRegistry icons={[EvaIconsPack, FeatherIconsPack, CustomIconsPack]} />
-					<ThemeProvider>
-						<Background>
-							<ErrorScreen>
-								<NavigationContainer
-									ref={navigationRef}
-									onReady={() => {
-										isReadyRef.current = true
-									}}
-								>
-									<NotificationProvider>
-										{Platform.OS !== 'web' ? <BootSplashInhibitor /> : null}
-										<StreamGate>
-											<ListGate>
-												<MusicPlayerProvider>
-													<ModalProvider>
-														<Navigation />
-													</ModalProvider>
-												</MusicPlayerProvider>
-											</ListGate>
-										</StreamGate>
-									</NotificationProvider>
-								</NavigationContainer>
-							</ErrorScreen>
-						</Background>
-					</ThemeProvider>
-				</ReduxProvider>
-			</StyleProvider>
+			<AppDimensionsProvider>
+				<StyleProvider>
+					<ReduxProvider store={reduxStore}>
+						<MessengerEffects />
+						<IconRegistry icons={[EvaIconsPack, FeatherIconsPack, CustomIconsPack]} />
+						<ThemeProvider>
+							<Background>
+								<ErrorScreen>
+									<NavigationContainer
+										ref={navigationRef}
+										onReady={() => {
+											isReadyRef.current = true
+										}}
+									>
+										<NotificationProvider>
+											{Platform.OS !== 'web' ? <BootSplashInhibitor /> : null}
+											<StreamGate>
+												<ListGate>
+													<MusicPlayerProvider>
+														<ModalProvider>
+															<Navigation />
+														</ModalProvider>
+													</MusicPlayerProvider>
+												</ListGate>
+											</StreamGate>
+										</NotificationProvider>
+									</NavigationContainer>
+								</ErrorScreen>
+							</Background>
+						</ThemeProvider>
+					</ReduxProvider>
+				</StyleProvider>
+			</AppDimensionsProvider>
 		</SafeAreaProvider>
 	)
 }

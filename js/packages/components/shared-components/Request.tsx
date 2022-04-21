@@ -3,7 +3,7 @@ import { View, StyleProp, TouchableOpacity, ViewStyle } from 'react-native'
 import { Icon } from '@ui-kitten/components'
 
 import { useThemeColor } from '@berty/store/hooks'
-import { useStyles, ColorsTypes } from '@berty/styles'
+import { useStyles, ColorsTypes } from '@berty/contexts/styles'
 import { Toggle } from '@berty/components/shared-components/Toggle'
 import { useContact } from '@berty/hooks'
 
@@ -43,7 +43,7 @@ const RequestButtonItem: React.FC<RequestButtonItemProps> = ({
 	style = null,
 	disabled = false,
 }) => {
-	const [{ row, flex, text, opacity }] = useStyles()
+	const { row, flex, text, opacity } = useStyles()
 	const colors = useThemeColor()
 
 	if (!iconColor) {
@@ -73,7 +73,7 @@ const RequestButtonItem: React.FC<RequestButtonItemProps> = ({
 }
 
 const RequestButtons: React.FC<RequestButtonsProps> = ({ buttons = null }) => {
-	const [{ row, padding, margin }] = useStyles()
+	const { row, padding, margin } = useStyles()
 	return (
 		<View style={[row.left, padding.medium, margin.top.medium]}>
 			{buttons && buttons.map((obj: any, i: number) => <RequestButtonItem key={i} {...obj} />)}
@@ -85,7 +85,7 @@ const MarkAsVerified: React.FC<{}> = () => {
 	const [isToggled, setIsToggled] = useState(false)
 
 	const handleToggled = () => setIsToggled(!isToggled)
-	const [{ margin, padding, border, row, column, text }] = useStyles()
+	const { margin, padding, border, row, column, text } = useStyles()
 	const colors = useThemeColor()
 
 	return (
@@ -146,7 +146,7 @@ type BodyRequestProps = {
 }
 
 const BodyRequestContent: React.FC<{}> = ({ children }) => {
-	const [{ margin }] = useStyles()
+	const { margin } = useStyles()
 	return (
 		<View style={[margin.top.big]}>
 			<View>{children}</View>
@@ -181,7 +181,7 @@ const BodyRequest: React.FC<BodyRequestProps> = ({
 	markAsVerified,
 	buttons = null,
 }) => {
-	const [{ padding, absolute, row, text, border }] = useStyles()
+	const { padding, absolute, row, text, border } = useStyles()
 	const [selectedContent, setSelectedContent] = useState('fingerprint')
 	const contact = useContact(contactPublicKey)
 	const colors = useThemeColor()

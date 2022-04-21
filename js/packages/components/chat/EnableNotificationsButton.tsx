@@ -14,7 +14,7 @@ import {
 import { checkNotifications, RESULTS, PermissionStatus } from 'react-native-permissions'
 import rnutil from '@berty/rnutil'
 import { useNavigation } from '@berty/navigation'
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 import beapi from '@berty/api'
 import { GRPCError } from '@berty/grpc-bridge'
 import { selectClient, selectProtocolClient } from '@berty/redux/reducers/ui.reducer'
@@ -28,7 +28,7 @@ const EnableNotificationsButton: React.FC<{
 }> = ({ conversationPk }) => {
 	const { t } = useTranslation()
 	const { navigate } = useNavigation()
-	const [{ padding }] = useStyles()
+	const { padding } = useStyles()
 	const protocolClient = useSelector(selectProtocolClient)
 
 	const services = useAccountServices()

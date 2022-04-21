@@ -1,7 +1,9 @@
-import { useThemeColor } from '@berty/store/hooks'
-import { useStyles } from '@berty/styles'
 import React, { ComponentProps } from 'react'
 import { TextStyle, TouchableOpacity, View } from 'react-native'
+
+import { useStyles } from '@berty/contexts/styles'
+import { useThemeColor } from '@berty/store/hooks'
+
 import { UnifiedText } from '../shared-components/UnifiedText'
 import { Card } from '../shared-components/Card'
 import Button from './Button'
@@ -18,7 +20,7 @@ const SwiperCard: React.FC<{
 	} & ComponentProps<typeof Button>
 	skip?: { text: string; onPress: () => void; textStyle: TextStyle | TextStyle[] }
 }> = ({ children, desc, header, title, button, skip, secondButton }) => {
-	const [{ text, padding, margin }] = useStyles()
+	const { text, padding, margin } = useStyles()
 	const colors = useThemeColor()
 
 	return (

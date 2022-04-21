@@ -4,7 +4,7 @@ import LottieView, { AnimatedLottieViewProps } from 'lottie-react-native'
 import { useTranslation } from 'react-i18next'
 import { RESULTS, openSettings, PermissionStatus } from 'react-native-permissions'
 
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 import { accountService, useThemeColor } from '@berty/store'
 import audioLottie from '@berty/assets/lottie/audio-lottie.json'
 import cameraLottie from '@berty/assets/lottie/camera-lottie.json'
@@ -35,7 +35,7 @@ const animations: Record<PermissionType, AnimatedLottieViewProps['source']> = {
 
 export const Permissions: ScreenFC<'Main.Permissions'> = ({ route: { params }, navigation }) => {
 	const appState = useRef(AppState.currentState)
-	const [{ text, border }] = useStyles()
+	const { text, border } = useStyles()
 	const colors = useThemeColor()
 	const { t }: { t: any } = useTranslation()
 	const persistentOptions = useSelector(selectPersistentOptions)
@@ -280,7 +280,7 @@ export const Permissions: ScreenFC<'Main.Permissions'> = ({ route: { params }, n
 
 export const BlePermission: ScreenFC<'Main.BlePermission'> = ({ route: { params } }) => {
 	const { accept, deny } = params
-	const [{ text, border }] = useStyles()
+	const { text, border } = useStyles()
 	const colors = useThemeColor()
 	const { t }: { t: any } = useTranslation()
 	const { goBack } = useNavigation()

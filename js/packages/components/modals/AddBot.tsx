@@ -3,7 +3,7 @@ import { View, TouchableOpacity, StyleSheet } from 'react-native'
 import { Text, Icon } from '@ui-kitten/components'
 import { Buffer } from 'buffer'
 
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 import messengerMethodsHooks from '@berty/store/methods'
 import { useThemeColor } from '@berty/store'
 import { BlurView } from '@react-native-community/blur'
@@ -18,9 +18,10 @@ import {
 } from '@berty/redux/reducers/persistentOptions.reducer'
 import { useAppDispatch } from '@berty/hooks'
 import { UnifiedText } from '../shared-components/UnifiedText'
+import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 
 export const useStylesDefaultModal = () => {
-	const [{ width, border, padding, margin }] = useStyles()
+	const { width, border, padding, margin } = useStyles()
 	const colors = useThemeColor()
 
 	return {
@@ -54,7 +55,8 @@ const AddBotBody: React.FC<{
 	link: string
 	closeModal: () => void
 }> = ({ displayName, link, closeModal }) => {
-	const [{ row, text, margin, padding, border, opacity }, { scaleHeight }] = useStyles()
+	const { row, text, margin, padding, border, opacity } = useStyles()
+	const { scaleHeight } = useAppDimensions()
 	const colors = useThemeColor()
 	const _styles = useStylesDefaultModal()
 	const persistentOptions = useSelector(selectPersistentOptions)
@@ -245,7 +247,7 @@ export const AddBot: React.FC<{ displayName: string; link: string; closeModal: (
 	displayName,
 	closeModal,
 }) => {
-	const [{}, { windowHeight }] = useStyles()
+	const { windowHeight } = useAppDimensions()
 
 	return (
 		<View style={[StyleSheet.absoluteFill, { elevation: 6, zIndex: 6 }]}>

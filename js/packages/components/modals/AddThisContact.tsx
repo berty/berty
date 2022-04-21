@@ -5,7 +5,7 @@ import { CommonActions } from '@react-navigation/native'
 import { Icon } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 import messengerMethodsHooks from '@berty/store/methods'
 import { useThemeColor } from '@berty/store'
 import { dispatch as navDispatch } from '@berty/navigation/rootRef'
@@ -19,7 +19,7 @@ import InvalidScan from './InvalidScan'
 import { UnifiedText } from '../shared-components/UnifiedText'
 
 const useStylesModal = () => {
-	const [{ width, border, height, opacity }] = useStyles()
+	const { width, border, height, opacity } = useStyles()
 	return {
 		closeRequest: [width(45), height(45), border.radius.scale(22.5)],
 		closeRequestIcon: opacity(0.5),
@@ -27,7 +27,7 @@ const useStylesModal = () => {
 }
 
 const BodyAddThisContactContent: React.FC<{}> = ({ children }) => {
-	const [{ margin }] = useStyles()
+	const { margin } = useStyles()
 	return (
 		<View style={[margin.top.big]}>
 			<View>{children}</View>
@@ -44,7 +44,7 @@ const SelectedContent = ({
 	pubKey: string
 	isEncrypted: boolean
 }) => {
-	const [{ padding }] = useStyles()
+	const { padding } = useStyles()
 	switch (contentName) {
 		case 'fingerprint':
 			return <FingerprintContent seed={pubKey} isEncrypted={isEncrypted} />
@@ -64,7 +64,7 @@ const AddThisContact: React.FC<{
 	type: string
 	isPassword: boolean
 }> = ({ displayName, publicKey, link, type, isPassword }) => {
-	const [{ row, text, column, flex, absolute, padding, border, margin }] = useStyles()
+	const { row, text, column, flex, absolute, padding, border, margin } = useStyles()
 	const colors = useThemeColor()
 	const navigation = useNavigation()
 	const { call: requestContact, error, done } = messengerMethodsHooks.useContactRequest()

@@ -2,14 +2,16 @@ import React from 'react'
 import { View } from 'react-native'
 
 import { useThemeColor } from '@berty/store/hooks'
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 import { UnifiedText } from '../../shared-components/UnifiedText'
+import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 
 export const UnreadCount: React.FC<{ value: number; isConvBadge?: boolean }> = ({
 	value,
 	isConvBadge = false,
 }) => {
-	const [{ text }, { scaleSize }] = useStyles()
+	const { text } = useStyles()
+	const { scaleSize } = useAppDimensions()
 	const colors = useThemeColor()
 	const dimension = isConvBadge ? 15 : 18
 	const fontSize = isConvBadge ? 10 : 13

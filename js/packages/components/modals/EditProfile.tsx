@@ -10,7 +10,7 @@ import {
 import { Icon, Input } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 import { useMessengerClient, useThemeColor } from '@berty/store'
 import { useAccount, useUpdateAccount } from '@berty/hooks'
 import ImagePicker, { ImageOrVideo } from 'react-native-image-crop-picker'
@@ -166,7 +166,7 @@ const EditMyProfile: React.FC = () => {
 		}
 	}
 
-	const [{ padding, margin, row, background, border, flex, text, color, column }] = useStyles()
+	const { padding, margin, row, background, border, flex, text, color, column } = useStyles()
 
 	let image: JSX.Element
 	if (state.pic) {
@@ -333,7 +333,7 @@ const EditMyProfile: React.FC = () => {
 }
 
 export const EditProfile: FC = () => {
-	const [{ padding }] = useStyles()
+	const { padding } = useStyles()
 	const colors = useThemeColor()
 
 	return (

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { View, TouchableOpacity, Image, ActivityIndicator } from 'react-native'
 
 import { useThemeColor } from '@berty/store'
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 import { useNavigation } from '@berty/navigation'
 
 import { getSource } from '../../utils'
@@ -15,7 +15,7 @@ export const PictureMessage: React.FC<{
 	onLongPress: () => void
 	isHighlight: boolean
 }> = ({ medias, onLongPress, isHighlight }) => {
-	const [{ border }] = useStyles()
+	const { border } = useStyles()
 	const colors = useThemeColor()
 	const protocolClient = useSelector(selectProtocolClient)
 	const [images, setImages] = useState<any[]>([])

@@ -4,7 +4,7 @@ import { Layout } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 
 import { ScreenFC } from '@berty/navigation'
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 import {
 	useGenerateFakeContacts,
 	useGenerateFakeMultiMembers,
@@ -17,7 +17,7 @@ import { ButtonSetting } from '../shared-components/SettingsButtons'
 
 const BodyFakeData = () => {
 	const { t } = useTranslation()
-	const [{ padding, flex, margin }] = useStyles()
+	const { padding, flex, margin } = useStyles()
 	const colors = useThemeColor()
 
 	const generateFakeContacts = useGenerateFakeContacts()

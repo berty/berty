@@ -6,16 +6,17 @@ import { Icon } from '@ui-kitten/components'
 import beapi from '@berty/api'
 import { useMessengerClient, useThemeColor, pbDateToNum } from '@berty/store'
 import { useNavigation } from '@berty/navigation'
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 import { usePlaySound } from '@berty/hooks'
 
 import { ContactAvatar } from '../../avatars'
 import FromNow from '../../shared-components/FromNow'
 import { UnreadCount } from './UnreadCount'
 import { UnifiedText } from '../../shared-components/UnifiedText'
+import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 
 const useStylesContactRequest: any = () => {
-	const [{ border, padding, margin, width, height, row, flex }] = useStyles()
+	const { border, padding, margin, width, height, row, flex } = useStyles()
 	const colors = useThemeColor()
 
 	return {
@@ -94,7 +95,8 @@ const ContactRequest: React.FC<beapi.messenger.IContact> = ({
 	const { t }: any = useTranslation()
 
 	const id = publicKey
-	const [{ border, padding, row, absolute, text }, { scaleSize }] = useStyles()
+	const { border, padding, row, absolute, text } = useStyles()
+	const { scaleSize } = useAppDimensions()
 	const colors = useThemeColor()
 	const createdDate = pbDateToNum(createdDateStr) || Date.now()
 	return (
@@ -209,7 +211,8 @@ const ContactRequest: React.FC<beapi.messenger.IContact> = ({
 }
 
 export const IncomingRequests: React.FC<any> = ({ items, onLayout }) => {
-	const [{ padding, text, row }, { scaleSize }] = useStyles()
+	const { padding, text, row } = useStyles()
+	const { scaleSize } = useAppDimensions()
 	const colors = useThemeColor()
 	const { t }: any = useTranslation()
 

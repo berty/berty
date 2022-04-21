@@ -10,13 +10,14 @@ import {
 } from 'react-native'
 import { Icon } from '@ui-kitten/components'
 
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 import { useThemeColor } from '@berty/store/hooks'
 import { Toggle } from '@berty/components/shared-components/Toggle'
 import { UnifiedText } from './UnifiedText'
+import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 
 export const Section: React.FC<{}> = ({ children }) => {
-	const [{ margin, border, padding }] = useStyles()
+	const { margin, border, padding } = useStyles()
 	const colors = useThemeColor()
 	return (
 		<View style={[margin.top.large, padding.horizontal.medium]}>
@@ -60,7 +61,8 @@ export const ButtonSettingV2: React.FC<{
 	disabled = false,
 	last = false,
 }) => {
-	const [{ padding, margin, opacity }, { scaleSize }] = useStyles()
+	const { padding, margin, opacity } = useStyles()
+	const { scaleSize } = useAppDimensions()
 	const colors = useThemeColor()
 
 	if (!color) {
@@ -183,7 +185,7 @@ type SettingButtonProps = {
 
 // Style
 const useStylesSettingButton = () => {
-	const [{ padding, margin }] = useStyles()
+	const { padding, margin } = useStyles()
 	return {
 		statePaddingBox: [padding.vertical.tiny, padding.horizontal.small],
 		descBox: [margin.left.scale(20), margin.bottom.medium],
@@ -222,8 +224,8 @@ export const ButtonSetting: React.FC<SettingButtonProps> = ({
 }) => {
 	const [isToggle, setIsToggle] = useState<boolean>()
 	const _styles = useStylesSettingButton()
-	const [{ margin, row, flex, padding, opacity, text, border }, { windowWidth, scaleSize }] =
-		useStyles()
+	const { margin, row, flex, padding, opacity, text, border } = useStyles()
+	const { windowWidth, scaleSize } = useAppDimensions()
 	const colors = useThemeColor()
 
 	if (!iconColor) {
@@ -422,7 +424,8 @@ export const FactionButtonSetting: React.FC<FactionButtonSettingProps> = ({
 	isDropdown = false,
 }) => {
 	const _styles = useStylesSettingButton()
-	const [{ border, padding, flex, height, row, opacity, margin, text }, { scaleSize }] = useStyles()
+	const { border, padding, flex, height, row, opacity, margin, text } = useStyles()
+	const { scaleSize } = useAppDimensions()
 	const colors = useThemeColor()
 	const [isCollapse, setIsCollapse] = React.useState<boolean>(true)
 
@@ -607,7 +610,7 @@ type ButtonSettingRowProps = {
 
 // Styles
 const useStylesButtonSettingRow = () => {
-	const [{ padding }] = useStyles()
+	const { padding } = useStyles()
 	return {
 		textPadding: padding.top.scale(6),
 	}
@@ -621,7 +624,7 @@ export const ButtonSettingRow: React.FC<ButtonSettingRowProps> = ({
 	isScroll = false,
 }) => {
 	const _styles = useStylesButtonSettingRow()
-	const [{ flex, row, margin, padding, border, text, opacity, width }] = useStyles()
+	const { flex, row, margin, padding, border, text, opacity, width } = useStyles()
 	const colors = useThemeColor()
 
 	return (
@@ -695,7 +698,7 @@ type ButtonSettingItem = {
 
 // Styles
 const useStylesButtonSettingItem = () => {
-	const [{ text, padding }] = useStyles()
+	const { text, padding } = useStyles()
 	return {
 		updateFeatureText: [text.size.tiny, padding.left.scale(8)],
 	}
@@ -711,7 +714,7 @@ export const ButtonSettingItem: React.FC<ButtonSettingItem> = ({
 	styleText = {},
 }) => {
 	const _styles = useStylesButtonSettingItem()
-	const [{ row, padding, text }] = useStyles()
+	const { row, padding, text } = useStyles()
 	const colors = useThemeColor()
 
 	if (!color) {
@@ -734,7 +737,8 @@ export const ButtonSettingItem: React.FC<ButtonSettingItem> = ({
 
 export const ButtonDropDown: React.FC<{ title: string; body: string }> = ({ title, body }) => {
 	const [isOpen, setOpen] = useState(false)
-	const [{ padding, margin, text }, { scaleSize }] = useStyles()
+	const { padding, margin, text } = useStyles()
+	const { scaleSize } = useAppDimensions()
 	const colors = useThemeColor()
 
 	const [animateHeight] = useState(new Animated.Value(0))
@@ -802,7 +806,8 @@ export const StringOptionInput: React.FC<{
 	bulletPointValue?: string
 	iconColor?: string | undefined
 }> = ({ name, bulletPointValue, getOptionValue, setOptionValue, iconColor }) => {
-	const [{ flex, row, text, margin, padding, border }, { scaleSize }] = useStyles()
+	const { flex, row, text, margin, padding, border } = useStyles()
+	const { scaleSize } = useAppDimensions()
 	const [value, setValue] = useState('')
 	useEffect(() => {
 		;(async () => {

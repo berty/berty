@@ -5,7 +5,7 @@ import { Icon } from '@ui-kitten/components'
 import { readFile } from 'react-native-fs'
 
 import { playSoundFile, useThemeColor } from '@berty/store'
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 
 import {
 	limitIntensities,
@@ -16,6 +16,7 @@ import {
 	WaveForm,
 } from '../../audioMessageCommon'
 import { SendButton } from '../ChatFooterButtons'
+import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 
 export const PreviewComponent: React.FC<{
 	meteredValuesRef: React.MutableRefObject<number[]>
@@ -32,7 +33,8 @@ export const PreviewComponent: React.FC<{
 	setRecordingState,
 	setHelpMessageValue,
 }) => {
-	const [{ border, padding, margin }, { scaleSize }] = useStyles()
+	const { border, padding, margin } = useStyles()
+	const { scaleSize } = useAppDimensions()
 	const colors = useThemeColor()
 	const { t } = useTranslation()
 	const [player, setPlayer] = useState<any>(null)

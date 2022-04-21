@@ -11,7 +11,7 @@ import {
 	useMessengerClient,
 	useThemeColor,
 } from '@berty/store'
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 import { ScreenFC, useNavigation } from '@berty/navigation'
 import * as middleware from '@berty/grpc-bridge/middleware'
 import beapi from '@berty/api'
@@ -65,7 +65,7 @@ import {
 
 // Styles
 const useStylesDevTools = () => {
-	const [{ margin, height }] = useStyles()
+	const { margin, height } = useStyles()
 	return {
 		buttonRow: [margin.right.scale(20), height(90)],
 		lastButtonRow: height(90),
@@ -77,7 +77,7 @@ const HeaderDevTools: React.FC<{}> = () => {
 	const { navigate } = useNavigation()
 	const { t } = useTranslation()
 	const _styles = useStylesDevTools()
-	const [{ text }] = useStyles()
+	const { text } = useStyles()
 	const colors = useThemeColor()
 
 	return (
@@ -342,7 +342,7 @@ const PlaySound: React.FC = () => {
 
 const BodyDevTools: React.FC<{}> = withInAppNotification(({ showNotification }: any) => {
 	const _styles = useStylesDevTools()
-	const [{ padding, flex, margin, text }] = useStyles()
+	const { padding, flex, margin, text } = useStyles()
 	const { navigate } = useNavigation()
 	const navigation = useNavigation()
 	const { t } = useTranslation()
@@ -620,7 +620,7 @@ const BodyDevTools: React.FC<{}> = withInAppNotification(({ showNotification }: 
 
 export const DevTools: ScreenFC<'Settings.DevTools'> = () => {
 	const colors = useThemeColor()
-	const [{ padding }] = useStyles()
+	const { padding } = useStyles()
 
 	return (
 		<Layout style={{ backgroundColor: colors['main-background'], flex: 1 }}>

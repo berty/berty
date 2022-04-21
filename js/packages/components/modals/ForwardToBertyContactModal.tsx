@@ -3,17 +3,18 @@ import { View, Modal, TouchableOpacity, ScrollView, ActivityIndicator } from 're
 import { useTranslation } from 'react-i18next'
 import { Buffer } from 'buffer'
 
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 import beapi from '@berty/api'
 import { useThemeColor, useMessengerClient, Maybe, prepareMediaBytes } from '@berty/store'
 import { useAllConversations, useOneToOneContact, usePlaySound } from '@berty/hooks'
 
 import { ConversationAvatar } from '../avatars'
 import { UnifiedText } from '../shared-components/UnifiedText'
+import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 
 const Item: React.FC<{ conversation: beapi.messenger.IConversation; image: any }> = React.memo(
 	({ conversation, image }) => {
-		const [{ border, padding, margin }] = useStyles()
+		const { border, padding, margin } = useStyles()
 		const colors = useThemeColor()
 		const playSound = usePlaySound()
 		const client = useMessengerClient()
@@ -96,7 +97,8 @@ export const ForwardToBertyContactModal: React.FC<{
 	image: any
 	onClose: () => void
 }> = ({ image, onClose }) => {
-	const [{ border }, { windowHeight }] = useStyles()
+	const { border } = useStyles()
+	const { windowHeight } = useAppDimensions()
 	const colors = useThemeColor()
 	const conversations = useAllConversations()
 

@@ -2,14 +2,14 @@ import React from 'react'
 import { ScrollView, View } from 'react-native'
 import { useTranslation } from 'react-i18next'
 
-import { useStyles } from '@berty/styles'
 import { ScreenFC, useNavigation } from '@berty/navigation'
 import { useThemeColor } from '@berty/store'
 
 import { ButtonSettingV2, Section } from '../shared-components'
+import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 
 export const AboutBerty: ScreenFC<'Settings.AboutBerty'> = () => {
-	const [{}, { scaleSize }] = useStyles()
+	const { scaleSize } = useAppDimensions()
 	const colors = useThemeColor()
 	const { navigate } = useNavigation()
 	const { t }: { t: any } = useTranslation()

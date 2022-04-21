@@ -3,7 +3,7 @@ import { ScrollView, View, TouchableOpacity, Platform } from 'react-native'
 import { useTranslation } from 'react-i18next'
 
 import beapi from '@berty/api'
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 import { ScreenFC, useNavigation } from '@berty/navigation'
 import {
 	useThemeColor,
@@ -27,6 +27,7 @@ import { UnifiedText } from '../shared-components/UnifiedText'
 import { AccordionV2 } from './Accordion'
 import { withInAppNotification } from 'react-native-in-app-notification'
 import { useSwitchAccount } from '@berty/hooks'
+import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 
 const AccountButton: React.FC<beapi.account.IAccountMetadata> = ({
 	avatarCid,
@@ -38,7 +39,8 @@ const AccountButton: React.FC<beapi.account.IAccountMetadata> = ({
 	const colors = useThemeColor()
 	const selectedAccount = useSelector(selectSelectedAccount)
 	const selected = selectedAccount === accountId
-	const [{ padding, margin }, { scaleSize }] = useStyles()
+	const { padding, margin } = useStyles()
+	const { scaleSize } = useAppDimensions()
 	const switchAccount = useSwitchAccount()
 
 	const heightButton = 50
@@ -101,7 +103,7 @@ const AccountButton: React.FC<beapi.account.IAccountMetadata> = ({
 
 export const Accounts: ScreenFC<'Settings.Accounts'> = withInAppNotification(
 	({ showNotification }: any) => {
-		const [{}, { scaleSize }] = useStyles()
+		const { scaleSize } = useAppDimensions()
 		const colors = useThemeColor()
 		const dispatch = useDispatch()
 		const { navigate } = useNavigation()

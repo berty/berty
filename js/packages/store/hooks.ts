@@ -2,10 +2,9 @@ import React, { EffectCallback, useEffect } from 'react'
 import { useNavigation } from '@react-navigation/native'
 
 import beapi from '@berty/api'
-import colors from '@berty/styles/colors.json'
-import darkTheme from '@berty/styles/darktheme-default.json'
+import colors from '@berty/assets/themes/default-theme.json'
+import darkTheme from '@berty/assets/themes/dark-theme.json'
 import { useAllConversations, useAllContacts, useConversation, useAppDispatch } from '@berty/hooks'
-import { useStyles } from '@berty/styles'
 
 import { NotificationsInhibitor } from './types'
 import { fakeContacts, fakeMultiMemberConversations } from './faker'
@@ -29,6 +28,7 @@ import {
 	selectPersistentOptions,
 	UpdatesProfileNotification,
 } from '@berty/redux/reducers/persistentOptions.reducer'
+import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 
 export type Maybe<T> = T | null | undefined
 
@@ -51,7 +51,7 @@ export const useStylesBertyId = ({
 	const bertyIdContentScaleFactor = contentScaleFactor
 	const requestAvatarSize = avatarSize
 
-	const [, { fontScale, scaleSize, windowHeight, windowWidth, isGteIpadSize }] = useStyles()
+	const { fontScale, scaleSize, windowHeight, windowWidth, isGteIpadSize } = useAppDimensions()
 	const _bertyIdButtonSize = 60 * scaleSize
 
 	// Make sure we can always see the whole QR code on the screen, even if need to scroll

@@ -14,7 +14,7 @@ import { Icon } from '@ui-kitten/components'
 import beapi from '@berty/api'
 import { ScreenFC, useNavigation } from '@berty/navigation'
 import { accountService, useMountEffect, useThemeColor } from '@berty/store'
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 import { useAppDispatch, useAppSelector, useCreateNewAccount } from '@berty/hooks'
 import {
 	addToBootstrap,
@@ -51,6 +51,7 @@ import { useModal } from '../providers/modal.provider'
 import { useDispatch } from 'react-redux'
 import { UnifiedText } from '../shared-components/UnifiedText'
 import { RESULTS } from 'react-native-permissions'
+import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 
 type AccordionRefsType = {
 	relay: RefObject<AccordionRef>
@@ -63,7 +64,8 @@ const ConfigPart: React.FC<{
 	icon: string
 	iconSize?: number
 }> = ({ title, icon, iconSize = 40 }) => {
-	const [{ padding, text, margin, border }, { scaleSize }] = useStyles()
+	const { padding, text, margin, border } = useStyles()
+	const { scaleSize } = useAppDimensions()
 	const colors = useThemeColor()
 
 	return (
@@ -476,7 +478,7 @@ const Access: React.FC<{ accordionRefs: AccordionRefsType }> = ({ accordionRefs 
 }
 
 const CustomConfig: React.FC<{ accordionRefs: AccordionRefsType }> = ({ accordionRefs }) => {
-	const [{ margin, padding, border }] = useStyles()
+	const { margin, padding, border } = useStyles()
 	const { t } = useTranslation()
 	const colors = useThemeColor()
 
@@ -524,7 +526,7 @@ const CustomConfig: React.FC<{ accordionRefs: AccordionRefsType }> = ({ accordio
 }
 
 const ApplyChanges: React.FC = () => {
-	const [{ padding, border, text }] = useStyles()
+	const { padding, border, text } = useStyles()
 	const colors = useThemeColor()
 	const [isPressed, setIsPressed] = React.useState<boolean>(false)
 	const { t } = useTranslation()
@@ -561,7 +563,7 @@ const ApplyChanges: React.FC = () => {
 }
 
 const EnableDisableAll: React.FC<{ accordionRefs: AccordionRefsType }> = ({ accordionRefs }) => {
-	const [{ padding, border }] = useStyles()
+	const { padding, border } = useStyles()
 	const colors = useThemeColor()
 	const [isToggled, setIsToggled] = React.useState(false)
 	const dispatch = useAppDispatch()
@@ -658,7 +660,7 @@ const EnableDisableAll: React.FC<{ accordionRefs: AccordionRefsType }> = ({ acco
 
 export const CustomModeSettings: ScreenFC<'Onboarding.CustomModeSettings'> = () => {
 	const colors = useThemeColor()
-	const [{ padding }] = useStyles()
+	const { padding } = useStyles()
 	const dispatch = useAppDispatch()
 	const accordionRefs: AccordionRefsType = {
 		relay: createRef<AccordionRef>(),

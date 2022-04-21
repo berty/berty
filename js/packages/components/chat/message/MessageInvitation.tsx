@@ -7,7 +7,7 @@ import { useNavigation } from '@berty/navigation'
 import { CommonActions } from '@react-navigation/native'
 
 import { useMessengerClient, useThemeColor } from '@berty/store'
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 import { InteractionGroupInvitation } from '@berty/store/types.gen'
 import { useOneToOneContact, useConversation } from '@berty/hooks'
 
@@ -37,7 +37,7 @@ export const MessageInvitationButton: React.FC<{
 	disabled = false,
 	loading,
 }) => {
-	const [{ flex, padding, border, width, row, text, opacity }] = useStyles()
+	const { flex, padding, border, width, row, text, opacity } = useStyles()
 	return (
 		<TouchableOpacity
 			style={[flex.align.center]}
@@ -78,7 +78,7 @@ export const MessageInvitationButton: React.FC<{
 }
 
 const MessageInvitationSent: React.FC<{ message: InteractionGroupInvitation }> = ({ message }) => {
-	const [{ text }] = useStyles()
+	const { text } = useStyles()
 	const { t }: any = useTranslation()
 
 	const conversationContact = useOneToOneContact(message.conversationPublicKey || '')
@@ -94,7 +94,7 @@ const MessageInvitationSent: React.FC<{ message: InteractionGroupInvitation }> =
 const MessageInvitationReceived: React.FC<{ message: InteractionGroupInvitation }> = ({
 	message,
 }) => {
-	const [{ row, flex, text, margin }] = useStyles()
+	const { row, flex, text, margin } = useStyles()
 	const colors = useThemeColor()
 	const client = useMessengerClient()
 	const { t }: any = useTranslation()
@@ -233,7 +233,7 @@ const MessageInvitationReceived: React.FC<{ message: InteractionGroupInvitation 
 export const MessageInvitation: React.FC<{ message: InteractionGroupInvitation }> = ({
 	message,
 }) => {
-	const [{ row, padding, margin }] = useStyles()
+	const { row, padding, margin } = useStyles()
 
 	return (
 		<View style={[row.center, padding.horizontal.medium, margin.bottom.small, { paddingTop: 2 }]}>

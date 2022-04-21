@@ -5,19 +5,20 @@ import { useTranslation } from 'react-i18next'
 
 import beapi from '@berty/api'
 import { ScreenFC } from '@berty/navigation'
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 import { useThemeColor, pbDateToNum } from '@berty/store'
 import { protocolMethodsHooks } from '@berty/store/methods'
 
 import { usePrevious } from '../hooks'
 import { UnifiedText } from '../shared-components/UnifiedText'
+import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 
 const PeerItem: React.FC<{ item: beapi.protocol.PeerList.IPeer; highlighted: boolean }> = ({
 	item,
 	highlighted,
 }) => {
 	const { id, minLatency, isActive, features } = item
-	const [{ padding, border, text, row, height, width }] = useStyles()
+	const { padding, border, text, row, height, width } = useStyles()
 	const colors = useThemeColor()
 	const [isDropdown, setIsDropdown] = useState(false)
 
@@ -132,7 +133,7 @@ function getPeersTypes(peers: beapi.protocol.PeerList.IPeer[] | null) {
 }
 
 const NetworkMapBody: React.FC<{ peers: beapi.protocol.PeerList.IReply | null }> = ({ peers }) => {
-	const [{ margin, text }] = useStyles()
+	const { margin, text } = useStyles()
 	const colors = useThemeColor()
 	const { t }: any = useTranslation()
 	const [sortPeers, setSortPeers] = useState<beapi.protocol.PeerList.IPeer[] | null>(null)
@@ -249,7 +250,7 @@ const NetworkMapBody: React.FC<{ peers: beapi.protocol.PeerList.IReply | null }>
 
 export const NetworkMap: ScreenFC<'Settings.NetworkMap'> = ({ navigation }) => {
 	const colors = useThemeColor()
-	const [{}, { scaleSize }] = useStyles()
+	const { scaleSize } = useAppDimensions()
 	const { reply: peers = {}, call, called } = protocolMethodsHooks.usePeerList()
 
 	useEffect(() => {

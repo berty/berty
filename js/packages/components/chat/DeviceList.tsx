@@ -3,7 +3,7 @@ import { View } from 'react-native'
 import { useTranslation } from 'react-i18next'
 import { ButtonDropDown } from '@berty/components/shared-components'
 import { berty } from '@berty/api/root.pb'
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 import {
 	getDevicesForConversationAndMember,
 	getSharedPushTokensForConversation,
@@ -16,7 +16,7 @@ const UserDevicesList: React.FC<{ memberPk: string; conversationPk: string }> = 
 	conversationPk,
 }) => {
 	const cutoff = 16
-	const [{ padding }] = useStyles()
+	const { padding } = useStyles()
 	const { t } = useTranslation()
 	const [tokens, setTokens] = useState<berty.messenger.v1.ISharedPushToken[]>([])
 	const [devices, setDevices] = useState<berty.messenger.v1.IDevice[]>([])

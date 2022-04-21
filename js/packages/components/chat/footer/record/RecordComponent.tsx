@@ -14,7 +14,7 @@ import { RESULTS } from 'react-native-permissions'
 import Long from 'long'
 
 import { WelshMessengerServiceClient } from '@berty/grpc-bridge/welsh-clients.gen'
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 import beapi from '@berty/api'
 import { playSound } from '@berty/store/sounds'
 import { useMessengerClient, useThemeColor } from '@berty/store'
@@ -33,6 +33,7 @@ import { RecordingComponent } from './RecordingComponent'
 import { PreviewComponent } from './PreviewComponent'
 import { UnifiedText } from '../../../shared-components/UnifiedText'
 import { PermissionType } from '@berty/rnutil/checkPermissions'
+import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 
 enum MicPermStatus {
 	UNDEFINED = 0,
@@ -161,7 +162,8 @@ export const RecordComponent: React.FC<{
 	const { t } = useTranslation()
 	const { navigate } = useNavigation()
 
-	const [{ border, padding, margin }, { scaleSize }] = useStyles()
+	const { border, padding, margin } = useStyles()
+	const { scaleSize } = useAppDimensions()
 	const colors = useThemeColor()
 	const [recordingState, setRecordingState] = useState(RecordingState.NOT_RECORDING)
 	/*

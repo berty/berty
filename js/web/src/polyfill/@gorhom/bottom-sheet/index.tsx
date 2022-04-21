@@ -3,9 +3,10 @@ import { ScrollViewProps, View, ViewProps } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
 import ImportedBottomSheet from '../../../../../node_modules/@gorhom/bottom-sheet' // import from original bottom-sheet
 
-import { useStyles } from '../../../../../packages/styles'
+import { useStyles } from '../../../../../packages/contexts/styles'
 import { useLayout } from '../../../../../packages/components/hooks'
 import { useThemeColor } from '../../../../../packages/store'
+import { useAppDimensions } from '../../../../../packages/contexts/app-dimensions.context'
 
 export const useBottomSheetDynamicSnapPoints = (_snapPoints: string[]) => {
 	return {
@@ -36,7 +37,8 @@ const BottomSheet = forwardRef(
 			close: onClose,
 			forceClose: () => {},
 		}))
-		const [{ padding, border }, { windowHeight }] = useStyles()
+		const { padding, border } = useStyles()
+		const { windowHeight } = useAppDimensions()
 		const colors = useThemeColor()
 		const [layout, onLayout] = useLayout()
 

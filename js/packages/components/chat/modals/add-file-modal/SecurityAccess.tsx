@@ -4,18 +4,20 @@ import { RESULTS, openSettings } from 'react-native-permissions'
 import { useTranslation } from 'react-i18next'
 import { Icon } from '@ui-kitten/components'
 
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 import { useThemeColor } from '@berty/store/hooks'
 import { getPermissionStatus, PermissionType } from '@berty/rnutil/checkPermissions'
 
 import { TabItems } from './types'
 import { UnifiedText } from '../../../shared-components/UnifiedText'
+import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 
 export const SecurityAccess: React.FC<{ close: () => void; activeTab: TabItems }> = ({
 	activeTab,
 	close,
 }) => {
-	const [{ border, padding, margin }, { scaleSize }] = useStyles()
+	const { border, padding, margin } = useStyles()
+	const { scaleSize } = useAppDimensions()
 	const { t }: { t: any } = useTranslation()
 	const colors = useThemeColor()
 

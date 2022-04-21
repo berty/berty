@@ -3,14 +3,16 @@ import { View, ScrollView, ActivityIndicator, TouchableOpacity } from 'react-nat
 import { Layout, Icon } from '@ui-kitten/components'
 
 import beapi from '@berty/api'
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 import { ScreenFC } from '@berty/navigation'
 import messengerMethodsHooks from '@berty/store/methods'
 import { useMountEffect, useThemeColor, accountService } from '@berty/store'
 import { UnifiedText } from '../shared-components/UnifiedText'
+import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 
 export const SystemInfo: ScreenFC<'Settings.SystemInfo'> = ({ navigation }) => {
-	const [{ padding }, { scaleSize }] = useStyles()
+	const { padding } = useStyles()
+	const { scaleSize } = useAppDimensions()
 	const colors = useThemeColor()
 	const { reply: systemInfo, done, error, call } = messengerMethodsHooks.useSystemInfo()
 	const [networkConfig, setNetworkConfig] = React.useState<beapi.account.INetworkConfig | null>(

@@ -4,12 +4,13 @@ import { useTranslation } from 'react-i18next'
 import moment from 'moment'
 import { Icon } from '@ui-kitten/components'
 
-import { useStyles } from '@berty/styles'
+import { useStyles } from '@berty/contexts/styles'
 import { useThemeColor } from '@berty/store/hooks'
 
 import { RecordingState } from '../../audioMessageCommon'
 import { SendButton } from '../ChatFooterButtons'
 import { UnifiedText } from '../../../shared-components/UnifiedText'
+import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 
 export const RecordingComponent: React.FC<{
 	recordingState: RecordingState
@@ -18,7 +19,8 @@ export const RecordingComponent: React.FC<{
 	setHelpMessageValue: ({ message, delay }: { message: string; delay?: number | undefined }) => void
 	timer: number
 }> = ({ recordingState, recordingColorVal, setRecordingState, setHelpMessageValue, timer }) => {
-	const [{ border, padding, margin, text }, { scaleSize }] = useStyles()
+	const { border, padding, margin, text } = useStyles()
+	const { scaleSize } = useAppDimensions()
 	const colors = useThemeColor()
 	const { t } = useTranslation()
 
