@@ -308,7 +308,10 @@
 		},
 		"add-dev-conversations": {
 			"title": "Добавете разговори за разработчици",
-			"add": "Добави {{name}}"
+			"add": "Добави {{name}}",
+			"tag-bot": "Бот",
+			"tag-contact": "Контакт",
+			"tag-conversation": ""
 		},
 		"ipfs-webui": {
 			"title": "IPFS WebUI"
@@ -473,7 +476,10 @@
 			"title": "",
 			"medias": "",
 			"links": "",
-			"documents": ""
+			"documents": "",
+			"file": "",
+			"picture": "",
+			"audio": ""
 		},
 		"reply": {
 			"response-to": "",
