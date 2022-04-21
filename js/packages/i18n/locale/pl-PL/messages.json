@@ -308,7 +308,10 @@
 		},
 		"add-dev-conversations": {
 			"title": "Dodaj rozmowy deweloperskie",
-			"add": "Dodaj {{name}}"
+			"add": "Dodaj {{name}}",
+			"tag-bot": "Bot",
+			"tag-contact": "Kontakt",
+			"tag-conversation": ""
 		},
 		"ipfs-webui": {
 			"title": "IPFS WebUI"
@@ -473,7 +476,10 @@
 			"title": "Współdzielone media",
 			"medias": "Media",
 			"links": "Linki",
-			"documents": "Dokumenty"
+			"documents": "Dokumenty",
+			"file": "",
+			"picture": "",
+			"audio": ""
 		},
 		"reply": {
 			"response-to": "",
