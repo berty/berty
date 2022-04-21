@@ -308,7 +308,10 @@
 		},
 		"add-dev-conversations": {
 			"title": "Legg til utviklersamtaler",
-			"add": "Legg til {{name}}"
+			"add": "Legg til {{name}}",
+			"tag-bot": "Bot",
+			"tag-contact": "Kontakt",
+			"tag-conversation": ""
 		},
 		"ipfs-webui": {
 			"title": "IPFS WebUI"
@@ -473,7 +476,10 @@
 			"title": "",
 			"medias": "",
 			"links": "",
-			"documents": ""
+			"documents": "",
+			"file": "",
+			"picture": "",
+			"audio": ""
 		},
 		"reply": {
 			"response-to": "",
