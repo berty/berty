@@ -308,7 +308,10 @@
 		},
 		"add-dev-conversations": {
 			"title": "Добавить dev беседы",
-			"add": "Добавить {{name}}"
+			"add": "Добавить {{name}}",
+			"tag-bot": "Бот",
+			"tag-contact": "Контакт",
+			"tag-conversation": ""
 		},
 		"ipfs-webui": {
 			"title": "IPFS WebUI"
@@ -473,7 +476,10 @@
 			"title": "Общие медиа",
 			"medias": "Медиа",
 			"links": "Ссылки",
-			"documents": "Документы"
+			"documents": "Документы",
+			"file": "",
+			"picture": "",
+			"audio": ""
 		},
 		"reply": {
 			"response-to": "Ответить",
