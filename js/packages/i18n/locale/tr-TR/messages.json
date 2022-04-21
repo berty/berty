@@ -308,7 +308,10 @@
 		},
 		"add-dev-conversations": {
 			"title": "Geliştirici konuşmaları ekle",
-			"add": "Ekle {{name}}"
+			"add": "Ekle {{name}}",
+			"tag-bot": "Bot",
+			"tag-contact": "İletişim kur",
+			"tag-conversation": ""
 		},
 		"ipfs-webui": {
 			"title": "IPFS WebUI"
@@ -473,7 +476,10 @@
 			"title": "Paylaşılan medyalar",
 			"medias": "Medya",
 			"links": "Bağlantılar",
-			"documents": "Belgeler"
+			"documents": "Belgeler",
+			"file": "",
+			"picture": "",
+			"audio": ""
 		},
 		"reply": {
 			"response-to": "Yanıtla",
