@@ -308,7 +308,10 @@
 		},
 		"add-dev-conversations": {
 			"title": "開発者の会話を追加する",
-			"add": "{{name}} を追加"
+			"add": "{{name}} を追加",
+			"tag-bot": "Bot",
+			"tag-contact": "連絡先",
+			"tag-conversation": ""
 		},
 		"ipfs-webui": {
 			"title": "IPFS WebUI"
@@ -473,7 +476,10 @@
 			"title": "共有メディア",
 			"medias": "メディア",
 			"links": "リンク",
-			"documents": "ドキュメント"
+			"documents": "ドキュメント",
+			"file": "",
+			"picture": "",
+			"audio": ""
 		},
 		"reply": {
 			"response-to": "返信先",
