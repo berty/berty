@@ -308,7 +308,10 @@
 		},
 		"add-dev-conversations": {
 			"title": "Lägg till utvecklarkonversationer",
-			"add": "Lägg till {{name}}"
+			"add": "Lägg till {{name}}",
+			"tag-bot": "Bot",
+			"tag-contact": "Kontakt",
+			"tag-conversation": ""
 		},
 		"ipfs-webui": {
 			"title": "IPFS webbgränssnitt"
@@ -473,7 +476,10 @@
 			"title": "Delad media",
 			"medias": "Media",
 			"links": "Länkar",
-			"documents": "Dokument"
+			"documents": "Dokument",
+			"file": "",
+			"picture": "",
+			"audio": ""
 		},
 		"reply": {
 			"response-to": "Svar till",
