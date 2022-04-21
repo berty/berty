@@ -308,7 +308,10 @@
 		},
 		"add-dev-conversations": {
 			"title": "Agregar conversaciones de desarrollo",
-			"add": "Agregar {{name}}"
+			"add": "Agregar {{name}}",
+			"tag-bot": "Bot",
+			"tag-contact": "Contacto",
+			"tag-conversation": ""
 		},
 		"ipfs-webui": {
 			"title": "IPFS WebUI"
@@ -473,7 +476,10 @@
 			"title": "Multimedia compartida",
 			"medias": "Multimedia",
 			"links": "Enlaces",
-			"documents": "Documentos"
+			"documents": "Documentos",
+			"file": "",
+			"picture": "",
+			"audio": ""
 		},
 		"reply": {
 			"response-to": "Responder a",
