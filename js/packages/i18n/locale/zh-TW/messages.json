@@ -308,7 +308,10 @@
 		},
 		"add-dev-conversations": {
 			"title": "添加開發者會話",
-			"add": "添加 {{name}}"
+			"add": "添加 {{name}}",
+			"tag-bot": "機器人",
+			"tag-contact": "聯繫人",
+			"tag-conversation": ""
 		},
 		"ipfs-webui": {
 			"title": "IPFS WebUI"
@@ -473,7 +476,10 @@
 			"title": "共享媒體",
 			"medias": "媒體",
 			"links": "鏈接",
-			"documents": "文件"
+			"documents": "文件",
+			"file": "",
+			"picture": "",
+			"audio": ""
 		},
 		"reply": {
 			"response-to": "答覆：",
