@@ -26,8 +26,8 @@
 				"subtitle": "",
 				"first-point": "",
 				"second-point": "",
-				"back-button": "",
-				"accept-button": ""
+				"back-button": "Назад",
+				"accept-button": "Продължи"
 			},
 			"settings": {
 				"off-grid": {
