@@ -63,6 +63,7 @@ func PushEnrich(rawPushData *messengertypes.PushReceivedData, accountData *accou
 		AlreadyReceived:         rawPushData.AlreadyReceived,
 		AccountMuted:            rawPushData.AccountMuted,
 		ConversationMuted:       rawPushData.ConversationMuted,
+		HidePreview:             rawPushData.HidePreview,
 	}
 
 	if rawPushData.Interaction.Member != nil {

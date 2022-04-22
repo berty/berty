@@ -3,7 +3,7 @@ import { PermissionStatus } from 'react-native-permissions'
 
 import beapi from '@berty/api'
 import { StackScreenProps } from '@react-navigation/stack'
-import { PermissionType } from '@berty/rnutil/checkPermissions'
+import { PermissionType } from '@berty/rnutil/permissions'
 
 export type ScreensParams = {
 	// Onboarding

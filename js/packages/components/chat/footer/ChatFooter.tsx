@@ -45,8 +45,8 @@ import { RecordComponent } from './record/RecordComponent'
 import { AddFileMenu } from '../modals/add-file-modal/AddFileMenu.modal'
 import { EmojiBanner } from './emojis/EmojiBanner'
 import { useModal } from '../../providers/modal.provider'
-import { PermissionType } from '@berty/rnutil/checkPermissions'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
+import { PermissionType } from '@berty/rnutil/permissions'
 
 type ChatFooterProps = {
 	convPK: string

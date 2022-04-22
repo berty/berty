@@ -212,10 +212,10 @@ export type MessengerMethodsHooks = {
 		called: boolean
 		loading: boolean
 	}
-	useAccountMute: () => {
+	useAccountPushConfigure: () => {
 		error: any
-		call: (req?: beapi.messenger.AccountMute.IRequest) => void
-		reply: beapi.messenger.AccountMute.IReply | null
+		call: (req?: beapi.messenger.AccountPushConfigure.IRequest) => void
+		reply: beapi.messenger.AccountPushConfigure.IReply | null
 		done: boolean
 		called: boolean
 		loading: boolean

@@ -786,6 +786,15 @@ func (svc *service) sharePushTokenForConversationInternal(conversation *mt.Conve
 		if _, err := svc.db.UpdateConversation(mt.Conversation{PublicKey: conversation.PublicKey, SharedPushTokenIdentifier: tokenIdentifier}); err != nil {
 			return errcode.ErrDBWrite.Wrap(err)
 		}
+
+		conv, err := svc.db.GetConversationByPK(conversation.PublicKey)
+		if err != nil {
+			return errcode.ErrDBRead.Wrap(err)
+		}
+
+		if err := svc.dispatcher.StreamEvent(mt.StreamEvent_TypeConversationUpdated, &mt.StreamEvent_ConversationUpdated{Conversation: conv}, false); err != nil {
+			return errcode.TODO.Wrap(err)
+		}
 	}
 
 	return nil

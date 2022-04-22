@@ -1,83 +1,7 @@
 import { Linking, Platform } from 'react-native'
-import {
-	check,
-	checkNotifications,
-	Permission,
-	PERMISSIONS,
-	PermissionStatus,
-	request,
-	requestNotifications,
-	RESULTS,
-} from 'react-native-permissions'
+import { check, PERMISSIONS, PermissionStatus, RESULTS } from 'react-native-permissions'
 import beapi from '@berty/api'
-import { Camera } from 'expo-camera'
-
-export enum PermissionType {
-	proximity = 'proximity',
-	audio = 'audio',
-	notification = 'notification',
-	camera = 'camera',
-	gallery = 'gallery',
-}
-
-const permissionsByDevice: Record<string, Permission | undefined> = {
-	proximity: Platform.select({
-		ios: PERMISSIONS?.IOS?.BLUETOOTH_PERIPHERAL,
-		android: PERMISSIONS?.ANDROID?.ACCESS_FINE_LOCATION,
-		web: undefined,
-	}),
-	camera: Platform.select({
-		ios: PERMISSIONS?.IOS?.CAMERA,
-		android: PERMISSIONS?.ANDROID?.CAMERA,
-		web: undefined,
-	}),
-	audio: Platform.select({
-		ios: PERMISSIONS?.IOS?.MICROPHONE,
-		android: PERMISSIONS?.ANDROID?.RECORD_AUDIO,
-		web: undefined,
-	}),
-	gallery: Platform.select({
-		ios: PERMISSIONS?.IOS?.PHOTO_LIBRARY,
-		android: PERMISSIONS?.ANDROID?.READ_EXTERNAL_STORAGE,
-		web: undefined,
-	}),
-}
-
-export const getPermissionStatus = async (
-	permissionType: PermissionType,
-): Promise<PermissionStatus> => {
-	if (permissionType === PermissionType.notification) {
-		return (await checkNotifications()).status
-	}
-	if (permissionType === PermissionType.camera && Platform.OS === 'web') {
-		return (await Camera.requestCameraPermissionsAsync()).status === 'granted'
-			? RESULTS.GRANTED
-			: RESULTS.DENIED
-	}
-	const permission = permissionsByDevice[permissionType]
-	if (!permission) {
-		return RESULTS.UNAVAILABLE
-	}
-	return await check(permission)
-}
-
-export const requestPermission = async (
-	permissionType: PermissionType,
-): Promise<PermissionStatus> => {
-	if (permissionType === PermissionType.notification) {
-		return (await requestNotifications(['alert', 'sound'])).status
-	}
-	if (permissionType === PermissionType.camera) {
-		return (await Camera.requestCameraPermissionsAsync()).status === 'granted'
-			? RESULTS.GRANTED
-			: RESULTS.DENIED
-	}
-	const permission = permissionsByDevice[permissionType]
-	if (!permission) {
-		return RESULTS.UNAVAILABLE
-	}
-	return await request(permission)
-}
+import { PermissionType, getPermissions } from '@berty/rnutil/permissions'
 
 export const checkPermissions = async (
 	permissionType: PermissionType,
@@ -94,7 +18,7 @@ export const checkPermissions = async (
 	// }
 	let status
 	try {
-		status = await getPermissionStatus(permissionType)
+		status = (await getPermissions())[permissionType]
 	} catch (err) {
 		console.warn('Check permission failed:', err)
 	}
@@ -163,20 +87,20 @@ export const checkBlePermission = async (options: {
 				: PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
 		)
 		switch (status) {
-			case 'granted':
+			case RESULTS.GRANTED:
 				await handleAccept()
 				break
-			case 'denied':
+			case RESULTS.DENIED:
 				// status is denied at the first launch of the app (https://github.com/zoontek/react-native-permissions#understanding-permission-flow)
 				navigate('Chat.BlePermission', {
 					accept: handleAccept,
 					deny: handleDeny,
 				})
 				break
-			case 'limited':
-			case 'unavailable':
+			case RESULTS.LIMITED:
+			case RESULTS.UNAVAILABLE:
 				break
-			case 'blocked':
+			case RESULTS.BLOCKED:
 				// if status is blocked, we open the settings
 				await Linking.openSettings()
 				break

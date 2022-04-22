@@ -1482,20 +1482,41 @@ func (svc *service) ConversationMute(ctx context.Context, request *messengertype
 	return &messengertypes.ConversationMute_Reply{}, nil
 }
 
-func (svc *service) AccountMute(ctx context.Context, request *messengertypes.AccountMute_Request) (*messengertypes.AccountMute_Reply, error) {
-	if request.MuteForever {
-		request.MutedUntil = math.MaxInt64
-	}
+func (svc *service) AccountPushConfigure(ctx context.Context, request *messengertypes.AccountPushConfigure_Request) (*messengertypes.AccountPushConfigure_Reply, error) {
+	updatedFields := map[string]interface{}{}
 
-	if (request.Unmute && request.MutedUntil > 0) || (!request.Unmute && request.MutedUntil <= 0) {
+	switch {
+	case !request.Unmute && request.MutedUntil <= 0 && !request.MuteForever:
+		break
+	case (request.MuteForever || request.MutedUntil > 0) && request.Unmute:
 		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("can't mute and unmute a conversation simultaneously"))
+	case request.MutedUntil > 0:
+		updatedFields["muted_until"] = request.MutedUntil
+	case request.MuteForever:
+		updatedFields["muted_until"] = int64(math.MaxInt64)
+	case request.Unmute:
+		updatedFields["muted_until"] = 0
 	}
 
-	if request.Unmute {
-		request.MutedUntil = 0
+	switch {
+	case request.HidePushPreviews && request.ShowPushPreviews:
+		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("can't hide and show a push previews simultaneously"))
+	case request.HidePushPreviews:
+		updatedFields["hide_push_previews"] = true
+	case request.ShowPushPreviews:
+		updatedFields["hide_push_previews"] = false
 	}
 
-	if err := svc.db.MuteAccount(request.MutedUntil); err != nil {
+	switch {
+	case request.HideInAppNotifications && request.ShowInAppNotifications:
+		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("can't hide and show in app notifications simultaneously"))
+	case request.HideInAppNotifications:
+		updatedFields["hide_in_app_notifications"] = true
+	case request.ShowInAppNotifications:
+		updatedFields["hide_in_app_notifications"] = false
+	}
+
+	if err := svc.db.UpdateAccountFields(updatedFields); err != nil {
 		return nil, errcode.ErrInternal.Wrap(err)
 	}
 
@@ -1508,7 +1529,7 @@ func (svc *service) AccountMute(ctx context.Context, request *messengertypes.Acc
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	return &messengertypes.AccountMute_Reply{}, nil
+	return &messengertypes.AccountPushConfigure_Reply{}, nil
 }
 
 func (svc *service) MediaGetRelated(ctx context.Context, request *messengertypes.MediaGetRelated_Request) (*messengertypes.MediaGetRelated_Reply, error) {

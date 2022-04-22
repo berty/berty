@@ -20,7 +20,7 @@ import (
 	"berty.tech/berty/v2/go/pkg/pushtypes"
 )
 
-func (s *service) authInitURL(baseURL string) (string, error) {
+func (s *service) authInitURL(baseURL string, services ...string) (string, error) {
 	parsedAuthURL, err := url.Parse(baseURL)
 	if err != nil {
 		return "", errcode.ErrServicesAuthInvalidURL
@@ -45,7 +45,7 @@ func (s *service) authInitURL(baseURL string) (string, error) {
 
 	s.authSession.Store(auth)
 
-	return fmt.Sprintf("%s%s?response_type=%s&client_id=%s&redirect_uri=%s&state=%s&code_challenge=%s&code_challenge_method=%s",
+	outURL := fmt.Sprintf("%s%s?response_type=%s&client_id=%s&redirect_uri=%s&state=%s&code_challenge=%s&code_challenge_method=%s",
 		baseURL,
 		authtypes.AuthHTTPPathAuthorize,
 		authtypes.AuthResponseType,
@@ -54,7 +54,18 @@ func (s *service) authInitURL(baseURL string) (string, error) {
 		auth.State,
 		codeChallenge,
 		authtypes.AuthCodeChallengeMethod,
-	), nil
+	)
+
+	_ = services
+
+	// if len(services) > 0 {
+	// 	outURL = fmt.Sprintf("%s&scope=%s",
+	// 		outURL,
+	// 		strings.Join(services, ","),
+	// 	)
+	// }
+
+	return outURL, nil
 }
 
 func (s *service) AuthServiceCompleteFlow(ctx context.Context, request *protocoltypes.AuthServiceCompleteFlow_Request) (*protocoltypes.AuthServiceCompleteFlow_Reply, error) {
@@ -195,7 +206,7 @@ func (s *service) AuthServiceCompleteFlow(ctx context.Context, request *protocol
 }
 
 func (s *service) AuthServiceInitFlow(ctx context.Context, request *protocoltypes.AuthServiceInitFlow_Request) (*protocoltypes.AuthServiceInitFlow_Reply, error) {
-	u, err := s.authInitURL(request.AuthURL)
+	u, err := s.authInitURL(request.AuthURL, request.Services...)
 	if err != nil {
 		return nil, err
 	}

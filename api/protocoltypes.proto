@@ -1186,6 +1186,7 @@ message AuthServiceCompleteFlow {
 message AuthServiceInitFlow {
   message Request {
     string auth_url = 1 [(gogoproto.customname) = "AuthURL"];
+    repeated string services = 3;
   }
   message Reply {
     string url = 1 [(gogoproto.customname) = "URL"];

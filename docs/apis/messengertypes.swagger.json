@@ -43,14 +43,14 @@
         ]
       }
     },
-    "/berty.messenger.v1/MessengerService/AccountMute": {
+    "/berty.messenger.v1/MessengerService/AccountPushConfigure": {
       "post": {
-        "operationId": "MessengerService_AccountMute",
+        "operationId": "MessengerService_AccountPushConfigure",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/v1AccountMuteReply"
+              "$ref": "#/definitions/v1AccountPushConfigureReply"
             }
           },
           "default": {
@@ -66,7 +66,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/v1AccountMuteRequest"
+              "$ref": "#/definitions/v1AccountPushConfigureRequest"
             }
           }
         ],
@@ -1792,6 +1792,12 @@
         "muted_until": {
           "type": "string",
           "format": "int64"
+        },
+        "hide_in_app_notifications": {
+          "type": "boolean"
+        },
+        "hide_push_previews": {
+          "type": "boolean"
         }
       }
     },
@@ -2002,10 +2008,10 @@
     "v1AccountGetRequest": {
       "type": "object"
     },
-    "v1AccountMuteReply": {
+    "v1AccountPushConfigureReply": {
       "type": "object"
     },
-    "v1AccountMuteRequest": {
+    "v1AccountPushConfigureRequest": {
       "type": "object",
       "properties": {
         "muted_until": {
@@ -2016,6 +2022,18 @@
           "type": "boolean"
         },
         "mute_forever": {
+          "type": "boolean"
+        },
+        "hide_in_app_notifications": {
+          "type": "boolean"
+        },
+        "hide_push_previews": {
+          "type": "boolean"
+        },
+        "show_in_app_notifications": {
+          "type": "boolean"
+        },
+        "show_push_previews": {
           "type": "boolean"
         }
       }
@@ -3026,6 +3044,9 @@
           "type": "boolean"
         },
         "conversation_muted": {
+          "type": "boolean"
+        },
+        "hide_preview": {
           "type": "boolean"
         }
       }

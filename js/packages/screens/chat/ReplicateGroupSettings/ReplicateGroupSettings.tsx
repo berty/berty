@@ -144,7 +144,7 @@ const ReplicateGroupContent: React.FC<{
 				iconColor={colors['background-header']}
 				alone={true}
 				onPress={async () => {
-					await servicesAuthViaDefault(protocolClient)
+					await servicesAuthViaDefault(protocolClient, [serviceTypes.Replication])
 				}}
 			/>
 			<ButtonSetting

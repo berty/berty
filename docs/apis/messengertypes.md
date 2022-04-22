@@ -8,9 +8,9 @@
     - [AccountGet](#berty.messenger.v1.AccountGet)
     - [AccountGet.Reply](#berty.messenger.v1.AccountGet.Reply)
     - [AccountGet.Request](#berty.messenger.v1.AccountGet.Request)
-    - [AccountMute](#berty.messenger.v1.AccountMute)
-    - [AccountMute.Reply](#berty.messenger.v1.AccountMute.Reply)
-    - [AccountMute.Request](#berty.messenger.v1.AccountMute.Request)
+    - [AccountPushConfigure](#berty.messenger.v1.AccountPushConfigure)
+    - [AccountPushConfigure.Reply](#berty.messenger.v1.AccountPushConfigure.Reply)
+    - [AccountPushConfigure.Request](#berty.messenger.v1.AccountPushConfigure.Request)
     - [AccountUpdate](#berty.messenger.v1.AccountUpdate)
     - [AccountUpdate.Reply](#berty.messenger.v1.AccountUpdate.Reply)
     - [AccountUpdate.Request](#berty.messenger.v1.AccountUpdate.Request)
@@ -216,6 +216,8 @@
 | device_push_token | [bytes](#bytes) |  |  |
 | device_push_server | [bytes](#bytes) |  |  |
 | muted_until | [int64](#int64) |  |  |
+| hide_in_app_notifications | [bool](#bool) |  |  |
+| hide_push_previews | [bool](#bool) |  |  |
 
 <a name="berty.messenger.v1.AccountGet"></a>
 
@@ -233,23 +235,27 @@
 
 ### AccountGet.Request
 
-<a name="berty.messenger.v1.AccountMute"></a>
+<a name="berty.messenger.v1.AccountPushConfigure"></a>
 
-### AccountMute
+### AccountPushConfigure
 
-<a name="berty.messenger.v1.AccountMute.Reply"></a>
+<a name="berty.messenger.v1.AccountPushConfigure.Reply"></a>
 
-### AccountMute.Reply
+### AccountPushConfigure.Reply
 
-<a name="berty.messenger.v1.AccountMute.Request"></a>
+<a name="berty.messenger.v1.AccountPushConfigure.Request"></a>
 
-### AccountMute.Request
+### AccountPushConfigure.Request
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | muted_until | [int64](#int64) |  |  |
 | unmute | [bool](#bool) |  |  |
 | mute_forever | [bool](#bool) |  |  |
+| hide_in_app_notifications | [bool](#bool) |  |  |
+| hide_push_previews | [bool](#bool) |  |  |
+| show_in_app_notifications | [bool](#bool) |  |  |
+| show_push_previews | [bool](#bool) |  |  |
 
 <a name="berty.messenger.v1.AccountUpdate"></a>
 
@@ -1159,6 +1165,7 @@ Composite primary key
 | already_received | [bool](#bool) |  |  |
 | account_muted | [bool](#bool) |  |  |
 | conversation_muted | [bool](#bool) |  |  |
+| hide_preview | [bool](#bool) |  |  |
 
 <a name="berty.messenger.v1.PushSetAutoShare"></a>
 
@@ -1719,7 +1726,7 @@ Today, most of the Berty Messenger logic is implemented directly in the applicat
 | ConversationJoin | [ConversationJoin.Request](#berty.messenger.v1.ConversationJoin.Request) | [ConversationJoin.Reply](#berty.messenger.v1.ConversationJoin.Reply) |  |
 | AccountGet | [AccountGet.Request](#berty.messenger.v1.AccountGet.Request) | [AccountGet.Reply](#berty.messenger.v1.AccountGet.Reply) |  |
 | AccountUpdate | [AccountUpdate.Request](#berty.messenger.v1.AccountUpdate.Request) | [AccountUpdate.Reply](#berty.messenger.v1.AccountUpdate.Reply) |  |
-| AccountMute | [AccountMute.Request](#berty.messenger.v1.AccountMute.Request) | [AccountMute.Reply](#berty.messenger.v1.AccountMute.Reply) |  |
+| AccountPushConfigure | [AccountPushConfigure.Request](#berty.messenger.v1.AccountPushConfigure.Request) | [AccountPushConfigure.Reply](#berty.messenger.v1.AccountPushConfigure.Reply) |  |
 | ContactRequest | [ContactRequest.Request](#berty.messenger.v1.ContactRequest.Request) | [ContactRequest.Reply](#berty.messenger.v1.ContactRequest.Reply) |  |
 | ContactAccept | [ContactAccept.Request](#berty.messenger.v1.ContactAccept.Request) | [ContactAccept.Reply](#berty.messenger.v1.ContactAccept.Reply) |  |
 | Interact | [Interact.Request](#berty.messenger.v1.Interact.Request) | [Interact.Reply](#berty.messenger.v1.Interact.Reply) |  |

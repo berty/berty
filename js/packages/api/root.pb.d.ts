@@ -1767,6 +1767,7 @@ export namespace berty {
                 alreadyReceived?: (boolean|null);
                 accountMuted?: (boolean|null);
                 conversationMuted?: (boolean|null);
+                hidePreview?: (boolean|null);
             }
 
             class DecryptedPush implements IDecryptedPush {
@@ -1783,6 +1784,7 @@ export namespace berty {
                 public alreadyReceived: boolean;
                 public accountMuted: boolean;
                 public conversationMuted: boolean;
+                public hidePreview: boolean;
                 public static create(properties?: berty.push.v1.IDecryptedPush): berty.push.v1.DecryptedPush;
                 public static encode(message: berty.push.v1.IDecryptedPush, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.push.v1.IDecryptedPush, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -1820,6 +1822,7 @@ export namespace berty {
                 body?: (string|null);
                 deepLink?: (string|null);
                 muted?: (boolean|null);
+                hidePreview?: (boolean|null);
             }
 
             class FormatedPush implements IFormatedPush {
@@ -1830,6 +1833,7 @@ export namespace berty {
                 public body: string;
                 public deepLink: string;
                 public muted: boolean;
+                public hidePreview: boolean;
                 public static create(properties?: berty.push.v1.IFormatedPush): berty.push.v1.FormatedPush;
                 public static encode(message: berty.push.v1.IFormatedPush, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.push.v1.IFormatedPush, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -4823,11 +4827,13 @@ export namespace berty {
 
                 interface IRequest {
                     authUrl?: (string|null);
+                    services?: (string[]|null);
                 }
 
                 class Request implements IRequest {
 
                     public authUrl: string;
+                    public services: string[];
                     public static create(properties?: berty.protocol.v1.AuthServiceInitFlow.IRequest): berty.protocol.v1.AuthServiceInitFlow.Request;
                     public static encode(message: berty.protocol.v1.AuthServiceInitFlow.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.protocol.v1.AuthServiceInitFlow.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -6721,8 +6727,8 @@ export namespace berty {
                 public accountGet(request: berty.messenger.v1.AccountGet.IRequest): Promise<berty.messenger.v1.AccountGet.Reply>;
                 public accountUpdate(request: berty.messenger.v1.AccountUpdate.IRequest, callback: berty.messenger.v1.MessengerService.AccountUpdateCallback): void;
                 public accountUpdate(request: berty.messenger.v1.AccountUpdate.IRequest): Promise<berty.messenger.v1.AccountUpdate.Reply>;
-                public accountMute(request: berty.messenger.v1.AccountMute.IRequest, callback: berty.messenger.v1.MessengerService.AccountMuteCallback): void;
-                public accountMute(request: berty.messenger.v1.AccountMute.IRequest): Promise<berty.messenger.v1.AccountMute.Reply>;
+                public accountPushConfigure(request: berty.messenger.v1.AccountPushConfigure.IRequest, callback: berty.messenger.v1.MessengerService.AccountPushConfigureCallback): void;
+                public accountPushConfigure(request: berty.messenger.v1.AccountPushConfigure.IRequest): Promise<berty.messenger.v1.AccountPushConfigure.Reply>;
                 public contactRequest(request: berty.messenger.v1.ContactRequest.IRequest, callback: berty.messenger.v1.MessengerService.ContactRequestCallback): void;
                 public contactRequest(request: berty.messenger.v1.ContactRequest.IRequest): Promise<berty.messenger.v1.ContactRequest.Reply>;
                 public contactAccept(request: berty.messenger.v1.ContactAccept.IRequest, callback: berty.messenger.v1.MessengerService.ContactAcceptCallback): void;
@@ -6807,7 +6813,7 @@ export namespace berty {
 
                 type AccountUpdateCallback = (error: (Error|null), response?: berty.messenger.v1.AccountUpdate.Reply) => void;
 
-                type AccountMuteCallback = (error: (Error|null), response?: berty.messenger.v1.AccountMute.Reply) => void;
+                type AccountPushConfigureCallback = (error: (Error|null), response?: berty.messenger.v1.AccountPushConfigure.Reply) => void;
 
                 type ContactRequestCallback = (error: (Error|null), response?: berty.messenger.v1.ContactRequest.Reply) => void;
 
@@ -8156,6 +8162,8 @@ export namespace berty {
                 devicePushToken?: (Uint8Array|null);
                 devicePushServer?: (Uint8Array|null);
                 mutedUntil?: (Long|null);
+                hideInAppNotifications?: (boolean|null);
+                hidePushPreviews?: (boolean|null);
             }
 
             class Account implements IAccount {
@@ -8170,6 +8178,8 @@ export namespace berty {
                 public devicePushToken: Uint8Array;
                 public devicePushServer: Uint8Array;
                 public mutedUntil: Long;
+                public hideInAppNotifications: boolean;
+                public hidePushPreviews: boolean;
                 public static create(properties?: berty.messenger.v1.IAccount): berty.messenger.v1.Account;
                 public static encode(message: berty.messenger.v1.IAccount, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.messenger.v1.IAccount, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -9233,28 +9243,32 @@ export namespace berty {
                 }
             }
 
-            interface IAccountMute {
+            interface IAccountPushConfigure {
             }
 
-            class AccountMute implements IAccountMute {
+            class AccountPushConfigure implements IAccountPushConfigure {
 
-                public static create(properties?: berty.messenger.v1.IAccountMute): berty.messenger.v1.AccountMute;
-                public static encode(message: berty.messenger.v1.IAccountMute, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.messenger.v1.IAccountMute, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.AccountMute;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.AccountMute;
+                public static create(properties?: berty.messenger.v1.IAccountPushConfigure): berty.messenger.v1.AccountPushConfigure;
+                public static encode(message: berty.messenger.v1.IAccountPushConfigure, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.messenger.v1.IAccountPushConfigure, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.AccountPushConfigure;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.AccountPushConfigure;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.messenger.v1.AccountMute;
-                public static toObject(message: berty.messenger.v1.AccountMute, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): berty.messenger.v1.AccountPushConfigure;
+                public static toObject(message: berty.messenger.v1.AccountPushConfigure, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
-            namespace AccountMute {
+            namespace AccountPushConfigure {
 
                 interface IRequest {
                     mutedUntil?: (Long|null);
                     unmute?: (boolean|null);
                     muteForever?: (boolean|null);
+                    hideInAppNotifications?: (boolean|null);
+                    hidePushPreviews?: (boolean|null);
+                    showInAppNotifications?: (boolean|null);
+                    showPushPreviews?: (boolean|null);
                 }
 
                 class Request implements IRequest {
@@ -9262,14 +9276,18 @@ export namespace berty {
                     public mutedUntil: Long;
                     public unmute: boolean;
                     public muteForever: boolean;
-                    public static create(properties?: berty.messenger.v1.AccountMute.IRequest): berty.messenger.v1.AccountMute.Request;
-                    public static encode(message: berty.messenger.v1.AccountMute.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.messenger.v1.AccountMute.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.AccountMute.Request;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.AccountMute.Request;
+                    public hideInAppNotifications: boolean;
+                    public hidePushPreviews: boolean;
+                    public showInAppNotifications: boolean;
+                    public showPushPreviews: boolean;
+                    public static create(properties?: berty.messenger.v1.AccountPushConfigure.IRequest): berty.messenger.v1.AccountPushConfigure.Request;
+                    public static encode(message: berty.messenger.v1.AccountPushConfigure.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.messenger.v1.AccountPushConfigure.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.AccountPushConfigure.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.AccountPushConfigure.Request;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.AccountMute.Request;
-                    public static toObject(message: berty.messenger.v1.AccountMute.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.AccountPushConfigure.Request;
+                    public static toObject(message: berty.messenger.v1.AccountPushConfigure.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
 
@@ -9278,14 +9296,14 @@ export namespace berty {
 
                 class Reply implements IReply {
 
-                    public static create(properties?: berty.messenger.v1.AccountMute.IReply): berty.messenger.v1.AccountMute.Reply;
-                    public static encode(message: berty.messenger.v1.AccountMute.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.messenger.v1.AccountMute.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.AccountMute.Reply;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.AccountMute.Reply;
+                    public static create(properties?: berty.messenger.v1.AccountPushConfigure.IReply): berty.messenger.v1.AccountPushConfigure.Reply;
+                    public static encode(message: berty.messenger.v1.AccountPushConfigure.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.messenger.v1.AccountPushConfigure.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.AccountPushConfigure.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.AccountPushConfigure.Reply;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.AccountMute.Reply;
-                    public static toObject(message: berty.messenger.v1.AccountMute.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.AccountPushConfigure.Reply;
+                    public static toObject(message: berty.messenger.v1.AccountPushConfigure.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
             }
@@ -10264,6 +10282,7 @@ export namespace berty {
                 alreadyReceived?: (boolean|null);
                 accountMuted?: (boolean|null);
                 conversationMuted?: (boolean|null);
+                hidePreview?: (boolean|null);
             }
 
             class PushReceivedData implements IPushReceivedData {
@@ -10273,6 +10292,7 @@ export namespace berty {
                 public alreadyReceived: boolean;
                 public accountMuted: boolean;
                 public conversationMuted: boolean;
+                public hidePreview: boolean;
                 public static create(properties?: berty.messenger.v1.IPushReceivedData): berty.messenger.v1.PushReceivedData;
                 public static encode(message: berty.messenger.v1.IPushReceivedData, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.messenger.v1.IPushReceivedData, writer?: $protobuf.Writer): $protobuf.Writer;

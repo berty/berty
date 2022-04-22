@@ -6,8 +6,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import beapi from '@berty/api'
 import { useStyles } from '@berty/contexts/styles'
 import { useThemeColor, NotificationsInhibitor, SoundKey } from '@berty/store'
-import { selectPersistentOptions } from '@berty/redux/reducers/persistentOptions.reducer'
-import { useAppSelector, usePlaySound } from '@berty/hooks'
+import { useAccount, useAppSelector, usePlaySound } from '@berty/hooks'
 import { selectNotificationsInhibitors } from '@berty/redux/reducers/ui.reducer'
 
 import { usePrevious } from './hooks'
@@ -64,16 +63,16 @@ const notifsSounds: { [key: number]: SoundKey } = {
 }
 
 const GatedNotificationBody: React.FC<any> = props => {
+	const account = useAccount()
 	const prevProps = usePrevious(props)
 	const justOpened = props.isOpen && !prevProps?.isOpen
 
 	const notificationsInhibitors = useAppSelector(selectNotificationsInhibitors)
 	const playSound = usePlaySound()
-	const persistentOptions = useAppSelector(selectPersistentOptions)
 
 	const notif = props.additionalProps as beapi.messenger.StreamEvent.INotified | undefined
 
-	const isValid = notif && props.isOpen && persistentOptions?.notifications?.enable
+	const isValid = notif && props.isOpen && !account?.hideInAppNotifications
 
 	const inhibit = isValid
 		? notificationsInhibitors.reduce<ReturnType<NotificationsInhibitor>>((r, inh) => {

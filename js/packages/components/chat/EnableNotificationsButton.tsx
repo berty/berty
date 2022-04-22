@@ -1,20 +1,16 @@
-import React, { useState, useEffect, useCallback } from 'react'
-import { Alert } from 'react-native'
+import React, { useContext, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 
 import { ButtonSetting } from '@berty/components/shared-components'
-import { getSharedPushTokensForConversation } from '@berty/store'
-import { checkNotifications, RESULTS, PermissionStatus } from 'react-native-permissions'
+import { RESULTS } from 'react-native-permissions'
 import { useNavigation } from '@berty/navigation'
 import { useStyles } from '@berty/contexts/styles'
-import beapi from '@berty/api'
-import { GRPCError } from '@berty/grpc-bridge'
 import { selectClient, selectProtocolClient } from '@berty/redux/reducers/ui.reducer'
-import { berty } from '@berty/api/root.pb'
 import { useAccount, useConversation } from '@berty/hooks'
 import { UnifiedText } from '../shared-components/UnifiedText'
-import { enablePushPermission } from '@berty/store/push'
+import { conversationPushToggleState, pushAvailable } from '@berty/store/push'
+import PermissionsContext from '@berty/contexts/permissions.context'
 
 const EnableNotificationsButton: React.FC<{
 	conversationPk: string
@@ -27,39 +23,24 @@ const EnableNotificationsButton: React.FC<{
 	const conv = useConversation(conversationPk)
 	const account = useAccount()
 	const client = useSelector(selectClient)
+	const { permissions } = useContext(PermissionsContext)
 
-	const [tokens, setTokens] = useState<berty.messenger.v1.ISharedPushToken[]>([])
-	const [notificationPermStatus, setNotificationPermStatus] = useState<PermissionStatus | null>(
-		null,
+	const pushTokenShared = useMemo(
+		() => conv?.sharedPushTokenIdentifier !== undefined && conv?.sharedPushTokenIdentifier !== '',
+		[conv],
 	)
-
-	const refreshSharedPushTokens = useCallback(() => {
-		if (!client) {
-			return
-		}
-
-		getSharedPushTokensForConversation(client, conversationPk).then(setTokens).catch(console.warn)
-	}, [client, conversationPk])
-
-	const refreshNotificationPermStatus = useCallback(() => {
-		checkNotifications()
-			.then(status => {
-				setNotificationPermStatus(status.status)
-			})
-			.catch(console.warn)
-	}, [])
-
-	useEffect(() => {
-		refreshNotificationPermStatus()
-		refreshSharedPushTokens()
-	}, [refreshSharedPushTokens, refreshNotificationPermStatus])
-
-	const pushEnabledDevice = React.useMemo(
-		() => tokens.find(d => d.devicePublicKey === conv?.localDevicePublicKey),
-		[tokens, conv],
+	const conversationNotMuted = useMemo(
+		() => (conv?.mutedUntil ? conv?.mutedUntil : 0) < Date.now(),
+		[conv],
 	)
+	const pushPermissionGranted = useMemo(
+		() =>
+			permissions.notification === RESULTS.GRANTED || permissions.notification === RESULTS.LIMITED,
+		[permissions.notification],
+	)
+	const accountMuted = useMemo(() => (account.mutedUntil || 0) > Date.now(), [account.mutedUntil])
 
-	if (notificationPermStatus === RESULTS.UNAVAILABLE) {
+	if (!pushAvailable || permissions.notification === RESULTS.UNAVAILABLE) {
 		return (
 			<ButtonSetting
 				icon='bell-outline'
@@ -78,61 +59,23 @@ const EnableNotificationsButton: React.FC<{
 				name={t('chat.push-notifications.title')}
 				alone={true}
 				toggled={true}
-				varToggle={
-					pushEnabledDevice &&
-					(conv?.mutedUntil ? conv?.mutedUntil : 0) < Date.now() &&
-					(notificationPermStatus === RESULTS.GRANTED || notificationPermStatus === RESULTS.LIMITED)
-				}
+				varToggle={pushTokenShared && conversationNotMuted && pushPermissionGranted}
 				actionToggle={async () => {
-					try {
-						if (!client || !protocolClient || !conv) {
-							return
-						}
-
-						if (
-							pushEnabledDevice &&
-							(conv.mutedUntil ? conv.mutedUntil : 0) < Date.now() &&
-							(notificationPermStatus === RESULTS.GRANTED ||
-								notificationPermStatus === RESULTS.LIMITED)
-						) {
-							await client.conversationMute({
-								groupPk: conversationPk,
-								muteForever: true,
-							})
-						} else {
-							await enablePushPermission(client, protocolClient!, navigate)
-
-							// Share push token
-							await client!.pushShareTokenForConversation({ conversationPk: conversationPk })
-							await client.conversationMute({
-								groupPk: conversationPk,
-								unmute: true,
-							})
-
-							refreshNotificationPermStatus()
-							refreshSharedPushTokens()
-						}
-					} catch (e) {
-						if ((e as GRPCError).Code === beapi.errcode.ErrCode.ErrPushUnknownDestination) {
-							Alert.alert('', t('chat.push-notifications.errors.no-token'))
-							throw new Error()
-						} else if ((e as GRPCError).Code === beapi.errcode.ErrCode.ErrPushUnknownDestination) {
-							Alert.alert('', t('chat.push-notifications.errors.no-server'))
-							throw new Error()
-						} else {
-							console.warn(e)
-						}
-					}
+					await conversationPushToggleState({
+						t,
+						messengerClient: client,
+						protocolClient,
+						conversation: conv,
+						navigate,
+					})
 				}}
 			/>
-			{pushEnabledDevice &&
-				(notificationPermStatus === RESULTS.BLOCKED ||
-					notificationPermStatus === RESULTS.DENIED) && (
-					<UnifiedText style={[padding.left.small, padding.right.small, padding.top.small]}>
-						{t('chat.push-notifications.check-device-settings')}
-					</UnifiedText>
-				)}
-			{pushEnabledDevice && (account.mutedUntil || 0) > Date.now() && (
+			{pushTokenShared && !pushPermissionGranted && (
+				<UnifiedText style={[padding.left.small, padding.right.small, padding.top.small]}>
+					{t('chat.push-notifications.check-device-settings')}
+				</UnifiedText>
+			)}
+			{pushTokenShared && accountMuted && (
 				<UnifiedText style={[padding.left.small, padding.right.small, padding.top.small]}>
 					{t('chat.push-notifications.check-account-settings')}
 				</UnifiedText>

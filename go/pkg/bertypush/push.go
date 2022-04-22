@@ -56,6 +56,12 @@ func (m *messengerPushReceiver) PushReceive(ctx context.Context, input []byte) (
 		conversationMuted = true
 	}
 
+	hidePreview := true
+	account, err := m.db.GetAccount()
+	if err == nil && !account.HidePushPreviews {
+		hidePreview = false
+	}
+
 	return &messengertypes.PushReceive_Reply{
 		Data: &messengertypes.PushReceivedData{
 			ProtocolData:      clear,
@@ -63,6 +69,7 @@ func (m *messengerPushReceiver) PushReceive(ctx context.Context, input []byte) (
 			AlreadyReceived:   clear.AlreadyReceived || !isNew,
 			ConversationMuted: conversationMuted,
 			AccountMuted:      accountMuted,
+			HidePreview:       hidePreview,
 		},
 	}, nil
 }

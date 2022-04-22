@@ -38,14 +38,14 @@ export const Section: React.FC<{}> = ({ children }) => {
 
 export const ButtonSettingV2: React.FC<{
 	text: string
-	icon?: string
-	arrowIcon?: string
+	icon?: string | React.ReactNode
 	onPress?: (...args: any) => void
 	toggle?: {
 		enable: boolean
 		value?: boolean
 		action?: () => Promise<void>
 	}
+	oppositeNode?: string | React.ReactNode
 	color?: string
 	pack?: string
 	disabled?: boolean
@@ -53,10 +53,10 @@ export const ButtonSettingV2: React.FC<{
 }> = ({
 	text,
 	icon,
-	arrowIcon = 'arrow-ios-forward',
 	onPress,
 	color,
 	toggle,
+	oppositeNode = 'arrow-ios-forward',
 	pack,
 	disabled = false,
 	last = false,
@@ -70,6 +70,42 @@ export const ButtonSettingV2: React.FC<{
 	}
 	const heightButton = 55
 	const disabledOpacity = 0.3
+
+	if (toggle?.enable) {
+		oppositeNode = (
+			<Toggle
+				style={padding.right.scale(5)}
+				status='primary'
+				checked={toggle?.value}
+				onChange={async () => {
+					if (toggle && toggle?.action) {
+						await toggle?.action()
+					}
+				}}
+			/>
+		)
+	} else if (!React.isValidElement(oppositeNode) && oppositeNode) {
+		oppositeNode = (
+			<Icon
+				name={oppositeNode as string}
+				width={20 * scaleSize}
+				height={20 * scaleSize}
+				fill={colors['main-text']}
+			/>
+		)
+	}
+
+	if (!React.isValidElement(icon) && icon) {
+		icon = (
+			<Icon
+				name={icon as string}
+				width={20 * scaleSize}
+				height={20 * scaleSize}
+				pack={pack}
+				fill={color}
+			/>
+		)
+	}
 
 	return (
 		<>
@@ -89,17 +125,7 @@ export const ButtonSettingV2: React.FC<{
 				]}
 			>
 				<View style={{ flexDirection: 'row', alignItems: 'center' }}>
-					{icon && (
-						<View style={[{ height: heightButton, flexDirection: 'row', alignItems: 'center' }]}>
-							<Icon
-								name={icon}
-								width={20 * scaleSize}
-								height={20 * scaleSize}
-								pack={pack}
-								fill={color}
-							/>
-						</View>
-					)}
+					{icon}
 					<View
 						style={[
 							margin.left.small,
@@ -109,26 +135,7 @@ export const ButtonSettingV2: React.FC<{
 						<UnifiedText>{text}</UnifiedText>
 					</View>
 				</View>
-
-				{toggle?.enable && !disabled ? (
-					<Toggle
-						style={padding.right.scale(5)}
-						status='primary'
-						checked={toggle?.value}
-						onChange={async () => {
-							if (toggle && toggle?.action) {
-								await toggle?.action()
-							}
-						}}
-					/>
-				) : (
-					<Icon
-						name={arrowIcon}
-						width={20 * scaleSize}
-						height={20 * scaleSize}
-						fill={colors['main-text']}
-					/>
-				)}
+				{oppositeNode}
 			</TouchableOpacity>
 			{!last && (
 				<View style={{ flex: 1, height: 1, backgroundColor: colors['secondary-background'] }} />

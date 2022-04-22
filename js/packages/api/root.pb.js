@@ -1101,6 +1101,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   conversationMuted: {
                     type: "bool",
                     id: 12
+                  },
+                  hidePreview: {
+                    type: "bool",
+                    id: 13
                   }
                 },
                 nested: {
@@ -1148,6 +1152,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   muted: {
                     type: "bool",
                     id: 6
+                  },
+                  hidePreview: {
+                    type: "bool",
+                    id: 7
                   }
                 }
               }
@@ -3164,6 +3172,11 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                         options: {
                           "(gogoproto.customname)": "AuthURL"
                         }
+                      },
+                      services: {
+                        rule: "repeated",
+                        type: "string",
+                        id: 3
                       }
                     }
                   },
@@ -4542,9 +4555,9 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     requestType: "AccountUpdate.Request",
                     responseType: "AccountUpdate.Reply"
                   },
-                  AccountMute: {
-                    requestType: "AccountMute.Request",
-                    responseType: "AccountMute.Reply"
+                  AccountPushConfigure: {
+                    requestType: "AccountPushConfigure.Request",
+                    responseType: "AccountPushConfigure.Reply"
                   },
                   ContactRequest: {
                     requestType: "ContactRequest.Request",
@@ -5473,6 +5486,14 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   mutedUntil: {
                     type: "int64",
                     id: 11
+                  },
+                  hideInAppNotifications: {
+                    type: "bool",
+                    id: 12
+                  },
+                  hidePushPreviews: {
+                    type: "bool",
+                    id: 13
                   }
                 }
               },
@@ -6357,7 +6378,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   }
                 }
               },
-              AccountMute: {
+              AccountPushConfigure: {
                 fields: {},
                 nested: {
                   Request: {
@@ -6373,6 +6394,22 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       muteForever: {
                         type: "bool",
                         id: 3
+                      },
+                      hideInAppNotifications: {
+                        type: "bool",
+                        id: 4
+                      },
+                      hidePushPreviews: {
+                        type: "bool",
+                        id: 5
+                      },
+                      showInAppNotifications: {
+                        type: "bool",
+                        id: 6
+                      },
+                      showPushPreviews: {
+                        type: "bool",
+                        id: 7
                       }
                     }
                   },
@@ -6931,6 +6968,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   conversationMuted: {
                     type: "bool",
                     id: 5
+                  },
+                  hidePreview: {
+                    type: "bool",
+                    id: 6
                   }
                 }
               },

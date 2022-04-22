@@ -20,7 +20,7 @@ import { CreateAccountBox } from './components/CreateAccountBox'
 import OnboardingWrapper from '@berty/components/onboarding/OnboardingWrapper'
 import rnutil from '@berty/rnutil'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
-import { PermissionType } from '@berty/rnutil/checkPermissions'
+import { PermissionType } from '@berty/rnutil/permissions'
 
 const CreateAccountBody = () => {
 	const { padding, margin, border, text } = useStyles()

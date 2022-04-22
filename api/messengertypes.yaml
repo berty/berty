@@ -51,8 +51,8 @@ http:
  - selector: berty.messenger.v1.MessengerService.AccountUpdate
    post: /berty.messenger.v1/MessengerService/AccountUpdate
    body: "*"
- - selector: berty.messenger.v1.MessengerService.AccountMute
-   post: /berty.messenger.v1/MessengerService/AccountMute
+ - selector: berty.messenger.v1.MessengerService.AccountPushConfigure
+   post: /berty.messenger.v1/MessengerService/AccountPushConfigure
    body: "*"
  - selector: berty.messenger.v1.MessengerService.ContactRequest
    post: /berty.messenger.v1/MessengerService/ContactRequest

@@ -124,6 +124,7 @@ message DecryptedPush {
   bool already_received = 10;
   bool account_muted = 11;
   bool conversation_muted = 12;
+  bool hide_preview = 13;
 }
 
 message FormatedPush {
@@ -133,4 +134,5 @@ message FormatedPush {
   string body = 4;
   string deep_link = 5;
   bool muted = 6;
+  bool hide_preview = 7;
 }

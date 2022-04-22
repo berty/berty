@@ -1843,8 +1843,8 @@ func (d *DBWrapper) MuteConversation(pk string, until int64) error {
 	return d.db.Model(&messengertypes.Conversation{}).Where(&messengertypes.Conversation{PublicKey: pk}).Update("muted_until", until).Error
 }
 
-func (d *DBWrapper) MuteAccount(until int64) error {
-	return d.db.Model(&messengertypes.Account{}).Where("1 = 1").Update("muted_until", until).Error
+func (d *DBWrapper) UpdateAccountFields(fields map[string]interface{}) error {
+	return d.db.Model(&messengertypes.Account{}).Where("1 = 1").Updates(fields).Error
 }
 
 func (d *DBWrapper) GetMuteStatusForConversation(key string) (accountMuted bool, conversationMuted bool, err error) {
