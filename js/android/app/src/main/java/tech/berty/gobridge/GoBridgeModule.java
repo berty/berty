@@ -41,8 +41,12 @@ public class GoBridgeModule extends ReactContextBaseJavaModule {
   public GoBridgeModule(ReactApplicationContext reactContext) {
     super(reactContext);
     this.reactContext = reactContext;
-    this.keystoreDriver = new KeystoreDriver(reactContext);
-    rootDir = new File(new RootDirModule(reactContext).getRootDir());
+      try {
+          this.keystoreDriver = new KeystoreDriver(reactContext);
+      } catch (Exception e) {
+          e.printStackTrace();
+      }
+      rootDir = new File(new RootDirModule(reactContext).getRootDir());
     tempDir = new File(reactContext.getCacheDir().getAbsolutePath() + "/berty");
   }
 
@@ -107,6 +111,10 @@ public class GoBridgeModule extends ReactContextBaseJavaModule {
       if (bridgeMessenger != null) {
         promise.resolve(false);
         return;
+      }
+
+      if (this.keystoreDriver == null) {
+          throw new Exception("keystoreDriver is not instantiated");
       }
 
       final Config config = Bertybridge.newConfig();
