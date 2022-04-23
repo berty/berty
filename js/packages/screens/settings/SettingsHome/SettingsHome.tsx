@@ -26,7 +26,7 @@ import {
 } from '@berty/redux/reducers/networkConfig.reducer'
 
 import { useModal } from '@berty/components/providers/modal.provider'
-import { EditProfile } from '@berty/components/modals'
+import { EditProfile } from './components/EditProfile'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { AccountAvatar } from '@berty/components/avatars'
 import { ButtonSettingV2, Section } from '@berty/components/shared-components'

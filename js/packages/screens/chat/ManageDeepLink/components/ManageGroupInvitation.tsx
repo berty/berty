@@ -11,11 +11,11 @@ import { dispatch as navDispatch } from '@berty/navigation/rootRef'
 import { useThemeColor } from '@berty/store'
 import { useAppDispatch, useConversation } from '@berty/hooks'
 
-import { TabBar } from '../shared-components/TabBar'
-import { FingerprintContent } from '../shared-components/FingerprintContent'
+import { TabBar } from '@berty/components/shared-components/TabBar'
+import { FingerprintContent } from '@berty/components/shared-components/FingerprintContent'
 import InvalidScan from './InvalidScan'
-import { MultiMemberAvatar } from '../avatars'
-import { UnifiedText } from '../shared-components/UnifiedText'
+import { MultiMemberAvatar } from '@berty/components/avatars'
+import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 
 const useStylesModal = () => {
 	const { width, border, height, opacity } = useStyles()

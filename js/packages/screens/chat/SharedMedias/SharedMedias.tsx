@@ -296,7 +296,7 @@ export const SharedMedias: ScreenFC<'Chat.SharedMedias'> = ({
 						<Hyperlink
 							onPress={async url => {
 								if (client && (await isBertyDeepLink(client, url))) {
-									navigate('Modals.ManageDeepLink', { type: 'link', value: url })
+									navigate('Chat.ManageDeepLink', { type: 'link', value: url })
 									return
 								}
 								Linking.canOpenURL(url).then(supported => supported && Linking.openURL(url))

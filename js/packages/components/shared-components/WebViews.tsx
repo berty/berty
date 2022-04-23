@@ -19,7 +19,7 @@ import { WebView } from 'react-native-webview'
 import { UnifiedText } from './UnifiedText'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 
-export const useStylesModalWebView = () => {
+const useStylesModalWebView = () => {
 	const { width, border, padding, margin } = useStyles()
 	const colors = useThemeColor()
 
@@ -49,7 +49,7 @@ export const useStylesModalWebView = () => {
 	}
 }
 
-export const ModalWebviewBody: React.FC<{
+const ModalWebviewBody: React.FC<{
 	closeModal: () => void
 	accept: () => void
 }> = ({ closeModal, accept }) => {

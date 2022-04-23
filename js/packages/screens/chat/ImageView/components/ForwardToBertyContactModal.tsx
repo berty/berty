@@ -8,8 +8,8 @@ import beapi from '@berty/api'
 import { useThemeColor, useMessengerClient, Maybe, prepareMediaBytes } from '@berty/store'
 import { useAllConversations, useOneToOneContact, usePlaySound } from '@berty/hooks'
 
-import { ConversationAvatar } from '../avatars'
-import { UnifiedText } from '../shared-components/UnifiedText'
+import { ConversationAvatar } from '../../../../components/avatars'
+import { UnifiedText } from '../../../../components/shared-components/UnifiedText'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 
 const Item: React.FC<{ conversation: beapi.messenger.IConversation; image: any }> = React.memo(

@@ -12,11 +12,11 @@ import { dispatch as navDispatch } from '@berty/navigation/rootRef'
 import { useNavigation } from '@berty/navigation'
 import { useAppDispatch, useContactConversation } from '@berty/hooks'
 
-import { ContactAvatar } from '../avatars'
-import { TabBar } from '../shared-components/TabBar'
-import { FingerprintContent } from '../shared-components/FingerprintContent'
+import { ContactAvatar } from '@berty/components/avatars'
+import { TabBar } from '@berty/components/shared-components/TabBar'
+import { FingerprintContent } from '@berty/components/shared-components/FingerprintContent'
 import InvalidScan from './InvalidScan'
-import { UnifiedText } from '../shared-components/UnifiedText'
+import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 
 const useStylesModal = () => {
 	const { width, border, height, opacity } = useStyles()

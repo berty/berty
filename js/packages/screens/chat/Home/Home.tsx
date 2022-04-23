@@ -264,7 +264,7 @@ export const Home: ScreenFC<'Chat.Home'> = ({ navigation: { navigate } }) => {
 										text='Open Berty Link'
 										icon='external-link-outline'
 										onPress={() =>
-											navigate('Modals.ManageDeepLink', { type: 'link', value: searchText })
+											navigate('Chat.ManageDeepLink', { type: 'link', value: searchText })
 										}
 									/>
 								</View>

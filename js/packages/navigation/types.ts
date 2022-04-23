@@ -83,7 +83,7 @@ export type ScreensParams = {
 
 	// Modals
 
-	'Modals.ManageDeepLink': {
+	'Chat.ManageDeepLink': {
 		type: 'qr' | 'link'
 		value: string
 	}
@@ -91,7 +91,6 @@ export type ScreensParams = {
 		images: (beapi.messenger.IMedia & { uri?: string })[]
 		previewOnly?: boolean
 	}
-	'Modals.EditProfile': undefined
 }
 
 type ScreenProps<T extends keyof ScreensParams> = StackScreenProps<ScreensParams, T>

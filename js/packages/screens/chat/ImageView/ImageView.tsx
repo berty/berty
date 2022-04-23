@@ -10,8 +10,8 @@ import { useStyles } from '@berty/contexts/styles'
 import { useThemeColor } from '@berty/store'
 import { ScreenFC, useNavigation } from '@berty/navigation'
 
-import { ForwardToBertyContactModal } from './ForwardToBertyContactModal'
-import { UnifiedText } from '../shared-components/UnifiedText'
+import { ForwardToBertyContactModal } from './components/ForwardToBertyContactModal'
+import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 
 export const ImageView: ScreenFC<'Modals.ImageView'> = ({
 	route: {

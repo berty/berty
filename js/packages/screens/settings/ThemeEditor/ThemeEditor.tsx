@@ -13,7 +13,7 @@ import { withInAppNotification } from 'react-native-in-app-notification'
 
 import { ButtonSetting } from '@berty/components/shared-components'
 import { DropDownPicker } from '@berty/components/shared-components/DropDownPicker'
-import { ThemeColorName } from '@berty/components/modals/ThemeColorName'
+import { ThemeColorName } from './components/ThemeColorName'
 import { useDispatch, useSelector } from 'react-redux'
 import {
 	deleteAddedThemes,

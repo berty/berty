@@ -12,12 +12,12 @@ import messengerMethodsHooks from '@berty/store/methods'
 import { useConversationsDict } from '@berty/hooks'
 import { BlurView } from '@react-native-community/blur'
 
-import { ManageGroupInvitation } from './ManageGroupInvitation'
-import AddThisContact from './AddThisContact'
-import { base64ToURLBase64 } from '../utils'
-import InvalidScan from './InvalidScan'
+import { ManageGroupInvitation } from './components/ManageGroupInvitation'
+import AddThisContact from './components/AddThisContact'
+import { base64ToURLBase64 } from '@berty/components/utils'
+import InvalidScan from './components/InvalidScan'
 
-export const ManageDeepLink: ScreenFC<'Modals.ManageDeepLink'> = ({ route: { params } }) => {
+export const ManageDeepLink: ScreenFC<'Chat.ManageDeepLink'> = ({ route: { params } }) => {
 	const colors = useThemeColor()
 	const { border } = useStyles()
 	const { reply: pdlReply, error, call, done, called } = messengerMethodsHooks.useParseDeepLink()

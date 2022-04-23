@@ -10,7 +10,7 @@ import { saveTheme } from '@berty/redux/reducers/theme.reducer'
 import { BlurView } from '@react-native-community/blur'
 
 import Avatar from '@berty/assets/logo/buck_berty_icon_card.svg'
-import { UnifiedText } from '../shared-components/UnifiedText'
+import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStylesDefaultModal } from '@berty/hooks'
 

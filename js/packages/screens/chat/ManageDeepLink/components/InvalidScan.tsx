@@ -7,7 +7,7 @@ import { useStyles } from '@berty/contexts/styles'
 import beapi from '@berty/api'
 import { useThemeColor } from '@berty/store'
 import { useNavigation } from '@berty/navigation'
-import { UnifiedText } from '../shared-components/UnifiedText'
+import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 
 //
 // Scan Invalid

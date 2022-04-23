@@ -58,7 +58,7 @@ const Button: React.FC<ValueType> = ({ kind: rawKind, name, link }) => {
 			actionIcon={null}
 			state={state}
 			onPress={() => {
-				navigation.navigate('Modals.ManageDeepLink', { type: 'link', value: link })
+				navigation.navigate('Chat.ManageDeepLink', { type: 'link', value: link })
 			}}
 		/>
 	)

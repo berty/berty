@@ -124,7 +124,7 @@ const DeepLinkBridge: React.FC = React.memo(() => {
 	useEffect(() => {
 		if (!handledLink && url && !error && !(url as string).startsWith('berty://services-auth')) {
 			dispatch(setHandledLink(true))
-			navigation.navigate('Modals.ManageDeepLink', { type: 'link', value: url })
+			navigation.navigate('Chat.ManageDeepLink', { type: 'link', value: url })
 		}
 	}, [dispatch, handledLink, error, navigation, url])
 
@@ -694,10 +694,9 @@ export const Navigation: React.FC = React.memo(() => {
 					presentation: 'formSheet',
 				})}
 			/>
-			{/* Modals */}
 			<NavigationStack.Screen
-				name={'Modals.ManageDeepLink'}
-				component={Components.Modals.ManageDeepLink}
+				name={'Chat.ManageDeepLink'}
+				component={Components.Chat.ManageDeepLink}
 				options={{
 					presentation: 'containedTransparentModal',
 					animation: 'fade',
@@ -706,7 +705,7 @@ export const Navigation: React.FC = React.memo(() => {
 			/>
 			<NavigationStack.Screen
 				name={'Modals.ImageView'}
-				component={Components.Modals.ImageView}
+				component={Components.Chat.ImageView}
 				options={{
 					presentation: 'containedTransparentModal',
 					headerShown: false,

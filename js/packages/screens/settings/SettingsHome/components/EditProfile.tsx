@@ -15,11 +15,11 @@ import { useMessengerClient, useThemeColor } from '@berty/store'
 import { useAccount, useUpdateAccount } from '@berty/hooks'
 import ImagePicker, { ImageOrVideo } from 'react-native-image-crop-picker'
 
-import { AccountAvatar } from '../avatars'
+import { AccountAvatar } from '@berty/components/avatars'
 import { useSelector } from 'react-redux'
 import { selectSelectedAccount } from '@berty/redux/reducers/ui.reducer'
-import { useModal } from '../providers/modal.provider'
-import { UnifiedText } from '../shared-components/UnifiedText'
+import { useModal } from '@berty/components/providers/modal.provider'
+import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 
 //
 // Edit Profile
