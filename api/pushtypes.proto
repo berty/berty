@@ -135,4 +135,5 @@ message FormatedPush {
   string deep_link = 5;
   bool muted = 6;
   bool hide_preview = 7;
+  string conversation_identifier = 8;
 }

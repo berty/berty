@@ -86,6 +86,9 @@ public class NotificationService extends FirebaseMessagingService {
             .setContentTitle(fpush.getTitle())
             .setContentText(fpush.getBody())
             .setSmallIcon(android.R.drawable.stat_notify_chat)
+            .setCategory(Notification.CATEGORY_MESSAGE)
+            .setGroup(fpush.getConversationIdentifier())
+            .setVibrate(new long[]{125L, 75L, 125L})
             .setAutoCancel(true)
             .setContentIntent(pendingIntent);
 
@@ -95,7 +98,7 @@ public class NotificationService extends FirebaseMessagingService {
         }
 
         // Send notification
-        notificationHelper.getManager().notify(1001, builder.build());
+        notificationHelper.getManager().notify((Long.valueOf(System.currentTimeMillis() % Integer.MAX_VALUE)).intValue(), builder.build());
     }
 
     private void createReactNativeEvent(String push) {

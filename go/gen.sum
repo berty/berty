@@ -7,5 +7,5 @@ c314cc3d08e8849bd0693039e42da117c39efef5  ../api/go-internal/handshake.proto
 851d354abf878a3afd1e1759511b7b3ce297330f  ../api/go-internal/testutil.proto
 5435e65abd5e30f98a2f92f7d848530c55a69b38  ../api/messengertypes.proto
 eb3c2c764fcc11add81dae1d81beb68dfa17e812  ../api/protocoltypes.proto
-18c126ad5ea29c7241aefb935f97f617f1063f33  ../api/pushtypes.proto
+429ad083ef1963a77adc439239118d0db65c9d37  ../api/pushtypes.proto
 c4e7c980edd0b529f6720303dbefe410f5ede88d  Makefile

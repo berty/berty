@@ -24,8 +24,9 @@ func (p formatedPayload) get(key string, value *string) error {
 
 func FormatDecryptedPush(decrypted *pushtypes.DecryptedPush, printer *message.Printer) *pushtypes.FormatedPush {
 	fmtpush := &pushtypes.FormatedPush{
-		PushType: decrypted.PushType,
-		DeepLink: decrypted.DeepLink,
+		PushType:               decrypted.PushType,
+		DeepLink:               decrypted.DeepLink,
+		ConversationIdentifier: decrypted.ConversationPublicKey,
 	}
 
 	var payload formatedPayload = make(map[string]string)
@@ -42,6 +43,7 @@ func FormatDecryptedPush(decrypted *pushtypes.DecryptedPush, printer *message.Pr
 		fmtpush.Title = printer.Sprintf("push.message.title")
 		fmtpush.Subtitle = ""
 		fmtpush.Body = ""
+		fmtpush.ConversationIdentifier = ""
 
 	case decrypted.PushType == pushtypes.DecryptedPush_Message:
 		var msg string
