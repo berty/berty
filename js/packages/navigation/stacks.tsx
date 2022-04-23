@@ -446,7 +446,7 @@ export const Navigation: React.FC = React.memo(() => {
 			{/* Settings */}
 			<NavigationStack.Screen
 				name={'Settings.Home'}
-				component={Components.Settings.Home}
+				component={Components.Settings.SettingsHome}
 				options={{
 					headerStyle: {
 						backgroundColor: colors['secondary-background'],
