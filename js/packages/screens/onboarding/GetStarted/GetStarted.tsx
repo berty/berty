@@ -12,9 +12,9 @@ import { useStyles } from '@berty/contexts/styles'
 import { ScreenFC } from '@berty/navigation'
 
 import Logo from '@berty/assets/logo/berty_gradient_square.svg'
-import Button from './Button'
-import { importAccountFromDocumentPicker } from '../pickerUtils'
-import { UnifiedText } from '../shared-components/UnifiedText'
+import Button from '@berty/components/onboarding/Button'
+import { importAccountFromDocumentPicker } from '@berty/components/pickerUtils'
+import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useAppSelector } from '@berty/hooks'
 import { selectEmbedded } from '@berty/redux/reducers/ui.reducer'
 

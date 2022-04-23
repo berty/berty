@@ -8,7 +8,7 @@ import { useStyles } from '@berty/contexts/styles'
 import { useNavigation } from '@berty/navigation'
 import { useAccount } from '@berty/hooks'
 
-import SwiperCard from './SwiperCard'
+import SwiperCard from '@berty/components/onboarding/SwiperCard'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 
 export const CreateAccountBox: React.FC<{

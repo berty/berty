@@ -5,7 +5,7 @@ import { Layout } from '@ui-kitten/components'
 import { useThemeColor } from '@berty/store'
 import { ScreenFC } from '@berty/navigation'
 
-import { WebViews as SharedWebViews } from '../shared-components'
+import { WebViews as SharedWebViews } from '@berty/components/shared-components'
 
 export const WebViews: ScreenFC<'Onboarding.WebViews'> = ({ route: { params } }) => {
 	const { url } = params

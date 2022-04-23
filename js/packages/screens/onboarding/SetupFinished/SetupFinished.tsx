@@ -10,8 +10,8 @@ import LottieView from 'lottie-react-native'
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ActivityIndicator as Spinner, StatusBar, Vibration, View } from 'react-native'
-import OnboardingWrapper from './OnboardingWrapper'
-import SwiperCard from './SwiperCard'
+import OnboardingWrapper from '@berty/components/onboarding/OnboardingWrapper'
+import SwiperCard from '@berty/components/onboarding/SwiperCard'
 
 const SetupFinishedBody = () => {
 	const { t }: any = useTranslation()

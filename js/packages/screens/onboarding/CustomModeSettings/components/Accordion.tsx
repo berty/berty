@@ -14,7 +14,7 @@ import { Divider, Icon } from '@ui-kitten/components'
 
 import { useThemeColor } from '@berty/store'
 import { useStyles } from '@berty/contexts/styles'
-import { ButtonSetting } from '../shared-components'
+import { ButtonSetting } from '@berty/components/shared-components'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 
 const heightButton = 55

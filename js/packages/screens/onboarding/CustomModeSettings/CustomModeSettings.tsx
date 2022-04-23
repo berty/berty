@@ -37,19 +37,24 @@ import {
 	toggleFromStaticRelay,
 } from '@berty/redux/reducers/networkConfig.reducer'
 
-import { ButtonSetting } from '../shared-components'
-import { Toggle } from '../shared-components/Toggle'
+import { ButtonSetting } from '@berty/components/shared-components'
+import { Toggle } from '@berty/components/shared-components/Toggle'
 import {
 	checkBlePermission,
 	getPermissionStatus,
 	PermissionType,
 } from '@berty/rnutil/checkPermissions'
-import { Accordion, AccordionAddItem, AccordionItem, AccordionRef } from './Accordion'
-import { AccordionEdit } from '../modals/AccordionEdit.modal'
-import { AccordionAdd } from '../modals/AccordionAdd.modal'
-import { useModal } from '../providers/modal.provider'
+import {
+	Accordion,
+	AccordionAddItem,
+	AccordionItem,
+	AccordionRef,
+} from '@berty/screens/onboarding/CustomModeSettings/components/Accordion'
+import { AccordionEdit } from '@berty/components/modals/AccordionEdit.modal'
+import { AccordionAdd } from '@berty/components/modals/AccordionAdd.modal'
+import { useModal } from '@berty/components/providers/modal.provider'
 import { useDispatch } from 'react-redux'
-import { UnifiedText } from '../shared-components/UnifiedText'
+import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { RESULTS } from 'react-native-permissions'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 

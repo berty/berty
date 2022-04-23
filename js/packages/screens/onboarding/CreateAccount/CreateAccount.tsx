@@ -16,10 +16,10 @@ import {
 import { useStyles } from '@berty/contexts/styles'
 import { IOSOnlyKeyboardAvoidingView } from '@berty/rnutil/keyboardAvoiding'
 
-import { CreateAccountBox } from './CreateAccountBox'
-import OnboardingWrapper from './OnboardingWrapper'
+import { CreateAccountBox } from './components/CreateAccountBox'
+import OnboardingWrapper from '@berty/components/onboarding/OnboardingWrapper'
 import rnutil from '@berty/rnutil'
-import { UnifiedText } from '../shared-components/UnifiedText'
+import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { PermissionType } from '@berty/rnutil/checkPermissions'
 
 const CreateAccountBody = () => {
