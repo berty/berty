@@ -121,15 +121,15 @@
 			},
 			"multi-account": {
 				"create-button": "",
-				"import-button": ""
+				"import-button": "Заредете съществуващ акаунт"
 			},
 			"create-group": {
-				"title": "",
-				"add-members": "",
-				"group-info": "",
+				"title": "Създай Група",
+				"add-members": "Добави участник",
+				"group-info": "Информация за групата",
 				"search-placeholder": "Търсене",
-				"continue": "",
-				"create-group": ""
+				"continue": "Продължи",
+				"create-group": "Създай нова група"
 			},
 			"create-group-finalize": {
 				"placeholder": "",
