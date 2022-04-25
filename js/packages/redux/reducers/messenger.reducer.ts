@@ -1,7 +1,8 @@
 import { createEntityAdapter, createSlice, EntityState } from '@reduxjs/toolkit'
 
 import beapi from '@berty/api'
-import { ParsedInteraction, parseInteraction, pbDateToNum } from '@berty/store'
+import { parseInteraction, pbDateToNum } from '@berty/store/convert'
+import { ParsedInteraction } from '@berty/store/types.gen'
 
 import { messengerActions } from '../messengerActions.gen'
 
