@@ -17,13 +17,15 @@ import bertybridge.NativeKeystoreDriver;
 public class KeystoreDriver implements NativeKeystoreDriver {
     private final Context ctx;
     private static final int encodingFlags = Base64.URL_SAFE & Base64.NO_WRAP & Base64.NO_PADDING;
+    private final SharedPreferences sharedPreferences;
 
-    public KeystoreDriver(Context ctx) {
+    public KeystoreDriver(Context ctx) throws Exception {
         this.ctx = ctx;
+        this.sharedPreferences = getSecureSharedPreferences();
     }
 
     public byte[] get(String key) throws Exception {
-        String value = getSecureSharedPreferences().getString(key, null);
+        String value = this.sharedPreferences.getString(key, null);
         if (value == null) {
           throw new FileNotFoundException(key + " has not been set");
         }
@@ -32,7 +34,7 @@ public class KeystoreDriver implements NativeKeystoreDriver {
 
 	public void put(String key, byte[] data) throws Exception {
         String b64Data = Base64.encodeToString(data, encodingFlags);
-        getSecureSharedPreferences().edit().putString(key, b64Data).commit();
+        this.sharedPreferences.edit().putString(key, b64Data).apply();
     }
 
     private SharedPreferences getSecureSharedPreferences() throws GeneralSecurityException, IOException {
