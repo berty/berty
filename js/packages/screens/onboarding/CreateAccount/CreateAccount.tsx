@@ -41,13 +41,13 @@ const CreateAccountBody = () => {
 		<View style={[{ flex: 1 }]}>
 			<View>
 				<LottieView
-					source={require('./Berty_onboard_animation_assets2/Startup animation assets/Berty BG.json')}
+					source={require('@berty/assets/lottie/Berty_onboard_animation_assets2/Startup animation assets/Berty BG.json')}
 					autoPlay
 					loop
 					style={{ width: '100%', position: 'absolute' }}
 				/>
 				<LottieView
-					source={require('./Berty_onboard_animation_assets2/Startup animation assets/Shield appear.json')}
+					source={require('@berty/assets/lottie/Berty_onboard_animation_assets2/Startup animation assets/Shield appear.json')}
 					autoPlay
 					loop={false}
 					onAnimationFinish={async () => {

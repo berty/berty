@@ -45,7 +45,7 @@ const SetupFinishedBody = () => {
 			)}
 			<View style={{ flex: 4 }}>
 				<LottieView
-					source={require('./Berty_onboard_animation_assets2/Startup animation assets/Berty BG.json')}
+					source={require('@berty/assets/lottie/Berty_onboard_animation_assets2/Startup animation assets/Berty BG.json')}
 					autoPlay
 					loop
 					style={{ width: '100%' }}
@@ -55,12 +55,12 @@ const SetupFinishedBody = () => {
 					(!isGenerated ? (
 						<>
 							<LottieView
-								source={require('./Berty_onboard_animation_assets2/Startup animation assets/Circle spin.json')}
+								source={require('@berty/assets/lottie/Berty_onboard_animation_assets2/Startup animation assets/Circle spin.json')}
 								autoPlay
 								loop={false}
 							/>
 							<LottieView
-								source={require('./Berty_onboard_animation_assets2/Startup animation assets/Code Generated.json')}
+								source={require('@berty/assets/lottie/Berty_onboard_animation_assets2/Startup animation assets/Code Generated.json')}
 								autoPlay
 								loop={false}
 								onAnimationFinish={() => {
@@ -70,7 +70,7 @@ const SetupFinishedBody = () => {
 						</>
 					) : (
 						<LottieView
-							source={require('./Berty_onboard_animation_assets2/Startup animation assets/Finish appear.json')}
+							source={require('@berty/assets/lottie/Berty_onboard_animation_assets2/Startup animation assets/Finish appear.json')}
 							autoPlay
 							loop={false}
 						/>
@@ -112,14 +112,14 @@ const SetupFinishedBody = () => {
 		<>
 			<View style={{ flex: 4 }}>
 				<LottieView
-					source={require('./Berty_onboard_animation_assets2/Startup animation assets/Berty BG.json')}
+					source={require('@berty/assets/lottie/Berty_onboard_animation_assets2/Startup animation assets/Berty BG.json')}
 					autoPlay
 					loop
 					style={{ width: '100%' }}
 				/>
 				{isGeneration === 1 && (
 					<LottieView
-						source={require('./Berty_onboard_animation_assets2/Startup animation assets/Code generation row 1.json')}
+						source={require('@berty/assets/lottie/Berty_onboard_animation_assets2/Startup animation assets/Code generation row 1.json')}
 						autoPlay
 						loop={false}
 						speed={2}
@@ -130,7 +130,7 @@ const SetupFinishedBody = () => {
 				)}
 				{isGeneration === 2 && (
 					<LottieView
-						source={require('./Berty_onboard_animation_assets2/Startup animation assets/Code generation row 2.json')}
+						source={require('@berty/assets/lottie/Berty_onboard_animation_assets2/Startup animation assets/Code generation row 2.json')}
 						autoPlay
 						loop={false}
 						speed={2}
@@ -141,7 +141,7 @@ const SetupFinishedBody = () => {
 				)}
 				{isGeneration === 3 && (
 					<LottieView
-						source={require('./Berty_onboard_animation_assets2/Startup animation assets/Code generation row 3.json')}
+						source={require('@berty/assets/lottie/Berty_onboard_animation_assets2/Startup animation assets/Code generation row 3.json')}
 						autoPlay
 						loop={false}
 						speed={2}
@@ -152,7 +152,7 @@ const SetupFinishedBody = () => {
 				)}
 				{isGeneration === 4 && (
 					<LottieView
-						source={require('./Berty_onboard_animation_assets2/Startup animation assets/Code generation row 4.json')}
+						source={require('@berty/assets/lottie/Berty_onboard_animation_assets2/Startup animation assets/Code generation row 4.json')}
 						autoPlay
 						loop={false}
 						speed={2}
