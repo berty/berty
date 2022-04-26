@@ -10,7 +10,7 @@ import { Icon } from '@ui-kitten/components'
 import mapValues from 'lodash/mapValues'
 import { useSelector } from 'react-redux'
 
-import * as RawComponents from '@berty/components'
+import * as RawComponents from '@berty/screens'
 import { useThemeColor } from '@berty/store'
 import { useStyles } from '@berty/contexts/styles'
 import {
@@ -124,7 +124,7 @@ const DeepLinkBridge: React.FC = React.memo(() => {
 	useEffect(() => {
 		if (!handledLink && url && !error && !(url as string).startsWith('berty://services-auth')) {
 			dispatch(setHandledLink(true))
-			navigation.navigate('Modals.ManageDeepLink', { type: 'link', value: url })
+			navigation.navigate('Chat.ManageDeepLink', { type: 'link', value: url })
 		}
 	}, [dispatch, handledLink, error, navigation, url])
 
@@ -162,7 +162,7 @@ export const Navigation: React.FC = React.memo(() => {
 			case MESSENGER_APP_STATE.READY:
 				dispatch(
 					CommonActions.reset({
-						routes: [{ name: 'Main.Home' }],
+						routes: [{ name: 'Chat.Home' }],
 					}),
 				)
 				return
@@ -188,7 +188,7 @@ export const Navigation: React.FC = React.memo(() => {
 	return (
 		<NavigationStack.Navigator
 			initialRouteName={
-				appState === MESSENGER_APP_STATE.GET_STARTED ? 'Onboarding.GetStarted' : 'Main.Home'
+				appState === MESSENGER_APP_STATE.GET_STARTED ? 'Onboarding.GetStarted' : 'Chat.Home'
 			}
 			screenOptions={{
 				headerLeft:
@@ -277,26 +277,26 @@ export const Navigation: React.FC = React.memo(() => {
 					headerTitle: () => <></>,
 				}}
 			/>
-			{/* Main */}
+			{/* Chat */}
 			<NavigationStack.Screen
-				name={'Main.Home'}
-				component={Components.Main.Home}
+				name={'Chat.Home'}
+				component={Components.Chat.Home}
 				options={{
 					headerShown: false,
 					title: t('main.home.title'),
 				}}
 			/>
 			<NavigationStack.Screen
-				name={'Main.ContactRequest'}
-				component={Components.Main.ContactRequest}
+				name={'Chat.ContactRequest'}
+				component={Components.Chat.ContactRequest}
 				options={{
 					headerShown: false,
 					title: t('main.home.requests.page-title'),
 				}}
 			/>
 			<NavigationStack.Screen
-				name={'Main.Permissions'}
-				component={Components.Main.Permissions}
+				name={'Chat.Permissions'}
+				component={Components.Chat.Permissions}
 				options={{
 					headerShown: false,
 					presentation: 'formSheet',
@@ -304,8 +304,8 @@ export const Navigation: React.FC = React.memo(() => {
 				}}
 			/>
 			<NavigationStack.Screen
-				name={'Main.BlePermission'}
-				component={Components.Main.BlePermission}
+				name={'Chat.BlePermission'}
+				component={Components.Chat.BlePermission}
 				options={{
 					headerShown: false,
 					presentation: 'formSheet',
@@ -313,18 +313,17 @@ export const Navigation: React.FC = React.memo(() => {
 				}}
 			/>
 			<NavigationStack.Screen
-				name={'Main.Share'}
-				component={Components.Main.ShareModal}
+				name={'Chat.Share'}
+				component={Components.Chat.ShareModal}
 				options={BackgroundHeaderScreenOptions({
 					title: t('main.home.title'),
 					headerTitle: () => <></>,
 					presentation: 'formSheet',
 				})}
 			/>
-			{/* CreateGroup */}
 			<NavigationStack.Screen
-				name={'Main.CreateGroupAddMembers'}
-				component={Components.Main.CreateGroupAddMembers}
+				name={'Chat.CreateGroupAddMembers'}
+				component={Components.Chat.CreateGroupAddMembers}
 				options={BackgroundHeaderScreenOptions({
 					title: t('main.home.create-group.title'),
 					headerRight: () => (
@@ -341,8 +340,8 @@ export const Navigation: React.FC = React.memo(() => {
 				})}
 			/>
 			<NavigationStack.Screen
-				name={'Main.CreateGroupFinalize'}
-				component={Components.Main.CreateGroupFinalize}
+				name={'Chat.CreateGroupFinalize'}
+				component={Components.Chat.CreateGroupFinalize}
 				options={BackgroundHeaderScreenOptions({
 					title: t('main.home.create-group.title'),
 					headerRight: () => (
@@ -358,7 +357,6 @@ export const Navigation: React.FC = React.memo(() => {
 					presentation: 'formSheet',
 				})}
 			/>
-			{/* Chat */}
 			<NavigationStack.Screen
 				name={'Chat.OneToOne'}
 				component={Components.Chat.OneToOne}
@@ -419,7 +417,7 @@ export const Navigation: React.FC = React.memo(() => {
 				})}
 			/>
 			<NavigationStack.Screen
-				name={'Group.MultiMemberSettingsAddMembers'}
+				name={'Chat.MultiMemberSettingsAddMembers'}
 				component={Components.Chat.MultiMemberSettingsAddMembers}
 				options={BackgroundHeaderScreenOptions({
 					title: t('chat.add-members.members'),
@@ -448,7 +446,7 @@ export const Navigation: React.FC = React.memo(() => {
 			{/* Settings */}
 			<NavigationStack.Screen
 				name={'Settings.Home'}
-				component={Components.Settings.Home}
+				component={Components.Settings.SettingsHome}
 				options={{
 					headerStyle: {
 						backgroundColor: colors['secondary-background'],
@@ -696,10 +694,9 @@ export const Navigation: React.FC = React.memo(() => {
 					presentation: 'formSheet',
 				})}
 			/>
-			{/* Modals */}
 			<NavigationStack.Screen
-				name={'Modals.ManageDeepLink'}
-				component={Components.Modals.ManageDeepLink}
+				name={'Chat.ManageDeepLink'}
+				component={Components.Chat.ManageDeepLink}
 				options={{
 					presentation: 'containedTransparentModal',
 					animation: 'fade',
@@ -708,7 +705,7 @@ export const Navigation: React.FC = React.memo(() => {
 			/>
 			<NavigationStack.Screen
 				name={'Modals.ImageView'}
-				component={Components.Modals.ImageView}
+				component={Components.Chat.ImageView}
 				options={{
 					presentation: 'containedTransparentModal',
 					headerShown: false,

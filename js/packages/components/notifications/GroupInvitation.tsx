@@ -21,7 +21,7 @@ const GroupInvitation: React.FC<any> = ({ onClose, title, message, ...props }) =
 			dispatch(
 				CommonActions.reset({
 					routes: [
-						{ name: 'Main.Home' },
+						{ name: 'Chat.Home' },
 						{
 							name: 'Chat.OneToOne',
 							params: {

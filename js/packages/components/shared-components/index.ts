@@ -1,6 +1,11 @@
-export * from './FingerprintContent'
-export * from './SettingsButtons'
-export * from './TabBar'
+export {
+	Section,
+	ButtonSettingV2,
+	ButtonSetting,
+	ButtonSettingRow,
+	ButtonDropDown,
+	FactionButtonSetting,
+} from './SettingsButtons'
 export * from './HintBody'
 export * from './ContactPicker'
-export * from './WebViews'
+export { WebViews } from './WebViews'

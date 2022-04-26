@@ -10,11 +10,7 @@ const packagesDir = path.join(scriptDir, "../../js/packages");
 const i18nDir = path.join(packagesDir, "i18n/locale");
 const i18nJSON = path.join(i18nDir, "en-US/messages.json");
 const assetsDir = path.join(packagesDir, "assets");
-const onboardAssetsDir = path.join(
-	packagesDir,
-	"components/onboarding/Berty_onboard_animation_assets2"
-);
-const dirsToIgnore = [i18nDir, assetsDir, onboardAssetsDir];
+const dirsToIgnore = [i18nDir, assetsDir];
 const filesToIgnore = [
 	".png",
 	".svg",

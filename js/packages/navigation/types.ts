@@ -19,14 +19,14 @@ export type ScreensParams = {
 
 	// Main
 
-	'Main.Home': undefined
-	'Main.ContactRequest': { contactId: string }
-	'Main.BlePermission': {
+	'Chat.Home': undefined
+	'Chat.ContactRequest': { contactId: string }
+	'Chat.BlePermission': {
 		accept: () => Promise<void>
 		deny: () => Promise<void>
 	}
-	'Main.Share': undefined
-	'Main.Permissions': {
+	'Chat.Share': undefined
+	'Chat.Permissions': {
 		permissionType: PermissionType
 		permissionStatus: PermissionStatus
 		navigateNext: keyof ScreensParams
@@ -35,8 +35,8 @@ export type ScreensParams = {
 
 	// Create group
 
-	'Main.CreateGroupAddMembers': undefined
-	'Main.CreateGroupFinalize': undefined
+	'Chat.CreateGroupAddMembers': undefined
+	'Chat.CreateGroupFinalize': undefined
 
 	// Chat
 
@@ -45,7 +45,7 @@ export type ScreensParams = {
 	'Chat.OneToOneSettings': { convId: string }
 	'Chat.ContactSettings': { contactId: string }
 	'Group.MultiMemberSettings': { convId: string }
-	'Group.MultiMemberSettingsAddMembers': { convPK: string }
+	'Chat.MultiMemberSettingsAddMembers': { convPK: string }
 	'Group.ChatSettingsMemberDetail': { convId: string; memberPk: string; displayName: string }
 	'Chat.MultiMemberQR': { convId: string }
 	'Chat.ReplicateGroupSettings': { convId: string }
@@ -83,7 +83,7 @@ export type ScreensParams = {
 
 	// Modals
 
-	'Modals.ManageDeepLink': {
+	'Chat.ManageDeepLink': {
 		type: 'qr' | 'link'
 		value: string
 	}
@@ -91,7 +91,6 @@ export type ScreensParams = {
 		images: (beapi.messenger.IMedia & { uri?: string })[]
 		previewOnly?: boolean
 	}
-	'Modals.EditProfile': undefined
 }
 
 type ScreenProps<T extends keyof ScreensParams> = StackScreenProps<ScreensParams, T>

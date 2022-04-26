@@ -117,7 +117,7 @@ export const HyperlinkUserMessage: React.FC<{
 				<Hyperlink
 					onPress={async url => {
 						if (client && (await isBertyDeepLink(client, url))) {
-							navigation.navigate('Modals.ManageDeepLink', { type: 'link', value: url })
+							navigation.navigate('Chat.ManageDeepLink', { type: 'link', value: url })
 							return
 						}
 						Linking.canOpenURL(url).then(supported => supported && Linking.openURL(url))

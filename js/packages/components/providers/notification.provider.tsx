@@ -35,7 +35,7 @@ const PushNotificationBridge: React.FC = withInAppNotification(({ showNotificati
 							dispatch(
 								CommonActions.reset({
 									routes: [
-										{ name: 'Main.Home' },
+										{ name: 'Chat.Home' },
 										{
 											name:
 												conv?.type === beapi.messenger.Conversation.Type.MultiMemberType
