@@ -1,11 +1,10 @@
 import React, { useContext, useMemo } from 'react'
 import { Alert, ScrollView, View } from 'react-native'
 import { useSelector } from 'react-redux'
-import Long from 'long'
 
 import { ScreenFC, useNavigation } from '@berty/navigation'
-import { serviceTypes, useMessengerClient, useThemeColor } from '@berty/store'
-import { useAccount } from '@berty/hooks'
+import { numberifyLong, serviceTypes, useThemeColor } from '@berty/store'
+import { useAccount, useOneToOneContact } from '@berty/hooks'
 import { ButtonSettingV2, Section } from '@berty/components/shared-components'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
@@ -22,20 +21,13 @@ import {
 } from '@berty/store/push'
 import { RESULTS } from 'react-native-permissions'
 import PermissionsContext from '@berty/contexts/permissions.context'
+import { berty } from '@berty/api/root.pb'
 
 const oneSecond = 1000
 const oneMinute = oneSecond * 60
 const oneHour = oneMinute * 60
 const oneDay = oneHour * 24
 const oneYear = oneDay * 365
-
-const numberifyLong = (timeout: number | Long): number => {
-	if (timeout instanceof Long) {
-		timeout = timeout.toNumber()
-	}
-
-	return timeout
-}
 
 const timeoutDisplay = (t: (_: String, __?: any) => string, timeout: number): string => {
 	const expiresIn = timeout - Date.now()
@@ -51,11 +43,72 @@ const timeoutDisplay = (t: (_: String, __?: any) => string, timeout: number): st
 	return t('muted')
 }
 
+const MutedConversationButton = ({
+	conversation,
+}: {
+	conversation: berty.messenger.v1.IConversation
+}) => {
+	const { t } = useTranslation()
+	const messengerClient = useSelector(selectClient)
+
+	const colors = useThemeColor()
+	const { scaleSize } = useAppDimensions()
+
+	const contact = useOneToOneContact(conversation.publicKey || '')
+
+	return (
+		<ButtonSettingV2
+			text={conversation.displayName || contact?.displayName || t('chat.title-unknown')}
+			key={conversation.publicKey}
+			icon={<ConversationAvatar size={40 * scaleSize} publicKey={conversation.publicKey} />}
+			onPress={async () => {
+				if (!messengerClient) {
+					return
+				}
+
+				const confirmed = await new Promise(resolve => {
+					Alert.alert(t('chat.push-notifications.warning-disable-mute.title'), '', [
+						{
+							text: t('chat.push-notifications.warning-disable-mute.refuse'),
+							onPress: () => resolve(false),
+							style: 'cancel',
+						},
+						{
+							text: t('chat.push-notifications.warning-disable-mute.accept'),
+							onPress: () => resolve(true),
+							style: 'default',
+						},
+					])
+				})
+
+				if (confirmed) {
+					await enableNotificationsForConversation(t, messengerClient, conversation.publicKey!)
+				}
+			}}
+			oppositeNode={
+				conversation.sharedPushTokenIdentifier &&
+				numberifyLong(conversation.mutedUntil) - Date.now() < oneYear ? (
+					<UnifiedText style={{ color: colors['warning-asset'] }}>
+						{timeoutDisplay(t, numberifyLong(conversation.mutedUntil))}
+					</UnifiedText>
+				) : (
+					<Icon
+						name={'bell-off'}
+						width={20 * scaleSize}
+						height={20 * scaleSize}
+						fill={colors['warning-asset']}
+					/>
+				)
+			}
+		/>
+	)
+}
+
 export const Notifications: ScreenFC<'Settings.Notifications'> = () => {
 	const { t } = useTranslation()
 	const { navigate } = useNavigation()
 	const { permissions } = useContext(PermissionsContext)
-	const messengerClient = useMessengerClient()
+	const messengerClient = useSelector(selectClient)
 	const protocolClient = useSelector(selectProtocolClient)
 
 	const { scaleSize } = useAppDimensions()
@@ -65,7 +118,10 @@ export const Notifications: ScreenFC<'Settings.Notifications'> = () => {
 		() => account.serviceTokens?.some(t => t.serviceType === serviceTypes.Push),
 		[account.serviceTokens],
 	)
-	const accountUnmuted = useMemo(() => (account.mutedUntil || 0) < Date.now(), [account.mutedUntil])
+	const accountUnmuted = useMemo(
+		() => numberifyLong(account.mutedUntil) < Date.now(),
+		[account.mutedUntil],
+	)
 	const pushPermissionGranted = useMemo(
 		() =>
 			permissions.notification === RESULTS.GRANTED || permissions.notification === RESULTS.LIMITED,
@@ -76,14 +132,13 @@ export const Notifications: ScreenFC<'Settings.Notifications'> = () => {
 		() => hasPushToken && accountUnmuted && pushPermissionGranted,
 		[accountUnmuted, hasPushToken, pushPermissionGranted],
 	)
-	const client = useSelector(selectClient)
 
 	const conversations = useAllConversations()
 	const mutedConversations = useMemo(
 		() =>
 			pushEnabled && pushFilteringAvailable
 				? conversations.filter(
-						c => c && (!c.sharedPushTokenIdentifier || (c.mutedUntil || 0) > Date.now()),
+						c => c && (!c.sharedPushTokenIdentifier || numberifyLong(c.mutedUntil) > Date.now()),
 				  )
 				: [],
 		[pushEnabled, conversations],
@@ -157,9 +212,9 @@ export const Notifications: ScreenFC<'Settings.Notifications'> = () => {
 										value: account.autoSharePushTokenFlag || false,
 										action: async () => {
 											if (account.autoSharePushTokenFlag) {
-												await client?.pushSetAutoShare({ enabled: false })
+												await messengerClient?.pushSetAutoShare({ enabled: false })
 											} else {
-												await askAndSharePushTokenOnAllConversations(t, client!)
+												await askAndSharePushTokenOnAllConversations(t, messengerClient!)
 											}
 										},
 									}}
@@ -187,50 +242,7 @@ export const Notifications: ScreenFC<'Settings.Notifications'> = () => {
 					<>
 						<Section>
 							{mutedConversations.map(c => (
-								<ButtonSettingV2
-									text={c.displayName || c.contact?.displayName || t('chat.title-unknown')}
-									key={c.publicKey}
-									icon={<ConversationAvatar size={40 * scaleSize} publicKey={c.publicKey} />}
-									onPress={async () => {
-										if (!client) {
-											return
-										}
-
-										const confirmed = await new Promise(resolve => {
-											Alert.alert(t('chat.push-notifications.warning-disable-mute.title'), '', [
-												{
-													text: t('chat.push-notifications.warning-disable-mute.refuse'),
-													onPress: () => resolve(false),
-													style: 'cancel',
-												},
-												{
-													text: t('chat.push-notifications.warning-disable-mute.accept'),
-													onPress: () => resolve(true),
-													style: 'default',
-												},
-											])
-										})
-
-										if (confirmed) {
-											await enableNotificationsForConversation(t, client, c.publicKey!)
-										}
-									}}
-									oppositeNode={
-										c.sharedPushTokenIdentifier &&
-										numberifyLong(c.mutedUntil || 0) - Date.now() < oneYear ? (
-											<UnifiedText style={{ color: colors['warning-asset'] }}>
-												{timeoutDisplay(t, numberifyLong(c.mutedUntil || 0))}
-											</UnifiedText>
-										) : (
-											<Icon
-												name={'bell-off'}
-												width={20 * scaleSize}
-												height={20 * scaleSize}
-												fill={colors['warning-asset']}
-											/>
-										)
-									}
-								/>
+								<MutedConversationButton key={c.publicKey} conversation={c} />
 							))}
 						</Section>
 					</>

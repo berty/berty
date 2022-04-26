@@ -54,3 +54,16 @@ export const pbDateToNum = (pbTimestamp?: number | Long | string | null): number
 		return 0
 	}
 }
+export const numberifyLong = (longNumber: number | Long | undefined | null): number => {
+	if (longNumber === undefined || longNumber === null) {
+		longNumber = 0
+	}
+
+	if (longNumber instanceof Long) {
+		longNumber = longNumber.toNumber()
+	}
+
+	longNumber = parseInt(String(longNumber), 10)
+
+	return longNumber
+}

@@ -15,6 +15,7 @@ import {
 	useThemeColor,
 	useMessengerClient,
 	serviceTypes,
+	numberifyLong,
 } from '@berty/store'
 import { useAccount, useAppSelector, useSyncNetworkConfigOnScreenRemoved } from '@berty/hooks'
 import { selectProtocolClient, selectSelectedAccount } from '@berty/redux/reducers/ui.reducer'
@@ -284,7 +285,7 @@ export const SettingsHome: ScreenFC<'Settings.Home'> = withInAppNotification(
 									enable: pushFilteringAvailable,
 									value:
 										hasKnownPushServer &&
-										(account.mutedUntil ? account.mutedUntil : 0) < Date.now() &&
+										numberifyLong(account.mutedUntil) < Date.now() &&
 										(permissions.notification === RESULTS.GRANTED ||
 											permissions.notification === RESULTS.LIMITED),
 									action: async () => {

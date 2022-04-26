@@ -11,6 +11,7 @@ import { useAccount, useConversation } from '@berty/hooks'
 import { UnifiedText } from '../shared-components/UnifiedText'
 import { conversationPushToggleState, pushAvailable } from '@berty/store/push'
 import PermissionsContext from '@berty/contexts/permissions.context'
+import { numberifyLong } from '@berty/store'
 
 const EnableNotificationsButton: React.FC<{
 	conversationPk: string
@@ -30,15 +31,18 @@ const EnableNotificationsButton: React.FC<{
 		[conv],
 	)
 	const conversationNotMuted = useMemo(
-		() => (conv?.mutedUntil ? conv?.mutedUntil : 0) < Date.now(),
-		[conv],
+		() => numberifyLong(conv?.mutedUntil) < Date.now(),
+		[conv?.mutedUntil],
 	)
 	const pushPermissionGranted = useMemo(
 		() =>
 			permissions.notification === RESULTS.GRANTED || permissions.notification === RESULTS.LIMITED,
 		[permissions.notification],
 	)
-	const accountMuted = useMemo(() => (account.mutedUntil || 0) > Date.now(), [account.mutedUntil])
+	const accountMuted = useMemo(
+		() => numberifyLong(account.mutedUntil) > Date.now(),
+		[account.mutedUntil],
+	)
 
 	if (!pushAvailable || permissions.notification === RESULTS.UNAVAILABLE) {
 		return (

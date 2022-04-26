@@ -1,7 +1,12 @@
 import { Alert, Platform } from 'react-native'
 import rnutil from '@berty/rnutil'
 import { RESULTS } from 'react-native-permissions'
-import { requestAndPersistPushToken, servicesAuthViaDefault, serviceTypes } from '@berty/store'
+import {
+	numberifyLong,
+	requestAndPersistPushToken,
+	servicesAuthViaDefault,
+	serviceTypes,
+} from '@berty/store'
 import beapi from '@berty/api'
 import { ServiceClientType } from '@berty/grpc-bridge/welsh-clients.gen'
 import { PermissionType, getPermissions } from '@berty/rnutil/permissions'
@@ -35,7 +40,7 @@ export const accountPushToggleState = async ({
 
 	if (
 		!hasKnownPushServer ||
-		(account.mutedUntil ? account.mutedUntil : 0) > Date.now() ||
+		numberifyLong(account.mutedUntil) > Date.now() ||
 		!(permissions.notification === RESULTS.GRANTED || permissions.notification === RESULTS.LIMITED)
 	) {
 		if (!enable && enable !== undefined) {
@@ -49,7 +54,7 @@ export const accountPushToggleState = async ({
 		})
 
 		if (enabledJustNow && pushFilteringAvailable) {
-			await askAndSharePushTokenOnAllConversations(t, messengerClient)
+			await askAndSharePushTokenOnAllConversations(t, messengerClient, { forceEnable: true })
 		}
 	} else {
 		if (enable) {
@@ -113,30 +118,37 @@ const enablePushPermission = async (
 export const askAndSharePushTokenOnAllConversations = async (
 	t: (k: string) => string,
 	messengerClient: ServiceClientType<beapi.messenger.MessengerService>,
+	options?: {
+		forceEnable?: boolean
+	},
 ) => {
 	if (!pushFilteringAvailable) {
 		return
 	}
 
-	// Ask if user want to enable push notifications for all conversations
-	const enableForEveryGroup = await new Promise(resolve => {
-		Alert.alert(
-			t('chat.push-notifications.warning-enable-all.title'),
-			t('chat.push-notifications.warning-enable-all.subtitle'),
-			[
-				{
-					text: t('chat.push-notifications.warning-enable-all.refuse'),
-					onPress: () => resolve(false),
-					style: 'cancel',
-				},
-				{
-					text: t('chat.push-notifications.warning-enable-all.accept'),
-					onPress: () => resolve(true),
-					style: 'default',
-				},
-			],
-		)
-	})
+	let enableForEveryGroup = options?.forceEnable || false
+
+	if (!options?.forceEnable) {
+		// Ask if user want to enable push notifications for all conversations
+		enableForEveryGroup = await new Promise(resolve => {
+			Alert.alert(
+				t('chat.push-notifications.warning-enable-all.title'),
+				t('chat.push-notifications.warning-enable-all.subtitle'),
+				[
+					{
+						text: t('chat.push-notifications.warning-enable-all.refuse'),
+						onPress: () => resolve(false),
+						style: 'cancel',
+					},
+					{
+						text: t('chat.push-notifications.warning-enable-all.accept'),
+						onPress: () => resolve(true),
+						style: 'default',
+					},
+				],
+			)
+		})
+	}
 
 	if (enableForEveryGroup) {
 		await messengerClient.pushSetAutoShare({ enabled: true })
@@ -200,16 +212,15 @@ export const conversationPushToggleState = async ({
 
 		if (
 			!conversation?.sharedPushTokenIdentifier ||
-			((conversation.mutedUntil ? conversation.mutedUntil : 0) > Date.now() &&
-				permissions.notification !== RESULTS.GRANTED &&
-				permissions.notification !== RESULTS.LIMITED)
+			numberifyLong(conversation.mutedUntil) > Date.now() ||
+			(permissions.notification !== RESULTS.GRANTED && permissions.notification !== RESULTS.LIMITED)
 		) {
 			const enabledJustNow = await enablePushPermission(messengerClient, protocolClient!, navigate)
 
 			// Share push token
 			await enableNotificationsForConversation(t, messengerClient!, conversation.publicKey)
 
-			if (enabledJustNow) {
+			if (enabledJustNow && pushFilteringAvailable) {
 				await askAndSharePushTokenOnAllConversations(t, messengerClient)
 			}
 		} else {
