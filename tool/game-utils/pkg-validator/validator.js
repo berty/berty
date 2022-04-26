@@ -71,7 +71,7 @@ const manifestSpecs = [
 	{
 		key: "exit_info",
 		type: "string",
-		required: true,
+		required: false,
 		validator: (value) => {
 			return value.length > 0;
 		},
@@ -85,6 +85,15 @@ const manifestSpecs = [
 			return semver.valid(value);
 		},
 		err: "must be a valid semantic version",
+	},
+	{
+		key: "orientation",
+		type: "string",
+		required: true,
+		validator: (value) => {
+			return ["landscape", "portrait", "both"].includes(value);
+		},
+		err: "must either be 'landscape', 'portrait' or 'both'",
 	},
 	{
 		key: "sources",

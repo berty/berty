@@ -5,7 +5,6 @@ declare module '*.svg' {
 	export default content
 }
 declare module '*.ttf'
-declare module '*.html'
 
 declare var __DEV__: boolean | undefined
 
