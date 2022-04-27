@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { View, TouchableOpacity, TextInput, StyleSheet, ScrollView } from 'react-native'
+import { View, TextInput, StyleSheet, ScrollView } from 'react-native'
 import { Layout, Icon } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
 
@@ -115,16 +115,7 @@ const GroupInfo: React.FC<GroupInfoProps> = ({ onGroupNameChange }) => {
 					/>
 				</View>
 			</View>
-			<TouchableOpacity
-				activeOpacity={0.9}
-				style={[
-					border.radius.medium,
-					border.shadow.medium,
-					padding.medium,
-					margin.top.medium,
-					{ shadowColor: colors.shadow },
-				]}
-			>
+			<View style={[padding.medium, margin.top.medium]}>
 				<View style={[row.fill]}>
 					<View style={[row.center]}>
 						<Icon
@@ -170,7 +161,7 @@ const GroupInfo: React.FC<GroupInfoProps> = ({ onGroupNameChange }) => {
 						iconColor={colors['warning-asset']}
 					/>
 				</View>
-			</TouchableOpacity>
+			</View>
 		</View>
 	)
 }
