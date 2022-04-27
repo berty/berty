@@ -4,8 +4,8 @@
 			"screenTitle": "保护您的隐私",
 			"title": "保护您的隐私",
 			"desc": "免费和安全的点对点消息传递",
-			"create-button": "创建帐户",
-			"import-button": "导入帐户",
+			"create-button": "创建账户",
+			"import-button": "导入账户",
 			"link-button": "连接此设备"
 		},
 		"default-mode": {
@@ -24,7 +24,7 @@
 				"screenTitle": "创建账户 - 自定义设置",
 				"title": "自定义模式",
 				"subtitle": "自定义隐私/舒适度平衡",
-				"first-point": "在此模式下，单独调整所有设置以创建适合您的隐私和舒适的平衡。",
+				"first-point": "在此模式下，单独调整所有设置以创建适合您隐私和舒适的平衡。",
 				"second-point": "要获得turnkey experience，请选择默认模式。",
 				"back-button": "返回",
 				"accept-button": "继续"
@@ -33,7 +33,7 @@
 				"off-grid": {
 					"title": "离线通讯",
 					"ble-button": "低功耗蓝牙",
-					"nearby-button": "附近的安卓",
+					"nearby-button": "附近的移动设备",
 					"mc-button": "苹果多点连接",
 					"mdns-button": "多播 DNS (LAN)"
 				},
@@ -86,7 +86,7 @@
 			"placeholder": "选择您的昵称",
 			"good-to-know": {
 				"title": "知道：",
-				"first-point": "您的帐户已在本地创建",
+				"first-point": "您的账户在本地创建",
 				"second-point": "昵称是可选的，可以稍后更改"
 			}
 		},
@@ -97,7 +97,7 @@
 		"setup-finished": {
 			"title": "设置完成！",
 			"desc": "您现在可以使用该应用，开始添加联系人以及与他们自由私下聊天",
-			"button": ""
+			"button": "开始使用 berty"
 		},
 		"web-views": {
 			"title": "网页内容权限",
@@ -128,8 +128,8 @@
 				"add-members": "添加新成员",
 				"group-info": "群组信息",
 				"search-placeholder": "搜索",
-				"continue": "",
-				"create-group": ""
+				"continue": "继续",
+				"create-group": "创建群組"
 			},
 			"create-group-finalize": {
 				"placeholder": "群组名称",
@@ -170,14 +170,14 @@
 		},
 		"accounts": {
 			"title": "账户",
-			"backup-button": "",
-			"backup-notif-title": "",
-			"backup-notif-desc": "",
+			"backup-button": "备份",
+			"backup-notif-title": "成功",
+			"backup-notif-desc": "账户已备份！",
 			"accounts-button": "账户",
-			"create-button": "创建帐户",
-			"import-button": "导入帐户",
+			"create-button": "创建账户",
+			"import-button": "导入账户",
 			"link-button": "连接其他设备",
-			"delete-button": "删除此帐户",
+			"delete-button": "删除此账户",
 			"delete-title": "账户删除"
 		},
 		"appearance": {
@@ -203,7 +203,7 @@
 			"title": "网络",
 			"ble-button": "低功耗蓝牙",
 			"mc-button": "多节点连接",
-			"nearby-button": "附近的安卓",
+			"nearby-button": "附近的移动设备",
 			"mdns-button": "多播DNS",
 			"memo-cell-button": "在蜂窝上加载语音备忘录",
 			"medias-cell-button": "在蜂窝网络上加载媒体",
@@ -311,7 +311,7 @@
 			"add": "添加 {{name}}",
 			"tag-bot": "机器人",
 			"tag-contact": "联系人",
-			"tag-conversation": ""
+			"tag-conversation": "对话"
 		},
 		"ipfs-webui": {
 			"title": "IPFS WebUI"
@@ -350,7 +350,7 @@
 			"contact-already-added-message": "您不能多次添加同一个联系人"
 		},
 		"invalid-scan": {
-			"dismiss-button": ""
+			"dismiss-button": "关闭"
 		},
 		"add-this-contact": {
 			"fingerprint": "指纹",
@@ -361,7 +361,7 @@
 			"fingerprint": "指纹",
 			"info": "信息",
 			"devices": "设备",
-			"join": "",
+			"join": "加入此群组",
 			"password-label": "输入群组密码",
 			"password-placeholder": "密码..."
 		},
@@ -429,10 +429,10 @@
 		"one-to-one": {
 			"contact-request-box": {
 				"title": "联系人请求",
-				"group-invitation": "",
-				"refuse-button": "",
+				"group-invitation": "群组邀请",
+				"refuse-button": "拒绝",
 				"accept-button": "同意",
-				"accepted-button": "",
+				"accepted-button": "同意",
 				"error": "将您添加到群组时出错☹️ 我们的错误！",
 				"you-invited": "你已邀请",
 				"this-contact": "此联系人",
@@ -477,9 +477,9 @@
 			"medias": "媒体",
 			"links": "链接",
 			"documents": "文件",
-			"file": "",
-			"picture": "",
-			"audio": ""
+			"file": "文件",
+			"picture": "图片",
+			"audio": "音频"
 		},
 		"reply": {
 			"response-to": "答复：",
