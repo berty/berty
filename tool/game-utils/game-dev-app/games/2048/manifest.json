@@ -1,0 +1,9 @@
+{
+  "manifest_version": 1,
+  "name": "2048",
+  "author": "gabrielecirulli",
+  "description": "Join the tiles, get to 2048!",
+  "version": "1.0.0",
+  "orientation": "portrait",
+  "sources": "https://github.com/gabrielecirulli/2048"
+}

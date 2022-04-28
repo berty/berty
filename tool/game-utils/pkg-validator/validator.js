@@ -71,7 +71,7 @@ const manifestSpecs = [
 	{
 		key: "exit_info",
 		type: "string",
-		required: true,
+		required: false,
 		validator: (value) => {
 			return value.length > 0;
 		},
@@ -87,6 +87,15 @@ const manifestSpecs = [
 		err: "must be a valid semantic version",
 	},
 	{
+		key: "orientation",
+		type: "string",
+		required: true,
+		validator: (value) => {
+			return ["landscape", "portrait", "both"].includes(value);
+		},
+		err: "must either be 'landscape', 'portrait' or 'both'",
+	},
+	{
 		key: "sources",
 		type: "string",
 		required: true,
@@ -98,8 +107,8 @@ const manifestSpecs = [
 ];
 
 const iconSpecs = {
-	width: 512,
-	height: 512,
+	width: 256,
+	height: 256,
 	type: "image/png",
 };
 
