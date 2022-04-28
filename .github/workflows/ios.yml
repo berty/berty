@@ -202,7 +202,45 @@ jobs:
         working-directory: js
         run: make ios.app_deps
 
-      - name: Build the Archive
+#      - name: Build the Archive
+#        working-directory: js
+#        run: |
+#          xcodebuild archive \
+#                CODE_SIGN_IDENTITY="" \
+#                CODE_SIGNING_ALLOWED=NO \
+#                ONLY_ACTIVE_ARCH=NO  \
+#                EXCLUDED_ARCHS='armv7 armv7s' \
+#                -workspace ios/Berty.xcworkspace \
+#                -scheme "Berty Yolo" \
+#                -sdk iphoneos \
+#                -archivePath $RUNNER_TEMP/Berty.xcarchive
+#
+#      - name: Strip and sign the Archive
+#        working-directory: js
+#        run: |
+#          APP_PATH="$RUNNER_TEMP/Berty.xcarchive/Products/Applications/Berty Yolo.app"
+#          find "$APP_PATH" -type f | while read FILE; do
+#            if [ -z "$(file "$FILE" | grep Mach-O)" ]; then continue; fi
+#            for ARCH in $(lipo -archs "$FILE" 2> /dev/null); do
+#              if [[ ! "$ARCH" =~ ^arm64e?$ ]]; then
+#                lipo -remove "$ARCH" "$FILE" -output "$FILE"
+#              fi
+#            done
+#          done
+#          codesign -fs "Berty Dummy" "$APP_PATH"
+#          mkdir Payload
+#          mv "$APP_PATH" Payload/
+#          zip -r ${{ github.workspace }}/Berty\ Yolo.dummy-signed-ipa Payload
+#
+#      - name: Upload the Archive
+#        uses: actions/upload-artifact@v2
+#        with:
+#          path: ${{ github.workspace }}/Berty Yolo.dummy-signed-ipa
+#          name: berty-yolo-${{github.sha}}.dummy-signed-ipa
+#          if-no-files-found: error
+
+      - name: Build the Archive (main release)
+        # if: github.ref == 'refs/heads/master'
         working-directory: js
         run: |
           xcodebuild archive \
@@ -211,14 +249,15 @@ jobs:
                 ONLY_ACTIVE_ARCH=NO  \
                 EXCLUDED_ARCHS='armv7 armv7s' \
                 -workspace ios/Berty.xcworkspace \
-                -scheme "Berty Yolo" \
+                -scheme "Berty AppStore" \
                 -sdk iphoneos \
                 -archivePath $RUNNER_TEMP/Berty.xcarchive
 
-      - name: Strip and sign the Archive
+      - name: Strip and sign the Archive (main release)
+        # if: github.ref == 'refs/heads/master'
         working-directory: js
         run: |
-          APP_PATH="$RUNNER_TEMP/Berty.xcarchive/Products/Applications/Berty Yolo.app"
+          APP_PATH="$RUNNER_TEMP/Berty.xcarchive/Products/Applications/Berty.app"
           find "$APP_PATH" -type f | while read FILE; do
             if [ -z "$(file "$FILE" | grep Mach-O)" ]; then continue; fi
             for ARCH in $(lipo -archs "$FILE" 2> /dev/null); do
@@ -228,13 +267,31 @@ jobs:
             done
           done
           codesign -fs "Berty Dummy" "$APP_PATH"
+          rm -rf Payload
           mkdir Payload
           mv "$APP_PATH" Payload/
-          zip -r ${{ github.workspace }}/Berty\ Yolo.dummy-signed-ipa Payload
+          zip -r ${{ github.workspace }}/Berty.dummy-signed-ipa Payload
 
-      - name: Upload the Archive
-        uses: actions/upload-artifact@v2
-        with:
-          path: ${{ github.workspace }}/Berty Yolo.dummy-signed-ipa
-          name: berty-yolo-${{github.sha}}.dummy-signed-ipa
-          if-no-files-found: error
+      - name: Install private API key P8
+        # if: github.ref == 'refs/heads/master'
+        env:
+          APPSTORE_API_PRIVATE_KEY_BASE64: ${{ secrets.APPSTORE_API_PRIVATE_KEY_BASE64 }}
+          APPSTORE_API_KEY_ID: ${{ secrets.APPSTORE_API_KEY_ID }}
+        run: |
+          mkdir -p ~/private_keys
+          echo '::echo::off'
+          echo "::add-mask::$APPSTORE_API_KEY_ID"
+          echo "::add-mask::APPSTORE_ISSUER_ID"
+          echo "::add-mask::APPSTORE_API_PRIVATE_KEY_BASE64"
+          echo -n "$APPSTORE_API_PRIVATE_KEY_BASE64" | base64 --decode --output ~/private_keys/AuthKey_$APPSTORE_API_KEY_ID.p8
+
+      - name: Upload app to TestFlight
+        # if: github.ref == 'refs/heads/master'
+        env:
+          APPSTORE_API_KEY_ID: ${{ secrets.APPSTORE_API_KEY_ID }}
+          APPSTORE_ISSUER_ID : ${{ secrets.APPSTORE_ISSUER_ID  }}
+        run: |
+          echo '::echo::off'
+          echo "::add-mask::$APPSTORE_API_KEY_ID"
+          echo "::add-mask::APPSTORE_ISSUER_ID"
+          xcrun altool --output-format xml --upload-app -f ${{ github.workspace }}/Berty.dummy-signed-ipa -t ios --apiKey $APPSTORE_API_KEY_ID --apiIssuer $APPSTORE_ISSUER_ID
