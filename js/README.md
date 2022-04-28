@@ -47,7 +47,7 @@ $ make help
 ## Generate files using protobuf
 $ make generate
 
-## Build and serve UI
+## Build and serve mobile UI
 $ make metro.start
 
 ## Optional if using only one device
@@ -74,6 +74,13 @@ $ ANDROID_DEVICE=__ANDROID_DEVICE_ID_1__ make android.debug
 $ ANDROID_DEVICE=__ANDROID_DEVICE_ID_2__ make android.debug
 
 💡 You can check available Android Virtual Devices with `adb devices`
+
+## Web
+## Run Berty daemon for the web app
+make web.daemon.start
+## Run web app in debug mode
+$ make web.debug
+## Open http://localhost:3002/#/ip4/127.0.0.1/tcp/9092/grpcws in your browser
 ```
 
 ## 🧳 Requirements
