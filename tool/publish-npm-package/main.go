@@ -29,6 +29,8 @@ func errMain() error {
 	pathFlag := flag.String("path", "", "path to the package to be published")
 	versionFlag := flag.String("version", "", "version to publish")
 	dryrunFlag := flag.Bool("dry-run", false, "do not publish at the end")
+	var manual bool
+	flag.BoolVar(&manual, "manual", false, "don't install deps and don't publish if set")
 	flag.Parse()
 
 	path := *pathFlag
@@ -101,6 +103,11 @@ func errMain() error {
 		return errors.Wrap(err, "write package.json")
 	}
 	logger.Info("Wrote package.json")
+
+	if manual {
+		logger.Info("Manual mode!")
+		return nil
+	}
 
 	cmd := exec.Command("npm", "i")
 	cmd.Dir = buildDir

@@ -52,7 +52,6 @@ jobs:
           echo "::set-output name=new-release-published::${{steps.semantic.outputs.new-release-published}}"
           echo "::set-output name=release-version::${{steps.semantic.outputs.release-version}}"
 
-
   post-semantic-release:
     needs: semantic-release
     #if: needs.semantic-release.outputs.new-release-published == 'true'
@@ -64,6 +63,7 @@ jobs:
       - name: Unshallow
         run: git fetch --prune --unshallow
 
+      # Next step also sets up a .npmrc file for automatic publishing to npm
       - uses: actions/setup-node@v2
         if: needs.semantic-release.outputs.new-release-published == 'true'
         with:
@@ -81,11 +81,21 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         continue-on-error: true
-      # Next step also sets up a .npmrc file for automatic publishing to npm
 
       - name: "Publish npm package: @berty/api (DryRun)"
         if: needs.semantic-release.outputs.new-release-published != 'true'
-        run: cd tool && go run ./publish-npm-package -path=../js/packages/api -version=0.0.0 -dry-run
+        run: cd tool && go run ./publish-npm-package -path=../js/packages/api -version=0.42.0 -dry-run
+
+      - name: "Publish npm package: @berty/grpc-bridge (Real)"
+        if: needs.semantic-release.outputs.new-release-published == 'true'
+        run: cd tool && go run ./publish-npm-package -path=../js/packages/grpc-bridge -version=${{ needs.semantic-release.outputs.release-version }}
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        continue-on-error: true
+
+      - name: "Publish npm package: @berty/grpc-bridge (DryRun)"
+        if: needs.semantic-release.outputs.new-release-published != 'true'
+        run: cd tool && go run ./publish-npm-package -path=../js/packages/grpc-bridge -version=0.42.0 -dry-run
 
       - name: Register version on pkg.go.dev
         if: needs.semantic-release.outputs.new-release-published == 'true'
@@ -96,19 +106,19 @@ jobs:
           set -x +e
           curl -i $url
 
-
   build-asset:
     needs: semantic-release
     name: build asset
     runs-on: ${{ matrix.config.runs-on }}
     strategy:
       matrix:
-        config: [
-          {runs-on: 'ubuntu-latest',  goos: 'linux',   golang: '1.17.x'},
-          {runs-on: 'macos-latest',  goos: 'darwin',  golang: '1.17.x'},
-          {runs-on: 'windows-latest', goos: 'windows', golang: '1.17.x'},
-          # TODO: bertyguy
-        ]
+        config:
+          [
+            { runs-on: "ubuntu-latest", goos: "linux", golang: "1.17.x" },
+            { runs-on: "macos-latest", goos: "darwin", golang: "1.17.x" },
+            { runs-on: "windows-latest", goos: "windows", golang: "1.17.x" },
+          ]
+    # TODO: bertyguy
     env:
       OSXCROSS_DIR: /home/runner/work/osxcross
     steps:
