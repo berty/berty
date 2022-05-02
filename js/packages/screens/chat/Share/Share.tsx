@@ -183,7 +183,7 @@ export const ShareModal: ScreenFC<'Chat.Share'> = () => {
 	const colors = useThemeColor()
 	const [isScannerVisible, setIsScannerVisible] = useState<boolean>(true)
 	const [isScannerSelected, setIsScannerSelected] = useState<boolean>(false)
-	const { navigate, goBack } = useNavigation()
+	const { navigate } = useNavigation()
 	const { t } = useTranslation()
 	const account = useAccount()
 	const url = account.link
@@ -232,7 +232,6 @@ export const ShareModal: ScreenFC<'Chat.Share'> = () => {
 				navigateToPermScreenOnProblem: true,
 				onComplete: () => {
 					toggleScanner()
-					goBack()
 				},
 				onSuccess: () => {
 					toggleScanner()
@@ -241,7 +240,7 @@ export const ShareModal: ScreenFC<'Chat.Share'> = () => {
 		} else {
 			toggleScanner()
 		}
-	}, [goBack, isScannerSelected, navigate, toggleScanner])
+	}, [isScannerSelected, navigate, toggleScanner])
 
 	return (
 		<Layout style={[flex.tiny, { backgroundColor: colors['main-background'] }]}>
