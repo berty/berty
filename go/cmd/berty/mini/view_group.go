@@ -60,7 +60,7 @@ func (v *groupView) commandParser(ctx context.Context, input string) error {
 					return errors.New("not implemented")
 				}
 
-				trimmed := strings.TrimPrefix(input, prefix+" ")
+				trimmed := strings.TrimSpace(strings.TrimPrefix(input, prefix))
 				return attrs.cmd(ctx, v, trimmed)
 			}
 		}
