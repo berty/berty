@@ -25,7 +25,6 @@ const polyfillModules = [
 
 module.exports = {
 	babel: {
-		presets: ['@babel/preset-react'],
 		plugins: ['@babel/plugin-proposal-optional-chaining'],
 	},
 	webpack: {
@@ -36,7 +35,10 @@ module.exports = {
 			)
 
 			webpackConfig.module.rules.push({
-				test: /node_modules\/react-native-reanimated.*\.(js|jsx)$/,
+				test: [
+					/node_modules\/react-native-reanimated.*\.(js|jsx)$/,
+					/node_modules\/react-native-qrcode-svg.*\.(js|jsx)$/,
+				],
 				use: {
 					loader: 'babel-loader',
 					options: {
