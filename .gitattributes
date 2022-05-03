@@ -30,6 +30,9 @@ Podfile.lock linguist-generated text -diff
 package.json linguist-generated
 go.mod text
 
+# Collapse snapshot files on GitHub
+*.snap linguist-generated
+
 # Reduce conflicts on markdown files
 *.md merge=union
 

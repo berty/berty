@@ -58,6 +58,7 @@ export const GetStarted: ScreenFC<'Onboarding.GetStarted'> = ({ navigation: { na
 				</View>
 				<View style={[margin.top.big]}>
 					<Button
+						accessibilityLabel={t('onboarding.getstarted.create-button')}
 						onPress={async () => {
 							await storageSet(GlobalPersistentOptionsKeys.IsNewAccount, 'isNew')
 							navigate('Onboarding.CreateAccount')
