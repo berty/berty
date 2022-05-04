@@ -1,6 +1,10 @@
 export const convertMAddr = (urls: String[]): string | null =>
 	urls
 		.map((maddr: String) => {
+			if (maddr === '/mock') {
+				return 'mock://'
+			}
+
 			const ip = maddr.match(/\/ip([46])\/([^/]+)\/tcp\/([0-9]+)\/grpcws/)
 			if (ip !== null) {
 				const preIP = ip[1] === '6' ? '[' : ''

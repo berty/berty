@@ -5,7 +5,16 @@ import { BarCodeScanner } from 'expo-barcode-scanner'
 import { Camera } from 'expo-camera'
 import React, { FC, ReactNode, useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { View, Vibration, StatusBar, Share, ScrollView, Platform } from 'react-native'
+import {
+	View,
+	Vibration,
+	StatusBar,
+	Share,
+	ScrollView,
+	Platform,
+	TextInput,
+	TouchableOpacity,
+} from 'react-native'
 import { RESULTS } from 'react-native-permissions'
 import QRCode from 'react-native-qrcode-svg'
 
@@ -293,8 +302,25 @@ export const ShareModal: ScreenFC<'Chat.Share'> = () => {
 						name={t('settings.share.create-group')}
 						onPress={() => navigate('Chat.CreateGroupAddMembers')}
 					/>
+					{__DEV__ && <DevLinkInput />}
 				</View>
 			</ScrollView>
 		</Layout>
+	)
+}
+
+const DevLinkInput = () => {
+	const [link, setLink] = useState('')
+	const { navigate } = useNavigation()
+	return (
+		<View style={{ flexDirection: 'row' }}>
+			<TextInput style={{ flex: 1 }} onChangeText={setLink} placeholder='Paste link here' />
+			<TouchableOpacity
+				disabled={!link}
+				onPress={() => navigate('Chat.ManageDeepLink', { type: 'link', value: link })}
+			>
+				<UnifiedText>Confirm</UnifiedText>
+			</TouchableOpacity>
+		</View>
 	)
 }

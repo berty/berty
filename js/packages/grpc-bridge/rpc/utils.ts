@@ -14,4 +14,5 @@ export const getServiceName = <T extends pb.Method>(method: T) => {
 }
 
 // Error
-export const ErrorStreamNotImplemented = new Error('stream service not implemented')
+export const ErrorStreamNotImplemented = new Error('stream method not implemented')
+export const ErrorUnaryNotImplemented = new Error('unary method not implemented')

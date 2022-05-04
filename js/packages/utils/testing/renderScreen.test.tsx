@@ -1,8 +1,13 @@
 import { NavigationContainer } from '@react-navigation/native'
 import { render } from '@testing-library/react-native'
+import { IconRegistry } from '@ui-kitten/components'
+import { EvaIconsPack } from '@ui-kitten/eva-icons'
 import React, { ComponentProps } from 'react'
 import { Provider } from 'react-redux'
 
+import { UIKittenProvider } from '@berty/contexts/uiKitten.context'
+import { CustomIconsPack } from '@berty/messenger-app/custom-icons'
+import { FeatherIconsPack } from '@berty/messenger-app/feather-icons'
 import { isReadyRef, navigationRef } from '@berty/navigation/rootRef'
 import { ScreenFC, ScreensParams } from '@berty/navigation/types'
 import store from '@berty/redux/store'
@@ -46,14 +51,17 @@ const testNavigationProps = <N extends keyof ScreensParams>(
 const TestProvider: React.FC = ({ children }) => {
 	return (
 		<Provider store={store}>
-			<NavigationContainer
-				ref={navigationRef}
-				onReady={() => {
-					isReadyRef.current = true
-				}}
-			>
-				{children}
-			</NavigationContainer>
+			<IconRegistry icons={[EvaIconsPack, FeatherIconsPack, CustomIconsPack]} />
+			<UIKittenProvider>
+				<NavigationContainer
+					ref={navigationRef}
+					onReady={() => {
+						isReadyRef.current = true
+					}}
+				>
+					{children}
+				</NavigationContainer>
+			</UIKittenProvider>
 		</Provider>
 	)
 }
