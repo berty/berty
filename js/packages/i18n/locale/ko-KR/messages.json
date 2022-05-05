@@ -374,6 +374,7 @@
 		}
 	},
 	"chat": {
+		"title-unknown": "",
 		"sending": "보내는 중...",
 		"sent": "",
 		"contact-settings": {
@@ -385,10 +386,10 @@
 			"input-placeholder": "여기에 입력..."
 		},
 		"push-notifications": {
-			"enable": "",
-			"enabled": "",
+			"title": "알림",
 			"unsupported": "",
 			"check-device-settings": "",
+			"check-account-settings": "",
 			"warning-disable": {
 				"title": "",
 				"subtitle": "",
@@ -396,10 +397,28 @@
 				"refuse": ""
 			},
 			"why-cant-disable": "",
+			"why-cant-disable-account": "",
 			"errors": {
 				"no-token": "",
 				"no-server": ""
-			}
+			},
+			"warning-enable-all": {
+				"title": "",
+				"subtitle": "",
+				"refuse": "",
+				"accept": ""
+			},
+			"warning-disable-mute": {
+				"title": "",
+				"refuse": "",
+				"accept": ""
+			},
+			"enabled": "",
+			"disabled": "알림 수신 해제됨",
+			"receive-push": "푸시 알림 수신하기",
+			"hide-previews": "",
+			"auto-enable": "",
+			"show-in-app": ""
 		},
 		"devices": {
 			"title": "장치",
@@ -620,5 +639,10 @@
 				"button-cancel": "취소"
 			}
 		}
+	},
+	"time-for": {
+		"minutes": "",
+		"hours": "",
+		"days": ""
 	}
 }
