@@ -374,6 +374,7 @@
 		}
 	},
 	"chat": {
+		"title-unknown": "",
 		"sending": "Invio...",
 		"sent": "",
 		"contact-settings": {
@@ -385,10 +386,10 @@
 			"input-placeholder": "Scrivi qui..."
 		},
 		"push-notifications": {
-			"enable": "",
-			"enabled": "",
+			"title": "Notifiche",
 			"unsupported": "",
 			"check-device-settings": "",
+			"check-account-settings": "",
 			"warning-disable": {
 				"title": "",
 				"subtitle": "",
@@ -396,10 +397,28 @@
 				"refuse": ""
 			},
 			"why-cant-disable": "",
+			"why-cant-disable-account": "",
 			"errors": {
 				"no-token": "",
 				"no-server": ""
-			}
+			},
+			"warning-enable-all": {
+				"title": "",
+				"subtitle": "",
+				"refuse": "",
+				"accept": "Accetta"
+			},
+			"warning-disable-mute": {
+				"title": "",
+				"refuse": "",
+				"accept": ""
+			},
+			"enabled": "",
+			"disabled": "Notifiche push disabilitate",
+			"receive-push": "Ricevi notifiche push",
+			"hide-previews": "",
+			"auto-enable": "",
+			"show-in-app": ""
 		},
 		"devices": {
 			"title": "Dispositivi",
@@ -620,5 +639,10 @@
 				"button-cancel": "Annulla"
 			}
 		}
+	},
+	"time-for": {
+		"minutes": "",
+		"hours": "",
+		"days": ""
 	}
 }
