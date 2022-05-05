@@ -374,6 +374,7 @@
 		}
 	},
 	"chat": {
+		"title-unknown": "",
 		"sending": "Envoi...",
 		"sent": "Envoyé",
 		"contact-settings": {
@@ -385,21 +386,39 @@
 			"input-placeholder": "Écrivez ici..."
 		},
 		"push-notifications": {
-			"enable": "Activer les notifications push",
-			"enabled": "Les notifications push sont activées",
+			"title": "Notifications",
 			"unsupported": "Notifications non prises en charge",
 			"check-device-settings": "Cette conversation est configurée pour recevoir des notifications push, mais les alertes ont été désactivées dans les paramètres système de votre appareil",
+			"check-account-settings": "",
 			"warning-disable": {
 				"title": "Voulez-vous activer cette fonctionnalité ?",
 				"subtitle": "Une fois activées, les notifications push ne peuvent pas être désactivées pour une conversation spécifique.",
 				"accept": "Activer",
 				"refuse": "Ignorer"
 			},
-			"why-cant-disable": "Impossible de désactiver les notifications push par conversation.",
+			"why-cant-disable": "",
+			"why-cant-disable-account": "",
 			"errors": {
 				"no-token": "Votre appareil n'est pas compatible avec les notifications push",
 				"no-server": "Vous devez d'abord enregistrer un relais push"
-			}
+			},
+			"warning-enable-all": {
+				"title": "",
+				"subtitle": "",
+				"refuse": "",
+				"accept": "Accepter"
+			},
+			"warning-disable-mute": {
+				"title": "",
+				"refuse": "",
+				"accept": ""
+			},
+			"enabled": "Les notifications push sont activées",
+			"disabled": "Notifications push désactivées",
+			"receive-push": "Recevoir les notifications push",
+			"hide-previews": "",
+			"auto-enable": "",
+			"show-in-app": ""
 		},
 		"devices": {
 			"title": "Appareils",
@@ -620,5 +639,10 @@
 				"button-cancel": "Annuler"
 			}
 		}
+	},
+	"time-for": {
+		"minutes": "",
+		"hours": "",
+		"days": ""
 	}
 }
