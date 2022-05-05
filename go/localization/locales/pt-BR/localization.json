@@ -18,7 +18,9 @@
     "privacyPolicyLabel": "Política de privacidade"
   },
   "push": {
-    "message": {},
+    "message": {
+      "title": ""
+    },
     "error": {
       "title": "Falha na descriptografia do push"
     },
