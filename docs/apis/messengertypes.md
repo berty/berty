@@ -8,6 +8,9 @@
     - [AccountGet](#berty.messenger.v1.AccountGet)
     - [AccountGet.Reply](#berty.messenger.v1.AccountGet.Reply)
     - [AccountGet.Request](#berty.messenger.v1.AccountGet.Request)
+    - [AccountPushConfigure](#berty.messenger.v1.AccountPushConfigure)
+    - [AccountPushConfigure.Reply](#berty.messenger.v1.AccountPushConfigure.Reply)
+    - [AccountPushConfigure.Request](#berty.messenger.v1.AccountPushConfigure.Request)
     - [AccountUpdate](#berty.messenger.v1.AccountUpdate)
     - [AccountUpdate.Reply](#berty.messenger.v1.AccountUpdate.Reply)
     - [AccountUpdate.Request](#berty.messenger.v1.AccountUpdate.Request)
@@ -50,6 +53,9 @@
     - [ConversationLoad](#berty.messenger.v1.ConversationLoad)
     - [ConversationLoad.Reply](#berty.messenger.v1.ConversationLoad.Reply)
     - [ConversationLoad.Request](#berty.messenger.v1.ConversationLoad.Request)
+    - [ConversationMute](#berty.messenger.v1.ConversationMute)
+    - [ConversationMute.Reply](#berty.messenger.v1.ConversationMute.Reply)
+    - [ConversationMute.Request](#berty.messenger.v1.ConversationMute.Request)
     - [ConversationOpen](#berty.messenger.v1.ConversationOpen)
     - [ConversationOpen.Reply](#berty.messenger.v1.ConversationOpen.Reply)
     - [ConversationOpen.Request](#berty.messenger.v1.ConversationOpen.Request)
@@ -209,6 +215,9 @@
 | auto_share_push_token_flag | [bool](#bool) |  |  |
 | device_push_token | [bytes](#bytes) |  |  |
 | device_push_server | [bytes](#bytes) |  |  |
+| muted_until | [int64](#int64) |  |  |
+| hide_in_app_notifications | [bool](#bool) |  |  |
+| hide_push_previews | [bool](#bool) |  |  |
 
 <a name="berty.messenger.v1.AccountGet"></a>
 
@@ -225,6 +234,28 @@
 <a name="berty.messenger.v1.AccountGet.Request"></a>
 
 ### AccountGet.Request
+
+<a name="berty.messenger.v1.AccountPushConfigure"></a>
+
+### AccountPushConfigure
+
+<a name="berty.messenger.v1.AccountPushConfigure.Reply"></a>
+
+### AccountPushConfigure.Reply
+
+<a name="berty.messenger.v1.AccountPushConfigure.Request"></a>
+
+### AccountPushConfigure.Request
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| muted_until | [int64](#int64) |  |  |
+| unmute | [bool](#bool) |  |  |
+| mute_forever | [bool](#bool) |  |  |
+| hide_in_app_notifications | [bool](#bool) |  |  |
+| hide_push_previews | [bool](#bool) |  |  |
+| show_in_app_notifications | [bool](#bool) |  |  |
+| show_push_previews | [bool](#bool) |  |  |
 
 <a name="berty.messenger.v1.AccountUpdate"></a>
 
@@ -502,6 +533,7 @@ to test more false-positive guesses.
 | info_date | [int64](#int64) |  | info_date is used when SetGroupInfo is called |
 | shared_push_token_identifier | [string](#string) |  |  |
 | local_member_public_key | [string](#string) |  |  |
+| muted_until | [int64](#int64) |  |  |
 
 <a name="berty.messenger.v1.ConversationClose"></a>
 
@@ -572,6 +604,25 @@ to test more false-positive guesses.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | options | [PaginatedInteractionsOptions](#berty.messenger.v1.PaginatedInteractionsOptions) |  |  |
+
+<a name="berty.messenger.v1.ConversationMute"></a>
+
+### ConversationMute
+
+<a name="berty.messenger.v1.ConversationMute.Reply"></a>
+
+### ConversationMute.Reply
+
+<a name="berty.messenger.v1.ConversationMute.Request"></a>
+
+### ConversationMute.Request
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| group_pk | [string](#string) |  |  |
+| muted_until | [int64](#int64) |  |  |
+| unmute | [bool](#bool) |  |  |
+| mute_forever | [bool](#bool) |  |  |
 
 <a name="berty.messenger.v1.ConversationOpen"></a>
 
@@ -1112,6 +1163,9 @@ Composite primary key
 | protocol_data | [berty.protocol.v1.PushReceive.Reply](#berty.protocol.v1.PushReceive.Reply) |  |  |
 | interaction | [Interaction](#berty.messenger.v1.Interaction) |  |  |
 | already_received | [bool](#bool) |  |  |
+| account_muted | [bool](#bool) |  |  |
+| conversation_muted | [bool](#bool) |  |  |
+| hide_preview | [bool](#bool) |  |  |
 
 <a name="berty.messenger.v1.PushSetAutoShare"></a>
 
@@ -1672,12 +1726,14 @@ Today, most of the Berty Messenger logic is implemented directly in the applicat
 | ConversationJoin | [ConversationJoin.Request](#berty.messenger.v1.ConversationJoin.Request) | [ConversationJoin.Reply](#berty.messenger.v1.ConversationJoin.Reply) |  |
 | AccountGet | [AccountGet.Request](#berty.messenger.v1.AccountGet.Request) | [AccountGet.Reply](#berty.messenger.v1.AccountGet.Reply) |  |
 | AccountUpdate | [AccountUpdate.Request](#berty.messenger.v1.AccountUpdate.Request) | [AccountUpdate.Reply](#berty.messenger.v1.AccountUpdate.Reply) |  |
+| AccountPushConfigure | [AccountPushConfigure.Request](#berty.messenger.v1.AccountPushConfigure.Request) | [AccountPushConfigure.Reply](#berty.messenger.v1.AccountPushConfigure.Reply) |  |
 | ContactRequest | [ContactRequest.Request](#berty.messenger.v1.ContactRequest.Request) | [ContactRequest.Reply](#berty.messenger.v1.ContactRequest.Reply) |  |
 | ContactAccept | [ContactAccept.Request](#berty.messenger.v1.ContactAccept.Request) | [ContactAccept.Reply](#berty.messenger.v1.ContactAccept.Reply) |  |
 | Interact | [Interact.Request](#berty.messenger.v1.Interact.Request) | [Interact.Reply](#berty.messenger.v1.Interact.Reply) |  |
 | ConversationOpen | [ConversationOpen.Request](#berty.messenger.v1.ConversationOpen.Request) | [ConversationOpen.Reply](#berty.messenger.v1.ConversationOpen.Reply) |  |
 | ConversationClose | [ConversationClose.Request](#berty.messenger.v1.ConversationClose.Request) | [ConversationClose.Reply](#berty.messenger.v1.ConversationClose.Reply) |  |
 | ConversationLoad | [ConversationLoad.Request](#berty.messenger.v1.ConversationLoad.Request) | [ConversationLoad.Reply](#berty.messenger.v1.ConversationLoad.Reply) |  |
+| ConversationMute | [ConversationMute.Request](#berty.messenger.v1.ConversationMute.Request) | [ConversationMute.Reply](#berty.messenger.v1.ConversationMute.Reply) |  |
 | ServicesTokenList | [.berty.protocol.v1.ServicesTokenList.Request](#berty.protocol.v1.ServicesTokenList.Request) | [.berty.protocol.v1.ServicesTokenList.Reply](#berty.protocol.v1.ServicesTokenList.Reply) stream | ServicesTokenList Retrieves the list of service server tokens |
 | ReplicationServiceRegisterGroup | [ReplicationServiceRegisterGroup.Request](#berty.messenger.v1.ReplicationServiceRegisterGroup.Request) | [ReplicationServiceRegisterGroup.Reply](#berty.messenger.v1.ReplicationServiceRegisterGroup.Reply) | ReplicationServiceRegisterGroup Asks a replication service to distribute a group contents |
 | ReplicationSetAutoEnable | [ReplicationSetAutoEnable.Request](#berty.messenger.v1.ReplicationSetAutoEnable.Request) | [ReplicationSetAutoEnable.Reply](#berty.messenger.v1.ReplicationSetAutoEnable.Reply) | ReplicationSetAutoEnable Sets whether new groups should be replicated automatically or not |

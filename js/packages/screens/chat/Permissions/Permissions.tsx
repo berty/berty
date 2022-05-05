@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef } from 'react'
+import React, { useCallback, useEffect, useRef, useContext } from 'react'
 import { TouchableOpacity, Platform, View, AppState, StatusBar } from 'react-native'
 import LottieView, { AnimatedLottieViewProps } from 'lottie-react-native'
 import { useTranslation } from 'react-i18next'
@@ -15,7 +15,8 @@ import beapi from '@berty/api'
 import { ScreenFC } from '@berty/navigation'
 import rnutil from '@berty/rnutil'
 import { selectSelectedAccount } from '@berty/redux/reducers/ui.reducer'
-import { PermissionType, requestPermission } from '@berty/rnutil/checkPermissions'
+import { PermissionType } from '@berty/rnutil/permissions'
+import PermissionsContext from '@berty/contexts/permissions.context'
 import {
 	PersistentOptionsKeys,
 	selectPersistentOptions,
@@ -41,6 +42,7 @@ export const Permissions: ScreenFC<'Chat.Permissions'> = ({ route: { params }, n
 	const dispatch = useAppDispatch()
 	const selectedAccount = useSelector(selectSelectedAccount)
 	const { permissionType, permissionStatus, navigateNext, onComplete } = params
+	const { acquirePermission, refreshPermissions } = useContext(PermissionsContext)
 
 	const handleOnComplete = useCallback(
 		async (status: PermissionStatus | undefined) => {
@@ -62,7 +64,7 @@ export const Permissions: ScreenFC<'Chat.Permissions'> = ({ route: { params }, n
 	)
 
 	const handleRequestPermission = useCallback(async () => {
-		const status = await requestPermission(permissionType)
+		const status = await acquirePermission(permissionType)
 		try {
 			if (permissionStatus === RESULTS.BLOCKED) {
 				return openSettings()
@@ -116,7 +118,10 @@ export const Permissions: ScreenFC<'Chat.Permissions'> = ({ route: { params }, n
 			console.warn('request permission err:', err)
 		}
 		await handleOnComplete(status)
+		refreshPermissions()
 	}, [
+		acquirePermission,
+		refreshPermissions,
 		dispatch,
 		handleOnComplete,
 		permissionStatus,

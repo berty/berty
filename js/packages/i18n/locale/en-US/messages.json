@@ -374,6 +374,7 @@
 		}
 	},
 	"chat": {
+		"title-unknown": "Unknown conversation",
 		"sending": "Sending...",
 		"sent": "Sent",
 		"contact-settings": {
@@ -385,21 +386,39 @@
 			"input-placeholder": "Type here..."
 		},
 		"push-notifications": {
-			"enable": "Enable push notifications",
-			"enabled": "Push notifications enabled",
+			"title": "Notifications",
 			"unsupported": "Notifications unsupported",
 			"check-device-settings": "This conversation is set to receive push notifications, but alerts have been disabled in the system settings of your device",
+			"check-account-settings": "Notifications are disabled, check your account settings",
 			"warning-disable": {
 				"title": "Do you want to activate this feature?",
 				"subtitle": "Once enabled, push notifications can't be disabled for a specific conversation.",
 				"accept": "Activate",
 				"refuse": "Skip"
 			},
-			"why-cant-disable": "Can't disable push notifications per conversation.",
+			"why-cant-disable": "Push notifications can't be muted for a specific conversation",
+			"why-cant-disable-account": "Push notifications can't be muted but you can use the OS settings to mute Berty notifications globally.",
 			"errors": {
 				"no-token": "Your device is not compatible with push notifications",
 				"no-server": "You must register a push relay first"
-			}
+			},
+			"warning-enable-all": {
+				"title": "Enable push notification for all conversations?",
+				"subtitle": "This will also enable notifications for the conversations you join in the future",
+				"refuse": "Refuse",
+				"accept": "Accept"
+			},
+			"warning-disable-mute": {
+				"title": "Enable notifications for this conversation?",
+				"refuse": "Keep muted",
+				"accept": "Unmute"
+			},
+			"enabled": "Push notifications enabled",
+			"disabled": "Push notifications disabled",
+			"receive-push": "Receive push notifications",
+			"hide-previews": "Hide previews in push notifications",
+			"auto-enable": "Enable push for current and future conversations",
+			"show-in-app": "Show notifications in the application"
 		},
 		"devices": {
 			"title": "Devices",
@@ -620,5 +639,10 @@
 				"button-cancel": "Cancel"
 			}
 		}
+	},
+	"time-for": {
+		"minutes": "{{minutes}} min",
+		"hours": "{{hours}} h",
+		"days": "{{days}} days"
 	}
 }

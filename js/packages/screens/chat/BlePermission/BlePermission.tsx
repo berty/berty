@@ -8,7 +8,7 @@ import proximityLottie from '@berty/assets/lottie/proximity-lottie.json'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { ScreenFC, useNavigation } from '@berty/navigation'
 import { setBlePerm } from '@berty/redux/reducers/networkConfig.reducer'
-import { PermissionType, requestPermission } from '@berty/rnutil/checkPermissions'
+import { PermissionType, acquirePermission } from '@berty/rnutil/permissions'
 import { useThemeColor } from '@berty/store'
 import { useStyles } from '@berty/contexts/styles'
 
@@ -23,7 +23,7 @@ export const BlePermission: ScreenFC<'Chat.BlePermission'> = ({ route: { params 
 	const handleRequestPermission = React.useCallback(async () => {
 		try {
 			// request the permission
-			const status = await requestPermission(PermissionType.proximity)
+			const status = await acquirePermission(PermissionType.proximity)
 			// set new Ble status for toggle's condition in settings
 			dispatch(setBlePerm(status))
 			// check status

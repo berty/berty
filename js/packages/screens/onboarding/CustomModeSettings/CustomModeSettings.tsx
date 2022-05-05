@@ -39,11 +39,8 @@ import {
 
 import { ButtonSetting } from '@berty/components/shared-components'
 import { Toggle } from '@berty/components/shared-components/Toggle'
-import {
-	checkBlePermission,
-	getPermissionStatus,
-	PermissionType,
-} from '@berty/rnutil/checkPermissions'
+import { checkBlePermission } from '@berty/rnutil/checkPermissions'
+import { getPermissions, PermissionType } from '@berty/rnutil/permissions'
 import {
 	Accordion,
 	AccordionAddItem,
@@ -621,7 +618,7 @@ const EnableDisableAll: React.FC<{ accordionRefs: AccordionRefsType }> = ({ acco
 						if (toToggled) {
 							if (Platform.OS === 'ios') {
 								// TODO: dig why (on iOS) when i accept the request the status is unavailable
-								const status = await getPermissionStatus(PermissionType.proximity)
+								const status = (await getPermissions())[PermissionType.proximity]
 								status === RESULTS.UNAVAILABLE
 									? dispatch(setCurrentNetworkConfig(enableWithoutBle))
 									: await checkBlePermission({

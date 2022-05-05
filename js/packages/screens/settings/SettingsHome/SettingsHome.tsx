@@ -1,21 +1,25 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { ScrollView, TouchableOpacity, View, Platform } from 'react-native'
 import { Icon } from '@ui-kitten/components'
 import { useTranslation } from 'react-i18next'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import * as MailComposer from 'expo-mail-composer'
+import { RESULTS } from 'react-native-permissions'
 
 import beapi from '@berty/api'
 import { useStyles } from '@berty/contexts/styles'
 import { ScreenFC, useNavigation } from '@berty/navigation'
-import { accountService, useMountEffect, useThemeColor, useMessengerClient } from '@berty/store'
-import { useAccount, useAppSelector, useSyncNetworkConfigOnScreenRemoved } from '@berty/hooks'
-import { selectSelectedAccount } from '@berty/redux/reducers/ui.reducer'
 import {
-	checkBlePermission,
-	getPermissionStatus,
-	PermissionType,
-} from '@berty/rnutil/checkPermissions'
+	accountService,
+	useMountEffect,
+	useThemeColor,
+	useMessengerClient,
+	serviceTypes,
+	numberifyLong,
+} from '@berty/store'
+import { useAccount, useAppSelector, useSyncNetworkConfigOnScreenRemoved } from '@berty/hooks'
+import { selectProtocolClient, selectSelectedAccount } from '@berty/redux/reducers/ui.reducer'
+import { checkBlePermission } from '@berty/rnutil/checkPermissions'
 import { withInAppNotification } from 'react-native-in-app-notification'
 import {
 	selectBlePerm,
@@ -31,6 +35,8 @@ import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { AccountAvatar } from '@berty/components/avatars'
 import { ButtonSettingV2, Section } from '@berty/components/shared-components'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
+import { accountPushToggleState, pushAvailable, pushFilteringAvailable } from '@berty/store/push'
+import PermissionsContext from '@berty/contexts/permissions.context'
 
 const ProfileButton: React.FC<{}> = () => {
 	const { padding, margin, border, text } = useStyles()
@@ -93,10 +99,16 @@ export const SettingsHome: ScreenFC<'Settings.Home'> = withInAppNotification(
 		const { navigate } = useNavigation()
 		const { t }: { t: any } = useTranslation()
 		const messengerClient = useMessengerClient()
+		const protocolClient = useSelector(selectProtocolClient)
+
 		const selectedAccount = useAppSelector(selectSelectedAccount)
 		const blePerm = useAppSelector(selectBlePerm)
 		const networkConfig = useAppSelector(selectEditedNetworkConfig)
 		const dispatch = useDispatch()
+		const account = useAccount()
+		const { permissions } = useContext(PermissionsContext)
+
+		const hasKnownPushServer = account.serviceTokens?.some(t => t.serviceType === serviceTypes.Push)
 
 		const generateEmail = React.useCallback(async () => {
 			var systemInfo = await messengerClient?.systemInfo({})
@@ -160,8 +172,7 @@ export const SettingsHome: ScreenFC<'Settings.Home'> = withInAppNotification(
 				if (Platform.OS === 'web') {
 					return
 				}
-				const status = await getPermissionStatus(PermissionType.proximity)
-				dispatch(setBlePerm(status))
+				dispatch(setBlePerm(permissions.proximity))
 			}
 			f()
 		})
@@ -265,12 +276,31 @@ export const SettingsHome: ScreenFC<'Settings.Home'> = withInAppNotification(
 								}}
 							/>
 						)}
+						{pushAvailable && (
+							<ButtonSettingV2
+								text={t('settings.home.notifications-button')}
+								icon='bell'
+								onPress={() => navigate('Settings.Notifications')}
+								toggle={{
+									enable: pushFilteringAvailable,
+									value:
+										hasKnownPushServer &&
+										numberifyLong(account.mutedUntil) < Date.now() &&
+										(permissions.notification === RESULTS.GRANTED ||
+											permissions.notification === RESULTS.LIMITED),
+									action: async () => {
+										await accountPushToggleState({
+											account,
+											messengerClient: messengerClient,
+											protocolClient: protocolClient,
+											navigate,
+											t,
+										})
+									},
+								}}
+							/>
+						)}
 						{/*
-					<ButtonSettingV2
-						text={t('settings.home.notifications-button')}
-						icon='bell'
-						onPress={() => navigate('Settings.Notifications')}
-					/>
 					<ButtonSettingV2
 						text={t('settings.home.contact-convs-button')}
 						icon='message-circle'

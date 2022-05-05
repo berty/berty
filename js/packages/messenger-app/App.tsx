@@ -25,6 +25,7 @@ import LightOpenSans from '@berty/assets/font/OpenSans-Light.ttf'
 import LightItalicOpenSans from '@berty/assets/font/OpenSans-LightItalic.ttf'
 import SemiBoldOpenSans from '@berty/assets/font/OpenSans-SemiBold.ttf'
 import SemiBoldItalicOpenSans from '@berty/assets/font/OpenSans-SemiBoldItalic.ttf'
+import PermissionsProvider from '@berty/components/providers/permissions.provider'
 
 import { FeatherIconsPack } from './feather-icons'
 import { CustomIconsPack } from './custom-icons'
@@ -114,18 +115,20 @@ const App: React.FC = () => {
 											isReadyRef.current = true
 										}}
 									>
-										<NotificationProvider>
-											{Platform.OS !== 'web' ? <BootSplashInhibitor /> : null}
-											<StreamGate>
-												<ListGate>
-													<MusicPlayerProvider>
-														<ModalProvider>
-															<Navigation />
-														</ModalProvider>
-													</MusicPlayerProvider>
-												</ListGate>
-											</StreamGate>
-										</NotificationProvider>
+										<PermissionsProvider>
+											<NotificationProvider>
+												{Platform.OS !== 'web' ? <BootSplashInhibitor /> : null}
+												<StreamGate>
+													<ListGate>
+														<MusicPlayerProvider>
+															<ModalProvider>
+																<Navigation />
+															</ModalProvider>
+														</MusicPlayerProvider>
+													</ListGate>
+												</StreamGate>
+											</NotificationProvider>
+										</PermissionsProvider>
 									</NavigationContainer>
 								</ErrorScreen>
 							</Background>

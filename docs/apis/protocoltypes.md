@@ -553,6 +553,7 @@ AppMetadata is an app defined message, accessible to future group members
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | auth_url | [string](#string) |  |  |
+| services | [string](#string) | repeated |  |
 
 <a name="berty.protocol.v1.ContactAddAliasKey"></a>
 

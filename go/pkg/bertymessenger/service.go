@@ -221,7 +221,7 @@ func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (_ Service, err
 	}
 
 	svc.eventHandler = messengerpayloads.NewEventHandler(ctx, db, &MetaFetcherFromProtocolClient{client: client}, newPostActionsService(&svc), opts.Logger, svc.dispatcher, false)
-	svc.pushReceiver = bertypush.NewPushReceiver(bertypush.NewPushHandlerViaProtocol(ctx, client), svc.eventHandler, opts.Logger)
+	svc.pushReceiver = bertypush.NewPushReceiver(bertypush.NewPushHandlerViaProtocol(ctx, client), svc.eventHandler, svc.db, opts.Logger)
 
 	// get or create account in DB
 	{
@@ -785,6 +785,15 @@ func (svc *service) sharePushTokenForConversationInternal(conversation *mt.Conve
 
 		if _, err := svc.db.UpdateConversation(mt.Conversation{PublicKey: conversation.PublicKey, SharedPushTokenIdentifier: tokenIdentifier}); err != nil {
 			return errcode.ErrDBWrite.Wrap(err)
+		}
+
+		conv, err := svc.db.GetConversationByPK(conversation.PublicKey)
+		if err != nil {
+			return errcode.ErrDBRead.Wrap(err)
+		}
+
+		if err := svc.dispatcher.StreamEvent(mt.StreamEvent_TypeConversationUpdated, &mt.StreamEvent_ConversationUpdated{Conversation: conv}, false); err != nil {
+			return errcode.TODO.Wrap(err)
 		}
 	}
 

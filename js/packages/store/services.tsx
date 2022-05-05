@@ -49,13 +49,15 @@ export const useAccountServices = (): Array<beapi.messenger.IServiceToken> => {
 
 export const servicesAuthViaDefault = async (
 	protocolClient: ServiceClientType<beapi.protocol.ProtocolService> | null,
+	services?: string[],
 ): Promise<void> => {
-	return servicesAuthViaURL(protocolClient, bertyOperatedServer)
+	return servicesAuthViaURL(protocolClient, bertyOperatedServer, services)
 }
 
 export const servicesAuthViaURL = async (
 	protocolClient: ServiceClientType<beapi.protocol.ProtocolService> | null,
 	url: string,
+	services?: string[],
 ): Promise<void> => {
 	if (!protocolClient) {
 		throw new Error('missing protocol client')
@@ -65,6 +67,7 @@ export const servicesAuthViaURL = async (
 	const resp = await protocolClient
 		?.authServiceInitFlow({
 			authUrl: url,
+			services: services || [],
 		})
 		.catch(e => {
 			Alert.alert('The provided URL is not supported')

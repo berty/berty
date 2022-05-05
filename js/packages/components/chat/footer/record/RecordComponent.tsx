@@ -32,7 +32,7 @@ import {
 import { RecordingComponent } from './RecordingComponent'
 import { PreviewComponent } from './PreviewComponent'
 import { UnifiedText } from '../../../shared-components/UnifiedText'
-import { PermissionType } from '@berty/rnutil/checkPermissions'
+import { PermissionType } from '@berty/rnutil/permissions'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 
 enum MicPermStatus {

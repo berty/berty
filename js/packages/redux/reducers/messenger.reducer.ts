@@ -3,6 +3,7 @@ import { createEntityAdapter, createSlice, EntityState } from '@reduxjs/toolkit'
 import beapi from '@berty/api'
 import { parseInteraction, pbDateToNum } from '@berty/store/convert'
 import { ParsedInteraction } from '@berty/store/types.gen'
+import Long from 'long'
 
 import { messengerActions } from '../messengerActions.gen'
 
@@ -150,6 +151,7 @@ const slice = createSlice({
 					...payload.conversation,
 					isOpen: !!payload.conversation.isOpen,
 					unreadCount: payload.conversation.unreadCount || 0,
+					mutedUntil: payload.conversation.mutedUntil || Long.fromInt(0),
 				})
 
 				const convPk = payload.conversation.publicKey

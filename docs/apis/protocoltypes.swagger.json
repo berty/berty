@@ -2083,6 +2083,12 @@
       "properties": {
         "auth_url": {
           "type": "string"
+        },
+        "services": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
         }
       }
     },

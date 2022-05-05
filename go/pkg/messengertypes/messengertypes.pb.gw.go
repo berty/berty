@@ -537,6 +537,38 @@ func local_request_MessengerService_AccountUpdate_0(ctx context.Context, marshal
 	return msg, metadata, err
 }
 
+func request_MessengerService_AccountPushConfigure_0(ctx context.Context, marshaler runtime.Marshaler, client MessengerServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq AccountPushConfigure_Request
+	var metadata runtime.ServerMetadata
+
+	newReader, berr := utilities.IOReaderFactory(req.Body)
+	if berr != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
+	}
+	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+
+	msg, err := client.AccountPushConfigure(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+}
+
+func local_request_MessengerService_AccountPushConfigure_0(ctx context.Context, marshaler runtime.Marshaler, server MessengerServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq AccountPushConfigure_Request
+	var metadata runtime.ServerMetadata
+
+	newReader, berr := utilities.IOReaderFactory(req.Body)
+	if berr != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
+	}
+	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+
+	msg, err := server.AccountPushConfigure(ctx, &protoReq)
+	return msg, metadata, err
+}
+
 func request_MessengerService_ContactRequest_0(ctx context.Context, marshaler runtime.Marshaler, client MessengerServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq ContactRequest_Request
 	var metadata runtime.ServerMetadata
@@ -726,6 +758,38 @@ func local_request_MessengerService_ConversationLoad_0(ctx context.Context, mars
 	}
 
 	msg, err := server.ConversationLoad(ctx, &protoReq)
+	return msg, metadata, err
+}
+
+func request_MessengerService_ConversationMute_0(ctx context.Context, marshaler runtime.Marshaler, client MessengerServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq ConversationMute_Request
+	var metadata runtime.ServerMetadata
+
+	newReader, berr := utilities.IOReaderFactory(req.Body)
+	if berr != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
+	}
+	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+
+	msg, err := client.ConversationMute(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+}
+
+func local_request_MessengerService_ConversationMute_0(ctx context.Context, marshaler runtime.Marshaler, server MessengerServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq ConversationMute_Request
+	var metadata runtime.ServerMetadata
+
+	newReader, berr := utilities.IOReaderFactory(req.Body)
+	if berr != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
+	}
+	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+
+	msg, err := server.ConversationMute(ctx, &protoReq)
 	return msg, metadata, err
 }
 
@@ -1518,6 +1582,28 @@ func RegisterMessengerServiceHandlerServer(ctx context.Context, mux *runtime.Ser
 		forward_MessengerService_AccountUpdate_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
 
+	mux.Handle("POST", pattern_MessengerService_AccountPushConfigure_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_MessengerService_AccountPushConfigure_0(rctx, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
+		ctx = runtime.NewServerMetadataContext(ctx, md)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_MessengerService_AccountPushConfigure_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
+
 	mux.Handle("POST", pattern_MessengerService_ContactRequest_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
@@ -1648,6 +1734,28 @@ func RegisterMessengerServiceHandlerServer(ctx context.Context, mux *runtime.Ser
 		}
 
 		forward_MessengerService_ConversationLoad_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
+
+	mux.Handle("POST", pattern_MessengerService_ConversationMute_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_MessengerService_ConversationMute_0(rctx, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
+		ctx = runtime.NewServerMetadataContext(ctx, md)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_MessengerService_ConversationMute_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
 
 	mux.Handle("POST", pattern_MessengerService_ServicesTokenList_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -2263,6 +2371,25 @@ func RegisterMessengerServiceHandlerClient(ctx context.Context, mux *runtime.Ser
 		forward_MessengerService_AccountUpdate_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
 
+	mux.Handle("POST", pattern_MessengerService_AccountPushConfigure_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		rctx, err := runtime.AnnotateContext(ctx, mux, req)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_MessengerService_AccountPushConfigure_0(rctx, inboundMarshaler, client, req, pathParams)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_MessengerService_AccountPushConfigure_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
+
 	mux.Handle("POST", pattern_MessengerService_ContactRequest_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
@@ -2375,6 +2502,25 @@ func RegisterMessengerServiceHandlerClient(ctx context.Context, mux *runtime.Ser
 		}
 
 		forward_MessengerService_ConversationLoad_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
+
+	mux.Handle("POST", pattern_MessengerService_ConversationMute_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		rctx, err := runtime.AnnotateContext(ctx, mux, req)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_MessengerService_ConversationMute_0(rctx, inboundMarshaler, client, req, pathParams)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_MessengerService_ConversationMute_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
 
 	mux.Handle("POST", pattern_MessengerService_ServicesTokenList_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -2736,6 +2882,8 @@ var (
 
 	pattern_MessengerService_AccountUpdate_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"berty.messenger.v1", "MessengerService", "AccountUpdate"}, "", runtime.AssumeColonVerbOpt(true)))
 
+	pattern_MessengerService_AccountPushConfigure_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"berty.messenger.v1", "MessengerService", "AccountPushConfigure"}, "", runtime.AssumeColonVerbOpt(true)))
+
 	pattern_MessengerService_ContactRequest_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"berty.messenger.v1", "MessengerService", "ContactRequest"}, "", runtime.AssumeColonVerbOpt(true)))
 
 	pattern_MessengerService_ContactAccept_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"berty.messenger.v1", "MessengerService", "ContactAccept"}, "", runtime.AssumeColonVerbOpt(true)))
@@ -2747,6 +2895,8 @@ var (
 	pattern_MessengerService_ConversationClose_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"berty.messenger.v1", "MessengerService", "ConversationClose"}, "", runtime.AssumeColonVerbOpt(true)))
 
 	pattern_MessengerService_ConversationLoad_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"berty.messenger.v1", "MessengerService", "ConversationLoad"}, "", runtime.AssumeColonVerbOpt(true)))
+
+	pattern_MessengerService_ConversationMute_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"berty.messenger.v1", "MessengerService", "ConversationMute"}, "", runtime.AssumeColonVerbOpt(true)))
 
 	pattern_MessengerService_ServicesTokenList_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"berty.messenger.v1", "MessengerService", "ServicesTokenList"}, "", runtime.AssumeColonVerbOpt(true)))
 
@@ -2816,6 +2966,8 @@ var (
 
 	forward_MessengerService_AccountUpdate_0 = runtime.ForwardResponseMessage
 
+	forward_MessengerService_AccountPushConfigure_0 = runtime.ForwardResponseMessage
+
 	forward_MessengerService_ContactRequest_0 = runtime.ForwardResponseMessage
 
 	forward_MessengerService_ContactAccept_0 = runtime.ForwardResponseMessage
@@ -2827,6 +2979,8 @@ var (
 	forward_MessengerService_ConversationClose_0 = runtime.ForwardResponseMessage
 
 	forward_MessengerService_ConversationLoad_0 = runtime.ForwardResponseMessage
+
+	forward_MessengerService_ConversationMute_0 = runtime.ForwardResponseMessage
 
 	forward_MessengerService_ServicesTokenList_0 = runtime.ForwardResponseStream
 
