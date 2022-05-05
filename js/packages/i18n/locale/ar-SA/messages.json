@@ -374,6 +374,7 @@
 		}
 	},
 	"chat": {
+		"title-unknown": "",
 		"sending": "يرسل...",
 		"sent": "أرسلت",
 		"contact-settings": {
@@ -385,10 +386,10 @@
 			"input-placeholder": "اكتب هنا..."
 		},
 		"push-notifications": {
-			"enable": "فعّل دفع الإشعارات",
-			"enabled": "دفع الإشعارات مفعل",
+			"title": "الإشعارات",
 			"unsupported": "الإشعارات غير مدعومة",
 			"check-device-settings": "",
+			"check-account-settings": "",
 			"warning-disable": {
 				"title": "هل تريد تفعيل هذه الميّزة؟",
 				"subtitle": "بمجرد تفعيلها لا يمكن تعطيل الإشعارات لمحادثة معينة.",
@@ -396,10 +397,28 @@
 				"refuse": "تخطى"
 			},
 			"why-cant-disable": "",
+			"why-cant-disable-account": "",
 			"errors": {
 				"no-token": "",
 				"no-server": ""
-			}
+			},
+			"warning-enable-all": {
+				"title": "",
+				"subtitle": "",
+				"refuse": "",
+				"accept": "قبول"
+			},
+			"warning-disable-mute": {
+				"title": "",
+				"refuse": "",
+				"accept": ""
+			},
+			"enabled": "دفع الإشعارات مفعل",
+			"disabled": "تم تعطيل الإشعارات",
+			"receive-push": "تلقي الإشعارات",
+			"hide-previews": "",
+			"auto-enable": "",
+			"show-in-app": ""
 		},
 		"devices": {
 			"title": "الأجهزة",
@@ -620,5 +639,10 @@
 				"button-cancel": ""
 			}
 		}
+	},
+	"time-for": {
+		"minutes": "",
+		"hours": "",
+		"days": ""
 	}
 }
