@@ -374,6 +374,7 @@
 		}
 	},
 	"chat": {
+		"title-unknown": "",
 		"sending": "正在发送...",
 		"sent": "已发送",
 		"contact-settings": {
@@ -385,21 +386,39 @@
 			"input-placeholder": "在此输入..."
 		},
 		"push-notifications": {
-			"enable": "开启推送通知",
-			"enabled": "已启用推送通知",
+			"title": "消息通知",
 			"unsupported": "不支持通知",
 			"check-device-settings": "此对话设置为接收推送通知，但您设备的系统设置中已禁用通知",
+			"check-account-settings": "",
 			"warning-disable": {
 				"title": "您想要激活此功能吗？",
 				"subtitle": "开启后，无法为特定对话禁用推送通知。",
 				"accept": "启用",
 				"refuse": "跳过"
 			},
-			"why-cant-disable": "无法禁用每个对话的推送通知。",
+			"why-cant-disable": "",
+			"why-cant-disable-account": "",
 			"errors": {
 				"no-token": "您的设备与推送通知不兼容",
 				"no-server": "您必须先注册一个推送中继"
-			}
+			},
+			"warning-enable-all": {
+				"title": "",
+				"subtitle": "",
+				"refuse": "拒绝",
+				"accept": "同意"
+			},
+			"warning-disable-mute": {
+				"title": "",
+				"refuse": "",
+				"accept": ""
+			},
+			"enabled": "已启用推送通知",
+			"disabled": "已禁用新消息通知",
+			"receive-push": "接收新消息通知",
+			"hide-previews": "",
+			"auto-enable": "",
+			"show-in-app": ""
 		},
 		"devices": {
 			"title": "设备",
@@ -620,5 +639,10 @@
 				"button-cancel": "取消"
 			}
 		}
+	},
+	"time-for": {
+		"minutes": "",
+		"hours": "",
+		"days": ""
 	}
 }
