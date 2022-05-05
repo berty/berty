@@ -374,6 +374,7 @@
 		}
 	},
 	"chat": {
+		"title-unknown": "",
 		"sending": "Wird gesendet...",
 		"sent": "Gesendet",
 		"contact-settings": {
@@ -385,10 +386,10 @@
 			"input-placeholder": "Hier eingeben..."
 		},
 		"push-notifications": {
-			"enable": "Push-Benachrichtigungen aktivieren",
-			"enabled": "Push-Benachrichtigungen aktiviert",
+			"title": "Benachrichtigungen",
 			"unsupported": "Benachrichtigungen werden nicht unterstützt",
 			"check-device-settings": "Diese Unterhaltung ist so eingestellt, dass Push-Benachrichtigungen empfangen werden, aber Benachrichtigungen wurden in den Systemeinstellungen Ihres Geräts deaktiviert",
+			"check-account-settings": "",
 			"warning-disable": {
 				"title": "Möchten Sie diese Funktion aktivieren?",
 				"subtitle": "Einmal aktiviert, können Push-Benachrichtigungen für eine bestimmte Unterhaltung nicht deaktiviert werden.",
@@ -396,10 +397,28 @@
 				"refuse": "Überspringen"
 			},
 			"why-cant-disable": "",
+			"why-cant-disable-account": "",
 			"errors": {
 				"no-token": "Ihr Gerät ist nicht mit Push-Benachrichtigungen kompatibel",
 				"no-server": ""
-			}
+			},
+			"warning-enable-all": {
+				"title": "",
+				"subtitle": "",
+				"refuse": "",
+				"accept": "Akzeptieren"
+			},
+			"warning-disable-mute": {
+				"title": "",
+				"refuse": "",
+				"accept": ""
+			},
+			"enabled": "Push-Benachrichtigungen aktiviert",
+			"disabled": "Push Benachrichtigungen deaktiviert",
+			"receive-push": "Push-Benachrichtigungen erhalten",
+			"hide-previews": "",
+			"auto-enable": "",
+			"show-in-app": ""
 		},
 		"devices": {
 			"title": "Geräte",
@@ -620,5 +639,10 @@
 				"button-cancel": "Abbrechen"
 			}
 		}
+	},
+	"time-for": {
+		"minutes": "",
+		"hours": "",
+		"days": ""
 	}
 }
