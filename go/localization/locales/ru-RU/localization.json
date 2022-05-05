@@ -18,7 +18,9 @@
     "privacyPolicyLabel": "Политика конфиденциальности"
   },
   "push": {
-    "message": {},
+    "message": {
+      "title": "Новое сообщение"
+    },
     "error": {
       "title": "Ошибка Push-расшифровки"
     },
