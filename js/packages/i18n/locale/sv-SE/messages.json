@@ -374,6 +374,7 @@
 		}
 	},
 	"chat": {
+		"title-unknown": "",
 		"sending": "Skickar...",
 		"sent": "Skickat",
 		"contact-settings": {
@@ -385,10 +386,10 @@
 			"input-placeholder": "Skriv här..."
 		},
 		"push-notifications": {
-			"enable": "",
-			"enabled": "",
+			"title": "Aviseringar",
 			"unsupported": "",
 			"check-device-settings": "",
+			"check-account-settings": "",
 			"warning-disable": {
 				"title": "",
 				"subtitle": "",
@@ -396,10 +397,28 @@
 				"refuse": ""
 			},
 			"why-cant-disable": "",
+			"why-cant-disable-account": "",
 			"errors": {
 				"no-token": "",
 				"no-server": ""
-			}
+			},
+			"warning-enable-all": {
+				"title": "",
+				"subtitle": "",
+				"refuse": "",
+				"accept": "Acceptera"
+			},
+			"warning-disable-mute": {
+				"title": "",
+				"refuse": "",
+				"accept": ""
+			},
+			"enabled": "",
+			"disabled": "Push-aviseringar avstängda",
+			"receive-push": "Ta emot push-aviseringar",
+			"hide-previews": "",
+			"auto-enable": "",
+			"show-in-app": ""
 		},
 		"devices": {
 			"title": "Enheter",
@@ -620,5 +639,10 @@
 				"button-cancel": "Avbryt"
 			}
 		}
+	},
+	"time-for": {
+		"minutes": "",
+		"hours": "",
+		"days": ""
 	}
 }
