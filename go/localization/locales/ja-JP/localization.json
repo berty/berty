@@ -18,7 +18,9 @@
     "privacyPolicyLabel": "プライバシーポリシー"
   },
   "push": {
-    "message": {},
+    "message": {
+      "title": "新しいメッセージ"
+    },
     "error": {
       "title": ""
     },
