@@ -374,6 +374,7 @@
 		}
 	},
 	"chat": {
+		"title-unknown": "",
 		"sending": "Отправка...",
 		"sent": "Отправлено",
 		"contact-settings": {
@@ -385,21 +386,39 @@
 			"input-placeholder": "Введите здесь..."
 		},
 		"push-notifications": {
-			"enable": "Получать push-уведомления",
-			"enabled": "Push-уведомления включены",
+			"title": "Уведомления",
 			"unsupported": "Уведомления не поддерживаются",
 			"check-device-settings": "",
+			"check-account-settings": "",
 			"warning-disable": {
 				"title": "",
 				"subtitle": "",
 				"accept": "",
 				"refuse": "Пропустить"
 			},
-			"why-cant-disable": "Не удается отключить push-уведомления в чате.",
+			"why-cant-disable": "",
+			"why-cant-disable-account": "",
 			"errors": {
 				"no-token": "Твоё устройство не поддерживает push-уведомления",
 				"no-server": ""
-			}
+			},
+			"warning-enable-all": {
+				"title": "",
+				"subtitle": "",
+				"refuse": "",
+				"accept": "Принять"
+			},
+			"warning-disable-mute": {
+				"title": "",
+				"refuse": "",
+				"accept": ""
+			},
+			"enabled": "Push-уведомления включены",
+			"disabled": "Push-уведомления отключены",
+			"receive-push": "Получать push-уведомления",
+			"hide-previews": "",
+			"auto-enable": "",
+			"show-in-app": ""
 		},
 		"devices": {
 			"title": "Устройства",
@@ -620,5 +639,10 @@
 				"button-cancel": "Отменить"
 			}
 		}
+	},
+	"time-for": {
+		"minutes": "",
+		"hours": "",
+		"days": ""
 	}
 }
