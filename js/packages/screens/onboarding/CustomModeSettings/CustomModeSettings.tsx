@@ -1,3 +1,4 @@
+import { Icon } from '@ui-kitten/components'
 import React, { createRef, RefObject } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
@@ -9,13 +10,20 @@ import {
 	Platform,
 	ActivityIndicator,
 } from 'react-native'
-import { Icon } from '@ui-kitten/components'
+import { RESULTS } from 'react-native-permissions'
+import { useDispatch } from 'react-redux'
 
 import beapi from '@berty/api'
-import { ScreenFC, useNavigation } from '@berty/navigation'
-import { accountService, useMountEffect, useThemeColor } from '@berty/store'
+import { AccordionAdd } from '@berty/components/modals/AccordionAdd.modal'
+import { AccordionEdit } from '@berty/components/modals/AccordionEdit.modal'
+import { useModal } from '@berty/components/providers/modal.provider'
+import { ButtonSetting } from '@berty/components/shared-components'
+import { Toggle } from '@berty/components/shared-components/Toggle'
+import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
+import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
 import { useAppDispatch, useAppSelector, useCreateNewAccount } from '@berty/hooks'
+import { ScreenFC, useNavigation } from '@berty/navigation'
 import {
 	addToBootstrap,
 	addToRendezvous,
@@ -36,9 +44,6 @@ import {
 	toggleFromRendezvous,
 	toggleFromStaticRelay,
 } from '@berty/redux/reducers/networkConfig.reducer'
-
-import { ButtonSetting } from '@berty/components/shared-components'
-import { Toggle } from '@berty/components/shared-components/Toggle'
 import { checkBlePermission } from '@berty/rnutil/checkPermissions'
 import { getPermissions, PermissionType } from '@berty/rnutil/permissions'
 import {
@@ -47,13 +52,7 @@ import {
 	AccordionItem,
 	AccordionRef,
 } from '@berty/screens/onboarding/CustomModeSettings/components/Accordion'
-import { AccordionEdit } from '@berty/components/modals/AccordionEdit.modal'
-import { AccordionAdd } from '@berty/components/modals/AccordionAdd.modal'
-import { useModal } from '@berty/components/providers/modal.provider'
-import { useDispatch } from 'react-redux'
-import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
-import { RESULTS } from 'react-native-permissions'
-import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
+import { accountService, useMountEffect, useThemeColor } from '@berty/store'
 
 type AccordionRefsType = {
 	relay: RefObject<AccordionRef>

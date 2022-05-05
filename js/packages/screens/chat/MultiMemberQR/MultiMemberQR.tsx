@@ -1,18 +1,18 @@
-import React from 'react'
-import QRCode from 'react-native-qrcode-svg'
-import { Share, TouchableOpacity, View, StatusBar, Platform } from 'react-native'
-import { Icon, Layout } from '@ui-kitten/components'
 import Clipboard from '@react-native-clipboard/clipboard'
+import { Icon, Layout } from '@ui-kitten/components'
+import React from 'react'
+import { Share, TouchableOpacity, View, StatusBar, Platform } from 'react-native'
+import QRCode from 'react-native-qrcode-svg'
 
 import beapi from '@berty/api'
-import { ScreenFC } from '@berty/navigation'
-import { useStylesBertyId, useThemeColor } from '@berty/store'
-import { useStyles } from '@berty/contexts/styles'
-import { useConversation } from '@berty/hooks'
+import logo from '@berty/assets/images/1_berty_picto.png'
 import { MultiMemberAvatar } from '@berty/components/avatars'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
-import logo from '@berty/assets/images/1_berty_picto.png'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
+import { useStyles } from '@berty/contexts/styles'
+import { useConversation } from '@berty/hooks'
+import { ScreenFC } from '@berty/navigation'
+import { useStylesBertyId, useThemeColor } from '@berty/store'
 
 const styleBertyIdOptions = {
 	iconIdSize: 30,

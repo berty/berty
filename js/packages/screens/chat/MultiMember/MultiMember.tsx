@@ -1,12 +1,22 @@
-import React, { useState } from 'react'
-import { TouchableOpacity, View, Platform, TextInput, Keyboard } from 'react-native'
-import { Icon } from '@ui-kitten/components'
-import { useFocusEffect } from '@react-navigation/native'
-import { useTranslation } from 'react-i18next'
 import { useHeaderHeight } from '@react-navigation/elements'
+import { useFocusEffect } from '@react-navigation/native'
+import { Icon } from '@ui-kitten/components'
+import React, { useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { TouchableOpacity, View, Platform, TextInput, Keyboard } from 'react-native'
+import AndroidKeyboardAdjust from 'react-native-android-keyboard-adjust'
 
+import beapi from '@berty/api'
+import { MultiMemberAvatar } from '@berty/components/avatars'
+import { ChatDate } from '@berty/components/chat/common'
+import { ChatFooter } from '@berty/components/chat/footer/ChatFooter'
+import { MessageList } from '@berty/components/chat/MessageList'
+import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
+import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
+import { useConversation, useLastConvInteraction } from '@berty/hooks'
 import { ScreenFC } from '@berty/navigation'
+import { IOSOnlyKeyboardAvoidingView } from '@berty/rnutil/keyboardAvoiding'
 import {
 	useReadEffect,
 	useNotificationsInhibitor,
@@ -14,17 +24,6 @@ import {
 	pbDateToNum,
 	useMessengerClient,
 } from '@berty/store'
-import beapi from '@berty/api'
-import { IOSOnlyKeyboardAvoidingView } from '@berty/rnutil/keyboardAvoiding'
-import { useConversation, useLastConvInteraction } from '@berty/hooks'
-import AndroidKeyboardAdjust from 'react-native-android-keyboard-adjust'
-import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
-
-import { ChatDate } from '@berty/components/chat/common'
-import { MultiMemberAvatar } from '@berty/components/avatars'
-import { MessageList } from '@berty/components/chat/MessageList'
-import { ChatFooter } from '@berty/components/chat/footer/ChatFooter'
-import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 
 //
 // MultiMember

@@ -1,10 +1,11 @@
 import React from 'react'
 import { TextStyle, TouchableOpacity, ViewStyle } from 'react-native'
 
+import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
 import { useThemeColor } from '@berty/store/hooks'
+
 import { UnifiedText } from '../shared-components/UnifiedText'
-import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 
 const Button: React.FC<{
 	onPress: () => void

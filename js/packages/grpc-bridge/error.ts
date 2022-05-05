@@ -1,5 +1,6 @@
-import beapi from '@berty/api'
 import { reduce } from 'lodash'
+
+import beapi from '@berty/api'
 
 class GRPCError extends Error {
 	public EOF: boolean

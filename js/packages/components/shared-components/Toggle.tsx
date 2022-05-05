@@ -1,6 +1,6 @@
+import { Icon } from '@ui-kitten/components'
 import React, { useEffect, useState } from 'react'
 import { TouchableOpacity, Animated, ViewStyle } from 'react-native'
-import { Icon } from '@ui-kitten/components'
 
 import { useThemeColor } from '@berty/store/hooks'
 

@@ -1,11 +1,10 @@
+import { Layout } from '@ui-kitten/components'
 import React from 'react'
 import { StatusBar } from 'react-native'
-import { Layout } from '@ui-kitten/components'
-
-import { ScreenFC } from '@berty/navigation'
-import { useThemeColor } from '@berty/store'
 
 import { WebViews } from '@berty/components/shared-components'
+import { ScreenFC } from '@berty/navigation'
+import { useThemeColor } from '@berty/store'
 
 const PrivacyPolicyURL = 'https://berty.tech/privacy-policy#'
 

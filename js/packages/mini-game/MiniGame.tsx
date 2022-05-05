@@ -1,8 +1,7 @@
 import React from 'react'
 import { View, SafeAreaView, Pressable, PanResponder, Dimensions, StyleSheet } from 'react-native'
-
-import WebView from 'react-native-webview'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import WebView from 'react-native-webview'
 
 const _defaultBorderSize = 40
 const exitMessageEvent = 'ExitGame'

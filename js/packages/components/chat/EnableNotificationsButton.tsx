@@ -1,17 +1,18 @@
 import React, { useContext, useMemo } from 'react'
-import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
+import { RESULTS } from 'react-native-permissions'
+import { useSelector } from 'react-redux'
 
 import { ButtonSetting } from '@berty/components/shared-components'
-import { RESULTS } from 'react-native-permissions'
-import { useNavigation } from '@berty/navigation'
-import { useStyles } from '@berty/contexts/styles'
-import { selectClient, selectProtocolClient } from '@berty/redux/reducers/ui.reducer'
-import { useAccount, useConversation } from '@berty/hooks'
-import { UnifiedText } from '../shared-components/UnifiedText'
-import { conversationPushToggleState, pushAvailable } from '@berty/store/push'
 import PermissionsContext from '@berty/contexts/permissions.context'
+import { useStyles } from '@berty/contexts/styles'
+import { useAccount, useConversation } from '@berty/hooks'
+import { useNavigation } from '@berty/navigation'
+import { selectClient, selectProtocolClient } from '@berty/redux/reducers/ui.reducer'
 import { numberifyLong } from '@berty/store'
+import { conversationPushToggleState, pushAvailable } from '@berty/store/push'
+
+import { UnifiedText } from '../shared-components/UnifiedText'
 
 const EnableNotificationsButton: React.FC<{
 	conversationPk: string

@@ -4,6 +4,7 @@ import { SHA3 } from 'sha3'
 
 import { useStyles } from '@berty/contexts/styles'
 import { Maybe, useThemeColor } from '@berty/store'
+
 import { UnifiedText } from './UnifiedText'
 
 //

@@ -1,15 +1,15 @@
+import { CommonActions } from '@react-navigation/native'
 import React from 'react'
 import { TouchableOpacity, View } from 'react-native'
-import { CommonActions } from '@react-navigation/native'
 
 import beapi from '@berty/api'
 import { useStyles } from '@berty/contexts/styles'
-import { dispatch } from '@berty/navigation'
 import { useConversation } from '@berty/hooks'
+import { dispatch } from '@berty/navigation'
 
-import { useStylesNotification } from './common'
 import { ConversationAvatar } from '../avatars'
 import { UnifiedText } from '../shared-components/UnifiedText'
+import { useStylesNotification } from './common'
 
 const MessageReceived: React.FC<any> = ({ onClose, title, message, ...props }) => {
 	const { text } = useStyles()

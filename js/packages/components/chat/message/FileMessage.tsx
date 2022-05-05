@@ -1,14 +1,14 @@
+import { Icon } from '@ui-kitten/components'
 import React, { useEffect, useState } from 'react'
 import { TouchableOpacity } from 'react-native'
-import { Icon } from '@ui-kitten/components'
-
-import { useThemeColor } from '@berty/store'
-import { useStyles } from '@berty/contexts/styles'
-
-import { getSource } from '../../utils'
 import { useSelector } from 'react-redux'
+
+import { useStyles } from '@berty/contexts/styles'
 import { selectProtocolClient } from '@berty/redux/reducers/ui.reducer'
+import { useThemeColor } from '@berty/store'
+
 import { UnifiedText } from '../../shared-components/UnifiedText'
+import { getSource } from '../../utils'
 
 export const FileMessage: React.FC<{
 	medias: any

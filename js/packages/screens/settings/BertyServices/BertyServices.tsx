@@ -1,25 +1,24 @@
 import React from 'react'
-import { StatusBar, View } from 'react-native'
 import { useTranslation } from 'react-i18next'
+import { StatusBar, View } from 'react-native'
+import { useSelector } from 'react-redux'
 
+import OnboardingWrapper from '@berty/components/onboarding/OnboardingWrapper'
+import SwiperCard from '@berty/components/onboarding/SwiperCard'
+import { useAppDispatch } from '@berty/hooks'
 import { ScreenFC, useNavigation } from '@berty/navigation'
+import {
+	PersistentOptionsKeys,
+	selectPersistentOptions,
+	setPersistentOption,
+} from '@berty/redux/reducers/persistentOptions.reducer'
+import { selectProtocolClient } from '@berty/redux/reducers/ui.reducer'
 import {
 	servicesAuthViaDefault,
 	useAccountServices,
 	useNotificationsInhibitor,
 	useThemeColor,
 } from '@berty/store'
-
-import SwiperCard from '@berty/components/onboarding/SwiperCard'
-import OnboardingWrapper from '@berty/components/onboarding/OnboardingWrapper'
-import { useSelector } from 'react-redux'
-import { selectProtocolClient } from '@berty/redux/reducers/ui.reducer'
-import {
-	PersistentOptionsKeys,
-	selectPersistentOptions,
-	setPersistentOption,
-} from '@berty/redux/reducers/persistentOptions.reducer'
-import { useAppDispatch } from '@berty/hooks'
 
 const ServicesAuthBody: React.FC<{ next: () => void }> = ({ next }) => {
 	const persistentOptions = useSelector(selectPersistentOptions)

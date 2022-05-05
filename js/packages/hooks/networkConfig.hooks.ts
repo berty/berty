@@ -1,5 +1,5 @@
-import { useCallback, useEffect } from 'react'
 import { useNavigation } from '@react-navigation/native'
+import { useCallback, useEffect } from 'react'
 
 import beapi from '@berty/api'
 import {

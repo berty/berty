@@ -1,7 +1,8 @@
 import { grpc } from '@improbable-eng/grpc-web'
-import { getServiceName } from './utils'
 import * as pb from 'protobufjs'
+
 import { newGRPCError, EOF } from '../error'
+import { getServiceName } from './utils'
 
 class LazyMessage extends pb.Message implements grpc.ProtobufMessage {
 	buf: Uint8Array

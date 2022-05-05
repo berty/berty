@@ -1,24 +1,23 @@
-import React, { useEffect } from 'react'
-import { View, TouchableOpacity, StyleSheet } from 'react-native'
+import { BlurView } from '@react-native-community/blur'
 import { Text, Icon } from '@ui-kitten/components'
 import { Buffer } from 'buffer'
-
-import { useStyles } from '@berty/contexts/styles'
-import messengerMethodsHooks from '@berty/store/methods'
-import { useThemeColor } from '@berty/store'
-import { BlurView } from '@react-native-community/blur'
+import React, { useEffect } from 'react'
+import { View, TouchableOpacity, StyleSheet } from 'react-native'
+import { useSelector } from 'react-redux'
 
 import Avatar from '@berty/assets/logo/buck_berty_icon_card.svg'
+import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { base64ToURLBase64 } from '@berty/components/utils'
-import { useSelector } from 'react-redux'
+import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
+import { useStyles } from '@berty/contexts/styles'
+import { useAppDispatch, useStylesDefaultModal } from '@berty/hooks'
 import {
 	PersistentOptionsKeys,
 	selectPersistentOptions,
 	setPersistentOption,
 } from '@berty/redux/reducers/persistentOptions.reducer'
-import { useAppDispatch, useStylesDefaultModal } from '@berty/hooks'
-import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
-import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
+import { useThemeColor } from '@berty/store'
+import messengerMethodsHooks from '@berty/store/methods'
 
 const AddBotBody: React.FC<{
 	displayName: string

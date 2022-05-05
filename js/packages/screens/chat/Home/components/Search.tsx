@@ -1,17 +1,17 @@
 import React, { useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import { SectionList, TouchableHighlight, View } from 'react-native'
 import { EdgeInsets } from 'react-native-safe-area-context'
-import { useTranslation } from 'react-i18next'
 
 import beapi from '@berty/api'
-import { useNavigation } from '@berty/navigation'
-import { useStyles } from '@berty/contexts/styles'
-import { useThemeColor, parseInteraction, pbDateToNum, ParsedInteraction } from '@berty/store'
-import { useContact, useConversationInteractions, useConversation } from '@berty/hooks'
-import { HintBody } from '@berty/components/shared-components'
-import { timeFormat } from '@berty/components/helpers'
 import { ContactAvatar, ConversationAvatar } from '@berty/components/avatars'
+import { timeFormat } from '@berty/components/helpers'
+import { HintBody } from '@berty/components/shared-components'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
+import { useStyles } from '@berty/contexts/styles'
+import { useContact, useConversationInteractions, useConversation } from '@berty/hooks'
+import { useNavigation } from '@berty/navigation'
+import { useThemeColor, parseInteraction, pbDateToNum, ParsedInteraction } from '@berty/store'
 
 // Styles
 

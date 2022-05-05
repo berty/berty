@@ -1,3 +1,7 @@
+import BottomSheet, {
+	useBottomSheetDynamicSnapPoints,
+	BottomSheetScrollView,
+} from '@gorhom/bottom-sheet'
 import React, {
 	createContext,
 	FC,
@@ -13,13 +17,9 @@ import React, {
 	useEffect,
 } from 'react'
 import { Keyboard, Platform, TouchableWithoutFeedback, View } from 'react-native'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import BottomSheet, {
-	useBottomSheetDynamicSnapPoints,
-	BottomSheetScrollView,
-} from '@gorhom/bottom-sheet'
-
 import { useAnimatedStyle } from 'react-native-reanimated'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
+
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 
 const useKeyboardHeight = (platforms: string[] = ['ios', 'android']) => {

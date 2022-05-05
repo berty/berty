@@ -1,11 +1,12 @@
+import { Icon } from '@ui-kitten/components'
 import React from 'react'
 import { View, TouchableOpacity, ActivityIndicator, TextStyle } from 'react-native'
-import { Icon } from '@ui-kitten/components'
 
+import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
 import { useThemeColor } from '@berty/store/hooks'
+
 import { UnifiedText } from '../shared-components/UnifiedText'
-import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 
 type FooterCreateGroupProps = {
 	title: string

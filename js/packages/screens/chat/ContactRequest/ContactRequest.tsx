@@ -1,7 +1,7 @@
 import React from 'react'
 
-import { ScreenFC } from '@berty/navigation'
 import { useStyles } from '@berty/contexts/styles'
+import { ScreenFC } from '@berty/navigation'
 import { useThemeColor } from '@berty/store'
 import messengerMethodsHooks from '@berty/store/methods'
 

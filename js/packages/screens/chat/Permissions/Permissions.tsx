@@ -1,29 +1,29 @@
-import React, { useCallback, useEffect, useRef, useContext } from 'react'
-import { TouchableOpacity, Platform, View, AppState, StatusBar } from 'react-native'
 import LottieView, { AnimatedLottieViewProps } from 'lottie-react-native'
+import React, { useCallback, useEffect, useRef, useContext } from 'react'
 import { useTranslation } from 'react-i18next'
+import { TouchableOpacity, Platform, View, AppState, StatusBar } from 'react-native'
 import { RESULTS, openSettings, PermissionStatus } from 'react-native-permissions'
 import { useSelector } from 'react-redux'
 
-import { useStyles } from '@berty/contexts/styles'
-import { accountService, useThemeColor } from '@berty/store'
+import beapi from '@berty/api'
 import audioLottie from '@berty/assets/lottie/audio-lottie.json'
 import cameraLottie from '@berty/assets/lottie/camera-lottie.json'
 import notificationLottie from '@berty/assets/lottie/notification-lottie.json'
 import proximityLottie from '@berty/assets/lottie/proximity-lottie.json'
-import beapi from '@berty/api'
-import { ScreenFC } from '@berty/navigation'
-import rnutil from '@berty/rnutil'
-import { selectSelectedAccount } from '@berty/redux/reducers/ui.reducer'
-import { PermissionType } from '@berty/rnutil/permissions'
+import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import PermissionsContext from '@berty/contexts/permissions.context'
+import { useStyles } from '@berty/contexts/styles'
+import { useAppDispatch } from '@berty/hooks'
+import { ScreenFC } from '@berty/navigation'
 import {
 	PersistentOptionsKeys,
 	selectPersistentOptions,
 	setPersistentOption,
 } from '@berty/redux/reducers/persistentOptions.reducer'
-import { useAppDispatch } from '@berty/hooks'
-import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
+import { selectSelectedAccount } from '@berty/redux/reducers/ui.reducer'
+import rnutil from '@berty/rnutil'
+import { PermissionType } from '@berty/rnutil/permissions'
+import { accountService, useThemeColor } from '@berty/store'
 
 const animations: Record<PermissionType, AnimatedLottieViewProps['source']> = {
 	audio: audioLottie,

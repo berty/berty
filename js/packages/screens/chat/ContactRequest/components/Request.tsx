@@ -1,17 +1,16 @@
+import { Icon } from '@ui-kitten/components'
 import React, { useState } from 'react'
 import { View, StyleProp, TouchableOpacity, ViewStyle } from 'react-native'
-import { Icon } from '@ui-kitten/components'
 
-import { useThemeColor } from '@berty/store/hooks'
-import { useStyles, ColorsTypes } from '@berty/contexts/styles'
-import { Toggle } from '@berty/components/shared-components/Toggle'
-import { useContact } from '@berty/hooks'
-
-import { TabBar } from '@berty/components/shared-components/TabBar'
+import { ContactAvatar } from '@berty/components/avatars'
 import { FingerprintContent } from '@berty/components/shared-components/FingerprintContent'
 import { Modal } from '@berty/components/shared-components/Modal'
-import { ContactAvatar } from '@berty/components/avatars'
+import { TabBar } from '@berty/components/shared-components/TabBar'
+import { Toggle } from '@berty/components/shared-components/Toggle'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
+import { useStyles, ColorsTypes } from '@berty/contexts/styles'
+import { useContact } from '@berty/hooks'
+import { useThemeColor } from '@berty/store/hooks'
 
 // Types
 

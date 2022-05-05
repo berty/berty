@@ -1,8 +1,9 @@
 import React, { FC } from 'react'
 import { TextInputProps, TextInput as RNTextInput, View, ViewProps } from 'react-native'
 
-import { useThemeColor } from '@berty/store'
 import { useStyles } from '@berty/contexts/styles'
+import { useThemeColor } from '@berty/store'
+
 import { UnifiedText } from './UnifiedText'
 
 export const TextInput: FC<

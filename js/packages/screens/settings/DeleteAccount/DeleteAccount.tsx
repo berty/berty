@@ -1,14 +1,14 @@
-import React, { useState } from 'react'
-import { View, StyleSheet, TouchableOpacity, TextInput, Vibration, StatusBar } from 'react-native'
-import { Icon } from '@ui-kitten/components'
-import { useTranslation } from 'react-i18next'
 import { useNavigation as useReactNavigation } from '@react-navigation/core'
+import { Icon } from '@ui-kitten/components'
+import React, { useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { View, StyleSheet, TouchableOpacity, TextInput, Vibration, StatusBar } from 'react-native'
 
-import { useStyles } from '@berty/contexts/styles'
-import { useThemeColor } from '@berty/store'
-import { ScreenFC } from '@berty/navigation'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
+import { useStyles } from '@berty/contexts/styles'
 import { useDeleteAccount } from '@berty/hooks'
+import { ScreenFC } from '@berty/navigation'
+import { useThemeColor } from '@berty/store'
 
 const useStylesDeleteAccount = () => {
 	const { width, height, border, text, padding, margin } = useStyles()

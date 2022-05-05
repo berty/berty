@@ -1,18 +1,17 @@
+import { Icon } from '@ui-kitten/components'
 import LottieView from 'lottie-react-native'
-import { useTranslation } from 'react-i18next'
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 import { ActivityIndicator, StatusBar, View } from 'react-native'
-
-import { ScreenFC, useNavigation } from '@berty/navigation'
-import { accountService, useNotificationsInhibitor, useThemeColor } from '@berty/store'
-import { useStyles } from '@berty/contexts/styles'
+import { TouchableOpacity } from 'react-native-gesture-handler'
 
 import OnboardingWrapper from '@berty/components/onboarding/OnboardingWrapper'
-import { Icon } from '@ui-kitten/components'
-import { TouchableOpacity } from 'react-native-gesture-handler'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
-import { useCreateNewAccount } from '@berty/hooks'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
+import { useStyles } from '@berty/contexts/styles'
+import { useCreateNewAccount } from '@berty/hooks'
+import { ScreenFC, useNavigation } from '@berty/navigation'
+import { accountService, useNotificationsInhibitor, useThemeColor } from '@berty/store'
 
 const DefaultModeBody: React.FC = () => {
 	const { goBack } = useNavigation()

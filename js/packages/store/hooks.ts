@@ -1,15 +1,17 @@
-import React, { EffectCallback, useEffect } from 'react'
 import { useNavigation } from '@react-navigation/native'
+import React, { EffectCallback, useEffect } from 'react'
+import { useSelector } from 'react-redux'
 
 import beapi from '@berty/api'
-import colors from '@berty/assets/themes/default-theme.json'
 import darkTheme from '@berty/assets/themes/dark-theme.json'
+import colors from '@berty/assets/themes/default-theme.json'
+import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useAllConversations, useAllContacts, useConversation, useAppDispatch } from '@berty/hooks'
-
-import { NotificationsInhibitor } from './types'
-import { fakeContacts, fakeMultiMemberConversations } from './faker'
-import { ParsedInteraction } from './types.gen'
-import { useSelector } from 'react-redux'
+import {
+	PersistentOptionsKeys,
+	selectPersistentOptions,
+	UpdatesProfileNotification,
+} from '@berty/redux/reducers/persistentOptions.reducer'
 import {
 	selectThemeCollection,
 	selectThemeIsDark,
@@ -23,12 +25,10 @@ import {
 	selectAppState,
 	selectClient,
 } from '@berty/redux/reducers/ui.reducer'
-import {
-	PersistentOptionsKeys,
-	selectPersistentOptions,
-	UpdatesProfileNotification,
-} from '@berty/redux/reducers/persistentOptions.reducer'
-import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
+
+import { fakeContacts, fakeMultiMemberConversations } from './faker'
+import { NotificationsInhibitor } from './types'
+import { ParsedInteraction } from './types.gen'
 
 export type Maybe<T> = T | null | undefined
 

@@ -1,10 +1,12 @@
-import { useThemeColor } from '@berty/store/hooks'
-import { useStyles } from '@berty/contexts/styles'
 import { Icon } from '@ui-kitten/components'
 import React, { useState } from 'react'
 import { Animated, Easing, TouchableOpacity, View } from 'react-native'
-import { UnifiedText } from './UnifiedText'
+
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
+import { useStyles } from '@berty/contexts/styles'
+import { useThemeColor } from '@berty/store/hooks'
+
+import { UnifiedText } from './UnifiedText'
 
 export type Item = {
 	label: string

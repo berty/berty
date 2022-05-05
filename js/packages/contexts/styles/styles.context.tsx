@@ -1,9 +1,7 @@
-import React, { createContext, useContext, useState } from 'react'
 import { useDimensions } from '@react-native-community/hooks'
+import React, { createContext, useContext, useState } from 'react'
 import { PixelRatio } from 'react-native'
 
-import { Styles } from './types'
-import { defaultStylesDeclaration, mapScaledDeclarationWithDims } from './map-declaration'
 import {
 	initialScaleHeight,
 	initialScaleSize,
@@ -11,6 +9,8 @@ import {
 	iPhone11LongEdge,
 	initialFontScale,
 } from './constant'
+import { defaultStylesDeclaration, mapScaledDeclarationWithDims } from './map-declaration'
+import { Styles } from './types'
 
 const defaultStyles = mapScaledDeclarationWithDims(defaultStylesDeclaration, {
 	scaleSize: initialScaleSize,

@@ -1,21 +1,20 @@
-import React, { useState } from 'react'
-import { View, TouchableOpacity, Share, StatusBar, Platform } from 'react-native'
-import { Layout, Icon } from '@ui-kitten/components'
-import QRCode from 'react-native-qrcode-svg'
-import { useTranslation } from 'react-i18next'
 import Clipboard from '@react-native-clipboard/clipboard'
+import { Layout, Icon } from '@ui-kitten/components'
+import React, { useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { View, TouchableOpacity, Share, StatusBar, Platform } from 'react-native'
+import QRCode from 'react-native-qrcode-svg'
 
-import { useStyles } from '@berty/contexts/styles'
-import { useStylesBertyId, useThemeColor } from '@berty/store'
-import { ScreenFC } from '@berty/navigation'
-import { useAccount } from '@berty/hooks'
-
-import { TabBar } from '@berty/components/shared-components/TabBar'
-import { FingerprintContent } from '@berty/components/shared-components/FingerprintContent'
 import logo from '@berty/assets/images/1_berty_picto.png'
 import { AccountAvatar } from '@berty/components/avatars'
+import { FingerprintContent } from '@berty/components/shared-components/FingerprintContent'
+import { TabBar } from '@berty/components/shared-components/TabBar'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
+import { useStyles } from '@berty/contexts/styles'
+import { useAccount } from '@berty/hooks'
+import { ScreenFC } from '@berty/navigation'
+import { useStylesBertyId, useThemeColor } from '@berty/store'
 
 //
 // Settings My Berty ID Vue

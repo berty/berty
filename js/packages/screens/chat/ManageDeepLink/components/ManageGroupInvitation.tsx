@@ -1,21 +1,21 @@
-import React, { useState } from 'react'
-import { View, TouchableOpacity, TextInput } from 'react-native'
-import { Buffer } from 'buffer'
-import { Icon } from '@ui-kitten/components'
 import { CommonActions, useNavigation } from '@react-navigation/native'
+import { Icon } from '@ui-kitten/components'
+import { Buffer } from 'buffer'
+import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { View, TouchableOpacity, TextInput } from 'react-native'
 
+import { MultiMemberAvatar } from '@berty/components/avatars'
+import { FingerprintContent } from '@berty/components/shared-components/FingerprintContent'
+import { TabBar } from '@berty/components/shared-components/TabBar'
+import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useStyles } from '@berty/contexts/styles'
-import messengerMethodsHooks from '@berty/store/methods'
+import { useAppDispatch, useConversation } from '@berty/hooks'
 import { dispatch as navDispatch } from '@berty/navigation/rootRef'
 import { useThemeColor } from '@berty/store'
-import { useAppDispatch, useConversation } from '@berty/hooks'
+import messengerMethodsHooks from '@berty/store/methods'
 
-import { TabBar } from '@berty/components/shared-components/TabBar'
-import { FingerprintContent } from '@berty/components/shared-components/FingerprintContent'
 import InvalidScan from './InvalidScan'
-import { MultiMemberAvatar } from '@berty/components/avatars'
-import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 
 const useStylesModal = () => {
 	const { width, border, height, opacity } = useStyles()

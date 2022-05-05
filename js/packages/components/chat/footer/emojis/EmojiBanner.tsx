@@ -1,21 +1,22 @@
+import { Divider, Icon } from '@ui-kitten/components'
 import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { View, Animated, LayoutChangeEvent } from 'react-native'
 import { TouchableHighlight, TouchableOpacity } from 'react-native-gesture-handler'
-import { useTranslation } from 'react-i18next'
 
-import { Divider, Icon } from '@ui-kitten/components'
-import { useThemeColor } from '@berty/store'
-import { useStyles } from '@berty/contexts/styles'
-import { selectChatInputText, setChatInputText } from '@berty/redux/reducers/chatInputs.reducer'
-import { useAppDispatch, useAppSelector } from '@berty/hooks'
 import { emojis, getEmojiByName } from '@berty/components/utils'
+import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
+import { useStyles } from '@berty/contexts/styles'
+import { Emoji } from '@berty/contexts/styles/types'
+import { useAppDispatch, useAppSelector } from '@berty/hooks'
+import { selectChatInputText, setChatInputText } from '@berty/redux/reducers/chatInputs.reducer'
 import {
 	selectChatInputIsFocused,
 	selectChatInputSelection,
 } from '@berty/redux/reducers/chatInputsVolatile.reducer'
+import { useThemeColor } from '@berty/store'
+
 import { UnifiedText } from '../../../shared-components/UnifiedText'
-import { Emoji } from '@berty/contexts/styles/types'
-import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 
 type Word = {
 	word: string

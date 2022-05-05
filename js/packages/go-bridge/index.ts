@@ -1,12 +1,11 @@
 import GoBridge from './GoBridge'
-
 import BridgeLogger from './logger'
+import { GoBridgeInterface, GoBridgeOpts, GoLogLevel } from './types'
+
 const BridgeConsole = {
 	...console,
 	...BridgeLogger(GoBridge),
 }
-
-import { GoBridgeInterface, GoBridgeOpts, GoLogLevel } from './types'
 
 export { GoBridgeDefaultOpts } from './defaults'
 

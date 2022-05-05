@@ -1,3 +1,5 @@
+import { BlurView } from '@react-native-community/blur'
+import { Icon } from '@ui-kitten/components'
 import React from 'react'
 import {
 	TouchableOpacity,
@@ -7,12 +9,10 @@ import {
 	ViewStyle,
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { Icon } from '@ui-kitten/components'
 
 import { useStyles } from '@berty/contexts/styles'
 import { useNavigation } from '@berty/navigation'
 import { useThemeColor } from '@berty/store/hooks'
-import { BlurView } from '@react-native-community/blur'
 
 //
 // Modal => Modals on screens requests

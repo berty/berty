@@ -1,11 +1,10 @@
 import React from 'react'
 import { ScrollView, View } from 'react-native'
 
-import { ScreenFC } from '@berty/navigation'
-import { useThemeColor } from '@berty/store'
-
 import { ButtonSettingV2, Section } from '@berty/components/shared-components'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
+import { ScreenFC } from '@berty/navigation'
+import { useThemeColor } from '@berty/store'
 
 export const DevicesAndBackup: ScreenFC<'Settings.DevicesAndBackup'> = () => {
 	const { scaleSize } = useAppDimensions()

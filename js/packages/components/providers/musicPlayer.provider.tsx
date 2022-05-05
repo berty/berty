@@ -1,10 +1,10 @@
-import React, { createContext, useContext, useEffect, useState } from 'react'
-
 import { Player } from '@react-native-community/audio-toolkit'
+import React, { createContext, useContext, useEffect, useState } from 'react'
+import { useSelector } from 'react-redux'
+
+import { selectProtocolClient } from '@berty/redux/reducers/ui.reducer'
 
 import { getSource } from '../utils'
-import { useSelector } from 'react-redux'
-import { selectProtocolClient } from '@berty/redux/reducers/ui.reducer'
 
 type PlayerType = Player | undefined
 

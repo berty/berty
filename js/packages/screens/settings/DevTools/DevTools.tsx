@@ -1,27 +1,26 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { Alert, ScrollView, StatusBar, Vibration, View } from 'react-native'
+import { Player } from '@react-native-community/audio-toolkit'
 import { Layout } from '@ui-kitten/components'
-import { useTranslation } from 'react-i18next'
 import Long from 'long'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { Alert, ScrollView, StatusBar, Vibration, View } from 'react-native'
+import { withInAppNotification } from 'react-native-in-app-notification'
+import { useSelector } from 'react-redux'
 
-import {
-	GlobalPersistentOptionsKeys,
-	storageGet,
-	storageSet,
-	useMessengerClient,
-	useThemeColor,
-} from '@berty/store'
-import { useStyles } from '@berty/contexts/styles'
-import { ScreenFC, useNavigation } from '@berty/navigation'
-import * as middleware from '@berty/grpc-bridge/middleware'
 import beapi from '@berty/api'
-import { bridge as rpcBridge } from '@berty/grpc-bridge/rpc'
-import { Service } from '@berty/grpc-bridge'
+import { showNeedRestartNotification } from '@berty/components/helpers'
+import { DropDownPicker, Item } from '@berty/components/shared-components/DropDownPicker'
+import {
+	ButtonSetting,
+	ButtonSettingItem,
+	ButtonSettingRow,
+	StringOptionInput,
+} from '@berty/components/shared-components/SettingsButtons'
+import { useStyles } from '@berty/contexts/styles'
 import GoBridge from '@berty/go-bridge'
-import messengerMethodsHooks from '@berty/store/methods'
-import { languages } from '@berty/i18n/locale/languages'
-import i18n from '@berty/i18n'
-import { setAccountLanguage } from '@berty/redux/reducers/accountSettings.reducer'
+import { Service } from '@berty/grpc-bridge'
+import * as middleware from '@berty/grpc-bridge/middleware'
+import { bridge as rpcBridge } from '@berty/grpc-bridge/rpc'
 import {
 	useAllConversations,
 	useAllInteractions,
@@ -33,17 +32,16 @@ import {
 	usePlaySound,
 	useRestart,
 } from '@berty/hooks'
-import { Player } from '@react-native-community/audio-toolkit'
-
+import i18n from '@berty/i18n'
+import { languages } from '@berty/i18n/locale/languages'
+import { ScreenFC, useNavigation } from '@berty/navigation'
+import { setAccountLanguage } from '@berty/redux/reducers/accountSettings.reducer'
 import {
-	ButtonSetting,
-	ButtonSettingItem,
-	ButtonSettingRow,
-	StringOptionInput,
-} from '@berty/components/shared-components/SettingsButtons'
-import { showNeedRestartNotification } from '@berty/components/helpers'
-import { DropDownPicker, Item } from '@berty/components/shared-components/DropDownPicker'
-import { useSelector } from 'react-redux'
+	defaultPersistentOptions,
+	PersistentOptionsKeys,
+	selectPersistentOptions,
+	setPersistentOption,
+} from '@berty/redux/reducers/persistentOptions.reducer'
 import {
 	selectDaemonAddress,
 	selectEmbedded,
@@ -51,13 +49,14 @@ import {
 	setDebugMode,
 	setStreamError,
 } from '@berty/redux/reducers/ui.reducer'
-import { withInAppNotification } from 'react-native-in-app-notification'
 import {
-	defaultPersistentOptions,
-	PersistentOptionsKeys,
-	selectPersistentOptions,
-	setPersistentOption,
-} from '@berty/redux/reducers/persistentOptions.reducer'
+	GlobalPersistentOptionsKeys,
+	storageGet,
+	storageSet,
+	useMessengerClient,
+	useThemeColor,
+} from '@berty/store'
+import messengerMethodsHooks from '@berty/store/methods'
 
 //
 // DevTools

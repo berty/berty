@@ -1,28 +1,23 @@
+import { grpc } from '@improbable-eng/grpc-web'
 import { EventEmitter } from 'events'
 import cloneDeep from 'lodash/cloneDeep'
 import { Platform } from 'react-native'
-import { grpc } from '@improbable-eng/grpc-web'
+import RNFS from 'react-native-fs'
 
 import beapi from '@berty/api'
-import i18n, { osLanguage } from '@berty/i18n'
 import GoBridge, { GoBridgeDefaultOpts, GoBridgeOpts } from '@berty/go-bridge'
 import { GRPCError, Service } from '@berty/grpc-bridge'
 import { logger } from '@berty/grpc-bridge/middleware'
 import { bridge as rpcBridge, grpcweb as rpcWeb } from '@berty/grpc-bridge/rpc'
+import { deserializeFromBase64 } from '@berty/grpc-bridge/rpc/utils'
 import { ServiceClientType } from '@berty/grpc-bridge/welsh-clients.gen'
-import store, { AppDispatch, persistor } from '@berty/redux/store'
-import { streamEventToAction as streamEventToReduxAction } from '@berty/redux/messengerActions'
-import RNFS from 'react-native-fs'
 import {
 	WelshMessengerServiceClient,
 	WelshProtocolServiceClient,
 } from '@berty/grpc-bridge/welsh-clients.gen'
-
-import { accountService, convertMAddr, storageGet, storageRemove } from './accountService'
-import { updateAccount, closeAccountWithProgress, refreshAccountList } from './accountUtils'
-import { requestAndPersistPushToken } from './services'
-import { GlobalPersistentOptionsKeys, StreamInProgress } from './types'
-import { storageKeyForAccount } from './utils'
+import i18n, { osLanguage } from '@berty/i18n'
+import { streamEventToAction as streamEventToReduxAction } from '@berty/redux/messengerActions'
+import { PersistentOptions } from '@berty/redux/reducers/persistentOptions.reducer'
 import { resetTheme } from '@berty/redux/reducers/theme.reducer'
 import {
 	bridgeClosed,
@@ -40,8 +35,13 @@ import {
 	setStateStreamInProgress,
 	setStreamError,
 } from '@berty/redux/reducers/ui.reducer'
-import { deserializeFromBase64 } from '@berty/grpc-bridge/rpc/utils'
-import { PersistentOptions } from '@berty/redux/reducers/persistentOptions.reducer'
+import store, { AppDispatch, persistor } from '@berty/redux/store'
+
+import { accountService, convertMAddr, storageGet, storageRemove } from './accountService'
+import { updateAccount, closeAccountWithProgress, refreshAccountList } from './accountUtils'
+import { requestAndPersistPushToken } from './services'
+import { GlobalPersistentOptionsKeys, StreamInProgress } from './types'
+import { storageKeyForAccount } from './utils'
 
 const openAccountWithProgress = async (
 	bridgeOpts: GoBridgeOpts,

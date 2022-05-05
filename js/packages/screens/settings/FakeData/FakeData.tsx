@@ -1,10 +1,11 @@
-import React from 'react'
-import { View, ScrollView } from 'react-native'
 import { Layout } from '@ui-kitten/components'
+import React from 'react'
 import { useTranslation } from 'react-i18next'
+import { View, ScrollView } from 'react-native'
 
-import { ScreenFC } from '@berty/navigation'
+import { ButtonSetting } from '@berty/components/shared-components/SettingsButtons'
 import { useStyles } from '@berty/contexts/styles'
+import { ScreenFC } from '@berty/navigation'
 import {
 	useGenerateFakeContacts,
 	useGenerateFakeMultiMembers,
@@ -12,8 +13,6 @@ import {
 	// useGenerateFakeMessages,
 	useThemeColor,
 } from '@berty/store'
-
-import { ButtonSetting } from '@berty/components/shared-components/SettingsButtons'
 
 const BodyFakeData = () => {
 	const { t } = useTranslation()

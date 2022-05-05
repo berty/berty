@@ -1,3 +1,4 @@
+import { Icon } from '@ui-kitten/components'
 import React, { ReactNode, useEffect, useState } from 'react'
 import {
 	View,
@@ -8,13 +9,13 @@ import {
 	TextInput,
 	ScrollView,
 } from 'react-native'
-import { Icon } from '@ui-kitten/components'
 
+import { Toggle } from '@berty/components/shared-components/Toggle'
+import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
 import { useThemeColor } from '@berty/store/hooks'
-import { Toggle } from '@berty/components/shared-components/Toggle'
+
 import { UnifiedText } from './UnifiedText'
-import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 
 export const Section: React.FC<{}> = ({ children }) => {
 	const { margin, border, padding } = useStyles()

@@ -1,19 +1,13 @@
-import React, { useCallback, useState } from 'react'
-import { View, TouchableOpacity, Animated } from 'react-native'
-import { SHA3 } from 'sha3'
-import palette from 'google-palette'
 import { Icon } from '@ui-kitten/components'
-import { PanGestureHandler, State } from 'react-native-gesture-handler'
+import palette from 'google-palette'
+import React, { useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { View, TouchableOpacity, Animated } from 'react-native'
+import { PanGestureHandler, State } from 'react-native-gesture-handler'
+import { SHA3 } from 'sha3'
 
 import beapi from '@berty/api'
-import {
-	useThemeColor,
-	InteractionUserMessage,
-	ParsedInteraction,
-	pbDateToNum,
-	useMessengerClient,
-} from '@berty/store'
+import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
 import {
 	useAppDispatch,
@@ -22,22 +16,29 @@ import {
 	useLastConvInteraction,
 	usePlaySound,
 } from '@berty/hooks'
+import { setActiveReplyInteraction } from '@berty/redux/reducers/chatInputs.reducer'
 import { selectInteraction } from '@berty/redux/reducers/messenger.reducer'
+import {
+	useThemeColor,
+	InteractionUserMessage,
+	ParsedInteraction,
+	pbDateToNum,
+	useMessengerClient,
+} from '@berty/store'
 
 import { MemberAvatar } from '../../avatars'
-import { HyperlinkUserMessage, TimestampStatusUserMessage } from './UserMessageComponents'
-import { PictureMessage } from './PictureMessage'
+import { useModal } from '../../providers/modal.provider'
+import { UnifiedText } from '../../shared-components/UnifiedText'
+import { getMediaTypeFromMedias } from '../../utils'
+import { MessageMenu } from '../modals/MessageMenu.modal'
 import { AudioMessage } from './AudioMessage'
 import { FileMessage } from './FileMessage'
-import { getMediaTypeFromMedias } from '../../utils'
+import { PictureMessage } from './PictureMessage'
+import { HyperlinkUserMessage, TimestampStatusUserMessage } from './UserMessageComponents'
 // We have delete this component cause unusable but we can find it here if we need: https://github.com/berty/berty/blob/38913ed828/js/packages/components/chat/message/Reactions.tsx
 // and a component dependencie https://github.com/berty/berty/blob/38913ed828f11799bb5f4471d1cb31dc182d9ed5/js/packages/components/shared-components/AnimatedNumber.tsx
 // import { Reactions } from './Reactions'
-import { MessageMenu } from '../modals/MessageMenu.modal'
-import { useModal } from '../../providers/modal.provider'
-import { setActiveReplyInteraction } from '@berty/redux/reducers/chatInputs.reducer'
-import { UnifiedText } from '../../shared-components/UnifiedText'
-import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
+
 // import { EmojiKeyboard } from '../modals/EmojiKeyboard.modal'
 
 const pal = palette('tol-rainbow', 256)

@@ -1,3 +1,4 @@
+import { Divider, Icon } from '@ui-kitten/components'
 import React, {
 	useState,
 	useRef,
@@ -10,12 +11,11 @@ import React, {
 	ForwardedRef,
 } from 'react'
 import { View, Animated, Easing, TouchableOpacity } from 'react-native'
-import { Divider, Icon } from '@ui-kitten/components'
 
-import { useThemeColor } from '@berty/store'
-import { useStyles } from '@berty/contexts/styles'
 import { ButtonSetting } from '@berty/components/shared-components'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
+import { useStyles } from '@berty/contexts/styles'
+import { useThemeColor } from '@berty/store'
 
 const heightButton = 55
 

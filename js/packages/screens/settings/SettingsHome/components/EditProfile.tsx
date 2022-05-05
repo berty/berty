@@ -1,4 +1,6 @@
+import { Icon, Input } from '@ui-kitten/components'
 import React, { FC, useReducer } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
 	ActivityIndicator,
 	Image,
@@ -7,19 +9,16 @@ import {
 	TouchableOpacity,
 	View,
 } from 'react-native'
-import { Icon, Input } from '@ui-kitten/components'
-import { useTranslation } from 'react-i18next'
-
-import { useStyles } from '@berty/contexts/styles'
-import { useMessengerClient, useThemeColor } from '@berty/store'
-import { useAccount, useUpdateAccount } from '@berty/hooks'
 import ImagePicker, { ImageOrVideo } from 'react-native-image-crop-picker'
+import { useSelector } from 'react-redux'
 
 import { AccountAvatar } from '@berty/components/avatars'
-import { useSelector } from 'react-redux'
-import { selectSelectedAccount } from '@berty/redux/reducers/ui.reducer'
 import { useModal } from '@berty/components/providers/modal.provider'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
+import { useStyles } from '@berty/contexts/styles'
+import { useAccount, useUpdateAccount } from '@berty/hooks'
+import { selectSelectedAccount } from '@berty/redux/reducers/ui.reducer'
+import { useMessengerClient, useThemeColor } from '@berty/store'
 
 //
 // Edit Profile

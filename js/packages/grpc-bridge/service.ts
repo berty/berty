@@ -1,5 +1,6 @@
 // @ts-nocheck
 import * as pbjs from 'protobufjs'
+
 import { ServiceClientType } from './welsh-clients.gen'
 
 const lowerFirst = (str: string) => str.charAt(0).toLowerCase() + str.substring(1)

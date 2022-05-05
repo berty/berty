@@ -1,13 +1,16 @@
+import { Icon } from '@ui-kitten/components'
+import pickBy from 'lodash/pickBy'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ScrollView, View, StatusBar, TouchableOpacity, SafeAreaView } from 'react-native'
-import pickBy from 'lodash/pickBy'
-import { Icon } from '@ui-kitten/components'
 import { useSelector } from 'react-redux'
 
-import { ScreenFC } from '@berty/navigation'
-import { useNotificationsInhibitor, useThemeColor } from '@berty/store'
 import beapi from '@berty/api'
+import EmptyChat from '@berty/assets/logo/empty_chat.svg'
+import { useLayout } from '@berty/components/hooks'
+import { ButtonSettingV2 } from '@berty/components/shared-components'
+import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
+import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
 import {
 	useContactsDict,
@@ -15,20 +18,17 @@ import {
 	useIncomingContactRequests,
 	useAllConversations,
 } from '@berty/hooks'
-import { useLayout } from '@berty/components/hooks'
-import EmptyChat from '@berty/assets/logo/empty_chat.svg'
-import { selectClient } from '@berty/redux/reducers/ui.reducer'
+import { ScreenFC } from '@berty/navigation'
 import { selectPersistentOptions } from '@berty/redux/reducers/persistentOptions.reducer'
-import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
-import { ButtonSettingV2 } from '@berty/components/shared-components'
-import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
+import { selectClient } from '@berty/redux/reducers/ui.reducer'
+import { useNotificationsInhibitor, useThemeColor } from '@berty/store'
 
-import { IncomingRequests } from './components/Requests'
+import { AddBot } from './components/AddBot'
 import { Conversations } from './components/Conversations'
-import { SearchComponent } from './components/Search'
 import { HomeHeader } from './components/Header'
 import { MultiAccount } from './components/MultiAccount'
-import { AddBot } from './components/AddBot'
+import { IncomingRequests } from './components/Requests'
+import { SearchComponent } from './components/Search'
 
 const T = beapi.messenger.StreamEvent.Notified.Type
 

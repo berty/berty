@@ -1,16 +1,17 @@
 import { Alert, Platform } from 'react-native'
-import rnutil from '@berty/rnutil'
 import { RESULTS } from 'react-native-permissions'
+
+import beapi from '@berty/api'
+import { GRPCError } from '@berty/grpc-bridge'
+import { ServiceClientType } from '@berty/grpc-bridge/welsh-clients.gen'
+import rnutil from '@berty/rnutil'
+import { PermissionType, getPermissions } from '@berty/rnutil/permissions'
 import {
 	numberifyLong,
 	requestAndPersistPushToken,
 	servicesAuthViaDefault,
 	serviceTypes,
 } from '@berty/store'
-import beapi from '@berty/api'
-import { ServiceClientType } from '@berty/grpc-bridge/welsh-clients.gen'
-import { PermissionType, getPermissions } from '@berty/rnutil/permissions'
-import { GRPCError } from '@berty/grpc-bridge'
 
 export const pushAvailable = Platform.OS !== 'web'
 export const pushFilteringAvailable = Platform.OS === 'android'

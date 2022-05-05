@@ -3,9 +3,9 @@ import { View } from 'react-native'
 import EmojiBoard from 'react-native-emoji-board'
 
 import beapi from '@berty/api'
-import { useMessengerClient, useThemeColor } from '@berty/store'
 import { useStyles } from '@berty/contexts/styles'
 import { usePlaySound } from '@berty/hooks'
+import { useMessengerClient, useThemeColor } from '@berty/store'
 
 import { useModal } from '../../providers/modal.provider'
 

@@ -1,13 +1,13 @@
+import { CommonActions } from '@react-navigation/native'
 import React, { useContext } from 'react'
 import { EmitterSubscription, NativeEventEmitter, NativeModules, Platform } from 'react-native'
-import { CommonActions } from '@react-navigation/native'
 import { InAppNotificationProvider, withInAppNotification } from 'react-native-in-app-notification'
 
-import { accountService } from '@berty/store'
 import beapi from '@berty/api'
-import { useNavigation } from '@berty/navigation'
-import { useConversationsDict } from '@berty/hooks'
 import { EventEmitterContext } from '@berty/contexts/eventEmitter.context'
+import { useConversationsDict } from '@berty/hooks'
+import { useNavigation } from '@berty/navigation'
+import { accountService } from '@berty/store'
 
 import NotificationBody from '../NotificationBody'
 

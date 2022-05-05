@@ -1,7 +1,8 @@
 import React, { useState, useCallback, useEffect } from 'react'
 import { AppState } from 'react-native'
-import PermissionsContext from '@berty/contexts/permissions.context'
 import { PermissionStatus } from 'react-native-permissions'
+
+import PermissionsContext from '@berty/contexts/permissions.context'
 import {
 	defaultPermissionStatus,
 	acquirePermission,

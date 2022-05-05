@@ -1,20 +1,17 @@
+import { Layout } from '@ui-kitten/components'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { Layout } from '@ui-kitten/components'
 import { Platform, ScrollView, StatusBar, View } from 'react-native'
-import Share from 'react-native-share'
 import DocumentPicker from 'react-native-document-picker'
-
-import { useStyles } from '@berty/contexts/styles'
-import { useThemeColor, createAndSaveFile } from '@berty/store'
-import { ScreenFC } from '@berty/navigation'
 import RNFS from 'react-native-fs'
 import { withInAppNotification } from 'react-native-in-app-notification'
+import Share from 'react-native-share'
+import { useDispatch, useSelector } from 'react-redux'
 
 import { ButtonSetting } from '@berty/components/shared-components'
 import { DropDownPicker } from '@berty/components/shared-components/DropDownPicker'
-import { ThemeColorName } from './components/ThemeColorName'
-import { useDispatch, useSelector } from 'react-redux'
+import { useStyles } from '@berty/contexts/styles'
+import { ScreenFC } from '@berty/navigation'
 import {
 	deleteAddedThemes,
 	importTheme,
@@ -25,6 +22,9 @@ import {
 	setTheme,
 } from '@berty/redux/reducers/theme.reducer'
 import { getPath } from '@berty/rnutil/getPath'
+import { useThemeColor, createAndSaveFile } from '@berty/store'
+
+import { ThemeColorName } from './components/ThemeColorName'
 
 const openThemeColorFile = async () => {
 	try {

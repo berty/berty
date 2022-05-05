@@ -1,16 +1,16 @@
-import React from 'react'
-import { Animated, TouchableOpacity, View } from 'react-native'
-import { useTranslation } from 'react-i18next'
-import moment from 'moment'
 import { Icon } from '@ui-kitten/components'
+import moment from 'moment'
+import React from 'react'
+import { useTranslation } from 'react-i18next'
+import { Animated, TouchableOpacity, View } from 'react-native'
 
+import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
 import { useThemeColor } from '@berty/store/hooks'
 
+import { UnifiedText } from '../../../shared-components/UnifiedText'
 import { RecordingState } from '../../audioMessageCommon'
 import { SendButton } from '../ChatFooterButtons'
-import { UnifiedText } from '../../../shared-components/UnifiedText'
-import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 
 export const RecordingComponent: React.FC<{
 	recordingState: RecordingState

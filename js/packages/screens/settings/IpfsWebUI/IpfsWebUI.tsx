@@ -1,6 +1,6 @@
+import { Layout } from '@ui-kitten/components'
 import React from 'react'
 import { View, ScrollView } from 'react-native'
-import { Layout } from '@ui-kitten/components'
 import { WebView } from 'react-native-webview'
 
 import { useStyles } from '@berty/contexts/styles'

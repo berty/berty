@@ -1,13 +1,13 @@
 import { useCallback } from 'react'
 
 import beapi from '@berty/api'
+import { selectEmbedded, selectSelectedAccount } from '@berty/redux/reducers/ui.reducer'
 import {
 	createNewAccount,
 	deleteAccount,
 	updateAccount,
 	switchAccount,
 } from '@berty/store/accountUtils'
-import { selectEmbedded, selectSelectedAccount } from '@berty/redux/reducers/ui.reducer'
 
 import { useAppDispatch, useAppSelector } from './core'
 

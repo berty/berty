@@ -1,23 +1,23 @@
-import React, { useEffect, useState } from 'react'
-import { ScrollView, TextInput, TouchableOpacity, View } from 'react-native'
 import { CheckBox, Icon } from '@ui-kitten/components'
+import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { ScrollView, TextInput, TouchableOpacity, View } from 'react-native'
 
 import beapi from '@berty/api'
+import { berty } from '@berty/api/root.pb'
+import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
-import { useThemeColor } from '@berty/store/hooks'
-
-import { ContactAvatar } from '../avatars'
+import { useAppDispatch, useAppSelector, useContactSearchResults } from '@berty/hooks'
 import {
 	addMemberToInvitationList,
 	removeMemberFromInvitationListById,
 	resetInvitationList,
 	selectInvitationListMembers,
 } from '@berty/redux/reducers/groupCreationForm.reducer'
-import { berty } from '@berty/api/root.pb'
-import { useAppDispatch, useAppSelector, useContactSearchResults } from '@berty/hooks'
+import { useThemeColor } from '@berty/store/hooks'
+
+import { ContactAvatar } from '../avatars'
 import { UnifiedText } from './UnifiedText'
-import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 
 // Styles
 const useStylesCreateGroup = () => {

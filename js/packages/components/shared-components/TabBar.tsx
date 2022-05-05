@@ -1,9 +1,10 @@
+import { Icon } from '@ui-kitten/components'
 import React, { useState, useEffect } from 'react'
 import { TouchableOpacity, View, TransformsStyle } from 'react-native'
-import { Icon } from '@ui-kitten/components'
 
 import { useStyles } from '@berty/contexts/styles'
 import { useThemeColor } from '@berty/store/hooks'
+
 import { UnifiedText } from './UnifiedText'
 
 // Types

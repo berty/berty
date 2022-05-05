@@ -1,18 +1,17 @@
-import React from 'react'
-import { View, TouchableOpacity, StyleSheet, TextInput } from 'react-native'
-import { Icon } from '@ui-kitten/components'
-import { useTranslation } from 'react-i18next'
-import { useDispatch } from 'react-redux'
-
-import { useStyles } from '@berty/contexts/styles'
-import { useThemeColor } from '@berty/store'
-import { saveTheme } from '@berty/redux/reducers/theme.reducer'
 import { BlurView } from '@react-native-community/blur'
+import { Icon } from '@ui-kitten/components'
+import React from 'react'
+import { useTranslation } from 'react-i18next'
+import { View, TouchableOpacity, StyleSheet, TextInput } from 'react-native'
+import { useDispatch } from 'react-redux'
 
 import Avatar from '@berty/assets/logo/buck_berty_icon_card.svg'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
+import { useStyles } from '@berty/contexts/styles'
 import { useStylesDefaultModal } from '@berty/hooks'
+import { saveTheme } from '@berty/redux/reducers/theme.reducer'
+import { useThemeColor } from '@berty/store'
 
 const ThemeColorBody: React.FC<{ closeModal: () => void }> = ({ closeModal }) => {
 	const [themeName, setThemeName] = React.useState<string>('')

@@ -1,8 +1,10 @@
 import React, { useContext, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 
+import { EventEmitterContext } from '@berty/contexts/eventEmitter.context'
 import { useAppDispatch, useAppSelector, useAccount, useConversationsDict } from '@berty/hooks'
 import { selectAccountLanguage } from '@berty/redux/reducers/accountSettings.reducer'
+import { selectPersistentOptions } from '@berty/redux/reducers/persistentOptions.reducer'
 import {
 	selectAppState,
 	selectClearClients,
@@ -12,8 +14,6 @@ import {
 	selectSelectedAccount,
 	selectDaemonAddress,
 } from '@berty/redux/reducers/ui.reducer'
-import { selectPersistentOptions } from '@berty/redux/reducers/persistentOptions.reducer'
-import { EventEmitterContext } from '@berty/contexts/eventEmitter.context'
 
 import {
 	initialLaunch,

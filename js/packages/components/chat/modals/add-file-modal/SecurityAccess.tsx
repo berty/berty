@@ -1,16 +1,16 @@
+import { Icon } from '@ui-kitten/components'
 import React, { useEffect, useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
 import { View, TouchableOpacity, AppState, Platform } from 'react-native'
 import { RESULTS, openSettings } from 'react-native-permissions'
-import { useTranslation } from 'react-i18next'
-import { Icon } from '@ui-kitten/components'
 
-import { useStyles } from '@berty/contexts/styles'
-import { useThemeColor } from '@berty/store/hooks'
-import { PermissionType, getPermissions } from '@berty/rnutil/permissions'
-
-import { TabItems } from './types'
-import { UnifiedText } from '../../../shared-components/UnifiedText'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
+import { useStyles } from '@berty/contexts/styles'
+import { PermissionType, getPermissions } from '@berty/rnutil/permissions'
+import { useThemeColor } from '@berty/store/hooks'
+
+import { UnifiedText } from '../../../shared-components/UnifiedText'
+import { TabItems } from './types'
 
 export const SecurityAccess: React.FC<{ close: () => void; activeTab: TabItems }> = ({
 	activeTab,
