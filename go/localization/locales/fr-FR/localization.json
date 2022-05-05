@@ -18,7 +18,9 @@
     "privacyPolicyLabel": "Politique de confidentialité"
   },
   "push": {
-    "message": {},
+    "message": {
+      "title": "Nouveau message"
+    },
     "error": {
       "title": "Échec du déchiffrement des messages push"
     },
