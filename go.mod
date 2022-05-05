@@ -61,7 +61,7 @@ require (
 	github.com/libp2p/go-libp2p-kad-dht v0.15.0
 	github.com/libp2p/go-libp2p-pubsub v0.6.0
 	github.com/libp2p/go-libp2p-record v0.1.3
-	github.com/libp2p/go-libp2p-rendezvous v0.0.0-00010101000000-000000000000
+	github.com/libp2p/go-libp2p-rendezvous v0.0.0
 	github.com/libp2p/go-libp2p-transport-upgrader v0.6.0
 	github.com/libp2p/go-tcp-transport v0.4.0
 	github.com/libp2p/zeroconf/v2 v2.1.1
