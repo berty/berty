@@ -18,7 +18,9 @@
     "privacyPolicyLabel": "Privacy policy"
   },
   "push": {
-    "message": {},
+    "message": {
+      "title": ""
+    },
     "error": {
       "title": "Push decryption failed"
     },
