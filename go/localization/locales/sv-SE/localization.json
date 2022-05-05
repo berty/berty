@@ -18,7 +18,9 @@
     "privacyPolicyLabel": "Integritetspolicy"
   },
   "push": {
-    "message": {},
+    "message": {
+      "title": "Nytt meddelande"
+    },
     "error": {
       "title": "Push-dekryptering misslyckades"
     },
