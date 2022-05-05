@@ -62,6 +62,9 @@ help:
 	@echo "  lint.fix             Run eslint and fix errors"
 	@echo "  js.unused_exports    Run ts-unused-exports"
 	@echo "  metro.start          Start React-Native Metro (app debug)"
+	@echo "  web.debug            Start Craco (web app debug)"
+	@echo "  web.daemon.start     Start Berty account daemon for web"
+	@echo "  web.build            Build a production build for web"
 	@echo "  regenerate           Clean and generate Protobuf files"
 	@echo "  test                 Run tests"
 
@@ -273,10 +276,15 @@ android.reverse_tcp:
 
 #### Web
 
-.PHONY: web.start
-web.start: web/node_modules
+.PHONY: web.debug
+web.debug: web/node_modules
 	$(call check-program, yarn)
 	cd web && yarn && yarn start
+
+.PHONY: web.daemon.start
+web.daemon.start:
+	cd ../go && $(MAKE) install
+	berty account-daemon -node.account.listeners /ip4/127.0.0.1/tcp/9092/grpcws -node.listeners /ip4/127.0.0.1/tcp/9091/grpcws --log.filters='bty.grpc'
 
 .PHONY: web.build
 web.build: web/node_modules
