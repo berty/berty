@@ -374,6 +374,7 @@
 		}
 	},
 	"chat": {
+		"title-unknown": "",
 		"sending": "Enviando...",
 		"sent": "Enviado",
 		"contact-settings": {
@@ -385,10 +386,10 @@
 			"input-placeholder": "Escribe aquí..."
 		},
 		"push-notifications": {
-			"enable": "Habilitar notificaciones push",
-			"enabled": "Notificaciones push habilitadas",
+			"title": "Notificaciones",
 			"unsupported": "",
 			"check-device-settings": "",
+			"check-account-settings": "",
 			"warning-disable": {
 				"title": "",
 				"subtitle": "",
@@ -396,10 +397,28 @@
 				"refuse": "Omitir"
 			},
 			"why-cant-disable": "",
+			"why-cant-disable-account": "",
 			"errors": {
 				"no-token": "",
 				"no-server": ""
-			}
+			},
+			"warning-enable-all": {
+				"title": "",
+				"subtitle": "",
+				"refuse": "",
+				"accept": "Aceptar"
+			},
+			"warning-disable-mute": {
+				"title": "",
+				"refuse": "",
+				"accept": ""
+			},
+			"enabled": "Notificaciones push habilitadas",
+			"disabled": "Notificaciones push desactivadas",
+			"receive-push": "Recibir notificaciones push",
+			"hide-previews": "",
+			"auto-enable": "",
+			"show-in-app": ""
 		},
 		"devices": {
 			"title": "Dispositivos",
@@ -620,5 +639,10 @@
 				"button-cancel": "Cancelar"
 			}
 		}
+	},
+	"time-for": {
+		"minutes": "",
+		"hours": "",
+		"days": ""
 	}
 }
