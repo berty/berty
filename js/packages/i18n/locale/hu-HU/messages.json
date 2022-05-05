@@ -374,6 +374,7 @@
 		}
 	},
 	"chat": {
+		"title-unknown": "",
 		"sending": "Küldés...",
 		"sent": "Elküldött",
 		"contact-settings": {
@@ -385,21 +386,39 @@
 			"input-placeholder": "Írjon ide..."
 		},
 		"push-notifications": {
-			"enable": "Felugró értesítések bekapcsolása",
-			"enabled": "Felugró értesítések engedélyezése",
+			"title": "Értesítések",
 			"unsupported": "Az értesítések nem támogatottak",
 			"check-device-settings": "Ez a beszélgetés felugró értesítések fogadására van beállítva, de a riasztások le vannak tiltva az eszköz rendszerbeállításaiban",
+			"check-account-settings": "",
 			"warning-disable": {
 				"title": "Aktiválja ezt a funkciót?",
 				"subtitle": "Ha engedélyezve van, akkor a felugró értesítéseket nem lehet letiltani egy adott beszélgetésnél.",
 				"accept": "Aktiválás",
 				"refuse": "Kihagyás"
 			},
-			"why-cant-disable": "A beszélgetésenkénti felugró értesítések nem kapcsolhatóak ki.",
+			"why-cant-disable": "",
+			"why-cant-disable-account": "",
 			"errors": {
 				"no-token": "Eszköze nem kompatibilis a felugró értesítésekkel",
 				"no-server": "Először regisztrálnia kell egy felugrü közvetítőt"
-			}
+			},
+			"warning-enable-all": {
+				"title": "",
+				"subtitle": "",
+				"refuse": "",
+				"accept": "Elfogadás"
+			},
+			"warning-disable-mute": {
+				"title": "",
+				"refuse": "",
+				"accept": ""
+			},
+			"enabled": "Felugró értesítések engedélyezése",
+			"disabled": "Értesítések letiltva",
+			"receive-push": "Értesítések bekapcsolása",
+			"hide-previews": "",
+			"auto-enable": "",
+			"show-in-app": ""
 		},
 		"devices": {
 			"title": "Eszközök",
@@ -620,5 +639,10 @@
 				"button-cancel": "Mégse"
 			}
 		}
+	},
+	"time-for": {
+		"minutes": "",
+		"hours": "",
+		"days": ""
 	}
 }
