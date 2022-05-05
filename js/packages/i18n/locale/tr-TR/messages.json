@@ -374,6 +374,7 @@
 		}
 	},
 	"chat": {
+		"title-unknown": "",
 		"sending": "Gönderiliyor...",
 		"sent": "Gönderildi",
 		"contact-settings": {
@@ -385,10 +386,10 @@
 			"input-placeholder": "Buraya yaz..."
 		},
 		"push-notifications": {
-			"enable": "Bildirimleri aç",
-			"enabled": "Bildirimler açık",
+			"title": "Bildirimler",
 			"unsupported": "Bildirimler desteklenmiyor",
 			"check-device-settings": "",
+			"check-account-settings": "",
 			"warning-disable": {
 				"title": "Bu özelliği aktifleştirmek istiyor musun?",
 				"subtitle": "",
@@ -396,10 +397,28 @@
 				"refuse": "Geç"
 			},
 			"why-cant-disable": "",
+			"why-cant-disable-account": "",
 			"errors": {
 				"no-token": "Cihazın bildirimleri desteklemiyor",
 				"no-server": ""
-			}
+			},
+			"warning-enable-all": {
+				"title": "",
+				"subtitle": "",
+				"refuse": "",
+				"accept": "Onayla"
+			},
+			"warning-disable-mute": {
+				"title": "",
+				"refuse": "",
+				"accept": ""
+			},
+			"enabled": "Bildirimler açık",
+			"disabled": "Anlık bildirimler devre dışı",
+			"receive-push": "Anlık bildirimler alın",
+			"hide-previews": "",
+			"auto-enable": "",
+			"show-in-app": ""
 		},
 		"devices": {
 			"title": "Aygıtlar",
@@ -620,5 +639,10 @@
 				"button-cancel": "İptal"
 			}
 		}
+	},
+	"time-for": {
+		"minutes": "",
+		"hours": "",
+		"days": ""
 	}
 }
