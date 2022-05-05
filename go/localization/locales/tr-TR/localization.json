@@ -18,7 +18,9 @@
     "privacyPolicyLabel": "Gizlilik politikası"
   },
   "push": {
-    "message": {},
+    "message": {
+      "title": "Yeni mesaj"
+    },
     "error": {
       "title": ""
     },
