@@ -18,7 +18,9 @@
     "privacyPolicyLabel": "Retningslinjer for personvern"
   },
   "push": {
-    "message": {},
+    "message": {
+      "title": ""
+    },
     "error": {
       "title": ""
     },
