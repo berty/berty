@@ -25,23 +25,26 @@ const polyfillModules = [
 
 module.exports = {
 	babel: {
-		plugins: ['@babel/plugin-proposal-optional-chaining']
+		plugins: ['@babel/plugin-proposal-optional-chaining'],
 	},
 	webpack: {
 		target: 'web',
 		configure: webpackConfig => {
 			webpackConfig.resolve.plugins = webpackConfig.resolve.plugins.filter(
-				p => p.constructor.name !== "ModuleScopePlugin"
+				p => p.constructor.name !== 'ModuleScopePlugin',
 			)
 
 			webpackConfig.module.rules.push({
-				test: /node_modules\/react-native-reanimated.*\.(js|jsx)$/,
+				test: [
+					/node_modules\/react-native-reanimated.*\.(js|jsx)$/,
+					/node_modules\/react-native-qrcode-svg.*\.(js|jsx)$/,
+				],
 				use: {
 					loader: 'babel-loader',
 					options: {
 						presets: [
 							'@babel/preset-react',
-							{ plugins: ['@babel/plugin-proposal-class-properties'] }
+							{ plugins: ['@babel/plugin-proposal-class-properties'] },
 						],
 					},
 				},
@@ -75,22 +78,33 @@ module.exports = {
 					})
 				}
 				return rule
-		})
+			})
 
-			webpackConfig.plugins.push(new webpack.DefinePlugin({
-				'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),
-				__DEV__: process.env.NODE_ENV !== 'production' || true,
-			}))
+			webpackConfig.plugins.push(
+				new webpack.DefinePlugin({
+					'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),
+					__DEV__: process.env.NODE_ENV !== 'production' || true,
+				}),
+			)
 
 			return webpackConfig
 		},
 		alias: {
 			'@berty': path.join(path.resolve(__dirname, '../packages/')),
-			...(Object.fromEntries(polyfillModules.map(name => [name, path.join(path.resolve(__dirname, `./src/polyfill/${name}/`))]))),
-			'react': path.resolve(path.resolve(__dirname, './node_modules/react')),
+			...Object.fromEntries(
+				polyfillModules.map(name => [
+					name,
+					path.join(path.resolve(__dirname, `./src/polyfill/${name}/`)),
+				]),
+			),
+			react: path.resolve(path.resolve(__dirname, './node_modules/react')),
 			'^react-native$': path.resolve(path.resolve(__dirname, './node_modules/react-native')),
-			'react-native-svg': path.resolve(path.resolve(__dirname, './node_modules/react-native-svg-web')),
-			'lottie-react-native': path.resolve(path.resolve(__dirname, './node_modules/react-native-web-lottie')),
+			'react-native-svg': path.resolve(
+				path.resolve(__dirname, './node_modules/react-native-svg-web'),
+			),
+			'lottie-react-native': path.resolve(
+				path.resolve(__dirname, './node_modules/react-native-web-lottie'),
+			),
 		},
-	}
+	},
 }
