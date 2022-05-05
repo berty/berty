@@ -1,21 +1,21 @@
+import { BlurView } from '@react-native-community/blur'
+import { CommonActions } from '@react-navigation/native'
+import { Buffer } from 'buffer'
 import React from 'react'
 import { Platform, StyleSheet, ActivityIndicator } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { Buffer } from 'buffer'
-import { CommonActions } from '@react-navigation/native'
 
+import beapi from '@berty/api'
+import { base64ToURLBase64 } from '@berty/components/utils'
 import { useStyles } from '@berty/contexts/styles'
+import { useConversationsDict } from '@berty/hooks'
 import { ScreenFC, useNavigation } from '@berty/navigation'
 import { useThemeColor } from '@berty/store'
-import beapi from '@berty/api'
 import messengerMethodsHooks from '@berty/store/methods'
-import { useConversationsDict } from '@berty/hooks'
-import { BlurView } from '@react-native-community/blur'
 
-import { ManageGroupInvitation } from './components/ManageGroupInvitation'
 import AddThisContact from './components/AddThisContact'
-import { base64ToURLBase64 } from '@berty/components/utils'
 import InvalidScan from './components/InvalidScan'
+import { ManageGroupInvitation } from './components/ManageGroupInvitation'
 
 export const ManageDeepLink: ScreenFC<'Chat.ManageDeepLink'> = ({ route: { params } }) => {
 	const colors = useThemeColor()

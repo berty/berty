@@ -1,14 +1,31 @@
-import React, { useContext } from 'react'
-import { ScrollView, TouchableOpacity, View, Platform } from 'react-native'
 import { Icon } from '@ui-kitten/components'
-import { useTranslation } from 'react-i18next'
-import { useDispatch, useSelector } from 'react-redux'
 import * as MailComposer from 'expo-mail-composer'
+import React, { useContext } from 'react'
+import { useTranslation } from 'react-i18next'
+import { ScrollView, TouchableOpacity, View, Platform } from 'react-native'
+import { withInAppNotification } from 'react-native-in-app-notification'
 import { RESULTS } from 'react-native-permissions'
+import { useDispatch, useSelector } from 'react-redux'
 
 import beapi from '@berty/api'
+import { AccountAvatar } from '@berty/components/avatars'
+import { useModal } from '@berty/components/providers/modal.provider'
+import { ButtonSettingV2, Section } from '@berty/components/shared-components'
+import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
+import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
+import PermissionsContext from '@berty/contexts/permissions.context'
 import { useStyles } from '@berty/contexts/styles'
+import { useAccount, useAppSelector, useSyncNetworkConfigOnScreenRemoved } from '@berty/hooks'
 import { ScreenFC, useNavigation } from '@berty/navigation'
+import {
+	selectBlePerm,
+	selectEditedNetworkConfig,
+	setBlePerm,
+	setCurrentNetworkConfig,
+	setNodeNetworkConfig,
+} from '@berty/redux/reducers/networkConfig.reducer'
+import { selectProtocolClient, selectSelectedAccount } from '@berty/redux/reducers/ui.reducer'
+import { checkBlePermission } from '@berty/rnutil/checkPermissions'
 import {
 	accountService,
 	useMountEffect,
@@ -17,26 +34,9 @@ import {
 	serviceTypes,
 	numberifyLong,
 } from '@berty/store'
-import { useAccount, useAppSelector, useSyncNetworkConfigOnScreenRemoved } from '@berty/hooks'
-import { selectProtocolClient, selectSelectedAccount } from '@berty/redux/reducers/ui.reducer'
-import { checkBlePermission } from '@berty/rnutil/checkPermissions'
-import { withInAppNotification } from 'react-native-in-app-notification'
-import {
-	selectBlePerm,
-	selectEditedNetworkConfig,
-	setBlePerm,
-	setCurrentNetworkConfig,
-	setNodeNetworkConfig,
-} from '@berty/redux/reducers/networkConfig.reducer'
-
-import { useModal } from '@berty/components/providers/modal.provider'
-import { EditProfile } from './components/EditProfile'
-import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
-import { AccountAvatar } from '@berty/components/avatars'
-import { ButtonSettingV2, Section } from '@berty/components/shared-components'
-import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { accountPushToggleState, pushAvailable, pushFilteringAvailable } from '@berty/store/push'
-import PermissionsContext from '@berty/contexts/permissions.context'
+
+import { EditProfile } from './components/EditProfile'
 
 const ProfileButton: React.FC<{}> = () => {
 	const { padding, margin, border, text } = useStyles()

@@ -1,16 +1,16 @@
+import LottieView from 'lottie-react-native'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Platform, StatusBar, TouchableOpacity, View } from 'react-native'
 import { useDispatch } from 'react-redux'
-import LottieView from 'lottie-react-native'
 
 import proximityLottie from '@berty/assets/lottie/proximity-lottie.json'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
+import { useStyles } from '@berty/contexts/styles'
 import { ScreenFC, useNavigation } from '@berty/navigation'
 import { setBlePerm } from '@berty/redux/reducers/networkConfig.reducer'
 import { PermissionType, acquirePermission } from '@berty/rnutil/permissions'
 import { useThemeColor } from '@berty/store'
-import { useStyles } from '@berty/contexts/styles'
 
 export const BlePermission: ScreenFC<'Chat.BlePermission'> = ({ route: { params } }) => {
 	const { accept, deny } = params

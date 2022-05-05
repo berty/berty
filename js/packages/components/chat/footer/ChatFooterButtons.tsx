@@ -1,11 +1,12 @@
+import { Icon } from '@ui-kitten/components'
 import React from 'react'
 import { TouchableOpacity, TouchableOpacityProps, View, ActivityIndicator } from 'react-native'
-import { Icon } from '@ui-kitten/components'
 
-import { useThemeColor } from '@berty/store'
-import { useStyles } from '@berty/contexts/styles'
-import { UnifiedText } from '../../shared-components/UnifiedText'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
+import { useStyles } from '@berty/contexts/styles'
+import { useThemeColor } from '@berty/store'
+
+import { UnifiedText } from '../../shared-components/UnifiedText'
 
 const chatInputButtonSizeMultiplier = 36
 

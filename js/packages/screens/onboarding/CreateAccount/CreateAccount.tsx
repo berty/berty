@@ -1,26 +1,26 @@
+import { useHeaderHeight } from '@react-navigation/elements'
 import LottieView from 'lottie-react-native'
 import React from 'react'
-import { Platform, Vibration } from 'react-native'
 import { useTranslation } from 'react-i18next'
+import { Platform, Vibration } from 'react-native'
 import { StatusBar, View } from 'react-native'
-import { useHeaderHeight } from '@react-navigation/elements'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
+import OnboardingWrapper from '@berty/components/onboarding/OnboardingWrapper'
+import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
+import { useStyles } from '@berty/contexts/styles'
 import { ScreenFC } from '@berty/navigation'
+import rnutil from '@berty/rnutil'
+import { IOSOnlyKeyboardAvoidingView } from '@berty/rnutil/keyboardAvoiding'
+import { PermissionType } from '@berty/rnutil/permissions'
 import {
 	useMountEffect,
 	useNotificationsInhibitor,
 	useThemeColor,
 	accountService,
 } from '@berty/store'
-import { useStyles } from '@berty/contexts/styles'
-import { IOSOnlyKeyboardAvoidingView } from '@berty/rnutil/keyboardAvoiding'
 
 import { CreateAccountBox } from './components/CreateAccountBox'
-import OnboardingWrapper from '@berty/components/onboarding/OnboardingWrapper'
-import rnutil from '@berty/rnutil'
-import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
-import { PermissionType } from '@berty/rnutil/permissions'
 
 const CreateAccountBody = () => {
 	const { padding, margin, border, text } = useStyles()

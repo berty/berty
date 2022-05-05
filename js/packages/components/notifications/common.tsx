@@ -1,10 +1,9 @@
 import React from 'react'
 import { View } from 'react-native'
 
+import Logo from '@berty/assets/logo/1_berty_picto.svg'
 import { useStyles } from '@berty/contexts/styles'
 import { useThemeColor } from '@berty/store/hooks'
-
-import Logo from '@berty/assets/logo/1_berty_picto.svg'
 
 export const useStylesNotification = () => {
 	const { flex } = useStyles()

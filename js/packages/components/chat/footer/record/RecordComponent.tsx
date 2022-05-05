@@ -1,4 +1,9 @@
+import { Recorder } from '@react-native-community/audio-toolkit'
+import { useNavigation } from '@react-navigation/native'
+import { Icon } from '@ui-kitten/components'
+import Long from 'long'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Animated, Platform, TouchableOpacity, Vibration, View } from 'react-native'
 import {
 	LongPressGestureHandler,
@@ -6,22 +11,20 @@ import {
 	LongPressGestureHandlerStateChangeEvent,
 	State,
 } from 'react-native-gesture-handler'
-import { Recorder } from '@react-native-community/audio-toolkit'
-import { useTranslation } from 'react-i18next'
-import { Icon } from '@ui-kitten/components'
-import { useNavigation } from '@react-navigation/native'
 import { RESULTS } from 'react-native-permissions'
-import Long from 'long'
 
-import { WelshMessengerServiceClient } from '@berty/grpc-bridge/welsh-clients.gen'
-import { useStyles } from '@berty/contexts/styles'
 import beapi from '@berty/api'
-import { playSound } from '@berty/store/sounds'
-import { useMessengerClient, useThemeColor } from '@berty/store'
-import rnutil from '@berty/rnutil'
-import { AppDispatch } from '@berty/redux/store'
+import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
+import { useStyles } from '@berty/contexts/styles'
+import { WelshMessengerServiceClient } from '@berty/grpc-bridge/welsh-clients.gen'
 import { useAppDispatch } from '@berty/hooks'
+import { AppDispatch } from '@berty/redux/store'
+import rnutil from '@berty/rnutil'
+import { PermissionType } from '@berty/rnutil/permissions'
+import { useMessengerClient, useThemeColor } from '@berty/store'
+import { playSound } from '@berty/store/sounds'
 
+import { UnifiedText } from '../../../shared-components/UnifiedText'
 import {
 	limitIntensities,
 	RecordingState,
@@ -29,11 +32,8 @@ import {
 	volumeValueLowest,
 	volumeValuePrecision,
 } from '../../audioMessageCommon'
-import { RecordingComponent } from './RecordingComponent'
 import { PreviewComponent } from './PreviewComponent'
-import { UnifiedText } from '../../../shared-components/UnifiedText'
-import { PermissionType } from '@berty/rnutil/permissions'
-import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
+import { RecordingComponent } from './RecordingComponent'
 
 enum MicPermStatus {
 	UNDEFINED = 0,

@@ -1,10 +1,10 @@
 import React from 'react'
 import { View } from 'react-native'
 
-import { useThemeColor } from '@berty/store/hooks'
-import { useStyles } from '@berty/contexts/styles'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
+import { useStyles } from '@berty/contexts/styles'
+import { useThemeColor } from '@berty/store/hooks'
 
 export const UnreadCount: React.FC<{ value: number; isConvBadge?: boolean }> = ({
 	value,

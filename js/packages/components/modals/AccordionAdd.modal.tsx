@@ -1,12 +1,13 @@
+import { multiaddr } from 'multiaddr'
 import React, { FC, useCallback, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { View } from 'react-native'
 
 import Button from '@berty/components/onboarding/Button'
 import { TextInput } from '@berty/components/shared-components/TextInput'
-import { useThemeColor } from '@berty/store'
 import { useStyles } from '@berty/contexts/styles'
-import { multiaddr } from 'multiaddr'
-import { useTranslation } from 'react-i18next'
+import { useThemeColor } from '@berty/store'
+
 import { UnifiedText } from '../shared-components/UnifiedText'
 
 export const AccordionAdd: FC<{

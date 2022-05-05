@@ -1,10 +1,9 @@
 import { Buffer } from 'buffer'
-import beapi from '@berty/api'
 import emojiSource from 'emoji-datasource'
-import 'string.fromcodepoint'
 
-import { WelshProtocolServiceClient } from '@berty/grpc-bridge/welsh-clients.gen'
+import beapi from '@berty/api'
 import { Emoji } from '@berty/contexts/styles/types'
+import { WelshProtocolServiceClient } from '@berty/grpc-bridge/welsh-clients.gen'
 
 let cache: { cid: string; prom: Promise<string> }[] = []
 

@@ -1,8 +1,8 @@
+import { StackScreenProps } from '@react-navigation/stack'
 import React from 'react'
 import { PermissionStatus } from 'react-native-permissions'
 
 import beapi from '@berty/api'
-import { StackScreenProps } from '@react-navigation/stack'
 import { PermissionType } from '@berty/rnutil/permissions'
 
 export type ScreensParams = {

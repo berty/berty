@@ -1,4 +1,8 @@
+import Clipboard from '@react-native-clipboard/clipboard'
+import { Icon } from '@ui-kitten/components'
+import LinkifyIt from 'linkify-it'
 import React, { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
 	View,
 	ScrollView,
@@ -11,17 +15,21 @@ import {
 	Share,
 	Platform,
 } from 'react-native'
-import { Icon } from '@ui-kitten/components'
-import { useTranslation } from 'react-i18next'
-import { TabView, SceneMap } from 'react-native-tab-view'
-import tlds from 'tlds'
-import LinkifyIt from 'linkify-it'
+import RNFS from 'react-native-fs'
 import Hyperlink from 'react-native-hyperlink'
-import Clipboard from '@react-native-clipboard/clipboard'
+import { TabView, SceneMap } from 'react-native-tab-view'
+import { useSelector } from 'react-redux'
+import tlds from 'tlds'
 
 import beapi from '@berty/api'
+import { isBertyDeepLink } from '@berty/components/chat/message/UserMessageComponents'
+import { timeFormat } from '@berty/components/helpers'
+import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
+import { getSource } from '@berty/components/utils'
 import { useStyles } from '@berty/contexts/styles'
+import { useConversationInteractions } from '@berty/hooks'
 import { ScreenFC } from '@berty/navigation'
+import { selectProtocolClient } from '@berty/redux/reducers/ui.reducer'
 import {
 	useMessengerClient,
 	useThemeColor,
@@ -29,15 +37,6 @@ import {
 	retrieveMediaBytes,
 	Maybe,
 } from '@berty/store'
-import { useConversationInteractions } from '@berty/hooks'
-import RNFS from 'react-native-fs'
-
-import { getSource } from '@berty/components/utils'
-import { timeFormat } from '@berty/components/helpers'
-import { isBertyDeepLink } from '@berty/components/chat/message/UserMessageComponents'
-import { useSelector } from 'react-redux'
-import { selectProtocolClient } from '@berty/redux/reducers/ui.reducer'
-import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 
 const initialLayout = { width: Dimensions.get('window').width }
 const linkify = LinkifyIt().tlds(tlds, true)

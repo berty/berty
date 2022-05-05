@@ -1,6 +1,6 @@
-import { Platform } from 'react-native'
 import base64 from 'base64-js'
 import * as pb from 'protobufjs'
+import { Platform } from 'react-native'
 
 // methods
 export const serializeToBase64 = (req: Uint8Array) => base64.fromByteArray(req)

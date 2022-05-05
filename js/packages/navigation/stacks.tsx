@@ -1,28 +1,28 @@
-import React, { useCallback, useEffect, useState } from 'react'
-import { Linking, Platform, TouchableOpacity } from 'react-native'
-import { useTranslation } from 'react-i18next'
+import { CommonActions, NavigationProp, useNavigation } from '@react-navigation/native'
 import {
 	createNativeStackNavigator,
 	NativeStackNavigationOptions,
 } from '@react-navigation/native-stack'
-import { CommonActions, NavigationProp, useNavigation } from '@react-navigation/native'
 import { Icon } from '@ui-kitten/components'
 import mapValues from 'lodash/mapValues'
+import React, { useCallback, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { Linking, Platform, TouchableOpacity } from 'react-native'
 import { useSelector } from 'react-redux'
 
-import * as RawComponents from '@berty/screens'
-import { useThemeColor } from '@berty/store'
+import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
+import { useAppDispatch } from '@berty/hooks'
 import {
 	MESSENGER_APP_STATE,
 	selectAppState,
 	selectHandledLink,
 	setHandledLink,
 } from '@berty/redux/reducers/ui.reducer'
-import { useAppDispatch } from '@berty/hooks'
+import * as RawComponents from '@berty/screens'
+import { useThemeColor } from '@berty/store'
 
 import { ScreensParams } from './types'
-import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 
 export const CustomTitleStyle: () => any = () => {
 	const { text } = useStyles()

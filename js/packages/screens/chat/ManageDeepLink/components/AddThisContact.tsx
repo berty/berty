@@ -1,22 +1,22 @@
-import React, { useState } from 'react'
-import { View, TouchableOpacity, TextInput } from 'react-native'
-import { Buffer } from 'buffer'
 import { CommonActions } from '@react-navigation/native'
 import { Icon } from '@ui-kitten/components'
+import { Buffer } from 'buffer'
+import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-
-import { useStyles } from '@berty/contexts/styles'
-import messengerMethodsHooks from '@berty/store/methods'
-import { useThemeColor } from '@berty/store'
-import { dispatch as navDispatch } from '@berty/navigation/rootRef'
-import { useNavigation } from '@berty/navigation'
-import { useAppDispatch, useContactConversation } from '@berty/hooks'
+import { View, TouchableOpacity, TextInput } from 'react-native'
 
 import { ContactAvatar } from '@berty/components/avatars'
-import { TabBar } from '@berty/components/shared-components/TabBar'
 import { FingerprintContent } from '@berty/components/shared-components/FingerprintContent'
-import InvalidScan from './InvalidScan'
+import { TabBar } from '@berty/components/shared-components/TabBar'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
+import { useStyles } from '@berty/contexts/styles'
+import { useAppDispatch, useContactConversation } from '@berty/hooks'
+import { useNavigation } from '@berty/navigation'
+import { dispatch as navDispatch } from '@berty/navigation/rootRef'
+import { useThemeColor } from '@berty/store'
+import messengerMethodsHooks from '@berty/store/methods'
+
+import InvalidScan from './InvalidScan'
 
 const useStylesModal = () => {
 	const { width, border, height, opacity } = useStyles()

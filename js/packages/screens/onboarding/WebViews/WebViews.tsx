@@ -1,11 +1,10 @@
+import { Layout } from '@ui-kitten/components'
 import React from 'react'
 import { StatusBar } from 'react-native'
-import { Layout } from '@ui-kitten/components'
-
-import { useThemeColor } from '@berty/store'
-import { ScreenFC } from '@berty/navigation'
 
 import { WebViews as SharedWebViews } from '@berty/components/shared-components'
+import { ScreenFC } from '@berty/navigation'
+import { useThemeColor } from '@berty/store'
 
 export const WebViews: ScreenFC<'Onboarding.WebViews'> = ({ route: { params } }) => {
 	const { url } = params

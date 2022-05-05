@@ -1,3 +1,4 @@
+import moment from 'moment'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import {
 	ActivityIndicator,
@@ -7,9 +8,15 @@ import {
 	View,
 	Platform,
 } from 'react-native'
-import moment from 'moment'
 
+import beapi from '@berty/api'
+import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
+import {
+	useConversationInteractions,
+	useConversationMembersDict,
+	useConversation,
+} from '@berty/hooks'
 import {
 	fetchMore,
 	pbDateToNum,
@@ -17,18 +24,11 @@ import {
 	useMessengerClient,
 	useThemeColor,
 } from '@berty/store'
-import beapi from '@berty/api'
-import {
-	useConversationInteractions,
-	useConversationMembersDict,
-	useConversation,
-} from '@berty/hooks'
-import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 
 import { InfosChat } from '../InfosChat'
-import { Message } from './message'
 import { ChatDate, updateStickyDate } from './common'
 import { InfosMultiMember } from './InfosMultiMember'
+import { Message } from './message'
 
 const CenteredActivityIndicator: React.FC<ActivityIndicatorProps> = React.memo(props => {
 	const { ...propsToPass } = props

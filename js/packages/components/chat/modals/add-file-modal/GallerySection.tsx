@@ -1,4 +1,7 @@
+import CameraRoll from '@react-native-community/cameraroll'
+import { Icon } from '@ui-kitten/components'
 import React, { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
 	TouchableOpacity,
 	View,
@@ -7,17 +10,14 @@ import {
 	Platform,
 	ActivityIndicator,
 } from 'react-native'
-import { Icon } from '@ui-kitten/components'
-import CameraRoll from '@react-native-community/cameraroll'
-import { useTranslation } from 'react-i18next'
-
-import { useStyles } from '@berty/contexts/styles'
-import { useThemeColor } from '@berty/store/hooks'
-import beapi from '@berty/api'
 import RNFS from 'react-native-fs'
 
-import { ImageCounter } from '../../ImageCounter'
+import beapi from '@berty/api'
+import { useStyles } from '@berty/contexts/styles'
+import { useThemeColor } from '@berty/store/hooks'
+
 import { UnifiedText } from '../../../shared-components/UnifiedText'
+import { ImageCounter } from '../../ImageCounter'
 
 const GALLERY_IMAGE_PER_PAGE = 30
 

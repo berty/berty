@@ -1,9 +1,10 @@
-import React from 'react'
 import moment from 'moment'
+import React from 'react'
 import { View, ViewStyle } from 'react-native'
 
-import { useThemeColor } from '@berty/store'
 import { useStyles } from '@berty/contexts/styles'
+import { useThemeColor } from '@berty/store'
+
 import { UnifiedText } from '../shared-components/UnifiedText'
 
 export const volumeValueLowest = -160

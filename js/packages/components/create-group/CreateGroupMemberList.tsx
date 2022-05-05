@@ -1,16 +1,16 @@
+import { Icon } from '@ui-kitten/components'
 import React from 'react'
 import { ScrollView, TouchableOpacity, View } from 'react-native'
-import { Icon } from '@ui-kitten/components'
 
 import beapi from '@berty/api'
+import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
-import { useThemeColor } from '@berty/store'
 import { useAppDispatch, useAppSelector } from '@berty/hooks'
 import {
 	removeMemberFromInvitationListById,
 	selectInvitationListMembers,
 } from '@berty/redux/reducers/groupCreationForm.reducer'
-import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
+import { useThemeColor } from '@berty/store'
 
 import { ContactAvatar } from '../avatars'
 import { UnifiedText } from '../shared-components/UnifiedText'

@@ -1,25 +1,25 @@
-import React, { ComponentProps, useState } from 'react'
-import { View, ScrollView, Share, StatusBar, TouchableOpacity, Platform } from 'react-native'
-import { Layout } from '@ui-kitten/components'
-import { useTranslation } from 'react-i18next'
 import Clipboard from '@react-native-clipboard/clipboard'
-import QRCode from 'react-native-qrcode-svg'
+import { Layout } from '@ui-kitten/components'
+import React, { ComponentProps, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { View, ScrollView, Share, StatusBar, TouchableOpacity, Platform } from 'react-native'
 import ImagePicker, { ImageOrVideo } from 'react-native-image-crop-picker'
+import QRCode from 'react-native-qrcode-svg'
 
 import beapi from '@berty/api'
-import { useStyles } from '@berty/contexts/styles'
-import { ScreenFC, useNavigation } from '@berty/navigation'
-import { Maybe, useMessengerClient, useThemeColor } from '@berty/store'
-import { useConversationMembersDict, useConversation } from '@berty/hooks'
+import logo from '@berty/assets/images/1_berty_picto.png'
+import { MemberAvatar, MultiMemberAvatar } from '@berty/components/avatars'
+import EnableNotificationsButton from '@berty/components/chat/EnableNotificationsButton'
 import {
 	ButtonSetting,
 	FactionButtonSetting,
 } from '@berty/components/shared-components/SettingsButtons'
-import logo from '@berty/assets/images/1_berty_picto.png'
-import { MemberAvatar, MultiMemberAvatar } from '@berty/components/avatars'
-import EnableNotificationsButton from '@berty/components/chat/EnableNotificationsButton'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
+import { useStyles } from '@berty/contexts/styles'
+import { useConversationMembersDict, useConversation } from '@berty/hooks'
+import { ScreenFC, useNavigation } from '@berty/navigation'
+import { Maybe, useMessengerClient, useThemeColor } from '@berty/store'
 
 const GroupChatSettingsHeader: React.FC<{ publicKey: Maybe<string> }> = ({ publicKey }) => {
 	const conv = useConversation(publicKey)

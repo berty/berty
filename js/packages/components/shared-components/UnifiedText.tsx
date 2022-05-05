@@ -1,7 +1,8 @@
-import { useThemeColor } from '@berty/store'
-import { useStyles } from '@berty/contexts/styles'
 import React from 'react'
 import { Text, TextProps } from 'react-native'
+
+import { useStyles } from '@berty/contexts/styles'
+import { useThemeColor } from '@berty/store'
 
 export const UnifiedText: React.FC<TextProps> = props => {
 	const { children, style } = props

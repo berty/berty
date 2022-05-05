@@ -1,6 +1,6 @@
+import moment from 'moment'
 import React from 'react'
 import { View, ViewToken } from 'react-native'
-import moment from 'moment'
 
 import { useStyles } from '@berty/contexts/styles'
 import { useThemeColor } from '@berty/store'

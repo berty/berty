@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import { Image, ImageProps, ActivityIndicator, View, TouchableOpacity } from 'react-native'
+import { useSelector } from 'react-redux'
 
-import { useNavigation } from '@berty/navigation'
 import { useMedia } from '@berty/hooks'
+import { useNavigation } from '@berty/navigation'
+import { selectProtocolClient } from '@berty/redux/reducers/ui.reducer'
 
 import { getSource } from './utils'
-import { useSelector } from 'react-redux'
-import { selectProtocolClient } from '@berty/redux/reducers/ui.reducer'
 
 const AttachmentImage: React.FC<{ cid: string; pressable?: boolean } & Omit<ImageProps, 'source'>> =
 	React.memo(props => {

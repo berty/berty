@@ -1,5 +1,5 @@
-import React, { createContext, useContext, useState } from 'react'
 import { useDimensions } from '@react-native-community/hooks'
+import React, { createContext, useContext, useState } from 'react'
 import { PixelRatio } from 'react-native'
 
 import {

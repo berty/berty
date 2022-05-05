@@ -1,22 +1,21 @@
-import React from 'react'
-import { StatusBar, View } from 'react-native'
-import { useTranslation } from 'react-i18next'
 import { Icon, Layout } from '@ui-kitten/components'
-import { SafeAreaView } from 'react-native-safe-area-context'
 import Long from 'long'
+import React from 'react'
+import { useTranslation } from 'react-i18next'
+import { StatusBar, View } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 import beapi from '@berty/api'
-import { ScreenFC } from '@berty/navigation'
-import { useStyles } from '@berty/contexts/styles'
-import { useMessengerClient, useThemeColor } from '@berty/store'
-import { selectInvitationListMembers } from '@berty/redux/reducers/groupCreationForm.reducer'
-import { useAllContacts, useAppDispatch, useAppSelector, useConversation } from '@berty/hooks'
-
 import { FooterCreateGroup } from '@berty/components/create-group/CreateGroupFooter'
-import { ContactPicker } from '@berty/components/shared-components'
 import { Header } from '@berty/components/create-group/CreateGroupHeader'
 import { MemberList } from '@berty/components/create-group/CreateGroupMemberList'
+import { ContactPicker } from '@berty/components/shared-components'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
+import { useStyles } from '@berty/contexts/styles'
+import { useAllContacts, useAppDispatch, useAppSelector, useConversation } from '@berty/hooks'
+import { ScreenFC } from '@berty/navigation'
+import { selectInvitationListMembers } from '@berty/redux/reducers/groupCreationForm.reducer'
+import { useMessengerClient, useThemeColor } from '@berty/store'
 
 export const MultiMemberSettingsAddMembers: ScreenFC<'Chat.MultiMemberSettingsAddMembers'> = ({
 	route,

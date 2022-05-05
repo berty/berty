@@ -1,5 +1,5 @@
-import { Platform } from 'react-native'
 import { Camera } from 'expo-camera'
+import { Platform } from 'react-native'
 import {
 	check,
 	checkNotifications,

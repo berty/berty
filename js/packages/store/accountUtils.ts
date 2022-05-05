@@ -2,6 +2,10 @@ import { Platform } from 'react-native'
 
 import beapi from '@berty/api'
 import {
+	PersistentOptionsKeys,
+	setPersistentOption,
+} from '@berty/redux/reducers/persistentOptions.reducer'
+import {
 	setAccounts,
 	setCreatedAccount,
 	setNextAccount,
@@ -10,16 +14,12 @@ import {
 	setStateStreamInProgress,
 	setStreamError,
 } from '@berty/redux/reducers/ui.reducer'
-import {
-	PersistentOptionsKeys,
-	setPersistentOption,
-} from '@berty/redux/reducers/persistentOptions.reducer'
 import store, { AppDispatch, persistor, resetAccountStore } from '@berty/redux/store'
 
-import { storageKeyForAccount } from './utils'
-import { Maybe } from './hooks'
 import { accountService, storageRemove } from './accountService'
+import { Maybe } from './hooks'
 import { StreamInProgress } from './types'
+import { storageKeyForAccount } from './utils'
 
 export const importAccount = async (embedded: boolean, path: string) => {
 	if (!embedded) {

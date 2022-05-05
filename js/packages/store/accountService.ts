@@ -1,13 +1,13 @@
-import { Platform } from 'react-native'
-import { Buffer } from 'buffer'
 import { grpc } from '@improbable-eng/grpc-web'
+import { Buffer } from 'buffer'
+import { Platform } from 'react-native'
 
 import beapi from '@berty/api'
-import { grpcweb as rpcWeb } from '@berty/grpc-bridge/rpc'
-import { WelshAccountServiceClient } from '@berty/grpc-bridge/welsh-clients.gen'
 import { Service } from '@berty/grpc-bridge'
-import rpcBridge from '@berty/grpc-bridge/rpc/rpc.bridge'
 import { logger } from '@berty/grpc-bridge/middleware'
+import { grpcweb as rpcWeb } from '@berty/grpc-bridge/rpc'
+import rpcBridge from '@berty/grpc-bridge/rpc/rpc.bridge'
+import { WelshAccountServiceClient } from '@berty/grpc-bridge/welsh-clients.gen'
 
 export const convertMAddr = (urls: String[]): string | null =>
 	urls

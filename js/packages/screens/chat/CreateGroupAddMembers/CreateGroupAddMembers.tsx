@@ -1,17 +1,17 @@
-import React from 'react'
-import { View, StatusBar } from 'react-native'
 import { Layout } from '@ui-kitten/components'
+import React from 'react'
 import { useTranslation } from 'react-i18next'
+import { View, StatusBar } from 'react-native'
 
-import { ScreenFC, useNavigation } from '@berty/navigation'
-import { useStyles } from '@berty/contexts/styles'
-import { useThemeColor } from '@berty/store'
-import { useAllContacts } from '@berty/hooks'
-import { ContactPicker } from '@berty/components/shared-components'
 import { FooterCreateGroup } from '@berty/components/create-group/CreateGroupFooter'
 import { Header } from '@berty/components/create-group/CreateGroupHeader'
 import { MemberList } from '@berty/components/create-group/CreateGroupMemberList'
+import { ContactPicker } from '@berty/components/shared-components'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
+import { useStyles } from '@berty/contexts/styles'
+import { useAllContacts } from '@berty/hooks'
+import { ScreenFC, useNavigation } from '@berty/navigation'
+import { useThemeColor } from '@berty/store'
 
 export const CreateGroupAddMembers: ScreenFC<'Chat.CreateGroupAddMembers'> = () => {
 	const { flex, margin } = useStyles()

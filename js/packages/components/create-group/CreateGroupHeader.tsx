@@ -1,10 +1,10 @@
+import { Icon } from '@ui-kitten/components'
 import React from 'react'
 import { TouchableWithoutFeedback, View } from 'react-native'
-import { Icon } from '@ui-kitten/components'
 
-import { useThemeColor } from '@berty/store'
-import { useStyles } from '@berty/contexts/styles'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
+import { useStyles } from '@berty/contexts/styles'
+import { useThemeColor } from '@berty/store'
 
 import { UnifiedText } from '../shared-components/UnifiedText'
 

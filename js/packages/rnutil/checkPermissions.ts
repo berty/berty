@@ -1,5 +1,6 @@
 import { Linking, Platform } from 'react-native'
 import { check, PERMISSIONS, PermissionStatus, RESULTS } from 'react-native-permissions'
+
 import beapi from '@berty/api'
 import { PermissionType, getPermissions } from '@berty/rnutil/permissions'
 

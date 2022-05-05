@@ -1,14 +1,14 @@
+import { Layout, Icon } from '@ui-kitten/components'
 import React from 'react'
 import { View, ScrollView, ActivityIndicator, TouchableOpacity } from 'react-native'
-import { Layout, Icon } from '@ui-kitten/components'
 
 import beapi from '@berty/api'
-import { useStyles } from '@berty/contexts/styles'
-import { ScreenFC } from '@berty/navigation'
-import messengerMethodsHooks from '@berty/store/methods'
-import { useMountEffect, useThemeColor, accountService } from '@berty/store'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
+import { useStyles } from '@berty/contexts/styles'
+import { ScreenFC } from '@berty/navigation'
+import { useMountEffect, useThemeColor, accountService } from '@berty/store'
+import messengerMethodsHooks from '@berty/store/methods'
 
 export const SystemInfo: ScreenFC<'Settings.SystemInfo'> = ({ navigation }) => {
 	const { padding } = useStyles()

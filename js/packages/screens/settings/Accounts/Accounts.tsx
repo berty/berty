@@ -1,10 +1,25 @@
 import React from 'react'
-import { ScrollView, View, TouchableOpacity, Platform } from 'react-native'
 import { useTranslation } from 'react-i18next'
+import { ScrollView, View, TouchableOpacity, Platform } from 'react-native'
+import { withInAppNotification } from 'react-native-in-app-notification'
+import { useDispatch, useSelector } from 'react-redux'
 
 import beapi from '@berty/api'
+import { AccordionV2 } from '@berty/components/Accordion'
+import { GenericAvatar } from '@berty/components/avatars'
+import { importAccountFromDocumentPicker } from '@berty/components/pickerUtils'
+import { ButtonSettingV2, Section } from '@berty/components/shared-components'
+import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
+import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
+import { useSwitchAccount } from '@berty/hooks'
 import { ScreenFC, useNavigation } from '@berty/navigation'
+import {
+	selectAccounts,
+	selectEmbedded,
+	selectSelectedAccount,
+	setStateOnBoardingReady,
+} from '@berty/redux/reducers/ui.reducer'
 import {
 	useThemeColor,
 	pbDateToNum,
@@ -12,22 +27,6 @@ import {
 	exportAccountToFile,
 	refreshAccountList,
 } from '@berty/store'
-
-import { ButtonSettingV2, Section } from '@berty/components/shared-components'
-import {
-	selectAccounts,
-	selectEmbedded,
-	selectSelectedAccount,
-	setStateOnBoardingReady,
-} from '@berty/redux/reducers/ui.reducer'
-import { useDispatch, useSelector } from 'react-redux'
-import { importAccountFromDocumentPicker } from '@berty/components/pickerUtils'
-import { GenericAvatar } from '@berty/components/avatars'
-import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
-import { AccordionV2 } from '@berty/components/Accordion'
-import { withInAppNotification } from 'react-native-in-app-notification'
-import { useSwitchAccount } from '@berty/hooks'
-import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 
 const AccountButton: React.FC<beapi.account.IAccountMetadata> = ({
 	avatarCid,

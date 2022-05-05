@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
 	View,
 	Platform,
@@ -8,18 +9,17 @@ import {
 	StyleSheet,
 	StatusBar,
 } from 'react-native'
-import { useTranslation } from 'react-i18next'
-import { SafeAreaView } from 'react-native-safe-area-context'
-import RNFS from 'react-native-fs'
 import { NativeModules } from 'react-native'
+import RNFS from 'react-native-fs'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 import beapi from '@berty/api'
+import { useStyles } from '@berty/contexts/styles'
 import { GRPCError, Service } from '@berty/grpc-bridge'
 import { bridge as rpcBridge } from '@berty/grpc-bridge/rpc'
-import { pbDateToNum } from '@berty/store'
-import { useStyles } from '@berty/contexts/styles'
 import { useAppDispatch } from '@berty/hooks'
 import { setDebugMode } from '@berty/redux/reducers/ui.reducer'
+import { pbDateToNum } from '@berty/store'
 
 import { UnifiedText } from '../shared-components/UnifiedText'
 

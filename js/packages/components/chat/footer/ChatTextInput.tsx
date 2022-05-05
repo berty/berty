@@ -1,10 +1,10 @@
-import React, { ComponentProps } from 'react'
-import { TextInput, View, Platform } from 'react-native'
-import { useTranslation } from 'react-i18next'
 import { Icon } from '@ui-kitten/components'
+import React, { ComponentProps } from 'react'
+import { useTranslation } from 'react-i18next'
+import { TextInput, View, Platform } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 
-import { Maybe, useThemeColor } from '@berty/store'
+import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
 import { useAppDispatch, useAppSelector, useInteractionAuthor } from '@berty/hooks'
 import {
@@ -12,10 +12,10 @@ import {
 	selectActiveReplyInteraction,
 } from '@berty/redux/reducers/chatInputs.reducer'
 import { isTablet } from '@berty/rnutil/constants'
+import { Maybe, useThemeColor } from '@berty/store'
 
-import { getMediaTypeFromMedias } from '../../utils'
 import { UnifiedText } from '../../shared-components/UnifiedText'
-import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
+import { getMediaTypeFromMedias } from '../../utils'
 
 const ReplyMessageBar: React.FC<{ convPK: string }> = ({ convPK }) => {
 	const { border, text } = useStyles()

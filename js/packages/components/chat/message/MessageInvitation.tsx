@@ -1,20 +1,20 @@
-import React, { useState } from 'react'
-import { ActivityIndicator, TouchableOpacity, View } from 'react-native'
+import { CommonActions } from '@react-navigation/native'
 import { Icon } from '@ui-kitten/components'
 import { Buffer } from 'buffer'
+import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useNavigation } from '@berty/navigation'
-import { CommonActions } from '@react-navigation/native'
+import { ActivityIndicator, TouchableOpacity, View } from 'react-native'
 
-import { useMessengerClient, useThemeColor } from '@berty/store'
 import { useStyles } from '@berty/contexts/styles'
-import { InteractionGroupInvitation } from '@berty/store/types.gen'
 import { useOneToOneContact, useConversation } from '@berty/hooks'
+import { useNavigation } from '@berty/navigation'
+import { useMessengerClient, useThemeColor } from '@berty/store'
+import { InteractionGroupInvitation } from '@berty/store/types.gen'
 
-import { MessageSystemWrapper } from './MessageSystemWrapper'
 import { MultiMemberAvatar } from '../../avatars'
-import { base64ToURLBase64 } from '../../utils'
 import { UnifiedText } from '../../shared-components/UnifiedText'
+import { base64ToURLBase64 } from '../../utils'
+import { MessageSystemWrapper } from './MessageSystemWrapper'
 
 export const MessageInvitationButton: React.FC<{
 	onPress?: () => void

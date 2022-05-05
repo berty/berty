@@ -1,17 +1,26 @@
+import Long from 'long'
 import React, { MutableRefObject, useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
 	NativeSyntheticEvent,
 	Platform,
 	TextInputSelectionChangeEventData,
 	View,
 } from 'react-native'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import ImagePicker from 'react-native-image-crop-picker'
 import { RESULTS } from 'react-native-permissions'
-import Long from 'long'
-import { useTranslation } from 'react-i18next'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
-import { Maybe, useMessengerClient, useMountEffect, useThemeColor } from '@berty/store'
-
+import beapi from '@berty/api'
+import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
+import {
+	useAppDispatch,
+	useAppSelector,
+	useMedias,
+	useConversation,
+	usePlaySound,
+} from '@berty/hooks'
+import { useNavigation } from '@berty/navigation'
 import {
 	removeActiveReplyInteraction,
 	resetChatInput,
@@ -20,16 +29,6 @@ import {
 	selectChatInputText,
 	setChatInputText,
 } from '@berty/redux/reducers/chatInputs.reducer'
-import beapi from '@berty/api'
-import { useNavigation } from '@berty/navigation'
-import rnutil from '@berty/rnutil'
-import {
-	useAppDispatch,
-	useAppSelector,
-	useMedias,
-	useConversation,
-	usePlaySound,
-} from '@berty/hooks'
 import {
 	selectChatInputIsFocused,
 	selectChatInputIsSending,
@@ -37,16 +36,16 @@ import {
 	setChatInputIsSending,
 	setChatInputSelection,
 } from '@berty/redux/reducers/chatInputsVolatile.reducer'
-import ImagePicker from 'react-native-image-crop-picker'
+import rnutil from '@berty/rnutil'
+import { PermissionType } from '@berty/rnutil/permissions'
+import { Maybe, useMessengerClient, useMountEffect, useThemeColor } from '@berty/store'
 
+import { useModal } from '../../providers/modal.provider'
+import { AddFileMenu } from '../modals/add-file-modal/AddFileMenu.modal'
 import { CameraButton, MoreButton, RecordButton, SendButton } from './ChatFooterButtons'
 import { ChatTextInput } from './ChatTextInput'
-import { RecordComponent } from './record/RecordComponent'
-import { AddFileMenu } from '../modals/add-file-modal/AddFileMenu.modal'
 import { EmojiBanner } from './emojis/EmojiBanner'
-import { useModal } from '../../providers/modal.provider'
-import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
-import { PermissionType } from '@berty/rnutil/permissions'
+import { RecordComponent } from './record/RecordComponent'
 
 type ChatFooterProps = {
 	convPK: string

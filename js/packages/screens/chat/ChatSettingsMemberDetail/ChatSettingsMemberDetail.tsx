@@ -1,16 +1,15 @@
-import React, { ComponentProps } from 'react'
-import { View, ScrollView, StatusBar } from 'react-native'
 import { Layout } from '@ui-kitten/components'
+import React, { ComponentProps } from 'react'
 import { useTranslation } from 'react-i18next'
+import { View, ScrollView, StatusBar } from 'react-native'
 
-import { useStyles } from '@berty/contexts/styles'
-import { ScreenFC } from '@berty/navigation'
-import { Maybe, useThemeColor } from '@berty/store'
-import { useMember } from '@berty/hooks'
-
-import { FactionButtonSetting } from '@berty/components/shared-components/SettingsButtons'
 import { MemberAvatar } from '@berty/components/avatars'
 import UserDevicesList from '@berty/components/chat/DeviceList'
+import { FactionButtonSetting } from '@berty/components/shared-components/SettingsButtons'
+import { useStyles } from '@berty/contexts/styles'
+import { useMember } from '@berty/hooks'
+import { ScreenFC } from '@berty/navigation'
+import { Maybe, useThemeColor } from '@berty/store'
 
 const ChatSettingsMemberDetailHeader: React.FC<{
 	convId: Maybe<string>

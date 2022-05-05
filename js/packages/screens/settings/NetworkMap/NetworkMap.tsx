@@ -1,17 +1,16 @@
-import React, { useEffect, useState } from 'react'
-import { ScrollView, View, ActivityIndicator, TouchableOpacity, StatusBar } from 'react-native'
 import { Layout, Icon } from '@ui-kitten/components'
+import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { ScrollView, View, ActivityIndicator, TouchableOpacity, StatusBar } from 'react-native'
 
 import beapi from '@berty/api'
-import { ScreenFC } from '@berty/navigation'
-import { useStyles } from '@berty/contexts/styles'
-import { useThemeColor, pbDateToNum } from '@berty/store'
-import { protocolMethodsHooks } from '@berty/store/methods'
-
 import { usePrevious } from '@berty/components/hooks'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
+import { useStyles } from '@berty/contexts/styles'
+import { ScreenFC } from '@berty/navigation'
+import { useThemeColor, pbDateToNum } from '@berty/store'
+import { protocolMethodsHooks } from '@berty/store/methods'
 
 const PeerItem: React.FC<{ item: beapi.protocol.PeerList.IPeer; highlighted: boolean }> = ({
 	item,

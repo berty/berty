@@ -1,13 +1,13 @@
-import React, { useState } from 'react'
-import { View, StyleSheet, TouchableOpacity } from 'react-native'
 import { Icon } from '@ui-kitten/components'
+import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { View, StyleSheet, TouchableOpacity } from 'react-native'
 
-import { useStyles } from '@berty/contexts/styles'
 import beapi from '@berty/api'
-import { useThemeColor } from '@berty/store'
-import { useNavigation } from '@berty/navigation'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
+import { useStyles } from '@berty/contexts/styles'
+import { useNavigation } from '@berty/navigation'
+import { useThemeColor } from '@berty/store'
 
 //
 // Scan Invalid

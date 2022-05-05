@@ -1,11 +1,12 @@
+import { Icon } from '@ui-kitten/components'
 import React, { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { TouchableOpacity, View } from 'react-native'
-import { Icon } from '@ui-kitten/components'
 import { readFile } from 'react-native-fs'
 
-import { playSoundFile, useThemeColor } from '@berty/store'
+import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
+import { playSoundFile, useThemeColor } from '@berty/store'
 
 import {
 	limitIntensities,
@@ -16,7 +17,6 @@ import {
 	WaveForm,
 } from '../../audioMessageCommon'
 import { SendButton } from '../ChatFooterButtons'
-import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 
 export const PreviewComponent: React.FC<{
 	meteredValuesRef: React.MutableRefObject<number[]>

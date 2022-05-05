@@ -1,5 +1,5 @@
-import { useThemeColor } from '@berty/store'
 import { useStyles } from '@berty/contexts/styles'
+import { useThemeColor } from '@berty/store'
 
 export const useStylesDefaultModal = () => {
 	const { width, border, padding, margin } = useStyles()

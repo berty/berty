@@ -1,14 +1,13 @@
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 import { ScrollView, View } from 'react-native'
 // import { useSelector, useDispatch } from 'react-redux'
-import { useTranslation } from 'react-i18next'
-
-import { ScreenFC, useNavigation } from '@berty/navigation'
-import { useThemeColor } from '@berty/store'
-// import { selectThemeIsDark, toggleDarkTheme } from '@berty/redux/reducers/theme.reducer'
 
 import { ButtonSettingV2, Section } from '@berty/components/shared-components'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
+import { ScreenFC, useNavigation } from '@berty/navigation'
+import { useThemeColor } from '@berty/store'
+// import { selectThemeIsDark, toggleDarkTheme } from '@berty/redux/reducers/theme.reducer'
 
 export const Appearance: ScreenFC<'Settings.Appearance'> = () => {
 	const { scaleSize } = useAppDimensions()

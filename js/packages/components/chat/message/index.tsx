@@ -1,21 +1,21 @@
+import { Dictionary } from '@reduxjs/toolkit'
 import React from 'react'
 import { View } from 'react-native'
-import { Dictionary } from '@reduxjs/toolkit'
+import { useSelector } from 'react-redux'
 
 import beapi from '@berty/api'
-import { pbDateToNum, ParsedInteraction, useThemeColor } from '@berty/store'
 import { useStyles } from '@berty/contexts/styles'
-
-import { timeFormat } from '../../helpers'
-import { MessageInvitation } from './MessageInvitation'
-import { MessageMonitorMetadata } from './MessageMonitorMetadata'
-import { UserMessage } from './UserMessage'
-import { useSelector } from 'react-redux'
 import {
 	PersistentOptionsKeys,
 	selectPersistentOptions,
 } from '@berty/redux/reducers/persistentOptions.reducer'
+import { pbDateToNum, ParsedInteraction, useThemeColor } from '@berty/store'
+
+import { timeFormat } from '../../helpers'
 import { UnifiedText } from '../../shared-components/UnifiedText'
+import { MessageInvitation } from './MessageInvitation'
+import { MessageMonitorMetadata } from './MessageMonitorMetadata'
+import { UserMessage } from './UserMessage'
 
 //
 // Message => All messages (group/contact)

@@ -1,15 +1,14 @@
-import React from 'react'
 import { Icon } from '@ui-kitten/components'
+import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { TextInput, View } from 'react-native'
 
-import { GlobalPersistentOptionsKeys, storageSet, useThemeColor } from '@berty/store'
-import { useStyles } from '@berty/contexts/styles'
-import { useNavigation } from '@berty/navigation'
-import { useAccount } from '@berty/hooks'
-
 import SwiperCard from '@berty/components/onboarding/SwiperCard'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
+import { useStyles } from '@berty/contexts/styles'
+import { useAccount } from '@berty/hooks'
+import { useNavigation } from '@berty/navigation'
+import { GlobalPersistentOptionsKeys, storageSet, useThemeColor } from '@berty/store'
 
 export const CreateAccountBox: React.FC<{
 	defaultName: string

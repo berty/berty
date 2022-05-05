@@ -1,11 +1,13 @@
+import * as pb from 'protobufjs'
+
 import GoBridge from '@berty/go-bridge'
+
 import {
 	serializeToBase64,
 	deserializeFromBase64,
 	ErrorStreamNotImplemented,
 	getServiceName,
 } from './utils'
-import * as pb from 'protobufjs'
 
 // native rpc implem
 const unary = async <T extends pb.Method>(method: T, request: Uint8Array, _metadata?: never) => {

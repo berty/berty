@@ -11,9 +11,11 @@ import {
 import * as Progress from 'react-native-progress'
 import { useSelector } from 'react-redux'
 
-import { useAppDispatch } from '@berty/hooks'
-import { useThemeColor } from '@berty/store'
 import source from '@berty/assets/images/loader_dots.gif'
+import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
+import { useStyles } from '@berty/contexts/styles'
+import { useAppDispatch } from '@berty/hooks'
+import { useDeleteAccount, useRestart } from '@berty/hooks'
 import {
 	selectDaemonAddress,
 	selectEmbedded,
@@ -23,9 +25,7 @@ import {
 	selectStreamInProgress,
 	setDaemonAddress,
 } from '@berty/redux/reducers/ui.reducer'
-import { useStyles } from '@berty/contexts/styles'
-import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
-import { useDeleteAccount, useRestart } from '@berty/hooks'
+import { useThemeColor } from '@berty/store'
 
 import { UnifiedText } from './shared-components/UnifiedText'
 

@@ -4,8 +4,8 @@ import { TextStyle, TouchableOpacity, View } from 'react-native'
 import { useStyles } from '@berty/contexts/styles'
 import { useThemeColor } from '@berty/store/hooks'
 
-import { UnifiedText } from '../shared-components/UnifiedText'
 import { Card } from '../shared-components/Card'
+import { UnifiedText } from '../shared-components/UnifiedText'
 import Button from './Button'
 
 const SwiperCard: React.FC<{

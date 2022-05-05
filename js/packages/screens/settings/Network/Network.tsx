@@ -1,15 +1,18 @@
-import React from 'react'
-import { ScrollView, View, Platform } from 'react-native'
-import { useTranslation } from 'react-i18next'
 import { useHeaderHeight } from '@react-navigation/elements'
+import React from 'react'
+import { useTranslation } from 'react-i18next'
+import { ScrollView, View, Platform } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
 
 import beapi from '@berty/api'
-
+import { AccordionV2, AccordionAddItemV2, AccordionItemV2 } from '@berty/components/Accordion'
+import { AccordionAdd } from '@berty/components/modals/AccordionAdd.modal'
+import { AccordionEdit } from '@berty/components/modals/AccordionEdit.modal'
+import { ModalProvider, useModal } from '@berty/components/providers/modal.provider'
+import { ButtonSettingV2, Section } from '@berty/components/shared-components'
+import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
+import { useAppDispatch, useAppSelector, useSyncNetworkConfigOnScreenRemoved } from '@berty/hooks'
 import { ScreenFC, useNavigation } from '@berty/navigation'
-import { useThemeColor } from '@berty/store'
-import { IOSOnlyKeyboardAvoidingView } from '@berty/rnutil/keyboardAvoiding'
-import { checkBlePermission } from '@berty/rnutil/checkPermissions'
 import {
 	addToBootstrap,
 	addToRendezvous,
@@ -30,14 +33,9 @@ import {
 	toggleFromRendezvous,
 	toggleFromStaticRelay,
 } from '@berty/redux/reducers/networkConfig.reducer'
-import { useAppDispatch, useAppSelector, useSyncNetworkConfigOnScreenRemoved } from '@berty/hooks'
-
-import { AccordionV2, AccordionAddItemV2, AccordionItemV2 } from '@berty/components/Accordion'
-import { ModalProvider, useModal } from '@berty/components/providers/modal.provider'
-import { AccordionAdd } from '@berty/components/modals/AccordionAdd.modal'
-import { AccordionEdit } from '@berty/components/modals/AccordionEdit.modal'
-import { ButtonSettingV2, Section } from '@berty/components/shared-components'
-import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
+import { checkBlePermission } from '@berty/rnutil/checkPermissions'
+import { IOSOnlyKeyboardAvoidingView } from '@berty/rnutil/keyboardAvoiding'
+import { useThemeColor } from '@berty/store'
 
 const Proximity: React.FC = () => {
 	const { navigate } = useNavigation()

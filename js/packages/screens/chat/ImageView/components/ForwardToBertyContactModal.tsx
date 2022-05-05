@@ -1,16 +1,16 @@
-import React from 'react'
-import { View, Modal, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native'
-import { useTranslation } from 'react-i18next'
 import { Buffer } from 'buffer'
+import React from 'react'
+import { useTranslation } from 'react-i18next'
+import { View, Modal, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native'
 
-import { useStyles } from '@berty/contexts/styles'
 import beapi from '@berty/api'
-import { useThemeColor, useMessengerClient, Maybe, prepareMediaBytes } from '@berty/store'
+import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
+import { useStyles } from '@berty/contexts/styles'
 import { useAllConversations, useOneToOneContact, usePlaySound } from '@berty/hooks'
+import { useThemeColor, useMessengerClient, Maybe, prepareMediaBytes } from '@berty/store'
 
 import { ConversationAvatar } from '../../../../components/avatars'
 import { UnifiedText } from '../../../../components/shared-components/UnifiedText'
-import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 
 const Item: React.FC<{ conversation: beapi.messenger.IConversation; image: any }> = React.memo(
 	({ conversation, image }) => {

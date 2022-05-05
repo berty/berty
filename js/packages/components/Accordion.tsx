@@ -1,12 +1,13 @@
-import React, { useState, useRef, FC, useCallback, useMemo } from 'react'
 import { Divider, Icon } from '@ui-kitten/components'
+import React, { useState, useRef, FC, useCallback, useMemo } from 'react'
 import { View, Animated, Easing, TouchableOpacity } from 'react-native'
 
-import { useThemeColor } from '@berty/store'
+import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
+import { useThemeColor } from '@berty/store'
+
 import { Toggle } from './shared-components/Toggle'
 import { UnifiedText } from './shared-components/UnifiedText'
-import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 
 const heightButton = 55
 

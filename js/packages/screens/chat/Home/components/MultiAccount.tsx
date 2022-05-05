@@ -1,22 +1,22 @@
-import React from 'react'
-import { GestureResponderEvent, ScrollView, TouchableOpacity, View } from 'react-native'
 import { Icon } from '@ui-kitten/components'
+import React from 'react'
 import { useTranslation } from 'react-i18next'
+import { GestureResponderEvent, ScrollView, TouchableOpacity, View } from 'react-native'
 
-import { useStyles } from '@berty/contexts/styles'
-import { closeAccountWithProgress, useThemeColor, pbDateToNum, Maybe } from '@berty/store'
-import { importAccountFromDocumentPicker } from '@berty/components/pickerUtils'
-import { useAppDispatch, useAppSelector, useSwitchAccount } from '@berty/hooks'
 import beapi from '@berty/api'
 import { GenericAvatar } from '@berty/components/avatars'
+import { importAccountFromDocumentPicker } from '@berty/components/pickerUtils'
+import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
+import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
+import { useStyles } from '@berty/contexts/styles'
+import { useAppDispatch, useAppSelector, useSwitchAccount } from '@berty/hooks'
 import {
 	selectAccounts,
 	selectEmbedded,
 	selectSelectedAccount,
 	setStateOnBoardingReady,
 } from '@berty/redux/reducers/ui.reducer'
-import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
-import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
+import { closeAccountWithProgress, useThemeColor, pbDateToNum, Maybe } from '@berty/store'
 
 const AccountButton: React.FC<{
 	name: string | null | undefined

@@ -1,27 +1,27 @@
+import { Icon } from '@ui-kitten/components'
 import React, { useContext, useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Alert, ScrollView, View } from 'react-native'
+import { RESULTS } from 'react-native-permissions'
 import { useSelector } from 'react-redux'
 
-import { ScreenFC, useNavigation } from '@berty/navigation'
-import { numberifyLong, serviceTypes, useThemeColor } from '@berty/store'
-import { useAccount, useOneToOneContact } from '@berty/hooks'
-import { ButtonSettingV2, Section } from '@berty/components/shared-components'
-import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
-import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
-import { useAllConversations } from '@berty/hooks'
+import { berty } from '@berty/api/root.pb'
 import { ConversationAvatar } from '@berty/components/avatars'
+import { ButtonSettingV2, Section } from '@berty/components/shared-components'
+import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
+import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
+import PermissionsContext from '@berty/contexts/permissions.context'
+import { useAccount, useOneToOneContact } from '@berty/hooks'
+import { useAllConversations } from '@berty/hooks'
+import { ScreenFC, useNavigation } from '@berty/navigation'
 import { selectClient, selectProtocolClient } from '@berty/redux/reducers/ui.reducer'
-import { useTranslation } from 'react-i18next'
-import { Icon } from '@ui-kitten/components'
+import { numberifyLong, serviceTypes, useThemeColor } from '@berty/store'
 import {
 	accountPushToggleState,
 	askAndSharePushTokenOnAllConversations,
 	enableNotificationsForConversation,
 	pushFilteringAvailable,
 } from '@berty/store/push'
-import { RESULTS } from 'react-native-permissions'
-import PermissionsContext from '@berty/contexts/permissions.context'
-import { berty } from '@berty/api/root.pb'
 
 const oneSecond = 1000
 const oneMinute = oneSecond * 60

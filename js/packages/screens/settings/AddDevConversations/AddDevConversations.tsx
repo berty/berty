@@ -1,17 +1,16 @@
-import React from 'react'
-import { View, ScrollView } from 'react-native'
 import { Layout } from '@ui-kitten/components'
+import React from 'react'
 import { useTranslation } from 'react-i18next'
-
-import { useStyles } from '@berty/contexts/styles'
-import { globals } from '@berty/config'
-import { useThemeColor } from '@berty/store/hooks'
+import { View, ScrollView } from 'react-native'
 
 import {
 	ButtonSetting,
 	SettingButtonStateType,
 } from '@berty/components/shared-components/SettingsButtons'
+import { globals } from '@berty/config'
+import { useStyles } from '@berty/contexts/styles'
 import { ScreenFC, useNavigation } from '@berty/navigation'
+import { useThemeColor } from '@berty/store/hooks'
 
 type ValueOf<T> = T[keyof T]
 
