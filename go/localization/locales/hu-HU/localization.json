@@ -18,7 +18,9 @@
     "privacyPolicyLabel": "Adatvédelmi irányelvek"
   },
   "push": {
-    "message": {},
+    "message": {
+      "title": "Új üzenet"
+    },
     "error": {
       "title": "A push visszafejtés nem sikerült"
     },
