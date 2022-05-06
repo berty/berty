@@ -60,6 +60,7 @@ require (
 	github.com/libp2p/go-libp2p-discovery v0.6.0
 	github.com/libp2p/go-libp2p-kad-dht v0.15.0
 	github.com/libp2p/go-libp2p-pubsub v0.6.0
+	github.com/libp2p/go-libp2p-quic-transport v0.15.2
 	github.com/libp2p/go-libp2p-record v0.1.3
 	github.com/libp2p/go-libp2p-rendezvous v0.0.0-00010101000000-000000000000
 	github.com/libp2p/go-libp2p-transport-upgrader v0.6.0
@@ -124,6 +125,8 @@ replace (
 	bazil.org/fuse => bazil.org/fuse v0.0.0-20200117225306-7b5117fecadc // specific version for iOS building
 
 	github.com/agl/ed25519 => github.com/agl/ed25519 v0.0.0-20170116200512-5312a6153412 // latest commit before the author shutdown the repo; see https://github.com/golang/go/issues/20504
+
+	github.com/libp2p/go-libp2p-quic-transport => github.com/gfanton/go-libp2p-quic-transport v0.1.2-0.20220505161611-70c8b4581447 // waiting for https://github.com/libp2p/go-libp2p/pull/1476
 	github.com/libp2p/go-libp2p-rendezvous => github.com/berty/go-libp2p-rendezvous v0.0.0-20211013085524-09965cd64781 // use berty fork of go-libp2p-rendezvous with sqlcipher support
 
 	github.com/multiformats/go-multiaddr => github.com/berty/go-multiaddr v0.4.2-0.20220126184027-53e56f02fb68 // tmp, required for Android SDK30
