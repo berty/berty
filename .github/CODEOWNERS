@@ -2,8 +2,8 @@
 ## CODEOWNERS files are read from top to bottom; last mathing rule "wins"
 ##
 
-# default is tech team
-* @berty/tech
+# default is tech team (disabled, for annoying noise)
+# * @berty/tech
 
 ##
 ## by folders
