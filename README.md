@@ -161,7 +161,7 @@ Everything about contribution is summed up here: [CONTRIBUTING.MD](https://githu
 
 ## Stargazers over time
 
-[![Stargazers over time](https://starchart.cc/berty/berty.svg)](https://starchart.cc/berty/berty)
+[![Star History Chart](https://api.star-history.com/svg?repos=berty/berty&type=Date)](https://star-history.com/#berty/berty&Date)
 
 ## Other resources
 
