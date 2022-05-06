@@ -4,12 +4,11 @@ import { EmitterSubscription, NativeEventEmitter, NativeModules, Platform } from
 import { InAppNotificationProvider, withInAppNotification } from 'react-native-in-app-notification'
 
 import beapi from '@berty/api'
+import NotificationBody from '@berty/components/NotificationBody'
 import { EventEmitterContext } from '@berty/contexts/eventEmitter.context'
 import { useConversationsDict } from '@berty/hooks'
 import { useNavigation } from '@berty/navigation'
 import { accountClient } from '@berty/utils/accounts/accountClient'
-
-import NotificationBody from '../NotificationBody'
 
 const PushNotificationBridge: React.FC = withInAppNotification(({ showNotification }: any) => {
 	const conversations = useConversationsDict()

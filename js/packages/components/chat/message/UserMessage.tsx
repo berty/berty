@@ -8,6 +8,7 @@ import { SHA3 } from 'sha3'
 
 import beapi from '@berty/api'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
+import { useModal } from '@berty/contexts/modal.context'
 import { useStyles } from '@berty/contexts/styles'
 import {
 	useAppDispatch,
@@ -28,7 +29,6 @@ import { pbDateToNum } from '@berty/utils/convert/time'
 import { getMediaTypeFromMedias } from '@berty/utils/messenger/media'
 
 import { MemberAvatar } from '../../avatars'
-import { useModal } from '../../providers/modal.provider'
 import { UnifiedText } from '../../shared-components/UnifiedText'
 import { MessageMenu } from '../modals/MessageMenu.modal'
 import { AudioMessage } from './AudioMessage'

@@ -15,12 +15,12 @@ import SemiBoldOpenSans from '@berty/assets/font/OpenSans-SemiBold.ttf'
 import SemiBoldItalicOpenSans from '@berty/assets/font/OpenSans-SemiBoldItalic.ttf'
 import { ErrorScreen } from '@berty/components/error'
 import { StreamGate, ListGate } from '@berty/components/gates'
-import { ModalProvider } from '@berty/components/providers/modal.provider'
-import { MusicPlayerProvider } from '@berty/components/providers/musicPlayer.provider'
-import NotificationProvider from '@berty/components/providers/notification.provider'
-import PermissionsProvider from '@berty/components/providers/permissions.provider'
-import { Provider as ThemeProvider } from '@berty/components/theme'
+import { ModalProvider } from '@berty/contexts/modal.context'
+import { MusicPlayerProvider } from '@berty/contexts/musicPlayer.context'
+import NotificationProvider from '@berty/contexts/notification.context'
+import { PermissionsProvider } from '@berty/contexts/permissions.context'
 import { AppDimensionsProvider, StyleProvider } from '@berty/contexts/styles'
+import { UIKittenProvider } from '@berty/contexts/uiKitten.context'
 import { isReadyRef, navigationRef } from '@berty/navigation'
 import { Navigation } from '@berty/navigation/stacks'
 import reduxStore from '@berty/redux/store'
@@ -105,7 +105,7 @@ const App: React.FC = () => {
 					<ReduxProvider store={reduxStore}>
 						<MessengerEffects />
 						<IconRegistry icons={[EvaIconsPack, FeatherIconsPack, CustomIconsPack]} />
-						<ThemeProvider>
+						<UIKittenProvider>
 							<Background>
 								<ErrorScreen>
 									<NavigationContainer
@@ -131,7 +131,7 @@ const App: React.FC = () => {
 									</NavigationContainer>
 								</ErrorScreen>
 							</Background>
-						</ThemeProvider>
+						</UIKittenProvider>
 					</ReduxProvider>
 				</StyleProvider>
 			</AppDimensionsProvider>

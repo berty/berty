@@ -13,6 +13,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import beapi from '@berty/api'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
+import { useModal } from '@berty/contexts/modal.context'
 import {
 	useAppDispatch,
 	useAppSelector,
@@ -40,7 +41,6 @@ import { Maybe, useMessengerClient, useMountEffect, useThemeColor } from '@berty
 import rnutil from '@berty/utils/react-native'
 import { PermissionType } from '@berty/utils/react-native/permissions'
 
-import { useModal } from '../../providers/modal.provider'
 import { AddFileMenu } from '../modals/add-file-modal/AddFileMenu.modal'
 import { CameraButton, MoreButton, RecordButton, SendButton } from './ChatFooterButtons'
 import { ChatTextInput } from './ChatTextInput'
