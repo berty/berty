@@ -37,7 +37,7 @@ import {
 	setStreamError,
 } from '@berty/redux/reducers/ui.reducer'
 import store, { AppDispatch, persistor } from '@berty/redux/store'
-import { accountService, storageGet, storageRemove } from '@berty/utils/accounts/accountService'
+import { accountClient, storageGet, storageRemove } from '@berty/utils/accounts/accountClient'
 import {
 	updateAccount,
 	closeAccountWithProgress,
@@ -56,7 +56,7 @@ const openAccountWithProgress = async (
 ) => {
 	console.log('Opening account', selectedAccount)
 	try {
-		const stream = await accountService.openAccountWithProgress({
+		const stream = await accountClient.openAccountWithProgress({
 			args: bridgeOpts.cliArgs,
 			accountId: selectedAccount?.toString(),
 			sessionKind: Platform.OS === 'web' ? 'desktop-electron' : null,
@@ -209,11 +209,11 @@ export const openingDaemon = async (
 	let openedAccount: beapi.account.GetOpenedAccount.Reply
 
 	try {
-		openedAccount = await accountService.getOpenedAccount({})
+		openedAccount = await accountClient.getOpenedAccount({})
 
 		if (openedAccount.accountId !== selectedAccount) {
 			if (openedAccount.accountId !== '') {
-				await accountService.closeAccount({})
+				await accountClient.closeAccount({})
 			}
 
 			await openAccountWithProgress(bridgeOpts, selectedAccount)
@@ -242,7 +242,7 @@ export const openingClients = async (
 	let messengerClient, protocolClient
 
 	if (Platform.OS === 'web') {
-		const openedAccount = await accountService?.getOpenedAccount({})
+		const openedAccount = await accountClient?.getOpenedAccount({})
 		const url = convertMAddr(openedAccount?.listeners || [])
 
 		if (url === null) {
@@ -467,7 +467,7 @@ export const deletingStorage = (
 
 	const f = async () => {
 		if (selectedAccount !== null) {
-			await accountService.deleteAccount({ accountId: selectedAccount })
+			await accountClient.deleteAccount({ accountId: selectedAccount })
 			await storageRemove(storageKeyForAccount(selectedAccount))
 			await refreshAccountList(embedded)
 		} else {

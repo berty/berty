@@ -50,7 +50,7 @@ import {
 } from '@berty/redux/reducers/ui.reducer'
 import { useMessengerClient, useThemeColor } from '@berty/store'
 import messengerMethodsHooks from '@berty/store/methods'
-import { storageGet, storageSet } from '@berty/utils/accounts/accountService'
+import { storageGet, storageSet } from '@berty/utils/accounts/accountClient'
 import { showNeedRestartNotification } from '@berty/utils/notification/notif-in-app'
 import { GlobalPersistentOptionsKeys } from '@berty/utils/persistent-options/types'
 

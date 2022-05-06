@@ -11,7 +11,7 @@ import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useStyles } from '@berty/contexts/styles'
 import { ScreenFC } from '@berty/navigation'
 import { useMountEffect, useNotificationsInhibitor, useThemeColor } from '@berty/store'
-import { accountService } from '@berty/utils/accounts/accountService'
+import { accountClient } from '@berty/utils/accounts/accountClient'
 import rnutil from '@berty/utils/react-native'
 import { IOSOnlyKeyboardAvoidingView } from '@berty/utils/react-native/keyboardAvoiding'
 import { PermissionType } from '@berty/utils/react-native/permissions'
@@ -27,7 +27,7 @@ const CreateAccountBody = () => {
 	const insets = useSafeAreaInsets()
 
 	useMountEffect(() => {
-		accountService
+		accountClient
 			.getUsername({})
 			.then(reply => reply && setDefaultName(reply.username))
 			.catch(err => console.warn('Failed to fetch username:', err))

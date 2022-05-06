@@ -7,7 +7,7 @@ import {
 	selectEditedNetworkConfig,
 } from '@berty/redux/reducers/networkConfig.reducer'
 import { selectSelectedAccount } from '@berty/redux/reducers/ui.reducer'
-import { accountService } from '@berty/utils/accounts/accountService'
+import { accountClient } from '@berty/utils/accounts/accountClient'
 
 import { useAppSelector } from './core.hooks'
 import { useRestart } from './ui.hooks'
@@ -22,7 +22,7 @@ const useSetNetworkConfig = () => {
 
 	return useCallback(
 		(newConfig: beapi.account.INetworkConfig) => {
-			accountService
+			accountClient
 				.networkConfigSet({
 					accountId: selectedAccount,
 					config: newConfig,
