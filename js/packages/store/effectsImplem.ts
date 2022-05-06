@@ -36,11 +36,17 @@ import {
 	setStreamError,
 } from '@berty/redux/reducers/ui.reducer'
 import store, { AppDispatch, persistor } from '@berty/redux/store'
+import { accountService, storageGet, storageRemove } from '@berty/utils/accounts/accountService'
+import {
+	updateAccount,
+	closeAccountWithProgress,
+	refreshAccountList,
+} from '@berty/utils/accounts/accountUtils'
+import { convertMAddr } from '@berty/utils/ipfs/convertMAddr'
+import { requestAndPersistPushToken } from '@berty/utils/notification/notif-push'
+import { GlobalPersistentOptionsKeys } from '@berty/utils/persistent-options/types'
+import { StreamInProgress } from '@berty/utils/protocol/progress.types'
 
-import { accountService, convertMAddr, storageGet, storageRemove } from './accountService'
-import { updateAccount, closeAccountWithProgress, refreshAccountList } from './accountUtils'
-import { requestAndPersistPushToken } from './services'
-import { GlobalPersistentOptionsKeys, StreamInProgress } from './types'
 import { storageKeyForAccount } from './utils'
 
 const openAccountWithProgress = async (

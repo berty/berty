@@ -5,8 +5,7 @@ import { useSelector } from 'react-redux'
 import { useMedia } from '@berty/hooks'
 import { useNavigation } from '@berty/navigation'
 import { selectProtocolClient } from '@berty/redux/reducers/ui.reducer'
-
-import { getSource } from './utils'
+import { getSource } from '@berty/utils/protocol/attachments'
 
 const AttachmentImage: React.FC<{ cid: string; pressable?: boolean } & Omit<ImageProps, 'source'>> =
 	React.memo(props => {

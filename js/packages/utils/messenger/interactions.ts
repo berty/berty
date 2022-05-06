@@ -1,9 +1,7 @@
 import { Buffer } from 'buffer'
-import Long from 'long'
 
 import beapi from '@berty/api'
-
-import { ParsedInteraction } from './types.gen'
+import { ParsedInteraction } from '@berty/store/types.gen'
 
 export const parseInteraction = (
 	i: beapi.messenger.IInteraction | beapi.messenger.Interaction,
@@ -44,26 +42,4 @@ export const parseInteraction = (
 		console.log('failed to parse interaction:', i, err)
 		return { ...i, type: beapi.messenger.AppMessage.Type.Undefined, payload: undefined }
 	}
-}
-
-export const pbDateToNum = (pbTimestamp?: number | Long | string | null): number => {
-	try {
-		return !pbTimestamp ? 0 : parseInt(pbTimestamp as string, 10)
-	} catch (e) {
-		console.warn(`Error parsing date ${pbTimestamp}; returning zero`)
-		return 0
-	}
-}
-export const numberifyLong = (longNumber: number | Long | undefined | null): number => {
-	if (longNumber === undefined || longNumber === null) {
-		longNumber = 0
-	}
-
-	if (longNumber instanceof Long) {
-		longNumber = longNumber.toNumber()
-	}
-
-	longNumber = parseInt(String(longNumber), 10)
-
-	return longNumber
 }

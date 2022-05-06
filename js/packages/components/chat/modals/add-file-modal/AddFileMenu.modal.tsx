@@ -7,10 +7,10 @@ import { RESULTS } from 'react-native-permissions'
 
 import beapi from '@berty/api'
 import { useNavigation } from '@berty/navigation'
-import { checkPermissions } from '@berty/rnutil/checkPermissions'
-import { getPath } from '@berty/rnutil/getPath'
-import { PermissionType } from '@berty/rnutil/permissions'
 import { useMessengerClient, useThemeColor } from '@berty/store'
+import { checkPermissions } from '@berty/utils/react-native/checkPermissions'
+import { getPath } from '@berty/utils/react-native/file-system'
+import { PermissionType } from '@berty/utils/react-native/permissions'
 
 import { GallerySection } from './GallerySection'
 import { ListItemMenu } from './ListItemMenu'

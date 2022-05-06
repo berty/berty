@@ -25,10 +25,9 @@ import {
 	selectAppState,
 	selectClient,
 } from '@berty/redux/reducers/ui.reducer'
+import { NotificationsInhibitor } from '@berty/utils/notification/notif-in-app'
 
 import { fakeContacts, fakeMultiMemberConversations } from './faker'
-import { NotificationsInhibitor } from './types'
-import { ParsedInteraction } from './types.gen'
 
 export type Maybe<T> = T | null | undefined
 
@@ -276,42 +275,3 @@ export const useReadEffect = (publicKey: Maybe<string>, timeout: Maybe<number>) 
 
 // eslint-disable-next-line react-hooks/exhaustive-deps
 export const useMountEffect = (effect: EffectCallback) => useEffect(effect, [])
-
-export const fetchMore = async ({
-	setFetchingFrom,
-	setFetchedFirst,
-	fetchingFrom,
-	fetchedFirst,
-	oldestMessage,
-	client,
-	convPk,
-}: {
-	setFetchingFrom: (value: string | null) => void
-	setFetchedFirst: (value: boolean) => void
-	fetchingFrom: string | null
-	fetchedFirst: boolean
-	oldestMessage?: ParsedInteraction
-	client: any
-	convPk: string
-}) => {
-	if (fetchingFrom !== null || fetchedFirst) {
-		return
-	}
-
-	let refCid: string | undefined
-	if (oldestMessage) {
-		refCid = oldestMessage.cid!
-	}
-
-	setFetchingFrom(refCid || '')
-
-	return client
-		?.conversationLoad({
-			options: {
-				amount: 50,
-				conversationPk: convPk,
-				refCid: refCid,
-			},
-		})
-		.catch(() => setFetchedFirst(true))
-}

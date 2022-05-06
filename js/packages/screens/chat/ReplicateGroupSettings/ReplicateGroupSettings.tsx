@@ -7,18 +7,15 @@ import { useSelector } from 'react-redux'
 import beapi from '@berty/api'
 import { ButtonSetting, FactionButtonSetting } from '@berty/components/shared-components'
 import { useStyles } from '@berty/contexts/styles'
-import { useConversation } from '@berty/hooks'
+import { useAccountServices, useConversation } from '@berty/hooks'
 import { ScreenFC } from '@berty/navigation'
 import { selectProtocolClient } from '@berty/redux/reducers/ui.reducer'
+import { Maybe, useThemeColor, useMessengerClient } from '@berty/store'
 import {
-	Maybe,
-	useThemeColor,
-	servicesAuthViaDefault,
-	useAccountServices,
-	serviceTypes,
 	replicateGroup,
-	useMessengerClient,
-} from '@berty/store'
+	servicesAuthViaDefault,
+	serviceTypes,
+} from '@berty/utils/remote-services/remote-services'
 
 enum replicationServerStatus {
 	KnownServerEnabled,

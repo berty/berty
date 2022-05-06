@@ -6,13 +6,13 @@ import { View } from 'react-native'
 import beapi from '@berty/api'
 import { useStyles } from '@berty/contexts/styles'
 import { useOneToOneContact, usePlaySound } from '@berty/hooks'
-import { pbDateToNum, useMessengerClient, useThemeColor } from '@berty/store'
+import { useMessengerClient, useThemeColor } from '@berty/store'
+import { pbDateToNum, timeFormat } from '@berty/utils/convert/time'
 
 import { ContactAvatar } from './avatars'
-import { ChatDate } from './chat/common'
+import { ChatDate } from './chat/ChatDate'
 import { MessageInvitationButton } from './chat/message/MessageInvitation'
 import { MessageSystemWrapper } from './chat/message/MessageSystemWrapper'
-import { timeFormat } from './helpers'
 import { UnifiedText } from './shared-components/UnifiedText'
 
 const useStylesOneToOne = () => {

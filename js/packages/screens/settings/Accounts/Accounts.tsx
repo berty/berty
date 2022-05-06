@@ -7,7 +7,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import beapi from '@berty/api'
 import { AccordionV2 } from '@berty/components/Accordion'
 import { GenericAvatar } from '@berty/components/avatars'
-import { importAccountFromDocumentPicker } from '@berty/components/pickerUtils'
 import { ButtonSettingV2, Section } from '@berty/components/shared-components'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
@@ -20,13 +19,13 @@ import {
 	selectSelectedAccount,
 	setStateOnBoardingReady,
 } from '@berty/redux/reducers/ui.reducer'
+import { useThemeColor } from '@berty/store'
 import {
-	useThemeColor,
-	pbDateToNum,
-	closeAccountWithProgress,
 	exportAccountToFile,
-	refreshAccountList,
-} from '@berty/store'
+	importAccountFromDocumentPicker,
+} from '@berty/utils/accounts/accountBackup'
+import { closeAccountWithProgress, refreshAccountList } from '@berty/utils/accounts/accountUtils'
+import { pbDateToNum } from '@berty/utils/convert/time'
 
 const AccountButton: React.FC<beapi.account.IAccountMetadata> = ({
 	avatarCid,

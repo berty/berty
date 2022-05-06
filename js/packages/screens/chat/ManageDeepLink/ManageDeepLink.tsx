@@ -6,12 +6,12 @@ import { Platform, StyleSheet, ActivityIndicator } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 import beapi from '@berty/api'
-import { base64ToURLBase64 } from '@berty/components/utils'
 import { useStyles } from '@berty/contexts/styles'
 import { useConversationsDict } from '@berty/hooks'
 import { ScreenFC, useNavigation } from '@berty/navigation'
 import { useThemeColor } from '@berty/store'
 import messengerMethodsHooks from '@berty/store/methods'
+import { base64ToURLBase64 } from '@berty/utils/convert/base64'
 
 import AddThisContact from './components/AddThisContact'
 import InvalidScan from './components/InvalidScan'

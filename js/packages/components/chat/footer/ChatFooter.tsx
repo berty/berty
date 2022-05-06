@@ -36,9 +36,9 @@ import {
 	setChatInputIsSending,
 	setChatInputSelection,
 } from '@berty/redux/reducers/chatInputsVolatile.reducer'
-import rnutil from '@berty/rnutil'
-import { PermissionType } from '@berty/rnutil/permissions'
 import { Maybe, useMessengerClient, useMountEffect, useThemeColor } from '@berty/store'
+import rnutil from '@berty/utils/react-native'
+import { PermissionType } from '@berty/utils/react-native/permissions'
 
 import { useModal } from '../../providers/modal.provider'
 import { AddFileMenu } from '../modals/add-file-modal/AddFileMenu.modal'

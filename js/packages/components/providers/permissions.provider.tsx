@@ -8,7 +8,7 @@ import {
 	acquirePermission,
 	getPermissions,
 	PermissionType,
-} from '@berty/rnutil/permissions'
+} from '@berty/utils/react-native/permissions'
 
 const PermissionsProvider: React.FC = ({ children }) => {
 	const [state, setState] = useState(defaultPermissionStatus)

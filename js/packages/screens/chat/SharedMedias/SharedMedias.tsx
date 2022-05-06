@@ -23,20 +23,15 @@ import tlds from 'tlds'
 
 import beapi from '@berty/api'
 import { isBertyDeepLink } from '@berty/components/chat/message/UserMessageComponents'
-import { timeFormat } from '@berty/components/helpers'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
-import { getSource } from '@berty/components/utils'
 import { useStyles } from '@berty/contexts/styles'
 import { useConversationInteractions } from '@berty/hooks'
 import { ScreenFC } from '@berty/navigation'
 import { selectProtocolClient } from '@berty/redux/reducers/ui.reducer'
-import {
-	useMessengerClient,
-	useThemeColor,
-	pbDateToNum,
-	retrieveMediaBytes,
-	Maybe,
-} from '@berty/store'
+import { useMessengerClient, useThemeColor, Maybe } from '@berty/store'
+import { pbDateToNum, timeFormat } from '@berty/utils/convert/time'
+import { retrieveMediaBytes } from '@berty/utils/messenger/media'
+import { getSource } from '@berty/utils/protocol/attachments'
 
 const initialLayout = { width: Dimensions.get('window').width }
 const linkify = LinkifyIt().tlds(tlds, true)

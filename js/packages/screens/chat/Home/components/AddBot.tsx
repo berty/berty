@@ -7,7 +7,6 @@ import { useSelector } from 'react-redux'
 
 import Avatar from '@berty/assets/logo/buck_berty_icon_card.svg'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
-import { base64ToURLBase64 } from '@berty/components/utils'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
 import { useAppDispatch, useStylesDefaultModal } from '@berty/hooks'
@@ -18,6 +17,7 @@ import {
 } from '@berty/redux/reducers/persistentOptions.reducer'
 import { useThemeColor } from '@berty/store'
 import messengerMethodsHooks from '@berty/store/methods'
+import { base64ToURLBase64 } from '@berty/utils/convert/base64'
 
 const AddBotBody: React.FC<{
 	displayName: string

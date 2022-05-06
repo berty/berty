@@ -4,18 +4,15 @@ import { View, StatusBar, Platform } from 'react-native'
 
 import Logo from '@berty/assets/logo/berty_gradient_square.svg'
 import Button from '@berty/components/onboarding/Button'
-import { importAccountFromDocumentPicker } from '@berty/components/pickerUtils'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useStyles } from '@berty/contexts/styles'
 import { useAppSelector } from '@berty/hooks'
 import { ScreenFC } from '@berty/navigation'
 import { selectEmbedded } from '@berty/redux/reducers/ui.reducer'
-import {
-	storageSet,
-	GlobalPersistentOptionsKeys,
-	useNotificationsInhibitor,
-	useThemeColor,
-} from '@berty/store'
+import { useNotificationsInhibitor, useThemeColor } from '@berty/store'
+import { importAccountFromDocumentPicker } from '@berty/utils/accounts/accountBackup'
+import { storageSet } from '@berty/utils/accounts/accountService'
+import { GlobalPersistentOptionsKeys } from '@berty/utils/persistent-options/types'
 
 export const GetStarted: ScreenFC<'Onboarding.GetStarted'> = ({ navigation: { navigate } }) => {
 	useNotificationsInhibitor(() => true)

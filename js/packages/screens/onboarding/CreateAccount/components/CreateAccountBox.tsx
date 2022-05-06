@@ -8,7 +8,9 @@ import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
 import { useAccount } from '@berty/hooks'
 import { useNavigation } from '@berty/navigation'
-import { GlobalPersistentOptionsKeys, storageSet, useThemeColor } from '@berty/store'
+import { useThemeColor } from '@berty/store'
+import { storageSet } from '@berty/utils/accounts/accountService'
+import { GlobalPersistentOptionsKeys } from '@berty/utils/persistent-options/types'
 
 export const CreateAccountBox: React.FC<{
 	defaultName: string

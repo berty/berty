@@ -19,7 +19,7 @@ import { GRPCError, Service } from '@berty/grpc-bridge'
 import { bridge as rpcBridge } from '@berty/grpc-bridge/rpc'
 import { useAppDispatch } from '@berty/hooks'
 import { setDebugMode } from '@berty/redux/reducers/ui.reducer'
-import { pbDateToNum } from '@berty/store'
+import { pbDateToNum } from '@berty/utils/convert/time'
 
 import { UnifiedText } from '../shared-components/UnifiedText'
 

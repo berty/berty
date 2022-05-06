@@ -2,7 +2,7 @@ import React from 'react'
 import { View } from 'react-native'
 
 import beapi from '@berty/api'
-import { ChatDate } from '@berty/components/chat/common'
+import { ChatDate } from '@berty/components/chat/ChatDate'
 import { MessageSystemWrapper } from '@berty/components/chat/message/MessageSystemWrapper'
 import { useStyles } from '@berty/contexts/styles'
 import { useThemeColor } from '@berty/store/hooks'

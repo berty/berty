@@ -10,10 +10,10 @@ import { useOneToOneContact, useConversation } from '@berty/hooks'
 import { useNavigation } from '@berty/navigation'
 import { useMessengerClient, useThemeColor } from '@berty/store'
 import { InteractionGroupInvitation } from '@berty/store/types.gen'
+import { base64ToURLBase64 } from '@berty/utils/convert/base64'
 
 import { MultiMemberAvatar } from '../../avatars'
 import { UnifiedText } from '../../shared-components/UnifiedText'
-import { base64ToURLBase64 } from '../../utils'
 import { MessageSystemWrapper } from './MessageSystemWrapper'
 
 export const MessageInvitationButton: React.FC<{

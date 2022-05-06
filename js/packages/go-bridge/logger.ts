@@ -1,4 +1,5 @@
-import { GRPCError } from '../grpc-bridge/error'
+import { GRPCError } from '@berty/grpc-bridge/error'
+
 import { GoBridgeInterface, GoLogLevel } from './types'
 
 const stringifyReplacer = (key: string, value: any): any => {

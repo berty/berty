@@ -1,14 +1,6 @@
 import { Buffer } from 'buffer'
-import emojiSource from 'emoji-datasource'
 
-import beapi from '@berty/api'
-import { Emoji } from '@berty/contexts/styles/types'
 import { WelshProtocolServiceClient } from '@berty/grpc-bridge/welsh-clients.gen'
-
-let cache: { cid: string; prom: Promise<string> }[] = []
-
-export const base64ToURLBase64 = (str: string) =>
-	str.replace(/\+/g, '-').replace(/\//g, '_').replace(/\=/g, '')
 
 const fetchSource = async (
 	protocolClient: WelshProtocolServiceClient,
@@ -37,6 +29,8 @@ const fetchSource = async (
 	return data.toString('base64')
 }
 
+let cache: { cid: string; prom: Promise<string> }[] = []
+
 export const getSource = async (
 	protocolClient: WelshProtocolServiceClient,
 	cid: string,
@@ -53,33 +47,4 @@ export const getSource = async (
 		throw new Error('unexpected cache miss')
 	}
 	return cached.prom
-}
-
-type MediaElementType = 'file' | 'picture' | 'audio'
-
-export const getMediaTypeFromMedias = (
-	medias: beapi.messenger.Interaction['medias'] | null | undefined,
-) => {
-	let type: MediaElementType = 'file'
-	if (medias?.[0]?.mimeType?.startsWith('image')) {
-		type = 'picture'
-	} else if (medias?.[0]?.mimeType?.startsWith('audio')) {
-		type = 'audio'
-	}
-
-	return type
-}
-
-export const emojis: Emoji[] = emojiSource
-
-const toEmoji = (code: any) => {
-	return String.fromCodePoint(...code.split('-').map((u: string) => '0x' + u))
-}
-
-export const getEmojiByName = (name: string) => {
-	const requiredSource = emojis.find((item: Emoji) => item.short_name === name.replaceAll(':', ''))
-	if (!requiredSource) {
-		return
-	}
-	return toEmoji(requiredSource?.unified)
 }

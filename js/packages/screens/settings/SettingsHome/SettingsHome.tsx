@@ -25,16 +25,16 @@ import {
 	setNodeNetworkConfig,
 } from '@berty/redux/reducers/networkConfig.reducer'
 import { selectProtocolClient, selectSelectedAccount } from '@berty/redux/reducers/ui.reducer'
-import { checkBlePermission } from '@berty/rnutil/checkPermissions'
+import { useMountEffect, useThemeColor, useMessengerClient } from '@berty/store'
+import { accountService } from '@berty/utils/accounts/accountService'
+import { numberifyLong } from '@berty/utils/convert/long'
 import {
-	accountService,
-	useMountEffect,
-	useThemeColor,
-	useMessengerClient,
-	serviceTypes,
-	numberifyLong,
-} from '@berty/store'
-import { accountPushToggleState, pushAvailable, pushFilteringAvailable } from '@berty/store/push'
+	accountPushToggleState,
+	pushAvailable,
+	pushFilteringAvailable,
+} from '@berty/utils/notification/notif-push'
+import { checkBlePermission } from '@berty/utils/react-native/checkPermissions'
+import { serviceTypes } from '@berty/utils/remote-services/remote-services'
 
 import { EditProfile } from './components/EditProfile'
 

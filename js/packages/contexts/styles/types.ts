@@ -163,16 +163,3 @@ export type Styles = {
 }
 
 export type ScaleSizes = { fontScale: number; scaleSize: number; scaleHeight: number }
-
-export type Emoji = {
-	short_name: string
-	unified: string
-	short_names: string[]
-	sheet_x: number
-	sheet_y: number
-	skin_variations?: { [key: string]: Emoji }
-	category: string
-	char: string
-	image_url: string
-	image: string
-}

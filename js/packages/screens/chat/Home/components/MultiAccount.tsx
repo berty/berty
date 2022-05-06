@@ -5,7 +5,6 @@ import { GestureResponderEvent, ScrollView, TouchableOpacity, View } from 'react
 
 import beapi from '@berty/api'
 import { GenericAvatar } from '@berty/components/avatars'
-import { importAccountFromDocumentPicker } from '@berty/components/pickerUtils'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
@@ -16,7 +15,10 @@ import {
 	selectSelectedAccount,
 	setStateOnBoardingReady,
 } from '@berty/redux/reducers/ui.reducer'
-import { closeAccountWithProgress, useThemeColor, pbDateToNum, Maybe } from '@berty/store'
+import { useThemeColor, Maybe } from '@berty/store'
+import { importAccountFromDocumentPicker } from '@berty/utils/accounts/accountBackup'
+import { closeAccountWithProgress } from '@berty/utils/accounts/accountUtils'
+import { pbDateToNum } from '@berty/utils/convert/time'
 
 const AccountButton: React.FC<{
 	name: string | null | undefined

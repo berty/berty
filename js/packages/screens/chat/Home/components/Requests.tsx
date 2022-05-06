@@ -11,7 +11,8 @@ import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
 import { usePlaySound } from '@berty/hooks'
 import { useNavigation } from '@berty/navigation'
-import { useMessengerClient, useThemeColor, pbDateToNum } from '@berty/store'
+import { useMessengerClient, useThemeColor } from '@berty/store'
+import { pbDateToNum } from '@berty/utils/convert/time'
 
 import { UnreadCount } from './UnreadCount'
 

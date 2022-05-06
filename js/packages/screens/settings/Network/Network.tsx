@@ -33,9 +33,9 @@ import {
 	toggleFromRendezvous,
 	toggleFromStaticRelay,
 } from '@berty/redux/reducers/networkConfig.reducer'
-import { checkBlePermission } from '@berty/rnutil/checkPermissions'
-import { IOSOnlyKeyboardAvoidingView } from '@berty/rnutil/keyboardAvoiding'
 import { useThemeColor } from '@berty/store'
+import { checkBlePermission } from '@berty/utils/react-native/checkPermissions'
+import { IOSOnlyKeyboardAvoidingView } from '@berty/utils/react-native/keyboardAvoiding'
 
 const Proximity: React.FC = () => {
 	const { navigate } = useNavigation()

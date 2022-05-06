@@ -9,8 +9,8 @@ import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useStyles } from '@berty/contexts/styles'
 import { ScreenFC, useNavigation } from '@berty/navigation'
 import { setBlePerm } from '@berty/redux/reducers/networkConfig.reducer'
-import { PermissionType, acquirePermission } from '@berty/rnutil/permissions'
 import { useThemeColor } from '@berty/store'
+import { PermissionType, acquirePermission } from '@berty/utils/react-native/permissions'
 
 export const BlePermission: ScreenFC<'Chat.BlePermission'> = ({ route: { params } }) => {
 	const { accept, deny } = params

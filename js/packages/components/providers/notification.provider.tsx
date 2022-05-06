@@ -7,7 +7,7 @@ import beapi from '@berty/api'
 import { EventEmitterContext } from '@berty/contexts/eventEmitter.context'
 import { useConversationsDict } from '@berty/hooks'
 import { useNavigation } from '@berty/navigation'
-import { accountService } from '@berty/store'
+import { accountService } from '@berty/utils/accounts/accountService'
 
 import NotificationBody from '../NotificationBody'
 

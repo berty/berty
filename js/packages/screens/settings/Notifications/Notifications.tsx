@@ -15,13 +15,15 @@ import { useAccount, useOneToOneContact } from '@berty/hooks'
 import { useAllConversations } from '@berty/hooks'
 import { ScreenFC, useNavigation } from '@berty/navigation'
 import { selectClient, selectProtocolClient } from '@berty/redux/reducers/ui.reducer'
-import { numberifyLong, serviceTypes, useThemeColor } from '@berty/store'
+import { useThemeColor } from '@berty/store'
+import { numberifyLong } from '@berty/utils/convert/long'
 import {
 	accountPushToggleState,
 	askAndSharePushTokenOnAllConversations,
 	enableNotificationsForConversation,
 	pushFilteringAvailable,
-} from '@berty/store/push'
+} from '@berty/utils/notification/notif-push'
+import { serviceTypes } from '@berty/utils/remote-services/remote-services'
 
 const oneSecond = 1000
 const oneMinute = oneSecond * 60

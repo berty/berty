@@ -6,9 +6,9 @@ import { useSelector } from 'react-redux'
 import { useStyles } from '@berty/contexts/styles'
 import { selectProtocolClient } from '@berty/redux/reducers/ui.reducer'
 import { useThemeColor } from '@berty/store'
+import { getSource } from '@berty/utils/protocol/attachments'
 
 import { UnifiedText } from '../../shared-components/UnifiedText'
-import { getSource } from '../../utils'
 
 export const FileMessage: React.FC<{
 	medias: any

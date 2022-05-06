@@ -2,8 +2,9 @@ import { createEntityAdapter, createSlice, EntityState } from '@reduxjs/toolkit'
 import Long from 'long'
 
 import beapi from '@berty/api'
-import { parseInteraction, pbDateToNum } from '@berty/store/convert'
 import { ParsedInteraction } from '@berty/store/types.gen'
+import { pbDateToNum } from '@berty/utils/convert/time'
+import { parseInteraction } from '@berty/utils/messenger/interactions'
 
 import { messengerActions } from '../messengerActions.gen'
 

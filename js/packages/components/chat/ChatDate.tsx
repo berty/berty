@@ -1,11 +1,10 @@
-import moment from 'moment'
 import React from 'react'
-import { View, ViewToken } from 'react-native'
+import { View } from 'react-native'
 
 import { useStyles } from '@berty/contexts/styles'
 import { useThemeColor } from '@berty/store'
+import { timeFormat } from '@berty/utils/convert/time'
 
-import { timeFormat } from '../helpers'
 import { UnifiedText } from '../shared-components/UnifiedText'
 
 //
@@ -40,16 +39,3 @@ export const ChatDate: React.FC<ChatDateProps> = React.memo(({ date }) => {
 		</View>
 	)
 })
-
-export const updateStickyDate: (
-	setStickyDate: (date: number) => void,
-) => (info: { viewableItems: ViewToken[] }) => void =
-	(setStickyDate: (date: number) => void) =>
-	({ viewableItems }) => {
-		if (viewableItems && viewableItems.length) {
-			const minDate = viewableItems[viewableItems.length - 1]?.section?.title
-			if (minDate) {
-				setStickyDate(moment(minDate, 'DD/MM/YYYY').unix() * 1000)
-			}
-		}
-	}
