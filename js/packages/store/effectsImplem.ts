@@ -7,7 +7,7 @@ import RNFS from 'react-native-fs'
 
 import beapi from '@berty/api'
 import GoBridge, { GoBridgeDefaultOpts, GoBridgeOpts } from '@berty/go-bridge'
-import { GRPCError, Service } from '@berty/grpc-bridge'
+import { GRPCError, createServiceClient } from '@berty/grpc-bridge'
 import { logger } from '@berty/grpc-bridge/middleware'
 import { bridge as rpcBridge, grpcweb as rpcWeb } from '@berty/grpc-bridge/rpc'
 import { deserializeFromBase64 } from '@berty/grpc-bridge/rpc/utils'
@@ -255,22 +255,26 @@ export const openingClients = async (
 			host: url,
 		}
 
-		protocolClient = Service(
+		protocolClient = createServiceClient(
 			beapi.protocol.ProtocolService,
 			rpcWeb(opts),
 		) as unknown as WelshProtocolServiceClient
 
-		messengerClient = Service(
+		messengerClient = createServiceClient(
 			beapi.messenger.MessengerService,
 			rpcWeb(opts),
 		) as unknown as WelshMessengerServiceClient
 	} else {
-		messengerClient = Service(
+		messengerClient = createServiceClient(
 			beapi.messenger.MessengerService,
 			rpcBridge,
 			logger.create('MESSENGER'),
 		)
-		protocolClient = Service(beapi.protocol.ProtocolService, rpcBridge, logger.create('PROTOCOL'))
+		protocolClient = createServiceClient(
+			beapi.protocol.ProtocolService,
+			rpcBridge,
+			logger.create('PROTOCOL'),
+		)
 	}
 
 	if (Platform.OS === 'ios' || Platform.OS === 'android') {

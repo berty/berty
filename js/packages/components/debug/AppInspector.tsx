@@ -15,7 +15,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 
 import beapi from '@berty/api'
 import { useStyles } from '@berty/contexts/styles'
-import { GRPCError, Service } from '@berty/grpc-bridge'
+import { GRPCError, createServiceClient } from '@berty/grpc-bridge'
 import { bridge as rpcBridge } from '@berty/grpc-bridge/rpc'
 import { useAppDispatch } from '@berty/hooks'
 import { setDebugMode } from '@berty/redux/reducers/ui.reducer'
@@ -25,7 +25,7 @@ import { UnifiedText } from '../shared-components/UnifiedText'
 
 const { RootDir } = NativeModules
 
-const accountService = Service(beapi.account.AccountService, rpcBridge, null)
+const accountService = createServiceClient(beapi.account.AccountService, rpcBridge, null)
 
 const styles = StyleSheet.create({
 	safeViewContainer: {

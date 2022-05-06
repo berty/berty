@@ -84,7 +84,7 @@ const createStreamMethodList = <S extends typeof pbjs.rpc.Service>(
 	return methods
 }
 
-export const createService = <T extends typeof pbjs.rpc.Service, S extends InstanceType<T>>(
+export const createServiceClient = <T extends typeof pbjs.rpc.Service, S extends InstanceType<T>>(
 	service: T,
 	rpcImpl: unknown,
 	middleware?: unknown,

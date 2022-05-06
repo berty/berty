@@ -3,7 +3,7 @@ import { Buffer } from 'buffer'
 import { Platform } from 'react-native'
 
 import beapi from '@berty/api'
-import { Service } from '@berty/grpc-bridge'
+import { createServiceClient } from '@berty/grpc-bridge'
 import { logger } from '@berty/grpc-bridge/middleware'
 import { grpcweb as rpcWeb } from '@berty/grpc-bridge/rpc'
 import rpcBridge from '@berty/grpc-bridge/rpc/rpc.bridge'
@@ -20,8 +20,11 @@ const opts: grpc.ClientRpcOptions = {
 
 export const accountClient =
 	Platform.OS === 'web'
-		? (Service(beapi.account.AccountService, rpcWeb(opts)) as unknown as WelshAccountServiceClient)
-		: Service(beapi.account.AccountService, rpcBridge, logger.create('ACCOUNT'))
+		? (createServiceClient(
+				beapi.account.AccountService,
+				rpcWeb(opts),
+		  ) as unknown as WelshAccountServiceClient)
+		: createServiceClient(beapi.account.AccountService, rpcBridge, logger.create('ACCOUNT'))
 
 export const storageSet = async (key: string, value: string) => {
 	await accountClient.appStoragePut({ key, value: Buffer.from(value, 'utf-8'), global: true })

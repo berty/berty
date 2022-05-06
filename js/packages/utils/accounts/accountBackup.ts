@@ -5,7 +5,7 @@ import RNFS from 'react-native-fs'
 import Share from 'react-native-share'
 
 import beapi from '@berty/api'
-import { Service } from '@berty/grpc-bridge'
+import { createServiceClient } from '@berty/grpc-bridge'
 import * as middleware from '@berty/grpc-bridge/middleware'
 import rpcBridge from '@berty/grpc-bridge/rpc/rpc.bridge'
 
@@ -33,7 +33,11 @@ export const exportAccountToFile = async (accountId: string | null) => {
 		__DEV__ ? middleware.logger.create('MESSENGER') : null,
 	)
 
-	const messengerClient = Service(beapi.messenger.MessengerService, rpcBridge, messengerMiddlewares)
+	const messengerClient = createServiceClient(
+		beapi.messenger.MessengerService,
+		rpcBridge,
+		messengerMiddlewares,
+	)
 
 	const fileName = `berty-backup-${accountId}`
 	const outFile = RNFS.TemporaryDirectoryPath + `/${fileName}` + '.tar'

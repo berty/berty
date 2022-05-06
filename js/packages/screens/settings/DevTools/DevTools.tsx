@@ -18,7 +18,7 @@ import {
 } from '@berty/components/shared-components/SettingsButtons'
 import { useStyles } from '@berty/contexts/styles'
 import GoBridge from '@berty/go-bridge'
-import { Service } from '@berty/grpc-bridge'
+import { createServiceClient } from '@berty/grpc-bridge'
 import * as middleware from '@berty/grpc-bridge/middleware'
 import { bridge as rpcBridge } from '@berty/grpc-bridge/rpc'
 import {
@@ -117,7 +117,11 @@ const NativeCallButton: React.FC = () => {
 	)
 	const colors = useThemeColor()
 
-	const messengerClient = Service(beapi.messenger.MessengerService, rpcBridge, messengerMiddlewares)
+	const messengerClient = createServiceClient(
+		beapi.messenger.MessengerService,
+		rpcBridge,
+		messengerMiddlewares,
+	)
 	const { t } = useTranslation()
 	let i = 0
 	return (

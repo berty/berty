@@ -2,7 +2,7 @@ import * as pbjs from 'protobufjs'
 
 import beapi from '@berty/api'
 
-import { Service } from '..'
+import { createServiceClient } from '..'
 import { GRPCError, EOF } from '../error'
 import { ServiceClientType } from '../welsh-clients.gen'
 import rpcNative from './rpc.native'
@@ -148,5 +148,5 @@ const client = (bridgeClient: ServiceClientType<beapi.bridge.BridgeService>) => 
 	streamCall: stream(bridgeClient),
 })
 
-const bridgeClient = Service(beapi.bridge.BridgeService, rpcNative)
+const bridgeClient = createServiceClient(beapi.bridge.BridgeService, rpcNative)
 export default client(bridgeClient)
