@@ -16,10 +16,9 @@ import {
 } from '@berty/redux/reducers/ui.reducer'
 import store, { AppDispatch, persistor, resetAccountStore } from '@berty/redux/store'
 import { Maybe } from '@berty/store/hooks'
-import { storageKeyForAccount } from '@berty/store/utils'
 
 import { StreamInProgress } from '../protocol/progress.types'
-import { accountClient, storageRemove } from './accountClient'
+import { accountClient } from './accountClient'
 
 export const importAccount = async (embedded: boolean, path: string) => {
 	if (!embedded) {
@@ -120,7 +119,6 @@ export const deleteAccount = async (
 	if (selectedAccount !== null) {
 		// delete account service and account data storage
 		await accountClient.deleteAccount({ accountId: selectedAccount })
-		await storageRemove(storageKeyForAccount(selectedAccount))
 		accounts = await refreshAccountList(embedded)
 	} else {
 		console.warn('state.selectedAccount is null and this should not occur')

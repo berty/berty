@@ -48,8 +48,6 @@ import { requestAndPersistPushToken } from '@berty/utils/notification/notif-push
 import { GlobalPersistentOptionsKeys } from '@berty/utils/persistent-options/types'
 import { StreamInProgress } from '@berty/utils/protocol/progress.types'
 
-import { storageKeyForAccount } from './utils'
-
 const openAccountWithProgress = async (
 	bridgeOpts: GoBridgeOpts,
 	selectedAccount: string | null,
@@ -184,23 +182,13 @@ export const openingDaemon = async (
 	// Apply store options
 	let bridgeOpts: GoBridgeOpts
 	try {
-		let opts: PersistentOptions | undefined
-		let store = await storageGet(storageKeyForAccount(selectedAccount.toString()))
-		if (store) {
-			opts = JSON.parse(store)
-		}
-
 		bridgeOpts = cloneDeep(GoBridgeDefaultOpts)
 
 		// set log flag
-		bridgeOpts.cliArgs = opts?.log?.format
-			? [...bridgeOpts.cliArgs!, `--log.format=${opts?.log?.format}`]
-			: [...bridgeOpts.cliArgs!, '--log.format=console']
+		bridgeOpts.cliArgs = [...bridgeOpts.cliArgs!, '--log.format=console']
 
 		// set log filter opt
-		bridgeOpts.logFilters = opts?.logFilters?.format
-			? opts?.logFilters?.format
-			: 'info+:bty*,-*.grpc warn+:*.grpc error+:*'
+		bridgeOpts.logFilters = 'info+:bty*,-*.grpc warn+:*.grpc error+:*'
 	} catch (e) {
 		console.warn('store getPersistentOptions Failed:', e)
 		bridgeOpts = cloneDeep(GoBridgeDefaultOpts)
@@ -472,7 +460,6 @@ export const deletingStorage = (
 	const f = async () => {
 		if (selectedAccount !== null) {
 			await accountClient.deleteAccount({ accountId: selectedAccount })
-			await storageRemove(storageKeyForAccount(selectedAccount))
 			await refreshAccountList(embedded)
 		} else {
 			console.warn('state.selectedAccount is null and this should not occur')
