@@ -14,7 +14,7 @@ import {
 } from "react-native";
 
 import { Colors, Header } from "react-native/Libraries/NewAppScreen";
-import { MiniGame } from "mini-game/MiniGame";
+import { MiniGame } from "berty-components/MiniGame";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import RNFS from "react-native-fs";
 import Gzip from "rn-gzip";
