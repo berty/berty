@@ -1,12 +1,10 @@
 import { grpc } from '@improbable-eng/grpc-web'
 import { EventEmitter } from 'events'
 import i18next from 'i18next'
-import cloneDeep from 'lodash/cloneDeep'
 import { Platform } from 'react-native'
 import RNFS from 'react-native-fs'
 
 import beapi from '@berty/api'
-import GoBridge, { GoBridgeDefaultOpts, GoBridgeOpts } from '@berty/go-bridge'
 import { GRPCError, createServiceClient } from '@berty/grpc-bridge'
 import { logger } from '@berty/grpc-bridge/middleware'
 import { bridge as rpcBridge, grpcweb as rpcWeb } from '@berty/grpc-bridge/rpc'
@@ -17,6 +15,7 @@ import {
 	WelshProtocolServiceClient,
 } from '@berty/grpc-bridge/welsh-clients.gen'
 import { detectOSLanguage } from '@berty/i18n'
+import { GoBridge } from '@berty/native-modules/GoBridge'
 import { streamEventToAction as streamEventToReduxAction } from '@berty/redux/messengerActions'
 import { PersistentOptions } from '@berty/redux/reducers/persistentOptions.reducer'
 import { resetTheme } from '@berty/redux/reducers/theme.reducer'
@@ -43,19 +42,17 @@ import {
 	closeAccountWithProgress,
 	refreshAccountList,
 } from '@berty/utils/accounts/accountUtils'
+import { defaultCLIArgs } from '@berty/utils/accounts/defaultCLIArgs'
 import { convertMAddr } from '@berty/utils/ipfs/convertMAddr'
 import { requestAndPersistPushToken } from '@berty/utils/notification/notif-push'
 import { GlobalPersistentOptionsKeys } from '@berty/utils/persistent-options/types'
 import { StreamInProgress } from '@berty/utils/protocol/progress.types'
 
-const openAccountWithProgress = async (
-	bridgeOpts: GoBridgeOpts,
-	selectedAccount: string | null,
-) => {
+const openAccountWithProgress = async (cliArgs: string[], selectedAccount: string | null) => {
 	console.log('Opening account', selectedAccount)
 	try {
 		const stream = await accountClient.openAccountWithProgress({
-			args: bridgeOpts.cliArgs,
+			args: cliArgs,
 			accountId: selectedAccount?.toString(),
 			sessionKind: Platform.OS === 'web' ? 'desktop-electron' : null,
 		})
@@ -179,20 +176,8 @@ export const openingDaemon = async (
 		console.warn(e)
 	}
 
-	// Apply store options
-	let bridgeOpts: GoBridgeOpts
-	try {
-		bridgeOpts = cloneDeep(GoBridgeDefaultOpts)
-
-		// set log flag
-		bridgeOpts.cliArgs = [...bridgeOpts.cliArgs!, '--log.format=console']
-
-		// set log filter opt
-		bridgeOpts.logFilters = 'info+:bty*,-*.grpc warn+:*.grpc error+:*'
-	} catch (e) {
-		console.warn('store getPersistentOptions Failed:', e)
-		bridgeOpts = cloneDeep(GoBridgeDefaultOpts)
-	}
+	// FIXME: pass tyber host as arg
+	const cliArgs = defaultCLIArgs
 
 	let openedAccount: beapi.account.GetOpenedAccount.Reply
 
@@ -204,7 +189,7 @@ export const openingDaemon = async (
 				await accountClient.closeAccount({})
 			}
 
-			await openAccountWithProgress(bridgeOpts, selectedAccount)
+			await openAccountWithProgress(cliArgs, selectedAccount)
 		}
 
 		store.dispatch(setStateOpeningClients())

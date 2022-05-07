@@ -17,7 +17,6 @@ import {
 	StringOptionInput,
 } from '@berty/components/shared-components/SettingsButtons'
 import { useStyles } from '@berty/contexts/styles'
-import GoBridge from '@berty/go-bridge'
 import { createServiceClient } from '@berty/grpc-bridge'
 import * as middleware from '@berty/grpc-bridge/middleware'
 import { bridge as rpcBridge } from '@berty/grpc-bridge/rpc'
@@ -33,6 +32,7 @@ import {
 	useRestart,
 } from '@berty/hooks'
 import { languages } from '@berty/i18n/locale/languages'
+import { GoBridge } from '@berty/native-modules/GoBridge'
 import { ScreenFC, useNavigation } from '@berty/navigation'
 import { setAccountLanguage } from '@berty/redux/reducers/accountSettings.reducer'
 import {

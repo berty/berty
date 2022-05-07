@@ -1,6 +1,6 @@
 import * as pb from 'protobufjs'
 
-import GoBridge from '@berty/go-bridge'
+import { GoBridge } from '@berty/native-modules/GoBridge'
 
 import {
 	serializeToBase64,
