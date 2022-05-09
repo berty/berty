@@ -12,7 +12,7 @@ declare module 'react-i18next' {
 
 const fallbackLang = 'en-US'
 
-export const osLanguage = (() => {
+export const detectOSLanguage = () => {
 	const locale: string | undefined =
 		Platform.OS === 'ios'
 			? NativeModules?.SettingsManager?.settings?.AppleLanguages[0] // iOS 13
@@ -26,26 +26,25 @@ export const osLanguage = (() => {
 		lang = fallbackLang
 	}
 	return lang
-})()
+}
 
 const RNLanguageDetector: LanguageDetectorModule = {
 	type: 'languageDetector',
 	init: () => {},
-	detect: () => osLanguage,
+	detect: detectOSLanguage,
 	cacheUserLanguage: () => {},
 }
 
-i18next
-	.use(RNLanguageDetector)
-	.use(initReactI18next)
-	.init({
-		fallbackLng: fallbackLang,
-		resources: languages,
-		returnEmptyString: false,
-	})
-	.then()
-	.catch((e: any) => {
-		console.log('failed to init i18n:', e)
-	})
-
-export default i18next
+export const initI18N = () =>
+	i18next
+		.use(RNLanguageDetector)
+		.use(initReactI18next)
+		.init({
+			fallbackLng: fallbackLang,
+			resources: languages,
+			returnEmptyString: false,
+		})
+		.then()
+		.catch((e: any) => {
+			console.log('failed to init i18n:', e)
+		})

@@ -6,14 +6,14 @@ import 'node-libs-react-native/globals'
 import 'react-native-gesture-handler'
 import 'react-native-reanimated'
 import 'string.fromcodepoint'
-import '@berty/i18n'
 
 import protobuf from 'protobufjs'
 import { AppRegistry, NativeModules } from 'react-native'
 
-import BridgeLogger from './packages/go-bridge/logger'
-import App from './packages/messenger-app/App'
-import { name as appName } from './packages/messenger-app/app.json'
+import BridgeLogger from '@berty/go-bridge/logger'
+import { initI18N } from '@berty/i18n'
+import App from '@berty/messenger-app/App'
+import { name as appName } from '@berty/messenger-app/app.json'
 
 protobuf.util.toJSONOptions = { longs: String, enums: Number, json: true }
 
@@ -25,5 +25,7 @@ if (!__DEV__) {
 	global.console = BridgeLogger(NativeModules.GoBridge)
 	global.console.info('native bridge logger enabled')
 }
+
+initI18N()
 
 AppRegistry.registerComponent(appName, () => App)

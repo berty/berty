@@ -1,5 +1,6 @@
 import { grpc } from '@improbable-eng/grpc-web'
 import { EventEmitter } from 'events'
+import i18next from 'i18next'
 import cloneDeep from 'lodash/cloneDeep'
 import { Platform } from 'react-native'
 import RNFS from 'react-native-fs'
@@ -15,7 +16,7 @@ import {
 	WelshMessengerServiceClient,
 	WelshProtocolServiceClient,
 } from '@berty/grpc-bridge/welsh-clients.gen'
-import i18n, { osLanguage } from '@berty/i18n'
+import { detectOSLanguage } from '@berty/i18n'
 import { streamEventToAction as streamEventToReduxAction } from '@berty/redux/messengerActions'
 import { PersistentOptions } from '@berty/redux/reducers/persistentOptions.reducer'
 import { resetTheme } from '@berty/redux/reducers/theme.reducer'
@@ -382,7 +383,7 @@ export const openingCloseConvos = async (
 }
 
 export const syncAccountLanguage = async (accountLanguage: string | undefined) => {
-	await i18n.changeLanguage(accountLanguage || osLanguage)
+	await i18next.changeLanguage(accountLanguage || detectOSLanguage())
 }
 
 // handle state PreReady

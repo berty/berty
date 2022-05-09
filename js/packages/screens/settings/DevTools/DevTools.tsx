@@ -1,5 +1,6 @@
 import { Player } from '@react-native-community/audio-toolkit'
 import { Layout } from '@ui-kitten/components'
+import i18next from 'i18next'
 import Long from 'long'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -32,7 +33,6 @@ import {
 	usePlaySound,
 	useRestart,
 } from '@berty/hooks'
-import i18n from '@berty/i18n'
 import { languages } from '@berty/i18n/locale/languages'
 import { ScreenFC, useNavigation } from '@berty/navigation'
 import { setAccountLanguage } from '@berty/redux/reducers/accountSettings.reducer'
@@ -575,7 +575,7 @@ const BodyDevTools: React.FC<{}> = withInAppNotification(({ showNotification }: 
 			<PlaySound />
 			<DropDownPicker
 				items={items}
-				defaultValue={i18n.language}
+				defaultValue={i18next.language}
 				onChangeItem={(item: Item) => dispatch(setAccountLanguage(item.value))}
 			/>
 			<ButtonSetting
