@@ -11,13 +11,12 @@ import { useStyles } from '@berty/contexts/styles'
 import { useAppDispatch, useAppSelector, useSwitchAccount } from '@berty/hooks'
 import {
 	selectAccounts,
-	selectEmbedded,
 	selectSelectedAccount,
 	setStateOnBoardingReady,
 } from '@berty/redux/reducers/ui.reducer'
 import { useThemeColor, Maybe } from '@berty/store'
 import { importAccountFromDocumentPicker } from '@berty/utils/accounts/accountBackup'
-import { closeAccountWithProgress } from '@berty/utils/accounts/accountUtils'
+import { closeAccountWithProgress, refreshAccountList } from '@berty/utils/accounts/accountUtils'
 import { pbDateToNum } from '@berty/utils/convert/time'
 
 const AccountButton: React.FC<{
@@ -78,7 +77,6 @@ export const MultiAccount: React.FC<{ onPress: () => void }> = ({ onPress }) => 
 	const selectedAccount = useAppSelector(selectSelectedAccount)
 	const switchAccount = useSwitchAccount()
 	const accounts = useAppSelector(selectAccounts)
-	const embedded = useAppSelector(selectEmbedded)
 
 	const [isHandlingPress, setIsHandlingPress] = React.useState(false)
 	const handlePress = async (account: beapi.account.IAccountMetadata) => {
@@ -93,7 +91,11 @@ export const MultiAccount: React.FC<{ onPress: () => void }> = ({ onPress }) => 
 		}
 	}
 
-	return (
+	React.useEffect(() => {
+		refreshAccountList()
+	}, [])
+
+	return accounts.length ? (
 		<TouchableOpacity
 			style={[
 				padding.horizontal.medium,
@@ -159,7 +161,7 @@ export const MultiAccount: React.FC<{ onPress: () => void }> = ({ onPress }) => 
 				/>
 				<AccountButton
 					name={t('main.home.multi-account.import-button')}
-					onPress={() => importAccountFromDocumentPicker(embedded)}
+					onPress={() => importAccountFromDocumentPicker()}
 					avatar={
 						<View
 							style={{
@@ -182,5 +184,5 @@ export const MultiAccount: React.FC<{ onPress: () => void }> = ({ onPress }) => 
 				/>
 			</ScrollView>
 		</TouchableOpacity>
-	)
+	) : null
 }

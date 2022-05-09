@@ -1,10 +1,9 @@
 import { useReducer, useCallback } from 'react'
-import { useSelector } from 'react-redux'
 
 import beapi from '@berty/api'
 import { WelshMessengerServiceClient } from '@berty/grpc-bridge/welsh-clients.gen'
-import { selectClient } from '@berty/redux/reducers/ui.reducer'
 
+import { useMessengerClient } from './hooks'
 import { MessengerMethodsHooks, ProtocolMethodsHooks } from './types.gen'
 
 const initialState: MethodState<any> = {
@@ -47,7 +46,7 @@ const callAction = () => ({ type: 'CALL' })
 const makeMethodHook =
 	<R>(key: string) =>
 	() => {
-		const client = useSelector(selectClient)
+		const client = useMessengerClient()
 
 		const [state, dispatch] = useReducer<(state: MethodState<R>, action: any) => MethodState<R>>(
 			methodReducer,

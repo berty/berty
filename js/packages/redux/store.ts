@@ -4,9 +4,6 @@ import createMigrate from 'redux-persist/lib/createMigrate'
 
 import { reduxPersistMigrations } from './migrations'
 import persistStorage from './persistStorage'
-import accountSettingsRootReducer, {
-	sliceName as accountSettingsSliceName,
-} from './reducers/accountSettings.reducer'
 import chatInputsRootReducer, {
 	sliceName as chatInputsSliceName,
 } from './reducers/chatInputs.reducer'
@@ -31,7 +28,6 @@ const persistConfig = {
 	whitelist: [
 		newGroupSliceName,
 		chatInputsSliceName,
-		accountSettingsSliceName,
 		themeSliceName,
 		networkConfigSliceName,
 		persistentOptionsSliceName,
@@ -43,7 +39,6 @@ const rootReducer = combineReducers({
 	...newGroupRootReducer,
 	...chatInputsRootReducer,
 	...chatInputsVolatileRootReducer,
-	...accountSettingsRootReducer,
 	...messengerRootReducer,
 	...themeReducer,
 	...uiReducer,

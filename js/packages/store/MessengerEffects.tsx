@@ -2,94 +2,54 @@ import React, { useContext, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 
 import { EventEmitterContext } from '@berty/contexts/eventEmitter.context'
-import { useAppDispatch, useAppSelector, useAccount, useConversationsDict } from '@berty/hooks'
-import { selectAccountLanguage } from '@berty/redux/reducers/accountSettings.reducer'
-import { selectPersistentOptions } from '@berty/redux/reducers/persistentOptions.reducer'
-import {
-	selectAppState,
-	selectClearClients,
-	selectClient,
-	selectEmbedded,
-	selectProtocolClient,
-	selectSelectedAccount,
-	selectDaemonAddress,
-} from '@berty/redux/reducers/ui.reducer'
+import { useAppDispatch, useAppSelector, useConversationsDict } from '@berty/hooks'
+import { selectAppState } from '@berty/redux/reducers/ui.reducer'
 
-import {
-	initialLaunch,
-	openingDaemon,
-	openingClients,
-	openingListingEvents,
-	openingLocalSettings,
-	openingCloseConvos,
-	closingDaemon,
-	deletingStorage,
-	updateAccountsPreReady,
-	syncAccountLanguage,
-} from './effectsImplem'
+import { initialLaunch, openingDaemonAndClients, finishPreparingAccount } from './effectsImplem'
 
 export const MessengerEffects: React.FC = () => {
 	const dispatch = useAppDispatch()
 	const eventEmitter = useContext(EventEmitterContext)
+	const ui = useAppSelector(state => state.ui)
+	const messenger = useAppSelector(state => state.messenger)
 	const appState = useSelector(selectAppState)
-	const clearClients = useSelector(selectClearClients)
-	const protocolClient = useSelector(selectProtocolClient)
-	const client = useSelector(selectClient)
-	const embedded = useSelector(selectEmbedded)
-	const selectedAccount = useSelector(selectSelectedAccount)
-	const persistentOptions = useSelector(selectPersistentOptions)
-	const daemonAddress = useSelector(selectDaemonAddress)
+	const conversations = useConversationsDict()
 
 	useEffect(() => {
 		console.log(`State change: ${appState}\n`)
 	}, [appState])
 
 	useEffect(() => {
-		initialLaunch(embedded)
-	}, [embedded])
+		// this condition is for support hot reload on dev, no need to restart all daemons/clients when we do a change on the store
+		// this variable is set to true when messenger client has finished to stream events
+		if (!messenger.initialEventsStreamCompleted) {
+			// this function determine if you have already an account or not
+			// if you have an account, this function triggered the openingDaemonAndClients in the next useEffect
+			// else you'll be redirected in the onboarding
+			initialLaunch(dispatch)
+		}
+
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [])
 
 	useEffect(() => {
-		openingDaemon(appState, selectedAccount)
-	}, [embedded, appState, selectedAccount])
+		// this function open berty daemon and differents clients
+		// after that, EventStream of messengerClient will be called
+		// when the stream will have finished, it will set initialEventsStreamCompleted (in the messenger store) to true
+		openingDaemonAndClients(ui, eventEmitter, dispatch)
+	}, [ui, eventEmitter, dispatch])
 
 	useEffect(() => {
-		openingClients(appState, eventEmitter, daemonAddress, embedded, dispatch)
-	}, [daemonAddress, embedded, eventEmitter, appState, selectedAccount, dispatch])
+		// like the second useEffect of this file, this variable is set to true when messenger client has finished to stream events
+		if (!messenger.initialEventsStreamCompleted) {
+			console.info('waiting for initial listing to be completed')
+			return
+		}
+		// this function finish to prepare some requirements for the app
+		finishPreparingAccount(ui, messenger, conversations, dispatch)
 
-	const initialListComplete = useAppSelector(state => state.messenger.initialListComplete)
-
-	useEffect(() => {
-		return openingListingEvents(appState, initialListComplete)
-	}, [appState, initialListComplete])
-
-	useEffect(() => {
-		openingLocalSettings(appState)
-	}, [appState])
-
-	const conversations = useConversationsDict()
-
-	useEffect(() => {
-		openingCloseConvos(appState, client, conversations, persistentOptions)
-	}, [appState, client, conversations, persistentOptions])
-
-	const accountLanguage = useAppSelector(selectAccountLanguage)
-	useEffect(() => {
-		syncAccountLanguage(accountLanguage)
-	}, [accountLanguage])
-
-	const account = useAccount()
-
-	useEffect(() => {
-		updateAccountsPreReady(appState, client, selectedAccount, account, protocolClient, embedded)
-	}, [appState, client, selectedAccount, account, protocolClient, embedded])
-
-	useEffect(() => {
-		return closingDaemon(appState, clearClients, dispatch)
-	}, [clearClients, appState, dispatch])
-
-	useEffect(() => {
-		return deletingStorage(appState, embedded, selectedAccount)
-	}, [appState, selectedAccount, embedded])
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [messenger.initialEventsStreamCompleted])
 
 	return null
 }

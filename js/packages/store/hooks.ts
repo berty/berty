@@ -23,7 +23,7 @@ import {
 	MESSENGER_APP_STATE,
 	removeNotificationInhibitor,
 	selectAppState,
-	selectClient,
+	selectMessengerClient,
 } from '@berty/redux/reducers/ui.reducer'
 import { NotificationsInhibitor } from '@berty/utils/notification/notif-in-app'
 
@@ -79,7 +79,7 @@ export const useStylesBertyId = ({
 }
 
 export const useMessengerClient = () => {
-	return useSelector(selectClient)
+	return useSelector(selectMessengerClient)
 }
 
 export const useThemeColor = (): ThemeType => {
@@ -89,7 +89,10 @@ export const useThemeColor = (): ThemeType => {
 	const themeCollection = useSelector(selectThemeCollection)
 
 	return React.useMemo(() => {
-		if (!Object.entries(themeCollection).length || appState === MESSENGER_APP_STATE.GET_STARTED) {
+		if (
+			!Object.entries(themeCollection).length ||
+			appState === MESSENGER_APP_STATE.ONBOARDING_READY
+		) {
 			return colors
 		}
 

@@ -12,13 +12,13 @@ import rpcBridge from '@berty/grpc-bridge/rpc/rpc.bridge'
 import { createAndSaveFile, getPath } from '../react-native/file-system'
 import { importAccount } from './accountUtils'
 
-export const importAccountFromDocumentPicker = async (embedded: boolean) => {
+export const importAccountFromDocumentPicker = async () => {
 	try {
 		const res = await DocumentPicker.pickSingle({
 			type: Platform.OS === 'android' ? ['application/x-tar'] : ['public.tar-archive'],
 		})
 		const replaced = Platform.OS === 'android' ? await getPath(res.uri) : res.uri
-		await importAccount(embedded, replaced.replace(/^file:\/\//, ''))
+		await importAccount(replaced.replace(/^file:\/\//, ''))
 	} catch (err: any) {
 		if (DocumentPicker.isCancel(err)) {
 			// ignore

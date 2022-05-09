@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 
 import beapi from '@berty/api'
-import { selectEmbedded, selectSelectedAccount } from '@berty/redux/reducers/ui.reducer'
+import { selectSelectedAccount } from '@berty/redux/reducers/ui.reducer'
 import {
 	createNewAccount,
 	deleteAccount,
@@ -14,29 +14,20 @@ import { useAccount } from './messenger.hooks'
 
 export const useDeleteAccount = () => {
 	const dispatch = useAppDispatch()
-	const embedded = useAppSelector(selectEmbedded)
 	const selectedAccount = useAppSelector(selectSelectedAccount)
-	return useCallback(
-		() => deleteAccount(embedded, selectedAccount, dispatch),
-		[embedded, selectedAccount, dispatch],
-	)
+	return useCallback(() => deleteAccount(selectedAccount, dispatch), [selectedAccount, dispatch])
 }
 
 export const useSwitchAccount = () => {
 	const dispatch = useAppDispatch()
-	const embedded = useAppSelector(selectEmbedded)
-	return useCallback(
-		(account: string) => switchAccount(embedded, account, dispatch),
-		[embedded, dispatch],
-	)
+	return useCallback((account: string) => switchAccount(account, dispatch), [dispatch])
 }
 
 export const useCreateNewAccount = () => {
 	const dispatch = useAppDispatch()
-	const embedded = useAppSelector(selectEmbedded)
 	return useCallback(
-		(newConfig?: beapi.account.INetworkConfig) => createNewAccount(embedded, dispatch, newConfig),
-		[embedded, dispatch],
+		(newConfig?: beapi.account.INetworkConfig) => createNewAccount(dispatch, newConfig),
+		[dispatch],
 	)
 }
 
@@ -44,8 +35,7 @@ export const useCreateNewAccount = () => {
  * Returns a function to update the AccountService account
  */
 export const useUpdateAccount = () => {
-	const embedded = useAppSelector(selectEmbedded)
-	return useCallback((payload: any) => updateAccount(embedded, payload), [embedded])
+	return useCallback((payload: any) => updateAccount(payload), [])
 }
 
 export const useAccountServices = (): Array<beapi.messenger.IServiceToken> => {

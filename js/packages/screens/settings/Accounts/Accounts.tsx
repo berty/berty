@@ -15,7 +15,6 @@ import { useSwitchAccount } from '@berty/hooks'
 import { ScreenFC, useNavigation } from '@berty/navigation'
 import {
 	selectAccounts,
-	selectEmbedded,
 	selectSelectedAccount,
 	setStateOnBoardingReady,
 } from '@berty/redux/reducers/ui.reducer'
@@ -108,11 +107,10 @@ export const Accounts: ScreenFC<'Settings.Accounts'> = withInAppNotification(
 		const { t }: { t: any } = useTranslation()
 		const selectedAccount = useSelector(selectSelectedAccount)
 		const accounts = useSelector(selectAccounts)
-		const embedded = useSelector(selectEmbedded)
 
 		React.useEffect(() => {
-			refreshAccountList(embedded)
-		}, [embedded])
+			refreshAccountList()
+		}, [])
 
 		return (
 			<View style={{ backgroundColor: colors['secondary-background'], flex: 1 }}>
@@ -162,7 +160,7 @@ export const Accounts: ScreenFC<'Settings.Accounts'> = withInAppNotification(
 						{Platform.OS !== 'web' && (
 							<ButtonSettingV2
 								text={t('settings.accounts.import-button')}
-								onPress={async () => await importAccountFromDocumentPicker(embedded)}
+								onPress={async () => await importAccountFromDocumentPicker()}
 								last
 							/>
 						)}

@@ -1,4 +1,5 @@
 import { grpc } from '@improbable-eng/grpc-web'
+import { Dictionary } from '@reduxjs/toolkit'
 import { EventEmitter } from 'events'
 import i18next from 'i18next'
 import { Platform } from 'react-native'
@@ -17,39 +18,37 @@ import {
 import { detectOSLanguage } from '@berty/i18n'
 import { GoBridge } from '@berty/native-modules/GoBridge'
 import { streamEventToAction as streamEventToReduxAction } from '@berty/redux/messengerActions'
-import { PersistentOptions } from '@berty/redux/reducers/persistentOptions.reducer'
+import { MessengerState } from '@berty/redux/reducers/messenger.reducer'
 import { resetTheme } from '@berty/redux/reducers/theme.reducer'
 import {
-	bridgeClosed,
 	MESSENGER_APP_STATE,
 	setNextAccount,
-	setStateClosed,
+	setStateClients,
 	setStateOnBoardingReady,
-	setStateOpeningClients,
-	setStateOpeningGettingLocalSettings,
-	setStateOpeningListingEvents,
-	setStateOpeningMarkConversationsClosed,
-	setStatePreReady,
+	setStateOpening,
 	setStateReady,
+	setStateSetupFinished,
 	setStateStreamDone,
 	setStateStreamInProgress,
 	setStreamError,
+	UiState,
 } from '@berty/redux/reducers/ui.reducer'
-import store, { AppDispatch, persistor } from '@berty/redux/store'
-import { accountClient, storageGet, storageRemove } from '@berty/utils/accounts/accountClient'
-import {
-	updateAccount,
-	closeAccountWithProgress,
-	refreshAccountList,
-} from '@berty/utils/accounts/accountUtils'
+import { AppDispatch, persistor } from '@berty/redux/store'
+import { accountClient, storageGet } from '@berty/utils/accounts/accountClient'
+import { updateAccount, refreshAccountList } from '@berty/utils/accounts/accountUtils'
 import { defaultCLIArgs } from '@berty/utils/accounts/defaultCLIArgs'
 import { convertMAddr } from '@berty/utils/ipfs/convertMAddr'
 import { requestAndPersistPushToken } from '@berty/utils/notification/notif-push'
 import { GlobalPersistentOptionsKeys } from '@berty/utils/persistent-options/types'
 import { StreamInProgress } from '@berty/utils/protocol/progress.types'
 
-const openAccountWithProgress = async (cliArgs: string[], selectedAccount: string | null) => {
+const openAccountWithProgress = async (
+	cliArgs: string[],
+	selectedAccount: string | null,
+	dispatch: AppDispatch,
+) => {
 	console.log('Opening account', selectedAccount)
+
 	try {
 		const stream = await accountClient.openAccountWithProgress({
 			args: cliArgs,
@@ -61,13 +60,12 @@ const openAccountWithProgress = async (cliArgs: string[], selectedAccount: strin
 				console.log('activating persist with account:', selectedAccount?.toString())
 				persistor.persist()
 				console.log('opening account: stream closed')
-				store.dispatch(setStateStreamDone())
-				store.dispatch(setStateOpeningClients())
+				dispatch(setStateStreamDone())
 				return
 			}
 			if (err && !err.OK) {
 				console.warn('open account error:', err.error.errorCode)
-				store.dispatch(setStreamError({ error: new Error(`Failed to start node: ${err}`) }))
+				dispatch(setStreamError({ error: new Error(`Failed to start node: ${err}`) }))
 				return
 			}
 			if (msg?.progress?.state !== 'done') {
@@ -77,14 +75,14 @@ const openAccountWithProgress = async (cliArgs: string[], selectedAccount: strin
 						msg: progress,
 						stream: 'Open account',
 					}
-					store.dispatch(setStateStreamInProgress(payload))
+					dispatch(setStateStreamInProgress(payload))
 				}
 			}
 		})
 		await stream.start()
 		console.log('node is opened')
 	} catch (err) {
-		store.dispatch(setStreamError({ error: new Error(`Failed to start node: ${err}`) }))
+		dispatch(setStreamError({ error: new Error(`Failed to start node: ${err}`) }))
 	}
 }
 
@@ -102,10 +100,10 @@ const initBridge = async () => {
 	}
 }
 
-export const initialLaunch = async (embedded: boolean) => {
+export const initialLaunch = async (dispatch: AppDispatch) => {
 	await initBridge()
 	const f = async () => {
-		const accounts = await refreshAccountList(embedded)
+		const accounts = await refreshAccountList()
 
 		if (Object.keys(accounts).length > 0) {
 			let accountSelected: any = null
@@ -127,40 +125,42 @@ export const initialLaunch = async (embedded: boolean) => {
 				.catch(() => {
 					console.log('File berty backup does not exist') // here
 				})
-			store.dispatch(setNextAccount(accountSelected.accountId))
+
+			dispatch(setNextAccount(accountSelected.accountId))
+
 			return
 		} else {
-			store.dispatch(setStateOnBoardingReady())
+			// this is the first account that will be created
+			dispatch(setStateOnBoardingReady())
 		}
 	}
 
 	f().catch(e => console.warn(e))
 }
 
-// handle state openingGettingLocalSettings
-export const openingLocalSettings = async (
-	appState: MESSENGER_APP_STATE[keyof MESSENGER_APP_STATE],
+export const openingDaemonAndClients = async (
+	ui: UiState,
+	eventEmitter: EventEmitter,
+	dispatch: AppDispatch,
 ) => {
-	if (appState !== MESSENGER_APP_STATE.OPENING_GETTING_LOCAL_SETTINGS) {
+	if (ui.appState !== MESSENGER_APP_STATE.TO_OPEN) {
 		return
 	}
 
+	dispatch(setStateOpening())
+
 	try {
-		store.dispatch(setStateOpeningMarkConversationsClosed())
-	} catch (e) {
-		console.warn('unable to get persistent options', e)
+		// opening berty daemon
+		await openingDaemon(ui.selectedAccount, dispatch)
+
+		// opening messenger and protocol clients
+		await openingClients(eventEmitter, dispatch)
+	} catch (err) {
+		console.warn(err)
 	}
 }
 
-// handle state OpeningWaitingForDaemon
-export const openingDaemon = async (
-	appState: MESSENGER_APP_STATE[keyof MESSENGER_APP_STATE],
-	selectedAccount: string | null,
-) => {
-	if (appState !== MESSENGER_APP_STATE.OPENING_WAITING_FOR_DAEMON) {
-		return
-	}
-
+const openingDaemon = async (selectedAccount: string | null, dispatch: AppDispatch) => {
 	if (selectedAccount === null) {
 		console.warn('openingDaemon / no account opened')
 		return
@@ -189,27 +189,14 @@ export const openingDaemon = async (
 				await accountClient.closeAccount({})
 			}
 
-			await openAccountWithProgress(cliArgs, selectedAccount)
+			await openAccountWithProgress(cliArgs, selectedAccount, dispatch)
 		}
-
-		store.dispatch(setStateOpeningClients())
 	} catch (e) {
 		console.log(`account seems to be unopened yet ${e}`)
 	}
 }
 
-// handle state OpeningWaitingForClients
-export const openingClients = async (
-	appState: MESSENGER_APP_STATE[keyof MESSENGER_APP_STATE],
-	eventEmitter: EventEmitter,
-	daemonAddress: string,
-	embedded: boolean,
-	dispatch: AppDispatch,
-): Promise<void> => {
-	if (appState !== MESSENGER_APP_STATE.OPENING_WAITING_FOR_CLIENTS) {
-		return
-	}
-
+const openingClients = async (eventEmitter: EventEmitter, dispatch: AppDispatch): Promise<void> => {
 	console.log('starting stream')
 
 	let messengerClient, protocolClient
@@ -250,15 +237,23 @@ export const openingClients = async (
 		)
 	}
 
+	// request push notifications token
 	if (Platform.OS === 'ios' || Platform.OS === 'android') {
 		requestAndPersistPushToken(protocolClient).catch(e => console.warn(e))
 	}
 
-	let precancel = false
-	let cancel = () => {
-		precancel = true
-	}
+	// call messenger client event stream
+	messengerEventStream(messengerClient, eventEmitter, dispatch)
 
+	dispatch(setStateClients({ messengerClient, protocolClient }))
+}
+
+const messengerEventStream = (
+	messengerClient: WelshMessengerServiceClient,
+	eventEmitter: EventEmitter,
+	dispatch: AppDispatch,
+) => {
+	let precancel = false
 	messengerClient
 		.eventStream({ shallowAmount: 20 })
 		.then(async stream => {
@@ -266,7 +261,6 @@ export const openingClients = async (
 				await stream.stop()
 				return
 			}
-			cancel = () => stream.stop()
 			stream.onMessage((msg, err) => {
 				try {
 					if (err) {
@@ -279,7 +273,7 @@ export const openingClients = async (
 							return
 						}
 						console.warn('events stream onMessage error:', err)
-						store.dispatch(setStreamError({ error: err }))
+						dispatch(setStreamError({ error: err }))
 					}
 
 					const evt = msg?.event
@@ -328,28 +322,44 @@ export const openingClients = async (
 		.catch(err => {
 			if (err instanceof GRPCError && err?.EOF) {
 				console.info('end of the events stream')
-				store.dispatch(setStateClosed())
+				precancel = true
+				dispatch(setNextAccount())
 			} else {
 				console.warn('events stream error:', err)
-				store.dispatch(setStreamError({ error: err }))
+				precancel = true
+				dispatch(setStreamError({ error: err }))
 			}
 		})
-	dispatch(
-		setStateOpeningListingEvents({ messengerClient, protocolClient, clearClients: () => cancel() }),
-	)
 }
 
-// handle state OpeningMarkConversationsAsClosed
-export const openingCloseConvos = async (
-	appState: MESSENGER_APP_STATE[keyof MESSENGER_APP_STATE],
+export const finishPreparingAccount = async (
+	ui: UiState,
+	messenger: MessengerState,
+	conversations: Dictionary<beapi.messenger.IConversation>,
+	dispatch: AppDispatch,
+) => {
+	try {
+		await closeConvos(ui.messengerClient, conversations)
+
+		await i18next.changeLanguage(detectOSLanguage())
+
+		if (ui.isNewAccount) {
+			await updateAccountOnClients(ui.messengerClient, ui.selectedAccount, messenger.account)
+			// reset ui theme
+			dispatch(resetTheme())
+			dispatch(setStateSetupFinished())
+		} else {
+			dispatch(setStateReady())
+		}
+	} catch (err) {
+		console.warn(err)
+	}
+}
+
+const closeConvos = async (
 	client: ServiceClientType<beapi.messenger.MessengerService> | null,
 	conversations: { [key: string]: beapi.messenger.IConversation | undefined },
-	persistentOptions: PersistentOptions,
 ) => {
-	if (appState !== MESSENGER_APP_STATE.OPENING_MARK_CONVERSATIONS_AS_CLOSED) {
-		return
-	}
-
 	if (client === null) {
 		console.warn('client is null')
 		return
@@ -360,114 +370,34 @@ export const openingCloseConvos = async (
 			console.warn(`failed to close conversation "${conv.displayName}",`, e)
 		})
 	}
-	persistentOptions.onBoardingFinished.isFinished
-		? store.dispatch(setStateReady())
-		: store.dispatch(setStatePreReady())
 }
 
-export const syncAccountLanguage = async (accountLanguage: string | undefined) => {
-	await i18next.changeLanguage(accountLanguage || detectOSLanguage())
-}
-
-// handle state PreReady
-export const updateAccountsPreReady = async (
-	appState: MESSENGER_APP_STATE[keyof MESSENGER_APP_STATE],
-	client: ServiceClientType<beapi.messenger.MessengerService> | null,
+const updateAccountOnClients = async (
+	messengerClient: ServiceClientType<beapi.messenger.MessengerService> | null,
 	selectedAccount: string | null,
 	account: beapi.messenger.IAccount | null | undefined,
-	protocolClient: ServiceClientType<beapi.protocol.ProtocolService> | null,
-	embedded: boolean,
 ) => {
-	if (appState !== MESSENGER_APP_STATE.PRE_READY) {
-		return
+	try {
+		// remove the displayName value that was set at the creation of the account
+		const displayName = await storageGet(GlobalPersistentOptionsKeys.DisplayName)
+		await storageRemove(GlobalPersistentOptionsKeys.DisplayName)
+		if (displayName) {
+			// update account in messenger client
+			await messengerClient?.accountUpdate({ displayName })
+			// update account in account client
+			await updateAccount({
+				accountName: displayName,
+				accountId: selectedAccount,
+				publicKey: account?.publicKey,
+			})
+		}
+	} catch (err) {
+		console.warn(err)
 	}
-	const displayName = await storageGet(GlobalPersistentOptionsKeys.DisplayName)
-	await storageRemove(GlobalPersistentOptionsKeys.DisplayName)
-	await storageRemove(GlobalPersistentOptionsKeys.IsNewAccount)
-	if (displayName) {
-		await client?.accountUpdate({ displayName }).catch(err => console.error(err))
-		// update account in bertyaccount
-		await updateAccount(embedded, {
-			accountName: displayName,
-			accountId: selectedAccount,
-			publicKey: account?.publicKey,
-		})
-	}
-	store.dispatch(resetTheme())
+
 	// TODO: fix flow of asking permissions
 	// const config = await accountService.networkConfigGet({ accountId: selectedAccount })
 	// if (config.currentConfig?.staticRelay && config.currentConfig?.staticRelay[0] === ':default:') {
 	// 	await servicesAuthViaURL(protocolClient, bertyOperatedServer)
 	// }
-}
-
-// handle states DeletingClosingDaemon, ClosingDaemon
-export const closingDaemon = (
-	appState: MESSENGER_APP_STATE[keyof MESSENGER_APP_STATE],
-	clearClients: (() => Promise<void>) | (() => void) | null,
-	dispatch: AppDispatch,
-) => {
-	if (
-		appState !== MESSENGER_APP_STATE.CLOSING_DAEMON &&
-		appState !== MESSENGER_APP_STATE.DELETING_CLOSING_DAEMON
-	) {
-		return
-	}
-	return () => {
-		const f = async () => {
-			try {
-				if (clearClients) {
-					await clearClients()
-				}
-				await closeAccountWithProgress(dispatch)
-			} catch (e) {
-				console.warn('unable to stop protocol', e)
-			}
-			dispatch(bridgeClosed())
-		}
-
-		f().catch(e => {
-			console.warn(e)
-		})
-	}
-}
-
-// handle state DeletingClearingStorage
-export const deletingStorage = (
-	appState: MESSENGER_APP_STATE[keyof MESSENGER_APP_STATE],
-	embedded: boolean,
-	selectedAccount: string | null,
-) => {
-	if (appState !== MESSENGER_APP_STATE.DELETING_CLEARING_STORAGE) {
-		return
-	}
-
-	const f = async () => {
-		if (selectedAccount !== null) {
-			await accountClient.deleteAccount({ accountId: selectedAccount })
-			await refreshAccountList(embedded)
-		} else {
-			console.warn('state.selectedAccount is null and this should not occur')
-		}
-
-		store.dispatch(setStateClosed())
-	}
-
-	f().catch(e => console.error(e))
-}
-
-export const openingListingEvents = (
-	appState: MESSENGER_APP_STATE[keyof MESSENGER_APP_STATE],
-	initialListComplete: boolean,
-) => {
-	if (appState !== MESSENGER_APP_STATE.OPENING_LISTING_EVENTS) {
-		return
-	}
-
-	if (!initialListComplete) {
-		console.info('waiting for initial listing to be completed')
-		return
-	}
-
-	store.dispatch(setStateOpeningGettingLocalSettings())
 }

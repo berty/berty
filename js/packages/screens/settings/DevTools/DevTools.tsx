@@ -34,7 +34,6 @@ import {
 import { languages } from '@berty/i18n/locale/languages'
 import { GoBridge } from '@berty/native-modules/GoBridge'
 import { ScreenFC, useNavigation } from '@berty/navigation'
-import { setAccountLanguage } from '@berty/redux/reducers/accountSettings.reducer'
 import {
 	defaultPersistentOptions,
 	PersistentOptionsKeys,
@@ -43,7 +42,6 @@ import {
 } from '@berty/redux/reducers/persistentOptions.reducer'
 import {
 	selectDaemonAddress,
-	selectEmbedded,
 	setDaemonAddress,
 	setDebugMode,
 	setStreamError,
@@ -350,7 +348,6 @@ const BodyDevTools: React.FC<{}> = withInAppNotification(({ showNotification }: 
 	const colors = useThemeColor()
 	const dispatch = useAppDispatch()
 	const persistentOptions = useSelector(selectPersistentOptions)
-	const embedded = useSelector(selectEmbedded)
 	const client = useMessengerClient()
 	const restart = useRestart()
 	const daemonAddress = useSelector(selectDaemonAddress)
@@ -535,7 +532,7 @@ const BodyDevTools: React.FC<{}> = withInAppNotification(({ showNotification }: 
 				iconColor={colors['alt-secondary-background-header']}
 				onPress={() => GoBridge.closeBridge()}
 			/>
-			{!embedded && daemonAddress !== 'http://localhost:1338' && (
+			{daemonAddress !== 'http://localhost:1338' && (
 				<ButtonSetting
 					name='Switch to 1338 node'
 					icon='folder-outline'
@@ -576,7 +573,7 @@ const BodyDevTools: React.FC<{}> = withInAppNotification(({ showNotification }: 
 			<DropDownPicker
 				items={items}
 				defaultValue={i18next.language}
-				onChangeItem={(item: Item) => dispatch(setAccountLanguage(item.value))}
+				onChangeItem={async (item: Item) => await i18next.changeLanguage(item.value)}
 			/>
 			<ButtonSetting
 				name={t('debug.inspector.show-button')}

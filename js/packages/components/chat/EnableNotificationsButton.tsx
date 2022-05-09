@@ -8,7 +8,8 @@ import PermissionsContext from '@berty/contexts/permissions.context'
 import { useStyles } from '@berty/contexts/styles'
 import { useAccount, useConversation } from '@berty/hooks'
 import { useNavigation } from '@berty/navigation'
-import { selectClient, selectProtocolClient } from '@berty/redux/reducers/ui.reducer'
+import { selectProtocolClient } from '@berty/redux/reducers/ui.reducer'
+import { useMessengerClient } from '@berty/store'
 import { numberifyLong } from '@berty/utils/convert/long'
 import { conversationPushToggleState, pushAvailable } from '@berty/utils/notification/notif-push'
 
@@ -24,7 +25,7 @@ const EnableNotificationsButton: React.FC<{
 
 	const conv = useConversation(conversationPk)
 	const account = useAccount()
-	const client = useSelector(selectClient)
+	const messengerClient = useMessengerClient()
 	const { permissions } = useContext(PermissionsContext)
 
 	const pushTokenShared = useMemo(
@@ -68,7 +69,7 @@ const EnableNotificationsButton: React.FC<{
 				actionToggle={async () => {
 					await conversationPushToggleState({
 						t,
-						messengerClient: client,
+						messengerClient,
 						protocolClient,
 						conversation: conv,
 						navigate,

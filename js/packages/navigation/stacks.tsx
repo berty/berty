@@ -151,6 +151,7 @@ const NavigationStack = createNativeStackNavigator<ScreensParams>()
 
 export const Navigation: React.FC = React.memo(() => {
 	const appState = useSelector(selectAppState)
+
 	const colors = useThemeColor()
 	const { scaleSize } = useAppDimensions()
 	const { t }: any = useTranslation()
@@ -159,6 +160,13 @@ export const Navigation: React.FC = React.memo(() => {
 	useEffect(() => {
 		console.log('context app State', appState)
 		switch (appState) {
+			case MESSENGER_APP_STATE.ONBOARDING_READY:
+				dispatch(
+					CommonActions.reset({
+						routes: [{ name: 'Onboarding.GetStarted' }],
+					}),
+				)
+				return
 			case MESSENGER_APP_STATE.READY:
 				dispatch(
 					CommonActions.reset({
@@ -166,30 +174,41 @@ export const Navigation: React.FC = React.memo(() => {
 					}),
 				)
 				return
-			case MESSENGER_APP_STATE.PRE_READY:
+			case MESSENGER_APP_STATE.SETUP_FINISHED:
 				dispatch(
 					CommonActions.reset({
 						routes: [{ name: 'Onboarding.SetupFinished' }],
 					}),
 				)
 				return
-			case MESSENGER_APP_STATE.GET_STARTED:
-				if (Platform.OS === 'web') {
-					dispatch(
-						CommonActions.reset({
-							routes: [{ name: 'Onboarding.GetStarted' }],
-						}),
-					)
-				}
+			case MESSENGER_APP_STATE.STREAM:
+				dispatch(
+					CommonActions.reset({
+						routes: [{ name: 'Gates.Stream' }],
+					}),
+				)
 				return
 		}
 	}, [appState, dispatch])
 
+	const initialRoute = React.useCallback(() => {
+		switch (appState) {
+			case MESSENGER_APP_STATE.READY:
+				return 'Chat.Home'
+			case MESSENGER_APP_STATE.ONBOARDING_READY:
+				return 'Onboarding.GetStarted'
+			case MESSENGER_APP_STATE.SETUP_FINISHED:
+				return 'Onboarding.SetupFinished'
+			case MESSENGER_APP_STATE.STREAM:
+				return 'Gates.Stream'
+			default:
+				return 'Chat.Home'
+		}
+	}, [appState])
+
 	return (
 		<NavigationStack.Navigator
-			initialRouteName={
-				appState === MESSENGER_APP_STATE.GET_STARTED ? 'Onboarding.GetStarted' : 'Chat.Home'
-			}
+			initialRouteName={initialRoute()}
 			screenOptions={{
 				headerLeft:
 					Platform.OS === 'web'
@@ -204,6 +223,11 @@ export const Navigation: React.FC = React.memo(() => {
 						: undefined,
 			}}
 		>
+			<NavigationStack.Screen
+				name={'Gates.Stream'}
+				component={Components.Gates.Stream}
+				options={{ headerShown: false }}
+			/>
 			{/* OnBoarding */}
 			<NavigationStack.Screen
 				name={'Onboarding.GetStarted'}

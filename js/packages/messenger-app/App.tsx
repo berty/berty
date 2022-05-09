@@ -14,7 +14,7 @@ import LightItalicOpenSans from '@berty/assets/font/OpenSans-LightItalic.ttf'
 import SemiBoldOpenSans from '@berty/assets/font/OpenSans-SemiBold.ttf'
 import SemiBoldItalicOpenSans from '@berty/assets/font/OpenSans-SemiBoldItalic.ttf'
 import { ErrorScreen } from '@berty/components/error'
-import { StreamGate, ListGate } from '@berty/components/gates'
+import { LoaderGate } from '@berty/components/gates'
 import { ModalProvider } from '@berty/contexts/modal.context'
 import { MusicPlayerProvider } from '@berty/contexts/musicPlayer.context'
 import NotificationProvider from '@berty/contexts/notification.context'
@@ -117,15 +117,13 @@ const App: React.FC = () => {
 										<PermissionsProvider>
 											<NotificationProvider>
 												{Platform.OS !== 'web' ? <BootSplashInhibitor /> : null}
-												<StreamGate>
-													<ListGate>
-														<MusicPlayerProvider>
-															<ModalProvider>
-																<Navigation />
-															</ModalProvider>
-														</MusicPlayerProvider>
-													</ListGate>
-												</StreamGate>
+												<LoaderGate>
+													<MusicPlayerProvider>
+														<ModalProvider>
+															<Navigation />
+														</ModalProvider>
+													</MusicPlayerProvider>
+												</LoaderGate>
 											</NotificationProvider>
 										</PermissionsProvider>
 									</NavigationContainer>

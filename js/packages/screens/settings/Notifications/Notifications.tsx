@@ -14,8 +14,9 @@ import PermissionsContext from '@berty/contexts/permissions.context'
 import { useAccount, useOneToOneContact } from '@berty/hooks'
 import { useAllConversations } from '@berty/hooks'
 import { ScreenFC, useNavigation } from '@berty/navigation'
-import { selectClient, selectProtocolClient } from '@berty/redux/reducers/ui.reducer'
+import { selectProtocolClient } from '@berty/redux/reducers/ui.reducer'
 import { useThemeColor } from '@berty/store'
+import { useMessengerClient } from '@berty/store'
 import { numberifyLong } from '@berty/utils/convert/long'
 import {
 	accountPushToggleState,
@@ -51,7 +52,7 @@ const MutedConversationButton = ({
 	conversation: berty.messenger.v1.IConversation
 }) => {
 	const { t } = useTranslation()
-	const messengerClient = useSelector(selectClient)
+	const messengerClient = useMessengerClient()
 
 	const colors = useThemeColor()
 	const { scaleSize } = useAppDimensions()
@@ -110,7 +111,7 @@ export const Notifications: ScreenFC<'Settings.Notifications'> = () => {
 	const { t } = useTranslation()
 	const { navigate } = useNavigation()
 	const { permissions } = useContext(PermissionsContext)
-	const messengerClient = useSelector(selectClient)
+	const messengerClient = useMessengerClient()
 	const protocolClient = useSelector(selectProtocolClient)
 
 	const { scaleSize } = useAppDimensions()
