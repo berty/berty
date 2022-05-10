@@ -9,8 +9,8 @@ import { useStyles } from '@berty/contexts/styles'
 import { useAccount, useConversation } from '@berty/hooks'
 import { useNavigation } from '@berty/navigation'
 import { selectClient, selectProtocolClient } from '@berty/redux/reducers/ui.reducer'
-import { numberifyLong } from '@berty/store'
-import { conversationPushToggleState, pushAvailable } from '@berty/store/push'
+import { numberifyLong } from '@berty/utils/convert/long'
+import { conversationPushToggleState, pushAvailable } from '@berty/utils/notification/notif-push'
 
 import { UnifiedText } from '../shared-components/UnifiedText'
 

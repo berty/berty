@@ -13,9 +13,9 @@ import { useStyles } from '@berty/contexts/styles'
 import { useAppDispatch, useAppSelector, usePlaySound } from '@berty/hooks'
 import { ScreenFC, useNavigation } from '@berty/navigation'
 import { selectInvitationListMembers } from '@berty/redux/reducers/groupCreationForm.reducer'
-import { IOSOnlyKeyboardAvoidingView } from '@berty/rnutil/keyboardAvoiding'
 import { useThemeColor } from '@berty/store'
 import messengerMethodsHooks from '@berty/store/methods'
+import { IOSOnlyKeyboardAvoidingView } from '@berty/utils/react-native/keyboardAvoiding'
 
 const useStylesCreateGroup = () => {
 	const { padding, height, width, absolute, border, column, text } = useStyles()

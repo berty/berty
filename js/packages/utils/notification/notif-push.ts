@@ -1,17 +1,17 @@
-import { Alert, Platform } from 'react-native'
+import base64 from 'base64-js'
+import { Alert, NativeModules, Platform } from 'react-native'
 import { RESULTS } from 'react-native-permissions'
 
 import beapi from '@berty/api'
 import { GRPCError } from '@berty/grpc-bridge'
 import { ServiceClientType } from '@berty/grpc-bridge/welsh-clients.gen'
-import rnutil from '@berty/rnutil'
-import { PermissionType, getPermissions } from '@berty/rnutil/permissions'
-import {
-	numberifyLong,
-	requestAndPersistPushToken,
-	servicesAuthViaDefault,
-	serviceTypes,
-} from '@berty/store'
+import rnutil from '@berty/utils/react-native'
+import { PermissionType, getPermissions } from '@berty/utils/react-native/permissions'
+
+import { numberifyLong } from '../convert/long'
+import { servicesAuthViaDefault, serviceTypes } from '../remote-services/remote-services'
+
+const { PushTokenRequester } = NativeModules
 
 export const pushAvailable = Platform.OS !== 'web'
 export const pushFilteringAvailable = Platform.OS === 'android'
@@ -246,3 +246,79 @@ export const conversationPushToggleState = async ({
 		}
 	}
 }
+
+export const getSharedPushTokensForConversation = (
+	client: ServiceClientType<beapi.messenger.MessengerService>,
+	conversationPk: string | undefined | null,
+) => {
+	if (!conversationPk) {
+		return new Promise<beapi.messenger.ISharedPushToken[]>(resolve => {
+			resolve([])
+		})
+	}
+
+	return new Promise<beapi.messenger.ISharedPushToken[]>(resolve => {
+		let tokens = [] as beapi.messenger.ISharedPushToken[]
+		let subStream: { stop: () => void } | null
+
+		client
+			?.pushTokenSharedForConversation({ conversationPk: conversationPk })
+			.then(async stream => {
+				stream.onMessage((msg, err) => {
+					if (err) {
+						return
+					}
+
+					if (!msg || !msg.pushToken) {
+						return
+					}
+
+					tokens.push(msg.pushToken)
+				})
+
+				await stream.start()
+			})
+			.then(() => {
+				resolve(tokens)
+			})
+
+		return () => {
+			if (subStream !== null) {
+				subStream.stop()
+			}
+		}
+	})
+}
+
+export const requestAndPersistPushToken = (
+	protocolClient: ServiceClientType<beapi.protocol.ProtocolService>,
+) =>
+	new Promise((resolve, reject) => {
+		PushTokenRequester.request()
+			.then((responseJSON: string) => {
+				let response = JSON.parse(responseJSON)
+				protocolClient
+					.pushSetDeviceToken({
+						receiver: beapi.protocol.PushServiceReceiver.create({
+							tokenType:
+								Platform.OS === 'ios'
+									? beapi.push.PushServiceTokenType.PushTokenApplePushNotificationService
+									: beapi.push.PushServiceTokenType.PushTokenFirebaseCloudMessaging,
+							bundleId: response.bundleId,
+							token: new Uint8Array(base64.toByteArray(response.token)),
+						}),
+					})
+					.then(() => {
+						console.info(`Push token registered: ${responseJSON}`)
+						resolve(responseJSON)
+					})
+					.catch(err => {
+						console.warn(`Push token registration failed: ${err}`)
+						reject(err)
+					})
+			})
+			.catch((err: Error) => {
+				console.warn(`Push token request failed: ${err}`)
+				reject(err)
+			})
+	})

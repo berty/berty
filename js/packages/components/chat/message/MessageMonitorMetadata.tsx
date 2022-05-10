@@ -4,11 +4,10 @@ import { View } from 'react-native'
 
 import beapi from '@berty/api'
 import { useStyles } from '@berty/contexts/styles'
-import { pbDateToNum } from '@berty/store/convert'
 import { useThemeColor } from '@berty/store/hooks'
 import { InteractionMonitorMetadata } from '@berty/store/types.gen'
+import { pbDateToNum, timeFormat } from '@berty/utils/convert/time'
 
-import { timeFormat } from '../../helpers'
 import { UnifiedText } from '../../shared-components/UnifiedText'
 
 const eventMonitorTypes = beapi.protocol.MonitorGroup.TypeEventMonitor

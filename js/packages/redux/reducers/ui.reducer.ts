@@ -2,7 +2,8 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 import beapi from '@berty/api'
 import { ServiceClientType } from '@berty/grpc-bridge/welsh-clients.gen'
-import { NotificationsInhibitor, StreamInProgress } from '@berty/store'
+import { NotificationsInhibitor } from '@berty/utils/notification/notif-in-app'
+import { StreamInProgress } from '@berty/utils/protocol/progress.types'
 
 /**
  *

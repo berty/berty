@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux'
 
 import OnboardingWrapper from '@berty/components/onboarding/OnboardingWrapper'
 import SwiperCard from '@berty/components/onboarding/SwiperCard'
-import { useAppDispatch } from '@berty/hooks'
+import { useAccountServices, useAppDispatch } from '@berty/hooks'
 import { ScreenFC, useNavigation } from '@berty/navigation'
 import {
 	PersistentOptionsKeys,
@@ -13,12 +13,8 @@ import {
 	setPersistentOption,
 } from '@berty/redux/reducers/persistentOptions.reducer'
 import { selectProtocolClient } from '@berty/redux/reducers/ui.reducer'
-import {
-	servicesAuthViaDefault,
-	useAccountServices,
-	useNotificationsInhibitor,
-	useThemeColor,
-} from '@berty/store'
+import { useNotificationsInhibitor, useThemeColor } from '@berty/store'
+import { servicesAuthViaDefault } from '@berty/utils/remote-services/remote-services'
 
 const ServicesAuthBody: React.FC<{ next: () => void }> = ({ next }) => {
 	const persistentOptions = useSelector(selectPersistentOptions)

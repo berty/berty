@@ -4,13 +4,13 @@ import { useTranslation } from 'react-i18next'
 import { View, Modal, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native'
 
 import beapi from '@berty/api'
+import { ConversationAvatar } from '@berty/components/avatars'
+import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
 import { useAllConversations, useOneToOneContact, usePlaySound } from '@berty/hooks'
-import { useThemeColor, useMessengerClient, Maybe, prepareMediaBytes } from '@berty/store'
-
-import { ConversationAvatar } from '../../../../components/avatars'
-import { UnifiedText } from '../../../../components/shared-components/UnifiedText'
+import { useThemeColor, useMessengerClient, Maybe } from '@berty/store'
+import { prepareMediaBytes } from '@berty/utils/messenger/media'
 
 const Item: React.FC<{ conversation: beapi.messenger.IConversation; image: any }> = React.memo(
 	({ conversation, image }) => {

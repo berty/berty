@@ -22,14 +22,14 @@ import {
 	useThemeColor,
 	InteractionUserMessage,
 	ParsedInteraction,
-	pbDateToNum,
 	useMessengerClient,
 } from '@berty/store'
+import { pbDateToNum } from '@berty/utils/convert/time'
+import { getMediaTypeFromMedias } from '@berty/utils/messenger/media'
 
 import { MemberAvatar } from '../../avatars'
 import { useModal } from '../../providers/modal.provider'
 import { UnifiedText } from '../../shared-components/UnifiedText'
-import { getMediaTypeFromMedias } from '../../utils'
 import { MessageMenu } from '../modals/MessageMenu.modal'
 import { AudioMessage } from './AudioMessage'
 import { FileMessage } from './FileMessage'

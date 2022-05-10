@@ -7,8 +7,9 @@ import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
 import { ScreenFC } from '@berty/navigation'
-import { useMountEffect, useThemeColor, accountService } from '@berty/store'
+import { useMountEffect, useThemeColor } from '@berty/store'
 import messengerMethodsHooks from '@berty/store/methods'
+import { accountService } from '@berty/utils/accounts/accountService'
 
 export const SystemInfo: ScreenFC<'Settings.SystemInfo'> = ({ navigation }) => {
 	const { padding } = useStyles()

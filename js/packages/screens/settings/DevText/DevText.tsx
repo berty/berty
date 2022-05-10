@@ -1,9 +1,8 @@
 import React from 'react'
 import { ScrollView } from 'react-native'
 
+import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { ScreenFC } from '@berty/navigation'
-
-import { UnifiedText } from '../../../components/shared-components/UnifiedText'
 
 export const DevText: ScreenFC<'Settings.DevText'> = ({
 	route: {

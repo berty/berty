@@ -1,3 +1,4 @@
+import Long from 'long'
 import moment from 'moment'
 
 const getValidDateMoment = (date: number | Date): moment.Moment => {
@@ -49,17 +50,11 @@ const fmtTimestamp3 = (date: number | Date): string => {
 
 export const timeFormat = { fmtTimestamp1, fmtTimestamp2, fmtTimestamp3 }
 
-export const showNeedRestartNotification = (
-	showNotification: any,
-	restart: () => Promise<void>,
-	t: any,
-) => {
-	showNotification({
-		title: t('notification.need-restart.title'),
-		message: t('notification.need-restart.desc'),
-		onPress: async () => {
-			await restart()
-		},
-		additionalProps: { type: 'message' },
-	})
+export const pbDateToNum = (pbTimestamp?: number | Long | string | null): number => {
+	try {
+		return !pbTimestamp ? 0 : parseInt(pbTimestamp as string, 10)
+	} catch (e) {
+		console.warn(`Error parsing date ${pbTimestamp}; returning zero`)
+		return 0
+	}
 }

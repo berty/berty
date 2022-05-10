@@ -5,9 +5,11 @@ import {
 	selectPersistentOptions,
 } from '@berty/redux/reducers/persistentOptions.reducer'
 import { selectEmbedded, selectSelectedAccount } from '@berty/redux/reducers/ui.reducer'
-import { playSound, SoundKey, restart } from '@berty/store'
+import { restart } from '@berty/utils/accounts/accountUtils'
+import { SoundKey } from '@berty/utils/sound/sound.types'
+import { playSound } from '@berty/utils/sound/sounds'
 
-import { useAppDispatch, useAppSelector } from './core'
+import { useAppDispatch, useAppSelector } from './core.hooks'
 
 export const usePlaySound = () => {
 	const persistentOptions = useAppSelector(selectPersistentOptions)

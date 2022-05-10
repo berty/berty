@@ -11,7 +11,8 @@ import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
 import { useCreateNewAccount } from '@berty/hooks'
 import { ScreenFC, useNavigation } from '@berty/navigation'
-import { accountService, useNotificationsInhibitor, useThemeColor } from '@berty/store'
+import { useNotificationsInhibitor, useThemeColor } from '@berty/store'
+import { accountService } from '@berty/utils/accounts/accountService'
 
 const DefaultModeBody: React.FC = () => {
 	const { goBack } = useNavigation()

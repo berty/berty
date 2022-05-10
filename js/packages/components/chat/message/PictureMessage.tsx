@@ -6,8 +6,8 @@ import { useStyles } from '@berty/contexts/styles'
 import { useNavigation } from '@berty/navigation'
 import { selectProtocolClient } from '@berty/redux/reducers/ui.reducer'
 import { useThemeColor } from '@berty/store'
+import { getSource } from '@berty/utils/protocol/attachments'
 
-import { getSource } from '../../utils'
 import { ImageCounter } from '../ImageCounter'
 
 export const PictureMessage: React.FC<{

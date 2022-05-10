@@ -1,5 +1,5 @@
 import React from 'react'
-import { TextStyle, TouchableOpacity, ViewStyle } from 'react-native'
+import { TextProps, TextStyle, TouchableOpacity, ViewStyle } from 'react-native'
 
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
@@ -7,14 +7,16 @@ import { useThemeColor } from '@berty/store/hooks'
 
 import { UnifiedText } from '../shared-components/UnifiedText'
 
-const Button: React.FC<{
-	onPress: () => void
-	width?: number
-	status?: 'primary' | 'secondary'
-	disabled?: boolean
-	style?: ViewStyle | ViewStyle[]
-	textStyle?: TextStyle | TextStyle[]
-}> = ({
+const Button: React.FC<
+	{
+		onPress: () => void
+		width?: number
+		status?: 'primary' | 'secondary'
+		disabled?: boolean
+		style?: ViewStyle | ViewStyle[]
+		textStyle?: TextStyle | TextStyle[]
+	} & Omit<TextProps, 'style'>
+> = ({
 	children,
 	onPress,
 	width = 250,
@@ -22,6 +24,7 @@ const Button: React.FC<{
 	style = null,
 	disabled,
 	textStyle,
+	...textProps
 }) => {
 	const { margin, padding, text, border, column } = useStyles()
 	const { scaleSize } = useAppDimensions()
@@ -50,6 +53,7 @@ const Button: React.FC<{
 			onPress={onPress}
 		>
 			<UnifiedText
+				{...textProps}
 				style={[
 					text.align.center,
 					text.bold,

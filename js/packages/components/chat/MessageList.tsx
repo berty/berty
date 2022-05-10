@@ -7,6 +7,7 @@ import {
 	ListRenderItem,
 	View,
 	Platform,
+	ViewToken,
 } from 'react-native'
 
 import beapi from '@berty/api'
@@ -17,16 +18,11 @@ import {
 	useConversationMembersDict,
 	useConversation,
 } from '@berty/hooks'
-import {
-	fetchMore,
-	pbDateToNum,
-	ParsedInteraction,
-	useMessengerClient,
-	useThemeColor,
-} from '@berty/store'
+import { ParsedInteraction, useMessengerClient, useThemeColor } from '@berty/store'
+import { pbDateToNum } from '@berty/utils/convert/time'
 
 import { InfosChat } from '../InfosChat'
-import { ChatDate, updateStickyDate } from './common'
+import { ChatDate } from './ChatDate'
 import { InfosMultiMember } from './InfosMultiMember'
 import { Message } from './message'
 
@@ -66,6 +62,58 @@ const DateSeparator: React.FC<{
 const NoopComponent: React.FC = () => null
 
 const keyExtractor = (item: ParsedInteraction, index: number) => item.cid || `${index}`
+
+const updateStickyDate: (
+	setStickyDate: (date: number) => void,
+) => (info: { viewableItems: ViewToken[] }) => void =
+	(setStickyDate: (date: number) => void) =>
+	({ viewableItems }) => {
+		if (viewableItems && viewableItems.length) {
+			const minDate = viewableItems[viewableItems.length - 1]?.section?.title
+			if (minDate) {
+				setStickyDate(moment(minDate, 'DD/MM/YYYY').unix() * 1000)
+			}
+		}
+	}
+
+const fetchMore = async ({
+	setFetchingFrom,
+	setFetchedFirst,
+	fetchingFrom,
+	fetchedFirst,
+	oldestMessage,
+	client,
+	convPk,
+}: {
+	setFetchingFrom: (value: string | null) => void
+	setFetchedFirst: (value: boolean) => void
+	fetchingFrom: string | null
+	fetchedFirst: boolean
+	oldestMessage?: ParsedInteraction
+	client: any
+	convPk: string
+}) => {
+	if (fetchingFrom !== null || fetchedFirst) {
+		return
+	}
+
+	let refCid: string | undefined
+	if (oldestMessage) {
+		refCid = oldestMessage.cid!
+	}
+
+	setFetchingFrom(refCid || '')
+
+	return client
+		?.conversationLoad({
+			options: {
+				amount: 50,
+				conversationPk: convPk,
+				refCid: refCid,
+			},
+		})
+		.catch(() => setFetchedFirst(true))
+}
 
 export const MessageList: React.FC<{
 	id: string

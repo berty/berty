@@ -3,8 +3,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 
 import { selectProtocolClient } from '@berty/redux/reducers/ui.reducer'
-
-import { getSource } from '../utils'
+import { getSource } from '@berty/utils/protocol/attachments'
 
 type PlayerType = Player | undefined
 

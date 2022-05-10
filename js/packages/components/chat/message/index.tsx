@@ -9,9 +9,9 @@ import {
 	PersistentOptionsKeys,
 	selectPersistentOptions,
 } from '@berty/redux/reducers/persistentOptions.reducer'
-import { pbDateToNum, ParsedInteraction, useThemeColor } from '@berty/store'
+import { ParsedInteraction, useThemeColor } from '@berty/store'
+import { pbDateToNum, timeFormat } from '@berty/utils/convert/time'
 
-import { timeFormat } from '../../helpers'
 import { UnifiedText } from '../../shared-components/UnifiedText'
 import { MessageInvitation } from './MessageInvitation'
 import { MessageMonitorMetadata } from './MessageMonitorMetadata'

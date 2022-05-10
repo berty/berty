@@ -11,11 +11,11 @@ import {
 	removeActiveReplyInteraction,
 	selectActiveReplyInteraction,
 } from '@berty/redux/reducers/chatInputs.reducer'
-import { isTablet } from '@berty/rnutil/constants'
 import { Maybe, useThemeColor } from '@berty/store'
+import { getMediaTypeFromMedias } from '@berty/utils/messenger/media'
+import { isTablet } from '@berty/utils/react-native/constants'
 
 import { UnifiedText } from '../../shared-components/UnifiedText'
-import { getMediaTypeFromMedias } from '../../utils'
 
 const ReplyMessageBar: React.FC<{ convPK: string }> = ({ convPK }) => {
 	const { border, text } = useStyles()

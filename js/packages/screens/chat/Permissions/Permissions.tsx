@@ -21,9 +21,10 @@ import {
 	setPersistentOption,
 } from '@berty/redux/reducers/persistentOptions.reducer'
 import { selectSelectedAccount } from '@berty/redux/reducers/ui.reducer'
-import rnutil from '@berty/rnutil'
-import { PermissionType } from '@berty/rnutil/permissions'
-import { accountService, useThemeColor } from '@berty/store'
+import { useThemeColor } from '@berty/store'
+import { accountService } from '@berty/utils/accounts/accountService'
+import rnutil from '@berty/utils/react-native'
+import { PermissionType } from '@berty/utils/react-native/permissions'
 
 const animations: Record<PermissionType, AnimatedLottieViewProps['source']> = {
 	audio: audioLottie,

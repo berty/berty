@@ -9,7 +9,6 @@ import { withInAppNotification } from 'react-native-in-app-notification'
 import { useSelector } from 'react-redux'
 
 import beapi from '@berty/api'
-import { showNeedRestartNotification } from '@berty/components/helpers'
 import { DropDownPicker, Item } from '@berty/components/shared-components/DropDownPicker'
 import {
 	ButtonSetting,
@@ -49,14 +48,11 @@ import {
 	setDebugMode,
 	setStreamError,
 } from '@berty/redux/reducers/ui.reducer'
-import {
-	GlobalPersistentOptionsKeys,
-	storageGet,
-	storageSet,
-	useMessengerClient,
-	useThemeColor,
-} from '@berty/store'
+import { useMessengerClient, useThemeColor } from '@berty/store'
 import messengerMethodsHooks from '@berty/store/methods'
+import { storageGet, storageSet } from '@berty/utils/accounts/accountService'
+import { showNeedRestartNotification } from '@berty/utils/notification/notif-in-app'
+import { GlobalPersistentOptionsKeys } from '@berty/utils/persistent-options/types'
 
 //
 // DevTools

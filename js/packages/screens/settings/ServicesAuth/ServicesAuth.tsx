@@ -5,19 +5,18 @@ import { View, ScrollView } from 'react-native'
 import { withInAppNotification } from 'react-native-in-app-notification'
 import { useSelector } from 'react-redux'
 
-import { showNeedRestartNotification } from '@berty/components/helpers'
 import { ButtonSetting, FactionButtonSetting } from '@berty/components/shared-components'
 import { useStyles } from '@berty/contexts/styles'
-import { useRestart } from '@berty/hooks'
+import { useAccountServices, useRestart } from '@berty/hooks'
 import { ScreenFC } from '@berty/navigation'
 import { selectProtocolClient } from '@berty/redux/reducers/ui.reducer'
+import { useThemeColor } from '@berty/store'
+import { showNeedRestartNotification } from '@berty/utils/notification/notif-in-app'
 import {
-	useThemeColor,
-	servicesAuthViaURL,
-	servicesAuthViaDefault,
-	useAccountServices,
 	serviceNames,
-} from '@berty/store'
+	servicesAuthViaDefault,
+	servicesAuthViaURL,
+} from '@berty/utils/remote-services/remote-services'
 
 const BodyServicesAuth = withInAppNotification(({ showNotification }: any) => {
 	const { flex, padding, margin } = useStyles()

@@ -1,7 +1,11 @@
 import { createContext } from 'react'
 import { PermissionStatus, RESULTS } from 'react-native-permissions'
 
-import { defaultPermissionStatus, PermissionType, Permissions } from '@berty/rnutil/permissions'
+import {
+	defaultPermissionStatus,
+	PermissionType,
+	Permissions,
+} from '@berty/utils/react-native/permissions'
 
 const PermissionsContext = createContext<{
 	permissions: Permissions

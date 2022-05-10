@@ -19,10 +19,10 @@ import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
 import { useAccount } from '@berty/hooks'
 import { ScreenFC, useNavigation } from '@berty/navigation'
-import { checkPermissions } from '@berty/rnutil/checkPermissions'
-import { PermissionType } from '@berty/rnutil/permissions'
 import { useMessengerClient } from '@berty/store'
 import { useThemeColor } from '@berty/store/hooks'
+import { checkPermissions } from '@berty/utils/react-native/checkPermissions'
+import { PermissionType } from '@berty/utils/react-native/permissions'
 
 const QrCode: FC<{ size: number }> = ({ size }) => {
 	const client = useMessengerClient()

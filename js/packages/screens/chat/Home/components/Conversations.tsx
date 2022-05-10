@@ -5,7 +5,6 @@ import { ActivityIndicator, TouchableHighlight, View, ViewProps, ViewStyle } fro
 
 import beapi from '@berty/api'
 import { ConversationAvatar, HardcodedAvatar, HardcodedAvatarKey } from '@berty/components/avatars'
-import { timeFormat } from '@berty/components/helpers'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles, defaultStylesDeclaration } from '@berty/contexts/styles'
@@ -14,7 +13,8 @@ import { useNavigation } from '@berty/navigation'
 import { selectChatInputText } from '@berty/redux/reducers/chatInputs.reducer'
 import { selectChatInputIsSending } from '@berty/redux/reducers/chatInputsVolatile.reducer'
 import { Suggestion, Configuration } from '@berty/redux/reducers/persistentOptions.reducer'
-import { pbDateToNum, useThemeColor, ParsedInteraction } from '@berty/store'
+import { useThemeColor, ParsedInteraction } from '@berty/store'
+import { pbDateToNum, timeFormat } from '@berty/utils/convert/time'
 
 import { UnreadCount } from './UnreadCount'
 

@@ -19,10 +19,10 @@ import { useStyles } from '@berty/contexts/styles'
 import { WelshMessengerServiceClient } from '@berty/grpc-bridge/welsh-clients.gen'
 import { useAppDispatch } from '@berty/hooks'
 import { AppDispatch } from '@berty/redux/store'
-import rnutil from '@berty/rnutil'
-import { PermissionType } from '@berty/rnutil/permissions'
 import { useMessengerClient, useThemeColor } from '@berty/store'
-import { playSound } from '@berty/store/sounds'
+import rnutil from '@berty/utils/react-native'
+import { PermissionType } from '@berty/utils/react-native/permissions'
+import { playSound } from '@berty/utils/sound/sounds'
 
 import { UnifiedText } from '../../../shared-components/UnifiedText'
 import {

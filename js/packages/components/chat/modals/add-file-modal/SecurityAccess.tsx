@@ -6,8 +6,8 @@ import { RESULTS, openSettings } from 'react-native-permissions'
 
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
-import { PermissionType, getPermissions } from '@berty/rnutil/permissions'
 import { useThemeColor } from '@berty/store/hooks'
+import { PermissionType, getPermissions } from '@berty/utils/react-native/permissions'
 
 import { UnifiedText } from '../../../shared-components/UnifiedText'
 import { TabItems } from './types'

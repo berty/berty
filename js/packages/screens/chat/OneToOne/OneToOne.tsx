@@ -7,7 +7,7 @@ import AndroidKeyboardAdjust from 'react-native-android-keyboard-adjust'
 
 import beapi from '@berty/api'
 import { ContactAvatar } from '@berty/components/avatars'
-import { ChatDate } from '@berty/components/chat/common'
+import { ChatDate } from '@berty/components/chat/ChatDate'
 import { ChatFooter } from '@berty/components/chat/footer/ChatFooter'
 import { MessageList } from '@berty/components/chat/MessageList'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
@@ -15,8 +15,9 @@ import { useStyles } from '@berty/contexts/styles'
 import { useContact, useConversation } from '@berty/hooks'
 import { ScreenFC } from '@berty/navigation'
 import { CustomTitleStyle } from '@berty/navigation/stacks'
-import { IOSOnlyKeyboardAvoidingView } from '@berty/rnutil/keyboardAvoiding'
-import { useReadEffect, useNotificationsInhibitor, useThemeColor, pbDateToNum } from '@berty/store'
+import { useReadEffect, useNotificationsInhibitor, useThemeColor } from '@berty/store'
+import { pbDateToNum } from '@berty/utils/convert/time'
+import { IOSOnlyKeyboardAvoidingView } from '@berty/utils/react-native/keyboardAvoiding'
 
 //
 // Chat

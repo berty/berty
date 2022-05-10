@@ -44,15 +44,16 @@ import {
 	toggleFromRendezvous,
 	toggleFromStaticRelay,
 } from '@berty/redux/reducers/networkConfig.reducer'
-import { checkBlePermission } from '@berty/rnutil/checkPermissions'
-import { getPermissions, PermissionType } from '@berty/rnutil/permissions'
 import {
 	Accordion,
 	AccordionAddItem,
 	AccordionItem,
 	AccordionRef,
 } from '@berty/screens/onboarding/CustomModeSettings/components/Accordion'
-import { accountService, useMountEffect, useThemeColor } from '@berty/store'
+import { useMountEffect, useThemeColor } from '@berty/store'
+import { accountService } from '@berty/utils/accounts/accountService'
+import { checkBlePermission } from '@berty/utils/react-native/checkPermissions'
+import { getPermissions, PermissionType } from '@berty/utils/react-native/permissions'
 
 type AccordionRefsType = {
 	relay: RefObject<AccordionRef>

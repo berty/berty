@@ -21,8 +21,8 @@ import {
 	selectThemeSelected,
 	setTheme,
 } from '@berty/redux/reducers/theme.reducer'
-import { getPath } from '@berty/rnutil/getPath'
-import { useThemeColor, createAndSaveFile } from '@berty/store'
+import { useThemeColor } from '@berty/store'
+import { createAndSaveFile, getPath } from '@berty/utils/react-native/file-system'
 
 import { ThemeColorName } from './components/ThemeColorName'
 

@@ -10,15 +10,11 @@ import OnboardingWrapper from '@berty/components/onboarding/OnboardingWrapper'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useStyles } from '@berty/contexts/styles'
 import { ScreenFC } from '@berty/navigation'
-import rnutil from '@berty/rnutil'
-import { IOSOnlyKeyboardAvoidingView } from '@berty/rnutil/keyboardAvoiding'
-import { PermissionType } from '@berty/rnutil/permissions'
-import {
-	useMountEffect,
-	useNotificationsInhibitor,
-	useThemeColor,
-	accountService,
-} from '@berty/store'
+import { useMountEffect, useNotificationsInhibitor, useThemeColor } from '@berty/store'
+import { accountService } from '@berty/utils/accounts/accountService'
+import rnutil from '@berty/utils/react-native'
+import { IOSOnlyKeyboardAvoidingView } from '@berty/utils/react-native/keyboardAvoiding'
+import { PermissionType } from '@berty/utils/react-native/permissions'
 
 import { CreateAccountBox } from './components/CreateAccountBox'
 
@@ -34,7 +30,7 @@ const CreateAccountBody = () => {
 		accountService
 			.getUsername({})
 			.then(reply => reply && setDefaultName(reply.username))
-			.catch(err2 => console.warn('Failed to fetch username:', err2))
+			.catch(err => console.warn('Failed to fetch username:', err))
 	})
 
 	return (

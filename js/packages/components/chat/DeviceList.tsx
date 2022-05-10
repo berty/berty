@@ -7,10 +7,8 @@ import { berty } from '@berty/api/root.pb'
 import { ButtonDropDown } from '@berty/components/shared-components'
 import { useStyles } from '@berty/contexts/styles'
 import { selectClient } from '@berty/redux/reducers/ui.reducer'
-import {
-	getDevicesForConversationAndMember,
-	getSharedPushTokensForConversation,
-} from '@berty/store'
+import { getDevicesForConversationAndMember } from '@berty/utils/messenger/devices'
+import { getSharedPushTokensForConversation } from '@berty/utils/notification/notif-push'
 
 const UserDevicesList: React.FC<{ memberPk: string; conversationPk: string }> = ({
 	memberPk,

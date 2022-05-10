@@ -1,6 +1,6 @@
 import { Buffer } from 'buffer'
 
-import { accountService } from '@berty/store/accountService'
+import { accountService } from '@berty/utils/accounts/accountService'
 
 const setItem = async (key: string, value: string) => {
 	await accountService.appStoragePut({ key, value: Buffer.from(value, 'utf-8') })

@@ -7,9 +7,10 @@ import {
 	deleteAccount,
 	updateAccount,
 	switchAccount,
-} from '@berty/store/accountUtils'
+} from '@berty/utils/accounts/accountUtils'
 
-import { useAppDispatch, useAppSelector } from './core'
+import { useAppDispatch, useAppSelector } from './core.hooks'
+import { useAccount } from './messenger.hooks'
 
 export const useDeleteAccount = () => {
 	const dispatch = useAppDispatch()
@@ -45,4 +46,21 @@ export const useCreateNewAccount = () => {
 export const useUpdateAccount = () => {
 	const embedded = useAppSelector(selectEmbedded)
 	return useCallback((payload: any) => updateAccount(embedded, payload), [embedded])
+}
+
+export const useAccountServices = (): Array<beapi.messenger.IServiceToken> => {
+	const account = useAccount()
+	if (!account.serviceTokens) {
+		return []
+	}
+
+	return Object.values(
+		account.serviceTokens.reduce(
+			(tokens, t) => ({
+				...tokens,
+				[`${t.authenticationUrl}-${t.serviceType}`]: t,
+			}),
+			{},
+		),
+	)
 }

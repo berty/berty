@@ -14,12 +14,11 @@ import {
 	Maybe,
 	useMessengerClient,
 	useThemeColor,
-	pbDateToNum,
 	InteractionUserMessage,
 	ParsedInteraction,
 } from '@berty/store'
+import { pbDateToNum, timeFormat } from '@berty/utils/convert/time'
 
-import { timeFormat } from '../../helpers'
 import { UnifiedText } from '../../shared-components/UnifiedText'
 
 const READ_MORE_MESSAGE_LENGTH = 325

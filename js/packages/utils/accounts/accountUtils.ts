@@ -15,11 +15,11 @@ import {
 	setStreamError,
 } from '@berty/redux/reducers/ui.reducer'
 import store, { AppDispatch, persistor, resetAccountStore } from '@berty/redux/store'
+import { Maybe } from '@berty/store/hooks'
+import { storageKeyForAccount } from '@berty/store/utils'
 
+import { StreamInProgress } from '../protocol/progress.types'
 import { accountService, storageRemove } from './accountService'
-import { Maybe } from './hooks'
-import { StreamInProgress } from './types'
-import { storageKeyForAccount } from './utils'
 
 export const importAccount = async (embedded: boolean, path: string) => {
 	if (!embedded) {
