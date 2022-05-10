@@ -31,11 +31,11 @@ func (c *NodeGroup) parseConnections() error {
 	// would cause error in terraform otherwise
 	c.Name = strings.ReplaceAll(c.Name, " ", "_")
 
-	// var hasInternet bool
+	var hasInternet bool
 	for i := range c.Connections {
 		if strings.Contains(c.Connections[i].To, ConnTypeInternet) {
 			c.Connections[i].connType = ConnTypeInternet
-			// hasInternet = true
+			hasInternet = true
 		} else {
 			c.Connections[i].connType = ConnTypeLan
 		}
@@ -58,19 +58,19 @@ func (c *NodeGroup) parseConnections() error {
 		config.Attributes.Connections[c.Connections[i].To] = &c.Connections[i]
 	}
 
-	// if !hasInternet {
-	// supplementary connection for gRPC to talk to server
-	con := Connection{
-		To:            ConnTypeInternet,
-		Protocol:      tcp,
-		connType:      ConnTypeInternet,
-		infraToolOnly: true,
-	}
+	if !hasInternet {
+		// supplementary connection for gRPC to talk to daemon
+		var con = Connection{
+			To:            ConnTypeInternet,
+			Protocol:      tcp,
+			connType:      ConnTypeInternet,
+			infraToolOnly: true,
+		}
 
-	// prepend
-	c.Connections = append([]Connection{con}, c.Connections...)
-	config.Attributes.Connections[ConnTypeInternet] = &con
-	// }
+		// prepend
+		c.Connections = append(c.Connections, con)
+		config.Attributes.Connections[ConnTypeInternet] = &con
+	}
 
 	return nil
 }
@@ -175,7 +175,7 @@ func generateNewSubnetCIDR() string {
 
 	switch cidr {
 	case 16:
-		return fmt.Sprintf("%v.%v.%v.%v/%v", ip[0], ip[1], countSubnets(), 0, 24)
+		return fmt.Sprintf("%s.%s.%d.%d/%d", ip[0], ip[1], countSubnets(), 0, 24)
 	default:
 		return ""
 	}
