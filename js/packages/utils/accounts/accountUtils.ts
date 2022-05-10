@@ -16,10 +16,9 @@ import {
 } from '@berty/redux/reducers/ui.reducer'
 import store, { AppDispatch, persistor, resetAccountStore } from '@berty/redux/store'
 import { Maybe } from '@berty/store/hooks'
-import { storageKeyForAccount } from '@berty/store/utils'
 
 import { StreamInProgress } from '../protocol/progress.types'
-import { accountService, storageRemove } from './accountService'
+import { accountClient } from './accountClient'
 
 export const importAccount = async (embedded: boolean, path: string) => {
 	if (!embedded) {
@@ -79,7 +78,7 @@ export const updateAccount = async (embedded: boolean, payload: any) => {
 		if (payload.avatarCid) {
 			obj.avatarCid = payload.avatarCid
 		}
-		await accountService.updateAccount(obj)
+		await accountClient.updateAccount(obj)
 	} catch (e) {
 		console.warn('unable to update account', e)
 		return
@@ -119,8 +118,7 @@ export const deleteAccount = async (
 	let accounts: beapi.account.IAccountMetadata[] = []
 	if (selectedAccount !== null) {
 		// delete account service and account data storage
-		await accountService.deleteAccount({ accountId: selectedAccount })
-		await storageRemove(storageKeyForAccount(selectedAccount))
+		await accountClient.deleteAccount({ accountId: selectedAccount })
 		accounts = await refreshAccountList(embedded)
 	} else {
 		console.warn('state.selectedAccount is null and this should not occur')
@@ -173,7 +171,7 @@ export const closeAccountWithProgress = async (dispatch: AppDispatch) => {
 		console.log('flushed redux persistence')
 		persistor.pause()
 		console.log('paused redux persistence')
-		const stream = await accountService.closeAccountWithProgress({})
+		const stream = await accountClient.closeAccountWithProgress({})
 		stream.onMessage((msg, err) => {
 			if (err) {
 				if (err.EOF) {
@@ -209,7 +207,7 @@ const importAccountWithProgress = (path: string, dispatch: AppDispatch) =>
 		let metaMsg: beapi.account.ImportAccountWithProgress.Reply | null = null
 		let done = false
 		try {
-			const stream = await accountService.importAccountWithProgress({ backupPath: path })
+			const stream = await accountClient.importAccountWithProgress({ backupPath: path })
 			stream.onMessage(async (msg, _) => {
 				if (msg?.progress?.state !== 'done') {
 					const progress = msg?.progress
@@ -242,7 +240,7 @@ export const refreshAccountList = async (
 ): Promise<beapi.account.IAccountMetadata[]> => {
 	try {
 		if (embedded) {
-			const resp = await accountService.listAccounts({})
+			const resp = await accountClient.listAccounts({})
 
 			if (!resp.accounts) {
 				return []
@@ -273,12 +271,12 @@ const createAccount = async (
 	try {
 		let networkConfig
 		if (!config) {
-			const defaultConfig = await accountService.networkConfigGet({ accountId: '' })
+			const defaultConfig = await accountClient.networkConfigGet({ accountId: '' })
 			networkConfig = defaultConfig.currentConfig
 		} else {
 			networkConfig = config
 		}
-		resp = await accountService.createAccount({
+		resp = await accountClient.createAccount({
 			networkConfig,
 			sessionKind: Platform.OS === 'web' ? 'desktop-electron' : null,
 		})

@@ -18,7 +18,7 @@ import {
 } from '@berty/components/shared-components/SettingsButtons'
 import { useStyles } from '@berty/contexts/styles'
 import GoBridge from '@berty/go-bridge'
-import { Service } from '@berty/grpc-bridge'
+import { createServiceClient } from '@berty/grpc-bridge'
 import * as middleware from '@berty/grpc-bridge/middleware'
 import { bridge as rpcBridge } from '@berty/grpc-bridge/rpc'
 import {
@@ -50,7 +50,7 @@ import {
 } from '@berty/redux/reducers/ui.reducer'
 import { useMessengerClient, useThemeColor } from '@berty/store'
 import messengerMethodsHooks from '@berty/store/methods'
-import { storageGet, storageSet } from '@berty/utils/accounts/accountService'
+import { storageGet, storageSet } from '@berty/utils/accounts/accountClient'
 import { showNeedRestartNotification } from '@berty/utils/notification/notif-in-app'
 import { GlobalPersistentOptionsKeys } from '@berty/utils/persistent-options/types'
 
@@ -117,7 +117,11 @@ const NativeCallButton: React.FC = () => {
 	)
 	const colors = useThemeColor()
 
-	const messengerClient = Service(beapi.messenger.MessengerService, rpcBridge, messengerMiddlewares)
+	const messengerClient = createServiceClient(
+		beapi.messenger.MessengerService,
+		rpcBridge,
+		messengerMiddlewares,
+	)
 	const { t } = useTranslation()
 	let i = 0
 	return (

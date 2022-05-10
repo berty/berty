@@ -7,7 +7,7 @@ import beapi from '@berty/api'
 import { EventEmitterContext } from '@berty/contexts/eventEmitter.context'
 import { useConversationsDict } from '@berty/hooks'
 import { useNavigation } from '@berty/navigation'
-import { accountService } from '@berty/utils/accounts/accountService'
+import { accountClient } from '@berty/utils/accounts/accountClient'
 
 import NotificationBody from '../NotificationBody'
 
@@ -17,7 +17,7 @@ const PushNotificationBridge: React.FC = withInAppNotification(({ showNotificati
 
 	React.useEffect(() => {
 		const pushNotifListener = async (data: any) => {
-			const push = await accountService.pushReceive({
+			const push = await accountClient.pushReceive({
 				payload: data,
 				tokenType:
 					Platform.OS === 'ios'

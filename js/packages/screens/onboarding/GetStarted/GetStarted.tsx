@@ -11,7 +11,7 @@ import { ScreenFC } from '@berty/navigation'
 import { selectEmbedded } from '@berty/redux/reducers/ui.reducer'
 import { useNotificationsInhibitor, useThemeColor } from '@berty/store'
 import { importAccountFromDocumentPicker } from '@berty/utils/accounts/accountBackup'
-import { storageSet } from '@berty/utils/accounts/accountService'
+import { storageSet } from '@berty/utils/accounts/accountClient'
 import { GlobalPersistentOptionsKeys } from '@berty/utils/persistent-options/types'
 
 export const GetStarted: ScreenFC<'Onboarding.GetStarted'> = ({ navigation: { navigate } }) => {

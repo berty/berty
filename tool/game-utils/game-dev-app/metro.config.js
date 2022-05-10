@@ -8,9 +8,9 @@
 const path = require('path')
 
 const extraNodeModules = {
-	'mini-game': path.resolve(__dirname + '/../../../js/packages/mini-game'),
+	'berty-components': path.resolve(__dirname + '/../../../js/packages/components'),
 }
-const watchFolders = [path.resolve(__dirname + '/../../../js/packages/mini-game')]
+const watchFolders = [path.resolve(__dirname + '/../../../js/packages/components')]
 
 module.exports = {
 	transformer: {

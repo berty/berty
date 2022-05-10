@@ -9,7 +9,7 @@ import { useStyles } from '@berty/contexts/styles'
 import { ScreenFC } from '@berty/navigation'
 import { useMountEffect, useThemeColor } from '@berty/store'
 import messengerMethodsHooks from '@berty/store/methods'
-import { accountService } from '@berty/utils/accounts/accountService'
+import { accountClient } from '@berty/utils/accounts/accountClient'
 
 export const SystemInfo: ScreenFC<'Settings.SystemInfo'> = ({ navigation }) => {
 	const { padding } = useStyles()
@@ -23,7 +23,7 @@ export const SystemInfo: ScreenFC<'Settings.SystemInfo'> = ({ navigation }) => {
 	useMountEffect(() => {
 		const getNetworkConfig = async () => {
 			// with an empty accountId the function returns default config
-			const defaultConfig = await accountService.networkConfigGet({ accountId: '' })
+			const defaultConfig = await accountClient.networkConfigGet({ accountId: '' })
 			console.log('defaultConfig', defaultConfig.currentConfig)
 			if (defaultConfig.currentConfig) {
 				setNetworkConfig(defaultConfig?.currentConfig)

@@ -51,7 +51,7 @@ import {
 	AccordionRef,
 } from '@berty/screens/onboarding/CustomModeSettings/components/Accordion'
 import { useMountEffect, useThemeColor } from '@berty/store'
-import { accountService } from '@berty/utils/accounts/accountService'
+import { accountClient } from '@berty/utils/accounts/accountClient'
 import { checkBlePermission } from '@berty/utils/react-native/checkPermissions'
 import { getPermissions, PermissionType } from '@berty/utils/react-native/permissions'
 
@@ -673,7 +673,7 @@ export const CustomModeSettings: ScreenFC<'Onboarding.CustomModeSettings'> = () 
 	useMountEffect(() => {
 		const getNetworkConfig = async () => {
 			// with an empty accountId the function returns default config
-			const defaultConfig = await accountService.networkConfigGet({ accountId: '' })
+			const defaultConfig = await accountClient.networkConfigGet({ accountId: '' })
 			if (defaultConfig.currentConfig) {
 				dispatch(setCurrentNetworkConfig(defaultConfig?.currentConfig))
 			}

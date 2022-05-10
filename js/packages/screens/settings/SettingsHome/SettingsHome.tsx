@@ -26,7 +26,7 @@ import {
 } from '@berty/redux/reducers/networkConfig.reducer'
 import { selectProtocolClient, selectSelectedAccount } from '@berty/redux/reducers/ui.reducer'
 import { useMountEffect, useThemeColor, useMessengerClient } from '@berty/store'
-import { accountService } from '@berty/utils/accounts/accountService'
+import { accountClient } from '@berty/utils/accounts/accountClient'
 import { numberifyLong } from '@berty/utils/convert/long'
 import {
 	accountPushToggleState,
@@ -153,7 +153,7 @@ export const SettingsHome: ScreenFC<'Settings.Home'> = withInAppNotification(
 		// get network config of the account at the mount of the component
 		useMountEffect(() => {
 			const f = async () => {
-				const netConf = await accountService.networkConfigGet({
+				const netConf = await accountClient.networkConfigGet({
 					accountId: selectedAccount,
 				})
 				if (netConf.currentConfig) {

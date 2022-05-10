@@ -49,7 +49,7 @@ func (m *Manager) getNotificationManager() (notification.Manager, error) {
 	if m.Node.Messenger.DisableNotifications {
 		notificationManager = notification.NewLoggerManager(notifLogger)
 	} else {
-		notificationManager = notification.NewDesktopManager(notifLogger, pkger.Include("/assets/Buck_Berty_Icon_Card.svg"))
+		notificationManager = notification.NewDesktopManager(notifLogger, pkger.Include("/js/packages/assets/logo/buck_berty_icon_card.svg"))
 	}
 	m.Node.Messenger.notificationManager = notificationManager
 	return notificationManager, nil
