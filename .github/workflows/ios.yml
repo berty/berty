@@ -233,7 +233,7 @@ jobs:
           zip -r ${{ github.workspace }}/Berty\ Yolo.dummy-signed-ipa Payload
 
       - name: Upload the Archive
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           path: ${{ github.workspace }}/Berty Yolo.dummy-signed-ipa
           name: berty-yolo-${{github.sha}}.dummy-signed-ipa
