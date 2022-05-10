@@ -937,10 +937,6 @@ func (h *EventHandler) handleAppMessageUserMessage(tx *messengerdb.DBWrapper, i 
 }
 
 func (h *EventHandler) handleAppMessageSetUserInfo(tx *messengerdb.DBWrapper, i *mt.Interaction, amPayload proto.Message) (*mt.Interaction, bool, error) {
-	if len(i.GetPayload()) == 0 {
-		return nil, false, ErrNilPayload
-	}
-
 	payload := amPayload.(*mt.AppMessage_SetUserInfo)
 
 	if i.GetConversation().GetType() == mt.Conversation_ContactType {
