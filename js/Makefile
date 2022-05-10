@@ -28,8 +28,8 @@ xcodegen_ver = $(shell cat ios/XcodeGen.version)
 required_java_ver = 18
 minimum_ios_ver = 12.0
 minimum_android_ver = 21
-ios_gomobile_cache=ios/.gomobile-cache
-android_gomobile_cache=android/.gomobile-cache
+ios_gomobile_cache="$(PWD)/ios/.gomobile-cache"
+android_gomobile_cache="$(PWD)/android/.gomobile-cache"
 
 ## if (PWD != Makefile directory) then exit
 
@@ -382,11 +382,10 @@ _write_gen_sum:
 #### iOS
 
 ios/Frameworks/Bertybridge.xcframework: $(bridge_src)
-	mkdir -p ios/.gomobile-cache
 	cd .. && $(GO) mod download
 	cd .. && $(GO) install golang.org/x/mobile/cmd/gobind
 	cd .. && ANDROID_HOME= ANDROID_NDK_HOME= $(GO) run golang.org/x/mobile/cmd/gomobile init
-	mkdir -p ios/Frameworks
+	mkdir -p $(ios_gomobile_cache) ios/Frameworks
 	cd .. && \
 		PATH="$(PATH):`go env GOPATH`/bin" \
 		CGO_CPPFLAGS=-DHAVE_GETHOSTUUID=0 \
@@ -395,7 +394,7 @@ ios/Frameworks/Bertybridge.xcframework: $(bridge_src)
 			-o js/$@ \
 			-v $(ext_ldflags) \
 			$(GO_TAGS) \
-			-cache "$(PWD)/ios/.gomobile-cache/bertybridge" \
+			-cache $(ios_gomobile_cache)/bertybridge \
 			-target ios \
 			-iosversion $(minimum_ios_ver) \
 			./go/framework/bertybridge
@@ -403,11 +402,10 @@ ios/Frameworks/Bertybridge.xcframework: $(bridge_src)
 	cd .. && $(GO) mod tidy
 
 ios/Frameworks/Bertypush.xcframework: $(bridge_src)
-	mkdir -p ios/.gomobile-cache
 	cd .. && $(GO) mod download
 	cd .. && $(GO) install golang.org/x/mobile/cmd/gobind
 	cd .. && ANDROID_HOME= ANDROID_NDK_HOME= $(GO) run golang.org/x/mobile/cmd/gomobile init
-	mkdir -p ios/Frameworks
+	mkdir -p $(ios_gomobile_cache) ios/Frameworks
 	cd .. && \
 		PATH="$(PATH):`go env GOPATH`/bin" \
 		CGO_CPPFLAGS=-DHAVE_GETHOSTUUID=0 \
@@ -416,7 +414,7 @@ ios/Frameworks/Bertypush.xcframework: $(bridge_src)
 			-o js/$@ \
 			-v $(ext_ldflags) \
 			$(GO_TAGS) \
-			-cache "$(PWD)/ios/.gomobile-cache/bertypush" \
+			-cache $(ios_gomobile_cache)/bertypush \
 			-target ios \
 			-iosversion $(minimum_ios_ver) \
 			./go/framework/bertypush
@@ -463,12 +461,12 @@ ios/vendor/bundle: ios/Gemfile
 android/libs/gobridge.aar: $(bridge_src)
 	cd .. && $(GO) mod download
 	cd .. && $(GO) run golang.org/x/mobile/cmd/gomobile init
-	mkdir -p android/libs
+	mkdir -p $(android_gomobile_cache) android/libs
 	cd .. && GO111MODULE=on $(GO) run golang.org/x/mobile/cmd/gomobile bind \
 		-o js/$@ \
 		-v $(ext_ldflags) \
 		$(GO_TAGS) \
-		-cache "$(PWD)/android/.gomobile-cache" \
+		-cache $(android_gomobile_cache) \
 		-target android \
 		-androidapi $(minimum_android_ver) \
 		./go/framework/bertybridge
