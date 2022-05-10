@@ -101,7 +101,7 @@ require (
 	golang.org/x/net v0.0.0-20210813160813-60bc85c4be6d
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c
 	golang.org/x/text v0.3.7
-	golang.org/x/tools v0.1.7
+	golang.org/x/tools v0.1.8-0.20211022200916-316ba0b74098
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1
 	google.golang.org/grpc v1.42.0
 	google.golang.org/grpc/examples v0.0.0-20200922230038-4e932bbcb079
@@ -129,6 +129,6 @@ replace (
 	github.com/multiformats/go-multiaddr => github.com/berty/go-multiaddr v0.4.2-0.20220126184027-53e56f02fb68 // tmp, required for Android SDK30
 	github.com/mutecomm/go-sqlcipher/v4 => github.com/berty/go-sqlcipher/v4 v4.0.0-20211104165006-2c524b646cf0
 	github.com/peterbourgon/ff/v3 => github.com/moul/ff/v3 v3.0.1 // temporary, see https://github.com/peterbourgon/ff/pull/67, https://github.com/peterbourgon/ff/issues/68
-	golang.org/x/mobile => github.com/aeddi/mobile v0.0.3-silicon // temporary, see https://github.com/golang/mobile/pull/58
+	golang.org/x/mobile => github.com/aeddi/mobile v0.0.4 // temporary, see https://github.com/golang/mobile/pull/58
 
 )
