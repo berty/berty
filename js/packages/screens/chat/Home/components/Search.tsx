@@ -5,7 +5,6 @@ import { EdgeInsets } from 'react-native-safe-area-context'
 
 import beapi from '@berty/api'
 import { ContactAvatar, ConversationAvatar } from '@berty/components/avatars'
-import { HintBody } from '@berty/components/shared-components'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useStyles } from '@berty/contexts/styles'
 import { useContact, useConversationInteractions, useConversation } from '@berty/hooks'
@@ -13,6 +12,8 @@ import { useNavigation } from '@berty/navigation'
 import { useThemeColor, ParsedInteraction } from '@berty/store'
 import { pbDateToNum, timeFormat } from '@berty/utils/convert/time'
 import { parseInteraction } from '@berty/utils/messenger/interactions'
+
+import { HintBody } from './HintBody'
 
 // Styles
 

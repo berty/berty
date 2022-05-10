@@ -2,12 +2,11 @@ import { Icon } from '@ui-kitten/components'
 import React from 'react'
 import { View } from 'react-native'
 
+import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
 import { useThemeColor } from '@berty/store/hooks'
 import messengerMethodsHooks from '@berty/store/methods'
-
-import { UnifiedText } from './UnifiedText'
 
 const useStylesHint = () => {
 	const { text, opacity, margin } = useStyles()

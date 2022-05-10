@@ -1,12 +1,27 @@
 import React, { ComponentProps } from 'react'
-import { TextStyle, TouchableOpacity, View } from 'react-native'
+import { TextStyle, TouchableOpacity, View, ViewProps } from 'react-native'
 
 import { useStyles } from '@berty/contexts/styles'
 import { useThemeColor } from '@berty/store/hooks'
 
-import { Card } from '../shared-components/Card'
+import Button from '../shared-components/Button'
 import { UnifiedText } from '../shared-components/UnifiedText'
-import Button from './Button'
+
+const Card: React.FC<ViewProps> = ({ style, children, ...props }) => (
+	<View
+		{...props}
+		style={[
+			{
+				borderRadius: 20,
+				padding: 16,
+				margin: 16,
+			},
+			style,
+		]}
+	>
+		<>{children}</>
+	</View>
+)
 
 const SwiperCard: React.FC<{
 	title: string
