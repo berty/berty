@@ -20,7 +20,7 @@ import {
 } from '@berty/redux/reducers/theme.reducer'
 import {
 	addNotificationInhibitor,
-	MESSENGER_APP_STATE,
+	MessengerAppState,
 	removeNotificationInhibitor,
 	selectAppState,
 	selectMessengerClient,
@@ -89,10 +89,7 @@ export const useThemeColor = (): ThemeType => {
 	const themeCollection = useSelector(selectThemeCollection)
 
 	return React.useMemo(() => {
-		if (
-			!Object.entries(themeCollection).length ||
-			appState === MESSENGER_APP_STATE.ONBOARDING_READY
-		) {
+		if (!Object.entries(themeCollection).length || appState === MessengerAppState.ONBOARDING) {
 			return colors
 		}
 

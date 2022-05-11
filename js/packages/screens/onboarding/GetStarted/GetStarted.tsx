@@ -61,7 +61,12 @@ export const GetStarted: ScreenFC<'Onboarding.GetStarted'> = ({ navigation: { na
 						<Button
 							status='secondary'
 							onPress={async () => {
-								await importAccountFromDocumentPicker()
+								const filePath = await importAccountFromDocumentPicker()
+								if (!filePath) {
+									console.warn("imported file doesn't exist")
+									return
+								}
+								navigate('Account.Importing', { filePath })
 							}}
 						>
 							{t('onboarding.getstarted.import-button')}

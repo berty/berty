@@ -19,7 +19,7 @@ import persistentOptionsReducer, {
 	sliceName as persistentOptionsSliceName,
 } from './reducers/persistentOptions.reducer'
 import themeReducer, { sliceName as themeSliceName } from './reducers/theme.reducer'
-import uiReducer from './reducers/ui.reducer'
+import uiReducer, { initialState as uiInitialState } from './reducers/ui.reducer'
 
 const persistConfig = {
 	key: 'persistStore',
@@ -52,7 +52,16 @@ export const resetAccountStore = () => ({ type: 'RESET' })
 
 const resettableReducer: typeof persistedReducer = (state, action, ...other) => {
 	if (action.type === 'RESET') {
-		return persistedReducer(undefined, action)
+		return persistedReducer(
+			{
+				ui: {
+					...uiInitialState,
+					appState: state?.ui.appState || uiInitialState.appState,
+					selectedAccount: state?.ui.selectedAccount || uiInitialState.selectedAccount,
+				},
+			} as any,
+			action,
+		)
 	}
 	return persistedReducer(state, action, ...other)
 }

@@ -3,7 +3,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import beapi from '@berty/api'
 import { ServiceClientType } from '@berty/grpc-bridge/welsh-clients.gen'
 import { NotificationsInhibitor } from '@berty/utils/notification/notif-in-app'
-import { StreamInProgress } from '@berty/utils/protocol/progress.types'
+import { StreamWithProgressType } from '@berty/utils/protocol/progress.types'
 
 /**
  *
@@ -12,7 +12,7 @@ import { StreamInProgress } from '@berty/utils/protocol/progress.types'
  */
 
 export type UiState = {
-	appState: MESSENGER_APP_STATE[keyof MESSENGER_APP_STATE]
+	appState: MessengerAppState
 	// variable to know (at the opening step) if the user create a new account or not
 	isNewAccount: boolean
 	selectedAccount: string | null
@@ -20,9 +20,10 @@ export type UiState = {
 	// clients
 	messengerClient: ServiceClientType<beapi.messenger.MessengerService> | null
 	protocolClient: ServiceClientType<beapi.protocol.ProtocolService> | null
+	clearClients: () => Promise<void>
 	// variable to have more infos on streams
 	streamError: any
-	streamInProgress: StreamInProgress | null
+	streamInProgress: StreamWithProgressType | null
 	// notifications inhibitors to know if in the current screen an in-app notification has to be shown or not
 	notificationsInhibitors: NotificationsInhibitor[]
 	// address of the berty daemon (now static, but changeable in devtools)
@@ -33,37 +34,24 @@ export type UiState = {
 	handledLink: boolean
 }
 
-export enum MESSENGER_APP_STATE {
+export enum MessengerAppState {
 	INIT = 'init',
-	TO_OPEN = 'toOpen',
 	OPENING = 'opening',
-	SETUP_FINISHED = 'setupFinished',
-	ONBOARDING_READY = 'onBoardingReady',
+	ONBOARDING = 'onBoarding',
 	READY = 'ready',
-	STREAM = 'stream',
+}
+
+const expectedAppStateChanges: {
+	[key: string]: MessengerAppState[]
+} = {
+	[MessengerAppState.INIT]: [MessengerAppState.OPENING, MessengerAppState.ONBOARDING],
+	[MessengerAppState.OPENING]: [MessengerAppState.READY],
+	[MessengerAppState.ONBOARDING]: [MessengerAppState.OPENING],
+	[MessengerAppState.READY]: [MessengerAppState.INIT, MessengerAppState.ONBOARDING],
 }
 
 // function to see expected changes from a state to an other
-const expectedAppStateChanges: {
-	[key: string]: MESSENGER_APP_STATE[keyof MESSENGER_APP_STATE][]
-} = {
-	[MESSENGER_APP_STATE.INIT]: [MESSENGER_APP_STATE.TO_OPEN, MESSENGER_APP_STATE.ONBOARDING_READY],
-	[MESSENGER_APP_STATE.TO_OPEN]: [MESSENGER_APP_STATE.OPENING],
-	[MESSENGER_APP_STATE.OPENING]: [
-		MESSENGER_APP_STATE.SETUP_FINISHED,
-		MESSENGER_APP_STATE.READY,
-		MESSENGER_APP_STATE.STREAM,
-	],
-	[MESSENGER_APP_STATE.SETUP_FINISHED]: [MESSENGER_APP_STATE.READY],
-	[MESSENGER_APP_STATE.ONBOARDING_READY]: [MESSENGER_APP_STATE.TO_OPEN],
-	[MESSENGER_APP_STATE.READY]: [MESSENGER_APP_STATE.STREAM],
-	[MESSENGER_APP_STATE.STREAM]: [MESSENGER_APP_STATE.OPENING],
-}
-
-const isExpectedAppStateChange = (
-	former: MESSENGER_APP_STATE[keyof MESSENGER_APP_STATE],
-	next: MESSENGER_APP_STATE[keyof MESSENGER_APP_STATE],
-): boolean => {
+const isExpectedAppStateChange = (former: MessengerAppState, next: MessengerAppState): boolean => {
 	console.log({ former, next })
 	if (former === next) {
 		return true
@@ -83,13 +71,14 @@ const makeRoot = <T>(val: T) => ({
 	[sliceName]: val,
 })
 
-const initialState: UiState = {
-	appState: MESSENGER_APP_STATE.INIT,
+export const initialState: UiState = {
+	appState: MessengerAppState.INIT,
 	isNewAccount: false,
 	selectedAccount: null,
 	accounts: [],
 	messengerClient: null,
 	protocolClient: null,
+	clearClients: async () => {},
 	streamError: null,
 	streamInProgress: null,
 	notificationsInhibitors: [],
@@ -107,10 +96,7 @@ type LocalRootState = typeof rootInitialState
  *
  */
 
-const changeAppState = (
-	state: UiState,
-	newAppState: MESSENGER_APP_STATE[keyof MESSENGER_APP_STATE],
-) => {
+const changeAppState = (state: UiState, newAppState: MessengerAppState) => {
 	if (!isExpectedAppStateChange(state.appState, newAppState)) {
 		console.warn(`unexpected app state change from ${state.appState} to ${newAppState}`)
 	}
@@ -135,7 +121,7 @@ const slice = createSlice({
 		setDaemonAddress(state: UiState, { payload: { value } }: PayloadAction<{ value: string }>) {
 			state.daemonAddress = value
 		},
-		setStateClients(
+		setClients(
 			state: UiState,
 			{
 				payload,
@@ -147,25 +133,29 @@ const slice = createSlice({
 			state.messengerClient = payload.messengerClient || state.messengerClient
 			state.protocolClient = payload.protocolClient || state.protocolClient
 		},
-		setNextAccount(state: UiState, { payload }: PayloadAction<string | null | undefined>) {
+		setClearClients(state: UiState, { payload }: PayloadAction<() => Promise<void>>) {
+			state.clearClients = payload
+		},
+		setSelectedAccount(state: UiState, { payload }: PayloadAction<string | null | undefined>) {
+			state.selectedAccount = payload || state.selectedAccount
+		},
+		resetStateBeforeOpening(state: UiState) {
+			// reset state to initialState except accounts
 			Object.keys(initialState).map(k => {
-				if (['accounts'].indexOf(k) === -1) {
-					//@ts-ignore
-					state[k as keyof UiState] = initialState[k as keyof UiState]
+				if (k !== 'accounts' && k !== 'isNewAccount' && k !== 'selectedAccount') {
+					// @ts-ignore
+					state[k] = initialState[k]
 				}
 			})
-			state.selectedAccount = payload || state.selectedAccount
-			changeAppState(state, MESSENGER_APP_STATE.TO_OPEN)
 		},
 		setStateOpening(state: UiState) {
-			state.appState = MESSENGER_APP_STATE.OPENING
-		},
-		setStateSetupFinished(state: UiState) {
-			state.appState = MESSENGER_APP_STATE.SETUP_FINISHED
+			changeAppState(state, MessengerAppState.OPENING)
 		},
 		setStateReady(state: UiState) {
-			state.isNewAccount = false
-			state.appState = MESSENGER_APP_STATE.READY
+			changeAppState(state, MessengerAppState.READY)
+		},
+		setIsNewAccount(state: UiState, { payload }: PayloadAction<boolean>) {
+			state.isNewAccount = payload
 		},
 		setAccounts(state: UiState, { payload }: PayloadAction<beapi.account.IAccountMetadata[]>) {
 			state.accounts = payload
@@ -192,23 +182,24 @@ const slice = createSlice({
 			)
 		},
 		setCreatedAccount(state: UiState, { payload }: PayloadAction<{ accountId: string | null }>) {
-			state.selectedAccount = payload?.accountId
 			state.isNewAccount = true
-			state.appState = MESSENGER_APP_STATE.TO_OPEN
+			state.selectedAccount = payload?.accountId
 		},
-		setStateStreamInProgress(state: UiState, { payload }: PayloadAction<StreamInProgress | null>) {
-			state.appState = MESSENGER_APP_STATE.STREAM
+		setStateStreamInProgress(
+			state: UiState,
+			{ payload }: PayloadAction<StreamWithProgressType | null>,
+		) {
+			// state.appState = MessengerAppState.STREAM
 			state.streamInProgress = payload
 		},
-		setStateStreamDone(state: UiState) {
-			state.appState = MESSENGER_APP_STATE.OPENING
+		setStreamDone(state) {
 			state.streamInProgress = null
 		},
 		setStreamError(state: UiState, { payload: { error } }: PayloadAction<{ error: unknown }>) {
 			state.streamError = error
 		},
-		setStateOnBoardingReady(state: UiState) {
-			state.appState = MESSENGER_APP_STATE.ONBOARDING_READY
+		setStateOnBoarding(state: UiState) {
+			state.appState = MessengerAppState.ONBOARDING
 		},
 		setDebugMode(state: UiState, { payload }: PayloadAction<boolean>) {
 			state.debugMode = payload
@@ -228,53 +219,47 @@ const slice = createSlice({
 const selectSlice = (state: LocalRootState) => state[sliceName]
 
 export const selectMessengerIsNotReady = (state: LocalRootState): boolean =>
-	selectSlice(state).appState === MESSENGER_APP_STATE.INIT ||
-	selectSlice(state).appState === MESSENGER_APP_STATE.TO_OPEN ||
-	selectSlice(state).appState === MESSENGER_APP_STATE.OPENING
+	selectSlice(state).appState === MessengerAppState.INIT
 
-export const selectAppState = (
-	state: LocalRootState,
-): MESSENGER_APP_STATE[keyof MESSENGER_APP_STATE] => selectSlice(state).appState
+export const selectAppState = (state: LocalRootState) => selectSlice(state).appState
 
-export const selectSelectedAccount = (state: LocalRootState): string | null =>
-	selectSlice(state).selectedAccount
+export const selectSelectedAccount = (state: LocalRootState) => selectSlice(state).selectedAccount
 
-export const selectMessengerClient = (
-	state: LocalRootState,
-): ServiceClientType<beapi.messenger.MessengerService> | null => selectSlice(state).messengerClient
+export const selectMessengerClient = (state: LocalRootState) => selectSlice(state).messengerClient
 
-export const selectProtocolClient = (
-	state: LocalRootState,
-): ServiceClientType<beapi.protocol.ProtocolService> | null => selectSlice(state).protocolClient
+export const selectProtocolClient = (state: LocalRootState) => selectSlice(state).protocolClient
 
-export const selectDaemonAddress = (state: LocalRootState): string =>
-	selectSlice(state).daemonAddress
+export const selectClearClients = (state: LocalRootState) => selectSlice(state).clearClients
 
-export const selectDebugMode = (state: LocalRootState): boolean => selectSlice(state).debugMode
+export const selectDaemonAddress = (state: LocalRootState) => selectSlice(state).daemonAddress
 
-export const selectStreamInProgress = (state: LocalRootState): StreamInProgress | null =>
-	selectSlice(state).streamInProgress
+export const selectDebugMode = (state: LocalRootState) => selectSlice(state).debugMode
 
-export const selectStreamError = (state: LocalRootState): any => selectSlice(state).streamError
+export const selectStreamInProgress = (state: LocalRootState) => selectSlice(state).streamInProgress
 
-export const selectNotificationsInhibitors = (state: LocalRootState): NotificationsInhibitor[] =>
+export const selectStreamError = (state: LocalRootState) => selectSlice(state).streamError
+
+export const selectNotificationsInhibitors = (state: LocalRootState) =>
 	selectSlice(state).notificationsInhibitors
 
-export const selectAccounts = (state: LocalRootState): beapi.account.IAccountMetadata[] =>
-	selectSlice(state).accounts
+export const selectAccounts = (state: LocalRootState) => selectSlice(state).accounts
 
 export const selectHandledLink = (state: LocalRootState) => selectSlice(state).handledLink
 
+export const selectIsNewAccount = (state: LocalRootState) => selectSlice(state).isNewAccount
+
 export const {
-	setStateOpening,
-	setStateSetupFinished,
-	setStateClients,
-	setNextAccount,
-	setStateReady,
+	setClients,
+	setClearClients,
+	setSelectedAccount,
+	resetStateBeforeOpening,
+	setIsNewAccount,
 	setCreatedAccount,
 	setStateStreamInProgress,
-	setStateStreamDone,
-	setStateOnBoardingReady,
+	setStreamDone,
+	setStateOnBoarding,
+	setStateOpening,
+	setStateReady,
 	setDebugMode,
 	setStreamError,
 	setAccounts,

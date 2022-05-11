@@ -25,7 +25,7 @@ import { UnifiedText } from '../shared-components/UnifiedText'
 
 const { RootDir } = NativeModules
 
-const accountService = createServiceClient(beapi.account.AccountService, rpcBridge, null)
+const accountClient = createServiceClient(beapi.account.AccountService, rpcBridge, null)
 
 const styles = StyleSheet.create({
 	safeViewContainer: {
@@ -142,7 +142,7 @@ const fetchProtoAccountList = (
 	t: any,
 ) => {
 	const f = async () => {
-		const resp = await accountService.listAccounts({})
+		const resp = await accountClient.listAccounts({})
 
 		if (!resp) {
 			updateAccountProtoEntries({})
@@ -193,14 +193,14 @@ const accountAction = async (
 				t('debug.inspector.accounts.action-delete.action-account-manager-confirm'),
 				() => {
 					// close account if necessary
-					accountService
+					accountClient
 						.closeAccount({})
 						.catch((err: Error) => {
 							console.warn(err)
 							Alert.alert(t('debug.inspector.accounts.action-delete.error-close'), err.message)
 						})
 						// delete account
-						.then(() => accountService.deleteAccount({ accountId: accountId }))
+						.then(() => accountClient.deleteAccount({ accountId: accountId }))
 						.then(() => Alert.alert(t('debug.inspector.accounts.action-delete.success-feedback')))
 						.catch((err: Error) => {
 							console.warn(err)

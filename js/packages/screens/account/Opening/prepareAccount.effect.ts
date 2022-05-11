@@ -1,12 +1,12 @@
 import { Dictionary } from '@reduxjs/toolkit'
-import i18next from 'i18next'
 
 import beapi from '@berty/api'
-import { ServiceClientType } from '@berty/grpc-bridge/welsh-clients.gen'
-import { detectOSLanguage } from '@berty/i18n'
-import { MessengerState } from '@berty/redux/reducers/messenger.reducer'
+import {
+	ServiceClientType,
+	WelshMessengerServiceClient,
+} from '@berty/grpc-bridge/welsh-clients.gen'
 import { resetTheme } from '@berty/redux/reducers/theme.reducer'
-import { setStateReady, setStateSetupFinished, UiState } from '@berty/redux/reducers/ui.reducer'
+import { setIsNewAccount, setStateReady } from '@berty/redux/reducers/ui.reducer'
 import { AppDispatch } from '@berty/redux/store'
 import { storageGet, storageRemove } from '@berty/utils/accounts/accountClient'
 import { updateAccount } from '@berty/utils/accounts/accountUtils'
@@ -33,22 +33,18 @@ const updateAccountOnClients = async (
 	selectedAccount: string | null,
 	account: beapi.messenger.IAccount | null | undefined,
 ) => {
-	try {
-		// remove the displayName value that was set at the creation of the account
-		const displayName = await storageGet(GlobalPersistentOptionsKeys.DisplayName)
-		await storageRemove(GlobalPersistentOptionsKeys.DisplayName)
-		if (displayName) {
-			// update account in messenger client
-			await messengerClient?.accountUpdate({ displayName })
-			// update account in account client
-			await updateAccount({
-				accountName: displayName,
-				accountId: selectedAccount,
-				publicKey: account?.publicKey,
-			})
-		}
-	} catch (err) {
-		console.warn(err)
+	// remove the displayName value that was set at the creation of the account
+	const displayName = await storageGet(GlobalPersistentOptionsKeys.DisplayName)
+	await storageRemove(GlobalPersistentOptionsKeys.DisplayName)
+	if (displayName) {
+		// update account in messenger client
+		await messengerClient?.accountUpdate({ displayName })
+		// update account in account client
+		await updateAccount({
+			accountName: displayName,
+			accountId: selectedAccount,
+			publicKey: account?.publicKey,
+		})
 	}
 
 	// TODO: fix flow of asking permissions
@@ -58,26 +54,28 @@ const updateAccountOnClients = async (
 	// }
 }
 
-export const finishPreparingAccount = async (
-	ui: UiState,
-	messenger: MessengerState,
+export const prepareAccount = async (
+	isNewAccount: boolean,
+	messengerClient: WelshMessengerServiceClient | null,
+	selectedAccount: string | null,
+	account: beapi.messenger.IAccount,
 	conversations: Dictionary<beapi.messenger.IConversation>,
 	dispatch: AppDispatch,
+	navigate: any,
 ) => {
-	try {
-		await closeConvos(ui.messengerClient, conversations)
+	// messenger service keep conversations open on restart, so we close all after open app
+	await closeConvos(messengerClient, conversations)
 
-		await i18next.changeLanguage(detectOSLanguage())
-
-		if (ui.isNewAccount) {
-			await updateAccountOnClients(ui.messengerClient, ui.selectedAccount, messenger.account)
-			// reset ui theme
-			dispatch(resetTheme())
-			dispatch(setStateSetupFinished())
-		} else {
-			dispatch(setStateReady())
-		}
-	} catch (err) {
-		console.warn(err)
+	console.log('prepare Account isNewAccount', isNewAccount)
+	if (isNewAccount) {
+		await updateAccountOnClients(messengerClient, selectedAccount, account)
+		// reset ui theme
+		dispatch(resetTheme())
+		dispatch(setStateReady())
+		navigate('Onboarding.SetupFinished')
+	} else {
+		dispatch(setIsNewAccount(false))
+		dispatch(setStateReady())
+		navigate('Chat.Home')
 	}
 }

@@ -103,7 +103,6 @@ const App: React.FC = () => {
 			<AppDimensionsProvider>
 				<StyleProvider>
 					<ReduxProvider store={reduxStore}>
-						<MessengerEffects />
 						<IconRegistry icons={[EvaIconsPack, FeatherIconsPack, CustomIconsPack]} />
 						<UIKittenProvider>
 							<Background>
@@ -116,6 +115,7 @@ const App: React.FC = () => {
 									>
 										<PermissionsProvider>
 											<NotificationProvider>
+												<MessengerEffects />
 												{Platform.OS !== 'web' ? <BootSplashInhibitor /> : null}
 												<LoaderGate>
 													<MusicPlayerProvider>

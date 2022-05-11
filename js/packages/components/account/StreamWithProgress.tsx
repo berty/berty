@@ -6,9 +6,8 @@ import { useSelector } from 'react-redux'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
-import { useAppDispatch } from '@berty/hooks'
-import { useDeleteAccount, useRestart } from '@berty/hooks'
-import { ScreenFC } from '@berty/navigation'
+import { useAppDispatch, useRestart } from '@berty/hooks'
+import { useDeleteAccount } from '@berty/hooks'
 import {
 	selectDaemonAddress,
 	selectStreamError,
@@ -17,7 +16,7 @@ import {
 } from '@berty/redux/reducers/ui.reducer'
 import { useThemeColor } from '@berty/store'
 
-const StreamInProgressCmp: React.FC<{}> = () => {
+const StreamWithProgressCmp: React.FC<{}> = () => {
 	const { text } = useStyles()
 	const { scaleSize } = useAppDimensions()
 	const colors = useThemeColor()
@@ -63,7 +62,7 @@ const StreamInProgressCmp: React.FC<{}> = () => {
 
 const gutter = 50
 
-export const Stream: ScreenFC<'Gates.Stream'> = () => {
+export const StreamWithProgress = () => {
 	const streamInProgress = useSelector(selectStreamInProgress)
 	const streamError = useSelector(selectStreamError)
 	const deleteAccount = useDeleteAccount()
@@ -71,8 +70,10 @@ export const Stream: ScreenFC<'Gates.Stream'> = () => {
 	const dispatch = useAppDispatch()
 	const restart = useRestart()
 
-	const [newAddress, setNewAddress] = React.useState(daemonAddress)
 	const colors = useThemeColor()
+
+	const [newAddress, setNewAddress] = React.useState(daemonAddress)
+
 	const changeAddress = React.useCallback(() => {
 		dispatch(setDaemonAddress({ value: newAddress }))
 	}, [dispatch, newAddress])
@@ -115,5 +116,5 @@ export const Stream: ScreenFC<'Gates.Stream'> = () => {
 			</View>
 		)
 	}
-	return <StreamInProgressCmp />
+	return <StreamWithProgressCmp />
 }

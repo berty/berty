@@ -1,11 +1,12 @@
 import { useCallback } from 'react'
 
+import { useNavigation } from '@berty/navigation'
 import {
 	PersistentOptionsKeys,
 	selectPersistentOptions,
 } from '@berty/redux/reducers/persistentOptions.reducer'
 import { selectSelectedAccount } from '@berty/redux/reducers/ui.reducer'
-import { restart } from '@berty/utils/accounts/accountUtils'
+import { switchAccountAfterClosing } from '@berty/utils/accounts'
 import { SoundKey } from '@berty/utils/sound/sound.types'
 import { playSound } from '@berty/utils/sound/sounds'
 
@@ -25,7 +26,16 @@ export const usePlaySound = () => {
 }
 
 export const useRestart = () => {
+	const { navigate } = useNavigation()
 	const dispatch = useAppDispatch()
 	const selectedAccount = useAppSelector(selectSelectedAccount)
-	return useCallback(() => restart(selectedAccount, dispatch), [selectedAccount, dispatch])
+	return useCallback(
+		() =>
+			navigate('Account.Closing', {
+				callback: () => {
+					switchAccountAfterClosing(dispatch, selectedAccount)
+				},
+			}),
+		[navigate, selectedAccount, dispatch],
+	)
 }

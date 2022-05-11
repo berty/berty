@@ -2,12 +2,7 @@ import { useCallback } from 'react'
 
 import beapi from '@berty/api'
 import { selectSelectedAccount } from '@berty/redux/reducers/ui.reducer'
-import {
-	createNewAccount,
-	deleteAccount,
-	updateAccount,
-	switchAccount,
-} from '@berty/utils/accounts/accountUtils'
+import { createAccount, deleteAccount, updateAccount } from '@berty/utils/accounts'
 
 import { useAppDispatch, useAppSelector } from './core.hooks'
 import { useAccount } from './messenger.hooks'
@@ -18,15 +13,10 @@ export const useDeleteAccount = () => {
 	return useCallback(() => deleteAccount(selectedAccount, dispatch), [selectedAccount, dispatch])
 }
 
-export const useSwitchAccount = () => {
-	const dispatch = useAppDispatch()
-	return useCallback((account: string) => switchAccount(account, dispatch), [dispatch])
-}
-
 export const useCreateNewAccount = () => {
 	const dispatch = useAppDispatch()
 	return useCallback(
-		(newConfig?: beapi.account.INetworkConfig) => createNewAccount(dispatch, newConfig),
+		(newConfig?: beapi.account.INetworkConfig) => createAccount(dispatch, newConfig),
 		[dispatch],
 	)
 }

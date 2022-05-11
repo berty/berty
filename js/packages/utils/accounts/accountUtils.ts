@@ -1,43 +1,12 @@
-import { Platform } from 'react-native'
+import { CommonActions } from '@react-navigation/native'
 
 import beapi from '@berty/api'
-import {
-	setAccounts,
-	setCreatedAccount,
-	setNextAccount,
-	setStateOnBoardingReady,
-	setStateStreamDone,
-	setStateStreamInProgress,
-	setStreamError,
-} from '@berty/redux/reducers/ui.reducer'
-import store, { AppDispatch, persistor, resetAccountStore } from '@berty/redux/store'
+import { setAccounts, setSelectedAccount } from '@berty/redux/reducers/ui.reducer'
+import store, { AppDispatch } from '@berty/redux/store'
 import { Maybe } from '@berty/store/hooks'
 
-import { StreamInProgress } from '../protocol/progress.types'
 import { accountClient } from './accountClient'
-
-export const importAccount = async (path: string) => {
-	let resp: beapi.account.ImportAccountWithProgress.Reply | null
-	try {
-		await closeAccountWithProgress(store.dispatch)
-		resp = await importAccountWithProgress(path, store.dispatch)
-	} catch (e) {
-		console.warn('unable to import account', e)
-		return
-	}
-
-	if (!resp) {
-		throw new Error('no account returned')
-	}
-
-	if (!resp.accountMetadata?.accountId) {
-		throw new Error('no account id returned')
-	}
-
-	await refreshAccountList()
-
-	store.dispatch(setNextAccount(resp.accountMetadata.accountId))
-}
+import { closeAccount } from './closeAccount'
 
 /**
  * updates the AccountService account
@@ -65,207 +34,49 @@ export const updateAccount = async (payload: any) => {
 	await refreshAccountList()
 }
 
-export const switchAccount = async (accountID: string, dispatch: AppDispatch) => {
-	try {
-		await closeAccountWithProgress(dispatch)
-	} catch (e) {
-		console.warn('unable to close account', e)
-		return
-	}
-	dispatch(setNextAccount(accountID))
-}
-
-export const deleteAccount = async (selectedAccount: string | null, dispatch: AppDispatch) => {
-	// close current account service
-	await closeAccountWithProgress(dispatch)
-	let accounts: beapi.account.IAccountMetadata[] = []
-	if (selectedAccount !== null) {
-		// delete account service and account data storage
-<<<<<<< HEAD:js/packages/utils/accounts/accountUtils.ts
-		await accountClient.deleteAccount({ accountId: selectedAccount })
-		accounts = await refreshAccountList(embedded)
-=======
-		await accountService.deleteAccount({ accountId: selectedAccount })
-		await storageRemove(storageKeyForAccount(selectedAccount))
-		accounts = await refreshAccountList()
->>>>>>> 8528feeb3 (WIP: fix: refacto front state machine):js/packages/store/accountUtils.ts
-	} else {
-		console.warn('state.selectedAccount is null and this should not occur')
-	}
-
-	if (!Object.values(accounts).length) {
-		// reset to OnBoarding
-		dispatch(setStateOnBoardingReady())
-	} else {
-		// open the last opened if an other account exist
-		let accountSelected: beapi.account.IAccountMetadata | null = null
-		for (const account of accounts) {
-			if (!accountSelected) {
-				accountSelected = account
-			} else if (
-				accountSelected &&
-				accountSelected.lastOpened &&
-				account.lastOpened &&
-				accountSelected.lastOpened < account.lastOpened
-			) {
-				accountSelected = account
-			}
-		}
-		dispatch(setNextAccount(accountSelected?.accountId))
-	}
-}
-
 export const restart = async (accountID: Maybe<string>, dispatch: AppDispatch) => {
 	try {
-		await closeAccountWithProgress(dispatch)
+		await closeAccount(dispatch)
 	} catch (e) {
 		console.warn('unable to close account')
 		return
 	}
-	dispatch(setNextAccount(accountID))
+	dispatch(setSelectedAccount(accountID))
 }
 
-export const closeAccountWithProgress = async (dispatch: AppDispatch) => {
-	try {
-		console.log('flushing redux persistence')
-		await persistor.flush()
-		console.log('flushed redux persistence')
-		persistor.pause()
-		console.log('paused redux persistence')
-		const stream = await accountClient.closeAccountWithProgress({})
-		stream.onMessage((msg, err) => {
-			if (err) {
-				if (err.EOF) {
-					console.log('Node is closed')
-				} else {
-					console.warn('Error while closing node:', err)
-				}
-				dispatch(resetAccountStore())
-				dispatch(setStateStreamDone())
-				return
-			}
-			if (msg?.progress?.state !== 'done') {
-				const progress = msg?.progress
-				if (progress) {
-					const payload: StreamInProgress = {
-						msg: progress,
-						stream: 'Close account',
-					}
-					dispatch(setStateStreamInProgress(payload))
-				}
-			}
-		})
-		await stream.start()
-	} catch (err) {
-		console.warn('Failed to close node:', err)
-		dispatch(resetAccountStore())
-		dispatch(setStreamError({ error: new Error(`Failed to close node: ${err}`) }))
-	}
+export const switchAccountAfterClosing = (
+	dispatch: AppDispatch,
+	selectedAccount: string | null,
+) => {
+	dispatch(setSelectedAccount(selectedAccount))
 }
 
-const importAccountWithProgress = (path: string, dispatch: AppDispatch) =>
-	new Promise<beapi.account.ImportAccountWithProgress.Reply | null>(async resolve => {
-		let metaMsg: beapi.account.ImportAccountWithProgress.Reply | null = null
-		let done = false
-		try {
-			const stream = await accountClient.importAccountWithProgress({ backupPath: path })
-			stream.onMessage(async (msg, _) => {
-				if (msg?.progress?.state !== 'done') {
-					const progress = msg?.progress
-					if (progress) {
-						const payload: StreamInProgress = {
-							msg: progress,
-							stream: 'Import account',
-						}
-						dispatch(setStateStreamInProgress(payload))
-					}
-				}
-
-				metaMsg = msg?.accountMetadata ? msg : metaMsg
-				done = msg?.progress?.state === 'done' || done
-
-				if (done && metaMsg) {
-					dispatch(setStateStreamDone())
-					resolve(metaMsg)
-				}
-			})
-			await stream.start()
-		} catch (err) {
-			dispatch(setStreamError({ error: new Error(`Failed to import account: ${err}`) }))
-			resolve(null)
-		}
-	})
-
-export const refreshAccountList = async (): Promise<beapi.account.IAccountMetadata[]> => {
-	try {
-<<<<<<< HEAD:js/packages/utils/accounts/accountUtils.ts
-		if (embedded) {
-			const resp = await accountClient.listAccounts({})
-
-			if (!resp.accounts) {
-				return []
-			}
-
-			store.dispatch(setAccounts(resp.accounts))
-
-			return resp.accounts
-=======
-		const resp = await accountService.listAccounts({})
-		if (!resp.accounts) {
-			return []
->>>>>>> 8528feeb3 (WIP: fix: refacto front state machine):js/packages/store/accountUtils.ts
-		}
-		store.dispatch(setAccounts(resp.accounts))
-		return resp.accounts
-
-		// let accounts = [{ accountId: '0', name: 'remote server account' }]
-		// store.dispatch(setAccounts(accounts))
-		// return accounts
-	} catch (e) {
-		console.warn(e)
-		return []
-	}
-}
-
-const createAccount = async (dispatch: AppDispatch, config?: beapi.account.INetworkConfig) => {
-	let resp: beapi.account.CreateAccount.Reply
-	try {
-		let networkConfig
-		if (!config) {
-			const defaultConfig = await accountClient.networkConfigGet({ accountId: '' })
-			networkConfig = defaultConfig.currentConfig
-		} else {
-			networkConfig = config
-		}
-		resp = await accountClient.createAccount({
-			networkConfig,
-			sessionKind: Platform.OS === 'web' ? 'desktop-electron' : null,
-		})
-		persistor.persist()
-	} catch (e) {
-		console.warn('unable to create account', e)
-		return
-	}
-	if (!resp.accountMetadata?.accountId) {
-		throw new Error('no account id returned')
-	}
-
-	await refreshAccountList()
-	dispatch(
-		setCreatedAccount({
-			accountId: resp.accountMetadata.accountId,
+export const onBoardingAfterClosing = (navDispatch: any) => {
+	navDispatch(
+		CommonActions.reset({
+			routes: [{ name: 'Onboarding.GetStarted' }],
 		}),
 	)
 }
 
-export const createNewAccount = async (
-	dispatch: AppDispatch,
-	config?: beapi.account.INetworkConfig,
-) => {
+export const importAccountAfterClosing = (navigate: any, filePath: string) => {
+	navigate('Account.Importing', { filePath })
+}
+
+export const deleteAccountAfterClosing = (navigate: any) => {
+	navigate('Account.Deleting')
+}
+
+export const refreshAccountList = async (): Promise<beapi.account.IAccountMetadata[]> => {
 	try {
-		await createAccount(dispatch, config)
+		const resp = await accountClient.listAccounts({})
+		if (!resp.accounts) {
+			return []
+		}
+		store.dispatch(setAccounts(resp.accounts))
+		return resp.accounts
 	} catch (e) {
-		console.warn('unable to create account', e)
-		return
+		console.warn(e)
+		return []
 	}
 }

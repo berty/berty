@@ -9,28 +9,16 @@ import OnboardingWrapper from '@berty/components/onboarding/OnboardingWrapper'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
-import { useCreateNewAccount } from '@berty/hooks'
 import { ScreenFC, useNavigation } from '@berty/navigation'
 import { useNotificationsInhibitor, useThemeColor } from '@berty/store'
-import { accountClient } from '@berty/utils/accounts/accountClient'
 
 const DefaultModeBody: React.FC = () => {
-	const { goBack } = useNavigation()
+	const { goBack, navigate } = useNavigation()
 	const colors = useThemeColor()
 	const { padding, border, margin, text } = useStyles()
 	const { scaleSize } = useAppDimensions()
 	const [isPressed, setIsPressed] = React.useState<boolean>(false)
 	const { t }: { t: any } = useTranslation()
-	const createNewAccount = useCreateNewAccount()
-
-	const onPress = React.useCallback(async () => {
-		// with an empty accountId the function returns default config
-		const defaultConfig = await accountClient.networkConfigGet({ accountId: '' })
-		if (defaultConfig.currentConfig) {
-			setIsPressed(true)
-			await createNewAccount(defaultConfig.currentConfig)
-		}
-	}, [createNewAccount])
 
 	return (
 		<View style={[{ flex: 1 }]}>
@@ -46,6 +34,7 @@ const DefaultModeBody: React.FC = () => {
 					autoPlay
 					loop={false}
 					style={{ position: 'absolute', top: -20, width: '100%' }}
+					onAnimationFinish={() => navigate('Account.Creating')}
 				/>
 			) : (
 				<LottieView
@@ -143,7 +132,7 @@ const DefaultModeBody: React.FC = () => {
 							border.radius.medium,
 							{ width: 170 * scaleSize, backgroundColor: '#3744DD' },
 						]}
-						onPress={async () => await onPress()}
+						onPress={() => setIsPressed(true)}
 					>
 						{isPressed ? (
 							<ActivityIndicator color={colors['reverted-main-text']} />

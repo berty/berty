@@ -99,7 +99,7 @@ type PersistentOptionsUpdate =
 			payload: PersistentOptionsProfileNotification
 	  }
 
-export type PersistentOptions = {
+type PersistentOptions = {
 	[PersistentOptionsKeys.Notifications]: PersistentOptionsNotifications
 	[PersistentOptionsKeys.Suggestions]: PersistentOptionsSuggestions
 	[PersistentOptionsKeys.Debug]: PersistentOptionsDebug

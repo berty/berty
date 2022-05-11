@@ -589,7 +589,6 @@
 			"title": "Inspector",
 			"accounts": {
 				"title": "Accounts",
-				"unsupported-remote-mode": "Accounts inspector not supported in remote mode",
 				"data-not-found": "Account not in list",
 				"action-delete": {
 					"file-exists": "Account {{accountId}} does not exists, a file has this name though.",

@@ -1,7 +1,5 @@
-import RNFS from 'react-native-fs'
-
 import { GoBridge } from '@berty/native-modules/GoBridge'
-import { setNextAccount, setStateOnBoardingReady } from '@berty/redux/reducers/ui.reducer'
+import { setStateOnBoarding, setSelectedAccount } from '@berty/redux/reducers/ui.reducer'
 import { AppDispatch } from '@berty/redux/store'
 import { refreshAccountList } from '@berty/utils/accounts/accountUtils'
 
@@ -34,23 +32,10 @@ export const initialLaunch = async (dispatch: AppDispatch) => {
 				}
 			})
 
-			// Delete berty-backup account
-			const outFile =
-				RNFS.TemporaryDirectoryPath + `/berty-backup-${accountSelected.accountId}` + '.tar'
-			RNFS.unlink(outFile)
-				.then(() => {
-					console.log('File deleted')
-				})
-				.catch(() => {
-					console.log('File berty backup does not exist') // here
-				})
-
-			dispatch(setNextAccount(accountSelected.accountId))
-
+			dispatch(setSelectedAccount(accountSelected.accountId))
 			return
 		} else {
-			// this is the first account that will be created
-			dispatch(setStateOnBoardingReady())
+			dispatch(setStateOnBoarding())
 		}
 	}
 

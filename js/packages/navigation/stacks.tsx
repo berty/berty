@@ -14,7 +14,7 @@ import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
 import { useAppDispatch } from '@berty/hooks'
 import {
-	MESSENGER_APP_STATE,
+	MessengerAppState,
 	selectAppState,
 	selectHandledLink,
 	setHandledLink,
@@ -160,51 +160,31 @@ export const Navigation: React.FC = React.memo(() => {
 	useEffect(() => {
 		console.log('context app State', appState)
 		switch (appState) {
-			case MESSENGER_APP_STATE.ONBOARDING_READY:
+			case MessengerAppState.ONBOARDING:
 				dispatch(
 					CommonActions.reset({
 						routes: [{ name: 'Onboarding.GetStarted' }],
 					}),
 				)
 				return
-			case MESSENGER_APP_STATE.READY:
+			case MessengerAppState.OPENING:
 				dispatch(
 					CommonActions.reset({
-						routes: [{ name: 'Chat.Home' }],
-					}),
-				)
-				return
-			case MESSENGER_APP_STATE.SETUP_FINISHED:
-				dispatch(
-					CommonActions.reset({
-						routes: [{ name: 'Onboarding.SetupFinished' }],
-					}),
-				)
-				return
-			case MESSENGER_APP_STATE.STREAM:
-				dispatch(
-					CommonActions.reset({
-						routes: [{ name: 'Gates.Stream' }],
+						routes: [{ name: 'Account.Opening' }],
 					}),
 				)
 				return
 		}
 	}, [appState, dispatch])
 
-	const initialRoute = React.useCallback(() => {
+	const initialRoute = () => {
 		switch (appState) {
-			case MESSENGER_APP_STATE.READY:
-				return 'Chat.Home'
-			case MESSENGER_APP_STATE.ONBOARDING_READY:
+			case MessengerAppState.ONBOARDING:
 				return 'Onboarding.GetStarted'
-			case MESSENGER_APP_STATE.SETUP_FINISHED:
-				return 'Onboarding.SetupFinished'
-			case MESSENGER_APP_STATE.STREAM:
-				return 'Gates.Stream'
 			default:
 				return 'Chat.Home'
 		}
-	}, [appState])
+	}
 
 	return (
 		<NavigationStack.Navigator
@@ -223,9 +203,30 @@ export const Navigation: React.FC = React.memo(() => {
 						: undefined,
 			}}
 		>
+			{/* Account */}
 			<NavigationStack.Screen
-				name={'Gates.Stream'}
-				component={Components.Gates.Stream}
+				name={'Account.Creating'}
+				component={Components.Account.CreatingAccount}
+				options={{ headerShown: false }}
+			/>
+			<NavigationStack.Screen
+				name={'Account.Opening'}
+				component={Components.Account.OpeningAccount}
+				options={{ headerShown: false }}
+			/>
+			<NavigationStack.Screen
+				name={'Account.Closing'}
+				component={Components.Account.ClosingAccount}
+				options={{ headerShown: false }}
+			/>
+			<NavigationStack.Screen
+				name={'Account.Importing'}
+				component={Components.Account.ImportingAccount}
+				options={{ headerShown: false }}
+			/>
+			<NavigationStack.Screen
+				name={'Account.Deleting'}
+				component={Components.Account.DeletingAccount}
 				options={{ headerShown: false }}
 			/>
 			{/* OnBoarding */}

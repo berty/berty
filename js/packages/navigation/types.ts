@@ -92,9 +92,14 @@ export type ScreensParams = {
 		previewOnly?: boolean
 	}
 
-	// Gates
+	// Account
 
-	'Gates.Stream': undefined
+	'Account.Opening': undefined
+	'Account.Creating': undefined
+	// https://reactnavigation.org/docs/troubleshooting#i-get-the-warning-non-serializable-values-were-found-in-the-navigation-state
+	'Account.Closing': { callback: () => void }
+	'Account.Importing': { filePath: string }
+	'Account.Deleting': undefined
 }
 
 type ScreenProps<T extends keyof ScreensParams> = StackScreenProps<ScreensParams, T>
