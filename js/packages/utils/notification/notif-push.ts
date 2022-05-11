@@ -1,17 +1,16 @@
 import base64 from 'base64-js'
-import { Alert, NativeModules, Platform } from 'react-native'
+import { Alert, Platform } from 'react-native'
 import { RESULTS } from 'react-native-permissions'
 
 import beapi from '@berty/api'
 import { GRPCError } from '@berty/grpc-bridge'
 import { ServiceClientType } from '@berty/grpc-bridge/welsh-clients.gen'
+import { PushTokenRequester } from '@berty/native-modules/PushTokenRequester'
 import rnutil from '@berty/utils/react-native'
 import { PermissionType, getPermissions } from '@berty/utils/react-native/permissions'
 
 import { numberifyLong } from '../convert/long'
 import { servicesAuthViaDefault, serviceTypes } from '../remote-services/remote-services'
-
-const { PushTokenRequester } = NativeModules
 
 export const pushAvailable = Platform.OS !== 'web'
 export const pushFilteringAvailable = Platform.OS === 'android'

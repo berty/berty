@@ -1,9 +1,3 @@
-export type GoBridgeOpts = {
-	logFilters?: string
-	cliArgs?: string[]
-	persistence?: boolean
-}
-
 export enum GoLogLevel {
 	debug = 'debug',
 	info = 'info',
@@ -11,7 +5,7 @@ export enum GoLogLevel {
 	warn = 'warn',
 }
 
-export type GoLoggerOpts = {
+type GoLoggerOpts = {
 	level: GoLogLevel
 	message: string
 }
@@ -21,6 +15,5 @@ export interface GoBridgeInterface {
 	initBridge(): Promise<void>
 	clearStorage(): Promise<void>
 	closeBridge(): Promise<void>
-	getProtocolAddr(): Promise<string>
 	invokeBridgeMethod(method: string, b64message: string): Promise<string>
 }

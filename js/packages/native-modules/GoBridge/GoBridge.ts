@@ -1,4 +1,4 @@
-import { GoBridgeInterface } from './types'
+import { GoBridgeInterface } from './GoBridgeInterface'
 
 class NoopGoBirdge implements GoBridgeInterface {
 	initBridge() {
@@ -11,10 +11,6 @@ class NoopGoBirdge implements GoBridgeInterface {
 
 	log() {}
 
-	getProtocolAddr() {
-		return Promise.reject()
-	}
-
 	clearStorage() {
 		return Promise.reject()
 	}
@@ -24,6 +20,4 @@ class NoopGoBirdge implements GoBridgeInterface {
 	}
 }
 
-const GoBridge: GoBridgeInterface = new NoopGoBirdge()
-
-export default GoBridge
+export const GoBridge: GoBridgeInterface = new NoopGoBirdge()

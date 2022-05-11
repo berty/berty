@@ -1,6 +1,6 @@
 import { NativeModules } from 'react-native'
 
-import { GoBridgeInterface } from './types'
+import { GoBridgeInterface } from './GoBridgeInterface'
 
 const GoBridge: GoBridgeInterface = NativeModules.GoBridge
 
