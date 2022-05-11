@@ -5,7 +5,9 @@ import { EventEmitterContext } from '@berty/contexts/eventEmitter.context'
 import { useAppDispatch, useAppSelector, useConversationsDict } from '@berty/hooks'
 import { selectAppState } from '@berty/redux/reducers/ui.reducer'
 
-import { initialLaunch, openingDaemonAndClients, finishPreparingAccount } from './effectsImplem'
+import { finishPreparingAccount } from './finishPreparingAccount.effect'
+import { initialLaunch } from './initialLaunch.effect'
+import { openingDaemonAndClients } from './openingDaemonAndClients.effect'
 
 export const MessengerEffects: React.FC = () => {
 	const dispatch = useAppDispatch()
