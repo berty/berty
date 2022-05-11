@@ -6,6 +6,5 @@ export {
 	ButtonDropDown,
 	FactionButtonSetting,
 } from './SettingsButtons'
-export * from './HintBody'
 export * from './ContactPicker'
 export { WebViews } from './WebViews'

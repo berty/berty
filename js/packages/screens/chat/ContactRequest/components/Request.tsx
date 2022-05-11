@@ -4,13 +4,14 @@ import { View, StyleProp, TouchableOpacity, ViewStyle } from 'react-native'
 
 import { ContactAvatar } from '@berty/components/avatars'
 import { FingerprintContent } from '@berty/components/shared-components/FingerprintContent'
-import { Modal } from '@berty/components/shared-components/Modal'
 import { TabBar } from '@berty/components/shared-components/TabBar'
 import { Toggle } from '@berty/components/shared-components/Toggle'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useStyles, ColorsTypes } from '@berty/contexts/styles'
 import { useContact } from '@berty/hooks'
 import { useThemeColor } from '@berty/store/hooks'
+
+import { Modal } from './Modal'
 
 // Types
 

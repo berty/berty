@@ -5,7 +5,6 @@ import { ScrollView, TouchableOpacity, View } from 'react-native'
 
 import beapi from '@berty/api'
 import { ContactAvatar } from '@berty/components/avatars'
-import FromNow from '@berty/components/shared-components/FromNow'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
@@ -14,6 +13,7 @@ import { useNavigation } from '@berty/navigation'
 import { useMessengerClient, useThemeColor } from '@berty/store'
 import { pbDateToNum } from '@berty/utils/convert/time'
 
+import FromNow from './FromNow'
 import { UnreadCount } from './UnreadCount'
 
 const useStylesContactRequest: any = () => {

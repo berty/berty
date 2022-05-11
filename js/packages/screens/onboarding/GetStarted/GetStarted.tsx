@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { View, StatusBar, Platform } from 'react-native'
 
 import Logo from '@berty/assets/logo/berty_gradient_square.svg'
-import Button from '@berty/components/onboarding/Button'
+import Button from '@berty/components/shared-components/Button'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useStyles } from '@berty/contexts/styles'
 import { useAppSelector } from '@berty/hooks'

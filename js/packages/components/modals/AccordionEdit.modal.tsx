@@ -3,7 +3,7 @@ import React, { FC, useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View } from 'react-native'
 
-import Button from '@berty/components/onboarding/Button'
+import Button from '@berty/components/shared-components/Button'
 import { TextInput } from '@berty/components/shared-components/TextInput'
 import { useStyles } from '@berty/contexts/styles'
 import { useThemeColor } from '@berty/store'
