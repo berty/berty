@@ -6,6 +6,7 @@ import AddEmojiIcon from '@berty/assets/logo/add_emoji.svg'
 import { useLayout } from '@berty/components/hooks'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
+import { useModal } from '@berty/contexts/modal.context'
 import { useStyles } from '@berty/contexts/styles'
 import { useAppDispatch } from '@berty/hooks'
 import {
@@ -15,7 +16,6 @@ import {
 import { useThemeColor } from '@berty/store'
 import { getEmojiByName } from '@berty/utils/emojis/emojis'
 
-import { useModal } from '../../providers/modal.provider'
 import { EmojiKeyboard } from './EmojiKeyboard.modal'
 
 const emojis = [

@@ -1,16 +1,26 @@
-import React, { useState, useCallback, useEffect } from 'react'
+import React, { createContext, useCallback, useEffect, useState } from 'react'
 import { AppState } from 'react-native'
-import { PermissionStatus } from 'react-native-permissions'
+import { PermissionStatus, RESULTS } from 'react-native-permissions'
 
-import PermissionsContext from '@berty/contexts/permissions.context'
 import {
 	defaultPermissionStatus,
-	acquirePermission,
-	getPermissions,
 	PermissionType,
+	Permissions,
+	getPermissions,
+	acquirePermission,
 } from '@berty/utils/react-native/permissions'
 
-const PermissionsProvider: React.FC = ({ children }) => {
+const PermissionsContext = createContext<{
+	permissions: Permissions
+	refreshPermissions: () => Promise<void>
+	acquirePermission: (_: PermissionType) => Promise<PermissionStatus>
+}>({
+	permissions: defaultPermissionStatus,
+	refreshPermissions: async () => {},
+	acquirePermission: async (_: PermissionType) => RESULTS.BLOCKED,
+})
+
+export const PermissionsProvider: React.FC = ({ children }) => {
 	const [state, setState] = useState(defaultPermissionStatus)
 
 	const refreshPermissions = useCallback(async () => {
@@ -51,4 +61,4 @@ const PermissionsProvider: React.FC = ({ children }) => {
 	)
 }
 
-export default PermissionsProvider
+export default PermissionsContext

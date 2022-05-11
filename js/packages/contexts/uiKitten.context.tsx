@@ -3,7 +3,7 @@ import { ApplicationProvider } from '@ui-kitten/components'
 import React from 'react'
 import { StatusBar } from 'react-native'
 
-export const Provider: React.FC = ({ children }) => (
+export const UIKittenProvider: React.FC = ({ children }) => (
 	<>
 		<ApplicationProvider
 			mapping={mapping}

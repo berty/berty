@@ -4,8 +4,8 @@ import { View, TouchableWithoutFeedback, TouchableOpacity, ActivityIndicator } f
 import { useSelector } from 'react-redux'
 
 import beapi from '@berty/api'
-import { useMusicPlayer } from '@berty/components/providers/musicPlayer.provider'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
+import { useMusicPlayer } from '@berty/contexts/musicPlayer.context'
 import { useStyles } from '@berty/contexts/styles'
 import { selectProtocolClient } from '@berty/redux/reducers/ui.reducer'
 import { useThemeColor } from '@berty/store/hooks'
