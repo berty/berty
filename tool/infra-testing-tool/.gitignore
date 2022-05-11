@@ -1,0 +1,9 @@
+# Terraform output
+.terraform.*
+terraform.*
+.terraform/
+.main.tf
+private.tf
+state.yaml
+
+THOUGHTS.md

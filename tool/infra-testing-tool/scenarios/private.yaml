@@ -1,0 +1,49 @@
+peer:
+    - name: test peers 1
+      amount: 2
+      groups:
+      - name: message group
+        tests:
+        - type: text
+          size: 300B
+          interval: 2
+          amount: 10
+      connections:
+          - to: lan_1
+            protocol: tcp
+      routers:
+          - type: rdvp
+            address: test rdvp
+          - type: relay
+            address: test relay
+          - type: bootstrap
+            address: test bs
+
+rdvp:
+    - name: test rdvp
+      amount: 1
+      connections:
+      - to: lan_1
+        protocol: tcp
+
+
+relay:
+    - name: test relay
+      amount: 1
+      connections:
+      - to: lan_1
+        protocol: tcp
+
+bootstrap:
+    - name: test bs
+      amount: 1
+      connections:
+          - to: lan_1
+            protocol: tcp
+      routers:
+          - type: relay
+            address: test relay
+
+settings:
+    region: eu-west-3
+    keyPairName: berty_key

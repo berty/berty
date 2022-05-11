@@ -1,0 +1,53 @@
+peer:
+    - name: test peers 1
+      amount: 2
+      reliability: 5,3
+      groups:
+      - name: message group
+        tests:
+        - type: text
+          size: 300B
+          interval: 3
+          amount: 100
+      connections:
+          - to: internet
+            protocol: tcp
+      routers:
+          - type: rdvp
+            address: test rdvp
+          - type: relay
+            address: test relay
+          - type: bootstrap
+            address: test bs
+
+rdvp:
+    - name: test rdvp
+      amount: 1
+      reliability: 5,3
+      connections:
+      - to: internet
+        protocol: tcp
+
+
+relay:
+    - name: test relay
+      amount: 1
+      reliability: 5,3
+      connections:
+      - to: internet
+        protocol: tcp
+
+bootstrap:
+    - name: test bs
+      amount: 1
+      reliability: 5,3
+      connections:
+          - to: internet
+            protocol: tcp
+      routers:
+          - type: relay
+            address: test relay
+
+settings:
+    region: eu-west-3
+    keyPairName: berty_key

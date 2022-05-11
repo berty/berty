@@ -1,0 +1,13 @@
+[Unit]
+Description=berty-infra-server
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+User=ec2-user
+ExecStart=/usr/local/bin/berty-infra-server
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,180 @@
+syntax = "proto3";
+package server;
+option go_package = "./server";
+
+// ConnectToPeer
+message ConnectToPeer {
+  message Request {
+    string host = 1;
+    string port = 2;
+  }
+
+  message Response {}
+}
+
+// ReplicationJoinGroup
+message AddReplication {
+  message Request {
+    string groupName = 1;
+    string tokenIp = 2;
+  }
+
+  message Response {}
+}
+
+// UploadLogs
+message UploadLogs {
+  message Request {
+    string folder = 1;
+    string name = 2;
+  }
+
+  message Response {
+    int64 uploadCount = 1;
+    repeated string link = 2;
+  }
+}
+
+// CreateInvite
+message CreateInvite {
+  message Request {
+    string groupName = 1;
+  }
+
+  message Response {
+    // invite gob
+    bytes invite = 1;
+  }
+}
+
+// JoinGroup
+message JoinGroup {
+  message Request {
+    string groupName = 1;
+    // invite gob
+    bytes invite = 2;
+  }
+
+  message Response {}
+}
+
+// StartReceiveMessage
+message StartReceiveMessage {
+  message Request {
+    string groupName = 1;
+  }
+  message Response {}
+}
+
+// StopReceiveMessage
+message StopReceiveMessage {
+  message Request {
+    string groupName = 1;
+  }
+
+  message Response {}
+}
+
+// TestConnection
+message TestConnection {
+  message Request {
+    string message = 1;
+  }
+
+  message Response {
+    bool success = 1;
+  }
+}
+
+// TestConnection
+message TestConnectionToPeer {
+  message Request {
+    int64 tries = 1;
+    string host = 2;
+    string port = 3;
+  }
+
+  message Response {
+    bool success = 1;
+  }
+}
+
+// IsTestRunning
+message IsTestRunning {
+  message Request {
+    string groupName = 1;
+    int64 testN = 2;
+  }
+
+  message Response {
+    bool testIsRunning = 1;
+  }
+}
+
+// NewTest
+message NewTest {
+  message Request {
+    string groupName = 1;
+    int64 testN = 2;
+    string type = 3;
+    int64 size = 4;
+    int64 interval = 5;
+    int64 amount = 6;
+  }
+
+  message Response {}
+}
+
+// StartTest
+message StartTest {
+  message Request {
+    string groupName = 1;
+    int64 testN = 2;
+  }
+
+  message Response {}
+}
+
+
+// IsProcessRunning
+message IsProcessRunning{
+  message Request {
+  }
+
+  message Response {
+    bool running = 1;
+  }
+}
+
+// AddReliability
+message AddReliability{
+  message Request {
+    int64 timeout = 1;
+    int64 odds = 2;
+  }
+
+  message Response {}
+}
+
+
+
+service Proxy {
+  rpc TestConnection(TestConnection.Request) returns (TestConnection.Response) {}
+  rpc TestConnectionToPeer(TestConnectionToPeer.Request) returns (TestConnectionToPeer.Response) {}
+  rpc IsProcessRunning(IsProcessRunning.Request) returns (IsProcessRunning.Response) {}
+
+  rpc ConnectToPeer(ConnectToPeer.Request) returns (ConnectToPeer.Response) {}
+  rpc UploadLogs(UploadLogs.Request) returns (UploadLogs.Response) {}
+
+  rpc CreateInvite(CreateInvite.Request) returns (CreateInvite.Response) {}
+  rpc JoinGroup(JoinGroup.Request) returns (JoinGroup.Response) {}
+  rpc StartReceiveMessage(StartReceiveMessage.Request) returns (StartReceiveMessage.Response) {}
+  rpc StopReceiveMessage(StopReceiveMessage.Request) returns (StopReceiveMessage.Response) {}
+  rpc AddReplication(AddReplication.Request) returns (AddReplication.Response) {}
+
+  rpc NewTest(NewTest.Request) returns (NewTest.Response) {}
+  rpc StartTest(StartTest.Request) returns (StartTest.Response) {}
+  rpc IsTestRunning(IsTestRunning.Request) returns (IsTestRunning.Response) {}
+  
+  rpc AddReliability(AddReliability.Request) returns (AddReliability.Response) {}
+}
