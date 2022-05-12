@@ -8,6 +8,7 @@ require (
 	berty.tech/berty/v2 v2.0.0
 	github.com/mdp/qrterminal/v3 v3.0.0
 	github.com/otiai10/copy v1.7.0
+	github.com/peterbourgon/ff/v3 v3.1.2 // indirect
 	github.com/pkg/errors v0.9.1
 	go.uber.org/zap v1.20.0
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b

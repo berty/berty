@@ -6,23 +6,34 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+
+	"github.com/pkg/errors"
 )
 
-func (p *Parser) saveSessionFile(s *Session) error {
+func (p *Parser) SaveSessionFile(sessionID string, path string) error {
+	p.sessionsLock.RLock()
+	session, ok := p.sessions.Get(sessionID)
+	p.sessionsLock.RUnlock()
+
+	if !ok {
+		return errors.New("ession ID not found")
+	}
+
+	return p.saveSessionFile(session.(*Session), path)
+}
+
+func (p *Parser) saveSessionFile(s *Session, path string) error {
 	content, err := json.MarshalIndent(s, "", "  ")
 	if err != nil {
 		return err
 	}
 	content = append(content, '\n')
 
-	path := filepath.Join(p.sessionPath, fmt.Sprintf("%s.json", s.ID))
-
 	return ioutil.WriteFile(path, content, 0644)
 }
 
-func (p *Parser) restoreSessionFile(sessionID string) (*Session, error) {
+func (p *Parser) restoreSessionFile(sessionID string, path string) (*Session, error) {
 	s := &Session{}
-	path := filepath.Join(p.sessionPath, fmt.Sprintf("%s.json", sessionID))
 	content, err := ioutil.ReadFile(path)
 	if err != nil {
 		return nil, err

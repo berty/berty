@@ -46,7 +46,7 @@ func New(ctx context.Context, goLogger *log.Logger, w WebsocketBridge) *Bridge {
 	b.logger = baseLogger.Named("bridge")
 
 	b.config = config.New(ctx, baseLogger)
-	b.parser = parser.New(baseLogger)
+	b.parser = parser.New(ctx, baseLogger)
 	receiver := b.HandleMessages
 	b.receiver = &receiver
 
