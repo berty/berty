@@ -1,6 +1,6 @@
 {
   "cache-version": {
-    "node": "2",
+    "node": "3",
     "go": "1",
     "xcodegen": "1",
     "xcodeproj": "1",

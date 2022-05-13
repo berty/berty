@@ -19,7 +19,6 @@ GO_TAGS ?= -tags "fts5 sqlite sqlite_unlock_notify"
 
 rwildcard = $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2) $(filter $(subst *,%,$2),$d))
 check-program = $(foreach exec,$(1),$(if $(shell PATH="$(PATH)" which $(exec)),,$(error "Missing deps: no '$(exec)' in PATH")))
-check-java-ver = $(if $(patsubst $(shell java -version 2>&1 | sed -n ';s/.* version "\(.*\)\.\(.*\)\..*"/\1\2/p;'),,$(1)),$(error "wrong java version (required $(1))"),)
 kill-program-using-port = $(foreach port,$(1),$(eval pid ?= $(shell lsof -t -i :$(port))) $(if $(pid),$(shell kill $(pid)),))
 ext_ldflags = -ldflags="-X berty.tech/berty/v2/go/pkg/bertyversion.VcsRef=$(VCS_REF) -X berty.tech/berty/v2/go/pkg/bertyversion.Version=$(VERSION)"
 bridge_src := $(call rwildcard,../go,*.go *.m *.h) ../go.sum
@@ -229,7 +228,6 @@ android.app_deps: node_modules android.gomobile
 .PHONY: android.debug
 android.debug: android.app_deps
 	$(call check-program, npx)
-	$(call check-java-ver,$(required_java_ver))
 	npx react-native run-android \
 		--no-packager \
 		--port="$(METRO_RN_PORT)" \
@@ -240,7 +238,6 @@ android.debug: android.app_deps
 .PHONY: android.release
 android.release: android.app_deps
 	$(call check-program, npx)
-	$(call check-java-ver,$(required_java_ver))
 	npx react-native run-android \
 		--no-packager \
 		--port="$(METRO_RN_PORT)" \
