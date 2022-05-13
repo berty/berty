@@ -49,9 +49,9 @@ allprojects {
         }
 
         google()
-        maven { url 'https://www.jitpack.io' }
         mavenCentral()
         jcenter()
+        maven { url 'https://www.jitpack.io' }
     }
 }
 
