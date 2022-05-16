@@ -1,17 +1,9 @@
 import React from 'react'
-import { StyleSheet } from 'react-native'
 
-import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
+import TextButtonPriv from '../TextButton.priv'
 
 const PrimaryTextPriv: React.FC = props => {
-	return <UnifiedText style={styles.text}>{props.children}</UnifiedText>
+	return <TextButtonPriv color='white'>{props.children}</TextButtonPriv>
 }
-
-const styles = StyleSheet.create({
-	text: {
-		color: 'white',
-		textTransform: 'uppercase',
-	},
-})
 
 export default PrimaryTextPriv
