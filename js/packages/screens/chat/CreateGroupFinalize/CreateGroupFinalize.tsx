@@ -222,7 +222,7 @@ export const CreateGroupFinalize: ScreenFC<'Chat.CreateGroupFinalize'> = () => {
 							<GroupInfo onGroupNameChange={setGroupName} />
 							<FooterCreateGroup
 								title={t('main.home.create-group.create-group')}
-								titleStyle={{ textTransform: 'uppercase' }}
+								// titleStyle={{ textTransform: 'uppercase' }}
 								action={() => {
 									createGroup()
 									playSound('groupCreated')
