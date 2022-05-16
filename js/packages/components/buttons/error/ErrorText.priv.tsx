@@ -1,18 +1,10 @@
 import React from 'react'
-import { StyleSheet } from 'react-native'
 
-import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
+import TextButtonPriv from '../TextButton.priv'
 
 const ErrorTextPriv: React.FC = props => {
-	return <UnifiedText style={styles.text}>{props.children}</UnifiedText>
+	// TODO: replace with value from theme
+	return <TextButtonPriv color='#E35179'>{props.children}</TextButtonPriv>
 }
-
-const styles = StyleSheet.create({
-	text: {
-		// TODO: replace with value from theme
-		color: '#E35179',
-		textTransform: 'uppercase',
-	},
-})
 
 export default ErrorTextPriv

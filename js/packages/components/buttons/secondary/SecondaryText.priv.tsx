@@ -1,23 +1,13 @@
 import React from 'react'
-import { StyleSheet } from 'react-native'
 
-import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useThemeColor } from '@berty/store'
+
+import TextButtonPriv from '../TextButton.priv'
 
 const SecondaryTextPriv: React.FC = props => {
 	const colors = useThemeColor()
 
-	return (
-		<UnifiedText style={[styles.text, { color: colors['background-header'] }]}>
-			{props.children}
-		</UnifiedText>
-	)
+	return <TextButtonPriv color={colors['background-header']}>{props.children}</TextButtonPriv>
 }
-
-const styles = StyleSheet.create({
-	text: {
-		textTransform: 'uppercase',
-	},
-})
 
 export default SecondaryTextPriv
