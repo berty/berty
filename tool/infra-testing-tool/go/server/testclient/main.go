@@ -24,6 +24,7 @@ func main() {
 	defer conn.Close()
 
 	p := server.NewProxyClient(conn)
+
 	////conn, err := grpc.Dial("15.236.100.80:9090", grpc.WithInsecure())
 	//conn, err = grpc.Dial("192.168.1.177:9090", grpc.WithInsecure())
 	//if err != nil {

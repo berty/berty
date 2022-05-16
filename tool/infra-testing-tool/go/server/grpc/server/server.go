@@ -22,6 +22,45 @@ import (
 	"google.golang.org/grpc"
 )
 
+type TestSession struct {
+	ctx     context.Context
+	cancel  context.CancelFunc
+	started time.Time
+	ended   time.Duration
+	once    sync.Once
+
+	Config *config.Test
+}
+
+func (s *TestSession) IsRunning() bool {
+	return s.ctx.Err() == nil
+}
+
+func (s *TestSession) Done() <-chan struct{} {
+	return s.ctx.Done()
+}
+
+func (s *TestSession) Stop() time.Duration {
+	s.once.Do(func() {
+		s.cancel()
+		// @TODO: maybe protect time ended
+		s.ended = time.Since(s.started)
+	})
+
+	return s.ended
+}
+
+func NewTestSession(ctx context.Context, ct *config.Test) *TestSession {
+	ctx, cancel := context.WithCancel(ctx)
+	return &TestSession{
+		Config: ct,
+
+		ctx:     ctx,
+		cancel:  cancel,
+		started: time.Now(),
+	}
+}
+
 type Server struct {
 	Cc        *grpc.ClientConn
 	Messenger messengertypes.MessengerServiceClient
@@ -31,9 +70,9 @@ type Server struct {
 
 	Groups map[string]*protocoltypes.Group
 
-	// group --> test --> bool
-	Tests        map[string]map[int64]config.Test
-	RunningTests map[string]map[int64]bool
+	Tests        map[string] /* group */ map[int64] /* test_index */ *config.Test
+	TestSessions map[string] /* group */ map[int64] /* test_index */ *TestSession
+	muTests      sync.RWMutex
 
 	ReceivingMessages map[string]bool
 
@@ -46,19 +85,15 @@ type Server struct {
 }
 
 // NewServer returns server with initialised internal maps
-func NewServer() Server {
-	var s Server
-
-	s.Groups = make(map[string]*protocoltypes.Group)
-	s.Tests = make(map[string]map[int64]config.Test)
-	s.RunningTests = make(map[string]map[int64]bool)
-
-	s.ReceivingMessages = make(map[string]bool)
-
-	s.Messages = make(map[string][]Message)
-	s.LastMessageId = make(map[string][]byte)
-
-	return s
+func NewServer() *Server {
+	return &Server{
+		Groups:            make(map[string]*protocoltypes.Group),
+		Tests:             make(map[string]map[int64]*config.Test),
+		TestSessions:      make(map[string]map[int64]*TestSession),
+		ReceivingMessages: make(map[string]bool),
+		Messages:          make(map[string][]Message),
+		LastMessageId:     make(map[string][]byte),
+	}
 }
 
 func (s *Server) mustEmbedUnimplementedProxyServer() {
@@ -70,16 +105,16 @@ func (s *Server) mustEmbedUnimplementedProxyServer() {
 func (s *Server) IsTestRunning(ctx context.Context, request *IsTestRunning_Request) (response *IsTestRunning_Response, err error) {
 	logging.Log(fmt.Sprintf("IsTestRunning - incoming request: %+v", request))
 
-	if s.Groups[request.GroupName] == nil {
-		return &IsTestRunning_Response{TestIsRunning: false}, logging.LogErr(errors.New(ErrNotInGroup))
+	s.muTests.Lock()
+	defer s.muTests.Unlock()
+
+	if gtest, ok := s.TestSessions[request.GroupName]; ok {
+		if _, ok := gtest[request.TestN]; ok {
+			return &IsTestRunning_Response{TestIsRunning: false}, nil
+		}
 	}
 
-	_, ok := s.Tests[request.GroupName][request.TestN]
-	if !ok {
-		return response, logging.LogErr(errors.New(ErrTestNotExist))
-	}
-
-	return &IsTestRunning_Response{TestIsRunning: s.RunningTests[request.GroupName][request.TestN]}, logging.LogErr(err)
+	return &IsTestRunning_Response{TestIsRunning: true}, nil
 }
 
 // NewTest adds a test to the peers' test memory
@@ -91,7 +126,7 @@ func (s *Server) NewTest(ctx context.Context, request *NewTest_Request) (respons
 		return response, logging.LogErr(errors.New(ErrNotInGroup))
 	}
 
-	test := config.Test{
+	test := &config.Test{
 		TypeInternal:     request.Type,
 		SizeInternal:     int(request.Size),
 		IntervalInternal: int(request.Interval),
@@ -99,10 +134,9 @@ func (s *Server) NewTest(ctx context.Context, request *NewTest_Request) (respons
 	}
 
 	s.Lock.Lock()
-
 	_, ok := s.Tests[request.GroupName]
 	if !ok {
-		s.Tests[request.GroupName] = make(map[int64]config.Test)
+		s.Tests[request.GroupName] = make(map[int64]*config.Test)
 	}
 
 	s.Tests[request.GroupName][request.TestN] = test
@@ -112,69 +146,92 @@ func (s *Server) NewTest(ctx context.Context, request *NewTest_Request) (respons
 	return response, logging.LogErr(err)
 }
 
+// StopTest stops all tests
+func (s *Server) StopTest(ctx context.Context, request *StopTest_Request) (res *StopTest_Response, err error) {
+	res = new(StopTest_Response)
+
+	s.muTests.Lock()
+
+	for _, gtest := range s.TestSessions {
+		for index, ts := range gtest {
+			elapsed := ts.Stop()
+			logging.Log(fmt.Sprintf("test [%d] ended in %dm%ds", index, int(elapsed.Minutes()), int(elapsed.Seconds())))
+
+			// @TODO: keep trace of the test
+			delete(gtest, index)
+		}
+	}
+
+	s.muTests.Unlock()
+
+	return res, logging.LogErr(err)
+}
+
 // StartTest starts a specific test
 func (s *Server) StartTest(ctx context.Context, request *StartTest_Request) (response *StartTest_Response, err error) {
+	// @TODO: maybe make this command sync, and stream interaction to let the
+	// client know when all the interaction has been sent
+
 	logging.Log(fmt.Sprintf("StartTest - incoming request: %+v", request))
 	response = new(StartTest_Response)
 
+	var ct *config.Test
+	var ts *TestSession
+
+	s.muTests.Lock()
+
 	// checks if test exists
-	if s.Tests[request.GroupName][request.TestN] == *new(config.Test) {
-		return response, logging.LogErr(errors.New(ErrTestNotExist))
+	if gtest, ok := s.Tests[request.GroupName]; ok {
+		if ct, ok = gtest[request.TestN]; !ok {
+			s.muTests.Unlock()
+			return response, logging.LogErr(errors.New(ErrTestNotExist))
+		}
 	}
 
 	// checks if test isn't already running
-	if s.RunningTests[request.GroupName][request.TestN] {
-		return response, logging.LogErr(errors.New(ErrTestInProgress))
+	if gtest, ok := s.TestSessions[request.GroupName]; ok {
+		if ts, ok = gtest[request.TestN]; ok {
+			s.muTests.Unlock()
+			return response, logging.LogErr(errors.New(ErrTestNotExist))
+		}
 	}
 
-	s.Lock.Lock()
-	// adds test to local test cache
-	test := s.Tests[request.GroupName][request.TestN]
+	sctx := context.Background()
+	ts = NewTestSession(sctx, ct)
+	s.TestSessions[request.GroupName][request.TestN] = ts
 
-	if s.RunningTests[request.GroupName] == nil {
-		s.RunningTests[request.GroupName] = make(map[int64]bool)
-	}
-
-	// sets test to running
-	s.RunningTests[request.GroupName][request.TestN] = true
-	s.Lock.Unlock()
-
-	logging.Log(fmt.Sprintf("starting test: %+v", test))
+	s.muTests.Unlock()
 
 	time.Sleep(time.Second * 5)
 
-	go func() {
-		defer func() {
-			s.Lock.Lock()
-			defer s.Lock.Unlock()
-			// set running state to false when function finishes
-			s.RunningTests[request.GroupName][request.TestN] = false
-		}()
+	logging.Log(fmt.Sprintf("starting test: %+v", ct))
 
+	go func() {
 		var x int
-		for x = 0; x < test.AmountInternal; x += 1 {
-			switch test.TypeInternal {
+		for x = 0; ts.IsRunning() && x < ct.AmountInternal; x += 1 {
+			switch ct.TypeInternal {
 			case config.TestTypeText:
-				message := ConstructTextMessage(test.SizeInternal)
-				err = s.SendTextMessage(request.GroupName, message)
+				message := ConstructTextMessage(ct.SizeInternal)
+				err = s.SendTextMessage(sctx, request.GroupName, message)
 				if err != nil {
 					logging.Log(err.Error())
 				}
 
 			case config.TestTypeMedia:
-				image, err := ConstructImageMessage(test.SizeInternal)
+				image, err := ConstructImageMessage(ct.SizeInternal)
 				if err != nil {
 					logging.Log(err.Error())
+					continue
 				}
 
-				err = s.SendImageMessage(request.GroupName, image)
+				err = s.SendImageMessage(sctx, request.GroupName, image)
 				if err != nil {
 					logging.Log(err.Error())
 				}
 			}
 
 			logging.Log(fmt.Sprintf("sent message to group: %s", request.GroupName))
-			time.Sleep(time.Second * time.Duration(test.IntervalInternal))
+			time.Sleep(time.Second * time.Duration(ct.IntervalInternal))
 		}
 
 		logging.Log(fmt.Sprintf("sent %d messages to %s\n", x, request.GroupName))

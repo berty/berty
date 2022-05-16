@@ -1,8 +1,9 @@
 package cmd
 
 import (
-	"github.com/spf13/cobra"
 	"infratesting/logging"
+
+	"github.com/spf13/cobra"
 )
 
 var (
@@ -35,8 +36,10 @@ func init() {
 
 	rootCmd.AddCommand(destroyCmd)
 	rootCmd.AddCommand(deployCmd)
-	rootCmd.AddCommand(testCmd)
+	rootCmd.AddCommand(testStartCmd)
+	rootCmd.AddCommand(testStopCmd)
 	rootCmd.AddCommand(versionCmd)
+	rootCmd.AddCommand(testRunAndStopCmd)
 	rootCmd.AddCommand(getIpsCmd)
 }
 

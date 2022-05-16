@@ -16,6 +16,10 @@ CLIENT_OUTPUT_PATH  = $(MAKEFILE_DIR)/$(CLIENT_NAME)
 SERVER_OUTPUT_PATH  = $(MAKEFILE_DIR)/$(SERVER_NAME)
 CLIENT_INSTALL_PATH = $(INSTALL_DIR)/$(CLIENT_NAME)
 SERVER_INSTALL_PATH = $(INSTALL_DIR)/$(SERVER_NAME)
+GO_FILES			= $(shell find go -name '*.go')
+GO_DEPS				= go/go.mod $(GO_FILES)
+
+# run
 
 .PHONY: run.client
 run.client: deps
@@ -28,24 +32,30 @@ run.server: deps
 .PHONY: run
 run: run.client run.server
 
+# build
+
 .PHONY: build.client
-build.client: deps
-	cd $(GO_DIR) && go build -o ${CLIENT_OUTPUT_PATH} .
+build.client: deps $(CLIENT_OUTPUT_PATH)
+$(CLIENT_OUTPUT_PATH): $(GO_DEPS)
+	cd $(GO_DIR) && go build -o $@ .
 
 .PHONY: build.server
-build.server: deps
-	cd $(GO_SERVER_DIR) && go build -o ${SERVER_OUTPUT_PATH} .
+build.server: deps $(SERVER_OUTPUT_PATH)
+$(SERVER_OUTPUT_PATH): $(GO_DEPS)
+	cd $(GO_SERVER_DIR) && go build -o $@ .
 
 .PHONY: build
 build: build.client build.server
 
 .PHONY: install.client
 install.client: deps
-	cd $(GO_DIR) && go build -o ${CLIENT_INSTALL_PATH} .
+${CLIENT_INSTALL_PATH}: $(GO_DEPS)
+	cd $(GO_DIR) && go build -o $@  .
 
 .PHONY: install.server
 install.server: deps
-	cd $(GO_SERVER_DIR) && go build -o ${SERVER_INSTALL_PATH} .
+${SERVER_INSTALL_PATH}: $(GO_DEPS)
+	cd $(GO_SERVER_DIR) && go build -o $@ .
 
 .PHONY: install
 install: install.client install.server
@@ -61,9 +71,29 @@ update_ami:
 		-var 'server_go_version=$(SERVER_GO_VERSION)' \
 		.
 
+# deps
+
 .PHONY: deps
-deps:
-	cd $(GO_DIR) && go mod tidy
+deps: generate.proto go/go.sum
+
+# deps: go mod
+
+%.sum: go/go.mod
+	cd $(GO_DIR) && go mod tidy -v
+	touch $@
+
+# deps: protos
+
+.PHONY: generate.proto
+generate.proto: go/server/grpc/server/server.pb.go go/server/grpc/server/server_grpc.pb.go
+
+go/server/grpc/server/server.pb.go: go/server/grpc/server.proto
+	protoc -I$(dir $<) --go_out=$(dir $<) "$<"
+
+go/server/grpc/server/server_grpc.pb.go: go/server/grpc/server.proto
+	protoc -I$(dir $<) --go-grpc_out=$(dir $<) "$<"
+
+# clean
 
 .PHONY: clean
 clean:
