@@ -152,21 +152,42 @@ android {
         addEnvVar("SHAKE_API_SECRET")
 
         def generateVersionCode = {
-            def result = "git rev-list HEAD --count".execute().text.trim() //unix
-            if(result.empty) result = "PowerShell -Command git rev-list HEAD --count".execute().text.trim() //windows
-            if(result.empty) throw new RuntimeException("Could not generate versionCode on this platform? Cmd output: ${result.text}")
-            logger.info("Generated versionCode: ${result}")
-            return result.toInteger()
+            def cwd = rootDir.getParentFile().getParentFile() // Berty repo root dir
+            def platform = System.properties['os.name'].toLowerCase().contains('windows') ? "Windows" : "Unix"
+            def err
+            try {
+                def proc = "${platform == "Windows" ? "PowerShell -Command" : ""} git rev-list HEAD --count".execute(null, cwd)
+                err = proc.err.text.trim()
+                def out = proc.text.trim()
+                if (!out.isEmpty()) {
+                    if (out.isInteger()) {
+                        return out.toInteger()
+                    }
+                    err = "can't convert version code to integer: <${out}>"
+                }
+            } catch (Exception e) {
+                err = e.toString()
+            }
+            throw new RuntimeException("Could not generate versionCode (platform ${platform}): ${err}")
         }
 
         def generateVersionName = {
-            def result = "go run -mod=readonly -modfile=${rootDir.getPath()}/../../go.mod github.com/mdomke/git-semver/v5".execute().text.trim() // unix
-            if(result.empty) result = "PowerShell -Command go run -mod=readonly -modfile=${rootDir.getPath()}/../../go.mod github.com/mdomke/git-semver/v5".execute().text.trim() //windows
-            if(result.empty) throw new RuntimeException("Could not generate versionName on this platform? Cmd output: ${result.text}")
-            result = result.substring(1)
-            result = result.split('-')[0]
-            logger.info("Generated versionName: ${result}")
-            return result
+            def cwd = rootDir.getParentFile().getParentFile() // Berty repo root dir
+            def platform = System.properties['os.name'].toLowerCase().contains('windows') ? "Windows" : "Unix"
+            def err
+            try {
+                def proc = "${platform == "Windows" ? "PowerShell -Command" : ""} go run -mod=readonly github.com/mdomke/git-semver/v5".execute(null, cwd)
+                err = proc.err.text.trim()
+                def out = proc.text.trim()
+                if (!out.isEmpty()) {
+                    out = out.substring(1)
+                    out = out.split('-')[0]
+                    return out
+                }
+            } catch (Exception e) {
+                err = e.toString()
+            }
+            throw new RuntimeException("Could not generate versionName (platform ${platform}): ${err}")
         }
 
         versionCode generateVersionCode()
