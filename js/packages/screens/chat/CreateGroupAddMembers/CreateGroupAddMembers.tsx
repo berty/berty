@@ -39,7 +39,7 @@ export const CreateGroupAddMembers: ScreenFC<'Chat.CreateGroupAddMembers'> = () 
 			</View>
 			<FooterCreateGroup
 				title={t('main.home.create-group.continue')}
-				titleStyle={{ textTransform: 'uppercase' }}
+				// titleStyle={{ textTransform: 'uppercase' }}
 				icon='arrow-forward-outline'
 				action={() => navigation.navigate('Chat.CreateGroupFinalize')}
 			/>

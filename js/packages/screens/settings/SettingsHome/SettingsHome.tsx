@@ -2,7 +2,7 @@ import { Icon } from '@ui-kitten/components'
 import * as MailComposer from 'expo-mail-composer'
 import React, { useContext } from 'react'
 import { useTranslation } from 'react-i18next'
-import { ScrollView, TouchableOpacity, View, Platform } from 'react-native'
+import { Platform, ScrollView, TouchableOpacity, View } from 'react-native'
 import { withInAppNotification } from 'react-native-in-app-notification'
 import { RESULTS } from 'react-native-permissions'
 import { useDispatch, useSelector } from 'react-redux'
@@ -25,7 +25,7 @@ import {
 	setNodeNetworkConfig,
 } from '@berty/redux/reducers/networkConfig.reducer'
 import { selectProtocolClient, selectSelectedAccount } from '@berty/redux/reducers/ui.reducer'
-import { useMountEffect, useThemeColor, useMessengerClient } from '@berty/store'
+import { useMessengerClient, useMountEffect, useThemeColor } from '@berty/store'
 import { accountClient } from '@berty/utils/accounts/accountClient'
 import { numberifyLong } from '@berty/utils/convert/long'
 import {
