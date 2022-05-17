@@ -1,7 +1,6 @@
 package parser
 
 import (
-	"context"
 	"time"
 
 	"berty.tech/berty/v2/go/pkg/tyber"
@@ -88,27 +87,3 @@ type CreateStepEvent struct {
 // 	Detail string `json:"detail"`
 // 	Status
 // }
-
-func WatchSessionEvent(ctx context.Context, c chan interface{}) <-chan interface{} {
-	cout := make(chan interface{})
-
-	go func() {
-		for {
-			select {
-			case e := <-c:
-				switch evt := e.(type) {
-				case []CreateSessionEvent:
-					cout <- evt
-				case CreateSessionEvent:
-					cout <- evt
-				case DeleteSessionEvent:
-					cout <- evt
-				}
-			case <-ctx.Done():
-				cout <- ctx.Err()
-			}
-		}
-	}()
-
-	return cout
-}

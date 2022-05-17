@@ -61,7 +61,7 @@ func runMain(args []string) error {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	manager = cmd.New(ctx)
+	manager = cmd.New(ctx, cancel)
 
 	// setup flags
 	var fs *flag.FlagSet
@@ -111,16 +111,19 @@ func list() *ffcli.Command {
 			}
 			defer manager.Cancel()
 
-			c := parser.WatchSessionEvent(ctx, manager.Parser.EventChan)
-
-			manager.Parser.ListSessions()
+			var sessions []parser.CreateSessionEvent
+			go manager.Parser.ListSessions()
 
 			// waiting parser returns the session list
-			evt := <-c
-
-			sessions, ok := evt.([]parser.CreateSessionEvent)
-			if !ok {
-				return errors.New("list: wrong event received")
+			select {
+			case evt := <-manager.Parser.EventChan:
+				var ok bool
+				sessions, ok = evt.([]parser.CreateSessionEvent)
+				if !ok {
+					return errors.New("list: wrong event received")
+				}
+			case <-ctx.Done():
+				return ctx.Err()
 			}
 
 			for _, session := range sessions {
@@ -151,15 +154,30 @@ func parse() *ffcli.Command {
 			}
 			defer manager.Cancel()
 
-			c := parser.WatchSessionEvent(ctx, manager.Parser.EventChan)
-
 			for _, path := range args {
-				manager.Parser.ParseFile(path)
+				cerr := make(chan error)
+
+				go func() {
+					if err := manager.Parser.ParseFile(path); err != nil {
+						cerr <- err
+					}
+				}()
 
 				// waiting to finish parsing
-				evt := <-c
-				if _, ok := evt.(parser.CreateSessionEvent); !ok {
-					return errors.New("parser: wrong event received")
+			EVENT_LOOP: // label
+				for {
+					select {
+					case evt := <-manager.Parser.EventChan:
+						switch evt.(type) {
+						case parser.CreateSessionEvent:
+							break EVENT_LOOP
+						default: // digest unwanted events
+						}
+					case err := <-cerr:
+						return err
+					case <-ctx.Done():
+						return ctx.Err()
+					}
 				}
 			}
 
@@ -188,16 +206,19 @@ func delete() *ffcli.Command {
 			}
 			defer manager.Cancel()
 
-			c := parser.WatchSessionEvent(ctx, manager.Parser.EventChan)
-
 			if *all {
-				manager.Parser.DeleteAllSessions()
+				go manager.Parser.DeleteAllSessions()
 
-				// waiting parser returns
-				evt := <-c
-				_, ok := evt.([]parser.CreateSessionEvent)
-				if !ok {
-					return errors.New("delete -a: wrong event received")
+				// waiting parser deletes all sessions
+				select {
+				case evt := <-manager.Parser.EventChan:
+					var ok bool
+					_, ok = evt.([]parser.CreateSessionEvent)
+					if !ok {
+						return errors.New("delete: wrong event received")
+					}
+				case <-ctx.Done():
+					return ctx.Err()
 				}
 
 				return nil
@@ -206,11 +227,16 @@ func delete() *ffcli.Command {
 			for _, sessionID := range args {
 				go manager.Parser.DeleteSession(sessionID)
 
-				// waiting parser returns
-				evt := <-c
-				_, ok := evt.(parser.DeleteSessionEvent)
-				if !ok {
-					return errors.New("delete: wrong event received")
+				// waiting parser deletes this session
+				select {
+				case evt := <-manager.Parser.EventChan:
+					var ok bool
+					_, ok = evt.(parser.DeleteSessionEvent)
+					if !ok {
+						return errors.New("delete: wrong event received")
+					}
+				case <-ctx.Done():
+					return ctx.Err()
 				}
 			}
 

@@ -22,9 +22,7 @@ type Manager struct {
 	logger *logger.Logger
 }
 
-func New(ctx context.Context) *Manager {
-	ctx, cancel := context.WithCancel(ctx)
-
+func New(ctx context.Context, cancel func()) *Manager {
 	l := log.New(log.Writer(), log.Prefix(), log.Flags())
 	logger := logger.New(l, func(log *logger.Log) {}).Named("manager")
 
