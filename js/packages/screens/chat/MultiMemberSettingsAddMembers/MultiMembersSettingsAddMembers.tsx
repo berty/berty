@@ -6,7 +6,7 @@ import { StatusBar, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 import beapi from '@berty/api'
-import { FooterCreateGroup } from '@berty/components/create-group/CreateGroupFooter'
+import { CreateGroupFooterWithIcon } from '@berty/components/create-group/CreateGroupFooterWithIcon'
 import { Header } from '@berty/components/create-group/CreateGroupHeader'
 import { MemberList } from '@berty/components/create-group/CreateGroupMemberList'
 import { ContactPicker } from '@berty/components/shared-components'
@@ -89,7 +89,7 @@ export const MultiMemberSettingsAddMembers: ScreenFC<'Chat.MultiMemberSettingsAd
 					<ContactPicker accountContacts={accountContacts} />
 				</View>
 			</View>
-			<FooterCreateGroup
+			<CreateGroupFooterWithIcon
 				title={t('chat.add-members.add')}
 				icon='arrow-forward-outline'
 				action={async () => {

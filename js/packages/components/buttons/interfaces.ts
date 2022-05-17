@@ -10,3 +10,7 @@ export interface IIconName {
 	 */
 	name?: string
 }
+
+export interface IIconType {
+	type?: 'primary' | 'secondary' | 'tertiary' | 'error'
+}

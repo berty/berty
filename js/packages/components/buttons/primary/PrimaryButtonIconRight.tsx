@@ -1,7 +1,6 @@
 import React from 'react'
-import { StyleSheet, View } from 'react-native'
 
-import IconButtonPriv from '../IconButton.priv'
+import IconWrapperRightPriv from '../icon-button/IconWrapperRight.priv'
 import { IButtonPress, IIconName } from '../interfaces'
 import PrimaryButtonPriv from './PrimaryButton.priv'
 import PrimaryTextPriv from './PrimaryText.priv'
@@ -10,17 +9,9 @@ const PrimaryButtonIconRight: React.FC<IButtonPress & IIconName> = props => {
 	return (
 		<PrimaryButtonPriv onPress={props.onPress}>
 			<PrimaryTextPriv>{props.children}</PrimaryTextPriv>
-			<View style={styles.icon}>
-				<IconButtonPriv name={props.name} />
-			</View>
+			<IconWrapperRightPriv name={props.name} />
 		</PrimaryButtonPriv>
 	)
 }
-
-const styles = StyleSheet.create({
-	icon: {
-		marginLeft: 10,
-	},
-})
 
 export default PrimaryButtonIconRight

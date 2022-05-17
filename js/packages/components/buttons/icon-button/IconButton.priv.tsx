@@ -3,13 +3,9 @@ import React, { useMemo } from 'react'
 
 import { useThemeColor } from '@berty/store'
 
-import { IIconName } from './interfaces'
+import { IIconName, IIconType } from '../interfaces'
 
-interface IIconButtonProps extends IIconName {
-	type?: 'primary' | 'secondary' | 'tertiary' | 'error'
-}
-
-const IconButtonPriv = (props?: IIconButtonProps): JSX.Element => {
+const IconButtonPriv = (props?: IIconType & IIconName): JSX.Element => {
 	const colors = useThemeColor()
 
 	const color = useMemo((): string => {

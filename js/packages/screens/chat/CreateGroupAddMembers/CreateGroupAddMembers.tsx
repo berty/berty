@@ -3,7 +3,7 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { View, StatusBar } from 'react-native'
 
-import { FooterCreateGroup } from '@berty/components/create-group/CreateGroupFooter'
+import { CreateGroupFooterWithIcon } from '@berty/components/create-group/CreateGroupFooterWithIcon'
 import { Header } from '@berty/components/create-group/CreateGroupHeader'
 import { MemberList } from '@berty/components/create-group/CreateGroupMemberList'
 import { ContactPicker } from '@berty/components/shared-components'
@@ -37,9 +37,8 @@ export const CreateGroupAddMembers: ScreenFC<'Chat.CreateGroupAddMembers'> = () 
 					<ContactPicker accountContacts={accountContacts} />
 				</View>
 			</View>
-			<FooterCreateGroup
+			<CreateGroupFooterWithIcon
 				title={t('main.home.create-group.continue')}
-				// titleStyle={{ textTransform: 'uppercase' }}
 				icon='arrow-forward-outline'
 				action={() => navigation.navigate('Chat.CreateGroupFinalize')}
 			/>
