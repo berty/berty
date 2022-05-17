@@ -1,7 +1,6 @@
 import React from 'react'
-import { StyleSheet, View } from 'react-native'
 
-import IconButtonPriv from '../IconButton.priv'
+import IconWrapperLeftPriv from '../icon-button/IconWrapperLeft.priv'
 import { IButtonPress, IIconName } from '../interfaces'
 import TertiaryButtonPriv from './TertiaryButton.priv'
 import TertiaryTextPriv from './TertiaryText.priv'
@@ -9,18 +8,10 @@ import TertiaryTextPriv from './TertiaryText.priv'
 const TertiaryButtonIconLeft: React.FC<IButtonPress & IIconName> = props => {
 	return (
 		<TertiaryButtonPriv onPress={props.onPress}>
-			<View style={styles.icon}>
-				<IconButtonPriv name={props.name} type='tertiary' />
-			</View>
+			<IconWrapperLeftPriv name={props.name} type='tertiary' />
 			<TertiaryTextPriv>{props.children}</TertiaryTextPriv>
 		</TertiaryButtonPriv>
 	)
 }
-
-const styles = StyleSheet.create({
-	icon: {
-		marginRight: 10,
-	},
-})
 
 export default TertiaryButtonIconLeft
