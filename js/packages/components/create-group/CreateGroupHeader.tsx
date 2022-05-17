@@ -14,7 +14,7 @@ export const Header: React.FC<{
 	iconPack?: string
 	first?: boolean
 	disabled?: boolean
-	onPress?: any
+	onPress?: () => void
 	style?: any
 }> = ({
 	children,
@@ -32,7 +32,7 @@ export const Header: React.FC<{
 
 	return (
 		<View style={[!first && { backgroundColor: colors['main-background'] }]}>
-			<TouchableWithoutFeedback onPress={onPress}>
+			<TouchableWithoutFeedback onPress={() => onPress?.()}>
 				<View
 					style={[
 						border.radius.top.scale(30),
