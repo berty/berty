@@ -212,9 +212,7 @@ func delete() *ffcli.Command {
 				// waiting parser deletes all sessions
 				select {
 				case evt := <-manager.Parser.EventChan:
-					var ok bool
-					_, ok = evt.([]parser.CreateSessionEvent)
-					if !ok {
+					if _, ok := evt.([]parser.CreateSessionEvent); !ok {
 						return errors.New("delete: wrong event received")
 					}
 				case <-ctx.Done():

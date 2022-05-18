@@ -71,6 +71,7 @@ func (p *Parser) Init(sessionPath string) error {
 	select {
 	case p.EventChan <- events:
 	case <-p.ctx.Done():
+		return p.ctx.Err()
 	}
 
 	p.initLock.Lock()
