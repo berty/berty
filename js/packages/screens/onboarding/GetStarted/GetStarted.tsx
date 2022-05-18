@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { View, StatusBar, Platform } from 'react-native'
 
 import Logo from '@berty/assets/logo/berty_gradient_square.svg'
-import Button from '@berty/components/shared-components/Button'
+import { PrimaryButton, SecondaryButton } from '@berty/components'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useStyles } from '@berty/contexts/styles'
 import { useAppSelector } from '@berty/hooks'
@@ -36,7 +36,6 @@ export const GetStarted: ScreenFC<'Onboarding.GetStarted'> = ({ navigation: { na
 				<View>
 					<UnifiedText
 						style={[
-							padding.horizontal.medium,
 							text.align.center,
 							text.size.large,
 							text.bold,
@@ -47,14 +46,34 @@ export const GetStarted: ScreenFC<'Onboarding.GetStarted'> = ({ navigation: { na
 					</UnifiedText>
 				</View>
 				<View style={[margin.top.small]}>
-					<UnifiedText
-						style={[padding.horizontal.medium, text.align.center, text.align.bottom, text.italic]}
-					>
+					<UnifiedText style={[text.align.center, text.align.bottom, text.italic]}>
 						{t('onboarding.getstarted.desc')}
 					</UnifiedText>
 				</View>
-				<View style={[margin.top.big]}>
-					<Button
+				<View style={{ marginHorizontal: 60 }}>
+					<View style={[margin.top.huge]}>
+						<PrimaryButton
+							onPress={async () => {
+								await storageSet(GlobalPersistentOptionsKeys.IsNewAccount, 'isNew')
+								navigate('Onboarding.CreateAccount')
+							}}
+						>
+							{t('onboarding.getstarted.create-button')}
+						</PrimaryButton>
+					</View>
+					{Platform.OS !== 'web' && (
+						<View style={[margin.top.small]}>
+							<SecondaryButton
+								onPress={async () => {
+									await importAccountFromDocumentPicker(embedded)
+								}}
+							>
+								{t('onboarding.getstarted.import-button')}
+							</SecondaryButton>
+						</View>
+					)}
+				</View>
+				{/* <Button
 						accessibilityLabel={t('onboarding.getstarted.create-button')}
 						onPress={async () => {
 							await storageSet(GlobalPersistentOptionsKeys.IsNewAccount, 'isNew')
@@ -62,8 +81,8 @@ export const GetStarted: ScreenFC<'Onboarding.GetStarted'> = ({ navigation: { na
 						}}
 					>
 						{t('onboarding.getstarted.create-button')}
-					</Button>
-					{Platform.OS !== 'web' && (
+					</Button> */}
+				{/* {Platform.OS !== 'web' && (
 						<Button
 							status='secondary'
 							onPress={async () => {
@@ -72,13 +91,12 @@ export const GetStarted: ScreenFC<'Onboarding.GetStarted'> = ({ navigation: { na
 						>
 							{t('onboarding.getstarted.import-button')}
 						</Button>
-					)}
-					{/*
+					)} */}
+				{/*
 					<Button status='secondary' onPress={() => {}}>
 						{t('onboarding.getstarted.link-button')}
 					</Button>
 					*/}
-				</View>
 			</View>
 		</View>
 	)

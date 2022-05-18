@@ -1,17 +1,11 @@
 import { Icon, Input } from '@ui-kitten/components'
 import React, { FC, useReducer } from 'react'
 import { useTranslation } from 'react-i18next'
-import {
-	ActivityIndicator,
-	Image,
-	Pressable,
-	StyleSheet,
-	TouchableOpacity,
-	View,
-} from 'react-native'
+import { Image, Pressable, View } from 'react-native'
 import ImagePicker, { ImageOrVideo } from 'react-native-image-crop-picker'
 import { useSelector } from 'react-redux'
 
+import { SecondaryButton } from '@berty/components'
 import { AccountAvatar } from '@berty/components/avatars'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useModal } from '@berty/contexts/modal.context'
@@ -23,12 +17,6 @@ import { useMessengerClient, useThemeColor } from '@berty/store'
 //
 // Edit Profile
 //
-
-// Style
-const _stylesEditProfile = StyleSheet.create({
-	profileButton: { width: '80%', height: 50 },
-	profileInfo: { width: '100%', height: 60 },
-})
 
 type State = {
 	saving: boolean
@@ -165,7 +153,7 @@ const EditMyProfile: React.FC = () => {
 		}
 	}
 
-	const { padding, margin, row, background, border, flex, text, color, column } = useStyles()
+	const { padding, margin, row, background, border, flex, text, color } = useStyles()
 
 	let image: JSX.Element
 	if (state.pic) {
@@ -283,7 +271,7 @@ const EditMyProfile: React.FC = () => {
 					</UnifiedText>
 				</View>
 			</View>
-			{state.err ? (
+			{state.err && (
 				<View
 					style={{
 						alignItems: 'center',
@@ -296,37 +284,12 @@ const EditMyProfile: React.FC = () => {
 						🚧 {state.err.toString()} 🚧
 					</UnifiedText>
 				</View>
-			) : undefined}
-			<TouchableOpacity disabled={state.saving} onPress={handleSave}>
-				<View
-					style={[
-						row.item.justify,
-						column.justify,
-						border.radius.small,
-						_stylesEditProfile.profileButton,
-						{ backgroundColor: colors['positive-asset'] },
-					]}
-				>
-					{state.saving ? (
-						<ActivityIndicator color={colors['secondary-text']} />
-					) : (
-						<UnifiedText
-							style={[
-								text.align.center,
-								text.bold,
-								{
-									textTransform: 'uppercase',
-									color: colors['background-header'],
-								},
-							]}
-						>
-							{(state.name && state.name !== account.displayName) || state.pic
-								? t('settings.edit-profile.save')
-								: (t('settings.edit-profile.cancel') as any)}
-						</UnifiedText>
-					)}
-				</View>
-			</TouchableOpacity>
+			)}
+			<SecondaryButton loading={state.saving} onPress={handleSave}>
+				{(state.name && state.name !== account.displayName) || state.pic
+					? t('settings.edit-profile.save')
+					: (t('settings.edit-profile.cancel') as any)}
+			</SecondaryButton>
 		</View>
 	)
 }

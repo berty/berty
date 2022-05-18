@@ -42,7 +42,6 @@ export const CreateAccountBox: React.FC<{
 						await storageSet(GlobalPersistentOptionsKeys.DisplayName, displayName)
 						navigate('Onboarding.CustomMode')
 					},
-					status: 'secondary',
 				}}
 			>
 				<View

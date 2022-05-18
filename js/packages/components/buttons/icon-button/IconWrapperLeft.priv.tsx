@@ -10,7 +10,7 @@ const IconWrapperLeftPriv: React.FC<IIconName & IIconType> = props => {
 	const { margin } = useStyles()
 
 	return (
-		<View style={margin.small}>
+		<View style={margin.right.small}>
 			<IconButtonPriv name={props.name} type={props.type} />
 		</View>
 	)

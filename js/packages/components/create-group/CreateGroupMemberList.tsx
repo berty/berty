@@ -69,7 +69,7 @@ const MemberItem: React.FC<{
 	)
 }
 
-export const MemberList = () => {
+export const CreateGroupMemberList = () => {
 	const { padding } = useStyles()
 	const members = useAppSelector(selectInvitationListMembers)
 

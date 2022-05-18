@@ -1,10 +1,10 @@
-import React, { ComponentProps } from 'react'
+import React from 'react'
 import { TextStyle, TouchableOpacity, View, ViewProps } from 'react-native'
 
 import { useStyles } from '@berty/contexts/styles'
 import { useThemeColor } from '@berty/store/hooks'
 
-import Button from '../shared-components/Button'
+import { PrimaryButton, SecondaryButton } from '../buttons'
 import { UnifiedText } from '../shared-components/UnifiedText'
 
 const Card: React.FC<ViewProps> = ({ style, children, ...props }) => (
@@ -29,10 +29,12 @@ const SwiperCard: React.FC<{
 	header?: string
 	button?: {
 		text: string
-	} & ComponentProps<typeof Button>
+		onPress: () => void
+	}
 	secondButton?: {
 		text: string
-	} & ComponentProps<typeof Button>
+		onPress: () => void
+	}
 	skip?: { text: string; onPress: () => void; textStyle: TextStyle | TextStyle[] }
 }> = ({ children, desc, header, title, button, skip, secondButton }) => {
 	const { text, padding, margin } = useStyles()
@@ -71,10 +73,18 @@ const SwiperCard: React.FC<{
 						</UnifiedText>
 					) : null}
 					{children}
-					{button ? <Button {...button}>{button.text}</Button> : null}
-					{secondButton ? <Button {...secondButton}>{secondButton.text}</Button> : null}
+					<View style={[margin.horizontal.large, margin.top.small]}>
+						{!!button && <PrimaryButton onPress={button.onPress}>{button.text}</PrimaryButton>}
+						{!!secondButton && (
+							<View style={margin.top.small}>
+								<SecondaryButton onPress={secondButton.onPress}>
+									{secondButton.text}
+								</SecondaryButton>
+							</View>
+						)}
+					</View>
 
-					{skip ? (
+					{!!skip && (
 						<TouchableOpacity style={[margin.top.medium]} onPress={skip.onPress}>
 							<UnifiedText
 								style={[
@@ -87,7 +97,7 @@ const SwiperCard: React.FC<{
 								{skip.text}
 							</UnifiedText>
 						</TouchableOpacity>
-					) : null}
+					)}
 				</View>
 			</Card>
 		</View>

@@ -18,6 +18,13 @@ import { useStyles } from '@berty/contexts/styles'
 import { useNavigation } from '@berty/navigation'
 import { useThemeColor } from '@berty/store'
 
+import {
+	HorizontalButtons,
+	SecondaryButton,
+	SecondaryButtonIconLeft,
+	TertiaryButton,
+	TertiaryButtonIconLeft,
+} from '../buttons'
 import { UnifiedText } from './UnifiedText'
 
 const useStylesModalWebView = () => {
@@ -80,7 +87,7 @@ const ModalWebviewBody: React.FC<{
 					{ backgroundColor: colors['main-background'], shadowColor: colors.shadow },
 				]}
 			>
-				<View style={[margin.top.scale(70 * scaleHeight)]}>
+				<View style={[margin.top.scale(50 * scaleHeight)]}>
 					<Icon
 						name='info-outline'
 						fill={colors['background-header']}
@@ -95,7 +102,20 @@ const ModalWebviewBody: React.FC<{
 						<UnifiedText style={[text.light]}>{t('onboarding.web-views.desc')}</UnifiedText>
 					</Text>
 				</View>
-				<View style={[row.center, padding.top.medium]}>
+				<HorizontalButtons>
+					<TertiaryButtonIconLeft name='close' onPress={closeModal}>
+						{t('onboarding.web-views.first-button')}
+					</TertiaryButtonIconLeft>
+					<SecondaryButtonIconLeft
+						onPress={() => {
+							accept()
+							closeModal()
+						}}
+					>
+						{t('onboarding.web-views.second-button')}
+					</SecondaryButtonIconLeft>
+				</HorizontalButtons>
+				{/* <View style={[row.center, padding.top.medium]}>
 					<TouchableOpacity
 						style={[
 							margin.bottom.medium,
@@ -151,7 +171,7 @@ const ModalWebviewBody: React.FC<{
 							{t('onboarding.web-views.second-button')}
 						</UnifiedText>
 					</TouchableOpacity>
-				</View>
+				</View> */}
 			</View>
 		</View>
 	)

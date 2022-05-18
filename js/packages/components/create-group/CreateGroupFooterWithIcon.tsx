@@ -1,10 +1,10 @@
 import React from 'react'
-import { View } from 'react-native'
 
 import { SecondaryButtonIconRight } from '@berty/components'
-import { useStyles } from '@berty/contexts/styles'
 
-type CreateGroupFooterWithIconProps = {
+import { CreateGroupFooterPriv } from './CreateGroupFooter.priv'
+
+interface CreateGroupFooterWithIconProps {
 	title: string
 	icon: string
 	action: () => void
@@ -15,13 +15,11 @@ export const CreateGroupFooterWithIcon = ({
 	icon,
 	action,
 }: CreateGroupFooterWithIconProps) => {
-	const { padding } = useStyles()
-
 	return (
-		<View style={[padding.horizontal.huge, padding.vertical.large]}>
+		<CreateGroupFooterPriv>
 			<SecondaryButtonIconRight name={icon} onPress={action}>
 				{title}
 			</SecondaryButtonIconRight>
-		</View>
+		</CreateGroupFooterPriv>
 	)
 }
