@@ -77,7 +77,6 @@ const SetupFinishedBody = () => {
 					desc={t('onboarding.setup-finished.desc')}
 					button={{
 						text: t('onboarding.setup-finished.button'),
-						textStyle: { textTransform: 'uppercase' },
 						onPress: () => {
 							setIsFinished(true)
 							Vibration.vibrate([500])

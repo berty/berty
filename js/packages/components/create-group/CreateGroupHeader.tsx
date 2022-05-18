@@ -8,7 +8,7 @@ import { useThemeColor } from '@berty/store'
 
 import { UnifiedText } from '../shared-components/UnifiedText'
 
-export const Header: React.FC<{
+export const CreateGroupHeader: React.FC<{
 	title: string
 	icon?: string
 	iconPack?: string

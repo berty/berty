@@ -10,6 +10,7 @@ import audioLottie from '@berty/assets/lottie/audio-lottie.json'
 import cameraLottie from '@berty/assets/lottie/camera-lottie.json'
 import notificationLottie from '@berty/assets/lottie/notification-lottie.json'
 import proximityLottie from '@berty/assets/lottie/proximity-lottie.json'
+import { PrimaryButton } from '@berty/components'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import PermissionsContext from '@berty/contexts/permissions.context'
 import { useStyles } from '@berty/contexts/styles'
@@ -36,7 +37,7 @@ const animations: Record<PermissionType, AnimatedLottieViewProps['source']> = {
 
 export const Permissions: ScreenFC<'Chat.Permissions'> = ({ route: { params }, navigation }) => {
 	const appState = useRef(AppState.currentState)
-	const { text, border } = useStyles()
+	const { text, border, margin } = useStyles()
 	const colors = useThemeColor()
 	const { t }: { t: any } = useTranslation()
 	const persistentOptions = useSelector(selectPersistentOptions)
@@ -171,7 +172,8 @@ export const Permissions: ScreenFC<'Chat.Permissions'> = ({ route: { params }, n
 				style={[
 					border.radius.top.large,
 					{
-						paddingVertical: 24,
+						paddingTop: 24,
+						paddingBottom: 40,
 						paddingHorizontal: 32,
 						backgroundColor: colors['main-background'],
 					},
@@ -196,7 +198,7 @@ export const Permissions: ScreenFC<'Chat.Permissions'> = ({ route: { params }, n
 					*/}
 					{t(`permission.${permissionType}.title`)}
 				</UnifiedText>
-				<UnifiedText style={{ lineHeight: 25, marginTop: 20 }}>
+				<UnifiedText style={[{ lineHeight: 25, marginTop: 20 }, text.align.center]}>
 					{/* Ignore check for i18n missing keys
 						permission.notification.desc
 						permission.camera.desc
@@ -223,37 +225,25 @@ export const Permissions: ScreenFC<'Chat.Permissions'> = ({ route: { params }, n
 					</UnifiedText>
 				)}
 				<View
-					style={{
-						width: '100%',
-						paddingHorizontal: 20,
-					}}
-				>
-					<TouchableOpacity
-						onPress={() => handleRequestPermission()}
-						style={{
-							backgroundColor: colors['background-header'],
-							paddingVertical: 16,
-							alignItems: 'center',
-							borderRadius: 12,
-							marginTop: 20,
+					style={[
+						{
 							width: '100%',
-						}}
-						activeOpacity={0.9}
-					>
-						<UnifiedText
-							style={[text.size.scale(18), text.bold, { color: colors['reverted-main-text'] }]}
-						>
-							{/* Ignore check for i18n missing keys
+							paddingHorizontal: 20,
+						},
+						margin.top.medium,
+					]}
+				>
+					<PrimaryButton onPress={() => handleRequestPermission()}>
+						{/* Ignore check for i18n missing keys
 								permission.button-labels.settings
 								permission.button-labels.allow
 							*/}
-							{t(
-								`permission.button-labels.${
-									permissionStatus === RESULTS.BLOCKED ? 'settings' : 'allow'
-								}`,
-							)}
-						</UnifiedText>
-					</TouchableOpacity>
+						{t(
+							`permission.button-labels.${
+								permissionStatus === RESULTS.BLOCKED ? 'settings' : 'allow'
+							}`,
+						)}
+					</PrimaryButton>
 				</View>
 				<TouchableOpacity
 					onPress={async () => {
