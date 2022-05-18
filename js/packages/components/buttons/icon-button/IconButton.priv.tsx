@@ -5,7 +5,7 @@ import { useThemeColor } from '@berty/store'
 
 import { IIconName, IIconType } from '../interfaces'
 
-const IconButtonPriv = (props?: IIconType & IIconName): JSX.Element => {
+const IconButtonPriv: React.FC<Partial<IIconType & IIconName>> = props => {
 	const colors = useThemeColor()
 
 	const color = useMemo((): string => {
@@ -23,7 +23,7 @@ const IconButtonPriv = (props?: IIconType & IIconName): JSX.Element => {
 		}
 	}, [props?.type, colors])
 
-	return <Icon fill={color} name={props?.name ?? 'checkmark-outline'} width={20} height={20} />
+	return <Icon fill={color} name={props?.name ?? 'checkmark-outline'} width={25} height={25} />
 }
 
 export default IconButtonPriv

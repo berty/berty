@@ -287,7 +287,7 @@ export const Home: ScreenFC<'Chat.Home'> = ({ navigation: { navigate } }) => {
 							configurations={configurations}
 							addBot={setIsAddBot}
 						/>
-						{!hasConversations && !hasSuggestion && !hasConfigurations ? (
+						{!hasConversations && !hasSuggestion && !hasConfigurations && (
 							<View style={{ backgroundColor: colors['main-background'] }}>
 								<View style={[flex.justify.center, flex.align.center, margin.top.scale(60)]}>
 									<View>
@@ -306,7 +306,7 @@ export const Home: ScreenFC<'Chat.Home'> = ({ navigation: { navigate } }) => {
 									</View>
 								</View>
 							</View>
-						) : null}
+						)}
 					</View>
 				)}
 			</ScrollView>

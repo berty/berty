@@ -3,9 +3,7 @@ import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View, TextInput, StyleSheet, ScrollView } from 'react-native'
 
-import { CreateGroupFooter } from '@berty/components/create-group/CreateGroupFooter'
-import { Header } from '@berty/components/create-group/CreateGroupHeader'
-import { MemberList } from '@berty/components/create-group/CreateGroupMemberList'
+import { CreateGroupFooter, CreateGroupHeader, CreateGroupMemberList } from '@berty/components'
 import { ButtonSettingItem } from '@berty/components/shared-components/SettingsButtons'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
@@ -213,15 +211,15 @@ export const CreateGroupFinalize: ScreenFC<'Chat.CreateGroupFinalize'> = () => {
 				<ScrollView>
 					<View style={{ backgroundColor: colors['background-header'] }}>
 						<View>
-							<MemberList />
-							<Header
+							<CreateGroupMemberList />
+							<CreateGroupHeader
 								title={t('main.home.create-group.add-members')}
 								onPress={goBack}
 								style={[padding.bottom.small]}
 								first
 							/>
 						</View>
-						<Header title={t('main.home.create-group.group-info')}>
+						<CreateGroupHeader title={t('main.home.create-group.group-info')}>
 							<GroupInfo onGroupNameChange={setGroupName} />
 							<CreateGroupFooter
 								title={t('main.home.create-group.create-group')}
@@ -231,7 +229,7 @@ export const CreateGroupFinalize: ScreenFC<'Chat.CreateGroupFinalize'> = () => {
 								}}
 								loading={loading}
 							/>
-						</Header>
+						</CreateGroupHeader>
 					</View>
 				</ScrollView>
 			</IOSOnlyKeyboardAvoidingView>

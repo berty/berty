@@ -52,9 +52,7 @@ export const GetStarted: ScreenFC<'Onboarding.GetStarted'> = () => {
 				<View style={[margin.top.big]}>
 					<Button
 						accessibilityLabel={t('onboarding.getstarted.create-button')}
-						onPress={async () => {
-							navigate('Onboarding.CreateAccount')
-						}}
+						onPress={() => navigate('Onboarding.CreateAccount')}
 					>
 						{t('onboarding.getstarted.create-button')}
 					</Button>

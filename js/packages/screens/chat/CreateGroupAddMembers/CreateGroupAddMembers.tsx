@@ -3,9 +3,11 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { View, StatusBar } from 'react-native'
 
-import { CreateGroupFooterWithIcon } from '@berty/components/create-group/CreateGroupFooterWithIcon'
-import { Header } from '@berty/components/create-group/CreateGroupHeader'
-import { MemberList } from '@berty/components/create-group/CreateGroupMemberList'
+import {
+	CreateGroupFooterWithIcon,
+	CreateGroupHeader,
+	CreateGroupMemberList,
+} from '@berty/components'
 import { ContactPicker } from '@berty/components/shared-components'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
@@ -25,11 +27,11 @@ export const CreateGroupAddMembers: ScreenFC<'Chat.CreateGroupAddMembers'> = () 
 		<Layout style={[flex.tiny]}>
 			<StatusBar backgroundColor={colors['background-header']} barStyle='light-content' />
 			<View style={{ backgroundColor: colors['background-header'] }}>
-				<MemberList />
+				<CreateGroupMemberList />
 			</View>
 			<View style={{ flex: 1, backgroundColor: colors['main-background'] }}>
 				<View style={{ top: -30 * scaleHeight, flex: 1 }}>
-					<Header
+					<CreateGroupHeader
 						title={t('main.home.create-group.add-members')}
 						first
 						style={[margin.bottom.scale(-1)]}
