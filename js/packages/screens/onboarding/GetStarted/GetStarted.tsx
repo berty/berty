@@ -32,7 +32,6 @@ export const GetStarted: ScreenFC<'Onboarding.GetStarted'> = () => {
 				<View>
 					<UnifiedText
 						style={[
-							padding.horizontal.medium,
 							text.align.center,
 							text.size.large,
 							text.bold,
@@ -43,9 +42,7 @@ export const GetStarted: ScreenFC<'Onboarding.GetStarted'> = () => {
 					</UnifiedText>
 				</View>
 				<View style={[margin.top.small]}>
-					<UnifiedText
-						style={[padding.horizontal.medium, text.align.center, text.align.bottom, text.italic]}
-					>
+					<UnifiedText style={[text.align.center, text.align.bottom, text.italic]}>
 						{t('onboarding.getstarted.desc')}
 					</UnifiedText>
 				</View>
