@@ -1,7 +1,7 @@
 import LottieView, { AnimatedLottieViewProps } from 'lottie-react-native'
 import React, { useCallback, useEffect, useRef, useContext } from 'react'
 import { useTranslation } from 'react-i18next'
-import { TouchableOpacity, Platform, View, AppState, StatusBar } from 'react-native'
+import { Platform, View, AppState, StatusBar } from 'react-native'
 import { RESULTS, openSettings, PermissionStatus } from 'react-native-permissions'
 import { useSelector } from 'react-redux'
 
@@ -10,7 +10,7 @@ import audioLottie from '@berty/assets/lottie/audio-lottie.json'
 import cameraLottie from '@berty/assets/lottie/camera-lottie.json'
 import notificationLottie from '@berty/assets/lottie/notification-lottie.json'
 import proximityLottie from '@berty/assets/lottie/proximity-lottie.json'
-import { PrimaryButton } from '@berty/components'
+import { PrimaryButton, TertiaryButtonWithoutBorder } from '@berty/components'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import PermissionsContext from '@berty/contexts/permissions.context'
 import { useStyles } from '@berty/contexts/styles'
@@ -173,7 +173,7 @@ export const Permissions: ScreenFC<'Chat.Permissions'> = ({ route: { params }, n
 					border.radius.top.large,
 					{
 						paddingTop: 24,
-						paddingBottom: 40,
+						paddingBottom: 30,
 						paddingHorizontal: 32,
 						backgroundColor: colors['main-background'],
 					},
@@ -245,7 +245,7 @@ export const Permissions: ScreenFC<'Chat.Permissions'> = ({ route: { params }, n
 						)}
 					</PrimaryButton>
 				</View>
-				<TouchableOpacity
+				<TertiaryButtonWithoutBorder
 					onPress={async () => {
 						navigation.goBack()
 
@@ -255,19 +255,10 @@ export const Permissions: ScreenFC<'Chat.Permissions'> = ({ route: { params }, n
 						}
 					}}
 				>
-					<UnifiedText
-						style={{
-							marginTop: 16,
-							color: colors['secondary-text'],
-							textTransform: 'uppercase',
-							textAlign: 'center',
-						}}
-					>
-						{permissionType === PermissionType.notification && !selectedAccount
-							? t('permission.skip')
-							: t('permission.cancel')}
-					</UnifiedText>
-				</TouchableOpacity>
+					{permissionType === PermissionType.notification && !selectedAccount
+						? t('permission.skip')
+						: t('permission.cancel')}
+				</TertiaryButtonWithoutBorder>
 			</View>
 		</View>
 	)
