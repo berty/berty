@@ -1,4 +1,4 @@
-Apackage aws
+package aws
 
 // all AWS SDK related things / things that interface directly with AWS should reside here
 
@@ -35,7 +35,6 @@ func GetSess() *session.Session {
 		},
 		SharedConfigState: session.SharedConfigEnable,
 	}))
-
 
 	return sess
 }
