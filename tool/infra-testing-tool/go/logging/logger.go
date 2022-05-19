@@ -25,23 +25,13 @@ func init() {
 
 	_, err = os.Stat(fmt.Sprintf("%s/logs/berty", dirname))
 	if os.IsNotExist(err) {
-		err = os.MkdirAll(fmt.Sprintf("%s/logs/infra", dirname), 0755)
+		err = os.MkdirAll(fmt.Sprintf("%s/logs/berty", dirname), 0755)
 		if err != nil {
 			panic(err)
 		}
 	}
 
 	logpath = fmt.Sprintf("%s/logs/berty/berty-infra-server.log", dirname)
-
-	// 	logFile, err := os.OpenFile(fmt.Sprintf("%s/logs/infra/berty-infra-server.log", dirname), os.O_CREATE|os.O_APPEND|os.O_RDWR, 0755)
-	// 	if err != nil {
-	// 		panic(err)
-	// 	}
-
-	// 	mw := io.MultiWriter(os.Stdout, logFile)
-	// 	// log.SetOutput(mw)
-	// }
-
 }
 
 type zapTestLogger struct {
@@ -49,69 +39,66 @@ type zapTestLogger struct {
 }
 
 func (z *zapTestLogger) Logf(t testing.TestingT, format string, args ...interface{}) {
-	z.l.Sugar().Infof(format, args...)
+	if format != "" {
+		msg := fmt.Sprintf(format, args...)
+		z.l.Sugar().Info(msg)
+	}
 }
 
 func TerraformLogger(logger *zap.Logger) *mlogger.Logger {
 	return mlogger.New(&zapTestLogger{logger})
 }
 
-func New(level zapcore.Level) (*zap.Logger, error) {
-	cfg := zap.NewDevelopmentConfig()
-	if logpath != "" {
-		cfg.OutputPaths = []string{logpath}
+func NewFileLogger(level zapcore.Level) (*zap.Logger, error) {
+	logFile, err := os.OpenFile(logpath, os.O_CREATE|os.O_APPEND|os.O_RDWR, 0755)
+	if err != nil {
+		return nil, fmt.Errorf("unable to open file(%s): %w", logpath, err)
 	}
-	cfg.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
-	cfg.EncoderConfig.EncodeTime = zapcore.TimeEncoderOfLayout(time.Stamp)
-	return cfg.Build()
-
-	// consoleEncoder := zapcore.NewConsoleEncoder(encodeConfig)
-	// consoleDebugging := zapcore.Lock(os.Stdout)
-	// core := zapcore.NewCore(consoleEncoder, consoleDebugging, level)
-
-	// logger := zap.New(core)
+	encoder := newFileEncoder()
+	fileSync := zapcore.AddSync(logFile)
+	core := zapcore.NewCore(encoder, fileSync, zapcore.DebugLevel)
+	return zap.New(core), nil
 }
 
-// func callerPrefix(callDepth int) string {
-// 	_, file, line, ok := runtime.Caller(callDepth)
-// 	if ok {
-// 		// Truncate file name at last file name separator.
-// 		if index := strings.LastIndex(file, "/"); index >= 0 {
-// 			file = file[index+1:]
-// 		} else if index = strings.LastIndex(file, "\\"); index >= 0 {
-// 			file = file[index+1:]
-// 		}
-// 	} else {
-// 		file = "???"
-// 		line = 1
-// 	}
+func NewConsoleLogger(level zapcore.Level) (*zap.Logger, error) {
+	encoder := newConsoleEncoder()
+	stdoutLock := zapcore.Lock(os.Stdout)
+	core := zapcore.NewCore(encoder, stdoutLock, level)
+	return zap.New(core), nil
+}
 
-// 	return fmt.Sprintf("%s:%d", file, line)
-// }
+func NewTeeLogger(level zapcore.Level) (*zap.Logger, error) {
+	// file log
+	logFile, err := os.OpenFile(logpath, os.O_CREATE|os.O_APPEND|os.O_RDWR, 0755)
+	if err != nil {
+		return nil, fmt.Errorf("unable to open file(%s): %w", logpath, err)
+	}
+	fileEncoder := newFileEncoder()
+	fileSync := zapcore.AddSync(logFile)
 
-// func Log(i interface{}) {
-// 	actualLog(fmt.Sprint(i))
-// }
+	// console
+	consoleEncoder := newConsoleEncoder()
+	stdoutLock := zapcore.Lock(os.Stdout)
 
-// func LogErr(err error) error {
-// 	if err != nil {
-// 		actualLog(err.Error())
-// 		return err
-// 	}
+	// tee log
+	core := zapcore.NewTee(
+		zapcore.NewCore(fileEncoder, fileSync, zapcore.DebugLevel),
+		zapcore.NewCore(consoleEncoder, stdoutLock, level),
+	)
 
-// 	return nil
-// }
+	return zap.New(core), nil
+}
 
-// func actualLog(s string) {
-// 	prefix := pad(callerPrefix(callDepth))
-// 	log.Info(fmt.Sprintf("%v - %v", prefix, s))
-// }
+func newFileEncoder() zapcore.Encoder {
+	fileConfig := zap.NewProductionEncoderConfig()
+	fileConfig.EncodeLevel = zapcore.CapitalLevelEncoder
+	return zapcore.NewJSONEncoder(fileConfig)
+}
 
-// func pad(s string) string {
-// 	remainder := int(math.Sqrt(math.Pow(float64(20-len(s)), float64(2))))
-// 	for i := 0; i < remainder; i += 1 {
-// 		s += " "
-// 	}
-
-// 	return s
-// }
+func newConsoleEncoder() zapcore.Encoder {
+	// console log
+	consoleConfig := zap.NewDevelopmentEncoderConfig()
+	consoleConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
+	consoleConfig.EncodeTime = zapcore.TimeEncoderOfLayout(time.Stamp)
+	return zapcore.NewConsoleEncoder(consoleConfig)
+}

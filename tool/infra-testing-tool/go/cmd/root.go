@@ -18,9 +18,9 @@ var (
 		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
 			var err error
 			if verbose {
-				logger, err = logging.New(zapcore.DebugLevel)
+				logger, err = logging.NewConsoleLogger(zapcore.DebugLevel)
 			} else {
-				logger, err = logging.New(zapcore.InfoLevel)
+				logger, err = logging.NewConsoleLogger(zapcore.InfoLevel)
 			}
 			return err
 		},
