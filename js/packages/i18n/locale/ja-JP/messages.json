@@ -1,52 +1,84 @@
 {
 	"onboarding": {
 		"getstarted": {
+			"screenTitle": "プライバシーを保護",
 			"title": "プライバシーを保護",
 			"desc": "無料で安全に P2P メッセージをやりとりする",
-			"create-button": "",
-			"import-button": "",
-			"link-button": ""
+			"create-button": "アカウントを作成",
+			"import-button": "アカウントをインポート",
+			"link-button": "このデバイスをリンク"
 		},
 		"default-mode": {
 			"summary": {
-				"title": "",
-				"subtitle": "",
-				"first-point": "",
-				"second-point": "",
-				"back-button": "",
-				"accept-button": ""
+				"title": "デフォルトモード",
+				"screenTitle": "アカウントを作成",
+				"subtitle": "素早く始める",
+				"first-point": "最もプライバシー/快適性のバランスの取れたプリセットから始めましょう。Berty ノードはパフォーマンスと非同期通信を改善するために使用されます。",
+				"second-point": "プライバシーと快適性のバランスを調整するには、「カスタムモード」を選択してください。",
+				"back-button": "戻る",
+				"accept-button": "始めましょう"
 			}
 		},
 		"custom-mode": {
 			"summary": {
-				"title": "",
-				"subtitle": "",
-				"first-point": "",
-				"second-point": "",
-				"back-button": "",
-				"accept-button": ""
+				"screenTitle": "アカウント作成 - 設定をカスタマイズ",
+				"title": "カスタムモード",
+				"subtitle": "プライバシーと快適性のバランスを調整",
+				"first-point": "このモードでは、すべての設定を個別に調整して、プライバシーと快適さのバランスを作成します。",
+				"second-point": "簡単に始めたい場合は、デフォルトモードを選択してください。",
+				"back-button": "戻る",
+				"accept-button": "続行"
 			},
 			"settings": {
 				"off-grid": {
-					"title": "",
+					"title": "Off-Grid 通信",
 					"ble-button": "Bluetooth Low Energy",
-					"nearby-button": "",
-					"mc-button": "",
-					"mdns-button": ""
+					"nearby-button": "Android Nearby",
+					"mc-button": "Apple Multiper Connectivity",
+					"mdns-button": "Multicast DNS (LAN)"
 				},
 				"routing": {
-					"title": "",
+					"title": "ルーティング",
 					"dht-button": "分散ハッシュテーブル",
-					"rdvp-button": ""
+					"rdvp-button": "ランデブーポイントノード"
 				},
 				"access": {
-					"title": "",
-					"relay-button": "",
-					"bootstrap-button": "",
-					"replication-button": ""
+					"title": "ネットワークアクセシビリティ",
+					"relay-button": "リレーノード (TURN)",
+					"bootstrap-button": "ブートストラップノード",
+					"replication-button": "レプリケーションノード"
 				},
-				"all-button": "",
-				"accept-button": ""
+				"modals": {
+					"add": {
+						"title": {
+							"relay": "リレーノード (TURN) を追加",
+							"bootstrap": "ブートストラップノードを追加",
+							"rdvp": "RDVPノードを追加"
+						}
+					},
+					"edit": {
+						"title": {
+							"relay": "リレーノード (TURN) を編集",
+							"bootstrap": "ブートストラップノードを編集",
+							"rdvp": "RDVPノードを編集"
+						}
+					},
+					"errors": {
+						"alias-already-exists": "エイリアスは既に存在します",
+						"multiaddr-alread-exists": "マルチアドレスは既に存在します",
+						"multiaddr-bad-format": "マルチアドレスの形式が不正です",
+						"multiaddr-p2p": "マルチアドレスはp2pを含む必要があります"
+					},
+					"buttons": {
+						"add": "追加",
+						"edit": "編集",
+						"delete": "削除"
+					},
+					"multiaddress": "マルチアドレス",
+					"alias": "エイリアス"
+				},
+				"all-button": "すべて",
+				"accept-button": "始めましょう"
 			}
 		},
 		"create-account": {
@@ -55,7 +87,7 @@
 			"good-to-know": {
 				"title": "伝えておきたいこと:",
 				"first-point": "ローカルにアカウントが作成されました。",
-				"second-point": ""
+				"second-point": "ニックネームはオプションで、後から編集も可能です。"
 			}
 		},
 		"generate-key": {
@@ -65,17 +97,18 @@
 		"setup-finished": {
 			"title": "セットアップが完了しました!",
 			"desc": "アプリが使えるようになりました。連絡先に相手を追加すると、自由かつプライベートに話せます。",
-			"button": "Bertyを使用開始"
+			"button": "Berty の使用を開始"
 		},
 		"web-views": {
-			"title": "WebViews",
-			"desc": "",
+			"title": "Web コンテンツのアクセス許可",
+			"desc": "Bertyはウェブからコンテンツを読み込もうとしています。このページを開きますか?",
 			"first-button": "キャンセル",
 			"second-button": "はい"
 		}
 	},
 	"main": {
 		"home": {
+			"title": "Berty",
 			"requests": {
 				"title": "リクエスト",
 				"accept": "承認",
@@ -95,8 +128,8 @@
 				"add-members": "メンバーを追加",
 				"group-info": "グループの情報",
 				"search-placeholder": "検索",
-				"continue": "続行",
-				"create-group": "グループを作成"
+				"continue": "",
+				"create-group": ""
 			},
 			"create-group-finalize": {
 				"placeholder": "グループ名",
@@ -112,13 +145,11 @@
 				"draft": "下書き: {{message}}"
 			}
 		},
-		"suggestion-display-name-initial": "追加するにはここをクリック",
-		"scan": {
-			"title": "QR コードの読み取り"
-		}
+		"suggestion-display-name-initial": "追加するにはここをクリック"
 	},
 	"settings": {
 		"home": {
+			"title": "設定",
 			"proximity-button": "",
 			"notifications-button": "通知",
 			"contact-convs-button": "",
@@ -130,27 +161,46 @@
 			"about-button": "Bertyについて"
 		},
 		"about": {
+			"title": "Bertyについて",
 			"faq-button": "よくある質問",
 			"roadmap-button": "ロードマップ",
 			"policy-button": "",
-			"license-button": ""
+			"license-button": "",
+			"terms-of-use": "利用規約"
 		},
 		"accounts": {
+			"title": "アカウント",
+			"backup-button": "",
+			"backup-notif-title": "",
+			"backup-notif-desc": "",
 			"accounts-button": "アカウント",
 			"create-button": "",
 			"import-button": "",
 			"link-button": "",
-			"delete-button": ""
+			"delete-button": "",
+			"delete-title": ""
 		},
 		"appearance": {
+			"title": "",
 			"dark-button": "",
-			"editor-button": ""
+			"editor-button": "",
+			"theme-editor": {
+				"title": ""
+			}
 		},
 		"contact-convs": {
+			"title": "",
 			"reset-button": "",
 			"request-button": ""
 		},
+		"devices-backup": {
+			"title": ""
+		},
+		"security": {
+			"title": ""
+		},
 		"network": {
+			"title": "",
 			"ble-button": "Bluetooth Low Energy",
 			"mc-button": "",
 			"nearby-button": "",
@@ -161,6 +211,9 @@
 			"rdvp-button": "",
 			"relay-button": "",
 			"bootstrap-button": ""
+		},
+		"notifications": {
+			"title": "通知"
 		},
 		"edit-profile": {
 			"title": "プロフィールを編集",
@@ -175,7 +228,7 @@
 			"title": "",
 			"desc": "",
 			"button": "",
-			"skip": "スキップして後で実行する"
+			"skip": ""
 		},
 		"delete-account": {
 			"title": "アカウントを削除します!",
@@ -255,7 +308,10 @@
 		},
 		"add-dev-conversations": {
 			"title": "開発者の会話を追加する",
-			"add": "{{name}} を追加"
+			"add": "{{name}} を追加",
+			"tag-bot": "Bot",
+			"tag-contact": "連絡先",
+			"tag-conversation": ""
 		},
 		"ipfs-webui": {
 			"title": "IPFS WebUI"
@@ -294,7 +350,7 @@
 			"contact-already-added-message": "同じ連絡先を複数追加することはできません"
 		},
 		"invalid-scan": {
-			"dismiss-button": "却下"
+			"dismiss-button": ""
 		},
 		"add-this-contact": {
 			"fingerprint": "識別情報（フィンガープリント）",
@@ -305,7 +361,7 @@
 			"fingerprint": "識別情報（フィンガープリント）",
 			"info": "各種情報",
 			"devices": "デバイス",
-			"join": "このグループに参加する",
+			"join": "",
 			"password-label": "",
 			"password-placeholder": "パスワード..."
 		},
@@ -318,6 +374,7 @@
 		}
 	},
 	"chat": {
+		"title-unknown": "",
 		"sending": "送信しています...",
 		"sent": "送信しました",
 		"contact-settings": {
@@ -329,10 +386,10 @@
 			"input-placeholder": "ここに入力..."
 		},
 		"push-notifications": {
-			"enable": "",
-			"enabled": "",
+			"title": "通知",
 			"unsupported": "",
 			"check-device-settings": "",
+			"check-account-settings": "",
 			"warning-disable": {
 				"title": "",
 				"subtitle": "",
@@ -340,10 +397,28 @@
 				"refuse": ""
 			},
 			"why-cant-disable": "",
+			"why-cant-disable-account": "",
 			"errors": {
 				"no-token": "",
 				"no-server": ""
-			}
+			},
+			"warning-enable-all": {
+				"title": "",
+				"subtitle": "",
+				"refuse": "",
+				"accept": "承認"
+			},
+			"warning-disable-mute": {
+				"title": "",
+				"refuse": "",
+				"accept": ""
+			},
+			"enabled": "",
+			"disabled": "プッシュ通知は無効になっています",
+			"receive-push": "プッシュ通知の受信",
+			"hide-previews": "",
+			"auto-enable": "",
+			"show-in-app": ""
 		},
 		"devices": {
 			"title": "デバイス",
@@ -353,6 +428,7 @@
 			}
 		},
 		"multi-member-settings": {
+			"title": "",
 			"media-button": "メディア、リンク & ドキュメント",
 			"members-button": {
 				"title": "メンバー"
@@ -373,9 +449,9 @@
 			"contact-request-box": {
 				"title": "連絡先リクエスト",
 				"group-invitation": "",
-				"refuse-button": "拒否",
+				"refuse-button": "",
 				"accept-button": "承認",
-				"accepted-button": "承認済み",
+				"accepted-button": "",
 				"error": "",
 				"you-invited": "",
 				"this-contact": "",
@@ -391,6 +467,7 @@
 			"input-placeholder": "ここに入力..."
 		},
 		"one-to-one-settings": {
+			"title": "",
 			"media-button": "メディア、リンク & ドキュメント",
 			"save-button": "会話をサーバーに保存"
 		},
@@ -418,7 +495,10 @@
 			"title": "共有メディア",
 			"medias": "メディア",
 			"links": "リンク",
-			"documents": "ドキュメント"
+			"documents": "ドキュメント",
+			"file": "",
+			"picture": "",
+			"audio": ""
 		},
 		"reply": {
 			"response-to": "返信先",
@@ -470,7 +550,7 @@
 			"allow": "許可する",
 			"settings": "設定に移動"
 		},
-		"skip": "スキップする",
+		"skip": "",
 		"cancel": "キャンセル",
 		"settings-text": "設定画面から {{title}} の権限を有効にできます。"
 	},
@@ -479,7 +559,7 @@
 			"title": "",
 			"desc": ""
 		},
-		"need-restart-ble": {
+		"submit-failed": {
 			"title": "",
 			"desc": ""
 		}
@@ -559,5 +639,10 @@
 				"button-cancel": "キャンセル"
 			}
 		}
+	},
+	"time-for": {
+		"minutes": "",
+		"hours": "",
+		"days": ""
 	}
 }
