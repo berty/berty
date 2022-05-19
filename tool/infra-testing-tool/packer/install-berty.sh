@@ -5,7 +5,7 @@
 
 # update system
 sudo yum update -y
-sudo yum install gcc gcc-c++ make htop wget git gcc -y
+sudo yum install gcc gcc-c++ make htop wget git gcc awslogs -y
 
 # install golang
 echo "Installing go..."
@@ -51,6 +51,23 @@ EOF
 
 # create logs folder
 echo "Creating logs folder..."
-mkdir $HOME/logs
+mkdir -p /var/log/berty
+
+# create config
+echo "Creating AWS Logs..."
+mkdir $HOME/.aws
+cat << EOF > $HOME/.aws/config
+[/var/log/berty]
+datetime_format = %b %d %H:%M:%S
+file = /var/log/berty/berty.log.json
+buffer_duration = 5000
+log_stream_name = $(curl -s http://169.254.169.254/latest/meta-data/instance-id)
+initial_position = start_of_file
+log_group_name =  berty
+EOF
+
+echo "starting AWS Logs service..."
+sudo service awslogsd start
+sudo systemctl enable awslogsd
 
 echo "Done"

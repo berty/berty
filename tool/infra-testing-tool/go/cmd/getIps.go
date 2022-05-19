@@ -6,10 +6,10 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/spf13/cobra"
 	"infratesting/aws"
-	"infratesting/logging"
 	"strings"
+
+	"github.com/spf13/cobra"
 )
 
 var (
@@ -21,18 +21,18 @@ var (
 
 			c, err := loadConfig()
 			if err != nil {
-				return logging.LogErr(err)
+				return fmt.Errorf("unable to laod config: %w", err)
 			}
 
 			aws.SetRegion(c.Settings.Region)
 
 			instances, err := aws.DescribeInstances()
 			if err != nil {
-				return err
+				return fmt.Errorf("unable to describe instances: %w", err)
 			}
 
 			if len(instances) == 0 {
-				logging.Log("no running instances")
+				logger.Warn("no running instances")
 				return nil
 			}
 

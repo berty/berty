@@ -4,15 +4,26 @@ import (
 	"infratesting/logging"
 
 	"github.com/spf13/cobra"
+	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 )
 
 var (
 	File string
 
+	verbose bool
+	logger  = zap.NewNop()
 	rootCmd = &cobra.Command{
 		Use: "infra",
-		Run: func(cmd *cobra.Command, args []string) {
-			logging.Log("nothing to see here \n	-> infra help")
+		PersistentPreRun: func(cmd *cobra.Command, args []string) {
+			if verbose {
+				logger = logging.New(zapcore.DebugLevel)
+			} else {
+				logger = logging.New(zapcore.InfoLevel)
+			}
+		},
+		RunE: func(cmd *cobra.Command, args []string) error {
+			return nil
 		},
 	}
 )
@@ -32,8 +43,9 @@ func init() {
 	generateCmd.Flags().StringVarP(&File, "file", "f", "", fileUsage)
 	_ = generateCmd.MarkFlagRequired("file")
 
-	rootCmd.AddCommand(generateCmd)
+	rootCmd.PersistentFlags().BoolVarP(&verbose, "verbose", "v", false, "enable verbose mode")
 
+	rootCmd.AddCommand(generateCmd)
 	rootCmd.AddCommand(destroyCmd)
 	rootCmd.AddCommand(deployCmd)
 	rootCmd.AddCommand(testStartCmd)
@@ -43,6 +55,9 @@ func init() {
 	rootCmd.AddCommand(getIpsCmd)
 }
 
-func Execute() error {
-	return rootCmd.Execute()
+func Execute() (err error) {
+	if err = rootCmd.Execute(); err != nil {
+		logger.Error("failed execute command", zap.Error(err))
+	}
+	return
 }

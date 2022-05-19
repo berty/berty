@@ -15,6 +15,7 @@ require (
 	github.com/multiformats/go-multiaddr v0.3.1
 	github.com/sirupsen/logrus v1.6.0
 	github.com/spf13/cobra v1.1.3
+	go.uber.org/zap v1.16.0
 	google.golang.org/grpc v1.37.0
 	google.golang.org/protobuf v1.27.1
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b
