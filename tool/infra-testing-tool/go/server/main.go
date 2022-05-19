@@ -23,7 +23,7 @@ func main() {
 	s := server.NewServer()
 	s.ReliabilityProcess()
 
-	server.RegisterProxyServer(grpcServer, &s)
+	server.RegisterProxyServer(grpcServer, s)
 
 	if err := grpcServer.Serve(lis); err != nil {
 		panic(err)
