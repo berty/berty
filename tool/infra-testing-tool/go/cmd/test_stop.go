@@ -67,7 +67,7 @@ func stopTest(ctx context.Context, c *config.Config) error {
 				return
 			}
 
-			bucketName, err := aws.GetBucketName()
+			bucketName, err := aws.GetBucketName(logger)
 			if err != nil {
 				logger.Error("unable to get bucket name", zap.Error(err))
 			} else {

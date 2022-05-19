@@ -2,8 +2,6 @@ package server
 
 import (
 	"context"
-	"fmt"
-	"infratesting/logging"
 	"math/rand"
 	"strings"
 	"sync"
@@ -11,44 +9,42 @@ import (
 
 	"github.com/mathisve/ec2ifupifdown"
 	ps "github.com/mitchellh/go-ps"
+	"go.uber.org/zap"
 )
 
 var (
 	processLock      sync.Mutex
+	once             sync.Once
 	isProcessRunning bool
 
 	processNames = []string{"berty", "rdvp"}
 )
 
-func init() {
-	StartProcessCheck()
-}
-
 // StartProcessCheck checks if a berty daemon/rdvp is running
-func StartProcessCheck() {
-	go func() {
+func startProcessCheck(logger *zap.Logger) {
+	once.Do(func() {
 		for {
 			processList, err := ps.Processes()
 			if err != nil {
-				logging.Log(err.Error())
-			}
+				logger.Error("unable to list process", zap.Error(err))
+			} else {
+				processLock.Lock()
+				isProcessRunning = false
+				for x := range processList {
+					process := processList[x]
 
-			processLock.Lock()
-			isProcessRunning = false
-			for x := range processList {
-				process := processList[x]
-
-				for p := range processNames {
-					if strings.Contains(process.Executable(), processNames[p]) {
-						isProcessRunning = true
+					for p := range processNames {
+						if strings.Contains(process.Executable(), processNames[p]) {
+							isProcessRunning = true
+						}
 					}
 				}
+				processLock.Unlock()
 			}
-			processLock.Unlock()
 
 			time.Sleep(time.Second * 3)
 		}
-	}()
+	})
 }
 
 // ProcessRunning returns true if a berty daemon is running
@@ -60,13 +56,12 @@ func ProcessRunning() bool {
 }
 
 func (s *Server) IsProcessRunning(ctx context.Context, request *IsProcessRunning_Request) (response *IsProcessRunning_Response, err error) {
-	logging.Log(fmt.Sprintf("IsProcessRunning - incoming request: %+v", request))
-
 	return &IsProcessRunning_Response{Running: ProcessRunning()}, nil
 }
 
 func (s *Server) ReliabilityProcess() {
 	go func() {
+		timeout := time.Duration(s.Reliability.Timeout) * time.Second
 		for {
 			// no reliability configured, sleep for 1 second
 			if s.Reliability.Timeout == 0 && s.Reliability.Odds == 0 {
@@ -77,27 +72,27 @@ func (s *Server) ReliabilityProcess() {
 				if rand.Intn(int(s.Reliability.Odds)) == 0 {
 					interfaces, err := ec2ifupifdown.GetInterfaces()
 					if err != nil {
-						logging.LogErr(err)
+						s.logger.Error("unable to get interfaces", zap.Error(err))
 					}
 
-					logging.Log(fmt.Sprintf("disabling networking for %d seconds", s.Reliability.Timeout))
+					s.logger.Debug("disabling networking", zap.Duration("timeout", timeout))
 
 					for _, interf := range interfaces {
 						if interf.DeviceNumber != 0 {
 							err = interf.Ifdown()
 							if err != nil {
-								logging.LogErr(err)
+								s.logger.Error("disabling networking ", zap.Error(err))
 							}
 						}
 					}
 
-					time.Sleep(time.Duration(s.Reliability.Timeout) * time.Second)
+					time.Sleep(timeout)
 
 					for _, interf := range interfaces {
 						if interf.DeviceNumber != 0 {
 							err = interf.Ifup()
 							if err != nil {
-								logging.LogErr(err)
+								s.logger.Error("enable networking back ", zap.Error(err))
 							}
 						}
 					}

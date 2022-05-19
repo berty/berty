@@ -7,7 +7,6 @@ import (
 	"infratesting/aws"
 	"infratesting/iac"
 	"infratesting/iac/components/networking"
-	"infratesting/logging"
 
 	//relay "github.com/libp2p/go-libp2p-circuit"
 	"gopkg.in/yaml.v3"
@@ -54,11 +53,11 @@ func init() {
 func (c *Config) Validate() error {
 	// VALIDATING SETTINGS
 	if c.Settings.Region == "" {
-		return logging.LogErr(errors.New(aws.ErrNoRegion))
+		return errors.New(aws.ErrNoRegion)
 	}
 
 	if !aws.IsValidRegion(c.Settings.Region) {
-		return logging.LogErr(errors.New(aws.ErrInvalidRegion))
+		return errors.New(aws.ErrInvalidRegion)
 	}
 
 	aws.SetRegion(c.Settings.Region)
@@ -66,17 +65,15 @@ func (c *Config) Validate() error {
 	if c.Settings.KeyName != "" {
 		valid, err := aws.IsValidKeyPair(c.Settings.KeyName)
 		if err != nil {
-			return logging.LogErr(err)
+			return fmt.Errorf("aws invalid key pair: %w", err)
 		}
 
 		if !valid {
-			return logging.LogErr(errors.New(aws.ErrInvalidKeypair))
+			return errors.New(aws.ErrInvalidKeypair)
 		}
 	} else {
-		logging.Log(aws.InfoNoKeyPair)
+		// logging.Log(aws.InfoNoKeyPair)
 	}
-
-
 
 	for i := range c.RDVP {
 
@@ -123,7 +120,7 @@ func NewConfig() Config {
 
 	s, err := yaml.Marshal(c)
 	if err != nil {
-		logging.Log(err)
+		panic(err)
 	}
 	fmt.Println(string(s))
 

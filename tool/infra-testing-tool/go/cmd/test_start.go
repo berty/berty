@@ -151,7 +151,7 @@ func startTest(ctx context.Context, c *config.Config) error {
 					Invite:    groups[availablePeers[i].ConfigGroups[g].Name].Pk,
 				})
 				if err != nil {
-					if !strings.Contains(err.Error(), server.ErrAlreadyInGroup) {
+					if !strings.Contains(err.Error(), server.ErrAlreadyInGroup.Error()) {
 						return fmt.Errorf("unable to join group: %w", err)
 					}
 				}

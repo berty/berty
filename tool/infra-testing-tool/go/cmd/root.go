@@ -15,12 +15,14 @@ var (
 	logger  = zap.NewNop()
 	rootCmd = &cobra.Command{
 		Use: "infra",
-		PersistentPreRun: func(cmd *cobra.Command, args []string) {
+		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
+			var err error
 			if verbose {
-				logger = logging.New(zapcore.DebugLevel)
+				logger, err = logging.New(zapcore.DebugLevel)
 			} else {
-				logger = logging.New(zapcore.InfoLevel)
+				logger, err = logging.New(zapcore.InfoLevel)
 			}
+			return err
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return nil

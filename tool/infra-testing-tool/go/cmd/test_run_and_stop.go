@@ -90,7 +90,7 @@ func updoadLogs(ctx context.Context, res *Result, c config.Config) error {
 				return
 			}
 
-			bucketName, err := aws.GetBucketName()
+			bucketName, err := aws.GetBucketName(logger)
 			if err != nil {
 				logger.Error("unable to get bucket name", zap.String("node_name", name), zap.Error(err))
 				return
@@ -233,7 +233,7 @@ func runTestFlow(ctx context.Context, timeout time.Duration, c config.Config) (*
 					Invite:    groups[availablePeers[i].ConfigGroups[g].Name].Pk,
 				})
 				if err != nil {
-					if !strings.Contains(err.Error(), server.ErrAlreadyInGroup) {
+					if !strings.Contains(err.Error(), server.ErrAlreadyInGroup.Error()) {
 						return res, fmt.Errorf("unable to join group: %w", err)
 					}
 				}

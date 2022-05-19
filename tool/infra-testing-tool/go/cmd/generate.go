@@ -17,7 +17,7 @@ var (
 				return fmt.Errorf("unable to open config: %w", err)
 			}
 
-			hcl, y, err := config.OutputNormal(b)
+			hcl, y, err := config.OutputNormal(logger, b)
 			if err != nil {
 				return fmt.Errorf("unable to open config: %w", err)
 			}

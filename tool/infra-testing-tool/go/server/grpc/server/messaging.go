@@ -5,29 +5,31 @@ import (
 	"context"
 	"crypto/sha256"
 	"encoding/base64"
+	"errors"
 	"fmt"
 	"image"
 	"image/color"
 	"image/png"
-	"infratesting/logging"
 	"math"
 	"math/rand"
 	"time"
 
 	"berty.tech/berty/v2/go/pkg/messengertypes"
+	"go.uber.org/zap"
 
 	"github.com/golang/protobuf/proto"
 	"github.com/google/uuid"
 )
 
+var (
+	ErrAlreadyInGroup   = errors.New("peer already in group")
+	ErrNotInGroup       = errors.New("peer not in group")
+	ErrTestNotExist     = errors.New("test does not exist")
+	ErrTestInProgress   = errors.New("test already in progress")
+	ErrAlreadyReceiving = errors.New("already receiving messages in group")
+)
+
 const (
-	ErrAlreadyInGroup = "peer already in group"
-	ErrNotInGroup     = "peer not in group"
-	ErrTestNotExist   = "test does not exist"
-	ErrTestInProgress = "test already in progress"
-
-	ErrAlreadyReceiving = "already receiving messages in group"
-
 	RandomChars    = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 	ImageSplitSize = 3000
 )
@@ -57,7 +59,7 @@ func ToMessage(a messengertypes.AppMessage) Message {
 
 // SendTextMessage sends a string to a specific group
 func (s *Server) SendTextMessage(ctx context.Context, groupName string, message string) error {
-	logging.Log(fmt.Sprintf("sending text message to '%s'", groupName))
+	s.logger.Debug("sending text message to", zap.String("group_name", groupName))
 	payload, err := proto.Marshal(&messengertypes.AppMessage_UserMessage{
 		Body: message,
 	})
@@ -65,7 +67,7 @@ func (s *Server) SendTextMessage(ctx context.Context, groupName string, message 
 		return err
 	}
 
-	logging.Log(fmt.Sprintf("sending message payload: %v", asSha256(payload)))
+	s.logger.Debug("sending message payload", zap.Any("payload", asSha256(payload)))
 
 	_, err = s.Messenger.Interact(ctx, &messengertypes.Interact_Request{
 		Type:                  messengertypes.AppMessage_TypeUserMessage,
@@ -74,14 +76,14 @@ func (s *Server) SendTextMessage(ctx context.Context, groupName string, message 
 	})
 
 	if err != nil {
-		return err
+		return fmt.Errorf("unable to interact: %w", err)
 	}
 
 	return err
 }
 
 func (s *Server) SendImageMessage(ctx context.Context, groupName string, content []byte) error {
-	logging.Log(fmt.Sprintf("sending image message to %s", groupName))
+	s.logger.Debug("sending image message to", zap.String("group_name", groupName))
 
 	header := messengertypes.Media{
 		MimeType:    "image/png",
@@ -91,18 +93,18 @@ func (s *Server) SendImageMessage(ctx context.Context, groupName string, content
 
 	cl, err := s.Messenger.MediaPrepare(ctx)
 	if err != nil {
-		return logging.LogErr(err)
+		return fmt.Errorf("unable to prepare media: %w", err)
 	}
 
 	err = cl.Send(&messengertypes.MediaPrepare_Request{Info: &header})
 	if err != nil {
-		return logging.LogErr(err)
+		return fmt.Errorf("unable to send media info: %w", err)
 	}
 
 	if len(content) <= 3500 {
 		err = cl.Send(&messengertypes.MediaPrepare_Request{Block: content})
 		if err != nil {
-			return logging.LogErr(err)
+			return fmt.Errorf("unable to send media block: %w", err)
 		}
 	} else {
 		var j int
@@ -113,7 +115,7 @@ func (s *Server) SendImageMessage(ctx context.Context, groupName string, content
 
 			err = cl.Send(&messengertypes.MediaPrepare_Request{Block: content[j:i]})
 			if err != nil {
-				return logging.LogErr(err)
+				return fmt.Errorf("unable to send media block: %w", err)
 			}
 
 			j = i
@@ -123,7 +125,7 @@ func (s *Server) SendImageMessage(ctx context.Context, groupName string, content
 	if len(content) <= ImageSplitSize {
 		err = cl.Send(&messengertypes.MediaPrepare_Request{Block: content})
 		if err != nil {
-			return logging.LogErr(err)
+			return fmt.Errorf("unable to send media block: %w", err)
 		}
 	} else {
 		var i, j int
@@ -139,7 +141,7 @@ func (s *Server) SendImageMessage(ctx context.Context, groupName string, content
 
 			err = cl.Send(&messengertypes.MediaPrepare_Request{Block: content[j:i]})
 			if err != nil {
-				return logging.LogErr(err)
+				return fmt.Errorf("unable to send media block: %w", err)
 			}
 
 			j = i
@@ -149,7 +151,7 @@ func (s *Server) SendImageMessage(ctx context.Context, groupName string, content
 
 	reply, err := cl.CloseAndRecv()
 	if err != nil {
-		return logging.LogErr(err)
+		return fmt.Errorf("unable to close stream: %w", err)
 	}
 
 	b64CID := reply.GetCid()
@@ -162,7 +164,7 @@ func (s *Server) SendImageMessage(ctx context.Context, groupName string, content
 		ConversationPublicKey: base64.RawURLEncoding.EncodeToString(s.Groups[groupName].GetPublicKey()),
 	}
 
-	logging.Log(fmt.Sprintf("media message: %+v", interact))
+	s.logger.Debug("media message", zap.Any("interaction", interact))
 
 	if err != nil {
 		return err
@@ -170,8 +172,9 @@ func (s *Server) SendImageMessage(ctx context.Context, groupName string, content
 
 	_, err = s.Messenger.Interact(ctx, interact)
 	if err != nil {
-		logging.Log("this shouldn't happen, if it doesn't we know somethings wrong here")
-		return logging.LogErr(err)
+		s.logger.Debug("unable to interact", zap.Error(err))
+		s.logger.Debug("this shouldn't happen, if it doesn't we know somethings wrong here")
+		return fmt.Errorf("unable to interact: %w", err)
 	}
 
 	return nil

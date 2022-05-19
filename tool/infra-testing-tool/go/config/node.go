@@ -9,7 +9,6 @@ import (
 	"infratesting/iac"
 	"infratesting/iac/components/ec2"
 	"infratesting/iac/components/networking"
-	"infratesting/logging"
 	mrand "math/rand"
 	"strconv"
 	"strings"
@@ -268,7 +267,7 @@ func (c *NodeGroup) composeComponents() {
 		if c.NodeType == NodeTypeRDVP || c.NodeType == NodeTypeRelay || c.NodeType == NodeTypeBootstrap {
 			peerId, pk, err := genKey()
 			if err != nil {
-				logging.Log(err)
+				panic(err)
 			}
 
 			c.Nodes[i].NodeAttributes.Pk = pk

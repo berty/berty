@@ -8,6 +8,7 @@ require (
 	github.com/aws/aws-sdk-go v1.38.51
 	github.com/golang/protobuf v1.5.2
 	github.com/google/uuid v1.2.0
+	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
 	github.com/gruntwork-io/terratest v0.35.4
 	github.com/libp2p/go-libp2p-core v0.8.5
 	github.com/mathisve/ec2ifupifdown v0.0.0-20220129230945-d304390301de
