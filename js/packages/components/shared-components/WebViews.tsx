@@ -18,54 +18,18 @@ import { useStyles } from '@berty/contexts/styles'
 import { useNavigation } from '@berty/navigation'
 import { useThemeColor } from '@berty/store'
 
-import {
-	HorizontalButtons,
-	SecondaryButton,
-	SecondaryButtonIconLeft,
-	TertiaryButton,
-	TertiaryButtonIconLeft,
-} from '../buttons'
+import { HorizontalButtons, SecondaryButtonIconLeft, TertiaryButtonIconLeft } from '../buttons'
 import { UnifiedText } from './UnifiedText'
-
-const useStylesModalWebView = () => {
-	const { width, border, padding, margin } = useStyles()
-	const colors = useThemeColor()
-
-	return {
-		skipButton: [
-			border.scale(2),
-			border.radius.small,
-			margin.top.scale(15),
-			padding.left.small,
-			padding.right.medium,
-			padding.top.small,
-			padding.bottom.small,
-			width(120),
-			{ borderColor: colors['negative-asset'] },
-		],
-		addButton: [
-			border.scale(2),
-			border.radius.small,
-			margin.top.scale(15),
-			padding.left.small,
-			padding.right.medium,
-			padding.top.small,
-			padding.bottom.small,
-			width(120),
-			{ borderColor: colors['positive-asset'] },
-		],
-	}
-}
 
 const ModalWebviewBody: React.FC<{
 	closeModal: () => void
 	accept: () => void
 }> = ({ closeModal, accept }) => {
-	const { row, text, margin, padding, border, opacity } = useStyles()
+	const { row, text, margin, padding, border } = useStyles()
 	const { scaleHeight } = useAppDimensions()
 	const colors = useThemeColor()
-	const _styles = useStylesModalWebView()
 	const { t } = useTranslation()
+
 	return (
 		<View
 			style={[
@@ -102,76 +66,21 @@ const ModalWebviewBody: React.FC<{
 						<UnifiedText style={[text.light]}>{t('onboarding.web-views.desc')}</UnifiedText>
 					</Text>
 				</View>
-				<HorizontalButtons>
-					<TertiaryButtonIconLeft name='close' onPress={closeModal}>
-						{t('onboarding.web-views.first-button')}
-					</TertiaryButtonIconLeft>
-					<SecondaryButtonIconLeft
-						onPress={() => {
-							accept()
-							closeModal()
-						}}
-					>
-						{t('onboarding.web-views.second-button')}
-					</SecondaryButtonIconLeft>
-				</HorizontalButtons>
-				{/* <View style={[row.center, padding.top.medium]}>
-					<TouchableOpacity
-						style={[
-							margin.bottom.medium,
-							opacity(0.5),
-							_styles.skipButton,
-							{ flexDirection: 'row', justifyContent: 'center' },
-						]}
-						onPress={async () => {
-							closeModal()
-						}}
-					>
-						<Icon
-							name='close'
-							width={30}
-							height={30}
-							fill={colors['negative-asset']}
-							style={row.item.justify}
-						/>
-						<UnifiedText style={[padding.left.small, row.item.justify, text.bold]}>
+				<View style={[margin.horizontal.medium, margin.top.medium]}>
+					<HorizontalButtons>
+						<TertiaryButtonIconLeft name='close' onPress={closeModal}>
 							{t('onboarding.web-views.first-button')}
-						</UnifiedText>
-					</TouchableOpacity>
-					<TouchableOpacity
-						style={[
-							margin.bottom.medium,
-							_styles.addButton,
-							{
-								flexDirection: 'row',
-								justifyContent: 'center',
-								backgroundColor: colors['positive-asset'],
-							},
-						]}
-						onPress={async () => {
-							accept()
-							closeModal()
-						}}
-					>
-						<Icon
-							name='checkmark-outline'
-							width={30}
-							height={30}
-							fill={colors['background-header']}
-							style={row.item.justify}
-						/>
-						<UnifiedText
-							style={[
-								padding.left.small,
-								row.item.justify,
-								text.bold,
-								{ color: colors['background-header'] },
-							]}
+						</TertiaryButtonIconLeft>
+						<SecondaryButtonIconLeft
+							onPress={() => {
+								accept()
+								closeModal()
+							}}
 						>
 							{t('onboarding.web-views.second-button')}
-						</UnifiedText>
-					</TouchableOpacity>
-				</View> */}
+						</SecondaryButtonIconLeft>
+					</HorizontalButtons>
+				</View>
 			</View>
 		</View>
 	)

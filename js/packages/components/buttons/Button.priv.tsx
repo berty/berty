@@ -6,6 +6,7 @@ import { IButtonPress } from './interfaces'
 interface IButtonProps extends IButtonPress {
 	backgroundColor?: string
 	borderColor?: string
+	borderRadius?: number
 }
 
 const ButtonPriv: React.FC<IButtonProps> = props => {
@@ -17,10 +18,15 @@ const ButtonPriv: React.FC<IButtonProps> = props => {
 		}
 		if (props.backgroundColor) {
 			styleArray.push({ backgroundColor: props.backgroundColor })
+		} else {
+			styleArray.push({ backgroundColor: 'transparent' })
+		}
+		if (props.borderRadius) {
+			styleArray.push({ borderRadius: props.borderRadius })
 		}
 
 		return styleArray
-	}, [props.backgroundColor, props.borderColor])
+	}, [props.backgroundColor, props.borderColor, props.borderRadius])
 
 	return (
 		<TouchableOpacity style={style} onPress={props.onPress}>

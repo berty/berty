@@ -4,7 +4,7 @@ import { IButtonPress } from '../interfaces'
 import TertiaryButtonPriv from './TertiaryButton.priv'
 import TertiaryTextPriv from './TertiaryText.priv'
 
-const TertiaryButtonWithoutBorder: React.FC<IButtonPress> = props => {
+const TertiaryAltButton: React.FC<IButtonPress> = props => {
 	return (
 		<TertiaryButtonPriv noBorder onPress={props.onPress}>
 			<TertiaryTextPriv>{props.children}</TertiaryTextPriv>
@@ -12,4 +12,4 @@ const TertiaryButtonWithoutBorder: React.FC<IButtonPress> = props => {
 	)
 }
 
-export default TertiaryButtonWithoutBorder
+export default TertiaryAltButton
