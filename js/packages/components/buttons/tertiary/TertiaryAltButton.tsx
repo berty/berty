@@ -1,15 +1,15 @@
 import React from 'react'
 
-import { ButtonDefProps } from '../interfaces'
-import { TertiaryButtonPriv } from './TertiaryButton.priv'
-import { TertiaryTextPriv } from './TertiaryText.priv'
+import { IButtonPress } from '../interfaces'
+import TertiaryButtonPriv from './TertiaryButton.priv'
+import TertiaryTextPriv from './TertiaryText.priv'
 
-export const TertiaryAltButton: React.FC<ButtonDefProps> = props => {
+const TertiaryAltButton: React.FC<IButtonPress> = props => {
 	return (
-		<TertiaryButtonPriv {...props} alternative>
-			<TertiaryTextPriv disabled={!!props.disabled} alternative>
-				{props.children}
-			</TertiaryTextPriv>
+		<TertiaryButtonPriv noBorder onPress={props.onPress}>
+			<TertiaryTextPriv>{props.children}</TertiaryTextPriv>
 		</TertiaryButtonPriv>
 	)
 }
+
+export default TertiaryAltButton
