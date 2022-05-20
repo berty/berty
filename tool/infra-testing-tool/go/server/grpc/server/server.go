@@ -190,9 +190,12 @@ func (s *Server) StartTest(ctx context.Context, request *StartTest_Request) (res
 			s.muTests.Unlock()
 			return response, fmt.Errorf("%w: Test(%d) - %s", ErrTestNotExist, request.TestN, request.GroupName)
 		}
+	} else {
+		s.TestSessions[request.GroupName] = make(map[int64]*TestSession)
 	}
 
 	sctx := context.Background()
+
 	ts = NewTestSession(sctx, ct)
 	s.TestSessions[request.GroupName][request.TestN] = ts
 

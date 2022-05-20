@@ -183,6 +183,10 @@ func startTest(ctx context.Context, c *config.Config) error {
 	var newTestWG sync.WaitGroup
 	var startTestWG sync.WaitGroup
 
+	if len(groupArray) == 0 {
+		logger.Warn("no group to test")
+	}
+
 	// iterate over groups
 	for g := range groupArray {
 		// iterate over tests in groups
