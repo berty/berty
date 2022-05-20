@@ -10,7 +10,7 @@ import audioLottie from '@berty/assets/lottie/audio-lottie.json'
 import cameraLottie from '@berty/assets/lottie/camera-lottie.json'
 import notificationLottie from '@berty/assets/lottie/notification-lottie.json'
 import proximityLottie from '@berty/assets/lottie/proximity-lottie.json'
-import { PrimaryButton, TertiaryButtonWithoutBorder } from '@berty/components'
+import { PrimaryButton, TertiaryAltButton } from '@berty/components'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import PermissionsContext from '@berty/contexts/permissions.context'
 import { useStyles } from '@berty/contexts/styles'
@@ -245,7 +245,7 @@ export const Permissions: ScreenFC<'Chat.Permissions'> = ({ route: { params }, n
 						)}
 					</PrimaryButton>
 				</View>
-				<TertiaryButtonWithoutBorder
+				<TertiaryAltButton
 					onPress={async () => {
 						navigation.goBack()
 
@@ -258,7 +258,7 @@ export const Permissions: ScreenFC<'Chat.Permissions'> = ({ route: { params }, n
 					{permissionType === PermissionType.notification && !selectedAccount
 						? t('permission.skip')
 						: t('permission.cancel')}
-				</TertiaryButtonWithoutBorder>
+				</TertiaryAltButton>
 			</View>
 		</View>
 	)
