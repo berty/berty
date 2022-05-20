@@ -1,5 +1,5 @@
 export interface IButtonPress {
-	onPress: () => void
+	onPress?: () => void
 	loading?: boolean
 }
 

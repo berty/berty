@@ -9,25 +9,21 @@ interface IButtonProps extends IButtonPress {
 }
 
 const ButtonPriv: React.FC<IButtonProps> = props => {
-	const borderStyle = useMemo((): StyleProp<ViewStyle> | undefined => {
-		if (props.borderColor) {
-			return { borderColor: props.borderColor, borderWidth: 1.5 }
-		}
-		return undefined
-	}, [props.borderColor])
+	const style = useMemo((): StyleProp<ViewStyle> => {
+		const styleArray: StyleProp<ViewStyle> = [styles.button]
 
-	const backgroundStyle = useMemo((): StyleProp<ViewStyle> => {
-		if (props.backgroundColor) {
-			return { backgroundColor: props.backgroundColor }
+		if (props.borderColor) {
+			styleArray.push({ borderColor: props.borderColor, borderWidth: 1.5 })
 		}
-		return { backgroundColor: 'transparent' }
-	}, [props.backgroundColor])
+		if (props.backgroundColor) {
+			styleArray.push({ backgroundColor: props.backgroundColor })
+		}
+
+		return styleArray
+	}, [props.backgroundColor, props.borderColor])
 
 	return (
-		<TouchableOpacity
-			style={[styles.button, backgroundStyle, borderStyle]}
-			onPress={() => props.onPress()}
-		>
+		<TouchableOpacity style={style} onPress={props.onPress}>
 			{props.loading ? (
 				<ActivityIndicator color={props.backgroundColor ?? props.borderColor} />
 			) : (

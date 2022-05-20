@@ -6,8 +6,8 @@ import { useStyles } from '@berty/contexts/styles'
 import { ScreenFC } from '@berty/navigation'
 import { useThemeColor } from '@berty/store'
 
-import { DeleteAccountContent } from './DeleteAccountContent'
-import { DeleteAccountHeader } from './DeleteAccountHeader'
+import { DeleteAccountContent } from './components/DeleteAccountContent'
+import { DeleteAccountHeader } from './components/DeleteAccountHeader'
 
 export const DeleteAccount: ScreenFC<'Settings.DeleteAccount'> = () => {
 	const [layout, setLayout] = useState(0)

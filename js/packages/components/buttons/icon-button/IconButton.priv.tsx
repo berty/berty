@@ -1,5 +1,5 @@
 import { Icon } from '@ui-kitten/components'
-import React, { useMemo } from 'react'
+import React from 'react'
 
 import { useThemeColor } from '@berty/store'
 
@@ -8,7 +8,7 @@ import { IIconName, IIconType } from '../interfaces'
 const IconButtonPriv: React.FC<Partial<IIconType & IIconName>> = props => {
 	const colors = useThemeColor()
 
-	const color = useMemo((): string => {
+	const getColor = (): string => {
 		switch (props?.type) {
 			case 'secondary':
 				return colors['background-header']
@@ -21,9 +21,9 @@ const IconButtonPriv: React.FC<Partial<IIconType & IIconName>> = props => {
 			default:
 				return 'white'
 		}
-	}, [props?.type, colors])
+	}
 
-	return <Icon fill={color} name={props?.name ?? 'checkmark-outline'} width={25} height={25} />
+	return <Icon fill={getColor()} name={props?.name ?? 'checkmark-outline'} width={25} height={25} />
 }
 
 export default IconButtonPriv
