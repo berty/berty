@@ -2,9 +2,9 @@ import { Icon } from '@ui-kitten/components'
 import LottieView from 'lottie-react-native'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { ActivityIndicator, StatusBar, View } from 'react-native'
-import { TouchableOpacity } from 'react-native-gesture-handler'
+import { StatusBar, View } from 'react-native'
 
+import { HorizontalButtons, PrimaryAltButton, SecondaryAltButton } from '@berty/components'
 import OnboardingWrapper from '@berty/components/onboarding/OnboardingWrapper'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
@@ -116,52 +116,14 @@ const DefaultModeBody: React.FC = () => {
 						},
 					]}
 				>
-					<TouchableOpacity
-						style={[
-							padding.medium,
-							border.radius.medium,
-							{ width: 170 * scaleSize, backgroundColor: '#EBECFF' },
-						]}
-						onPress={() => goBack()}
-					>
-						<UnifiedText
-							style={[
-								text.bold,
-								{
-									textTransform: 'uppercase',
-									color: colors['background-header'],
-									textAlign: 'center',
-								},
-							]}
-						>
+					<HorizontalButtons>
+						<SecondaryAltButton onPress={goBack}>
 							{t('onboarding.default-mode.summary.back-button')}
-						</UnifiedText>
-					</TouchableOpacity>
-					<TouchableOpacity
-						style={[
-							padding.medium,
-							border.radius.medium,
-							{ width: 170 * scaleSize, backgroundColor: '#3744DD' },
-						]}
-						onPress={async () => await onPress()}
-					>
-						{isPressed ? (
-							<ActivityIndicator color={colors['reverted-main-text']} />
-						) : (
-							<UnifiedText
-								style={[
-									text.bold,
-									{
-										textTransform: 'uppercase',
-										color: colors['reverted-main-text'],
-										textAlign: 'center',
-									},
-								]}
-							>
-								{t('onboarding.default-mode.summary.accept-button')}
-							</UnifiedText>
-						)}
-					</TouchableOpacity>
+						</SecondaryAltButton>
+						<PrimaryAltButton loading={isPressed} onPress={async () => await onPress()}>
+							{t('onboarding.default-mode.summary.accept-button')}
+						</PrimaryAltButton>
+					</HorizontalButtons>
 				</View>
 			</View>
 		</View>

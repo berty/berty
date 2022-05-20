@@ -4,7 +4,7 @@ import { View, ViewProps } from 'react-native'
 import { useStyles } from '@berty/contexts/styles'
 import { useThemeColor } from '@berty/store/hooks'
 
-import { PrimaryButton, SecondaryButton, TertiaryButtonWithoutBorder } from '../buttons'
+import { PrimaryButton, SecondaryButton, TertiaryAltButton } from '../buttons'
 import { UnifiedText } from '../shared-components/UnifiedText'
 
 const Card: React.FC<ViewProps> = ({ style, children, ...props }) => (
@@ -73,7 +73,7 @@ const SwiperCard: React.FC<{
 						</UnifiedText>
 					) : null}
 					{children}
-					<View style={[margin.horizontal.large, margin.vertical.small]}>
+					<View style={[margin.horizontal.large, margin.top.small]}>
 						{!!button && <PrimaryButton onPress={button.onPress}>{button.text}</PrimaryButton>}
 						{!!secondButton && (
 							<View style={margin.top.small}>
@@ -84,11 +84,7 @@ const SwiperCard: React.FC<{
 						)}
 					</View>
 
-					{!!skip && (
-						<TertiaryButtonWithoutBorder onPress={skip.onPress}>
-							{skip.text}
-						</TertiaryButtonWithoutBorder>
-					)}
+					{!!skip && <TertiaryAltButton onPress={skip.onPress}>{skip.text}</TertiaryAltButton>}
 				</View>
 			</Card>
 		</View>

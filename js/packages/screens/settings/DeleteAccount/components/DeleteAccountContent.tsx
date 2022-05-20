@@ -46,22 +46,24 @@ export const DeleteAccountContent: React.FC<{}> = () => {
 					autoCorrect={false}
 					autoCapitalize='none'
 				/>
-				<HorizontalButtons>
-					<TertiaryButtonIconLeft name='arrow-back-outline' onPress={() => navigation.goBack()}>
-						{t('settings.delete-account.cancel-button')}
-					</TertiaryButtonIconLeft>
-					<ErrorButtonIconLeft
-						name='close'
-						onPress={async () => {
-							if (confirmed) {
-								Vibration.vibrate(500)
-								await deleteAccount()
-							}
-						}}
-					>
-						{t('settings.delete-account.delete-button')}
-					</ErrorButtonIconLeft>
-				</HorizontalButtons>
+				<View style={[margin.top.small, margin.horizontal.medium]}>
+					<HorizontalButtons>
+						<TertiaryButtonIconLeft name='arrow-back-outline' onPress={() => navigation.goBack()}>
+							{t('settings.delete-account.cancel-button')}
+						</TertiaryButtonIconLeft>
+						<ErrorButtonIconLeft
+							name='close'
+							onPress={async () => {
+								if (confirmed) {
+									Vibration.vibrate(500)
+									await deleteAccount()
+								}
+							}}
+						>
+							{t('settings.delete-account.delete-button')}
+						</ErrorButtonIconLeft>
+					</HorizontalButtons>
+				</View>
 			</View>
 		</>
 	)

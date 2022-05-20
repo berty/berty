@@ -73,30 +73,6 @@ export const GetStarted: ScreenFC<'Onboarding.GetStarted'> = ({ navigation: { na
 						</View>
 					)}
 				</View>
-				{/* <Button
-						accessibilityLabel={t('onboarding.getstarted.create-button')}
-						onPress={async () => {
-							await storageSet(GlobalPersistentOptionsKeys.IsNewAccount, 'isNew')
-							navigate('Onboarding.CreateAccount')
-						}}
-					>
-						{t('onboarding.getstarted.create-button')}
-					</Button> */}
-				{/* {Platform.OS !== 'web' && (
-						<Button
-							status='secondary'
-							onPress={async () => {
-								await importAccountFromDocumentPicker(embedded)
-							}}
-						>
-							{t('onboarding.getstarted.import-button')}
-						</Button>
-					)} */}
-				{/*
-					<Button status='secondary' onPress={() => {}}>
-						{t('onboarding.getstarted.link-button')}
-					</Button>
-					*/}
 			</View>
 		</View>
 	)

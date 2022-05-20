@@ -153,12 +153,14 @@ const AddBotBody: React.FC<{
 						<UnifiedText style={[text.light]}>to discover and test conversations?</UnifiedText>
 					</Text>
 				</View>
-				<HorizontalButtons>
-					<TertiaryButtonIconLeft name='close' onPress={onClose}>
-						SKIP
-					</TertiaryButtonIconLeft>
-					<SecondaryButtonIconLeft onPress={onAdd}>ADD !</SecondaryButtonIconLeft>
-				</HorizontalButtons>
+				<View style={[margin.top.medium, margin.horizontal.medium]}>
+					<HorizontalButtons>
+						<TertiaryButtonIconLeft name='close' onPress={onClose}>
+							SKIP
+						</TertiaryButtonIconLeft>
+						<SecondaryButtonIconLeft onPress={onAdd}>ADD !</SecondaryButtonIconLeft>
+					</HorizontalButtons>
+				</View>
 			</View>
 		</View>
 	) : null
