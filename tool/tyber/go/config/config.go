@@ -2,10 +2,11 @@ package config
 
 import (
 	"context"
-	"github.com/grandcat/zeroconf"
 	"os"
 	"path/filepath"
 	"sync"
+
+	"github.com/grandcat/zeroconf"
 
 	"berty.tech/berty/tool/tyber/go/logger"
 	"github.com/pkg/errors"
@@ -79,6 +80,10 @@ func (c *Config) isInitialized() bool {
 	c.initLock.RLock()
 	defer c.initLock.RUnlock()
 	return c.initialized
+}
+
+func (c *Config) GetLogger() *logger.Logger {
+	return c.logger
 }
 
 func (c *Config) GetSessionsPath() (string, error) {

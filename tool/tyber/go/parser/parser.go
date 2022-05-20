@@ -6,6 +6,7 @@ import (
 	"io"
 	"net"
 	"os"
+	"path/filepath"
 	"sync"
 	"time"
 
@@ -16,6 +17,7 @@ import (
 )
 
 type Parser struct {
+	ctx           context.Context
 	logger        *logger.Logger
 	sessionPath   string
 	listener      *net.TCPListener
@@ -28,8 +30,9 @@ type Parser struct {
 	EventChan     chan interface{} // TODO: base event definition
 }
 
-func New(l *logger.Logger) *Parser {
+func New(ctx context.Context, l *logger.Logger) *Parser {
 	return &Parser{
+		ctx:       ctx,
 		logger:    l.Named("parser"),
 		sessions:  orderedmap.New(),
 		EventChan: make(chan interface{}),
@@ -49,7 +52,8 @@ func (p *Parser) Init(sessionPath string) error {
 
 	var events []CreateSessionEvent
 	for _, sessionID := range sessionsIndex {
-		s, err := p.restoreSessionFile(sessionID)
+		path := filepath.Join(p.sessionPath, fmt.Sprintf("%s.json", sessionID))
+		s, err := p.restoreSessionFile(sessionID, path)
 		if err != nil {
 			p.logger.Errorf("restoring session %s failed: %v", sessionID, err)
 			continue
@@ -64,7 +68,11 @@ func (p *Parser) Init(sessionPath string) error {
 	elapsed := time.Since(start)
 	p.logger.Debugf("restoring sessions took: %s", elapsed)
 
-	p.EventChan <- events
+	select {
+	case p.EventChan <- events:
+	case <-p.ctx.Done():
+		return p.ctx.Err()
+	}
 
 	p.initLock.Lock()
 	p.initialized = true
@@ -188,7 +196,24 @@ func (p *Parser) OpenSession(sessionID string) error {
 	return nil
 }
 
+func (p *Parser) ListSessions() {
+	if p.isInitialized() {
+		var events []CreateSessionEvent
+		p.sessionsLock.RLock()
+		for pair := p.sessions.Oldest(); pair != nil; {
+			s := pair.Value.(*Session)
+			events = append(events, sessionToCreateEvent(s))
+			pair = pair.Next()
+		}
+		p.sessionsLock.RUnlock()
+
+		p.EventChan <- events
+	}
+}
+
 func (p *Parser) DeleteSession(sessionID string) {
+	p.logger.Debugf("delete session request: %s", sessionID)
+
 	if p.isInitialized() {
 		p.sessionsLock.Lock()
 		if p.openedSession != nil && p.openedSession.ID == sessionID {
@@ -227,6 +252,8 @@ func (p *Parser) DeleteAllSessions() {
 			s := pair.Value.(*Session)
 			pair = pair.Next()
 
+			p.logger.Debugf("delete session request: %s", s.ID)
+
 			if p.openedSession != nil && p.openedSession.ID == s.ID {
 				p.openedSession.tracesLock.Lock()
 				p.openedSession.openned = false
@@ -264,7 +291,8 @@ func (p *Parser) startSession(srcName string, srcType SrcType, srcIO io.ReadClos
 	p.sessionsLock.Lock()
 	p.sessions.Set(s.ID, s)
 	p.sessionsLock.Unlock()
-	p.EventChan <- sessionToCreateEvent(s)
+
+	wait := make(chan interface{})
 
 	go func() {
 		if err := s.parseLogs(); err != nil {
@@ -278,7 +306,8 @@ func (p *Parser) startSession(srcName string, srcType SrcType, srcIO io.ReadClos
 		}
 
 		p.sessionsLock.Lock()
-		if err := p.saveSessionFile(s); err != nil {
+		path := filepath.Join(p.sessionPath, fmt.Sprintf("%s.json", s.ID))
+		if err := p.saveSessionFile(s, path); err != nil {
 			p.logger.Errorf("saving session %s logs from %s (%s) failed: %v", s.ID, srcType, srcName, err)
 		} else {
 			p.logger.Debugf("successfully saved session %s logs from %s (%s)", s.ID, srcType, srcName)
@@ -287,5 +316,15 @@ func (p *Parser) startSession(srcName string, srcType SrcType, srcIO io.ReadClos
 			}
 		}
 		p.sessionsLock.Unlock()
+
+		if srcType == FileType {
+			wait <- struct{}{}
+		}
 	}()
+
+	if srcType == FileType {
+		<-wait
+	}
+
+	p.EventChan <- sessionToCreateEvent(s)
 }
