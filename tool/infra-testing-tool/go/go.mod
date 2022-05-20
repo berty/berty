@@ -14,7 +14,6 @@ require (
 	github.com/mathisve/ec2ifupifdown v0.0.0-20220129230945-d304390301de
 	github.com/mitchellh/go-ps v1.0.0
 	github.com/multiformats/go-multiaddr v0.3.1
-	github.com/sirupsen/logrus v1.6.0
 	github.com/spf13/cobra v1.1.3
 	go.uber.org/zap v1.16.0
 	google.golang.org/grpc v1.37.0

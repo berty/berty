@@ -222,11 +222,11 @@ func startTest(ctx context.Context, c *config.Config) error {
 					})
 					if err != nil {
 						logger.Error("unable to start test", zap.Error(err))
+					} else {
+						time.Sleep(time.Second * 3)
+
+						logger.Debug("started test", zap.Int("index", testIndex), zap.String("group", groupArray[g].Name), zap.String("node", groupArray[g].Peers[peerIndex].Tags[aws.Ec2TagName]))
 					}
-					time.Sleep(time.Second * 3)
-
-					logger.Debug("started test", zap.Int("index", testIndex), zap.String("group", groupArray[g].Name), zap.String("node", groupArray[g].Peers[peerIndex].Tags[aws.Ec2TagName]))
-
 					startTestWG.Done()
 				}(&newTestWG, &startTestWG)
 			}

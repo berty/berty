@@ -7,7 +7,9 @@ import (
 	"infratesting/server/grpc/server"
 	"net"
 
+	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
+	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"google.golang.org/grpc"
@@ -25,9 +27,16 @@ func main() {
 	}
 
 	grpclogger := logger.Named("grpc")
+	grpc_zap.ReplaceGrpcLoggerV2(logger)
 	grpcServer := grpc.NewServer(
-		grpc.StreamInterceptor(grpc_zap.StreamServerInterceptor(grpclogger)),
-		grpc.UnaryInterceptor(grpc_zap.UnaryServerInterceptor(grpclogger)),
+		grpc.StreamInterceptor(grpc_middleware.ChainStreamServer(
+			grpc_zap.StreamServerInterceptor(grpclogger),
+			grpc_recovery.StreamServerInterceptor(),
+		)),
+		grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(
+			grpc_zap.UnaryServerInterceptor(grpclogger),
+			grpc_recovery.UnaryServerInterceptor(),
+		)),
 	)
 
 	s := server.NewServer(logger)

@@ -219,7 +219,11 @@ func UploadFile(logger *zap.Logger, path, key string) error {
 		Bucket: &bucketName,
 		Key:    &key,
 	})
-	return fmt.Errorf("unable to put object: %w", err)
+	if err != nil {
+		return fmt.Errorf("unable to put object: %w", err)
+	}
+
+	return nil
 }
 
 // CreateBucket creates an s3 bucket
