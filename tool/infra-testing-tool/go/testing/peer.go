@@ -68,16 +68,6 @@ func NewPeer(ctx context.Context, logger *zap.Logger, ip string, tags []*ec2.Tag
 		return nil, fmt.Errorf("unable to dial host: %w", err)
 	}
 
-	// for state := connectivity.Shutdown; state != connectivity.Ready; {
-	// 	if ok := cc.WaitForStateChange(ctx, connectivity.Shutdown); !ok {
-	// 		return nil, err
-	// 	}
-	// 	state = cc.GetState()
-	// 	logger.Debug("connectivity update",
-	// 		zap.String("host", p.GetHost()),
-	// 		zap.String("state", state.String()))
-	// }
-
 	if deploy {
 		if isPeer {
 			// connecting to peer
