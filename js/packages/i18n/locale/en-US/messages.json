@@ -13,7 +13,8 @@
 				"screenTitle": "Create account",
 				"subtitle": "Get Started Quickly",
 				"first-point": "Start with presets that offer a privacy/comfort balance that suits most. Berty nodes are used to improve performance and asynchronous communication.",
-				"second-point": "For a custom privacy/comfort balance, select Custom Mode.",
+				"second-point": "Push notifications are enabled by default and you can't disable them yet on iOS.",
+				"third-point": "For a custom privacy/comfort balance, select Custom Mode.",
 				"back-button": "Back",
 				"accept-button": "Let's go"
 			}

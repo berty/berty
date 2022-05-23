@@ -93,6 +93,11 @@ const DefaultModeBody: React.FC = () => {
 							{t('onboarding.default-mode.summary.second-point')}
 						</UnifiedText>
 					</View>
+					<View style={[margin.top.medium]}>
+						<UnifiedText style={{ textAlign: 'center' }}>
+							{t('onboarding.default-mode.summary.third-point')}
+						</UnifiedText>
+					</View>
 				</View>
 				<View
 					style={[
