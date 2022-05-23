@@ -84,13 +84,11 @@ const getEntitiesInitialState = () => ({
 export type MessengerState = ReturnType<typeof getEntitiesInitialState> & {
 	account: beapi.messenger.IAccount
 	// value that will set to true when messenger EventsStream finished to list events
-	initialEventsListCompleted: boolean
 }
 
 const initialState: MessengerState = {
 	...getEntitiesInitialState(),
 	account: {},
-	initialEventsListCompleted: false,
 }
 
 /**
@@ -193,9 +191,6 @@ const slice = createSlice({
 				mediasAdapter.upsertOne(state.medias, payload.media)
 			},
 		)
-		builder.addCase(messengerActions[beapi.messenger.StreamEvent.Type.TypeListEnded], state => {
-			state.initialEventsListCompleted = true
-		})
 		builder.addCase(
 			messengerActions[beapi.messenger.StreamEvent.Type.TypeMemberUpdated],
 			(state, { payload }) => {
@@ -456,8 +451,5 @@ export const selectInteractionAuthor = (state: LocalRootState, convPk: string, c
 			return inte.isMine ? selectAccount(state) : selectContact(state, conv.contactPublicKey || '')
 	}
 }
-
-export const selectInitialEventsListCompleted = (state: LocalRootState) =>
-	selectSlice(state).initialEventsListCompleted
 
 export default makeRoot(slice.reducer)

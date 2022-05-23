@@ -1,38 +1,29 @@
-import React, { useContext, useEffect } from 'react'
-import { View } from 'react-native'
+import React, { useContext } from 'react'
 
-import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
+import { CenteredTextScreen } from '@berty/components/account'
+import { StatusBarPrimary } from '@berty/components/StatusBarPrimary'
 import { EventEmitterContext } from '@berty/contexts/eventEmitter.context'
-import { useAccount, useAppDispatch, useAppSelector, useConversationsDict } from '@berty/hooks'
+import { useAppDispatch, useAppSelector } from '@berty/hooks'
 import { ScreenFC, useNavigation } from '@berty/navigation'
-import {
-	selectIsNewAccount,
-	selectSelectedAccount,
-	selectStreamInProgress,
-} from '@berty/redux/reducers/ui.reducer'
-import { useMessengerClient, useMountEffect } from '@berty/store'
+import { selectStreamProgress } from '@berty/redux/reducers/ui.reducer'
 import { openAccount } from '@berty/utils/accounts'
 
-import { StreamWithProgress } from '../../../components/account/StreamWithProgress'
+import { StreamProgress } from '../../../components/account/StreamProgress'
 import { openClients } from './openClients.effect'
 import { prepareAccount } from './prepareAccount.effect'
 
-export const OpeningAccount: ScreenFC<'Account.Opening'> = () => {
-	// necessary to update state of messengerClient value
-	const [clientsOpened, setClientsOpened] = React.useState<boolean>(false)
+export const OpeningAccount: ScreenFC<'Account.Opening'> = ({
+	route: {
+		params: { selectedAccount, isNewAccount = false },
+	},
+}) => {
 	const dispatch = useAppDispatch()
-	const { navigate } = useNavigation()
+	const { reset } = useNavigation()
 	const eventEmitter = useContext(EventEmitterContext)
 
-	const messengerClient = useMessengerClient()
-	const conversations = useConversationsDict()
-	const account = useAccount()
+	const streamProgress = useAppSelector(selectStreamProgress)
 
-	const streamProgress = useAppSelector(selectStreamInProgress)
-	const selectedAccount = useAppSelector(selectSelectedAccount)
-	const isNewAccount = useAppSelector(selectIsNewAccount)
-
-	useMountEffect(() => {
+	React.useEffect(() => {
 		const f = async () => {
 			// open account
 			await openAccount(selectedAccount, dispatch)
@@ -40,50 +31,21 @@ export const OpeningAccount: ScreenFC<'Account.Opening'> = () => {
 			// opening messenger and protocol clients
 			await openClients(eventEmitter, dispatch)
 
-			setClientsOpened(true)
+			dispatch(prepareAccount({ reset, selectedAccount, isNewAccount }))
 		}
 
 		f()
-	})
-
-	useEffect(() => {
-		const f = async () => {
-			// prepare account, like close convos, update clients datas
-			await prepareAccount(
-				isNewAccount,
-				messengerClient,
-				selectedAccount,
-				account,
-				conversations,
-				dispatch,
-				navigate,
-			)
-		}
-		if (clientsOpened) {
-			setClientsOpened(false)
-			f()
-		}
-	}, [
-		account,
-		clientsOpened,
-		conversations,
-		dispatch,
-		isNewAccount,
-		messengerClient,
-		navigate,
-		selectedAccount,
-	])
+	}, [dispatch, eventEmitter, isNewAccount, reset, selectedAccount])
 
 	return (
 		<>
+			<StatusBarPrimary />
 			{streamProgress ? (
-				<StreamWithProgress />
+				<StreamProgress />
 			) : (
-				<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-					<UnifiedText>
-						Opening account stream done, opening messenger/protocol clients and preparing account...
-					</UnifiedText>
-				</View>
+				<CenteredTextScreen>
+					Opening account stream done, opening messenger/protocol clients and preparing account...
+				</CenteredTextScreen>
 			)}
 		</>
 	)

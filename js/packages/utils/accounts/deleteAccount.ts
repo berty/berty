@@ -1,11 +1,16 @@
+import { NavigationProp } from '@react-navigation/native'
+
 import beapi from '@berty/api'
-import { setStateOnBoarding, setSelectedAccount } from '@berty/redux/reducers/ui.reducer'
-import { AppDispatch } from '@berty/redux/store'
+import { ScreensParams } from '@berty/navigation/types'
 
 import { accountClient } from './accountClient'
 import { refreshAccountList } from './accountUtils'
 
-export const deleteAccount = async (selectedAccount: string | null, dispatch: AppDispatch) => {
+export const deleteAccount = async (
+	reset: NavigationProp<ScreensParams>['reset'],
+	selectedAccount: string | null,
+) => {
+	console.log('deleteAccount', selectedAccount)
 	let accounts: beapi.account.IAccountMetadata[] = []
 	if (selectedAccount !== null) {
 		// delete account service and account data storage
@@ -16,8 +21,14 @@ export const deleteAccount = async (selectedAccount: string | null, dispatch: Ap
 	}
 
 	if (!Object.values(accounts).length) {
-		// reset to OnBoarding
-		dispatch(setStateOnBoarding())
+		// navigate to OnBoarding
+		reset({
+			routes: [
+				{
+					name: 'Onboarding.GetStarted',
+				},
+			],
+		})
 	} else {
 		// open the last opened if an other account exist
 		let accountSelected: beapi.account.IAccountMetadata | null = null
@@ -33,6 +44,14 @@ export const deleteAccount = async (selectedAccount: string | null, dispatch: Ap
 				accountSelected = account
 			}
 		}
-		dispatch(setSelectedAccount(accountSelected?.accountId))
+		// navigate to OpeningAccount
+		reset({
+			routes: [
+				{
+					name: 'Account.Opening',
+					params: { selectedAccount: accountSelected?.accountId },
+				},
+			],
+		})
 	}
 }

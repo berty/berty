@@ -1,6 +1,7 @@
 import React from 'react'
 
-import { Unary } from '@berty/components/account'
+import { CenteredTextScreen } from '@berty/components/account'
+import { StatusBarPrimary } from '@berty/components/StatusBarPrimary'
 import { useCreateNewAccount } from '@berty/hooks'
 import { ScreenFC } from '@berty/navigation'
 import { accountClient } from '@berty/utils/accounts/accountClient'
@@ -20,5 +21,10 @@ export const CreatingAccount: ScreenFC<'Account.Creating'> = () => {
 		f()
 	}, [createNewAccount])
 
-	return <Unary>Creating Account...</Unary>
+	return (
+		<>
+			<StatusBarPrimary />
+			<CenteredTextScreen>Creating Account...</CenteredTextScreen>
+		</>
+	)
 }

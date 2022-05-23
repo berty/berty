@@ -94,12 +94,14 @@ export type ScreensParams = {
 
 	// Account
 
-	'Account.Opening': undefined
+	'Account.InitialLaunch': undefined
+	'Account.Opening': { selectedAccount: string; isNewAccount?: boolean }
 	'Account.Creating': undefined
+	// we know that is a warn but it's ok in our case because we don't loose the navigation state
 	// https://reactnavigation.org/docs/troubleshooting#i-get-the-warning-non-serializable-values-were-found-in-the-navigation-state
 	'Account.Closing': { callback: () => void }
 	'Account.Importing': { filePath: string }
-	'Account.Deleting': undefined
+	'Account.Deleting': { selectedAccount: string }
 }
 
 type ScreenProps<T extends keyof ScreensParams> = StackScreenProps<ScreensParams, T>

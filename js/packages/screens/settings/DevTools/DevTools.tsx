@@ -29,7 +29,7 @@ import {
 	useConversationsDict,
 	useAccount,
 	usePlaySound,
-	useRestart,
+	useRestartAfterClosing,
 } from '@berty/hooks'
 import { languages } from '@berty/i18n/locale/languages'
 import { GoBridge } from '@berty/native-modules/GoBridge'
@@ -40,12 +40,7 @@ import {
 	selectPersistentOptions,
 	setPersistentOption,
 } from '@berty/redux/reducers/persistentOptions.reducer'
-import {
-	selectDaemonAddress,
-	setDaemonAddress,
-	setDebugMode,
-	setStreamError,
-} from '@berty/redux/reducers/ui.reducer'
+import { setDebugMode, setStreamError } from '@berty/redux/reducers/ui.reducer'
 import { useMessengerClient, useThemeColor } from '@berty/store'
 import messengerMethodsHooks from '@berty/store/methods'
 import { storageGet, storageSet } from '@berty/utils/accounts/accountClient'
@@ -349,8 +344,7 @@ const BodyDevTools: React.FC<{}> = withInAppNotification(({ showNotification }: 
 	const dispatch = useAppDispatch()
 	const persistentOptions = useSelector(selectPersistentOptions)
 	const client = useMessengerClient()
-	const restart = useRestart()
-	const daemonAddress = useSelector(selectDaemonAddress)
+	const restart = useRestartAfterClosing()
 
 	const addTyberHost = useCallback(
 		(host: string, addresses: string[]) => {
@@ -532,18 +526,6 @@ const BodyDevTools: React.FC<{}> = withInAppNotification(({ showNotification }: 
 				iconColor={colors['alt-secondary-background-header']}
 				onPress={() => GoBridge.closeBridge()}
 			/>
-			{daemonAddress !== 'http://localhost:1338' && (
-				<ButtonSetting
-					name='Switch to 1338 node'
-					icon='folder-outline'
-					iconSize={30}
-					iconColor={colors['alt-secondary-background-header']}
-					actionIcon='arrow-ios-forward'
-					onPress={() => {
-						dispatch(setDaemonAddress({ value: 'http://localhost:1338' }))
-					}}
-				/>
-			)}
 			<ButtonSetting
 				name={t('settings.devtools.local-grpc-button')}
 				icon='hard-drive-outline'

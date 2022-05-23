@@ -1,16 +1,12 @@
 import { Platform } from 'react-native'
 
 import beapi from '@berty/api'
-import {
-	setStateStreamInProgress,
-	setStreamError,
-	setStreamDone,
-} from '@berty/redux/reducers/ui.reducer'
+import { setStreamProgress, setStreamError, setStreamDone } from '@berty/redux/reducers/ui.reducer'
 import { AppDispatch, persistor } from '@berty/redux/store'
 import { accountClient, storageGet } from '@berty/utils/accounts/accountClient'
 import { defaultCLIArgs } from '@berty/utils/accounts/defaultCLIArgs'
 import { GlobalPersistentOptionsKeys } from '@berty/utils/persistent-options/types'
-import { StreamWithProgressType } from '@berty/utils/protocol/progress.types'
+import { StreamProgressType } from '@berty/utils/protocol/progress.types'
 
 const openAccountWithProgress = async (
 	cliArgs: string[],
@@ -39,11 +35,11 @@ const openAccountWithProgress = async (
 				if (msg?.progress?.state !== 'done') {
 					const progress = msg?.progress
 					if (progress) {
-						const payload: StreamWithProgressType = {
+						const payload: StreamProgressType = {
 							msg: progress,
 							stream: 'Open account',
 						}
-						dispatch(setStateStreamInProgress(payload))
+						dispatch(setStreamProgress(payload))
 					}
 				}
 			})
@@ -76,17 +72,13 @@ export const openAccount = async (selectedAccount: string | null, dispatch: AppD
 
 	let openedAccount: beapi.account.GetOpenedAccount.Reply
 
-	try {
-		openedAccount = await accountClient.getOpenedAccount({})
+	openedAccount = await accountClient.getOpenedAccount({})
 
-		if (openedAccount.accountId !== selectedAccount) {
-			if (openedAccount.accountId !== '') {
-				await accountClient.closeAccount({})
-			}
-
-			await openAccountWithProgress(cliArgs, selectedAccount, dispatch)
+	if (openedAccount.accountId !== selectedAccount) {
+		if (openedAccount.accountId !== '') {
+			await accountClient.closeAccount({})
 		}
-	} catch (e) {
-		console.log(`account seems to be unopened yet ${e}`)
+
+		await openAccountWithProgress(cliArgs, selectedAccount, dispatch)
 	}
 }

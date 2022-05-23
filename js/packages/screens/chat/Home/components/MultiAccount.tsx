@@ -1,4 +1,3 @@
-import { useNavigation as useNativeNavigation } from '@react-navigation/native'
 import { Icon } from '@ui-kitten/components'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
@@ -9,17 +8,15 @@ import { GenericAvatar } from '@berty/components/avatars'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
-import { useAppDispatch, useAppSelector } from '@berty/hooks'
-import { useNavigation } from '@berty/navigation'
+import {
+	useAppSelector,
+	useImportingAccountAfterClosing,
+	useOnBoardingAfterClosing,
+	useSwitchAccountAfterClosing,
+} from '@berty/hooks'
 import { selectAccounts, selectSelectedAccount } from '@berty/redux/reducers/ui.reducer'
 import { useThemeColor, Maybe } from '@berty/store'
-import {
-	importAccountFromDocumentPicker,
-	importAccountAfterClosing,
-	switchAccountAfterClosing,
-	onBoardingAfterClosing,
-	refreshAccountList,
-} from '@berty/utils/accounts'
+import { importAccountFromDocumentPicker, refreshAccountList } from '@berty/utils/accounts'
 import { pbDateToNum } from '@berty/utils/convert/time'
 
 const AccountButton: React.FC<{
@@ -78,9 +75,9 @@ export const MultiAccount: React.FC<{ onPress: () => void }> = ({ onPress }) => 
 	const { t } = useTranslation()
 	const selectedAccount = useAppSelector(selectSelectedAccount)
 	const accounts = useAppSelector(selectAccounts)
-	const { navigate } = useNavigation()
-	const dispatch = useAppDispatch()
-	const { dispatch: navDispatch } = useNativeNavigation()
+	const switchAccount = useSwitchAccountAfterClosing()
+	const onBoardingAfterClosing = useOnBoardingAfterClosing()
+	const importingAccountAfterClosing = useImportingAccountAfterClosing()
 
 	const [isHandlingPress, setIsHandlingPress] = React.useState(false)
 
@@ -90,11 +87,7 @@ export const MultiAccount: React.FC<{ onPress: () => void }> = ({ onPress }) => 
 		}
 		setIsHandlingPress(true)
 		if (selectedAccount !== account.accountId) {
-			navigate('Account.Closing', {
-				callback: () => {
-					switchAccountAfterClosing(dispatch, selectedAccount)
-				},
-			})
+			switchAccount(account.accountId)
 		} else if (selectedAccount === account.accountId && !account.error) {
 			return onPress()
 		}
@@ -144,13 +137,7 @@ export const MultiAccount: React.FC<{ onPress: () => void }> = ({ onPress }) => 
 					})}
 				<AccountButton
 					name={t('main.home.multi-account.create-button')}
-					onPress={async () => {
-						navigate('Account.Closing', {
-							callback: () => {
-								onBoardingAfterClosing(navDispatch)
-							},
-						})
-					}}
+					onPress={async () => onBoardingAfterClosing()}
 					avatar={
 						<View
 							style={{
@@ -179,11 +166,7 @@ export const MultiAccount: React.FC<{ onPress: () => void }> = ({ onPress }) => 
 							console.warn("imported file doesn't exist")
 							return
 						}
-						navigate('Account.Closing', {
-							callback: () => {
-								importAccountAfterClosing(navigate, filePath)
-							},
-						})
+						importingAccountAfterClosing(filePath)
 					}}
 					avatar={
 						<View

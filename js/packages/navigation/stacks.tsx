@@ -13,12 +13,7 @@ import { useSelector } from 'react-redux'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
 import { useAppDispatch } from '@berty/hooks'
-import {
-	MessengerAppState,
-	selectAppState,
-	selectHandledLink,
-	setHandledLink,
-} from '@berty/redux/reducers/ui.reducer'
+import { selectHandledLink, setHandledLink } from '@berty/redux/reducers/ui.reducer'
 import * as RawComponents from '@berty/screens'
 import { useThemeColor } from '@berty/store'
 
@@ -150,45 +145,14 @@ Components = mapValues(RawComponents, SubComponents =>
 const NavigationStack = createNativeStackNavigator<ScreensParams>()
 
 export const Navigation: React.FC = React.memo(() => {
-	const appState = useSelector(selectAppState)
-
 	const colors = useThemeColor()
 	const { scaleSize } = useAppDimensions()
 	const { t }: any = useTranslation()
 	const { dispatch } = useNavigation()
 
-	useEffect(() => {
-		console.log('context app State', appState)
-		switch (appState) {
-			case MessengerAppState.ONBOARDING:
-				dispatch(
-					CommonActions.reset({
-						routes: [{ name: 'Onboarding.GetStarted' }],
-					}),
-				)
-				return
-			case MessengerAppState.OPENING:
-				dispatch(
-					CommonActions.reset({
-						routes: [{ name: 'Account.Opening' }],
-					}),
-				)
-				return
-		}
-	}, [appState, dispatch])
-
-	const initialRoute = () => {
-		switch (appState) {
-			case MessengerAppState.ONBOARDING:
-				return 'Onboarding.GetStarted'
-			default:
-				return 'Chat.Home'
-		}
-	}
-
 	return (
 		<NavigationStack.Navigator
-			initialRouteName={initialRoute()}
+			initialRouteName='Account.InitialLaunch'
 			screenOptions={{
 				headerLeft:
 					Platform.OS === 'web'
@@ -204,6 +168,11 @@ export const Navigation: React.FC = React.memo(() => {
 			}}
 		>
 			{/* Account */}
+			<NavigationStack.Screen
+				name={'Account.InitialLaunch'}
+				component={Components.Account.InitialLaunch}
+				options={{ headerShown: false }}
+			/>
 			<NavigationStack.Screen
 				name={'Account.Creating'}
 				component={Components.Account.CreatingAccount}

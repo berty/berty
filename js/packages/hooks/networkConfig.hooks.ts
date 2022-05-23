@@ -9,8 +9,8 @@ import {
 import { selectSelectedAccount } from '@berty/redux/reducers/ui.reducer'
 import { accountClient } from '@berty/utils/accounts/accountClient'
 
+import { useRestartAfterClosing } from './accounts.hooks'
 import { useAppSelector } from './core.hooks'
-import { useRestart } from './ui.hooks'
 
 /**
  * Returns a function that updates the berty node network config
@@ -18,7 +18,7 @@ import { useRestart } from './ui.hooks'
  */
 const useSetNetworkConfig = () => {
 	const selectedAccount = useAppSelector(selectSelectedAccount)
-	const restart = useRestart()
+	const restart = useRestartAfterClosing()
 
 	return useCallback(
 		(newConfig: beapi.account.INetworkConfig) => {

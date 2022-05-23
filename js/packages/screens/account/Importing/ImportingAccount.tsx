@@ -1,9 +1,9 @@
 import React from 'react'
 
-import { StreamWithProgress } from '@berty/components/account'
+import { StreamProgress } from '@berty/components/account'
+import { StatusBarPrimary } from '@berty/components/StatusBarPrimary'
 import { useAppDispatch } from '@berty/hooks'
-import { ScreenFC } from '@berty/navigation'
-import { setSelectedAccount } from '@berty/redux/reducers/ui.reducer'
+import { ScreenFC, useNavigation } from '@berty/navigation'
 import { importAccount, refreshAccountList } from '@berty/utils/accounts'
 
 export const ImportingAccount: ScreenFC<'Account.Importing'> = ({
@@ -12,6 +12,7 @@ export const ImportingAccount: ScreenFC<'Account.Importing'> = ({
 	},
 }) => {
 	const dispatch = useAppDispatch()
+	const { reset } = useNavigation()
 
 	React.useEffect(() => {
 		const f = async () => {
@@ -25,15 +26,20 @@ export const ImportingAccount: ScreenFC<'Account.Importing'> = ({
 			}
 
 			await refreshAccountList()
-			dispatch(setSelectedAccount(resp.accountMetadata.accountId))
+			reset({
+				routes: [
+					{ name: 'Account.Opening', params: { selectedAccount: resp.accountMetadata.accountId } },
+				],
+			})
 		}
 
 		f()
-	}, [dispatch, filePath])
+	}, [dispatch, reset, filePath])
 
 	return (
 		<>
-			<StreamWithProgress />
+			<StatusBarPrimary />
+			<StreamProgress />
 		</>
 	)
 }

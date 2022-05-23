@@ -1,12 +1,8 @@
 import beapi from '@berty/api'
-import {
-	setStateStreamInProgress,
-	setStreamError,
-	setStreamDone,
-} from '@berty/redux/reducers/ui.reducer'
+import { setStreamProgress, setStreamError, setStreamDone } from '@berty/redux/reducers/ui.reducer'
 import { AppDispatch } from '@berty/redux/store'
 
-import { StreamWithProgressType } from '../protocol/progress.types'
+import { StreamProgressType } from '../protocol/progress.types'
 import { accountClient } from './accountClient'
 
 export const importAccount = async (path: string, dispatch: AppDispatch) =>
@@ -27,11 +23,11 @@ export const importAccount = async (path: string, dispatch: AppDispatch) =>
 				if (msg?.progress?.state !== 'done') {
 					const progress = msg?.progress
 					if (progress) {
-						const payload: StreamWithProgressType = {
+						const payload: StreamProgressType = {
 							msg: progress,
 							stream: 'Import account',
 						}
-						dispatch(setStateStreamInProgress(payload))
+						dispatch(setStreamProgress(payload))
 					}
 				}
 

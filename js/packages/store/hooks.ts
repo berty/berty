@@ -20,9 +20,7 @@ import {
 } from '@berty/redux/reducers/theme.reducer'
 import {
 	addNotificationInhibitor,
-	MessengerAppState,
 	removeNotificationInhibitor,
-	selectAppState,
 	selectMessengerClient,
 } from '@berty/redux/reducers/ui.reducer'
 import { NotificationsInhibitor } from '@berty/utils/notification/notif-in-app'
@@ -83,13 +81,12 @@ export const useMessengerClient = () => {
 }
 
 export const useThemeColor = (): ThemeType => {
-	const appState = useSelector(selectAppState)
 	const themeIsDark = useSelector(selectThemeIsDark)
 	const themeSelected = useSelector(selectThemeSelected)
 	const themeCollection = useSelector(selectThemeCollection)
 
 	return React.useMemo(() => {
-		if (!Object.entries(themeCollection).length || appState === MessengerAppState.ONBOARDING) {
+		if (!Object.entries(themeCollection).length) {
 			return colors
 		}
 
@@ -105,7 +102,7 @@ export const useThemeColor = (): ThemeType => {
 			}
 		}
 		return collectionColors as ThemeType
-	}, [appState, themeCollection, themeIsDark, themeSelected])
+	}, [themeCollection, themeIsDark, themeSelected])
 }
 
 export const useProfileNotification = () => {

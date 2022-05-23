@@ -1,6 +1,7 @@
 import React from 'react'
 
-import { StreamWithProgress } from '@berty/components/account'
+import { StreamProgress } from '@berty/components/account'
+import { StatusBarPrimary } from '@berty/components/StatusBarPrimary'
 import { useAppDispatch } from '@berty/hooks'
 import { ScreenFC } from '@berty/navigation'
 import { useMountEffect } from '@berty/store'
@@ -24,7 +25,8 @@ export const ClosingAccount: ScreenFC<'Account.Closing'> = ({
 
 	return (
 		<>
-			<StreamWithProgress />
+			<StatusBarPrimary />
+			<StreamProgress />
 		</>
 	)
 }

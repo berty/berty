@@ -1,7 +1,7 @@
-import { setStateStreamInProgress, setStreamError } from '@berty/redux/reducers/ui.reducer'
+import { setStreamProgress, setStreamError } from '@berty/redux/reducers/ui.reducer'
 import { AppDispatch, persistor, resetAccountStore } from '@berty/redux/store'
 
-import { StreamWithProgressType } from '../protocol/progress.types'
+import { StreamProgressType } from '../protocol/progress.types'
 import { accountClient } from './accountClient'
 
 export const closeAccount = async (dispatch: AppDispatch) =>
@@ -28,11 +28,11 @@ export const closeAccount = async (dispatch: AppDispatch) =>
 				if (msg?.progress?.state !== 'done') {
 					const progress = msg?.progress
 					if (progress) {
-						const payload: StreamWithProgressType = {
+						const payload: StreamProgressType = {
 							msg: progress,
 							stream: 'Close account',
 						}
-						dispatch(setStateStreamInProgress(payload))
+						dispatch(setStreamProgress(payload))
 					}
 				}
 			})

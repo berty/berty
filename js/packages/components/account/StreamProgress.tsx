@@ -1,31 +1,28 @@
 import React from 'react'
-import { ActivityIndicator, Button, TextInput, View, StatusBar, Platform } from 'react-native'
+import { ActivityIndicator, Button, View, Platform } from 'react-native'
 import * as Progress from 'react-native-progress'
 import { useSelector } from 'react-redux'
 
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
-import { useAppDispatch, useRestart } from '@berty/hooks'
+import { useAppSelector, useRestartAfterClosing } from '@berty/hooks'
 import { useDeleteAccount } from '@berty/hooks'
 import {
-	selectDaemonAddress,
+	selectSelectedAccount,
 	selectStreamError,
-	selectStreamInProgress,
-	setDaemonAddress,
+	selectStreamProgress,
 } from '@berty/redux/reducers/ui.reducer'
 import { useThemeColor } from '@berty/store'
 
-const StreamWithProgressCmp: React.FC<{}> = () => {
+const StreamProgressCmp: React.FC = () => {
 	const { text } = useStyles()
 	const { scaleSize } = useAppDimensions()
 	const colors = useThemeColor()
-	const stream = useSelector(selectStreamInProgress)
+	const stream = useSelector(selectStreamProgress)
 
 	return (
 		<View style={{ backgroundColor: colors['main-background'], flex: 1 }}>
-			<StatusBar backgroundColor={colors['main-background']} barStyle='dark-content' />
-
 			<UnifiedText
 				style={[
 					text.align.center,
@@ -62,21 +59,14 @@ const StreamWithProgressCmp: React.FC<{}> = () => {
 
 const gutter = 50
 
-export const StreamWithProgress = () => {
-	const streamInProgress = useSelector(selectStreamInProgress)
+export const StreamProgress: React.FC = () => {
+	const streamInProgress = useSelector(selectStreamProgress)
 	const streamError = useSelector(selectStreamError)
 	const deleteAccount = useDeleteAccount()
-	const daemonAddress = useSelector(selectDaemonAddress)
-	const dispatch = useAppDispatch()
-	const restart = useRestart()
+	const restart = useRestartAfterClosing()
+	const selectedAccount = useAppSelector(selectSelectedAccount)
 
 	const colors = useThemeColor()
-
-	const [newAddress, setNewAddress] = React.useState(daemonAddress)
-
-	const changeAddress = React.useCallback(() => {
-		dispatch(setDaemonAddress({ value: newAddress }))
-	}, [dispatch, newAddress])
 
 	if (streamError && !streamInProgress) {
 		return (
@@ -92,29 +82,20 @@ export const StreamWithProgress = () => {
 					},
 				]}
 			>
-				<StatusBar backgroundColor={colors['main-background']} barStyle='dark-content' />
 				<UnifiedText style={{ color: colors['warning-asset'] }}>
 					{streamError.toString()}
 				</UnifiedText>
 				<UnifiedText style={{ marginTop: gutter }}>
 					Likely couldn't connect to the node, or the connection dropped
 				</UnifiedText>
-				<>
-					<TextInput
-						onChangeText={setNewAddress}
-						value={newAddress}
-						style={{ backgroundColor: colors['secondary-text'] }}
-					/>
-					<Button title='Change node address' onPress={changeAddress} />
-				</>
 				<View style={{ marginTop: gutter }}>
 					<Button onPress={() => restart()} title='Restart' />
 				</View>
 				<View style={{ marginTop: gutter }}>
-					<Button onPress={() => deleteAccount()} title='Delete account' />
+					<Button onPress={() => deleteAccount(selectedAccount)} title='Delete account' />
 				</View>
 			</View>
 		)
 	}
-	return <StreamWithProgressCmp />
+	return <StreamProgressCmp />
 }

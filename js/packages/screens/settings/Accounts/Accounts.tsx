@@ -1,4 +1,3 @@
-import { useNavigation as useNativeNavigation } from '@react-navigation/native'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { ScrollView, View, TouchableOpacity, Platform } from 'react-native'
@@ -12,16 +11,17 @@ import { ButtonSettingV2, Section } from '@berty/components/shared-components'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
-import { useAppDispatch } from '@berty/hooks'
+import {
+	useOnBoardingAfterClosing,
+	useImportingAccountAfterClosing,
+	useSwitchAccountAfterClosing,
+} from '@berty/hooks'
 import { ScreenFC, useNavigation } from '@berty/navigation'
 import { selectAccounts, selectSelectedAccount } from '@berty/redux/reducers/ui.reducer'
 import { useThemeColor } from '@berty/store'
 import {
 	exportAccountToFile,
 	importAccountFromDocumentPicker,
-	switchAccountAfterClosing,
-	importAccountAfterClosing,
-	onBoardingAfterClosing,
 	refreshAccountList,
 } from '@berty/utils/accounts'
 import { pbDateToNum } from '@berty/utils/convert/time'
@@ -38,8 +38,7 @@ const AccountButton: React.FC<beapi.account.IAccountMetadata> = ({
 	const selected = selectedAccount === accountId
 	const { padding, margin } = useStyles()
 	const { scaleSize } = useAppDimensions()
-	const { navigate } = useNavigation()
-	const dispatch = useAppDispatch()
+	const switchAccount = useSwitchAccountAfterClosing()
 
 	const heightButton = 50
 
@@ -50,14 +49,10 @@ const AccountButton: React.FC<beapi.account.IAccountMetadata> = ({
 		}
 		setIsHandlingPress(true)
 		if (selectedAccount !== accountId) {
-			navigate('Account.Closing', {
-				callback: () => {
-					switchAccountAfterClosing(dispatch, selectedAccount)
-				},
-			})
+			switchAccount(accountId)
 		}
 		return
-	}, [accountId, dispatch, isHandlingPress, navigate, selectedAccount])
+	}, [accountId, isHandlingPress, selectedAccount, switchAccount])
 
 	return (
 		<TouchableOpacity
@@ -108,10 +103,11 @@ export const Accounts: ScreenFC<'Settings.Accounts'> = withInAppNotification(
 		const { scaleSize } = useAppDimensions()
 		const colors = useThemeColor()
 		const { navigate } = useNavigation()
-		const { dispatch: navDispatch } = useNativeNavigation()
 		const { t }: { t: any } = useTranslation()
 		const selectedAccount = useSelector(selectSelectedAccount)
 		const accounts = useSelector(selectAccounts)
+		const onBoardingAfterClosing = useOnBoardingAfterClosing()
+		const importingAccountAfterClosing = useImportingAccountAfterClosing()
 
 		React.useEffect(() => {
 			refreshAccountList()
@@ -156,13 +152,7 @@ export const Accounts: ScreenFC<'Settings.Accounts'> = withInAppNotification(
 					<Section>
 						<ButtonSettingV2
 							text={t('settings.accounts.create-button')}
-							onPress={async () => {
-								navigate('Account.Closing', {
-									callback: () => {
-										onBoardingAfterClosing(navDispatch)
-									},
-								})
-							}}
+							onPress={async () => onBoardingAfterClosing()}
 							last={Platform.OS === 'web'}
 						/>
 						{Platform.OS !== 'web' && (
@@ -174,11 +164,7 @@ export const Accounts: ScreenFC<'Settings.Accounts'> = withInAppNotification(
 										console.warn("imported file doesn't exist")
 										return
 									}
-									navigate('Account.Closing', {
-										callback: () => {
-											importAccountAfterClosing(navigate, filePath)
-										},
-									})
+									importingAccountAfterClosing(filePath)
 								}}
 								last
 							/>

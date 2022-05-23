@@ -16,7 +16,7 @@ const SetupFinishedBody = () => {
 	const [isFinished, setIsFinished] = useState(false)
 	const [isAccount, setIsAccount] = useState(false)
 	const client = {}
-	const { navigate } = useNavigation()
+	const { reset } = useNavigation()
 
 	return isAccount ? (
 		<>
@@ -81,7 +81,17 @@ const SetupFinishedBody = () => {
 						onPress: () => {
 							setIsFinished(true)
 							Vibration.vibrate([500])
-							setTimeout(() => navigate('Chat.Home'), 1500)
+							setTimeout(
+								() =>
+									reset({
+										routes: [
+											{
+												name: 'Chat.Home',
+											},
+										],
+									}),
+								1500,
+							)
 						},
 					}}
 				/>

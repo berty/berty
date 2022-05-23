@@ -11,5 +11,4 @@ export {
 	useReadEffect,
 	useMountEffect,
 } from './hooks'
-export { MessengerEffects } from './messenger-effects/MessengerEffects'
 export * from './types.gen'

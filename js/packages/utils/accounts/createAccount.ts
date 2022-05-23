@@ -1,14 +1,15 @@
+import { NavigationProp } from '@react-navigation/native'
 import { Platform } from 'react-native'
 
 import beapi from '@berty/api'
-import { setSelectedAccount, setIsNewAccount } from '@berty/redux/reducers/ui.reducer'
-import { AppDispatch } from '@berty/redux/store'
+import { ScreensParams } from '@berty/navigation/types'
+import { persistor } from '@berty/redux/store'
 
 import { accountClient } from './accountClient'
 import { refreshAccountList } from './accountUtils'
 
 export const createAccount = async (
-	dispatch: AppDispatch,
+	reset: NavigationProp<ScreensParams>['reset'],
 	config?: beapi.account.INetworkConfig,
 ) => {
 	let resp: beapi.account.CreateAccount.Reply
@@ -24,8 +25,9 @@ export const createAccount = async (
 			networkConfig,
 			sessionKind: Platform.OS === 'web' ? 'desktop-electron' : null,
 		})
-		// TODO: dig why this line cause error on AppStorageGet: datastore key not found
-		// persistor.persist()
+		// this line can cause error like AppStorageGet: datastore key not found
+		// this error is triggered when it's the first time that the account is persisted, and it's normal
+		persistor.persist()
 	} catch (e) {
 		console.warn('unable to create account', e)
 		return
@@ -35,6 +37,15 @@ export const createAccount = async (
 	}
 
 	await refreshAccountList()
-	dispatch(setIsNewAccount(true))
-	dispatch(setSelectedAccount(resp.accountMetadata.accountId))
+	reset({
+		routes: [
+			{
+				name: 'Account.Opening',
+				params: {
+					selectedAccount: resp.accountMetadata.accountId,
+					isNewAccount: true,
+				},
+			},
+		],
+	})
 }

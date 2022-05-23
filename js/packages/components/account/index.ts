@@ -1,2 +1,2 @@
-export { StreamWithProgress } from './StreamWithProgress'
-export { Unary } from './Unary'
+export { StreamProgress } from './StreamProgress'
+export { CenteredTextScreen } from './CenteredTextScreen'

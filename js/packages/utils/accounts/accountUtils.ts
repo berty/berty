@@ -1,12 +1,8 @@
-import { CommonActions } from '@react-navigation/native'
-
 import beapi from '@berty/api'
-import { setAccounts, setSelectedAccount } from '@berty/redux/reducers/ui.reducer'
-import store, { AppDispatch } from '@berty/redux/store'
-import { Maybe } from '@berty/store/hooks'
+import { setAccounts } from '@berty/redux/reducers/ui.reducer'
+import store from '@berty/redux/store'
 
 import { accountClient } from './accountClient'
-import { closeAccount } from './closeAccount'
 
 /**
  * updates the AccountService account
@@ -32,39 +28,6 @@ export const updateAccount = async (payload: any) => {
 	}
 
 	await refreshAccountList()
-}
-
-export const restart = async (accountID: Maybe<string>, dispatch: AppDispatch) => {
-	try {
-		await closeAccount(dispatch)
-	} catch (e) {
-		console.warn('unable to close account')
-		return
-	}
-	dispatch(setSelectedAccount(accountID))
-}
-
-export const switchAccountAfterClosing = (
-	dispatch: AppDispatch,
-	selectedAccount: string | null,
-) => {
-	dispatch(setSelectedAccount(selectedAccount))
-}
-
-export const onBoardingAfterClosing = (navDispatch: any) => {
-	navDispatch(
-		CommonActions.reset({
-			routes: [{ name: 'Onboarding.GetStarted' }],
-		}),
-	)
-}
-
-export const importAccountAfterClosing = (navigate: any, filePath: string) => {
-	navigate('Account.Importing', { filePath })
-}
-
-export const deleteAccountAfterClosing = (navigate: any) => {
-	navigate('Account.Deleting')
 }
 
 export const refreshAccountList = async (): Promise<beapi.account.IAccountMetadata[]> => {

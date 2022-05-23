@@ -1,28 +1,28 @@
-import { Dictionary } from '@reduxjs/toolkit'
+import { NavigationProp } from '@react-navigation/native'
+import { createAsyncThunk } from '@reduxjs/toolkit'
 
 import beapi from '@berty/api'
-import {
-	ServiceClientType,
-	WelshMessengerServiceClient,
-} from '@berty/grpc-bridge/welsh-clients.gen'
+import { ServiceClientType } from '@berty/grpc-bridge/welsh-clients.gen'
+import { ScreensParams } from '@berty/navigation/types'
+import { selectConversationsDict, selectAccount } from '@berty/redux/reducers/messenger.reducer'
 import { resetTheme } from '@berty/redux/reducers/theme.reducer'
-import { setIsNewAccount, setStateReady } from '@berty/redux/reducers/ui.reducer'
-import { AppDispatch } from '@berty/redux/store'
+import { selectMessengerClient, setSelectedAccount } from '@berty/redux/reducers/ui.reducer'
+import { RootState } from '@berty/redux/store'
 import { storageGet, storageRemove } from '@berty/utils/accounts/accountClient'
 import { updateAccount } from '@berty/utils/accounts/accountUtils'
 import { GlobalPersistentOptionsKeys } from '@berty/utils/persistent-options/types'
 
 const closeConvos = async (
-	client: ServiceClientType<beapi.messenger.MessengerService> | null,
+	messengerClient: ServiceClientType<beapi.messenger.MessengerService> | null,
 	conversations: { [key: string]: beapi.messenger.IConversation | undefined },
 ) => {
-	if (client === null) {
-		console.warn('client is null')
+	if (messengerClient === null) {
+		console.warn('messenger client is null')
 		return
 	}
 
 	for (const conv of Object.values(conversations).filter(conv => conv?.isOpen) as any) {
-		client.conversationClose({ groupPk: conv.publicKey }).catch((e: any) => {
+		messengerClient.conversationClose({ groupPk: conv.publicKey }).catch((e: any) => {
 			console.warn(`failed to close conversation "${conv.displayName}",`, e)
 		})
 	}
@@ -54,28 +54,48 @@ const updateAccountOnClients = async (
 	// }
 }
 
-export const prepareAccount = async (
-	isNewAccount: boolean,
-	messengerClient: WelshMessengerServiceClient | null,
-	selectedAccount: string | null,
-	account: beapi.messenger.IAccount,
-	conversations: Dictionary<beapi.messenger.IConversation>,
-	dispatch: AppDispatch,
-	navigate: any,
-) => {
-	// messenger service keep conversations open on restart, so we close all after open app
-	await closeConvos(messengerClient, conversations)
+// we create a thunk here to have the current store state after opening account and clients to avoid multi hacks effects
+export const prepareAccount = createAsyncThunk(
+	'account/prepared',
+	async (
+		arg: {
+			reset: NavigationProp<ScreensParams>['reset']
+			selectedAccount: string
+			isNewAccount: boolean
+		},
+		{ dispatch, getState },
+	) => {
+		const { reset, selectedAccount, isNewAccount } = arg
+		// typing createAsyncThunk is a nightmare 👻
+		const state: RootState = getState() as any
+		const messengerClient = selectMessengerClient(state)
+		const conversations = selectConversationsDict(state)
+		const account = selectAccount(state)
 
-	console.log('prepare Account isNewAccount', isNewAccount)
-	if (isNewAccount) {
-		await updateAccountOnClients(messengerClient, selectedAccount, account)
-		// reset ui theme
-		dispatch(resetTheme())
-		dispatch(setStateReady())
-		navigate('Onboarding.SetupFinished')
-	} else {
-		dispatch(setIsNewAccount(false))
-		dispatch(setStateReady())
-		navigate('Chat.Home')
-	}
-}
+		// messenger service keep conversations open on restart, so we close all after open app
+		await closeConvos(messengerClient, conversations)
+
+		console.log('PREPARING', selectedAccount)
+		dispatch(setSelectedAccount(selectedAccount))
+		if (isNewAccount) {
+			await updateAccountOnClients(messengerClient, selectedAccount, account)
+			// reset ui theme
+			dispatch(resetTheme())
+			reset({
+				routes: [
+					{
+						name: 'Onboarding.SetupFinished',
+					},
+				],
+			})
+		} else {
+			reset({
+				routes: [
+					{
+						name: 'Chat.Home',
+					},
+				],
+			})
+		}
+	},
+)

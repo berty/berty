@@ -12,12 +12,7 @@ import {
 	WelshProtocolServiceClient,
 } from '@berty/grpc-bridge/welsh-clients.gen'
 import { streamEventToAction as streamEventToReduxAction } from '@berty/redux/messengerActions'
-import {
-	setSelectedAccount,
-	setClients,
-	setStreamError,
-	setClearClients,
-} from '@berty/redux/reducers/ui.reducer'
+import { setClients, setStreamError, setClearClients } from '@berty/redux/reducers/ui.reducer'
 import { AppDispatch } from '@berty/redux/store'
 import { accountClient } from '@berty/utils/accounts/accountClient'
 import { convertMAddr } from '@berty/utils/ipfs/convertMAddr'
@@ -101,7 +96,7 @@ const messengerEventStream = (
 			.catch(err => {
 				if (err instanceof GRPCError && err?.EOF) {
 					console.info('end of the events stream')
-					dispatch(setSelectedAccount())
+					resolve()
 				} else {
 					console.warn('events stream error:', err)
 					dispatch(setStreamError({ error: err }))
@@ -114,7 +109,10 @@ const messengerEventStream = (
 export const openClients = async (
 	eventEmitter: EventEmitter,
 	dispatch: AppDispatch,
-): Promise<void> => {
+): Promise<{
+	messengerClient: WelshMessengerServiceClient
+	protocolClient: WelshProtocolServiceClient
+}> => {
 	console.log('starting stream')
 
 	let messengerClient, protocolClient
@@ -124,8 +122,7 @@ export const openClients = async (
 		const url = convertMAddr(openedAccount?.listeners || [])
 
 		if (url === null) {
-			console.error('unable to find service address')
-			return
+			throw new Error('unable to find service address')
 		}
 
 		const opts = {
@@ -164,4 +161,6 @@ export const openClients = async (
 	messengerEventStream(messengerClient, eventEmitter, dispatch)
 
 	dispatch(setClients({ messengerClient, protocolClient }))
+
+	return { messengerClient, protocolClient }
 }
