@@ -23,6 +23,7 @@ import {
 	askAndSharePushTokenOnAllConversations,
 	enableNotificationsForConversation,
 	pushFilteringAvailable,
+	pushAvailable,
 } from '@berty/utils/notification/notif-push'
 import { serviceTypes } from '@berty/utils/remote-services/remote-services'
 
@@ -155,26 +156,7 @@ export const Notifications: ScreenFC<'Settings.Notifications'> = () => {
 				showsVerticalScrollIndicator={false}
 			>
 				<Section>
-					{!pushFilteringAvailable && (
-						<ButtonSettingV2
-							text={
-								pushEnabled
-									? t('chat.push-notifications.enabled')
-									: t('chat.push-notifications.disabled')
-							}
-							oppositeNode={
-								<>
-									<Icon
-										name={pushEnabled ? 'bell' : 'bell-off'}
-										width={20 * scaleSize}
-										height={20 * scaleSize}
-										fill={pushEnabled ? colors['main-text'] : colors['warning-asset']}
-									/>
-								</>
-							}
-						/>
-					)}
-					{pushFilteringAvailable && (
+					{pushAvailable && (
 						<ButtonSettingV2
 							text={t('chat.push-notifications.receive-push')}
 							toggle={{
@@ -207,7 +189,7 @@ export const Notifications: ScreenFC<'Settings.Notifications'> = () => {
 									},
 								}}
 							/>
-							{pushFilteringAvailable && (
+							{pushAvailable && (
 								<ButtonSettingV2
 									text={t('chat.push-notifications.auto-enable')}
 									toggle={{

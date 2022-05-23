@@ -122,7 +122,7 @@ export const askAndSharePushTokenOnAllConversations = async (
 		forceEnable?: boolean
 	},
 ) => {
-	if (!pushFilteringAvailable) {
+	if (!pushAvailable) {
 		return
 	}
 

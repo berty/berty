@@ -46,6 +46,12 @@ const EnableNotificationsButton: React.FC<{
 		[account.mutedUntil],
 	)
 
+	console.log(
+		'results:',
+		permissions.notification,
+		conv?.sharedPushTokenIdentifier,
+		conversationNotMuted,
+	)
 	if (!pushAvailable || permissions.notification === RESULTS.UNAVAILABLE) {
 		return (
 			<ButtonSetting
