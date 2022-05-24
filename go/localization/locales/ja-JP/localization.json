@@ -2,25 +2,27 @@
   "auth": {
     "services": {
       "rpl": {
-        "name": "",
-        "description": "",
+        "name": "複製",
+        "description": "このサービスは自動的に会話を複製し、デバイスに最も効率的なネットワークパフォーマンスを提供します。",
         "benefitBadge": "パフォーマンス"
       },
       "psh": {
         "name": "プッシュ通知",
-        "description": "",
+        "description": "このサービスでは、メッセージのプッシュ通知をデバイスが受け取ることができます。",
         "benefitBadge": "パフォーマンス"
       }
     },
-    "pageTitle": "",
-    "connectButton_one": "",
-    "connectButton_other": "",
+    "pageTitle": "Berty サービス",
+    "connectButton_one": "サービスを使用",
+    "connectButton_other": "選択したサービスを使用",
     "privacyPolicyLabel": "プライバシーポリシー"
   },
   "push": {
-    "message": {},
+    "message": {
+      "title": "新しいメッセージ"
+    },
     "error": {
-      "title": ""
+      "title": "プッシュの復号に失敗しました"
     },
     "voiceMessage": {
       "bodyWithNumberOfMedia_one": "音声メッセージを送信しました",
@@ -35,32 +37,32 @@
       "bodyWithNumberOfMedia_other": "%[1] 件の写真を送信しました"
     },
     "media": {
-      "bodyWithNumberOfMedia_one": "",
-      "bodyWithNumberOfMedia_other": ""
+      "bodyWithNumberOfMedia_one": "メディアを送信しました",
+      "bodyWithNumberOfMedia_other": "%[1] 件のメディアを送信しました"
     },
     "reaction": {
       "bodyWithDisplayNameAndEmoji": "%[1]v が %[2]v でメッセージに反応しました"
     },
     "groupInvitation": {
-      "bodyWithGroupName": ""
+      "bodyWithGroupName": "%[1]v に招待されました"
     },
     "unknown": {
-      "body": ""
+      "body": "新しいものを受信しました"
     },
     "conversationNameChanged": {
-      "body": ""
+      "body": "会話名が更新されました。"
     },
     "memberNameChanged": {
-      "body": ""
+      "body": "表示する名前を更新しました"
     },
     "memberPictureChanged": {
-      "body": ""
+      "body": "プロフィール画像を更新しました"
     },
     "memberDetailsChanged": {
-      "body": ""
+      "body": "メンバーの詳細が更新されました"
     },
     "replyOptionsOffered": {
-      "body": ""
+      "body": "オファーされた返信オプション"
     }
   }
 }
