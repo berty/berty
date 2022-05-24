@@ -1,5 +1,8 @@
-export interface ButtonDefProps {
+export interface ButtonPressProps {
 	onPress?: () => void
+}
+
+export interface ButtonDefProps extends ButtonPressProps {
 	loading?: boolean
 }
 
