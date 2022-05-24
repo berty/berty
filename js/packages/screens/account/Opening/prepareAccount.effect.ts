@@ -54,7 +54,7 @@ const updateAccountOnClients = async (
 	// }
 }
 
-// we create a thunk here to have the current store state after opening account and clients to avoid multi hacks effects
+// we create a thunk here to have the current store state after opening the account and clients while avoiding hacky effects
 export const prepareAccount = createAsyncThunk(
 	'account/prepared',
 	async (
@@ -75,7 +75,6 @@ export const prepareAccount = createAsyncThunk(
 		// messenger service keep conversations open on restart, so we close all after open app
 		await closeConvos(messengerClient, conversations)
 
-		console.log('PREPARING', selectedAccount)
 		dispatch(setSelectedAccount(selectedAccount))
 		if (isNewAccount) {
 			await updateAccountOnClients(messengerClient, selectedAccount, account)

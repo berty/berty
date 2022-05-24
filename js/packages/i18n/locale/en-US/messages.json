@@ -83,6 +83,8 @@
 		},
 		"create-account": {
 			"title": "Create your account",
+			"first-button": "Default mode",
+			"second-button": "Custom mode",
 			"placeholder": "Choose your nickname",
 			"good-to-know": {
 				"title": "Good to know:",
@@ -512,6 +514,10 @@
 		"emojis": {
 			"matching": "Emojis matching"
 		}
+	},
+	"account": {
+		"deleting-account": "Deleting account...",
+		"creating-account": "Creating account..."
 	},
 	"audio": {
 		"record": {

@@ -4,7 +4,6 @@ import { StreamProgress } from '@berty/components/account'
 import { StatusBarPrimary } from '@berty/components/StatusBarPrimary'
 import { useAppDispatch } from '@berty/hooks'
 import { ScreenFC } from '@berty/navigation'
-import { useMountEffect } from '@berty/store'
 import { closeAccount } from '@berty/utils/accounts'
 
 export const ClosingAccount: ScreenFC<'Account.Closing'> = ({
@@ -14,14 +13,14 @@ export const ClosingAccount: ScreenFC<'Account.Closing'> = ({
 }) => {
 	const dispatch = useAppDispatch()
 
-	useMountEffect(() => {
+	React.useEffect(() => {
 		const f = async () => {
 			await closeAccount(dispatch)
 			callback()
 		}
 
 		f()
-	})
+	}, [callback, dispatch])
 
 	return (
 		<>

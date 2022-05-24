@@ -1,6 +1,6 @@
 import React, { useContext } from 'react'
 
-import { CenteredTextScreen } from '@berty/components/account'
+import { LoaderDots } from '@berty/components/LoaderDots'
 import { StatusBarPrimary } from '@berty/components/StatusBarPrimary'
 import { EventEmitterContext } from '@berty/contexts/eventEmitter.context'
 import { useAppDispatch, useAppSelector } from '@berty/hooks'
@@ -40,13 +40,7 @@ export const OpeningAccount: ScreenFC<'Account.Opening'> = ({
 	return (
 		<>
 			<StatusBarPrimary />
-			{streamProgress ? (
-				<StreamProgress />
-			) : (
-				<CenteredTextScreen>
-					Opening account stream done, opening messenger/protocol clients and preparing account...
-				</CenteredTextScreen>
-			)}
+			{streamProgress ? <StreamProgress /> : <LoaderDots />}
 		</>
 	)
 }

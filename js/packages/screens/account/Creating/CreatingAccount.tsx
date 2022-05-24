@@ -1,4 +1,5 @@
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 
 import { CenteredTextScreen } from '@berty/components/account'
 import { StatusBarPrimary } from '@berty/components/StatusBarPrimary'
@@ -8,6 +9,7 @@ import { accountClient } from '@berty/utils/accounts/accountClient'
 
 export const CreatingAccount: ScreenFC<'Account.Creating'> = () => {
 	const createNewAccount = useCreateNewAccount()
+	const { t } = useTranslation()
 
 	React.useEffect(() => {
 		const f = async () => {
@@ -24,7 +26,7 @@ export const CreatingAccount: ScreenFC<'Account.Creating'> = () => {
 	return (
 		<>
 			<StatusBarPrimary />
-			<CenteredTextScreen>Creating Account...</CenteredTextScreen>
+			<CenteredTextScreen>{t('account.creating-account')}</CenteredTextScreen>
 		</>
 	)
 }

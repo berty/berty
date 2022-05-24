@@ -1,7 +1,7 @@
 import { Icon } from '@ui-kitten/components'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { GestureResponderEvent, ScrollView, TouchableOpacity, View } from 'react-native'
+import { GestureResponderEvent, Platform, ScrollView, TouchableOpacity, View } from 'react-native'
 
 import beapi from '@berty/api'
 import { GenericAvatar } from '@berty/components/avatars'
@@ -158,36 +158,38 @@ export const MultiAccount: React.FC<{ onPress: () => void }> = ({ onPress }) => 
 						</View>
 					}
 				/>
-				<AccountButton
-					name={t('main.home.multi-account.import-button')}
-					onPress={async () => {
-						const filePath = await importAccountFromDocumentPicker()
-						if (!filePath) {
-							console.warn("imported file doesn't exist")
-							return
+				{Platform.OS !== 'web' && (
+					<AccountButton
+						name={t('main.home.multi-account.import-button')}
+						onPress={async () => {
+							const filePath = await importAccountFromDocumentPicker()
+							if (!filePath) {
+								console.warn("imported file doesn't exist")
+								return
+							}
+							importingAccountAfterClosing(filePath)
+						}}
+						avatar={
+							<View
+								style={{
+									height: 40,
+									width: 40,
+									borderRadius: 20,
+									backgroundColor: colors['background-header'],
+									alignItems: 'center',
+									justifyContent: 'center',
+								}}
+							>
+								<Icon
+									name='download-outline'
+									height={30}
+									width={30}
+									fill={colors['reverted-main-text']}
+								/>
+							</View>
 						}
-						importingAccountAfterClosing(filePath)
-					}}
-					avatar={
-						<View
-							style={{
-								height: 40,
-								width: 40,
-								borderRadius: 20,
-								backgroundColor: colors['background-header'],
-								alignItems: 'center',
-								justifyContent: 'center',
-							}}
-						>
-							<Icon
-								name='download-outline'
-								height={30}
-								width={30}
-								fill={colors['reverted-main-text']}
-							/>
-						</View>
-					}
-				/>
+					/>
+				)}
 			</ScrollView>
 		</TouchableOpacity>
 	) : null

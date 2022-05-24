@@ -1,9 +1,9 @@
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 
 import { CenteredTextScreen } from '@berty/components/account'
 import { useDeleteAccount } from '@berty/hooks'
 import { ScreenFC } from '@berty/navigation'
-import { useMountEffect } from '@berty/store'
 
 export const DeletingAccount: ScreenFC<'Account.Deleting'> = ({
 	route: {
@@ -11,13 +11,14 @@ export const DeletingAccount: ScreenFC<'Account.Deleting'> = ({
 	},
 }) => {
 	const deleteAccount = useDeleteAccount()
+	const { t } = useTranslation()
 
-	useMountEffect(() => {
+	React.useEffect(() => {
 		const f = async () => {
 			await deleteAccount(selectedAccount)
 		}
 		f()
-	})
+	}, [deleteAccount, selectedAccount])
 
-	return <CenteredTextScreen>Deleting account...</CenteredTextScreen>
+	return <CenteredTextScreen>{t('account.deleting-account')}</CenteredTextScreen>
 }

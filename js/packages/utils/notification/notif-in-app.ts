@@ -9,7 +9,7 @@ export const showNeedRestartNotification = (showNotification: any, restart: () =
 	showNotification({
 		title: t('notification.need-restart.title'),
 		message: t('notification.need-restart.desc'),
-		onPress: async () => {
+		onPress: () => {
 			restart()
 		},
 		additionalProps: { type: 'message' },

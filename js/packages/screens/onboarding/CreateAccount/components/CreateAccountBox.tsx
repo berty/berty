@@ -19,7 +19,7 @@ export const CreateAccountBox: React.FC<{
 	const { text, padding, margin, border } = useStyles()
 	const { scaleSize } = useAppDimensions()
 	const colors = useThemeColor()
-	const { t } = useTranslation()
+	const { t }: any = useTranslation()
 	const { navigate } = useNavigation()
 	const account = useAccount()
 
@@ -28,7 +28,7 @@ export const CreateAccountBox: React.FC<{
 			<SwiperCard
 				title={t('onboarding.create-account.title')}
 				button={{
-					text: 'DEFAULT MODE',
+					text: t('onboarding.create-account.first-button'),
 					onPress: async () => {
 						const displayName = name || `anon#${account.publicKey?.substring(0, 4)}`
 						await storageSet(GlobalPersistentOptionsKeys.DisplayName, displayName)
@@ -36,7 +36,7 @@ export const CreateAccountBox: React.FC<{
 					},
 				}}
 				secondButton={{
-					text: 'CUSTOM MODE',
+					text: t('onboarding.create-account.second-button'),
 					onPress: async () => {
 						const displayName = name || `anon#${account.publicKey?.substring(0, 4)}`
 						await storageSet(GlobalPersistentOptionsKeys.DisplayName, displayName)
