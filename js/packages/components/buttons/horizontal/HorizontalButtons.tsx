@@ -3,11 +3,11 @@ import { View } from 'react-native'
 
 import { useStyles } from '@berty/contexts/styles'
 
-interface IHorizontalButtonsProps {
+interface HorizontalButtonsProps {
 	children: ReactNode[]
 }
 
-const HorizontalButtons: React.FC<IHorizontalButtonsProps> = props => {
+export const HorizontalButtons: React.FC<HorizontalButtonsProps> = props => {
 	const { row, margin } = useStyles()
 
 	return (
@@ -17,5 +17,3 @@ const HorizontalButtons: React.FC<IHorizontalButtonsProps> = props => {
 		</View>
 	)
 }
-
-export default HorizontalButtons

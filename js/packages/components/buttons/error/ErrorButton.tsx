@@ -1,15 +1,13 @@
 import React from 'react'
 
-import { IButtonPress } from '../interfaces'
-import ErrorButtonPriv from './ErrorButton.priv'
-import ErrorTextPriv from './ErrorText.priv'
+import { ButtonDefProps } from '../interfaces'
+import { ErrorButtonPriv } from './ErrorButton.priv'
+import { ErrorTextPriv } from './ErrorText.priv'
 
-const ErrorButton: React.FC<IButtonPress> = props => {
+export const ErrorButton: React.FC<ButtonDefProps> = props => {
 	return (
 		<ErrorButtonPriv onPress={props.onPress}>
 			<ErrorTextPriv>{props.children}</ErrorTextPriv>
 		</ErrorButtonPriv>
 	)
 }
-
-export default ErrorButton

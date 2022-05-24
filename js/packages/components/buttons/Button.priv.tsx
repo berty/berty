@@ -1,15 +1,15 @@
 import React, { useMemo } from 'react'
 import { ActivityIndicator, StyleProp, StyleSheet, TouchableOpacity, ViewStyle } from 'react-native'
 
-import { IButtonPress } from './interfaces'
+import { ButtonDefProps } from './interfaces'
 
-interface IButtonProps extends IButtonPress {
+interface ButtonPrivProps extends ButtonDefProps {
 	backgroundColor?: string
 	borderColor?: string
 	borderRadius?: number
 }
 
-const ButtonPriv: React.FC<IButtonProps> = props => {
+export const ButtonPriv: React.FC<ButtonPrivProps> = props => {
 	const style = useMemo((): StyleProp<ViewStyle> => {
 		const styleArray: StyleProp<ViewStyle> = [styles.button]
 
@@ -48,5 +48,3 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 	},
 })
-
-export default ButtonPriv

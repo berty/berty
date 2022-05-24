@@ -4,7 +4,7 @@ import { StyleSheet } from 'react-native'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useStyles } from '@berty/contexts/styles'
 
-const TextButtonPriv: React.FC<{ color: string }> = props => {
+export const TextButtonPriv: React.FC<{ color: string }> = props => {
 	const { text } = useStyles()
 
 	return (
@@ -19,5 +19,3 @@ const styles = StyleSheet.create({
 		textTransform: 'uppercase',
 	},
 })
-
-export default TextButtonPriv

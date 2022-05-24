@@ -1,9 +1,9 @@
 import React from 'react'
 
-import ButtonPriv from '../Button.priv'
-import { IButtonPress } from '../interfaces'
+import { ButtonPriv } from '../Button.priv'
+import { ButtonDefProps } from '../interfaces'
 
-const SecondaryButtonPriv: React.FC<IButtonPress & { alternative?: boolean }> = props => {
+export const SecondaryButtonPriv: React.FC<ButtonDefProps & { alternative?: boolean }> = props => {
 	// TODO: replace with value from theme
 	return (
 		<ButtonPriv
@@ -16,5 +16,3 @@ const SecondaryButtonPriv: React.FC<IButtonPress & { alternative?: boolean }> = 
 		</ButtonPriv>
 	)
 }
-
-export default SecondaryButtonPriv
