@@ -1,9 +1,9 @@
-export interface IButtonPress {
+export interface ButtonDefProps {
 	onPress?: () => void
 	loading?: boolean
 }
 
-export interface IIconName {
+export interface IconNameProps {
 	// TODO: check how to use this with a type
 	/**
 	 * @default 'checkmark-outline'
@@ -11,6 +11,6 @@ export interface IIconName {
 	name?: string
 }
 
-export interface IIconType {
+export interface IconTypeProps {
 	type?: 'primary' | 'secondary' | 'tertiary' | 'error'
 }

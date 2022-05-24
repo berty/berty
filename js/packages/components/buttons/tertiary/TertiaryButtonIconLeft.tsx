@@ -1,11 +1,11 @@
 import React from 'react'
 
-import IconWrapperLeftPriv from '../icon-button/IconWrapperLeft.priv'
-import { IButtonPress, IIconName } from '../interfaces'
-import TertiaryButtonPriv from './TertiaryButton.priv'
-import TertiaryTextPriv from './TertiaryText.priv'
+import { IconWrapperLeftPriv } from '../icon-button/IconWrapperLeft.priv'
+import { ButtonDefProps, IconNameProps } from '../interfaces'
+import { TertiaryButtonPriv } from './TertiaryButton.priv'
+import { TertiaryTextPriv } from './TertiaryText.priv'
 
-const TertiaryButtonIconLeft: React.FC<IButtonPress & IIconName> = props => {
+export const TertiaryButtonIconLeft: React.FC<ButtonDefProps & IconNameProps> = props => {
 	return (
 		<TertiaryButtonPriv onPress={props.onPress}>
 			<IconWrapperLeftPriv name={props.name} type='tertiary' />
@@ -13,5 +13,3 @@ const TertiaryButtonIconLeft: React.FC<IButtonPress & IIconName> = props => {
 		</TertiaryButtonPriv>
 	)
 }
-
-export default TertiaryButtonIconLeft
