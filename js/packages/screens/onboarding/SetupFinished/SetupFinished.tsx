@@ -1,4 +1,3 @@
-import { CommonActions } from '@react-navigation/native'
 import LottieView from 'lottie-react-native'
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -6,12 +5,7 @@ import { ActivityIndicator as Spinner, StatusBar, Vibration, View } from 'react-
 
 import OnboardingWrapper from '@berty/components/onboarding/OnboardingWrapper'
 import SwiperCard from '@berty/components/onboarding/SwiperCard'
-import { useAppDispatch } from '@berty/hooks'
-import { dispatch as navDispatch, ScreenFC } from '@berty/navigation'
-import {
-	PersistentOptionsKeys,
-	setPersistentOption,
-} from '@berty/redux/reducers/persistentOptions.reducer'
+import { ScreenFC, useNavigation } from '@berty/navigation'
 import { useNotificationsInhibitor, useThemeColor } from '@berty/store'
 
 const SetupFinishedBody = () => {
@@ -22,7 +16,7 @@ const SetupFinishedBody = () => {
 	const [isFinished, setIsFinished] = useState(false)
 	const [isAccount, setIsAccount] = useState(false)
 	const client = {}
-	const dispatch = useAppDispatch()
+	const { reset } = useNavigation()
 
 	return isAccount ? (
 		<>
@@ -85,23 +79,17 @@ const SetupFinishedBody = () => {
 						text: t('onboarding.setup-finished.button'),
 						textStyle: { textTransform: 'uppercase' },
 						onPress: () => {
-							dispatch(
-								setPersistentOption({
-									type: PersistentOptionsKeys.OnBoardingFinished,
-									payload: {
-										isFinished: true,
-									},
-								}),
-							)
 							setIsFinished(true)
 							Vibration.vibrate([500])
 							setTimeout(
 								() =>
-									navDispatch(
-										CommonActions.reset({
-											routes: [{ name: 'Chat.Home' }],
-										}),
-									),
+									reset({
+										routes: [
+											{
+												name: 'Chat.Home',
+											},
+										],
+									}),
 								1500,
 							)
 						},

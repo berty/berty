@@ -1,6 +1,6 @@
 import beapi from '@berty/api'
 
-export type StreamInProgress = {
+export type StreamProgressType = {
 	msg: beapi.protocol.IProgress
 	stream: string
 }

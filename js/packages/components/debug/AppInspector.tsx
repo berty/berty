@@ -25,7 +25,7 @@ import { UnifiedText } from '../shared-components/UnifiedText'
 
 const { RootDir } = NativeModules
 
-const accountService = createServiceClient(beapi.account.AccountService, rpcBridge, null)
+const accountClient = createServiceClient(beapi.account.AccountService, rpcBridge, null)
 
 const styles = StyleSheet.create({
 	safeViewContainer: {
@@ -142,7 +142,7 @@ const fetchProtoAccountList = (
 	t: any,
 ) => {
 	const f = async () => {
-		const resp = await accountService.listAccounts({})
+		const resp = await accountClient.listAccounts({})
 
 		if (!resp) {
 			updateAccountProtoEntries({})
@@ -193,14 +193,14 @@ const accountAction = async (
 				t('debug.inspector.accounts.action-delete.action-account-manager-confirm'),
 				() => {
 					// close account if necessary
-					accountService
+					accountClient
 						.closeAccount({})
 						.catch((err: Error) => {
 							console.warn(err)
 							Alert.alert(t('debug.inspector.accounts.action-delete.error-close'), err.message)
 						})
 						// delete account
-						.then(() => accountService.deleteAccount({ accountId: accountId }))
+						.then(() => accountClient.deleteAccount({ accountId: accountId }))
 						.then(() => Alert.alert(t('debug.inspector.accounts.action-delete.success-feedback')))
 						.catch((err: Error) => {
 							console.warn(err)
@@ -397,10 +397,7 @@ const AccountsInspector: React.FC<{
 	)
 }
 
-const AppInspector: React.FC<{ embedded: boolean; error: Error | null }> = ({
-	embedded,
-	error,
-}) => {
+const AppInspector: React.FC<{ error: Error | null }> = ({ error }) => {
 	const [lastUpdate, setLastUpdate] = useState(Date.now())
 	const { t }: { t: any } = useTranslation()
 	const { text } = useStyles()
@@ -440,13 +437,7 @@ const AppInspector: React.FC<{ embedded: boolean; error: Error | null }> = ({
 				<UnifiedText style={[styles.text, styles.header2]}>
 					{t('debug.inspector.accounts.title')}
 				</UnifiedText>
-				{embedded ? (
-					<AccountsInspector lastRefresh={lastUpdate} setLastUpdate={setLastUpdate} />
-				) : (
-					<UnifiedText style={[styles.text]}>
-						❌ {t('debug.inspector.accounts.unsupported-remote-mode')}
-					</UnifiedText>
-				)}
+				<AccountsInspector lastRefresh={lastUpdate} setLastUpdate={setLastUpdate} />
 			</ScrollView>
 			<View style={{ position: 'absolute', bottom: 30, left: 0, right: 0 }}>
 				<View style={{ flexDirection: 'row', paddingHorizontal: 12 }}>

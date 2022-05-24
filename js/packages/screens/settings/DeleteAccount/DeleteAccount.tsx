@@ -1,4 +1,4 @@
-import { useNavigation as useReactNavigation } from '@react-navigation/core'
+import { useNavigation as useReactNavigation } from '@react-navigation/native'
 import { Icon } from '@ui-kitten/components'
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -6,7 +6,7 @@ import { View, StyleSheet, TouchableOpacity, TextInput, Vibration, StatusBar } f
 
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useStyles } from '@berty/contexts/styles'
-import { useDeleteAccount } from '@berty/hooks'
+import { useDeletingAccountAfterClosing } from '@berty/hooks'
 import { ScreenFC } from '@berty/navigation'
 import { useThemeColor } from '@berty/store'
 
@@ -105,7 +105,6 @@ const DeleteAccountError: React.FC<{ error: string }> = ({ error }) => {
 const DELETE_STR = 'delete'
 
 const DeleteAccountContent: React.FC<{}> = () => {
-	const deleteAccount = useDeleteAccount()
 	const _styles = useStylesDeleteAccount()
 	const { row, margin, border, padding, text, column } = useStyles()
 	const colors = useThemeColor()
@@ -113,6 +112,7 @@ const DeleteAccountContent: React.FC<{}> = () => {
 	const { t }: any = useTranslation()
 	const [deleteConfirmation, setDeleteConfirmation] = useState<string>()
 	const confirmed = deleteConfirmation === DELETE_STR
+	const deletingAccountAfterClosing = useDeletingAccountAfterClosing()
 
 	return (
 		<>
@@ -170,7 +170,7 @@ const DeleteAccountContent: React.FC<{}> = () => {
 						]}
 						onPress={async () => {
 							Vibration.vibrate(500)
-							await deleteAccount()
+							deletingAccountAfterClosing()
 						}}
 						disabled={!confirmed}
 					>

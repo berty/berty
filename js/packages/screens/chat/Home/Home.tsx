@@ -20,8 +20,7 @@ import {
 } from '@berty/hooks'
 import { ScreenFC } from '@berty/navigation'
 import { selectPersistentOptions } from '@berty/redux/reducers/persistentOptions.reducer'
-import { selectClient } from '@berty/redux/reducers/ui.reducer'
-import { useNotificationsInhibitor, useThemeColor } from '@berty/store'
+import { useMessengerClient, useNotificationsInhibitor, useThemeColor } from '@berty/store'
 
 import { AddBot } from './components/AddBot'
 import { Conversations } from './components/Conversations'
@@ -96,7 +95,7 @@ export const Home: ScreenFC<'Chat.Home'> = ({ navigation: { navigate } }) => {
 
 	const [isLongPress, setIsLongPress] = useState<boolean>(false)
 
-	const client = useSelector(selectClient)
+	const messengerClient = useMessengerClient()
 
 	const { text, opacity, flex, margin, border } = useStyles()
 	const { scaleSize, scaleHeight } = useAppDimensions()
@@ -167,7 +166,7 @@ export const Home: ScreenFC<'Chat.Home'> = ({ navigation: { navigate } }) => {
 				let earliestResult = ''
 				setEarliestResult('')
 				while (true) {
-					const results = await client?.messageSearch({
+					const results = await messengerClient?.messageSearch({
 						query: searchText,
 						refCid: earliestResult,
 						limit: 10,
@@ -195,7 +194,7 @@ export const Home: ScreenFC<'Chat.Home'> = ({ navigation: { navigate } }) => {
 		return () => {
 			canceled = true
 		}
-	}, [client, searchInteractions, searchText])
+	}, [messengerClient, searchInteractions, searchText])
 
 	const hasResults = [searchConversations, searchContacts, searchInteractions.current].some(
 		c => Object.keys(c).length > 0,

@@ -13,7 +13,6 @@ export enum PersistentOptionsKeys {
 	Configurations = 'configurations',
 	LogFilters = 'logFilters',
 	TyberHost = 'tyberHost',
-	OnBoardingFinished = 'onBoardingFinished',
 	ProfileNotification = 'profileNotification',
 }
 
@@ -61,10 +60,6 @@ type PersistentOptionsTyberHost = {
 	address: string
 }
 
-type PersistentOptionsOnBoardingFinished = {
-	isFinished: boolean
-}
-
 export const UpdatesProfileNotification = 'updates'
 type PersistentOptionsProfileNotification = {
 	[UpdatesProfileNotification]: number
@@ -100,15 +95,11 @@ type PersistentOptionsUpdate =
 			payload: PersistentOptionsTyberHost
 	  }
 	| {
-			type: typeof PersistentOptionsKeys.OnBoardingFinished
-			payload: PersistentOptionsOnBoardingFinished
-	  }
-	| {
 			type: typeof PersistentOptionsKeys.ProfileNotification
 			payload: PersistentOptionsProfileNotification
 	  }
 
-export type PersistentOptions = {
+type PersistentOptions = {
 	[PersistentOptionsKeys.Notifications]: PersistentOptionsNotifications
 	[PersistentOptionsKeys.Suggestions]: PersistentOptionsSuggestions
 	[PersistentOptionsKeys.Debug]: PersistentOptionsDebug
@@ -116,7 +107,6 @@ export type PersistentOptions = {
 	[PersistentOptionsKeys.Configurations]: PersistentOptionsConfigurations
 	[PersistentOptionsKeys.LogFilters]: PersistentOptionsLogFilters
 	[PersistentOptionsKeys.TyberHost]: PersistentOptionsTyberHost
-	[PersistentOptionsKeys.OnBoardingFinished]: PersistentOptionsOnBoardingFinished
 	[PersistentOptionsKeys.ProfileNotification]: PersistentOptionsProfileNotification
 }
 
@@ -153,9 +143,6 @@ export const defaultPersistentOptions = (): PersistentOptions => {
 		},
 		[PersistentOptionsKeys.TyberHost]: {
 			address: Platform.OS === 'android' ? '10.0.2.2:4242' : '127.0.0.1:4242',
-		},
-		[PersistentOptionsKeys.OnBoardingFinished]: {
-			isFinished: false,
 		},
 		[PersistentOptionsKeys.ProfileNotification]: {
 			[UpdatesProfileNotification]: 0,

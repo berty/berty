@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux'
 
 import { ButtonSetting, FactionButtonSetting } from '@berty/components/shared-components'
 import { useStyles } from '@berty/contexts/styles'
-import { useAccountServices, useRestart } from '@berty/hooks'
+import { useAccountServices, useRestartAfterClosing } from '@berty/hooks'
 import { ScreenFC } from '@berty/navigation'
 import { selectProtocolClient } from '@berty/redux/reducers/ui.reducer'
 import { useThemeColor } from '@berty/store'
@@ -24,7 +24,7 @@ const BodyServicesAuth = withInAppNotification(({ showNotification }: any) => {
 	const { t }: any = useTranslation()
 	const protocolClient = useSelector(selectProtocolClient)
 	const [url, setURL] = useState('')
-	const restart = useRestart()
+	const restart = useRestartAfterClosing()
 	const accountServices = useAccountServices()
 
 	return (

@@ -33,7 +33,7 @@ const FingerprintContentText: React.FC<FingerprintContentProps> = ({ fingerprint
 			style={[
 				text.bold,
 				_styles.fingerprintContentText,
-				{ fontFamily: 'Courier, monospace', color: colors['background-header'] },
+				{ fontFamily: 'Courier', color: colors['background-header'] },
 			]}
 		>
 			{fingerprint.toUpperCase()}

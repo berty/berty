@@ -12,7 +12,7 @@ declare module 'react-i18next' {
 
 const fallbackLang = 'en-US'
 
-export const detectOSLanguage = () => {
+const detectOSLanguage = () => {
 	const locale: string | undefined =
 		Platform.OS === 'ios'
 			? NativeModules?.SettingsManager?.settings?.AppleLanguages[0] // iOS 13

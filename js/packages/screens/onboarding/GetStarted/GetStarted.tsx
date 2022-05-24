@@ -6,20 +6,16 @@ import Logo from '@berty/assets/logo/berty_gradient_square.svg'
 import Button from '@berty/components/shared-components/Button'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useStyles } from '@berty/contexts/styles'
-import { useAppSelector } from '@berty/hooks'
-import { ScreenFC } from '@berty/navigation'
-import { selectEmbedded } from '@berty/redux/reducers/ui.reducer'
+import { ScreenFC, useNavigation } from '@berty/navigation'
 import { useNotificationsInhibitor, useThemeColor } from '@berty/store'
 import { importAccountFromDocumentPicker } from '@berty/utils/accounts/accountBackup'
-import { storageSet } from '@berty/utils/accounts/accountClient'
-import { GlobalPersistentOptionsKeys } from '@berty/utils/persistent-options/types'
 
-export const GetStarted: ScreenFC<'Onboarding.GetStarted'> = ({ navigation: { navigate } }) => {
+export const GetStarted: ScreenFC<'Onboarding.GetStarted'> = () => {
 	useNotificationsInhibitor(() => true)
 	const { margin, padding, text } = useStyles()
 	const colors = useThemeColor()
 	const { t } = useTranslation()
-	const embedded = useAppSelector(selectEmbedded)
+	const { reset, navigate } = useNavigation()
 
 	return (
 		<View
@@ -57,7 +53,6 @@ export const GetStarted: ScreenFC<'Onboarding.GetStarted'> = ({ navigation: { na
 					<Button
 						accessibilityLabel={t('onboarding.getstarted.create-button')}
 						onPress={async () => {
-							await storageSet(GlobalPersistentOptionsKeys.IsNewAccount, 'isNew')
 							navigate('Onboarding.CreateAccount')
 						}}
 					>
@@ -67,7 +62,14 @@ export const GetStarted: ScreenFC<'Onboarding.GetStarted'> = ({ navigation: { na
 						<Button
 							status='secondary'
 							onPress={async () => {
-								await importAccountFromDocumentPicker(embedded)
+								const filePath = await importAccountFromDocumentPicker()
+								if (!filePath) {
+									console.warn("imported file doesn't exist")
+									return
+								}
+								reset({
+									routes: [{ name: 'Account.Importing', params: { filePath } }],
+								})
 							}}
 						>
 							{t('onboarding.getstarted.import-button')}

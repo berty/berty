@@ -8,7 +8,7 @@ import RNRestart from 'react-native-restart'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
 import { useAppSelector } from '@berty/hooks'
-import { selectDebugMode, selectEmbedded } from '@berty/redux/reducers/ui.reducer'
+import { selectDebugMode } from '@berty/redux/reducers/ui.reducer'
 import { useThemeColor } from '@berty/store'
 
 import AppInspector from './debug/AppInspector'
@@ -273,7 +273,6 @@ export const ErrorScreen: React.FC = ({ children }) => {
 	const [error, setError] = React.useState<Error | null>(null)
 
 	const debugMode = useAppSelector(selectDebugMode)
-	const embedded = useAppSelector(selectEmbedded)
 
 	const errorHandler = (err: Error) => {
 		setError(err)
@@ -288,7 +287,7 @@ export const ErrorScreen: React.FC = ({ children }) => {
 	}, [error])
 
 	if (debugMode) {
-		return <AppInspector embedded={embedded} error={error} />
+		return <AppInspector error={error} />
 	}
 
 	if (error !== null) {
