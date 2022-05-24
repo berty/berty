@@ -2,10 +2,10 @@ import React from 'react'
 
 import { useThemeColor } from '@berty/store'
 
-import ButtonPriv from '../Button.priv'
-import { IButtonPress } from '../interfaces'
+import { ButtonPriv } from '../Button.priv'
+import { ButtonDefProps } from '../interfaces'
 
-const PrimaryButtonPriv: React.FC<IButtonPress & { alternative?: boolean }> = props => {
+export const PrimaryButtonPriv: React.FC<ButtonDefProps & { alternative?: boolean }> = props => {
 	const colors = useThemeColor()
 
 	// TODO: replace with value from theme
@@ -19,5 +19,3 @@ const PrimaryButtonPriv: React.FC<IButtonPress & { alternative?: boolean }> = pr
 		</ButtonPriv>
 	)
 }
-
-export default PrimaryButtonPriv

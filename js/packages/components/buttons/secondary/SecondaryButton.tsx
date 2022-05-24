@@ -1,15 +1,13 @@
 import React from 'react'
 
-import { IButtonPress } from '../interfaces'
-import SecondaryButtonPriv from './SecondaryButton.priv'
-import SecondaryTextPriv from './SecondaryText.priv'
+import { ButtonDefProps } from '../interfaces'
+import { SecondaryButtonPriv } from './SecondaryButton.priv'
+import { SecondaryTextPriv } from './SecondaryText.priv'
 
-const SecondaryButton: React.FC<IButtonPress> = props => {
+export const SecondaryButton: React.FC<ButtonDefProps> = props => {
 	return (
 		<SecondaryButtonPriv onPress={props.onPress}>
 			<SecondaryTextPriv>{props.children}</SecondaryTextPriv>
 		</SecondaryButtonPriv>
 	)
 }
-
-export default SecondaryButton

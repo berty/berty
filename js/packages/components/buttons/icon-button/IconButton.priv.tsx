@@ -3,9 +3,9 @@ import React from 'react'
 
 import { useThemeColor } from '@berty/store'
 
-import { IIconName, IIconType } from '../interfaces'
+import { IconNameProps, IconTypeProps } from '../interfaces'
 
-const IconButtonPriv: React.FC<Partial<IIconType & IIconName>> = props => {
+export const IconButtonPriv: React.FC<Partial<IconTypeProps & IconNameProps>> = props => {
 	const colors = useThemeColor()
 
 	const getColor = (): string => {
@@ -25,5 +25,3 @@ const IconButtonPriv: React.FC<Partial<IIconType & IIconName>> = props => {
 
 	return <Icon fill={getColor()} name={props?.name ?? 'checkmark-outline'} width={25} height={25} />
 }
-
-export default IconButtonPriv

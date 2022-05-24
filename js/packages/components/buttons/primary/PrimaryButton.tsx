@@ -1,15 +1,13 @@
 import React from 'react'
 
-import { IButtonPress } from '../interfaces'
-import PrimaryButtonPriv from './PrimaryButton.priv'
-import PrimaryTextPriv from './PrimaryText.priv'
+import { ButtonDefProps } from '../interfaces'
+import { PrimaryButtonPriv } from './PrimaryButton.priv'
+import { PrimaryTextPriv } from './PrimaryText.priv'
 
-const PrimaryButton: React.FC<IButtonPress> = props => {
+export const PrimaryButton: React.FC<ButtonDefProps> = props => {
 	return (
 		<PrimaryButtonPriv onPress={props.onPress}>
 			<PrimaryTextPriv>{props.children}</PrimaryTextPriv>
 		</PrimaryButtonPriv>
 	)
 }
-
-export default PrimaryButton

@@ -1,15 +1,13 @@
 import React from 'react'
 
-import { IButtonPress } from '../interfaces'
-import TertiaryButtonPriv from './TertiaryButton.priv'
-import TertiaryTextPriv from './TertiaryText.priv'
+import { ButtonDefProps } from '../interfaces'
+import { TertiaryButtonPriv } from './TertiaryButton.priv'
+import { TertiaryTextPriv } from './TertiaryText.priv'
 
-const TertiaryButton: React.FC<IButtonPress> = props => {
+export const TertiaryButton: React.FC<ButtonDefProps> = props => {
 	return (
 		<TertiaryButtonPriv onPress={props.onPress}>
 			<TertiaryTextPriv>{props.children}</TertiaryTextPriv>
 		</TertiaryButtonPriv>
 	)
 }
-
-export default TertiaryButton

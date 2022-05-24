@@ -3,10 +3,10 @@ import { View } from 'react-native'
 
 import { useStyles } from '@berty/contexts/styles'
 
-import { IIconName, IIconType } from '../interfaces'
-import IconButtonPriv from './IconButton.priv'
+import { IconNameProps, IconTypeProps } from '../interfaces'
+import { IconButtonPriv } from './IconButton.priv'
 
-const IconWrapperLeftPriv: React.FC<IIconName & IIconType> = props => {
+export const IconWrapperLeftPriv: React.FC<IconNameProps & IconTypeProps> = props => {
 	const { margin } = useStyles()
 
 	return (
@@ -15,5 +15,3 @@ const IconWrapperLeftPriv: React.FC<IIconName & IIconType> = props => {
 		</View>
 	)
 }
-
-export default IconWrapperLeftPriv
