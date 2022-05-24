@@ -148,14 +148,14 @@ jobs:
           git clone https://github.com/plentico/osxcross-target.git ../../osxcross/target
 
       - name: "Run GoReleaser (DryRun)"
-        uses: goreleaser/goreleaser-action@v2
+        uses: goreleaser/goreleaser-action@v3
         if: needs.semantic-release.outputs.new-release-published != 'true'
         with:
           version: latest
           args: release --rm-dist -f .github/workflows/utils/.goreleaser.${{ matrix.config.goos }}.yml --skip-publish
 
       - name: "Run GoReleaser (Publish)"
-        uses: goreleaser/goreleaser-action@v2
+        uses: goreleaser/goreleaser-action@v3
         if: needs.semantic-release.outputs.new-release-published == 'true'
         with:
           version: latest
