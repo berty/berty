@@ -1,6 +1,7 @@
 {
 	"onboarding": {
 		"getstarted": {
+			"screenTitle": "",
 			"title": "",
 			"desc": "",
 			"create-button": "",
@@ -10,6 +11,7 @@
 		"default-mode": {
 			"summary": {
 				"title": "",
+				"screenTitle": "",
 				"subtitle": "",
 				"first-point": "",
 				"second-point": "",
@@ -19,6 +21,7 @@
 		},
 		"custom-mode": {
 			"summary": {
+				"screenTitle": "",
 				"title": "",
 				"subtitle": "",
 				"first-point": "",
@@ -45,12 +48,43 @@
 					"bootstrap-button": "",
 					"replication-button": ""
 				},
+				"modals": {
+					"add": {
+						"title": {
+							"relay": "",
+							"bootstrap": "",
+							"rdvp": ""
+						}
+					},
+					"edit": {
+						"title": {
+							"relay": "",
+							"bootstrap": "",
+							"rdvp": ""
+						}
+					},
+					"errors": {
+						"alias-already-exists": "",
+						"multiaddr-alread-exists": "",
+						"multiaddr-bad-format": "",
+						"multiaddr-p2p": ""
+					},
+					"buttons": {
+						"add": "",
+						"edit": "",
+						"delete": ""
+					},
+					"multiaddress": "",
+					"alias": ""
+				},
 				"all-button": "",
 				"accept-button": ""
 			}
 		},
 		"create-account": {
 			"title": "შექმენი შენი ანგარიში",
+			"first-button": "",
+			"second-button": "",
 			"placeholder": "",
 			"good-to-know": {
 				"title": "",
@@ -76,6 +110,7 @@
 	},
 	"main": {
 		"home": {
+			"title": "",
 			"requests": {
 				"title": "",
 				"accept": "",
@@ -95,8 +130,8 @@
 				"add-members": "",
 				"group-info": "",
 				"search-placeholder": "ძებნა",
-				"continue": "გაგრძელება",
-				"create-group": "ჯგუფის შექმნა"
+				"continue": "",
+				"create-group": ""
 			},
 			"create-group-finalize": {
 				"placeholder": "",
@@ -112,13 +147,11 @@
 				"draft": ""
 			}
 		},
-		"suggestion-display-name-initial": "დააჭირეთ აქ რომ დაამატოთ",
-		"scan": {
-			"title": ""
-		}
+		"suggestion-display-name-initial": "დააჭირეთ აქ რომ დაამატოთ"
 	},
 	"settings": {
 		"home": {
+			"title": "",
 			"proximity-button": "",
 			"notifications-button": "შეტყობინებები",
 			"contact-convs-button": "",
@@ -130,27 +163,46 @@
 			"about-button": ""
 		},
 		"about": {
+			"title": "",
 			"faq-button": "",
 			"roadmap-button": "",
 			"policy-button": "",
-			"license-button": ""
+			"license-button": "",
+			"terms-of-use": ""
 		},
 		"accounts": {
+			"title": "",
+			"backup-button": "",
+			"backup-notif-title": "",
+			"backup-notif-desc": "",
 			"accounts-button": "",
 			"create-button": "",
 			"import-button": "",
 			"link-button": "",
-			"delete-button": ""
+			"delete-button": "",
+			"delete-title": ""
 		},
 		"appearance": {
+			"title": "",
 			"dark-button": "",
-			"editor-button": ""
+			"editor-button": "",
+			"theme-editor": {
+				"title": ""
+			}
 		},
 		"contact-convs": {
+			"title": "",
 			"reset-button": "",
 			"request-button": ""
 		},
+		"devices-backup": {
+			"title": ""
+		},
+		"security": {
+			"title": ""
+		},
 		"network": {
+			"title": "",
 			"ble-button": "",
 			"mc-button": "",
 			"nearby-button": "",
@@ -161,6 +213,9 @@
 			"rdvp-button": "",
 			"relay-button": "",
 			"bootstrap-button": ""
+		},
+		"notifications": {
+			"title": "შეტყობინებები"
 		},
 		"edit-profile": {
 			"title": "",
@@ -175,7 +230,7 @@
 			"title": "",
 			"desc": "",
 			"button": "",
-			"skip": "გამოტოვეთ და გააკეთეთ მოგვიანებით"
+			"skip": ""
 		},
 		"delete-account": {
 			"title": "",
@@ -255,7 +310,10 @@
 		},
 		"add-dev-conversations": {
 			"title": "",
-			"add": ""
+			"add": "",
+			"tag-bot": "",
+			"tag-contact": "",
+			"tag-conversation": ""
 		},
 		"ipfs-webui": {
 			"title": ""
@@ -318,6 +376,7 @@
 		}
 	},
 	"chat": {
+		"title-unknown": "",
 		"sending": "",
 		"sent": "",
 		"contact-settings": {
@@ -329,10 +388,10 @@
 			"input-placeholder": ""
 		},
 		"push-notifications": {
-			"enable": "",
-			"enabled": "",
+			"title": "შეტყობინებები",
 			"unsupported": "",
 			"check-device-settings": "",
+			"check-account-settings": "",
 			"warning-disable": {
 				"title": "",
 				"subtitle": "",
@@ -340,10 +399,28 @@
 				"refuse": ""
 			},
 			"why-cant-disable": "",
+			"why-cant-disable-account": "",
 			"errors": {
 				"no-token": "",
 				"no-server": ""
-			}
+			},
+			"warning-enable-all": {
+				"title": "",
+				"subtitle": "",
+				"refuse": "",
+				"accept": ""
+			},
+			"warning-disable-mute": {
+				"title": "",
+				"refuse": "",
+				"accept": ""
+			},
+			"enabled": "",
+			"disabled": "",
+			"receive-push": "",
+			"hide-previews": "",
+			"auto-enable": "",
+			"show-in-app": ""
 		},
 		"devices": {
 			"title": "",
@@ -353,6 +430,7 @@
 			}
 		},
 		"multi-member-settings": {
+			"title": "",
 			"media-button": "",
 			"members-button": {
 				"title": ""
@@ -391,6 +469,7 @@
 			"input-placeholder": ""
 		},
 		"one-to-one-settings": {
+			"title": "",
 			"media-button": "",
 			"save-button": ""
 		},
@@ -418,7 +497,10 @@
 			"title": "",
 			"medias": "",
 			"links": "",
-			"documents": ""
+			"documents": "",
+			"file": "",
+			"picture": "",
+			"audio": ""
 		},
 		"reply": {
 			"response-to": "",
@@ -432,6 +514,10 @@
 		"emojis": {
 			"matching": ""
 		}
+	},
+	"account": {
+		"deleting-account": "",
+		"creating-account": ""
 	},
 	"audio": {
 		"record": {
@@ -479,7 +565,7 @@
 			"title": "",
 			"desc": ""
 		},
-		"need-restart-ble": {
+		"submit-failed": {
 			"title": "",
 			"desc": ""
 		}
@@ -509,7 +595,6 @@
 			"title": "",
 			"accounts": {
 				"title": "",
-				"unsupported-remote-mode": "",
 				"data-not-found": "",
 				"action-delete": {
 					"file-exists": "",
@@ -559,5 +644,10 @@
 				"button-cancel": ""
 			}
 		}
+	},
+	"time-for": {
+		"minutes": "",
+		"hours": "",
+		"days": ""
 	}
 }
