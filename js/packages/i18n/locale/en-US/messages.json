@@ -83,8 +83,8 @@
 		},
 		"create-account": {
 			"title": "Create your account",
-			"first-button": "Default mode",
-			"second-button": "Custom mode",
+			"first-button": "",
+			"second-button": "",
 			"placeholder": "Choose your nickname",
 			"good-to-know": {
 				"title": "Good to know:",
@@ -376,7 +376,7 @@
 		}
 	},
 	"chat": {
-		"title-unknown": "Unknown conversation",
+		"title-unknown": "",
 		"sending": "Sending...",
 		"sent": "Sent",
 		"contact-settings": {
@@ -388,39 +388,39 @@
 			"input-placeholder": "Type here..."
 		},
 		"push-notifications": {
-			"title": "Notifications",
+			"title": "",
 			"unsupported": "Notifications unsupported",
 			"check-device-settings": "This conversation is set to receive push notifications, but alerts have been disabled in the system settings of your device",
-			"check-account-settings": "Notifications are disabled, check your account settings",
+			"check-account-settings": "",
 			"warning-disable": {
 				"title": "Do you want to activate this feature?",
 				"subtitle": "Once enabled, push notifications can't be disabled for a specific conversation.",
 				"accept": "Activate",
 				"refuse": "Skip"
 			},
-			"why-cant-disable": "Push notifications can't be muted for a specific conversation",
-			"why-cant-disable-account": "Push notifications can't be muted but you can use the OS settings to mute Berty notifications globally.",
+			"why-cant-disable": "",
+			"why-cant-disable-account": "",
 			"errors": {
 				"no-token": "Your device is not compatible with push notifications",
 				"no-server": "You must register a push relay first"
 			},
 			"warning-enable-all": {
-				"title": "Enable push notification for all conversations?",
-				"subtitle": "This will also enable notifications for the conversations you join in the future",
-				"refuse": "Refuse",
-				"accept": "Accept"
+				"title": "",
+				"subtitle": "",
+				"refuse": "",
+				"accept": ""
 			},
 			"warning-disable-mute": {
-				"title": "Enable notifications for this conversation?",
-				"refuse": "Keep muted",
-				"accept": "Unmute"
+				"title": "",
+				"refuse": "",
+				"accept": ""
 			},
 			"enabled": "Push notifications enabled",
-			"disabled": "Push notifications disabled",
-			"receive-push": "Receive push notifications",
-			"hide-previews": "Hide previews in push notifications",
-			"auto-enable": "Enable push for current and future conversations",
-			"show-in-app": "Show notifications in the application"
+			"disabled": "",
+			"receive-push": "",
+			"hide-previews": "",
+			"auto-enable": "",
+			"show-in-app": ""
 		},
 		"devices": {
 			"title": "Devices",
@@ -516,8 +516,8 @@
 		}
 	},
 	"account": {
-		"deleting-account": "Deleting account...",
-		"creating-account": "Creating account..."
+		"deleting-account": "",
+		"creating-account": ""
 	},
 	"audio": {
 		"record": {
@@ -566,8 +566,8 @@
 			"desc": "Restart Berty to save your data and enable notifications!"
 		},
 		"submit-failed": {
-			"title": "Cannot submit a bug",
-			"desc": "Mail app missing"
+			"title": "Bug can not be submitted",
+			"desc": "Mail application is missing"
 		}
 	},
 	"error": {
@@ -646,8 +646,8 @@
 		}
 	},
 	"time-for": {
-		"minutes": "{{minutes}} min",
-		"hours": "{{hours}} h",
-		"days": "{{days}} days"
+		"minutes": "",
+		"hours": "",
+		"days": ""
 	}
 }
