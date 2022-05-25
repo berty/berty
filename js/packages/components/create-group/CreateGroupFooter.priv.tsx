@@ -7,7 +7,14 @@ export const CreateGroupFooterPriv: React.FC = props => {
 	const { padding, margin } = useStyles()
 
 	return (
-		<View style={[padding.horizontal.huge, padding.vertical.large, margin.bottom.small]}>
+		<View
+			style={[
+				padding.horizontal.huge,
+				padding.vertical.large,
+				margin.bottom.small,
+				{ backgroundColor: '#F2F2F2' },
+			]}
+		>
 			{props.children}
 		</View>
 	)

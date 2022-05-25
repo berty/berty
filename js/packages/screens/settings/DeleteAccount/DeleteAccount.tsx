@@ -32,8 +32,8 @@ export const DeleteAccount: ScreenFC<'Settings.DeleteAccount'> = () => {
 				style={[
 					padding.medium,
 					border.radius.medium,
-					{ backgroundColor: colors['main-background'] },
-					layout && { height: layout - 70 },
+					{ backgroundColor: '#F2F2F2' },
+					layout && { height: layout - 80 },
 				]}
 			>
 				<View style={[_deleteAccountStyles.body]}>
@@ -47,6 +47,6 @@ export const DeleteAccount: ScreenFC<'Settings.DeleteAccount'> = () => {
 
 const _deleteAccountStyles = StyleSheet.create({
 	body: {
-		bottom: 78,
+		bottom: 70,
 	},
 })

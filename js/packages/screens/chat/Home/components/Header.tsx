@@ -1,9 +1,9 @@
-import { Icon } from '@ui-kitten/components'
 import LottieView from 'lottie-react-native'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Platform, ScrollView, TextInput, TouchableOpacity, View, ViewProps } from 'react-native'
+import { ScrollView, TouchableOpacity, View, ViewProps } from 'react-native'
 
+import { MediumInput } from '@berty/components'
 import { AccountAvatar } from '@berty/components/avatars'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
@@ -35,13 +35,12 @@ export const HomeHeader: React.FC<
 	onLongPress,
 	isMultiAccount,
 }) => {
-	const { border, width, height, padding, text, margin, row } = useStyles()
+	const { border, width, height, padding, margin } = useStyles()
 	const { scaleSize } = useAppDimensions()
 	const colors = useThemeColor()
 	const { navigate } = useNavigation()
 	const notifs = useProfileNotification()
 	const { t }: any = useTranslation()
-	const [focus, setFocus] = useState<any>(null)
 	const animate = useRef<any>(null)
 
 	useEffect(() => {
@@ -96,76 +95,16 @@ export const HomeHeader: React.FC<
 								/>
 							</TouchableOpacity>
 						</View>
-						<TouchableOpacity
-							style={[
-								{
-									flex: 12,
-									flexDirection: 'row',
-									justifyContent: 'flex-start',
-									alignItems: 'center',
-									backgroundColor: `${colors['secondary-text']}20`,
-								},
-								padding.vertical.scale(Platform.OS === 'android' ? 0 : 12),
-								padding.left.medium,
-								margin.left.small,
-								margin.right.scale(25),
-								border.radius.medium,
-							]}
-							activeOpacity={1}
-							onPress={() => focus?.focus()}
-						>
-							<View style={[row.center]}>
-								<Icon
-									name='search-outline'
-									fill={colors['secondary-text']}
-									width={20 * scaleSize}
-									height={20 * scaleSize}
-								/>
-							</View>
-
-							<View
-								style={[
-									margin.left.small,
-									{
-										flex: 6,
-										flexDirection: 'row',
-										alignItems: 'flex-start',
-									},
-								]}
-							>
-								<TextInput
-									ref={ref => setFocus(ref)}
-									placeholder={t('main.home.input-placeholder')}
-									placeholderTextColor={`${colors['secondary-text']}90`}
-									autoCorrect={false}
-									autoCapitalize='none'
-									value={value}
-									onChangeText={(s: string) => onChange(s)}
-									style={[
-										{ fontFamily: 'Open Sans', color: colors['secondary-text'] },
-										value?.length ? padding.right.scale(25) : padding.right.medium,
-										text.size.medium,
-									]}
-								/>
-							</View>
-							{!!value?.length && (
-								<TouchableOpacity
-									style={{
-										justifyContent: 'center',
-										flex: 1,
-										flexDirection: 'row',
-									}}
-									onPress={() => onChange('')}
-								>
-									<Icon
-										name='close-circle-outline'
-										fill={colors['secondary-text']}
-										width={20 * scaleSize}
-										height={20 * scaleSize}
-									/>
-								</TouchableOpacity>
-							)}
-						</TouchableOpacity>
+						<View style={[{ flex: 12 }, margin.left.small, margin.right.scale(25)]}>
+							<MediumInput
+								// autoCorrect={false}
+								// autoCapitalize='none'
+								value={value}
+								onChange={onChange}
+								placeholder={t('main.home.input-placeholder')}
+								iconName='search-outline'
+							/>
+						</View>
 						<TouchableOpacity
 							style={{
 								flex: 1,

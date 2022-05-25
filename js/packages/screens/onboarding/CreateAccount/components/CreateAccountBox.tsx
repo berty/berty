@@ -1,14 +1,12 @@
-import { Icon } from '@ui-kitten/components'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { TextInput, View } from 'react-native'
+import { View } from 'react-native'
 
+import { LargeInput } from '@berty/components'
 import SwiperCard from '@berty/components/onboarding/SwiperCard'
-import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
 import { useAccount } from '@berty/hooks'
 import { useNavigation } from '@berty/navigation'
-import { useThemeColor } from '@berty/store'
 import { storageSet } from '@berty/utils/accounts/accountClient'
 import { GlobalPersistentOptionsKeys } from '@berty/utils/persistent-options/types'
 
