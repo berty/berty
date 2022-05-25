@@ -18,7 +18,9 @@
     "privacyPolicyLabel": "隐私策略"
   },
   "push": {
-    "message": {},
+    "message": {
+      "title": "新消息"
+    },
     "error": {
       "title": "推送解密失败"
     },
