@@ -18,7 +18,9 @@
     "privacyPolicyLabel": "Политика за поверителонст"
   },
   "push": {
-    "message": {},
+    "message": {
+      "title": "Ново съобщение"
+    },
     "error": {
       "title": ""
     },
