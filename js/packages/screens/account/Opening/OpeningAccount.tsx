@@ -1,4 +1,5 @@
 import React, { useContext } from 'react'
+import { useTranslation } from 'react-i18next'
 
 import { LoaderDots } from '@berty/components/LoaderDots'
 import { StatusBarPrimary } from '@berty/components/StatusBarPrimary'
@@ -18,7 +19,8 @@ export const OpeningAccount: ScreenFC<'Account.Opening'> = ({
 	},
 }) => {
 	const dispatch = useAppDispatch()
-	const { reset } = useNavigation()
+	const navigation = useNavigation()
+	const { t } = useTranslation()
 	const eventEmitter = useContext(EventEmitterContext)
 
 	const streamProgress = useAppSelector(selectStreamProgress)
@@ -31,11 +33,12 @@ export const OpeningAccount: ScreenFC<'Account.Opening'> = ({
 			// opening messenger and protocol clients
 			await openClients(eventEmitter, dispatch)
 
-			dispatch(prepareAccount({ reset, selectedAccount, isNewAccount }))
+			// call thunk function prepareAccount
+			dispatch(prepareAccount({ navigation, t, selectedAccount, isNewAccount }))
 		}
 
 		f()
-	}, [dispatch, eventEmitter, isNewAccount, reset, selectedAccount])
+	}, [dispatch, eventEmitter, isNewAccount, navigation, selectedAccount, t])
 
 	return (
 		<>

@@ -48,12 +48,12 @@ export const accountPushToggleState = async ({
 			return
 		}
 
-		const enabledJustNow = await enablePushPermission(messengerClient, protocolClient, navigate)
+		const pushEnabled = await enablePushPermission(messengerClient, protocolClient, navigate)
 		await messengerClient.accountPushConfigure({
 			unmute: true,
 		})
 
-		if (enabledJustNow && pushFilteringAvailable) {
+		if (pushEnabled === PushEnabled.JustNow) {
 			await askAndSharePushTokenOnAllConversations(t, messengerClient, { forceEnable: true })
 		}
 	} else {
@@ -73,11 +73,17 @@ export const accountPushToggleState = async ({
 	}
 }
 
+enum PushEnabled {
+	JustNow = 0,
+	EnabledBefore = 1,
+	Disabled = 2,
+}
+
 const enablePushPermission = async (
 	messengerClient: ServiceClientType<beapi.messenger.MessengerService>,
 	protocolClient: ServiceClientType<beapi.protocol.ProtocolService>,
 	navigate: any,
-): Promise<boolean> => {
+): Promise<PushEnabled> => {
 	const account = await messengerClient.accountGet({})
 	const hasKnownPushServer = account.account?.serviceTokens?.some(
 		t => t.serviceType === serviceTypes.Push,
@@ -105,14 +111,14 @@ const enablePushPermission = async (
 		try {
 			await servicesAuthViaDefault(protocolClient, [serviceTypes.Push])
 			await new Promise(r => setTimeout(r, 300))
-			return true
+			return PushEnabled.JustNow
 		} catch (e) {
 			console.warn('no push server known')
-			throw new Error('no push server known')
+			return PushEnabled.Disabled
 		}
 	}
 
-	return false
+	return PushEnabled.EnabledBefore
 }
 
 export const askAndSharePushTokenOnAllConversations = async (
