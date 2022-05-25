@@ -47,7 +47,7 @@ const SwiperCard: React.FC<{
 			>
 				{header}
 			</UnifiedText>
-			<Card style={[{ backgroundColor: colors['main-background'], shadowColor: colors.shadow }]}>
+			<Card style={[{ backgroundColor: '#F2F2F2', shadowColor: colors.shadow }]}>
 				<View style={[padding.medium]}>
 					<UnifiedText
 						style={[

@@ -24,12 +24,12 @@ export const CreateGroupAddMembers: ScreenFC<'Chat.CreateGroupAddMembers'> = () 
 	const accountContacts = useAllContacts()
 
 	return (
-		<Layout style={[flex.tiny]}>
+		<Layout style={[flex.tiny, { backgroundColor: '#F2F2F2' }]}>
 			<StatusBar backgroundColor={colors['background-header']} barStyle='light-content' />
 			<View style={{ backgroundColor: colors['background-header'] }}>
 				<CreateGroupMemberList />
 			</View>
-			<View style={{ flex: 1, backgroundColor: colors['main-background'] }}>
+			<View style={{ flex: 1, backgroundColor: '#F2F2F2' }}>
 				<View style={{ top: -30 * scaleHeight, flex: 1 }}>
 					<CreateGroupHeader
 						title={t('main.home.create-group.add-members')}

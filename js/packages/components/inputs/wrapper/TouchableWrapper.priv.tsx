@@ -1,12 +1,9 @@
 import React from 'react'
-import { StyleProp, TouchableOpacity, ViewStyle } from 'react-native'
+import { TouchableOpacity } from 'react-native'
 
-interface InputPrivProps {
-	style: StyleProp<ViewStyle>
-	onPress?: () => void
-}
+import { TouchableWrapperProps } from '../interfaces'
 
-export const TouchableWrapperPriv: React.FC<InputPrivProps> = props => {
+export const TouchableWrapperPriv: React.FC<TouchableWrapperProps> = props => {
 	return (
 		<TouchableOpacity style={props.style} activeOpacity={1} onPress={props.onPress}>
 			{props.children}

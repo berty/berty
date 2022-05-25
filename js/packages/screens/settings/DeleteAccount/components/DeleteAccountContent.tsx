@@ -1,7 +1,7 @@
 import { useNavigation as useReactNavigation } from '@react-navigation/core'
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { View, TextInput, Vibration } from 'react-native'
+import { View, Vibration } from 'react-native'
 
 import {
 	ErrorButtonIconLeft,
@@ -22,7 +22,7 @@ export const DeleteAccountContent: React.FC<{}> = () => {
 	const colors = useThemeColor()
 	const navigation = useReactNavigation()
 	const { t }: any = useTranslation()
-	const [deleteConfirmation, setDeleteConfirmation] = useState<string>()
+	const [deleteConfirmation, setDeleteConfirmation] = useState('')
 	const confirmed = deleteConfirmation === DELETE_STR
 	const deletingAccountAfterClosing = useDeletingAccountAfterClosing()
 
@@ -37,18 +37,11 @@ export const DeleteAccountContent: React.FC<{}> = () => {
 				</UnifiedText>
 			</View>
 			<View style={[column.justify]}>
-				<TextInput
-					style={[
-						padding.small,
-						text.size.large,
-						border.radius.small,
-						margin.medium,
-						{ backgroundColor: colors['input-background'], color: colors['main-text'] },
-					]}
+				<SmallInput
+					// autoCorrect={false}
+					// autoCapitalize='none'
 					value={deleteConfirmation}
-					onChangeText={setDeleteConfirmation}
-					autoCorrect={false}
-					autoCapitalize='none'
+					onChange={setDeleteConfirmation}
 				/>
 				<TwoHorizontalButtons>
 					<TertiaryButtonIconLeft name='arrow-back-outline' onPress={() => navigation.goBack()}>
