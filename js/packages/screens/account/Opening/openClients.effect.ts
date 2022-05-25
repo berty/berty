@@ -158,7 +158,7 @@ export const openClients = async (
 	}
 
 	// call messenger client event stream
-	messengerEventStream(messengerClient, eventEmitter, dispatch)
+	await messengerEventStream(messengerClient, eventEmitter, dispatch)
 
 	dispatch(setClients({ messengerClient, protocolClient }))
 
