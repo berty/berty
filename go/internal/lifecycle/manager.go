@@ -9,6 +9,11 @@ import (
 
 type State int
 
+const (
+	StateActive State = iota
+	StateInactive
+)
+
 type Manager struct {
 	notify       *notify.Notify
 	currentState State

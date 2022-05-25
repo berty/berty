@@ -113,7 +113,7 @@ func (opts *Opts) applyDefaults() (func(), error) {
 	}
 
 	if opts.LifeCycleManager == nil {
-		opts.LifeCycleManager = lifecycle.NewManager(StateActive)
+		opts.LifeCycleManager = lifecycle.NewManager(lifecycle.StateActive)
 	}
 
 	opts.Logger = opts.Logger.Named("msg")
@@ -267,7 +267,7 @@ func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (_ Service, err
 			notif = payload.(*mt.StreamEvent_Notified)
 		}
 
-		if svc.lcmanager.GetCurrentState() == StateInactive {
+		if svc.lcmanager.GetCurrentState() == lifecycle.StateInactive {
 			if err := svc.notifmanager.Notify(&notification.Notification{
 				Title: notif.GetTitle(),
 				Body:  notif.GetBody(),

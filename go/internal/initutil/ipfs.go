@@ -20,6 +20,7 @@ import (
 	ipfs_p2p "github.com/ipfs/go-ipfs/core/node/libp2p"
 	ipfs_repo "github.com/ipfs/go-ipfs/repo"
 	libp2p "github.com/libp2p/go-libp2p"
+	connmgr "github.com/libp2p/go-libp2p-connmgr"
 	p2p_disc "github.com/libp2p/go-libp2p-core/discovery"
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/peer"
@@ -309,6 +310,16 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 	// enable conn logger
 	ipfsutil.EnableConnLogger(m.getContext(), logger, m.Node.Protocol.ipfsNode.PeerHost)
 
+	lm := m.getLifecycleManager()
+
+	// enable lifecycle conn
+	m.Node.Protocol.connlifecycle, err = ipfsutil.NewConnLifecycle(
+		logger, m.Node.Protocol.ipfsNode.PeerHost, lm,
+	)
+	if err != nil {
+		return nil, nil, errcode.ErrIPFSInit.Wrap(err)
+	}
+
 	// register metrics
 	if m.Metrics.Listener != "" {
 		registry, err := m.getMetricsRegistry()
@@ -445,13 +456,28 @@ func (m *Manager) setupIPFSConfig(cfg *ipfs_cfg.Config) ([]libp2p.Option, error)
 		cfg.Addresses.NoAnnounce = strings.Split(m.Node.Protocol.NoAnnounce, ",")
 	}
 
-	if m.Node.Protocol.HighWatermark > 0 {
-		cfg.Swarm.ConnMgr.HighWater = m.Node.Protocol.HighWatermark
-	}
+	// disable original connection manager
+	cfg.Swarm.ConnMgr.Type = "none"
 
-	if m.Node.Protocol.LowWatermark > 0 {
-		cfg.Swarm.ConnMgr.LowWater = m.Node.Protocol.LowWatermark
-	}
+	// configure custom conn manager
+	cm := connmgr.NewConnManager(
+		cfg.Swarm.ConnMgr.LowWater, cfg.Swarm.ConnMgr.HighWater, ipfs_cfg.DefaultConnMgrGracePeriod,
+	)
+
+	// wrap conn manager
+	m.Node.Protocol.connmngr = ipfsutil.NewBertyConnManager(logger.Named("connmgr"), cm)
+
+	// add our connection manager
+	p2popts = append(p2popts, libp2p.ConnectionManager(m.Node.Protocol.connmngr))
+
+	// @NOTE(gfanton): we don't have to set this since we use a custom connmngr
+	// if m.Node.Protocol.HighWatermark > 0 {
+	// 	cfg.Swarm.ConnMgr.HighWater = m.Node.Protocol.HighWatermark
+	// }
+
+	// if m.Node.Protocol.LowWatermark > 0 {
+	// 	cfg.Swarm.ConnMgr.LowWater = m.Node.Protocol.LowWatermark
+	// }
 
 	if m.Node.Protocol.DisableIPFSNetwork {
 		// Disable IP transports
@@ -584,6 +610,11 @@ func (m *Manager) configIPFSRouting(h host.Host, r p2p_routing.Routing) error {
 		if err = registry.Register(ipfsutil.NewHostCollector(h)); err != nil {
 			return errcode.ErrIPFSSetupHost.Wrap(err)
 		}
+	}
+
+	// register berty connmngr bus event
+	if err := m.Node.Protocol.connmngr.RegisterEventBus(h.EventBus()); err != nil {
+		return errcode.ErrIPFSSetupHost.Wrap(err)
 	}
 
 	rng := mrand.New(mrand.NewSource(srand.MustSecure())) // nolint:gosec // we need to use math/rand here, but it is seeded from crypto/rand

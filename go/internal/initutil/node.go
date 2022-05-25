@@ -343,7 +343,7 @@ func (m *Manager) getLifecycleManager() *lifecycle.Manager {
 		return m.Node.Messenger.lcmanager
 	}
 
-	m.Node.Messenger.lcmanager = lifecycle.NewManager(bertymessenger.StateActive)
+	m.Node.Messenger.lcmanager = lifecycle.NewManager(lifecycle.StateActive)
 	return m.Node.Messenger.lcmanager
 }
 

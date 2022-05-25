@@ -225,7 +225,7 @@ func (s *BertyOrbitDB) openAccountGroup(ctx context.Context, options *orbitdb.Cr
 
 	l.Debug("Account group context activated", tyber.FormatStepLogFields(ctx, []tyber.Detail{})...)
 
-	TagGroupContextPeers(ctx, gc, ipfsCoreAPI, 84)
+	TagGroupContextPeers(ctx, l, gc, ipfsCoreAPI, 84)
 
 	l.Debug("TagGroupContextPeers done", tyber.FormatStepLogFields(ctx, []tyber.Detail{})...)
 

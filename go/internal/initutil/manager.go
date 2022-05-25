@@ -137,21 +137,25 @@ type Manager struct {
 			// internal
 			DisableDiscoverFilterAddrs bool
 			ServiceID                  string
-			needAuth                   bool
-			ipfsNode                   *core.IpfsNode
-			ipfsAPI                    ipfsutil.ExtendedCoreAPI
-			mdnsService                p2p_mdns.Service
-			localdisc                  *tinder.LocalDiscovery
-			pubsub                     *pubsub.PubSub
-			discovery                  tinder.Service
-			server                     bertyprotocol.Service
-			ipfsAPIListeners           []net.Listener
-			ipfsWebUIListener          net.Listener
-			client                     protocoltypes.ProtocolServiceClient
-			requiredByClient           bool
-			ipfsWebUICleanup           func()
-			orbitDB                    *bertyprotocol.BertyOrbitDB
-			rotationInterval           *rendezvous.RotationInterval
+
+			// private
+			connlifecycle     *ipfsutil.ConnLifecycle
+			connmngr          *ipfsutil.BertyConnManager
+			needAuth          bool
+			ipfsNode          *core.IpfsNode
+			ipfsAPI           ipfsutil.ExtendedCoreAPI
+			mdnsService       p2p_mdns.Service
+			localdisc         *tinder.LocalDiscovery
+			pubsub            *pubsub.PubSub
+			discovery         tinder.Service
+			server            bertyprotocol.Service
+			ipfsAPIListeners  []net.Listener
+			ipfsWebUIListener net.Listener
+			client            protocoltypes.ProtocolServiceClient
+			requiredByClient  bool
+			ipfsWebUICleanup  func()
+			orbitDB           *bertyprotocol.BertyOrbitDB
+			rotationInterval  *rendezvous.RotationInterval
 		}
 		Messenger struct {
 			DisableGroupMonitor  bool   `json:"DisableGroupMonitor,omitempty"`

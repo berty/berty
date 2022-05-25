@@ -407,6 +407,7 @@ ios/Frameworks/Bertybridge.xcframework: $(bridge_src)
 			-target ios \
 			-iosversion $(minimum_ios_ver) \
 			./go/framework/bertybridge
+
 	touch $@
 	cd .. && $(GO) mod tidy
 
@@ -427,6 +428,7 @@ ios/Frameworks/Bertypush.xcframework: $(bridge_src)
 			-target ios \
 			-iosversion $(minimum_ios_ver) \
 			./go/framework/bertypush
+
 	touch $@
 	cd .. && $(GO) mod tidy
 
