@@ -19,7 +19,7 @@
   },
   "push": {
     "message": {
-      "title": "New message"
+      "title": ""
     },
     "error": {
       "title": "Push decryption failed"
