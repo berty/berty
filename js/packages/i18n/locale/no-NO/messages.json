@@ -1,6 +1,7 @@
 {
 	"onboarding": {
 		"getstarted": {
+			"screenTitle": "",
 			"title": "",
 			"desc": "",
 			"create-button": "",
@@ -10,6 +11,7 @@
 		"default-mode": {
 			"summary": {
 				"title": "",
+				"screenTitle": "",
 				"subtitle": "",
 				"first-point": "",
 				"second-point": "",
@@ -19,6 +21,7 @@
 		},
 		"custom-mode": {
 			"summary": {
+				"screenTitle": "",
 				"title": "",
 				"subtitle": "",
 				"first-point": "",
@@ -45,12 +48,43 @@
 					"bootstrap-button": "",
 					"replication-button": ""
 				},
+				"modals": {
+					"add": {
+						"title": {
+							"relay": "",
+							"bootstrap": "",
+							"rdvp": ""
+						}
+					},
+					"edit": {
+						"title": {
+							"relay": "",
+							"bootstrap": "",
+							"rdvp": ""
+						}
+					},
+					"errors": {
+						"alias-already-exists": "",
+						"multiaddr-alread-exists": "",
+						"multiaddr-bad-format": "",
+						"multiaddr-p2p": ""
+					},
+					"buttons": {
+						"add": "Legg til",
+						"edit": "",
+						"delete": ""
+					},
+					"multiaddress": "",
+					"alias": ""
+				},
 				"all-button": "",
 				"accept-button": ""
 			}
 		},
 		"create-account": {
 			"title": "Opprett din konto",
+			"first-button": "",
+			"second-button": "",
 			"placeholder": "",
 			"good-to-know": {
 				"title": "",
@@ -65,7 +99,7 @@
 		"setup-finished": {
 			"title": "Oppsett fullført!",
 			"desc": "Du kan nå bruke appen, legge til kontakter, og snakke fritt og privat med dem",
-			"button": "BEGYNN Å BRUKE BERTY"
+			"button": ""
 		},
 		"web-views": {
 			"title": "",
@@ -76,6 +110,7 @@
 	},
 	"main": {
 		"home": {
+			"title": "",
 			"requests": {
 				"title": "Forespørsler",
 				"accept": "Godta",
@@ -112,13 +147,11 @@
 				"draft": ""
 			}
 		},
-		"suggestion-display-name-initial": "",
-		"scan": {
-			"title": ""
-		}
+		"suggestion-display-name-initial": ""
 	},
 	"settings": {
 		"home": {
+			"title": "Innstillinger",
 			"proximity-button": "",
 			"notifications-button": "Varsler",
 			"contact-convs-button": "",
@@ -130,27 +163,46 @@
 			"about-button": "Om Berty"
 		},
 		"about": {
+			"title": "Om Berty",
 			"faq-button": "",
 			"roadmap-button": "",
 			"policy-button": "",
-			"license-button": ""
+			"license-button": "",
+			"terms-of-use": "Vilkår for bruk"
 		},
 		"accounts": {
+			"title": "",
+			"backup-button": "",
+			"backup-notif-title": "",
+			"backup-notif-desc": "",
 			"accounts-button": "",
 			"create-button": "",
 			"import-button": "",
 			"link-button": "",
-			"delete-button": ""
+			"delete-button": "",
+			"delete-title": ""
 		},
 		"appearance": {
+			"title": "",
 			"dark-button": "",
-			"editor-button": ""
+			"editor-button": "",
+			"theme-editor": {
+				"title": ""
+			}
 		},
 		"contact-convs": {
+			"title": "",
 			"reset-button": "",
 			"request-button": ""
 		},
+		"devices-backup": {
+			"title": ""
+		},
+		"security": {
+			"title": ""
+		},
 		"network": {
+			"title": "",
 			"ble-button": "",
 			"mc-button": "",
 			"nearby-button": "",
@@ -161,6 +213,9 @@
 			"rdvp-button": "",
 			"relay-button": "",
 			"bootstrap-button": ""
+		},
+		"notifications": {
+			"title": "Varsler"
 		},
 		"edit-profile": {
 			"title": "Rediger min profil",
@@ -175,14 +230,14 @@
 			"title": "",
 			"desc": "",
 			"button": "",
-			"skip": "HOPP OVER OG GJØR DETTE SENERE"
+			"skip": ""
 		},
 		"delete-account": {
 			"title": "Slett konto!",
 			"first-desc": "Er du sikker på at du vil slette din konto?",
 			"desc": "Vennligst skriv \"slett\" for å bekrefte",
-			"cancel-button": "AVBRYT",
-			"delete-button": "SLETT"
+			"cancel-button": "Avbryt",
+			"delete-button": ""
 		},
 		"faq": {
 			"title": ""
@@ -255,7 +310,10 @@
 		},
 		"add-dev-conversations": {
 			"title": "Legg til utviklersamtaler",
-			"add": "Legg til {{name}}"
+			"add": "Legg til {{name}}",
+			"tag-bot": "Bot",
+			"tag-contact": "Kontakt",
+			"tag-conversation": ""
 		},
 		"ipfs-webui": {
 			"title": "IPFS WebUI"
@@ -294,7 +352,7 @@
 			"contact-already-added-message": "Du kan ikke legge til samme kontakt flere ganger"
 		},
 		"invalid-scan": {
-			"dismiss-button": "AVVIS"
+			"dismiss-button": ""
 		},
 		"add-this-contact": {
 			"fingerprint": "Fingeravtrykk",
@@ -313,11 +371,12 @@
 			"title": "",
 			"desc": "",
 			"placeholder": "",
-			"cancel": "AVBRYT",
+			"cancel": "Avbryt",
 			"add": ""
 		}
 	},
 	"chat": {
+		"title-unknown": "",
 		"sending": "Sender...",
 		"sent": "",
 		"contact-settings": {
@@ -329,10 +388,10 @@
 			"input-placeholder": ""
 		},
 		"push-notifications": {
-			"enable": "",
-			"enabled": "",
+			"title": "Varsler",
 			"unsupported": "",
 			"check-device-settings": "",
+			"check-account-settings": "",
 			"warning-disable": {
 				"title": "",
 				"subtitle": "",
@@ -340,10 +399,28 @@
 				"refuse": ""
 			},
 			"why-cant-disable": "",
+			"why-cant-disable-account": "",
 			"errors": {
 				"no-token": "",
 				"no-server": ""
-			}
+			},
+			"warning-enable-all": {
+				"title": "",
+				"subtitle": "",
+				"refuse": "",
+				"accept": "Godta"
+			},
+			"warning-disable-mute": {
+				"title": "",
+				"refuse": "",
+				"accept": ""
+			},
+			"enabled": "",
+			"disabled": "Push-varsler deaktivert",
+			"receive-push": "Motta push-varsler",
+			"hide-previews": "",
+			"auto-enable": "",
+			"show-in-app": ""
 		},
 		"devices": {
 			"title": "Enheter",
@@ -353,6 +430,7 @@
 			}
 		},
 		"multi-member-settings": {
+			"title": "",
 			"media-button": "Medier, lenker & dokumenter",
 			"members-button": {
 				"title": "Medlemmer"
@@ -371,11 +449,11 @@
 		},
 		"one-to-one": {
 			"contact-request-box": {
-				"title": "KONTAKTFORESPØRSEL",
+				"title": "Kontaktforespørsel",
 				"group-invitation": "",
-				"refuse-button": "NEKT",
-				"accept-button": "GODTA",
-				"accepted-button": "GODTATT",
+				"refuse-button": "",
+				"accept-button": "Godta",
+				"accepted-button": "",
 				"error": "",
 				"you-invited": "",
 				"this-contact": "",
@@ -391,6 +469,7 @@
 			"input-placeholder": ""
 		},
 		"one-to-one-settings": {
+			"title": "",
 			"media-button": "Medier, lenker & dokumenter",
 			"save-button": "Lagre samtale på serveren"
 		},
@@ -418,7 +497,10 @@
 			"title": "",
 			"medias": "",
 			"links": "",
-			"documents": ""
+			"documents": "",
+			"file": "",
+			"picture": "",
+			"audio": ""
 		},
 		"reply": {
 			"response-to": "",
@@ -432,6 +514,10 @@
 		"emojis": {
 			"matching": ""
 		}
+	},
+	"account": {
+		"deleting-account": "",
+		"creating-account": ""
 	},
 	"audio": {
 		"record": {
@@ -470,8 +556,8 @@
 			"allow": "",
 			"settings": ""
 		},
-		"skip": "HOPP OVER",
-		"cancel": "AVBRYT",
+		"skip": "",
+		"cancel": "Avbryt",
 		"settings-text": ""
 	},
 	"notification": {
@@ -479,7 +565,7 @@
 			"title": "",
 			"desc": ""
 		},
-		"need-restart-ble": {
+		"submit-failed": {
 			"title": "",
 			"desc": ""
 		}
@@ -509,7 +595,6 @@
 			"title": "",
 			"accounts": {
 				"title": "",
-				"unsupported-remote-mode": "",
 				"data-not-found": "",
 				"action-delete": {
 					"file-exists": "",
@@ -559,5 +644,10 @@
 				"button-cancel": "Avbryt"
 			}
 		}
+	},
+	"time-for": {
+		"minutes": "",
+		"hours": "",
+		"days": ""
 	}
 }
