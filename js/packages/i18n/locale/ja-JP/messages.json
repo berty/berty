@@ -83,6 +83,8 @@
 		},
 		"create-account": {
 			"title": "アカウントの作成",
+			"first-button": "",
+			"second-button": "",
 			"placeholder": "ニックネームを選択",
 			"good-to-know": {
 				"title": "伝えておきたいこと:",
@@ -513,6 +515,10 @@
 			"matching": ""
 		}
 	},
+	"account": {
+		"deleting-account": "",
+		"creating-account": ""
+	},
 	"audio": {
 		"record": {
 			"tooltip": {
@@ -589,7 +595,6 @@
 			"title": "診断",
 			"accounts": {
 				"title": "アカウント",
-				"unsupported-remote-mode": "アカウント診断は、リモート・モードに対応していません",
 				"data-not-found": "アカウントが一覧にありません",
 				"action-delete": {
 					"file-exists": "アカウント {{accountId}} は存在しませんが、ファイルにはこの名前が付いています。",
