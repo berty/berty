@@ -1,7 +1,6 @@
 import React from 'react'
 import { TextProps, TextStyle, TouchableOpacity, ViewStyle } from 'react-native'
 
-import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
 import { useThemeColor } from '@berty/store/hooks'
 
@@ -27,7 +26,6 @@ const Button: React.FC<
 	...textProps
 }) => {
 	const { margin, padding, text, border, column } = useStyles()
-	const { scaleSize } = useAppDimensions()
 	const colors = useThemeColor()
 
 	const getBackgroundColor = () => {
@@ -46,7 +44,7 @@ const Button: React.FC<
 				column.item.center,
 				style,
 				{
-					width: width * scaleSize,
+					width: width,
 					backgroundColor: getBackgroundColor(),
 				},
 			]}
