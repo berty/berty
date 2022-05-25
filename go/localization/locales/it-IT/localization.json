@@ -18,7 +18,9 @@
     "privacyPolicyLabel": "Informativa sulla privacy"
   },
   "push": {
-    "message": {},
+    "message": {
+      "title": "Nuovo messaggio"
+    },
     "error": {
       "title": ""
     },
