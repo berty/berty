@@ -12,13 +12,15 @@
         "benefitBadge": "Performans"
       }
     },
-    "pageTitle": "",
-    "connectButton_one": "",
-    "connectButton_other": "",
+    "pageTitle": "Berty Servisleri",
+    "connectButton_one": "Servisi kullan",
+    "connectButton_other": "Seçili servisleri kullan",
     "privacyPolicyLabel": "Gizlilik politikası"
   },
   "push": {
-    "message": {},
+    "message": {
+      "title": "Yeni mesaj"
+    },
     "error": {
       "title": ""
     },
@@ -35,29 +37,29 @@
       "bodyWithNumberOfMedia_other": "%[1]v tane fotoğraf gönderildi"
     },
     "media": {
-      "bodyWithNumberOfMedia_one": "",
-      "bodyWithNumberOfMedia_other": ""
+      "bodyWithNumberOfMedia_one": "Medya gönderildi",
+      "bodyWithNumberOfMedia_other": "%[1]v adet medya gönderildi"
     },
     "reaction": {
-      "bodyWithDisplayNameAndEmoji": ""
+      "bodyWithDisplayNameAndEmoji": "%[1]v mesajına %[2]v ile tepki verdi"
     },
     "groupInvitation": {
-      "bodyWithGroupName": ""
+      "bodyWithGroupName": "Seni %[1]v grubuna davet etti"
     },
     "unknown": {
-      "body": ""
+      "body": "Yeni bir şeyler geldi"
     },
     "conversationNameChanged": {
-      "body": ""
+      "body": "Sohbet ismi güncellendi"
     },
     "memberNameChanged": {
-      "body": ""
+      "body": "Görüntülenen isim güncellendi"
     },
     "memberPictureChanged": {
-      "body": ""
+      "body": "Profil fotoğrafı güncellendi"
     },
     "memberDetailsChanged": {
-      "body": ""
+      "body": "Üye detayı güncellendi"
     },
     "replyOptionsOffered": {
       "body": ""
