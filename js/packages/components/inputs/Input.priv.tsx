@@ -1,34 +1,32 @@
 import React from 'react'
-import { TextInput } from 'react-native'
+import { StyleSheet, TextInput } from 'react-native'
 
 import { useStyles } from '@berty/contexts/styles'
 
-interface InputPrivProps {
-	value: string
-	onChange: (text: string) => void
-	placeholder?: string
-}
+import { InputProps } from './interfaces'
 
-export const InputPriv = React.forwardRef<TextInput, InputPrivProps>((props, ref) => {
+export const InputPriv = React.forwardRef<TextInput, InputProps>((props, ref) => {
 	const { text } = useStyles()
 
 	return (
 		<TextInput
 			ref={ref}
 			// autoCapitalize='none'
-			autoCorrect={false}
+			// autoCorrect={false}
+			editable={!props.disabled}
 			value={props.value}
 			onChangeText={props.onChange}
 			placeholder={props.placeholder}
-			style={[
-				text.size.medium,
-				{
-					flex: 1,
-					fontFamily: 'Open Sans',
-					color: '#393C63',
-				},
-			]}
-			placeholderTextColor='#8E8E92'
+			style={[text.size.medium, styles.input]}
+			placeholderTextColor={props.disabled ? '#D0D0D6' : '#8E8E92'}
 		/>
 	)
+})
+
+const styles = StyleSheet.create({
+	input: {
+		flex: 1,
+		fontFamily: 'Open Sans',
+		color: '#393C63',
+	},
 })

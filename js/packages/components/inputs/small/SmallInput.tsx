@@ -8,7 +8,12 @@ import { TouchableWrapperPriv } from '../wrapper/TouchableWrapper.priv'
 export const SmallInput: React.FC<InputProps> = props => {
 	return (
 		<TouchableWrapperPriv style={styles.button}>
-			<InputPriv value={props.value} onChange={props.onChange} placeholder={props.placeholder} />
+			<InputPriv
+				value={props.value}
+				onChange={props.onChange}
+				placeholder={props.placeholder}
+				disabled={props.disabled}
+			/>
 		</TouchableWrapperPriv>
 	)
 }

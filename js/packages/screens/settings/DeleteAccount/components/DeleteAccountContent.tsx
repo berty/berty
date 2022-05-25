@@ -1,9 +1,14 @@
 import { useNavigation as useReactNavigation } from '@react-navigation/core'
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { View, TextInput, Vibration } from 'react-native'
+import { View, Vibration } from 'react-native'
 
-import { ErrorButtonIconLeft, HorizontalButtons, TertiaryButtonIconLeft } from '@berty/components'
+import {
+	ErrorButtonIconLeft,
+	HorizontalButtons,
+	SmallInput,
+	TertiaryButtonIconLeft,
+} from '@berty/components'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useStyles } from '@berty/contexts/styles'
 import { useDeleteAccount } from '@berty/hooks'
@@ -15,11 +20,11 @@ const DELETE_STR = 'delete'
 
 export const DeleteAccountContent: React.FC<{}> = () => {
 	const deleteAccount = useDeleteAccount()
-	const { margin, border, padding, text, column } = useStyles()
+	const { margin, padding, text, column } = useStyles()
 	const colors = useThemeColor()
 	const navigation = useReactNavigation()
 	const { t }: any = useTranslation()
-	const [deleteConfirmation, setDeleteConfirmation] = useState<string>()
+	const [deleteConfirmation, setDeleteConfirmation] = useState('')
 	const confirmed = deleteConfirmation === DELETE_STR
 
 	return (
@@ -33,20 +38,14 @@ export const DeleteAccountContent: React.FC<{}> = () => {
 				</UnifiedText>
 			</View>
 			<View style={[column.justify]}>
-				<TextInput
-					style={[
-						padding.small,
-						text.size.large,
-						border.radius.small,
-						margin.medium,
-						{ backgroundColor: colors['input-background'], color: colors['main-text'] },
-					]}
+				<SmallInput
+					// autoCorrect={false}
+					// autoCapitalize='none'
 					value={deleteConfirmation}
-					onChangeText={setDeleteConfirmation}
-					autoCorrect={false}
-					autoCapitalize='none'
+					onChange={setDeleteConfirmation}
 				/>
-				<View style={[margin.top.small, margin.horizontal.medium]}>
+
+				<View style={[margin.top.large, margin.horizontal.medium]}>
 					<HorizontalButtons>
 						<TertiaryButtonIconLeft name='arrow-back-outline' onPress={() => navigation.goBack()}>
 							{t('settings.delete-account.cancel-button')}
