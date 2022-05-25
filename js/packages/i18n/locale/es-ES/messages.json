@@ -1,7 +1,8 @@
 {
 	"onboarding": {
 		"getstarted": {
-			"title": "PROTEGE TU PRIVACIDAD",
+			"screenTitle": "",
+			"title": "",
 			"desc": "mensajería peer-to-peer gratuita y segura",
 			"create-button": "",
 			"import-button": "",
@@ -10,6 +11,7 @@
 		"default-mode": {
 			"summary": {
 				"title": "",
+				"screenTitle": "",
 				"subtitle": "",
 				"first-point": "",
 				"second-point": "",
@@ -19,6 +21,7 @@
 		},
 		"custom-mode": {
 			"summary": {
+				"screenTitle": "",
 				"title": "",
 				"subtitle": "",
 				"first-point": "",
@@ -45,12 +48,43 @@
 					"bootstrap-button": "",
 					"replication-button": ""
 				},
+				"modals": {
+					"add": {
+						"title": {
+							"relay": "",
+							"bootstrap": "",
+							"rdvp": ""
+						}
+					},
+					"edit": {
+						"title": {
+							"relay": "",
+							"bootstrap": "",
+							"rdvp": ""
+						}
+					},
+					"errors": {
+						"alias-already-exists": "",
+						"multiaddr-alread-exists": "",
+						"multiaddr-bad-format": "",
+						"multiaddr-p2p": ""
+					},
+					"buttons": {
+						"add": "Agregar",
+						"edit": "",
+						"delete": ""
+					},
+					"multiaddress": "",
+					"alias": ""
+				},
 				"all-button": "",
 				"accept-button": ""
 			}
 		},
 		"create-account": {
 			"title": "Crear una nueva cuenta",
+			"first-button": "",
+			"second-button": "",
 			"placeholder": "Elige tu apodo",
 			"good-to-know": {
 				"title": "Buen saber:",
@@ -65,10 +99,10 @@
 		"setup-finished": {
 			"title": "¡Configuración finalizada!",
 			"desc": "Ahora puedes usar la aplicación, empieza a añadir contactos y habla libre y en privado con ellos",
-			"button": "INICIAR USANDO BERTY"
+			"button": ""
 		},
 		"web-views": {
-			"title": "WebViews",
+			"title": "",
 			"desc": "",
 			"first-button": "Cancelar",
 			"second-button": "Sí"
@@ -76,6 +110,7 @@
 	},
 	"main": {
 		"home": {
+			"title": "",
 			"requests": {
 				"title": "Solicitudes",
 				"accept": "Aceptar",
@@ -95,8 +130,8 @@
 				"add-members": "Agregar usuarios",
 				"group-info": "Información del grupo",
 				"search-placeholder": "Buscar",
-				"continue": "CONTINUAR",
-				"create-group": "CREAR UN GRUPO"
+				"continue": "",
+				"create-group": ""
 			},
 			"create-group-finalize": {
 				"placeholder": "Nombre del grupo",
@@ -112,13 +147,11 @@
 				"draft": "Borrador: {{message}}"
 			}
 		},
-		"suggestion-display-name-initial": "Haz clic aquí para añadir",
-		"scan": {
-			"title": "Escanear codigo QR"
-		}
+		"suggestion-display-name-initial": "Haz clic aquí para añadir"
 	},
 	"settings": {
 		"home": {
+			"title": "Ajustes",
 			"proximity-button": "",
 			"notifications-button": "Notificaciones",
 			"contact-convs-button": "",
@@ -130,27 +163,46 @@
 			"about-button": "Acerca de Berty"
 		},
 		"about": {
+			"title": "Acerca de Berty",
 			"faq-button": "PREGUNTAS FRECUENTES",
 			"roadmap-button": "Guía",
 			"policy-button": "",
-			"license-button": ""
+			"license-button": "",
+			"terms-of-use": "Términos de uso"
 		},
 		"accounts": {
+			"title": "Cuentas",
+			"backup-button": "",
+			"backup-notif-title": "",
+			"backup-notif-desc": "",
 			"accounts-button": "Cuentas",
 			"create-button": "",
 			"import-button": "",
 			"link-button": "",
-			"delete-button": ""
+			"delete-button": "",
+			"delete-title": ""
 		},
 		"appearance": {
+			"title": "",
 			"dark-button": "",
-			"editor-button": ""
+			"editor-button": "",
+			"theme-editor": {
+				"title": ""
+			}
 		},
 		"contact-convs": {
+			"title": "",
 			"reset-button": "",
 			"request-button": ""
 		},
+		"devices-backup": {
+			"title": ""
+		},
+		"security": {
+			"title": ""
+		},
 		"network": {
+			"title": "",
 			"ble-button": "Bluetooth Low Energy",
 			"mc-button": "",
 			"nearby-button": "",
@@ -161,6 +213,9 @@
 			"rdvp-button": "",
 			"relay-button": "",
 			"bootstrap-button": ""
+		},
+		"notifications": {
+			"title": "Notificaciones"
 		},
 		"edit-profile": {
 			"title": "Editar mi perfil",
@@ -175,14 +230,14 @@
 			"title": "",
 			"desc": "",
 			"button": "",
-			"skip": "SALTAR Y HACER MÁS TARDE"
+			"skip": "Omitir y hacer esto más tarde"
 		},
 		"delete-account": {
 			"title": "¡Eliminar cuenta!",
 			"first-desc": "¿Está seguro que desea eliminar su cuenta?",
 			"desc": "Por favor, escriba borrar para confirmar",
-			"cancel-button": "CANCELAR",
-			"delete-button": "ELIMINAR"
+			"cancel-button": "Cancelar",
+			"delete-button": ""
 		},
 		"faq": {
 			"title": "PREGUNTAS FRECUENTES"
@@ -255,7 +310,10 @@
 		},
 		"add-dev-conversations": {
 			"title": "Agregar conversaciones de desarrollo",
-			"add": "Agregar {{name}}"
+			"add": "Agregar {{name}}",
+			"tag-bot": "Bot",
+			"tag-contact": "Contacto",
+			"tag-conversation": ""
 		},
 		"ipfs-webui": {
 			"title": "IPFS WebUI"
@@ -294,7 +352,7 @@
 			"contact-already-added-message": "No puedes añadir el mismo contacto varias veces"
 		},
 		"invalid-scan": {
-			"dismiss-button": "CERRAR"
+			"dismiss-button": ""
 		},
 		"add-this-contact": {
 			"fingerprint": "Huella digital",
@@ -305,7 +363,7 @@
 			"fingerprint": "Huella digital",
 			"info": "Información",
 			"devices": "Dispositivos",
-			"join": "UNIR A ESTE GRUPO",
+			"join": "",
 			"password-label": "",
 			"password-placeholder": "Contraseña..."
 		},
@@ -313,11 +371,12 @@
 			"title": "Guardar tema",
 			"desc": "¡Por favor, elija un nombre para su tema!",
 			"placeholder": "Nombre del tema...",
-			"cancel": "CANCELAR",
-			"add": "¡AÑADIR!"
+			"cancel": "Cancelar",
+			"add": "Añadir!"
 		}
 	},
 	"chat": {
+		"title-unknown": "",
 		"sending": "Enviando...",
 		"sent": "Enviado",
 		"contact-settings": {
@@ -329,10 +388,10 @@
 			"input-placeholder": "Escribe aquí..."
 		},
 		"push-notifications": {
-			"enable": "Habilitar notificaciones push",
-			"enabled": "Notificaciones push habilitadas",
+			"title": "Notificaciones",
 			"unsupported": "",
 			"check-device-settings": "",
+			"check-account-settings": "",
 			"warning-disable": {
 				"title": "",
 				"subtitle": "",
@@ -340,10 +399,28 @@
 				"refuse": "Omitir"
 			},
 			"why-cant-disable": "",
+			"why-cant-disable-account": "",
 			"errors": {
 				"no-token": "",
 				"no-server": ""
-			}
+			},
+			"warning-enable-all": {
+				"title": "",
+				"subtitle": "",
+				"refuse": "",
+				"accept": "Aceptar"
+			},
+			"warning-disable-mute": {
+				"title": "",
+				"refuse": "",
+				"accept": ""
+			},
+			"enabled": "Notificaciones push habilitadas",
+			"disabled": "Notificaciones push desactivadas",
+			"receive-push": "Recibir notificaciones push",
+			"hide-previews": "",
+			"auto-enable": "",
+			"show-in-app": ""
 		},
 		"devices": {
 			"title": "Dispositivos",
@@ -353,6 +430,7 @@
 			}
 		},
 		"multi-member-settings": {
+			"title": "",
 			"media-button": "Medios, enlaces y documentos",
 			"members-button": {
 				"title": "Miembros"
@@ -371,11 +449,11 @@
 		},
 		"one-to-one": {
 			"contact-request-box": {
-				"title": "SOLICITUD DE CONTACTO",
+				"title": "Solicitud de contacto",
 				"group-invitation": "",
-				"refuse-button": "RECHAZAR",
-				"accept-button": "ACEPTAR",
-				"accepted-button": "ACEPTADO",
+				"refuse-button": "",
+				"accept-button": "Aceptar",
+				"accepted-button": "",
 				"error": "",
 				"you-invited": "",
 				"this-contact": "",
@@ -391,6 +469,7 @@
 			"input-placeholder": "Escribe aquí..."
 		},
 		"one-to-one-settings": {
+			"title": "",
 			"media-button": "Medios, enlaces y documentos",
 			"save-button": "Guardar la conversación en el servidor"
 		},
@@ -418,7 +497,10 @@
 			"title": "Multimedia compartida",
 			"medias": "Multimedia",
 			"links": "Enlaces",
-			"documents": "Documentos"
+			"documents": "Documentos",
+			"file": "",
+			"picture": "",
+			"audio": ""
 		},
 		"reply": {
 			"response-to": "Responder a",
@@ -432,6 +514,10 @@
 		"emojis": {
 			"matching": ""
 		}
+	},
+	"account": {
+		"deleting-account": "",
+		"creating-account": ""
 	},
 	"audio": {
 		"record": {
@@ -470,8 +556,8 @@
 			"allow": "Permitir",
 			"settings": "Ir a Ajustes"
 		},
-		"skip": "SALTAR",
-		"cancel": "CANCELAR",
+		"skip": "Omitir",
+		"cancel": "Cancelar",
 		"settings-text": "Puedes habilitar el permiso {{title}} desde la configuración."
 	},
 	"notification": {
@@ -479,7 +565,7 @@
 			"title": "",
 			"desc": ""
 		},
-		"need-restart-ble": {
+		"submit-failed": {
 			"title": "",
 			"desc": ""
 		}
@@ -509,7 +595,6 @@
 			"title": "Inspector",
 			"accounts": {
 				"title": "Cuentas",
-				"unsupported-remote-mode": "Inspector de cuentas no soportado en modo remoto",
 				"data-not-found": "La cuenta no está en la lista",
 				"action-delete": {
 					"file-exists": "La cuenta {{accountId}} no existe, pero un archivo tiene este mismo nombre.",
@@ -559,5 +644,10 @@
 				"button-cancel": "Cancelar"
 			}
 		}
+	},
+	"time-for": {
+		"minutes": "",
+		"hours": "",
+		"days": ""
 	}
 }
