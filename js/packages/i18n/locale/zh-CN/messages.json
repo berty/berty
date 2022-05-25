@@ -83,6 +83,8 @@
 		},
 		"create-account": {
 			"title": "创建您的帐号",
+			"first-button": "",
+			"second-button": "",
 			"placeholder": "选择您的昵称",
 			"good-to-know": {
 				"title": "知道：",
@@ -513,6 +515,10 @@
 			"matching": "表情符号匹配"
 		}
 	},
+	"account": {
+		"deleting-account": "",
+		"creating-account": ""
+	},
 	"audio": {
 		"record": {
 			"tooltip": {
@@ -589,7 +595,6 @@
 			"title": "检查器",
 			"accounts": {
 				"title": "账户",
-				"unsupported-remote-mode": "远程模式下不支持帐户检查器",
 				"data-not-found": "帐户不在列表中",
 				"action-delete": {
 					"file-exists": "帐户 {{accountId}} 不存在，但文件有此名称。",
