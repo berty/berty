@@ -1,3 +1,4 @@
+import NetInfo from '@react-native-community/netinfo'
 import { NavigationProp } from '@react-navigation/native'
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import { TFunction } from 'react-i18next'
@@ -83,14 +84,21 @@ export const prepareAccount = createAsyncThunk(
 			// reset ui theme
 			dispatch(resetTheme())
 
-			// request push notifications
-			await accountPushToggleState({
-				account,
-				messengerClient: messengerClient,
-				protocolClient: protocolClient,
-				navigate: navigation.navigate,
-				t,
-			})
+			// we'll call an url during the request push notifications permissions flow
+			// so we need an internet connection to activate it
+			// call NetInfo to have network informations
+			const netState = await NetInfo.fetch()
+			// if the internet is not connected we just skip this step
+			if (netState.isConnected) {
+				// request push notifications
+				await accountPushToggleState({
+					account,
+					messengerClient: messengerClient,
+					protocolClient: protocolClient,
+					navigate: navigation.navigate,
+					t,
+				})
+			}
 
 			navigation.reset({
 				routes: [

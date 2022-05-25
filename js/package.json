@@ -19,6 +19,7 @@
     "@react-native-community/blur": "^3.6.0",
     "@react-native-community/cameraroll": "^4.1.2",
     "@react-native-community/hooks": "^2.8.1",
+    "@react-native-community/netinfo": "^8.3.0",
     "@react-navigation/elements": "^1.2.1",
     "@react-navigation/native": "^6.0.6",
     "@react-navigation/native-stack": "^6.2.5",
