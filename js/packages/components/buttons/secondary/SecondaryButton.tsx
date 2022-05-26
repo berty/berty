@@ -6,8 +6,8 @@ import { SecondaryTextPriv } from './SecondaryText.priv'
 
 export const SecondaryButton: React.FC<ButtonDefProps> = props => {
 	return (
-		<SecondaryButtonPriv onPress={props.onPress}>
-			<SecondaryTextPriv>{props.children}</SecondaryTextPriv>
+		<SecondaryButtonPriv {...props}>
+			<SecondaryTextPriv disabled={!!props.disabled}>{props.children}</SecondaryTextPriv>
 		</SecondaryButtonPriv>
 	)
 }

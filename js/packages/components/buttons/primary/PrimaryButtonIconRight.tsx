@@ -7,9 +7,9 @@ import { PrimaryTextPriv } from './PrimaryText.priv'
 
 export const PrimaryButtonIconRight: React.FC<ButtonDefProps & IconNameProps> = props => {
 	return (
-		<PrimaryButtonPriv onPress={props.onPress}>
+		<PrimaryButtonPriv {...props}>
 			<PrimaryTextPriv>{props.children}</PrimaryTextPriv>
-			<IconWrapperRightPriv name={props.name} />
+			<IconWrapperRightPriv disabled={!!props.disabled} name={props.name} />
 		</PrimaryButtonPriv>
 	)
 }

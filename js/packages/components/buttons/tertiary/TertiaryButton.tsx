@@ -6,8 +6,8 @@ import { TertiaryTextPriv } from './TertiaryText.priv'
 
 export const TertiaryButton: React.FC<ButtonDefProps> = props => {
 	return (
-		<TertiaryButtonPriv onPress={props.onPress}>
-			<TertiaryTextPriv>{props.children}</TertiaryTextPriv>
+		<TertiaryButtonPriv {...props}>
+			<TertiaryTextPriv disabled={!!props.disabled}>{props.children}</TertiaryTextPriv>
 		</TertiaryButtonPriv>
 	)
 }

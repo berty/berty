@@ -7,9 +7,9 @@ import { ErrorTextPriv } from './ErrorText.priv'
 
 export const ErrorButtonIconRight: React.FC<ButtonDefProps & IconNameProps> = props => {
 	return (
-		<ErrorButtonPriv onPress={props.onPress}>
-			<ErrorTextPriv>{props.children}</ErrorTextPriv>
-			<IconWrapperRightPriv name={props.name} type='error' />
+		<ErrorButtonPriv {...props}>
+			<ErrorTextPriv disabled={!!props.disabled}>{props.children}</ErrorTextPriv>
+			<IconWrapperRightPriv disabled={!!props.disabled} name={props.name} type='error' />
 		</ErrorButtonPriv>
 	)
 }

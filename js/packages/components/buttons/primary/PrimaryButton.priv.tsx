@@ -1,4 +1,5 @@
 import React from 'react'
+import { ActivityIndicator } from 'react-native'
 
 import { useThemeColor } from '@berty/store'
 
@@ -9,13 +10,23 @@ export const PrimaryButtonPriv: React.FC<ButtonDefProps & { alternative?: boolea
 	const colors = useThemeColor()
 
 	// TODO: replace with value from theme
+	const getBgColor = (): string => {
+		if (props.disabled) {
+			return props.alternative ? '#E3E4EB' : '#E9EAF1'
+		}
+		return props.alternative ? '#3943D4' : colors['background-header']
+	}
+
 	return (
 		<ButtonPriv
-			borderRadius={props.alternative ? 14 : undefined}
-			backgroundColor={props.alternative ? '#3943D4' : colors['background-header']}
-			onPress={props.onPress}
+			{...props}
+			style={{
+				borderRadius: props.alternative ? 14 : 8,
+				backgroundColor: getBgColor(),
+			}}
+			onPress={props.loading ? undefined : props.onPress}
 		>
-			{props.children}
+			{props.loading ? <ActivityIndicator color='#F2F2F2' /> : props.children}
 		</ButtonPriv>
 	)
 }

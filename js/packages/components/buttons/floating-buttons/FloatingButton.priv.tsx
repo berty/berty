@@ -1,47 +1,19 @@
 import { Icon } from '@ui-kitten/components'
-import React, { useMemo } from 'react'
-import { StyleProp, StyleSheet, TouchableOpacity, View, ViewStyle } from 'react-native'
+import React from 'react'
+import { StyleSheet, TouchableOpacity, TouchableOpacityProps, View } from 'react-native'
 
-import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useThemeColor } from '@berty/store'
 
-import { ButtonPressProps } from '../interfaces'
-
-interface FloatingButtonPrivProps extends ButtonPressProps {
-	backgroundColor?: string
-}
-
-export const FloatingButtonPriv: React.FC<FloatingButtonPrivProps> = props => {
-	const { scaleSize } = useAppDimensions()
+export const FloatingButtonPriv: React.FC<TouchableOpacityProps> = props => {
 	const colors = useThemeColor()
 
-	const style = useMemo((): StyleProp<ViewStyle> => {
-		const styleArray: StyleProp<ViewStyle> = [
-			styles.button,
-			{ marginBottom: 20 * scaleSize, shadowColor: colors.shadow },
-		]
-
-		if (props.backgroundColor) {
-			styleArray.push({ backgroundColor: props.backgroundColor })
-		} else {
-			styleArray.push({ backgroundColor: 'transparent' })
-		}
-
-		return styleArray
-	}, [colors.shadow, props.backgroundColor, scaleSize])
-
 	return (
-		<View
-			style={[
-				styles.container,
-				{
-					right: 20 * scaleSize,
-					bottom: 20 * scaleSize,
-				},
-			]}
-		>
-			<TouchableOpacity style={style} onPress={props.onPress}>
-				<Icon fill='white' name='plus' width={30 * scaleSize} height={30 * scaleSize} />
+		<View style={styles.container}>
+			<TouchableOpacity
+				style={[{ marginBottom: 20, shadowColor: colors.shadow }, styles.button, props.style]}
+				onPress={props.onPress}
+			>
+				<Icon fill='white' name='plus' width={30} height={30} />
 			</TouchableOpacity>
 		</View>
 	)
@@ -50,6 +22,8 @@ export const FloatingButtonPriv: React.FC<FloatingButtonPrivProps> = props => {
 const styles = StyleSheet.create({
 	container: {
 		position: 'absolute',
+		right: 20,
+		bottom: 20,
 	},
 	button: {
 		width: 52,
