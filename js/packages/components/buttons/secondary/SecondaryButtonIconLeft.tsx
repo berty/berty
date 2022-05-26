@@ -7,9 +7,9 @@ import { SecondaryTextPriv } from './SecondaryText.priv'
 
 export const SecondaryButtonIconLeft: React.FC<ButtonDefProps & IconNameProps> = props => {
 	return (
-		<SecondaryButtonPriv onPress={props.onPress}>
-			<IconWrapperLeftPriv name={props.name} type='secondary' />
-			<SecondaryTextPriv>{props.children}</SecondaryTextPriv>
+		<SecondaryButtonPriv {...props}>
+			<IconWrapperLeftPriv disabled={!!props.disabled} name={props.name} type='secondary' />
+			<SecondaryTextPriv disabled={!!props.disabled}>{props.children}</SecondaryTextPriv>
 		</SecondaryButtonPriv>
 	)
 }

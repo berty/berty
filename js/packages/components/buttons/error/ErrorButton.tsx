@@ -6,8 +6,8 @@ import { ErrorTextPriv } from './ErrorText.priv'
 
 export const ErrorButton: React.FC<ButtonDefProps> = props => {
 	return (
-		<ErrorButtonPriv onPress={props.onPress}>
-			<ErrorTextPriv>{props.children}</ErrorTextPriv>
+		<ErrorButtonPriv {...props}>
+			<ErrorTextPriv disabled={!!props.disabled}>{props.children}</ErrorTextPriv>
 		</ErrorButtonPriv>
 	)
 }

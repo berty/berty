@@ -52,11 +52,10 @@ export const DeleteAccountContent: React.FC<{}> = () => {
 					</TertiaryButtonIconLeft>
 					<ErrorButtonIconLeft
 						name='close'
+						disabled={!confirmed}
 						onPress={() => {
-							if (confirmed) {
-								Vibration.vibrate(500)
-								deletingAccountAfterClosing()
-							}
+							Vibration.vibrate(500)
+							deletingAccountAfterClosing()
 						}}
 					>
 						{t('settings.delete-account.delete-button')}

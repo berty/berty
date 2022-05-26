@@ -4,8 +4,12 @@ import { useThemeColor } from '@berty/store'
 
 import { TextButtonPriv } from '../TextButton.priv'
 
-export const SecondaryTextPriv: React.FC = props => {
+export const SecondaryTextPriv: React.FC<{ disabled: boolean }> = props => {
 	const colors = useThemeColor()
 
-	return <TextButtonPriv color={colors['background-header']}>{props.children}</TextButtonPriv>
+	return (
+		<TextButtonPriv color={props.disabled ? '#D0D0D6' : colors['background-header']}>
+			{props.children}
+		</TextButtonPriv>
+	)
 }

@@ -6,7 +6,7 @@ import { PrimaryTextPriv } from './PrimaryText.priv'
 
 export const PrimaryAltButton: React.FC<ButtonDefProps> = props => {
 	return (
-		<PrimaryButtonPriv alternative onPress={props.onPress}>
+		<PrimaryButtonPriv {...props} alternative>
 			<PrimaryTextPriv>{props.children}</PrimaryTextPriv>
 		</PrimaryButtonPriv>
 	)
