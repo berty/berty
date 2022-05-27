@@ -83,8 +83,8 @@
 		},
 		"create-account": {
 			"title": "创建您的帐号",
-			"first-button": "",
-			"second-button": "",
+			"first-button": "默认模式",
+			"second-button": "自定义模式",
 			"placeholder": "选择您的昵称",
 			"good-to-know": {
 				"title": "知道：",
@@ -516,8 +516,8 @@
 		}
 	},
 	"account": {
-		"deleting-account": "",
-		"creating-account": ""
+		"deleting-account": "删除账户中...",
+		"creating-account": "创建账户中..."
 	},
 	"audio": {
 		"record": {
