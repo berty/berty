@@ -39,10 +39,10 @@ export const DeleteAccountContent: React.FC<{}> = () => {
 			</View>
 			<View style={[column.justify]}>
 				<SmallInput
-					// autoCorrect={false}
-					// autoCapitalize='none'
+					autoCorrect={false}
+					autoCapitalize='none'
 					value={deleteConfirmation}
-					onChange={setDeleteConfirmation}
+					onChangeText={setDeleteConfirmation}
 				/>
 
 				<View style={[margin.top.large, margin.horizontal.medium]}>

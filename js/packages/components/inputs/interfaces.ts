@@ -1,13 +1,6 @@
-import { StyleProp, ViewStyle } from 'react-native'
+import { StyleProp, TextInputProps, ViewStyle } from 'react-native'
 
-export interface InputProps {
-	value?: string
-	onChange: (text: string) => void
-	placeholder?: string
-	disabled?: boolean
-}
-
-export interface InputWithIconProps extends InputProps {
+export interface InputWithIconProps extends Omit<TextInputProps, 'style'> {
 	iconName: string
 }
 

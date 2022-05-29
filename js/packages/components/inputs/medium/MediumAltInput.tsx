@@ -15,15 +15,9 @@ export const MediumAltInput: React.FC<InputWithIconProps> = props => {
 				iconColor='#8E8E92'
 				iconName={props.iconName}
 				value={props.value}
-				disabled={props.disabled}
+				disabled={!props.editable}
 			/>
-			<InputWithIconPriv
-				ref={input}
-				value={props.value}
-				onChange={props.onChange}
-				placeholder={props.placeholder}
-				disabled={props.disabled}
-			/>
+			<InputWithIconPriv ref={input} {...props} />
 		</TouchableWrapperWithIconPriv>
 	)
 }

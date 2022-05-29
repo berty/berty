@@ -94,9 +94,9 @@ const GroupInfo: React.FC<GroupInfoProps> = ({ groupName, setGroupName }) => {
 
 				<View style={[margin.left.medium, flex.tiny, row.item.justify]}>
 					<SmallInput
-						// autoCorrect={false}
+						autoCorrect={false}
 						value={groupName}
-						onChange={setGroupName}
+						onChangeText={setGroupName}
 						placeholder={t('main.home.create-group-finalize.placeholder')}
 					/>
 				</View>

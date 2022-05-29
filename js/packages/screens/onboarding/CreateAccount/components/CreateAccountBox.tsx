@@ -41,10 +41,10 @@ export const CreateAccountBox: React.FC<{
 		>
 			<View style={[margin.top.medium]}>
 				<LargeInput
-					// autoCapitalize='none'
-					// autoCorrect={false}
+					autoCapitalize='none'
+					autoCorrect={false}
 					value={name}
-					onChange={setName}
+					onChangeText={setName}
 					placeholder={t('onboarding.create-account.placeholder')}
 					iconName='person-outline'
 				/>
