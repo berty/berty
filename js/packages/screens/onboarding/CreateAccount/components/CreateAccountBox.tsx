@@ -22,59 +22,35 @@ export const CreateAccountBox: React.FC<{
 	const account = useAccount()
 
 	return (
-		<View>
-			<SwiperCard
-				title={t('onboarding.create-account.title')}
-				button={{
-					text: t('onboarding.create-account.first-button'),
-					onPress: async () => {
-						const displayName = name || `anon#${account.publicKey?.substring(0, 4)}`
-						await storageSet(GlobalPersistentOptionsKeys.DisplayName, displayName)
-						navigate('Onboarding.DefaultMode')
-					},
-				}}
-				secondButton={{
-					text: t('onboarding.create-account.second-button'),
-					onPress: async () => {
-						const displayName = name || `anon#${account.publicKey?.substring(0, 4)}`
-						await storageSet(GlobalPersistentOptionsKeys.DisplayName, displayName)
-						navigate('Onboarding.CustomMode')
-					},
-				}}
-			>
-				<View
-					style={[
-						margin.top.medium,
-						padding.medium,
-						border.radius.small,
-						{
-							backgroundColor: colors['input-background'],
-							flexDirection: 'row',
-							alignItems: 'center',
-						},
-					]}
-				>
-					<Icon
-						style={[margin.right.small]}
-						name='person-outline'
-						width={30 * scaleSize}
-						height={30 * scaleSize}
-						fill={`${colors['main-text']}60`}
-					/>
-					<TextInput
-						autoCapitalize='none'
-						autoCorrect={false}
-						value={name}
-						onChangeText={setName}
-						placeholder={t('onboarding.create-account.placeholder')}
-						placeholderTextColor={`${colors['main-text']}60`}
-						style={[
-							text.size.medium,
-							{ flex: 1, fontFamily: 'Open Sans', color: colors['main-text'] },
-						]}
-					/>
-				</View>
-			</SwiperCard>
-		</View>
+		<SwiperCard
+			title={t('onboarding.create-account.title')}
+			button={{
+				text: t('onboarding.create-account.first-button'),
+				onPress: async () => {
+					const displayName = name || `anon#${account.publicKey?.substring(0, 4)}`
+					await storageSet(GlobalPersistentOptionsKeys.DisplayName, displayName)
+					navigate('Onboarding.DefaultMode')
+				},
+			}}
+			secondButton={{
+				text: t('onboarding.create-account.second-button'),
+				onPress: async () => {
+					const displayName = name || `anon#${account.publicKey?.substring(0, 4)}`
+					await storageSet(GlobalPersistentOptionsKeys.DisplayName, displayName)
+					navigate('Onboarding.CustomMode')
+				},
+			}}
+		>
+			<View style={[margin.top.medium]}>
+				<LargeInput
+					autoCapitalize='none'
+					autoCorrect={false}
+					value={name}
+					onChangeText={setName}
+					placeholder={t('onboarding.create-account.placeholder')}
+					iconName='person-outline'
+				/>
+			</View>
+		</SwiperCard>
 	)
 }

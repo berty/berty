@@ -97,10 +97,10 @@ export const HomeHeader: React.FC<
 						</View>
 						<View style={[{ flex: 12 }, margin.left.small, margin.right.scale(25)]}>
 							<MediumInput
-								// autoCorrect={false}
-								// autoCapitalize='none'
+								autoCorrect={false}
+								autoCapitalize='none'
 								value={value}
-								onChange={onChange}
+								onChangeText={onChange}
 								placeholder={t('main.home.input-placeholder')}
 								iconName='search-outline'
 							/>
