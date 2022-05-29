@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View } from 'react-native'
-import { useSelector } from 'react-redux'
 
 import { berty } from '@berty/api/root.pb'
 import { ButtonDropDown } from '@berty/components/shared-components'
 import { useStyles } from '@berty/contexts/styles'
-import { selectClient } from '@berty/redux/reducers/ui.reducer'
+import { useMessengerClient } from '@berty/store'
 import { getDevicesForConversationAndMember } from '@berty/utils/messenger/devices'
 import { getSharedPushTokensForConversation } from '@berty/utils/notification/notif-push'
 
@@ -19,23 +18,25 @@ const UserDevicesList: React.FC<{ memberPk: string; conversationPk: string }> = 
 	const { t } = useTranslation()
 	const [tokens, setTokens] = useState<berty.messenger.v1.ISharedPushToken[]>([])
 	const [devices, setDevices] = useState<berty.messenger.v1.IDevice[]>([])
-	const client = useSelector(selectClient)
+	const messengerClient = useMessengerClient()
 
 	useEffect(() => {
-		if (!client) {
+		if (!messengerClient) {
 			return
 		}
 
-		getSharedPushTokensForConversation(client, conversationPk).then(setTokens).catch(console.warn)
-	}, [conversationPk, client, setTokens])
+		getSharedPushTokensForConversation(messengerClient, conversationPk)
+			.then(setTokens)
+			.catch(console.warn)
+	}, [conversationPk, messengerClient, setTokens])
 
 	useEffect(() => {
-		if (!client) {
+		if (!messengerClient) {
 			return
 		}
 
-		getDevicesForConversationAndMember(client, conversationPk, memberPk).then(setDevices)
-	}, [conversationPk, client, memberPk, setDevices])
+		getDevicesForConversationAndMember(messengerClient, conversationPk, memberPk).then(setDevices)
+	}, [conversationPk, messengerClient, memberPk, setDevices])
 
 	const tokensMap = Object.fromEntries(tokens.map(t => [t.devicePublicKey, t.token]))
 

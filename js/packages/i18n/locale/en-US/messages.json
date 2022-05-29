@@ -83,6 +83,8 @@
 		},
 		"create-account": {
 			"title": "Create your account",
+			"first-button": "Default mode",
+			"second-button": "Custom mode",
 			"placeholder": "Choose your nickname",
 			"good-to-know": {
 				"title": "Good to know:",
@@ -513,6 +515,10 @@
 			"matching": "Emojis matching"
 		}
 	},
+	"account": {
+		"deleting-account": "Deleting account...",
+		"creating-account": "Creating account..."
+	},
 	"audio": {
 		"record": {
 			"tooltip": {
@@ -589,7 +595,6 @@
 			"title": "Inspector",
 			"accounts": {
 				"title": "Accounts",
-				"unsupported-remote-mode": "Accounts inspector not supported in remote mode",
 				"data-not-found": "Account not in list",
 				"action-delete": {
 					"file-exists": "Account {{accountId}} does not exists, a file has this name though.",

@@ -1,8 +1,6 @@
-export interface ButtonPressProps {
-	onPress?: () => void
-}
+import { TouchableOpacityProps } from 'react-native'
 
-export interface ButtonDefProps extends ButtonPressProps {
+export interface ButtonDefProps extends Omit<TouchableOpacityProps, 'style'> {
 	loading?: boolean
 }
 

@@ -56,7 +56,7 @@ func ToMessage(a messengertypes.AppMessage) Message {
 }
 
 // SendTextMessage sends a string to a specific group
-func (s *Server) SendTextMessage(groupName string, message string) error {
+func (s *Server) SendTextMessage(ctx context.Context, groupName string, message string) error {
 	logging.Log(fmt.Sprintf("sending text message to '%s'", groupName))
 	payload, err := proto.Marshal(&messengertypes.AppMessage_UserMessage{
 		Body: message,
@@ -67,7 +67,7 @@ func (s *Server) SendTextMessage(groupName string, message string) error {
 
 	logging.Log(fmt.Sprintf("sending message payload: %v", asSha256(payload)))
 
-	_, err = s.Messenger.Interact(context.Background(), &messengertypes.Interact_Request{
+	_, err = s.Messenger.Interact(ctx, &messengertypes.Interact_Request{
 		Type:                  messengertypes.AppMessage_TypeUserMessage,
 		Payload:               payload,
 		ConversationPublicKey: base64.RawURLEncoding.EncodeToString(s.Groups[groupName].GetPublicKey()),
@@ -80,9 +80,8 @@ func (s *Server) SendTextMessage(groupName string, message string) error {
 	return err
 }
 
-func (s *Server) SendImageMessage(groupName string, content []byte) error {
+func (s *Server) SendImageMessage(ctx context.Context, groupName string, content []byte) error {
 	logging.Log(fmt.Sprintf("sending image message to %s", groupName))
-	ctx := context.Background()
 
 	header := messengertypes.Media{
 		MimeType:    "image/png",

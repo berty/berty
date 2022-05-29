@@ -1,11 +1,33 @@
 package cmd
 
 import (
-	"gopkg.in/yaml.v3"
+	"context"
 	"infratesting/config"
 	"os"
+	"os/signal"
+
+	"gopkg.in/yaml.v3"
 )
 
+func contextHandleSignal(ctx context.Context, signals ...os.Signal) (context.Context, context.CancelFunc) {
+	ctx, cancel := context.WithCancel(ctx)
+
+	signal_chan := make(chan os.Signal, 1)
+	signal.Notify(signal_chan, signals...)
+	go func() {
+		select {
+		case <-ctx.Done():
+		case <-signal_chan:
+			cancel()
+		}
+	}()
+
+	return ctx, func() {
+		signal.Reset(signals...)
+		cancel()
+
+	}
+}
 func writeFile(content string, filename string) error {
 	_, err := os.Stat(DefaultFolderName)
 	if os.IsNotExist(err) {

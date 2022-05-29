@@ -2,6 +2,28 @@ syntax = "proto3";
 package server;
 option go_package = "./server";
 
+service Proxy {
+  rpc TestConnection(TestConnection.Request) returns (TestConnection.Response) {}
+  rpc TestConnectionToPeer(TestConnectionToPeer.Request) returns (TestConnectionToPeer.Response) {}
+  rpc IsProcessRunning(IsProcessRunning.Request) returns (IsProcessRunning.Response) {}
+
+  rpc ConnectToPeer(ConnectToPeer.Request) returns (ConnectToPeer.Response) {}
+  rpc UploadLogs(UploadLogs.Request) returns (UploadLogs.Response) {}
+
+  rpc CreateInvite(CreateInvite.Request) returns (CreateInvite.Response) {}
+  rpc JoinGroup(JoinGroup.Request) returns (JoinGroup.Response) {}
+  rpc StartReceiveMessage(StartReceiveMessage.Request) returns (StartReceiveMessage.Response) {}
+  rpc StopReceiveMessage(StopReceiveMessage.Request) returns (StopReceiveMessage.Response) {}
+  rpc AddReplication(AddReplication.Request) returns (AddReplication.Response) {}
+
+  rpc NewTest(NewTest.Request) returns (NewTest.Response) {}
+  rpc StartTest(StartTest.Request) returns (StartTest.Response) {}
+  rpc StopTest(StopTest.Request) returns (StopTest.Response) {}
+  rpc IsTestRunning(IsTestRunning.Request) returns (IsTestRunning.Response) {}
+
+  rpc AddReliability(AddReliability.Request) returns (AddReliability.Response) {}
+}
+
 // ConnectToPeer
 message ConnectToPeer {
   message Request {
@@ -135,6 +157,15 @@ message StartTest {
   message Response {}
 }
 
+// StopTest
+message StopTest {
+  message Request {
+    string groupName = 1;
+    int64 testN = 2;
+  }
+
+  message Response {}
+}
 
 // IsProcessRunning
 message IsProcessRunning{
@@ -154,27 +185,4 @@ message AddReliability{
   }
 
   message Response {}
-}
-
-
-
-service Proxy {
-  rpc TestConnection(TestConnection.Request) returns (TestConnection.Response) {}
-  rpc TestConnectionToPeer(TestConnectionToPeer.Request) returns (TestConnectionToPeer.Response) {}
-  rpc IsProcessRunning(IsProcessRunning.Request) returns (IsProcessRunning.Response) {}
-
-  rpc ConnectToPeer(ConnectToPeer.Request) returns (ConnectToPeer.Response) {}
-  rpc UploadLogs(UploadLogs.Request) returns (UploadLogs.Response) {}
-
-  rpc CreateInvite(CreateInvite.Request) returns (CreateInvite.Response) {}
-  rpc JoinGroup(JoinGroup.Request) returns (JoinGroup.Response) {}
-  rpc StartReceiveMessage(StartReceiveMessage.Request) returns (StartReceiveMessage.Response) {}
-  rpc StopReceiveMessage(StopReceiveMessage.Request) returns (StopReceiveMessage.Response) {}
-  rpc AddReplication(AddReplication.Request) returns (AddReplication.Response) {}
-
-  rpc NewTest(NewTest.Request) returns (NewTest.Response) {}
-  rpc StartTest(StartTest.Request) returns (StartTest.Response) {}
-  rpc IsTestRunning(IsTestRunning.Request) returns (IsTestRunning.Response) {}
-  
-  rpc AddReliability(AddReliability.Request) returns (AddReliability.Response) {}
 }

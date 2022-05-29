@@ -14,7 +14,6 @@ import LightItalicOpenSans from '@berty/assets/font/OpenSans-LightItalic.ttf'
 import SemiBoldOpenSans from '@berty/assets/font/OpenSans-SemiBold.ttf'
 import SemiBoldItalicOpenSans from '@berty/assets/font/OpenSans-SemiBoldItalic.ttf'
 import { ErrorScreen } from '@berty/components/error'
-import { StreamGate, ListGate } from '@berty/components/gates'
 import { ModalProvider } from '@berty/contexts/modal.context'
 import { MusicPlayerProvider } from '@berty/contexts/musicPlayer.context'
 import NotificationProvider from '@berty/contexts/notification.context'
@@ -24,7 +23,7 @@ import { UIKittenProvider } from '@berty/contexts/uiKitten.context'
 import { isReadyRef, navigationRef } from '@berty/navigation'
 import { Navigation } from '@berty/navigation/stacks'
 import reduxStore from '@berty/redux/store'
-import { MessengerEffects, useThemeColor, useMountEffect } from '@berty/store'
+import { useThemeColor, useMountEffect } from '@berty/store'
 
 import { CustomIconsPack } from './custom-icons'
 import { FeatherIconsPack } from './feather-icons'
@@ -103,7 +102,6 @@ const App: React.FC = () => {
 			<AppDimensionsProvider>
 				<StyleProvider>
 					<ReduxProvider store={reduxStore}>
-						<MessengerEffects />
 						<IconRegistry icons={[EvaIconsPack, FeatherIconsPack, CustomIconsPack]} />
 						<UIKittenProvider>
 							<Background>
@@ -117,15 +115,11 @@ const App: React.FC = () => {
 										<PermissionsProvider>
 											<NotificationProvider>
 												{Platform.OS !== 'web' ? <BootSplashInhibitor /> : null}
-												<StreamGate>
-													<ListGate>
-														<MusicPlayerProvider>
-															<ModalProvider>
-																<Navigation />
-															</ModalProvider>
-														</MusicPlayerProvider>
-													</ListGate>
-												</StreamGate>
+												<MusicPlayerProvider>
+													<ModalProvider>
+														<Navigation />
+													</ModalProvider>
+												</MusicPlayerProvider>
 											</NotificationProvider>
 										</PermissionsProvider>
 									</NavigationContainer>

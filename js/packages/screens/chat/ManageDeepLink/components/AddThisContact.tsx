@@ -5,6 +5,7 @@ import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View, TouchableOpacity, TextInput } from 'react-native'
 
+import { SecondaryButton } from '@berty/components'
 import { ContactAvatar } from '@berty/components/avatars'
 import { FingerprintContent } from '@berty/components/shared-components/FingerprintContent'
 import { TabBar } from '@berty/components/shared-components/TabBar'
@@ -64,7 +65,7 @@ const AddThisContact: React.FC<{
 	type: string
 	isPassword: boolean
 }> = ({ displayName, publicKey, link, type, isPassword }) => {
-	const { row, text, column, flex, absolute, padding, border, margin } = useStyles()
+	const { row, text, column, absolute, padding, border, margin } = useStyles()
 	const colors = useThemeColor()
 	const navigation = useNavigation()
 	const { call: requestContact, error, done } = messengerMethodsHooks.useContactRequest()
@@ -207,24 +208,16 @@ const AddThisContact: React.FC<{
 						</View>
 					</View>
 				) : null}
-				<View style={[row.fill, padding.medium]}>
-					<TouchableOpacity
+				<View style={padding.medium}>
+					<SecondaryButton
 						onPress={() => {
 							isPassword
 								? requestContact({ link, passphrase: Buffer.from(password) })
 								: requestContact({ link })
 						}}
-						style={[
-							flex.medium,
-							padding.vertical.scale(12),
-							border.radius.small,
-							{ backgroundColor: colors['positive-asset'] },
-						]}
 					>
-						<UnifiedText style={{ textAlign: 'center', color: colors['background-header'] }}>
-							ADD THIS CONTACT
-						</UnifiedText>
-					</TouchableOpacity>
+						ADD THIS CONTACT
+					</SecondaryButton>
 				</View>
 			</View>
 			<TouchableOpacity

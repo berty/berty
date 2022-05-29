@@ -6,7 +6,7 @@ import { PrimaryTextPriv } from './PrimaryText.priv'
 
 export const PrimaryButton: React.FC<ButtonDefProps> = props => {
 	return (
-		<PrimaryButtonPriv onPress={props.onPress}>
+		<PrimaryButtonPriv {...props}>
 			<PrimaryTextPriv>{props.children}</PrimaryTextPriv>
 		</PrimaryButtonPriv>
 	)

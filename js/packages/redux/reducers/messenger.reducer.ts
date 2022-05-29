@@ -81,15 +81,14 @@ const getEntitiesInitialState = () => ({
 	medias: mediasAdapter.getInitialState(),
 })
 
-type MessengerState = ReturnType<typeof getEntitiesInitialState> & {
+export type MessengerState = ReturnType<typeof getEntitiesInitialState> & {
 	account: beapi.messenger.IAccount
-	initialListComplete: boolean
+	// value that will set to true when messenger EventsStream finished to list events
 }
 
 const initialState: MessengerState = {
 	...getEntitiesInitialState(),
 	account: {},
-	initialListComplete: false,
 }
 
 /**
@@ -192,9 +191,6 @@ const slice = createSlice({
 				mediasAdapter.upsertOne(state.medias, payload.media)
 			},
 		)
-		builder.addCase(messengerActions[beapi.messenger.StreamEvent.Type.TypeListEnded], state => {
-			state.initialListComplete = true
-		})
 		builder.addCase(
 			messengerActions[beapi.messenger.StreamEvent.Type.TypeMemberUpdated],
 			(state, { payload }) => {

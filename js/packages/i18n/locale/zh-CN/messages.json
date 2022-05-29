@@ -1,15 +1,17 @@
 {
 	"onboarding": {
 		"getstarted": {
-			"title": "保护您的隐私！",
+			"screenTitle": "保护您的隐私",
+			"title": "保护您的隐私",
 			"desc": "免费和安全的点对点消息传递",
-			"create-button": "创建帐户",
-			"import-button": "导入帐户",
+			"create-button": "创建账户",
+			"import-button": "导入账户",
 			"link-button": "连接此设备"
 		},
 		"default-mode": {
 			"summary": {
 				"title": "默认模式",
+				"screenTitle": "创建账户",
 				"subtitle": "快速开始",
 				"first-point": "从提供最适合的隐私/舒适平衡的预设开始。 Berty 节点用于提高性能和异步通信。",
 				"second-point": "如需自定义隐私/舒适度平衡，请选择自定义模式。",
@@ -19,9 +21,10 @@
 		},
 		"custom-mode": {
 			"summary": {
+				"screenTitle": "创建账户 - 自定义设置",
 				"title": "自定义模式",
 				"subtitle": "自定义隐私/舒适度平衡",
-				"first-point": "在此模式下，单独调整所有设置以创建适合您的隐私和舒适的平衡。",
+				"first-point": "在此模式下，单独调整所有设置以创建适合您隐私和舒适的平衡。",
 				"second-point": "要获得turnkey experience，请选择默认模式。",
 				"back-button": "返回",
 				"accept-button": "继续"
@@ -30,7 +33,7 @@
 				"off-grid": {
 					"title": "离线通讯",
 					"ble-button": "低功耗蓝牙",
-					"nearby-button": "附近的安卓",
+					"nearby-button": "附近的移动设备",
 					"mc-button": "苹果多点连接",
 					"mdns-button": "多播 DNS (LAN)"
 				},
@@ -45,6 +48,35 @@
 					"bootstrap-button": "引导节点",
 					"replication-button": "复制节点"
 				},
+				"modals": {
+					"add": {
+						"title": {
+							"relay": "添加中继节点 (TURN)",
+							"bootstrap": "添加引导节点",
+							"rdvp": "添加 RDVP 节点"
+						}
+					},
+					"edit": {
+						"title": {
+							"relay": "编辑中继节点 (TURN)",
+							"bootstrap": "编辑引导节点",
+							"rdvp": "编辑 RDVP 节点"
+						}
+					},
+					"errors": {
+						"alias-already-exists": "别名已存在",
+						"multiaddr-alread-exists": "多地址已存在",
+						"multiaddr-bad-format": "多地址格式错误",
+						"multiaddr-p2p": "多地址应该包含一个p2p"
+					},
+					"buttons": {
+						"add": "添加",
+						"edit": "编辑",
+						"delete": "删除"
+					},
+					"multiaddress": "多地址",
+					"alias": "别名"
+				},
 				"all-button": "全部",
 				"accept-button": "开始"
 			}
@@ -54,7 +86,7 @@
 			"placeholder": "选择您的昵称",
 			"good-to-know": {
 				"title": "知道：",
-				"first-point": "您的帐户已在本地创建",
+				"first-point": "您的账户在本地创建",
 				"second-point": "昵称是可选的，可以稍后更改"
 			}
 		},
@@ -65,17 +97,18 @@
 		"setup-finished": {
 			"title": "设置完成！",
 			"desc": "您现在可以使用该应用，开始添加联系人以及与他们自由私下聊天",
-			"button": "开始使用 Berty"
+			"button": "开始使用 berty"
 		},
 		"web-views": {
-			"title": "WebViews",
-			"desc": "我们准备好加载WebView。你还想打开它吗？",
+			"title": "网页内容权限",
+			"desc": "Berty 即将从网络加载内容。您想要打开此页面吗？",
 			"first-button": "取消",
 			"second-button": "是"
 		}
 	},
 	"main": {
 		"home": {
+			"title": "Berty",
 			"requests": {
 				"title": "请求",
 				"accept": "同意",
@@ -96,7 +129,7 @@
 				"group-info": "群组信息",
 				"search-placeholder": "搜索",
 				"continue": "继续",
-				"create-group": "创建群组"
+				"create-group": "创建群組"
 			},
 			"create-group-finalize": {
 				"placeholder": "群组名称",
@@ -112,13 +145,11 @@
 				"draft": "草稿: {{message}}"
 			}
 		},
-		"suggestion-display-name-initial": "单击这里添加",
-		"scan": {
-			"title": "扫描二维码"
-		}
+		"suggestion-display-name-initial": "单击这里添加"
 	},
 	"settings": {
 		"home": {
+			"title": "设置",
 			"proximity-button": "离线通讯",
 			"notifications-button": "消息通知",
 			"contact-convs-button": "联系和对话",
@@ -130,37 +161,59 @@
 			"about-button": "关于 Berty"
 		},
 		"about": {
+			"title": "关于 Berty",
 			"faq-button": "常见问题",
 			"roadmap-button": "路线图",
 			"policy-button": "隐私政策",
-			"license-button": "开源许可证"
+			"license-button": "开源许可证",
+			"terms-of-use": "使用条款"
 		},
 		"accounts": {
+			"title": "账户",
+			"backup-button": "备份",
+			"backup-notif-title": "成功",
+			"backup-notif-desc": "账户已备份！",
 			"accounts-button": "账户",
-			"create-button": "创建帐户",
-			"import-button": "导入帐户",
+			"create-button": "创建账户",
+			"import-button": "导入账户",
 			"link-button": "连接其他设备",
-			"delete-button": "删除此帐户"
+			"delete-button": "删除此账户",
+			"delete-title": "账户删除"
 		},
 		"appearance": {
+			"title": "外观",
 			"dark-button": "暗色模式",
-			"editor-button": "主题编辑器"
+			"editor-button": "主题编辑器",
+			"theme-editor": {
+				"title": "主题编辑器"
+			}
 		},
 		"contact-convs": {
+			"title": "联系人和对话",
 			"reset-button": "重置我的联系链接/二维码",
 			"request-button": "允许收到联系人请求"
 		},
+		"devices-backup": {
+			"title": "设备和备份"
+		},
+		"security": {
+			"title": "安全"
+		},
 		"network": {
+			"title": "网络",
 			"ble-button": "低功耗蓝牙",
 			"mc-button": "多节点连接",
-			"nearby-button": "附近的安卓",
+			"nearby-button": "附近的移动设备",
 			"mdns-button": "多播DNS",
-			"memo-cell-button": "在蜂窝上加载语音备忘录",
+			"memo-cell-button": "在蜂窝中加载语音备忘录",
 			"medias-cell-button": "在蜂窝网络上加载媒体",
 			"dht-button": "分布式哈希表",
 			"rdvp-button": "Rendezvous 节点",
 			"relay-button": "中继节点",
 			"bootstrap-button": "引导节点"
+		},
+		"notifications": {
+			"title": "消息通知"
 		},
 		"edit-profile": {
 			"title": "编辑我的资料",
@@ -175,7 +228,7 @@
 			"title": "Berty 服务",
 			"desc": " 激活 Berty 服务将允许您通过 Berty Technologies 服务器接收推送通知，并授权您访问其节点以复制对话。",
 			"button": "使用 Berty 服务",
-			"skip": "跳过并稍后再做"
+			"skip": "跳过并稍后执行此操作"
 		},
 		"delete-account": {
 			"title": "删除帐户！",
@@ -255,7 +308,10 @@
 		},
 		"add-dev-conversations": {
 			"title": "添加开发者会话",
-			"add": "添加 {{name}}"
+			"add": "添加 {{name}}",
+			"tag-bot": "机器人",
+			"tag-contact": "联系人",
+			"tag-conversation": "对话"
 		},
 		"ipfs-webui": {
 			"title": "IPFS WebUI"
@@ -294,7 +350,7 @@
 			"contact-already-added-message": "您不能多次添加同一个联系人"
 		},
 		"invalid-scan": {
-			"dismiss-button": "忽略"
+			"dismiss-button": "关闭"
 		},
 		"add-this-contact": {
 			"fingerprint": "指纹",
@@ -318,6 +374,7 @@
 		}
 	},
 	"chat": {
+		"title-unknown": "未知对话",
 		"sending": "正在发送...",
 		"sent": "已发送",
 		"contact-settings": {
@@ -329,21 +386,39 @@
 			"input-placeholder": "在此输入..."
 		},
 		"push-notifications": {
-			"enable": "开启推送通知",
-			"enabled": "已启用推送通知",
+			"title": "消息通知",
 			"unsupported": "不支持通知",
 			"check-device-settings": "此对话设置为接收推送通知，但您设备的系统设置中已禁用通知",
+			"check-account-settings": "通知已禁用，请检查您的帐户设置",
 			"warning-disable": {
 				"title": "您想要激活此功能吗？",
 				"subtitle": "开启后，无法为特定对话禁用推送通知。",
 				"accept": "启用",
 				"refuse": "跳过"
 			},
-			"why-cant-disable": "无法禁用每个对话的推送通知。",
+			"why-cant-disable": "无法为特定对话禁用推送通知",
+			"why-cant-disable-account": "推送通知无法静音，但您可以使用操作系统设置全局静音Berty通知。",
 			"errors": {
 				"no-token": "您的设备与推送通知不兼容",
 				"no-server": "您必须先注册一个推送中继"
-			}
+			},
+			"warning-enable-all": {
+				"title": "是否为所有对话启用推送通知？",
+				"subtitle": "这为您将来加入的对话启用通知",
+				"refuse": "拒绝",
+				"accept": "同意"
+			},
+			"warning-disable-mute": {
+				"title": "是否为此对话启用通知？",
+				"refuse": "保持静音",
+				"accept": "取消静音"
+			},
+			"enabled": "已启用推送通知",
+			"disabled": "已禁用新消息通知",
+			"receive-push": "接收新消息通知",
+			"hide-previews": "在推送通知中隐藏预览",
+			"auto-enable": "启用当前和未来对话的推送功能",
+			"show-in-app": "在应用程序中显示通知"
 		},
 		"devices": {
 			"title": "设备",
@@ -353,6 +428,7 @@
 			}
 		},
 		"multi-member-settings": {
+			"title": "对话设置",
 			"media-button": "媒体、 链接和文档",
 			"members-button": {
 				"title": "成员"
@@ -372,10 +448,10 @@
 		"one-to-one": {
 			"contact-request-box": {
 				"title": "联系人请求",
-				"group-invitation": "群组链接",
+				"group-invitation": "群组邀请",
 				"refuse-button": "拒绝",
-				"accept-button": "接受",
-				"accepted-button": "已接受",
+				"accept-button": "同意",
+				"accepted-button": "同意",
 				"error": "将您添加到群组时出错☹️ 我们的错误！",
 				"you-invited": "你已邀请",
 				"this-contact": "此联系人",
@@ -391,6 +467,7 @@
 			"input-placeholder": "在此输入..."
 		},
 		"one-to-one-settings": {
+			"title": "对话设置",
 			"media-button": "媒体、 链接和文档",
 			"save-button": "在服务器上保存对话"
 		},
@@ -418,7 +495,10 @@
 			"title": "共享媒体",
 			"medias": "媒体",
 			"links": "链接",
-			"documents": "文件"
+			"documents": "文件",
+			"file": "文件",
+			"picture": "图片",
+			"audio": "音频"
 		},
 		"reply": {
 			"response-to": "答复：",
@@ -479,9 +559,9 @@
 			"title": "需要重新启动",
 			"desc": "重新启动 Berty 以保存您的数据并启用通知！"
 		},
-		"need-restart-ble": {
-			"title": "需要重新启动",
-			"desc": "重启 Berty 并在系统设置中启用蓝牙！"
+		"submit-failed": {
+			"title": "无法提交bug",
+			"desc": "缺少邮件应用"
 		}
 	},
 	"error": {
@@ -559,5 +639,10 @@
 				"button-cancel": "取消"
 			}
 		}
+	},
+	"time-for": {
+		"minutes": "{{minutes}} 分",
+		"hours": "{{hours}} 时",
+		"days": "{{days}} 日"
 	}
 }

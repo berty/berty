@@ -13,12 +13,7 @@ import { useSelector } from 'react-redux'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
 import { useAppDispatch } from '@berty/hooks'
-import {
-	MESSENGER_APP_STATE,
-	selectAppState,
-	selectHandledLink,
-	setHandledLink,
-} from '@berty/redux/reducers/ui.reducer'
+import { selectHandledLink, setHandledLink } from '@berty/redux/reducers/ui.reducer'
 import * as RawComponents from '@berty/screens'
 import { useThemeColor } from '@berty/store'
 
@@ -150,46 +145,14 @@ Components = mapValues(RawComponents, SubComponents =>
 const NavigationStack = createNativeStackNavigator<ScreensParams>()
 
 export const Navigation: React.FC = React.memo(() => {
-	const appState = useSelector(selectAppState)
 	const colors = useThemeColor()
 	const { scaleSize } = useAppDimensions()
 	const { t }: any = useTranslation()
 	const { dispatch } = useNavigation()
 
-	useEffect(() => {
-		console.log('context app State', appState)
-		switch (appState) {
-			case MESSENGER_APP_STATE.READY:
-				dispatch(
-					CommonActions.reset({
-						routes: [{ name: 'Chat.Home' }],
-					}),
-				)
-				return
-			case MESSENGER_APP_STATE.PRE_READY:
-				dispatch(
-					CommonActions.reset({
-						routes: [{ name: 'Onboarding.SetupFinished' }],
-					}),
-				)
-				return
-			case MESSENGER_APP_STATE.GET_STARTED:
-				if (Platform.OS === 'web') {
-					dispatch(
-						CommonActions.reset({
-							routes: [{ name: 'Onboarding.GetStarted' }],
-						}),
-					)
-				}
-				return
-		}
-	}, [appState, dispatch])
-
 	return (
 		<NavigationStack.Navigator
-			initialRouteName={
-				appState === MESSENGER_APP_STATE.GET_STARTED ? 'Onboarding.GetStarted' : 'Chat.Home'
-			}
+			initialRouteName='Account.InitialLaunch'
 			screenOptions={{
 				headerLeft:
 					Platform.OS === 'web'
@@ -204,6 +167,37 @@ export const Navigation: React.FC = React.memo(() => {
 						: undefined,
 			}}
 		>
+			{/* Account */}
+			<NavigationStack.Screen
+				name={'Account.InitialLaunch'}
+				component={Components.Account.InitialLaunch}
+				options={{ headerShown: false }}
+			/>
+			<NavigationStack.Screen
+				name={'Account.Creating'}
+				component={Components.Account.CreatingAccount}
+				options={{ headerShown: false }}
+			/>
+			<NavigationStack.Screen
+				name={'Account.Opening'}
+				component={Components.Account.OpeningAccount}
+				options={{ headerShown: false }}
+			/>
+			<NavigationStack.Screen
+				name={'Account.Closing'}
+				component={Components.Account.ClosingAccount}
+				options={{ headerShown: false }}
+			/>
+			<NavigationStack.Screen
+				name={'Account.Importing'}
+				component={Components.Account.ImportingAccount}
+				options={{ headerShown: false }}
+			/>
+			<NavigationStack.Screen
+				name={'Account.Deleting'}
+				component={Components.Account.DeletingAccount}
+				options={{ headerShown: false }}
+			/>
 			{/* OnBoarding */}
 			<NavigationStack.Screen
 				name={'Onboarding.GetStarted'}

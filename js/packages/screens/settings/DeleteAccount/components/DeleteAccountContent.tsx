@@ -11,7 +11,7 @@ import {
 } from '@berty/components'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useStyles } from '@berty/contexts/styles'
-import { useDeleteAccount } from '@berty/hooks'
+import { useDeletingAccountAfterClosing } from '@berty/hooks'
 import { useThemeColor } from '@berty/store'
 
 import { DeleteAccountError } from './DeleteAccountError'
@@ -19,13 +19,13 @@ import { DeleteAccountError } from './DeleteAccountError'
 const DELETE_STR = 'delete'
 
 export const DeleteAccountContent: React.FC<{}> = () => {
-	const deleteAccount = useDeleteAccount()
 	const { margin, padding, text, column } = useStyles()
 	const colors = useThemeColor()
 	const navigation = useReactNavigation()
 	const { t }: any = useTranslation()
-	const [deleteConfirmation, setDeleteConfirmation] = useState('')
+	const [deleteConfirmation, setDeleteConfirmation] = useState<string>()
 	const confirmed = deleteConfirmation === DELETE_STR
+	const deletingAccountAfterClosing = useDeletingAccountAfterClosing()
 
 	return (
 		<>
@@ -52,11 +52,10 @@ export const DeleteAccountContent: React.FC<{}> = () => {
 						</TertiaryButtonIconLeft>
 						<ErrorButtonIconLeft
 							name='close'
-							onPress={async () => {
-								if (confirmed) {
-									Vibration.vibrate(500)
-									await deleteAccount()
-								}
+							disabled={!confirmed}
+							onPress={() => {
+								Vibration.vibrate(500)
+								deletingAccountAfterClosing()
 							}}
 						>
 							{t('settings.delete-account.delete-button')}
