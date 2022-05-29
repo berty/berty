@@ -165,7 +165,7 @@ export const EditMyProfile: React.FC = () => {
 				<View style={[flex.tiny, margin.left.medium]}>
 					<SmallInput
 						value={state.name}
-						onChange={name => localDispatch({ type: 'SET_NAME', name })}
+						onChangeText={name => localDispatch({ type: 'SET_NAME', name })}
 						placeholder={t('settings.edit-profile.name-input-placeholder')}
 					/>
 				</View>

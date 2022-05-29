@@ -38,10 +38,10 @@ export const DeleteAccountContent: React.FC<{}> = () => {
 			</View>
 			<View style={[column.justify]}>
 				<SmallInput
-					// autoCorrect={false}
-					// autoCapitalize='none'
+					autoCorrect={false}
+					autoCapitalize='none'
 					value={deleteConfirmation}
-					onChange={setDeleteConfirmation}
+					onChangeText={setDeleteConfirmation}
 				/>
 				<TwoHorizontalButtons>
 					<TertiaryButtonIconLeft name='arrow-back-outline' onPress={() => navigation.goBack()}>
