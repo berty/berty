@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <title>{{ .PageTitle }}</title>
+</head>
+<body>
+<form method="POST">
+  <ul>
+     {{- range $err := .FormErrors }}
+        <li>{{ $err }}</li>
+     {{- end }}
+  </ul>
+  <input type="hidden" name="context" value="{{ .Context }}" />
+  <label for="codeInput">{{ .CodeLabel }}</label>
+  <input id="codeInput" name="code" value="{{ .Code }}" placeholder="{{ .CodePlaceholder }}" />
+  <button type="submit">{{ .CodeSubmitButton }}</button>
+</form>
+</body>
+</html>

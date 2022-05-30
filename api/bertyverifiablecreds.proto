@@ -1,0 +1,74 @@
+syntax = "proto3";
+
+package berty.account.v1;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "berty.tech/berty/go/pkg/verifiablecredstypes";
+
+option (gogoproto.marshaler_all) = true;
+option (gogoproto.unmarshaler_all) = true;
+option (gogoproto.sizer_all) = true;
+
+// StateChallenge serialized and signed state used when requesting a challenge
+message StateChallenge {
+  bytes timestamp = 1;
+  bytes nonce = 2;
+  string berty_link = 3;
+  string redirect_uri = 4 [(gogoproto.customname) = "RedirectURI"];
+  string state = 5;
+}
+
+// StateCode serialized and signed state used when requesting a code
+message StateCode {
+  bytes timestamp = 1;
+  string berty_link = 2;
+  CodeStrategy code_strategy = 3;
+  string identifier = 4;
+  string code = 5;
+  string redirect_uri = 6 [(gogoproto.customname) = "RedirectURI"];
+  string state = 7;
+}
+
+message AccountCryptoChallenge {
+  string challenge = 1;
+}
+
+message SendVerificationCode {
+  message Request {
+    string recipient = 1;
+    string code = 2;
+    string network_context = 3;
+    string context = 4;
+  }
+  message Reply {}
+}
+
+message ValidateIdentifier {
+  message Request {
+    string identifier = 1;
+  }
+  message Reply {
+    string sanitized = 1;
+  }
+}
+
+enum FlowType {
+  FlowTypeUndefined = 0;
+  // FlowTypeCode asks users a code sent on a side channel
+  FlowTypeCode = 1;
+  // FlowTypeAuth currently unimplemented
+  FlowTypeAuth = 2;
+  // FlowTypeProof currently unimplemented
+  FlowTypeProof = 3;
+}
+
+enum CodeStrategy {
+  CodeStrategyUndefined = 0;
+  // CodeStrategy6Digits currently unimplemented
+  CodeStrategy6Digits = 1;
+  // CodeStrategy10Chars currently unimplemented
+  CodeStrategy10Chars = 2;
+  // CodeStrategyMocked6Zeroes must only be used in testing
+  CodeStrategyMocked6Zeroes = 999;
+}

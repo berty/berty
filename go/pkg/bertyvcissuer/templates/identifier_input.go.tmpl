@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <title>{{ .PageTitle }}</title>
+</head>
+<body>
+<form method="POST">
+  <ul>
+     {{- range $err := .FormErrors }}
+        <li>{{ $err }}</li>
+     {{- end }}
+  </ul>
+  <input type="hidden" name="context" value="{{ .Context }}" />
+  <label for="IdentifierInput">{{ .IdentifierLabel }}</label>
+  <input id="IdentifierInput" name="identifier" value="{{ .Identifier }}" placeholder="{{ .IdentifierPlaceholder }}" />
+  <button type="submit">{{ .IdentifierSubmitButton }}</button>
+</form>
+</body>
+</html>

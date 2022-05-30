@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Redirect</title>
+  </head>
+  <body>
+    <div
+      style="display: flex; align-items: center; justify-content: center; height: 100vh"
+    >
+      <textarea style="width: 80vw; height: 128px">{{.URI}}</textarea>
+    </div>
+    <script>
+      location.href = "{{.URI}}";
+    </script>
+  </body>
+</html>

@@ -3,6 +3,8 @@ a9eed0caefc2bb169f2a7c3a9a5238ac19c2d953  ../api/accounttypes.yaml
 5e3b172a92d1a8f333f9a3efea106425a8a234c9  ../api/bertybridge.proto
 762b42ebd2cb8f749d22b014037d69d0f8ad02eb  ../api/bertyreplication.proto
 905a4386f317f51d3965a531d39a783c25ad8d0b  ../api/bertyreplication.yaml
+32a7fc91108297910b332969720c09576e9f938e  ../api/bertyverifiablecreds.proto
+c487da32080977a2ec757252b6187633327b5e07  ../api/bertyverifiablecreds.yaml
 9f42025e90b2e6da94afacf69ec9e5cb0b0d010a  ../api/errcode.proto
 5435e65abd5e30f98a2f92f7d848530c55a69b38  ../api/messengertypes.proto
 0bf65c534c7bd4dd9453bfcc828a7be7b2d9dc2f  ../api/messengertypes.yaml
