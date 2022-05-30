@@ -3,11 +3,11 @@ import React, { FC, useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View } from 'react-native'
 
-import Button from '@berty/components/shared-components/Button'
 import { TextInput } from '@berty/components/shared-components/TextInput'
 import { useStyles } from '@berty/contexts/styles'
 import { useThemeColor } from '@berty/store'
 
+import { PrimaryButton } from '../buttons'
 import { UnifiedText } from '../shared-components/UnifiedText'
 
 export const AccordionAdd: FC<{
@@ -85,10 +85,10 @@ export const AccordionAdd: FC<{
 				multiline
 				error={getUrlError(t)}
 			/>
-			<View style={{ flexDirection: 'row' }}>
-				<Button
+
+			<View style={[margin.horizontal.medium]}>
+				<PrimaryButton
 					onPress={() => onSubmit({ url, alias })}
-					style={[margin.bottom.medium, margin.horizontal.medium, { flex: 1 }]}
 					disabled={
 						!url.length ||
 						!alias.length ||
@@ -98,7 +98,7 @@ export const AccordionAdd: FC<{
 					}
 				>
 					{t('onboarding.custom-mode.settings.modals.buttons.add')}
-				</Button>
+				</PrimaryButton>
 			</View>
 		</View>
 	)
