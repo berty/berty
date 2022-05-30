@@ -116,6 +116,6 @@ $ make web.debug
   - Cmake
   - Android SDK Command-line Tools
 - A physical or virtual **Android device** (in Android Studio, `Tools --> AVD Manager`)
-- **Java 8**. If you already have another version of Java, you can use a version manager and Homebrew to add another installation. Some nice instructions are given [here](https://java.christmas/2019/16).
+- **Java 15** or earlier. If you already have a later version of Java, you can use a version manager and Homebrew to add another installation. Some nice instructions are given [here](https://java.christmas/2019/16).
 
 💡 Check you can run all the commands `sdkmanager`, `emulator`, `ndk-bundle`, and `adb` (these are binaries in `$ANDROID_HOME` subfolders)
