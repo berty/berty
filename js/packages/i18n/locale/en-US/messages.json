@@ -5,8 +5,7 @@
 			"title": "Protect your privacy",
 			"desc": "free & secure peer-to-peer messaging",
 			"create-button": "Create an account",
-			"import-button": "Import an account",
-			"link-button": "Link this device"
+			"import-button": "Import an account"
 		},
 		"default-mode": {
 			"summary": {
