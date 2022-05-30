@@ -3,7 +3,7 @@ import React, { useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ScrollView, TouchableOpacity, View, ViewProps } from 'react-native'
 
-import { MediumInput } from '@berty/components'
+import { MediumClearableInput } from '@berty/components'
 import { AccountAvatar } from '@berty/components/avatars'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
@@ -96,7 +96,7 @@ export const HomeHeader: React.FC<
 							</TouchableOpacity>
 						</View>
 						<View style={[{ flex: 12 }, margin.left.small, margin.right.scale(25)]}>
-							<MediumInput
+							<MediumClearableInput
 								autoCorrect={false}
 								autoCapitalize='none'
 								value={value}
