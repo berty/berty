@@ -83,7 +83,6 @@ const ThemeColorBody: React.FC<{ closeModal: () => void }> = ({ closeModal }) =>
 
 						<View style={[margin.top.medium]}>
 							<SmallInput
-								multiline
 								value={themeName}
 								onChangeText={setThemeName}
 								placeholder={t('modals.save-theme.placeholder')}
