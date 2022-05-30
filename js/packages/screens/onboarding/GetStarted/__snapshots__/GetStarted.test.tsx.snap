@@ -63,7 +63,7 @@ exports[`Onboarding.GetStarted renders correctly 1`] = `
                   "fontFamily": "Bold Open Sans",
                 },
                 Object {
-                  "color": "#525BEC",
+                  "color": "#535AE4",
                   "textTransform": "uppercase",
                 },
               ],
@@ -114,115 +114,129 @@ exports[`Onboarding.GetStarted renders correctly 1`] = `
       </View>
       <View
         style={
-          Array [
-            Object {
-              "marginTop": 32,
-            },
-          ]
+          Object {
+            "marginHorizontal": 60,
+          }
         }
       >
         <View
-          accessible={true}
-          focusable={true}
-          onClick={[Function]}
-          onResponderGrant={[Function]}
-          onResponderMove={[Function]}
-          onResponderRelease={[Function]}
-          onResponderTerminate={[Function]}
-          onResponderTerminationRequest={[Function]}
-          onStartShouldSetResponder={[Function]}
           style={
-            Object {
-              "alignSelf": "center",
-              "backgroundColor": "#525BEC",
-              "borderRadius": 9,
-              "marginTop": 9,
-              "opacity": 1,
-              "padding": 16,
-              "width": 250,
-            }
+            Array [
+              Object {
+                "marginTop": 40,
+              },
+            ]
           }
         >
-          <Text
+          <View
             accessibilityLabel="onboarding.getstarted.create-button"
+            accessible={true}
+            focusable={true}
+            onClick={[Function]}
+            onResponderGrant={[Function]}
+            onResponderMove={[Function]}
+            onResponderRelease={[Function]}
+            onResponderTerminate={[Function]}
+            onResponderTerminationRequest={[Function]}
+            onStartShouldSetResponder={[Function]}
             style={
-              Array [
-                Object {
-                  "fontSize": 30,
-                },
-                Object {
-                  "color": "#383B62",
-                  "fontFamily": "Open Sans",
-                },
-                Array [
-                  Object {
-                    "textAlign": "center",
-                  },
-                  Object {
-                    "fontFamily": "Bold Open Sans",
-                  },
-                  Object {
-                    "color": "#FFFFFF",
-                    "textTransform": "uppercase",
-                  },
-                  undefined,
-                ],
-              ]
+              Object {
+                "alignItems": "center",
+                "backgroundColor": "#535AE4",
+                "borderRadius": 8,
+                "flexDirection": "row",
+                "height": 44,
+                "justifyContent": "center",
+                "opacity": 1,
+              }
             }
           >
-            onboarding.getstarted.create-button
-          </Text>
+            <Text
+              style={
+                Array [
+                  Object {
+                    "fontSize": 30,
+                  },
+                  Object {
+                    "color": "#383B62",
+                    "fontFamily": "Open Sans",
+                  },
+                  Array [
+                    Object {
+                      "textTransform": "uppercase",
+                    },
+                    Object {
+                      "color": "#F2F2F2",
+                    },
+                    Object {
+                      "fontFamily": "Bold Open Sans",
+                    },
+                  ],
+                ]
+              }
+            >
+              onboarding.getstarted.create-button
+            </Text>
+          </View>
         </View>
         <View
-          accessible={true}
-          focusable={true}
-          onClick={[Function]}
-          onResponderGrant={[Function]}
-          onResponderMove={[Function]}
-          onResponderRelease={[Function]}
-          onResponderTerminate={[Function]}
-          onResponderTerminationRequest={[Function]}
-          onStartShouldSetResponder={[Function]}
           style={
-            Object {
-              "alignSelf": "center",
-              "backgroundColor": "#525BEC20",
-              "borderRadius": 9,
-              "marginTop": 9,
-              "opacity": 1,
-              "padding": 16,
-              "width": 250,
-            }
+            Array [
+              Object {
+                "marginTop": 9,
+              },
+            ]
           }
         >
-          <Text
+          <View
+            accessible={true}
+            focusable={true}
+            onClick={[Function]}
+            onResponderGrant={[Function]}
+            onResponderMove={[Function]}
+            onResponderRelease={[Function]}
+            onResponderTerminate={[Function]}
+            onResponderTerminationRequest={[Function]}
+            onStartShouldSetResponder={[Function]}
             style={
-              Array [
-                Object {
-                  "fontSize": 30,
-                },
-                Object {
-                  "color": "#383B62",
-                  "fontFamily": "Open Sans",
-                },
-                Array [
-                  Object {
-                    "textAlign": "center",
-                  },
-                  Object {
-                    "fontFamily": "Bold Open Sans",
-                  },
-                  Object {
-                    "color": "#525BEC",
-                    "textTransform": "uppercase",
-                  },
-                  undefined,
-                ],
-              ]
+              Object {
+                "alignItems": "center",
+                "backgroundColor": "#EAEAFB",
+                "borderRadius": 8,
+                "flexDirection": "row",
+                "height": 44,
+                "justifyContent": "center",
+                "opacity": 1,
+              }
             }
           >
-            onboarding.getstarted.import-button
-          </Text>
+            <Text
+              style={
+                Array [
+                  Object {
+                    "fontSize": 30,
+                  },
+                  Object {
+                    "color": "#383B62",
+                    "fontFamily": "Open Sans",
+                  },
+                  Array [
+                    Object {
+                      "textTransform": "uppercase",
+                    },
+                    Object {
+                      "color": "#535AE4",
+                    },
+                    Object {
+                      "fontFamily": "Bold Open Sans",
+                    },
+                  ],
+                ]
+              }
+            >
+              onboarding.getstarted.import-button
+            </Text>
+          </View>
         </View>
       </View>
     </View>

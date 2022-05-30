@@ -17,7 +17,7 @@ exports[`Settings.MyBertyId renders correctly 1`] = `
           "backgroundColor": "#FFFFFF",
         },
         Object {
-          "backgroundColor": "#525BEC",
+          "backgroundColor": "#535AE4",
           "flex": 1,
         },
       ]
@@ -30,7 +30,7 @@ exports[`Settings.MyBertyId renders correctly 1`] = `
             "padding": 16,
           },
           Object {
-            "backgroundColor": "#525BEC",
+            "backgroundColor": "#535AE4",
           },
         ]
       }
@@ -213,7 +213,7 @@ exports[`Settings.MyBertyId renders correctly 1`] = `
                       }
                     >
                       <AssetMock
-                        color="#525BEC"
+                        color="#535AE4"
                         height={25}
                         style={
                           Object {
@@ -245,7 +245,7 @@ exports[`Settings.MyBertyId renders correctly 1`] = `
                             "fontSize": 26,
                           },
                           Object {
-                            "color": "#525BEC",
+                            "color": "#535AE4",
                           },
                         ],
                       ]
@@ -271,7 +271,7 @@ exports[`Settings.MyBertyId renders correctly 1`] = `
                           "borderRadius": 2,
                         },
                         Object {
-                          "borderColor": "#525BEC",
+                          "borderColor": "#535AE4",
                         },
                       ],
                       false,
@@ -421,7 +421,7 @@ exports[`Settings.MyBertyId renders correctly 1`] = `
               >
                 <QRCodeMock
                   backgroundColor="#FFFFFF"
-                  color="#525BEC"
+                  color="#535AE4"
                   logo="AssetMock"
                   mode="circle"
                   size={462.5}
@@ -486,7 +486,7 @@ exports[`Settings.MyBertyId renders correctly 1`] = `
             }
           >
             <AssetMock
-              color="#525BEC"
+              color="#535AE4"
               height={26}
               style={
                 Object {
@@ -520,7 +520,7 @@ exports[`Settings.MyBertyId renders correctly 2`] = `
           "backgroundColor": "#FFFFFF",
         },
         Object {
-          "backgroundColor": "#525BEC",
+          "backgroundColor": "#535AE4",
           "flex": 1,
         },
       ]
@@ -533,7 +533,7 @@ exports[`Settings.MyBertyId renders correctly 2`] = `
             "padding": 16,
           },
           Object {
-            "backgroundColor": "#525BEC",
+            "backgroundColor": "#535AE4",
           },
         ]
       }
@@ -835,7 +835,7 @@ exports[`Settings.MyBertyId renders correctly 2`] = `
                       }
                     >
                       <AssetMock
-                        color="#525BEC"
+                        color="#535AE4"
                         height={25}
                         style={
                           Object {
@@ -867,7 +867,7 @@ exports[`Settings.MyBertyId renders correctly 2`] = `
                             "fontSize": 26,
                           },
                           Object {
-                            "color": "#525BEC",
+                            "color": "#535AE4",
                           },
                         ],
                       ]
@@ -893,7 +893,7 @@ exports[`Settings.MyBertyId renders correctly 2`] = `
                           "borderRadius": 2,
                         },
                         Object {
-                          "borderColor": "#525BEC",
+                          "borderColor": "#535AE4",
                         },
                       ],
                       false,
@@ -981,7 +981,7 @@ exports[`Settings.MyBertyId renders correctly 2`] = `
                                 "fontSize": 26,
                               },
                               Object {
-                                "color": "#525BEC",
+                                "color": "#535AE4",
                                 "fontFamily": "Courier",
                               },
                             ],
@@ -1008,7 +1008,7 @@ exports[`Settings.MyBertyId renders correctly 2`] = `
                                 "fontSize": 26,
                               },
                               Object {
-                                "color": "#525BEC",
+                                "color": "#535AE4",
                                 "fontFamily": "Courier",
                               },
                             ],
@@ -1035,7 +1035,7 @@ exports[`Settings.MyBertyId renders correctly 2`] = `
                                 "fontSize": 26,
                               },
                               Object {
-                                "color": "#525BEC",
+                                "color": "#535AE4",
                                 "fontFamily": "Courier",
                               },
                             ],
@@ -1062,7 +1062,7 @@ exports[`Settings.MyBertyId renders correctly 2`] = `
                                 "fontSize": 26,
                               },
                               Object {
-                                "color": "#525BEC",
+                                "color": "#535AE4",
                                 "fontFamily": "Courier",
                               },
                             ],
@@ -1101,7 +1101,7 @@ exports[`Settings.MyBertyId renders correctly 2`] = `
                                 "fontSize": 26,
                               },
                               Object {
-                                "color": "#525BEC",
+                                "color": "#535AE4",
                                 "fontFamily": "Courier",
                               },
                             ],
@@ -1128,7 +1128,7 @@ exports[`Settings.MyBertyId renders correctly 2`] = `
                                 "fontSize": 26,
                               },
                               Object {
-                                "color": "#525BEC",
+                                "color": "#535AE4",
                                 "fontFamily": "Courier",
                               },
                             ],
@@ -1155,7 +1155,7 @@ exports[`Settings.MyBertyId renders correctly 2`] = `
                                 "fontSize": 26,
                               },
                               Object {
-                                "color": "#525BEC",
+                                "color": "#535AE4",
                                 "fontFamily": "Courier",
                               },
                             ],
@@ -1182,7 +1182,7 @@ exports[`Settings.MyBertyId renders correctly 2`] = `
                                 "fontSize": 26,
                               },
                               Object {
-                                "color": "#525BEC",
+                                "color": "#535AE4",
                                 "fontFamily": "Courier",
                               },
                             ],
@@ -1221,7 +1221,7 @@ exports[`Settings.MyBertyId renders correctly 2`] = `
                                 "fontSize": 26,
                               },
                               Object {
-                                "color": "#525BEC",
+                                "color": "#535AE4",
                                 "fontFamily": "Courier",
                               },
                             ],
@@ -1248,7 +1248,7 @@ exports[`Settings.MyBertyId renders correctly 2`] = `
                                 "fontSize": 26,
                               },
                               Object {
-                                "color": "#525BEC",
+                                "color": "#535AE4",
                                 "fontFamily": "Courier",
                               },
                             ],
@@ -1275,7 +1275,7 @@ exports[`Settings.MyBertyId renders correctly 2`] = `
                                 "fontSize": 26,
                               },
                               Object {
-                                "color": "#525BEC",
+                                "color": "#535AE4",
                                 "fontFamily": "Courier",
                               },
                             ],
@@ -1302,7 +1302,7 @@ exports[`Settings.MyBertyId renders correctly 2`] = `
                                 "fontSize": 26,
                               },
                               Object {
-                                "color": "#525BEC",
+                                "color": "#535AE4",
                                 "fontFamily": "Courier",
                               },
                             ],
@@ -1341,7 +1341,7 @@ exports[`Settings.MyBertyId renders correctly 2`] = `
                                 "fontSize": 26,
                               },
                               Object {
-                                "color": "#525BEC",
+                                "color": "#535AE4",
                                 "fontFamily": "Courier",
                               },
                             ],
@@ -1368,7 +1368,7 @@ exports[`Settings.MyBertyId renders correctly 2`] = `
                                 "fontSize": 26,
                               },
                               Object {
-                                "color": "#525BEC",
+                                "color": "#535AE4",
                                 "fontFamily": "Courier",
                               },
                             ],
@@ -1395,7 +1395,7 @@ exports[`Settings.MyBertyId renders correctly 2`] = `
                                 "fontSize": 26,
                               },
                               Object {
-                                "color": "#525BEC",
+                                "color": "#535AE4",
                                 "fontFamily": "Courier",
                               },
                             ],
@@ -1422,7 +1422,7 @@ exports[`Settings.MyBertyId renders correctly 2`] = `
                                 "fontSize": 26,
                               },
                               Object {
-                                "color": "#525BEC",
+                                "color": "#535AE4",
                                 "fontFamily": "Courier",
                               },
                             ],
@@ -1493,7 +1493,7 @@ exports[`Settings.MyBertyId renders correctly 2`] = `
             }
           >
             <AssetMock
-              color="#525BEC"
+              color="#535AE4"
               height={26}
               style={
                 Object {
