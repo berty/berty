@@ -3,9 +3,7 @@ import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View, TextInput, StyleSheet, ScrollView } from 'react-native'
 
-import { FooterCreateGroup } from '@berty/components/create-group/CreateGroupFooter'
-import { Header } from '@berty/components/create-group/CreateGroupHeader'
-import { MemberList } from '@berty/components/create-group/CreateGroupMemberList'
+import { CreateGroupFooter, CreateGroupHeader, CreateGroupMemberList } from '@berty/components'
 import { ButtonSettingItem } from '@berty/components/shared-components/SettingsButtons'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
@@ -183,53 +181,55 @@ export const CreateGroupFinalize: ScreenFC<'Chat.CreateGroupFinalize'> = () => {
 	const { t }: { t: any } = useTranslation()
 
 	React.useEffect(() => {
-		if (done) {
-			if (error) {
-				console.warn('Failed to create group:', error)
-			} else if (reply?.publicKey) {
-				reset({
-					index: 0,
-					routes: [
-						{
-							name: 'Chat.Home',
+		if (!done) {
+			return
+		}
+
+		if (error) {
+			console.warn('Failed to create group:', error)
+		} else if (reply?.publicKey) {
+			reset({
+				index: 0,
+				routes: [
+					{
+						name: 'Chat.Home',
+					},
+					{
+						name: 'Chat.Group',
+						params: {
+							convId: reply.publicKey,
 						},
-						{
-							name: 'Chat.Group',
-							params: {
-								convId: reply.publicKey,
-							},
-						},
-					],
-				})
-			}
+					},
+				],
+			})
 		}
 	}, [done, error, reset, reply, dispatch])
+
 	return (
 		<Layout style={[flex.tiny]}>
 			<IOSOnlyKeyboardAvoidingView behavior='position'>
 				<ScrollView>
 					<View style={{ backgroundColor: colors['background-header'] }}>
 						<View>
-							<MemberList />
-							<Header
+							<CreateGroupMemberList />
+							<CreateGroupHeader
 								title={t('main.home.create-group.add-members')}
-								onPress={() => goBack()}
+								onPress={goBack}
 								style={[padding.bottom.small]}
 								first
 							/>
 						</View>
-						<Header title={t('main.home.create-group.group-info')}>
+						<CreateGroupHeader title={t('main.home.create-group.group-info')}>
 							<GroupInfo onGroupNameChange={setGroupName} />
-							<FooterCreateGroup
+							<CreateGroupFooter
 								title={t('main.home.create-group.create-group')}
-								titleStyle={{ textTransform: 'uppercase' }}
 								action={() => {
 									createGroup()
 									playSound('groupCreated')
 								}}
 								loading={loading}
 							/>
-						</Header>
+						</CreateGroupHeader>
 					</View>
 				</ScrollView>
 			</IOSOnlyKeyboardAvoidingView>

@@ -40,7 +40,7 @@ const CreateAccountBody = () => {
 					source={require('@berty/assets/lottie/Berty_onboard_animation_assets2/Startup animation assets/Berty BG.json')}
 					autoPlay
 					loop
-					style={{ width: '100%', position: 'absolute' }}
+					style={{ width: '100%', position: 'absolute', top: -10 }}
 				/>
 				<LottieView
 					source={require('@berty/assets/lottie/Berty_onboard_animation_assets2/Startup animation assets/Shield appear.json')}
@@ -52,7 +52,7 @@ const CreateAccountBody = () => {
 							await rnutil.checkPermissions(PermissionType.proximity)
 						}
 					}}
-					style={{ position: 'absolute', width: '100%' }}
+					style={{ position: 'absolute', width: '100%', top: -10 }}
 				/>
 			</View>
 

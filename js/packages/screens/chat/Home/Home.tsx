@@ -1,12 +1,12 @@
-import { Icon } from '@ui-kitten/components'
 import pickBy from 'lodash/pickBy'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { ScrollView, View, StatusBar, TouchableOpacity, SafeAreaView } from 'react-native'
+import { ScrollView, View, StatusBar, SafeAreaView } from 'react-native'
 import { useSelector } from 'react-redux'
 
 import beapi from '@berty/api'
 import EmptyChat from '@berty/assets/logo/empty_chat.svg'
+import { PrimaryFloatingButton } from '@berty/components'
 import { useLayout } from '@berty/components/hooks'
 import { ButtonSettingV2 } from '@berty/components/shared-components'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
@@ -30,43 +30,6 @@ import { IncomingRequests } from './components/Requests'
 import { SearchComponent } from './components/Search'
 
 const T = beapi.messenger.StreamEvent.Notified.Type
-
-const FooterButton: React.FC<{
-	name: string
-	fill: string
-	backgroundColor: string
-	onPress: () => Promise<void> | void
-}> = ({ name, fill, backgroundColor, onPress }) => {
-	const { scaleSize } = useAppDimensions()
-	const colors = useThemeColor()
-
-	return (
-		<TouchableOpacity
-			style={[
-				{
-					marginBottom: 20 * scaleSize,
-					width: 60,
-					height: 60,
-					borderRadius: 60,
-					shadowColor: colors.shadow,
-					shadowOffset: {
-						width: 0,
-						height: 5,
-					},
-					shadowOpacity: 0.2,
-					shadowRadius: 10,
-					elevation: 5,
-					backgroundColor,
-					alignItems: 'center',
-					justifyContent: 'center',
-				},
-			]}
-			onPress={onPress}
-		>
-			<Icon name={name} fill={fill} width={30 * scaleSize} height={30 * scaleSize} />
-		</TouchableOpacity>
-	)
-}
 
 export const Home: ScreenFC<'Chat.Home'> = ({ navigation: { navigate } }) => {
 	useNotificationsInhibitor(notif =>
@@ -287,7 +250,7 @@ export const Home: ScreenFC<'Chat.Home'> = ({ navigation: { navigate } }) => {
 							configurations={configurations}
 							addBot={setIsAddBot}
 						/>
-						{!hasConversations && !hasSuggestion && !hasConfigurations ? (
+						{!hasConversations && !hasSuggestion && !hasConfigurations && (
 							<View style={{ backgroundColor: colors['main-background'] }}>
 								<View style={[flex.justify.center, flex.align.center, margin.top.scale(60)]}>
 									<View>
@@ -306,24 +269,11 @@ export const Home: ScreenFC<'Chat.Home'> = ({ navigation: { navigate } }) => {
 									</View>
 								</View>
 							</View>
-						) : null}
+						)}
 					</View>
 				)}
 			</ScrollView>
-			<View
-				style={{
-					position: 'absolute',
-					right: 20 * scaleSize,
-					bottom: 20 * scaleSize,
-				}}
-			>
-				<FooterButton
-					name='plus'
-					fill={colors['reverted-main-text']}
-					backgroundColor={colors['background-header']}
-					onPress={() => navigate('Chat.Share')}
-				/>
-			</View>
+			<PrimaryFloatingButton onPress={() => navigate('Chat.Share')} />
 			{isLongPress ? (
 				<MultiAccount
 					onPress={() => {

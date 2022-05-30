@@ -1,24 +1,26 @@
 import { BlurView } from '@react-native-community/blur'
-import { Icon } from '@ui-kitten/components'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { View, TouchableOpacity, StyleSheet, TextInput } from 'react-native'
 import { useDispatch } from 'react-redux'
 
 import Avatar from '@berty/assets/logo/buck_berty_icon_card.svg'
+import {
+	TwoHorizontalButtons,
+	PrimaryButtonIconLeft,
+	SecondaryButtonIconLeft,
+} from '@berty/components'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
-import { useStylesDefaultModal } from '@berty/hooks'
 import { saveTheme } from '@berty/redux/reducers/theme.reducer'
 import { useThemeColor } from '@berty/store'
 
 const ThemeColorBody: React.FC<{ closeModal: () => void }> = ({ closeModal }) => {
 	const [themeName, setThemeName] = React.useState<string>('')
-	const { row, text, margin, padding, border, opacity } = useStyles()
+	const { text, margin, padding, border } = useStyles()
 	const { scaleHeight, scaleSize } = useAppDimensions()
 	const colors = useThemeColor()
-	const _styles = useStylesDefaultModal()
 	const { t } = useTranslation()
 	const dispatch = useDispatch()
 
@@ -101,70 +103,21 @@ const ThemeColorBody: React.FC<{ closeModal: () => void }> = ({ closeModal }) =>
 						</View>
 					</View>
 				</View>
-				<View style={[row.center, margin.top.small]}>
-					<TouchableOpacity
-						style={[
-							margin.bottom.medium,
-							opacity(0.5),
-							_styles.skipButton,
-							{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' },
-						]}
-						onPress={async () => {
-							closeModal()
-						}}
-					>
-						<Icon
-							name='close'
-							width={30}
-							height={30}
-							fill={colors['negative-asset']}
-							style={row.item.justify}
-						/>
-						<UnifiedText
-							style={[
-								padding.left.small,
-								row.item.justify,
-								text.bold,
-								{ color: colors['negative-asset'], textTransform: 'uppercase' },
-							]}
-						>
+
+				<View style={[margin.top.medium, margin.horizontal.medium]}>
+					<TwoHorizontalButtons>
+						<SecondaryButtonIconLeft name='close' onPress={closeModal}>
 							{t('modals.save-theme.cancel')}
-						</UnifiedText>
-					</TouchableOpacity>
-					<TouchableOpacity
-						style={[
-							margin.bottom.medium,
-							_styles.addButton,
-							{
-								flexDirection: 'row',
-								justifyContent: 'center',
-								alignItems: 'center',
-								backgroundColor: colors['positive-asset'],
-							},
-						]}
-						onPress={() => {
-							dispatch(saveTheme({ themeName }))
-							closeModal()
-						}}
-					>
-						<Icon
-							name='checkmark-outline'
-							width={30}
-							height={30}
-							fill={colors['background-header']}
-							style={row.item.justify}
-						/>
-						<UnifiedText
-							style={[
-								padding.left.small,
-								row.item.justify,
-								text.bold,
-								{ color: colors['background-header'], textTransform: 'uppercase' },
-							]}
+						</SecondaryButtonIconLeft>
+						<PrimaryButtonIconLeft
+							onPress={() => {
+								dispatch(saveTheme({ themeName }))
+								closeModal()
+							}}
 						>
 							{t('modals.save-theme.add')}
-						</UnifiedText>
-					</TouchableOpacity>
+						</PrimaryButtonIconLeft>
+					</TwoHorizontalButtons>
 				</View>
 			</View>
 		</View>

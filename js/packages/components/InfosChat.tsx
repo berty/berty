@@ -10,8 +10,8 @@ import { useMessengerClient, useThemeColor } from '@berty/store'
 import { pbDateToNum, timeFormat } from '@berty/utils/convert/time'
 
 import { ContactAvatar } from './avatars'
+import { TwoHorizontalButtons, SecondaryButtonIconLeft, TertiaryButtonIconLeft } from './buttons'
 import { ChatDate } from './chat/ChatDate'
-import { MessageInvitationButton } from './chat/message/MessageInvitation'
 import { MessageSystemWrapper } from './chat/message/MessageSystemWrapper'
 import { UnifiedText } from './shared-components/UnifiedText'
 
@@ -58,8 +58,7 @@ const ContactRequestBox: React.FC<{ contact: beapi.messenger.IContact; isAccepte
 }) => {
 	const { publicKey, displayName } = contact
 	const { row, flex, text, margin } = useStyles()
-	const colors = useThemeColor()
-	const { t }: any = useTranslation()
+	const { t } = useTranslation()
 
 	const [accepting, setAccepting] = useState(false)
 	const playSound = usePlaySound()
@@ -83,44 +82,33 @@ const ContactRequestBox: React.FC<{ contact: beapi.messenger.IContact; isAccepte
 					{displayName}
 				</UnifiedText>
 			</View>
-			<View style={[row.center, flex.justify.spaceEvenly, flex.align.center, margin.top.medium]}>
-				<MessageInvitationButton
-					onPress={() => decline()}
-					activeOpacity={!acceptDisabled ? 0.2 : 1}
-					icon='close-outline'
-					color={colors['secondary-text']}
-					title={t('chat.one-to-one.contact-request-box.refuse-button')}
-					backgroundColor={colors['main-background']}
-					styleOpacity={0.6}
-					disabled
-				/>
-				<MessageInvitationButton
-					onPress={async () => {
-						try {
-							if (!client || accepting) {
-								return
+			<View style={[margin.top.small, margin.horizontal.large]}>
+				<TwoHorizontalButtons>
+					<TertiaryButtonIconLeft name='close-outline' onPress={decline} disabled>
+						{t('chat.one-to-one.contact-request-box.refuse-button')}
+					</TertiaryButtonIconLeft>
+					<SecondaryButtonIconLeft
+						disabled={acceptDisabled}
+						loading={accepting}
+						onPress={async () => {
+							try {
+								if (!client || accepting) {
+									return
+								}
+								setAccepting(true)
+								await client.contactAccept({ publicKey })
+								playSound('contactRequestAccepted')
+							} catch (err: any) {
+								console.warn('Failed to accept contact request:', err)
 							}
-							setAccepting(true)
-							await client.contactAccept({ publicKey })
-							playSound('contactRequestAccepted')
-						} catch (err: any) {
-							console.warn('Failed to accept contact request:', err)
-						}
-						setAccepting(false)
-					}}
-					activeOpacity={!acceptDisabled ? 0.2 : 1}
-					icon='checkmark-outline'
-					color={!acceptDisabled ? colors['background-header'] : colors['secondary-text']}
-					title={
-						!acceptDisabled
+							setAccepting(false)
+						}}
+					>
+						{!acceptDisabled
 							? t('chat.one-to-one.contact-request-box.accept-button')
-							: t('chat.one-to-one.contact-request-box.accepted-button')
-					}
-					backgroundColor={!acceptDisabled ? colors['positive-asset'] : colors['secondary-text']}
-					styleOpacity={acceptDisabled ? 0.6 : undefined}
-					disabled={acceptDisabled}
-					loading={accepting}
-				/>
+							: t('chat.one-to-one.contact-request-box.accepted-button')}
+					</SecondaryButtonIconLeft>
+				</TwoHorizontalButtons>
 			</View>
 		</View>
 	)
@@ -132,7 +120,7 @@ export const InfosChat: React.FC<beapi.messenger.IConversation> = ({
 }) => {
 	const { flex, text, padding, margin } = useStyles()
 	const colors = useThemeColor()
-	const { t }: any = useTranslation()
+	const { t } = useTranslation()
 
 	const { dateMessage } = useStylesOneToOne()
 	const createdDate = pbDateToNum(createdDateStr) || Date.now()

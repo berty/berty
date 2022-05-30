@@ -24,44 +24,44 @@ const ServicesAuthBody: React.FC<{ next: () => void }> = ({ next }) => {
 	const { goBack } = useNavigation()
 	const protocolClient = useSelector(selectProtocolClient)
 
+	const getButton = () => {
+		if (accountServices.length > 0) {
+			return undefined
+		}
+		return {
+			text: t('settings.berty-services.button'),
+			onPress: async () => {
+				try {
+					await servicesAuthViaDefault(protocolClient)
+					dispatch(
+						setPersistentOption({
+							type: PersistentOptionsKeys.Configurations,
+							payload: {
+								...persistentOptions.configurations,
+								replicate: {
+									...persistentOptions.configurations.replicate,
+									state: 'added',
+								},
+							},
+						}),
+					)
+					goBack()
+				} catch (e) {
+					console.log(e)
+				}
+			},
+		}
+	}
+
 	return (
 		<View style={{ flex: 1 }}>
 			<SwiperCard
 				title={t('settings.berty-services.title')}
 				desc={t('settings.berty-services.desc')}
-				button={
-					accountServices.length > 0
-						? undefined
-						: {
-								text: t('settings.berty-services.button'),
-								onPress: async () => {
-									try {
-										await servicesAuthViaDefault(protocolClient)
-										dispatch(
-											setPersistentOption({
-												type: PersistentOptionsKeys.Configurations,
-												payload: {
-													...persistentOptions.configurations,
-													replicate: {
-														...persistentOptions.configurations.replicate,
-														state: 'added',
-													},
-												},
-											}),
-										)
-										goBack()
-									} catch (e) {
-										console.log(e)
-									}
-								},
-						  }
-				}
+				button={getButton()}
 				skip={{
 					text: t('settings.berty-services.skip'),
-					textStyle: { textTransform: 'uppercase' },
-					onPress: () => {
-						next()
-					},
+					onPress: () => next(),
 				}}
 			/>
 		</View>

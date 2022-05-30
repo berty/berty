@@ -6,10 +6,15 @@ import { View, TouchableOpacity, StyleSheet } from 'react-native'
 import { useSelector } from 'react-redux'
 
 import Avatar from '@berty/assets/logo/buck_berty_icon_card.svg'
+import {
+	TwoHorizontalButtons,
+	SecondaryButtonIconLeft,
+	TertiaryButtonIconLeft,
+} from '@berty/components'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
-import { useAppDispatch, useStylesDefaultModal } from '@berty/hooks'
+import { useAppDispatch } from '@berty/hooks'
 import {
 	PersistentOptionsKeys,
 	selectPersistentOptions,
@@ -24,10 +29,9 @@ const AddBotBody: React.FC<{
 	link: string
 	closeModal: () => void
 }> = ({ displayName, link, closeModal }) => {
-	const { row, text, margin, padding, border, opacity } = useStyles()
+	const { row, text, margin, padding, border } = useStyles()
 	const { scaleHeight } = useAppDimensions()
 	const colors = useThemeColor()
-	const _styles = useStylesDefaultModal()
 	const persistentOptions = useSelector(selectPersistentOptions)
 	const dispatch = useAppDispatch()
 	const { call: requestContact, done, error } = messengerMethodsHooks.useContactRequest()
@@ -47,6 +51,45 @@ const AddBotBody: React.FC<{
 			closeModal()
 		}
 	}, [done, error, closeModal])
+
+	const onClose = () => {
+		dispatch(
+			setPersistentOption({
+				type: PersistentOptionsKeys.Suggestions,
+				payload: {
+					...persistentOptions.suggestions,
+					[displayName]: {
+						...persistentOptions.suggestions[displayName],
+						state: 'skipped',
+					},
+				},
+			}),
+		)
+		closeModal()
+	}
+
+	const onAdd = () => {
+		if (pdlDone && !pdlError && pdlReply && pdlReply.link?.bertyId?.accountPk) {
+			dispatch(
+				setPersistentOption({
+					type: PersistentOptionsKeys.Suggestions,
+					payload: {
+						...persistentOptions.suggestions,
+						[displayName]: {
+							...persistentOptions.suggestions[displayName],
+							state: 'added',
+							pk: base64ToURLBase64(
+								Buffer.from(pdlReply.link.bertyId.accountPk).toString('base64'),
+							),
+						},
+					},
+				}),
+			)
+			requestContact({
+				link,
+			})
+		}
+	}
 
 	return pdlReply?.link?.bertyId?.accountPk ? (
 		<View
@@ -85,7 +128,7 @@ const AddBotBody: React.FC<{
 			<View
 				style={[
 					padding.horizontal.medium,
-					padding.bottom.medium,
+					padding.bottom.large,
 					border.radius.large,
 					border.shadow.huge,
 					{ backgroundColor: colors['main-background'], shadowColor: colors.shadow },
@@ -110,101 +153,13 @@ const AddBotBody: React.FC<{
 						<UnifiedText style={[text.light]}>to discover and test conversations?</UnifiedText>
 					</Text>
 				</View>
-				<View style={[row.center, padding.top.medium]}>
-					<TouchableOpacity
-						style={[
-							margin.bottom.medium,
-							opacity(0.5),
-							_styles.skipButton,
-							{ flexDirection: 'row', justifyContent: 'center' },
-						]}
-						onPress={() => {
-							dispatch(
-								setPersistentOption({
-									type: PersistentOptionsKeys.Suggestions,
-									payload: {
-										...persistentOptions.suggestions,
-										[displayName]: {
-											...persistentOptions.suggestions[displayName],
-											state: 'skipped',
-										},
-									},
-								}),
-							)
-							closeModal()
-						}}
-					>
-						<Icon
-							name='close'
-							width={30}
-							height={30}
-							fill={colors['negative-asset']}
-							style={row.item.justify}
-						/>
-						<UnifiedText
-							style={[
-								padding.left.small,
-								row.item.justify,
-								text.size.scale(16),
-								text.bold,
-								{ color: colors['negative-asset'] },
-							]}
-						>
+				<View style={[margin.top.medium, margin.horizontal.medium]}>
+					<TwoHorizontalButtons>
+						<TertiaryButtonIconLeft name='close' onPress={onClose}>
 							SKIP
-						</UnifiedText>
-					</TouchableOpacity>
-					<TouchableOpacity
-						style={[
-							margin.bottom.medium,
-							_styles.addButton,
-							{
-								flexDirection: 'row',
-								justifyContent: 'center',
-								backgroundColor: colors['positive-asset'],
-							},
-						]}
-						onPress={() => {
-							if (pdlDone && !pdlError && pdlReply.link?.bertyId?.accountPk) {
-								dispatch(
-									setPersistentOption({
-										type: PersistentOptionsKeys.Suggestions,
-										payload: {
-											...persistentOptions.suggestions,
-											[displayName]: {
-												...persistentOptions.suggestions[displayName],
-												state: 'added',
-												pk: base64ToURLBase64(
-													Buffer.from(pdlReply.link.bertyId.accountPk).toString('base64'),
-												),
-											},
-										},
-									}),
-								)
-								requestContact({
-									link,
-								})
-							}
-						}}
-					>
-						<Icon
-							name='checkmark-outline'
-							width={30}
-							height={30}
-							fill={colors['background-header']}
-							style={row.item.justify}
-						/>
-						<UnifiedText
-							style={[
-								padding.left.small,
-								row.item.justify,
-								text.size.scale(16),
-								text.bold,
-								{ color: colors['background-header'] },
-							]}
-						>
-							ADD !
-						</UnifiedText>
-					</TouchableOpacity>
+						</TertiaryButtonIconLeft>
+						<SecondaryButtonIconLeft onPress={onAdd}>ADD !</SecondaryButtonIconLeft>
+					</TwoHorizontalButtons>
 				</View>
 			</View>
 		</View>

@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { View, StatusBar, Platform } from 'react-native'
 
 import Logo from '@berty/assets/logo/berty_gradient_square.svg'
-import Button from '@berty/components/shared-components/Button'
+import { PrimaryButton, SecondaryButton } from '@berty/components'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useStyles } from '@berty/contexts/styles'
 import { ScreenFC, useNavigation } from '@berty/navigation'
@@ -49,37 +49,33 @@ export const GetStarted: ScreenFC<'Onboarding.GetStarted'> = () => {
 						{t('onboarding.getstarted.desc')}
 					</UnifiedText>
 				</View>
-				<View style={[margin.top.big]}>
-					<Button
-						accessibilityLabel={t('onboarding.getstarted.create-button')}
-						onPress={async () => {
-							navigate('Onboarding.CreateAccount')
-						}}
-					>
-						{t('onboarding.getstarted.create-button')}
-					</Button>
-					{Platform.OS !== 'web' && (
-						<Button
-							status='secondary'
-							onPress={async () => {
-								const filePath = await importAccountFromDocumentPicker()
-								if (!filePath) {
-									console.warn("imported file doesn't exist")
-									return
-								}
-								reset({
-									routes: [{ name: 'Account.Importing', params: { filePath } }],
-								})
-							}}
+				<View style={{ marginHorizontal: 60 }}>
+					<View style={[margin.top.huge]}>
+						<PrimaryButton
+							accessibilityLabel={t('onboarding.getstarted.create-button')}
+							onPress={() => navigate('Onboarding.CreateAccount')}
 						>
-							{t('onboarding.getstarted.import-button')}
-						</Button>
+							{t('onboarding.getstarted.create-button')}
+						</PrimaryButton>
+					</View>
+					{Platform.OS !== 'web' && (
+						<View style={[margin.top.small]}>
+							<SecondaryButton
+								onPress={async () => {
+									const filePath = await importAccountFromDocumentPicker()
+									if (!filePath) {
+										console.warn("imported file doesn't exist")
+										return
+									}
+									reset({
+										routes: [{ name: 'Account.Importing', params: { filePath } }],
+									})
+								}}
+							>
+								{t('onboarding.getstarted.import-button')}
+							</SecondaryButton>
+						</View>
 					)}
-					{/*
-					<Button status='secondary' onPress={() => {}}>
-						{t('onboarding.getstarted.link-button')}
-					</Button>
-					*/}
 				</View>
 			</View>
 		</View>

@@ -1,10 +1,14 @@
 import { CommonActions } from '@react-navigation/native'
-import { Icon } from '@ui-kitten/components'
 import { Buffer } from 'buffer'
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { ActivityIndicator, TouchableOpacity, View } from 'react-native'
+import { View } from 'react-native'
 
+import {
+	TwoHorizontalButtons,
+	SecondaryButtonIconLeft,
+	TertiaryButtonIconLeft,
+} from '@berty/components/buttons'
 import { useStyles } from '@berty/contexts/styles'
 import { useOneToOneContact, useConversation } from '@berty/hooks'
 import { useNavigation } from '@berty/navigation'
@@ -16,70 +20,9 @@ import { MultiMemberAvatar } from '../../avatars'
 import { UnifiedText } from '../../shared-components/UnifiedText'
 import { MessageSystemWrapper } from './MessageSystemWrapper'
 
-export const MessageInvitationButton: React.FC<{
-	onPress?: () => void
-	activeOpacity: any
-	backgroundColor: any
-	icon: any
-	color: any
-	title: string
-	styleOpacity?: any
-	disabled?: boolean
-	loading?: boolean
-}> = ({
-	onPress,
-	activeOpacity,
-	backgroundColor,
-	icon,
-	color,
-	title,
-	styleOpacity,
-	disabled = false,
-	loading,
-}) => {
-	const { flex, padding, border, width, row, text, opacity } = useStyles()
-	return (
-		<TouchableOpacity
-			style={[flex.align.center]}
-			activeOpacity={activeOpacity}
-			onPress={onPress}
-			disabled={disabled}
-		>
-			<View
-				style={[
-					padding.tiny,
-					padding.vertical.small,
-					border.radius.tiny,
-					width(120),
-					row.center,
-					flex.align.center,
-					padding.right.small,
-					{ backgroundColor },
-				]}
-			>
-				{loading ? (
-					<ActivityIndicator />
-				) : (
-					<Icon name={icon} width={24} height={24} fill={color} style={[opacity(styleOpacity)]} />
-				)}
-				<UnifiedText
-					style={[
-						text.align.center,
-						text.bold,
-						opacity(styleOpacity),
-						{ color, textTransform: 'uppercase' },
-					]}
-				>
-					{title}
-				</UnifiedText>
-			</View>
-		</TouchableOpacity>
-	)
-}
-
 const MessageInvitationSent: React.FC<{ message: InteractionGroupInvitation }> = ({ message }) => {
 	const { text } = useStyles()
-	const { t }: any = useTranslation()
+	const { t } = useTranslation()
 
 	const conversationContact = useOneToOneContact(message.conversationPublicKey || '')
 	return (
@@ -97,7 +40,7 @@ const MessageInvitationReceived: React.FC<{ message: InteractionGroupInvitation 
 	const { row, flex, text, margin } = useStyles()
 	const colors = useThemeColor()
 	const client = useMessengerClient()
-	const { t }: any = useTranslation()
+	const { t } = useTranslation()
 	const { dispatch } = useNavigation()
 	const [error, setError] = useState(false)
 	const [{ convPk, displayName }, setPdlInfo] = useState({ convPk: '', displayName: '' })
@@ -174,43 +117,21 @@ const MessageInvitationReceived: React.FC<{ message: InteractionGroupInvitation 
 					{displayName}
 				</UnifiedText>
 			</View>
-			<View style={[row.center, flex.justify.spaceEvenly, flex.align.center, margin.top.medium]}>
-				<MessageInvitationButton
-					onPress={undefined} // TODO: Command to refuse invitation
-					activeOpacity={!conv ? 0.2 : 1}
-					icon='close-outline'
-					color={colors['secondary-text']}
-					title={t('chat.one-to-one.contact-request-box.refuse-button')}
-					backgroundColor={colors['main-background']}
-					styleOpacity={0.6}
-					disabled
-				/>
-				<MessageInvitationButton
-					onPress={handleAccept}
-					activeOpacity={!conv ? 0.2 : 1}
-					icon='checkmark-outline'
-					color={
-						error
-							? colors['secondary-text']
-							: !conv
-							? colors['background-header']
-							: colors['secondary-text']
-					}
-					title={
-						!conv
+			<View style={[margin.top.medium, margin.horizontal.large]}>
+				<TwoHorizontalButtons>
+					<TertiaryButtonIconLeft
+						disabled
+						name='close-outline'
+						onPress={undefined} // TODO: Command to refuse invitation
+					>
+						{t('chat.one-to-one.contact-request-box.refuse-button')}
+					</TertiaryButtonIconLeft>
+					<SecondaryButtonIconLeft onPress={handleAccept} disabled={acceptDisabled ? true : false}>
+						{!conv
 							? t('chat.one-to-one.contact-request-box.accept-button')
-							: t('chat.one-to-one.contact-request-box.accepted-button')
-					}
-					backgroundColor={
-						error
-							? colors['main-background']
-							: !conv
-							? colors['positive-asset']
-							: `${colors['secondary-text']}20`
-					}
-					styleOpacity={acceptDisabled ? 0.6 : undefined}
-					disabled={acceptDisabled ? true : false}
-				/>
+							: t('chat.one-to-one.contact-request-box.accepted-button')}
+					</SecondaryButtonIconLeft>
+				</TwoHorizontalButtons>
 			</View>
 			{error && (
 				<UnifiedText

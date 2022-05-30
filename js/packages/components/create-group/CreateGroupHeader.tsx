@@ -8,13 +8,13 @@ import { useThemeColor } from '@berty/store'
 
 import { UnifiedText } from '../shared-components/UnifiedText'
 
-export const Header: React.FC<{
+export const CreateGroupHeader: React.FC<{
 	title: string
 	icon?: string
 	iconPack?: string
 	first?: boolean
 	disabled?: boolean
-	onPress?: any
+	onPress?: () => void
 	style?: any
 }> = ({
 	children,
@@ -32,7 +32,7 @@ export const Header: React.FC<{
 
 	return (
 		<View style={[!first && { backgroundColor: colors['main-background'] }]}>
-			<TouchableWithoutFeedback onPress={onPress}>
+			<TouchableWithoutFeedback onPress={() => onPress?.()}>
 				<View
 					style={[
 						border.radius.top.scale(30),

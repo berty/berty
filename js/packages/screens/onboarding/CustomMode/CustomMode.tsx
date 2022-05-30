@@ -3,8 +3,8 @@ import LottieView from 'lottie-react-native'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { StatusBar, View } from 'react-native'
-import { TouchableOpacity } from 'react-native-gesture-handler'
 
+import { TwoHorizontalButtons, PrimaryAltButton, SecondaryAltButton } from '@berty/components'
 import OnboardingWrapper from '@berty/components/onboarding/OnboardingWrapper'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
@@ -95,50 +95,14 @@ const CustomModeBody: React.FC = () => {
 						},
 					]}
 				>
-					<TouchableOpacity
-						style={[
-							padding.medium,
-							border.radius.medium,
-							{ width: 170 * scaleSize, backgroundColor: '#EBECFF' },
-						]}
-						onPress={() => goBack()}
-					>
-						<UnifiedText
-							style={[
-								text.bold,
-								{
-									textTransform: 'uppercase',
-									color: colors['background-header'],
-									textAlign: 'center',
-								},
-							]}
-						>
+					<TwoHorizontalButtons>
+						<SecondaryAltButton onPress={goBack}>
 							{t('onboarding.custom-mode.summary.back-button')}
-						</UnifiedText>
-					</TouchableOpacity>
-					<TouchableOpacity
-						style={[
-							padding.medium,
-							border.radius.medium,
-							{ width: 170 * scaleSize, backgroundColor: '#3744DD' },
-						]}
-						onPress={() => {
-							navigate('Onboarding.CustomModeSettings')
-						}}
-					>
-						<UnifiedText
-							style={[
-								text.bold,
-								{
-									textTransform: 'uppercase',
-									color: colors['reverted-main-text'],
-									textAlign: 'center',
-								},
-							]}
-						>
+						</SecondaryAltButton>
+						<PrimaryAltButton onPress={() => navigate('Onboarding.CustomModeSettings')}>
 							{t('onboarding.custom-mode.summary.accept-button')}
-						</UnifiedText>
-					</TouchableOpacity>
+						</PrimaryAltButton>
+					</TwoHorizontalButtons>
 				</View>
 			</View>
 		</View>

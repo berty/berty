@@ -6,9 +6,11 @@ import { StatusBar, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 import beapi from '@berty/api'
-import { FooterCreateGroup } from '@berty/components/create-group/CreateGroupFooter'
-import { Header } from '@berty/components/create-group/CreateGroupHeader'
-import { MemberList } from '@berty/components/create-group/CreateGroupMemberList'
+import {
+	CreateGroupFooterWithIcon,
+	CreateGroupHeader,
+	CreateGroupMemberList,
+} from '@berty/components'
 import { ContactPicker } from '@berty/components/shared-components'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
@@ -37,6 +39,7 @@ export const MultiMemberSettingsAddMembers: ScreenFC<'Chat.MultiMemberSettingsAd
 				throw new Error('no client')
 			}
 			const buf = beapi.messenger.AppMessage.GroupInvitation.encode({ link: conv?.link }).finish()
+
 			await Promise.all(
 				members.map(async member => {
 					const reply = await client.interact({
@@ -81,15 +84,19 @@ export const MultiMemberSettingsAddMembers: ScreenFC<'Chat.MultiMemberSettingsAd
 		<Layout style={[flex.tiny]}>
 			<StatusBar backgroundColor={colors['background-header']} barStyle='light-content' />
 			<SafeAreaView style={{ backgroundColor: colors['background-header'] }}>
-				<MemberList />
+				<CreateGroupMemberList />
 			</SafeAreaView>
 			<View style={{ flex: 1, backgroundColor: colors['main-background'] }}>
 				<View style={{ top: -30 * scaleHeight, flex: 1 }}>
-					<Header title={t('chat.add-members.contacts')} first style={[margin.bottom.scale(-1)]} />
+					<CreateGroupHeader
+						title={t('chat.add-members.contacts')}
+						first
+						style={[margin.bottom.scale(-1)]}
+					/>
 					<ContactPicker accountContacts={accountContacts} />
 				</View>
 			</View>
-			<FooterCreateGroup
+			<CreateGroupFooterWithIcon
 				title={t('chat.add-members.add')}
 				icon='arrow-forward-outline'
 				action={async () => {
