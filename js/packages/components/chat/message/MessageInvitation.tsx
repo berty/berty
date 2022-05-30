@@ -1,9 +1,8 @@
 import { CommonActions } from '@react-navigation/native'
-import { Icon } from '@ui-kitten/components'
 import { Buffer } from 'buffer'
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { ActivityIndicator, TouchableOpacity, View } from 'react-native'
+import { View } from 'react-native'
 
 import {
 	TwoHorizontalButtons,
@@ -20,67 +19,6 @@ import { base64ToURLBase64 } from '@berty/utils/convert/base64'
 import { MultiMemberAvatar } from '../../avatars'
 import { UnifiedText } from '../../shared-components/UnifiedText'
 import { MessageSystemWrapper } from './MessageSystemWrapper'
-
-export const MessageInvitationButton: React.FC<{
-	onPress?: () => void
-	activeOpacity: any
-	backgroundColor: any
-	icon: any
-	color: any
-	title: string
-	styleOpacity?: any
-	disabled?: boolean
-	loading?: boolean
-}> = ({
-	onPress,
-	activeOpacity,
-	backgroundColor,
-	icon,
-	color,
-	title,
-	styleOpacity,
-	disabled = false,
-	loading,
-}) => {
-	const { flex, padding, border, width, row, text, opacity } = useStyles()
-	return (
-		<TouchableOpacity
-			style={[flex.align.center]}
-			activeOpacity={activeOpacity}
-			onPress={onPress}
-			disabled={disabled}
-		>
-			<View
-				style={[
-					padding.tiny,
-					padding.vertical.small,
-					border.radius.tiny,
-					width(120),
-					row.center,
-					flex.align.center,
-					padding.right.small,
-					{ backgroundColor },
-				]}
-			>
-				{loading ? (
-					<ActivityIndicator />
-				) : (
-					<Icon name={icon} width={24} height={24} fill={color} style={[opacity(styleOpacity)]} />
-				)}
-				<UnifiedText
-					style={[
-						text.align.center,
-						text.bold,
-						opacity(styleOpacity),
-						{ color, textTransform: 'uppercase' },
-					]}
-				>
-					{title}
-				</UnifiedText>
-			</View>
-		</TouchableOpacity>
-	)
-}
 
 const MessageInvitationSent: React.FC<{ message: InteractionGroupInvitation }> = ({ message }) => {
 	const { text } = useStyles()
