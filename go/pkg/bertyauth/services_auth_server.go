@@ -121,6 +121,9 @@ func (a *AuthTokenServer) authTokenServerJSONResponse(w http.ResponseWriter, jso
 }
 
 func (a *AuthTokenServer) authTokenServerRedirect(w http.ResponseWriter, url string, logger *zap.Logger) {
+	w.Header().Add("x-auth-redirect", url)
+	w.WriteHeader(200)
+
 	if err := templateAuthTokenServerRedirect.Execute(w, struct {
 		URL template.URL
 	}{
@@ -149,8 +152,24 @@ func (a *AuthTokenServer) authTokenServerHTTPAuthorize(w http.ResponseWriter, r 
 	scopeStr := r.URL.Query().Get("scope")
 	var scope []string
 
+	if r.URL.Query().Get("redirect_uri") != authtypes.AuthRedirect {
+		w.WriteHeader(400)
+		reply, err := json.Marshal(map[string]interface{}{
+			"error": "unexpected value for redirect_uri",
+		})
+
+		if err == nil {
+			_, err = w.Write(reply)
+			if err != nil {
+				a.logger.Error("unable to write on stream", zap.Error(err))
+			}
+			return
+		}
+
+		return
+	}
+
 	for _, vs := range [][2]string{
-		{"redirect_uri", authtypes.AuthRedirect},
 		{"response_type", authtypes.AuthResponseType},
 		{"client_id", authtypes.AuthClientID},
 		{"code_challenge_method", authtypes.AuthCodeChallengeMethod},
@@ -184,9 +203,13 @@ func (a *AuthTokenServer) authTokenServerHTTPAuthorize(w http.ResponseWriter, r 
 
 	if r.Method == "POST" || a.noClick {
 		selectedScope := []string(nil)
-		for _, key := range scope {
-			if r.PostFormValue(fmt.Sprintf("%s_selected", key)) == "1" {
-				selectedScope = append(selectedScope, key)
+		if a.noClick {
+			selectedScope = scope
+		} else {
+			for _, key := range scope {
+				if r.PostFormValue(fmt.Sprintf("%s_selected", key)) == "1" {
+					selectedScope = append(selectedScope, key)
+				}
 			}
 		}
 
@@ -215,6 +238,7 @@ func (a *AuthTokenServer) authTokenServerHTTPAuthorize(w http.ResponseWriter, r 
 
 	tags, _, err := language.ParseAcceptLanguage(r.Header.Get("Accept-Language"))
 	if err != nil || len(tags) == 0 {
+		a.logger.Info("unable to parse language", zap.Error(err))
 		i18nPrinter = a.i18n.NewPrinter()
 	} else {
 		i18nPrinter = a.i18n.NewPrinter(tags...)
@@ -223,7 +247,7 @@ func (a *AuthTokenServer) authTokenServerHTTPAuthorize(w http.ResponseWriter, r 
 		htmlLang = preferred.String()
 	}
 
-	_ = a.authPageTemplate.Execute(w, &map[string]interface{}{
+	err = a.authPageTemplate.Execute(w, &map[string]interface{}{
 		"HTMLLang":              htmlLang,
 		"PageTitle":             i18nPrinter.Sprintf("auth.pageTitle"),
 		"Services":              formatServiceDescription(scope, i18nPrinter),
@@ -231,6 +255,10 @@ func (a *AuthTokenServer) authTokenServerHTTPAuthorize(w http.ResponseWriter, r 
 		"PrivacyPolicyURL":      a.privacyPolicyURL,
 		"PrivacyPolicyURLLabel": i18nPrinter.Sprintf("auth.privacyPolicyLabel"),
 	})
+
+	if err != nil {
+		a.logger.Error("unable to execute template", zap.Error(err))
+	}
 }
 
 func formatServiceDescription(services []string, i18nPrinter *message.Printer) map[string]map[string]string {
