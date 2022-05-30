@@ -18,7 +18,7 @@ import { useStyles } from '@berty/contexts/styles'
 import { useNavigation } from '@berty/navigation'
 import { useThemeColor } from '@berty/store'
 
-import { HorizontalButtons, SecondaryButtonIconLeft, TertiaryButtonIconLeft } from '../buttons'
+import { TwoHorizontalButtons, SecondaryButtonIconLeft, TertiaryButtonIconLeft } from '../buttons'
 import { UnifiedText } from './UnifiedText'
 
 const ModalWebviewBody: React.FC<{
@@ -67,7 +67,7 @@ const ModalWebviewBody: React.FC<{
 					</Text>
 				</View>
 				<View style={[margin.horizontal.medium, margin.top.medium]}>
-					<HorizontalButtons>
+					<TwoHorizontalButtons>
 						<TertiaryButtonIconLeft name='close' onPress={closeModal}>
 							{t('onboarding.web-views.first-button')}
 						</TertiaryButtonIconLeft>
@@ -79,7 +79,7 @@ const ModalWebviewBody: React.FC<{
 						>
 							{t('onboarding.web-views.second-button')}
 						</SecondaryButtonIconLeft>
-					</HorizontalButtons>
+					</TwoHorizontalButtons>
 				</View>
 			</View>
 		</View>

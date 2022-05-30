@@ -10,7 +10,7 @@ import { useMessengerClient, useThemeColor } from '@berty/store'
 import { pbDateToNum, timeFormat } from '@berty/utils/convert/time'
 
 import { ContactAvatar } from './avatars'
-import { HorizontalButtons, SecondaryButtonIconLeft, TertiaryButtonIconLeft } from './buttons'
+import { TwoHorizontalButtons, SecondaryButtonIconLeft, TertiaryButtonIconLeft } from './buttons'
 import { ChatDate } from './chat/ChatDate'
 import { MessageSystemWrapper } from './chat/message/MessageSystemWrapper'
 import { UnifiedText } from './shared-components/UnifiedText'
@@ -83,7 +83,7 @@ const ContactRequestBox: React.FC<{ contact: beapi.messenger.IContact; isAccepte
 				</UnifiedText>
 			</View>
 			<View style={[margin.top.small, margin.horizontal.large]}>
-				<HorizontalButtons>
+				<TwoHorizontalButtons>
 					<TertiaryButtonIconLeft name='close-outline' onPress={decline} disabled>
 						{t('chat.one-to-one.contact-request-box.refuse-button')}
 					</TertiaryButtonIconLeft>
@@ -108,7 +108,7 @@ const ContactRequestBox: React.FC<{ contact: beapi.messenger.IContact; isAccepte
 							? t('chat.one-to-one.contact-request-box.accept-button')
 							: t('chat.one-to-one.contact-request-box.accepted-button')}
 					</SecondaryButtonIconLeft>
-				</HorizontalButtons>
+				</TwoHorizontalButtons>
 			</View>
 		</View>
 	)

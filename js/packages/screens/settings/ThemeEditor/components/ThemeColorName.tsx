@@ -6,7 +6,7 @@ import { useDispatch } from 'react-redux'
 
 import Avatar from '@berty/assets/logo/buck_berty_icon_card.svg'
 import {
-	HorizontalButtons,
+	TwoHorizontalButtons,
 	PrimaryButtonIconLeft,
 	SecondaryButtonIconLeft,
 } from '@berty/components'
@@ -105,7 +105,7 @@ const ThemeColorBody: React.FC<{ closeModal: () => void }> = ({ closeModal }) =>
 				</View>
 
 				<View style={[margin.top.medium, margin.horizontal.medium]}>
-					<HorizontalButtons>
+					<TwoHorizontalButtons>
 						<SecondaryButtonIconLeft name='close' onPress={closeModal}>
 							{t('modals.save-theme.cancel')}
 						</SecondaryButtonIconLeft>
@@ -117,7 +117,7 @@ const ThemeColorBody: React.FC<{ closeModal: () => void }> = ({ closeModal }) =>
 						>
 							{t('modals.save-theme.add')}
 						</PrimaryButtonIconLeft>
-					</HorizontalButtons>
+					</TwoHorizontalButtons>
 				</View>
 			</View>
 		</View>

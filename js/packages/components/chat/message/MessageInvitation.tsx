@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next'
 import { ActivityIndicator, TouchableOpacity, View } from 'react-native'
 
 import {
-	HorizontalButtons,
+	TwoHorizontalButtons,
 	SecondaryButtonIconLeft,
 	TertiaryButtonIconLeft,
 } from '@berty/components/buttons'
@@ -180,7 +180,7 @@ const MessageInvitationReceived: React.FC<{ message: InteractionGroupInvitation 
 				</UnifiedText>
 			</View>
 			<View style={[margin.top.medium, margin.horizontal.large]}>
-				<HorizontalButtons>
+				<TwoHorizontalButtons>
 					<TertiaryButtonIconLeft
 						disabled
 						name='close-outline'
@@ -193,7 +193,7 @@ const MessageInvitationReceived: React.FC<{ message: InteractionGroupInvitation 
 							? t('chat.one-to-one.contact-request-box.accept-button')
 							: t('chat.one-to-one.contact-request-box.accepted-button')}
 					</SecondaryButtonIconLeft>
-				</HorizontalButtons>
+				</TwoHorizontalButtons>
 			</View>
 			{error && (
 				<UnifiedText

@@ -3,7 +3,11 @@ import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View, TextInput, Vibration } from 'react-native'
 
-import { ErrorButtonIconLeft, HorizontalButtons, TertiaryButtonIconLeft } from '@berty/components'
+import {
+	ErrorButtonIconLeft,
+	TwoHorizontalButtons,
+	TertiaryButtonIconLeft,
+} from '@berty/components'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useStyles } from '@berty/contexts/styles'
 import { useDeletingAccountAfterClosing } from '@berty/hooks'
@@ -46,7 +50,7 @@ export const DeleteAccountContent: React.FC<{}> = () => {
 					autoCorrect={false}
 					autoCapitalize='none'
 				/>
-				<HorizontalButtons>
+				<TwoHorizontalButtons>
 					<TertiaryButtonIconLeft name='arrow-back-outline' onPress={() => navigation.goBack()}>
 						{t('settings.delete-account.cancel-button')}
 					</TertiaryButtonIconLeft>
@@ -60,7 +64,7 @@ export const DeleteAccountContent: React.FC<{}> = () => {
 					>
 						{t('settings.delete-account.delete-button')}
 					</ErrorButtonIconLeft>
-				</HorizontalButtons>
+				</TwoHorizontalButtons>
 			</View>
 		</>
 	)

@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux'
 
 import Avatar from '@berty/assets/logo/buck_berty_icon_card.svg'
 import {
-	HorizontalButtons,
+	TwoHorizontalButtons,
 	SecondaryButtonIconLeft,
 	TertiaryButtonIconLeft,
 } from '@berty/components'
@@ -154,12 +154,12 @@ const AddBotBody: React.FC<{
 					</Text>
 				</View>
 				<View style={[margin.top.medium, margin.horizontal.medium]}>
-					<HorizontalButtons>
+					<TwoHorizontalButtons>
 						<TertiaryButtonIconLeft name='close' onPress={onClose}>
 							SKIP
 						</TertiaryButtonIconLeft>
 						<SecondaryButtonIconLeft onPress={onAdd}>ADD !</SecondaryButtonIconLeft>
-					</HorizontalButtons>
+					</TwoHorizontalButtons>
 				</View>
 			</View>
 		</View>
