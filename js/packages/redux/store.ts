@@ -53,6 +53,8 @@ export const resetAccountStore = () => ({ type: 'RESET' })
 const resettableReducer: typeof persistedReducer = (state, action, ...other) => {
 	if (action.type === 'RESET') {
 		return persistedReducer(undefined, action)
+	} else if (action.type === 'FULL_RESET') {
+		return persistedReducer(undefined, action)
 	}
 	return persistedReducer(state, action, ...other)
 }

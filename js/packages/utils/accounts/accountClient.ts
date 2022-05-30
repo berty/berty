@@ -7,24 +7,36 @@ import { createServiceClient } from '@berty/grpc-bridge'
 import { logger } from '@berty/grpc-bridge/middleware'
 import { grpcweb as rpcWeb } from '@berty/grpc-bridge/rpc'
 import rpcBridge from '@berty/grpc-bridge/rpc/rpc.bridge'
-import { WelshAccountServiceClient } from '@berty/grpc-bridge/welsh-clients.gen'
+import { rpcMock } from '@berty/grpc-bridge/rpc/rpc.mocked'
+import { AccountServiceMock } from '@berty/mock-services/static/accountServiceMock'
 
 import { convertMAddr } from '../ipfs/convertMAddr'
 
-const defaultMAddr =
-	Platform.OS === 'web' && convertMAddr([window.location.hash.substring(1) || ''])
-const opts: grpc.ClientRpcOptions = {
-	transport: grpc.CrossBrowserHttpTransport({ withCredentials: false }),
-	host: defaultMAddr || '',
+const createAccountClient = () => {
+	const middleware = logger.create('ACCOUNT')
+
+	if (Platform.OS === 'web') {
+		if (window.location.hash) {
+			const defaultMAddr =
+				Platform.OS === 'web' && convertMAddr([window.location.hash.substring(1) || ''])
+			const opts: grpc.ClientRpcOptions = {
+				transport: grpc.CrossBrowserHttpTransport({ withCredentials: false }),
+				host: defaultMAddr || '',
+			}
+			return createServiceClient(beapi.account.AccountService, rpcWeb(opts), middleware)
+		}
+
+		return createServiceClient(
+			beapi.account.AccountService,
+			rpcMock(new AccountServiceMock()),
+			middleware,
+		)
+	}
+
+	return createServiceClient(beapi.account.AccountService, rpcBridge, middleware)
 }
 
-export const accountClient =
-	Platform.OS === 'web'
-		? (createServiceClient(
-				beapi.account.AccountService,
-				rpcWeb(opts),
-		  ) as unknown as WelshAccountServiceClient)
-		: createServiceClient(beapi.account.AccountService, rpcBridge, logger.create('ACCOUNT'))
+export const accountClient = createAccountClient()
 
 export const storageSet = async (key: string, value: string) => {
 	await accountClient.appStoragePut({ key, value: Buffer.from(value, 'utf-8'), global: true })

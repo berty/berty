@@ -7,9 +7,9 @@ import { useAppDispatch, useAppSelector } from '@berty/hooks'
 import { ScreenFC, useNavigation } from '@berty/navigation'
 import { selectStreamProgress } from '@berty/redux/reducers/ui.reducer'
 import { openAccount } from '@berty/utils/accounts'
+import { openClients } from '@berty/utils/messenger/clients'
 
 import { StreamProgress } from '../../../components/account/StreamProgress'
-import { openClients } from './openClients.effect'
 import { prepareAccount } from './prepareAccount.effect'
 
 export const OpeningAccount: ScreenFC<'Account.Opening'> = ({

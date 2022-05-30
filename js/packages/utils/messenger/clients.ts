@@ -6,17 +6,21 @@ import beapi from '@berty/api'
 import { GRPCError, createServiceClient } from '@berty/grpc-bridge'
 import { logger } from '@berty/grpc-bridge/middleware'
 import { bridge as rpcBridge, grpcweb as rpcWeb } from '@berty/grpc-bridge/rpc'
+import { rpcMock } from '@berty/grpc-bridge/rpc/rpc.mocked'
 import { deserializeFromBase64 } from '@berty/grpc-bridge/rpc/utils'
 import {
 	WelshMessengerServiceClient,
 	WelshProtocolServiceClient,
 } from '@berty/grpc-bridge/welsh-clients.gen'
+import { MessengerServiceMock } from '@berty/mock-services/static/messengerServiceMock'
+import { ProtocolServiceMock } from '@berty/mock-services/static/protocolServiceMock'
 import { streamEventToAction as streamEventToReduxAction } from '@berty/redux/messengerActions'
 import { setClients, setStreamError, setClearClients } from '@berty/redux/reducers/ui.reducer'
 import { AppDispatch } from '@berty/redux/store'
-import { accountClient } from '@berty/utils/accounts/accountClient'
-import { convertMAddr } from '@berty/utils/ipfs/convertMAddr'
-import { requestAndPersistPushToken } from '@berty/utils/notification/notif-push'
+
+import { accountClient } from '../accounts/accountClient'
+import { convertMAddr } from '../ipfs/convertMAddr'
+import { requestAndPersistPushToken } from '../notification/notif-push'
 
 const messengerEventStream = (
 	messengerClient: WelshMessengerServiceClient,
@@ -106,16 +110,25 @@ const messengerEventStream = (
 		dispatch(setClearClients(async () => await cancel()))
 	})
 
-export const openClients = async (
-	eventEmitter: EventEmitter,
-	dispatch: AppDispatch,
-): Promise<{
-	messengerClient: WelshMessengerServiceClient
-	protocolClient: WelshProtocolServiceClient
-}> => {
-	console.log('starting stream')
+const createMockClients = () => {
+	return {
+		protocolClient: createServiceClient(
+			beapi.protocol.ProtocolService,
+			rpcMock(new ProtocolServiceMock()),
+			logger.create('PROTOCOL'),
+		),
+		messengerClient: createServiceClient(
+			beapi.messenger.MessengerService,
+			rpcMock(new MessengerServiceMock()),
+			logger.create('MESSENGER'),
+		),
+	}
+}
 
-	let messengerClient, protocolClient
+const createServicesClients = async (forceMock: boolean) => {
+	if (forceMock) {
+		return createMockClients()
+	}
 
 	if (Platform.OS === 'web') {
 		const openedAccount = await accountClient?.getOpenedAccount({})
@@ -125,32 +138,52 @@ export const openClients = async (
 			throw new Error('unable to find service address')
 		}
 
+		if (url === 'mock://') {
+			return createMockClients()
+		}
+
 		const opts = {
 			transport: grpc.CrossBrowserHttpTransport({ withCredentials: false }),
 			host: url,
 		}
 
-		protocolClient = createServiceClient(
-			beapi.protocol.ProtocolService,
-			rpcWeb(opts),
-		) as unknown as WelshProtocolServiceClient
+		return {
+			protocolClient: createServiceClient(
+				beapi.protocol.ProtocolService,
+				rpcWeb(opts),
+				logger.create('PROTOCOL'),
+			),
+			messengerClient: createServiceClient(
+				beapi.messenger.MessengerService,
+				rpcWeb(opts),
+				logger.create('MESSENGER'),
+			),
+		}
+	}
 
-		messengerClient = createServiceClient(
-			beapi.messenger.MessengerService,
-			rpcWeb(opts),
-		) as unknown as WelshMessengerServiceClient
-	} else {
-		messengerClient = createServiceClient(
+	return {
+		messengerClient: createServiceClient(
 			beapi.messenger.MessengerService,
 			rpcBridge,
 			logger.create('MESSENGER'),
-		)
-		protocolClient = createServiceClient(
+		),
+		protocolClient: createServiceClient(
 			beapi.protocol.ProtocolService,
 			rpcBridge,
 			logger.create('PROTOCOL'),
-		)
+		),
 	}
+}
+
+export const openClients = async (
+	eventEmitter: EventEmitter,
+	dispatch: AppDispatch,
+	forceMock = false,
+): Promise<{
+	messengerClient: WelshMessengerServiceClient
+	protocolClient: WelshProtocolServiceClient
+}> => {
+	const { messengerClient, protocolClient } = await createServicesClients(forceMock)
 
 	// request push notifications token
 	if (Platform.OS === 'ios' || Platform.OS === 'android') {
@@ -158,6 +191,7 @@ export const openClients = async (
 	}
 
 	// call messenger client event stream
+	console.log('starting event stream')
 	await messengerEventStream(messengerClient, eventEmitter, dispatch)
 
 	dispatch(setClients({ messengerClient, protocolClient }))

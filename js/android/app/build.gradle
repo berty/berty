@@ -83,6 +83,7 @@ import com.android.build.OutputFile
 project.ext.react = [
     enableHermes: false,  // clean and rebuild if changing
     entryFile: "index.ts",
+    nodeExecutableAndArgs: ["node", "--max-old-space-size=4096"], // fixes OOM error during js build, from https://stackoverflow.com/a/42568929/18204329
 ]
 
 apply from: "../../node_modules/react-native/react.gradle"

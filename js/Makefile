@@ -163,6 +163,8 @@ lint: node_modules
 	echo '*.gen.*' >> .eslintignore
 	npx eslint --cache --quiet --ext=.js,.jsx,.ts,.tsx .
 	npx tsc # check static typing
+	../tool/check-dead-i18n/check.js
+	$(MAKE) js.unused_exports
 
 .PHONY: lint.fix
 lint.fix: node_modules
@@ -178,7 +180,7 @@ lint.fix: node_modules
 .PHONY: js.unused_exports
 js.unused_exports: node_modules
 	$(call check-program, npx)
-	npx ts-unused-exports ./tsconfig.json --excludePathsFromReport="grpc-bridge;api;polyfill;packages/components/MiniGame.tsx;GoBridge.native.ts;PushTokenRequester.native.ts" --ignoreTestFiles --ignoreFiles=.*gen
+	npx ts-unused-exports ./tsconfig.json --excludePathsFromReport="grpc-bridge;api;polyfill;packages/components/MiniGame.tsx;GoBridge.native.ts;PushTokenRequester.native.ts" --ignoreTestFiles --ignoreFiles='.*\.gen'
 
 ###################
 # Build/Run rules #
@@ -349,8 +351,13 @@ packages/redux/messengerActions.gen.ts: packages/redux/gen-messenger-actions.js 
 	npx babel-node packages/redux/gen-messenger-actions.js > $@
 	npx eslint --no-ignore --fix $@
 
+packages/mock-services/mockedServicesInterfaces.gen.ts: packages/mock-services/gen-mocked-interfaces.js packages/api/root.pb.js node_modules
+	$(call check-program, npx)
+	npx babel-node packages/mock-services/gen-mocked-interfaces.js > $@
+	npx eslint --no-ignore --fix $@
 
-_gen.pbjs: packages/api/root.pb.js packages/api/root.pb.d.ts packages/grpc-bridge/welsh-clients.gen.ts packages/store/types.gen.ts packages/redux/messengerActions.gen.ts
+
+_gen.pbjs: packages/api/root.pb.js packages/api/root.pb.d.ts packages/grpc-bridge/welsh-clients.gen.ts packages/store/types.gen.ts packages/redux/messengerActions.gen.ts packages/mock-services/mockedServicesInterfaces.gen.ts
 .PHONY: _gen.pbjs
 
 ##### other generation
