@@ -52,7 +52,7 @@ import {
 } from '@berty/screens/onboarding/CustomModeSettings/components/Accordion'
 import { useMountEffect, useThemeColor } from '@berty/store'
 import { accountClient } from '@berty/utils/accounts/accountClient'
-import { checkBlePermission } from '@berty/utils/react-native/checkPermissions'
+import { checkProximityPermission } from '@berty/utils/react-native/checkPermissions'
 import { getPermissions, PermissionType } from '@berty/utils/react-native/permissions'
 
 type AccordionRefsType = {
@@ -149,7 +149,7 @@ const Proximity: React.FC = () => {
 				toggleStatus='secondary'
 				varToggle={currentNetworkConfig?.bluetoothLe === beapi.account.NetworkConfig.Flag.Enabled}
 				actionToggle={async () => {
-					await checkBlePermission({
+					await checkProximityPermission({
 						setNetworkConfig: async (newConfig: beapi.account.INetworkConfig) => {
 							dispatch(setCurrentNetworkConfig(newConfig))
 						},
@@ -175,7 +175,7 @@ const Proximity: React.FC = () => {
 						beapi.account.NetworkConfig.Flag.Enabled
 					}
 					actionToggle={async () => {
-						await checkBlePermission({
+						await checkProximityPermission({
 							setNetworkConfig: async (newConfig: beapi.account.INetworkConfig) => {
 								dispatch(setCurrentNetworkConfig(newConfig))
 							},
@@ -201,7 +201,7 @@ const Proximity: React.FC = () => {
 						currentNetworkConfig?.androidNearby === beapi.account.NetworkConfig.Flag.Enabled
 					}
 					actionToggle={async () => {
-						await checkBlePermission({
+						await checkProximityPermission({
 							setNetworkConfig: async (newConfig: beapi.account.INetworkConfig) => {
 								dispatch(setCurrentNetworkConfig(newConfig))
 							},
@@ -621,7 +621,7 @@ const EnableDisableAll: React.FC<{ accordionRefs: AccordionRefsType }> = ({ acco
 								const status = (await getPermissions())[PermissionType.proximity]
 								status === RESULTS.UNAVAILABLE
 									? dispatch(setCurrentNetworkConfig(enableWithoutBle))
-									: await checkBlePermission({
+									: await checkProximityPermission({
 											setNetworkConfig: async (newConfig: beapi.account.INetworkConfig) => {
 												dispatch(setCurrentNetworkConfig(newConfig))
 											},
@@ -634,7 +634,7 @@ const EnableDisableAll: React.FC<{ accordionRefs: AccordionRefsType }> = ({ acco
 									  })
 							}
 							if (Platform.OS === 'android') {
-								await checkBlePermission({
+								await checkProximityPermission({
 									setNetworkConfig: async (newConfig: beapi.account.INetworkConfig) => {
 										dispatch(setCurrentNetworkConfig(newConfig))
 									},

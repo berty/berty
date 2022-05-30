@@ -26,7 +26,7 @@ export const CreatingAccount: ScreenFC<'Account.Creating'> = () => {
 	return (
 		<>
 			<StatusBarPrimary />
-			<CenteredTextScreen>{t('account.creating-account')}</CenteredTextScreen>
+			<CenteredTextScreen>{t('account.creating')}</CenteredTextScreen>
 		</>
 	)
 }

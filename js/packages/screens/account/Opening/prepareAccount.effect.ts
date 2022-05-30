@@ -97,6 +97,7 @@ export const prepareAccount = createAsyncThunk(
 					protocolClient: protocolClient,
 					navigate: navigation.navigate,
 					t,
+					isOnboarding: true,
 				})
 			}
 

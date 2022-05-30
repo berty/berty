@@ -1,7 +1,9 @@
-import { Linking, Platform } from 'react-native'
-import { check, PERMISSIONS, PermissionStatus, RESULTS } from 'react-native-permissions'
+import { NavigationProp } from '@react-navigation/native'
+import { Platform } from 'react-native'
+import { PermissionStatus, RESULTS } from 'react-native-permissions'
 
 import beapi from '@berty/api'
+import { ScreensParams } from '@berty/navigation/types'
 
 import { PermissionType, getPermissions } from './permissions'
 
@@ -47,17 +49,60 @@ export const checkPermissions = async (
 	return status
 }
 
-export const checkBlePermission = async (options: {
+const getPermissionStatusAndSwitch = async (
+	permissionType: PermissionType,
+	accept: () => Promise<void>,
+	deny: () => Promise<void>,
+	navigate: NavigationProp<ScreensParams>['navigate'],
+) => {
+	let status: PermissionStatus = RESULTS.DENIED
+	try {
+		// check permission status
+		status = (await getPermissions())[permissionType]
+		switch (status) {
+			// run accept method when granted
+			case RESULTS.GRANTED:
+				await accept()
+				break
+			case RESULTS.DENIED:
+				// status is denied at the first launch of the app (https://github.com/zoontek/react-native-permissions#understanding-permission-flow)
+				// navigate to the permission screen to ask permission
+				navigate('Chat.NotificationAndProximityPermissions', {
+					permissionType,
+					accept,
+					deny,
+				})
+				break
+			case RESULTS.LIMITED:
+				break
+			case RESULTS.UNAVAILABLE:
+				break
+			case RESULTS.BLOCKED:
+				// navigate to the permission screen to re-ask permission
+				navigate('Chat.NotificationAndProximityPermissions', {
+					permissionType,
+					accept,
+					deny,
+				})
+				break
+		}
+	} catch (err) {
+		console.warn(`check ${permissionType} permissions failed:`, err)
+	}
+	return status
+}
+
+export const checkProximityPermission = async (options: {
 	setNetworkConfig: (newConfig: beapi.account.INetworkConfig) => Promise<void>
 	networkConfig: beapi.account.INetworkConfig
 	changedKey: ('bluetoothLe' | 'androidNearby' | 'appleMultipeerConnectivity')[]
-	navigate: any
+	navigate: NavigationProp<ScreensParams>['navigate']
 	accept?: () => Promise<void>
 	deny?: () => Promise<void>
 }) => {
 	const { setNetworkConfig, networkConfig, changedKey, navigate, accept, deny } = options
 
-	// final accept flow
+	// final ble accept flow
 	let newConfig: beapi.account.INetworkConfig = networkConfig
 	const handleAccept = async () => {
 		changedKey.forEach((key: 'bluetoothLe' | 'androidNearby' | 'appleMultipeerConnectivity') => {
@@ -74,40 +119,22 @@ export const checkBlePermission = async (options: {
 		}
 	}
 
-	// final deny flow
+	// final ble deny flow
 	const handleDeny = async () => {
 		if (deny) {
 			await deny()
 		}
 	}
 
-	try {
-		// check permission status
-		const status = await check(
-			Platform.OS === 'ios'
-				? PERMISSIONS.IOS.BLUETOOTH_PERIPHERAL
-				: PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
-		)
-		switch (status) {
-			case RESULTS.GRANTED:
-				await handleAccept()
-				break
-			case RESULTS.DENIED:
-				// status is denied at the first launch of the app (https://github.com/zoontek/react-native-permissions#understanding-permission-flow)
-				navigate('Chat.BlePermission', {
-					accept: handleAccept,
-					deny: handleDeny,
-				})
-				break
-			case RESULTS.LIMITED:
-			case RESULTS.UNAVAILABLE:
-				break
-			case RESULTS.BLOCKED:
-				// if status is blocked, we open the settings
-				await Linking.openSettings()
-				break
-		}
-	} catch (err) {
-		console.warn('checkBlePermissions failed:', err)
-	}
+	return getPermissionStatusAndSwitch(PermissionType.proximity, handleAccept, handleDeny, navigate)
+}
+
+export const checkNotificationPermission = async (options: {
+	navigate: NavigationProp<ScreensParams>['navigate']
+	accept: () => Promise<void>
+	deny: () => Promise<void>
+}) => {
+	const { navigate, accept, deny } = options
+
+	return getPermissionStatusAndSwitch(PermissionType.notification, accept, deny, navigate)
 }

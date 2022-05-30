@@ -7,9 +7,10 @@ import { GRPCError } from '@berty/grpc-bridge'
 import { ServiceClientType } from '@berty/grpc-bridge/welsh-clients.gen'
 import { PushTokenRequester } from '@berty/native-modules/PushTokenRequester'
 import rnutil from '@berty/utils/react-native'
-import { PermissionType, getPermissions } from '@berty/utils/react-native/permissions'
+import { getPermissions } from '@berty/utils/react-native/permissions'
 
 import { numberifyLong } from '../convert/long'
+import { asyncAlert } from '../react-native/asyncAlert'
 import { servicesAuthViaDefault, serviceTypes } from '../remote-services/remote-services'
 
 export const pushAvailable = Platform.OS !== 'web'
@@ -22,6 +23,7 @@ export const accountPushToggleState = async ({
 	navigate,
 	t,
 	enable,
+	isOnboarding,
 }: {
 	account: beapi.messenger.IAccount
 	messengerClient: ServiceClientType<beapi.messenger.MessengerService> | null
@@ -29,6 +31,7 @@ export const accountPushToggleState = async ({
 	navigate: any
 	t: (k: string) => string
 	enable?: boolean
+	isOnboarding?: boolean
 }) => {
 	if (!messengerClient || !protocolClient) {
 		console.warn('missing a client')
@@ -49,6 +52,17 @@ export const accountPushToggleState = async ({
 		}
 
 		const pushEnabled = await enablePushPermission(messengerClient, protocolClient, navigate)
+
+		// if something went wrong during onboarding enable push notification process
+		// prevent the user that he can be enable it manually in settings
+		if (pushEnabled === PushEnabled.Disabled && isOnboarding) {
+			await asyncAlert(
+				t('account.opening.alert-push-title'),
+				t('account.opening.alert-push-desc'),
+				t('account.opening.alert-push-button'),
+			)
+		}
+
 		await messengerClient.accountPushConfigure({
 			unmute: true,
 		})
@@ -89,33 +103,36 @@ const enablePushPermission = async (
 		t => t.serviceType === serviceTypes.Push,
 	)
 
-	// Get or ask for permission
-	await new Promise(resolve =>
-		rnutil.checkPermissions(PermissionType.notification, {
-			navigate,
-			navigateToPermScreenOnProblem: true,
-			onSuccess: () => resolve(null),
-			onComplete: () =>
-				new Promise(subResolve => {
-					subResolve()
-					setTimeout(resolve, 800)
-				}),
-		}),
-	)
+	try {
+		// Get or ask for permission
+		await new Promise((resolve, reject) =>
+			rnutil.checkNotificationPermission({
+				navigate,
+				accept: () =>
+					new Promise<void>(subResolve => {
+						subResolve()
+						setTimeout(resolve, 800)
+					}),
+				deny: () =>
+					new Promise<void>(subResolve => {
+						subResolve()
+						setTimeout(reject, 800)
+					}),
+			}),
+		)
 
-	// Persist push token if needed
-	await requestAndPersistPushToken(protocolClient)
+		// Persist push token if needed
+		await requestAndPersistPushToken(protocolClient)
 
-	// Register push server secrets if needed
-	if (!hasKnownPushServer) {
-		try {
+		// Register push server secrets if needed
+		if (!hasKnownPushServer) {
 			await servicesAuthViaDefault(protocolClient, [serviceTypes.Push])
 			await new Promise(r => setTimeout(r, 300))
 			return PushEnabled.JustNow
-		} catch (e) {
-			console.warn('no push server known')
-			return PushEnabled.Disabled
 		}
+	} catch (e) {
+		console.warn('no push server known', e)
+		return PushEnabled.Disabled
 	}
 
 	return PushEnabled.EnabledBefore

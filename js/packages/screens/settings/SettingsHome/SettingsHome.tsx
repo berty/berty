@@ -33,7 +33,7 @@ import {
 	pushAvailable,
 	pushFilteringAvailable,
 } from '@berty/utils/notification/notif-push'
-import { checkBlePermission } from '@berty/utils/react-native/checkPermissions'
+import { checkProximityPermission } from '@berty/utils/react-native/checkPermissions'
 import { serviceTypes } from '@berty/utils/remote-services/remote-services'
 
 import { EditProfile } from './components/EditProfile'
@@ -211,7 +211,7 @@ export const SettingsHome: ScreenFC<'Settings.Home'> = withInAppNotification(
 									value: getOffGridCommunicationValue(),
 									action: async () => {
 										if (Platform.OS === 'ios') {
-											await checkBlePermission({
+											await checkProximityPermission({
 												setNetworkConfig: async (newConfig: beapi.account.INetworkConfig) => {
 													dispatch(setCurrentNetworkConfig(newConfig))
 												},
@@ -242,7 +242,7 @@ export const SettingsHome: ScreenFC<'Settings.Home'> = withInAppNotification(
 											})
 										}
 										if (Platform.OS === 'android') {
-											await checkBlePermission({
+											await checkProximityPermission({
 												setNetworkConfig: async (newConfig: beapi.account.INetworkConfig) => {
 													dispatch(setCurrentNetworkConfig(newConfig))
 												},

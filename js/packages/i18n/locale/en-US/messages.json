@@ -415,8 +415,6 @@
 				"refuse": "Keep muted",
 				"accept": "Unmute"
 			},
-			"enabled": "Push notifications enabled",
-			"disabled": "Push notifications disabled",
 			"receive-push": "Receive push notifications",
 			"hide-previews": "Hide previews in push notifications",
 			"auto-enable": "Enable push for current and future conversations",
@@ -516,8 +514,13 @@
 		}
 	},
 	"account": {
-		"deleting-account": "Deleting account...",
-		"creating-account": "Creating account..."
+		"deleting": "Deleting account...",
+		"creating": "Creating account...",
+		"opening": {
+			"alert-push-title": "Push notifications permission",
+			"alert-push-desc": "The permission has been denied, an error was encountered or you cancel the enable push notifications process.\nYou can enable it manually in the settings.",
+			"alert-push-button": "Continue"
+		}
 	},
 	"audio": {
 		"record": {
