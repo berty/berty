@@ -163,6 +163,8 @@ lint: node_modules
 	echo '*.gen.*' >> .eslintignore
 	npx eslint --cache --quiet --ext=.js,.jsx,.ts,.tsx .
 	npx tsc # check static typing
+	../tool/check-dead-i18n/check.js
+	$(MAKE) js.unused_exports
 
 .PHONY: lint.fix
 lint.fix: node_modules

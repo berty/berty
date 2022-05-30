@@ -40,7 +40,7 @@ jobs:
         uses: actions/cache@v2.1.6
         with:
           path: js/node_modules
-          key:          ${{ runner.OS }}-node-${{ matrix.node }}-${{ env.json_cache-version_node }}-${{ hashFiles('js/yarn.lock') }}
+          key: ${{ runner.OS }}-node-${{ matrix.node }}-${{ env.json_cache-version_node }}-${{ hashFiles('js/yarn.lock') }}
           restore-keys: ${{ runner.OS }}-node-${{ matrix.node }}-${{ env.json_cache-version_node }}-
       - name: "Fetch deps"
         working-directory: js
@@ -57,11 +57,6 @@ jobs:
         run: make lint
         env:
           CI: true
-      - name: Look for i18n dead keys
-        run: ./tool/check-dead-i18n/check.js
-      - name: Look for js dead code
-        working-directory: js
-        run: make js.unused_exports
       - name: Building web client
         working-directory: js
         run: make web.build
