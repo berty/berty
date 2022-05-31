@@ -7,7 +7,7 @@ import { useStyles } from '@berty/contexts/styles'
 import { useThemeColor } from '@berty/store'
 
 import { PrimaryButton } from '../buttons'
-import { SmallInput } from '../inputs'
+import { LargeInput } from '../inputs'
 import { UnifiedText } from '../shared-components/UnifiedText'
 
 export const AccordionAdd: FC<{
@@ -63,7 +63,7 @@ export const AccordionAdd: FC<{
 				</UnifiedText>
 			) : null}
 			<View style={[margin.horizontal.medium, margin.bottom.medium]}>
-				<SmallInput
+				<LargeInput
 					autoCapitalize='none'
 					autoCorrect={false}
 					value={alias}
@@ -80,7 +80,7 @@ export const AccordionAdd: FC<{
 			</View>
 
 			<View style={[margin.horizontal.medium, margin.bottom.medium]}>
-				<SmallInput
+				<LargeInput
 					autoCapitalize='none'
 					autoCorrect={false}
 					value={url}
@@ -95,7 +95,7 @@ export const AccordionAdd: FC<{
 				)}
 			</View>
 
-			<View style={[margin.horizontal.medium]}>
+			<View style={[margin.horizontal.huge]}>
 				<PrimaryButton
 					onPress={() => onSubmit({ url, alias })}
 					disabled={

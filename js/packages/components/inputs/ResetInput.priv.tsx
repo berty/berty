@@ -9,7 +9,7 @@ interface ResetInputPrivProps {
 export const ResetInputPriv: React.FC<ResetInputPrivProps> = props => {
 	return (
 		<TouchableOpacity style={styles.container} onPress={props.onPress}>
-			<Icon name='close-circle-outline' fill='#393C63' width={20} height={20} />
+			<Icon name='close' fill='#8E8E92' width={20} height={20} />
 		</TouchableOpacity>
 	)
 }
