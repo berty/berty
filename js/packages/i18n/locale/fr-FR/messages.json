@@ -5,8 +5,7 @@
 			"title": "Protégez votre vie privée",
 			"desc": "messagerie P2P gratuite et sécurisée",
 			"create-button": "Créer un nouveau compte",
-			"import-button": "Importer un compte",
-			"link-button": "Lier cet appareil"
+			"import-button": "Importer un compte"
 		},
 		"default-mode": {
 			"summary": {
