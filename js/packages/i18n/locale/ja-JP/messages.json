@@ -5,8 +5,7 @@
 			"title": "プライバシーを保護",
 			"desc": "無料で安全に P2P メッセージをやりとりする",
 			"create-button": "アカウントを作成",
-			"import-button": "アカウントをインポート",
-			"link-button": "このデバイスをリンク"
+			"import-button": "アカウントをインポート"
 		},
 		"default-mode": {
 			"summary": {
