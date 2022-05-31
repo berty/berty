@@ -1,8 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { Platform } from 'react-native'
 
-import { globals } from '@berty/config'
-
 // types
 
 export enum PersistentOptionsKeys {
@@ -112,20 +110,21 @@ type PersistentOptions = {
 
 export const defaultPersistentOptions = (): PersistentOptions => {
 	let suggestions: PersistentOptionsSuggestions = {}
-	Object.values(globals.berty.contacts).forEach(async value => {
-		if (value.suggestion) {
-			suggestions = {
-				...suggestions,
-				[value.name]: {
-					link: value.link,
-					displayName: value.name,
-					state: 'unread',
-					pk: '',
-					icon: value.icon,
-				},
-			}
-		}
-	})
+	// TODO uncomment it when suggestions bots works
+	// Object.values(globals.berty.contacts).forEach(async value => {
+	// 	if (value.suggestion) {
+	// 		suggestions = {
+	// 			...suggestions,
+	// 			[value.name]: {
+	// 				link: value.link,
+	// 				displayName: value.name,
+	// 				state: 'unread',
+	// 				pk: '',
+	// 				icon: value.icon,
+	// 			},
+	// 		}
+	// 	}
+	// })
 	return {
 		[PersistentOptionsKeys.Notifications]: {
 			enable: true,
