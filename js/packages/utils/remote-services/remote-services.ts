@@ -1,5 +1,4 @@
 import { Alert } from 'react-native'
-import InAppBrowser, { RedirectResult } from 'react-native-inappbrowser-reborn'
 
 import beapi from '@berty/api'
 import {
@@ -17,7 +16,7 @@ export const serviceNames: { [key: string]: string } = {
 	[serviceTypes.Push]: 'Push notifications', // TODO: i18n
 }
 
-const bertyOperatedServer = 'https://services.berty.tech/'
+const bertyOperatedServer = 'https://services-v1.berty.tech/'
 
 export const servicesAuthViaDefault = async (
 	protocolClient: ServiceClientType<beapi.protocol.ProtocolService> | null,
@@ -70,28 +69,10 @@ export const servicesAuthViaURL = async (
 		}
 	}
 
-	if (!(await InAppBrowser.isAvailable())) {
-		throw new Error('no browser available')
-	}
+	// TODO remove &scope=psh suffix when we want to propose more berty services
+	const response = await fetch(`${resp.url}&scope=psh`)
 
-	const response = await InAppBrowser.openAuth(resp.url, 'berty://', {
-		dismissButtonStyle: 'cancel',
-		readerMode: false,
-		modalPresentationStyle: 'pageSheet',
-		modalEnabled: true,
-		showTitle: true,
-		enableDefaultShare: false,
-		ephemeralWebSession: true,
-		// forceCloseOnRedirection: false,
-	})
-
-	if ((response as RedirectResult).url) {
-		if (!(response as RedirectResult).url) {
-			throw new Error('invalid response from auth server')
-		}
-	}
-
-	const responseURL = (response as RedirectResult).url
+	const responseURL = response.headers.get('x-auth-redirect')
 	await protocolClient?.authServiceCompleteFlow({
 		callbackUrl: responseURL,
 	})

@@ -12,7 +12,6 @@ const polyfillModules = [
 	'react-native-image-crop-picker',
 	'react-native-image-zoom-viewer',
 	'react-native-in-app-notification',
-	'react-native-inappbrowser-reborn',
 	'react-native-permissions',
 	'react-native-progress',
 	'react-native-qrcode-scanner',
