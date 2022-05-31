@@ -7,6 +7,7 @@ import {
 	ErrorButtonIconLeft,
 	TwoHorizontalButtons,
 	TertiaryButtonIconLeft,
+	SmallInput,
 } from '@berty/components'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useStyles } from '@berty/contexts/styles'
@@ -18,7 +19,7 @@ import { DeleteAccountError } from './DeleteAccountError'
 const DELETE_STR = 'delete'
 
 export const DeleteAccountContent: React.FC<{}> = () => {
-	const { margin, border, padding, text, column } = useStyles()
+	const { padding, text, column } = useStyles()
 	const colors = useThemeColor()
 	const navigation = useReactNavigation()
 	const { t }: any = useTranslation()

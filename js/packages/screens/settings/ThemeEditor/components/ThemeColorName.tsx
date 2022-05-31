@@ -20,8 +20,6 @@ import { useThemeColor } from '@berty/store'
 const ThemeColorBody: React.FC<{ closeModal: () => void }> = ({ closeModal }) => {
 	const [themeName, setThemeName] = React.useState<string>('')
 	const { text, margin, padding, border } = useStyles()
-	const { scaleHeight, scaleSize } = useAppDimensions()
-	const { row, text, margin, padding, border, opacity } = useStyles()
 	const { scaleHeight } = useAppDimensions()
 	const colors = useThemeColor()
 	const { t } = useTranslation()
