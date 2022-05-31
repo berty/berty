@@ -2,7 +2,7 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { View } from 'react-native'
 
-import { LargeInput } from '@berty/components'
+import { LargeInputWithIcon } from '@berty/components'
 import SwiperCard from '@berty/components/onboarding/SwiperCard'
 import { useStyles } from '@berty/contexts/styles'
 import { useAccount } from '@berty/hooks'
@@ -42,7 +42,7 @@ export const CreateAccountBox: React.FC<{
 			}}
 		>
 			<View style={[margin.top.medium]}>
-				<LargeInput
+				<LargeInputWithIcon
 					autoCapitalize='none'
 					autoCorrect={false}
 					value={name}

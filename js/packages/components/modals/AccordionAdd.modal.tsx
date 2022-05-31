@@ -3,11 +3,11 @@ import React, { FC, useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View } from 'react-native'
 
-import Button from '@berty/components/shared-components/Button'
 import { useStyles } from '@berty/contexts/styles'
 import { useThemeColor } from '@berty/store'
 
-import { SmallInput } from '../inputs'
+import { PrimaryButton } from '../buttons'
+import { LargeInput } from '../inputs'
 import { UnifiedText } from '../shared-components/UnifiedText'
 
 export const AccordionAdd: FC<{
@@ -63,7 +63,7 @@ export const AccordionAdd: FC<{
 				</UnifiedText>
 			) : null}
 			<View style={[margin.horizontal.medium, margin.bottom.medium]}>
-				<SmallInput
+				<LargeInput
 					autoCapitalize='none'
 					autoCorrect={false}
 					value={alias}
@@ -80,7 +80,7 @@ export const AccordionAdd: FC<{
 			</View>
 
 			<View style={[margin.horizontal.medium, margin.bottom.medium]}>
-				<SmallInput
+				<LargeInput
 					autoCapitalize='none'
 					autoCorrect={false}
 					value={url}
@@ -95,8 +95,8 @@ export const AccordionAdd: FC<{
 				)}
 			</View>
 
-			<View style={{ flexDirection: 'row' }}>
-				<Button
+			<View style={[margin.horizontal.huge]}>
+				<PrimaryButton
 					onPress={() => onSubmit({ url, alias })}
 					disabled={
 						!url.length ||

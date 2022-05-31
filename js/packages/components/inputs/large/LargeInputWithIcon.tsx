@@ -1,15 +1,23 @@
 import React, { useRef } from 'react'
-import { StyleSheet, TextInput, TextInputProps } from 'react-native'
+import { StyleSheet, TextInput } from 'react-native'
 
-import { InputPriv } from '../Input.priv'
+import { IconPriv } from '../Icon.priv'
+import { InputWithIconPriv } from '../InputWithIcon.priv'
+import { InputWithIconProps } from '../interfaces'
 import { TouchableWrapperWithIconPriv } from '../wrapper/TouchableWrapperWithIcon.priv'
 
-export const LargeInput: React.FC<Omit<TextInputProps, 'style'>> = props => {
+export const LargeInputWithIcon: React.FC<InputWithIconProps> = props => {
 	const input = useRef<TextInput>(null)
 
 	return (
 		<TouchableWrapperWithIconPriv onPress={() => input.current?.focus()} style={styles.container}>
-			<InputPriv ref={input} {...props} />
+			<IconPriv
+				iconColor='#AEAFC1'
+				iconName={props.iconName}
+				value={props.value}
+				disabled={!props.editable}
+			/>
+			<InputWithIconPriv ref={input} {...props} />
 		</TouchableWrapperWithIconPriv>
 	)
 }
