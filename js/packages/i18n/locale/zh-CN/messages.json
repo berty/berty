@@ -5,8 +5,7 @@
 			"title": "保护您的隐私",
 			"desc": "免费和安全的点对点消息传递",
 			"create-button": "创建账户",
-			"import-button": "导入账户",
-			"link-button": "连接此设备"
+			"import-button": "导入账户"
 		},
 		"default-mode": {
 			"summary": {
