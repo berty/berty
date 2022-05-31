@@ -5,8 +5,7 @@
 			"title": "",
 			"desc": "mensagem peer-to-peer gratuita e segura",
 			"create-button": "Criar uma nova conta",
-			"import-button": "Importar uma conta",
-			"link-button": "Vincular este dispositivo"
+			"import-button": "Importar uma conta"
 		},
 		"default-mode": {
 			"summary": {
