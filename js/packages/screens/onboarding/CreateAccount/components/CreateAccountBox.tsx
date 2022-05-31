@@ -15,7 +15,7 @@ export const CreateAccountBox: React.FC<{
 }> = ({ defaultName }) => {
 	const [name, setName] = React.useState(defaultName || '')
 	const { margin } = useStyles()
-	const { t }: any = useTranslation()
+	const { t } = useTranslation()
 	const { navigate } = useNavigation()
 	const account = useAccount()
 
