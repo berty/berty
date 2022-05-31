@@ -247,7 +247,8 @@ const MultiMemberSettingsBody: React.FC<{
 				}
 				disabled={!link || undefined}
 			/>
-			{Platform.OS !== 'web' && (
+			{/* TODO: uncomment when replication nodes works */}
+			{/* {Platform.OS !== 'web' && (
 				<ButtonSetting
 					name={t('chat.multi-member-settings.save-button')}
 					icon='cloud-upload-outline'
@@ -257,7 +258,7 @@ const MultiMemberSettingsBody: React.FC<{
 						navigation.navigate('Chat.ReplicateGroupSettings', { convId: publicKey })
 					}}
 				/>
-			)}
+			)} */}
 		</View>
 	)
 }

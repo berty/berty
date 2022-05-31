@@ -39,9 +39,9 @@ const OneToOneHeader: React.FC<{ contact: any }> = ({ contact }) => {
 
 const OneToOneBody: React.FC<{
 	publicKey: string
-	isIncoming: boolean
+	isAccepted: boolean
 	navigation: ComponentProps<typeof OneToOneSettings>['navigation']
-}> = ({ publicKey, isIncoming, navigation }) => {
+}> = ({ publicKey, isAccepted, navigation }) => {
 	const { padding } = useStyles()
 	const { t } = useTranslation()
 
@@ -52,8 +52,11 @@ const OneToOneBody: React.FC<{
 				icon='image-outline'
 				onPress={() => navigation.navigate('Chat.SharedMedias', { convPk: publicKey })}
 			/>
-			{Platform.OS !== 'web' && <EnableNotificationsButton conversationPk={publicKey} />}
-			{!isIncoming && Platform.OS !== 'web' && (
+			{isAccepted && Platform.OS !== 'web' && (
+				<EnableNotificationsButton conversationPk={publicKey} />
+			)}
+			{/* TODO: uncomment when replication nodes works */}
+			{/* {Platform.OS !== 'web' && (
 				<ButtonSetting
 					name={t('chat.one-to-one-settings.save-button')}
 					icon='cloud-upload-outline'
@@ -63,7 +66,7 @@ const OneToOneBody: React.FC<{
 						navigation.navigate('Chat.ReplicateGroupSettings', { convId: publicKey })
 					}}
 				/>
-			)}
+			)} */}
 		</View>
 	)
 }
@@ -102,7 +105,7 @@ export const OneToOneSettings: ScreenFC<'Chat.OneToOneSettings'> = ({
 		navigation.goBack()
 		return null
 	}
-	const isIncoming = contact && contact.state === beapi.messenger.Contact.State.IncomingRequest
+	const isAccepted = contact && contact.state === beapi.messenger.Contact.State.Accepted
 
 	return (
 		<>
@@ -118,7 +121,7 @@ export const OneToOneSettings: ScreenFC<'Chat.OneToOneSettings'> = ({
 					</View>
 					<OneToOneBody
 						publicKey={conv.publicKey || ''}
-						isIncoming={isIncoming}
+						isAccepted={isAccepted}
 						navigation={navigation}
 					/>
 				</ScrollView>
