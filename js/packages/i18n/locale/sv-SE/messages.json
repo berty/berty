@@ -5,8 +5,7 @@
 			"title": "",
 			"desc": "gratis & säker peer-to-peer kommunikation",
 			"create-button": "Skapa nytt konto",
-			"import-button": "Importera konto",
-			"link-button": "Länka denna enhet"
+			"import-button": "Importera konto"
 		},
 		"default-mode": {
 			"summary": {
