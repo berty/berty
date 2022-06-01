@@ -644,7 +644,7 @@ func (h *EventHandler) contactRequestAccepted(contact *mt.Contact, memberPK []by
 func (h *EventHandler) multiMemberGroupInitialMemberAnnounced(gme *protocoltypes.GroupMetadataEvent) error {
 	var ev protocoltypes.MultiMemberInitialMember
 	if err := proto.Unmarshal(gme.GetEvent(), &ev); err != nil {
-		return err
+		return errcode.ErrInvalidInput.Wrap(err)
 	}
 
 	mpkb := ev.GetMemberPK()
@@ -654,6 +654,9 @@ func (h *EventHandler) multiMemberGroupInitialMemberAnnounced(gme *protocoltypes
 
 	if err := h.db.TX(h.ctx, func(tx *messengerdb.DBWrapper) error {
 		// create or update member
+
+		var update *mt.Member
+		isNew := false
 
 		member, err := tx.GetMemberByPK(mpk, gpk)
 		if err != gorm.ErrRecordNotFound && err != nil {
@@ -668,31 +671,27 @@ func (h *EventHandler) multiMemberGroupInitialMemberAnnounced(gme *protocoltypes
 
 			isMe := bytes.Equal(ownMemberPK, mpkb)
 
-			if _, err := tx.AddMember(mpk, gpk, "", "", isMe, true); err != nil {
+			if update, err = tx.AddMember(mpk, gpk, "", "", isMe, true); err != nil {
 				return errcode.ErrDBWrite.Wrap(err)
 			}
-		} else if err := tx.MarkMemberAsConversationCreator(member.PublicKey, gpk); err != nil {
+
+			isNew = true
+		} else if update, err = tx.MarkMemberAsConversationCreator(member.PublicKey, gpk); err != nil {
 			return errcode.ErrDBWrite.Wrap(err)
+		}
+
+		if update != nil {
+			err = h.dispatcher.StreamEvent(mt.StreamEvent_TypeMemberUpdated, &mt.StreamEvent_MemberUpdated{Member: update}, isNew)
+			if err != nil {
+				return err
+			}
+
+			h.logger.Info("dispatched member update", zap.Any("member", member), zap.Bool("isNew", isNew))
 		}
 
 		return nil
 	}); err != nil {
 		return errcode.ErrDBWrite.Wrap(err)
-	}
-
-	// dispatch update
-	{
-		member, err := h.db.GetMemberByPK(mpk, gpk)
-		if err != nil {
-			return errcode.ErrDBRead.Wrap(err)
-		}
-
-		err = h.dispatcher.StreamEvent(mt.StreamEvent_TypeMemberUpdated, &mt.StreamEvent_MemberUpdated{Member: member}, true)
-		if err != nil {
-			return err
-		}
-
-		h.logger.Info("dispatched member update", zap.Any("member", member), zap.Bool("isNew", true))
 	}
 
 	return nil
@@ -705,7 +704,7 @@ func (h *EventHandler) multiMemberGroupInitialMemberAnnounced(gme *protocoltypes
 func (h *EventHandler) groupMemberDeviceAdded(gme *protocoltypes.GroupMetadataEvent) error {
 	var ev protocoltypes.GroupAddMemberDevice
 	if err := proto.Unmarshal(gme.GetEvent(), &ev); err != nil {
-		return err
+		return errcode.ErrInvalidInput.Wrap(err)
 	}
 
 	mpkb := ev.GetMemberPK()
@@ -728,86 +727,94 @@ func (h *EventHandler) groupMemberDeviceAdded(gme *protocoltypes.GroupMetadataEv
 
 	isMe := bytes.Equal(ownMemberPK, mpkb)
 
-	// Register device if not already known
-	if _, err := h.db.GetDeviceByPK(dpk); errors.Is(err, errcode.ErrNotFound) || errors.Is(err, gorm.ErrRecordNotFound) {
-		device, err := h.db.AddDevice(dpk, mpk)
-		if err != nil {
-			return err
+	if err := h.db.TX(h.ctx, func(d *messengerdb.DBWrapper) error {
+		// Register device if not already known
+		if _, err := d.GetDeviceByPK(dpk); errors.Is(err, errcode.ErrNotFound) || errors.Is(err, gorm.ErrRecordNotFound) {
+			device, err := d.AddDevice(dpk, mpk)
+			if err != nil {
+				return err
+			}
+
+			err = h.dispatcher.StreamEvent(mt.StreamEvent_TypeDeviceUpdated, &mt.StreamEvent_DeviceUpdated{Device: device}, true)
+			if err != nil {
+				h.logger.Error("error dispatching device updated", zap.Error(err))
+			}
 		}
 
-		err = h.dispatcher.StreamEvent(mt.StreamEvent_TypeDeviceUpdated, &mt.StreamEvent_DeviceUpdated{Device: device}, true)
-		if err != nil {
-			h.logger.Error("error dispatching device updated", zap.Error(err))
-		}
-	}
-
-	// Check whether a contact request has been accepted (a device from the contact has been added to the group)
-	if contact, err := h.db.GetContactByPK(mpk); err == nil && contact.GetState() == mt.Contact_OutgoingRequestSent {
-		if err := h.contactRequestAccepted(contact, mpkb); err != nil {
-			return err
-		}
-	}
-
-	// check backlogs
-	userInfo := (*mt.AppMessage_SetUserInfo)(nil)
-	{
-		backlog, err := h.db.AttributeBacklogInteractions(dpk, gpk, mpk)
-		if err != nil {
-			return err
+		// Check whether a contact request has been accepted (a device from the contact has been added to the group)
+		if contact, err := d.GetContactByPK(mpk); err == nil && contact.GetState() == mt.Contact_OutgoingRequestSent {
+			if err := h.contactRequestAccepted(contact, mpkb); err != nil {
+				return err
+			}
 		}
 
-		for _, elem := range backlog {
-			h.logger.Info("found elem in backlog", zap.String("type", elem.GetType().String()), logutil.PrivateString("device-pk", elem.GetDevicePublicKey()), logutil.PrivateString("conv", elem.GetConversationPublicKey()))
+		// check backlogs
+		userInfo := (*mt.AppMessage_SetUserInfo)(nil)
+		{
+			backlog, err := d.AttributeBacklogInteractions(dpk, gpk, mpk)
+			if err != nil {
+				return err
+			}
 
-			elem.MemberPublicKey = mpk
+			for _, elem := range backlog {
+				h.logger.Info("found elem in backlog", zap.String("type", elem.GetType().String()), logutil.PrivateString("device-pk", elem.GetDevicePublicKey()), logutil.PrivateString("conv", elem.GetConversationPublicKey()))
 
-			switch elem.GetType() {
-			case mt.AppMessage_TypeSetUserInfo:
-				var payload mt.AppMessage_SetUserInfo
+				elem.MemberPublicKey = mpk
 
-				if err := proto.Unmarshal(elem.GetPayload(), &payload); err != nil {
-					return err
-				}
+				switch elem.GetType() {
+				case mt.AppMessage_TypeSetUserInfo:
+					var payload mt.AppMessage_SetUserInfo
 
-				userInfo = &payload
+					if err := proto.Unmarshal(elem.GetPayload(), &payload); err != nil {
+						return err
+					}
 
-				if err := h.db.DeleteInteractions([]string{elem.CID}); err != nil {
-					return err
-				}
+					userInfo = &payload
 
-				if err := h.dispatcher.StreamEvent(mt.StreamEvent_TypeInteractionDeleted, &mt.StreamEvent_InteractionDeleted{CID: elem.GetCID(), ConversationPublicKey: gpk}, false); err != nil {
-					return err
-				}
+					if err := d.DeleteInteractions([]string{elem.CID}); err != nil {
+						return err
+					}
 
-			default:
-				if err := messengerutil.StreamInteraction(h.dispatcher, h.db, elem.CID, false); err != nil {
-					return err
+					if err := h.dispatcher.StreamEvent(mt.StreamEvent_TypeInteractionDeleted, &mt.StreamEvent_InteractionDeleted{CID: elem.GetCID(), ConversationPublicKey: gpk}, false); err != nil {
+						return err
+					}
+
+				default:
+					if err := messengerutil.StreamInteraction(h.dispatcher, d, elem.CID, false); err != nil {
+						return err
+					}
 				}
 			}
 		}
-	}
 
-	member := &mt.Member{
-		PublicKey:             mpk,
-		ConversationPublicKey: gpk,
-		IsMe:                  isMe,
-	}
-	if userInfo != nil {
-		member.DisplayName = userInfo.GetDisplayName()
-		member.AvatarCID = userInfo.GetAvatarCID()
-	}
+		member := &mt.Member{
+			PublicKey:             mpk,
+			ConversationPublicKey: gpk,
+			IsMe:                  isMe,
+		}
+		if userInfo != nil {
+			member.DisplayName = userInfo.GetDisplayName()
+			member.AvatarCID = userInfo.GetAvatarCID()
+		}
 
-	member, isNew, err := h.db.UpsertMember(mpk, gpk, *member)
-	if err != nil {
-		return err
-	}
+		update, isNew, err := d.UpsertMember(mpk, gpk, *member)
+		if err != nil {
+			return err
+		}
 
-	err = h.dispatcher.StreamEvent(mt.StreamEvent_TypeMemberUpdated, &mt.StreamEvent_MemberUpdated{Member: member}, isNew)
-	if err != nil {
-		return err
-	}
+		if update != nil {
+			err = h.dispatcher.StreamEvent(mt.StreamEvent_TypeMemberUpdated, &mt.StreamEvent_MemberUpdated{Member: update}, isNew)
+			if err != nil {
+				return err
+			}
 
-	h.logger.Info("dispatched member update", zap.Any("member", member), zap.Bool("isNew", isNew))
+			h.logger.Info("dispatched member update", zap.Any("member", member), zap.Bool("isNew", isNew))
+		}
+
+		return nil
+	}); err != nil {
+		return errcode.ErrDBWrite.Wrap(err)
+	}
 
 	return nil
 }
@@ -998,7 +1005,7 @@ func (h *EventHandler) handleAppMessageSetUserInfo(tx *messengerdb.DBWrapper, i 
 	}
 	h.logger.Debug("interesting member SetUserInfo")
 
-	member, isNew, err := tx.UpsertMember(
+	update, isNew, err := tx.UpsertMember(
 		i.MemberPublicKey,
 		i.ConversationPublicKey,
 		mt.Member{DisplayName: payload.GetDisplayName(), AvatarCID: payload.GetAvatarCID(), InfoDate: i.GetSentDate()},
@@ -1007,12 +1014,14 @@ func (h *EventHandler) handleAppMessageSetUserInfo(tx *messengerdb.DBWrapper, i 
 		return nil, false, err
 	}
 
-	err = h.dispatcher.StreamEvent(mt.StreamEvent_TypeMemberUpdated, &mt.StreamEvent_MemberUpdated{Member: member}, isNew)
-	if err != nil {
-		return nil, false, err
-	}
+	if update != nil {
+		err = h.dispatcher.StreamEvent(mt.StreamEvent_TypeMemberUpdated, &mt.StreamEvent_MemberUpdated{Member: update}, isNew)
+		if err != nil {
+			return nil, false, err
+		}
 
-	h.logger.Info("dispatched member update", zap.Any("member", member), zap.Bool("isNew", isNew))
+		h.logger.Info("dispatched member update", zap.Any("member", update), zap.Bool("isNew", isNew))
+	}
 
 	return i, false, nil
 }

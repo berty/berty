@@ -96,6 +96,9 @@ func TestingInfra(ctx context.Context, t *testing.T, amount int, logger *zap.Log
 	protocols, cleanup := bertyprotocol.NewTestingProtocolWithMockedPeers(ctx, t, &bertyprotocol.TestingOpts{Logger: logger, Mocknet: mocknet}, nil, amount)
 	clients := make([]messengertypes.MessengerServiceClient, amount)
 
+	// wait for protocol warmup
+	time.Sleep(1 * time.Second)
+
 	// setup client
 	for i, p := range protocols {
 		// new messenger service
