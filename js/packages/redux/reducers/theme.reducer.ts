@@ -82,7 +82,7 @@ export const selectThemeCollection = (state: LocalRootState): ThemeCollectionTyp
 
 export const selectThemeIsDark = (state: LocalRootState): boolean => selectSlice(state).isDark
 
-export const selectCurrentTheme = (state: LocalRootState): keyof AVAILABLE_THEMES | string =>
+export const selectCurrentTheme = (state: LocalRootState): string =>
 	selectSlice(state).isDark
 		? AVAILABLE_THEMES.DEFAULT_DARK_THEME
 		: (selectSlice(state).selected as string)

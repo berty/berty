@@ -15,7 +15,7 @@ import { ButtonSetting } from '@berty/components/shared-components/SettingsButto
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
-import { useConversationMembersDict, useConversation } from '@berty/hooks'
+import { useConversation, useConversationMembers } from '@berty/hooks'
 import { ScreenFC, useNavigation } from '@berty/navigation'
 import { Maybe, useMessengerClient, useThemeColor } from '@berty/store'
 
@@ -136,11 +136,12 @@ const MultiMemberSettingsBody: React.FC<{
 	navigation: ComponentProps<typeof MultiMemberSettings>['navigation']
 }> = ({ publicKey, link, navigation }) => {
 	const { padding, margin } = useStyles()
-	const members = useConversationMembersDict(publicKey)
+	const members = useConversationMembers(publicKey)
 	const membersCount = Object.values(members).length
 	const { t } = useTranslation()
 
 	console.log('members', members)
+	console.log('members', members.length)
 	return (
 		<View style={[padding.medium]}>
 			<ButtonSetting

@@ -1,4 +1,3 @@
-import { Dictionary } from '@reduxjs/toolkit'
 import React from 'react'
 import { StyleSheet, TouchableOpacity, View } from 'react-native'
 
@@ -11,7 +10,7 @@ import { UnifiedText } from '../../shared-components/UnifiedText'
 import { DropdownPriv } from '../Dropdown.priv'
 
 interface MembersDropdownProps {
-	items: Dictionary<beapi.messenger.IMember>
+	items: beapi.messenger.IMember[]
 	onChangeItem: (item: beapi.messenger.IMember) => void
 	placeholder: string
 	defaultValue?: string | null
@@ -23,27 +22,28 @@ export const MembersDropdown: React.FC<MembersDropdownProps> = props => {
 	const colors = useThemeColor()
 
 	return (
-		<View style={[styles.container, { shadowColor: colors.shadow }, border.shadow.medium]}>
+		<View
+			style={[
+				styles.container,
+				border.shadow.medium,
+				{ shadowColor: colors.shadow, backgroundColor: colors['main-background'] },
+			]}
+		>
 			<DropdownPriv icon='users' placeholder={props.placeholder}>
-				{Object.entries(props.items)
-					.filter(([, m]) => m !== undefined)
-					.map(
-						([, item], key) =>
-							item !== undefined && (
-								<TouchableOpacity
-									onPress={() => props.onChangeItem(item)}
-									style={[styles.item, padding.horizontal.medium]}
-									key={key}
-								>
-									<MemberAvatar
-										publicKey={item?.publicKey}
-										conversationPublicKey={props.publicKey}
-										size={25}
-									/>
-									<UnifiedText style={[margin.left.medium]}>{item.displayName ?? ''}</UnifiedText>
-								</TouchableOpacity>
-							),
-					)}
+				{props.items.map(item => (
+					<TouchableOpacity
+						onPress={() => props.onChangeItem(item)}
+						style={[styles.item, padding.horizontal.medium]}
+						key={item.publicKey}
+					>
+						<MemberAvatar
+							publicKey={item?.publicKey}
+							conversationPublicKey={props.publicKey}
+							size={25}
+						/>
+						<UnifiedText style={[margin.left.medium]}>{item.displayName ?? ''}</UnifiedText>
+					</TouchableOpacity>
+				))}
 			</DropdownPriv>
 		</View>
 	)
@@ -53,9 +53,12 @@ const styles = StyleSheet.create({
 	container: {
 		borderRadius: 14,
 		flex: 1,
-		backgroundColor: '#F2F2F2',
+		borderWidth: 1,
+		borderColor: '#EDF1F7',
 	},
 	item: {
+		borderTopWidth: 1,
+		borderTopColor: '#EDF1F7',
 		flexDirection: 'row',
 		alignItems: 'center',
 		paddingVertical: 12,

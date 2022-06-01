@@ -173,7 +173,7 @@ const BodyThemeEditor: React.FC<{ openModal: () => void }> = ({ openModal }) => 
 			<View style={[margin.top.medium]}>
 				<TextualDropdown
 					items={items}
-					placeholder={String(currentTheme)}
+					placeholder={currentTheme}
 					onChangeItem={item => dispatch(setTheme({ themeName: item.label }))}
 				/>
 			</View>
