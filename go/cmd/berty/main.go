@@ -80,6 +80,8 @@ func runMain(args []string) error {
 				remoteLogsCommand(),
 				serviceKeyCommand(),
 				pushServerCommand(),
+				p2pCommand(),
+				relayServerCommand(),
 			},
 		}
 
