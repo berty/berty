@@ -110,9 +110,10 @@ $ make web.debug
 
 - An Android app **development environment**, e.g. [Android Studio](https://developer.android.com/studio/install)
 - **Android SDK**, with the following enabled (in Android Studio Code in `Tools --> SDK Manager`):
+  - SDK Platform "Android 11.0 (R)"
   - Android SDK Build-Tools
   - LLDB
-  - NDK
+  - NDK version 23.1.7779620 (`export ANDROID_NDK_HOME="$ANDROID_HOME/ndk/23.1.7779620"`)
   - Cmake
   - Android SDK Command-line Tools
 - A physical or virtual **Android device** (in Android Studio, `Tools --> AVD Manager`)
