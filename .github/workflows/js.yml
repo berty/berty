@@ -47,6 +47,14 @@ jobs:
         run: make node_modules
         env:
           CI: true
+      - name: "Generate icons font"
+        working-directory: js
+        run: make icons.generate
+      - name: "Check diff"
+        run: |
+          git status | cat
+          git diff -w | cat
+          git diff-index -w --quiet HEAD --
       - name: "Run tests"
         working-directory: js
         run: make test

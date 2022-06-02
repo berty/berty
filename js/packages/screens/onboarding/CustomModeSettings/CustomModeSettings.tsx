@@ -215,7 +215,7 @@ const Proximity: React.FC = () => {
 			<ButtonSetting
 				name={t('onboarding.custom-mode.settings.off-grid.mdns-button')}
 				color={colors['main-text']}
-				icon='expert-setting'
+				icon='expert-mdns'
 				iconPack='custom'
 				iconColor='#6E6DFF'
 				actionIconColor={colors['main-text']}
@@ -252,7 +252,7 @@ const Routing: React.FC<{ accordionRefs: AccordionRefsType }> = ({ accordionRefs
 			<ButtonSetting
 				name={t('onboarding.custom-mode.settings.routing.dht-button')}
 				color={colors['main-text']}
-				icon='expert-setting'
+				icon='network'
 				iconPack='custom'
 				iconColor='#6E6DFF'
 				actionIconColor={colors['main-text']}

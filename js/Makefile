@@ -65,6 +65,7 @@ help:
 	@echo "  web.daemon.start     Start Berty account daemon for web"
 	@echo "  web.build            Build a production build for web"
 	@echo "  regenerate           Clean and generate Protobuf files"
+	@echo "  icons.generate       Generate a font from custom icons"
 	@echo "  test                 Run tests"
 
 #### Test
@@ -81,6 +82,12 @@ generate: node_modules gen.sum
 
 .PHONY: regenerate
 regenerate: gen.clean generate
+
+.PHONY: icons.generate
+icons.generate: node_modules
+	$(call check-program, npx)
+	npx icon-font-generator packages/assets/custom-icons/*.svg -o packages/assets/font --name CustomIcons.gen
+	ls -d packages/assets/font/CustomIcons.* | grep -v -e .ttf -e .json | xargs rm
 
 #### Clean
 

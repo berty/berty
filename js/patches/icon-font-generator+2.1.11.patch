@@ -1,0 +1,16 @@
+diff --git a/node_modules/icon-font-generator/lib/index.js b/node_modules/icon-font-generator/lib/index.js
+index 2f4d785..65cce6c 100644
+--- a/node_modules/icon-font-generator/lib/index.js
++++ b/node_modules/icon-font-generator/lib/index.js
+@@ -84,6 +84,11 @@ function getGeneratorConfig(options) {
+         path.dirname(getResolvedPath(options, 'html')),
+         getResolvedPath(options, 'css')
+       )
++    },
++    formatOptions: {
++      ttf: {
++        ts: 0,
++      }
+     }
+   }
+ 
