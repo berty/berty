@@ -517,8 +517,11 @@
 		"deleting": "Deleting account...",
 		"creating": "Creating account...",
 		"opening": {
-			"alert-push-title": "Push notifications permission",
-			"alert-push-desc": "The permission has been denied, an error was encountered or you cancel the enable push notifications process.\nYou can enable it manually in the settings.",
+			"alert-push-title": "Push notifications",
+			"alert-push-go-failed": "An error occurred while registering for the Berty Push Notification service.",
+			"alert-push-fetch-failed": "Unable to connect to the Berty Push Notification service.",
+			"alert-push-perm-denied": "The permission request for Push Notification has been denied.",
+			"alert-push-desc": "You can try to activate this feature again in Settings at any time.",
 			"alert-push-button": "Continue"
 		}
 	},

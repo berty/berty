@@ -16,6 +16,18 @@ import { servicesAuthViaDefault, serviceTypes } from '../remote-services/remote-
 export const pushAvailable = Platform.OS !== 'web'
 export const pushFilteringAvailable = Platform.OS === 'android'
 
+export enum PushNotificationStatus {
+	EnabledJustNow = 'enabled-just-now',
+	EnabledBefore = 'enabled-before',
+	PermDenied = 'perm-denied',
+	GoFailed = 'go-failed',
+	FetchFailed = 'fetch-failed',
+}
+const isPushNotificationFailed = (pushStatus: PushNotificationStatus) =>
+	pushStatus === PushNotificationStatus.PermDenied ||
+	pushStatus === PushNotificationStatus.FetchFailed ||
+	pushStatus === PushNotificationStatus.GoFailed
+
 export const accountPushToggleState = async ({
 	account,
 	messengerClient,
@@ -23,7 +35,6 @@ export const accountPushToggleState = async ({
 	navigate,
 	t,
 	enable,
-	isOnboarding,
 }: {
 	account: beapi.messenger.IAccount
 	messengerClient: ServiceClientType<beapi.messenger.MessengerService> | null
@@ -31,7 +42,6 @@ export const accountPushToggleState = async ({
 	navigate: any
 	t: (k: string) => string
 	enable?: boolean
-	isOnboarding?: boolean
 }) => {
 	if (!messengerClient || !protocolClient) {
 		console.warn('missing a client')
@@ -40,7 +50,7 @@ export const accountPushToggleState = async ({
 
 	const permissions = await getPermissions()
 	const hasKnownPushServer = account.serviceTokens?.some(t => t.serviceType === serviceTypes.Push)
-
+	console.log('HAS KNOW', account.serviceTokens)
 	if (
 		!hasKnownPushServer ||
 		numberifyLong(account.mutedUntil) > Date.now() ||
@@ -51,14 +61,19 @@ export const accountPushToggleState = async ({
 			return
 		}
 
-		const pushEnabled = await enablePushPermission(messengerClient, protocolClient, navigate)
+		const pushStatus = await enablePushPermission(messengerClient, protocolClient, navigate)
 
 		// if something went wrong during onboarding enable push notification process
 		// prevent the user that he can be enable it manually in settings
-		if (pushEnabled === PushEnabled.Disabled && isOnboarding) {
+		if (isPushNotificationFailed(pushStatus)) {
+			/* Ignore check for i18n missing keys
+				account.opening.alert-push-go-failed
+				account.opening.alert-push-fetch-failed
+				account.opening.alert-push-perm-denied
+			*/
 			await asyncAlert(
 				t('account.opening.alert-push-title'),
-				t('account.opening.alert-push-desc'),
+				`${t(`account.opening.alert-push-${pushStatus}`)}\n${t('account.opening.alert-push-desc')}`,
 				t('account.opening.alert-push-button'),
 			)
 		}
@@ -67,7 +82,7 @@ export const accountPushToggleState = async ({
 			unmute: true,
 		})
 
-		if (pushEnabled === PushEnabled.JustNow) {
+		if (pushStatus === PushNotificationStatus.EnabledJustNow) {
 			await askAndSharePushTokenOnAllConversations(t, messengerClient, { forceEnable: true })
 		}
 	} else {
@@ -87,17 +102,11 @@ export const accountPushToggleState = async ({
 	}
 }
 
-enum PushEnabled {
-	JustNow = 0,
-	EnabledBefore = 1,
-	Disabled = 2,
-}
-
 const enablePushPermission = async (
 	messengerClient: ServiceClientType<beapi.messenger.MessengerService>,
 	protocolClient: ServiceClientType<beapi.protocol.ProtocolService>,
 	navigate: any,
-): Promise<PushEnabled> => {
+): Promise<PushNotificationStatus> => {
 	const account = await messengerClient.accountGet({})
 	const hasKnownPushServer = account.account?.serviceTokens?.some(
 		t => t.serviceType === serviceTypes.Push,
@@ -120,22 +129,34 @@ const enablePushPermission = async (
 					}),
 			}),
 		)
-
-		// Persist push token if needed
-		await requestAndPersistPushToken(protocolClient)
-
-		// Register push server secrets if needed
-		if (!hasKnownPushServer) {
-			await servicesAuthViaDefault(protocolClient, [serviceTypes.Push])
-			await new Promise(r => setTimeout(r, 300))
-			return PushEnabled.JustNow
-		}
 	} catch (e) {
-		console.warn('no push server known', e)
-		return PushEnabled.Disabled
+		console.log('Permission push deny', e)
+		return PushNotificationStatus.PermDenied
 	}
 
-	return PushEnabled.EnabledBefore
+	// Persist push token if needed
+	try {
+		// When we don't have network connection the requestAndPersistPushToken function hang so we manually set a timeout
+		const timeout = new Promise(resolve => setTimeout(() => resolve('timeout'), 5000))
+		const result = await Promise.race([timeout, requestAndPersistPushToken(protocolClient)])
+		if (result === 'timeout') {
+			return PushNotificationStatus.FetchFailed
+		}
+	} catch (e) {
+		console.warn('Fail on request and persist push token', e)
+		return PushNotificationStatus.FetchFailed
+	}
+
+	// Register push server secrets if needed
+	if (!hasKnownPushServer) {
+		const pushStatus = await servicesAuthViaDefault(protocolClient, [serviceTypes.Push])
+		if (pushStatus === PushNotificationStatus.EnabledJustNow) {
+			await new Promise(r => setTimeout(r, 300))
+		}
+		return pushStatus
+	}
+
+	return PushNotificationStatus.EnabledBefore
 }
 
 export const askAndSharePushTokenOnAllConversations = async (
@@ -238,12 +259,12 @@ export const conversationPushToggleState = async ({
 			numberifyLong(conversation.mutedUntil) > Date.now() ||
 			(permissions.notification !== RESULTS.GRANTED && permissions.notification !== RESULTS.LIMITED)
 		) {
-			const enabledJustNow = await enablePushPermission(messengerClient, protocolClient!, navigate)
+			const pushStatus = await enablePushPermission(messengerClient, protocolClient!, navigate)
 
 			// Share push token
 			await enableNotificationsForConversation(t, messengerClient!, conversation.publicKey)
 
-			if (enabledJustNow && pushFilteringAvailable) {
+			if (pushStatus === PushNotificationStatus.EnabledJustNow && pushFilteringAvailable) {
 				await askAndSharePushTokenOnAllConversations(t, messengerClient)
 			}
 		} else {

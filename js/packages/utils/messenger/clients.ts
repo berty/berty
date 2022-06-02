@@ -187,7 +187,7 @@ export const openClients = async (
 
 	// request push notifications token
 	if (Platform.OS === 'ios' || Platform.OS === 'android') {
-		requestAndPersistPushToken(protocolClient).catch(e => console.warn(e))
+		await requestAndPersistPushToken(protocolClient).catch(e => console.warn(e))
 	}
 
 	// call messenger client event stream

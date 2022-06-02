@@ -6,6 +6,8 @@ import {
 	WelshMessengerServiceClient,
 } from '@berty/grpc-bridge/welsh-clients.gen'
 
+import { PushNotificationStatus } from '../notification/notif-push'
+
 export enum serviceTypes {
 	Replication = 'rpl',
 	Push = 'psh',
@@ -21,7 +23,7 @@ const bertyOperatedServer = 'https://services-v1.berty.tech/'
 export const servicesAuthViaDefault = async (
 	protocolClient: ServiceClientType<beapi.protocol.ProtocolService> | null,
 	services?: string[],
-): Promise<void> => {
+): Promise<PushNotificationStatus> => {
 	return servicesAuthViaURL(protocolClient, bertyOperatedServer, services)
 }
 
@@ -29,21 +31,22 @@ export const servicesAuthViaURL = async (
 	protocolClient: ServiceClientType<beapi.protocol.ProtocolService> | null,
 	url: string,
 	services?: string[],
-): Promise<void> => {
+): Promise<PushNotificationStatus> => {
 	if (!protocolClient) {
 		throw new Error('missing protocol client')
 	}
 
-	// PKCE OAuth flow
-	const resp = await protocolClient
-		?.authServiceInitFlow({
+	let resp
+	try {
+		// PKCE OAuth flow
+		resp = await protocolClient?.authServiceInitFlow({
 			authUrl: url,
 			services: services || [],
 		})
-		.catch(e => {
-			Alert.alert('The provided URL is not supported')
-			throw e
-		})
+	} catch (e) {
+		console.warn(e)
+		return PushNotificationStatus.GoFailed
+	}
 
 	if (!resp.secureUrl) {
 		let allowNonSecure = false
@@ -69,13 +72,29 @@ export const servicesAuthViaURL = async (
 		}
 	}
 
-	// TODO remove &scope=psh suffix when we want to propose more berty services
-	const response = await fetch(`${resp.url}&scope=psh`)
+	let responseURL
+	try {
+		// TODO remove &scope=psh suffix when we want to propose more berty services
+		const response = await fetch(`${resp.url}&scope=psh`)
+		if (!response.ok) {
+			return PushNotificationStatus.FetchFailed
+		}
+		responseURL = response.headers.get('x-auth-redirect')
+	} catch (e) {
+		console.warn(e)
+		return PushNotificationStatus.FetchFailed
+	}
 
-	const responseURL = response.headers.get('x-auth-redirect')
-	await protocolClient?.authServiceCompleteFlow({
-		callbackUrl: responseURL,
-	})
+	try {
+		await protocolClient?.authServiceCompleteFlow({
+			callbackUrl: responseURL,
+		})
+	} catch (e) {
+		console.warn(e)
+		return PushNotificationStatus.GoFailed
+	}
+
+	return PushNotificationStatus.EnabledJustNow
 }
 
 export const replicateGroup = async (

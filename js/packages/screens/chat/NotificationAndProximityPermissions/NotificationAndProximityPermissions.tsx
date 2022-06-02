@@ -1,7 +1,7 @@
 import LottieView, { AnimatedLottieViewProps } from 'lottie-react-native'
 import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { AppState, Platform, StatusBar, TouchableOpacity, View } from 'react-native'
+import { AppState, AppStateStatus, Platform, StatusBar, TouchableOpacity, View } from 'react-native'
 import { RESULTS, PermissionStatus, openSettings } from 'react-native-permissions'
 
 import notificationLottie from '@berty/assets/lottie/notification-lottie.json'
@@ -41,6 +41,11 @@ export const NotificationAndProximityPermissions: ScreenFC<'Chat.NotificationAnd
 		const { goBack, navigate, setOptions } = useNavigation()
 		const dispatch = useAppDispatch()
 		const networkConfig = useAppSelector(selectEditedNetworkConfig)
+
+		// we have an issue with the network permission (require to run ipfs node) and the listener handleAppStateChange is triggered when we accept this perm
+		// (because during the process of account creation this screen is rendered at the same time of the network permission ask)
+		// so we handle this case with this value
+		const [listenerAvailable, setListenerAvailable] = React.useState<boolean>(false)
 
 		const appState = React.useRef(AppState.currentState)
 
@@ -85,10 +90,14 @@ export const NotificationAndProximityPermissions: ScreenFC<'Chat.NotificationAnd
 
 		// this callback is called in the listener below to handle the change of the app state
 		const handleAppStateChange = React.useCallback(
-			async (nextAppState: string) => {
+			async (nextAppState: AppStateStatus) => {
 				// this condition is valid when the OS settings is open (so permission is BLOCKED)
 				// and we return to the app (with or wihtout changes)
-				if (appState.current.match(/active/) && nextAppState === 'active') {
+				if (
+					appState.current.match(/inactive|background/) &&
+					nextAppState === 'active' &&
+					listenerAvailable
+				) {
 					let status: PermissionStatus = RESULTS.DENIED
 
 					// get the correspondant permission
@@ -104,7 +113,10 @@ export const NotificationAndProximityPermissions: ScreenFC<'Chat.NotificationAnd
 								dispatch(setCurrentNetworkConfig(newConfig))
 							},
 							networkConfig,
-							changedKey: ['bluetoothLe', 'appleMultipeerConnectivity'],
+							changedKey:
+								Platform.OS === 'ios'
+									? ['bluetoothLe', 'appleMultipeerConnectivity']
+									: ['bluetoothLe', 'androidNearby'],
 							navigate,
 							accept,
 							deny,
@@ -112,6 +124,7 @@ export const NotificationAndProximityPermissions: ScreenFC<'Chat.NotificationAnd
 					}
 
 					// this is the check of the permission status after having gone to the settings
+
 					if (status === RESULTS.GRANTED) {
 						await accept()
 					} else {
@@ -119,6 +132,8 @@ export const NotificationAndProximityPermissions: ScreenFC<'Chat.NotificationAnd
 					}
 					goBack()
 				}
+
+				appState.current = nextAppState
 			},
 			[
 				accept,
@@ -127,6 +142,7 @@ export const NotificationAndProximityPermissions: ScreenFC<'Chat.NotificationAnd
 				goBack,
 				isNotificationPermission,
 				isProximityPermission,
+				listenerAvailable,
 				navigate,
 				networkConfig,
 			],
@@ -135,12 +151,14 @@ export const NotificationAndProximityPermissions: ScreenFC<'Chat.NotificationAnd
 		// listener to handle the change of the app state
 		// (the app state change when we go to the OS settings of the app, so when you come back in the app, we can detect it)
 		useEffect(() => {
-			AppState.addEventListener('change', handleAppStateChange)
+			if (listenerAvailable) {
+				AppState.addEventListener('change', handleAppStateChange)
+			}
 			return () => {
 				AppState.removeEventListener('change', handleAppStateChange)
 			}
 			// eslint-disable-next-line react-hooks/exhaustive-deps
-		}, [])
+		}, [listenerAvailable])
 
 		return (
 			<View style={{ flex: 1, backgroundColor: colors['background-header'] }}>
@@ -199,8 +217,8 @@ export const NotificationAndProximityPermissions: ScreenFC<'Chat.NotificationAnd
 					>
 						<TouchableOpacity
 							onPress={async () => {
+								setListenerAvailable(true)
 								const status = (await getPermissions())[permissionType]
-								console.log('initialStatus', status)
 								if (status === RESULTS.BLOCKED) {
 									await openSettings()
 								} else {

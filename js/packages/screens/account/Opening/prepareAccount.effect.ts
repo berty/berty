@@ -1,7 +1,7 @@
-import NetInfo from '@react-native-community/netinfo'
 import { NavigationProp } from '@react-navigation/native'
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import { TFunction } from 'react-i18next'
+import { Platform } from 'react-native'
 
 import beapi from '@berty/api'
 import { ServiceClientType } from '@berty/grpc-bridge/welsh-clients.gen'
@@ -84,12 +84,7 @@ export const prepareAccount = createAsyncThunk(
 			// reset ui theme
 			dispatch(resetTheme())
 
-			// we'll call an url during the request push notifications permissions flow
-			// so we need an internet connection to activate it
-			// call NetInfo to have network informations
-			const netState = await NetInfo.fetch()
-			// if the internet is not connected we just skip this step
-			if (netState.isConnected) {
+			if (Platform.OS !== 'web') {
 				// request push notifications
 				await accountPushToggleState({
 					account,
@@ -97,7 +92,6 @@ export const prepareAccount = createAsyncThunk(
 					protocolClient: protocolClient,
 					navigate: navigation.navigate,
 					t,
-					isOnboarding: true,
 				})
 			}
 
