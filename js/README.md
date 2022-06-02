@@ -91,7 +91,6 @@ $ make web.debug
 - [iOS dev reqs](#ios-dev-requirements) **and/or** [Android dev reqs](#android-dev-requirements)
 - [Watchman](https://facebook.github.io/watchman/docs/install/) to enable live reloading
 - [Docker Desktop](https://docs.docker.com/docker-for-mac/install/)
-- The [gomobile package](https://godoc.org/golang.org/x/mobile/cmd/gomobile): `go get golang.org/x/mobile/cmd/gomobile/... && gomobile init`
 
 💡 `$GOPATH` may need to be set explicitly (usually `$HOME/go`)
 
