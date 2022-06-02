@@ -704,12 +704,12 @@ func (m *Manager) configIPFSRouting(h host.Host, r p2p_routing.Routing) error {
 		}
 	}
 
-	rp, err := m.getRotationInterval()
-	if err != nil {
-		return errcode.ErrIPFSSetupHost.Wrap(err)
-	}
+	// rp, err := m.getRotationInterval()
+	// if err != nil {
+	// 	return errcode.ErrIPFSSetupHost.Wrap(err)
+	// }
 
-	disc = tinder.NewRotationDiscovery(disc, rp)
+	// disc = tinder.NewRotationDiscovery(logger.Named("rotation"), disc, rp)
 	popts = append(popts, pubsub.WithDiscovery(disc, pubsub.WithDiscoverConnector(backoffconnector)))
 
 	// pubsub.DiscoveryPollInterval = m.Node.Protocol.PollInterval

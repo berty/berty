@@ -160,9 +160,9 @@ func NewBertyOrbitDB(ctx context.Context, ipfs coreapi.CoreAPI, options *NewOrbi
 	}
 
 	mm := NewRotationMessageMarshaler(options.RotationInterval)
-	if options.MessageMarshaler == nil {
-		options.MessageMarshaler = mm
-	}
+	// if options.MessageMarshaler == nil {
+	// 	options.MessageMarshaler = mm
+	// }
 
 	orbitDB, err := baseorbitdb.NewOrbitDB(ctx, ipfs, &options.NewOrbitDBOptions)
 	if err != nil {
@@ -458,6 +458,7 @@ func (s *BertyOrbitDB) storeForGroup(ctx context.Context, o iface.BaseOrbitDB, g
 		cborIO.ApplyOptions(&io.CBOROptions{LinkKey: sk})
 		options.IO = cborIO
 
+		l.Debug("opening store: register rotation", zap.String("topic", addr.String()))
 		s.messageMarshaler.RegisterSharedKeyForTopic(addr.String(), sk)
 		s.rotationInterval.RegisterRotation(time.Now(), addr.String(), key)
 	}
