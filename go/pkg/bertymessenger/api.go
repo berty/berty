@@ -687,10 +687,16 @@ func (svc *service) ConversationCreate(ctx context.Context, req *messengertypes.
 		if err != nil {
 			return nil, err
 		}
-		_, err = svc.protocolClient.AppMessageSend(ctx, &protocoltypes.AppMessageSend_Request{GroupPK: ginfo.GetGroup().GetPublicKey(), Payload: am})
+		gpk := ginfo.GetGroup().GetPublicKey()
+		reply, err := svc.protocolClient.AppMessageSend(ctx, &protocoltypes.AppMessageSend_Request{GroupPK: gpk, Payload: am})
 		if err != nil {
 			return nil, err
 		}
+		cid, err := ipfscid.Cast(reply.GetCID())
+		if err != nil {
+			return nil, errcode.ErrDeserialization.Wrap(err)
+		}
+		go svc.interactionDelayedActions(cid, gpk)
 	}
 
 	go svc.autoReplicateGroupOnAllServers(pk)
@@ -1751,7 +1757,7 @@ func (svc *service) interactionDelayedActions(id ipfscid.Cid, groupPK []byte) {
 		return
 	}
 
-	if i.Type != messengertypes.AppMessage_TypeUserMessage {
+	if i.Type != messengertypes.AppMessage_TypeUserMessage && i.Type != messengertypes.AppMessage_TypeGroupInvitation {
 		// Nothing to do, move along
 		svc.logger.Debug("push: nothing to send, invalid interaction type", logutil.PrivateString("cid", id.String()), zap.String("type", i.Type.String()))
 		return

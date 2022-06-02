@@ -13,7 +13,8 @@
 				"screenTitle": "Create account",
 				"subtitle": "Get Started Quickly",
 				"first-point": "Start with presets that offer a privacy/comfort balance that suits most. Berty nodes are used to improve performance and asynchronous communication.",
-				"second-point": "For a custom privacy/comfort balance, select Custom Mode.",
+				"second-point": "Push notifications are enabled by default and you can't disable them yet on iOS.",
+				"third-point": "For a custom privacy/comfort balance, select Custom Mode.",
 				"back-button": "Back",
 				"accept-button": "Let's go"
 			}
@@ -414,8 +415,6 @@
 				"refuse": "Keep muted",
 				"accept": "Unmute"
 			},
-			"enabled": "Push notifications enabled",
-			"disabled": "Push notifications disabled",
 			"receive-push": "Receive push notifications",
 			"hide-previews": "Hide previews in push notifications",
 			"auto-enable": "Enable push for current and future conversations",
@@ -515,8 +514,16 @@
 		}
 	},
 	"account": {
-		"deleting-account": "Deleting account...",
-		"creating-account": "Creating account..."
+		"deleting": "Deleting account...",
+		"creating": "Creating account...",
+		"opening": {
+			"alert-push-title": "Push notifications",
+			"alert-push-go-failed": "An error occurred while registering for the Berty Push Notification service.",
+			"alert-push-fetch-failed": "Unable to connect to the Berty Push Notification service.",
+			"alert-push-perm-denied": "The permission request for Push Notification has been denied.",
+			"alert-push-desc": "You can try to activate this feature again in Settings at any time.",
+			"alert-push-button": "Continue"
+		}
 	},
 	"audio": {
 		"record": {

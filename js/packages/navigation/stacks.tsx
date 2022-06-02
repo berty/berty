@@ -298,12 +298,11 @@ export const Navigation: React.FC = React.memo(() => {
 				}}
 			/>
 			<NavigationStack.Screen
-				name={'Chat.BlePermission'}
-				component={Components.Chat.BlePermission}
+				name={'Chat.NotificationAndProximityPermissions'}
+				component={Components.Chat.NotificationAndProximityPermissions}
 				options={{
 					headerShown: false,
 					presentation: 'formSheet',
-					title: t('permission.proximity.title'),
 				}}
 			/>
 			<NavigationStack.Screen

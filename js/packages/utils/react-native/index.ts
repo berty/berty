@@ -1,6 +1,11 @@
-import { checkPermissions, checkBlePermission } from './checkPermissions'
+import {
+	checkPermissions,
+	checkProximityPermission,
+	checkNotificationPermission,
+} from './checkPermissions'
 
 export default {
 	checkPermissions,
-	checkBlePermission,
+	checkProximityPermission,
+	checkNotificationPermission,
 }

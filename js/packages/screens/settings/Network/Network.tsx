@@ -34,7 +34,7 @@ import {
 	toggleFromStaticRelay,
 } from '@berty/redux/reducers/networkConfig.reducer'
 import { useThemeColor } from '@berty/store'
-import { checkBlePermission } from '@berty/utils/react-native/checkPermissions'
+import { checkProximityPermission } from '@berty/utils/react-native/checkPermissions'
 import { IOSOnlyKeyboardAvoidingView } from '@berty/utils/react-native/keyboardAvoiding'
 
 const Proximity: React.FC = () => {
@@ -55,7 +55,7 @@ const Proximity: React.FC = () => {
 							blePerm === 'granted' &&
 							networkConfig?.bluetoothLe === beapi.account.NetworkConfig.Flag.Enabled,
 						action: async () => {
-							await checkBlePermission({
+							await checkProximityPermission({
 								setNetworkConfig: async newConfig => {
 									dispatch(setCurrentNetworkConfig(newConfig))
 								},
@@ -77,7 +77,7 @@ const Proximity: React.FC = () => {
 							networkConfig?.appleMultipeerConnectivity ===
 								beapi.account.NetworkConfig.Flag.Enabled,
 						action: async () => {
-							await checkBlePermission({
+							await checkProximityPermission({
 								setNetworkConfig: async newConfig => {
 									dispatch(setCurrentNetworkConfig(newConfig))
 								},
@@ -98,7 +98,7 @@ const Proximity: React.FC = () => {
 							blePerm === 'granted' &&
 							networkConfig?.androidNearby === beapi.account.NetworkConfig.Flag.Enabled,
 						action: async () => {
-							await checkBlePermission({
+							await checkProximityPermission({
 								setNetworkConfig: async newConfig => {
 									dispatch(setCurrentNetworkConfig(newConfig))
 								},

@@ -1,11 +1,12 @@
 import { Alert } from 'react-native'
-import InAppBrowser, { RedirectResult } from 'react-native-inappbrowser-reborn'
 
 import beapi from '@berty/api'
 import {
 	ServiceClientType,
 	WelshMessengerServiceClient,
 } from '@berty/grpc-bridge/welsh-clients.gen'
+
+import { PushNotificationStatus } from '../notification/notif-push'
 
 export enum serviceTypes {
 	Replication = 'rpl',
@@ -17,12 +18,12 @@ export const serviceNames: { [key: string]: string } = {
 	[serviceTypes.Push]: 'Push notifications', // TODO: i18n
 }
 
-const bertyOperatedServer = 'https://services.berty.tech/'
+const bertyOperatedServer = 'https://services-v1.berty.tech/'
 
 export const servicesAuthViaDefault = async (
 	protocolClient: ServiceClientType<beapi.protocol.ProtocolService> | null,
 	services?: string[],
-): Promise<void> => {
+): Promise<PushNotificationStatus> => {
 	return servicesAuthViaURL(protocolClient, bertyOperatedServer, services)
 }
 
@@ -30,21 +31,22 @@ export const servicesAuthViaURL = async (
 	protocolClient: ServiceClientType<beapi.protocol.ProtocolService> | null,
 	url: string,
 	services?: string[],
-): Promise<void> => {
+): Promise<PushNotificationStatus> => {
 	if (!protocolClient) {
 		throw new Error('missing protocol client')
 	}
 
-	// PKCE OAuth flow
-	const resp = await protocolClient
-		?.authServiceInitFlow({
+	let resp
+	try {
+		// PKCE OAuth flow
+		resp = await protocolClient?.authServiceInitFlow({
 			authUrl: url,
 			services: services || [],
 		})
-		.catch(e => {
-			Alert.alert('The provided URL is not supported')
-			throw e
-		})
+	} catch (e) {
+		console.warn(e)
+		return PushNotificationStatus.GoFailed
+	}
 
 	if (!resp.secureUrl) {
 		let allowNonSecure = false
@@ -70,31 +72,29 @@ export const servicesAuthViaURL = async (
 		}
 	}
 
-	if (!(await InAppBrowser.isAvailable())) {
-		throw new Error('no browser available')
-	}
-
-	const response = await InAppBrowser.openAuth(resp.url, 'berty://', {
-		dismissButtonStyle: 'cancel',
-		readerMode: false,
-		modalPresentationStyle: 'pageSheet',
-		modalEnabled: true,
-		showTitle: true,
-		enableDefaultShare: false,
-		ephemeralWebSession: true,
-		// forceCloseOnRedirection: false,
-	})
-
-	if ((response as RedirectResult).url) {
-		if (!(response as RedirectResult).url) {
-			throw new Error('invalid response from auth server')
+	let responseURL
+	try {
+		// TODO remove &scope=psh suffix when we want to propose more berty services
+		const response = await fetch(`${resp.url}&scope=psh`)
+		if (!response.ok) {
+			return PushNotificationStatus.FetchFailed
 		}
+		responseURL = response.headers.get('x-auth-redirect')
+	} catch (e) {
+		console.warn(e)
+		return PushNotificationStatus.FetchFailed
 	}
 
-	const responseURL = (response as RedirectResult).url
-	await protocolClient?.authServiceCompleteFlow({
-		callbackUrl: responseURL,
-	})
+	try {
+		await protocolClient?.authServiceCompleteFlow({
+			callbackUrl: responseURL,
+		})
+	} catch (e) {
+		console.warn(e)
+		return PushNotificationStatus.GoFailed
+	}
+
+	return PushNotificationStatus.EnabledJustNow
 }
 
 export const replicateGroup = async (

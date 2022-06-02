@@ -21,7 +21,8 @@ export type ScreensParams = {
 
 	'Chat.Home': undefined
 	'Chat.ContactRequest': { contactId: string }
-	'Chat.BlePermission': {
+	'Chat.NotificationAndProximityPermissions': {
+		permissionType: PermissionType
 		accept: () => Promise<void>
 		deny: () => Promise<void>
 	}

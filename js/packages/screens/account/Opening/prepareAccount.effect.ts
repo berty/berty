@@ -1,15 +1,22 @@
 import { NavigationProp } from '@react-navigation/native'
 import { createAsyncThunk } from '@reduxjs/toolkit'
+import { TFunction } from 'react-i18next'
+import { Platform } from 'react-native'
 
 import beapi from '@berty/api'
 import { ServiceClientType } from '@berty/grpc-bridge/welsh-clients.gen'
 import { ScreensParams } from '@berty/navigation/types'
 import { selectConversationsDict, selectAccount } from '@berty/redux/reducers/messenger.reducer'
 import { resetTheme } from '@berty/redux/reducers/theme.reducer'
-import { selectMessengerClient, setSelectedAccount } from '@berty/redux/reducers/ui.reducer'
+import {
+	selectMessengerClient,
+	selectProtocolClient,
+	setSelectedAccount,
+} from '@berty/redux/reducers/ui.reducer'
 import { RootState } from '@berty/redux/store'
 import { storageGet, storageRemove } from '@berty/utils/accounts/accountClient'
 import { updateAccount } from '@berty/utils/accounts/accountUtils'
+import { accountPushToggleState } from '@berty/utils/notification/notif-push'
 import { GlobalPersistentOptionsKeys } from '@berty/utils/persistent-options/types'
 
 const closeConvos = async (
@@ -46,12 +53,6 @@ const updateAccountOnClients = async (
 			publicKey: account?.publicKey,
 		})
 	}
-
-	// TODO: fix flow of asking permissions
-	// const config = await accountService.networkConfigGet({ accountId: selectedAccount })
-	// if (config.currentConfig?.staticRelay && config.currentConfig?.staticRelay[0] === ':default:') {
-	// 	await servicesAuthViaURL(protocolClient, bertyOperatedServer)
-	// }
 }
 
 // we create a thunk here to have the current store state after opening the account and clients while avoiding hacky effects
@@ -59,16 +60,18 @@ export const prepareAccount = createAsyncThunk(
 	'account/prepared',
 	async (
 		arg: {
-			reset: NavigationProp<ScreensParams>['reset']
+			navigation: NavigationProp<ScreensParams>
+			t: TFunction<'translation', undefined>
 			selectedAccount: string
 			isNewAccount: boolean
 		},
 		{ dispatch, getState },
 	) => {
-		const { reset, selectedAccount, isNewAccount } = arg
+		const { navigation, t, selectedAccount, isNewAccount } = arg
 		// typing createAsyncThunk is a nightmare 👻
 		const state: RootState = getState() as any
 		const messengerClient = selectMessengerClient(state)
+		const protocolClient = selectProtocolClient(state)
 		const conversations = selectConversationsDict(state)
 		const account = selectAccount(state)
 
@@ -80,7 +83,19 @@ export const prepareAccount = createAsyncThunk(
 			await updateAccountOnClients(messengerClient, selectedAccount, account)
 			// reset ui theme
 			dispatch(resetTheme())
-			reset({
+
+			if (Platform.OS !== 'web') {
+				// request push notifications
+				await accountPushToggleState({
+					account,
+					messengerClient: messengerClient,
+					protocolClient: protocolClient,
+					navigate: navigation.navigate,
+					t,
+				})
+			}
+
+			navigation.reset({
 				routes: [
 					{
 						name: 'Onboarding.SetupFinished',
@@ -88,7 +103,7 @@ export const prepareAccount = createAsyncThunk(
 				],
 			})
 		} else {
-			reset({
+			navigation.reset({
 				routes: [
 					{
 						name: 'Chat.Home',

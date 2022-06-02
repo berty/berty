@@ -20,5 +20,5 @@ export const DeletingAccount: ScreenFC<'Account.Deleting'> = ({
 		f()
 	}, [deleteAccount, selectedAccount])
 
-	return <CenteredTextScreen>{t('account.deleting-account')}</CenteredTextScreen>
+	return <CenteredTextScreen>{t('account.deleting')}</CenteredTextScreen>
 }
