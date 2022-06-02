@@ -219,6 +219,7 @@ export const ManageGroupInvitation: React.FC<{
 							border.radius.small,
 							{ backgroundColor: colors['positive-asset'] },
 						]}
+						accessibilityLabel={t('modals.group-invitation.join')}
 					>
 						<UnifiedText
 							style={{

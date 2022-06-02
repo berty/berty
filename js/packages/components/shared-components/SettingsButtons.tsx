@@ -41,6 +41,7 @@ export const ButtonSettingV2: React.FC<{
 	text: string
 	icon?: string | React.ReactNode
 	onPress?: (...args: any) => void
+	accessibilityLabel?: string
 	toggle?: {
 		enable: boolean
 		value?: boolean
@@ -61,6 +62,7 @@ export const ButtonSettingV2: React.FC<{
 	pack,
 	disabled = false,
 	last = false,
+	accessibilityLabel,
 }) => {
 	const { padding, margin, opacity } = useStyles()
 	const { scaleSize } = useAppDimensions()
@@ -113,6 +115,7 @@ export const ButtonSettingV2: React.FC<{
 			<TouchableOpacity
 				onPress={!disabled ? onPress : () => {}}
 				activeOpacity={disabled ? disabledOpacity : 0.2}
+				accessibilityLabel={accessibilityLabel}
 				style={[
 					padding.vertical.medium,
 					padding.horizontal.medium,
