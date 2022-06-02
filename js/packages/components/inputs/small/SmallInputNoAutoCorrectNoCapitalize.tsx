@@ -5,7 +5,7 @@ import { InputPriv } from '../Input.priv'
 import { InputProps } from '../interfaces'
 import { TouchableWrapperPriv } from '../wrapper/TouchableWrapper.priv'
 
-export const SmallInput: React.FC<InputProps> = props => {
+export const SmallInputNoAutoCorrectNoCapitalize: React.FC<InputProps> = props => {
 	const input = useRef<TextInput>(null)
 
 	return (
@@ -13,6 +13,8 @@ export const SmallInput: React.FC<InputProps> = props => {
 			<InputPriv
 				ref={input}
 				accessibilityLabel={props.accessibilityLabel}
+				autoCorrect={false}
+				autoCapitalize='none'
 				value={props.value}
 				placeholder={props.placeholder}
 				onChangeText={props.onChangeText}

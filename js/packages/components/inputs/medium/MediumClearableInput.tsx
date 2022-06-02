@@ -1,10 +1,10 @@
 import React, { useRef } from 'react'
 import { StyleSheet, TextInput } from 'react-native'
 
+import { ClearTouchablePriv } from '../ClearTouchable.priv'
 import { IconPriv } from '../Icon.priv'
 import { InputWithIconPriv } from '../InputWithIcon.priv'
 import { InputWithIconProps } from '../interfaces'
-import { ResetInputPriv } from '../ResetInput.priv'
 import { TouchableWrapperWithIconPriv } from '../wrapper/TouchableWrapperWithIcon.priv'
 
 export const MediumClearableInput: React.FC<InputWithIconProps> = props => {
@@ -18,8 +18,16 @@ export const MediumClearableInput: React.FC<InputWithIconProps> = props => {
 				value={props.value}
 				disabled={!props.editable}
 			/>
-			<InputWithIconPriv ref={input} {...props} />
-			{!!props.value && <ResetInputPriv onPress={() => props.onChangeText?.('')} />}
+			<InputWithIconPriv
+				ref={input}
+				autoCorrect={false}
+				autoCapitalize='none'
+				accessibilityLabel={props.accessibilityLabel}
+				value={props.value}
+				placeholder={props.placeholder}
+				onChangeText={props.onChangeText}
+			/>
+			{!!props.value && <ClearTouchablePriv onPress={() => props.onChangeText?.('')} />}
 		</TouchableWrapperWithIconPriv>
 	)
 }

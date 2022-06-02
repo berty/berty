@@ -17,7 +17,15 @@ export const LargeInputWithIcon: React.FC<InputWithIconProps> = props => {
 				value={props.value}
 				disabled={!props.editable}
 			/>
-			<InputWithIconPriv ref={input} {...props} />
+			<InputWithIconPriv
+				ref={input}
+				autoCapitalize='none'
+				autoCorrect={false}
+				accessibilityLabel={props.accessibilityLabel}
+				value={props.value}
+				placeholder={props.placeholder}
+				onChangeText={props.onChangeText}
+			/>
 		</TouchableWrapperWithIconPriv>
 	)
 }

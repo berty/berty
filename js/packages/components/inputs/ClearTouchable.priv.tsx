@@ -2,11 +2,11 @@ import { Icon } from '@ui-kitten/components'
 import React from 'react'
 import { StyleSheet, TouchableOpacity } from 'react-native'
 
-interface ResetInputPrivProps {
+interface ClearTouchablePrivProps {
 	onPress: () => void
 }
 
-export const ResetInputPriv: React.FC<ResetInputPrivProps> = props => {
+export const ClearTouchablePriv: React.FC<ClearTouchablePrivProps> = props => {
 	return (
 		<TouchableOpacity style={styles.container} onPress={props.onPress}>
 			<Icon name='close' fill='#8E8E92' width={20} height={20} />

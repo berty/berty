@@ -17,7 +17,14 @@ export const MediumAltInput: React.FC<InputWithIconProps> = props => {
 				value={props.value}
 				disabled={!props.editable}
 			/>
-			<InputWithIconPriv ref={input} {...props} />
+			<InputWithIconPriv
+				ref={input}
+				autoCorrect={false}
+				accessibilityLabel={props.accessibilityLabel}
+				value={props.value}
+				placeholder={props.placeholder}
+				onChangeText={props.onChangeText}
+			/>
 		</TouchableWrapperWithIconPriv>
 	)
 }

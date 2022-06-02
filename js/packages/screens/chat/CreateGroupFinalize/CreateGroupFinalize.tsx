@@ -7,7 +7,7 @@ import {
 	CreateGroupFooter,
 	CreateGroupHeader,
 	CreateGroupMemberList,
-	SmallInput,
+	SmallInputNoAutoCorrect,
 } from '@berty/components'
 import { ButtonSettingItem } from '@berty/components/shared-components/SettingsButtons'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
@@ -93,8 +93,7 @@ const GroupInfo: React.FC<GroupInfoProps> = ({ groupName, setGroupName }) => {
 				</View>
 
 				<View style={[margin.left.medium, flex.tiny, row.item.justify]}>
-					<SmallInput
-						autoCorrect={false}
+					<SmallInputNoAutoCorrect
 						value={groupName}
 						onChangeText={setGroupName}
 						placeholder={t('main.home.create-group-finalize.placeholder')}

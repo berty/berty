@@ -5,13 +5,16 @@ import { InputPriv } from '../Input.priv'
 import { InputProps } from '../interfaces'
 import { TouchableWrapperPriv } from '../wrapper/TouchableWrapper.priv'
 
-export const SmallInput: React.FC<InputProps> = props => {
+export const LargeInputMultiline: React.FC<InputProps> = props => {
 	const input = useRef<TextInput>(null)
 
 	return (
-		<TouchableWrapperPriv onPress={() => input.current?.focus()} style={styles.button}>
+		<TouchableWrapperPriv onPress={() => input.current?.focus()} style={styles.container}>
 			<InputPriv
+				multiline
 				ref={input}
+				autoCapitalize='none'
+				autoCorrect={false}
 				accessibilityLabel={props.accessibilityLabel}
 				value={props.value}
 				placeholder={props.placeholder}
@@ -22,11 +25,11 @@ export const SmallInput: React.FC<InputProps> = props => {
 }
 
 const styles = StyleSheet.create({
-	button: {
+	container: {
 		backgroundColor: '#F7F8FE',
 		borderRadius: 8,
-		height: 36,
-		paddingHorizontal: 12,
-		paddingVertical: 10,
+		minHeight: 54,
+		paddingHorizontal: 16,
+		paddingVertical: 17,
 	},
 })

@@ -1,16 +1,25 @@
 import React, { useRef } from 'react'
-import { StyleSheet, TextInput, TextInputProps } from 'react-native'
+import { StyleSheet, TextInput } from 'react-native'
 
 import { InputPriv } from '../Input.priv'
-import { TouchableWrapperWithIconPriv } from '../wrapper/TouchableWrapperWithIcon.priv'
+import { InputProps } from '../interfaces'
+import { TouchableWrapperPriv } from '../wrapper/TouchableWrapper.priv'
 
-export const LargeInput: React.FC<Omit<TextInputProps, 'style'>> = props => {
+export const LargeInput: React.FC<InputProps> = props => {
 	const input = useRef<TextInput>(null)
 
 	return (
-		<TouchableWrapperWithIconPriv onPress={() => input.current?.focus()} style={styles.container}>
-			<InputPriv ref={input} {...props} />
-		</TouchableWrapperWithIconPriv>
+		<TouchableWrapperPriv onPress={() => input.current?.focus()} style={styles.container}>
+			<InputPriv
+				ref={input}
+				autoCapitalize='none'
+				autoCorrect={false}
+				accessibilityLabel={props.accessibilityLabel}
+				value={props.value}
+				placeholder={props.placeholder}
+				onChangeText={props.onChangeText}
+			/>
+		</TouchableWrapperPriv>
 	)
 }
 

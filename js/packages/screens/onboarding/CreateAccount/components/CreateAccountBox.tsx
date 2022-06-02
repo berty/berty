@@ -14,10 +14,8 @@ export const CreateAccountBox: React.FC<{
 	defaultName: string
 }> = ({ defaultName }) => {
 	const [name, setName] = React.useState(defaultName || '')
-	const { text, padding, margin, border } = useStyles()
-	const { scaleSize } = useAppDimensions()
-	const colors = useThemeColor()
-	const { t }: any = useTranslation()
+	const { margin } = useStyles()
+	const { t } = useTranslation()
 	const { navigate } = useNavigation()
 	const account = useAccount()
 
@@ -43,8 +41,6 @@ export const CreateAccountBox: React.FC<{
 		>
 			<View style={[margin.top.medium]}>
 				<LargeInputWithIcon
-					autoCapitalize='none'
-					autoCorrect={false}
 					value={name}
 					onChangeText={setName}
 					placeholder={t('onboarding.create-account.placeholder')}

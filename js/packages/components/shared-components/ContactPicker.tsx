@@ -108,7 +108,6 @@ export const ContactPicker: React.FC<ContactPickerProps> = ({ accountContacts })
 			style={[padding.horizontal.large, padding.top.small, { flex: 1, backgroundColor: '#F2F2F2' }]}
 		>
 			<MediumAltInput
-				autoCorrect={false}
 				value={searchText}
 				onChangeText={setSearchText}
 				placeholder={t('main.home.create-group.search-placeholder')}

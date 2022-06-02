@@ -7,7 +7,7 @@ import { useStyles } from '@berty/contexts/styles'
 import { useThemeColor } from '@berty/store'
 
 import { PrimaryButton } from '../buttons'
-import { LargeInput } from '../inputs'
+import { LargeInput, LargeInputMultiline } from '../inputs'
 import { UnifiedText } from '../shared-components/UnifiedText'
 
 export const AccordionAdd: FC<{
@@ -64,8 +64,6 @@ export const AccordionAdd: FC<{
 			) : null}
 			<View style={[margin.horizontal.medium, margin.bottom.medium]}>
 				<LargeInput
-					autoCapitalize='none'
-					autoCorrect={false}
 					value={alias}
 					onChangeText={setAlias}
 					placeholder={t('onboarding.custom-mode.settings.modals.alias')}
@@ -80,13 +78,10 @@ export const AccordionAdd: FC<{
 			</View>
 
 			<View style={[margin.horizontal.medium, margin.bottom.medium]}>
-				<LargeInput
-					autoCapitalize='none'
-					autoCorrect={false}
+				<LargeInputMultiline
 					value={url}
 					onChangeText={setUrl}
 					placeholder={t('onboarding.custom-mode.settings.modals.multiaddress')}
-					multiline
 				/>
 				{!!getUrlError(t) && (
 					<View style={[padding.top.small, padding.horizontal.small]}>
