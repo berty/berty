@@ -108,8 +108,8 @@ func (m *Manager) SetupLocalIPFSFlags(fs *flag.FlagSet) {
 	fs.BoolVar(&m.Node.Protocol.DisableDiscoverFilterAddrs, FlagNameP2PDisableDiscoverAddrsFilter, false, "dont filter private addrs on discovery service")
 	fs.BoolVar(&m.Node.Protocol.AutoRelay, "p2p.autorelay", true, "enable autorelay, force private reachability")
 	fs.StringVar(&m.Node.Protocol.StaticRelays, FlagNameP2PStaticRelays, KeywordDefault, "list of static relay maddrs, `:default:` will use statics relays from the config")
-	fs.DurationVar(&m.Node.Protocol.MinBackoff, "p2p.min-backoff", time.Second, "minimum p2p backoff duration")
-	fs.DurationVar(&m.Node.Protocol.MaxBackoff, "p2p.max-backoff", time.Minute*10, "maximum p2p backoff duration")
+	fs.DurationVar(&m.Node.Protocol.MinBackoff, "p2p.min-backoff", time.Second*10, "minimum p2p backoff duration")
+	fs.DurationVar(&m.Node.Protocol.MaxBackoff, "p2p.max-backoff", time.Hour, "maximum p2p backoff duration")
 	fs.DurationVar(&m.Node.Protocol.PollInterval, "p2p.poll-interval", pubsub.DiscoveryPollInterval, "how long the discovery system will waits for more peers")
 	fs.StringVar(&m.Node.Protocol.RdvpMaddrs, FlagNameP2PRDVP, KeywordDefault, "list of rendezvous point maddr, `:dev:` will add the default devs servers, `:none:` will disable rdvp")
 	fs.BoolVar(&m.Node.Protocol.Ble.Enable, FlagNameP2PBLE, false, "if true Bluetooth Low Energy will be enabled")
@@ -312,9 +312,22 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 
 	lm := m.getLifecycleManager()
 
+	serverRng := mrand.New(mrand.NewSource(srand.MustSecure())) // nolint:gosec // we need to use math/rand here, but it is seeded from crypto/rand
+	backoffstrat := discovery.NewExponentialBackoff(
+		time.Second,
+		time.Minute*10,
+		discovery.FullJitter,
+		time.Second, 5.0, 0, serverRng)
+
+	peering := ipfsutil.NewPeeringService(
+		logger.Named("peering"), m.Node.Protocol.ipfsNode.PeerHost, backoffstrat,
+	)
+	if err := peering.Start(); err != nil {
+		return nil, nil, errcode.ErrIPFSInit.Wrap(err)
+	}
 	// enable lifecycle conn
 	m.Node.Protocol.connlifecycle, err = ipfsutil.NewConnLifecycle(
-		logger, m.Node.Protocol.ipfsNode.PeerHost, lm,
+		logger, m.Node.Protocol.ipfsNode.PeerHost, peering, lm,
 	)
 	if err != nil {
 		return nil, nil, errcode.ErrIPFSInit.Wrap(err)
@@ -679,8 +692,8 @@ func (m *Manager) configIPFSRouting(h host.Host, r p2p_routing.Routing) error {
 
 	tinderOpts := &tinder.Opts{
 		Logger:                 logger,
-		AdvertiseResetInterval: time.Minute * 2,
-		FindPeerResetInterval:  time.Minute * 2,
+		AdvertiseResetInterval: time.Hour,
+		FindPeerResetInterval:  time.Minute * 10,
 		AdvertiseGracePeriod:   time.Minute,
 		BackoffStrategy: &tinder.BackoffOpts{
 			StratFactory: backoffstrat,

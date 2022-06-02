@@ -130,18 +130,18 @@ func (c *BertyConnManager) UpsertTag(p peer.ID, tag string, upsert func(int) int
 	}
 }
 
-func (cl *BertyConnManager) computePeerScore(p peer.ID) (old, new int) {
-	cl.muMarked.Lock()
+func (c *BertyConnManager) computePeerScore(p peer.ID) (old, new int) {
+	c.muMarked.Lock()
 
-	old = cl.marked[p]
-	if info := cl.ConnManager.GetTagInfo(p); info != nil {
+	old = c.marked[p]
+	if info := c.ConnManager.GetTagInfo(p); info != nil {
 		if new = info.Value; new > 0 {
-			cl.marked[p] = new
+			c.marked[p] = new
 		} else {
-			delete(cl.marked, p)
+			delete(c.marked, p)
 		}
 	}
 
-	cl.muMarked.Unlock()
+	c.muMarked.Unlock()
 	return
 }
