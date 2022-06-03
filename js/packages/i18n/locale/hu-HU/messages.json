@@ -13,7 +13,8 @@
 				"screenTitle": "",
 				"subtitle": "Kezdje el gyorsan",
 				"first-point": "Kezdje az előre beállított beállításokkal, amelyek a leginkább megfelelőbb a magánélet/kényelem arányában. A Berty csomópontokat a teljesítmény és az aszinkron kommunikáció javítására használja.",
-				"second-point": "Az egyéni adatvédelmi/használati módhoz, válaszd az Egyéni módot.",
+				"second-point": "",
+				"third-point": "Az egyéni adatvédelmi/használati módhoz, válaszd az Egyéni módot.",
 				"back-button": "Vissza",
 				"accept-button": "Kezdés"
 			}
@@ -414,8 +415,6 @@
 				"refuse": "",
 				"accept": ""
 			},
-			"enabled": "Felugró értesítések engedélyezése",
-			"disabled": "Értesítések letiltva",
 			"receive-push": "Értesítések bekapcsolása",
 			"hide-previews": "",
 			"auto-enable": "",
@@ -515,8 +514,16 @@
 		}
 	},
 	"account": {
-		"deleting-account": "",
-		"creating-account": ""
+		"deleting": "",
+		"creating": "",
+		"opening": {
+			"alert-push-title": "Push értesítések",
+			"alert-push-go-failed": "",
+			"alert-push-fetch-failed": "",
+			"alert-push-perm-denied": "",
+			"alert-push-desc": "",
+			"alert-push-button": ""
+		}
 	},
 	"audio": {
 		"record": {
