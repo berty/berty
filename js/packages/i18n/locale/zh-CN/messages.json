@@ -13,7 +13,8 @@
 				"screenTitle": "创建账户",
 				"subtitle": "快速开始",
 				"first-point": "从提供最适合的隐私/舒适平衡的预设开始。 Berty 节点用于提高性能和异步通信。",
-				"second-point": "如需自定义隐私/舒适度平衡，请选择自定义模式。",
+				"second-point": "推送通知在默认情况下是启用的，您还不能在iOS上禁用它们。",
+				"third-point": "如需自定义隐私/舒适度平衡，请选择自定义模式。",
 				"back-button": "返回",
 				"accept-button": "开始"
 			}
@@ -414,8 +415,6 @@
 				"refuse": "保持静音",
 				"accept": "取消静音"
 			},
-			"enabled": "已启用推送通知",
-			"disabled": "已禁用新消息通知",
 			"receive-push": "接收新消息通知",
 			"hide-previews": "在推送通知中隐藏预览",
 			"auto-enable": "启用当前和未来对话的推送功能",
@@ -515,8 +514,16 @@
 		}
 	},
 	"account": {
-		"deleting-account": "删除账户中...",
-		"creating-account": "创建账户中..."
+		"deleting": "删除账户中...",
+		"creating": "创建账户中...",
+		"opening": {
+			"alert-push-title": "推送通知",
+			"alert-push-go-failed": "注册Berty Push通知服务时出错。",
+			"alert-push-fetch-failed": "无法连接到Berty推送通知服务。",
+			"alert-push-perm-denied": "推送通知的权限请求已被拒绝。",
+			"alert-push-desc": "您可以随时尝试在“设置”中再次激活此功能。",
+			"alert-push-button": "继续"
+		}
 	},
 	"audio": {
 		"record": {
