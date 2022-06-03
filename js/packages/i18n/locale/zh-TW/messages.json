@@ -14,6 +14,7 @@
 				"subtitle": "",
 				"first-point": "",
 				"second-point": "",
+				"third-point": "",
 				"back-button": "",
 				"accept-button": ""
 			}
@@ -414,8 +415,6 @@
 				"refuse": "",
 				"accept": ""
 			},
-			"enabled": "",
-			"disabled": "已禁用新消息通知",
 			"receive-push": "接收新消息通知",
 			"hide-previews": "",
 			"auto-enable": "",
@@ -515,8 +514,16 @@
 		}
 	},
 	"account": {
-		"deleting-account": "",
-		"creating-account": ""
+		"deleting": "",
+		"creating": "",
+		"opening": {
+			"alert-push-title": "推送通知",
+			"alert-push-go-failed": "",
+			"alert-push-fetch-failed": "",
+			"alert-push-perm-denied": "",
+			"alert-push-desc": "",
+			"alert-push-button": ""
+		}
 	},
 	"audio": {
 		"record": {
