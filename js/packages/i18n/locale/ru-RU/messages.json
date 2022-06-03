@@ -13,7 +13,8 @@
 				"screenTitle": "Создание аккаунта",
 				"subtitle": "Быстрое начало",
 				"first-point": "Начните с установок, которые удовлетворят ваш баланс между приватностью и комфортом. Узлы Berty используются для улучшения производительности и возможности общаться не одновременно.",
-				"second-point": "Для личных настроек баланса приватность/комфорт, выбери Ручной Режим.",
+				"second-point": "",
+				"third-point": "Для личных настроек баланса приватность/комфорт, выбери Ручной Режим.",
 				"back-button": "Назад",
 				"accept-button": "Вперёд"
 			}
@@ -414,8 +415,6 @@
 				"refuse": "",
 				"accept": ""
 			},
-			"enabled": "Push-уведомления включены",
-			"disabled": "Push-уведомления отключены",
 			"receive-push": "Получать push-уведомления",
 			"hide-previews": "",
 			"auto-enable": "",
@@ -515,8 +514,16 @@
 		}
 	},
 	"account": {
-		"deleting-account": "",
-		"creating-account": ""
+		"deleting": "",
+		"creating": "",
+		"opening": {
+			"alert-push-title": "Push-уведомления",
+			"alert-push-go-failed": "",
+			"alert-push-fetch-failed": "",
+			"alert-push-perm-denied": "",
+			"alert-push-desc": "",
+			"alert-push-button": ""
+		}
 	},
 	"audio": {
 		"record": {
