@@ -13,7 +13,8 @@
 				"screenTitle": "Créez votre compte",
 				"subtitle": "Démarrer rapidement",
 				"first-point": "Commencer par des préréglages qui offrent un équilibre entre intimité et confort qui convient au plus grand nombre. Les nœuds Berty sont utilisés pour améliorer les performances et la communication asynchrone.",
-				"second-point": "Pour un équilibre de vie privée/confort personnalisé, sélectionnez le Mode Personnalisé.",
+				"second-point": "",
+				"third-point": "Pour un équilibre de vie privée/confort personnalisé, sélectionnez le Mode Personnalisé.",
 				"back-button": "Retour",
 				"accept-button": "C'est parti"
 			}
@@ -414,8 +415,6 @@
 				"refuse": "",
 				"accept": ""
 			},
-			"enabled": "Les notifications push sont activées",
-			"disabled": "Notifications push désactivées",
 			"receive-push": "Recevoir les notifications push",
 			"hide-previews": "",
 			"auto-enable": "",
@@ -515,8 +514,16 @@
 		}
 	},
 	"account": {
-		"deleting-account": "",
-		"creating-account": ""
+		"deleting": "",
+		"creating": "",
+		"opening": {
+			"alert-push-title": "Notifications push",
+			"alert-push-go-failed": "",
+			"alert-push-fetch-failed": "",
+			"alert-push-perm-denied": "",
+			"alert-push-desc": "",
+			"alert-push-button": ""
+		}
 	},
 	"audio": {
 		"record": {
