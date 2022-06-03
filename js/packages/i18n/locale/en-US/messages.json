@@ -13,7 +13,8 @@
 				"screenTitle": "Create account",
 				"subtitle": "Get Started Quickly",
 				"first-point": "Start with presets that offer a privacy/comfort balance that suits most. Berty nodes are used to improve performance and asynchronous communication.",
-				"second-point": "For a custom privacy/comfort balance, select Custom Mode.",
+				"second-point": "",
+				"third-point": "",
 				"back-button": "Back",
 				"accept-button": "Let's go"
 			}
@@ -414,8 +415,6 @@
 				"refuse": "",
 				"accept": ""
 			},
-			"enabled": "Push notifications enabled",
-			"disabled": "",
 			"receive-push": "",
 			"hide-previews": "",
 			"auto-enable": "",
@@ -515,8 +514,16 @@
 		}
 	},
 	"account": {
-		"deleting-account": "",
-		"creating-account": ""
+		"deleting": "",
+		"creating": "",
+		"opening": {
+			"alert-push-title": "",
+			"alert-push-go-failed": "",
+			"alert-push-fetch-failed": "",
+			"alert-push-perm-denied": "",
+			"alert-push-desc": "",
+			"alert-push-button": ""
+		}
 	},
 	"audio": {
 		"record": {
