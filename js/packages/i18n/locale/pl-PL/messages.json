@@ -14,6 +14,7 @@
 				"subtitle": "",
 				"first-point": "",
 				"second-point": "",
+				"third-point": "",
 				"back-button": "",
 				"accept-button": ""
 			}
@@ -414,8 +415,6 @@
 				"refuse": "",
 				"accept": ""
 			},
-			"enabled": "",
-			"disabled": "Powiadomienia push wyłączone",
 			"receive-push": "Otrzymuj powiadomienia push",
 			"hide-previews": "",
 			"auto-enable": "",
@@ -515,8 +514,16 @@
 		}
 	},
 	"account": {
-		"deleting-account": "",
-		"creating-account": ""
+		"deleting": "",
+		"creating": "",
+		"opening": {
+			"alert-push-title": "",
+			"alert-push-go-failed": "",
+			"alert-push-fetch-failed": "",
+			"alert-push-perm-denied": "",
+			"alert-push-desc": "",
+			"alert-push-button": ""
+		}
 	},
 	"audio": {
 		"record": {
