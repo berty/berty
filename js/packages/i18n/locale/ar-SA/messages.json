@@ -13,7 +13,8 @@
 				"screenTitle": "أنشئ حسابًا",
 				"subtitle": "",
 				"first-point": "ابدأ مع الإعدادات المسبقة التي توفر توازن الخصوصية/الراحة الأكثر مناسبة. تستخدام عقد بريتي لتحسين الأداء والاتصال غير المتزامن.",
-				"second-point": "لتخصيص توازن الخصوصية/الراحة حدد الوضع المخصص.",
+				"second-point": "",
+				"third-point": "لتخصيص توازن الخصوصية/الراحة حدد الوضع المخصص.",
 				"back-button": "رجوع",
 				"accept-button": "لنبدأ"
 			}
@@ -414,8 +415,6 @@
 				"refuse": "",
 				"accept": ""
 			},
-			"enabled": "دفع الإشعارات مفعل",
-			"disabled": "تم تعطيل الإشعارات",
 			"receive-push": "تلقي الإشعارات",
 			"hide-previews": "",
 			"auto-enable": "",
@@ -515,8 +514,16 @@
 		}
 	},
 	"account": {
-		"deleting-account": "",
-		"creating-account": ""
+		"deleting": "",
+		"creating": "",
+		"opening": {
+			"alert-push-title": "",
+			"alert-push-go-failed": "",
+			"alert-push-fetch-failed": "",
+			"alert-push-perm-denied": "",
+			"alert-push-desc": "",
+			"alert-push-button": ""
+		}
 	},
 	"audio": {
 		"record": {
