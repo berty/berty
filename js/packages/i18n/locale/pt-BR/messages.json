@@ -13,7 +13,8 @@
 				"screenTitle": "",
 				"subtitle": "Comece rapidamente",
 				"first-point": "Comece com predefinições que oferecem um equilíbrio de privacidade/conforto que mais se adequa a você. Pontos de conexão Berty são usados para melhorar o desempenho e a comunicação assíncrona.",
-				"second-point": "Para um equilíbrio de privacidade/conforto personalizado, selecione o Modo personalizado.",
+				"second-point": "",
+				"third-point": "Para um equilíbrio de privacidade/conforto personalizado, selecione o Modo personalizado.",
 				"back-button": "Voltar",
 				"accept-button": "Vamos lá"
 			}
@@ -414,8 +415,6 @@
 				"refuse": "",
 				"accept": ""
 			},
-			"enabled": "",
-			"disabled": "Notificação de push desativada",
 			"receive-push": "Receber notificações de push",
 			"hide-previews": "",
 			"auto-enable": "",
@@ -515,8 +514,16 @@
 		}
 	},
 	"account": {
-		"deleting-account": "",
-		"creating-account": ""
+		"deleting": "",
+		"creating": "",
+		"opening": {
+			"alert-push-title": "Notificações Push",
+			"alert-push-go-failed": "",
+			"alert-push-fetch-failed": "",
+			"alert-push-perm-denied": "",
+			"alert-push-desc": "",
+			"alert-push-button": ""
+		}
 	},
 	"audio": {
 		"record": {
