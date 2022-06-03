@@ -82,7 +82,7 @@
 			}
 		},
 		"create-account": {
-			"title": "创建您的帐号",
+			"title": "创建您的账户",
 			"placeholder": "选择您的昵称",
 			"good-to-know": {
 				"title": "知道：",
@@ -120,8 +120,8 @@
 				"no-results": "未找到结果"
 			},
 			"multi-account": {
-				"create-button": "创建新账号",
-				"import-button": "导入帐号"
+				"create-button": "创建新账户",
+				"import-button": "导入帐户"
 			},
 			"create-group": {
 				"title": "新建群组",
