@@ -13,7 +13,8 @@
 				"screenTitle": "Създайте акаунт",
 				"subtitle": "",
 				"first-point": "Започнете с настройки, които предлагат балансирани защита и удобство подходящи за повечето потребители. Berty клетки ще бъдат ползвани за подобряване на скоростта и асинхронна комуникация.",
-				"second-point": "За специфични настройки на баланса между защита и удобство, изберете Персонализиран Режим.",
+				"second-point": "",
+				"third-point": "За специфични настройки на баланса между защита и удобство, изберете Персонализиран Режим.",
 				"back-button": "Назад",
 				"accept-button": "Продължи"
 			}
@@ -414,8 +415,6 @@
 				"refuse": "",
 				"accept": ""
 			},
-			"enabled": "",
-			"disabled": "Известията са забранени",
 			"receive-push": "Получаване на push известия",
 			"hide-previews": "",
 			"auto-enable": "",
@@ -515,8 +514,16 @@
 		}
 	},
 	"account": {
-		"deleting-account": "",
-		"creating-account": ""
+		"deleting": "",
+		"creating": "",
+		"opening": {
+			"alert-push-title": "",
+			"alert-push-go-failed": "",
+			"alert-push-fetch-failed": "",
+			"alert-push-perm-denied": "",
+			"alert-push-desc": "",
+			"alert-push-button": "Продължи"
+		}
 	},
 	"audio": {
 		"record": {
