@@ -13,7 +13,8 @@
 				"screenTitle": "",
 				"subtitle": "Hızlıca Başla",
 				"first-point": "Senin için en uygun olan gizlilik/konfor dengesiyle başla. Berty düğümleri performans arttırmak ve asenkron iletişim sağlamak için kullanılır.",
-				"second-point": "Özelleştirilmiş gizlilik/konfor dengesi için, özelleştirme modunu seç.",
+				"second-point": "",
+				"third-point": "Özelleştirilmiş gizlilik/konfor dengesi için, özelleştirme modunu seç.",
 				"back-button": "Geri",
 				"accept-button": "Başlayalım"
 			}
@@ -414,8 +415,6 @@
 				"refuse": "",
 				"accept": ""
 			},
-			"enabled": "Bildirimler açık",
-			"disabled": "Anlık bildirimler devre dışı",
 			"receive-push": "Anlık bildirimler alın",
 			"hide-previews": "",
 			"auto-enable": "",
@@ -515,8 +514,16 @@
 		}
 	},
 	"account": {
-		"deleting-account": "",
-		"creating-account": ""
+		"deleting": "",
+		"creating": "",
+		"opening": {
+			"alert-push-title": "",
+			"alert-push-go-failed": "",
+			"alert-push-fetch-failed": "",
+			"alert-push-perm-denied": "",
+			"alert-push-desc": "",
+			"alert-push-button": ""
+		}
 	},
 	"audio": {
 		"record": {
