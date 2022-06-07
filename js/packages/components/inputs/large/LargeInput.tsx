@@ -12,8 +12,8 @@ export const LargeInput: React.FC<InputProps> = props => {
 		<TouchableWrapperPriv onPress={() => input.current?.focus()} style={styles.container}>
 			<InputPriv
 				ref={input}
-				autoCapitalize='none'
-				autoCorrect={false}
+				autoCapitalize={props.autoCapitalize || 'none'}
+				autoCorrect={props.autoCorrect || false}
 				accessibilityLabel={props.accessibilityLabel}
 				value={props.value}
 				placeholder={props.placeholder}

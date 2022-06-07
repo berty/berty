@@ -13,6 +13,8 @@ export const SmallInput: React.FC<InputProps> = props => {
 			<InputPriv
 				ref={input}
 				accessibilityLabel={props.accessibilityLabel}
+				autoCorrect={props.autoCorrect}
+				autoCapitalize={props.autoCapitalize}
 				value={props.value}
 				placeholder={props.placeholder}
 				onChangeText={props.onChangeText}

@@ -20,8 +20,8 @@ export const MediumClearableInput: React.FC<InputWithIconProps> = props => {
 			/>
 			<InputWithIconPriv
 				ref={input}
-				autoCorrect={false}
-				autoCapitalize='none'
+				autoCapitalize={props.autoCapitalize || 'none'}
+				autoCorrect={props.autoCorrect || false}
 				accessibilityLabel={props.accessibilityLabel}
 				value={props.value}
 				placeholder={props.placeholder}

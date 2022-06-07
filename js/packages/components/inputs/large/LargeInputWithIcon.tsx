@@ -19,8 +19,8 @@ export const LargeInputWithIcon: React.FC<InputWithIconProps> = props => {
 			/>
 			<InputWithIconPriv
 				ref={input}
-				autoCapitalize='none'
-				autoCorrect={false}
+				autoCapitalize={props.autoCapitalize || 'none'}
+				autoCorrect={props.autoCorrect || false}
 				accessibilityLabel={props.accessibilityLabel}
 				value={props.value}
 				placeholder={props.placeholder}

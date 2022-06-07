@@ -17,7 +17,7 @@ import {
 import { useThemeColor } from '@berty/store/hooks'
 
 import { ContactAvatar } from '../avatars'
-import { MediumAltInput } from '../inputs'
+import { MediumInput } from '../index'
 import { UnifiedText } from './UnifiedText'
 
 // Styles
@@ -107,7 +107,7 @@ export const ContactPicker: React.FC<ContactPickerProps> = ({ accountContacts })
 		<View
 			style={[padding.horizontal.large, padding.top.small, { flex: 1, backgroundColor: '#F2F2F2' }]}
 		>
-			<MediumAltInput
+			<MediumInput
 				value={searchText}
 				onChangeText={setSearchText}
 				placeholder={t('main.home.create-group.search-placeholder')}

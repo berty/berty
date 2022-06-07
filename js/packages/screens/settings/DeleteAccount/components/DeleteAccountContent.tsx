@@ -7,7 +7,7 @@ import {
 	ErrorButtonIconLeft,
 	TwoHorizontalButtons,
 	TertiaryButtonIconLeft,
-	SmallInputNoAutoCorrectNoCapitalize,
+	SmallInput,
 } from '@berty/components'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useStyles } from '@berty/contexts/styles'
@@ -38,9 +38,11 @@ export const DeleteAccountContent: React.FC<{}> = () => {
 				</UnifiedText>
 			</View>
 			<View style={[column.justify]}>
-				<SmallInputNoAutoCorrectNoCapitalize
+				<SmallInput
 					value={deleteConfirmation}
 					onChangeText={setDeleteConfirmation}
+					autoCapitalize='none'
+					autoCorrect={false}
 				/>
 				<TwoHorizontalButtons>
 					<TertiaryButtonIconLeft name='arrow-back-outline' onPress={() => navigation.goBack()}>
