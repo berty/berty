@@ -1,4 +1,5 @@
 import base64 from 'base64-js'
+import * as Application from 'expo-application'
 import { Alert, Platform } from 'react-native'
 import { RESULTS } from 'react-native-permissions'
 
@@ -14,7 +15,9 @@ import { asyncAlert } from '../react-native/asyncAlert'
 import { servicesAuthViaDefault, serviceTypes } from '../remote-services/remote-services'
 
 export const pushAvailable = Platform.OS !== 'web'
-export const pushFilteringAvailable = Platform.OS === 'android'
+export const pushFilteringAvailable =
+	Platform.OS === 'android' ||
+	(Platform.OS === 'ios' && Application.applicationId === 'tech.berty.ios')
 
 export enum PushNotificationStatus {
 	EnabledJustNow = 'enabled-just-now',
