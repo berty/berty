@@ -8,8 +8,8 @@ import { withInAppNotification } from 'react-native-in-app-notification'
 import Share from 'react-native-share'
 import { useDispatch, useSelector } from 'react-redux'
 
+import { TextualDropdown } from '@berty/components'
 import { ButtonSetting } from '@berty/components/shared-components'
-import { DropDownPicker } from '@berty/components/shared-components/DropDownPicker'
 import { useStyles } from '@berty/contexts/styles'
 import { ScreenFC } from '@berty/navigation'
 import {
@@ -144,7 +144,7 @@ const BodyFileThemeEditor: React.FC<{}> = withInAppNotification(({ showNotificat
 
 const BodyThemeEditor: React.FC<{ openModal: () => void }> = ({ openModal }) => {
 	const colors = useThemeColor()
-	const { padding } = useStyles()
+	const { padding, margin } = useStyles()
 	const { t } = useTranslation()
 	const dispatch = useDispatch()
 	const items = useSelector(selectThemeCollectionAsItem)
@@ -170,14 +170,13 @@ const BodyThemeEditor: React.FC<{ openModal: () => void }> = ({ openModal }) => 
 				actionIcon={null}
 				onPress={() => openModal()}
 			/>
-			<DropDownPicker
-				items={items}
-				mode={'themeCollection'}
-				defaultValue={currentTheme}
-				onChangeItem={async (item: any) => {
-					dispatch(setTheme({ themeName: item.label }))
-				}}
-			/>
+			<View style={[margin.top.medium]}>
+				<TextualDropdown
+					items={items}
+					placeholder={currentTheme}
+					onChangeItem={item => dispatch(setTheme({ themeName: item.label }))}
+				/>
+			</View>
 			<BodyFileThemeEditor />
 		</View>
 	)

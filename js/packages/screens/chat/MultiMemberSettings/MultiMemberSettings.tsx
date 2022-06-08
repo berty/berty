@@ -8,16 +8,14 @@ import QRCode from 'react-native-qrcode-svg'
 
 import beapi from '@berty/api'
 import logo from '@berty/assets/images/1_berty_picto.png'
-import { MemberAvatar, MultiMemberAvatar } from '@berty/components/avatars'
+import { MembersDropdown } from '@berty/components'
+import { MultiMemberAvatar } from '@berty/components/avatars'
 import EnableNotificationsButton from '@berty/components/chat/EnableNotificationsButton'
-import {
-	ButtonSetting,
-	FactionButtonSetting,
-} from '@berty/components/shared-components/SettingsButtons'
+import { ButtonSetting } from '@berty/components/shared-components/SettingsButtons'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
-import { useConversationMembersDict, useConversation } from '@berty/hooks'
+import { useConversation, useConversationMembers } from '@berty/hooks'
 import { ScreenFC, useNavigation } from '@berty/navigation'
 import { Maybe, useMessengerClient, useThemeColor } from '@berty/store'
 
@@ -138,11 +136,9 @@ const MultiMemberSettingsBody: React.FC<{
 	navigation: ComponentProps<typeof MultiMemberSettings>['navigation']
 }> = ({ publicKey, link, navigation }) => {
 	const { padding, margin } = useStyles()
-	const { scaleSize } = useAppDimensions()
-	const members = useConversationMembersDict(publicKey)
+	const members = useConversationMembers(publicKey)
 	const membersCount = Object.values(members).length
 	const { t } = useTranslation()
-	const accountMember = Object.values(members).find(m => m?.isMe)
 
 	return (
 		<View style={[padding.medium]}>
@@ -152,73 +148,20 @@ const MultiMemberSettingsBody: React.FC<{
 				onPress={() => navigation.navigate('Chat.SharedMedias', { convPk: publicKey })}
 			/>
 			{Platform.OS !== 'web' && <EnableNotificationsButton conversationPk={publicKey} />}
-			<FactionButtonSetting
-				name={`${t('chat.multi-member-settings.members-button.title')} (${membersCount})`}
-				icon='users'
-				iconPack='custom'
-				style={[margin.top.medium]}
-				isDropdown
-			>
-				<View
-					style={{
-						flexDirection: 'row',
-						alignItems: 'center',
+			<View style={[margin.top.medium]}>
+				<MembersDropdown
+					items={members}
+					publicKey={publicKey}
+					onChangeItem={member => {
+						navigation.navigate('Group.ChatSettingsMemberDetail', {
+							convId: publicKey,
+							memberPk: member?.publicKey!,
+							displayName: member?.displayName || '',
+						})
 					}}
-				>
-					<MemberAvatar
-						publicKey={accountMember?.publicKey}
-						conversationPublicKey={publicKey}
-						size={30 * scaleSize}
-					/>
-					<ButtonSetting
-						style={[padding.horizontal.small]}
-						textSize={15}
-						name={accountMember?.displayName || ''}
-						alone={false}
-						actionIcon={null}
-						onPress={() => {
-							navigation.navigate('Group.ChatSettingsMemberDetail', {
-								convId: publicKey,
-								memberPk: accountMember?.publicKey!,
-								displayName: accountMember?.displayName || '',
-							})
-						}}
-					/>
-				</View>
-				{Object.entries(members)
-					.filter(([, m]) => m && !m.isMe)
-					.map(([k], key) => {
-						return (
-							<View
-								style={{
-									flexDirection: 'row',
-									alignItems: 'center',
-								}}
-								key={key}
-							>
-								<MemberAvatar
-									publicKey={members[k]?.publicKey}
-									conversationPublicKey={publicKey}
-									size={30 * scaleSize}
-								/>
-								<ButtonSetting
-									style={[padding.horizontal.small]}
-									textSize={15}
-									name={members[k]?.displayName || ''}
-									alone={false}
-									actionIcon={null}
-									onPress={() => {
-										navigation.navigate('Group.ChatSettingsMemberDetail', {
-											convId: publicKey,
-											memberPk: members[k]?.publicKey!,
-											displayName: members[k]?.displayName || '',
-										})
-									}}
-								/>
-							</View>
-						)
-					})}
-			</FactionButtonSetting>
+					placeholder={`${t('chat.multi-member-settings.members-button.title')} (${membersCount})`}
+				/>
+			</View>
 			<ButtonSetting
 				name={t('chat.multi-member-settings.add-member-button')}
 				icon='user-plus'

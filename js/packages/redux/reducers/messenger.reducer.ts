@@ -359,11 +359,21 @@ export const selectConversationMembersDict = (state: LocalRootState, convPk: str
 	return membersSelectors.selectEntities(bucket?.members || initialMembers)
 }
 
-// export const selectConversationMembers = (state: LocalRootState, convPk: string) => {
-// 	const slice = selectSlice(state)
-// 	const bucket = membersBucketsSelectors.selectById(slice.membersBuckets, convPk)
-// 	return membersSelectors.selectAll(bucket?.members || initialMembers)
-// }
+export const selectConversationMembers = (state: LocalRootState, convPk: string) => {
+	const slice = selectSlice(state)
+	const bucket = membersBucketsSelectors.selectById(slice.membersBuckets, convPk)
+	const result = membersSelectors.selectAll(bucket?.members || initialMembers)
+
+	return result.sort((a, b) => {
+		if (a.isMe) {
+			return -1
+		}
+		if (b.isMe) {
+			return 1
+		}
+		return 0
+	})
+}
 
 export const selectMember = (state: LocalRootState, convPk: string, memberPk: string) => {
 	const slice = selectSlice(state)

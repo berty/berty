@@ -18,6 +18,10 @@ export const useConversationMembersDict = (convPk: string) => {
 	return useAppSelector(state => m.selectConversationMembersDict(state, convPk))
 }
 
+export const useConversationMembers = (convPk: string) => {
+	return useAppSelector(state => m.selectConversationMembers(state, convPk))
+}
+
 export const useConversationsDict = () => {
 	return useAppSelector(m.selectConversationsDict)
 }

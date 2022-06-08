@@ -1,16 +1,13 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { ScrollView, View, TouchableOpacity, Platform } from 'react-native'
+import { ScrollView, View, Platform } from 'react-native'
 import { withInAppNotification } from 'react-native-in-app-notification'
 import { useSelector } from 'react-redux'
 
 import beapi from '@berty/api'
-import { AccordionV2 } from '@berty/components/Accordion'
-import { GenericAvatar } from '@berty/components/avatars'
+import { AccountsDropdown } from '@berty/components'
 import { ButtonSettingV2, Section } from '@berty/components/shared-components'
-import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
-import { useStyles } from '@berty/contexts/styles'
 import {
 	useOnBoardingAfterClosing,
 	useImportingAccountAfterClosing,
@@ -26,78 +23,6 @@ import {
 } from '@berty/utils/accounts'
 import { pbDateToNum } from '@berty/utils/convert/time'
 
-const AccountButton: React.FC<beapi.account.IAccountMetadata> = ({
-	avatarCid,
-	publicKey,
-	name,
-	accountId,
-	error,
-}) => {
-	const colors = useThemeColor()
-	const selectedAccount = useSelector(selectSelectedAccount)
-	const selected = selectedAccount === accountId
-	const { padding, margin } = useStyles()
-	const { scaleSize } = useAppDimensions()
-	const switchAccount = useSwitchAccountAfterClosing()
-
-	const heightButton = 50
-
-	const [isHandlingPress, setIsHandlingPress] = React.useState(false)
-	const handlePress = React.useCallback(async () => {
-		if (isHandlingPress || !accountId) {
-			return
-		}
-		setIsHandlingPress(true)
-		if (selectedAccount !== accountId) {
-			switchAccount(accountId)
-		}
-		return
-	}, [accountId, isHandlingPress, selectedAccount, switchAccount])
-
-	return (
-		<TouchableOpacity
-			onPress={handlePress}
-			style={[
-				padding.left.scale(40),
-				{
-					height: heightButton * scaleSize,
-					backgroundColor: error
-						? colors['secondary-text']
-						: selected
-						? colors['positive-asset']
-						: colors['main-background'],
-				},
-			]}
-		>
-			<View style={{ flexDirection: 'row', alignItems: 'center' }}>
-				<View style={[{ height: heightButton, flexDirection: 'row', alignItems: 'center' }]}>
-					<View
-						style={{
-							flexDirection: 'row',
-							alignItems: 'center',
-						}}
-					>
-						<GenericAvatar
-							size={30 * scaleSize}
-							cid={avatarCid}
-							colorSeed={publicKey}
-							nameSeed={name}
-						/>
-					</View>
-				</View>
-				<View
-					style={[
-						margin.left.small,
-						{ height: heightButton, flexDirection: 'row', alignItems: 'center' },
-					]}
-				>
-					<UnifiedText>{name}</UnifiedText>
-				</View>
-			</View>
-		</TouchableOpacity>
-	)
-}
-
 export const Accounts: ScreenFC<'Settings.Accounts'> = withInAppNotification(
 	({ showNotification }: any) => {
 		const { scaleSize } = useAppDimensions()
@@ -108,10 +33,27 @@ export const Accounts: ScreenFC<'Settings.Accounts'> = withInAppNotification(
 		const accounts = useSelector(selectAccounts)
 		const onBoardingAfterClosing = useOnBoardingAfterClosing()
 		const importingAccountAfterClosing = useImportingAccountAfterClosing()
+		const switchAccount = useSwitchAccountAfterClosing()
+
+		const [isHandlingPress, setIsHandlingPress] = React.useState(false)
 
 		React.useEffect(() => {
 			refreshAccountList()
 		}, [])
+
+		const handlePress = React.useCallback(
+			async (item: beapi.account.IAccountMetadata) => {
+				if (isHandlingPress || !item.accountId) {
+					return
+				}
+				setIsHandlingPress(true)
+				if (selectedAccount !== item.accountId) {
+					switchAccount(item.accountId)
+				}
+				return
+			},
+			[isHandlingPress, selectedAccount, switchAccount],
+		)
 
 		return (
 			<View style={{ backgroundColor: colors['secondary-background'], flex: 1 }}>
@@ -141,13 +83,14 @@ export const Accounts: ScreenFC<'Settings.Accounts'> = withInAppNotification(
 						</Section>
 					)}
 					<Section>
-						<AccordionV2 title={t('settings.accounts.accounts-button')}>
-							{[...accounts]
-								.sort((a, b) => pbDateToNum(a.creationDate) - pbDateToNum(b.creationDate))
-								.map(account => {
-									return <AccountButton key={account.accountId} {...account} />
-								})}
-						</AccordionV2>
+						<AccountsDropdown
+							placeholder={t('settings.accounts.accounts-button')}
+							items={[...accounts].sort(
+								(a, b) => pbDateToNum(a.creationDate) - pbDateToNum(b.creationDate),
+							)}
+							defaultValue={selectedAccount}
+							onChangeItem={handlePress}
+						/>
 					</Section>
 					<Section>
 						<ButtonSettingV2
