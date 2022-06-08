@@ -109,14 +109,14 @@ jobs:
           node-version: ${{ matrix.node }}
 
       - name: Cache Go modules
-        uses: actions/cache@v2.1.6
+        uses: actions/cache@v3.0.4
         with:
           path: ~/go/pkg/mod
           key: ${{ runner.os }}-go-${{ matrix.golang }}-${{ env.json_cache-version_go }}-${{ hashFiles('go/**/go.sum') }}
           restore-keys: ${{ runner.os }}-go-${{ matrix.golang }}-${{ env.json_cache-version_go }}-
 
       - name: Cache Node modules
-        uses: actions/cache@v2.1.6
+        uses: actions/cache@v3.0.4
         with:
           path: js/node_modules
           key: ${{ runner.OS }}-node-${{ matrix.node }}-${{ env.json_cache-version_node }}-${{ hashFiles('js/yarn.lock') }}
@@ -143,21 +143,21 @@ jobs:
         run: make ios.gomobile
 
       - name: Cache XCodeGen
-        uses: actions/cache@v2.1.6
+        uses: actions/cache@v3.0.4
         with:
           path: js/vendor/xcodegen
           key: ios-xcodegen-${{ matrix.xcode }}-${{ env.json_cache-version_xcodegen }}-${{ hashFiles('js/XcodeGen.version') }}
           restore-keys: ios-xcodegen-${{ matrix.xcode }}-${{ env.json_cache-version_xcodegen }}-
 
       - name: Cache XCode project
-        uses: actions/cache@v2.1.6
+        uses: actions/cache@v3.0.4
         with:
           path: js/ios/Berty.xcodeproj
           key: ios-xcodeproj-${{ matrix.xcode }}-${{ env.json_cache-version_xcodeproj }}-${{ hashFiles('js/ios/*.yaml') }}
           restore-keys: ios-xcodeproj-${{ matrix.xcode }}-${{ env.json_cache-version_xcodeproj }}-
 
       - name: Cache Pods and XCode workspace
-        uses: actions/cache@v2.1.6
+        uses: actions/cache@v3.0.4
         with:
           path: |
             js/ios/Berty.xcworkspace
