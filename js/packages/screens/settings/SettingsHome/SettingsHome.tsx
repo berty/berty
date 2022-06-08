@@ -8,8 +8,8 @@ import { RESULTS } from 'react-native-permissions'
 import { useDispatch, useSelector } from 'react-redux'
 
 import beapi from '@berty/api'
+import { Divider, ItemMenuWithIcon, Section, ToggleMenuWithIcon } from '@berty/components'
 import { AccountAvatar } from '@berty/components/avatars'
-import { ButtonSettingV2, Section } from '@berty/components/shared-components'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useModal } from '@berty/contexts/modal.context'
@@ -193,6 +193,70 @@ export const SettingsHome: ScreenFC<'Settings.Home'> = withInAppNotification(
 			return false
 		}, [blePerm, networkConfig])
 
+		const onPressOffGridCommunication = async () => {
+			if (Platform.OS === 'ios') {
+				await checkProximityPermission({
+					setNetworkConfig: async (newConfig: beapi.account.INetworkConfig) => {
+						dispatch(setCurrentNetworkConfig(newConfig))
+					},
+					networkConfig,
+					changedKey: ['bluetoothLe', 'appleMultipeerConnectivity'],
+					navigate,
+					accept: async () => {
+						let newValue
+						newValue =
+							networkConfig?.bluetoothLe === beapi.account.NetworkConfig.Flag.Enabled
+								? beapi.account.NetworkConfig.Flag.Disabled
+								: beapi.account.NetworkConfig.Flag.Enabled
+						if (newValue === beapi.account.NetworkConfig.Flag.Disabled) {
+							newValue =
+								networkConfig?.appleMultipeerConnectivity ===
+								beapi.account.NetworkConfig.Flag.Enabled
+									? beapi.account.NetworkConfig.Flag.Disabled
+									: beapi.account.NetworkConfig.Flag.Enabled
+						}
+						dispatch(
+							setCurrentNetworkConfig({
+								...networkConfig,
+								bluetoothLe: newValue,
+								appleMultipeerConnectivity: newValue,
+							}),
+						)
+					},
+				})
+			}
+			if (Platform.OS === 'android') {
+				await checkProximityPermission({
+					setNetworkConfig: async (newConfig: beapi.account.INetworkConfig) => {
+						dispatch(setCurrentNetworkConfig(newConfig))
+					},
+					networkConfig,
+					changedKey: ['bluetoothLe', 'androidNearby'],
+					navigate,
+					accept: async () => {
+						let newValue
+						newValue =
+							networkConfig?.bluetoothLe === beapi.account.NetworkConfig.Flag.Enabled
+								? beapi.account.NetworkConfig.Flag.Disabled
+								: beapi.account.NetworkConfig.Flag.Enabled
+						if (newValue === beapi.account.NetworkConfig.Flag.Disabled) {
+							newValue =
+								networkConfig?.androidNearby === beapi.account.NetworkConfig.Flag.Enabled
+									? beapi.account.NetworkConfig.Flag.Disabled
+									: beapi.account.NetworkConfig.Flag.Enabled
+						}
+						dispatch(
+							setCurrentNetworkConfig({
+								...networkConfig,
+								bluetoothLe: newValue,
+								androidNearby: newValue,
+							}),
+						)
+					},
+				})
+			}
+		}
+
 		return (
 			<View style={{ backgroundColor: colors['secondary-background'], flex: 1, paddingTop: 20 }}>
 				<ScrollView
@@ -203,102 +267,51 @@ export const SettingsHome: ScreenFC<'Settings.Home'> = withInAppNotification(
 					<ProfileButton />
 					<Section>
 						{Platform.OS !== 'web' && networkConfig && (
-							<ButtonSettingV2
-								text={t('settings.home.proximity-button')}
-								icon='bluetooth-outline'
-								toggle={{
-									enable: true,
-									value: getOffGridCommunicationValue(),
-									action: async () => {
-										if (Platform.OS === 'ios') {
-											await checkProximityPermission({
-												setNetworkConfig: async (newConfig: beapi.account.INetworkConfig) => {
-													dispatch(setCurrentNetworkConfig(newConfig))
-												},
-												networkConfig,
-												changedKey: ['bluetoothLe', 'appleMultipeerConnectivity'],
-												navigate,
-												accept: async () => {
-													let newValue
-													newValue =
-														networkConfig?.bluetoothLe === beapi.account.NetworkConfig.Flag.Enabled
-															? beapi.account.NetworkConfig.Flag.Disabled
-															: beapi.account.NetworkConfig.Flag.Enabled
-													if (newValue === beapi.account.NetworkConfig.Flag.Disabled) {
-														newValue =
-															networkConfig?.appleMultipeerConnectivity ===
-															beapi.account.NetworkConfig.Flag.Enabled
-																? beapi.account.NetworkConfig.Flag.Disabled
-																: beapi.account.NetworkConfig.Flag.Enabled
-													}
-													dispatch(
-														setCurrentNetworkConfig({
-															...networkConfig,
-															bluetoothLe: newValue,
-															appleMultipeerConnectivity: newValue,
-														}),
-													)
-												},
-											})
-										}
-										if (Platform.OS === 'android') {
-											await checkProximityPermission({
-												setNetworkConfig: async (newConfig: beapi.account.INetworkConfig) => {
-													dispatch(setCurrentNetworkConfig(newConfig))
-												},
-												networkConfig,
-												changedKey: ['bluetoothLe', 'androidNearby'],
-												navigate,
-												accept: async () => {
-													let newValue
-													newValue =
-														networkConfig?.bluetoothLe === beapi.account.NetworkConfig.Flag.Enabled
-															? beapi.account.NetworkConfig.Flag.Disabled
-															: beapi.account.NetworkConfig.Flag.Enabled
-													if (newValue === beapi.account.NetworkConfig.Flag.Disabled) {
-														newValue =
-															networkConfig?.androidNearby ===
-															beapi.account.NetworkConfig.Flag.Enabled
-																? beapi.account.NetworkConfig.Flag.Disabled
-																: beapi.account.NetworkConfig.Flag.Enabled
-													}
-													dispatch(
-														setCurrentNetworkConfig({
-															...networkConfig,
-															bluetoothLe: newValue,
-															androidNearby: newValue,
-														}),
-													)
-												},
-											})
-										}
-									},
-								}}
-							/>
+							<>
+								<ToggleMenuWithIcon
+									iconName='bluetooth-outline'
+									isToggleOn={getOffGridCommunicationValue()}
+									onPress={onPressOffGridCommunication}
+								>
+									{t('settings.home.proximity-button')}
+								</ToggleMenuWithIcon>
+								<Divider />
+							</>
 						)}
 						{pushAvailable && (
-							<ButtonSettingV2
-								text={t('settings.home.notifications-button')}
-								icon='bell'
-								onPress={() => navigate('Settings.Notifications')}
-								toggle={{
-									enable: pushFilteringAvailable,
-									value:
-										hasKnownPushServer &&
-										numberifyLong(account.mutedUntil) < Date.now() &&
-										(permissions.notification === RESULTS.GRANTED ||
-											permissions.notification === RESULTS.LIMITED),
-									action: async () => {
-										await accountPushToggleState({
-											account,
-											messengerClient: messengerClient,
-											protocolClient: protocolClient,
-											navigate,
-											t,
-										})
-									},
-								}}
-							/>
+							<>
+								{pushFilteringAvailable ? (
+									<ToggleMenuWithIcon
+										iconName='bell'
+										isToggleOn={
+											hasKnownPushServer &&
+											numberifyLong(account.mutedUntil) < Date.now() &&
+											(permissions.notification === RESULTS.GRANTED ||
+												permissions.notification === RESULTS.LIMITED)
+										}
+										onPress={() => navigate('Settings.Notifications')}
+										onToggle={async () =>
+											accountPushToggleState({
+												account,
+												messengerClient: messengerClient,
+												protocolClient: protocolClient,
+												navigate,
+												t,
+											})
+										}
+									>
+										{t('settings.home.notifications-button')}
+									</ToggleMenuWithIcon>
+								) : (
+									<ItemMenuWithIcon
+										iconName='bell'
+										onPress={() => navigate('Settings.Notifications')}
+									>
+										{t('settings.home.notifications-button')}
+									</ItemMenuWithIcon>
+								)}
+								<Divider />
+							</>
 						)}
 						{/*
 					<ButtonSettingV2
@@ -307,11 +320,12 @@ export const SettingsHome: ScreenFC<'Settings.Home'> = withInAppNotification(
 						onPress={() => navigate('Settings.ContactAndConversations')}
 					/>
 					*/}
-						<ButtonSettingV2
-							text={t('settings.home.appearance-button')}
-							icon='eye-outline'
+						<ItemMenuWithIcon
+							iconName='eye-outline'
 							onPress={() => navigate('Settings.Appearance')}
-						/>
+						>
+							{t('settings.home.appearance-button')}
+						</ItemMenuWithIcon>
 						{/*
 					<ButtonSettingV2
 						text={t('settings.home.devices-button')}
@@ -329,34 +343,33 @@ export const SettingsHome: ScreenFC<'Settings.Home'> = withInAppNotification(
 						onPress={() => navigate('Settings.Security')}
 					/>
 					*/}
-						<ButtonSettingV2
-							text={t('settings.home.accounts-button')}
-							icon='person-outline'
+						<ItemMenuWithIcon
+							iconName='person-outline'
 							onPress={() => navigate('Settings.Accounts')}
-						/>
+						>
+							{t('settings.home.accounts-button')}
+						</ItemMenuWithIcon>
+						<Divider />
 						{networkConfig && (
-							<ButtonSettingV2
-								text={t('settings.home.network-button')}
-								icon='wifi-outline'
-								last
-								onPress={() => {
-									navigate('Settings.Network')
-								}}
-							/>
+							<ItemMenuWithIcon
+								iconName='wifi-outline'
+								onPress={() => navigate('Settings.Network')}
+							>
+								{t('settings.home.network-button')}
+							</ItemMenuWithIcon>
 						)}
 					</Section>
 					<Section>
-						<ButtonSettingV2
-							text={t('settings.home.bug-button')}
-							icon='email-outline'
-							onPress={() => generateEmail()}
-						/>
-						<ButtonSettingV2
-							text={t('settings.home.about-button')}
-							icon='info-outline'
-							last
+						<ItemMenuWithIcon iconName='email-outline' onPress={generateEmail}>
+							{t('settings.home.bug-button')}
+						</ItemMenuWithIcon>
+						<Divider />
+						<ItemMenuWithIcon
+							iconName='info-outline'
 							onPress={() => navigate('Settings.AboutBerty')}
-						/>
+						>
+							{t('settings.home.about-button')}
+						</ItemMenuWithIcon>
 					</Section>
 				</ScrollView>
 			</View>

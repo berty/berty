@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux'
 
 import beapi from '@berty/api'
 import { AccountsDropdown } from '@berty/components'
-import { ButtonSettingV2, Section } from '@berty/components/shared-components'
+import { Divider, ItemMenu, Section } from '@berty/components'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import {
 	useOnBoardingAfterClosing,
@@ -64,9 +64,7 @@ export const Accounts: ScreenFC<'Settings.Accounts'> = withInAppNotification(
 				>
 					{Platform.OS !== 'web' && (
 						<Section>
-							<ButtonSettingV2
-								text={t('settings.accounts.backup-button')}
-								last
+							<ItemMenu
 								onPress={async () => {
 									try {
 										await exportAccountToFile(selectedAccount)
@@ -79,7 +77,9 @@ export const Accounts: ScreenFC<'Settings.Accounts'> = withInAppNotification(
 										console.warn('account backup failed:', e)
 									}
 								}}
-							/>
+							>
+								{t('settings.accounts.backup-button')}
+							</ItemMenu>
 						</Section>
 					)}
 					<Section>
@@ -93,33 +93,33 @@ export const Accounts: ScreenFC<'Settings.Accounts'> = withInAppNotification(
 						/>
 					</Section>
 					<Section>
-						<ButtonSettingV2
-							text={t('settings.accounts.create-button')}
-							onPress={async () => onBoardingAfterClosing()}
-							last={Platform.OS === 'web'}
-						/>
+						<ItemMenu onPress={onBoardingAfterClosing}>
+							{t('settings.accounts.create-button')}
+						</ItemMenu>
+
 						{Platform.OS !== 'web' && (
-							<ButtonSettingV2
-								text={t('settings.accounts.import-button')}
-								onPress={async () => {
-									const filePath = await importAccountFromDocumentPicker()
-									if (!filePath) {
-										console.warn("imported file doesn't exist")
-										return
-									}
-									importingAccountAfterClosing(filePath)
-								}}
-								last
-							/>
+							<>
+								<Divider />
+								<ItemMenu
+									onPress={async () => {
+										const filePath = await importAccountFromDocumentPicker()
+										if (!filePath) {
+											console.warn("imported file doesn't exist")
+											return
+										}
+										importingAccountAfterClosing(filePath)
+									}}
+								>
+									{t('settings.accounts.import-button')}
+								</ItemMenu>
+							</>
 						)}
 						{/* <ButtonSettingV2 text={t('settings.accounts.link-button')} disabled last /> */}
 					</Section>
 					<Section>
-						<ButtonSettingV2
-							text={t('settings.accounts.delete-button')}
-							onPress={() => navigate('Settings.DeleteAccount')}
-							last
-						/>
+						<ItemMenu onPress={() => navigate('Settings.DeleteAccount')}>
+							{t('settings.accounts.delete-button')}
+						</ItemMenu>
 					</Section>
 				</ScrollView>
 			</View>

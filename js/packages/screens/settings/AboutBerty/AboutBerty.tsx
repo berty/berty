@@ -2,7 +2,7 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { ScrollView, View } from 'react-native'
 
-import { ButtonSettingV2, Section } from '@berty/components/shared-components'
+import { Divider, ItemMenuWithIcon, Section } from '@berty/components'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { ScreenFC, useNavigation } from '@berty/navigation'
 import { useThemeColor } from '@berty/store'
@@ -11,7 +11,7 @@ export const AboutBerty: ScreenFC<'Settings.AboutBerty'> = () => {
 	const { scaleSize } = useAppDimensions()
 	const colors = useThemeColor()
 	const { navigate } = useNavigation()
-	const { t }: { t: any } = useTranslation()
+	const { t } = useTranslation()
 
 	return (
 		<View style={{ backgroundColor: colors['secondary-background'], flex: 1 }}>
@@ -21,22 +21,26 @@ export const AboutBerty: ScreenFC<'Settings.AboutBerty'> = () => {
 				showsVerticalScrollIndicator={false}
 			>
 				<Section>
-					<ButtonSettingV2
-						text={t('settings.about.faq-button')}
+					<ItemMenuWithIcon
+						iconName='question-mark-circle-outline'
 						onPress={() => navigate('Settings.Faq')}
-						icon='question-mark-circle-outline'
-					/>
-					<ButtonSettingV2
-						text={t('settings.about.roadmap-button')}
-						icon='map-outline'
-						onPress={() => navigate('Settings.Roadmap')}
-					/>
-					<ButtonSettingV2
-						text={t('settings.about.policy-button')}
-						icon='lock-outline'
+					>
+						{t('settings.about.faq-button')}
+					</ItemMenuWithIcon>
+					<Divider />
+					<ItemMenuWithIcon iconName='map-outline' onPress={() => navigate('Settings.Roadmap')}>
+						{t('settings.about.roadmap-button')}
+					</ItemMenuWithIcon>
+					<Divider />
+					<ItemMenuWithIcon
+						iconName='lock-outline'
 						onPress={() => navigate('Settings.PrivacyPolicy')}
-					/>
-					<ButtonSettingV2 text={t('settings.about.license-button')} icon='info-outline' last />
+					>
+						{t('settings.about.policy-button')}
+					</ItemMenuWithIcon>
+					{/* <ItemMenuWithIcon iconName='info-outline' onPress={() => navigate('Settings.Op')}>
+						{t('settings.about.license-button')}
+					</ItemMenuWithIcon> */}
 				</Section>
 			</ScrollView>
 		</View>

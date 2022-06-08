@@ -5,10 +5,10 @@ import { ScrollView, View, Platform } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
 
 import beapi from '@berty/api'
+import { Divider, ToggleMenu, Section } from '@berty/components'
 import { AccordionV2, AccordionAddItemV2, AccordionItemV2 } from '@berty/components/Accordion'
 import { AccordionAdd } from '@berty/components/modals/AccordionAdd.modal'
 import { AccordionEdit } from '@berty/components/modals/AccordionEdit.modal'
-import { ButtonSettingV2, Section } from '@berty/components/shared-components'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { ModalProvider, useModal } from '@berty/contexts/modal.context'
 import { useAppDispatch, useAppSelector, useSyncNetworkConfigOnScreenRemoved } from '@berty/hooks'
@@ -39,7 +39,7 @@ import { IOSOnlyKeyboardAvoidingView } from '@berty/utils/react-native/keyboardA
 
 const Proximity: React.FC = () => {
 	const { navigate } = useNavigation()
-	const { t }: { t: any } = useTranslation()
+	const { t } = useTranslation()
 	const blePerm = useSelector(selectBlePerm)
 	const networkConfig = useSelector(selectEditedNetworkConfig)
 	const dispatch = useAppDispatch()
@@ -47,14 +47,13 @@ const Proximity: React.FC = () => {
 	return (
 		<Section>
 			{Platform.OS !== 'web' && (
-				<ButtonSettingV2
-					text={t('settings.network.ble-button')}
-					toggle={{
-						enable: true,
-						value:
+				<>
+					<ToggleMenu
+						isToggleOn={
 							blePerm === 'granted' &&
-							networkConfig?.bluetoothLe === beapi.account.NetworkConfig.Flag.Enabled,
-						action: async () => {
+							networkConfig?.bluetoothLe === beapi.account.NetworkConfig.Flag.Enabled
+						}
+						onPress={async () => {
 							await checkProximityPermission({
 								setNetworkConfig: async newConfig => {
 									dispatch(setCurrentNetworkConfig(newConfig))
@@ -63,20 +62,21 @@ const Proximity: React.FC = () => {
 								changedKey: ['bluetoothLe'],
 								navigate,
 							})
-						},
-					}}
-				/>
+						}}
+					>
+						{t('settings.network.ble-button')}
+					</ToggleMenu>
+					<Divider />
+				</>
 			)}
 			{Platform.OS === 'ios' && (
-				<ButtonSettingV2
-					text={t('settings.network.mc-button')}
-					toggle={{
-						enable: true,
-						value:
+				<>
+					<ToggleMenu
+						isToggleOn={
 							blePerm === 'granted' &&
-							networkConfig?.appleMultipeerConnectivity ===
-								beapi.account.NetworkConfig.Flag.Enabled,
-						action: async () => {
+							networkConfig?.appleMultipeerConnectivity === beapi.account.NetworkConfig.Flag.Enabled
+						}
+						onPress={async () => {
 							await checkProximityPermission({
 								setNetworkConfig: async newConfig => {
 									dispatch(setCurrentNetworkConfig(newConfig))
@@ -85,19 +85,21 @@ const Proximity: React.FC = () => {
 								changedKey: ['appleMultipeerConnectivity'],
 								navigate,
 							})
-						},
-					}}
-				/>
+						}}
+					>
+						{t('settings.network.mc-button')}
+					</ToggleMenu>
+					<Divider />
+				</>
 			)}
 			{Platform.OS === 'android' && (
-				<ButtonSettingV2
-					text={t('settings.network.nearby-button')}
-					toggle={{
-						enable: true,
-						value:
+				<>
+					<ToggleMenu
+						isToggleOn={
 							blePerm === 'granted' &&
-							networkConfig?.androidNearby === beapi.account.NetworkConfig.Flag.Enabled,
-						action: async () => {
+							networkConfig?.androidNearby === beapi.account.NetworkConfig.Flag.Enabled
+						}
+						onPress={async () => {
 							await checkProximityPermission({
 								setNetworkConfig: async newConfig => {
 									dispatch(setCurrentNetworkConfig(newConfig))
@@ -106,29 +108,29 @@ const Proximity: React.FC = () => {
 								changedKey: ['androidNearby'],
 								navigate,
 							})
-						},
-					}}
-				/>
+						}}
+					>
+						{t('settings.network.nearby-button')}
+					</ToggleMenu>
+					<Divider />
+				</>
 			)}
-			<ButtonSettingV2
-				text={t('settings.network.mdns-button')}
-				toggle={{
-					enable: true,
-					value: networkConfig?.mdns === beapi.account.NetworkConfig.Flag.Enabled,
-					action: async () => {
-						dispatch(
-							setCurrentNetworkConfig({
-								...networkConfig,
-								mdns:
-									networkConfig?.mdns === beapi.account.NetworkConfig.Flag.Enabled
-										? beapi.account.NetworkConfig.Flag.Disabled
-										: beapi.account.NetworkConfig.Flag.Enabled,
-							}),
-						)
-					},
+			<ToggleMenu
+				isToggleOn={networkConfig?.mdns === beapi.account.NetworkConfig.Flag.Enabled}
+				onPress={async () => {
+					dispatch(
+						setCurrentNetworkConfig({
+							...networkConfig,
+							mdns:
+								networkConfig?.mdns === beapi.account.NetworkConfig.Flag.Enabled
+									? beapi.account.NetworkConfig.Flag.Disabled
+									: beapi.account.NetworkConfig.Flag.Enabled,
+						}),
+					)
 				}}
-				last
-			/>
+			>
+				{t('settings.network.mdns-button')}
+			</ToggleMenu>
 		</Section>
 	)
 }
@@ -167,24 +169,23 @@ const NetworkBody: React.FC = () => {
 				*/}
 				<Proximity />
 				<Section>
-					<ButtonSettingV2
-						text={t('settings.network.dht-button')}
-						toggle={{
-							enable: true,
-							value: networkConfig?.dht === beapi.account.NetworkConfig.DHTFlag.DHTClient,
-							action: async () => {
-								dispatch(
-									setCurrentNetworkConfig({
-										...networkConfig,
-										dht:
-											networkConfig?.dht === beapi.account.NetworkConfig.DHTFlag.DHTClient
-												? beapi.account.NetworkConfig.DHTFlag.DHTDisabled
-												: beapi.account.NetworkConfig.DHTFlag.DHTClient,
-									}),
-								)
-							},
+					<ToggleMenu
+						isToggleOn={networkConfig?.dht === beapi.account.NetworkConfig.DHTFlag.DHTClient}
+						onPress={async () => {
+							dispatch(
+								setCurrentNetworkConfig({
+									...networkConfig,
+									dht:
+										networkConfig?.dht === beapi.account.NetworkConfig.DHTFlag.DHTClient
+											? beapi.account.NetworkConfig.DHTFlag.DHTDisabled
+											: beapi.account.NetworkConfig.DHTFlag.DHTClient,
+								}),
+							)
 						}}
-					/>
+					>
+						{t('settings.network.dht-button')}
+					</ToggleMenu>
+					<Divider />
 					<AccordionV2 title={t('settings.network.rdvp-button')}>
 						{(rendezvous || []).map(({ alias, url, isEnabled, isEditable }, index) => (
 							<AccordionItemV2

@@ -20,6 +20,7 @@ import { UnifiedText } from './UnifiedText'
 export const Section: React.FC<{}> = ({ children }) => {
 	const { margin, border, padding } = useStyles()
 	const colors = useThemeColor()
+
 	return (
 		<View style={[margin.top.large, padding.horizontal.medium]}>
 			<View

@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { ScrollView, View } from 'react-native'
 // import { useSelector, useDispatch } from 'react-redux'
 
-import { ButtonSettingV2, Section } from '@berty/components/shared-components'
+import { ItemMenu, Section } from '@berty/components'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { ScreenFC, useNavigation } from '@berty/navigation'
 import { useThemeColor } from '@berty/store'
@@ -38,11 +38,9 @@ export const Appearance: ScreenFC<'Settings.Appearance'> = () => {
 					/>
 					*/}
 					{/* TODO: replace dark toggle by a menu or a radio button:  Light, Dark, System based*/}
-					<ButtonSettingV2
-						text={t('settings.appearance.editor-button')}
-						onPress={() => navigate('Settings.ThemeEditor')}
-						last
-					/>
+					<ItemMenu onPress={() => navigate('Settings.ThemeEditor')}>
+						{t('settings.appearance.editor-button')}
+					</ItemMenu>
 				</Section>
 			</ScrollView>
 		</View>
