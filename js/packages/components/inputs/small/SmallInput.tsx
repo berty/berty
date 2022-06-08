@@ -10,15 +10,7 @@ export const SmallInput: React.FC<InputProps> = props => {
 
 	return (
 		<TouchableWrapperPriv onPress={() => input.current?.focus()} style={styles.button}>
-			<InputPriv
-				ref={input}
-				accessibilityLabel={props.accessibilityLabel}
-				autoCorrect={props.autoCorrect}
-				autoCapitalize={props.autoCapitalize}
-				value={props.value}
-				placeholder={props.placeholder}
-				onChangeText={props.onChangeText}
-			/>
+			<InputPriv ref={input} {...props} />
 		</TouchableWrapperPriv>
 	)
 }

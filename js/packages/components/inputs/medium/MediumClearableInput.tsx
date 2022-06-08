@@ -20,12 +20,9 @@ export const MediumClearableInput: React.FC<InputWithIconProps> = props => {
 			/>
 			<InputWithIconPriv
 				ref={input}
+				{...props}
 				autoCapitalize={props.autoCapitalize || 'none'}
 				autoCorrect={props.autoCorrect || false}
-				accessibilityLabel={props.accessibilityLabel}
-				value={props.value}
-				placeholder={props.placeholder}
-				onChangeText={props.onChangeText}
 			/>
 			{!!props.value && <ClearTouchablePriv onPress={() => props.onChangeText?.('')} />}
 		</TouchableWrapperWithIconPriv>

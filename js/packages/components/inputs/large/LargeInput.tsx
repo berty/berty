@@ -12,12 +12,9 @@ export const LargeInput: React.FC<InputProps> = props => {
 		<TouchableWrapperPriv onPress={() => input.current?.focus()} style={styles.container}>
 			<InputPriv
 				ref={input}
+				{...props}
 				autoCapitalize={props.autoCapitalize || 'none'}
 				autoCorrect={props.autoCorrect || false}
-				accessibilityLabel={props.accessibilityLabel}
-				value={props.value}
-				placeholder={props.placeholder}
-				onChangeText={props.onChangeText}
 			/>
 		</TouchableWrapperPriv>
 	)
