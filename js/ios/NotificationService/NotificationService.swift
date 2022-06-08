@@ -73,6 +73,11 @@ class NotificationService: UNNotificationServiceExtension {
 
         os_log("successfully decrypt push", log: oslogger)
 
+        if decrypted.muted {
+            contentHandler(UNNotificationContent())
+            return
+        }
+
         self.bestAttemptContent!.title = decrypted.title
         self.bestAttemptContent!.body = decrypted.body
 
@@ -120,16 +125,6 @@ class NotificationService: UNNotificationServiceExtension {
     }
 
     func displayFallback() {
-        let bundle = getLocalizedBundle()
-
-        let defaultPushMessage = NSLocalizedString("BertyPushMessage", tableName: nil, bundle: bundle!, value: "", comment: "default push title")
-        let defaultPushMessageError = NSLocalizedString("BertyPushMessageError", tableName: nil, bundle: bundle!, value: "", comment: "default push decryption error")
-
-        self.bestAttemptContent!.title = defaultPushMessage
-        self.bestAttemptContent!.subtitle = ""
-        self.bestAttemptContent!.body = defaultPushMessageError
-
-        // Display fallback content
-        self.contentHandler!(self.bestAttemptContent!)
+        self.contentHandler!(UNNotificationContent())
     }
 }
