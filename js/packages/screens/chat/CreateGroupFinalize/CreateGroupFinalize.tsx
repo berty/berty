@@ -1,9 +1,14 @@
 import { Layout, Icon } from '@ui-kitten/components'
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { View, TextInput, StyleSheet, ScrollView } from 'react-native'
+import { View, StyleSheet, ScrollView } from 'react-native'
 
-import { CreateGroupFooter, CreateGroupHeader, CreateGroupMemberList } from '@berty/components'
+import {
+	CreateGroupFooter,
+	CreateGroupHeader,
+	CreateGroupMemberList,
+	SmallInput,
+} from '@berty/components'
 import { ButtonSettingItem } from '@berty/components/shared-components/SettingsButtons'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
@@ -58,10 +63,10 @@ const _stylesCreateGroup = StyleSheet.create({
 	},
 })
 
-type GroupInfoProps = { onGroupNameChange: (name: string) => void }
+type GroupInfoProps = { groupName: string; setGroupName: (name: string) => void }
 
-const GroupInfo: React.FC<GroupInfoProps> = ({ onGroupNameChange }) => {
-	const { row, column, margin, flex, border, padding, text } = useStyles()
+const GroupInfo: React.FC<GroupInfoProps> = ({ groupName, setGroupName }) => {
+	const { row, column, margin, flex, padding } = useStyles()
 	const { scaleSize } = useAppDimensions()
 	const colors = useThemeColor()
 	const { t }: { t: any } = useTranslation()
@@ -86,29 +91,12 @@ const GroupInfo: React.FC<GroupInfoProps> = ({ onGroupNameChange }) => {
 						style={row.item.justify}
 					/>
 				</View>
-				<View
-					style={[
-						margin.left.medium,
-						flex.tiny,
-						row.item.justify,
-						padding.small,
-						border.radius.small,
-						{ backgroundColor: colors['input-background'] },
-					]}
-				>
-					<TextInput
-						style={[
-							margin.left.small,
-							text.light,
-							text.size.medium,
-							{
-								fontFamily: 'Open Sans',
-								color: colors['background-header'],
-							},
-						]}
+
+				<View style={[margin.left.medium, flex.tiny, row.item.justify]}>
+					<SmallInput
+						value={groupName}
+						onChangeText={setGroupName}
 						placeholder={t('main.home.create-group-finalize.placeholder')}
-						placeholderTextColor={colors['secondary-text']}
-						onChangeText={onGroupNameChange}
 						autoCorrect={false}
 					/>
 				</View>
@@ -206,7 +194,7 @@ export const CreateGroupFinalize: ScreenFC<'Chat.CreateGroupFinalize'> = () => {
 	}, [done, error, reset, reply, dispatch])
 
 	return (
-		<Layout style={[flex.tiny]}>
+		<Layout style={[flex.tiny, { backgroundColor: '#F2F2F2' }]}>
 			<IOSOnlyKeyboardAvoidingView behavior='position'>
 				<ScrollView>
 					<View style={{ backgroundColor: colors['background-header'] }}>
@@ -220,7 +208,7 @@ export const CreateGroupFinalize: ScreenFC<'Chat.CreateGroupFinalize'> = () => {
 							/>
 						</View>
 						<CreateGroupHeader title={t('main.home.create-group.group-info')}>
-							<GroupInfo onGroupNameChange={setGroupName} />
+							<GroupInfo groupName={groupName} setGroupName={setGroupName} />
 							<CreateGroupFooter
 								title={t('main.home.create-group.create-group')}
 								action={() => {

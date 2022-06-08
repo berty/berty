@@ -3,11 +3,11 @@ import React, { FC, useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View } from 'react-native'
 
-import { TextInput } from '@berty/components/shared-components/TextInput'
 import { useStyles } from '@berty/contexts/styles'
 import { useThemeColor } from '@berty/store'
 
 import { PrimaryButton } from '../buttons'
+import { LargeInput } from '../index'
 import { UnifiedText } from '../shared-components/UnifiedText'
 
 export const AccordionAdd: FC<{
@@ -16,7 +16,7 @@ export const AccordionAdd: FC<{
 	alreadyExistingUrls?: string[]
 	onSubmit: (data: { alias: string; url: string }) => void
 }> = ({ title, onSubmit, alreadyExistingAliases, alreadyExistingUrls }) => {
-	const { margin, text } = useStyles()
+	const { margin, text, padding } = useStyles()
 	const colors = useThemeColor()
 	const [alias, setAlias] = useState<string>('')
 	const [url, setUrl] = useState<string>('')
@@ -62,31 +62,36 @@ export const AccordionAdd: FC<{
 					{title}
 				</UnifiedText>
 			) : null}
-			<TextInput
-				autoCapitalize='none'
-				autoCorrect={false}
-				value={alias}
-				onChangeText={setAlias}
-				placeholder={t('onboarding.custom-mode.settings.modals.alias')}
-				containerStyle={[margin.horizontal.medium, margin.bottom.medium]}
-				error={
-					aliasAlreadyExists()
-						? t('onboarding.custom-mode.settings.modals.errors.alias-already-exists')
-						: null
-				}
-			/>
-			<TextInput
-				autoCapitalize='none'
-				autoCorrect={false}
-				value={url}
-				onChangeText={setUrl}
-				placeholder={t('onboarding.custom-mode.settings.modals.multiaddress')}
-				containerStyle={[margin.horizontal.medium, margin.bottom.medium]}
-				multiline
-				error={getUrlError(t)}
-			/>
+			<View style={[margin.horizontal.medium, margin.bottom.medium]}>
+				<LargeInput
+					value={alias}
+					onChangeText={setAlias}
+					placeholder={t('onboarding.custom-mode.settings.modals.alias')}
+				/>
+				{aliasAlreadyExists() && (
+					<View style={[padding.top.small, padding.horizontal.small]}>
+						<UnifiedText style={[text.color.red, text.size.small]}>
+							{t('onboarding.custom-mode.settings.modals.errors.alias-already-exists')}
+						</UnifiedText>
+					</View>
+				)}
+			</View>
 
-			<View style={[margin.horizontal.medium]}>
+			<View style={[margin.horizontal.medium, margin.bottom.medium]}>
+				<LargeInput
+					value={url}
+					onChangeText={setUrl}
+					placeholder={t('onboarding.custom-mode.settings.modals.multiaddress')}
+					multiline
+				/>
+				{!!getUrlError(t) && (
+					<View style={[padding.top.small, padding.horizontal.small]}>
+						<UnifiedText style={[text.color.red, text.size.small]}>{getUrlError(t)}</UnifiedText>
+					</View>
+				)}
+			</View>
+
+			<View style={[margin.horizontal.huge]}>
 				<PrimaryButton
 					onPress={() => onSubmit({ url, alias })}
 					disabled={

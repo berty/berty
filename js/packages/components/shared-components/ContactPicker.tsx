@@ -1,7 +1,7 @@
-import { CheckBox, Icon } from '@ui-kitten/components'
+import { CheckBox } from '@ui-kitten/components'
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { ScrollView, TextInput, TouchableOpacity, View } from 'react-native'
+import { ScrollView, TouchableOpacity, View } from 'react-native'
 
 import beapi from '@berty/api'
 import { berty } from '@berty/api/root.pb'
@@ -17,6 +17,7 @@ import {
 import { useThemeColor } from '@berty/store/hooks'
 
 import { ContactAvatar } from '../avatars'
+import { MediumInput } from '../index'
 import { UnifiedText } from './UnifiedText'
 
 // Styles
@@ -86,9 +87,8 @@ const ContactItem: React.FC<ContactItemProps> = ({ contact, added, separateBar =
 }
 
 export const ContactPicker: React.FC<ContactPickerProps> = ({ accountContacts }) => {
-	const { padding, row, margin, border } = useStyles()
-	const { scaleHeight, scaleSize } = useAppDimensions()
-	const colors = useThemeColor()
+	const { padding, margin } = useStyles()
+	const { scaleSize } = useAppDimensions()
 	const [searchText, setSearchText] = useState('')
 	const searchContacts = useContactSearchResults(searchText)
 	const { t }: { t: any } = useTranslation()
@@ -105,42 +105,14 @@ export const ContactPicker: React.FC<ContactPickerProps> = ({ accountContacts })
 
 	return (
 		<View
-			style={[
-				padding.horizontal.large,
-				padding.top.small,
-				{ flex: 1, backgroundColor: colors['main-background'] },
-			]}
+			style={[padding.horizontal.large, padding.top.small, { flex: 1, backgroundColor: '#F2F2F2' }]}
 		>
-			<View
-				style={[
-					padding.small,
-					row.left,
-					border.radius.medium,
-					{ backgroundColor: colors['input-background'], alignItems: 'center' },
-				]}
-			>
-				<Icon
-					name='search-outline'
-					width={30 * scaleHeight}
-					height={30 * scaleHeight}
-					fill={colors['secondary-text']}
-					style={row.item.justify}
-				/>
-				<TextInput
-					style={[
-						margin.left.small,
-						{
-							color: colors['secondary-text'],
-							paddingVertical: 8 * scaleHeight,
-							flex: 1,
-						},
-					]}
-					placeholder={t('main.home.create-group.search-placeholder')}
-					placeholderTextColor={colors['secondary-text']}
-					onChangeText={setSearchText}
-					autoCorrect={false}
-				/>
-			</View>
+			<MediumInput
+				value={searchText}
+				onChangeText={setSearchText}
+				placeholder={t('main.home.create-group.search-placeholder')}
+				iconName='search-outline'
+			/>
 
 			<ScrollView
 				contentContainerStyle={[padding.top.medium, { paddingBottom: 75 * scaleSize }]}

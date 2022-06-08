@@ -1,7 +1,7 @@
 import { BlurView } from '@react-native-community/blur'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { View, TouchableOpacity, StyleSheet, TextInput } from 'react-native'
+import { View, TouchableOpacity, StyleSheet } from 'react-native'
 import { useDispatch } from 'react-redux'
 
 import Avatar from '@berty/assets/logo/buck_berty_icon_card.svg'
@@ -10,6 +10,7 @@ import {
 	PrimaryButtonIconLeft,
 	SecondaryButtonIconLeft,
 } from '@berty/components'
+import { SmallInput } from '@berty/components'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
@@ -19,7 +20,7 @@ import { useThemeColor } from '@berty/store'
 const ThemeColorBody: React.FC<{ closeModal: () => void }> = ({ closeModal }) => {
 	const [themeName, setThemeName] = React.useState<string>('')
 	const { text, margin, padding, border } = useStyles()
-	const { scaleHeight, scaleSize } = useAppDimensions()
+	const { scaleHeight } = useAppDimensions()
 	const colors = useThemeColor()
 	const { t } = useTranslation()
 	const dispatch = useDispatch()
@@ -77,28 +78,12 @@ const ThemeColorBody: React.FC<{ closeModal: () => void }> = ({ closeModal }) =>
 						<View>
 							<UnifiedText style={[text.light]}>{t('modals.save-theme.desc')}</UnifiedText>
 						</View>
-						<View
-							style={[
-								border.radius.medium,
-								padding.left.small,
-								margin.top.medium,
-								{ backgroundColor: colors['input-background'] },
-							]}
-						>
-							<TextInput
+
+						<View style={[margin.top.medium]}>
+							<SmallInput
 								value={themeName}
-								multiline
-								onChange={({ nativeEvent }) => setThemeName(nativeEvent.text)}
-								style={[
-									text.light,
-									{
-										fontFamily: 'Open Sans',
-										color: colors['background-header'],
-										paddingRight: 12 * scaleSize,
-									},
-								]}
+								onChangeText={setThemeName}
 								placeholder={t('modals.save-theme.placeholder')}
-								placeholderTextColor={colors['secondary-text']}
 							/>
 						</View>
 					</View>
