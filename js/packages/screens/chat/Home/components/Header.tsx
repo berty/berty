@@ -100,6 +100,7 @@ export const HomeHeader: React.FC<
 								value={value}
 								onChangeText={onChange}
 								placeholder={t('main.home.input-placeholder')}
+								accessibilityLabel={t('main.home.input-placeholder')}
 								iconName='search-outline'
 							/>
 						</View>

@@ -156,6 +156,11 @@ export const Permissions: ScreenFC<'Chat.Permissions'> = ({ route: { params }, n
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [])
 
+	const altText =
+		permissionType === PermissionType.notification && !selectedAccount
+			? t('permission.skip')
+			: t('permission.cancel')
+
 	return (
 		<View style={{ flex: 1, backgroundColor: colors['background-header'] }}>
 			<StatusBar backgroundColor={colors['background-header']} barStyle='light-content' />
@@ -254,10 +259,9 @@ export const Permissions: ScreenFC<'Chat.Permissions'> = ({ route: { params }, n
 							await onComplete()
 						}
 					}}
+					accessibilityLabel={altText}
 				>
-					{permissionType === PermissionType.notification && !selectedAccount
-						? t('permission.skip')
-						: t('permission.cancel')}
+					{altText}
 				</TertiaryAltButton>
 			</View>
 		</View>

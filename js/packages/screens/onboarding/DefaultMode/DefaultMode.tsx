@@ -114,7 +114,11 @@ const DefaultModeBody: React.FC = () => {
 						<SecondaryAltButton onPress={goBack}>
 							{t('onboarding.default-mode.summary.back-button')}
 						</SecondaryAltButton>
-						<PrimaryAltButton loading={isPressed} onPress={() => setIsPressed(true)}>
+						<PrimaryAltButton
+							loading={isPressed}
+							onPress={() => setIsPressed(true)}
+							accessibilityLabel={t('onboarding.default-mode.summary.accept-button')}
+						>
 							{t('onboarding.default-mode.summary.accept-button')}
 						</PrimaryAltButton>
 					</TwoHorizontalButtons>

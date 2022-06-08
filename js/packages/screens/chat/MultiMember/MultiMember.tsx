@@ -123,6 +123,7 @@ export const MultiMember: ScreenFC<'Chat.Group'> = ({ route: { params }, navigat
 							}}
 							value={editValue}
 							onChange={({ nativeEvent }) => setEditValue(nativeEvent.text)}
+							accessibilityLabel={editValue}
 						/>
 						<TouchableOpacity onPress={editDisplayName}>
 							<Icon
