@@ -140,8 +140,6 @@ const MultiMemberSettingsBody: React.FC<{
 	const membersCount = Object.values(members).length
 	const { t } = useTranslation()
 
-	console.log('members', members)
-	console.log('members', members.length)
 	return (
 		<View style={[padding.medium]}>
 			<ButtonSetting
