@@ -223,8 +223,7 @@
 			"ocr-wont-update": "您的待處理聯繫人請求將不會被更新",
 			"save": "保存修改",
 			"cancel": "取消",
-			"name-input-placeholder": "名...",
-			"name-input-label": "名稱"
+			"name-input-placeholder": "名..."
 		},
 		"berty-services": {
 			"title": "",
