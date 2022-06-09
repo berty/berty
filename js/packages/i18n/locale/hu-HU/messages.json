@@ -223,8 +223,7 @@
 			"ocr-wont-update": "Függőben lévő kapcsolattartási kérelmei nem frissültek",
 			"save": "Változtatások mentése",
 			"cancel": "Mégse",
-			"name-input-placeholder": "Név...",
-			"name-input-label": "Név"
+			"name-input-placeholder": "Név..."
 		},
 		"berty-services": {
 			"title": "Berty szolgáltatások",
