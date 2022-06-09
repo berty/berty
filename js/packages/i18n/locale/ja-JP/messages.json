@@ -223,8 +223,7 @@
 			"ocr-wont-update": "保留中の連絡先リクエストは更新されません",
 			"save": "変更を保存",
 			"cancel": "キャンセル",
-			"name-input-placeholder": "名前...",
-			"name-input-label": "名前"
+			"name-input-placeholder": "名前..."
 		},
 		"berty-services": {
 			"title": "Berty サービス一覧",
