@@ -223,8 +223,7 @@
 			"ocr-wont-update": "Ihre ausstehenden Kontaktanfragen werden nicht aktualisiert",
 			"save": "Änderungen speichern",
 			"cancel": "Abbrechen",
-			"name-input-placeholder": "Name...",
-			"name-input-label": "Name"
+			"name-input-placeholder": "Name..."
 		},
 		"berty-services": {
 			"title": "",
