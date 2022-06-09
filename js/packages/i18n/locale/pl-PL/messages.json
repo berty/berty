@@ -223,8 +223,7 @@
 			"ocr-wont-update": "Twoje oczekujące prośby o kontakt nie zostaną zaktualizowane",
 			"save": "Zapisz zmiany",
 			"cancel": "Anuluj",
-			"name-input-placeholder": "Nazwa...",
-			"name-input-label": "Nazwa"
+			"name-input-placeholder": "Nazwa..."
 		},
 		"berty-services": {
 			"title": "",
