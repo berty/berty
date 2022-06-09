@@ -223,8 +223,7 @@
 			"ocr-wont-update": "Изчакващите ви заявки за контакт няма да бъдат актуализирани",
 			"save": "Запази промените",
 			"cancel": "Отказ",
-			"name-input-placeholder": "Име...",
-			"name-input-label": "Име"
+			"name-input-placeholder": "Име..."
 		},
 		"berty-services": {
 			"title": "",
