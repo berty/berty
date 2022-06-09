@@ -2,8 +2,8 @@ import React from 'react'
 
 import { useThemeColor } from '@berty/store'
 
+import { ItemMenuWithIconProps } from '../interfaces'
 import { FloatingItemMenuWithIconPriv } from './FloatingItemMenuWithIcon.priv'
-import { ItemMenuWithIconProps } from './interfaces'
 
 export const FloatingItemMenuWithIconBlue: React.FC<ItemMenuWithIconProps> = props => {
 	const colors = useThemeColor()

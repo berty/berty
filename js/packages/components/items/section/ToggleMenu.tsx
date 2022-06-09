@@ -2,9 +2,9 @@ import React from 'react'
 
 import { Toggle } from '@berty/components/shared-components/Toggle'
 
-import { IsToggleProps, ItemMenuProps, OnToggleMenuProps } from './interfaces'
-import { ItemMenuPriv } from './ItemMenu.priv'
-import { TextPriv } from './Text.priv'
+import { IsToggleProps, ItemMenuProps, OnToggleMenuProps } from '../interfaces'
+import { ItemMenuPriv } from '../ItemMenu.priv'
+import { TextPriv } from '../Text.priv'
 
 export const ToggleMenu: React.FC<ItemMenuProps & OnToggleMenuProps & IsToggleProps> = props => {
 	return (

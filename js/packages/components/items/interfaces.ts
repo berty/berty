@@ -15,3 +15,7 @@ export interface ToggleItemMenuWithIconProps extends ItemMenuWithIconProps, IsTo
 export interface OnToggleMenuProps {
 	onToggle?: () => void
 }
+
+export interface PackProps {
+	pack?: string
+}
