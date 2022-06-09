@@ -223,8 +223,7 @@
 			"ocr-wont-update": "Ваши ожидающие запросы в контакты не будут обновляться",
 			"save": "Сохранить изменения",
 			"cancel": "Отменить",
-			"name-input-placeholder": "Имя...",
-			"name-input-label": "Имя"
+			"name-input-placeholder": "Имя..."
 		},
 		"berty-services": {
 			"title": "Сервисы Berty",
