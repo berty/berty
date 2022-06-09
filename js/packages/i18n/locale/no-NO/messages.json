@@ -223,8 +223,7 @@
 			"ocr-wont-update": "Dine pågående kontaktforespørsler vil ikke bli oppdatert",
 			"save": "Lagre endringer",
 			"cancel": "Avbryt",
-			"name-input-placeholder": "Navn...",
-			"name-input-label": "Navn"
+			"name-input-placeholder": "Navn..."
 		},
 		"berty-services": {
 			"title": "",
