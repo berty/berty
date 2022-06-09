@@ -223,8 +223,7 @@
 			"ocr-wont-update": "Vaše nevyřízené žádosti o kontakty nebudou aktualizovány",
 			"save": "Uložit změny",
 			"cancel": "Zrušit",
-			"name-input-placeholder": "Jméno...",
-			"name-input-label": "Jméno"
+			"name-input-placeholder": "Jméno..."
 		},
 		"berty-services": {
 			"title": "",
