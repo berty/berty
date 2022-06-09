@@ -6,7 +6,7 @@ import { RESULTS } from 'react-native-permissions'
 import { useSelector } from 'react-redux'
 
 import { berty } from '@berty/api/root.pb'
-import { Divider, Section, ToggleMenu } from '@berty/components'
+import { ItemDivider, ItemSection, ToggleMenu } from '@berty/components'
 import { ConversationAvatar } from '@berty/components/avatars'
 import { ButtonSettingV2 } from '@berty/components/shared-components'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
@@ -156,7 +156,7 @@ export const Notifications: ScreenFC<'Settings.Notifications'> = () => {
 				contentContainerStyle={{ paddingBottom: 12 * scaleSize }}
 				showsVerticalScrollIndicator={false}
 			>
-				<Section>
+				<ItemSection>
 					{pushAvailable && (
 						<ToggleMenu
 							isToggleOn={pushEnabled}
@@ -175,7 +175,7 @@ export const Notifications: ScreenFC<'Settings.Notifications'> = () => {
 					)}
 					{pushEnabled && (
 						<>
-							<Divider />
+							<ItemDivider />
 							<ToggleMenu
 								isToggleOn={account.hidePushPreviews}
 								onPress={async () => {
@@ -187,7 +187,7 @@ export const Notifications: ScreenFC<'Settings.Notifications'> = () => {
 							>
 								{t('chat.push-notifications.hide-previews')}
 							</ToggleMenu>
-							<Divider />
+							<ItemDivider />
 							{pushAvailable && (
 								<ToggleMenu
 									isToggleOn={account.autoSharePushTokenFlag}
@@ -204,8 +204,8 @@ export const Notifications: ScreenFC<'Settings.Notifications'> = () => {
 							)}
 						</>
 					)}
-				</Section>
-				<Section>
+				</ItemSection>
+				<ItemSection>
 					<ToggleMenu
 						isToggleOn={!account.hideInAppNotifications}
 						onPress={async () => {
@@ -217,15 +217,13 @@ export const Notifications: ScreenFC<'Settings.Notifications'> = () => {
 					>
 						{t('chat.push-notifications.show-in-app')}
 					</ToggleMenu>
-				</Section>
+				</ItemSection>
 				{mutedConversations.length > 0 && (
-					<>
-						<Section>
-							{mutedConversations.map(c => (
-								<MutedConversationButton key={c.publicKey} conversation={c} />
-							))}
-						</Section>
-					</>
+					<ItemSection>
+						{mutedConversations.map(c => (
+							<MutedConversationButton key={c.publicKey} conversation={c} />
+						))}
+					</ItemSection>
 				)}
 			</ScrollView>
 		</View>

@@ -1,7 +1,7 @@
 import React from 'react'
 import { StyleSheet, View } from 'react-native'
 
-export const Divider = () => {
+export const ItemDivider = () => {
 	return <View style={styles.container} />
 }
 

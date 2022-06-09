@@ -509,28 +509,6 @@ export const Navigation: React.FC = React.memo(() => {
 				}}
 			/>
 			<NavigationStack.Screen
-				name={'Settings.DevicesAndBackup'}
-				component={Components.Settings.DevicesAndBackup}
-				options={{
-					headerStyle: {
-						backgroundColor: colors['secondary-background'],
-					},
-					title: t('settings.devices-backup.title'),
-					presentation: 'formSheet',
-				}}
-			/>
-			<NavigationStack.Screen
-				name={'Settings.Security'}
-				component={Components.Settings.Security}
-				options={{
-					headerStyle: {
-						backgroundColor: colors['secondary-background'],
-					},
-					title: t('settings.security.title'),
-					presentation: 'formSheet',
-				}}
-			/>
-			<NavigationStack.Screen
 				name={'Settings.Accounts'}
 				component={Components.Settings.Accounts}
 				options={{

@@ -1,11 +1,9 @@
 import React from 'react'
 import { StyleSheet, TouchableOpacity } from 'react-native'
 
-interface ItemMenuPrivProps {
-	onPress: () => void
-}
+import { ItemMenuProps } from './interfaces'
 
-export const ItemMenuPriv: React.FC<ItemMenuPrivProps> = props => {
+export const ItemMenuPriv: React.FC<ItemMenuProps> = props => {
 	return (
 		<TouchableOpacity style={styles.button} onPress={props.onPress}>
 			{props.children}

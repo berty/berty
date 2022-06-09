@@ -14,7 +14,7 @@ import { RESULTS } from 'react-native-permissions'
 import { useDispatch } from 'react-redux'
 
 import beapi from '@berty/api'
-import { FloatingToggleMenu } from '@berty/components'
+import { FloatingToggleMenuCustomPack } from '@berty/components'
 import { AccordionAdd } from '@berty/components/modals/AccordionAdd.modal'
 import { AccordionEdit } from '@berty/components/modals/AccordionEdit.modal'
 import { Toggle } from '@berty/components/shared-components/Toggle'
@@ -136,7 +136,7 @@ const Proximity: React.FC = () => {
 
 	return (
 		<View>
-			<FloatingToggleMenu
+			<FloatingToggleMenuCustomPack
 				iconName='expert-ble'
 				isToggleOn={currentNetworkConfig?.bluetoothLe === beapi.account.NetworkConfig.Flag.Enabled}
 				onPress={async () => {
@@ -151,9 +151,9 @@ const Proximity: React.FC = () => {
 				}}
 			>
 				{t('onboarding.custom-mode.settings.off-grid.ble-button')}
-			</FloatingToggleMenu>
+			</FloatingToggleMenuCustomPack>
 			{Platform.OS === 'ios' && (
-				<FloatingToggleMenu
+				<FloatingToggleMenuCustomPack
 					iconName='expert-ble'
 					isToggleOn={
 						currentNetworkConfig?.appleMultipeerConnectivity ===
@@ -171,10 +171,10 @@ const Proximity: React.FC = () => {
 					}}
 				>
 					{t('onboarding.custom-mode.settings.off-grid.mc-button')}
-				</FloatingToggleMenu>
+				</FloatingToggleMenuCustomPack>
 			)}
 			{Platform.OS === 'android' && (
-				<FloatingToggleMenu
+				<FloatingToggleMenuCustomPack
 					iconName='expert-ble'
 					isToggleOn={
 						currentNetworkConfig?.androidNearby === beapi.account.NetworkConfig.Flag.Enabled
@@ -191,9 +191,9 @@ const Proximity: React.FC = () => {
 					}}
 				>
 					{t('onboarding.custom-mode.settings.off-grid.nearby-button')}
-				</FloatingToggleMenu>
+				</FloatingToggleMenuCustomPack>
 			)}
-			<FloatingToggleMenu
+			<FloatingToggleMenuCustomPack
 				iconName='expert-setting'
 				isToggleOn={currentNetworkConfig?.mdns === beapi.account.NetworkConfig.Flag.Enabled}
 				onPress={async () => {
@@ -209,7 +209,7 @@ const Proximity: React.FC = () => {
 				}}
 			>
 				{t('onboarding.custom-mode.settings.off-grid.mdns-button')}
-			</FloatingToggleMenu>
+			</FloatingToggleMenuCustomPack>
 		</View>
 	)
 }
@@ -223,7 +223,7 @@ const Routing: React.FC<{ accordionRefs: AccordionRefsType }> = ({ accordionRefs
 
 	return (
 		<View>
-			<FloatingToggleMenu
+			<FloatingToggleMenuCustomPack
 				iconName='expert-setting'
 				isToggleOn={currentNetworkConfig?.dht === beapi.account.NetworkConfig.DHTFlag.DHTClient}
 				onPress={async () => {
@@ -239,7 +239,7 @@ const Routing: React.FC<{ accordionRefs: AccordionRefsType }> = ({ accordionRefs
 				}}
 			>
 				{t('onboarding.custom-mode.settings.routing.dht-button')}
-			</FloatingToggleMenu>
+			</FloatingToggleMenuCustomPack>
 
 			<Accordion
 				title={t('onboarding.custom-mode.settings.routing.rdvp-button')}

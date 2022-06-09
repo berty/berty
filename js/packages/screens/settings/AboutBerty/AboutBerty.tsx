@@ -2,7 +2,7 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { ScrollView, View } from 'react-native'
 
-import { Divider, ItemMenuWithIcon, Section } from '@berty/components'
+import { ItemDivider, ItemMenuWithIcon, ItemSection } from '@berty/components'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { ScreenFC, useNavigation } from '@berty/navigation'
 import { useThemeColor } from '@berty/store'
@@ -20,28 +20,29 @@ export const AboutBerty: ScreenFC<'Settings.AboutBerty'> = () => {
 				contentContainerStyle={{ paddingBottom: 12 * scaleSize }}
 				showsVerticalScrollIndicator={false}
 			>
-				<Section>
+				<ItemSection>
 					<ItemMenuWithIcon
 						iconName='question-mark-circle-outline'
 						onPress={() => navigate('Settings.Faq')}
 					>
 						{t('settings.about.faq-button')}
 					</ItemMenuWithIcon>
-					<Divider />
+					<ItemDivider />
 					<ItemMenuWithIcon iconName='map-outline' onPress={() => navigate('Settings.Roadmap')}>
 						{t('settings.about.roadmap-button')}
 					</ItemMenuWithIcon>
-					<Divider />
+					<ItemDivider />
 					<ItemMenuWithIcon
 						iconName='lock-outline'
 						onPress={() => navigate('Settings.PrivacyPolicy')}
 					>
 						{t('settings.about.policy-button')}
 					</ItemMenuWithIcon>
-					{/* <ItemMenuWithIcon iconName='info-outline' onPress={() => navigate('Settings.Op')}>
+					<ItemDivider />
+					<ItemMenuWithIcon iconName='info-outline'>
 						{t('settings.about.license-button')}
-					</ItemMenuWithIcon> */}
-				</Section>
+					</ItemMenuWithIcon>
+				</ItemSection>
 			</ScrollView>
 		</View>
 	)

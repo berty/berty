@@ -63,20 +63,22 @@ export const DropdownPriv = forwardRef(
 					onPress={toggleView}
 				>
 					{!!icon && (
-						<View style={[margin.right.medium]}>
-							<Icon
-								name={icon}
-								pack='custom'
-								fill={colors['background-header']}
-								width={25}
-								height={25}
-							/>
-						</View>
+						<Icon
+							name={icon}
+							pack='custom'
+							fill={colors['background-header']}
+							width={20}
+							height={20}
+						/>
 					)}
-					<UnifiedText>{placeholder}</UnifiedText>
+					<View style={{ width: '80%' }}>
+						<UnifiedText numberOfLines={1} style={[margin.left.small]}>
+							{placeholder}
+						</UnifiedText>
+					</View>
 					<View style={[{ flex: 1, alignItems: 'flex-end' }]}>
 						<Animated.View style={[{ transform: [{ rotate: rotateAnimation }] }]}>
-							<Icon name='arrow-ios-downward' height={25} width={25} fill='#393C63' />
+							<Icon name='arrow-ios-downward' height={20} width={20} fill='#393C63' />
 						</Animated.View>
 					</View>
 				</TouchableOpacity>

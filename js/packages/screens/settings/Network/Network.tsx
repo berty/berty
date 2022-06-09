@@ -5,7 +5,7 @@ import { ScrollView, View, Platform } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
 
 import beapi from '@berty/api'
-import { Divider, ToggleMenu, Section } from '@berty/components'
+import { ItemDivider, ToggleMenu, ItemSection } from '@berty/components'
 import { AccordionV2, AccordionAddItemV2, AccordionItemV2 } from '@berty/components/Accordion'
 import { AccordionAdd } from '@berty/components/modals/AccordionAdd.modal'
 import { AccordionEdit } from '@berty/components/modals/AccordionEdit.modal'
@@ -45,7 +45,7 @@ const Proximity: React.FC = () => {
 	const dispatch = useAppDispatch()
 
 	return (
-		<Section>
+		<ItemSection>
 			{Platform.OS !== 'web' && (
 				<>
 					<ToggleMenu
@@ -66,7 +66,7 @@ const Proximity: React.FC = () => {
 					>
 						{t('settings.network.ble-button')}
 					</ToggleMenu>
-					<Divider />
+					<ItemDivider />
 				</>
 			)}
 			{Platform.OS === 'ios' && (
@@ -89,7 +89,7 @@ const Proximity: React.FC = () => {
 					>
 						{t('settings.network.mc-button')}
 					</ToggleMenu>
-					<Divider />
+					<ItemDivider />
 				</>
 			)}
 			{Platform.OS === 'android' && (
@@ -112,7 +112,7 @@ const Proximity: React.FC = () => {
 					>
 						{t('settings.network.nearby-button')}
 					</ToggleMenu>
-					<Divider />
+					<ItemDivider />
 				</>
 			)}
 			<ToggleMenu
@@ -131,7 +131,7 @@ const Proximity: React.FC = () => {
 			>
 				{t('settings.network.mdns-button')}
 			</ToggleMenu>
-		</Section>
+		</ItemSection>
 	)
 }
 
@@ -154,7 +154,7 @@ const NetworkBody: React.FC = () => {
 				showsVerticalScrollIndicator={false}
 			>
 				{/*
-				<Section>
+				<ItemSection>
 					<ButtonSettingV2
 						text={t('settings.network.memo-cell-button')}
 						toggle={{ enable: true }}
@@ -165,10 +165,10 @@ const NetworkBody: React.FC = () => {
 						toggle={{ enable: true }}
 						disabled
 					/>
-				</Section>
+				</ItemSection>
 				*/}
 				<Proximity />
-				<Section>
+				<ItemSection>
 					<ToggleMenu
 						isToggleOn={networkConfig?.dht === beapi.account.NetworkConfig.DHTFlag.DHTClient}
 						onPress={async () => {
@@ -185,7 +185,7 @@ const NetworkBody: React.FC = () => {
 					>
 						{t('settings.network.dht-button')}
 					</ToggleMenu>
-					<Divider />
+					<ItemDivider />
 					<AccordionV2 title={t('settings.network.rdvp-button')}>
 						{(rendezvous || []).map(({ alias, url, isEnabled, isEditable }, index) => (
 							<AccordionItemV2
@@ -241,8 +241,8 @@ const NetworkBody: React.FC = () => {
 							}
 						/>
 					</AccordionV2>
-				</Section>
-				<Section>
+				</ItemSection>
+				<ItemSection>
 					<AccordionV2 title={t('settings.network.relay-button')}>
 						{(staticRelay || []).map(({ alias, url, isEnabled, isEditable }, index) => (
 							<AccordionItemV2
@@ -353,7 +353,7 @@ const NetworkBody: React.FC = () => {
 							}
 						/>
 					</AccordionV2>
-				</Section>
+				</ItemSection>
 			</ScrollView>
 		</View>
 	)

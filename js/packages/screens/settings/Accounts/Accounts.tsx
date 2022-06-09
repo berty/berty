@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux'
 
 import beapi from '@berty/api'
 import { AccountsDropdown } from '@berty/components'
-import { Divider, ItemMenu, Section } from '@berty/components'
+import { ItemDivider, ItemMenu, ItemSection } from '@berty/components'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import {
 	useOnBoardingAfterClosing,
@@ -63,7 +63,7 @@ export const Accounts: ScreenFC<'Settings.Accounts'> = withInAppNotification(
 					showsVerticalScrollIndicator={false}
 				>
 					{Platform.OS !== 'web' && (
-						<Section>
+						<ItemSection>
 							<ItemMenu
 								onPress={async () => {
 									try {
@@ -80,9 +80,9 @@ export const Accounts: ScreenFC<'Settings.Accounts'> = withInAppNotification(
 							>
 								{t('settings.accounts.backup-button')}
 							</ItemMenu>
-						</Section>
+						</ItemSection>
 					)}
-					<Section>
+					<ItemSection>
 						<AccountsDropdown
 							placeholder={t('settings.accounts.accounts-button')}
 							items={[...accounts].sort(
@@ -91,15 +91,15 @@ export const Accounts: ScreenFC<'Settings.Accounts'> = withInAppNotification(
 							defaultValue={selectedAccount}
 							onChangeItem={handlePress}
 						/>
-					</Section>
-					<Section>
+					</ItemSection>
+					<ItemSection>
 						<ItemMenu onPress={onBoardingAfterClosing}>
 							{t('settings.accounts.create-button')}
 						</ItemMenu>
 
 						{Platform.OS !== 'web' && (
 							<>
-								<Divider />
+								<ItemDivider />
 								<ItemMenu
 									onPress={async () => {
 										const filePath = await importAccountFromDocumentPicker()
@@ -115,12 +115,12 @@ export const Accounts: ScreenFC<'Settings.Accounts'> = withInAppNotification(
 							</>
 						)}
 						{/* <ButtonSettingV2 text={t('settings.accounts.link-button')} disabled last /> */}
-					</Section>
-					<Section>
+					</ItemSection>
+					<ItemSection>
 						<ItemMenu onPress={() => navigate('Settings.DeleteAccount')}>
 							{t('settings.accounts.delete-button')}
 						</ItemMenu>
-					</Section>
+					</ItemSection>
 				</ScrollView>
 			</View>
 		)

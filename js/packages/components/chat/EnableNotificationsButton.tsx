@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next'
 import { RESULTS } from 'react-native-permissions'
 import { useSelector } from 'react-redux'
 
-import { ButtonSetting } from '@berty/components/shared-components'
 import PermissionsContext from '@berty/contexts/permissions.context'
 import { useStyles } from '@berty/contexts/styles'
 import { useAccount, useConversation } from '@berty/hooks'
@@ -13,6 +12,7 @@ import { useMessengerClient } from '@berty/store'
 import { numberifyLong } from '@berty/utils/convert/long'
 import { conversationPushToggleState, pushAvailable } from '@berty/utils/notification/notif-push'
 
+import { FloatingItemMenuWithIconBlue, FloatingWhiteToggleMenu } from '../items'
 import { UnifiedText } from '../shared-components/UnifiedText'
 
 const EnableNotificationsButton: React.FC<{
@@ -54,25 +54,18 @@ const EnableNotificationsButton: React.FC<{
 	)
 	if (!pushAvailable || permissions.notification === RESULTS.UNAVAILABLE) {
 		return (
-			<ButtonSetting
-				icon='bell-outline'
-				name={t('chat.push-notifications.unsupported')}
-				actionIcon={null}
-				alone={true}
-				disabled
-			/>
+			<FloatingItemMenuWithIconBlue iconName='bell-outline'>
+				{t('chat.push-notifications.unsupported')}
+			</FloatingItemMenuWithIconBlue>
 		)
 	}
 
 	return (
 		<>
-			<ButtonSetting
-				icon='bell-outline'
-				name={t('chat.push-notifications.title')}
-				alone={true}
-				toggled={true}
-				varToggle={pushTokenShared && conversationNotMuted && pushPermissionGranted}
-				actionToggle={async () => {
+			<FloatingWhiteToggleMenu
+				iconName='bell-outline'
+				isToggleOn={pushTokenShared && conversationNotMuted && pushPermissionGranted}
+				onPress={async () => {
 					await conversationPushToggleState({
 						t,
 						messengerClient,
@@ -81,7 +74,9 @@ const EnableNotificationsButton: React.FC<{
 						navigate,
 					})
 				}}
-			/>
+			>
+				{t('chat.push-notifications.title')}
+			</FloatingWhiteToggleMenu>
 			{pushTokenShared && !pushPermissionGranted && (
 				<UnifiedText style={[padding.left.small, padding.right.small, padding.top.small]}>
 					{t('chat.push-notifications.check-device-settings')}

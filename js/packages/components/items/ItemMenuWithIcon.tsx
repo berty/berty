@@ -4,12 +4,8 @@ import React from 'react'
 import { useThemeColor } from '@berty/store'
 
 import { IconWithTextPriv } from './IconWithText.priv'
+import { ItemMenuWithIconProps } from './interfaces'
 import { ItemMenuPriv } from './ItemMenu.priv'
-
-interface ItemMenuWithIconProps {
-	onPress: () => void
-	iconName: string
-}
 
 export const ItemMenuWithIcon: React.FC<ItemMenuWithIconProps> = props => {
 	const colors = useThemeColor()

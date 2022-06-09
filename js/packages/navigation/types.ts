@@ -69,8 +69,6 @@ export type ScreensParams = {
 	'Settings.Notifications': undefined
 	'Settings.ContactAndConversations': undefined
 	'Settings.Appearance': undefined
-	'Settings.DevicesAndBackup': undefined
-	'Settings.Security': undefined
 	'Settings.Accounts': undefined
 
 	'Settings.DevTools': undefined

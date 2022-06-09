@@ -9,7 +9,7 @@ import Share from 'react-native-share'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { TextualDropdown } from '@berty/components'
-import { FloatingItemMenu } from '@berty/components'
+import { FloatingItemMenuWithIcon } from '@berty/components'
 import { useStyles } from '@berty/contexts/styles'
 import { ScreenFC } from '@berty/navigation'
 import {
@@ -71,7 +71,7 @@ const BodyFileThemeEditor: React.FC<{}> = withInAppNotification(({ showNotificat
 
 	return (
 		<View>
-			<FloatingItemMenu
+			<FloatingItemMenuWithIcon
 				iconName='color-palette-outline'
 				onPress={async () => {
 					try {
@@ -92,8 +92,8 @@ const BodyFileThemeEditor: React.FC<{}> = withInAppNotification(({ showNotificat
 				}}
 			>
 				{t('settings.theme-editor.import')}
-			</FloatingItemMenu>
-			<FloatingItemMenu
+			</FloatingItemMenuWithIcon>
+			<FloatingItemMenuWithIcon
 				iconName='color-palette-outline'
 				onPress={async () => {
 					await exportColorThemeToFile(JSON.stringify(colors), selectedTheme)
@@ -109,21 +109,21 @@ const BodyFileThemeEditor: React.FC<{}> = withInAppNotification(({ showNotificat
 				{Platform.OS === 'android'
 					? t('settings.theme-editor.export')
 					: t('settings.theme-editor.share')}
-			</FloatingItemMenu>
+			</FloatingItemMenuWithIcon>
 			{Platform.OS === 'android' && (
-				<FloatingItemMenu
+				<FloatingItemMenuWithIcon
 					iconName='color-palette-outline'
 					onPress={async () => shareColorTheme(selectedTheme)}
 				>
 					{t('settings.theme-editor.share')}
-				</FloatingItemMenu>
+				</FloatingItemMenuWithIcon>
 			)}
-			<FloatingItemMenu
+			<FloatingItemMenuWithIcon
 				iconName='color-palette-outline'
 				onPress={() => dispatch(deleteAddedThemes())}
 			>
 				{t('settings.theme-editor.delete')}
-			</FloatingItemMenu>
+			</FloatingItemMenuWithIcon>
 		</View>
 	)
 })
@@ -137,12 +137,15 @@ const BodyThemeEditor: React.FC<{ openModal: () => void }> = ({ openModal }) => 
 
 	return (
 		<View style={[padding.medium, { flex: 1 }]}>
-			<FloatingItemMenu onPress={() => dispatch(randomizeTheme())} iconName='color-palette-outline'>
+			<FloatingItemMenuWithIcon
+				onPress={() => dispatch(randomizeTheme())}
+				iconName='color-palette-outline'
+			>
 				{t('settings.theme-editor.randomize')}
-			</FloatingItemMenu>
-			<FloatingItemMenu onPress={openModal} iconName='color-palette-outline'>
+			</FloatingItemMenuWithIcon>
+			<FloatingItemMenuWithIcon onPress={openModal} iconName='color-palette-outline'>
 				{t('settings.theme-editor.save')}
-			</FloatingItemMenu>
+			</FloatingItemMenuWithIcon>
 			<View style={[margin.top.medium]}>
 				<TextualDropdown
 					items={items}

@@ -2,25 +2,17 @@ import React from 'react'
 
 import { Toggle } from '@berty/components/shared-components/Toggle'
 
-import { useToggle } from './hooks/useToggle'
+import { IsToggleProps, ItemMenuProps, OnToggleMenuProps } from './interfaces'
 import { ItemMenuPriv } from './ItemMenu.priv'
 import { TextPriv } from './Text.priv'
 
-interface ToggleMenuProps {
-	onPress: () => void
-	isToggleOn?: boolean | null
-	onToggle?: () => void
-}
-
-export const ToggleMenu: React.FC<ToggleMenuProps> = props => {
-	const isToggleOn = useToggle()
-
+export const ToggleMenu: React.FC<ItemMenuProps & OnToggleMenuProps & IsToggleProps> = props => {
 	return (
 		<ItemMenuPriv onPress={props.onPress}>
 			<TextPriv>{props.children}</TextPriv>
 			<Toggle
 				status='primary'
-				checked={isToggleOn}
+				checked={props.isToggleOn ?? false}
 				onChange={props.onToggle ? props.onToggle : props.onPress}
 			/>
 		</ItemMenuPriv>

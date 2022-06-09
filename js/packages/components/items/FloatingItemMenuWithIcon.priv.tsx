@@ -5,21 +5,21 @@ import { useStyles } from '@berty/contexts/styles'
 import { useThemeColor } from '@berty/store'
 
 import { IconWithTextPriv } from './IconWithText.priv'
+import { ItemMenuWithIconProps } from './interfaces'
 import { ItemMenuPriv } from './ItemMenu.priv'
 
-interface FloatingItemMenuProps {
-	onPress: () => void
-	iconName: string
-}
-
-export const FloatingItemMenu: React.FC<FloatingItemMenuProps> = props => {
+export const FloatingItemMenuWithIconPriv: React.FC<
+	ItemMenuWithIconProps & { color?: string; pack?: string }
+> = props => {
 	const { border } = useStyles()
 	const colors = useThemeColor()
 
 	return (
 		<View style={[{ shadowColor: colors.shadow }, border.shadow.medium, styles.container]}>
 			<ItemMenuPriv onPress={props.onPress}>
-				<IconWithTextPriv iconName={props.iconName}>{props.children}</IconWithTextPriv>
+				<IconWithTextPriv pack={props.pack} iconName={props.iconName} color={props.color}>
+					{props.children}
+				</IconWithTextPriv>
 			</ItemMenuPriv>
 		</View>
 	)
