@@ -223,8 +223,7 @@
 			"ocr-wont-update": "",
 			"save": "변경사항 저장",
 			"cancel": "취소",
-			"name-input-placeholder": "이름...",
-			"name-input-label": "이름"
+			"name-input-placeholder": "이름..."
 		},
 		"berty-services": {
 			"title": "",
