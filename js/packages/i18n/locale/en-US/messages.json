@@ -223,8 +223,7 @@
 			"ocr-wont-update": "Your pending contact requests won’t be updated",
 			"save": "Save changes",
 			"cancel": "Cancel",
-			"name-input-placeholder": "Name...",
-			"name-input-label": "Name"
+			"name-input-placeholder": "Name..."
 		},
 		"berty-services": {
 			"title": "Berty Services",
