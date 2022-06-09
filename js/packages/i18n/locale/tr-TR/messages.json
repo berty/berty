@@ -223,8 +223,7 @@
 			"ocr-wont-update": "Bekleyen iletişim istekleriniz güncellenmeyecek",
 			"save": "Değişiklikleri kaydet",
 			"cancel": "İptal",
-			"name-input-placeholder": "İsim...",
-			"name-input-label": "İsim"
+			"name-input-placeholder": "İsim..."
 		},
 		"berty-services": {
 			"title": "Berty Servisleri",
