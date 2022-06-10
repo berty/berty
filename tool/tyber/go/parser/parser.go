@@ -196,7 +196,23 @@ func (p *Parser) OpenSession(sessionID string) error {
 	return nil
 }
 
-func (p *Parser) ListSessions() {
+func (p *Parser) ListSessions() ([]*Session, error) {
+	if !p.isInitialized() {
+		return nil, errors.New("Parser is not initialized")
+	}
+
+	var sessions []*Session
+	p.sessionsLock.RLock()
+	for pair := p.sessions.Oldest(); pair != nil; {
+		sessions = append(sessions, pair.Value.(*Session))
+		pair = pair.Next()
+	}
+	p.sessionsLock.RUnlock()
+
+	return sessions, nil
+}
+
+func (p *Parser) ListSessionEvents() {
 	if p.isInitialized() {
 		var events []CreateSessionEvent
 		p.sessionsLock.RLock()

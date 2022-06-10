@@ -82,7 +82,7 @@ func runMain(args []string) error {
 			ShortHelp:   "start a log parse tool",
 			FlagSet:     fs,
 			Options:     ffCommandOptions(),
-			Subcommands: []*ffcli.Command{delete(), list(), parse()},
+			Subcommands: []*ffcli.Command{delete(), list(), parse(), analyze()},
 			Exec: func(ctx context.Context, args []string) error {
 				return runGui(ctx)
 			},
@@ -112,7 +112,7 @@ func list() *ffcli.Command {
 			defer manager.Cancel()
 
 			var sessions []parser.CreateSessionEvent
-			go manager.Parser.ListSessions()
+			go manager.Parser.ListSessionEvents()
 
 			// waiting parser returns the session list
 			select {
@@ -186,6 +186,49 @@ func parse() *ffcli.Command {
 	}
 }
 
+func analyze() *ffcli.Command {
+	fs := flag.NewFlagSet("tyber analyze [flags] <session_id>...", flag.ExitOnError)
+
+	return &ffcli.Command{
+		Name:       "analyze",
+		ShortUsage: "tyber [global flags] analyze [flags] <session_id>...",
+		ShortHelp:  "Analyze Tyber's session files",
+		Options:    ffCommandOptions(),
+		FlagSet:    fs,
+		Exec: func(ctx context.Context, args []string) error {
+			if len(args) < 2 {
+				return flag.ErrHelp
+			}
+
+			if err := manager.Init(); err != nil {
+				return err
+			}
+			defer manager.Cancel()
+
+			sessions, err := manager.Parser.ListSessions()
+			if err != nil {
+				return err
+			}
+
+			// check if session requests are available and pick sessions
+			var requestedSessions []*parser.Session
+		LOOP_ARGS:
+			for _, sessionID := range args {
+				for _, session := range sessions {
+					if session.ID == sessionID {
+						requestedSessions = append(requestedSessions, session)
+						continue LOOP_ARGS
+					}
+				}
+				return errors.New(fmt.Sprintf("session=%s is not found", sessionID))
+			}
+
+			manager.Analyzer.Analyze(requestedSessions)
+
+			return nil
+		},
+	}
+}
 func delete() *ffcli.Command {
 	fs := flag.NewFlagSet("tyber delete", flag.ExitOnError)
 	all := fs.Bool("a", false, "Delete all sessions")
