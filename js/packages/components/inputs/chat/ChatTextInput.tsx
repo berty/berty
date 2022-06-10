@@ -6,7 +6,7 @@ import { Maybe, useThemeColor } from '@berty/store'
 import { isTablet } from '@berty/utils/react-native/constants'
 
 import { InputPriv } from '../Input.priv'
-import { ReplyMessageBar } from './ReplyMessageBar.priv'
+import { ReplyMessageBar } from './reply/ReplyMessageBar.priv'
 
 interface ChatInputProps extends TextInputProps {
 	handleTabletSubmit: Maybe<() => void>
