@@ -14,7 +14,7 @@ import (
 
 func omnisearchCommand() *ffcli.Command {
 	fsBuilder := func() (*flag.FlagSet, error) {
-		fs := flag.NewFlagSet("berty omnisearch", flag.ExitOnError)
+		fs := flag.NewFlagSet("berty search", flag.ExitOnError)
 		manager.Node.Preset = initutil.VolatilePreset
 		manager.SetLogger(zap.NewNop())
 		manager.SetupLocalMessengerServerFlags(fs) // we want to configure a local messenger server
@@ -25,13 +25,13 @@ func omnisearchCommand() *ffcli.Command {
 	return &ffcli.Command{
 		Name:       "search",
 		ShortUsage: "berty [global flags] search QUERY",
-		ShortHelp:  "use omnisearch to find information about some things",
+		ShortHelp:  "use search to find information about some things",
 		LongHelp: `Currently parsers and engines available for omnisearch are :
 - Berty invite parser (parse berty's group and one to one invites)
 - Berty swiper engine (find peers (peer.AddrInfo) from their invites)
 
 Example:
-berty omnisearch https://berty.tech/id#key=CiDnVU4YlFPkjTbSggoZAWbFdAIsnuv5qoruQDyN_NB8rBIgfrT2x0wzMjiK4kBXnPYStGxW2Hssk8UyYfW8ITJbEFg&name=Example`,
+berty search https://berty.tech/id#key=CiDnVU4YlFPkjTbSggoZAWbFdAIsnuv5qoruQDyN_NB8rBIgfrT2x0wzMjiK4kBXnPYStGxW2Hssk8UyYfW8ITJbEFg&name=Example`,
 		Options:        ffSubcommandOptions(),
 		FlagSetBuilder: fsBuilder,
 		UsageFunc:      usageFunc,
