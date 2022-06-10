@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux'
 
 import beapi from '@berty/api'
 import { AccountsDropdown } from '@berty/components'
-import { ItemDivider, ItemMenu, ItemSection } from '@berty/components'
+import { DividerItem, MenuItem, SectionItem } from '@berty/components'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import {
 	useOnBoardingAfterClosing,
@@ -63,8 +63,8 @@ export const Accounts: ScreenFC<'Settings.Accounts'> = withInAppNotification(
 					showsVerticalScrollIndicator={false}
 				>
 					{Platform.OS !== 'web' && (
-						<ItemSection>
-							<ItemMenu
+						<SectionItem>
+							<MenuItem
 								onPress={async () => {
 									try {
 										await exportAccountToFile(selectedAccount)
@@ -79,10 +79,10 @@ export const Accounts: ScreenFC<'Settings.Accounts'> = withInAppNotification(
 								}}
 							>
 								{t('settings.accounts.backup-button')}
-							</ItemMenu>
-						</ItemSection>
+							</MenuItem>
+						</SectionItem>
 					)}
-					<ItemSection>
+					<SectionItem>
 						<AccountsDropdown
 							placeholder={t('settings.accounts.accounts-button')}
 							items={[...accounts].sort(
@@ -91,16 +91,16 @@ export const Accounts: ScreenFC<'Settings.Accounts'> = withInAppNotification(
 							defaultValue={selectedAccount}
 							onChangeItem={handlePress}
 						/>
-					</ItemSection>
-					<ItemSection>
-						<ItemMenu onPress={onBoardingAfterClosing}>
+					</SectionItem>
+					<SectionItem>
+						<MenuItem onPress={onBoardingAfterClosing}>
 							{t('settings.accounts.create-button')}
-						</ItemMenu>
+						</MenuItem>
 
 						{Platform.OS !== 'web' && (
 							<>
-								<ItemDivider />
-								<ItemMenu
+								<DividerItem />
+								<MenuItem
 									onPress={async () => {
 										const filePath = await importAccountFromDocumentPicker()
 										if (!filePath) {
@@ -111,16 +111,16 @@ export const Accounts: ScreenFC<'Settings.Accounts'> = withInAppNotification(
 									}}
 								>
 									{t('settings.accounts.import-button')}
-								</ItemMenu>
+								</MenuItem>
 							</>
 						)}
 						{/* <ButtonSettingV2 text={t('settings.accounts.link-button')} disabled last /> */}
-					</ItemSection>
-					<ItemSection>
-						<ItemMenu onPress={() => navigate('Settings.DeleteAccount')}>
+					</SectionItem>
+					<SectionItem>
+						<MenuItem onPress={() => navigate('Settings.DeleteAccount')}>
 							{t('settings.accounts.delete-button')}
-						</ItemMenu>
-					</ItemSection>
+						</MenuItem>
+					</SectionItem>
 				</ScrollView>
 			</View>
 		)

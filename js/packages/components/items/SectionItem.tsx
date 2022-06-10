@@ -3,7 +3,7 @@ import { StyleSheet, View } from 'react-native'
 
 import { useStyles } from '@berty/contexts/styles'
 
-export const ItemSection: React.FC<{}> = props => {
+export const SectionItem: React.FC<{}> = props => {
 	const { margin } = useStyles()
 
 	return (

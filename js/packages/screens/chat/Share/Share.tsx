@@ -20,7 +20,7 @@ import QRCode from 'react-native-qrcode-svg'
 
 import logo from '@berty/assets/images/1_berty_picto.png'
 import ScanTarget from '@berty/assets/logo/scan_target.svg'
-import { FloatingItemMenu } from '@berty/components'
+import { FloatingMenuItem } from '@berty/components'
 import { AccountAvatar } from '@berty/components/avatars'
 import { LoaderDots } from '@berty/components/LoaderDots'
 import { ButtonSettingRow } from '@berty/components/shared-components'
@@ -299,9 +299,9 @@ export const ShareModal: ScreenFC<'Chat.Share'> = () => {
 					/>
 				</ShareContainer>
 				<View style={[margin.horizontal.medium]}>
-					<FloatingItemMenu onPress={() => navigate('Chat.CreateGroupAddMembers')}>
+					<FloatingMenuItem onPress={() => navigate('Chat.CreateGroupAddMembers')}>
 						{t('settings.share.create-group')}
-					</FloatingItemMenu>
+					</FloatingMenuItem>
 					{__DEV__ && <DevLinkInput />}
 				</View>
 			</ScrollView>

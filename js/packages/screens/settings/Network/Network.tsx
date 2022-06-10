@@ -5,7 +5,7 @@ import { ScrollView, View, Platform } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
 
 import beapi from '@berty/api'
-import { ItemDivider, ToggleMenu, ItemSection } from '@berty/components'
+import { DividerItem, MenuToggle, SectionItem } from '@berty/components'
 import { AccordionV2, AccordionAddItemV2, AccordionItemV2 } from '@berty/components/Accordion'
 import { AccordionAdd } from '@berty/components/modals/AccordionAdd.modal'
 import { AccordionEdit } from '@berty/components/modals/AccordionEdit.modal'
@@ -45,10 +45,10 @@ const Proximity: React.FC = () => {
 	const dispatch = useAppDispatch()
 
 	return (
-		<ItemSection>
+		<SectionItem>
 			{Platform.OS !== 'web' && (
 				<>
-					<ToggleMenu
+					<MenuToggle
 						isToggleOn={
 							blePerm === 'granted' &&
 							networkConfig?.bluetoothLe === beapi.account.NetworkConfig.Flag.Enabled
@@ -65,13 +65,13 @@ const Proximity: React.FC = () => {
 						}}
 					>
 						{t('settings.network.ble-button')}
-					</ToggleMenu>
-					<ItemDivider />
+					</MenuToggle>
+					<DividerItem />
 				</>
 			)}
 			{Platform.OS === 'ios' && (
 				<>
-					<ToggleMenu
+					<MenuToggle
 						isToggleOn={
 							blePerm === 'granted' &&
 							networkConfig?.appleMultipeerConnectivity === beapi.account.NetworkConfig.Flag.Enabled
@@ -88,13 +88,13 @@ const Proximity: React.FC = () => {
 						}}
 					>
 						{t('settings.network.mc-button')}
-					</ToggleMenu>
-					<ItemDivider />
+					</MenuToggle>
+					<DividerItem />
 				</>
 			)}
 			{Platform.OS === 'android' && (
 				<>
-					<ToggleMenu
+					<MenuToggle
 						isToggleOn={
 							blePerm === 'granted' &&
 							networkConfig?.androidNearby === beapi.account.NetworkConfig.Flag.Enabled
@@ -111,11 +111,11 @@ const Proximity: React.FC = () => {
 						}}
 					>
 						{t('settings.network.nearby-button')}
-					</ToggleMenu>
-					<ItemDivider />
+					</MenuToggle>
+					<DividerItem />
 				</>
 			)}
-			<ToggleMenu
+			<MenuToggle
 				isToggleOn={networkConfig?.mdns === beapi.account.NetworkConfig.Flag.Enabled}
 				onPress={async () => {
 					dispatch(
@@ -130,8 +130,8 @@ const Proximity: React.FC = () => {
 				}}
 			>
 				{t('settings.network.mdns-button')}
-			</ToggleMenu>
-		</ItemSection>
+			</MenuToggle>
+		</SectionItem>
 	)
 }
 
@@ -154,7 +154,7 @@ const NetworkBody: React.FC = () => {
 				showsVerticalScrollIndicator={false}
 			>
 				{/*
-				<ItemSection>
+				<SectionItem>
 					<ButtonSettingV2
 						text={t('settings.network.memo-cell-button')}
 						toggle={{ enable: true }}
@@ -165,11 +165,11 @@ const NetworkBody: React.FC = () => {
 						toggle={{ enable: true }}
 						disabled
 					/>
-				</ItemSection>
+				</SectionItem>
 				*/}
 				<Proximity />
-				<ItemSection>
-					<ToggleMenu
+				<SectionItem>
+					<MenuToggle
 						isToggleOn={networkConfig?.dht === beapi.account.NetworkConfig.DHTFlag.DHTClient}
 						onPress={async () => {
 							dispatch(
@@ -184,8 +184,8 @@ const NetworkBody: React.FC = () => {
 						}}
 					>
 						{t('settings.network.dht-button')}
-					</ToggleMenu>
-					<ItemDivider />
+					</MenuToggle>
+					<DividerItem />
 					<AccordionV2 title={t('settings.network.rdvp-button')}>
 						{(rendezvous || []).map(({ alias, url, isEnabled, isEditable }, index) => (
 							<AccordionItemV2
@@ -241,8 +241,8 @@ const NetworkBody: React.FC = () => {
 							}
 						/>
 					</AccordionV2>
-				</ItemSection>
-				<ItemSection>
+				</SectionItem>
+				<SectionItem>
 					<AccordionV2 title={t('settings.network.relay-button')}>
 						{(staticRelay || []).map(({ alias, url, isEnabled, isEditable }, index) => (
 							<AccordionItemV2
@@ -353,7 +353,7 @@ const NetworkBody: React.FC = () => {
 							}
 						/>
 					</AccordionV2>
-				</ItemSection>
+				</SectionItem>
 			</ScrollView>
 		</View>
 	)

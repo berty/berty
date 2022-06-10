@@ -1,8 +1,8 @@
-export interface ItemMenuProps {
+export interface MenuItemProps {
 	onPress?: () => void
 }
 
-export interface ItemMenuWithIconProps extends ItemMenuProps {
+export interface MenuItemWithIconProps extends MenuItemProps {
 	iconName: string
 }
 
@@ -10,9 +10,9 @@ export interface IsToggleProps {
 	isToggleOn?: boolean | null
 }
 
-export interface ToggleItemMenuWithIconProps extends ItemMenuWithIconProps, IsToggleProps {}
+export interface ToggleMenuItemWithIconProps extends MenuItemWithIconProps, IsToggleProps {}
 
-export interface OnToggleMenuProps {
+export interface OnToggleProps {
 	onToggle?: () => void
 }
 

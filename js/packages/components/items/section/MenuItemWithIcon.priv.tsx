@@ -4,16 +4,16 @@ import React from 'react'
 import { useThemeColor } from '@berty/store'
 
 import { IconWithTextPriv } from '../IconWithText.priv'
-import { ItemMenuWithIconProps, PackProps } from '../interfaces'
-import { ItemMenuPriv } from '../ItemMenu.priv'
+import { MenuItemWithIconProps, PackProps } from '../interfaces'
+import { MenuItemPriv } from '../MenuItem.priv'
 
-export const ItemMenuWithIconPriv: React.FC<
-	ItemMenuWithIconProps & PackProps & { color?: string }
+export const MenuItemWithIconPriv: React.FC<
+	MenuItemWithIconProps & PackProps & { color?: string }
 > = props => {
 	const colors = useThemeColor()
 
 	return (
-		<ItemMenuPriv onPress={props.onPress}>
+		<MenuItemPriv onPress={props.onPress}>
 			<IconWithTextPriv
 				iconName={props.iconName}
 				pack={props.pack}
@@ -22,6 +22,6 @@ export const ItemMenuWithIconPriv: React.FC<
 				{props.children}
 			</IconWithTextPriv>
 			<Icon name='arrow-ios-forward' width={20} height={20} fill='#393C63' />
-		</ItemMenuPriv>
+		</MenuItemPriv>
 	)
 }

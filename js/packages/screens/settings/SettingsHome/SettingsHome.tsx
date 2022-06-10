@@ -8,7 +8,7 @@ import { RESULTS } from 'react-native-permissions'
 import { useDispatch, useSelector } from 'react-redux'
 
 import beapi from '@berty/api'
-import { ItemDivider, ItemMenuWithIcon, ItemSection, ToggleMenuWithIcon } from '@berty/components'
+import { DividerItem, MenuItemWithIcon, SectionItem, MenuToggleWithIcon } from '@berty/components'
 import { AccountAvatar } from '@berty/components/avatars'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
@@ -265,23 +265,23 @@ export const SettingsHome: ScreenFC<'Settings.Home'> = withInAppNotification(
 					showsVerticalScrollIndicator={false}
 				>
 					<ProfileButton />
-					<ItemSection>
+					<SectionItem>
 						{Platform.OS !== 'web' && networkConfig && (
 							<>
-								<ToggleMenuWithIcon
+								<MenuToggleWithIcon
 									iconName='bluetooth-outline'
 									isToggleOn={getOffGridCommunicationValue()}
 									onPress={onPressOffGridCommunication}
 								>
 									{t('settings.home.proximity-button')}
-								</ToggleMenuWithIcon>
-								<ItemDivider />
+								</MenuToggleWithIcon>
+								<DividerItem />
 							</>
 						)}
 						{pushAvailable && (
 							<>
 								{pushFilteringAvailable ? (
-									<ToggleMenuWithIcon
+									<MenuToggleWithIcon
 										iconName='bell-outline'
 										isToggleOn={
 											hasKnownPushServer &&
@@ -301,16 +301,16 @@ export const SettingsHome: ScreenFC<'Settings.Home'> = withInAppNotification(
 										}
 									>
 										{t('settings.home.notifications-button')}
-									</ToggleMenuWithIcon>
+									</MenuToggleWithIcon>
 								) : (
-									<ItemMenuWithIcon
+									<MenuItemWithIcon
 										iconName='bell-outline'
 										onPress={() => navigate('Settings.Notifications')}
 									>
 										{t('settings.home.notifications-button')}
-									</ItemMenuWithIcon>
+									</MenuItemWithIcon>
 								)}
-								<ItemDivider />
+								<DividerItem />
 							</>
 						)}
 						{/*
@@ -320,42 +320,42 @@ export const SettingsHome: ScreenFC<'Settings.Home'> = withInAppNotification(
 						onPress={() => navigate('Settings.ContactAndConversations')}
 					/>
 					*/}
-						<ItemMenuWithIcon
+						<MenuItemWithIcon
 							iconName='eye-outline'
 							onPress={() => navigate('Settings.Appearance')}
 						>
 							{t('settings.home.appearance-button')}
-						</ItemMenuWithIcon>
-					</ItemSection>
-					<ItemSection>
-						<ItemMenuWithIcon
+						</MenuItemWithIcon>
+					</SectionItem>
+					<SectionItem>
+						<MenuItemWithIcon
 							iconName='person-outline'
 							onPress={() => navigate('Settings.Accounts')}
 						>
 							{t('settings.home.accounts-button')}
-						</ItemMenuWithIcon>
-						<ItemDivider />
+						</MenuItemWithIcon>
+						<DividerItem />
 						{networkConfig && (
-							<ItemMenuWithIcon
+							<MenuItemWithIcon
 								iconName='wifi-outline'
 								onPress={() => navigate('Settings.Network')}
 							>
 								{t('settings.home.network-button')}
-							</ItemMenuWithIcon>
+							</MenuItemWithIcon>
 						)}
-					</ItemSection>
-					<ItemSection>
-						<ItemMenuWithIcon iconName='email-outline' onPress={generateEmail}>
+					</SectionItem>
+					<SectionItem>
+						<MenuItemWithIcon iconName='email-outline' onPress={generateEmail}>
 							{t('settings.home.bug-button')}
-						</ItemMenuWithIcon>
-						<ItemDivider />
-						<ItemMenuWithIcon
+						</MenuItemWithIcon>
+						<DividerItem />
+						<MenuItemWithIcon
 							iconName='info-outline'
 							onPress={() => navigate('Settings.AboutBerty')}
 						>
 							{t('settings.home.about-button')}
-						</ItemMenuWithIcon>
-					</ItemSection>
+						</MenuItemWithIcon>
+					</SectionItem>
 				</ScrollView>
 			</View>
 		)

@@ -4,16 +4,16 @@ import { Toggle } from '@berty/components/shared-components/Toggle'
 import { useThemeColor } from '@berty/store'
 
 import { IconWithTextPriv } from '../IconWithText.priv'
-import { OnToggleMenuProps, PackProps, ToggleItemMenuWithIconProps } from '../interfaces'
-import { ItemMenuPriv } from '../ItemMenu.priv'
+import { OnToggleProps, PackProps, ToggleMenuItemWithIconProps } from '../interfaces'
+import { MenuItemPriv } from '../MenuItem.priv'
 
-export const ToggleMenuWithIconPriv: React.FC<
-	ToggleItemMenuWithIconProps & OnToggleMenuProps & PackProps
+export const MenuToggleWithIconPriv: React.FC<
+	ToggleMenuItemWithIconProps & OnToggleProps & PackProps
 > = props => {
 	const colors = useThemeColor()
 
 	return (
-		<ItemMenuPriv onPress={props.onPress}>
+		<MenuItemPriv onPress={props.onPress}>
 			<IconWithTextPriv
 				iconName={props.iconName}
 				pack={props.pack}
@@ -26,6 +26,6 @@ export const ToggleMenuWithIconPriv: React.FC<
 				checked={props.isToggleOn ?? false}
 				onChange={props.onToggle ? props.onToggle : props.onPress}
 			/>
-		</ItemMenuPriv>
+		</MenuItemPriv>
 	)
 }

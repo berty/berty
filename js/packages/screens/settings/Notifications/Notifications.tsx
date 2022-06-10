@@ -6,7 +6,7 @@ import { RESULTS } from 'react-native-permissions'
 import { useSelector } from 'react-redux'
 
 import { berty } from '@berty/api/root.pb'
-import { ItemDivider, ItemSection, ToggleMenu } from '@berty/components'
+import { DividerItem, SectionItem, MenuToggle } from '@berty/components'
 import { ConversationAvatar } from '@berty/components/avatars'
 import { ButtonSettingV2 } from '@berty/components/shared-components'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
@@ -156,9 +156,9 @@ export const Notifications: ScreenFC<'Settings.Notifications'> = () => {
 				contentContainerStyle={{ paddingBottom: 12 * scaleSize }}
 				showsVerticalScrollIndicator={false}
 			>
-				<ItemSection>
+				<SectionItem>
 					{pushAvailable && (
-						<ToggleMenu
+						<MenuToggle
 							isToggleOn={pushEnabled}
 							onPress={async () =>
 								accountPushToggleState({
@@ -171,12 +171,12 @@ export const Notifications: ScreenFC<'Settings.Notifications'> = () => {
 							}
 						>
 							{t('chat.push-notifications.receive-push')}
-						</ToggleMenu>
+						</MenuToggle>
 					)}
 					{pushEnabled && (
 						<>
-							<ItemDivider />
-							<ToggleMenu
+							<DividerItem />
+							<MenuToggle
 								isToggleOn={account.hidePushPreviews}
 								onPress={async () => {
 									await messengerClient?.accountPushConfigure({
@@ -186,10 +186,10 @@ export const Notifications: ScreenFC<'Settings.Notifications'> = () => {
 								}}
 							>
 								{t('chat.push-notifications.hide-previews')}
-							</ToggleMenu>
-							<ItemDivider />
+							</MenuToggle>
+							<DividerItem />
 							{pushAvailable && (
-								<ToggleMenu
+								<MenuToggle
 									isToggleOn={account.autoSharePushTokenFlag}
 									onPress={async () => {
 										if (account.autoSharePushTokenFlag) {
@@ -200,13 +200,13 @@ export const Notifications: ScreenFC<'Settings.Notifications'> = () => {
 									}}
 								>
 									{t('chat.push-notifications.auto-enable')}
-								</ToggleMenu>
+								</MenuToggle>
 							)}
 						</>
 					)}
-				</ItemSection>
-				<ItemSection>
-					<ToggleMenu
+				</SectionItem>
+				<SectionItem>
+					<MenuToggle
 						isToggleOn={!account.hideInAppNotifications}
 						onPress={async () => {
 							await messengerClient?.accountPushConfigure({
@@ -216,14 +216,14 @@ export const Notifications: ScreenFC<'Settings.Notifications'> = () => {
 						}}
 					>
 						{t('chat.push-notifications.show-in-app')}
-					</ToggleMenu>
-				</ItemSection>
+					</MenuToggle>
+				</SectionItem>
 				{mutedConversations.length > 0 && (
-					<ItemSection>
+					<SectionItem>
 						{mutedConversations.map(c => (
 							<MutedConversationButton key={c.publicKey} conversation={c} />
 						))}
-					</ItemSection>
+					</SectionItem>
 				)}
 			</ScrollView>
 		</View>

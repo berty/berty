@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { RESULTS } from 'react-native-permissions'
 import { useSelector } from 'react-redux'
 
-import { FloatingItemMenuWithIconBlue, FloatingToggleMenu } from '@berty/components'
+import { FloatingMenuItemWithPrimaryIcon, FloatingMenuToggle } from '@berty/components'
 import PermissionsContext from '@berty/contexts/permissions.context'
 import { useStyles } from '@berty/contexts/styles'
 import { useAccount, useConversation } from '@berty/hooks'
@@ -54,15 +54,15 @@ const EnableNotificationsButton: React.FC<{
 	)
 	if (!pushAvailable || permissions.notification === RESULTS.UNAVAILABLE) {
 		return (
-			<FloatingItemMenuWithIconBlue iconName='bell-outline'>
+			<FloatingMenuItemWithPrimaryIcon iconName='bell-outline'>
 				{t('chat.push-notifications.unsupported')}
-			</FloatingItemMenuWithIconBlue>
+			</FloatingMenuItemWithPrimaryIcon>
 		)
 	}
 
 	return (
 		<>
-			<FloatingToggleMenu
+			<FloatingMenuToggle
 				iconName='bell-outline'
 				isToggleOn={pushTokenShared && conversationNotMuted && pushPermissionGranted}
 				onPress={async () => {
@@ -76,7 +76,7 @@ const EnableNotificationsButton: React.FC<{
 				}}
 			>
 				{t('chat.push-notifications.title')}
-			</FloatingToggleMenu>
+			</FloatingMenuToggle>
 			{pushTokenShared && !pushPermissionGranted && (
 				<UnifiedText style={[padding.left.small, padding.right.small, padding.top.small]}>
 					{t('chat.push-notifications.check-device-settings')}

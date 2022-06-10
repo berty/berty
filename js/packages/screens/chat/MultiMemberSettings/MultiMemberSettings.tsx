@@ -8,11 +8,7 @@ import QRCode from 'react-native-qrcode-svg'
 
 import beapi from '@berty/api'
 import logo from '@berty/assets/images/1_berty_picto.png'
-import {
-	FloatingItemMenuWithIconBlue,
-	FloatingItemMenuWithIconBlueCustomPack,
-	MembersDropdown,
-} from '@berty/components'
+import { FloatingMenuItemWithPrimaryIcon, MembersDropdown } from '@berty/components'
 import { MultiMemberAvatar } from '@berty/components/avatars'
 import EnableNotificationsButton from '@berty/components/chat/EnableNotificationsButton'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
@@ -145,12 +141,12 @@ const MultiMemberSettingsBody: React.FC<{
 
 	return (
 		<View style={[padding.medium]}>
-			<FloatingItemMenuWithIconBlue
+			<FloatingMenuItemWithPrimaryIcon
 				iconName='image-outline'
 				onPress={() => navigation.navigate('Chat.SharedMedias', { convPk: publicKey })}
 			>
 				{t('chat.multi-member-settings.media-button')}
-			</FloatingItemMenuWithIconBlue>
+			</FloatingMenuItemWithPrimaryIcon>
 			{Platform.OS !== 'web' && <EnableNotificationsButton conversationPk={publicKey} />}
 			<View style={{ marginTop: 20 }}>
 				<MembersDropdown
@@ -166,15 +162,16 @@ const MultiMemberSettingsBody: React.FC<{
 					placeholder={`${t('chat.multi-member-settings.members-button.title')} (${membersCount})`}
 				/>
 			</View>
-			<FloatingItemMenuWithIconBlueCustomPack
+			<FloatingMenuItemWithPrimaryIcon
+				pack='custom'
 				iconName='user-plus'
 				onPress={() =>
 					navigation.navigate('Chat.MultiMemberSettingsAddMembers', { convPK: publicKey })
 				}
 			>
 				{t('chat.multi-member-settings.add-member-button')}
-			</FloatingItemMenuWithIconBlueCustomPack>
-			<FloatingItemMenuWithIconBlue
+			</FloatingMenuItemWithPrimaryIcon>
+			<FloatingMenuItemWithPrimaryIcon
 				iconName='attach-outline'
 				onPress={
 					link
@@ -193,7 +190,7 @@ const MultiMemberSettingsBody: React.FC<{
 				}
 			>
 				{t('chat.multi-member-settings.invite-button')}
-			</FloatingItemMenuWithIconBlue>
+			</FloatingMenuItemWithPrimaryIcon>
 			{/* TODO: uncomment when replication nodes works */}
 			{/* {Platform.OS !== 'web' && (
 				<ButtonSetting
