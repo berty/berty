@@ -34,13 +34,15 @@ func (cr *ContactRequest) parseSenderStep1(trace *parser.AppTrace) error {
 		switch step.Name {
 		case "Contact request info":
 			cr.Started = step.Started
-			cr.parseReceiverPK(step.Details)
+			if err := cr.parseReceiverPK(step.Details); err != nil {
+				return err
+			}
 		case "Enqueuing contact request":
 			if err := cr.parseSenderPK(step.Details); err != nil {
 				return err
 			}
 		case "Got member device public key":
-			if err := cr.parseDevicePK(step.Details); err != nil {
+			if err := cr.parseSenderDevicePK(step.Details); err != nil {
 				return err
 			}
 		}
@@ -74,7 +76,7 @@ func (cr *ContactRequest) parseSenderPK(details []tyber.Detail) error {
 	return errors.New("member device public key not found")
 }
 
-func (cr *ContactRequest) parseDevicePK(details []tyber.Detail) error {
+func (cr *ContactRequest) parseSenderDevicePK(details []tyber.Detail) error {
 	for _, detail := range details {
 		if detail.Name == "MemberDevicePublicKey" {
 			cr.SenderDevicePK = detail.Description
