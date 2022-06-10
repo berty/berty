@@ -5,7 +5,7 @@ import { ScrollView, View, Platform } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
 
 import beapi from '@berty/api'
-import { DividerItem, MenuToggle, SectionItem } from '@berty/components'
+import { DividerItem, MenuToggle, ItemSection } from '@berty/components'
 import { AccordionV2, AccordionAddItemV2, AccordionItemV2 } from '@berty/components/Accordion'
 import { AccordionAdd } from '@berty/components/modals/AccordionAdd.modal'
 import { AccordionEdit } from '@berty/components/modals/AccordionEdit.modal'
@@ -45,7 +45,7 @@ const Proximity: React.FC = () => {
 	const dispatch = useAppDispatch()
 
 	return (
-		<SectionItem>
+		<ItemSection>
 			{Platform.OS !== 'web' && (
 				<>
 					<MenuToggle
@@ -131,7 +131,7 @@ const Proximity: React.FC = () => {
 			>
 				{t('settings.network.mdns-button')}
 			</MenuToggle>
-		</SectionItem>
+		</ItemSection>
 	)
 }
 
@@ -154,7 +154,7 @@ const NetworkBody: React.FC = () => {
 				showsVerticalScrollIndicator={false}
 			>
 				{/*
-				<SectionItem>
+				<ItemSection>
 					<ButtonSettingV2
 						text={t('settings.network.memo-cell-button')}
 						toggle={{ enable: true }}
@@ -165,10 +165,10 @@ const NetworkBody: React.FC = () => {
 						toggle={{ enable: true }}
 						disabled
 					/>
-				</SectionItem>
+				</ItemSection>
 				*/}
 				<Proximity />
-				<SectionItem>
+				<ItemSection>
 					<MenuToggle
 						isToggleOn={networkConfig?.dht === beapi.account.NetworkConfig.DHTFlag.DHTClient}
 						onPress={async () => {
@@ -241,8 +241,8 @@ const NetworkBody: React.FC = () => {
 							}
 						/>
 					</AccordionV2>
-				</SectionItem>
-				<SectionItem>
+				</ItemSection>
+				<ItemSection>
 					<AccordionV2 title={t('settings.network.relay-button')}>
 						{(staticRelay || []).map(({ alias, url, isEnabled, isEditable }, index) => (
 							<AccordionItemV2
@@ -353,7 +353,7 @@ const NetworkBody: React.FC = () => {
 							}
 						/>
 					</AccordionV2>
-				</SectionItem>
+				</ItemSection>
 			</ScrollView>
 		</View>
 	)

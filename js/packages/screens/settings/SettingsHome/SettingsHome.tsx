@@ -8,7 +8,7 @@ import { RESULTS } from 'react-native-permissions'
 import { useDispatch, useSelector } from 'react-redux'
 
 import beapi from '@berty/api'
-import { DividerItem, MenuItemWithIcon, SectionItem, MenuToggleWithIcon } from '@berty/components'
+import { DividerItem, MenuItemWithIcon, ItemSection, MenuToggleWithIcon } from '@berty/components'
 import { AccountAvatar } from '@berty/components/avatars'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
@@ -265,7 +265,7 @@ export const SettingsHome: ScreenFC<'Settings.Home'> = withInAppNotification(
 					showsVerticalScrollIndicator={false}
 				>
 					<ProfileButton />
-					<SectionItem>
+					<ItemSection>
 						{Platform.OS !== 'web' && networkConfig && (
 							<>
 								<MenuToggleWithIcon
@@ -326,8 +326,8 @@ export const SettingsHome: ScreenFC<'Settings.Home'> = withInAppNotification(
 						>
 							{t('settings.home.appearance-button')}
 						</MenuItemWithIcon>
-					</SectionItem>
-					<SectionItem>
+					</ItemSection>
+					<ItemSection>
 						<MenuItemWithIcon
 							iconName='person-outline'
 							onPress={() => navigate('Settings.Accounts')}
@@ -343,8 +343,8 @@ export const SettingsHome: ScreenFC<'Settings.Home'> = withInAppNotification(
 								{t('settings.home.network-button')}
 							</MenuItemWithIcon>
 						)}
-					</SectionItem>
-					<SectionItem>
+					</ItemSection>
+					<ItemSection>
 						<MenuItemWithIcon iconName='email-outline' onPress={generateEmail}>
 							{t('settings.home.bug-button')}
 						</MenuItemWithIcon>
@@ -355,7 +355,7 @@ export const SettingsHome: ScreenFC<'Settings.Home'> = withInAppNotification(
 						>
 							{t('settings.home.about-button')}
 						</MenuItemWithIcon>
-					</SectionItem>
+					</ItemSection>
 				</ScrollView>
 			</View>
 		)

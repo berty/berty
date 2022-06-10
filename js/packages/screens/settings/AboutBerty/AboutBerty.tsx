@@ -2,7 +2,7 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { ScrollView, View } from 'react-native'
 
-import { DividerItem, MenuItemWithIcon, SectionItem } from '@berty/components'
+import { DividerItem, MenuItemWithIcon, ItemSection } from '@berty/components'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { ScreenFC, useNavigation } from '@berty/navigation'
 import { useThemeColor } from '@berty/store'
@@ -20,7 +20,7 @@ export const AboutBerty: ScreenFC<'Settings.AboutBerty'> = () => {
 				contentContainerStyle={{ paddingBottom: 12 * scaleSize }}
 				showsVerticalScrollIndicator={false}
 			>
-				<SectionItem>
+				<ItemSection>
 					<MenuItemWithIcon
 						iconName='question-mark-circle-outline'
 						onPress={() => navigate('Settings.Faq')}
@@ -42,7 +42,7 @@ export const AboutBerty: ScreenFC<'Settings.AboutBerty'> = () => {
 					<MenuItemWithIcon iconName='info-outline'>
 						{t('settings.about.license-button')}
 					</MenuItemWithIcon>
-				</SectionItem>
+				</ItemSection>
 			</ScrollView>
 		</View>
 	)

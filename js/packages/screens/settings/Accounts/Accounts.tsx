@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux'
 
 import beapi from '@berty/api'
 import { AccountsDropdown } from '@berty/components'
-import { DividerItem, MenuItem, SectionItem } from '@berty/components'
+import { DividerItem, MenuItem, ItemSection } from '@berty/components'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import {
 	useOnBoardingAfterClosing,
@@ -63,7 +63,7 @@ export const Accounts: ScreenFC<'Settings.Accounts'> = withInAppNotification(
 					showsVerticalScrollIndicator={false}
 				>
 					{Platform.OS !== 'web' && (
-						<SectionItem>
+						<ItemSection>
 							<MenuItem
 								onPress={async () => {
 									try {
@@ -80,9 +80,9 @@ export const Accounts: ScreenFC<'Settings.Accounts'> = withInAppNotification(
 							>
 								{t('settings.accounts.backup-button')}
 							</MenuItem>
-						</SectionItem>
+						</ItemSection>
 					)}
-					<SectionItem>
+					<ItemSection>
 						<AccountsDropdown
 							placeholder={t('settings.accounts.accounts-button')}
 							items={[...accounts].sort(
@@ -91,8 +91,8 @@ export const Accounts: ScreenFC<'Settings.Accounts'> = withInAppNotification(
 							defaultValue={selectedAccount}
 							onChangeItem={handlePress}
 						/>
-					</SectionItem>
-					<SectionItem>
+					</ItemSection>
+					<ItemSection>
 						<MenuItem onPress={onBoardingAfterClosing}>
 							{t('settings.accounts.create-button')}
 						</MenuItem>
@@ -115,12 +115,12 @@ export const Accounts: ScreenFC<'Settings.Accounts'> = withInAppNotification(
 							</>
 						)}
 						{/* <ButtonSettingV2 text={t('settings.accounts.link-button')} disabled last /> */}
-					</SectionItem>
-					<SectionItem>
+					</ItemSection>
+					<ItemSection>
 						<MenuItem onPress={() => navigate('Settings.DeleteAccount')}>
 							{t('settings.accounts.delete-button')}
 						</MenuItem>
-					</SectionItem>
+					</ItemSection>
 				</ScrollView>
 			</View>
 		)

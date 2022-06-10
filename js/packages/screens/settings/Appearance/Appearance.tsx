@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { ScrollView, View } from 'react-native'
 // import { useSelector, useDispatch } from 'react-redux'
 
-import { MenuItem, SectionItem } from '@berty/components'
+import { MenuItem, ItemSection } from '@berty/components'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { ScreenFC, useNavigation } from '@berty/navigation'
 import { useThemeColor } from '@berty/store'
@@ -24,7 +24,7 @@ export const Appearance: ScreenFC<'Settings.Appearance'> = () => {
 				contentContainerStyle={{ paddingBottom: 12 * scaleSize }}
 				showsVerticalScrollIndicator={false}
 			>
-				<SectionItem>
+				<ItemSection>
 					{/*
 					<ButtonSettingV2
 						text={t('settings.appearance.dark-button')}
@@ -41,7 +41,7 @@ export const Appearance: ScreenFC<'Settings.Appearance'> = () => {
 					<MenuItem onPress={() => navigate('Settings.ThemeEditor')}>
 						{t('settings.appearance.editor-button')}
 					</MenuItem>
-				</SectionItem>
+				</ItemSection>
 			</ScrollView>
 		</View>
 	)

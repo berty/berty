@@ -6,7 +6,7 @@ import { RESULTS } from 'react-native-permissions'
 import { useSelector } from 'react-redux'
 
 import { berty } from '@berty/api/root.pb'
-import { DividerItem, SectionItem, MenuToggle } from '@berty/components'
+import { DividerItem, ItemSection, MenuToggle } from '@berty/components'
 import { ConversationAvatar } from '@berty/components/avatars'
 import { ButtonSettingV2 } from '@berty/components/shared-components'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
@@ -156,7 +156,7 @@ export const Notifications: ScreenFC<'Settings.Notifications'> = () => {
 				contentContainerStyle={{ paddingBottom: 12 * scaleSize }}
 				showsVerticalScrollIndicator={false}
 			>
-				<SectionItem>
+				<ItemSection>
 					{pushAvailable && (
 						<MenuToggle
 							isToggleOn={pushEnabled}
@@ -204,8 +204,8 @@ export const Notifications: ScreenFC<'Settings.Notifications'> = () => {
 							)}
 						</>
 					)}
-				</SectionItem>
-				<SectionItem>
+				</ItemSection>
+				<ItemSection>
 					<MenuToggle
 						isToggleOn={!account.hideInAppNotifications}
 						onPress={async () => {
@@ -217,13 +217,13 @@ export const Notifications: ScreenFC<'Settings.Notifications'> = () => {
 					>
 						{t('chat.push-notifications.show-in-app')}
 					</MenuToggle>
-				</SectionItem>
+				</ItemSection>
 				{mutedConversations.length > 0 && (
-					<SectionItem>
+					<ItemSection>
 						{mutedConversations.map(c => (
 							<MutedConversationButton key={c.publicKey} conversation={c} />
 						))}
-					</SectionItem>
+					</ItemSection>
 				)}
 			</ScrollView>
 		</View>

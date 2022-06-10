@@ -1,4 +1,4 @@
-export { SectionItem } from './SectionItem'
+export { ItemSection } from './ItemSection'
 export { DividerItem } from './DividerItem'
 export { MenuItem } from './section/MenuItem'
 export { MenuItemWithIcon } from './section/MenuItemWithIcon'
