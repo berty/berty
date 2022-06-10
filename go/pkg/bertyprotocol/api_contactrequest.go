@@ -84,6 +84,8 @@ func (s *service) ContactRequestSend(ctx context.Context, req *protocoltypes.Con
 	ctx, _, endSection := tyber.Section(ctx, s.logger, "Sending contact request")
 	defer func() { endSection(err, "") }()
 
+	s.logger.Debug("Contact request info", tyber.FormatStepLogFields(ctx, []tyber.Detail{}, tyber.WithJSONDetail("Request", req))...)
+
 	shareableContact := req.Contact
 	if shareableContact == nil {
 		return nil, errcode.ErrInvalidInput

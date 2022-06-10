@@ -244,7 +244,7 @@ func (d *DBWrapper) AddConversationForContact(groupPK, ownMemberPK, ownDevicePK,
 	if err != nil {
 		return nil, err
 	}
-	d.logStep("Maybed added conversation to db", tyber.WithJSONDetail("ConversationToSave", conversation), tyber.WithJSONDetail("FinalConversation", finalConv))
+	d.logStep("Maybe added conversation to db", tyber.WithJSONDetail("ConversationToSave", conversation), tyber.WithJSONDetail("FinalConversation", finalConv))
 	return finalConv, nil
 }
 
