@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux'
 
 import beapi from '@berty/api'
 import { AccountsDropdown } from '@berty/components'
-import { ButtonSettingV2, Section } from '@berty/components/shared-components'
+import { DividerItem, MenuItem, ItemSection } from '@berty/components'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import {
 	useOnBoardingAfterClosing,
@@ -63,10 +63,8 @@ export const Accounts: ScreenFC<'Settings.Accounts'> = withInAppNotification(
 					showsVerticalScrollIndicator={false}
 				>
 					{Platform.OS !== 'web' && (
-						<Section>
-							<ButtonSettingV2
-								text={t('settings.accounts.backup-button')}
-								last
+						<ItemSection>
+							<MenuItem
 								onPress={async () => {
 									try {
 										await exportAccountToFile(selectedAccount)
@@ -79,10 +77,12 @@ export const Accounts: ScreenFC<'Settings.Accounts'> = withInAppNotification(
 										console.warn('account backup failed:', e)
 									}
 								}}
-							/>
-						</Section>
+							>
+								{t('settings.accounts.backup-button')}
+							</MenuItem>
+						</ItemSection>
 					)}
-					<Section>
+					<ItemSection>
 						<AccountsDropdown
 							placeholder={t('settings.accounts.accounts-button')}
 							items={[...accounts].sort(
@@ -91,36 +91,36 @@ export const Accounts: ScreenFC<'Settings.Accounts'> = withInAppNotification(
 							defaultValue={selectedAccount}
 							onChangeItem={handlePress}
 						/>
-					</Section>
-					<Section>
-						<ButtonSettingV2
-							text={t('settings.accounts.create-button')}
-							onPress={async () => onBoardingAfterClosing()}
-							last={Platform.OS === 'web'}
-						/>
+					</ItemSection>
+					<ItemSection>
+						<MenuItem onPress={onBoardingAfterClosing}>
+							{t('settings.accounts.create-button')}
+						</MenuItem>
+
 						{Platform.OS !== 'web' && (
-							<ButtonSettingV2
-								text={t('settings.accounts.import-button')}
-								onPress={async () => {
-									const filePath = await importAccountFromDocumentPicker()
-									if (!filePath) {
-										console.warn("imported file doesn't exist")
-										return
-									}
-									importingAccountAfterClosing(filePath)
-								}}
-								last
-							/>
+							<>
+								<DividerItem />
+								<MenuItem
+									onPress={async () => {
+										const filePath = await importAccountFromDocumentPicker()
+										if (!filePath) {
+											console.warn("imported file doesn't exist")
+											return
+										}
+										importingAccountAfterClosing(filePath)
+									}}
+								>
+									{t('settings.accounts.import-button')}
+								</MenuItem>
+							</>
 						)}
 						{/* <ButtonSettingV2 text={t('settings.accounts.link-button')} disabled last /> */}
-					</Section>
-					<Section>
-						<ButtonSettingV2
-							text={t('settings.accounts.delete-button')}
-							onPress={() => navigate('Settings.DeleteAccount')}
-							last
-						/>
-					</Section>
+					</ItemSection>
+					<ItemSection>
+						<MenuItem onPress={() => navigate('Settings.DeleteAccount')}>
+							{t('settings.accounts.delete-button')}
+						</MenuItem>
+					</ItemSection>
 				</ScrollView>
 			</View>
 		)

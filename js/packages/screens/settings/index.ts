@@ -12,8 +12,6 @@ export { Network } from './Network/Network'
 export { Notifications } from './Notifications/Notifications'
 export { ContactAndConversations } from './ContactAndConversations/ContactAndConversations'
 export { Appearance } from './Appearance/Appearance'
-export { DevicesAndBackup } from './DevicesAndBackup/DevicesAndBackup'
-export { Security } from './Security/Security'
 export { Accounts } from './Accounts/Accounts'
 
 export { DevTools } from './DevTools/DevTools'

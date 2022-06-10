@@ -14,9 +14,9 @@ import { RESULTS } from 'react-native-permissions'
 import { useDispatch } from 'react-redux'
 
 import beapi from '@berty/api'
+import { FloatingMenuToggleAlt } from '@berty/components'
 import { AccordionAdd } from '@berty/components/modals/AccordionAdd.modal'
 import { AccordionEdit } from '@berty/components/modals/AccordionEdit.modal'
-import { ButtonSetting } from '@berty/components/shared-components'
 import { Toggle } from '@berty/components/shared-components/Toggle'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
@@ -129,7 +129,6 @@ const ConfigPart: React.FC<{
 }
 
 const Proximity: React.FC = () => {
-	const colors = useThemeColor()
 	const { t } = useTranslation()
 	const { navigate } = useNavigation()
 	const dispatch = useDispatch()
@@ -137,18 +136,11 @@ const Proximity: React.FC = () => {
 
 	return (
 		<View>
-			<ButtonSetting
-				name={t('onboarding.custom-mode.settings.off-grid.ble-button')}
-				color={colors['main-text']}
-				icon='expert-ble'
-				iconPack='custom'
-				iconColor='#6E6DFF'
-				actionIconColor={colors['main-text']}
-				backgroundColor={colors['input-background']}
-				toggled
-				toggleStatus='secondary'
-				varToggle={currentNetworkConfig?.bluetoothLe === beapi.account.NetworkConfig.Flag.Enabled}
-				actionToggle={async () => {
+			<FloatingMenuToggleAlt
+				pack='custom'
+				iconName='expert-ble'
+				isToggleOn={currentNetworkConfig?.bluetoothLe === beapi.account.NetworkConfig.Flag.Enabled}
+				onPress={async () => {
 					await checkProximityPermission({
 						setNetworkConfig: async (newConfig: beapi.account.INetworkConfig) => {
 							dispatch(setCurrentNetworkConfig(newConfig))
@@ -158,23 +150,18 @@ const Proximity: React.FC = () => {
 						navigate,
 					})
 				}}
-			/>
+			>
+				{t('onboarding.custom-mode.settings.off-grid.ble-button')}
+			</FloatingMenuToggleAlt>
 			{Platform.OS === 'ios' && (
-				<ButtonSetting
-					name={t('onboarding.custom-mode.settings.off-grid.mc-button')}
-					color={colors['main-text']}
-					icon='expert-ble'
-					iconPack='custom'
-					iconColor='#6E6DFF'
-					actionIconColor={colors['main-text']}
-					backgroundColor={colors['input-background']}
-					toggled
-					toggleStatus='secondary'
-					varToggle={
+				<FloatingMenuToggleAlt
+					pack='custom'
+					iconName='expert-ble'
+					isToggleOn={
 						currentNetworkConfig?.appleMultipeerConnectivity ===
 						beapi.account.NetworkConfig.Flag.Enabled
 					}
-					actionToggle={async () => {
+					onPress={async () => {
 						await checkProximityPermission({
 							setNetworkConfig: async (newConfig: beapi.account.INetworkConfig) => {
 								dispatch(setCurrentNetworkConfig(newConfig))
@@ -184,23 +171,18 @@ const Proximity: React.FC = () => {
 							navigate,
 						})
 					}}
-				/>
+				>
+					{t('onboarding.custom-mode.settings.off-grid.mc-button')}
+				</FloatingMenuToggleAlt>
 			)}
 			{Platform.OS === 'android' && (
-				<ButtonSetting
-					name={t('onboarding.custom-mode.settings.off-grid.nearby-button')}
-					color={colors['main-text']}
-					icon='expert-ble'
-					iconPack='custom'
-					iconColor='#6E6DFF'
-					actionIconColor={colors['main-text']}
-					backgroundColor={colors['input-background']}
-					toggled
-					toggleStatus='secondary'
-					varToggle={
+				<FloatingMenuToggleAlt
+					pack='custom'
+					iconName='expert-ble'
+					isToggleOn={
 						currentNetworkConfig?.androidNearby === beapi.account.NetworkConfig.Flag.Enabled
 					}
-					actionToggle={async () => {
+					onPress={async () => {
 						await checkProximityPermission({
 							setNetworkConfig: async (newConfig: beapi.account.INetworkConfig) => {
 								dispatch(setCurrentNetworkConfig(newConfig))
@@ -210,20 +192,15 @@ const Proximity: React.FC = () => {
 							navigate,
 						})
 					}}
-				/>
+				>
+					{t('onboarding.custom-mode.settings.off-grid.nearby-button')}
+				</FloatingMenuToggleAlt>
 			)}
-			<ButtonSetting
-				name={t('onboarding.custom-mode.settings.off-grid.mdns-button')}
-				color={colors['main-text']}
-				icon='expert-setting'
-				iconPack='custom'
-				iconColor='#6E6DFF'
-				actionIconColor={colors['main-text']}
-				backgroundColor={colors['input-background']}
-				toggled
-				toggleStatus='secondary'
-				varToggle={currentNetworkConfig?.mdns === beapi.account.NetworkConfig.Flag.Enabled}
-				actionToggle={async () => {
+			<FloatingMenuToggleAlt
+				pack='custom'
+				iconName='expert-setting'
+				isToggleOn={currentNetworkConfig?.mdns === beapi.account.NetworkConfig.Flag.Enabled}
+				onPress={async () => {
 					dispatch(
 						setCurrentNetworkConfig({
 							...currentNetworkConfig,
@@ -234,13 +211,14 @@ const Proximity: React.FC = () => {
 						}),
 					)
 				}}
-			/>
+			>
+				{t('onboarding.custom-mode.settings.off-grid.mdns-button')}
+			</FloatingMenuToggleAlt>
 		</View>
 	)
 }
 
 const Routing: React.FC<{ accordionRefs: AccordionRefsType }> = ({ accordionRefs }) => {
-	const colors = useThemeColor()
 	const { t } = useTranslation()
 	const dispatch = useAppDispatch()
 	const { hide, show } = useModal()
@@ -249,18 +227,11 @@ const Routing: React.FC<{ accordionRefs: AccordionRefsType }> = ({ accordionRefs
 
 	return (
 		<View>
-			<ButtonSetting
-				name={t('onboarding.custom-mode.settings.routing.dht-button')}
-				color={colors['main-text']}
-				icon='expert-setting'
-				iconPack='custom'
-				iconColor='#6E6DFF'
-				actionIconColor={colors['main-text']}
-				backgroundColor={colors['input-background']}
-				toggled
-				toggleStatus='secondary'
-				varToggle={currentNetworkConfig?.dht === beapi.account.NetworkConfig.DHTFlag.DHTClient}
-				actionToggle={async () => {
+			<FloatingMenuToggleAlt
+				pack='custom'
+				iconName='expert-setting'
+				isToggleOn={currentNetworkConfig?.dht === beapi.account.NetworkConfig.DHTFlag.DHTClient}
+				onPress={async () => {
 					dispatch(
 						setCurrentNetworkConfig({
 							...currentNetworkConfig,
@@ -271,7 +242,10 @@ const Routing: React.FC<{ accordionRefs: AccordionRefsType }> = ({ accordionRefs
 						}),
 					)
 				}}
-			/>
+			>
+				{t('onboarding.custom-mode.settings.routing.dht-button')}
+			</FloatingMenuToggleAlt>
+
 			<Accordion
 				title={t('onboarding.custom-mode.settings.routing.rdvp-button')}
 				icon='privacy'

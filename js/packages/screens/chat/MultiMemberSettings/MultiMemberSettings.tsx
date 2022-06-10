@@ -8,10 +8,9 @@ import QRCode from 'react-native-qrcode-svg'
 
 import beapi from '@berty/api'
 import logo from '@berty/assets/images/1_berty_picto.png'
-import { MembersDropdown } from '@berty/components'
+import { FloatingMenuItemWithPrimaryIcon, MembersDropdown } from '@berty/components'
 import { MultiMemberAvatar } from '@berty/components/avatars'
 import EnableNotificationsButton from '@berty/components/chat/EnableNotificationsButton'
-import { ButtonSetting } from '@berty/components/shared-components/SettingsButtons'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
@@ -135,20 +134,21 @@ const MultiMemberSettingsBody: React.FC<{
 	link: string
 	navigation: ComponentProps<typeof MultiMemberSettings>['navigation']
 }> = ({ publicKey, link, navigation }) => {
-	const { padding, margin } = useStyles()
+	const { padding } = useStyles()
 	const members = useConversationMembers(publicKey)
 	const membersCount = Object.values(members).length
 	const { t } = useTranslation()
 
 	return (
 		<View style={[padding.medium]}>
-			<ButtonSetting
-				name={t('chat.multi-member-settings.media-button')}
-				icon='image-outline'
+			<FloatingMenuItemWithPrimaryIcon
+				iconName='image-outline'
 				onPress={() => navigation.navigate('Chat.SharedMedias', { convPk: publicKey })}
-			/>
+			>
+				{t('chat.multi-member-settings.media-button')}
+			</FloatingMenuItemWithPrimaryIcon>
 			{Platform.OS !== 'web' && <EnableNotificationsButton conversationPk={publicKey} />}
-			<View style={[margin.top.medium]}>
+			<View style={{ marginTop: 20 }}>
 				<MembersDropdown
 					items={members}
 					publicKey={publicKey}
@@ -162,17 +162,17 @@ const MultiMemberSettingsBody: React.FC<{
 					placeholder={`${t('chat.multi-member-settings.members-button.title')} (${membersCount})`}
 				/>
 			</View>
-			<ButtonSetting
-				name={t('chat.multi-member-settings.add-member-button')}
-				icon='user-plus'
-				iconPack='custom'
+			<FloatingMenuItemWithPrimaryIcon
+				pack='custom'
+				iconName='user-plus'
 				onPress={() =>
 					navigation.navigate('Chat.MultiMemberSettingsAddMembers', { convPK: publicKey })
 				}
-			/>
-			<ButtonSetting
-				name={t('chat.multi-member-settings.invite-button')}
-				icon='attach-outline'
+			>
+				{t('chat.multi-member-settings.add-member-button')}
+			</FloatingMenuItemWithPrimaryIcon>
+			<FloatingMenuItemWithPrimaryIcon
+				iconName='attach-outline'
 				onPress={
 					link
 						? async () => {
@@ -188,8 +188,9 @@ const MultiMemberSettingsBody: React.FC<{
 						  }
 						: undefined
 				}
-				disabled={!link || undefined}
-			/>
+			>
+				{t('chat.multi-member-settings.invite-button')}
+			</FloatingMenuItemWithPrimaryIcon>
 			{/* TODO: uncomment when replication nodes works */}
 			{/* {Platform.OS !== 'web' && (
 				<ButtonSetting
