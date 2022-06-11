@@ -156,7 +156,6 @@
 			"notifications-button": "Értesítések",
 			"contact-convs-button": "Kapcsolat és beszélgetések",
 			"appearance-button": "",
-			"devices-button": "Eszközök és biztonsági mentés",
 			"accounts-button": "Fiókok",
 			"network-button": "Hálózat",
 			"bug-button": "Hibabejelentés",
@@ -194,12 +193,6 @@
 			"title": "",
 			"reset-button": "Állítsa vissza a kapcsolatfelvételi linket / QR-kódot",
 			"request-button": "Bejövő kapcsolatfelvételi kérések engedélyezése"
-		},
-		"devices-backup": {
-			"title": ""
-		},
-		"security": {
-			"title": ""
 		},
 		"network": {
 			"title": "Hálózat",
