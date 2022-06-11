@@ -156,7 +156,6 @@
 			"notifications-button": "Notificaties",
 			"contact-convs-button": "",
 			"appearance-button": "",
-			"devices-button": "",
 			"accounts-button": "Accounts",
 			"network-button": "",
 			"bug-button": "",
@@ -194,12 +193,6 @@
 			"title": "",
 			"reset-button": "",
 			"request-button": ""
-		},
-		"devices-backup": {
-			"title": ""
-		},
-		"security": {
-			"title": ""
 		},
 		"network": {
 			"title": "",
