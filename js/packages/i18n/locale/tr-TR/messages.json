@@ -156,7 +156,6 @@
 			"notifications-button": "Bildirimler",
 			"contact-convs-button": "Bağlantı ve sohbetler",
 			"appearance-button": "",
-			"devices-button": "Cihazlar ve yedekleme",
 			"accounts-button": "Hesaplar",
 			"network-button": "Ağ",
 			"bug-button": "Hata bildir",
@@ -194,12 +193,6 @@
 			"title": "",
 			"reset-button": "Bağlantı linkimi sıfırla/QR Kod",
 			"request-button": "Gelen bağlantı isteklerine izin ver"
-		},
-		"devices-backup": {
-			"title": ""
-		},
-		"security": {
-			"title": ""
 		},
 		"network": {
 			"title": "Ağ",
