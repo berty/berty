@@ -156,7 +156,6 @@
 			"notifications-button": "通知",
 			"contact-convs-button": "連絡先と会話",
 			"appearance-button": "外観",
-			"devices-button": "デバイスとバックアップ",
 			"accounts-button": "アカウント",
 			"network-button": "ネットワーク",
 			"bug-button": "バグを送信",
@@ -194,12 +193,6 @@
 			"title": "連絡先と会話",
 			"reset-button": "連絡先のリンク/QRコードをリセットする",
 			"request-button": "連絡先リクエストの受信を許可する"
-		},
-		"devices-backup": {
-			"title": "デバイスとバックアップ"
-		},
-		"security": {
-			"title": "セキュリティ"
 		},
 		"network": {
 			"title": "ネットワーク",
