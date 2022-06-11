@@ -156,7 +156,6 @@
 			"notifications-button": "Notifications",
 			"contact-convs-button": "Contact and conversations",
 			"appearance-button": "Appearance",
-			"devices-button": "Devices and backup",
 			"accounts-button": "Accounts",
 			"network-button": "Network",
 			"bug-button": "Submit a bug",
@@ -194,12 +193,6 @@
 			"title": "Contact and Conversations",
 			"reset-button": "Reset my contact link/QR Code",
 			"request-button": "Allow incoming contact requests"
-		},
-		"devices-backup": {
-			"title": "Devices and Backup"
-		},
-		"security": {
-			"title": "Security"
 		},
 		"network": {
 			"title": "Network",
