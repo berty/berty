@@ -156,7 +156,6 @@
 			"notifications-button": "Obvestila",
 			"contact-convs-button": "",
 			"appearance-button": "",
-			"devices-button": "",
 			"accounts-button": "",
 			"network-button": "",
 			"bug-button": "",
@@ -194,12 +193,6 @@
 			"title": "",
 			"reset-button": "",
 			"request-button": ""
-		},
-		"devices-backup": {
-			"title": ""
-		},
-		"security": {
-			"title": ""
 		},
 		"network": {
 			"title": "",
