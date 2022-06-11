@@ -156,7 +156,6 @@
 			"notifications-button": "Уведомления",
 			"contact-convs-button": "Контакты и чаты",
 			"appearance-button": "Вид приложения",
-			"devices-button": "Устройства и резервное копирование",
 			"accounts-button": "Аккаунты",
 			"network-button": "Сеть",
 			"bug-button": "Сообщить об ошибке",
@@ -194,12 +193,6 @@
 			"title": "Контакты и чаты",
 			"reset-button": "Сбросить мою контактную ссылку/QR код",
 			"request-button": "Разрешить входящие запросы контактов"
-		},
-		"devices-backup": {
-			"title": "Устройства и Резервное копирование"
-		},
-		"security": {
-			"title": "Безопасность"
 		},
 		"network": {
 			"title": "Сеть",
