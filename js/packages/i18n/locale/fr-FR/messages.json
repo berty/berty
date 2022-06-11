@@ -156,7 +156,6 @@
 			"notifications-button": "Notifications",
 			"contact-convs-button": "Contacts et conversations",
 			"appearance-button": "Apparence",
-			"devices-button": "Périphériques et sauvegarde",
 			"accounts-button": "Comptes",
 			"network-button": "Réseau",
 			"bug-button": "Soumettre un bug",
@@ -194,12 +193,6 @@
 			"title": "Contacts et Conversations",
 			"reset-button": "Réinitialiser mon lien/code QR de contact",
 			"request-button": "Autoriser les demandes de contact entrantes"
-		},
-		"devices-backup": {
-			"title": "Périphériques et Sauvegarde"
-		},
-		"security": {
-			"title": "Sécurité"
 		},
 		"network": {
 			"title": "Réseau",
