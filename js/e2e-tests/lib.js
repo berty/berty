@@ -5,7 +5,7 @@ const androidScrollIntoView = (driver, label) => {
 	)
 }
 
-const waitForElementByAccessibilityId = async (driver, label, timeout = 5 * 60 * 1000) => {
+const waitForElementByAccessibilityId = async (driver, label, timeout = 30 * 1000) => {
 	const getElem = () => driver.$(`~${label}`)
 	await driver.waitUntil(() => getElem().isDisplayed(), { timeout, interval: 1000 })
 	return getElem()
@@ -37,7 +37,9 @@ const getCapabilitiesFromEnv = () => {
 				deviceName: process.env.IOS_DEVICE || 'iPhone 11',
 				app,
 				automationName: 'XCUITest', // UiAutomator2, Espresso, or UiAutomator1 for Android,
-				simulatorStartupTimeout: 600000,
+				simulatorStartupTimeout: 10 * 60 * 1000,
+				wdaLaunchTimeout: 10 * 60 * 1000,
+				wdaConnectionTimeout: 10 * 60 * 1000,
 			}
 		case 'Android':
 			return {

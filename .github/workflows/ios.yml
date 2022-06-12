@@ -22,6 +22,10 @@ on:
       - "!js/packages/i18n/locale/*/*.json"
       - ".github/workflows/ios.yml"
 
+env:
+  E2E_TESTING_IOS_DEVICE: iPhone 11
+  E2E_TESTING_IOS_VERSION: 15.2
+
 jobs:
   mac_runner_matrix_builder:
     name: macOS matrix builder
@@ -90,10 +94,10 @@ jobs:
       # pinned by js/ios/.ruby-version
       - uses: ruby/setup-ruby@v1
         env:
-         # Needs to be set up for self-hosted runners, see:
-         # https://github.com/ruby/setup-ruby#using-self-hosted-runners
-         # Image used in runners: summerwind/actions-runner
-         ImageOS: macos11
+          # Needs to be set up for self-hosted runners, see:
+          # https://github.com/ruby/setup-ruby#using-self-hosted-runners
+          # Image used in runners: summerwind/actions-runner
+          ImageOS: macos11
         with:
           working-directory: js/ios
           bundler-cache: true # runs 'bundle install' and caches installed gems automatically
@@ -238,3 +242,27 @@ jobs:
           path: ${{ github.workspace }}/Berty Yolo.dummy-signed-ipa
           name: berty-yolo-${{github.sha}}.dummy-signed-ipa
           if-no-files-found: error
+
+      - name: Build the app for e2e testing
+        working-directory: js/ios
+        run: |
+          xcodebuild \
+            -workspace Berty.xcworkspace \
+            -configuration "AppStore Release" \
+            -scheme "Berty AppStore" \
+            -destination "name=$E2E_TESTING_IOS_DEVICE"
+
+      - name: Run basic e2e test
+        working-directory: js
+        run: |
+          # run appium in background
+          npx appium &
+          # wait for appium to be up
+          sleep 5
+          # run test
+          IOS_DEVICE="$E2E_TESTING_IOS_DEVICE" \
+          IOS_APP="$(find ~/Library/Developer/Xcode/DerivedData -name "Berty.app" | grep 'Products/AppStore Release-iphonesimulator/Berty.app')" \
+          IOS_VERSION=$E2E_TESTING_IOS_VERSION \
+          node e2e-tests/basic.js
+          # kill appium
+          jobs -p | grep -o -E '\s\d+\s' | xargs kill
