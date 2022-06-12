@@ -76,6 +76,7 @@ const ModalWebviewBody: React.FC<{
 								accept()
 								closeModal()
 							}}
+							accessibilityLabel={t('onboarding.web-views.second-button')}
 						>
 							{t('onboarding.web-views.second-button')}
 						</SecondaryButtonIconLeft>

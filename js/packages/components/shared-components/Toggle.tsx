@@ -16,6 +16,7 @@ type ToggleProps = {
 	onChange?: (checked: boolean) => void
 	disabled?: boolean
 	style?: ViewStyle
+	accessibilityLabel?: string
 }
 
 const generateStyleColors = (
@@ -66,6 +67,7 @@ export const Toggle: React.FC<ToggleProps> = ({
 	checked: defaultChecked = false,
 	style,
 	onChange,
+	accessibilityLabel,
 }) => {
 	const colors = useThemeColor()
 	const [checked, setChecked] = useState(defaultChecked)
@@ -102,6 +104,7 @@ export const Toggle: React.FC<ToggleProps> = ({
 				onChange?.(!checked)
 				// setChecked(!checked)
 			}}
+			accessibilityLabel={accessibilityLabel}
 			style={[
 				{
 					height: CIRCLE_WIDTH + BORDER_RADIUS_WIDTH * 2,

@@ -586,6 +586,7 @@ const EnableDisableAll: React.FC<{ accordionRefs: AccordionRefsType }> = ({ acco
 				<Toggle
 					checked={isToggled}
 					status='third'
+					accessibilityLabel={t('onboarding.custom-mode.settings.all-button')}
 					onChange={async () => {
 						const toToggled = !isToggled
 						setIsToggled(toToggled)

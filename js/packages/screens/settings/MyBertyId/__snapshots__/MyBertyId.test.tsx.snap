@@ -1,145 +1,147 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Settings.MyBertyId renders correctly 1`] = `
-<View
+<RNCSafeAreaProvider
+  onInsetsChange={[Function]}
   style={
-    Object {
-      "flex": 1,
-    }
+    Array [
+      Object {
+        "flex": 1,
+      },
+      undefined,
+    ]
   }
 >
   <View
-    appearance="default"
-    level="1"
     style={
-      Array [
-        Object {
-          "backgroundColor": "#FFFFFF",
-        },
-        Object {
-          "backgroundColor": "#535AE4",
-          "flex": 1,
-        },
-      ]
+      Object {
+        "flex": 1,
+      }
     }
   >
     <View
+      appearance="default"
+      level="1"
       style={
         Array [
           Object {
-            "padding": 16,
+            "backgroundColor": "#FFFFFF",
           },
           Object {
             "backgroundColor": "#535AE4",
+            "flex": 1,
           },
         ]
       }
     >
       <View
         style={
-          Object {
-            "alignItems": "center",
-            "top": 35,
-            "zIndex": 10,
-          }
-        }
-      >
-        <View
-          style={
-            Object {
-              "zIndex": -1,
-            }
-          }
-        >
-          <View
-            style={
-              Array [
-                undefined,
-                Object {
-                  "alignItems": "center",
-                  "backgroundColor": "#FFFFFF",
-                  "borderRadius": 45,
-                  "height": 90,
-                  "justifyContent": "center",
-                  "width": 90,
-                },
-              ]
-            }
-          >
-            <View
-              style={
-                Object {
-                  "alignItems": "center",
-                  "justifyContent": "center",
-                }
-              }
-            >
-              <View
-                style={
-                  Array [
-                    undefined,
-                    Object {
-                      "alignItems": "center",
-                      "backgroundColor": "#b8bd4a",
-                      "borderRadius": 45,
-                      "height": 90,
-                      "justifyContent": "center",
-                      "width": 90,
-                    },
-                  ]
-                }
-              >
-                <Text
-                  style={
-                    Array [
-                      Object {
-                        "fontSize": 30,
-                      },
-                      Object {
-                        "color": "#383B62",
-                        "fontFamily": "Open Sans",
-                      },
-                      Object {
-                        "color": "#FFFFFF",
-                        "fontSize": 45,
-                        "includeFontPadding": false,
-                      },
-                    ]
-                  }
-                >
-                  A
-                </Text>
-              </View>
-            </View>
-          </View>
-        </View>
-      </View>
-      <View
-        style={
           Array [
             Object {
-              "borderRadius": 30,
+              "padding": 16,
             },
             Object {
-              "marginHorizontal": 16,
-            },
-            Object {
-              "paddingTop": 24,
-            },
-            Object {
-              "backgroundColor": "#FFFFFF",
-            },
-            Object {
-              "paddingBottom": 40,
+              "backgroundColor": "#535AE4",
             },
           ]
         }
       >
         <View
           style={
+            Object {
+              "alignItems": "center",
+              "top": 35,
+              "zIndex": 10,
+            }
+          }
+        >
+          <View
+            style={
+              Object {
+                "zIndex": -1,
+              }
+            }
+          >
+            <View
+              style={
+                Array [
+                  undefined,
+                  Object {
+                    "alignItems": "center",
+                    "backgroundColor": "#FFFFFF",
+                    "borderRadius": 45,
+                    "height": 90,
+                    "justifyContent": "center",
+                    "width": 90,
+                  },
+                ]
+              }
+            >
+              <View
+                style={
+                  Object {
+                    "alignItems": "center",
+                    "justifyContent": "center",
+                  }
+                }
+              >
+                <View
+                  style={
+                    Array [
+                      undefined,
+                      Object {
+                        "alignItems": "center",
+                        "backgroundColor": "#b8bd4a",
+                        "borderRadius": 45,
+                        "height": 90,
+                        "justifyContent": "center",
+                        "width": 90,
+                      },
+                    ]
+                  }
+                >
+                  <Text
+                    style={
+                      Array [
+                        Object {
+                          "fontSize": 30,
+                        },
+                        Object {
+                          "color": "#383B62",
+                          "fontFamily": "Open Sans",
+                        },
+                        Object {
+                          "color": "#FFFFFF",
+                          "fontSize": 45,
+                          "includeFontPadding": false,
+                        },
+                      ]
+                    }
+                  >
+                    A
+                  </Text>
+                </View>
+              </View>
+            </View>
+          </View>
+        </View>
+        <View
+          style={
             Array [
               Object {
-                "paddingHorizontal": 32,
+                "borderRadius": 30,
+              },
+              Object {
+                "marginHorizontal": 16,
+              },
+              Object {
+                "paddingTop": 24,
+              },
+              Object {
+                "backgroundColor": "#FFFFFF",
+              },
+              Object {
+                "paddingBottom": 40,
               },
             ]
           }
@@ -148,7 +150,7 @@ exports[`Settings.MyBertyId renders correctly 1`] = `
             style={
               Array [
                 Object {
-                  "marginTop": 16,
+                  "paddingHorizontal": 32,
                 },
               ]
             }
@@ -157,255 +159,7 @@ exports[`Settings.MyBertyId renders correctly 1`] = `
               style={
                 Array [
                   Object {
-                    "alignItems": "stretch",
-                    "flexDirection": "row",
-                    "justifyContent": "space-between",
-                  },
-                ]
-              }
-            >
-              <View
-                accessibilityLabel="settings.my-berty-ID.qr"
-                accessible={true}
-                focusable={true}
-                onClick={[Function]}
-                onResponderGrant={[Function]}
-                onResponderMove={[Function]}
-                onResponderRelease={[Function]}
-                onResponderTerminate={[Function]}
-                onResponderTerminationRequest={[Function]}
-                onStartShouldSetResponder={[Function]}
-                style={
-                  Object {
-                    "flex": 1,
-                    "opacity": 1,
-                    "paddingBottom": 4,
-                  }
-                }
-              >
-                <View
-                  style={
-                    Array [
-                      false,
-                      Object {
-                        "alignItems": "center",
-                        "justifyContent": "space-between",
-                      },
-                    ]
-                  }
-                >
-                  <View
-                    style={
-                      Object {
-                        "height": 25,
-                      }
-                    }
-                  >
-                    <View
-                      style={
-                        Object {
-                          "transform": Array [
-                            Object {
-                              "scale": 1,
-                            },
-                          ],
-                        }
-                      }
-                    >
-                      <AssetMock
-                        color="#535AE4"
-                        height={25}
-                        style={
-                          Object {
-                            "transform": undefined,
-                          }
-                        }
-                        width={25}
-                      />
-                    </View>
-                  </View>
-                  <Text
-                    style={
-                      Array [
-                        Object {
-                          "fontSize": 30,
-                        },
-                        Object {
-                          "color": "#383B62",
-                          "fontFamily": "Open Sans",
-                        },
-                        Array [
-                          Object {
-                            "fontFamily": "Bold Open Sans",
-                          },
-                          Object {
-                            "textAlign": "center",
-                          },
-                          Object {
-                            "fontSize": 26,
-                          },
-                          Object {
-                            "color": "#535AE4",
-                          },
-                        ],
-                      ]
-                    }
-                  >
-                    settings.my-berty-ID.qr
-                  </Text>
-                </View>
-                <View
-                  style={
-                    Array [
-                      Object {
-                        "bottom": 0,
-                        "left": "2.5%",
-                        "position": "absolute",
-                        "width": "95%",
-                      },
-                      Array [
-                        Object {
-                          "borderWidth": 2,
-                        },
-                        Object {
-                          "borderRadius": 2,
-                        },
-                        Object {
-                          "borderColor": "#535AE4",
-                        },
-                      ],
-                      false,
-                    ]
-                  }
-                />
-              </View>
-              <View
-                accessibilityLabel="settings.my-berty-ID.fingerprint"
-                accessible={true}
-                focusable={true}
-                onClick={[Function]}
-                onResponderGrant={[Function]}
-                onResponderMove={[Function]}
-                onResponderRelease={[Function]}
-                onResponderTerminate={[Function]}
-                onResponderTerminationRequest={[Function]}
-                onStartShouldSetResponder={[Function]}
-                style={
-                  Object {
-                    "flex": 1,
-                    "opacity": 1,
-                    "paddingBottom": 4,
-                  }
-                }
-              >
-                <View
-                  style={
-                    Array [
-                      Object {
-                        "opacity": 0.2,
-                      },
-                      Object {
-                        "alignItems": "center",
-                        "justifyContent": "space-between",
-                      },
-                    ]
-                  }
-                >
-                  <View
-                    style={
-                      Object {
-                        "height": 25,
-                      }
-                    }
-                  >
-                    <View
-                      style={
-                        Object {
-                          "transform": Array [
-                            Object {
-                              "scale": 1,
-                            },
-                          ],
-                        }
-                      }
-                    >
-                      <AssetMock
-                        color="#383B62"
-                        height={25}
-                        style={
-                          Object {
-                            "transform": undefined,
-                          }
-                        }
-                        width={25}
-                      />
-                    </View>
-                  </View>
-                  <Text
-                    style={
-                      Array [
-                        Object {
-                          "fontSize": 30,
-                        },
-                        Object {
-                          "color": "#383B62",
-                          "fontFamily": "Open Sans",
-                        },
-                        Array [
-                          Object {
-                            "fontFamily": "Bold Open Sans",
-                          },
-                          Object {
-                            "textAlign": "center",
-                          },
-                          Object {
-                            "fontSize": 26,
-                          },
-                          Object {
-                            "color": "#383B62",
-                          },
-                        ],
-                      ]
-                    }
-                  >
-                    settings.my-berty-ID.fingerprint
-                  </Text>
-                </View>
-                <View
-                  style={
-                    Array [
-                      Object {
-                        "bottom": 0,
-                        "left": "2.5%",
-                        "position": "absolute",
-                        "width": "95%",
-                      },
-                      Array [
-                        Object {
-                          "borderWidth": 2,
-                        },
-                        Object {
-                          "borderRadius": 2,
-                        },
-                        Object {
-                          "borderColor": "#383B62",
-                        },
-                      ],
-                      Object {
-                        "opacity": 0.2,
-                      },
-                    ]
-                  }
-                />
-              </View>
-            </View>
-          </View>
-          <View>
-            <View
-              style={
-                Array [
-                  Object {
-                    "alignSelf": "center",
+                    "marginTop": 16,
                   },
                 ]
               }
@@ -414,235 +168,495 @@ exports[`Settings.MyBertyId renders correctly 1`] = `
                 style={
                   Array [
                     Object {
-                      "paddingTop": 32,
+                      "alignItems": "stretch",
+                      "flexDirection": "row",
+                      "justifyContent": "space-between",
                     },
                   ]
                 }
               >
-                <QRCodeMock
-                  backgroundColor="#FFFFFF"
-                  color="#535AE4"
-                  logo="AssetMock"
-                  mode="circle"
-                  size={462.5}
-                  value="https://berty.tech/mock#contact/5cf2bc99-2721-407d-992b-a00fbdf302f2/name=Alice"
-                />
+                <View
+                  accessibilityLabel="settings.my-berty-ID.qr"
+                  accessible={true}
+                  focusable={true}
+                  onClick={[Function]}
+                  onResponderGrant={[Function]}
+                  onResponderMove={[Function]}
+                  onResponderRelease={[Function]}
+                  onResponderTerminate={[Function]}
+                  onResponderTerminationRequest={[Function]}
+                  onStartShouldSetResponder={[Function]}
+                  style={
+                    Object {
+                      "flex": 1,
+                      "opacity": 1,
+                      "paddingBottom": 4,
+                    }
+                  }
+                >
+                  <View
+                    style={
+                      Array [
+                        false,
+                        Object {
+                          "alignItems": "center",
+                          "justifyContent": "space-between",
+                        },
+                      ]
+                    }
+                  >
+                    <View
+                      style={
+                        Object {
+                          "height": 25,
+                        }
+                      }
+                    >
+                      <View
+                        style={
+                          Object {
+                            "transform": Array [
+                              Object {
+                                "scale": 1,
+                              },
+                            ],
+                          }
+                        }
+                      >
+                        <AssetMock
+                          color="#535AE4"
+                          height={25}
+                          style={
+                            Object {
+                              "transform": undefined,
+                            }
+                          }
+                          width={25}
+                        />
+                      </View>
+                    </View>
+                    <Text
+                      style={
+                        Array [
+                          Object {
+                            "fontSize": 30,
+                          },
+                          Object {
+                            "color": "#383B62",
+                            "fontFamily": "Open Sans",
+                          },
+                          Array [
+                            Object {
+                              "fontFamily": "Bold Open Sans",
+                            },
+                            Object {
+                              "textAlign": "center",
+                            },
+                            Object {
+                              "fontSize": 26,
+                            },
+                            Object {
+                              "color": "#535AE4",
+                            },
+                          ],
+                        ]
+                      }
+                    >
+                      settings.my-berty-ID.qr
+                    </Text>
+                  </View>
+                  <View
+                    style={
+                      Array [
+                        Object {
+                          "bottom": 0,
+                          "left": "2.5%",
+                          "position": "absolute",
+                          "width": "95%",
+                        },
+                        Array [
+                          Object {
+                            "borderWidth": 2,
+                          },
+                          Object {
+                            "borderRadius": 2,
+                          },
+                          Object {
+                            "borderColor": "#535AE4",
+                          },
+                        ],
+                        false,
+                      ]
+                    }
+                  />
+                </View>
+                <View
+                  accessibilityLabel="settings.my-berty-ID.fingerprint"
+                  accessible={true}
+                  focusable={true}
+                  onClick={[Function]}
+                  onResponderGrant={[Function]}
+                  onResponderMove={[Function]}
+                  onResponderRelease={[Function]}
+                  onResponderTerminate={[Function]}
+                  onResponderTerminationRequest={[Function]}
+                  onStartShouldSetResponder={[Function]}
+                  style={
+                    Object {
+                      "flex": 1,
+                      "opacity": 1,
+                      "paddingBottom": 4,
+                    }
+                  }
+                >
+                  <View
+                    style={
+                      Array [
+                        Object {
+                          "opacity": 0.2,
+                        },
+                        Object {
+                          "alignItems": "center",
+                          "justifyContent": "space-between",
+                        },
+                      ]
+                    }
+                  >
+                    <View
+                      style={
+                        Object {
+                          "height": 25,
+                        }
+                      }
+                    >
+                      <View
+                        style={
+                          Object {
+                            "transform": Array [
+                              Object {
+                                "scale": 1,
+                              },
+                            ],
+                          }
+                        }
+                      >
+                        <AssetMock
+                          color="#383B62"
+                          height={25}
+                          style={
+                            Object {
+                              "transform": undefined,
+                            }
+                          }
+                          width={25}
+                        />
+                      </View>
+                    </View>
+                    <Text
+                      style={
+                        Array [
+                          Object {
+                            "fontSize": 30,
+                          },
+                          Object {
+                            "color": "#383B62",
+                            "fontFamily": "Open Sans",
+                          },
+                          Array [
+                            Object {
+                              "fontFamily": "Bold Open Sans",
+                            },
+                            Object {
+                              "textAlign": "center",
+                            },
+                            Object {
+                              "fontSize": 26,
+                            },
+                            Object {
+                              "color": "#383B62",
+                            },
+                          ],
+                        ]
+                      }
+                    >
+                      settings.my-berty-ID.fingerprint
+                    </Text>
+                  </View>
+                  <View
+                    style={
+                      Array [
+                        Object {
+                          "bottom": 0,
+                          "left": "2.5%",
+                          "position": "absolute",
+                          "width": "95%",
+                        },
+                        Array [
+                          Object {
+                            "borderWidth": 2,
+                          },
+                          Object {
+                            "borderRadius": 2,
+                          },
+                          Object {
+                            "borderColor": "#383B62",
+                          },
+                        ],
+                        Object {
+                          "opacity": 0.2,
+                        },
+                      ]
+                    }
+                  />
+                </View>
+              </View>
+            </View>
+            <View>
+              <View
+                style={
+                  Array [
+                    Object {
+                      "alignSelf": "center",
+                    },
+                  ]
+                }
+              >
+                <View
+                  style={
+                    Array [
+                      Object {
+                        "paddingTop": 32,
+                      },
+                    ]
+                  }
+                >
+                  <QRCodeMock
+                    backgroundColor="#FFFFFF"
+                    color="#535AE4"
+                    logo="AssetMock"
+                    mode="circle"
+                    size={462.5}
+                    value="https://berty.tech/mock#contact/5cf2bc99-2721-407d-992b-a00fbdf302f2/name=Alice"
+                  />
+                </View>
               </View>
             </View>
           </View>
         </View>
-      </View>
-      <View
-        accessible={true}
-        focusable={true}
-        onClick={[Function]}
-        onResponderGrant={[Function]}
-        onResponderMove={[Function]}
-        onResponderRelease={[Function]}
-        onResponderTerminate={[Function]}
-        onResponderTerminationRequest={[Function]}
-        onStartShouldSetResponder={[Function]}
-        style={
-          Object {
-            "alignSelf": "flex-end",
-            "backgroundColor": "#CED2FF",
-            "borderRadius": 30,
-            "bottom": 30,
-            "height": 60,
-            "marginRight": 60,
-            "opacity": 1,
-            "shadowColor": "#000000",
-            "shadowOffset": Object {
-              "height": 1,
-              "width": 0,
-            },
-            "shadowOpacity": 0.2,
-            "shadowRadius": 2,
-            "width": 60,
-          }
-        }
-      >
         <View
+          accessible={true}
+          focusable={true}
+          onClick={[Function]}
+          onResponderGrant={[Function]}
+          onResponderMove={[Function]}
+          onResponderRelease={[Function]}
+          onResponderTerminate={[Function]}
+          onResponderTerminationRequest={[Function]}
+          onStartShouldSetResponder={[Function]}
           style={
-            Array [
-              Object {
-                "flex": 1,
+            Object {
+              "alignSelf": "flex-end",
+              "backgroundColor": "#CED2FF",
+              "borderRadius": 30,
+              "bottom": 30,
+              "height": 60,
+              "marginRight": 60,
+              "opacity": 1,
+              "shadowColor": "#000000",
+              "shadowOffset": Object {
+                "height": 1,
+                "width": 0,
               },
-              Object {
-                "justifyContent": "center",
-              },
-            ]
+              "shadowOpacity": 0.2,
+              "shadowRadius": 2,
+              "width": 60,
+            }
           }
         >
           <View
             style={
-              Object {
-                "transform": Array [
-                  Object {
-                    "scale": 1,
-                  },
-                ],
-              }
+              Array [
+                Object {
+                  "flex": 1,
+                },
+                Object {
+                  "justifyContent": "center",
+                },
+              ]
             }
           >
-            <AssetMock
-              color="#535AE4"
-              height={26}
+            <View
               style={
                 Object {
-                  "alignSelf": "center",
+                  "transform": Array [
+                    Object {
+                      "scale": 1,
+                    },
+                  ],
                 }
               }
-              width={26}
-            />
+            >
+              <AssetMock
+                color="#535AE4"
+                height={26}
+                style={
+                  Object {
+                    "alignSelf": "center",
+                  }
+                }
+                width={26}
+              />
+            </View>
           </View>
         </View>
       </View>
     </View>
   </View>
-</View>
+</RNCSafeAreaProvider>
 `;
 
 exports[`Settings.MyBertyId renders correctly 2`] = `
-<View
+<RNCSafeAreaProvider
+  onInsetsChange={[Function]}
   style={
-    Object {
-      "flex": 1,
-    }
+    Array [
+      Object {
+        "flex": 1,
+      },
+      undefined,
+    ]
   }
 >
   <View
-    appearance="default"
-    level="1"
     style={
-      Array [
-        Object {
-          "backgroundColor": "#FFFFFF",
-        },
-        Object {
-          "backgroundColor": "#535AE4",
-          "flex": 1,
-        },
-      ]
+      Object {
+        "flex": 1,
+      }
     }
   >
     <View
+      appearance="default"
+      level="1"
       style={
         Array [
           Object {
-            "padding": 16,
+            "backgroundColor": "#FFFFFF",
           },
           Object {
             "backgroundColor": "#535AE4",
+            "flex": 1,
           },
         ]
       }
     >
       <View
         style={
-          Object {
-            "alignItems": "center",
-            "top": 35,
-            "zIndex": 10,
-          }
-        }
-      >
-        <View
-          style={
-            Object {
-              "zIndex": -1,
-            }
-          }
-        >
-          <View
-            style={
-              Array [
-                undefined,
-                Object {
-                  "alignItems": "center",
-                  "backgroundColor": "#FFFFFF",
-                  "borderRadius": 45,
-                  "height": 90,
-                  "justifyContent": "center",
-                  "width": 90,
-                },
-              ]
-            }
-          >
-            <View
-              style={
-                Object {
-                  "alignItems": "center",
-                  "justifyContent": "center",
-                }
-              }
-            >
-              <View
-                style={
-                  Array [
-                    undefined,
-                    Object {
-                      "alignItems": "center",
-                      "backgroundColor": "#b8bd4a",
-                      "borderRadius": 45,
-                      "height": 90,
-                      "justifyContent": "center",
-                      "width": 90,
-                    },
-                  ]
-                }
-              >
-                <Text
-                  style={
-                    Array [
-                      Object {
-                        "fontSize": 30,
-                      },
-                      Object {
-                        "color": "#383B62",
-                        "fontFamily": "Open Sans",
-                      },
-                      Object {
-                        "color": "#FFFFFF",
-                        "fontSize": 45,
-                        "includeFontPadding": false,
-                      },
-                    ]
-                  }
-                >
-                  A
-                </Text>
-              </View>
-            </View>
-          </View>
-        </View>
-      </View>
-      <View
-        style={
           Array [
             Object {
-              "borderRadius": 30,
+              "padding": 16,
             },
             Object {
-              "marginHorizontal": 16,
-            },
-            Object {
-              "paddingTop": 24,
-            },
-            Object {
-              "backgroundColor": "#FFFFFF",
-            },
-            Object {
-              "paddingBottom": 40,
+              "backgroundColor": "#535AE4",
             },
           ]
         }
       >
         <View
           style={
+            Object {
+              "alignItems": "center",
+              "top": 35,
+              "zIndex": 10,
+            }
+          }
+        >
+          <View
+            style={
+              Object {
+                "zIndex": -1,
+              }
+            }
+          >
+            <View
+              style={
+                Array [
+                  undefined,
+                  Object {
+                    "alignItems": "center",
+                    "backgroundColor": "#FFFFFF",
+                    "borderRadius": 45,
+                    "height": 90,
+                    "justifyContent": "center",
+                    "width": 90,
+                  },
+                ]
+              }
+            >
+              <View
+                style={
+                  Object {
+                    "alignItems": "center",
+                    "justifyContent": "center",
+                  }
+                }
+              >
+                <View
+                  style={
+                    Array [
+                      undefined,
+                      Object {
+                        "alignItems": "center",
+                        "backgroundColor": "#b8bd4a",
+                        "borderRadius": 45,
+                        "height": 90,
+                        "justifyContent": "center",
+                        "width": 90,
+                      },
+                    ]
+                  }
+                >
+                  <Text
+                    style={
+                      Array [
+                        Object {
+                          "fontSize": 30,
+                        },
+                        Object {
+                          "color": "#383B62",
+                          "fontFamily": "Open Sans",
+                        },
+                        Object {
+                          "color": "#FFFFFF",
+                          "fontSize": 45,
+                          "includeFontPadding": false,
+                        },
+                      ]
+                    }
+                  >
+                    A
+                  </Text>
+                </View>
+              </View>
+            </View>
+          </View>
+        </View>
+        <View
+          style={
             Array [
               Object {
-                "paddingHorizontal": 32,
+                "borderRadius": 30,
+              },
+              Object {
+                "marginHorizontal": 16,
+              },
+              Object {
+                "paddingTop": 24,
+              },
+              Object {
+                "backgroundColor": "#FFFFFF",
+              },
+              Object {
+                "paddingBottom": 40,
               },
             ]
           }
@@ -651,7 +665,7 @@ exports[`Settings.MyBertyId renders correctly 2`] = `
             style={
               Array [
                 Object {
-                  "marginTop": 16,
+                  "paddingHorizontal": 32,
                 },
               ]
             }
@@ -660,255 +674,7 @@ exports[`Settings.MyBertyId renders correctly 2`] = `
               style={
                 Array [
                   Object {
-                    "alignItems": "stretch",
-                    "flexDirection": "row",
-                    "justifyContent": "space-between",
-                  },
-                ]
-              }
-            >
-              <View
-                accessibilityLabel="settings.my-berty-ID.qr"
-                accessible={true}
-                focusable={true}
-                onClick={[Function]}
-                onResponderGrant={[Function]}
-                onResponderMove={[Function]}
-                onResponderRelease={[Function]}
-                onResponderTerminate={[Function]}
-                onResponderTerminationRequest={[Function]}
-                onStartShouldSetResponder={[Function]}
-                style={
-                  Object {
-                    "flex": 1,
-                    "opacity": 1,
-                    "paddingBottom": 4,
-                  }
-                }
-              >
-                <View
-                  style={
-                    Array [
-                      Object {
-                        "opacity": 0.2,
-                      },
-                      Object {
-                        "alignItems": "center",
-                        "justifyContent": "space-between",
-                      },
-                    ]
-                  }
-                >
-                  <View
-                    style={
-                      Object {
-                        "height": 25,
-                      }
-                    }
-                  >
-                    <View
-                      style={
-                        Object {
-                          "transform": Array [
-                            Object {
-                              "scale": 1,
-                            },
-                          ],
-                        }
-                      }
-                    >
-                      <AssetMock
-                        color="#383B62"
-                        height={25}
-                        style={
-                          Object {
-                            "transform": undefined,
-                          }
-                        }
-                        width={25}
-                      />
-                    </View>
-                  </View>
-                  <Text
-                    style={
-                      Array [
-                        Object {
-                          "fontSize": 30,
-                        },
-                        Object {
-                          "color": "#383B62",
-                          "fontFamily": "Open Sans",
-                        },
-                        Array [
-                          Object {
-                            "fontFamily": "Bold Open Sans",
-                          },
-                          Object {
-                            "textAlign": "center",
-                          },
-                          Object {
-                            "fontSize": 26,
-                          },
-                          Object {
-                            "color": "#383B62",
-                          },
-                        ],
-                      ]
-                    }
-                  >
-                    settings.my-berty-ID.qr
-                  </Text>
-                </View>
-                <View
-                  style={
-                    Array [
-                      Object {
-                        "bottom": 0,
-                        "left": "2.5%",
-                        "position": "absolute",
-                        "width": "95%",
-                      },
-                      Array [
-                        Object {
-                          "borderWidth": 2,
-                        },
-                        Object {
-                          "borderRadius": 2,
-                        },
-                        Object {
-                          "borderColor": "#383B62",
-                        },
-                      ],
-                      Object {
-                        "opacity": 0.2,
-                      },
-                    ]
-                  }
-                />
-              </View>
-              <View
-                accessibilityLabel="settings.my-berty-ID.fingerprint"
-                accessible={true}
-                focusable={true}
-                onClick={[Function]}
-                onResponderGrant={[Function]}
-                onResponderMove={[Function]}
-                onResponderRelease={[Function]}
-                onResponderTerminate={[Function]}
-                onResponderTerminationRequest={[Function]}
-                onStartShouldSetResponder={[Function]}
-                style={
-                  Object {
-                    "flex": 1,
-                    "opacity": 1,
-                    "paddingBottom": 4,
-                  }
-                }
-              >
-                <View
-                  style={
-                    Array [
-                      false,
-                      Object {
-                        "alignItems": "center",
-                        "justifyContent": "space-between",
-                      },
-                    ]
-                  }
-                >
-                  <View
-                    style={
-                      Object {
-                        "height": 25,
-                      }
-                    }
-                  >
-                    <View
-                      style={
-                        Object {
-                          "transform": Array [
-                            Object {
-                              "scale": 1,
-                            },
-                          ],
-                        }
-                      }
-                    >
-                      <AssetMock
-                        color="#535AE4"
-                        height={25}
-                        style={
-                          Object {
-                            "transform": undefined,
-                          }
-                        }
-                        width={25}
-                      />
-                    </View>
-                  </View>
-                  <Text
-                    style={
-                      Array [
-                        Object {
-                          "fontSize": 30,
-                        },
-                        Object {
-                          "color": "#383B62",
-                          "fontFamily": "Open Sans",
-                        },
-                        Array [
-                          Object {
-                            "fontFamily": "Bold Open Sans",
-                          },
-                          Object {
-                            "textAlign": "center",
-                          },
-                          Object {
-                            "fontSize": 26,
-                          },
-                          Object {
-                            "color": "#535AE4",
-                          },
-                        ],
-                      ]
-                    }
-                  >
-                    settings.my-berty-ID.fingerprint
-                  </Text>
-                </View>
-                <View
-                  style={
-                    Array [
-                      Object {
-                        "bottom": 0,
-                        "left": "2.5%",
-                        "position": "absolute",
-                        "width": "95%",
-                      },
-                      Array [
-                        Object {
-                          "borderWidth": 2,
-                        },
-                        Object {
-                          "borderRadius": 2,
-                        },
-                        Object {
-                          "borderColor": "#535AE4",
-                        },
-                      ],
-                      false,
-                    ]
-                  }
-                />
-              </View>
-            </View>
-          </View>
-          <View>
-            <View
-              style={
-                Array [
-                  Object {
-                    "alignSelf": "center",
+                    "marginTop": 16,
                   },
                 ]
               }
@@ -917,10 +683,255 @@ exports[`Settings.MyBertyId renders correctly 2`] = `
                 style={
                   Array [
                     Object {
-                      "paddingTop": 32,
+                      "alignItems": "stretch",
+                      "flexDirection": "row",
+                      "justifyContent": "space-between",
                     },
+                  ]
+                }
+              >
+                <View
+                  accessibilityLabel="settings.my-berty-ID.qr"
+                  accessible={true}
+                  focusable={true}
+                  onClick={[Function]}
+                  onResponderGrant={[Function]}
+                  onResponderMove={[Function]}
+                  onResponderRelease={[Function]}
+                  onResponderTerminate={[Function]}
+                  onResponderTerminationRequest={[Function]}
+                  onStartShouldSetResponder={[Function]}
+                  style={
                     Object {
-                      "width": 495,
+                      "flex": 1,
+                      "opacity": 1,
+                      "paddingBottom": 4,
+                    }
+                  }
+                >
+                  <View
+                    style={
+                      Array [
+                        Object {
+                          "opacity": 0.2,
+                        },
+                        Object {
+                          "alignItems": "center",
+                          "justifyContent": "space-between",
+                        },
+                      ]
+                    }
+                  >
+                    <View
+                      style={
+                        Object {
+                          "height": 25,
+                        }
+                      }
+                    >
+                      <View
+                        style={
+                          Object {
+                            "transform": Array [
+                              Object {
+                                "scale": 1,
+                              },
+                            ],
+                          }
+                        }
+                      >
+                        <AssetMock
+                          color="#383B62"
+                          height={25}
+                          style={
+                            Object {
+                              "transform": undefined,
+                            }
+                          }
+                          width={25}
+                        />
+                      </View>
+                    </View>
+                    <Text
+                      style={
+                        Array [
+                          Object {
+                            "fontSize": 30,
+                          },
+                          Object {
+                            "color": "#383B62",
+                            "fontFamily": "Open Sans",
+                          },
+                          Array [
+                            Object {
+                              "fontFamily": "Bold Open Sans",
+                            },
+                            Object {
+                              "textAlign": "center",
+                            },
+                            Object {
+                              "fontSize": 26,
+                            },
+                            Object {
+                              "color": "#383B62",
+                            },
+                          ],
+                        ]
+                      }
+                    >
+                      settings.my-berty-ID.qr
+                    </Text>
+                  </View>
+                  <View
+                    style={
+                      Array [
+                        Object {
+                          "bottom": 0,
+                          "left": "2.5%",
+                          "position": "absolute",
+                          "width": "95%",
+                        },
+                        Array [
+                          Object {
+                            "borderWidth": 2,
+                          },
+                          Object {
+                            "borderRadius": 2,
+                          },
+                          Object {
+                            "borderColor": "#383B62",
+                          },
+                        ],
+                        Object {
+                          "opacity": 0.2,
+                        },
+                      ]
+                    }
+                  />
+                </View>
+                <View
+                  accessibilityLabel="settings.my-berty-ID.fingerprint"
+                  accessible={true}
+                  focusable={true}
+                  onClick={[Function]}
+                  onResponderGrant={[Function]}
+                  onResponderMove={[Function]}
+                  onResponderRelease={[Function]}
+                  onResponderTerminate={[Function]}
+                  onResponderTerminationRequest={[Function]}
+                  onStartShouldSetResponder={[Function]}
+                  style={
+                    Object {
+                      "flex": 1,
+                      "opacity": 1,
+                      "paddingBottom": 4,
+                    }
+                  }
+                >
+                  <View
+                    style={
+                      Array [
+                        false,
+                        Object {
+                          "alignItems": "center",
+                          "justifyContent": "space-between",
+                        },
+                      ]
+                    }
+                  >
+                    <View
+                      style={
+                        Object {
+                          "height": 25,
+                        }
+                      }
+                    >
+                      <View
+                        style={
+                          Object {
+                            "transform": Array [
+                              Object {
+                                "scale": 1,
+                              },
+                            ],
+                          }
+                        }
+                      >
+                        <AssetMock
+                          color="#535AE4"
+                          height={25}
+                          style={
+                            Object {
+                              "transform": undefined,
+                            }
+                          }
+                          width={25}
+                        />
+                      </View>
+                    </View>
+                    <Text
+                      style={
+                        Array [
+                          Object {
+                            "fontSize": 30,
+                          },
+                          Object {
+                            "color": "#383B62",
+                            "fontFamily": "Open Sans",
+                          },
+                          Array [
+                            Object {
+                              "fontFamily": "Bold Open Sans",
+                            },
+                            Object {
+                              "textAlign": "center",
+                            },
+                            Object {
+                              "fontSize": 26,
+                            },
+                            Object {
+                              "color": "#535AE4",
+                            },
+                          ],
+                        ]
+                      }
+                    >
+                      settings.my-berty-ID.fingerprint
+                    </Text>
+                  </View>
+                  <View
+                    style={
+                      Array [
+                        Object {
+                          "bottom": 0,
+                          "left": "2.5%",
+                          "position": "absolute",
+                          "width": "95%",
+                        },
+                        Array [
+                          Object {
+                            "borderWidth": 2,
+                          },
+                          Object {
+                            "borderRadius": 2,
+                          },
+                          Object {
+                            "borderColor": "#535AE4",
+                          },
+                        ],
+                        false,
+                      ]
+                    }
+                  />
+                </View>
+              </View>
+            </View>
+            <View>
+              <View
+                style={
+                  Array [
+                    Object {
+                      "alignSelf": "center",
                     },
                   ]
                 }
@@ -929,14 +940,10 @@ exports[`Settings.MyBertyId renders correctly 2`] = `
                   style={
                     Array [
                       Object {
-                        "borderRadius": 16,
+                        "paddingTop": 32,
                       },
                       Object {
-                        "padding": 16,
-                      },
-                      Object {
-                        "backgroundColor": "#F7F8FF",
-                        "width": "100%",
+                        "width": 495,
                       },
                     ]
                   }
@@ -945,9 +952,14 @@ exports[`Settings.MyBertyId renders correctly 2`] = `
                     style={
                       Array [
                         Object {
-                          "alignItems": "stretch",
-                          "flexDirection": "column",
-                          "justifyContent": "flex-start",
+                          "borderRadius": 16,
+                        },
+                        Object {
+                          "padding": 16,
+                        },
+                        Object {
+                          "backgroundColor": "#F7F8FF",
+                          "width": "100%",
                         },
                       ]
                     }
@@ -957,480 +969,492 @@ exports[`Settings.MyBertyId renders correctly 2`] = `
                         Array [
                           Object {
                             "alignItems": "stretch",
-                            "flexDirection": "row",
-                            "justifyContent": "space-between",
+                            "flexDirection": "column",
+                            "justifyContent": "flex-start",
                           },
                         ]
                       }
                     >
-                      <Text
+                      <View
                         style={
                           Array [
                             Object {
-                              "fontSize": 30,
+                              "alignItems": "stretch",
+                              "flexDirection": "row",
+                              "justifyContent": "space-between",
                             },
-                            Object {
-                              "color": "#383B62",
-                              "fontFamily": "Open Sans",
-                            },
-                            Array [
-                              Object {
-                                "fontFamily": "Bold Open Sans",
-                              },
-                              Object {
-                                "fontSize": 26,
-                              },
-                              Object {
-                                "color": "#535AE4",
-                                "fontFamily": "Courier",
-                              },
-                            ],
                           ]
                         }
                       >
-                        636A
-                      </Text>
-                      <Text
+                        <Text
+                          style={
+                            Array [
+                              Object {
+                                "fontSize": 30,
+                              },
+                              Object {
+                                "color": "#383B62",
+                                "fontFamily": "Open Sans",
+                              },
+                              Array [
+                                Object {
+                                  "fontFamily": "Bold Open Sans",
+                                },
+                                Object {
+                                  "fontSize": 26,
+                                },
+                                Object {
+                                  "color": "#535AE4",
+                                  "fontFamily": "Courier",
+                                },
+                              ],
+                            ]
+                          }
+                        >
+                          636A
+                        </Text>
+                        <Text
+                          style={
+                            Array [
+                              Object {
+                                "fontSize": 30,
+                              },
+                              Object {
+                                "color": "#383B62",
+                                "fontFamily": "Open Sans",
+                              },
+                              Array [
+                                Object {
+                                  "fontFamily": "Bold Open Sans",
+                                },
+                                Object {
+                                  "fontSize": 26,
+                                },
+                                Object {
+                                  "color": "#535AE4",
+                                  "fontFamily": "Courier",
+                                },
+                              ],
+                            ]
+                          }
+                        >
+                          5088
+                        </Text>
+                        <Text
+                          style={
+                            Array [
+                              Object {
+                                "fontSize": 30,
+                              },
+                              Object {
+                                "color": "#383B62",
+                                "fontFamily": "Open Sans",
+                              },
+                              Array [
+                                Object {
+                                  "fontFamily": "Bold Open Sans",
+                                },
+                                Object {
+                                  "fontSize": 26,
+                                },
+                                Object {
+                                  "color": "#535AE4",
+                                  "fontFamily": "Courier",
+                                },
+                              ],
+                            ]
+                          }
+                        >
+                          B175
+                        </Text>
+                        <Text
+                          style={
+                            Array [
+                              Object {
+                                "fontSize": 30,
+                              },
+                              Object {
+                                "color": "#383B62",
+                                "fontFamily": "Open Sans",
+                              },
+                              Array [
+                                Object {
+                                  "fontFamily": "Bold Open Sans",
+                                },
+                                Object {
+                                  "fontSize": 26,
+                                },
+                                Object {
+                                  "color": "#535AE4",
+                                  "fontFamily": "Courier",
+                                },
+                              ],
+                            ]
+                          }
+                        >
+                          E091
+                        </Text>
+                      </View>
+                      <View
                         style={
                           Array [
                             Object {
-                              "fontSize": 30,
+                              "alignItems": "stretch",
+                              "flexDirection": "row",
+                              "justifyContent": "space-between",
                             },
-                            Object {
-                              "color": "#383B62",
-                              "fontFamily": "Open Sans",
-                            },
-                            Array [
-                              Object {
-                                "fontFamily": "Bold Open Sans",
-                              },
-                              Object {
-                                "fontSize": 26,
-                              },
-                              Object {
-                                "color": "#535AE4",
-                                "fontFamily": "Courier",
-                              },
-                            ],
                           ]
                         }
                       >
-                        5088
-                      </Text>
-                      <Text
+                        <Text
+                          style={
+                            Array [
+                              Object {
+                                "fontSize": 30,
+                              },
+                              Object {
+                                "color": "#383B62",
+                                "fontFamily": "Open Sans",
+                              },
+                              Array [
+                                Object {
+                                  "fontFamily": "Bold Open Sans",
+                                },
+                                Object {
+                                  "fontSize": 26,
+                                },
+                                Object {
+                                  "color": "#535AE4",
+                                  "fontFamily": "Courier",
+                                },
+                              ],
+                            ]
+                          }
+                        >
+                          93BF
+                        </Text>
+                        <Text
+                          style={
+                            Array [
+                              Object {
+                                "fontSize": 30,
+                              },
+                              Object {
+                                "color": "#383B62",
+                                "fontFamily": "Open Sans",
+                              },
+                              Array [
+                                Object {
+                                  "fontFamily": "Bold Open Sans",
+                                },
+                                Object {
+                                  "fontSize": 26,
+                                },
+                                Object {
+                                  "color": "#535AE4",
+                                  "fontFamily": "Courier",
+                                },
+                              ],
+                            ]
+                          }
+                        >
+                          76B6
+                        </Text>
+                        <Text
+                          style={
+                            Array [
+                              Object {
+                                "fontSize": 30,
+                              },
+                              Object {
+                                "color": "#383B62",
+                                "fontFamily": "Open Sans",
+                              },
+                              Array [
+                                Object {
+                                  "fontFamily": "Bold Open Sans",
+                                },
+                                Object {
+                                  "fontSize": 26,
+                                },
+                                Object {
+                                  "color": "#535AE4",
+                                  "fontFamily": "Courier",
+                                },
+                              ],
+                            ]
+                          }
+                        >
+                          3CB4
+                        </Text>
+                        <Text
+                          style={
+                            Array [
+                              Object {
+                                "fontSize": 30,
+                              },
+                              Object {
+                                "color": "#383B62",
+                                "fontFamily": "Open Sans",
+                              },
+                              Array [
+                                Object {
+                                  "fontFamily": "Bold Open Sans",
+                                },
+                                Object {
+                                  "fontSize": 26,
+                                },
+                                Object {
+                                  "color": "#535AE4",
+                                  "fontFamily": "Courier",
+                                },
+                              ],
+                            ]
+                          }
+                        >
+                          5C50
+                        </Text>
+                      </View>
+                      <View
                         style={
                           Array [
                             Object {
-                              "fontSize": 30,
+                              "alignItems": "stretch",
+                              "flexDirection": "row",
+                              "justifyContent": "space-between",
                             },
-                            Object {
-                              "color": "#383B62",
-                              "fontFamily": "Open Sans",
-                            },
-                            Array [
-                              Object {
-                                "fontFamily": "Bold Open Sans",
-                              },
-                              Object {
-                                "fontSize": 26,
-                              },
-                              Object {
-                                "color": "#535AE4",
-                                "fontFamily": "Courier",
-                              },
-                            ],
                           ]
                         }
                       >
-                        B175
-                      </Text>
-                      <Text
+                        <Text
+                          style={
+                            Array [
+                              Object {
+                                "fontSize": 30,
+                              },
+                              Object {
+                                "color": "#383B62",
+                                "fontFamily": "Open Sans",
+                              },
+                              Array [
+                                Object {
+                                  "fontFamily": "Bold Open Sans",
+                                },
+                                Object {
+                                  "fontSize": 26,
+                                },
+                                Object {
+                                  "color": "#535AE4",
+                                  "fontFamily": "Courier",
+                                },
+                              ],
+                            ]
+                          }
+                        >
+                          F56F
+                        </Text>
+                        <Text
+                          style={
+                            Array [
+                              Object {
+                                "fontSize": 30,
+                              },
+                              Object {
+                                "color": "#383B62",
+                                "fontFamily": "Open Sans",
+                              },
+                              Array [
+                                Object {
+                                  "fontFamily": "Bold Open Sans",
+                                },
+                                Object {
+                                  "fontSize": 26,
+                                },
+                                Object {
+                                  "color": "#535AE4",
+                                  "fontFamily": "Courier",
+                                },
+                              ],
+                            ]
+                          }
+                        >
+                          7B4F
+                        </Text>
+                        <Text
+                          style={
+                            Array [
+                              Object {
+                                "fontSize": 30,
+                              },
+                              Object {
+                                "color": "#383B62",
+                                "fontFamily": "Open Sans",
+                              },
+                              Array [
+                                Object {
+                                  "fontFamily": "Bold Open Sans",
+                                },
+                                Object {
+                                  "fontSize": 26,
+                                },
+                                Object {
+                                  "color": "#535AE4",
+                                  "fontFamily": "Courier",
+                                },
+                              ],
+                            ]
+                          }
+                        >
+                          6852
+                        </Text>
+                        <Text
+                          style={
+                            Array [
+                              Object {
+                                "fontSize": 30,
+                              },
+                              Object {
+                                "color": "#383B62",
+                                "fontFamily": "Open Sans",
+                              },
+                              Array [
+                                Object {
+                                  "fontFamily": "Bold Open Sans",
+                                },
+                                Object {
+                                  "fontSize": 26,
+                                },
+                                Object {
+                                  "color": "#535AE4",
+                                  "fontFamily": "Courier",
+                                },
+                              ],
+                            ]
+                          }
+                        >
+                          AF6C
+                        </Text>
+                      </View>
+                      <View
                         style={
                           Array [
                             Object {
-                              "fontSize": 30,
+                              "alignItems": "stretch",
+                              "flexDirection": "row",
+                              "justifyContent": "space-between",
                             },
-                            Object {
-                              "color": "#383B62",
-                              "fontFamily": "Open Sans",
-                            },
-                            Array [
-                              Object {
-                                "fontFamily": "Bold Open Sans",
-                              },
-                              Object {
-                                "fontSize": 26,
-                              },
-                              Object {
-                                "color": "#535AE4",
-                                "fontFamily": "Courier",
-                              },
-                            ],
                           ]
                         }
                       >
-                        E091
-                      </Text>
-                    </View>
-                    <View
-                      style={
-                        Array [
-                          Object {
-                            "alignItems": "stretch",
-                            "flexDirection": "row",
-                            "justifyContent": "space-between",
-                          },
-                        ]
-                      }
-                    >
-                      <Text
-                        style={
-                          Array [
-                            Object {
-                              "fontSize": 30,
-                            },
-                            Object {
-                              "color": "#383B62",
-                              "fontFamily": "Open Sans",
-                            },
+                        <Text
+                          style={
                             Array [
                               Object {
-                                "fontFamily": "Bold Open Sans",
+                                "fontSize": 30,
                               },
                               Object {
-                                "fontSize": 26,
+                                "color": "#383B62",
+                                "fontFamily": "Open Sans",
                               },
-                              Object {
-                                "color": "#535AE4",
-                                "fontFamily": "Courier",
-                              },
-                            ],
-                          ]
-                        }
-                      >
-                        93BF
-                      </Text>
-                      <Text
-                        style={
-                          Array [
-                            Object {
-                              "fontSize": 30,
-                            },
-                            Object {
-                              "color": "#383B62",
-                              "fontFamily": "Open Sans",
-                            },
+                              Array [
+                                Object {
+                                  "fontFamily": "Bold Open Sans",
+                                },
+                                Object {
+                                  "fontSize": 26,
+                                },
+                                Object {
+                                  "color": "#535AE4",
+                                  "fontFamily": "Courier",
+                                },
+                              ],
+                            ]
+                          }
+                        >
+                          FB5D
+                        </Text>
+                        <Text
+                          style={
                             Array [
                               Object {
-                                "fontFamily": "Bold Open Sans",
+                                "fontSize": 30,
                               },
                               Object {
-                                "fontSize": 26,
+                                "color": "#383B62",
+                                "fontFamily": "Open Sans",
                               },
-                              Object {
-                                "color": "#535AE4",
-                                "fontFamily": "Courier",
-                              },
-                            ],
-                          ]
-                        }
-                      >
-                        76B6
-                      </Text>
-                      <Text
-                        style={
-                          Array [
-                            Object {
-                              "fontSize": 30,
-                            },
-                            Object {
-                              "color": "#383B62",
-                              "fontFamily": "Open Sans",
-                            },
+                              Array [
+                                Object {
+                                  "fontFamily": "Bold Open Sans",
+                                },
+                                Object {
+                                  "fontSize": 26,
+                                },
+                                Object {
+                                  "color": "#535AE4",
+                                  "fontFamily": "Courier",
+                                },
+                              ],
+                            ]
+                          }
+                        >
+                          0664
+                        </Text>
+                        <Text
+                          style={
                             Array [
                               Object {
-                                "fontFamily": "Bold Open Sans",
+                                "fontSize": 30,
                               },
                               Object {
-                                "fontSize": 26,
+                                "color": "#383B62",
+                                "fontFamily": "Open Sans",
                               },
-                              Object {
-                                "color": "#535AE4",
-                                "fontFamily": "Courier",
-                              },
-                            ],
-                          ]
-                        }
-                      >
-                        3CB4
-                      </Text>
-                      <Text
-                        style={
-                          Array [
-                            Object {
-                              "fontSize": 30,
-                            },
-                            Object {
-                              "color": "#383B62",
-                              "fontFamily": "Open Sans",
-                            },
+                              Array [
+                                Object {
+                                  "fontFamily": "Bold Open Sans",
+                                },
+                                Object {
+                                  "fontSize": 26,
+                                },
+                                Object {
+                                  "color": "#535AE4",
+                                  "fontFamily": "Courier",
+                                },
+                              ],
+                            ]
+                          }
+                        >
+                          B3E4
+                        </Text>
+                        <Text
+                          style={
                             Array [
                               Object {
-                                "fontFamily": "Bold Open Sans",
+                                "fontSize": 30,
                               },
                               Object {
-                                "fontSize": 26,
+                                "color": "#383B62",
+                                "fontFamily": "Open Sans",
                               },
-                              Object {
-                                "color": "#535AE4",
-                                "fontFamily": "Courier",
-                              },
-                            ],
-                          ]
-                        }
-                      >
-                        5C50
-                      </Text>
-                    </View>
-                    <View
-                      style={
-                        Array [
-                          Object {
-                            "alignItems": "stretch",
-                            "flexDirection": "row",
-                            "justifyContent": "space-between",
-                          },
-                        ]
-                      }
-                    >
-                      <Text
-                        style={
-                          Array [
-                            Object {
-                              "fontSize": 30,
-                            },
-                            Object {
-                              "color": "#383B62",
-                              "fontFamily": "Open Sans",
-                            },
-                            Array [
-                              Object {
-                                "fontFamily": "Bold Open Sans",
-                              },
-                              Object {
-                                "fontSize": 26,
-                              },
-                              Object {
-                                "color": "#535AE4",
-                                "fontFamily": "Courier",
-                              },
-                            ],
-                          ]
-                        }
-                      >
-                        F56F
-                      </Text>
-                      <Text
-                        style={
-                          Array [
-                            Object {
-                              "fontSize": 30,
-                            },
-                            Object {
-                              "color": "#383B62",
-                              "fontFamily": "Open Sans",
-                            },
-                            Array [
-                              Object {
-                                "fontFamily": "Bold Open Sans",
-                              },
-                              Object {
-                                "fontSize": 26,
-                              },
-                              Object {
-                                "color": "#535AE4",
-                                "fontFamily": "Courier",
-                              },
-                            ],
-                          ]
-                        }
-                      >
-                        7B4F
-                      </Text>
-                      <Text
-                        style={
-                          Array [
-                            Object {
-                              "fontSize": 30,
-                            },
-                            Object {
-                              "color": "#383B62",
-                              "fontFamily": "Open Sans",
-                            },
-                            Array [
-                              Object {
-                                "fontFamily": "Bold Open Sans",
-                              },
-                              Object {
-                                "fontSize": 26,
-                              },
-                              Object {
-                                "color": "#535AE4",
-                                "fontFamily": "Courier",
-                              },
-                            ],
-                          ]
-                        }
-                      >
-                        6852
-                      </Text>
-                      <Text
-                        style={
-                          Array [
-                            Object {
-                              "fontSize": 30,
-                            },
-                            Object {
-                              "color": "#383B62",
-                              "fontFamily": "Open Sans",
-                            },
-                            Array [
-                              Object {
-                                "fontFamily": "Bold Open Sans",
-                              },
-                              Object {
-                                "fontSize": 26,
-                              },
-                              Object {
-                                "color": "#535AE4",
-                                "fontFamily": "Courier",
-                              },
-                            ],
-                          ]
-                        }
-                      >
-                        AF6C
-                      </Text>
-                    </View>
-                    <View
-                      style={
-                        Array [
-                          Object {
-                            "alignItems": "stretch",
-                            "flexDirection": "row",
-                            "justifyContent": "space-between",
-                          },
-                        ]
-                      }
-                    >
-                      <Text
-                        style={
-                          Array [
-                            Object {
-                              "fontSize": 30,
-                            },
-                            Object {
-                              "color": "#383B62",
-                              "fontFamily": "Open Sans",
-                            },
-                            Array [
-                              Object {
-                                "fontFamily": "Bold Open Sans",
-                              },
-                              Object {
-                                "fontSize": 26,
-                              },
-                              Object {
-                                "color": "#535AE4",
-                                "fontFamily": "Courier",
-                              },
-                            ],
-                          ]
-                        }
-                      >
-                        FB5D
-                      </Text>
-                      <Text
-                        style={
-                          Array [
-                            Object {
-                              "fontSize": 30,
-                            },
-                            Object {
-                              "color": "#383B62",
-                              "fontFamily": "Open Sans",
-                            },
-                            Array [
-                              Object {
-                                "fontFamily": "Bold Open Sans",
-                              },
-                              Object {
-                                "fontSize": 26,
-                              },
-                              Object {
-                                "color": "#535AE4",
-                                "fontFamily": "Courier",
-                              },
-                            ],
-                          ]
-                        }
-                      >
-                        0664
-                      </Text>
-                      <Text
-                        style={
-                          Array [
-                            Object {
-                              "fontSize": 30,
-                            },
-                            Object {
-                              "color": "#383B62",
-                              "fontFamily": "Open Sans",
-                            },
-                            Array [
-                              Object {
-                                "fontFamily": "Bold Open Sans",
-                              },
-                              Object {
-                                "fontSize": 26,
-                              },
-                              Object {
-                                "color": "#535AE4",
-                                "fontFamily": "Courier",
-                              },
-                            ],
-                          ]
-                        }
-                      >
-                        B3E4
-                      </Text>
-                      <Text
-                        style={
-                          Array [
-                            Object {
-                              "fontSize": 30,
-                            },
-                            Object {
-                              "color": "#383B62",
-                              "fontFamily": "Open Sans",
-                            },
-                            Array [
-                              Object {
-                                "fontFamily": "Bold Open Sans",
-                              },
-                              Object {
-                                "fontSize": 26,
-                              },
-                              Object {
-                                "color": "#535AE4",
-                                "fontFamily": "Courier",
-                              },
-                            ],
-                          ]
-                        }
-                      >
-                        ABB7
-                      </Text>
+                              Array [
+                                Object {
+                                  "fontFamily": "Bold Open Sans",
+                                },
+                                Object {
+                                  "fontSize": 26,
+                                },
+                                Object {
+                                  "color": "#535AE4",
+                                  "fontFamily": "Courier",
+                                },
+                              ],
+                            ]
+                          }
+                        >
+                          ABB7
+                        </Text>
+                      </View>
                     </View>
                   </View>
                 </View>
@@ -1438,74 +1462,74 @@ exports[`Settings.MyBertyId renders correctly 2`] = `
             </View>
           </View>
         </View>
-      </View>
-      <View
-        accessible={true}
-        focusable={true}
-        onClick={[Function]}
-        onResponderGrant={[Function]}
-        onResponderMove={[Function]}
-        onResponderRelease={[Function]}
-        onResponderTerminate={[Function]}
-        onResponderTerminationRequest={[Function]}
-        onStartShouldSetResponder={[Function]}
-        style={
-          Object {
-            "alignSelf": "flex-end",
-            "backgroundColor": "#CED2FF",
-            "borderRadius": 30,
-            "bottom": 30,
-            "height": 60,
-            "marginRight": 60,
-            "opacity": 1,
-            "shadowColor": "#000000",
-            "shadowOffset": Object {
-              "height": 1,
-              "width": 0,
-            },
-            "shadowOpacity": 0.2,
-            "shadowRadius": 2,
-            "width": 60,
-          }
-        }
-      >
         <View
+          accessible={true}
+          focusable={true}
+          onClick={[Function]}
+          onResponderGrant={[Function]}
+          onResponderMove={[Function]}
+          onResponderRelease={[Function]}
+          onResponderTerminate={[Function]}
+          onResponderTerminationRequest={[Function]}
+          onStartShouldSetResponder={[Function]}
           style={
-            Array [
-              Object {
-                "flex": 1,
+            Object {
+              "alignSelf": "flex-end",
+              "backgroundColor": "#CED2FF",
+              "borderRadius": 30,
+              "bottom": 30,
+              "height": 60,
+              "marginRight": 60,
+              "opacity": 1,
+              "shadowColor": "#000000",
+              "shadowOffset": Object {
+                "height": 1,
+                "width": 0,
               },
-              Object {
-                "justifyContent": "center",
-              },
-            ]
+              "shadowOpacity": 0.2,
+              "shadowRadius": 2,
+              "width": 60,
+            }
           }
         >
           <View
             style={
-              Object {
-                "transform": Array [
-                  Object {
-                    "scale": 1,
-                  },
-                ],
-              }
+              Array [
+                Object {
+                  "flex": 1,
+                },
+                Object {
+                  "justifyContent": "center",
+                },
+              ]
             }
           >
-            <AssetMock
-              color="#535AE4"
-              height={26}
+            <View
               style={
                 Object {
-                  "alignSelf": "center",
+                  "transform": Array [
+                    Object {
+                      "scale": 1,
+                    },
+                  ],
                 }
               }
-              width={26}
-            />
+            >
+              <AssetMock
+                color="#535AE4"
+                height={26}
+                style={
+                  Object {
+                    "alignSelf": "center",
+                  }
+                }
+                width={26}
+              />
+            </View>
           </View>
         </View>
       </View>
     </View>
   </View>
-</View>
+</RNCSafeAreaProvider>
 `;
