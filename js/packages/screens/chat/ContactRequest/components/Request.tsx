@@ -2,10 +2,10 @@ import { Icon } from '@ui-kitten/components'
 import React, { useState } from 'react'
 import { View, StyleProp, TouchableOpacity, ViewStyle } from 'react-native'
 
+import { Toggle } from '@berty/components'
 import { ContactAvatar } from '@berty/components/avatars'
 import { FingerprintContent } from '@berty/components/shared-components/FingerprintContent'
 import { TabBar } from '@berty/components/shared-components/TabBar'
-import { Toggle } from '@berty/components/shared-components/Toggle'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useStyles, ColorsTypes } from '@berty/contexts/styles'
 import { useContact } from '@berty/hooks'
@@ -112,7 +112,7 @@ const MarkAsVerified: React.FC<{}> = () => {
 					</UnifiedText>
 				</View>
 				<View style={column.item.center}>
-					<Toggle status='primary' checked={isToggled} onChange={handleToggled} />
+					<Toggle checked={isToggled} onChange={handleToggled} />
 				</View>
 			</View>
 			<UnifiedText

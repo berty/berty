@@ -14,10 +14,9 @@ import { RESULTS } from 'react-native-permissions'
 import { useDispatch } from 'react-redux'
 
 import beapi from '@berty/api'
-import { FloatingMenuToggleAlt } from '@berty/components'
+import { AltToggle, FloatingMenuToggleAlt } from '@berty/components'
 import { AccordionAdd } from '@berty/components/modals/AccordionAdd.modal'
 import { AccordionEdit } from '@berty/components/modals/AccordionEdit.modal'
-import { Toggle } from '@berty/components/shared-components/Toggle'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useModal } from '@berty/contexts/modal.context'
@@ -583,9 +582,8 @@ const EnableDisableAll: React.FC<{ accordionRefs: AccordionRefsType }> = ({ acco
 				{t('onboarding.custom-mode.settings.all-button')}
 			</UnifiedText>
 			<View style={[padding.small]}>
-				<Toggle
+				<AltToggle
 					checked={isToggled}
-					status='third'
 					accessibilityLabel={t('onboarding.custom-mode.settings.all-button')}
 					onChange={async () => {
 						const toToggled = !isToggled
