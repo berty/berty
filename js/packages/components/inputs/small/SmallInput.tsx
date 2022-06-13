@@ -1,8 +1,8 @@
 import React, { useRef } from 'react'
 import { StyleSheet, TextInput } from 'react-native'
 
-import { InputPriv } from '../Input.priv'
 import { InputProps } from '../interfaces'
+import { StyledInputPriv } from '../StyledInput.priv'
 import { TouchableWrapperPriv } from '../wrapper/TouchableWrapper.priv'
 
 export const SmallInput: React.FC<InputProps> = props => {
@@ -10,7 +10,7 @@ export const SmallInput: React.FC<InputProps> = props => {
 
 	return (
 		<TouchableWrapperPriv onPress={() => input.current?.focus()} style={styles.button}>
-			<InputPriv ref={input} {...props} />
+			<StyledInputPriv ref={input} {...props} />
 		</TouchableWrapperPriv>
 	)
 }

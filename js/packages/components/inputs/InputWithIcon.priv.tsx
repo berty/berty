@@ -3,15 +3,15 @@ import { StyleSheet, TextInput, View } from 'react-native'
 
 import { useStyles } from '@berty/contexts/styles'
 
-import { InputPriv } from './Input.priv'
 import { InputProps } from './interfaces'
+import { StyledInputPriv } from './StyledInput.priv'
 
 export const InputWithIconPriv = React.forwardRef<TextInput, InputProps>((props, ref) => {
 	const { margin } = useStyles()
 
 	return (
 		<View style={[margin.left.small, styles.input]}>
-			<InputPriv {...props} ref={ref} />
+			<StyledInputPriv {...props} ref={ref} />
 		</View>
 	)
 })
