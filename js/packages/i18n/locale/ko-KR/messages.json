@@ -1,24 +1,27 @@
 {
 	"onboarding": {
 		"getstarted": {
+			"screenTitle": "",
 			"title": "",
 			"desc": "",
 			"create-button": "",
-			"import-button": "",
-			"link-button": ""
+			"import-button": ""
 		},
 		"default-mode": {
 			"summary": {
 				"title": "",
+				"screenTitle": "",
 				"subtitle": "",
 				"first-point": "",
 				"second-point": "",
+				"third-point": "",
 				"back-button": "",
 				"accept-button": ""
 			}
 		},
 		"custom-mode": {
 			"summary": {
+				"screenTitle": "",
 				"title": "",
 				"subtitle": "",
 				"first-point": "",
@@ -45,12 +48,43 @@
 					"bootstrap-button": "",
 					"replication-button": ""
 				},
+				"modals": {
+					"add": {
+						"title": {
+							"relay": "",
+							"bootstrap": "",
+							"rdvp": ""
+						}
+					},
+					"edit": {
+						"title": {
+							"relay": "",
+							"bootstrap": "",
+							"rdvp": ""
+						}
+					},
+					"errors": {
+						"alias-already-exists": "",
+						"multiaddr-alread-exists": "",
+						"multiaddr-bad-format": "",
+						"multiaddr-p2p": ""
+					},
+					"buttons": {
+						"add": "추가",
+						"edit": "",
+						"delete": ""
+					},
+					"multiaddress": "",
+					"alias": ""
+				},
 				"all-button": "",
 				"accept-button": ""
 			}
 		},
 		"create-account": {
 			"title": "계정 만들기",
+			"first-button": "",
+			"second-button": "",
 			"placeholder": "",
 			"good-to-know": {
 				"title": "",
@@ -65,7 +99,7 @@
 		"setup-finished": {
 			"title": "설정이 끝났어요!",
 			"desc": "",
-			"button": "Berty 사용해보기"
+			"button": ""
 		},
 		"web-views": {
 			"title": "",
@@ -76,6 +110,7 @@
 	},
 	"main": {
 		"home": {
+			"title": "",
 			"requests": {
 				"title": "요청",
 				"accept": "",
@@ -95,8 +130,8 @@
 				"add-members": "멤버 추가",
 				"group-info": "그룹 정보",
 				"search-placeholder": "검색",
-				"continue": "다음",
-				"create-group": "만들기"
+				"continue": "",
+				"create-group": ""
 			},
 			"create-group-finalize": {
 				"placeholder": "",
@@ -112,45 +147,55 @@
 				"draft": ""
 			}
 		},
-		"suggestion-display-name-initial": "여기를 눌러 추가",
-		"scan": {
-			"title": ""
-		}
+		"suggestion-display-name-initial": "여기를 눌러 추가"
 	},
 	"settings": {
 		"home": {
+			"title": "설정",
 			"proximity-button": "",
 			"notifications-button": "알림",
 			"contact-convs-button": "",
 			"appearance-button": "",
-			"devices-button": "",
 			"accounts-button": "계정",
 			"network-button": "",
 			"bug-button": "",
 			"about-button": "Berty에 대해"
 		},
 		"about": {
+			"title": "Berty에 대해",
 			"faq-button": "",
 			"roadmap-button": "",
 			"policy-button": "",
-			"license-button": ""
+			"license-button": "",
+			"terms-of-use": "이용약관"
 		},
 		"accounts": {
+			"title": "계정",
+			"backup-button": "",
+			"backup-notif-title": "",
+			"backup-notif-desc": "",
 			"accounts-button": "계정",
 			"create-button": "",
 			"import-button": "",
 			"link-button": "",
-			"delete-button": ""
+			"delete-button": "",
+			"delete-title": ""
 		},
 		"appearance": {
+			"title": "",
 			"dark-button": "",
-			"editor-button": ""
+			"editor-button": "",
+			"theme-editor": {
+				"title": ""
+			}
 		},
 		"contact-convs": {
+			"title": "",
 			"reset-button": "",
 			"request-button": ""
 		},
 		"network": {
+			"title": "",
 			"ble-button": "",
 			"mc-button": "",
 			"nearby-button": "",
@@ -162,27 +207,29 @@
 			"relay-button": "",
 			"bootstrap-button": ""
 		},
+		"notifications": {
+			"title": "알림"
+		},
 		"edit-profile": {
 			"title": "프로필 수정",
 			"qr-will-update": "",
 			"ocr-wont-update": "",
 			"save": "변경사항 저장",
 			"cancel": "취소",
-			"name-input-placeholder": "이름...",
-			"name-input-label": "이름"
+			"name-input-placeholder": "이름..."
 		},
 		"berty-services": {
 			"title": "",
 			"desc": "",
 			"button": "",
-			"skip": "넘기고 다음에 하기"
+			"skip": ""
 		},
 		"delete-account": {
 			"title": "계정 삭제!",
 			"first-desc": "정말로 계정을 삭제해도 괜찮을까요?",
 			"desc": "삭제하려면 delete를 입력하세요",
-			"cancel-button": "취소하기",
-			"delete-button": "삭제하기"
+			"cancel-button": "취소",
+			"delete-button": ""
 		},
 		"faq": {
 			"title": ""
@@ -255,7 +302,10 @@
 		},
 		"add-dev-conversations": {
 			"title": "",
-			"add": ""
+			"add": "",
+			"tag-bot": "",
+			"tag-contact": "",
+			"tag-conversation": ""
 		},
 		"ipfs-webui": {
 			"title": "IPFS 웹 UI"
@@ -294,7 +344,7 @@
 			"contact-already-added-message": "같은 연락처는 또 추가할 수 없어요"
 		},
 		"invalid-scan": {
-			"dismiss-button": "닫기"
+			"dismiss-button": ""
 		},
 		"add-this-contact": {
 			"fingerprint": "지문",
@@ -313,11 +363,12 @@
 			"title": "",
 			"desc": "",
 			"placeholder": "",
-			"cancel": "취소하기",
+			"cancel": "취소",
 			"add": ""
 		}
 	},
 	"chat": {
+		"title-unknown": "",
 		"sending": "보내는 중...",
 		"sent": "",
 		"contact-settings": {
@@ -329,10 +380,10 @@
 			"input-placeholder": "여기에 입력..."
 		},
 		"push-notifications": {
-			"enable": "",
-			"enabled": "",
+			"title": "알림",
 			"unsupported": "",
 			"check-device-settings": "",
+			"check-account-settings": "",
 			"warning-disable": {
 				"title": "",
 				"subtitle": "",
@@ -340,10 +391,26 @@
 				"refuse": ""
 			},
 			"why-cant-disable": "",
+			"why-cant-disable-account": "",
 			"errors": {
 				"no-token": "",
 				"no-server": ""
-			}
+			},
+			"warning-enable-all": {
+				"title": "",
+				"subtitle": "",
+				"refuse": "",
+				"accept": ""
+			},
+			"warning-disable-mute": {
+				"title": "",
+				"refuse": "",
+				"accept": ""
+			},
+			"receive-push": "푸시 알림 수신하기",
+			"hide-previews": "",
+			"auto-enable": "",
+			"show-in-app": ""
 		},
 		"devices": {
 			"title": "장치",
@@ -353,6 +420,7 @@
 			}
 		},
 		"multi-member-settings": {
+			"title": "",
 			"media-button": "미디어, 링크 및 문서",
 			"members-button": {
 				"title": "멤버"
@@ -373,9 +441,9 @@
 			"contact-request-box": {
 				"title": "",
 				"group-invitation": "",
-				"refuse-button": "거절",
-				"accept-button": "수락",
-				"accepted-button": "수락함",
+				"refuse-button": "",
+				"accept-button": "",
+				"accepted-button": "",
 				"error": "",
 				"you-invited": "",
 				"this-contact": "",
@@ -391,6 +459,7 @@
 			"input-placeholder": "여기에 입력..."
 		},
 		"one-to-one-settings": {
+			"title": "",
 			"media-button": "미디어, 링크 및 문서",
 			"save-button": "서버에 대화내역 저장하기"
 		},
@@ -418,7 +487,10 @@
 			"title": "",
 			"medias": "",
 			"links": "",
-			"documents": ""
+			"documents": "",
+			"file": "",
+			"picture": "",
+			"audio": ""
 		},
 		"reply": {
 			"response-to": "",
@@ -431,6 +503,18 @@
 		},
 		"emojis": {
 			"matching": ""
+		}
+	},
+	"account": {
+		"deleting": "",
+		"creating": "",
+		"opening": {
+			"alert-push-title": "",
+			"alert-push-go-failed": "",
+			"alert-push-fetch-failed": "",
+			"alert-push-perm-denied": "",
+			"alert-push-desc": "",
+			"alert-push-button": ""
 		}
 	},
 	"audio": {
@@ -470,8 +554,8 @@
 			"allow": "",
 			"settings": ""
 		},
-		"skip": "넘기기",
-		"cancel": "취소하기",
+		"skip": "",
+		"cancel": "취소",
 		"settings-text": ""
 	},
 	"notification": {
@@ -479,7 +563,7 @@
 			"title": "",
 			"desc": ""
 		},
-		"need-restart-ble": {
+		"submit-failed": {
 			"title": "",
 			"desc": ""
 		}
@@ -509,7 +593,6 @@
 			"title": "",
 			"accounts": {
 				"title": "계정",
-				"unsupported-remote-mode": "",
 				"data-not-found": "",
 				"action-delete": {
 					"file-exists": "",
@@ -559,5 +642,10 @@
 				"button-cancel": "취소"
 			}
 		}
+	},
+	"time-for": {
+		"minutes": "",
+		"hours": "",
+		"days": ""
 	}
 }
