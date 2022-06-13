@@ -3,19 +3,16 @@ import React from 'react'
 import { StyleSheet } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 
-import { useAppDispatch, useAppSelector } from '@berty/hooks'
-import {
-	removeActiveReplyInteraction,
-	selectActiveReplyInteraction,
-} from '@berty/redux/reducers/chatInputs.reducer'
+import { useAppDispatch } from '@berty/hooks'
+import { removeActiveReplyInteraction } from '@berty/redux/reducers/chatInputs.reducer'
 
-import { ReplyMessageProps } from './interface'
+import { ReplyMessageProps, ActiveReplyInteractionProps } from './interface'
 
-export const CancelReply: React.FC<ReplyMessageProps> = ({ convPK }) => {
+export const CancelReply: React.FC<ReplyMessageProps & ActiveReplyInteractionProps> = ({
+	convPK,
+	activeReplyInteraction,
+}) => {
 	const dispatch = useAppDispatch()
-	const activeReplyInteraction = useAppSelector(state =>
-		selectActiveReplyInteraction(state, convPK),
-	)
 
 	return (
 		<TouchableOpacity

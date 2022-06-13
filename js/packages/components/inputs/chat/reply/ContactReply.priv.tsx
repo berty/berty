@@ -3,21 +3,17 @@ import { useTranslation } from 'react-i18next'
 import { StyleSheet, View } from 'react-native'
 
 import { useStyles } from '@berty/contexts/styles'
-import { useAppSelector, useInteractionAuthor } from '@berty/hooks'
-import { selectActiveReplyInteraction } from '@berty/redux/reducers/chatInputs.reducer'
+import { useInteractionAuthor } from '@berty/hooks'
 import { useThemeColor } from '@berty/store'
 
 import { UnifiedText } from '../../../shared-components/UnifiedText'
-import { ReplyMessageProps } from './interface'
+import { ActiveReplyInteractionProps } from './interface'
 
-export const ContactReply: React.FC<ReplyMessageProps> = ({ convPK }) => {
+export const ContactReply: React.FC<ActiveReplyInteractionProps> = ({ activeReplyInteraction }) => {
 	const { t } = useTranslation()
 	const { text } = useStyles()
 	const colors = useThemeColor()
 
-	const activeReplyInteraction = useAppSelector(state =>
-		selectActiveReplyInteraction(state, convPK),
-	)
 	const replyTargetAuthor = useInteractionAuthor(
 		activeReplyInteraction?.conversationPublicKey || '',
 		activeReplyInteraction?.cid || '',
