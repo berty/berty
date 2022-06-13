@@ -1,10 +1,10 @@
-const wdio = require('webdriverio')
-
 const {
-	pressButton,
-	setInputValue,
+	createAccount,
+	joinGroupFromHome,
 	waitForElementByAccessibilityId,
-	getCapabilitiesFromEnv,
+	getConfigFromEnv,
+	waitForElementByText,
+	createDriver,
 } = require('./lib')
 
 /**
@@ -14,40 +14,31 @@ const {
 const groupName = 'random-group-18708'
 const groupLink = `https://berty.tech/id#group/8ejngpAxnMQKGMuM2AUsuWi5BJg7m9bDN25hjn7mnfx4sgV7FooCqMcJrto7fbTTeRo4ZmwP78F113XJWkGS9d3LYb9Lox7hYKXMRPHZUMb1f5gZkQAwy5UG12QjFP5E5YGq7BtMBD5GcsRVRv7bfof1gKjjyKkzmkKZEmeLsw92BzYsDcuviBX5Vt1vsg3iFgWuxxjPxbmuFEu9kTdGVzhsxqF1Tk9gKnf9BrJQbsww2w3j5JqjpyBvNvzFzZJt1Vvt2wgFifriAnxAppZ5NqAHJBHr/name=${groupName}`
 
-const startAppAndCreateAccount = async caps => {
-	const driver = await wdio.remote({
-		path: '/wd/hub',
-		port: 4723,
-		capabilities: caps,
-	})
-
-	await pressButton(driver, 'Create an account')
-	await pressButton(driver, 'Default mode')
-	await pressButton(driver, "Let's go")
-	await pressButton(driver, 'SKIP') // skip push notif perm request
-	await pressButton(driver, 'Continue')
-	await pressButton(driver, 'Start using berty')
-
-	return driver
-}
-
-const joinGroupFromHome = async (driver, link) => {
-	await setInputValue(driver, 'Search keyword', link)
-	await pressButton(driver, 'Open Berty Link')
-	await pressButton(driver, 'Join this group')
-}
-
 const main = async () => {
-	const capabilities = getCapabilitiesFromEnv()
+	const config = getConfigFromEnv()
+	if (!config.selected) {
+		throw new Error('missing TESTING_PLATFORM environment variable')
+	}
 
-	const device = await startAppAndCreateAccount(capabilities)
+	const driver = await createDriver(config.selected)
 
-	await joinGroupFromHome(device, groupLink)
+	await createAccount(driver)
 
-	// check that the group name is visible
-	await waitForElementByAccessibilityId(device, groupName)
+	await joinGroupFromHome(driver, groupLink)
 
-	await device.deleteSession()
+	// check that the group name is correctly displayed
+	switch (driver.capabilities.platformName) {
+		case 'iOS':
+			await waitForElementByAccessibilityId(driver, groupName)
+			break
+		case 'Android':
+			await waitForElementByText(driver, groupName)
+			break
+		default:
+			throw new Error(`platform '${driver.capabilities.platformName}' not supported`)
+	}
+
+	await driver.deleteSession()
 }
 
 main()

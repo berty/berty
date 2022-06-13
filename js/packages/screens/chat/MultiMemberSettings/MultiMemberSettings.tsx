@@ -144,6 +144,10 @@ const MultiMemberSettingsBody: React.FC<{
 	const membersCount = Object.values(members).length
 	const { t } = useTranslation()
 
+	const membersDropdownText = `${t(
+		'chat.multi-member-settings.members-button.title',
+	)} (${membersCount})`
+
 	return (
 		<View style={[padding.medium]}>
 			<FloatingMenuItemWithPrimaryIcon
@@ -164,7 +168,8 @@ const MultiMemberSettingsBody: React.FC<{
 							displayName: member?.displayName || '',
 						})
 					}}
-					placeholder={`${t('chat.multi-member-settings.members-button.title')} (${membersCount})`}
+					placeholder={membersDropdownText}
+					accessibilityLabel={membersDropdownText}
 				/>
 			</View>
 			<FloatingMenuItemWithPrimaryIcon

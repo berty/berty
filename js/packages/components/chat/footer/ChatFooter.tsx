@@ -351,6 +351,7 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 								onFocusChange={setIsFocused}
 								handleTabletSubmit={handlePressSend}
 								convPK={convPK}
+								accessibilityLabel={placeholder || undefined}
 							/>
 							<View style={{ marginLeft: horizontalGutter }}>
 								{showQuickButtons ? (

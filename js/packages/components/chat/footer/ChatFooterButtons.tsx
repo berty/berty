@@ -19,55 +19,78 @@ const ChatInputButton: React.FC<{
 	disabled?: boolean
 	vOffset?: number
 	loading?: boolean
-}> = React.memo(({ onPress, disabled, iconName, iconPack, size, iconRatio, vOffset, loading }) => {
-	const { scaleSize } = useAppDimensions()
-	const colors = useThemeColor()
+	accessiblityLabel?: string
+}> = React.memo(
+	({
+		onPress,
+		disabled,
+		iconName,
+		iconPack,
+		size,
+		iconRatio,
+		vOffset,
+		loading,
+		accessiblityLabel,
+	}) => {
+		const { scaleSize } = useAppDimensions()
+		const colors = useThemeColor()
 
-	if (size === undefined) {
-		size = chatInputButtonSizeMultiplier * scaleSize
-	}
-	if (iconRatio === undefined) {
-		iconRatio = 0.5
-	}
-	const iconSize = iconRatio * size
+		if (size === undefined) {
+			size = chatInputButtonSizeMultiplier * scaleSize
+		}
+		if (iconRatio === undefined) {
+			iconRatio = 0.5
+		}
+		const iconSize = iconRatio * size
 
-	const style: TouchableOpacityProps['style'] = React.useMemo(
-		() => ({
-			alignItems: 'center',
-			justifyContent: 'center',
-			width: size,
-			height: size,
-			backgroundColor: disabled ? colors['secondary-text'] : colors['background-header'],
-			borderRadius: (size || 0) / 2,
-		}),
-		[disabled, size, colors],
-	)
+		const style: TouchableOpacityProps['style'] = React.useMemo(
+			() => ({
+				alignItems: 'center',
+				justifyContent: 'center',
+				width: size,
+				height: size,
+				backgroundColor: disabled ? colors['secondary-text'] : colors['background-header'],
+				borderRadius: (size || 0) / 2,
+			}),
+			[disabled, size, colors],
+		)
 
-	return (
-		<TouchableOpacity style={style} disabled={disabled} onPress={onPress}>
-			<View style={vOffset && vOffset > 0 ? { paddingBottom: vOffset * scaleSize } : undefined}>
-				{loading ? (
-					<ActivityIndicator size='small' color={colors['reverted-main-text']} />
-				) : (
-					<Icon
-						name={iconName}
-						pack={iconPack}
-						width={iconSize}
-						height={iconSize}
-						fill={colors['reverted-main-text']}
-					/>
-				)}
-			</View>
-		</TouchableOpacity>
-	)
-})
+		return (
+			<TouchableOpacity
+				style={style}
+				disabled={disabled}
+				onPress={onPress}
+				accessibilityLabel={accessiblityLabel}
+			>
+				<View style={vOffset && vOffset > 0 ? { paddingBottom: vOffset * scaleSize } : undefined}>
+					{loading ? (
+						<ActivityIndicator size='small' color={colors['reverted-main-text']} />
+					) : (
+						<Icon
+							name={iconName}
+							pack={iconPack}
+							width={iconSize}
+							height={iconSize}
+							fill={colors['reverted-main-text']}
+						/>
+					)}
+				</View>
+			</TouchableOpacity>
+		)
+	},
+)
 
 export const SendButton: React.FC<{
 	onPress?: TouchableOpacityProps['onPress']
 	disabled?: boolean
 	loading?: boolean
 }> = React.memo(props => (
-	<ChatInputButton iconName='paper-plane-outline' iconRatio={0.56} {...props} />
+	<ChatInputButton
+		iconName='paper-plane-outline'
+		iconRatio={0.56}
+		accessiblityLabel='Send'
+		{...props}
+	/>
 ))
 
 export const CameraButton: React.FC<{

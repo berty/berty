@@ -151,6 +151,7 @@ export const MultiMember: ScreenFC<'Chat.Group'> = ({ route: { params }, navigat
 					onPress={() =>
 						navigation.navigate('Group.MultiMemberSettings', { convId: params.convId })
 					}
+					accessibilityLabel='Group settings'
 				>
 					<MultiMemberAvatar publicKey={conv?.publicKey} size={40 * scaleSize} />
 				</TouchableOpacity>

@@ -28,7 +28,7 @@ info Installing "/Users/norman/Library/Developer/Xcode/DerivedData/Berty-fhgkrmo
 ### Run the test script
 
 ```sh
-IOS_APP=<path-to-the-app> node e2e-tests/basic.js
+TESTING_PLATFORM=iOS IOS_APP=<path-to-the-app> node e2e-tests/basic.js
 ```
 
 ## Known errors
