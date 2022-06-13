@@ -1,24 +1,27 @@
 {
 	"onboarding": {
 		"getstarted": {
+			"screenTitle": "",
 			"title": "",
 			"desc": "",
 			"create-button": "",
-			"import-button": "",
-			"link-button": ""
+			"import-button": ""
 		},
 		"default-mode": {
 			"summary": {
 				"title": "",
+				"screenTitle": "",
 				"subtitle": "",
 				"first-point": "",
 				"second-point": "",
+				"third-point": "",
 				"back-button": "",
 				"accept-button": ""
 			}
 		},
 		"custom-mode": {
 			"summary": {
+				"screenTitle": "",
 				"title": "",
 				"subtitle": "",
 				"first-point": "",
@@ -45,12 +48,43 @@
 					"bootstrap-button": "",
 					"replication-button": ""
 				},
+				"modals": {
+					"add": {
+						"title": {
+							"relay": "",
+							"bootstrap": "",
+							"rdvp": ""
+						}
+					},
+					"edit": {
+						"title": {
+							"relay": "",
+							"bootstrap": "",
+							"rdvp": ""
+						}
+					},
+					"errors": {
+						"alias-already-exists": "",
+						"multiaddr-alread-exists": "",
+						"multiaddr-bad-format": "",
+						"multiaddr-p2p": ""
+					},
+					"buttons": {
+						"add": "添加",
+						"edit": "",
+						"delete": ""
+					},
+					"multiaddress": "",
+					"alias": ""
+				},
 				"all-button": "",
 				"accept-button": ""
 			}
 		},
 		"create-account": {
 			"title": "創建您的帳戶",
+			"first-button": "",
+			"second-button": "",
 			"placeholder": "",
 			"good-to-know": {
 				"title": "",
@@ -65,7 +99,7 @@
 		"setup-finished": {
 			"title": "設置完成！",
 			"desc": "您現在可以使用該應用，開始添加聯繫人以及與他們自由私下聊天",
-			"button": "開始使用 Berty"
+			"button": ""
 		},
 		"web-views": {
 			"title": "",
@@ -76,6 +110,7 @@
 	},
 	"main": {
 		"home": {
+			"title": "",
 			"requests": {
 				"title": "請求",
 				"accept": "同意",
@@ -95,8 +130,8 @@
 				"add-members": "添加成員",
 				"group-info": "群組信息",
 				"search-placeholder": "搜索",
-				"continue": "繼續",
-				"create-group": "創建群組"
+				"continue": "",
+				"create-group": ""
 			},
 			"create-group-finalize": {
 				"placeholder": "群組名稱",
@@ -112,45 +147,55 @@
 				"draft": ""
 			}
 		},
-		"suggestion-display-name-initial": "單擊這裡以添加",
-		"scan": {
-			"title": ""
-		}
+		"suggestion-display-name-initial": "單擊這裡以添加"
 	},
 	"settings": {
 		"home": {
+			"title": "設置",
 			"proximity-button": "",
 			"notifications-button": "消息通知",
 			"contact-convs-button": "",
 			"appearance-button": "",
-			"devices-button": "",
 			"accounts-button": "賬戶",
 			"network-button": "",
 			"bug-button": "",
 			"about-button": "關於 Berty"
 		},
 		"about": {
+			"title": "關於 Berty",
 			"faq-button": "",
 			"roadmap-button": "",
 			"policy-button": "",
-			"license-button": ""
+			"license-button": "",
+			"terms-of-use": "使用條款"
 		},
 		"accounts": {
+			"title": "賬戶",
+			"backup-button": "",
+			"backup-notif-title": "",
+			"backup-notif-desc": "",
 			"accounts-button": "賬戶",
 			"create-button": "",
 			"import-button": "",
 			"link-button": "",
-			"delete-button": ""
+			"delete-button": "",
+			"delete-title": ""
 		},
 		"appearance": {
+			"title": "",
 			"dark-button": "",
-			"editor-button": ""
+			"editor-button": "",
+			"theme-editor": {
+				"title": ""
+			}
 		},
 		"contact-convs": {
+			"title": "",
 			"reset-button": "",
 			"request-button": ""
 		},
 		"network": {
+			"title": "",
 			"ble-button": "",
 			"mc-button": "",
 			"nearby-button": "",
@@ -162,27 +207,29 @@
 			"relay-button": "",
 			"bootstrap-button": ""
 		},
+		"notifications": {
+			"title": "消息通知"
+		},
 		"edit-profile": {
 			"title": "編輯我的資料",
 			"qr-will-update": "您的 Berty ID (二維碼) 將會被更新",
 			"ocr-wont-update": "您的待處理聯繫人請求將不會被更新",
 			"save": "保存修改",
 			"cancel": "取消",
-			"name-input-placeholder": "名...",
-			"name-input-label": "名稱"
+			"name-input-placeholder": "名..."
 		},
 		"berty-services": {
 			"title": "",
 			"desc": "",
 			"button": "",
-			"skip": "跳過並稍後再做"
+			"skip": ""
 		},
 		"delete-account": {
 			"title": "刪除帳戶！",
 			"first-desc": "您確定要刪除您的帳戶嗎？",
 			"desc": "請輸入delete以確認",
 			"cancel-button": "取消",
-			"delete-button": "刪除"
+			"delete-button": ""
 		},
 		"faq": {
 			"title": ""
@@ -255,7 +302,10 @@
 		},
 		"add-dev-conversations": {
 			"title": "添加開發者會話",
-			"add": "添加 {{name}}"
+			"add": "添加 {{name}}",
+			"tag-bot": "機器人",
+			"tag-contact": "聯繫人",
+			"tag-conversation": ""
 		},
 		"ipfs-webui": {
 			"title": "IPFS WebUI"
@@ -294,7 +344,7 @@
 			"contact-already-added-message": "您不能多次添加同一個聯繫人"
 		},
 		"invalid-scan": {
-			"dismiss-button": "忽略"
+			"dismiss-button": ""
 		},
 		"add-this-contact": {
 			"fingerprint": "指紋",
@@ -318,6 +368,7 @@
 		}
 	},
 	"chat": {
+		"title-unknown": "",
 		"sending": "正在發送...",
 		"sent": "",
 		"contact-settings": {
@@ -329,10 +380,10 @@
 			"input-placeholder": "在此輸入..."
 		},
 		"push-notifications": {
-			"enable": "",
-			"enabled": "",
+			"title": "消息通知",
 			"unsupported": "",
 			"check-device-settings": "",
+			"check-account-settings": "",
 			"warning-disable": {
 				"title": "",
 				"subtitle": "",
@@ -340,10 +391,26 @@
 				"refuse": ""
 			},
 			"why-cant-disable": "",
+			"why-cant-disable-account": "",
 			"errors": {
 				"no-token": "",
 				"no-server": ""
-			}
+			},
+			"warning-enable-all": {
+				"title": "",
+				"subtitle": "",
+				"refuse": "",
+				"accept": "同意"
+			},
+			"warning-disable-mute": {
+				"title": "",
+				"refuse": "",
+				"accept": ""
+			},
+			"receive-push": "接收新消息通知",
+			"hide-previews": "",
+			"auto-enable": "",
+			"show-in-app": ""
 		},
 		"devices": {
 			"title": "設備",
@@ -353,6 +420,7 @@
 			}
 		},
 		"multi-member-settings": {
+			"title": "",
 			"media-button": "媒體、 鏈接和文檔",
 			"members-button": {
 				"title": "成員"
@@ -371,11 +439,11 @@
 		},
 		"one-to-one": {
 			"contact-request-box": {
-				"title": "聯繫人請求",
+				"title": "聯繫請求",
 				"group-invitation": "",
-				"refuse-button": "拒絕",
-				"accept-button": "接受",
-				"accepted-button": "已接受",
+				"refuse-button": "",
+				"accept-button": "同意",
+				"accepted-button": "",
 				"error": "",
 				"you-invited": "",
 				"this-contact": "",
@@ -391,6 +459,7 @@
 			"input-placeholder": "在此輸入..."
 		},
 		"one-to-one-settings": {
+			"title": "",
 			"media-button": "媒體、 鏈接和文檔",
 			"save-button": "在服務器上保存對話"
 		},
@@ -418,7 +487,10 @@
 			"title": "共享媒體",
 			"medias": "媒體",
 			"links": "鏈接",
-			"documents": "文件"
+			"documents": "文件",
+			"file": "",
+			"picture": "",
+			"audio": ""
 		},
 		"reply": {
 			"response-to": "答覆：",
@@ -431,6 +503,18 @@
 		},
 		"emojis": {
 			"matching": ""
+		}
+	},
+	"account": {
+		"deleting": "",
+		"creating": "",
+		"opening": {
+			"alert-push-title": "推送通知",
+			"alert-push-go-failed": "",
+			"alert-push-fetch-failed": "",
+			"alert-push-perm-denied": "",
+			"alert-push-desc": "",
+			"alert-push-button": ""
 		}
 	},
 	"audio": {
@@ -470,7 +554,7 @@
 			"allow": "允許",
 			"settings": "轉到設置"
 		},
-		"skip": "跳過",
+		"skip": "",
 		"cancel": "取消",
 		"settings-text": "您可以在設置中啟用 {{title}} 權限。"
 	},
@@ -479,7 +563,7 @@
 			"title": "",
 			"desc": ""
 		},
-		"need-restart-ble": {
+		"submit-failed": {
 			"title": "",
 			"desc": ""
 		}
@@ -509,7 +593,6 @@
 			"title": "檢查器",
 			"accounts": {
 				"title": "賬戶",
-				"unsupported-remote-mode": "遠程模式下不支持帳戶檢查器",
 				"data-not-found": "帳戶不在列表中",
 				"action-delete": {
 					"file-exists": "帳戶 {{accountId}} 不存在，但文件有此名稱。",
@@ -559,5 +642,10 @@
 				"button-cancel": "取消"
 			}
 		}
+	},
+	"time-for": {
+		"minutes": "",
+		"hours": "",
+		"days": ""
 	}
 }
