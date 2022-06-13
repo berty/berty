@@ -1,5 +1,6 @@
 import { Icon } from '@ui-kitten/components'
 import React from 'react'
+import { StyleSheet } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 
 import { useAppDispatch, useAppSelector } from '@berty/hooks'
@@ -15,6 +16,7 @@ export const CancelReply: React.FC<ReplyMessageProps> = ({ convPK }) => {
 	const activeReplyInteraction = useAppSelector(state =>
 		selectActiveReplyInteraction(state, convPK),
 	)
+
 	return (
 		<TouchableOpacity
 			onPress={() => {
@@ -26,8 +28,12 @@ export const CancelReply: React.FC<ReplyMessageProps> = ({ convPK }) => {
 				height={18}
 				width={18}
 				fill={activeReplyInteraction?.textColor}
-				style={{ marginTop: 2, transform: [{ rotate: '45deg' }] }}
+				style={styles.icon}
 			/>
 		</TouchableOpacity>
 	)
 }
+
+const styles = StyleSheet.create({
+	icon: { marginTop: 2, transform: [{ rotate: '45deg' }] },
+})

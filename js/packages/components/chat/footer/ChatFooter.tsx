@@ -12,7 +12,7 @@ import { RESULTS } from 'react-native-permissions'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import beapi from '@berty/api'
-import { ChatTextInput } from '@berty/components/inputs'
+import { ChatTextInput } from '@berty/components'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useModal } from '@berty/contexts/modal.context'
 import {

@@ -5,16 +5,16 @@ import { useStyles } from '@berty/contexts/styles'
 import { useAppSelector } from '@berty/hooks'
 import { selectActiveReplyInteraction } from '@berty/redux/reducers/chatInputs.reducer'
 
-import { CancelReply } from './CancelReply'
-import { ContactReply } from './ContactReply'
+import { CancelReply } from './CancelReply.priv'
+import { ContactReply } from './ContactReply.priv'
 import { ReplyMessageProps } from './interface'
-import { ReplyMessage } from './ReplyMessage'
+import { ReplyMessage } from './ReplyMessage.priv'
 
 export const ReplyMessageBar: React.FC<ReplyMessageProps> = ({ convPK }) => {
-	const { border } = useStyles()
 	const activeReplyInteraction = useAppSelector(state =>
 		selectActiveReplyInteraction(state, convPK),
 	)
+	const { border } = useStyles()
 
 	if (!activeReplyInteraction) {
 		return null

@@ -1,6 +1,6 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { View, StyleSheet } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 
 import { useStyles } from '@berty/contexts/styles'
 import { useAppSelector, useInteractionAuthor } from '@berty/hooks'
@@ -11,9 +11,9 @@ import { UnifiedText } from '../../../shared-components/UnifiedText'
 import { ReplyMessageProps } from './interface'
 
 export const ContactReply: React.FC<ReplyMessageProps> = ({ convPK }) => {
-	const colors = useThemeColor()
-	const { text } = useStyles()
 	const { t } = useTranslation()
+	const { text } = useStyles()
+	const colors = useThemeColor()
 
 	const activeReplyInteraction = useAppSelector(state =>
 		selectActiveReplyInteraction(state, convPK),
@@ -26,8 +26,11 @@ export const ContactReply: React.FC<ReplyMessageProps> = ({ convPK }) => {
 	return (
 		<View
 			style={[
-				styles.contactReply,
-				{ backgroundColor: colors['input-background'], borderColor: colors['positive-asset'] },
+				styles.container,
+				{
+					backgroundColor: colors['input-background'],
+					borderColor: colors['positive-asset'],
+				},
 			]}
 		>
 			<UnifiedText
@@ -41,7 +44,7 @@ export const ContactReply: React.FC<ReplyMessageProps> = ({ convPK }) => {
 }
 
 const styles = StyleSheet.create({
-	contactReply: {
+	container: {
 		position: 'absolute',
 		top: -20,
 		alignSelf: 'center',
