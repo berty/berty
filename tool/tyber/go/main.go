@@ -6,6 +6,7 @@ import (
 	"errors"
 	"flag"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"os"
 	"strings"
@@ -103,11 +104,12 @@ func runMain(args []string) error {
 }
 
 func list() *ffcli.Command {
-	fs := flag.NewFlagSet("tyber list", flag.ExitOnError)
+	fs := flag.NewFlagSet("tyber list [flags]", flag.ExitOnError)
+	output := fs.String("o", "", "Path of the file to write the output")
 
 	return &ffcli.Command{
 		Name:       "list",
-		ShortUsage: "tyber [global flags] list",
+		ShortUsage: "tyber [global flags] list [flags]",
 		ShortHelp:  "List parsed files",
 		Options:    ffCommandOptions(),
 		FlagSet:    fs,
@@ -140,12 +142,17 @@ func list() *ffcli.Command {
 				}
 				appSessions = append(appSessions, session)
 			}
-			jsonSessions, err := json.Marshal(appSessions)
+
+			jsonSessions, err := json.MarshalIndent(appSessions, "", "  ")
 			if err != nil {
 				return err
 			}
-			fmt.Println(string(jsonSessions))
 
+			if *output != "" {
+				return ioutil.WriteFile(*output, jsonSessions, 0644)
+			}
+
+			fmt.Println(string(jsonSessions))
 			return nil
 		},
 	}
@@ -204,6 +211,7 @@ func parse() *ffcli.Command {
 
 func analyze() *ffcli.Command {
 	fs := flag.NewFlagSet("tyber analyze [flags] <session_id>...", flag.ExitOnError)
+	output := fs.String("o", "", "Path of the file to write the output")
 
 	return &ffcli.Command{
 		Name:       "analyze",
@@ -239,7 +247,22 @@ func analyze() *ffcli.Command {
 				return errors.New(fmt.Sprintf("session=%s is not found", sessionID))
 			}
 
-			manager.Analyzer.Analyze(requestedSessions)
+			report, err := manager.Analyzer.Analyze(requestedSessions)
+			if err != nil {
+				return err
+			}
+
+			jsonReport, err := json.MarshalIndent(report, "", "  ")
+			if err != nil {
+				return err
+			}
+			jsonReport = append(jsonReport, '\n')
+
+			if *output != "" {
+				return ioutil.WriteFile(*output, jsonReport, 0644)
+			}
+
+			fmt.Println(string(jsonReport))
 
 			return nil
 		},

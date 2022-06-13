@@ -1,7 +1,5 @@
 package analyzer
 
-import "fmt"
-
 type ContactRequestReport struct {
 	ContactRequests []*ContactRequest `json:"contactRequests"`
 	Sent            int               `json:"sent"`
@@ -81,7 +79,6 @@ func (crr *ContactRequestReport) computeAverageTime() {
 }
 
 func (mr *MessageReport) processMessage(message *Message) error {
-	fmt.Println("adding this message", message)
 	mr.Messages = append(mr.Messages, message)
 	mr.Sent++
 	if message.Successed {

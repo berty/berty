@@ -2,9 +2,7 @@ package analyzer
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
-	"fmt"
 	"strings"
 
 	"berty.tech/berty/tool/tyber/go/logger"
@@ -22,33 +20,24 @@ type Analyzer struct {
 func New(ctx context.Context, logger *logger.Logger) *Analyzer {
 	return &Analyzer{
 		ctx:             ctx,
-		logger:          logger,
+		logger:          logger.Named("analyzer"),
 		ContactRequests: make(map[string][]*ContactRequest),
 		Messages:        make(map[string]*Message),
 	}
 }
 
-func (a *Analyzer) Analyze(sessions []*parser.Session) error {
+func (a *Analyzer) Analyze(sessions []*parser.Session) (*Report, error) {
 	if err := a.parseSessions(sessions); err != nil {
-		return err
+		return nil, err
 	}
 
-	report, err := a.Report()
-	if err != nil {
-		return err
-	}
-	jsonReport, _ := json.Marshal(report)
-	fmt.Println(string(jsonReport))
-
-	return nil
+	return a.Report()
 }
 
 func (a *Analyzer) parseSessions(sessions []*parser.Session) error {
 	for _, session := range sessions {
 		for _, trace := range session.Traces {
 			if trace.Name == "Sending contact request" {
-				a.logger.Debug("found Contact request sent")
-
 				cr := NewContactRequest()
 				if err := cr.parseSenderStep1(trace); err != nil {
 					a.logger.Errorf("error while parsing contact request: %s", err.Error())
@@ -58,8 +47,6 @@ func (a *Analyzer) parseSessions(sessions []*parser.Session) error {
 					a.logger.Errorf("error while updating contact request: %s", err.Error())
 				}
 			} else if strings.Contains(trace.Name, "Received AccountContactRequestOutgoingEnqueued from Account group") {
-				a.logger.Debug("found outgoing queue contact request")
-
 				cr := NewContactRequest()
 				if err := cr.parseSenderStep2(trace); err != nil {
 					a.logger.Errorf("error while parsing contact request: %s", err.Error())
@@ -69,8 +56,6 @@ func (a *Analyzer) parseSessions(sessions []*parser.Session) error {
 					a.logger.Errorf("error while updating contact request: %s", err.Error())
 				}
 			} else if strings.Contains(trace.Name, "Received AccountContactRequestIncomingReceived from Account group") {
-				a.logger.Debug("found incoming contact request")
-
 				cr := NewContactRequest()
 				if err := cr.parseReceiver(trace); err != nil {
 					a.logger.Errorf("error while parsing contact request: %s", err.Error())
@@ -80,8 +65,6 @@ func (a *Analyzer) parseSessions(sessions []*parser.Session) error {
 					a.logger.Errorf("error while saving contact request: %s", err.Error())
 				}
 			} else if strings.Contains(trace.Name, "Sending message to group") || strings.Contains(trace.Name, "Interacting with UserMessage on group") {
-				a.logger.Debug("found sent message")
-
 				m := NewMessage()
 				if err := m.parseSenderTrace(trace); err != nil {
 					a.logger.Errorf("error while parsing message: %s", err.Error())
@@ -91,8 +74,6 @@ func (a *Analyzer) parseSessions(sessions []*parser.Session) error {
 					a.logger.Errorf("error while saving message: %s", err.Error())
 				}
 			} else if trace.InitialName == "Received message store event" {
-				a.logger.Debug("found received message")
-
 				m := NewMessage()
 				if err := m.parseReceiverTrace(trace); err != nil {
 					a.logger.Errorf("error while parsing message: %s", err.Error())
