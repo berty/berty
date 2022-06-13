@@ -34,7 +34,7 @@ jobs:
         with:
           go-version: ${{ matrix.golang }}
       - name: golangci-lint
-        uses: golangci/golangci-lint-action@v3.1.0
+        uses: golangci/golangci-lint-action@v3.2.0
         with:
           go-version: ${{ matrix.golang }}
           version: v1.44.2
