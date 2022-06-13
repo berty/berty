@@ -8,6 +8,11 @@ import SwiperCard from '@berty/components/onboarding/SwiperCard'
 import { ScreenFC, useNavigation } from '@berty/navigation'
 import { useNotificationsInhibitor, useThemeColor } from '@berty/store'
 
+/**
+ * FIXME: rewrite this component, the client ternaries always go through the first path
+ * so only the first animation is played and the variables are oddly named
+ */
+
 const SetupFinishedBody = () => {
 	const { t }: any = useTranslation()
 	const colors = useThemeColor()

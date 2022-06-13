@@ -1,183 +1,88 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Onboarding.GetStarted renders correctly 1`] = `
-<View
+<RNCSafeAreaProvider
+  onInsetsChange={[Function]}
   style={
-    Object {
-      "flex": 1,
-    }
+    Array [
+      Object {
+        "flex": 1,
+      },
+      undefined,
+    ]
   }
 >
   <View
     style={
-      Array [
-        Object {
-          "padding": 16,
-        },
-        Object {
-          "backgroundColor": "#FFFFFF",
-          "flex": 1,
-          "justifyContent": "center",
-        },
-      ]
+      Object {
+        "flex": 1,
+      }
     }
   >
     <View
       style={
         Array [
           Object {
-            "marginBottom": 32,
+            "padding": 16,
           },
           Object {
-            "flexDirection": "row",
+            "backgroundColor": "#FFFFFF",
+            "flex": 1,
             "justifyContent": "center",
           },
         ]
       }
     >
-      <AssetMock />
-    </View>
-    <View>
-      <View>
-        <Text
-          style={
-            Array [
-              Object {
-                "fontSize": 30,
-              },
-              Object {
-                "color": "#383B62",
-                "fontFamily": "Open Sans",
-              },
-              Array [
-                Object {
-                  "paddingHorizontal": 16,
-                },
-                Object {
-                  "textAlign": "center",
-                },
-                Object {
-                  "fontSize": 40,
-                },
-                Object {
-                  "fontFamily": "Bold Open Sans",
-                },
-                Object {
-                  "color": "#535AE4",
-                  "textTransform": "uppercase",
-                },
-              ],
-            ]
-          }
-        >
-          onboarding.getstarted.title
-        </Text>
-      </View>
       <View
         style={
           Array [
             Object {
-              "marginTop": 9,
+              "marginBottom": 32,
+            },
+            Object {
+              "flexDirection": "row",
+              "justifyContent": "center",
             },
           ]
         }
       >
-        <Text
-          style={
-            Array [
-              Object {
-                "fontSize": 30,
-              },
-              Object {
-                "color": "#383B62",
-                "fontFamily": "Open Sans",
-              },
+        <AssetMock />
+      </View>
+      <View>
+        <View>
+          <Text
+            style={
               Array [
                 Object {
-                  "paddingHorizontal": 16,
+                  "fontSize": 30,
                 },
                 Object {
-                  "textAlign": "center",
+                  "color": "#383B62",
+                  "fontFamily": "Open Sans",
                 },
-                Object {
-                  "textAlignVertical": "bottom",
-                },
-                Object {
-                  "fontFamily": "Italic Open Sans",
-                },
-              ],
-            ]
-          }
-        >
-          onboarding.getstarted.desc
-        </Text>
-      </View>
-      <View
-        style={
-          Object {
-            "marginHorizontal": 60,
-          }
-        }
-      >
-        <View
-          style={
-            Array [
-              Object {
-                "marginTop": 40,
-              },
-            ]
-          }
-        >
-          <View
-            accessibilityLabel="onboarding.getstarted.create-button"
-            accessible={true}
-            focusable={true}
-            onClick={[Function]}
-            onResponderGrant={[Function]}
-            onResponderMove={[Function]}
-            onResponderRelease={[Function]}
-            onResponderTerminate={[Function]}
-            onResponderTerminationRequest={[Function]}
-            onStartShouldSetResponder={[Function]}
-            style={
-              Object {
-                "alignItems": "center",
-                "backgroundColor": "#535AE4",
-                "borderRadius": 8,
-                "flexDirection": "row",
-                "height": 44,
-                "justifyContent": "center",
-                "opacity": 1,
-              }
-            }
-          >
-            <Text
-              style={
                 Array [
                   Object {
-                    "fontSize": 30,
+                    "paddingHorizontal": 16,
                   },
                   Object {
-                    "color": "#383B62",
-                    "fontFamily": "Open Sans",
+                    "textAlign": "center",
                   },
-                  Array [
-                    Object {
-                      "textTransform": "uppercase",
-                    },
-                    Object {
-                      "color": "#F2F2F2",
-                    },
-                    Object {
-                      "fontFamily": "Bold Open Sans",
-                    },
-                  ],
-                ]
-              }
-            >
-              onboarding.getstarted.create-button
-            </Text>
-          </View>
+                  Object {
+                    "fontSize": 40,
+                  },
+                  Object {
+                    "fontFamily": "Bold Open Sans",
+                  },
+                  Object {
+                    "color": "#535AE4",
+                    "textTransform": "uppercase",
+                  },
+                ],
+              ]
+            }
+          >
+            onboarding.getstarted.title
+          </Text>
         </View>
         <View
           style={
@@ -188,58 +93,165 @@ exports[`Onboarding.GetStarted renders correctly 1`] = `
             ]
           }
         >
-          <View
-            accessible={true}
-            focusable={true}
-            onClick={[Function]}
-            onResponderGrant={[Function]}
-            onResponderMove={[Function]}
-            onResponderRelease={[Function]}
-            onResponderTerminate={[Function]}
-            onResponderTerminationRequest={[Function]}
-            onStartShouldSetResponder={[Function]}
+          <Text
             style={
-              Object {
-                "alignItems": "center",
-                "backgroundColor": "#EAEAFB",
-                "borderRadius": 8,
-                "flexDirection": "row",
-                "height": 44,
-                "justifyContent": "center",
-                "opacity": 1,
-              }
-            }
-          >
-            <Text
-              style={
+              Array [
+                Object {
+                  "fontSize": 30,
+                },
+                Object {
+                  "color": "#383B62",
+                  "fontFamily": "Open Sans",
+                },
                 Array [
                   Object {
-                    "fontSize": 30,
+                    "paddingHorizontal": 16,
                   },
                   Object {
-                    "color": "#383B62",
-                    "fontFamily": "Open Sans",
+                    "textAlign": "center",
                   },
-                  Array [
-                    Object {
-                      "textTransform": "uppercase",
-                    },
-                    Object {
-                      "color": "#535AE4",
-                    },
-                    Object {
-                      "fontFamily": "Bold Open Sans",
-                    },
-                  ],
-                ]
+                  Object {
+                    "textAlignVertical": "bottom",
+                  },
+                  Object {
+                    "fontFamily": "Italic Open Sans",
+                  },
+                ],
+              ]
+            }
+          >
+            onboarding.getstarted.desc
+          </Text>
+        </View>
+        <View
+          style={
+            Object {
+              "marginHorizontal": 60,
+            }
+          }
+        >
+          <View
+            style={
+              Array [
+                Object {
+                  "marginTop": 40,
+                },
+              ]
+            }
+          >
+            <View
+              accessibilityLabel="onboarding.getstarted.create-button"
+              accessible={true}
+              focusable={true}
+              onClick={[Function]}
+              onResponderGrant={[Function]}
+              onResponderMove={[Function]}
+              onResponderRelease={[Function]}
+              onResponderTerminate={[Function]}
+              onResponderTerminationRequest={[Function]}
+              onStartShouldSetResponder={[Function]}
+              style={
+                Object {
+                  "alignItems": "center",
+                  "backgroundColor": "#535AE4",
+                  "borderRadius": 8,
+                  "flexDirection": "row",
+                  "height": 44,
+                  "justifyContent": "center",
+                  "opacity": 1,
+                }
               }
             >
-              onboarding.getstarted.import-button
-            </Text>
+              <Text
+                style={
+                  Array [
+                    Object {
+                      "fontSize": 30,
+                    },
+                    Object {
+                      "color": "#383B62",
+                      "fontFamily": "Open Sans",
+                    },
+                    Array [
+                      Object {
+                        "textTransform": "uppercase",
+                      },
+                      Object {
+                        "color": "#F2F2F2",
+                      },
+                      Object {
+                        "fontFamily": "Bold Open Sans",
+                      },
+                    ],
+                  ]
+                }
+              >
+                onboarding.getstarted.create-button
+              </Text>
+            </View>
+          </View>
+          <View
+            style={
+              Array [
+                Object {
+                  "marginTop": 9,
+                },
+              ]
+            }
+          >
+            <View
+              accessible={true}
+              focusable={true}
+              onClick={[Function]}
+              onResponderGrant={[Function]}
+              onResponderMove={[Function]}
+              onResponderRelease={[Function]}
+              onResponderTerminate={[Function]}
+              onResponderTerminationRequest={[Function]}
+              onStartShouldSetResponder={[Function]}
+              style={
+                Object {
+                  "alignItems": "center",
+                  "backgroundColor": "#EAEAFB",
+                  "borderRadius": 8,
+                  "flexDirection": "row",
+                  "height": 44,
+                  "justifyContent": "center",
+                  "opacity": 1,
+                }
+              }
+            >
+              <Text
+                style={
+                  Array [
+                    Object {
+                      "fontSize": 30,
+                    },
+                    Object {
+                      "color": "#383B62",
+                      "fontFamily": "Open Sans",
+                    },
+                    Array [
+                      Object {
+                        "textTransform": "uppercase",
+                      },
+                      Object {
+                        "color": "#535AE4",
+                      },
+                      Object {
+                        "fontFamily": "Bold Open Sans",
+                      },
+                    ],
+                  ]
+                }
+              >
+                onboarding.getstarted.import-button
+              </Text>
+            </View>
           </View>
         </View>
       </View>
     </View>
   </View>
-</View>
+</RNCSafeAreaProvider>
 `;
