@@ -1,0 +1,10 @@
+/* 
+  Localizable.strings
+  Berty
+
+  Created by Guilhem Fanton on 10/11/2021.
+
+*/
+
+"BertyPushMessage" = "新しいメッセージ";
+"BertyPushMessageError" = "新しいメッセージを受信しましたが、復号中にエラーが発生しました";
