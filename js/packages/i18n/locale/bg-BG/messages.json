@@ -1,30 +1,33 @@
 {
 	"onboarding": {
 		"getstarted": {
-			"title": "",
-			"desc": "",
-			"create-button": "",
-			"import-button": "",
-			"link-button": ""
+			"screenTitle": "Защитете Вашата лична информация",
+			"title": "Защитете Вашата лична информация",
+			"desc": "Безплатни и защитени директни съобщения",
+			"create-button": "Създайте акаунт",
+			"import-button": "Заредете съществуващ акаунт"
 		},
 		"default-mode": {
 			"summary": {
-				"title": "",
+				"title": "Режим по подразбиране",
+				"screenTitle": "Създайте акаунт",
 				"subtitle": "",
-				"first-point": "",
+				"first-point": "Започнете с настройки, които предлагат балансирани защита и удобство подходящи за повечето потребители. Berty клетки ще бъдат ползвани за подобряване на скоростта и асинхронна комуникация.",
 				"second-point": "",
-				"back-button": "",
-				"accept-button": ""
+				"third-point": "За специфични настройки на баланса между защита и удобство, изберете Персонализиран Режим.",
+				"back-button": "Назад",
+				"accept-button": "Продължи"
 			}
 		},
 		"custom-mode": {
 			"summary": {
-				"title": "",
+				"screenTitle": "Създай акаунт - Специфични настройки",
+				"title": "Персонализиран Режим",
 				"subtitle": "",
 				"first-point": "",
 				"second-point": "",
-				"back-button": "",
-				"accept-button": ""
+				"back-button": "Назад",
+				"accept-button": "Продължи"
 			},
 			"settings": {
 				"off-grid": {
@@ -45,12 +48,43 @@
 					"bootstrap-button": "",
 					"replication-button": ""
 				},
+				"modals": {
+					"add": {
+						"title": {
+							"relay": "",
+							"bootstrap": "",
+							"rdvp": ""
+						}
+					},
+					"edit": {
+						"title": {
+							"relay": "",
+							"bootstrap": "",
+							"rdvp": ""
+						}
+					},
+					"errors": {
+						"alias-already-exists": "",
+						"multiaddr-alread-exists": "",
+						"multiaddr-bad-format": "",
+						"multiaddr-p2p": ""
+					},
+					"buttons": {
+						"add": "Добави",
+						"edit": "",
+						"delete": ""
+					},
+					"multiaddress": "",
+					"alias": ""
+				},
 				"all-button": "",
 				"accept-button": ""
 			}
 		},
 		"create-account": {
 			"title": "Създадете собствена сметка",
+			"first-button": "",
+			"second-button": "",
 			"placeholder": "",
 			"good-to-know": {
 				"title": "",
@@ -65,7 +99,7 @@
 		"setup-finished": {
 			"title": "Настройката приключи!",
 			"desc": "Вече можете да използвате приложението, да започнете да добавяте контакти и да говорите свободно и насаме с тях",
-			"button": "ЗАПОЧНИ РАБОТА С BERTY"
+			"button": ""
 		},
 		"web-views": {
 			"title": "",
@@ -76,6 +110,7 @@
 	},
 	"main": {
 		"home": {
+			"title": "",
 			"requests": {
 				"title": "Заявки",
 				"accept": "Приеми",
@@ -88,15 +123,15 @@
 			},
 			"multi-account": {
 				"create-button": "",
-				"import-button": ""
+				"import-button": "Заредете съществуващ акаунт"
 			},
 			"create-group": {
-				"title": "",
-				"add-members": "",
-				"group-info": "",
+				"title": "Създай Група",
+				"add-members": "Добави участник",
+				"group-info": "Информация за групата",
 				"search-placeholder": "Търсене",
-				"continue": "",
-				"create-group": ""
+				"continue": "Продължи",
+				"create-group": "Създай нова група"
 			},
 			"create-group-finalize": {
 				"placeholder": "",
@@ -112,45 +147,55 @@
 				"draft": ""
 			}
 		},
-		"suggestion-display-name-initial": "",
-		"scan": {
-			"title": ""
-		}
+		"suggestion-display-name-initial": ""
 	},
 	"settings": {
 		"home": {
+			"title": "Настройки",
 			"proximity-button": "",
 			"notifications-button": "Известия",
 			"contact-convs-button": "",
 			"appearance-button": "",
-			"devices-button": "",
 			"accounts-button": "",
 			"network-button": "",
 			"bug-button": "",
 			"about-button": "Относно Berty"
 		},
 		"about": {
+			"title": "Относно Berty",
 			"faq-button": "",
 			"roadmap-button": "",
 			"policy-button": "",
-			"license-button": ""
+			"license-button": "",
+			"terms-of-use": "Политика за употреба"
 		},
 		"accounts": {
+			"title": "",
+			"backup-button": "",
+			"backup-notif-title": "",
+			"backup-notif-desc": "",
 			"accounts-button": "",
 			"create-button": "",
 			"import-button": "",
 			"link-button": "",
-			"delete-button": ""
+			"delete-button": "",
+			"delete-title": ""
 		},
 		"appearance": {
+			"title": "",
 			"dark-button": "",
-			"editor-button": ""
+			"editor-button": "",
+			"theme-editor": {
+				"title": ""
+			}
 		},
 		"contact-convs": {
+			"title": "",
 			"reset-button": "",
 			"request-button": ""
 		},
 		"network": {
+			"title": "",
 			"ble-button": "",
 			"mc-button": "",
 			"nearby-button": "",
@@ -162,27 +207,29 @@
 			"relay-button": "",
 			"bootstrap-button": ""
 		},
+		"notifications": {
+			"title": "Известия"
+		},
 		"edit-profile": {
 			"title": "Редактирай моя профил",
 			"qr-will-update": "Твоят Berty ID (QR код) ще бъде подновен",
 			"ocr-wont-update": "Изчакващите ви заявки за контакт няма да бъдат актуализирани",
 			"save": "Запази промените",
 			"cancel": "Отказ",
-			"name-input-placeholder": "Име...",
-			"name-input-label": "Име"
+			"name-input-placeholder": "Име..."
 		},
 		"berty-services": {
 			"title": "",
 			"desc": "",
 			"button": "",
-			"skip": "ПРОПУСНИ И ОСТАВИ ЗА ПО-КЪСНО"
+			"skip": ""
 		},
 		"delete-account": {
 			"title": "Изтрии акаунт!",
 			"first-desc": "Наистина ли искате да изтриете акаунта си?",
 			"desc": "Напиши delete за потвърждение",
-			"cancel-button": "ОТКАЗ",
-			"delete-button": "ИЗТРИИ"
+			"cancel-button": "Отказ",
+			"delete-button": ""
 		},
 		"faq": {
 			"title": ""
@@ -255,7 +302,10 @@
 		},
 		"add-dev-conversations": {
 			"title": "Добавете разговори за разработчици",
-			"add": "Добави {{name}}"
+			"add": "Добави {{name}}",
+			"tag-bot": "Бот",
+			"tag-contact": "Контакт",
+			"tag-conversation": ""
 		},
 		"ipfs-webui": {
 			"title": "IPFS WebUI"
@@ -294,7 +344,7 @@
 			"contact-already-added-message": "Не може да добавиш същия контакт няколко пъти"
 		},
 		"invalid-scan": {
-			"dismiss-button": "ОК"
+			"dismiss-button": ""
 		},
 		"add-this-contact": {
 			"fingerprint": "Fingerprint",
@@ -313,11 +363,12 @@
 			"title": "",
 			"desc": "",
 			"placeholder": "",
-			"cancel": "ОТКАЗ",
+			"cancel": "Отказ",
 			"add": ""
 		}
 	},
 	"chat": {
+		"title-unknown": "",
 		"sending": "Изпращане...",
 		"sent": "",
 		"contact-settings": {
@@ -329,10 +380,10 @@
 			"input-placeholder": ""
 		},
 		"push-notifications": {
-			"enable": "",
-			"enabled": "",
+			"title": "Известия",
 			"unsupported": "",
 			"check-device-settings": "",
+			"check-account-settings": "",
 			"warning-disable": {
 				"title": "",
 				"subtitle": "",
@@ -340,10 +391,26 @@
 				"refuse": ""
 			},
 			"why-cant-disable": "",
+			"why-cant-disable-account": "",
 			"errors": {
 				"no-token": "",
 				"no-server": ""
-			}
+			},
+			"warning-enable-all": {
+				"title": "",
+				"subtitle": "",
+				"refuse": "",
+				"accept": "Приеми"
+			},
+			"warning-disable-mute": {
+				"title": "",
+				"refuse": "",
+				"accept": ""
+			},
+			"receive-push": "Получаване на push известия",
+			"hide-previews": "",
+			"auto-enable": "",
+			"show-in-app": ""
 		},
 		"devices": {
 			"title": "Устройства",
@@ -353,6 +420,7 @@
 			}
 		},
 		"multi-member-settings": {
+			"title": "",
 			"media-button": "Медия, линкове & документи",
 			"members-button": {
 				"title": "Участници"
@@ -371,11 +439,11 @@
 		},
 		"one-to-one": {
 			"contact-request-box": {
-				"title": "ЗАЯВКА ЗА КОНТАКТ",
+				"title": "Искане за контакт",
 				"group-invitation": "",
-				"refuse-button": "ОТКАЖИ",
-				"accept-button": "ПРИЕМИ",
-				"accepted-button": "ПРИЕТ",
+				"refuse-button": "",
+				"accept-button": "Приеми",
+				"accepted-button": "",
 				"error": "",
 				"you-invited": "",
 				"this-contact": "",
@@ -391,6 +459,7 @@
 			"input-placeholder": ""
 		},
 		"one-to-one-settings": {
+			"title": "",
 			"media-button": "Медия, линкове & документи",
 			"save-button": "Запази разговора на сървъра"
 		},
@@ -418,7 +487,10 @@
 			"title": "",
 			"medias": "",
 			"links": "",
-			"documents": ""
+			"documents": "",
+			"file": "",
+			"picture": "",
+			"audio": ""
 		},
 		"reply": {
 			"response-to": "",
@@ -431,6 +503,18 @@
 		},
 		"emojis": {
 			"matching": ""
+		}
+	},
+	"account": {
+		"deleting": "",
+		"creating": "",
+		"opening": {
+			"alert-push-title": "",
+			"alert-push-go-failed": "",
+			"alert-push-fetch-failed": "",
+			"alert-push-perm-denied": "",
+			"alert-push-desc": "",
+			"alert-push-button": "Продължи"
 		}
 	},
 	"audio": {
@@ -470,8 +554,8 @@
 			"allow": "",
 			"settings": ""
 		},
-		"skip": "ПРОПУСНИ",
-		"cancel": "ОТКАЗ",
+		"skip": "",
+		"cancel": "Отказ",
 		"settings-text": ""
 	},
 	"notification": {
@@ -479,7 +563,7 @@
 			"title": "",
 			"desc": ""
 		},
-		"need-restart-ble": {
+		"submit-failed": {
 			"title": "",
 			"desc": ""
 		}
@@ -509,7 +593,6 @@
 			"title": "",
 			"accounts": {
 				"title": "",
-				"unsupported-remote-mode": "",
 				"data-not-found": "",
 				"action-delete": {
 					"file-exists": "",
@@ -559,5 +642,10 @@
 				"button-cancel": "Отказ"
 			}
 		}
+	},
+	"time-for": {
+		"minutes": "",
+		"hours": "",
+		"days": ""
 	}
 }
