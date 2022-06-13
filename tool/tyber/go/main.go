@@ -177,40 +177,45 @@ func parse() *ffcli.Command {
 			}
 			defer manager.Cancel()
 
-			for _, path := range args {
-				cerr := make(chan error)
-
-				go func() {
-					if err := manager.Parser.ParseFile(path); err != nil {
-						cerr <- err
-					}
-				}()
-
-				// waiting to finish parsing
-			EVENT_LOOP: // label
-				for {
-					select {
-					case evt := <-manager.Parser.EventChan:
-						switch evt.(type) {
-						case parser.CreateSessionEvent:
-							break EVENT_LOOP
-						default: // digest unwanted events
-						}
-					case err := <-cerr:
-						return err
-					case <-ctx.Done():
-						return ctx.Err()
-					}
-				}
-			}
-
-			return nil
+			return _parse(ctx, args)
 		},
 	}
 }
 
+func _parse(ctx context.Context, args []string) error {
+	for _, path := range args {
+		cerr := make(chan error)
+
+		go func() {
+			if err := manager.Parser.ParseFile(path); err != nil {
+				cerr <- err
+			}
+		}()
+
+		// waiting to finish parsing
+	EVENT_LOOP: // label
+		for {
+			select {
+			case evt := <-manager.Parser.EventChan:
+				switch evt.(type) {
+				case parser.CreateSessionEvent:
+					break EVENT_LOOP
+				default: // digest unwanted events
+				}
+			case err := <-cerr:
+				return err
+			case <-ctx.Done():
+				return ctx.Err()
+			}
+		}
+	}
+
+	return nil
+}
+
 func analyze() *ffcli.Command {
 	fs := flag.NewFlagSet("tyber analyze [flags] <session_id>...", flag.ExitOnError)
+	parse := fs.Bool("p", false, "takes Berty logs as arguments and parse them before analyze")
 	output := fs.String("o", "", "Path of the file to write the output")
 
 	return &ffcli.Command{
@@ -229,6 +234,12 @@ func analyze() *ffcli.Command {
 			}
 			defer manager.Cancel()
 
+			if *parse {
+				if err := _parse(ctx, args); err != nil {
+					return err
+				}
+			}
+
 			sessions, err := manager.Parser.ListSessions()
 			if err != nil {
 				return err
@@ -237,14 +248,21 @@ func analyze() *ffcli.Command {
 			// check if session requests are available and pick sessions
 			var requestedSessions []*parser.Session
 		LOOP_ARGS:
-			for _, sessionID := range args {
+			for _, arg := range args {
 				for _, session := range sessions {
-					if session.ID == sessionID {
-						requestedSessions = append(requestedSessions, session)
-						continue LOOP_ARGS
+					if *parse {
+						if session.SrcName == arg {
+							requestedSessions = append(requestedSessions, session)
+							continue LOOP_ARGS
+						}
+					} else {
+						if session.ID == arg {
+							requestedSessions = append(requestedSessions, session)
+							continue LOOP_ARGS
+						}
 					}
 				}
-				return errors.New(fmt.Sprintf("session=%s is not found", sessionID))
+				return errors.New(fmt.Sprintf("session=%s is not found", arg))
 			}
 
 			report, err := manager.Analyzer.Analyze(requestedSessions)
@@ -256,7 +274,6 @@ func analyze() *ffcli.Command {
 			if err != nil {
 				return err
 			}
-			jsonReport = append(jsonReport, '\n')
 
 			if *output != "" {
 				return ioutil.WriteFile(*output, jsonReport, 0644)
