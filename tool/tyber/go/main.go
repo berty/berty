@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"flag"
 	"fmt"
@@ -42,6 +43,11 @@ var (
 	VersionAstilectron string
 	VersionElectron    string
 )
+
+type AppSession struct {
+	ID   string `json:"id"`
+	Path string `json:"path"`
+}
 
 func main() {
 	err := runMain(os.Args[1:])
@@ -126,9 +132,19 @@ func list() *ffcli.Command {
 				return ctx.Err()
 			}
 
+			appSessions := []AppSession{}
 			for _, session := range sessions {
-				fmt.Printf("ID:%s file:%s\n", session.ID, session.SrcName)
+				session := AppSession{
+					ID:   session.ID,
+					Path: session.SrcName,
+				}
+				appSessions = append(appSessions, session)
 			}
+			jsonSessions, err := json.Marshal(appSessions)
+			if err != nil {
+				return err
+			}
+			fmt.Println(string(jsonSessions))
 
 			return nil
 		},
