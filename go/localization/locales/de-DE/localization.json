@@ -18,7 +18,9 @@
     "privacyPolicyLabel": "Datenschutzerklärung"
   },
   "push": {
-    "message": {},
+    "message": {
+      "title": "Neue Nachricht"
+    },
     "error": {
       "title": "Push-Entschlüsselung fehlgeschlagen"
     },
