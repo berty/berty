@@ -9,7 +9,9 @@ import { useThemeColor } from '@berty/store'
 import { UnifiedText } from '../../../shared-components/UnifiedText'
 import { ActiveReplyInteractionProps } from './interface'
 
-export const ContactReply: React.FC<ActiveReplyInteractionProps> = ({ activeReplyInteraction }) => {
+export const ReplyTargetAuthor: React.FC<ActiveReplyInteractionProps> = ({
+	activeReplyInteraction,
+}) => {
 	const { t } = useTranslation()
 	const { text } = useStyles()
 	const colors = useThemeColor()

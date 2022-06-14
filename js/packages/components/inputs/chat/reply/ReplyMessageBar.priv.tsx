@@ -6,10 +6,10 @@ import { useAppSelector } from '@berty/hooks'
 import { selectActiveReplyInteraction } from '@berty/redux/reducers/chatInputs.reducer'
 
 import { CancelReply } from './CancelReply.priv'
-import { ContactReply } from './ContactReply.priv'
 import { ReplyMessageProps } from './interface'
 import { ReplyMessage } from './reply-message/ReplyMessage.priv'
 import { ReplyMessageWithAttachment } from './reply-message/ReplyMessageWithAttachment.priv'
+import { ReplyTargetAuthor } from './ReplyTargetAuthor.priv'
 
 export const ReplyMessageBar: React.FC<ReplyMessageProps> = ({ convPK }) => {
 	const activeReplyInteraction = useAppSelector(state =>
@@ -29,7 +29,7 @@ export const ReplyMessageBar: React.FC<ReplyMessageProps> = ({ convPK }) => {
 				{ backgroundColor: activeReplyInteraction?.backgroundColor },
 			]}
 		>
-			<ContactReply activeReplyInteraction={activeReplyInteraction} />
+			<ReplyTargetAuthor activeReplyInteraction={activeReplyInteraction} />
 			{activeReplyInteraction?.payload?.body ? (
 				<ReplyMessage activeReplyInteraction={activeReplyInteraction} />
 			) : (
