@@ -5,8 +5,7 @@
 			"title": "プライバシーを保護",
 			"desc": "無料で安全に P2P メッセージをやりとりする",
 			"create-button": "アカウントを作成",
-			"import-button": "アカウントをインポート",
-			"link-button": "このデバイスをリンク"
+			"import-button": "アカウントをインポート"
 		},
 		"default-mode": {
 			"summary": {
@@ -14,7 +13,8 @@
 				"screenTitle": "アカウントを作成",
 				"subtitle": "素早く始める",
 				"first-point": "最もプライバシー/快適性のバランスの取れたプリセットから始めましょう。Berty ノードはパフォーマンスと非同期通信を改善するために使用されます。",
-				"second-point": "プライバシーと快適性のバランスを調整するには、「カスタムモード」を選択してください。",
+				"second-point": "",
+				"third-point": "プライバシーと快適性のバランスを調整するには、「カスタムモード」を選択してください。",
 				"back-button": "戻る",
 				"accept-button": "始めましょう"
 			}
@@ -83,6 +83,8 @@
 		},
 		"create-account": {
 			"title": "アカウントの作成",
+			"first-button": "",
+			"second-button": "",
 			"placeholder": "ニックネームを選択",
 			"good-to-know": {
 				"title": "伝えておきたいこと:",
@@ -154,7 +156,6 @@
 			"notifications-button": "通知",
 			"contact-convs-button": "連絡先と会話",
 			"appearance-button": "外観",
-			"devices-button": "デバイスとバックアップ",
 			"accounts-button": "アカウント",
 			"network-button": "ネットワーク",
 			"bug-button": "バグを送信",
@@ -193,12 +194,6 @@
 			"reset-button": "連絡先のリンク/QRコードをリセットする",
 			"request-button": "連絡先リクエストの受信を許可する"
 		},
-		"devices-backup": {
-			"title": "デバイスとバックアップ"
-		},
-		"security": {
-			"title": "セキュリティ"
-		},
 		"network": {
 			"title": "ネットワーク",
 			"ble-button": "Bluetooth Low Energy",
@@ -221,8 +216,7 @@
 			"ocr-wont-update": "保留中の連絡先リクエストは更新されません",
 			"save": "変更を保存",
 			"cancel": "キャンセル",
-			"name-input-placeholder": "名前...",
-			"name-input-label": "名前"
+			"name-input-placeholder": "名前..."
 		},
 		"berty-services": {
 			"title": "Berty サービス一覧",
@@ -413,8 +407,6 @@
 				"refuse": "ミュートのままにする",
 				"accept": "ミュート解除"
 			},
-			"enabled": "プッシュ通知を有効にしました",
-			"disabled": "プッシュ通知は無効になっています",
 			"receive-push": "プッシュ通知の受信",
 			"hide-previews": "プッシュ通知のプレビューを非表示にする",
 			"auto-enable": "現在および今後の会話のプッシュを有効にする",
@@ -513,6 +505,18 @@
 			"matching": ""
 		}
 	},
+	"account": {
+		"deleting": "",
+		"creating": "",
+		"opening": {
+			"alert-push-title": "プッシュ通知",
+			"alert-push-go-failed": "",
+			"alert-push-fetch-failed": "",
+			"alert-push-perm-denied": "",
+			"alert-push-desc": "",
+			"alert-push-button": "続ける"
+		}
+	},
 	"audio": {
 		"record": {
 			"tooltip": {
@@ -589,7 +593,6 @@
 			"title": "診断",
 			"accounts": {
 				"title": "アカウント",
-				"unsupported-remote-mode": "アカウント診断は、リモート・モードに対応していません",
 				"data-not-found": "アカウントが一覧にありません",
 				"action-delete": {
 					"file-exists": "アカウント {{accountId}} は存在しませんが、ファイルにはこの名前が付いています。",

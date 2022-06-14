@@ -18,7 +18,9 @@
     "privacyPolicyLabel": "개인정보보호정책"
   },
   "push": {
-    "message": {},
+    "message": {
+      "title": ""
+    },
     "error": {
       "title": ""
     },

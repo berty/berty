@@ -1,24 +1,27 @@
 {
 	"onboarding": {
 		"getstarted": {
+			"screenTitle": "",
 			"title": "",
 			"desc": "",
 			"create-button": "",
-			"import-button": "",
-			"link-button": ""
+			"import-button": ""
 		},
 		"default-mode": {
 			"summary": {
 				"title": "",
+				"screenTitle": "",
 				"subtitle": "",
 				"first-point": "",
 				"second-point": "",
+				"third-point": "",
 				"back-button": "",
 				"accept-button": ""
 			}
 		},
 		"custom-mode": {
 			"summary": {
+				"screenTitle": "",
 				"title": "",
 				"subtitle": "",
 				"first-point": "",
@@ -45,12 +48,43 @@
 					"bootstrap-button": "",
 					"replication-button": ""
 				},
+				"modals": {
+					"add": {
+						"title": {
+							"relay": "",
+							"bootstrap": "",
+							"rdvp": ""
+						}
+					},
+					"edit": {
+						"title": {
+							"relay": "",
+							"bootstrap": "",
+							"rdvp": ""
+						}
+					},
+					"errors": {
+						"alias-already-exists": "",
+						"multiaddr-alread-exists": "",
+						"multiaddr-bad-format": "",
+						"multiaddr-p2p": ""
+					},
+					"buttons": {
+						"add": "",
+						"edit": "",
+						"delete": ""
+					},
+					"multiaddress": "",
+					"alias": ""
+				},
 				"all-button": "",
 				"accept-button": ""
 			}
 		},
 		"create-account": {
 			"title": "Tạo tài khoản của bạn",
+			"first-button": "",
+			"second-button": "",
 			"placeholder": "",
 			"good-to-know": {
 				"title": "",
@@ -76,6 +110,7 @@
 	},
 	"main": {
 		"home": {
+			"title": "",
 			"requests": {
 				"title": "",
 				"accept": "",
@@ -112,45 +147,55 @@
 				"draft": ""
 			}
 		},
-		"suggestion-display-name-initial": "",
-		"scan": {
-			"title": ""
-		}
+		"suggestion-display-name-initial": ""
 	},
 	"settings": {
 		"home": {
+			"title": "",
 			"proximity-button": "",
 			"notifications-button": "Các thông báo",
 			"contact-convs-button": "",
 			"appearance-button": "",
-			"devices-button": "",
 			"accounts-button": "",
 			"network-button": "",
 			"bug-button": "",
 			"about-button": ""
 		},
 		"about": {
+			"title": "",
 			"faq-button": "",
 			"roadmap-button": "",
 			"policy-button": "",
-			"license-button": ""
+			"license-button": "",
+			"terms-of-use": ""
 		},
 		"accounts": {
+			"title": "",
+			"backup-button": "",
+			"backup-notif-title": "",
+			"backup-notif-desc": "",
 			"accounts-button": "",
 			"create-button": "",
 			"import-button": "",
 			"link-button": "",
-			"delete-button": ""
+			"delete-button": "",
+			"delete-title": ""
 		},
 		"appearance": {
+			"title": "",
 			"dark-button": "",
-			"editor-button": ""
+			"editor-button": "",
+			"theme-editor": {
+				"title": ""
+			}
 		},
 		"contact-convs": {
+			"title": "",
 			"reset-button": "",
 			"request-button": ""
 		},
 		"network": {
+			"title": "",
 			"ble-button": "",
 			"mc-button": "",
 			"nearby-button": "",
@@ -162,20 +207,22 @@
 			"relay-button": "",
 			"bootstrap-button": ""
 		},
+		"notifications": {
+			"title": "Các thông báo"
+		},
 		"edit-profile": {
 			"title": "",
 			"qr-will-update": "",
 			"ocr-wont-update": "",
 			"save": "",
 			"cancel": "",
-			"name-input-placeholder": "",
-			"name-input-label": "Tên"
+			"name-input-placeholder": ""
 		},
 		"berty-services": {
 			"title": "",
 			"desc": "",
 			"button": "",
-			"skip": "BỎ QUA VÀ THỰC HIỆN ĐIỀU NÀY SAU"
+			"skip": ""
 		},
 		"delete-account": {
 			"title": "",
@@ -255,7 +302,10 @@
 		},
 		"add-dev-conversations": {
 			"title": "",
-			"add": ""
+			"add": "",
+			"tag-bot": "",
+			"tag-contact": "",
+			"tag-conversation": ""
 		},
 		"ipfs-webui": {
 			"title": ""
@@ -318,6 +368,7 @@
 		}
 	},
 	"chat": {
+		"title-unknown": "",
 		"sending": "",
 		"sent": "",
 		"contact-settings": {
@@ -329,10 +380,10 @@
 			"input-placeholder": ""
 		},
 		"push-notifications": {
-			"enable": "",
-			"enabled": "",
+			"title": "Các thông báo",
 			"unsupported": "",
 			"check-device-settings": "",
+			"check-account-settings": "",
 			"warning-disable": {
 				"title": "",
 				"subtitle": "",
@@ -340,10 +391,26 @@
 				"refuse": ""
 			},
 			"why-cant-disable": "",
+			"why-cant-disable-account": "",
 			"errors": {
 				"no-token": "",
 				"no-server": ""
-			}
+			},
+			"warning-enable-all": {
+				"title": "",
+				"subtitle": "",
+				"refuse": "",
+				"accept": ""
+			},
+			"warning-disable-mute": {
+				"title": "",
+				"refuse": "",
+				"accept": ""
+			},
+			"receive-push": "Nhận các thông báo đẩy",
+			"hide-previews": "",
+			"auto-enable": "",
+			"show-in-app": ""
 		},
 		"devices": {
 			"title": "",
@@ -353,6 +420,7 @@
 			}
 		},
 		"multi-member-settings": {
+			"title": "",
 			"media-button": "",
 			"members-button": {
 				"title": ""
@@ -391,6 +459,7 @@
 			"input-placeholder": ""
 		},
 		"one-to-one-settings": {
+			"title": "",
 			"media-button": "",
 			"save-button": ""
 		},
@@ -418,7 +487,10 @@
 			"title": "",
 			"medias": "",
 			"links": "",
-			"documents": ""
+			"documents": "",
+			"file": "",
+			"picture": "",
+			"audio": ""
 		},
 		"reply": {
 			"response-to": "",
@@ -431,6 +503,18 @@
 		},
 		"emojis": {
 			"matching": ""
+		}
+	},
+	"account": {
+		"deleting": "",
+		"creating": "",
+		"opening": {
+			"alert-push-title": "",
+			"alert-push-go-failed": "",
+			"alert-push-fetch-failed": "",
+			"alert-push-perm-denied": "",
+			"alert-push-desc": "",
+			"alert-push-button": ""
 		}
 	},
 	"audio": {
@@ -479,7 +563,7 @@
 			"title": "",
 			"desc": ""
 		},
-		"need-restart-ble": {
+		"submit-failed": {
 			"title": "",
 			"desc": ""
 		}
@@ -509,7 +593,6 @@
 			"title": "",
 			"accounts": {
 				"title": "",
-				"unsupported-remote-mode": "",
 				"data-not-found": "",
 				"action-delete": {
 					"file-exists": "",
@@ -559,5 +642,10 @@
 				"button-cancel": ""
 			}
 		}
+	},
+	"time-for": {
+		"minutes": "",
+		"hours": "",
+		"days": ""
 	}
 }

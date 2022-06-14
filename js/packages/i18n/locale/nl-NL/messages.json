@@ -1,24 +1,27 @@
 {
 	"onboarding": {
 		"getstarted": {
-			"title": "BESCHERM UW PRIVACY",
+			"screenTitle": "Bescherm uw privacy",
+			"title": "Bescherm uw privacy",
 			"desc": "gratis & veilig peer-to-peer berichten",
-			"create-button": "",
-			"import-button": "",
-			"link-button": ""
+			"create-button": "Maak een nieuw account",
+			"import-button": "Importeer een account"
 		},
 		"default-mode": {
 			"summary": {
 				"title": "",
+				"screenTitle": "",
 				"subtitle": "",
 				"first-point": "",
 				"second-point": "",
-				"back-button": "",
+				"third-point": "",
+				"back-button": "Terug",
 				"accept-button": ""
 			}
 		},
 		"custom-mode": {
 			"summary": {
+				"screenTitle": "",
 				"title": "",
 				"subtitle": "",
 				"first-point": "",
@@ -45,17 +48,48 @@
 					"bootstrap-button": "",
 					"replication-button": ""
 				},
+				"modals": {
+					"add": {
+						"title": {
+							"relay": "",
+							"bootstrap": "",
+							"rdvp": ""
+						}
+					},
+					"edit": {
+						"title": {
+							"relay": "",
+							"bootstrap": "",
+							"rdvp": ""
+						}
+					},
+					"errors": {
+						"alias-already-exists": "",
+						"multiaddr-alread-exists": "",
+						"multiaddr-bad-format": "",
+						"multiaddr-p2p": ""
+					},
+					"buttons": {
+						"add": "Toevoegen",
+						"edit": "",
+						"delete": ""
+					},
+					"multiaddress": "",
+					"alias": ""
+				},
 				"all-button": "",
 				"accept-button": ""
 			}
 		},
 		"create-account": {
 			"title": "Maak jouw account",
+			"first-button": "",
+			"second-button": "",
 			"placeholder": "Kies uw bijnaam",
 			"good-to-know": {
 				"title": "Goed om te weten:",
 				"first-point": "Uw account is lokaal aangemaakt",
-				"second-point": ""
+				"second-point": "Bijnaam is optioneel en kan later bewerkt worden"
 			}
 		},
 		"generate-key": {
@@ -65,17 +99,18 @@
 		"setup-finished": {
 			"title": "Setup voltooid!",
 			"desc": "Je kunt nu de app gebruiken, begin met het toevoegen van contacten om vrij en privé te communiceren",
-			"button": "GEBRUIK BERTY"
+			"button": ""
 		},
 		"web-views": {
 			"title": "",
 			"desc": "",
 			"first-button": "Annuleren",
-			"second-button": ""
+			"second-button": "Ja"
 		}
 	},
 	"main": {
 		"home": {
+			"title": "Berty",
 			"requests": {
 				"title": "Aanvragen",
 				"accept": "Accepteren",
@@ -95,8 +130,8 @@
 				"add-members": "Deelnemers toevoegen",
 				"group-info": "Groep info",
 				"search-placeholder": "Zoeken",
-				"continue": "DOORGAAN",
-				"create-group": "MAAK EEN GROEP"
+				"continue": "",
+				"create-group": ""
 			},
 			"create-group-finalize": {
 				"placeholder": "Groepsnaam",
@@ -112,45 +147,55 @@
 				"draft": "Concept: {{message}}"
 			}
 		},
-		"suggestion-display-name-initial": "Klik hier om toe te voegen",
-		"scan": {
-			"title": "Scan QR Code"
-		}
+		"suggestion-display-name-initial": "Klik hier om toe te voegen"
 	},
 	"settings": {
 		"home": {
+			"title": "Instellingen",
 			"proximity-button": "",
 			"notifications-button": "Notificaties",
 			"contact-convs-button": "",
 			"appearance-button": "",
-			"devices-button": "",
 			"accounts-button": "Accounts",
 			"network-button": "",
 			"bug-button": "",
 			"about-button": "Over Berty"
 		},
 		"about": {
+			"title": "Over Berty",
 			"faq-button": "FAQ",
 			"roadmap-button": "Roadmap",
 			"policy-button": "",
-			"license-button": ""
+			"license-button": "",
+			"terms-of-use": "Gebruiksvoorwaarden"
 		},
 		"accounts": {
+			"title": "Accounts",
+			"backup-button": "",
+			"backup-notif-title": "",
+			"backup-notif-desc": "",
 			"accounts-button": "Accounts",
 			"create-button": "",
 			"import-button": "",
 			"link-button": "",
-			"delete-button": ""
+			"delete-button": "",
+			"delete-title": ""
 		},
 		"appearance": {
+			"title": "",
 			"dark-button": "",
-			"editor-button": ""
+			"editor-button": "",
+			"theme-editor": {
+				"title": ""
+			}
 		},
 		"contact-convs": {
+			"title": "",
 			"reset-button": "",
 			"request-button": ""
 		},
 		"network": {
+			"title": "",
 			"ble-button": "Bluetooth Low Energy",
 			"mc-button": "",
 			"nearby-button": "",
@@ -162,27 +207,29 @@
 			"relay-button": "",
 			"bootstrap-button": ""
 		},
+		"notifications": {
+			"title": "Notificaties"
+		},
 		"edit-profile": {
 			"title": "Bewerk mijn profiel",
 			"qr-will-update": "Je Berty ID (QR-code) zal worden bijgewerkt",
 			"ocr-wont-update": "Je openstaande contactverzoeken worden niet bijgewerkt",
 			"save": "Wijzigingen opslaan",
 			"cancel": "Annuleren",
-			"name-input-placeholder": "Naam...",
-			"name-input-label": "Naam"
+			"name-input-placeholder": "Naam..."
 		},
 		"berty-services": {
 			"title": "",
 			"desc": "",
 			"button": "",
-			"skip": "OVERSLAAN EN LATER UITVOEREN"
+			"skip": "Sla dit over en doe dit later"
 		},
 		"delete-account": {
 			"title": "Account verwijderen!",
 			"first-desc": "Weet je zeker dat je je account wilt verwijderen?",
 			"desc": "Typ verwijder om te bevestigen",
-			"cancel-button": "ANNULEREN",
-			"delete-button": "VERWIJDEREN"
+			"cancel-button": "Annuleren",
+			"delete-button": ""
 		},
 		"faq": {
 			"title": "FAQ"
@@ -255,7 +302,10 @@
 		},
 		"add-dev-conversations": {
 			"title": "Voeg ontwikkelaar gesprekken toe",
-			"add": "Voeg {{name}} toe"
+			"add": "Voeg {{name}} toe",
+			"tag-bot": "Bot",
+			"tag-contact": "Contact",
+			"tag-conversation": ""
 		},
 		"ipfs-webui": {
 			"title": "IPFS WebUI"
@@ -294,7 +344,7 @@
 			"contact-already-added-message": "Je kan niet meerdere keren hetzelfde contact toevoegen"
 		},
 		"invalid-scan": {
-			"dismiss-button": "Sluit"
+			"dismiss-button": ""
 		},
 		"add-this-contact": {
 			"fingerprint": "Vingerafdruk",
@@ -305,7 +355,7 @@
 			"fingerprint": "Vingerafdruk",
 			"info": "Informatie",
 			"devices": "Apparaten",
-			"join": "WORD LID VAN DEZE GROEP",
+			"join": "",
 			"password-label": "",
 			"password-placeholder": "Wachtwoord..."
 		},
@@ -313,11 +363,12 @@
 			"title": "Thema opslaan",
 			"desc": "Kies een naam voor je thema!",
 			"placeholder": "Thema naam...",
-			"cancel": "ANNULEREN",
-			"add": "TOEVOEGEN!"
+			"cancel": "Annuleren",
+			"add": "Toevoegen!"
 		}
 	},
 	"chat": {
+		"title-unknown": "",
 		"sending": "Verzenden...",
 		"sent": "",
 		"contact-settings": {
@@ -329,10 +380,10 @@
 			"input-placeholder": "Voer hier in..."
 		},
 		"push-notifications": {
-			"enable": "",
-			"enabled": "",
+			"title": "Notificaties",
 			"unsupported": "",
 			"check-device-settings": "",
+			"check-account-settings": "",
 			"warning-disable": {
 				"title": "",
 				"subtitle": "",
@@ -340,10 +391,26 @@
 				"refuse": ""
 			},
 			"why-cant-disable": "",
+			"why-cant-disable-account": "",
 			"errors": {
 				"no-token": "",
 				"no-server": ""
-			}
+			},
+			"warning-enable-all": {
+				"title": "",
+				"subtitle": "",
+				"refuse": "",
+				"accept": "Accepteren"
+			},
+			"warning-disable-mute": {
+				"title": "",
+				"refuse": "",
+				"accept": ""
+			},
+			"receive-push": "Ontvang push notificaties",
+			"hide-previews": "",
+			"auto-enable": "",
+			"show-in-app": ""
 		},
 		"devices": {
 			"title": "Apparaten",
@@ -353,6 +420,7 @@
 			}
 		},
 		"multi-member-settings": {
+			"title": "",
 			"media-button": "Media, links & documenten",
 			"members-button": {
 				"title": "Leden"
@@ -371,11 +439,11 @@
 		},
 		"one-to-one": {
 			"contact-request-box": {
-				"title": "CONTACT VERZOEK",
+				"title": "Contact verzoek",
 				"group-invitation": "",
-				"refuse-button": "WEIGEREN",
-				"accept-button": "ACCEPTEREN",
-				"accepted-button": "GEACCEPTEERD",
+				"refuse-button": "",
+				"accept-button": "Accepteren",
+				"accepted-button": "",
 				"error": "",
 				"you-invited": "",
 				"this-contact": "",
@@ -391,6 +459,7 @@
 			"input-placeholder": "Voer hier in..."
 		},
 		"one-to-one-settings": {
+			"title": "",
 			"media-button": "Media, links & documenten",
 			"save-button": "Gesprek opslaan op server"
 		},
@@ -418,7 +487,10 @@
 			"title": "Gedeelde media",
 			"medias": "Media",
 			"links": "Koppelingen",
-			"documents": "Documenten"
+			"documents": "Documenten",
+			"file": "",
+			"picture": "",
+			"audio": ""
 		},
 		"reply": {
 			"response-to": "Reactie op",
@@ -431,6 +503,18 @@
 		},
 		"emojis": {
 			"matching": ""
+		}
+	},
+	"account": {
+		"deleting": "",
+		"creating": "",
+		"opening": {
+			"alert-push-title": "Pushmeldingen",
+			"alert-push-go-failed": "",
+			"alert-push-fetch-failed": "",
+			"alert-push-perm-denied": "",
+			"alert-push-desc": "",
+			"alert-push-button": ""
 		}
 	},
 	"audio": {
@@ -470,8 +554,8 @@
 			"allow": "Toestaan",
 			"settings": "Ga naar Instellingen"
 		},
-		"skip": "OVERSLAAN",
-		"cancel": "ANNULEREN",
+		"skip": "",
+		"cancel": "Annuleren",
 		"settings-text": "Je kunt {{title}} rechten inschakelen via de Instellingen."
 	},
 	"notification": {
@@ -479,7 +563,7 @@
 			"title": "",
 			"desc": ""
 		},
-		"need-restart-ble": {
+		"submit-failed": {
 			"title": "",
 			"desc": ""
 		}
@@ -509,7 +593,6 @@
 			"title": "Inspector",
 			"accounts": {
 				"title": "Accounts",
-				"unsupported-remote-mode": "Accounts inspector wordt niet ondersteund in remote modus",
 				"data-not-found": "Account komt niet voor in de lijst",
 				"action-delete": {
 					"file-exists": "Account {{accountId}} bestaat niet, maar een bestand heeft wel deze naam.",
@@ -559,5 +642,10 @@
 				"button-cancel": "Annuleren"
 			}
 		}
+	},
+	"time-for": {
+		"minutes": "",
+		"hours": "",
+		"days": ""
 	}
 }

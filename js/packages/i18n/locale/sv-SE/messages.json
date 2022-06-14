@@ -1,26 +1,29 @@
 {
 	"onboarding": {
 		"getstarted": {
-			"title": "SKYDDA DIN INTEGRITET",
+			"screenTitle": "",
+			"title": "",
 			"desc": "gratis & säker peer-to-peer kommunikation",
-			"create-button": "",
-			"import-button": "",
-			"link-button": ""
+			"create-button": "Skapa nytt konto",
+			"import-button": "Importera konto"
 		},
 		"default-mode": {
 			"summary": {
-				"title": "",
-				"subtitle": "",
+				"title": "Standardläge",
+				"screenTitle": "",
+				"subtitle": "Kom igång snabbt",
 				"first-point": "",
 				"second-point": "",
+				"third-point": "",
 				"back-button": "",
-				"accept-button": ""
+				"accept-button": "Kom igång"
 			}
 		},
 		"custom-mode": {
 			"summary": {
-				"title": "",
-				"subtitle": "",
+				"screenTitle": "",
+				"title": "Anpassat läge",
+				"subtitle": "Anpassad sekretess/komfort balans",
 				"first-point": "",
 				"second-point": "",
 				"back-button": "",
@@ -45,12 +48,43 @@
 					"bootstrap-button": "",
 					"replication-button": ""
 				},
+				"modals": {
+					"add": {
+						"title": {
+							"relay": "",
+							"bootstrap": "",
+							"rdvp": ""
+						}
+					},
+					"edit": {
+						"title": {
+							"relay": "",
+							"bootstrap": "",
+							"rdvp": ""
+						}
+					},
+					"errors": {
+						"alias-already-exists": "",
+						"multiaddr-alread-exists": "",
+						"multiaddr-bad-format": "",
+						"multiaddr-p2p": ""
+					},
+					"buttons": {
+						"add": "Lägg till",
+						"edit": "",
+						"delete": ""
+					},
+					"multiaddress": "",
+					"alias": ""
+				},
 				"all-button": "",
 				"accept-button": ""
 			}
 		},
 		"create-account": {
 			"title": "Skapa ditt konto",
+			"first-button": "",
+			"second-button": "",
 			"placeholder": "Välj ditt smeknamn",
 			"good-to-know": {
 				"title": "Bra att veta:",
@@ -65,10 +99,10 @@
 		"setup-finished": {
 			"title": "Genomgång slutförd!",
 			"desc": "Du kan nu använda appen, börja lägga till kontakter och prata fritt med dem utan övervakning",
-			"button": "BÖRJA ANVÄNDA BERTY"
+			"button": ""
 		},
 		"web-views": {
-			"title": "WebViews",
+			"title": "",
 			"desc": "",
 			"first-button": "Avbryt",
 			"second-button": "Ja"
@@ -76,6 +110,7 @@
 	},
 	"main": {
 		"home": {
+			"title": "",
 			"requests": {
 				"title": "Förfrågningar",
 				"accept": "Acceptera",
@@ -95,8 +130,8 @@
 				"add-members": "Lägg till medlemmar",
 				"group-info": "Gruppinformation",
 				"search-placeholder": "Sök",
-				"continue": "FORTSÄTT",
-				"create-group": "SKAPA EN GRUPP"
+				"continue": "",
+				"create-group": ""
 			},
 			"create-group-finalize": {
 				"placeholder": "Gruppnamn",
@@ -112,45 +147,55 @@
 				"draft": "Utkast: {{message}}"
 			}
 		},
-		"suggestion-display-name-initial": "Klicka här för att lägga till",
-		"scan": {
-			"title": "Skanna QR-kod"
-		}
+		"suggestion-display-name-initial": "Klicka här för att lägga till"
 	},
 	"settings": {
 		"home": {
-			"proximity-button": "",
+			"title": "Inställningar",
+			"proximity-button": "Kommunikation utanför rutnät",
 			"notifications-button": "Aviseringar",
-			"contact-convs-button": "",
+			"contact-convs-button": "Kontakt och konversationer",
 			"appearance-button": "",
-			"devices-button": "",
 			"accounts-button": "Konton",
-			"network-button": "",
-			"bug-button": "",
+			"network-button": "Nätverk",
+			"bug-button": "Rapportera en bugg",
 			"about-button": "Om Berty"
 		},
 		"about": {
+			"title": "Om Berty",
 			"faq-button": "Vanliga frågor",
 			"roadmap-button": "Roadmap",
 			"policy-button": "",
-			"license-button": ""
+			"license-button": "",
+			"terms-of-use": "Användarvillkor"
 		},
 		"accounts": {
+			"title": "Konton",
+			"backup-button": "",
+			"backup-notif-title": "",
+			"backup-notif-desc": "",
 			"accounts-button": "Konton",
 			"create-button": "",
 			"import-button": "",
 			"link-button": "",
-			"delete-button": ""
+			"delete-button": "",
+			"delete-title": ""
 		},
 		"appearance": {
+			"title": "",
 			"dark-button": "",
-			"editor-button": ""
+			"editor-button": "",
+			"theme-editor": {
+				"title": ""
+			}
 		},
 		"contact-convs": {
+			"title": "",
 			"reset-button": "",
 			"request-button": ""
 		},
 		"network": {
+			"title": "Nätverk",
 			"ble-button": "Bluetooth Low Energy",
 			"mc-button": "",
 			"nearby-button": "",
@@ -162,27 +207,29 @@
 			"relay-button": "",
 			"bootstrap-button": ""
 		},
+		"notifications": {
+			"title": "Aviseringar"
+		},
 		"edit-profile": {
 			"title": "Redigera min profil",
 			"qr-will-update": "Ditt Berty ID (QR-kod) kommer att uppdateras",
 			"ocr-wont-update": "Dina pågående kontaktförfrågningar kommer inte att uppdateras",
 			"save": "Spara ändringar",
 			"cancel": "Avbryt",
-			"name-input-placeholder": "Namn...",
-			"name-input-label": "Namn"
+			"name-input-placeholder": "Namn..."
 		},
 		"berty-services": {
 			"title": "",
 			"desc": "",
 			"button": "",
-			"skip": "HOPPA ÖVER OCH GÖR SENARE"
+			"skip": "Hoppa över och gör detta senare"
 		},
 		"delete-account": {
 			"title": "Radera konto!",
 			"first-desc": "Är du säker på att du vill radera ditt konto?",
 			"desc": "Vänligen skriv \"delete\" för att bekräfta",
-			"cancel-button": "AVBRYT",
-			"delete-button": "RADERA KONTO"
+			"cancel-button": "Avbryt",
+			"delete-button": ""
 		},
 		"faq": {
 			"title": "Vanliga frågor"
@@ -255,7 +302,10 @@
 		},
 		"add-dev-conversations": {
 			"title": "Lägg till utvecklarkonversationer",
-			"add": "Lägg till {{name}}"
+			"add": "Lägg till {{name}}",
+			"tag-bot": "Bot",
+			"tag-contact": "Kontakt",
+			"tag-conversation": ""
 		},
 		"ipfs-webui": {
 			"title": "IPFS webbgränssnitt"
@@ -294,7 +344,7 @@
 			"contact-already-added-message": "Du kan inte lägga till samma kontakt flera gånger"
 		},
 		"invalid-scan": {
-			"dismiss-button": "AVFÄRDA"
+			"dismiss-button": ""
 		},
 		"add-this-contact": {
 			"fingerprint": "Fingeravtryck",
@@ -305,7 +355,7 @@
 			"fingerprint": "Fingeravtryck",
 			"info": "Detaljer",
 			"devices": "Enheter",
-			"join": "GÅ MED I GRUPPEN",
+			"join": "",
 			"password-label": "",
 			"password-placeholder": "Lösenord..."
 		},
@@ -313,11 +363,12 @@
 			"title": "Sparar temat",
 			"desc": "Vänligen välj ett namn för ditt tema!",
 			"placeholder": "Temats namn...",
-			"cancel": "AVBRYT",
-			"add": "LÄGG TILL!"
+			"cancel": "Avbryt",
+			"add": "Lägg till!"
 		}
 	},
 	"chat": {
+		"title-unknown": "",
 		"sending": "Skickar...",
 		"sent": "Skickat",
 		"contact-settings": {
@@ -329,10 +380,10 @@
 			"input-placeholder": "Skriv här..."
 		},
 		"push-notifications": {
-			"enable": "",
-			"enabled": "",
+			"title": "Aviseringar",
 			"unsupported": "",
 			"check-device-settings": "",
+			"check-account-settings": "",
 			"warning-disable": {
 				"title": "",
 				"subtitle": "",
@@ -340,10 +391,26 @@
 				"refuse": ""
 			},
 			"why-cant-disable": "",
+			"why-cant-disable-account": "",
 			"errors": {
 				"no-token": "",
 				"no-server": ""
-			}
+			},
+			"warning-enable-all": {
+				"title": "",
+				"subtitle": "",
+				"refuse": "",
+				"accept": "Acceptera"
+			},
+			"warning-disable-mute": {
+				"title": "",
+				"refuse": "",
+				"accept": ""
+			},
+			"receive-push": "Ta emot push-aviseringar",
+			"hide-previews": "",
+			"auto-enable": "",
+			"show-in-app": ""
 		},
 		"devices": {
 			"title": "Enheter",
@@ -353,6 +420,7 @@
 			}
 		},
 		"multi-member-settings": {
+			"title": "",
 			"media-button": "Medier, länkar & dokument",
 			"members-button": {
 				"title": "Medlemmar"
@@ -371,11 +439,11 @@
 		},
 		"one-to-one": {
 			"contact-request-box": {
-				"title": "KONTAKTFÖRFRÅGAN",
+				"title": "Kontaktförfrågan",
 				"group-invitation": "",
-				"refuse-button": "NEKA",
-				"accept-button": "GODTA",
-				"accepted-button": "GOTTAGEN",
+				"refuse-button": "",
+				"accept-button": "Acceptera",
+				"accepted-button": "",
 				"error": "",
 				"you-invited": "",
 				"this-contact": "",
@@ -391,6 +459,7 @@
 			"input-placeholder": "Skriv här..."
 		},
 		"one-to-one-settings": {
+			"title": "",
 			"media-button": "Medier, länkar & dokument",
 			"save-button": "Spara konversation på servern"
 		},
@@ -418,7 +487,10 @@
 			"title": "Delad media",
 			"medias": "Media",
 			"links": "Länkar",
-			"documents": "Dokument"
+			"documents": "Dokument",
+			"file": "",
+			"picture": "",
+			"audio": ""
 		},
 		"reply": {
 			"response-to": "Svar till",
@@ -431,6 +503,18 @@
 		},
 		"emojis": {
 			"matching": ""
+		}
+	},
+	"account": {
+		"deleting": "",
+		"creating": "",
+		"opening": {
+			"alert-push-title": "Push-aviseringar",
+			"alert-push-go-failed": "",
+			"alert-push-fetch-failed": "",
+			"alert-push-perm-denied": "",
+			"alert-push-desc": "",
+			"alert-push-button": ""
 		}
 	},
 	"audio": {
@@ -470,8 +554,8 @@
 			"allow": "Tillåt",
 			"settings": "Gå till inställningar"
 		},
-		"skip": "HOPPA ÖVER",
-		"cancel": "AVBRYT",
+		"skip": "",
+		"cancel": "Avbryt",
 		"settings-text": "Du kan aktivera {{title}} behörighet från inställningar."
 	},
 	"notification": {
@@ -479,7 +563,7 @@
 			"title": "",
 			"desc": ""
 		},
-		"need-restart-ble": {
+		"submit-failed": {
 			"title": "",
 			"desc": ""
 		}
@@ -509,7 +593,6 @@
 			"title": "Inspektör",
 			"accounts": {
 				"title": "Konton",
-				"unsupported-remote-mode": "Kontonsinspektören stöds inte i fjärrläge",
 				"data-not-found": "Kontot finns inte i listan",
 				"action-delete": {
 					"file-exists": "Kontot {{accountId}} finns inte, en fil har detta namn dock.",
@@ -559,5 +642,10 @@
 				"button-cancel": "Avbryt"
 			}
 		}
+	},
+	"time-for": {
+		"minutes": "",
+		"hours": "",
+		"days": ""
 	}
 }

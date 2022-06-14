@@ -18,7 +18,9 @@
     "privacyPolicyLabel": "Zásady ochrany soukromí"
   },
   "push": {
-    "message": {},
+    "message": {
+      "title": ""
+    },
     "error": {
       "title": ""
     },

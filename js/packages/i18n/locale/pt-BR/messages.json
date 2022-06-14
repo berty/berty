@@ -1,49 +1,81 @@
 {
 	"onboarding": {
 		"getstarted": {
-			"title": "PROTEJA SUA PRIVACIDADE",
+			"screenTitle": "",
+			"title": "",
 			"desc": "mensagem peer-to-peer gratuita e segura",
-			"create-button": "",
-			"import-button": "",
-			"link-button": ""
+			"create-button": "Criar uma nova conta",
+			"import-button": "Importar uma conta"
 		},
 		"default-mode": {
 			"summary": {
-				"title": "",
-				"subtitle": "",
-				"first-point": "",
+				"title": "Modo Padrão",
+				"screenTitle": "",
+				"subtitle": "Comece rapidamente",
+				"first-point": "Comece com predefinições que oferecem um equilíbrio de privacidade/conforto que mais se adequa a você. Pontos de conexão Berty são usados para melhorar o desempenho e a comunicação assíncrona.",
 				"second-point": "",
-				"back-button": "",
-				"accept-button": ""
+				"third-point": "Para um equilíbrio de privacidade/conforto personalizado, selecione o Modo personalizado.",
+				"back-button": "Voltar",
+				"accept-button": "Vamos lá"
 			}
 		},
 		"custom-mode": {
 			"summary": {
-				"title": "",
-				"subtitle": "",
-				"first-point": "",
-				"second-point": "",
-				"back-button": "",
-				"accept-button": ""
+				"screenTitle": "",
+				"title": "Modo personalizado",
+				"subtitle": "Customizar Privacidade/Conforto",
+				"first-point": "Neste modo, ajuste todas as configurações individualmente para criar o equilíbrio de privacidade e conforto que funciona para você.",
+				"second-point": "Para uma experiência segura, selecione o Modo Padrão.",
+				"back-button": "Voltar",
+				"accept-button": "Continuar"
 			},
 			"settings": {
 				"off-grid": {
-					"title": "",
+					"title": "Comunicação Off-Grid",
 					"ble-button": "Bluetooth de Baixa Energia",
-					"nearby-button": "",
-					"mc-button": "",
-					"mdns-button": ""
+					"nearby-button": "Android nas proximidades",
+					"mc-button": "Conectividade Multipares da Apple",
+					"mdns-button": "Multicast DNS (LAN)"
 				},
 				"routing": {
-					"title": "",
+					"title": "Roteamento",
 					"dht-button": "Tabela Hash Distribuída",
 					"rdvp-button": ""
 				},
 				"access": {
-					"title": "",
-					"relay-button": "",
-					"bootstrap-button": "",
-					"replication-button": ""
+					"title": "Acessibilidade de rede",
+					"relay-button": "Nós de retransmissão (TURN)",
+					"bootstrap-button": "Pontos de inicialização",
+					"replication-button": "Pontos de replicação"
+				},
+				"modals": {
+					"add": {
+						"title": {
+							"relay": "Adicionar um ponto de retransmissão (TURN)",
+							"bootstrap": "Adicionar um ponto de inicialização",
+							"rdvp": "Adicionar um ponto RDVP"
+						}
+					},
+					"edit": {
+						"title": {
+							"relay": "",
+							"bootstrap": "",
+							"rdvp": ""
+						}
+					},
+					"errors": {
+						"alias-already-exists": "",
+						"multiaddr-alread-exists": "",
+						"multiaddr-bad-format": "",
+						"multiaddr-p2p": ""
+					},
+					"buttons": {
+						"add": "Adicionar",
+						"edit": "",
+						"delete": ""
+					},
+					"multiaddress": "",
+					"alias": ""
 				},
 				"all-button": "",
 				"accept-button": ""
@@ -51,6 +83,8 @@
 		},
 		"create-account": {
 			"title": "Criar sua conta",
+			"first-button": "",
+			"second-button": "",
 			"placeholder": "Escolha seu apelido",
 			"good-to-know": {
 				"title": "É bom saber:",
@@ -65,10 +99,10 @@
 		"setup-finished": {
 			"title": "Configuração finalizada!",
 			"desc": "Agora você pode usar o aplicativo, comece a adicionar contatos e conversar de forma livre e privada com eles",
-			"button": "COMECE A USAR O BERTY"
+			"button": ""
 		},
 		"web-views": {
-			"title": "WebViews",
+			"title": "",
 			"desc": "",
 			"first-button": "Cancelar",
 			"second-button": "Sim"
@@ -76,6 +110,7 @@
 	},
 	"main": {
 		"home": {
+			"title": "",
 			"requests": {
 				"title": "Solicitações",
 				"accept": "Aceitar",
@@ -95,8 +130,8 @@
 				"add-members": "Adicionar membros",
 				"group-info": "Informações do grupo",
 				"search-placeholder": "Pesquisar",
-				"continue": "CONTINUAR",
-				"create-group": "CRIAR UM GRUPO"
+				"continue": "",
+				"create-group": ""
 			},
 			"create-group-finalize": {
 				"placeholder": "Nome do grupo",
@@ -112,45 +147,55 @@
 				"draft": ""
 			}
 		},
-		"suggestion-display-name-initial": "Clique aqui para adicionar",
-		"scan": {
-			"title": "Escanear código QR"
-		}
+		"suggestion-display-name-initial": "Clique aqui para adicionar"
 	},
 	"settings": {
 		"home": {
+			"title": "Configurações",
 			"proximity-button": "",
 			"notifications-button": "Notificações",
 			"contact-convs-button": "",
 			"appearance-button": "",
-			"devices-button": "",
 			"accounts-button": "Contas",
 			"network-button": "",
 			"bug-button": "",
 			"about-button": "Sobre Berty"
 		},
 		"about": {
+			"title": "Sobre o Berty",
 			"faq-button": "",
 			"roadmap-button": "",
 			"policy-button": "",
-			"license-button": ""
+			"license-button": "",
+			"terms-of-use": "Termos de uso"
 		},
 		"accounts": {
+			"title": "Contas",
+			"backup-button": "",
+			"backup-notif-title": "",
+			"backup-notif-desc": "",
 			"accounts-button": "Contas",
 			"create-button": "",
 			"import-button": "",
 			"link-button": "",
-			"delete-button": ""
+			"delete-button": "",
+			"delete-title": ""
 		},
 		"appearance": {
+			"title": "",
 			"dark-button": "",
-			"editor-button": ""
+			"editor-button": "",
+			"theme-editor": {
+				"title": ""
+			}
 		},
 		"contact-convs": {
+			"title": "",
 			"reset-button": "",
 			"request-button": ""
 		},
 		"network": {
+			"title": "",
 			"ble-button": "Bluetooth de Baixa Energia",
 			"mc-button": "",
 			"nearby-button": "",
@@ -162,27 +207,29 @@
 			"relay-button": "",
 			"bootstrap-button": ""
 		},
+		"notifications": {
+			"title": "Notificações"
+		},
 		"edit-profile": {
 			"title": "Editar meu perfil",
 			"qr-will-update": "Seu ID Berty (código QR) será atualizado",
 			"ocr-wont-update": "As suas solicitações de contato pendentes não serão atualizadas",
 			"save": "Salvar alterações",
 			"cancel": "Cancelar",
-			"name-input-placeholder": "Nome...",
-			"name-input-label": "Nome"
+			"name-input-placeholder": "Nome..."
 		},
 		"berty-services": {
 			"title": "",
 			"desc": "",
 			"button": "",
-			"skip": "PULAR E FAZER MAIS TARDE"
+			"skip": ""
 		},
 		"delete-account": {
 			"title": "Apagar conta!",
 			"first-desc": "Você tem certeza que deseja apagar sua conta?",
 			"desc": "Por favor, digite \"apagar\" para confirmar",
-			"cancel-button": "CANCELAR",
-			"delete-button": "APAGAR"
+			"cancel-button": "Cancelar",
+			"delete-button": ""
 		},
 		"faq": {
 			"title": ""
@@ -255,7 +302,10 @@
 		},
 		"add-dev-conversations": {
 			"title": "Adicionar conversas de desenvolvimento",
-			"add": "Adicionar {{name}}"
+			"add": "Adicionar {{name}}",
+			"tag-bot": "Bot",
+			"tag-contact": "Contato",
+			"tag-conversation": ""
 		},
 		"ipfs-webui": {
 			"title": "WebUI do IPFS"
@@ -294,7 +344,7 @@
 			"contact-already-added-message": "Você não pode adicionar o mesmo contato várias vezes"
 		},
 		"invalid-scan": {
-			"dismiss-button": "DISPENSAR"
+			"dismiss-button": ""
 		},
 		"add-this-contact": {
 			"fingerprint": "Impressão digital",
@@ -313,11 +363,12 @@
 			"title": "",
 			"desc": "",
 			"placeholder": "Nome do tema...",
-			"cancel": "CANCELAR",
+			"cancel": "Cancelar",
 			"add": ""
 		}
 	},
 	"chat": {
+		"title-unknown": "",
 		"sending": "Enviando...",
 		"sent": "",
 		"contact-settings": {
@@ -329,10 +380,10 @@
 			"input-placeholder": "Digite aqui..."
 		},
 		"push-notifications": {
-			"enable": "",
-			"enabled": "",
+			"title": "Notificações",
 			"unsupported": "",
 			"check-device-settings": "",
+			"check-account-settings": "",
 			"warning-disable": {
 				"title": "",
 				"subtitle": "",
@@ -340,10 +391,26 @@
 				"refuse": ""
 			},
 			"why-cant-disable": "",
+			"why-cant-disable-account": "",
 			"errors": {
 				"no-token": "",
 				"no-server": ""
-			}
+			},
+			"warning-enable-all": {
+				"title": "",
+				"subtitle": "",
+				"refuse": "",
+				"accept": "Aceitar"
+			},
+			"warning-disable-mute": {
+				"title": "",
+				"refuse": "",
+				"accept": ""
+			},
+			"receive-push": "Receber notificações de push",
+			"hide-previews": "",
+			"auto-enable": "",
+			"show-in-app": ""
 		},
 		"devices": {
 			"title": "Dispositivos",
@@ -353,6 +420,7 @@
 			}
 		},
 		"multi-member-settings": {
+			"title": "",
 			"media-button": "Mídias, links e documentos",
 			"members-button": {
 				"title": "Membros"
@@ -371,11 +439,11 @@
 		},
 		"one-to-one": {
 			"contact-request-box": {
-				"title": "SOLICITAÇÃO DE CONTATO",
+				"title": "Solicitação de contato",
 				"group-invitation": "",
-				"refuse-button": "RECUSAR",
-				"accept-button": "ACEITAR",
-				"accepted-button": "ACEITO",
+				"refuse-button": "",
+				"accept-button": "Aceitar",
+				"accepted-button": "",
 				"error": "",
 				"you-invited": "",
 				"this-contact": "",
@@ -391,6 +459,7 @@
 			"input-placeholder": "Digite aqui..."
 		},
 		"one-to-one-settings": {
+			"title": "",
 			"media-button": "Mídias, links e documentos",
 			"save-button": "Salvar conversa no servidor"
 		},
@@ -418,7 +487,10 @@
 			"title": "Mídias compartilhadas",
 			"medias": "Mídias",
 			"links": "",
-			"documents": "Documentos"
+			"documents": "Documentos",
+			"file": "",
+			"picture": "",
+			"audio": ""
 		},
 		"reply": {
 			"response-to": "",
@@ -431,6 +503,18 @@
 		},
 		"emojis": {
 			"matching": ""
+		}
+	},
+	"account": {
+		"deleting": "",
+		"creating": "",
+		"opening": {
+			"alert-push-title": "Notificações Push",
+			"alert-push-go-failed": "",
+			"alert-push-fetch-failed": "",
+			"alert-push-perm-denied": "",
+			"alert-push-desc": "",
+			"alert-push-button": ""
 		}
 	},
 	"audio": {
@@ -470,8 +554,8 @@
 			"allow": "",
 			"settings": ""
 		},
-		"skip": "PULAR",
-		"cancel": "CANCELAR",
+		"skip": "",
+		"cancel": "Cancelar",
 		"settings-text": ""
 	},
 	"notification": {
@@ -479,7 +563,7 @@
 			"title": "",
 			"desc": ""
 		},
-		"need-restart-ble": {
+		"submit-failed": {
 			"title": "",
 			"desc": ""
 		}
@@ -509,7 +593,6 @@
 			"title": "",
 			"accounts": {
 				"title": "Contas",
-				"unsupported-remote-mode": "",
 				"data-not-found": "",
 				"action-delete": {
 					"file-exists": "",
@@ -559,5 +642,10 @@
 				"button-cancel": "Cancelar"
 			}
 		}
+	},
+	"time-for": {
+		"minutes": "",
+		"hours": "",
+		"days": ""
 	}
 }

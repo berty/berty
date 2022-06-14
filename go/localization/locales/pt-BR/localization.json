@@ -2,65 +2,67 @@
   "auth": {
     "services": {
       "rpl": {
-        "name": "",
-        "description": "",
+        "name": "Replicação",
+        "description": "Este serviço replicará suas mensagens automaticamente para fornecer melhor desempenho de rede ao seu dispositivo.",
         "benefitBadge": "Desempenho"
       },
       "psh": {
         "name": "Notificações Push",
-        "description": "",
+        "description": "Este serviço permite que seu dispositivo receba notificações push para receber mensagens.",
         "benefitBadge": "Desempenho"
       }
     },
-    "pageTitle": "",
-    "connectButton_one": "",
-    "connectButton_other": "",
+    "pageTitle": "Serviços Berty",
+    "connectButton_one": "Usar serviço",
+    "connectButton_other": "Utilizar serviços selecionados",
     "privacyPolicyLabel": "Política de privacidade"
   },
   "push": {
-    "message": {},
-    "error": {
+    "message": {
       "title": ""
     },
+    "error": {
+      "title": "Falha na descriptografia do push"
+    },
     "voiceMessage": {
-      "bodyWithNumberOfMedia_one": "",
-      "bodyWithNumberOfMedia_other": ""
+      "bodyWithNumberOfMedia_one": "Mensagem de voz enviada",
+      "bodyWithNumberOfMedia_other": "Enviou %[1]mensagens de voz v"
     },
     "gif": {
-      "bodyWithNumberOfMedia_one": "",
-      "bodyWithNumberOfMedia_other": ""
+      "bodyWithNumberOfMedia_one": "Enviou um gif",
+      "bodyWithNumberOfMedia_other": "Enviou %[1]v gifs"
     },
     "photo": {
-      "bodyWithNumberOfMedia_one": "",
-      "bodyWithNumberOfMedia_other": ""
+      "bodyWithNumberOfMedia_one": "Foto enviada",
+      "bodyWithNumberOfMedia_other": "Enviou %[1]fotos de v"
     },
     "media": {
-      "bodyWithNumberOfMedia_one": "",
-      "bodyWithNumberOfMedia_other": ""
+      "bodyWithNumberOfMedia_one": "Mídia enviada",
+      "bodyWithNumberOfMedia_other": "Enviou %[1] itens de mídia"
     },
     "reaction": {
-      "bodyWithDisplayNameAndEmoji": ""
+      "bodyWithDisplayNameAndEmoji": "%[1]v reagiu com %[2]v à sua mensagem"
     },
     "groupInvitation": {
-      "bodyWithGroupName": ""
+      "bodyWithGroupName": "Convidou você para %[1]v"
     },
     "unknown": {
-      "body": ""
+      "body": "Algo novo foi recebido"
     },
     "conversationNameChanged": {
-      "body": ""
+      "body": "O nome da conversa foi atualizado"
     },
     "memberNameChanged": {
-      "body": ""
+      "body": "Nome de exibição atualizado"
     },
     "memberPictureChanged": {
-      "body": ""
+      "body": "Foto de perfil atualizada"
     },
     "memberDetailsChanged": {
-      "body": ""
+      "body": "Detalhe do membro atualizado"
     },
     "replyOptionsOffered": {
-      "body": ""
+      "body": "Opções de resposta oferecidas"
     }
   }
 }

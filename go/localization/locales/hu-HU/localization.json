@@ -2,65 +2,67 @@
   "auth": {
     "services": {
       "rpl": {
-        "name": "",
-        "description": "",
+        "name": "P2P replikáció",
+        "description": "Ez a szolgáltatás automatikusan újraállítja a beszélgetéseket, hogy eszköze a leghatékonyabb hálózati teljesítményt nyújtsa.",
         "benefitBadge": "Teljesítmény"
       },
       "psh": {
         "name": "Push értesítések",
-        "description": "",
+        "description": "Ez a szolgáltatás lehetővé teszi, hogy készüléke push értesítéseket kapjon a bejövő üzenetekről.",
         "benefitBadge": "Teljesítmény"
       }
     },
-    "pageTitle": "",
-    "connectButton_one": "",
-    "connectButton_other": "",
+    "pageTitle": "Berty szolgáltatások",
+    "connectButton_one": "Szolgáltatás használata",
+    "connectButton_other": "Kiválasztott szolgáltatások használata",
     "privacyPolicyLabel": "Adatvédelmi irányelvek"
   },
   "push": {
-    "message": {},
+    "message": {
+      "title": "Új üzenet"
+    },
     "error": {
-      "title": ""
+      "title": "A push visszafejtés nem sikerült"
     },
     "voiceMessage": {
-      "bodyWithNumberOfMedia_one": "",
-      "bodyWithNumberOfMedia_other": ""
+      "bodyWithNumberOfMedia_one": "Hangüzenetet küldött",
+      "bodyWithNumberOfMedia_other": "Elküldött hangüzenetek"
     },
     "gif": {
-      "bodyWithNumberOfMedia_one": "",
-      "bodyWithNumberOfMedia_other": ""
+      "bodyWithNumberOfMedia_one": "Küldött egy gifet",
+      "bodyWithNumberOfMedia_other": "Elküldött gifek"
     },
     "photo": {
-      "bodyWithNumberOfMedia_one": "",
-      "bodyWithNumberOfMedia_other": ""
+      "bodyWithNumberOfMedia_one": "Küldött egy fotót",
+      "bodyWithNumberOfMedia_other": "Elküldött fotók"
     },
     "media": {
-      "bodyWithNumberOfMedia_one": "",
-      "bodyWithNumberOfMedia_other": ""
+      "bodyWithNumberOfMedia_one": "Elküldött média",
+      "bodyWithNumberOfMedia_other": "Elküldött média anyagok"
     },
     "reaction": {
-      "bodyWithDisplayNameAndEmoji": ""
+      "bodyWithDisplayNameAndEmoji": "Reagált az üzenetre"
     },
     "groupInvitation": {
-      "bodyWithGroupName": ""
+      "bodyWithGroupName": "Meghívott a csoportba"
     },
     "unknown": {
-      "body": ""
+      "body": "Valami új érkezett"
     },
     "conversationNameChanged": {
-      "body": ""
+      "body": "A beszélgetés neve frissítve"
     },
     "memberNameChanged": {
-      "body": ""
+      "body": "A megjelenített név frissítve"
     },
     "memberPictureChanged": {
-      "body": ""
+      "body": "Profilkép frissítve"
     },
     "memberDetailsChanged": {
-      "body": ""
+      "body": "A résztvevő adatai frissítve"
     },
     "replyOptionsOffered": {
-      "body": ""
+      "body": "Felkínált válaszlehetőségek"
     }
   }
 }

@@ -1,24 +1,27 @@
 {
 	"onboarding": {
 		"getstarted": {
-			"title": "SCHÜTZE DEINE PRIVATSPHÄRE",
+			"screenTitle": "",
+			"title": "",
 			"desc": "kostenloses und sicheres Peer-to-Peer-Messaging",
 			"create-button": "",
-			"import-button": "",
-			"link-button": ""
+			"import-button": ""
 		},
 		"default-mode": {
 			"summary": {
 				"title": "",
+				"screenTitle": "",
 				"subtitle": "",
 				"first-point": "",
 				"second-point": "",
+				"third-point": "",
 				"back-button": "",
 				"accept-button": ""
 			}
 		},
 		"custom-mode": {
 			"summary": {
+				"screenTitle": "",
 				"title": "",
 				"subtitle": "",
 				"first-point": "",
@@ -45,12 +48,43 @@
 					"bootstrap-button": "",
 					"replication-button": ""
 				},
+				"modals": {
+					"add": {
+						"title": {
+							"relay": "",
+							"bootstrap": "",
+							"rdvp": ""
+						}
+					},
+					"edit": {
+						"title": {
+							"relay": "",
+							"bootstrap": "",
+							"rdvp": ""
+						}
+					},
+					"errors": {
+						"alias-already-exists": "",
+						"multiaddr-alread-exists": "",
+						"multiaddr-bad-format": "",
+						"multiaddr-p2p": ""
+					},
+					"buttons": {
+						"add": "Vorschau des Fehlers",
+						"edit": "",
+						"delete": ""
+					},
+					"multiaddress": "",
+					"alias": ""
+				},
 				"all-button": "",
 				"accept-button": ""
 			}
 		},
 		"create-account": {
 			"title": "Konto erstellen",
+			"first-button": "",
+			"second-button": "",
 			"placeholder": "Wähle deinen Spitznamen",
 			"good-to-know": {
 				"title": "Wissenswert:",
@@ -65,10 +99,10 @@
 		"setup-finished": {
 			"title": "Einrichtung abgeschlossen!",
 			"desc": "Sie können jetzt die App benutzen, Kontakte hinzufügen und sich frei und privat mit ihnen unterhalten",
-			"button": "Fertig - Berty benutzen"
+			"button": ""
 		},
 		"web-views": {
-			"title": "WebViews",
+			"title": "",
 			"desc": "",
 			"first-button": "Abbrechen",
 			"second-button": "Ja"
@@ -76,6 +110,7 @@
 	},
 	"main": {
 		"home": {
+			"title": "",
 			"requests": {
 				"title": "Anfragen",
 				"accept": "Akzeptieren",
@@ -95,8 +130,8 @@
 				"add-members": "Mitglied hinzufügen",
 				"group-info": "Gruppen informationen",
 				"search-placeholder": "Suchen",
-				"continue": "Fortfahren",
-				"create-group": "Gruppe erstellen"
+				"continue": "",
+				"create-group": ""
 			},
 			"create-group-finalize": {
 				"placeholder": "Gruppenname",
@@ -112,45 +147,55 @@
 				"draft": "Entwurf: {{message}}"
 			}
 		},
-		"suggestion-display-name-initial": "Klicke hier, um hinzuzufügen",
-		"scan": {
-			"title": "QR Code scannen"
-		}
+		"suggestion-display-name-initial": "Klicke hier, um hinzuzufügen"
 	},
 	"settings": {
 		"home": {
+			"title": "Einstellungen",
 			"proximity-button": "",
 			"notifications-button": "Benachrichtigungen",
 			"contact-convs-button": "",
 			"appearance-button": "",
-			"devices-button": "",
 			"accounts-button": "Konten",
 			"network-button": "",
 			"bug-button": "",
 			"about-button": "Über Berty"
 		},
 		"about": {
+			"title": "Über Berty",
 			"faq-button": "FAQ",
 			"roadmap-button": "Roadmap",
 			"policy-button": "",
-			"license-button": ""
+			"license-button": "",
+			"terms-of-use": "Nutzungsbedingungen"
 		},
 		"accounts": {
+			"title": "Konten",
+			"backup-button": "",
+			"backup-notif-title": "",
+			"backup-notif-desc": "",
 			"accounts-button": "Konten",
 			"create-button": "",
 			"import-button": "",
 			"link-button": "",
-			"delete-button": ""
+			"delete-button": "",
+			"delete-title": ""
 		},
 		"appearance": {
+			"title": "",
 			"dark-button": "",
-			"editor-button": ""
+			"editor-button": "",
+			"theme-editor": {
+				"title": ""
+			}
 		},
 		"contact-convs": {
+			"title": "",
 			"reset-button": "",
 			"request-button": ""
 		},
 		"network": {
+			"title": "",
 			"ble-button": "Bluetooth Low Energy",
 			"mc-button": "",
 			"nearby-button": "",
@@ -162,27 +207,29 @@
 			"relay-button": "",
 			"bootstrap-button": ""
 		},
+		"notifications": {
+			"title": "Benachrichtigungen"
+		},
 		"edit-profile": {
 			"title": "Profil bearbeiten",
 			"qr-will-update": "Ihre Berty ID (QR-Code) wird aktualisiert",
 			"ocr-wont-update": "Ihre ausstehenden Kontaktanfragen werden nicht aktualisiert",
 			"save": "Änderungen speichern",
 			"cancel": "Abbrechen",
-			"name-input-placeholder": "Name...",
-			"name-input-label": "Name"
+			"name-input-placeholder": "Name..."
 		},
 		"berty-services": {
 			"title": "",
 			"desc": "",
 			"button": "",
-			"skip": "ÜBERSPRINGEN UND DIES SPÄTER ERLEDIGEN"
+			"skip": ""
 		},
 		"delete-account": {
 			"title": "Mein Konto löschen!",
 			"first-desc": "Sind Sie sicher, dass Sie Ihr Konto löschen möchten?",
 			"desc": "Bitte löschen zum Bestätigen eingeben",
 			"cancel-button": "Abbrechen",
-			"delete-button": "Löschen"
+			"delete-button": ""
 		},
 		"faq": {
 			"title": "FAQ"
@@ -255,7 +302,10 @@
 		},
 		"add-dev-conversations": {
 			"title": "Entwickler-Unterhaltungen hinzufügen",
-			"add": "{{name}} hinzufügen"
+			"add": "{{name}} hinzufügen",
+			"tag-bot": "Bot",
+			"tag-contact": "Kontakt",
+			"tag-conversation": ""
 		},
 		"ipfs-webui": {
 			"title": "IPFS Webinterface"
@@ -294,7 +344,7 @@
 			"contact-already-added-message": "Sie können den gleichen Kontakt nicht mehrmals hinzufügen"
 		},
 		"invalid-scan": {
-			"dismiss-button": "Schließen"
+			"dismiss-button": ""
 		},
 		"add-this-contact": {
 			"fingerprint": "Fingerabdruck",
@@ -305,7 +355,7 @@
 			"fingerprint": "Fingerabdruck",
 			"info": "Infos",
 			"devices": "Geräte",
-			"join": "TRITT DER GRUPPE BEI",
+			"join": "",
 			"password-label": "",
 			"password-placeholder": "Passwort..."
 		},
@@ -314,10 +364,11 @@
 			"desc": "Bitte wählen Sie einen Namen für Ihr Theme!",
 			"placeholder": "Theme-Name...",
 			"cancel": "Abbrechen",
-			"add": "HINZUFÜGEN!"
+			"add": "Hinzufügen!"
 		}
 	},
 	"chat": {
+		"title-unknown": "",
 		"sending": "Wird gesendet...",
 		"sent": "Gesendet",
 		"contact-settings": {
@@ -329,10 +380,10 @@
 			"input-placeholder": "Hier eingeben..."
 		},
 		"push-notifications": {
-			"enable": "Push-Benachrichtigungen aktivieren",
-			"enabled": "Push-Benachrichtigungen aktiviert",
+			"title": "Benachrichtigungen",
 			"unsupported": "Benachrichtigungen werden nicht unterstützt",
 			"check-device-settings": "Diese Unterhaltung ist so eingestellt, dass Push-Benachrichtigungen empfangen werden, aber Benachrichtigungen wurden in den Systemeinstellungen Ihres Geräts deaktiviert",
+			"check-account-settings": "",
 			"warning-disable": {
 				"title": "Möchten Sie diese Funktion aktivieren?",
 				"subtitle": "Einmal aktiviert, können Push-Benachrichtigungen für eine bestimmte Unterhaltung nicht deaktiviert werden.",
@@ -340,10 +391,26 @@
 				"refuse": "Überspringen"
 			},
 			"why-cant-disable": "",
+			"why-cant-disable-account": "",
 			"errors": {
 				"no-token": "Ihr Gerät ist nicht mit Push-Benachrichtigungen kompatibel",
 				"no-server": ""
-			}
+			},
+			"warning-enable-all": {
+				"title": "",
+				"subtitle": "",
+				"refuse": "",
+				"accept": "Akzeptieren"
+			},
+			"warning-disable-mute": {
+				"title": "",
+				"refuse": "",
+				"accept": ""
+			},
+			"receive-push": "Push-Benachrichtigungen erhalten",
+			"hide-previews": "",
+			"auto-enable": "",
+			"show-in-app": ""
 		},
 		"devices": {
 			"title": "Geräte",
@@ -353,6 +420,7 @@
 			}
 		},
 		"multi-member-settings": {
+			"title": "",
 			"media-button": "Medien, Links & Dokumente",
 			"members-button": {
 				"title": "Mitglieder"
@@ -371,11 +439,11 @@
 		},
 		"one-to-one": {
 			"contact-request-box": {
-				"title": "KONTAKT-ANFRAGE",
+				"title": "Kontaktanfrage",
 				"group-invitation": "",
-				"refuse-button": "Ablehnen",
-				"accept-button": "Annehmen",
-				"accepted-button": "Angenommen",
+				"refuse-button": "",
+				"accept-button": "Akzeptieren",
+				"accepted-button": "",
 				"error": "",
 				"you-invited": "",
 				"this-contact": "",
@@ -391,6 +459,7 @@
 			"input-placeholder": "Hier eingeben..."
 		},
 		"one-to-one-settings": {
+			"title": "",
 			"media-button": "Medien, Links & Dokumente",
 			"save-button": "Unterhaltung auf Server speichern"
 		},
@@ -418,7 +487,10 @@
 			"title": "Geteilte Medien",
 			"medias": "Medien",
 			"links": "Links",
-			"documents": "Dokumente"
+			"documents": "Dokumente",
+			"file": "",
+			"picture": "",
+			"audio": ""
 		},
 		"reply": {
 			"response-to": "Antwort an",
@@ -431,6 +503,18 @@
 		},
 		"emojis": {
 			"matching": "Emojis matching"
+		}
+	},
+	"account": {
+		"deleting": "",
+		"creating": "",
+		"opening": {
+			"alert-push-title": "Push-Benachrichtigungen",
+			"alert-push-go-failed": "",
+			"alert-push-fetch-failed": "",
+			"alert-push-perm-denied": "",
+			"alert-push-desc": "",
+			"alert-push-button": ""
 		}
 	},
 	"audio": {
@@ -479,7 +563,7 @@
 			"title": "",
 			"desc": ""
 		},
-		"need-restart-ble": {
+		"submit-failed": {
 			"title": "",
 			"desc": ""
 		}
@@ -509,7 +593,6 @@
 			"title": "Inspektor",
 			"accounts": {
 				"title": "Konten",
-				"unsupported-remote-mode": "Der Konten-Inspektor wird im Remote-Modus nicht unterstützt",
 				"data-not-found": "Dieses Konto ist nicht in der Liste",
 				"action-delete": {
 					"file-exists": "Konto {{accountId}} existiert nicht, aber eine Datei mit diesem Namen.",
@@ -559,5 +642,10 @@
 				"button-cancel": "Abbrechen"
 			}
 		}
+	},
+	"time-for": {
+		"minutes": "",
+		"hours": "",
+		"days": ""
 	}
 }

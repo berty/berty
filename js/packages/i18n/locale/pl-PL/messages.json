@@ -1,24 +1,27 @@
 {
 	"onboarding": {
 		"getstarted": {
+			"screenTitle": "",
 			"title": "",
 			"desc": "",
 			"create-button": "",
-			"import-button": "",
-			"link-button": ""
+			"import-button": ""
 		},
 		"default-mode": {
 			"summary": {
 				"title": "",
+				"screenTitle": "",
 				"subtitle": "",
 				"first-point": "",
 				"second-point": "",
+				"third-point": "",
 				"back-button": "",
 				"accept-button": ""
 			}
 		},
 		"custom-mode": {
 			"summary": {
+				"screenTitle": "",
 				"title": "",
 				"subtitle": "",
 				"first-point": "",
@@ -45,12 +48,43 @@
 					"bootstrap-button": "",
 					"replication-button": ""
 				},
+				"modals": {
+					"add": {
+						"title": {
+							"relay": "",
+							"bootstrap": "",
+							"rdvp": ""
+						}
+					},
+					"edit": {
+						"title": {
+							"relay": "",
+							"bootstrap": "",
+							"rdvp": ""
+						}
+					},
+					"errors": {
+						"alias-already-exists": "",
+						"multiaddr-alread-exists": "",
+						"multiaddr-bad-format": "",
+						"multiaddr-p2p": ""
+					},
+					"buttons": {
+						"add": "Dodaj",
+						"edit": "",
+						"delete": ""
+					},
+					"multiaddress": "",
+					"alias": ""
+				},
 				"all-button": "",
 				"accept-button": ""
 			}
 		},
 		"create-account": {
 			"title": "Utwórz swoje konto",
+			"first-button": "",
+			"second-button": "",
 			"placeholder": "",
 			"good-to-know": {
 				"title": "",
@@ -65,7 +99,7 @@
 		"setup-finished": {
 			"title": "Konfiguracja zakończona!",
 			"desc": "Teraz możesz korzystać z aplikacji, dodawać kontakty i rozmawiać z nimi swobodnie i prywatnie",
-			"button": "ROZPOCZNIJ UŻYWANIE BERTY"
+			"button": ""
 		},
 		"web-views": {
 			"title": "",
@@ -76,6 +110,7 @@
 	},
 	"main": {
 		"home": {
+			"title": "",
 			"requests": {
 				"title": "Prośby",
 				"accept": "Akceptuj",
@@ -95,8 +130,8 @@
 				"add-members": "Dodaj członków",
 				"group-info": "Informacje o grupie",
 				"search-placeholder": "Szukaj",
-				"continue": "KONTYNUUJ",
-				"create-group": "UTWÓRZ GRUPĘ"
+				"continue": "",
+				"create-group": ""
 			},
 			"create-group-finalize": {
 				"placeholder": "",
@@ -112,45 +147,55 @@
 				"draft": ""
 			}
 		},
-		"suggestion-display-name-initial": "Kliknij tutaj, aby dodać",
-		"scan": {
-			"title": ""
-		}
+		"suggestion-display-name-initial": "Kliknij tutaj, aby dodać"
 	},
 	"settings": {
 		"home": {
+			"title": "Ustawienia",
 			"proximity-button": "",
 			"notifications-button": "Powiadomienia",
 			"contact-convs-button": "",
 			"appearance-button": "",
-			"devices-button": "",
 			"accounts-button": "Konta",
 			"network-button": "",
 			"bug-button": "",
 			"about-button": "O Berty"
 		},
 		"about": {
+			"title": "O Berty",
 			"faq-button": "",
 			"roadmap-button": "",
 			"policy-button": "",
-			"license-button": ""
+			"license-button": "",
+			"terms-of-use": "Warunki użytkowania"
 		},
 		"accounts": {
+			"title": "Konta",
+			"backup-button": "",
+			"backup-notif-title": "",
+			"backup-notif-desc": "",
 			"accounts-button": "Konta",
 			"create-button": "",
 			"import-button": "",
 			"link-button": "",
-			"delete-button": ""
+			"delete-button": "",
+			"delete-title": ""
 		},
 		"appearance": {
+			"title": "",
 			"dark-button": "",
-			"editor-button": ""
+			"editor-button": "",
+			"theme-editor": {
+				"title": ""
+			}
 		},
 		"contact-convs": {
+			"title": "",
 			"reset-button": "",
 			"request-button": ""
 		},
 		"network": {
+			"title": "",
 			"ble-button": "",
 			"mc-button": "",
 			"nearby-button": "",
@@ -162,27 +207,29 @@
 			"relay-button": "",
 			"bootstrap-button": ""
 		},
+		"notifications": {
+			"title": "Powiadomienia"
+		},
 		"edit-profile": {
 			"title": "Edytuj mój profil",
 			"qr-will-update": "Twój identyfikator Berty (kod QR) zostanie zaktualizowany",
 			"ocr-wont-update": "Twoje oczekujące prośby o kontakt nie zostaną zaktualizowane",
 			"save": "Zapisz zmiany",
 			"cancel": "Anuluj",
-			"name-input-placeholder": "Nazwa...",
-			"name-input-label": "Nazwa"
+			"name-input-placeholder": "Nazwa..."
 		},
 		"berty-services": {
 			"title": "",
 			"desc": "",
 			"button": "",
-			"skip": "POMIŃ I ZRÓB TO PÓŹNIEJ"
+			"skip": ""
 		},
 		"delete-account": {
 			"title": "Usuń konto!",
 			"first-desc": "Czy na pewno chcesz usunąć swoje konto?",
 			"desc": "Proszę wpisać usuń, aby potwierdzić",
-			"cancel-button": "ANULUJ",
-			"delete-button": "USUŃ"
+			"cancel-button": "Anuluj",
+			"delete-button": ""
 		},
 		"faq": {
 			"title": ""
@@ -255,7 +302,10 @@
 		},
 		"add-dev-conversations": {
 			"title": "Dodaj rozmowy deweloperskie",
-			"add": "Dodaj {{name}}"
+			"add": "Dodaj {{name}}",
+			"tag-bot": "Bot",
+			"tag-contact": "Kontakt",
+			"tag-conversation": ""
 		},
 		"ipfs-webui": {
 			"title": "IPFS WebUI"
@@ -294,7 +344,7 @@
 			"contact-already-added-message": "Nie możesz dodać tego samego kontaktu wiele razy"
 		},
 		"invalid-scan": {
-			"dismiss-button": "Schowaj"
+			"dismiss-button": ""
 		},
 		"add-this-contact": {
 			"fingerprint": "Odcisk palca",
@@ -313,11 +363,12 @@
 			"title": "",
 			"desc": "",
 			"placeholder": "",
-			"cancel": "ANULUJ",
+			"cancel": "Anuluj",
 			"add": ""
 		}
 	},
 	"chat": {
+		"title-unknown": "",
 		"sending": "Wysyłanie...",
 		"sent": "",
 		"contact-settings": {
@@ -329,10 +380,10 @@
 			"input-placeholder": "Wpisz tutaj..."
 		},
 		"push-notifications": {
-			"enable": "",
-			"enabled": "",
+			"title": "Powiadomienia",
 			"unsupported": "",
 			"check-device-settings": "",
+			"check-account-settings": "",
 			"warning-disable": {
 				"title": "",
 				"subtitle": "",
@@ -340,10 +391,26 @@
 				"refuse": ""
 			},
 			"why-cant-disable": "",
+			"why-cant-disable-account": "",
 			"errors": {
 				"no-token": "",
 				"no-server": ""
-			}
+			},
+			"warning-enable-all": {
+				"title": "",
+				"subtitle": "",
+				"refuse": "",
+				"accept": "Akceptuj"
+			},
+			"warning-disable-mute": {
+				"title": "",
+				"refuse": "",
+				"accept": ""
+			},
+			"receive-push": "Otrzymuj powiadomienia push",
+			"hide-previews": "",
+			"auto-enable": "",
+			"show-in-app": ""
 		},
 		"devices": {
 			"title": "Urządzenia",
@@ -353,6 +420,7 @@
 			}
 		},
 		"multi-member-settings": {
+			"title": "",
 			"media-button": "Multimedia, linki i dokumenty",
 			"members-button": {
 				"title": "Członkowie"
@@ -371,11 +439,11 @@
 		},
 		"one-to-one": {
 			"contact-request-box": {
-				"title": "PROŚBA O KONTAKT",
+				"title": "Prośba o kontakt",
 				"group-invitation": "",
-				"refuse-button": "ODRZUĆ",
-				"accept-button": "AKCEPTUJ",
-				"accepted-button": "ZAAKCEPOWANE",
+				"refuse-button": "",
+				"accept-button": "Akceptuj",
+				"accepted-button": "",
 				"error": "",
 				"you-invited": "",
 				"this-contact": "",
@@ -391,6 +459,7 @@
 			"input-placeholder": "Wpisz tutaj..."
 		},
 		"one-to-one-settings": {
+			"title": "",
 			"media-button": "Multimedia, linki i dokumenty",
 			"save-button": "Zapisz konwersację na serwerze"
 		},
@@ -418,7 +487,10 @@
 			"title": "Współdzielone media",
 			"medias": "Media",
 			"links": "Linki",
-			"documents": "Dokumenty"
+			"documents": "Dokumenty",
+			"file": "",
+			"picture": "",
+			"audio": ""
 		},
 		"reply": {
 			"response-to": "",
@@ -431,6 +503,18 @@
 		},
 		"emojis": {
 			"matching": ""
+		}
+	},
+	"account": {
+		"deleting": "",
+		"creating": "",
+		"opening": {
+			"alert-push-title": "",
+			"alert-push-go-failed": "",
+			"alert-push-fetch-failed": "",
+			"alert-push-perm-denied": "",
+			"alert-push-desc": "",
+			"alert-push-button": ""
 		}
 	},
 	"audio": {
@@ -470,8 +554,8 @@
 			"allow": "",
 			"settings": ""
 		},
-		"skip": "POMIŃ",
-		"cancel": "ANULUJ",
+		"skip": "",
+		"cancel": "Anuluj",
 		"settings-text": ""
 	},
 	"notification": {
@@ -479,7 +563,7 @@
 			"title": "",
 			"desc": ""
 		},
-		"need-restart-ble": {
+		"submit-failed": {
 			"title": "",
 			"desc": ""
 		}
@@ -509,7 +593,6 @@
 			"title": "Inspektor",
 			"accounts": {
 				"title": "Konta",
-				"unsupported-remote-mode": "Inspektor kont nie jest obsługiwany w trybie zdalnym",
 				"data-not-found": "Konto nie jest na liście",
 				"action-delete": {
 					"file-exists": "Konto {{accountId}} nie istnieje, jednak plik ma taką nazwę.",
@@ -559,5 +642,10 @@
 				"button-cancel": "Anuluj"
 			}
 		}
+	},
+	"time-for": {
+		"minutes": "",
+		"hours": "",
+		"days": ""
 	}
 }

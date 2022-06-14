@@ -1,24 +1,27 @@
 {
 	"onboarding": {
 		"getstarted": {
+			"screenTitle": "",
 			"title": "",
 			"desc": "",
 			"create-button": "",
-			"import-button": "",
-			"link-button": ""
+			"import-button": ""
 		},
 		"default-mode": {
 			"summary": {
 				"title": "",
+				"screenTitle": "",
 				"subtitle": "",
 				"first-point": "",
 				"second-point": "",
+				"third-point": "",
 				"back-button": "",
 				"accept-button": ""
 			}
 		},
 		"custom-mode": {
 			"summary": {
+				"screenTitle": "",
 				"title": "",
 				"subtitle": "",
 				"first-point": "",
@@ -45,12 +48,43 @@
 					"bootstrap-button": "",
 					"replication-button": ""
 				},
+				"modals": {
+					"add": {
+						"title": {
+							"relay": "",
+							"bootstrap": "",
+							"rdvp": ""
+						}
+					},
+					"edit": {
+						"title": {
+							"relay": "",
+							"bootstrap": "",
+							"rdvp": ""
+						}
+					},
+					"errors": {
+						"alias-already-exists": "",
+						"multiaddr-alread-exists": "",
+						"multiaddr-bad-format": "",
+						"multiaddr-p2p": ""
+					},
+					"buttons": {
+						"add": "Adaugă",
+						"edit": "",
+						"delete": ""
+					},
+					"multiaddress": "",
+					"alias": ""
+				},
 				"all-button": "",
 				"accept-button": ""
 			}
 		},
 		"create-account": {
 			"title": "Creează un cont nou",
+			"first-button": "",
+			"second-button": "",
 			"placeholder": "",
 			"good-to-know": {
 				"title": "",
@@ -65,7 +99,7 @@
 		"setup-finished": {
 			"title": "Configurare finalizată!",
 			"desc": "",
-			"button": "ÎNCEPE SĂ UTILIZEZI BERTY"
+			"button": ""
 		},
 		"web-views": {
 			"title": "",
@@ -76,6 +110,7 @@
 	},
 	"main": {
 		"home": {
+			"title": "",
 			"requests": {
 				"title": "Cereri",
 				"accept": "Acceptă",
@@ -95,8 +130,8 @@
 				"add-members": "Adaugă membri",
 				"group-info": "Informații grup",
 				"search-placeholder": "Caută",
-				"continue": "CONTINUĂ",
-				"create-group": "CREEAZĂ UN GRUP"
+				"continue": "",
+				"create-group": ""
 			},
 			"create-group-finalize": {
 				"placeholder": "",
@@ -112,45 +147,55 @@
 				"draft": ""
 			}
 		},
-		"suggestion-display-name-initial": "Apasă aici pentru a adăuga",
-		"scan": {
-			"title": ""
-		}
+		"suggestion-display-name-initial": "Apasă aici pentru a adăuga"
 	},
 	"settings": {
 		"home": {
+			"title": "Setări",
 			"proximity-button": "",
 			"notifications-button": "Notificări",
 			"contact-convs-button": "",
 			"appearance-button": "",
-			"devices-button": "",
 			"accounts-button": "",
 			"network-button": "",
 			"bug-button": "",
 			"about-button": "Despre Berty"
 		},
 		"about": {
+			"title": "Despre Berty",
 			"faq-button": "",
 			"roadmap-button": "",
 			"policy-button": "",
-			"license-button": ""
+			"license-button": "",
+			"terms-of-use": "Termeni de utilizare"
 		},
 		"accounts": {
+			"title": "",
+			"backup-button": "",
+			"backup-notif-title": "",
+			"backup-notif-desc": "",
 			"accounts-button": "",
 			"create-button": "",
 			"import-button": "",
 			"link-button": "",
-			"delete-button": ""
+			"delete-button": "",
+			"delete-title": ""
 		},
 		"appearance": {
+			"title": "",
 			"dark-button": "",
-			"editor-button": ""
+			"editor-button": "",
+			"theme-editor": {
+				"title": ""
+			}
 		},
 		"contact-convs": {
+			"title": "",
 			"reset-button": "",
 			"request-button": ""
 		},
 		"network": {
+			"title": "",
 			"ble-button": "",
 			"mc-button": "",
 			"nearby-button": "",
@@ -162,27 +207,29 @@
 			"relay-button": "",
 			"bootstrap-button": ""
 		},
+		"notifications": {
+			"title": "Notificări"
+		},
 		"edit-profile": {
 			"title": "Modifică profilul",
 			"qr-will-update": "ID-ul Berty (cod QR) va fi actualizat",
 			"ocr-wont-update": "Cererile tale de contact în așteptare nu vor fi actualizate",
 			"save": "Salvează modificările",
 			"cancel": "Anulează",
-			"name-input-placeholder": "Nume...",
-			"name-input-label": "Nume"
+			"name-input-placeholder": "Nume..."
 		},
 		"berty-services": {
 			"title": "",
 			"desc": "",
 			"button": "",
-			"skip": "SARI PESTE ȘI FĂ MAI TÂRZIU"
+			"skip": ""
 		},
 		"delete-account": {
 			"title": "Șterge contul meu!",
 			"first-desc": "Ești sigur că vrei să ștergi contul?",
 			"desc": "",
 			"cancel-button": "Anulează",
-			"delete-button": "Şterge"
+			"delete-button": ""
 		},
 		"faq": {
 			"title": ""
@@ -255,7 +302,10 @@
 		},
 		"add-dev-conversations": {
 			"title": "",
-			"add": ""
+			"add": "",
+			"tag-bot": "Bot",
+			"tag-contact": "Contact",
+			"tag-conversation": ""
 		},
 		"ipfs-webui": {
 			"title": ""
@@ -318,6 +368,7 @@
 		}
 	},
 	"chat": {
+		"title-unknown": "",
 		"sending": "Se trimite...",
 		"sent": "",
 		"contact-settings": {
@@ -329,10 +380,10 @@
 			"input-placeholder": ""
 		},
 		"push-notifications": {
-			"enable": "",
-			"enabled": "",
+			"title": "Notificări",
 			"unsupported": "",
 			"check-device-settings": "",
+			"check-account-settings": "",
 			"warning-disable": {
 				"title": "",
 				"subtitle": "",
@@ -340,10 +391,26 @@
 				"refuse": ""
 			},
 			"why-cant-disable": "",
+			"why-cant-disable-account": "",
 			"errors": {
 				"no-token": "",
 				"no-server": ""
-			}
+			},
+			"warning-enable-all": {
+				"title": "",
+				"subtitle": "",
+				"refuse": "",
+				"accept": "Acceptă"
+			},
+			"warning-disable-mute": {
+				"title": "",
+				"refuse": "",
+				"accept": ""
+			},
+			"receive-push": "Primește notificări push",
+			"hide-previews": "",
+			"auto-enable": "",
+			"show-in-app": ""
 		},
 		"devices": {
 			"title": "Dispozitive",
@@ -353,6 +420,7 @@
 			}
 		},
 		"multi-member-settings": {
+			"title": "",
 			"media-button": "",
 			"members-button": {
 				"title": ""
@@ -371,10 +439,10 @@
 		},
 		"one-to-one": {
 			"contact-request-box": {
-				"title": "",
+				"title": "Cerere de contact",
 				"group-invitation": "",
 				"refuse-button": "",
-				"accept-button": "",
+				"accept-button": "Acceptă",
 				"accepted-button": "",
 				"error": "",
 				"you-invited": "",
@@ -391,6 +459,7 @@
 			"input-placeholder": ""
 		},
 		"one-to-one-settings": {
+			"title": "",
 			"media-button": "",
 			"save-button": ""
 		},
@@ -418,7 +487,10 @@
 			"title": "",
 			"medias": "",
 			"links": "",
-			"documents": ""
+			"documents": "",
+			"file": "",
+			"picture": "",
+			"audio": ""
 		},
 		"reply": {
 			"response-to": "",
@@ -431,6 +503,18 @@
 		},
 		"emojis": {
 			"matching": ""
+		}
+	},
+	"account": {
+		"deleting": "",
+		"creating": "",
+		"opening": {
+			"alert-push-title": "",
+			"alert-push-go-failed": "",
+			"alert-push-fetch-failed": "",
+			"alert-push-perm-denied": "",
+			"alert-push-desc": "",
+			"alert-push-button": ""
 		}
 	},
 	"audio": {
@@ -470,7 +554,7 @@
 			"allow": "",
 			"settings": ""
 		},
-		"skip": "Omite",
+		"skip": "",
 		"cancel": "Anulează",
 		"settings-text": ""
 	},
@@ -479,7 +563,7 @@
 			"title": "",
 			"desc": ""
 		},
-		"need-restart-ble": {
+		"submit-failed": {
 			"title": "",
 			"desc": ""
 		}
@@ -509,7 +593,6 @@
 			"title": "",
 			"accounts": {
 				"title": "",
-				"unsupported-remote-mode": "",
 				"data-not-found": "",
 				"action-delete": {
 					"file-exists": "",
@@ -559,5 +642,10 @@
 				"button-cancel": "Anulează"
 			}
 		}
+	},
+	"time-for": {
+		"minutes": "",
+		"hours": "",
+		"days": ""
 	}
 }

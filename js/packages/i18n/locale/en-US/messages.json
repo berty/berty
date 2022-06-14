@@ -564,8 +564,8 @@
 			"desc": "Restart Berty to save your data and enable notifications!"
 		},
 		"submit-failed": {
-			"title": "Cannot submit a bug",
-			"desc": "Mail app missing"
+			"title": "Bug can not be submitted",
+			"desc": "Mail application is missing"
 		}
 	},
 	"error": {

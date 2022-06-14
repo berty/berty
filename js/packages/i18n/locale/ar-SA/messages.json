@@ -1,36 +1,39 @@
 {
 	"onboarding": {
 		"getstarted": {
-			"title": "",
-			"desc": "",
-			"create-button": "",
-			"import-button": "",
-			"link-button": ""
+			"screenTitle": "احم خصوصيتك",
+			"title": "احم خصوصيتك",
+			"desc": "عميل ترسال مجاني وآمن ند لند",
+			"create-button": "أنشئ حسابًا",
+			"import-button": "استورد حسابًا"
 		},
 		"default-mode": {
 			"summary": {
-				"title": "",
+				"title": "الوضع الافتراضي",
+				"screenTitle": "أنشئ حسابًا",
 				"subtitle": "",
-				"first-point": "",
+				"first-point": "ابدأ مع الإعدادات المسبقة التي توفر توازن الخصوصية/الراحة الأكثر مناسبة. تستخدام عقد بريتي لتحسين الأداء والاتصال غير المتزامن.",
 				"second-point": "",
-				"back-button": "",
-				"accept-button": ""
+				"third-point": "لتخصيص توازن الخصوصية/الراحة حدد الوضع المخصص.",
+				"back-button": "رجوع",
+				"accept-button": "لنبدأ"
 			}
 		},
 		"custom-mode": {
 			"summary": {
-				"title": "",
-				"subtitle": "",
-				"first-point": "",
+				"screenTitle": "أنشئ حسابًا - خصص الإعدادات",
+				"title": "الوضع المخصص",
+				"subtitle": "توازن الخصوصية/الراحة مخصص",
+				"first-point": "في هذا الوضع، اضبط جميع الإعدادات لإنشاء توازن الخصوصية بالنسبة للراحة المناسب لك.",
 				"second-point": "",
-				"back-button": "",
-				"accept-button": ""
+				"back-button": "رجوع",
+				"accept-button": "تابع"
 			},
 			"settings": {
 				"off-grid": {
-					"title": "",
+					"title": "اتصال معزول عن الشبكة",
 					"ble-button": "",
-					"nearby-button": "",
+					"nearby-button": "جهاز أندرويد قريب",
 					"mc-button": "",
 					"mdns-button": ""
 				},
@@ -45,12 +48,43 @@
 					"bootstrap-button": "",
 					"replication-button": ""
 				},
+				"modals": {
+					"add": {
+						"title": {
+							"relay": "",
+							"bootstrap": "",
+							"rdvp": ""
+						}
+					},
+					"edit": {
+						"title": {
+							"relay": "",
+							"bootstrap": "",
+							"rdvp": ""
+						}
+					},
+					"errors": {
+						"alias-already-exists": "",
+						"multiaddr-alread-exists": "",
+						"multiaddr-bad-format": "",
+						"multiaddr-p2p": ""
+					},
+					"buttons": {
+						"add": "إضافة",
+						"edit": "",
+						"delete": ""
+					},
+					"multiaddress": "",
+					"alias": ""
+				},
 				"all-button": "",
 				"accept-button": ""
 			}
 		},
 		"create-account": {
 			"title": "أنشئ حسابك",
+			"first-button": "",
+			"second-button": "",
 			"placeholder": "",
 			"good-to-know": {
 				"title": "",
@@ -65,7 +99,7 @@
 		"setup-finished": {
 			"title": "تم الإعداد!",
 			"desc": "يمكنك الآن استخدام التطبيق، بدء إضافة جهات الاتصال والتحدث معهم بحرية وبشكل خاص",
-			"button": "ابدأ استخدام البيرتي"
+			"button": ""
 		},
 		"web-views": {
 			"title": "",
@@ -76,6 +110,7 @@
 	},
 	"main": {
 		"home": {
+			"title": "",
 			"requests": {
 				"title": "الطلبات",
 				"accept": "قبول",
@@ -95,8 +130,8 @@
 				"add-members": "إضافة أعضاء",
 				"group-info": "معلومات المجموعة",
 				"search-placeholder": "البحث",
-				"continue": "متابعة",
-				"create-group": "إنشاء مجموعة"
+				"continue": "",
+				"create-group": ""
 			},
 			"create-group-finalize": {
 				"placeholder": "اسم المجموعة",
@@ -112,48 +147,58 @@
 				"draft": "مسودة: {{message}}"
 			}
 		},
-		"suggestion-display-name-initial": "انقر هنا للإضافة",
-		"scan": {
-			"title": ""
-		}
+		"suggestion-display-name-initial": "انقر هنا للإضافة"
 	},
 	"settings": {
 		"home": {
+			"title": "الإعدادات",
 			"proximity-button": "",
 			"notifications-button": "الإشعارات",
 			"contact-convs-button": "",
 			"appearance-button": "",
-			"devices-button": "",
 			"accounts-button": "",
 			"network-button": "",
 			"bug-button": "",
 			"about-button": "حول برتي"
 		},
 		"about": {
+			"title": "حول برتي",
 			"faq-button": "",
 			"roadmap-button": "",
-			"policy-button": "",
-			"license-button": ""
+			"policy-button": "سياسة الخصوصية",
+			"license-button": "",
+			"terms-of-use": "شروط الاستخدام"
 		},
 		"accounts": {
-			"accounts-button": "",
-			"create-button": "",
-			"import-button": "",
-			"link-button": "",
-			"delete-button": ""
+			"title": "الحسابات",
+			"backup-button": "النسخ الاحتياطي",
+			"backup-notif-title": "نجح",
+			"backup-notif-desc": "أُنشئت نسخة احتياطية للحساب!",
+			"accounts-button": "الحسابات",
+			"create-button": "أنشئ حسابًا",
+			"import-button": "استورد حسابًا",
+			"link-button": "اربط جهازًا آخر",
+			"delete-button": "احذف هذا الحساب",
+			"delete-title": "حذف الحساب"
 		},
 		"appearance": {
-			"dark-button": "",
-			"editor-button": ""
+			"title": "المظهر",
+			"dark-button": "الوضع الداكن",
+			"editor-button": "محرر السمات",
+			"theme-editor": {
+				"title": "محرر السمات"
+			}
 		},
 		"contact-convs": {
+			"title": "",
 			"reset-button": "",
 			"request-button": ""
 		},
 		"network": {
+			"title": "الشبكة",
 			"ble-button": "",
 			"mc-button": "",
-			"nearby-button": "",
+			"nearby-button": "جهاز أندرويد قريب",
 			"mdns-button": "",
 			"memo-cell-button": "",
 			"medias-cell-button": "",
@@ -162,61 +207,63 @@
 			"relay-button": "",
 			"bootstrap-button": ""
 		},
+		"notifications": {
+			"title": "الإشعارات"
+		},
 		"edit-profile": {
 			"title": "",
 			"qr-will-update": "",
 			"ocr-wont-update": "",
-			"save": "",
-			"cancel": "",
-			"name-input-placeholder": "",
-			"name-input-label": "الاسم"
+			"save": "احفظ التغييرات",
+			"cancel": "ألغ",
+			"name-input-placeholder": "الاسم..."
 		},
 		"berty-services": {
-			"title": "",
+			"title": "خدمات برتي",
 			"desc": "",
-			"button": "",
-			"skip": "اختراع و هذه الأشرطة"
+			"button": "استخدم خدمات برتي",
+			"skip": "تخطى وقم بهذا لاحقاً"
 		},
 		"delete-account": {
 			"title": "حذف الحساب!",
 			"first-desc": "هل أنت متأكد من أنك تريد حذف حسابك؟",
 			"desc": "الرجاء كتابة \"حذف\" للتأكيد",
-			"cancel-button": "لالغاء",
-			"delete-button": "إزالة"
+			"cancel-button": "ألغ",
+			"delete-button": "احذف"
 		},
 		"faq": {
-			"title": ""
+			"title": "الأسئلة الشائعة"
 		},
 		"roadmap": {
 			"title": ""
 		},
 		"privacy-policy": {
-			"title": ""
+			"title": "سياسة الخصوصية"
 		},
 		"devtools": {
-			"title": "",
-			"header-left-button": "",
+			"title": "أدوات التطوير",
+			"header-left-button": "معلومات الجهاز",
 			"header-middle-button": "توليد بيانات مزيفة",
 			"header-right-button": "إعادة تشغيل الرديمون",
 			"simulate-button": "",
-			"simulate-js-error-button": "",
+			"simulate-js-error-button": "حاكِ خطأ في جافا سكريبت",
 			"system-info-button": "معلومات النظام",
-			"debug-button": "",
+			"debug-button": "نقّح",
 			"log-button": {
-				"name": "",
-				"bullet-point": ""
+				"name": "تنسيق السجل",
+				"bullet-point": "أعد تشغيل التطبيق بعد تغيير هذا الحقل"
 			},
 			"log-filters-button": {
-				"name": "",
-				"bullet-point": ""
+				"name": "مرشحات السجل",
+				"bullet-point": "أعد تشغيل التطبيق بعد تغيير هذا الحقل"
 			},
 			"add-dev-conversations-button": "إضافة محادثات Dev",
 			"share-button": {
-				"title": "",
-				"alert-title": "",
+				"title": "شارك المعرف على ديسكورد",
+				"alert-title": "هل تريد مشاركة رمز الاستجابة السريعة في قناة \"#dev-logs\" التابعة لخادم ديسكورد لبيرتي؟",
 				"alert-message": "",
-				"alert-accept-button": "",
-				"alert-cancel-button": ""
+				"alert-accept-button": "نعم 👍",
+				"alert-cancel-button": "لا"
 			},
 			"native-bridge-button": "",
 			"dump-account-button": "",
@@ -224,22 +271,22 @@
 			"dump-conversations-button": "",
 			"dump-interactions-button": "",
 			"dump-members-button": "",
-			"stop-node-button": "",
+			"stop-node-button": "أوقف العقدة",
 			"local-grpc-button": "",
 			"console-logs-button": "",
 			"ipfs-webui-button": "IPFS WebUI",
 			"send-to-all-button": {
-				"title": "",
-				"sending": "",
-				"test": "",
-				"tried": ""
+				"title": "أرسل رسائل لكل المتراسلين",
+				"sending": "يرسل...",
+				"test": "اختبار، ",
+				"tried": "✔ حاولَ الارسال {{length}} متراسلين"
 			},
 			"tyber-attach": "",
 			"tyber-host-button": {
 				"name": "",
-				"bullet-point": ""
+				"bullet-point": "أعد تشغيل التطبيق بعد تغيير هذا الحقل"
 			},
-			"footer-left-button": "",
+			"footer-left-button": "معلومات الجهاز",
 			"footer-middle-button": "قائمة الأحداث",
 			"footer-right-button": "إعادة تشغيل الرديمون"
 		},
@@ -255,34 +302,37 @@
 		},
 		"add-dev-conversations": {
 			"title": "إضافة محادثات Dev",
-			"add": "إضافة {{name}}"
+			"add": "إضافة {{name}}",
+			"tag-bot": "Bot",
+			"tag-contact": "الاتصال",
+			"tag-conversation": "محادثة"
 		},
 		"ipfs-webui": {
 			"title": "IPFS WebUI"
 		},
 		"theme-editor": {
-			"randomize": "",
-			"save": "",
-			"export": "",
-			"share": "",
-			"import": "",
-			"delete": "",
-			"bad-format-title": "",
-			"bad-format-desc": "",
+			"randomize": "ولّد سمة",
+			"save": "احفظ هذه السمة",
+			"export": "صدّر السمة المختارة كملف",
+			"share": "شارك السمة المختارة كملف",
+			"import": "استورد ملف سمة",
+			"delete": "احذف جميع السمات غير الافتراضية",
+			"bad-format-title": "تنسيق سمة خاطئ",
+			"bad-format-desc": "تنسيق غير صحيح لملف سمة",
 			"notification-file-saved": {
-				"title": "",
-				"desc": ""
+				"title": "حُفظت البيانات!",
+				"desc": "متوفر في مجلد التنزيلات"
 			}
 		},
 		"my-berty-ID": {
-			"title": "",
+			"title": "معرف برتي الخاص بي",
 			"qr": "QR",
 			"fingerprint": "بصمة"
 		},
 		"share": {
-			"invite": "",
-			"tap-to-scan": "",
-			"create-group": ""
+			"invite": "ادعو",
+			"tap-to-scan": "انقر للمسح",
+			"create-group": "أنشئ مجموعة"
 		}
 	},
 	"modals": {
@@ -303,47 +353,64 @@
 		},
 		"group-invitation": {
 			"fingerprint": "بصمة",
-			"info": "",
+			"info": "معلومات",
 			"devices": "الأجهزة",
-			"join": "",
-			"password-label": "",
-			"password-placeholder": ""
+			"join": "انضم إلى هذه المجموعة",
+			"password-label": "أدخل كلمة مرور المجموعة",
+			"password-placeholder": "كلمة المرور..."
 		},
 		"save-theme": {
-			"title": "",
-			"desc": "",
-			"placeholder": "",
-			"cancel": "لالغاء",
-			"add": ""
+			"title": "يحفظ السمة",
+			"desc": "رجاءً اختر اسمًا لسمتك!",
+			"placeholder": "اسم السمة...",
+			"cancel": "ألغ",
+			"add": "أضف!"
 		}
 	},
 	"chat": {
-		"sending": "",
-		"sent": "",
+		"title-unknown": "",
+		"sending": "يرسل...",
+		"sent": "أرسلت",
 		"contact-settings": {
 			"fingerprint": "بصمة",
-			"info": "",
-			"my-devices": ""
+			"info": "معلومات",
+			"my-devices": "أجهزتي"
 		},
 		"multi-member": {
-			"input-placeholder": ""
+			"input-placeholder": "اكتب هنا..."
 		},
 		"push-notifications": {
-			"enable": "",
-			"enabled": "",
-			"unsupported": "",
+			"title": "الإشعارات",
+			"unsupported": "الإشعارات غير مدعومة",
 			"check-device-settings": "",
+			"check-account-settings": "",
 			"warning-disable": {
-				"title": "",
-				"subtitle": "",
-				"accept": "",
-				"refuse": ""
+				"title": "هل تريد تفعيل هذه الميّزة؟",
+				"subtitle": "بمجرد تفعيلها لا يمكن تعطيل الإشعارات لمحادثة معينة.",
+				"accept": "فعّل",
+				"refuse": "تخطى"
 			},
 			"why-cant-disable": "",
+			"why-cant-disable-account": "",
 			"errors": {
 				"no-token": "",
 				"no-server": ""
-			}
+			},
+			"warning-enable-all": {
+				"title": "",
+				"subtitle": "",
+				"refuse": "",
+				"accept": "قبول"
+			},
+			"warning-disable-mute": {
+				"title": "",
+				"refuse": "",
+				"accept": ""
+			},
+			"receive-push": "تلقي الإشعارات",
+			"hide-previews": "",
+			"auto-enable": "",
+			"show-in-app": ""
 		},
 		"devices": {
 			"title": "الأجهزة",
@@ -353,6 +420,7 @@
 			}
 		},
 		"multi-member-settings": {
+			"title": "",
 			"media-button": "الوسائط والروابط والمستندات",
 			"members-button": {
 				"title": ""
@@ -374,28 +442,29 @@
 				"title": "",
 				"group-invitation": "",
 				"refuse-button": "",
-				"accept-button": "الموافقة",
+				"accept-button": "قبول",
 				"accepted-button": "",
 				"error": "",
-				"you-invited": "",
-				"this-contact": "",
-				"to-a-group": ""
+				"you-invited": "دعيت",
+				"this-contact": "هذا المتراسل",
+				"to-a-group": "لمجموعة! 💌"
 			},
 			"infos-chat": {
-				"connection-confirmed": "",
-				"request-sent": "",
-				"incoming": "",
+				"connection-confirmed": "👋 أُكدَ اتصال برتي! 🎉",
+				"request-sent": "أُرسل الطلب ✈",
+				"incoming": "اقبل هذا الطلب للرد!",
 				"outgoing": ""
 			},
-			"incoming-input-placeholder": "",
-			"input-placeholder": ""
+			"incoming-input-placeholder": "اقبل الطلب للكتابة هنا...",
+			"input-placeholder": "اكتب هنا..."
 		},
 		"one-to-one-settings": {
+			"title": "إعدادات المحادثة",
 			"media-button": "الوسائط والروابط والمستندات",
-			"save-button": ""
+			"save-button": "احفظ المحادثة على الخادم"
 		},
 		"replicate-group-settings": {
-			"title": "",
+			"title": "سجّل المحادثة على الخادم",
 			"no-registered-button": "",
 			"connect-button": "",
 			"manage-add-button": ""
@@ -408,29 +477,44 @@
 			"microphone": "الميكروفون",
 			"security-access": "",
 			"security-access-desc": "",
-			"save-to-gallery": "",
+			"save-to-gallery": "احفظ هذا الملف في المعرض",
 			"share": "مشاركة",
 			"forward-berty": "ارسال إلى جهة اتصال برتي",
 			"forward": "ارسال",
-			"image-saved": ""
+			"image-saved": "حُفظت الصورة في المعرض"
 		},
 		"shared-medias": {
-			"title": "",
-			"medias": "",
-			"links": "",
-			"documents": ""
+			"title": "الوسائط المشاركة",
+			"medias": "الوسائط",
+			"links": "الروابط",
+			"documents": "الوثائق",
+			"file": "ملف",
+			"picture": "صورة",
+			"audio": "صوت"
 		},
 		"reply": {
-			"response-to": "",
-			"replying-to": "",
-			"replied-to": ""
+			"response-to": "ردّ على",
+			"replying-to": "أنت ترد على",
+			"replied-to": "ردَدتَ على"
 		},
 		"user-message": {
-			"read-more": "",
+			"read-more": "اقرأ المزيد",
 			"show-less": ""
 		},
 		"emojis": {
 			"matching": ""
+		}
+	},
+	"account": {
+		"deleting": "",
+		"creating": "",
+		"opening": {
+			"alert-push-title": "",
+			"alert-push-go-failed": "",
+			"alert-push-fetch-failed": "",
+			"alert-push-perm-denied": "",
+			"alert-push-desc": "",
+			"alert-push-button": ""
 		}
 	},
 	"audio": {
@@ -470,8 +554,8 @@
 			"allow": "",
 			"settings": ""
 		},
-		"skip": "تخطي",
-		"cancel": "لالغاء",
+		"skip": "",
+		"cancel": "",
 		"settings-text": ""
 	},
 	"notification": {
@@ -479,7 +563,7 @@
 			"title": "",
 			"desc": ""
 		},
-		"need-restart-ble": {
+		"submit-failed": {
 			"title": "",
 			"desc": ""
 		}
@@ -509,7 +593,6 @@
 			"title": "",
 			"accounts": {
 				"title": "",
-				"unsupported-remote-mode": "",
 				"data-not-found": "",
 				"action-delete": {
 					"file-exists": "",
@@ -559,5 +642,10 @@
 				"button-cancel": ""
 			}
 		}
+	},
+	"time-for": {
+		"minutes": "",
+		"hours": "",
+		"days": ""
 	}
 }
