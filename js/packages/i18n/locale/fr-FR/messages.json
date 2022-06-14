@@ -564,8 +564,8 @@
 			"desc": "Redémarrez Berty pour sauvegarder vos données et activer les notifications !"
 		},
 		"submit-failed": {
-			"title": "Impossible de soumettre un bug",
-			"desc": "Application e-mail manquante"
+			"title": "",
+			"desc": ""
 		}
 	},
 	"error": {
