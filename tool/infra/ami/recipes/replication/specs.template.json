@@ -1,0 +1,52 @@
+{
+  "name": "{{ RECIPE_NAME }}",
+  "description": "{{ RECIPE_DESCRIPTION }}",
+  "semanticVersion": "{{ RECIPE_VERSION }}",
+  "parentImage": "arn:aws:imagebuilder:{{ AWS_REGION }}:aws:image/amazon-linux-2-x86/x.x.x",
+  "components": [
+    {
+      "componentArn": "arn:aws:imagebuilder:{{ AWS_REGION }}:aws:component/amazon-cloudwatch-agent-linux/x.x.x"
+    },
+    {
+      "componentArn": "arn:aws:imagebuilder:{{ AWS_REGION }}:{{ AWS_OWNER }}:component/asdf/x.x.x",
+      "parameters": [
+        {
+          "name": "Version",
+          "value": ["{{ ASDF_VERSION }}"]
+        }
+      ]
+    },
+    {
+      "componentArn": "arn:aws:imagebuilder:{{ AWS_REGION }}:{{ AWS_OWNER }}:component/berty/x.x.x",
+      "parameters": [
+        {
+          "name": "Remote",
+          "value": ["{{ GITHUB_REMOTE }}"]
+        },
+        {
+          "name": "Branch",
+          "value": ["{{ GITHUB_BRANCH }}"]
+        }
+      ]
+    }
+  ],
+  "blockDeviceMappings": [
+    {
+      "deviceName": "/dev/xvda",
+      "ebs": {
+        "encrypted": true,
+        "deleteOnTermination": true,
+        "kmsKeyId": "alias/aws/ebs",
+        "volumeSize": {{ DISK_SIZE }},
+        "volumeType": "gp2"
+      }
+    }
+  ],
+  "additionalInstanceConfiguration": {
+    "systemsManagerAgent": {
+      "uninstallAfterBuild": false
+    },
+    "userDataOverride": "{{ USER_DATA }}"
+  },
+  "clientToken": "{{ CLIENT_TOKEN }}"
+}

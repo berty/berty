@@ -1,0 +1,13 @@
+###
+# AWS_OWNER and AWS_REGION are set by the Makefile
+# GITHUB_REMOTE and GITHUB_BRANCH are set by the Makefile
+# USER_DATA is the content of the user_data.sh file
+# RECIPE_NAME is set by the Makefile (equal to related recipe name)
+# RECIPE_VERSION is set by the Makefile (equal to related recipe version)
+# CLIENT_TOKEN is set by the Makefile (md5 hash of current folder files)
+###
+INFRA_CONFIG_NAME="generic-infra-config"
+INFRA_CONFIG_DESCRIPTION="Generic infrastructure configuration automatically generated"
+INFRA_INSTANCE_TYPES='"m5.large", "m5a.large", "m5ad.large", "m5d.large", "m6g.large", "m6i.large"'
+DISTRIB_CONFIG_NAME="generic-distrib-config"
+DISTRIB_CONFIG_DESCRIPTION="Generic distribution configuration automatically generated"

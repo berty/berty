@@ -1,0 +1,4 @@
+{
+  "imagePipelineArn": "arn:aws:imagebuilder:{{ AWS_REGION }}:{{ AWS_OWNER }}:image-pipeline/{{ RECIPE_NAME }}",
+  "clientToken": "{{ CLIENT_TOKEN }}"
+}

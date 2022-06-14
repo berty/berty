@@ -1,0 +1,12 @@
+{
+  "name": "{{ DISTRIB_CONFIG_NAME }}",
+  "description": "{{ DISTRIB_CONFIG_DESCRIPTION }}",
+  "distributionConfigurationArn": "arn:aws:imagebuilder:{{ AWS_REGION }}:{{ AWS_OWNER }}:distribution-configuration/{{ DISTRIB_CONFIG_NAME }}",
+  "distributions": [
+    {
+      "region": "{{ AWS_REGION }}",
+      "amiDistributionConfiguration": {}
+    }
+  ],
+  "clientToken": "{{ CLIENT_TOKEN }}"
+}

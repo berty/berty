@@ -1,0 +1,8 @@
+{
+  "name": "{{ COMPONENT_NAME }}",
+  "semanticVersion": "{{ COMPONENT_VERSION }}",
+  "description": "{{ COMPONENT_DESCRIPTION }}",
+  "platform": "Linux",
+  "supportedOsVersions": ["Amazon Linux 2"],
+  "clientToken": "{{ CLIENT_TOKEN }}"
+}

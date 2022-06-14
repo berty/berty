@@ -1,0 +1,6 @@
+###
+# COMPONENT_NAME is set by the Makefile (equal to current folder name)
+# CLIENT_TOKEN is set by the Makefile (sha256 hash of current folder files)
+###
+COMPONENT_DESCRIPTION="Build Berty go binary"
+COMPONENT_VERSION=1.0.0

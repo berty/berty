@@ -1,0 +1,9 @@
+{
+  "name": "{{ INFRA_CONFIG_NAME }}",
+  "description": "{{ INFRA_CONFIG_DESCRIPTION }}",
+  "infrastructureConfigurationArn": "arn:aws:imagebuilder:{{ AWS_REGION }}:{{ AWS_OWNER }}:infrastructure-configuration/{{ INFRA_CONFIG_NAME }}",
+  "instanceTypes": [{{ INFRA_INSTANCE_TYPES }}],
+  "instanceProfileName": "EC2InstanceProfileForImageBuilder",
+  "terminateInstanceOnFailure": true,
+  "clientToken": "{{ CLIENT_TOKEN }}"
+}

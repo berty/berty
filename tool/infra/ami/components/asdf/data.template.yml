@@ -1,0 +1,41 @@
+name: {{ COMPONENT_NAME }}
+description: {{ COMPONENT_DESCRIPTION }}
+schemaVersion: 1.0
+
+parameters:
+  - Version:
+      description: asdf version to install
+      type: string
+
+# See https://asdf-vm.com/guide/getting-started.html
+phases:
+  - name: build
+    steps:
+      - name: Dependencies
+        action: ExecuteBash
+        inputs:
+          commands:
+            - sudo yum update -y
+            - sudo yum install curl git -y
+
+      - name: Download
+        action: ExecuteBash
+        inputs:
+          commands:
+            - git clone https://github.com/asdf-vm/asdf.git /root/.asdf --branch 'v{{ Version }}'
+
+      - name: Installation
+        action: AppendFile
+        inputs:
+          - path: /root/.bashrc
+            content: |
+              . /root/.asdf/asdf.sh
+              . /root/.asdf/completions/asdf.bash
+
+  - name: validate
+    steps:
+      - name: Version
+        action: ExecuteBash
+        inputs:
+          commands:
+            - bash -ic 'asdf version | grep "{{ Version }}"'

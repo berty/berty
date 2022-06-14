@@ -1,0 +1,11 @@
+###
+# AWS_OWNER and AWS_REGION are set by the Makefile
+# GITHUB_REMOTE and GITHUB_BRANCH are set by the Makefile
+# USER_DATA is the content of the user_data.sh file
+# RECIPE_NAME is set by the Makefile (equal to current folder name)
+# CLIENT_TOKEN is set by the Makefile (md5 hash of current folder files)
+###
+RECIPE_DESCRIPTION="Berty Welcome Bot logging to CloudWatch"
+RECIPE_VERSION=1.0.0
+ASDF_VERSION=0.10.2
+DISK_SIZE=8

@@ -1,0 +1,11 @@
+{
+  "name": "{{ RECIPE_NAME }}",
+  "description": "Pipeline automatically generated to build {{ RECIPE_NAME }} image",
+  "imagePipelineArn": "arn:aws:imagebuilder:{{ AWS_REGION }}:{{ AWS_OWNER }}:image-pipeline/{{ RECIPE_NAME }}",
+  "imageRecipeArn": "arn:aws:imagebuilder:{{ AWS_REGION }}:{{ AWS_OWNER }}:image-recipe/{{ RECIPE_NAME }}/{{ RECIPE_VERSION }}",
+  "infrastructureConfigurationArn": "arn:aws:imagebuilder:{{ AWS_REGION }}:{{ AWS_OWNER }}:infrastructure-configuration/{{ INFRA_CONFIG_NAME }}",
+  "distributionConfigurationArn": "arn:aws:imagebuilder:{{ AWS_REGION }}:{{ AWS_OWNER }}:distribution-configuration/{{ DISTRIB_CONFIG_NAME }}",
+  "enhancedImageMetadataEnabled": true,
+  "status": "ENABLED",
+  "clientToken": "{{ CLIENT_TOKEN }}"
+}
