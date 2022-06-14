@@ -564,8 +564,8 @@
 			"desc": "Indítsa újra a Bertyt az adatok mentéséhez és az értesítések engedélyezéséhez!"
 		},
 		"submit-failed": {
-			"title": "Hibabejelentés nem lehetséges",
-			"desc": "A Levelező alkalmazás hiányzik"
+			"title": "",
+			"desc": ""
 		}
 	},
 	"error": {
