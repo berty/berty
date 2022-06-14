@@ -6,6 +6,7 @@ import (
 	"log"
 	"time"
 
+	"berty.tech/berty/tool/tyber/go/analyzer"
 	"berty.tech/berty/tool/tyber/go/config"
 	"berty.tech/berty/tool/tyber/go/logger"
 	"berty.tech/berty/tool/tyber/go/parser"
@@ -17,6 +18,7 @@ type Manager struct {
 
 	Config   *config.Config
 	Parser   *parser.Parser
+	Analyzer *analyzer.Analyzer
 	DataPath string
 
 	logger *logger.Logger
@@ -36,6 +38,7 @@ func New(ctx context.Context, cancel func()) *Manager {
 func (m *Manager) Init() error {
 	m.Config = config.New(m.ctx, m.logger)
 	m.Parser = parser.New(m.ctx, m.logger)
+	m.Analyzer = analyzer.New(m.ctx, m.logger)
 
 	// init
 	if err := m.Config.Init(m.DataPath); err != nil {

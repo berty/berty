@@ -57,8 +57,15 @@ func (s *service) AppMessageSend(ctx context.Context, req *protocoltypes.AppMess
 }
 
 func tyberLogGroupContext(ctx context.Context, logger *zap.Logger, gc *GroupContext) {
+	memberPK, err := gc.MemberPubKey().Raw()
+	if err != nil {
+		memberPK = []byte{}
+	}
+
 	logger.Debug("Got group context", tyber.FormatStepLogFields(ctx, []tyber.Detail{
 		{Name: "GroupType", Description: gc.Group().GetGroupType().String()},
+		{Name: "GroupPK", Description: base64.RawURLEncoding.EncodeToString(gc.Group().PublicKey)},
+		{Name: "MemberPK", Description: base64.RawURLEncoding.EncodeToString(memberPK)},
 	})...)
 }
 

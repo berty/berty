@@ -380,6 +380,11 @@ func messageStoreAddMessage(ctx context.Context, g *protocoltypes.Group, md *cry
 		return nil, errcode.ErrOrbitDBDeserialization.Wrap(err)
 	}
 
+	m.logger.Debug(
+		"Operation parsed by orbit-DB successfully",
+		tyber.FormatStepLogFields(ctx, []tyber.Detail{{Name: "CID", Description: op.GetEntry().GetHash().String()}})...,
+	)
+
 	return op, nil
 }
 

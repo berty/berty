@@ -2,9 +2,11 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"flag"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"os"
 	"strings"
@@ -42,6 +44,11 @@ var (
 	VersionAstilectron string
 	VersionElectron    string
 )
+
+type AppSession struct {
+	ID   string `json:"id"`
+	Path string `json:"path"`
+}
 
 func main() {
 	err := runMain(os.Args[1:])
@@ -82,7 +89,7 @@ func runMain(args []string) error {
 			ShortHelp:   "start a log parse tool",
 			FlagSet:     fs,
 			Options:     ffCommandOptions(),
-			Subcommands: []*ffcli.Command{delete(), list(), parse()},
+			Subcommands: []*ffcli.Command{delete(), list(), parse(), analyze()},
 			Exec: func(ctx context.Context, args []string) error {
 				return runGui(ctx)
 			},
@@ -97,11 +104,12 @@ func runMain(args []string) error {
 }
 
 func list() *ffcli.Command {
-	fs := flag.NewFlagSet("tyber list", flag.ExitOnError)
+	fs := flag.NewFlagSet("tyber list [flags]", flag.ExitOnError)
+	output := fs.String("o", "", "Path of the file to write the output")
 
 	return &ffcli.Command{
 		Name:       "list",
-		ShortUsage: "tyber [global flags] list",
+		ShortUsage: "tyber [global flags] list [flags]",
 		ShortHelp:  "List parsed files",
 		Options:    ffCommandOptions(),
 		FlagSet:    fs,
@@ -112,7 +120,7 @@ func list() *ffcli.Command {
 			defer manager.Cancel()
 
 			var sessions []parser.CreateSessionEvent
-			go manager.Parser.ListSessions()
+			go manager.Parser.ListSessionEvents()
 
 			// waiting parser returns the session list
 			select {
@@ -126,10 +134,25 @@ func list() *ffcli.Command {
 				return ctx.Err()
 			}
 
+			appSessions := []AppSession{}
 			for _, session := range sessions {
-				fmt.Printf("ID:%s file:%s\n", session.ID, session.SrcName)
+				session := AppSession{
+					ID:   session.ID,
+					Path: session.SrcName,
+				}
+				appSessions = append(appSessions, session)
 			}
 
+			jsonSessions, err := json.MarshalIndent(appSessions, "", "  ")
+			if err != nil {
+				return err
+			}
+
+			if *output != "" {
+				return ioutil.WriteFile(*output, jsonSessions, 0644)
+			}
+
+			fmt.Println(string(jsonSessions))
 			return nil
 		},
 	}
@@ -154,38 +177,114 @@ func parse() *ffcli.Command {
 			}
 			defer manager.Cancel()
 
-			for _, path := range args {
-				cerr := make(chan error)
+			return _parse(ctx, args)
+		},
+	}
+}
 
-				go func() {
-					if err := manager.Parser.ParseFile(path); err != nil {
-						cerr <- err
-					}
-				}()
+func _parse(ctx context.Context, args []string) error {
+	for _, path := range args {
+		cerr := make(chan error)
 
-				// waiting to finish parsing
-			EVENT_LOOP: // label
-				for {
-					select {
-					case evt := <-manager.Parser.EventChan:
-						switch evt.(type) {
-						case parser.CreateSessionEvent:
-							break EVENT_LOOP
-						default: // digest unwanted events
-						}
-					case err := <-cerr:
-						return err
-					case <-ctx.Done():
-						return ctx.Err()
-					}
+		go func() {
+			if err := manager.Parser.ParseFile(path); err != nil {
+				cerr <- err
+			}
+		}()
+
+		// waiting to finish parsing
+	EVENT_LOOP: // label
+		for {
+			select {
+			case evt := <-manager.Parser.EventChan:
+				switch evt.(type) {
+				case parser.CreateSessionEvent:
+					break EVENT_LOOP
+				default: // digest unwanted events
+				}
+			case err := <-cerr:
+				return err
+			case <-ctx.Done():
+				return ctx.Err()
+			}
+		}
+	}
+
+	return nil
+}
+
+func analyze() *ffcli.Command {
+	fs := flag.NewFlagSet("tyber analyze [flags] <session_id>...", flag.ExitOnError)
+	parse := fs.Bool("p", false, "takes Berty logs as arguments and parse them before analyze")
+	output := fs.String("o", "", "Path of the file to write the output")
+
+	return &ffcli.Command{
+		Name:       "analyze",
+		ShortUsage: "tyber [global flags] analyze [flags] <session_id>...",
+		ShortHelp:  "Analyze Tyber's session files",
+		Options:    ffCommandOptions(),
+		FlagSet:    fs,
+		Exec: func(ctx context.Context, args []string) error {
+			if len(args) < 2 {
+				return flag.ErrHelp
+			}
+
+			if err := manager.Init(); err != nil {
+				return err
+			}
+			defer manager.Cancel()
+
+			if *parse {
+				if err := _parse(ctx, args); err != nil {
+					return err
 				}
 			}
+
+			sessions, err := manager.Parser.ListSessions()
+			if err != nil {
+				return err
+			}
+
+			// check if session requests are available and pick sessions
+			var requestedSessions []*parser.Session
+		LOOP_ARGS:
+			for _, arg := range args {
+				for _, session := range sessions {
+					if *parse {
+						if session.SrcName == arg {
+							requestedSessions = append(requestedSessions, session)
+							continue LOOP_ARGS
+						}
+					} else {
+						if session.ID == arg {
+							requestedSessions = append(requestedSessions, session)
+							continue LOOP_ARGS
+						}
+					}
+				}
+				return errors.New(fmt.Sprintf("session=%s is not found", arg))
+			}
+
+			report, err := manager.Analyzer.Analyze(requestedSessions)
+			if err != nil {
+				return err
+			}
+
+			jsonReport, err := json.MarshalIndent(report, "", "  ")
+			if err != nil {
+				return err
+			}
+
+			if *output != "" {
+				return ioutil.WriteFile(*output, jsonReport, 0644)
+			}
+
+			fmt.Println(string(jsonReport))
 
 			return nil
 		},
 	}
 }
-
 func delete() *ffcli.Command {
 	fs := flag.NewFlagSet("tyber delete", flag.ExitOnError)
 	all := fs.Bool("a", false, "Delete all sessions")

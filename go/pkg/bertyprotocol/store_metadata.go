@@ -573,7 +573,8 @@ func (m *MetadataStore) ContactRequestReferenceReset(ctx context.Context) (opera
 func (m *MetadataStore) ContactRequestOutgoingEnqueue(ctx context.Context, contact *protocoltypes.ShareableContact, ownMetadata []byte) (operation.Operation, error) {
 	ctx, _ = tyber.ContextWithTraceID(ctx)
 
-	m.logger.Debug("Enqueuing contact request", tyber.FormatStepLogFields(ctx, []tyber.Detail{})...)
+	b64GroupPK := base64.RawURLEncoding.EncodeToString(m.g.PublicKey)
+	m.logger.Debug("Enqueuing contact request", tyber.FormatStepLogFields(ctx, []tyber.Detail{{Name: "GroupPK", Description: fmt.Sprint(b64GroupPK)}})...)
 
 	if !m.typeChecker(isAccountGroup) {
 		return nil, errcode.ErrGroupInvalidType
