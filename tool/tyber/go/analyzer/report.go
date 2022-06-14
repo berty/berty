@@ -48,7 +48,7 @@ func (a *Analyzer) Report() (*Report, error) {
 func (crr *ContactRequestReport) processContactRequest(contactRequest *ContactRequest) error {
 	crr.ContactRequests = append(crr.ContactRequests, contactRequest)
 	crr.Sent++
-	if contactRequest.Successed {
+	if contactRequest.Succeeded {
 		crr.Received++
 
 		duration := contactRequest.Finished.Sub(contactRequest.Started).Milliseconds()
@@ -59,7 +59,7 @@ func (crr *ContactRequestReport) processContactRequest(contactRequest *ContactRe
 			crr.MaxTime = duration
 		}
 	}
-	crr.SuccessPercent = float32(crr.Received) / float32(crr.Sent)
+	crr.SuccessPercent = float32(crr.Received) / float32(crr.Sent) * 100
 	return nil
 }
 
@@ -68,7 +68,7 @@ func (crr *ContactRequestReport) computeAverageTime() {
 
 	if len(crr.ContactRequests) > 0 {
 		for _, contactRequest := range crr.ContactRequests {
-			if contactRequest.Successed {
+			if contactRequest.Succeeded {
 				duration := contactRequest.Finished.Sub(contactRequest.Started).Milliseconds()
 				total += duration
 			}
@@ -81,7 +81,7 @@ func (crr *ContactRequestReport) computeAverageTime() {
 func (mr *MessageReport) processMessage(message *Message) error {
 	mr.Messages = append(mr.Messages, message)
 	mr.Sent++
-	if message.Successed {
+	if message.Succeeded {
 		mr.Received++
 
 		duration := message.Finished.Sub(message.Started).Milliseconds()
@@ -92,7 +92,7 @@ func (mr *MessageReport) processMessage(message *Message) error {
 			mr.MaxTime = duration
 		}
 	}
-	mr.SuccessPercent = float32(mr.Received) / float32(mr.Sent)
+	mr.SuccessPercent = float32(mr.Received) / float32(mr.Sent) * 100
 	return nil
 }
 
@@ -101,7 +101,7 @@ func (mr *MessageReport) computeAverageTime() {
 
 	if len(mr.Messages) > 0 {
 		for _, message := range mr.Messages {
-			if message.Successed {
+			if message.Succeeded {
 				duration := message.Finished.Sub(message.Started).Milliseconds()
 				total += duration
 			}

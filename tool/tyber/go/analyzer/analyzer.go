@@ -138,8 +138,8 @@ func (a *Analyzer) saveContactRequest(cr *ContactRequest) error {
 	if cr.Finished.After(foundCR.Finished) {
 		foundCR.Finished = cr.Finished
 	}
-	if cr.Successed {
-		foundCR.Successed = true
+	if cr.Succeeded {
+		foundCR.Succeeded = true
 	}
 
 	return nil
@@ -176,8 +176,8 @@ func (a *Analyzer) saveMessage(m *Message) error {
 	if m.Finished.After(savedMessage.Finished) {
 		savedMessage.Finished = m.Finished
 	}
-	if m.Successed {
-		savedMessage.Successed = true
+	if m.Succeeded {
+		savedMessage.Succeeded = true
 	}
 
 	return nil

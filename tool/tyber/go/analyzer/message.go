@@ -17,12 +17,12 @@ type Message struct {
 	ReceiverPK string    `json:"receiverPK"`
 	Started    time.Time `json:"started"`
 	Finished   time.Time `json:"finished"`
-	Successed  bool      `json:"successed"`
+	Succeeded  bool      `json:"succeeded"`
 }
 
 func NewMessage() *Message {
 	return &Message{
-		Successed: false,
+		Succeeded: false,
 	}
 }
 
@@ -85,7 +85,7 @@ func (m *Message) parseReceiverTrace(trace *parser.AppTrace) error {
 				return err
 			}
 			m.Finished = step.Started
-			m.Successed = true
+			m.Succeeded = true
 			found++
 		}
 		if found == 2 {

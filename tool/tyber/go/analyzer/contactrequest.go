@@ -20,12 +20,12 @@ type ContactRequest struct {
 	ReceiverDevicePK string    `json:"receiverDevicePK"`
 	Started          time.Time `json:"started"`
 	Finished         time.Time `json:"finished"`
-	Successed        bool      `json:"successed"`
+	Succeeded        bool      `json:"succeeded"`
 }
 
 func NewContactRequest() *ContactRequest {
 	return &ContactRequest{
-		Successed: false,
+		Succeeded: false,
 	}
 }
 
@@ -123,7 +123,7 @@ func (cr *ContactRequest) parseReceiver(trace *parser.AppTrace) error {
 					cr.ReceiverPK = conversation.LocalMemberPublicKey
 					cr.ReceiverDevicePK = conversation.LocalDevicePublicKey
 					cr.Finished = step.Started
-					cr.Successed = true
+					cr.Succeeded = true
 
 					return nil
 				}
