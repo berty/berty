@@ -12,6 +12,7 @@ import { RESULTS } from 'react-native-permissions'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import beapi from '@berty/api'
+import { ChatTextInput } from '@berty/components'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useModal } from '@berty/contexts/modal.context'
 import {
@@ -43,14 +44,13 @@ import { PermissionType } from '@berty/utils/react-native/permissions'
 
 import { AddFileMenu } from '../modals/add-file-modal/AddFileMenu.modal'
 import { CameraButton, MoreButton, RecordButton, SendButton } from './ChatFooterButtons'
-import { ChatTextInput } from './ChatTextInput'
 import { EmojiBanner } from './emojis/EmojiBanner'
 import { RecordComponent } from './record/RecordComponent'
 
 type ChatFooterProps = {
 	convPK: string
+	placeholder: string
 	disabled?: Maybe<boolean>
-	placeholder?: Maybe<string>
 }
 
 const amap = async <T extends any, C extends (value: T) => any>(arr: T[], cb: C) =>
@@ -340,13 +340,13 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 								)}
 							</View>
 							<ChatTextInput
-								disabled={(!isFocused && sending) || disabled}
-								handleTabletSubmit={handlePressSend}
+								editable={!sending && !disabled}
 								placeholder={sending ? t('chat.sending') : placeholder}
-								onFocusChange={setIsFocused}
 								onChangeText={handleTextChange}
 								onSelectionChange={handleSelectionChange}
 								value={message}
+								onFocusChange={setIsFocused}
+								handleTabletSubmit={handlePressSend}
 								convPK={convPK}
 							/>
 							<View style={{ marginLeft: horizontalGutter }}>
