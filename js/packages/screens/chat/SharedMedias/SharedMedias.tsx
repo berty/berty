@@ -2,12 +2,10 @@ import Clipboard from '@react-native-clipboard/clipboard'
 import { Icon } from '@ui-kitten/components'
 import LinkifyIt from 'linkify-it'
 import React, { useState, useEffect } from 'react'
-import { useTranslation } from 'react-i18next'
 import {
 	View,
 	ScrollView,
 	TouchableOpacity,
-	SafeAreaView,
 	StatusBar,
 	Image,
 	Dimensions,
@@ -33,6 +31,8 @@ import { pbDateToNum, timeFormat } from '@berty/utils/convert/time'
 import { retrieveMediaBytes } from '@berty/utils/messenger/media'
 import { getSource } from '@berty/utils/protocol/attachments'
 
+import { TabSwitch } from './components/TabSwitch'
+
 const initialLayout = { width: Dimensions.get('window').width }
 const linkify = LinkifyIt().tlds(tlds, true)
 
@@ -56,7 +56,6 @@ export const SharedMedias: ScreenFC<'Chat.SharedMedias'> = ({
 }) => {
 	const { flex, margin, text, padding, border } = useStyles()
 	const colors = useThemeColor()
-	const { t }: { t: any } = useTranslation()
 	const [activeIndex, setActiveIndex] = useState(0)
 	const protocolClient = useSelector(selectProtocolClient)
 	const [images, setImages] = useState<any[]>([])
@@ -130,30 +129,6 @@ export const SharedMedias: ScreenFC<'Chat.SharedMedias'> = ({
 		).then((images: any) => setImages(images.filter(Boolean)))
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [protocolClient, pictures.length])
-
-	const tabs = [
-		{
-			icon: {
-				name: 'image',
-				pack: 'feather',
-			},
-			title: t('chat.shared-medias.medias'),
-		},
-		{
-			icon: {
-				name: 'link',
-				pack: 'feather',
-			},
-			title: t('chat.shared-medias.links'),
-		},
-		{
-			icon: {
-				name: 'file-text',
-				pack: 'feather',
-			},
-			title: t('chat.shared-medias.documents'),
-		},
-	]
 
 	const mediaView = () => (
 		<ScrollView contentContainerStyle={[padding.medium]}>
@@ -331,63 +306,7 @@ export const SharedMedias: ScreenFC<'Chat.SharedMedias'> = ({
 	return (
 		<View style={[flex.tiny, { backgroundColor: colors['main-background'] }]}>
 			<StatusBar barStyle='light-content' backgroundColor={colors['background-header']} />
-			<SafeAreaView style={[{ backgroundColor: colors['background-header'] }]}>
-				<View style={[{ flexDirection: 'row', alignItems: 'flex-end' }, padding.top.large]}>
-					{tabs.map((tab, index) => (
-						<TouchableOpacity
-							key={index}
-							activeOpacity={0.9}
-							onPress={() => setActiveIndex(index)}
-							style={[
-								padding.horizontal.small,
-								padding.top.medium,
-								padding.bottom.big,
-								border.radius.top.small,
-								margin.right.small,
-								{
-									flexDirection: 'row',
-									alignItems: 'center',
-									backgroundColor:
-										activeIndex === index ? colors['main-background'] : colors['input-background'],
-								},
-							]}
-						>
-							<Icon
-								height={activeIndex === index ? 30 : 25}
-								width={activeIndex === index ? 30 : 25}
-								fill={colors['background-header']}
-								{...tab.icon}
-							/>
-							<UnifiedText
-								style={[
-									margin.left.small,
-									text.size.scale(activeIndex === index ? 17 : 16),
-									{ color: colors['background-header'] },
-								]}
-							>
-								{tab.title}
-							</UnifiedText>
-						</TouchableOpacity>
-					))}
-				</View>
-
-				<View
-					style={{
-						position: 'absolute',
-						right: -50,
-						bottom: -30,
-						zIndex: -1,
-					}}
-				>
-					<Icon
-						height={200}
-						width={200}
-						fill={colors['background-header']}
-						name={tabs[activeIndex].icon.name}
-						pack='feather'
-					/>
-				</View>
-			</SafeAreaView>
+			<TabSwitch activeIndex={activeIndex} setActiveIndex={setActiveIndex} />
 
 			<View
 				style={[

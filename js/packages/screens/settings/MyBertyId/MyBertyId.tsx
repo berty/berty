@@ -6,9 +6,9 @@ import { View, TouchableOpacity, Share, StatusBar, Platform } from 'react-native
 import QRCode from 'react-native-qrcode-svg'
 
 import logo from '@berty/assets/images/1_berty_picto.png'
+import { TabBar } from '@berty/components'
 import { AccountAvatar } from '@berty/components/avatars'
 import { FingerprintContent } from '@berty/components/shared-components/FingerprintContent'
-import { TabBar } from '@berty/components/shared-components/TabBar'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'

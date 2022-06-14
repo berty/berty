@@ -1,6 +1,7 @@
 import React, { useContext } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import { StreamProgress } from '@berty/components'
 import { LoaderDots } from '@berty/components/LoaderDots'
 import { StatusBarPrimary } from '@berty/components/StatusBarPrimary'
 import { EventEmitterContext } from '@berty/contexts/eventEmitter.context'
@@ -10,7 +11,6 @@ import { selectStreamProgress } from '@berty/redux/reducers/ui.reducer'
 import { openAccount } from '@berty/utils/accounts'
 import { openClients } from '@berty/utils/messenger/clients'
 
-import { StreamProgress } from '../../../components/account/StreamProgress'
 import { prepareAccount } from './prepareAccount.effect'
 
 export const OpeningAccount: ScreenFC<'Account.Opening'> = ({
