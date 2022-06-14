@@ -564,8 +564,8 @@
 			"desc": "重新启动 Berty 以保存您的数据并启用通知！"
 		},
 		"submit-failed": {
-			"title": "无法提交bug",
-			"desc": "缺少邮件应用"
+			"title": "",
+			"desc": ""
 		}
 	},
 	"error": {
