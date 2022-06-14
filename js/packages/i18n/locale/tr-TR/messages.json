@@ -565,7 +565,7 @@
 		},
 		"submit-failed": {
 			"title": "",
-			"desc": "Mail uygulaması bulunamıyor"
+			"desc": ""
 		}
 	},
 	"error": {
