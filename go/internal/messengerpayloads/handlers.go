@@ -159,12 +159,24 @@ func (h *EventHandler) HandleAppMessage(gpk string, gme *protocoltypes.GroupMess
 		return tyber.LogError(h.ctx, h.logger, text, err, append(muts, tyber.ForceReopen)...)
 	}
 
+	gpkB, err := messengerutil.B64DecodeBytes(gpk)
+	if err != nil {
+		return err
+	}
+
+	memPK, devPK, err := h.metaFetcher.OwnMemberAndDevicePKForConversation(h.ctx, gpkB)
+	if err != nil {
+		return err
+	}
+
 	// unmarshal payload
 	muts := []tyber.StepMutator{
 		tyber.WithDetail("Type", am.GetType().String()),
 		tyber.WithCIDDetail("CID", gme.GetEventContext().GetID()),
 		tyber.WithDetail("MediasCount", strconv.Itoa(len(am.GetMedias()))),
 		tyber.WithDetail("TargetCID", am.GetTargetCID()),
+		tyber.WithDetail("LocalMemberPK", messengerutil.B64EncodeBytes(memPK)),
+		tyber.WithDetail("LocalDevicePK", messengerutil.B64EncodeBytes(devPK)),
 	}
 	amPayload, err := am.UnmarshalPayload()
 	if err != nil {
@@ -349,7 +361,11 @@ func (h *EventHandler) accountGroupJoined(gme *protocoltypes.GroupMetadataEvent)
 		return err
 	}
 
-	h.logger.Info("AccountGroupJoined", logutil.PrivateString("pk", groupPK), logutil.PrivateString("known-as", conversation.GetDisplayName()))
+	h.logger.Info("GroupJoined", tyber.FormatStepLogFields(h.ctx, []tyber.Detail{
+		{Name: "GroupPK", Description: groupPK},
+		{Name: "MemberPK", Description: messengerutil.B64EncodeBytes(memPK)},
+		{Name: "DevicePK", Description: messengerutil.B64EncodeBytes(devPK)},
+	})...)
 
 	return nil
 }
@@ -807,7 +823,13 @@ func (h *EventHandler) groupMemberDeviceAdded(gme *protocoltypes.GroupMetadataEv
 		return err
 	}
 
-	h.logger.Info("dispatched member update", zap.Any("member", member), zap.Bool("isNew", isNew))
+	h.logger.Info("dispatched member update", tyber.FormatStepLogFields(h.ctx, []tyber.Detail{
+		{Name: "GroupPK", Description: gpk},
+		{Name: "MemberPK", Description: mpk},
+		{Name: "DevicePK", Description: dpk},
+		{Name: "IsMe", Description: strconv.FormatBool(isMe)},
+		{Name: "IsNew", Description: strconv.FormatBool(isNew)},
+	})...)
 
 	return nil
 }
