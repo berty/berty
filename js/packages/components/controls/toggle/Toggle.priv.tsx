@@ -21,6 +21,7 @@ export const TogglePriv: React.FC<TogglePrivProps> = ({
 	checked = false,
 	onChange,
 	styleColors,
+	accessibilityLabel,
 }) => {
 	const circleLeftPositionAnimation = React.useRef(
 		new Animated.Value(checked ? CIRCLE_RIGHT_POSITION : 0),
@@ -44,6 +45,7 @@ export const TogglePriv: React.FC<TogglePrivProps> = ({
 
 	return (
 		<TouchableOpacity
+			accessibilityLabel={accessibilityLabel}
 			onPress={() => onChange?.(!checked)}
 			style={[
 				styles.button,

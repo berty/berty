@@ -10,8 +10,7 @@ export const AltToggle: React.FC<ToggleProps> = props => {
 
 	return (
 		<TogglePriv
-			checked={props.checked}
-			onChange={props.onChange}
+			{...props}
 			styleColors={{
 				circleBackground: colors['background-header'],
 				toggleBackgroundInactive: '#DEE2E8',

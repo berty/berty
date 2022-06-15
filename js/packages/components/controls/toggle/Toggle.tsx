@@ -10,8 +10,7 @@ export const Toggle: React.FC<ToggleProps> = props => {
 
 	return (
 		<TogglePriv
-			checked={props.checked}
-			onChange={props.onChange}
+			{...props}
 			styleColors={{
 				circleBackground: 'white',
 				toggleBackgroundInactive: '#EDF0F3',
