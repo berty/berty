@@ -1,7 +1,7 @@
 import { Icon } from '@ui-kitten/components'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { SafeAreaView, TouchableOpacity, View } from 'react-native'
+import { SafeAreaView, StyleSheet, TouchableOpacity, View } from 'react-native'
 
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useStyles } from '@berty/contexts/styles'
@@ -19,34 +19,25 @@ export const TabSwitch: React.FC<TabSwitchProps> = ({ activeIndex, setActiveInde
 
 	const tabs = [
 		{
-			icon: {
-				name: 'image',
-				pack: 'feather',
-			},
+			icon: 'image',
 			title: t('chat.shared-medias.medias'),
 		},
 		{
-			icon: {
-				name: 'link',
-				pack: 'feather',
-			},
+			icon: 'link',
 			title: t('chat.shared-medias.links'),
 		},
 		{
-			icon: {
-				name: 'file-text',
-				pack: 'feather',
-			},
+			icon: 'file-text',
 			title: t('chat.shared-medias.documents'),
 		},
 	]
 
 	return (
 		<SafeAreaView style={[{ backgroundColor: colors['background-header'] }]}>
-			<View style={[{ flexDirection: 'row', alignItems: 'flex-end' }, padding.top.large]}>
+			<View style={[styles.container, padding.top.large]}>
 				{tabs.map((tab, index) => (
 					<TouchableOpacity
-						key={index}
+						key={tab.icon}
 						onPress={() => setActiveIndex(index)}
 						style={[
 							padding.horizontal.small,
@@ -54,15 +45,19 @@ export const TabSwitch: React.FC<TabSwitchProps> = ({ activeIndex, setActiveInde
 							padding.bottom.big,
 							border.radius.top.small,
 							margin.right.small,
+							styles.button,
 							{
-								maxWidth: 150,
-								flexDirection: 'row',
-								alignItems: 'center',
 								backgroundColor: activeIndex === index ? colors['main-background'] : '#F7F8FE',
 							},
 						]}
 					>
-						<Icon height={20} width={20} fill={colors['background-header']} {...tab.icon} />
+						<Icon
+							height={20}
+							width={20}
+							fill={colors['background-header']}
+							name={tab.icon}
+							pack='feather'
+						/>
 						<UnifiedText
 							numberOfLines={1}
 							style={[
@@ -76,23 +71,18 @@ export const TabSwitch: React.FC<TabSwitchProps> = ({ activeIndex, setActiveInde
 					</TouchableOpacity>
 				))}
 			</View>
-
-			<View
-				style={{
-					position: 'absolute',
-					right: -50,
-					bottom: -30,
-					zIndex: -1,
-				}}
-			>
-				<Icon
-					height={200}
-					width={200}
-					fill={colors['background-header']}
-					name={tabs[activeIndex].icon.name}
-					pack='feather'
-				/>
-			</View>
 		</SafeAreaView>
 	)
 }
+
+const styles = StyleSheet.create({
+	container: {
+		flexDirection: 'row',
+		alignItems: 'flex-end',
+	},
+	button: {
+		maxWidth: 150,
+		flexDirection: 'row',
+		alignItems: 'center',
+	},
+})

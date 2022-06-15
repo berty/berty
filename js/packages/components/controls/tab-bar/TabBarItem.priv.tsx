@@ -1,28 +1,12 @@
 import { Icon } from '@ui-kitten/components'
 import React from 'react'
-import { TouchableOpacity, View } from 'react-native'
+import { StyleSheet, TouchableOpacity, View } from 'react-native'
 
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useStyles } from '@berty/contexts/styles'
 import { useThemeColor } from '@berty/store'
 
 import { TabBarItemProps } from './interfaces'
-
-const useStylesTab = () => {
-	const { text, opacity, border } = useStyles()
-	const colors = useThemeColor()
-
-	return {
-		tabItemName: text.size.small,
-		tabItemDisable: opacity(0.2),
-		tabBarItemEnable: [
-			border.big,
-			border.radius.scale(2),
-			{ borderColor: colors['background-header'] },
-		],
-		tabBarItemDisable: [border.big, border.radius.scale(2), { borderColor: colors['main-text'] }],
-	}
-}
 
 export const TabBarItemPriv: React.FC<TabBarItemProps> = ({
 	name,
@@ -33,9 +17,10 @@ export const TabBarItemPriv: React.FC<TabBarItemProps> = ({
 	enable = false,
 	buttonDisabled = false,
 }) => {
-	const _styles = useStylesTab()
-	const { flex, text, padding } = useStyles()
+	const { flex, text, padding, opacity, border } = useStyles()
 	const colors = useThemeColor()
+	const selectedColor = enable ? colors['background-header'] : colors['main-text']
+	const selectedOpacity = enable ? undefined : opacity(0.2)
 
 	return (
 		<TouchableOpacity
@@ -44,18 +29,10 @@ export const TabBarItemPriv: React.FC<TabBarItemProps> = ({
 			style={[flex.tiny, padding.bottom.tiny]}
 			disabled={buttonDisabled}
 		>
-			<View
-				style={[
-					!enable && _styles.tabItemDisable,
-					{
-						alignItems: 'center',
-						justifyContent: 'space-between',
-					},
-				]}
-			>
-				<View style={{ height: 25 }}>
+			<View style={[selectedOpacity, styles.content]}>
+				<View style={styles.iconWrapper}>
 					<Icon
-						fill={enable ? colors['background-header'] : colors['main-text']}
+						fill={selectedColor}
 						name={icon}
 						pack={iconPack}
 						style={{ transform: iconTransform }}
@@ -64,23 +41,36 @@ export const TabBarItemPriv: React.FC<TabBarItemProps> = ({
 					/>
 				</View>
 				<UnifiedText
-					style={[
-						text.bold,
-						text.align.center,
-						_styles.tabItemName,
-						{ color: enable ? colors['background-header'] : colors['main-text'] },
-					]}
+					style={[text.bold, text.align.center, text.size.small, { color: selectedColor }]}
 				>
 					{name}
 				</UnifiedText>
 			</View>
 			<View
 				style={[
-					{ width: '95%', position: 'absolute', bottom: 0, left: '2.5%' },
-					enable ? _styles.tabBarItemEnable : _styles.tabBarItemDisable,
-					!enable && _styles.tabItemDisable,
+					styles.placeholder,
+					border.big,
+					border.radius.scale(2),
+					{ borderColor: selectedColor },
+					selectedOpacity,
 				]}
 			/>
 		</TouchableOpacity>
 	)
 }
+
+const styles = StyleSheet.create({
+	content: {
+		alignItems: 'center',
+		justifyContent: 'space-between',
+	},
+	iconWrapper: {
+		height: 25,
+	},
+	placeholder: {
+		width: '95%',
+		position: 'absolute',
+		bottom: 0,
+		left: '2.5%',
+	},
+})

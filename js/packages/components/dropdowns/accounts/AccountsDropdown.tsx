@@ -34,7 +34,7 @@ export const AccountsDropdown: React.FC<AccountsDropdownProps> = props => {
 						colorSeed={item.publicKey}
 						nameSeed={item.name}
 					/>
-					<UnifiedText style={{ marginLeft: 7 }}>{item.name}</UnifiedText>
+					<UnifiedText style={styles.text}>{item.name}</UnifiedText>
 				</TouchableOpacity>
 			))}
 		</DropdownPriv>
@@ -49,5 +49,8 @@ const styles = StyleSheet.create({
 		paddingVertical: 12,
 		paddingRight: 12,
 		flex: 1,
+	},
+	text: {
+		marginLeft: 7,
 	},
 })

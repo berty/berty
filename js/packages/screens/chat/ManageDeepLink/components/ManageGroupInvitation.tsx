@@ -130,26 +130,9 @@ export const ManageGroupInvitation: React.FC<{
 					<UnifiedText style={{ textAlign: 'center' }}>{displayName}</UnifiedText>
 					<TabBar
 						tabs={[
-							{
-								key: 'fingerprint',
-								name: t('modals.group-invitation.fingerprint'),
-								icon: 'fingerprint',
-								iconPack: 'custom',
-							},
-							{
-								key: 'info',
-								name: t('modals.group-invitation.info'),
-								icon: 'info-outline',
-								buttonDisabled: true,
-							},
-							{
-								key: 'devices',
-								name: t('modals.group-invitation.devices'),
-								icon: 'smartphone',
-								iconPack: 'feather',
-								iconTransform: [{ rotate: '22.5deg' }, { scale: 0.8 }],
-								buttonDisabled: true,
-							},
+							{ name: t('tabs.fingerprint') },
+							{ name: t('tabs.info'), buttonDisabled: true },
+							{ name: t('tabs.devices'), buttonDisabled: true },
 						]}
 						onTabChange={setSelectedContent}
 					/>

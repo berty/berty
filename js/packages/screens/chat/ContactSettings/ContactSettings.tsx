@@ -78,19 +78,7 @@ const ContactSettingsHeader: React.FC<{ contact: any }> = ({ contact }) => {
 						{contact.displayName}
 					</UnifiedText>
 					<TabBar
-						tabs={[
-							{
-								key: 'fingerprint',
-								name: t('chat.contact-settings.fingerprint'),
-								icon: 'fingerprint',
-								iconPack: 'custom',
-							},
-							{
-								key: 'info',
-								name: t('chat.contact-settings.info'),
-								icon: 'info-outline',
-							},
-						]}
+						tabs={[{ name: t('tabs.fingerprint') }, { name: t('tabs.info') }]}
 						onTabChange={setSelectedContent}
 					/>
 					<ContactSettingsHeaderContent>

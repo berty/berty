@@ -1,6 +1,6 @@
 import { Icon } from '@ui-kitten/components'
 import React, { useEffect } from 'react'
-import { TouchableOpacity, Animated } from 'react-native'
+import { TouchableOpacity, Animated, StyleSheet } from 'react-native'
 
 import { ToggleProps } from './interfaces'
 
@@ -45,27 +45,23 @@ export const TogglePriv: React.FC<TogglePrivProps> = ({
 	return (
 		<TouchableOpacity
 			onPress={() => onChange?.(!checked)}
-			style={{
-				height: CIRCLE_WIDTH + BORDER_RADIUS_WIDTH * 2,
-				width: TOGGLE_WIDTH,
-				borderRadius: 30,
-				backgroundColor:
-					styleColors[checked ? 'toggleBackgroundActive' : 'toggleBackgroundInactive'],
-				borderWidth: BORDER_RADIUS_WIDTH,
-				borderColor: styleColors.toggleBackgroundActive,
-			}}
+			style={[
+				styles.button,
+				{
+					backgroundColor:
+						styleColors[checked ? 'toggleBackgroundActive' : 'toggleBackgroundInactive'],
+					borderColor: styleColors.toggleBackgroundActive,
+				},
+			]}
 		>
 			<Animated.View
-				style={{
-					height: CIRCLE_WIDTH,
-					width: CIRCLE_WIDTH,
-					borderRadius: 30,
-					backgroundColor: styleColors.circleBackground,
-					alignItems: 'center',
-					justifyContent: 'center',
-					position: 'absolute',
-					left: circleLeftPositionAnimation,
-				}}
+				style={[
+					styles.content,
+					{
+						backgroundColor: styleColors.circleBackground,
+						left: circleLeftPositionAnimation,
+					},
+				]}
 			>
 				<Animated.View
 					style={{
@@ -83,3 +79,20 @@ export const TogglePriv: React.FC<TogglePrivProps> = ({
 		</TouchableOpacity>
 	)
 }
+
+const styles = StyleSheet.create({
+	button: {
+		borderRadius: 30,
+		borderWidth: BORDER_RADIUS_WIDTH,
+		height: CIRCLE_WIDTH + BORDER_RADIUS_WIDTH * 2,
+		width: TOGGLE_WIDTH,
+	},
+	content: {
+		height: CIRCLE_WIDTH,
+		width: CIRCLE_WIDTH,
+		borderRadius: 30,
+		alignItems: 'center',
+		justifyContent: 'center',
+		position: 'absolute',
+	},
+})

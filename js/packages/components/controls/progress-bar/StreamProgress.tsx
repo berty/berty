@@ -13,6 +13,5 @@ export const StreamProgress: React.FC = () => {
 	if (streamError && !streamInProgress) {
 		return <StreamProgressErrorPriv />
 	}
-
 	return <StreamProgressPriv />
 }

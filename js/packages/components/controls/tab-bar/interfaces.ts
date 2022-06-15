@@ -1,4 +1,10 @@
+import { TFunction } from 'i18next'
 import { TransformsStyle } from 'react-native'
+
+export interface Tabs {
+	name: Parameters<TFunction>[0]
+	buttonDisabled?: boolean
+}
 
 export interface TabBarItemProps {
 	name: string
@@ -11,13 +17,6 @@ export interface TabBarItemProps {
 }
 
 export interface TabBarProps {
-	tabs: {
-		key: string
-		name: string
-		icon: string
-		buttonDisabled?: boolean
-		iconPack?: string
-		iconTransform?: TabBarItemProps['iconTransform']
-	}[]
+	tabs: Tabs[]
 	onTabChange: (selectedTab: string) => void
 }

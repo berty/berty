@@ -1,6 +1,6 @@
 import { Icon } from '@ui-kitten/components'
 import React, { useState, forwardRef, useImperativeHandle } from 'react'
-import { Animated, Easing, TouchableOpacity, View } from 'react-native'
+import { Animated, Easing, StyleSheet, TouchableOpacity, View } from 'react-native'
 
 import { useStyles } from '@berty/contexts/styles'
 import { useThemeColor } from '@berty/store/hooks'
@@ -52,14 +52,7 @@ export const DropdownPriv = forwardRef(
 			<>
 				<TouchableOpacity
 					activeOpacity={0.9}
-					style={[
-						padding.horizontal.medium,
-						{
-							height: 48,
-							flexDirection: 'row',
-							alignItems: 'center',
-						},
-					]}
+					style={[padding.horizontal.medium, styles.button]}
 					onPress={toggleView}
 				>
 					{!!icon && (
@@ -71,12 +64,12 @@ export const DropdownPriv = forwardRef(
 							height={20}
 						/>
 					)}
-					<View style={{ width: '80%' }}>
+					<View style={styles.textWrapper}>
 						<UnifiedText numberOfLines={1} style={[margin.left.small]}>
 							{placeholder}
 						</UnifiedText>
 					</View>
-					<View style={[{ flex: 1, alignItems: 'flex-end' }]}>
+					<View style={styles.iconWrapper}>
 						<Animated.View style={[{ transform: [{ rotate: rotateAnimation }] }]}>
 							<Icon name='arrow-ios-downward' height={20} width={20} fill='#393C63' />
 						</Animated.View>
@@ -87,9 +80,8 @@ export const DropdownPriv = forwardRef(
 					style={[
 						{
 							maxHeight: animateHeight,
-							borderBottomLeftRadius: 14,
-							borderBottomRightRadius: 14,
 						},
+						styles.scrollView,
 					]}
 					nestedScrollEnabled
 					showsVerticalScrollIndicator={false}
@@ -100,3 +92,22 @@ export const DropdownPriv = forwardRef(
 		)
 	},
 )
+
+const styles = StyleSheet.create({
+	button: {
+		height: 48,
+		flexDirection: 'row',
+		alignItems: 'center',
+	},
+	textWrapper: {
+		width: '80%',
+	},
+	iconWrapper: {
+		flex: 1,
+		alignItems: 'flex-end',
+	},
+	scrollView: {
+		borderBottomLeftRadius: 14,
+		borderBottomRightRadius: 14,
+	},
+})

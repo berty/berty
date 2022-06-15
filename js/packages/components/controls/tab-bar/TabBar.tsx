@@ -3,11 +3,13 @@ import { View } from 'react-native'
 
 import { useStyles } from '@berty/contexts/styles'
 
+import { getTabList } from './getTabList'
 import { TabBarProps } from './interfaces'
 import { TabBarItemPriv } from './TabBarItem.priv'
 
 export const TabBar: React.FC<TabBarProps> = ({ tabs, onTabChange }) => {
-	const [selectedTab, setEnable] = useState(tabs[0].key)
+	const tabList = getTabList(tabs)
+	const [selectedTab, setEnable] = useState(tabList[0].key)
 	const { margin, row } = useStyles()
 
 	useEffect(() => {
@@ -17,7 +19,7 @@ export const TabBar: React.FC<TabBarProps> = ({ tabs, onTabChange }) => {
 	return (
 		<View style={[margin.top.medium]}>
 			<View style={[row.fill]}>
-				{tabs.map(obj => (
+				{tabList.map(obj => (
 					<TabBarItemPriv
 						key={obj.key}
 						name={obj.name}

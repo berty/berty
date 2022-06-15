@@ -124,15 +124,7 @@ const BertIdBody: React.FC = () => {
 			>
 				<View style={[padding.horizontal.big]}>
 					<TabBar
-						tabs={[
-							{ key: 'qr', name: t('settings.my-berty-ID.qr'), icon: 'qr', iconPack: 'custom' },
-							{
-								key: 'fingerprint',
-								name: t('settings.my-berty-ID.fingerprint'),
-								icon: 'fingerprint',
-								iconPack: 'custom',
-							},
-						]}
+						tabs={[{ name: t('tabs.qr') }, { name: t('tabs.fingerprint') }]}
 						onTabChange={setSelectedContent}
 					/>
 					<BertyIdContent>

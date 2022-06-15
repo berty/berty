@@ -1,5 +1,6 @@
 import { Icon } from '@ui-kitten/components'
 import React, { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { View, StyleProp, TouchableOpacity, ViewStyle } from 'react-native'
 
 import { Toggle, TabBar } from '@berty/components'
@@ -184,6 +185,8 @@ const BodyRequest: React.FC<BodyRequestProps> = ({
 	const [selectedContent, setSelectedContent] = useState('fingerprint')
 	const contact = useContact(contactPublicKey)
 	const colors = useThemeColor()
+	const { t } = useTranslation()
+
 	return (
 		<View style={[padding.horizontal.medium, padding.bottom.medium]}>
 			<View
@@ -202,16 +205,9 @@ const BodyRequest: React.FC<BodyRequestProps> = ({
 				</UnifiedText>
 				<TabBar
 					tabs={[
-						{ key: 'fingerprint', name: 'Fingerprint', icon: 'fingerprint', iconPack: 'custom' },
-						{ key: 'info', name: 'Infos', icon: 'info-outline', buttonDisabled: true },
-						{
-							key: 'devices',
-							name: 'Devices',
-							icon: 'smartphone',
-							iconPack: 'feather',
-							iconTransform: [{ rotate: '22.5deg' }, { scale: 0.8 }],
-							buttonDisabled: true,
-						},
+						{ name: t('tabs.fingerprint') },
+						{ name: t('tabs.info'), buttonDisabled: true },
+						{ name: t('tabs.devices'), buttonDisabled: true },
 					]}
 					onTabChange={setSelectedContent}
 				/>

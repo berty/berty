@@ -15,7 +15,6 @@ export const StreamProgressErrorPriv: React.FC = () => {
 	const deleteAccount = useDeleteAccount()
 	const restart = useRestartAfterClosing()
 	const selectedAccount = useAppSelector(selectSelectedAccount)
-
 	const colors = useThemeColor()
 
 	return (
