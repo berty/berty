@@ -14,6 +14,8 @@ import (
 	discovery "github.com/libp2p/go-libp2p-discovery"
 	"github.com/multiformats/go-multiaddr"
 	"go.uber.org/zap"
+
+	"berty.tech/berty/v2/go/internal/logutil"
 )
 
 // Seed the random number generator.
@@ -111,10 +113,10 @@ func (ps *PeeringService) AddPeer(info peer.AddrInfo) {
 	ps.muPeers.Unlock()
 
 	if ok {
-		ps.logger.Info("updating addresses", zap.Stringer("peer", info.ID), zap.Any("addrs", info.Addrs))
+		ps.logger.Info("updating addresses", logutil.PrivateStringer("peer", info.ID), zap.Any("addrs", info.Addrs))
 		handler.setAddrs(info.Addrs)
 	} else {
-		ps.logger.Info("peer added", zap.Stringer("peer", info.ID), zap.Any("addrs", info.Addrs))
+		ps.logger.Info("peer added", logutil.PrivateStringer("peer", info.ID), zap.Any("addrs", info.Addrs))
 		ps.host.ConnManager().Protect(info.ID, connmgrTag)
 		handler = &peerHandler{
 			logger:       ps.logger,
@@ -161,7 +163,7 @@ func (ps *PeeringService) RemovePeer(id peer.ID) {
 	defer ps.muPeers.Unlock()
 
 	if handler, ok := ps.peers[id]; ok {
-		ps.logger.Info("peer removed", zap.Stringer("peer", id))
+		ps.logger.Info("peer removed", logutil.PrivateStringer("peer", id))
 		ps.host.ConnManager().Unprotect(id, connmgrTag)
 
 		handler.stop()
@@ -183,6 +185,7 @@ func (nn *netNotifee) Connected(_ network.Network, c network.Conn) {
 		go handler.stopIfConnected()
 	}
 }
+
 func (nn *netNotifee) Disconnected(_ network.Network, c network.Conn) {
 	ps := (*PeeringService)(nn)
 
@@ -256,18 +259,18 @@ func (ph *peerHandler) nextBackoff() time.Duration {
 func (ph *peerHandler) reconnect() {
 	// Try connecting
 	addrs := ph.getAddrs()
-	ph.logger.Debug("reconnecting", zap.Stringer("peer", ph.peer), zap.Any("addrs", addrs))
+	ph.logger.Debug("reconnecting", logutil.PrivateStringer("peer", ph.peer), zap.Any("addrs", addrs))
 
 	err := ph.host.Connect(ph.ctx, peer.AddrInfo{ID: ph.peer, Addrs: addrs})
 	if err != nil {
 		delay := ph.nextBackoff()
 		if delay > MaximumReconnectingDelay {
-			ph.logger.Debug("peer unavailable", zap.Stringer("peer", ph.peer))
+			ph.logger.Debug("peer unavailable", logutil.PrivateStringer("peer", ph.peer))
 			ph.stop()
 			return
 		}
 
-		ph.logger.Debug("failed to reconnect", zap.Duration("next_try", delay), zap.Stringer("peer", ph.peer), zap.Error(err))
+		ph.logger.Debug("failed to reconnect", zap.Duration("next_try", delay), logutil.PrivateStringer("peer", ph.peer), zap.Error(err))
 		// Ok, we failed. Extend the timeout.
 		ph.muHandler.Lock()
 		if ph.reconnectTimer != nil {
@@ -290,7 +293,7 @@ func (ph *peerHandler) stopIfConnected() {
 	defer ph.muHandler.Unlock()
 
 	if ph.reconnectTimer != nil && ph.host.Network().Connectedness(ph.peer) == network.Connected {
-		ph.logger.Debug("successfully reconnected", zap.Stringer("peer", ph.peer))
+		ph.logger.Debug("successfully reconnected", logutil.PrivateStringer("peer", ph.peer))
 
 		// stop reconnect timer
 		ph.reconnectTimer.Stop()
@@ -308,7 +311,7 @@ func (ph *peerHandler) startIfDisconnected() {
 		ph.backoffStrat.Reset()
 
 		delay := ph.nextBackoff()
-		ph.logger.Debug("disconnected from peer, waiting for reconnection", zap.Stringer("peer", ph.peer), zap.Duration("delay", delay))
+		ph.logger.Debug("disconnected from peer, waiting for reconnection", logutil.PrivateStringer("peer", ph.peer), zap.Duration("delay", delay))
 
 		// Always start with a short timeout so we can stagger things a bit.
 		ph.reconnectTimer = time.AfterFunc(delay, ph.reconnect)

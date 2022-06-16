@@ -15,6 +15,7 @@ import (
 	"go.uber.org/zap"
 
 	"berty.tech/berty/v2/go/internal/lifecycle"
+	"berty.tech/berty/v2/go/internal/logutil"
 )
 
 var (
@@ -147,7 +148,7 @@ func (cl *ConnLifecycle) monitorConnection(ctx context.Context) error {
 		if tag := cl.h.ConnManager().GetTagInfo(p); tag != nil && tag.Value >= ConnPeerOfInterestMinScore {
 			infos := cl.h.Peerstore().PeerInfo(p)
 			cl.peering.AddPeer(infos)
-			cl.logger.Debug("adding peer of interest", zap.Stringer("peer", p), zap.Int("score", tag.Value))
+			cl.logger.Debug("adding peer of interest", logutil.PrivateStringer("peer", p), zap.Int("score", tag.Value))
 		}
 	}
 
@@ -168,11 +169,11 @@ func (cl *ConnLifecycle) monitorConnection(ctx context.Context) error {
 					infos := cl.h.Peerstore().PeerInfo(evt.Peer)
 					cl.peering.AddPeer(infos)
 					cl.logger.Debug("marking peer as peer of interest",
-						zap.Stringer("peer", evt.Peer), zap.Int("score", evt.Total), zap.Int("diff", evt.Diff), zap.String("last_tag", evt.Tag))
+						logutil.PrivateStringer("peer", evt.Peer), zap.Int("score", evt.Total), zap.Int("diff", evt.Diff), zap.String("last_tag", evt.Tag))
 				} else if evt.Total < ConnPeerOfInterestMinScore && oldTotal >= ConnPeerOfInterestMinScore {
 					cl.peering.RemovePeer(evt.Peer)
 					cl.logger.Debug("unmarking peer as peer of interest",
-						zap.Stringer("peer", evt.Peer), zap.Int("score", evt.Total), zap.Int("diff", evt.Diff), zap.String("last_tag", evt.Tag))
+						logutil.PrivateStringer("peer", evt.Peer), zap.Int("score", evt.Total), zap.Int("diff", evt.Diff), zap.String("last_tag", evt.Tag))
 				}
 			case event.EvtPeerConnectednessChanged:
 			}
