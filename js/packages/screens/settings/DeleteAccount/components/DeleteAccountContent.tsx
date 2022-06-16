@@ -19,7 +19,7 @@ import { DeleteAccountError } from './DeleteAccountError'
 const DELETE_STR = 'delete'
 
 export const DeleteAccountContent: React.FC<{}> = () => {
-	const { padding, text, column } = useStyles()
+	const { padding, text, column, margin } = useStyles()
 	const colors = useThemeColor()
 	const navigation = useReactNavigation()
 	const { t } = useTranslation()
@@ -44,6 +44,7 @@ export const DeleteAccountContent: React.FC<{}> = () => {
 					autoCapitalize='none'
 					autoCorrect={false}
 				/>
+				<View style={[margin.top.medium]} />
 				<TwoHorizontalButtons>
 					<TertiaryButtonIconLeft name='arrow-back-outline' onPress={() => navigation.goBack()}>
 						{t('settings.delete-account.cancel-button')}

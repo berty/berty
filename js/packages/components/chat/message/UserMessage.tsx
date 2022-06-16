@@ -79,18 +79,23 @@ const getUserMessageState = (
 	const cmd = null /*messenger.message.isCommandMessage(payload.body)*/
 	if (convKind === beapi.messenger.Conversation.Type.ContactType) {
 		// State of OneToOne conversation
-		msgTextColor = inte.isMine
-			? inte.acknowledged
-				? colors['reverted-main-text']
-				: cmd
-				? colors['secondary-text']
-				: colors['background-header']
-			: colors['background-header']
-		msgBackgroundColor = inte.isMine
-			? inte.acknowledged
-				? colors['background-header']
-				: colors['reverted-main-text']
-			: colors['input-background']
+
+		// TODO: tmp comment to don't have user frustration when a message is not received
+		// msgTextColor = inte.isMine
+		// 	? inte.acknowledged
+		// 		? colors['reverted-main-text']
+		// 		: colors['background-header']
+		// 	: colors['background-header']
+		msgTextColor = inte.isMine ? colors['reverted-main-text'] : colors['background-header']
+
+		// TODO: tmp comment to don't have user frustration when a message is not received
+		// msgBackgroundColor = inte.isMine
+		// 	? inte.acknowledged
+		// 		? colors['background-header']
+		// 		: colors['reverted-main-text']
+		// 	: colors['input-background']
+		msgBackgroundColor = inte.isMine ? colors['background-header'] : colors['input-background']
+
 		msgBorderColor =
 			inte.isMine &&
 			(cmd
@@ -124,18 +129,27 @@ const getUserMessageState = (
 			const h = new SHA3(256).update(inte.memberPublicKey).digest()
 			baseColor = '#' + pal[h[0]]
 		}
-		msgTextColor = inte.isMine
-			? inte.acknowledged
-				? colors['reverted-main-text']
-				: cmd
-				? colors['secondary-text']
-				: baseColor
-			: colors['reverted-main-text']
-		msgBackgroundColor = inte.isMine
-			? inte.acknowledged
-				? baseColor
-				: colors['reverted-main-text']
-			: baseColor
+		// TODO: tmp comment to don't have user frustration when a message is not received
+		// msgTextColor = inte.isMine
+		// 	? inte.acknowledged
+		// 		? colors['reverted-main-text']
+		// 		: cmd
+		// 		? colors['secondary-text']
+		// 		: baseColor
+		// 	: colors['reverted-main-text']
+		// msgTextColor = inte.isMine
+		// 	? inte.acknowledged
+		// 		? colors['reverted-main-text']
+		// 		: baseColor
+		// 	: colors['reverted-main-text']
+		msgTextColor = colors['reverted-main-text']
+		// TODO: tmp comment to don't have user frustration when a message is not received
+		// msgBackgroundColor = inte.isMine
+		// 	? inte.acknowledged
+		// 		? baseColor
+		// 		: colors['reverted-main-text']
+		// 	: baseColor
+		msgBackgroundColor = baseColor
 		msgBorderColor =
 			inte.isMine && (cmd ? { borderColor: colors['secondary-text'] } : { borderColor: baseColor })
 		msgSenderColor = inte.isMine ? colors['warning-asset'] : baseColor
