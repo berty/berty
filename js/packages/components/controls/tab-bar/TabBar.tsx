@@ -9,7 +9,7 @@ import { TabBarItemPriv } from './TabBarItem.priv'
 
 export const TabBar: React.FC<TabBarProps> = ({ tabs, onTabChange }) => {
 	const tabList = getTabList(tabs)
-	const [selectedTab, setEnable] = useState(tabList[0].key)
+	const [selectedTab, setEnable] = useState(tabList[0]?.key)
 	const { margin, row } = useStyles()
 
 	useEffect(() => {

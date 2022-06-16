@@ -176,7 +176,7 @@ exports[`Settings.MyBertyId renders correctly 1`] = `
                 }
               >
                 <View
-                  accessibilityLabel="settings.my-berty-ID.qr"
+                  accessibilityLabel="tabs.qr"
                   accessible={true}
                   focusable={true}
                   onClick={[Function]}
@@ -197,7 +197,7 @@ exports[`Settings.MyBertyId renders correctly 1`] = `
                   <View
                     style={
                       Array [
-                        false,
+                        undefined,
                         Object {
                           "alignItems": "center",
                           "justifyContent": "space-between",
@@ -262,7 +262,7 @@ exports[`Settings.MyBertyId renders correctly 1`] = `
                         ]
                       }
                     >
-                      settings.my-berty-ID.qr
+                      tabs.qr
                     </Text>
                   </View>
                   <View
@@ -274,24 +274,22 @@ exports[`Settings.MyBertyId renders correctly 1`] = `
                           "position": "absolute",
                           "width": "95%",
                         },
-                        Array [
-                          Object {
-                            "borderWidth": 2,
-                          },
-                          Object {
-                            "borderRadius": 2,
-                          },
-                          Object {
-                            "borderColor": "#535AE4",
-                          },
-                        ],
-                        false,
+                        Object {
+                          "borderWidth": 2,
+                        },
+                        Object {
+                          "borderRadius": 2,
+                        },
+                        Object {
+                          "borderColor": "#535AE4",
+                        },
+                        undefined,
                       ]
                     }
                   />
                 </View>
                 <View
-                  accessibilityLabel="settings.my-berty-ID.fingerprint"
+                  accessibilityLabel="tabs.fingerprint"
                   accessible={true}
                   focusable={true}
                   onClick={[Function]}
@@ -379,7 +377,7 @@ exports[`Settings.MyBertyId renders correctly 1`] = `
                         ]
                       }
                     >
-                      settings.my-berty-ID.fingerprint
+                      tabs.fingerprint
                     </Text>
                   </View>
                   <View
@@ -391,17 +389,15 @@ exports[`Settings.MyBertyId renders correctly 1`] = `
                           "position": "absolute",
                           "width": "95%",
                         },
-                        Array [
-                          Object {
-                            "borderWidth": 2,
-                          },
-                          Object {
-                            "borderRadius": 2,
-                          },
-                          Object {
-                            "borderColor": "#383B62",
-                          },
-                        ],
+                        Object {
+                          "borderWidth": 2,
+                        },
+                        Object {
+                          "borderRadius": 2,
+                        },
+                        Object {
+                          "borderColor": "#383B62",
+                        },
                         Object {
                           "opacity": 0.2,
                         },
@@ -691,7 +687,7 @@ exports[`Settings.MyBertyId renders correctly 2`] = `
                 }
               >
                 <View
-                  accessibilityLabel="settings.my-berty-ID.qr"
+                  accessibilityLabel="tabs.qr"
                   accessible={true}
                   focusable={true}
                   onClick={[Function]}
@@ -779,7 +775,7 @@ exports[`Settings.MyBertyId renders correctly 2`] = `
                         ]
                       }
                     >
-                      settings.my-berty-ID.qr
+                      tabs.qr
                     </Text>
                   </View>
                   <View
@@ -791,17 +787,15 @@ exports[`Settings.MyBertyId renders correctly 2`] = `
                           "position": "absolute",
                           "width": "95%",
                         },
-                        Array [
-                          Object {
-                            "borderWidth": 2,
-                          },
-                          Object {
-                            "borderRadius": 2,
-                          },
-                          Object {
-                            "borderColor": "#383B62",
-                          },
-                        ],
+                        Object {
+                          "borderWidth": 2,
+                        },
+                        Object {
+                          "borderRadius": 2,
+                        },
+                        Object {
+                          "borderColor": "#383B62",
+                        },
                         Object {
                           "opacity": 0.2,
                         },
@@ -810,7 +804,7 @@ exports[`Settings.MyBertyId renders correctly 2`] = `
                   />
                 </View>
                 <View
-                  accessibilityLabel="settings.my-berty-ID.fingerprint"
+                  accessibilityLabel="tabs.fingerprint"
                   accessible={true}
                   focusable={true}
                   onClick={[Function]}
@@ -831,7 +825,7 @@ exports[`Settings.MyBertyId renders correctly 2`] = `
                   <View
                     style={
                       Array [
-                        false,
+                        undefined,
                         Object {
                           "alignItems": "center",
                           "justifyContent": "space-between",
@@ -896,7 +890,7 @@ exports[`Settings.MyBertyId renders correctly 2`] = `
                         ]
                       }
                     >
-                      settings.my-berty-ID.fingerprint
+                      tabs.fingerprint
                     </Text>
                   </View>
                   <View
@@ -908,18 +902,16 @@ exports[`Settings.MyBertyId renders correctly 2`] = `
                           "position": "absolute",
                           "width": "95%",
                         },
-                        Array [
-                          Object {
-                            "borderWidth": 2,
-                          },
-                          Object {
-                            "borderRadius": 2,
-                          },
-                          Object {
-                            "borderColor": "#535AE4",
-                          },
-                        ],
-                        false,
+                        Object {
+                          "borderWidth": 2,
+                        },
+                        Object {
+                          "borderRadius": 2,
+                        },
+                        Object {
+                          "borderColor": "#535AE4",
+                        },
+                        undefined,
                       ]
                     }
                   />

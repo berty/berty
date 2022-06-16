@@ -1,3 +1,5 @@
+import i18next from 'i18next'
+
 import { Tabs } from './interfaces'
 
 export const getTabList = (tabs: Tabs[]) => {
@@ -5,7 +7,7 @@ export const getTabList = (tabs: Tabs[]) => {
 
 	for (const tab of tabs) {
 		switch (tab.name) {
-			case 'QR':
+			case i18next.t('tabs.qr'):
 				list.push({
 					key: 'qr',
 					name: tab.name,
@@ -14,7 +16,7 @@ export const getTabList = (tabs: Tabs[]) => {
 					buttonDisabled: tab.buttonDisabled,
 				})
 				break
-			case 'Fingerprint':
+			case i18next.t('tabs.fingerprint'):
 				list.push({
 					key: 'fingerprint',
 					name: tab.name,
@@ -23,7 +25,7 @@ export const getTabList = (tabs: Tabs[]) => {
 					buttonDisabled: tab.buttonDisabled,
 				})
 				break
-			case 'Info':
+			case i18next.t('tabs.info'):
 				list.push({
 					key: 'info',
 					name: tab.name,
@@ -31,7 +33,7 @@ export const getTabList = (tabs: Tabs[]) => {
 					buttonDisabled: tab.buttonDisabled,
 				})
 				break
-			case 'Devices':
+			case i18next.t('tabs.devices'):
 				list.push({
 					key: 'devices',
 					name: tab.name,
