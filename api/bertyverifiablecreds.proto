@@ -34,25 +34,6 @@ message AccountCryptoChallenge {
   string challenge = 1;
 }
 
-message SendVerificationCode {
-  message Request {
-    string recipient = 1;
-    string code = 2;
-    string network_context = 3;
-    string context = 4;
-  }
-  message Reply {}
-}
-
-message ValidateIdentifier {
-  message Request {
-    string identifier = 1;
-  }
-  message Reply {
-    string sanitized = 1;
-  }
-}
-
 enum FlowType {
   FlowTypeUndefined = 0;
   // FlowTypeCode asks users a code sent on a side channel

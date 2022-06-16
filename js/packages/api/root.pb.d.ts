@@ -1972,6 +1972,12 @@ export namespace berty {
                 public authServiceInitFlow(request: berty.protocol.v1.AuthServiceInitFlow.IRequest): Promise<berty.protocol.v1.AuthServiceInitFlow.Reply>;
                 public authServiceCompleteFlow(request: berty.protocol.v1.AuthServiceCompleteFlow.IRequest, callback: berty.protocol.v1.ProtocolService.AuthServiceCompleteFlowCallback): void;
                 public authServiceCompleteFlow(request: berty.protocol.v1.AuthServiceCompleteFlow.IRequest): Promise<berty.protocol.v1.AuthServiceCompleteFlow.Reply>;
+                public credentialVerificationServiceInitFlow(request: berty.protocol.v1.CredentialVerificationServiceInitFlow.IRequest, callback: berty.protocol.v1.ProtocolService.CredentialVerificationServiceInitFlowCallback): void;
+                public credentialVerificationServiceInitFlow(request: berty.protocol.v1.CredentialVerificationServiceInitFlow.IRequest): Promise<berty.protocol.v1.CredentialVerificationServiceInitFlow.Reply>;
+                public credentialVerificationServiceCompleteFlow(request: berty.protocol.v1.CredentialVerificationServiceCompleteFlow.IRequest, callback: berty.protocol.v1.ProtocolService.CredentialVerificationServiceCompleteFlowCallback): void;
+                public credentialVerificationServiceCompleteFlow(request: berty.protocol.v1.CredentialVerificationServiceCompleteFlow.IRequest): Promise<berty.protocol.v1.CredentialVerificationServiceCompleteFlow.Reply>;
+                public verifiedCredentialsList(request: berty.protocol.v1.VerifiedCredentialsList.IRequest, callback: berty.protocol.v1.ProtocolService.VerifiedCredentialsListCallback): void;
+                public verifiedCredentialsList(request: berty.protocol.v1.VerifiedCredentialsList.IRequest): Promise<berty.protocol.v1.VerifiedCredentialsList.Reply>;
                 public servicesTokenList(request: berty.protocol.v1.ServicesTokenList.IRequest, callback: berty.protocol.v1.ProtocolService.ServicesTokenListCallback): void;
                 public servicesTokenList(request: berty.protocol.v1.ServicesTokenList.IRequest): Promise<berty.protocol.v1.ServicesTokenList.Reply>;
                 public replicationServiceRegisterGroup(request: berty.protocol.v1.ReplicationServiceRegisterGroup.IRequest, callback: berty.protocol.v1.ProtocolService.ReplicationServiceRegisterGroupCallback): void;
@@ -2060,6 +2066,12 @@ export namespace berty {
 
                 type AuthServiceCompleteFlowCallback = (error: (Error|null), response?: berty.protocol.v1.AuthServiceCompleteFlow.Reply) => void;
 
+                type CredentialVerificationServiceInitFlowCallback = (error: (Error|null), response?: berty.protocol.v1.CredentialVerificationServiceInitFlow.Reply) => void;
+
+                type CredentialVerificationServiceCompleteFlowCallback = (error: (Error|null), response?: berty.protocol.v1.CredentialVerificationServiceCompleteFlow.Reply) => void;
+
+                type VerifiedCredentialsListCallback = (error: (Error|null), response?: berty.protocol.v1.VerifiedCredentialsList.Reply) => void;
+
                 type ServicesTokenListCallback = (error: (Error|null), response?: berty.protocol.v1.ServicesTokenList.Reply) => void;
 
                 type ReplicationServiceRegisterGroupCallback = (error: (Error|null), response?: berty.protocol.v1.ReplicationServiceRegisterGroup.Reply) => void;
@@ -2112,6 +2124,7 @@ export namespace berty {
                 EventTypePushMemberTokenUpdate = 404,
                 EventTypePushDeviceTokenRegistered = 405,
                 EventTypePushDeviceServerRegistered = 406,
+                EventTypeAccountVerifiedCredentialRegistered = 500,
                 EventTypeGroupMetadataPayloadSent = 1001
             }
 
@@ -4851,6 +4864,175 @@ export namespace berty {
                 }
             }
 
+            interface ICredentialVerificationServiceInitFlow {
+            }
+
+            class CredentialVerificationServiceInitFlow implements ICredentialVerificationServiceInitFlow {
+
+                public static create(properties?: berty.protocol.v1.ICredentialVerificationServiceInitFlow): berty.protocol.v1.CredentialVerificationServiceInitFlow;
+                public static encode(message: berty.protocol.v1.ICredentialVerificationServiceInitFlow, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.protocol.v1.ICredentialVerificationServiceInitFlow, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.CredentialVerificationServiceInitFlow;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.CredentialVerificationServiceInitFlow;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.protocol.v1.CredentialVerificationServiceInitFlow;
+                public static toObject(message: berty.protocol.v1.CredentialVerificationServiceInitFlow, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            namespace CredentialVerificationServiceInitFlow {
+
+                interface IRequest {
+                    serviceUrl?: (string|null);
+                    publicKey?: (Uint8Array|null);
+                    link?: (string|null);
+                }
+
+                class Request implements IRequest {
+
+                    public serviceUrl: string;
+                    public publicKey: Uint8Array;
+                    public link: string;
+                    public static create(properties?: berty.protocol.v1.CredentialVerificationServiceInitFlow.IRequest): berty.protocol.v1.CredentialVerificationServiceInitFlow.Request;
+                    public static encode(message: berty.protocol.v1.CredentialVerificationServiceInitFlow.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.CredentialVerificationServiceInitFlow.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.CredentialVerificationServiceInitFlow.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.CredentialVerificationServiceInitFlow.Request;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.CredentialVerificationServiceInitFlow.Request;
+                    public static toObject(message: berty.protocol.v1.CredentialVerificationServiceInitFlow.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+
+                interface IReply {
+                    url?: (string|null);
+                    secureUrl?: (boolean|null);
+                }
+
+                class Reply implements IReply {
+
+                    public url: string;
+                    public secureUrl: boolean;
+                    public static create(properties?: berty.protocol.v1.CredentialVerificationServiceInitFlow.IReply): berty.protocol.v1.CredentialVerificationServiceInitFlow.Reply;
+                    public static encode(message: berty.protocol.v1.CredentialVerificationServiceInitFlow.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.CredentialVerificationServiceInitFlow.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.CredentialVerificationServiceInitFlow.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.CredentialVerificationServiceInitFlow.Reply;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.CredentialVerificationServiceInitFlow.Reply;
+                    public static toObject(message: berty.protocol.v1.CredentialVerificationServiceInitFlow.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+            }
+
+            interface ICredentialVerificationServiceCompleteFlow {
+            }
+
+            class CredentialVerificationServiceCompleteFlow implements ICredentialVerificationServiceCompleteFlow {
+
+                public static create(properties?: berty.protocol.v1.ICredentialVerificationServiceCompleteFlow): berty.protocol.v1.CredentialVerificationServiceCompleteFlow;
+                public static encode(message: berty.protocol.v1.ICredentialVerificationServiceCompleteFlow, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.protocol.v1.ICredentialVerificationServiceCompleteFlow, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.CredentialVerificationServiceCompleteFlow;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.CredentialVerificationServiceCompleteFlow;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.protocol.v1.CredentialVerificationServiceCompleteFlow;
+                public static toObject(message: berty.protocol.v1.CredentialVerificationServiceCompleteFlow, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            namespace CredentialVerificationServiceCompleteFlow {
+
+                interface IRequest {
+                    callbackUri?: (string|null);
+                }
+
+                class Request implements IRequest {
+
+                    public callbackUri: string;
+                    public static create(properties?: berty.protocol.v1.CredentialVerificationServiceCompleteFlow.IRequest): berty.protocol.v1.CredentialVerificationServiceCompleteFlow.Request;
+                    public static encode(message: berty.protocol.v1.CredentialVerificationServiceCompleteFlow.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.CredentialVerificationServiceCompleteFlow.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.CredentialVerificationServiceCompleteFlow.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.CredentialVerificationServiceCompleteFlow.Request;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.CredentialVerificationServiceCompleteFlow.Request;
+                    public static toObject(message: berty.protocol.v1.CredentialVerificationServiceCompleteFlow.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+
+                interface IReply {
+                    identifier?: (string|null);
+                }
+
+                class Reply implements IReply {
+
+                    public identifier: string;
+                    public static create(properties?: berty.protocol.v1.CredentialVerificationServiceCompleteFlow.IReply): berty.protocol.v1.CredentialVerificationServiceCompleteFlow.Reply;
+                    public static encode(message: berty.protocol.v1.CredentialVerificationServiceCompleteFlow.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.CredentialVerificationServiceCompleteFlow.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.CredentialVerificationServiceCompleteFlow.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.CredentialVerificationServiceCompleteFlow.Reply;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.CredentialVerificationServiceCompleteFlow.Reply;
+                    public static toObject(message: berty.protocol.v1.CredentialVerificationServiceCompleteFlow.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+            }
+
+            interface IVerifiedCredentialsList {
+            }
+
+            class VerifiedCredentialsList implements IVerifiedCredentialsList {
+
+                public static create(properties?: berty.protocol.v1.IVerifiedCredentialsList): berty.protocol.v1.VerifiedCredentialsList;
+                public static encode(message: berty.protocol.v1.IVerifiedCredentialsList, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.protocol.v1.IVerifiedCredentialsList, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.VerifiedCredentialsList;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.VerifiedCredentialsList;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.protocol.v1.VerifiedCredentialsList;
+                public static toObject(message: berty.protocol.v1.VerifiedCredentialsList, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            namespace VerifiedCredentialsList {
+
+                interface IRequest {
+                }
+
+                class Request implements IRequest {
+
+                    public static create(properties?: berty.protocol.v1.VerifiedCredentialsList.IRequest): berty.protocol.v1.VerifiedCredentialsList.Request;
+                    public static encode(message: berty.protocol.v1.VerifiedCredentialsList.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.VerifiedCredentialsList.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.VerifiedCredentialsList.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.VerifiedCredentialsList.Request;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.VerifiedCredentialsList.Request;
+                    public static toObject(message: berty.protocol.v1.VerifiedCredentialsList.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+
+                interface IReply {
+                    credentials?: (berty.protocol.v1.IAccountVerifiedCredentialRegistered[]|null);
+                }
+
+                class Reply implements IReply {
+
+                    public credentials: berty.protocol.v1.IAccountVerifiedCredentialRegistered[];
+                    public static create(properties?: berty.protocol.v1.VerifiedCredentialsList.IReply): berty.protocol.v1.VerifiedCredentialsList.Reply;
+                    public static encode(message: berty.protocol.v1.VerifiedCredentialsList.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.VerifiedCredentialsList.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.VerifiedCredentialsList.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.VerifiedCredentialsList.Reply;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.VerifiedCredentialsList.Reply;
+                    public static toObject(message: berty.protocol.v1.VerifiedCredentialsList.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+            }
+
             interface IServicesTokenList {
             }
 
@@ -5522,6 +5704,34 @@ export namespace berty {
                 public static verify(message: { [k: string]: any }): (string|null);
                 public static fromObject(object: { [k: string]: any }): berty.protocol.v1.PushDeviceServerRegistered;
                 public static toObject(message: berty.protocol.v1.PushDeviceServerRegistered, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            interface IAccountVerifiedCredentialRegistered {
+                devicePk?: (Uint8Array|null);
+                signedIdentityPublicKey?: (Uint8Array|null);
+                verifiedCredential?: (string|null);
+                registrationDate?: (Long|null);
+                expirationDate?: (Long|null);
+                identifier?: (string|null);
+            }
+
+            class AccountVerifiedCredentialRegistered implements IAccountVerifiedCredentialRegistered {
+
+                public devicePk: Uint8Array;
+                public signedIdentityPublicKey: Uint8Array;
+                public verifiedCredential: string;
+                public registrationDate: Long;
+                public expirationDate: Long;
+                public identifier: string;
+                public static create(properties?: berty.protocol.v1.IAccountVerifiedCredentialRegistered): berty.protocol.v1.AccountVerifiedCredentialRegistered;
+                public static encode(message: berty.protocol.v1.IAccountVerifiedCredentialRegistered, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.protocol.v1.IAccountVerifiedCredentialRegistered, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.AccountVerifiedCredentialRegistered;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.AccountVerifiedCredentialRegistered;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.protocol.v1.AccountVerifiedCredentialRegistered;
+                public static toObject(message: berty.protocol.v1.AccountVerifiedCredentialRegistered, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 

@@ -1362,6 +1362,18 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     requestType: "AuthServiceCompleteFlow.Request",
                     responseType: "AuthServiceCompleteFlow.Reply"
                   },
+                  CredentialVerificationServiceInitFlow: {
+                    requestType: "CredentialVerificationServiceInitFlow.Request",
+                    responseType: "CredentialVerificationServiceInitFlow.Reply"
+                  },
+                  CredentialVerificationServiceCompleteFlow: {
+                    requestType: "CredentialVerificationServiceCompleteFlow.Request",
+                    responseType: "CredentialVerificationServiceCompleteFlow.Reply"
+                  },
+                  VerifiedCredentialsList: {
+                    requestType: "VerifiedCredentialsList.Request",
+                    responseType: "VerifiedCredentialsList.Reply"
+                  },
                   ServicesTokenList: {
                     requestType: "ServicesTokenList.Request",
                     responseType: "ServicesTokenList.Reply",
@@ -1436,6 +1448,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   EventTypePushMemberTokenUpdate: 404,
                   EventTypePushDeviceTokenRegistered: 405,
                   EventTypePushDeviceServerRegistered: 406,
+                  EventTypeAccountVerifiedCredentialRegistered: 500,
                   EventTypeGroupMetadataPayloadSent: 1001
                 }
               },
@@ -3173,6 +3186,89 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   }
                 }
               },
+              CredentialVerificationServiceInitFlow: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      serviceUrl: {
+                        type: "string",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "ServiceURL"
+                        }
+                      },
+                      publicKey: {
+                        type: "bytes",
+                        id: 2
+                      },
+                      link: {
+                        type: "string",
+                        id: 3
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {
+                      url: {
+                        type: "string",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "URL"
+                        }
+                      },
+                      secureUrl: {
+                        type: "bool",
+                        id: 2,
+                        options: {
+                          "(gogoproto.customname)": "SecureURL"
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              CredentialVerificationServiceCompleteFlow: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      callbackUri: {
+                        type: "string",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "CallbackURI"
+                        }
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {
+                      identifier: {
+                        type: "string",
+                        id: 1
+                      }
+                    }
+                  }
+                }
+              },
+              VerifiedCredentialsList: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {}
+                  },
+                  Reply: {
+                    fields: {
+                      credentials: {
+                        rule: "repeated",
+                        type: "AccountVerifiedCredentialRegistered",
+                        id: 1
+                      }
+                    }
+                  }
+                }
+              },
               ServicesTokenList: {
                 fields: {},
                 nested: {
@@ -3708,6 +3804,37 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     options: {
                       "(gogoproto.customname)": "DevicePK"
                     }
+                  }
+                }
+              },
+              AccountVerifiedCredentialRegistered: {
+                fields: {
+                  devicePk: {
+                    type: "bytes",
+                    id: 1,
+                    options: {
+                      "(gogoproto.customname)": "DevicePK"
+                    }
+                  },
+                  signedIdentityPublicKey: {
+                    type: "bytes",
+                    id: 2
+                  },
+                  verifiedCredential: {
+                    type: "string",
+                    id: 3
+                  },
+                  registrationDate: {
+                    type: "int64",
+                    id: 4
+                  },
+                  expirationDate: {
+                    type: "int64",
+                    id: 5
+                  },
+                  identifier: {
+                    type: "string",
+                    id: 6
                   }
                 }
               },

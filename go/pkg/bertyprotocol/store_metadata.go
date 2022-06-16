@@ -322,6 +322,10 @@ func (m *MetadataStore) ListContacts() map[string]*AccountContact {
 	return m.Index().(*metadataStoreIndex).listContacts()
 }
 
+func (m *MetadataStore) ListVerifiedCredentials() []*protocoltypes.AccountVerifiedCredentialRegistered {
+	return m.Index().(*metadataStoreIndex).listVerifiedCredentials()
+}
+
 func (m *MetadataStore) GetMemberByDevice(pk crypto.PubKey) (crypto.PubKey, error) {
 	return m.Index().(*metadataStoreIndex).getMemberByDevice(pk)
 }
@@ -833,6 +837,14 @@ func (m *MetadataStore) SendAccountServiceTokenRemoved(ctx context.Context, toke
 	return m.attributeSignAndAddEvent(ctx, &protocoltypes.AccountServiceTokenRemoved{
 		TokenID: tokenID,
 	}, protocoltypes.EventTypeAccountServiceTokenRemoved)
+}
+
+func (m *MetadataStore) SendAccountVerifiedCredentialAdded(ctx context.Context, token *protocoltypes.AccountVerifiedCredentialRegistered) (operation.Operation, error) {
+	if !m.typeChecker(isAccountGroup) {
+		return nil, errcode.ErrGroupInvalidType
+	}
+
+	return m.attributeSignAndAddEvent(ctx, token, protocoltypes.EventTypeAccountVerifiedCredentialRegistered)
 }
 
 func (m *MetadataStore) SendGroupReplicating(ctx context.Context, t *protocoltypes.ServiceToken, endpoint string) (operation.Operation, error) {

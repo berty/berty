@@ -19,6 +19,7 @@
     - [AccountGroupLeft](#berty-protocol-v1-AccountGroupLeft)
     - [AccountServiceTokenAdded](#berty-protocol-v1-AccountServiceTokenAdded)
     - [AccountServiceTokenRemoved](#berty-protocol-v1-AccountServiceTokenRemoved)
+    - [AccountVerifiedCredentialRegistered](#berty-protocol-v1-AccountVerifiedCredentialRegistered)
     - [ActivateGroup](#berty-protocol-v1-ActivateGroup)
     - [ActivateGroup.Reply](#berty-protocol-v1-ActivateGroup-Reply)
     - [ActivateGroup.Request](#berty-protocol-v1-ActivateGroup-Request)
@@ -68,6 +69,12 @@
     - [ContactUnblock](#berty-protocol-v1-ContactUnblock)
     - [ContactUnblock.Reply](#berty-protocol-v1-ContactUnblock-Reply)
     - [ContactUnblock.Request](#berty-protocol-v1-ContactUnblock-Request)
+    - [CredentialVerificationServiceCompleteFlow](#berty-protocol-v1-CredentialVerificationServiceCompleteFlow)
+    - [CredentialVerificationServiceCompleteFlow.Reply](#berty-protocol-v1-CredentialVerificationServiceCompleteFlow-Reply)
+    - [CredentialVerificationServiceCompleteFlow.Request](#berty-protocol-v1-CredentialVerificationServiceCompleteFlow-Request)
+    - [CredentialVerificationServiceInitFlow](#berty-protocol-v1-CredentialVerificationServiceInitFlow)
+    - [CredentialVerificationServiceInitFlow.Reply](#berty-protocol-v1-CredentialVerificationServiceInitFlow-Reply)
+    - [CredentialVerificationServiceInitFlow.Request](#berty-protocol-v1-CredentialVerificationServiceInitFlow-Request)
     - [DeactivateGroup](#berty-protocol-v1-DeactivateGroup)
     - [DeactivateGroup.Reply](#berty-protocol-v1-DeactivateGroup-Reply)
     - [DeactivateGroup.Request](#berty-protocol-v1-DeactivateGroup-Request)
@@ -197,6 +204,9 @@
     - [SystemInfo.Process](#berty-protocol-v1-SystemInfo-Process)
     - [SystemInfo.Reply](#berty-protocol-v1-SystemInfo-Reply)
     - [SystemInfo.Request](#berty-protocol-v1-SystemInfo-Request)
+    - [VerifiedCredentialsList](#berty-protocol-v1-VerifiedCredentialsList)
+    - [VerifiedCredentialsList.Reply](#berty-protocol-v1-VerifiedCredentialsList-Reply)
+    - [VerifiedCredentialsList.Request](#berty-protocol-v1-VerifiedCredentialsList-Request)
   
     - [ContactState](#berty-protocol-v1-ContactState)
     - [DebugInspectGroupLogType](#berty-protocol-v1-DebugInspectGroupLogType)
@@ -376,6 +386,19 @@ AccountServiceTokenRemoved indicates a token has removed
 | ----- | ---- | ----- | ----------- |
 | device_pk | [bytes](#bytes) |  | device_pk is the device sending the event, signs the message |
 | token_id | [string](#string) |  |  |
+
+<a name="berty-protocol-v1-AccountVerifiedCredentialRegistered"></a>
+
+### AccountVerifiedCredentialRegistered
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| device_pk | [bytes](#bytes) |  | device_pk is the public key of the device sending the message |
+| signed_identity_public_key | [bytes](#bytes) |  |  |
+| verified_credential | [string](#string) |  |  |
+| registration_date | [int64](#int64) |  |  |
+| expiration_date | [int64](#int64) |  |  |
+| identifier | [string](#string) |  |  |
 
 <a name="berty-protocol-v1-ActivateGroup"></a>
 
@@ -676,6 +699,49 @@ ContactAddAliasKey is an event type where ones shares their alias public key
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | contact_pk | [bytes](#bytes) |  | contact_pk is the identifier of the contact to unblock |
+
+<a name="berty-protocol-v1-CredentialVerificationServiceCompleteFlow"></a>
+
+### CredentialVerificationServiceCompleteFlow
+
+<a name="berty-protocol-v1-CredentialVerificationServiceCompleteFlow-Reply"></a>
+
+### CredentialVerificationServiceCompleteFlow.Reply
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| identifier | [string](#string) |  |  |
+
+<a name="berty-protocol-v1-CredentialVerificationServiceCompleteFlow-Request"></a>
+
+### CredentialVerificationServiceCompleteFlow.Request
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| callback_uri | [string](#string) |  |  |
+
+<a name="berty-protocol-v1-CredentialVerificationServiceInitFlow"></a>
+
+### CredentialVerificationServiceInitFlow
+
+<a name="berty-protocol-v1-CredentialVerificationServiceInitFlow-Reply"></a>
+
+### CredentialVerificationServiceInitFlow.Reply
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| url | [string](#string) |  |  |
+| secure_url | [bool](#bool) |  |  |
+
+<a name="berty-protocol-v1-CredentialVerificationServiceInitFlow-Request"></a>
+
+### CredentialVerificationServiceInitFlow.Request
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| service_url | [string](#string) |  |  |
+| public_key | [bytes](#bytes) |  |  |
+| link | [string](#string) |  |  |
 
 <a name="berty-protocol-v1-DeactivateGroup"></a>
 
@@ -1701,6 +1767,22 @@ Progress define a generic object that can be used to display a progress bar for 
 
 ### SystemInfo.Request
 
+<a name="berty-protocol-v1-VerifiedCredentialsList"></a>
+
+### VerifiedCredentialsList
+
+<a name="berty-protocol-v1-VerifiedCredentialsList-Reply"></a>
+
+### VerifiedCredentialsList.Reply
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| credentials | [AccountVerifiedCredentialRegistered](#berty-protocol-v1-AccountVerifiedCredentialRegistered) | repeated |  |
+
+<a name="berty-protocol-v1-VerifiedCredentialsList-Request"></a>
+
+### VerifiedCredentialsList.Request
+
  
 
 <a name="berty-protocol-v1-ContactState"></a>
@@ -1769,6 +1851,7 @@ Progress define a generic object that can be used to display a progress bar for 
 | EventTypePushMemberTokenUpdate | 404 | EventTypePushMemberTokenUpdate |
 | EventTypePushDeviceTokenRegistered | 405 | EventTypePushDeviceTokenRegistered |
 | EventTypePushDeviceServerRegistered | 406 | EventTypePushDeviceServerRegistered |
+| EventTypeAccountVerifiedCredentialRegistered | 500 | EventTypeAccountVerifiedCredentialRegistered |
 | EventTypeGroupMetadataPayloadSent | 1001 | EventTypeGroupMetadataPayloadSent indicates the payload includes an app specific event, unlike messages stored on the message store it is encrypted using a static key |
 
 <a name="berty-protocol-v1-GroupDeviceStatus-Transport"></a>
@@ -1873,6 +1956,9 @@ Each Berty Protocol Instance is considered as a Berty device and is associated w
 | SystemInfo | [SystemInfo.Request](#berty-protocol-v1-SystemInfo-Request) | [SystemInfo.Reply](#berty-protocol-v1-SystemInfo-Reply) |  |
 | AuthServiceInitFlow | [AuthServiceInitFlow.Request](#berty-protocol-v1-AuthServiceInitFlow-Request) | [AuthServiceInitFlow.Reply](#berty-protocol-v1-AuthServiceInitFlow-Reply) | AuthServiceInitFlow Initialize an authentication flow |
 | AuthServiceCompleteFlow | [AuthServiceCompleteFlow.Request](#berty-protocol-v1-AuthServiceCompleteFlow-Request) | [AuthServiceCompleteFlow.Reply](#berty-protocol-v1-AuthServiceCompleteFlow-Reply) | AuthServiceCompleteFlow Completes an authentication flow |
+| CredentialVerificationServiceInitFlow | [CredentialVerificationServiceInitFlow.Request](#berty-protocol-v1-CredentialVerificationServiceInitFlow-Request) | [CredentialVerificationServiceInitFlow.Reply](#berty-protocol-v1-CredentialVerificationServiceInitFlow-Reply) | CredentialVerificationServiceInitFlow Initialize a credential verification flow |
+| CredentialVerificationServiceCompleteFlow | [CredentialVerificationServiceCompleteFlow.Request](#berty-protocol-v1-CredentialVerificationServiceCompleteFlow-Request) | [CredentialVerificationServiceCompleteFlow.Reply](#berty-protocol-v1-CredentialVerificationServiceCompleteFlow-Reply) | CredentialVerificationServiceCompleteFlow Completes a credential verification flow |
+| VerifiedCredentialsList | [VerifiedCredentialsList.Request](#berty-protocol-v1-VerifiedCredentialsList-Request) | [VerifiedCredentialsList.Reply](#berty-protocol-v1-VerifiedCredentialsList-Reply) | VerifiedCredentialsList Retrieves the list of verified credentials |
 | ServicesTokenList | [ServicesTokenList.Request](#berty-protocol-v1-ServicesTokenList-Request) | [ServicesTokenList.Reply](#berty-protocol-v1-ServicesTokenList-Reply) stream | ServicesTokenList Retrieves the list of services tokens |
 | ReplicationServiceRegisterGroup | [ReplicationServiceRegisterGroup.Request](#berty-protocol-v1-ReplicationServiceRegisterGroup-Request) | [ReplicationServiceRegisterGroup.Reply](#berty-protocol-v1-ReplicationServiceRegisterGroup-Reply) | ReplicationServiceRegisterGroup Asks a replication service to distribute a group contents |
 | PeerList | [PeerList.Request](#berty-protocol-v1-PeerList-Request) | [PeerList.Reply](#berty-protocol-v1-PeerList-Reply) | PeerList returns a list of P2P peers |

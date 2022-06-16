@@ -109,6 +109,15 @@ service ProtocolService {
   // AuthServiceCompleteFlow Completes an authentication flow
   rpc AuthServiceCompleteFlow (AuthServiceCompleteFlow.Request) returns (AuthServiceCompleteFlow.Reply);
 
+  // CredentialVerificationServiceInitFlow Initialize a credential verification flow
+  rpc CredentialVerificationServiceInitFlow (CredentialVerificationServiceInitFlow.Request) returns (CredentialVerificationServiceInitFlow.Reply);
+
+  // CredentialVerificationServiceCompleteFlow Completes a credential verification flow
+  rpc CredentialVerificationServiceCompleteFlow (CredentialVerificationServiceCompleteFlow.Request) returns (CredentialVerificationServiceCompleteFlow.Reply);
+
+  // VerifiedCredentialsList Retrieves the list of verified credentials
+  rpc VerifiedCredentialsList (VerifiedCredentialsList.Request) returns (VerifiedCredentialsList.Reply);
+
   // ServicesTokenList Retrieves the list of services tokens
   rpc ServicesTokenList (ServicesTokenList.Request) returns (stream ServicesTokenList.Reply);
 
@@ -242,6 +251,9 @@ enum EventType {
 
   // EventTypePushDeviceServerRegistered
   EventTypePushDeviceServerRegistered = 406;
+
+  // EventTypeAccountVerifiedCredentialRegistered
+  EventTypeAccountVerifiedCredentialRegistered = 500;
 
   // EventTypeGroupMetadataPayloadSent indicates the payload includes an app specific event, unlike messages stored on the message store it is encrypted using a static key
   EventTypeGroupMetadataPayloadSent = 1001;
@@ -1155,6 +1167,34 @@ message AuthServiceInitFlow {
   }
 }
 
+message CredentialVerificationServiceInitFlow {
+  message Request {
+    string service_url = 1 [(gogoproto.customname) = "ServiceURL"];
+    bytes public_key = 2;
+    string link = 3;
+  }
+  message Reply {
+    string url = 1 [(gogoproto.customname) = "URL"];
+    bool secure_url = 2 [(gogoproto.customname) = "SecureURL"];
+  }
+}
+
+message CredentialVerificationServiceCompleteFlow {
+  message Request {
+    string callback_uri = 1 [(gogoproto.customname) = "CallbackURI"];
+  }
+  message Reply {
+    string identifier = 1;
+  }
+}
+
+message VerifiedCredentialsList {
+  message Request {}
+  message Reply {
+    repeated AccountVerifiedCredentialRegistered credentials = 1;
+  }
+}
+
 message ServicesTokenList {
   message Request{}
   message Reply{
@@ -1361,6 +1401,21 @@ message PushDeviceServerRegistered {
 
   // device_pk is the public key of the device sending the message
   bytes device_pk = 2 [(gogoproto.customname) = "DevicePK"];
+}
+
+message AccountVerifiedCredentialRegistered {
+  // device_pk is the public key of the device sending the message
+  bytes device_pk = 1 [(gogoproto.customname) = "DevicePK"];
+
+  bytes signed_identity_public_key = 2;
+
+  string verified_credential = 3;
+
+  int64 registration_date = 4;
+
+  int64 expiration_date = 5;
+
+  string identifier = 6;
 }
 
 message PushMemberTokenUpdate {

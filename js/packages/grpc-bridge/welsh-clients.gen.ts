@@ -56,6 +56,13 @@ export interface WelshProtocolServiceClient {
 	systemInfo: UnaryType<beapi.protocol.ProtocolService['systemInfo']>
 	authServiceInitFlow: UnaryType<beapi.protocol.ProtocolService['authServiceInitFlow']>
 	authServiceCompleteFlow: UnaryType<beapi.protocol.ProtocolService['authServiceCompleteFlow']>
+	credentialVerificationServiceInitFlow: UnaryType<
+		beapi.protocol.ProtocolService['credentialVerificationServiceInitFlow']
+	>
+	credentialVerificationServiceCompleteFlow: UnaryType<
+		beapi.protocol.ProtocolService['credentialVerificationServiceCompleteFlow']
+	>
+	verifiedCredentialsList: UnaryType<beapi.protocol.ProtocolService['verifiedCredentialsList']>
 	servicesTokenList: ResponseStreamType<beapi.protocol.ProtocolService['servicesTokenList']>
 	replicationServiceRegisterGroup: UnaryType<
 		beapi.protocol.ProtocolService['replicationServiceRegisterGroup']

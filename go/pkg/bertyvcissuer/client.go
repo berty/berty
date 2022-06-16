@@ -81,24 +81,24 @@ func (c *Client) Init(ctx context.Context, bertyURL string, accountPriv crypto.S
 	return fmt.Sprintf("%s/%s?&%s=%s&%s=%s", c.serverRoot, PathAuthenticate, ParamChallenge, challengeStruct.Challenge, ParamChallengeSig, base64.URLEncoding.EncodeToString(challengeSig)), nil
 }
 
-func (c *Client) Complete(uri string) (string, string, error) {
+func (c *Client) Complete(uri string) (string, string, *verifiable.Credential, error) {
 	parsedURI, err := url.Parse(uri)
 	if err != nil {
-		return "", "", errcode.ErrInvalidInput.Wrap(err)
+		return "", "", nil, errcode.ErrInvalidInput.Wrap(err)
 	}
 
 	if parsedURI.Query().Get(ParamState) != c.state {
-		return "", "", errcode.ErrInvalidInput.Wrap(fmt.Errorf("unexpected state value"))
+		return "", "", nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("unexpected state value"))
 	}
 
 	credentialsStr := parsedURI.Query().Get(ParamCredentials)
 	if len(credentialsStr) == 0 {
-		return "", "", errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing credentials value"))
+		return "", "", nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing credentials value"))
 	}
 
 	credentials, err := base64.StdEncoding.DecodeString(credentialsStr)
 	if err != nil {
-		return "", "", errcode.ErrDeserialization.Wrap(err)
+		return "", "", nil, errcode.ErrDeserialization.Wrap(err)
 	}
 
 	parsedCredential, err := verifiable.ParseCredential(
@@ -107,19 +107,19 @@ func (c *Client) Complete(uri string) (string, string, error) {
 		verifiable.WithJSONLDDocumentLoader(ld.NewDefaultDocumentLoader(http.DefaultClient)),
 	)
 	if err != nil {
-		return "", "", errcode.ErrDeserialization.Wrap(err)
+		return "", "", nil, errcode.ErrDeserialization.Wrap(err)
 	}
 
 	if c.bertyURL != parsedCredential.ID {
-		return "", "", errcode.ErrInvalidInput.Wrap(fmt.Errorf("credential is not delivered for the current berty url (%s != %s)", c.bertyURL, parsedCredential.ID))
+		return "", "", nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("credential is not delivered for the current berty url (%s != %s)", c.bertyURL, parsedCredential.ID))
 	}
 
 	identifier, err := extractSubjectFromVC(parsedCredential)
 	if err != nil {
-		return "", "", errcode.ErrInvalidInput.Wrap(err)
+		return "", "", nil, errcode.ErrInvalidInput.Wrap(err)
 	}
 
-	return string(credentials), identifier, nil
+	return string(credentials), identifier, parsedCredential, nil
 }
 
 func extractSubjectFromVC(credential *verifiable.Credential) (string, error) {

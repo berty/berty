@@ -123,6 +123,18 @@ export interface IProtocolServiceMock {
 		beapi.protocol.AuthServiceCompleteFlow.IRequest,
 		beapi.protocol.AuthServiceCompleteFlow.IReply
 	>
+	CredentialVerificationServiceInitFlow: UnaryMock<
+		beapi.protocol.CredentialVerificationServiceInitFlow.IRequest,
+		beapi.protocol.CredentialVerificationServiceInitFlow.IReply
+	>
+	CredentialVerificationServiceCompleteFlow: UnaryMock<
+		beapi.protocol.CredentialVerificationServiceCompleteFlow.IRequest,
+		beapi.protocol.CredentialVerificationServiceCompleteFlow.IReply
+	>
+	VerifiedCredentialsList: UnaryMock<
+		beapi.protocol.VerifiedCredentialsList.IRequest,
+		beapi.protocol.VerifiedCredentialsList.IReply
+	>
 	ServicesTokenList: ResponseStreamMock<
 		beapi.protocol.ServicesTokenList.IRequest,
 		beapi.protocol.ServicesTokenList.IReply

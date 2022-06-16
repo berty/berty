@@ -3,8 +3,6 @@ package mini
 import (
 	"bytes"
 	"context"
-	"crypto/ed25519"
-	crand "crypto/rand"
 	"encoding/base64"
 	"fmt"
 	"io"
@@ -20,7 +18,6 @@ import (
 	"moul.io/godev"
 
 	"berty.tech/berty/v2/go/pkg/bertylinks"
-	"berty.tech/berty/v2/go/pkg/bertyvcissuer"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
@@ -212,6 +209,11 @@ func commandList() []*command {
 			cmd:   credentialVerificationComplete,
 		},
 		{
+			title: "services credential list",
+			help:  `Lists verified credentials`,
+			cmd:   credentialVerificationList,
+		},
+		{
 			title:     "/",
 			help:      "",
 			cmd:       newSlashMessageCommand,
@@ -221,59 +223,63 @@ func commandList() []*command {
 }
 
 func credentialVerificationInit(ctx context.Context, v *groupView, service string) error {
-	// TODO: move this to bertyprotocol
-	// FIXME: use a non volatile identity
-	pub, priv, err := ed25519.GenerateKey(crand.Reader)
-	if err != nil {
-		return err
-	}
+	v.v.lock.Lock()
+	displayName := v.v.displayName
+	v.v.lock.Unlock()
 
-	_, webLink, err := bertylinks.MarshalLink(&messengertypes.BertyLink{
-		Kind: messengertypes.BertyLink_ContactInviteV1Kind,
-		BertyID: &messengertypes.BertyID{
-			PublicRendezvousSeed: []byte("testseed"),
-			AccountPK:            pub[:],
-			DisplayName:          "test link",
-		},
+	res, err := v.v.messenger.InstanceShareableBertyID(ctx, &messengertypes.InstanceShareableBertyID_Request{
+		DisplayName: displayName,
 	})
 	if err != nil {
 		return err
 	}
 
-	v.vcClient = bertyvcissuer.NewClient(service)
-	ctx, cancel := context.WithTimeout(ctx, time.Second*10)
-	defer cancel()
-
-	url, err := v.vcClient.Init(ctx, webLink, priv)
+	flowDetails, err := v.v.protocol.CredentialVerificationServiceInitFlow(ctx, &protocoltypes.CredentialVerificationServiceInitFlow_Request{
+		ServiceURL: service,
+		PublicKey:  res.Link.BertyID.AccountPK,
+		Link:       res.WebURL,
+	})
 	if err != nil {
 		return err
 	}
 
 	v.messages.Append(&historyMessage{
 		messageType: messageTypeMeta,
-		payload:     []byte(fmt.Sprintf("Auth URL: %s", url)),
+		payload:     []byte(fmt.Sprintf("Auth URL: %s", flowDetails.URL)),
 	})
-	copyToClipboard(v, url)
+	copyToClipboard(v, flowDetails.URL)
 
 	return nil
 }
 
 func credentialVerificationComplete(ctx context.Context, v *groupView, callbackURI string) error {
-	if v.vcClient == nil {
-		return fmt.Errorf("no verification process has been started")
-	}
-
-	_, identifier, err := v.vcClient.Complete(callbackURI)
+	res, err := v.v.protocol.CredentialVerificationServiceCompleteFlow(ctx, &protocoltypes.CredentialVerificationServiceCompleteFlow_Request{
+		CallbackURI: callbackURI,
+	})
 	if err != nil {
 		return err
 	}
 
 	v.messages.Append(&historyMessage{
 		messageType: messageTypeMeta,
-		payload:     []byte(fmt.Sprintf("Completed authentication, associated identifier is <%s>", identifier)),
+		payload:     []byte(fmt.Sprintf("Completed authentication, associated identifier is <%s>", res.Identifier)),
 	})
 
-	v.vcClient = nil
+	return nil
+}
+
+func credentialVerificationList(ctx context.Context, v *groupView, _ string) error {
+	res, err := v.v.protocol.VerifiedCredentialsList(ctx, &protocoltypes.VerifiedCredentialsList_Request{})
+	if err != nil {
+		return err
+	}
+
+	for _, cred := range res.Credentials {
+		v.messages.Append(&historyMessage{
+			messageType: messageTypeMeta,
+			payload:     []byte(fmt.Sprintf("> <%s>", cred.Identifier)),
+		})
+	}
 
 	return nil
 }
