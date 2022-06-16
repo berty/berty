@@ -8,13 +8,18 @@ import { useStyles } from '@berty/contexts/styles'
 import { selectStreamProgress } from '@berty/redux/reducers/ui.reducer'
 import { useThemeColor } from '@berty/store'
 
-export const StreamProgressPriv: React.FC = () => {
+import { StreamProgressProps } from './interfaces'
+
+export const StreamProgressPriv: React.FC<StreamProgressProps> = props => {
 	const { text } = useStyles()
 	const colors = useThemeColor()
 	const stream = useSelector(selectStreamProgress)
 
 	return (
-		<View style={{ backgroundColor: colors['main-background'], flex: 1 }}>
+		<View
+			style={{ backgroundColor: colors['main-background'], flex: 1 }}
+			accessibilityLabel={props.accessibilityLabel}
+		>
 			<UnifiedText style={[text.align.center, styles.title]}>
 				{stream?.stream || 'Test'}
 			</UnifiedText>

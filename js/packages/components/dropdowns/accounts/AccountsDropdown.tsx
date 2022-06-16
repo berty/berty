@@ -12,11 +12,12 @@ interface AccountsDropdownProps {
 	onChangeItem: (item: beapi.account.IAccountMetadata) => void
 	placeholder: string
 	defaultValue?: string | null
+	accessibilityLabel?: string
 }
 
 export const AccountsDropdown: React.FC<AccountsDropdownProps> = props => {
 	return (
-		<DropdownPriv placeholder={props.placeholder}>
+		<DropdownPriv placeholder={props.placeholder} accessibilityLabel={props.accessibilityLabel}>
 			{props.items.map(item => (
 				<TouchableOpacity
 					onPress={() => props.onChangeItem(item)}

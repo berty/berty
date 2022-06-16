@@ -13,6 +13,7 @@ interface TextualDropdownProps {
 	items: Item[]
 	onChangeItem: (item: Item) => void
 	placeholder: string
+	accessibilityLabel?: string
 }
 
 export const TextualDropdown: React.FC<TextualDropdownProps> = props => {
@@ -20,7 +21,11 @@ export const TextualDropdown: React.FC<TextualDropdownProps> = props => {
 
 	return (
 		<View style={styles.container}>
-			<DropdownPriv ref={childRef} placeholder={props.placeholder}>
+			<DropdownPriv
+				ref={childRef}
+				placeholder={props.placeholder}
+				accessibilityLabel={props.accessibilityLabel}
+			>
 				{props.items.map(item => (
 					<TouchableOpacity
 						activeOpacity={0.9}

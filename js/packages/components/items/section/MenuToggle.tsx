@@ -8,7 +8,7 @@ import { TextPriv } from '../Text.priv'
 
 export const MenuToggle: React.FC<MenuItemProps & OnToggleProps & IsToggleProps> = props => {
 	return (
-		<MenuItemPriv onPress={props.onPress}>
+		<MenuItemPriv onPress={props.onPress} accessibilityLabel={props.accessibilityLabel}>
 			<TextPriv>{props.children}</TextPriv>
 			<Toggle
 				checked={props.isToggleOn ?? false}

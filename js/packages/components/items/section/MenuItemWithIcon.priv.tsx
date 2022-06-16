@@ -13,7 +13,7 @@ export const MenuItemWithIconPriv: React.FC<
 	const colors = useThemeColor()
 
 	return (
-		<MenuItemPriv onPress={props.onPress}>
+		<MenuItemPriv onPress={props.onPress} accessibilityLabel={props.accessibilityLabel}>
 			<IconWithTextPriv
 				iconName={props.iconName}
 				pack={props.pack}
