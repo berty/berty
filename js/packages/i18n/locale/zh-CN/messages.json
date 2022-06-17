@@ -325,15 +325,19 @@
 			}
 		},
 		"my-berty-ID": {
-			"title": "我的 Berty ID",
-			"qr": "二维码",
-			"fingerprint": "指纹"
+			"title": "我的 Berty ID"
 		},
 		"share": {
 			"invite": "邀请",
 			"tap-to-scan": "点击扫描",
 			"create-group": "创建群組"
 		}
+	},
+	"tabs": {
+		"qr": "二维码",
+		"fingerprint": "指纹",
+		"info": "信息",
+		"devices": "设备"
 	},
 	"modals": {
 		"manage-deep-link": {
@@ -346,15 +350,7 @@
 		"invalid-scan": {
 			"dismiss-button": "关闭"
 		},
-		"add-this-contact": {
-			"fingerprint": "指纹",
-			"info": "信息",
-			"devices": "设备"
-		},
 		"group-invitation": {
-			"fingerprint": "指纹",
-			"info": "信息",
-			"devices": "设备",
 			"join": "加入此群组",
 			"password-label": "输入群组密码",
 			"password-placeholder": "密码..."
@@ -372,8 +368,6 @@
 		"sending": "正在发送...",
 		"sent": "已发送",
 		"contact-settings": {
-			"fingerprint": "指纹",
-			"info": "信息",
 			"my-devices": "我的设备"
 		},
 		"multi-member": {
