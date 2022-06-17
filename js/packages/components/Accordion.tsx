@@ -2,11 +2,11 @@ import { Divider, Icon } from '@ui-kitten/components'
 import React, { useState, useRef, FC, useCallback, useMemo } from 'react'
 import { View, Animated, Easing, TouchableOpacity } from 'react-native'
 
+import { Toggle } from '@berty/components'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
 import { useThemeColor } from '@berty/store'
 
-import { Toggle } from './shared-components/Toggle'
 import { UnifiedText } from './shared-components/UnifiedText'
 
 const heightButton = 55
@@ -69,7 +69,7 @@ export const AccordionItemV2: FC<{
 							<AccordionIconV2 name='edit-outline' size={24} />
 						</TouchableOpacity>
 					) : null}
-					<Toggle status='primary' checked={toggle} onChange={onToggleChange} />
+					<Toggle checked={toggle} onChange={onToggleChange} />
 				</View>
 			</View>
 			<Divider />

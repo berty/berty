@@ -12,11 +12,12 @@ interface AccountsDropdownProps {
 	onChangeItem: (item: beapi.account.IAccountMetadata) => void
 	placeholder: string
 	defaultValue?: string | null
+	accessibilityLabel?: string
 }
 
 export const AccountsDropdown: React.FC<AccountsDropdownProps> = props => {
 	return (
-		<DropdownPriv placeholder={props.placeholder}>
+		<DropdownPriv placeholder={props.placeholder} accessibilityLabel={props.accessibilityLabel}>
 			{props.items.map(item => (
 				<TouchableOpacity
 					onPress={() => props.onChangeItem(item)}
@@ -34,7 +35,7 @@ export const AccountsDropdown: React.FC<AccountsDropdownProps> = props => {
 						colorSeed={item.publicKey}
 						nameSeed={item.name}
 					/>
-					<UnifiedText style={{ marginLeft: 7 }}>{item.name}</UnifiedText>
+					<UnifiedText style={styles.text}>{item.name}</UnifiedText>
 				</TouchableOpacity>
 			))}
 		</DropdownPriv>
@@ -49,5 +50,8 @@ const styles = StyleSheet.create({
 		paddingVertical: 12,
 		paddingRight: 12,
 		flex: 1,
+	},
+	text: {
+		marginLeft: 7,
 	},
 })

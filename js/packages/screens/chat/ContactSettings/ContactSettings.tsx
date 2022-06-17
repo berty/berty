@@ -2,10 +2,10 @@ import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View, ScrollView, ActivityIndicator, StatusBar } from 'react-native'
 
+import { TabBar } from '@berty/components'
 import { ContactAvatar } from '@berty/components/avatars'
 import UserDevicesList from '@berty/components/chat/DeviceList'
 import { FingerprintContent } from '@berty/components/shared-components/FingerprintContent'
-import { TabBar } from '@berty/components/shared-components/TabBar'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useStyles } from '@berty/contexts/styles'
 import { useContact, useConversation } from '@berty/hooks'
@@ -78,19 +78,7 @@ const ContactSettingsHeader: React.FC<{ contact: any }> = ({ contact }) => {
 						{contact.displayName}
 					</UnifiedText>
 					<TabBar
-						tabs={[
-							{
-								key: 'fingerprint',
-								name: t('chat.contact-settings.fingerprint'),
-								icon: 'fingerprint',
-								iconPack: 'custom',
-							},
-							{
-								key: 'info',
-								name: t('chat.contact-settings.info'),
-								icon: 'info-outline',
-							},
-						]}
+						tabs={[{ name: t('tabs.fingerprint') }, { name: t('tabs.info') }]}
 						onTabChange={setSelectedContent}
 					/>
 					<ContactSettingsHeaderContent>

@@ -6,9 +6,9 @@ import { View, TouchableOpacity, Share, StatusBar, Platform } from 'react-native
 import QRCode from 'react-native-qrcode-svg'
 
 import logo from '@berty/assets/images/1_berty_picto.png'
+import { TabBar } from '@berty/components'
 import { AccountAvatar } from '@berty/components/avatars'
 import { FingerprintContent } from '@berty/components/shared-components/FingerprintContent'
-import { TabBar } from '@berty/components/shared-components/TabBar'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
@@ -124,15 +124,7 @@ const BertIdBody: React.FC = () => {
 			>
 				<View style={[padding.horizontal.big]}>
 					<TabBar
-						tabs={[
-							{ key: 'qr', name: t('settings.my-berty-ID.qr'), icon: 'qr', iconPack: 'custom' },
-							{
-								key: 'fingerprint',
-								name: t('settings.my-berty-ID.fingerprint'),
-								icon: 'fingerprint',
-								iconPack: 'custom',
-							},
-						]}
+						tabs={[{ name: t('tabs.qr') }, { name: t('tabs.fingerprint') }]}
 						onTabChange={setSelectedContent}
 					/>
 					<BertyIdContent>

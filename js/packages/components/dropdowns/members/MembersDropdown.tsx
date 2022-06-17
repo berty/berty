@@ -15,6 +15,7 @@ interface MembersDropdownProps {
 	placeholder: string
 	defaultValue?: string | null
 	publicKey: string
+	accessibilityLabel?: string
 }
 
 export const MembersDropdown: React.FC<MembersDropdownProps> = props => {
@@ -29,7 +30,11 @@ export const MembersDropdown: React.FC<MembersDropdownProps> = props => {
 				{ shadowColor: colors.shadow, backgroundColor: colors['main-background'] },
 			]}
 		>
-			<DropdownPriv icon='users' placeholder={props.placeholder}>
+			<DropdownPriv
+				icon='users'
+				placeholder={props.placeholder}
+				accessibilityLabel={props.accessibilityLabel}
+			>
 				{props.items.map(item => (
 					<TouchableOpacity
 						onPress={() => props.onChangeItem(item)}

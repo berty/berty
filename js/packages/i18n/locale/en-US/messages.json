@@ -325,15 +325,19 @@
 			}
 		},
 		"my-berty-ID": {
-			"title": "My Berty ID",
-			"qr": "QR",
-			"fingerprint": "Fingerprint"
+			"title": "My Berty ID"
 		},
 		"share": {
 			"invite": "Invite",
 			"tap-to-scan": "Tap to scan",
 			"create-group": "Create group"
 		}
+	},
+	"tabs": {
+		"qr": "QR",
+		"fingerprint": "Fingerprint",
+		"info": "Info",
+		"devices": "Devices"
 	},
 	"modals": {
 		"manage-deep-link": {
@@ -346,15 +350,7 @@
 		"invalid-scan": {
 			"dismiss-button": "Dismiss"
 		},
-		"add-this-contact": {
-			"fingerprint": "Fingerprint",
-			"info": "Info",
-			"devices": "Devices"
-		},
 		"group-invitation": {
-			"fingerprint": "Fingerprint",
-			"info": "Infos",
-			"devices": "Devices",
 			"join": "Join this group",
 			"password-label": "Enter group password",
 			"password-placeholder": "Password..."
@@ -372,8 +368,6 @@
 		"sending": "Sending...",
 		"sent": "Sent",
 		"contact-settings": {
-			"fingerprint": "Fingerprint",
-			"info": "Infos",
 			"my-devices": "My devices"
 		},
 		"multi-member": {

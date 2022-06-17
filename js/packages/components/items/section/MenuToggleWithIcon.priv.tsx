@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Toggle } from '@berty/components/shared-components/Toggle'
+import { Toggle } from '@berty/components'
 import { useThemeColor } from '@berty/store'
 
 import { IconWithTextPriv } from '../IconWithText.priv'
@@ -13,7 +13,7 @@ export const MenuToggleWithIconPriv: React.FC<
 	const colors = useThemeColor()
 
 	return (
-		<MenuItemPriv onPress={props.onPress}>
+		<MenuItemPriv onPress={props.onPress} accessibilityLabel={props.accessibilityLabel}>
 			<IconWithTextPriv
 				iconName={props.iconName}
 				pack={props.pack}
@@ -22,7 +22,6 @@ export const MenuToggleWithIconPriv: React.FC<
 				{props.children}
 			</IconWithTextPriv>
 			<Toggle
-				status='primary'
 				checked={props.isToggleOn ?? false}
 				onChange={props.onToggle ? props.onToggle : props.onPress}
 			/>

@@ -1330,7 +1330,6 @@ exports[`Onboarding.CustomModeSettings renders correctly 1`] = `
                                   "borderWidth": 1,
                                   "height": 27,
                                   "opacity": 1,
-                                  "paddingRight": 5,
                                   "width": 50,
                                 }
                               }
@@ -1945,7 +1944,6 @@ exports[`Onboarding.CustomModeSettings renders correctly 1`] = `
                                   "borderWidth": 1,
                                   "height": 27,
                                   "opacity": 1,
-                                  "paddingRight": 5,
                                   "width": 50,
                                 }
                               }
@@ -2408,7 +2406,6 @@ exports[`Onboarding.CustomModeSettings renders correctly 1`] = `
                                   "borderWidth": 1,
                                   "height": 27,
                                   "opacity": 1,
-                                  "paddingRight": 5,
                                   "width": 50,
                                 }
                               }
@@ -4059,7 +4056,6 @@ exports[`Onboarding.CustomModeSettings renders correctly 2`] = `
                                   "borderWidth": 1,
                                   "height": 27,
                                   "opacity": 1,
-                                  "paddingRight": 5,
                                   "width": 50,
                                 }
                               }
@@ -4674,7 +4670,6 @@ exports[`Onboarding.CustomModeSettings renders correctly 2`] = `
                                   "borderWidth": 1,
                                   "height": 27,
                                   "opacity": 1,
-                                  "paddingRight": 5,
                                   "width": 50,
                                 }
                               }
@@ -5137,7 +5132,6 @@ exports[`Onboarding.CustomModeSettings renders correctly 2`] = `
                                   "borderWidth": 1,
                                   "height": 27,
                                   "opacity": 1,
-                                  "paddingRight": 5,
                                   "width": 50,
                                 }
                               }
@@ -6782,13 +6776,12 @@ exports[`Onboarding.CustomModeSettings renders correctly 3`] = `
                               onStartShouldSetResponder={[Function]}
                               style={
                                 Object {
-                                  "backgroundColor": "#C7C6FF61",
+                                  "backgroundColor": "#EDF0F3",
                                   "borderColor": "#535AE4",
                                   "borderRadius": 30,
                                   "borderWidth": 1,
                                   "height": 27,
                                   "opacity": 1,
-                                  "paddingRight": 5,
                                   "width": 50,
                                 }
                               }
@@ -7397,13 +7390,12 @@ exports[`Onboarding.CustomModeSettings renders correctly 3`] = `
                               onStartShouldSetResponder={[Function]}
                               style={
                                 Object {
-                                  "backgroundColor": "#C7C6FF61",
+                                  "backgroundColor": "#EDF0F3",
                                   "borderColor": "#535AE4",
                                   "borderRadius": 30,
                                   "borderWidth": 1,
                                   "height": 27,
                                   "opacity": 1,
-                                  "paddingRight": 5,
                                   "width": 50,
                                 }
                               }
@@ -7860,13 +7852,12 @@ exports[`Onboarding.CustomModeSettings renders correctly 3`] = `
                               onStartShouldSetResponder={[Function]}
                               style={
                                 Object {
-                                  "backgroundColor": "#C7C6FF61",
+                                  "backgroundColor": "#EDF0F3",
                                   "borderColor": "#535AE4",
                                   "borderRadius": 30,
                                   "borderWidth": 1,
                                   "height": 27,
                                   "opacity": 1,
-                                  "paddingRight": 5,
                                   "width": 50,
                                 }
                               }

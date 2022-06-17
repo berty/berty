@@ -12,7 +12,7 @@ test('Settings.MyBertyId renders correctly', async () => {
 	const { toJSON, getByLabelText } = renderScreen('Settings.MyBertyId', MyBertyId)
 	expect(toJSON()).toMatchSnapshot()
 
-	const button = getByLabelText(i18next.t('settings.my-berty-ID.fingerprint'))
+	const button = getByLabelText(i18next.t('tabs.fingerprint'))
 	fireEvent.press(button)
 	expect(toJSON()).toMatchSnapshot()
 })

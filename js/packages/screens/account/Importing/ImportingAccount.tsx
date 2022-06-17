@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { StreamProgress } from '@berty/components/account'
+import { StreamProgress } from '@berty/components'
 import { StatusBarPrimary } from '@berty/components/StatusBarPrimary'
 import { useAppDispatch } from '@berty/hooks'
 import { ScreenFC, useNavigation } from '@berty/navigation'

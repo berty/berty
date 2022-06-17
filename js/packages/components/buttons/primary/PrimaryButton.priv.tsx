@@ -9,12 +9,13 @@ import { ButtonDefProps } from '../interfaces'
 export const PrimaryButtonPriv: React.FC<ButtonDefProps & { alternative?: boolean }> = props => {
 	const colors = useThemeColor()
 
+	let backgroundColor = colors['background-header']
+
 	// TODO: replace with value from theme
-	const getBgColor = (): string => {
-		if (props.disabled) {
-			return props.alternative ? '#E3E4EB' : '#E9EAF1'
-		}
-		return props.alternative ? '#3943D4' : colors['background-header']
+	if (props.disabled) {
+		backgroundColor = props.alternative ? '#E3E4EB' : '#E9EAF1'
+	} else if (props.alternative) {
+		backgroundColor = '#3943D4'
 	}
 
 	return (
@@ -22,7 +23,7 @@ export const PrimaryButtonPriv: React.FC<ButtonDefProps & { alternative?: boolea
 			{...props}
 			style={{
 				borderRadius: props.alternative ? 14 : 8,
-				backgroundColor: getBgColor(),
+				backgroundColor,
 			}}
 			onPress={props.loading ? undefined : props.onPress}
 		>

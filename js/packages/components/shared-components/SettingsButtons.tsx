@@ -10,7 +10,7 @@ import {
 	ScrollView,
 } from 'react-native'
 
-import { Toggle } from '@berty/components/shared-components/Toggle'
+import { Toggle } from '@berty/components'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
 import { useThemeColor } from '@berty/store/hooks'
@@ -78,8 +78,6 @@ export const ButtonSettingV2: React.FC<{
 	if (toggle?.enable) {
 		oppositeNode = (
 			<Toggle
-				style={padding.right.scale(5)}
-				status='primary'
 				checked={toggle?.value}
 				onChange={async () => {
 					if (toggle && toggle?.action) {
@@ -224,7 +222,6 @@ export const ButtonSetting: React.FC<SettingButtonProps> = ({
 	actionIconAngle = null,
 	actionToggle = null,
 	varToggle = null,
-	toggleStatus = 'primary',
 	previewValue = null,
 	previewValueColor,
 	alone = true,
@@ -381,9 +378,6 @@ export const ButtonSetting: React.FC<SettingButtonProps> = ({
 					)}
 					{toggled && (
 						<Toggle
-							disabled={disabled}
-							style={padding.right.scale(5)}
-							status={toggleStatus}
 							checked={varToggle || isToggle}
 							onChange={
 								actionToggle
