@@ -1,5 +1,10 @@
 package analyzer
 
+import (
+	"errors"
+	"fmt"
+)
+
 type ContactRequestReport struct {
 	ContactRequests []*ContactRequest `json:"contactRequests"`
 	Sent            int               `json:"sent"`
@@ -14,6 +19,7 @@ type MessageReport struct {
 	Messages       []*Message `json:"messages"`
 	Sent           int        `json:"sent"`
 	Received       int        `json:"received"`
+	Missing        int        `json:"missing"`
 	SuccessPercent float32    `json:"successPercent"`
 	AverageTime    float32    `json:"averageTime"`
 	MinTime        int64      `json:"minTime"`
@@ -36,7 +42,11 @@ func (a *Analyzer) Report() (*Report, error) {
 
 	mr := &MessageReport{}
 	for _, message := range a.Messages {
-		mr.processMessage(message)
+		group, ok := a.Groups[message.GroupPK]
+		if !ok {
+			return nil, errors.New(fmt.Sprintf("no group=%s found for message=%s", message.GroupPK, message.CID))
+		}
+		mr.processMessage(message, group)
 	}
 	mr.computeAverageTime()
 	return &Report{
@@ -78,22 +88,52 @@ func (crr *ContactRequestReport) computeAverageTime() {
 	}
 }
 
-func (mr *MessageReport) processMessage(message *Message) error {
+func (mr *MessageReport) processMessage(message *Message, group *Group) error {
 	mr.Messages = append(mr.Messages, message)
-	mr.Sent++
-	if message.Succeeded {
-		mr.Received++
 
-		duration := message.Finished.Sub(message.Started).Milliseconds()
-		if mr.MinTime == 0 || duration < mr.MinTime {
-			mr.MinTime = duration
+	mr.Sent++
+	mr.Received += len(message.ReceiverPKs)
+
+	if len(message.ReceiverPKs) > 0 {
+		message.MissingReceiverPKs = computeMissingMembers(message, group.Members)
+		mr.Missing += len(message.MissingReceiverPKs)
+		if len(message.MissingReceiverPKs) == 0 {
+			message.Succeeded = true
 		}
-		if mr.MaxTime == 0 || duration > mr.MaxTime {
-			mr.MaxTime = duration
+
+		mr.SuccessPercent = float32(len(message.ReceiverPKs)) / float32(len(group.Members)) * 100
+	}
+
+	duration := message.Finished.Sub(message.Started).Milliseconds()
+	if mr.MinTime == 0 || duration < mr.MinTime {
+		mr.MinTime = duration
+	}
+	if mr.MaxTime == 0 || duration > mr.MaxTime {
+		mr.MaxTime = duration
+	}
+	return nil
+}
+
+func computeMissingMembers(message *Message, members []string) []string {
+	result := []string{}
+
+	for _, member := range members {
+		if !contains(message.ReceiverPKs, member) {
+			result = append(result, member)
 		}
 	}
-	mr.SuccessPercent = float32(mr.Received) / float32(mr.Sent) * 100
-	return nil
+
+	return result
+}
+
+func (a *Analyzer) groupMembers(groupPK string) []string {
+	result := []string{}
+	group, ok := a.Groups[groupPK]
+	if ok {
+		return group.Members
+	}
+
+	return result
 }
 
 func (mr *MessageReport) computeAverageTime() {

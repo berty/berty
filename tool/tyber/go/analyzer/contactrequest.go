@@ -87,7 +87,7 @@ func (cr *ContactRequest) parseSenderDevicePK(details []tyber.Detail) error {
 	return errors.New("member device public key not found")
 }
 
-func (cr *ContactRequest) parseSenderStep2(trace *parser.AppTrace) error {
+func (cr *ContactRequest) parseSenderGroupPK(trace *parser.AppTrace) error {
 	for _, step := range trace.Steps {
 		if step.Name == "Added contact to db" {
 			for _, detail := range step.Details {
