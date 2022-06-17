@@ -325,15 +325,19 @@
 			}
 		},
 		"my-berty-ID": {
-			"title": "A Berty azonosítóm",
-			"qr": "QR",
-			"fingerprint": "Ujjlenyomat"
+			"title": "A Berty azonosítóm"
 		},
 		"share": {
 			"invite": "Meghívás",
 			"tap-to-scan": "Koppintson a szkenneléshez",
 			"create-group": "Csoport létrehozás"
 		}
+	},
+	"tabs": {
+		"qr": "QR",
+		"fingerprint": "Ujjlenyomat",
+		"info": "Infó",
+		"devices": "Eszközök"
 	},
 	"modals": {
 		"manage-deep-link": {
@@ -346,15 +350,7 @@
 		"invalid-scan": {
 			"dismiss-button": ""
 		},
-		"add-this-contact": {
-			"fingerprint": "Ujjlenyomat",
-			"info": "Infó",
-			"devices": "Eszközök"
-		},
 		"group-invitation": {
-			"fingerprint": "Ujjlenyomat",
-			"info": "Infók",
-			"devices": "Eszközök",
 			"join": "",
 			"password-label": "Csoport jelszó megadása",
 			"password-placeholder": "Jelszó..."
@@ -372,8 +368,6 @@
 		"sending": "Küldés...",
 		"sent": "Elküldött",
 		"contact-settings": {
-			"fingerprint": "Ujjlenyomat",
-			"info": "Infók",
 			"my-devices": "Eszközeim"
 		},
 		"multi-member": {
