@@ -325,15 +325,19 @@
 			}
 		},
 		"my-berty-ID": {
-			"title": "",
-			"qr": "QR",
-			"fingerprint": "Fingeravtrykk"
+			"title": ""
 		},
 		"share": {
 			"invite": "",
 			"tap-to-scan": "",
 			"create-group": ""
 		}
+	},
+	"tabs": {
+		"qr": "QR",
+		"fingerprint": "Fingeravtrykk",
+		"info": "Info",
+		"devices": "Enheter"
 	},
 	"modals": {
 		"manage-deep-link": {
@@ -346,15 +350,7 @@
 		"invalid-scan": {
 			"dismiss-button": ""
 		},
-		"add-this-contact": {
-			"fingerprint": "Fingeravtrykk",
-			"info": "Info",
-			"devices": "Enheter"
-		},
 		"group-invitation": {
-			"fingerprint": "Fingeravtrykk",
-			"info": "Infoer",
-			"devices": "Enheter",
 			"join": "",
 			"password-label": "",
 			"password-placeholder": ""
@@ -372,8 +368,6 @@
 		"sending": "Sender...",
 		"sent": "",
 		"contact-settings": {
-			"fingerprint": "Fingeravtrykk",
-			"info": "Infoer",
 			"my-devices": ""
 		},
 		"multi-member": {
