@@ -325,15 +325,19 @@
 			}
 		},
 		"my-berty-ID": {
-			"title": "",
-			"qr": "二維碼",
-			"fingerprint": "指紋"
+			"title": ""
 		},
 		"share": {
 			"invite": "",
 			"tap-to-scan": "",
 			"create-group": ""
 		}
+	},
+	"tabs": {
+		"qr": "二維碼",
+		"fingerprint": "指紋",
+		"info": "信息",
+		"devices": "設備"
 	},
 	"modals": {
 		"manage-deep-link": {
@@ -346,15 +350,7 @@
 		"invalid-scan": {
 			"dismiss-button": ""
 		},
-		"add-this-contact": {
-			"fingerprint": "指紋",
-			"info": "信息",
-			"devices": "設備"
-		},
 		"group-invitation": {
-			"fingerprint": "指紋",
-			"info": "信息",
-			"devices": "設備",
 			"join": "",
 			"password-label": "",
 			"password-placeholder": ""
@@ -372,8 +368,6 @@
 		"sending": "正在發送...",
 		"sent": "",
 		"contact-settings": {
-			"fingerprint": "指紋",
-			"info": "信息",
 			"my-devices": ""
 		},
 		"multi-member": {
