@@ -325,15 +325,19 @@
 			}
 		},
 		"my-berty-ID": {
-			"title": "",
-			"qr": "",
-			"fingerprint": ""
+			"title": ""
 		},
 		"share": {
 			"invite": "",
 			"tap-to-scan": "",
 			"create-group": ""
 		}
+	},
+	"tabs": {
+		"qr": "",
+		"fingerprint": "",
+		"info": "",
+		"devices": ""
 	},
 	"modals": {
 		"manage-deep-link": {
@@ -346,15 +350,7 @@
 		"invalid-scan": {
 			"dismiss-button": ""
 		},
-		"add-this-contact": {
-			"fingerprint": "",
-			"info": "",
-			"devices": ""
-		},
 		"group-invitation": {
-			"fingerprint": "",
-			"info": "",
-			"devices": "",
 			"join": "",
 			"password-label": "",
 			"password-placeholder": ""
@@ -372,8 +368,6 @@
 		"sending": "",
 		"sent": "",
 		"contact-settings": {
-			"fingerprint": "",
-			"info": "",
 			"my-devices": ""
 		},
 		"multi-member": {
