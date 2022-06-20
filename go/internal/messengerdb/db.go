@@ -1087,6 +1087,7 @@ func (d *DBWrapper) AddMember(memberPK, groupPK, displayName, avatarCID string, 
 		AvatarCID:             avatarCID,
 		IsCreator:             isCreator,
 		IsMe:                  isMe,
+		DisplayName:           displayName,
 	}
 
 	if err := d.TX(d.ctx, func(tx *DBWrapper) error {
@@ -1097,16 +1098,6 @@ func (d *DBWrapper) AddMember(memberPK, groupPK, displayName, avatarCID string, 
 		} else if err != nil && err != gorm.ErrRecordNotFound {
 			return err
 		}
-
-		// Ensure a display name
-		if displayName == "" {
-			nameSuffix := "1337"
-			if len(memberPK) >= 4 {
-				nameSuffix = memberPK[:4]
-			}
-			displayName = "anon#" + nameSuffix
-		}
-		member.DisplayName = displayName
 
 		return tx.db.Create(&member).Error
 	}); errors.Is(err, errcode.ErrDBEntryAlreadyExists) {
@@ -1133,14 +1124,6 @@ func (d *DBWrapper) UpsertMember(memberPK, groupPK string, m messengertypes.Memb
 		isNew = true
 	} else if err != nil {
 		return nil, isNew, errcode.ErrDBRead.Wrap(err)
-	}
-
-	if em.GetDisplayName() == "" && m.DisplayName == "" {
-		nameSuffix := "1337"
-		if len(memberPK) >= 4 {
-			nameSuffix = memberPK[:4]
-		}
-		m.DisplayName = "anon#" + nameSuffix
 	}
 
 	if isNew {

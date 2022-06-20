@@ -1,4 +1,5 @@
 import { createEntityAdapter, createSlice, EntityState } from '@reduxjs/toolkit'
+import cloneDeep from 'lodash/cloneDeep'
 import Long from 'long'
 
 import beapi from '@berty/api'
@@ -112,6 +113,14 @@ type LocalRootState = typeof rootInitialState
  *
  */
 
+const defaultDisplayName = (seed: string | null | undefined) => {
+	let suffix = '1337'
+	if (seed) {
+		suffix = seed.substring(0, 4)
+	}
+	return `anon#${suffix}`
+}
+
 const slice = createSlice({
 	name: 'messenger',
 	initialState,
@@ -201,6 +210,11 @@ const slice = createSlice({
 					return
 				}
 
+				const member = cloneDeep(payload.member)
+				if (!member.displayName) {
+					member.displayName = defaultDisplayName(member.publicKey)
+				}
+
 				const membersBucket = selectMembersBucket(
 					state.membersBuckets,
 					payload.member.conversationPublicKey,
@@ -208,7 +222,7 @@ const slice = createSlice({
 
 				if (!membersBucket) {
 					let members = membersAdapter.getInitialState()
-					members = membersAdapter.addOne(members, payload.member)
+					members = membersAdapter.addOne(members, member)
 					membersBucketsAdapter.addOne(state.membersBuckets, {
 						conversationPublicKey: payload.member.conversationPublicKey,
 						members,
@@ -218,7 +232,7 @@ const slice = createSlice({
 
 				membersBucketsAdapter.updateOne(state.membersBuckets, {
 					id: membersBucket.conversationPublicKey,
-					changes: { members: membersAdapter.upsertOne(membersBucket.members, payload.member) },
+					changes: { members: membersAdapter.upsertOne(membersBucket.members, member) },
 				})
 			},
 		)
