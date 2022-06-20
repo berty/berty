@@ -1,11 +1,12 @@
 import { Icon } from '@ui-kitten/components'
-import React, { useState, forwardRef, useImperativeHandle } from 'react'
+import React, { useState, forwardRef, useImperativeHandle, ForwardedRef } from 'react'
 import { Animated, Easing, StyleSheet, TouchableOpacity, View } from 'react-native'
 
 import { useStyles } from '@berty/contexts/styles'
 import { useThemeColor } from '@berty/store/hooks'
 
 import { UnifiedText } from '../shared-components/UnifiedText'
+import { DropdownRef } from './interfaces'
 
 interface DropdownPrivProps {
 	icon?: string
@@ -15,7 +16,10 @@ interface DropdownPrivProps {
 }
 
 export const DropdownPriv = forwardRef(
-	({ icon, children, accessibilityLabel, placeholder = '' }: DropdownPrivProps, ref) => {
+	(
+		{ icon, children, accessibilityLabel, placeholder = '' }: DropdownPrivProps,
+		ref: ForwardedRef<DropdownRef>,
+	) => {
 		const { padding, margin } = useStyles()
 		const colors = useThemeColor()
 
@@ -27,6 +31,44 @@ export const DropdownPriv = forwardRef(
 			inputRange: [0, 1],
 			outputRange: ['0deg', '180deg'],
 		})
+
+		const open = () => {
+			if (!isOpen) {
+				Animated.parallel([
+					Animated.timing(animateHeight, {
+						toValue: 200,
+						duration: 200,
+						easing: Easing.linear,
+						useNativeDriver: false,
+					}),
+					Animated.timing(rotateValue, {
+						toValue: 1,
+						duration: 150,
+						useNativeDriver: true,
+					}),
+				]).start()
+				setOpen(true)
+			}
+		}
+
+		const close = () => {
+			if (isOpen) {
+				Animated.parallel([
+					Animated.timing(animateHeight, {
+						toValue: 0,
+						duration: 200,
+						easing: Easing.out(Easing.circle),
+						useNativeDriver: false,
+					}),
+					Animated.timing(rotateValue, {
+						toValue: 0,
+						duration: 150,
+						useNativeDriver: true,
+					}),
+				]).start()
+				setOpen(false)
+			}
+		}
 
 		const toggleView = () => {
 			Animated.parallel([
@@ -47,6 +89,8 @@ export const DropdownPriv = forwardRef(
 
 		useImperativeHandle(ref, () => ({
 			toggleView,
+			open,
+			close,
 		}))
 
 		return (
