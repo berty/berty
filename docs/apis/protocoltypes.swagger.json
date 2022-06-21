@@ -1391,6 +1391,39 @@
         ]
       }
     },
+    "/berty.protocol.v1/ProtocolService/RefreshGroup": {
+      "post": {
+        "summary": "RefreshGroup try to force refresh the given group",
+        "operationId": "ProtocolService_RefreshGroup",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1RefreshGroupReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1RefreshGroupRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProtocolService"
+        ]
+      }
+    },
     "/berty.protocol.v1/ProtocolService/ReplicationServiceRegisterGroup": {
       "post": {
         "summary": "ReplicationServiceRegisterGroup Asks a replication service to distribute a group contents",
@@ -3054,6 +3087,18 @@
         },
         "receiver": {
           "$ref": "#/definitions/v1PushServiceReceiver"
+        }
+      }
+    },
+    "v1RefreshGroupReply": {
+      "type": "object"
+    },
+    "v1RefreshGroupRequest": {
+      "type": "object",
+      "properties": {
+        "group_pk": {
+          "type": "string",
+          "format": "byte"
         }
       }
     },

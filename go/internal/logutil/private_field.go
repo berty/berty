@@ -124,5 +124,5 @@ func init() { // nolint:gochecknoinits
 		panic(err)
 	}
 
-	SetGlobal(namespace, true)
+	SetGlobal(namespace, false)
 }

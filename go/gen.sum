@@ -6,7 +6,7 @@ d986b56aadb37b2e818ebb822e66c281f2c8e2e4  ../api/accounttypes.proto
 c314cc3d08e8849bd0693039e42da117c39efef5  ../api/go-internal/handshake.proto
 9b4665f0290b8e94e5ef4b80572a9304f587c2c7  ../api/go-internal/records.proto
 851d354abf878a3afd1e1759511b7b3ce297330f  ../api/go-internal/testutil.proto
-5435e65abd5e30f98a2f92f7d848530c55a69b38  ../api/messengertypes.proto
-eb3c2c764fcc11add81dae1d81beb68dfa17e812  ../api/protocoltypes.proto
+273f452d6ea8a21bfba5622377471d28ac39fa8f  ../api/messengertypes.proto
+d5d7cd76d3763eb58ccaf49d949bfe0cf6678291  ../api/protocoltypes.proto
 429ad083ef1963a77adc439239118d0db65c9d37  ../api/pushtypes.proto
 b2734b140660cb270f9c183b2395e752b9468ebe  Makefile

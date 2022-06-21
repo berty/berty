@@ -1942,6 +1942,8 @@ export namespace berty {
                 public pushSetDeviceToken(request: berty.protocol.v1.PushSetDeviceToken.IRequest): Promise<berty.protocol.v1.PushSetDeviceToken.Reply>;
                 public pushSetServer(request: berty.protocol.v1.PushSetServer.IRequest, callback: berty.protocol.v1.ProtocolService.PushSetServerCallback): void;
                 public pushSetServer(request: berty.protocol.v1.PushSetServer.IRequest): Promise<berty.protocol.v1.PushSetServer.Reply>;
+                public refreshGroup(request: berty.protocol.v1.RefreshGroup.IRequest, callback: berty.protocol.v1.ProtocolService.RefreshGroupCallback): void;
+                public refreshGroup(request: berty.protocol.v1.RefreshGroup.IRequest): Promise<berty.protocol.v1.RefreshGroup.Reply>;
             }
 
             namespace ProtocolService {
@@ -2031,6 +2033,8 @@ export namespace berty {
                 type PushSetDeviceTokenCallback = (error: (Error|null), response?: berty.protocol.v1.PushSetDeviceToken.Reply) => void;
 
                 type PushSetServerCallback = (error: (Error|null), response?: berty.protocol.v1.PushSetServer.Reply) => void;
+
+                type RefreshGroupCallback = (error: (Error|null), response?: berty.protocol.v1.RefreshGroup.Reply) => void;
             }
 
             enum GroupType {
@@ -6018,6 +6022,59 @@ export namespace berty {
                     public static verify(message: { [k: string]: any }): (string|null);
                     public static fromObject(object: { [k: string]: any }): berty.protocol.v1.OrbitDBMessageHeads.Box;
                     public static toObject(message: berty.protocol.v1.OrbitDBMessageHeads.Box, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+            }
+
+            interface IRefreshGroup {
+            }
+
+            class RefreshGroup implements IRefreshGroup {
+
+                public static create(properties?: berty.protocol.v1.IRefreshGroup): berty.protocol.v1.RefreshGroup;
+                public static encode(message: berty.protocol.v1.IRefreshGroup, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.protocol.v1.IRefreshGroup, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.RefreshGroup;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.RefreshGroup;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.protocol.v1.RefreshGroup;
+                public static toObject(message: berty.protocol.v1.RefreshGroup, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            namespace RefreshGroup {
+
+                interface IRequest {
+                    groupPk?: (Uint8Array|null);
+                }
+
+                class Request implements IRequest {
+
+                    public groupPk: Uint8Array;
+                    public static create(properties?: berty.protocol.v1.RefreshGroup.IRequest): berty.protocol.v1.RefreshGroup.Request;
+                    public static encode(message: berty.protocol.v1.RefreshGroup.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.RefreshGroup.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.RefreshGroup.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.RefreshGroup.Request;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.RefreshGroup.Request;
+                    public static toObject(message: berty.protocol.v1.RefreshGroup.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+
+                interface IReply {
+                }
+
+                class Reply implements IReply {
+
+                    public static create(properties?: berty.protocol.v1.RefreshGroup.IReply): berty.protocol.v1.RefreshGroup.Reply;
+                    public static encode(message: berty.protocol.v1.RefreshGroup.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.RefreshGroup.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.RefreshGroup.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.RefreshGroup.Reply;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.RefreshGroup.Reply;
+                    public static toObject(message: berty.protocol.v1.RefreshGroup.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
             }
