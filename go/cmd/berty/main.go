@@ -82,6 +82,7 @@ func runMain(args []string) error {
 				pushServerCommand(),
 				p2pCommand(),
 				relayServerCommand(),
+				vcIssuerCommand(),
 			},
 		}
 

@@ -3,6 +3,8 @@ package mini
 import (
 	"bytes"
 	"context"
+	"crypto/ed25519"
+	crand "crypto/rand"
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
@@ -19,6 +21,7 @@ import (
 	"moul.io/godev"
 
 	"berty.tech/berty/v2/go/internal/bertylinks"
+	"berty.tech/berty/v2/go/pkg/bertyvcissuer"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
@@ -200,6 +203,16 @@ func commandList() []*command {
 			cmd:   exportAccount,
 		},
 		{
+			title: "services credential init",
+			help:  `Inits a credential verification flow`,
+			cmd:   credentialVerificationInit,
+		},
+		{
+			title: "services credential complete",
+			help:  `Completes a credential verification flow`,
+			cmd:   credentialVerificationComplete,
+		},
+		{
 			title:     "/",
 			help:      "",
 			cmd:       newSlashMessageCommand,
@@ -222,6 +235,64 @@ func sendReplyOptions(ctx context.Context, v *groupView, cmd string) error {
 	})
 
 	return err
+}
+
+func credentialVerificationInit(ctx context.Context, v *groupView, service string) error {
+	// TODO: move this to bertyprotocol
+	// FIXME: use a non volatile identity
+	pub, priv, err := ed25519.GenerateKey(crand.Reader)
+	if err != nil {
+		return err
+	}
+
+	_, webLink, err := bertylinks.MarshalLink(&messengertypes.BertyLink{
+		Kind: messengertypes.BertyLink_ContactInviteV1Kind,
+		BertyID: &messengertypes.BertyID{
+			PublicRendezvousSeed: []byte("testseed"),
+			AccountPK:            pub[:],
+			DisplayName:          "test link",
+		},
+	})
+	if err != nil {
+		return err
+	}
+
+	v.vcClient = bertyvcissuer.NewClient(service)
+	ctx, cancel := context.WithTimeout(ctx, time.Second*10)
+	defer cancel()
+
+	url, err := v.vcClient.Init(ctx, webLink, priv)
+	if err != nil {
+		return err
+	}
+
+	v.messages.Append(&historyMessage{
+		messageType: messageTypeMeta,
+		payload:     []byte(fmt.Sprintf("Auth URL: %s", url)),
+	})
+	copyToClipboard(v, url)
+
+	return nil
+}
+
+func credentialVerificationComplete(ctx context.Context, v *groupView, callbackURI string) error {
+	if v.vcClient == nil {
+		return fmt.Errorf("no verification process has been started")
+	}
+
+	_, identifier, err := v.vcClient.Complete(callbackURI)
+	if err != nil {
+		return err
+	}
+
+	v.messages.Append(&historyMessage{
+		messageType: messageTypeMeta,
+		payload:     []byte(fmt.Sprintf("Completed authentication, associated identifier is <%s>", identifier)),
+	})
+
+	v.vcClient = nil
+
+	return nil
 }
 
 func exportAccount(ctx context.Context, v *groupView, path string) error {
