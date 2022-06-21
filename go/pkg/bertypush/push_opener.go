@@ -51,12 +51,23 @@ func PushEnrich(rawPushData *messengertypes.PushReceivedData, accountData *accou
 		link = bertylinks.LinkInternalPrefix
 	}
 
+	conversationDisplayName := ""
+	memberDisplayName := ""
+	switch rawPushData.GetInteraction().GetConversation().GetType() {
+	case messengertypes.Conversation_ContactType:
+		conversationDisplayName = rawPushData.GetInteraction().GetConversation().GetContact().GetDisplayName()
+	case messengertypes.Conversation_MultiMemberType:
+		conversationDisplayName = rawPushData.GetInteraction().GetConversation().GetDisplayName()
+		memberDisplayName = rawPushData.GetInteraction().GetMember().GetDisplayName()
+	}
+
 	d := &pushtypes.DecryptedPush{
 		AccountID:               accountData.AccountID,
 		AccountName:             accountData.Name,
 		ConversationPublicKey:   rawPushData.Interaction.ConversationPublicKey,
-		ConversationDisplayName: rawPushData.Interaction.Conversation.DisplayName,
+		ConversationDisplayName: conversationDisplayName,
 		MemberPublicKey:         rawPushData.Interaction.MemberPublicKey,
+		MemberDisplayName:       memberDisplayName,
 		PushType:                pushtypes.DecryptedPush_Unknown,
 		PayloadAttrsJSON:        "{}",
 		DeepLink:                link,
@@ -64,10 +75,6 @@ func PushEnrich(rawPushData *messengertypes.PushReceivedData, accountData *accou
 		AccountMuted:            rawPushData.AccountMuted,
 		ConversationMuted:       rawPushData.ConversationMuted,
 		HidePreview:             rawPushData.HidePreview,
-	}
-
-	if rawPushData.Interaction.Member != nil {
-		d.MemberDisplayName = rawPushData.Interaction.Member.DisplayName
 	}
 
 	payloadAttrs := map[string]string{}

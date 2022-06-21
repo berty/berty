@@ -50,6 +50,13 @@ func (m *messengerPushReceiver) PushReceive(ctx context.Context, input []byte) (
 		return nil, errcode.ErrInternal.Wrap(err)
 	}
 
+	if i.Conversation.Type == messengertypes.Conversation_ContactType {
+		i.Conversation.Contact, err = m.db.GetContactByPK(i.Conversation.ContactPublicKey)
+		if err != nil {
+			m.logger.Error("failed to get push notif contact", zap.Error(err))
+		}
+	}
+
 	accountMuted, conversationMuted, err := m.db.GetMuteStatusForConversation(i.ConversationPublicKey)
 	if err != nil {
 		accountMuted = true
