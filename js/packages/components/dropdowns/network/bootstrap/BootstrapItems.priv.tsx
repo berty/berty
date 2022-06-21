@@ -1,5 +1,6 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
+import { View } from 'react-native'
 
 import { DividerItem } from '@berty/components/items'
 import { AccordionAdd } from '@berty/components/modals/AccordionAdd.modal'
@@ -17,7 +18,7 @@ import {
 import { AddButtonPriv } from '../AddButton.priv'
 import { MenuToggleWithEditPriv } from '../MenuToggleWithEdit.priv'
 
-export const BootstrapDropdownPriv = () => {
+export const BootstrapItemsPriv = () => {
 	const dispatch = useAppDispatch()
 	const { hide, show } = useModal()
 	const { t } = useTranslation()
@@ -26,10 +27,9 @@ export const BootstrapDropdownPriv = () => {
 	return (
 		<>
 			{(bootstrap || []).map(({ alias, url, isEnabled, isEditable }, index) => (
-				<>
+				<View key={`bootstrap-item-${index}`}>
 					<DividerItem />
 					<MenuToggleWithEditPriv
-						key={`bootstrap-item-${index}`}
 						isToggleOn={isEnabled}
 						onPress={() => dispatch(toggleFromBootstrap(url))}
 						onPressModify={
@@ -61,7 +61,7 @@ export const BootstrapDropdownPriv = () => {
 					>
 						{alias}
 					</MenuToggleWithEditPriv>
-				</>
+				</View>
 			))}
 			<DividerItem />
 			<AddButtonPriv

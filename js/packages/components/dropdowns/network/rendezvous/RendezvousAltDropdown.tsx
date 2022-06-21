@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 
 import { NetworkProps } from '../interfaces'
 import { NetworkAltDropdownPriv } from '../NetworkAltDropdown.priv'
-import { RendezvousDropdownPriv } from './RendezvousDropdown.priv'
+import { RendezvousItemsPriv } from './RendezvousItems.priv'
 
 export const RendezvousAltDropdown: React.FC<NetworkProps> = props => {
 	const { t } = useTranslation()
@@ -13,7 +13,7 @@ export const RendezvousAltDropdown: React.FC<NetworkProps> = props => {
 			placeholder={t('settings.network.rdvp-button')}
 			accessibilityLabel={props.accessibilityLabel}
 		>
-			<RendezvousDropdownPriv />
+			<RendezvousItemsPriv />
 		</NetworkAltDropdownPriv>
 	)
 }

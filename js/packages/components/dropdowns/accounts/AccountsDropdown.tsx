@@ -18,13 +18,15 @@ interface AccountsDropdownProps {
 export const AccountsDropdown: React.FC<AccountsDropdownProps> = props => {
 	return (
 		<DropdownPriv placeholder={props.placeholder} accessibilityLabel={props.accessibilityLabel}>
-			{props.items.map(item => (
+			{props.items.map((item, index) => (
 				<TouchableOpacity
 					onPress={() => props.onChangeItem(item)}
 					style={[
 						styles.item,
 						{
 							backgroundColor: props.defaultValue === item.accountId ? '#CFD2FB' : 'transparent',
+							borderBottomLeftRadius: index === props.items.length - 1 ? 14 : 0,
+							borderBottomRightRadius: index === props.items.length - 1 ? 14 : 0,
 						},
 					]}
 					key={item.accountId}

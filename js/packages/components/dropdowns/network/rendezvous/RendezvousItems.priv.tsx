@@ -1,5 +1,6 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
+import { View } from 'react-native'
 
 import { DividerItem } from '@berty/components/items'
 import { AccordionAdd } from '@berty/components/modals/AccordionAdd.modal'
@@ -7,51 +8,50 @@ import { AccordionEdit } from '@berty/components/modals/AccordionEdit.modal'
 import { useModal } from '@berty/contexts/modal.context'
 import { useAppDispatch, useAppSelector } from '@berty/hooks'
 import {
-	addToStaticRelay,
-	modifyFromStaticRelay,
-	removeFromStaticRelay,
-	selectStaticRelay,
-	toggleFromStaticRelay,
+	addToRendezvous,
+	modifyFromRendezvous,
+	removeFromRendezvous,
+	selectRendezvous,
+	toggleFromRendezvous,
 } from '@berty/redux/reducers/networkConfig.reducer'
 
 import { AddButtonPriv } from '../AddButton.priv'
 import { MenuToggleWithEditPriv } from '../MenuToggleWithEdit.priv'
 
-export const RelayDropdownPriv = () => {
+export const RendezvousItemsPriv = () => {
 	const dispatch = useAppDispatch()
 	const { hide, show } = useModal()
 	const { t } = useTranslation()
-	const staticRelay = useAppSelector(selectStaticRelay)
+	const rendezvous = useAppSelector(selectRendezvous)
 
 	return (
 		<>
-			{(staticRelay || []).map(({ alias, url, isEnabled, isEditable }, index) => (
-				<>
+			{(rendezvous || []).map(({ alias, url, isEnabled, isEditable }, index) => (
+				<View key={`rendezvous-item-${index}`}>
 					<DividerItem />
 					<MenuToggleWithEditPriv
-						key={`relay-item-${index}`}
 						isToggleOn={isEnabled}
-						onPress={() => dispatch(toggleFromStaticRelay(url))}
+						onPress={() => dispatch(toggleFromRendezvous(url))}
 						onPressModify={
 							isEditable
 								? () =>
 										show(
 											<AccordionEdit
-												title={t('onboarding.custom-mode.settings.modals.edit.title.relay')}
+												title={t('onboarding.custom-mode.settings.modals.edit.title.rdvp')}
 												onEdit={data => {
-													dispatch(modifyFromStaticRelay({ url, changes: data }))
+													dispatch(modifyFromRendezvous({ url, changes: data }))
 													hide()
 												}}
 												onDelete={() => {
-													dispatch(removeFromStaticRelay(url))
+													dispatch(removeFromRendezvous(url))
 													hide()
 												}}
 												defaultAlias={alias}
 												defaultUrl={url}
-												alreadyExistingUrls={staticRelay
+												alreadyExistingUrls={rendezvous
 													.map(({ url }) => url)
 													.filter((url): url is string => url !== undefined)}
-												alreadyExistingAliases={staticRelay
+												alreadyExistingAliases={rendezvous
 													.map(({ alias }) => alias)
 													.filter((alias): alias is string => alias !== undefined)}
 											/>,
@@ -61,22 +61,22 @@ export const RelayDropdownPriv = () => {
 					>
 						{alias}
 					</MenuToggleWithEditPriv>
-				</>
+				</View>
 			))}
 			<DividerItem />
 			<AddButtonPriv
 				onPress={() =>
 					show(
 						<AccordionAdd
-							title={t('onboarding.custom-mode.settings.modals.add.title.relay')}
+							title={t('onboarding.custom-mode.settings.modals.add.title.rdvp')}
 							onSubmit={data => {
-								dispatch(addToStaticRelay(data))
+								dispatch(addToRendezvous(data))
 								hide()
 							}}
-							alreadyExistingAliases={staticRelay
+							alreadyExistingAliases={rendezvous
 								.map(({ alias }) => alias)
 								.filter((alias): alias is string => alias !== undefined)}
-							alreadyExistingUrls={staticRelay
+							alreadyExistingUrls={rendezvous
 								.map(({ url }) => url)
 								.filter((url): url is string => url !== undefined)}
 						/>,

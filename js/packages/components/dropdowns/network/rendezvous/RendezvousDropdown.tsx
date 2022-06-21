@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { DropdownRef } from '../../interfaces'
 import { NetworkProps } from '../interfaces'
 import { NetworkDropdownPriv } from '../NetworkDropdown.priv'
-import { RendezvousDropdownPriv } from './RendezvousDropdown.priv'
+import { RendezvousItemsPriv } from './RendezvousItems.priv'
 
 export const RendezvousDropdown = forwardRef(
 	(props: NetworkProps, ref: ForwardedRef<DropdownRef>) => {
@@ -17,7 +17,7 @@ export const RendezvousDropdown = forwardRef(
 				icon='privacy'
 				ref={ref}
 			>
-				<RendezvousDropdownPriv />
+				<RendezvousItemsPriv />
 			</NetworkDropdownPriv>
 		)
 	},
