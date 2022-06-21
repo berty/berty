@@ -43,4 +43,4 @@ https://berty.tech/id#contact/oZBLF1QtpQqrKjikvbjJLVmDWSNJpevG5FiSZxqFr2Wc31nRqy
 
 ## Deployment
 
-See [../../../tool/deployments/welcome-bot/](../../../tool/deployments/welcome-bot/)
+See [../../../tool/deployments/welcomebot/](../../../tool/deployments/welcomebot/)
