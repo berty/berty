@@ -181,6 +181,9 @@
     - [PushShareToken](#berty.protocol.v1.PushShareToken)
     - [PushShareToken.Reply](#berty.protocol.v1.PushShareToken.Reply)
     - [PushShareToken.Request](#berty.protocol.v1.PushShareToken.Request)
+    - [RefreshGroup](#berty.protocol.v1.RefreshGroup)
+    - [RefreshGroup.Reply](#berty.protocol.v1.RefreshGroup.Reply)
+    - [RefreshGroup.Request](#berty.protocol.v1.RefreshGroup.Request)
     - [ReplicationServiceRegisterGroup](#berty.protocol.v1.ReplicationServiceRegisterGroup)
     - [ReplicationServiceRegisterGroup.Reply](#berty.protocol.v1.ReplicationServiceRegisterGroup.Reply)
     - [ReplicationServiceRegisterGroup.Request](#berty.protocol.v1.ReplicationServiceRegisterGroup.Request)
@@ -1581,6 +1584,22 @@ Progress define a generic object that can be used to display a progress bar for 
 | server | [PushServer](#berty.protocol.v1.PushServer) |  |  |
 | receiver | [PushServiceReceiver](#berty.protocol.v1.PushServiceReceiver) |  |  |
 
+<a name="berty.protocol.v1.RefreshGroup"></a>
+
+### RefreshGroup
+
+<a name="berty.protocol.v1.RefreshGroup.Reply"></a>
+
+### RefreshGroup.Reply
+
+<a name="berty.protocol.v1.RefreshGroup.Request"></a>
+
+### RefreshGroup.Request
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| group_pk | [bytes](#bytes) |  |  |
+
 <a name="berty.protocol.v1.ReplicationServiceRegisterGroup"></a>
 
 ### ReplicationServiceRegisterGroup
@@ -1922,6 +1941,7 @@ Each Berty Protocol Instance is considered as a Berty device and is associated w
 | PushShareToken | [PushShareToken.Request](#berty.protocol.v1.PushShareToken.Request) | [PushShareToken.Reply](#berty.protocol.v1.PushShareToken.Reply) | PushShareToken sends push tokens of own devices to a group |
 | PushSetDeviceToken | [PushSetDeviceToken.Request](#berty.protocol.v1.PushSetDeviceToken.Request) | [PushSetDeviceToken.Reply](#berty.protocol.v1.PushSetDeviceToken.Reply) | PushSetDeviceToken registers a push token for the current device |
 | PushSetServer | [PushSetServer.Request](#berty.protocol.v1.PushSetServer.Request) | [PushSetServer.Reply](#berty.protocol.v1.PushSetServer.Reply) | PushSetServer registers a push server for the current device |
+| RefreshGroup | [RefreshGroup.Request](#berty.protocol.v1.RefreshGroup.Request) | [RefreshGroup.Reply](#berty.protocol.v1.RefreshGroup.Reply) | RefreshGroup try to force refresh the given group |
 
  
 

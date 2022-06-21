@@ -1360,6 +1360,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   PushSetServer: {
                     requestType: "PushSetServer.Request",
                     responseType: "PushSetServer.Reply"
+                  },
+                  RefreshGroup: {
+                    requestType: "RefreshGroup.Request",
+                    responseType: "RefreshGroup.Reply"
                   }
                 }
               },
@@ -3974,6 +3978,25 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                         id: 2
                       }
                     }
+                  }
+                }
+              },
+              RefreshGroup: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      groupPk: {
+                        type: "bytes",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "GroupPK"
+                        }
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {}
                   }
                 }
               }

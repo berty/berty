@@ -95,6 +95,7 @@ func (cl *connLogger) OpenedStream(n network.Network, s network.Stream) {
 			logutil.PrivateString("peer", s.Conn().RemotePeer().Pretty()),
 			logutil.PrivateString("to", s.Conn().LocalMultiaddr().String()),
 			logutil.PrivateString("from", s.Conn().RemoteMultiaddr().String()),
+			logutil.PrivateString("protocol", string(s.Protocol())),
 			logutil.PrivateStrings("tags", tags),
 		)
 	}
@@ -106,6 +107,7 @@ func (cl *connLogger) ClosedStream(n network.Network, s network.Stream) {
 			logutil.PrivateString("peer", s.Conn().RemotePeer().Pretty()),
 			logutil.PrivateString("to", s.Conn().LocalMultiaddr().String()),
 			logutil.PrivateString("from", s.Conn().RemoteMultiaddr().String()),
+			logutil.PrivateString("protocol", string(s.Protocol())),
 			logutil.PrivateStrings("tags", tags),
 		)
 	}

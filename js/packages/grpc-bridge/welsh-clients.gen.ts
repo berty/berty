@@ -68,6 +68,7 @@ export interface WelshProtocolServiceClient {
 	pushShareToken: UnaryType<beapi.protocol.ProtocolService['pushShareToken']>
 	pushSetDeviceToken: UnaryType<beapi.protocol.ProtocolService['pushSetDeviceToken']>
 	pushSetServer: UnaryType<beapi.protocol.ProtocolService['pushSetServer']>
+	refreshGroup: UnaryType<beapi.protocol.ProtocolService['refreshGroup']>
 }
 
 export interface WelshAccountServiceClient {

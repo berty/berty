@@ -132,3 +132,6 @@ http:
  - selector: berty.protocol.v1.ProtocolService.PushSetServer
    post: /berty.protocol.v1/ProtocolService/PushSetServer
    body: "*"
+ - selector: berty.protocol.v1.ProtocolService.RefreshGroup
+   post: /berty.protocol.v1/ProtocolService/RefreshGroup
+   body: "*"

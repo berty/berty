@@ -31,6 +31,7 @@ type watchdogsDiscoverer struct {
 
 	logger        *zap.Logger
 	disc          p2p_discovery.Discoverer
+	mdisc         p2p_discovery.Discoverer
 	resetInterval time.Duration
 
 	findpeers   map[string]*findPeersTimer
@@ -61,6 +62,7 @@ func newWatchdogsDiscoverer(ctx context.Context, l *zap.Logger, h host.Host, res
 		findpeers:     make(map[string]*findPeersTimer),
 		logger:        l,
 		disc:          disc,
+		mdisc:         mdisc,
 	}, nil
 }
 
@@ -73,6 +75,11 @@ func (w *watchdogsDiscoverer) FindPeers(ctx context.Context, ns string, opts ...
 	if _, ok := options.Other[optionKeepContext]; !ok {
 		// override context with our context
 		ctx = w.rootctx
+	}
+
+	// if `force` option is passed, ignore cache and trigger a find peers directly
+	if _, force := options.Other[optionForce]; force {
+		return w.mdisc.FindPeers(ctx, ns, opts...)
 	}
 
 	w.mufindpeers.Lock()

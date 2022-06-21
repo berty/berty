@@ -110,6 +110,7 @@ service MessengerService {
 
   // InteractionReactionsForEmoji returns a list of reactions on an interaction for a specific emoji
   rpc InteractionReactionsForEmoji(InteractionReactionsForEmoji.Request) returns (InteractionReactionsForEmoji.Reply);
+
 }
 
 message PaginatedInteractionsOptions {

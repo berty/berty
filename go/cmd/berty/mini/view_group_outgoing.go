@@ -148,6 +148,11 @@ func commandList() []*command {
 			cmd:   debugIPFSCommand,
 		},
 		{
+			title: "refresh",
+			help:  "force refresh",
+			cmd:   refreshCommand,
+		},
+		{
 			title: "debug system",
 			help:  "Shows system debug information",
 			cmd:   debugSystemCommand,
@@ -784,6 +789,33 @@ func groupInviteCommand(renderFunc func(*groupView, string)) func(ctx context.Co
 
 		return nil
 	}
+}
+
+func refreshCommand(ctx context.Context, v *groupView, cmd string) error {
+	go func() {
+		ctx, cancel := context.WithTimeout(ctx, time.Second*20)
+		defer cancel()
+
+		_, err := v.v.protocol.RefreshGroup(ctx, &protocoltypes.RefreshGroup_Request{
+			GroupPK: v.g.PublicKey,
+		})
+
+		if err != nil {
+			v.syncMessages <- &historyMessage{
+				messageType: messageTypeError,
+				payload:     []byte("refresh: unable to connect to peer"),
+			}
+		} else {
+			v.syncMessages <- &historyMessage{
+				messageType: messageTypeMeta,
+				payload:     []byte("refresh: connected"),
+			}
+
+		}
+
+	}()
+
+	return nil
 }
 
 func cmdHelp(ctx context.Context, v *groupView, cmd string) error {
