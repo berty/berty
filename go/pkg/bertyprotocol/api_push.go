@@ -76,12 +76,12 @@ func (s *service) getPushClient(host string) (pushtypes.PushServiceClient, error
 	// retry policies
 	connectParams := grpc.WithConnectParams(grpc.ConnectParams{
 		Backoff: backoff.Config{
-			BaseDelay:  time.Second * 5,
+			BaseDelay:  1.0 * time.Second,
 			Multiplier: 1.5,
-			Jitter:     2,
-			MaxDelay:   time.Second * 60,
+			Jitter:     0.2,
+			MaxDelay:   60 * time.Second,
 		},
-		MinConnectTimeout: time.Second * 20,
+		MinConnectTimeout: time.Second * 10,
 	})
 
 	cc, err := grpc.DialContext(s.ctx, host, creds, connectParams)
@@ -150,7 +150,7 @@ func (s *service) PushSend(ctx context.Context, request *protocoltypes.PushSend_
 				Envelope:  sealedMessageEnvelope,
 				Priority:  pushtypes.PushServicePriority_PushPriorityNormal,
 				Receivers: pushTokens,
-			})
+			}, grpc.WaitForReady(true))
 			if err != nil {
 				s.logger.Error("error while dialing push server", logutil.PrivateString("push-server", serverAddr), zap.Error(err))
 				return
