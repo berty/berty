@@ -1748,8 +1748,8 @@ func (svc *service) interactionDelayedActions(id ipfscid.Cid, groupPK []byte) {
 		return
 	}
 
-	// TODO: lower delay?
-	time.Sleep(time.Second * 2)
+	// TODO: check ack before sending push
+	// time.Sleep(time.Second * 2)
 
 	i, err := svc.db.GetInteractionByCID(id.String())
 	if err != nil {
