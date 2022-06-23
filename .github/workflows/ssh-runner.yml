@@ -81,7 +81,15 @@ jobs:
         run: make node_modules
 
       - name: Install emacs
-        run: sudo apt-get install -y emacs
+        shell: bash
+        run: |
+            if [ "$RUNNER_OS" == "Linux" ]; then
+                sudo apt-get install -y emacs
+            elif [ "$RUNNER_OS" == "Windows" ]; then
+                choco install emacs
+            else
+                echo "Already installed!"
+            fi
 
       - name: Setup tmate session
         uses: mxschmitt/action-tmate@v3

@@ -9,21 +9,33 @@ updates:
       prefix: "fix"
       prefix-development: "chore"
       include: "scope"
+    labels:
+      - "t/javascript"
+      - "dependencies"
 
   - package-ecosystem: docker
     directory: "/"
     schedule:
       interval: daily
     open-pull-requests-limit: 5
+    labels:
+      - "t/docker"
+      - "dependencies"
 
   - package-ecosystem: github-actions
     directory: "/"
     schedule:
       interval: daily
     open-pull-requests-limit: 5
+    labels:
+      - "t/github-actions"
+      - "dependencies"
 
   - package-ecosystem: gomod
     directory: "/"
     schedule:
       interval: daily
     open-pull-requests-limit: 5
+    labels:
+      - "t/golang"
+      - "dependencies"
