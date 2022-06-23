@@ -696,6 +696,7 @@ func (svc *service) ConversationCreate(ctx context.Context, req *messengertypes.
 		if err != nil {
 			return nil, errcode.ErrDeserialization.Wrap(err)
 		}
+
 		go svc.interactionDelayedActions(cid, gpk)
 	}
 
@@ -1031,7 +1032,9 @@ func (svc *service) Interact(ctx context.Context, req *messengertypes.Interact_R
 		tyber.LogTraceEnd(ctx, svc.logger, "Interacted successfully", tyber.WithDetail("CID", cid.String()))
 	}
 
-	go svc.interactionDelayedActions(cid, gpkb)
+	if payloadType == messengertypes.AppMessage_TypeUserMessage || payloadType == messengertypes.AppMessage_TypeGroupInvitation {
+		go svc.interactionDelayedActions(cid, gpkb)
+	}
 
 	return &messengertypes.Interact_Reply{CID: cid.String()}, nil
 }
@@ -1748,20 +1751,8 @@ func (svc *service) interactionDelayedActions(id ipfscid.Cid, groupPK []byte) {
 		return
 	}
 
-	// TODO: lower delay?
-	time.Sleep(time.Second * 2)
-
-	i, err := svc.db.GetInteractionByCID(id.String())
-	if err != nil {
-		svc.logger.Error("unable to retrieve interaction", zap.Error(err), logutil.PrivateString("cid", id.String()))
-		return
-	}
-
-	if i.Type != messengertypes.AppMessage_TypeUserMessage && i.Type != messengertypes.AppMessage_TypeGroupInvitation {
-		// Nothing to do, move along
-		svc.logger.Debug("push: nothing to send, invalid interaction type", logutil.PrivateString("cid", id.String()), zap.String("type", i.Type.String()))
-		return
-	}
+	// TODO: check ack before sending push
+	// time.Sleep(time.Second * 2)
 
 	// TODO: avoid pushing acknowledged events
 	// TODO: watch for currently active devices?
@@ -1769,7 +1760,7 @@ func (svc *service) interactionDelayedActions(id ipfscid.Cid, groupPK []byte) {
 	// defer svc.handlerMutex.Unlock()
 
 	svc.logger.Info("attempting to push interaction", logutil.PrivateString("cid", id.String()))
-	_, err = svc.protocolClient.PushSend(svc.ctx, &protocoltypes.PushSend_Request{
+	_, err := svc.protocolClient.PushSend(svc.ctx, &protocoltypes.PushSend_Request{
 		CID:            id.Bytes(),
 		GroupPublicKey: groupPK,
 	})

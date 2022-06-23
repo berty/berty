@@ -143,6 +143,7 @@ const enablePushPermission = async (
 		const timeout = new Promise(resolve => setTimeout(() => resolve('timeout'), 5000))
 		const result = await Promise.race([timeout, requestAndPersistPushToken(protocolClient)])
 		if (result === 'timeout') {
+			console.warn('Fail on request and persist push token: timeout')
 			return PushNotificationStatus.FetchFailed
 		}
 	} catch (e) {
@@ -152,11 +153,19 @@ const enablePushPermission = async (
 
 	// Register push server secrets if needed
 	if (!hasKnownPushServer) {
-		const pushStatus = await servicesAuthViaDefault(protocolClient, [serviceTypes.Push])
-		if (pushStatus === PushNotificationStatus.EnabledJustNow) {
+		// When we don't have network connection the requestAndPersistPushToken function hang so we manually set a timeout
+		const timeout = new Promise(resolve => setTimeout(() => resolve('timeout'), 5000))
+		const pushStatus = await Promise.race([
+			timeout,
+			servicesAuthViaDefault(protocolClient, [serviceTypes.Push]),
+		])
+		if (pushStatus === 'timeout') {
+			console.warn('Fail on register server push token: timeout')
+			return PushNotificationStatus.FetchFailed
+		} else if (pushStatus === PushNotificationStatus.EnabledJustNow) {
 			await new Promise(r => setTimeout(r, 300))
 		}
-		return pushStatus
+		return pushStatus as PushNotificationStatus
 	}
 
 	return PushNotificationStatus.EnabledBefore

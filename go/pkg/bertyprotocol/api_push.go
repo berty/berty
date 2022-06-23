@@ -8,12 +8,14 @@ import (
 	"encoding/base64"
 	"fmt"
 	"sync"
+	"time"
 
 	"github.com/ipfs/go-cid"
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"go.uber.org/zap"
 	"golang.org/x/crypto/nacl/box"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/backoff"
 	"google.golang.org/grpc/credentials"
 
 	"berty.tech/berty/v2/go/internal/cryptoutil"
@@ -71,10 +73,22 @@ func (s *service) getPushClient(host string) (pushtypes.PushServiceClient, error
 		creds = grpc.WithTransportCredentials(tlsconfig)
 	}
 
-	cc, err := grpc.DialContext(s.ctx, host, creds)
+	// retry policies
+	connectParams := grpc.WithConnectParams(grpc.ConnectParams{
+		Backoff: backoff.Config{
+			BaseDelay:  1.0 * time.Second,
+			Multiplier: 1.5,
+			Jitter:     0.2,
+			MaxDelay:   60 * time.Second,
+		},
+		MinConnectTimeout: time.Second * 10,
+	})
+
+	cc, err := grpc.DialContext(s.ctx, host, creds, connectParams)
 	if err != nil {
 		return nil, err
 	}
+	s.pushClients[host] = cc
 
 	// monitor push client state
 	go monitorPushServer(s.ctx, cc, s.logger)
@@ -136,7 +150,7 @@ func (s *service) PushSend(ctx context.Context, request *protocoltypes.PushSend_
 				Envelope:  sealedMessageEnvelope,
 				Priority:  pushtypes.PushServicePriority_PushPriorityNormal,
 				Receivers: pushTokens,
-			})
+			}, grpc.WaitForReady(true))
 			if err != nil {
 				s.logger.Error("error while dialing push server", logutil.PrivateString("push-server", serverAddr), zap.Error(err))
 				return
