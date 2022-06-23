@@ -1,0 +1,96 @@
+name: "🐛 Bug report"
+description: Report a bug found while using the Berty apps or packages.
+labels: ["bug", "Ready for Review"]
+assignees:
+- peletron
+body:
+  - type: checkboxes
+    attributes:
+      label: Is there an existing issue for this?
+      description: Please search to see if an issue already exists for the bug you encountered.
+      options:
+      - label: I have searched the existing issues
+        required: true
+  - type: dropdown
+    id: product
+    attributes:
+      label: Berty product
+      description: What Berty product are you seeing the problem on?
+      options:
+        - Mobile app
+        - Desktop app
+        - CLI tools (berty mini, daemon, etc.)
+        - Code package
+    validations:
+      required: true
+  - type: input
+    id: product-version
+    attributes:
+      label:  Berty product version
+      description: |+
+                  What is the version of this Berty product?
+
+                  Tip: You can find the version of the mobile and desktop apps in the settings.
+                  To display the CLI tool version, run `berty version`.
+      placeholder: e.g. 2.396.1
+    validations:
+      required: true
+  - type: dropdown
+    id: os
+    attributes:
+      label: OS
+      description: What OS are you seeing the problem on?
+      options:
+        - iOS
+        - Android
+        - Linux
+        - macOS
+        - Windows
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: OS version
+      description: What is the version of the OS you are using?
+      placeholder: e.g. iOS 15.4 or Android 11.0 or Ubuntu 20.04.4
+    validations:
+      required: true
+  - type: input
+    id: device
+    attributes:
+      label: Device
+      description: What device are you using?
+      placeholder: e.g. iPhone 12 Pro Max or a Synology NAS
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to reproduce
+      description: Steps to reproduce the behavior.
+      placeholder: |
+       1. Navigate to the ...
+       2. Click on the user ...
+       3. Change name of ...
+       4. Click Save button ...
+    validations:
+      required: true
+  - type: textarea
+    id: current-behavior
+    attributes:
+      label: Current behavior
+      description: A description including screenshots, stack traces, debug logs, etc.
+      placeholder: Currently ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: Expected behavior
+      description: Please provide what would be your expectation to happen.
+      placeholder: In this situation, Berty should ...
+  - type: textarea
+    id: other
+    attributes:
+      label: Other
+      placeholder: Any other details?
