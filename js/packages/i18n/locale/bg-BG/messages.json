@@ -45,8 +45,7 @@
 				"access": {
 					"title": "",
 					"relay-button": "",
-					"bootstrap-button": "",
-					"replication-button": ""
+					"bootstrap-button": ""
 				},
 				"modals": {
 					"add": {
@@ -159,7 +158,9 @@
 			"accounts-button": "",
 			"network-button": "",
 			"bug-button": "",
-			"about-button": "Относно Berty"
+			"about-button": "Относно Berty",
+			"version-button": "",
+			"devtools-button": "Инструмени за програмисти"
 		},
 		"about": {
 			"title": "Относно Berty",
