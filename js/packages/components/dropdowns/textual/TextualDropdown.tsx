@@ -3,6 +3,7 @@ import { StyleSheet, TouchableOpacity, View } from 'react-native'
 
 import { UnifiedText } from '../../shared-components/UnifiedText'
 import { DropdownPriv } from '../Dropdown.priv'
+import { DropdownRef } from '../interfaces'
 
 type Item = {
 	label: string
@@ -17,7 +18,7 @@ interface TextualDropdownProps {
 }
 
 export const TextualDropdown: React.FC<TextualDropdownProps> = props => {
-	const childRef = useRef<{ toggleView: () => void }>()
+	const childRef = useRef<DropdownRef>(null)
 
 	return (
 		<View style={styles.container}>
@@ -31,7 +32,7 @@ export const TextualDropdown: React.FC<TextualDropdownProps> = props => {
 						activeOpacity={0.9}
 						onPress={() => {
 							props.onChangeItem(item)
-							childRef.current?.toggleView()
+							childRef.current?.toggleView?.()
 						}}
 						style={styles.item}
 						key={`${item.label}-${item.value}`}

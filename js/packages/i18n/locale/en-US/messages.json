@@ -45,8 +45,7 @@
 				"access": {
 					"title": "Network Accessibility",
 					"relay-button": "Relay Nodes (TURN)",
-					"bootstrap-button": "Bootstrap Nodes",
-					"replication-button": "Replication Nodes"
+					"bootstrap-button": "Bootstrap Nodes"
 				},
 				"modals": {
 					"add": {

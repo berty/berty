@@ -5,33 +5,22 @@ import { ScrollView, View, Platform } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
 
 import beapi from '@berty/api'
-import { DividerItem, MenuToggle, ItemSection } from '@berty/components'
-import { AccordionV2, AccordionAddItemV2, AccordionItemV2 } from '@berty/components/Accordion'
-import { AccordionAdd } from '@berty/components/modals/AccordionAdd.modal'
-import { AccordionEdit } from '@berty/components/modals/AccordionEdit.modal'
+import {
+	DividerItem,
+	MenuToggle,
+	ItemSection,
+	RendezvousAltDropdown,
+	BootstrapAltDropdown,
+	RelayAltDropdown,
+} from '@berty/components'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
-import { ModalProvider, useModal } from '@berty/contexts/modal.context'
-import { useAppDispatch, useAppSelector, useSyncNetworkConfigOnScreenRemoved } from '@berty/hooks'
+import { ModalProvider } from '@berty/contexts/modal.context'
+import { useAppDispatch, useSyncNetworkConfigOnScreenRemoved } from '@berty/hooks'
 import { ScreenFC, useNavigation } from '@berty/navigation'
 import {
-	addToBootstrap,
-	addToRendezvous,
-	addToStaticRelay,
-	modifyFromBootstrap,
-	modifyFromRendezvous,
-	modifyFromStaticRelay,
-	removeFromBootstrap,
-	removeFromRendezvous,
-	removeFromStaticRelay,
 	selectBlePerm,
-	selectBootstrap,
 	selectEditedNetworkConfig,
-	selectRendezvous,
-	selectStaticRelay,
 	setCurrentNetworkConfig,
-	toggleFromBootstrap,
-	toggleFromRendezvous,
-	toggleFromStaticRelay,
 } from '@berty/redux/reducers/networkConfig.reducer'
 import { useThemeColor } from '@berty/store'
 import { checkProximityPermission } from '@berty/utils/react-native/checkPermissions'
@@ -141,10 +130,6 @@ const NetworkBody: React.FC = () => {
 	const { t } = useTranslation()
 	const dispatch = useDispatch()
 	const networkConfig = useSelector(selectEditedNetworkConfig)
-	const { show, hide } = useModal()
-	const rendezvous = useAppSelector(selectRendezvous)
-	const bootstrap = useAppSelector(selectBootstrap)
-	const staticRelay = useAppSelector(selectStaticRelay)
 
 	return (
 		<View style={{ backgroundColor: colors['secondary-background'], flex: 1 }}>
@@ -186,173 +171,12 @@ const NetworkBody: React.FC = () => {
 						{t('settings.network.dht-button')}
 					</MenuToggle>
 					<DividerItem />
-					<AccordionV2 title={t('settings.network.rdvp-button')}>
-						{(rendezvous || []).map(({ alias, url, isEnabled, isEditable }, index) => (
-							<AccordionItemV2
-								key={`rendezvous-item-${index}`}
-								toggle={isEnabled}
-								value={alias}
-								onToggleChange={() => dispatch(toggleFromRendezvous(url))}
-								onPressModify={
-									isEditable
-										? () =>
-												show(
-													<AccordionEdit
-														title={t('onboarding.custom-mode.settings.modals.edit.title.rdvp')}
-														onEdit={data => {
-															dispatch(modifyFromRendezvous({ url, changes: data }))
-															hide()
-														}}
-														onDelete={() => {
-															dispatch(removeFromRendezvous(url))
-															hide()
-														}}
-														defaultAlias={alias}
-														defaultUrl={url}
-														alreadyExistingUrls={rendezvous
-															.map(({ url }) => url)
-															.filter((url): url is string => url !== undefined)}
-														alreadyExistingAliases={rendezvous
-															.map(({ alias }) => alias)
-															.filter((alias): alias is string => alias !== undefined)}
-													/>,
-												)
-										: undefined
-								}
-							/>
-						))}
-						<AccordionAddItemV2
-							onPress={() =>
-								show(
-									<AccordionAdd
-										title={t('onboarding.custom-mode.settings.modals.add.title.rdvp')}
-										onSubmit={data => {
-											dispatch(addToRendezvous(data))
-											hide()
-										}}
-										alreadyExistingAliases={rendezvous
-											.map(({ alias }) => alias)
-											.filter((alias): alias is string => alias !== undefined)}
-										alreadyExistingUrls={rendezvous
-											.map(({ url }) => url)
-											.filter((url): url is string => url !== undefined)}
-									/>,
-								)
-							}
-						/>
-					</AccordionV2>
+					<RendezvousAltDropdown />
 				</ItemSection>
 				<ItemSection>
-					<AccordionV2 title={t('settings.network.relay-button')}>
-						{(staticRelay || []).map(({ alias, url, isEnabled, isEditable }, index) => (
-							<AccordionItemV2
-								key={`rendezvous-item-${index}`}
-								toggle={isEnabled}
-								value={alias}
-								onToggleChange={() => dispatch(toggleFromStaticRelay(url))}
-								onPressModify={
-									isEditable
-										? () =>
-												show(
-													<AccordionEdit
-														title={t('onboarding.custom-mode.settings.modals.edit.title.relay')}
-														onEdit={data => {
-															dispatch(modifyFromStaticRelay({ url, changes: data }))
-															hide()
-														}}
-														onDelete={() => {
-															dispatch(removeFromStaticRelay(url))
-															hide()
-														}}
-														defaultUrl={url}
-														alreadyExistingUrls={staticRelay
-															.map(({ url }) => url)
-															.filter((url): url is string => url !== undefined)}
-														defaultAlias={alias}
-														alreadyExistingAliases={staticRelay
-															.map(({ alias }) => alias)
-															.filter((alias): alias is string => alias !== undefined)}
-													/>,
-												)
-										: undefined
-								}
-							/>
-						))}
-						<AccordionAddItemV2
-							onPress={() =>
-								show(
-									<AccordionAdd
-										title={t('onboarding.custom-mode.settings.modals.add.title.relay')}
-										onSubmit={data => {
-											dispatch(addToStaticRelay(data))
-											hide()
-										}}
-										alreadyExistingAliases={staticRelay
-											.map(({ alias }) => alias)
-											.filter((alias): alias is string => alias !== undefined)}
-										alreadyExistingUrls={staticRelay
-											.map(({ url }) => url)
-											.filter((url): url is string => url !== undefined)}
-									/>,
-								)
-							}
-						/>
-					</AccordionV2>
-					<AccordionV2 title={t('settings.network.bootstrap-button')}>
-						{(bootstrap || []).map(({ alias, url, isEnabled, isEditable }, index) => (
-							<AccordionItemV2
-								key={`rendezvous-item-${index}`}
-								toggle={isEnabled}
-								value={alias}
-								onToggleChange={() => dispatch(toggleFromBootstrap(url))}
-								onPressModify={
-									isEditable
-										? () =>
-												show(
-													<AccordionEdit
-														title={t('onboarding.custom-mode.settings.modals.edit.title.bootstrap')}
-														onEdit={data => {
-															dispatch(modifyFromBootstrap({ url, changes: data }))
-															hide()
-														}}
-														onDelete={() => {
-															dispatch(removeFromBootstrap(url))
-															hide()
-														}}
-														defaultAlias={alias}
-														defaultUrl={url}
-														alreadyExistingUrls={bootstrap
-															.map(({ url }) => url)
-															.filter((url): url is string => url !== undefined)}
-														alreadyExistingAliases={bootstrap
-															.map(({ alias }) => alias)
-															.filter((alias): alias is string => alias !== undefined)}
-													/>,
-												)
-										: undefined
-								}
-							/>
-						))}
-						<AccordionAddItemV2
-							onPress={() =>
-								show(
-									<AccordionAdd
-										title={t('onboarding.custom-mode.settings.modals.add.title.bootstrap')}
-										onSubmit={data => {
-											dispatch(addToBootstrap(data))
-											hide()
-										}}
-										alreadyExistingAliases={bootstrap
-											.map(({ alias }) => alias)
-											.filter((alias): alias is string => alias !== undefined)}
-										alreadyExistingUrls={bootstrap
-											.map(({ url }) => url)
-											.filter((url): url is string => url !== undefined)}
-									/>,
-								)
-							}
-						/>
-					</AccordionV2>
+					<RelayAltDropdown />
+					<DividerItem />
+					<BootstrapAltDropdown />
 				</ItemSection>
 			</ScrollView>
 		</View>

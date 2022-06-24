@@ -14,47 +14,35 @@ import { RESULTS } from 'react-native-permissions'
 import { useDispatch } from 'react-redux'
 
 import beapi from '@berty/api'
-import { AltToggle, FloatingMenuToggleAlt } from '@berty/components'
-import { AccordionAdd } from '@berty/components/modals/AccordionAdd.modal'
-import { AccordionEdit } from '@berty/components/modals/AccordionEdit.modal'
+import {
+	AltToggle,
+	BootstrapDropdown,
+	FloatingMenuToggleAlt,
+	RelayDropdown,
+	RendezvousDropdown,
+} from '@berty/components'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
-import { useModal } from '@berty/contexts/modal.context'
 import { useStyles } from '@berty/contexts/styles'
 import { useAppDispatch, useAppSelector, useCreateNewAccount } from '@berty/hooks'
 import { ScreenFC, useNavigation } from '@berty/navigation'
 import {
-	addToBootstrap,
-	addToRendezvous,
 	disableEveryNodeLists,
 	enableEveryNodeLists,
-	modifyFromBootstrap,
-	modifyFromRendezvous,
-	modifyFromStaticRelay,
-	removeFromBootstrap,
-	removeFromRendezvous,
-	removeFromStaticRelay,
-	selectBootstrap,
 	selectEditedNetworkConfig,
-	selectRendezvous,
-	selectStaticRelay,
 	setCurrentNetworkConfig,
-	toggleFromBootstrap,
-	toggleFromRendezvous,
-	toggleFromStaticRelay,
 } from '@berty/redux/reducers/networkConfig.reducer'
-import {
-	Accordion,
-	AccordionAddItem,
-	AccordionItem,
-	AccordionRef,
-} from '@berty/screens/onboarding/CustomModeSettings/components/Accordion'
 import { useMountEffect, useThemeColor } from '@berty/store'
 import { accountClient } from '@berty/utils/accounts/accountClient'
 import { checkProximityPermission } from '@berty/utils/react-native/checkPermissions'
 import { getPermissions, PermissionType } from '@berty/utils/react-native/permissions'
 
-type AccordionRefsType = {
+interface AccordionRef {
+	open: () => void
+	close: () => void
+}
+
+interface AccordionRefs {
 	relay: RefObject<AccordionRef>
 	rdvp: RefObject<AccordionRef>
 	bootstrap: RefObject<AccordionRef>
@@ -217,11 +205,9 @@ const Proximity: React.FC = () => {
 	)
 }
 
-const Routing: React.FC<{ accordionRefs: AccordionRefsType }> = ({ accordionRefs }) => {
+const Routing: React.FC<{ accordionRefs: AccordionRefs }> = ({ accordionRefs }) => {
 	const { t } = useTranslation()
 	const dispatch = useAppDispatch()
-	const { hide, show } = useModal()
-	const rendezvous = useAppSelector(selectRendezvous)
 	const currentNetworkConfig = useAppSelector(selectEditedNetworkConfig)
 
 	return (
@@ -245,214 +231,12 @@ const Routing: React.FC<{ accordionRefs: AccordionRefsType }> = ({ accordionRefs
 				{t('onboarding.custom-mode.settings.routing.dht-button')}
 			</FloatingMenuToggleAlt>
 
-			<Accordion
-				title={t('onboarding.custom-mode.settings.routing.rdvp-button')}
-				icon='privacy'
-				ref={accordionRefs.rdvp}
-			>
-				{(rendezvous || []).map(({ alias, url, isEnabled, isEditable }, index) => (
-					<AccordionItem
-						key={`rendezvous-item-${index}`}
-						toggle={isEnabled}
-						value={alias}
-						onToggleChange={() => dispatch(toggleFromRendezvous(url))}
-						onPressModify={
-							isEditable
-								? () =>
-										show(
-											<AccordionEdit
-												title={t('onboarding.custom-mode.settings.modals.edit.title.rdvp')}
-												onEdit={data => {
-													dispatch(modifyFromRendezvous({ url, changes: data }))
-													hide()
-												}}
-												onDelete={() => {
-													dispatch(removeFromRendezvous(url))
-													hide()
-												}}
-												defaultAlias={alias}
-												defaultUrl={url}
-												alreadyExistingUrls={rendezvous
-													.map(({ url }) => url)
-													.filter((url): url is string => url !== undefined)}
-												alreadyExistingAliases={rendezvous
-													.map(({ alias }) => alias)
-													.filter((alias): alias is string => alias !== undefined)}
-											/>,
-										)
-								: undefined
-						}
-					/>
-				))}
-				<AccordionAddItem
-					onPress={() =>
-						show(
-							<AccordionAdd
-								title={t('onboarding.custom-mode.settings.modals.add.title.rdvp')}
-								onSubmit={data => {
-									dispatch(addToRendezvous(data))
-									hide()
-								}}
-								alreadyExistingAliases={rendezvous
-									.map(({ alias }) => alias)
-									.filter((alias): alias is string => alias !== undefined)}
-								alreadyExistingUrls={rendezvous
-									.map(({ url }) => url)
-									.filter((url): url is string => url !== undefined)}
-							/>,
-						)
-					}
-				/>
-			</Accordion>
+			<RendezvousDropdown ref={accordionRefs.rdvp} />
 		</View>
 	)
 }
 
-const Access: React.FC<{ accordionRefs: AccordionRefsType }> = ({ accordionRefs }) => {
-	// const colors = useThemeColor()
-	// const navigation = useNavigation()
-	// const { t } = useTranslation()
-	const dispatch = useAppDispatch()
-	const { t } = useTranslation()
-	const { hide, show } = useModal()
-	const bootstrap = useAppSelector(selectBootstrap)
-	const staticRelay = useAppSelector(selectStaticRelay)
-
-	return (
-		<View>
-			<Accordion
-				title={t('onboarding.custom-mode.settings.access.relay-button')}
-				icon='earth'
-				ref={accordionRefs.relay}
-			>
-				{(staticRelay || []).map(({ alias, url, isEnabled, isEditable }, index) => (
-					<AccordionItem
-						key={`rendezvous-item-${index}`}
-						toggle={isEnabled}
-						value={alias}
-						onToggleChange={() => dispatch(toggleFromStaticRelay(url))}
-						onPressModify={
-							isEditable
-								? () =>
-										show(
-											<AccordionEdit
-												title={t('onboarding.custom-mode.settings.modals.edit.title.relay')}
-												onEdit={data => {
-													dispatch(modifyFromStaticRelay({ url, changes: data }))
-													hide()
-												}}
-												onDelete={() => {
-													dispatch(removeFromStaticRelay(url))
-													hide()
-												}}
-												defaultAlias={alias}
-												defaultUrl={url}
-												alreadyExistingUrls={staticRelay
-													.map(({ url }) => url)
-													.filter((url): url is string => url !== undefined)}
-												alreadyExistingAliases={staticRelay
-													.map(({ alias }) => alias)
-													.filter((alias): alias is string => alias !== undefined)}
-											/>,
-										)
-								: undefined
-						}
-					/>
-				))}
-				<AccordionAddItem
-					onPress={() =>
-						show(
-							<AccordionAdd
-								title={t('onboarding.custom-mode.settings.modals.add.title.relay')}
-								onSubmit={data => {
-									dispatch(addToRendezvous(data))
-									hide()
-								}}
-								alreadyExistingAliases={staticRelay
-									.map(({ alias }) => alias)
-									.filter((alias): alias is string => alias !== undefined)}
-								alreadyExistingUrls={staticRelay
-									.map(({ url }) => url)
-									.filter((url): url is string => url !== undefined)}
-							/>,
-						)
-					}
-				/>
-			</Accordion>
-			<Accordion
-				title={t('onboarding.custom-mode.settings.access.bootstrap-button')}
-				icon='earth'
-				ref={accordionRefs.bootstrap}
-			>
-				{(bootstrap || []).map(({ alias, url, isEnabled, isEditable }, index) => (
-					<AccordionItem
-						key={`rendezvous-item-${index}`}
-						toggle={isEnabled}
-						value={alias}
-						onToggleChange={() => dispatch(toggleFromBootstrap(url))}
-						onPressModify={
-							isEditable
-								? () =>
-										show(
-											<AccordionEdit
-												title={t('onboarding.custom-mode.settings.modals.edit.title.bootstrap')}
-												onEdit={data => {
-													dispatch(modifyFromBootstrap({ url, changes: data }))
-													hide()
-												}}
-												onDelete={() => {
-													dispatch(removeFromBootstrap(url))
-													hide()
-												}}
-												defaultAlias={alias}
-												defaultUrl={url}
-												alreadyExistingUrls={bootstrap
-													.map(({ url }) => url)
-													.filter((url): url is string => url !== undefined)}
-												alreadyExistingAliases={bootstrap
-													.map(({ alias }) => alias)
-													.filter((alias): alias is string => alias !== undefined)}
-											/>,
-										)
-								: undefined
-						}
-					/>
-				))}
-				<AccordionAddItem
-					onPress={() =>
-						show(
-							<AccordionAdd
-								title={t('onboarding.custom-mode.settings.modals.add.title.bootstrap')}
-								onSubmit={data => {
-									dispatch(addToBootstrap(data))
-									hide()
-								}}
-								alreadyExistingAliases={bootstrap
-									.map(({ alias }) => alias)
-									.filter((alias): alias is string => alias !== undefined)}
-								alreadyExistingUrls={bootstrap
-									.map(({ url }) => url)
-									.filter((url): url is string => url !== undefined)}
-							/>,
-						)
-					}
-				/>
-			</Accordion>
-			{/* <ButtonSetting
-				name={t('onboarding.custom-mode.settings.access.replication-button')}
-				icon='earth'
-				iconPack='custom'
-				color={colors['main-text']}
-				iconColor='#6E6DFF'
-				actionIconColor={colors['main-text']}
-				backgroundColor={colors['input-background']}
-				onPress={() => navigation.navigate('Settings.NetworkMap')}
-			/> */}
-		</View>
-	)
-}
-
-const CustomConfig: React.FC<{ accordionRefs: AccordionRefsType }> = ({ accordionRefs }) => {
+const CustomConfig: React.FC<{ accordionRefs: AccordionRefs }> = ({ accordionRefs }) => {
 	const { margin, padding, border } = useStyles()
 	const { t } = useTranslation()
 	const colors = useThemeColor()
@@ -494,7 +278,8 @@ const CustomConfig: React.FC<{ accordionRefs: AccordionRefsType }> = ({ accordio
 					icon='services'
 					iconSize={50}
 				/>
-				<Access accordionRefs={accordionRefs} />
+				<RelayDropdown ref={accordionRefs.relay} />
+				<BootstrapDropdown ref={accordionRefs.bootstrap} />
 			</View>
 		</View>
 	)
@@ -537,7 +322,7 @@ const ApplyChanges: React.FC = () => {
 	)
 }
 
-const EnableDisableAll: React.FC<{ accordionRefs: AccordionRefsType }> = ({ accordionRefs }) => {
+const EnableDisableAll: React.FC<{ accordionRefs: AccordionRefs }> = ({ accordionRefs }) => {
 	const { padding, border } = useStyles()
 	const colors = useThemeColor()
 	const [isToggled, setIsToggled] = React.useState(false)
@@ -637,7 +422,7 @@ export const CustomModeSettings: ScreenFC<'Onboarding.CustomModeSettings'> = () 
 	const colors = useThemeColor()
 	const { padding } = useStyles()
 	const dispatch = useAppDispatch()
-	const accordionRefs: AccordionRefsType = {
+	const accordionRefs: AccordionRefs = {
 		relay: createRef<AccordionRef>(),
 		rdvp: createRef<AccordionRef>(),
 		bootstrap: createRef<AccordionRef>(),
