@@ -45,8 +45,7 @@
 				"access": {
 					"title": "",
 					"relay-button": "",
-					"bootstrap-button": "",
-					"replication-button": ""
+					"bootstrap-button": ""
 				},
 				"modals": {
 					"add": {
@@ -159,7 +158,9 @@
 			"accounts-button": "Konten",
 			"network-button": "",
 			"bug-button": "",
-			"about-button": "Über Berty"
+			"about-button": "Über Berty",
+			"version-button": "",
+			"devtools-button": "Für Entwickler"
 		},
 		"about": {
 			"title": "Über Berty",
