@@ -45,8 +45,7 @@
 				"access": {
 					"title": "网络辅助",
 					"relay-button": "中继节点 (TURN)",
-					"bootstrap-button": "引导节点",
-					"replication-button": "复制节点"
+					"bootstrap-button": "引导节点"
 				},
 				"modals": {
 					"add": {
@@ -159,7 +158,9 @@
 			"accounts-button": "账户",
 			"network-button": "网络",
 			"bug-button": "提交错误",
-			"about-button": "关于 Berty"
+			"about-button": "关于 Berty",
+			"version-button": "",
+			"devtools-button": "开发工具"
 		},
 		"about": {
 			"title": "关于 Berty",
