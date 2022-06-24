@@ -45,8 +45,7 @@
 				"access": {
 					"title": "",
 					"relay-button": "",
-					"bootstrap-button": "",
-					"replication-button": ""
+					"bootstrap-button": ""
 				},
 				"modals": {
 					"add": {
@@ -159,7 +158,9 @@
 			"accounts-button": "Accounts",
 			"network-button": "",
 			"bug-button": "",
-			"about-button": "Over Berty"
+			"about-button": "Over Berty",
+			"version-button": "",
+			"devtools-button": "Ontwikkelaars tools"
 		},
 		"about": {
 			"title": "Over Berty",
