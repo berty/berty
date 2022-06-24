@@ -39,7 +39,7 @@ jobs:
           go-version: ${{ matrix.golang }}
           version: v1.44.2
           working-directory: go
-          args: --timeout=10m
+          args: "--timeout=10m --out-${NO_FUTURE}format colored-line-number"
           # only-new-issues: true
 
   # this is not very common to have a job that checks the flappy tests.
