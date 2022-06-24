@@ -45,8 +45,7 @@
 				"access": {
 					"title": "ネットワークアクセシビリティ",
 					"relay-button": "リレーノード (TURN)",
-					"bootstrap-button": "ブートストラップノード",
-					"replication-button": "レプリケーションノード"
+					"bootstrap-button": "ブートストラップノード"
 				},
 				"modals": {
 					"add": {
@@ -159,7 +158,9 @@
 			"accounts-button": "アカウント",
 			"network-button": "ネットワーク",
 			"bug-button": "バグを送信",
-			"about-button": "Bertyについて"
+			"about-button": "Bertyについて",
+			"version-button": "",
+			"devtools-button": "開発者向けツール"
 		},
 		"about": {
 			"title": "Bertyについて",
