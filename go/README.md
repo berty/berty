@@ -115,7 +115,7 @@ USAGE
 
 SUBCOMMANDS
   daemon        start a full Berty instance (Berty Protocol + Berty Messenger)
-  mini          start a terminal-based mini berty client (not fully compatible with the app)
+  mini          start a terminal-based mini berty client (some messaging features not compatible with the app)
   banner        print the Berty banner of the day
   version       print software version
   info          display system info

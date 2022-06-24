@@ -27,7 +27,7 @@ func miniCommand() *ffcli.Command {
 
 	return &ffcli.Command{
 		Name:           "mini",
-		ShortHelp:      "start a terminal-based mini berty client (not fully compatible with the app)",
+		ShortHelp:      "start a terminal-based mini berty client (some messaging features not compatible with the app)",
 		ShortUsage:     "berty [global flags] mini [flags]",
 		FlagSetBuilder: fsBuilder,
 		Options:        ffSubcommandOptions(),
