@@ -45,8 +45,7 @@
 				"access": {
 					"title": "Доступность сети",
 					"relay-button": "Ретранслятор (ВКЛЮЧИТЬ)",
-					"bootstrap-button": "Загрузка Узла",
-					"replication-button": "Копирование узлов"
+					"bootstrap-button": "Загрузка Узла"
 				},
 				"modals": {
 					"add": {
@@ -159,7 +158,9 @@
 			"accounts-button": "Аккаунты",
 			"network-button": "Сеть",
 			"bug-button": "Сообщить об ошибке",
-			"about-button": "О Berty"
+			"about-button": "О Berty",
+			"version-button": "",
+			"devtools-button": "Инструменты для разработчиков"
 		},
 		"about": {
 			"title": "О Berty",
