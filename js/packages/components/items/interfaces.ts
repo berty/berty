@@ -1,6 +1,7 @@
 export interface MenuItemProps {
 	onPress?: () => void
 	accessibilityLabel?: string
+	noRightArrow?: boolean
 }
 
 export interface MenuItemWithIconProps extends MenuItemProps {

@@ -158,7 +158,9 @@
 			"accounts-button": "Accounts",
 			"network-button": "Network",
 			"bug-button": "Submit a bug",
-			"about-button": "About Berty"
+			"about-button": "About Berty",
+			"version-button": "Version: {{version}}",
+			"devtools-button": "Devtools"
 		},
 		"about": {
 			"title": "About Berty",

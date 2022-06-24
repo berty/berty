@@ -24,8 +24,14 @@ import {
 	setCurrentNetworkConfig,
 	setNodeNetworkConfig,
 } from '@berty/redux/reducers/networkConfig.reducer'
-import { selectProtocolClient, selectSelectedAccount } from '@berty/redux/reducers/ui.reducer'
+import {
+	selectProtocolClient,
+	selectSelectedAccount,
+	selectDevMode,
+	setDevMode,
+} from '@berty/redux/reducers/ui.reducer'
 import { useMessengerClient, useMountEffect, useThemeColor } from '@berty/store'
+import messengerMethodsHooks from '@berty/store/methods'
 import { accountClient } from '@berty/utils/accounts/accountClient'
 import { numberifyLong } from '@berty/utils/convert/long'
 import {
@@ -107,16 +113,34 @@ export const SettingsHome: ScreenFC<'Settings.Home'> = withInAppNotification(
 		const dispatch = useDispatch()
 		const account = useAccount()
 		const { permissions } = useContext(PermissionsContext)
+		const devMode = useSelector(selectDevMode)
+		const [nbClick, setNbClick] = React.useState<number>(0)
+		const {
+			reply: systemInfo,
+			done: systemInfoDone,
+			error: systemInfoError,
+			call: systemInfoCall,
+		} = messengerMethodsHooks.useSystemInfo()
 
 		const hasKnownPushServer = account.serviceTokens?.some(t => t.serviceType === serviceTypes.Push)
 
+		// get system info
+		React.useEffect(() => {
+			systemInfoCall()
+		}, [systemInfoCall])
+
 		const generateEmail = React.useCallback(async () => {
-			var systemInfo = await messengerClient?.systemInfo({})
-			// Delete useless / intrusive infos
-			delete systemInfo?.protocol?.process?.hostName
-			delete systemInfo?.protocol?.process?.systemUsername
-			delete systemInfo?.messenger?.process?.hostName
-			delete systemInfo?.messenger?.process?.systemUsername
+			var localSysInfo: beapi.messenger.SystemInfo.IReply
+			if (systemInfoDone && systemInfoError != null) {
+				localSysInfo = { ...systemInfo }
+				// Delete useless / intrusive infos
+				delete localSysInfo?.protocol?.process?.hostName
+				delete localSysInfo?.protocol?.process?.systemUsername
+				delete localSysInfo?.messenger?.process?.hostName
+				delete localSysInfo?.messenger?.process?.systemUsername
+			} else {
+				localSysInfo = {}
+			}
 			try {
 				let result = await MailComposer.composeAsync({
 					recipients: ['bugs@berty.tech'],
@@ -125,7 +149,7 @@ export const SettingsHome: ScreenFC<'Settings.Home'> = withInAppNotification(
 						--------------------------------
 						${JSON.stringify(
 							{
-								systemInfo: systemInfo,
+								systemInfo: localSysInfo,
 								networkConfig: networkConfig,
 							},
 							null,
@@ -146,7 +170,7 @@ export const SettingsHome: ScreenFC<'Settings.Home'> = withInAppNotification(
 					additionalProps: { type: 'message' },
 				})
 			}
-		}, [messengerClient, networkConfig, showNotification, t])
+		}, [networkConfig, showNotification, t, systemInfoError, systemInfoDone, systemInfo])
 
 		useSyncNetworkConfigOnScreenRemoved()
 
@@ -356,6 +380,35 @@ export const SettingsHome: ScreenFC<'Settings.Home'> = withInAppNotification(
 							{t('settings.home.about-button')}
 						</MenuItemWithIcon>
 					</ItemSection>
+					{systemInfoDone && systemInfoError == null && (
+						<ItemSection>
+							<MenuItemWithIcon
+								iconName='github'
+								noRightArrow={true}
+								onPress={() => {
+									if (devMode) {
+										return
+									}
+									if (nbClick + 1 === 7) {
+										console.log('activate devmode')
+										dispatch(setDevMode(true))
+									}
+									setNbClick(nbClick + 1)
+									console.log('click: ' + (nbClick + 1))
+								}}
+							>
+								{t('settings.home.version-button', {
+									version: systemInfo?.messenger?.process?.version,
+								})}
+							</MenuItemWithIcon>
+							<DividerItem />
+							{devMode && (
+								<MenuItemWithIcon iconName='code' onPress={() => navigate('Settings.DevTools')}>
+									{t('settings.home.devtools-button')}
+								</MenuItemWithIcon>
+							)}
+						</ItemSection>
+					)}
 				</ScrollView>
 			</View>
 		)
