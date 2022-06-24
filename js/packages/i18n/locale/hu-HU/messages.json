@@ -45,8 +45,7 @@
 				"access": {
 					"title": "Hálózati hozzáférhetőség",
 					"relay-button": "Közvetítő csomópontok (TURN)",
-					"bootstrap-button": "Rendszertöltő csomópontok",
-					"replication-button": "Replikációs csomópontok"
+					"bootstrap-button": "Rendszertöltő csomópontok"
 				},
 				"modals": {
 					"add": {
@@ -159,7 +158,9 @@
 			"accounts-button": "Fiókok",
 			"network-button": "Hálózat",
 			"bug-button": "Hibabejelentés",
-			"about-button": "Berty-ről"
+			"about-button": "Berty-ről",
+			"version-button": "",
+			"devtools-button": "Fejlesztői eszközök"
 		},
 		"about": {
 			"title": "Berty-ről",
