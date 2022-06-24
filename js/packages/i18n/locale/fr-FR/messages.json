@@ -45,8 +45,7 @@
 				"access": {
 					"title": "Accessibilité réseau",
 					"relay-button": "Nœuds de relais (TURN)",
-					"bootstrap-button": "Nœuds d'amorçage",
-					"replication-button": "Nœuds de réplication"
+					"bootstrap-button": "Nœuds d'amorçage"
 				},
 				"modals": {
 					"add": {
@@ -159,7 +158,9 @@
 			"accounts-button": "Comptes",
 			"network-button": "Réseau",
 			"bug-button": "Soumettre un bug",
-			"about-button": "À propos de Berty"
+			"about-button": "À propos de Berty",
+			"version-button": "",
+			"devtools-button": "Devtools"
 		},
 		"about": {
 			"title": "À propos de Berty",
