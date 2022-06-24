@@ -45,8 +45,7 @@
 				"access": {
 					"title": "",
 					"relay-button": "",
-					"bootstrap-button": "",
-					"replication-button": ""
+					"bootstrap-button": ""
 				},
 				"modals": {
 					"add": {
@@ -159,7 +158,9 @@
 			"accounts-button": "",
 			"network-button": "",
 			"bug-button": "",
-			"about-button": "حول برتي"
+			"about-button": "حول برتي",
+			"version-button": "",
+			"devtools-button": "أدوات التطوير"
 		},
 		"about": {
 			"title": "حول برتي",
