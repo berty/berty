@@ -45,8 +45,7 @@
 				"access": {
 					"title": "",
 					"relay-button": "",
-					"bootstrap-button": "",
-					"replication-button": ""
+					"bootstrap-button": ""
 				},
 				"modals": {
 					"add": {
@@ -159,7 +158,9 @@
 			"accounts-button": "賬戶",
 			"network-button": "",
 			"bug-button": "",
-			"about-button": "關於 Berty"
+			"about-button": "關於 Berty",
+			"version-button": "",
+			"devtools-button": "開發工具"
 		},
 		"about": {
 			"title": "關於 Berty",
