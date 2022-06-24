@@ -384,6 +384,7 @@ export const SettingsHome: ScreenFC<'Settings.Home'> = withInAppNotification(
 						<ItemSection>
 							<MenuItemWithIcon
 								iconName='github'
+								noRightArrow={true}
 								onPress={() => {
 									if (devMode) {
 										return

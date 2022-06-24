@@ -21,7 +21,9 @@ export const MenuItemWithIconPriv: React.FC<
 			>
 				{props.children}
 			</IconWithTextPriv>
-			<Icon name='arrow-ios-forward' width={20} height={20} fill='#393C63' />
+			{!props.noRightArrow && (
+				<Icon name='arrow-ios-forward' width={20} height={20} fill='#393C63' />
+			)}
 		</MenuItemPriv>
 	)
 }
