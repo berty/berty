@@ -45,8 +45,7 @@
 				"access": {
 					"title": "",
 					"relay-button": "",
-					"bootstrap-button": "",
-					"replication-button": ""
+					"bootstrap-button": ""
 				},
 				"modals": {
 					"add": {
@@ -159,7 +158,9 @@
 			"accounts-button": "계정",
 			"network-button": "",
 			"bug-button": "",
-			"about-button": "Berty에 대해"
+			"about-button": "Berty에 대해",
+			"version-button": "",
+			"devtools-button": ""
 		},
 		"about": {
 			"title": "Berty에 대해",
