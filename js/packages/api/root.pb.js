@@ -1361,9 +1361,9 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     requestType: "PushSetServer.Request",
                     responseType: "PushSetServer.Reply"
                   },
-                  RefreshGroup: {
-                    requestType: "RefreshGroup.Request",
-                    responseType: "RefreshGroup.Reply"
+                  RefreshRequest: {
+                    requestType: "RefreshRequest.Request",
+                    responseType: "RefreshRequest.Reply"
                   }
                 }
               },
@@ -3981,22 +3981,44 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   }
                 }
               },
-              RefreshGroup: {
+              RefreshRequest: {
                 fields: {},
                 nested: {
+                  Peer: {
+                    fields: {
+                      id: {
+                        type: "string",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "ID"
+                        }
+                      },
+                      addrs: {
+                        rule: "repeated",
+                        type: "string",
+                        id: 3
+                      }
+                    }
+                  },
                   Request: {
                     fields: {
-                      groupPk: {
+                      contactPk: {
                         type: "bytes",
                         id: 1,
                         options: {
-                          "(gogoproto.customname)": "GroupPK"
+                          "(gogoproto.customname)": "ContactPK"
                         }
                       }
                     }
                   },
                   Reply: {
-                    fields: {}
+                    fields: {
+                      peersFound: {
+                        rule: "repeated",
+                        type: "Peer",
+                        id: 1
+                      }
+                    }
                   }
                 }
               }

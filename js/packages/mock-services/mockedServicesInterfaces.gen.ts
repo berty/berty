@@ -154,7 +154,10 @@ export interface IProtocolServiceMock {
 		beapi.protocol.PushSetServer.IRequest,
 		beapi.protocol.PushSetServer.IReply
 	>
-	RefreshGroup: UnaryMock<beapi.protocol.RefreshGroup.IRequest, beapi.protocol.RefreshGroup.IReply>
+	RefreshRequest: UnaryMock<
+		beapi.protocol.RefreshRequest.IRequest,
+		beapi.protocol.RefreshRequest.IReply
+	>
 }
 
 export interface IAccountServiceMock {

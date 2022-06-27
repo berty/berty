@@ -792,28 +792,56 @@ func groupInviteCommand(renderFunc func(*groupView, string)) func(ctx context.Co
 }
 
 func refreshCommand(ctx context.Context, v *groupView, cmd string) error {
-	go func() {
-		ctx, cancel := context.WithTimeout(ctx, time.Second*20)
-		defer cancel()
+	contactspk := [][]byte{}
+	v.v.lock.Lock()
+	for k, state := range v.v.contactStates {
+		switch state {
+		case protocoltypes.ContactStateToRequest, protocoltypes.ContactStateAdded:
+			contactspk = append(contactspk, []byte(k))
+		default:
+		}
+	}
+	v.v.lock.Unlock()
 
-		_, err := v.v.protocol.RefreshGroup(ctx, &protocoltypes.RefreshGroup_Request{
-			GroupPK: v.g.PublicKey,
-		})
+	for _, pk := range contactspk {
+		go func(pk []byte) {
+			ctx, cancel := context.WithTimeout(ctx, time.Second*20)
+			defer cancel()
 
-		if err != nil {
-			v.syncMessages <- &historyMessage{
-				messageType: messageTypeError,
-				payload:     []byte("refresh: unable to connect to peer"),
-			}
-		} else {
 			v.syncMessages <- &historyMessage{
 				messageType: messageTypeMeta,
-				payload:     []byte("refresh: connected"),
+				payload:     []byte("refreshing..."),
 			}
 
-		}
+			res, err := v.v.protocol.RefreshRequest(ctx, &protocoltypes.RefreshRequest_Request{
+				ContactPK: pk,
+			})
 
-	}()
+			switch {
+			case err != nil:
+				emsg := fmt.Sprintf("refresh: unable to connect to peer: %s", err.Error())
+				v.syncMessages <- &historyMessage{
+					messageType: messageTypeError,
+					payload:     []byte(emsg),
+				}
+
+			case len(res.PeersFound) == 0:
+				v.syncMessages <- &historyMessage{
+					messageType: messageTypeError,
+					payload:     []byte("refresh: no peers found"),
+				}
+
+			default:
+				for _, p := range res.PeersFound {
+					msg := fmt.Sprintf("refresh: succefully connected to peer: %s", p.ID)
+					v.syncMessages <- &historyMessage{
+						messageType: messageTypeMeta,
+						payload:     []byte(msg),
+					}
+				}
+			}
+		}(pk)
+	}
 
 	return nil
 }

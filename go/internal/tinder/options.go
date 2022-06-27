@@ -15,7 +15,7 @@ const (
 	optionForce                      tinderOption = "force"
 )
 
-func WatchdogDiscoverForce(opts *p2p_discovery.Options) error {
+func WatchdogDiscoverForceOption(opts *p2p_discovery.Options) error {
 	if opts.Other == nil {
 		opts.Other = make(map[interface{}]interface{})
 	}

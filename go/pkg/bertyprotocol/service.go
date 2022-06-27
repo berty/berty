@@ -70,6 +70,7 @@ type service struct {
 	grpcInsecure     bool
 	refreshprocess   map[string]context.CancelFunc
 	muRefreshprocess sync.RWMutex
+	swiper           *Swiper
 }
 
 // Opts contains optional configuration flags for building a new Client
@@ -237,11 +238,12 @@ func New(ctx context.Context, opts Opts) (_ Service, err error) {
 	opts.Logger.Debug("Opened account group", tyber.FormatStepLogFields(ctx, []tyber.Detail{{Name: "AccountGroup", Description: acc.group.String()}})...)
 
 	var disc discovery.Discovery
+	var swiper *Swiper
 	if opts.TinderDriver != nil {
-		s := NewSwiper(opts.Logger, opts.TinderDriver, opts.OrbitDB.rotationInterval)
+		swiper = NewSwiper(opts.Logger, opts.TinderDriver, opts.OrbitDB.rotationInterval)
 		opts.Logger.Debug("Tinder swiper is enabled", tyber.FormatStepLogFields(ctx, []tyber.Detail{})...)
 
-		if err := initContactRequestsManager(ctx, s, acc.metadataStore, opts.IpfsCoreAPI, opts.Logger); err != nil {
+		if err := initContactRequestsManager(ctx, swiper, acc.metadataStore, opts.IpfsCoreAPI, opts.Logger); err != nil {
 			return nil, errcode.TODO.Wrap(err)
 		}
 		disc = opts.TinderDriver
@@ -275,6 +277,7 @@ func New(ctx context.Context, opts Opts) (_ Service, err error) {
 		deviceKeystore: opts.DeviceKeystore,
 		close:          opts.close,
 		accountGroup:   acc,
+		swiper:         swiper,
 		startedAt:      time.Now(),
 		groupDatastore: opts.GroupDatastore,
 		openedGroups: map[string]*GroupContext{
