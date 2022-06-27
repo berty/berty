@@ -200,33 +200,40 @@ func (c *contactRequestsManager) enqueueRequest(tctx context.Context, contact *p
 			}
 		}
 	}()
+
 	pending.updateCh <- &pendingRequestDetails{
 		contact:     contact,
 		ownMetadata: ownMetadata,
 	}
+
 	c.toAdd[string(contact.PK)] = pending
 
 	// process addresses from swiper
 	go func() {
 		for addr := range swiperCh {
+			// TODO(gfanton): Add tyber step
+			c.logger.Debug("swiper found a peer, connecting", logutil.PrivateString("peer", addr.ID.String()))
 			if err := c.ipfs.Swarm().Connect(c.ctx, addr); err != nil {
-				endSection(err, "Failed to connect to peer")
-				return
+				tyber.LogStep(tctx, c.logger, "Failed to connect to peer")
+				continue
 			}
 
 			stream, err := c.ipfs.NewStream(context.TODO(), addr.ID, contactRequestV1)
 			if err != nil {
-				endSection(err, "Failed to open stream with peer")
-				return
+				tyber.LogStep(tctx, c.logger, "Failed to open stream with peer")
+				continue
 			}
 
 			if err := c.performSend(tctx, pk, stream); err != nil {
-				endSection(err, "Contact request send failed")
-				return
+				tyber.LogStep(tctx, c.logger, "Contact request send failed")
+				continue
 			}
 
 			endSection(nil, "Contact request success")
+			return
 		}
+
+		endSection(nil, "unable to process contact request")
 	}()
 
 	return nil

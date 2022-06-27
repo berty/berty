@@ -9,7 +9,6 @@ import (
 	"github.com/libp2p/go-libp2p-core/host"
 	peer "github.com/libp2p/go-libp2p-core/peer"
 	"github.com/pkg/errors"
-	"go.uber.org/zap"
 
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/internal/logutil"
@@ -170,44 +169,48 @@ func (s *service) MonitorGroup(req *protocoltypes.MonitorGroup_Request, srv prot
 	return nil
 }
 
-func (s *service) RefreshGroup(ctx context.Context, req *protocoltypes.RefreshGroup_Request) (*protocoltypes.RefreshGroup_Reply, error) {
-	if len(req.GroupPK) == 0 {
-		return nil, errcode.ErrGroupMissing
+func (s *service) RefreshRequest(ctx context.Context, req *protocoltypes.RefreshRequest_Request) (*protocoltypes.RefreshRequest_Reply, error) {
+	if len(req.ContactPK) == 0 {
+		return nil, errcode.ErrInternal
 	}
 
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
-	g, err := s.GetContextGroupForID([]byte(req.GroupPK))
-	if err != nil {
-		return nil, errcode.ErrGroupMissing.Wrap(err)
-	}
-
-	topic := g.MessageStore().Address().String()
+	key := string(req.ContactPK)
 	s.muRefreshprocess.Lock()
-	if clfn, ok := s.refreshprocess[topic]; ok {
+	if clfn, ok := s.refreshprocess[key]; ok {
 		clfn() // close previous refresh method
 	}
-	s.refreshprocess[topic] = cancel
+	s.refreshprocess[key] = cancel
 	s.muRefreshprocess.Unlock()
 
-	topic = fmt.Sprintf("floodsub:%s", topic)
-	cpeers, err := s.discovery.FindPeers(ctx, topic, tinder.WatchdogDiscoverForce)
+	peers, err := s.swiper.RefreshRequest(ctx, req.ContactPK)
 	if err != nil {
-		return nil, errcode.ErrInternal.Wrap(err)
+		return nil, fmt.Errorf("unable to refresh group: %w", err)
 	}
 
-	for p := range cpeers {
+	res := &protocoltypes.RefreshRequest_Reply{
+		PeersFound: []*protocoltypes.RefreshRequest_Peer{},
+	}
+	for _, p := range peers {
+		// check if we can connect to this peers
 		if err := s.host.Connect(ctx, p); err != nil {
-			s.logger.Debug("refresh: unable to connect", zap.Stringer("peer", p), zap.Error(err))
 			continue
 		}
 
-		s.logger.Debug("refresh success", zap.Stringer("peer", p))
-		return &protocoltypes.RefreshGroup_Reply{}, nil
+		addrs := make([]string, len(p.Addrs))
+		for i, addr := range p.Addrs {
+			addrs[i] = addr.String()
+		}
+
+		res.PeersFound = append(res.PeersFound, &protocoltypes.RefreshRequest_Peer{
+			ID:    p.ID.Pretty(),
+			Addrs: addrs,
+		})
 	}
 
-	return nil, fmt.Errorf("unable to refresh group")
+	return res, nil
 }
 
 func monitorHandlePubsubEvent(e *ipfsutil.EvtPubSubTopic, h host.Host) *protocoltypes.MonitorGroup_EventMonitor {
