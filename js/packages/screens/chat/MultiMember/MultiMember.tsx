@@ -160,7 +160,7 @@ export const MultiMember: ScreenFC<'Chat.Group'> = ({ route: { params }, navigat
 
 	const headerHeight = useHeaderHeight()
 
-	if (Platform.OS === 'android' && !keyboardIsHidden) {
+	if ((Platform.OS === 'android' && !keyboardIsHidden) || !params.convId || !params.convId.length) {
 		return null
 	}
 
@@ -179,14 +179,7 @@ export const MultiMember: ScreenFC<'Chat.Group'> = ({ route: { params }, navigat
 							placeholder={t('chat.multi-member.input-placeholder')}
 						/>
 						{!!stickyDate && !!showStickyDate && (
-							<View
-								style={{
-									position: 'absolute',
-									top: 110,
-									left: 0,
-									right: 0,
-								}}
-							>
+							<View style={{ position: 'absolute', top: 110, left: 0, right: 0 }}>
 								<ChatDate date={pbDateToNum(stickyDate)} />
 							</View>
 						)}
@@ -199,14 +192,7 @@ export const MultiMember: ScreenFC<'Chat.Group'> = ({ route: { params }, navigat
 							placeholder={t('chat.multi-member.input-placeholder')}
 						/>
 						{!!stickyDate && !!showStickyDate && (
-							<View
-								style={{
-									position: 'absolute',
-									top: 110,
-									left: 0,
-									right: 0,
-								}}
-							>
+							<View style={{ position: 'absolute', top: 110, left: 0, right: 0 }}>
 								<ChatDate date={pbDateToNum(stickyDate)} />
 							</View>
 						)}

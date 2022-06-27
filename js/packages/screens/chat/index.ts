@@ -7,7 +7,7 @@ export { ChatSettingsMemberDetail } from './ChatSettingsMemberDetail/ChatSetting
 export { MultiMemberQR } from './MultiMemberQR/MultiMemberQR'
 export { ReplicateGroupSettings } from './ReplicateGroupSettings/ReplicateGroupSettings'
 export { SharedMedias } from './SharedMedias/SharedMedias'
-export { MultiMemberSettingsAddMembers } from './MultiMemberSettingsAddMembers/MultiMembersSettingsAddMembers'
+export { MultiMemberSettingsAddMembers } from './MultiMemberSettingsAddMembers/MultiMemberSettingsAddMembers'
 export { Home } from './Home/Home'
 export { ContactRequest } from './ContactRequest/ContactRequest'
 export { CreateGroupAddMembers } from './CreateGroupAddMembers/CreateGroupAddMembers'

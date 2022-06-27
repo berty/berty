@@ -100,7 +100,11 @@ export const OneToOne: ScreenFC<'Chat.OneToOne'> = React.memo(
 			})
 		})
 
-		if (Platform.OS === 'android' && !keyboardIsHidden) {
+		if (
+			(Platform.OS === 'android' && !keyboardIsHidden) ||
+			!params.convId ||
+			!params.convId.length
+		) {
 			return null
 		}
 
