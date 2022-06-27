@@ -1,0 +1,47 @@
+name: "Question"
+description: Ask a question about this project.
+labels: ["question", "🔍 Ready for Review"]
+body:
+  - type: checkboxes
+    attributes:
+      label: Asking a question, not reporting a bug
+      description: If your question is "Why did I get this error?" and you think it is a bug, then please open a Bug Report at https://github.com/berty/berty/issues/new/
+      options:
+      - label: This question is not about a bug
+        required: true
+  - type: checkboxes
+    attributes:
+      label: Is there an existing issue for this?
+      description: Please search to see if an issue already exists for your question.
+      options:
+      - label: I have searched the existing issues
+        required: true
+  - type: dropdown
+    id: product
+    attributes:
+      label: Berty product
+      description: What Berty product is your question about?
+      options:
+        - Mobile app
+        - Desktop app
+        - CLI tools (berty mini, daemon, etc.)
+        - Code package
+        - General
+    validations:
+      required: true
+  - type: textarea
+    id: question
+    attributes:
+      label: Question
+      description: Provide your question with enough detail that it is helpful to anyone reading the question (maybe years later).
+      placeholder: How do I ...
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: Is it a general question about the design and goals of Berty, or about how to use the Berty app (or some other context)?
+      placeholder: This is a question about ...
+    validations:
+      required: true
