@@ -45,8 +45,7 @@
 				"access": {
 					"title": "",
 					"relay-button": "",
-					"bootstrap-button": "",
-					"replication-button": ""
+					"bootstrap-button": ""
 				},
 				"modals": {
 					"add": {
@@ -159,7 +158,9 @@
 			"accounts-button": "계정",
 			"network-button": "",
 			"bug-button": "",
-			"about-button": "Berty에 대해"
+			"about-button": "Berty에 대해",
+			"version-button": "",
+			"devtools-button": ""
 		},
 		"about": {
 			"title": "Berty에 대해",
@@ -325,15 +326,19 @@
 			}
 		},
 		"my-berty-ID": {
-			"title": "",
-			"qr": "QR",
-			"fingerprint": "지문"
+			"title": ""
 		},
 		"share": {
 			"invite": "",
 			"tap-to-scan": "",
 			"create-group": ""
 		}
+	},
+	"tabs": {
+		"qr": "QR",
+		"fingerprint": "지문",
+		"info": "정보",
+		"devices": "장치"
 	},
 	"modals": {
 		"manage-deep-link": {
@@ -346,15 +351,7 @@
 		"invalid-scan": {
 			"dismiss-button": ""
 		},
-		"add-this-contact": {
-			"fingerprint": "지문",
-			"info": "정보",
-			"devices": "장치"
-		},
 		"group-invitation": {
-			"fingerprint": "지문",
-			"info": "정보",
-			"devices": "장치",
 			"join": "",
 			"password-label": "",
 			"password-placeholder": ""
@@ -372,8 +369,6 @@
 		"sending": "보내는 중...",
 		"sent": "",
 		"contact-settings": {
-			"fingerprint": "지문",
-			"info": "정보",
 			"my-devices": ""
 		},
 		"multi-member": {
