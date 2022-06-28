@@ -45,8 +45,7 @@
 				"access": {
 					"title": "网络辅助",
 					"relay-button": "中继节点 (TURN)",
-					"bootstrap-button": "引导节点",
-					"replication-button": "复制节点"
+					"bootstrap-button": "引导节点"
 				},
 				"modals": {
 					"add": {
@@ -159,7 +158,9 @@
 			"accounts-button": "账户",
 			"network-button": "网络",
 			"bug-button": "提交错误",
-			"about-button": "关于 Berty"
+			"about-button": "关于 Berty",
+			"version-button": "",
+			"devtools-button": "开发工具"
 		},
 		"about": {
 			"title": "关于 Berty",
@@ -325,15 +326,19 @@
 			}
 		},
 		"my-berty-ID": {
-			"title": "我的 Berty ID",
-			"qr": "二维码",
-			"fingerprint": "指纹"
+			"title": "我的 Berty ID"
 		},
 		"share": {
 			"invite": "邀请",
 			"tap-to-scan": "点击扫描",
 			"create-group": "创建群組"
 		}
+	},
+	"tabs": {
+		"qr": "二维码",
+		"fingerprint": "指纹",
+		"info": "信息",
+		"devices": "设备"
 	},
 	"modals": {
 		"manage-deep-link": {
@@ -346,15 +351,7 @@
 		"invalid-scan": {
 			"dismiss-button": "关闭"
 		},
-		"add-this-contact": {
-			"fingerprint": "指纹",
-			"info": "信息",
-			"devices": "设备"
-		},
 		"group-invitation": {
-			"fingerprint": "指纹",
-			"info": "信息",
-			"devices": "设备",
 			"join": "加入此群组",
 			"password-label": "输入群组密码",
 			"password-placeholder": "密码..."
@@ -372,8 +369,6 @@
 		"sending": "正在发送...",
 		"sent": "已发送",
 		"contact-settings": {
-			"fingerprint": "指纹",
-			"info": "信息",
 			"my-devices": "我的设备"
 		},
 		"multi-member": {
@@ -564,8 +559,8 @@
 			"desc": "重新启动 Berty 以保存您的数据并启用通知！"
 		},
 		"submit-failed": {
-			"title": "无法提交bug",
-			"desc": "缺少邮件应用"
+			"title": "",
+			"desc": ""
 		}
 	},
 	"error": {
