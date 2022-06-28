@@ -67,7 +67,7 @@ const initialState: State = {
 
 export const EditMyProfile: React.FC = () => {
 	const colors = useThemeColor()
-	const { t }: any = useTranslation()
+	const { t } = useTranslation()
 	const client = useMessengerClient()
 	const selectedAccount = useSelector(selectSelectedAccount)
 	const { hide } = useModal()
