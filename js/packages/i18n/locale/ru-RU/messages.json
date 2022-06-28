@@ -45,8 +45,7 @@
 				"access": {
 					"title": "Доступность сети",
 					"relay-button": "Ретранслятор (ВКЛЮЧИТЬ)",
-					"bootstrap-button": "Загрузка Узла",
-					"replication-button": "Копирование узлов"
+					"bootstrap-button": "Загрузка Узла"
 				},
 				"modals": {
 					"add": {
@@ -159,7 +158,9 @@
 			"accounts-button": "Аккаунты",
 			"network-button": "Сеть",
 			"bug-button": "Сообщить об ошибке",
-			"about-button": "О Berty"
+			"about-button": "О Berty",
+			"version-button": "",
+			"devtools-button": "Инструменты для разработчиков"
 		},
 		"about": {
 			"title": "О Berty",
@@ -325,15 +326,19 @@
 			}
 		},
 		"my-berty-ID": {
-			"title": "Мой Berty ID",
-			"qr": "QR",
-			"fingerprint": "Отпечаток"
+			"title": "Мой Berty ID"
 		},
 		"share": {
 			"invite": "Пригласить",
 			"tap-to-scan": "Нажми для сканирования",
 			"create-group": "Создать группу"
 		}
+	},
+	"tabs": {
+		"qr": "QR",
+		"fingerprint": "Отпечаток",
+		"info": "Информация",
+		"devices": "Устройства"
 	},
 	"modals": {
 		"manage-deep-link": {
@@ -346,15 +351,7 @@
 		"invalid-scan": {
 			"dismiss-button": ""
 		},
-		"add-this-contact": {
-			"fingerprint": "Отпечаток",
-			"info": "Информация",
-			"devices": "Устройства"
-		},
 		"group-invitation": {
-			"fingerprint": "Отпечаток",
-			"info": "Информация",
-			"devices": "Устройства",
 			"join": "",
 			"password-label": "Введи пароль группы",
 			"password-placeholder": "Пароль..."
@@ -372,8 +369,6 @@
 		"sending": "Отправка...",
 		"sent": "Отправлено",
 		"contact-settings": {
-			"fingerprint": "Отпечаток",
-			"info": "Информация",
 			"my-devices": "Мои устройства"
 		},
 		"multi-member": {
@@ -564,8 +559,8 @@
 			"desc": "Перезапусти Berty, чтобы сохранить данные и включить уведомления!"
 		},
 		"submit-failed": {
-			"title": "Не удаётся сообщить об ошибке",
-			"desc": "Не удаётся найти почтовое приложение"
+			"title": "",
+			"desc": ""
 		}
 	},
 	"error": {
