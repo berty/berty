@@ -8,12 +8,11 @@ import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useModal } from '@berty/contexts/modal.context'
 import { useStyles } from '@berty/contexts/styles'
-import { useAppDispatch } from '@berty/hooks'
+import { useAppDispatch, useThemeColor } from '@berty/hooks'
 import {
 	ReplyTargetInteraction,
 	setActiveReplyInteraction,
 } from '@berty/redux/reducers/chatInputs.reducer'
-import { useThemeColor } from '@berty/store'
 import { getEmojiByName } from '@berty/utils/emojis/emojis'
 
 import { EmojiKeyboard } from './EmojiKeyboard.modal'

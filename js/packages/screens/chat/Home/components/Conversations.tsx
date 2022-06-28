@@ -4,8 +4,8 @@ import { View, ViewProps } from 'react-native'
 
 import beapi from '@berty/api'
 import { useStyles } from '@berty/contexts/styles'
+import { useThemeColor } from '@berty/hooks'
 import { Suggestion, Configuration } from '@berty/redux/reducers/persistentOptions.reducer'
-import { useThemeColor } from '@berty/store'
 
 import { ConversationItem } from './conversation/ConversationItem'
 import { AddBotCallback } from './suggestion/interfaces'

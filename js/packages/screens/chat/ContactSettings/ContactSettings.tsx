@@ -8,9 +8,8 @@ import UserDevicesList from '@berty/components/chat/DeviceList'
 import { FingerprintContent } from '@berty/components/shared-components/FingerprintContent'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useStyles } from '@berty/contexts/styles'
-import { useContact, useConversation } from '@berty/hooks'
+import { useContact, useConversation, useThemeColor } from '@berty/hooks'
 import { ScreenFC } from '@berty/navigation'
-import { useThemeColor } from '@berty/store'
 
 const ContactSettingsHeaderContent: React.FC = ({ children }) => {
 	const { margin } = useStyles()

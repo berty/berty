@@ -8,7 +8,7 @@ import { useStyles } from '@berty/contexts/styles'
 import { useAppSelector, useOneToOneContact, useLastConvInteraction } from '@berty/hooks'
 import { selectChatInputText } from '@berty/redux/reducers/chatInputs.reducer'
 import { selectChatInputIsSending } from '@berty/redux/reducers/chatInputsVolatile.reducer'
-import { ParsedInteraction } from '@berty/store'
+import { ParsedInteraction } from '@berty/utils/api'
 import { pbDateToNum } from '@berty/utils/convert/time'
 
 import { ConversationButton } from './ConversationButton'

@@ -7,9 +7,14 @@ import beapi from '@berty/api'
 import { ContactAvatar, ConversationAvatar } from '@berty/components/avatars'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useStyles } from '@berty/contexts/styles'
-import { useContact, useConversationInteractions, useConversation } from '@berty/hooks'
+import {
+	useContact,
+	useConversationInteractions,
+	useConversation,
+	useThemeColor,
+} from '@berty/hooks'
 import { useNavigation } from '@berty/navigation'
-import { useThemeColor, ParsedInteraction } from '@berty/store'
+import { ParsedInteraction } from '@berty/utils/api'
 import { pbDateToNum, timeFormat } from '@berty/utils/convert/time'
 import { parseInteraction } from '@berty/utils/messenger/interactions'
 

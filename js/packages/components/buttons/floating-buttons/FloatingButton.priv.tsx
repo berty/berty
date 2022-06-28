@@ -2,7 +2,7 @@ import { Icon } from '@ui-kitten/components'
 import React from 'react'
 import { StyleSheet, TouchableOpacity, TouchableOpacityProps, View } from 'react-native'
 
-import { useThemeColor } from '@berty/store'
+import { useThemeColor } from '@berty/hooks'
 
 export const FloatingButtonPriv: React.FC<TouchableOpacityProps> = props => {
 	const colors = useThemeColor()

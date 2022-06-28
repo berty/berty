@@ -7,14 +7,18 @@ import beapi from '@berty/api'
 import { berty } from '@berty/api/root.pb'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
-import { useAppDispatch, useAppSelector, useContactSearchResults } from '@berty/hooks'
+import {
+	useAppDispatch,
+	useAppSelector,
+	useContactSearchResults,
+	useThemeColor,
+} from '@berty/hooks'
 import {
 	addMemberToInvitationList,
 	removeMemberFromInvitationListById,
 	resetInvitationList,
 	selectInvitationListMembers,
 } from '@berty/redux/reducers/groupCreationForm.reducer'
-import { useThemeColor } from '@berty/store/hooks'
 
 import { ContactAvatar } from '../avatars'
 import { MediumInput } from '../index'

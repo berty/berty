@@ -6,7 +6,7 @@ import { View } from 'react-native'
 import Button from '@berty/components/shared-components/Button'
 import { TextInput } from '@berty/components/shared-components/TextInput'
 import { useStyles } from '@berty/contexts/styles'
-import { useThemeColor } from '@berty/store'
+import { useThemeColor } from '@berty/hooks'
 
 import { UnifiedText } from '../shared-components/UnifiedText'
 

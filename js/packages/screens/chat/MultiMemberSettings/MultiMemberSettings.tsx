@@ -14,9 +14,14 @@ import EnableNotificationsButton from '@berty/components/chat/EnableNotification
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
-import { useConversation, useConversationMembers } from '@berty/hooks'
+import {
+	useConversation,
+	useConversationMembers,
+	useMessengerClient,
+	useThemeColor,
+} from '@berty/hooks'
 import { ScreenFC, useNavigation } from '@berty/navigation'
-import { Maybe, useMessengerClient, useThemeColor } from '@berty/store'
+import { Maybe } from '@berty/utils/type/maybe'
 
 const GroupChatSettingsHeader: React.FC<{ publicKey: Maybe<string> }> = ({ publicKey }) => {
 	const conv = useConversation(publicKey)

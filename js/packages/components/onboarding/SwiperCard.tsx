@@ -2,7 +2,7 @@ import React from 'react'
 import { View, ViewProps } from 'react-native'
 
 import { useStyles } from '@berty/contexts/styles'
-import { useThemeColor } from '@berty/store/hooks'
+import { useThemeColor } from '@berty/hooks'
 
 import { PrimaryButton, SecondaryButton, TertiaryAltButton } from '../buttons'
 import { UnifiedText } from '../shared-components/UnifiedText'

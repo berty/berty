@@ -2,7 +2,7 @@ import React from 'react'
 import { TouchableHighlight, View, ViewStyle } from 'react-native'
 
 import { useStyles } from '@berty/contexts/styles'
-import { useThemeColor } from '@berty/store'
+import { useThemeColor } from '@berty/hooks'
 
 interface SuggestionButtonProps {
 	isLast: boolean

@@ -5,8 +5,8 @@ import { ScrollView, View } from 'react-native'
 
 import { MenuItem, ItemSection } from '@berty/components'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
+import { useThemeColor } from '@berty/hooks'
 import { ScreenFC, useNavigation } from '@berty/navigation'
-import { useThemeColor } from '@berty/store'
 // import { selectThemeIsDark, toggleDarkTheme } from '@berty/redux/reducers/theme.reducer'
 
 export const Appearance: ScreenFC<'Settings.Appearance'> = () => {

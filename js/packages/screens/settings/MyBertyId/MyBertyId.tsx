@@ -12,9 +12,8 @@ import { FingerprintContent } from '@berty/components/shared-components/Fingerpr
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
-import { useAccount } from '@berty/hooks'
+import { useAccount, useStylesBertyId, useThemeColor } from '@berty/hooks'
 import { ScreenFC } from '@berty/navigation'
-import { useStylesBertyId, useThemeColor } from '@berty/store'
 
 //
 // Settings My Berty ID Vue

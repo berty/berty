@@ -5,11 +5,12 @@ import { useSelector } from 'react-redux'
 
 import beapi from '@berty/api'
 import { useStyles } from '@berty/contexts/styles'
+import { useThemeColor } from '@berty/hooks'
 import {
 	PersistentOptionsKeys,
 	selectPersistentOptions,
 } from '@berty/redux/reducers/persistentOptions.reducer'
-import { ParsedInteraction, useThemeColor } from '@berty/store'
+import { ParsedInteraction } from '@berty/utils/api'
 import { pbDateToNum, timeFormat } from '@berty/utils/convert/time'
 
 import { UnifiedText } from '../../shared-components/UnifiedText'

@@ -5,8 +5,7 @@ import { View } from 'react-native'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
-import { useThemeColor } from '@berty/store/hooks'
-import messengerMethodsHooks from '@berty/store/methods'
+import { bertyMethodsHooks, useThemeColor } from '@berty/hooks'
 
 const useStylesHint = () => {
 	const { text, opacity, margin } = useStyles()
@@ -33,7 +32,7 @@ export const HintBody = () => {
 	const colors = useThemeColor()
 	const { searchHintBodyText } = useStylesHint()
 
-	const { reply: bannerQuote = {}, call, called } = messengerMethodsHooks.useBannerQuote()
+	const { reply: bannerQuote = {}, call, called } = bertyMethodsHooks.useBannerQuote()
 	React.useEffect(() => {
 		if (!called) {
 			call({ random: false })

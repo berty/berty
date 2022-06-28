@@ -2,7 +2,7 @@ import React from 'react'
 import { View } from 'react-native'
 
 import { useStyles } from '@berty/contexts/styles'
-import { useThemeColor } from '@berty/store'
+import { useThemeColor } from '@berty/hooks'
 import { timeFormat } from '@berty/utils/convert/time'
 
 import { UnifiedText } from '../shared-components/UnifiedText'

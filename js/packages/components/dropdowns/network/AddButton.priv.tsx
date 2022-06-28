@@ -3,7 +3,7 @@ import React from 'react'
 import { StyleSheet, TouchableOpacity, View } from 'react-native'
 
 import { useStyles } from '@berty/contexts/styles'
-import { useThemeColor } from '@berty/store'
+import { useThemeColor } from '@berty/hooks'
 
 export const AddButtonPriv: React.FC<{ onPress?: () => void }> = props => {
 	const { padding } = useStyles()

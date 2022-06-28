@@ -30,6 +30,9 @@ import {
 	useAccount,
 	usePlaySound,
 	useRestartAfterClosing,
+	useThemeColor,
+	useMessengerClient,
+	bertyMethodsHooks,
 } from '@berty/hooks'
 import { languages } from '@berty/i18n/locale/languages'
 import { GoBridge } from '@berty/native-modules/GoBridge'
@@ -41,8 +44,6 @@ import {
 	setPersistentOption,
 } from '@berty/redux/reducers/persistentOptions.reducer'
 import { setDebugMode, setStreamError } from '@berty/redux/reducers/ui.reducer'
-import { useMessengerClient, useThemeColor } from '@berty/store'
-import messengerMethodsHooks from '@berty/store/methods'
 import { storageGet, storageSet } from '@berty/utils/accounts/accountClient'
 import { showNeedRestartNotification } from '@berty/utils/notification/notif-in-app'
 import { GlobalPersistentOptionsKeys } from '@berty/utils/persistent-options/types'
@@ -158,7 +159,7 @@ const NativeCallButton: React.FC = () => {
 const DiscordShareButton: React.FC = () => {
 	const { navigate, goBack } = useNavigation()
 	const account = useAccount()
-	const { call, done, error } = messengerMethodsHooks.useDevShareInstanceBertyID()
+	const { call, done, error } = bertyMethodsHooks.useDevShareInstanceBertyID()
 	const { t } = useTranslation()
 	const colors = useThemeColor()
 

@@ -4,7 +4,7 @@ import { TouchableOpacity, View } from 'react-native'
 
 import { Toggle } from '@berty/components'
 import { useStyles } from '@berty/contexts/styles'
-import { useThemeColor } from '@berty/store'
+import { useThemeColor } from '@berty/hooks'
 
 import { IsToggleProps, MenuItemProps, OnToggleProps } from '../../items/interfaces'
 import { MenuItemPriv } from '../../items/MenuItem.priv'

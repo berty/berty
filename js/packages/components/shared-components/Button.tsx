@@ -2,7 +2,7 @@ import React from 'react'
 import { TextProps, TextStyle, TouchableOpacity, ViewStyle } from 'react-native'
 
 import { useStyles } from '@berty/contexts/styles'
-import { useThemeColor } from '@berty/store/hooks'
+import { useThemeColor } from '@berty/hooks'
 
 import { UnifiedText } from './UnifiedText'
 

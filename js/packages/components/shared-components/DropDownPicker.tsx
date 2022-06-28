@@ -4,7 +4,7 @@ import { Animated, Easing, TouchableOpacity, View } from 'react-native'
 
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
-import { useThemeColor } from '@berty/store/hooks'
+import { useThemeColor } from '@berty/hooks'
 
 import { UnifiedText } from './UnifiedText'
 

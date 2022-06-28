@@ -3,7 +3,8 @@ import { View } from 'react-native'
 import { SHA3 } from 'sha3'
 
 import { useStyles } from '@berty/contexts/styles'
-import { Maybe, useThemeColor } from '@berty/store'
+import { useThemeColor } from '@berty/hooks'
+import { Maybe } from '@berty/utils/type/maybe'
 
 import { UnifiedText } from './UnifiedText'
 

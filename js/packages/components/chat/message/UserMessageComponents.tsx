@@ -9,15 +9,11 @@ import tlds from 'tlds'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
 import { WelshMessengerServiceClient } from '@berty/grpc-bridge/welsh-clients.gen'
+import { useMessengerClient, useThemeColor } from '@berty/hooks'
 import { useNavigation } from '@berty/navigation'
-import {
-	Maybe,
-	useMessengerClient,
-	useThemeColor,
-	InteractionUserMessage,
-	ParsedInteraction,
-} from '@berty/store'
+import { InteractionUserMessage, ParsedInteraction } from '@berty/utils/api'
 import { pbDateToNum, timeFormat } from '@berty/utils/convert/time'
+import { Maybe } from '@berty/utils/type/maybe'
 
 import { UnifiedText } from '../../shared-components/UnifiedText'
 

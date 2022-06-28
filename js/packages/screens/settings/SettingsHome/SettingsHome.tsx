@@ -15,7 +15,15 @@ import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useModal } from '@berty/contexts/modal.context'
 import PermissionsContext from '@berty/contexts/permissions.context'
 import { useStyles } from '@berty/contexts/styles'
-import { useAccount, useAppSelector, useSyncNetworkConfigOnScreenRemoved } from '@berty/hooks'
+import {
+	bertyMethodsHooks,
+	useAccount,
+	useAppSelector,
+	useMessengerClient,
+	useMountEffect,
+	useSyncNetworkConfigOnScreenRemoved,
+	useThemeColor,
+} from '@berty/hooks'
 import { ScreenFC, useNavigation } from '@berty/navigation'
 import {
 	selectBlePerm,
@@ -30,8 +38,6 @@ import {
 	selectDevMode,
 	setDevMode,
 } from '@berty/redux/reducers/ui.reducer'
-import { useMessengerClient, useMountEffect, useThemeColor } from '@berty/store'
-import messengerMethodsHooks from '@berty/store/methods'
 import { accountClient } from '@berty/utils/accounts/accountClient'
 import { numberifyLong } from '@berty/utils/convert/long'
 import {
@@ -120,7 +126,7 @@ export const SettingsHome: ScreenFC<'Settings.Home'> = withInAppNotification(
 			done: systemInfoDone,
 			error: systemInfoError,
 			call: systemInfoCall,
-		} = messengerMethodsHooks.useSystemInfo()
+		} = bertyMethodsHooks.useSystemInfo()
 
 		const hasKnownPushServer = account.serviceTokens?.some(t => t.serviceType === serviceTypes.Push)
 

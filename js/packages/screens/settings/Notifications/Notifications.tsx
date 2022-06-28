@@ -12,12 +12,10 @@ import { ButtonSettingV2 } from '@berty/components/shared-components'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import PermissionsContext from '@berty/contexts/permissions.context'
-import { useAccount, useOneToOneContact } from '@berty/hooks'
+import { useAccount, useMessengerClient, useOneToOneContact, useThemeColor } from '@berty/hooks'
 import { useAllConversations } from '@berty/hooks'
 import { ScreenFC, useNavigation } from '@berty/navigation'
 import { selectProtocolClient } from '@berty/redux/reducers/ui.reducer'
-import { useThemeColor } from '@berty/store'
-import { useMessengerClient } from '@berty/store'
 import { numberifyLong } from '@berty/utils/convert/long'
 import {
 	accountPushToggleState,

@@ -15,14 +15,13 @@ import {
 } from '@berty/components'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { ModalProvider } from '@berty/contexts/modal.context'
-import { useAppDispatch, useSyncNetworkConfigOnScreenRemoved } from '@berty/hooks'
+import { useAppDispatch, useSyncNetworkConfigOnScreenRemoved, useThemeColor } from '@berty/hooks'
 import { ScreenFC, useNavigation } from '@berty/navigation'
 import {
 	selectBlePerm,
 	selectEditedNetworkConfig,
 	setCurrentNetworkConfig,
 } from '@berty/redux/reducers/networkConfig.reducer'
-import { useThemeColor } from '@berty/store'
 import { checkProximityPermission } from '@berty/utils/react-native/checkPermissions'
 import { IOSOnlyKeyboardAvoidingView } from '@berty/utils/react-native/keyboardAvoiding'
 

@@ -3,8 +3,8 @@ import { useTranslation } from 'react-i18next'
 import { View, StyleSheet, StatusBar } from 'react-native'
 
 import { useStyles } from '@berty/contexts/styles'
+import { useThemeColor } from '@berty/hooks'
 import { ScreenFC } from '@berty/navigation'
-import { useThemeColor } from '@berty/store'
 
 import { DeleteAccountContent } from './components/DeleteAccountContent'
 import { DeleteAccountHeader } from './components/DeleteAccountHeader'

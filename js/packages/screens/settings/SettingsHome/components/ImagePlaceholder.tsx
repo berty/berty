@@ -3,7 +3,7 @@ import React from 'react'
 import { View } from 'react-native'
 
 import { AccountAvatar } from '@berty/components/avatars'
-import { useThemeColor } from '@berty/store'
+import { useThemeColor } from '@berty/hooks'
 
 export const ImagePlaceholder = () => {
 	const colors = useThemeColor()

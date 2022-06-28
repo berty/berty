@@ -1,7 +1,8 @@
 import { Buffer } from 'buffer'
 
 import beapi from '@berty/api'
-import { ParsedInteraction } from '@berty/store/types.gen'
+
+import { ParsedInteraction } from '../api'
 
 export const parseInteraction = (
 	i: beapi.messenger.IInteraction | beapi.messenger.Interaction,

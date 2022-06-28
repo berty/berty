@@ -5,14 +5,14 @@ import { View, ScrollView } from 'react-native'
 
 import { ButtonSetting } from '@berty/components/shared-components/SettingsButtons'
 import { useStyles } from '@berty/contexts/styles'
-import { ScreenFC } from '@berty/navigation'
 import {
+	useThemeColor,
 	useGenerateFakeContacts,
 	useGenerateFakeMultiMembers,
 	useDeleteFakeData,
 	// useGenerateFakeMessages,
-	useThemeColor,
-} from '@berty/store'
+} from '@berty/hooks'
+import { ScreenFC } from '@berty/navigation'
 
 const BodyFakeData = () => {
 	const { t } = useTranslation()

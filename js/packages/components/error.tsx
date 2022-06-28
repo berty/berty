@@ -7,9 +7,8 @@ import RNRestart from 'react-native-restart'
 
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
-import { useAppSelector } from '@berty/hooks'
+import { useAppSelector, useThemeColor } from '@berty/hooks'
 import { selectDebugMode } from '@berty/redux/reducers/ui.reducer'
-import { useThemeColor } from '@berty/store'
 
 import AppInspector from './debug/AppInspector'
 import { UnifiedText } from './shared-components/UnifiedText'

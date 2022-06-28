@@ -14,7 +14,7 @@ import RNFS from 'react-native-fs'
 
 import beapi from '@berty/api'
 import { useStyles } from '@berty/contexts/styles'
-import { useThemeColor } from '@berty/store/hooks'
+import { useThemeColor } from '@berty/hooks'
 
 import { UnifiedText } from '../../../shared-components/UnifiedText'
 import { ImageCounter } from '../../ImageCounter'

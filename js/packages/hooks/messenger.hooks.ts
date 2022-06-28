@@ -1,10 +1,13 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 
 import beapi from '@berty/api'
+import { useNavigation } from '@berty/navigation'
 import * as m from '@berty/redux/reducers/messenger.reducer'
-import { ParsedInteraction } from '@berty/store'
+import { ParsedInteraction } from '@berty/utils/api'
+import { Maybe } from '@berty/utils/type/maybe'
 
 import { useAppSelector } from './core.hooks'
+import { useMessengerClient } from './ui.hooks'
 
 export const useAccount = () => {
 	return useAppSelector(m.selectAccount)
@@ -125,6 +128,66 @@ export const useLastConvInteraction = (
 		}
 		return intes.find(filterFunc)
 	}, [intes, filterFunc])
+}
+
+export const useReadEffect = (publicKey: Maybe<string>, timeout: Maybe<number>) => {
+	// timeout is the duration (in ms) that the user must stay on the page to set messages as read
+	const navigation = useNavigation()
+
+	const client = useMessengerClient()
+
+	const conv = useConversation(publicKey)
+	const fake = (conv && (conv as any).fake) || false
+
+	useEffect(() => {
+		if (fake) {
+			return
+		}
+		let timeoutID: ReturnType<typeof setTimeout> | null = null
+		const handleStart = () => {
+			if (timeoutID === null) {
+				let t = timeout
+				if (typeof t !== 'number') {
+					t = 1000
+				}
+				timeoutID = setTimeout(() => {
+					timeoutID = null
+					client?.conversationOpen({ groupPk: publicKey }).catch((err: unknown) => {
+						console.warn('failed to open conversation,', err)
+					})
+				}, t)
+			}
+		}
+		handleStart()
+		const unsubscribeFocus = navigation.addListener('focus', handleStart)
+		const handleStop = () => {
+			if (timeoutID !== null) {
+				clearTimeout(timeoutID)
+				timeoutID = null
+			}
+
+			// Not marking a conversation as closed if still in the navigation stack
+			const { routes } = navigation.getState()
+			for (let route of routes) {
+				if (
+					(route.name === 'Chat.OneToOne' || route.name === 'Chat.Group') &&
+					(route.params as any)?.convId === publicKey
+				) {
+					return
+				}
+			}
+
+			client?.conversationClose({ groupPk: publicKey }).catch((err: unknown) => {
+				console.warn('failed to close conversation,', err)
+			})
+		}
+		const unsubscribeBlur = navigation.addListener('blur', handleStop)
+		return () => {
+			unsubscribeFocus()
+			unsubscribeBlur()
+			handleStop()
+		}
+	}, [client, fake, navigation, publicKey, timeout])
 }
 
 /*

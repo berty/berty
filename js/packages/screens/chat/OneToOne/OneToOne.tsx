@@ -12,10 +12,15 @@ import { ChatFooter } from '@berty/components/chat/footer/ChatFooter'
 import { MessageList } from '@berty/components/chat/MessageList'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
-import { useContact, useConversation } from '@berty/hooks'
+import {
+	useContact,
+	useConversation,
+	useNotificationsInhibitor,
+	useReadEffect,
+	useThemeColor,
+} from '@berty/hooks'
 import { ScreenFC } from '@berty/navigation'
 import { CustomTitleStyle } from '@berty/navigation/stacks'
-import { useReadEffect, useNotificationsInhibitor, useThemeColor } from '@berty/store'
 import { pbDateToNum } from '@berty/utils/convert/time'
 import { IOSOnlyKeyboardAvoidingView } from '@berty/utils/react-native/keyboardAvoiding'
 

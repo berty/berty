@@ -7,8 +7,8 @@ import { MediumClearableInput } from '@berty/components'
 import { AccountAvatar } from '@berty/components/avatars'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
+import { useProfileNotification, useThemeColor } from '@berty/hooks'
 import { useNavigation } from '@berty/navigation'
-import { useProfileNotification, useThemeColor } from '@berty/store'
 
 import { UnreadCount } from './UnreadCount'
 

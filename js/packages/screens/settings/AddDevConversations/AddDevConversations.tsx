@@ -9,8 +9,8 @@ import {
 } from '@berty/components/shared-components/SettingsButtons'
 import { globals } from '@berty/config'
 import { useStyles } from '@berty/contexts/styles'
+import { useThemeColor } from '@berty/hooks'
 import { ScreenFC, useNavigation } from '@berty/navigation'
-import { useThemeColor } from '@berty/store/hooks'
 
 type ValueOf<T> = T[keyof T]
 

@@ -3,8 +3,8 @@ import React from 'react'
 import { StatusBar } from 'react-native'
 
 import { WebViews as SharedWebViews } from '@berty/components/shared-components'
+import { useThemeColor } from '@berty/hooks'
 import { ScreenFC } from '@berty/navigation'
-import { useThemeColor } from '@berty/store'
 
 export const WebViews: ScreenFC<'Onboarding.WebViews'> = ({ route: { params } }) => {
 	const { url } = params

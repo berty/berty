@@ -21,6 +21,9 @@ import {
 	useMedias,
 	useConversation,
 	usePlaySound,
+	useThemeColor,
+	useMessengerClient,
+	useMountEffect,
 } from '@berty/hooks'
 import { useNavigation } from '@berty/navigation'
 import {
@@ -38,9 +41,9 @@ import {
 	setChatInputIsSending,
 	setChatInputSelection,
 } from '@berty/redux/reducers/chatInputsVolatile.reducer'
-import { Maybe, useMessengerClient, useMountEffect, useThemeColor } from '@berty/store'
 import rnutil from '@berty/utils/react-native'
 import { PermissionType } from '@berty/utils/react-native/permissions'
+import { Maybe } from '@berty/utils/type/maybe'
 
 import { AddFileMenu } from '../modals/add-file-modal/AddFileMenu.modal'
 import { CameraButton, MoreButton, RecordButton, SendButton } from './ChatFooterButtons'

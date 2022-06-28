@@ -1,7 +1,7 @@
 import { Icon } from '@ui-kitten/components'
 import React from 'react'
 
-import { useThemeColor } from '@berty/store'
+import { useThemeColor } from '@berty/hooks'
 
 import { IconNameProps, IconTypeProps } from '../interfaces'
 

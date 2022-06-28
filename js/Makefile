@@ -341,9 +341,14 @@ packages/grpc-bridge/welsh-clients.gen.ts: packages/grpc-bridge/gen-clients.js p
 	npx babel-node packages/grpc-bridge/gen-clients.js > $@
 	npx eslint --no-ignore --fix $@
 
-packages/store/types.gen.ts: packages/store/gen-type-utils.js packages/api/root.pb.js node_modules
+packages/utils/api/types.gen.ts: packages/utils/api/gen-type-utils.js packages/api/root.pb.js node_modules
 	$(call check-program, npx)
-	npx babel-node packages/store/gen-type-utils.js > $@
+	npx babel-node packages/utils/api/gen-type-utils.js > $@
+	npx eslint --no-ignore --fix $@
+
+packages/hooks/methods/methods.gen.ts: packages/hooks/methods/gen-methods-hooks.js packages/api/root.pb.js node_modules
+	$(call check-program, npx)
+	npx babel-node packages/hooks/methods/gen-methods-hooks.js > $@
 	npx eslint --no-ignore --fix $@
 
 packages/redux/messengerActions.gen.ts: packages/redux/gen-messenger-actions.js packages/api/root.pb.js node_modules
@@ -357,7 +362,7 @@ packages/mock-services/mockedServicesInterfaces.gen.ts: packages/mock-services/g
 	npx eslint --no-ignore --fix $@
 
 
-_gen.pbjs: packages/api/root.pb.js packages/api/root.pb.d.ts packages/grpc-bridge/welsh-clients.gen.ts packages/store/types.gen.ts packages/redux/messengerActions.gen.ts packages/mock-services/mockedServicesInterfaces.gen.ts
+_gen.pbjs: packages/api/root.pb.js packages/api/root.pb.d.ts packages/grpc-bridge/welsh-clients.gen.ts packages/utils/api/types.gen.ts packages/redux/messengerActions.gen.ts packages/mock-services/mockedServicesInterfaces.gen.ts packages/hooks/methods/methods.gen.ts
 .PHONY: _gen.pbjs
 
 ##### other generation

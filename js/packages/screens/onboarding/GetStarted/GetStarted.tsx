@@ -6,8 +6,8 @@ import Logo from '@berty/assets/logo/berty_gradient_square.svg'
 import { PrimaryButton, SecondaryButton } from '@berty/components'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useStyles } from '@berty/contexts/styles'
+import { useNotificationsInhibitor, useThemeColor } from '@berty/hooks'
 import { ScreenFC, useNavigation } from '@berty/navigation'
-import { useNotificationsInhibitor, useThemeColor } from '@berty/store'
 import { importAccountFromDocumentPicker } from '@berty/utils/accounts/accountBackup'
 
 export const GetStarted: ScreenFC<'Onboarding.GetStarted'> = () => {

@@ -10,9 +10,8 @@ import { MultiMemberAvatar } from '@berty/components/avatars'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
-import { useConversation } from '@berty/hooks'
+import { useConversation, useStylesBertyId, useThemeColor } from '@berty/hooks'
 import { ScreenFC } from '@berty/navigation'
-import { useStylesBertyId, useThemeColor } from '@berty/store'
 
 const styleBertyIdOptions = {
 	iconIdSize: 30,

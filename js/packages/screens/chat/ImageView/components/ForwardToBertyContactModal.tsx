@@ -8,9 +8,15 @@ import { ConversationAvatar } from '@berty/components/avatars'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
-import { useAllConversations, useOneToOneContact, usePlaySound } from '@berty/hooks'
-import { useThemeColor, useMessengerClient, Maybe } from '@berty/store'
+import {
+	useAllConversations,
+	useMessengerClient,
+	useOneToOneContact,
+	usePlaySound,
+	useThemeColor,
+} from '@berty/hooks'
 import { prepareMediaBytes } from '@berty/utils/messenger/media'
+import { Maybe } from '@berty/utils/type/maybe'
 
 const Item: React.FC<{ conversation: beapi.messenger.IConversation; image: any }> = React.memo(
 	({ conversation, image }) => {
