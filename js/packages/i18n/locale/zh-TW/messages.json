@@ -45,8 +45,7 @@
 				"access": {
 					"title": "",
 					"relay-button": "",
-					"bootstrap-button": "",
-					"replication-button": ""
+					"bootstrap-button": ""
 				},
 				"modals": {
 					"add": {
@@ -159,7 +158,9 @@
 			"accounts-button": "賬戶",
 			"network-button": "",
 			"bug-button": "",
-			"about-button": "關於 Berty"
+			"about-button": "關於 Berty",
+			"version-button": "",
+			"devtools-button": "開發工具"
 		},
 		"about": {
 			"title": "關於 Berty",
@@ -325,15 +326,19 @@
 			}
 		},
 		"my-berty-ID": {
-			"title": "",
-			"qr": "二維碼",
-			"fingerprint": "指紋"
+			"title": ""
 		},
 		"share": {
 			"invite": "",
 			"tap-to-scan": "",
 			"create-group": ""
 		}
+	},
+	"tabs": {
+		"qr": "二維碼",
+		"fingerprint": "指紋",
+		"info": "信息",
+		"devices": "設備"
 	},
 	"modals": {
 		"manage-deep-link": {
@@ -346,15 +351,7 @@
 		"invalid-scan": {
 			"dismiss-button": ""
 		},
-		"add-this-contact": {
-			"fingerprint": "指紋",
-			"info": "信息",
-			"devices": "設備"
-		},
 		"group-invitation": {
-			"fingerprint": "指紋",
-			"info": "信息",
-			"devices": "設備",
 			"join": "",
 			"password-label": "",
 			"password-placeholder": ""
@@ -372,8 +369,6 @@
 		"sending": "正在發送...",
 		"sent": "",
 		"contact-settings": {
-			"fingerprint": "指紋",
-			"info": "信息",
 			"my-devices": ""
 		},
 		"multi-member": {
