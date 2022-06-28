@@ -45,8 +45,7 @@
 				"access": {
 					"title": "Acessibilidade de rede",
 					"relay-button": "Nós de retransmissão (TURN)",
-					"bootstrap-button": "Pontos de inicialização",
-					"replication-button": "Pontos de replicação"
+					"bootstrap-button": "Pontos de inicialização"
 				},
 				"modals": {
 					"add": {
@@ -159,7 +158,9 @@
 			"accounts-button": "Contas",
 			"network-button": "",
 			"bug-button": "",
-			"about-button": "Sobre Berty"
+			"about-button": "Sobre Berty",
+			"version-button": "",
+			"devtools-button": "Ferramentas do desenvolvedor"
 		},
 		"about": {
 			"title": "Sobre o Berty",
@@ -325,15 +326,19 @@
 			}
 		},
 		"my-berty-ID": {
-			"title": "",
-			"qr": "QR",
-			"fingerprint": "Impressão digital"
+			"title": ""
 		},
 		"share": {
 			"invite": "",
 			"tap-to-scan": "",
 			"create-group": ""
 		}
+	},
+	"tabs": {
+		"qr": "QR",
+		"fingerprint": "Impressão digital",
+		"info": "Informações",
+		"devices": "Dispositivos"
 	},
 	"modals": {
 		"manage-deep-link": {
@@ -346,15 +351,7 @@
 		"invalid-scan": {
 			"dismiss-button": ""
 		},
-		"add-this-contact": {
-			"fingerprint": "Impressão digital",
-			"info": "Informações",
-			"devices": "Dispositivos"
-		},
 		"group-invitation": {
-			"fingerprint": "Impressão digital",
-			"info": "Informações",
-			"devices": "Dispositivos",
 			"join": "",
 			"password-label": "",
 			"password-placeholder": ""
@@ -372,8 +369,6 @@
 		"sending": "Enviando...",
 		"sent": "",
 		"contact-settings": {
-			"fingerprint": "Impressão digital",
-			"info": "Informações",
 			"my-devices": ""
 		},
 		"multi-member": {
