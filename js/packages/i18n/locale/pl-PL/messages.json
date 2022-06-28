@@ -45,8 +45,7 @@
 				"access": {
 					"title": "",
 					"relay-button": "",
-					"bootstrap-button": "",
-					"replication-button": ""
+					"bootstrap-button": ""
 				},
 				"modals": {
 					"add": {
@@ -159,7 +158,9 @@
 			"accounts-button": "Konta",
 			"network-button": "",
 			"bug-button": "",
-			"about-button": "O Berty"
+			"about-button": "O Berty",
+			"version-button": "",
+			"devtools-button": "Narzędzia Deweloperskie"
 		},
 		"about": {
 			"title": "O Berty",
@@ -325,15 +326,19 @@
 			}
 		},
 		"my-berty-ID": {
-			"title": "",
-			"qr": "QR",
-			"fingerprint": "Odcisk palca"
+			"title": ""
 		},
 		"share": {
 			"invite": "",
 			"tap-to-scan": "",
 			"create-group": ""
 		}
+	},
+	"tabs": {
+		"qr": "QR",
+		"fingerprint": "Odcisk palca",
+		"info": "Informacje",
+		"devices": "Urządzenia"
 	},
 	"modals": {
 		"manage-deep-link": {
@@ -346,15 +351,7 @@
 		"invalid-scan": {
 			"dismiss-button": ""
 		},
-		"add-this-contact": {
-			"fingerprint": "Odcisk palca",
-			"info": "Informacje",
-			"devices": "Urządzenia"
-		},
 		"group-invitation": {
-			"fingerprint": "Odcisk palca",
-			"info": "Informacje",
-			"devices": "Urządzenia",
 			"join": "",
 			"password-label": "",
 			"password-placeholder": ""
@@ -372,8 +369,6 @@
 		"sending": "Wysyłanie...",
 		"sent": "",
 		"contact-settings": {
-			"fingerprint": "Odcisk palca",
-			"info": "Informacje",
 			"my-devices": ""
 		},
 		"multi-member": {

@@ -45,8 +45,7 @@
 				"access": {
 					"title": "",
 					"relay-button": "",
-					"bootstrap-button": "",
-					"replication-button": ""
+					"bootstrap-button": ""
 				},
 				"modals": {
 					"add": {
@@ -159,7 +158,9 @@
 			"accounts-button": "",
 			"network-button": "",
 			"bug-button": "",
-			"about-button": ""
+			"about-button": "",
+			"version-button": "",
+			"devtools-button": ""
 		},
 		"about": {
 			"title": "",
@@ -325,15 +326,19 @@
 			}
 		},
 		"my-berty-ID": {
-			"title": "",
-			"qr": "",
-			"fingerprint": ""
+			"title": ""
 		},
 		"share": {
 			"invite": "",
 			"tap-to-scan": "",
 			"create-group": ""
 		}
+	},
+	"tabs": {
+		"qr": "",
+		"fingerprint": "",
+		"info": "",
+		"devices": ""
 	},
 	"modals": {
 		"manage-deep-link": {
@@ -346,15 +351,7 @@
 		"invalid-scan": {
 			"dismiss-button": ""
 		},
-		"add-this-contact": {
-			"fingerprint": "",
-			"info": "",
-			"devices": ""
-		},
 		"group-invitation": {
-			"fingerprint": "",
-			"info": "",
-			"devices": "",
 			"join": "",
 			"password-label": "",
 			"password-placeholder": ""
@@ -372,8 +369,6 @@
 		"sending": "",
 		"sent": "",
 		"contact-settings": {
-			"fingerprint": "",
-			"info": "",
 			"my-devices": ""
 		},
 		"multi-member": {

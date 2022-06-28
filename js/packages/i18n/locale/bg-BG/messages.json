@@ -45,8 +45,7 @@
 				"access": {
 					"title": "",
 					"relay-button": "",
-					"bootstrap-button": "",
-					"replication-button": ""
+					"bootstrap-button": ""
 				},
 				"modals": {
 					"add": {
@@ -159,7 +158,9 @@
 			"accounts-button": "",
 			"network-button": "",
 			"bug-button": "",
-			"about-button": "Относно Berty"
+			"about-button": "Относно Berty",
+			"version-button": "",
+			"devtools-button": "Инструмени за програмисти"
 		},
 		"about": {
 			"title": "Относно Berty",
@@ -325,15 +326,19 @@
 			}
 		},
 		"my-berty-ID": {
-			"title": "",
-			"qr": "QR",
-			"fingerprint": "Fingerprint"
+			"title": ""
 		},
 		"share": {
 			"invite": "",
 			"tap-to-scan": "",
 			"create-group": ""
 		}
+	},
+	"tabs": {
+		"qr": "QR",
+		"fingerprint": "Fingerprint",
+		"info": "Информация",
+		"devices": "Устройства"
 	},
 	"modals": {
 		"manage-deep-link": {
@@ -346,15 +351,7 @@
 		"invalid-scan": {
 			"dismiss-button": ""
 		},
-		"add-this-contact": {
-			"fingerprint": "Fingerprint",
-			"info": "Информация",
-			"devices": "Устройства"
-		},
 		"group-invitation": {
-			"fingerprint": "Fingerprint",
-			"info": "Информация",
-			"devices": "Устройства",
 			"join": "",
 			"password-label": "",
 			"password-placeholder": ""
@@ -372,8 +369,6 @@
 		"sending": "Изпращане...",
 		"sent": "",
 		"contact-settings": {
-			"fingerprint": "Fingerprint",
-			"info": "Информация",
 			"my-devices": ""
 		},
 		"multi-member": {

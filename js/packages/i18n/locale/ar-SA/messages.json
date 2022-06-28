@@ -45,8 +45,7 @@
 				"access": {
 					"title": "",
 					"relay-button": "",
-					"bootstrap-button": "",
-					"replication-button": ""
+					"bootstrap-button": ""
 				},
 				"modals": {
 					"add": {
@@ -159,7 +158,9 @@
 			"accounts-button": "",
 			"network-button": "",
 			"bug-button": "",
-			"about-button": "حول برتي"
+			"about-button": "حول برتي",
+			"version-button": "",
+			"devtools-button": "أدوات التطوير"
 		},
 		"about": {
 			"title": "حول برتي",
@@ -325,15 +326,19 @@
 			}
 		},
 		"my-berty-ID": {
-			"title": "معرف برتي الخاص بي",
-			"qr": "QR",
-			"fingerprint": "بصمة"
+			"title": "معرف برتي الخاص بي"
 		},
 		"share": {
 			"invite": "ادعو",
 			"tap-to-scan": "انقر للمسح",
 			"create-group": "أنشئ مجموعة"
 		}
+	},
+	"tabs": {
+		"qr": "QR",
+		"fingerprint": "بصمة",
+		"info": "معلومات",
+		"devices": "الأجهزة"
 	},
 	"modals": {
 		"manage-deep-link": {
@@ -346,15 +351,7 @@
 		"invalid-scan": {
 			"dismiss-button": ""
 		},
-		"add-this-contact": {
-			"fingerprint": "بصمة",
-			"info": "معلومات",
-			"devices": "الأجهزة"
-		},
 		"group-invitation": {
-			"fingerprint": "بصمة",
-			"info": "معلومات",
-			"devices": "الأجهزة",
 			"join": "انضم إلى هذه المجموعة",
 			"password-label": "أدخل كلمة مرور المجموعة",
 			"password-placeholder": "كلمة المرور..."
@@ -372,8 +369,6 @@
 		"sending": "يرسل...",
 		"sent": "أرسلت",
 		"contact-settings": {
-			"fingerprint": "بصمة",
-			"info": "معلومات",
 			"my-devices": "أجهزتي"
 		},
 		"multi-member": {

@@ -45,8 +45,7 @@
 				"access": {
 					"title": "ネットワークアクセシビリティ",
 					"relay-button": "リレーノード (TURN)",
-					"bootstrap-button": "ブートストラップノード",
-					"replication-button": "レプリケーションノード"
+					"bootstrap-button": "ブートストラップノード"
 				},
 				"modals": {
 					"add": {
@@ -159,7 +158,9 @@
 			"accounts-button": "アカウント",
 			"network-button": "ネットワーク",
 			"bug-button": "バグを送信",
-			"about-button": "Bertyについて"
+			"about-button": "Bertyについて",
+			"version-button": "",
+			"devtools-button": "開発者向けツール"
 		},
 		"about": {
 			"title": "Bertyについて",
@@ -325,15 +326,19 @@
 			}
 		},
 		"my-berty-ID": {
-			"title": "私のBerty ID",
-			"qr": "QR コード",
-			"fingerprint": "識別情報（フィンガープリント）"
+			"title": "私のBerty ID"
 		},
 		"share": {
 			"invite": "招待",
 			"tap-to-scan": "タップしてスキャン",
 			"create-group": "新しいグループを作成"
 		}
+	},
+	"tabs": {
+		"qr": "QR コード",
+		"fingerprint": "識別情報（フィンガープリント）",
+		"info": "各種情報",
+		"devices": "デバイス"
 	},
 	"modals": {
 		"manage-deep-link": {
@@ -346,15 +351,7 @@
 		"invalid-scan": {
 			"dismiss-button": "閉じる"
 		},
-		"add-this-contact": {
-			"fingerprint": "識別情報（フィンガープリント）",
-			"info": "各種情報",
-			"devices": "デバイス"
-		},
 		"group-invitation": {
-			"fingerprint": "識別情報（フィンガープリント）",
-			"info": "各種情報",
-			"devices": "デバイス",
 			"join": "このグループに参加",
 			"password-label": "グループのパスワードを入力してください",
 			"password-placeholder": "パスワード..."
@@ -372,8 +369,6 @@
 		"sending": "送信しています...",
 		"sent": "送信しました",
 		"contact-settings": {
-			"fingerprint": "識別情報（フィンガープリント）",
-			"info": "各種情報",
 			"my-devices": "私のデバイス"
 		},
 		"multi-member": {
@@ -564,8 +559,8 @@
 			"desc": "Bertyを再起動してデータを保存し、通知を有効にしてください！"
 		},
 		"submit-failed": {
-			"title": "バグを提出できません",
-			"desc": "メールアプリが見つかりません"
+			"title": "",
+			"desc": ""
 		}
 	},
 	"error": {

@@ -45,8 +45,7 @@
 				"access": {
 					"title": "Hálózati hozzáférhetőség",
 					"relay-button": "Közvetítő csomópontok (TURN)",
-					"bootstrap-button": "Rendszertöltő csomópontok",
-					"replication-button": "Replikációs csomópontok"
+					"bootstrap-button": "Rendszertöltő csomópontok"
 				},
 				"modals": {
 					"add": {
@@ -159,7 +158,9 @@
 			"accounts-button": "Fiókok",
 			"network-button": "Hálózat",
 			"bug-button": "Hibabejelentés",
-			"about-button": "Berty-ről"
+			"about-button": "Berty-ről",
+			"version-button": "",
+			"devtools-button": "Fejlesztői eszközök"
 		},
 		"about": {
 			"title": "Berty-ről",
@@ -325,15 +326,19 @@
 			}
 		},
 		"my-berty-ID": {
-			"title": "A Berty azonosítóm",
-			"qr": "QR",
-			"fingerprint": "Ujjlenyomat"
+			"title": "A Berty azonosítóm"
 		},
 		"share": {
 			"invite": "Meghívás",
 			"tap-to-scan": "Koppintson a szkenneléshez",
 			"create-group": "Csoport létrehozás"
 		}
+	},
+	"tabs": {
+		"qr": "QR",
+		"fingerprint": "Ujjlenyomat",
+		"info": "Infó",
+		"devices": "Eszközök"
 	},
 	"modals": {
 		"manage-deep-link": {
@@ -346,15 +351,7 @@
 		"invalid-scan": {
 			"dismiss-button": ""
 		},
-		"add-this-contact": {
-			"fingerprint": "Ujjlenyomat",
-			"info": "Infó",
-			"devices": "Eszközök"
-		},
 		"group-invitation": {
-			"fingerprint": "Ujjlenyomat",
-			"info": "Infók",
-			"devices": "Eszközök",
 			"join": "",
 			"password-label": "Csoport jelszó megadása",
 			"password-placeholder": "Jelszó..."
@@ -372,8 +369,6 @@
 		"sending": "Küldés...",
 		"sent": "Elküldött",
 		"contact-settings": {
-			"fingerprint": "Ujjlenyomat",
-			"info": "Infók",
 			"my-devices": "Eszközeim"
 		},
 		"multi-member": {
@@ -564,8 +559,8 @@
 			"desc": "Indítsa újra a Bertyt az adatok mentéséhez és az értesítések engedélyezéséhez!"
 		},
 		"submit-failed": {
-			"title": "Hibabejelentés nem lehetséges",
-			"desc": "A Levelező alkalmazás hiányzik"
+			"title": "",
+			"desc": ""
 		}
 	},
 	"error": {

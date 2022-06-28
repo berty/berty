@@ -45,8 +45,7 @@
 				"access": {
 					"title": "",
 					"relay-button": "",
-					"bootstrap-button": "",
-					"replication-button": ""
+					"bootstrap-button": ""
 				},
 				"modals": {
 					"add": {
@@ -159,7 +158,9 @@
 			"accounts-button": "",
 			"network-button": "",
 			"bug-button": "",
-			"about-button": "Despre Berty"
+			"about-button": "Despre Berty",
+			"version-button": "",
+			"devtools-button": ""
 		},
 		"about": {
 			"title": "Despre Berty",
@@ -325,15 +326,19 @@
 			}
 		},
 		"my-berty-ID": {
-			"title": "",
-			"qr": "QR",
-			"fingerprint": "Amprentă"
+			"title": ""
 		},
 		"share": {
 			"invite": "",
 			"tap-to-scan": "",
 			"create-group": ""
 		}
+	},
+	"tabs": {
+		"qr": "QR",
+		"fingerprint": "Amprentă",
+		"info": "Informaţii",
+		"devices": "Dispozitive"
 	},
 	"modals": {
 		"manage-deep-link": {
@@ -346,15 +351,7 @@
 		"invalid-scan": {
 			"dismiss-button": ""
 		},
-		"add-this-contact": {
-			"fingerprint": "Amprentă",
-			"info": "Informaţii",
-			"devices": "Dispozitive"
-		},
 		"group-invitation": {
-			"fingerprint": "Amprentă",
-			"info": "Informaţii",
-			"devices": "Dispozitive",
 			"join": "",
 			"password-label": "",
 			"password-placeholder": ""
@@ -372,8 +369,6 @@
 		"sending": "Se trimite...",
 		"sent": "",
 		"contact-settings": {
-			"fingerprint": "Amprentă",
-			"info": "Informaţii",
 			"my-devices": ""
 		},
 		"multi-member": {

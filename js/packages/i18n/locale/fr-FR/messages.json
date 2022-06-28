@@ -45,8 +45,7 @@
 				"access": {
 					"title": "Accessibilité réseau",
 					"relay-button": "Nœuds de relais (TURN)",
-					"bootstrap-button": "Nœuds d'amorçage",
-					"replication-button": "Nœuds de réplication"
+					"bootstrap-button": "Nœuds d'amorçage"
 				},
 				"modals": {
 					"add": {
@@ -159,7 +158,9 @@
 			"accounts-button": "Comptes",
 			"network-button": "Réseau",
 			"bug-button": "Soumettre un bug",
-			"about-button": "À propos de Berty"
+			"about-button": "À propos de Berty",
+			"version-button": "",
+			"devtools-button": "Devtools"
 		},
 		"about": {
 			"title": "À propos de Berty",
@@ -325,15 +326,19 @@
 			}
 		},
 		"my-berty-ID": {
-			"title": "Mon identifiant Berty",
-			"qr": "QR",
-			"fingerprint": "Empreinte numérique"
+			"title": "Mon identifiant Berty"
 		},
 		"share": {
 			"invite": "Inviter",
 			"tap-to-scan": "Appuyer pour scanner",
 			"create-group": "Créer un groupe"
 		}
+	},
+	"tabs": {
+		"qr": "QR",
+		"fingerprint": "Empreinte numérique",
+		"info": "Infos",
+		"devices": "Appareils"
 	},
 	"modals": {
 		"manage-deep-link": {
@@ -346,15 +351,7 @@
 		"invalid-scan": {
 			"dismiss-button": ""
 		},
-		"add-this-contact": {
-			"fingerprint": "Empreinte numérique",
-			"info": "Infos",
-			"devices": "Appareils"
-		},
 		"group-invitation": {
-			"fingerprint": "Empreinte digitale",
-			"info": "Infos",
-			"devices": "Appareils",
 			"join": "",
 			"password-label": "Saisir le mot de passe du groupe",
 			"password-placeholder": "Mot de passe..."
@@ -372,8 +369,6 @@
 		"sending": "Envoi...",
 		"sent": "Envoyé",
 		"contact-settings": {
-			"fingerprint": "Empreinte digitale",
-			"info": "Infos",
 			"my-devices": "Mes appareils"
 		},
 		"multi-member": {
@@ -564,8 +559,8 @@
 			"desc": "Redémarrez Berty pour sauvegarder vos données et activer les notifications !"
 		},
 		"submit-failed": {
-			"title": "Impossible de soumettre un bug",
-			"desc": "Application e-mail manquante"
+			"title": "",
+			"desc": ""
 		}
 	},
 	"error": {

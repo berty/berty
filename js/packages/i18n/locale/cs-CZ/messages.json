@@ -45,8 +45,7 @@
 				"access": {
 					"title": "",
 					"relay-button": "",
-					"bootstrap-button": "",
-					"replication-button": ""
+					"bootstrap-button": ""
 				},
 				"modals": {
 					"add": {
@@ -159,7 +158,9 @@
 			"accounts-button": "",
 			"network-button": "",
 			"bug-button": "",
-			"about-button": "O projektu Berty"
+			"about-button": "O projektu Berty",
+			"version-button": "",
+			"devtools-button": "Nástroje pro vývojáře"
 		},
 		"about": {
 			"title": "O projektu Berty",
@@ -325,15 +326,19 @@
 			}
 		},
 		"my-berty-ID": {
-			"title": "",
-			"qr": "QR",
-			"fingerprint": "Otisk"
+			"title": ""
 		},
 		"share": {
 			"invite": "",
 			"tap-to-scan": "",
 			"create-group": ""
 		}
+	},
+	"tabs": {
+		"qr": "QR",
+		"fingerprint": "Otisk",
+		"info": "Info",
+		"devices": "Zařízení"
 	},
 	"modals": {
 		"manage-deep-link": {
@@ -346,15 +351,7 @@
 		"invalid-scan": {
 			"dismiss-button": ""
 		},
-		"add-this-contact": {
-			"fingerprint": "Otisk",
-			"info": "Info",
-			"devices": "Zařízení"
-		},
 		"group-invitation": {
-			"fingerprint": "Otisk",
-			"info": "Informace",
-			"devices": "Zařízení",
 			"join": "",
 			"password-label": "",
 			"password-placeholder": ""
@@ -372,8 +369,6 @@
 		"sending": "Odesílání...",
 		"sent": "",
 		"contact-settings": {
-			"fingerprint": "Otisk",
-			"info": "Informace",
 			"my-devices": ""
 		},
 		"multi-member": {

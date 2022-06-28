@@ -45,8 +45,7 @@
 				"access": {
 					"title": "",
 					"relay-button": "",
-					"bootstrap-button": "",
-					"replication-button": ""
+					"bootstrap-button": ""
 				},
 				"modals": {
 					"add": {
@@ -159,7 +158,9 @@
 			"accounts-button": "Konton",
 			"network-button": "Nätverk",
 			"bug-button": "Rapportera en bugg",
-			"about-button": "Om Berty"
+			"about-button": "Om Berty",
+			"version-button": "",
+			"devtools-button": "Utvecklingsverktyg"
 		},
 		"about": {
 			"title": "Om Berty",
@@ -325,15 +326,19 @@
 			}
 		},
 		"my-berty-ID": {
-			"title": "",
-			"qr": "QR",
-			"fingerprint": "Fingeravtryck"
+			"title": ""
 		},
 		"share": {
 			"invite": "",
 			"tap-to-scan": "",
 			"create-group": "Skapa grupp"
 		}
+	},
+	"tabs": {
+		"qr": "QR",
+		"fingerprint": "Fingeravtryck",
+		"info": "Detaljer",
+		"devices": "Enheter"
 	},
 	"modals": {
 		"manage-deep-link": {
@@ -346,15 +351,7 @@
 		"invalid-scan": {
 			"dismiss-button": ""
 		},
-		"add-this-contact": {
-			"fingerprint": "Fingeravtryck",
-			"info": "Detaljer",
-			"devices": "Enheter"
-		},
 		"group-invitation": {
-			"fingerprint": "Fingeravtryck",
-			"info": "Detaljer",
-			"devices": "Enheter",
 			"join": "",
 			"password-label": "",
 			"password-placeholder": "Lösenord..."
@@ -372,8 +369,6 @@
 		"sending": "Skickar...",
 		"sent": "Skickat",
 		"contact-settings": {
-			"fingerprint": "Fingeravtryck",
-			"info": "Detaljer",
 			"my-devices": ""
 		},
 		"multi-member": {
