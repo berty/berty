@@ -45,8 +45,7 @@
 				"access": {
 					"title": "",
 					"relay-button": "",
-					"bootstrap-button": "",
-					"replication-button": ""
+					"bootstrap-button": ""
 				},
 				"modals": {
 					"add": {
@@ -159,7 +158,9 @@
 			"accounts-button": "Account",
 			"network-button": "",
 			"bug-button": "",
-			"about-button": "Su Berty"
+			"about-button": "Su Berty",
+			"version-button": "",
+			"devtools-button": "Devtools"
 		},
 		"about": {
 			"title": "Su Berty",
@@ -325,15 +326,19 @@
 			}
 		},
 		"my-berty-ID": {
-			"title": "",
-			"qr": "QR",
-			"fingerprint": "Impronta"
+			"title": ""
 		},
 		"share": {
 			"invite": "",
 			"tap-to-scan": "",
 			"create-group": ""
 		}
+	},
+	"tabs": {
+		"qr": "QR",
+		"fingerprint": "Impronta",
+		"info": "Informazioni",
+		"devices": "Dispositivi"
 	},
 	"modals": {
 		"manage-deep-link": {
@@ -346,15 +351,7 @@
 		"invalid-scan": {
 			"dismiss-button": ""
 		},
-		"add-this-contact": {
-			"fingerprint": "Impronta",
-			"info": "Informazioni",
-			"devices": "Dispositivi"
-		},
 		"group-invitation": {
-			"fingerprint": "Impronta",
-			"info": "Informazioni",
-			"devices": "Dispositivi",
 			"join": "",
 			"password-label": "",
 			"password-placeholder": ""
@@ -372,8 +369,6 @@
 		"sending": "Invio...",
 		"sent": "",
 		"contact-settings": {
-			"fingerprint": "Impronta",
-			"info": "Informazioni",
 			"my-devices": ""
 		},
 		"multi-member": {
