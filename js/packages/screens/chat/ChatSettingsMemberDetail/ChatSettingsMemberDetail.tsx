@@ -7,9 +7,9 @@ import { MemberAvatar } from '@berty/components/avatars'
 import UserDevicesList from '@berty/components/chat/DeviceList'
 import { FactionButtonSetting } from '@berty/components/shared-components/SettingsButtons'
 import { useStyles } from '@berty/contexts/styles'
-import { useMember } from '@berty/hooks'
+import { useMember, useThemeColor } from '@berty/hooks'
 import { ScreenFC } from '@berty/navigation'
-import { Maybe, useThemeColor } from '@berty/store'
+import { Maybe } from '@berty/utils/type/maybe'
 
 const ChatSettingsMemberDetailHeader: React.FC<{
 	convId: Maybe<string>

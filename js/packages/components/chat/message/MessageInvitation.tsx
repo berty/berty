@@ -10,10 +10,14 @@ import {
 	TertiaryButtonIconLeft,
 } from '@berty/components/buttons'
 import { useStyles } from '@berty/contexts/styles'
-import { useOneToOneContact, useConversation } from '@berty/hooks'
+import {
+	useOneToOneContact,
+	useConversation,
+	useThemeColor,
+	useMessengerClient,
+} from '@berty/hooks'
 import { useNavigation } from '@berty/navigation'
-import { useMessengerClient, useThemeColor } from '@berty/store'
-import { InteractionGroupInvitation } from '@berty/store/types.gen'
+import { InteractionGroupInvitation } from '@berty/utils/api'
 import { base64ToURLBase64 } from '@berty/utils/convert/base64'
 
 import { MultiMemberAvatar } from '../../avatars'

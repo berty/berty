@@ -11,8 +11,7 @@ import {
 } from '@berty/components'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useStyles } from '@berty/contexts/styles'
-import { useDeletingAccountAfterClosing } from '@berty/hooks'
-import { useThemeColor } from '@berty/store'
+import { useDeletingAccountAfterClosing, useThemeColor } from '@berty/hooks'
 
 import { DeleteAccountError } from './DeleteAccountError'
 

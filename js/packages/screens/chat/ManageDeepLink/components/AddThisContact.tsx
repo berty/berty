@@ -10,11 +10,14 @@ import { ContactAvatar } from '@berty/components/avatars'
 import { FingerprintContent } from '@berty/components/shared-components/FingerprintContent'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useStyles } from '@berty/contexts/styles'
-import { useAppDispatch, useContactConversation } from '@berty/hooks'
+import {
+	bertyMethodsHooks,
+	useAppDispatch,
+	useContactConversation,
+	useThemeColor,
+} from '@berty/hooks'
 import { useNavigation } from '@berty/navigation'
 import { dispatch as navDispatch } from '@berty/navigation/rootRef'
-import { useThemeColor } from '@berty/store'
-import messengerMethodsHooks from '@berty/store/methods'
 
 import InvalidScan from './InvalidScan'
 
@@ -67,7 +70,7 @@ const AddThisContact: React.FC<{
 	const { row, text, column, absolute, padding, border, margin } = useStyles()
 	const colors = useThemeColor()
 	const navigation = useNavigation()
-	const { call: requestContact, error, done } = messengerMethodsHooks.useContactRequest()
+	const { call: requestContact, error, done } = bertyMethodsHooks.useContactRequest()
 	const [selectedContent, setSelectedContent] = useState('fingerprint')
 	const _styles = useStylesModal()
 	const { t } = useTranslation()

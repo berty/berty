@@ -3,7 +3,8 @@ import React from 'react'
 import { ActivityIndicator } from 'react-native'
 
 import beapi from '@berty/api'
-import { useThemeColor, ParsedInteraction } from '@berty/store'
+import { useThemeColor } from '@berty/hooks'
+import { ParsedInteraction } from '@berty/utils/api'
 
 export const MessageStatus: React.FC<{
 	interaction: ParsedInteraction

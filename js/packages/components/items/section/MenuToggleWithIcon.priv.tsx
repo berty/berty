@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { Toggle } from '@berty/components'
-import { useThemeColor } from '@berty/store'
+import { useThemeColor } from '@berty/hooks'
 
 import { IconWithTextPriv } from '../IconWithText.priv'
 import { OnToggleProps, PackProps, ToggleMenuItemWithIconProps } from '../interfaces'

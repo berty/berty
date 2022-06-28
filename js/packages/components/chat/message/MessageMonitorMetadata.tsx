@@ -4,8 +4,8 @@ import { View } from 'react-native'
 
 import beapi from '@berty/api'
 import { useStyles } from '@berty/contexts/styles'
-import { useThemeColor } from '@berty/store/hooks'
-import { InteractionMonitorMetadata } from '@berty/store/types.gen'
+import { useThemeColor } from '@berty/hooks'
+import { InteractionMonitorMetadata } from '@berty/utils/api'
 import { pbDateToNum, timeFormat } from '@berty/utils/convert/time'
 
 import { UnifiedText } from '../../shared-components/UnifiedText'

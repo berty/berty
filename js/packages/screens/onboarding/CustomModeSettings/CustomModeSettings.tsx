@@ -24,7 +24,13 @@ import {
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
-import { useAppDispatch, useAppSelector, useCreateNewAccount } from '@berty/hooks'
+import {
+	useAppDispatch,
+	useAppSelector,
+	useCreateNewAccount,
+	useMountEffect,
+	useThemeColor,
+} from '@berty/hooks'
 import { ScreenFC, useNavigation } from '@berty/navigation'
 import {
 	disableEveryNodeLists,
@@ -32,7 +38,6 @@ import {
 	selectEditedNetworkConfig,
 	setCurrentNetworkConfig,
 } from '@berty/redux/reducers/networkConfig.reducer'
-import { useMountEffect, useThemeColor } from '@berty/store'
 import { accountClient } from '@berty/utils/accounts/accountClient'
 import { checkProximityPermission } from '@berty/utils/react-native/checkPermissions'
 import { getPermissions, PermissionType } from '@berty/utils/react-native/permissions'

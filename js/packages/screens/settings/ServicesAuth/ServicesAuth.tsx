@@ -7,10 +7,9 @@ import { useSelector } from 'react-redux'
 
 import { ButtonSetting, FactionButtonSetting } from '@berty/components/shared-components'
 import { useStyles } from '@berty/contexts/styles'
-import { useAccountServices, useRestartAfterClosing } from '@berty/hooks'
+import { useAccountServices, useRestartAfterClosing, useThemeColor } from '@berty/hooks'
 import { ScreenFC } from '@berty/navigation'
 import { selectProtocolClient } from '@berty/redux/reducers/ui.reducer'
-import { useThemeColor } from '@berty/store'
 import { showNeedRestartNotification } from '@berty/utils/notification/notif-in-app'
 import {
 	serviceNames,

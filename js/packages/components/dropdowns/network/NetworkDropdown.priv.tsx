@@ -2,7 +2,7 @@ import React, { ForwardedRef, forwardRef, ReactNode } from 'react'
 import { StyleSheet, View } from 'react-native'
 
 import { useStyles } from '@berty/contexts/styles'
-import { useThemeColor } from '@berty/store'
+import { useThemeColor } from '@berty/hooks'
 
 import { DropdownPriv } from '../Dropdown.priv'
 import { DropdownRef } from '../interfaces'

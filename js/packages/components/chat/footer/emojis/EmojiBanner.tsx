@@ -6,13 +6,12 @@ import { TouchableHighlight, TouchableOpacity } from 'react-native-gesture-handl
 
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
-import { useAppDispatch, useAppSelector } from '@berty/hooks'
+import { useAppDispatch, useAppSelector, useThemeColor } from '@berty/hooks'
 import { selectChatInputText, setChatInputText } from '@berty/redux/reducers/chatInputs.reducer'
 import {
 	selectChatInputIsFocused,
 	selectChatInputSelection,
 } from '@berty/redux/reducers/chatInputsVolatile.reducer'
-import { useThemeColor } from '@berty/store'
 import { Emoji, emojis, getEmojiByName } from '@berty/utils/emojis/emojis'
 
 import { UnifiedText } from '../../../shared-components/UnifiedText'

@@ -7,10 +7,8 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 
 import beapi from '@berty/api'
 import { useStyles } from '@berty/contexts/styles'
-import { useConversationsDict } from '@berty/hooks'
+import { bertyMethodsHooks, useConversationsDict, useThemeColor } from '@berty/hooks'
 import { ScreenFC, useNavigation } from '@berty/navigation'
-import { useThemeColor } from '@berty/store'
-import messengerMethodsHooks from '@berty/store/methods'
 import { base64ToURLBase64 } from '@berty/utils/convert/base64'
 
 import AddThisContact from './components/AddThisContact'
@@ -20,7 +18,7 @@ import { ManageGroupInvitation } from './components/ManageGroupInvitation'
 export const ManageDeepLink: ScreenFC<'Chat.ManageDeepLink'> = ({ route: { params } }) => {
 	const colors = useThemeColor()
 	const { border } = useStyles()
-	const { reply: pdlReply, error, call, done, called } = messengerMethodsHooks.useParseDeepLink()
+	const { reply: pdlReply, error, call, done, called } = bertyMethodsHooks.useParseDeepLink()
 	const [content, setContent] = React.useState<JSX.Element | null>()
 	const { dispatch } = useNavigation()
 	const conversations = useConversationsDict()

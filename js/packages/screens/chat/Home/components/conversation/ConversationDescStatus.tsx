@@ -5,7 +5,8 @@ import { StyleSheet, View } from 'react-native'
 import beapi from '@berty/api'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { defaultStylesDeclaration, useStyles } from '@berty/contexts/styles'
-import { ParsedInteraction, useThemeColor } from '@berty/store'
+import { useThemeColor } from '@berty/hooks'
+import { ParsedInteraction } from '@berty/utils/api'
 
 import { MessageStatus } from './MessageStatus'
 

@@ -9,8 +9,8 @@ import OnboardingWrapper from '@berty/components/onboarding/OnboardingWrapper'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
+import { useNotificationsInhibitor, useThemeColor } from '@berty/hooks'
 import { ScreenFC, useNavigation } from '@berty/navigation'
-import { useNotificationsInhibitor, useThemeColor } from '@berty/store'
 
 const CustomModeBody: React.FC = () => {
 	const { goBack } = useNavigation()

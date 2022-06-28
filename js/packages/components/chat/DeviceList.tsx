@@ -5,7 +5,7 @@ import { View } from 'react-native'
 import { berty } from '@berty/api/root.pb'
 import { ButtonDropDown } from '@berty/components/shared-components'
 import { useStyles } from '@berty/contexts/styles'
-import { useMessengerClient } from '@berty/store'
+import { useMessengerClient } from '@berty/hooks'
 import { getDevicesForConversationAndMember } from '@berty/utils/messenger/devices'
 import { getSharedPushTokensForConversation } from '@berty/utils/notification/notif-push'
 

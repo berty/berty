@@ -4,8 +4,8 @@ import { View, ScrollView } from 'react-native'
 import { WebView } from 'react-native-webview'
 
 import { useStyles } from '@berty/contexts/styles'
+import { useThemeColor } from '@berty/hooks'
 import { ScreenFC } from '@berty/navigation'
-import { useThemeColor } from '@berty/store'
 
 //
 // IpfsWebUI

@@ -10,9 +10,8 @@ import { ButtonSetting } from '@berty/components/shared-components/SettingsButto
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
-import { useContact, useConversation } from '@berty/hooks'
+import { useContact, useConversation, useThemeColor } from '@berty/hooks'
 import { ScreenFC } from '@berty/navigation'
-import { useThemeColor } from '@berty/store'
 
 const OneToOneHeader: React.FC<{ contact: any }> = ({ contact }) => {
 	const { text, padding, flex } = useStyles()

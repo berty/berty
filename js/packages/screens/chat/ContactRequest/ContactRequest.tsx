@@ -1,9 +1,8 @@
 import React from 'react'
 
 import { useStyles } from '@berty/contexts/styles'
+import { bertyMethodsHooks, useThemeColor } from '@berty/hooks'
 import { ScreenFC } from '@berty/navigation'
-import { useThemeColor } from '@berty/store'
-import messengerMethodsHooks from '@berty/store/methods'
 
 import { Request } from './components/Request'
 
@@ -36,7 +35,7 @@ export const ContactRequest: ScreenFC<'Chat.ContactRequest'> = ({
 }) => {
 	const _styles = useStylesContactRequest()
 	const colors = useThemeColor()
-	const { call: accept } = messengerMethodsHooks.useContactAccept()
+	const { call: accept } = bertyMethodsHooks.useContactAccept()
 	return (
 		<Request
 			contactPublicKey={params.contactId}

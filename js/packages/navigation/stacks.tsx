@@ -12,10 +12,9 @@ import { useSelector } from 'react-redux'
 
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
-import { useAppDispatch } from '@berty/hooks'
+import { useAppDispatch, useThemeColor } from '@berty/hooks'
 import { selectHandledLink, setHandledLink } from '@berty/redux/reducers/ui.reducer'
 import * as RawComponents from '@berty/screens'
-import { useThemeColor } from '@berty/store'
 
 import { ScreensParams } from './types'
 

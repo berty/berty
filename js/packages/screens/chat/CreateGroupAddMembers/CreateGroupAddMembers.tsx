@@ -11,9 +11,8 @@ import {
 import { ContactPicker } from '@berty/components/shared-components'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
-import { useAllContacts } from '@berty/hooks'
+import { useAllContacts, useThemeColor } from '@berty/hooks'
 import { ScreenFC, useNavigation } from '@berty/navigation'
-import { useThemeColor } from '@berty/store'
 
 export const CreateGroupAddMembers: ScreenFC<'Chat.CreateGroupAddMembers'> = () => {
 	const { flex, margin } = useStyles()

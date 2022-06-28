@@ -2,7 +2,7 @@ import React from 'react'
 import { View, Platform, StyleSheet } from 'react-native'
 
 import { useStyles } from '@berty/contexts/styles'
-import { useThemeColor } from '@berty/store'
+import { useThemeColor } from '@berty/hooks'
 import { isTablet } from '@berty/utils/react-native/constants'
 
 import { InputPriv } from '../Input.priv'

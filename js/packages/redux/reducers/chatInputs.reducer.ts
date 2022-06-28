@@ -1,6 +1,6 @@
 import { createEntityAdapter, createSlice, PayloadAction } from '@reduxjs/toolkit'
 
-import { InteractionUserMessage } from '@berty/store'
+import { InteractionUserMessage } from '@berty/utils/api'
 
 /**
  *

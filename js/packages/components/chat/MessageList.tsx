@@ -17,8 +17,10 @@ import {
 	useConversationInteractions,
 	useConversationMembersDict,
 	useConversation,
+	useThemeColor,
+	useMessengerClient,
 } from '@berty/hooks'
-import { ParsedInteraction, useMessengerClient, useThemeColor } from '@berty/store'
+import { ParsedInteraction } from '@berty/utils/api'
 import { pbDateToNum } from '@berty/utils/convert/time'
 
 import { InfosChat } from '../InfosChat'

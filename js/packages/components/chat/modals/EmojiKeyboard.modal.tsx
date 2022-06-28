@@ -5,8 +5,7 @@ import EmojiBoard from 'react-native-emoji-board'
 import beapi from '@berty/api'
 import { useModal } from '@berty/contexts/modal.context'
 import { useStyles } from '@berty/contexts/styles'
-import { usePlaySound } from '@berty/hooks'
-import { useMessengerClient, useThemeColor } from '@berty/store'
+import { useMessengerClient, usePlaySound, useThemeColor } from '@berty/hooks'
 
 export const EmojiKeyboard: FC<{ conversationPublicKey: string; targetCid: string }> = ({
 	conversationPublicKey,

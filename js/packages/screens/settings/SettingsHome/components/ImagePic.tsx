@@ -3,7 +3,7 @@ import React from 'react'
 import { Image, View } from 'react-native'
 
 import { useStyles } from '@berty/contexts/styles'
-import { useThemeColor } from '@berty/store'
+import { useThemeColor } from '@berty/hooks'
 
 interface ImagePicProps {
 	avatarURI?: string

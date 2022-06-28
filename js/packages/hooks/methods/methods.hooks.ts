@@ -2,9 +2,9 @@ import { useReducer, useCallback } from 'react'
 
 import beapi from '@berty/api'
 import { WelshMessengerServiceClient } from '@berty/grpc-bridge/welsh-clients.gen'
+import { useMessengerClient } from '@berty/hooks'
 
-import { useMessengerClient } from './hooks'
-import { MessengerMethodsHooks, ProtocolMethodsHooks } from './types.gen'
+import { MessengerMethodsHooks, ProtocolMethodsHooks } from './methods.gen'
 
 const initialState: MethodState<any> = {
 	error: null,
@@ -106,7 +106,7 @@ const messengerMethodsHooks: MessengerMethodsHooks = makeServiceHooks(
 	beapi.messenger.MessengerService,
 ) as any
 
-export const protocolMethodsHooks: ProtocolMethodsHooks = makeServiceHooks(
+const protocolMethodsHooks: ProtocolMethodsHooks = makeServiceHooks(
 	beapi.protocol.ProtocolService,
 ) as any
 

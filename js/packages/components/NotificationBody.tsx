@@ -5,9 +5,8 @@ import GestureRecognizer from 'react-native-swipe-gestures'
 
 import beapi from '@berty/api'
 import { useStyles } from '@berty/contexts/styles'
-import { useAccount, useAppSelector, usePlaySound } from '@berty/hooks'
+import { useAccount, useAppSelector, usePlaySound, useThemeColor } from '@berty/hooks'
 import { selectNotificationsInhibitors } from '@berty/redux/reducers/ui.reducer'
-import { useThemeColor } from '@berty/store'
 import { NotificationsInhibitor } from '@berty/utils/notification/notif-in-app'
 import { SoundKey } from '@berty/utils/sound/sound.types'
 

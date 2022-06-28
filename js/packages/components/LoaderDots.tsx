@@ -2,7 +2,7 @@ import React from 'react'
 import { View, Image, StatusBar } from 'react-native'
 
 import source from '@berty/assets/images/loader_dots.gif'
-import { useThemeColor } from '@berty/store'
+import { useThemeColor } from '@berty/hooks'
 
 export const LoaderDots: React.FC = () => {
 	const colors = useThemeColor()

@@ -8,8 +8,8 @@ import Share from 'react-native-share'
 
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useStyles } from '@berty/contexts/styles'
+import { useThemeColor } from '@berty/hooks'
 import { ScreenFC, useNavigation } from '@berty/navigation'
-import { useThemeColor } from '@berty/store'
 
 import { ForwardToBertyContactModal } from './components/ForwardToBertyContactModal'
 

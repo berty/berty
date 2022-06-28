@@ -3,7 +3,7 @@ import cloneDeep from 'lodash/cloneDeep'
 import Long from 'long'
 
 import beapi from '@berty/api'
-import { ParsedInteraction } from '@berty/store/types.gen'
+import { ParsedInteraction } from '@berty/utils/api'
 import { pbDateToNum } from '@berty/utils/convert/time'
 import { parseInteraction } from '@berty/utils/messenger/interactions'
 

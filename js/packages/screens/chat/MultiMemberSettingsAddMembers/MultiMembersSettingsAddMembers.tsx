@@ -14,10 +14,16 @@ import {
 import { ContactPicker } from '@berty/components/shared-components'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
-import { useAllContacts, useAppDispatch, useAppSelector, useConversation } from '@berty/hooks'
+import {
+	useAllContacts,
+	useAppDispatch,
+	useAppSelector,
+	useConversation,
+	useMessengerClient,
+	useThemeColor,
+} from '@berty/hooks'
 import { ScreenFC } from '@berty/navigation'
 import { selectInvitationListMembers } from '@berty/redux/reducers/groupCreationForm.reducer'
-import { useMessengerClient, useThemeColor } from '@berty/store'
 
 export const MultiMemberSettingsAddMembers: ScreenFC<'Chat.MultiMemberSettingsAddMembers'> = ({
 	route,

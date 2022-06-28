@@ -6,16 +6,15 @@ import beapi from '@berty/api'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
+import { bertyMethodsHooks, useMountEffect, useThemeColor } from '@berty/hooks'
 import { ScreenFC } from '@berty/navigation'
-import { useMountEffect, useThemeColor } from '@berty/store'
-import messengerMethodsHooks from '@berty/store/methods'
 import { accountClient } from '@berty/utils/accounts/accountClient'
 
 export const SystemInfo: ScreenFC<'Settings.SystemInfo'> = ({ navigation }) => {
 	const { padding } = useStyles()
 	const { scaleSize } = useAppDimensions()
 	const colors = useThemeColor()
-	const { reply: systemInfo, done, error, call } = messengerMethodsHooks.useSystemInfo()
+	const { reply: systemInfo, done, error, call } = bertyMethodsHooks.useSystemInfo()
 	const [networkConfig, setNetworkConfig] = React.useState<beapi.account.INetworkConfig | null>(
 		null,
 	)

@@ -11,6 +11,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { TextualDropdown } from '@berty/components'
 import { FloatingMenuItemWithIcon } from '@berty/components'
 import { useStyles } from '@berty/contexts/styles'
+import { useThemeColor } from '@berty/hooks'
 import { ScreenFC } from '@berty/navigation'
 import {
 	deleteAddedThemes,
@@ -21,7 +22,6 @@ import {
 	selectThemeSelected,
 	setTheme,
 } from '@berty/redux/reducers/theme.reducer'
-import { useThemeColor } from '@berty/store'
 import { createAndSaveFile, getPath } from '@berty/utils/react-native/file-system'
 
 import { ThemeColorName } from './components/ThemeColorName'

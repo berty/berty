@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { View } from 'react-native'
 
 import { useStyles } from '@berty/contexts/styles'
-import { useThemeColor } from '@berty/store'
+import { useThemeColor } from '@berty/hooks'
 
 import { PrimaryButton } from '../buttons'
 import { LargeInput } from '../index'

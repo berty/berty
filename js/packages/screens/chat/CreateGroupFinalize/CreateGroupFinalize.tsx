@@ -13,11 +13,15 @@ import { ButtonSettingItem } from '@berty/components/shared-components/SettingsB
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
-import { useAppDispatch, useAppSelector, usePlaySound } from '@berty/hooks'
+import {
+	bertyMethodsHooks,
+	useAppDispatch,
+	useAppSelector,
+	usePlaySound,
+	useThemeColor,
+} from '@berty/hooks'
 import { ScreenFC, useNavigation } from '@berty/navigation'
 import { selectInvitationListMembers } from '@berty/redux/reducers/groupCreationForm.reducer'
-import { useThemeColor } from '@berty/store'
-import messengerMethodsHooks from '@berty/store/methods'
 import { IOSOnlyKeyboardAvoidingView } from '@berty/utils/react-native/keyboardAvoiding'
 
 const useStylesCreateGroup = () => {
@@ -155,7 +159,7 @@ const GroupInfo: React.FC<GroupInfoProps> = ({ groupName, setGroupName }) => {
 export const CreateGroupFinalize: ScreenFC<'Chat.CreateGroupFinalize'> = () => {
 	const { goBack, reset } = useNavigation()
 	const [groupName, setGroupName] = useState('New group')
-	const { call, error, done, reply, loading } = messengerMethodsHooks.useConversationCreate()
+	const { call, error, done, reply, loading } = bertyMethodsHooks.useConversationCreate()
 	const members = useAppSelector(selectInvitationListMembers)
 	const dispatch = useAppDispatch()
 

@@ -3,8 +3,8 @@ import React from 'react'
 import { StatusBar } from 'react-native'
 
 import { WebViews } from '@berty/components/shared-components'
+import { useThemeColor } from '@berty/hooks'
 import { ScreenFC } from '@berty/navigation'
-import { useThemeColor } from '@berty/store'
 
 const PrivacyPolicyURL = 'https://berty.tech/privacy-policy#'
 

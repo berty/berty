@@ -13,11 +13,12 @@ import {
 	useImportingAccountAfterClosing,
 	useOnBoardingAfterClosing,
 	useSwitchAccountAfterClosing,
+	useThemeColor,
 } from '@berty/hooks'
 import { selectAccounts, selectSelectedAccount } from '@berty/redux/reducers/ui.reducer'
-import { useThemeColor, Maybe } from '@berty/store'
 import { importAccountFromDocumentPicker, refreshAccountList } from '@berty/utils/accounts'
 import { pbDateToNum } from '@berty/utils/convert/time'
+import { Maybe } from '@berty/utils/type/maybe'
 
 const AccountButton: React.FC<{
 	name: string | null | undefined

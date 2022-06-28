@@ -6,7 +6,7 @@ import { RESULTS, openSettings } from 'react-native-permissions'
 
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
-import { useThemeColor } from '@berty/store/hooks'
+import { useThemeColor } from '@berty/hooks'
 import { PermissionType, getPermissions } from '@berty/utils/react-native/permissions'
 
 import { UnifiedText } from '../../../shared-components/UnifiedText'

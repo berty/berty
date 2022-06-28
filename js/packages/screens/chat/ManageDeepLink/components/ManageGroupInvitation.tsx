@@ -10,10 +10,8 @@ import { MultiMemberAvatar } from '@berty/components/avatars'
 import { FingerprintContent } from '@berty/components/shared-components/FingerprintContent'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useStyles } from '@berty/contexts/styles'
-import { useAppDispatch, useConversation } from '@berty/hooks'
+import { bertyMethodsHooks, useAppDispatch, useConversation, useThemeColor } from '@berty/hooks'
 import { dispatch as navDispatch } from '@berty/navigation/rootRef'
-import { useThemeColor } from '@berty/store'
-import messengerMethodsHooks from '@berty/store/methods'
 
 import InvalidScan from './InvalidScan'
 
@@ -64,7 +62,7 @@ export const ManageGroupInvitation: React.FC<{
 	isPassword: boolean
 }> = ({ link, type, displayName, publicKey, isPassword }) => {
 	const navigation = useNavigation()
-	const { call: joinConversation, done, error } = messengerMethodsHooks.useConversationJoin()
+	const { call: joinConversation, done, error } = bertyMethodsHooks.useConversationJoin()
 	const { row, text, column, flex, absolute, padding, border, margin } = useStyles()
 	const colors = useThemeColor()
 	const [selectedContent, setSelectedContent] = useState('fingerprint')

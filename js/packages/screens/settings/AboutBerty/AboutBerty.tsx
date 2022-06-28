@@ -4,8 +4,8 @@ import { ScrollView, View } from 'react-native'
 
 import { DividerItem, MenuItemWithIcon, ItemSection } from '@berty/components'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
+import { useThemeColor } from '@berty/hooks'
 import { ScreenFC, useNavigation } from '@berty/navigation'
-import { useThemeColor } from '@berty/store'
 
 export const AboutBerty: ScreenFC<'Settings.AboutBerty'> = () => {
 	const { scaleSize } = useAppDimensions()

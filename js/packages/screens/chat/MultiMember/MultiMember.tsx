@@ -14,14 +14,15 @@ import { MessageList } from '@berty/components/chat/MessageList'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
-import { useConversation, useLastConvInteraction } from '@berty/hooks'
-import { ScreenFC } from '@berty/navigation'
 import {
-	useReadEffect,
-	useNotificationsInhibitor,
-	useThemeColor,
+	useConversation,
+	useLastConvInteraction,
 	useMessengerClient,
-} from '@berty/store'
+	useNotificationsInhibitor,
+	useReadEffect,
+	useThemeColor,
+} from '@berty/hooks'
+import { ScreenFC } from '@berty/navigation'
 import { pbDateToNum } from '@berty/utils/convert/time'
 import { IOSOnlyKeyboardAvoidingView } from '@berty/utils/react-native/keyboardAvoiding'
 

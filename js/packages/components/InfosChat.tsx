@@ -5,8 +5,7 @@ import { View } from 'react-native'
 
 import beapi from '@berty/api'
 import { useStyles } from '@berty/contexts/styles'
-import { useOneToOneContact, usePlaySound } from '@berty/hooks'
-import { useMessengerClient, useThemeColor } from '@berty/store'
+import { useMessengerClient, useOneToOneContact, usePlaySound, useThemeColor } from '@berty/hooks'
 import { pbDateToNum, timeFormat } from '@berty/utils/convert/time'
 
 import { ContactAvatar } from './avatars'

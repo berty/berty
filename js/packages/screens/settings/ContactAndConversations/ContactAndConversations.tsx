@@ -5,9 +5,9 @@ import { useSelector } from 'react-redux'
 
 import { ButtonSettingV2, Section } from '@berty/components/shared-components'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
+import { useThemeColor } from '@berty/hooks'
 import { ScreenFC } from '@berty/navigation'
 import { selectSelectedAccount } from '@berty/redux/reducers/ui.reducer'
-import { useThemeColor } from '@berty/store'
 import { exportAccountToFile } from '@berty/utils/accounts/accountBackup'
 
 export const ContactAndConversations: ScreenFC<'Settings.ContactAndConversations'> = () => {

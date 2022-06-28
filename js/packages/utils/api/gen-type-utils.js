@@ -47,7 +47,7 @@ Object.entries(pb.lookup('berty.messenger.v1.AppMessage.Type').values).forEach((
 	if (val === 0) {
 		console.log(`export type Interaction${key} =`)
 		console.log(`{ type: beapi.messenger.AppMessage.Type.${key},`)
-		console.log(`payload?: undefined,`)
+		console.log('payload?: undefined,')
 	} else {
 		console.log(`export type Interaction${key.substr('Type'.length)} =`)
 		console.log(`{ type: beapi.messenger.AppMessage.Type.${key},`)
@@ -64,23 +64,3 @@ Object.entries(pb.lookup('berty.messenger.v1.AppMessage.Type').values).forEach((
 		console.log(`| Interaction${key.substr('Type'.length)}`)
 	}
 })
-
-const methodsHooks = (name, svcType, prefix) => {
-	const svc = pb.lookup(svcType)
-	console.log(`export type ${name} = {`)
-	Object.values(svc.methods).forEach(method => {
-		if (method.requestStream || method.responseStream) return
-		console.log(`use${method.name}: () => {
-			error: any
-			call: (req?: ${prefix}.${method.name}.IRequest) => void
-			reply: ${prefix}.${method.name}.IReply | null
-			done: boolean
-			called: boolean
-			loading: boolean
-		},`)
-	})
-	console.log('}')
-}
-
-methodsHooks('MessengerMethodsHooks', 'berty.messenger.v1.MessengerService', 'beapi.messenger')
-methodsHooks('ProtocolMethodsHooks', 'berty.protocol.v1.ProtocolService', 'beapi.protocol')

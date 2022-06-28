@@ -17,10 +17,12 @@ import {
 	useConversationsDict,
 	useIncomingContactRequests,
 	useAllConversations,
+	useThemeColor,
+	useMessengerClient,
+	useNotificationsInhibitor,
 } from '@berty/hooks'
 import { ScreenFC } from '@berty/navigation'
 import { selectPersistentOptions } from '@berty/redux/reducers/persistentOptions.reducer'
-import { useMessengerClient, useNotificationsInhibitor, useThemeColor } from '@berty/store'
 
 import { AddBot } from './components/AddBot'
 import { Conversations } from './components/Conversations'

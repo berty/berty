@@ -5,12 +5,11 @@ import { ScrollView, TouchableOpacity, View } from 'react-native'
 import beapi from '@berty/api'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
-import { useAppDispatch, useAppSelector } from '@berty/hooks'
+import { useAppDispatch, useAppSelector, useThemeColor } from '@berty/hooks'
 import {
 	removeMemberFromInvitationListById,
 	selectInvitationListMembers,
 } from '@berty/redux/reducers/groupCreationForm.reducer'
-import { useThemeColor } from '@berty/store'
 
 import { ContactAvatar } from '../avatars'
 import { UnifiedText } from '../shared-components/UnifiedText'

@@ -5,8 +5,8 @@ import { useSelector } from 'react-redux'
 
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useStyles } from '@berty/contexts/styles'
+import { useThemeColor } from '@berty/hooks'
 import { selectStreamProgress } from '@berty/redux/reducers/ui.reducer'
-import { useThemeColor } from '@berty/store'
 
 import { StreamProgressProps } from './interfaces'
 

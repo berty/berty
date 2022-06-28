@@ -6,7 +6,7 @@ import { readFile } from 'react-native-fs'
 
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
-import { useThemeColor } from '@berty/store'
+import { useThemeColor } from '@berty/hooks'
 import { playSoundFile } from '@berty/utils/sound/sounds'
 
 import {

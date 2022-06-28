@@ -4,7 +4,7 @@ import { View } from 'react-native'
 
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useStyles } from '@berty/contexts/styles'
-import { useThemeColor } from '@berty/store'
+import { useThemeColor } from '@berty/hooks'
 
 const useStylesDeleteAccount = () => {
 	const { width, height, border, text, padding, margin } = useStyles()

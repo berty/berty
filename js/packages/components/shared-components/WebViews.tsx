@@ -15,8 +15,8 @@ import { WebView } from 'react-native-webview'
 
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
+import { useThemeColor } from '@berty/hooks'
 import { useNavigation } from '@berty/navigation'
-import { useThemeColor } from '@berty/store'
 
 import { TwoHorizontalButtons, SecondaryButtonIconLeft, TertiaryButtonIconLeft } from '../buttons'
 import { UnifiedText } from './UnifiedText'

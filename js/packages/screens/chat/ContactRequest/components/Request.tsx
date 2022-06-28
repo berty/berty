@@ -8,8 +8,7 @@ import { ContactAvatar } from '@berty/components/avatars'
 import { FingerprintContent } from '@berty/components/shared-components/FingerprintContent'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useStyles, ColorsTypes } from '@berty/contexts/styles'
-import { useContact } from '@berty/hooks'
-import { useThemeColor } from '@berty/store/hooks'
+import { useContact, useThemeColor } from '@berty/hooks'
 
 import { Modal } from './Modal'
 

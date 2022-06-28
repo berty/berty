@@ -8,14 +8,13 @@ import notificationLottie from '@berty/assets/lottie/notification-lottie.json'
 import proximityLottie from '@berty/assets/lottie/proximity-lottie.json'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useStyles } from '@berty/contexts/styles'
-import { useAppDispatch, useAppSelector } from '@berty/hooks'
+import { useAppDispatch, useAppSelector, useThemeColor } from '@berty/hooks'
 import { ScreenFC, useNavigation } from '@berty/navigation'
 import {
 	selectEditedNetworkConfig,
 	setBlePerm,
 	setCurrentNetworkConfig,
 } from '@berty/redux/reducers/networkConfig.reducer'
-import { useThemeColor } from '@berty/store'
 import rnutil from '@berty/utils/react-native'
 import {
 	PermissionType,

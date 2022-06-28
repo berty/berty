@@ -3,10 +3,9 @@ import { Button, StyleSheet, View } from 'react-native'
 import { useSelector } from 'react-redux'
 
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
-import { useAppSelector, useRestartAfterClosing } from '@berty/hooks'
+import { useAppSelector, useRestartAfterClosing, useThemeColor } from '@berty/hooks'
 import { useDeleteAccount } from '@berty/hooks'
 import { selectSelectedAccount, selectStreamError } from '@berty/redux/reducers/ui.reducer'
-import { useThemeColor } from '@berty/store'
 
 const gutter = 50
 

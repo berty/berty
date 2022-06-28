@@ -3,8 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { StyleSheet, View } from 'react-native'
 
 import { useStyles } from '@berty/contexts/styles'
-import { useInteractionAuthor } from '@berty/hooks'
-import { useThemeColor } from '@berty/store'
+import { useInteractionAuthor, useThemeColor } from '@berty/hooks'
 
 import { UnifiedText } from '../../../shared-components/UnifiedText'
 import { ActiveReplyInteractionProps } from './interface'

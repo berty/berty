@@ -15,16 +15,13 @@ import {
 	useAppSelector,
 	useInteractionAuthor,
 	useLastConvInteraction,
+	useMessengerClient,
 	usePlaySound,
+	useThemeColor,
 } from '@berty/hooks'
 import { setActiveReplyInteraction } from '@berty/redux/reducers/chatInputs.reducer'
 import { selectInteraction } from '@berty/redux/reducers/messenger.reducer'
-import {
-	useThemeColor,
-	InteractionUserMessage,
-	ParsedInteraction,
-	useMessengerClient,
-} from '@berty/store'
+import { InteractionUserMessage, ParsedInteraction } from '@berty/utils/api'
 import { pbDateToNum } from '@berty/utils/convert/time'
 import { getMediaTypeFromMedias } from '@berty/utils/messenger/media'
 

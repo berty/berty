@@ -8,9 +8,8 @@ import { usePrevious } from '@berty/components/hooks'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
+import { bertyMethodsHooks, useThemeColor } from '@berty/hooks'
 import { ScreenFC } from '@berty/navigation'
-import { useThemeColor } from '@berty/store'
-import { protocolMethodsHooks } from '@berty/store/methods'
 import { pbDateToNum } from '@berty/utils/convert/time'
 
 const PeerItem: React.FC<{ item: beapi.protocol.PeerList.IPeer; highlighted: boolean }> = ({
@@ -251,7 +250,7 @@ const NetworkMapBody: React.FC<{ peers: beapi.protocol.PeerList.IReply | null }>
 export const NetworkMap: ScreenFC<'Settings.NetworkMap'> = ({ navigation }) => {
 	const colors = useThemeColor()
 	const { scaleSize } = useAppDimensions()
-	const { reply: peers = {}, call, called } = protocolMethodsHooks.usePeerList()
+	const { reply: peers = {}, call, called } = bertyMethodsHooks.usePeerList()
 
 	useEffect(() => {
 		if (!called) {

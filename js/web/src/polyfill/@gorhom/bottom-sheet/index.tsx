@@ -5,7 +5,7 @@ import ImportedBottomSheet from '../../../../../node_modules/@gorhom/bottom-shee
 
 import { useStyles } from '../../../../../packages/contexts/styles'
 import { useLayout } from '../../../../../packages/components/hooks'
-import { useThemeColor } from '../../../../../packages/store'
+import { useThemeColor } from '../../../../../packages/hooks'
 import { useAppDimensions } from '../../../../../packages/contexts/app-dimensions.context'
 
 export const useBottomSheetDynamicSnapPoints = (_snapPoints: string[]) => {

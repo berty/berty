@@ -14,14 +14,12 @@ import {
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
-import { useAppDispatch } from '@berty/hooks'
+import { bertyMethodsHooks, useAppDispatch, useThemeColor } from '@berty/hooks'
 import {
 	PersistentOptionsKeys,
 	selectPersistentOptions,
 	setPersistentOption,
 } from '@berty/redux/reducers/persistentOptions.reducer'
-import { useThemeColor } from '@berty/store'
-import messengerMethodsHooks from '@berty/store/methods'
 import { base64ToURLBase64 } from '@berty/utils/convert/base64'
 
 const AddBotBody: React.FC<{
@@ -34,13 +32,13 @@ const AddBotBody: React.FC<{
 	const colors = useThemeColor()
 	const persistentOptions = useSelector(selectPersistentOptions)
 	const dispatch = useAppDispatch()
-	const { call: requestContact, done, error } = messengerMethodsHooks.useContactRequest()
+	const { call: requestContact, done, error } = bertyMethodsHooks.useContactRequest()
 	const {
 		reply: pdlReply,
 		error: pdlError,
 		call,
 		done: pdlDone,
-	} = messengerMethodsHooks.useParseDeepLink()
+	} = bertyMethodsHooks.useParseDeepLink()
 
 	useEffect(() => {
 		call({ link })

@@ -11,8 +11,8 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 import { useStyles } from '@berty/contexts/styles'
+import { useThemeColor } from '@berty/hooks'
 import { useNavigation } from '@berty/navigation'
-import { useThemeColor } from '@berty/store/hooks'
 
 //
 // Modal => Modals on screens requests

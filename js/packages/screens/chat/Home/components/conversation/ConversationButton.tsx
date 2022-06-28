@@ -3,8 +3,8 @@ import { StyleSheet, TouchableHighlight, View } from 'react-native'
 
 import beapi from '@berty/api'
 import { useStyles } from '@berty/contexts/styles'
+import { useThemeColor } from '@berty/hooks'
 import { useNavigation } from '@berty/navigation'
-import { useThemeColor } from '@berty/store'
 
 interface ConversationButtonProps {
 	publicKey: string

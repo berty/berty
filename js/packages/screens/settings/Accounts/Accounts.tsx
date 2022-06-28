@@ -12,10 +12,10 @@ import {
 	useOnBoardingAfterClosing,
 	useImportingAccountAfterClosing,
 	useSwitchAccountAfterClosing,
+	useThemeColor,
 } from '@berty/hooks'
 import { ScreenFC, useNavigation } from '@berty/navigation'
 import { selectAccounts, selectSelectedAccount } from '@berty/redux/reducers/ui.reducer'
-import { useThemeColor } from '@berty/store'
 import {
 	exportAccountToFile,
 	importAccountFromDocumentPicker,

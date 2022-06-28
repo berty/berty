@@ -3,9 +3,9 @@ import { View, TouchableOpacity, Image, ActivityIndicator } from 'react-native'
 import { useSelector } from 'react-redux'
 
 import { useStyles } from '@berty/contexts/styles'
+import { useThemeColor } from '@berty/hooks'
 import { useNavigation } from '@berty/navigation'
 import { selectProtocolClient } from '@berty/redux/reducers/ui.reducer'
-import { useThemeColor } from '@berty/store'
 import { getSource } from '@berty/utils/protocol/attachments'
 
 import { ImageCounter } from '../ImageCounter'

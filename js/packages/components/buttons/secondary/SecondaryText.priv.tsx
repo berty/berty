@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { useThemeColor } from '@berty/store'
+import { useThemeColor } from '@berty/hooks'
 
 import { TextButtonPriv } from '../TextButton.priv'
 
