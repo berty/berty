@@ -44,6 +44,7 @@ export const WebViews: React.FC<{ url: string }> = ({ url }) => {
 					description={t('onboarding.web-views.desc')}
 					onClose={() => setIsModal(false)}
 					onConfirm={() => setIsAccept(true)}
+					cancelText={t('onboarding.web-views.first-button')}
 					confirmText={t('onboarding.web-views.second-button')}
 				/>
 			)}

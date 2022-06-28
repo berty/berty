@@ -1,7 +1,6 @@
 import { Icon } from '@ui-kitten/components'
 import React from 'react'
-import { useTranslation } from 'react-i18next'
-import { StyleSheet, View } from 'react-native'
+import { View } from 'react-native'
 
 import Avatar from '@berty/assets/logo/buck_berty_icon_card.svg'
 import {
@@ -13,29 +12,32 @@ import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useStyles } from '@berty/contexts/styles'
 import { useThemeColor } from '@berty/store'
 
+import { AvatarWrapperPriv } from './AvatarWrapper.priv'
+import { CardContainerPriv } from './CardContainer.priv'
+import { CardContentPriv } from './CardContent.priv'
+
 interface ActionCardProps {
 	onClose: () => void
 	onConfirm: () => void
 	title: string
 	description: string
 	confirmText: string
-	cancelText?: string
+	cancelText: string
 	withAvatar?: boolean
 }
 
 export const ActionCard: React.FC<ActionCardProps> = props => {
 	const { text, margin, padding, row } = useStyles()
-	const { t } = useTranslation()
 	const colors = useThemeColor()
 
 	return (
-		<View style={[styles.container, margin.big]}>
+		<CardContainerPriv>
 			{props.withAvatar && (
-				<View style={styles.avatar}>
+				<AvatarWrapperPriv>
 					<Avatar width={96} height={96} />
-				</View>
+				</AvatarWrapperPriv>
 			)}
-			<View style={[padding.horizontal.large, padding.bottom.medium, styles.content]}>
+			<CardContentPriv>
 				{!props.withAvatar && (
 					<Icon
 						name='info-outline'
@@ -59,7 +61,7 @@ export const ActionCard: React.FC<ActionCardProps> = props => {
 				<View style={[margin.top.medium, margin.bottom.small]}>
 					<TwoHorizontalButtonsSmallMargin>
 						<TertiaryButtonIconLeft name='close' onPress={props.onClose}>
-							{props.cancelText ? props.cancelText : t('modals.save-theme.cancel')}
+							{props.cancelText}
 						</TertiaryButtonIconLeft>
 						<SecondaryButtonIconLeft
 							onPress={() => {
@@ -71,41 +73,7 @@ export const ActionCard: React.FC<ActionCardProps> = props => {
 						</SecondaryButtonIconLeft>
 					</TwoHorizontalButtonsSmallMargin>
 				</View>
-			</View>
-		</View>
+			</CardContentPriv>
+		</CardContainerPriv>
 	)
 }
-
-const styles = StyleSheet.create({
-	container: {
-		justifyContent: 'center',
-		alignItems: 'center',
-		height: 250,
-		top: '25%',
-	},
-	avatar: {
-		width: 98,
-		height: 98,
-		backgroundColor: 'white',
-		justifyContent: 'center',
-		alignItems: 'center',
-		position: 'relative',
-		top: 50,
-		zIndex: 1,
-		elevation: 7,
-		shadowOpacity: 0.1,
-		shadowRadius: 40,
-		shadowColor: 'black',
-		shadowOffset: { width: 0, height: 10 },
-		borderRadius: 100,
-	},
-	content: {
-		backgroundColor: 'white',
-		elevation: 7,
-		shadowOpacity: 0.1,
-		shadowRadius: 40,
-		shadowColor: 'black',
-		shadowOffset: { width: 0, height: 10 },
-		borderRadius: 20,
-	},
-})

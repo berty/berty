@@ -11,6 +11,10 @@ import {
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useStyles } from '@berty/contexts/styles'
 
+import { AvatarWrapperPriv } from './AvatarWrapper.priv'
+import { CardContainerPriv } from './CardContainer.priv'
+import { CardContentPriv } from './CardContent.priv'
+
 interface ErrorCardProps {
 	onClose: () => void
 	onConfirm: () => void
@@ -23,8 +27,8 @@ export const ErrorCard: React.FC<ErrorCardProps> = props => {
 	const { t } = useTranslation()
 
 	return (
-		<View style={[styles.container, margin.big]}>
-			<View style={styles.avatar}>
+		<CardContainerPriv>
+			<AvatarWrapperPriv>
 				<Icon
 					name='alert-circle-outline'
 					width={80}
@@ -32,8 +36,8 @@ export const ErrorCard: React.FC<ErrorCardProps> = props => {
 					fill='#E35179'
 					style={[row.item.justify]}
 				/>
-			</View>
-			<View style={[padding.horizontal.large, padding.bottom.medium, styles.content]}>
+			</AvatarWrapperPriv>
+			<CardContentPriv>
 				<View style={[margin.top.scale(70)]}>
 					<UnifiedText
 						style={[
@@ -65,43 +69,12 @@ export const ErrorCard: React.FC<ErrorCardProps> = props => {
 						</ErrorButtonIconLeft>
 					</TwoHorizontalButtonsSmallMargin>
 				</View>
-			</View>
-		</View>
+			</CardContentPriv>
+		</CardContainerPriv>
 	)
 }
 
 const styles = StyleSheet.create({
-	container: {
-		justifyContent: 'center',
-		alignItems: 'center',
-		height: 250,
-		top: '25%',
-	},
-	avatar: {
-		width: 98,
-		height: 98,
-		backgroundColor: 'white',
-		justifyContent: 'center',
-		alignItems: 'center',
-		position: 'relative',
-		top: 50,
-		zIndex: 1,
-		elevation: 7,
-		shadowOpacity: 0.1,
-		shadowRadius: 40,
-		shadowColor: 'black',
-		shadowOffset: { width: 0, height: 10 },
-		borderRadius: 100,
-	},
-	content: {
-		backgroundColor: 'white',
-		elevation: 7,
-		shadowOpacity: 0.1,
-		shadowRadius: 40,
-		shadowColor: 'black',
-		shadowOffset: { width: 0, height: 10 },
-		borderRadius: 20,
-	},
 	errorColor: {
 		color: '#E35179',
 	},

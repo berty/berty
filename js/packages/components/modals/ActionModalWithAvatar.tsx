@@ -9,7 +9,7 @@ interface ActionModalWithAvatarProps {
 	title: string
 	description: string
 	confirmText: string
-	cancelText?: string
+	cancelText: string
 }
 
 export const ActionModalWithAvatar: React.FC<ActionModalWithAvatarProps> = props => {

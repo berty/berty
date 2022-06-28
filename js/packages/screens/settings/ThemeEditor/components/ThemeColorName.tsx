@@ -20,6 +20,7 @@ export const ThemeColorName: React.FC<{ closeModal: () => void }> = ({ closeModa
 			}}
 			title={`🎨 ${t('modals.save-theme.title')}`}
 			description={t('modals.save-theme.desc')}
+			cancelText={t('modals.save-theme.cancel')}
 			confirmText={t('modals.save-theme.add')}
 		>
 			<SmallInput
