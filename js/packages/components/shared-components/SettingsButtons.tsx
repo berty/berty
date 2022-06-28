@@ -388,6 +388,8 @@ export const ButtonSetting: React.FC<SettingButtonProps> = ({
 					)}
 				</View>
 			</View>
+			{/* TODO: delete this ASAP, it's a quick fix to support StringOptionInput */}
+			{children && <View style={[margin.left.medium]}>{children}</View>}
 		</TouchableOpacity>
 	)
 }
@@ -839,7 +841,7 @@ export const StringOptionInput: React.FC<{
 			<View style={[padding.right.small, padding.top.small]}>
 				<View
 					style={[
-						flex.tiny,
+						// flex.tiny,
 						border.radius.medium,
 						border.medium,
 						padding.horizontal.small,
