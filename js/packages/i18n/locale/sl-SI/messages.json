@@ -45,8 +45,7 @@
 				"access": {
 					"title": "",
 					"relay-button": "",
-					"bootstrap-button": "",
-					"replication-button": ""
+					"bootstrap-button": ""
 				},
 				"modals": {
 					"add": {
@@ -159,7 +158,9 @@
 			"accounts-button": "",
 			"network-button": "",
 			"bug-button": "",
-			"about-button": "O Berty"
+			"about-button": "O Berty",
+			"version-button": "",
+			"devtools-button": "Razvijalska orodja"
 		},
 		"about": {
 			"title": "O Berty",
@@ -325,15 +326,19 @@
 			}
 		},
 		"my-berty-ID": {
-			"title": "",
-			"qr": "",
-			"fingerprint": "Prstni odtis"
+			"title": ""
 		},
 		"share": {
 			"invite": "",
 			"tap-to-scan": "",
 			"create-group": ""
 		}
+	},
+	"tabs": {
+		"qr": "",
+		"fingerprint": "Prstni odtis",
+		"info": "",
+		"devices": "Naprave"
 	},
 	"modals": {
 		"manage-deep-link": {
@@ -346,15 +351,7 @@
 		"invalid-scan": {
 			"dismiss-button": ""
 		},
-		"add-this-contact": {
-			"fingerprint": "Prstni odtis",
-			"info": "",
-			"devices": "Naprave"
-		},
 		"group-invitation": {
-			"fingerprint": "Prstni odtis",
-			"info": "Informacije",
-			"devices": "Naprave",
 			"join": "",
 			"password-label": "",
 			"password-placeholder": ""
@@ -372,8 +369,6 @@
 		"sending": "",
 		"sent": "",
 		"contact-settings": {
-			"fingerprint": "Prstni odtis",
-			"info": "Informacije",
 			"my-devices": ""
 		},
 		"multi-member": {
