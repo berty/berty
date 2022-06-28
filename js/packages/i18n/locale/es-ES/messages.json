@@ -45,8 +45,7 @@
 				"access": {
 					"title": "",
 					"relay-button": "",
-					"bootstrap-button": "",
-					"replication-button": ""
+					"bootstrap-button": ""
 				},
 				"modals": {
 					"add": {
@@ -159,7 +158,9 @@
 			"accounts-button": "Cuentas",
 			"network-button": "",
 			"bug-button": "",
-			"about-button": "Acerca de Berty"
+			"about-button": "Acerca de Berty",
+			"version-button": "",
+			"devtools-button": "Herramientas de desarrollo"
 		},
 		"about": {
 			"title": "Acerca de Berty",
@@ -325,15 +326,19 @@
 			}
 		},
 		"my-berty-ID": {
-			"title": "Mi ID de Berty",
-			"qr": "QR",
-			"fingerprint": "Huella digital"
+			"title": "Mi ID de Berty"
 		},
 		"share": {
 			"invite": "",
 			"tap-to-scan": "",
 			"create-group": "Crear grupo"
 		}
+	},
+	"tabs": {
+		"qr": "QR",
+		"fingerprint": "Huella digital",
+		"info": "Información",
+		"devices": "Dispositivos"
 	},
 	"modals": {
 		"manage-deep-link": {
@@ -346,15 +351,7 @@
 		"invalid-scan": {
 			"dismiss-button": ""
 		},
-		"add-this-contact": {
-			"fingerprint": "Huella digital",
-			"info": "Información",
-			"devices": "Dispositivos"
-		},
 		"group-invitation": {
-			"fingerprint": "Huella digital",
-			"info": "Información",
-			"devices": "Dispositivos",
 			"join": "",
 			"password-label": "",
 			"password-placeholder": "Contraseña..."
@@ -372,8 +369,6 @@
 		"sending": "Enviando...",
 		"sent": "Enviado",
 		"contact-settings": {
-			"fingerprint": "Huella digital",
-			"info": "Información",
 			"my-devices": ""
 		},
 		"multi-member": {
