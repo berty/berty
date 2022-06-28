@@ -45,8 +45,7 @@
 				"access": {
 					"title": "Ağ Erişilebilirliği",
 					"relay-button": "",
-					"bootstrap-button": "",
-					"replication-button": ""
+					"bootstrap-button": ""
 				},
 				"modals": {
 					"add": {
@@ -159,7 +158,9 @@
 			"accounts-button": "Hesaplar",
 			"network-button": "Ağ",
 			"bug-button": "Hata bildir",
-			"about-button": "Berty Hakkında"
+			"about-button": "Berty Hakkında",
+			"version-button": "",
+			"devtools-button": "Geliştirme araçları"
 		},
 		"about": {
 			"title": "Berty hakkında",
@@ -325,15 +326,19 @@
 			}
 		},
 		"my-berty-ID": {
-			"title": "",
-			"qr": "QR",
-			"fingerprint": "Parmak izi"
+			"title": ""
 		},
 		"share": {
 			"invite": "",
 			"tap-to-scan": "",
 			"create-group": "Grup yarat"
 		}
+	},
+	"tabs": {
+		"qr": "QR",
+		"fingerprint": "Parmak izi",
+		"info": "Bilgi",
+		"devices": "Aygıtlar"
 	},
 	"modals": {
 		"manage-deep-link": {
@@ -346,15 +351,7 @@
 		"invalid-scan": {
 			"dismiss-button": ""
 		},
-		"add-this-contact": {
-			"fingerprint": "Parmak izi",
-			"info": "Bilgi",
-			"devices": "Aygıtlar"
-		},
 		"group-invitation": {
-			"fingerprint": "Parmak izi",
-			"info": "Bilgiler",
-			"devices": "Aygıtlar",
 			"join": "",
 			"password-label": "",
 			"password-placeholder": "Parola..."
@@ -372,8 +369,6 @@
 		"sending": "Gönderiliyor...",
 		"sent": "Gönderildi",
 		"contact-settings": {
-			"fingerprint": "Parmak izi",
-			"info": "Bilgiler",
 			"my-devices": ""
 		},
 		"multi-member": {
@@ -565,7 +560,7 @@
 		},
 		"submit-failed": {
 			"title": "",
-			"desc": "Mail uygulaması bulunamıyor"
+			"desc": ""
 		}
 	},
 	"error": {
