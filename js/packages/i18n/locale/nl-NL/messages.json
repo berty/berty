@@ -45,8 +45,7 @@
 				"access": {
 					"title": "",
 					"relay-button": "",
-					"bootstrap-button": "",
-					"replication-button": ""
+					"bootstrap-button": ""
 				},
 				"modals": {
 					"add": {
@@ -159,7 +158,9 @@
 			"accounts-button": "Accounts",
 			"network-button": "",
 			"bug-button": "",
-			"about-button": "Over Berty"
+			"about-button": "Over Berty",
+			"version-button": "",
+			"devtools-button": "Ontwikkelaars tools"
 		},
 		"about": {
 			"title": "Over Berty",
@@ -325,15 +326,19 @@
 			}
 		},
 		"my-berty-ID": {
-			"title": "",
-			"qr": "QR",
-			"fingerprint": "Vingerafdruk"
+			"title": ""
 		},
 		"share": {
 			"invite": "",
 			"tap-to-scan": "",
 			"create-group": ""
 		}
+	},
+	"tabs": {
+		"qr": "QR",
+		"fingerprint": "Vingerafdruk",
+		"info": "Informatie",
+		"devices": "Apparaten"
 	},
 	"modals": {
 		"manage-deep-link": {
@@ -346,15 +351,7 @@
 		"invalid-scan": {
 			"dismiss-button": ""
 		},
-		"add-this-contact": {
-			"fingerprint": "Vingerafdruk",
-			"info": "Informatie",
-			"devices": "Apparaten"
-		},
 		"group-invitation": {
-			"fingerprint": "Vingerafdruk",
-			"info": "Informatie",
-			"devices": "Apparaten",
 			"join": "",
 			"password-label": "",
 			"password-placeholder": "Wachtwoord..."
@@ -372,8 +369,6 @@
 		"sending": "Verzenden...",
 		"sent": "",
 		"contact-settings": {
-			"fingerprint": "Vingerafdruk",
-			"info": "Informatie",
 			"my-devices": ""
 		},
 		"multi-member": {
