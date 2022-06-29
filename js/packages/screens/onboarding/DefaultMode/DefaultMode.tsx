@@ -4,7 +4,7 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { StatusBar, View } from 'react-native'
 
-import { TwoHorizontalButtons, PrimaryAltButton, SecondaryAltButton } from '@berty/components'
+import { HorizontalDuo, PrimaryAltButton, SecondaryAltButton } from '@berty/components'
 import OnboardingWrapper from '@berty/components/onboarding/OnboardingWrapper'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
@@ -110,7 +110,7 @@ const DefaultModeBody: React.FC = () => {
 						},
 					]}
 				>
-					<TwoHorizontalButtons>
+					<HorizontalDuo>
 						<SecondaryAltButton onPress={goBack}>
 							{t('onboarding.default-mode.summary.back-button')}
 						</SecondaryAltButton>
@@ -121,7 +121,7 @@ const DefaultModeBody: React.FC = () => {
 						>
 							{t('onboarding.default-mode.summary.accept-button')}
 						</PrimaryAltButton>
-					</TwoHorizontalButtons>
+					</HorizontalDuo>
 				</View>
 			</View>
 		</View>

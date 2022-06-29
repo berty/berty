@@ -1,20 +1,12 @@
 import { BlurView } from '@react-native-community/blur'
-import { Text, Icon } from '@ui-kitten/components'
 import { Buffer } from 'buffer'
 import React, { useEffect } from 'react'
 import { View, TouchableOpacity, StyleSheet } from 'react-native'
 import { useSelector } from 'react-redux'
 
-import Avatar from '@berty/assets/logo/buck_berty_icon_card.svg'
-import {
-	TwoHorizontalButtons,
-	SecondaryButtonIconLeft,
-	TertiaryButtonIconLeft,
-} from '@berty/components'
-import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
+import { ActionModal } from '@berty/components'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
-import { useStyles } from '@berty/contexts/styles'
-import { bertyMethodsHooks, useAppDispatch, useThemeColor } from '@berty/hooks'
+import { bertyMethodsHooks, useAppDispatch } from '@berty/hooks'
 import {
 	PersistentOptionsKeys,
 	selectPersistentOptions,
@@ -27,9 +19,6 @@ const AddBotBody: React.FC<{
 	link: string
 	closeModal: () => void
 }> = ({ displayName, link, closeModal }) => {
-	const { row, text, margin, padding, border } = useStyles()
-	const { scaleHeight } = useAppDimensions()
-	const colors = useThemeColor()
 	const persistentOptions = useSelector(selectPersistentOptions)
 	const dispatch = useAppDispatch()
 	const { call: requestContact, done, error } = bertyMethodsHooks.useContactRequest()
@@ -90,77 +79,14 @@ const AddBotBody: React.FC<{
 	}
 
 	return pdlReply?.link?.bertyId?.accountPk ? (
-		<View
-			style={[
-				{
-					justifyContent: 'center',
-					alignItems: 'center',
-					height: 250 * scaleHeight,
-					top: '25%',
-				},
-				margin.big,
-			]}
-		>
-			<View
-				style={[
-					{
-						width: 110 * scaleHeight,
-						height: 110 * scaleHeight,
-						backgroundColor: colors['main-background'],
-						justifyContent: 'center',
-						alignItems: 'center',
-						position: 'relative',
-						top: 50 * scaleHeight,
-						zIndex: 1,
-						elevation: 7,
-						shadowOpacity: 0.1,
-						shadowRadius: 5,
-						shadowColor: colors.shadow,
-						shadowOffset: { width: 0, height: 3 },
-					},
-					border.radius.scale(60),
-				]}
-			>
-				<Avatar width={125 * scaleHeight} height={125 * scaleHeight} />
-			</View>
-			<View
-				style={[
-					padding.horizontal.medium,
-					padding.bottom.large,
-					border.radius.large,
-					border.shadow.huge,
-					{ backgroundColor: colors['main-background'], shadowColor: colors.shadow },
-				]}
-			>
-				<View style={[margin.top.scale(70 * scaleHeight)]}>
-					<Icon
-						name='info-outline'
-						fill={colors['background-header']}
-						width={60 * scaleHeight}
-						height={60 * scaleHeight}
-						style={[row.item.justify, padding.top.large]}
-					/>
-					<UnifiedText style={[text.align.center, padding.top.small, text.size.large, text.bold]}>
-						{`👋 ADD ${displayName}?`}
-					</UnifiedText>
-					<Text style={[text.align.center, padding.top.scale(20), padding.horizontal.medium]}>
-						<UnifiedText style={[text.light]}>
-							You don't have any contacts yet would you like to add the
-						</UnifiedText>
-						<UnifiedText style={[text.bold]}>{` ${displayName} `}</UnifiedText>
-						<UnifiedText style={[text.light]}>to discover and test conversations?</UnifiedText>
-					</Text>
-				</View>
-				<View style={[margin.top.medium, margin.horizontal.medium]}>
-					<TwoHorizontalButtons>
-						<TertiaryButtonIconLeft name='close' onPress={onClose}>
-							SKIP
-						</TertiaryButtonIconLeft>
-						<SecondaryButtonIconLeft onPress={onAdd}>ADD !</SecondaryButtonIconLeft>
-					</TwoHorizontalButtons>
-				</View>
-			</View>
-		</View>
+		<ActionModal
+			title={`👋 ADD ${displayName}?`}
+			description={`You don't have any contacts yet would you like to add the ${displayName} to discover and test conversations?`}
+			cancelText='SKIP'
+			confirmText='ADD !'
+			onClose={onClose}
+			onConfirm={onAdd}
+		/>
 	) : null
 }
 
@@ -186,7 +112,7 @@ export const AddBot: React.FC<{ displayName: string; link: string; closeModal: (
 						height: windowHeight,
 					},
 				]}
-				onPress={() => closeModal()}
+				onPress={closeModal}
 			>
 				<BlurView style={[StyleSheet.absoluteFill]} blurType='light' />
 			</TouchableOpacity>
