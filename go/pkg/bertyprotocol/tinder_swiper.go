@@ -106,7 +106,7 @@ func (s *Swiper) watchPeers(ctx context.Context, out chan<- peer.AddrInfo, ns st
 
 	for {
 		// use find peers while keeping his context
-		cpeer, err := s.disc.FindPeers(ctx, ns)
+		cpeer, err := s.disc.FindPeers(ctx, ns, tinder.RendezvousUseDiscoverAsyncOption)
 		if err != nil {
 			s.logger.Error("failed find peers", zap.String("topic", ns), zap.Error(err))
 		}

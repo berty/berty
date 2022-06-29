@@ -9,8 +9,9 @@ import (
 type tinderOption string
 
 const (
-	optionKeepContext  tinderOption = "keepctx"
-	optionFilterDriver tinderOption = "filterdriver"
+	optionKeepContext                tinderOption = "keepctx"
+	optionFilterDriver               tinderOption = "filterdriver"
+	optionRendezvousUseDiscoverAsync tinderOption = "rendezvoususediscoverasync"
 )
 
 func WatchdogDiscoverKeepContextOption(opts *p2p_discovery.Options) error {
@@ -18,6 +19,14 @@ func WatchdogDiscoverKeepContextOption(opts *p2p_discovery.Options) error {
 		opts.Other = make(map[interface{}]interface{})
 	}
 	opts.Other[optionKeepContext] = true
+	return nil
+}
+
+func RendezvousUseDiscoverAsyncOption(opts *p2p_discovery.Options) error {
+	if opts.Other == nil {
+		opts.Other = make(map[interface{}]interface{})
+	}
+	opts.Other[optionRendezvousUseDiscoverAsync] = true
 	return nil
 }
 
