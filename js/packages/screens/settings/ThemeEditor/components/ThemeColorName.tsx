@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useDispatch } from 'react-redux'
 
-import { ActionModalWithAvatar } from '@berty/components'
+import { ActionModal } from '@berty/components'
 import { SmallInput } from '@berty/components'
 import { saveTheme } from '@berty/redux/reducers/theme.reducer'
 
@@ -12,7 +12,7 @@ export const ThemeColorName: React.FC<{ closeModal: () => void }> = ({ closeModa
 	const [themeName, setThemeName] = useState<string>('')
 
 	return (
-		<ActionModalWithAvatar
+		<ActionModal
 			onClose={closeModal}
 			onConfirm={() => {
 				dispatch(saveTheme({ themeName }))
@@ -28,6 +28,6 @@ export const ThemeColorName: React.FC<{ closeModal: () => void }> = ({ closeModa
 				onChangeText={setThemeName}
 				placeholder={t('modals.save-theme.placeholder')}
 			/>
-		</ActionModalWithAvatar>
+		</ActionModal>
 	)
 }

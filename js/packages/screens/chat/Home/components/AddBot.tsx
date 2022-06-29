@@ -4,7 +4,7 @@ import React, { useEffect } from 'react'
 import { View, TouchableOpacity, StyleSheet } from 'react-native'
 import { useSelector } from 'react-redux'
 
-import { ActionModalWithAvatar } from '@berty/components'
+import { ActionModal } from '@berty/components'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { bertyMethodsHooks, useAppDispatch } from '@berty/hooks'
 import {
@@ -79,7 +79,7 @@ const AddBotBody: React.FC<{
 	}
 
 	return pdlReply?.link?.bertyId?.accountPk ? (
-		<ActionModalWithAvatar
+		<ActionModal
 			title={`👋 ADD ${displayName}?`}
 			description={`You don't have any contacts yet would you like to add the ${displayName} to discover and test conversations?`}
 			cancelText='SKIP'

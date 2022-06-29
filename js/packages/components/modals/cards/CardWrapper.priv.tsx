@@ -3,7 +3,7 @@ import { StyleSheet, View } from 'react-native'
 
 import { useStyles } from '@berty/contexts/styles'
 
-export const CardContainerPriv: React.FC<{}> = props => {
+export const CardWrapperPriv: React.FC<{}> = props => {
 	const { margin } = useStyles()
 
 	return <View style={[styles.container, margin.big]}>{props.children}</View>

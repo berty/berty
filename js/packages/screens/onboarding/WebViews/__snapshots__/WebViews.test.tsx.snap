@@ -286,7 +286,7 @@ exports[`Onboarding.WebViews renders correctly 1`] = `
                       ]
                     }
                   >
-                    modals.save-theme.cancel
+                    onboarding.web-views.first-button
                   </Text>
                 </View>
               </View>

@@ -3,7 +3,7 @@ import { StyleSheet, View } from 'react-native'
 
 import { useStyles } from '@berty/contexts/styles'
 
-export const CardContentPriv: React.FC<{}> = props => {
+export const CardBodyPriv: React.FC<{}> = props => {
 	const { padding } = useStyles()
 
 	return (

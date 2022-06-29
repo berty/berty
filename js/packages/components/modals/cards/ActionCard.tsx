@@ -2,28 +2,23 @@ import { Icon } from '@ui-kitten/components'
 import React from 'react'
 import { View } from 'react-native'
 
-import Avatar from '@berty/assets/logo/buck_berty_icon_card.svg'
+import Logo from '@berty/assets/logo/buck_berty_icon_card.svg'
 import {
 	SecondaryButtonIconLeft,
 	TertiaryButtonIconLeft,
-	TwoHorizontalButtonsSmallMargin,
+	HorizontalDuoSmall,
 } from '@berty/components'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useStyles } from '@berty/contexts/styles'
 import { useThemeColor } from '@berty/store'
 
-import { AvatarWrapperPriv } from './AvatarWrapper.priv'
-import { CardContainerPriv } from './CardContainer.priv'
-import { CardContentPriv } from './CardContent.priv'
+import { ActionButtonsProps, ModalCardProps } from '../interfaces'
+import { CardBodyPriv } from './CardBody.priv'
+import { CardWrapperPriv } from './CardWrapper.priv'
+import { HeaderPictoWrapperPriv } from './HeaderPictoWrapper.priv'
 
-interface ActionCardProps {
-	onClose: () => void
-	onConfirm: () => void
-	title: string
-	description: string
-	confirmText: string
-	cancelText: string
-	withAvatar?: boolean
+interface ActionCardProps extends ModalCardProps, ActionButtonsProps {
+	withLogo?: boolean
 }
 
 export const ActionCard: React.FC<ActionCardProps> = props => {
@@ -31,14 +26,14 @@ export const ActionCard: React.FC<ActionCardProps> = props => {
 	const colors = useThemeColor()
 
 	return (
-		<CardContainerPriv>
-			{props.withAvatar && (
-				<AvatarWrapperPriv>
-					<Avatar width={96} height={96} />
-				</AvatarWrapperPriv>
+		<CardWrapperPriv>
+			{props.withLogo && (
+				<HeaderPictoWrapperPriv>
+					<Logo width={96} height={96} />
+				</HeaderPictoWrapperPriv>
 			)}
-			<CardContentPriv>
-				{!props.withAvatar && (
+			<CardBodyPriv>
+				{!props.withLogo && (
 					<Icon
 						name='info-outline'
 						fill={colors['background-header']}
@@ -47,7 +42,7 @@ export const ActionCard: React.FC<ActionCardProps> = props => {
 						style={[row.item.justify, margin.top.huge, margin.bottom.small]}
 					/>
 				)}
-				<View style={props.withAvatar ? [margin.top.scale(70)] : []}>
+				<View style={props.withLogo ? [margin.top.scale(70)] : []}>
 					<UnifiedText style={[text.align.center, padding.top.small, text.size.big, text.bold]}>
 						{props.title}
 					</UnifiedText>
@@ -59,7 +54,7 @@ export const ActionCard: React.FC<ActionCardProps> = props => {
 				</View>
 
 				<View style={[margin.top.medium, margin.bottom.small]}>
-					<TwoHorizontalButtonsSmallMargin>
+					<HorizontalDuoSmall>
 						<TertiaryButtonIconLeft name='close' onPress={props.onClose}>
 							{props.cancelText}
 						</TertiaryButtonIconLeft>
@@ -71,9 +66,9 @@ export const ActionCard: React.FC<ActionCardProps> = props => {
 						>
 							{props.confirmText}
 						</SecondaryButtonIconLeft>
-					</TwoHorizontalButtonsSmallMargin>
+					</HorizontalDuoSmall>
 				</View>
-			</CardContentPriv>
-		</CardContainerPriv>
+			</CardBodyPriv>
+		</CardWrapperPriv>
 	)
 }
