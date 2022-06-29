@@ -214,6 +214,7 @@ exports[`Onboarding.WebViews renders correctly 1`] = `
                 }
               >
                 <View
+                  accessibilityLabel="onboarding.web-views.first-button"
                   accessible={true}
                   focusable={true}
                   onClick={[Function]}
@@ -303,6 +304,7 @@ exports[`Onboarding.WebViews renders correctly 1`] = `
                 }
               >
                 <View
+                  accessibilityLabel="onboarding.web-views.second-button"
                   accessible={true}
                   focusable={true}
                   onClick={[Function]}
