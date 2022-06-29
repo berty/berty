@@ -1,11 +1,18 @@
 import { Icon } from '@ui-kitten/components'
+import base64 from 'base64-js'
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { View } from 'react-native'
+import { View, Button } from 'react-native'
 
 import beapi from '@berty/api'
 import { useStyles } from '@berty/contexts/styles'
-import { useMessengerClient, useOneToOneContact, usePlaySound, useThemeColor } from '@berty/hooks'
+import {
+	useMessengerClient,
+	useOneToOneContact,
+	usePlaySound,
+	useProtocolClient,
+	useThemeColor,
+} from '@berty/hooks'
 import { pbDateToNum, timeFormat } from '@berty/utils/convert/time'
 
 import { ContactAvatar } from './avatars'
@@ -125,6 +132,7 @@ export const InfosChat: React.FC<beapi.messenger.IConversation> = ({
 	const { dateMessage } = useStylesOneToOne()
 	const createdDate = pbDateToNum(createdDateStr) || Date.now()
 	const contact = useOneToOneContact(publicKey || '')
+	const protocolClient = useProtocolClient()
 
 	const isAccepted = contact?.state === beapi.messenger.Contact.State.Accepted
 	const isIncoming = contact?.state === beapi.messenger.Contact.State.IncomingRequest
@@ -159,6 +167,18 @@ export const InfosChat: React.FC<beapi.messenger.IConversation> = ({
 								? t('chat.one-to-one.infos-chat.incoming')
 								: t('chat.one-to-one.infos-chat.outgoing')
 						}
+					/>
+					<Button
+						title='Refresh'
+						onPress={async () => {
+							if (!contact?.publicKey) {
+								console.warn("Failed to refresh: contact.publicKey doesn't exist.")
+								return
+							}
+							await protocolClient?.refreshRequest({
+								contactPk: new Uint8Array(base64.toByteArray(contact?.publicKey)),
+							})
+						}}
 					/>
 				</>
 			)}
