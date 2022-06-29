@@ -112,7 +112,7 @@ export const AddBot: React.FC<{ displayName: string; link: string; closeModal: (
 						height: windowHeight,
 					},
 				]}
-				onPress={() => closeModal()}
+				onPress={closeModal}
 			>
 				<BlurView style={[StyleSheet.absoluteFill]} blurType='light' />
 			</TouchableOpacity>

@@ -10,7 +10,7 @@ import {
 } from '@berty/components'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useStyles } from '@berty/contexts/styles'
-import { useThemeColor } from '@berty/store'
+import { useThemeColor } from '@berty/hooks'
 
 import { ActionButtonsProps, ModalCardProps } from '../interfaces'
 import { CardBodyPriv } from './CardBody.priv'
