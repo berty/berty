@@ -1669,7 +1669,7 @@ exports[`Chat.Group renders correctly 1`] = `
                           ]
                         }
                       >
-                        chat.emojis.matching: 
+                        chat.emojis.matching
                       </Text>
                     </View>
                     <View

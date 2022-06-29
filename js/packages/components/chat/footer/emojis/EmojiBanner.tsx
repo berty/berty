@@ -208,7 +208,7 @@ export const EmojiBanner: FC<{
 					>
 						<View style={{ flex: 1 }}>
 							<UnifiedText style={[textStyle.bold]}>
-								{`${t('chat.emojis.matching')}: ${currentWord.word.substring(1)}`}
+								{t('chat.emojis.matching', { word: currentWord.word.substring(1) })}
 							</UnifiedText>
 						</View>
 						<View

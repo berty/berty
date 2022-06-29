@@ -498,7 +498,7 @@
 			"show-less": "Show less"
 		},
 		"emojis": {
-			"matching": "Emojis matching"
+			"matching": "Emojis matching: {{word}}"
 		}
 	},
 	"account": {

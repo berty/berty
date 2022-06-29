@@ -249,7 +249,7 @@ exports[`Chat.OneToOne renders correctly 1`] = `
                           ]
                         }
                       >
-                        chat.emojis.matching: 
+                        chat.emojis.matching
                       </Text>
                     </View>
                     <View
