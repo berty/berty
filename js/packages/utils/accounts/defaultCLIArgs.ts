@@ -5,5 +5,4 @@ export const defaultCLIArgs: string[] = [
 	'--p2p.low-water=40',
 	'--p2p.webui-listener=:3000',
 	'--log.format=console',
-	'--log.filters=info+:bty*,-*.grpc warn+:*.grpc error+:*',
 ]

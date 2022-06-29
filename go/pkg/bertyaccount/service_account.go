@@ -114,7 +114,7 @@ func (s *service) openAccount(ctx context.Context, req *accounttypes.OpenAccount
 	streams := []logutil.Stream(nil)
 	{
 		if req.LoggerFilters == "" {
-			req.LoggerFilters = "debug+:bty*,-*.grpc warn+:*.grpc error+:*"
+			req.LoggerFilters = initutil.DefaultLoggingFilters
 		}
 
 		nativeLoggerStream := logutil.NewCustomStream(req.LoggerFilters, s.logger)

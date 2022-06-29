@@ -242,8 +242,8 @@ func New(ctx context.Context, opts *ManagerOpts) (*Manager, error) {
 	//
 	// the good location for other variables is in the initutil.SetupFoo functions.
 	m.Logging.DefaultLoggerStreams = opts.DefaultLoggerStreams
-	m.Logging.StderrFilters = defaultLoggingFilters
-	m.Logging.RingFilters = defaultLoggingFilters
+	m.Logging.StderrFilters = DefaultLoggingFilters
+	m.Logging.RingFilters = DefaultLoggingFilters
 	m.Logging.FileFilters = "*"
 	m.Logging.StderrFormat = "color"
 	m.Logging.RingSize = 10 // 10MB ring buffer

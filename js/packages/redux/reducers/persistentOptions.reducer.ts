@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { Platform } from 'react-native'
 
 // types
 
@@ -9,8 +8,6 @@ export enum PersistentOptionsKeys {
 	Debug = 'debug',
 	Log = 'log',
 	Configurations = 'configurations',
-	LogFilters = 'logFilters',
-	TyberHost = 'tyberHost',
 	ProfileNotification = 'profileNotification',
 }
 
@@ -50,14 +47,6 @@ export type Configuration = {
 
 type PersistentOptionsConfigurations = { [key: string]: Configuration }
 
-type PersistentOptionsLogFilters = {
-	format: string
-}
-
-type PersistentOptionsTyberHost = {
-	address: string
-}
-
 export const UpdatesProfileNotification = 'updates'
 type PersistentOptionsProfileNotification = {
 	[UpdatesProfileNotification]: number
@@ -85,14 +74,6 @@ type PersistentOptionsUpdate =
 			payload: Partial<PersistentOptionsConfigurations>
 	  }
 	| {
-			type: typeof PersistentOptionsKeys.LogFilters
-			payload: PersistentOptionsLogFilters
-	  }
-	| {
-			type: typeof PersistentOptionsKeys.TyberHost
-			payload: PersistentOptionsTyberHost
-	  }
-	| {
 			type: typeof PersistentOptionsKeys.ProfileNotification
 			payload: PersistentOptionsProfileNotification
 	  }
@@ -103,8 +84,6 @@ type PersistentOptions = {
 	[PersistentOptionsKeys.Debug]: PersistentOptionsDebug
 	[PersistentOptionsKeys.Log]: PersistentOptionsLog
 	[PersistentOptionsKeys.Configurations]: PersistentOptionsConfigurations
-	[PersistentOptionsKeys.LogFilters]: PersistentOptionsLogFilters
-	[PersistentOptionsKeys.TyberHost]: PersistentOptionsTyberHost
 	[PersistentOptionsKeys.ProfileNotification]: PersistentOptionsProfileNotification
 }
 
@@ -137,12 +116,6 @@ export const defaultPersistentOptions = (): PersistentOptions => {
 			format: 'json',
 		},
 		[PersistentOptionsKeys.Configurations]: {},
-		[PersistentOptionsKeys.LogFilters]: {
-			format: '*:bty*',
-		},
-		[PersistentOptionsKeys.TyberHost]: {
-			address: Platform.OS === 'android' ? '10.0.2.2:4242' : '127.0.0.1:4242',
-		},
 		[PersistentOptionsKeys.ProfileNotification]: {
 			[UpdatesProfileNotification]: 0,
 		},
