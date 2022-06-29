@@ -15,7 +15,7 @@ const MessageSystemLogo = () => {
 	return (
 		<View
 			style={{
-				transform: [{ translateY: -logoDiameter * 1.15 * scaleSize }],
+				transform: [{ translateY: Math.round(-logoDiameter * 1.15 * scaleSize) }],
 				alignSelf: 'center',
 				marginBottom: -logoDiameter * scaleSize, // compensate for transformed logo
 			}}
