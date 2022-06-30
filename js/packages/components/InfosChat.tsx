@@ -1,8 +1,8 @@
 import { Icon } from '@ui-kitten/components'
 import base64 from 'base64-js'
-import React, { useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { View, Button } from 'react-native'
+import { View } from 'react-native'
 
 import beapi from '@berty/api'
 import { useStyles } from '@berty/contexts/styles'
@@ -16,7 +16,7 @@ import {
 import { pbDateToNum, timeFormat } from '@berty/utils/convert/time'
 
 import { ContactAvatar } from './avatars'
-import { SecondaryButtonIconLeft, TertiaryButtonIconLeft } from './buttons'
+import { SecondaryButtonIconLeft, TertiaryButtonIconLeft, PrimaryButton } from './buttons'
 import { ChatDate } from './chat/ChatDate'
 import { MessageSystemWrapper } from './chat/message/MessageSystemWrapper'
 import { HorizontalDuo } from './layout'
@@ -138,6 +138,20 @@ export const InfosChat: React.FC<beapi.messenger.IConversation> = ({
 	const isIncoming = contact?.state === beapi.messenger.Contact.State.IncomingRequest
 	const textColor = colors['background-header']
 
+	const [isRefreshing, setIsRefreshing] = useState<boolean>(false)
+	const handleRefreshButton = useCallback(async () => {
+		if (!contact?.publicKey) {
+			console.warn("Failed to refresh: contact.publicKey doesn't exist.")
+			return
+		}
+		setIsRefreshing(true)
+		// this function takes 20sec max
+		await protocolClient?.refreshRequest({
+			contactPk: new Uint8Array(base64.toByteArray(contact?.publicKey)),
+		})
+		setIsRefreshing(false)
+	}, [contact?.publicKey, protocolClient])
+
 	return (
 		<View style={[padding.medium, flex.align.center]}>
 			<ChatDate date={createdDate} />
@@ -168,18 +182,13 @@ export const InfosChat: React.FC<beapi.messenger.IConversation> = ({
 								: t('chat.one-to-one.infos-chat.outgoing')
 						}
 					/>
-					<Button
-						title='Refresh'
-						onPress={async () => {
-							if (!contact?.publicKey) {
-								console.warn("Failed to refresh: contact.publicKey doesn't exist.")
-								return
-							}
-							await protocolClient?.refreshRequest({
-								contactPk: new Uint8Array(base64.toByteArray(contact?.publicKey)),
-							})
-						}}
-					/>
+					<PrimaryButton
+						loading={isRefreshing}
+						onPress={handleRefreshButton}
+						disabled={isRefreshing}
+					>
+						{t('chat.one-to-one.infos-chat.refresh-button')}
+					</PrimaryButton>
 				</>
 			)}
 		</View>
