@@ -4,6 +4,7 @@ import { Platform } from 'react-native'
 import beapi from '@berty/api'
 import { ScreensParams } from '@berty/navigation/types'
 import { persistor } from '@berty/redux/store'
+import { defaultGlobalPersistentOptions } from '@berty/utils/persistent-options/defaults'
 
 import { accountClient } from './accountClient'
 import { refreshAccountList } from './accountUtils'
@@ -24,6 +25,7 @@ export const createAccount = async (
 		resp = await accountClient.createAccount({
 			networkConfig,
 			sessionKind: Platform.OS === 'web' ? 'desktop-electron' : null,
+			loggerFilters: defaultGlobalPersistentOptions().logFilters.format,
 		})
 		// this line can cause error like AppStorageGet: datastore key not found
 		// this error is triggered when it's the first time that the account is persisted, and it's normal
