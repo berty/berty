@@ -1,5 +1,6 @@
 import CameraRoll from '@react-native-community/cameraroll'
 import { Icon } from '@ui-kitten/components'
+import { cacheDirectory, copyAsync, deleteAsync } from 'expo-file-system'
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
@@ -10,7 +11,6 @@ import {
 	Platform,
 	ActivityIndicator,
 } from 'react-native'
-import RNFS from 'react-native-fs'
 
 import beapi from '@berty/api'
 import { useStyles } from '@berty/contexts/styles'
@@ -79,10 +79,10 @@ export const GallerySection: React.FC<{
 			return item.uri
 		}
 		// Workaround to get uploadable uri from ios
-		const destination = `${RNFS.TemporaryDirectoryPath}${item.filename}`
+		const destination = `${cacheDirectory}${item.filename}`
 		try {
-			let absolutePath = item.uri && (await RNFS.copyAssetsFileIOS(item.uri, destination, 0, 0))
-			setTimeout(() => RNFS.unlink(destination), 10000)
+			let absolutePath = item.uri && (await copyAsync({ from: item.uri, to: destination }))
+			setTimeout(() => deleteAsync(destination), 10000)
 			return absolutePath
 		} catch (error) {
 			console.log(error)

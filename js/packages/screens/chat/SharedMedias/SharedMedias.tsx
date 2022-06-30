@@ -1,5 +1,6 @@
 import Clipboard from '@react-native-clipboard/clipboard'
 import { Icon } from '@ui-kitten/components'
+import { cacheDirectory, deleteAsync, EncodingType, writeAsStringAsync } from 'expo-file-system'
 import LinkifyIt from 'linkify-it'
 import React, { useState, useEffect } from 'react'
 import {
@@ -13,7 +14,6 @@ import {
 	Share,
 	Platform,
 } from 'react-native'
-import RNFS from 'react-native-fs'
 import Hyperlink from 'react-native-hyperlink'
 import { TabView, SceneMap } from 'react-native-tab-view'
 import { useSelector } from 'react-redux'
@@ -202,10 +202,12 @@ export const SharedMedias: ScreenFC<'Chat.SharedMedias'> = ({
 									return
 								}
 								const { data } = await retrieveMediaBytes(client, doc.cid)
-								const tmpFilename = RNFS.TemporaryDirectoryPath + '/' + (doc.filename || 'document')
+								const tmpFilename = cacheDirectory + (doc.filename || 'document')
 								try {
 									console.log('will share', data.length / 1000 / 1000, 'MB')
-									await RNFS.writeFile(tmpFilename, data.toString('base64'), 'base64')
+									await writeAsStringAsync(tmpFilename, data.toString('base64'), {
+										encoding: EncodingType.Base64,
+									})
 									const url = 'file://' + tmpFilename
 									if (Platform.OS === 'web') {
 										Clipboard.setString(url)
@@ -218,7 +220,7 @@ export const SharedMedias: ScreenFC<'Chat.SharedMedias'> = ({
 									}
 								}
 								try {
-									await RNFS.unlink(tmpFilename)
+									await deleteAsync(tmpFilename)
 								} catch (err) {
 									console.warn('failed to unlink shareable file: ', err)
 								}

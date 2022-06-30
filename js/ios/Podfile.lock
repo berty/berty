@@ -31,6 +31,8 @@ PODS:
   - ExpoModulesCore (0.6.5):
     - React-Core
     - ReactCommon/turbomodule/core
+  - EXSharing (10.1.1):
+    - ExpoModulesCore
   - FBLazyVector (0.64.2)
   - FBReactNativeSpec (0.64.2):
     - RCT-Folly (= 2020.01.13.00)
@@ -392,8 +394,6 @@ PODS:
     - React-Core
   - RNCClipboard (1.9.0):
     - React-Core
-  - RNFS (2.18.0):
-    - React
   - RNGestureHandler (1.10.3):
     - React-Core
   - RNImageCropPicker (0.37.2):
@@ -468,6 +468,7 @@ DEPENDENCIES:
   - EXMailComposer (from `../node_modules/expo-mail-composer/ios`)
   - Expo (from `../node_modules/expo/ios`)
   - ExpoModulesCore (from `../node_modules/expo-modules-core/ios`)
+  - EXSharing (from `../node_modules/expo-sharing/ios`)
   - FBLazyVector (from `../node_modules/react-native/Libraries/FBLazyVector`)
   - FBReactNativeSpec (from `../node_modules/react-native/React/FBReactNativeSpec`)
   - Flipper (= 0.87.0)
@@ -532,7 +533,6 @@ DEPENDENCIES:
   - ReactNativeExceptionHandler (from `../node_modules/react-native-exception-handler`)
   - RNBootSplash (from `../node_modules/react-native-bootsplash`)
   - "RNCClipboard (from `../node_modules/@react-native-clipboard/clipboard`)"
-  - RNFS (from `../node_modules/react-native-fs`)
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNImageCropPicker (from `../node_modules/react-native-image-crop-picker`)
   - RNPermissions (from `../node_modules/react-native-permissions`)
@@ -587,6 +587,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/expo/ios"
   ExpoModulesCore:
     :path: "../node_modules/expo-modules-core/ios"
+  EXSharing:
+    :path: "../node_modules/expo-sharing/ios"
   FBLazyVector:
     :path: "../node_modules/react-native/Libraries/FBLazyVector"
   FBReactNativeSpec:
@@ -675,8 +677,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-bootsplash"
   RNCClipboard:
     :path: "../node_modules/@react-native-clipboard/clipboard"
-  RNFS:
-    :path: "../node_modules/react-native-fs"
   RNGestureHandler:
     :path: "../node_modules/react-native-gesture-handler"
   RNImageCropPicker:
@@ -712,6 +712,7 @@ SPEC CHECKSUMS:
   EXMailComposer: 290c110c14c1a022de752e85b8a9eea820a3ee5c
   Expo: 534e51e607aba8229293297da5585f4b26f50fa1
   ExpoModulesCore: 32c0ccb47f477d330ee93db72505380adf0de09a
+  EXSharing: 328228a9f14503cfdec68892796478a7a15b8d4d
   FBLazyVector: e686045572151edef46010a6f819ade377dfeb4b
   FBReactNativeSpec: b30928116374479d80d407d74915cc3d0ff13635
   Flipper: 1bd2db48dcc31e4b167b9a33ec1df01c2ded4893
@@ -765,7 +766,6 @@ SPEC CHECKSUMS:
   ReactNativeExceptionHandler: b11ff67c78802b2f62eed0e10e75cb1ef7947c60
   RNBootSplash: 51eef7e143faeab63f81ddbb7c1de38b8fba66ed
   RNCClipboard: 99fc8ad669a376b756fbc8098ae2fd05c0ed0668
-  RNFS: 3ab21fa6c56d65566d1fb26c2228e2b6132e5e32
   RNGestureHandler: a479ebd5ed4221a810967000735517df0d2db211
   RNImageCropPicker: 448d3c6e923fde3466b49caf3c2457c2a0ba02dd
   RNPermissions: 4b54095940aea8c03fa3e6c92d4ac3647b31ed4e

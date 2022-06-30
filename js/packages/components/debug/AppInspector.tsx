@@ -1,3 +1,4 @@
+import { deleteAsync, getInfoAsync, readDirectoryAsync } from 'expo-file-system'
 import React, { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
@@ -10,7 +11,6 @@ import {
 	StatusBar,
 } from 'react-native'
 import { NativeModules } from 'react-native'
-import RNFS from 'react-native-fs'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 import beapi from '@berty/api'
@@ -102,28 +102,28 @@ class FSItem {
 const fetchFSAccountList = (updateAccountFSFiles: (arg: Array<FSItem>) => void, t: any) => {
 	const f = async () => {
 		const rootDir = (await getRootDir()) + '/accounts'
-		const files = await RNFS.readDir(rootDir)
+		const files = await readDirectoryAsync(rootDir)
 		const items: Array<FSItem> = []
 
 		for (const file of files) {
 			const fsi = new FSItem()
 
 			try {
-				await RNFS.stat(rootDir + '/' + file.name + '/datastore.sqlite')
-				fsi.datastoreFound = true
+				const info = await getInfoAsync(rootDir + '/' + file + '/datastore.sqlite')
+				fsi.datastoreFound = info.exists
 			} catch (e) {}
 
 			try {
-				await RNFS.stat(rootDir + '/' + file.name + '/messenger.sqlite')
-				fsi.messengerDBFound = true
+				const info = await getInfoAsync(rootDir + '/' + file + '/messenger.sqlite')
+				fsi.messengerDBFound = info.exists
 			} catch (e) {}
 
 			try {
-				await RNFS.stat(rootDir + '/' + file.name + '/ipfs.sqlite')
-				fsi.ipfsRepoFound = true
+				const info = await getInfoAsync(rootDir + '/' + file + '/ipfs.sqlite')
+				fsi.ipfsRepoFound = info.exists
 			} catch (e) {}
 
-			fsi.fileName = file.name
+			fsi.fileName = file
 
 			items.push(fsi)
 		}
@@ -174,8 +174,11 @@ const accountAction = async (
 	let title = t('debug.inspector.accounts.action-delete.file-exists', { accountId: accountId })
 
 	try {
-		const stat = await RNFS.stat((await getRootDir()) + '/' + accountId)
-		if (stat.isFile()) {
+		const stat = await getInfoAsync((await getRootDir()) + '/' + accountId)
+		if (!stat.exists) {
+			throw new Error("file doesn't exist")
+		}
+		if (!stat.isDirectory) {
 			title = t('debug.inspector.accounts.action-delete.file-exists', { accountId: accountId })
 		} else {
 			title = t('debug.inspector.accounts.action-delete.account-exists', { accountId: accountId })
@@ -217,7 +220,7 @@ const accountAction = async (
 			onPress: confirmActionWrapper(
 				t('debug.inspector.accounts.action-delete.action-force-delete-confirm'),
 				async () => {
-					RNFS.unlink((await getRootDir()) + '/' + accountId)
+					deleteAsync((await getRootDir()) + '/' + accountId)
 						.then(() => Alert.alert(t('debug.inspector.accounts.action-delete.success-feedback')))
 						.catch((err: Error) => {
 							console.warn(err)

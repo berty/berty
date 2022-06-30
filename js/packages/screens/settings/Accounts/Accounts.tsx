@@ -67,6 +67,7 @@ export const Accounts: ScreenFC<'Settings.Accounts'> = withInAppNotification(
 							<MenuItem
 								onPress={async () => {
 									try {
+										console.log('backing up', selectedAccount)
 										await exportAccountToFile(selectedAccount)
 										showNotification({
 											title: t('settings.accounts.backup-notif-title'),

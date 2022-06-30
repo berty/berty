@@ -1,11 +1,11 @@
 import { Layout } from '@ui-kitten/components'
+import { cacheDirectory, readAsStringAsync, writeAsStringAsync } from 'expo-file-system'
+import { shareAsync } from 'expo-sharing'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Platform, ScrollView, StatusBar, View } from 'react-native'
 import DocumentPicker from 'react-native-document-picker'
-import RNFS from 'react-native-fs'
 import { withInAppNotification } from 'react-native-in-app-notification'
-import Share from 'react-native-share'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { TextualDropdown } from '@berty/components'
@@ -22,14 +22,13 @@ import {
 	selectThemeSelected,
 	setTheme,
 } from '@berty/redux/reducers/theme.reducer'
-import { createAndSaveFile, getPath } from '@berty/utils/react-native/file-system'
 
 import { ThemeColorName } from './components/ThemeColorName'
 
 const openThemeColorFile = async () => {
 	try {
 		return await DocumentPicker.pickSingle({
-			type: DocumentPicker.types.allFiles,
+			type: Platform.OS === 'android' ? 'application/json' : 'public.json',
 		})
 	} catch (err: any) {
 		if (DocumentPicker.isCancel(err)) {
@@ -40,27 +39,14 @@ const openThemeColorFile = async () => {
 	}
 }
 
-const importColorThemeFileFromStorage = async (uri: string): Promise<string> => {
-	const file = Platform.OS === 'android' ? await getPath(uri) : uri
-	const theme = await RNFS.readFile(file.replace(/^file:\/\//, ''), 'utf8')
-	return theme
-}
-
-const shareColorTheme = async (fileName: string) => {
-	const outFile = RNFS.TemporaryDirectoryPath + `/${fileName}` + '.json'
-	await Share.open({
-		title: 'Berty theme',
-		url: `file://${outFile}`,
-		type: '*/*',
+const shareColorTheme = async (themeJSON: string, themeName: string): Promise<void> => {
+	const outFile = `${cacheDirectory}${themeName}.json`
+	await writeAsStringAsync(outFile, themeJSON)
+	await shareAsync(outFile, {
+		UTI: 'public.json',
+		dialogTitle: `Berty ${themeName} theme`,
+		mimeType: 'application/json',
 	})
-}
-
-const exportColorThemeToFile = async (themeColor: any, fileName: string): Promise<void> => {
-	const outFile = RNFS.TemporaryDirectoryPath + `/${fileName}` + '.json'
-	await RNFS.writeFile(outFile, themeColor, 'utf8')
-	Platform.OS === 'android'
-		? await createAndSaveFile(outFile, fileName, 'json')
-		: await shareColorTheme(fileName)
 }
 
 const BodyFileThemeEditor: React.FC<{}> = withInAppNotification(({ showNotification }: any) => {
@@ -79,7 +65,7 @@ const BodyFileThemeEditor: React.FC<{}> = withInAppNotification(({ showNotificat
 						if (!document) {
 							return
 						}
-						const themeColors = JSON.parse(await importColorThemeFileFromStorage(document.uri))
+						const themeColors = JSON.parse(await readAsStringAsync(document.uri))
 						const themeName = document.name.split('.')[0]
 						dispatch(importTheme({ themeName, colors: themeColors }))
 					} catch (err) {
@@ -96,28 +82,11 @@ const BodyFileThemeEditor: React.FC<{}> = withInAppNotification(({ showNotificat
 			<FloatingMenuItemWithIcon
 				iconName='color-palette-outline'
 				onPress={async () => {
-					await exportColorThemeToFile(JSON.stringify(colors), selectedTheme)
-					if (Platform.OS === 'android') {
-						showNotification({
-							title: t('settings.theme-editor.notification-file-saved.title'),
-							message: t('settings.theme-editor.notification-file-saved.desc'),
-							additionalProps: { type: 'message' },
-						})
-					}
+					await shareColorTheme(JSON.stringify(colors), selectedTheme)
 				}}
 			>
-				{Platform.OS === 'android'
-					? t('settings.theme-editor.export')
-					: t('settings.theme-editor.share')}
+				{t('settings.theme-editor.share')}
 			</FloatingMenuItemWithIcon>
-			{Platform.OS === 'android' && (
-				<FloatingMenuItemWithIcon
-					iconName='color-palette-outline'
-					onPress={async () => shareColorTheme(selectedTheme)}
-				>
-					{t('settings.theme-editor.share')}
-				</FloatingMenuItemWithIcon>
-			)}
 			<FloatingMenuItemWithIcon
 				iconName='color-palette-outline'
 				onPress={() => dispatch(deleteAddedThemes())}
