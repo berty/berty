@@ -63,33 +63,449 @@ exports[`Chat.OneToOne renders correctly 1`] = `
               }
             }
           >
-            <RCTScrollView
-              ListFooterComponent={
-                <NoopComponent
-                  accountMemberPublicKey="5cf2bc99-2721-407d-992b-a00fbdf302f2"
-                  contactPublicKey="06048962-04f5-4371-8936-8f970d9a2710"
-                  createdDate="1604951594194"
-                  isOpen={false}
-                  lastUpdate="1610898041307"
-                  mutedUntil={
-                    Long {
-                      "high": 0,
-                      "low": 0,
-                      "unsigned": false,
-                    }
-                  }
-                  publicKey="fff9c640-13a3-47a1-97d0-2e642ac46838"
-                  type="ContactType"
-                  unreadCount={46}
-                />
+            <View
+              style={
+                Object {
+                  "alignItems": "center",
+                  "flexDirection": "row",
+                  "justifyContent": "center",
+                }
               }
+            >
+              <ActivityIndicator
+                animating={true}
+                color="#535AE4"
+                hidesWhenStopped={true}
+                size="small"
+              />
+            </View>
+            <RCTScrollView
+              ListFooterComponent={null}
               contentContainerStyle={
                 Object {
                   "backgroundColor": "#FFFFFF",
                   "paddingBottom": 35,
                 }
               }
-              data={Array []}
+              data={
+                Array [
+                  Object {
+                    "acknowledged": false,
+                    "cid": "ea6fd845-8636-4c27-986d-bb4f56e76957",
+                    "conversationPublicKey": "10f6c634-00d3-4bbb-8c91-e5a1edd97511",
+                    "isMine": true,
+                    "memberPublicKey": "5cf2bc99-2721-407d-992b-a00fbdf302f2",
+                    "payload": undefined,
+                    "reactions": Array [
+                      Object {
+                        "count": "2",
+                        "emoji": "↗️",
+                        "ownState": true,
+                      },
+                    ],
+                    "sentDate": "1653247538028",
+                    "type": 0,
+                  },
+                  Object {
+                    "acknowledged": true,
+                    "cid": "85566b44-498e-4067-95e7-5fcbcde5dbb7",
+                    "conversationPublicKey": "10f6c634-00d3-4bbb-8c91-e5a1edd97511",
+                    "isMine": false,
+                    "memberPublicKey": "6ee9be51-9380-4f5d-ab48-d95f498424c2",
+                    "outOfStoreMessage": false,
+                    "payload": undefined,
+                    "reactions": Array [
+                      Object {
+                        "count": "2",
+                        "emoji": "🇸🇰",
+                        "ownState": true,
+                      },
+                      Object {
+                        "count": "1",
+                        "emoji": "↖️",
+                        "ownState": true,
+                      },
+                    ],
+                    "sentDate": "1653199288001",
+                    "type": 0,
+                  },
+                  Object {
+                    "acknowledged": true,
+                    "cid": "e0a01e48-35ec-4ff6-8e02-d089efb87f27",
+                    "conversationPublicKey": "10f6c634-00d3-4bbb-8c91-e5a1edd97511",
+                    "isMine": false,
+                    "memberPublicKey": "6ee9be51-9380-4f5d-ab48-d95f498424c2",
+                    "outOfStoreMessage": false,
+                    "payload": undefined,
+                    "reactions": Array [
+                      Object {
+                        "count": "1",
+                        "emoji": "🎳",
+                        "ownState": false,
+                      },
+                      Object {
+                        "count": "1",
+                        "emoji": "🍏",
+                        "ownState": true,
+                      },
+                    ],
+                    "sentDate": "1653139628936",
+                    "type": 0,
+                  },
+                  Object {
+                    "acknowledged": false,
+                    "cid": "8cdc5756-ea18-41ab-87cb-56632bd0a737",
+                    "conversationPublicKey": "10f6c634-00d3-4bbb-8c91-e5a1edd97511",
+                    "isMine": true,
+                    "memberPublicKey": "5cf2bc99-2721-407d-992b-a00fbdf302f2",
+                    "outOfStoreMessage": false,
+                    "payload": undefined,
+                    "reactions": Array [
+                      Object {
+                        "count": "1",
+                        "emoji": "📙",
+                        "ownState": false,
+                      },
+                      Object {
+                        "count": "1",
+                        "emoji": "🦏",
+                        "ownState": false,
+                      },
+                    ],
+                    "sentDate": "1653056529948",
+                    "type": 0,
+                  },
+                  Object {
+                    "acknowledged": false,
+                    "cid": "7f459a76-3a14-4c6a-a04f-9ae37dbeb98e",
+                    "conversationPublicKey": "10f6c634-00d3-4bbb-8c91-e5a1edd97511",
+                    "isMine": false,
+                    "memberPublicKey": "6ee9be51-9380-4f5d-ab48-d95f498424c2",
+                    "outOfStoreMessage": false,
+                    "payload": undefined,
+                    "reactions": undefined,
+                    "sentDate": "1653050401641",
+                    "type": 0,
+                  },
+                  Object {
+                    "acknowledged": true,
+                    "cid": "d259b84d-98c6-4974-93d2-0de918535689",
+                    "conversationPublicKey": "10f6c634-00d3-4bbb-8c91-e5a1edd97511",
+                    "isMine": true,
+                    "memberPublicKey": "5cf2bc99-2721-407d-992b-a00fbdf302f2",
+                    "outOfStoreMessage": false,
+                    "payload": undefined,
+                    "reactions": undefined,
+                    "sentDate": "1653038705875",
+                    "type": 0,
+                  },
+                  Object {
+                    "acknowledged": false,
+                    "cid": "2932a729-5e23-4c2e-ad50-a5aa302b7d21",
+                    "conversationPublicKey": "10f6c634-00d3-4bbb-8c91-e5a1edd97511",
+                    "isMine": true,
+                    "memberPublicKey": "5cf2bc99-2721-407d-992b-a00fbdf302f2",
+                    "outOfStoreMessage": false,
+                    "payload": undefined,
+                    "reactions": Array [
+                      Object {
+                        "count": "2",
+                        "emoji": "🖥️",
+                        "ownState": true,
+                      },
+                    ],
+                    "sentDate": "1653033286232",
+                    "type": 0,
+                  },
+                  Object {
+                    "acknowledged": true,
+                    "cid": "117c63c0-c4d4-4dcf-bb19-5247968ba4ed",
+                    "conversationPublicKey": "10f6c634-00d3-4bbb-8c91-e5a1edd97511",
+                    "isMine": false,
+                    "memberPublicKey": "6ee9be51-9380-4f5d-ab48-d95f498424c2",
+                    "outOfStoreMessage": false,
+                    "payload": undefined,
+                    "reactions": Array [
+                      Object {
+                        "count": "2",
+                        "emoji": "🅾️",
+                        "ownState": true,
+                      },
+                      Object {
+                        "count": "2",
+                        "emoji": "💋",
+                        "ownState": true,
+                      },
+                      Object {
+                        "count": "1",
+                        "emoji": "🤛🏽",
+                        "ownState": true,
+                      },
+                      Object {
+                        "count": "1",
+                        "emoji": "🇻🇺",
+                        "ownState": true,
+                      },
+                    ],
+                    "sentDate": "1652986574411",
+                    "type": 0,
+                  },
+                  Object {
+                    "acknowledged": false,
+                    "cid": "c5ac558d-0369-41fb-8ee2-239d099999c3",
+                    "conversationPublicKey": "10f6c634-00d3-4bbb-8c91-e5a1edd97511",
+                    "isMine": true,
+                    "memberPublicKey": "5cf2bc99-2721-407d-992b-a00fbdf302f2",
+                    "outOfStoreMessage": false,
+                    "payload": undefined,
+                    "reactions": Array [
+                      Object {
+                        "count": "2",
+                        "emoji": "🎀",
+                        "ownState": true,
+                      },
+                    ],
+                    "sentDate": "1652911380285",
+                    "type": 0,
+                  },
+                  Object {
+                    "acknowledged": true,
+                    "cid": "31615ed8-97de-4f84-b7eb-78659dfef4c4",
+                    "conversationPublicKey": "10f6c634-00d3-4bbb-8c91-e5a1edd97511",
+                    "isMine": true,
+                    "memberPublicKey": "5cf2bc99-2721-407d-992b-a00fbdf302f2",
+                    "outOfStoreMessage": false,
+                    "payload": undefined,
+                    "reactions": Array [
+                      Object {
+                        "count": "2",
+                        "emoji": "🐈",
+                        "ownState": true,
+                      },
+                      Object {
+                        "count": "2",
+                        "emoji": "🫔",
+                        "ownState": true,
+                      },
+                    ],
+                    "sentDate": "1652906810947",
+                    "type": 0,
+                  },
+                  Object {
+                    "acknowledged": true,
+                    "cid": "d2572fbc-2f4d-4742-a43a-381de28d11cb",
+                    "conversationPublicKey": "10f6c634-00d3-4bbb-8c91-e5a1edd97511",
+                    "isMine": false,
+                    "memberPublicKey": "6ee9be51-9380-4f5d-ab48-d95f498424c2",
+                    "outOfStoreMessage": false,
+                    "payload": undefined,
+                    "reactions": Array [
+                      Object {
+                        "count": "1",
+                        "emoji": "👂🏻",
+                        "ownState": true,
+                      },
+                    ],
+                    "sentDate": "1652879721788",
+                    "type": 0,
+                  },
+                  Object {
+                    "acknowledged": true,
+                    "cid": "8ab0d2ce-d3ec-4ab2-9d37-309a6b77c888",
+                    "conversationPublicKey": "10f6c634-00d3-4bbb-8c91-e5a1edd97511",
+                    "isMine": true,
+                    "memberPublicKey": "5cf2bc99-2721-407d-992b-a00fbdf302f2",
+                    "outOfStoreMessage": false,
+                    "payload": undefined,
+                    "reactions": Array [
+                      Object {
+                        "count": "1",
+                        "emoji": "🥼",
+                        "ownState": false,
+                      },
+                      Object {
+                        "count": "2",
+                        "emoji": "🕊️",
+                        "ownState": true,
+                      },
+                      Object {
+                        "count": "2",
+                        "emoji": "❣️",
+                        "ownState": true,
+                      },
+                    ],
+                    "sentDate": "1652848667544",
+                    "type": 0,
+                  },
+                  Object {
+                    "acknowledged": true,
+                    "cid": "309fb3c7-c992-405f-a1a2-dd61e3a0821a",
+                    "conversationPublicKey": "10f6c634-00d3-4bbb-8c91-e5a1edd97511",
+                    "isMine": true,
+                    "memberPublicKey": "5cf2bc99-2721-407d-992b-a00fbdf302f2",
+                    "outOfStoreMessage": false,
+                    "payload": undefined,
+                    "reactions": Array [
+                      Object {
+                        "count": "1",
+                        "emoji": "🐺",
+                        "ownState": false,
+                      },
+                      Object {
+                        "count": "1",
+                        "emoji": "🌹",
+                        "ownState": true,
+                      },
+                      Object {
+                        "count": "1",
+                        "emoji": "🥽",
+                        "ownState": true,
+                      },
+                      Object {
+                        "count": "1",
+                        "emoji": "🧑‍🔧",
+                        "ownState": true,
+                      },
+                    ],
+                    "sentDate": "1652765080636",
+                    "type": 0,
+                  },
+                  Object {
+                    "acknowledged": false,
+                    "cid": "f1712de4-7857-41a7-ac5b-272b558b91e3",
+                    "conversationPublicKey": "10f6c634-00d3-4bbb-8c91-e5a1edd97511",
+                    "isMine": true,
+                    "memberPublicKey": "5cf2bc99-2721-407d-992b-a00fbdf302f2",
+                    "outOfStoreMessage": false,
+                    "payload": undefined,
+                    "reactions": Array [
+                      Object {
+                        "count": "1",
+                        "emoji": "🙎🏽‍♂️",
+                        "ownState": false,
+                      },
+                    ],
+                    "sentDate": "1652724460783",
+                    "type": 0,
+                  },
+                  Object {
+                    "acknowledged": true,
+                    "cid": "496870b1-c2fa-43f4-b527-9ca3ccb3bbbc",
+                    "conversationPublicKey": "10f6c634-00d3-4bbb-8c91-e5a1edd97511",
+                    "isMine": true,
+                    "memberPublicKey": "5cf2bc99-2721-407d-992b-a00fbdf302f2",
+                    "outOfStoreMessage": false,
+                    "payload": undefined,
+                    "reactions": Array [
+                      Object {
+                        "count": "1",
+                        "emoji": "🎀",
+                        "ownState": false,
+                      },
+                    ],
+                    "sentDate": "1652645997017",
+                    "type": 0,
+                  },
+                  Object {
+                    "acknowledged": false,
+                    "cid": "63422d10-fff7-4ee7-8cbd-3419af34da1a",
+                    "conversationPublicKey": "10f6c634-00d3-4bbb-8c91-e5a1edd97511",
+                    "isMine": false,
+                    "memberPublicKey": "6ee9be51-9380-4f5d-ab48-d95f498424c2",
+                    "outOfStoreMessage": false,
+                    "payload": undefined,
+                    "reactions": Array [
+                      Object {
+                        "count": "1",
+                        "emoji": "🧑🏽‍🦽",
+                        "ownState": true,
+                      },
+                      Object {
+                        "count": "1",
+                        "emoji": "🎉",
+                        "ownState": true,
+                      },
+                      Object {
+                        "count": "2",
+                        "emoji": "🗿",
+                        "ownState": true,
+                      },
+                    ],
+                    "sentDate": "1652574023705",
+                    "type": 0,
+                  },
+                  Object {
+                    "acknowledged": true,
+                    "cid": "fc26fa4b-c40c-4419-b35c-3a2fc99cf1a0",
+                    "conversationPublicKey": "10f6c634-00d3-4bbb-8c91-e5a1edd97511",
+                    "isMine": true,
+                    "memberPublicKey": "5cf2bc99-2721-407d-992b-a00fbdf302f2",
+                    "outOfStoreMessage": false,
+                    "payload": undefined,
+                    "reactions": undefined,
+                    "sentDate": "1652568271800",
+                    "type": 0,
+                  },
+                  Object {
+                    "acknowledged": false,
+                    "cid": "b07e389b-0482-40f9-b77e-ff5a129880cc",
+                    "conversationPublicKey": "10f6c634-00d3-4bbb-8c91-e5a1edd97511",
+                    "isMine": false,
+                    "memberPublicKey": "6ee9be51-9380-4f5d-ab48-d95f498424c2",
+                    "outOfStoreMessage": false,
+                    "payload": undefined,
+                    "reactions": undefined,
+                    "sentDate": "1652536261597",
+                    "type": 0,
+                  },
+                  Object {
+                    "acknowledged": false,
+                    "cid": "716c4e75-9e57-4e9f-a37a-e3f876831551",
+                    "conversationPublicKey": "10f6c634-00d3-4bbb-8c91-e5a1edd97511",
+                    "isMine": false,
+                    "memberPublicKey": "6ee9be51-9380-4f5d-ab48-d95f498424c2",
+                    "outOfStoreMessage": false,
+                    "payload": undefined,
+                    "reactions": Array [
+                      Object {
+                        "count": "1",
+                        "emoji": "🍨",
+                        "ownState": true,
+                      },
+                      Object {
+                        "count": "1",
+                        "emoji": "🦡",
+                        "ownState": true,
+                      },
+                      Object {
+                        "count": "1",
+                        "emoji": "🇲🇼",
+                        "ownState": false,
+                      },
+                    ],
+                    "sentDate": "1652470657976",
+                    "type": 0,
+                  },
+                  Object {
+                    "acknowledged": false,
+                    "cid": "ce627e78-4dd2-4b49-b6a3-2ac340414bb6",
+                    "conversationPublicKey": "10f6c634-00d3-4bbb-8c91-e5a1edd97511",
+                    "isMine": false,
+                    "memberPublicKey": "6ee9be51-9380-4f5d-ab48-d95f498424c2",
+                    "outOfStoreMessage": false,
+                    "payload": undefined,
+                    "reactions": Array [
+                      Object {
+                        "count": "1",
+                        "emoji": "💄",
+                        "ownState": false,
+                      },
+                    ],
+                    "sentDate": "1652386830404",
+                    "type": 0,
+                  },
+                ]
+              }
               disableVirtualization={false}
               getItem={[Function]}
               getItemCount={[Function]}
@@ -145,15 +561,973 @@ exports[`Chat.OneToOne renders correctly 1`] = `
                 <View
                   onLayout={[Function]}
                   style={
-                    Object {
-                      "transform": Array [
-                        Object {
-                          "scaleY": -1,
-                        },
-                      ],
-                    }
+                    Array [
+                      Object {
+                        "flexDirection": "column-reverse",
+                      },
+                      Object {
+                        "transform": Array [
+                          Object {
+                            "scaleY": -1,
+                          },
+                        ],
+                      },
+                    ]
                   }
                 />
+                <View
+                  onLayout={[Function]}
+                  style={
+                    Array [
+                      Object {
+                        "flexDirection": "column-reverse",
+                      },
+                      Object {
+                        "transform": Array [
+                          Object {
+                            "scaleY": -1,
+                          },
+                        ],
+                      },
+                    ]
+                  }
+                />
+                <View
+                  onLayout={[Function]}
+                  style={
+                    Array [
+                      Object {
+                        "flexDirection": "column-reverse",
+                      },
+                      Object {
+                        "transform": Array [
+                          Object {
+                            "scaleY": -1,
+                          },
+                        ],
+                      },
+                    ]
+                  }
+                >
+                  <View
+                    style={
+                      Array [
+                        Object {
+                          "marginBottom": 4,
+                        },
+                      ]
+                    }
+                  >
+                    <View
+                      style={
+                        Array [
+                          Object {
+                            "alignSelf": "center",
+                          },
+                          Object {
+                            "borderRadius": 16,
+                          },
+                          Array [
+                            Object {
+                              "paddingHorizontal": 8,
+                            },
+                            Object {
+                              "paddingVertical": 2,
+                            },
+                          ],
+                          Object {
+                            "backgroundColor": "#F7F8FF",
+                          },
+                        ]
+                      }
+                    >
+                      <Text
+                        style={
+                          Array [
+                            Object {
+                              "fontSize": 30,
+                            },
+                            Object {
+                              "color": "#383B62",
+                              "fontFamily": "Open Sans",
+                            },
+                            Array [
+                              Array [
+                                Object {
+                                  "fontSize": 26,
+                                },
+                                Object {
+                                  "textAlign": "center",
+                                },
+                              ],
+                              Object {
+                                "color": "#979797",
+                              },
+                            ],
+                          ]
+                        }
+                      >
+                        May 22 2022
+                      </Text>
+                    </View>
+                  </View>
+                </View>
+                <View
+                  onLayout={[Function]}
+                  style={
+                    Array [
+                      Object {
+                        "flexDirection": "column-reverse",
+                      },
+                      Object {
+                        "transform": Array [
+                          Object {
+                            "scaleY": -1,
+                          },
+                        ],
+                      },
+                    ]
+                  }
+                >
+                  <View
+                    style={
+                      Array [
+                        Object {
+                          "marginBottom": 4,
+                        },
+                      ]
+                    }
+                  >
+                    <View
+                      style={
+                        Array [
+                          Object {
+                            "alignSelf": "center",
+                          },
+                          Object {
+                            "borderRadius": 16,
+                          },
+                          Array [
+                            Object {
+                              "paddingHorizontal": 8,
+                            },
+                            Object {
+                              "paddingVertical": 2,
+                            },
+                          ],
+                          Object {
+                            "backgroundColor": "#F7F8FF",
+                          },
+                        ]
+                      }
+                    >
+                      <Text
+                        style={
+                          Array [
+                            Object {
+                              "fontSize": 30,
+                            },
+                            Object {
+                              "color": "#383B62",
+                              "fontFamily": "Open Sans",
+                            },
+                            Array [
+                              Array [
+                                Object {
+                                  "fontSize": 26,
+                                },
+                                Object {
+                                  "textAlign": "center",
+                                },
+                              ],
+                              Object {
+                                "color": "#979797",
+                              },
+                            ],
+                          ]
+                        }
+                      >
+                        May 21 2022
+                      </Text>
+                    </View>
+                  </View>
+                </View>
+                <View
+                  onLayout={[Function]}
+                  style={
+                    Array [
+                      Object {
+                        "flexDirection": "column-reverse",
+                      },
+                      Object {
+                        "transform": Array [
+                          Object {
+                            "scaleY": -1,
+                          },
+                        ],
+                      },
+                    ]
+                  }
+                />
+                <View
+                  onLayout={[Function]}
+                  style={
+                    Array [
+                      Object {
+                        "flexDirection": "column-reverse",
+                      },
+                      Object {
+                        "transform": Array [
+                          Object {
+                            "scaleY": -1,
+                          },
+                        ],
+                      },
+                    ]
+                  }
+                />
+                <View
+                  onLayout={[Function]}
+                  style={
+                    Array [
+                      Object {
+                        "flexDirection": "column-reverse",
+                      },
+                      Object {
+                        "transform": Array [
+                          Object {
+                            "scaleY": -1,
+                          },
+                        ],
+                      },
+                    ]
+                  }
+                />
+                <View
+                  onLayout={[Function]}
+                  style={
+                    Array [
+                      Object {
+                        "flexDirection": "column-reverse",
+                      },
+                      Object {
+                        "transform": Array [
+                          Object {
+                            "scaleY": -1,
+                          },
+                        ],
+                      },
+                    ]
+                  }
+                >
+                  <View
+                    style={
+                      Array [
+                        Object {
+                          "marginBottom": 4,
+                        },
+                      ]
+                    }
+                  >
+                    <View
+                      style={
+                        Array [
+                          Object {
+                            "alignSelf": "center",
+                          },
+                          Object {
+                            "borderRadius": 16,
+                          },
+                          Array [
+                            Object {
+                              "paddingHorizontal": 8,
+                            },
+                            Object {
+                              "paddingVertical": 2,
+                            },
+                          ],
+                          Object {
+                            "backgroundColor": "#F7F8FF",
+                          },
+                        ]
+                      }
+                    >
+                      <Text
+                        style={
+                          Array [
+                            Object {
+                              "fontSize": 30,
+                            },
+                            Object {
+                              "color": "#383B62",
+                              "fontFamily": "Open Sans",
+                            },
+                            Array [
+                              Array [
+                                Object {
+                                  "fontSize": 26,
+                                },
+                                Object {
+                                  "textAlign": "center",
+                                },
+                              ],
+                              Object {
+                                "color": "#979797",
+                              },
+                            ],
+                          ]
+                        }
+                      >
+                        May 20 2022
+                      </Text>
+                    </View>
+                  </View>
+                </View>
+                <View
+                  onLayout={[Function]}
+                  style={
+                    Array [
+                      Object {
+                        "flexDirection": "column-reverse",
+                      },
+                      Object {
+                        "transform": Array [
+                          Object {
+                            "scaleY": -1,
+                          },
+                        ],
+                      },
+                    ]
+                  }
+                />
+                <View
+                  onLayout={[Function]}
+                  style={
+                    Array [
+                      Object {
+                        "flexDirection": "column-reverse",
+                      },
+                      Object {
+                        "transform": Array [
+                          Object {
+                            "scaleY": -1,
+                          },
+                        ],
+                      },
+                    ]
+                  }
+                >
+                  <View
+                    style={
+                      Array [
+                        Object {
+                          "marginBottom": 4,
+                        },
+                      ]
+                    }
+                  >
+                    <View
+                      style={
+                        Array [
+                          Object {
+                            "alignSelf": "center",
+                          },
+                          Object {
+                            "borderRadius": 16,
+                          },
+                          Array [
+                            Object {
+                              "paddingHorizontal": 8,
+                            },
+                            Object {
+                              "paddingVertical": 2,
+                            },
+                          ],
+                          Object {
+                            "backgroundColor": "#F7F8FF",
+                          },
+                        ]
+                      }
+                    >
+                      <Text
+                        style={
+                          Array [
+                            Object {
+                              "fontSize": 30,
+                            },
+                            Object {
+                              "color": "#383B62",
+                              "fontFamily": "Open Sans",
+                            },
+                            Array [
+                              Array [
+                                Object {
+                                  "fontSize": 26,
+                                },
+                                Object {
+                                  "textAlign": "center",
+                                },
+                              ],
+                              Object {
+                                "color": "#979797",
+                              },
+                            ],
+                          ]
+                        }
+                      >
+                        May 19 2022
+                      </Text>
+                    </View>
+                  </View>
+                </View>
+                <View
+                  onLayout={[Function]}
+                  style={
+                    Array [
+                      Object {
+                        "flexDirection": "column-reverse",
+                      },
+                      Object {
+                        "transform": Array [
+                          Object {
+                            "scaleY": -1,
+                          },
+                        ],
+                      },
+                    ]
+                  }
+                />
+                <View
+                  onLayout={[Function]}
+                  style={
+                    Array [
+                      Object {
+                        "flexDirection": "column-reverse",
+                      },
+                      Object {
+                        "transform": Array [
+                          Object {
+                            "scaleY": -1,
+                          },
+                        ],
+                      },
+                    ]
+                  }
+                />
+                <View
+                  onLayout={[Function]}
+                  style={
+                    Array [
+                      Object {
+                        "flexDirection": "column-reverse",
+                      },
+                      Object {
+                        "transform": Array [
+                          Object {
+                            "scaleY": -1,
+                          },
+                        ],
+                      },
+                    ]
+                  }
+                >
+                  <View
+                    style={
+                      Array [
+                        Object {
+                          "marginBottom": 4,
+                        },
+                      ]
+                    }
+                  >
+                    <View
+                      style={
+                        Array [
+                          Object {
+                            "alignSelf": "center",
+                          },
+                          Object {
+                            "borderRadius": 16,
+                          },
+                          Array [
+                            Object {
+                              "paddingHorizontal": 8,
+                            },
+                            Object {
+                              "paddingVertical": 2,
+                            },
+                          ],
+                          Object {
+                            "backgroundColor": "#F7F8FF",
+                          },
+                        ]
+                      }
+                    >
+                      <Text
+                        style={
+                          Array [
+                            Object {
+                              "fontSize": 30,
+                            },
+                            Object {
+                              "color": "#383B62",
+                              "fontFamily": "Open Sans",
+                            },
+                            Array [
+                              Array [
+                                Object {
+                                  "fontSize": 26,
+                                },
+                                Object {
+                                  "textAlign": "center",
+                                },
+                              ],
+                              Object {
+                                "color": "#979797",
+                              },
+                            ],
+                          ]
+                        }
+                      >
+                        May 18 2022
+                      </Text>
+                    </View>
+                  </View>
+                </View>
+                <View
+                  onLayout={[Function]}
+                  style={
+                    Array [
+                      Object {
+                        "flexDirection": "column-reverse",
+                      },
+                      Object {
+                        "transform": Array [
+                          Object {
+                            "scaleY": -1,
+                          },
+                        ],
+                      },
+                    ]
+                  }
+                >
+                  <View
+                    style={
+                      Array [
+                        Object {
+                          "marginBottom": 4,
+                        },
+                      ]
+                    }
+                  >
+                    <View
+                      style={
+                        Array [
+                          Object {
+                            "alignSelf": "center",
+                          },
+                          Object {
+                            "borderRadius": 16,
+                          },
+                          Array [
+                            Object {
+                              "paddingHorizontal": 8,
+                            },
+                            Object {
+                              "paddingVertical": 2,
+                            },
+                          ],
+                          Object {
+                            "backgroundColor": "#F7F8FF",
+                          },
+                        ]
+                      }
+                    >
+                      <Text
+                        style={
+                          Array [
+                            Object {
+                              "fontSize": 30,
+                            },
+                            Object {
+                              "color": "#383B62",
+                              "fontFamily": "Open Sans",
+                            },
+                            Array [
+                              Array [
+                                Object {
+                                  "fontSize": 26,
+                                },
+                                Object {
+                                  "textAlign": "center",
+                                },
+                              ],
+                              Object {
+                                "color": "#979797",
+                              },
+                            ],
+                          ]
+                        }
+                      >
+                        May 17 2022
+                      </Text>
+                    </View>
+                  </View>
+                </View>
+                <View
+                  onLayout={[Function]}
+                  style={
+                    Array [
+                      Object {
+                        "flexDirection": "column-reverse",
+                      },
+                      Object {
+                        "transform": Array [
+                          Object {
+                            "scaleY": -1,
+                          },
+                        ],
+                      },
+                    ]
+                  }
+                >
+                  <View
+                    style={
+                      Array [
+                        Object {
+                          "marginBottom": 4,
+                        },
+                      ]
+                    }
+                  >
+                    <View
+                      style={
+                        Array [
+                          Object {
+                            "alignSelf": "center",
+                          },
+                          Object {
+                            "borderRadius": 16,
+                          },
+                          Array [
+                            Object {
+                              "paddingHorizontal": 8,
+                            },
+                            Object {
+                              "paddingVertical": 2,
+                            },
+                          ],
+                          Object {
+                            "backgroundColor": "#F7F8FF",
+                          },
+                        ]
+                      }
+                    >
+                      <Text
+                        style={
+                          Array [
+                            Object {
+                              "fontSize": 30,
+                            },
+                            Object {
+                              "color": "#383B62",
+                              "fontFamily": "Open Sans",
+                            },
+                            Array [
+                              Array [
+                                Object {
+                                  "fontSize": 26,
+                                },
+                                Object {
+                                  "textAlign": "center",
+                                },
+                              ],
+                              Object {
+                                "color": "#979797",
+                              },
+                            ],
+                          ]
+                        }
+                      >
+                        May 16 2022
+                      </Text>
+                    </View>
+                  </View>
+                </View>
+                <View
+                  onLayout={[Function]}
+                  style={
+                    Array [
+                      Object {
+                        "flexDirection": "column-reverse",
+                      },
+                      Object {
+                        "transform": Array [
+                          Object {
+                            "scaleY": -1,
+                          },
+                        ],
+                      },
+                    ]
+                  }
+                />
+                <View
+                  onLayout={[Function]}
+                  style={
+                    Array [
+                      Object {
+                        "flexDirection": "column-reverse",
+                      },
+                      Object {
+                        "transform": Array [
+                          Object {
+                            "scaleY": -1,
+                          },
+                        ],
+                      },
+                    ]
+                  }
+                />
+                <View
+                  onLayout={[Function]}
+                  style={
+                    Array [
+                      Object {
+                        "flexDirection": "column-reverse",
+                      },
+                      Object {
+                        "transform": Array [
+                          Object {
+                            "scaleY": -1,
+                          },
+                        ],
+                      },
+                    ]
+                  }
+                >
+                  <View
+                    style={
+                      Array [
+                        Object {
+                          "marginBottom": 4,
+                        },
+                      ]
+                    }
+                  >
+                    <View
+                      style={
+                        Array [
+                          Object {
+                            "alignSelf": "center",
+                          },
+                          Object {
+                            "borderRadius": 16,
+                          },
+                          Array [
+                            Object {
+                              "paddingHorizontal": 8,
+                            },
+                            Object {
+                              "paddingVertical": 2,
+                            },
+                          ],
+                          Object {
+                            "backgroundColor": "#F7F8FF",
+                          },
+                        ]
+                      }
+                    >
+                      <Text
+                        style={
+                          Array [
+                            Object {
+                              "fontSize": 30,
+                            },
+                            Object {
+                              "color": "#383B62",
+                              "fontFamily": "Open Sans",
+                            },
+                            Array [
+                              Array [
+                                Object {
+                                  "fontSize": 26,
+                                },
+                                Object {
+                                  "textAlign": "center",
+                                },
+                              ],
+                              Object {
+                                "color": "#979797",
+                              },
+                            ],
+                          ]
+                        }
+                      >
+                        May 15 2022
+                      </Text>
+                    </View>
+                  </View>
+                </View>
+                <View
+                  onLayout={[Function]}
+                  style={
+                    Array [
+                      Object {
+                        "flexDirection": "column-reverse",
+                      },
+                      Object {
+                        "transform": Array [
+                          Object {
+                            "scaleY": -1,
+                          },
+                        ],
+                      },
+                    ]
+                  }
+                >
+                  <View
+                    style={
+                      Array [
+                        Object {
+                          "marginBottom": 4,
+                        },
+                      ]
+                    }
+                  >
+                    <View
+                      style={
+                        Array [
+                          Object {
+                            "alignSelf": "center",
+                          },
+                          Object {
+                            "borderRadius": 16,
+                          },
+                          Array [
+                            Object {
+                              "paddingHorizontal": 8,
+                            },
+                            Object {
+                              "paddingVertical": 2,
+                            },
+                          ],
+                          Object {
+                            "backgroundColor": "#F7F8FF",
+                          },
+                        ]
+                      }
+                    >
+                      <Text
+                        style={
+                          Array [
+                            Object {
+                              "fontSize": 30,
+                            },
+                            Object {
+                              "color": "#383B62",
+                              "fontFamily": "Open Sans",
+                            },
+                            Array [
+                              Array [
+                                Object {
+                                  "fontSize": 26,
+                                },
+                                Object {
+                                  "textAlign": "center",
+                                },
+                              ],
+                              Object {
+                                "color": "#979797",
+                              },
+                            ],
+                          ]
+                        }
+                      >
+                        May 14 2022
+                      </Text>
+                    </View>
+                  </View>
+                </View>
+                <View
+                  onLayout={[Function]}
+                  style={
+                    Array [
+                      Object {
+                        "flexDirection": "column-reverse",
+                      },
+                      Object {
+                        "transform": Array [
+                          Object {
+                            "scaleY": -1,
+                          },
+                        ],
+                      },
+                    ]
+                  }
+                >
+                  <View
+                    style={
+                      Array [
+                        Object {
+                          "marginBottom": 4,
+                        },
+                      ]
+                    }
+                  >
+                    <View
+                      style={
+                        Array [
+                          Object {
+                            "alignSelf": "center",
+                          },
+                          Object {
+                            "borderRadius": 16,
+                          },
+                          Array [
+                            Object {
+                              "paddingHorizontal": 8,
+                            },
+                            Object {
+                              "paddingVertical": 2,
+                            },
+                          ],
+                          Object {
+                            "backgroundColor": "#F7F8FF",
+                          },
+                        ]
+                      }
+                    >
+                      <Text
+                        style={
+                          Array [
+                            Object {
+                              "fontSize": 30,
+                            },
+                            Object {
+                              "color": "#383B62",
+                              "fontFamily": "Open Sans",
+                            },
+                            Array [
+                              Array [
+                                Object {
+                                  "fontSize": 26,
+                                },
+                                Object {
+                                  "textAlign": "center",
+                                },
+                              ],
+                              Object {
+                                "color": "#979797",
+                              },
+                            ],
+                          ]
+                        }
+                      >
+                        May 13 2022
+                      </Text>
+                    </View>
+                  </View>
+                </View>
               </View>
             </RCTScrollView>
           </View>
