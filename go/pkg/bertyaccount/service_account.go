@@ -382,7 +382,6 @@ func (s *service) openManager(kind string, defaultLoggerStreams []logutil.Stream
 	manager, err := initutil.New(context.Background(), &initutil.ManagerOpts{
 		DoNotSetDefaultDir:   true,
 		DefaultLoggerStreams: defaultLoggerStreams,
-		DisableLogging:       s.disableLogging,
 		NativeKeystore:       s.nativeKeystore,
 		AccountID:            s.accountData.AccountID,
 	})

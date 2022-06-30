@@ -59,12 +59,6 @@ func (m *Manager) getLogger() (*zap.Logger, error) {
 		return m.Logging.zapLogger, nil
 	}
 
-	// if set, explicitly disable logging
-	if m.Logging.DisableLogging {
-		m.Logging.zapLogger = zap.NewNop()
-		return m.Logging.zapLogger, nil
-	}
-
 	m.Logging.StderrFilters = strings.ReplaceAll(m.Logging.StderrFilters, KeywordDefault, DefaultLoggingFilters)
 	m.Logging.FileFilters = strings.ReplaceAll(m.Logging.FileFilters, KeywordDefault, DefaultLoggingFilters)
 

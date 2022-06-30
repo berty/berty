@@ -80,9 +80,10 @@ public class GoBridgeModule extends ReactContextBaseJavaModule {
 
   @ReactMethod
   public void log(ReadableMap opts) {
-      if (!BuildConfig.DEBUG) {
-          return;
-      }
+    if (!BuildConfig.DEBUG) {
+      return;
+    }
+
     if (opts.hasKey("message")) {
       String message = opts.getString("message");
       String type = opts.hasKey("level") ? opts.getString("level") : "info";
