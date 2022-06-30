@@ -139,8 +139,8 @@ service ProtocolService {
   // PushSetServer registers a push server for the current device
   rpc PushSetServer(PushSetServer.Request) returns (PushSetServer.Reply);
 
-  // RefreshGroup try to force refresh the given group
-  rpc RefreshRequest(RefreshRequest.Request) returns (RefreshRequest.Reply);
+  // RefreshContactRequest try to refresh the contact request for the given contact
+  rpc RefreshContactRequest(RefreshContactRequest.Request) returns (RefreshContactRequest.Reply);
 }
 
 
@@ -1510,19 +1510,21 @@ message OrbitDBMessageHeads {
   bytes raw_rotation = 3;
 }
 
-message RefreshRequest {
+message RefreshContactRequest {
   message Peer {
     // id is the libp2p.PeerID.
     string id = 1 [(gogoproto.customname) = "ID"];
 
-    // addrs list of peers addrs.
-    repeated string addrs = 3;
+    // list of peers multiaddrs.
+    repeated string addrs = 2;
   }
 
   message Request {
     bytes contact_pk = 1 [(gogoproto.customname) = "ContactPK"];
   }
+
   message Reply {
+    // peers found and successfully connected.
     repeated Peer peers_found = 1;
   }
 }

@@ -1942,8 +1942,8 @@ export namespace berty {
                 public pushSetDeviceToken(request: berty.protocol.v1.PushSetDeviceToken.IRequest): Promise<berty.protocol.v1.PushSetDeviceToken.Reply>;
                 public pushSetServer(request: berty.protocol.v1.PushSetServer.IRequest, callback: berty.protocol.v1.ProtocolService.PushSetServerCallback): void;
                 public pushSetServer(request: berty.protocol.v1.PushSetServer.IRequest): Promise<berty.protocol.v1.PushSetServer.Reply>;
-                public refreshRequest(request: berty.protocol.v1.RefreshRequest.IRequest, callback: berty.protocol.v1.ProtocolService.RefreshRequestCallback): void;
-                public refreshRequest(request: berty.protocol.v1.RefreshRequest.IRequest): Promise<berty.protocol.v1.RefreshRequest.Reply>;
+                public refreshContactRequest(request: berty.protocol.v1.RefreshContactRequest.IRequest, callback: berty.protocol.v1.ProtocolService.RefreshContactRequestCallback): void;
+                public refreshContactRequest(request: berty.protocol.v1.RefreshContactRequest.IRequest): Promise<berty.protocol.v1.RefreshContactRequest.Reply>;
             }
 
             namespace ProtocolService {
@@ -2034,7 +2034,7 @@ export namespace berty {
 
                 type PushSetServerCallback = (error: (Error|null), response?: berty.protocol.v1.PushSetServer.Reply) => void;
 
-                type RefreshRequestCallback = (error: (Error|null), response?: berty.protocol.v1.RefreshRequest.Reply) => void;
+                type RefreshContactRequestCallback = (error: (Error|null), response?: berty.protocol.v1.RefreshContactRequest.Reply) => void;
             }
 
             enum GroupType {
@@ -6026,23 +6026,23 @@ export namespace berty {
                 }
             }
 
-            interface IRefreshRequest {
+            interface IRefreshContactRequest {
             }
 
-            class RefreshRequest implements IRefreshRequest {
+            class RefreshContactRequest implements IRefreshContactRequest {
 
-                public static create(properties?: berty.protocol.v1.IRefreshRequest): berty.protocol.v1.RefreshRequest;
-                public static encode(message: berty.protocol.v1.IRefreshRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.protocol.v1.IRefreshRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.RefreshRequest;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.RefreshRequest;
+                public static create(properties?: berty.protocol.v1.IRefreshContactRequest): berty.protocol.v1.RefreshContactRequest;
+                public static encode(message: berty.protocol.v1.IRefreshContactRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.protocol.v1.IRefreshContactRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.RefreshContactRequest;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.RefreshContactRequest;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.protocol.v1.RefreshRequest;
-                public static toObject(message: berty.protocol.v1.RefreshRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): berty.protocol.v1.RefreshContactRequest;
+                public static toObject(message: berty.protocol.v1.RefreshContactRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
-            namespace RefreshRequest {
+            namespace RefreshContactRequest {
 
                 interface IPeer {
                     id?: (string|null);
@@ -6053,14 +6053,14 @@ export namespace berty {
 
                     public id: string;
                     public addrs: string[];
-                    public static create(properties?: berty.protocol.v1.RefreshRequest.IPeer): berty.protocol.v1.RefreshRequest.Peer;
-                    public static encode(message: berty.protocol.v1.RefreshRequest.IPeer, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.protocol.v1.RefreshRequest.IPeer, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.RefreshRequest.Peer;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.RefreshRequest.Peer;
+                    public static create(properties?: berty.protocol.v1.RefreshContactRequest.IPeer): berty.protocol.v1.RefreshContactRequest.Peer;
+                    public static encode(message: berty.protocol.v1.RefreshContactRequest.IPeer, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.RefreshContactRequest.IPeer, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.RefreshContactRequest.Peer;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.RefreshContactRequest.Peer;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.RefreshRequest.Peer;
-                    public static toObject(message: berty.protocol.v1.RefreshRequest.Peer, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.RefreshContactRequest.Peer;
+                    public static toObject(message: berty.protocol.v1.RefreshContactRequest.Peer, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
 
@@ -6071,32 +6071,32 @@ export namespace berty {
                 class Request implements IRequest {
 
                     public contactPk: Uint8Array;
-                    public static create(properties?: berty.protocol.v1.RefreshRequest.IRequest): berty.protocol.v1.RefreshRequest.Request;
-                    public static encode(message: berty.protocol.v1.RefreshRequest.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.protocol.v1.RefreshRequest.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.RefreshRequest.Request;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.RefreshRequest.Request;
+                    public static create(properties?: berty.protocol.v1.RefreshContactRequest.IRequest): berty.protocol.v1.RefreshContactRequest.Request;
+                    public static encode(message: berty.protocol.v1.RefreshContactRequest.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.RefreshContactRequest.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.RefreshContactRequest.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.RefreshContactRequest.Request;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.RefreshRequest.Request;
-                    public static toObject(message: berty.protocol.v1.RefreshRequest.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.RefreshContactRequest.Request;
+                    public static toObject(message: berty.protocol.v1.RefreshContactRequest.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
 
                 interface IReply {
-                    peersFound?: (berty.protocol.v1.RefreshRequest.IPeer[]|null);
+                    peersFound?: (berty.protocol.v1.RefreshContactRequest.IPeer[]|null);
                 }
 
                 class Reply implements IReply {
 
-                    public peersFound: berty.protocol.v1.RefreshRequest.IPeer[];
-                    public static create(properties?: berty.protocol.v1.RefreshRequest.IReply): berty.protocol.v1.RefreshRequest.Reply;
-                    public static encode(message: berty.protocol.v1.RefreshRequest.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.protocol.v1.RefreshRequest.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.RefreshRequest.Reply;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.RefreshRequest.Reply;
+                    public peersFound: berty.protocol.v1.RefreshContactRequest.IPeer[];
+                    public static create(properties?: berty.protocol.v1.RefreshContactRequest.IReply): berty.protocol.v1.RefreshContactRequest.Reply;
+                    public static encode(message: berty.protocol.v1.RefreshContactRequest.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.RefreshContactRequest.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.RefreshContactRequest.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.RefreshContactRequest.Reply;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.RefreshRequest.Reply;
-                    public static toObject(message: berty.protocol.v1.RefreshRequest.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.RefreshContactRequest.Reply;
+                    public static toObject(message: berty.protocol.v1.RefreshContactRequest.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
             }

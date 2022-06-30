@@ -8,8 +8,8 @@ c487da32080977a2ec757252b6187633327b5e07  ../api/bertyverifiablecreds.yaml
 9f42025e90b2e6da94afacf69ec9e5cb0b0d010a  ../api/errcode.proto
 5435e65abd5e30f98a2f92f7d848530c55a69b38  ../api/messengertypes.proto
 0bf65c534c7bd4dd9453bfcc828a7be7b2d9dc2f  ../api/messengertypes.yaml
-6603895ef7497bf9f292b060ba21bd0eaa0e686e  ../api/protocoltypes.proto
-c01f7839993a6e749645586ee0cc97e10bc3b2f1  ../api/protocoltypes.yaml
+baa958d8ae6e741c19d9509bb153afb80938b1eb  ../api/protocoltypes.proto
+b8ab758df2629807e5f79f87f2ab35fff105e325  ../api/protocoltypes.yaml
 429ad083ef1963a77adc439239118d0db65c9d37  ../api/pushtypes.proto
 00284c7d54f219f2d66852350c00cbff87a14620  ../api/pushtypes.yaml
 3b24f8f94b17cce89e535ea22432b75769bce542  Makefile

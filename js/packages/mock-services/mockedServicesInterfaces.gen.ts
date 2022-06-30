@@ -154,9 +154,9 @@ export interface IProtocolServiceMock {
 		beapi.protocol.PushSetServer.IRequest,
 		beapi.protocol.PushSetServer.IReply
 	>
-	RefreshRequest: UnaryMock<
-		beapi.protocol.RefreshRequest.IRequest,
-		beapi.protocol.RefreshRequest.IReply
+	RefreshContactRequest: UnaryMock<
+		beapi.protocol.RefreshContactRequest.IRequest,
+		beapi.protocol.RefreshContactRequest.IReply
 	>
 }
 

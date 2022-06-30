@@ -175,7 +175,7 @@ export const InfosChat: React.FC<beapi.messenger.IConversation> = ({
 								console.warn("Failed to refresh: contact.publicKey doesn't exist.")
 								return
 							}
-							await protocolClient?.refreshRequest({
+							await protocolClient?.refreshContactRequest({
 								contactPk: new Uint8Array(base64.toByteArray(contact?.publicKey)),
 							})
 						}}

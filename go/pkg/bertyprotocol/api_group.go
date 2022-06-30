@@ -2,7 +2,6 @@ package bertyprotocol
 
 import (
 	"context"
-	"fmt"
 	"strings"
 
 	"github.com/libp2p/go-libp2p-core/crypto"
@@ -167,50 +166,6 @@ func (s *service) MonitorGroup(req *protocoltypes.MonitorGroup_Request, srv prot
 	}
 
 	return nil
-}
-
-func (s *service) RefreshRequest(ctx context.Context, req *protocoltypes.RefreshRequest_Request) (*protocoltypes.RefreshRequest_Reply, error) {
-	if len(req.ContactPK) == 0 {
-		return nil, errcode.ErrInternal
-	}
-
-	ctx, cancel := context.WithCancel(ctx)
-	defer cancel()
-
-	key := string(req.ContactPK)
-	s.muRefreshprocess.Lock()
-	if clfn, ok := s.refreshprocess[key]; ok {
-		clfn() // close previous refresh method
-	}
-	s.refreshprocess[key] = cancel
-	s.muRefreshprocess.Unlock()
-
-	peers, err := s.swiper.RefreshRequest(ctx, req.ContactPK)
-	if err != nil {
-		return nil, fmt.Errorf("unable to refresh group: %w", err)
-	}
-
-	res := &protocoltypes.RefreshRequest_Reply{
-		PeersFound: []*protocoltypes.RefreshRequest_Peer{},
-	}
-	for _, p := range peers {
-		// check if we can connect to this peers
-		if err := s.host.Connect(ctx, p); err != nil {
-			continue
-		}
-
-		addrs := make([]string, len(p.Addrs))
-		for i, addr := range p.Addrs {
-			addrs[i] = addr.String()
-		}
-
-		res.PeersFound = append(res.PeersFound, &protocoltypes.RefreshRequest_Peer{
-			ID:    p.ID.Pretty(),
-			Addrs: addrs,
-		})
-	}
-
-	return res, nil
 }
 
 func monitorHandlePubsubEvent(e *ipfsutil.EvtPubSubTopic, h host.Host) *protocoltypes.MonitorGroup_EventMonitor {

@@ -506,10 +506,10 @@ export type ProtocolMethodsHooks = {
 		called: boolean
 		loading: boolean
 	}
-	useRefreshRequest: () => {
+	useRefreshContactRequest: () => {
 		error: any
-		call: (req?: beapi.protocol.RefreshRequest.IRequest) => void
-		reply: beapi.protocol.RefreshRequest.IReply | null
+		call: (req?: beapi.protocol.RefreshContactRequest.IRequest) => void
+		reply: beapi.protocol.RefreshContactRequest.IReply | null
 		done: boolean
 		called: boolean
 		loading: boolean

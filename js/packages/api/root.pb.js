@@ -1361,9 +1361,9 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     requestType: "PushSetServer.Request",
                     responseType: "PushSetServer.Reply"
                   },
-                  RefreshRequest: {
-                    requestType: "RefreshRequest.Request",
-                    responseType: "RefreshRequest.Reply"
+                  RefreshContactRequest: {
+                    requestType: "RefreshContactRequest.Request",
+                    responseType: "RefreshContactRequest.Reply"
                   }
                 }
               },
@@ -3981,7 +3981,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   }
                 }
               },
-              RefreshRequest: {
+              RefreshContactRequest: {
                 fields: {},
                 nested: {
                   Peer: {
@@ -3996,7 +3996,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       addrs: {
                         rule: "repeated",
                         type: "string",
-                        id: 3
+                        id: 2
                       }
                     }
                   },

@@ -14,7 +14,7 @@ tail:
 	@touch $(TMPDIR)/berty-mini-$(ID).log
 	tail -f $(TMPDIR)/berty-mini-$(ID).log
 
-.PHONY: tail
+.PHONY: loon
 loon:
 	@touch $(TMPDIR)/berty-mini-$(ID).log
 	loon $(TMPDIR)/berty-mini-$(ID).log

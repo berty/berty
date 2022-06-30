@@ -148,8 +148,8 @@ func commandList() []*command {
 			cmd:   debugIPFSCommand,
 		},
 		{
-			title: "refresh",
-			help:  "force refresh",
+			title: "contact refresh",
+			help:  "refresh contact request",
 			cmd:   refreshCommand,
 		},
 		{
@@ -813,7 +813,7 @@ func refreshCommand(ctx context.Context, v *groupView, cmd string) error {
 				payload:     []byte("refreshing..."),
 			}
 
-			res, err := v.v.protocol.RefreshRequest(ctx, &protocoltypes.RefreshRequest_Request{
+			res, err := v.v.protocol.RefreshContactRequest(ctx, &protocoltypes.RefreshContactRequest_Request{
 				ContactPK: pk,
 			})
 

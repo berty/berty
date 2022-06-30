@@ -1391,15 +1391,15 @@
         ]
       }
     },
-    "/berty.protocol.v1/ProtocolService/RefreshRequest": {
+    "/berty.protocol.v1/ProtocolService/RefreshContactRequest": {
       "post": {
-        "summary": "RefreshGroup try to force refresh the given group",
-        "operationId": "ProtocolService_RefreshRequest",
+        "summary": "RefreshContactRequest try to refresh the contact request for the given contact",
+        "operationId": "ProtocolService_RefreshContactRequest",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/v1RefreshRequestReply"
+              "$ref": "#/definitions/v1RefreshContactRequestReply"
             }
           },
           "default": {
@@ -1415,7 +1415,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/v1RefreshRequestRequest"
+              "$ref": "#/definitions/v1RefreshContactRequestRequest"
             }
           }
         ],
@@ -3090,7 +3090,7 @@
         }
       }
     },
-    "v1RefreshRequestPeer": {
+    "v1RefreshContactRequestPeer": {
       "type": "object",
       "properties": {
         "id": {
@@ -3102,22 +3102,23 @@
           "items": {
             "type": "string"
           },
-          "description": "addrs list of peers addrs."
+          "description": "list of peers multiaddrs."
         }
       }
     },
-    "v1RefreshRequestReply": {
+    "v1RefreshContactRequestReply": {
       "type": "object",
       "properties": {
         "peers_found": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/v1RefreshRequestPeer"
-          }
+            "$ref": "#/definitions/v1RefreshContactRequestPeer"
+          },
+          "description": "peers found and successfully connected."
         }
       }
     },
-    "v1RefreshRequestRequest": {
+    "v1RefreshContactRequestRequest": {
       "type": "object",
       "properties": {
         "contact_pk": {

@@ -45,7 +45,7 @@ func NewSwiper(logger *zap.Logger, disc tinder.UnregisterDiscovery, rp *rendezvo
 	}
 }
 
-func (s *Swiper) RefreshRequest(ctx context.Context, topic []byte) ([]peer.AddrInfo, error) {
+func (s *Swiper) RefreshContactRequest(ctx context.Context, topic []byte) ([]peer.AddrInfo, error) {
 	// canceling find peers
 	s.muRequest.Lock()
 	req, ok := s.inProgressRequest[string(topic)]
@@ -75,7 +75,7 @@ func (s *Swiper) RefreshRequest(ctx context.Context, topic []byte) ([]peer.AddrI
 
 	select {
 	case p := <-cpeer:
-		req.out <- p // forward peer to swiperchan
+		req.out <- p
 		return []peer.AddrInfo{p}, nil
 	case <-ctx.Done():
 		return nil, ctx.Err()
