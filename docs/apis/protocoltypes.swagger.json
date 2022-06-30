@@ -3124,6 +3124,11 @@
         "contact_pk": {
           "type": "string",
           "format": "byte"
+        },
+        "timeout": {
+          "type": "string",
+          "format": "int64",
+          "title": "timeout in second"
         }
       }
     },

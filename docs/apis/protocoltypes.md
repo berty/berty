@@ -1613,6 +1613,7 @@ Progress define a generic object that can be used to display a progress bar for 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | contact_pk | [bytes](#bytes) |  |  |
+| timeout | [int64](#int64) |  | timeout in second |
 
 <a name="berty.protocol.v1.ReplicationServiceRegisterGroup"></a>
 

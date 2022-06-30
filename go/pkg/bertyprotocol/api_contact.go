@@ -3,6 +3,7 @@ package bertyprotocol
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/libp2p/go-libp2p-core/crypto"
 
@@ -64,7 +65,12 @@ func (s *service) RefreshContactRequest(ctx context.Context, req *protocoltypes.
 		return nil, errcode.ErrInternal
 	}
 
-	ctx, cancel := context.WithCancel(ctx)
+	var cancel context.CancelFunc
+	if req.Timeout > 0 {
+		ctx, cancel = context.WithTimeout(ctx, time.Duration(req.Timeout)*time.Second)
+	} else {
+		ctx, cancel = context.WithCancel(ctx)
+	}
 	defer cancel()
 
 	key := string(req.ContactPK)

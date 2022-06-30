@@ -1521,6 +1521,8 @@ message RefreshContactRequest {
 
   message Request {
     bytes contact_pk = 1 [(gogoproto.customname) = "ContactPK"];
+    // timeout in second
+    int64 timeout = 2;
   }
 
   message Reply {

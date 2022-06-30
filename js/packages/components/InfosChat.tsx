@@ -1,8 +1,9 @@
 import { Icon } from '@ui-kitten/components'
 import base64 from 'base64-js'
-import React, { useState } from 'react'
+import Long from 'long'
+import React, { useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { View, Button } from 'react-native'
+import { View } from 'react-native'
 
 import beapi from '@berty/api'
 import { useStyles } from '@berty/contexts/styles'
@@ -16,7 +17,7 @@ import {
 import { pbDateToNum, timeFormat } from '@berty/utils/convert/time'
 
 import { ContactAvatar } from './avatars'
-import { SecondaryButtonIconLeft, TertiaryButtonIconLeft } from './buttons'
+import { SecondaryButtonIconLeft, TertiaryButtonIconLeft, PrimaryButton } from './buttons'
 import { ChatDate } from './chat/ChatDate'
 import { MessageSystemWrapper } from './chat/message/MessageSystemWrapper'
 import { HorizontalDuo } from './layout'
@@ -138,50 +139,65 @@ export const InfosChat: React.FC<beapi.messenger.IConversation> = ({
 	const isIncoming = contact?.state === beapi.messenger.Contact.State.IncomingRequest
 	const textColor = colors['background-header']
 
+	const [isRefresh, setIsRefresh] = useState<boolean>(false)
+	const handleRefreshButton = useCallback(async () => {
+		if (!contact?.publicKey) {
+			console.warn("Failed to refresh: contact.publicKey doesn't exist.")
+			return
+		}
+		setIsRefresh(true)
+		try {
+			// this function takes 20sec max
+			await protocolClient?.refreshContactRequest({
+				contactPk: new Uint8Array(base64.toByteArray(contact?.publicKey)),
+				timeout: Long.fromInt(5),
+			})
+		} catch (e) {
+			console.warn(e)
+		}
+
+		setIsRefresh(false)
+	}, [contact?.publicKey, protocolClient])
+
 	return (
-		<View style={[padding.medium, flex.align.center]}>
-			<ChatDate date={createdDate} />
-			{!isIncoming ? (
-				<MessageSystemWrapper styleContainer={[margin.bottom.small, margin.top.large]}>
-					<UnifiedText style={[text.align.center, { color: textColor }]}>
-						{isAccepted
-							? t('chat.one-to-one.infos-chat.connection-confirmed')
-							: t('chat.one-to-one.infos-chat.request-sent')}
-					</UnifiedText>
-				</MessageSystemWrapper>
-			) : (
-				<MessageSystemWrapper>
-					<ContactRequestBox contact={contact} isAccepted={isAccepted} />
-				</MessageSystemWrapper>
-			)}
-			{!isAccepted && contact?.state !== beapi.messenger.Contact.State.Undefined && (
-				<>
-					<View style={[flex.align.center]}>
-						<UnifiedText style={[margin.top.tiny, dateMessage]}>
-							{timeFormat.fmtTimestamp1(pbDateToNum(createdDate))}
+		<View style={[padding.medium]}>
+			<View style={[flex.align.center]}>
+				<ChatDate date={createdDate} />
+				{!isIncoming ? (
+					<MessageSystemWrapper styleContainer={[margin.bottom.small, margin.top.large]}>
+						<UnifiedText style={[text.align.center, { color: textColor }]}>
+							{isAccepted
+								? t('chat.one-to-one.infos-chat.connection-confirmed')
+								: t('chat.one-to-one.infos-chat.request-sent')}
 						</UnifiedText>
-					</View>
-					<InfosContactState
-						state={
-							isIncoming
-								? t('chat.one-to-one.infos-chat.incoming')
-								: t('chat.one-to-one.infos-chat.outgoing')
-						}
-					/>
-					<Button
-						title='Refresh'
-						onPress={async () => {
-							if (!contact?.publicKey) {
-								console.warn("Failed to refresh: contact.publicKey doesn't exist.")
-								return
+					</MessageSystemWrapper>
+				) : (
+					<MessageSystemWrapper>
+						<ContactRequestBox contact={contact} isAccepted={isAccepted} />
+					</MessageSystemWrapper>
+				)}
+				{!isAccepted && contact?.state !== beapi.messenger.Contact.State.Undefined && (
+					<>
+						<View style={[flex.align.center]}>
+							<UnifiedText style={[margin.top.tiny, dateMessage]}>
+								{timeFormat.fmtTimestamp1(pbDateToNum(createdDate))}
+							</UnifiedText>
+						</View>
+						<InfosContactState
+							state={
+								isIncoming
+									? t('chat.one-to-one.infos-chat.incoming')
+									: t('chat.one-to-one.infos-chat.outgoing')
 							}
-							await protocolClient?.refreshContactRequest({
-								contactPk: new Uint8Array(base64.toByteArray(contact?.publicKey)),
-							})
-						}}
-					/>
-				</>
-			)}
+						/>
+					</>
+				)}
+			</View>
+			<View style={[flex.tiny, margin.top.small]}>
+				<PrimaryButton loading={isRefresh} onPress={handleRefreshButton} disabled={isRefresh}>
+					{t('chat.one-to-one.infos-chat.refresh-button')}
+				</PrimaryButton>
+			</View>
 		</View>
 	)
 }

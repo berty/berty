@@ -6066,11 +6066,13 @@ export namespace berty {
 
                 interface IRequest {
                     contactPk?: (Uint8Array|null);
+                    timeout?: (Long|null);
                 }
 
                 class Request implements IRequest {
 
                     public contactPk: Uint8Array;
+                    public timeout: Long;
                     public static create(properties?: berty.protocol.v1.RefreshContactRequest.IRequest): berty.protocol.v1.RefreshContactRequest.Request;
                     public static encode(message: berty.protocol.v1.RefreshContactRequest.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.protocol.v1.RefreshContactRequest.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;

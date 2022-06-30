@@ -4008,6 +4008,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                         options: {
                           "(gogoproto.customname)": "ContactPK"
                         }
+                      },
+                      timeout: {
+                        type: "int64",
+                        id: 2
                       }
                     }
                   },
