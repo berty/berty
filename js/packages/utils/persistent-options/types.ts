@@ -10,10 +10,10 @@ export type GlobalPersistentOptions = {
 	[GlobalPersistentOptionsKeys.TyberHost]: GlobalPersistentOptionsTyberHost
 }
 
-export type GlobalPersistentOptionsLogFilters = {
+type GlobalPersistentOptionsLogFilters = {
 	format: string
 }
 
-export type GlobalPersistentOptionsTyberHost = {
+type GlobalPersistentOptionsTyberHost = {
 	address: string
 }

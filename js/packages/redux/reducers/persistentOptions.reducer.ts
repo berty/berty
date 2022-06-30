@@ -87,7 +87,7 @@ type PersistentOptions = {
 	[PersistentOptionsKeys.ProfileNotification]: PersistentOptionsProfileNotification
 }
 
-export const defaultPersistentOptions = (): PersistentOptions => {
+const defaultPersistentOptions = (): PersistentOptions => {
 	let suggestions: PersistentOptionsSuggestions = {}
 	// TODO uncomment it when suggestions bots works
 	// Object.values(globals.berty.contacts).forEach(async value => {
