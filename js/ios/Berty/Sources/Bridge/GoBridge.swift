@@ -88,11 +88,7 @@ class GoBridge: NSObject {
                 throw NSError(domain: "tech.berty.gobridge", code: 2, userInfo: [NSLocalizedDescriptionKey : "unable to create config"])
             }
 
-            #if CFG_APPSTORE
-            config.setLoggerDriver(nil)
-            #else
             config.setLoggerDriver(LoggerDriver("tech.berty", "gomobile"))
-            #endif
 
             // get user preferred languages
             let preferredLanguages: String = Locale.preferredLanguages.joined(separator: ",")

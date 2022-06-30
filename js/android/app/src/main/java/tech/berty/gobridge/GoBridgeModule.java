@@ -80,6 +80,9 @@ public class GoBridgeModule extends ReactContextBaseJavaModule {
 
   @ReactMethod
   public void log(ReadableMap opts) {
+      if (!BuildConfig.DEBUG) {
+          return;
+      }
     if (opts.hasKey("message")) {
       String message = opts.getString("message");
       String type = opts.hasKey("level") ? opts.getString("level") : "info";
@@ -119,11 +122,8 @@ public class GoBridgeModule extends ReactContextBaseJavaModule {
       }
 
       // init logger
-
-      if (BuildConfig.DEBUG) {
-          LoggerDriver logger = new LoggerDriver("tech.berty", "protocol");
-          config.setLoggerDriver(logger);
-      }
+      LoggerDriver logger = new LoggerDriver("tech.berty", "protocol");
+      config.setLoggerDriver(logger);
 
       // set net driver
       if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
