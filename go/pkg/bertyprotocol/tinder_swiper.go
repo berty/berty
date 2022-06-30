@@ -3,18 +3,31 @@ package bertyprotocol
 import (
 	"context"
 	"encoding/hex"
+	"fmt"
+	"sync"
 	"time"
 
+	"github.com/libp2p/go-libp2p-core/discovery"
 	"github.com/libp2p/go-libp2p-core/peer"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	"go.uber.org/zap"
 
+	"berty.tech/berty/v2/go/internal/logutil"
 	"berty.tech/berty/v2/go/internal/rendezvous"
 	"berty.tech/berty/v2/go/internal/tinder"
 )
 
+type swiperRequest struct {
+	ctx      context.Context
+	out      chan<- peer.AddrInfo
+	rdvTopic string
+}
+
 type Swiper struct {
 	topics map[string]*pubsub.Topic
+
+	inProgressRequest map[string]*swiperRequest
+	muRequest         sync.Mutex
 
 	rp *rendezvous.RotationInterval
 
@@ -24,10 +37,48 @@ type Swiper struct {
 
 func NewSwiper(logger *zap.Logger, disc tinder.UnregisterDiscovery, rp *rendezvous.RotationInterval) *Swiper {
 	return &Swiper{
-		logger: logger.Named("swiper"),
-		topics: make(map[string]*pubsub.Topic),
-		rp:     rp,
-		disc:   disc,
+		logger:            logger.Named("swiper"),
+		topics:            make(map[string]*pubsub.Topic),
+		inProgressRequest: make(map[string]*swiperRequest),
+		rp:                rp,
+		disc:              disc,
+	}
+}
+
+func (s *Swiper) RefreshContactRequest(ctx context.Context, topic []byte) ([]peer.AddrInfo, error) {
+	// canceling find peers
+	s.muRequest.Lock()
+	req, ok := s.inProgressRequest[string(topic)]
+	s.muRequest.Unlock()
+	if !ok {
+		return nil, fmt.Errorf("unknown topic")
+	}
+
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
+
+	go func() {
+		// if rotation topic is outdated, cancel research
+		<-req.ctx.Done()
+		cancel()
+	}()
+
+	// s.logger.Debug("refresh swiper watcher", zap.String("topic", btopic))
+	cpeer, err := s.disc.FindPeers(req.ctx, req.rdvTopic,
+		tinder.WatchdogDiscoverKeepContextOption,
+		tinder.WatchdogDiscoverForceOption,
+		discovery.Limit(1),
+	)
+	if err != nil {
+		return nil, fmt.Errorf("unable to find peers: %w", err)
+	}
+
+	select {
+	case p := <-cpeer:
+		req.out <- p
+		return []peer.AddrInfo{p}, nil
+	case <-ctx.Done():
+		return nil, ctx.Err()
 	}
 }
 
@@ -39,11 +90,23 @@ func (s *Swiper) WatchTopic(ctx context.Context, topic, seed []byte, out chan<- 
 		zap.String("seed", hex.EncodeToString(seed)))
 
 	defer done()
+
 	for {
 		point := s.rp.NewRendezvousPointForPeriod(time.Now(), string(topic), seed)
-		s.logger.Debug("watch topic for time", zap.Duration("ttl", point.TTL()), zap.String("topic", point.RotationTopic()))
 
 		watchCtx, cancel := context.WithDeadline(ctx, point.Deadline())
+
+		s.muRequest.Lock()
+
+		// keep cancel topic options
+		s.inProgressRequest[string(topic)] = &swiperRequest{
+			ctx:      watchCtx,
+			out:      out,
+			rdvTopic: point.RotationTopic(),
+		}
+
+		s.muRequest.Unlock()
+
 		if err := s.watchPeers(watchCtx, out, point.RotationTopic()); err != nil && err != context.DeadlineExceeded {
 			s.logger.Debug("watch until deadline ended", zap.Error(err))
 		}
@@ -62,8 +125,8 @@ func (s *Swiper) Announce(ctx context.Context, topic, seed []byte) {
 	var point *rendezvous.Point
 
 	s.logger.Debug("start announce for peer with",
-		zap.String("topic", hex.EncodeToString(topic)),
-		zap.String("seed", hex.EncodeToString(seed)))
+		logutil.PrivateString("topic", string(topic)),
+		logutil.PrivateString("seed", string(seed)))
 
 	go func() {
 		for {
@@ -72,6 +135,7 @@ func (s *Swiper) Announce(ctx context.Context, topic, seed []byte) {
 			}
 
 			s.logger.Debug("self announce topic for time", zap.String("topic", point.RotationTopic()))
+
 			ttl, err := s.disc.Advertise(ctx, point.RotationTopic())
 			switch err {
 			case context.Canceled, context.DeadlineExceeded:

@@ -12,7 +12,16 @@ const (
 	optionKeepContext                tinderOption = "keepctx"
 	optionFilterDriver               tinderOption = "filterdriver"
 	optionRendezvousUseDiscoverAsync tinderOption = "rendezvoususediscoverasync"
+	optionForce                      tinderOption = "force"
 )
+
+func WatchdogDiscoverForceOption(opts *p2p_discovery.Options) error {
+	if opts.Other == nil {
+		opts.Other = make(map[interface{}]interface{})
+	}
+	opts.Other[optionForce] = true
+	return nil
+}
 
 func WatchdogDiscoverKeepContextOption(opts *p2p_discovery.Options) error {
 	if opts.Other == nil {

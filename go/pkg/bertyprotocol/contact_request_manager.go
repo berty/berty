@@ -144,7 +144,7 @@ func (c *contactRequestsManager) metadataRequestReceived(evt *protocoltypes.Grou
 }
 
 func (c *contactRequestsManager) enqueueRequest(tctx context.Context, contact *protocoltypes.ShareableContact, ownMetadata []byte) error {
-	tctx, _, endSection := tyber.Section(tctx, c.logger, "Requesting contact "+base64.RawURLEncoding.EncodeToString(contact.PK))
+	tctx, _, endSection := tyber.Section(c.ctx, c.logger, "Requesting contact "+base64.RawURLEncoding.EncodeToString(contact.PK))
 
 	pk, err := crypto.UnmarshalEd25519PublicKey(contact.PK)
 	if err != nil {
@@ -164,8 +164,8 @@ func (c *contactRequestsManager) enqueueRequest(tctx context.Context, contact *p
 	}
 
 	swiperCh := make(chan peer.AddrInfo)
-	reqCtx, reqCancel := context.WithCancel(c.ctx)
-	parent := u.NewUniqueChild(context.Background())
+	reqCtx, reqCancel := context.WithCancel(tctx)
+	parent := u.NewUniqueChild(reqCtx)
 	var wg sync.WaitGroup
 	pending := &pendingRequest{
 		updateCh:   make(chan *pendingRequestDetails),
@@ -185,6 +185,8 @@ func (c *contactRequestsManager) enqueueRequest(tctx context.Context, contact *p
 						swiperCh,
 						wg.Done,
 					)
+
+					close(swiperCh)
 				})
 			case <-reqCtx.Done():
 				parent.CloseChild()
@@ -195,38 +197,45 @@ func (c *contactRequestsManager) enqueueRequest(tctx context.Context, contact *p
 				}()
 
 				wg.Wait()
-				close(swiperCh)
 				return
 			}
 		}
 	}()
+
 	pending.updateCh <- &pendingRequestDetails{
 		contact:     contact,
 		ownMetadata: ownMetadata,
 	}
+
 	c.toAdd[string(contact.PK)] = pending
 
 	// process addresses from swiper
 	go func() {
+		defer reqCancel()
 		for addr := range swiperCh {
-			if err := c.ipfs.Swarm().Connect(c.ctx, addr); err != nil {
-				endSection(err, "Failed to connect to peer")
-				return
+			// TODO(gfanton): Add tyber step
+			c.logger.Debug("swiper found a peer, connecting", logutil.PrivateString("peer", addr.ID.String()))
+			if err := c.ipfs.Swarm().Connect(reqCtx, addr); err != nil {
+				tyber.LogStep(tctx, c.logger, "Failed to connect to peer")
+				continue
 			}
 
-			stream, err := c.ipfs.NewStream(context.TODO(), addr.ID, contactRequestV1)
+			stream, err := c.ipfs.NewStream(reqCtx, addr.ID, contactRequestV1)
 			if err != nil {
-				endSection(err, "Failed to open stream with peer")
-				return
+				tyber.LogStep(tctx, c.logger, "Failed to open stream with peer")
+				continue
 			}
 
-			if err := c.performSend(tctx, pk, stream); err != nil {
-				endSection(err, "Contact request send failed")
-				return
+			if err := c.performSend(reqCtx, pk, stream); err != nil {
+				tyber.LogStep(tctx, c.logger, "Contact request send failed")
+				continue
 			}
 
 			endSection(nil, "Contact request success")
+			return
 		}
+
+		endSection(nil, "unable to process contact request")
 	}()
 
 	return nil

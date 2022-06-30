@@ -181,6 +181,10 @@
     - [PushShareToken](#berty.protocol.v1.PushShareToken)
     - [PushShareToken.Reply](#berty.protocol.v1.PushShareToken.Reply)
     - [PushShareToken.Request](#berty.protocol.v1.PushShareToken.Request)
+    - [RefreshContactRequest](#berty.protocol.v1.RefreshContactRequest)
+    - [RefreshContactRequest.Peer](#berty.protocol.v1.RefreshContactRequest.Peer)
+    - [RefreshContactRequest.Reply](#berty.protocol.v1.RefreshContactRequest.Reply)
+    - [RefreshContactRequest.Request](#berty.protocol.v1.RefreshContactRequest.Request)
     - [ReplicationServiceRegisterGroup](#berty.protocol.v1.ReplicationServiceRegisterGroup)
     - [ReplicationServiceRegisterGroup.Reply](#berty.protocol.v1.ReplicationServiceRegisterGroup.Reply)
     - [ReplicationServiceRegisterGroup.Request](#berty.protocol.v1.ReplicationServiceRegisterGroup.Request)
@@ -1581,6 +1585,36 @@ Progress define a generic object that can be used to display a progress bar for 
 | server | [PushServer](#berty.protocol.v1.PushServer) |  |  |
 | receiver | [PushServiceReceiver](#berty.protocol.v1.PushServiceReceiver) |  |  |
 
+<a name="berty.protocol.v1.RefreshContactRequest"></a>
+
+### RefreshContactRequest
+
+<a name="berty.protocol.v1.RefreshContactRequest.Peer"></a>
+
+### RefreshContactRequest.Peer
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| id | [string](#string) |  | id is the libp2p.PeerID. |
+| addrs | [string](#string) | repeated | list of peers multiaddrs. |
+
+<a name="berty.protocol.v1.RefreshContactRequest.Reply"></a>
+
+### RefreshContactRequest.Reply
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| peers_found | [RefreshContactRequest.Peer](#berty.protocol.v1.RefreshContactRequest.Peer) | repeated | peers found and successfully connected. |
+
+<a name="berty.protocol.v1.RefreshContactRequest.Request"></a>
+
+### RefreshContactRequest.Request
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| contact_pk | [bytes](#bytes) |  |  |
+| timeout | [int64](#int64) |  | timeout in second |
+
 <a name="berty.protocol.v1.ReplicationServiceRegisterGroup"></a>
 
 ### ReplicationServiceRegisterGroup
@@ -1922,6 +1956,7 @@ Each Berty Protocol Instance is considered as a Berty device and is associated w
 | PushShareToken | [PushShareToken.Request](#berty.protocol.v1.PushShareToken.Request) | [PushShareToken.Reply](#berty.protocol.v1.PushShareToken.Reply) | PushShareToken sends push tokens of own devices to a group |
 | PushSetDeviceToken | [PushSetDeviceToken.Request](#berty.protocol.v1.PushSetDeviceToken.Request) | [PushSetDeviceToken.Reply](#berty.protocol.v1.PushSetDeviceToken.Reply) | PushSetDeviceToken registers a push token for the current device |
 | PushSetServer | [PushSetServer.Request](#berty.protocol.v1.PushSetServer.Request) | [PushSetServer.Reply](#berty.protocol.v1.PushSetServer.Reply) | PushSetServer registers a push server for the current device |
+| RefreshContactRequest | [RefreshContactRequest.Request](#berty.protocol.v1.RefreshContactRequest.Request) | [RefreshContactRequest.Reply](#berty.protocol.v1.RefreshContactRequest.Reply) | RefreshContactRequest try to refresh the contact request for the given contact |
 
  
 

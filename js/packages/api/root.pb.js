@@ -1360,6 +1360,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   PushSetServer: {
                     requestType: "PushSetServer.Request",
                     responseType: "PushSetServer.Reply"
+                  },
+                  RefreshContactRequest: {
+                    requestType: "RefreshContactRequest.Request",
+                    responseType: "RefreshContactRequest.Reply"
                   }
                 }
               },
@@ -3972,6 +3976,51 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       heads: {
                         type: "bytes",
                         id: 2
+                      }
+                    }
+                  }
+                }
+              },
+              RefreshContactRequest: {
+                fields: {},
+                nested: {
+                  Peer: {
+                    fields: {
+                      id: {
+                        type: "string",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "ID"
+                        }
+                      },
+                      addrs: {
+                        rule: "repeated",
+                        type: "string",
+                        id: 2
+                      }
+                    }
+                  },
+                  Request: {
+                    fields: {
+                      contactPk: {
+                        type: "bytes",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "ContactPK"
+                        }
+                      },
+                      timeout: {
+                        type: "int64",
+                        id: 2
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {
+                      peersFound: {
+                        rule: "repeated",
+                        type: "Peer",
+                        id: 1
                       }
                     }
                   }

@@ -2,6 +2,8 @@ package bertyprotocol
 
 import (
 	"context"
+	"fmt"
+	"time"
 
 	"github.com/libp2p/go-libp2p-core/crypto"
 
@@ -56,4 +58,53 @@ func (s *service) ContactUnblock(ctx context.Context, req *protocoltypes.Contact
 	}
 
 	return &protocoltypes.ContactUnblock_Reply{}, nil
+}
+
+func (s *service) RefreshContactRequest(ctx context.Context, req *protocoltypes.RefreshContactRequest_Request) (*protocoltypes.RefreshContactRequest_Reply, error) {
+	if len(req.ContactPK) == 0 {
+		return nil, errcode.ErrInternal
+	}
+
+	var cancel context.CancelFunc
+	if req.Timeout > 0 {
+		ctx, cancel = context.WithTimeout(ctx, time.Duration(req.Timeout)*time.Second)
+	} else {
+		ctx, cancel = context.WithCancel(ctx)
+	}
+	defer cancel()
+
+	key := string(req.ContactPK)
+	s.muRefreshprocess.Lock()
+	if clfn, ok := s.refreshprocess[key]; ok {
+		clfn() // close previous refresh method
+	}
+	s.refreshprocess[key] = cancel
+	s.muRefreshprocess.Unlock()
+
+	peers, err := s.swiper.RefreshContactRequest(ctx, req.ContactPK)
+	if err != nil {
+		return nil, fmt.Errorf("unable to refresh group: %w", err)
+	}
+
+	res := &protocoltypes.RefreshContactRequest_Reply{
+		PeersFound: []*protocoltypes.RefreshContactRequest_Peer{},
+	}
+	for _, p := range peers {
+		// check if we can connect to this peers
+		if err := s.host.Connect(ctx, p); err != nil {
+			continue
+		}
+
+		addrs := make([]string, len(p.Addrs))
+		for i, addr := range p.Addrs {
+			addrs[i] = addr.String()
+		}
+
+		res.PeersFound = append(res.PeersFound, &protocoltypes.RefreshContactRequest_Peer{
+			ID:    p.ID.Pretty(),
+			Addrs: addrs,
+		})
+	}
+
+	return res, nil
 }

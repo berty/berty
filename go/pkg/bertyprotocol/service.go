@@ -12,6 +12,7 @@ import (
 	ds "github.com/ipfs/go-datastore"
 	ds_sync "github.com/ipfs/go-datastore/sync"
 	ipfs_interface "github.com/ipfs/interface-go-ipfs-core"
+	"github.com/libp2p/go-libp2p-core/discovery"
 	"github.com/libp2p/go-libp2p-core/host"
 	peer "github.com/libp2p/go-libp2p-core/peer"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
@@ -47,25 +48,29 @@ type Service interface {
 
 type service struct {
 	// variables
-	ctx             context.Context
-	logger          *zap.Logger
-	ipfsCoreAPI     ipfsutil.ExtendedCoreAPI
-	odb             *BertyOrbitDB
-	accountGroup    *GroupContext
-	deviceKeystore  cryptoutil.DeviceKeystore
-	openedGroups    map[string]*GroupContext
-	lock            sync.RWMutex
-	authSession     atomic.Value
-	close           func() error
-	startedAt       time.Time
-	host            host.Host
-	groupDatastore  *cryptoutil.GroupDatastore
-	pushHandler     bertypush.PushHandler
-	accountCache    ds.Batching
-	messageKeystore *cryptoutil.MessageKeystore
-	pushClients     map[string]*grpc.ClientConn
-	muPushClients   sync.RWMutex
-	grpcInsecure    bool
+	ctx              context.Context
+	logger           *zap.Logger
+	ipfsCoreAPI      ipfsutil.ExtendedCoreAPI
+	odb              *BertyOrbitDB
+	accountGroup     *GroupContext
+	deviceKeystore   cryptoutil.DeviceKeystore
+	openedGroups     map[string]*GroupContext
+	lock             sync.RWMutex
+	authSession      atomic.Value
+	close            func() error
+	startedAt        time.Time
+	host             host.Host
+	groupDatastore   *cryptoutil.GroupDatastore
+	pushHandler      bertypush.PushHandler
+	accountCache     ds.Batching
+	messageKeystore  *cryptoutil.MessageKeystore
+	pushClients      map[string]*grpc.ClientConn
+	muPushClients    sync.RWMutex
+	discovery        discovery.Discovery
+	grpcInsecure     bool
+	refreshprocess   map[string]context.CancelFunc
+	muRefreshprocess sync.RWMutex
+	swiper           *Swiper
 }
 
 // Opts contains optional configuration flags for building a new Client
@@ -232,14 +237,18 @@ func New(ctx context.Context, opts Opts) (_ Service, err error) {
 
 	opts.Logger.Debug("Opened account group", tyber.FormatStepLogFields(ctx, []tyber.Detail{{Name: "AccountGroup", Description: acc.group.String()}})...)
 
+	var disc discovery.Discovery
+	var swiper *Swiper
 	if opts.TinderDriver != nil {
-		s := NewSwiper(opts.Logger, opts.TinderDriver, opts.OrbitDB.rotationInterval)
+		swiper = NewSwiper(opts.Logger, opts.TinderDriver, opts.OrbitDB.rotationInterval)
 		opts.Logger.Debug("Tinder swiper is enabled", tyber.FormatStepLogFields(ctx, []tyber.Detail{})...)
 
-		if err := initContactRequestsManager(ctx, s, acc.metadataStore, opts.IpfsCoreAPI, opts.Logger); err != nil {
+		if err := initContactRequestsManager(ctx, swiper, acc.metadataStore, opts.IpfsCoreAPI, opts.Logger); err != nil {
 			return nil, errcode.TODO.Wrap(err)
 		}
+		disc = opts.TinderDriver
 	} else {
+		disc = tinder.NoopDiscovery
 		opts.Logger.Warn("No tinder driver provided, incoming and outgoing contact requests won't be enabled", tyber.FormatStepLogFields(ctx, []tyber.Detail{})...)
 	}
 
@@ -268,6 +277,7 @@ func New(ctx context.Context, opts Opts) (_ Service, err error) {
 		deviceKeystore: opts.DeviceKeystore,
 		close:          opts.close,
 		accountGroup:   acc,
+		swiper:         swiper,
 		startedAt:      time.Now(),
 		groupDatastore: opts.GroupDatastore,
 		openedGroups: map[string]*GroupContext{
@@ -278,6 +288,8 @@ func New(ctx context.Context, opts Opts) (_ Service, err error) {
 		pushHandler:     pushHandler,
 		pushClients:     make(map[string]*grpc.ClientConn),
 		grpcInsecure:    opts.GRPCInsecureMode,
+		discovery:       disc,
+		refreshprocess:  make(map[string]context.CancelFunc),
 	}
 
 	s.startTyberTinderMonitor()

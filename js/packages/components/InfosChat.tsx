@@ -1,15 +1,23 @@
 import { Icon } from '@ui-kitten/components'
-import React, { useState } from 'react'
+import base64 from 'base64-js'
+import Long from 'long'
+import React, { useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View } from 'react-native'
 
 import beapi from '@berty/api'
 import { useStyles } from '@berty/contexts/styles'
-import { useMessengerClient, useOneToOneContact, usePlaySound, useThemeColor } from '@berty/hooks'
+import {
+	useMessengerClient,
+	useOneToOneContact,
+	usePlaySound,
+	useProtocolClient,
+	useThemeColor,
+} from '@berty/hooks'
 import { pbDateToNum, timeFormat } from '@berty/utils/convert/time'
 
 import { ContactAvatar } from './avatars'
-import { SecondaryButtonIconLeft, TertiaryButtonIconLeft } from './buttons'
+import { SecondaryButtonIconLeft, TertiaryButtonIconLeft, PrimaryButton } from './buttons'
 import { ChatDate } from './chat/ChatDate'
 import { MessageSystemWrapper } from './chat/message/MessageSystemWrapper'
 import { HorizontalDuo } from './layout'
@@ -125,43 +133,71 @@ export const InfosChat: React.FC<beapi.messenger.IConversation> = ({
 	const { dateMessage } = useStylesOneToOne()
 	const createdDate = pbDateToNum(createdDateStr) || Date.now()
 	const contact = useOneToOneContact(publicKey || '')
+	const protocolClient = useProtocolClient()
 
 	const isAccepted = contact?.state === beapi.messenger.Contact.State.Accepted
 	const isIncoming = contact?.state === beapi.messenger.Contact.State.IncomingRequest
 	const textColor = colors['background-header']
 
+	const [isRefresh, setIsRefresh] = useState<boolean>(false)
+	const handleRefreshButton = useCallback(async () => {
+		if (!contact?.publicKey) {
+			console.warn("Failed to refresh: contact.publicKey doesn't exist.")
+			return
+		}
+		setIsRefresh(true)
+		try {
+			// this function takes 20sec max
+			await protocolClient?.refreshContactRequest({
+				contactPk: new Uint8Array(base64.toByteArray(contact?.publicKey)),
+				timeout: Long.fromInt(5),
+			})
+		} catch (e) {
+			console.warn(e)
+		}
+
+		setIsRefresh(false)
+	}, [contact?.publicKey, protocolClient])
+
 	return (
-		<View style={[padding.medium, flex.align.center]}>
-			<ChatDate date={createdDate} />
-			{!isIncoming ? (
-				<MessageSystemWrapper styleContainer={[margin.bottom.small, margin.top.large]}>
-					<UnifiedText style={[text.align.center, { color: textColor }]}>
-						{isAccepted
-							? t('chat.one-to-one.infos-chat.connection-confirmed')
-							: t('chat.one-to-one.infos-chat.request-sent')}
-					</UnifiedText>
-				</MessageSystemWrapper>
-			) : (
-				<MessageSystemWrapper>
-					<ContactRequestBox contact={contact} isAccepted={isAccepted} />
-				</MessageSystemWrapper>
-			)}
-			{!isAccepted && contact?.state !== beapi.messenger.Contact.State.Undefined && (
-				<>
-					<View style={[flex.align.center]}>
-						<UnifiedText style={[margin.top.tiny, dateMessage]}>
-							{timeFormat.fmtTimestamp1(pbDateToNum(createdDate))}
+		<View style={[padding.medium]}>
+			<View style={[flex.align.center]}>
+				<ChatDate date={createdDate} />
+				{!isIncoming ? (
+					<MessageSystemWrapper styleContainer={[margin.bottom.small, margin.top.large]}>
+						<UnifiedText style={[text.align.center, { color: textColor }]}>
+							{isAccepted
+								? t('chat.one-to-one.infos-chat.connection-confirmed')
+								: t('chat.one-to-one.infos-chat.request-sent')}
 						</UnifiedText>
-					</View>
-					<InfosContactState
-						state={
-							isIncoming
-								? t('chat.one-to-one.infos-chat.incoming')
-								: t('chat.one-to-one.infos-chat.outgoing')
-						}
-					/>
-				</>
-			)}
+					</MessageSystemWrapper>
+				) : (
+					<MessageSystemWrapper>
+						<ContactRequestBox contact={contact} isAccepted={isAccepted} />
+					</MessageSystemWrapper>
+				)}
+				{!isAccepted && contact?.state !== beapi.messenger.Contact.State.Undefined && (
+					<>
+						<View style={[flex.align.center]}>
+							<UnifiedText style={[margin.top.tiny, dateMessage]}>
+								{timeFormat.fmtTimestamp1(pbDateToNum(createdDate))}
+							</UnifiedText>
+						</View>
+						<InfosContactState
+							state={
+								isIncoming
+									? t('chat.one-to-one.infos-chat.incoming')
+									: t('chat.one-to-one.infos-chat.outgoing')
+							}
+						/>
+					</>
+				)}
+			</View>
+			<View style={[flex.tiny, margin.top.small]}>
+				<PrimaryButton loading={isRefresh} onPress={handleRefreshButton} disabled={isRefresh}>
+					{t('chat.one-to-one.infos-chat.refresh-button')}
+				</PrimaryButton>
+			</View>
 		</View>
 	)
 }

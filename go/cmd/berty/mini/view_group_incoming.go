@@ -136,17 +136,17 @@ func handlerAccountContactRequestIncomingReceived(ctx context.Context, v *groupV
 	}
 	v.v.lock.Unlock()
 
-	v.v.lock.Lock()
 	gInfo, err := v.v.protocol.GroupInfo(ctx, &protocoltypes.GroupInfo_Request{
 		ContactPK: casted.ContactPK,
 	})
 
 	if err == nil {
+		v.v.lock.Lock()
 		if _, hasValue := v.v.contactNames[string(gInfo.Group.PublicKey)]; (!hasValue || !isHistory) && len(casted.ContactMetadata) > 0 {
 			v.v.contactNames[string(gInfo.Group.PublicKey)] = string(casted.ContactMetadata)
 		}
+		v.v.lock.Unlock()
 	}
-	v.v.lock.Unlock()
 
 	return nil
 }
@@ -214,17 +214,21 @@ func handlerAccountContactRequestOutgoingEnqueued(ctx context.Context, v *groupV
 	}
 	v.v.lock.Unlock()
 
-	v.v.lock.Lock()
 	gInfo, err := v.v.protocol.GroupInfo(ctx, &protocoltypes.GroupInfo_Request{
 		ContactPK: casted.Contact.PK,
 	})
 
 	if err == nil {
+		v.v.AddContextGroup(ctx, gInfo.Group)
+		v.v.recomputeChannelList(true)
+
+		v.v.lock.Lock()
 		if _, hasValue := v.v.contactNames[string(gInfo.Group.PublicKey)]; (!hasValue || !isHistory) && len(casted.Contact.Metadata) > 0 {
 			v.v.contactNames[string(gInfo.Group.PublicKey)] = string(casted.Contact.Metadata)
 		}
+
+		v.v.lock.Unlock()
 	}
-	v.v.lock.Unlock()
 
 	return nil
 }
@@ -348,6 +352,11 @@ func groupMonitorEventHandler(logger *zap.Logger, v *groupView, e *protocoltypes
 }
 
 func metadataEventHandler(ctx context.Context, v *groupView, e *protocoltypes.GroupMetadataEvent, isHistory bool, logger *zap.Logger) {
+	addToBuffer(&historyMessage{
+		messageType: messageTypeMeta,
+		payload:     []byte(fmt.Sprintf("event type: %s", e.Metadata.EventType.String())),
+	}, e, v, isHistory)
+
 	actions := map[protocoltypes.EventType]func(context.Context, *groupView, *protocoltypes.GroupMetadataEvent, bool) error{
 		protocoltypes.EventTypeAccountContactBlocked:                  nil, // do it later
 		protocoltypes.EventTypeAccountContactRequestDisabled:          handlerNoop,

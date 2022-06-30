@@ -1391,6 +1391,39 @@
         ]
       }
     },
+    "/berty.protocol.v1/ProtocolService/RefreshContactRequest": {
+      "post": {
+        "summary": "RefreshContactRequest try to refresh the contact request for the given contact",
+        "operationId": "ProtocolService_RefreshContactRequest",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1RefreshContactRequestReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1RefreshContactRequestRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProtocolService"
+        ]
+      }
+    },
     "/berty.protocol.v1/ProtocolService/ReplicationServiceRegisterGroup": {
       "post": {
         "summary": "ReplicationServiceRegisterGroup Asks a replication service to distribute a group contents",
@@ -1662,49 +1695,6 @@
         "QuicFeature"
       ],
       "default": "UnknownFeature"
-    },
-    "PeerListPeer": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string",
-          "description": "id is the libp2p.PeerID."
-        },
-        "routes": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/PeerListRoute"
-          },
-          "description": "routes are the list of active and known maddr."
-        },
-        "errors": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "description": "errors is a list of errors related to the peer."
-        },
-        "features": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/PeerListFeature"
-          },
-          "description": "Features is a list of available features."
-        },
-        "min_latency": {
-          "type": "string",
-          "format": "int64",
-          "description": "MinLatency is the minimum latency across all the peer routes."
-        },
-        "is_active": {
-          "type": "boolean",
-          "description": "IsActive is true if at least one of the route is active."
-        },
-        "direction": {
-          "$ref": "#/definitions/v1Direction",
-          "description": "Direction is the aggregate of all the routes's direction."
-        }
-      }
     },
     "PeerListRoute": {
       "type": "object",
@@ -2883,13 +2873,56 @@
         }
       }
     },
+    "v1PeerListPeer": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "id is the libp2p.PeerID."
+        },
+        "routes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PeerListRoute"
+          },
+          "description": "routes are the list of active and known maddr."
+        },
+        "errors": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "errors is a list of errors related to the peer."
+        },
+        "features": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PeerListFeature"
+          },
+          "description": "Features is a list of available features."
+        },
+        "min_latency": {
+          "type": "string",
+          "format": "int64",
+          "description": "MinLatency is the minimum latency across all the peer routes."
+        },
+        "is_active": {
+          "type": "boolean",
+          "description": "IsActive is true if at least one of the route is active."
+        },
+        "direction": {
+          "$ref": "#/definitions/v1Direction",
+          "description": "Direction is the aggregate of all the routes's direction."
+        }
+      }
+    },
     "v1PeerListReply": {
       "type": "object",
       "properties": {
         "peers": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/PeerListPeer"
+            "$ref": "#/definitions/v1PeerListPeer"
           }
         }
       }
@@ -3054,6 +3087,48 @@
         },
         "receiver": {
           "$ref": "#/definitions/v1PushServiceReceiver"
+        }
+      }
+    },
+    "v1RefreshContactRequestPeer": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "id is the libp2p.PeerID."
+        },
+        "addrs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "list of peers multiaddrs."
+        }
+      }
+    },
+    "v1RefreshContactRequestReply": {
+      "type": "object",
+      "properties": {
+        "peers_found": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1RefreshContactRequestPeer"
+          },
+          "description": "peers found and successfully connected."
+        }
+      }
+    },
+    "v1RefreshContactRequestRequest": {
+      "type": "object",
+      "properties": {
+        "contact_pk": {
+          "type": "string",
+          "format": "byte"
+        },
+        "timeout": {
+          "type": "string",
+          "format": "int64",
+          "title": "timeout in second"
         }
       }
     },

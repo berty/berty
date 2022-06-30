@@ -99,6 +99,8 @@ func (ld *LocalDiscovery) Close() error {
 }
 
 func (ld *LocalDiscovery) Advertise(ctx context.Context, cid string, opts ...discovery.Option) (time.Duration, error) {
+	ld.logger.Debug("advertise record", logutil.PrivateString("ns", cid))
+
 	// Get options
 	var options discovery.Options
 	err := options.Apply(opts...)
@@ -138,7 +140,7 @@ func (ld *LocalDiscovery) Advertise(ctx context.Context, cid string, opts ...dis
 }
 
 func (ld *LocalDiscovery) FindPeers(ctx context.Context, cid string, opts ...discovery.Option) (<-chan peer.AddrInfo, error) {
-	ld.logger.Debug("starting find peers")
+	ld.logger.Debug("starting find peers", logutil.PrivateString("ns", cid))
 	cpeer := make(chan peer.AddrInfo)
 
 	// Get options
@@ -162,7 +164,7 @@ func (ld *LocalDiscovery) FindPeers(ctx context.Context, cid string, opts ...dis
 	}
 	ld.muCaches.Unlock()
 
-	ctx, cancel := context.WithTimeout(ctx, time.Second*10)
+	ctx, cancel := context.WithCancel(ctx)
 	go func() {
 		<-ctx.Done()
 		cancel()
@@ -184,10 +186,17 @@ func (ld *LocalDiscovery) FindPeers(ctx context.Context, cid string, opts ...dis
 
 			next := current.Next()
 			rec := current.Value.(*recCache)
+
 			if time.Now().After(rec.expire) {
+				ld.logger.Debug("receiving expired record",
+					logutil.PrivateString("ns", cid),
+					zap.Duration("since", time.Since(rec.expire)))
+
 				delete(cache.recs, rec.peer.ID)
 				cache.queue.Remove(current)
 			} else {
+				ld.logger.Debug("receiving record", logutil.PrivateString("ns", cid))
+
 				select {
 				case cpeer <- *rec.peer:
 					counter++
@@ -200,6 +209,8 @@ func (ld *LocalDiscovery) FindPeers(ctx context.Context, cid string, opts ...dis
 		}
 		close(cpeer)
 		cache.Unlock()
+
+		ld.logger.Debug("find peers ended", logutil.PrivateString("ns", cid), zap.Error(ctx.Err()))
 	}()
 
 	return cpeer, nil
@@ -239,19 +250,19 @@ func (ld *LocalDiscovery) sendRecordsToProximityPeers(ctx context.Context, recor
 	wg := sync.WaitGroup{}
 
 	for _, c := range conns {
-		if !manet.IsPrivateAddr(c.RemoteMultiaddr()) && !isProximityProtocol(c.RemoteMultiaddr()) {
-			continue
+		if manet.IsPrivateAddr(c.RemoteMultiaddr()) || isProximityProtocol(c.RemoteMultiaddr()) {
+			wg.Add(1)
+			go func(c network.Conn) {
+				ld.logger.Debug("sending records to peer", zap.Stringer("peer", c.RemotePeer()))
+
+				if err := ld.sendRecordsTo(ctx, c.RemotePeer(), records); err != nil {
+					ld.logger.Error("unable to send records to newly connected peer",
+						zap.Error(err), zap.Stringer("peer", c.RemotePeer()))
+				}
+
+				wg.Done()
+			}(c)
 		}
-
-		wg.Add(1)
-		go func(c network.Conn) {
-			if err := ld.sendRecordsTo(ctx, c.RemotePeer(), records); err != nil {
-				ld.logger.Error("unable to send records to newly connected peer",
-					zap.Error(err), zap.Stringer("peer", c.RemotePeer()))
-			}
-
-			wg.Done()
-		}(c)
 	}
 
 	wg.Wait()
@@ -274,6 +285,7 @@ func (ld *LocalDiscovery) handleStream(s network.Stream) {
 	// fill the remote cache
 	for _, record := range records.Records {
 		expire := time.Unix(record.Expire, 0)
+
 		ld.logger.Debug("saving remote record in cache",
 			logutil.PrivateString("remoteID", s.Conn().RemotePeer().String()),
 			logutil.PrivateString("CID", record.Cid),
@@ -323,19 +335,6 @@ func (ld *LocalDiscovery) sendRecordsTo(ctx context.Context, p peer.ID, records 
 	return nil
 }
 
-func (ld *LocalDiscovery) Connected(net network.Network, c network.Conn) {
-	// addrfactory in tinder
-	if manet.IsPrivateAddr(c.RemoteMultiaddr()) || isProximityProtocol(c.RemoteMultiaddr()) {
-		go func() {
-			ctx := context.Background()
-			records := ld.getLocalReccord()
-			if err := ld.sendRecordsTo(ctx, c.RemotePeer(), records); err != nil {
-				ld.logger.Error("unable to send records to newly connected peer", zap.Error(err), zap.Stringer("peer", c.RemotePeer()))
-			}
-		}()
-	}
-}
-
 func isProximityProtocol(addr ma.Multiaddr) bool {
 	for _, p := range addr.Protocols() {
 		switch p.Code {
@@ -347,10 +346,42 @@ func isProximityProtocol(addr ma.Multiaddr) bool {
 	return false
 }
 
+func (ld *LocalDiscovery) handleConnection(ctx context.Context, p peer.ID) {
+	if p == ld.h.ID() {
+		return
+	}
+
+	// check if we use a proximity addrs with this peer
+	conns := ld.h.Network().ConnsToPeer(p)
+	for _, conn := range conns {
+		if manet.IsPrivateAddr(conn.RemoteMultiaddr()) || isProximityProtocol(conn.RemoteMultiaddr()) {
+			ld.logger.Info("found local peer", logutil.PrivateString("peer", conn.RemotePeer().String()))
+			go func() {
+				records := ld.getLocalReccord()
+				if err := ld.sendRecordsTo(ctx, p, records); err != nil {
+					ld.logger.Error("unable to send local record",
+						logutil.PrivateString("peer", p.String()),
+						zap.Int("records", len(records.Records)),
+						zap.Error(err))
+				}
+			}()
+
+			return
+		}
+	}
+}
+
 func (ld *LocalDiscovery) monitorConnection(ctx context.Context) error {
 	sub, err := ld.h.EventBus().Subscribe(new(event.EvtPeerConnectednessChanged))
 	if err != nil {
 		return fmt.Errorf("unable to subscribe to `EvtPeerConnectednessChanged`: %w", err)
+	}
+
+	// check already connected peers
+	for _, p := range ld.h.Peerstore().Peers() {
+		if ld.h.Network().Connectedness(p) == network.Connected {
+			ld.handleConnection(ctx, p)
+		}
 	}
 
 	go func() {
@@ -370,27 +401,7 @@ func (ld *LocalDiscovery) monitorConnection(ctx context.Context) error {
 				continue
 			}
 
-			// check if we use a proximity addrs with this peer
-			conns := ld.h.Network().ConnsToPeer(evt.Peer)
-			isProximity := false
-			for _, conn := range conns {
-				if manet.IsPrivateAddr(conn.RemoteMultiaddr()) || isProximityProtocol(conn.RemoteMultiaddr()) {
-					isProximity = true
-					break
-				}
-			}
-
-			if isProximity {
-				go func() {
-					records := ld.getLocalReccord()
-					if err := ld.sendRecordsTo(ctx, evt.Peer, records); err != nil {
-						ld.logger.Error("unable to send local record",
-							logutil.PrivateString("peer", evt.Peer.String()),
-							zap.Int("records", len(records.Records)),
-							zap.Error(err))
-					}
-				}()
-			}
+			ld.handleConnection(ctx, evt.Peer)
 		}
 	}()
 

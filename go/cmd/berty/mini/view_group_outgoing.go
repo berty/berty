@@ -148,6 +148,11 @@ func commandList() []*command {
 			cmd:   debugIPFSCommand,
 		},
 		{
+			title: "contact refresh",
+			help:  "refresh contact request",
+			cmd:   refreshCommand,
+		},
+		{
 			title: "debug system",
 			help:  "Shows system debug information",
 			cmd:   debugSystemCommand,
@@ -784,6 +789,61 @@ func groupInviteCommand(renderFunc func(*groupView, string)) func(ctx context.Co
 
 		return nil
 	}
+}
+
+func refreshCommand(ctx context.Context, v *groupView, cmd string) error {
+	contactspk := [][]byte{}
+	v.v.lock.Lock()
+	for k, state := range v.v.contactStates {
+		switch state {
+		case protocoltypes.ContactStateToRequest, protocoltypes.ContactStateAdded:
+			contactspk = append(contactspk, []byte(k))
+		default:
+		}
+	}
+	v.v.lock.Unlock()
+
+	for _, pk := range contactspk {
+		go func(pk []byte) {
+			ctx, cancel := context.WithTimeout(ctx, time.Second*20)
+			defer cancel()
+
+			v.syncMessages <- &historyMessage{
+				messageType: messageTypeMeta,
+				payload:     []byte("refreshing..."),
+			}
+
+			res, err := v.v.protocol.RefreshContactRequest(ctx, &protocoltypes.RefreshContactRequest_Request{
+				ContactPK: pk,
+			})
+
+			switch {
+			case err != nil:
+				emsg := fmt.Sprintf("refresh: unable to connect to peer: %s", err.Error())
+				v.syncMessages <- &historyMessage{
+					messageType: messageTypeError,
+					payload:     []byte(emsg),
+				}
+
+			case len(res.PeersFound) == 0:
+				v.syncMessages <- &historyMessage{
+					messageType: messageTypeError,
+					payload:     []byte("refresh: no peers found"),
+				}
+
+			default:
+				for _, p := range res.PeersFound {
+					msg := fmt.Sprintf("refresh: succefully connected to peer: %s", p.ID)
+					v.syncMessages <- &historyMessage{
+						messageType: messageTypeMeta,
+						payload:     []byte(msg),
+					}
+				}
+			}
+		}(pk)
+	}
+
+	return nil
 }
 
 func cmdHelp(ctx context.Context, v *groupView, cmd string) error {
