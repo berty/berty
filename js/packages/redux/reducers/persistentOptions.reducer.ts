@@ -9,6 +9,7 @@ export enum PersistentOptionsKeys {
 	Log = 'log',
 	Configurations = 'configurations',
 	ProfileNotification = 'profileNotification',
+	DevMode = 'devmode',
 }
 
 type PersistentOptionsNotifications = {
@@ -34,6 +35,10 @@ type PersistentOptionsDebug = {
 
 type PersistentOptionsLog = {
 	format: string
+}
+
+type PersistentOptionsDevMode = {
+	enable: boolean
 }
 
 export type Configuration = {
@@ -77,6 +82,10 @@ type PersistentOptionsUpdate =
 			type: typeof PersistentOptionsKeys.ProfileNotification
 			payload: PersistentOptionsProfileNotification
 	  }
+	| {
+			type: typeof PersistentOptionsKeys.DevMode
+			payload: Partial<PersistentOptionsDevMode>
+	  }
 
 type PersistentOptions = {
 	[PersistentOptionsKeys.Notifications]: PersistentOptionsNotifications
@@ -85,6 +94,7 @@ type PersistentOptions = {
 	[PersistentOptionsKeys.Log]: PersistentOptionsLog
 	[PersistentOptionsKeys.Configurations]: PersistentOptionsConfigurations
 	[PersistentOptionsKeys.ProfileNotification]: PersistentOptionsProfileNotification
+	[PersistentOptionsKeys.DevMode]: PersistentOptionsDevMode
 }
 
 const defaultPersistentOptions = (): PersistentOptions => {
@@ -118,6 +128,9 @@ const defaultPersistentOptions = (): PersistentOptions => {
 		[PersistentOptionsKeys.Configurations]: {},
 		[PersistentOptionsKeys.ProfileNotification]: {
 			[UpdatesProfileNotification]: 0,
+		},
+		[PersistentOptionsKeys.DevMode]: {
+			enable: false,
 		},
 	}
 }

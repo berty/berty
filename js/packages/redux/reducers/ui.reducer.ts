@@ -25,8 +25,6 @@ type UiState = {
 	notificationsInhibitors: NotificationsInhibitor[]
 	// variable for AppInspector
 	debugMode: boolean
-	// show the dev mode button in settings
-	devMode: boolean
 	// TODO: fix the way to handle deeplink, this variable is needed to know the handle status of the link
 	handledLink: boolean
 }
@@ -53,7 +51,6 @@ const initialState: UiState = {
 	streamProgress: null,
 	notificationsInhibitors: [],
 	debugMode: false,
-	devMode: false,
 	handledLink: false,
 }
 
@@ -135,9 +132,6 @@ const slice = createSlice({
 		setDebugMode(state: UiState, { payload }: PayloadAction<boolean>) {
 			state.debugMode = payload
 		},
-		setDevMode(state: UiState, { payload }: PayloadAction<boolean>) {
-			state.devMode = payload
-		},
 		setHandledLink(state: UiState, { payload }: PayloadAction<boolean>) {
 			state.handledLink = payload
 		},
@@ -160,8 +154,6 @@ export const selectProtocolClient = (state: LocalRootState) => selectSlice(state
 
 export const selectDebugMode = (state: LocalRootState) => selectSlice(state).debugMode
 
-export const selectDevMode = (state: LocalRootState) => selectSlice(state).devMode
-
 export const selectStreamProgress = (state: LocalRootState) => selectSlice(state).streamProgress
 
 export const selectStreamError = (state: LocalRootState) => selectSlice(state).streamError
@@ -180,7 +172,6 @@ export const {
 	setStreamProgress,
 	setStreamDone,
 	setDebugMode,
-	setDevMode,
 	setStreamError,
 	setAccounts,
 	setHandledLink,
