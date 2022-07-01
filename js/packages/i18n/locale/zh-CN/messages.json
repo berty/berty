@@ -448,7 +448,8 @@
 				"connection-confirmed": "👋 Berty 连接已确认! 🎉",
 				"request-sent": "请求已发送: airplan:",
 				"incoming": "接受此请求以回复 ！",
-				"outgoing": "正在等待您的联系人回复连接！"
+				"outgoing": "正在等待您的联系人回复连接！",
+				"refresh-button": ""
 			},
 			"incoming-input-placeholder": "接受此请求以在这里写入...",
 			"input-placeholder": "在此输入..."
