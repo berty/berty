@@ -67,7 +67,7 @@
     "react-native-reanimated": "https://github.com/aeddi/react-native-reanimated/releases/download/2.4.1/react-native-reanimated-2.4.1.tgz",
     "react-native-restart": "^0.0.22",
     "react-native-safe-area-context": "^3.3.2",
-    "react-native-screens": "^3.9.0",
+    "react-native-screens": "^3.14.0",
     "react-native-share": "^7.2.1",
     "react-native-svg": "^12.1.0",
     "react-native-tab-view": "^3.1.1",
