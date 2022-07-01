@@ -238,7 +238,7 @@ const accountAction = async (
 }
 
 // const ExportAllAppData = () => {
-// 	const { t }: { t: any } = useTranslation()
+// 	const { t } = useTranslation()
 
 // 	return (
 // 		<TouchableOpacity style={{ flex: 1 }}>
@@ -257,7 +257,7 @@ const AccountsInspector: React.FC<{
 	const [accountProtoEntries, updateAccountProtoEntries] = useState<{
 		[key: string]: beapi.account.IAccountMetadata
 	}>({})
-	const { t }: { t: any } = useTranslation()
+	const { t } = useTranslation()
 	const { text } = useStyles()
 
 	useEffect(
@@ -399,7 +399,7 @@ const AccountsInspector: React.FC<{
 
 const AppInspector: React.FC<{ error: Error | null }> = ({ error }) => {
 	const [lastUpdate, setLastUpdate] = useState(Date.now())
-	const { t }: { t: any } = useTranslation()
+	const { t } = useTranslation()
 	const { text } = useStyles()
 	const dispatch = useAppDispatch()
 

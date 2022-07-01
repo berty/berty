@@ -1,4 +1,5 @@
 import React from 'react'
+import { StyleProp, ViewStyle } from 'react-native'
 import { SvgProps } from 'react-native-svg'
 
 import Berty from '@berty/assets/custom-icons/berty_picto.svg'
@@ -58,7 +59,7 @@ const CustomIcon: React.FC<{
 	width: number
 	height: number
 	fill: string
-	style: any
+	style: StyleProp<ViewStyle>
 }> = ({ name, width, height, fill, style = [] }) => {
 	const Icon = iconsMap[name]
 	if (!Icon) {

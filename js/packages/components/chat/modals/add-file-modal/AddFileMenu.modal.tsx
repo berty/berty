@@ -25,7 +25,7 @@ export const AddFileMenu: React.FC<{
 	sending?: boolean
 	setSending: (val: boolean) => void
 }> = ({ onClose, sending, setSending }) => {
-	const { t }: { t: any } = useTranslation()
+	const { t } = useTranslation()
 	const [activeTab, setActiveTab] = useState(TabItems.Default)
 	const [isSecurityAccessVisible, setSecurityAccessVisibility] = useState(false)
 	const client = useMessengerClient()
@@ -195,7 +195,7 @@ export const AddFileMenu: React.FC<{
 							mimeType: res.type,
 						},
 					])
-				} catch (err: any) {
+				} catch (err) {
 					if (DocumentPicker.isCancel(err)) {
 						// ignore
 					} else {

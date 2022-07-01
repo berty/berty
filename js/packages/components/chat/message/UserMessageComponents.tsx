@@ -57,10 +57,12 @@ export async function isBertyDeepLink(
 
 export const HyperlinkUserMessage: React.FC<{
 	inte: InteractionUserMessage
-	msgBorderColor: any
+	msgBorderColor?: {
+		borderColor: string
+	}
 	isFollowedMessage: boolean | undefined
-	msgBackgroundColor: any
-	msgTextColor: any
+	msgBackgroundColor: string
+	msgTextColor: string
 	isHighlight: boolean
 }> = ({
 	inte,

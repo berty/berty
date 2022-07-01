@@ -73,7 +73,7 @@ const GroupInfo: React.FC<GroupInfoProps> = ({ groupName, setGroupName }) => {
 	const { row, column, margin, flex, padding } = useStyles()
 	const { scaleSize } = useAppDimensions()
 	const colors = useThemeColor()
-	const { t }: { t: any } = useTranslation()
+	const { t } = useTranslation()
 	const _styles = useStylesCreateGroup()
 
 	return (
@@ -170,7 +170,7 @@ export const CreateGroupFinalize: ScreenFC<'Chat.CreateGroupFinalize'> = () => {
 	const { flex, padding } = useStyles()
 	const colors = useThemeColor()
 	const playSound = usePlaySound()
-	const { t }: { t: any } = useTranslation()
+	const { t } = useTranslation()
 
 	React.useEffect(() => {
 		if (!done) {

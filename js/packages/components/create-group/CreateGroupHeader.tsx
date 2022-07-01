@@ -1,6 +1,6 @@
 import { Icon } from '@ui-kitten/components'
 import React from 'react'
-import { TouchableWithoutFeedback, View } from 'react-native'
+import { StyleProp, TouchableWithoutFeedback, View, ViewStyle } from 'react-native'
 
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
@@ -15,7 +15,7 @@ export const CreateGroupHeader: React.FC<{
 	first?: boolean
 	disabled?: boolean
 	onPress?: () => void
-	style?: any
+	style?: StyleProp<ViewStyle>
 }> = ({
 	children,
 	title,

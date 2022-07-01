@@ -17,13 +17,13 @@ import { Modal } from './Modal'
 type Buttons = {
 	title: string
 	icon: string
-	action?: any
+	action?: () => void
 	disabled?: boolean
 	titleColor?: ColorsTypes
 	iconColor?: ColorsTypes
 	iconSize?: number
 	bgColor?: ColorsTypes
-	style?: StyleProp<any>[]
+	style?: StyleProp<ViewStyle>
 }
 
 type RequestButtonItemProps = Buttons
@@ -35,7 +35,7 @@ type RequestButtonsProps = {
 const RequestButtonItem: React.FC<RequestButtonItemProps> = ({
 	icon,
 	title,
-	action = null,
+	action = undefined,
 	iconSize = 25,
 	iconColor,
 	titleColor,
@@ -75,7 +75,7 @@ const RequestButtons: React.FC<RequestButtonsProps> = ({ buttons = null }) => {
 	const { row, padding, margin } = useStyles()
 	return (
 		<View style={[row.left, padding.medium, margin.top.medium]}>
-			{buttons && buttons.map((obj: any, i: number) => <RequestButtonItem key={i} {...obj} />)}
+			{buttons && buttons.map((obj, index) => <RequestButtonItem key={index} {...obj} />)}
 		</View>
 	)
 }

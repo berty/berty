@@ -28,9 +28,9 @@ const closeConvos = async (
 		return
 	}
 
-	for (const conv of Object.values(conversations).filter(conv => conv?.isOpen) as any) {
-		messengerClient.conversationClose({ groupPk: conv.publicKey }).catch((e: any) => {
-			console.warn(`failed to close conversation "${conv.displayName}",`, e)
+	for (const conv of Object.values(conversations).filter(conv => conv?.isOpen)) {
+		messengerClient.conversationClose({ groupPk: conv?.publicKey }).catch(e => {
+			console.warn(`failed to close conversation "${conv?.displayName}",`, e)
 		})
 	}
 }

@@ -15,7 +15,7 @@ export const Appearance: ScreenFC<'Settings.Appearance'> = () => {
 	// const isDark = useSelector(selectThemeIsDark)
 	// const dispatch = useDispatch()
 	const { navigate } = useNavigation()
-	const { t }: { t: any } = useTranslation()
+	const { t } = useTranslation()
 
 	return (
 		<View style={{ backgroundColor: colors['secondary-background'], flex: 1 }}>

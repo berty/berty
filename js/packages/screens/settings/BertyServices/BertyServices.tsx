@@ -24,7 +24,7 @@ const ServicesAuthBody: React.FC<{ next: () => void }> = ({ next }) => {
 	const persistentOptions = useSelector(selectPersistentOptions)
 	const dispatch = useAppDispatch()
 	const accountServices = useAccountServices() || []
-	const { t }: any = useTranslation()
+	const { t } = useTranslation()
 	const { goBack } = useNavigation()
 	const protocolClient = useSelector(selectProtocolClient)
 

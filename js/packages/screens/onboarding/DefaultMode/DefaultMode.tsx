@@ -18,7 +18,7 @@ const DefaultModeBody: React.FC = () => {
 	const { padding, border, margin, text } = useStyles()
 	const { scaleSize } = useAppDimensions()
 	const [isPressed, setIsPressed] = React.useState<boolean>(false)
-	const { t }: { t: any } = useTranslation()
+	const { t } = useTranslation()
 
 	return (
 		<View style={[{ flex: 1 }]}>

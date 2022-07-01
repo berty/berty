@@ -36,7 +36,7 @@ export const NotificationAndProximityPermissions: ScreenFC<'Chat.NotificationAnd
 		const { accept, deny, permissionType } = params
 		const { text, border } = useStyles()
 		const colors = useThemeColor()
-		const { t }: { t: any } = useTranslation()
+		const { t } = useTranslation()
 		const { goBack, navigate, setOptions } = useNavigation()
 		const dispatch = useAppDispatch()
 		const networkConfig = useAppSelector(selectEditedNetworkConfig)

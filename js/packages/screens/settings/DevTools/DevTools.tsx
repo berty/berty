@@ -256,7 +256,7 @@ const DumpInteractions: React.FC = () => {
 const SendToAllContacts: React.FC = () => {
 	const [disabled, setDisabled] = useState(false)
 	const { t } = useTranslation()
-	const [name, setName] = useState<any>(t('settings.devtools.send-to-all-button.title'))
+	const [name, setName] = useState(t('settings.devtools.send-to-all-button.title'))
 	const client = useMessengerClient()
 	const colors = useThemeColor()
 	const conversations = useAllConversations()

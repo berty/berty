@@ -18,7 +18,7 @@ const CustomModeBody: React.FC = () => {
 	const { padding, border, margin, text } = useStyles()
 	const { scaleSize } = useAppDimensions()
 	const { navigate } = useNavigation()
-	const { t }: { t: any } = useTranslation()
+	const { t } = useTranslation()
 
 	return (
 		<View style={[{ flex: 1 }]}>

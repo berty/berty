@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { View, TouchableOpacity, Image, ActivityIndicator } from 'react-native'
 import { useSelector } from 'react-redux'
 
+import beapi from '@berty/api'
 import { useStyles } from '@berty/contexts/styles'
 import { useThemeColor } from '@berty/hooks'
 import { useNavigation } from '@berty/navigation'
@@ -11,7 +12,7 @@ import { getSource } from '@berty/utils/protocol/attachments'
 import { ImageCounter } from '../ImageCounter'
 
 export const PictureMessage: React.FC<{
-	medias: any
+	medias: beapi.messenger.IMedia[]
 	onLongPress: () => void
 	isHighlight: boolean
 }> = ({ medias, onLongPress, isHighlight }) => {
@@ -20,20 +21,25 @@ export const PictureMessage: React.FC<{
 	const protocolClient = useSelector(selectProtocolClient)
 	const [images, setImages] = useState<any[]>([])
 	const navigation = useNavigation()
+
 	useEffect(() => {
 		if (!protocolClient) {
 			return
 		}
 
 		Promise.all(
-			medias.map((media: any) => {
-				return getSource(protocolClient, media.cid)
-					.then(src => {
+			medias.map(async media => {
+				if (media.cid) {
+					try {
+						const src = await getSource(protocolClient, media.cid)
+
 						return { ...media, uri: `data:${media.mimeType};base64,${src}` }
-					})
-					.catch(e => console.error('failed to get picture message image:', e))
+					} catch (e) {
+						return console.error('failed to get picture message image:', e)
+					}
+				}
 			}),
-		).then((images: any) => setImages(images.filter(Boolean)))
+		).then(images => setImages(images.filter(Boolean)))
 	}, [protocolClient, medias])
 
 	return (
@@ -54,7 +60,7 @@ export const PictureMessage: React.FC<{
 					marginRight: medias.length > 4 ? 60 : 0,
 				}}
 			>
-				{medias.slice(0, medias.length > 4 ? 4 : medias.length).map((media: any, index: number) => (
+				{medias.slice(0, medias.length > 4 ? 4 : medias.length).map((media, index) => (
 					<TouchableOpacity
 						onPress={() => {
 							navigation.navigate('Modals.ImageView', { images })

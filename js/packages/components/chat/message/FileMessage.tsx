@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { TouchableOpacity } from 'react-native'
 import { useSelector } from 'react-redux'
 
+import beapi from '@berty/api'
 import { useStyles } from '@berty/contexts/styles'
 import { useThemeColor } from '@berty/hooks'
 import { selectProtocolClient } from '@berty/redux/reducers/ui.reducer'
@@ -11,7 +12,7 @@ import { getSource } from '@berty/utils/protocol/attachments'
 import { UnifiedText } from '../../shared-components/UnifiedText'
 
 export const FileMessage: React.FC<{
-	medias: any
+	medias: beapi.messenger.IMedia[]
 	onLongPress: () => void
 	isHighlight: boolean
 }> = ({ medias, onLongPress, isHighlight }) => {
@@ -24,7 +25,7 @@ export const FileMessage: React.FC<{
 	const { margin } = useStyles()
 
 	useEffect(() => {
-		if (!protocolClient) {
+		if (!protocolClient || !medias[0].cid) {
 			return
 		}
 		getSource(protocolClient, medias[0].cid)

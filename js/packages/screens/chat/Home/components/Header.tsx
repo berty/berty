@@ -18,9 +18,9 @@ export const HomeHeader: React.FC<
 		scrollRef: React.RefObject<ScrollView>
 		isOnTop: boolean
 		value: string
-		onChange: any
+		onChange: (value: string) => void
 		refresh: boolean
-		setRefresh: any
+		setRefresh: (value: boolean) => void
 		onLongPress: React.Dispatch<React.SetStateAction<boolean>>
 		isMultiAccount: boolean
 	}
@@ -40,7 +40,7 @@ export const HomeHeader: React.FC<
 	const colors = useThemeColor()
 	const { navigate } = useNavigation()
 	const notifs = useProfileNotification()
-	const { t }: any = useTranslation()
+	const { t } = useTranslation()
 	const animate = useRef<any>(null)
 
 	useEffect(() => {

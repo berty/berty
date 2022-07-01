@@ -92,7 +92,7 @@ const ContactRequest: React.FC<beapi.messenger.IContact> = ({
 	const { navigate } = useNavigation()
 	const { contactReqContainer, declineButton, acceptButton, buttonsWrapper } =
 		useStylesContactRequest()
-	const { t }: any = useTranslation()
+	const { t } = useTranslation()
 
 	const id = publicKey
 	const { border, padding, row, absolute, text } = useStyles()
@@ -186,7 +186,7 @@ const ContactRequest: React.FC<beapi.messenger.IContact> = ({
 							.then(() => {
 								playSound('contactRequestAccepted')
 							})
-							.catch((err: any) => console.warn('Failed to accept contact request:', err))
+							.catch(err => console.warn('Failed to accept contact request:', err))
 					}
 				>
 					<Icon
@@ -214,7 +214,7 @@ export const IncomingRequests: React.FC<any> = ({ items, onLayout }) => {
 	const { padding, text, row } = useStyles()
 	const { scaleSize } = useAppDimensions()
 	const colors = useThemeColor()
-	const { t }: any = useTranslation()
+	const { t } = useTranslation()
 
 	return items?.length ? (
 		<View
