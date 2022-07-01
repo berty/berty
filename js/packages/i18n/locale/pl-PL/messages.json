@@ -448,7 +448,8 @@
 				"connection-confirmed": "👋 Połączenie Berty potwierdzone! 🎉",
 				"request-sent": "Prośba wysłana ✈",
 				"incoming": "Zaakceptuj tę prośbę aby odpowiedzieć!",
-				"outgoing": "Oczekiwanie na odpowiedź na Twojego kontaktu aby się połączyć!"
+				"outgoing": "Oczekiwanie na odpowiedź na Twojego kontaktu aby się połączyć!",
+				"refresh-button": ""
 			},
 			"incoming-input-placeholder": "Zaakceptuj prośbę aby pisać tutaj...",
 			"input-placeholder": "Wpisz tutaj..."
