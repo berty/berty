@@ -448,7 +448,8 @@
 				"connection-confirmed": "👋 Berty bağlantısı onaylandı! 🎉",
 				"request-sent": "İstek Gönderildi ✈",
 				"incoming": "Cevap vermek için bu isteği kabul edin!",
-				"outgoing": "Bağlanmak için kişinizin yanıtı bekleniyor!"
+				"outgoing": "Bağlanmak için kişinizin yanıtı bekleniyor!",
+				"refresh-button": ""
 			},
 			"incoming-input-placeholder": "Buraya yazmak için isteği kabul et...",
 			"input-placeholder": "Buraya yaz..."
