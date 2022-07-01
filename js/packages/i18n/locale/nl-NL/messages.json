@@ -448,7 +448,8 @@
 				"connection-confirmed": "👋 Berty verbinding bevestigd! 🎉",
 				"request-sent": "Verzoek verzonden ✈",
 				"incoming": "Accepteer dit verzoek om te reageren!",
-				"outgoing": "Wachten op antwoord van je contact om te verbinden!"
+				"outgoing": "Wachten op antwoord van je contact om te verbinden!",
+				"refresh-button": ""
 			},
 			"incoming-input-placeholder": "Accepteer het verzoek om hier te schrijven...",
 			"input-placeholder": "Voer hier in..."
