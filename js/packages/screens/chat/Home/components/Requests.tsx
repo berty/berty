@@ -15,7 +15,7 @@ import { pbDateToNum } from '@berty/utils/convert/time'
 import FromNow from './FromNow'
 import { UnreadCount } from './UnreadCount'
 
-const useStylesContactRequest: any = () => {
+const useStylesContactRequest = () => {
 	const { border, padding, margin, width, height, row, flex } = useStyles()
 	const colors = useThemeColor()
 
@@ -239,9 +239,9 @@ export const IncomingRequests: React.FC<any> = ({ items, onLayout }) => {
 					</View>
 				</View>
 				<ScrollView horizontal showsHorizontalScrollIndicator={false}>
-					{items.map((c: any) => {
-						return <ContactRequest key={c.publicKey} {...c} />
-					})}
+					{items.map((c: any) => (
+						<ContactRequest key={c.publicKey} {...c} />
+					))}
 				</ScrollView>
 			</View>
 		</View>

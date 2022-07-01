@@ -30,7 +30,6 @@ export type ScreensParams = {
 	'Chat.Permissions': {
 		permissionType: PermissionType
 		permissionStatus: PermissionStatus
-		navigateNext: keyof ScreensParams
 		onComplete?: (() => Promise<void>) | (() => void)
 	}
 
@@ -54,14 +53,11 @@ export type ScreensParams = {
 
 	// Settings
 
-	'Settings.ServicesAuth': undefined
 	'Settings.AboutBerty': undefined
 	'Settings.TermsOfUse': undefined
-	'Settings.NetworkMap': undefined
 	'Settings.Roadmap': undefined
 	'Settings.Faq': undefined
 	'Settings.PrivacyPolicy': undefined
-	'Settings.BertyServices': undefined
 
 	'Settings.Home': undefined
 	'Settings.MyBertyId': undefined

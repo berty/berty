@@ -98,7 +98,7 @@ const getReplicationStatusColor = (status: replicationServerStatus): string => {
 const ReplicateGroupContent: React.FC<{
 	conversationPublicKey?: Maybe<string>
 	navigation: ComponentProps<typeof ReplicateGroupSettings>['navigation']
-}> = ({ conversationPublicKey, navigation }) => {
+}> = ({ conversationPublicKey }) => {
 	const client = useMessengerClient()
 	const conversation = useConversation(conversationPublicKey)
 	const services = useAccountServices()
@@ -154,7 +154,7 @@ const ReplicateGroupContent: React.FC<{
 				iconSize={30}
 				iconColor={colors['background-header']}
 				alone={true}
-				onPress={() => navigation.navigate('Settings.BertyServices')}
+				// onPress={() => navigation.navigate('Settings.BertyServices')}
 			/>
 		</View>
 	)

@@ -236,14 +236,10 @@ export const ContactAvatar: React.FC<{
 	const contact = useContact(publicKey)
 	const persistentOptions = useSelector(selectPersistentOptions)
 	const suggestion = Object.values(persistentOptions?.suggestions).find(v => v.pk === publicKey)
+
 	if (suggestion) {
 		return (
-			<HardcodedAvatar
-				size={size}
-				style={style}
-				name={suggestion.icon as any}
-				pressable={pressable}
-			/>
+			<HardcodedAvatar size={size} style={style} name={suggestion.icon} pressable={pressable} />
 		)
 	}
 	return (
@@ -292,12 +288,7 @@ export const MultiMemberAvatar: React.FC<{
 		let content: React.ReactElement
 		if (suggestion) {
 			content = (
-				<HardcodedAvatar
-					size={size}
-					style={style}
-					name={suggestion.icon as any}
-					pressable={pressable}
-				/>
+				<HardcodedAvatar size={size} style={style} name={suggestion.icon} pressable={pressable} />
 			)
 		} else {
 			content = (
@@ -345,7 +336,7 @@ export const ConversationAvatar: React.FC<{
 
 	const suggestion = Object.values(persistentOptions?.suggestions).find(v => v.pk === publicKey)
 	if (suggestion) {
-		return <HardcodedAvatar size={size} style={style} name={suggestion.icon as any} />
+		return <HardcodedAvatar size={size} style={style} name={suggestion.icon} />
 	}
 
 	return <GenericAvatar size={size} style={style} cid='' colorSeed={publicKey} nameSeed={'C'} />

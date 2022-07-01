@@ -1,6 +1,6 @@
 import { multiaddr } from 'multiaddr'
 import React, { FC, useCallback, useState } from 'react'
-import { useTranslation } from 'react-i18next'
+import { TFunction, useTranslation } from 'react-i18next'
 import { View } from 'react-native'
 
 import Button from '@berty/components/shared-components/Button'
@@ -59,7 +59,7 @@ export const AccordionEdit: FC<{
 		}
 	}, [url])
 
-	const getUrlError = (t: any) => {
+	const getUrlError = (t: TFunction<'translation', undefined>) => {
 		if (urlAlreadyExists()) {
 			return t('onboarding.custom-mode.settings.modals.errors.multiaddr-alread-exists')
 		}

@@ -514,7 +514,7 @@ export const UserMessage: React.FC<{
 											{!!(!inte.medias?.length || inte.payload?.body) && (
 												<HyperlinkUserMessage
 													inte={inte}
-													msgBorderColor={msgBorderColor ? msgBorderColor : undefined}
+													msgBorderColor={msgBorderColor || undefined}
 													isFollowedMessage={isFollowedMessage}
 													msgBackgroundColor={msgBackgroundColor}
 													msgTextColor={msgTextColor}

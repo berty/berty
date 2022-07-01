@@ -182,7 +182,7 @@ export const EditMyProfile: React.FC<EditProfileProps> = ({ hide }) => {
 					<UnifiedText
 						style={[margin.left.medium, text.size.scale(11), { color: colors['secondary-text'] }]}
 					>
-						{t('settings.edit-profile.qr-will-update') as any}
+						{t('settings.edit-profile.qr-will-update')}
 					</UnifiedText>
 				</View>
 				<View style={[padding.top.small, row.left]}>
@@ -190,7 +190,7 @@ export const EditMyProfile: React.FC<EditProfileProps> = ({ hide }) => {
 					<UnifiedText
 						style={[margin.left.medium, text.size.scale(11), { color: colors['secondary-text'] }]}
 					>
-						{t('settings.edit-profile.ocr-wont-update') as any}
+						{t('settings.edit-profile.ocr-wont-update')}
 					</UnifiedText>
 				</View>
 			</View>
@@ -211,7 +211,7 @@ export const EditMyProfile: React.FC<EditProfileProps> = ({ hide }) => {
 			<SecondaryButton loading={state.saving} onPress={handleSave}>
 				{(state.name && state.name !== account.displayName) || state.pic
 					? t('settings.edit-profile.save')
-					: (t('settings.edit-profile.cancel') as any)}
+					: t('settings.edit-profile.cancel')}
 			</SecondaryButton>
 		</View>
 	)

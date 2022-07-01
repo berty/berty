@@ -371,7 +371,7 @@ export const SearchComponent: React.FC<{
 			}}
 			stickySectionHeadersEnabled={false}
 			bounces={false}
-			keyExtractor={(item: any) => item.cid || item.publicKey}
+			keyExtractor={item => item.cid || item.publicKey}
 			sections={sections}
 			renderSectionHeader={({ section }) => {
 				const { title } = section

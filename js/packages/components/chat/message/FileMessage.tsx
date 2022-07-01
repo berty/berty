@@ -29,33 +29,24 @@ export const FileMessage: React.FC<{
 			return
 		}
 		getSource(protocolClient, medias[0].cid)
-			.then(src => {
-				setSource(src)
-			})
+			.then(setSource)
 			.catch(e => console.error('failed to get picture message image:', e))
 	}, [protocolClient, medias])
 
 	return (
 		<TouchableOpacity
 			style={[
-				{
-					flexDirection: 'row',
-				},
+				{ flexDirection: 'row' },
 				isHighlight && {
 					shadowColor: colors.shadow,
-					shadowOffset: {
-						width: 0,
-						height: 8,
-					},
+					shadowOffset: { width: 0, height: 8 },
 					shadowOpacity: 0.44,
 					shadowRadius: 10.32,
 					elevation: 16,
 				},
 			]}
 			onLongPress={onLongPress}
-			onPress={async () => {
-				setLoading(true)
-			}}
+			onPress={() => setLoading(true)}
 		>
 			<Icon
 				name='file'

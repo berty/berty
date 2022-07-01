@@ -18,7 +18,7 @@ export const SecurityAccess: React.FC<{ close: () => void; activeTab: TabItems }
 }) => {
 	const { border, padding, margin } = useStyles()
 	const { scaleSize } = useAppDimensions()
-	const { t }: { t: any } = useTranslation()
+	const { t } = useTranslation()
 	const colors = useThemeColor()
 
 	const handleAppStateChange = useCallback(
@@ -62,7 +62,12 @@ export const SecurityAccess: React.FC<{ close: () => void; activeTab: TabItems }
 		}
 	}, [handleAppStateChange])
 
-	const CONFIG = [
+	const CONFIG: {
+		tab: TabItems
+		iconName: string
+		title: string
+		onPress: () => Promise<void>
+	}[] = [
 		{
 			tab: TabItems.Gallery,
 			iconName: 'gallery',
@@ -156,7 +161,7 @@ export const SecurityAccess: React.FC<{ close: () => void; activeTab: TabItems }
 						{ textAlign: 'center' },
 					]}
 				>
-					{t('chat.files.security-access-desc')} {t(activeTabConfig.title)}
+					{t('chat.files.security-access-desc')} {activeTabConfig.title}
 				</UnifiedText>
 			</TouchableOpacity>
 		</View>

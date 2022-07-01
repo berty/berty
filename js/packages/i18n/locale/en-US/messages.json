@@ -218,12 +218,6 @@
 			"cancel": "Cancel",
 			"name-input-placeholder": "Name..."
 		},
-		"berty-services": {
-			"title": "Berty Services",
-			"desc": " Activating Berty Services will allow you to receive push notifications via Berty Technologies' servers and grant you access to its nodes for conversation replication.",
-			"button": "Use Berty Services",
-			"skip": "Skip and do this later"
-		},
 		"delete-account": {
 			"title": "Delete account!",
 			"first-desc": "Are you sure you want to delete your account?",

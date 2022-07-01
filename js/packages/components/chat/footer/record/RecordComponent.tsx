@@ -195,7 +195,7 @@ export const RecordComponent: React.FC<{
 		recordingState === RecordingState.RECORDING_LOCKED
 
 	const addMeteredValue = useCallback(
-		(metered: any) => {
+		metered => {
 			meteredValuesRef.current.push(metered.value)
 		},
 		[meteredValuesRef],

@@ -1,4 +1,4 @@
-import { berty } from '@berty/api/root.pb'
+import beapi from '@berty/api'
 import { GoBridge } from '@berty/native-modules/GoBridge'
 import { ScreensParams } from '@berty/navigation/types'
 import { refreshAccountList } from '@berty/utils/accounts/accountUtils'
@@ -23,7 +23,7 @@ export const initialLaunch = async (): Promise<{ name: keyof ScreensParams; para
 
 	const lengthAccounts = Object.keys(accounts).length
 	if (lengthAccounts > 0) {
-		let selectedAccount: berty.account.v1.IAccountMetadata = {}
+		let selectedAccount: beapi.account.IAccountMetadata = {}
 		Object.values(accounts).forEach(account => {
 			if (!selectedAccount.accountId) {
 				selectedAccount = account

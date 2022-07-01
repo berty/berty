@@ -78,7 +78,7 @@ const GatedNotificationBody: React.FC<any> = props => {
 	const inhibit = isValid
 		? notificationsInhibitors.reduce<ReturnType<NotificationsInhibitor>>((r, inh) => {
 				if (r === false) {
-					return inh(notif as any)
+					return inh(notif)
 				}
 				return r
 		  }, false)

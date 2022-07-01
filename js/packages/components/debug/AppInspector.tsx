@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { useTranslation } from 'react-i18next'
+import { TFunction, useTranslation } from 'react-i18next'
 import {
 	View,
 	Platform,
@@ -77,20 +77,21 @@ const getRootDir = async () => {
 	}
 }
 
-const confirmActionWrapper = (title: string, action: () => void, t: any) => () => {
-	Alert.alert(title, '', [
-		{
-			text: t('debug.inspector.confirm-alert.button-confirm'),
-			onPress: action,
-			style: 'destructive',
-		},
-		{
-			text: t('debug.inspector.confirm-alert.button-cancel'),
-			onPress: () => {},
-			style: 'cancel',
-		},
-	])
-}
+const confirmActionWrapper =
+	(title: string, action: () => void, t: TFunction<'translation', undefined>) => () => {
+		Alert.alert(title, '', [
+			{
+				text: t('debug.inspector.confirm-alert.button-confirm'),
+				onPress: action,
+				style: 'destructive',
+			},
+			{
+				text: t('debug.inspector.confirm-alert.button-cancel'),
+				onPress: () => {},
+				style: 'cancel',
+			},
+		])
+	}
 
 class FSItem {
 	fileName: string = ''
@@ -99,7 +100,10 @@ class FSItem {
 	ipfsRepoFound: boolean = false
 }
 
-const fetchFSAccountList = (updateAccountFSFiles: (arg: Array<FSItem>) => void, t: any) => {
+const fetchFSAccountList = (
+	updateAccountFSFiles: (arg: Array<FSItem>) => void,
+	t: TFunction<'translation', undefined>,
+) => {
 	const f = async () => {
 		const rootDir = (await getRootDir()) + '/accounts'
 		const files = await RNFS.readDir(rootDir)
@@ -139,7 +143,7 @@ const fetchFSAccountList = (updateAccountFSFiles: (arg: Array<FSItem>) => void, 
 
 const fetchProtoAccountList = (
 	updateAccountProtoEntries: (arg: { [key: string]: beapi.account.IAccountMetadata }) => void,
-	t: any,
+	t: TFunction<'translation', undefined>,
 ) => {
 	const f = async () => {
 		const resp = await accountClient.listAccounts({})
@@ -169,7 +173,7 @@ const fetchProtoAccountList = (
 const accountAction = async (
 	accountId: string,
 	setLastUpdate: React.Dispatch<React.SetStateAction<number>>,
-	t: any,
+	t: TFunction<'translation', undefined>,
 ) => {
 	let title = t('debug.inspector.accounts.action-delete.file-exists', { accountId: accountId })
 

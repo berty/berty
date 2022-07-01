@@ -41,12 +41,12 @@ export const HomeHeader: React.FC<
 	const { navigate } = useNavigation()
 	const notifs = useProfileNotification()
 	const { t } = useTranslation()
-	const animate = useRef<any>(null)
+	const animate = useRef<LottieView>(null)
 
 	useEffect(() => {
 		if (refresh) {
 			setRefresh(false)
-			animate.current.play()
+			animate.current?.play()
 		}
 	}, [refresh, setRefresh, animate])
 
@@ -83,7 +83,7 @@ export const HomeHeader: React.FC<
 							<TouchableOpacity
 								activeOpacity={1}
 								onPress={() => {
-									animate.current.play()
+									animate.current?.play()
 									scrollRef.current?.scrollTo({ y: 0, animated: true })
 								}}
 							>

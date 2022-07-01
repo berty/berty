@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import mem from 'mem'
 import { StyleSheet, Platform } from 'react-native'
 
