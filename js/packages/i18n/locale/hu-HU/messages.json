@@ -448,7 +448,8 @@
 				"connection-confirmed": "👋 Berty kapcsolat megerősítve! 🎉",
 				"request-sent": "Kérés Elküldve ✈",
 				"incoming": "Elfogadja ezt a kérést a válaszhoz!",
-				"outgoing": "Várjuk a válaszod a kacsolódáshoz!"
+				"outgoing": "Várjuk a válaszod a kacsolódáshoz!",
+				"refresh-button": ""
 			},
 			"incoming-input-placeholder": "Fogadja el az írási kérelmet ide...",
 			"input-placeholder": "Írjon ide..."
