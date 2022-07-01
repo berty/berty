@@ -448,7 +448,8 @@
 				"connection-confirmed": "👋 Berty-tilkobling bekreftet! 🎉",
 				"request-sent": "Forespørsel sendt ✈",
 				"incoming": "Godta denne forespørselen for å svare!",
-				"outgoing": "Venter på ditt kontaktsvar for å tilkoble!"
+				"outgoing": "Venter på ditt kontaktsvar for å tilkoble!",
+				"refresh-button": ""
 			},
 			"incoming-input-placeholder": "Godta forespørselen for å skrive her...",
 			"input-placeholder": ""
