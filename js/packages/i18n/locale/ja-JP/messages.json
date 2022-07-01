@@ -448,7 +448,8 @@
 				"connection-confirmed": "👋 Berty 接続が確認されました! 🎉",
 				"request-sent": "リクエスト送信済み ✈",
 				"incoming": "このリクエストを承認して返信！",
-				"outgoing": "連絡先からの承認待ちによる接続待機中..."
+				"outgoing": "連絡先からの承認待ちによる接続待機中...",
+				"refresh-button": ""
 			},
 			"incoming-input-placeholder": "ここに書くためのリクエストを承認してください...",
 			"input-placeholder": "ここに入力..."
