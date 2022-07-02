@@ -92,10 +92,10 @@ function useLinking(): [string | null, unknown] {
 	}, [])
 
 	useEffect(() => {
-		const handleOpenUrl = (ev: any) => {
-			console.log('handleOpenUrl:', ev.url)
+		const handleOpenUrl = (event: { url: string }) => {
+			console.log('handleOpenUrl:', event.url)
 			setUrl(null)
-			setUrl(ev.url)
+			setUrl(event.url)
 		}
 
 		// for initial render

@@ -72,7 +72,7 @@ export const normalizeVolumeIntensities = (intensities: Array<number>) => {
 }
 
 export const WaveForm: React.FC<{
-	intensities: any[]
+	intensities: number[]
 	duration: number | null
 	currentTime?: number
 	color?: ViewStyle['backgroundColor']

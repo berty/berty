@@ -26,7 +26,7 @@ export const GallerySection: React.FC<{
 }> = ({ prepareMediaAndSend }) => {
 	const { border, padding, margin } = useStyles()
 	const colors = useThemeColor()
-	const { t }: { t: any } = useTranslation()
+	const { t } = useTranslation()
 
 	const [selectedImages, setSelectedImages] = useState<
 		(beapi.messenger.IMedia & { uri: string })[]

@@ -1,5 +1,5 @@
 import React from 'react'
-import { View } from 'react-native'
+import { StyleProp, View, ViewStyle } from 'react-native'
 
 import Logo from '@berty/assets/logo/1_berty_picto.svg'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
@@ -45,8 +45,7 @@ const MessageSystemLogo = () => {
 }
 
 export const MessageSystemWrapper: React.FC<{
-	children: any
-	styleContainer?: any
+	styleContainer?: StyleProp<ViewStyle>
 	logo?: boolean
 }> = ({ children, styleContainer = {}, logo = true }) => {
 	const { padding, border, margin, width } = useStyles()

@@ -14,7 +14,7 @@ import { ScreenFC, useNavigation } from '@berty/navigation'
  */
 
 const SetupFinishedBody = () => {
-	const { t }: any = useTranslation()
+	const { t } = useTranslation()
 	const colors = useThemeColor()
 	const [isGeneration, setIsGeneration] = useState(1)
 	const [isGenerated, setIsGenerated] = useState(false)

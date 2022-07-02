@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { SectionList, TouchableHighlight, View } from 'react-native'
+import { SectionList, StyleProp, TextStyle, TouchableHighlight, View } from 'react-native'
 import { EdgeInsets } from 'react-native-safe-area-context'
 
 import beapi from '@berty/api'
@@ -56,8 +56,8 @@ type SearchItemProps = { searchText?: string; data: any; kind: SearchResultKind 
 const MessageSearchResult: React.FC<{
 	message: string
 	searchText: string
-	style?: any
-	highlightStyle?: any
+	style?: StyleProp<TextStyle>
+	highlightStyle?: StyleProp<TextStyle>
 }> = ({ message, searchText, style, highlightStyle }) => {
 	if (typeof message !== 'string' || typeof searchText !== 'string') {
 		return null

@@ -13,7 +13,7 @@ import { exportAccountToFile } from '@berty/utils/accounts/accountBackup'
 export const ContactAndConversations: ScreenFC<'Settings.ContactAndConversations'> = () => {
 	const { scaleSize } = useAppDimensions()
 	const colors = useThemeColor()
-	const { t }: { t: any } = useTranslation()
+	const { t } = useTranslation()
 	const selectedAccount = useSelector(selectSelectedAccount)
 
 	return (

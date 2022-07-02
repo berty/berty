@@ -67,7 +67,7 @@ export const ManageGroupInvitation: React.FC<{
 	const colors = useThemeColor()
 	const [selectedContent, setSelectedContent] = useState('fingerprint')
 	const _styles = useStylesModal()
-	const { t }: any = useTranslation()
+	const { t } = useTranslation()
 	const dispatch = useAppDispatch()
 	const { dispatch: navigationDispatch } = useNavigation()
 	const convId = useConversation(publicKey)?.publicKey

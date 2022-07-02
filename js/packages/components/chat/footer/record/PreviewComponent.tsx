@@ -1,3 +1,4 @@
+import { Player } from '@react-native-community/audio-toolkit'
 import { Icon } from '@ui-kitten/components'
 import React, { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -38,7 +39,7 @@ export const PreviewComponent: React.FC<{
 	const { scaleSize } = useAppDimensions()
 	const colors = useThemeColor()
 	const { t } = useTranslation()
-	const [player, setPlayer] = useState<any>(null)
+	const [player, setPlayer] = useState<Player>()
 	const isPlaying = useMemo(() => player?.isPlaying === true, [player?.isPlaying])
 
 	return (
@@ -59,7 +60,9 @@ export const PreviewComponent: React.FC<{
 					},
 				]}
 				onPress={() => {
-					clearInterval(clearRecordingInterval as any)
+					if (clearRecordingInterval) {
+						clearInterval(clearRecordingInterval)
+					}
 					setHelpMessageValue({
 						message: t('audio.record.tooltip.not-sent'),
 					})
@@ -132,7 +135,7 @@ export const PreviewComponent: React.FC<{
 							),
 							volumeValuesAttached,
 						)}
-						currentTime={isPlaying && player?.currentTime}
+						currentTime={isPlaying && player?.currentTime ? player.currentTime : undefined}
 						duration={recordDuration}
 						color={colors['background-header']}
 					/>

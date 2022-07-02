@@ -9,7 +9,7 @@ import { accountClient } from './accountClient'
  */
 export const updateAccount = async (payload: any) => {
 	try {
-		let obj: any = {
+		let obj: beapi.account.UpdateAccount.IRequest = {
 			accountId: payload.accountId,
 		}
 		if (payload.accountName) {

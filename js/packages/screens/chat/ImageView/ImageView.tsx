@@ -20,7 +20,7 @@ export const ImageView: ScreenFC<'Modals.ImageView'> = ({
 }) => {
 	const { border, padding } = useStyles()
 	const colors = useThemeColor()
-	const { t }: { t: any } = useTranslation()
+	const { t } = useTranslation()
 	const { goBack } = useNavigation()
 
 	const [currentIndex, setCurrentIndex] = useState(0)

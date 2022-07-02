@@ -61,7 +61,7 @@ const Body: React.FC<{ children: React.ReactElement[] }> = ({ children }) => {
 const RestartButton: React.FC = () => {
 	const { border, margin, padding, text } = useStyles()
 	const colors = useThemeColor()
-	const { t }: { t: any } = useTranslation()
+	const { t } = useTranslation()
 
 	return (
 		<TouchableOpacity
@@ -155,7 +155,7 @@ type ErrorScreenProps = {
 const WTFScreen: React.FC<ErrorScreenProps> = ({ error }) => {
 	const { margin, text } = useStyles()
 	const colors = useThemeColor()
-	const { t }: { t: any } = useTranslation()
+	const { t } = useTranslation()
 	return (
 		<ErrorScreenContainer error={error} labelTitle={t('error.labels.bug')}>
 			<View
@@ -205,7 +205,7 @@ const WTFScreen: React.FC<ErrorScreenProps> = ({ error }) => {
 const SorryScreen: React.FC<ErrorScreenProps> = ({ error }) => {
 	const { margin, text } = useStyles()
 	const colors = useThemeColor()
-	const { t }: { t: any } = useTranslation()
+	const { t } = useTranslation()
 
 	return (
 		<ErrorScreenContainer error={error} labelTitle={t('error.labels.crash')}>

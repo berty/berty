@@ -8,6 +8,8 @@ import {
 	Easing,
 	TextInput,
 	ScrollView,
+	ViewStyle,
+	TextStyle,
 } from 'react-native'
 
 import { Toggle } from '@berty/components'
@@ -182,12 +184,12 @@ type SettingButtonProps = {
 	actionIconAngle?: Animated.AnimatedInterpolation | null
 	actionIconSize?: number
 	actionIconColor?: string
-	actionToggle?: any
+	actionToggle?: (value: boolean) => void
 	varToggle?: boolean
 	toggleStatus?: 'primary' | 'secondary'
 	backgroundColor?: string
-	style?: StyleProp<any>[]
-	textStyle?: StyleProp<any>[]
+	style?: StyleProp<ViewStyle>[]
+	textStyle?: StyleProp<TextStyle>[]
 	// action
 	previewValue?: string
 	previewValueColor?: string
@@ -416,7 +418,7 @@ type FactionButtonSettingProps = {
 		stateIcon?: string
 		stateIconColor?: string
 	}
-	style?: StyleProp<any>
+	style?: StyleProp<ViewStyle>
 	disabled?: boolean
 	isDropdown?: boolean
 }
@@ -608,14 +610,14 @@ type ButtonSettingRowProps = {
 		name: string
 		icon: string
 		color: string
-		style: StyleProp<any>
+		style: StyleProp<ViewStyle>
 		onPress?: () => void
 		disabled?: boolean
 		displayComponent?: ReactNode
 	}[]
 	numberOfLines?: number
-	style?: StyleProp<any>
-	styleText?: StyleProp<any>
+	style?: StyleProp<ViewStyle>
+	styleText?: StyleProp<TextStyle>
 	isScroll?: boolean
 }
 
@@ -702,8 +704,8 @@ type ButtonSettingItem = {
 	icon?: string
 	iconSize?: number
 	iconColor?: string
-	styleContainer?: any
-	styleText?: any
+	styleContainer?: StyleProp<ViewStyle>
+	styleText?: StyleProp<TextStyle>
 	disabled?: boolean
 }
 

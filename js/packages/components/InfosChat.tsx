@@ -106,7 +106,7 @@ const ContactRequestBox: React.FC<{ contact: beapi.messenger.IContact; isAccepte
 								setAccepting(true)
 								await client.contactAccept({ publicKey })
 								playSound('contactRequestAccepted')
-							} catch (err: any) {
+							} catch (err) {
 								console.warn('Failed to accept contact request:', err)
 							}
 							setAccepting(false)
