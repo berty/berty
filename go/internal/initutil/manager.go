@@ -83,11 +83,13 @@ type Manager struct {
 		registry *prometheus.Registry
 	} `json:"Metrics,omitempty"`
 	Datastore struct {
-		Dir      string `json:"Dir,omitempty"`
-		InMemory bool   `json:"InMemory,omitempty"`
+		AppDir    string `json:"AppDir,omitempty"`
+		SharedDir string `json:"SharedDir,omitempty"`
+		InMemory  bool   `json:"InMemory,omitempty"`
 
 		defaultDir string
-		dir        string
+		appDir     string
+		sharedDir  string
 		rootDS     datastore.Batching
 	} `json:"Datastore,omitempty"`
 	Node struct {
@@ -277,6 +279,10 @@ func (m *Manager) applyDefaults() {
 		} else {
 			m.initLogger = zap.NewNop()
 		}
+	}
+
+	if m.Datastore.SharedDir == "" {
+		m.Datastore.SharedDir = m.Datastore.AppDir
 	}
 }
 

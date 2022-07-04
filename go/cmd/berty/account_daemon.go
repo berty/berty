@@ -61,9 +61,10 @@ func accountDaemonCommand() *ffcli.Command {
 			}
 
 			serviceAccount, err := account_svc.NewService(&account_svc.Options{
-				ServiceListeners: manager.Node.GRPC.Listeners,
-				Logger:           logger,
-				RootDirectory:    manager.Datastore.Dir,
+				ServiceListeners:    manager.Node.GRPC.Listeners,
+				Logger:              logger,
+				AppRootDirectory:    manager.Datastore.AppDir,
+				SharedRootDirectory: manager.Datastore.SharedDir,
 			})
 			if err != nil {
 				return err

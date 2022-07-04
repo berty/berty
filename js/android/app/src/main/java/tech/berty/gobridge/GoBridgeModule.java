@@ -146,7 +146,7 @@ public class GoBridgeModule extends ReactContextBaseJavaModule {
       config.setPreferredLanguages(tags);
 
       // set root dir
-      config.setRootDir(rootDir.getAbsolutePath());
+      config.setAppRootDir(rootDir.getAbsolutePath());
 
       // set temp dir
       if (tempDir != null && !tempDir.exists()) {

@@ -225,25 +225,57 @@ func GetAccountDir(rootDir, accountID string) string {
 	return filepath.Join(GetAccountsDir(rootDir), accountID)
 }
 
-func GetDatastoreDir(dir string) (string, error) {
+func CreateDataDir(dir string) error {
 	switch {
 	case dir == "":
-		return "", errcode.TODO.Wrap(fmt.Errorf("--store.dir is empty"))
+		return errcode.TODO.Wrap(fmt.Errorf("missing data dir argument"))
 	case dir == InMemoryDir:
-		return InMemoryDir, nil
+		return nil
 	}
 
 	_, err := os.Stat(dir)
 	switch {
 	case os.IsNotExist(err):
 		if err := os.MkdirAll(dir, 0o700); err != nil {
-			return "", errcode.TODO.Wrap(err)
+			return errcode.TODO.Wrap(err)
 		}
 	case err != nil:
-		return "", errcode.TODO.Wrap(err)
+		return errcode.TODO.Wrap(err)
 	}
 
-	return dir, nil
+	return nil
+}
+
+func GetGlobalAppStorage(rootDir string, ks NativeKeystore) (datastore.Batching, func() error, error) {
+	dbPath := filepath.Join(rootDir, "app.sqlite")
+	if err := os.MkdirAll(rootDir, 0o700); err != nil {
+		return nil, nil, errcode.TODO.Wrap(err)
+	}
+
+	var err error
+
+	storageKey := ([]byte)(nil)
+	if ks != nil {
+		storageKey, err = GetOrCreateMasterStorageKey(ks)
+		if err != nil {
+			return nil, nil, errcode.TODO.Wrap(err)
+		}
+	}
+
+	storageSalt := ([]byte)(nil)
+	if ks != nil {
+		storageSalt, err = GetOrCreateMasterStorageSalt(ks)
+		if err != nil {
+			return nil, nil, errcode.TODO.Wrap(err)
+		}
+	}
+
+	appDatastore, err := encrepo.NewSQLCipherDatastore("sqlite3", dbPath, "data", storageKey, storageSalt)
+	if err != nil {
+		return nil, nil, errcode.ErrDBOpen.Wrap(err)
+	}
+
+	return encrepo.NewNamespacedDatastore(appDatastore, datastore.NewKey("app-storage")), appDatastore.Close, nil
 }
 
 func GetAccountAppStorage(rootDir string, accountID string, key []byte, salt []byte) (datastore.Datastore, error) {

@@ -73,7 +73,7 @@ func (m *Manager) getLogger() (*zap.Logger, error) {
 		streams = append(streams, logutil.NewRingStream(m.Logging.RingFilters, "json", m.Logging.ring))
 	}
 	if m.Logging.FilePath != "" && m.Logging.FileFilters != "" {
-		m.Logging.FilePath = strings.ReplaceAll(m.Logging.FilePath, "<store-dir>", m.Datastore.Dir)
+		m.Logging.FilePath = strings.ReplaceAll(m.Logging.FilePath, "<store-dir>", m.Datastore.AppDir)
 		streams = append(streams, logutil.NewFileStream(m.Logging.FileFilters, "json", m.Logging.FilePath, m.Session.Kind))
 	}
 	logger, loggerCleanup, err := logutil.NewLogger(streams...)

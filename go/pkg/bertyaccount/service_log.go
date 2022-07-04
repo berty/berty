@@ -15,6 +15,8 @@ import (
 )
 
 func (s *service) LogfileList(ctx context.Context, req *accounttypes.LogfileList_Request) (*accounttypes.LogfileList_Reply, error) {
+	rootDir := s.appRootDir
+
 	accounts, err := s.ListAccounts(ctx, nil)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
@@ -23,7 +25,7 @@ func (s *service) LogfileList(ctx context.Context, req *accounttypes.LogfileList
 	ret := accounttypes.LogfileList_Reply{}
 
 	for _, account := range accounts.Accounts {
-		logsDir := filepath.Join(accountutils.GetAccountDir(s.rootdir, account.AccountID), "logs")
+		logsDir := filepath.Join(accountutils.GetAccountDir(rootDir, account.AccountID), "logs")
 		files, err := logutil.LogfileList(logsDir)
 		if err != nil {
 			return nil, errcode.TODO.Wrap(err)
@@ -54,6 +56,8 @@ func (s *service) StreamLogfile(req *accounttypes.StreamLogfile_Request, server 
 		return errcode.TODO.Wrap(fmt.Errorf("AccountID is required"))
 	}
 
+	rootDir := s.appRootDir
+
 	accounts, err := s.ListAccounts(s.rootCtx, nil)
 	if err != nil {
 		return errcode.TODO.Wrap(err)
@@ -73,7 +77,7 @@ func (s *service) StreamLogfile(req *accounttypes.StreamLogfile_Request, server 
 		}
 	}
 
-	logsDir := filepath.Join(accountutils.GetAccountDir(s.rootdir, account.AccountID), "logs")
+	logsDir := filepath.Join(accountutils.GetAccountDir(rootDir, account.AccountID), "logs")
 
 	logfilePath, err := logutil.CurrentLogfilePath(logsDir)
 	if err != nil {

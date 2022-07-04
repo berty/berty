@@ -26,34 +26,10 @@ import (
 	"berty.tech/berty/v2/go/pkg/bertyauth"
 	"berty.tech/berty/v2/go/pkg/bertypush"
 	"berty.tech/berty/v2/go/pkg/bertypushrelay"
-	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
 	"berty.tech/berty/v2/go/pkg/pushtypes"
 )
-
-type MemNativeKeystore struct {
-	dict map[string][]byte
-}
-
-var _ accountutils.NativeKeystore = (*MemNativeKeystore)(nil)
-
-func (ks *MemNativeKeystore) Get(key string) ([]byte, error) {
-	value, ok := ks.dict[key]
-	if !ok {
-		return nil, errcode.ErrNotFound
-	}
-	return value, nil
-}
-
-func (ks *MemNativeKeystore) Put(key string, value []byte) error {
-	ks.dict[key] = value
-	return nil
-}
-
-func NewMemNativeKeystore() accountutils.NativeKeystore {
-	return &MemNativeKeystore{dict: make(map[string][]byte)}
-}
 
 func TestPushDecryptStandalone(t *testing.T) {
 	t.Skip()
@@ -91,11 +67,11 @@ func TestPushDecryptStandalone(t *testing.T) {
 	svc2Account1 := "acc_2_1"
 
 	// init service
-	svc1Keystore := NewMemNativeKeystore()
+	svc1Keystore := accountutils.NewMemNativeKeystore()
 	svc1, err := bertyaccount.NewService(&bertyaccount.Options{
-		RootDirectory: svc1RootDir,
-		Logger:        logger,
-		Keystore:      svc1Keystore,
+		AppRootDirectory: svc1RootDir,
+		Logger:           logger,
+		Keystore:         svc1Keystore,
 	})
 	require.NoError(t, err)
 	defer svc1.Close()
@@ -117,9 +93,9 @@ func TestPushDecryptStandalone(t *testing.T) {
 
 	// init service
 	svc2, err := bertyaccount.NewService(&bertyaccount.Options{
-		RootDirectory: svc2RootDir,
-		Logger:        logger,
-		Keystore:      NewMemNativeKeystore(),
+		AppRootDirectory: svc2RootDir,
+		Logger:           logger,
+		Keystore:         accountutils.NewMemNativeKeystore(),
 	})
 	require.NoError(t, err)
 	defer svc2.Close()

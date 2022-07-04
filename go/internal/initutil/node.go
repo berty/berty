@@ -447,7 +447,7 @@ func (m *Manager) getMessengerDB() (*gorm.DB, error) {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	dir, err := m.getDatastoreDir()
+	dir, err := m.getSharedDataDir()
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
@@ -481,7 +481,7 @@ func (m *Manager) getReplicationDB() (*gorm.DB, error) {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	dir, err := m.getDatastoreDir()
+	dir, err := m.getAppDataDir()
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}

@@ -381,7 +381,11 @@ func (m *Manager) setupIPFSRepo(ctx context.Context) (*ipfs_mobile.RepoMobile, e
 		return nil, errcode.ErrKeystoreGet.Wrap(err)
 	}
 
-	dbPath := filepath.Join(m.Datastore.Dir, "ipfs.sqlite")
+	appDir, err := m.getAppDataDir()
+	if err != nil {
+		return nil, errcode.TODO.Wrap(err)
+	}
+	dbPath := filepath.Join(appDir, "ipfs.sqlite")
 
 	repo, err = ipfsutil.LoadRepoFromPath(dbPath, storageKey, storageSalt)
 	if err != nil {

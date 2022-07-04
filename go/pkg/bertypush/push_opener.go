@@ -226,7 +226,8 @@ func PushDecrypt(ctx context.Context, rootDir string, input []byte, opts *PushDe
 				return nil, nil
 			}
 
-			accountDir, err := accountutils.GetDatastoreDir(accountutils.GetAccountDir(rootDir, account.AccountID))
+			accountDir := accountutils.GetAccountDir(rootDir, account.AccountID)
+			err := accountutils.CreateDataDir(accountDir)
 			if err != nil {
 				return nil, err
 			}

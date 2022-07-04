@@ -72,7 +72,7 @@ func (i *integration) init() error {
 	}
 
 	i.manager.Session.Kind = "cli.integration"
-	i.manager.Datastore.Dir = i.tempdir
+	i.manager.Datastore.AppDir = i.tempdir
 	i.manager.Logging.StderrFormat = "light-color"
 	i.manager.Logging.StderrFilters = "debug:bty,bty.inte,bty.tinder" // (level==warn for everything except ipfs.*) || (levels >= error)
 	fs := flag.NewFlagSet("integration", flag.ExitOnError)
