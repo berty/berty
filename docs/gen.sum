@@ -6,10 +6,10 @@ a9eed0caefc2bb169f2a7c3a9a5238ac19c2d953  ../api/accounttypes.yaml
 32a7fc91108297910b332969720c09576e9f938e  ../api/bertyverifiablecreds.proto
 c487da32080977a2ec757252b6187633327b5e07  ../api/bertyverifiablecreds.yaml
 9f42025e90b2e6da94afacf69ec9e5cb0b0d010a  ../api/errcode.proto
-5435e65abd5e30f98a2f92f7d848530c55a69b38  ../api/messengertypes.proto
+b2d3ee4e5e61d6bf8336e02794311ca74e055b00  ../api/messengertypes.proto
 0bf65c534c7bd4dd9453bfcc828a7be7b2d9dc2f  ../api/messengertypes.yaml
-b7f1bc4dd2c0896ba776940be234bfd60b3f3f58  ../api/protocoltypes.proto
-b8ab758df2629807e5f79f87f2ab35fff105e325  ../api/protocoltypes.yaml
+9549e435386afbd1592d312ab76047d3e8b100b2  ../api/protocoltypes.proto
+ad9a40023700b6ad892fb5661504613231812af8  ../api/protocoltypes.yaml
 429ad083ef1963a77adc439239118d0db65c9d37  ../api/pushtypes.proto
 00284c7d54f219f2d66852350c00cbff87a14620  ../api/pushtypes.yaml
 3b24f8f94b17cce89e535ea22432b75769bce542  Makefile

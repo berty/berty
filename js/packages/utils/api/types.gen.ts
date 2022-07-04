@@ -26,6 +26,14 @@ export type StreamEventPayloadType<T> = T extends beapi.messenger.StreamEvent.Ty
 	? beapi.messenger.StreamEvent.IMediaUpdated
 	: T extends beapi.messenger.StreamEvent.Type.TypeConversationPartialLoad
 	? beapi.messenger.StreamEvent.IConversationPartialLoad
+	: T extends beapi.messenger.StreamEvent.Type.TypePeerStatusConnected
+	? beapi.messenger.StreamEvent.IPeerStatusConnected
+	: T extends beapi.messenger.StreamEvent.Type.TypePeerStatusReconnecting
+	? beapi.messenger.StreamEvent.IPeerStatusReconnecting
+	: T extends beapi.messenger.StreamEvent.Type.TypePeerStatusDisconnected
+	? beapi.messenger.StreamEvent.IPeerStatusDisconnected
+	: T extends beapi.messenger.StreamEvent.Type.TypePeerStatusGroupAssociated
+	? beapi.messenger.StreamEvent.IPeerStatusGroupAssociated
 	: never
 
 export type StreamEventNotifiedPayloadType<T> =

@@ -97,6 +97,10 @@ export interface IProtocolServiceMock {
 		beapi.protocol.DeactivateGroup.IRequest,
 		beapi.protocol.DeactivateGroup.IReply
 	>
+	GroupDeviceStatus: ResponseStreamMock<
+		beapi.protocol.GroupDeviceStatus.IRequest,
+		beapi.protocol.GroupDeviceStatus.IReply
+	>
 	MonitorGroup: ResponseStreamMock<
 		beapi.protocol.MonitorGroup.IRequest,
 		beapi.protocol.MonitorGroup.IReply

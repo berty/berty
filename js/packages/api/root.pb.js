@@ -1275,6 +1275,11 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     requestType: "DeactivateGroup.Request",
                     responseType: "DeactivateGroup.Reply"
                   },
+                  GroupDeviceStatus: {
+                    requestType: "GroupDeviceStatus.Request",
+                    responseType: "GroupDeviceStatus.Reply",
+                    responseStream: true
+                  },
                   MonitorGroup: {
                     requestType: "MonitorGroup.Request",
                     responseType: "MonitorGroup.Reply",
@@ -2737,6 +2742,97 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   },
                   Reply: {
                     fields: {}
+                  }
+                }
+              },
+              GroupDeviceStatus: {
+                fields: {},
+                nested: {
+                  Type: {
+                    values: {
+                      TypeUnknown: 0,
+                      TypePeerDisconnected: 1,
+                      TypePeerConnected: 2,
+                      TypePeerReconnecting: 3
+                    }
+                  },
+                  Transport: {
+                    values: {
+                      TptUnknown: 0,
+                      TptLAN: 1,
+                      TptWAN: 2,
+                      TptProximity: 3
+                    }
+                  },
+                  Request: {
+                    fields: {
+                      groupPk: {
+                        type: "string",
+                        id: 1
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {
+                      type: {
+                        type: "Type",
+                        id: 1
+                      },
+                      event: {
+                        type: "bytes",
+                        id: 2
+                      }
+                    },
+                    nested: {
+                      PeerConnected: {
+                        fields: {
+                          peerId: {
+                            type: "string",
+                            id: 1,
+                            options: {
+                              "(gogoproto.customname)": "PeerID"
+                            }
+                          },
+                          devicePk: {
+                            type: "string",
+                            id: 2,
+                            options: {
+                              "(gogoproto.customname)": "DevicePK"
+                            }
+                          },
+                          transport: {
+                            type: "Transport",
+                            id: 3
+                          },
+                          maddr: {
+                            type: "string",
+                            id: 4
+                          }
+                        }
+                      },
+                      PeerReconnecting: {
+                        fields: {
+                          peerId: {
+                            type: "string",
+                            id: 1,
+                            options: {
+                              "(gogoproto.customname)": "PeerID"
+                            }
+                          }
+                        }
+                      },
+                      PeerDisconnected: {
+                        fields: {
+                          peerId: {
+                            type: "string",
+                            id: 1,
+                            options: {
+                              "(gogoproto.customname)": "PeerID"
+                            }
+                          }
+                        }
+                      }
+                    }
                   }
                 }
               },
@@ -6124,7 +6220,11 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       TypeDeviceUpdated: 9,
                       TypeNotified: 10,
                       TypeMediaUpdated: 11,
-                      TypeConversationPartialLoad: 12
+                      TypeConversationPartialLoad: 12,
+                      TypePeerStatusConnected: 13,
+                      TypePeerStatusReconnecting: 14,
+                      TypePeerStatusDisconnected: 15,
+                      TypePeerStatusGroupAssociated: 16
                     }
                   },
                   ConversationUpdated: {
@@ -6305,6 +6405,78 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                             type: "Contact",
                             id: 3
                           }
+                        }
+                      }
+                    }
+                  },
+                  PeerStatusConnected: {
+                    fields: {
+                      peerId: {
+                        type: "string",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "PeerID"
+                        }
+                      },
+                      transport: {
+                        type: "Transport",
+                        id: 2
+                      }
+                    },
+                    nested: {
+                      Transport: {
+                        values: {
+                          Unknown: 0,
+                          LAN: 1,
+                          WAN: 2,
+                          Proximity: 3
+                        }
+                      }
+                    }
+                  },
+                  PeerStatusReconnecting: {
+                    fields: {
+                      peerId: {
+                        type: "string",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "PeerID"
+                        }
+                      }
+                    }
+                  },
+                  PeerStatusDisconnected: {
+                    fields: {
+                      peerId: {
+                        type: "string",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "PeerID"
+                        }
+                      }
+                    }
+                  },
+                  PeerStatusGroupAssociated: {
+                    fields: {
+                      peerId: {
+                        type: "string",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "PeerID"
+                        }
+                      },
+                      devicePk: {
+                        type: "string",
+                        id: 2,
+                        options: {
+                          "(gogoproto.customname)": "DevicePK"
+                        }
+                      },
+                      groupPk: {
+                        type: "string",
+                        id: 3,
+                        options: {
+                          "(gogoproto.customname)": "GroupPK"
                         }
                       }
                     }

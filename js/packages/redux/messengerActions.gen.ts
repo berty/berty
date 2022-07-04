@@ -51,4 +51,20 @@ export const messengerActions = {
 		beapi.messenger.StreamEvent.IConversationPartialLoad,
 		'messenger/ConversationPartialLoad'
 	>('messenger/ConversationPartialLoad'),
+	[beapi.messenger.StreamEvent.Type.TypePeerStatusConnected]: createAction<
+		beapi.messenger.StreamEvent.IPeerStatusConnected,
+		'messenger/PeerStatusConnected'
+	>('messenger/PeerStatusConnected'),
+	[beapi.messenger.StreamEvent.Type.TypePeerStatusReconnecting]: createAction<
+		beapi.messenger.StreamEvent.IPeerStatusReconnecting,
+		'messenger/PeerStatusReconnecting'
+	>('messenger/PeerStatusReconnecting'),
+	[beapi.messenger.StreamEvent.Type.TypePeerStatusDisconnected]: createAction<
+		beapi.messenger.StreamEvent.IPeerStatusDisconnected,
+		'messenger/PeerStatusDisconnected'
+	>('messenger/PeerStatusDisconnected'),
+	[beapi.messenger.StreamEvent.Type.TypePeerStatusGroupAssociated]: createAction<
+		beapi.messenger.StreamEvent.IPeerStatusGroupAssociated,
+		'messenger/PeerStatusGroupAssociated'
+	>('messenger/PeerStatusGroupAssociated'),
 }

@@ -97,6 +97,12 @@
     - [GroupAddAdditionalRendezvousSeed](#berty.protocol.v1.GroupAddAdditionalRendezvousSeed)
     - [GroupAddDeviceSecret](#berty.protocol.v1.GroupAddDeviceSecret)
     - [GroupAddMemberDevice](#berty.protocol.v1.GroupAddMemberDevice)
+    - [GroupDeviceStatus](#berty.protocol.v1.GroupDeviceStatus)
+    - [GroupDeviceStatus.Reply](#berty.protocol.v1.GroupDeviceStatus.Reply)
+    - [GroupDeviceStatus.Reply.PeerConnected](#berty.protocol.v1.GroupDeviceStatus.Reply.PeerConnected)
+    - [GroupDeviceStatus.Reply.PeerDisconnected](#berty.protocol.v1.GroupDeviceStatus.Reply.PeerDisconnected)
+    - [GroupDeviceStatus.Reply.PeerReconnecting](#berty.protocol.v1.GroupDeviceStatus.Reply.PeerReconnecting)
+    - [GroupDeviceStatus.Request](#berty.protocol.v1.GroupDeviceStatus.Request)
     - [GroupEnvelope](#berty.protocol.v1.GroupEnvelope)
     - [GroupHeadsExport](#berty.protocol.v1.GroupHeadsExport)
     - [GroupInfo](#berty.protocol.v1.GroupInfo)
@@ -210,6 +216,8 @@
     - [DebugInspectGroupLogType](#berty.protocol.v1.DebugInspectGroupLogType)
     - [Direction](#berty.protocol.v1.Direction)
     - [EventType](#berty.protocol.v1.EventType)
+    - [GroupDeviceStatus.Transport](#berty.protocol.v1.GroupDeviceStatus.Transport)
+    - [GroupDeviceStatus.Type](#berty.protocol.v1.GroupDeviceStatus.Type)
     - [GroupType](#berty.protocol.v1.GroupType)
     - [InstanceGetConfiguration.SettingState](#berty.protocol.v1.InstanceGetConfiguration.SettingState)
     - [MonitorGroup.TypeEventMonitor](#berty.protocol.v1.MonitorGroup.TypeEventMonitor)
@@ -913,6 +921,54 @@ When added on AccountGroup, this event should be followed by appropriate GroupAd
 | member_sig | [bytes](#bytes) |  | member_sig is used to prove the ownership of the member pk
 
 TODO: signature of what ??? ensure it can&#39;t be replayed |
+
+<a name="berty.protocol.v1.GroupDeviceStatus"></a>
+
+### GroupDeviceStatus
+
+<a name="berty.protocol.v1.GroupDeviceStatus.Reply"></a>
+
+### GroupDeviceStatus.Reply
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| type | [GroupDeviceStatus.Type](#berty.protocol.v1.GroupDeviceStatus.Type) |  |  |
+| event | [bytes](#bytes) |  |  |
+
+<a name="berty.protocol.v1.GroupDeviceStatus.Reply.PeerConnected"></a>
+
+### GroupDeviceStatus.Reply.PeerConnected
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| peer_id | [string](#string) |  |  |
+| device_pk | [string](#string) |  |  |
+| transport | [GroupDeviceStatus.Transport](#berty.protocol.v1.GroupDeviceStatus.Transport) |  |  |
+| maddr | [string](#string) |  |  |
+
+<a name="berty.protocol.v1.GroupDeviceStatus.Reply.PeerDisconnected"></a>
+
+### GroupDeviceStatus.Reply.PeerDisconnected
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| peer_id | [string](#string) |  |  |
+
+<a name="berty.protocol.v1.GroupDeviceStatus.Reply.PeerReconnecting"></a>
+
+### GroupDeviceStatus.Reply.PeerReconnecting
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| peer_id | [string](#string) |  |  |
+
+<a name="berty.protocol.v1.GroupDeviceStatus.Request"></a>
+
+### GroupDeviceStatus.Request
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| group_pk | [string](#string) |  |  |
 
 <a name="berty.protocol.v1.GroupEnvelope"></a>
 
@@ -1854,6 +1910,28 @@ Progress define a generic object that can be used to display a progress bar for 
 | EventTypePushDeviceServerRegistered | 406 | EventTypePushDeviceServerRegistered |
 | EventTypeGroupMetadataPayloadSent | 1001 | EventTypeGroupMetadataPayloadSent indicates the payload includes an app specific event, unlike messages stored on the message store it is encrypted using a static key |
 
+<a name="berty.protocol.v1.GroupDeviceStatus.Transport"></a>
+
+### GroupDeviceStatus.Transport
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| TptUnknown | 0 |  |
+| TptLAN | 1 |  |
+| TptWAN | 2 |  |
+| TptProximity | 3 |  |
+
+<a name="berty.protocol.v1.GroupDeviceStatus.Type"></a>
+
+### GroupDeviceStatus.Type
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| TypeUnknown | 0 |  |
+| TypePeerDisconnected | 1 |  |
+| TypePeerConnected | 2 |  |
+| TypePeerReconnecting | 3 |  |
+
 <a name="berty.protocol.v1.GroupType"></a>
 
 ### GroupType
@@ -1938,6 +2016,7 @@ Each Berty Protocol Instance is considered as a Berty device and is associated w
 | GroupInfo | [GroupInfo.Request](#berty.protocol.v1.GroupInfo.Request) | [GroupInfo.Reply](#berty.protocol.v1.GroupInfo.Reply) | GroupInfo retrieves information about a group |
 | ActivateGroup | [ActivateGroup.Request](#berty.protocol.v1.ActivateGroup.Request) | [ActivateGroup.Reply](#berty.protocol.v1.ActivateGroup.Reply) | ActivateGroup explicitly opens a group |
 | DeactivateGroup | [DeactivateGroup.Request](#berty.protocol.v1.DeactivateGroup.Request) | [DeactivateGroup.Reply](#berty.protocol.v1.DeactivateGroup.Reply) | DeactivateGroup closes a group |
+| GroupDeviceStatus | [GroupDeviceStatus.Request](#berty.protocol.v1.GroupDeviceStatus.Request) | [GroupDeviceStatus.Reply](#berty.protocol.v1.GroupDeviceStatus.Reply) stream | @TODO: GroupDeviceStatus monitor device status |
 | MonitorGroup | [MonitorGroup.Request](#berty.protocol.v1.MonitorGroup.Request) | [MonitorGroup.Reply](#berty.protocol.v1.MonitorGroup.Reply) stream | Monitor Group events |
 | DebugListGroups | [DebugListGroups.Request](#berty.protocol.v1.DebugListGroups.Request) | [DebugListGroups.Reply](#berty.protocol.v1.DebugListGroups.Reply) stream |  |
 | DebugInspectGroupStore | [DebugInspectGroupStore.Request](#berty.protocol.v1.DebugInspectGroupStore.Request) | [DebugInspectGroupStore.Reply](#berty.protocol.v1.DebugInspectGroupStore.Reply) stream |  |

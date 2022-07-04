@@ -1902,6 +1902,8 @@ export namespace berty {
                 public activateGroup(request: berty.protocol.v1.ActivateGroup.IRequest): Promise<berty.protocol.v1.ActivateGroup.Reply>;
                 public deactivateGroup(request: berty.protocol.v1.DeactivateGroup.IRequest, callback: berty.protocol.v1.ProtocolService.DeactivateGroupCallback): void;
                 public deactivateGroup(request: berty.protocol.v1.DeactivateGroup.IRequest): Promise<berty.protocol.v1.DeactivateGroup.Reply>;
+                public groupDeviceStatus(request: berty.protocol.v1.GroupDeviceStatus.IRequest, callback: berty.protocol.v1.ProtocolService.GroupDeviceStatusCallback): void;
+                public groupDeviceStatus(request: berty.protocol.v1.GroupDeviceStatus.IRequest): Promise<berty.protocol.v1.GroupDeviceStatus.Reply>;
                 public monitorGroup(request: berty.protocol.v1.MonitorGroup.IRequest, callback: berty.protocol.v1.ProtocolService.MonitorGroupCallback): void;
                 public monitorGroup(request: berty.protocol.v1.MonitorGroup.IRequest): Promise<berty.protocol.v1.MonitorGroup.Reply>;
                 public debugListGroups(request: berty.protocol.v1.DebugListGroups.IRequest, callback: berty.protocol.v1.ProtocolService.DebugListGroupsCallback): void;
@@ -1993,6 +1995,8 @@ export namespace berty {
                 type ActivateGroupCallback = (error: (Error|null), response?: berty.protocol.v1.ActivateGroup.Reply) => void;
 
                 type DeactivateGroupCallback = (error: (Error|null), response?: berty.protocol.v1.DeactivateGroup.Reply) => void;
+
+                type GroupDeviceStatusCallback = (error: (Error|null), response?: berty.protocol.v1.GroupDeviceStatus.Reply) => void;
 
                 type MonitorGroupCallback = (error: (Error|null), response?: berty.protocol.v1.MonitorGroup.Reply) => void;
 
@@ -4226,6 +4230,140 @@ export namespace berty {
                     public static fromObject(object: { [k: string]: any }): berty.protocol.v1.DeactivateGroup.Reply;
                     public static toObject(message: berty.protocol.v1.DeactivateGroup.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
+                }
+            }
+
+            interface IGroupDeviceStatus {
+            }
+
+            class GroupDeviceStatus implements IGroupDeviceStatus {
+
+                public static create(properties?: berty.protocol.v1.IGroupDeviceStatus): berty.protocol.v1.GroupDeviceStatus;
+                public static encode(message: berty.protocol.v1.IGroupDeviceStatus, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.protocol.v1.IGroupDeviceStatus, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.GroupDeviceStatus;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.GroupDeviceStatus;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.protocol.v1.GroupDeviceStatus;
+                public static toObject(message: berty.protocol.v1.GroupDeviceStatus, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            namespace GroupDeviceStatus {
+
+                enum Type {
+                    TypeUnknown = 0,
+                    TypePeerDisconnected = 1,
+                    TypePeerConnected = 2,
+                    TypePeerReconnecting = 3
+                }
+
+                enum Transport {
+                    TptUnknown = 0,
+                    TptLAN = 1,
+                    TptWAN = 2,
+                    TptProximity = 3
+                }
+
+                interface IRequest {
+                    groupPk?: (string|null);
+                }
+
+                class Request implements IRequest {
+
+                    public groupPk: string;
+                    public static create(properties?: berty.protocol.v1.GroupDeviceStatus.IRequest): berty.protocol.v1.GroupDeviceStatus.Request;
+                    public static encode(message: berty.protocol.v1.GroupDeviceStatus.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.GroupDeviceStatus.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.GroupDeviceStatus.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.GroupDeviceStatus.Request;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.GroupDeviceStatus.Request;
+                    public static toObject(message: berty.protocol.v1.GroupDeviceStatus.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+
+                interface IReply {
+                    type?: (berty.protocol.v1.GroupDeviceStatus.Type|null);
+                    event?: (Uint8Array|null);
+                }
+
+                class Reply implements IReply {
+
+                    public type: berty.protocol.v1.GroupDeviceStatus.Type;
+                    public event: Uint8Array;
+                    public static create(properties?: berty.protocol.v1.GroupDeviceStatus.IReply): berty.protocol.v1.GroupDeviceStatus.Reply;
+                    public static encode(message: berty.protocol.v1.GroupDeviceStatus.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.protocol.v1.GroupDeviceStatus.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.GroupDeviceStatus.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.GroupDeviceStatus.Reply;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.protocol.v1.GroupDeviceStatus.Reply;
+                    public static toObject(message: berty.protocol.v1.GroupDeviceStatus.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+
+                namespace Reply {
+
+                    interface IPeerConnected {
+                        peerId?: (string|null);
+                        devicePk?: (string|null);
+                        transport?: (berty.protocol.v1.GroupDeviceStatus.Transport|null);
+                        maddr?: (string|null);
+                    }
+
+                    class PeerConnected implements IPeerConnected {
+
+                        public peerId: string;
+                        public devicePk: string;
+                        public transport: berty.protocol.v1.GroupDeviceStatus.Transport;
+                        public maddr: string;
+                        public static create(properties?: berty.protocol.v1.GroupDeviceStatus.Reply.IPeerConnected): berty.protocol.v1.GroupDeviceStatus.Reply.PeerConnected;
+                        public static encode(message: berty.protocol.v1.GroupDeviceStatus.Reply.IPeerConnected, writer?: $protobuf.Writer): $protobuf.Writer;
+                        public static encodeDelimited(message: berty.protocol.v1.GroupDeviceStatus.Reply.IPeerConnected, writer?: $protobuf.Writer): $protobuf.Writer;
+                        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.GroupDeviceStatus.Reply.PeerConnected;
+                        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.GroupDeviceStatus.Reply.PeerConnected;
+                        public static verify(message: { [k: string]: any }): (string|null);
+                        public static fromObject(object: { [k: string]: any }): berty.protocol.v1.GroupDeviceStatus.Reply.PeerConnected;
+                        public static toObject(message: berty.protocol.v1.GroupDeviceStatus.Reply.PeerConnected, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                        public toJSON(): { [k: string]: any };
+                    }
+
+                    interface IPeerReconnecting {
+                        peerId?: (string|null);
+                    }
+
+                    class PeerReconnecting implements IPeerReconnecting {
+
+                        public peerId: string;
+                        public static create(properties?: berty.protocol.v1.GroupDeviceStatus.Reply.IPeerReconnecting): berty.protocol.v1.GroupDeviceStatus.Reply.PeerReconnecting;
+                        public static encode(message: berty.protocol.v1.GroupDeviceStatus.Reply.IPeerReconnecting, writer?: $protobuf.Writer): $protobuf.Writer;
+                        public static encodeDelimited(message: berty.protocol.v1.GroupDeviceStatus.Reply.IPeerReconnecting, writer?: $protobuf.Writer): $protobuf.Writer;
+                        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.GroupDeviceStatus.Reply.PeerReconnecting;
+                        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.GroupDeviceStatus.Reply.PeerReconnecting;
+                        public static verify(message: { [k: string]: any }): (string|null);
+                        public static fromObject(object: { [k: string]: any }): berty.protocol.v1.GroupDeviceStatus.Reply.PeerReconnecting;
+                        public static toObject(message: berty.protocol.v1.GroupDeviceStatus.Reply.PeerReconnecting, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                        public toJSON(): { [k: string]: any };
+                    }
+
+                    interface IPeerDisconnected {
+                        peerId?: (string|null);
+                    }
+
+                    class PeerDisconnected implements IPeerDisconnected {
+
+                        public peerId: string;
+                        public static create(properties?: berty.protocol.v1.GroupDeviceStatus.Reply.IPeerDisconnected): berty.protocol.v1.GroupDeviceStatus.Reply.PeerDisconnected;
+                        public static encode(message: berty.protocol.v1.GroupDeviceStatus.Reply.IPeerDisconnected, writer?: $protobuf.Writer): $protobuf.Writer;
+                        public static encodeDelimited(message: berty.protocol.v1.GroupDeviceStatus.Reply.IPeerDisconnected, writer?: $protobuf.Writer): $protobuf.Writer;
+                        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.protocol.v1.GroupDeviceStatus.Reply.PeerDisconnected;
+                        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.protocol.v1.GroupDeviceStatus.Reply.PeerDisconnected;
+                        public static verify(message: { [k: string]: any }): (string|null);
+                        public static fromObject(object: { [k: string]: any }): berty.protocol.v1.GroupDeviceStatus.Reply.PeerDisconnected;
+                        public static toObject(message: berty.protocol.v1.GroupDeviceStatus.Reply.PeerDisconnected, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                        public toJSON(): { [k: string]: any };
+                    }
                 }
             }
 
@@ -8709,7 +8847,11 @@ export namespace berty {
                     TypeDeviceUpdated = 9,
                     TypeNotified = 10,
                     TypeMediaUpdated = 11,
-                    TypeConversationPartialLoad = 12
+                    TypeConversationPartialLoad = 12,
+                    TypePeerStatusConnected = 13,
+                    TypePeerStatusReconnecting = 14,
+                    TypePeerStatusDisconnected = 15,
+                    TypePeerStatusGroupAssociated = 16
                 }
 
                 interface IConversationUpdated {
@@ -9042,6 +9184,94 @@ export namespace berty {
                         public static toObject(message: berty.messenger.v1.StreamEvent.Notified.GroupInvitation, options?: $protobuf.IConversionOptions): { [k: string]: any };
                         public toJSON(): { [k: string]: any };
                     }
+                }
+
+                interface IPeerStatusConnected {
+                    peerId?: (string|null);
+                    transport?: (berty.messenger.v1.StreamEvent.PeerStatusConnected.Transport|null);
+                }
+
+                class PeerStatusConnected implements IPeerStatusConnected {
+
+                    public peerId: string;
+                    public transport: berty.messenger.v1.StreamEvent.PeerStatusConnected.Transport;
+                    public static create(properties?: berty.messenger.v1.StreamEvent.IPeerStatusConnected): berty.messenger.v1.StreamEvent.PeerStatusConnected;
+                    public static encode(message: berty.messenger.v1.StreamEvent.IPeerStatusConnected, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.messenger.v1.StreamEvent.IPeerStatusConnected, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.StreamEvent.PeerStatusConnected;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.StreamEvent.PeerStatusConnected;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.StreamEvent.PeerStatusConnected;
+                    public static toObject(message: berty.messenger.v1.StreamEvent.PeerStatusConnected, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+
+                namespace PeerStatusConnected {
+
+                    enum Transport {
+                        Unknown = 0,
+                        LAN = 1,
+                        WAN = 2,
+                        Proximity = 3
+                    }
+                }
+
+                interface IPeerStatusReconnecting {
+                    peerId?: (string|null);
+                }
+
+                class PeerStatusReconnecting implements IPeerStatusReconnecting {
+
+                    public peerId: string;
+                    public static create(properties?: berty.messenger.v1.StreamEvent.IPeerStatusReconnecting): berty.messenger.v1.StreamEvent.PeerStatusReconnecting;
+                    public static encode(message: berty.messenger.v1.StreamEvent.IPeerStatusReconnecting, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.messenger.v1.StreamEvent.IPeerStatusReconnecting, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.StreamEvent.PeerStatusReconnecting;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.StreamEvent.PeerStatusReconnecting;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.StreamEvent.PeerStatusReconnecting;
+                    public static toObject(message: berty.messenger.v1.StreamEvent.PeerStatusReconnecting, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+
+                interface IPeerStatusDisconnected {
+                    peerId?: (string|null);
+                }
+
+                class PeerStatusDisconnected implements IPeerStatusDisconnected {
+
+                    public peerId: string;
+                    public static create(properties?: berty.messenger.v1.StreamEvent.IPeerStatusDisconnected): berty.messenger.v1.StreamEvent.PeerStatusDisconnected;
+                    public static encode(message: berty.messenger.v1.StreamEvent.IPeerStatusDisconnected, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.messenger.v1.StreamEvent.IPeerStatusDisconnected, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.StreamEvent.PeerStatusDisconnected;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.StreamEvent.PeerStatusDisconnected;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.StreamEvent.PeerStatusDisconnected;
+                    public static toObject(message: berty.messenger.v1.StreamEvent.PeerStatusDisconnected, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+
+                interface IPeerStatusGroupAssociated {
+                    peerId?: (string|null);
+                    devicePk?: (string|null);
+                    groupPk?: (string|null);
+                }
+
+                class PeerStatusGroupAssociated implements IPeerStatusGroupAssociated {
+
+                    public peerId: string;
+                    public devicePk: string;
+                    public groupPk: string;
+                    public static create(properties?: berty.messenger.v1.StreamEvent.IPeerStatusGroupAssociated): berty.messenger.v1.StreamEvent.PeerStatusGroupAssociated;
+                    public static encode(message: berty.messenger.v1.StreamEvent.IPeerStatusGroupAssociated, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.messenger.v1.StreamEvent.IPeerStatusGroupAssociated, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.StreamEvent.PeerStatusGroupAssociated;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.StreamEvent.PeerStatusGroupAssociated;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.StreamEvent.PeerStatusGroupAssociated;
+                    public static toObject(message: berty.messenger.v1.StreamEvent.PeerStatusGroupAssociated, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
                 }
             }
 

@@ -46,6 +46,7 @@ export interface WelshProtocolServiceClient {
 	groupInfo: UnaryType<beapi.protocol.ProtocolService['groupInfo']>
 	activateGroup: UnaryType<beapi.protocol.ProtocolService['activateGroup']>
 	deactivateGroup: UnaryType<beapi.protocol.ProtocolService['deactivateGroup']>
+	groupDeviceStatus: ResponseStreamType<beapi.protocol.ProtocolService['groupDeviceStatus']>
 	monitorGroup: ResponseStreamType<beapi.protocol.ProtocolService['monitorGroup']>
 	debugListGroups: ResponseStreamType<beapi.protocol.ProtocolService['debugListGroups']>
 	debugInspectGroupStore: ResponseStreamType<
