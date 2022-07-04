@@ -90,8 +90,11 @@ service ProtocolService {
   // DeactivateGroup closes a group
   rpc DeactivateGroup (DeactivateGroup.Request) returns (DeactivateGroup.Reply);
 
+  // @TODO: GroupDeviceStatus monitor device status
+  rpc GroupDeviceStatus(GroupDeviceStatus.Request) returns (stream GroupDeviceStatus.Reply);
+
   // Monitor Group events
-  rpc MonitorGroup (MonitorGroup.Request) returns (stream MonitorGroup.Reply);
+  rpc MonitorGroup(MonitorGroup.Request) returns (stream MonitorGroup.Reply);
 
   rpc DebugListGroups (DebugListGroups.Request) returns (stream DebugListGroups.Reply);
 
@@ -988,6 +991,46 @@ message DeactivateGroup {
   }
 
   message Reply {
+  }
+}
+
+message GroupDeviceStatus {
+  enum Type {
+    TypeUnknown = 0;
+    TypePeerDisconnected = 1;
+    TypePeerConnected = 2;
+    TypePeerReconnecting = 3;
+  }
+
+  enum Transport {
+    TptUnknown = 0;
+    TptLAN = 1;
+    TptWAN = 2;
+    TptProximity = 3;
+  }
+
+  message Request {
+    string group_pk = 1;
+  }
+
+  message Reply {
+    message PeerConnected {
+      string peer_id = 1 [(gogoproto.customname) = "PeerID"];
+      string device_pk = 2 [(gogoproto.customname) = "DevicePK"];
+      Transport transport = 3;
+      string maddr = 4;
+    }
+
+    message PeerReconnecting {
+      string peer_id = 1 [(gogoproto.customname) = "PeerID"];
+    }
+
+    message PeerDisconnected {
+      string peer_id = 1 [(gogoproto.customname) = "PeerID"];
+    }
+
+    Type type = 1;
+    bytes event = 2;
   }
 }
 

@@ -616,6 +616,10 @@ message StreamEvent {
     TypeNotified = 10;
     TypeMediaUpdated = 11;
     TypeConversationPartialLoad = 12;
+    TypePeerStatusConnected = 13;
+    TypePeerStatusReconnecting = 14;
+    TypePeerStatusDisconnected = 15;
+    TypePeerStatusGroupAssociated = 16;
   }
   message ConversationUpdated {
     Conversation conversation = 1;
@@ -680,6 +684,30 @@ message StreamEvent {
       Conversation conversation = 2;
       Contact contact = 3;
     }
+  }
+
+  // status events
+  message PeerStatusConnected {
+    enum Transport {
+      Unknown = 0;
+      LAN = 1;
+      WAN = 2;
+      Proximity = 3;
+    }
+
+    string peer_id = 1 [(gogoproto.customname) = "PeerID"];
+    Transport transport = 2;
+  }
+  message PeerStatusReconnecting {
+    string peer_id = 1 [(gogoproto.customname) = "PeerID"];
+  }
+  message PeerStatusDisconnected {
+    string peer_id = 1 [(gogoproto.customname) = "PeerID"];
+  }
+  message PeerStatusGroupAssociated {
+    string peer_id = 1 [(gogoproto.customname) = "PeerID"];
+    string device_pk = 2 [(gogoproto.customname) = "DevicePK"];
+    string group_pk = 3 [(gogoproto.customname) = "GroupPK"];
   }
 }
 
