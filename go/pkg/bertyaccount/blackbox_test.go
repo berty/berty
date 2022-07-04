@@ -103,11 +103,22 @@ func TestFlow(t *testing.T) {
 		require.True(t, gotErr)
 	}
 
-	// create and load a new account
+	// create a new account
 	{
 		rep, err := cl.CreateAccount(ctx, &accounttypes.CreateAccount_Request{
 			AccountID:   "account 1",
 			AccountName: "my first account",
+		})
+		require.NoError(t, err)
+		require.Equal(t, "account 1", rep.AccountMetadata.AccountID)
+		require.Equal(t, "my first account", rep.AccountMetadata.Name)
+		require.Zero(t, rep.AccountMetadata.LastOpened)
+	}
+
+	// load this new account
+	{
+		rep, err := cl.OpenAccount(ctx, &accounttypes.OpenAccount_Request{
+			AccountID: "account 1",
 		})
 		require.NoError(t, err)
 		require.Equal(t, "account 1", rep.AccountMetadata.AccountID)
@@ -377,11 +388,22 @@ func TestImportExportFlow(t *testing.T) {
 		require.Empty(t, rep.Accounts)
 	}
 
-	// create and load a new account
+	// create a new account
 	{
 		rep, err := cl.CreateAccount(ctx, &accounttypes.CreateAccount_Request{
 			AccountID:   "account 1",
 			AccountName: "my first account",
+		})
+		require.NoError(t, err)
+		require.Equal(t, "account 1", rep.AccountMetadata.AccountID)
+		require.Equal(t, "my first account", rep.AccountMetadata.Name)
+		require.Zero(t, rep.AccountMetadata.LastOpened)
+	}
+
+	// load this new account
+	{
+		rep, err := cl.OpenAccount(ctx, &accounttypes.OpenAccount_Request{
+			AccountID: "account 1",
 		})
 		require.NoError(t, err)
 		require.Equal(t, "account 1", rep.AccountMetadata.AccountID)

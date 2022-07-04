@@ -39,11 +39,7 @@ public class LoggerDriver: NSObject, BertybridgeNativeLoggerDriverProtocol {
   public init(_ subsytem: String = "logger", _ category: String = "log") {
     self.subsytem = subsytem
     self.category = category
-    #if CFG_APPSTORE
-    self.scope = Visibility.hidden
-    #else
     self.scope = Visibility.visible
-    #endif
 
     self.isEnabled = true
   }

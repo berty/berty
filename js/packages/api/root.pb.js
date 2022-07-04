@@ -235,7 +235,12 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     }
                   },
                   Reply: {
-                    fields: {}
+                    fields: {
+                      accountMetadata: {
+                        type: "AccountMetadata",
+                        id: 1
+                      }
+                    }
                   }
                 }
               },
@@ -495,22 +500,9 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                         type: "string",
                         id: 2
                       },
-                      args: {
-                        rule: "repeated",
-                        type: "string",
-                        id: 3
-                      },
-                      loggerFilters: {
-                        type: "string",
-                        id: 4
-                      },
                       networkConfig: {
                         type: "NetworkConfig",
-                        id: 5
-                      },
-                      sessionKind: {
-                        type: "string",
-                        id: 6
+                        id: 3
                       }
                     }
                   },

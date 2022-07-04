@@ -126,6 +126,7 @@ message OpenAccount {
     string session_kind = 5;
   }
   message Reply {
+    AccountMetadata account_metadata = 1;
   }
 }
 
@@ -214,10 +215,7 @@ message CreateAccount {
   message Request {
     string account_id = 1 [(gogoproto.customname) = "AccountID"];
     string account_name = 2;
-    repeated string args = 3;
-    string logger_filters = 4;
-    NetworkConfig network_config = 5;
-    string session_kind = 6;
+    NetworkConfig network_config = 3;
   }
   message Reply {
     AccountMetadata account_metadata = 1;

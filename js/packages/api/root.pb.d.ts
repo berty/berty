@@ -370,10 +370,12 @@ export namespace berty {
                 }
 
                 interface IReply {
+                    accountMetadata?: (berty.account.v1.IAccountMetadata|null);
                 }
 
                 class Reply implements IReply {
 
+                    public accountMetadata?: (berty.account.v1.IAccountMetadata|null);
                     public static create(properties?: berty.account.v1.OpenAccount.IReply): berty.account.v1.OpenAccount.Reply;
                     public static encode(message: berty.account.v1.OpenAccount.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.account.v1.OpenAccount.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -844,20 +846,14 @@ export namespace berty {
                 interface IRequest {
                     accountId?: (string|null);
                     accountName?: (string|null);
-                    args?: (string[]|null);
-                    loggerFilters?: (string|null);
                     networkConfig?: (berty.account.v1.INetworkConfig|null);
-                    sessionKind?: (string|null);
                 }
 
                 class Request implements IRequest {
 
                     public accountId: string;
                     public accountName: string;
-                    public args: string[];
-                    public loggerFilters: string;
                     public networkConfig?: (berty.account.v1.INetworkConfig|null);
-                    public sessionKind: string;
                     public static create(properties?: berty.account.v1.CreateAccount.IRequest): berty.account.v1.CreateAccount.Request;
                     public static encode(message: berty.account.v1.CreateAccount.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.account.v1.CreateAccount.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;

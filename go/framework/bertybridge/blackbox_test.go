@@ -55,10 +55,11 @@ func Example() {
 		"--store.dir=" + tmpdir,
 	}
 
-	// open account
+	var accountID string
+	// create account
 	{
 		// create `CreateAccount` Input
-		input := &accounttypes.CreateAccount_Request{Args: args}
+		input := &accounttypes.CreateAccount_Request{}
 		payload, err := proto.Marshal(input)
 		checkErr(err)
 
@@ -77,13 +78,49 @@ func Example() {
 		ret, err := b.InvokeBridgeMethod("/berty.bridge.v1.BridgeService/ClientInvokeUnary", reqb64)
 		checkErr(err)
 
+		// deserialize reply
 		var output bridge_svc.ClientInvokeUnary_Reply
 		err = decodeProtoMessage(ret, &output)
 		checkErr(err)
 
 		// deserialize reply
-		var res bridge_svc.ClientInvokeUnary_Reply
-		err = decodeProtoMessage(ret, &res)
+		var res accounttypes.CreateAccount_Reply
+		err = proto.Unmarshal(output.Payload, &res)
+		checkErr(err)
+
+		accountID = res.GetAccountMetadata().GetAccountID()
+
+		fmt.Println("[+] account created.")
+	}
+
+	// open account
+	{
+		// create `CreateAccount` Input
+		input := &accounttypes.OpenAccount_Request{
+			AccountID: accountID,
+			Args:      args,
+		}
+		payload, err := proto.Marshal(input)
+		checkErr(err)
+
+		// Serialize request
+		in := &bridge_svc.ClientInvokeUnary_Request{
+			MethodDesc: &bridge_svc.MethodDesc{
+				Name: "/berty.account.v1.AccountService/OpenAccount",
+			},
+			Payload: payload,
+		}
+
+		reqb64, err := encodeProtoMessage(in)
+		checkErr(err)
+
+		// invoke through bridge client
+		ret, err := b.InvokeBridgeMethod("/berty.bridge.v1.BridgeService/ClientInvokeUnary", reqb64)
+		checkErr(err)
+
+		// deserialize reply
+		var output bridge_svc.ClientInvokeUnary_Reply
+		err = decodeProtoMessage(ret, &output)
 		checkErr(err)
 
 		fmt.Println("[+] account opened.")
@@ -171,6 +208,7 @@ func Example() {
 
 	// Output:
 	// [+] initialized.
+	// [+] account created.
 	// [+] account opened.
 	// [+] has grpc-web listener:            false
 	// [+] has websocket listener:           true

@@ -36,7 +36,7 @@ import (
 	"berty.tech/berty/v2/go/pkg/username"
 )
 
-func (s *service) openAccount(ctx context.Context, req *accounttypes.OpenAccount_Request, prog *progress.Progress) error {
+func (s *service) openAccount(ctx context.Context, req *accounttypes.OpenAccount_Request, prog *progress.Progress) (*accounttypes.AccountMetadata, error) {
 	args := req.GetArgs()
 
 	if req.NetworkConfig == nil {
@@ -48,16 +48,16 @@ func (s *service) openAccount(ctx context.Context, req *accounttypes.OpenAccount
 	s.logger.Info("opening account with args", logutil.PrivateStrings("args", args))
 
 	if req.AccountID == "" {
-		return errcode.ErrBertyAccountNoIDSpecified
+		return nil, errcode.ErrBertyAccountNoIDSpecified
 	}
 
 	// close previous initManager
 	if s.initManager != nil {
-		return errcode.ErrBertyAccountAlreadyOpened
+		return nil, errcode.ErrBertyAccountAlreadyOpened
 	}
 
 	if strings.ContainsAny(filepath.Clean(req.AccountID), "/\\") {
-		return errcode.ErrBertyAccountInvalidIDFormat
+		return nil, errcode.ErrBertyAccountInvalidIDFormat
 	}
 
 	s.openedAccountID = filepath.Clean(req.AccountID)
@@ -65,7 +65,7 @@ func (s *service) openAccount(ctx context.Context, req *accounttypes.OpenAccount
 	accountStorePath := accountutils.GetAccountDir(s.rootdir, req.GetAccountID())
 
 	if _, err := os.Stat(accountStorePath); err != nil {
-		return errcode.ErrBertyAccountDataNotFound.Wrap(err)
+		return nil, errcode.ErrBertyAccountDataNotFound.Wrap(err)
 	}
 
 	if prog == nil {
@@ -94,15 +94,16 @@ func (s *service) openAccount(ctx context.Context, req *accounttypes.OpenAccount
 	if s.pushPlatformToken != nil {
 		data, err := s.pushPlatformToken.Marshal()
 		if err != nil {
-			return errcode.ErrSerialization.Wrap(err)
+			return nil, errcode.ErrSerialization.Wrap(err)
 		}
 
 		args = append(args, "--node.default-push-token", base64.RawURLEncoding.EncodeToString(data))
 	}
 
-	if _, err := s.updateAccountMetadataLastOpened(ctx, req.AccountID); err != nil {
+	meta, err := s.updateAccountMetadataLastOpened(ctx, req.AccountID)
+	if err != nil {
 		errCleanup()
-		return errcode.ErrBertyAccountMetadataUpdate.Wrap(err)
+		return nil, errcode.ErrBertyAccountMetadataUpdate.Wrap(err)
 	}
 
 	// setup manager logger
@@ -133,7 +134,7 @@ func (s *service) openAccount(ctx context.Context, req *accounttypes.OpenAccount
 		var err error
 		if initManager, err = s.openManager(req.SessionKind, streams, args...); err != nil {
 			errCleanup()
-			return errcode.ErrBertyAccountManagerOpen.Wrap(err)
+			return nil, errcode.ErrBertyAccountManagerOpen.Wrap(err)
 		}
 	}
 
@@ -142,18 +143,18 @@ func (s *service) openAccount(ctx context.Context, req *accounttypes.OpenAccount
 	// setup manager logger
 	prog.Get("setup-manager-logger").SetAsCurrent()
 	{
-		if _, err := initManager.GetLogger(); err != nil {
+		if _, err = initManager.GetLogger(); err != nil {
 			errCleanup()
-			return errcode.TODO.Wrap(err)
+			return nil, errcode.TODO.Wrap(err)
 		}
 	}
 
 	// setup local IPFS
 	prog.Get("setup-local-ipfs").SetAsCurrent()
 	{
-		if _, _, err := initManager.GetLocalIPFS(); err != nil {
+		if _, _, err = initManager.GetLocalIPFS(); err != nil {
 			errCleanup()
-			return errcode.TODO.Wrap(err)
+			return nil, errcode.TODO.Wrap(err)
 		}
 	}
 
@@ -164,25 +165,25 @@ func (s *service) openAccount(ctx context.Context, req *accounttypes.OpenAccount
 		var err error
 		if srvServices, _, err = initManager.GetGRPCServer(); err != nil {
 			errCleanup()
-			return errcode.ErrBertyAccountGRPCClient.Wrap(err)
+			return nil, errcode.ErrBertyAccountGRPCClient.Wrap(err)
 		}
 	}
 
 	// setup local messenger server
 	prog.Get("setup-local-messenger-server").SetAsCurrent()
 	{
-		if _, err := initManager.GetLocalMessengerServer(); err != nil {
+		if _, err = initManager.GetLocalMessengerServer(); err != nil {
 			errCleanup()
-			return errcode.TODO.Wrap(err)
+			return nil, errcode.TODO.Wrap(err)
 		}
 	}
 
 	// setup notification manager
 	prog.Get("setup-notification-manager").SetAsCurrent()
 	{
-		if _, err := initManager.GetNotificationManager(); err != nil {
+		if _, err = initManager.GetNotificationManager(); err != nil {
 			errCleanup()
-			return errcode.TODO.Wrap(err)
+			return nil, errcode.TODO.Wrap(err)
 		}
 	}
 
@@ -190,10 +191,9 @@ func (s *service) openAccount(ctx context.Context, req *accounttypes.OpenAccount
 	prog.Get("setup-grpc-client").SetAsCurrent()
 	var ccServices *grpc.ClientConn
 	{
-		var err error
 		if ccServices, err = initManager.GetGRPCClientConn(); err != nil {
 			errCleanup()
-			return errcode.ErrBertyAccountGRPCClient.Wrap(err)
+			return nil, errcode.ErrBertyAccountGRPCClient.Wrap(err)
 		}
 	}
 
@@ -218,7 +218,7 @@ func (s *service) openAccount(ctx context.Context, req *accounttypes.OpenAccount
 	s.initManager = initManager
 	prog.Get("finishing").SetAsCurrent().Done()
 
-	return nil
+	return meta, nil
 }
 
 // OpenAccount starts a Berty node.
@@ -229,11 +229,14 @@ func (s *service) OpenAccount(ctx context.Context, req *accounttypes.OpenAccount
 	endSection := tyber.SimpleSection(ctx, s.logger, fmt.Sprintf("Opening account %s (AccountService)", req.AccountID))
 	defer func() { endSection(err) }()
 
-	if err := s.openAccount(ctx, req, nil); err != nil {
+	meta, err := s.openAccount(ctx, req, nil)
+	if err != nil {
 		return nil, errcode.ErrBertyAccountOpenAccount.Wrap(err)
 	}
 
-	return &accounttypes.OpenAccount_Reply{}, nil
+	return &accounttypes.OpenAccount_Reply{
+		AccountMetadata: meta,
+	}, nil
 }
 
 // OpenAccountWithProgress is similar to OpenAccount, but also streams the progress.
@@ -282,7 +285,7 @@ func (s *service) OpenAccountWithProgress(req *accounttypes.OpenAccountWithProgr
 		LoggerFilters: req.LoggerFilters,
 		SessionKind:   req.SessionKind,
 	}
-	if err := s.openAccount(server.Context(), &typed, prog); err != nil {
+	if _, err := s.openAccount(server.Context(), &typed, prog); err != nil {
 		return errcode.ErrBertyAccountOpenAccount.Wrap(err)
 	}
 
@@ -560,8 +563,8 @@ func (s *service) createAccountMetadata(ctx context.Context, accountID string, n
 		meta.Name = accountID
 	}
 
-	meta.LastOpened = time.Now().UnixNano() / 1000
-	meta.CreationDate = meta.LastOpened
+	meta.LastOpened = 0
+	meta.CreationDate = time.Now().UnixNano() / 1000
 
 	metaBytes, err := proto.Marshal(meta)
 	if err != nil {
@@ -688,9 +691,16 @@ func (s *service) importAccount(ctx context.Context, req *accounttypes.ImportAcc
 
 	s.logger.Info("importing berty messenger account", zap.String("path", req.BackupPath))
 
-	meta, err := s.createAccount(ctx, &accounttypes.CreateAccount_Request{
+	if _, err := s.createAccount(ctx, &accounttypes.CreateAccount_Request{
 		AccountID:     req.AccountID,
 		AccountName:   req.AccountName,
+		NetworkConfig: req.NetworkConfig,
+	}, prog); err != nil {
+		return nil, err
+	}
+
+	meta, err := s.openAccount(ctx, &accounttypes.OpenAccount_Request{
+		AccountID:     req.AccountID,
 		Args:          append(req.Args, "-node.restore-export-path", req.BackupPath),
 		LoggerFilters: req.LoggerFilters,
 		NetworkConfig: req.NetworkConfig,
