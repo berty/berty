@@ -23,6 +23,10 @@ import QRCode from '@berty/assets/custom-icons/qr.svg'
 import Quote from '@berty/assets/custom-icons/quote.svg'
 import Services from '@berty/assets/custom-icons/services.svg'
 import Share from '@berty/assets/custom-icons/share.svg'
+import Transport4g from '@berty/assets/custom-icons/transport-icons/transport-4g.svg'
+import TransportBle from '@berty/assets/custom-icons/transport-icons/transport-ble.svg'
+import TransportNode from '@berty/assets/custom-icons/transport-icons/transport-node.svg'
+import TransportWifi from '@berty/assets/custom-icons/transport-icons/transport-wifi.svg'
 import UserPlus from '@berty/assets/custom-icons/user-plus.svg'
 import Users from '@berty/assets/custom-icons/users.svg'
 import WrongMan from '@berty/assets/custom-icons/wrong-man.svg'
@@ -52,6 +56,11 @@ const iconsMap: { [key: string]: React.FC<SvgProps> } = {
 	services: Services,
 	'expert-ble': ExpertBluetooth,
 	'expert-setting': ExpertSetting,
+	// transport icons
+	'transport-4g': Transport4g,
+	'transport-ble': TransportBle,
+	'transport-node': TransportNode,
+	'transport-wifi': TransportWifi,
 }
 
 const CustomIcon: React.FC<{
