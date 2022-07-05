@@ -34,7 +34,7 @@ import {
 } from '@berty/redux/reducers/networkConfig.reducer'
 import {
 	PersistentOptionsKeys,
-	selectPersistentOptions,
+	selectDevMode,
 	setPersistentOption,
 } from '@berty/redux/reducers/persistentOptions.reducer'
 import { selectProtocolClient, selectSelectedAccount } from '@berty/redux/reducers/ui.reducer'
@@ -119,7 +119,7 @@ export const SettingsHome: ScreenFC<'Settings.Home'> = withInAppNotification(
 		const dispatch = useDispatch()
 		const account = useAccount()
 		const { permissions } = useContext(PermissionsContext)
-		const persistentOptions = useSelector(selectPersistentOptions)
+		const devMode = useSelector(selectDevMode)
 		const [nbClick, setNbClick] = React.useState<number>(0)
 		const {
 			reply: systemInfo,
@@ -392,11 +392,11 @@ export const SettingsHome: ScreenFC<'Settings.Home'> = withInAppNotification(
 								iconName='github'
 								noRightArrow={true}
 								onPress={() => {
-									if (persistentOptions.devmode?.enable) {
+									if (devMode?.enable) {
 										return
 									}
 									if (nbClick + 1 === 7) {
-										console.log('activate devmode')
+										console.log('activate devMode')
 										dispatch(
 											setPersistentOption({
 												type: PersistentOptionsKeys.DevMode,
@@ -414,7 +414,7 @@ export const SettingsHome: ScreenFC<'Settings.Home'> = withInAppNotification(
 								})}
 							</MenuItemWithIcon>
 							<DividerItem />
-							{persistentOptions.devmode?.enable && (
+							{devMode?.enable && (
 								<MenuItemWithIcon iconName='code' onPress={() => navigate('Settings.DevTools')}>
 									{t('settings.home.devtools-button')}
 								</MenuItemWithIcon>

@@ -9,7 +9,7 @@ export enum PersistentOptionsKeys {
 	Log = 'log',
 	Configurations = 'configurations',
 	ProfileNotification = 'profileNotification',
-	DevMode = 'devmode',
+	DevMode = 'devMode',
 }
 
 type PersistentOptionsNotifications = {
@@ -166,5 +166,7 @@ const selectSlice = (state: LocalRootState) => state[sliceName]
 export const selectPersistentOptions = (state: LocalRootState) => selectSlice(state)
 
 export const { setPersistentOption } = slice.actions
+
+export const selectDevMode = (state: LocalRootState) => selectSlice(state).devMode
 
 export default makeRoot(slice.reducer)

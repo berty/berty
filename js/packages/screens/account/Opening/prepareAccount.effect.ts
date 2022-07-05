@@ -16,8 +16,8 @@ import {
 import { RootState } from '@berty/redux/store'
 import { storageGet, storageRemove } from '@berty/utils/accounts/accountClient'
 import { updateAccount } from '@berty/utils/accounts/accountUtils'
+import { GlobalPersistentOptionsKeys } from '@berty/utils/global-persistent-options/types'
 import { accountPushToggleState } from '@berty/utils/notification/notif-push'
-import { GlobalPersistentOptionsKeys } from '@berty/utils/persistent-options/types'
 
 const closeConvos = async (
 	messengerClient: ServiceClientType<beapi.messenger.MessengerService> | null,

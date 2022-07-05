@@ -3,7 +3,7 @@ import { Platform } from 'react-native'
 import {
 	GlobalPersistentOptions,
 	GlobalPersistentOptionsKeys,
-} from '@berty/utils/persistent-options/types'
+} from '@berty/utils/global-persistent-options/types'
 
 let format = '-*'
 if (__DEV__) {

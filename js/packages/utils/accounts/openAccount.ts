@@ -5,8 +5,8 @@ import { setStreamProgress, setStreamError, setStreamDone } from '@berty/redux/r
 import { AppDispatch, persistor } from '@berty/redux/store'
 import { accountClient, storageGet } from '@berty/utils/accounts/accountClient'
 import { defaultCLIArgs } from '@berty/utils/accounts/defaultCLIArgs'
-import { defaultGlobalPersistentOptions } from '@berty/utils/persistent-options/defaults'
-import { GlobalPersistentOptionsKeys } from '@berty/utils/persistent-options/types'
+import { defaultGlobalPersistentOptions } from '@berty/utils/global-persistent-options/defaults'
+import { GlobalPersistentOptionsKeys } from '@berty/utils/global-persistent-options/types'
 import { StreamProgressType } from '@berty/utils/protocol/progress.types'
 
 const openAccountWithProgress = async (
@@ -16,7 +16,7 @@ const openAccountWithProgress = async (
 ) =>
 	new Promise<void>(async (resolve, reject) => {
 		try {
-			let logFilters =
+			const logFilters =
 				(await storageGet(GlobalPersistentOptionsKeys.LogFilters)) ||
 				defaultGlobalPersistentOptions().logFilters.format
 			console.info(`logFilters=${logFilters}`)
@@ -67,7 +67,7 @@ export const openAccount = async (selectedAccount: string | null, dispatch: AppD
 	const cliArgs = defaultCLIArgs
 
 	try {
-		let tyberHost = (await storageGet(GlobalPersistentOptionsKeys.TyberHost)) || ''
+		const tyberHost = (await storageGet(GlobalPersistentOptionsKeys.TyberHost)) || ''
 		if (tyberHost !== '') {
 			// TODO: need to add this Tyber flag before enable this
 			// PR: https://github.com/berty/berty/pull/3877

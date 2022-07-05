@@ -44,9 +44,9 @@ import {
 } from '@berty/redux/reducers/persistentOptions.reducer'
 import { setDebugMode, setStreamError } from '@berty/redux/reducers/ui.reducer'
 import { storageGet, storageSet } from '@berty/utils/accounts/accountClient'
+import { defaultGlobalPersistentOptions } from '@berty/utils/global-persistent-options/defaults'
+import { GlobalPersistentOptionsKeys } from '@berty/utils/global-persistent-options/types'
 import { showNeedRestartNotification } from '@berty/utils/notification/notif-in-app'
-import { defaultGlobalPersistentOptions } from '@berty/utils/persistent-options/defaults'
-import { GlobalPersistentOptionsKeys } from '@berty/utils/persistent-options/types'
 
 //
 // DevTools
