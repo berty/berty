@@ -115,8 +115,11 @@ const createAccount = async driver => {
 			await pressButton(driver, 'Continue')
 			break
 		case 'Android':
-			await pressButtonByText(driver, 'SKIP') // skip push notif perm request
-			await pressButtonByText(driver, 'CONTINUE')
+			// Android API 33 requires user to accept notification permission
+			if (driver.capabilities.deviceApiLevel >= 33) {
+				await pressButtonByText(driver, 'SKIP') // skip push notif perm request
+				await pressButtonByText(driver, 'CONTINUE')
+			}
 			break
 		default:
 			throw new Error(`platform '${driver.capabilities.platform}' not supported`)
