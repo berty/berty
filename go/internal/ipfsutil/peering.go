@@ -126,7 +126,6 @@ func (ps *PeeringService) AddPeer(info peer.AddrInfo) {
 			backoffStrat: ps.backoffFactory(),
 		}
 
-		handler.expireFn = ps.RemovePeer
 		handler.ctx, handler.cancel = context.WithCancel(context.Background())
 		ps.peers[info.ID] = handler
 		switch ps.state {
@@ -214,9 +213,7 @@ type peerHandler struct {
 	addrs          []multiaddr.Multiaddr
 	backoffStrat   discovery.BackoffStrategy
 	reconnectTimer *time.Timer
-	expireFn       func(id peer.ID)
 
-	nextDelay time.Duration
 	muHandler sync.Mutex
 }
 

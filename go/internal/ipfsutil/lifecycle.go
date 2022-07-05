@@ -8,7 +8,6 @@ import (
 	"time"
 
 	"github.com/libp2p/go-libp2p-core/connmgr"
-	"github.com/libp2p/go-libp2p-core/event"
 	host "github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p/p2p/protocol/ping"
@@ -27,9 +26,9 @@ var (
 type ConnLifecycle struct {
 	connmgr.ConnManager
 
-	rootCtx    context.Context
-	rootCancel context.CancelFunc
-	logger     *zap.Logger
+	rootCtx context.Context
+
+	logger *zap.Logger
 
 	peering *PeeringService
 	ps      *ping.PingService
@@ -37,38 +36,33 @@ type ConnLifecycle struct {
 	lm      *lifecycle.Manager
 }
 
-func NewConnLifecycle(logger *zap.Logger, h host.Host, ps *PeeringService, lm *lifecycle.Manager) (*ConnLifecycle, error) {
-	ctx, cancel := context.WithCancel(context.Background())
+func NewConnLifecycle(ctx context.Context, logger *zap.Logger, h host.Host, ps *PeeringService, lm *lifecycle.Manager) (*ConnLifecycle, error) {
 	cl := &ConnLifecycle{
-		peering:    ps,
-		rootCtx:    ctx,
-		rootCancel: cancel,
-		logger:     logger.Named("ipfs-lc"),
-		ps:         ping.NewPingService(h),
-		h:          h,
-		lm:         lm,
+		peering: ps,
+		rootCtx: ctx,
+		logger:  logger,
+		ps:      ping.NewPingService(h),
+		h:       h,
+		lm:      lm,
 	}
 
-	go cl.handleLifecycle()
-
-	if err := cl.monitorConnection(ctx); err != nil {
+	// start peer of interest monitoring process
+	if err := cl.monitorPeerOfInterest(ctx); err != nil {
 		return nil, err
 	}
+
+	// start app state monitoring process
+	go cl.monitorAppState(ctx)
 
 	cl.logger.Debug("lifecycle conn started")
 	return cl, nil
 }
 
-func (cl *ConnLifecycle) Close() error {
-	cl.rootCancel()
-	return nil
-}
-
-func (cl *ConnLifecycle) handleLifecycle() {
+func (cl *ConnLifecycle) monitorAppState(ctx context.Context) {
 	currentState := lifecycle.StateActive
 	for {
 		start := time.Now()
-		if !cl.lm.WaitForStateChange(cl.rootCtx, currentState) {
+		if !cl.lm.WaitForStateChange(ctx, currentState) {
 			return
 		}
 		currentState = cl.lm.GetCurrentState()
@@ -135,9 +129,8 @@ func (cl *ConnLifecycle) dropUnavailableConn() {
 	}
 }
 
-func (cl *ConnLifecycle) monitorConnection(ctx context.Context) error {
+func (cl *ConnLifecycle) monitorPeerOfInterest(ctx context.Context) error {
 	sub, err := cl.h.EventBus().Subscribe([]interface{}{
-		new(event.EvtPeerConnectednessChanged),
 		new(EvtPeerTag),
 	})
 	if err != nil {
@@ -162,20 +155,18 @@ func (cl *ConnLifecycle) monitorConnection(ctx context.Context) error {
 				return
 			}
 
-			switch evt := e.(type) {
-			case EvtPeerTag:
-				oldTotal := evt.Total - evt.Diff
-				if evt.Total >= ConnPeerOfInterestMinScore && oldTotal < ConnPeerOfInterestMinScore {
-					infos := cl.h.Peerstore().PeerInfo(evt.Peer)
-					cl.peering.AddPeer(infos)
-					cl.logger.Debug("marking peer as peer of interest",
-						logutil.PrivateStringer("peer", evt.Peer), zap.Int("score", evt.Total), zap.Int("diff", evt.Diff), zap.String("last_tag", evt.Tag))
-				} else if evt.Total < ConnPeerOfInterestMinScore && oldTotal >= ConnPeerOfInterestMinScore {
-					cl.peering.RemovePeer(evt.Peer)
-					cl.logger.Debug("unmarking peer as peer of interest",
-						logutil.PrivateStringer("peer", evt.Peer), zap.Int("score", evt.Total), zap.Int("diff", evt.Diff), zap.String("last_tag", evt.Tag))
-				}
-			case event.EvtPeerConnectednessChanged:
+			evt := e.(EvtPeerTag)
+
+			oldTotal := evt.Total - evt.Diff
+			if evt.Total >= ConnPeerOfInterestMinScore && oldTotal < ConnPeerOfInterestMinScore {
+				infos := cl.h.Peerstore().PeerInfo(evt.Peer)
+				cl.peering.AddPeer(infos)
+				cl.logger.Debug("marking peer as peer of interest",
+					logutil.PrivateStringer("peer", evt.Peer), zap.Int("score", evt.Total), zap.Int("diff", evt.Diff), zap.String("last_tag", evt.Tag))
+			} else if evt.Total < ConnPeerOfInterestMinScore && oldTotal >= ConnPeerOfInterestMinScore {
+				cl.peering.RemovePeer(evt.Peer)
+				cl.logger.Debug("unmarking peer as peer of interest",
+					logutil.PrivateStringer("peer", evt.Peer), zap.Int("score", evt.Total), zap.Int("diff", evt.Diff), zap.String("last_tag", evt.Tag))
 			}
 		}
 	}()

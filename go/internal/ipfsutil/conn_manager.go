@@ -13,9 +13,9 @@ import (
 type TypeTagAction int
 
 const (
-	TypeTagAction_Tag TypeTagAction = iota
-	TypeTagAction_Untag
-	TypeTagAction_Upsert
+	TypeTagActionTag TypeTagAction = iota
+	TypeTagActionUntag
+	TypeTagActionUpsert
 )
 
 type EvtPeerTag struct {
@@ -71,7 +71,7 @@ func (c *BertyConnManager) TagPeer(p peer.ID, tag string, score int) {
 
 	if old != total && c.tagEmitter != nil {
 		evt := EvtPeerTag{
-			Kind:  TypeTagAction_Tag,
+			Kind:  TypeTagActionTag,
 			Peer:  p,
 			Tag:   tag,
 			Diff:  total - old,
@@ -92,7 +92,7 @@ func (c *BertyConnManager) UntagPeer(p peer.ID, tag string) {
 
 	if old != total && c.tagEmitter != nil {
 		evt := EvtPeerTag{
-			Kind:  TypeTagAction_Untag,
+			Kind:  TypeTagActionUntag,
 			Peer:  p,
 			Tag:   tag,
 			Diff:  total - old,
@@ -117,7 +117,7 @@ func (c *BertyConnManager) UpsertTag(p peer.ID, tag string, upsert func(int) int
 
 	if old != total && c.tagEmitter != nil {
 		evt := EvtPeerTag{
-			Kind:  TypeTagAction_Upsert,
+			Kind:  TypeTagActionUpsert,
 			Peer:  p,
 			Tag:   tag,
 			Diff:  total - old,

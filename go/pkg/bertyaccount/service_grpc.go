@@ -57,7 +57,7 @@ func (s *service) GetMessengerClient() (messengertypes.MessengerServiceClient, e
 	return messenger, err
 }
 
-// GetMessengerClient returns the Messenger Client of the actual Berty account if there is one selected.
+// GetIPFSNode returns the IPFS Node and core api interface
 func (s *service) GetIPFSNode() (ipfsutil.ExtendedCoreAPI, *core.IpfsNode, error) {
 	m, err := s.getInitManager()
 	if err != nil {

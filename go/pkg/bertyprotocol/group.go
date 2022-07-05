@@ -307,7 +307,7 @@ func TagGroupContextPeers(ctx context.Context, logger *zap.Logger, gc *GroupCont
 			evt := e.(stores.EventNewPeer)
 
 			tag := fmt.Sprintf("grp_%s", id)
-			logger.Debug("new peer of interest", zap.Stringer("peer", evt.Peer), zap.String("tag", tag), zap.Int("score", weight))
+			logger.Debug("new peer of interest", logutil.PrivateStringer("peer", evt.Peer), zap.String("tag", tag), zap.Int("score", weight))
 			ipfsCoreAPI.ConnMgr().TagPeer(evt.Peer, tag, weight)
 		}
 	}()
