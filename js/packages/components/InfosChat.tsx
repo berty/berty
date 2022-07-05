@@ -137,6 +137,9 @@ export const InfosChat: React.FC<beapi.messenger.IConversation> = ({
 
 	const isAccepted = contact?.state === beapi.messenger.Contact.State.Accepted
 	const isIncoming = contact?.state === beapi.messenger.Contact.State.IncomingRequest
+	const isOutgoing =
+		contact?.state === beapi.messenger.Contact.State.OutgoingRequestEnqueued ||
+		contact?.state === beapi.messenger.Contact.State.OutgoingRequestSent
 	const textColor = colors['background-header']
 
 	const [isRefresh, setIsRefresh] = useState<boolean>(false)
@@ -193,11 +196,13 @@ export const InfosChat: React.FC<beapi.messenger.IConversation> = ({
 					</>
 				)}
 			</View>
-			<View style={[flex.tiny, margin.top.small]}>
-				<PrimaryButton loading={isRefresh} onPress={handleRefreshButton} disabled={isRefresh}>
-					{t('chat.one-to-one.infos-chat.refresh-button')}
-				</PrimaryButton>
-			</View>
+			{isOutgoing && (
+				<View style={[margin.top.small]}>
+					<PrimaryButton loading={isRefresh} onPress={handleRefreshButton} disabled={isRefresh}>
+						{t('chat.one-to-one.infos-chat.refresh-button')}
+					</PrimaryButton>
+				</View>
+			)}
 		</View>
 	)
 }
