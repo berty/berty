@@ -34,7 +34,7 @@ func NewLogger(streams ...Stream) (*zap.Logger, func(), error) {
 		var config zap.Config
 		switch strings.ToLower(opts.format) {
 		case "":
-			config = zap.NewDevelopmentConfig()
+			config = zap.NewProductionConfig()
 		case "json":
 			config = zap.NewProductionConfig()
 			config.Development = true

@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { Platform } from 'react-native'
 
 // types
 
@@ -9,9 +8,8 @@ export enum PersistentOptionsKeys {
 	Debug = 'debug',
 	Log = 'log',
 	Configurations = 'configurations',
-	LogFilters = 'logFilters',
-	TyberHost = 'tyberHost',
 	ProfileNotification = 'profileNotification',
+	DevMode = 'devMode',
 }
 
 type PersistentOptionsNotifications = {
@@ -39,6 +37,10 @@ type PersistentOptionsLog = {
 	format: string
 }
 
+type PersistentOptionsDevMode = {
+	enable: boolean
+}
+
 export type Configuration = {
 	key: 'network' | 'notification' | 'replicate'
 	displayName: string
@@ -49,14 +51,6 @@ export type Configuration = {
 }
 
 type PersistentOptionsConfigurations = { [key: string]: Configuration }
-
-type PersistentOptionsLogFilters = {
-	format: string
-}
-
-type PersistentOptionsTyberHost = {
-	address: string
-}
 
 export const UpdatesProfileNotification = 'updates'
 type PersistentOptionsProfileNotification = {
@@ -85,16 +79,12 @@ type PersistentOptionsUpdate =
 			payload: Partial<PersistentOptionsConfigurations>
 	  }
 	| {
-			type: typeof PersistentOptionsKeys.LogFilters
-			payload: PersistentOptionsLogFilters
-	  }
-	| {
-			type: typeof PersistentOptionsKeys.TyberHost
-			payload: PersistentOptionsTyberHost
-	  }
-	| {
 			type: typeof PersistentOptionsKeys.ProfileNotification
 			payload: PersistentOptionsProfileNotification
+	  }
+	| {
+			type: typeof PersistentOptionsKeys.DevMode
+			payload: Partial<PersistentOptionsDevMode>
 	  }
 
 type PersistentOptions = {
@@ -103,12 +93,11 @@ type PersistentOptions = {
 	[PersistentOptionsKeys.Debug]: PersistentOptionsDebug
 	[PersistentOptionsKeys.Log]: PersistentOptionsLog
 	[PersistentOptionsKeys.Configurations]: PersistentOptionsConfigurations
-	[PersistentOptionsKeys.LogFilters]: PersistentOptionsLogFilters
-	[PersistentOptionsKeys.TyberHost]: PersistentOptionsTyberHost
 	[PersistentOptionsKeys.ProfileNotification]: PersistentOptionsProfileNotification
+	[PersistentOptionsKeys.DevMode]: PersistentOptionsDevMode
 }
 
-export const defaultPersistentOptions = (): PersistentOptions => {
+const defaultPersistentOptions = (): PersistentOptions => {
 	let suggestions: PersistentOptionsSuggestions = {}
 	// TODO uncomment it when suggestions bots works
 	// Object.values(globals.berty.contacts).forEach(async value => {
@@ -137,14 +126,11 @@ export const defaultPersistentOptions = (): PersistentOptions => {
 			format: 'json',
 		},
 		[PersistentOptionsKeys.Configurations]: {},
-		[PersistentOptionsKeys.LogFilters]: {
-			format: '*:bty*',
-		},
-		[PersistentOptionsKeys.TyberHost]: {
-			address: Platform.OS === 'android' ? '10.0.2.2:4242' : '127.0.0.1:4242',
-		},
 		[PersistentOptionsKeys.ProfileNotification]: {
 			[UpdatesProfileNotification]: 0,
+		},
+		[PersistentOptionsKeys.DevMode]: {
+			enable: false,
 		},
 	}
 }
@@ -180,5 +166,7 @@ const selectSlice = (state: LocalRootState) => state[sliceName]
 export const selectPersistentOptions = (state: LocalRootState) => selectSlice(state)
 
 export const { setPersistentOption } = slice.actions
+
+export const selectDevMode = (state: LocalRootState) => selectSlice(state).devMode
 
 export default makeRoot(slice.reducer)

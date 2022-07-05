@@ -8,7 +8,7 @@ import { useStyles } from '@berty/contexts/styles'
 import { useAccount } from '@berty/hooks'
 import { useNavigation } from '@berty/navigation'
 import { storageSet } from '@berty/utils/accounts/accountClient'
-import { GlobalPersistentOptionsKeys } from '@berty/utils/persistent-options/types'
+import { GlobalPersistentOptionsKeys } from '@berty/utils/global-persistent-options/types'
 
 export const CreateAccountBox: React.FC<{
 	defaultName: string

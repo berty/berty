@@ -64,7 +64,6 @@ type Options struct {
 	NBDriver              proximity.ProximityDriver
 	Keystore              accountutils.NativeKeystore
 	Logger                *zap.Logger
-	DisableLogging        bool
 	ServiceListeners      string
 }
 
@@ -72,10 +71,9 @@ type service struct {
 	rootCtx    context.Context
 	rootCancel context.CancelFunc
 
-	mdnslocker     sync.Locker
-	notifManager   notification.Manager
-	logger         *zap.Logger
-	disableLogging bool
+	mdnslocker   sync.Locker
+	notifManager notification.Manager
+	logger       *zap.Logger
 
 	rootdir           string
 	languages         []language.Tag
@@ -131,7 +129,6 @@ func NewService(opts *Options) (_ Service, err error) {
 		rootCtx:           rootCtx,
 		rootCancel:        rootCancelCtx,
 		logger:            opts.Logger,
-		disableLogging:    opts.DisableLogging,
 		lifecycleManager:  opts.LifecycleManager,
 		notifManager:      opts.NotificationManager,
 		sclients:          opts.ServiceClientRegister,

@@ -38,15 +38,15 @@ import { languages } from '@berty/i18n/locale/languages'
 import { GoBridge } from '@berty/native-modules/GoBridge'
 import { ScreenFC, useNavigation } from '@berty/navigation'
 import {
-	defaultPersistentOptions,
 	PersistentOptionsKeys,
 	selectPersistentOptions,
 	setPersistentOption,
 } from '@berty/redux/reducers/persistentOptions.reducer'
 import { setDebugMode, setStreamError } from '@berty/redux/reducers/ui.reducer'
 import { storageGet, storageSet } from '@berty/utils/accounts/accountClient'
+import { defaultGlobalPersistentOptions } from '@berty/utils/global-persistent-options/defaults'
+import { GlobalPersistentOptionsKeys } from '@berty/utils/global-persistent-options/types'
 import { showNeedRestartNotification } from '@berty/utils/notification/notif-in-app'
-import { GlobalPersistentOptionsKeys } from '@berty/utils/persistent-options/types'
 
 //
 // DevTools
@@ -457,14 +457,12 @@ const BodyDevTools: React.FC<{}> = withInAppNotification(({ showNotification }: 
 			<StringOptionInput
 				name={t('settings.devtools.log-filters-button.name')}
 				bulletPointValue={t('settings.devtools.log-filters-button.bullet-point')}
-				getOptionValue={() => persistentOptions.logFilters.format}
-				setOptionValue={val => {
-					dispatch(
-						setPersistentOption({
-							type: PersistentOptionsKeys.LogFilters,
-							payload: { format: val },
-						}),
-					)
+				getOptionValue={async () =>
+					(await storageGet(GlobalPersistentOptionsKeys.LogFilters)) ||
+					defaultGlobalPersistentOptions().logFilters.format
+				}
+				setOptionValue={async val => {
+					await storageSet(GlobalPersistentOptionsKeys.LogFilters, val)
 					showNeedRestartNotification(showNotification, restart, t)
 				}}
 			/>
@@ -473,7 +471,7 @@ const BodyDevTools: React.FC<{}> = withInAppNotification(({ showNotification }: 
 				bulletPointValue={t('settings.devtools.tyber-host-button.bullet-point')}
 				getOptionValue={async () =>
 					(await storageGet(GlobalPersistentOptionsKeys.TyberHost)) ||
-					defaultPersistentOptions().tyberHost.address
+					defaultGlobalPersistentOptions().tyberHost.address
 				}
 				setOptionValue={async val => {
 					await storageSet(GlobalPersistentOptionsKeys.TyberHost, val)

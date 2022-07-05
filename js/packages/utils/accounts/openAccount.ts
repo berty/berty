@@ -5,7 +5,8 @@ import { setStreamProgress, setStreamError, setStreamDone } from '@berty/redux/r
 import { AppDispatch, persistor } from '@berty/redux/store'
 import { accountClient, storageGet } from '@berty/utils/accounts/accountClient'
 import { defaultCLIArgs } from '@berty/utils/accounts/defaultCLIArgs'
-import { GlobalPersistentOptionsKeys } from '@berty/utils/persistent-options/types'
+import { defaultGlobalPersistentOptions } from '@berty/utils/global-persistent-options/defaults'
+import { GlobalPersistentOptionsKeys } from '@berty/utils/global-persistent-options/types'
 import { StreamProgressType } from '@berty/utils/protocol/progress.types'
 
 const openAccountWithProgress = async (
@@ -15,10 +16,16 @@ const openAccountWithProgress = async (
 ) =>
 	new Promise<void>(async (resolve, reject) => {
 		try {
+			const logFilters =
+				(await storageGet(GlobalPersistentOptionsKeys.LogFilters)) ||
+				defaultGlobalPersistentOptions().logFilters.format
+			console.info(`logFilters=${logFilters}`)
+
 			const stream = await accountClient.openAccountWithProgress({
 				args: cliArgs,
 				accountId: selectedAccount?.toString(),
 				sessionKind: Platform.OS === 'web' ? 'desktop-electron' : null,
+				loggerFilters: logFilters,
 			})
 			stream.onMessage((msg, err) => {
 				if (err?.EOF) {
@@ -57,18 +64,19 @@ export const openAccount = async (selectedAccount: string | null, dispatch: AppD
 		return
 	}
 
-	let tyberHost = ''
+	const cliArgs = defaultCLIArgs
+
 	try {
-		tyberHost = (await storageGet(GlobalPersistentOptionsKeys.TyberHost)) || ''
+		const tyberHost = (await storageGet(GlobalPersistentOptionsKeys.TyberHost)) || ''
 		if (tyberHost !== '') {
-			console.warn(`connecting to ${tyberHost}`)
+			// TODO: need to add this Tyber flag before enable this
+			// PR: https://github.com/berty/berty/pull/3877
+			// console.info(`connecting to ${tyberHost}`)
+			// cliArgs.push('--log.tyber-auto-attach=' + tyberHost)
 		}
 	} catch (e) {
 		console.warn(e)
 	}
-
-	// FIXME: pass tyber host as arg
-	const cliArgs = defaultCLIArgs
 
 	let openedAccount: beapi.account.GetOpenedAccount.Reply
 

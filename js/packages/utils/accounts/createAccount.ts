@@ -1,5 +1,4 @@
 import { NavigationProp } from '@react-navigation/native'
-import { Platform } from 'react-native'
 
 import beapi from '@berty/api'
 import { ScreensParams } from '@berty/navigation/types'
@@ -23,7 +22,6 @@ export const createAccount = async (
 		}
 		resp = await accountClient.createAccount({
 			networkConfig,
-			sessionKind: Platform.OS === 'web' ? 'desktop-electron' : null,
 		})
 		// this line can cause error like AppStorageGet: datastore key not found
 		// this error is triggered when it's the first time that the account is persisted, and it's normal

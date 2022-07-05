@@ -63,8 +63,6 @@ type Manager struct {
 		ID string `json:"ID,omitempty"`
 	} `json:"Session,omitempty"`
 	Logging struct {
-		DisableLogging bool
-
 		DefaultLoggerStreams []logutil.Stream
 		StderrFormat         string `json:"StderrFormat,omitempty"`
 		StderrFilters        string `json:"StderrFilters,omitempty"`
@@ -207,7 +205,6 @@ type Manager struct {
 
 type ManagerOpts struct {
 	DoNotSetDefaultDir   bool
-	DisableLogging       bool
 	DefaultLoggerStreams []logutil.Stream
 	NativeKeystore       accountutils.NativeKeystore
 	AccountID            string
@@ -226,9 +223,6 @@ func New(ctx context.Context, opts *ManagerOpts) (*Manager, error) {
 		m.accountID = "0"
 	}
 
-	// explicitly disable logging
-	m.Logging.DisableLogging = opts.DisableLogging
-
 	// special default values:
 	// this is not the good place to put all the default values.
 	//
@@ -242,8 +236,8 @@ func New(ctx context.Context, opts *ManagerOpts) (*Manager, error) {
 	//
 	// the good location for other variables is in the initutil.SetupFoo functions.
 	m.Logging.DefaultLoggerStreams = opts.DefaultLoggerStreams
-	m.Logging.StderrFilters = defaultLoggingFilters
-	m.Logging.RingFilters = defaultLoggingFilters
+	m.Logging.StderrFilters = DefaultLoggingFilters
+	m.Logging.RingFilters = DefaultLoggingFilters
 	m.Logging.FileFilters = "*"
 	m.Logging.StderrFormat = "color"
 	m.Logging.RingSize = 10 // 10MB ring buffer

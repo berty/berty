@@ -114,7 +114,7 @@ func (s *service) openAccount(ctx context.Context, req *accounttypes.OpenAccount
 	streams := []logutil.Stream(nil)
 	{
 		if req.LoggerFilters == "" {
-			req.LoggerFilters = "debug+:bty*,-*.grpc warn+:*.grpc error+:*"
+			req.LoggerFilters = initutil.DefaultLoggingFilters
 		}
 
 		nativeLoggerStream := logutil.NewCustomStream(req.LoggerFilters, s.logger)
@@ -229,11 +229,14 @@ func (s *service) OpenAccount(ctx context.Context, req *accounttypes.OpenAccount
 	endSection := tyber.SimpleSection(ctx, s.logger, fmt.Sprintf("Opening account %s (AccountService)", req.AccountID))
 	defer func() { endSection(err) }()
 
-	if _, err := s.openAccount(ctx, req, nil); err != nil {
+	meta, err := s.openAccount(ctx, req, nil)
+	if err != nil {
 		return nil, errcode.ErrBertyAccountOpenAccount.Wrap(err)
 	}
 
-	return &accounttypes.OpenAccount_Reply{}, nil
+	return &accounttypes.OpenAccount_Reply{
+		AccountMetadata: meta,
+	}, nil
 }
 
 // OpenAccountWithProgress is similar to OpenAccount, but also streams the progress.
@@ -382,7 +385,6 @@ func (s *service) openManager(kind string, defaultLoggerStreams []logutil.Stream
 	manager, err := initutil.New(context.Background(), &initutil.ManagerOpts{
 		DoNotSetDefaultDir:   true,
 		DefaultLoggerStreams: defaultLoggerStreams,
-		DisableLogging:       s.disableLogging,
 		NativeKeystore:       s.nativeKeystore,
 		AccountID:            s.accountData.AccountID,
 	})
@@ -561,8 +563,8 @@ func (s *service) createAccountMetadata(ctx context.Context, accountID string, n
 		meta.Name = accountID
 	}
 
-	meta.LastOpened = time.Now().UnixNano() / 1000
-	meta.CreationDate = meta.LastOpened
+	meta.LastOpened = 0
+	meta.CreationDate = time.Now().UnixNano() / 1000
 
 	metaBytes, err := proto.Marshal(meta)
 	if err != nil {
@@ -689,9 +691,16 @@ func (s *service) importAccount(ctx context.Context, req *accounttypes.ImportAcc
 
 	s.logger.Info("importing berty messenger account", zap.String("path", req.BackupPath))
 
-	meta, err := s.createAccount(ctx, &accounttypes.CreateAccount_Request{
+	if _, err := s.createAccount(ctx, &accounttypes.CreateAccount_Request{
 		AccountID:     req.AccountID,
 		AccountName:   req.AccountName,
+		NetworkConfig: req.NetworkConfig,
+	}, prog); err != nil {
+		return nil, err
+	}
+
+	meta, err := s.openAccount(ctx, &accounttypes.OpenAccount_Request{
+		AccountID:     req.AccountID,
 		Args:          append(req.Args, "-node.restore-export-path", req.BackupPath),
 		LoggerFilters: req.LoggerFilters,
 		NetworkConfig: req.NetworkConfig,
@@ -746,7 +755,7 @@ func (s *service) createAccount(ctx context.Context, req *accounttypes.CreateAcc
 		}
 	}
 
-	_, err := s.createAccountMetadata(ctx, req.AccountID, req.AccountName)
+	meta, err := s.createAccountMetadata(ctx, req.AccountID, req.AccountName)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
@@ -756,17 +765,6 @@ func (s *service) createAccount(ctx context.Context, req *accounttypes.CreateAcc
 	}
 
 	if err := s.saveNetworkConfigForAccount(ctx, req.AccountID, req.NetworkConfig); err != nil {
-		return nil, errcode.TODO.Wrap(err)
-	}
-
-	meta, err := s.openAccount(ctx, &accounttypes.OpenAccount_Request{
-		Args:          req.Args,
-		AccountID:     req.AccountID,
-		LoggerFilters: req.LoggerFilters,
-		NetworkConfig: req.NetworkConfig,
-		SessionKind:   req.SessionKind,
-	}, prog)
-	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
