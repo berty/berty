@@ -43,14 +43,14 @@ require (
 	github.com/imdario/mergo v0.3.11 // indirect
 	github.com/improbable-eng/grpc-web v0.14.1
 	github.com/ipfs-shipyard/gomobile-ipfs/go v0.0.0-20220121164338-5af8e0f4276a
-	github.com/ipfs/go-cid v0.1.0
+	github.com/ipfs/go-cid v0.2.0
 	github.com/ipfs/go-datastore v0.5.1
 	github.com/ipfs/go-ipfs v0.12.2
 	github.com/ipfs/go-ipfs-config v0.19.0
 	github.com/ipfs/go-ipfs-files v0.0.9
 	github.com/ipfs/go-ipfs-keystore v0.0.2
 	github.com/ipfs/go-ipld-cbor v0.0.6
-	github.com/ipfs/go-log/v2 v2.4.0
+	github.com/ipfs/go-log/v2 v2.5.1
 	github.com/ipfs/interface-go-ipfs-core v0.5.2
 	github.com/itsTurnip/dishooks v0.0.0-20200206125049-b4fc7c7b042e
 	github.com/jbenet/go-context v0.0.0-20150711004518-d14ea06fba99
@@ -59,7 +59,7 @@ require (
 	github.com/libp2p/go-eventbus v0.2.1
 	github.com/libp2p/go-libp2p v0.17.0
 	github.com/libp2p/go-libp2p-connmgr v0.2.4
-	github.com/libp2p/go-libp2p-core v0.13.0
+	github.com/libp2p/go-libp2p-core v0.19.1
 	github.com/libp2p/go-libp2p-discovery v0.6.0
 	github.com/libp2p/go-libp2p-kad-dht v0.15.0
 	github.com/libp2p/go-libp2p-pubsub v0.6.0
@@ -79,7 +79,7 @@ require (
 	github.com/multiformats/go-multiaddr-dns v0.3.1
 	github.com/multiformats/go-multiaddr-fmt v0.1.0
 	github.com/multiformats/go-multibase v0.0.3
-	github.com/multiformats/go-multicodec v0.3.0
+	github.com/multiformats/go-multicodec v0.4.1
 	github.com/multiformats/go-multihash v0.1.0
 	github.com/mutecomm/go-sqlcipher/v4 v4.4.2
 	github.com/nyaruka/phonenumbers v1.0.75
