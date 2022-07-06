@@ -30,3 +30,15 @@ info Installing "/Users/norman/Library/Developer/Xcode/DerivedData/Berty-fhgkrmo
 ```sh
 IOS_APP=<path-to-the-app> node e2e-tests/basic.js
 ```
+
+## Known errors
+
+### AccountService init fails due to missing secure keystore entitlement
+
+The AccountService init fails with error
+
+```
+[ERROR] Error while Initializing AccountService	{"tyberLogType": "step", "step": {"parentTraceID":"3eb6463a-6640-406a-8059-178da420fe18","details":[{"name":"Error","description":"TODO(#666): ErrKeystorePut(#401): The operation couldn’t be completed. (SecItemCopyMatching failed: A required entitlement isn't present. error 0.); The operation couldn’t be completed. (SecItemAdd failed: A required entitlement isn't present. error 0.)"},{"name":"RootDir","description":"/Users/norman/Library/Developer/CoreSimulator/Devices/9F9EF88A-B5CB-434F-AB6B-D22F40A28F33/data/Containers/Shared/AppGroup/8A717BC2-9AF4-476D-B6FA-3FA0C4FFDA7A/berty"}],"status":"failed","endTrace":true,"updateTraceName":"","forceReopen":false}}
+```
+
+This means the app is not properly signed, one way to fix this without a proper cert is to directly build the app with a simulator as destination (like `react-native run-ios` does)
