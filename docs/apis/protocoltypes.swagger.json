@@ -761,6 +761,48 @@
         ]
       }
     },
+    "/berty.protocol.v1/ProtocolService/GroupDeviceStatus": {
+      "post": {
+        "summary": "@TODO: GroupDeviceStatus monitor device status",
+        "operationId": "ProtocolService_GroupDeviceStatus",
+        "responses": {
+          "200": {
+            "description": "A successful response.(streaming responses)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "result": {
+                  "$ref": "#/definitions/v1GroupDeviceStatusReply"
+                },
+                "error": {
+                  "$ref": "#/definitions/runtimeStreamError"
+                }
+              },
+              "title": "Stream result of v1GroupDeviceStatusReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1GroupDeviceStatusRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProtocolService"
+        ]
+      }
+    },
     "/berty.protocol.v1/ProtocolService/GroupInfo": {
       "post": {
         "summary": "GroupInfo retrieves information about a group",
@@ -2453,6 +2495,36 @@
         }
       },
       "title": "Group define a group and is enough to invite someone to it"
+    },
+    "v1GroupDeviceStatusReply": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "$ref": "#/definitions/v1GroupDeviceStatusType"
+        },
+        "event": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
+    "v1GroupDeviceStatusRequest": {
+      "type": "object",
+      "properties": {
+        "group_pk": {
+          "type": "string"
+        }
+      }
+    },
+    "v1GroupDeviceStatusType": {
+      "type": "string",
+      "enum": [
+        "TypeUnknown",
+        "TypePeerDisconnected",
+        "TypePeerConnected",
+        "TypePeerReconnecting"
+      ],
+      "default": "TypeUnknown"
     },
     "v1GroupInfoReply": {
       "type": "object",

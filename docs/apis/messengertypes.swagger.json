@@ -3268,7 +3268,11 @@
         "TypeDeviceUpdated",
         "TypeNotified",
         "TypeMediaUpdated",
-        "TypeConversationPartialLoad"
+        "TypeConversationPartialLoad",
+        "TypePeerStatusConnected",
+        "TypePeerStatusReconnecting",
+        "TypePeerStatusDisconnected",
+        "TypePeerStatusGroupAssociated"
       ],
       "default": "Undefined"
     },

@@ -2,6 +2,7 @@ package bertyprotocol
 
 import (
 	"context"
+	"fmt"
 	"strings"
 
 	"github.com/libp2p/go-libp2p-core/crypto"
@@ -94,6 +95,11 @@ func (s *service) DeactivateGroup(_ context.Context, req *protocoltypes.Deactiva
 	}
 
 	return &protocoltypes.DeactivateGroup_Reply{}, nil
+}
+
+// @TODO: GroupDeviceStatus
+func (s *service) GroupDeviceStatus(req *protocoltypes.GroupDeviceStatus_Request, srv protocoltypes.ProtocolService_GroupDeviceStatusServer) error {
+	return fmt.Errorf("not implemented")
 }
 
 func (s *service) MonitorGroup(req *protocoltypes.MonitorGroup_Request, srv protocoltypes.ProtocolService_MonitorGroupServer) error {

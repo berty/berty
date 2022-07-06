@@ -170,6 +170,10 @@
     - [StreamEvent.Notified.ContactRequestSent](#berty.messenger.v1.StreamEvent.Notified.ContactRequestSent)
     - [StreamEvent.Notified.GroupInvitation](#berty.messenger.v1.StreamEvent.Notified.GroupInvitation)
     - [StreamEvent.Notified.MessageReceived](#berty.messenger.v1.StreamEvent.Notified.MessageReceived)
+    - [StreamEvent.PeerStatusConnected](#berty.messenger.v1.StreamEvent.PeerStatusConnected)
+    - [StreamEvent.PeerStatusDisconnected](#berty.messenger.v1.StreamEvent.PeerStatusDisconnected)
+    - [StreamEvent.PeerStatusGroupAssociated](#berty.messenger.v1.StreamEvent.PeerStatusGroupAssociated)
+    - [StreamEvent.PeerStatusReconnecting](#berty.messenger.v1.StreamEvent.PeerStatusReconnecting)
     - [SystemInfo](#berty.messenger.v1.SystemInfo)
     - [SystemInfo.DB](#berty.messenger.v1.SystemInfo.DB)
     - [SystemInfo.Messenger](#berty.messenger.v1.SystemInfo.Messenger)
@@ -189,6 +193,7 @@
     - [Media.State](#berty.messenger.v1.Media.State)
     - [MediaMetadataType](#berty.messenger.v1.MediaMetadataType)
     - [StreamEvent.Notified.Type](#berty.messenger.v1.StreamEvent.Notified.Type)
+    - [StreamEvent.PeerStatusConnected.Transport](#berty.messenger.v1.StreamEvent.PeerStatusConnected.Transport)
     - [StreamEvent.Type](#berty.messenger.v1.StreamEvent.Type)
   
     - [MessengerService](#berty.messenger.v1.MessengerService)
@@ -1502,6 +1507,42 @@ Composite primary key
 | conversation | [Conversation](#berty.messenger.v1.Conversation) |  |  |
 | contact | [Contact](#berty.messenger.v1.Contact) |  |  |
 
+<a name="berty.messenger.v1.StreamEvent.PeerStatusConnected"></a>
+
+### StreamEvent.PeerStatusConnected
+status events
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| peer_id | [string](#string) |  |  |
+| transport | [StreamEvent.PeerStatusConnected.Transport](#berty.messenger.v1.StreamEvent.PeerStatusConnected.Transport) |  |  |
+
+<a name="berty.messenger.v1.StreamEvent.PeerStatusDisconnected"></a>
+
+### StreamEvent.PeerStatusDisconnected
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| peer_id | [string](#string) |  |  |
+
+<a name="berty.messenger.v1.StreamEvent.PeerStatusGroupAssociated"></a>
+
+### StreamEvent.PeerStatusGroupAssociated
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| peer_id | [string](#string) |  |  |
+| device_pk | [string](#string) |  |  |
+| group_pk | [string](#string) |  |  |
+
+<a name="berty.messenger.v1.StreamEvent.PeerStatusReconnecting"></a>
+
+### StreamEvent.PeerStatusReconnecting
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| peer_id | [string](#string) |  |  |
+
 <a name="berty.messenger.v1.SystemInfo"></a>
 
 ### SystemInfo
@@ -1678,6 +1719,17 @@ Composite primary key
 | TypeContactRequestReceived | 4 |  |
 | TypeGroupInvitation | 5 |  |
 
+<a name="berty.messenger.v1.StreamEvent.PeerStatusConnected.Transport"></a>
+
+### StreamEvent.PeerStatusConnected.Transport
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| Unknown | 0 |  |
+| LAN | 1 |  |
+| WAN | 2 |  |
+| Proximity | 3 |  |
+
 <a name="berty.messenger.v1.StreamEvent.Type"></a>
 
 ### StreamEvent.Type
@@ -1697,6 +1749,10 @@ Composite primary key
 | TypeNotified | 10 |  |
 | TypeMediaUpdated | 11 |  |
 | TypeConversationPartialLoad | 12 |  |
+| TypePeerStatusConnected | 13 |  |
+| TypePeerStatusReconnecting | 14 |  |
+| TypePeerStatusDisconnected | 15 |  |
+| TypePeerStatusGroupAssociated | 16 |  |
 
  
 
