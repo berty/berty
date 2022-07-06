@@ -413,7 +413,7 @@
 			"title": "Conversation settings",
 			"media-button": "Medias, links & docs",
 			"members-button": {
-				"title": "Members"
+				"title": "Network Status Members ({{count}})"
 			},
 			"add-member-button": "Add member",
 			"invite-button": "Invite by link",

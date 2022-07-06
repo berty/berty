@@ -11,6 +11,7 @@ import { Provider as ReduxProvider } from 'react-redux'
 import BoldOpenSans from '@berty/assets/font/OpenSans-Bold.ttf'
 import LightOpenSans from '@berty/assets/font/OpenSans-Light.ttf'
 import LightItalicOpenSans from '@berty/assets/font/OpenSans-LightItalic.ttf'
+import RegularOpenSans from '@berty/assets/font/OpenSans-Regular.ttf'
 import SemiBoldOpenSans from '@berty/assets/font/OpenSans-SemiBold.ttf'
 import SemiBoldItalicOpenSans from '@berty/assets/font/OpenSans-SemiBoldItalic.ttf'
 import { ErrorScreen } from '@berty/components/error'
@@ -65,6 +66,10 @@ const useFonts = () => {
 				},
 				'Italic Open Sans': {
 					uri: SemiBoldItalicOpenSans,
+					display: Font.FontDisplay.SWAP,
+				},
+				'Regular Open Sans': {
+					uri: RegularOpenSans,
 					display: Font.FontDisplay.SWAP,
 				},
 			})
