@@ -122,7 +122,7 @@ func (s *service) activateGroup(ctx context.Context, pk crypto.PubKey, localOnly
 
 		s.openedGroups[string(id)] = gc
 
-		TagGroupContextPeers(s.ctx, gc, s.ipfsCoreAPI, 42)
+		TagGroupContextPeers(s.ctx, s.logger, gc, s.ipfsCoreAPI, 42)
 
 		return nil
 	case protocoltypes.GroupTypeAccount:

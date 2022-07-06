@@ -275,7 +275,7 @@ func ActivateGroupContext(ctx context.Context, gc *GroupContext, contact crypto.
 	return activateGroupContext(ctx, gc, contact, true)
 }
 
-func TagGroupContextPeers(ctx context.Context, gc *GroupContext, ipfsCoreAPI ipfsutil.ExtendedCoreAPI, weight int) {
+func TagGroupContextPeers(ctx context.Context, logger *zap.Logger, gc *GroupContext, ipfsCoreAPI ipfsutil.ExtendedCoreAPI, weight int) {
 	id := gc.Group().GroupIDAsString()
 
 	chSub1, err := gc.metadataStore.EventBus().Subscribe(new(stores.EventNewPeer))
@@ -305,7 +305,10 @@ func TagGroupContextPeers(ctx context.Context, gc *GroupContext, ipfsCoreAPI ipf
 			}
 
 			evt := e.(stores.EventNewPeer)
-			ipfsCoreAPI.ConnMgr().TagPeer(evt.Peer, fmt.Sprintf("grp_%s", id), weight)
+
+			tag := fmt.Sprintf("grp_%s", id)
+			logger.Debug("new peer of interest", logutil.PrivateStringer("peer", evt.Peer), zap.String("tag", tag), zap.Int("score", weight))
+			ipfsCoreAPI.ConnMgr().TagPeer(evt.Peer, tag, weight)
 		}
 	}()
 }

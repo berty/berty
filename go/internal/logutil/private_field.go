@@ -43,6 +43,14 @@ func (p *PrivateField) PrivateString(key string, value string) zap.Field {
 	return zap.String(key, value)
 }
 
+func (p *PrivateField) PrivateStringer(key string, value fmt.Stringer) zap.Field {
+	if p.Enabled {
+		return zap.String(key, p.hash(value.String()))
+	}
+
+	return zap.Stringer(key, value)
+}
+
 func (p *PrivateField) PrivateStrings(key string, values []string) zap.Field {
 	if p.Enabled {
 		strings := make([]string, len(values))
@@ -86,6 +94,14 @@ func PrivateString(key string, value string) zap.Field {
 	mu.RUnlock()
 
 	return g.PrivateString(key, value)
+}
+
+func PrivateStringer(key string, value fmt.Stringer) zap.Field {
+	mu.RLock()
+	g := global
+	mu.RUnlock()
+
+	return g.PrivateStringer(key, value)
 }
 
 func PrivateAny(key string, value interface{}) zap.Field {

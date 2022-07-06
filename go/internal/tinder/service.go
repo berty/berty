@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"sync"
 	"time"
 
 	p2p_discovery "github.com/libp2p/go-libp2p-core/discovery"
@@ -52,6 +53,8 @@ type service struct {
 	nnotify *NetworkUpdate
 	emitter p2p_event.Emitter
 	doneCtx context.CancelFunc
+
+	onceClose sync.Once
 }
 
 type Opts struct {
@@ -146,13 +149,15 @@ func NewService(opts *Opts, h host.Host, drivers ...*Driver) (Service, error) {
 func (s *service) Close() error {
 	s.doneCtx()
 
-	// we only want to log errors here, discard them on return
-	if err := s.emitter.Close(); err != nil {
-		s.logger.Warn("unable to close service emitter", zap.Error(err))
-	}
-	if err := s.nnotify.Close(); err != nil {
-		s.logger.Warn("unable to close network notify", zap.Error(err))
-	}
+	s.onceClose.Do(func() {
+		// we only want to log errors here, discard them on return
+		if err := s.emitter.Close(); err != nil {
+			s.logger.Warn("unable to close service emitter", zap.Error(err))
+		}
+		if err := s.nnotify.Close(); err != nil {
+			s.logger.Warn("unable to close network notify", zap.Error(err))
+		}
+	})
 
 	return nil
 }

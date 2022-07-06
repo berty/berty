@@ -24,7 +24,6 @@ import (
 	"berty.tech/berty/v2/go/pkg/accounttypes"
 	account_svc "berty.tech/berty/v2/go/pkg/bertyaccount"
 	bridge_svc "berty.tech/berty/v2/go/pkg/bertybridge"
-	"berty.tech/berty/v2/go/pkg/bertymessenger"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/osversion"
 )
@@ -171,6 +170,14 @@ func NewBridge(config *Config) (*Bridge, error) {
 		b.client = grpcutil.NewLazyClient(ccBridge)
 	}
 
+	// setup lifecycle manager
+	{
+		b.lifecycleManager = lifecycle.NewManager(lifecycle.StateActive)
+		if lifecycleHandler := config.lc; lifecycleHandler != nil {
+			lifecycleHandler.RegisterHandler(b)
+		}
+	}
+
 	// setup berty account service
 	{
 		opts := account_svc.Options{
@@ -220,14 +227,6 @@ func NewBridge(config *Config) (*Bridge, error) {
 		}
 	}
 
-	// setup lifecycle manager
-	{
-		b.lifecycleManager = lifecycle.NewManager(bertymessenger.StateActive)
-		if lifecycleHandler := config.lc; lifecycleHandler != nil {
-			lifecycleHandler.RegisterHandler(b)
-		}
-	}
-
 	// start Bridge
 	b.logger.Debug("starting Bridge")
 	go func() {
@@ -241,13 +240,13 @@ func NewBridge(config *Config) (*Bridge, error) {
 func (b *Bridge) HandleState(appstate int) {
 	switch appstate {
 	case AppStateBackground:
-		b.lifecycleManager.UpdateState(bertymessenger.StateInactive)
+		b.lifecycleManager.UpdateState(lifecycle.StateInactive)
 		b.logger.Info("app is in Background State")
 	case AppStateActive:
-		b.lifecycleManager.UpdateState(bertymessenger.StateActive)
+		b.lifecycleManager.UpdateState(lifecycle.StateActive)
 		b.logger.Info("app is in Active State")
 	case AppStateInactive:
-		b.lifecycleManager.UpdateState(bertymessenger.StateInactive)
+		b.lifecycleManager.UpdateState(lifecycle.StateInactive)
 		b.logger.Info("app is in Inactive State")
 	}
 }
@@ -258,9 +257,9 @@ func (b *Bridge) HandleTask() LifeCycleBackgroundTask {
 			return fmt.Errorf("service accnunt not initialized")
 		}
 
-		b.lifecycleManager.UpdateState(bertymessenger.StateActive)
+		b.lifecycleManager.UpdateState(lifecycle.StateActive)
 		err := b.serviceAccount.WakeUp(ctx)
-		b.lifecycleManager.UpdateState(bertymessenger.StateInactive)
+		b.lifecycleManager.UpdateState(lifecycle.StateInactive)
 
 		return err
 	})

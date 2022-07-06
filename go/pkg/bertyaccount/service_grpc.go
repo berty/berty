@@ -4,8 +4,10 @@ import (
 	"context"
 	"strings"
 
+	"github.com/ipfs/go-ipfs/core"
 	ma "github.com/multiformats/go-multiaddr"
 
+	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/pkg/accounttypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
@@ -53,6 +55,16 @@ func (s *service) GetMessengerClient() (messengertypes.MessengerServiceClient, e
 	}
 
 	return messenger, err
+}
+
+// GetIPFSNode returns the IPFS Node and core api interface
+func (s *service) GetIPFSNode() (ipfsutil.ExtendedCoreAPI, *core.IpfsNode, error) {
+	m, err := s.getInitManager()
+	if err != nil {
+		return nil, nil, errcode.TODO.Wrap(err)
+	}
+
+	return m.GetLocalIPFS()
 }
 
 // GetProtocolClient returns the Protocol Client of the actual Berty account if there is one selected.

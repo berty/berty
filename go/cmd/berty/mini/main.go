@@ -15,7 +15,6 @@ import (
 
 	"berty.tech/berty/v2/go/internal/lifecycle"
 	assets "berty.tech/berty/v2/go/pkg/assets"
-	"berty.tech/berty/v2/go/pkg/bertymessenger"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
@@ -127,14 +126,14 @@ func Main(ctx context.Context, opts *Opts) error {
 
 	const ShouldBecomeInactive = time.Second * 30
 	inactiveTimer := time.AfterFunc(ShouldBecomeInactive, func() {
-		opts.LifecycleManager.UpdateState(bertymessenger.StateInactive)
+		opts.LifecycleManager.UpdateState(lifecycle.StateInactive)
 	})
 
 	app.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
 		// reset timer
 		if !inactiveTimer.Stop() {
 			// AfterFunc timer should already have consume `inactiveTimer.C`
-			opts.LifecycleManager.UpdateState(bertymessenger.StateActive)
+			opts.LifecycleManager.UpdateState(lifecycle.StateActive)
 		}
 		inactiveTimer.Reset(ShouldBecomeInactive)
 

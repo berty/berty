@@ -20,6 +20,7 @@ import (
 	ipfs_p2p "github.com/ipfs/go-ipfs/core/node/libp2p"
 	ipfs_repo "github.com/ipfs/go-ipfs/repo"
 	libp2p "github.com/libp2p/go-libp2p"
+	connmgr "github.com/libp2p/go-libp2p-connmgr"
 	p2p_disc "github.com/libp2p/go-libp2p-core/discovery"
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/peer"
@@ -107,8 +108,8 @@ func (m *Manager) SetupLocalIPFSFlags(fs *flag.FlagSet) {
 	fs.BoolVar(&m.Node.Protocol.DisableDiscoverFilterAddrs, FlagNameP2PDisableDiscoverAddrsFilter, false, "dont filter private addrs on discovery service")
 	fs.BoolVar(&m.Node.Protocol.AutoRelay, "p2p.autorelay", true, "enable autorelay, force private reachability")
 	fs.StringVar(&m.Node.Protocol.StaticRelays, FlagNameP2PStaticRelays, KeywordDefault, "list of static relay maddrs, `:default:` will use statics relays from the config")
-	fs.DurationVar(&m.Node.Protocol.MinBackoff, "p2p.min-backoff", time.Second, "minimum p2p backoff duration")
-	fs.DurationVar(&m.Node.Protocol.MaxBackoff, "p2p.max-backoff", time.Minute*10, "maximum p2p backoff duration")
+	fs.DurationVar(&m.Node.Protocol.MinBackoff, "p2p.min-backoff", time.Second*10, "minimum p2p backoff duration")
+	fs.DurationVar(&m.Node.Protocol.MaxBackoff, "p2p.max-backoff", time.Hour, "maximum p2p backoff duration")
 	fs.DurationVar(&m.Node.Protocol.PollInterval, "p2p.poll-interval", pubsub.DiscoveryPollInterval, "how long the discovery system will waits for more peers")
 	fs.StringVar(&m.Node.Protocol.RdvpMaddrs, FlagNameP2PRDVP, KeywordDefault, "list of rendezvous point maddr, `:dev:` will add the default devs servers, `:none:` will disable rdvp")
 	fs.BoolVar(&m.Node.Protocol.Ble.Enable, FlagNameP2PBLE, false, "if true Bluetooth Low Energy will be enabled")
@@ -309,6 +310,29 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 	// enable conn logger
 	ipfsutil.EnableConnLogger(m.getContext(), logger, m.Node.Protocol.ipfsNode.PeerHost)
 
+	lm := m.getLifecycleManager()
+
+	serverRng := mrand.New(mrand.NewSource(srand.MustSecure())) // nolint:gosec // we need to use math/rand here, but it is seeded from crypto/rand
+	backoffstrat := discovery.NewExponentialBackoff(
+		time.Second,
+		time.Minute*10,
+		discovery.FullJitter,
+		time.Second, 5.0, 0, serverRng)
+
+	peering := ipfsutil.NewPeeringService(
+		logger.Named("peering"), m.Node.Protocol.ipfsNode.PeerHost, backoffstrat,
+	)
+	if err := peering.Start(); err != nil {
+		return nil, nil, errcode.ErrIPFSInit.Wrap(err)
+	}
+	// enable lifecycle conn
+	m.Node.Protocol.connlifecycle, err = ipfsutil.NewConnLifecycle(
+		ctx, logger.Named("ipfs-lc"), m.Node.Protocol.ipfsNode.PeerHost, peering, lm,
+	)
+	if err != nil {
+		return nil, nil, errcode.ErrIPFSInit.Wrap(err)
+	}
+
 	// register metrics
 	if m.Metrics.Listener != "" {
 		registry, err := m.getMetricsRegistry()
@@ -445,13 +469,28 @@ func (m *Manager) setupIPFSConfig(cfg *ipfs_cfg.Config) ([]libp2p.Option, error)
 		cfg.Addresses.NoAnnounce = strings.Split(m.Node.Protocol.NoAnnounce, ",")
 	}
 
-	if m.Node.Protocol.HighWatermark > 0 {
-		cfg.Swarm.ConnMgr.HighWater = m.Node.Protocol.HighWatermark
-	}
+	// disable original connection manager
+	cfg.Swarm.ConnMgr.Type = "none"
 
-	if m.Node.Protocol.LowWatermark > 0 {
-		cfg.Swarm.ConnMgr.LowWater = m.Node.Protocol.LowWatermark
-	}
+	// configure custom conn manager
+	cm := connmgr.NewConnManager(
+		cfg.Swarm.ConnMgr.LowWater, cfg.Swarm.ConnMgr.HighWater, ipfs_cfg.DefaultConnMgrGracePeriod,
+	)
+
+	// wrap conn manager
+	m.Node.Protocol.connmngr = ipfsutil.NewBertyConnManager(logger.Named("connmgr"), cm)
+
+	// add our connection manager
+	p2popts = append(p2popts, libp2p.ConnectionManager(m.Node.Protocol.connmngr))
+
+	// @NOTE(gfanton): we don't have to set this since we use a custom connmngr
+	// if m.Node.Protocol.HighWatermark > 0 {
+	// 	cfg.Swarm.ConnMgr.HighWater = m.Node.Protocol.HighWatermark
+	// }
+
+	// if m.Node.Protocol.LowWatermark > 0 {
+	// 	cfg.Swarm.ConnMgr.LowWater = m.Node.Protocol.LowWatermark
+	// }
 
 	if m.Node.Protocol.DisableIPFSNetwork {
 		// Disable IP transports
@@ -586,6 +625,11 @@ func (m *Manager) configIPFSRouting(h host.Host, r p2p_routing.Routing) error {
 		}
 	}
 
+	// register berty connmngr bus event
+	if err := m.Node.Protocol.connmngr.RegisterEventBus(h.EventBus()); err != nil {
+		return errcode.ErrIPFSSetupHost.Wrap(err)
+	}
+
 	rng := mrand.New(mrand.NewSource(srand.MustSecure())) // nolint:gosec // we need to use math/rand here, but it is seeded from crypto/rand
 
 	// configure tinder drivers
@@ -644,12 +688,12 @@ func (m *Manager) configIPFSRouting(h host.Host, r p2p_routing.Routing) error {
 		m.Node.Protocol.MinBackoff,
 		m.Node.Protocol.MaxBackoff,
 		discovery.FullJitter,
-		time.Second, 5.0, 0, serverRng)
+		time.Second, 10.0, 0, serverRng)
 
 	tinderOpts := &tinder.Opts{
 		Logger:                 logger,
-		AdvertiseResetInterval: time.Minute * 2,
-		FindPeerResetInterval:  time.Minute * 2,
+		AdvertiseResetInterval: time.Hour,
+		FindPeerResetInterval:  time.Minute * 10,
 		AdvertiseGracePeriod:   time.Minute,
 		BackoffStrategy: &tinder.BackoffOpts{
 			StratFactory: backoffstrat,
