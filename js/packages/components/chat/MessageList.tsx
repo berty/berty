@@ -12,7 +12,6 @@ import {
 } from 'react-native'
 
 import beapi from '@berty/api'
-import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
 import { WelshMessengerServiceClient } from '@berty/grpc-bridge/welsh-clients.gen'
 import {
@@ -28,6 +27,7 @@ import { pbDateToNum } from '@berty/utils/convert/time'
 import { InfosChat } from '../InfosChat'
 import { ChatDate } from './ChatDate'
 import { InfosMultiMember } from './InfosMultiMember'
+import { MemberBar } from './member-bar/MemberBar'
 import { Message } from './message'
 
 const CenteredActivityIndicator: React.FC<ActivityIndicatorProps> = React.memo(props => {
@@ -125,8 +125,7 @@ export const MessageList: React.FC<{
 	setStickyDate: (date: Long.Long) => void
 	setShowStickyDate: (value: boolean) => void
 }> = React.memo(({ id, scrollToMessage: _scrollToMessage, setStickyDate, setShowStickyDate }) => {
-	const { overflow, row, flex } = useStyles()
-	const { scaleHeight } = useAppDimensions()
+	const { row, flex } = useStyles()
 	const colors = useThemeColor()
 	const conversation = useConversation(id)
 	const messengerClient = useMessengerClient()
@@ -224,12 +223,12 @@ export const MessageList: React.FC<{
 	)
 
 	const style = React.useMemo(
-		() => [overflow, row.item.fill, flex.tiny],
-		[flex.tiny, overflow, row.item.fill],
+		() => [row.item.fill, flex.tiny, { marginTop: 40 }],
+		[flex.tiny, row.item.fill],
 	)
 	const contentContainerStyle = React.useMemo(
-		() => ({ paddingBottom: 35 * scaleHeight, backgroundColor: colors['main-background'] }),
-		[scaleHeight, colors],
+		() => ({ paddingBottom: 30, backgroundColor: colors['main-background'] }),
+		[colors],
 	)
 
 	useEffect(() => {
@@ -253,6 +252,7 @@ export const MessageList: React.FC<{
 					<ActivityIndicator color={colors['background-header']} />
 				</View>
 			)}
+			<MemberBar convId={id} />
 			<FlatList
 				overScrollMode='never'
 				initialScrollIndex={initialScrollIndex}
