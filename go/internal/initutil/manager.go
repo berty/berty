@@ -238,7 +238,7 @@ func New(ctx context.Context, opts *ManagerOpts) (*Manager, error) {
 	m.Logging.DefaultLoggerStreams = opts.DefaultLoggerStreams
 	m.Logging.StderrFilters = DefaultLoggingFilters
 	m.Logging.RingFilters = DefaultLoggingFilters
-	m.Logging.FileFilters = "*"
+	m.Logging.FileFilters = "debug+:bty*,-*.grpc,error+:*"
 	m.Logging.StderrFormat = "color"
 	m.Logging.RingSize = 10 // 10MB ring buffer
 
