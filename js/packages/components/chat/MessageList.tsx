@@ -9,6 +9,7 @@ import {
 	View,
 	Platform,
 	ViewToken,
+	StyleSheet,
 } from 'react-native'
 
 import beapi from '@berty/api'
@@ -27,7 +28,6 @@ import { pbDateToNum } from '@berty/utils/convert/time'
 import { InfosChat } from '../InfosChat'
 import { ChatDate } from './ChatDate'
 import { InfosMultiMember } from './InfosMultiMember'
-import { MemberBar } from './member-bar/MemberBar'
 import { Message } from './message'
 
 const CenteredActivityIndicator: React.FC<ActivityIndicatorProps> = React.memo(props => {
@@ -125,7 +125,7 @@ export const MessageList: React.FC<{
 	setStickyDate: (date: Long.Long) => void
 	setShowStickyDate: (value: boolean) => void
 }> = React.memo(({ id, scrollToMessage: _scrollToMessage, setStickyDate, setShowStickyDate }) => {
-	const { row, flex } = useStyles()
+	const { overflow, row, flex } = useStyles()
 	const colors = useThemeColor()
 	const conversation = useConversation(id)
 	const messengerClient = useMessengerClient()
@@ -223,11 +223,11 @@ export const MessageList: React.FC<{
 	)
 
 	const style = React.useMemo(
-		() => [row.item.fill, flex.tiny, { marginTop: 40 }],
-		[flex.tiny, row.item.fill],
+		() => [overflow, row.item.fill, flex.tiny],
+		[flex.tiny, overflow, row.item.fill],
 	)
 	const contentContainerStyle = React.useMemo(
-		() => ({ paddingBottom: 30, backgroundColor: colors['main-background'] }),
+		() => ({ paddingBottom: 35, backgroundColor: colors['main-background'] }),
 		[colors],
 	)
 
@@ -239,20 +239,30 @@ export const MessageList: React.FC<{
 		}
 	}, [fetchingFrom, oldestMessage?.cid])
 
+	// const [lastOffset, setLastOffset] = useState<number>()
+	// const [showMemberBar, setShowMemberBar] = useState(true)
+
+	// const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+	// 	console.log('ok', event.nativeEvent.contentOffset.y)
+
+	// 	if (lastOffset === undefined) {
+	// 		setLastOffset(event.nativeEvent.contentOffset.y)
+	// 	} else if (event.nativeEvent.contentOffset.y > lastOffset) {
+	// 		setShowMemberBar(false)
+	// 	} else {
+	// 		setShowMemberBar(true)
+	// 	}
+	// 	setLastOffset(event.nativeEvent.contentOffset.y)
+	// }
+
 	return (
-		<View style={{ flex: 1 }}>
+		<View style={styles.container}>
 			{!fetchedFirst && (
-				<View
-					style={{
-						justifyContent: 'center',
-						alignItems: 'center',
-						flexDirection: 'row',
-					}}
-				>
+				<View style={styles.loadingContainer}>
 					<ActivityIndicator color={colors['background-header']} />
 				</View>
 			)}
-			<MemberBar convId={id} />
+			{/* {showMemberBar && <MemberBar members={[]} />} */}
 			<FlatList
 				overScrollMode='never'
 				initialScrollIndex={initialScrollIndex}
@@ -271,10 +281,30 @@ export const MessageList: React.FC<{
 				renderItem={renderItem}
 				onViewableItemsChanged={__DEV__ ? undefined : updateStickyDateCB}
 				initialNumToRender={20}
+				// onScroll={handleScroll}
 				onScrollBeginDrag={handleScrollBeginDrag}
 				onScrollEndDrag={handleScrollEndDrag}
 				disableVirtualization={Platform.OS === 'web'}
 			/>
 		</View>
 	)
+})
+
+const styles = StyleSheet.create({
+	header: {
+		position: 'absolute',
+		backgroundColor: '#1c1c1c',
+		left: 0,
+		right: 0,
+		width: '100%',
+		zIndex: 1,
+	},
+	loadingContainer: {
+		justifyContent: 'center',
+		alignItems: 'center',
+		flexDirection: 'row',
+	},
+	container: {
+		flex: 1,
+	},
 })

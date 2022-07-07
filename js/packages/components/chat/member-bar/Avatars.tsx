@@ -1,5 +1,5 @@
 import React from 'react'
-import { View } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 
 import { MemberAvatar } from '@berty/components/avatars'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
@@ -15,7 +15,7 @@ interface AvatarsProps {
 
 export const Avatars: React.FC<AvatarsProps> = props => {
 	return (
-		<View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+		<View style={styles.container}>
 			{props.items.slice(0, 5).map((item, index) => {
 				let backgroundColor = '#E35179'
 
@@ -28,39 +28,54 @@ export const Avatars: React.FC<AvatarsProps> = props => {
 				return (
 					<View
 						key={item.publicKey ?? index}
-						style={{
-							width: 30,
-							height: 30,
-							borderRadius: 30,
-							backgroundColor,
-							borderColor: 'white',
-							borderWidth: 1,
-							justifyContent: 'center',
-							alignItems: 'center',
-							marginLeft: -10,
-							zIndex: index,
-						}}
+						style={[
+							styles.avatarWrapper,
+							{
+								backgroundColor,
+								zIndex: index,
+							},
+						]}
 					>
 						<Avatar publicKey={item.publicKey} convId={props.convId} />
 					</View>
 				)
 			})}
 			{props.items.length > 5 && (
-				<View
-					style={{
-						width: 30,
-						height: 30,
-						borderRadius: 30,
-						backgroundColor: '#EDF1F7',
-						justifyContent: 'center',
-						alignItems: 'center',
-						marginLeft: -10,
-						zIndex: -1,
-					}}
-				>
-					<UnifiedText style={{ fontSize: 10 }}>+5</UnifiedText>
+				<View style={styles.manyMembersWrapper}>
+					<UnifiedText style={styles.manyMembersText}>+5</UnifiedText>
 				</View>
 			)}
 		</View>
 	)
 }
+
+const styles = StyleSheet.create({
+	container: {
+		flexDirection: 'row',
+		justifyContent: 'center',
+		alignItems: 'center',
+	},
+	avatarWrapper: {
+		width: 30,
+		height: 30,
+		borderRadius: 30,
+		borderColor: 'white',
+		borderWidth: 1,
+		justifyContent: 'center',
+		alignItems: 'center',
+		marginLeft: -10,
+	},
+	manyMembersWrapper: {
+		width: 30,
+		height: 30,
+		borderRadius: 30,
+		backgroundColor: '#EDF1F7',
+		justifyContent: 'center',
+		alignItems: 'center',
+		marginLeft: -10,
+		zIndex: -1,
+	},
+	manyMembersText: {
+		fontSize: 10,
+	},
+})
