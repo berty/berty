@@ -22,13 +22,12 @@ export const MemberBar: React.FC<MemberBarProps> = props => {
 			onPress={() => navigation.navigate('Group.MultiMemberSettings', { convId: props.convId })}
 			style={styles.container}
 		>
-			<View style={{ width: 28 }} />
 			<View style={styles.barWidth}>
 				{animationStep === 0 && (
 					<LottieView
 						autoPlay
 						style={styles.lottieWidth}
-						source={require('@berty/assets/lottie/member_bar-lottie/anim_orange.json')}
+						source={require('@berty/assets/lottie/network_status_animations/orange.json')}
 						onAnimationFinish={() => setAnimationStep(1)}
 						loop={false}
 					/>
@@ -37,7 +36,7 @@ export const MemberBar: React.FC<MemberBarProps> = props => {
 					<LottieView
 						autoPlay
 						style={styles.lottieWidth}
-						source={require('@berty/assets/lottie/member_bar-lottie/anim_blue.json')}
+						source={require('@berty/assets/lottie/network_status_animations/blue.json')}
 						onAnimationFinish={() => setAnimationStep(2)}
 						loop={false}
 					/>
@@ -84,5 +83,7 @@ const styles = StyleSheet.create({
 	},
 	lottieWidth: {
 		width: '100%',
+		height: 10,
+		marginLeft: 15,
 	},
 })
