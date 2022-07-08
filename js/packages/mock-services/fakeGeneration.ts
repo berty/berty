@@ -3,6 +3,7 @@ import range from 'lodash/range'
 import Long from 'long'
 
 import beapi from '@berty/api'
+import { randomValueFromEnum } from '@berty/utils/testing/mockServices.test'
 
 /**
  * NOTE: Everything that is using Date.now won't be deterministic.
@@ -117,6 +118,10 @@ const genFakeMembersMap = ({
 					conversationPublicKey: conv.publicKey,
 					publicKey: faker.datatype.uuid(),
 					displayName: faker.name.findName(),
+					devices: range(0, 1).map(() => ({
+						publicKey: faker.datatype.uuid(),
+						memberPublicKey: faker.datatype.uuid(),
+					})),
 				})
 			})
 			return members
@@ -247,6 +252,30 @@ export const genFakeMessengerData = ({
 		[],
 	)
 
+	let groupsDevicesToPeer: beapi.messenger.StreamEvent.IPeerStatusGroupAssociated[] = []
+	let peersNetworkStatus: beapi.messenger.StreamEvent.IPeerStatusConnected[] = []
+	members.forEach(value => {
+		const peerId = faker.datatype.uuid()
+
+		const devicePk =
+			!value?.devices || !value?.devices.length ? faker.datatype.uuid() : value.devices[0].publicKey
+		const groupDeviceToPeer: beapi.messenger.StreamEvent.IPeerStatusGroupAssociated = {
+			groupPk: value.conversationPublicKey,
+			devicePk,
+			peerId,
+		}
+		groupsDevicesToPeer.push(groupDeviceToPeer)
+
+		const randomTransportValue = randomValueFromEnum(
+			beapi.messenger.StreamEvent.PeerStatusConnected.Transport,
+		)
+		const peerNetworkStatus: beapi.messenger.StreamEvent.IPeerStatusConnected = {
+			peerId,
+			transport: randomTransportValue,
+		}
+		peersNetworkStatus.push(peerNetworkStatus)
+	})
+
 	const interactionsMap = genFakeInteractionsMap({
 		baseDate,
 		conversations,
@@ -274,5 +303,7 @@ export const genFakeMessengerData = ({
 		membersMap,
 		interactions,
 		interactionsMap,
+		groupsDevicesToPeer,
+		peersNetworkStatus,
 	}
 }

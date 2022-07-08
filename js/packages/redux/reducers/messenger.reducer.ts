@@ -74,12 +74,70 @@ const mediasAdapter = createEntityAdapter<beapi.messenger.IMedia>({
 
 const mediasSelectors = mediasAdapter.getSelectors()
 
+// Peer network status
+export type GroupsDevicesToPeer = {
+	id: string // with groupPK-devicePK format
+	peerID: string
+}
+
+export type PeerNetworkStatus = {
+	id: string // PeerID
+	transport: beapi.messenger.StreamEvent.PeerStatusConnected.Transport
+	connectionStatus: beapi.protocol.GroupDeviceStatus.Type
+}
+
+const groupsDevicesToPeerAdapter = createEntityAdapter<GroupsDevicesToPeer>()
+const groupsDevicesToPeerSelectors = groupsDevicesToPeerAdapter.getSelectors()
+
+const peerNetworkStatusAdapter = createEntityAdapter<PeerNetworkStatus>()
+const peerNetworkStatusSelectors = peerNetworkStatusAdapter.getSelectors()
+
+export const selectGroupsDevicesToPeerDict = (state: LocalRootState) => {
+	return groupsDevicesToPeerSelectors.selectEntities(selectSlice(state).groupsDevicesToPeer)
+}
+export const selectPeerIdFromDevicePK = (
+	state: LocalRootState,
+	groupPK: string,
+	devicePK: string,
+) => {
+	const group = groupsDevicesToPeerSelectors.selectById(
+		selectSlice(state).groupsDevicesToPeer,
+		`${groupPK}-${devicePK}`,
+	)
+	if (!group) {
+		return
+	}
+	return group?.peerID
+}
+
+export const selectPeerNetworkStatusDict = (state: LocalRootState) => {
+	return peerNetworkStatusSelectors.selectEntities(selectSlice(state).peersNetworkStatus)
+}
+export const selectPeerFromPeerID = (state: LocalRootState, peerID: string) => {
+	const peer = peerNetworkStatusSelectors.selectById(selectSlice(state).peersNetworkStatus, peerID)
+	if (!peer) {
+		return
+	}
+	return peer
+}
+
+// react to events:
+// when i receive PeerConnected event => fill PeerNetworkStatus object with the peerID, the transport et the connected connection status
+// when i receive PeerDisconnected event => delete the PeerNetworkStatus object correspondant to the peerdID
+// when i receive PeerGroupAssociated => fill GroupsDevicesToPeerBucket object with the GroupPK for the id, and for devices fill DeviceToPeerBucket object with the devicePK for the id and the peerID witht the peerID
+
+// so in the front to recup the transport and the connection status of a member =>  call this function in the front getDevicesForConversationAndMember that returns you all devicesPK from a memberPK
+// after that take the first devicePK from this object, call the selector of GroupsDevicesToPeerBucket with the groupPK and the devicePK that returns you the correspondant peerID
+// after that call the selector if PeerNetworkStatus with the peerID (that you got from the last step) and recup the transport and the connection status
+
 const getEntitiesInitialState = () => ({
 	conversations: conversationsAdapter.getInitialState(),
 	contacts: contactsAdapter.getInitialState(),
 	interactionsBuckets: interactionsBucketsAdapter.getInitialState(),
 	membersBuckets: membersBucketsAdapter.getInitialState(),
 	medias: mediasAdapter.getInitialState(),
+	groupsDevicesToPeer: groupsDevicesToPeerAdapter.getInitialState(),
+	peersNetworkStatus: peerNetworkStatusAdapter.getInitialState(),
 })
 
 export type MessengerState = ReturnType<typeof getEntitiesInitialState> & {
@@ -126,6 +184,60 @@ const slice = createSlice({
 	initialState,
 	reducers: {},
 	extraReducers: builder => {
+		// Peer network status reducers
+		builder.addCase(
+			messengerActions[beapi.messenger.StreamEvent.Type.TypePeerStatusConnected],
+			(state, { payload }) => {
+				if (!payload.peerId || payload.transport === undefined || payload.transport === null) {
+					console.warn('PeerStatusConnected action without peerID or transport', payload)
+					return
+				}
+				peerNetworkStatusAdapter.upsertOne(state.peersNetworkStatus, {
+					id: payload.peerId,
+					transport: payload.transport,
+					connectionStatus: beapi.protocol.GroupDeviceStatus.Type.TypePeerConnected,
+				})
+			},
+		)
+		builder.addCase(
+			messengerActions[beapi.messenger.StreamEvent.Type.TypePeerStatusDisconnected],
+			(state, { payload }) => {
+				if (!payload.peerId) {
+					console.warn('PeerStatusDisconnected action without peerID', payload)
+					return
+				}
+				peerNetworkStatusAdapter.removeOne(state.peersNetworkStatus, payload.peerId)
+			},
+		)
+		builder.addCase(
+			messengerActions[beapi.messenger.StreamEvent.Type.TypePeerStatusReconnecting],
+			(state, { payload }) => {
+				if (!payload.peerId) {
+					console.warn('PeerStatusReconnecting action without peerID', payload)
+					return
+				}
+				peerNetworkStatusAdapter.updateOne(state.peersNetworkStatus, {
+					id: payload.peerId,
+					changes: { connectionStatus: beapi.protocol.GroupDeviceStatus.Type.TypePeerReconnecting },
+				})
+			},
+		)
+		builder.addCase(
+			messengerActions[beapi.messenger.StreamEvent.Type.TypePeerStatusGroupAssociated],
+			(state, { payload }) => {
+				if (!payload.peerId || !payload.groupPk || !payload.devicePk) {
+					console.warn(
+						'PeerStatusGroupAssociated action without peerID or groupPK or devicePK',
+						payload,
+					)
+					return
+				}
+				groupsDevicesToPeerAdapter.upsertOne(state.groupsDevicesToPeer, {
+					id: `${payload.groupPk}-${payload.devicePk}`,
+					peerID: payload.peerId,
+				})
+			},
+		)
 		builder.addCase(
 			messengerActions[beapi.messenger.StreamEvent.Type.TypeAccountUpdated],
 			(state, { payload }) => {

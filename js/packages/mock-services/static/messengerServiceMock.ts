@@ -74,6 +74,31 @@ export class MessengerServiceMock implements Partial<IMessengerServiceMock> {
 				})
 			}
 
+			for (const peerNetworkStatus of getGoldenData().peersNetworkStatus) {
+				await send({
+					event: {
+						type: beapi.messenger.StreamEvent.Type.TypePeerStatusConnected,
+						payload: beapi.messenger.StreamEvent.PeerStatusConnected.encode({
+							peerId: peerNetworkStatus.peerId,
+							transport: peerNetworkStatus.transport,
+						}).finish(),
+					},
+				})
+			}
+
+			for (const groupDevicesToPeer of getGoldenData().groupsDevicesToPeer) {
+				await send({
+					event: {
+						type: beapi.messenger.StreamEvent.Type.TypePeerStatusGroupAssociated,
+						payload: beapi.messenger.StreamEvent.PeerStatusGroupAssociated.encode({
+							peerId: groupDevicesToPeer.peerId,
+							groupPk: groupDevicesToPeer.groupPk,
+							devicePk: groupDevicesToPeer.devicePk,
+						}).finish(),
+					},
+				})
+			}
+
 			this.eventEmitter.on('stream-event', event => {
 				send({ event })
 			})
