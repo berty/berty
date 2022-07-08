@@ -75,12 +75,12 @@ const mediasAdapter = createEntityAdapter<beapi.messenger.IMedia>({
 const mediasSelectors = mediasAdapter.getSelectors()
 
 // Peer network status
-type GroupsDevicesToPeer = {
+export type GroupsDevicesToPeer = {
 	id: string // with groupPK-devicePK format
 	peerID: string
 }
 
-type PeerNetworkStatus = {
+export type PeerNetworkStatus = {
 	id: string // PeerID
 	transport: beapi.messenger.StreamEvent.PeerStatusConnected.Transport
 	connectionStatus: beapi.protocol.GroupDeviceStatus.Type
@@ -188,7 +188,7 @@ const slice = createSlice({
 		builder.addCase(
 			messengerActions[beapi.messenger.StreamEvent.Type.TypePeerStatusConnected],
 			(state, { payload }) => {
-				if (!payload.peerId || !payload.transport) {
+				if (!payload.peerId || payload.transport === undefined || payload.transport === null) {
 					console.warn('PeerStatusConnected action without peerID or transport', payload)
 					return
 				}
@@ -238,7 +238,6 @@ const slice = createSlice({
 				})
 			},
 		)
-		//
 		builder.addCase(
 			messengerActions[beapi.messenger.StreamEvent.Type.TypeAccountUpdated],
 			(state, { payload }) => {
