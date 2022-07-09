@@ -448,7 +448,8 @@
 				"connection-confirmed": "👋 Berty 연결을 확인했어요! 🎉",
 				"request-sent": "요청 보냄 ✈",
 				"incoming": "",
-				"outgoing": ""
+				"outgoing": "",
+				"refresh-button": ""
 			},
 			"incoming-input-placeholder": "",
 			"input-placeholder": "여기에 입력..."

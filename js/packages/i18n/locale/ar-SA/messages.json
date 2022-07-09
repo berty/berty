@@ -448,7 +448,8 @@
 				"connection-confirmed": "👋 أُكدَ اتصال برتي! 🎉",
 				"request-sent": "أُرسل الطلب ✈",
 				"incoming": "اقبل هذا الطلب للرد!",
-				"outgoing": ""
+				"outgoing": "",
+				"refresh-button": ""
 			},
 			"incoming-input-placeholder": "اقبل الطلب للكتابة هنا...",
 			"input-placeholder": "اكتب هنا..."

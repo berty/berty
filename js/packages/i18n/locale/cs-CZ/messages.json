@@ -448,7 +448,8 @@
 				"connection-confirmed": "👋 Berty spojení potvrzeno! 🎉",
 				"request-sent": "Žádost odeslána :plane:",
 				"incoming": "",
-				"outgoing": ""
+				"outgoing": "",
+				"refresh-button": ""
 			},
 			"incoming-input-placeholder": "",
 			"input-placeholder": ""

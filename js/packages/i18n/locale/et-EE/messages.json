@@ -448,7 +448,8 @@
 				"connection-confirmed": "",
 				"request-sent": "",
 				"incoming": "",
-				"outgoing": ""
+				"outgoing": "",
+				"refresh-button": ""
 			},
 			"incoming-input-placeholder": "",
 			"input-placeholder": ""
