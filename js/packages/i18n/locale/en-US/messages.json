@@ -449,7 +449,7 @@
 				"request-sent": "Request Sent ✈",
 				"incoming": "Accept this request to reply!",
 				"outgoing": "Waiting for your contact reply to connect!",
-				"refresh-button": ""
+				"refresh-button": "Retry to send contact request"
 			},
 			"incoming-input-placeholder": "Accept the request to write here...",
 			"input-placeholder": "Type here..."
