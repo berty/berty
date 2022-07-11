@@ -4,7 +4,8 @@ import { StyleSheet, TouchableOpacity, View } from 'react-native'
 
 import beapi from '@berty/api'
 import { useStyles } from '@berty/contexts/styles'
-import { useThemeColor } from '@berty/hooks'
+import { useAppDispatch, useThemeColor } from '@berty/hooks'
+import { PeerNetworkStatus, getPeerFromMemberPK } from '@berty/redux/reducers/messenger.reducer'
 
 import { DropdownPriv } from '../Dropdown.priv'
 import { MemberAvatarWithStatus } from './MemberAvatarWithStatus.priv'
@@ -29,27 +30,34 @@ interface MemberItemProps {
 
 const MemberItem: React.FC<MemberItemProps> = ({ onPress, convPK, item }) => {
 	const { padding } = useStyles()
+	const dispatch = useAppDispatch()
+	const [peer, setPeer] = React.useState<PeerNetworkStatus | null>(null)
 
-	// TODO change it and recup it in redux store
-	const memberStatus = 'reconnecting'
-	const memberUserType = 'replication'
-	const memberTransport = 'wifi'
+	React.useEffect(() => {
+		const f = async () => {
+			const _peer = await dispatch(
+				getPeerFromMemberPK({ memberPK: item.publicKey, convPK: item.conversationPublicKey }),
+			)
+			setPeer(_peer.payload as PeerNetworkStatus)
+		}
+
+		f()
+	}, [convPK, dispatch, item.publicKey, item.conversationPublicKey])
+
 	return (
-		<TouchableOpacity
-			onPress={onPress}
-			style={[styles.item, padding.horizontal.medium]}
-			key={item.publicKey}
-		>
-			<View style={[styles.content]}>
-				<MemberAvatarWithStatus
-					publicKey={item.publicKey}
-					convPK={convPK}
-					memberStatus={memberStatus}
-				/>
-				<MemberName displayName={item.displayName} memberUserType={memberUserType} />
-			</View>
-			<MemberTransport memberStatus={memberStatus} memberTransport={memberTransport} />
-		</TouchableOpacity>
+		peer && (
+			<TouchableOpacity onPress={onPress} style={[styles.item, padding.horizontal.medium]}>
+				<View style={[styles.content]}>
+					<MemberAvatarWithStatus
+						publicKey={item.publicKey}
+						convPK={convPK}
+						memberStatus={peer.connectionStatus}
+					/>
+					<MemberName displayName={item.displayName} />
+				</View>
+				<MemberTransport memberStatus={peer.connectionStatus} memberTransport={peer.transport} />
+			</TouchableOpacity>
+		)
 	)
 }
 
@@ -86,6 +94,7 @@ export const MembersDropdown: React.FC<MembersDropdownProps> = props => {
 				{/* <AddConversationBoosterButton /> */}
 				{Object.values(searchMembers).map(item => (
 					<MemberItem
+						key={item.publicKey}
 						onPress={() => props.onChangeItem(item)}
 						convPK={props.publicKey}
 						item={item}

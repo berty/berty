@@ -1,6 +1,7 @@
 import React from 'react'
 import { View, StyleSheet } from 'react-native'
 
+import beapi from '@berty/api'
 import { MemberAvatar } from '@berty/components/avatars'
 import { Maybe } from '@berty/utils/type/maybe'
 
@@ -14,13 +15,13 @@ interface MemberAvatarWithStatusProps extends IMemberStatus {
 const MemberStatus: React.FC<IMemberStatus> = ({ memberStatus }) => {
 	let backgroundColor
 	switch (memberStatus) {
-		case 'connected':
+		case beapi.protocol.GroupDeviceStatus.Type.TypePeerConnected:
 			backgroundColor = '#4CD31D'
 			break
-		case 'reconnecting':
+		case beapi.protocol.GroupDeviceStatus.Type.TypePeerReconnecting:
 			backgroundColor = '#FF9900'
 			break
-		case 'disconnected':
+		case beapi.protocol.GroupDeviceStatus.Type.TypePeerDisconnected:
 			backgroundColor = '#AFAFAF'
 			break
 	}

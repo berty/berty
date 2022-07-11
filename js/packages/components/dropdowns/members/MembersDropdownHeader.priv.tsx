@@ -1,7 +1,7 @@
 import React from 'react'
 import { View } from 'react-native'
 
-import { SmallClearableInput } from '@berty/components/inputs'
+import { SmallClearableInput } from '@berty/components'
 import { useStyles } from '@berty/contexts/styles'
 
 interface MembersDropdownHeaderProps {

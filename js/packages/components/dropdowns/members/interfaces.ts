@@ -1,9 +1,11 @@
+import beapi from '@berty/api'
+
 export interface IMemberUserTypes {
-	memberUserType: 'replication' | 'user'
+	memberUserType?: 'replication' | 'user'
 }
 export interface IMemberTransports {
-	memberTransport: 'wifi' | '4g' | 'node' | 'ble' // TODO replace by proto GroupDevicesStatus.Transport enum
+	memberTransport?: beapi.messenger.StreamEvent.PeerStatusConnected.Transport
 }
 export interface IMemberStatus {
-	memberStatus: 'connected' | 'disconnected' | 'reconnecting' // TODO replace by proto GroupDevicesStatus.Type enum
+	memberStatus: beapi.protocol.GroupDeviceStatus.Type
 }

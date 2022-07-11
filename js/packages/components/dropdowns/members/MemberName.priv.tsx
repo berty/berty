@@ -11,7 +11,7 @@ interface MemberNameProps extends IMemberUserTypes {
 	displayName: string | null | undefined
 }
 
-const MemberUserTypes: React.FC<IMemberUserTypes> = ({ memberUserType }) => {
+const MemberUserTypes: React.FC<IMemberUserTypes> = ({ memberUserType = 'user' }) => {
 	const { margin, text } = useStyles()
 
 	let value, icon
@@ -36,7 +36,7 @@ const MemberUserTypes: React.FC<IMemberUserTypes> = ({ memberUserType }) => {
 	)
 }
 
-export const MemberName: React.FC<MemberNameProps> = ({ displayName, memberUserType }) => {
+export const MemberName: React.FC<MemberNameProps> = ({ displayName, memberUserType = 'user' }) => {
 	return (
 		<View>
 			<UnifiedText>{displayName ?? ''}</UnifiedText>
