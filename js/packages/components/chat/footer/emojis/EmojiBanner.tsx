@@ -75,7 +75,9 @@ export const EmojiBanner: FC<{
 	const setOpen = useCallback(
 		(open: boolean) => {
 			Animated.spring(slideAnim, {
-				toValue: open ? 0 : modalHeight + emojisToDisplay * 50 * scaleSize + 50 * scaleSize, // + 50 for hiding modal shadows
+				toValue: open
+					? 0
+					: Math.round(modalHeight + emojisToDisplay * 50 * scaleSize + 50 * scaleSize), // + 50 for hiding modal shadows
 				velocity: 3,
 				tension: 2,
 				friction: 8,
@@ -90,10 +92,11 @@ export const EmojiBanner: FC<{
 			return
 		}
 		Animated.spring(collapseAnim, {
-			toValue:
+			toValue: Math.round(
 				(emojisToDisplay < currentEmojis.length ? emojisToDisplay : currentEmojis.length) *
-				50 *
-				scaleSize,
+					50 *
+					scaleSize,
+			),
 			velocity: 3,
 			tension: 2,
 			friction: 8,
@@ -205,7 +208,7 @@ export const EmojiBanner: FC<{
 					>
 						<View style={{ flex: 1 }}>
 							<UnifiedText style={[textStyle.bold]}>
-								{`${t('chat.emojis.matching')}: ${currentWord.word.substring(1)}`}
+								{t('chat.emojis.matching', { word: currentWord.word.substring(1) })}
 							</UnifiedText>
 						</View>
 						<View

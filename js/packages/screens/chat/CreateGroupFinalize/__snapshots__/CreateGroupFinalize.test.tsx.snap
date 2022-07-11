@@ -1,0 +1,991 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Chat.CreateGroupFinalize renders correctly 1`] = `
+<RNCSafeAreaProvider
+  onInsetsChange={[Function]}
+  style={
+    Array [
+      Object {
+        "flex": 1,
+      },
+      undefined,
+    ]
+  }
+>
+  <View
+    style={
+      Object {
+        "flex": 1,
+      }
+    }
+  >
+    <View
+      appearance="default"
+      level="1"
+      style={
+        Array [
+          Object {
+            "backgroundColor": "#FFFFFF",
+          },
+          Array [
+            Object {
+              "flex": 1,
+            },
+            Object {
+              "backgroundColor": "#F2F2F2",
+            },
+          ],
+        ]
+      }
+    >
+      <View
+        onLayout={[Function]}
+      >
+        <View
+          style={
+            Object {
+              "bottom": 0,
+            }
+          }
+        >
+          <RCTScrollView>
+            <View>
+              <View
+                style={
+                  Object {
+                    "backgroundColor": "#535AE4",
+                  }
+                }
+              >
+                <View>
+                  <View
+                    style={
+                      Object {
+                        "height": 135,
+                      }
+                    }
+                  >
+                    <RCTScrollView
+                      contentContainerStyle={
+                        Array [
+                          Object {
+                            "paddingLeft": 16,
+                          },
+                        ]
+                      }
+                      horizontal={true}
+                      showsHorizontalScrollIndicator={false}
+                    >
+                      <View />
+                    </RCTScrollView>
+                  </View>
+                  <View
+                    style={
+                      Array [
+                        false,
+                      ]
+                    }
+                  >
+                    <View
+                      accessible={true}
+                      focusable={true}
+                      onClick={[Function]}
+                      onResponderGrant={[Function]}
+                      onResponderMove={[Function]}
+                      onResponderRelease={[Function]}
+                      onResponderTerminate={[Function]}
+                      onResponderTerminationRequest={[Function]}
+                      onStartShouldSetResponder={[Function]}
+                      style={
+                        Array [
+                          Object {
+                            "borderTopLeftRadius": 30,
+                            "borderTopRightRadius": 30,
+                          },
+                          false,
+                          false,
+                          false,
+                          Object {
+                            "backgroundColor": "#F2F2F2",
+                          },
+                          Array [
+                            Object {
+                              "paddingBottom": 9,
+                            },
+                          ],
+                        ]
+                      }
+                    >
+                      <View
+                        style={
+                          Array [
+                            Object {
+                              "height": 90,
+                            },
+                          ]
+                        }
+                      >
+                        <View
+                          style={
+                            Array [
+                              Object {
+                                "marginTop": 16,
+                              },
+                              Object {
+                                "alignSelf": "center",
+                              },
+                              Object {
+                                "borderRadius": 4,
+                              },
+                              Object {
+                                "backgroundColor": "#97979770",
+                                "height": 5,
+                                "width": 60,
+                              },
+                            ]
+                          }
+                        />
+                        <View
+                          style={
+                            Array [
+                              Object {
+                                "marginTop": 9,
+                              },
+                            ]
+                          }
+                        >
+                          <View
+                            style={
+                              Array [
+                                Object {
+                                  "alignItems": "stretch",
+                                  "flexDirection": "row",
+                                  "justifyContent": "space-between",
+                                },
+                                Object {
+                                  "paddingHorizontal": 16,
+                                },
+                                Object {
+                                  "paddingTop": 9,
+                                },
+                              ]
+                            }
+                          >
+                            <Text
+                              style={
+                                Array [
+                                  Object {
+                                    "fontSize": 30,
+                                  },
+                                  Object {
+                                    "color": "#383B62",
+                                    "fontFamily": "Open Sans",
+                                  },
+                                  Array [
+                                    Object {
+                                      "fontFamily": "Bold Open Sans",
+                                    },
+                                    Object {
+                                      "fontSize": 50,
+                                    },
+                                    Object {
+                                      "alignSelf": "center",
+                                    },
+                                  ],
+                                ]
+                              }
+                            >
+                              main.home.create-group.add-members
+                            </Text>
+                          </View>
+                        </View>
+                      </View>
+                    </View>
+                  </View>
+                </View>
+                <View
+                  style={
+                    Array [
+                      Object {
+                        "backgroundColor": "#F2F2F2",
+                      },
+                    ]
+                  }
+                >
+                  <View
+                    accessible={true}
+                    focusable={true}
+                    onClick={[Function]}
+                    onResponderGrant={[Function]}
+                    onResponderMove={[Function]}
+                    onResponderRelease={[Function]}
+                    onResponderTerminate={[Function]}
+                    onResponderTerminationRequest={[Function]}
+                    onStartShouldSetResponder={[Function]}
+                    style={
+                      Array [
+                        Object {
+                          "borderTopLeftRadius": 30,
+                          "borderTopRightRadius": 30,
+                        },
+                        Object {
+                          "shadowOffset": Object {
+                            "height": 4,
+                            "width": 0,
+                          },
+                          "shadowOpacity": 0.2,
+                          "shadowRadius": 8,
+                        },
+                        Object {
+                          "shadowColor": "#000000",
+                        },
+                        false,
+                        Object {
+                          "backgroundColor": "#F2F2F2",
+                        },
+                        null,
+                      ]
+                    }
+                  >
+                    <View
+                      style={
+                        Array [
+                          Object {
+                            "height": 90,
+                          },
+                        ]
+                      }
+                    >
+                      <View
+                        style={
+                          Array [
+                            Object {
+                              "marginTop": 16,
+                            },
+                            Object {
+                              "alignSelf": "center",
+                            },
+                            Object {
+                              "borderRadius": 4,
+                            },
+                            Object {
+                              "backgroundColor": "#97979770",
+                              "height": 5,
+                              "width": 60,
+                            },
+                          ]
+                        }
+                      />
+                      <View
+                        style={
+                          Array [
+                            Object {
+                              "marginTop": 9,
+                            },
+                          ]
+                        }
+                      >
+                        <View
+                          style={
+                            Array [
+                              Object {
+                                "alignItems": "stretch",
+                                "flexDirection": "row",
+                                "justifyContent": "space-between",
+                              },
+                              Object {
+                                "paddingHorizontal": 16,
+                              },
+                              Object {
+                                "paddingTop": 9,
+                              },
+                            ]
+                          }
+                        >
+                          <Text
+                            style={
+                              Array [
+                                Object {
+                                  "fontSize": 30,
+                                },
+                                Object {
+                                  "color": "#383B62",
+                                  "fontFamily": "Open Sans",
+                                },
+                                Array [
+                                  Object {
+                                    "fontFamily": "Bold Open Sans",
+                                  },
+                                  Object {
+                                    "fontSize": 50,
+                                  },
+                                  Object {
+                                    "alignSelf": "center",
+                                  },
+                                ],
+                              ]
+                            }
+                          >
+                            main.home.create-group.group-info
+                          </Text>
+                        </View>
+                      </View>
+                    </View>
+                    <View>
+                      <View
+                        style={
+                          Array [
+                            Object {
+                              "paddingHorizontal": 24,
+                            },
+                          ]
+                        }
+                      >
+                        <View
+                          style={
+                            Array [
+                              Object {
+                                "alignItems": "stretch",
+                                "flexDirection": "row",
+                                "justifyContent": "space-evenly",
+                              },
+                            ]
+                          }
+                        >
+                          <View
+                            style={
+                              Array [
+                                Object {
+                                  "alignSelf": "center",
+                                },
+                                Object {
+                                  "alignItems": "stretch",
+                                  "flexDirection": "column",
+                                  "justifyContent": "space-evenly",
+                                },
+                                Array [
+                                  Object {
+                                    "height": 65,
+                                  },
+                                  Object {
+                                    "width": 65,
+                                  },
+                                  Object {
+                                    "borderRadius": 32.5,
+                                  },
+                                ],
+                                Object {
+                                  "backgroundColor": "#CED2FF",
+                                },
+                              ]
+                            }
+                          >
+                            <View
+                              style={
+                                Object {
+                                  "transform": Array [
+                                    Object {
+                                      "scale": 1,
+                                    },
+                                  ],
+                                }
+                              }
+                            >
+                              <RNSVGMock
+                                fill="#535AE4"
+                                height={30}
+                                style={
+                                  Object {
+                                    "alignSelf": "center",
+                                  }
+                                }
+                                viewBox="0 0 24 24"
+                                width={30}
+                              />
+                            </View>
+                          </View>
+                          <View
+                            style={
+                              Array [
+                                Object {
+                                  "marginLeft": 16,
+                                },
+                                Object {
+                                  "flex": 1,
+                                },
+                                Object {
+                                  "alignSelf": "center",
+                                },
+                              ]
+                            }
+                          >
+                            <View
+                              accessible={true}
+                              focusable={true}
+                              onClick={[Function]}
+                              onResponderGrant={[Function]}
+                              onResponderMove={[Function]}
+                              onResponderRelease={[Function]}
+                              onResponderTerminate={[Function]}
+                              onResponderTerminationRequest={[Function]}
+                              onStartShouldSetResponder={[Function]}
+                              style={
+                                Object {
+                                  "backgroundColor": "#F7F8FE",
+                                  "borderRadius": 8,
+                                  "height": 36,
+                                  "opacity": 1,
+                                  "paddingHorizontal": 12,
+                                }
+                              }
+                            >
+                              <TextInput
+                                allowFontScaling={true}
+                                autoCorrect={false}
+                                onChangeText={[Function]}
+                                placeholder="main.home.create-group-finalize.placeholder"
+                                placeholderTextColor="#D0D0D6"
+                                rejectResponderTermination={true}
+                                style={
+                                  Array [
+                                    Object {
+                                      "fontSize": 30,
+                                    },
+                                    Object {
+                                      "color": "#393C63",
+                                      "flex": 1,
+                                      "fontFamily": "Open Sans",
+                                    },
+                                  ]
+                                }
+                                underlineColorAndroid="transparent"
+                                value="New group"
+                              />
+                            </View>
+                          </View>
+                        </View>
+                        <View
+                          style={
+                            Array [
+                              Object {
+                                "padding": 16,
+                              },
+                              Object {
+                                "marginTop": 16,
+                              },
+                            ]
+                          }
+                        >
+                          <View
+                            style={
+                              Array [
+                                Object {
+                                  "alignItems": "stretch",
+                                  "flexDirection": "row",
+                                  "justifyContent": "space-between",
+                                },
+                              ]
+                            }
+                          >
+                            <View
+                              style={
+                                Array [
+                                  Object {
+                                    "alignItems": "stretch",
+                                    "flexDirection": "row",
+                                    "justifyContent": "space-evenly",
+                                  },
+                                ]
+                              }
+                            >
+                              <View
+                                style={
+                                  Object {
+                                    "transform": Array [
+                                      Object {
+                                        "scale": 1,
+                                      },
+                                    ],
+                                  }
+                                }
+                              >
+                                <RNSVGMock
+                                  fill="#535AE4"
+                                  height={30}
+                                  style={
+                                    Object {
+                                      "alignSelf": "center",
+                                    }
+                                  }
+                                  viewBox="0 0 24 24"
+                                  width={30}
+                                />
+                              </View>
+                              <Text
+                                style={
+                                  Array [
+                                    Object {
+                                      "fontSize": 30,
+                                    },
+                                    Object {
+                                      "color": "#383B62",
+                                      "fontFamily": "Open Sans",
+                                    },
+                                    Array [
+                                      Object {
+                                        "marginLeft": 16,
+                                      },
+                                      Object {
+                                        "alignSelf": "center",
+                                      },
+                                      Object {
+                                        "fontSize": 30,
+                                      },
+                                    ],
+                                  ]
+                                }
+                              >
+                                main.home.create-group-finalize.about
+                              </Text>
+                            </View>
+                          </View>
+                          <View
+                            style={
+                              Array [
+                                Object {
+                                  "marginTop": 16,
+                                },
+                                Object {
+                                  "opacity": 0.7,
+                                },
+                              ]
+                            }
+                          >
+                            <View
+                              style={
+                                Array [
+                                  Object {
+                                    "alignItems": "stretch",
+                                    "flexDirection": "row",
+                                    "justifyContent": "flex-start",
+                                  },
+                                  Object {
+                                    "paddingLeft": 9,
+                                  },
+                                  Object {
+                                    "alignItems": "center",
+                                  },
+                                  Object {},
+                                ]
+                              }
+                            >
+                              <View
+                                style={
+                                  Object {
+                                    "transform": Array [
+                                      Object {
+                                        "scale": 1,
+                                      },
+                                    ],
+                                  }
+                                }
+                              >
+                                <RNSVGMock
+                                  fill="#535AE4"
+                                  height={12}
+                                  viewBox="0 0 24 24"
+                                  width={12}
+                                />
+                              </View>
+                              <Text
+                                style={
+                                  Array [
+                                    Object {
+                                      "fontSize": 30,
+                                    },
+                                    Object {
+                                      "color": "#383B62",
+                                      "fontFamily": "Open Sans",
+                                    },
+                                    Array [
+                                      Object {
+                                        "fontFamily": "Bold Open Sans",
+                                      },
+                                      Array [
+                                        Object {
+                                          "fontSize": 22,
+                                        },
+                                        Object {
+                                          "paddingLeft": 8,
+                                        },
+                                      ],
+                                      Object {
+                                        "color": "#383B62",
+                                      },
+                                      Object {},
+                                    ],
+                                  ]
+                                }
+                              >
+                                main.home.create-group-finalize.first-bullet-point
+                              </Text>
+                            </View>
+                            <View
+                              style={
+                                Array [
+                                  Object {
+                                    "alignItems": "stretch",
+                                    "flexDirection": "row",
+                                    "justifyContent": "flex-start",
+                                  },
+                                  Object {
+                                    "paddingLeft": 9,
+                                  },
+                                  Object {
+                                    "alignItems": "center",
+                                  },
+                                  Object {},
+                                ]
+                              }
+                            >
+                              <View
+                                style={
+                                  Object {
+                                    "transform": Array [
+                                      Object {
+                                        "scale": 1,
+                                      },
+                                    ],
+                                  }
+                                }
+                              >
+                                <RNSVGMock
+                                  fill="#535AE4"
+                                  height={12}
+                                  viewBox="0 0 24 24"
+                                  width={12}
+                                />
+                              </View>
+                              <Text
+                                style={
+                                  Array [
+                                    Object {
+                                      "fontSize": 30,
+                                    },
+                                    Object {
+                                      "color": "#383B62",
+                                      "fontFamily": "Open Sans",
+                                    },
+                                    Array [
+                                      Object {
+                                        "fontFamily": "Bold Open Sans",
+                                      },
+                                      Array [
+                                        Object {
+                                          "fontSize": 22,
+                                        },
+                                        Object {
+                                          "paddingLeft": 8,
+                                        },
+                                      ],
+                                      Object {
+                                        "color": "#383B62",
+                                      },
+                                      Object {},
+                                    ],
+                                  ]
+                                }
+                              >
+                                main.home.create-group-finalize.second-bullet-point
+                              </Text>
+                            </View>
+                            <View
+                              style={
+                                Array [
+                                  Object {
+                                    "alignItems": "stretch",
+                                    "flexDirection": "row",
+                                    "justifyContent": "flex-start",
+                                  },
+                                  Object {
+                                    "paddingLeft": 9,
+                                  },
+                                  Object {
+                                    "alignItems": "center",
+                                  },
+                                  Object {},
+                                ]
+                              }
+                            >
+                              <View
+                                style={
+                                  Object {
+                                    "transform": Array [
+                                      Object {
+                                        "scale": 1,
+                                      },
+                                    ],
+                                  }
+                                }
+                              >
+                                <RNSVGMock
+                                  fill="#535AE4"
+                                  height={12}
+                                  viewBox="0 0 24 24"
+                                  width={12}
+                                />
+                              </View>
+                              <Text
+                                style={
+                                  Array [
+                                    Object {
+                                      "fontSize": 30,
+                                    },
+                                    Object {
+                                      "color": "#383B62",
+                                      "fontFamily": "Open Sans",
+                                    },
+                                    Array [
+                                      Object {
+                                        "fontFamily": "Bold Open Sans",
+                                      },
+                                      Array [
+                                        Object {
+                                          "fontSize": 22,
+                                        },
+                                        Object {
+                                          "paddingLeft": 8,
+                                        },
+                                      ],
+                                      Object {
+                                        "color": "#383B62",
+                                      },
+                                      Object {},
+                                    ],
+                                  ]
+                                }
+                              >
+                                main.home.create-group-finalize.third-bullet-point
+                              </Text>
+                            </View>
+                            <View
+                              style={
+                                Array [
+                                  Object {
+                                    "alignItems": "stretch",
+                                    "flexDirection": "row",
+                                    "justifyContent": "flex-start",
+                                  },
+                                  Object {
+                                    "paddingLeft": 9,
+                                  },
+                                  Object {
+                                    "alignItems": "center",
+                                  },
+                                  Object {},
+                                ]
+                              }
+                            >
+                              <View
+                                style={
+                                  Object {
+                                    "transform": Array [
+                                      Object {
+                                        "scale": 1,
+                                      },
+                                    ],
+                                  }
+                                }
+                              >
+                                <RNSVGMock
+                                  fill="#F64278"
+                                  height={12}
+                                  viewBox="0 0 24 24"
+                                  width={12}
+                                />
+                              </View>
+                              <Text
+                                style={
+                                  Array [
+                                    Object {
+                                      "fontSize": 30,
+                                    },
+                                    Object {
+                                      "color": "#383B62",
+                                      "fontFamily": "Open Sans",
+                                    },
+                                    Array [
+                                      Object {
+                                        "fontFamily": "Bold Open Sans",
+                                      },
+                                      Array [
+                                        Object {
+                                          "fontSize": 22,
+                                        },
+                                        Object {
+                                          "paddingLeft": 8,
+                                        },
+                                      ],
+                                      Object {
+                                        "color": "#383B62",
+                                      },
+                                      Object {},
+                                    ],
+                                  ]
+                                }
+                              >
+                                main.home.create-group-finalize.fourth-bullet-point
+                              </Text>
+                            </View>
+                            <View
+                              style={
+                                Array [
+                                  Object {
+                                    "alignItems": "stretch",
+                                    "flexDirection": "row",
+                                    "justifyContent": "flex-start",
+                                  },
+                                  Object {
+                                    "paddingLeft": 9,
+                                  },
+                                  Object {
+                                    "alignItems": "center",
+                                  },
+                                  Object {},
+                                ]
+                              }
+                            >
+                              <View
+                                style={
+                                  Object {
+                                    "transform": Array [
+                                      Object {
+                                        "scale": 1,
+                                      },
+                                    ],
+                                  }
+                                }
+                              >
+                                <RNSVGMock
+                                  fill="#F64278"
+                                  height={12}
+                                  viewBox="0 0 24 24"
+                                  width={12}
+                                />
+                              </View>
+                              <Text
+                                style={
+                                  Array [
+                                    Object {
+                                      "fontSize": 30,
+                                    },
+                                    Object {
+                                      "color": "#383B62",
+                                      "fontFamily": "Open Sans",
+                                    },
+                                    Array [
+                                      Object {
+                                        "fontFamily": "Bold Open Sans",
+                                      },
+                                      Array [
+                                        Object {
+                                          "fontSize": 22,
+                                        },
+                                        Object {
+                                          "paddingLeft": 8,
+                                        },
+                                      ],
+                                      Object {
+                                        "color": "#383B62",
+                                      },
+                                      Object {},
+                                    ],
+                                  ]
+                                }
+                              >
+                                main.home.create-group-finalize.fifth-bullet-point
+                              </Text>
+                            </View>
+                          </View>
+                        </View>
+                      </View>
+                      <View
+                        style={
+                          Array [
+                            Object {
+                              "paddingHorizontal": 40,
+                            },
+                            Object {
+                              "paddingVertical": 24,
+                            },
+                            Object {
+                              "marginBottom": 9,
+                            },
+                            Object {
+                              "backgroundColor": "#F2F2F2",
+                            },
+                          ]
+                        }
+                      >
+                        <View
+                          accessible={true}
+                          focusable={true}
+                          onClick={[Function]}
+                          onResponderGrant={[Function]}
+                          onResponderMove={[Function]}
+                          onResponderRelease={[Function]}
+                          onResponderTerminate={[Function]}
+                          onResponderTerminationRequest={[Function]}
+                          onStartShouldSetResponder={[Function]}
+                          style={
+                            Object {
+                              "alignItems": "center",
+                              "backgroundColor": "#EAEAFB",
+                              "borderRadius": 8,
+                              "flexDirection": "row",
+                              "height": 44,
+                              "justifyContent": "center",
+                              "opacity": 1,
+                            }
+                          }
+                        >
+                          <Text
+                            style={
+                              Array [
+                                Object {
+                                  "fontSize": 30,
+                                },
+                                Object {
+                                  "color": "#383B62",
+                                  "fontFamily": "Open Sans",
+                                },
+                                Array [
+                                  Object {
+                                    "textTransform": "uppercase",
+                                  },
+                                  Object {
+                                    "color": "#535AE4",
+                                  },
+                                  Object {
+                                    "fontFamily": "Bold Open Sans",
+                                  },
+                                ],
+                              ]
+                            }
+                          >
+                            main.home.create-group.create-group
+                          </Text>
+                        </View>
+                      </View>
+                    </View>
+                  </View>
+                </View>
+              </View>
+            </View>
+          </RCTScrollView>
+        </View>
+      </View>
+    </View>
+  </View>
+</RNCSafeAreaProvider>
+`;

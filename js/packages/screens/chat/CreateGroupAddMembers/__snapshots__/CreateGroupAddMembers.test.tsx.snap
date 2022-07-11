@@ -1,0 +1,442 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Chat.CreateGroupAddMembers renders correctly 1`] = `
+<RNCSafeAreaProvider
+  onInsetsChange={[Function]}
+  style={
+    Array [
+      Object {
+        "flex": 1,
+      },
+      undefined,
+    ]
+  }
+>
+  <View
+    style={
+      Object {
+        "flex": 1,
+      }
+    }
+  >
+    <View
+      appearance="default"
+      level="1"
+      style={
+        Array [
+          Object {
+            "backgroundColor": "#FFFFFF",
+          },
+          Array [
+            Object {
+              "flex": 1,
+            },
+            Object {
+              "backgroundColor": "#F2F2F2",
+            },
+          ],
+        ]
+      }
+    >
+      <View
+        style={
+          Object {
+            "backgroundColor": "#535AE4",
+          }
+        }
+      >
+        <View
+          style={
+            Object {
+              "height": 135,
+            }
+          }
+        >
+          <RCTScrollView
+            contentContainerStyle={
+              Array [
+                Object {
+                  "paddingLeft": 16,
+                },
+              ]
+            }
+            horizontal={true}
+            showsHorizontalScrollIndicator={false}
+          >
+            <View />
+          </RCTScrollView>
+        </View>
+      </View>
+      <View
+        style={
+          Object {
+            "backgroundColor": "#F2F2F2",
+            "flex": 1,
+          }
+        }
+      >
+        <View
+          style={
+            Object {
+              "flex": 1,
+              "top": -30,
+            }
+          }
+        >
+          <View
+            style={
+              Array [
+                false,
+              ]
+            }
+          >
+            <View
+              accessible={true}
+              focusable={true}
+              onClick={[Function]}
+              onResponderGrant={[Function]}
+              onResponderMove={[Function]}
+              onResponderRelease={[Function]}
+              onResponderTerminate={[Function]}
+              onResponderTerminationRequest={[Function]}
+              onStartShouldSetResponder={[Function]}
+              style={
+                Array [
+                  Object {
+                    "borderTopLeftRadius": 30,
+                    "borderTopRightRadius": 30,
+                  },
+                  false,
+                  false,
+                  false,
+                  Object {
+                    "backgroundColor": "#F2F2F2",
+                  },
+                  Array [
+                    Object {
+                      "marginBottom": -1,
+                    },
+                  ],
+                ]
+              }
+            >
+              <View
+                style={
+                  Array [
+                    Object {
+                      "height": 90,
+                    },
+                  ]
+                }
+              >
+                <View
+                  style={
+                    Array [
+                      Object {
+                        "marginTop": 16,
+                      },
+                      Object {
+                        "alignSelf": "center",
+                      },
+                      Object {
+                        "borderRadius": 4,
+                      },
+                      Object {
+                        "backgroundColor": "#97979770",
+                        "height": 5,
+                        "width": 60,
+                      },
+                    ]
+                  }
+                />
+                <View
+                  style={
+                    Array [
+                      Object {
+                        "marginTop": 9,
+                      },
+                    ]
+                  }
+                >
+                  <View
+                    style={
+                      Array [
+                        Object {
+                          "alignItems": "stretch",
+                          "flexDirection": "row",
+                          "justifyContent": "space-between",
+                        },
+                        Object {
+                          "paddingHorizontal": 16,
+                        },
+                        Object {
+                          "paddingTop": 9,
+                        },
+                      ]
+                    }
+                  >
+                    <Text
+                      style={
+                        Array [
+                          Object {
+                            "fontSize": 30,
+                          },
+                          Object {
+                            "color": "#383B62",
+                            "fontFamily": "Open Sans",
+                          },
+                          Array [
+                            Object {
+                              "fontFamily": "Bold Open Sans",
+                            },
+                            Object {
+                              "fontSize": 50,
+                            },
+                            Object {
+                              "alignSelf": "center",
+                            },
+                          ],
+                        ]
+                      }
+                    >
+                      main.home.create-group.add-members
+                    </Text>
+                  </View>
+                </View>
+              </View>
+            </View>
+          </View>
+          <View
+            style={
+              Array [
+                Object {
+                  "paddingHorizontal": 24,
+                },
+                Object {
+                  "paddingTop": 9,
+                },
+                Object {
+                  "backgroundColor": "#F2F2F2",
+                  "flex": 1,
+                },
+              ]
+            }
+          >
+            <View
+              accessible={true}
+              focusable={true}
+              onClick={[Function]}
+              onResponderGrant={[Function]}
+              onResponderMove={[Function]}
+              onResponderRelease={[Function]}
+              onResponderTerminate={[Function]}
+              onResponderTerminationRequest={[Function]}
+              onStartShouldSetResponder={[Function]}
+              style={
+                Object {
+                  "alignItems": "center",
+                  "backgroundColor": "#F7F8FE",
+                  "borderRadius": 14,
+                  "flexDirection": "row",
+                  "height": 42,
+                  "justifyContent": "flex-start",
+                  "opacity": 1,
+                  "paddingHorizontal": 12,
+                }
+              }
+            >
+              <View
+                style={
+                  Array [
+                    Object {
+                      "alignItems": "stretch",
+                      "flexDirection": "row",
+                      "justifyContent": "space-evenly",
+                    },
+                  ]
+                }
+              >
+                <View
+                  style={
+                    Object {
+                      "transform": Array [
+                        Object {
+                          "scale": 1,
+                        },
+                      ],
+                    }
+                  }
+                >
+                  <RNSVGMock
+                    fill="#D0D0D6"
+                    height={20}
+                    viewBox="0 0 24 24"
+                    width={20}
+                  />
+                </View>
+              </View>
+              <View
+                style={
+                  Array [
+                    Object {
+                      "marginLeft": 9,
+                    },
+                    Object {
+                      "alignItems": "flex-start",
+                      "flex": 6,
+                      "flexDirection": "row",
+                    },
+                  ]
+                }
+              >
+                <TextInput
+                  allowFontScaling={true}
+                  autoCorrect={false}
+                  iconName="search-outline"
+                  onChangeText={[Function]}
+                  placeholder="main.home.create-group.search-placeholder"
+                  placeholderTextColor="#D0D0D6"
+                  rejectResponderTermination={true}
+                  style={
+                    Array [
+                      Object {
+                        "fontSize": 30,
+                      },
+                      Object {
+                        "color": "#393C63",
+                        "flex": 1,
+                        "fontFamily": "Open Sans",
+                      },
+                    ]
+                  }
+                  underlineColorAndroid="transparent"
+                  value=""
+                />
+              </View>
+            </View>
+            <RCTScrollView
+              contentContainerStyle={
+                Array [
+                  Object {
+                    "paddingTop": 16,
+                  },
+                  Object {
+                    "paddingBottom": 75,
+                  },
+                ]
+              }
+              showsVerticalScrollIndicator={false}
+              style={
+                Array [
+                  Object {
+                    "marginTop": 9,
+                  },
+                  Object {
+                    "flex": 1,
+                  },
+                ]
+              }
+            >
+              <View />
+            </RCTScrollView>
+          </View>
+        </View>
+      </View>
+      <View
+        style={
+          Array [
+            Object {
+              "paddingHorizontal": 40,
+            },
+            Object {
+              "paddingVertical": 24,
+            },
+            Object {
+              "marginBottom": 9,
+            },
+            Object {
+              "backgroundColor": "#F2F2F2",
+            },
+          ]
+        }
+      >
+        <View
+          accessible={true}
+          focusable={true}
+          onClick={[Function]}
+          onResponderGrant={[Function]}
+          onResponderMove={[Function]}
+          onResponderRelease={[Function]}
+          onResponderTerminate={[Function]}
+          onResponderTerminationRequest={[Function]}
+          onStartShouldSetResponder={[Function]}
+          style={
+            Object {
+              "alignItems": "center",
+              "backgroundColor": "#EAEAFB",
+              "borderRadius": 8,
+              "flexDirection": "row",
+              "height": 44,
+              "justifyContent": "center",
+              "opacity": 1,
+            }
+          }
+        >
+          <Text
+            style={
+              Array [
+                Object {
+                  "fontSize": 30,
+                },
+                Object {
+                  "color": "#383B62",
+                  "fontFamily": "Open Sans",
+                },
+                Array [
+                  Object {
+                    "textTransform": "uppercase",
+                  },
+                  Object {
+                    "color": "#535AE4",
+                  },
+                  Object {
+                    "fontFamily": "Bold Open Sans",
+                  },
+                ],
+              ]
+            }
+          >
+            main.home.create-group.continue
+          </Text>
+          <View
+            style={
+              Object {
+                "marginLeft": 9,
+              }
+            }
+          >
+            <View
+              style={
+                Object {
+                  "transform": Array [
+                    Object {
+                      "scale": 1,
+                    },
+                  ],
+                }
+              }
+            >
+              <RNSVGMock
+                fill="#535AE4"
+                height={25}
+                viewBox="0 0 24 24"
+                width={25}
+              />
+            </View>
+          </View>
+        </View>
+      </View>
+    </View>
+  </View>
+</RNCSafeAreaProvider>
+`;

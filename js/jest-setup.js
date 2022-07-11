@@ -27,5 +27,13 @@ jest.mock('react-native-reanimated', () => {
 
 jest.mock('@gorhom/bottom-sheet', () => require('react-native-reanimated/mock'))
 
+jest.mock('react-native-gesture-handler', () => {
+	return {
+		...jest.requireActual('react-native-gesture-handler/src/mocks'),
+		LongPressGestureHandler: jest.fn,
+		TouchableOpacity: jest.fn,
+	}
+})
+
 initI18N()
 i18next.changeLanguage('cimode')
