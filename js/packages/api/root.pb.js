@@ -68,6 +68,11 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     requestType: "LogfileList.Request",
                     responseType: "LogfileList.Reply"
                   },
+                  StreamLogfile: {
+                    requestType: "StreamLogfile.Request",
+                    responseType: "StreamLogfile.Reply",
+                    responseStream: true
+                  },
                   GetUsername: {
                     requestType: "GetUsername.Request",
                     responseType: "GetUsername.Reply"
@@ -639,6 +644,34 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                             id: 8
                           }
                         }
+                      }
+                    }
+                  }
+                }
+              },
+              StreamLogfile: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      accountId: {
+                        type: "string",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "AccountID"
+                        }
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {
+                      line: {
+                        type: "string",
+                        id: 1
+                      },
+                      fileName: {
+                        type: "string",
+                        id: 2
                       }
                     }
                   }

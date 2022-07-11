@@ -61,6 +61,24 @@ func (m *Manager) getLogger() (*zap.Logger, error) {
 		return m.Logging.zapLogger, nil
 	}
 
+	// disable logger if no native loggers have logs
+	{
+		if len(m.Logging.DefaultLoggerStreams) > 0 {
+			disableLogger := true
+			for _, stream := range m.Logging.DefaultLoggerStreams {
+				if stream.GetFilters() != "-*" {
+					disableLogger = false
+					break
+				}
+			}
+
+			if disableLogger {
+				m.Logging.zapLogger = zap.NewNop()
+				return m.Logging.zapLogger, nil
+			}
+		}
+	}
+
 	m.Logging.StderrFilters = strings.ReplaceAll(m.Logging.StderrFilters, KeywordDefault, DefaultLoggingFilters)
 	m.Logging.FileFilters = strings.ReplaceAll(m.Logging.FileFilters, KeywordDefault, DefaultLoggingFilters)
 

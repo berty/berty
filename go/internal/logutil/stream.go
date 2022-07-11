@@ -22,6 +22,10 @@ type Stream struct {
 	baseLogger  *zap.Logger
 }
 
+func (s *Stream) GetFilters() string {
+	return s.filters
+}
+
 func NewStdStream(filters, format, path string) Stream {
 	return Stream{
 		kind:    typeStd,

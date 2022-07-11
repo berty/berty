@@ -32,6 +32,8 @@ export namespace berty {
                 public getGRPCListenerAddrs(request: berty.account.v1.GetGRPCListenerAddrs.IRequest): Promise<berty.account.v1.GetGRPCListenerAddrs.Reply>;
                 public logfileList(request: berty.account.v1.LogfileList.IRequest, callback: berty.account.v1.AccountService.LogfileListCallback): void;
                 public logfileList(request: berty.account.v1.LogfileList.IRequest): Promise<berty.account.v1.LogfileList.Reply>;
+                public streamLogfile(request: berty.account.v1.StreamLogfile.IRequest, callback: berty.account.v1.AccountService.StreamLogfileCallback): void;
+                public streamLogfile(request: berty.account.v1.StreamLogfile.IRequest): Promise<berty.account.v1.StreamLogfile.Reply>;
                 public getUsername(request: berty.account.v1.GetUsername.IRequest, callback: berty.account.v1.AccountService.GetUsernameCallback): void;
                 public getUsername(request: berty.account.v1.GetUsername.IRequest): Promise<berty.account.v1.GetUsername.Reply>;
                 public networkConfigSet(request: berty.account.v1.NetworkConfigSet.IRequest, callback: berty.account.v1.AccountService.NetworkConfigSetCallback): void;
@@ -79,6 +81,8 @@ export namespace berty {
                 type GetGRPCListenerAddrsCallback = (error: (Error|null), response?: berty.account.v1.GetGRPCListenerAddrs.Reply) => void;
 
                 type LogfileListCallback = (error: (Error|null), response?: berty.account.v1.LogfileList.Reply) => void;
+
+                type StreamLogfileCallback = (error: (Error|null), response?: berty.account.v1.StreamLogfile.Reply) => void;
 
                 type GetUsernameCallback = (error: (Error|null), response?: berty.account.v1.GetUsername.Reply) => void;
 
@@ -1106,6 +1110,63 @@ export namespace berty {
                         public static toObject(message: berty.account.v1.LogfileList.Reply.Logfile, options?: $protobuf.IConversionOptions): { [k: string]: any };
                         public toJSON(): { [k: string]: any };
                     }
+                }
+            }
+
+            interface IStreamLogfile {
+            }
+
+            class StreamLogfile implements IStreamLogfile {
+
+                public static create(properties?: berty.account.v1.IStreamLogfile): berty.account.v1.StreamLogfile;
+                public static encode(message: berty.account.v1.IStreamLogfile, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.account.v1.IStreamLogfile, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.account.v1.StreamLogfile;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.account.v1.StreamLogfile;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.account.v1.StreamLogfile;
+                public static toObject(message: berty.account.v1.StreamLogfile, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            namespace StreamLogfile {
+
+                interface IRequest {
+                    accountId?: (string|null);
+                }
+
+                class Request implements IRequest {
+
+                    public accountId: string;
+                    public static create(properties?: berty.account.v1.StreamLogfile.IRequest): berty.account.v1.StreamLogfile.Request;
+                    public static encode(message: berty.account.v1.StreamLogfile.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.account.v1.StreamLogfile.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.account.v1.StreamLogfile.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.account.v1.StreamLogfile.Request;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.account.v1.StreamLogfile.Request;
+                    public static toObject(message: berty.account.v1.StreamLogfile.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+
+                interface IReply {
+                    line?: (string|null);
+                    fileName?: (string|null);
+                }
+
+                class Reply implements IReply {
+
+                    public line: string;
+                    public fileName: string;
+                    public static create(properties?: berty.account.v1.StreamLogfile.IReply): berty.account.v1.StreamLogfile.Reply;
+                    public static encode(message: berty.account.v1.StreamLogfile.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.account.v1.StreamLogfile.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.account.v1.StreamLogfile.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.account.v1.StreamLogfile.Reply;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.account.v1.StreamLogfile.Reply;
+                    public static toObject(message: berty.account.v1.StreamLogfile.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
                 }
             }
 

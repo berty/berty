@@ -259,6 +259,7 @@
 				"name": "Log filters",
 				"bullet-point": "Restart app after changing this field"
 			},
+			"export-logs-button": "Export logs",
 			"add-dev-conversations-button": "Add dev conversations",
 			"share-button": {
 				"title": "Share ID on discord",

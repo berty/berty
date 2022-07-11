@@ -43,8 +43,13 @@ import {
 	selectPersistentOptions,
 	setPersistentOption,
 } from '@berty/redux/reducers/persistentOptions.reducer'
-import { setDebugMode, setStreamError } from '@berty/redux/reducers/ui.reducer'
+import {
+	selectSelectedAccount,
+	setDebugMode,
+	setStreamError,
+} from '@berty/redux/reducers/ui.reducer'
 import { storageGet, storageSet } from '@berty/utils/accounts/accountClient'
+import { exportLogfile } from '@berty/utils/accounts/accountUtils'
 import { defaultGlobalPersistentOptions } from '@berty/utils/global-persistent-options/defaults'
 import { GlobalPersistentOptionsKeys } from '@berty/utils/global-persistent-options/types'
 import { showNeedRestartNotification } from '@berty/utils/notification/notif-in-app'
@@ -348,6 +353,7 @@ const BodyDevTools: React.FC<{}> = withInAppNotification(({ showNotification }: 
 	const client = useMessengerClient()
 	const restart = useRestartAfterClosing()
 	const forceMock = useAppSelector(selectForceMock)
+	const selectedAccount = useAppSelector(selectSelectedAccount)
 
 	const addTyberHost = useCallback(
 		(host: string, addresses: string[]) => {
@@ -484,6 +490,17 @@ const BodyDevTools: React.FC<{}> = withInAppNotification(({ showNotification }: 
 				setOptionValue={async val => {
 					await storageSet(GlobalPersistentOptionsKeys.LogFilters, val)
 					showNeedRestartNotification(showNotification, restart, t)
+				}}
+			/>
+			<ButtonSetting
+				name={t('settings.devtools.export-logs-button')}
+				icon='file-text-outline'
+				iconSize={30}
+				iconColor={colors['alt-secondary-background-header']}
+				onPress={async () => {
+					console.log('remi: button')
+					// await logfileList()
+					await exportLogfile(selectedAccount)
 				}}
 			/>
 			<StringOptionInput

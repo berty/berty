@@ -556,11 +556,8 @@ func (m *Manager) getLocalMessengerServer() (messengertypes.MessengerServiceServ
 
 	// log file path
 	currentLogfilePath := ""
-	if m.Logging.FilePath != "" {
-		currentLogfilePath, err = logutil.CurrentLogfilePath(m.Logging.FilePath)
-		if err != nil {
-			return nil, errcode.TODO.Wrap(fmt.Errorf("failed to get the current log file from path=%s", m.Logging.FilePath))
-		}
+	if currentLogfilePath, err = logutil.CurrentLogfilePath(m.Logging.FilePath); err != nil {
+		logger.Warn("failed to get the current log file from path", zap.String("path", m.Logging.FilePath))
 	}
 
 	// messenger db
