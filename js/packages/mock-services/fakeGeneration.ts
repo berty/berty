@@ -252,13 +252,19 @@ export const genFakeMessengerData = ({
 		[],
 	)
 
-	let groupsDevicesToPeer: beapi.messenger.StreamEvent.IPeerStatusGroupAssociated[] = []
-	let peersNetworkStatus: beapi.messenger.StreamEvent.IPeerStatusConnected[] = []
+	const groupsDevicesToPeer: beapi.messenger.StreamEvent.IPeerStatusGroupAssociated[] = []
+	const peersNetworkStatus: beapi.messenger.StreamEvent.IPeerStatusConnected[] = []
+	const devices: { devicePk: string | null | undefined; memberPk: string | null | undefined }[] = []
 	members.forEach(value => {
 		const peerId = faker.datatype.uuid()
 
 		const devicePk =
 			!value?.devices || !value?.devices.length ? faker.datatype.uuid() : value.devices[0].publicKey
+		const device = {
+			devicePk,
+			memberPk: value.publicKey,
+		}
+		devices.push(device)
 		const groupDeviceToPeer: beapi.messenger.StreamEvent.IPeerStatusGroupAssociated = {
 			groupPk: value.conversationPublicKey,
 			devicePk,
@@ -305,5 +311,6 @@ export const genFakeMessengerData = ({
 		interactionsMap,
 		groupsDevicesToPeer,
 		peersNetworkStatus,
+		devices,
 	}
 }

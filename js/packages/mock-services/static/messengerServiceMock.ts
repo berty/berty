@@ -221,12 +221,14 @@ export class MessengerServiceMock implements Partial<IMessengerServiceMock> {
 		request: beapi.messenger.ListMemberDevices.IRequest,
 		send: (reply: beapi.messenger.ListMemberDevices.IReply) => Promise<void>,
 	) => {
+		const devices = getGoldenData().devices
+		const device = devices.find(val => val.memberPk === request.memberPk)
 		await Promise.all(
-			range(0, 3).map(() =>
+			range(0, 1).map(() =>
 				send({
 					device: {
-						memberPublicKey: request.memberPk,
-						publicKey: faker.datatype.uuid(),
+						memberPublicKey: device?.memberPk || request.memberPk,
+						publicKey: device?.devicePk || faker.datatype.uuid(),
 					},
 				}),
 			),
