@@ -6,12 +6,10 @@ import AndroidKeyboardAdjust from 'react-native-android-keyboard-adjust'
 
 import beapi from '@berty/api'
 import { MultiMemberAvatar } from '@berty/components/avatars'
-import { MemberBar } from '@berty/components/chat/member-bar/MemberBar'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
 import {
 	useConversation,
-	useConversationMembers,
 	useNotificationsInhibitor,
 	useReadEffect,
 	useThemeColor,
@@ -39,7 +37,6 @@ export const MultiMember: ScreenFC<'Chat.Group'> = ({ route: { params }, navigat
 	const colors = useThemeColor()
 	useReadEffect(params.convId, 1000)
 	const conv = useConversation(params.convId)
-	const members = useConversationMembers(params.convId).filter(members => !members.isMe)
 
 	const [keyboardIsHidden, setKeyboardIsHidden] = useState(false)
 
@@ -92,7 +89,6 @@ export const MultiMember: ScreenFC<'Chat.Group'> = ({ route: { params }, navigat
 			keyboardVerticalOffset={headerHeight}
 			style={[{ flex: 1, backgroundColor: colors['main-background'] }]}
 		>
-			{members.length > 0 && <MemberBar convId={params.convId} members={members} />}
 			<View style={[flex.tiny, { backgroundColor: colors['main-background'] }]}>
 				{Platform.OS === 'ios' ? (
 					<View style={[flex.tiny]}>

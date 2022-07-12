@@ -25,7 +25,7 @@ export const MultiMemberContent: React.FC<MultiMemberContentProps> = props => {
 
 	return (
 		<>
-			<MessageList id={props.convId} {...{ setStickyDate, setShowStickyDate }} />
+			<MessageList id={props.convId} {...{ setStickyDate, setShowStickyDate }} isGroup />
 			<ChatFooter convPK={props.convId} placeholder={t('chat.multi-member.input-placeholder')} />
 			{!!stickyDate && !!showStickyDate && (
 				<View style={styles.chatDateWrapper}>

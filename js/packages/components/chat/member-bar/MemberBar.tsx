@@ -1,21 +1,56 @@
 import LottieView from 'lottie-react-native'
-import React, { useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { StyleSheet, TouchableOpacity, View } from 'react-native'
 
-import beapi from '@berty/api'
+import { useAppDispatch, useConversationMembers, useMessengerClient } from '@berty/hooks'
 import { useNavigation } from '@berty/navigation'
+import { getPeerFromMemberPK, PeerNetworkStatus } from '@berty/redux/reducers/messenger.reducer'
 
 import { Avatars } from './Avatars'
 import { Boosted } from './Boosted'
+import { MemberBarItem } from './interfaces'
 
 interface MemberBarProps {
-	members: beapi.messenger.IMember[]
 	convId: string
 }
 
 export const MemberBar: React.FC<MemberBarProps> = props => {
 	const navigation = useNavigation()
 	const [animationStep, setAnimationStep] = useState(0)
+	const messengerClient = useMessengerClient()
+	const members = useConversationMembers(props.convId).filter(members => !members.isMe)
+	const dispatch = useAppDispatch()
+
+	const [memberList, setMemberList] = useState<MemberBarItem[] | undefined>(undefined)
+
+	const handleMemberList = useCallback(() => {
+		const list: MemberBarItem[] = []
+
+		if (!messengerClient) {
+			return
+		}
+
+		members.forEach(async member => {
+			const peer = await dispatch(
+				getPeerFromMemberPK({ memberPK: member.publicKey, convPK: props.convId }),
+			)
+
+			if (peer.payload && list.length < 5) {
+				list.push({
+					networkStatus: peer.payload as PeerNetworkStatus,
+					publicKey: member.publicKey ?? undefined,
+				})
+			}
+		})
+
+		setMemberList(list)
+		// members is needed but cause an infinite loop
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [dispatch, messengerClient, props.convId])
+
+	useEffect(() => {
+		handleMemberList()
+	}, [handleMemberList])
 
 	return (
 		<TouchableOpacity
@@ -41,14 +76,8 @@ export const MemberBar: React.FC<MemberBarProps> = props => {
 						loop={false}
 					/>
 				)}
-				{animationStep === 2 && (
-					<Avatars
-						convId={props.convId}
-						items={props.members.map(member => ({
-							status: 'connected',
-							publicKey: member.publicKey ?? undefined,
-						}))}
-					/>
+				{animationStep === 2 && memberList !== undefined && (
+					<Avatars convId={props.convId} membersLength={members.length} memberList={memberList} />
 				)}
 			</View>
 			<Boosted />
@@ -58,12 +87,9 @@ export const MemberBar: React.FC<MemberBarProps> = props => {
 
 const styles = StyleSheet.create({
 	container: {
+		marginTop: 10,
 		backgroundColor: 'white',
 		borderRadius: 18,
-		left: 20,
-		right: 20,
-		zIndex: 10,
-		position: 'absolute',
 		shadowOffset: {
 			width: 0,
 			height: 8,
@@ -80,10 +106,9 @@ const styles = StyleSheet.create({
 	},
 	barWidth: {
 		flex: 1,
+		alignItems: 'center',
 	},
 	lottieWidth: {
-		width: '100%',
-		height: 10,
-		marginLeft: 15,
+		height: 8,
 	},
 })

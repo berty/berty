@@ -1,48 +1,37 @@
 import React from 'react'
 import { StyleSheet, View } from 'react-native'
 
-import { MemberAvatar } from '@berty/components/avatars'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 
-const Avatar = ({ convId, publicKey }: { convId: string; publicKey?: string }) => {
-	return <MemberAvatar publicKey={publicKey} conversationPublicKey={convId} size={26} />
-}
+import { AvatarWrapper } from './AvatarWrapper'
+import { MemberBarItem } from './interfaces'
+
+const MAX_MEMBERS_TO_SHOW = 5
+const WIDTH_AVATAR_WRAPPER = 30
 
 interface AvatarsProps {
 	convId: string
-	items: { status: 'connected' | 'reconnecting' | 'disconnected'; publicKey?: string }[]
+	memberList: MemberBarItem[]
+	membersLength: number
 }
 
 export const Avatars: React.FC<AvatarsProps> = props => {
 	return (
 		<View style={styles.container}>
-			{props.items.slice(0, 5).map((item, index) => {
-				let backgroundColor = '#E35179'
-
-				if (item.status === 'connected') {
-					backgroundColor = '#0FBE00'
-				}
-				if (item.status === 'reconnecting') {
-					backgroundColor = '#F9B70F'
-				}
-				return (
-					<View
-						key={item.publicKey ?? index}
-						style={[
-							styles.avatarWrapper,
-							{
-								backgroundColor,
-								zIndex: index,
-							},
-						]}
-					>
-						<Avatar publicKey={item.publicKey} convId={props.convId} />
-					</View>
-				)
-			})}
-			{props.items.length > 5 && (
+			<View style={styles.placeholder} />
+			{props.memberList.map((member, index) => (
+				<AvatarWrapper
+					convId={props.convId}
+					member={member}
+					index={index}
+					key={member.publicKey ?? index}
+				/>
+			))}
+			{props.membersLength > MAX_MEMBERS_TO_SHOW && (
 				<View style={styles.manyMembersWrapper}>
-					<UnifiedText style={styles.manyMembersText}>+5</UnifiedText>
+					<UnifiedText style={styles.manyMembersText}>
+						+{props.membersLength - MAX_MEMBERS_TO_SHOW}
+					</UnifiedText>
 				</View>
 			)}
 		</View>
@@ -55,18 +44,11 @@ const styles = StyleSheet.create({
 		justifyContent: 'center',
 		alignItems: 'center',
 	},
-	avatarWrapper: {
-		width: 30,
-		height: 30,
-		borderRadius: 30,
-		borderColor: 'white',
-		borderWidth: 1,
-		justifyContent: 'center',
-		alignItems: 'center',
-		marginLeft: -10,
+	placeholder: {
+		width: WIDTH_AVATAR_WRAPPER,
 	},
 	manyMembersWrapper: {
-		width: 30,
+		width: WIDTH_AVATAR_WRAPPER,
 		height: 30,
 		borderRadius: 30,
 		backgroundColor: '#EDF1F7',
