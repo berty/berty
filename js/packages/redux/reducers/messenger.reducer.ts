@@ -126,7 +126,7 @@ export const selectPeerFromPeerID = (state: LocalRootState, peerID: string) => {
 
 // thunk to get a peer from a member
 export const getPeerFromMemberPK = createAsyncThunk(
-	'messenger/gotPeerFromMemberPK',
+	'messenger/getPeerFromMemberPK',
 	async (
 		arg: {
 			memberPK: string | null | undefined
