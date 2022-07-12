@@ -837,7 +837,7 @@ exports[`Group.MultiMemberSettings renders correctly 1`] = `
                                   undefined,
                                   Object {
                                     "alignItems": "center",
-                                    "backgroundColor": "#e03d25",
+                                    "backgroundColor": "#d9ad3c",
                                     "borderRadius": 12.5,
                                     "height": 25,
                                     "justifyContent": "center",
@@ -864,7 +864,7 @@ exports[`Group.MultiMemberSettings renders correctly 1`] = `
                                   ]
                                 }
                               >
-                                M
+                                J
                               </Text>
                             </View>
                           </View>
@@ -888,7 +888,7 @@ exports[`Group.MultiMemberSettings renders correctly 1`] = `
                           ]
                         }
                       >
-                        Melinda Farrell
+                        Jeanne Leffler
                       </Text>
                     </View>
                     <View
@@ -1063,7 +1063,7 @@ exports[`Group.MultiMemberSettings renders correctly 1`] = `
                                   undefined,
                                   Object {
                                     "alignItems": "center",
-                                    "backgroundColor": "#442e8a",
+                                    "backgroundColor": "#bbbc49",
                                     "borderRadius": 12.5,
                                     "height": 25,
                                     "justifyContent": "center",
@@ -1090,7 +1090,7 @@ exports[`Group.MultiMemberSettings renders correctly 1`] = `
                                   ]
                                 }
                               >
-                                W
+                                T
                               </Text>
                             </View>
                           </View>
@@ -1114,7 +1114,7 @@ exports[`Group.MultiMemberSettings renders correctly 1`] = `
                           ]
                         }
                       >
-                        Warren Walsh
+                        Terrence Fay
                       </Text>
                     </View>
                   </View>

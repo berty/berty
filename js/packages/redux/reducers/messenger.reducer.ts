@@ -1,13 +1,16 @@
-import { createEntityAdapter, createSlice, EntityState } from '@reduxjs/toolkit'
+import { createAsyncThunk, createEntityAdapter, createSlice, EntityState } from '@reduxjs/toolkit'
 import cloneDeep from 'lodash/cloneDeep'
 import Long from 'long'
 
 import beapi from '@berty/api'
 import { ParsedInteraction } from '@berty/utils/api'
 import { pbDateToNum } from '@berty/utils/convert/time'
+import { getDevicesForConversationAndMember } from '@berty/utils/messenger/devices'
 import { parseInteraction } from '@berty/utils/messenger/interactions'
 
 import { messengerActions } from '../messengerActions.gen'
+import { RootState } from '../store'
+import { selectMessengerClient } from './ui.reducer'
 
 /**
  *
@@ -121,14 +124,48 @@ export const selectPeerFromPeerID = (state: LocalRootState, peerID: string) => {
 	return peer
 }
 
-// react to events:
-// when i receive PeerConnected event => fill PeerNetworkStatus object with the peerID, the transport et the connected connection status
-// when i receive PeerDisconnected event => delete the PeerNetworkStatus object correspondant to the peerdID
-// when i receive PeerGroupAssociated => fill GroupsDevicesToPeerBucket object with the GroupPK for the id, and for devices fill DeviceToPeerBucket object with the devicePK for the id and the peerID witht the peerID
+// thunk to get a peer from a member
+export const getPeerFromMemberPK = createAsyncThunk(
+	'messenger/getPeerFromMemberPK',
+	async (
+		arg: {
+			memberPK: string | null | undefined
+			convPK: string | null | undefined
+		},
+		{ getState },
+	) => {
+		const { memberPK, convPK } = arg
+		// typing createAsyncThunk is a nightmare 👻
+		const state: RootState = getState() as any
+		const messengerClient = selectMessengerClient(state)
 
-// so in the front to recup the transport and the connection status of a member =>  call this function in the front getDevicesForConversationAndMember that returns you all devicesPK from a memberPK
-// after that take the first devicePK from this object, call the selector of GroupsDevicesToPeerBucket with the groupPK and the devicePK that returns you the correspondant peerID
-// after that call the selector if PeerNetworkStatus with the peerID (that you got from the last step) and recup the transport and the connection status
+		if (messengerClient === null) {
+			console.warn('messenger client is null:', messengerClient)
+			return
+		}
+		if (!convPK) {
+			console.warn('No convPK found for memberPK:', memberPK)
+			return
+		}
+
+		// recup all devices to a specific member from a group
+		const devices = await getDevicesForConversationAndMember(messengerClient, convPK, memberPK)
+		// for the moment we don't support multi device so only devices[0] is filled
+		const devicePK = devices[0].publicKey
+		if (!devicePK) {
+			console.warn('No devices found for memberPK:', memberPK)
+			return
+		}
+
+		const peerID = selectPeerIdFromDevicePK(state, convPK, devicePK)
+		if (!peerID) {
+			console.warn('No peerID found for devicePK:', devicePK)
+			return
+		}
+		const peer = selectPeerFromPeerID(state, peerID)
+		return peer
+	},
+)
 
 const getEntitiesInitialState = () => ({
 	conversations: conversationsAdapter.getInitialState(),
