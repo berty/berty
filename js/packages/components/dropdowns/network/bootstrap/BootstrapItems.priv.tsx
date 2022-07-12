@@ -1,11 +1,11 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View } from 'react-native'
 
 import { DividerItem } from '@berty/components/items'
+import { BottomModal } from '@berty/components/modals'
 import { AccordionAdd } from '@berty/components/modals/AccordionAdd.modal'
 import { AccordionEdit } from '@berty/components/modals/AccordionEdit.modal'
-import { useModal } from '@berty/contexts/modal.context'
 import { useAppDispatch, useAppSelector } from '@berty/hooks'
 import {
 	addToBootstrap,
@@ -20,9 +20,13 @@ import { MenuToggleWithEditPriv } from '../MenuToggleWithEdit.priv'
 
 export const BootstrapItemsPriv = () => {
 	const dispatch = useAppDispatch()
-	const { hide, show } = useModal()
 	const { t } = useTranslation()
 	const bootstrap = useAppSelector(selectBootstrap)
+	const [isVisible, setIsVisible] = useState<boolean>(false)
+	const [isEdit, setIsEdit] = useState<{
+		alias: string
+		url: string
+	} | null>(null)
 
 	return (
 		<>
@@ -34,28 +38,10 @@ export const BootstrapItemsPriv = () => {
 						onPress={() => dispatch(toggleFromBootstrap(url))}
 						onPressModify={
 							isEditable
-								? () =>
-										show(
-											<AccordionEdit
-												title={t('onboarding.custom-mode.settings.modals.edit.title.bootstrap')}
-												onEdit={data => {
-													dispatch(modifyFromBootstrap({ url, changes: data }))
-													hide()
-												}}
-												onDelete={() => {
-													dispatch(removeFromBootstrap(url))
-													hide()
-												}}
-												defaultAlias={alias}
-												defaultUrl={url}
-												alreadyExistingUrls={bootstrap
-													.map(({ url }) => url)
-													.filter((url): url is string => url !== undefined)}
-												alreadyExistingAliases={bootstrap
-													.map(({ alias }) => alias)
-													.filter((alias): alias is string => alias !== undefined)}
-											/>,
-										)
+								? () => {
+										setIsVisible(true)
+										setIsEdit({ alias: alias || '', url })
+								  }
 								: undefined
 						}
 					>
@@ -64,25 +50,44 @@ export const BootstrapItemsPriv = () => {
 				</View>
 			))}
 			<DividerItem />
-			<AddButtonPriv
-				onPress={() =>
-					show(
-						<AccordionAdd
-							title={t('onboarding.custom-mode.settings.modals.add.title.bootstrap')}
-							onSubmit={data => {
-								dispatch(addToBootstrap(data))
-								hide()
-							}}
-							alreadyExistingAliases={bootstrap
-								.map(({ alias }) => alias)
-								.filter((alias): alias is string => alias !== undefined)}
-							alreadyExistingUrls={bootstrap
-								.map(({ url }) => url)
-								.filter((url): url is string => url !== undefined)}
-						/>,
-					)
-				}
-			/>
+			<AddButtonPriv onPress={() => setIsVisible(true)} />
+			<BottomModal isVisible={isVisible} setIsVisible={setIsVisible}>
+				{isEdit ? (
+					<AccordionEdit
+						title={t('onboarding.custom-mode.settings.modals.edit.title.bootstrap')}
+						onEdit={data => {
+							dispatch(modifyFromBootstrap({ url: isEdit.url, changes: data }))
+							setIsVisible(false)
+						}}
+						onDelete={() => {
+							dispatch(removeFromBootstrap(isEdit.url))
+							setIsVisible(false)
+						}}
+						defaultAlias={isEdit.alias}
+						defaultUrl={isEdit.url}
+						alreadyExistingUrls={bootstrap
+							.map(({ url }) => url)
+							.filter((url): url is string => url !== undefined)}
+						alreadyExistingAliases={bootstrap
+							.map(({ alias }) => alias)
+							.filter((alias): alias is string => alias !== undefined)}
+					/>
+				) : (
+					<AccordionAdd
+						title={t('onboarding.custom-mode.settings.modals.add.title.bootstrap')}
+						onSubmit={data => {
+							dispatch(addToBootstrap(data))
+							setIsVisible(false)
+						}}
+						alreadyExistingAliases={bootstrap
+							.map(({ alias }) => alias)
+							.filter((alias): alias is string => alias !== undefined)}
+						alreadyExistingUrls={bootstrap
+							.map(({ url }) => url)
+							.filter((url): url is string => url !== undefined)}
+					/>
+				)}
+			</BottomModal>
 		</>
 	)
 }

@@ -1,11 +1,11 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View } from 'react-native'
 
+import { BottomModal } from '@berty/components'
 import { DividerItem } from '@berty/components/items'
 import { AccordionAdd } from '@berty/components/modals/AccordionAdd.modal'
 import { AccordionEdit } from '@berty/components/modals/AccordionEdit.modal'
-import { useModal } from '@berty/contexts/modal.context'
 import { useAppDispatch, useAppSelector } from '@berty/hooks'
 import {
 	addToStaticRelay,
@@ -20,9 +20,13 @@ import { MenuToggleWithEditPriv } from '../MenuToggleWithEdit.priv'
 
 export const RelayItemsPriv = () => {
 	const dispatch = useAppDispatch()
-	const { hide, show } = useModal()
 	const { t } = useTranslation()
 	const staticRelay = useAppSelector(selectStaticRelay)
+	const [isVisible, setIsVisible] = useState<boolean>(false)
+	const [isEdit, setIsEdit] = useState<{
+		alias: string
+		url: string
+	} | null>(null)
 
 	return (
 		<>
@@ -34,28 +38,10 @@ export const RelayItemsPriv = () => {
 						onPress={() => dispatch(toggleFromStaticRelay(url))}
 						onPressModify={
 							isEditable
-								? () =>
-										show(
-											<AccordionEdit
-												title={t('onboarding.custom-mode.settings.modals.edit.title.relay')}
-												onEdit={data => {
-													dispatch(modifyFromStaticRelay({ url, changes: data }))
-													hide()
-												}}
-												onDelete={() => {
-													dispatch(removeFromStaticRelay(url))
-													hide()
-												}}
-												defaultAlias={alias}
-												defaultUrl={url}
-												alreadyExistingUrls={staticRelay
-													.map(({ url }) => url)
-													.filter((url): url is string => url !== undefined)}
-												alreadyExistingAliases={staticRelay
-													.map(({ alias }) => alias)
-													.filter((alias): alias is string => alias !== undefined)}
-											/>,
-										)
+								? () => {
+										setIsVisible(true)
+										setIsEdit({ alias: alias || '', url })
+								  }
 								: undefined
 						}
 					>
@@ -64,25 +50,44 @@ export const RelayItemsPriv = () => {
 				</View>
 			))}
 			<DividerItem />
-			<AddButtonPriv
-				onPress={() =>
-					show(
-						<AccordionAdd
-							title={t('onboarding.custom-mode.settings.modals.add.title.relay')}
-							onSubmit={data => {
-								dispatch(addToStaticRelay(data))
-								hide()
-							}}
-							alreadyExistingAliases={staticRelay
-								.map(({ alias }) => alias)
-								.filter((alias): alias is string => alias !== undefined)}
-							alreadyExistingUrls={staticRelay
-								.map(({ url }) => url)
-								.filter((url): url is string => url !== undefined)}
-						/>,
-					)
-				}
-			/>
+			<AddButtonPriv onPress={() => setIsVisible(true)} />
+			<BottomModal isVisible={isVisible} setIsVisible={setIsVisible}>
+				{isEdit ? (
+					<AccordionEdit
+						title={t('onboarding.custom-mode.settings.modals.edit.title.relay')}
+						onEdit={data => {
+							dispatch(modifyFromStaticRelay({ url: isEdit.url, changes: data }))
+							setIsVisible(false)
+						}}
+						onDelete={() => {
+							dispatch(removeFromStaticRelay(isEdit.url))
+							setIsVisible(false)
+						}}
+						defaultAlias={isEdit.alias}
+						defaultUrl={isEdit.url}
+						alreadyExistingUrls={staticRelay
+							.map(({ url }) => url)
+							.filter((url): url is string => url !== undefined)}
+						alreadyExistingAliases={staticRelay
+							.map(({ alias }) => alias)
+							.filter((alias): alias is string => alias !== undefined)}
+					/>
+				) : (
+					<AccordionAdd
+						title={t('onboarding.custom-mode.settings.modals.add.title.relay')}
+						onSubmit={data => {
+							dispatch(addToStaticRelay(data))
+							setIsVisible(false)
+						}}
+						alreadyExistingAliases={staticRelay
+							.map(({ alias }) => alias)
+							.filter((alias): alias is string => alias !== undefined)}
+						alreadyExistingUrls={staticRelay
+							.map(({ url }) => url)
+							.filter((url): url is string => url !== undefined)}
+					/>
+				)}
+			</BottomModal>
 		</>
 	)
 }

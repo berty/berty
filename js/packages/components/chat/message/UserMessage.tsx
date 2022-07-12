@@ -7,8 +7,8 @@ import { PanGestureHandler, State } from 'react-native-gesture-handler'
 import { SHA3 } from 'sha3'
 
 import beapi from '@berty/api'
+import { BottomModal } from '@berty/components/modals'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
-import { useModal } from '@berty/contexts/modal.context'
 import { useStyles } from '@berty/contexts/styles'
 import {
 	useAppDispatch,
@@ -190,9 +190,9 @@ export const UserMessage: React.FC<{
 	const { t } = useTranslation()
 	const [animatedValue] = useState(new Animated.Value(0))
 	// const [messageLayoutWidth, setMessageLayoutWidth] = useState(0)
-	const { show } = useModal()
 	const dispatch = useAppDispatch()
 	const [highlightCid, setHighlightCid] = useState<string | undefined | null>()
+	const [isVisible, setIsVisible] = useState<boolean>(false)
 
 	const {
 		name,
@@ -239,213 +239,151 @@ export const UserMessage: React.FC<{
 		if (inte.isMine) {
 			return
 		}
-		show(
-			<MessageMenu
-				convPk={convPK}
-				cid={inte.cid!}
-				onSelectEmoji={handleSelectEmoji}
-				replyInteraction={{
-					...inte,
-					backgroundColor: msgBackgroundColor,
-					textColor: msgTextColor,
-				}}
-			/>,
-		)
-	}, [convPK, handleSelectEmoji, inte, msgBackgroundColor, msgTextColor, show])
+		setIsVisible(true)
+		// show(
+
+		// )
+	}, [inte.isMine, setIsVisible])
 
 	return (
-		<View
-			style={[
-				row.left,
-				inte.isMine ? _styles.isMeMessage : _styles.isOtherMessage,
-				padding.horizontal.medium,
-				padding.top.scale(2),
-			]}
-		>
-			{!inte.isMine && isGroup && !isFollowedMessage && (
-				<View
-					style={{
-						paddingRight: AVATAR_SPACE_RIGHT * scaleSize,
-						paddingBottom: 5 * scaleSize,
-						justifyContent: 'center',
-						alignItems: 'center',
-						alignSelf: 'flex-end',
-					}}
-				>
-					<MemberAvatar
-						publicKey={inte.memberPublicKey}
-						conversationPublicKey={inte.conversationPublicKey}
-						size={AVATAR_SIZE * scaleSize}
-						pressable
-					/>
-				</View>
-			)}
+		<>
+			<View
+				style={[
+					row.left,
+					inte.isMine ? _styles.isMeMessage : _styles.isOtherMessage,
+					padding.horizontal.medium,
+					padding.top.scale(2),
+				]}
+			>
+				{!inte.isMine && isGroup && !isFollowedMessage && (
+					<View
+						style={{
+							paddingRight: AVATAR_SPACE_RIGHT * scaleSize,
+							paddingBottom: 5 * scaleSize,
+							justifyContent: 'center',
+							alignItems: 'center',
+							alignSelf: 'flex-end',
+						}}
+					>
+						<MemberAvatar
+							publicKey={inte.memberPublicKey}
+							conversationPublicKey={inte.conversationPublicKey}
+							size={AVATAR_SIZE * scaleSize}
+							pressable
+						/>
+					</View>
+				)}
 
-			<View style={[column.top, _styles.messageItem, { flexDirection: 'row' }]}>
-				<View style={{ alignItems: inte?.isMine ? 'flex-end' : 'flex-start' }}>
-					{!inte.isMine && isGroup && !isFollowupMessage && (
-						<View style={[isFollowedMessage && margin.left.scale(40)]}>
-							<UnifiedText
-								style={[
-									text.bold,
-									margin.bottom.tiny,
-									_styles.personNameInGroup,
-									{ color: msgSenderColor },
-								]}
-							>
-								{name}
-							</UnifiedText>
-						</View>
-					)}
-
-					{!!repliedTo && (
-						<View
-							style={[
-								{
-									alignSelf: inte?.isMine ? 'flex-end' : 'flex-start',
-									alignItems: inte?.isMine ? 'flex-end' : 'flex-start',
-									marginTop: 7,
-								},
-								isFollowedMessage && { marginLeft: (AVATAR_SIZE + AVATAR_SPACE_RIGHT) * scaleSize },
-							]}
-						>
-							<View
-								style={{
-									backgroundColor: colors['input-background'],
-									borderColor: colors['negative-asset'],
-									paddingVertical: 1.5,
-									paddingHorizontal: 20,
-									borderWidth: 1,
-									borderRadius: 20,
-									marginBottom: -5,
-									zIndex: 2,
-								}}
-							>
+				<View style={[column.top, _styles.messageItem, { flexDirection: 'row' }]}>
+					<View style={{ alignItems: inte?.isMine ? 'flex-end' : 'flex-start' }}>
+						{!inte.isMine && isGroup && !isFollowupMessage && (
+							<View style={[isFollowedMessage && margin.left.scale(40)]}>
 								<UnifiedText
-									numberOfLines={1}
-									style={[text.size.tiny, { color: colors['background-header'] }]}
+									style={[
+										text.bold,
+										margin.bottom.tiny,
+										_styles.personNameInGroup,
+										{ color: msgSenderColor },
+									]}
 								>
-									<>
-										{t('chat.reply.replied-to')} {repliedTo?.displayName || ''}
-									</>
+									{name}
 								</UnifiedText>
 							</View>
+						)}
 
-							<TouchableOpacity
-								onPress={() => {
-									if (!replyOf?.cid) {
-										return
-									}
-									scrollToCid(replyOf.cid)
-									setHighlightCid(replyOf.cid)
-								}}
+						{!!repliedTo && (
+							<View
 								style={[
-									border.radius.top.medium,
-									inte.isMine ? border.radius.left.medium : border.radius.right.medium,
 									{
-										backgroundColor: repliedToColors?.msgBackgroundColor,
-										marginBottom: -15,
-										padding: 10,
-										paddingBottom: 20,
+										alignSelf: inte?.isMine ? 'flex-end' : 'flex-start',
+										alignItems: inte?.isMine ? 'flex-end' : 'flex-start',
+										marginTop: 7,
+									},
+									isFollowedMessage && {
+										marginLeft: (AVATAR_SIZE + AVATAR_SPACE_RIGHT) * scaleSize,
 									},
 								]}
 							>
-								<UnifiedText
-									numberOfLines={1}
-									style={[text.size.tiny, { color: repliedToColors?.msgTextColor, lineHeight: 17 }]}
+								<View
+									style={{
+										backgroundColor: colors['input-background'],
+										borderColor: colors['negative-asset'],
+										paddingVertical: 1.5,
+										paddingHorizontal: 20,
+										borderWidth: 1,
+										borderRadius: 20,
+										marginBottom: -5,
+										zIndex: 2,
+									}}
 								>
-									{(replyOf?.type === beapi.messenger.AppMessage.Type.TypeUserMessage &&
-										replyOf?.payload?.body) ||
-										`${t('chat.reply.response-to')} ${t(
-											`chat.shared-medias.${getMediaTypeFromMedias(replyOf?.medias)}`,
-										)}`}
-								</UnifiedText>
-							</TouchableOpacity>
-						</View>
-					)}
+									<UnifiedText
+										numberOfLines={1}
+										style={[text.size.tiny, { color: colors['background-header'] }]}
+									>
+										<>
+											{t('chat.reply.replied-to')} {repliedTo?.displayName || ''}
+										</>
+									</UnifiedText>
+								</View>
 
-					<View style={{ position: 'relative' }}>
-						<PanGestureHandler
-							enabled={!inte.isMine}
-							activeOffsetX={20}
-							onGestureEvent={({ nativeEvent }) => {
-								if (nativeEvent.translationX > 0 && nativeEvent.translationX < 120) {
-									Animated.timing(animatedValue, {
-										toValue: nativeEvent.translationX,
-										duration: 1,
-										useNativeDriver: false,
-									}).start()
-								} else if (nativeEvent.translationX <= 0) {
-									Animated.timing(animatedValue, {
-										toValue: 0,
-										duration: 50,
-										useNativeDriver: false,
-									}).start()
-								}
-							}}
-							onHandlerStateChange={event => {
-								if (event.nativeEvent.oldState === State.ACTIVE) {
-									if (event.nativeEvent.translationX > 120) {
-										dispatch(
-											setActiveReplyInteraction({
-												convPK,
-												activeReplyInteraction: {
-													...inte,
-													backgroundColor: msgBackgroundColor,
-													textColor: msgTextColor,
-												},
-											}),
-										)
+								<TouchableOpacity
+									onPress={() => {
+										if (!replyOf?.cid) {
+											return
+										}
+										scrollToCid(replyOf.cid)
+										setHighlightCid(replyOf.cid)
+									}}
+									style={[
+										border.radius.top.medium,
+										inte.isMine ? border.radius.left.medium : border.radius.right.medium,
+										{
+											backgroundColor: repliedToColors?.msgBackgroundColor,
+											marginBottom: -15,
+											padding: 10,
+											paddingBottom: 20,
+										},
+									]}
+								>
+									<UnifiedText
+										numberOfLines={1}
+										style={[
+											text.size.tiny,
+											{ color: repliedToColors?.msgTextColor, lineHeight: 17 },
+										]}
+									>
+										{(replyOf?.type === beapi.messenger.AppMessage.Type.TypeUserMessage &&
+											replyOf?.payload?.body) ||
+											`${t('chat.reply.response-to')} ${t(
+												`chat.shared-medias.${getMediaTypeFromMedias(replyOf?.medias)}`,
+											)}`}
+									</UnifiedText>
+								</TouchableOpacity>
+							</View>
+						)}
+
+						<View style={{ position: 'relative' }}>
+							<PanGestureHandler
+								enabled={!inte.isMine}
+								activeOffsetX={20}
+								onGestureEvent={({ nativeEvent }) => {
+									if (nativeEvent.translationX > 0 && nativeEvent.translationX < 120) {
+										Animated.timing(animatedValue, {
+											toValue: nativeEvent.translationX,
+											duration: 1,
+											useNativeDriver: false,
+										}).start()
+									} else if (nativeEvent.translationX <= 0) {
 										Animated.timing(animatedValue, {
 											toValue: 0,
 											duration: 50,
-											useNativeDriver: false,
-										}).start()
-									} else if (
-										event.nativeEvent.velocityX > 100 ||
-										event.nativeEvent.translationX > 40
-									) {
-										Animated.timing(animatedValue, {
-											toValue: 60,
-											duration: 50,
-
-											useNativeDriver: false,
-										}).start()
-									} else {
-										Animated.timing(animatedValue, {
-											toValue: 0,
-											duration: 50,
-
 											useNativeDriver: false,
 										}).start()
 									}
-								}
-							}}
-						>
-							<Animated.View
-								style={{
-									flexDirection: 'row',
-									alignItems: 'center',
-									transform: [{ translateX: animatedValue }],
 								}}
-							>
-								<Animated.View
-									style={{
-										marginRight: 10,
-										opacity: animatedValue.interpolate({
-											inputRange: [0, 60],
-											outputRange: [0, 1],
-										}),
-										position: 'absolute',
-										left: -50,
-									}}
-								>
-									<Icon
-										name='undo'
-										height={30}
-										width={30}
-										fill={colors['negative-asset']}
-										onPress={() => {
+								onHandlerStateChange={event => {
+									if (event.nativeEvent.oldState === State.ACTIVE) {
+										if (event.nativeEvent.translationX > 120) {
 											dispatch(
 												setActiveReplyInteraction({
 													convPK,
@@ -456,78 +394,138 @@ export const UserMessage: React.FC<{
 													},
 												}),
 											)
-										}}
-									/>
-								</Animated.View>
-								<TouchableOpacity
-									// onLayout={event => {
-									// 	setMessageLayoutWidth(event.nativeEvent.layout.width)
-									// }}
-									disabled={inte.isMine}
-									activeOpacity={0.9}
-									onLongPress={togglePopover}
-									style={{ marginBottom: inte?.reactions?.length ? 10 : 0 }}
+											Animated.timing(animatedValue, {
+												toValue: 0,
+												duration: 50,
+												useNativeDriver: false,
+											}).start()
+										} else if (
+											event.nativeEvent.velocityX > 100 ||
+											event.nativeEvent.translationX > 40
+										) {
+											Animated.timing(animatedValue, {
+												toValue: 60,
+												duration: 50,
+
+												useNativeDriver: false,
+											}).start()
+										} else {
+											Animated.timing(animatedValue, {
+												toValue: 0,
+												duration: 50,
+
+												useNativeDriver: false,
+											}).start()
+										}
+									}
+								}}
+							>
+								<Animated.View
+									style={{
+										flexDirection: 'row',
+										alignItems: 'center',
+										transform: [{ translateX: animatedValue }],
+									}}
 								>
-									<>
-										{!!inte.medias?.length && (
-											<View
-												style={[
-													isFollowedMessage && {
-														marginLeft: (AVATAR_SIZE + AVATAR_SPACE_RIGHT) * scaleSize,
-													},
-													previousMessage?.medias?.[0]?.mimeType
-														? margin.top.tiny
-														: margin.top.small,
-													nextMessage?.medias?.[0]?.mimeType
-														? margin.bottom.tiny
-														: margin.bottom.small,
-												]}
-											>
-												{(() => {
-													if (inte.medias[0]?.mimeType?.startsWith('image')) {
-														return (
-															<PictureMessage
-																medias={inte.medias}
-																onLongPress={togglePopover}
-																isHighlight={isHighlight}
-															/>
-														)
-													} else if (inte.medias[0]?.mimeType?.startsWith('audio')) {
-														return (
-															<AudioMessage
-																medias={inte.medias}
-																onLongPress={togglePopover}
-																isHighlight={isHighlight}
-																isMine={!!inte.isMine}
-															/>
-														)
-													} else {
-														return (
-															<FileMessage
-																medias={inte.medias}
-																onLongPress={togglePopover}
-																isHighlight={isHighlight}
-															/>
-														)
-													}
-												})()}
-											</View>
-										)}
-										{!!(!inte.medias?.length || inte.payload?.body) && (
-											<HyperlinkUserMessage
-												inte={inte}
-												msgBorderColor={msgBorderColor ? msgBorderColor : undefined}
-												isFollowedMessage={isFollowedMessage}
-												msgBackgroundColor={msgBackgroundColor}
-												msgTextColor={msgTextColor}
-												isHighlight={isHighlight}
-											/>
-										)}
-									</>
-								</TouchableOpacity>
-							</Animated.View>
-						</PanGestureHandler>
-						{/* {!!messageLayoutWidth && (
+									<Animated.View
+										style={{
+											marginRight: 10,
+											opacity: animatedValue.interpolate({
+												inputRange: [0, 60],
+												outputRange: [0, 1],
+											}),
+											position: 'absolute',
+											left: -50,
+										}}
+									>
+										<Icon
+											name='undo'
+											height={30}
+											width={30}
+											fill={colors['negative-asset']}
+											onPress={() => {
+												dispatch(
+													setActiveReplyInteraction({
+														convPK,
+														activeReplyInteraction: {
+															...inte,
+															backgroundColor: msgBackgroundColor,
+															textColor: msgTextColor,
+														},
+													}),
+												)
+											}}
+										/>
+									</Animated.View>
+									<TouchableOpacity
+										// onLayout={event => {
+										// 	setMessageLayoutWidth(event.nativeEvent.layout.width)
+										// }}
+										disabled={inte.isMine}
+										activeOpacity={0.9}
+										onLongPress={togglePopover}
+										style={{ marginBottom: inte?.reactions?.length ? 10 : 0 }}
+									>
+										<>
+											{!!inte.medias?.length && (
+												<View
+													style={[
+														isFollowedMessage && {
+															marginLeft: (AVATAR_SIZE + AVATAR_SPACE_RIGHT) * scaleSize,
+														},
+														previousMessage?.medias?.[0]?.mimeType
+															? margin.top.tiny
+															: margin.top.small,
+														nextMessage?.medias?.[0]?.mimeType
+															? margin.bottom.tiny
+															: margin.bottom.small,
+													]}
+												>
+													{(() => {
+														if (inte.medias[0]?.mimeType?.startsWith('image')) {
+															return (
+																<PictureMessage
+																	medias={inte.medias}
+																	onLongPress={togglePopover}
+																	isHighlight={isHighlight}
+																/>
+															)
+														} else if (inte.medias[0]?.mimeType?.startsWith('audio')) {
+															return (
+																<AudioMessage
+																	medias={inte.medias}
+																	onLongPress={togglePopover}
+																	isHighlight={isHighlight}
+																	isMine={!!inte.isMine}
+																/>
+															)
+														} else {
+															return (
+																<FileMessage
+																	medias={inte.medias}
+																	onLongPress={togglePopover}
+																	isHighlight={isHighlight}
+																/>
+															)
+														}
+													})()}
+												</View>
+											)}
+											{!!(!inte.medias?.length || inte.payload?.body) && (
+												<HyperlinkUserMessage
+													inte={inte}
+													msgBorderColor={msgBorderColor ? msgBorderColor : undefined}
+													isFollowedMessage={isFollowedMessage}
+													msgBackgroundColor={msgBackgroundColor}
+													msgTextColor={msgTextColor}
+													isHighlight={isHighlight}
+												/>
+											)}
+										</>
+									</TouchableOpacity>
+								</Animated.View>
+							</PanGestureHandler>
+							{/* {!!messageLayoutWidth && (
 							<Reactions
 								convPk={convPK}
 								reactions={inte.reactions || []}
@@ -538,17 +536,30 @@ export const UserMessage: React.FC<{
 								onRemoveEmoji={handleSelectEmoji}
 							/>
 						)} */}
+						</View>
+						{!isWithinCollapseDuration && (
+							<TimestampStatusUserMessage
+								inte={inte}
+								lastInte={lastInte}
+								isFollowedMessage={isFollowedMessage}
+								cmd={cmd}
+							/>
+						)}
 					</View>
-					{!isWithinCollapseDuration && (
-						<TimestampStatusUserMessage
-							inte={inte}
-							lastInte={lastInte}
-							isFollowedMessage={isFollowedMessage}
-							cmd={cmd}
-						/>
-					)}
 				</View>
 			</View>
-		</View>
+			<BottomModal isVisible={isVisible} setIsVisible={setIsVisible}>
+				<MessageMenu
+					convPk={convPK}
+					cid={inte.cid!}
+					onSelectEmoji={handleSelectEmoji}
+					replyInteraction={{
+						...inte,
+						backgroundColor: msgBackgroundColor,
+						textColor: msgTextColor,
+					}}
+				/>
+			</BottomModal>
+		</>
 	)
 }

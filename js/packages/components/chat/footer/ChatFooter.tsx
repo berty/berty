@@ -1,5 +1,5 @@
 import Long from 'long'
-import React, { MutableRefObject, useMemo } from 'react'
+import React, { MutableRefObject, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
 	NativeSyntheticEvent,
@@ -12,9 +12,8 @@ import { RESULTS } from 'react-native-permissions'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import beapi from '@berty/api'
-import { ChatTextInput } from '@berty/components'
+import { BottomModal, ChatTextInput } from '@berty/components'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
-import { useModal } from '@berty/contexts/modal.context'
 import {
 	useAppDispatch,
 	useAppSelector,
@@ -95,8 +94,8 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 		const conversation = useConversation(convPK)
 		const insets = useSafeAreaInsets()
 		const addedMedias = useMedias(mediaCids)
-		const { hide, show } = useModal()
 		const isFocused = useAppSelector(state => selectChatInputIsFocused(state, convPK))
+		const [isVisible, setIsVisible] = useState<boolean>(false)
 
 		// computed
 		const isFake = !!(conversation as any)?.fake
@@ -178,9 +177,9 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 				if (newMedias) {
 					await sendMessageBouncy(newMedias)
 				}
-				hide()
+				setIsVisible(false)
 			},
-			[hide, sendMessageBouncy],
+			[sendMessageBouncy],
 		)
 
 		const prepareMediaAndSend = React.useCallback(
@@ -255,21 +254,6 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 			}
 		}, [navigate, prepareMediaAndSend])
 
-		const handlePressMore = React.useCallback(() => {
-			show(
-				<AddFileMenu
-					onClose={handleCloseFileMenu}
-					setSending={val => {
-						setSending(val)
-						if (val) {
-							hide()
-						}
-					}}
-					sending={sending}
-				/>,
-			)
-		}, [handleCloseFileMenu, hide, sending, setSending, show])
-
 		const handleTextChange = React.useCallback(
 			(text: string) => {
 				if (sending) {
@@ -337,7 +321,7 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 								{Platform.OS !== 'web' && (
 									<MoreButton
 										n={mediaCids.length}
-										onPress={handlePressMore}
+										onPress={() => setIsVisible(true)}
 										disabled={disabled || sending}
 									/>
 								)}
@@ -368,6 +352,18 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 						</View>
 					</RecordComponent>
 				</View>
+				<BottomModal isVisible={isVisible} setIsVisible={setIsVisible}>
+					<AddFileMenu
+						onClose={handleCloseFileMenu}
+						setSending={val => {
+							setSending(val)
+							if (val) {
+								setIsVisible(false)
+							}
+						}}
+						sending={sending}
+					/>
+				</BottomModal>
 			</View>
 		)
 	},

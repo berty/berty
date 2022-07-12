@@ -14,7 +14,6 @@ import LightItalicOpenSans from '@berty/assets/font/OpenSans-LightItalic.ttf'
 import SemiBoldOpenSans from '@berty/assets/font/OpenSans-SemiBold.ttf'
 import SemiBoldItalicOpenSans from '@berty/assets/font/OpenSans-SemiBoldItalic.ttf'
 import { ErrorScreen } from '@berty/components/error'
-import { ModalProvider } from '@berty/contexts/modal.context'
 import { MusicPlayerProvider } from '@berty/contexts/musicPlayer.context'
 import NotificationProvider from '@berty/contexts/notification.context'
 import { PermissionsProvider } from '@berty/contexts/permissions.context'
@@ -116,9 +115,7 @@ const App: React.FC = () => {
 											<NotificationProvider>
 												{Platform.OS !== 'web' ? <BootSplashInhibitor /> : null}
 												<MusicPlayerProvider>
-													<ModalProvider>
-														<Navigation />
-													</ModalProvider>
+													<Navigation />
 												</MusicPlayerProvider>
 											</NotificationProvider>
 										</PermissionsProvider>

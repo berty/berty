@@ -1,12 +1,12 @@
 import { Icon } from '@ui-kitten/components'
-import React, { FC } from 'react'
+import React, { FC, useState } from 'react'
 import { View, TouchableOpacity } from 'react-native'
 
 import AddEmojiIcon from '@berty/assets/logo/add_emoji.svg'
+import { BottomModal } from '@berty/components'
 import { useLayout } from '@berty/components/hooks'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
-import { useModal } from '@berty/contexts/modal.context'
 import { useStyles } from '@berty/contexts/styles'
 import { useAppDispatch, useThemeColor } from '@berty/hooks'
 import {
@@ -43,7 +43,6 @@ export const MessageMenu: FC<{
 	const { padding, border, margin } = useStyles()
 	const { windowWidth } = useAppDimensions()
 	const [layout, onLayout] = useLayout()
-	const { show, hide } = useModal()
 	const emojisToDisplay: number = (Math.floor(windowWidth / layout.width) - 1) * 0.6
 	const dispatch = useAppDispatch()
 	const menuItems = [
@@ -57,6 +56,7 @@ export const MessageMenu: FC<{
 			},
 		},
 	]
+	const [isVisible, setIsVisible] = useState<boolean>(false)
 
 	return (
 		<View>
@@ -67,7 +67,6 @@ export const MessageMenu: FC<{
 							style={[
 								padding.small,
 								border.radius.big,
-
 								{
 									flexDirection: 'row',
 									alignItems: 'center',
@@ -77,7 +76,7 @@ export const MessageMenu: FC<{
 							key={`conversation-menu-${emoji}-${index}`}
 							onPress={() => {
 								onSelectEmoji(emoji)
-								hide()
+								setIsVisible(false)
 							}}
 						>
 							<UnifiedText>{`${getEmojiByName(emoji as string)}`}</UnifiedText>
@@ -94,9 +93,7 @@ export const MessageMenu: FC<{
 								backgroundColor: colors['input-background'],
 							},
 						]}
-						onPress={() => {
-							show(<EmojiKeyboard conversationPublicKey={convPk} targetCid={cid} />)
-						}}
+						onPress={() => setIsVisible(true)}
 					>
 						<AddEmojiIcon width={17} height={17} fill={colors['background-header']} />
 					</TouchableOpacity>
@@ -107,7 +104,7 @@ export const MessageMenu: FC<{
 					style={[padding.large, { flexDirection: 'row', alignItems: 'center' }]}
 					onPress={() => {
 						callback()
-						hide()
+						setIsVisible(false)
 					}}
 					key={title}
 				>
@@ -121,6 +118,13 @@ export const MessageMenu: FC<{
 					<UnifiedText>{title}</UnifiedText>
 				</TouchableOpacity>
 			))}
+			<BottomModal isVisible={isVisible} setIsVisible={setIsVisible}>
+				<EmojiKeyboard
+					conversationPublicKey={convPk}
+					targetCid={cid}
+					hide={() => setIsVisible(false)}
+				/>
+			</BottomModal>
 		</View>
 	)
 }

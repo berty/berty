@@ -8,11 +8,16 @@ import { RESULTS } from 'react-native-permissions'
 import { useDispatch, useSelector } from 'react-redux'
 
 import beapi from '@berty/api'
-import { DividerItem, MenuItemWithIcon, ItemSection, MenuToggleWithIcon } from '@berty/components'
+import {
+	DividerItem,
+	MenuItemWithIcon,
+	ItemSection,
+	MenuToggleWithIcon,
+	BottomModal,
+} from '@berty/components'
 import { AccountAvatar } from '@berty/components/avatars'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
-import { useModal } from '@berty/contexts/modal.context'
 import PermissionsContext from '@berty/contexts/permissions.context'
 import { useStyles } from '@berty/contexts/styles'
 import {
@@ -48,59 +53,62 @@ import {
 import { checkProximityPermission } from '@berty/utils/react-native/checkPermissions'
 import { serviceTypes } from '@berty/utils/remote-services/remote-services'
 
-import { EditProfile } from './components/EditProfile'
+import { EditMyProfile } from './components/EditMyProfile'
 
-const ProfileButton: React.FC<{}> = () => {
+const ProfileButton: React.FC<{ show: () => void }> = ({ show }) => {
 	const { padding, margin, border, text } = useStyles()
 	const { scaleSize } = useAppDimensions()
 	const colors = useThemeColor()
 	const account = useAccount()
 	const { navigate } = useNavigation()
-	const { show } = useModal()
 
 	return (
-		<TouchableOpacity
-			onPress={() => show(<EditProfile />)}
-			style={[
-				margin.horizontal.medium,
-				padding.medium,
-				border.radius.medium,
-				{
-					flex: 1,
-					backgroundColor: colors['main-background'],
-				},
-			]}
-		>
-			<View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-				<View style={{ flexDirection: 'row', alignItems: 'center' }}>
-					<AccountAvatar size={50 * scaleSize} />
-					<UnifiedText style={[padding.left.medium, text.bold]}>
-						{account.displayName || ''}
-					</UnifiedText>
-				</View>
-				<TouchableOpacity
-					style={[
-						padding.scale(8),
-						border.radius.scale(100),
-						{
-							backgroundColor: '#EDEDED',
-							alignItems: 'center',
-							justifyContent: 'center',
-							flexDirection: 'row',
-						},
-					]}
-					onPress={() => navigate('Settings.MyBertyId')}
+		<>
+			<TouchableOpacity
+				onPress={show}
+				style={[
+					margin.horizontal.medium,
+					padding.medium,
+					border.radius.medium,
+					{
+						flex: 1,
+						backgroundColor: colors['main-background'],
+					},
+				]}
+			>
+				<View
+					style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}
 				>
-					<Icon
-						name='qr'
-						pack='custom'
-						fill={colors['background-header']}
-						width={20 * scaleSize}
-						height={20 * scaleSize}
-					/>
-				</TouchableOpacity>
-			</View>
-		</TouchableOpacity>
+					<View style={{ flexDirection: 'row', alignItems: 'center' }}>
+						<AccountAvatar size={50 * scaleSize} />
+						<UnifiedText style={[padding.left.medium, text.bold]}>
+							{account.displayName || ''}
+						</UnifiedText>
+					</View>
+					<TouchableOpacity
+						style={[
+							padding.scale(8),
+							border.radius.scale(100),
+							{
+								backgroundColor: '#EDEDED',
+								alignItems: 'center',
+								justifyContent: 'center',
+								flexDirection: 'row',
+							},
+						]}
+						onPress={() => navigate('Settings.MyBertyId')}
+					>
+						<Icon
+							name='qr'
+							pack='custom'
+							fill={colors['background-header']}
+							width={20 * scaleSize}
+							height={20 * scaleSize}
+						/>
+					</TouchableOpacity>
+				</View>
+			</TouchableOpacity>
+		</>
 	)
 }
 
@@ -127,6 +135,7 @@ export const SettingsHome: ScreenFC<'Settings.Home'> = withInAppNotification(
 			error: systemInfoError,
 			call: systemInfoCall,
 		} = bertyMethodsHooks.useSystemInfo()
+		const [isVisible, setIsVisible] = React.useState<boolean>(false)
 
 		const hasKnownPushServer = account.serviceTokens?.some(t => t.serviceType === serviceTypes.Push)
 
@@ -288,141 +297,139 @@ export const SettingsHome: ScreenFC<'Settings.Home'> = withInAppNotification(
 		}
 
 		return (
-			<View style={{ backgroundColor: colors['secondary-background'], flex: 1, paddingTop: 20 }}>
-				<ScrollView
-					bounces={false}
-					contentContainerStyle={{ paddingBottom: 12 * scaleSize }}
-					showsVerticalScrollIndicator={false}
-				>
-					<ProfileButton />
-					<ItemSection>
-						{Platform.OS !== 'web' && networkConfig && (
-							<>
-								<MenuToggleWithIcon
-									iconName='bluetooth-outline'
-									isToggleOn={getOffGridCommunicationValue()}
-									onPress={onPressOffGridCommunication}
-								>
-									{t('settings.home.proximity-button')}
-								</MenuToggleWithIcon>
-								<DividerItem />
-							</>
-						)}
-						{pushAvailable && (
-							<>
-								{pushFilteringAvailable ? (
+			<>
+				<View style={{ backgroundColor: colors['secondary-background'], flex: 1, paddingTop: 20 }}>
+					<ScrollView
+						bounces={false}
+						contentContainerStyle={{ paddingBottom: 12 * scaleSize }}
+						showsVerticalScrollIndicator={false}
+					>
+						<ProfileButton show={() => setIsVisible(true)} />
+						<ItemSection>
+							{Platform.OS !== 'web' && networkConfig && (
+								<>
 									<MenuToggleWithIcon
-										iconName='bell-outline'
-										isToggleOn={
-											hasKnownPushServer &&
-											numberifyLong(account.mutedUntil) < Date.now() &&
-											(permissions.notification === RESULTS.GRANTED ||
-												permissions.notification === RESULTS.LIMITED)
-										}
-										onPress={() => navigate('Settings.Notifications')}
-										onToggle={async () =>
-											accountPushToggleState({
-												account,
-												messengerClient: messengerClient,
-												protocolClient: protocolClient,
-												navigate,
-												t,
-											})
-										}
+										iconName='bluetooth-outline'
+										isToggleOn={getOffGridCommunicationValue()}
+										onPress={onPressOffGridCommunication}
 									>
-										{t('settings.home.notifications-button')}
+										{t('settings.home.proximity-button')}
 									</MenuToggleWithIcon>
-								) : (
-									<MenuItemWithIcon
-										iconName='bell-outline'
-										onPress={() => navigate('Settings.Notifications')}
-									>
-										{t('settings.home.notifications-button')}
-									</MenuItemWithIcon>
-								)}
-								<DividerItem />
-							</>
-						)}
-						{/*
-					<ButtonSettingV2
-						text={t('settings.home.contact-convs-button')}
-						icon='message-circle'
-						onPress={() => navigate('Settings.ContactAndConversations')}
-					/>
-					*/}
-						<MenuItemWithIcon
-							iconName='eye-outline'
-							onPress={() => navigate('Settings.Appearance')}
-						>
-							{t('settings.home.appearance-button')}
-						</MenuItemWithIcon>
-					</ItemSection>
-					<ItemSection>
-						<MenuItemWithIcon
-							iconName='person-outline'
-							onPress={() => navigate('Settings.Accounts')}
-						>
-							{t('settings.home.accounts-button')}
-						</MenuItemWithIcon>
-						<DividerItem />
-						{networkConfig && (
+									<DividerItem />
+								</>
+							)}
+							{pushAvailable && (
+								<>
+									{pushFilteringAvailable ? (
+										<MenuToggleWithIcon
+											iconName='bell-outline'
+											isToggleOn={
+												hasKnownPushServer &&
+												numberifyLong(account.mutedUntil) < Date.now() &&
+												(permissions.notification === RESULTS.GRANTED ||
+													permissions.notification === RESULTS.LIMITED)
+											}
+											onPress={() => navigate('Settings.Notifications')}
+											onToggle={async () =>
+												accountPushToggleState({
+													account,
+													messengerClient: messengerClient,
+													protocolClient: protocolClient,
+													navigate,
+													t,
+												})
+											}
+										>
+											{t('settings.home.notifications-button')}
+										</MenuToggleWithIcon>
+									) : (
+										<MenuItemWithIcon
+											iconName='bell-outline'
+											onPress={() => navigate('Settings.Notifications')}
+										>
+											{t('settings.home.notifications-button')}
+										</MenuItemWithIcon>
+									)}
+									<DividerItem />
+								</>
+							)}
 							<MenuItemWithIcon
-								iconName='wifi-outline'
-								onPress={() => navigate('Settings.Network')}
+								iconName='eye-outline'
+								onPress={() => navigate('Settings.Appearance')}
 							>
-								{t('settings.home.network-button')}
+								{t('settings.home.appearance-button')}
 							</MenuItemWithIcon>
-						)}
-					</ItemSection>
-					<ItemSection>
-						<MenuItemWithIcon iconName='email-outline' onPress={generateEmail}>
-							{t('settings.home.bug-button')}
-						</MenuItemWithIcon>
-						<DividerItem />
-						<MenuItemWithIcon
-							iconName='info-outline'
-							onPress={() => navigate('Settings.AboutBerty')}
-						>
-							{t('settings.home.about-button')}
-						</MenuItemWithIcon>
-					</ItemSection>
-					{systemInfoDone && systemInfoError == null && (
+						</ItemSection>
 						<ItemSection>
 							<MenuItemWithIcon
-								iconName='github'
-								noRightArrow={true}
-								onPress={() => {
-									if (devMode?.enable) {
-										return
-									}
-									if (nbClick + 1 === 7) {
-										console.log('activate devMode')
-										dispatch(
-											setPersistentOption({
-												type: PersistentOptionsKeys.DevMode,
-												payload: {
-													enable: true,
-												},
-											}),
-										)
-									}
-									setNbClick(nbClick + 1)
-								}}
+								iconName='person-outline'
+								onPress={() => navigate('Settings.Accounts')}
 							>
-								{t('settings.home.version-button', {
-									version: systemInfo?.messenger?.process?.version,
-								})}
+								{t('settings.home.accounts-button')}
 							</MenuItemWithIcon>
 							<DividerItem />
-							{devMode?.enable && (
-								<MenuItemWithIcon iconName='code' onPress={() => navigate('Settings.DevTools')}>
-									{t('settings.home.devtools-button')}
+							{networkConfig && (
+								<MenuItemWithIcon
+									iconName='wifi-outline'
+									onPress={() => navigate('Settings.Network')}
+								>
+									{t('settings.home.network-button')}
 								</MenuItemWithIcon>
 							)}
 						</ItemSection>
-					)}
-				</ScrollView>
-			</View>
+						<ItemSection>
+							<MenuItemWithIcon iconName='email-outline' onPress={generateEmail}>
+								{t('settings.home.bug-button')}
+							</MenuItemWithIcon>
+							<DividerItem />
+							<MenuItemWithIcon
+								iconName='info-outline'
+								onPress={() => navigate('Settings.AboutBerty')}
+							>
+								{t('settings.home.about-button')}
+							</MenuItemWithIcon>
+						</ItemSection>
+						{systemInfoDone && systemInfoError == null && (
+							<ItemSection>
+								<MenuItemWithIcon
+									iconName='github'
+									noRightArrow={true}
+									onPress={() => {
+										if (devMode?.enable) {
+											return
+										}
+										if (nbClick + 1 === 7) {
+											console.log('activate devMode')
+											dispatch(
+												setPersistentOption({
+													type: PersistentOptionsKeys.DevMode,
+													payload: {
+														enable: true,
+													},
+												}),
+											)
+										}
+										setNbClick(nbClick + 1)
+									}}
+								>
+									{t('settings.home.version-button', {
+										version: systemInfo?.messenger?.process?.version,
+									})}
+								</MenuItemWithIcon>
+								<DividerItem />
+								{devMode?.enable && (
+									<MenuItemWithIcon iconName='code' onPress={() => navigate('Settings.DevTools')}>
+										{t('settings.home.devtools-button')}
+									</MenuItemWithIcon>
+								)}
+							</ItemSection>
+						)}
+					</ScrollView>
+				</View>
+				<BottomModal isVisible={isVisible} setIsVisible={setIsVisible}>
+					<EditMyProfile hide={() => setIsVisible(false)} />
+				</BottomModal>
+			</>
 		)
 	},
 )

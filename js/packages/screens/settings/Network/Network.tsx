@@ -14,7 +14,6 @@ import {
 	RelayAltDropdown,
 } from '@berty/components'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
-import { ModalProvider } from '@berty/contexts/modal.context'
 import { useAppDispatch, useSyncNetworkConfigOnScreenRemoved, useThemeColor } from '@berty/hooks'
 import { ScreenFC, useNavigation } from '@berty/navigation'
 import {
@@ -187,14 +186,12 @@ export const Network: ScreenFC<'Settings.Network'> = () => {
 	useSyncNetworkConfigOnScreenRemoved()
 
 	return (
-		<ModalProvider>
-			<IOSOnlyKeyboardAvoidingView
-				behavior='padding'
-				keyboardVerticalOffset={headerHeight}
-				style={[{ flex: 1 }]}
-			>
-				<NetworkBody />
-			</IOSOnlyKeyboardAvoidingView>
-		</ModalProvider>
+		<IOSOnlyKeyboardAvoidingView
+			behavior='padding'
+			keyboardVerticalOffset={headerHeight}
+			style={[{ flex: 1 }]}
+		>
+			<NetworkBody />
+		</IOSOnlyKeyboardAvoidingView>
 	)
 }
