@@ -1,0 +1,12 @@
+all:
+  children:
+    m1_macs:
+      hosts:
+        ci-macos-1.berty.io:
+          ansible_become_password: "{{ lookup('env','M1_PASSWORD_1') }}"
+        ci-macos-2.berty.io:
+          ansible_become_password: "{{ lookup('env','M1_PASSWORD_2') }}"
+        ci-macos-3.berty.io:
+          ansible_become_password: "{{ lookup('env','M1_PASSWORD_3') }}"
+      vars:
+        ansible_user: hetzner

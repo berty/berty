@@ -1,0 +1,33 @@
+- name: Create runner folder
+  command:
+    cmd: mkdir -p {{ runner_folder }}
+    creates: "{{ runner_folder }}"
+
+- name: Download runner archive
+  get_url:
+    url: "{{ runner_archive.url }}"
+    dest: "{{ runner_folder }}/{{ runner_archive.name }}"
+    checksum: "sha256:{{ runner_archive.sha256sum }}"
+
+- name: Uncompress runner archive
+  command:
+    chdir: "{{ runner_folder }}"
+    cmd: tar xzf {{ runner_archive.name }}
+    creates: "{{ runner_folder }}/config.sh"
+
+- name: Unconfigure previous runner if exists
+  command:
+    chdir: "{{ runner_folder }}"
+    cmd: ./config.sh remove --pat {{ config_token }}
+    removes: "{{ runner_folder }}/.credentials"
+
+- name: Configure runner
+  command:
+    chdir: "{{ runner_folder }}"
+    cmd: ./config.sh --unattended --url {{ config_url }} --pat {{ config_token }} --name {{ inventory_hostname }}
+
+- name: Install asdf and gpg (required by some asdf plugins)
+  homebrew:
+    name:
+      - asdf
+      - gpg
