@@ -39,6 +39,7 @@ import { GoBridge } from '@berty/native-modules/GoBridge'
 import { ScreenFC, useNavigation } from '@berty/navigation'
 import {
 	PersistentOptionsKeys,
+	selectForceMock,
 	selectPersistentOptions,
 	setPersistentOption,
 } from '@berty/redux/reducers/persistentOptions.reducer'
@@ -346,6 +347,7 @@ const BodyDevTools: React.FC<{}> = withInAppNotification(({ showNotification }: 
 	const persistentOptions = useSelector(selectPersistentOptions)
 	const client = useMessengerClient()
 	const restart = useRestartAfterClosing()
+	const forceMock = useAppSelector(selectForceMock)
 
 	const addTyberHost = useCallback(
 		(host: string, addresses: string[]) => {
@@ -396,8 +398,26 @@ const BodyDevTools: React.FC<{}> = withInAppNotification(({ showNotification }: 
 		}
 	}, [addTyberHost, client])
 
+	const handleForceMockToggle = useCallback(() => {
+		dispatch(
+			setPersistentOption({
+				type: PersistentOptionsKeys.ForceMock,
+				payload: forceMock ? false : true,
+			}),
+		)
+	}, [dispatch, forceMock])
+
 	return (
 		<View style={[padding.medium, flex.tiny, margin.bottom.small]}>
+			<ButtonSetting
+				name={t('settings.devtools.force-mock-button')}
+				icon='folder-outline'
+				iconSize={30}
+				iconColor={colors['alt-secondary-background-header']}
+				toggled
+				varToggle={forceMock}
+				actionToggle={handleForceMockToggle}
+			/>
 			<ButtonSetting
 				name={t('settings.devtools.system-info-button')}
 				icon='info-outline'
