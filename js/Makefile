@@ -2,8 +2,6 @@
 
 VERSION ?= `$(GO) run -mod=readonly -modfile=$(PWD)/../go.mod github.com/mdomke/git-semver/v5`
 VCS_REF ?= `git rev-parse --short HEAD`
-TMP ?= $(TMPDIR)
-CI ?= false
 BERTY_DAEMON_HOST ?= 127.0.0.1
 BERTY_DAEMON_PORT ?= 1337
 BERTY_DAEMON_OPTS ?= -p2p.webui-listener=""
@@ -23,7 +21,6 @@ kill-program-using-port = $(foreach port,$(1),$(eval pid ?= $(shell lsof -t -i :
 ext_ldflags = -ldflags="-X berty.tech/berty/v2/go/pkg/bertyversion.VcsRef=$(VCS_REF) -X berty.tech/berty/v2/go/pkg/bertyversion.Version=$(VERSION)"
 bridge_src := $(call rwildcard,../go,*.go *.m *.h) ../go.sum
 xcodegen_yml := $(wildcard $(PWD)/ios/*.yaml)
-xcodegen_ver = $(shell cat ios/XcodeGen.version)
 required_java_ver = 18
 minimum_ios_ver = 12.0
 minimum_android_ver = 21
@@ -393,12 +390,11 @@ _write_gen_sum:
 ios/Frameworks/Bertybridge.xcframework: $(bridge_src)
 	cd .. && $(GO) mod download
 	cd .. && $(GO) install golang.org/x/mobile/cmd/gobind
-	cd .. && ANDROID_HOME= ANDROID_NDK_HOME= $(GO) run golang.org/x/mobile/cmd/gomobile init
+	cd .. && $(GO) run golang.org/x/mobile/cmd/gomobile init
 	mkdir -p $(ios_gomobile_cache) ios/Frameworks
 	cd .. && \
 		PATH="$(PATH):`go env GOPATH`/bin" \
 		CGO_CPPFLAGS=-DHAVE_GETHOSTUUID=0 \
-		GO111MODULE=on ANDROID_HOME= ANDROID_NDK_HOME= \
 		$(GO) run golang.org/x/mobile/cmd/gomobile bind \
 			-o js/$@ \
 			-v $(ext_ldflags) \
@@ -414,12 +410,11 @@ ios/Frameworks/Bertybridge.xcframework: $(bridge_src)
 ios/Frameworks/Bertypush.xcframework: $(bridge_src)
 	cd .. && $(GO) mod download
 	cd .. && $(GO) install golang.org/x/mobile/cmd/gobind
-	cd .. && ANDROID_HOME= ANDROID_NDK_HOME= $(GO) run golang.org/x/mobile/cmd/gomobile init
+	cd .. && $(GO) run golang.org/x/mobile/cmd/gomobile init
 	mkdir -p $(ios_gomobile_cache) ios/Frameworks
 	cd .. && \
 		PATH="$(PATH):`go env GOPATH`/bin" \
 		CGO_CPPFLAGS=-DHAVE_GETHOSTUUID=0 \
-		GO111MODULE=on ANDROID_HOME= ANDROID_NDK_HOME= \
 		$(GO) run golang.org/x/mobile/cmd/gomobile bind \
 			-o js/$@ \
 			-v $(ext_ldflags) \
@@ -432,34 +427,22 @@ ios/Frameworks/Bertypush.xcframework: $(bridge_src)
 	touch $@
 	cd .. && $(GO) mod tidy
 
-
-
-ios/Berty.xcworkspace: ios/Berty.xcodeproj ios/Podfile ios/vendor/bundle package.json node_modules
+ios/Berty.xcworkspace: ios/Berty.xcodeproj ios/Podfile ios/vendor/bundle node_modules
 	$(call check-program, bundle)
 	cd ios && bundle exec pod install --repo-update
 	touch $@
 
-ios/Berty.xcodeproj: ios/vendor/xcodegen $(xcodegen_yml) $(call rwildcard,ios/Berty/Source,*) $(call rwildcard,assets,*)
-	$(call check-program, swift)
+ios/Berty.xcodeproj: $(xcodegen_yml) $(call rwildcard,ios/Berty/Source,*) $(call rwildcard,assets,*)
+	$(call check-program, xcodegen)
 	mkdir -p ios/Berty
 	touch ios/Berty/main.jsbundle
 	IOS_BUNDLE_VERSION=$(shell echo -n $(shell git rev-list HEAD | wc -l)) \
 	IOS_SHORT_BUNDLE_VERSION=$(shell echo "$(VERSION)" | cut -c2- | cut -f1 -d '-') \
 	IOS_COMMIT=$(shell git rev-parse HEAD) \
-	swift run --package-path ios/vendor/xcodegen xcodegen \
+	xcodegen \
 		--spec ios/berty.yaml \
-		--cache-path ios/vendor/xcodegen/.cache/berty-app \
+		--cache-path ios/.xcodegen-cache \
 		--use-cache
-	touch $@
-
-ios/vendor/xcodegen: ios/XcodeGen.version
-	$(call check-program, curl unzip)
-	mkdir -p $(TMP)/xcodegen_dl
-	curl -L https://github.com/yonaskolb/XcodeGen/archive/$(xcodegen_ver).zip > $(TMP)/xcodegen_dl/xcodegen.zip
-	unzip $(TMP)/xcodegen_dl/xcodegen.zip -d $(TMP)/xcodegen_dl
-	mkdir -p $@
-	cp -rf $(TMP)/xcodegen_dl/*/* $@
-	rm -rf $(TMP)/xcodegen_dl
 	touch $@
 
 ios/vendor/bundle: ios/Gemfile
