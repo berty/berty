@@ -8,8 +8,6 @@ import (
 	"os"
 	"path/filepath"
 
-	"moul.io/u"
-
 	"berty.tech/berty/v2/go/internal/accountutils"
 	"berty.tech/berty/v2/go/internal/logutil"
 	"berty.tech/berty/v2/go/pkg/accounttypes"
@@ -17,12 +15,6 @@ import (
 )
 
 func (s *service) LogfileList(ctx context.Context, req *accounttypes.LogfileList_Request) (*accounttypes.LogfileList_Reply, error) {
-	if !u.DirExists(s.rootdir) {
-		if err := os.MkdirAll(s.rootdir, 0o700); err != nil {
-			return nil, errcode.TODO.Wrap(err)
-		}
-	}
-
 	accounts, err := s.ListAccounts(ctx, nil)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
@@ -60,12 +52,6 @@ func (s *service) LogfileList(ctx context.Context, req *accounttypes.LogfileList
 func (s *service) StreamLogfile(req *accounttypes.StreamLogfile_Request, server accounttypes.AccountService_StreamLogfileServer) error {
 	if req.AccountID == "" {
 		return errcode.TODO.Wrap(fmt.Errorf("AccountID is required"))
-	}
-
-	if !u.DirExists(s.rootdir) {
-		if err := os.MkdirAll(s.rootdir, 0o700); err != nil {
-			return errcode.TODO.Wrap(err)
-		}
 	}
 
 	accounts, err := s.ListAccounts(s.rootCtx, nil)
