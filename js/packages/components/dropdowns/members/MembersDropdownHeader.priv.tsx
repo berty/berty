@@ -1,4 +1,5 @@
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 import { View } from 'react-native'
 
 import { SmallClearableInput } from '@berty/components'
@@ -14,13 +15,14 @@ export const MembersDropdownHeader: React.FC<MembersDropdownHeaderProps> = ({
 	setInputValue,
 }) => {
 	const { margin } = useStyles()
+	const { t } = useTranslation()
 
 	return (
 		<View style={[margin.horizontal.medium]}>
 			<SmallClearableInput
 				value={inputValue}
 				onChangeText={setInputValue}
-				placeholder='Search member'
+				placeholder={t('chat.multi-member-settings.members-dropdown.search-placeholder')}
 				iconName='search-outline'
 			/>
 		</View>

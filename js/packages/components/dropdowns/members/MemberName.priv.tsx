@@ -1,5 +1,6 @@
 import { Icon } from '@ui-kitten/components'
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 import { StyleSheet, View } from 'react-native'
 
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
@@ -13,15 +14,16 @@ interface MemberNameProps extends IMemberUserTypes {
 
 const MemberUserTypes: React.FC<IMemberUserTypes> = ({ memberUserType = 'user' }) => {
 	const { margin, text } = useStyles()
+	const { t } = useTranslation()
 
 	let value, icon
 	switch (memberUserType) {
 		case 'replication':
-			value = 'Replication node'
+			value = t('chat.multi-member-settings.members-dropdown.replication-type')
 			icon = 'server'
 			break
 		case 'user':
-			value = 'User device'
+			value = t('chat.multi-member-settings.members-dropdown.user-type')
 			icon = 'message-circle'
 			break
 	}

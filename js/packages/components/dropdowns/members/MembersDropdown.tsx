@@ -35,10 +35,10 @@ const MemberItem: React.FC<MemberItemProps> = ({ onPress, convPK, item }) => {
 
 	React.useEffect(() => {
 		const f = async () => {
-			const _peer = await dispatch(
+			const peerFromMemberPK = await dispatch(
 				getPeerFromMemberPK({ memberPK: item.publicKey, convPK: item.conversationPublicKey }),
 			)
-			setPeer(_peer.payload as PeerNetworkStatus)
+			setPeer(peerFromMemberPK.payload as PeerNetworkStatus)
 		}
 
 		f()
@@ -67,13 +67,12 @@ export const MembersDropdown: React.FC<MembersDropdownProps> = props => {
 	const [value, setValue] = React.useState<string>('')
 
 	const lowSearchValue = value.toLowerCase()
-	const searchCheck = React.useCallback(
-		searchIn => searchIn.toLowerCase().includes(lowSearchValue),
-		[lowSearchValue],
-	)
 	const searchMembers = React.useMemo(
-		() => (value.length ? pickBy(props.items, val => searchCheck(val.displayName)) : props.items),
-		[props.items, searchCheck, value],
+		() =>
+			value.length
+				? pickBy(props.items, val => val.displayName?.toLowerCase().includes(lowSearchValue))
+				: props.items,
+		[lowSearchValue, props.items, value.length],
 	)
 
 	return (
