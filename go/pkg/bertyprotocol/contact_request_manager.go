@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/base64"
+	"encoding/hex"
 	"fmt"
 	"strings"
 	"sync"
@@ -121,10 +122,8 @@ func (c *contactRequestsManager) metadataWatcher(ctx context.Context) {
 		var err error
 		if handler, ok := handlers[typ]; ok {
 			if err = handler(hctx, &e); err != nil {
-				c.logger.Error("error while handling metadata store event", zap.Error(err))
+				c.logger.Error("metadata store event handler", zap.String("event", typ.String()), zap.Error(err))
 			}
-		} else {
-			c.logger.Error("error while handling metadata store event, uknown event", zap.String("event", typ.String()))
 		}
 
 		c.muManager.Unlock()
@@ -147,9 +146,13 @@ func (c *contactRequestsManager) metadataRequestDisabled(ctx context.Context, _ 
 	return nil
 }
 
-func (c *contactRequestsManager) metadataRequestEnabled(ctx context.Context, _ *protocoltypes.GroupMetadataEvent) error {
-	c.enableContactRequest(ctx)
-	return nil
+func (c *contactRequestsManager) metadataRequestEnabled(ctx context.Context, evt *protocoltypes.GroupMetadataEvent) error {
+	e := &protocoltypes.AccountContactRequestEnabled{}
+	if err := e.Unmarshal(evt.Event); err != nil {
+		return errcode.ErrDeserialization.Wrap(err)
+	}
+
+	return c.enableContactRequest(ctx)
 }
 
 func (c *contactRequestsManager) enableContactRequest(ctx context.Context) error {
@@ -158,13 +161,9 @@ func (c *contactRequestsManager) enableContactRequest(ctx context.Context) error
 		return nil
 	}
 
-	if c.seed == nil {
-		return fmt.Errorf("empty seed")
-	}
-
 	pkBytes, err := c.accSK.GetPublic().Raw()
 	if err != nil {
-		return err
+		return fmt.Errorf("unable to get raw pk: %w", err)
 	}
 
 	c.enabled = true
@@ -179,8 +178,12 @@ func (c *contactRequestsManager) enableContactRequest(ctx context.Context) error
 		}
 	})
 
-	// announce on swiper
-	c.enableAnnounce(ctx, c.seed, pkBytes)
+	// announce on swiper if we already got seed
+	if c.seed != nil {
+		c.enableAnnounce(ctx, c.seed, pkBytes)
+	} else {
+		c.logger.Warn("no seed registered, reset will be needed before announcing")
+	}
 
 	return nil
 }
@@ -191,19 +194,25 @@ func (c *contactRequestsManager) metadataRequestReset(ctx context.Context, evt *
 		return errcode.ErrDeserialization.Wrap(err)
 	}
 
-	if e.PublicRendezvousSeed == nil {
-		return fmt.Errorf("empty seed")
-	}
-	c.seed = e.PublicRendezvousSeed
-
 	if !c.enabled {
-		return nil
+		return fmt.Errorf("contact request not enabled")
 	}
 
 	accPK, err := c.accSK.GetPublic().Raw()
 	if err != nil {
-		return err
+		return fmt.Errorf("unable to get raw pk: %w", err)
 	}
+
+	switch {
+	case e.PublicRendezvousSeed == nil:
+		return fmt.Errorf("unable to reset with an empty seed")
+	case bytes.Equal(e.PublicRendezvousSeed, c.seed):
+		return fmt.Errorf("unable to reset twice with the same seed")
+	}
+
+	// updating rendezvous seed
+	c.seed = e.PublicRendezvousSeed
+	c.logger.Debug("updating rendezvous seed", logutil.PrivateString("seed", hex.EncodeToString(c.seed)))
 
 	c.enableAnnounce(ctx, c.seed, accPK)
 	return nil
@@ -239,7 +248,11 @@ func (c *contactRequestsManager) metadataRequestReceived(ctx context.Context, ev
 	return nil
 }
 
-func (c *contactRequestsManager) enableAnnounce(ctx context.Context, seed, accPK []byte) {
+func (c *contactRequestsManager) enableAnnounce(ctx context.Context, seed, accPK []byte) error {
+	if seed == nil {
+		return fmt.Errorf("announcing with empty seed")
+	}
+
 	if c.announceCancel != nil { // is already enable
 		c.announceCancel()
 	}
@@ -247,13 +260,11 @@ func (c *contactRequestsManager) enableAnnounce(ctx context.Context, seed, accPK
 	ctx, c.announceCancel = context.WithCancel(ctx)
 	c.enabled = true
 
-	if c.seed == nil {
-		c.logger.Warn("announcing with empty seed")
-	}
-
+	c.logger.Debug("announcing")
 	// start announcing on swiper, this method should take care ton announce as
 	// many time as needed
-	c.swiper.Announce(ctx, accPK, c.seed)
+	c.swiper.Announce(ctx, accPK, seed)
+	return nil
 }
 
 func (c *contactRequestsManager) disableAnnounce() {

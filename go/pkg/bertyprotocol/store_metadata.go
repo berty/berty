@@ -559,7 +559,7 @@ func (m *MetadataStore) ContactRequestReferenceReset(ctx context.Context) (opera
 		return nil, errcode.ErrGroupInvalidType
 	}
 
-	seed, err := ioutil.ReadAll(io.LimitReader(crand.Reader, protocoltypes.RendezvousSeedLength))
+	seed, err := genNewSeed()
 	if err != nil {
 		return nil, errcode.ErrCryptoKeyGeneration.Wrap(err)
 	}
@@ -1207,5 +1207,10 @@ func (m *MetadataStore) initEmitter() (err error) {
 		return
 	}
 
+	return
+}
+
+func genNewSeed() (seed []byte, err error) {
+	seed, err = ioutil.ReadAll(io.LimitReader(crand.Reader, protocoltypes.RendezvousSeedLength))
 	return
 }

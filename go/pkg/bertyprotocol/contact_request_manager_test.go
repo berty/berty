@@ -80,9 +80,11 @@ func TestContactRequestFlow(t *testing.T) {
 		require.NoError(t, err)
 
 		if evt == nil || evt.Metadata.EventType != protocoltypes.EventTypeAccountContactRequestIncomingReceived {
+			t.Logf("type: %v", evt.Metadata.EventType.String())
 			continue
 		}
 
+		t.Logf("type recv: %v", evt.Metadata.EventType.String())
 		req := &protocoltypes.AccountContactRequestReceived{}
 		err = req.Unmarshal(evt.Event)
 
