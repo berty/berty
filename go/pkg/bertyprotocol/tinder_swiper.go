@@ -11,7 +11,6 @@ import (
 	p2p_disc "github.com/libp2p/go-libp2p-core/discovery"
 	"github.com/libp2p/go-libp2p-core/peer"
 	discovery "github.com/libp2p/go-libp2p-discovery"
-
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	"go.uber.org/zap"
 	"moul.io/srand"
@@ -75,11 +74,11 @@ func (s *Swiper) RefreshContactRequest(ctx context.Context, topic []byte) (addrs
 		return
 	}
 
-	// add a process refresh job
+	// add a refresh job process
 	req.wgRefresh.Add(1)
-	s.muRequest.Unlock()
-
 	defer req.wgRefresh.Done()
+
+	s.muRequest.Unlock()
 
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
@@ -90,6 +89,7 @@ func (s *Swiper) RefreshContactRequest(ctx context.Context, topic []byte) (addrs
 		cancel()
 	}()
 
+	// force find peers re check topic
 	cpeer, err := s.disc.FindPeers(req.ctx, req.rdvTopic,
 		tinder.WatchdogDiscoverKeepContextOption,
 		tinder.WatchdogDiscoverForceOption,
@@ -107,8 +107,6 @@ func (s *Swiper) RefreshContactRequest(ctx context.Context, topic []byte) (addrs
 	case <-ctx.Done():
 		return nil, ctx.Err()
 	}
-
-	return []peer.AddrInfo{}, nil
 }
 
 // WatchTopic looks for peers providing a resource.
@@ -154,10 +152,10 @@ func (s *Swiper) WatchTopic(ctx context.Context, topic, seed []byte) <-chan peer
 			if err := s.watchPeers(wctx, cpeers, point.RotationTopic()); err != nil && err != context.DeadlineExceeded {
 				s.logger.Debug("watch until deadline ended", zap.Error(err))
 			}
-
-			// upper context is done or we need to refresh rotation point
 			cancel()
 
+			// at this point upper context is done or we need to refresh
+			// rotation point.
 			// take a little breath and wait one second to avoid calling find
 			// peer in short amount of time
 			time.Sleep(time.Second)
@@ -168,6 +166,7 @@ func (s *Swiper) WatchTopic(ctx context.Context, topic, seed []byte) <-chan peer
 		s.muRequest.Unlock()
 
 		// wait all refresh job are done before closing the channel
+		// we dont want to send peer on a closed channel
 		wgRefresh.Wait()
 	}()
 
@@ -180,7 +179,7 @@ func (s *Swiper) watchPeers(ctx context.Context, out chan<- peer.AddrInfo, ns st
 	for ctx.Err() == nil {
 		s.logger.Debug("swipper looking for peers", zap.String("topic", ns))
 
-		// wait 10 seconds before considering lookup as failed
+		// wait 15 seconds before considering lookup as failed/done
 		fctx, cancel := context.WithTimeout(ctx, time.Second*15)
 
 		// use find peers while keeping his context

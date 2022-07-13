@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"context"
 	"encoding/base64"
-	"encoding/hex"
 	"fmt"
 	"strings"
 	"sync"
@@ -31,14 +30,13 @@ type contactRequestsManager struct {
 
 	rootCtx        context.Context
 	announceCancel context.CancelFunc
-	toAdd          map[string]string
 
 	logger *zap.Logger
 
 	enabled bool
 
-	seed  []byte
-	accSK crypto.PrivKey
+	ownRendezvousSeed []byte
+	accSK             crypto.PrivKey
 
 	ipfs          ipfsutil.ExtendedCoreAPI
 	swiper        *Swiper
@@ -87,7 +85,7 @@ func (c *contactRequestsManager) metadataWatcher(ctx context.Context) {
 	// recreate previous contact request state
 	enabled, contact := c.metadataStore.GetIncomingContactRequestsStatus()
 	if contact != nil {
-		c.seed = contact.PublicRendezvousSeed
+		c.ownRendezvousSeed = contact.PublicRendezvousSeed
 	}
 
 	if enabled {
@@ -131,7 +129,7 @@ func (c *contactRequestsManager) metadataWatcher(ctx context.Context) {
 	}
 }
 
-func (c *contactRequestsManager) metadataRequestDisabled(ctx context.Context, _ *protocoltypes.GroupMetadataEvent) error {
+func (c *contactRequestsManager) metadataRequestDisabled(_ context.Context, _ *protocoltypes.GroupMetadataEvent) error {
 	if !c.enabled {
 		c.logger.Warn("contact request already disabled")
 		return nil
@@ -166,25 +164,29 @@ func (c *contactRequestsManager) enableContactRequest(ctx context.Context) error
 		return fmt.Errorf("unable to get raw pk: %w", err)
 	}
 
-	c.enabled = true
-
 	c.ipfs.SetStreamHandler(contactRequestV1, func(s network.Stream) {
-		if err := c.handleIncomingRequest(s); err != nil {
+		ctx, _, endSection := tyber.Section(c.rootCtx, c.logger, "receiving incoming contact request")
+
+		if err := c.handleIncomingRequest(ctx, s); err != nil {
 			c.logger.Error("unable to handle incoming contact request", zap.Error(err))
 		}
 
+		endSection(err, "")
+
 		if err := s.Reset(); err != nil {
-			c.logger.Error("unable to handle incoming contact request", zap.Error(err))
+			c.logger.Error("unable to reset stream", zap.Error(err))
 		}
 	})
 
+	c.enabled = true
+	tyber.LogStep(ctx, c.logger, "enabled contact request")
+
 	// announce on swiper if we already got seed
-	if c.seed != nil {
-		c.enableAnnounce(ctx, c.seed, pkBytes)
-	} else {
-		c.logger.Warn("no seed registered, reset will be needed before announcing")
+	if c.ownRendezvousSeed != nil {
+		return c.enableAnnounce(ctx, c.ownRendezvousSeed, pkBytes)
 	}
 
+	c.logger.Warn("no seed registered, reset will be needed before announcing")
 	return nil
 }
 
@@ -206,16 +208,15 @@ func (c *contactRequestsManager) metadataRequestReset(ctx context.Context, evt *
 	switch {
 	case e.PublicRendezvousSeed == nil:
 		return fmt.Errorf("unable to reset with an empty seed")
-	case bytes.Equal(e.PublicRendezvousSeed, c.seed):
+	case bytes.Equal(e.PublicRendezvousSeed, c.ownRendezvousSeed):
 		return fmt.Errorf("unable to reset twice with the same seed")
 	}
 
 	// updating rendezvous seed
-	c.seed = e.PublicRendezvousSeed
-	c.logger.Debug("updating rendezvous seed", logutil.PrivateString("seed", hex.EncodeToString(c.seed)))
+	tyber.LogStep(ctx, c.logger, "update rendezvous seed")
+	c.ownRendezvousSeed = e.PublicRendezvousSeed
 
-	c.enableAnnounce(ctx, c.seed, accPK)
-	return nil
+	return c.enableAnnounce(ctx, c.ownRendezvousSeed, accPK)
 }
 
 func (c *contactRequestsManager) metadataRequestEnqueued(ctx context.Context, evt *protocoltypes.GroupMetadataEvent) error {
@@ -254,13 +255,14 @@ func (c *contactRequestsManager) enableAnnounce(ctx context.Context, seed, accPK
 	}
 
 	if c.announceCancel != nil { // is already enable
+		tyber.LogStep(ctx, c.logger, "canceling previous announce")
 		c.announceCancel()
 	}
 
 	ctx, c.announceCancel = context.WithCancel(ctx)
 	c.enabled = true
 
-	c.logger.Debug("announcing")
+	tyber.LogStep(ctx, c.logger, "announcing on swipper")
 	// start announcing on swiper, this method should take care ton announce as
 	// many time as needed
 	c.swiper.Announce(ctx, accPK, seed)
@@ -279,7 +281,6 @@ func (c *contactRequestsManager) enqueueRequest(ctx context.Context, to *protoco
 
 	otherPK, err := crypto.UnmarshalEd25519PublicKey(to.PK)
 	if err != nil {
-
 		return err
 	}
 
@@ -338,7 +339,7 @@ func (c *contactRequestsManager) SendContactRequest(ctx context.Context, own, to
 		endSection(err, "")
 	}()
 
-	// make sure to have conneciton with the remote peer
+	// make sure to have connection with the remote peer
 	if err := c.ipfs.Swarm().Connect(ctx, peer); err != nil {
 		return fmt.Errorf("unable to connect: %w", err)
 	}
@@ -380,10 +381,7 @@ func (c *contactRequestsManager) SendContactRequest(ctx context.Context, own, to
 	return nil
 }
 
-func (c *contactRequestsManager) handleIncomingRequest(stream network.Stream) (err error) {
-	ctx, _, endSection := tyber.Section(c.rootCtx, c.logger, "receiving incoming contact request")
-	defer func() { endSection(err, "", tyber.ForceReopen) }()
-
+func (c *contactRequestsManager) handleIncomingRequest(ctx context.Context, stream network.Stream) (err error) {
 	reader := ggio.NewDelimitedReader(stream, 2048)
 	writer := ggio.NewDelimitedWriter(stream)
 
@@ -417,6 +415,8 @@ func (c *contactRequestsManager) handleIncomingRequest(stream network.Stream) (e
 	if err := contact.CheckFormat(protocoltypes.ShareableContactOptionsAllowMissingRDVSeed); err != nil {
 		return fmt.Errorf("invalid contact information format: %w", err)
 	}
+
+	tyber.LogStep(ctx, c.logger, "marking contact request has received")
 
 	// mark contact request as received
 	_, err = c.metadataStore.ContactRequestIncomingReceived(ctx, &protocoltypes.ShareableContact{
