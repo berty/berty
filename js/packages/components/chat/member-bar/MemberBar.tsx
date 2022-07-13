@@ -23,33 +23,33 @@ export const MemberBar: React.FC<MemberBarProps> = props => {
 
 	const [memberList, setMemberList] = useState<MemberBarItem[] | undefined>(undefined)
 
-	const handleMemberList = useCallback(() => {
+	const handleMemberList = useCallback(async () => {
 		const list: MemberBarItem[] = []
 
 		if (!messengerClient) {
 			return
 		}
 
-		members.forEach(async member => {
+		for (const member of members) {
 			const peer = await dispatch(
 				getPeerFromMemberPK({ memberPK: member.publicKey, convPK: props.convId }),
 			)
 
-			if (peer.payload && list.length < 5) {
-				list.push({
-					networkStatus: peer.payload as PeerNetworkStatus,
-					publicKey: member.publicKey ?? undefined,
-				})
+			list.push({
+				networkStatus: peer.payload as PeerNetworkStatus,
+				publicKey: member.publicKey ?? undefined,
+			})
+			if (list.length >= 5) {
+				break
 			}
-		})
-
+		}
 		setMemberList(list)
 		// members is needed but cause an infinite loop
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [dispatch, messengerClient, props.convId])
 
 	useEffect(() => {
-		handleMemberList()
+		handleMemberList().then()
 	}, [handleMemberList])
 
 	return (
