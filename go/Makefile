@@ -8,6 +8,7 @@ GO_TAGS ?= -tags "fts5 sqlite sqlite_unlock_notify"
 GO_TEST_OPTS ?= -test.timeout=300s -race -cover -coverprofile=coverage.txt -covermode=atomic $(GO_TAGS)
 GO_TEST_PATH ?= ./...
 GO_TEST_ENV ?=
+CI ?= false
 
 BUILD_DATE ?= `date +%s`
 VCS_REF ?= `git rev-parse --short HEAD`
@@ -99,9 +100,8 @@ go.tidy: pb.generate
 
 go.lint: pb.generate
 	$(call check-program, golangci-lint)
-	golangci-lint run --timeout=120s --verbose ./...
+	golangci-lint run --timeout=5m $(if $(filter $(CI), false), --verbose) ./...
 .PHONY: go.lint
-
 
 go.unittest: pb.generate
 	$(call check-program, $(GO))

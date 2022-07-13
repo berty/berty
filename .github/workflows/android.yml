@@ -26,54 +26,58 @@ jobs:
   build:
     name: Build for Android
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        golang: ["1.16.x"]
-        node: ["14.x"]
-        java: ["1.8"]
     steps:
       - name: Checkout
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
           persist-credentials: false
-          ref: ${{ github.event.pull_request.head.sha }} # see https://github.com/actions/checkout/issues/299
 
       - name: Load variables from file
         uses: antifree/json-to-variables@v1.0.1
         with:
           filename: .github/workflows/utils/variables.json
 
-      - name: Setup Go
-        uses: actions/setup-go@v2
-        with:
-          go-version: ${{ matrix.golang }}
+      - name: Setup asdf
+        uses: asdf-vm/actions/setup@v1
 
-      - name: Setup Node
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node }}
+      - name: Setup go
+        run: |
+          asdf plugin add golang
+          asdf install golang
+          echo "go_version=$(asdf current golang | xargs | cut -d ' ' -f 2)" >> $GITHUB_ENV
 
-      - name: Cache Go modules
+      - name: Setup node
+        run: |
+          asdf plugin add nodejs
+          asdf install nodejs
+          echo "node_version=$(asdf current nodejs | xargs | cut -d ' ' -f 2)" >> $GITHUB_ENV
+
+      - name: Setup yarn
+        run: |
+          asdf plugin add yarn
+          asdf install yarn
+
+      - name: Setup java
+        run: |
+          asdf plugin add java
+          asdf install java
+
+      - name: Cache go modules
         uses: actions/cache@v2.1.6
         with:
           path: ~/go/pkg/mod
-          key: ${{ runner.os }}-go-${{ matrix.golang }}-${{ env.json_cache-version_go }}-${{ hashFiles('**/go.sum') }}
-          restore-keys: ${{ runner.os }}-go-${{ matrix.golang }}-${{ env.json_cache-version_go }}-
+          key:          ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-${{ hashFiles('go/**/go.sum') }}
+          restore-keys: ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-
 
-      - name: Cache Node modules
+      - name: Cache node modules
         uses: actions/cache@v2.1.6
         with:
           path: js/node_modules
-          key: ${{ runner.OS }}-node-${{ matrix.node }}-${{ env.json_cache-version_node }}-${{ hashFiles('js/yarn.lock') }}
-          restore-keys: ${{ runner.OS }}-node-${{ matrix.node }}-${{ env.json_cache-version_node }}-
+          key:          ${{ runner.OS }}-node-${{ env.node_version }}-${{ env.json_cache-versions_node }}-${{ hashFiles('js/yarn.lock') }}
+          restore-keys: ${{ runner.OS }}-node-${{ env.node_version }}-${{ env.json_cache-versions_node }}-
 
-      - name: Setup Java
-        uses: actions/setup-java@v1
-        with:
-          java-version: ${{ matrix.java }}
-
-      - name: Cache Gomobile .aar
+      - name: Cache gobridge aar
         uses: n0izn0iz/mkache@5cedaeaf0b39a9220ae5a815cac8d2a924cee3ef
         if: github.ref != 'refs/heads/master' # this makes sure the VCS_REF is correct on master
         with:
@@ -81,7 +85,11 @@ jobs:
           makefile: js/Makefile
           key: android-gomobile-bridge-${{ matrix.golang }}
 
-      - name: Build Gomobile .aar
+      - name: Fetch node modules
+        working-directory: js
+        run: make node_modules
+
+      - name: Build gobridge aar
         working-directory: js
         run: make android.gomobile
 

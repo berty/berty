@@ -21,26 +21,23 @@ on:
 
 jobs:
   golangci-lint:
-    name: "GolangCI-lint"
+    name: Golangci-lint
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        golang:
-          - 1.17.x
     steps:
-      - uses: actions/checkout@v3
-      - name: Set up Go
-        uses: actions/setup-go@v2
-        with:
-          go-version: ${{ matrix.golang }}
-      - name: golangci-lint
-        uses: golangci/golangci-lint-action@v3.1.0
-        with:
-          go-version: ${{ matrix.golang }}
-          version: v1.44.2
-          working-directory: go
-          args: "--timeout=10m --out-${NO_FUTURE}format colored-line-number"
-          # only-new-issues: true
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup asdf
+        uses: asdf-vm/actions/setup@v1
+
+      - name: Setup golangci-lint
+        run: |
+          asdf plugin add golangci-lint
+          asdf install golangci-lint
+
+      - name: Run golangci-lint
+        working-directory: go
+        run: make lint
 
   # this is not very common to have a job that checks the flappy tests.
   #
@@ -52,111 +49,123 @@ jobs:
   #
   # we hope we can remove this job because all the tests are stable 100% of the time
   flappy-tests:
-    name: "Flappy tests (Linux)"
+    name: Flappy tests (Linux)
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        golang: ['1.17.x']
-    env:
-      OS: ubuntu-latest
-      GOLANG: ${{ matrix.golang }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+
       - name: Load variables from file
         uses: antifree/json-to-variables@v1.0.1
         with:
           filename: .github/workflows/utils/variables.json
-      - name: Set up Go
-        uses: actions/setup-go@v2
-        with:
-          go-version: ${{ matrix.golang }}
-      - name: Cache Go modules
+
+      - name: Setup asdf
+        uses: asdf-vm/actions/setup@v1
+
+      - name: Setup go
+        run: |
+          asdf plugin add golang
+          asdf install golang
+          echo "go_version=$(asdf current golang | xargs | cut -d ' ' -f 2)" >> $GITHUB_ENV
+
+      - name: Cache go modules
         uses: actions/cache@v2.1.6
         with:
           path: ~/go/pkg/mod
-          key:          ${{ runner.os }}-go-${{ matrix.golang }}-${{ env.json_cache-version_go }}-${{ hashFiles('**/go.sum') }}
-          restore-keys: ${{ runner.os }}-go-${{ matrix.golang }}-${{ env.json_cache-version_go }}-
+          key:          ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-${{ hashFiles('**/go.sum') }}
+          restore-keys: ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-
+
       - name: Avoid triggering make generate
         run: touch go/gen.sum
-      - name: Fetch dependencies
+
+      - name: Fetch go modules
         run: go mod download
+
       - name: Compile the testing binaries
         run: |
           pushd ./go/pkg/bertyprotocol  && go test -c -o ./tests.bin . && popd
           pushd ./go/pkg/bertymessenger && go test -tags "fts5 sqlite sqlite_unlock_notify" -c -o ./tests.bin . && popd
+
       - name: Check go.mod and go.sum
         run: |
           go mod tidy -v
           git --no-pager diff go.mod go.sum
           git --no-pager diff --quiet go.mod go.sum
+
       - name: Run fast flappy tests
         working-directory: go
         env:
           TEST_SPEED: fast
           TEST_STABILITY: flappy
         run: make go.flappy-tests
-      # FIXME: coverage
 
   go-tests-on-linux:
-    name: "Stable tests (linux)"
+    name: Stable tests (Linux)
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        golang:
-          - 1.16.x
-          - 1.17.x
-          #- tip
-    env:
-      OS: ubuntu-latest
-      GOLANG: ${{ matrix.golang }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+
       - name: Load variables from file
         uses: antifree/json-to-variables@v1.0.1
         with:
           filename: .github/workflows/utils/variables.json
-      - name: Set up Go
-        uses: actions/setup-go@v2
-        with:
-          go-version: ${{ matrix.golang }}
-      - name: Cache Go modules
+
+      - name: Setup asdf
+        uses: asdf-vm/actions/setup@v1
+
+      - name: Setup go
+        run: |
+          asdf plugin add golang
+          asdf install golang
+          echo "go_version=$(asdf current golang | xargs | cut -d ' ' -f 2)" >> $GITHUB_ENV
+
+      - name: Cache go modules
         uses: actions/cache@v2.1.6
         with:
           path: ~/go/pkg/mod
-          key:          ${{ runner.os }}-go-${{ matrix.golang }}-${{ env.json_cache-version_go }}-${{ hashFiles('**/go.sum') }}
-          restore-keys: ${{ runner.os }}-go-${{ matrix.golang }}-${{ env.json_cache-version_go }}-
+          key:          ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-${{ hashFiles('**/go.sum') }}
+          restore-keys: ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-
+
       - name: Compile the project on Unix-like operating systems
         working-directory: go
         run: |
           touch gen.sum # avoid triggering make generate
           make go.install
+
       - name: Check go.mod and go.sum
         run: |
           go mod tidy -v
           git --no-pager diff go.mod go.sum
           git --no-pager diff --quiet go.mod go.sum
+
       - name: Run fast tests multiple times
         working-directory: go
         env:
           TEST_SPEED: fast
           GO_TEST_OPTS: -test.timeout=600s -count 1 -tags "fts5 sqlite sqlite_unlock_notify"
         run: set -o pipefail; make go.unittest | tee test_log.txt
+
       - name: Run all tests
         working-directory: go
         env:
           TEST_SPEED: any
           GO_TEST_OPTS: -test.timeout=600s -count 1 -tags "fts5 sqlite sqlite_unlock_notify"
         run: make go.unittest
+
       - name: Run all tests with race flag and generate coverage
         working-directory: go
         env:
           TEST_SPEED: any
           GO_TEST_OPTS: -test.timeout=1200s -count=1 -race -cover -tags "fts5 sqlite sqlite_unlock_notify" -coverprofile=coverage.txt -covermode=atomic
         run: make go.unittest
+
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v2.1.0
+        env:
+          OS: ${{ runner.os }}
+          GOLANG: ${{ env.go_version }}
         with:
           file: ./go/coverage.txt
           flags: go.unittests
@@ -165,28 +174,33 @@ jobs:
           fail_ci_if_error: false
 
   go-tests-on-windows:
-    name: "Stable tests (windows)"
+    name: Stable tests (Windows)
     runs-on: windows-latest
-    strategy:
-      matrix:
-        golang: ['1.17.x']
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+
       - name: Load variables from file
         uses: antifree/json-to-variables@v1.0.1
         with:
           filename: .github/workflows/utils/variables.json
-      - name: Set up Go
-        uses: actions/setup-go@v2
-        with:
-          go-version: ${{ matrix.golang }}
-      - name: Cache Go modules
+
+      - name: Setup asdf
+        uses: asdf-vm/actions/setup@v1
+
+      - name: Setup go
+        run: |
+          asdf plugin add golang
+          asdf install golang
+          "go_version={0}" -f (((asdf current golang) -replace '\s+', ' ') -Split ' ')[1] >> $env:GITHUB_ENV
+
+      - name: Cache go modules
         uses: actions/cache@v2.1.6
         with:
           path: ~/go/pkg/mod
-          key:          ${{ runner.os }}-go-${{ matrix.golang }}-${{ env.json_cache-version_go }}-${{ hashFiles('**/go.sum') }}
-          restore-keys: ${{ runner.os }}-go-${{ matrix.golang }}-${{ env.json_cache-version_go }}-
+          key:          ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-${{ hashFiles('**/go.sum') }}
+          restore-keys: ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-
+
       - name: Compile the project on Windows
         run: go.exe install -buildmode=exe ./go/cmd/...
       - name: Check go.mod and go.sum
@@ -194,87 +208,92 @@ jobs:
           go mod tidy -v
           git --no-pager diff go.mod go.sum
           git --no-pager diff --quiet go.mod go.sum
+
       - name: Run fast tests multiple times
         working-directory: go
         env:
           TEST_SPEED: fast
         run: go.exe test ./... -tags "fts5 sqlite sqlite_unlock_notify" -buildmode=exe -timeout=600s -count=5
+
       - name: Run all tests
         working-directory: go
         env:
           TEST_SPEED: any
         run: go.exe test ./... -tags "fts5 sqlite sqlite_unlock_notify" -buildmode=exe -timeout=600s -count=1
-      # broken
-      #- name: Run all tests with race flag and generate coverage
-      #  working-directory: go
-      #  env:
-      #    TEST_SPEED: any
-      #  run: go.exe test ./... -buildmode=exe -v -timeout=1200s -count=1 -tags "fts5 sqlite sqlite_unlock_notify" -race -cover -coverprofile=coverage.txt -covermode=atomic
-      #- name: Upload coverage to Codecov
-      #  uses: codecov/codecov-action@v2.1.0
-      #  with:
-      #    file: ./coverage.txt
-      #    flags: unittests
-      #    env_vars: OS,GOLANG
-      #    name: codecov-umbrella
-      #    fail_ci_if_error: false
 
   go-tests-on-macos:
-    name: "Stable tests (macos)"
+    name: Stable tests (macOS)
     runs-on: macos-latest
-    strategy:
-      matrix:
-        golang: ['1.17.x']
-    env:
-      OS: macos-latest
-      GOLANG: ${{ matrix.golang }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+
       - name: Load variables from file
         uses: antifree/json-to-variables@v1.0.1
         with:
           filename: .github/workflows/utils/variables.json
-      - name: Set up Go
-        uses: actions/setup-go@v2
-        with:
-          go-version: ${{ matrix.golang }}
-      - name: Cache Go modules
+
+      - name: Setup asdf
+        uses: asdf-vm/actions/setup@v1
+
+      - name: Setup go
+        run: |
+          asdf plugin add golang
+          asdf install golang
+          echo "go_version=$(asdf current golang | xargs | cut -d ' ' -f 2)" >> $GITHUB_ENV
+
+      - name: Cache go modules
         uses: actions/cache@v2.1.6
         with:
           path: ~/go/pkg/mod
-          key:          ${{ runner.os }}-go-${{ matrix.golang }}-${{ env.json_cache-version_go }}-${{ hashFiles('**/go.sum') }}
-          restore-keys: ${{ runner.os }}-go-${{ matrix.golang }}-${{ env.json_cache-version_go }}-
+          key:          ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-${{ hashFiles('**/go.sum') }}
+          restore-keys: ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-
+
       - name: Compile the project on Unix-like operating systems
         working-directory: go
         run: |
           touch gen.sum # avoid triggering make generate
           make go.install
+
       - name: Check go.mod and go.sum
         run: |
           go mod tidy -v
           git --no-pager diff go.mod go.sum
           git --no-pager diff --quiet go.mod go.sum
+
       - name: Run fast tests multiple times
         working-directory: go
         env:
           TEST_SPEED: fast
           GO_TEST_OPTS: -test.timeout=600s -count 1 -tags "fts5 sqlite sqlite_unlock_notify"
         run: set -o pipefail; make go.unittest | tee test_log.txt
+
       - name: Run all tests
         working-directory: go
         env:
           TEST_SPEED: any
           GO_TEST_OPTS: -test.timeout=600s -count 1 -tags "fts5 sqlite sqlite_unlock_notify"
         run: make go.unittest
+
       - name: Run all tests with race flag and generate coverage
         working-directory: go
         env:
           TEST_SPEED: any
           GO_TEST_OPTS: -test.timeout=1200s -count=1 -race -cover -tags "fts5 sqlite sqlite_unlock_notify" -coverprofile=coverage.txt -covermode=atomic
         run: make go.unittest
+
+      - name: TEST TO REMOVE
+        env:
+          OS: ${{ runner.os }}
+          GOLANG: ${{ env.go_version }}
+        run: |
+          echo "OS: $OS, GOLANG: $GOLANG"
+
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v2.1.0
+        env:
+          OS: ${{ runner.os }}
+          GOLANG: ${{ env.go_version }}
         with:
           file: ./go/coverage.txt
           flags: go.unittests

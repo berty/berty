@@ -3,3 +3,6 @@ nodejs 18.5.0
 xcodegen 2.29.0
 yarn 1.22.19
 ruby 3.1.2
+golangci-lint 1.42.1
+jq 1.6
+java openjdk-18.0.1.1

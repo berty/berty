@@ -1,9 +1,12 @@
 {
-  "cache-version": {
+  "cache-versions": {
     "node": "3",
+    "nodeweb": "1",
     "go": "1",
-    "xcodegen": "1",
-    "xcodeproj": "1",
+    "ruby": "1",
+    "bridgeframework": "1",
+    "pushframework": "1",
+    "xcodeproject": "1",
     "xcodeworkspace": "1"
   }
 }

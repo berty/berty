@@ -44,72 +44,92 @@ jobs:
           # usage: node .github/workflows/mac-runner-matrix-builder.js STRATEGY
           #
           #  STRATEGY
-          #    random         pick a random runner configuration
-          #    dc4            pick the dc4 runner configuration
+          #    self-hosted    pick the self-hosted runner configuration
           #    github         pick the github runner configuration
-          #    all            pick all the runner configurations (in parallel)
           #    optimized      pick a dc4 runner if available or fallback on github one
           #
           node .github/workflows/utils/mac-runner-matrix-builder.js optimized "${{ secrets.SELFHOSTED_STATUS_CHECK_TOKEN }}"
 
   build-macos-app:
-    name: "Build electron app (macos)"
+    name: Build Electron app (macOS)
     needs: mac_runner_matrix_builder
     runs-on: ${{ matrix.runner }}
     strategy:
       fail-fast: false
       matrix: ${{fromJson(needs.mac_runner_matrix_builder.outputs.matrix)}}
-    env:
-      OS: macos-latest
-      GOLANG: ${{ matrix.golang }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+
       - name: Load variables from file
         uses: antifree/json-to-variables@v1.0.1
         with:
           filename: .github/workflows/utils/variables.json
-      - name: Use Node.js ${{ matrix.node }}
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node }}
-      - name: Cache Node.js modules
-        uses: actions/cache@v2.1.6
-        with:
-          path: js/node_modules
-          key:          ${{ runner.OS }}-node-${{ matrix.node }}-${{ env.json_cache-version_node }}-${{ hashFiles('js/yarn.lock') }}-${{ hashFiles('js/electron-app/yarn.lock') }}
-          restore-keys: ${{ runner.OS }}-node-${{ matrix.node }}-${{ env.json_cache-version_node }}-
-      - name: Set up Go
-        uses: actions/setup-go@v2
-        with:
-          go-version: ${{ matrix.golang }}
-      - name: Cache Go modules
+
+      - name: Setup asdf
+        uses: asdf-vm/actions/setup@v1
+
+      - name: Setup go
+        run: |
+          asdf plugin add golang
+          asdf install golang
+          echo "go_version=$(asdf current golang | xargs | cut -d ' ' -f 2)" >> $GITHUB_ENV
+
+      - name: Setup node
+        run: |
+          asdf plugin add nodejs
+          asdf install nodejs
+          echo "node_version=$(asdf current nodejs | xargs | cut -d ' ' -f 2)" >> $GITHUB_ENV
+
+      - name: Setup yarn
+        run: |
+          asdf plugin add yarn
+          asdf install yarn
+
+      - name: Cache go modules
         uses: actions/cache@v2.1.6
         with:
           path: ~/go/pkg/mod
-          key:          ${{ runner.os }}-go-${{ matrix.golang }}-${{ env.json_cache-version_go }}-${{ hashFiles('**/go.sum') }}
-          restore-keys: ${{ runner.os }}-go-${{ matrix.golang }}-${{ env.json_cache-version_go }}-
-      - name: Compile the project on Unix-like operating systems
+          key:          ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-${{ hashFiles('go/**/go.sum') }}
+          restore-keys: ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-
+
+      - name: Cache node modules
+        uses: actions/cache@v2.1.6
+        with:
+          path: js/node_modules
+          key:          ${{ runner.OS }}-node-${{ env.node_version }}-${{ env.json_cache-versions_node }}-${{ hashFiles('js/yarn.lock') }}
+          restore-keys: ${{ runner.OS }}-node-${{ env.node_version }}-${{ env.json_cache-versions_node }}-
+
+      - name: Cache web node modules
+        uses: actions/cache@v2.1.6
+        with:
+          path: js/web/node_modules
+          key:          ${{ runner.OS }}-nodeweb-${{ env.node_version }}-${{ env.json_cache-versions_nodeweb }}-${{ hashFiles('js/web/yarn.lock') }}
+          restore-keys: ${{ runner.OS }}-nodeweb-${{ env.node_version }}-${{ env.json_cache-versions_nodeweb }}-
+
+      - name: Build berty binary
         working-directory: go
         run: |
           touch gen.sum # avoid triggering make generate
           make go.install
+
       - name: Check go.mod and go.sum
         run: |
           go mod tidy -v
           git --no-pager diff go.mod go.sum
           git --no-pager diff --quiet go.mod go.sum
-      - name: Install Yarn
-        run: npm install -g yarn
-      - name: Install electron app deps (node_modules)
+
+      - name: Fetch node modules
         working-directory: js
-        run: make node_modules && make web/node_modules
+        run: make node_modules web/node_modules
+
       - name: Build the app (PR)
         if: github.event_name == 'pull_request'
         env:
           CSC_IDENTITY_AUTO_DISCOVERY: false
         working-directory: js
         run: make electron.mac
+
       - name: Build the app (Merge)
         if: github.event_name != 'pull_request'
         env:
@@ -117,6 +137,7 @@ jobs:
           CSC_KEY_PASSWORD: ${{ secrets.MAC_APP_CSC_KEY_PASSWORD }}
         working-directory: js
         run: make electron.mac
+
       - name: Upload the Archive
         uses: actions/upload-artifact@v3
         with:

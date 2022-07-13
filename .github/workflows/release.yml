@@ -19,7 +19,7 @@ on:
 
 jobs:
   semantic-release:
-    name: semantic release
+    name: Semantic release
     runs-on: ubuntu-latest
     outputs:
       new-release-published: ${{ steps.semantic-echo.outputs.new-release-published }}
@@ -64,28 +64,35 @@ jobs:
       - name: Unshallow
         run: git fetch --prune --unshallow
 
-      - uses: actions/setup-node@v2
-        if: needs.semantic-release.outputs.new-release-published == 'true'
-        with:
-          node-version: "14.x"
-          registry-url: "https://registry.npmjs.org"
+      - name: Setup asdf
+        uses: asdf-vm/actions/setup@v1
 
-      - name: Set up Go
-        uses: actions/setup-go@v2
-        with:
-          go-version: 1.17.x
+      - name: Setup go
+        run: |
+          asdf plugin add golang
+          asdf install golang
+          echo "go_version=$(asdf current golang | xargs | cut -d ' ' -f 2)" >> $GITHUB_ENV
+
+      - name: Setup node
+        if: needs.semantic-release.outputs.new-release-published == 'true'
+        run: |
+          asdf plugin add nodejs
+          asdf install nodejs
+          echo "node_version=$(asdf current nodejs | xargs | cut -d ' ' -f 2)" >> $GITHUB_ENV
 
       - name: "Publish npm package: @berty/api (Real)"
         if: needs.semantic-release.outputs.new-release-published == 'true'
-        run: cd tool && go run ./publish-npm-package -path=../js/packages/api -version=${{ needs.semantic-release.outputs.release-version }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         continue-on-error: true
+        working-directory: tool
+        run: go run ./publish-npm-package -path=../js/packages/api -version=${{ needs.semantic-release.outputs.release-version }}
       # Next step also sets up a .npmrc file for automatic publishing to npm
 
       - name: "Publish npm package: @berty/api (DryRun)"
         if: needs.semantic-release.outputs.new-release-published != 'true'
-        run: cd tool && go run ./publish-npm-package -path=../js/packages/api -version=0.0.0 -dry-run
+        working-directory: tool
+        run: go run ./publish-npm-package -path=../js/packages/api -version=0.0.0 -dry-run
 
       - name: Register version on pkg.go.dev
         if: needs.semantic-release.outputs.new-release-published == 'true'
@@ -104,9 +111,9 @@ jobs:
     strategy:
       matrix:
         config: [
-          {runs-on: 'ubuntu-latest',  goos: 'linux',   golang: '1.17.x'},
-          {runs-on: 'macos-latest',  goos: 'darwin',  golang: '1.17.x'},
-          {runs-on: 'windows-latest', goos: 'windows', golang: '1.17.x'},
+          {runs-on: 'ubuntu-latest',  goos: 'linux'},
+          {runs-on: 'macos-latest',  goos: 'darwin'},
+          {runs-on: 'windows-latest', goos: 'windows'},
           # TODO: bertyguy
         ]
     env:
@@ -123,17 +130,29 @@ jobs:
         with:
           filename: .github/workflows/utils/variables.json
 
-      - name: Set up Go
-        uses: actions/setup-go@v2
-        with:
-          go-version: ${{ matrix.config.golang }}
+      - name: Setup asdf
+        uses: asdf-vm/actions/setup@v1
 
-      - name: Cache Go modules
-        uses: actions/cache@v2
+      - name: Setup go (Posix)
+        if: matrix.config.goos != 'windows'
+        run: |
+          asdf plugin add golang
+          asdf install golang
+          echo "go_version=$(asdf current golang | xargs | cut -d ' ' -f 2)" >> $GITHUB_ENV
+
+      - name: Setup go (Windows)
+        if: matrix.config.goos == 'windows'
+        run: |
+          asdf plugin add golang
+          asdf install golang
+          "go_version={0}" -f (((asdf current golang) -replace '\s+', ' ') -Split ' ')[1] >> $env:GITHUB_ENV
+
+      - name: Cache go modules
+        uses: actions/cache@v2.1.6
         with:
           path: ~/go/pkg/mod
-          key: ${{ runner.os }}-go-${{ matrix.config.golang }}-${{ env.json_cache-version_go }}-${{ hashFiles('**/go.sum') }}
-          restore-keys: ${{ runner.os }}-go-${{ matrix.config.golang }}-${{ env.json_cache-version_go }}-
+          key:          ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-${{ hashFiles('go/**/go.sum') }}
+          restore-keys: ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-
 
       - name: Install Linux Dependencies
         if: matrix.config.goos == 'linux'
@@ -147,14 +166,14 @@ jobs:
           mkdir ../../osxcross
           git clone https://github.com/plentico/osxcross-target.git ../../osxcross/target
 
-      - name: "Run GoReleaser (DryRun)"
+      - name: Run GoReleaser (DryRun)
         uses: goreleaser/goreleaser-action@v3
         if: needs.semantic-release.outputs.new-release-published != 'true'
         with:
           version: latest
           args: release --rm-dist -f .github/workflows/utils/.goreleaser.${{ matrix.config.goos }}.yml --skip-publish
 
-      - name: "Run GoReleaser (Publish)"
+      - name: Run GoReleaser (Publish)
         uses: goreleaser/goreleaser-action@v3
         if: needs.semantic-release.outputs.new-release-published == 'true'
         with:
@@ -163,10 +182,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: "Dist/ directory listing (Posix)"
+      - name: Dist/ directory listing (Posix)
         if: matrix.config.goos != 'windows'
         run: ls -lah dist
 
-      - name: "Dist/ directory listing (Windows)"
+      - name: Dist/ directory listing (Windows)
         if: matrix.config.goos == 'windows'
         run: Get-ChildItem -Recurse dist

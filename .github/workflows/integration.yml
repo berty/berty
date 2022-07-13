@@ -36,53 +36,63 @@ on:
 jobs:
   integration-prod:
     if: github.event_name == 'schedule'
-    name: "integration (production)"
+    name: Integration (Production)
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        golang: [1.17.x]
-    env:
-      OS: ubuntu-latest
-      GOLANG: ${{ matrix.golang }}
     steps:
       - name: Generate run's URL
         id: url
         run: |
           echo "::set-output name=runUrl::https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+
       - name: Checkout
         uses: actions/checkout@v3
+
       - name: Load variables from file
         uses: antifree/json-to-variables@v1.0.1
         with:
           filename: .github/workflows/utils/variables.json
-      - name: Set up Go
-        uses: actions/setup-go@v2
-        with:
-          go-version: ${{ matrix.golang }}
+
+      - name: Setup asdf
+        uses: asdf-vm/actions/setup@v1
+
+      - name: Setup go
+        run: |
+          asdf plugin add golang
+          asdf install golang
+          echo "go_version=$(asdf current golang | xargs | cut -d ' ' -f 2)" >> $GITHUB_ENV
+
       - name: Cache Go modules
         uses: actions/cache@v2.1.6
         with:
           path: ~/go/pkg/mod
-          key:          ${{ runner.os }}-go-${{ matrix.golang }}-${{ env.json_cache-version_go }}-${{ hashFiles('**/go.sum') }}
-          restore-keys: ${{ runner.os }}-go-${{ matrix.golang }}-${{ env.json_cache-version_go }}-
+          key:          ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-${{ hashFiles('**/go.sum') }}
+          restore-keys: ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-
+
       - name: Avoid triggering make generate
         run: touch go/gen.sum
+
       - name: Fetch dependencies
         run: go mod download
+
       - name: Compile the integration binary
         working-directory: go
-        run: go install ./cmd/berty-integration
+        run:
+          go install ./cmd/berty-integration
+          asdf reshim golang # See: https://github.com/kennyp/asdf-golang/issues/18
+
       - name: Run integration test suite
         run: |
           berty-integration \
             -p2p.disc-disable-filter=true \
             -integration.testbot=`cat ./config/config.gen.json | jq -r '.berty.contacts["testbot"].link'` \
             -integration.benchmark > benchmark_result.json
+
       - name: Download previous benchmark data
         uses: actions/cache@v2.1.6
         with:
           path: ./cache
           key: ${{runner.os}}-integration-benchmark
+
       - name: Discord notification
         if: failure()
         env:
@@ -93,20 +103,16 @@ jobs:
 
   integration-local:
     if: github.event_name == 'push' || github.event_name == 'pull_request'
-    name: "integration (local)"
+    name: Integration (Local)
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        golang: [1.17.x]
-    env:
-      OS: ubuntu-latest
-      GOLANG: ${{ matrix.golang }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+
       - name: Build Docker images
         working-directory: tool/compose-integration
         run: docker-compose build
+
       - name: Run integration test suite
         working-directory: tool/compose-integration
         run: make
@@ -123,44 +129,53 @@ jobs:
       #    #auto-push: true
 
   doctor-production:
-    name: "doctor (production)"
+    name: Doctor (Production)
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        golang: [1.17.x]
-    env:
-      OS: ubuntu-latest
-      GOLANG: ${{ matrix.golang }}
     steps:
       - name: Generate run's URL
         id: url
         run: |
           echo "::set-output name=runUrl::https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+
       - name: Checkout
         uses: actions/checkout@v3
+
       - name: Load variables from file
         uses: antifree/json-to-variables@v1.0.1
         with:
           filename: .github/workflows/utils/variables.json
-      - name: Set up Go
-        uses: actions/setup-go@v2
-        with:
-          go-version: ${{ matrix.golang }}
+
+      - name: Setup asdf
+        uses: asdf-vm/actions/setup@v1
+
+      - name: Setup go
+        run: |
+          asdf plugin add golang
+          asdf install golang
+          echo "go_version=$(asdf current golang | xargs | cut -d ' ' -f 2)" >> $GITHUB_ENV
+
       - name: Cache Go modules
         uses: actions/cache@v2.1.6
         with:
           path: ~/go/pkg/mod
-          key:          ${{ runner.os }}-go-${{ matrix.golang}}-${{ env.json_cache-version_go }}-${{ hashFiles('**/go.sum') }}
-          restore-keys: ${{ runner.os }}-go-${{ matrix.golang}}-${{ env.json_cache-version_go }}-
+          key:          ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-${{ hashFiles('**/go.sum') }}
+          restore-keys: ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-
+
       - name: Avoid triggering make generate
         run: touch go/gen.sum
+
       - name: Fetch dependencies
         run: go mod download
+
       - name: Compile the doctor binary
         working-directory: go
-        run: go install ./cmd/berty-doctor
+        run: |
+          go install ./cmd/berty-doctor
+          asdf reshim golang # See: https://github.com/kennyp/asdf-golang/issues/18
+
       - name: Run doctor
         run: berty-doctor -v
+
       - name: Discord notification
         if: github.event_name == 'schedule' && failure()
         env:
