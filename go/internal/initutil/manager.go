@@ -70,6 +70,7 @@ type Manager struct {
 		FileFilters          string `json:"FileFilters,omitempty"`
 		RingFilters          string `json:"RingFilters,omitempty"`
 		RingSize             uint   `json:"RingSize,omitempty"`
+		TyberAutoAttach      string `json:"TyberAutoAttach,omitempty"`
 
 		zapLogger *zap.Logger
 		cleanup   func()
@@ -245,6 +246,7 @@ func New(ctx context.Context, opts *ManagerOpts) (*Manager, error) {
 	m.Logging.FileFilters = "debug+:bty*,-*.grpc,error+:*"
 	m.Logging.StderrFormat = "color"
 	m.Logging.RingSize = 10 // 10MB ring buffer
+	m.Logging.TyberAutoAttach = ""
 
 	// generate SessionID using uuidv4 to identify each run
 	m.Session.ID = tyber.NewSessionID()

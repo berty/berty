@@ -1,11 +1,12 @@
 package bertyaccount
 
 import (
+	"bufio"
 	"context"
+	"fmt"
+	"io"
 	"os"
 	"path/filepath"
-
-	"moul.io/u"
 
 	"berty.tech/berty/v2/go/internal/accountutils"
 	"berty.tech/berty/v2/go/internal/logutil"
@@ -14,12 +15,6 @@ import (
 )
 
 func (s *service) LogfileList(ctx context.Context, req *accounttypes.LogfileList_Request) (*accounttypes.LogfileList_Reply, error) {
-	if !u.DirExists(s.rootdir) {
-		if err := os.MkdirAll(s.rootdir, 0o700); err != nil {
-			return nil, errcode.TODO.Wrap(err)
-		}
-	}
-
 	accounts, err := s.ListAccounts(ctx, nil)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
@@ -52,4 +47,66 @@ func (s *service) LogfileList(ctx context.Context, req *accounttypes.LogfileList
 	}
 
 	return &ret, nil
+}
+
+func (s *service) StreamLogfile(req *accounttypes.StreamLogfile_Request, server accounttypes.AccountService_StreamLogfileServer) error {
+	if req.AccountID == "" {
+		return errcode.TODO.Wrap(fmt.Errorf("AccountID is required"))
+	}
+
+	accounts, err := s.ListAccounts(s.rootCtx, nil)
+	if err != nil {
+		return errcode.TODO.Wrap(err)
+	}
+
+	var account *accounttypes.AccountMetadata
+	{
+		for _, a := range accounts.Accounts {
+			if req.AccountID == a.GetAccountID() {
+				account = a
+				break
+			}
+		}
+
+		if account == nil {
+			return errcode.TODO.Wrap(fmt.Errorf("AccoundID is not found"))
+		}
+	}
+
+	logsDir := filepath.Join(accountutils.GetAccountDir(s.rootdir, account.AccountID), "logs")
+
+	logfilePath, err := logutil.CurrentLogfilePath(logsDir)
+	if err != nil {
+		return errcode.TODO.Wrap(err)
+	}
+
+	file, err := os.Open(logfilePath)
+	if err != nil {
+		return errcode.TODO.Wrap(err)
+	}
+	defer file.Close()
+
+	// send filename
+	if err := server.Send(&accounttypes.StreamLogfile_Reply{
+		FileName: logfilePath,
+	}); err != nil {
+		return errcode.TODO.Wrap(err)
+	}
+
+	// stream log file
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		err := server.Send(&accounttypes.StreamLogfile_Reply{
+			Line: scanner.Text(),
+		})
+
+		switch err {
+		case nil: // ok
+		case io.EOF:
+			return nil
+		default:
+			return errcode.TODO.Wrap(err)
+		}
+	}
+	return nil
 }

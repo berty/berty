@@ -189,6 +189,10 @@ export interface IAccountServiceMock {
 		beapi.account.GetGRPCListenerAddrs.IReply
 	>
 	LogfileList: UnaryMock<beapi.account.LogfileList.IRequest, beapi.account.LogfileList.IReply>
+	StreamLogfile: ResponseStreamMock<
+		beapi.account.StreamLogfile.IRequest,
+		beapi.account.StreamLogfile.IReply
+	>
 	GetUsername: UnaryMock<beapi.account.GetUsername.IRequest, beapi.account.GetUsername.IReply>
 	NetworkConfigSet: UnaryMock<
 		beapi.account.NetworkConfigSet.IRequest,

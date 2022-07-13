@@ -39,6 +39,9 @@ http:
  - selector: berty.account.v1.AccountService.LogfileList
    post: /berty.account.v1/AccountService/LogfileList
    body: "*"
+ - selector: berty.account.v1.AccountService.StreamLogfile
+   post: /berty.account.v1/AccountService/StreamLogfile
+   body: "*"
  - selector: berty.account.v1.AccountService.GetUsername
    post: /berty.account.v1/AccountService/GetUsername
    body: "*"

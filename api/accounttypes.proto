@@ -51,6 +51,9 @@ service AccountService {
   // LogfileList returns a list of logfiles that can be used with Tyber.
   rpc LogfileList (LogfileList.Request) returns (LogfileList.Reply);
 
+  // StreamLogfile stream the lastest log file for the given account
+  rpc StreamLogfile (StreamLogfile.Request) returns (stream StreamLogfile.Reply);
+
   // GetUsername returns the name of the device/user using Android/iOS/universal API
   rpc GetUsername(GetUsername.Request) returns (GetUsername.Reply);
 
@@ -260,6 +263,16 @@ message LogfileList {
       bool latest = 7;
       string errs = 8;
     }
+  }
+}
+
+message StreamLogfile {
+  message Request {
+    string account_id = 1 [(gogoproto.customname) = "AccountID"];
+  }
+  message Reply {
+    string line = 1;
+    string fileName = 2;
   }
 }
 

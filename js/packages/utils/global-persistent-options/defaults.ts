@@ -5,18 +5,18 @@ import {
 	GlobalPersistentOptionsKeys,
 } from '@berty/utils/global-persistent-options/types'
 
-let format = '-*'
+let tyberAddress = ''
 if (__DEV__) {
-	format = 'info+:bty*,-*.grpc,error+:*'
+	tyberAddress = Platform.OS === 'android' ? '10.0.2.2:4242' : '127.0.0.1:4242'
 }
 
 export const defaultGlobalPersistentOptions = (): GlobalPersistentOptions => {
 	return {
 		[GlobalPersistentOptionsKeys.LogFilters]: {
-			format: format,
+			format: __DEV__ ? 'debug+:bty*,-*.grpc,error+:*' : '-*',
 		},
 		[GlobalPersistentOptionsKeys.TyberHost]: {
-			address: Platform.OS === 'android' ? '10.0.2.2:4242' : '127.0.0.1:4242',
+			address: tyberAddress,
 		},
 	}
 }

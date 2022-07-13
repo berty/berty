@@ -126,6 +126,29 @@ func LogfileList(logDir string) ([]*Logfile, error) {
 	return logfiles, nil
 }
 
+func CurrentLogfilePath(target string) (string, error) {
+	filename := ""
+
+	switch {
+	case strings.HasSuffix(target, ".log"): // use the indicated 'path' as filename
+		filename = target
+	default: // find the latest log file in the 'path' directory following a pattern
+		logfileList, err := LogfileList(target)
+		if err != nil {
+			return "", err
+		}
+
+		for _, logfile := range logfileList {
+			if logfile.Latest {
+				filename = logfile.Path()
+				break
+			}
+		}
+	}
+
+	return filename, nil
+}
+
 func LogfileGC(logDir string, max int) error {
 	if !u.DirExists(logDir) {
 		return nil
