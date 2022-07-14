@@ -246,6 +246,7 @@
 			"header-left-button": "设备信息",
 			"header-middle-button": "生成伪数据",
 			"header-right-button": "重启守护进程",
+			"force-mock-button": "",
 			"simulate-button": "模拟流错误",
 			"simulate-js-error-button": "模拟 JavaScript 错误",
 			"system-info-button": "系统信息",
@@ -258,6 +259,7 @@
 				"name": "日志过滤器",
 				"bullet-point": "更改之后重新启动应用"
 			},
+			"export-logs-button": "",
 			"add-dev-conversations-button": "添加开发者会话",
 			"share-button": {
 				"title": "分享ID到Discord",
