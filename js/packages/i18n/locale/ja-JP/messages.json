@@ -246,6 +246,7 @@
 			"header-left-button": "端末情報",
 			"header-middle-button": "偽装データを生成する",
 			"header-right-button": "サービス／デーモンを再起動する",
+			"force-mock-button": "",
 			"simulate-button": "ストリームのエラーをシミュレーションする",
 			"simulate-js-error-button": "JavaScript のエラーをシミュレーションする",
 			"system-info-button": "システム情報",
@@ -258,6 +259,7 @@
 				"name": "ログのフィルター一覧",
 				"bullet-point": "このフィールドを変更した後、アプリを再起動します"
 			},
+			"export-logs-button": "",
 			"add-dev-conversations-button": "開発者の会話を追加する",
 			"share-button": {
 				"title": "Discord で ID を共有する",
