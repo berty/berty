@@ -246,6 +246,7 @@
 			"header-left-button": "Apparaat informatie",
 			"header-middle-button": "Nep gegevens genereren",
 			"header-right-button": "Daemon herstarten",
+			"force-mock-button": "",
 			"simulate-button": "Simuleer stream fout",
 			"simulate-js-error-button": "Simuleer JavaScript-fout",
 			"system-info-button": "Systeem informatie",
@@ -258,6 +259,7 @@
 				"name": "Log filters",
 				"bullet-point": "Herstart de app na het wijzigen van dit veld"
 			},
+			"export-logs-button": "",
 			"add-dev-conversations-button": "Voeg ontwikkelaar gesprekken toe",
 			"share-button": {
 				"title": "Deel ID op discord",
