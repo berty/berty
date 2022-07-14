@@ -246,6 +246,7 @@
 			"header-left-button": "Informace o zařízení",
 			"header-middle-button": "Vytvořit falešná data",
 			"header-right-button": "Restartovat démona",
+			"force-mock-button": "",
 			"simulate-button": "Simulovat chybu streamu",
 			"simulate-js-error-button": "",
 			"system-info-button": "Systémové informace",
@@ -258,6 +259,7 @@
 				"name": "",
 				"bullet-point": ""
 			},
+			"export-logs-button": "",
 			"add-dev-conversations-button": "Přidat vývojářské konverzace",
 			"share-button": {
 				"title": "Sdílet ID na Discordu",
