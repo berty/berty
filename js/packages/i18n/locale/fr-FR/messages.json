@@ -246,6 +246,7 @@
 			"header-left-button": "Infos sur l'appareil",
 			"header-middle-button": "Générer de fausses données",
 			"header-right-button": "Redémarrer le démon",
+			"force-mock-button": "",
 			"simulate-button": "Simuler une erreur de stream",
 			"simulate-js-error-button": "Simuler une erreur JavaScript",
 			"system-info-button": "Infos système",
@@ -258,6 +259,7 @@
 				"name": "Filtres de logs",
 				"bullet-point": "Redémarrer l'application après avoir modifié ce champ"
 			},
+			"export-logs-button": "",
 			"add-dev-conversations-button": "Ajouter conversations de dev",
 			"share-button": {
 				"title": "Partager l'ID sur Discord",
