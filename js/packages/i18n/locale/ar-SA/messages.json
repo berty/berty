@@ -246,6 +246,7 @@
 			"header-left-button": "معلومات الجهاز",
 			"header-middle-button": "توليد بيانات مزيفة",
 			"header-right-button": "إعادة تشغيل الرديمون",
+			"force-mock-button": "",
 			"simulate-button": "",
 			"simulate-js-error-button": "حاكِ خطأ في جافا سكريبت",
 			"system-info-button": "معلومات النظام",
@@ -258,6 +259,7 @@
 				"name": "مرشحات السجل",
 				"bullet-point": "أعد تشغيل التطبيق بعد تغيير هذا الحقل"
 			},
+			"export-logs-button": "",
 			"add-dev-conversations-button": "إضافة محادثات Dev",
 			"share-button": {
 				"title": "شارك المعرف على ديسكورد",
