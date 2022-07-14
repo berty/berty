@@ -246,6 +246,7 @@
 			"header-left-button": "Device infos",
 			"header-middle-button": "Generate fake data",
 			"header-right-button": "Restart daemon",
+			"force-mock-button": "",
 			"simulate-button": "Simulate stream error",
 			"simulate-js-error-button": "Simulate JavaScript error",
 			"system-info-button": "System info",
@@ -258,6 +259,7 @@
 				"name": "Log filters",
 				"bullet-point": "Restart app after changing this field"
 			},
+			"export-logs-button": "",
 			"add-dev-conversations-button": "Add dev conversations",
 			"share-button": {
 				"title": "Share ID on discord",
