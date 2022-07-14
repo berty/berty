@@ -246,6 +246,7 @@
 			"header-left-button": "Информация за устройства",
 			"header-middle-button": "Генерирай фалшиви данни",
 			"header-right-button": "Рестартирай daemon-а",
+			"force-mock-button": "",
 			"simulate-button": "Симулирай грешка в потока",
 			"simulate-js-error-button": "",
 			"system-info-button": "Система информация",
@@ -258,6 +259,7 @@
 				"name": "",
 				"bullet-point": ""
 			},
+			"export-logs-button": "",
 			"add-dev-conversations-button": "Добави програмистка грешка",
 			"share-button": {
 				"title": "Сподели ID в discord",
