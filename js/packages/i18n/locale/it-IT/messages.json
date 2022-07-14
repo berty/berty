@@ -246,6 +246,7 @@
 			"header-left-button": "Informazioni sul dispositivo",
 			"header-middle-button": "Genera dati falsi",
 			"header-right-button": "Riavvia il daemon",
+			"force-mock-button": "",
 			"simulate-button": "Simula errore stream",
 			"simulate-js-error-button": "Simula errore JavaScript",
 			"system-info-button": "Informazioni di sistema",
@@ -258,6 +259,7 @@
 				"name": "Filtri log",
 				"bullet-point": "Riavvia l'app dopo aver cambiato questo campo"
 			},
+			"export-logs-button": "",
 			"add-dev-conversations-button": "Aggiungi conversazioni dev",
 			"share-button": {
 				"title": "Condividi ID su Discord",
