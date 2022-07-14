@@ -246,6 +246,7 @@
 			"header-left-button": "Eszköz információk",
 			"header-middle-button": "Hamis információ készítése",
 			"header-right-button": "Daemon újraindítása",
+			"force-mock-button": "",
 			"simulate-button": "Stream hiba szimulálása",
 			"simulate-js-error-button": "JavaScript hiba szimulálása",
 			"system-info-button": "Rendszer információ",
@@ -258,6 +259,7 @@
 				"name": "Napló szűrők",
 				"bullet-point": "Módosítás után indítsa újra az alkalmazást"
 			},
+			"export-logs-button": "",
 			"add-dev-conversations-button": "Fejlesztői beszélgetés hozzáadása",
 			"share-button": {
 				"title": "ID megosztása Discordon",
