@@ -246,6 +246,7 @@
 			"header-left-button": "Информация об устройстве",
 			"header-middle-button": "Сгенерировать фальшивые данные",
 			"header-right-button": "Перезапустить демон",
+			"force-mock-button": "",
 			"simulate-button": "Симулировать ошибки в передаче данных",
 			"simulate-js-error-button": "Имитация ошибки JavaScript",
 			"system-info-button": "Информация о системе",
@@ -258,6 +259,7 @@
 				"name": "Фильтры логов",
 				"bullet-point": "Перезапустите приложение после изменения этого поля"
 			},
+			"export-logs-button": "",
 			"add-dev-conversations-button": "Добавить dev беседы",
 			"share-button": {
 				"title": "Поделиться ID на Discord",
