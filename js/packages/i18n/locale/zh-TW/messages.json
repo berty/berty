@@ -246,6 +246,7 @@
 			"header-left-button": "設備信息",
 			"header-middle-button": "生成偽數據",
 			"header-right-button": "重啟守護進程",
+			"force-mock-button": "",
 			"simulate-button": "模擬流錯誤",
 			"simulate-js-error-button": "模擬 JavaScript 錯誤",
 			"system-info-button": "系統信息",
@@ -258,6 +259,7 @@
 				"name": "日誌過濾器",
 				"bullet-point": "更改之後重新啟動應用"
 			},
+			"export-logs-button": "",
 			"add-dev-conversations-button": "添加開發者會話",
 			"share-button": {
 				"title": "分享ID到Discord",
