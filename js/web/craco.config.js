@@ -35,7 +35,6 @@ module.exports = {
 
 			webpackConfig.module.rules.push({
 				test: [
-					/node_modules\/react-native-reanimated.*\.(js|jsx)$/,
 					/node_modules\/react-native-qrcode-svg.*\.(js|jsx)$/,
 				],
 				use: {
