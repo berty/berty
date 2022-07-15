@@ -1,0 +1,10 @@
+---
+- name: Setup CI runners on M1 Macs
+  hosts: m1_macs
+
+  pre_tasks:
+    - import_tasks: utils/check_m1.yml
+
+  roles:
+    - actions_setup
+    - actions_daemon

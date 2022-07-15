@@ -1,0 +1,11 @@
+---
+- name: Stop CI runners on Macs
+  hosts: m1_macs
+
+  pre_tasks:
+    - import_tasks: utils/check_macos.yml
+
+  tasks:
+    - include_role:
+        name: actions_daemon
+        tasks_from: stop

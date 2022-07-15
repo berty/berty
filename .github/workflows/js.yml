@@ -20,51 +20,72 @@ on:
 jobs:
   build-and-lint:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node:
-          #- 10.x
-          #- 12.x
-          - 14.x
+    name: Build, lint and test JS
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v3
+
       - name: Load variables from file
         uses: antifree/json-to-variables@v1.0.1
         with:
           filename: .github/workflows/utils/variables.json
-      - name: Use Node.js ${{ matrix.node }}
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node }}
-      - name: Cache Node.js modules
+
+      - name: Setup asdf
+        uses: asdf-vm/actions/setup@v1
+
+      - name: Setup node
+        run: |
+          asdf plugin add nodejs
+          asdf install nodejs
+          echo "node_version=$(asdf current nodejs | xargs | cut -d ' ' -f 2)" >> $GITHUB_ENV
+
+      - name: Setup yarn
+        run: |
+          asdf plugin add yarn
+          asdf install yarn
+
+      - name: Cache node modules
         uses: actions/cache@v2.1.6
         with:
           path: js/node_modules
-          key: ${{ runner.OS }}-node-${{ matrix.node }}-${{ env.json_cache-version_node }}-${{ hashFiles('js/yarn.lock') }}
-          restore-keys: ${{ runner.OS }}-node-${{ matrix.node }}-${{ env.json_cache-version_node }}-
-      - name: "Fetch deps"
+          key:          ${{ runner.OS }}-node-${{ env.node_version }}-${{ env.json_cache-versions_node }}-${{ hashFiles('js/yarn.lock') }}
+          restore-keys: ${{ runner.OS }}-node-${{ env.node_version }}-${{ env.json_cache-versions_node }}-
+
+      - name: Cache web node modules
+        uses: actions/cache@v2.1.6
+        with:
+          path: js/web/node_modules
+          key:          ${{ runner.OS }}-nodeweb-${{ env.node_version }}-${{ env.json_cache-versions_nodeweb }}-${{ hashFiles('js/web/yarn.lock') }}
+          restore-keys: ${{ runner.OS }}-nodeweb-${{ env.node_version }}-${{ env.json_cache-versions_nodeweb }}-
+
+      - name: Fetch common node modules
         working-directory: js
         run: make node_modules
-        env:
-          CI: true
-      - name: "Run tests"
+
+      - name: Run tests
         working-directory: js
         run: make test
-        env:
-          CI: true
-      - name: "Run lint"
+
+      - name: Lint
         working-directory: js
         run: make lint
-        env:
-          CI: true
-      - name: Building web client
+
+      - name: Fetch web node modules
+        working-directory: js
+        run: make web/node_modules
+
+      - name: Build web client
         working-directory: js
         run: make web.build
+
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v2.1.0
+        env:
+          OS: ${{ runner.os }}
+          NODE: ${{ env.node_version }}
         with:
           file: ./js/coverage/coverage-final.json
           flags: js.unittests
-          env_vars: OS,NODE_VERSION
+          env_vars: OS,NODE
           name: codecov-umbrella
           fail_ci_if_error: false

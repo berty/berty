@@ -28,7 +28,8 @@ type watchdogsAdvertiser struct {
 }
 
 func newWatchdogsAdvertiser(ctx context.Context, l *zap.Logger, h host.Host, n *NetworkUpdate,
-	resetInterval time.Duration, gracePeriod time.Duration, drivers []*Driver) *watchdogsAdvertiser {
+	resetInterval time.Duration, gracePeriod time.Duration, drivers []*Driver,
+) *watchdogsAdvertiser {
 	return &watchdogsAdvertiser{
 		logger:        l,
 		drivers:       drivers,

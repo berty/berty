@@ -1,0 +1,14 @@
+- import_tasks: stop.yml
+
+- name: Get actions setup vars
+  include_vars: ../../actions_setup/vars/main.yml
+
+- name: Create launchd plist
+  become: true
+  template:
+    src: daemon.plist.j2
+    dest: "{{ launchd_daemon.path }}"
+    validate: plutil %s
+    force: true
+
+- import_tasks: start.yml

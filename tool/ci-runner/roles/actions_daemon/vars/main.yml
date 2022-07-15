@@ -1,0 +1,3 @@
+launchd_daemon:
+  name: com.github_actions.runner
+  path: "/Library/LaunchDaemons/com.github_actions.runner.plist"

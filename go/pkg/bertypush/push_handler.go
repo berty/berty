@@ -223,9 +223,7 @@ func (s *pushHandler) getServerPushPubKey(ctx context.Context) (*[cryptoutil.Key
 	}
 
 	out := [cryptoutil.KeySize]byte{}
-	for i, c := range server.ServerKey {
-		out[i] = c
-	}
+	copy(out[:], server.ServerKey)
 
 	return &out, nil
 }

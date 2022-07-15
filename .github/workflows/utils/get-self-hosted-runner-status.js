@@ -2,7 +2,7 @@
 const https = require("https");
 
 // Function that request Github API to get self-hosted runners status
-async function getDC4RunnersStatus(token) {
+async function getSelfHostedRunnersStatus(token) {
 	const options = {
 		hostname: "api.github.com",
 		path: "/orgs/berty/actions/runners",
@@ -45,9 +45,9 @@ async function getDC4RunnersStatus(token) {
 }
 
 // Return hom many self-hosted runners are online
-async function getDC4RunnersOnlineCount(token) {
+async function getSelfHostedRunnersOnlineCount(token) {
 	return new Promise((resolve, reject) => {
-		getDC4RunnersStatus(token)
+		getSelfHostedRunnersStatus(token)
 			.then((json) => {
 				const stat = JSON.parse(json);
 				const total = stat.runners.length;
@@ -70,9 +70,9 @@ async function getDC4RunnersOnlineCount(token) {
 }
 
 // Returns true if at least one self-hosted runner is available
-async function isDC4RunnerAvailable(token) {
+async function isSelfHostedRunnerAvailable(token) {
 	try {
-		const json = await getDC4RunnersStatus(token);
+		const json = await getSelfHostedRunnersStatus(token);
 		const stat = JSON.parse(json);
 
 		for (const runner of stat.runners) {
@@ -96,14 +96,14 @@ if (require.main === module) {
 	}
 
 	if (onlineCheck) {
-		getDC4RunnersOnlineCount(token)
+		getSelfHostedRunnersOnlineCount(token)
 			.then((count) => console.log(count))
 			.catch((err) => {
 				console.error(err);
 				process.exit(1);
 			});
 	} else {
-		getDC4RunnersStatus(token)
+		getSelfHostedRunnersStatus(token)
 			.then((json) => {
 				console.log(JSON.stringify(JSON.parse(json), undefined, 2));
 			})
@@ -116,6 +116,6 @@ if (require.main === module) {
 
 // Export module functions
 module.exports = {
-	getDC4RunnersStatus: getDC4RunnersStatus,
-	isDC4RunnerAvailable: isDC4RunnerAvailable,
+	getSelfHostedRunnersStatus: getSelfHostedRunnersStatus,
+	isSelfHostedRunnerAvailable: isSelfHostedRunnerAvailable,
 };

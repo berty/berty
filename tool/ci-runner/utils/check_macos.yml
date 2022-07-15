@@ -1,0 +1,4 @@
+- name: Check if host OS is macOS
+  assert:
+    that: ansible_distribution == 'MacOSX'
+    quiet: true

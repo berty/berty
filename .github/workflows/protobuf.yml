@@ -66,114 +66,141 @@ on:
       - "**/Podfile.lock"
 jobs:
   gen-go-and-docs:
+    name: Generate go protobuf and docs
     runs-on: ubuntu-latest
     container: bertytech/protoc:28
     steps:
-      - name: checkout
+      - name: Checkout
         uses: actions/checkout@v3
-      - name: unshallow
+
+      - name: Unshallow
         run: git fetch --prune --unshallow
-      - name: remove lock files
+
+      - name: Remove lock files
         run: find . -name gen.sum ! -path './js/*' -delete
-      - name: preload common deps
-        run: go mod download
-      - name: generating docs/
-        run: |
-          cd docs
-          make generate_local
-      - name: generating go/
-        run: |
-          cd go
-          make generate_local
-          cd ..
-          git checkout go.mod go.sum
-      - name: check diff
-        run: |
-          git status | cat
-          git diff -w | cat
-          git diff-index -w --quiet HEAD --
-      - name: install jq
-        run: |
-          wget https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64 -O /usr/local/bin/jq
-          chmod +x /usr/local/bin/jq
-      - name: prepare openapi documentation
-        run: cd docs && make openapi.prepare
-      - name: install apiary
-        run: apk --no-cache add ruby-dev g++ && gem install apiaryio
-      - name: upload API docs to apiary.io
-        env:
-          APIARY_API_KEY: "${{ secrets.APIARY_API_KEY }}"
-        if: ${{ env.APIARY_API_KEY != 0 }}
-        run: |
-          apiary publish --api-name=bertyprotocol  --path="docs/.tmp/openapi/bertyprotocol.swagger.json"  || true
-          apiary publish --api-name=bertymessenger --path="docs/.tmp/openapi/bertymessenger.swagger.json" || true
-      #- name: deploy protocol API documentation on bump.sh
-      #  uses: bump-sh/github-action@0.1
-      #  env:
-      #    BUMP_TOKEN: "${{ secrets.BUMP_TOKEN }}"
-      #  if: ${{ env.BUMP_TOKEN != 0 }}
-      #  with:
-      #    id: 6eb1bb1e-c65d-4b73-a8c4-0e545742f6db
-      #    token: ${{ secrets.BUMP_TOKEN }}
-      #    file: docs/.tmp/openapi/bertyprotocol.swagger.json
-      #- name: deploy messenger API documentation on bump.sh
-      #  uses: bump-sh/github-action@0.1
-      #  env:
-      #    BUMP_TOKEN: "${{ secrets.BUMP_TOKEN }}"
-      #  if: ${{ env.BUMP_TOKEN != 0 }}
-      #  with:
-      #    id: f3c48f1c-2b5b-4d3f-9ddb-40f6cf09b905
-      #    token: ${{ secrets.BUMP_TOKEN }}
-      #    file: docs/.tmp/openapi/bertymessenger.swagger.json
-  gen-js:
-    strategy:
-      matrix:
-        node: [14.x]
-    runs-on: ubuntu-latest
-    container: bertytech/protoc:28
-    steps:
-      - uses: actions/checkout@v3
 
       - name: Load variables from file
         uses: antifree/json-to-variables@v1.0.1
         with:
           filename: .github/workflows/utils/variables.json
 
-      - name: Use Node.js ${{ matrix.node }}
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node }}
+      - name: Setup asdf
+        uses: asdf-vm/actions/setup@v1
 
+      - name: Setup go
+        run: |
+          asdf plugin add golang
+          asdf install golang
+          echo "go_version=$(asdf current golang | xargs | cut -d ' ' -f 2)" >> $GITHUB_ENV
+
+      - name: Setup jq
+        run: |
+          asdf plugin add jq
+          asdf install jq
+
+      - name: Cache go modules
+        uses: actions/cache@v2.1.6
+        with:
+          path: ~/go/pkg/mod
+          key:          ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-${{ hashFiles('**/go.sum') }}
+          restore-keys: ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-
+
+      - name: Fetch go modules
+        run: go mod download
+
+      - name: Generate docs
+        working-directory: docs
+        run: make generate_local
+
+      - name: Generate go protobuf
+        working-directory: go
+        run: |
+          make generate_local
+          git checkout ../go.mod ../go.sum
+
+      - name: Check diff
+        run: |
+          git status | cat
+          git diff -w | cat
+          git diff-index -w --quiet HEAD --
+
+      - name: Prepare openapi documentation
+        working-directory: docs
+        run: make openapi.prepare
+
+      - name: Setup apiary
+        run: apk --no-cache add ruby-dev g++ && gem install apiaryio
+
+      - name: Upload API docs to apiary.io
+        env:
+          APIARY_API_KEY: "${{ secrets.APIARY_API_KEY }}"
+        if: ${{ env.APIARY_API_KEY != 0 }}
+        run: |
+          apiary publish --api-name=bertyprotocol  --path="docs/.tmp/openapi/bertyprotocol.swagger.json"  || true
+          apiary publish --api-name=bertymessenger --path="docs/.tmp/openapi/bertymessenger.swagger.json" || true
+
+  gen-js:
+    name: Generate js protobuf
+    runs-on: ubuntu-latest
+    container: bertytech/protoc:28
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Load variables from file
+        uses: antifree/json-to-variables@v1.0.1
+        with:
+          filename: .github/workflows/utils/variables.json
+
+      - name: Setup asdf
+        uses: asdf-vm/actions/setup@v1
+
+      - name: Setup node
+        run: |
+          asdf plugin add nodejs
+          asdf install nodejs
+          echo "node_version=$(asdf current nodejs | xargs | cut -d ' ' -f 2)" >> $GITHUB_ENV
+
+      - name: Setup go
+        run: |
+          asdf plugin add golang
+          asdf install golang
+          echo "go_version=$(asdf current golang | xargs | cut -d ' ' -f 2)" >> $GITHUB_ENV
+
+      - name: Cleanup js gen
       - run: make gen.clean
         working-directory: js
 
-      - name: Cache Node.js modules
+      - name: Cache node modules
         uses: actions/cache@v2.1.6
         with:
           path: js/node_modules
-          key:          ${{ runner.OS }}-genjs-${{ matrix.node}}-${{ env.json_cache-version_node }}-${{ hashFiles('js/yarn.lock') }}
-          restore-keys: ${{ runner.OS }}-genjs-${{ matrix.node}}-${{ env.json_cache-version_node }}-
+          key:          ${{ runner.OS }}-node-${{ env.node_version }}-${{ env.json_cache-versions_node }}-${{ hashFiles('js/yarn.lock') }}
+          restore-keys: ${{ runner.OS }}-node-${{ env.node_version }}-${{ env.json_cache-versions_node }}-
 
-      - name: "Fetch deps"
+      - name: Cache go modules
+        uses: actions/cache@v2.1.6
+        with:
+          path: ~/go/pkg/mod
+          key:          ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-${{ hashFiles('**/go.sum') }}
+          restore-keys: ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-
+
+      - name: Fetch node modules
         # FIXME: find a way of only downloading the required packages or install them directly in the bertytech/protoc image
-        run: make node_modules
         working-directory: js
-        env:
-          CI: true
+        run: make node_modules
 
-      - name: Preload Go vendors
+      - name: Fetch go modules
         run: go mod download
 
-      - run: make _gen.pbjs
+      - name: Generate js protobuf
         working-directory: js
+        run: |
+          make _gen.pbjs
+          make _write_gen_sum
+          rm -f gen.sum && make generate
 
-      - run: make _write_gen_sum
-        working-directory: js
-
-      - run: rm -f gen.sum && make generate
-        working-directory: js
-
-      - name: check diff
+      - name: Check diff
         run: |
           go mod tidy
           git status | cat

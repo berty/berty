@@ -1,0 +1,4 @@
+- name: Check if host architecture is ARM64
+  assert:
+    that: ansible_machine == 'arm64'
+    quiet: true

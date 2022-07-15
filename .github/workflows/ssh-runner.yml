@@ -11,13 +11,8 @@ on:
         - ubuntu-latest
         - macos-latest
         - windows-latest
-      node:
-        description: 'Setup NodeJS'
-        required: true
-        default: true
-        type: boolean
-      go:
-        description: 'Setup Golang'
+      mod:
+        description: 'Install Go/Node modules'
         required: true
         default: true
         type: boolean
@@ -26,10 +21,6 @@ jobs:
   setup-ssh:
     name: Setup runner and open SSH endpoint
     runs-on: ${{ github.event.inputs.os }}
-    strategy:
-      matrix:
-        golang: ["1.17.x"]
-        node: ["17.x"]
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -42,41 +33,49 @@ jobs:
         with:
           filename: .github/workflows/utils/variables.json
 
-      - name: Setup Go
-        if: github.event.inputs.go == 'true'
-        uses: actions/setup-go@v2
-        with:
-          go-version: ${{ matrix.golang }}
+      - name: Setup asdf
+        uses: asdf-vm/actions/setup@v1
 
-      - name: Cache Go modules
-        if: github.event.inputs.go == 'true'
+      - name: Setup go
+        run: |
+          asdf plugin add golang
+          asdf install golang
+          echo "go_version=$(asdf current golang | xargs | cut -d ' ' -f 2)" >> $GITHUB_ENV
+
+      - name: Setup node
+        run: |
+          asdf plugin add nodejs
+          asdf install nodejs
+          echo "node_version=$(asdf current nodejs | xargs | cut -d ' ' -f 2)" >> $GITHUB_ENV
+
+      - name: Setup yarn
+        run: |
+          asdf plugin add yarn
+          asdf install yarn
+
+      - name: Cache go modules
+        if: github.event.inputs.mod == 'true'
         uses: actions/cache@v2.1.6
         with:
           path: ~/go/pkg/mod
-          key: ${{ runner.os }}-go-${{ matrix.golang }}-${{ env.json_cache-version_go }}-${{ hashFiles('go/**/go.sum') }}
-          restore-keys: ${{ runner.os }}-go-${{ matrix.golang }}-${{ env.json_cache-version_go }}-
+          key:          ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-${{ hashFiles('go/**/go.sum') }}
+          restore-keys: ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-
 
-      - name: Install Go modules
-        if: github.event.inputs.go == 'true'
-        working-directory: go
-        run: go mod tidy
-
-      - name: Setup Node
-        if: github.event.inputs.node == 'true'
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node }}
-
-      - name: Cache Node modules
-        if: github.event.inputs.node == 'true'
+      - name: Cache node modules
+        if: github.event.inputs.mod == 'true'
         uses: actions/cache@v2.1.6
         with:
           path: js/node_modules
-          key: ${{ runner.OS }}-node-${{ matrix.node }}-${{ env.json_cache-version_node }}-${{ hashFiles('js/yarn.lock') }}
-          restore-keys: ${{ runner.OS }}-node-${{ matrix.node }}-${{ env.json_cache-version_node }}-
+          key:          ${{ runner.OS }}-node-${{ env.node_version }}-${{ env.json_cache-versions_node }}-${{ hashFiles('js/yarn.lock') }}
+          restore-keys: ${{ runner.OS }}-node-${{ env.node_version }}-${{ env.json_cache-versions_node }}-
 
-      - name: Install Node modules
-        if: github.event.inputs.node == 'true'
+      - name: Fetch go modules
+        if: github.event.inputs.mod == 'true'
+        working-directory: go
+        run: go mod tidy
+
+      - name: Fetch node modules
+        if: github.event.inputs.mod == 'true'
         working-directory: js
         run: make node_modules
 

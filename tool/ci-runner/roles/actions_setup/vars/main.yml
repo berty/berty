@@ -1,0 +1,7 @@
+runner_folder: "{{ ansible_facts.user_dir }}/actions-runner"
+runner_archive:
+  name: actions-runner-osx-arm64-2.294.0.tar.gz
+  url: https://github.com/actions/runner/releases/download/v2.294.0/actions-runner-osx-arm64-2.294.0.tar.gz
+  sha256sum: 48ee1d58c977d6af82a5b48449a73d23ef5068e75917469d0315f32d4f4d1fef
+config_url: https://github.com/berty
+config_token: "{{ lookup('env','GITHUB_RUNNER_TOKEN') }}"

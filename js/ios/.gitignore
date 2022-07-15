@@ -6,4 +6,5 @@ Frameworks
 main.jsbundle
 tor-deps
 .gomobile-cache
+.xcodegen-cache
 /pods-hashes.json
