@@ -402,7 +402,7 @@ func (m *Manager) resetRepoIdentityIfExpired(ctx context.Context, repo ipfs_repo
 		return nil, errcode.ErrIPFSSetupRepo.Wrap(err)
 	}
 
-	lastUpdate := time.Now()
+	var lastUpdate time.Time
 	lastUpdateKey := datastore.NewKey(ipfsIdentityLastUpdateKey)
 	lastUpdateRaw, err := rootDS.Get(ctx, lastUpdateKey)
 	switch err {
@@ -412,8 +412,8 @@ func (m *Manager) resetRepoIdentityIfExpired(ctx context.Context, repo ipfs_repo
 			return nil, errcode.ErrIPFSSetupRepo.Wrap(err)
 		}
 	case datastore.ErrNotFound:
-		// key does not exist, force recreation
-		lastUpdate = time.Time{}
+		// key does not exist, do nothing
+		break
 	default:
 		return nil, errcode.ErrIPFSSetupRepo.Wrap(err)
 	}

@@ -42,8 +42,8 @@ type Conn struct {
 }
 
 // newConn returns an inbound or outbound tpt.CapableConn upgraded from a Conn.
-func newConn(ctx context.Context, t *proximityTransport, remoteMa ma.Multiaddr,
-	remotePID peer.ID, inbound bool) (tpt.CapableConn, error) {
+func newConn(ctx context.Context, t *proximityTransport, remoteMa ma.Multiaddr, remotePID peer.ID, inbound bool,
+) (tpt.CapableConn, error) {
 	t.logger.Debug("newConn()", logutil.PrivateString("remoteMa", remoteMa.String()), zap.Bool("inbound", inbound))
 
 	// Creates a manet.Conn

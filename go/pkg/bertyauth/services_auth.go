@@ -79,12 +79,8 @@ func (r *AuthTokenIssuer) encryptSign(payload []byte) (string, error) {
 	}
 
 	encrypted := secretbox.Seal(nil, payload, nonce, r.secret)
-	nonceSlice := make([]byte, len(nonce))
-	for i, c := range nonce {
-		nonceSlice[i] = c
-	}
 
-	jws, err := r.signer.Sign(append(nonceSlice, encrypted...))
+	jws, err := r.signer.Sign(append(nonce[:], encrypted...))
 	if err != nil {
 		return "", err
 	}

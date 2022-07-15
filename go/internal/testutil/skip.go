@@ -95,7 +95,7 @@ func FilterStability(t *testing.T, stability Stability) {
 	}
 
 	if !enabledStability[stability] {
-		t.Skip(fmt.Sprintf("skip test with %q stability", stability))
+		t.Skipf("skip test with %q stability", stability)
 	}
 }
 
@@ -107,7 +107,7 @@ func FilterSpeed(t *testing.T, speed Speed) {
 	}
 
 	if !enabledSpeed[speed] {
-		t.Skip(fmt.Sprintf("skip test with %q speed", speed))
+		t.Skipf("skip test with %q speed", speed)
 	}
 }
 

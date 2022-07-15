@@ -14,13 +14,9 @@ type AuthSession struct {
 }
 
 func AuthSessionCodeChallenge(codeVerifier string) string {
-	codeChallengeArr := sha256.Sum256([]byte(codeVerifier))
-	codeChallenge := make([]byte, sha256.Size)
-	for i, c := range codeChallengeArr {
-		codeChallenge[i] = c
-	}
+	codeChallenge := sha256.Sum256([]byte(codeVerifier))
 
-	return base64.RawURLEncoding.EncodeToString(codeChallenge)
+	return base64.RawURLEncoding.EncodeToString(codeChallenge[:])
 }
 
 func AuthSessionCodeVerifierAndChallenge() (string, string, error) {
@@ -29,12 +25,7 @@ func AuthSessionCodeVerifierAndChallenge() (string, string, error) {
 		return "", "", err
 	}
 
-	codeVerifierBytes := make([]byte, cryptoutil.NonceSize)
-	for i, c := range verifierArr {
-		codeVerifierBytes[i] = c
-	}
-
-	verifier := base64.RawURLEncoding.EncodeToString(codeVerifierBytes)
+	verifier := base64.RawURLEncoding.EncodeToString(verifierArr[:])
 
 	return verifier, AuthSessionCodeChallenge(verifier), nil
 }
@@ -50,14 +41,9 @@ func NewAuthSession(baseURL string) (*AuthSession, string, error) {
 		return nil, "", err
 	}
 
-	stateBytes := make([]byte, cryptoutil.NonceSize)
-	for i, c := range state {
-		stateBytes[i] = c
-	}
-
 	auth := &AuthSession{
 		BaseURL:      baseURL,
-		State:        base64.RawURLEncoding.EncodeToString(stateBytes),
+		State:        base64.RawURLEncoding.EncodeToString(state[:]),
 		CodeVerifier: verifier,
 	}
 

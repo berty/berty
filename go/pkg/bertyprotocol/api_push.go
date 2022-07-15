@@ -35,9 +35,7 @@ func PushSealTokenForServer(receiver *protocoltypes.PushServiceReceiver, server 
 	}
 
 	serverKey := [cryptoutil.KeySize]byte{}
-	for i, c := range server.ServerKey {
-		serverKey[i] = c
-	}
+	copy(serverKey[:], server.ServerKey)
 
 	opaqueToken, err := receiver.Marshal()
 	if err != nil {

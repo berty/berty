@@ -138,9 +138,7 @@ func deriveNextKeys(ck []byte, salt []byte, groupID []byte) ([]byte, [32]byte, e
 		return nil, nextMsg, errcode.ErrCryptoKeyGeneration.Wrap(err)
 	}
 
-	for i, b := range nextMsgSlice {
-		nextMsg[i] = b
-	}
+	copy(nextMsg[:], nextMsgSlice)
 
 	return nextCK, nextMsg, nil
 }
