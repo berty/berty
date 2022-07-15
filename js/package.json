@@ -12,7 +12,6 @@
   },
   "dependencies": {
     "@eva-design/eva": "^2.1.0",
-    "@gorhom/bottom-sheet": "^4",
     "@improbable-eng/grpc-web": "^0.15.0",
     "@react-native-clipboard/clipboard": "^1.9.0",
     "@react-native-community/audio-toolkit": "^2.0.3",
@@ -64,7 +63,6 @@
     "react-native-permissions": "^3.1.0",
     "react-native-progress": "^5.0.0",
     "react-native-qrcode-svg": "6.1.1",
-    "react-native-reanimated": "https://github.com/aeddi/react-native-reanimated/releases/download/2.4.1/react-native-reanimated-2.4.1.tgz",
     "react-native-restart": "^0.0.22",
     "react-native-safe-area-context": "^3.3.2",
     "react-native-screens": "^3.9.0",

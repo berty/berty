@@ -7,7 +7,6 @@ import { useSelector } from 'react-redux'
 
 import { SecondaryButton, SmallInput } from '@berty/components'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
-import { useModal } from '@berty/contexts/modal.context'
 import { useStyles } from '@berty/contexts/styles'
 import { useAccount, useMessengerClient, useThemeColor, useUpdateAccount } from '@berty/hooks'
 import { selectSelectedAccount } from '@berty/redux/reducers/ui.reducer'
@@ -65,12 +64,15 @@ const initialState: State = {
 	saving: false,
 }
 
-export const EditMyProfile: React.FC = () => {
+interface EditProfileProps {
+	hide: () => void
+}
+
+export const EditMyProfile: React.FC<EditProfileProps> = ({ hide }) => {
 	const colors = useThemeColor()
 	const { t } = useTranslation()
 	const client = useMessengerClient()
 	const selectedAccount = useSelector(selectSelectedAccount)
-	const { hide } = useModal()
 	const updateAccount = useUpdateAccount()
 
 	const account = useAccount()
@@ -153,7 +155,7 @@ export const EditMyProfile: React.FC = () => {
 	const { padding, margin, row, flex, text } = useStyles()
 
 	return (
-		<View>
+		<View style={[padding.horizontal.big]}>
 			<UnifiedText style={[margin.small, margin.bottom.medium, text.size.huge, text.bold]}>
 				{t('settings.edit-profile.title')}
 			</UnifiedText>

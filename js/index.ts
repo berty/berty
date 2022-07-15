@@ -4,7 +4,6 @@
 
 import 'node-libs-react-native/globals'
 import 'react-native-gesture-handler'
-import 'react-native-reanimated'
 import 'string.fromcodepoint'
 
 import protobuf from 'protobufjs'

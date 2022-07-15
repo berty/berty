@@ -254,8 +254,6 @@ android {
     packagingOptions {
         // Make sure libjsc.so does not packed in APK
         exclude "**/libjsc.so"
-        // Fix for react-native-reanimated using v8
-        pickFirst "**/libv8executor.so"
     }
 }
 
