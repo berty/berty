@@ -83,6 +83,8 @@ jobs:
           fi
 
       - name: Setup asdf
+        # Disabled on self-hosted because it is already installed
+        if: ${{ !matrix.selfhosted }}
         uses: asdf-vm/actions/setup@v1
 
       - name: Setup go
