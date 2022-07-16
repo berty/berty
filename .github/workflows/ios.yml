@@ -63,6 +63,9 @@ jobs:
           if [ -d js/ios/.gomobile-cache ]; then
             mv js/ios/.gomobile-cache $RUNNER_TEMP/.gomobile-cache
           fi
+          if [ -d js/ios/.xcodegen-cache ]; then
+            mv js/ios/.xcodegen-cache $RUNNER_TEMP/.xcodegen-cache
+          fi
 
       - name: Checkout
         uses: actions/checkout@v3
@@ -80,6 +83,9 @@ jobs:
         run: |
           if [ -d $RUNNER_TEMP/.gomobile-cache ]; then
             mv $RUNNER_TEMP/.gomobile-cache js/ios/.gomobile-cache
+          fi
+          if [ -d $RUNNER_TEMP/.xcodegen-cache ]; then
+            mv $RUNNER_TEMP/.xcodegen-cache js/ios/.xcodegen-cache
           fi
 
       - name: Setup asdf

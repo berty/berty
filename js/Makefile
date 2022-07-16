@@ -26,6 +26,7 @@ minimum_ios_ver = 12.0
 minimum_android_ver = 21
 ios_gomobile_cache="$(PWD)/ios/.gomobile-cache"
 android_gomobile_cache="$(PWD)/android/.gomobile-cache"
+xcodegen_cache="$(PWD)/ios/.xcodegen-cache"
 
 ## if (PWD != Makefile directory) then exit
 
@@ -441,7 +442,7 @@ ios/Berty.xcodeproj: $(xcodegen_yml) $(call rwildcard,ios/Berty/Source,*) $(call
 	IOS_COMMIT=$(shell git rev-parse HEAD) \
 	xcodegen \
 		--spec ios/berty.yaml \
-		--cache-path ios/.xcodegen-cache \
+		--cache-path $(xcodegen_cache) \
 		--use-cache
 	touch $@
 
