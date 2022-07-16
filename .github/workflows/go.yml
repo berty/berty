@@ -282,13 +282,6 @@ jobs:
           GO_TEST_OPTS: -test.timeout=1200s -count=1 -race -cover -tags "fts5 sqlite sqlite_unlock_notify" -coverprofile=coverage.txt -covermode=atomic
         run: make go.unittest
 
-      - name: TEST TO REMOVE
-        env:
-          OS: ${{ runner.os }}
-          GOLANG: ${{ env.go_version }}
-        run: |
-          echo "OS: $OS, GOLANG: $GOLANG"
-
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v2.1.0
         env:
