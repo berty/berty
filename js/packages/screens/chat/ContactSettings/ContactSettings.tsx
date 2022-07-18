@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View, ScrollView, ActivityIndicator, StatusBar } from 'react-native'
 
+import beapi from '@berty/api'
 import { TabBar } from '@berty/components'
 import { ContactAvatar } from '@berty/components/avatars'
 import UserDevicesList from '@berty/components/chat/DeviceList'
@@ -16,7 +17,7 @@ const ContactSettingsHeaderContent: React.FC = ({ children }) => {
 	return <View style={[margin.top.big]}>{children}</View>
 }
 
-const InfoTab: React.FC<{ contactPk: string }> = ({ contactPk }) => {
+const InfoTab: React.FC<{ contactPk: string | null | undefined }> = ({ contactPk }) => {
 	const { t } = useTranslation()
 	const contact = useContact(contactPk)
 	const conv = useConversation(contact?.conversationPublicKey || '')
@@ -27,7 +28,10 @@ const InfoTab: React.FC<{ contactPk: string }> = ({ contactPk }) => {
 			<UnifiedText style={[text.light, padding.left.small]}>
 				{contact?.displayName || ''}
 			</UnifiedText>
-			<UserDevicesList conversationPk={contact?.conversationPublicKey || ''} memberPk={contactPk} />
+			<UserDevicesList
+				conversationPk={contact?.conversationPublicKey || ''}
+				memberPk={contactPk || ''}
+			/>
 			<UnifiedText style={[text.light, padding.left.small]}>
 				{t('chat.contact-settings.my-devices')}
 			</UnifiedText>
@@ -39,7 +43,7 @@ const InfoTab: React.FC<{ contactPk: string }> = ({ contactPk }) => {
 	)
 }
 
-const SelectedContent: React.FC<{ contentName: string; publicKey: string }> = ({
+const SelectedContent: React.FC<{ contentName: string; publicKey: string | null | undefined }> = ({
 	contentName,
 	publicKey,
 }) => {
@@ -53,7 +57,7 @@ const SelectedContent: React.FC<{ contentName: string; publicKey: string }> = ({
 	}
 }
 
-const ContactSettingsHeader: React.FC<{ contact: any }> = ({ contact }) => {
+const ContactSettingsHeader: React.FC<{ contact: beapi.messenger.IContact }> = ({ contact }) => {
 	const { border, padding, row, absolute, text } = useStyles()
 	const colors = useThemeColor()
 	const { t } = useTranslation()

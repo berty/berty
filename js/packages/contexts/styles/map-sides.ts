@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import Case from 'case'
 import mem from 'mem'
 import { StyleSheet } from 'react-native'
@@ -6,11 +5,11 @@ import { StyleSheet } from 'react-native'
 import { initialScaleSize } from './constant'
 import { SizesDeclaration, ScaleSizes } from './types'
 
-const mapSideSize = (type: string, side: string, value: number): any => ({
+const mapSideSize = (type: string, side: string, value: number) => ({
 	[Case.camel(`${type}_${side}`)]: value,
 })
 
-const mapSideSizes = (decl: SizesDeclaration<number>, type: string, side: string): any => ({
+const mapSideSizes = (decl: SizesDeclaration<number>, type: string, side: string) => ({
 	...StyleSheet.create({
 		tiny: mapSideSize(type, side, decl.tiny),
 		small: mapSideSize(type, side, decl.small),
@@ -22,7 +21,7 @@ const mapSideSizes = (decl: SizesDeclaration<number>, type: string, side: string
 	scale: mem((size: number) => mapSideSize(type, side, size)),
 })
 
-export const mapSides = (decl: SizesDeclaration<number>, type: string): any => ({
+export const mapSides = (decl: SizesDeclaration<number>, type: string) => ({
 	top: mapSideSizes(decl, type, 'top'),
 	bottom: mapSideSizes(decl, type, 'bottom'),
 	left: mapSideSizes(decl, type, 'left'),
@@ -35,7 +34,7 @@ export const mapSizes = (
 	decl: SizesDeclaration<number>,
 	map: (value: number) => {},
 	{ scaleSize }: { scaleSize: ScaleSizes['scaleSize'] },
-): any => {
+) => {
 	return {
 		...StyleSheet.create({
 			tiny: map(decl.tiny),
@@ -54,7 +53,7 @@ export const mapSizes = (
 export const mapBorderSidesSizes = (
 	{ scaleSize = initialScaleSize }: { scaleSize: ScaleSizes['scaleSize'] },
 	decl: SizesDeclaration<number>,
-): any => ({
+) => ({
 	...mapSizes(decl, borderWidth => ({ borderWidth }), { scaleSize }),
 	top: mapSizes(decl, borderTopWidth => ({ borderTopWidth }), { scaleSize }),
 	left: mapSizes(decl, borderLeftWidth => ({ borderLeftWidth }), { scaleSize }),

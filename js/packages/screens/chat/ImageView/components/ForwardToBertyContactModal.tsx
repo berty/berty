@@ -18,89 +18,94 @@ import {
 import { prepareMediaBytes } from '@berty/utils/messenger/media'
 import { Maybe } from '@berty/utils/type/maybe'
 
-const Item: React.FC<{ conversation: beapi.messenger.IConversation; image: any }> = React.memo(
-	({ conversation, image }) => {
-		const { border, padding, margin } = useStyles()
-		const colors = useThemeColor()
-		const playSound = usePlaySound()
-		const client = useMessengerClient()
-		const contact = useOneToOneContact(conversation.publicKey || '')
-		const [sending, setSending] = React.useState(false)
-		const { t } = useTranslation()
+const Item: React.FC<{
+	conversation: beapi.messenger.IConversation
+	image: beapi.messenger.IMedia & {
+		uri?: string
+	}
+}> = React.memo(({ conversation, image }) => {
+	const { border, padding, margin } = useStyles()
+	const colors = useThemeColor()
+	const playSound = usePlaySound()
+	const client = useMessengerClient()
+	const contact = useOneToOneContact(conversation.publicKey || '')
+	const [sending, setSending] = React.useState(false)
+	const { t } = useTranslation()
 
-		const prepareMediaAndSend = async (convPk: Maybe<string>) => {
-			if (!client) {
-				return
-			}
-			if (sending) {
-				return
-			}
-			setSending(true)
-
-			try {
-				const { filename, mimeType, displayName } = image
-				const mediaBytes = Buffer.from(image.uri.split('base64,')[1], 'base64')
-				const cid = await prepareMediaBytes(client, { filename, mimeType, displayName }, mediaBytes)
-
-				const buf = beapi.messenger.AppMessage.UserMessage.encode({ body: '' }).finish()
-				await client.interact({
-					conversationPublicKey: convPk,
-					type: beapi.messenger.AppMessage.Type.TypeUserMessage,
-					payload: buf,
-					mediaCids: [cid],
-				})
-				playSound('messageSent')
-			} catch (err) {
-				console.warn('error sending message:', err)
-			}
-			setSending(false)
+	const prepareMediaAndSend = async (convPk: Maybe<string>) => {
+		if (!client) {
+			return
 		}
+		if (sending) {
+			return
+		}
+		setSending(true)
 
-		const userDisplayName =
-			(conversation.type === beapi.messenger.Conversation.Type.MultiMemberType
-				? conversation.displayName
-				: contact?.displayName) || ''
-		return (
-			<View
-				key={conversation.publicKey}
-				style={[
-					padding.medium,
-					{
-						flexDirection: 'row',
-						alignItems: 'center',
-						justifyContent: 'space-between',
-					},
-				]}
-			>
-				<View style={{ flexDirection: 'row', alignItems: 'center' }}>
-					<ConversationAvatar size={40} publicKey={conversation.publicKey} />
-					<UnifiedText style={[margin.left.small]}>{userDisplayName || undefined}</UnifiedText>
-				</View>
-				<TouchableOpacity
-					style={[
-						{ backgroundColor: colors['background-header'] },
-						padding.vertical.small,
-						padding.horizontal.medium,
-						border.radius.small,
-					]}
-					disabled={sending}
-					onPress={() => prepareMediaAndSend(conversation.publicKey)}
-				>
-					{sending ? (
-						<ActivityIndicator color={colors['reverted-main-text']} />
-					) : (
-						<UnifiedText style={{ color: colors['reverted-main-text'] }}>
-							<>{t('chat.files.forward')}</>
-						</UnifiedText>
-					)}
-				</TouchableOpacity>
+		try {
+			const { filename, mimeType, displayName } = image
+			const mediaBytes = Buffer.from(image.uri ? image.uri.split('base64,')[1] : '', 'base64')
+			const cid = await prepareMediaBytes(client, { filename, mimeType, displayName }, mediaBytes)
+
+			const buf = beapi.messenger.AppMessage.UserMessage.encode({ body: '' }).finish()
+			await client.interact({
+				conversationPublicKey: convPk,
+				type: beapi.messenger.AppMessage.Type.TypeUserMessage,
+				payload: buf,
+				mediaCids: [cid],
+			})
+			playSound('messageSent')
+		} catch (err) {
+			console.warn('error sending message:', err)
+		}
+		setSending(false)
+	}
+
+	const userDisplayName =
+		(conversation.type === beapi.messenger.Conversation.Type.MultiMemberType
+			? conversation.displayName
+			: contact?.displayName) || ''
+	return (
+		<View
+			key={conversation.publicKey}
+			style={[
+				padding.medium,
+				{
+					flexDirection: 'row',
+					alignItems: 'center',
+					justifyContent: 'space-between',
+				},
+			]}
+		>
+			<View style={{ flexDirection: 'row', alignItems: 'center' }}>
+				<ConversationAvatar size={40} publicKey={conversation.publicKey} />
+				<UnifiedText style={[margin.left.small]}>{userDisplayName || undefined}</UnifiedText>
 			</View>
-		)
-	},
-)
+			<TouchableOpacity
+				style={[
+					{ backgroundColor: colors['background-header'] },
+					padding.vertical.small,
+					padding.horizontal.medium,
+					border.radius.small,
+				]}
+				disabled={sending}
+				onPress={() => prepareMediaAndSend(conversation.publicKey)}
+			>
+				{sending ? (
+					<ActivityIndicator color={colors['reverted-main-text']} />
+				) : (
+					<UnifiedText style={{ color: colors['reverted-main-text'] }}>
+						<>{t('chat.files.forward')}</>
+					</UnifiedText>
+				)}
+			</TouchableOpacity>
+		</View>
+	)
+})
 
 export const ForwardToBertyContactModal: React.FC<{
-	image: any
+	image: beapi.messenger.IMedia & {
+		uri?: string
+	}
 	onClose: () => void
 }> = ({ image, onClose }) => {
 	const { border } = useStyles()

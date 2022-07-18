@@ -43,7 +43,7 @@ export const Section: React.FC<{}> = ({ children }) => {
 export const ButtonSettingV2: React.FC<{
 	text: string
 	icon?: string | React.ReactNode
-	onPress?: (...args: any) => void
+	onPress?: () => void
 	accessibilityLabel?: string
 	toggle?: {
 		enable: boolean
@@ -193,7 +193,7 @@ type SettingButtonProps = {
 	// action
 	previewValue?: string
 	previewValueColor?: string
-	onPress?: (...args: any) => void
+	onPress?: () => void
 	disabled?: boolean
 	rightComponent?: ReactNode
 }

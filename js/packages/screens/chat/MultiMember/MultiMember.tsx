@@ -67,8 +67,8 @@ export const MultiMember: ScreenFC<'Chat.Group'> = ({ route: { params }, navigat
 	}
 
 	const lastInte = useLastConvInteraction(params?.convId || '')
-	const lastUpdate = conv?.lastUpdate || lastInte?.sentDate || conv?.createdDate || null
-	const [stickyDate, setStickyDate] = useState(lastUpdate || null)
+	const lastUpdate = conv?.lastUpdate || lastInte?.sentDate || conv?.createdDate
+	const [stickyDate, setStickyDate] = useState(lastUpdate)
 	const [showStickyDate, setShowStickyDate] = useState(false)
 
 	useFocusEffect(
@@ -173,7 +173,11 @@ export const MultiMember: ScreenFC<'Chat.Group'> = ({ route: { params }, navigat
 			<View style={[flex.tiny, { backgroundColor: colors['main-background'] }]}>
 				{Platform.OS === 'ios' ? (
 					<View style={[flex.tiny]}>
-						<MessageList id={params?.convId} {...{ setStickyDate, setShowStickyDate }} />
+						<MessageList
+							id={params?.convId}
+							setStickyDate={setStickyDate}
+							setShowStickyDate={setShowStickyDate}
+						/>
 						<ChatFooter
 							convPK={params?.convId}
 							placeholder={t('chat.multi-member.input-placeholder')}
@@ -186,7 +190,11 @@ export const MultiMember: ScreenFC<'Chat.Group'> = ({ route: { params }, navigat
 					</View>
 				) : (
 					<>
-						<MessageList id={params?.convId} {...{ setStickyDate, setShowStickyDate }} />
+						<MessageList
+							id={params?.convId}
+							setStickyDate={setStickyDate}
+							setShowStickyDate={setShowStickyDate}
+						/>
 						<ChatFooter
 							convPK={params?.convId}
 							placeholder={t('chat.multi-member.input-placeholder')}

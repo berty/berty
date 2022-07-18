@@ -119,7 +119,8 @@ export const OneToOne: ScreenFC<'Chat.OneToOne'> = React.memo(
 						<MessageList
 							id={params.convId}
 							scrollToMessage={params.scrollToMessage || '0'}
-							{...{ setStickyDate, setShowStickyDate }}
+							setStickyDate={setStickyDate}
+							setShowStickyDate={setShowStickyDate}
 						/>
 						<ChatFooter
 							convPK={params.convId}

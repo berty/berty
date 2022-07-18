@@ -33,8 +33,11 @@ let cache: { cid: string; prom: Promise<string> }[] = []
 
 export const getSource = async (
 	protocolClient: WelshProtocolServiceClient,
-	cid: string,
+	cid: string | null | undefined,
 ): Promise<string> => {
+	if (!cid) {
+		throw new Error('cid is null or undefined')
+	}
 	if (!cache.find(item => item.cid === cid)) {
 		if (cache.length >= 20) {
 			// evict

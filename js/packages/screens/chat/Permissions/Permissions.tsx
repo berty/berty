@@ -42,7 +42,7 @@ export const Permissions: ScreenFC<'Chat.Permissions'> = ({ route: { params }, n
 	const persistentOptions = useSelector(selectPersistentOptions)
 	const dispatch = useAppDispatch()
 	const selectedAccount = useSelector(selectSelectedAccount)
-	const { permissionType, permissionStatus, navigateNext, onComplete } = params
+	const { permissionType, permissionStatus, onComplete } = params
 	const { acquirePermission, refreshPermissions } = useContext(PermissionsContext)
 
 	const handleOnComplete = useCallback(
@@ -51,17 +51,14 @@ export const Permissions: ScreenFC<'Chat.Permissions'> = ({ route: { params }, n
 				navigation.goBack()
 				return
 			}
-			if (navigateNext) {
-				navigation.navigate(navigateNext)
-			} else {
-				navigation.goBack()
-			}
+
+			navigation.goBack()
 
 			if (typeof onComplete === 'function') {
 				await onComplete()
 			}
 		},
-		[navigateNext, navigation, onComplete],
+		[navigation, onComplete],
 	)
 
 	const handleRequestPermission = useCallback(async () => {

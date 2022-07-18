@@ -1,5 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
+import { HardcodedAvatarKey } from '@berty/components/avatars'
+
 // types
 
 export enum PersistentOptionsKeys {
@@ -23,7 +25,7 @@ export type Suggestion = {
 	// added | skipped | unread
 	state: string
 	pk: string
-	icon: string
+	icon: HardcodedAvatarKey
 }
 
 type PersistentOptionsSuggestions = {

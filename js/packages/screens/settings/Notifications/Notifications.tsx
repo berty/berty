@@ -5,7 +5,7 @@ import { Alert, ScrollView, View } from 'react-native'
 import { RESULTS } from 'react-native-permissions'
 import { useSelector } from 'react-redux'
 
-import { berty } from '@berty/api/root.pb'
+import beapi from '@berty/api'
 import { DividerItem, ItemSection, MenuToggle } from '@berty/components'
 import { ConversationAvatar } from '@berty/components/avatars'
 import { ButtonSettingV2 } from '@berty/components/shared-components'
@@ -49,7 +49,7 @@ const timeoutDisplay = (t: (_: String, __?: any) => string, timeout: number): st
 const MutedConversationButton = ({
 	conversation,
 }: {
-	conversation: berty.messenger.v1.IConversation
+	conversation: beapi.messenger.IConversation
 }) => {
 	const { t } = useTranslation()
 	const messengerClient = useMessengerClient()

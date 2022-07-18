@@ -10,9 +10,8 @@ import { PermissionType, getPermissions } from './permissions'
 export const checkPermissions = async (
 	permissionType: PermissionType,
 	options?: {
-		navigate: any
+		navigate: NavigationProp<ScreensParams>['navigate']
 		navigateToPermScreenOnProblem?: boolean
-		navigateNext?: string
 		onComplete?: (() => Promise<void>) | (() => void)
 		onSuccess?: (() => Promise<void>) | (() => void)
 	},
@@ -35,13 +34,8 @@ export const checkPermissions = async (
 		options.navigate('Chat.Permissions', {
 			permissionType,
 			permissionStatus: status,
-			navigateNext: options?.navigateNext,
 			onComplete: options?.onComplete,
 		})
-		return status
-	}
-	if (options?.navigateNext) {
-		options.navigate(options?.navigateNext, {})
 		return status
 	}
 

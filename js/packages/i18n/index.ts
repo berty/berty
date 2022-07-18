@@ -45,6 +45,6 @@ export const initI18N = () =>
 			returnEmptyString: false,
 		})
 		.then()
-		.catch((e: any) => {
+		.catch(e => {
 			console.log('failed to init i18n:', e)
 		})

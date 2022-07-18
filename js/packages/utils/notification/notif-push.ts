@@ -53,7 +53,6 @@ export const accountPushToggleState = async ({
 
 	const permissions = await getPermissions()
 	const hasKnownPushServer = account.serviceTokens?.some(t => t.serviceType === serviceTypes.Push)
-	console.log('HAS KNOW', account.serviceTokens)
 	if (
 		!hasKnownPushServer ||
 		numberifyLong(account.mutedUntil) > Date.now() ||

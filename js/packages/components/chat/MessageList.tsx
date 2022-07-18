@@ -1,3 +1,4 @@
+import Long from 'long'
 import moment from 'moment'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import {
@@ -13,6 +14,7 @@ import {
 import beapi from '@berty/api'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
+import { WelshMessengerServiceClient } from '@berty/grpc-bridge/welsh-clients.gen'
 import {
 	useConversationInteractions,
 	useConversationMembersDict,
@@ -66,14 +68,14 @@ const NoopComponent: React.FC = () => null
 const keyExtractor = (item: ParsedInteraction, index: number) => item.cid || `${index}`
 
 const updateStickyDate: (
-	setStickyDate: (date: number) => void,
+	setStickyDate: (date: Long.Long) => void,
 ) => (info: { viewableItems: ViewToken[] }) => void =
-	(setStickyDate: (date: number) => void) =>
+	(setStickyDate: (date: Long.Long) => void) =>
 	({ viewableItems }) => {
 		if (viewableItems && viewableItems.length) {
 			const minDate = viewableItems[viewableItems.length - 1]?.section?.title
 			if (minDate) {
-				setStickyDate(moment(minDate, 'DD/MM/YYYY').unix() * 1000)
+				setStickyDate(Long.fromInt(moment(minDate, 'DD/MM/YYYY').unix() * 1000))
 			}
 		}
 	}
@@ -92,7 +94,7 @@ const fetchMore = async ({
 	fetchingFrom: string | null
 	fetchedFirst: boolean
 	oldestMessage?: ParsedInteraction
-	client: any
+	client: WelshMessengerServiceClient | null
 	convPk: string
 }) => {
 	if (fetchingFrom !== null || fetchedFirst) {
@@ -120,8 +122,8 @@ const fetchMore = async ({
 export const MessageList: React.FC<{
 	id: string
 	scrollToMessage?: string
-	setStickyDate: any
-	setShowStickyDate: any
+	setStickyDate: (date: Long.Long) => void
+	setShowStickyDate: (value: boolean) => void
 }> = React.memo(({ id, scrollToMessage: _scrollToMessage, setStickyDate, setShowStickyDate }) => {
 	const { overflow, row, flex } = useStyles()
 	const { scaleHeight } = useAppDimensions()

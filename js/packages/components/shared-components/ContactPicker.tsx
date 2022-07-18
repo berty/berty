@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next'
 import { ScrollView, TouchableOpacity, View } from 'react-native'
 
 import beapi from '@berty/api'
-import { berty } from '@berty/api/root.pb'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
 import {
@@ -41,7 +40,7 @@ type ContactPickerProps = {
 
 type ContactItemProps = {
 	separateBar?: boolean
-	contact: berty.messenger.v1.IContact
+	contact: beapi.messenger.IContact
 	added: boolean
 }
 

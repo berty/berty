@@ -32,7 +32,7 @@ const useStylesOneToOne = () => {
 	}
 }
 
-const InfosContactState: React.FC<{ state: any }> = ({ state }) => {
+const InfosContactState: React.FC<{ state: string }> = ({ state }) => {
 	const { text, border, padding, margin } = useStyles()
 	const colors = useThemeColor()
 

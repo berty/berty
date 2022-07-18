@@ -13,11 +13,6 @@ export enum serviceTypes {
 	Push = 'psh',
 }
 
-export const serviceNames: { [key: string]: string } = {
-	[serviceTypes.Replication]: 'Replication service', // TODO: i18n
-	[serviceTypes.Push]: 'Push notifications', // TODO: i18n
-}
-
 const bertyOperatedServer = 'https://services-v1.berty.tech/'
 
 export const servicesAuthViaDefault = async (
@@ -27,7 +22,7 @@ export const servicesAuthViaDefault = async (
 	return servicesAuthViaURL(protocolClient, bertyOperatedServer, services)
 }
 
-export const servicesAuthViaURL = async (
+const servicesAuthViaURL = async (
 	protocolClient: ServiceClientType<beapi.protocol.ProtocolService> | null,
 	url: string,
 	services?: string[],

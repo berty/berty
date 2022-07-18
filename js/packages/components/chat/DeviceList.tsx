@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View } from 'react-native'
 
-import { berty } from '@berty/api/root.pb'
+import beapi from '@berty/api'
 import { ButtonDropDown } from '@berty/components/shared-components'
 import { useStyles } from '@berty/contexts/styles'
 import { useMessengerClient } from '@berty/hooks'
@@ -16,8 +16,8 @@ const UserDevicesList: React.FC<{ memberPk: string; conversationPk: string }> = 
 	const cutoff = 16
 	const { padding } = useStyles()
 	const { t } = useTranslation()
-	const [tokens, setTokens] = useState<berty.messenger.v1.ISharedPushToken[]>([])
-	const [devices, setDevices] = useState<berty.messenger.v1.IDevice[]>([])
+	const [tokens, setTokens] = useState<beapi.messenger.ISharedPushToken[]>([])
+	const [devices, setDevices] = useState<beapi.messenger.IDevice[]>([])
 	const messengerClient = useMessengerClient()
 
 	useEffect(() => {

@@ -119,15 +119,15 @@ export const SharedMedias: ScreenFC<'Chat.SharedMedias'> = ({
 
 		Promise.all(
 			pictures.map(async media => {
-				if (media.cid) {
-					try {
-						const src = await getSource(protocolClient, media.cid)
-						return { ...media, uri: `data:${media.mimeType};base64,${src}` }
-					} catch (e) {
-						return console.error('failed to get picture message image:', e)
-					}
+				try {
+					const src = await getSource(protocolClient, media.cid)
+
+					return { ...media, uri: `data:${media.mimeType};base64,${src}` }
+				} catch (e) {
+					console.error('failed to get picture message image:', e)
 				}
 			}),
+			// https://michaeluloth.com/filter-boolean -> filter(Boolean): a way to quickly remove all empty items from an array
 		).then(images => setImages(images.filter(Boolean)))
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [protocolClient, pictures.length])

@@ -146,7 +146,7 @@ const NavigationStack = createNativeStackNavigator<ScreensParams>()
 export const Navigation: React.FC = React.memo(() => {
 	const colors = useThemeColor()
 	const { scaleSize } = useAppDimensions()
-	const { t }: any = useTranslation()
+	const { t } = useTranslation()
 	const { dispatch } = useNavigation()
 
 	return (
@@ -168,43 +168,43 @@ export const Navigation: React.FC = React.memo(() => {
 		>
 			{/* Account */}
 			<NavigationStack.Screen
-				name={'Account.InitialLaunch'}
+				name='Account.InitialLaunch'
 				component={Components.Account.InitialLaunch}
 				options={{ headerShown: false }}
 			/>
 			<NavigationStack.Screen
-				name={'Account.Creating'}
+				name='Account.Creating'
 				component={Components.Account.CreatingAccount}
 				options={{ headerShown: false }}
 			/>
 			<NavigationStack.Screen
-				name={'Account.Opening'}
+				name='Account.Opening'
 				component={Components.Account.OpeningAccount}
 				options={{ headerShown: false }}
 			/>
 			<NavigationStack.Screen
-				name={'Account.Closing'}
+				name='Account.Closing'
 				component={Components.Account.ClosingAccount}
 				options={{ headerShown: false }}
 			/>
 			<NavigationStack.Screen
-				name={'Account.Importing'}
+				name='Account.Importing'
 				component={Components.Account.ImportingAccount}
 				options={{ headerShown: false }}
 			/>
 			<NavigationStack.Screen
-				name={'Account.Deleting'}
+				name='Account.Deleting'
 				component={Components.Account.DeletingAccount}
 				options={{ headerShown: false }}
 			/>
 			{/* OnBoarding */}
 			<NavigationStack.Screen
-				name={'Onboarding.GetStarted'}
+				name='Onboarding.GetStarted'
 				component={Components.Onboarding.GetStarted}
 				options={{ headerShown: false, title: t('onboarding.getstarted.screenTitle') }}
 			/>
 			<NavigationStack.Screen
-				name={'Onboarding.CreateAccount'}
+				name='Onboarding.CreateAccount'
 				component={Components.Onboarding.CreateAccount}
 				options={{
 					headerStyle: {
@@ -217,12 +217,12 @@ export const Navigation: React.FC = React.memo(() => {
 				}}
 			/>
 			<NavigationStack.Screen
-				name={'Onboarding.SetupFinished'}
+				name='Onboarding.SetupFinished'
 				component={Components.Onboarding.SetupFinished}
 				options={{ headerShown: false, title: t('onboarding.setup-finished.title') }}
 			/>
 			<NavigationStack.Screen
-				name={'Onboarding.CustomModeSettings'}
+				name='Onboarding.CustomModeSettings'
 				component={Components.Onboarding.CustomModeSettings}
 				options={{
 					headerStyle: {
@@ -235,7 +235,7 @@ export const Navigation: React.FC = React.memo(() => {
 				}}
 			/>
 			<NavigationStack.Screen
-				name={'Onboarding.WebViews'}
+				name='Onboarding.WebViews'
 				component={Components.Onboarding.WebViews}
 				options={{
 					title: t('onboarding.web-views.title'),
@@ -245,7 +245,7 @@ export const Navigation: React.FC = React.memo(() => {
 				}}
 			/>
 			<NavigationStack.Screen
-				name={'Onboarding.DefaultMode'}
+				name='Onboarding.DefaultMode'
 				component={Components.Onboarding.DefaultMode}
 				options={{
 					headerStyle: {
@@ -258,7 +258,7 @@ export const Navigation: React.FC = React.memo(() => {
 				}}
 			/>
 			<NavigationStack.Screen
-				name={'Onboarding.CustomMode'}
+				name='Onboarding.CustomMode'
 				component={Components.Onboarding.CustomMode}
 				options={{
 					headerStyle: {
@@ -272,7 +272,7 @@ export const Navigation: React.FC = React.memo(() => {
 			/>
 			{/* Chat */}
 			<NavigationStack.Screen
-				name={'Chat.Home'}
+				name='Chat.Home'
 				component={Components.Chat.Home}
 				options={{
 					headerShown: false,
@@ -280,24 +280,23 @@ export const Navigation: React.FC = React.memo(() => {
 				}}
 			/>
 			<NavigationStack.Screen
-				name={'Chat.ContactRequest'}
+				name='Chat.ContactRequest'
 				component={Components.Chat.ContactRequest}
 				options={{
 					headerShown: false,
-					title: t('main.home.requests.page-title'),
+					title: t('main.home.requests.title'),
 				}}
 			/>
 			<NavigationStack.Screen
-				name={'Chat.Permissions'}
+				name='Chat.Permissions'
 				component={Components.Chat.Permissions}
 				options={{
 					headerShown: false,
 					presentation: 'formSheet',
-					title: t('permission.request.title'),
 				}}
 			/>
 			<NavigationStack.Screen
-				name={'Chat.NotificationAndProximityPermissions'}
+				name='Chat.NotificationAndProximityPermissions'
 				component={Components.Chat.NotificationAndProximityPermissions}
 				options={{
 					headerShown: false,
@@ -305,7 +304,7 @@ export const Navigation: React.FC = React.memo(() => {
 				}}
 			/>
 			<NavigationStack.Screen
-				name={'Chat.Share'}
+				name='Chat.Share'
 				component={Components.Chat.ShareModal}
 				options={BackgroundHeaderScreenOptions({
 					title: t('main.home.title'),
@@ -314,7 +313,7 @@ export const Navigation: React.FC = React.memo(() => {
 				})}
 			/>
 			<NavigationStack.Screen
-				name={'Chat.CreateGroupAddMembers'}
+				name='Chat.CreateGroupAddMembers'
 				component={Components.Chat.CreateGroupAddMembers}
 				options={BackgroundHeaderScreenOptions({
 					title: t('main.home.create-group.title'),
@@ -332,7 +331,7 @@ export const Navigation: React.FC = React.memo(() => {
 				})}
 			/>
 			<NavigationStack.Screen
-				name={'Chat.CreateGroupFinalize'}
+				name='Chat.CreateGroupFinalize'
 				component={Components.Chat.CreateGroupFinalize}
 				options={BackgroundHeaderScreenOptions({
 					title: t('main.home.create-group.title'),
@@ -350,21 +349,21 @@ export const Navigation: React.FC = React.memo(() => {
 				})}
 			/>
 			<NavigationStack.Screen
-				name={'Chat.OneToOne'}
+				name='Chat.OneToOne'
 				component={Components.Chat.OneToOne}
 				options={ChatScreenOptions({
 					...CustomTitleStyle(),
 				})}
 			/>
 			<NavigationStack.Screen
-				name={'Chat.Group'}
+				name='Chat.Group'
 				component={Components.Chat.MultiMember}
 				options={ChatScreenOptions({
 					...ChatScreenOptions(),
 				})}
 			/>
 			<NavigationStack.Screen
-				name={'Chat.OneToOneSettings'}
+				name='Chat.OneToOneSettings'
 				component={Components.Chat.OneToOneSettings}
 				options={BackgroundHeaderScreenOptions({
 					title: t('chat.one-to-one-settings.title'),
@@ -373,7 +372,7 @@ export const Navigation: React.FC = React.memo(() => {
 				})}
 			/>
 			<NavigationStack.Screen
-				name={'Chat.ContactSettings'}
+				name='Chat.ContactSettings'
 				component={Components.Chat.ContactSettings}
 				options={BackgroundHeaderScreenOptions({
 					title: t('chat.one-to-one-settings.title'),
@@ -382,7 +381,7 @@ export const Navigation: React.FC = React.memo(() => {
 				})}
 			/>
 			<NavigationStack.Screen
-				name={'Group.MultiMemberSettings'}
+				name='Group.MultiMemberSettings'
 				component={Components.Chat.MultiMemberSettings}
 				options={BackgroundHeaderScreenOptions({
 					title: t('chat.multi-member-settings.title'),
@@ -391,7 +390,7 @@ export const Navigation: React.FC = React.memo(() => {
 				})}
 			/>
 			<NavigationStack.Screen
-				name={'Group.ChatSettingsMemberDetail'}
+				name='Group.ChatSettingsMemberDetail'
 				component={Components.Chat.ChatSettingsMemberDetail}
 				options={BackgroundHeaderScreenOptions({
 					title: t('chat.multi-member-settings.title'),
@@ -400,7 +399,7 @@ export const Navigation: React.FC = React.memo(() => {
 				})}
 			/>
 			<NavigationStack.Screen
-				name={'Chat.MultiMemberQR'}
+				name='Chat.MultiMemberQR'
 				component={Components.Chat.MultiMemberQR}
 				options={BackgroundHeaderScreenOptions({
 					title: t('chat.multi-member-qr.title'),
@@ -409,7 +408,7 @@ export const Navigation: React.FC = React.memo(() => {
 				})}
 			/>
 			<NavigationStack.Screen
-				name={'Chat.MultiMemberSettingsAddMembers'}
+				name='Chat.MultiMemberSettingsAddMembers'
 				component={Components.Chat.MultiMemberSettingsAddMembers}
 				options={BackgroundHeaderScreenOptions({
 					title: t('chat.add-members.members'),
@@ -418,7 +417,7 @@ export const Navigation: React.FC = React.memo(() => {
 				})}
 			/>
 			<NavigationStack.Screen
-				name={'Chat.ReplicateGroupSettings'}
+				name='Chat.ReplicateGroupSettings'
 				component={Components.Chat.ReplicateGroupSettings}
 				options={BackgroundHeaderScreenOptions({
 					title: t('chat.replicate-group-settings.title'),
@@ -427,7 +426,7 @@ export const Navigation: React.FC = React.memo(() => {
 				})}
 			/>
 			<NavigationStack.Screen
-				name={'Chat.SharedMedias'}
+				name='Chat.SharedMedias'
 				component={Components.Chat.SharedMedias}
 				options={BackgroundHeaderScreenOptions({
 					title: t('chat.shared-medias.title'),
@@ -437,7 +436,7 @@ export const Navigation: React.FC = React.memo(() => {
 			/>
 			{/* Settings */}
 			<NavigationStack.Screen
-				name={'Settings.Home'}
+				name='Settings.Home'
 				component={Components.Settings.SettingsHome}
 				options={{
 					headerStyle: {
@@ -450,7 +449,7 @@ export const Navigation: React.FC = React.memo(() => {
 				}}
 			/>
 			<NavigationStack.Screen
-				name={'Settings.Network'}
+				name='Settings.Network'
 				component={Components.Settings.Network}
 				options={{
 					headerStyle: {
@@ -463,7 +462,7 @@ export const Navigation: React.FC = React.memo(() => {
 				}}
 			/>
 			<NavigationStack.Screen
-				name={'Settings.Notifications'}
+				name='Settings.Notifications'
 				component={Components.Settings.Notifications}
 				options={{
 					headerStyle: {
@@ -474,7 +473,7 @@ export const Navigation: React.FC = React.memo(() => {
 				}}
 			/>
 			<NavigationStack.Screen
-				name={'Settings.ContactAndConversations'}
+				name='Settings.ContactAndConversations'
 				component={Components.Settings.ContactAndConversations}
 				options={{
 					headerStyle: {
@@ -485,7 +484,7 @@ export const Navigation: React.FC = React.memo(() => {
 				}}
 			/>
 			<NavigationStack.Screen
-				name={'Settings.Appearance'}
+				name='Settings.Appearance'
 				component={Components.Settings.Appearance}
 				options={{
 					headerStyle: {
@@ -496,7 +495,7 @@ export const Navigation: React.FC = React.memo(() => {
 				}}
 			/>
 			<NavigationStack.Screen
-				name={'Settings.ThemeEditor'}
+				name='Settings.ThemeEditor'
 				component={Components.Settings.ThemeEditor}
 				options={{
 					headerStyle: {
@@ -508,7 +507,7 @@ export const Navigation: React.FC = React.memo(() => {
 				}}
 			/>
 			<NavigationStack.Screen
-				name={'Settings.Accounts'}
+				name='Settings.Accounts'
 				component={Components.Settings.Accounts}
 				options={{
 					headerStyle: {
@@ -519,7 +518,7 @@ export const Navigation: React.FC = React.memo(() => {
 				}}
 			/>
 			<NavigationStack.Screen
-				name={'Settings.AboutBerty'}
+				name='Settings.AboutBerty'
 				component={Components.Settings.AboutBerty}
 				options={{
 					headerStyle: {
@@ -530,7 +529,7 @@ export const Navigation: React.FC = React.memo(() => {
 				}}
 			/>
 			<NavigationStack.Screen
-				name={'Settings.MyBertyId'}
+				name='Settings.MyBertyId'
 				component={Components.Settings.MyBertyId}
 				options={BackgroundHeaderScreenOptions({
 					title: t('settings.my-berty-ID.title'),
@@ -539,7 +538,7 @@ export const Navigation: React.FC = React.memo(() => {
 				})}
 			/>
 			<NavigationStack.Screen
-				name={'Settings.TermsOfUse'}
+				name='Settings.TermsOfUse'
 				component={Components.Settings.TermsOfUse}
 				options={BackgroundHeaderScreenOptions({
 					title: t('settings.about.terms-of-use'),
@@ -548,25 +547,7 @@ export const Navigation: React.FC = React.memo(() => {
 				})}
 			/>
 			<NavigationStack.Screen
-				name={'Settings.NetworkMap'}
-				component={Components.Settings.NetworkMap}
-				options={AltBackgroundHeaderScreenOptions({
-					title: t('settings.network-map.title'),
-					...CustomTitleStyle(),
-					presentation: 'formSheet',
-				})}
-			/>
-			<NavigationStack.Screen
-				name={'Settings.ServicesAuth'}
-				component={Components.Settings.ServicesAuth}
-				options={BackgroundHeaderScreenOptions({
-					title: t('settings.services-auth.title'),
-					...CustomTitleStyle(),
-					presentation: 'formSheet',
-				})}
-			/>
-			<NavigationStack.Screen
-				name={'Settings.DeleteAccount'}
+				name='Settings.DeleteAccount'
 				component={Components.Settings.DeleteAccount}
 				options={{
 					headerShown: false,
@@ -575,7 +556,7 @@ export const Navigation: React.FC = React.memo(() => {
 				}}
 			/>
 			<NavigationStack.Screen
-				name={'Settings.DevTools'}
+				name='Settings.DevTools'
 				component={Components.Settings.DevTools}
 				options={AltBackgroundHeaderScreenOptions({
 					title: t('settings.devtools.title'),
@@ -584,7 +565,7 @@ export const Navigation: React.FC = React.memo(() => {
 				})}
 			/>
 			<NavigationStack.Screen
-				name={'Settings.FakeData'}
+				name='Settings.FakeData'
 				component={Components.Settings.FakeData}
 				options={AltBackgroundHeaderScreenOptions({
 					title: t('settings.fake-data.title'),
@@ -594,7 +575,7 @@ export const Navigation: React.FC = React.memo(() => {
 			/>
 
 			<NavigationStack.Screen
-				name={'Settings.SystemInfo'}
+				name='Settings.SystemInfo'
 				component={Components.Settings.SystemInfo}
 				options={AltBackgroundHeaderScreenOptions({
 					title: t('settings.system-info.title'),
@@ -603,7 +584,7 @@ export const Navigation: React.FC = React.memo(() => {
 				})}
 			/>
 			<NavigationStack.Screen
-				name={'Settings.AddDevConversations'}
+				name='Settings.AddDevConversations'
 				component={Components.Settings.AddDevConversations}
 				options={AltBackgroundHeaderScreenOptions({
 					title: t('settings.add-dev-conversations.title'),
@@ -612,7 +593,7 @@ export const Navigation: React.FC = React.memo(() => {
 				})}
 			/>
 			<NavigationStack.Screen
-				name={'Settings.IpfsWebUI'}
+				name='Settings.IpfsWebUI'
 				component={Components.Settings.IpfsWebUI}
 				options={AltBackgroundHeaderScreenOptions({
 					title: t('settings.ipfs-webui.title'),
@@ -621,7 +602,7 @@ export const Navigation: React.FC = React.memo(() => {
 				})}
 			/>
 			<NavigationStack.Screen
-				name={'Settings.DevText'}
+				name='Settings.DevText'
 				component={Components.Settings.DevText}
 				options={AltBackgroundHeaderScreenOptions({
 					title: '',
@@ -629,16 +610,7 @@ export const Navigation: React.FC = React.memo(() => {
 				})}
 			/>
 			<NavigationStack.Screen
-				name={'Settings.BertyServices'}
-				component={Components.Settings.BertyServices}
-				options={{
-					headerShown: false,
-					presentation: 'formSheet',
-					title: t('settings.berty-services.title'),
-				}}
-			/>
-			<NavigationStack.Screen
-				name={'Settings.Roadmap'}
+				name='Settings.Roadmap'
 				component={Components.Settings.Roadmap}
 				options={BackgroundHeaderScreenOptions({
 					title: t('settings.roadmap.title'),
@@ -647,7 +619,7 @@ export const Navigation: React.FC = React.memo(() => {
 				})}
 			/>
 			<NavigationStack.Screen
-				name={'Settings.Faq'}
+				name='Settings.Faq'
 				component={Components.Settings.Faq}
 				options={BackgroundHeaderScreenOptions({
 					title: t('settings.faq.title'),
@@ -656,7 +628,7 @@ export const Navigation: React.FC = React.memo(() => {
 				})}
 			/>
 			<NavigationStack.Screen
-				name={'Settings.PrivacyPolicy'}
+				name='Settings.PrivacyPolicy'
 				component={Components.Settings.PrivacyPolicy}
 				options={BackgroundHeaderScreenOptions({
 					title: t('settings.privacy-policy.title'),
@@ -665,7 +637,7 @@ export const Navigation: React.FC = React.memo(() => {
 				})}
 			/>
 			<NavigationStack.Screen
-				name={'Chat.ManageDeepLink'}
+				name='Chat.ManageDeepLink'
 				component={Components.Chat.ManageDeepLink}
 				options={{
 					presentation: 'containedTransparentModal',
@@ -674,7 +646,7 @@ export const Navigation: React.FC = React.memo(() => {
 				}}
 			/>
 			<NavigationStack.Screen
-				name={'Modals.ImageView'}
+				name='Modals.ImageView'
 				component={Components.Chat.ImageView}
 				options={{
 					presentation: 'containedTransparentModal',
