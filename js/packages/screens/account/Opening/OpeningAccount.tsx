@@ -7,7 +7,6 @@ import { StatusBarPrimary } from '@berty/components/StatusBarPrimary'
 import { EventEmitterContext } from '@berty/contexts/eventEmitter.context'
 import { useAppDispatch, useAppSelector } from '@berty/hooks'
 import { ScreenFC, useNavigation } from '@berty/navigation'
-import { selectForceMock } from '@berty/redux/reducers/persistentOptions.reducer'
 import { selectStreamProgress } from '@berty/redux/reducers/ui.reducer'
 import { openAccount } from '@berty/utils/accounts'
 import { openClients } from '@berty/utils/messenger/clients'
@@ -25,7 +24,6 @@ export const OpeningAccount: ScreenFC<'Account.Opening'> = ({
 	const eventEmitter = useContext(EventEmitterContext)
 
 	const streamProgress = useAppSelector(selectStreamProgress)
-	const forceMock = useAppSelector(selectForceMock)
 
 	React.useEffect(() => {
 		const f = async () => {
@@ -33,14 +31,14 @@ export const OpeningAccount: ScreenFC<'Account.Opening'> = ({
 			await openAccount(selectedAccount, dispatch)
 
 			// opening messenger and protocol clients
-			await openClients(eventEmitter, dispatch, forceMock)
+			await openClients(eventEmitter, dispatch)
 
 			// call thunk function prepareAccount
 			dispatch(prepareAccount({ navigation, t, selectedAccount, isNewAccount }))
 		}
 
 		f()
-	}, [dispatch, eventEmitter, forceMock, isNewAccount, navigation, selectedAccount, t])
+	}, [dispatch, eventEmitter, isNewAccount, navigation, selectedAccount, t])
 
 	return (
 		<>

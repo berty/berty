@@ -3,11 +3,13 @@ export enum GlobalPersistentOptionsKeys {
 	DisplayName = 'displayName',
 	IsHidden = 'isHidden',
 	LogFilters = 'logFilters',
+	ForceMock = 'forceMock',
 }
 
 export type GlobalPersistentOptions = {
 	[GlobalPersistentOptionsKeys.LogFilters]: GlobalPersistentOptionsLogFilters
 	[GlobalPersistentOptionsKeys.TyberHost]: GlobalPersistentOptionsTyberHost
+	[GlobalPersistentOptionsKeys.ForceMock]: GlobalPersistentOptionsForceMock
 }
 
 type GlobalPersistentOptionsLogFilters = {
@@ -17,3 +19,5 @@ type GlobalPersistentOptionsLogFilters = {
 type GlobalPersistentOptionsTyberHost = {
 	address: string
 }
+
+type GlobalPersistentOptionsForceMock = boolean
