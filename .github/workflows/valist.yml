@@ -1,0 +1,28 @@
+name: Valist Publish
+on:
+  release:
+    types: [published]
+jobs:
+  valist-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: robinraju/release-downloader@v1.3
+        with:
+          repository: "berty/berty"
+          latest: true
+          tarBall: true
+          zipBall: true
+          fileName: "*"
+      - uses: valist-io/valist-github-action@v2.3.1
+        with:
+          private-key: ${{ secrets.VALIST_SIGNER }}
+          account: berty
+          project: berty
+          release: ${{ github.ref_name }}
+          path: '.'
+
+          install-name: 'berty'
+          install-darwin-amd64: './berty_darwin_amd64.tar.gz'
+          install-darwin-arm64: './berty_darwin_arm64.tar.gz'
+          install-linux-amd64: './berty_linux_amd64.tar.gz'
+          install-windows-amd64: './berty_windows_amd64.zip'
