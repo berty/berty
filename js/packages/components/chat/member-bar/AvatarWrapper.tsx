@@ -8,15 +8,16 @@ import { MemberBarItem } from './interfaces'
 
 export const AvatarWrapper: React.FC<{ member: MemberBarItem; convId: string; index: number }> =
 	props => {
+		console.log('MEMBER', props.member)
 		let backgroundColor = '#E35179'
 		if (
-			props.member.networkStatus.connectionStatus ===
+			props.member.networkStatus?.connectionStatus ===
 			beapi.protocol.GroupDeviceStatus.Type.TypePeerConnected
 		) {
 			backgroundColor = '#0FBE00'
 		}
 		if (
-			props.member.networkStatus.connectionStatus ===
+			props.member.networkStatus?.connectionStatus ===
 			beapi.protocol.GroupDeviceStatus.Type.TypePeerReconnecting
 		) {
 			backgroundColor = '#F9B70F'
