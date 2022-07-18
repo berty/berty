@@ -17,8 +17,10 @@ import { ProtocolServiceMock } from '@berty/mock-services/static/protocolService
 import { streamEventToAction as streamEventToReduxAction } from '@berty/redux/messengerActions'
 import { setClients, setStreamError, setClearClients } from '@berty/redux/reducers/ui.reducer'
 import { AppDispatch } from '@berty/redux/store'
+import { defaultGlobalPersistentOptions } from '@berty/utils/global-persistent-options/defaults'
+import { GlobalPersistentOptionsKeys } from '@berty/utils/global-persistent-options/types'
 
-import { accountClient } from '../accounts/accountClient'
+import { accountClient, storageGet } from '../accounts/accountClient'
 import { convertMAddr } from '../ipfs/convertMAddr'
 import { requestAndPersistPushToken } from '../notification/notif-push'
 
@@ -183,7 +185,17 @@ export const openClients = async (
 	messengerClient: WelshMessengerServiceClient
 	protocolClient: WelshProtocolServiceClient
 }> => {
-	const { messengerClient, protocolClient } = await createServicesClients(forceMock)
+	let finalForceMock = forceMock
+	try {
+		finalForceMock =
+			forceMock ||
+			JSON.parse(await storageGet(GlobalPersistentOptionsKeys.ForceMock)) ||
+			defaultGlobalPersistentOptions().forceMock
+	} catch (e) {
+		console.warn('Failed to get forceMock value:', e)
+	}
+
+	const { messengerClient, protocolClient } = await createServicesClients(finalForceMock)
 
 	// request push notifications token
 	if (Platform.OS === 'ios' || Platform.OS === 'android') {

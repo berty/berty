@@ -10,7 +10,6 @@ export enum PersistentOptionsKeys {
 	Configurations = 'configurations',
 	ProfileNotification = 'profileNotification',
 	DevMode = 'devMode',
-	ForceMock = 'forceMock',
 }
 
 type PersistentOptionsNotifications = {
@@ -58,8 +57,6 @@ type PersistentOptionsProfileNotification = {
 	[UpdatesProfileNotification]: number
 }
 
-type PersistentOptionsForceMock = boolean
-
 type PersistentOptionsUpdate =
 	| {
 			type: typeof PersistentOptionsKeys.Notifications
@@ -89,10 +86,6 @@ type PersistentOptionsUpdate =
 			type: typeof PersistentOptionsKeys.DevMode
 			payload: Partial<PersistentOptionsDevMode>
 	  }
-	| {
-			type: typeof PersistentOptionsKeys.ForceMock
-			payload: Partial<PersistentOptionsForceMock>
-	  }
 
 type PersistentOptions = {
 	[PersistentOptionsKeys.Notifications]: PersistentOptionsNotifications
@@ -102,7 +95,6 @@ type PersistentOptions = {
 	[PersistentOptionsKeys.Configurations]: PersistentOptionsConfigurations
 	[PersistentOptionsKeys.ProfileNotification]: PersistentOptionsProfileNotification
 	[PersistentOptionsKeys.DevMode]: PersistentOptionsDevMode
-	[PersistentOptionsKeys.ForceMock]: PersistentOptionsForceMock
 }
 
 const defaultPersistentOptions = (): PersistentOptions => {
@@ -140,7 +132,6 @@ const defaultPersistentOptions = (): PersistentOptions => {
 		[PersistentOptionsKeys.DevMode]: {
 			enable: false,
 		},
-		[PersistentOptionsKeys.ForceMock]: false,
 	}
 }
 
@@ -177,6 +168,5 @@ export const selectPersistentOptions = (state: LocalRootState) => selectSlice(st
 export const { setPersistentOption } = slice.actions
 
 export const selectDevMode = (state: LocalRootState) => selectSlice(state).devMode
-export const selectForceMock = (state: LocalRootState) => selectSlice(state).forceMock
 
 export default makeRoot(slice.reducer)

@@ -39,7 +39,6 @@ import { GoBridge } from '@berty/native-modules/GoBridge'
 import { ScreenFC, useNavigation } from '@berty/navigation'
 import {
 	PersistentOptionsKeys,
-	selectForceMock,
 	selectPersistentOptions,
 	setPersistentOption,
 } from '@berty/redux/reducers/persistentOptions.reducer'
@@ -352,8 +351,8 @@ const BodyDevTools: React.FC<{}> = withInAppNotification(({ showNotification }: 
 	const persistentOptions = useSelector(selectPersistentOptions)
 	const client = useMessengerClient()
 	const restart = useRestartAfterClosing()
-	const forceMock = useAppSelector(selectForceMock)
 	const selectedAccount = useAppSelector(selectSelectedAccount)
+	const [forceMock, setForceMock] = useState<boolean>(false)
 
 	const addTyberHost = useCallback(
 		(host: string, addresses: string[]) => {
@@ -404,14 +403,27 @@ const BodyDevTools: React.FC<{}> = withInAppNotification(({ showNotification }: 
 		}
 	}, [addTyberHost, client])
 
-	const handleForceMockToggle = useCallback(() => {
-		dispatch(
-			setPersistentOption({
-				type: PersistentOptionsKeys.ForceMock,
-				payload: forceMock ? false : true,
-			}),
-		)
-	}, [dispatch, forceMock])
+	// effect to get async storage forceMock value
+	useEffect(() => {
+		const f = async () => {
+			try {
+				const finalForceMock =
+					JSON.parse(await storageGet(GlobalPersistentOptionsKeys.ForceMock)) ||
+					defaultGlobalPersistentOptions().forceMock
+				setForceMock(finalForceMock)
+			} catch (e) {
+				console.warn('Failed to get forceMock value:', e)
+			}
+		}
+
+		f().then()
+	}, [])
+
+	const handleForceMockToggle = useCallback(async () => {
+		const updateForceMock = forceMock ? false : true
+		await storageSet(GlobalPersistentOptionsKeys.ForceMock, JSON.stringify(updateForceMock))
+		setForceMock(updateForceMock)
+	}, [forceMock])
 
 	return (
 		<View style={[padding.medium, flex.tiny, margin.bottom.small]}>

@@ -18,5 +18,6 @@ export const defaultGlobalPersistentOptions = (): GlobalPersistentOptions => {
 		[GlobalPersistentOptionsKeys.TyberHost]: {
 			address: tyberAddress,
 		},
+		[GlobalPersistentOptionsKeys.ForceMock]: false,
 	}
 }
