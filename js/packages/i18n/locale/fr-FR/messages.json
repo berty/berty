@@ -153,7 +153,6 @@
 			"title": "Paramètres",
 			"proximity-button": "Communication hors-ligne",
 			"notifications-button": "Notifications",
-			"contact-convs-button": "Contacts et conversations",
 			"appearance-button": "Apparence",
 			"accounts-button": "Comptes",
 			"network-button": "Réseau",
@@ -219,12 +218,6 @@
 			"cancel": "Annuler",
 			"name-input-placeholder": "Nom..."
 		},
-		"berty-services": {
-			"title": "Services Berty",
-			"desc": "L'activation des services Berty vous permettra de recevoir des notifications push via les serveurs de Berty Technologies et vous donnera accès à ses nœuds pour la réplication des conversations.",
-			"button": "Activer les services Berty",
-			"skip": "Ignorer pour le moment"
-		},
 		"delete-account": {
 			"title": "Supprimer le compte !",
 			"first-desc": "Êtes-vous sûr de vouloir supprimer votre compte ?",
@@ -246,6 +239,7 @@
 			"header-left-button": "Infos sur l'appareil",
 			"header-middle-button": "Générer de fausses données",
 			"header-right-button": "Redémarrer le démon",
+			"force-mock-button": "",
 			"simulate-button": "Simuler une erreur de stream",
 			"simulate-js-error-button": "Simuler une erreur JavaScript",
 			"system-info-button": "Infos système",
@@ -258,6 +252,7 @@
 				"name": "Filtres de logs",
 				"bullet-point": "Redémarrer l'application après avoir modifié ce champ"
 			},
+			"export-logs-button": "",
 			"add-dev-conversations-button": "Ajouter conversations de dev",
 			"share-button": {
 				"title": "Partager l'ID sur Discord",
@@ -498,7 +493,7 @@
 			"show-less": "Afficher moins"
 		},
 		"emojis": {
-			"matching": "Correspondance de smileys"
+			"matching": ""
 		}
 	},
 	"account": {
