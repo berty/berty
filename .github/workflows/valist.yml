@@ -1,9 +1,11 @@
 name: Valist Publish
 on:
-  release:
-    types: [published]
+  workflow_run:
+    workflows: [Release]
+    types: [completed]
 jobs:
   valist-publish:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     steps:
       - uses: robinraju/release-downloader@v1.3
