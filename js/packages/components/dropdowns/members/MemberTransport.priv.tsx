@@ -40,14 +40,17 @@ export const MemberTransport: React.FC<IMemberStatus & IMemberTransports & IMemb
 			case beapi.messenger.StreamEvent.PeerStatusConnected.Transport.WAN:
 				icon = 'transport-4g'
 				break
+			case beapi.messenger.StreamEvent.PeerStatusConnected.Transport.Unknown:
+				icon = ''
+				break
 		}
 	}
 
-	return (
+	return icon ? (
 		<View style={[styles.container]}>
 			<Icon pack='custom' name={icon} width={iconSize} height={iconSize} fill={iconColor} />
 		</View>
-	)
+	) : null
 }
 const containerSize = 28
 const styles = StyleSheet.create({
