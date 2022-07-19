@@ -1,36 +1,24 @@
 import { useHeaderHeight } from '@react-navigation/elements'
 import { useFocusEffect } from '@react-navigation/native'
-import { Icon } from '@ui-kitten/components'
 import React, { useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import { TouchableOpacity, View, Platform, TextInput, Keyboard } from 'react-native'
+import { TouchableOpacity, View, Platform, Keyboard } from 'react-native'
 import AndroidKeyboardAdjust from 'react-native-android-keyboard-adjust'
 
 import beapi from '@berty/api'
 import { MultiMemberAvatar } from '@berty/components/avatars'
-import { ChatDate } from '@berty/components/chat/ChatDate'
-import { ChatFooter } from '@berty/components/chat/footer/ChatFooter'
-import { MessageList } from '@berty/components/chat/MessageList'
-import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
 import {
 	useConversation,
-	useLastConvInteraction,
-	useMessengerClient,
 	useNotificationsInhibitor,
 	useReadEffect,
 	useThemeColor,
 } from '@berty/hooks'
 import { ScreenFC } from '@berty/navigation'
-import { pbDateToNum } from '@berty/utils/convert/time'
 import { IOSOnlyKeyboardAvoidingView } from '@berty/utils/react-native/keyboardAvoiding'
 
-//
-// MultiMember
-//
-
-// Styles
+import { HeaderTitle } from './components/HeaderTitle'
+import { MultiMemberContent } from './components/MultiMemberContent'
 
 const NT = beapi.messenger.StreamEvent.Notified.Type
 
@@ -38,38 +26,19 @@ export const MultiMember: ScreenFC<'Chat.Group'> = ({ route: { params }, navigat
 	useNotificationsInhibitor(notif => {
 		if (
 			notif.type === NT.TypeMessageReceived &&
-			(notif.payload as any)?.payload?.interaction?.conversationPublicKey === params?.convId
+			(notif.payload as any)?.payload?.interaction?.conversationPublicKey === params.convId
 		) {
 			return 'sound-only'
 		}
 		return false
 	})
-	const { flex, opacity, border, padding, text } = useStyles()
+	const { flex, opacity } = useStyles()
 	const { scaleSize } = useAppDimensions()
 	const colors = useThemeColor()
 	useReadEffect(params.convId, 1000)
-	const conv = useConversation(params?.convId)
-	const { t } = useTranslation()
-	const client = useMessengerClient()
+	const conv = useConversation(params.convId)
 
-	const [editValue, setEditValue] = useState(conv?.displayName || '')
-	const [isEdit, setIsEdit] = useState(false)
 	const [keyboardIsHidden, setKeyboardIsHidden] = useState(false)
-	const editDisplayName = async () => {
-		const buf = beapi.messenger.AppMessage.SetGroupInfo.encode({ displayName: editValue }).finish()
-		await client?.interact({
-			conversationPublicKey: conv?.publicKey,
-			type: beapi.messenger.AppMessage.Type.TypeSetGroupInfo,
-			payload: buf,
-			metadata: true,
-		})
-		setIsEdit(false)
-	}
-
-	const lastInte = useLastConvInteraction(params?.convId || '')
-	const lastUpdate = conv?.lastUpdate || lastInte?.sentDate || conv?.createdDate
-	const [stickyDate, setStickyDate] = useState(lastUpdate)
-	const [showStickyDate, setShowStickyDate] = useState(false)
 
 	useFocusEffect(
 		React.useCallback(() => {
@@ -93,56 +62,7 @@ export const MultiMember: ScreenFC<'Chat.Group'> = ({ route: { params }, navigat
 
 	React.useLayoutEffect(() => {
 		navigation.setOptions({
-			headerTitle: () => {
-				return isEdit ? (
-					<View
-						style={[
-							border.radius.small,
-							padding.horizontal.small,
-							{
-								width: '70%',
-								flexDirection: 'row',
-								alignItems: 'center',
-								justifyContent: 'space-between',
-								backgroundColor: colors['input-background'],
-							},
-						]}
-					>
-						<TextInput
-							style={[
-								text.align.center,
-								text.bold,
-								text.size.scale(20),
-								padding.vertical.small,
-								{ color: colors['main-text'] },
-							]}
-							autoFocus
-							onSubmitEditing={editDisplayName}
-							onBlur={() => {
-								setIsEdit(false)
-								setEditValue(conv?.displayName || '')
-							}}
-							value={editValue}
-							onChange={({ nativeEvent }) => setEditValue(nativeEvent.text)}
-							accessibilityLabel={editValue}
-						/>
-						<TouchableOpacity onPress={editDisplayName}>
-							<Icon
-								name='checkmark-outline'
-								height={25 * scaleSize}
-								width={25 * scaleSize}
-								fill={colors['secondary-text']}
-							/>
-						</TouchableOpacity>
-					</View>
-				) : (
-					<TouchableOpacity onLongPress={() => setIsEdit(true)}>
-						<UnifiedText numberOfLines={1} style={[text.align.center, text.size.large, text.bold]}>
-							{conv?.displayName || ''}
-						</UnifiedText>
-					</TouchableOpacity>
-				)
-			},
+			headerTitle: () => <HeaderTitle conv={conv} />,
 			title: (conv as any)?.fake ? `FAKE - ${conv?.displayName}` : conv?.displayName || '',
 			headerRight: () => (
 				<TouchableOpacity
@@ -163,7 +83,6 @@ export const MultiMember: ScreenFC<'Chat.Group'> = ({ route: { params }, navigat
 	if ((Platform.OS === 'android' && !keyboardIsHidden) || !params.convId || !params.convId.length) {
 		return null
 	}
-
 	return (
 		<IOSOnlyKeyboardAvoidingView
 			behavior='padding'
@@ -173,38 +92,10 @@ export const MultiMember: ScreenFC<'Chat.Group'> = ({ route: { params }, navigat
 			<View style={[flex.tiny, { backgroundColor: colors['main-background'] }]}>
 				{Platform.OS === 'ios' ? (
 					<View style={[flex.tiny]}>
-						<MessageList
-							id={params?.convId}
-							setStickyDate={setStickyDate}
-							setShowStickyDate={setShowStickyDate}
-						/>
-						<ChatFooter
-							convPK={params?.convId}
-							placeholder={t('chat.multi-member.input-placeholder')}
-						/>
-						{!!stickyDate && !!showStickyDate && (
-							<View style={{ position: 'absolute', top: 110, left: 0, right: 0 }}>
-								<ChatDate date={pbDateToNum(stickyDate)} />
-							</View>
-						)}
+						<MultiMemberContent conv={conv} convId={params.convId} />
 					</View>
 				) : (
-					<>
-						<MessageList
-							id={params?.convId}
-							setStickyDate={setStickyDate}
-							setShowStickyDate={setShowStickyDate}
-						/>
-						<ChatFooter
-							convPK={params?.convId}
-							placeholder={t('chat.multi-member.input-placeholder')}
-						/>
-						{!!stickyDate && !!showStickyDate && (
-							<View style={{ position: 'absolute', top: 110, left: 0, right: 0 }}>
-								<ChatDate date={pbDateToNum(stickyDate)} />
-							</View>
-						)}
-					</>
+					<MultiMemberContent conv={conv} convId={params.convId} />
 				)}
 			</View>
 		</IOSOnlyKeyboardAvoidingView>
