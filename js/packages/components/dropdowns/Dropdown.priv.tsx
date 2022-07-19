@@ -123,12 +123,7 @@ export const DropdownPriv = forwardRef(
 				</TouchableOpacity>
 
 				<Animated.ScrollView
-					style={[
-						{
-							maxHeight: animateHeight,
-						},
-						styles.scrollView,
-					]}
+					style={[styles.scrollView, { maxHeight: animateHeight }]}
 					nestedScrollEnabled
 					showsVerticalScrollIndicator={false}
 				>

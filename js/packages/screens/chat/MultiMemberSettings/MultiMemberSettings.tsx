@@ -147,12 +147,14 @@ const MultiMemberSettingsBody: React.FC<{
 	return (
 		<View style={[padding.medium]}>
 			<FloatingMenuItemWithPrimaryIcon
-				iconName='image-outline'
-				onPress={() => navigation.navigate('Chat.SharedMedias', { convPk: publicKey })}
+				pack='custom'
+				iconName='user-plus'
+				onPress={() =>
+					navigation.navigate('Chat.MultiMemberSettingsAddMembers', { convPK: publicKey })
+				}
 			>
-				{t('chat.multi-member-settings.media-button')}
+				{t('chat.multi-member-settings.add-member-button')}
 			</FloatingMenuItemWithPrimaryIcon>
-			{Platform.OS !== 'web' && <EnableNotificationsButton conversationPk={publicKey} />}
 			<View style={{ marginTop: 20 }}>
 				<MembersDropdown
 					items={members}
@@ -164,17 +166,17 @@ const MultiMemberSettingsBody: React.FC<{
 							displayName: member?.displayName || '',
 						})
 					}}
-					placeholder={`${t('chat.multi-member-settings.members-button.title')} (${membersCount})`}
+					placeholder={t('chat.multi-member-settings.members-button.title', {
+						count: membersCount,
+					})}
 				/>
 			</View>
+			{Platform.OS !== 'web' && <EnableNotificationsButton conversationPk={publicKey} />}
 			<FloatingMenuItemWithPrimaryIcon
-				pack='custom'
-				iconName='user-plus'
-				onPress={() =>
-					navigation.navigate('Chat.MultiMemberSettingsAddMembers', { convPK: publicKey })
-				}
+				iconName='image-outline'
+				onPress={() => navigation.navigate('Chat.SharedMedias', { convPk: publicKey })}
 			>
-				{t('chat.multi-member-settings.add-member-button')}
+				{t('chat.multi-member-settings.media-button')}
 			</FloatingMenuItemWithPrimaryIcon>
 			<FloatingMenuItemWithPrimaryIcon
 				iconName='attach-outline'

@@ -1,13 +1,17 @@
+import { pickBy } from 'lodash'
 import React from 'react'
 import { StyleSheet, TouchableOpacity, View } from 'react-native'
 
 import beapi from '@berty/api'
 import { useStyles } from '@berty/contexts/styles'
-import { useThemeColor } from '@berty/hooks'
+import { useAppDispatch, useThemeColor } from '@berty/hooks'
+import { PeerNetworkStatus, getPeerFromMemberPK } from '@berty/redux/reducers/messenger.reducer'
 
-import { MemberAvatar } from '../../avatars'
-import { UnifiedText } from '../../shared-components/UnifiedText'
 import { DropdownPriv } from '../Dropdown.priv'
+import { MemberAvatarWithStatus } from './MemberAvatarWithStatus.priv'
+import { MemberName } from './MemberName.priv'
+import { MembersDropdownHeader } from './MembersDropdownHeader.priv'
+import { MemberTransport } from './MemberTransport.priv'
 
 interface MembersDropdownProps {
 	items: beapi.messenger.IMember[]
@@ -18,9 +22,58 @@ interface MembersDropdownProps {
 	accessibilityLabel?: string
 }
 
+interface MemberItemProps {
+	onPress: () => void
+	item: beapi.messenger.IMember
+	convPK: string
+}
+
+const MemberItem: React.FC<MemberItemProps> = ({ onPress, convPK, item }) => {
+	const { padding } = useStyles()
+	const dispatch = useAppDispatch()
+	const [peer, setPeer] = React.useState<PeerNetworkStatus | null>(null)
+
+	React.useEffect(() => {
+		const f = async () => {
+			const peerFromMemberPK = await dispatch(
+				getPeerFromMemberPK({ memberPK: item.publicKey, convPK: item.conversationPublicKey }),
+			)
+			setPeer(peerFromMemberPK.payload as PeerNetworkStatus)
+		}
+
+		f()
+	}, [convPK, dispatch, item.publicKey, item.conversationPublicKey])
+
+	return (
+		peer && (
+			<TouchableOpacity onPress={onPress} style={[styles.item, padding.horizontal.medium]}>
+				<View style={[styles.content]}>
+					<MemberAvatarWithStatus
+						publicKey={item.publicKey}
+						convPK={convPK}
+						memberStatus={peer.connectionStatus}
+					/>
+					<MemberName displayName={item.displayName} />
+				</View>
+				<MemberTransport memberStatus={peer.connectionStatus} memberTransport={peer.transport} />
+			</TouchableOpacity>
+		)
+	)
+}
+
 export const MembersDropdown: React.FC<MembersDropdownProps> = props => {
-	const { padding, margin, border } = useStyles()
+	const { border } = useStyles()
 	const colors = useThemeColor()
+	const [value, setValue] = React.useState<string>('')
+
+	const lowSearchValue = value.toLowerCase()
+	const searchMembers = React.useMemo(
+		() =>
+			value.length
+				? pickBy(props.items, val => val.displayName?.toLowerCase().includes(lowSearchValue))
+				: props.items,
+		[lowSearchValue, props.items, value.length],
+	)
 
 	return (
 		<View
@@ -35,19 +88,16 @@ export const MembersDropdown: React.FC<MembersDropdownProps> = props => {
 				placeholder={props.placeholder}
 				accessibilityLabel={props.accessibilityLabel}
 			>
-				{props.items.map(item => (
-					<TouchableOpacity
-						onPress={() => props.onChangeItem(item)}
-						style={[styles.item, padding.horizontal.medium]}
+				<MembersDropdownHeader inputValue={value} setInputValue={setValue} />
+				{/* TODO: enable it when replication node is up */}
+				{/* <AddConversationBoosterButton /> */}
+				{Object.values(searchMembers).map(item => (
+					<MemberItem
 						key={item.publicKey}
-					>
-						<MemberAvatar
-							publicKey={item?.publicKey}
-							conversationPublicKey={props.publicKey}
-							size={25}
-						/>
-						<UnifiedText style={[margin.left.medium]}>{item.displayName ?? ''}</UnifiedText>
-					</TouchableOpacity>
+						onPress={() => props.onChangeItem(item)}
+						convPK={props.publicKey}
+						item={item}
+					/>
 				))}
 			</DropdownPriv>
 		</View>
@@ -68,5 +118,10 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		paddingVertical: 12,
 		flex: 1,
+		justifyContent: 'space-between',
+	},
+	content: {
+		flexDirection: 'row',
+		alignItems: 'center',
 	},
 })

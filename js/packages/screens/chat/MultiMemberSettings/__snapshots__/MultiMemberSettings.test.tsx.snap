@@ -293,10 +293,10 @@ exports[`Group.MultiMemberSettings renders correctly 1`] = `
                       }
                     }
                   >
-                    <RNSVGMock
-                      fill="#535AE4"
+                    <AssetMock
+                      color="#535AE4"
                       height={20}
-                      viewBox="0 0 24 24"
+                      style={Array []}
                       width={20}
                     />
                   </View>
@@ -326,7 +326,7 @@ exports[`Group.MultiMemberSettings renders correctly 1`] = `
                         ]
                       }
                     >
-                      chat.multi-member-settings.media-button
+                      chat.multi-member-settings.add-member-button
                     </Text>
                   </View>
                 </View>
@@ -348,6 +348,264 @@ exports[`Group.MultiMemberSettings renders correctly 1`] = `
                     width={20}
                   />
                 </View>
+              </View>
+            </View>
+            <View
+              style={
+                Object {
+                  "marginTop": 20,
+                }
+              }
+            >
+              <View
+                style={
+                  Array [
+                    Object {
+                      "borderColor": "#EDF1F7",
+                      "borderRadius": 14,
+                      "borderWidth": 1,
+                      "flex": 1,
+                    },
+                    Object {
+                      "shadowOffset": Object {
+                        "height": 1,
+                        "width": 0,
+                      },
+                      "shadowOpacity": 0.2,
+                      "shadowRadius": 2,
+                    },
+                    Object {
+                      "backgroundColor": "#FFFFFF",
+                      "shadowColor": "#000000",
+                    },
+                  ]
+                }
+              >
+                <View
+                  accessible={true}
+                  focusable={true}
+                  onClick={[Function]}
+                  onResponderGrant={[Function]}
+                  onResponderMove={[Function]}
+                  onResponderRelease={[Function]}
+                  onResponderTerminate={[Function]}
+                  onResponderTerminationRequest={[Function]}
+                  onStartShouldSetResponder={[Function]}
+                  style={
+                    Object {
+                      "alignItems": "center",
+                      "flexDirection": "row",
+                      "height": 48,
+                      "opacity": 1,
+                      "paddingHorizontal": 16,
+                    }
+                  }
+                >
+                  <View
+                    style={
+                      Object {
+                        "transform": Array [
+                          Object {
+                            "scale": 1,
+                          },
+                        ],
+                      }
+                    }
+                  >
+                    <AssetMock
+                      color="#535AE4"
+                      height={20}
+                      style={Array []}
+                      width={20}
+                    />
+                  </View>
+                  <View
+                    style={
+                      Object {
+                        "width": "80%",
+                      }
+                    }
+                  >
+                    <Text
+                      numberOfLines={1}
+                      style={
+                        Array [
+                          Object {
+                            "fontSize": 30,
+                          },
+                          Object {
+                            "color": "#383B62",
+                            "fontFamily": "Open Sans",
+                          },
+                          Array [
+                            Object {
+                              "marginLeft": 9,
+                            },
+                          ],
+                        ]
+                      }
+                    >
+                      chat.multi-member-settings.members-button.title
+                    </Text>
+                  </View>
+                  <View
+                    style={
+                      Object {
+                        "alignItems": "flex-end",
+                        "flex": 1,
+                      }
+                    }
+                  >
+                    <View
+                      style={
+                        Object {
+                          "transform": Array [
+                            Object {
+                              "rotate": "0deg",
+                            },
+                          ],
+                        }
+                      }
+                    >
+                      <View
+                        style={
+                          Object {
+                            "transform": Array [
+                              Object {
+                                "scale": 1,
+                              },
+                            ],
+                          }
+                        }
+                      >
+                        <RNSVGMock
+                          fill="#393C63"
+                          height={20}
+                          viewBox="0 0 24 24"
+                          width={20}
+                        />
+                      </View>
+                    </View>
+                  </View>
+                </View>
+                <RCTScrollView
+                  nestedScrollEnabled={true}
+                  scrollEventThrottle={0.0001}
+                  showsVerticalScrollIndicator={false}
+                  style={
+                    Object {
+                      "borderBottomLeftRadius": 14,
+                      "borderBottomRightRadius": 14,
+                      "maxHeight": 0,
+                    }
+                  }
+                >
+                  <View>
+                    <View
+                      style={
+                        Array [
+                          Object {
+                            "marginHorizontal": 16,
+                          },
+                        ]
+                      }
+                    >
+                      <View
+                        accessible={true}
+                        focusable={true}
+                        onClick={[Function]}
+                        onResponderGrant={[Function]}
+                        onResponderMove={[Function]}
+                        onResponderRelease={[Function]}
+                        onResponderTerminate={[Function]}
+                        onResponderTerminationRequest={[Function]}
+                        onStartShouldSetResponder={[Function]}
+                        style={
+                          Object {
+                            "alignItems": "center",
+                            "backgroundColor": "#F7F8FE",
+                            "borderRadius": 8,
+                            "flexDirection": "row",
+                            "height": 36,
+                            "justifyContent": "flex-start",
+                            "opacity": 1,
+                            "paddingHorizontal": 12,
+                          }
+                        }
+                      >
+                        <View
+                          style={
+                            Array [
+                              Object {
+                                "alignItems": "stretch",
+                                "flexDirection": "row",
+                                "justifyContent": "space-evenly",
+                              },
+                            ]
+                          }
+                        >
+                          <View
+                            style={
+                              Object {
+                                "transform": Array [
+                                  Object {
+                                    "scale": 1,
+                                  },
+                                ],
+                              }
+                            }
+                          >
+                            <RNSVGMock
+                              fill="#D0D0D6"
+                              height={20}
+                              viewBox="0 0 24 24"
+                              width={20}
+                            />
+                          </View>
+                        </View>
+                        <View
+                          style={
+                            Array [
+                              Object {
+                                "marginLeft": 9,
+                              },
+                              Object {
+                                "alignItems": "flex-start",
+                                "flex": 6,
+                                "flexDirection": "row",
+                              },
+                            ]
+                          }
+                        >
+                          <TextInput
+                            allowFontScaling={true}
+                            autoCapitalize="none"
+                            autoCorrect={false}
+                            iconName="search-outline"
+                            onChangeText={[Function]}
+                            placeholder="chat.multi-member-settings.members-dropdown.search-placeholder"
+                            placeholderTextColor="#D0D0D6"
+                            rejectResponderTermination={true}
+                            style={
+                              Array [
+                                Object {
+                                  "fontSize": 30,
+                                },
+                                Object {
+                                  "color": "#393C63",
+                                  "flex": 1,
+                                  "fontFamily": "Open Sans",
+                                },
+                              ]
+                            }
+                            underlineColorAndroid="transparent"
+                            value=""
+                          />
+                        </View>
+                      </View>
+                    </View>
+                  </View>
+                </RCTScrollView>
               </View>
             </View>
             <View
@@ -516,613 +774,6 @@ exports[`Group.MultiMemberSettings renders correctly 1`] = `
             </View>
             <View
               style={
-                Object {
-                  "marginTop": 20,
-                }
-              }
-            >
-              <View
-                style={
-                  Array [
-                    Object {
-                      "borderColor": "#EDF1F7",
-                      "borderRadius": 14,
-                      "borderWidth": 1,
-                      "flex": 1,
-                    },
-                    Object {
-                      "shadowOffset": Object {
-                        "height": 1,
-                        "width": 0,
-                      },
-                      "shadowOpacity": 0.2,
-                      "shadowRadius": 2,
-                    },
-                    Object {
-                      "backgroundColor": "#FFFFFF",
-                      "shadowColor": "#000000",
-                    },
-                  ]
-                }
-              >
-                <View
-                  accessible={true}
-                  focusable={true}
-                  onClick={[Function]}
-                  onResponderGrant={[Function]}
-                  onResponderMove={[Function]}
-                  onResponderRelease={[Function]}
-                  onResponderTerminate={[Function]}
-                  onResponderTerminationRequest={[Function]}
-                  onStartShouldSetResponder={[Function]}
-                  style={
-                    Object {
-                      "alignItems": "center",
-                      "flexDirection": "row",
-                      "height": 48,
-                      "opacity": 1,
-                      "paddingHorizontal": 16,
-                    }
-                  }
-                >
-                  <View
-                    style={
-                      Object {
-                        "transform": Array [
-                          Object {
-                            "scale": 1,
-                          },
-                        ],
-                      }
-                    }
-                  >
-                    <AssetMock
-                      color="#535AE4"
-                      height={20}
-                      style={Array []}
-                      width={20}
-                    />
-                  </View>
-                  <View
-                    style={
-                      Object {
-                        "width": "80%",
-                      }
-                    }
-                  >
-                    <Text
-                      numberOfLines={1}
-                      style={
-                        Array [
-                          Object {
-                            "fontSize": 30,
-                          },
-                          Object {
-                            "color": "#383B62",
-                            "fontFamily": "Open Sans",
-                          },
-                          Array [
-                            Object {
-                              "marginLeft": 9,
-                            },
-                          ],
-                        ]
-                      }
-                    >
-                      chat.multi-member-settings.members-button.title (4)
-                    </Text>
-                  </View>
-                  <View
-                    style={
-                      Object {
-                        "alignItems": "flex-end",
-                        "flex": 1,
-                      }
-                    }
-                  >
-                    <View
-                      style={
-                        Object {
-                          "transform": Array [
-                            Object {
-                              "rotate": "0deg",
-                            },
-                          ],
-                        }
-                      }
-                    >
-                      <View
-                        style={
-                          Object {
-                            "transform": Array [
-                              Object {
-                                "scale": 1,
-                              },
-                            ],
-                          }
-                        }
-                      >
-                        <RNSVGMock
-                          fill="#393C63"
-                          height={20}
-                          viewBox="0 0 24 24"
-                          width={20}
-                        />
-                      </View>
-                    </View>
-                  </View>
-                </View>
-                <RCTScrollView
-                  nestedScrollEnabled={true}
-                  scrollEventThrottle={0.0001}
-                  showsVerticalScrollIndicator={false}
-                  style={
-                    Object {
-                      "borderBottomLeftRadius": 14,
-                      "borderBottomRightRadius": 14,
-                      "maxHeight": 0,
-                    }
-                  }
-                >
-                  <View>
-                    <View
-                      accessible={true}
-                      focusable={true}
-                      onClick={[Function]}
-                      onResponderGrant={[Function]}
-                      onResponderMove={[Function]}
-                      onResponderRelease={[Function]}
-                      onResponderTerminate={[Function]}
-                      onResponderTerminationRequest={[Function]}
-                      onStartShouldSetResponder={[Function]}
-                      style={
-                        Object {
-                          "alignItems": "center",
-                          "borderTopColor": "#EDF1F7",
-                          "borderTopWidth": 1,
-                          "flex": 1,
-                          "flexDirection": "row",
-                          "opacity": 1,
-                          "paddingHorizontal": 16,
-                          "paddingVertical": 12,
-                        }
-                      }
-                    >
-                      <View
-                        style={
-                          Object {
-                            "zIndex": -1,
-                          }
-                        }
-                      >
-                        <View
-                          style={
-                            Array [
-                              undefined,
-                              Object {
-                                "alignItems": "center",
-                                "backgroundColor": "#FFFFFF",
-                                "borderRadius": 12.5,
-                                "height": 25,
-                                "justifyContent": "center",
-                                "width": 25,
-                              },
-                            ]
-                          }
-                        >
-                          <View
-                            style={
-                              Object {
-                                "alignItems": "center",
-                                "justifyContent": "center",
-                              }
-                            }
-                          >
-                            <View
-                              style={
-                                Array [
-                                  undefined,
-                                  Object {
-                                    "alignItems": "center",
-                                    "backgroundColor": "#4d1f82",
-                                    "borderRadius": 12.5,
-                                    "height": 25,
-                                    "justifyContent": "center",
-                                    "width": 25,
-                                  },
-                                ]
-                              }
-                            >
-                              <Text
-                                style={
-                                  Array [
-                                    Object {
-                                      "fontSize": 30,
-                                    },
-                                    Object {
-                                      "color": "#383B62",
-                                      "fontFamily": "Open Sans",
-                                    },
-                                    Object {
-                                      "color": "#FFFFFF",
-                                      "fontSize": 12.5,
-                                      "includeFontPadding": false,
-                                    },
-                                  ]
-                                }
-                              >
-                                A
-                              </Text>
-                            </View>
-                          </View>
-                        </View>
-                      </View>
-                      <Text
-                        style={
-                          Array [
-                            Object {
-                              "fontSize": 30,
-                            },
-                            Object {
-                              "color": "#383B62",
-                              "fontFamily": "Open Sans",
-                            },
-                            Array [
-                              Object {
-                                "marginLeft": 16,
-                              },
-                            ],
-                          ]
-                        }
-                      >
-                        Alice
-                      </Text>
-                    </View>
-                    <View
-                      accessible={true}
-                      focusable={true}
-                      onClick={[Function]}
-                      onResponderGrant={[Function]}
-                      onResponderMove={[Function]}
-                      onResponderRelease={[Function]}
-                      onResponderTerminate={[Function]}
-                      onResponderTerminationRequest={[Function]}
-                      onStartShouldSetResponder={[Function]}
-                      style={
-                        Object {
-                          "alignItems": "center",
-                          "borderTopColor": "#EDF1F7",
-                          "borderTopWidth": 1,
-                          "flex": 1,
-                          "flexDirection": "row",
-                          "opacity": 1,
-                          "paddingHorizontal": 16,
-                          "paddingVertical": 12,
-                        }
-                      }
-                    >
-                      <View
-                        style={
-                          Object {
-                            "zIndex": -1,
-                          }
-                        }
-                      >
-                        <View
-                          style={
-                            Array [
-                              undefined,
-                              Object {
-                                "alignItems": "center",
-                                "backgroundColor": "#FFFFFF",
-                                "borderRadius": 12.5,
-                                "height": 25,
-                                "justifyContent": "center",
-                                "width": 25,
-                              },
-                            ]
-                          }
-                        >
-                          <View
-                            style={
-                              Object {
-                                "alignItems": "center",
-                                "justifyContent": "center",
-                              }
-                            }
-                          >
-                            <View
-                              style={
-                                Array [
-                                  undefined,
-                                  Object {
-                                    "alignItems": "center",
-                                    "backgroundColor": "#d9ad3c",
-                                    "borderRadius": 12.5,
-                                    "height": 25,
-                                    "justifyContent": "center",
-                                    "width": 25,
-                                  },
-                                ]
-                              }
-                            >
-                              <Text
-                                style={
-                                  Array [
-                                    Object {
-                                      "fontSize": 30,
-                                    },
-                                    Object {
-                                      "color": "#383B62",
-                                      "fontFamily": "Open Sans",
-                                    },
-                                    Object {
-                                      "color": "#FFFFFF",
-                                      "fontSize": 12.5,
-                                      "includeFontPadding": false,
-                                    },
-                                  ]
-                                }
-                              >
-                                J
-                              </Text>
-                            </View>
-                          </View>
-                        </View>
-                      </View>
-                      <Text
-                        style={
-                          Array [
-                            Object {
-                              "fontSize": 30,
-                            },
-                            Object {
-                              "color": "#383B62",
-                              "fontFamily": "Open Sans",
-                            },
-                            Array [
-                              Object {
-                                "marginLeft": 16,
-                              },
-                            ],
-                          ]
-                        }
-                      >
-                        Jeanne Leffler
-                      </Text>
-                    </View>
-                    <View
-                      accessible={true}
-                      focusable={true}
-                      onClick={[Function]}
-                      onResponderGrant={[Function]}
-                      onResponderMove={[Function]}
-                      onResponderRelease={[Function]}
-                      onResponderTerminate={[Function]}
-                      onResponderTerminationRequest={[Function]}
-                      onStartShouldSetResponder={[Function]}
-                      style={
-                        Object {
-                          "alignItems": "center",
-                          "borderTopColor": "#EDF1F7",
-                          "borderTopWidth": 1,
-                          "flex": 1,
-                          "flexDirection": "row",
-                          "opacity": 1,
-                          "paddingHorizontal": 16,
-                          "paddingVertical": 12,
-                        }
-                      }
-                    >
-                      <View
-                        style={
-                          Object {
-                            "zIndex": -1,
-                          }
-                        }
-                      >
-                        <View
-                          style={
-                            Array [
-                              undefined,
-                              Object {
-                                "alignItems": "center",
-                                "backgroundColor": "#FFFFFF",
-                                "borderRadius": 12.5,
-                                "height": 25,
-                                "justifyContent": "center",
-                                "width": 25,
-                              },
-                            ]
-                          }
-                        >
-                          <View
-                            style={
-                              Object {
-                                "alignItems": "center",
-                                "justifyContent": "center",
-                              }
-                            }
-                          >
-                            <View
-                              style={
-                                Array [
-                                  undefined,
-                                  Object {
-                                    "alignItems": "center",
-                                    "backgroundColor": "#87bb6a",
-                                    "borderRadius": 12.5,
-                                    "height": 25,
-                                    "justifyContent": "center",
-                                    "width": 25,
-                                  },
-                                ]
-                              }
-                            >
-                              <Text
-                                style={
-                                  Array [
-                                    Object {
-                                      "fontSize": 30,
-                                    },
-                                    Object {
-                                      "color": "#383B62",
-                                      "fontFamily": "Open Sans",
-                                    },
-                                    Object {
-                                      "color": "#FFFFFF",
-                                      "fontSize": 12.5,
-                                      "includeFontPadding": false,
-                                    },
-                                  ]
-                                }
-                              >
-                                P
-                              </Text>
-                            </View>
-                          </View>
-                        </View>
-                      </View>
-                      <Text
-                        style={
-                          Array [
-                            Object {
-                              "fontSize": 30,
-                            },
-                            Object {
-                              "color": "#383B62",
-                              "fontFamily": "Open Sans",
-                            },
-                            Array [
-                              Object {
-                                "marginLeft": 16,
-                              },
-                            ],
-                          ]
-                        }
-                      >
-                        Phil Padberg
-                      </Text>
-                    </View>
-                    <View
-                      accessible={true}
-                      focusable={true}
-                      onClick={[Function]}
-                      onResponderGrant={[Function]}
-                      onResponderMove={[Function]}
-                      onResponderRelease={[Function]}
-                      onResponderTerminate={[Function]}
-                      onResponderTerminationRequest={[Function]}
-                      onStartShouldSetResponder={[Function]}
-                      style={
-                        Object {
-                          "alignItems": "center",
-                          "borderTopColor": "#EDF1F7",
-                          "borderTopWidth": 1,
-                          "flex": 1,
-                          "flexDirection": "row",
-                          "opacity": 1,
-                          "paddingHorizontal": 16,
-                          "paddingVertical": 12,
-                        }
-                      }
-                    >
-                      <View
-                        style={
-                          Object {
-                            "zIndex": -1,
-                          }
-                        }
-                      >
-                        <View
-                          style={
-                            Array [
-                              undefined,
-                              Object {
-                                "alignItems": "center",
-                                "backgroundColor": "#FFFFFF",
-                                "borderRadius": 12.5,
-                                "height": 25,
-                                "justifyContent": "center",
-                                "width": 25,
-                              },
-                            ]
-                          }
-                        >
-                          <View
-                            style={
-                              Object {
-                                "alignItems": "center",
-                                "justifyContent": "center",
-                              }
-                            }
-                          >
-                            <View
-                              style={
-                                Array [
-                                  undefined,
-                                  Object {
-                                    "alignItems": "center",
-                                    "backgroundColor": "#bbbc49",
-                                    "borderRadius": 12.5,
-                                    "height": 25,
-                                    "justifyContent": "center",
-                                    "width": 25,
-                                  },
-                                ]
-                              }
-                            >
-                              <Text
-                                style={
-                                  Array [
-                                    Object {
-                                      "fontSize": 30,
-                                    },
-                                    Object {
-                                      "color": "#383B62",
-                                      "fontFamily": "Open Sans",
-                                    },
-                                    Object {
-                                      "color": "#FFFFFF",
-                                      "fontSize": 12.5,
-                                      "includeFontPadding": false,
-                                    },
-                                  ]
-                                }
-                              >
-                                T
-                              </Text>
-                            </View>
-                          </View>
-                        </View>
-                      </View>
-                      <Text
-                        style={
-                          Array [
-                            Object {
-                              "fontSize": 30,
-                            },
-                            Object {
-                              "color": "#383B62",
-                              "fontFamily": "Open Sans",
-                            },
-                            Array [
-                              Object {
-                                "marginLeft": 16,
-                              },
-                            ],
-                          ]
-                        }
-                      >
-                        Terrence Fay
-                      </Text>
-                    </View>
-                  </View>
-                </RCTScrollView>
-              </View>
-            </View>
-            <View
-              style={
                 Array [
                   Object {
                     "backgroundColor": "white",
@@ -1182,10 +833,10 @@ exports[`Group.MultiMemberSettings renders correctly 1`] = `
                       }
                     }
                   >
-                    <AssetMock
-                      color="#535AE4"
+                    <RNSVGMock
+                      fill="#535AE4"
                       height={20}
-                      style={Array []}
+                      viewBox="0 0 24 24"
                       width={20}
                     />
                   </View>
@@ -1215,7 +866,7 @@ exports[`Group.MultiMemberSettings renders correctly 1`] = `
                         ]
                       }
                     >
-                      chat.multi-member-settings.add-member-button
+                      chat.multi-member-settings.media-button
                     </Text>
                   </View>
                 </View>

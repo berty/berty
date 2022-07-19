@@ -413,9 +413,15 @@
 			"title": "Conversation settings",
 			"media-button": "Medias, links & docs",
 			"members-button": {
-				"title": "Members"
+				"title": "Members Network Status ({{count}})"
 			},
 			"add-member-button": "Add member",
+			"members-dropdown": {
+				"search-placeholder": "Search member",
+				"conversation-booster": "Add a conversation booster",
+				"replication-type": "Replication node",
+				"user-type": "User device"
+			},
 			"invite-button": "Invite by link",
 			"save-button": "Save conversation on server"
 		},
