@@ -12,6 +12,7 @@ export const InitialLaunch: ScreenFC<'Account.InitialLaunch'> = () => {
 	React.useEffect(() => {
 		const f = async () => {
 			const navObject = await initialLaunch()
+			// Prevent user going back to the initial launch screen
 			reset({
 				index: 0,
 				routes: [
