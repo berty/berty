@@ -201,11 +201,7 @@ export const Navigation: React.FC = React.memo(() => {
 			<NavigationStack.Screen
 				name='Onboarding.GetStarted'
 				component={Components.Onboarding.GetStarted}
-				options={{
-					headerShown: false,
-					title: t('onboarding.getstarted.screenTitle'),
-					gestureEnabled: true, // Prevent swipe back to go back to loading screen for iOS
-				}}
+				options={{ headerShown: false, title: t('onboarding.getstarted.screenTitle') }}
 			/>
 			<NavigationStack.Screen
 				name='Onboarding.CreateAccount'
