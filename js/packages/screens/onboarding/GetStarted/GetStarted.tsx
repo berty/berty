@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View, StatusBar, Platform } from 'react-native'
 
@@ -10,13 +10,20 @@ import { useNotificationsInhibitor, useThemeColor } from '@berty/hooks'
 import { ScreenFC, useNavigation } from '@berty/navigation'
 import { importAccountFromDocumentPicker } from '@berty/utils/accounts/accountBackup'
 
-export const GetStarted: ScreenFC<'Onboarding.GetStarted'> = () => {
+export const GetStarted: ScreenFC<'Onboarding.GetStarted'> = ({ navigation }) => {
 	useNotificationsInhibitor(() => true)
 	const { margin, padding, text } = useStyles()
 	const colors = useThemeColor()
 	const { t } = useTranslation()
 	const { reset, navigate } = useNavigation()
 
+	useEffect(
+		() =>
+			navigation.addListener('beforeRemove', (e: any) => {
+				e.preventDefault() // Prevent go back to go back to loading screen for Android
+			}),
+		[navigation],
+	)
 	return (
 		<View
 			style={[
