@@ -353,12 +353,6 @@ export const SettingsHome: ScreenFC<'Settings.Home'> = withInAppNotification(
 									<DividerItem />
 								</>
 							)}
-							<MenuItemWithIcon
-								iconName='eye-outline'
-								onPress={() => navigate('Settings.Appearance')}
-							>
-								{t('settings.home.appearance-button')}
-							</MenuItemWithIcon>
 						</ItemSection>
 						<ItemSection>
 							<MenuItemWithIcon
