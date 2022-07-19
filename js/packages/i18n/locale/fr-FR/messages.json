@@ -228,7 +228,7 @@
 		"delete-account": {
 			"title": "Supprimer le compte !",
 			"first-desc": "Êtes-vous sûr de vouloir supprimer votre compte ?",
-			"desc": "Veuillez saisir \"delete\" pour confirmer",
+			"desc": "Veuillez saisir \"supprimer\" pour confirmer",
 			"cancel-button": "Annuler",
 			"delete-button": "Supprimer"
 		},
