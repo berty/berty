@@ -122,7 +122,7 @@ export const HyperlinkUserMessage: React.FC<{
 					linkStyle={{ textDecorationLine: 'underline' }}
 					linkify={linkify_conf}
 				>
-					<UnifiedText style={{ fontSize: 17, color: msgTextColor, lineHeight: 17 }}>
+					<UnifiedText style={{ fontSize: 17, color: msgTextColor }}>
 						{message && message.length > READ_MORE_MESSAGE_LENGTH
 							? isReadMore
 								? message?.substring(0, READ_MORE_SUBSTR_LENGTH).concat('...')
