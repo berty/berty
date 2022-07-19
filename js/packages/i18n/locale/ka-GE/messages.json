@@ -153,7 +153,6 @@
 			"title": "",
 			"proximity-button": "",
 			"notifications-button": "შეტყობინებები",
-			"contact-convs-button": "",
 			"appearance-button": "",
 			"accounts-button": "",
 			"network-button": "",
@@ -219,12 +218,6 @@
 			"cancel": "",
 			"name-input-placeholder": ""
 		},
-		"berty-services": {
-			"title": "",
-			"desc": "",
-			"button": "",
-			"skip": ""
-		},
 		"delete-account": {
 			"title": "",
 			"first-desc": "",
@@ -246,6 +239,7 @@
 			"header-left-button": "",
 			"header-middle-button": "",
 			"header-right-button": "",
+			"force-mock-button": "",
 			"simulate-button": "",
 			"simulate-js-error-button": "",
 			"system-info-button": "",
@@ -258,6 +252,7 @@
 				"name": "",
 				"bullet-point": ""
 			},
+			"export-logs-button": "",
 			"add-dev-conversations-button": "",
 			"share-button": {
 				"title": "",
