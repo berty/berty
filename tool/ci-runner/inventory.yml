@@ -10,3 +10,4 @@ all:
           ansible_become_password: "{{ lookup('env','M1_PASSWORD_3') }}"
       vars:
         ansible_user: hetzner
+        ansible_python_interpreter: /usr/bin/python3

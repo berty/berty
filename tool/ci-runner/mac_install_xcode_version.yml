@@ -1,0 +1,10 @@
+---
+- name: Install a specific version of XCode
+  hosts: m1_macs
+
+  pre_tasks:
+    - import_tasks: utils/check_macos.yml
+
+  tasks:
+    - include_role:
+        name: xcode_setup
