@@ -84,7 +84,7 @@ export const AddFileMenu: React.FC<{
 				cropping: false,
 			})
 
-			prepareMediaAndSend([
+			await prepareMediaAndSend([
 				{
 					filename: '',
 					uri: image.path || image.sourceURL || '',
@@ -94,7 +94,8 @@ export const AddFileMenu: React.FC<{
 		} catch (err) {
 			console.warn(err)
 		}
-	}, [prepareMediaAndSend])
+		onClose()
+	}, [prepareMediaAndSend, onClose])
 
 	const LIST_CONFIG = [
 		{
@@ -134,38 +135,14 @@ export const AddFileMenu: React.FC<{
 				const status = await checkPermissions(PermissionType.camera, {
 					navigate,
 					navigateToPermScreenOnProblem: true,
-					onComplete: () => {
-						openCamera()
+					onComplete: async () => {
+						await openCamera()
 					},
 				})
-				if (status === RESULTS.GRANTED) {
-					openCamera()
-				} else {
-					console.warn('camera permission:', status)
+				if (status === RESULTS.BLOCKED || status === RESULTS.DENIED) {
 					return
 				}
-				try {
-					await ImagePicker.clean()
-				} catch (err) {
-					console.warn('failed to clean image picker:', err)
-				}
-				try {
-					const image = await ImagePicker.openCamera({
-						cropping: false,
-					})
-
-					if (image) {
-						prepareMediaAndSend([
-							{
-								filename: '',
-								uri: image.path || image.sourceURL || '',
-								mimeType: image.mime,
-							},
-						])
-					}
-				} catch (err) {
-					console.log(err)
-				}
+				await openCamera()
 			},
 		},
 		{
@@ -188,7 +165,7 @@ export const AddFileMenu: React.FC<{
 					if (Platform.OS === 'android') {
 						uri = await getPath(uri)
 					}
-					prepareMediaAndSend([
+					await prepareMediaAndSend([
 						{
 							filename: res.name,
 							uri: uri,
