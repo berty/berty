@@ -28,7 +28,7 @@ func TestRotationMessageMarshaler(t *testing.T) {
 	}
 
 	rp := rendezvous.NewStaticRotationInterval()
-	m := NewRotationMessageMarshaler(rp)
+	m := NewOrbitDBMessageMarshaler(rp)
 
 	rp.RegisterRotation(time.Now(), msg.Address, testSeed1)
 	m.RegisterSharedKeyForTopic(msg.Address, key)
@@ -52,7 +52,7 @@ func TestRotationMessageMarshalUnknownTopic(t *testing.T) {
 	}
 
 	rp := rendezvous.NewStaticRotationInterval()
-	m := NewRotationMessageMarshaler(rp)
+	m := NewOrbitDBMessageMarshaler(rp)
 
 	// marshal without register topic, should fail
 	payload, err := m.Marshal(msg)
@@ -70,7 +70,7 @@ func TestRotationMessageUnmarshalUnknownTopic(t *testing.T) {
 	require.NoError(t, err)
 
 	rp := rendezvous.NewStaticRotationInterval()
-	m := NewRotationMessageMarshaler(rp)
+	m := NewOrbitDBMessageMarshaler(rp)
 	rp.RegisterRotation(time.Now(), msg.Address, testSeed1)
 	m.RegisterSharedKeyForTopic(msg.Address, key1)
 
@@ -80,7 +80,7 @@ func TestRotationMessageUnmarshalUnknownTopic(t *testing.T) {
 	require.NotNil(t, payload)
 
 	rp2 := rendezvous.NewStaticRotationInterval()
-	m2 := NewRotationMessageMarshaler(rp2)
+	m2 := NewOrbitDBMessageMarshaler(rp2)
 
 	var ret iface.MessageExchangeHeads
 
@@ -104,7 +104,7 @@ func TestRotationMessageMarshalWrongKey(t *testing.T) {
 
 	rp1 := rendezvous.NewStaticRotationInterval()
 	rp1.RegisterRotation(time.Now(), msg.Address, testSeed1)
-	m1 := NewRotationMessageMarshaler(rp1)
+	m1 := NewOrbitDBMessageMarshaler(rp1)
 	m1.RegisterSharedKeyForTopic(msg.Address, key1)
 
 	payload, err := m1.Marshal(msg)
@@ -112,7 +112,7 @@ func TestRotationMessageMarshalWrongKey(t *testing.T) {
 
 	rp2 := rendezvous.NewStaticRotationInterval()
 	rp2.RegisterRotation(time.Now(), msg.Address, testSeed2)
-	m2 := NewRotationMessageMarshaler(rp2)
+	m2 := NewOrbitDBMessageMarshaler(rp2)
 	m2.RegisterSharedKeyForTopic(msg.Address, key2)
 
 	var ret iface.MessageExchangeHeads

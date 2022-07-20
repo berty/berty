@@ -1544,6 +1544,8 @@ message OrbitDBMessageHeads {
   message Box {
     string address = 1;
     bytes heads = 2;
+    bytes device_pk = 3 [(gogoproto.customname) = "DevicePK"];
+    bytes peer_id = 4 [(gogoproto.customname) = "PeerID"];
   }
 
   // sealed box should contain encrypted Box
