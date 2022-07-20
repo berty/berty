@@ -26,8 +26,5 @@
     chdir: "{{ runner_folder }}"
     cmd: ./config.sh --unattended --url {{ config_url }} --pat {{ config_token }} --name {{ inventory_hostname }}
 
-- name: Install asdf and gpg (required by some asdf plugins)
-  homebrew:
-    name:
-      - asdf
-      - gpg
+- import_role:
+    name: asdf_setup

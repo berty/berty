@@ -63,6 +63,9 @@ jobs:
           if [ -d js/ios/.gomobile-cache ]; then
             mv js/ios/.gomobile-cache $RUNNER_TEMP/.gomobile-cache
           fi
+          if [ -d js/ios/.xcodegen-cache ]; then
+            mv js/ios/.xcodegen-cache $RUNNER_TEMP/.xcodegen-cache
+          fi
 
       - name: Checkout
         uses: actions/checkout@v3
@@ -81,8 +84,13 @@ jobs:
           if [ -d $RUNNER_TEMP/.gomobile-cache ]; then
             mv $RUNNER_TEMP/.gomobile-cache js/ios/.gomobile-cache
           fi
+          if [ -d $RUNNER_TEMP/.xcodegen-cache ]; then
+            mv $RUNNER_TEMP/.xcodegen-cache js/ios/.xcodegen-cache
+          fi
 
       - name: Setup asdf
+        # Disabled on self-hosted because it is already installed
+        if: ${{ !matrix.selfhosted }}
         uses: asdf-vm/actions/setup@v1
 
       - name: Setup go
@@ -117,12 +125,23 @@ jobs:
           asdf plugin add yarn
           asdf install yarn
 
-      - name: Setup XCode
+      - name: Get XCode version from version file
+        run:
+          echo "xcode_version=$(cat js/ios/.xcode-version)" >> $GITHUB_ENV
+
+      - name: Setup XCode version (Github runners)
+        # Disabled on self-hosted because it requires authentication
         if: ${{ !matrix.selfhosted }}
-        # disabled on self-hosted because it requires authentication
         uses: maxim-lobanov/setup-xcode@v1.4.1
         with:
-          xcode-version: ${{ matrix.xcode }}
+          xcode-version: ${{ env.xcode_version }}
+
+      - name: Check XCode version (Self-hosted runners)
+        run: |
+          installed_version="$(xcodebuild -version | head -n 1 | sed 's/Xcode //')"
+          if [ "$xcode_version" != "$installed_version" ]; then
+              echo "::warning file=js/ios/.xcode-version,line=1,col=1::XCode version mismatch on self-hosted runner (required '$xcode_version' / installed '$installed_version')"
+          fi
 
       - name: Cache go modules
         uses: actions/cache@v2.1.6

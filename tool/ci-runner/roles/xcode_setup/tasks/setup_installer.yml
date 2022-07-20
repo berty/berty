@@ -1,0 +1,10 @@
+- import_role:
+    name: asdf_setup
+
+- name: Install xcode-install gem
+  shell:
+    chdir: "{{ ansible_facts.user_dir }}"
+    cmd: /bin/zsh -ic "unset SDKROOT; gem list | grep '^xcode-install ({{ xcode_install_version }})$' && exit 42; gem install xcode-install -v {{ xcode_install_version }}"
+  register: plugin_install
+  changed_when: plugin_install.rc == 0
+  failed_when: plugin_install.rc != 42 and plugin_install.rc != 0

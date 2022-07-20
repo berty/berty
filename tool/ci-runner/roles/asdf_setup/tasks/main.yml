@@ -1,0 +1,34 @@
+- name: Install asdf and gpg (required by some asdf plugins)
+  homebrew:
+    name:
+      - asdf
+      - gpg
+
+- name: Add asdf env in .zshrc
+  lineinfile:
+    create: true
+    line: . /opt/homebrew/opt/asdf/libexec/asdf.sh
+    path: "{{ ansible_facts.user_dir }}/.zshrc"
+
+- name: Add global .tool-versions file in home
+  copy:
+    dest: "{{ ansible_facts.user_dir }}/.tool-versions"
+    src: tool-versions
+
+- name: Install asdf plugins required by global .tool-versions
+  shell:
+    chdir: "{{ ansible_facts.user_dir }}"
+    cmd: /bin/zsh -lc 'GRET=2; for PLUGIN in $(cut -d " " -f1 .tool-versions | grep "^[^\#]"); do asdf plugin add $PLUGIN; CRET=$?; if [ $CRET != 2 ]; then GRET=$CRET; [[ $CRET != 0 ]] && break; fi; done; exit $GRET'
+  register: plugin_install
+  changed_when: plugin_install.rc == 0
+  failed_when: plugin_install.rc != 2 and plugin_install.rc != 0
+
+- name: Install tools required by global .tool-versions
+  environment:
+    CFLAGS: -Wno-error=implicit-function-declaration # Fix for ruby install
+  shell:
+    chdir: "{{ ansible_facts.user_dir }}"
+    cmd: /bin/zsh -lc 'unset SDKROOT; GRET=0; for TOOL in $(cut -d " " -f1 .tool-versions | grep "^[^\#]"); do OUT=$(asdf install $TOOL 2>&1); LRET=$?; [[ $LRET != 0 ]] && GRET=$LRET && >&2 echo "$OUT" && break; echo "$OUT" | grep -E "^$TOOL .+ already installed$" &>/dev/null || GRET=42; echo "$OUT"; done; exit $GRET'
+  register: tool_install
+  changed_when: tool_install.rc == 42
+  failed_when: tool_install.rc != 42 and tool_install.rc != 0

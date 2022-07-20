@@ -1,0 +1,59 @@
+- import_tasks: setup_installer.yml
+
+- name: Check if fastlane session is valid
+  environment:
+    FASTLANE_USER: "{{ FASTLANE_USER }}"
+    FASTLANE_PASSWORD: "{{ FASTLANE_PASSWORD }}"
+  shell:
+    chdir: "{{ ansible_facts.user_dir }}"
+    cmd: /bin/zsh -ic 'fastlane spaceauth --check-session'
+  register: check_session
+  changed_when: check_session.rc == 1
+  failed_when: check_session.rc != 1 and check_session.rc != 0
+
+- name: Create a new session cookie
+  pause:
+    prompt: "Please run 'make generate_xcode_cookie' on your computer then press enter to continue"
+  when: check_session.rc == 1
+
+- name: Create session cookie folder
+  command:
+    cmd: mkdir -p {{ session_folder }}
+    creates: "{{ session_folder }}"
+  when: check_session.rc == 1
+
+- name: Upload session cookie on runners
+  copy:
+    dest: "{{ session_folder }}/cookie"
+    src: ../../../xcode-cookie/cookie
+  when: check_session.rc == 1
+
+- name: Get list of available XCode versions
+  shell:
+    chdir: "{{ ansible_facts.user_dir }}"
+    cmd: /bin/zsh -ic "xcversion list | tail -n {{ xcode_version_list_size }}"
+  changed_when: false
+  register: xcode_version_list
+  when: inventory_hostname == ansible_play_hosts[0]
+
+- name: Choose an available XCode version
+  pause:
+    prompt: "List of {{ xcode_version_list_size }} latest XCode versions:\n\n{{ xcode_version_list.stdout }}\n\nPlease choose a version number"
+    echo: yes
+  register: xcode_version_choice
+  when: inventory_hostname == ansible_play_hosts[0]
+
+- name: Set version number for XCode on all runners
+  set_fact:
+    xcode_version: "{{ hostvars[ansible_play_hosts[0]].xcode_version_choice.user_input | trim }}"
+
+- name: Install XCode version
+  environment:
+    FASTLANE_USER: "{{ FASTLANE_USER }}"
+    FASTLANE_PASSWORD: "{{ FASTLANE_PASSWORD }}"
+    BECOME_PASSWORD: "{{ ansible_become_password }}"
+  shell:
+    chdir: "{{ ansible_facts.user_dir }}"
+    cmd: /bin/zsh -ic "echo $BECOME_PASSWORD | sudo -p '' -ES xcversion install {{ xcode_version }}"
+  register: xcode_install
+  changed_when: xcode_install.stdout != "Version " ~ xcode_version ~ " already installed."

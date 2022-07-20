@@ -1,0 +1,32 @@
+- import_tasks: setup_installer.yml
+
+- name: Get list of installed XCode versions
+  shell:
+    chdir: "{{ ansible_facts.user_dir }}"
+    cmd: /bin/zsh -ic "xcversion installed | cut -d $'\t' -f 1"
+  changed_when: false
+  register: xcode_version_list
+  when: inventory_hostname == ansible_play_hosts[0]
+
+- name: Choose an installed XCode version
+  pause:
+    prompt: "List of installed XCode versions:\n\n{{ xcode_version_list.stdout }}\n\nPlease choose a version number"
+    echo: yes
+  register: xcode_version_choice
+  when: inventory_hostname == ansible_play_hosts[0]
+
+- name: Set version number for XCode on all runners
+  set_fact:
+    xcode_version: "{{ hostvars[ansible_play_hosts[0]].xcode_version_choice.user_input | trim }}"
+
+- name: Switch to XCode version
+  environment:
+    FASTLANE_USER: "{{ FASTLANE_USER }}"
+    FASTLANE_PASSWORD: "{{ FASTLANE_PASSWORD }}"
+    BECOME_PASSWORD: "{{ ansible_become_password }}"
+  shell:
+    chdir: "{{ ansible_facts.user_dir }}"
+    cmd: /bin/zsh -ic "xcversion selected | head -n 1 | sed 's/Xcode //' |  grep '^{{ xcode_version }}$' && exit 42; echo $BECOME_PASSWORD | sudo -p '' -ES xcversion select {{ xcode_version }}"
+  register: xcode_switch
+  changed_when: xcode_switch.rc != 42
+  failed_when: xcode_switch.rc != 42 and xcode_switch.rc != 0
