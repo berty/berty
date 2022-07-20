@@ -171,9 +171,7 @@ func NewBertyOrbitDB(ctx context.Context, ipfs coreapi.CoreAPI, options *NewOrbi
 		options.PubSub = pubsubcoreapi.NewPubSub(ipfs, self.ID(), time.Second, options.Logger, options.Tracer)
 	}
 
-	groups := &GroupMap{}
-
-	mm := NewOrbitDBMessageMarshaler(logger, self.ID(), options.DeviceKeystore, options.RotationInterval)
+	mm := NewOrbitDBMessageMarshaler(self.ID(), options.DeviceKeystore, options.RotationInterval)
 	options.MessageMarshaler = mm
 
 	orbitDB, err := baseorbitdb.NewOrbitDB(ctx, ipfs, &options.NewOrbitDBOptions)
@@ -189,7 +187,7 @@ func NewBertyOrbitDB(ctx context.Context, ipfs coreapi.CoreAPI, options *NewOrbi
 		messageKeystore:  options.MessageKeystore,
 		rotationInterval: options.RotationInterval,
 		pubSub:           options.PubSub,
-		groups:           groups,
+		groups:           &GroupMap{},
 		groupContexts:    &GroupContextMap{},    // map[string]*GroupContext
 		groupsSigPubKey:  &GroupsSigPubKeyMap{}, // map[string]crypto.PubKey
 	}

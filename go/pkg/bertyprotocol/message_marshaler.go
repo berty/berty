@@ -8,7 +8,6 @@ import (
 	"github.com/gogo/protobuf/proto"
 	"github.com/libp2p/go-libp2p-core/crypto"
 	peer "github.com/libp2p/go-libp2p-core/peer"
-	"go.uber.org/zap"
 
 	"berty.tech/berty/v2/go/internal/cryptoutil"
 	"berty.tech/berty/v2/go/internal/rendezvous"
@@ -24,7 +23,6 @@ type PeerDeviceGroup struct {
 }
 
 type OrbitDBMessageMarshaler struct {
-	logger       *zap.Logger
 	rp           *rendezvous.RotationInterval
 	sharedKeys   map[string]enc.SharedKey
 	topicGroup   map[string]*protocoltypes.Group
@@ -34,9 +32,8 @@ type OrbitDBMessageMarshaler struct {
 	dk           cryptoutil.DeviceKeystore
 }
 
-func NewOrbitDBMessageMarshaler(logger *zap.Logger, selfid peer.ID, dk cryptoutil.DeviceKeystore, rp *rendezvous.RotationInterval) *OrbitDBMessageMarshaler {
+func NewOrbitDBMessageMarshaler(selfid peer.ID, dk cryptoutil.DeviceKeystore, rp *rendezvous.RotationInterval) *OrbitDBMessageMarshaler {
 	return &OrbitDBMessageMarshaler{
-		logger:       logger.Named("marshall"),
 		selfid:       selfid,
 		sharedKeys:   make(map[string]enc.SharedKey),
 		deviceCaches: make(map[peer.ID]*PeerDeviceGroup),
@@ -54,7 +51,6 @@ func (m *OrbitDBMessageMarshaler) RegisterSharedKeyForTopic(topic string, sk enc
 
 func (m *OrbitDBMessageMarshaler) RegisterGroup(sid string, group *protocoltypes.Group) {
 	m.muMarshall.Lock()
-	m.logger.Debug("@debug register id", zap.String("group_id", sid))
 	m.topicGroup[sid] = group
 	m.muMarshall.Unlock()
 }
@@ -87,7 +83,7 @@ func (m *OrbitDBMessageMarshaler) Marshal(msg *iface.MessageExchangeHeads) ([]by
 
 	group, ok := m.topicGroup[topic]
 	if !ok {
-		return nil, fmt.Errorf("unknown group for topic", zap.String("topic", topic))
+		return nil, fmt.Errorf("unknown group for topic: %s", topic)
 	}
 
 	ownDevice, err := m.dk.MemberDeviceForGroup(group)
@@ -172,9 +168,6 @@ func (m *OrbitDBMessageMarshaler) Unmarshal(payload []byte, msg *iface.MessageEx
 
 	msg.Address = box.Address
 	msg.Heads = entries
-
-	raw, _ := pub.Raw()
-	m.logger.Debug("@debug raw devicepk", zap.Any("raw", raw))
 
 	// store device into cache
 	var pdg PeerDeviceGroup
