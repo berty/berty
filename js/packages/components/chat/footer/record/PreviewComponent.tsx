@@ -1,9 +1,9 @@
 import { Player } from '@react-native-community/audio-toolkit'
 import { Icon } from '@ui-kitten/components'
+import { readAsStringAsync, EncodingType } from 'expo-file-system'
 import React, { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { TouchableOpacity, View } from 'react-native'
-import { readFile } from 'react-native-fs'
 
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
@@ -109,7 +109,7 @@ export const PreviewComponent: React.FC<{
 							} else if (player?.isPaused) {
 								player?.playPause()
 							} else {
-								readFile(recordFilePath, 'base64')
+								readAsStringAsync(recordFilePath, { encoding: EncodingType.Base64 })
 									.then(response => {
 										console.log('SUCCESS')
 										setPlayer(playSoundFile(response))

@@ -1,23 +1,25 @@
 import { Buffer } from 'buffer'
+import { cacheDirectory, deleteAsync, EncodingType, writeAsStringAsync } from 'expo-file-system'
+import { shareAsync } from 'expo-sharing'
 import { Platform } from 'react-native'
 import DocumentPicker from 'react-native-document-picker'
-import RNFS from 'react-native-fs'
-import Share from 'react-native-share'
 
 import beapi from '@berty/api'
 import { createServiceClient } from '@berty/grpc-bridge'
 import * as middleware from '@berty/grpc-bridge/middleware'
 import rpcBridge from '@berty/grpc-bridge/rpc/rpc.bridge'
 
-import { createAndSaveFile, getPath } from '../react-native/file-system'
+import { copyToCache } from '../react-native/file-system'
 
 export const importAccountFromDocumentPicker = async () => {
 	try {
 		const res = await DocumentPicker.pickSingle({
 			type: Platform.OS === 'android' ? ['application/x-tar'] : ['public.tar-archive'],
 		})
-		const replaced = Platform.OS === 'android' ? await getPath(res.uri) : res.uri
-		return replaced.replace(/^file:\/\//, '')
+		const replaced = Platform.OS === 'android' ? await copyToCache(res.uri) : res.uri
+		const filePath = decodeURI(replaced).replace(/^file:\/\//, '')
+		console.log('backup file path:', filePath)
+		return filePath
 	} catch (err: any) {
 		if (DocumentPicker.isCancel(err)) {
 			// ignore
@@ -39,36 +41,40 @@ export const exportAccountToFile = async (accountId: string | null) => {
 	)
 
 	const fileName = `berty-backup-${accountId}`
-	const outFile = RNFS.TemporaryDirectoryPath + `/${fileName}` + '.tar'
+	const outFile = `${cacheDirectory}${fileName}.tar`
 
 	// delete file if already exist
-	await RNFS.unlink(outFile).catch(() => {})
+	await deleteAsync(outFile).catch(() => {})
 
-	await messengerClient
-		.instanceExportData({})
-		.then(stream => {
-			stream.onMessage(async res => {
-				if (!res || !res.exportedData) {
+	const stream = await messengerClient.instanceExportData({})
+
+	await new Promise<void>((resolve, reject) => {
+		let buf = Buffer.from('')
+		stream.onMessage(async (res, err) => {
+			if (err) {
+				if (err.EOF) {
+					await writeAsStringAsync(outFile, buf.toString('base64'), {
+						encoding: EncodingType.Base64,
+					})
+					console.log('wrote backup at', outFile)
+					resolve()
 					return
 				}
-				const buff = Buffer.from(res.exportedData).toString('base64')
-				await RNFS.write(outFile, buff, -1, 'base64')
-			})
-			return stream.start()
-		})
-		.then(async () => {
-			Platform.OS === 'android'
-				? await createAndSaveFile(outFile, fileName)
-				: await Share.open({
-						title: 'Berty backup',
-						url: `file://${outFile}`,
-						type: 'application/x-tar',
-				  })
-		})
-		.catch(async err => {
-			if (err?.EOF) {
-			} else {
-				console.warn(err)
+				reject(err)
+				return
 			}
+			if (!res?.exportedData) {
+				return
+			}
+			console.log('got', res.exportedData.length, 'bytes')
+			buf = Buffer.concat([buf, res.exportedData])
 		})
+		stream.start()
+	})
+
+	await shareAsync(outFile, {
+		dialogTitle: 'Berty backup',
+		mimeType: 'application/x-tar',
+		UTI: 'public.tar-archive',
+	})
 }

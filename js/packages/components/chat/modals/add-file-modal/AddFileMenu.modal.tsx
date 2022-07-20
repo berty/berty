@@ -9,7 +9,7 @@ import beapi from '@berty/api'
 import { useMessengerClient, useThemeColor } from '@berty/hooks'
 import { useNavigation } from '@berty/navigation'
 import { checkPermissions } from '@berty/utils/react-native/checkPermissions'
-import { getPath } from '@berty/utils/react-native/file-system'
+import { copyToCache } from '@berty/utils/react-native/file-system'
 import { PermissionType } from '@berty/utils/react-native/permissions'
 
 import { GallerySection } from './GallerySection'
@@ -186,7 +186,7 @@ export const AddFileMenu: React.FC<{
 					})
 					let uri = res.uri
 					if (Platform.OS === 'android') {
-						uri = await getPath(uri)
+						uri = await copyToCache(uri)
 					}
 					prepareMediaAndSend([
 						{
