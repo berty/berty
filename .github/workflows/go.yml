@@ -162,7 +162,7 @@ jobs:
         run: make go.unittest
 
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v2.1.0
+        uses: codecov/codecov-action@v3.1.0
         env:
           OS: ${{ runner.os }}
           GOLANG: ${{ env.go_version }}
@@ -283,7 +283,7 @@ jobs:
         run: make go.unittest
 
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v2.1.0
+        uses: codecov/codecov-action@v3.1.0
         env:
           OS: ${{ runner.os }}
           GOLANG: ${{ env.go_version }}
