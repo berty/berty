@@ -141,6 +141,7 @@ const BertyIdShare: React.FC = () => {
 	const { styleBertyIdButton, iconShareSize } = useStylesBertyId(styleBertyIdOptions)
 	const account = useAccount()
 	const url = account.link
+	const { t } = useTranslation()
 	if (!url) {
 		return null
 	}
@@ -153,7 +154,7 @@ const BertyIdShare: React.FC = () => {
 				styleBertyIdButton,
 			]}
 			onPress={async () => {
-				await shareBertyID(url)
+				await shareBertyID(url, t)
 			}}
 		>
 			<View style={[flex.tiny, { justifyContent: 'center' }]}>

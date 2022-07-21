@@ -271,7 +271,7 @@ export const ShareModal: ScreenFC<'Chat.Share'> = () => {
 								color: colors['background-header'],
 								style: [height(120), height(120), width(120)],
 								onPress: async () => {
-									await shareBertyID(url)
+									await shareBertyID(url, t)
 								},
 							},
 						]}
