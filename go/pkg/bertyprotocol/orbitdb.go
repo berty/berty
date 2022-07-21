@@ -80,6 +80,11 @@ func (n *NewOrbitDBOptions) applyDefaults() {
 	if n.RotationInterval == nil {
 		n.RotationInterval = rendezvous.NewStaticRotationInterval()
 	}
+
+	if n.Logger == nil {
+		n.Logger = zap.NewNop()
+	}
+	n.Logger = n.Logger.Named("odb")
 }
 
 type (
@@ -137,8 +142,6 @@ func (s *BertyOrbitDB) registerGroupSigningPubKey(g *protocoltypes.Group) error 
 		}
 	}
 
-	// s.messageMarshaler.RegisterIdentity(sigPubKey crypto.PubKey, group *protocoltypes.Group)
-
 	if err := s.SetGroupSigPubKey(groupID, gSigPK); err != nil {
 		return errcode.TODO.Wrap(err)
 	}
@@ -149,14 +152,11 @@ func (s *BertyOrbitDB) registerGroupSigningPubKey(g *protocoltypes.Group) error 
 func NewBertyOrbitDB(ctx context.Context, ipfs coreapi.CoreAPI, options *NewOrbitDBOptions) (*BertyOrbitDB, error) {
 	var err error
 
-	logger := options.Logger.Named("odb")
-
 	if options == nil {
 		options = &NewOrbitDBOptions{}
 	}
 
 	options.applyDefaults()
-	options.Logger = logger
 
 	ks := &BertySignedKeyStore{}
 	options.Keystore = ks
@@ -263,7 +263,6 @@ func (s *BertyOrbitDB) setHeadsForGroup(ctx context.Context, g *protocoltypes.Gr
 
 	if metaImpl == nil || messagesImpl == nil {
 		groupID := g.GroupIDAsString()
-		s.Logger().Debug("@debug group id", zap.String("group_id", groupID))
 		s.groups.Store(groupID, g)
 
 		if err := s.registerGroupSigningPubKey(g); err != nil {
@@ -322,8 +321,6 @@ func (s *BertyOrbitDB) OpenGroup(ctx context.Context, g *protocoltypes.Group, op
 
 	id := g.GroupIDAsString()
 
-	s.Logger().Debug("@debug open group", zap.String("id", id))
-	// s.Logger().Debug("@debug open Identity", zap.String("identity", options.Identity.ID))
 	existingGC, err := s.getGroupContext(id)
 	if err != nil && !errcode.Is(err, errcode.ErrMissingMapKey) {
 		return nil, errcode.ErrInternal.Wrap(err)
@@ -482,8 +479,6 @@ func (s *BertyOrbitDB) storeForGroup(ctx context.Context, o iface.BaseOrbitDB, g
 		s.messageMarshaler.RegisterSharedKeyForTopic(addr.String(), sk)
 		s.rotationInterval.RegisterRotation(time.Now(), addr.String(), key)
 	}
-
-	// s.Logger().Debug("@debug identity", zap.Any("identity",))
 
 	options.EventBus = eventbus.NewBus()
 	store, err := o.Open(ctx, name, options)

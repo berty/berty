@@ -173,6 +173,7 @@ func (m *OrbitDBMessageMarshaler) Unmarshal(payload []byte, msg *iface.MessageEx
 	var pdg PeerDeviceGroup
 	pdg.DevicePK = pub
 	if g, ok := m.topicGroup[msg.Address]; ok {
+		// @FIXME(gfanton): do we need to raise an error here ?
 		pdg.Group = g
 	}
 	m.deviceCaches[pid] = &pdg
@@ -199,25 +200,6 @@ func (m *OrbitDBMessageMarshaler) sealBox(topic string, box *protocoltypes.Orbit
 }
 
 func (m *OrbitDBMessageMarshaler) openBox(topic string, payload []byte) (*protocoltypes.OrbitDBMessageHeads_Box, error) {
-	sk, ok := m.getSharedKeyFor(topic)
-	if !ok {
-		return nil, fmt.Errorf("unable to get shared key for topic")
-	}
-
-	rawBox, err := sk.Open(payload)
-	if err != nil {
-		return nil, fmt.Errorf("unable to open sealed box: %w", err)
-	}
-
-	box := &protocoltypes.OrbitDBMessageHeads_Box{}
-	if err := proto.Unmarshal(rawBox, box); err != nil {
-		return nil, fmt.Errorf("unable to unmarshal box: %w", err)
-	}
-
-	return box, nil
-}
-
-func (m *OrbitDBMessageMarshaler) registerDevice(topic string, payload []byte) (*protocoltypes.OrbitDBMessageHeads_Box, error) {
 	sk, ok := m.getSharedKeyFor(topic)
 	if !ok {
 		return nil, fmt.Errorf("unable to get shared key for topic")
