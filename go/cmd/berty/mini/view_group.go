@@ -162,6 +162,35 @@ func (v *groupView) loop(ctx context.Context) {
 		}()
 	}
 
+	// get GroupDeviceStatus
+	{
+		req := &protocoltypes.GroupDeviceStatus_Request{GroupPK: v.g.PublicKey}
+		cl, err := v.v.protocol.GroupDeviceStatus(ctx, req)
+		if err != nil {
+			panic(err)
+		}
+
+		go func() {
+			for {
+				res, err := cl.Recv()
+				if err != nil {
+					if err == io.EOF {
+						return
+					}
+
+					// @TODO: Log this
+					v.syncMessages <- &historyMessage{
+						messageType: messageTypeError,
+						payload:     []byte(err.Error()),
+					}
+					continue
+				}
+
+				groupDeviceStatusHandler(v.logger, v, res)
+			}
+		}()
+	}
+
 	// list group message events
 	{
 		req := &protocoltypes.GroupMessageList_Request{GroupPK: v.g.PublicKey, UntilNow: true}

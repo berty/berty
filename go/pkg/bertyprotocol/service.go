@@ -13,7 +13,9 @@ import (
 	ds_sync "github.com/ipfs/go-datastore/sync"
 	ipfs_interface "github.com/ipfs/interface-go-ipfs-core"
 	"github.com/libp2p/go-libp2p-core/discovery"
+	"github.com/libp2p/go-libp2p-core/event"
 	"github.com/libp2p/go-libp2p-core/host"
+	"github.com/libp2p/go-libp2p-core/network"
 	peer "github.com/libp2p/go-libp2p-core/peer"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/pkg/errors"
@@ -24,6 +26,8 @@ import (
 	"berty.tech/berty/v2/go/internal/cryptoutil"
 	"berty.tech/berty/v2/go/internal/datastoreutil"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
+	"berty.tech/berty/v2/go/internal/logutil"
+	"berty.tech/berty/v2/go/internal/notify"
 	"berty.tech/berty/v2/go/internal/tinder"
 	"berty.tech/berty/v2/go/pkg/bertypush"
 	"berty.tech/berty/v2/go/pkg/bertyversion"
@@ -48,29 +52,32 @@ type Service interface {
 
 type service struct {
 	// variables
-	ctx              context.Context
-	logger           *zap.Logger
-	ipfsCoreAPI      ipfsutil.ExtendedCoreAPI
-	odb              *BertyOrbitDB
-	accountGroup     *GroupContext
-	deviceKeystore   cryptoutil.DeviceKeystore
-	openedGroups     map[string]*GroupContext
-	lock             sync.RWMutex
-	authSession      atomic.Value
-	close            func() error
-	startedAt        time.Time
-	host             host.Host
-	groupDatastore   *cryptoutil.GroupDatastore
-	pushHandler      bertypush.PushHandler
-	accountCache     ds.Batching
-	messageKeystore  *cryptoutil.MessageKeystore
-	pushClients      map[string]*grpc.ClientConn
-	muPushClients    sync.RWMutex
-	discovery        discovery.Discovery
-	grpcInsecure     bool
-	refreshprocess   map[string]context.CancelFunc
-	muRefreshprocess sync.RWMutex
-	swiper           *Swiper
+	ctx                 context.Context
+	logger              *zap.Logger
+	ipfsCoreAPI         ipfsutil.ExtendedCoreAPI
+	odb                 *BertyOrbitDB
+	accountGroup        *GroupContext
+	deviceKeystore      cryptoutil.DeviceKeystore
+	openedGroups        map[string]*GroupContext
+	lock                sync.RWMutex
+	authSession         atomic.Value
+	close               func() error
+	startedAt           time.Time
+	host                host.Host
+	groupDatastore      *cryptoutil.GroupDatastore
+	pushHandler         bertypush.PushHandler
+	accountCache        ds.Batching
+	messageKeystore     *cryptoutil.MessageKeystore
+	pushClients         map[string]*grpc.ClientConn
+	muPushClients       sync.RWMutex
+	discovery           discovery.Discovery
+	grpcInsecure        bool
+	refreshprocess      map[string]context.CancelFunc
+	muRefreshprocess    sync.RWMutex
+	swiper              *Swiper
+	groupDeviceStatus   map[string]map[string]*protocoltypes.GroupDeviceStatus_Reply
+	muGroupDeviceStatus *sync.Mutex
+	groupDeviceNotify   *notify.Notify
 }
 
 // Opts contains optional configuration flags for building a new Client
@@ -268,6 +275,7 @@ func New(ctx context.Context, opts Opts) (_ Service, err error) {
 		}
 	}
 
+	muGroupDeviceStatus := &sync.Mutex{}
 	s := &service{
 		ctx:            ctx,
 		host:           opts.Host,
@@ -283,16 +291,20 @@ func New(ctx context.Context, opts Opts) (_ Service, err error) {
 		openedGroups: map[string]*GroupContext{
 			string(acc.Group().PublicKey): acc,
 		},
-		accountCache:    opts.AccountCache,
-		messageKeystore: opts.MessageKeystore,
-		pushHandler:     pushHandler,
-		pushClients:     make(map[string]*grpc.ClientConn),
-		grpcInsecure:    opts.GRPCInsecureMode,
-		discovery:       disc,
-		refreshprocess:  make(map[string]context.CancelFunc),
+		accountCache:        opts.AccountCache,
+		messageKeystore:     opts.MessageKeystore,
+		pushHandler:         pushHandler,
+		pushClients:         make(map[string]*grpc.ClientConn),
+		grpcInsecure:        opts.GRPCInsecureMode,
+		discovery:           disc,
+		refreshprocess:      make(map[string]context.CancelFunc),
+		groupDeviceStatus:   make(map[string]map[string]*protocoltypes.GroupDeviceStatus_Reply),
+		muGroupDeviceStatus: muGroupDeviceStatus,
+		groupDeviceNotify:   notify.New(muGroupDeviceStatus),
 	}
 
 	s.startTyberTinderMonitor()
+	s.startGroupDeviceMonitor()
 
 	return s, nil
 }
@@ -385,6 +397,64 @@ func (s *service) startTyberTinderMonitor() {
 			}
 		}
 	}()
+}
+
+func (s *service) startGroupDeviceMonitor() {
+	if s.host == nil {
+		return
+	}
+
+	// monitor new connections
+	sub1, err := s.odb.EventBus().Subscribe(new(baseorbitdb.EventExchangeHeads))
+	if err != nil {
+		s.logger.Error("startGroupDeviceMonitor", zap.Error(errors.Wrap(err, "unable to subscribe odb event")))
+		return
+	}
+
+	// monitor closed connections
+	sub2, err := s.host.EventBus().Subscribe(new(event.EvtPeerConnectednessChanged))
+	if err != nil {
+		s.logger.Error("startGroupDeviceMonitor", zap.Error(errors.Wrap(err, "unable to subscribe odb event")))
+		return
+	}
+
+	ch1 := sub1.Out()
+	ch2 := sub2.Out()
+	go func() {
+		defer sub1.Close()
+		defer sub2.Close()
+
+		for {
+			select {
+			case <-s.ctx.Done():
+				return
+			case evt := <-ch1:
+				e := evt.(baseorbitdb.EventExchangeHeads)
+				s.logger.Debug("GroupDeviceMonitor: EventExchangeHeads received", zap.String("peerID", e.Peer.Pretty()))
+
+				if err := s.monitorHandleGroupDeviceConnected(e.Peer); err != nil {
+					s.logger.Warn("GroupDeviceMonitor: cannot handle new peer connection", logutil.PrivateString("peerID", e.Peer.Pretty()))
+				}
+			case evt := <-ch2:
+				e := evt.(event.EvtPeerConnectednessChanged)
+				s.logger.Debug("GroupDeviceMonitor: EvtPeerConnectednessChanged received", zap.String("peerID", e.Peer.Pretty()))
+
+				if err := s.monitorHandleGroupDeviceDisconnected(e.Peer); err != nil {
+					s.logger.Warn("GroupDeviceMonitor: cannot handle new peer connection", logutil.PrivateString("peerID", e.Peer.Pretty()))
+				}
+			}
+		}
+	}()
+
+	// get status of peers in the peerstore
+	peers := s.host.Peerstore().Peers()
+	for _, peer := range peers {
+		if s.host.Network().Connectedness(peer) == network.Connected {
+			if err := s.monitorHandleGroupDeviceConnected(peer); err != nil {
+				s.logger.Warn("GroupDeviceMonitor: cannot handle peer store process", logutil.PrivateString("peerID", peer.Pretty()))
+			}
+		}
+	}
 }
 
 // Status contains results of status checks

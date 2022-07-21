@@ -140,7 +140,6 @@ func TestRotationMessageUnmarshalUnknownTopic(t *testing.T) {
 	err = m2.Unmarshal(payload, &ret)
 	require.Error(t, err)
 	assert.NotEqual(t, ret.Address, msg.Address)
-
 }
 
 func TestRotationMessageMarshalWrongKey(t *testing.T) {
