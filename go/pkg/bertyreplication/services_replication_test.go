@@ -368,7 +368,7 @@ func TestReplicationService_Flow(t *testing.T) {
 	baseDS = dssync.MutexWrap(baseDS)
 	defer baseDS.Close()
 
-	mn := mocknet.New(ctx)
+	mn := mocknet.New()
 	rdvp, err := mn.GenPeer()
 	require.NoError(t, err, "failed to generate mocked peer")
 
@@ -607,7 +607,7 @@ func TestReplicationService_InvalidFlow(t *testing.T) {
 	baseDS = dssync.MutexWrap(baseDS)
 	defer baseDS.Close()
 
-	mn := mocknet.New(ctx)
+	mn := mocknet.New()
 	rdvp, err := mn.GenPeer()
 	require.NoError(t, err, "failed to generate mocked peer")
 

@@ -170,7 +170,7 @@ func testMemberStore(t *testing.T, memberCount, deviceCount int) {
 func ipfsAPIUsingMockNet(ctx context.Context, t *testing.T) (ipfsutil.ExtendedCoreAPI, func()) {
 	ipfsopts := &ipfsutil.TestingAPIOpts{
 		Logger:    zap.NewNop(),
-		Mocknet:   libp2p_mocknet.New(ctx),
+		Mocknet:   libp2p_mocknet.New(),
 		Datastore: ds_sync.MutexWrap(datastore.NewMapDatastore()),
 	}
 

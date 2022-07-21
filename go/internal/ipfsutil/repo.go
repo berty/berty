@@ -7,9 +7,9 @@ import (
 	"time"
 
 	ipfs_ds "github.com/ipfs/go-datastore"
-	ipfs_cfg "github.com/ipfs/go-ipfs-config"
-	ipfs_loader "github.com/ipfs/go-ipfs/plugin/loader"
-	ipfs_repo "github.com/ipfs/go-ipfs/repo"
+	ipfs_cfg "github.com/ipfs/kubo/config"
+	ipfs_loader "github.com/ipfs/kubo/plugin/loader"
+	ipfs_repo "github.com/ipfs/kubo/repo"
 	p2p_ci "github.com/libp2p/go-libp2p-core/crypto"
 	p2p_peer "github.com/libp2p/go-libp2p-core/peer"
 	"github.com/pkg/errors"
@@ -96,7 +96,7 @@ func createBaseConfig() (*ipfs_cfg.Config, error) {
 
 	// Discovery
 	c.Discovery.MDNS.Enabled = true
-	c.Discovery.MDNS.Interval = 5
+	c.Discovery.MDNS.Interval.UnmarshalJSON([]byte("5"))
 
 	// swarm listeners
 	c.Addresses.Swarm = DefaultSwarmListeners
@@ -111,7 +111,7 @@ func createBaseConfig() (*ipfs_cfg.Config, error) {
 	}
 
 	c.Routing = ipfs_cfg.Routing{
-		Type: "dhtclient",
+		Type: ipfs_cfg.NewOptionalString("dhtclient"),
 	}
 
 	return &c, nil

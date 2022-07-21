@@ -22,7 +22,7 @@ func TestContactRequestFlow(t *testing.T) {
 	defer cleanup()
 
 	opts := TestingOpts{
-		Mocknet: libp2p_mocknet.New(ctx),
+		Mocknet: libp2p_mocknet.New(),
 		Logger:  logger,
 	}
 
@@ -146,7 +146,7 @@ func TestContactRequestFlowWithoutIncoming(t *testing.T) {
 	defer cleanup()
 
 	opts := TestingOpts{
-		Mocknet: libp2p_mocknet.New(ctx),
+		Mocknet: libp2p_mocknet.New(),
 		Logger:  logger,
 	}
 

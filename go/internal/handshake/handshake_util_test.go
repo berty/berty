@@ -62,7 +62,7 @@ func newMockedPeer(t *testing.T, ctx context.Context, ipfsOpts *ipfsutil.Testing
 func newMockedHandshake(t *testing.T, ctx context.Context) *mockedHandshake {
 	t.Helper()
 
-	mn := p2pmocknet.New(ctx)
+	mn := p2pmocknet.New()
 	rdvp, err := mn.GenPeer()
 	require.NoError(t, err, "failed to generate mocked peer")
 

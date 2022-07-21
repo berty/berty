@@ -11,6 +11,7 @@ import (
 	peer "github.com/libp2p/go-libp2p-core/peer"
 	tpt "github.com/libp2p/go-libp2p-core/transport"
 	ma "github.com/multiformats/go-multiaddr"
+		"github.com/libp2p/go-libp2p-core/network"
 	manet "github.com/multiformats/go-multiaddr/net"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
@@ -46,6 +47,29 @@ func newConn(ctx context.Context, t *proximityTransport, remoteMa ma.Multiaddr, 
 ) (tpt.CapableConn, error) {
 	t.logger.Debug("newConn()", logutil.PrivateString("remoteMa", remoteMa.String()), zap.Bool("inbound", inbound))
 
+	var dir network.Direction
+	if inbound {
+		dir = network.DirInbound
+	} else {
+		dir = network.DirOutbound
+	}
+
+	scope, err := t.rcmgr.OpenConnection(dir, false)
+	if err != nil {
+		return nil, err
+	}
+	var good bool
+	defer func() {
+		if !good {
+			scope.Done()
+		}
+	}()
+
+	err = scope.SetPeer(remotePID)
+	if err != nil {
+		return nil, err
+	}
+
 	// Creates a manet.Conn
 	pr, pw := io.Pipe()
 	connCtx, cancel := context.WithCancel(t.listener.ctx)
@@ -74,10 +98,12 @@ func newConn(ctx context.Context, t *proximityTransport, remoteMa ma.Multiaddr, 
 	maconn.mp.setOutput(pw)
 
 	// Returns an upgraded CapableConn (muxed, addr filtered, secured, etc...)
-	if inbound {
-		return t.upgrader.UpgradeInbound(ctx, t, maconn)
+	tpt, err := t.upgrader.Upgrade(ctx, t, maconn, dir, remotePID, scope)
+	if err != nil {
+		return nil, err
 	}
-	return t.upgrader.UpgradeOutbound(ctx, t, maconn, remotePID)
+	good = true
+	return tpt, nil
 }
 
 // Read reads data from the connection.

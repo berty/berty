@@ -98,7 +98,7 @@ func verifyRunningLeakDetection(t *testing.T) {
 		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p/p2p/discovery/mdns.(*mdnsService).startResolver.func1"),        // the closing routine has big timeout, should be managed by ipfs
 		goleak.IgnoreTopFunction("github.com/libp2p/zeroconf/v2.(*client).mainloop"),                                         // the closing routine has big timeout, should be managed by ipfs
 		goleak.IgnoreTopFunction("github.com/libp2p/zeroconf/v2.(*client).periodicQuery"),                                    // the closing routine has big timeout, should be managed by ipfs
-		goleak.IgnoreTopFunction("github.com/ipfs/go-ipfs/core/bootstrap.bootstrapConnect.func1 "),                           // the closing routine has big timeout, should be managed by ipfs
+		goleak.IgnoreTopFunction("github.com/ipfs/kubo/core/bootstrap.bootstrapConnect.func1 "),                           // the closing routine has big timeout, should be managed by ipfs
 		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p-nat.(*NAT).refreshMappings"),                                   // the closing routine has big timeout, should be managed by ipfs
 		goleak.IgnoreTopFunction("go.opencensus.io/stats/view.(*worker).start"),                                              // called by init() in berty/go/internal/grpcutil/server.go
 		goleak.IgnoreTopFunction("go.uber.org/fx.withTimeout"),                                                               // sometimes happening on CI, need more investigation

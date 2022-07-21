@@ -12,10 +12,10 @@ import (
 	ipfs_mobile "github.com/ipfs-shipyard/gomobile-ipfs/go/pkg/ipfsmobile"
 	ds "github.com/ipfs/go-datastore"
 	dsync "github.com/ipfs/go-datastore/sync"
-	ipfs_cfg "github.com/ipfs/go-ipfs-config"
-	ipfs_core "github.com/ipfs/go-ipfs/core"
-	ipfs_mock "github.com/ipfs/go-ipfs/core/mock"
-	ipfs_repo "github.com/ipfs/go-ipfs/repo"
+	ipfs_cfg "github.com/ipfs/kubo/config"
+	ipfs_core "github.com/ipfs/kubo/core"
+	ipfs_mock "github.com/ipfs/kubo/core/mock"
+	ipfs_repo "github.com/ipfs/kubo/repo"
 	p2p_ci "github.com/libp2p/go-libp2p-core/crypto"
 	host "github.com/libp2p/go-libp2p-core/host"
 	p2pnetwork "github.com/libp2p/go-libp2p-core/network"
@@ -224,7 +224,7 @@ func TestingCoreAPIUsingMockNet(ctx context.Context, t testing.TB, opts *Testing
 func TestingCoreAPI(ctx context.Context, t testing.TB) (CoreAPIMock, func()) {
 	t.Helper()
 
-	m := p2p_mocknet.New(ctx)
+	m := p2p_mocknet.New()
 	rdvPeer, err := m.GenPeer()
 	require.NoError(t, err)
 

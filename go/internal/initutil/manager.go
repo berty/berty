@@ -12,7 +12,7 @@ import (
 
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	datastore "github.com/ipfs/go-datastore"
-	"github.com/ipfs/go-ipfs/core"
+	"github.com/ipfs/kubo/core"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	p2p_mdns "github.com/libp2p/go-libp2p/p2p/discovery/mdns"
 	"github.com/oklog/run"

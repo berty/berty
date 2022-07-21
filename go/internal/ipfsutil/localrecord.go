@@ -4,7 +4,7 @@ import (
 	"context"
 	"os"
 
-	ipfs_core "github.com/ipfs/go-ipfs/core"
+	ipfs_core "github.com/ipfs/kubo/core"
 	ipfs_interface "github.com/ipfs/interface-go-ipfs-core"
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/network"

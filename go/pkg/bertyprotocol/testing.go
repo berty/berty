@@ -32,7 +32,7 @@ func TestHelperIPFSSetUp(t *testing.T) (context.Context, context.CancelFunc, lib
 
 	ctx, cancel := context.WithCancel(context.Background())
 
-	mn := libp2p_mocknet.New(ctx)
+	mn := libp2p_mocknet.New()
 	rdvp, err := mn.GenPeer()
 	require.NoError(t, err, "failed to generate mocked peer")
 
@@ -211,7 +211,7 @@ func (opts *TestingOpts) applyDefaults(ctx context.Context) {
 		opts.Logger = zap.NewNop()
 	}
 	if opts.Mocknet == nil {
-		opts.Mocknet = libp2p_mocknet.New(ctx)
+		opts.Mocknet = libp2p_mocknet.New()
 	}
 	if opts.ConnectFunc == nil {
 		opts.ConnectFunc = ConnectAll
@@ -379,7 +379,7 @@ func CreatePeersWithGroupTest(ctx context.Context, t testing.TB, pathBase string
 		t.Fatal(err)
 	}
 
-	mn := libp2p_mocknet.New(ctx)
+	mn := libp2p_mocknet.New()
 	rdvp, err := mn.GenPeer()
 	require.NoError(t, err, "failed to generate mocked peer")
 

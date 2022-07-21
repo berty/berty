@@ -6,8 +6,8 @@ import (
 
 	ipfs_mobile "github.com/ipfs-shipyard/gomobile-ipfs/go/pkg/ipfsmobile"
 	ds "github.com/ipfs/go-datastore"
-	ipfs_config "github.com/ipfs/go-ipfs-config"
-	ipfs_p2p "github.com/ipfs/go-ipfs/core/node/libp2p"
+	ipfs_config "github.com/ipfs/kubo/config"
+	ipfs_p2p "github.com/ipfs/kubo/core/node/libp2p"
 	p2p "github.com/libp2p/go-libp2p"
 	p2p_host "github.com/libp2p/go-libp2p-core/host"
 	p2p_peer "github.com/libp2p/go-libp2p-core/peer"

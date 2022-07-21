@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"reflect"
 
-	ipfsCore "github.com/ipfs/go-ipfs/core"
+	ipfsCore "github.com/ipfs/kubo/core"
 	"go.uber.org/zap"
 
 	"berty.tech/berty/v2/go/internal/initutil"

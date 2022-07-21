@@ -1,4 +1,4 @@
-// mostly from: https://github.com/ipfs/go-ipfs/blob/master/peering/peering.go
+// mostly from: https://github.com/ipfs/kubo/blob/master/peering/peering.go
 
 package ipfsutil
 

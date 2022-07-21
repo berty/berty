@@ -34,10 +34,7 @@ var veryLongBackoff = &BackoffOpts{
 }
 
 func TestNewService(t *testing.T) {
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
-
-	m := mocknet.New(ctx)
+	m := mocknet.New()
 
 	h, err := m.GenPeer()
 	require.NoError(t, err)
@@ -62,7 +59,7 @@ func TestFlappyAdvertiseWatchdogs(t *testing.T) {
 
 	tick := 200 * time.Millisecond
 
-	m := mocknet.New(ctx)
+	m := mocknet.New()
 	opts := &Opts{
 		Logger: l,
 		// should expired after 4 ticks
@@ -100,7 +97,7 @@ func TestAdvertiseWatchdogsExpired(t *testing.T) {
 	l, cleanup := testutil.Logger(t)
 	defer cleanup()
 
-	m := mocknet.New(ctx)
+	m := mocknet.New()
 	opts := &Opts{
 		Logger:                 l,
 		AdvertiseResetInterval: time.Millisecond * 250,
@@ -143,7 +140,7 @@ func TestAdvertiseNetworkWakeUp(t *testing.T) {
 	l, cleanup := testutil.Logger(t)
 	defer cleanup()
 
-	m := mocknet.New(ctx)
+	m := mocknet.New()
 	opts := &Opts{
 		Logger: l,
 		// should expired after 4 ticks
@@ -218,7 +215,7 @@ func TestFindPeersCache(t *testing.T) {
 
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
-			m := mocknet.New(ctx)
+			m := mocknet.New()
 			server := NewMockedDriverServer()
 
 			driverh, err := m.GenPeer()
@@ -289,7 +286,7 @@ func TestFindPeers(t *testing.T) {
 	rand.Seed(time.Now().UnixNano())
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
-			m := mocknet.New(ctx)
+			m := mocknet.New()
 
 			server := NewMockedDriverServer()
 
@@ -387,7 +384,7 @@ func TestFindPeersMultipleDriver(t *testing.T) {
 
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
-			m := mocknet.New(ctx)
+			m := mocknet.New()
 			opts := &Opts{
 				Logger:                 l,
 				AdvertiseResetInterval: time.Minute,
