@@ -38,27 +38,32 @@ const MemberItem: React.FC<MemberItemProps> = ({ onPress, convPK, item }) => {
 			const peerFromMemberPK = await dispatch(
 				getPeerFromMemberPK({ memberPK: item.publicKey, convPK: item.conversationPublicKey }),
 			)
-			setPeer(peerFromMemberPK.payload as PeerNetworkStatus)
+
+			// fallback peer object in waiting for go implementation
+			const fallbackPeer = {
+				id: '',
+				transport: beapi.messenger.StreamEvent.PeerStatusConnected.Transport.Unknown,
+				connectionStatus: beapi.protocol.GroupDeviceStatus.Type.TypeUnknown,
+			}
+			setPeer((peerFromMemberPK.payload as PeerNetworkStatus) || fallbackPeer)
 		}
 
 		f()
 	}, [convPK, dispatch, item.publicKey, item.conversationPublicKey])
 
-	return (
-		peer && (
-			<TouchableOpacity onPress={onPress} style={[styles.item, padding.horizontal.medium]}>
-				<View style={[styles.content]}>
-					<MemberAvatarWithStatus
-						publicKey={item.publicKey}
-						convPK={convPK}
-						memberStatus={peer.connectionStatus}
-					/>
-					<MemberName displayName={item.displayName} />
-				</View>
-				<MemberTransport memberStatus={peer.connectionStatus} memberTransport={peer.transport} />
-			</TouchableOpacity>
-		)
-	)
+	return peer ? (
+		<TouchableOpacity onPress={onPress} style={[styles.item, padding.horizontal.medium]}>
+			<View style={[styles.content]}>
+				<MemberAvatarWithStatus
+					publicKey={item.publicKey}
+					convPK={convPK}
+					memberStatus={peer.connectionStatus}
+				/>
+				<MemberName displayName={item.displayName} />
+			</View>
+			<MemberTransport memberStatus={peer.connectionStatus} memberTransport={peer.transport} />
+		</TouchableOpacity>
+	) : null
 }
 
 export const MembersDropdown: React.FC<MembersDropdownProps> = props => {
