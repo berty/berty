@@ -644,5 +644,8 @@
 		"minutes": "",
 		"hours": "",
 		"days": ""
+	},
+	"share": {
+		"sharing-id-message": ""
 	}
 }
