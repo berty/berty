@@ -1,6 +1,6 @@
 ---
-- name: Stop CI runners on Macs
-  hosts: m1_macs
+- name: Stop public Mac CI runners
+  hosts: public_m1_mac_runners
 
   pre_tasks:
     - import_tasks: utils/check_macos.yml
