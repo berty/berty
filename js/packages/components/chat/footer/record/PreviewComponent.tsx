@@ -2,10 +2,9 @@ import { Player } from '@react-native-community/audio-toolkit'
 import { Icon } from '@ui-kitten/components'
 import React, { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { TouchableOpacity, View } from 'react-native'
+import { StyleSheet, TouchableOpacity, View } from 'react-native'
 import { readFile } from 'react-native-fs'
 
-import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
 import { useThemeColor } from '@berty/hooks'
 import { playSoundFile } from '@berty/utils/sound/sounds'
@@ -36,27 +35,20 @@ export const PreviewComponent: React.FC<{
 	setHelpMessageValue,
 }) => {
 	const { border, padding, margin } = useStyles()
-	const { scaleSize } = useAppDimensions()
 	const colors = useThemeColor()
 	const { t } = useTranslation()
 	const [player, setPlayer] = useState<Player>()
 	const isPlaying = useMemo(() => player?.isPlaying === true, [player?.isPlaying])
 
 	return (
-		<View
-			style={[{ flex: 1, flexDirection: 'row', alignItems: 'flex-end' }, margin.horizontal.medium]}
-		>
+		<View style={[styles.container, margin.horizontal.medium]}>
 			<TouchableOpacity
 				style={[
 					padding.horizontal.small,
 					margin.right.small,
+					styles.deleteButton,
 					{
-						alignItems: 'center',
-						justifyContent: 'center',
-						width: 36 * scaleSize,
-						height: 36 * scaleSize,
 						backgroundColor: colors['secondary-background-header'],
-						borderRadius: 18,
 					},
 				]}
 				onPress={() => {
@@ -69,39 +61,20 @@ export const PreviewComponent: React.FC<{
 					setRecordingState(RecordingState.PENDING_CANCEL)
 				}}
 			>
-				<Icon
-					name='trash-outline'
-					height={20 * scaleSize}
-					width={20 * scaleSize}
-					fill={colors['reverted-main-text']}
-				/>
+				<Icon name='trash-outline' height={20} width={20} fill={colors['reverted-main-text']} />
 			</TouchableOpacity>
 			<View
 				style={[
 					border.radius.medium,
 					margin.right.small,
 					padding.left.small,
+					styles.content,
 					{
-						height: 50,
-						flex: 1,
 						backgroundColor: colors['input-background'],
-						flexDirection: 'row',
-						justifyContent: 'center',
-						alignItems: 'center',
 					},
 				]}
 			>
-				<View
-					style={[
-						{
-							height: '100%',
-							flex: 1,
-							flexDirection: 'row',
-							alignItems: 'center',
-							justifyContent: 'center',
-						},
-					]}
-				>
+				<View style={styles.buttonWrapper}>
 					<TouchableOpacity
 						onPress={() => {
 							if (player?.isPlaying) {
@@ -123,8 +96,8 @@ export const PreviewComponent: React.FC<{
 						<Icon
 							name={isPlaying ? 'pause' : 'play'}
 							fill={colors['background-header']}
-							height={18 * scaleSize}
-							width={18 * scaleSize}
+							height={18}
+							width={18}
 							pack='custom'
 						/>
 					</TouchableOpacity>
@@ -141,11 +114,36 @@ export const PreviewComponent: React.FC<{
 					/>
 				</View>
 			</View>
-			<SendButton
-				onPress={() => {
-					setRecordingState(RecordingState.COMPLETE)
-				}}
-			/>
+			<SendButton onPress={() => setRecordingState(RecordingState.COMPLETE)} />
 		</View>
 	)
 }
+
+const styles = StyleSheet.create({
+	container: {
+		flex: 1,
+		flexDirection: 'row',
+		alignItems: 'center',
+	},
+	deleteButton: {
+		alignItems: 'center',
+		justifyContent: 'center',
+		width: 36,
+		height: 36,
+		borderRadius: 18,
+	},
+	content: {
+		height: 50,
+		flex: 1,
+		flexDirection: 'row',
+		justifyContent: 'center',
+		alignItems: 'center',
+	},
+	buttonWrapper: {
+		height: '100%',
+		flex: 1,
+		flexDirection: 'row',
+		alignItems: 'center',
+		justifyContent: 'center',
+	},
+})

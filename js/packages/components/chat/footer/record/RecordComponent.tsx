@@ -4,7 +4,7 @@ import { Icon } from '@ui-kitten/components'
 import Long from 'long'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Animated, Platform, TouchableOpacity, Vibration, View } from 'react-native'
+import { Animated, Platform, StyleSheet, Vibration, View } from 'react-native'
 import {
 	LongPressGestureHandler,
 	LongPressGestureHandlerGestureEvent,
@@ -14,7 +14,6 @@ import {
 import { RESULTS } from 'react-native-permissions'
 
 import beapi from '@berty/api'
-import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
 import { WelshMessengerServiceClient } from '@berty/grpc-bridge/welsh-clients.gen'
 import { useAppDispatch, useMessengerClient, useThemeColor } from '@berty/hooks'
@@ -23,7 +22,6 @@ import rnutil from '@berty/utils/react-native'
 import { PermissionType } from '@berty/utils/react-native/permissions'
 import { playSound } from '@berty/utils/sound/sounds'
 
-import { UnifiedText } from '../../../shared-components/UnifiedText'
 import {
 	limitIntensities,
 	RecordingState,
@@ -31,6 +29,7 @@ import {
 	volumeValueLowest,
 	volumeValuePrecision,
 } from '../../audioMessageCommon'
+import { HelpMessage } from './HelpMessage'
 import { PreviewComponent } from './PreviewComponent'
 import { RecordingComponent } from './RecordingComponent'
 
@@ -161,8 +160,7 @@ export const RecordComponent: React.FC<{
 	const { t } = useTranslation()
 	const { navigate } = useNavigation()
 
-	const { border, padding, margin } = useStyles()
-	const { scaleSize } = useAppDimensions()
+	const { padding } = useStyles()
 	const colors = useThemeColor()
 	const [recordingState, setRecordingState] = useState(RecordingState.NOT_RECORDING)
 	/*
@@ -504,23 +502,9 @@ export const RecordComponent: React.FC<{
 	return Platform.OS === 'web' ? (
 		<View style={[padding.left.scale(10), { flex: 1 }]}>{children}</View>
 	) : (
-		<View style={[{ flexDirection: 'row' }]}>
+		<View style={{ flexDirection: 'row' }}>
 			{helpMessage !== '' && (
-				<TouchableOpacity
-					style={{ position: 'absolute', top: -30, right: 0, zIndex: 42000 }}
-					onPress={() => clearHelpMessageValue()}
-				>
-					<View
-						style={[
-							{ backgroundColor: colors['background-header'] },
-							padding.small,
-							border.radius.small,
-							margin.right.small,
-						]}
-					>
-						<UnifiedText style={{ color: colors['reverted-main-text'] }}>{helpMessage}</UnifiedText>
-					</View>
-				</TouchableOpacity>
+				<HelpMessage helpMessage={helpMessage} clearHelpMessageValue={clearHelpMessageValue} />
 			)}
 			{isRecording && (
 				<RecordingComponent
@@ -555,38 +539,24 @@ export const RecordComponent: React.FC<{
 					onHandlerStateChange={recordingPressStatus}
 					shouldCancelWhenOutside={false}
 				>
-					<View
-						style={[
-							{
-								justifyContent: 'center',
-								alignItems: 'flex-end',
-								paddingRight: 15 * scaleSize,
-							},
-						]}
-					>
+					<View style={styles.container}>
 						{recordingState === RecordingState.RECORDING && (
 							<View
-								style={{
-									justifyContent: 'center',
-									alignItems: 'center',
-									borderRadius: 18 * scaleSize,
-									borderWidth: 1,
-									borderColor: `${colors['reverted-main-text']}c0`,
-									backgroundColor: colors['background-header'],
-									width: 36 * scaleSize,
-									height: 36 * scaleSize,
-									position: 'absolute',
-									top: -distanceLock - 30,
-									right: 16,
-									paddingVertical: 5,
-								}}
+								style={[
+									styles.recordWrapper,
+									{
+										borderColor: `${colors['reverted-main-text']}c0`,
+										backgroundColor: colors['background-header'],
+										top: -distanceLock - 30,
+									},
+								]}
 							>
-								<View style={{ paddingBottom: 2 * scaleSize }}>
+								<View style={{ paddingBottom: 2 }}>
 									<Icon
 										name='lock'
 										pack='feather'
-										height={18 * scaleSize}
-										width={18 * scaleSize}
+										height={18}
+										width={18}
 										fill={colors['reverted-main-text']}
 									/>
 								</View>
@@ -599,3 +569,22 @@ export const RecordComponent: React.FC<{
 		</View>
 	)
 }
+
+const styles = StyleSheet.create({
+	container: {
+		justifyContent: 'center',
+		alignItems: 'flex-end',
+		paddingRight: 15,
+	},
+	recordWrapper: {
+		justifyContent: 'center',
+		alignItems: 'center',
+		borderRadius: 18,
+		borderWidth: 1,
+		width: 36,
+		height: 36,
+		position: 'absolute',
+		right: 16,
+		paddingVertical: 5,
+	},
+})

@@ -31,6 +31,7 @@ export const ChatDate: React.FC<ChatDateProps> = React.memo(({ date }) => {
 	const colors = useThemeColor()
 	const backgroundColor = colors['input-background']
 	const textColor = colors['secondary-text']
+
 	return (
 		<View style={[row.item.justify, border.radius.medium, _styles.date, { backgroundColor }]}>
 			<UnifiedText style={[_styles.dateText, { color: textColor }]}>

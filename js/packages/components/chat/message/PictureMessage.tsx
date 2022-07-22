@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { View, TouchableOpacity, Image, ActivityIndicator } from 'react-native'
+import { View, TouchableOpacity, Image, ActivityIndicator, StyleSheet } from 'react-native'
 import { useSelector } from 'react-redux'
 
 import beapi from '@berty/api'
@@ -42,15 +42,7 @@ export const PictureMessage: React.FC<{
 	}, [protocolClient, medias])
 
 	return (
-		<View
-			style={[
-				{
-					flexDirection: 'row',
-					alignContent: 'center',
-					justifyContent: 'center',
-				},
-			]}
-		>
+		<View style={styles.container}>
 			<View
 				style={{
 					height: 165 + (medias.length > 4 ? 3 : medias.length - 1) * 15,
@@ -81,24 +73,13 @@ export const PictureMessage: React.FC<{
 								{
 									backgroundColor: colors['input-background'],
 									shadowColor: colors.shadow,
-									alignItems: 'center',
-									justifyContent: 'center',
-									height: 165,
-									width: 165,
 								},
+								styles.imageWrapper,
 								border.radius.small,
 								border.shadow.small,
 								isHighlight && {
 									borderColor: colors['background-header'],
-									borderWidth: 1,
 									shadowColor: colors.shadow,
-									shadowOffset: {
-										width: 0,
-										height: 8,
-									},
-									shadowOpacity: 0.44,
-									shadowRadius: 10.32,
-									elevation: 16,
 								},
 							]}
 						>
@@ -126,16 +107,37 @@ export const PictureMessage: React.FC<{
 			</View>
 
 			{medias.length > 4 && (
-				<View
-					style={{
-						right: 0,
-						top: 70,
-						position: 'absolute',
-					}}
-				>
+				<View style={styles.counter}>
 					<ImageCounter count={medias.length - 4} />
 				</View>
 			)}
 		</View>
 	)
 }
+
+const styles = StyleSheet.create({
+	container: {
+		flexDirection: 'row',
+		alignContent: 'center',
+		justifyContent: 'center',
+	},
+	imageWrapper: {
+		alignItems: 'center',
+		justifyContent: 'center',
+		height: 165,
+		width: 165,
+		borderWidth: 1,
+		shadowOffset: {
+			width: 0,
+			height: 8,
+		},
+		shadowOpacity: 0.44,
+		shadowRadius: 10.32,
+		elevation: 16,
+	},
+	counter: {
+		right: 0,
+		top: 70,
+		position: 'absolute',
+	},
+})

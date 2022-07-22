@@ -1,15 +1,14 @@
 import { Icon } from '@ui-kitten/components'
 import React, { useEffect, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
-import { View, TouchableOpacity, AppState, Platform } from 'react-native'
+import { View, TouchableOpacity, AppState, Platform, StyleSheet } from 'react-native'
 import { RESULTS, openSettings } from 'react-native-permissions'
 
-import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
+import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useStyles } from '@berty/contexts/styles'
 import { useThemeColor } from '@berty/hooks'
 import { PermissionType, getPermissions } from '@berty/utils/react-native/permissions'
 
-import { UnifiedText } from '../../../shared-components/UnifiedText'
 import { TabItems } from './types'
 
 export const SecurityAccess: React.FC<{ close: () => void; activeTab: TabItems }> = ({
@@ -17,7 +16,6 @@ export const SecurityAccess: React.FC<{ close: () => void; activeTab: TabItems }
 	close,
 }) => {
 	const { border, padding, margin } = useStyles()
-	const { scaleSize } = useAppDimensions()
 	const { t } = useTranslation()
 	const colors = useThemeColor()
 
@@ -112,22 +110,14 @@ export const SecurityAccess: React.FC<{ close: () => void; activeTab: TabItems }
 				style={[
 					{
 						backgroundColor: colors['positive-asset'],
-						flexDirection: 'row',
-						alignItems: 'center',
-						justifyContent: 'center',
 					},
+					styles.header,
 					padding.small,
 					border.radius.top.large,
 				]}
 			>
 				<UnifiedText style={{ textAlign: 'center' }}>{t('chat.files.security-access')}</UnifiedText>
-				<TouchableOpacity
-					onPress={close}
-					style={{
-						position: 'absolute',
-						right: 20,
-					}}
-				>
+				<TouchableOpacity onPress={close} style={styles.iconWrapper}>
 					<Icon
 						name='close-circle-outline'
 						fill={colors['positive-asset']}
@@ -136,21 +126,12 @@ export const SecurityAccess: React.FC<{ close: () => void; activeTab: TabItems }
 					/>
 				</TouchableOpacity>
 			</View>
-			<TouchableOpacity
-				onPress={activeTabConfig.onPress}
-				style={[
-					padding.small,
-					{
-						alignItems: 'center',
-						justifyContent: 'center',
-					},
-				]}
-			>
+			<TouchableOpacity onPress={activeTabConfig.onPress} style={[padding.small, styles.content]}>
 				<Icon
 					name={activeTabConfig.iconName}
 					fill={colors['secondary-text']}
-					height={36 * scaleSize}
-					width={36 * scaleSize}
+					height={36}
+					width={36}
 					pack='custom'
 				/>
 				<UnifiedText
@@ -167,3 +148,19 @@ export const SecurityAccess: React.FC<{ close: () => void; activeTab: TabItems }
 		</View>
 	)
 }
+
+const styles = StyleSheet.create({
+	header: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		justifyContent: 'center',
+	},
+	iconWrapper: {
+		position: 'absolute',
+		right: 20,
+	},
+	content: {
+		alignItems: 'center',
+		justifyContent: 'center',
+	},
+})

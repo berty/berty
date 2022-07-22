@@ -1,12 +1,14 @@
 import React from 'react'
 import { StyleSheet } from 'react-native'
 
+import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useStyles } from '@berty/contexts/styles'
 
-import { UnifiedText } from '../../../../shared-components/UnifiedText'
 import { ActiveReplyInteractionProps } from '../interface'
 
-export const ReplyMessage: React.FC<ActiveReplyInteractionProps> = ({ activeReplyInteraction }) => {
+export const ReplyMessagePriv: React.FC<ActiveReplyInteractionProps> = ({
+	activeReplyInteraction,
+}) => {
 	const { text } = useStyles()
 
 	return (

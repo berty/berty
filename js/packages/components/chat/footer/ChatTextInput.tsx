@@ -1,13 +1,13 @@
 import React from 'react'
 import { View, Platform, StyleSheet } from 'react-native'
 
+import { InputPriv } from '@berty/components/inputs/Input.priv'
 import { useStyles } from '@berty/contexts/styles'
 import { useThemeColor } from '@berty/hooks'
 import { isTablet } from '@berty/utils/react-native/constants'
 
-import { InputPriv } from '../Input.priv'
 import { ChatInputProps } from './interface'
-import { ReplyMessageBar } from './reply/ReplyMessageBar.priv'
+import { ReplyMessageBarPriv } from './reply/ReplyMessageBar.priv'
 
 export const ChatTextInput: React.FC<ChatInputProps> = React.memo(props => {
 	const {
@@ -33,7 +33,7 @@ export const ChatTextInput: React.FC<ChatInputProps> = React.memo(props => {
 				{ backgroundColor: `${colors['positive-asset']}70` },
 			]}
 		>
-			<ReplyMessageBar convPK={convPK} />
+			<ReplyMessageBarPriv convPK={convPK} />
 			<InputPriv
 				value={value}
 				editable={editable}

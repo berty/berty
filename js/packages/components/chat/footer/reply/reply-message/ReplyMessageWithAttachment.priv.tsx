@@ -3,13 +3,13 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { StyleSheet, View } from 'react-native'
 
+import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useStyles } from '@berty/contexts/styles'
 import { getMediaTypeFromMedias } from '@berty/utils/messenger/media'
 
-import { UnifiedText } from '../../../../shared-components/UnifiedText'
 import { ActiveReplyInteractionProps } from '../interface'
 
-export const ReplyMessageWithAttachment: React.FC<ActiveReplyInteractionProps> = ({
+export const ReplyMessageWithAttachmentPriv: React.FC<ActiveReplyInteractionProps> = ({
 	activeReplyInteraction,
 }) => {
 	const { t } = useTranslation()

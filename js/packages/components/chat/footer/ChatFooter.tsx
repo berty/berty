@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import {
 	NativeSyntheticEvent,
 	Platform,
+	StyleSheet,
 	TextInputSelectionChangeEventData,
 	View,
 } from 'react-native'
@@ -12,8 +13,7 @@ import { RESULTS } from 'react-native-permissions'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import beapi from '@berty/api'
-import { BottomModal, ChatTextInput } from '@berty/components'
-import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
+import { BottomModal } from '@berty/components'
 import {
 	useAppDispatch,
 	useAppSelector,
@@ -46,6 +46,7 @@ import { Maybe } from '@berty/utils/type/maybe'
 
 import { AddFileMenu } from '../modals/add-file-modal/AddFileMenu.modal'
 import { CameraButton, MoreButton, RecordButton, SendButton } from './ChatFooterButtons'
+import { ChatTextInput } from './ChatTextInput'
 import { RecordComponent } from './record/RecordComponent'
 
 type ChatFooterProps = {
@@ -87,7 +88,6 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 		const colors = useThemeColor()
 		const { navigate } = useNavigation()
 		const activeReplyInte = useAppSelector(state => selectActiveReplyInteraction(state, convPK))
-		const { scaleSize } = useAppDimensions()
 		const messengerClient = useMessengerClient()
 		const playSound = usePlaySound()
 		const conversation = useConversation(convPK)
@@ -99,7 +99,7 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 		// computed
 		const isFake = !!(conversation as any)?.fake
 		const sendEnabled = !sending && !!(!isFake && (message || mediaCids.length > 0))
-		const horizontalGutter = 8 * scaleSize
+		const horizontalGutter = 8
 		const showQuickButtons = useMemo(
 			() => !disabled && !sending && !message && mediaCids.length <= 0 && Platform.OS !== 'web',
 			[disabled, mediaCids.length, message, sending],
@@ -290,15 +290,13 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 		return (
 			<View style={{ backgroundColor: colors['main-background'] }}>
 				<View
-					style={{
-						paddingLeft: 10 * scaleSize,
-						paddingTop: 10 * scaleSize,
-						paddingBottom: insets.bottom || 18 * scaleSize,
-						justifyContent: 'flex-end',
-						alignItems: 'center',
-						minHeight: 65 * scaleSize,
-						backgroundColor: colors['main-background'],
-					}}
+					style={[
+						styles.container,
+						{
+							paddingBottom: insets.bottom || 18,
+							backgroundColor: colors['main-background'],
+						},
+					]}
 				>
 					<RecordComponent
 						component={recordIcon}
@@ -308,13 +306,7 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 						setSending={setSending}
 						sending={sending}
 					>
-						<View
-							style={{
-								flexDirection: 'row',
-								justifyContent: 'center',
-								alignItems: 'center',
-							}}
-						>
+						<View style={styles.wrapper}>
 							<View style={{ marginRight: horizontalGutter }}>
 								{Platform.OS !== 'web' && (
 									<MoreButton
@@ -366,3 +358,18 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 		)
 	},
 )
+
+const styles = StyleSheet.create({
+	wrapper: {
+		flexDirection: 'row',
+		justifyContent: 'center',
+		alignItems: 'center',
+	},
+	container: {
+		paddingLeft: 10,
+		paddingTop: 10,
+		justifyContent: 'flex-end',
+		alignItems: 'center',
+		minHeight: 65,
+	},
+})
