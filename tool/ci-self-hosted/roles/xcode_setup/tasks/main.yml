@@ -4,9 +4,10 @@
   environment:
     FASTLANE_USER: "{{ FASTLANE_USER }}"
     FASTLANE_PASSWORD: "{{ FASTLANE_PASSWORD }}"
+    BECOME_PASSWORD: "{{ ansible_become_password }}"
   shell:
     chdir: "{{ ansible_facts.user_dir }}"
-    cmd: /bin/zsh -ic 'fastlane spaceauth --check-session'
+    cmd: /bin/zsh -ic "echo $BECOME_PASSWORD | sudo -p '' -ES fastlane spaceauth --check-session"
   register: check_session
   changed_when: check_session.rc == 1
   failed_when: check_session.rc != 1 and check_session.rc != 0
@@ -23,9 +24,11 @@
   when: check_session.rc == 1
 
 - name: Upload session cookie on runners
+  become: true
   copy:
     dest: "{{ session_folder }}/cookie"
     src: ../../../xcode-cookie/cookie
+    mode: '600'
   when: check_session.rc == 1
 
 - name: Get list of available XCode versions
