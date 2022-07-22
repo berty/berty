@@ -80,19 +80,32 @@ func (n *NewOrbitDBOptions) applyDefaults() {
 	if n.RotationInterval == nil {
 		n.RotationInterval = rendezvous.NewStaticRotationInterval()
 	}
+
+	if n.Logger == nil {
+		n.Logger = zap.NewNop()
+	}
+	n.Logger = n.Logger.Named("odb")
 }
+
+type (
+	GroupMap           = sync.Map
+	GroupContextMap    = sync.Map
+	GroupsSigPubKeyMap = sync.Map
+)
 
 type BertyOrbitDB struct {
 	baseorbitdb.BaseOrbitDB
-	rotationInterval *rendezvous.RotationInterval
-	groups           sync.Map // map[string]*protocoltypes.Group
-	groupContexts    sync.Map // map[string]*GroupContext
-	groupsSigPubKey  sync.Map // map[string]crypto.PubKey
 	keyStore         *BertySignedKeyStore
 	messageKeystore  *cryptoutil.MessageKeystore
 	deviceKeystore   cryptoutil.DeviceKeystore
 	pubSub           iface.PubSubInterface
-	messageMarshaler *RotationMessageMarshaler
+	rotationInterval *rendezvous.RotationInterval
+	messageMarshaler *OrbitDBMessageMarshaler
+
+	// FIXME(gfanton): use real map instead of sync.Map
+	groups          *GroupMap           // map[string]*protocoltypes.Group
+	groupContexts   *GroupContextMap    // map[string]*GroupContext
+	groupsSigPubKey *GroupsSigPubKeyMap // map[string]crypto.PubKey
 }
 
 func (s *BertyOrbitDB) registerGroupPrivateKey(g *protocoltypes.Group) error {
@@ -144,25 +157,22 @@ func NewBertyOrbitDB(ctx context.Context, ipfs coreapi.CoreAPI, options *NewOrbi
 	}
 
 	options.applyDefaults()
-	options.Logger = options.Logger.Named("odb")
 
 	ks := &BertySignedKeyStore{}
 	options.Keystore = ks
 	options.Identity = &identityprovider.Identity{}
 
-	if options.PubSub == nil {
-		self, err := ipfs.Key().Self(ctx)
-		if err != nil {
-			return nil, err
-		}
+	self, err := ipfs.Key().Self(ctx)
+	if err != nil {
+		return nil, err
+	}
 
+	if options.PubSub == nil {
 		options.PubSub = pubsubcoreapi.NewPubSub(ipfs, self.ID(), time.Second, options.Logger, options.Tracer)
 	}
 
-	mm := NewRotationMessageMarshaler(options.RotationInterval)
-	// if options.MessageMarshaler == nil {
-	// 	options.MessageMarshaler = mm
-	// }
+	mm := NewOrbitDBMessageMarshaler(self.ID(), options.DeviceKeystore, options.RotationInterval)
+	options.MessageMarshaler = mm
 
 	orbitDB, err := baseorbitdb.NewOrbitDB(ctx, ipfs, &options.NewOrbitDBOptions)
 	if err != nil {
@@ -177,6 +187,9 @@ func NewBertyOrbitDB(ctx context.Context, ipfs coreapi.CoreAPI, options *NewOrbi
 		messageKeystore:  options.MessageKeystore,
 		rotationInterval: options.RotationInterval,
 		pubSub:           options.PubSub,
+		groups:           &GroupMap{},
+		groupContexts:    &GroupContextMap{},    // map[string]*GroupContext
+		groupsSigPubKey:  &GroupsSigPubKeyMap{}, // map[string]crypto.PubKey
 	}
 
 	if err := bertyDB.RegisterAccessControllerType(NewSimpleAccessController); err != nil {
@@ -195,7 +208,6 @@ func (s *BertyOrbitDB) openAccountGroup(ctx context.Context, options *orbitdb.Cr
 	if err != nil {
 		return nil, errcode.ErrOrbitDBOpen.Wrap(err)
 	}
-
 	l.Debug("Got AccountPrivKey", tyber.FormatStepLogFields(ctx, []tyber.Detail{})...)
 
 	skProof, err := s.deviceKeystore.AccountProofPrivKey()
@@ -348,6 +360,7 @@ func (s *BertyOrbitDB) OpenGroup(ctx context.Context, g *protocoltypes.Group, op
 	if err != nil {
 		return nil, errcode.ErrOrbitDBOpen.Wrap(err)
 	}
+	s.messageMarshaler.RegisterGroup(metaImpl.Address().String(), g)
 
 	s.Logger().Debug("Got metadata store", tyber.FormatStepLogFields(ctx, []tyber.Detail{})...)
 
@@ -355,6 +368,7 @@ func (s *BertyOrbitDB) OpenGroup(ctx context.Context, g *protocoltypes.Group, op
 	if err != nil {
 		return nil, errcode.ErrOrbitDBOpen.Wrap(err)
 	}
+	s.messageMarshaler.RegisterGroup(messagesImpl.Address().String(), g)
 
 	s.Logger().Debug("Got message store", tyber.FormatStepLogFields(ctx, []tyber.Detail{})...)
 
@@ -443,6 +457,8 @@ func (s *BertyOrbitDB) storeForGroup(ctx context.Context, o iface.BaseOrbitDB, g
 		return nil, err
 	}
 
+	s.messageMarshaler.RegisterGroup(addr.String(), g)
+
 	linkKey, err := cryptoutil.GetLinkKeyArray(g)
 	if err != nil {
 		return nil, err
@@ -459,6 +475,7 @@ func (s *BertyOrbitDB) storeForGroup(ctx context.Context, o iface.BaseOrbitDB, g
 		options.IO = cborIO
 
 		l.Debug("opening store: register rotation", zap.String("topic", addr.String()))
+
 		s.messageMarshaler.RegisterSharedKeyForTopic(addr.String(), sk)
 		s.rotationInterval.RegisterRotation(time.Now(), addr.String(), key)
 	}
