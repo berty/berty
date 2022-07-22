@@ -32,7 +32,7 @@ import { MessageMenu } from '../modals/MessageMenu.modal'
 import { AudioMessage } from './AudioMessage'
 import { FileMessage } from './FileMessage'
 import { PictureMessage } from './PictureMessage'
-import { Reactions } from './Reactions'
+import { Reactions } from './reactions/Reactions'
 import { HyperlinkUserMessage, TimestampStatusUserMessage } from './UserMessageComponents'
 
 const pal = palette('tol-rainbow', 256)
@@ -523,7 +523,6 @@ export const UserMessage: React.FC<{
 							{!!messageLayoutWidth && (
 								<Reactions
 									convPk={convPK}
-									reactions={inte.reactions || []}
 									cid={inte.cid!}
 									onEmojiKeyboard={() => {
 										setIsEmojiVisible(true)
