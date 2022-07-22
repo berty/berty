@@ -644,5 +644,8 @@
 		"minutes": "{{minutes}} 分",
 		"hours": "{{hours}} 时",
 		"days": "{{days}} 日"
+	},
+	"share": {
+		"sharing-id-message": ""
 	}
 }
