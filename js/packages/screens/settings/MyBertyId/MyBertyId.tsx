@@ -1,8 +1,7 @@
-import Clipboard from '@react-native-clipboard/clipboard'
 import { Layout, Icon } from '@ui-kitten/components'
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { View, TouchableOpacity, Share, StatusBar, Platform } from 'react-native'
+import { View, TouchableOpacity, StatusBar } from 'react-native'
 import QRCode from 'react-native-qrcode-svg'
 
 import logo from '@berty/assets/images/1_berty_picto.png'
@@ -14,6 +13,7 @@ import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
 import { useAccount, useStylesBertyId, useThemeColor } from '@berty/hooks'
 import { ScreenFC } from '@berty/navigation'
+import { shareBertyID } from '@berty/utils/react-native/share'
 
 //
 // Settings My Berty ID Vue
@@ -141,6 +141,7 @@ const BertyIdShare: React.FC = () => {
 	const { styleBertyIdButton, iconShareSize } = useStylesBertyId(styleBertyIdOptions)
 	const account = useAccount()
 	const url = account.link
+	const { t } = useTranslation()
 	if (!url) {
 		return null
 	}
@@ -153,15 +154,7 @@ const BertyIdShare: React.FC = () => {
 				styleBertyIdButton,
 			]}
 			onPress={async () => {
-				try {
-					if (Platform.OS === 'web') {
-						Clipboard.setString(url)
-					} else {
-						await Share.share({ url, message: url })
-					}
-				} catch (e) {
-					console.error(e)
-				}
+				await shareBertyID(url, t)
 			}}
 		>
 			<View style={[flex.tiny, { justifyContent: 'center' }]}>

@@ -644,5 +644,8 @@
 		"minutes": "{{minutes}} min",
 		"hours": "{{hours}} h",
 		"days": "{{days}} days"
+	},
+	"share": {
+		"sharing-id-message": "Let’s chat on Berty, a secure & p2p messaging app. Join me here:"
 	}
 }

@@ -1,20 +1,10 @@
-import Clipboard from '@react-native-clipboard/clipboard'
 import { useFocusEffect } from '@react-navigation/core'
 import { Layout } from '@ui-kitten/components'
 import { BarCodeScanner } from 'expo-barcode-scanner'
 import { Camera } from 'expo-camera'
 import React, { FC, ReactNode, useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import {
-	View,
-	Vibration,
-	StatusBar,
-	Share,
-	ScrollView,
-	Platform,
-	TextInput,
-	TouchableOpacity,
-} from 'react-native'
+import { View, Vibration, StatusBar, ScrollView, TextInput, TouchableOpacity } from 'react-native'
 import { RESULTS } from 'react-native-permissions'
 import QRCode from 'react-native-qrcode-svg'
 
@@ -31,6 +21,7 @@ import { useAccount, useMessengerClient, useThemeColor } from '@berty/hooks'
 import { ScreenFC, useNavigation } from '@berty/navigation'
 import { checkPermissions } from '@berty/utils/react-native/checkPermissions'
 import { PermissionType } from '@berty/utils/react-native/permissions'
+import { shareBertyID } from '@berty/utils/react-native/share'
 
 const QrCode: FC<{ size: number }> = ({ size }) => {
 	const client = useMessengerClient()
@@ -280,17 +271,7 @@ export const ShareModal: ScreenFC<'Chat.Share'> = () => {
 								color: colors['background-header'],
 								style: [height(120), height(120), width(120)],
 								onPress: async () => {
-									if (url) {
-										try {
-											if (Platform.OS === 'web') {
-												Clipboard.setString(url)
-											} else {
-												await Share.share({ url, message: url })
-											}
-										} catch (e) {
-											console.error(e)
-										}
-									}
+									await shareBertyID(url, t)
 								},
 							},
 						]}
