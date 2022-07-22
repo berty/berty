@@ -19,7 +19,6 @@ export const Reactions: FC<{
 	const [isVisible, setIsVisible] = useState<boolean>(false)
 	const [emoji, setEmoji] = useState<string | null | undefined>('')
 
-	console.log('REACTIONS', inte?.reactions)
 	if (!inte?.reactions || !inte?.reactions.length) {
 		return null
 	}

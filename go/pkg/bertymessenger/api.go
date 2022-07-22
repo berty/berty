@@ -1428,16 +1428,10 @@ func (svc *service) ConversationLoad(ctx context.Context, request *messengertype
 		if medias == nil {
 			medias = []*messengertypes.Media{}
 		}
-		ais := make([]*messengertypes.Interaction, len(interactions))
-		for i, inte := range interactions {
-			if ais[i], err = svc.db.GetAugmentedInteraction(inte.CID); err != nil {
-				return nil, errcode.ErrDBRead.Wrap(err)
-			}
-		}
 
 		if err := svc.dispatcher.StreamEvent(messengertypes.StreamEvent_TypeConversationPartialLoad, &messengertypes.StreamEvent_ConversationPartialLoad{
 			ConversationPK: interactions[0].ConversationPublicKey,
-			Interactions:   ais,
+			Interactions:   interactions,
 			Medias:         medias,
 		}, false); err != nil {
 			svc.logger.Error("unable to bulk send conversation events", zap.Error(err))
