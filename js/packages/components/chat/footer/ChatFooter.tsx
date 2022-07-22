@@ -46,7 +46,6 @@ import { Maybe } from '@berty/utils/type/maybe'
 
 import { AddFileMenu } from '../modals/add-file-modal/AddFileMenu.modal'
 import { CameraButton, MoreButton, RecordButton, SendButton } from './ChatFooterButtons'
-import { EmojiBanner } from './emojis/EmojiBanner'
 import { RecordComponent } from './record/RecordComponent'
 
 type ChatFooterProps = {
@@ -290,7 +289,6 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 		// render
 		return (
 			<View style={{ backgroundColor: colors['main-background'] }}>
-				<EmojiBanner convPk={convPK} />
 				<View
 					style={{
 						paddingLeft: 10 * scaleSize,
