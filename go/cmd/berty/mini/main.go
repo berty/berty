@@ -6,7 +6,6 @@ import (
 	"io"
 	"os"
 	"strings"
-	"time"
 
 	"github.com/gdamore/tcell"
 	"github.com/gdamore/tcell/terminfo"
@@ -124,18 +123,29 @@ func Main(ctx context.Context, opts *Opts) error {
 			AddItem(tabbedView.GetHistory(), 0, 1, false).
 			AddItem(inputBox, 1, 1, true), 0, 1, true)
 
-	const ShouldBecomeInactive = time.Second * 30
-	inactiveTimer := time.AfterFunc(ShouldBecomeInactive, func() {
-		opts.LifecycleManager.UpdateState(lifecycle.StateInactive)
-	})
+	// The inactive timer is disabled for now because it will cause group subs to be suspended
+	// when going to inactive state
+	// This will prevent desktop notification when inactive but they should not happen if subs
+	// are suspended anyway
+
+	/*
+		const ShouldBecomeInactive = time.Second * 30
+		inactiveTimer := time.AfterFunc(ShouldBecomeInactive, func() {
+			opts.LifecycleManager.UpdateState(lifecycle.StateInactive)
+		})
+	*/
 
 	app.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
-		// reset timer
-		if !inactiveTimer.Stop() {
-			// AfterFunc timer should already have consume `inactiveTimer.C`
-			opts.LifecycleManager.UpdateState(lifecycle.StateActive)
-		}
-		inactiveTimer.Reset(ShouldBecomeInactive)
+		/*
+
+			// reset timer
+			if !inactiveTimer.Stop() {
+				// AfterFunc timer should already have consume `inactiveTimer.C`
+				opts.LifecycleManager.UpdateState(lifecycle.StateActive)
+			}
+			inactiveTimer.Reset(ShouldBecomeInactive)
+
+		*/
 
 		// nolint:exhaustive
 		switch event.Key() {
