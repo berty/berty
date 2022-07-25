@@ -1,15 +1,7 @@
 import Long from 'long'
 import React, { MutableRefObject, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import {
-	NativeSyntheticEvent,
-	Platform,
-	StyleSheet,
-	TextInputSelectionChangeEventData,
-	View,
-} from 'react-native'
-import ImagePicker from 'react-native-image-crop-picker'
-import { RESULTS } from 'react-native-permissions'
+import { Platform, StyleSheet, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import beapi from '@berty/api'
@@ -24,7 +16,6 @@ import {
 	useMessengerClient,
 	useMountEffect,
 } from '@berty/hooks'
-import { useNavigation } from '@berty/navigation'
 import {
 	removeActiveReplyInteraction,
 	resetChatInput,
@@ -34,29 +25,21 @@ import {
 	setChatInputText,
 } from '@berty/redux/reducers/chatInputs.reducer'
 import {
-	selectChatInputIsFocused,
 	selectChatInputIsSending,
-	setChatInputIsFocused,
 	setChatInputIsSending,
-	setChatInputSelection,
 } from '@berty/redux/reducers/chatInputsVolatile.reducer'
-import rnutil from '@berty/utils/react-native'
-import { PermissionType } from '@berty/utils/react-native/permissions'
-import { Maybe } from '@berty/utils/type/maybe'
 
 import { AddFileMenu } from '../modals/add-file-modal/AddFileMenu.modal'
-import { CameraButton, MoreButton, RecordButton, SendButton } from './ChatFooterButtons'
+import { CameraButton } from './CameraButton'
+import { MoreButton, RecordButton, SendButton } from './ChatFooterButtons'
 import { ChatTextInput } from './ChatTextInput'
 import { RecordComponent } from './record/RecordComponent'
 
 type ChatFooterProps = {
 	convPK: string
 	placeholder: string
-	disabled?: Maybe<boolean>
+	disabled?: boolean
 }
-
-const amap = async <T extends any, C extends (value: T) => any>(arr: T[], cb: C) =>
-	Promise.all(arr.map(cb))
 
 function useStateWithRef<T>(defaultValue: T): [T, (val: T) => void, MutableRefObject<T>] {
 	const [_state, _setState] = React.useState<T>(defaultValue)
@@ -72,7 +55,6 @@ function useStateWithRef<T>(defaultValue: T): [T, (val: T) => void, MutableRefOb
 
 export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 	({ placeholder, convPK, disabled }) => {
-		// external
 		const { t } = useTranslation()
 		const dispatch = useAppDispatch()
 		const sending = useAppSelector(state => selectChatInputIsSending(state, convPK))
@@ -86,17 +68,14 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 
 		const mediaCids = useAppSelector(state => selectChatInputMediaList(state, convPK))
 		const colors = useThemeColor()
-		const { navigate } = useNavigation()
 		const activeReplyInte = useAppSelector(state => selectActiveReplyInteraction(state, convPK))
 		const messengerClient = useMessengerClient()
 		const playSound = usePlaySound()
 		const conversation = useConversation(convPK)
 		const insets = useSafeAreaInsets()
 		const addedMedias = useMedias(mediaCids)
-		const isFocused = useAppSelector(state => selectChatInputIsFocused(state, convPK))
 		const [isVisible, setIsVisible] = useState<boolean>(false)
 
-		// computed
 		const isFake = !!(conversation as any)?.fake
 		const sendEnabled = !sending && !!(!isFake && (message || mediaCids.length > 0))
 		const horizontalGutter = 8
@@ -105,11 +84,6 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 			[disabled, mediaCids.length, message, sending],
 		)
 
-		// callbacks
-
-		const setIsFocused = (isFocused: boolean) => {
-			dispatch(setChatInputIsFocused({ convPK, isFocused }))
-		}
 		const sendMessageBouncy = React.useCallback(
 			async (additionalMedia: beapi.messenger.IMedia[] = []) => {
 				try {
@@ -181,78 +155,6 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 			[sendMessageBouncy],
 		)
 
-		const prepareMediaAndSend = React.useCallback(
-			async (res: (beapi.messenger.IMedia & { uri?: string })[]) => {
-				try {
-					if (sending) {
-						return
-					}
-					setSending(true)
-					if (!messengerClient) {
-						throw new Error('no messenger client')
-					}
-					const medias = await amap(res, async doc => {
-						const stream = await messengerClient.mediaPrepare({})
-						await stream.emit({
-							info: {
-								filename: doc.filename,
-								mimeType: doc.mimeType,
-								displayName: doc.displayName || doc.filename || 'document',
-							},
-							uri: doc.uri,
-						})
-						const reply = await stream.stopAndRecv()
-						const optimisticMedia: beapi.messenger.IMedia = {
-							cid: reply.cid,
-							filename: doc.filename,
-							mimeType: doc.mimeType,
-							displayName: doc.displayName || doc.filename || 'document',
-						}
-						return optimisticMedia
-					})
-
-					await handleCloseFileMenu(medias)
-				} catch (err) {
-					console.warn('failed to prepare media and send message:', err)
-				}
-				setSending(false)
-			},
-			[messengerClient, handleCloseFileMenu, sending, setSending],
-		)
-
-		const handlePressCamera = React.useCallback(async () => {
-			const permissionStatus = await rnutil.checkPermissions(PermissionType.camera, {
-				navigate,
-				navigateToPermScreenOnProblem: true,
-			})
-			if (permissionStatus !== RESULTS.GRANTED) {
-				return
-			}
-
-			try {
-				await ImagePicker.clean()
-			} catch (err) {
-				console.warn('failed to clean image picker:', err)
-			}
-			try {
-				const image = await ImagePicker.openCamera({
-					cropping: false,
-				})
-
-				if (image) {
-					await prepareMediaAndSend([
-						{
-							filename: '',
-							uri: image.path || image.sourceURL || '',
-							mimeType: image.mime,
-						},
-					])
-				}
-			} catch (err) {
-				console.warn('failed to send quick picture:', err)
-			}
-		}, [navigate, prepareMediaAndSend])
-
 		const handleTextChange = React.useCallback(
 			(text: string) => {
 				if (sending) {
@@ -273,15 +175,6 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 				dispatch(setChatInputText({ convPK, text: messageRef.current }))
 			}
 		})
-
-		const handleSelectionChange = React.useCallback(
-			(e: NativeSyntheticEvent<TextInputSelectionChangeEventData>) => {
-				if (isFocused) {
-					dispatch(setChatInputSelection({ convPK, selection: e.nativeEvent.selection }))
-				}
-			},
-			[convPK, dispatch, isFocused],
-		)
 
 		// elements
 		const recordIcon = React.useMemo(() => showQuickButtons && <RecordButton />, [showQuickButtons])
@@ -320,9 +213,7 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 								editable={!sending && !disabled}
 								placeholder={sending ? t('chat.sending') : placeholder}
 								onChangeText={handleTextChange}
-								onSelectionChange={handleSelectionChange}
 								value={message}
-								onFocusChange={setIsFocused}
 								handleTabletSubmit={handlePressSend}
 								convPK={convPK}
 							/>
@@ -331,7 +222,12 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 									<>
 										{Platform.OS !== 'web' && (
 											<View style={{ marginRight: horizontalGutter }}>
-												<CameraButton onPress={handlePressCamera} />
+												<CameraButton
+													sending={sending}
+													setSending={setSending}
+													messengerClient={messengerClient}
+													handleCloseFileMenu={handleCloseFileMenu}
+												/>
 											</View>
 										)}
 									</>

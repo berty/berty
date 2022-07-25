@@ -1,7 +1,6 @@
 import { Recorder } from '@react-native-community/audio-toolkit'
 import { useNavigation } from '@react-navigation/native'
 import { Icon } from '@ui-kitten/components'
-import Long from 'long'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Animated, Platform, StyleSheet, Vibration, View } from 'react-native'
@@ -11,16 +10,10 @@ import {
 	LongPressGestureHandlerStateChangeEvent,
 	State,
 } from 'react-native-gesture-handler'
-import { RESULTS } from 'react-native-permissions'
 
 import beapi from '@berty/api'
 import { useStyles } from '@berty/contexts/styles'
-import { WelshMessengerServiceClient } from '@berty/grpc-bridge/welsh-clients.gen'
 import { useAppDispatch, useMessengerClient, useThemeColor } from '@berty/hooks'
-import { AppDispatch } from '@berty/redux/store'
-import rnutil from '@berty/utils/react-native'
-import { PermissionType } from '@berty/utils/react-native/permissions'
-import { playSound } from '@berty/utils/sound/sounds'
 
 import {
 	limitIntensities,
@@ -29,108 +22,19 @@ import {
 	volumeValueLowest,
 	volumeValuePrecision,
 } from '../../audioMessageCommon'
+import { AudioPreview } from './AudioPreview'
+import {
+	acquireMicPerm,
+	attachMedias,
+	audioMessageDisplayName,
+	MicPermStatus,
+	sendMessage,
+	voiceMemoBitrate,
+	voiceMemoFormat,
+	voiceMemoSampleRate,
+} from './functions'
 import { HelpMessage } from './HelpMessage'
-import { PreviewComponent } from './PreviewComponent'
 import { RecordingComponent } from './RecordingComponent'
-
-enum MicPermStatus {
-	UNDEFINED = 0,
-	GRANTED = 1,
-	NEWLY_GRANTED = 2,
-	DENIED = 3,
-}
-
-const voiceMemoBitrate = 32000
-const voiceMemoSampleRate = 22050
-const voiceMemoFormat = 'aac'
-
-const acquireMicPerm = async (navigate: any): Promise<MicPermStatus> => {
-	const permissionStatus = await rnutil.checkPermissions(PermissionType.audio, {
-		navigate,
-		navigateToPermScreenOnProblem: true,
-	})
-	if (permissionStatus === RESULTS.GRANTED) {
-		return MicPermStatus.GRANTED
-	}
-
-	return MicPermStatus.UNDEFINED
-}
-
-const sendMessage = async (
-	client: WelshMessengerServiceClient,
-	convPk: string,
-	dispatch: AppDispatch,
-	opts: {
-		body?: string
-		medias?: beapi.messenger.IMedia[]
-	},
-) => {
-	try {
-		const buf = beapi.messenger.AppMessage.UserMessage.encode({ body: opts.body || '' }).finish()
-		const reply = await client.interact({
-			conversationPublicKey: convPk,
-			type: beapi.messenger.AppMessage.Type.TypeUserMessage,
-			payload: buf,
-			mediaCids: opts.medias?.filter(media => media.cid).map(media => media.cid) as string[],
-		})
-		const optimisticInteraction: beapi.messenger.IInteraction = {
-			cid: reply.cid,
-			conversationPublicKey: convPk,
-			isMine: true,
-			type: beapi.messenger.AppMessage.Type.TypeUserMessage,
-			payload: buf,
-			medias: opts.medias,
-			sentDate: Long.fromNumber(Date.now()).toString() as unknown as Long,
-		}
-		dispatch({
-			type: 'messenger/InteractionUpdated',
-			payload: { interaction: optimisticInteraction },
-		})
-		playSound('messageSent')
-	} catch (e) {
-		console.warn('error sending message:', e)
-	}
-}
-
-interface Attachment extends beapi.messenger.IMedia {
-	uri?: string
-}
-
-const attachMedias = async (client: WelshMessengerServiceClient, res: Attachment[]) =>
-	(
-		await Promise.all(
-			res.map(async doc => {
-				const stream = await client?.mediaPrepare({})
-				console.log(
-					'sending:',
-					beapi.messenger.AudioPreview.decode(
-						beapi.messenger.MediaMetadata.decode(doc.metadataBytes!).items[0].payload!,
-					),
-				)
-				await stream.emit({
-					info: {
-						filename: doc.filename,
-						mimeType: doc.mimeType,
-						displayName: doc.displayName || doc.filename || 'document',
-						metadataBytes: doc.metadataBytes,
-					},
-					uri: doc.uri,
-				})
-				const reply = await stream.stopAndRecv()
-				const optimisticMedia: beapi.messenger.IMedia = {
-					cid: reply?.cid,
-					filename: doc.filename,
-					mimeType: doc.mimeType,
-					displayName: doc.displayName || doc.filename || 'document',
-					metadataBytes: doc.metadataBytes,
-				}
-				return optimisticMedia
-			}),
-		)
-	).filter(media => !!media?.cid)
-
-const audioMessageDisplayName = (startDate: Date): string =>
-	`audiorec_${startDate.getFullYear()}:${startDate.getMonth()}:${startDate.getDate()}:${startDate.getHours()}:${startDate.getMinutes()}:${startDate.getSeconds()}`
 
 export const RecordComponent: React.FC<{
 	convPk: string
@@ -516,7 +420,7 @@ export const RecordComponent: React.FC<{
 				/>
 			)}
 			{recordingState === RecordingState.PREVIEW && (
-				<PreviewComponent
+				<AudioPreview
 					meteredValuesRef={meteredValuesRef}
 					recordDuration={recordDuration}
 					recordFilePath={recorderFilePath}
