@@ -182,7 +182,8 @@ func NewService(opts *Options) (_ Service, err error) {
 			return nil, errcode.TODO.Wrap(err)
 		}
 	}
-	appDatastore, err := encrepo.NewSQLCipherDatastore("sqlite3", dbPath, "data", storageKey, storageSalt)
+	sqldsOpts := encrepo.SQLCipherDatastoreOptions{JournalMode: "WAL", PlaintextHeader: len(storageSalt) != 0, Salt: storageSalt}
+	appDatastore, err := encrepo.NewSQLCipherDatastore("sqlite3", dbPath, "data", storageKey, sqldsOpts)
 	if err != nil {
 		return nil, errcode.ErrDBOpen.Wrap(err)
 	}

@@ -9,6 +9,7 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"strings"
 	"sync"
 	"time"
 
@@ -270,7 +271,8 @@ func GetGlobalAppStorage(rootDir string, ks NativeKeystore) (datastore.Batching,
 		}
 	}
 
-	appDatastore, err := encrepo.NewSQLCipherDatastore("sqlite3", dbPath, "data", storageKey, storageSalt)
+	sqldsOpts := encrepo.SQLCipherDatastoreOptions{JournalMode: "WAL", PlaintextHeader: len(storageSalt) != 0, Salt: storageSalt}
+	appDatastore, err := encrepo.NewSQLCipherDatastore("sqlite3", dbPath, "data", storageKey, sqldsOpts)
 	if err != nil {
 		return nil, nil, errcode.ErrDBOpen.Wrap(err)
 	}
@@ -280,7 +282,8 @@ func GetGlobalAppStorage(rootDir string, ks NativeKeystore) (datastore.Batching,
 
 func GetAccountAppStorage(rootDir string, accountID string, key []byte, salt []byte) (datastore.Datastore, error) {
 	dbPath := filepath.Join(GetAccountDir(rootDir, accountID), "app-account.sqlite")
-	return encrepo.NewSQLCipherDatastore("sqlite3", dbPath, "data", key, salt)
+	sqldsOpts := encrepo.SQLCipherDatastoreOptions{JournalMode: "WAL", PlaintextHeader: len(salt) != 0, Salt: salt}
+	return encrepo.NewSQLCipherDatastore("sqlite3", dbPath, "data", key, sqldsOpts)
 }
 
 func GetRootDatastoreForPath(dir string, key []byte, salt []byte, logger *zap.Logger) (datastore.Batching, error) {
@@ -296,7 +299,8 @@ func GetRootDatastoreForPath(dir string, key []byte, salt []byte, logger *zap.Lo
 		}
 
 		dbPath := filepath.Join(dir, "datastore.sqlite")
-		ds, err = encrepo.NewSQLCipherDatastore("sqlite3", dbPath, "blocks", key, salt)
+		sqldsOpts := encrepo.SQLCipherDatastoreOptions{JournalMode: "WAL", PlaintextHeader: len(salt) != 0, Salt: salt}
+		ds, err = encrepo.NewSQLCipherDatastore("sqlite3", dbPath, "blocks", key, sqldsOpts)
 		if err != nil {
 			return nil, errcode.TODO.Wrap(err)
 		}
@@ -307,12 +311,12 @@ func GetRootDatastoreForPath(dir string, key []byte, salt []byte, logger *zap.Lo
 	return ds, nil
 }
 
-func GetMessengerDBForPath(dir string, key []byte, logger *zap.Logger) (*gorm.DB, func(), error) {
+func GetMessengerDBForPath(dir string, key []byte, salt []byte, logger *zap.Logger) (*gorm.DB, func(), error) {
 	if dir != InMemoryDir {
 		dir = path.Join(dir, MessengerDatabaseFilename)
 	}
 
-	return GetGormDBForPath(dir, key, logger)
+	return GetGormDBForPath(dir, key, salt, logger)
 }
 
 func GetReplicationDBForPath(dir string, logger *zap.Logger) (*gorm.DB, func(), error) {
@@ -320,18 +324,37 @@ func GetReplicationDBForPath(dir string, logger *zap.Logger) (*gorm.DB, func(), 
 		dir = path.Join(dir, ReplicationDatabaseFilename)
 	}
 
-	return GetGormDBForPath(dir, nil, logger)
+	return GetGormDBForPath(dir, nil, nil, logger)
 }
 
-func GetGormDBForPath(dbPath string, key []byte, logger *zap.Logger) (*gorm.DB, func(), error) {
+const (
+	saltLength = 16
+	keyLength  = 32
+)
+
+func GetGormDBForPath(dbPath string, key []byte, salt []byte, logger *zap.Logger) (*gorm.DB, func(), error) {
 	var sqliteConn string
 	if dbPath == InMemoryDir {
 		sqliteConn = fmt.Sprintf("file:memdb%d?mode=memory&cache=shared", time.Now().UnixNano())
 	} else {
 		sqliteConn = dbPath
 		if len(key) != 0 {
-			hexKey := hex.EncodeToString(key)
-			sqliteConn = fmt.Sprintf("%s?_pragma_key=x'%s'&_pragma_cipher_page_size=4096", sqliteConn, hexKey)
+			if len(key) != keyLength {
+				return nil, nil, errcode.TODO.Wrap(fmt.Errorf("bad key, expected %d bytes, got %d", keyLength, len(key)))
+			}
+			if len(salt) != saltLength {
+				return nil, nil, errcode.TODO.Wrap(fmt.Errorf("bad salt, expected %d bytes, got %d", saltLength, len(salt)))
+			}
+			fmt.Println("hexSalt", hex.EncodeToString(salt))
+			args := []string{
+				"_journal_mode=WAL",
+				fmt.Sprintf("_pragma_key=x'%s'", hex.EncodeToString(key)),
+				"_pragma_cipher_plaintext_header_size=32",
+				fmt.Sprintf("_pragma_cipher_salt=x'%s'", hex.EncodeToString(salt)),
+				"_pragma_cipher_page_size=4096",
+			}
+			sqliteConn += fmt.Sprintf("?%s", strings.Join(args, "&"))
+			fmt.Println("conn", sqliteConn)
 		}
 	}
 

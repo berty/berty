@@ -457,7 +457,12 @@ func (m *Manager) getMessengerDB() (*gorm.DB, error) {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	m.Node.Messenger.db, m.Node.Messenger.dbCleanup, err = accountutils.GetMessengerDBForPath(dir, key, logger)
+	salt, err := m.GetAccountStorageSalt()
+	if err != nil {
+		return nil, errcode.TODO.Wrap(err)
+	}
+
+	m.Node.Messenger.db, m.Node.Messenger.dbCleanup, err = accountutils.GetMessengerDBForPath(dir, key, salt, logger)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}

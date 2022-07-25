@@ -69,7 +69,7 @@ func apply0To1(opts Options) error {
 
 	// create messenger db
 	opts.Logger.Info("creating account messenger db")
-	_, closeMessengerDB, err := accountutils.GetMessengerDBForPath(opts.accountSharedDir, storageKey, opts.Logger)
+	_, closeMessengerDB, err := accountutils.GetMessengerDBForPath(opts.accountSharedDir, storageKey, storageSalt, opts.Logger)
 	if err != nil {
 		return errcode.TODO.Wrap(err)
 	}
