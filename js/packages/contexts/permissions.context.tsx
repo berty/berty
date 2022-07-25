@@ -8,7 +8,7 @@ import {
 	Permissions,
 	getPermissions,
 	acquirePermission,
-} from '@berty/utils/react-native/permissions'
+} from '@berty/utils/permissions/permissions'
 
 const PermissionsContext = createContext<{
 	permissions: Permissions

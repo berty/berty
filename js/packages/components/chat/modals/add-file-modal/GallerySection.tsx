@@ -23,7 +23,7 @@ import { ImageCounter } from '../../ImageCounter'
 const GALLERY_IMAGE_PER_PAGE = 30
 
 export const GallerySection: React.FC<{
-	prepareMediaAndSend: (media: beapi.messenger.IMedia[]) => void
+	prepareMediaAndSend: (media: beapi.messenger.IMedia[]) => Promise<void>
 }> = ({ prepareMediaAndSend }) => {
 	const { border, padding, margin } = useStyles()
 	const colors = useThemeColor()
@@ -99,7 +99,9 @@ export const GallerySection: React.FC<{
 				})),
 			)
 
-			selectedImageWithUplodableURI.length && prepareMediaAndSend(selectedImageWithUplodableURI)
+			if (selectedImageWithUplodableURI.length) {
+				await prepareMediaAndSend(selectedImageWithUplodableURI)
+			}
 		} catch (e) {
 			console.log('image path error', e)
 		}

@@ -7,8 +7,8 @@ import beapi from '@berty/api'
 import { GRPCError } from '@berty/grpc-bridge'
 import { ServiceClientType } from '@berty/grpc-bridge/welsh-clients.gen'
 import { PushTokenRequester } from '@berty/native-modules/PushTokenRequester'
-import rnutil from '@berty/utils/react-native'
-import { getPermissions } from '@berty/utils/react-native/permissions'
+import { checkPermission } from '@berty/utils/permissions/checkPermissions'
+import { getPermissions, PermissionType } from '@berty/utils/permissions/permissions'
 
 import { numberifyLong } from '../convert/long'
 import { asyncAlert } from '../react-native/asyncAlert'
@@ -117,7 +117,8 @@ const enablePushPermission = async (
 	try {
 		// Get or ask for permission
 		await new Promise((resolve, reject) =>
-			rnutil.checkNotificationPermission({
+			checkPermission({
+				permissionType: PermissionType.notification,
 				navigate,
 				accept: () =>
 					new Promise<void>(subResolve => {

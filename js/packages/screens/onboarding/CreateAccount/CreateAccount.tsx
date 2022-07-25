@@ -2,7 +2,7 @@ import { useHeaderHeight } from '@react-navigation/elements'
 import LottieView from 'lottie-react-native'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { Platform, Vibration } from 'react-native'
+import { Vibration } from 'react-native'
 import { StatusBar, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
@@ -12,9 +12,7 @@ import { useStyles } from '@berty/contexts/styles'
 import { useMountEffect, useNotificationsInhibitor, useThemeColor } from '@berty/hooks'
 import { ScreenFC } from '@berty/navigation'
 import { accountClient } from '@berty/utils/accounts/accountClient'
-import rnutil from '@berty/utils/react-native'
 import { IOSOnlyKeyboardAvoidingView } from '@berty/utils/react-native/keyboardAvoiding'
-import { PermissionType } from '@berty/utils/react-native/permissions'
 
 import { CreateAccountBox } from './components/CreateAccountBox'
 
@@ -46,12 +44,7 @@ const CreateAccountBody = () => {
 					source={require('@berty/assets/lottie/Berty_onboard_animation_assets2/Startup animation assets/Shield appear.json')}
 					autoPlay
 					loop={false}
-					onAnimationFinish={async () => {
-						Vibration.vibrate(500)
-						if (Platform.OS !== 'web') {
-							await rnutil.checkPermissions(PermissionType.proximity)
-						}
-					}}
+					onAnimationFinish={() => Vibration.vibrate(500)}
 					style={{ position: 'absolute', width: '100%', top: -10 }}
 				/>
 			</View>

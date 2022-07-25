@@ -1,28 +1,25 @@
-import React, { useCallback, useState } from 'react'
+import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { View, Platform, StyleSheet } from 'react-native'
-import DocumentPicker from 'react-native-document-picker'
-import ImagePicker from 'react-native-image-crop-picker'
-import { RESULTS } from 'react-native-permissions'
+import { View, StyleSheet } from 'react-native'
 
 import beapi from '@berty/api'
 import { useMessengerClient, useThemeColor } from '@berty/hooks'
 import { useNavigation } from '@berty/navigation'
-import { checkPermissions } from '@berty/utils/react-native/checkPermissions'
-import { getPath } from '@berty/utils/react-native/file-system'
-import { PermissionType } from '@berty/utils/react-native/permissions'
+import {
+	handlePressCamera,
+	handlePressGallery,
+	handlePressFiles,
+	prepareMediaAndSend,
+} from '@berty/utils/permissions/handle-press-permissions'
 
 import { GallerySection } from './GallerySection'
 import { ListItemMenu } from './ListItemMenu'
 import { SecurityAccess } from './SecurityAccess'
 import { TabItems } from './types'
 
-const amap = async <T extends any, C extends (value: T) => any>(arr: T[], cb: C) =>
-	Promise.all(arr.map(cb))
-
 export const AddFileMenu: React.FC<{
-	onClose: (medias?: beapi.messenger.IMedia[]) => void
-	sending?: boolean
+	onClose: (value: beapi.messenger.IMedia[] | undefined) => Promise<void>
+	sending: boolean
 	setSending: (val: boolean) => void
 }> = ({ onClose, sending, setSending }) => {
 	const { t } = useTranslation()
@@ -31,71 +28,6 @@ export const AddFileMenu: React.FC<{
 	const client = useMessengerClient()
 	const colors = useThemeColor()
 	const { navigate } = useNavigation()
-
-	const prepareMediaAndSend = useCallback(
-		async (res: (beapi.messenger.IMedia & { uri?: string })[]) => {
-			try {
-				if (sending) {
-					return
-				}
-				setSending(true)
-				const mediaCids = (
-					await amap(res, async doc => {
-						const stream = await client?.mediaPrepare({})
-						await stream?.emit({
-							info: {
-								filename: doc.filename,
-								mimeType: doc.mimeType,
-								displayName: doc.displayName || doc.filename || 'document',
-							},
-							uri: doc.uri,
-						})
-						const reply = await stream?.stopAndRecv()
-						return reply?.cid
-					})
-				).filter(cid => !!cid)
-				onClose(
-					res.map(
-						(doc, i): beapi.messenger.IMedia => ({
-							cid: mediaCids[i],
-							filename: doc.filename,
-							mimeType: doc.mimeType,
-							displayName: doc.displayName || doc.filename || 'document',
-						}),
-					),
-				)
-			} catch (err) {
-				console.warn('error while preparing files:', err)
-			}
-			setSending(false)
-		},
-		[client, onClose, sending, setSending],
-	)
-
-	const openCamera = useCallback(async () => {
-		setActiveTab(TabItems.Camera)
-		try {
-			await ImagePicker.clean()
-		} catch (err) {
-			console.warn('failed to clean image picker:', err)
-		}
-		try {
-			const image = await ImagePicker.openCamera({
-				cropping: false,
-			})
-
-			await prepareMediaAndSend([
-				{
-					filename: '',
-					uri: image.path || image.sourceURL || '',
-					mimeType: image.mime,
-				},
-			])
-		} catch (err) {
-			console.warn(err)
-		}
-		onClose()
-	}, [prepareMediaAndSend, onClose])
 
 	const LIST_CONFIG = [
 		{
@@ -109,16 +41,14 @@ export const AddFileMenu: React.FC<{
 			},
 			title: t('chat.files.gallery'),
 			onPress: async () => {
-				const status = await checkPermissions(PermissionType.gallery, {
+				setActiveTab(TabItems.Gallery)
+				await handlePressGallery({
+					sending,
+					setSending,
+					messengerClient: client,
+					onClose,
 					navigate,
-					navigateToPermScreenOnProblem: true,
-					onComplete: () => {
-						setActiveTab(TabItems.Gallery)
-					},
 				})
-				if (status === RESULTS.GRANTED) {
-					setActiveTab(TabItems.Gallery)
-				}
 			},
 		},
 		{
@@ -132,17 +62,14 @@ export const AddFileMenu: React.FC<{
 			},
 			title: t('chat.files.camera'),
 			onPress: async () => {
-				const status = await checkPermissions(PermissionType.camera, {
+				setActiveTab(TabItems.Camera)
+				await handlePressCamera({
+					sending,
+					setSending,
+					messengerClient: client,
+					onClose,
 					navigate,
-					navigateToPermScreenOnProblem: true,
-					onComplete: async () => {
-						await openCamera()
-					},
 				})
-				if (status === RESULTS.BLOCKED || status === RESULTS.DENIED) {
-					return
-				}
-				await openCamera()
 			},
 		},
 		{
@@ -157,28 +84,7 @@ export const AddFileMenu: React.FC<{
 			title: t('chat.files.files'),
 			onPress: async () => {
 				setActiveTab(TabItems.Files)
-				try {
-					const res = await DocumentPicker.pickSingle({
-						type: [DocumentPicker.types.allFiles],
-					})
-					let uri = res.uri
-					if (Platform.OS === 'android') {
-						uri = await getPath(uri)
-					}
-					await prepareMediaAndSend([
-						{
-							filename: res.name,
-							uri: uri,
-							mimeType: res.type,
-						},
-					])
-				} catch (err) {
-					if (DocumentPicker.isCancel(err)) {
-						// ignore
-					} else {
-						console.warn(err)
-					}
-				}
+				await handlePressFiles({ sending, setSending, messengerClient: client, onClose })
 			},
 		},
 	]
@@ -194,7 +100,17 @@ export const AddFileMenu: React.FC<{
 				))}
 			</View>
 			{activeTab === TabItems.Gallery && (
-				<GallerySection prepareMediaAndSend={prepareMediaAndSend} />
+				<GallerySection
+					prepareMediaAndSend={async (media: beapi.messenger.IMedia[]) => {
+						await prepareMediaAndSend({
+							sending,
+							setSending,
+							messengerClient: client,
+							onClose,
+							res: media,
+						})
+					}}
+				/>
 			)}
 		</>
 	)
