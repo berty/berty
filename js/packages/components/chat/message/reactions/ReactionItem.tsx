@@ -19,17 +19,14 @@ export const ReactionItem: FC<{
 	ownState?: boolean | null | undefined
 	count?: Long | null | undefined
 }> = ({ emoji, ownState, count, onPress, onLongPress }) => {
-	const { margin, padding, border, text } = useStyles()
+	const { margin, text } = useStyles()
 	const colors = useThemeColor()
 
 	return (
 		<TouchableOpacity key={`reaction-list${emoji}`} onPress={onPress} onLongPress={onLongPress}>
 			<View
 				style={[
-					padding.tiny,
-					margin.right.tiny,
 					margin.bottom.tiny,
-					border.radius.small,
 					styles.item,
 					{
 						borderColor: colors['background-header'],
@@ -58,20 +55,13 @@ export const AddReactionItem: FC<{
 	onEmojiKeyboard: () => void
 }> = ({ convPk, cid, onEmojiKeyboard }) => {
 	const inte = useAppSelector(state => selectInteraction(state, convPk, cid))
-	const { margin, padding, border } = useStyles()
 	const colors = useThemeColor()
 	return !inte?.isMine ? (
 		<TouchableOpacity onPress={onEmojiKeyboard}>
 			<View
 				style={[
-					padding.tiny,
-					margin.right.tiny,
-					border.radius.small,
-					{
-						borderColor: colors['background-header'],
-						backgroundColor: colors['input-background'],
-						borderWidth: 1,
-					},
+					styles.item,
+					{ borderColor: colors['background-header'], backgroundColor: colors['input-background'] },
 				]}
 			>
 				<Icon name='plus-outline' width={18} height={18} fill={colors['background-header']} />
@@ -85,5 +75,9 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		borderWidth: 1,
 		alignItems: 'center',
+		padding: 4,
+		marginRight: 4,
+		borderRadius: 9,
+		height: 28,
 	},
 })

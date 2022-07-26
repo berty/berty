@@ -527,7 +527,7 @@ export const UserMessage: React.FC<{
 									onEmojiKeyboard={() => {
 										setIsEmojiVisible(true)
 									}}
-									onRemoveEmoji={handleSelectEmoji}
+									onPressEmoji={handleSelectEmoji}
 								/>
 							)}
 						</View>

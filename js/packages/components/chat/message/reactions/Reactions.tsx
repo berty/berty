@@ -10,10 +10,10 @@ import { ReactionItem, AddReactionItem } from './ReactionItem'
 
 export const Reactions: FC<{
 	onEmojiKeyboard: () => void
-	onRemoveEmoji: (emoji: string, remove: boolean) => void
+	onPressEmoji: (emoji: string, remove: boolean) => void
 	cid: string
 	convPk: string
-}> = ({ onEmojiKeyboard, onRemoveEmoji, cid, convPk }) => {
+}> = ({ onEmojiKeyboard, onPressEmoji, cid, convPk }) => {
 	const inte = useAppSelector(state => selectInteraction(state, convPk, cid))
 	const reactions = inte?.reactions || []
 	const [isVisible, setIsVisible] = useState<boolean>(false)
@@ -36,7 +36,9 @@ export const Reactions: FC<{
 							{...props}
 							onPress={() => {
 								if (props.ownState) {
-									onRemoveEmoji(props.emoji!, true)
+									onPressEmoji(props.emoji!, true)
+								} else {
+									onPressEmoji(props.emoji!, false)
 								}
 							}}
 							onLongPress={() => {
@@ -47,7 +49,7 @@ export const Reactions: FC<{
 					))}
 				<AddReactionItem convPk={convPk} cid={cid} onEmojiKeyboard={onEmojiKeyboard} />
 			</View>
-			{isVisible && emoji?.length && (
+			{isVisible && emoji && (
 				<BottomModal isVisible={isVisible} setIsVisible={setIsVisible}>
 					<ReactionListModal reactions={reactions} emoji={emoji} cid={cid} convPk={convPk} />
 				</BottomModal>

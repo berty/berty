@@ -6,7 +6,12 @@ import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
 import { berty } from '@berty/api/root.pb'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useStyles } from '@berty/contexts/styles'
-import { useConversationMembersDict, useMessengerClient, useThemeColor } from '@berty/hooks'
+import {
+	useConversationMembers,
+	useMessengerClient,
+	useMountEffect,
+	useThemeColor,
+} from '@berty/hooks'
 import { getEmojiByName } from '@berty/utils/emojis/emojis'
 
 import { EmojiNumber } from '../../message/reactions/EmojiNumber'
@@ -65,25 +70,35 @@ export const ReactionListModal: FC<{
 	const [userList, setUserList] = useState<(berty.messenger.v1.IMember | undefined)[]>([])
 	const scrollViewRef = createRef<ScrollView>()
 	const client = useMessengerClient()
-	const members = useConversationMembersDict(convPk)
+	const members = useConversationMembers(convPk)
 
-	const getReactionList = useCallback(async () => {
-		const r = (await client?.interactionReactionsForEmoji({
-			emoji: selectedEmoji,
-			interactionCid: cid,
-		})) as berty.messenger.v1.InteractionReactionsForEmoji.Reply
+	const getReactionList = useCallback(
+		async (emoji: string | null | undefined) => {
+			const r = (await client?.interactionReactionsForEmoji({
+				emoji: emoji,
+				interactionCid: cid,
+			})) as berty.messenger.v1.InteractionReactionsForEmoji.Reply
 
-		setUserList(
-			Object.values(members).filter(member =>
-				r?.reactions.find(reaction => reaction.memberPublicKey === member?.publicKey),
-			) || [],
-		)
-	}, [cid, client, selectedEmoji, members])
+			setUserList(
+				Object.values(members).filter(member =>
+					r?.reactions.find(reaction => reaction.memberPublicKey === member?.publicKey),
+				) || [],
+			)
+		},
+		[cid, client, members],
+	)
 
-	useEffect(() => {
-		setSelectedEmoji(emoji)
-		getReactionList()
-	}, [getReactionList, selectedEmoji, emoji])
+	const selectEmoji = useCallback(
+		async (emoji: string | null | undefined) => {
+			setSelectedEmoji(emoji)
+			await getReactionList(emoji)
+		},
+		[getReactionList],
+	)
+
+	useMountEffect(() => {
+		selectEmoji(emoji)
+	})
 
 	// effect to handle scrollTo on the selected emoji
 	useEffect(() => {
@@ -103,7 +118,7 @@ export const ReactionListModal: FC<{
 				{reactions.map(props => (
 					<ReactionItemModal
 						key={props.emoji}
-						onPress={() => setSelectedEmoji(props.emoji)}
+						onPress={async () => await selectEmoji(props.emoji)}
 						onLayout={e => {
 							if (!dataSourceCords) {
 								setDataSourceCords(
@@ -120,7 +135,7 @@ export const ReactionListModal: FC<{
 					/>
 				))}
 			</ScrollView>
-			<MemberList userList={userList} selectedEmoji={selectedEmoji} />
+			<MemberList userList={userList} />
 		</View>
 	)
 }
