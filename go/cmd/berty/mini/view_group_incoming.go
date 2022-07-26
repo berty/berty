@@ -351,6 +351,50 @@ func groupMonitorEventHandler(logger *zap.Logger, v *groupView, e *protocoltypes
 	})
 }
 
+func groupDeviceStatusHandler(logger *zap.Logger, v *groupView, e *protocoltypes.GroupDeviceStatus_Reply) {
+	var payload string
+
+	switch t := e.GetType(); t {
+	case protocoltypes.TypePeerConnected:
+		event := &protocoltypes.GroupDeviceStatus_Reply_PeerConnected{}
+		if err := event.Unmarshal(e.GetEvent()); err != nil {
+			logger.Error("Unmarshal error")
+			return
+		}
+		activeAddr := "<unknown>"
+		if len(event.GetMaddrs()) > 0 {
+			activeAddr = event.GetMaddrs()[0]
+		}
+		activeTransport := "<unknown>"
+		if len(event.GetTransports()) > 0 {
+			activeTransport = event.GetTransports()[0].String()
+		}
+		payload = fmt.Sprintf("device status updated: connected <%.15s> on: %s(%s)", event.GetPeerID(), activeAddr, activeTransport)
+	case protocoltypes.TypePeerDisconnected:
+		event := &protocoltypes.GroupDeviceStatus_Reply_PeerDisconnected{}
+		if err := event.Unmarshal(e.GetEvent()); err != nil {
+			logger.Error("Unmarshal error")
+			return
+		}
+		payload = fmt.Sprintf("device status updated: left <%.15s>", event.GetPeerID())
+	case protocoltypes.TypePeerReconnecting:
+		event := &protocoltypes.GroupDeviceStatus_Reply_PeerReconnecting{}
+		if err := event.Unmarshal(e.GetEvent()); err != nil {
+			logger.Error("Unmarshal error")
+			return
+		}
+		payload = fmt.Sprintf("device status updated: reconnecting <%.15s>", event.GetPeerID())
+	default:
+		logger.Warn("unknow group device status event received")
+		return
+	}
+
+	v.messages.Append(&historyMessage{
+		messageType: messageTypeMeta,
+		payload:     []byte(payload),
+	})
+}
+
 func metadataEventHandler(ctx context.Context, v *groupView, e *protocoltypes.GroupMetadataEvent, isHistory bool, logger *zap.Logger) {
 	addToBuffer(&historyMessage{
 		messageType: messageTypeMeta,

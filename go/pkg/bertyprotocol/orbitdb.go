@@ -13,6 +13,7 @@ import (
 	coreapi "github.com/ipfs/interface-go-ipfs-core"
 	"github.com/libp2p/go-eventbus"
 	"github.com/libp2p/go-libp2p-core/crypto"
+	peer "github.com/libp2p/go-libp2p-core/peer"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 
@@ -557,4 +558,8 @@ func (s *BertyOrbitDB) IsGroupLoaded(groupID string) bool {
 	gc, ok := s.groups.Load(groupID)
 
 	return ok && gc != nil
+}
+
+func (s *BertyOrbitDB) GetDevicePKForPeerID(id peer.ID) (pdg *PeerDeviceGroup, ok bool) {
+	return s.messageMarshaler.GetDevicePKForPeerID(id)
 }

@@ -90,7 +90,7 @@ service ProtocolService {
   // DeactivateGroup closes a group
   rpc DeactivateGroup (DeactivateGroup.Request) returns (DeactivateGroup.Reply);
 
-  // @TODO: GroupDeviceStatus monitor device status
+  // GroupDeviceStatus monitor device status
   rpc GroupDeviceStatus(GroupDeviceStatus.Request) returns (stream GroupDeviceStatus.Reply);
 
   // Monitor Group events
@@ -1010,15 +1010,15 @@ message GroupDeviceStatus {
   }
 
   message Request {
-    string group_pk = 1;
+    bytes group_pk = 1 [(gogoproto.customname) = "GroupPK"];
   }
 
   message Reply {
     message PeerConnected {
       string peer_id = 1 [(gogoproto.customname) = "PeerID"];
-      string device_pk = 2 [(gogoproto.customname) = "DevicePK"];
-      Transport transport = 3;
-      string maddr = 4;
+      bytes device_pk = 2 [(gogoproto.customname) = "DevicePK"];
+      repeated Transport transports = 3;
+      repeated string maddrs = 4;
     }
 
     message PeerReconnecting {

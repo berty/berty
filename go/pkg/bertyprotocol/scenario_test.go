@@ -84,6 +84,104 @@ func TestScenario_MessageMultiMemberGroup(t *testing.T) {
 	})
 }
 
+func TestScenario_GroupDeviceStatusOnMultiMemberGroup(t *testing.T) {
+	cases := []testCase{
+		{"2 clients/connectAll", 2, bertyprotocol.ConnectAll, testutil.Fast, testutil.Flappy, time.Second * 10},
+		{"3 clients/connectAll", 3, bertyprotocol.ConnectAll, testutil.Fast, testutil.Flappy, time.Second * 10},
+		{"5 clients/connectAll", 5, bertyprotocol.ConnectAll, testutil.Slow, testutil.Flappy, time.Second * 20},
+		{"8 clients/connectAll", 8, bertyprotocol.ConnectAll, testutil.Slow, testutil.Flappy, time.Second * 30},
+		{"10 clients/connectAll", 10, bertyprotocol.ConnectAll, testutil.Slow, testutil.Flappy, time.Second * 40},
+	}
+
+	testingScenario(t, cases, func(ctx context.Context, t *testing.T, tps ...*bertyprotocol.TestingProtocol) {
+		// Create MultiMember Group
+		groupID := createMultiMemberGroup(ctx, t, tps...)
+
+		testGroupDeviceStatus(ctx, t, groupID, tps...)
+
+	})
+}
+
+func testGroupDeviceStatus(ctx context.Context, t *testing.T, groupID []byte, tps ...*bertyprotocol.TestingProtocol) {
+	ntps := len(tps)
+
+	// Get group device status
+	{
+		testutil.LogTree(t, "Get Group Device Status", 1, true)
+		start := time.Now()
+
+		wg := sync.WaitGroup{}
+		statusReceivedLock := sync.Mutex{}
+		statusReceived := make([]map[string]struct{}, ntps)
+		wg.Add(ntps)
+
+		nSuccess := int64(0)
+		for i := range tps {
+			go func(i int) {
+				tp := tps[i]
+				defer wg.Done()
+
+				statusReceived[i] = map[string]struct{}{}
+
+				ctx, cancel := context.WithCancel(ctx)
+				defer cancel()
+
+				sub, inErr := tp.Client.GroupDeviceStatus(ctx, &protocoltypes.GroupDeviceStatus_Request{
+					GroupPK: groupID,
+				})
+				if inErr != nil {
+					assert.NoError(t, inErr, fmt.Sprintf("error for client %d", i))
+					return
+				}
+
+				for {
+					evt, inErr := sub.Recv()
+					if inErr != nil {
+						if inErr != io.EOF {
+							assert.NoError(t, inErr, fmt.Sprintf("error for client %d", i))
+						}
+
+						break
+					}
+
+					assert.Equal(t, evt.Type, protocoltypes.TypePeerConnected)
+					connected := &protocoltypes.GroupDeviceStatus_Reply_PeerConnected{}
+					err := connected.Unmarshal(evt.Event)
+					assert.NoError(t, err, fmt.Sprintf("Unmarshal error for client %d", i))
+
+					statusReceivedLock.Lock()
+					statusReceived[i][connected.PeerID] = struct{}{}
+					done := len(statusReceived[i]) == ntps-1
+					statusReceivedLock.Unlock()
+
+					if done {
+						atomic.AddInt64(&nSuccess, 1)
+						nSuccess := atomic.LoadInt64(&nSuccess)
+
+						got := fmt.Sprintf("%d/%d", nSuccess, ntps)
+						tps[i].Opts.Logger.Debug("received all group device status", zap.String("ok", got))
+						return
+					}
+				}
+			}(i)
+		}
+
+		wg.Wait()
+
+		statusReceivedLock.Lock()
+		ok := true
+		for i := range statusReceived {
+			if !assert.Equal(t, ntps-1, len(statusReceived[i]), fmt.Sprintf("mismatch for client %d", i)) {
+				ok = false
+			}
+		}
+		require.True(t, ok)
+		statusReceivedLock.Unlock()
+
+		testutil.LogTree(t, "duration: %s", 1, false, time.Since(start))
+	}
+}
+
 //
 //func TestScenario_MessageMultiMemberGroup2(t *testing.T) {
 //	cases := []testCase{
