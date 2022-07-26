@@ -497,9 +497,6 @@
 		"user-message": {
 			"read-more": "Read more",
 			"show-less": "Show less"
-		},
-		"emojis": {
-			"matching": "Emojis matching: {{word}}"
 		}
 	},
 	"account": {

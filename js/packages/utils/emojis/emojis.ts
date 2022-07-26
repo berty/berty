@@ -1,6 +1,6 @@
 import emojiSource from 'emoji-datasource'
 
-export type Emoji = {
+type Emoji = {
 	short_name: string
 	unified: string
 	short_names: string[]
@@ -13,7 +13,7 @@ export type Emoji = {
 	image: string
 }
 
-export const emojis: Emoji[] = emojiSource
+const emojis: Emoji[] = emojiSource
 
 const toEmoji = (code: any) => {
 	return String.fromCodePoint(...code.split('-').map((u: string) => '0x' + u))

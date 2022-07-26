@@ -10,8 +10,6 @@ import { useStyles } from '@berty/contexts/styles'
 import { useThemeColor, useDeletingAccountAfterClosing } from '@berty/hooks'
 import { ScreenFC } from '@berty/navigation'
 
-const DELETE_STR = 'delete'
-
 export const DeleteAccount: ScreenFC<'Settings.DeleteAccount'> = () => {
 	const { padding, text, margin } = useStyles()
 	const [deleteConfirmation, setDeleteConfirmation] = useState('')
@@ -19,6 +17,9 @@ export const DeleteAccount: ScreenFC<'Settings.DeleteAccount'> = () => {
 	const { t } = useTranslation()
 	const deletingAccountAfterClosing = useDeletingAccountAfterClosing()
 	const navigation = useReactNavigation()
+
+	// this is the translated string (of "delete"), that we have to compare with the input
+	const DELETE_STR = t('settings.delete-account.delete-button').toLowerCase()
 
 	return (
 		<Layout style={{ backgroundColor: '#E35179', flex: 1 }}>

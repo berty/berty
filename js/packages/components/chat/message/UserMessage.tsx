@@ -27,16 +27,13 @@ import { getMediaTypeFromMedias } from '@berty/utils/messenger/media'
 
 import { MemberAvatar } from '../../avatars'
 import { UnifiedText } from '../../shared-components/UnifiedText'
+import { EmojiKeyboard } from '../modals/EmojiKeyboard.modal'
 import { MessageMenu } from '../modals/MessageMenu.modal'
 import { AudioMessage } from './AudioMessage'
 import { FileMessage } from './FileMessage'
 import { PictureMessage } from './PictureMessage'
+import { Reactions } from './reactions/Reactions'
 import { HyperlinkUserMessage, TimestampStatusUserMessage } from './UserMessageComponents'
-// We have delete this component cause unusable but we can find it here if we need: https://github.com/berty/berty/blob/38913ed828/js/packages/components/chat/message/Reactions.tsx
-// and a component dependencie https://github.com/berty/berty/blob/38913ed828f11799bb5f4471d1cb31dc182d9ed5/js/packages/components/shared-components/AnimatedNumber.tsx
-// import { Reactions } from './Reactions'
-
-// import { EmojiKeyboard } from '../modals/EmojiKeyboard.modal'
 
 const pal = palette('tol-rainbow', 256)
 const AVATAR_SIZE = 30
@@ -189,10 +186,11 @@ export const UserMessage: React.FC<{
 	const colors = useThemeColor()
 	const { t } = useTranslation()
 	const [animatedValue] = useState(new Animated.Value(0))
-	// const [messageLayoutWidth, setMessageLayoutWidth] = useState(0)
+	const [messageLayoutWidth, setMessageLayoutWidth] = useState(0)
 	const dispatch = useAppDispatch()
 	const [highlightCid, setHighlightCid] = useState<string | undefined | null>()
-	const [isVisible, setIsVisible] = useState<boolean>(false)
+	const [isMenuVisible, setIsMenuVisible] = useState<boolean>(false)
+	const [isEmojiVisible, setIsEmojiVisible] = useState<boolean>(false)
 
 	const {
 		name,
@@ -239,11 +237,8 @@ export const UserMessage: React.FC<{
 		if (inte.isMine) {
 			return
 		}
-		setIsVisible(true)
-		// show(
-
-		// )
-	}, [inte.isMine, setIsVisible])
+		setIsMenuVisible(true)
+	}, [inte.isMine, setIsMenuVisible])
 
 	return (
 		<>
@@ -362,7 +357,7 @@ export const UserMessage: React.FC<{
 							</View>
 						)}
 
-						<View style={{ position: 'relative' }}>
+						<View style={{ alignItems: inte.isMine ? 'flex-end' : 'flex-start' }}>
 							<PanGestureHandler
 								enabled={!inte.isMine}
 								activeOffsetX={20}
@@ -458,9 +453,9 @@ export const UserMessage: React.FC<{
 										/>
 									</Animated.View>
 									<TouchableOpacity
-										// onLayout={event => {
-										// 	setMessageLayoutWidth(event.nativeEvent.layout.width)
-										// }}
+										onLayout={event => {
+											setMessageLayoutWidth(event.nativeEvent.layout.width)
+										}}
 										disabled={inte.isMine}
 										activeOpacity={0.9}
 										onLongPress={togglePopover}
@@ -525,17 +520,16 @@ export const UserMessage: React.FC<{
 									</TouchableOpacity>
 								</Animated.View>
 							</PanGestureHandler>
-							{/* {!!messageLayoutWidth && (
-							<Reactions
-								convPk={convPK}
-								reactions={inte.reactions || []}
-								cid={inte.cid!}
-								onEmojiKeyboard={() => {
-									show(<EmojiKeyboard conversationPublicKey={convPK} targetCid={inte.cid!} />)
-								}}
-								onRemoveEmoji={handleSelectEmoji}
-							/>
-						)} */}
+							{!!messageLayoutWidth && (
+								<Reactions
+									convPk={convPK}
+									cid={inte.cid!}
+									onEmojiKeyboard={() => {
+										setIsEmojiVisible(true)
+									}}
+									onPressEmoji={handleSelectEmoji}
+								/>
+							)}
 						</View>
 						{!isWithinCollapseDuration && (
 							<TimestampStatusUserMessage
@@ -548,7 +542,7 @@ export const UserMessage: React.FC<{
 					</View>
 				</View>
 			</View>
-			<BottomModal isVisible={isVisible} setIsVisible={setIsVisible}>
+			<BottomModal isVisible={isMenuVisible} setIsVisible={setIsMenuVisible}>
 				<MessageMenu
 					convPk={convPK}
 					cid={inte.cid!}
@@ -558,6 +552,15 @@ export const UserMessage: React.FC<{
 						backgroundColor: msgBackgroundColor,
 						textColor: msgTextColor,
 					}}
+					hide={() => setIsMenuVisible(false)}
+				/>
+			</BottomModal>
+			<BottomModal isVisible={isEmojiVisible} setIsVisible={setIsEmojiVisible}>
+				<EmojiKeyboard
+					conversationPublicKey={convPK}
+					targetCid={inte.cid!}
+					hide={() => setIsEmojiVisible(false)}
+					showBoard={isEmojiVisible}
 				/>
 			</BottomModal>
 		</>

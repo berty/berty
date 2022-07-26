@@ -437,6 +437,12 @@ const BodyDevTools: React.FC<{}> = withInAppNotification(({ showNotification }: 
 				actionToggle={handleForceMockToggle}
 			/>
 			<ButtonSetting
+				icon='eye-outline'
+				iconColor={colors['alt-secondary-background-header']}
+				name={t('settings.home.appearance-button')}
+				onPress={() => navigate('Settings.Appearance')}
+			/>
+			<ButtonSetting
 				name={t('settings.devtools.system-info-button')}
 				icon='info-outline'
 				iconSize={30}

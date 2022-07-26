@@ -40,12 +40,12 @@ const MemberItem: React.FC<MemberItemProps> = ({ onPress, convPK, item }) => {
 			)
 
 			// fallback peer object in waiting for go implementation
-			const fallbackPeer = {
+			const fallBackPeer: PeerNetworkStatus = {
 				id: '',
 				transport: beapi.messenger.StreamEvent.PeerStatusConnected.Transport.Unknown,
 				connectionStatus: beapi.protocol.GroupDeviceStatus.Type.TypeUnknown,
 			}
-			setPeer((peerFromMemberPK.payload as PeerNetworkStatus) || fallbackPeer)
+			setPeer((peerFromMemberPK.payload as PeerNetworkStatus) || fallBackPeer)
 		}
 
 		f()

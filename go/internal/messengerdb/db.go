@@ -628,6 +628,16 @@ func (d *DBWrapper) GetPaginatedInteractions(opts *messengertypes.PaginatedInter
 		}
 	}
 
+	// TODO: find a way to do this in one SQL call instead of parsing and do a db call for each interaction
+	for _, interaction := range interactions {
+		var err error
+		// add reactions to interaction
+		interaction.Reactions, err = d.BuildReactionsView(interaction.CID)
+		if err != nil {
+			return nil, nil, errcode.ErrDBRead.Wrap(err)
+		}
+	}
+
 	return interactions, medias, nil
 }
 
