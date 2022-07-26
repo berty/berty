@@ -311,6 +311,7 @@ func (s *service) monitorHandleGroupDeviceConnected(peer peer.ID) error {
 	activeConns := s.host.Network().ConnsToPeer(peer)
 	connected.Transports = make([]protocoltypes.GroupDeviceStatus_Transport, len(activeConns))
 	connected.Maddrs = make([]string, len(activeConns))
+
 CONN_LOOP:
 	for i, conn := range activeConns {
 		connected.Maddrs[i] = conn.RemoteMultiaddr().String()
@@ -327,6 +328,8 @@ CONN_LOOP:
 
 		// otherwise, check for WAN/LAN addr
 		if manet.IsPrivateAddr(conn.RemoteMultiaddr()) {
+			connected.Transports[i] = protocoltypes.TptLAN
+		} else {
 			connected.Transports[i] = protocoltypes.TptWAN
 		}
 	}
