@@ -1,5 +1,5 @@
 import Long from 'long'
-import React, { MutableRefObject, useMemo, useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Platform, StyleSheet, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
@@ -28,6 +28,7 @@ import {
 	selectChatInputIsSending,
 	setChatInputIsSending,
 } from '@berty/redux/reducers/chatInputsVolatile.reducer'
+import { useStateWithRef } from '@berty/utils/react-native/useStateWithRef'
 
 import { AddFileMenu } from '../modals/add-file-modal/AddFileMenu.modal'
 import { CameraButton } from './CameraButton'
@@ -39,18 +40,6 @@ type ChatFooterProps = {
 	convPK: string
 	placeholder: string
 	disabled?: boolean
-}
-
-function useStateWithRef<T>(defaultValue: T): [T, (val: T) => void, MutableRefObject<T>] {
-	const [_state, _setState] = React.useState<T>(defaultValue)
-	const _ref = React.useRef<T>(defaultValue)
-
-	const setState = React.useCallback((value: T) => {
-		_setState(value)
-		_ref.current = value
-	}, [])
-
-	return [_state, setState, _ref]
 }
 
 export const ChatFooter: React.FC<ChatFooterProps> = React.memo(

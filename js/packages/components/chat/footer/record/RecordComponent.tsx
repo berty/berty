@@ -1,19 +1,11 @@
 import { Recorder } from '@react-native-community/audio-toolkit'
-import { useNavigation } from '@react-navigation/native'
-import { Icon } from '@ui-kitten/components'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Animated, Platform, StyleSheet, Vibration, View } from 'react-native'
-import {
-	LongPressGestureHandler,
-	LongPressGestureHandlerGestureEvent,
-	LongPressGestureHandlerStateChangeEvent,
-	State,
-} from 'react-native-gesture-handler'
+import { Animated, Platform, Vibration, View } from 'react-native'
 
 import beapi from '@berty/api'
 import { useStyles } from '@berty/contexts/styles'
-import { useAppDispatch, useMessengerClient, useThemeColor } from '@berty/hooks'
+import { useAppDispatch, useMessengerClient } from '@berty/hooks'
 
 import {
 	limitIntensities,
@@ -23,17 +15,16 @@ import {
 	volumeValuePrecision,
 } from '../../audioMessageCommon'
 import { AudioPreview } from './AudioPreview'
+import { HelpMessage } from './HelpMessage'
+import { LongPressWrapper } from './LongPressWrapper'
 import {
-	acquireMicPerm,
 	attachMedias,
 	audioMessageDisplayName,
-	MicPermStatus,
 	sendMessage,
 	voiceMemoBitrate,
 	voiceMemoFormat,
 	voiceMemoSampleRate,
-} from './functions'
-import { HelpMessage } from './HelpMessage'
+} from './recordFunctions'
 import { RecordingComponent } from './RecordingComponent'
 
 export const RecordComponent: React.FC<{
@@ -62,10 +53,8 @@ export const RecordComponent: React.FC<{
 	const recorder = React.useRef<Recorder | undefined>(undefined)
 	const [recorderFilePath, setRecorderFilePath] = useState('')
 	const { t } = useTranslation()
-	const { navigate } = useNavigation()
 
 	const { padding } = useStyles()
-	const colors = useThemeColor()
 	const [recordingState, setRecordingState] = useState(RecordingState.NOT_RECORDING)
 	/*
 	// use this to debug recording state
@@ -268,141 +257,6 @@ export const RecordComponent: React.FC<{
 		sendComplete,
 	])
 
-	const updateCurrentTime = useCallback(() => {
-		setCurrentTime(Date.now())
-	}, [setCurrentTime])
-
-	const updateRecordingPressEvent = useCallback(
-		(e: LongPressGestureHandlerGestureEvent) => {
-			//console.log('gesture event', e)
-
-			if (disabled) {
-				return
-			}
-
-			//setXY({ x: e.nativeEvent.x, y: e.nativeEvent.y })
-
-			if (
-				recordingState !== RecordingState.RECORDING &&
-				recordingState !== RecordingState.RECORDING_LOCKED
-			) {
-				return
-			}
-
-			if (e.nativeEvent.x < -distanceCancel /* && e.nativeEvent.y > -20 && e.nativeEvent.y < 70*/) {
-				console.log('cancel recording')
-				setHelpMessageValue({
-					message: t('audio.record.tooltip.not-sent'),
-				})
-				console.log('slide cancel')
-				setRecordingState(RecordingState.PENDING_CANCEL)
-				return
-			}
-
-			if (
-				!disableLockMode &&
-				e.nativeEvent.y < -distanceLock /* &&
-				e.nativeEvent.x > -20 &&
-				e.nativeEvent.x < 50*/
-			) {
-				console.log('locking recording')
-				setRecordingState(RecordingState.RECORDING_LOCKED)
-				return
-			}
-		},
-		[
-			disableLockMode,
-			distanceCancel,
-			distanceLock,
-			recordingState,
-			setHelpMessageValue,
-			t,
-			disabled,
-		],
-	)
-
-	const recordingPressStatus = useCallback(
-		async (e: LongPressGestureHandlerStateChangeEvent) => {
-			if (disabled) {
-				return
-			}
-
-			// Pressed
-			if (e.nativeEvent.state === State.ACTIVE) {
-				console.log('start')
-				if (recordingState === RecordingState.NOT_RECORDING) {
-					const permState = await acquireMicPerm(navigate)
-					if (permState !== MicPermStatus.GRANTED) {
-						setHelpMessageValue({ message: t('audio.record.tooltip.permission-denied') }) //'App is not allowed to record sound'
-						return
-					}
-
-					clearHelpMessageValue()
-					setRecordingStart(Date.now())
-					setCurrentTime(Date.now())
-					setClearRecordingInterval(setInterval(() => updateCurrentTime(), 100))
-					meteredValuesRef.current = []
-
-					recorder.current = new Recorder('tempVoiceClip.aac', {
-						channels: 1,
-						bitrate: voiceMemoBitrate,
-						sampleRate: voiceMemoSampleRate,
-						format: voiceMemoFormat,
-						encoder: voiceMemoFormat,
-						quality: 'low',
-						meteringInterval: 20,
-					}).prepare((err, filePath) => {
-						if (err) {
-							console.log('recorder prepare error', err?.message)
-						}
-						setRecorderFilePath(filePath)
-					})
-					recorder.current.record(err => {
-						if (err) {
-							console.log('recorder record error', err?.message)
-						} else {
-							try {
-								;(recorder.current as any)?.on('meter', addMeteredValue)
-							} catch (e) {
-								console.warn(['err' + e])
-							}
-						}
-					})
-					setRecordingState(RecordingState.RECORDING)
-				}
-
-				return
-			}
-
-			// Released
-			if (recordingState !== RecordingState.NOT_RECORDING && e.nativeEvent.state === State.END) {
-				console.log('end')
-				setRecordingState(RecordingState.COMPLETE)
-
-				return
-			}
-
-			if (
-				recordingState !== RecordingState.NOT_RECORDING &&
-				(e.nativeEvent.state === State.CANCELLED || e.nativeEvent.state === State.FAILED)
-			) {
-				console.log('state cancel', e.nativeEvent.state)
-				setRecordingState(RecordingState.PENDING_CANCEL)
-				return
-			}
-		},
-		[
-			recordingState,
-			navigate,
-			clearHelpMessageValue,
-			setHelpMessageValue,
-			t,
-			updateCurrentTime,
-			addMeteredValue,
-			disabled,
-		],
-	)
-
 	return Platform.OS === 'web' ? (
 		<View style={[padding.left.scale(10), { flex: 1 }]}>{children}</View>
 	) : (
@@ -436,59 +290,25 @@ export const RecordComponent: React.FC<{
 			{(recordingState === RecordingState.NOT_RECORDING ||
 				recordingState === RecordingState.RECORDING ||
 				recordingState === RecordingState.PENDING_CANCEL) && (
-				<LongPressGestureHandler
-					minDurationMs={0}
-					maxDist={42000}
-					onGestureEvent={updateRecordingPressEvent}
-					onHandlerStateChange={recordingPressStatus}
-					shouldCancelWhenOutside={false}
-				>
-					<View style={styles.container}>
-						{recordingState === RecordingState.RECORDING && (
-							<View
-								style={[
-									styles.recordWrapper,
-									{
-										borderColor: `${colors['reverted-main-text']}c0`,
-										backgroundColor: colors['background-header'],
-										top: -distanceLock - 30,
-									},
-								]}
-							>
-								<View style={{ paddingBottom: 2 }}>
-									<Icon
-										name='lock'
-										pack='feather'
-										height={18}
-										width={18}
-										fill={colors['reverted-main-text']}
-									/>
-								</View>
-							</View>
-						)}
-						<View>{component}</View>
-					</View>
-				</LongPressGestureHandler>
+				<LongPressWrapper
+					component={component}
+					disabled={disabled}
+					addMeteredValue={addMeteredValue}
+					setRecordingState={setRecordingState}
+					clearHelpMessageValue={clearHelpMessageValue}
+					setHelpMessageValue={setHelpMessageValue}
+					meteredValuesRef={meteredValuesRef}
+					recorder={recorder}
+					recordingState={recordingState}
+					disableLockMode={disableLockMode}
+					distanceCancel={distanceCancel}
+					distanceLock={distanceLock}
+					setRecorderFilePath={setRecorderFilePath}
+					setRecordingStart={setRecordingStart}
+					setClearRecordingInterval={setClearRecordingInterval}
+					setCurrentTime={setCurrentTime}
+				/>
 			)}
 		</View>
 	)
 }
-
-const styles = StyleSheet.create({
-	container: {
-		justifyContent: 'center',
-		alignItems: 'flex-end',
-		paddingRight: 15,
-	},
-	recordWrapper: {
-		justifyContent: 'center',
-		alignItems: 'center',
-		borderRadius: 18,
-		borderWidth: 1,
-		width: 36,
-		height: 36,
-		position: 'absolute',
-		right: 16,
-		paddingVertical: 5,
-	},
-})
