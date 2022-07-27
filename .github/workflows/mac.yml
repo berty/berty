@@ -73,19 +73,19 @@ jobs:
 
       - name: Setup go
         run: |
-          asdf plugin add golang
+          asdf plugin add golang || ${{ matrix.selfhosted }}
           asdf install golang
           echo "go_version=$(asdf current golang | xargs | cut -d ' ' -f 2)" >> $GITHUB_ENV
 
       - name: Setup node
         run: |
-          asdf plugin add nodejs
+          asdf plugin add nodejs || ${{ matrix.selfhosted }}
           asdf install nodejs
           echo "node_version=$(asdf current nodejs | xargs | cut -d ' ' -f 2)" >> $GITHUB_ENV
 
       - name: Setup yarn
         run: |
-          asdf plugin add yarn
+          asdf plugin add yarn || ${{ matrix.selfhosted }}
           asdf install yarn
 
       - name: Cache go modules
