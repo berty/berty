@@ -24,7 +24,7 @@
 - name: Configure runner
   command:
     chdir: "{{ runner_folder }}"
-    cmd: ./config.sh --unattended --url {{ config_url }} --pat {{ config_token }} --name {{ inventory_hostname }}
+    cmd: ./config.sh --unattended --url {{ github_url }} --pat {{ config_token }} --name {{ inventory_hostname }}
 
 - import_role:
     name: asdf_setup

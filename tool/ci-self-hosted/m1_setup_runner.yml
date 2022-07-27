@@ -1,6 +1,6 @@
 ---
 - name: Setup CI runners on M1 Macs
-  hosts: m1_macs
+  hosts: m1_mac_runners
 
   pre_tasks:
     - import_tasks: utils/check_m1.yml

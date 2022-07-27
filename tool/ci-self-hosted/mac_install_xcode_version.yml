@@ -1,6 +1,6 @@
 ---
-- name: Switch to an already installed version of XCode
-  hosts: m1_macs
+- name: Install a specific version of XCode
+  hosts: m1_mac_runners
 
   pre_tasks:
     - import_tasks: utils/check_macos.yml
@@ -8,4 +8,3 @@
   tasks:
     - include_role:
         name: xcode_setup
-        tasks_from: switch

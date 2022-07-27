@@ -26,6 +26,9 @@
 /api/ @berty/tech
 /api/go-internal/ @berty/go-owners
 
+# self hosted runner Github Actions
+/tool/ci-self-hosted @aeddi
+
 ##
 ## by filetype
 ##
