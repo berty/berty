@@ -154,8 +154,8 @@ jobs:
         uses: actions/cache@v2.1.6
         with:
           path: js/ios/vendor/bundle
-          key:          ${{ runner.os }}-go-${{ env.ruby_version }}-${{ env.json_cache-versions_ruby }}-${{ hashFiles('go/**/go.sum') }}
-          restore-keys: ${{ runner.os }}-go-${{ env.ruby_version }}-${{ env.json_cache-versions_ruby }}-
+          key:          ${{ runner.os }}-ruby-${{ env.ruby_version }}-${{ env.json_cache-versions_ruby }}-${{ hashFiles('js/ios/Gemfile*') }}
+          restore-keys: ${{ runner.os }}-ruby-${{ env.ruby_version }}-${{ env.json_cache-versions_ruby }}-
 
       - name: Cache node modules
         uses: actions/cache@v2.1.6
