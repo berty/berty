@@ -12,6 +12,8 @@ IOS_DEVICE ?=
 ANDROID_DEVICE ?=
 GO ?= go # this allows to override the go version used
 GO_TAGS ?= -tags "fts5 sqlite sqlite_unlock_notify"
+GOMOBILE_IOS_TARGET ?= ios
+GOMOBILE_ANDROID_TARGET ?= android
 
 ## Internal variables
 
@@ -401,7 +403,7 @@ ios/Frameworks/Bertybridge.xcframework: $(bridge_src)
 			-v $(ext_ldflags) \
 			$(GO_TAGS) \
 			-cache $(ios_gomobile_cache)/bertybridge \
-			-target ios \
+			-target $(GOMOBILE_IOS_TARGET) \
 			-iosversion $(minimum_ios_ver) \
 			./go/framework/bertybridge
 
@@ -421,7 +423,7 @@ ios/Frameworks/Bertypush.xcframework: $(bridge_src)
 			-v $(ext_ldflags) \
 			$(GO_TAGS) \
 			-cache $(ios_gomobile_cache)/bertypush \
-			-target ios \
+			-target $(GOMOBILE_IOS_TARGET) \
 			-iosversion $(minimum_ios_ver) \
 			./go/framework/bertypush
 
@@ -462,7 +464,7 @@ android/libs/gobridge.aar: $(bridge_src)
 		-v $(ext_ldflags) \
 		$(GO_TAGS) \
 		-cache $(android_gomobile_cache) \
-		-target android \
+		-target $(GOMOBILE_ANDROID_TARGET) \
 		-androidapi $(minimum_android_ver) \
 		./go/framework/bertybridge
 	touch $@
