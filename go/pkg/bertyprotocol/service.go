@@ -415,6 +415,7 @@ func (s *service) startGroupDeviceMonitor() {
 	sub2, err := s.host.EventBus().Subscribe(new(event.EvtPeerConnectednessChanged))
 	if err != nil {
 		s.logger.Error("startGroupDeviceMonitor", zap.Error(errors.Wrap(err, "unable to subscribe odb event")))
+		sub1.Close()
 		return
 	}
 
@@ -437,7 +438,6 @@ func (s *service) startGroupDeviceMonitor() {
 				}
 			case evt := <-ch2:
 				e := evt.(event.EvtPeerConnectednessChanged)
-				s.logger.Debug("GroupDeviceMonitor: EvtPeerConnectednessChanged received", zap.String("peerID", e.Peer.Pretty()))
 
 				if err := s.monitorHandleGroupDeviceDisconnected(e.Peer); err != nil {
 					s.logger.Debug("GroupDeviceMonitor: cannot handle new peer connection", logutil.PrivateString("peerID", e.Peer.Pretty()))
@@ -451,7 +451,9 @@ func (s *service) startGroupDeviceMonitor() {
 	for _, peer := range peers {
 		if s.host.Network().Connectedness(peer) == network.Connected {
 			if err := s.monitorHandleGroupDeviceConnected(peer); err != nil {
-				s.logger.Warn("GroupDeviceMonitor: cannot handle peer store process", logutil.PrivateString("peerID", peer.Pretty()))
+				if err.Error() != "PeerDeviceGroup unknown" {
+					s.logger.Warn("GroupDeviceMonitor: cannot handle peer store process", logutil.PrivateString("peerID", peer.Pretty()))
+				}
 			}
 		}
 	}

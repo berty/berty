@@ -10,6 +10,7 @@ import (
 	peer "github.com/libp2p/go-libp2p-core/peer"
 	manet "github.com/multiformats/go-multiaddr/net"
 	"github.com/pkg/errors"
+	"go.uber.org/zap"
 
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/internal/logutil"
@@ -109,6 +110,7 @@ func (s *service) GroupDeviceStatus(req *protocoltypes.GroupDeviceStatus_Request
 			for id, status := range groupDeviceStatus {
 				statusCopy[id] = status
 				if err := srv.Send(status); err != nil {
+					s.logger.Debug("GroupDeviceStatus: failed to send event", zap.Error(err))
 					return err
 				}
 			}
@@ -117,8 +119,8 @@ func (s *service) GroupDeviceStatus(req *protocoltypes.GroupDeviceStatus_Request
 
 	for {
 		// wait until context is done or peer status cache is updated
-		if ok := s.groupDeviceNotify.Wait(s.ctx); !ok {
-			return errors.New("context canceled")
+		if ok := s.groupDeviceNotify.Wait(srv.Context()); !ok {
+			return nil // context canceled, it's ok
 		}
 
 		groupDeviceStatus, ok := s.groupDeviceStatus[hex.EncodeToString(req.GroupPK)]
@@ -127,6 +129,7 @@ func (s *service) GroupDeviceStatus(req *protocoltypes.GroupDeviceStatus_Request
 			if diff := diffStatusMaps(statusCopy, groupDeviceStatus); len(diff) > 0 {
 				for pid, status := range diff {
 					if err := srv.Send(status); err != nil {
+						s.logger.Debug("GroupDeviceStatus: failed to send event", zap.Error(err))
 						return err
 					}
 					// update cache
@@ -389,6 +392,7 @@ func (s *service) updateGroupDeviceStatus(group *protocoltypes.Group, peer peer.
 		s.groupDeviceStatus[group.GroupIDAsString()] = groupStatus
 	}
 
+	s.logger.Debug("updating GroupDeviceStatus cache", logutil.PrivateString("peerID", peer.Pretty()))
 	groupStatus[peer.Pretty()] = status
 	s.groupDeviceNotify.Broadcast()
 }

@@ -65,6 +65,8 @@ type service struct {
 	pushReceiver          bertypush.MessengerPushReceiver
 	tyberCleanup          func()
 	logFilePath           string
+	cancelPeerStatus      map[string]func()
+	peerGroup             map[string]map[string]*mt.StreamEvent_PeerStatusGroupAssociated
 }
 
 type Opts struct {
@@ -218,6 +220,8 @@ func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (_ Service, err
 		handlerMutex:          sync.Mutex{},
 		ring:                  opts.Ring,
 		logFilePath:           opts.LogFilePath,
+		cancelPeerStatus:      make(map[string]func()),
+		peerGroup:             make(map[string]map[string]*mt.StreamEvent_PeerStatusGroupAssociated),
 	}
 
 	svc.eventHandler = messengerpayloads.NewEventHandler(ctx, db, &MetaFetcherFromProtocolClient{client: client}, newPostActionsService(&svc), opts.Logger, svc.dispatcher, false)
