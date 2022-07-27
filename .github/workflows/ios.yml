@@ -204,6 +204,8 @@ jobs:
 
       - name: Build XCode project and workspace
         working-directory: js
+        env:
+          LANG: en_US.UTF-8
         run: make ios.project
 
       - name: Build iOS frameworks
