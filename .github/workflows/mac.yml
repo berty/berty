@@ -67,7 +67,9 @@ jobs:
           filename: .github/workflows/utils/variables.json
 
       - name: Setup asdf
-        uses: asdf-vm/actions/setup@v1
+        uses: aeddi/asdf-actions/setup@681862213369d8d868be8a2a7d6040c4d63027db
+        with:
+          skip_install: ${{ matrix.selfhosted }}
 
       - name: Setup go
         run: |
