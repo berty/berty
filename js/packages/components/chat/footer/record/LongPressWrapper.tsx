@@ -20,7 +20,7 @@ import {
 	voiceMemoBitrate,
 	voiceMemoFormat,
 	voiceMemoSampleRate,
-} from './recordFunctions'
+} from './record.helper'
 
 interface LongPressWrapperProps {
 	setCurrentTime: (time: number) => void

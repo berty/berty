@@ -24,7 +24,7 @@ import {
 	voiceMemoBitrate,
 	voiceMemoFormat,
 	voiceMemoSampleRate,
-} from './recordFunctions'
+} from './record.helper'
 import { RecordingComponent } from './RecordingComponent'
 
 export const RecordComponent: React.FC<{
