@@ -158,7 +158,7 @@
 			"network-button": "网络",
 			"bug-button": "提交错误",
 			"about-button": "关于 Berty",
-			"version-button": "",
+			"version-button": "版本: {{version}}",
 			"devtools-button": "开发工具"
 		},
 		"about": {
@@ -239,7 +239,7 @@
 			"header-left-button": "设备信息",
 			"header-middle-button": "生成伪数据",
 			"header-right-button": "重启守护进程",
-			"force-mock-button": "",
+			"force-mock-button": "强制模拟",
 			"simulate-button": "模拟流错误",
 			"simulate-js-error-button": "模拟 JavaScript 错误",
 			"system-info-button": "系统信息",
@@ -252,7 +252,7 @@
 				"name": "日志过滤器",
 				"bullet-point": "更改之后重新启动应用"
 			},
-			"export-logs-button": "",
+			"export-logs-button": "导出日志",
 			"add-dev-conversations-button": "添加开发者会话",
 			"share-button": {
 				"title": "分享ID到Discord",
@@ -413,14 +413,14 @@
 			"title": "对话设置",
 			"media-button": "媒体、 链接和文档",
 			"members-button": {
-				"title": ""
+				"title": "成员网络状态 ({{count}})"
 			},
 			"add-member-button": "添加成员",
 			"members-dropdown": {
-				"search-placeholder": "",
+				"search-placeholder": "查找成员",
 				"conversation-booster": "",
-				"replication-type": "",
-				"user-type": ""
+				"replication-type": "复制节点",
+				"user-type": "用户设备"
 			},
 			"invite-button": "通过链接邀请",
 			"save-button": "在服务器上保存对话"
@@ -450,7 +450,7 @@
 				"request-sent": "请求已发送: airplan:",
 				"incoming": "接受此请求以回复 ！",
 				"outgoing": "正在等待您的联系人回复连接！",
-				"refresh-button": ""
+				"refresh-button": "重新发送联系请求"
 			},
 			"incoming-input-placeholder": "接受此请求以在这里写入...",
 			"input-placeholder": "在此输入..."
@@ -497,9 +497,6 @@
 		"user-message": {
 			"read-more": "查看更多",
 			"show-less": "显示剩余"
-		},
-		"emojis": {
-			"matching": ""
 		}
 	},
 	"account": {
@@ -561,8 +558,8 @@
 			"desc": "重新启动 Berty 以保存您的数据并启用通知！"
 		},
 		"submit-failed": {
-			"title": "",
-			"desc": ""
+			"title": "无法提交 Bug",
+			"desc": "缺少邮件应用程序"
 		}
 	},
 	"error": {
@@ -646,6 +643,6 @@
 		"days": "{{days}} 日"
 	},
 	"share": {
-		"sharing-id-message": ""
+		"sharing-id-message": "让我们在 Berty 上聊天，这是一个安全的 p2p 消息应用。加入我："
 	}
 }
