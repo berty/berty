@@ -2,9 +2,19 @@ import LottieView from 'lottie-react-native'
 import React, { useCallback, useEffect, useState } from 'react'
 import { StyleSheet, TouchableOpacity, View } from 'react-native'
 
-import { useAppDispatch, useConversationMembers, useMessengerClient } from '@berty/hooks'
+import beapi from '@berty/api'
+import {
+	useAppDispatch,
+	useAppSelector,
+	useConversationMembers,
+	useMessengerClient,
+} from '@berty/hooks'
 import { useNavigation } from '@berty/navigation'
-import { getPeerFromMemberPK, PeerNetworkStatus } from '@berty/redux/reducers/messenger.reducer'
+import {
+	getPeerFromMemberPK,
+	PeerNetworkStatus,
+	selectPeerNetworkStatusDict,
+} from '@berty/redux/reducers/messenger.reducer'
 
 import { Avatars } from './Avatars'
 import { Boosted } from './Boosted'
@@ -20,6 +30,7 @@ export const MemberBar: React.FC<MemberBarProps> = props => {
 	const messengerClient = useMessengerClient()
 	const members = useConversationMembers(props.convId).filter(members => !members.isMe)
 	const dispatch = useAppDispatch()
+	const peers = useAppSelector(selectPeerNetworkStatusDict)
 
 	const [memberList, setMemberList] = useState<MemberBarItem[] | undefined>(undefined)
 
@@ -43,14 +54,27 @@ export const MemberBar: React.FC<MemberBarProps> = props => {
 				break
 			}
 		}
-		setMemberList(list)
+		setMemberList(
+			list.sort((a, b) => {
+				if (
+					b?.networkStatus?.connectionStatus ===
+						beapi.protocol.GroupDeviceStatus.Type.TypePeerConnected &&
+					a?.networkStatus?.connectionStatus !==
+						beapi.protocol.GroupDeviceStatus.Type.TypePeerConnected
+				) {
+					return 1
+				}
+				return -1
+			}),
+		)
 		// members is needed but cause an infinite loop
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [dispatch, messengerClient, props.convId])
 
 	useEffect(() => {
-		handleMemberList().then()
-	}, [handleMemberList])
+		handleMemberList()
+		// we put peers dependencies to update the connectionStatus of peers
+	}, [handleMemberList, peers])
 
 	return (
 		<TouchableOpacity
