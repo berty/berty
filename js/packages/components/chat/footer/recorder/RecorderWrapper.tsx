@@ -6,28 +6,24 @@ import { Animated, Platform, Vibration, View } from 'react-native'
 import beapi from '@berty/api'
 import { useStyles } from '@berty/contexts/styles'
 import { useAppDispatch, useMessengerClient } from '@berty/hooks'
+import { limitIntensities } from '@berty/utils/audio'
 
+import { AudioPreview } from './audio-preview/AudioPreview'
 import {
-	limitIntensities,
 	RecordingState,
 	volumeValuesAttached,
 	volumeValueLowest,
 	volumeValuePrecision,
-} from '../../audioMessageCommon'
-import { AudioPreview } from './AudioPreview'
-import { HelpMessage } from './HelpMessage'
-import { LongPressWrapper } from './LongPressWrapper'
-import {
-	attachMedias,
-	audioMessageDisplayName,
-	sendMessage,
 	voiceMemoBitrate,
 	voiceMemoFormat,
 	voiceMemoSampleRate,
-} from './record.helper'
-import { RecordingComponent } from './RecordingComponent'
+} from './constant'
+import { HelpMessage } from './HelpMessage'
+import { RecorderButton } from './RecorderButton'
+import { RecorderPreview } from './RecorderPreview'
+import { attachMedias, audioMessageDisplayName, sendMessage } from './recorderWrapper.helper'
 
-export const RecordComponent: React.FC<{
+interface RecorderWrapperProps {
 	convPk: string
 	component: React.ReactNode
 	distanceCancel?: number
@@ -37,7 +33,9 @@ export const RecordComponent: React.FC<{
 	disabled?: boolean
 	sending?: boolean
 	setSending: (val: boolean) => void
-}> = ({
+}
+
+export const RecorderWrapper: React.FC<RecorderWrapperProps> = ({
 	children,
 	component,
 	distanceCancel = 90,
@@ -70,7 +68,6 @@ export const RecordComponent: React.FC<{
 	const [clearRecordingInterval, setClearRecordingInterval] = useState<ReturnType<
 		typeof setInterval
 	> | null>(null)
-	//const [xy, setXY] = useState({ x: 0, y: 0 })
 	const [currentTime, setCurrentTime] = useState(Date.now())
 	const [helpMessageTimeoutID, _setHelpMessageTimeoutID] = useState<ReturnType<
 		typeof setTimeout
@@ -110,6 +107,7 @@ export const RecordComponent: React.FC<{
 		[clearHelpMessageValue],
 	)
 
+	// effect to handle animation when the user is recording
 	useEffect(() => {
 		if (!isRecording) {
 			return
@@ -195,6 +193,39 @@ export const RecordComponent: React.FC<{
 		[convPk, client, recorderFilePath, dispatch, sending, setSending],
 	)
 
+	const handleRecordingComplete = useCallback(async () => {
+		await recorder.current?.stop(async err => {
+			const duration = recordDuration || Date.now() - recordingStart
+
+			if (err !== null) {
+				if (duration) {
+					if (duration >= minAudioDuration) {
+						await sendComplete({ duration, start: recordingStart })
+					}
+				} else {
+					console.warn(err)
+				}
+			} else if (duration < minAudioDuration) {
+				setHelpMessageValue({
+					message: t('audio.record.tooltip.usage'),
+				})
+			} else {
+				await sendComplete({ duration, start: recordingStart })
+			}
+
+			clearRecording()
+		})
+	}, [
+		clearRecording,
+		minAudioDuration,
+		recordDuration,
+		recordingStart,
+		sendComplete,
+		setHelpMessageValue,
+		t,
+	])
+
+	// effect that handle recording state machine
 	useEffect(() => {
 		switch (recordingState) {
 			case RecordingState.PENDING_CANCEL:
@@ -206,7 +237,6 @@ export const RecordComponent: React.FC<{
 				recorder.current?.stop(() => {
 					recorder.current?.destroy()
 				})
-
 				clearRecording()
 				break
 
@@ -215,47 +245,13 @@ export const RecordComponent: React.FC<{
 					setRecordDuration(Date.now() - recordingStart)
 				})
 				setRecordingState(RecordingState.PREVIEW)
-
 				break
 
 			case RecordingState.COMPLETE:
-				recorder.current?.stop(err => {
-					const duration = recordDuration || Date.now() - recordingStart
-
-					if (err !== null) {
-						if (duration) {
-							if (duration >= minAudioDuration) {
-								sendComplete({ duration, start: recordingStart })
-							}
-						} else {
-							console.warn(err)
-						}
-					} else if (duration < minAudioDuration) {
-						setHelpMessageValue({
-							message: t('audio.record.tooltip.usage'),
-						})
-					} else {
-						sendComplete({ duration, start: recordingStart })
-					}
-
-					clearRecording()
-				})
+				handleRecordingComplete()
 				break
 		}
-	}, [
-		recordingStart,
-		recordingState,
-		clearRecording,
-		minAudioDuration,
-		setHelpMessageValue,
-		client,
-		recorderFilePath,
-		convPk,
-		t,
-		meteredValuesRef,
-		recordDuration,
-		sendComplete,
-	])
+	}, [clearRecording, handleRecordingComplete, recordingStart, recordingState])
 
 	return Platform.OS === 'web' ? (
 		<View style={[padding.left.scale(10), { flex: 1 }]}>{children}</View>
@@ -265,7 +261,7 @@ export const RecordComponent: React.FC<{
 				<HelpMessage helpMessage={helpMessage} clearHelpMessageValue={clearHelpMessageValue} />
 			)}
 			{isRecording && (
-				<RecordingComponent
+				<RecorderPreview
 					recordingState={recordingState}
 					recordingColorVal={recordingColorVal}
 					setRecordingState={setRecordingState}
@@ -290,7 +286,7 @@ export const RecordComponent: React.FC<{
 			{(recordingState === RecordingState.NOT_RECORDING ||
 				recordingState === RecordingState.RECORDING ||
 				recordingState === RecordingState.PENDING_CANCEL) && (
-				<LongPressWrapper
+				<RecorderButton
 					component={component}
 					disabled={disabled}
 					addMeteredValue={addMeteredValue}

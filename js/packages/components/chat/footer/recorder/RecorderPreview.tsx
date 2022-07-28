@@ -8,16 +8,24 @@ import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useStyles } from '@berty/contexts/styles'
 import { useThemeColor } from '@berty/hooks'
 
-import { RecordingState } from '../../audioMessageCommon'
 import { SendButton } from '../ChatFooterButtons'
+import { RecordingState } from './constant'
 
-export const RecordingComponent: React.FC<{
+interface RecordingPreviewProps {
 	recordingState: RecordingState
 	recordingColorVal: Animated.Value
 	setRecordingState: React.Dispatch<React.SetStateAction<RecordingState>>
 	setHelpMessageValue: ({ message, delay }: { message: string; delay?: number | undefined }) => void
 	timer: number
-}> = ({ recordingState, recordingColorVal, setRecordingState, setHelpMessageValue, timer }) => {
+}
+
+export const RecorderPreview: React.FC<RecordingPreviewProps> = ({
+	recordingState,
+	recordingColorVal,
+	setRecordingState,
+	setHelpMessageValue,
+	timer,
+}) => {
 	const { border, padding, margin, text } = useStyles()
 	const colors = useThemeColor()
 	const { t } = useTranslation()

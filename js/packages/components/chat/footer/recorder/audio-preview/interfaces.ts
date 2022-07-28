@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { RecordingState } from '../../audioMessageCommon'
+import { RecordingState } from '../constant'
 
 export interface AudioPreviewProps {
 	meteredValuesRef: React.MutableRefObject<number[]>

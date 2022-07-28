@@ -6,8 +6,8 @@ import { StyleSheet, TouchableOpacity, View } from 'react-native'
 import { useStyles } from '@berty/contexts/styles'
 import { useThemeColor } from '@berty/hooks'
 
-import { RecordingState } from '../../audioMessageCommon'
-import { SendButton } from '../ChatFooterButtons'
+import { SendButton } from '../../ChatFooterButtons'
+import { RecordingState } from '../constant'
 import { AudioPreviewWrapperProps } from './interfaces'
 
 export const AudioPreviewWrapper: React.FC<AudioPreviewWrapperProps> = props => {

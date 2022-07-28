@@ -34,7 +34,7 @@ import { AddFileMenu } from '../modals/add-file-modal/AddFileMenu.modal'
 import { CameraButton } from './CameraButton'
 import { MoreButton, RecordButton, SendButton } from './ChatFooterButtons'
 import { ChatTextInput } from './ChatTextInput'
-import { RecordComponent } from './record/RecordComponent'
+import { RecorderWrapper } from './recorder/RecorderWrapper'
 
 type ChatFooterProps = {
 	convPK: string
@@ -180,7 +180,7 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 						},
 					]}
 				>
-					<RecordComponent
+					<RecorderWrapper
 						component={recordIcon}
 						convPk={convPK}
 						disableLockMode={false}
@@ -225,7 +225,7 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 								)}
 							</View>
 						</View>
-					</RecordComponent>
+					</RecorderWrapper>
 				</View>
 				<BottomModal isVisible={isVisible} setIsVisible={setIsVisible}>
 					<AddFileMenu

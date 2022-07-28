@@ -9,9 +9,10 @@ import { useMusicPlayer } from '@berty/contexts/musicPlayer.context'
 import { useStyles } from '@berty/contexts/styles'
 import { useThemeColor } from '@berty/hooks'
 import { selectProtocolClient } from '@berty/redux/reducers/ui.reducer'
+import { normalizeVolumeIntensities } from '@berty/utils/audio'
 
 import { UnifiedText } from '../../shared-components/UnifiedText'
-import { normalizeVolumeIntensities, WaveForm } from '../audioMessageCommon'
+import { WaveForm } from '../WaveForm'
 
 const AudioPreview: React.FC<{
 	media: beapi.messenger.IMedia

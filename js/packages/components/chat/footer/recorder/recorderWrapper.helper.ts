@@ -1,35 +1,9 @@
 import Long from 'long'
-import { RESULTS } from 'react-native-permissions'
 
 import beapi from '@berty/api'
 import { WelshMessengerServiceClient } from '@berty/grpc-bridge/welsh-clients.gen'
 import { AppDispatch } from '@berty/redux/store'
-import rnutil from '@berty/utils/react-native'
-import { PermissionType } from '@berty/utils/react-native/permissions'
 import { playSound } from '@berty/utils/sound/sounds'
-
-export enum MicPermStatus {
-	UNDEFINED = 0,
-	GRANTED = 1,
-	NEWLY_GRANTED = 2,
-	DENIED = 3,
-}
-
-export const voiceMemoBitrate = 32000
-export const voiceMemoSampleRate = 22050
-export const voiceMemoFormat = 'aac'
-
-export const acquireMicPerm = async (navigate: any): Promise<MicPermStatus> => {
-	const permissionStatus = await rnutil.checkPermissions(PermissionType.audio, {
-		navigate,
-		navigateToPermScreenOnProblem: true,
-	})
-	if (permissionStatus === RESULTS.GRANTED) {
-		return MicPermStatus.GRANTED
-	}
-
-	return MicPermStatus.UNDEFINED
-}
 
 export const sendMessage = async (
 	client: WelshMessengerServiceClient,

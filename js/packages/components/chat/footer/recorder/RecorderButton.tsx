@@ -10,19 +10,32 @@ import {
 	LongPressGestureHandlerStateChangeEvent,
 	State,
 } from 'react-native-gesture-handler'
+import { RESULTS } from 'react-native-permissions'
 
 import { useThemeColor } from '@berty/hooks'
+import rnutil from '@berty/utils/react-native'
+import { PermissionType } from '@berty/utils/react-native/permissions'
 
-import { RecordingState } from '../../audioMessageCommon'
-import {
-	acquireMicPerm,
-	MicPermStatus,
-	voiceMemoBitrate,
-	voiceMemoFormat,
-	voiceMemoSampleRate,
-} from './record.helper'
+import { RecordingState, voiceMemoBitrate, voiceMemoFormat, voiceMemoSampleRate } from './constant'
 
-interface LongPressWrapperProps {
+enum MicPermStatus {
+	UNDEFINED = 0,
+	GRANTED = 1,
+	DENIED = 2,
+}
+const acquireMicPerm = async (navigate: any): Promise<MicPermStatus> => {
+	const permissionStatus = await rnutil.checkPermissions(PermissionType.audio, {
+		navigate,
+		navigateToPermScreenOnProblem: true,
+	})
+	if (permissionStatus === RESULTS.GRANTED) {
+		return MicPermStatus.GRANTED
+	}
+
+	return MicPermStatus.UNDEFINED
+}
+
+interface RecorderButtonProps {
 	setCurrentTime: (time: number) => void
 	disabled?: boolean
 	recordingState: RecordingState
@@ -42,7 +55,7 @@ interface LongPressWrapperProps {
 	component: React.ReactNode
 }
 
-export const LongPressWrapper: React.FC<LongPressWrapperProps> = ({
+export const RecorderButton: React.FC<RecorderButtonProps> = ({
 	setCurrentTime,
 	disabled,
 	recordingState,
@@ -64,19 +77,11 @@ export const LongPressWrapper: React.FC<LongPressWrapperProps> = ({
 	const { t } = useTranslation()
 	const colors = useThemeColor()
 
-	const updateCurrentTime = useCallback(() => {
-		setCurrentTime(Date.now())
-	}, [setCurrentTime])
-
 	const updateRecordingPressEvent = useCallback(
 		(e: LongPressGestureHandlerGestureEvent) => {
-			//console.log('gesture event', e)
-
 			if (disabled) {
 				return
 			}
-
-			//setXY({ x: e.nativeEvent.x, y: e.nativeEvent.y })
 
 			if (
 				recordingState !== RecordingState.RECORDING &&
@@ -85,22 +90,15 @@ export const LongPressWrapper: React.FC<LongPressWrapperProps> = ({
 				return
 			}
 
-			if (e.nativeEvent.x < -distanceCancel /* && e.nativeEvent.y > -20 && e.nativeEvent.y < 70*/) {
+			if (e.nativeEvent.x < -distanceCancel) {
 				console.log('cancel recording')
-				setHelpMessageValue({
-					message: t('audio.record.tooltip.not-sent'),
-				})
+				setHelpMessageValue({ message: t('audio.record.tooltip.not-sent') })
 				console.log('slide cancel')
 				setRecordingState(RecordingState.PENDING_CANCEL)
 				return
 			}
 
-			if (
-				!disableLockMode &&
-				e.nativeEvent.y < -distanceLock /* &&
-				e.nativeEvent.x > -20 &&
-				e.nativeEvent.x < 50*/
-			) {
+			if (!disableLockMode && e.nativeEvent.y < -distanceLock) {
 				console.log('locking recording')
 				setRecordingState(RecordingState.RECORDING_LOCKED)
 				return
@@ -118,6 +116,63 @@ export const LongPressWrapper: React.FC<LongPressWrapperProps> = ({
 		],
 	)
 
+	const createRecorder = useCallback(() => {
+		recorder.current = new Recorder('tempVoiceClip.aac', {
+			channels: 1,
+			bitrate: voiceMemoBitrate,
+			sampleRate: voiceMemoSampleRate,
+			format: voiceMemoFormat,
+			encoder: voiceMemoFormat,
+			quality: 'low',
+			meteringInterval: 20,
+		}).prepare((err, filePath) => {
+			if (err) {
+				console.log('recorder prepare error', err?.message)
+			}
+			setRecorderFilePath(filePath)
+		})
+		recorder.current.record(err => {
+			if (err) {
+				console.log('recorder record error', err?.message)
+			} else {
+				try {
+					;(recorder.current as any)?.on('meter', addMeteredValue)
+				} catch (e) {
+					console.warn(['err' + e])
+				}
+			}
+		})
+	}, [addMeteredValue, recorder, setRecorderFilePath])
+
+	const handlePressRecording = useCallback(async () => {
+		const permState = await acquireMicPerm(navigate)
+		if (permState !== MicPermStatus.GRANTED) {
+			setHelpMessageValue({ message: t('audio.record.tooltip.permission-denied') }) //'App is not allowed to record sound'
+			return
+		}
+
+		clearHelpMessageValue()
+		setRecordingStart(Date.now())
+		setCurrentTime(Date.now())
+		setClearRecordingInterval(setInterval(() => setCurrentTime(Date.now()), 100))
+		meteredValuesRef.current = []
+
+		createRecorder()
+
+		setRecordingState(RecordingState.RECORDING)
+	}, [
+		clearHelpMessageValue,
+		createRecorder,
+		meteredValuesRef,
+		navigate,
+		setClearRecordingInterval,
+		setCurrentTime,
+		setHelpMessageValue,
+		setRecordingStart,
+		setRecordingState,
+		t,
+	])
+
 	const recordingPressStatus = useCallback(
 		async (e: LongPressGestureHandlerStateChangeEvent) => {
 			if (disabled) {
@@ -128,46 +183,8 @@ export const LongPressWrapper: React.FC<LongPressWrapperProps> = ({
 			if (e.nativeEvent.state === State.ACTIVE) {
 				console.log('start')
 				if (recordingState === RecordingState.NOT_RECORDING) {
-					const permState = await acquireMicPerm(navigate)
-					if (permState !== MicPermStatus.GRANTED) {
-						setHelpMessageValue({ message: t('audio.record.tooltip.permission-denied') }) //'App is not allowed to record sound'
-						return
-					}
-
-					clearHelpMessageValue()
-					setRecordingStart(Date.now())
-					setCurrentTime(Date.now())
-					setClearRecordingInterval(setInterval(() => updateCurrentTime(), 100))
-					meteredValuesRef.current = []
-
-					recorder.current = new Recorder('tempVoiceClip.aac', {
-						channels: 1,
-						bitrate: voiceMemoBitrate,
-						sampleRate: voiceMemoSampleRate,
-						format: voiceMemoFormat,
-						encoder: voiceMemoFormat,
-						quality: 'low',
-						meteringInterval: 20,
-					}).prepare((err, filePath) => {
-						if (err) {
-							console.log('recorder prepare error', err?.message)
-						}
-						setRecorderFilePath(filePath)
-					})
-					recorder.current.record(err => {
-						if (err) {
-							console.log('recorder record error', err?.message)
-						} else {
-							try {
-								;(recorder.current as any)?.on('meter', addMeteredValue)
-							} catch (e) {
-								console.warn(['err' + e])
-							}
-						}
-					})
-					setRecordingState(RecordingState.RECORDING)
+					await handlePressRecording()
 				}
-
 				return
 			}
 
@@ -175,10 +192,10 @@ export const LongPressWrapper: React.FC<LongPressWrapperProps> = ({
 			if (recordingState !== RecordingState.NOT_RECORDING && e.nativeEvent.state === State.END) {
 				console.log('end')
 				setRecordingState(RecordingState.COMPLETE)
-
 				return
 			}
 
+			// Cancelled
 			if (
 				recordingState !== RecordingState.NOT_RECORDING &&
 				(e.nativeEvent.state === State.CANCELLED || e.nativeEvent.state === State.FAILED)
@@ -188,23 +205,7 @@ export const LongPressWrapper: React.FC<LongPressWrapperProps> = ({
 				return
 			}
 		},
-		[
-			addMeteredValue,
-			clearHelpMessageValue,
-			disabled,
-			meteredValuesRef,
-			navigate,
-			recorder,
-			recordingState,
-			setClearRecordingInterval,
-			setCurrentTime,
-			setHelpMessageValue,
-			setRecorderFilePath,
-			setRecordingStart,
-			setRecordingState,
-			t,
-			updateCurrentTime,
-		],
+		[disabled, handlePressRecording, recordingState, setRecordingState],
 	)
 
 	return (

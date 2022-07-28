@@ -6,15 +6,11 @@ import { readFile } from 'react-native-fs'
 
 import { useStyles } from '@berty/contexts/styles'
 import { useThemeColor } from '@berty/hooks'
+import { limitIntensities } from '@berty/utils/audio'
 import { playSoundFile } from '@berty/utils/sound/sounds'
 
-import {
-	limitIntensities,
-	volumeValuesAttached,
-	volumeValueLowest,
-	volumeValuePrecision,
-	WaveForm,
-} from '../../audioMessageCommon'
+import { WaveForm } from '../../../WaveForm'
+import { volumeValuesAttached, volumeValueLowest, volumeValuePrecision } from '../constant'
 import { AudioPreviewWrapper } from './AudioPreviewWrapper'
 import { AudioPreviewProps } from './interfaces'
 
