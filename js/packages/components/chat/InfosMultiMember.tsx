@@ -16,6 +16,7 @@ export const InfosMultiMember: React.FC<beapi.messenger.IConversation> = ({
 	const colors = useThemeColor()
 	const createdDate = parseInt(createdDateStr as unknown as string, 10)
 	const textColor = colors['background-header']
+
 	return (
 		<View style={[flex.align.center, flex.justify.center]}>
 			<ChatDate date={createdDate} />

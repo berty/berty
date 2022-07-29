@@ -5,13 +5,13 @@ import { useStyles } from '@berty/contexts/styles'
 import { useAppSelector } from '@berty/hooks'
 import { selectActiveReplyInteraction } from '@berty/redux/reducers/chatInputs.reducer'
 
-import { CancelReply } from './CancelReply.priv'
+import { CancelReplyPriv } from './CancelReply.priv'
 import { ReplyMessageProps } from './interface'
-import { ReplyMessage } from './reply-message/ReplyMessage.priv'
-import { ReplyMessageWithAttachment } from './reply-message/ReplyMessageWithAttachment.priv'
+import { ReplyMessagePriv } from './reply-message/ReplyMessage.priv'
+import { ReplyMessageWithAttachmentPriv } from './reply-message/ReplyMessageWithAttachment.priv'
 import { ReplyTargetAuthor } from './ReplyTargetAuthor.priv'
 
-export const ReplyMessageBar: React.FC<ReplyMessageProps> = ({ convPK }) => {
+export const ReplyMessageBarPriv: React.FC<ReplyMessageProps> = ({ convPK }) => {
 	const activeReplyInteraction = useAppSelector(state =>
 		selectActiveReplyInteraction(state, convPK),
 	)
@@ -31,11 +31,11 @@ export const ReplyMessageBar: React.FC<ReplyMessageProps> = ({ convPK }) => {
 		>
 			<ReplyTargetAuthor activeReplyInteraction={activeReplyInteraction} />
 			{activeReplyInteraction?.payload?.body ? (
-				<ReplyMessage activeReplyInteraction={activeReplyInteraction} />
+				<ReplyMessagePriv activeReplyInteraction={activeReplyInteraction} />
 			) : (
-				<ReplyMessageWithAttachment activeReplyInteraction={activeReplyInteraction} />
+				<ReplyMessageWithAttachmentPriv activeReplyInteraction={activeReplyInteraction} />
 			)}
-			<CancelReply convPK={convPK} activeReplyInteraction={activeReplyInteraction} />
+			<CancelReplyPriv convPK={convPK} activeReplyInteraction={activeReplyInteraction} />
 		</View>
 	)
 }

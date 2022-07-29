@@ -4,12 +4,11 @@ import { TouchableOpacity } from 'react-native'
 import { useSelector } from 'react-redux'
 
 import beapi from '@berty/api'
+import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useStyles } from '@berty/contexts/styles'
 import { useThemeColor } from '@berty/hooks'
 import { selectProtocolClient } from '@berty/redux/reducers/ui.reducer'
 import { getSource } from '@berty/utils/protocol/attachments'
-
-import { UnifiedText } from '../../shared-components/UnifiedText'
 
 export const FileMessage: React.FC<{
 	medias: beapi.messenger.IMedia[]

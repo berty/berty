@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { View } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 
 import beapi from '@berty/api'
 import { ButtonDropDown } from '@berty/components/shared-components'
@@ -44,21 +44,8 @@ const UserDevicesList: React.FC<{ memberPk: string; conversationPk: string }> = 
 		<>
 			{devices.map((m, key) => {
 				return (
-					<View
-						key={key}
-						style={{
-							flexDirection: 'row',
-							alignItems: 'center',
-						}}
-					>
-						<View
-							style={[
-								padding.top.small,
-								{
-									alignSelf: 'flex-start',
-								},
-							]}
-						/>
+					<View key={key} style={styles.container}>
+						<View style={[padding.top.small, { alignSelf: 'flex-start' }]} />
 
 						<ButtonDropDown
 							title={m?.publicKey?.substring(0, cutoff) || ''}
@@ -77,5 +64,12 @@ const UserDevicesList: React.FC<{ memberPk: string; conversationPk: string }> = 
 		</>
 	)
 }
+
+const styles = StyleSheet.create({
+	container: {
+		flexDirection: 'row',
+		alignItems: 'center',
+	},
+})
 
 export default UserDevicesList

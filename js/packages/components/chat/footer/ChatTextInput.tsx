@@ -1,28 +1,47 @@
 import React from 'react'
-import { View, Platform, StyleSheet } from 'react-native'
+import {
+	View,
+	Platform,
+	StyleSheet,
+	NativeSyntheticEvent,
+	TextInputSelectionChangeEventData,
+} from 'react-native'
 
+import { InputPriv } from '@berty/components/inputs/Input.priv'
 import { useStyles } from '@berty/contexts/styles'
-import { useThemeColor } from '@berty/hooks'
+import { useAppDispatch, useAppSelector, useThemeColor } from '@berty/hooks'
+import {
+	selectChatInputIsFocused,
+	setChatInputIsFocused,
+	setChatInputSelection,
+} from '@berty/redux/reducers/chatInputsVolatile.reducer'
 import { isTablet } from '@berty/utils/react-native/constants'
 
-import { InputPriv } from '../Input.priv'
 import { ChatInputProps } from './interface'
-import { ReplyMessageBar } from './reply/ReplyMessageBar.priv'
+import { ReplyMessageBarPriv } from './reply/ReplyMessageBar.priv'
 
 export const ChatTextInput: React.FC<ChatInputProps> = React.memo(props => {
-	const {
-		handleTabletSubmit,
-		onFocusChange,
-		convPK,
-		editable,
-		placeholder,
-		onChangeText,
-		value,
-		onSelectionChange,
-	} = props
+	const { handleTabletSubmit, convPK, editable, placeholder, onChangeText, value } = props
 	const { text, border, flex } = useStyles()
 	const colors = useThemeColor()
-	const [isFocused, setIsFocused] = React.useState<boolean>(false)
+	const dispatch = useAppDispatch()
+	const isFocused = useAppSelector(state => selectChatInputIsFocused(state, convPK))
+
+	const handleFocus = React.useCallback(
+		(focus: boolean) => {
+			dispatch(setChatInputIsFocused({ convPK, isFocused: focus }))
+		},
+		[dispatch, convPK],
+	)
+
+	const handleSelectionChange = React.useCallback(
+		(e: NativeSyntheticEvent<TextInputSelectionChangeEventData>) => {
+			if (isFocused) {
+				dispatch(setChatInputSelection({ convPK, selection: e.nativeEvent.selection }))
+			}
+		},
+		[convPK, dispatch, isFocused],
+	)
 
 	return (
 		<View
@@ -33,22 +52,16 @@ export const ChatTextInput: React.FC<ChatInputProps> = React.memo(props => {
 				{ backgroundColor: `${colors['positive-asset']}70` },
 			]}
 		>
-			<ReplyMessageBar convPK={convPK} />
+			<ReplyMessageBarPriv convPK={convPK} />
 			<InputPriv
 				value={value}
 				editable={editable}
 				onChangeText={onChangeText}
 				placeholder={placeholder}
-				onSelectionChange={onSelectionChange}
+				onSelectionChange={handleSelectionChange}
 				multiline
-				onBlur={() => {
-					setIsFocused(false)
-					onFocusChange(false)
-				}}
-				onFocus={() => {
-					setIsFocused(true)
-					onFocusChange(true)
-				}}
+				onBlur={() => handleFocus(false)}
+				onFocus={() => handleFocus(true)}
 				blurOnSubmit={false}
 				style={[
 					text.light,

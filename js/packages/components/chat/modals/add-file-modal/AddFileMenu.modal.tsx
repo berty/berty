@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { View, Platform } from 'react-native'
+import { View, Platform, StyleSheet } from 'react-native'
 import DocumentPicker from 'react-native-document-picker'
 import ImagePicker from 'react-native-image-crop-picker'
 import { RESULTS } from 'react-native-permissions'
@@ -188,14 +188,7 @@ export const AddFileMenu: React.FC<{
 			{isSecurityAccessVisible && (
 				<SecurityAccess activeTab={activeTab} close={() => setSecurityAccessVisibility(false)} />
 			)}
-			<View
-				style={{
-					flexDirection: 'row',
-					flexWrap: 'wrap',
-					alignItems: 'center',
-					justifyContent: 'center',
-				}}
-			>
+			<View style={styles.container}>
 				{LIST_CONFIG.map(listItem => (
 					<ListItemMenu {...listItem} key={listItem.title} />
 				))}
@@ -206,3 +199,12 @@ export const AddFileMenu: React.FC<{
 		</>
 	)
 }
+
+const styles = StyleSheet.create({
+	container: {
+		flexDirection: 'row',
+		flexWrap: 'wrap',
+		alignItems: 'center',
+		justifyContent: 'center',
+	},
+})

@@ -9,14 +9,15 @@ import {
 	Image,
 	Platform,
 	ActivityIndicator,
+	StyleSheet,
 } from 'react-native'
 import RNFS from 'react-native-fs'
 
 import beapi from '@berty/api'
+import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useStyles } from '@berty/contexts/styles'
 import { useThemeColor } from '@berty/hooks'
 
-import { UnifiedText } from '../../../shared-components/UnifiedText'
 import { ImageCounter } from '../../ImageCounter'
 
 const GALLERY_IMAGE_PER_PAGE = 30
@@ -144,13 +145,7 @@ export const GallerySection: React.FC<{
 				}}
 				scrollEventThrottle={400}
 				style={[padding.medium]}
-				contentContainerStyle={{
-					flexDirection: 'row',
-					flexWrap: 'wrap',
-					alignItems: 'center',
-					justifyContent: 'center',
-					backgroundColor: colors['main-background'],
-				}}
+				contentContainerStyle={[styles.scrollview, { backgroundColor: colors['main-background'] }]}
 			>
 				{loading ? (
 					<ActivityIndicator />
@@ -188,7 +183,6 @@ export const GallerySection: React.FC<{
 									width={40}
 									name='checkmark-circle-2'
 									fill={colors['reverted-main-text']}
-									style={{}}
 								/>
 							</View>
 						)}
@@ -200,17 +194,15 @@ export const GallerySection: React.FC<{
 				<View
 					style={[
 						{
-							flexDirection: 'row',
 							backgroundColor: colors['main-background'],
-							alignItems: 'center',
-							justifyContent: 'space-between',
 						},
+						styles.imageWrapper,
 						padding.small,
 						border.radius.small,
 						margin.large,
 					]}
 				>
-					<View style={{ flexDirection: 'row', alignItems: 'center' }}>
+					<View style={styles.imageRow}>
 						{selectedImages.slice(0, 2).map(image => (
 							<Image
 								key={image.filename}
@@ -231,3 +223,21 @@ export const GallerySection: React.FC<{
 		</>
 	)
 }
+
+const styles = StyleSheet.create({
+	imageWrapper: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		justifyContent: 'space-between',
+	},
+	scrollview: {
+		flexDirection: 'row',
+		flexWrap: 'wrap',
+		alignItems: 'center',
+		justifyContent: 'center',
+	},
+	imageRow: {
+		flexDirection: 'row',
+		alignItems: 'center',
+	},
+})

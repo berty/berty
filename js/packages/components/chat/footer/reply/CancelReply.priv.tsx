@@ -8,18 +8,14 @@ import { removeActiveReplyInteraction } from '@berty/redux/reducers/chatInputs.r
 
 import { ReplyMessageProps, ActiveReplyInteractionProps } from './interface'
 
-export const CancelReply: React.FC<ReplyMessageProps & ActiveReplyInteractionProps> = ({
+export const CancelReplyPriv: React.FC<ReplyMessageProps & ActiveReplyInteractionProps> = ({
 	convPK,
 	activeReplyInteraction,
 }) => {
 	const dispatch = useAppDispatch()
 
 	return (
-		<TouchableOpacity
-			onPress={() => {
-				dispatch(removeActiveReplyInteraction({ convPK }))
-			}}
-		>
+		<TouchableOpacity onPress={() => dispatch(removeActiveReplyInteraction({ convPK }))}>
 			<Icon
 				name='plus'
 				height={18}
