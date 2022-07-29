@@ -1,5 +1,5 @@
 import LottieView from 'lottie-react-native'
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { StyleSheet, TouchableOpacity, View } from 'react-native'
 
 import beapi from '@berty/api'
@@ -28,11 +28,16 @@ export const MemberBar: React.FC<MemberBarProps> = props => {
 	const navigation = useNavigation()
 	const [animationStep, setAnimationStep] = useState(0)
 	const messengerClient = useMessengerClient()
-	const members = useConversationMembers(props.convId).filter(members => !members.isMe)
 	const dispatch = useAppDispatch()
 	const peers = useAppSelector(selectPeerNetworkStatusDict)
 
+	const convMembers = useConversationMembers(props.convId)
+	const members = useMemo(() => convMembers.filter(members => !members.isMe), [convMembers])
+
 	const [memberList, setMemberList] = useState<MemberBarItem[] | undefined>(undefined)
+	const [isOneConnected, setIsOneConnected] = useState<boolean>(false)
+
+	const cometAnim = useRef<LottieView>(null)
 
 	const handleMemberList = useCallback(async () => {
 		const list: MemberBarItem[] = []
@@ -41,19 +46,33 @@ export const MemberBar: React.FC<MemberBarProps> = props => {
 			return
 		}
 
+		let connected: boolean = false
 		for (const member of members) {
-			const peer = await dispatch(
+			const action = await dispatch(
 				getPeerFromMemberPK({ memberPK: member.publicKey, convPK: props.convId }),
 			)
+			const peer = action.payload as PeerNetworkStatus
+
+			if (peer?.connectionStatus === beapi.protocol.GroupDeviceStatus.Type.TypePeerConnected) {
+				connected = true
+			}
 
 			list.push({
-				networkStatus: peer.payload as PeerNetworkStatus,
+				networkStatus: peer,
 				publicKey: member.publicKey ?? undefined,
 			})
+			// TODO: find a optimized way to push in the list 5 interested peers and not 5 firsts members
 			if (list.length >= 5) {
 				break
 			}
 		}
+
+		setIsOneConnected(connected)
+		if (!connected) {
+			// reset animation
+			setAnimationStep(0)
+		}
+
 		setMemberList(
 			list.sort((a, b) => {
 				if (
@@ -67,14 +86,12 @@ export const MemberBar: React.FC<MemberBarProps> = props => {
 				return -1
 			}),
 		)
-		// members is needed but cause an infinite loop
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [dispatch, messengerClient, props.convId])
+	}, [dispatch, messengerClient, props.convId, members])
 
 	useEffect(() => {
 		handleMemberList()
-		// we put peers dependencies to update the connectionStatus of peers
-	}, [handleMemberList, peers])
+		// we put peers/members dependencies to update the connectionStatus of peers
+	}, [handleMemberList, peers, members])
 
 	return (
 		<TouchableOpacity
@@ -87,8 +104,16 @@ export const MemberBar: React.FC<MemberBarProps> = props => {
 						autoPlay
 						style={styles.lottieWidth}
 						source={require('@berty/assets/lottie/network_status_animations/orange.json')}
-						onAnimationFinish={() => setAnimationStep(1)}
 						loop={false}
+						speed={1}
+						ref={cometAnim}
+						onAnimationFinish={() => {
+							if (isOneConnected) {
+								setAnimationStep(1)
+							} else {
+								cometAnim.current?.play()
+							}
+						}}
 					/>
 				)}
 				{animationStep === 1 && (
