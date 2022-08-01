@@ -153,7 +153,6 @@
 			"title": "Instellingen",
 			"proximity-button": "",
 			"notifications-button": "Notificaties",
-			"contact-convs-button": "",
 			"appearance-button": "",
 			"accounts-button": "Accounts",
 			"network-button": "",
@@ -219,12 +218,6 @@
 			"cancel": "Annuleren",
 			"name-input-placeholder": "Naam..."
 		},
-		"berty-services": {
-			"title": "",
-			"desc": "",
-			"button": "",
-			"skip": "Sla dit over en doe dit later"
-		},
 		"delete-account": {
 			"title": "Account verwijderen!",
 			"first-desc": "Weet je zeker dat je je account wilt verwijderen?",
@@ -246,6 +239,7 @@
 			"header-left-button": "Apparaat informatie",
 			"header-middle-button": "Nep gegevens genereren",
 			"header-right-button": "Daemon herstarten",
+			"force-mock-button": "",
 			"simulate-button": "Simuleer stream fout",
 			"simulate-js-error-button": "Simuleer JavaScript-fout",
 			"system-info-button": "Systeem informatie",
@@ -258,6 +252,7 @@
 				"name": "Log filters",
 				"bullet-point": "Herstart de app na het wijzigen van dit veld"
 			},
+			"export-logs-button": "",
 			"add-dev-conversations-button": "Voeg ontwikkelaar gesprekken toe",
 			"share-button": {
 				"title": "Deel ID op discord",
@@ -418,9 +413,15 @@
 			"title": "",
 			"media-button": "Media, links & documenten",
 			"members-button": {
-				"title": "Leden"
+				"title": ""
 			},
 			"add-member-button": "Voeg deelnemer toe",
+			"members-dropdown": {
+				"search-placeholder": "",
+				"conversation-booster": "",
+				"replication-type": "",
+				"user-type": ""
+			},
 			"invite-button": "Uitnodigen per link",
 			"save-button": "Gesprek opslaan op server"
 		},
@@ -496,9 +497,6 @@
 		"user-message": {
 			"read-more": "",
 			"show-less": ""
-		},
-		"emojis": {
-			"matching": ""
 		}
 	},
 	"account": {
@@ -643,5 +641,8 @@
 		"minutes": "",
 		"hours": "",
 		"days": ""
+	},
+	"share": {
+		"sharing-id-message": ""
 	}
 }

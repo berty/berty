@@ -153,7 +153,6 @@
 			"title": "設定",
 			"proximity-button": "Off-Grid 通信",
 			"notifications-button": "通知",
-			"contact-convs-button": "連絡先と会話",
 			"appearance-button": "外観",
 			"accounts-button": "アカウント",
 			"network-button": "ネットワーク",
@@ -219,12 +218,6 @@
 			"cancel": "キャンセル",
 			"name-input-placeholder": "名前..."
 		},
-		"berty-services": {
-			"title": "Berty サービス一覧",
-			"desc": " Berty サービスを有効にすると、プッシュ通知を Berty Technologies のサーバー経由で受信し、複製された通知にアクセスすることができます。",
-			"button": "Berty サービスを有効にする",
-			"skip": "スキップして後で行う"
-		},
 		"delete-account": {
 			"title": "アカウントを削除します!",
 			"first-desc": "本当にアカウントを削除しますか？",
@@ -246,6 +239,7 @@
 			"header-left-button": "端末情報",
 			"header-middle-button": "偽装データを生成する",
 			"header-right-button": "サービス／デーモンを再起動する",
+			"force-mock-button": "",
 			"simulate-button": "ストリームのエラーをシミュレーションする",
 			"simulate-js-error-button": "JavaScript のエラーをシミュレーションする",
 			"system-info-button": "システム情報",
@@ -258,6 +252,7 @@
 				"name": "ログのフィルター一覧",
 				"bullet-point": "このフィールドを変更した後、アプリを再起動します"
 			},
+			"export-logs-button": "",
 			"add-dev-conversations-button": "開発者の会話を追加する",
 			"share-button": {
 				"title": "Discord で ID を共有する",
@@ -418,9 +413,15 @@
 			"title": "会話の設定",
 			"media-button": "メディア、リンク & ドキュメント",
 			"members-button": {
-				"title": "メンバー"
+				"title": ""
 			},
 			"add-member-button": "メンバーを追加",
+			"members-dropdown": {
+				"search-placeholder": "",
+				"conversation-booster": "",
+				"replication-type": "",
+				"user-type": ""
+			},
 			"invite-button": "リンクから招待",
 			"save-button": "会話をサーバーに保存"
 		},
@@ -496,9 +497,6 @@
 		"user-message": {
 			"read-more": "もっと読む",
 			"show-less": "表示を隠す"
-		},
-		"emojis": {
-			"matching": ""
 		}
 	},
 	"account": {
@@ -643,5 +641,8 @@
 		"minutes": "{{minutes}} 分",
 		"hours": "{{hours}} 時間",
 		"days": "{{days}} 日"
+	},
+	"share": {
+		"sharing-id-message": ""
 	}
 }

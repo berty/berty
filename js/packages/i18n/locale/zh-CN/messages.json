@@ -153,13 +153,12 @@
 			"title": "设置",
 			"proximity-button": "离线通讯",
 			"notifications-button": "消息通知",
-			"contact-convs-button": "联系和对话",
 			"appearance-button": "外观",
 			"accounts-button": "账户",
 			"network-button": "网络",
 			"bug-button": "提交错误",
 			"about-button": "关于 Berty",
-			"version-button": "",
+			"version-button": "版本: {{version}}",
 			"devtools-button": "开发工具"
 		},
 		"about": {
@@ -219,12 +218,6 @@
 			"cancel": "取消",
 			"name-input-placeholder": "名"
 		},
-		"berty-services": {
-			"title": "Berty 服务",
-			"desc": " 激活 Berty 服务将允许您通过 Berty Technologies 服务器接收推送通知，并授权您访问其节点以复制对话。",
-			"button": "使用 Berty 服务",
-			"skip": "跳过并稍后执行此操作"
-		},
 		"delete-account": {
 			"title": "删除帐户！",
 			"first-desc": "您确定要删除您的帐户吗？",
@@ -246,6 +239,7 @@
 			"header-left-button": "设备信息",
 			"header-middle-button": "生成伪数据",
 			"header-right-button": "重启守护进程",
+			"force-mock-button": "强制模拟",
 			"simulate-button": "模拟流错误",
 			"simulate-js-error-button": "模拟 JavaScript 错误",
 			"system-info-button": "系统信息",
@@ -258,6 +252,7 @@
 				"name": "日志过滤器",
 				"bullet-point": "更改之后重新启动应用"
 			},
+			"export-logs-button": "导出日志",
 			"add-dev-conversations-button": "添加开发者会话",
 			"share-button": {
 				"title": "分享ID到Discord",
@@ -418,9 +413,15 @@
 			"title": "对话设置",
 			"media-button": "媒体、 链接和文档",
 			"members-button": {
-				"title": "成员"
+				"title": "成员网络状态 ({{count}})"
 			},
 			"add-member-button": "添加成员",
+			"members-dropdown": {
+				"search-placeholder": "查找成员",
+				"conversation-booster": "",
+				"replication-type": "复制节点",
+				"user-type": "用户设备"
+			},
 			"invite-button": "通过链接邀请",
 			"save-button": "在服务器上保存对话"
 		},
@@ -449,7 +450,7 @@
 				"request-sent": "请求已发送: airplan:",
 				"incoming": "接受此请求以回复 ！",
 				"outgoing": "正在等待您的联系人回复连接！",
-				"refresh-button": ""
+				"refresh-button": "重新发送联系请求"
 			},
 			"incoming-input-placeholder": "接受此请求以在这里写入...",
 			"input-placeholder": "在此输入..."
@@ -496,9 +497,6 @@
 		"user-message": {
 			"read-more": "查看更多",
 			"show-less": "显示剩余"
-		},
-		"emojis": {
-			"matching": "表情符号匹配"
 		}
 	},
 	"account": {
@@ -560,8 +558,8 @@
 			"desc": "重新启动 Berty 以保存您的数据并启用通知！"
 		},
 		"submit-failed": {
-			"title": "",
-			"desc": ""
+			"title": "无法提交 Bug",
+			"desc": "缺少邮件应用程序"
 		}
 	},
 	"error": {
@@ -643,5 +641,8 @@
 		"minutes": "{{minutes}} 分",
 		"hours": "{{hours}} 时",
 		"days": "{{days}} 日"
+	},
+	"share": {
+		"sharing-id-message": "让我们在 Berty 上聊天，这是一个安全的 p2p 消息应用。加入我："
 	}
 }

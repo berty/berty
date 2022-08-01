@@ -153,7 +153,6 @@
 			"title": "الإعدادات",
 			"proximity-button": "",
 			"notifications-button": "الإشعارات",
-			"contact-convs-button": "",
 			"appearance-button": "",
 			"accounts-button": "",
 			"network-button": "",
@@ -219,12 +218,6 @@
 			"cancel": "ألغ",
 			"name-input-placeholder": "الاسم..."
 		},
-		"berty-services": {
-			"title": "خدمات برتي",
-			"desc": "",
-			"button": "استخدم خدمات برتي",
-			"skip": "تخطى وقم بهذا لاحقاً"
-		},
 		"delete-account": {
 			"title": "حذف الحساب!",
 			"first-desc": "هل أنت متأكد من أنك تريد حذف حسابك؟",
@@ -246,6 +239,7 @@
 			"header-left-button": "معلومات الجهاز",
 			"header-middle-button": "توليد بيانات مزيفة",
 			"header-right-button": "إعادة تشغيل الرديمون",
+			"force-mock-button": "",
 			"simulate-button": "",
 			"simulate-js-error-button": "حاكِ خطأ في جافا سكريبت",
 			"system-info-button": "معلومات النظام",
@@ -258,6 +252,7 @@
 				"name": "مرشحات السجل",
 				"bullet-point": "أعد تشغيل التطبيق بعد تغيير هذا الحقل"
 			},
+			"export-logs-button": "",
 			"add-dev-conversations-button": "إضافة محادثات Dev",
 			"share-button": {
 				"title": "شارك المعرف على ديسكورد",
@@ -421,6 +416,12 @@
 				"title": ""
 			},
 			"add-member-button": "",
+			"members-dropdown": {
+				"search-placeholder": "",
+				"conversation-booster": "",
+				"replication-type": "",
+				"user-type": ""
+			},
 			"invite-button": "",
 			"save-button": ""
 		},
@@ -496,9 +497,6 @@
 		"user-message": {
 			"read-more": "اقرأ المزيد",
 			"show-less": ""
-		},
-		"emojis": {
-			"matching": ""
 		}
 	},
 	"account": {
@@ -643,5 +641,8 @@
 		"minutes": "",
 		"hours": "",
 		"days": ""
+	},
+	"share": {
+		"sharing-id-message": ""
 	}
 }

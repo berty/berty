@@ -153,7 +153,6 @@
 			"title": "Setări",
 			"proximity-button": "",
 			"notifications-button": "Notificări",
-			"contact-convs-button": "",
 			"appearance-button": "",
 			"accounts-button": "",
 			"network-button": "",
@@ -219,12 +218,6 @@
 			"cancel": "Anulează",
 			"name-input-placeholder": "Nume..."
 		},
-		"berty-services": {
-			"title": "",
-			"desc": "",
-			"button": "",
-			"skip": ""
-		},
 		"delete-account": {
 			"title": "Șterge contul meu!",
 			"first-desc": "Ești sigur că vrei să ștergi contul?",
@@ -246,6 +239,7 @@
 			"header-left-button": "Informații dispozitiv",
 			"header-middle-button": "Generează date false",
 			"header-right-button": "Reporneşte daemonul",
+			"force-mock-button": "",
 			"simulate-button": "",
 			"simulate-js-error-button": "",
 			"system-info-button": "Informații sistem",
@@ -258,6 +252,7 @@
 				"name": "",
 				"bullet-point": ""
 			},
+			"export-logs-button": "",
 			"add-dev-conversations-button": "",
 			"share-button": {
 				"title": "Partajează ID-ul pe Discord",
@@ -421,6 +416,12 @@
 				"title": ""
 			},
 			"add-member-button": "",
+			"members-dropdown": {
+				"search-placeholder": "",
+				"conversation-booster": "",
+				"replication-type": "",
+				"user-type": ""
+			},
 			"invite-button": "",
 			"save-button": ""
 		},
@@ -496,9 +497,6 @@
 		"user-message": {
 			"read-more": "",
 			"show-less": ""
-		},
-		"emojis": {
-			"matching": ""
 		}
 	},
 	"account": {
@@ -643,5 +641,8 @@
 		"minutes": "",
 		"hours": "",
 		"days": ""
+	},
+	"share": {
+		"sharing-id-message": ""
 	}
 }

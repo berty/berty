@@ -153,7 +153,6 @@
 			"title": "Настройки",
 			"proximity-button": "Внесетевое Общение",
 			"notifications-button": "Уведомления",
-			"contact-convs-button": "Контакты и чаты",
 			"appearance-button": "Вид приложения",
 			"accounts-button": "Аккаунты",
 			"network-button": "Сеть",
@@ -219,12 +218,6 @@
 			"cancel": "Отменить",
 			"name-input-placeholder": "Имя..."
 		},
-		"berty-services": {
-			"title": "Сервисы Berty",
-			"desc": "",
-			"button": "Использовать Сервисы Berty",
-			"skip": ""
-		},
 		"delete-account": {
 			"title": "Удалить аккаунт!",
 			"first-desc": "Вы уверены, что хотите удалить свой аккаунт?",
@@ -246,6 +239,7 @@
 			"header-left-button": "Информация об устройстве",
 			"header-middle-button": "Сгенерировать фальшивые данные",
 			"header-right-button": "Перезапустить демон",
+			"force-mock-button": "",
 			"simulate-button": "Симулировать ошибки в передаче данных",
 			"simulate-js-error-button": "Имитация ошибки JavaScript",
 			"system-info-button": "Информация о системе",
@@ -258,6 +252,7 @@
 				"name": "Фильтры логов",
 				"bullet-point": "Перезапустите приложение после изменения этого поля"
 			},
+			"export-logs-button": "",
 			"add-dev-conversations-button": "Добавить dev беседы",
 			"share-button": {
 				"title": "Поделиться ID на Discord",
@@ -418,9 +413,15 @@
 			"title": "Настройки беседы",
 			"media-button": "Медиа, ссылки и документы",
 			"members-button": {
-				"title": "Участники"
+				"title": ""
 			},
 			"add-member-button": "Добавить участника",
+			"members-dropdown": {
+				"search-placeholder": "",
+				"conversation-booster": "",
+				"replication-type": "",
+				"user-type": ""
+			},
 			"invite-button": "Пригласить по ссылке",
 			"save-button": "Сохранить беседу на сервере"
 		},
@@ -496,9 +497,6 @@
 		"user-message": {
 			"read-more": "Подробнее",
 			"show-less": "Показать меньше"
-		},
-		"emojis": {
-			"matching": "Подходящие эмодзи"
 		}
 	},
 	"account": {
@@ -643,5 +641,8 @@
 		"minutes": "",
 		"hours": "",
 		"days": ""
+	},
+	"share": {
+		"sharing-id-message": ""
 	}
 }
