@@ -285,7 +285,7 @@ jobs:
           sleep 5
           # run test
           IOS_DEVICE="$E2E_TESTING_IOS_DEVICE" \
-          IOS_APP="$(find ~/Library/Developer/Xcode/DerivedData -name "Berty.app" | grep 'Products/AppStore Release-iphonesimulator/Berty.app')" \
+          IOS_APP="$(ls -ladt1 \"$HOME/Library/Developer/Xcode/DerivedData/*/Build/Products/AppStore Release-iphonesimulator/Berty.app\" | head -n 1)" \
           IOS_VERSION=$E2E_TESTING_IOS_VERSION \
           node e2e-tests/basic.js
           # kill appium
