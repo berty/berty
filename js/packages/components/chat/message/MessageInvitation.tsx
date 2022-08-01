@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { View } from 'react-native'
 
 import { HorizontalDuo, SecondaryButtonIconLeft, TertiaryButtonIconLeft } from '@berty/components'
+import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useStyles } from '@berty/contexts/styles'
 import {
 	useOneToOneContact,
@@ -17,7 +18,6 @@ import { InteractionGroupInvitation } from '@berty/utils/api'
 import { base64ToURLBase64 } from '@berty/utils/convert/base64'
 
 import { MultiMemberAvatar } from '../../avatars'
-import { UnifiedText } from '../../shared-components/UnifiedText'
 import { MessageSystemWrapper } from './MessageSystemWrapper'
 
 const MessageInvitationSent: React.FC<{ message: InteractionGroupInvitation }> = ({ message }) => {

@@ -2,11 +2,10 @@ import { Icon } from '@ui-kitten/components'
 import linkify from 'linkify-it'
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Linking, View, TouchableOpacity } from 'react-native'
+import { Linking, View, TouchableOpacity, StyleSheet } from 'react-native'
 import Hyperlink from 'react-native-hyperlink'
 import tlds from 'tlds'
 
-import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
 import { WelshMessengerServiceClient } from '@berty/grpc-bridge/welsh-clients.gen'
 import { useMessengerClient, useThemeColor } from '@berty/hooks'
@@ -78,7 +77,6 @@ export const HyperlinkUserMessage: React.FC<{
 	const colors = useThemeColor()
 	const navigation = useNavigation()
 	const { margin, padding, column, border, text } = useStyles()
-	const { scaleSize } = useAppDimensions()
 	const [isReadMore, setReadMore] = useState<boolean>(true)
 	const { t } = useTranslation()
 
@@ -92,21 +90,14 @@ export const HyperlinkUserMessage: React.FC<{
 				padding.horizontal.scale(inte.isMine ? 11 : 13),
 				padding.vertical.scale(inte.isMine ? 7 : 9),
 				inte.isMine ? column.item.right : column.item.left,
-				isFollowedMessage && { marginLeft: 35 * scaleSize },
+				isFollowedMessage && { marginLeft: 35 },
 				{
 					backgroundColor: msgBackgroundColor,
 				},
 				isHighlight && {
+					...styles.hyperlinkHighlightWrapper,
 					borderColor: colors['background-header'],
-					borderWidth: 1,
 					shadowColor: colors.shadow,
-					shadowOffset: {
-						width: 0,
-						height: 8,
-					},
-					shadowOpacity: 0.44,
-					shadowRadius: 10.32,
-					elevation: 16,
 				},
 			]}
 		>
@@ -162,7 +153,6 @@ export const TimestampStatusUserMessage: React.FC<{
 }> = ({ inte, lastInte, isFollowedMessage, cmd }) => {
 	const sentDate = pbDateToNum(inte.sentDate)
 	const { row, margin, padding, flex } = useStyles()
-	const { scaleSize } = useAppDimensions()
 	const colors = useThemeColor()
 	const styles = useStylesMessage()
 	const { t } = useTranslation()
@@ -188,7 +178,7 @@ export const TimestampStatusUserMessage: React.FC<{
 							width={12}
 							height={12}
 							fill={colors['background-header']}
-							style={[padding.left.tiny, { marginTop: 1 * scaleSize }]}
+							style={[padding.left.tiny, { marginTop: 1 }]}
 						/>
 					)}
 					{inte.isMine && (
@@ -201,3 +191,16 @@ export const TimestampStatusUserMessage: React.FC<{
 		</View>
 	)
 }
+
+const styles = StyleSheet.create({
+	hyperlinkHighlightWrapper: {
+		borderWidth: 1,
+		shadowOffset: {
+			width: 0,
+			height: 8,
+		},
+		shadowOpacity: 0.44,
+		shadowRadius: 10.32,
+		elevation: 16,
+	},
+})
