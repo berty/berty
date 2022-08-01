@@ -153,7 +153,6 @@
 			"title": "Настройки",
 			"proximity-button": "",
 			"notifications-button": "Известия",
-			"contact-convs-button": "",
 			"appearance-button": "",
 			"accounts-button": "",
 			"network-button": "",
@@ -219,12 +218,6 @@
 			"cancel": "Отказ",
 			"name-input-placeholder": "Име..."
 		},
-		"berty-services": {
-			"title": "",
-			"desc": "",
-			"button": "",
-			"skip": ""
-		},
 		"delete-account": {
 			"title": "Изтрии акаунт!",
 			"first-desc": "Наистина ли искате да изтриете акаунта си?",
@@ -246,6 +239,7 @@
 			"header-left-button": "Информация за устройства",
 			"header-middle-button": "Генерирай фалшиви данни",
 			"header-right-button": "Рестартирай daemon-а",
+			"force-mock-button": "",
 			"simulate-button": "Симулирай грешка в потока",
 			"simulate-js-error-button": "",
 			"system-info-button": "Система информация",
@@ -258,6 +252,7 @@
 				"name": "",
 				"bullet-point": ""
 			},
+			"export-logs-button": "",
 			"add-dev-conversations-button": "Добави програмистка грешка",
 			"share-button": {
 				"title": "Сподели ID в discord",
@@ -418,9 +413,15 @@
 			"title": "",
 			"media-button": "Медия, линкове & документи",
 			"members-button": {
-				"title": "Участници"
+				"title": ""
 			},
 			"add-member-button": "Добави участник",
+			"members-dropdown": {
+				"search-placeholder": "",
+				"conversation-booster": "",
+				"replication-type": "",
+				"user-type": ""
+			},
 			"invite-button": "Покани чрез линк",
 			"save-button": "Запази разговора на сървъра"
 		},
@@ -496,9 +497,6 @@
 		"user-message": {
 			"read-more": "",
 			"show-less": ""
-		},
-		"emojis": {
-			"matching": ""
 		}
 	},
 	"account": {
@@ -643,5 +641,8 @@
 		"minutes": "",
 		"hours": "",
 		"days": ""
+	},
+	"share": {
+		"sharing-id-message": ""
 	}
 }
