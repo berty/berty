@@ -20,14 +20,14 @@ jobs:
         id: monitor
         continue-on-error: true
         run: |
-          COUNT=$(node .github/workflows/utils/get-selfhosted-runner-status.js "${{ secrets.SELFHOSTED_STATUS_CHECK_TOKEN }}" online)
+          COUNT=$(node .github/workflows/utils/get-self-hosted-runner-status.js "${{ secrets.SELFHOSTED_STATUS_CHECK_TOKEN }}" online)
           echo "Online self-hosted runners: $COUNT"
 
           # If all runners are online, return success
           if [[ "$COUNT" =~ ^All[[:space:]]\([[:digit:]]+\/[[:digit:]]+\)$ ]]; then exit 0; fi
 
           # Else, set outputs and fail
-          DETAIL=$(node .github/workflows/utils/get-selfhosted-runner-status.js "${{ secrets.SELFHOSTED_STATUS_CHECK_TOKEN }}")
+          DETAIL=$(node .github/workflows/utils/get-self-hosted-runner-status.js "${{ secrets.SELFHOSTED_STATUS_CHECK_TOKEN }}")
           echo "Detailed status: $DETAIL"
           echo "COUNT=$COUNT" >> $GITHUB_ENV
           echo "DETAIL<<EOF" >> $GITHUB_ENV
