@@ -153,7 +153,6 @@
 			"title": "設置",
 			"proximity-button": "",
 			"notifications-button": "消息通知",
-			"contact-convs-button": "",
 			"appearance-button": "",
 			"accounts-button": "賬戶",
 			"network-button": "",
@@ -219,12 +218,6 @@
 			"cancel": "取消",
 			"name-input-placeholder": "名..."
 		},
-		"berty-services": {
-			"title": "",
-			"desc": "",
-			"button": "",
-			"skip": ""
-		},
 		"delete-account": {
 			"title": "刪除帳戶！",
 			"first-desc": "您確定要刪除您的帳戶嗎？",
@@ -246,6 +239,7 @@
 			"header-left-button": "設備信息",
 			"header-middle-button": "生成偽數據",
 			"header-right-button": "重啟守護進程",
+			"force-mock-button": "",
 			"simulate-button": "模擬流錯誤",
 			"simulate-js-error-button": "模擬 JavaScript 錯誤",
 			"system-info-button": "系統信息",
@@ -258,6 +252,7 @@
 				"name": "日誌過濾器",
 				"bullet-point": "更改之後重新啟動應用"
 			},
+			"export-logs-button": "",
 			"add-dev-conversations-button": "添加開發者會話",
 			"share-button": {
 				"title": "分享ID到Discord",
@@ -418,9 +413,15 @@
 			"title": "",
 			"media-button": "媒體、 鏈接和文檔",
 			"members-button": {
-				"title": "成員"
+				"title": ""
 			},
 			"add-member-button": "添加成員",
+			"members-dropdown": {
+				"search-placeholder": "",
+				"conversation-booster": "",
+				"replication-type": "",
+				"user-type": ""
+			},
 			"invite-button": "通過鏈接邀請",
 			"save-button": "在服務器上保存對話"
 		},
@@ -496,9 +497,6 @@
 		"user-message": {
 			"read-more": "",
 			"show-less": ""
-		},
-		"emojis": {
-			"matching": ""
 		}
 	},
 	"account": {
@@ -643,5 +641,8 @@
 		"minutes": "",
 		"hours": "",
 		"days": ""
+	},
+	"share": {
+		"sharing-id-message": ""
 	}
 }
