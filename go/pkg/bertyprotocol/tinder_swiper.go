@@ -22,6 +22,7 @@ import (
 )
 
 type swiperRequest struct {
+	bstrat    discovery.BackoffStrategy
 	wgRefresh *sync.WaitGroup
 	ctx       context.Context
 	out       chan<- peer.AddrInfo
@@ -105,6 +106,7 @@ func (s *Swiper) RefreshContactRequest(ctx context.Context, topic []byte) (addrs
 		req.out <- p
 		return []peer.AddrInfo{p}, nil
 	case <-ctx.Done():
+
 		return nil, ctx.Err()
 	}
 }
@@ -136,10 +138,13 @@ func (s *Swiper) WatchTopic(ctx context.Context, topic, seed []byte) <-chan peer
 				point = s.rp.NewRendezvousPointForPeriod(time.Now(), string(topic), seed)
 			}
 
+			bstrat := s.backoffFactory()
+
 			// store watch peers informations to be later use by the refresh method to force a lookup
 			s.muRequest.Lock()
 			wctx, cancel := context.WithCancel(ctx)
 			s.inprogressLookup[string(topic)] = &swiperRequest{
+				bstrat:    bstrat,
 				wgRefresh: &wgRefresh,
 				ctx:       wctx,
 				out:       cpeers,
@@ -149,7 +154,7 @@ func (s *Swiper) WatchTopic(ctx context.Context, topic, seed []byte) <-chan peer
 
 			// start looking for peers for the given rotation topic
 			s.logger.Debug("looking for peers", zap.String("topic", point.RotationTopic()))
-			if err := s.watchPeers(wctx, cpeers, point.RotationTopic()); err != nil && err != context.DeadlineExceeded {
+			if err := s.watchPeers(wctx, bstrat, cpeers, point.RotationTopic()); err != nil && err != context.DeadlineExceeded {
 				s.logger.Debug("watch until deadline ended", zap.Error(err))
 			}
 			cancel()
@@ -173,9 +178,7 @@ func (s *Swiper) WatchTopic(ctx context.Context, topic, seed []byte) <-chan peer
 	return cpeers
 }
 
-func (s *Swiper) watchPeers(ctx context.Context, out chan<- peer.AddrInfo, ns string) error {
-	bstrat := s.backoffFactory()
-
+func (s *Swiper) watchPeers(ctx context.Context, bstrat discovery.BackoffStrategy, out chan<- peer.AddrInfo, ns string) error {
 	for ctx.Err() == nil {
 		s.logger.Debug("swipper looking for peers", zap.String("topic", ns))
 

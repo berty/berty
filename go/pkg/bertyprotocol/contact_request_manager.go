@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/base64"
+	"encoding/hex"
 	"fmt"
 	"strings"
 	"sync"
@@ -31,6 +32,9 @@ type contactRequestsManager struct {
 	rootCtx        context.Context
 	announceCancel context.CancelFunc
 
+	lookupProcess   map[string]context.CancelFunc
+	muLookupProcess sync.Mutex
+
 	logger *zap.Logger
 
 	enabled bool
@@ -50,6 +54,7 @@ func initContactRequestsManager(ctx context.Context, s *Swiper, store *MetadataS
 	}
 
 	cm := &contactRequestsManager{
+		lookupProcess: make(map[string]context.CancelFunc),
 		metadataStore: store,
 		ipfs:          ipfs,
 		logger:        logger.Named("req-mngr"),
@@ -111,10 +116,10 @@ func (c *contactRequestsManager) metadataWatcher(ctx context.Context) {
 		}
 
 		// handle new events
-
 		e := evt.(protocoltypes.GroupMetadataEvent)
 		typ := e.GetMetadata().GetEventType()
 		hctx, _, endSection := tyber.Section(ctx, c.logger, fmt.Sprintf("handling event - %s", typ.String()))
+
 		c.muManager.Lock()
 
 		var err error
@@ -125,6 +130,7 @@ func (c *contactRequestsManager) metadataWatcher(ctx context.Context) {
 		}
 
 		c.muManager.Unlock()
+
 		endSection(err, "")
 	}
 }
@@ -196,10 +202,6 @@ func (c *contactRequestsManager) metadataRequestReset(ctx context.Context, evt *
 		return errcode.ErrDeserialization.Wrap(err)
 	}
 
-	if !c.enabled {
-		return fmt.Errorf("contact request not enabled")
-	}
-
 	accPK, err := c.accSK.GetPublic().Raw()
 	if err != nil {
 		return fmt.Errorf("unable to get raw pk: %w", err)
@@ -215,6 +217,11 @@ func (c *contactRequestsManager) metadataRequestReset(ctx context.Context, evt *
 	// updating rendezvous seed
 	tyber.LogStep(ctx, c.logger, "update rendezvous seed")
 	c.ownRendezvousSeed = e.PublicRendezvousSeed
+
+	// if contact request manager is disable don't run announce
+	if !c.enabled {
+		return nil
+	}
 
 	return c.enableAnnounce(ctx, c.ownRendezvousSeed, accPK)
 }
@@ -240,13 +247,57 @@ func (c *contactRequestsManager) metadataRequestEnqueued(ctx context.Context, ev
 }
 
 func (c *contactRequestsManager) metadataRequestSent(ctx context.Context, evt *protocoltypes.GroupMetadataEvent) error {
-	// nothing to do here
+	e := &protocoltypes.AccountContactRequestSent{}
+	if err := e.Unmarshal(evt.Event); err != nil {
+		return errcode.ErrDeserialization.Wrap(err)
+	}
+
+	// another device may have successfully sent contact request, try to cancel
+	// lookup if needed
+	c.cancelContactLookup(e.ContactPK)
 	return nil
 }
 
 func (c *contactRequestsManager) metadataRequestReceived(ctx context.Context, evt *protocoltypes.GroupMetadataEvent) error {
-	// nothing to do here
+	e := &protocoltypes.AccountContactRequestReceived{}
+	if err := e.Unmarshal(evt.Event); err != nil {
+		return errcode.ErrDeserialization.Wrap(err)
+	}
+
+	// another device may have successfully sent contact request, try to cancel
+	// lookup if needed
+	c.cancelContactLookup(e.ContactPK)
 	return nil
+}
+
+func (c *contactRequestsManager) registerContactLookup(ctx context.Context, contactPK []byte) context.Context {
+	c.muLookupProcess.Lock()
+
+	key := hex.EncodeToString(contactPK)
+
+	// make sure to only have one process for this pk running
+	ctx, cancel := context.WithCancel(ctx)
+	if cancelProvious, ok := c.lookupProcess[key]; ok {
+		cancelProvious() // cancel previous lookup if needed
+	}
+	c.lookupProcess[key] = cancel
+
+	c.muLookupProcess.Unlock()
+	return ctx
+}
+
+func (c *contactRequestsManager) cancelContactLookup(contactPK []byte) {
+	c.muLookupProcess.Lock()
+
+	key := hex.EncodeToString(contactPK)
+
+	// cancel current lookup if needed
+	if cancel, ok := c.lookupProcess[key]; ok {
+		cancel()
+		delete(c.lookupProcess, key)
+	}
+
+	c.muLookupProcess.Unlock()
 }
 
 func (c *contactRequestsManager) enableAnnounce(ctx context.Context, seed, accPK []byte) error {
@@ -291,12 +342,43 @@ func (c *contactRequestsManager) enqueueRequest(ctx context.Context, to *protoco
 		return err
 	}
 
-	// @FIXME(gfanton): do we need to get those informations every time we
-	// want to perform a contact request ?
+	// register lookup process
+	ctx = c.registerContactLookup(ctx, to.PK)
+
+	// start watching topic on swiper, this method should take care of calling
+	// `FindPeer` as many times as needed
+	cpeers := c.swiper.WatchTopic(ctx, to.PK, to.PublicRendezvousSeed)
+	go func() {
+		var err error
+		for peer := range cpeers {
+			// get our sharable contact to send to other contact
+			if err = c.SendContactRequest(ctx, to, otherPK, peer); err != nil {
+				c.logger.Warn("unable to send contact request", zap.Error(err))
+			} else {
+				// succefully send contact request, leave the loop and cancel lookup
+				break
+			}
+		}
+
+		// cancel lookup process
+		c.cancelContactLookup(to.PK)
+
+		endSection(err, "")
+	}()
+
+	return nil
+}
+
+// SendContactRequest try to perform contact request with the given remote peer
+func (c *contactRequestsManager) SendContactRequest(ctx context.Context, to *protocoltypes.ShareableContact, otherPK crypto.PubKey, peer peer.AddrInfo) (err error) {
+	ctx, _, endSection := tyber.Section(ctx, c.logger, "sending contact request")
+	defer func() {
+		endSection(err, "")
+	}()
+
 	_, own := c.metadataStore.GetIncomingContactRequestsStatus()
 	if own == nil {
 		err = fmt.Errorf("unable to retrieve own contact information")
-		endSection(err, "")
 		return
 	}
 
@@ -307,37 +389,6 @@ func (c *contactRequestsManager) enqueueRequest(ctx context.Context, to *protoco
 		ownMetadata = nil
 	}
 	own.Metadata = ownMetadata
-
-	// start watching topic on swiper, this method should take care of calling
-	// `FindPeer` as many times as needed
-	ctx, cancel := context.WithCancel(ctx)
-	cpeers := c.swiper.WatchTopic(ctx, to.PK, to.PublicRendezvousSeed)
-	go func() {
-		defer cancel()
-		var err error
-
-		for peer := range cpeers {
-			// get our sharable contact to send to other contact
-			if err = c.SendContactRequest(ctx, own, to, otherPK, peer); err != nil {
-				c.logger.Warn("unable to send contact request", zap.Error(err))
-			} else {
-				// succefully send contact request, leave the loop and cancel lookup
-				break
-			}
-		}
-
-		endSection(err, "")
-	}()
-
-	return nil
-}
-
-// SendContactRequest try to perform contact request with the given remote peer
-func (c *contactRequestsManager) SendContactRequest(ctx context.Context, own, to *protocoltypes.ShareableContact, otherPK crypto.PubKey, peer peer.AddrInfo) (err error) {
-	ctx, _, endSection := tyber.Section(ctx, c.logger, "sending contact request")
-	defer func() {
-		endSection(err, "")
-	}()
 
 	// make sure to have connection with the remote peer
 	if err := c.ipfs.Swarm().Connect(ctx, peer); err != nil {
