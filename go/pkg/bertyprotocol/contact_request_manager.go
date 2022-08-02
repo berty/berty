@@ -246,7 +246,7 @@ func (c *contactRequestsManager) metadataRequestEnqueued(ctx context.Context, ev
 	return nil
 }
 
-func (c *contactRequestsManager) metadataRequestSent(ctx context.Context, evt *protocoltypes.GroupMetadataEvent) error {
+func (c *contactRequestsManager) metadataRequestSent(_ context.Context, evt *protocoltypes.GroupMetadataEvent) error {
 	e := &protocoltypes.AccountContactRequestSent{}
 	if err := e.Unmarshal(evt.Event); err != nil {
 		return errcode.ErrDeserialization.Wrap(err)
@@ -258,7 +258,7 @@ func (c *contactRequestsManager) metadataRequestSent(ctx context.Context, evt *p
 	return nil
 }
 
-func (c *contactRequestsManager) metadataRequestReceived(ctx context.Context, evt *protocoltypes.GroupMetadataEvent) error {
+func (c *contactRequestsManager) metadataRequestReceived(_ context.Context, evt *protocoltypes.GroupMetadataEvent) error {
 	e := &protocoltypes.AccountContactRequestReceived{}
 	if err := e.Unmarshal(evt.Event); err != nil {
 		return errcode.ErrDeserialization.Wrap(err)
