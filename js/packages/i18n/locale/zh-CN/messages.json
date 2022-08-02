@@ -98,7 +98,7 @@
 		"setup-finished": {
 			"title": "设置完成！",
 			"desc": "您现在可以使用该应用，开始添加联系人以及与他们自由私下聊天",
-			"button": "开始使用 berty"
+			"button": ""
 		},
 		"web-views": {
 			"title": "网页内容权限",
