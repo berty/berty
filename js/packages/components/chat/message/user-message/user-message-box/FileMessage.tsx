@@ -65,7 +65,7 @@ export const FileMessage: React.FC<{
 					},
 				]}
 			>
-				{medias[0].filename}
+				{medias[0].filename?.substring(0, 20).concat('...')}
 			</UnifiedText>
 			{(isDownloaded || isLoading) && (
 				<UnifiedText style={[margin.left.tiny]}>
