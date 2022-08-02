@@ -245,12 +245,8 @@ export const ShareModal: ScreenFC<'Chat.Share'> = () => {
 		<Layout style={[flex.tiny, { backgroundColor: colors['main-background'] }]}>
 			<StatusBar backgroundColor={colors['background-header']} barStyle='light-content' />
 			<ScrollView
-				style={[
-					margin.bottom.medium,
-					{
-						backgroundColor: colors['main-background'],
-					},
-				]}
+				contentContainerStyle={[flex.tiny]}
+				style={[margin.bottom.medium, { backgroundColor: colors['main-background'] }]}
 			>
 				<ShareContainer
 					element={isScannerSelected ? <ScanBody visible={isScannerVisible} /> : <ShareQr />}
