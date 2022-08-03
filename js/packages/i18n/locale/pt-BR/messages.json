@@ -490,7 +490,7 @@
 			"audio": ""
 		},
 		"reply": {
-			"response-to": "",
+			"response-to": "Responder para",
 			"replying-to": "Você está respondendo para",
 			"replied-to": "Respondeu para"
 		},
