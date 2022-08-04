@@ -2,30 +2,15 @@ import React, { useCallback } from 'react'
 import { View, TouchableOpacity } from 'react-native'
 
 import { useStyles } from '@berty/contexts/styles'
-import { InteractionUserMessage, ParsedInteraction } from '@berty/utils/api'
 
-import { AudioMessage } from './audio/AudioMessage'
+import { AudioMessage } from '../audio/AudioMessage'
 import { FileMessage } from './FileMessage'
+import { HyperlinkUserMessage } from './HyperlinkUserMessage'
+import { UserMessageContentProps } from './interfaces'
 import { PictureMessage } from './PictureMessage'
-import { HyperlinkUserMessage } from './UserMessageComponents'
 
 const AVATAR_SIZE = 30
 const AVATAR_SPACE_RIGHT = 5
-
-interface UserMessageContentProps {
-	inte: InteractionUserMessage
-	setMessageLayoutWidth: (value: number) => void
-	setIsMenuVisible: (value: boolean) => void
-	highlightCid: string | null | undefined
-	isFollowedMessage: boolean | undefined
-	previousMessage?: ParsedInteraction
-	nextMessage?: ParsedInteraction
-	msgBorderColor?: {
-		borderColor: string
-	}
-	msgBackgroundColor: string
-	msgTextColor: string
-}
 
 export const UserMessageContent: React.FC<UserMessageContentProps> = ({
 	inte,
