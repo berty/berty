@@ -26,7 +26,7 @@ const startAppAndCreateAccount = async caps => {
 	await pressButton(driver, "Let's go")
 	await pressButton(driver, 'SKIP') // skip push notif perm request
 	await pressButton(driver, 'Continue')
-	await pressButton(driver, 'Start using berty')
+	await pressButton(driver, 'Start using Berty')
 
 	return driver
 }
