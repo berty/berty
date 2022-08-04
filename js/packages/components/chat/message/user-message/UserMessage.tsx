@@ -19,9 +19,9 @@ import { MessageMenu } from '../../modals/MessageMenu.modal'
 import { Reactions } from '../reactions/Reactions'
 import { GestureHandler } from './GestureHandler'
 import { getUserMessageState } from './getUserMessageState'
+import { RepliedTo } from './RepliedTo'
 import { SenderName } from './SenderName'
-import { TimestampStatusUserMessage } from './TimestampStatusUserMessage'
-import { UserMessageRepliedTo } from './UserMessageRepliedTo'
+import { TimestampStatus } from './TimestampStatus'
 import { UserMessageWrapper } from './UserMessageWrapper'
 
 const interactionsFilter = (inte: ParsedInteraction) =>
@@ -116,7 +116,7 @@ export const UserMessage: React.FC<UserMessageProps> = ({
 				)}
 
 				{!!repliedTo && (
-					<UserMessageRepliedTo
+					<RepliedTo
 						inte={inte}
 						members={members}
 						scrollToCid={scrollToCid}
@@ -125,6 +125,8 @@ export const UserMessage: React.FC<UserMessageProps> = ({
 						isFollowedMessage={isFollowedMessage}
 						setHighlightCid={setHighlightCid}
 						repliedTo={repliedTo}
+						msgBackgroundColor={msgBackgroundColor}
+						msgTextColor={msgTextColor}
 					/>
 				)}
 
@@ -152,7 +154,7 @@ export const UserMessage: React.FC<UserMessageProps> = ({
 					)}
 				</View>
 				{!isWithinCollapseDuration && (
-					<TimestampStatusUserMessage
+					<TimestampStatus
 						inte={inte}
 						lastInte={lastInte}
 						isFollowedMessage={isFollowedMessage}

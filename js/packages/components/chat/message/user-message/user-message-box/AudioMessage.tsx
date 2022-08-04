@@ -10,8 +10,8 @@ import { useStyles } from '@berty/contexts/styles'
 import { useThemeColor } from '@berty/hooks'
 import { selectProtocolClient } from '@berty/redux/reducers/ui.reducer'
 
-import { AudioPreviewPriv } from './AudioPreview.priv'
-import { AudioWrapperPriv } from './AudioWrapper.priv'
+import { AudioPreviewPriv } from '../../audio/AudioPreview.priv'
+import { AudioWrapperPriv } from '../../audio/AudioWrapper.priv'
 
 interface AudioMessageProps {
 	medias: Array<beapi.messenger.IMedia>

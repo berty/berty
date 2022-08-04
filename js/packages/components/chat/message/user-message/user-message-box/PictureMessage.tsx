@@ -9,7 +9,7 @@ import { useNavigation } from '@berty/navigation'
 import { selectProtocolClient } from '@berty/redux/reducers/ui.reducer'
 import { getSource } from '@berty/utils/protocol/attachments'
 
-import { ImageCounter } from '../../ImageCounter'
+import { ImageCounter } from '../../../ImageCounter'
 
 export const PictureMessage: React.FC<{
 	medias: beapi.messenger.IMedia[]

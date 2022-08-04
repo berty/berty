@@ -23,7 +23,7 @@ const useStylesMessage = () => {
 	}
 }
 
-export const TimestampStatusUserMessage: React.FC<{
+export const TimestampStatus: React.FC<{
 	inte: ParsedInteraction
 	lastInte: Maybe<ParsedInteraction>
 	isFollowedMessage: boolean | undefined

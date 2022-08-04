@@ -1,15 +1,15 @@
 import { Icon } from '@ui-kitten/components'
 import React, { useState } from 'react'
-import { Animated } from 'react-native'
+import { Animated, StyleSheet } from 'react-native'
 import { PanGestureHandler, State } from 'react-native-gesture-handler'
 
 import { useAppDispatch, useThemeColor } from '@berty/hooks'
 import { setActiveReplyInteraction } from '@berty/redux/reducers/chatInputs.reducer'
 
-import { UserMessageContentProps } from './interfaces'
-import { UserMessageContent } from './UserMessageContent'
+import { UserMessageBoxProps } from './interfaces'
+import { UserMessageBox } from './user-message-box/UserMessageBox'
 
-interface GestureHandlerProps extends UserMessageContentProps {
+interface GestureHandlerProps extends UserMessageBoxProps {
 	convPK: string
 }
 
@@ -78,23 +78,17 @@ export const GestureHandler: React.FC<GestureHandlerProps> = props => {
 				}
 			}}
 		>
-			<Animated.View
-				style={{
-					flexDirection: 'row',
-					alignItems: 'center',
-					transform: [{ translateX: animatedValue }],
-				}}
-			>
+			<Animated.View style={[styles.container, { transform: [{ translateX: animatedValue }] }]}>
 				<Animated.View
-					style={{
-						marginRight: 10,
-						opacity: animatedValue.interpolate({
-							inputRange: [0, 60],
-							outputRange: [0, 1],
-						}),
-						position: 'absolute',
-						left: -50,
-					}}
+					style={[
+						styles.undo,
+						{
+							opacity: animatedValue.interpolate({
+								inputRange: [0, 60],
+								outputRange: [0, 1],
+							}),
+						},
+					]}
 				>
 					<Icon
 						name='undo'
@@ -104,8 +98,20 @@ export const GestureHandler: React.FC<GestureHandlerProps> = props => {
 						onPress={onSetActiveReplyInteraction}
 					/>
 				</Animated.View>
-				<UserMessageContent {...props} />
+				<UserMessageBox {...props} />
 			</Animated.View>
 		</PanGestureHandler>
 	)
 }
+
+const styles = StyleSheet.create({
+	container: {
+		flexDirection: 'row',
+		alignItems: 'center',
+	},
+	undo: {
+		marginRight: 10,
+		position: 'absolute',
+		left: -50,
+	},
+})

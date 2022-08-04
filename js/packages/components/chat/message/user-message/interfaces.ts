@@ -1,6 +1,6 @@
 import { InteractionUserMessage, ParsedInteraction } from '@berty/utils/api'
 
-export interface UserMessageContentProps {
+export interface UserMessageBoxProps {
 	inte: InteractionUserMessage
 	setMessageLayoutWidth: (value: number) => void
 	setIsMenuVisible: (value: boolean) => void

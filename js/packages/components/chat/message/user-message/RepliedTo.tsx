@@ -9,8 +9,6 @@ import { useThemeColor } from '@berty/hooks'
 import { InteractionUserMessage, ParsedInteraction } from '@berty/utils/api'
 import { getMediaTypeFromMedias } from '@berty/utils/messenger/media'
 
-import { getUserMessageState } from './getUserMessageState'
-
 const AVATAR_SIZE = 30
 const AVATAR_SPACE_RIGHT = 5
 
@@ -27,17 +25,14 @@ interface UserMessageRepliedToProps {
 		| beapi.messenger.IContact
 		| beapi.messenger.IAccount
 		| undefined
+	msgBackgroundColor: string
+	msgTextColor: string
 }
 
-export const UserMessageRepliedTo: React.FC<UserMessageRepliedToProps> = props => {
+export const RepliedTo: React.FC<UserMessageRepliedToProps> = props => {
 	const { t } = useTranslation()
 	const colors = useThemeColor()
 	const { border, text } = useStyles()
-
-	let repliedToColors =
-		props.repliedTo &&
-		props.replyOf &&
-		getUserMessageState(props.replyOf, props.members, props.convKind, undefined, undefined, colors)
 
 	return (
 		<View
@@ -55,10 +50,7 @@ export const UserMessageRepliedTo: React.FC<UserMessageRepliedToProps> = props =
 			<View
 				style={[
 					styles.wrapper,
-					{
-						backgroundColor: colors['input-background'],
-						borderColor: colors['negative-asset'],
-					},
+					{ backgroundColor: colors['input-background'], borderColor: colors['negative-asset'] },
 				]}
 			>
 				<UnifiedText
@@ -83,14 +75,12 @@ export const UserMessageRepliedTo: React.FC<UserMessageRepliedToProps> = props =
 					border.radius.top.medium,
 					props.inte.isMine ? border.radius.left.medium : border.radius.right.medium,
 					styles.button,
-					{
-						backgroundColor: repliedToColors?.msgBackgroundColor,
-					},
+					{ backgroundColor: props.msgBackgroundColor },
 				]}
 			>
 				<UnifiedText
 					numberOfLines={1}
-					style={[text.size.tiny, { color: repliedToColors?.msgTextColor, lineHeight: 17 }]}
+					style={[text.size.tiny, { color: props.msgTextColor, lineHeight: 17 }]}
 				>
 					{(props.replyOf?.type === beapi.messenger.AppMessage.Type.TypeUserMessage &&
 						props.replyOf?.payload?.body) ||

@@ -3,16 +3,16 @@ import { View, TouchableOpacity } from 'react-native'
 
 import { useStyles } from '@berty/contexts/styles'
 
-import { AudioMessage } from '../audio/AudioMessage'
+import { UserMessageBoxProps } from '../interfaces'
+import { AudioMessage } from './AudioMessage'
 import { FileMessage } from './FileMessage'
 import { HyperlinkUserMessage } from './HyperlinkUserMessage'
-import { UserMessageContentProps } from './interfaces'
 import { PictureMessage } from './PictureMessage'
 
 const AVATAR_SIZE = 30
 const AVATAR_SPACE_RIGHT = 5
 
-export const UserMessageContent: React.FC<UserMessageContentProps> = ({
+export const UserMessageBox: React.FC<UserMessageBoxProps> = ({
 	inte,
 	setMessageLayoutWidth,
 	setIsMenuVisible,
