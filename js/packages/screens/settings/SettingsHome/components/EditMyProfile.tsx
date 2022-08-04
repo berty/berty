@@ -95,8 +95,8 @@ export const EditMyProfile: React.FC<EditProfileProps> = ({ hide }) => {
 			if (pic) {
 				localDispatch({ type: 'SET_PICTURE', pic })
 			}
-		} catch (err) {
-			if (err?.code !== 'E_PICKER_CANCELLED') {
+		} catch (err: any) {
+			if (err.code !== 'E_PICKER_CANCELLED') {
 				localDispatch({ type: 'SET_ERROR', err })
 			}
 		}
