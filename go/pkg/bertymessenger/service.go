@@ -65,8 +65,10 @@ type service struct {
 	pushReceiver          bertypush.MessengerPushReceiver
 	tyberCleanup          func()
 	logFilePath           string
-	cancelPeerStatus      map[string]func()
-	peerGroup             map[string]map[string]*mt.StreamEvent_PeerStatusGroupAssociated
+	peerGroup             map[string] /* peer.ID */ map[string] /* groupPK */ *mt.StreamEvent_PeerStatusGroupAssociated
+	muPeerGroup           sync.Mutex
+	cancelGroupStatus     map[string] /*groupPK */ context.CancelFunc
+	muCancelGroupStatus   sync.Mutex
 }
 
 type Opts struct {
@@ -220,7 +222,7 @@ func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (_ Service, err
 		handlerMutex:          sync.Mutex{},
 		ring:                  opts.Ring,
 		logFilePath:           opts.LogFilePath,
-		cancelPeerStatus:      make(map[string]func()),
+		cancelGroupStatus:     make(map[string]context.CancelFunc),
 		peerGroup:             make(map[string]map[string]*mt.StreamEvent_PeerStatusGroupAssociated),
 	}
 

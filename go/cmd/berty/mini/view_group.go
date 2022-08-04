@@ -133,35 +133,6 @@ func (v *groupView) loop(ctx context.Context) {
 		return
 	}
 
-	// subscribe to group metadata monitor
-	{
-		req := &protocoltypes.MonitorGroup_Request{GroupPK: v.g.PublicKey}
-		cl, err := v.v.protocol.MonitorGroup(ctx, req)
-		if err != nil {
-			panic(err)
-		}
-
-		go func() {
-			for {
-				res, err := cl.Recv()
-				if err != nil {
-					if err == io.EOF {
-						return
-					}
-
-					// @TODO: Log this
-					v.syncMessages <- &historyMessage{
-						messageType: messageTypeError,
-						payload:     []byte(err.Error()),
-					}
-					continue
-				}
-
-				groupMonitorEventHandler(v.logger, v, res.GetEvent())
-			}
-		}()
-	}
-
 	// get GroupDeviceStatus
 	{
 		req := &protocoltypes.GroupDeviceStatus_Request{GroupPK: v.g.PublicKey}
