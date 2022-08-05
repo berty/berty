@@ -433,14 +433,14 @@ func (s *service) startGroupDeviceMonitor() {
 				s.logger.Debug("GroupDeviceMonitor: EventExchangeHeads received", zap.String("peerID", e.Peer.Pretty()))
 
 				if err := s.monitorHandleGroupDeviceConnected(e.Peer); err != nil {
-					s.logger.Warn("GroupDeviceMonitor: cannot handle new peer connection", logutil.PrivateString("peerID", e.Peer.Pretty()))
+					s.logger.Debug("GroupDeviceMonitor: cannot handle new peer connection", logutil.PrivateString("peerID", e.Peer.Pretty()))
 				}
 			case evt := <-ch2:
 				e := evt.(event.EvtPeerConnectednessChanged)
 				s.logger.Debug("GroupDeviceMonitor: EvtPeerConnectednessChanged received", zap.String("peerID", e.Peer.Pretty()))
 
 				if err := s.monitorHandleGroupDeviceDisconnected(e.Peer); err != nil {
-					s.logger.Warn("GroupDeviceMonitor: cannot handle new peer connection", logutil.PrivateString("peerID", e.Peer.Pretty()))
+					s.logger.Debug("GroupDeviceMonitor: cannot handle new peer connection", logutil.PrivateString("peerID", e.Peer.Pretty()))
 				}
 			}
 		}
