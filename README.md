@@ -35,6 +35,9 @@
 
 ### Mobile
 
+To use the latest released version, install it from [Google Play](https://play.google.com/store/apps/details?id=tech.berty.android)
+or [Apple App Store](https://apps.apple.com/tt/app/berty/id1535500412).
+
 To compile and run the mobile application on your device, see [js/README.md](js/README.md).
 
 ### CLI
