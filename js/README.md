@@ -97,7 +97,7 @@ $ make web.debug
 ### General React Native requirements
 
 - Homebrew or package manager of choice
-- Node >= 12.x
+- Node >= 14.x
 - The [yarn package manager](https://classic.yarnpkg.com/en/)
 
 ### iOS dev requirements
