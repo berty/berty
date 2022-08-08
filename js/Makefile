@@ -14,6 +14,9 @@ GO ?= go # this allows to override the go version used
 GO_TAGS ?= -tags "fts5 sqlite sqlite_unlock_notify"
 GOMOBILE_IOS_TARGET ?= ios
 GOMOBILE_ANDROID_TARGET ?= android
+IOS_BUNDLE_VERSION ?= $(shell echo -n $(shell git rev-list HEAD | wc -l))
+IOS_SHORT_BUNDLE_VERSION ?= $(shell echo "$(VERSION)" | cut -c2- | cut -f1 -d '-')
+IOS_COMMIT ?= $(shell git rev-parse HEAD)
 
 ## Internal variables
 
@@ -439,9 +442,9 @@ ios/Berty.xcodeproj: $(xcodegen_yml) $(call rwildcard,ios/Berty/Source,*) $(call
 	$(call check-program, xcodegen)
 	mkdir -p ios/Berty
 	touch ios/Berty/main.jsbundle
-	IOS_BUNDLE_VERSION=$(shell echo -n $(shell git rev-list HEAD | wc -l)) \
-	IOS_SHORT_BUNDLE_VERSION=$(shell echo "$(VERSION)" | cut -c2- | cut -f1 -d '-') \
-	IOS_COMMIT=$(shell git rev-parse HEAD) \
+	IOS_BUNDLE_VERSION=$(IOS_BUNDLE_VERSION) \
+	IOS_SHORT_BUNDLE_VERSION=$(IOS_SHORT_BUNDLE_VERSION) \
+	IOS_COMMIT=$(IOS_COMMIT) \
 	xcodegen \
 		--spec ios/berty.yaml \
 		--cache-path $(xcodegen_cache) \
