@@ -16,5 +16,7 @@
 	<array>
 		<string>$(AppIdentifierPrefix)tech.berty.ios</string>
 	</array>
+	<key>com.apple.developer.usernotifications.filtering</key>
+	<true/>
 </dict>
 </plist>
