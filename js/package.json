@@ -34,6 +34,7 @@
     "expo-file-system": "^13.1.4",
     "expo-font": "~10.0.4",
     "expo-mail-composer": "~11.1.0",
+    "expo-network": "~4.1.0",
     "faker": "^5.2.0",
     "google-palette": "^1.1.0",
     "i18next": "^21.6.4",

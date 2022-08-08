@@ -117,6 +117,12 @@
 			},
 			"input-placeholder": "Search keyword",
 			"no-contacts": "You don't have any contacts or chat yet",
+			"no-network": {
+				"title": "No Network Found!",
+				"description": "You look offline! Activate Bluetooth feature to chat with friends!",
+				"cancel": "NOT NOW",
+				"activate": "ACTIVATE"
+			},
 			"search": {
 				"no-results": "No results found"
 			},
