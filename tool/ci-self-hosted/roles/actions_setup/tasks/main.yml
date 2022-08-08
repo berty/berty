@@ -1,7 +1,7 @@
 - name: Create runner folder
-  command:
-    cmd: mkdir -p {{ runner_folder }}
-    creates: "{{ runner_folder }}"
+  file:
+    path: "{{ runner_folder }}"
+    state: directory
 
 - name: Download runner archive
   get_url:

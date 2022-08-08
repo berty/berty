@@ -18,9 +18,9 @@
   when: check_session.rc == 1
 
 - name: Create session cookie folder
-  command:
-    cmd: mkdir -p {{ session_folder }}
-    creates: "{{ session_folder }}"
+  file:
+    path: "{{ session_folder }}"
+    state: directory
   when: check_session.rc == 1
 
 - name: Upload session cookie on runners
