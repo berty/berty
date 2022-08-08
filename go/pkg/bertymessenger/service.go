@@ -13,6 +13,7 @@ import (
 	"time"
 
 	sqlite "github.com/flyingtime/gorm-sqlcipher"
+
 	// nolint:staticcheck // cannot use the new protobuf API while keeping gogoproto
 	"github.com/golang/protobuf/proto"
 	ipfscid "github.com/ipfs/go-cid"
@@ -69,6 +70,8 @@ type service struct {
 	muPeerGroup           sync.Mutex
 	cancelGroupStatus     map[string] /*groupPK */ context.CancelFunc
 	muCancelGroupStatus   sync.Mutex
+	knownPeers            map[string] /* peer.ID */ protocoltypes.GroupDeviceStatus_Type
+	muKnownPeers          sync.Mutex
 }
 
 type Opts struct {
@@ -222,8 +225,8 @@ func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (_ Service, err
 		handlerMutex:          sync.Mutex{},
 		ring:                  opts.Ring,
 		logFilePath:           opts.LogFilePath,
-		cancelGroupStatus:     make(map[string]context.CancelFunc),
-		peerGroup:             make(map[string]map[string]*mt.StreamEvent_PeerStatusGroupAssociated),
+		cancelGroupStatus:     make(map[string] /* groupPK */ context.CancelFunc),
+		knownPeers:            make(map[string] /* peer.ID */ protocoltypes.GroupDeviceStatus_Type),
 	}
 
 	svc.eventHandler = messengerpayloads.NewEventHandler(ctx, db, &MetaFetcherFromProtocolClient{client: client}, newPostActionsService(&svc), opts.Logger, svc.dispatcher, false)

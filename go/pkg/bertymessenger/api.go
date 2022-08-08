@@ -1091,6 +1091,11 @@ func (svc *service) ConversationOpen(ctx context.Context, req *messengertypes.Co
 
 	ret := messengertypes.ConversationOpen_Reply{}
 
+	if err := svc.monitorGroupPeersStatus(req.GroupPK); err != nil {
+		// only log an error here
+		svc.logger.Error("unable to monitor group peer status", zap.Error(err))
+	}
+
 	conv, updated, err := svc.db.SetConversationIsOpenStatus(req.GetGroupPK(), true)
 
 	if err != nil {
@@ -1103,11 +1108,6 @@ func (svc *service) ConversationOpen(ctx context.Context, req *messengertypes.Co
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	if err := svc.monitorGroupPeersStatus(req.GroupPK); err != nil {
-		// only log an error here
-		svc.logger.Error("unable to monitor group peer status", zap.Error(err))
-	}
-
 	return &ret, nil
 }
 
@@ -1117,13 +1117,13 @@ func (svc *service) monitorGroupPeersStatus(groupPK string) error {
 
 	if _, found := svc.cancelGroupStatus[groupPK]; found {
 		// skip if already have a monitor group in progress
-		return fmt.Errorf("monitor peer status for group already running", logutil.PrivateString("grouppk", groupPK))
+		return fmt.Errorf("monitor peer status for group already running")
 	}
 
 	rawGroupPK, err := messengerutil.B64DecodeBytes(groupPK)
 	if err != nil {
 		svc.logger.Error("error while decoding groupPK", zap.Error(err))
-		return fmt.Errorf("error while decoding groupPK", zap.Error(err))
+		return fmt.Errorf("error while decoding groupPK: %w", err)
 	}
 
 	subCtx, cancel := context.WithCancel(svc.ctx)
@@ -1135,6 +1135,7 @@ func (svc *service) monitorGroupPeersStatus(groupPK string) error {
 
 	svc.cancelGroupStatus[groupPK] = cancel
 
+	groupPeers := make(map[string]struct{})
 	go func() {
 		for {
 			statusEvent, err := cs.Recv()
@@ -1147,99 +1148,80 @@ func (svc *service) monitorGroupPeersStatus(groupPK string) error {
 				return
 			}
 
-			switch statusEvent.Type {
+			switch kind := statusEvent.Type; kind {
 			case protocoltypes.TypePeerConnected:
-				svc.handlePeerStatusConnected(groupPK, statusEvent)
+				var connected protocoltypes.GroupDeviceStatus_Reply_PeerConnected
+				if err = connected.Unmarshal(statusEvent.Event); err != nil {
+					svc.logger.Error("unable to unmarshall", zap.Error(err))
+					continue
+				}
+
+				svc.muKnownPeers.Lock()
+				if status, ok := svc.knownPeers[connected.PeerID]; !ok || status != kind {
+					svc.knownPeers[connected.PeerID] = kind
+
+					var transport messengertypes.StreamEvent_PeerStatusConnected_Transport
+					if len(connected.Transports) > 0 {
+						switch connected.Transports[0] {
+						case protocoltypes.TptWAN:
+							transport = messengertypes.StreamEvent_PeerStatusConnected_WAN
+						case protocoltypes.TptLAN:
+							transport = messengertypes.StreamEvent_PeerStatusConnected_LAN
+						case protocoltypes.TptProximity:
+							transport = messengertypes.StreamEvent_PeerStatusConnected_Proximity
+						}
+					}
+
+					err = svc.dispatcher.StreamEvent(messengertypes.StreamEvent_TypePeerStatusConnected,
+						&messengertypes.StreamEvent_PeerStatusConnected{
+							PeerID:    connected.PeerID,
+							Transport: transport,
+						}, true)
+				}
+				svc.muKnownPeers.Unlock()
+
+				if _, ok := groupPeers[connected.PeerID]; !ok {
+					groupPeers[connected.PeerID] = struct{}{}
+					err = svc.dispatcher.StreamEvent(
+						messengertypes.StreamEvent_TypePeerStatusGroupAssociated,
+						&messengertypes.StreamEvent_PeerStatusGroupAssociated{
+							PeerID:   connected.PeerID,
+							DevicePK: base64.RawURLEncoding.EncodeToString(connected.DevicePK),
+							GroupPK:  groupPK,
+						}, true)
+
+					if err != nil {
+						svc.logger.Error("unable to disaptch event event", zap.String("kind", statusEvent.Type.String()))
+						continue
+					}
+				}
+
 			case protocoltypes.TypePeerDisconnected:
-				svc.handlePeerStatusDisconnected(statusEvent)
+				var disconnected protocoltypes.GroupDeviceStatus_Reply_PeerDisconnected
+				if err = disconnected.Unmarshal(statusEvent.Event); err != nil {
+					svc.logger.Error("unable to unmarshall", zap.Error(err))
+					continue
+				}
+
+				svc.muKnownPeers.Lock()
+				if status, ok := svc.knownPeers[disconnected.PeerID]; !ok || status != kind {
+					svc.knownPeers[disconnected.PeerID] = kind
+					err = svc.dispatcher.StreamEvent(messengertypes.StreamEvent_TypePeerStatusDisconnected,
+						&messengertypes.StreamEvent_PeerStatusDisconnected{
+							PeerID: disconnected.PeerID,
+						}, true)
+				}
+				svc.muKnownPeers.Unlock()
+			}
+
+			if err != nil {
+				svc.logger.Error("unable to disaptch event event", zap.String("kind", statusEvent.Type.String()))
+				continue
 			}
 		}
 	}()
 
 	return nil
-}
-
-func (svc *service) handlePeerStatusConnected(groupPK string, statusEvent *protocoltypes.GroupDeviceStatus_Reply) {
-	connected := &protocoltypes.GroupDeviceStatus_Reply_PeerConnected{}
-	if err := connected.Unmarshal(statusEvent.Event); err != nil {
-		svc.logger.Debug(fmt.Sprintf("Unmarshal GroupDeviceStatus event error: %s", err))
-		return
-	}
-
-	// craft a PeerStatusGroupAssociated only once per group per peerID
-	svc.muPeerGroup.Lock()
-	peerMap, found := svc.peerGroup[connected.PeerID]
-	if !found {
-		peerMap = make(map[string]*messengertypes.StreamEvent_PeerStatusGroupAssociated)
-		svc.peerGroup[connected.PeerID] = peerMap
-	}
-
-	var err error
-	if _, found = peerMap[groupPK]; !found {
-		peerGroup := &messengertypes.StreamEvent_PeerStatusGroupAssociated{
-			PeerID:   connected.PeerID,
-			DevicePK: base64.RawURLEncoding.EncodeToString(connected.DevicePK),
-			GroupPK:  groupPK,
-		}
-		peerMap[groupPK] = peerGroup
-
-		// dispatch event
-		err = svc.dispatcher.StreamEvent(messengertypes.StreamEvent_TypePeerStatusGroupAssociated, peerGroup, true)
-	}
-	svc.muPeerGroup.Unlock()
-
-	if err != nil {
-		svc.logger.Error("Sending StreamEvent_PeerStatusGroupAssociated error", zap.Error(err))
-		return
-	}
-
-	// craft a PeerStatusConnected event
-	// default to unknown
-	var transport messengertypes.StreamEvent_PeerStatusConnected_Transport
-	if len(connected.Transports) > 0 {
-		switch connected.Transports[0] {
-		case protocoltypes.TptWAN:
-			transport = messengertypes.StreamEvent_PeerStatusConnected_WAN
-		case protocoltypes.TptLAN:
-			transport = messengertypes.StreamEvent_PeerStatusConnected_LAN
-		case protocoltypes.TptProximity:
-			transport = messengertypes.StreamEvent_PeerStatusConnected_Proximity
-		}
-	}
-
-	connectedEvent := &messengertypes.StreamEvent_PeerStatusConnected{
-		PeerID:    connected.PeerID,
-		Transport: transport,
-	}
-
-	// dispatch event
-	if err := svc.dispatcher.StreamEvent(messengertypes.StreamEvent_TypePeerStatusConnected, connectedEvent, true); err != nil {
-		svc.logger.Debug("Sending StreamEvent_PeerStatusConnected error", zap.Error(err))
-		return
-	}
-}
-
-func (svc *service) handlePeerStatusDisconnected(statusEvent *protocoltypes.GroupDeviceStatus_Reply) {
-	disconnected := &protocoltypes.GroupDeviceStatus_Reply_PeerDisconnected{}
-	if err := disconnected.Unmarshal(statusEvent.Event); err != nil {
-		svc.logger.Debug("Unmarshal GroupDeviceStatus event error", zap.Error(err))
-		return
-	}
-
-	// if the peer is not found, don't do anything because we assume
-	// that a peer is disconnected by default
-	svc.muPeerGroup.Lock()
-	_, found := svc.peerGroup[disconnected.PeerID]
-	svc.muPeerGroup.Unlock()
-	if !found {
-		return
-	}
-
-	// dispatch event
-	if err := svc.dispatcher.StreamEvent(messengertypes.StreamEvent_TypePeerStatusDisconnected, &messengertypes.StreamEvent_PeerStatusDisconnected{PeerID: disconnected.PeerID}, true); err != nil {
-		svc.logger.Debug("Sending StreamEvent_PeerStatusDisconnected error", zap.Error(err))
-		return
-	}
 }
 
 func (svc *service) ConversationClose(ctx context.Context, req *messengertypes.ConversationClose_Request) (*messengertypes.ConversationClose_Reply, error) {
