@@ -13,6 +13,7 @@ import { useNavigation } from '@berty/navigation'
 import {
 	getPeerFromMemberPK,
 	PeerNetworkStatus,
+	selectGroupsDevicesToPeerDict,
 	selectPeerNetworkStatusDict,
 } from '@berty/redux/reducers/messenger.reducer'
 
@@ -30,6 +31,7 @@ export const MemberBar: React.FC<MemberBarProps> = props => {
 	const messengerClient = useMessengerClient()
 	const dispatch = useAppDispatch()
 	const peers = useAppSelector(selectPeerNetworkStatusDict)
+	const groups = useAppSelector(selectGroupsDevicesToPeerDict)
 
 	const convMembers = useConversationMembers(props.convId)
 	const members = useMemo(() => convMembers.filter(members => !members.isMe), [convMembers])
@@ -90,8 +92,8 @@ export const MemberBar: React.FC<MemberBarProps> = props => {
 
 	useEffect(() => {
 		handleMemberList()
-		// we put peers/members dependencies to update the connectionStatus of peers
-	}, [handleMemberList, peers, members])
+		// we put peers/members/groups dependencies to update the connectionStatus of peers
+	}, [handleMemberList, groups, peers, members])
 
 	return (
 		<TouchableOpacity
