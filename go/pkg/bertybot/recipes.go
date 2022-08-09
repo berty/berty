@@ -72,7 +72,6 @@ func WelcomeMessageRecipe(text string) Recipe {
 			}
 		},
 	}
-	// FIXME: send welcome message to new conversations
 	return recipe
 }
 
