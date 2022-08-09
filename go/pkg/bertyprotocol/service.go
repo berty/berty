@@ -447,8 +447,15 @@ func (s *service) startGroupDeviceMonitor() {
 	// get status of peers in the peerstore
 	peers := s.host.Peerstore().Peers()
 	for _, peer := range peers {
+		// if we got some connected peer check their status
 		if s.host.Network().Connectedness(peer) == network.Connected {
 			s.peerStatusManager.UpdateState(peer, ConnectednessTypeConnected)
+		}
+
+		// if we already have some head exchange with this peer, associate it
+		if dpk, ok := s.odb.GetDevicePKForPeerID(peer); ok {
+			gkey := hex.EncodeToString(dpk.Group.PublicKey)
+			s.peerStatusManager.AssociatePeer(gkey, peer)
 		}
 	}
 }
