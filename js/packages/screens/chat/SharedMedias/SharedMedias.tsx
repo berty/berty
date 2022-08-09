@@ -20,7 +20,7 @@ import { useSelector } from 'react-redux'
 import tlds from 'tlds'
 
 import beapi from '@berty/api'
-import { isBertyDeepLink } from '@berty/components/chat/message/UserMessageComponents'
+import { isBertyDeepLink } from '@berty/components/chat/message/user-message/user-message-box/HyperlinkUserMessage'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useStyles } from '@berty/contexts/styles'
 import { useConversationInteractions, useMessengerClient, useThemeColor } from '@berty/hooks'

@@ -16,7 +16,7 @@ import { pbDateToNum, timeFormat } from '@berty/utils/convert/time'
 import { UnifiedText } from '../../shared-components/UnifiedText'
 import { MessageInvitation } from './MessageInvitation'
 import { MessageMonitorMetadata } from './MessageMonitorMetadata'
-import { UserMessage } from './UserMessage'
+import { UserMessage } from './user-message/UserMessage'
 
 //
 // Message => All messages (group/contact)
