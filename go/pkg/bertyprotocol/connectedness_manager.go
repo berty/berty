@@ -4,24 +4,25 @@ import (
 	"context"
 	"sync"
 
-	"berty.tech/berty/v2/go/internal/notify"
 	peer "github.com/libp2p/go-libp2p-core/peer"
+
+	"berty.tech/berty/v2/go/internal/notify"
 )
 
-type Connectedness int
+type ConnectednessType int
 
 const (
-	Disconnected Connectedness = iota
-	Reconnecting
-	Connected
+	ConnectednessTypeDisconnected ConnectednessType = iota
+	ConnectednessTypeReconnecting
+	ConnectednessTypeConnected
 )
 
 type ConnectednessUpdate struct {
 	Peer   peer.ID
-	Status Connectedness
+	Status ConnectednessType
 }
 
-type PeersConnectedness map[peer.ID]Connectedness
+type PeersConnectedness map[peer.ID]ConnectednessType
 
 type GroupStatus struct {
 	peers  map[peer.ID]*PeerStatus
@@ -30,7 +31,7 @@ type GroupStatus struct {
 
 type PeerStatus struct {
 	groups map[string]*GroupStatus
-	status Connectedness
+	status ConnectednessType
 }
 
 type ConnectednessManager struct {
@@ -65,7 +66,7 @@ func (m *ConnectednessManager) AssociatePeer(group string, peer peer.ID) {
 }
 
 // UpdateState update the current state of the manager
-func (m *ConnectednessManager) UpdateState(peer peer.ID, update Connectedness) {
+func (m *ConnectednessManager) UpdateState(peer peer.ID, update ConnectednessType) {
 	m.muState.Lock()
 	defer m.muState.Unlock()
 

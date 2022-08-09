@@ -27,7 +27,6 @@ import (
 	"berty.tech/berty/v2/go/internal/cryptoutil"
 	"berty.tech/berty/v2/go/internal/datastoreutil"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
-	"berty.tech/berty/v2/go/internal/notify"
 	"berty.tech/berty/v2/go/internal/tinder"
 	"berty.tech/berty/v2/go/pkg/bertypush"
 	"berty.tech/berty/v2/go/pkg/bertyversion"
@@ -52,33 +51,30 @@ type Service interface {
 
 type service struct {
 	// variables
-	ctx                 context.Context
-	logger              *zap.Logger
-	ipfsCoreAPI         ipfsutil.ExtendedCoreAPI
-	odb                 *BertyOrbitDB
-	accountGroup        *GroupContext
-	deviceKeystore      cryptoutil.DeviceKeystore
-	openedGroups        map[string]*GroupContext
-	lock                sync.RWMutex
-	authSession         atomic.Value
-	close               func() error
-	startedAt           time.Time
-	host                host.Host
-	groupDatastore      *cryptoutil.GroupDatastore
-	pushHandler         bertypush.PushHandler
-	accountCache        ds.Batching
-	messageKeystore     *cryptoutil.MessageKeystore
-	pushClients         map[string]*grpc.ClientConn
-	muPushClients       sync.RWMutex
-	discovery           discovery.Discovery
-	grpcInsecure        bool
-	refreshprocess      map[string]context.CancelFunc
-	muRefreshprocess    sync.RWMutex
-	swiper              *Swiper
-	groupDeviceStatus   map[string]map[string]*protocoltypes.GroupDeviceStatus_Reply
-	muGroupDeviceStatus *sync.Mutex
-	groupDeviceNotify   *notify.Notify
-	peerStatusManager   *ConnectednessManager
+	ctx               context.Context
+	logger            *zap.Logger
+	ipfsCoreAPI       ipfsutil.ExtendedCoreAPI
+	odb               *BertyOrbitDB
+	accountGroup      *GroupContext
+	deviceKeystore    cryptoutil.DeviceKeystore
+	openedGroups      map[string]*GroupContext
+	lock              sync.RWMutex
+	authSession       atomic.Value
+	close             func() error
+	startedAt         time.Time
+	host              host.Host
+	groupDatastore    *cryptoutil.GroupDatastore
+	pushHandler       bertypush.PushHandler
+	accountCache      ds.Batching
+	messageKeystore   *cryptoutil.MessageKeystore
+	pushClients       map[string]*grpc.ClientConn
+	muPushClients     sync.RWMutex
+	discovery         discovery.Discovery
+	grpcInsecure      bool
+	refreshprocess    map[string]context.CancelFunc
+	muRefreshprocess  sync.RWMutex
+	swiper            *Swiper
+	peerStatusManager *ConnectednessManager
 }
 
 // Opts contains optional configuration flags for building a new Client
@@ -435,9 +431,9 @@ func (s *service) startGroupDeviceMonitor() {
 			case event.EvtPeerConnectednessChanged:
 				switch e.Connectedness {
 				case network.Connected:
-					s.peerStatusManager.UpdateState(e.Peer, Connected)
+					s.peerStatusManager.UpdateState(e.Peer, ConnectednessTypeConnected)
 				case network.NotConnected:
-					s.peerStatusManager.UpdateState(e.Peer, Disconnected)
+					s.peerStatusManager.UpdateState(e.Peer, ConnectednessTypeDisconnected)
 				}
 			case baseorbitdb.EventExchangeHeads:
 				if dpk, ok := s.odb.GetDevicePKForPeerID(e.Peer); ok {
@@ -452,7 +448,7 @@ func (s *service) startGroupDeviceMonitor() {
 	peers := s.host.Peerstore().Peers()
 	for _, peer := range peers {
 		if s.host.Network().Connectedness(peer) == network.Connected {
-			s.peerStatusManager.UpdateState(peer, Connected)
+			s.peerStatusManager.UpdateState(peer, ConnectednessTypeConnected)
 		}
 	}
 }

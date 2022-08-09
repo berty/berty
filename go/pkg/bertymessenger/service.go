@@ -13,7 +13,6 @@ import (
 	"time"
 
 	sqlite "github.com/flyingtime/gorm-sqlcipher"
-
 	// nolint:staticcheck // cannot use the new protobuf API while keeping gogoproto
 	"github.com/golang/protobuf/proto"
 	ipfscid "github.com/ipfs/go-cid"
@@ -66,8 +65,6 @@ type service struct {
 	pushReceiver          bertypush.MessengerPushReceiver
 	tyberCleanup          func()
 	logFilePath           string
-	peerGroup             map[string] /* peer.ID */ map[string] /* groupPK */ *mt.StreamEvent_PeerStatusGroupAssociated
-	muPeerGroup           sync.Mutex
 	cancelGroupStatus     map[string] /*groupPK */ context.CancelFunc
 	muCancelGroupStatus   sync.Mutex
 	knownPeers            map[string] /* peer.ID */ protocoltypes.GroupDeviceStatus_Type

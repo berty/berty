@@ -3,7 +3,6 @@ package bertymessenger
 import (
 	"bufio"
 	"context"
-	"encoding/base64"
 	"errors"
 	"fmt"
 	"io"
@@ -1130,7 +1129,7 @@ func (svc *service) monitorGroupPeersStatus(groupPK string) error {
 	cs, err := svc.protocolClient.GroupDeviceStatus(subCtx, &protocoltypes.GroupDeviceStatus_Request{GroupPK: rawGroupPK})
 	if err != nil {
 		cancel()
-		return fmt.Errorf("unable to get group device status", zap.Error(err))
+		return fmt.Errorf("unable to get group device status: %w", err)
 	}
 
 	svc.cancelGroupStatus[groupPK] = cancel
@@ -1186,7 +1185,7 @@ func (svc *service) monitorGroupPeersStatus(groupPK string) error {
 						messengertypes.StreamEvent_TypePeerStatusGroupAssociated,
 						&messengertypes.StreamEvent_PeerStatusGroupAssociated{
 							PeerID:   connected.PeerID,
-							DevicePK: base64.RawURLEncoding.EncodeToString(connected.DevicePK),
+							DevicePK: messengerutil.B64EncodeBytes(connected.DevicePK),
 							GroupPK:  groupPK,
 						}, true)
 

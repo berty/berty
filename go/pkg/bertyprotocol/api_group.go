@@ -117,26 +117,22 @@ func (s *service) GroupDeviceStatus(req *protocoltypes.GroupDeviceStatus_Request
 			var evt protocoltypes.GroupDeviceStatus_Reply
 
 			switch peers[peer] {
-			case Connected:
+			case ConnectednessTypeConnected:
 				evt.Type = protocoltypes.TypePeerConnected
 				var connected *protocoltypes.GroupDeviceStatus_Reply_PeerConnected
 				if connected, err = s.craftPeerConnectedMessage(peer); err == nil {
 					evt.Event, err = connected.Marshal()
 				}
 
-			case Disconnected:
+			case ConnectednessTypeDisconnected:
 				evt.Type = protocoltypes.TypePeerDisconnected
-				var disconnected *protocoltypes.GroupDeviceStatus_Reply_PeerDisconnected
-				if disconnected, err = s.craftDeviceDisconnectedMessage(peer); err == nil {
-					evt.Event, err = disconnected.Marshal()
-				}
+				disconnected := s.craftDeviceDisconnectedMessage(peer)
+				evt.Event, err = disconnected.Marshal()
 
-			case Reconnecting:
+			case ConnectednessTypeReconnecting:
 				evt.Type = protocoltypes.TypePeerConnected
-				var reconnecting *protocoltypes.GroupDeviceStatus_Reply_PeerReconnecting
-				if reconnecting, err = s.craftDeviceReconnectedMessage(peer); err == nil {
-					evt.Event, err = reconnecting.Marshal()
-				}
+				reconnecting := s.craftDeviceReconnectedMessage(peer)
+				evt.Event, err = reconnecting.Marshal()
 
 			default:
 				evt.Type = protocoltypes.TypeUnknown
@@ -200,16 +196,16 @@ CONN_LOOP:
 	return &connected, nil
 }
 
-func (s *service) craftDeviceDisconnectedMessage(peer peer.ID) (*protocoltypes.GroupDeviceStatus_Reply_PeerDisconnected, error) {
+func (s *service) craftDeviceDisconnectedMessage(peer peer.ID) *protocoltypes.GroupDeviceStatus_Reply_PeerDisconnected {
 	return &protocoltypes.GroupDeviceStatus_Reply_PeerDisconnected{
 		PeerID: peer.Pretty(),
-	}, nil
+	}
 }
 
-func (s *service) craftDeviceReconnectedMessage(peer peer.ID) (*protocoltypes.GroupDeviceStatus_Reply_PeerReconnecting, error) {
+func (s *service) craftDeviceReconnectedMessage(peer peer.ID) *protocoltypes.GroupDeviceStatus_Reply_PeerReconnecting {
 	return &protocoltypes.GroupDeviceStatus_Reply_PeerReconnecting{
 		PeerID: peer.Pretty(),
-	}, nil
+	}
 }
 
 func (s *service) MonitorGroup(req *protocoltypes.MonitorGroup_Request, srv protocoltypes.ProtocolService_MonitorGroupServer) error {

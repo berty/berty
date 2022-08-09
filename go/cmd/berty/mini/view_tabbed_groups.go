@@ -236,7 +236,6 @@ func (v *tabbedGroupsView) handleEventStream(ctx context.Context) error {
 	accountv := v.accountGroupView
 	gm := make(map[string][]string)
 	go func() {
-		defer srv.CloseSend()
 		for {
 			msg, err := srv.Recv()
 			if err != nil {
