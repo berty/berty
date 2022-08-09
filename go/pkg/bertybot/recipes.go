@@ -131,10 +131,24 @@ func DelayResponseRecipe(duration time.Duration) Recipe {
 	return recipe
 }
 
-// AutoAcceptIncomingContactRequestRecipe makes the bot "click" on the "accept" button automatically.
-// NOT YET IMPLEMENTED.
+// AutoAcceptIncomingGroupInviteRecipe makes the bot "click" on the "join" button automatically.
 func AutoAcceptIncomingGroupInviteRecipe() Recipe {
-	panic("not implemented.")
+	recipe := map[HandlerType][]Handler{}
+	recipe[IncomingGroupInvitationHandler] = []Handler{
+		func(context Context) {
+			context.ReplyString("I'll join asasp !")
+
+			payload, err := context.Interaction.UnmarshalPayload()
+			if err != nil {
+				return
+			}
+			invLink := payload.(*messengertypes.AppMessage_GroupInvitation).Link
+
+			req := messengertypes.ConversationJoin_Request{Link: invLink}
+			context.Client.ConversationJoin(context.Context, &req)
+		},
+	}
+	return recipe
 }
 
 // SendErrorToClientRecipe will send internal errors to the related context (a contact or a conversation).

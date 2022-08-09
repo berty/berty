@@ -5,9 +5,8 @@ import (
 	"fmt"
 	"strings"
 
-	"go.uber.org/zap"
-
 	"berty.tech/berty/v2/go/pkg/messengertypes"
+	"go.uber.org/zap"
 )
 
 type HandlerType uint
@@ -35,6 +34,7 @@ const (
 	// specialized events
 
 	IncomingContactRequestHandler
+	IncomingGroupInvitationHandler
 	AcceptedContactHandler
 	UserMessageHandler
 	NewConversationHandler
@@ -105,6 +105,8 @@ func (b *Bot) handleEvent(ctx context.Context, event *messengertypes.StreamEvent
 				}
 			}
 			b.callHandlers(context, UserMessageHandler)
+		case messengertypes.AppMessage_TypeGroupInvitation:
+			b.callHandlers(context, IncomingGroupInvitationHandler)
 		default:
 			return fmt.Errorf("unsupported interaction type: %q", context.Interaction.Type)
 		}
