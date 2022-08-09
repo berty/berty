@@ -33,7 +33,6 @@ type Bot struct {
 // New initializes a new Bot.
 // The order of the passed options may have an impact.
 func New(opts ...NewOption) (*Bot, error) {
-	fmt.Println("Hello from fork!")
 	b := Bot{
 		logger:   zap.NewNop(),
 		handlers: make(map[HandlerType][]Handler),

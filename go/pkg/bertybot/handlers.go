@@ -5,8 +5,9 @@ import (
 	"fmt"
 	"strings"
 
-	"berty.tech/berty/v2/go/pkg/messengertypes"
 	"go.uber.org/zap"
+
+	"berty.tech/berty/v2/go/pkg/messengertypes"
 )
 
 type HandlerType uint
