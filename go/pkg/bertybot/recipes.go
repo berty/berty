@@ -144,7 +144,11 @@ func AutoAcceptIncomingGroupInviteRecipe() Recipe {
 			invLink := payload.(*messengertypes.AppMessage_GroupInvitation).Link
 
 			req := messengertypes.ConversationJoin_Request{Link: invLink}
-			context.Client.ConversationJoin(context.Context, &req)
+			_, err = context.Client.ConversationJoin(context.Context, &req)
+			if err != nil {
+				context.Logger.Error("conversation join failed", zap.Error(err))
+			}
+			context.Logger.Info("auto-accepting incoming group invite", zap.String("link", invLink))
 		},
 	}
 	return recipe
