@@ -133,6 +133,17 @@ func (v *groupView) loop(ctx context.Context) {
 		return
 	}
 
+	// Open conversation with local only first
+	gpk := base64.RawURLEncoding.EncodeToString(v.g.PublicKey)
+	if _, err := v.v.messenger.ConversationOpen(ctx, &messengertypes.ConversationOpen_Request{
+		GroupPK: gpk,
+	}); err == nil {
+		v.messages.Append(&historyMessage{
+			messageType: messageTypeError,
+			payload:     []byte("conversation opnned " + gpk),
+		})
+	}
+
 	// get GroupDeviceStatus
 	{
 		req := &protocoltypes.GroupDeviceStatus_Request{GroupPK: v.g.PublicKey}
