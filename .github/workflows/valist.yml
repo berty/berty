@@ -15,12 +15,14 @@ jobs:
           tarBall: true
           zipBall: true
           fileName: "*"
+      - uses: tenhaus/get-release-or-tag@v2
+        id: tag
       - uses: valist-io/valist-github-action@v2.4.0
         with:
           private-key: ${{ secrets.VALIST_SIGNER }}
           account: berty
           project: berty
-          release: ${{ github.ref_name }}
+          release: ${{ steps.tag.outputs.tag }}
           path: '.'
 
           install-name: 'berty'
