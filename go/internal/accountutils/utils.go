@@ -294,6 +294,9 @@ func GetGormDBForPath(dbPath string, key []byte, salt []byte, logger *zap.Logger
 		sqliteConn = fmt.Sprintf("file:memdb%d?mode=memory&cache=shared", time.Now().UnixNano())
 	} else {
 		sqliteConn = dbPath
+		args := []string{
+			"_journal_mode=WAL",
+		}
 		if len(key) != 0 {
 			if len(key) != keyLength {
 				return nil, nil, errcode.TODO.Wrap(fmt.Errorf("bad key, expected %d bytes, got %d", keyLength, len(key)))
@@ -301,15 +304,14 @@ func GetGormDBForPath(dbPath string, key []byte, salt []byte, logger *zap.Logger
 			if len(salt) != saltLength {
 				return nil, nil, errcode.TODO.Wrap(fmt.Errorf("bad salt, expected %d bytes, got %d", saltLength, len(salt)))
 			}
-			args := []string{
-				"_journal_mode=WAL",
+			args = append(args,
 				fmt.Sprintf("_pragma_key=x'%s'", hex.EncodeToString(key)),
 				"_pragma_cipher_plaintext_header_size=32",
 				fmt.Sprintf("_pragma_cipher_salt=x'%s'", hex.EncodeToString(salt)),
 				"_pragma_cipher_page_size=4096",
-			}
-			sqliteConn += fmt.Sprintf("?%s", strings.Join(args, "&"))
+			)
 		}
+		sqliteConn += fmt.Sprintf("?%s", strings.Join(args, "&"))
 	}
 
 	cfg := &gorm.Config{
