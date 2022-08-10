@@ -5,7 +5,7 @@ const https = require("https");
 async function getSelfHostedRunnersStatus(token) {
 	const options = {
 		hostname: "api.github.com",
-		path: "/orgs/berty/actions/runners",
+		path: "/repos/berty/berty/actions/runners",
 		port: 443,
 		method: "GET",
 		timeout: 30000,
