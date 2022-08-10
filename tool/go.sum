@@ -1,7 +1,7 @@
 bazil.org/fuse v0.0.0-20200117225306-7b5117fecadc/go.mod h1:FbcW6z/2VytnFDhZfumh8Ss8zxHE6qpMP5sHTRe0EaM=
 bazil.org/fuse v0.0.0-20200524192727-fb710f7dfd05/go.mod h1:h0h5FBYpXThbvSfTqthw+0I4nmHnhTHkO5BoOHsBWqg=
 berty.tech/go-ipfs-log v1.8.0/go.mod h1:fhe//ai9/3IUyYlDlnsCuNIZXMERXZelYm66dxesLhs=
-berty.tech/go-ipfs-repo-encrypted v1.1.3/go.mod h1:kzmfcfUvtQWxBFbmjvmkkoOquwJfnFsEkG0xZy2G1YU=
+berty.tech/go-ipfs-repo-encrypted v1.1.4/go.mod h1:31prmt4278qc0BKBvkLQ3Vy/93u+NCasU2Ge0Oqyi9s=
 berty.tech/go-orbit-db v1.17.1/go.mod h1:PzfAQcLXmhZlTCu2UELOYy/eS7hicNvMQLi2aPXb6p8=
 berty.tech/ipfs-webui-packed v1.0.0-v2.11.4-1/go.mod h1:n+M4wWEjVxnA0itc1m9oOLAXrNyZr2tiOxLnA1tVnrQ=
 cloud.google.com/go v0.26.0/go.mod h1:aQUYkXzVsufM+DwF1aE+0xfcU+56JwCaLick0ClmMTw=
