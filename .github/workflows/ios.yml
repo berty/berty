@@ -89,9 +89,8 @@ jobs:
           fi
 
       - name: Setup asdf
-        uses: aeddi/asdf-actions/setup@681862213369d8d868be8a2a7d6040c4d63027db
-        with:
-          skip_install: ${{ matrix.selfhosted }}
+        if: ${{ !matrix.selfhosted }}
+        uses: asdf-vm/actions/setup@v1
 
       - name: Setup go
         run: |
