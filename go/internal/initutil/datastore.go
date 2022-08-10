@@ -109,7 +109,7 @@ func (m *Manager) getRootDatastore() (datastore.Batching, error) {
 		return nil, errcode.ErrKeystoreGet.Wrap(err)
 	}
 
-	storageSalt, err := m.GetAccountStorageSalt()
+	storageSalt, err := m.GetAccountRootDatastoreSalt()
 	if err != nil {
 		return nil, errcode.ErrKeystoreGet.Wrap(err)
 	}

@@ -486,7 +486,7 @@ func (s *service) getAccountMetaForName(ctx context.Context, accountID string) (
 	var storageSalt []byte
 	if s.nativeKeystore != nil {
 		var err error
-		if storageSalt, err = accountutils.GetOrCreateStorageSaltForAccount(s.nativeKeystore, accountID); err != nil {
+		if storageSalt, err = accountutils.GetOrCreateRootDatastoreSaltForAccount(s.nativeKeystore, accountID); err != nil {
 			return nil, err
 		}
 	}
@@ -540,7 +540,7 @@ func (s *service) putInAccountDatastore(ctx context.Context, accountID string, k
 	var storageSalt []byte
 	if s.nativeKeystore != nil {
 		var err error
-		if storageSalt, err = accountutils.GetOrCreateStorageSaltForAccount(s.nativeKeystore, accountID); err != nil {
+		if storageSalt, err = accountutils.GetOrCreateRootDatastoreSaltForAccount(s.nativeKeystore, accountID); err != nil {
 			return err
 		}
 	}
@@ -1000,7 +1000,7 @@ func (s *service) NetworkConfigForAccount(ctx context.Context, accountID string)
 	var storageSalt []byte
 	if s.nativeKeystore != nil {
 		var err error
-		if storageSalt, err = accountutils.GetOrCreateStorageSaltForAccount(s.nativeKeystore, accountID); err != nil {
+		if storageSalt, err = accountutils.GetOrCreateRootDatastoreSaltForAccount(s.nativeKeystore, accountID); err != nil {
 			s.logger.Warn("unable to read network configuration for account: failed to get account storage salt", zap.Error(err), logutil.PrivateString("account-id", accountID))
 			return NetworkConfigGetDefault(), false
 		}

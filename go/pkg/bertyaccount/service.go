@@ -177,7 +177,7 @@ func NewService(opts *Options) (_ Service, err error) {
 	}
 	storageSalt := ([]byte)(nil)
 	if s.nativeKeystore != nil {
-		storageSalt, err = accountutils.GetOrCreateMasterStorageSalt(s.nativeKeystore)
+		storageSalt, err = accountutils.GetOrCreateGlobalAppStorageSalt(s.nativeKeystore)
 		if err != nil {
 			return nil, errcode.TODO.Wrap(err)
 		}

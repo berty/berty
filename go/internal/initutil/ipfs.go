@@ -376,7 +376,7 @@ func (m *Manager) setupIPFSRepo(ctx context.Context) (*ipfs_mobile.RepoMobile, e
 		return nil, errcode.ErrKeystoreGet.Wrap(err)
 	}
 
-	storageSalt, err := m.GetAccountStorageSalt()
+	ipfsDatastoreSalt, err := m.GetAccountIPFSDatastoreSalt()
 	if err != nil {
 		return nil, errcode.ErrKeystoreGet.Wrap(err)
 	}
@@ -387,12 +387,12 @@ func (m *Manager) setupIPFSRepo(ctx context.Context) (*ipfs_mobile.RepoMobile, e
 	}
 	dbPath := filepath.Join(appDir, "ipfs.sqlite")
 
-	repo, err = ipfsutil.LoadRepoFromPath(dbPath, storageKey, storageSalt)
+	repo, err = ipfsutil.LoadRepoFromPath(dbPath, storageKey, ipfsDatastoreSalt)
 	if err != nil {
 		return nil, errcode.ErrIPFSSetupRepo.Wrap(err)
 	}
 
-	repo, err = m.resetRepoIdentityIfExpired(ctx, repo, dbPath, storageKey, storageSalt)
+	repo, err = m.resetRepoIdentityIfExpired(ctx, repo, dbPath, storageKey, ipfsDatastoreSalt)
 	if err != nil {
 		return nil, errcode.ErrIPFSSetupRepo.Wrap(err)
 	}
@@ -400,7 +400,7 @@ func (m *Manager) setupIPFSRepo(ctx context.Context) (*ipfs_mobile.RepoMobile, e
 	return ipfs_mobile.NewRepoMobile(dbPath, repo), nil
 }
 
-func (m *Manager) resetRepoIdentityIfExpired(ctx context.Context, repo ipfs_repo.Repo, dbPath string, storageKey []byte, storageSalt []byte) (ipfs_repo.Repo, error) {
+func (m *Manager) resetRepoIdentityIfExpired(ctx context.Context, repo ipfs_repo.Repo, dbPath string, storageKey []byte, ipfsDatastoreSalt []byte) (ipfs_repo.Repo, error) {
 	rootDS, err := m.getRootDatastore()
 	if err != nil {
 		return nil, errcode.ErrIPFSSetupRepo.Wrap(err)
@@ -428,7 +428,7 @@ func (m *Manager) resetRepoIdentityIfExpired(ctx context.Context, repo ipfs_repo
 	}
 
 	if lastUpdate.Before(time.Now().Add(-rendezvousRotationBase)) {
-		repo, err = ipfsutil.ResetExistingRepoIdentity(repo, dbPath, storageKey, storageSalt)
+		repo, err = ipfsutil.ResetExistingRepoIdentity(repo, dbPath, storageKey, ipfsDatastoreSalt)
 		if err != nil {
 			return nil, errcode.ErrInternal.Wrap(err)
 		}

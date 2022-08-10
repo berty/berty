@@ -315,11 +315,25 @@ func (m *Manager) GetAccountStorageKey() ([]byte, error) {
 	return accountutils.GetOrCreateStorageKeyForAccount(m.nativeKeystore, m.accountID)
 }
 
-func (m *Manager) GetAccountStorageSalt() ([]byte, error) {
+func (m *Manager) GetAccountMessengerDBSalt() ([]byte, error) {
 	if m.nativeKeystore == nil {
 		return nil, nil
 	}
-	return accountutils.GetOrCreateStorageSaltForAccount(m.nativeKeystore, m.accountID)
+	return accountutils.GetOrCreateMessengerDBSaltForAccount(m.nativeKeystore, m.accountID)
+}
+
+func (m *Manager) GetAccountIPFSDatastoreSalt() ([]byte, error) {
+	if m.nativeKeystore == nil {
+		return nil, nil
+	}
+	return accountutils.GetOrCreateIPFSDatastoreSaltForAccount(m.nativeKeystore, m.accountID)
+}
+
+func (m *Manager) GetAccountRootDatastoreSalt() ([]byte, error) {
+	if m.nativeKeystore == nil {
+		return nil, nil
+	}
+	return accountutils.GetOrCreateRootDatastoreSaltForAccount(m.nativeKeystore, m.accountID)
 }
 
 func (m *Manager) SetLifecycleManager(manager *lifecycle.Manager) {
@@ -457,7 +471,7 @@ func (m *Manager) getMessengerDB() (*gorm.DB, error) {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	salt, err := m.GetAccountStorageSalt()
+	salt, err := m.GetAccountMessengerDBSalt()
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}

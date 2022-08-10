@@ -10,14 +10,12 @@ import (
 	"path"
 	"path/filepath"
 	"strings"
-	"sync"
 	"time"
 
 	sqlite "github.com/flyingtime/gorm-sqlcipher"
 	"github.com/gogo/protobuf/proto"
 	"github.com/ipfs/go-datastore"
 	sync_ds "github.com/ipfs/go-datastore/sync"
-	"go.uber.org/multierr"
 	"go.uber.org/zap"
 	"golang.org/x/crypto/nacl/box"
 	"gorm.io/gorm"
@@ -39,7 +37,6 @@ const (
 	ReplicationDatabaseFilename = "replication.sqlite"
 	StorageKeyName              = "storage"
 	StorageKeySize              = 32
-	StorageSaltName             = "storage_salt"
 	StorageSaltSize             = 16
 )
 
@@ -122,7 +119,7 @@ func ListAccounts(ctx context.Context, rootDir string, ks NativeKeystore, logger
 		var storageSalt []byte
 		if ks != nil {
 			var err error
-			if storageSalt, err = GetOrCreateStorageSaltForAccount(ks, subitem.Name()); err != nil {
+			if storageSalt, err = GetOrCreateRootDatastoreSaltForAccount(ks, subitem.Name()); err != nil {
 				accounts = append(accounts, &accounttypes.AccountMetadata{Error: err.Error(), AccountID: subitem.Name()})
 				continue
 			}
@@ -137,47 +134,6 @@ func ListAccounts(ctx context.Context, rootDir string, ks NativeKeystore, logger
 	}
 
 	return accounts, nil
-}
-
-var storageKeyMutex = sync.Mutex{}
-
-func getOrCreateKeystoreKey(ks NativeKeystore, keyName string, keySize int) ([]byte, error) {
-	storageKeyMutex.Lock()
-	defer storageKeyMutex.Unlock()
-
-	key, getErr := ks.Get(keyName)
-	if getErr != nil {
-		keyData := make([]byte, keySize)
-		if _, err := crand.Read(keyData); err != nil {
-			return nil, errcode.ErrCryptoKeyGeneration.Wrap(err)
-		}
-
-		if err := ks.Put(keyName, keyData); err != nil {
-			return nil, errcode.ErrKeystorePut.Wrap(multierr.Append(getErr, err))
-		}
-
-		var err error
-		if key, err = ks.Get(keyName); err != nil {
-			return nil, errcode.ErrKeystoreGet.Wrap(multierr.Append(getErr, err))
-		}
-	}
-	return key, nil
-}
-
-func GetOrCreateMasterStorageKey(ks NativeKeystore) ([]byte, error) {
-	return getOrCreateKeystoreKey(ks, StorageKeyName, StorageKeySize)
-}
-
-func GetOrCreateStorageKeyForAccount(ks NativeKeystore, accountID string) ([]byte, error) {
-	return getOrCreateKeystoreKey(ks, fmt.Sprintf("%s/%s", StorageKeyName, accountID), StorageKeySize)
-}
-
-func GetOrCreateMasterStorageSalt(ks NativeKeystore) ([]byte, error) {
-	return getOrCreateKeystoreKey(ks, StorageSaltName, StorageSaltSize)
-}
-
-func GetOrCreateStorageSaltForAccount(ks NativeKeystore, accountID string) ([]byte, error) {
-	return getOrCreateKeystoreKey(ks, fmt.Sprintf("%s/%s/salt", StorageKeyName, accountID), StorageSaltSize)
 }
 
 func GetAccountMetaForName(ctx context.Context, rootDir string, accountID string, storageKey []byte, storageSalt []byte, logger *zap.Logger) (*accounttypes.AccountMetadata, error) {
@@ -265,7 +221,7 @@ func GetGlobalAppStorage(rootDir string, ks NativeKeystore) (datastore.Batching,
 
 	storageSalt := ([]byte)(nil)
 	if ks != nil {
-		storageSalt, err = GetOrCreateMasterStorageSalt(ks)
+		storageSalt, err = GetOrCreateGlobalAppStorageSalt(ks)
 		if err != nil {
 			return nil, nil, errcode.TODO.Wrap(err)
 		}

@@ -29,7 +29,7 @@ func apply0To1(opts Options) error {
 	}
 
 	// get secrets
-	var storageKey, storageSalt []byte
+	var storageKey, appStorageSalt, ipfsSalt, messengerDBSalt, rootDatastoreSalt []byte
 	if opts.NativeKeystore != nil {
 		opts.Logger.Info("getting account secrets")
 
@@ -38,7 +38,19 @@ func apply0To1(opts Options) error {
 		if err != nil {
 			return errcode.TODO.Wrap(err)
 		}
-		storageSalt, err = accountutils.GetOrCreateStorageSaltForAccount(opts.NativeKeystore, opts.AccountID)
+		appStorageSalt, err = accountutils.GetOrCreateAppStorageSaltForAccount(opts.NativeKeystore, opts.AccountID)
+		if err != nil {
+			return errcode.TODO.Wrap(err)
+		}
+		ipfsSalt, err = accountutils.GetOrCreateIPFSDatastoreSaltForAccount(opts.NativeKeystore, opts.AccountID)
+		if err != nil {
+			return errcode.TODO.Wrap(err)
+		}
+		messengerDBSalt, err = accountutils.GetOrCreateMessengerDBSaltForAccount(opts.NativeKeystore, opts.AccountID)
+		if err != nil {
+			return errcode.TODO.Wrap(err)
+		}
+		rootDatastoreSalt, err = accountutils.GetOrCreateRootDatastoreSaltForAccount(opts.NativeKeystore, opts.AccountID)
 		if err != nil {
 			return errcode.TODO.Wrap(err)
 		}
@@ -48,7 +60,7 @@ func apply0To1(opts Options) error {
 
 	// create account app storage db
 	opts.Logger.Info("creating account app storage")
-	appStorage, err := accountutils.GetAccountAppStorage(opts.SharedDir, opts.AccountID, storageKey, storageSalt)
+	appStorage, err := accountutils.GetAccountAppStorage(opts.SharedDir, opts.AccountID, storageKey, appStorageSalt)
 	if err != nil {
 		return errcode.TODO.Wrap(err)
 	}
@@ -59,7 +71,7 @@ func apply0To1(opts Options) error {
 	// create account ipfs repo
 	opts.Logger.Info("creating account ipfs repo")
 	dbPath := filepath.Join(opts.accountSharedDir, "ipfs.sqlite")
-	ipfsRepo, err := ipfsutil.LoadRepoFromPath(dbPath, storageKey, storageSalt)
+	ipfsRepo, err := ipfsutil.LoadRepoFromPath(dbPath, storageKey, ipfsSalt)
 	if err != nil {
 		return errcode.ErrIPFSSetupRepo.Wrap(err)
 	}
@@ -69,7 +81,7 @@ func apply0To1(opts Options) error {
 
 	// create messenger db
 	opts.Logger.Info("creating account messenger db")
-	_, closeMessengerDB, err := accountutils.GetMessengerDBForPath(opts.accountSharedDir, storageKey, storageSalt, opts.Logger)
+	_, closeMessengerDB, err := accountutils.GetMessengerDBForPath(opts.accountSharedDir, storageKey, messengerDBSalt, opts.Logger)
 	if err != nil {
 		return errcode.TODO.Wrap(err)
 	}
@@ -77,7 +89,7 @@ func apply0To1(opts Options) error {
 
 	// create root datastore
 	opts.Logger.Info("creating account root datastore")
-	rootDS, err := accountutils.GetRootDatastoreForPath(opts.accountSharedDir, storageKey, storageSalt, opts.Logger)
+	rootDS, err := accountutils.GetRootDatastoreForPath(opts.accountSharedDir, storageKey, rootDatastoreSalt, opts.Logger)
 	if err != nil {
 		return errcode.TODO.Wrap(err)
 	}
