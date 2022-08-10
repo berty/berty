@@ -959,6 +959,11 @@ func newMessageCommand(ctx context.Context, v *groupView, cmd string) error {
 		return nil
 	}
 
+	// check for '/' messages
+	if strings.HasPrefix(cmd, "//") {
+		cmd = cmd[1:]
+	}
+
 	payload, err := proto.Marshal(&messengertypes.AppMessage_UserMessage{
 		Body: cmd,
 	})

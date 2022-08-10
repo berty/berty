@@ -134,21 +134,24 @@ func DelayResponseRecipe(duration time.Duration) Recipe {
 func AutoAcceptIncomingGroupInviteRecipe() Recipe {
 	recipe := map[HandlerType][]Handler{}
 	recipe[IncomingGroupInvitationHandler] = []Handler{
-		func(context Context) {
-			context.ReplyString("I'll join asasp !")
+		func(ctx Context) {
+			err := ctx.ReplyString("I'll join asap !")
+			if err != nil {
+				ctx.Logger.Error("reply failed", zap.Error(err))
+			}
 
-			payload, err := context.Interaction.UnmarshalPayload()
+			payload, err := ctx.Interaction.UnmarshalPayload()
 			if err != nil {
 				return
 			}
 			invLink := payload.(*messengertypes.AppMessage_GroupInvitation).Link
 
 			req := messengertypes.ConversationJoin_Request{Link: invLink}
-			_, err = context.Client.ConversationJoin(context.Context, &req)
+			_, err = ctx.Client.ConversationJoin(ctx.Context, &req)
 			if err != nil {
-				context.Logger.Error("conversation join failed", zap.Error(err))
+				ctx.Logger.Error("conversation join failed", zap.Error(err))
 			}
-			context.Logger.Info("auto-accepting incoming group invite", zap.String("link", invLink))
+			ctx.Logger.Info("auto-accepting incoming group invite", zap.String("link: ", invLink))
 		},
 	}
 	return recipe

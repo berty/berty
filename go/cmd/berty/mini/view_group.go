@@ -48,7 +48,7 @@ func (v *groupView) View() tview.Primitive {
 func (v *groupView) commandParser(ctx context.Context, input string) error {
 	input = strings.TrimSpace(input)
 
-	if len(input) > 0 && input[0] == '/' {
+	if len(input) > 1 && input[0] == '/' && input[1] != '/' {
 		for _, attrs := range commandList() {
 			if prefix := fmt.Sprintf("/%s", attrs.title); strings.HasPrefix(strings.ToLower(input), prefix) {
 				if !attrs.hideInLog {
