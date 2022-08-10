@@ -6,16 +6,12 @@ const amap = async <T extends any, C extends (value: T) => any>(arr: T[], cb: C)
 	Promise.all(arr.map(cb))
 
 export const prepareMediaAndSend: (props: PrepareMediaAndSendProps) => void = async ({
-	sending,
 	setSending,
 	messengerClient,
 	onClose,
 	res,
 }) => {
 	try {
-		if (sending) {
-			return
-		}
 		setSending(true)
 
 		const medias = await amap(res, async doc => {

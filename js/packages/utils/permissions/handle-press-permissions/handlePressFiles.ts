@@ -7,7 +7,6 @@ import { SendingFilesProps } from './interfaces'
 import { prepareMediaAndSend } from './prepareMediaAndSend'
 
 export const handlePressFiles: (props: SendingFilesProps) => void = async ({
-	sending,
 	setSending,
 	messengerClient,
 	onClose,
@@ -21,7 +20,6 @@ export const handlePressFiles: (props: SendingFilesProps) => void = async ({
 			uri = await getPath(uri)
 		}
 		await prepareMediaAndSend({
-			sending,
 			setSending,
 			messengerClient,
 			onClose,

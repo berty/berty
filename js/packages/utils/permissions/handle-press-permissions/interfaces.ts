@@ -5,7 +5,6 @@ import { WelshMessengerServiceClient } from '@berty/grpc-bridge/welsh-clients.ge
 import { ScreensParams } from '@berty/navigation/types'
 
 export interface SendingFilesProps {
-	sending: boolean
 	setSending: (sending: boolean) => void
 	messengerClient: WelshMessengerServiceClient | null
 	onClose: (value: beapi.messenger.IMedia[] | undefined) => Promise<void>

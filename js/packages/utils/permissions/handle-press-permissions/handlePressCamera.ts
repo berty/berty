@@ -7,7 +7,6 @@ import { HandlePressPermissionProps } from './interfaces'
 import { prepareMediaAndSend } from './prepareMediaAndSend'
 
 export const handlePressCamera: (props: HandlePressPermissionProps) => void = async ({
-	sending,
 	setSending,
 	messengerClient,
 	onClose,
@@ -30,7 +29,6 @@ export const handlePressCamera: (props: HandlePressPermissionProps) => void = as
 
 				if (image) {
 					await prepareMediaAndSend({
-						sending,
 						setSending,
 						messengerClient,
 						onClose,

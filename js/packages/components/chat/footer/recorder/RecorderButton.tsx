@@ -128,15 +128,15 @@ export const RecorderButton: React.FC<RecorderButtonProps> = ({
 	}, [addMeteredValue, recorder, setRecorderFilePath])
 
 	const handlePressRecording = useCallback(async () => {
-		const status = (await getPermissions()).audio
+		const initialStatus = (await getPermissions()).audio
 
 		await checkPermission({
 			permissionType: PermissionType.audio,
 			navigate,
 			accept: () => {
-				// We check the status before ask it, to don't record after asking permission
+				// We check the initialStatus before ask it, to don't record after asking permission
 				// (In other apps, the recorder don't start after accept permission)
-				if (status === RESULTS.GRANTED) {
+				if (initialStatus === RESULTS.GRANTED) {
 					clearHelpMessageValue()
 					setRecordingStart(Date.now())
 					setCurrentTime(Date.now())

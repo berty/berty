@@ -1,14 +1,14 @@
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { View, StyleSheet } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 
 import beapi from '@berty/api'
 import { useMessengerClient, useThemeColor } from '@berty/hooks'
 import { useNavigation } from '@berty/navigation'
 import {
 	handlePressCamera,
-	handlePressGallery,
 	handlePressFiles,
+	handlePressGallery,
 	prepareMediaAndSend,
 } from '@berty/utils/permissions/handle-press-permissions'
 
@@ -29,6 +29,39 @@ export const AddFileMenu: React.FC<{
 	const colors = useThemeColor()
 	const { navigate } = useNavigation()
 
+	const handlePressButton = React.useCallback(
+		async (tabType: TabItems) => {
+			setActiveTab(tabType)
+			if (sending) {
+				return
+			}
+			switch (tabType) {
+				case TabItems.Camera:
+					await handlePressCamera({
+						setSending,
+						messengerClient: client,
+						onClose,
+						navigate,
+					})
+					break
+				case TabItems.Files:
+					await handlePressFiles({ setSending, messengerClient: client, onClose })
+					break
+				case TabItems.Gallery:
+					await handlePressGallery({
+						setSending,
+						messengerClient: client,
+						onClose,
+						navigate,
+					})
+					break
+				default:
+					break
+			}
+		},
+		[client, navigate, onClose, sending, setSending],
+	)
+
 	const LIST_CONFIG = [
 		{
 			iconProps: {
@@ -40,16 +73,7 @@ export const AddFileMenu: React.FC<{
 				pack: 'custom',
 			},
 			title: t('chat.files.gallery'),
-			onPress: async () => {
-				setActiveTab(TabItems.Gallery)
-				await handlePressGallery({
-					sending,
-					setSending,
-					messengerClient: client,
-					onClose,
-					navigate,
-				})
-			},
+			onPress: async () => await handlePressButton(TabItems.Gallery),
 		},
 		{
 			iconProps: {
@@ -61,16 +85,7 @@ export const AddFileMenu: React.FC<{
 				pack: 'custom',
 			},
 			title: t('chat.files.camera'),
-			onPress: async () => {
-				setActiveTab(TabItems.Camera)
-				await handlePressCamera({
-					sending,
-					setSending,
-					messengerClient: client,
-					onClose,
-					navigate,
-				})
-			},
+			onPress: async () => await handlePressButton(TabItems.Camera),
 		},
 		{
 			iconProps: {
@@ -82,10 +97,7 @@ export const AddFileMenu: React.FC<{
 				pack: 'custom',
 			},
 			title: t('chat.files.files'),
-			onPress: async () => {
-				setActiveTab(TabItems.Files)
-				await handlePressFiles({ sending, setSending, messengerClient: client, onClose })
-			},
+			onPress: async () => await handlePressButton(TabItems.Files),
 		},
 	]
 
@@ -102,8 +114,10 @@ export const AddFileMenu: React.FC<{
 			{activeTab === TabItems.Gallery && (
 				<GallerySection
 					prepareMediaAndSend={async (media: beapi.messenger.IMedia[]) => {
+						if (sending) {
+							return
+						}
 						await prepareMediaAndSend({
-							sending,
 							setSending,
 							messengerClient: client,
 							onClose,

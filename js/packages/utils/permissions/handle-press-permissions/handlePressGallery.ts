@@ -9,7 +9,6 @@ import { HandlePressPermissionProps } from './interfaces'
 import { prepareMediaAndSend } from './prepareMediaAndSend'
 
 export const handlePressGallery: (props: HandlePressPermissionProps) => void = async ({
-	sending,
 	setSending,
 	messengerClient,
 	onClose,
@@ -28,7 +27,6 @@ export const handlePressGallery: (props: HandlePressPermissionProps) => void = a
 					uri = await getPath(uri)
 				}
 				await prepareMediaAndSend({
-					sending,
 					setSending,
 					messengerClient,
 					onClose,
