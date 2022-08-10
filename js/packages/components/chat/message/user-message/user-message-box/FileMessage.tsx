@@ -54,6 +54,7 @@ export const FileMessage: React.FC<{
 				fill={isHighlight ? colors['background-header'] : colors['secondary-text']}
 			/>
 			<UnifiedText
+				numberOfLines={1}
 				style={[
 					{
 						fontStyle: 'italic',
@@ -65,7 +66,7 @@ export const FileMessage: React.FC<{
 					},
 				]}
 			>
-				{medias[0].filename?.substring(0, 20).concat('...')}
+				{medias[0].filename}
 			</UnifiedText>
 			{(isDownloaded || isLoading) && (
 				<UnifiedText style={[margin.left.tiny]}>
