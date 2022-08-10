@@ -1,7 +1,6 @@
 package main
 
 import (
-	"berty.tech/berty/v2/go/internal/rendezvous"
 	"context"
 	crand "crypto/rand"
 	"encoding/base64"
@@ -36,6 +35,7 @@ import (
 
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/internal/logutil"
+	"berty.tech/berty/v2/go/internal/rendezvous"
 	"berty.tech/berty/v2/go/pkg/errcode"
 )
 
@@ -194,7 +194,7 @@ func main() {
 
 			defer db.Close()
 
-			var syncDrivers []libp2p_rp.RendezvousSync = nil
+			var syncDrivers []libp2p_rp.RendezvousSync
 
 			if emitterServer != "" && emitterAdminKey != "" {
 				emitter, err := rendezvous.NewEmitterServer(emitterServer, emitterAdminKey, &rendezvous.EmitterOptions{Logger: logger})
@@ -211,7 +211,6 @@ func main() {
 
 			// start service
 			_ = libp2p_rp.NewRendezvousService(host, db, syncDrivers...)
-			//_ = libp2p_rp.NewRendezvousService(host, db)
 
 			if serveMetricsListeners != "" {
 				ml, err := net.Listen("tcp", serveMetricsListeners)

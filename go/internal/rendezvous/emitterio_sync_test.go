@@ -28,9 +28,11 @@ func MakeRendezvousServiceTest(ctx context.Context, host host.Host, path string,
 func getRendezvousClients(ctx context.Context, t *testing.T, hosts []host.Host) []rendezvous.RendezvousClient {
 	t.Helper()
 
+	ctx, _ = context.WithTimeout(context.Background(), time.Second*10)
+
 	clients := make([]rendezvous.RendezvousClient, len(hosts)-1)
 	for i, host := range hosts[1:] {
-		syncClient := berty_rendezvous.NewEmitterClient()
+		syncClient := berty_rendezvous.NewEmitterClient(ctx, nil)
 		clients[i] = rendezvous.NewRendezvousClient(host, hosts[0].ID(), syncClient)
 	}
 	return clients
@@ -53,14 +55,14 @@ func TestEmitterIOFlow(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	inmemPubSubSync, err := berty_rendezvous.NewEmitterServer(serverAddr, adminKey, &berty_rendezvous.EmitterOptions{
+	emitterPubSubSync, err := berty_rendezvous.NewEmitterServer(serverAddr, adminKey, &berty_rendezvous.EmitterOptions{
 		Logger: logger,
 	})
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	svc, err := MakeRendezvousServiceTest(ctx, hosts[0], ":memory:", inmemPubSubSync)
+	svc, err := MakeRendezvousServiceTest(ctx, hosts[0], ":memory:", emitterPubSubSync)
 	if err != nil {
 		t.Fatal(err)
 	}

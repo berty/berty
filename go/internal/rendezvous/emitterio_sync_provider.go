@@ -6,14 +6,15 @@ import (
 	"time"
 
 	emitter "github.com/emitter-io/go/v2"
+	// nolint:staticcheck // cannot use the new protobuf API while keeping gogoproto
 	"github.com/golang/protobuf/proto"
 	"github.com/libp2p/go-libp2p-core/peer"
-	"github.com/libp2p/go-libp2p-rendezvous"
+	rendezvous "github.com/libp2p/go-libp2p-rendezvous"
 	pb "github.com/libp2p/go-libp2p-rendezvous/pb"
 	"go.uber.org/zap"
 )
 
-const ServiceType = "emitter-io"
+const EmitterServiceType = "emitter-io"
 
 type EmitterPubSub struct {
 	client     *emitter.Client
@@ -109,12 +110,15 @@ func (p *EmitterPubSub) Subscribe(ns string) (string, error) {
 		ReadKey:     readKey,
 		ChannelName: channel,
 	})
+	if err != nil {
+		return "", err
+	}
 
 	return string(jsonData), nil
 }
 
 func (p *EmitterPubSub) GetServiceType() string {
-	return ServiceType
+	return EmitterServiceType
 }
 
 func (p *EmitterPubSub) writeKeyForChannel(channelName string) (string, error) {
