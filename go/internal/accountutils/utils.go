@@ -301,7 +301,6 @@ func GetGormDBForPath(dbPath string, key []byte, salt []byte, logger *zap.Logger
 			if len(salt) != saltLength {
 				return nil, nil, errcode.TODO.Wrap(fmt.Errorf("bad salt, expected %d bytes, got %d", saltLength, len(salt)))
 			}
-			fmt.Println("hexSalt", hex.EncodeToString(salt))
 			args := []string{
 				"_journal_mode=WAL",
 				fmt.Sprintf("_pragma_key=x'%s'", hex.EncodeToString(key)),
@@ -310,7 +309,6 @@ func GetGormDBForPath(dbPath string, key []byte, salt []byte, logger *zap.Logger
 				"_pragma_cipher_page_size=4096",
 			}
 			sqliteConn += fmt.Sprintf("?%s", strings.Join(args, "&"))
-			fmt.Println("conn", sqliteConn)
 		}
 	}
 
