@@ -29,7 +29,6 @@ type migration struct {
 
 var allMigrations = []migration{
 	migration0To1,
-	migration1To2,
 }
 
 func MigrateToLatest(opts Options) error {

@@ -19,15 +19,6 @@ var migration0To1 = migration{
 }
 
 func apply0To1(opts Options) error {
-	// create root dirs
-	opts.Logger.Info("creating account root directories", zap.String("account-app-dir", opts.accountAppDir), zap.String("account-shared-dir", opts.accountSharedDir))
-	if err := os.MkdirAll(opts.accountAppDir, 0o700); err != nil {
-		return errcode.TODO.Wrap(err)
-	}
-	if err := os.MkdirAll(opts.accountSharedDir, 0o700); err != nil {
-		return errcode.TODO.Wrap(err)
-	}
-
 	// get secrets
 	var storageKey, appStorageSalt, ipfsSalt, messengerDBSalt, rootDatastoreSalt []byte
 	if opts.NativeKeystore != nil {
@@ -56,11 +47,18 @@ func apply0To1(opts Options) error {
 		}
 	}
 
-	// FIXME: using same salt for everything is bad, no?
+	// create root dirs
+	opts.Logger.Info("creating account root directories", zap.String("account-app-dir", opts.accountAppDir), zap.String("account-shared-dir", opts.accountSharedDir))
+	if err := os.MkdirAll(opts.accountAppDir, 0o700); err != nil {
+		return errcode.TODO.Wrap(err)
+	}
+	if err := os.MkdirAll(opts.accountSharedDir, 0o700); err != nil {
+		return errcode.TODO.Wrap(err)
+	}
 
 	// create account app storage db
 	opts.Logger.Info("creating account app storage")
-	appStorage, err := accountutils.GetAccountAppStorage(opts.SharedDir, opts.AccountID, storageKey, appStorageSalt)
+	appStorage, err := accountutils.GetAccountAppStorage(opts.AppDir, opts.AccountID, storageKey, appStorageSalt)
 	if err != nil {
 		return errcode.TODO.Wrap(err)
 	}
@@ -70,7 +68,7 @@ func apply0To1(opts Options) error {
 
 	// create account ipfs repo
 	opts.Logger.Info("creating account ipfs repo")
-	dbPath := filepath.Join(opts.accountSharedDir, "ipfs.sqlite")
+	dbPath := filepath.Join(opts.accountAppDir, "ipfs.sqlite")
 	ipfsRepo, err := ipfsutil.LoadRepoFromPath(dbPath, storageKey, ipfsSalt)
 	if err != nil {
 		return errcode.ErrIPFSSetupRepo.Wrap(err)
@@ -98,7 +96,7 @@ func apply0To1(opts Options) error {
 	}
 
 	// create logs directory
-	logsDir := filepath.Join(opts.accountSharedDir, "logs")
+	logsDir := filepath.Join(opts.accountAppDir, "logs")
 	opts.Logger.Info("creating account logs directory", zap.String("path", logsDir))
 	if err := os.MkdirAll(logsDir, 0o700); err != nil {
 		return errcode.TODO.Wrap(err)

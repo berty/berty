@@ -9,13 +9,14 @@ import (
 )
 
 type Options struct {
+	AppDir         string
+	SharedDir      string
+	Logger         *zap.Logger
+	NativeKeystore accountutils.NativeKeystore
+	AccountID      string
+
 	accountAppDir    string
 	accountSharedDir string
-	AppDir           string
-	SharedDir        string
-	AccountID        string
-	NativeKeystore   accountutils.NativeKeystore
-	Logger           *zap.Logger
 }
 
 func (o *Options) applyDefaults() {
@@ -38,7 +39,6 @@ type migration struct {
 
 var allMigrations = []migration{
 	migration0To1,
-	migration1To2,
 }
 
 func MigrateToLatest(opts Options) error {

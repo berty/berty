@@ -1364,9 +1364,8 @@ func (s *service) GetOpenedAccount(ctx context.Context, request *accounttypes.Ge
 }
 
 func (s *service) accountExists(accountID string) (bool, error) {
-	// we check for the shared dir since the app dir does not exists in data versions below "2"
-	sharedAccountStorePath := accountutils.GetAccountDir(s.sharedRootDir, accountID)
-	_, err := os.Stat(sharedAccountStorePath)
+	accountDir := accountutils.GetAccountDir(s.appRootDir, accountID)
+	_, err := os.Stat(accountDir)
 	if err == nil {
 		return true, nil
 	}

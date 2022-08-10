@@ -28,7 +28,7 @@ func apply0To1(opts Options) error {
 
 	// create global app storage db
 	opts.Logger.Info("creating global app storage")
-	_, closeAppStorage, err := accountutils.GetGlobalAppStorage(opts.SharedDir, opts.NativeKeystore)
+	_, closeAppStorage, err := accountutils.GetGlobalAppStorage(opts.AppDir, opts.NativeKeystore)
 	if err != nil {
 		return errcode.TODO.Wrap(err)
 	}
