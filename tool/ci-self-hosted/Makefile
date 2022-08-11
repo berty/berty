@@ -1,8 +1,8 @@
 MAKEFILE_DIR = $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 ENV_FILE     = $(MAKEFILE_DIR)/.env
 PLAYBOOKS    = m1_setup_runner \
-               mac_start_runner_daemon \
-               mac_stop_runner_daemon \
+               mac_start_runner_service \
+               mac_stop_runner_service \
                mac_install_xcode_version \
                mac_switch_to_xcode_version
 VERBOSE      ?= 0

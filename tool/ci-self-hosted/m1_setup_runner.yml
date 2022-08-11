@@ -7,4 +7,4 @@
 
   roles:
     - actions_setup
-    - actions_daemon
+    - actions_service

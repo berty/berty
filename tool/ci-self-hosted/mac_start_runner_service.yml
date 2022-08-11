@@ -1,5 +1,5 @@
 ---
-- name: Stop public Mac CI runners
+- name: Start public Mac CI runners
   hosts: public_m1_mac_runners
 
   pre_tasks:
@@ -7,5 +7,5 @@
 
   tasks:
     - include_role:
-        name: actions_daemon
-        tasks_from: stop
+        name: actions_service
+        tasks_from: start

@@ -1,3 +1,0 @@
-launchd_daemon:
-  name: com.github_actions.runner
-  path: "{{ ansible_facts.user_dir }}/Library/LaunchAgents/com.github_actions.runner.plist"
