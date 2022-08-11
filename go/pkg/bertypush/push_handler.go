@@ -16,6 +16,7 @@ import (
 	"berty.tech/berty/v2/go/internal/accountutils"
 	"berty.tech/berty/v2/go/internal/cryptoutil"
 	"berty.tech/berty/v2/go/internal/datastoreutil"
+	cryptoutil2 "berty.tech/berty/v2/go/pkg/cryptoutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
 	"berty.tech/berty/v2/go/pkg/pushtypes"
@@ -23,8 +24,8 @@ import (
 
 type pushHandler struct {
 	logger          *zap.Logger
-	pushSK          *[cryptoutil.KeySize]byte
-	pushPK          *[cryptoutil.KeySize]byte
+	pushSK          *[cryptoutil2.KeySize]byte
+	pushPK          *[cryptoutil2.KeySize]byte
 	groupDatastore  cryptoutil.GroupDatastoreReadOnly
 	messageKeystore *cryptoutil.MessageKeystore
 	accountCache    ds.Datastore
@@ -44,18 +45,18 @@ func (s *pushHandler) UpdatePushServer(ctx context.Context, server *protocoltype
 	return nil
 }
 
-func (s *pushHandler) PushPK() *[cryptoutil.KeySize]byte {
+func (s *pushHandler) PushPK() *[cryptoutil2.KeySize]byte {
 	return s.pushPK
 }
 
-func (s *pushHandler) SetPushSK(key *[cryptoutil.KeySize]byte) {
+func (s *pushHandler) SetPushSK(key *[cryptoutil2.KeySize]byte) {
 	s.pushSK = key
 	curve25519.ScalarBaseMult(s.pushPK, s.pushSK)
 }
 
 type PushHandler interface {
 	PushReceive(ctx context.Context, payload []byte) (*protocoltypes.PushReceive_Reply, error)
-	PushPK() *[cryptoutil.KeySize]byte
+	PushPK() *[cryptoutil2.KeySize]byte
 	UpdatePushServer(ctx context.Context, server *protocoltypes.PushServer) error
 }
 
@@ -63,7 +64,7 @@ var _ PushHandler = (*pushHandler)(nil)
 
 type PushHandlerOpts struct {
 	Logger          *zap.Logger
-	PushKey         *[cryptoutil.KeySize]byte
+	PushKey         *[cryptoutil2.KeySize]byte
 	DatastoreDir    string
 	RootDatastore   ds.Datastore
 	GroupDatastore  *cryptoutil.GroupDatastore
@@ -115,7 +116,7 @@ func NewPushHandler(opts *PushHandlerOpts) (PushHandler, error) {
 	h := &pushHandler{
 		logger:          opts.Logger,
 		pushSK:          opts.PushKey,
-		pushPK:          &[cryptoutil.KeySize]byte{},
+		pushPK:          &[cryptoutil2.KeySize]byte{},
 		groupDatastore:  opts.GroupDatastore,
 		messageKeystore: opts.MessageKeystore,
 		accountCache:    opts.AccountCache,
@@ -178,7 +179,7 @@ func (s *pushHandler) PushReceive(ctx context.Context, payload []byte) (*protoco
 }
 
 func DecryptOutOfStoreMessageEnv(ctx context.Context, gd cryptoutil.GroupDatastoreReadOnly, env *pushtypes.OutOfStoreMessageEnvelope, groupPK crypto.PubKey) (*protocoltypes.OutOfStoreMessage, error) {
-	nonce, err := cryptoutil.NonceSliceToArray(env.Nonce)
+	nonce, err := cryptoutil2.NonceSliceToArray(env.Nonce)
 	if err != nil {
 		return nil, errcode.ErrInvalidInput.Wrap(err)
 	}
@@ -203,7 +204,7 @@ func DecryptOutOfStoreMessageEnv(ctx context.Context, gd cryptoutil.GroupDatasto
 	return outOfStoreMessage, nil
 }
 
-func (s *pushHandler) getServerPushPubKey(ctx context.Context) (*[cryptoutil.KeySize]byte, error) {
+func (s *pushHandler) getServerPushPubKey(ctx context.Context) (*[cryptoutil2.KeySize]byte, error) {
 	serverBytes, err := s.accountCache.Get(ctx, ds.NewKey(datastoreutil.AccountCacheDatastorePushServerPK))
 	if err != nil {
 		return nil, errcode.ErrInternal.Wrap(fmt.Errorf("missing push server data: %w", err))
@@ -218,11 +219,11 @@ func (s *pushHandler) getServerPushPubKey(ctx context.Context) (*[cryptoutil.Key
 		return nil, errcode.ErrDeserialization.Wrap(fmt.Errorf("unable to deserialize push server data: %w", err))
 	}
 
-	if l := len(server.ServerKey); l != cryptoutil.KeySize {
-		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("invalid push pk size, expected %d bytes, got %d", cryptoutil.KeySize, l))
+	if l := len(server.ServerKey); l != cryptoutil2.KeySize {
+		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("invalid push pk size, expected %d bytes, got %d", cryptoutil2.KeySize, l))
 	}
 
-	out := [cryptoutil.KeySize]byte{}
+	out := [cryptoutil2.KeySize]byte{}
 	copy(out[:], server.ServerKey)
 
 	return &out, nil
@@ -275,7 +276,7 @@ func DecryptPushDataFromServer(data []byte, serverPK, ownSK *[32]byte) ([]byte, 
 		return nil, errcode.ErrPushInvalidPayload.Wrap(err)
 	}
 
-	nonce, err := cryptoutil.NonceSliceToArray(pushEnv.Nonce)
+	nonce, err := cryptoutil2.NonceSliceToArray(pushEnv.Nonce)
 	if err != nil {
 		return nil, errcode.ErrPushInvalidPayload.Wrap(err)
 	}

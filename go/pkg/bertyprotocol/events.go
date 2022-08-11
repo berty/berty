@@ -8,6 +8,7 @@ import (
 	"golang.org/x/crypto/nacl/secretbox"
 
 	"berty.tech/berty/v2/go/internal/cryptoutil"
+	cryptoutil2 "berty.tech/berty/v2/go/pkg/cryptoutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
 	ipfslog "berty.tech/go-ipfs-log"
@@ -116,7 +117,7 @@ func openGroupEnvelope(g *protocoltypes.Group, envelopeBytes []byte, devKS crypt
 		return nil, nil, nil, errcode.ErrInvalidInput.Wrap(err)
 	}
 
-	nonce, err := cryptoutil.NonceSliceToArray(env.Nonce)
+	nonce, err := cryptoutil2.NonceSliceToArray(env.Nonce)
 	if err != nil {
 		return nil, nil, nil, errcode.ErrSerialization.Wrap(err)
 	}
@@ -165,7 +166,7 @@ func sealGroupEnvelope(g *protocoltypes.Group, eventType protocoltypes.EventType
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	nonce, err := cryptoutil.GenerateNonce()
+	nonce, err := cryptoutil2.GenerateNonce()
 	if err != nil {
 		return nil, errcode.ErrCryptoNonceGeneration.Wrap(err)
 	}

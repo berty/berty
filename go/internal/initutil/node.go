@@ -24,6 +24,7 @@ import (
 	"berty.tech/berty/v2/go/internal/logutil"
 	"berty.tech/berty/v2/go/pkg/bertymessenger"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
+	cryptoutil2 "berty.tech/berty/v2/go/pkg/cryptoutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
@@ -138,8 +139,8 @@ func (m *Manager) GetLocalProtocolServer() (bertyprotocol.Service, error) {
 	return m.getLocalProtocolServer()
 }
 
-func (m *Manager) getPushSecretKey() (*[cryptoutil.KeySize]byte, error) {
-	pushKey := &[cryptoutil.KeySize]byte{}
+func (m *Manager) getPushSecretKey() (*[cryptoutil2.KeySize]byte, error) {
+	pushKey := &[cryptoutil2.KeySize]byte{}
 	if m.Node.Protocol.DevicePushKeyPath != "" {
 		var err error
 
