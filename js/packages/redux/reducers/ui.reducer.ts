@@ -27,6 +27,8 @@ type UiState = {
 	debugMode: boolean
 	// TODO: fix the way to handle deeplink, this variable is needed to know the handle status of the link
 	handledLink: boolean
+	// boolean to know if no network pop-up was already suggested
+	noNetworkWasSuggested: boolean
 }
 
 /**
@@ -52,6 +54,7 @@ const initialState: UiState = {
 	notificationsInhibitors: [],
 	debugMode: false,
 	handledLink: false,
+	noNetworkWasSuggested: false,
 }
 
 const rootInitialState = makeRoot(initialState)
@@ -135,6 +138,9 @@ const slice = createSlice({
 		setHandledLink(state: UiState, { payload }: PayloadAction<boolean>) {
 			state.handledLink = payload
 		},
+		setNoNetworkWasSuggested(state: UiState, { payload }: PayloadAction<boolean>) {
+			state.noNetworkWasSuggested = payload
+		},
 	},
 })
 
@@ -165,6 +171,9 @@ export const selectAccounts = (state: LocalRootState) => selectSlice(state).acco
 
 export const selectHandledLink = (state: LocalRootState) => selectSlice(state).handledLink
 
+export const selectNoNetworkWasSuggested = (state: LocalRootState) =>
+	selectSlice(state).noNetworkWasSuggested
+
 export const {
 	setClients,
 	setClearClients,
@@ -175,6 +184,7 @@ export const {
 	setStreamError,
 	setAccounts,
 	setHandledLink,
+	setNoNetworkWasSuggested,
 	addNotificationInhibitor,
 	removeNotificationInhibitor,
 } = slice.actions

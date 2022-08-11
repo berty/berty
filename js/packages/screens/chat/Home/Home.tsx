@@ -20,9 +20,15 @@ import {
 	useThemeColor,
 	useMessengerClient,
 	useNotificationsInhibitor,
+	useAppDispatch,
+	useAppSelector,
 } from '@berty/hooks'
 import { ScreenFC } from '@berty/navigation'
 import { selectPersistentOptions } from '@berty/redux/reducers/persistentOptions.reducer'
+import {
+	selectNoNetworkWasSuggested,
+	setNoNetworkWasSuggested,
+} from '@berty/redux/reducers/ui.reducer'
 
 import { AddBot } from './components/AddBot'
 import { Conversations } from './components/Conversations'
@@ -111,23 +117,25 @@ export const Home: ScreenFC<'Chat.Home'> = ({ navigation: { navigate } }) => {
 	const searchInteractions = useRef<beapi.messenger.IInteraction[]>([])
 	const [earliestResult, setEarliestResult] = useState('')
 
-	const [hasNetwork, setHasNetwork] = useState(true)
-
-	const handleNetworkChange = async () => {
+	const dispatch = useAppDispatch()
+	const noNetworkWasSuggested = useAppSelector(selectNoNetworkWasSuggested)
+	const handleNetworkChange = React.useCallback(async () => {
 		try {
 			const data = await Network.getNetworkStateAsync()
 
 			if (!data.isConnected || !data.isInternetReachable) {
-				setHasNetwork(false)
+				dispatch(setNoNetworkWasSuggested(true))
 			}
 		} catch (err) {
 			console.error(err)
 		}
-	}
+	}, [dispatch])
 
 	useEffect(() => {
-		handleNetworkChange()
-	}, [])
+		if (noNetworkWasSuggested) {
+			handleNetworkChange()
+		}
+	}, [handleNetworkChange, noNetworkWasSuggested])
 
 	useEffect(() => {
 		let canceled = false
@@ -222,7 +230,9 @@ export const Home: ScreenFC<'Chat.Home'> = ({ navigation: { navigate } }) => {
 					}
 				}}
 			>
-				{!hasNetwork && <NoNetwork onCancel={() => setHasNetwork(true)} />}
+				{!noNetworkWasSuggested && (
+					<NoNetwork onCancel={() => dispatch(setNoNetworkWasSuggested(true))} />
+				)}
 				{!searchText?.length ? (
 					<IncomingRequests items={requests} onLayout={onLayoutRequests} />
 				) : null}
