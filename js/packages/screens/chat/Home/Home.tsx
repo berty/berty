@@ -223,7 +223,7 @@ export const Home: ScreenFC<'Chat.Home'> = ({ navigation: { navigate } }) => {
 				}}
 			>
 				{!hasNetwork && <NoNetwork onCancel={() => setHasNetwork(true)} />}
-				{!searchText?.length && hasNetwork ? (
+				{!searchText?.length ? (
 					<IncomingRequests items={requests} onLayout={onLayoutRequests} />
 				) : null}
 				<HomeHeader
