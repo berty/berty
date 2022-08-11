@@ -1,0 +1,10 @@
+version: "3.9"
+services:
+  emitter:
+    image: emitter/server
+    ports:
+      - "8080:8080"
+      - "4000:4000"
+    environment:
+      - "EMITTER_LICENSE=PfA8INZBBcmxS4O3fj09pXaqZTJIwvJbJqFRpPmOsANZu75CEOIzfIuu3E3k-Q_wB2rCkv6qgOG3A57Q_OwPAQ:3"
+      # associated secret key Llo99jIV4vmN0BqJJO1Z5Y055DsPHnIS

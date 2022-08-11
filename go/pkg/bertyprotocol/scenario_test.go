@@ -98,7 +98,6 @@ func TestScenario_GroupDeviceStatusOnMultiMemberGroup(t *testing.T) {
 		groupID := createMultiMemberGroup(ctx, t, tps...)
 
 		testGroupDeviceStatus(ctx, t, groupID, tps...)
-
 	})
 }
 
