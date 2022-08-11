@@ -14,6 +14,7 @@ import (
 	"golang.org/x/crypto/hkdf"
 
 	"berty.tech/berty/v2/go/internal/datastoreutil"
+	"berty.tech/berty/v2/go/pkg/cryptoutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
@@ -136,7 +137,7 @@ func GetGroupForContact(contactPairSK crypto.PrivKey) (*protocoltypes.Group, err
 		return nil, errcode.ErrSerialization.Wrap(err)
 	}
 
-	signingBytes, err := SeedFromEd25519PrivateKey(groupSecretSK)
+	signingBytes, err := cryptoutil.SeedFromEd25519PrivateKey(groupSecretSK)
 	if err != nil {
 		return nil, errcode.ErrSerialization.Wrap(err)
 	}
@@ -155,7 +156,7 @@ func GetGroupForAccount(priv, signing crypto.PrivKey) (*protocoltypes.Group, err
 		return nil, errcode.ErrSerialization.Wrap(err)
 	}
 
-	signingBytes, err := SeedFromEd25519PrivateKey(signing)
+	signingBytes, err := cryptoutil.SeedFromEd25519PrivateKey(signing)
 	if err != nil {
 		return nil, errcode.ErrSerialization.Wrap(err)
 	}

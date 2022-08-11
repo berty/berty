@@ -21,6 +21,7 @@ debug.log
 /js/*.db.d
 tool/deployments/*/data
 node_modules
+.idea/
 
 # Go CMD's build output
 go/cmd/berty/berty

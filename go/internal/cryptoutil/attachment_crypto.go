@@ -15,6 +15,7 @@ import (
 	"golang.org/x/crypto/sha3"
 
 	"berty.tech/berty/v2/go/internal/streamutil"
+	"berty.tech/berty/v2/go/pkg/cryptoutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
@@ -36,7 +37,7 @@ type attachmentCipher struct {
 }
 
 func attachmentNewCipher(sk libp2pcrypto.PrivKey) (*attachmentCipher, error) {
-	key, err := SeedFromEd25519PrivateKey(sk)
+	key, err := cryptoutil.SeedFromEd25519PrivateKey(sk)
 	if err != nil {
 		return nil, errcode.ErrInvalidInput.Wrap(err)
 	}
@@ -128,10 +129,10 @@ func attachmentKeyUnmarshal(s []byte) (libp2pcrypto.PrivKey, error) {
 
 // - CID ENCRYPTION
 
-func attachmentCIDEncryptionKey(source *[KeySize]byte) (*[KeySize]byte, error) {
+func attachmentCIDEncryptionKey(source *[cryptoutil.KeySize]byte) (*[cryptoutil.KeySize]byte, error) {
 	hkdf := hkdf.New(sha3.New256, source[:], nil, []byte("cid encryption v0"))
 
-	var key [KeySize]byte
+	var key [cryptoutil.KeySize]byte
 	if _, err := io.ReadFull(hkdf, key[:]); err != nil {
 		return nil, errcode.ErrStreamRead.Wrap(err)
 	}
@@ -139,8 +140,8 @@ func attachmentCIDEncryptionKey(source *[KeySize]byte) (*[KeySize]byte, error) {
 	return &key, nil
 }
 
-func attachmentCIDEncrypt(sk *[KeySize]byte, cid []byte) ([]byte, error) {
-	nonce, err := GenerateNonce()
+func attachmentCIDEncrypt(sk *[cryptoutil.KeySize]byte, cid []byte) ([]byte, error) {
+	nonce, err := cryptoutil.GenerateNonce()
 	if err != nil {
 		return nil, errcode.ErrCryptoNonceGeneration.Wrap(err)
 	}
@@ -148,15 +149,15 @@ func attachmentCIDEncrypt(sk *[KeySize]byte, cid []byte) ([]byte, error) {
 	return append(nonce[:], secretbox.Seal(nil, cid, nonce, sk)...), nil
 }
 
-func attachmentCIDDecrypt(sk *[KeySize]byte, eCID []byte) ([]byte, error) {
-	if len(eCID) <= NonceSize {
-		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("encrypted cid too small, got %v, expected to be > %v", len(eCID), NonceSize))
+func attachmentCIDDecrypt(sk *[cryptoutil.KeySize]byte, eCID []byte) ([]byte, error) {
+	if len(eCID) <= cryptoutil.NonceSize {
+		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("encrypted cid too small, got %v, expected to be > %v", len(eCID), cryptoutil.NonceSize))
 	}
 
-	var nonce [NonceSize]byte
-	_ = copy(nonce[:], eCID[:NonceSize])
+	var nonce [cryptoutil.NonceSize]byte
+	_ = copy(nonce[:], eCID[:cryptoutil.NonceSize])
 
-	cid, ok := secretbox.Open(nil, eCID[NonceSize:], &nonce, sk)
+	cid, ok := secretbox.Open(nil, eCID[cryptoutil.NonceSize:], &nonce, sk)
 	if !ok {
 		return nil, errcode.ErrCryptoDecrypt
 	}

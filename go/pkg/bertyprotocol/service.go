@@ -31,6 +31,7 @@ import (
 	"berty.tech/berty/v2/go/internal/tinder"
 	"berty.tech/berty/v2/go/pkg/bertypush"
 	"berty.tech/berty/v2/go/pkg/bertyversion"
+	cryptoutil2 "berty.tech/berty/v2/go/pkg/cryptoutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
 	"berty.tech/berty/v2/go/pkg/tyber"
@@ -97,7 +98,7 @@ type Opts struct {
 	GRPCInsecureMode bool
 	LocalOnly        bool
 	close            func() error
-	PushKey          *[cryptoutil.KeySize]byte
+	PushKey          *[cryptoutil2.KeySize]byte
 }
 
 func (opts *Opts) applyPushDefaults() error {

@@ -18,6 +18,7 @@ import (
 
 	"berty.tech/berty/v2/go/internal/cryptoutil"
 	"berty.tech/berty/v2/go/internal/logutil"
+	cryptoutil2 "berty.tech/berty/v2/go/pkg/cryptoutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
 	"berty.tech/berty/v2/go/pkg/pushtypes"
@@ -540,12 +541,12 @@ func SealOutOfStoreMessageEnvelope(id cid.Cid, env *protocoltypes.MessageEnvelop
 		return nil, errcode.ErrSerialization.Wrap(err)
 	}
 
-	nonce, err := cryptoutil.GenerateNonce()
+	nonce, err := cryptoutil2.GenerateNonce()
 	if err != nil {
 		return nil, errcode.ErrCryptoNonceGeneration.Wrap(err)
 	}
 
-	secret, err := cryptoutil.KeySliceToArray(g.Secret)
+	secret, err := cryptoutil2.KeySliceToArray(g.Secret)
 	if err != nil {
 		return nil, errcode.ErrSerialization.Wrap(err)
 	}

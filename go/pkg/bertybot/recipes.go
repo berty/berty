@@ -72,7 +72,6 @@ func WelcomeMessageRecipe(text string) Recipe {
 			}
 		},
 	}
-	// FIXME: send welcome message to new conversations
 	return recipe
 }
 
@@ -131,10 +130,31 @@ func DelayResponseRecipe(duration time.Duration) Recipe {
 	return recipe
 }
 
-// AutoAcceptIncomingContactRequestRecipe makes the bot "click" on the "accept" button automatically.
-// NOT YET IMPLEMENTED.
+// AutoAcceptIncomingGroupInviteRecipe makes the bot "click" on the "join" button automatically.
 func AutoAcceptIncomingGroupInviteRecipe() Recipe {
-	panic("not implemented.")
+	recipe := map[HandlerType][]Handler{}
+	recipe[IncomingGroupInvitationHandler] = []Handler{
+		func(ctx Context) {
+			err := ctx.ReplyString("I'll join asap !")
+			if err != nil {
+				ctx.Logger.Error("reply failed", zap.Error(err))
+			}
+
+			payload, err := ctx.Interaction.UnmarshalPayload()
+			if err != nil {
+				return
+			}
+			invLink := payload.(*messengertypes.AppMessage_GroupInvitation).Link
+
+			req := messengertypes.ConversationJoin_Request{Link: invLink}
+			_, err = ctx.Client.ConversationJoin(ctx.Context, &req)
+			if err != nil {
+				ctx.Logger.Error("conversation join failed", zap.Error(err))
+			}
+			ctx.Logger.Info("auto-accepting incoming group invite", zap.String("link: ", invLink))
+		},
+	}
+	return recipe
 }
 
 // SendErrorToClientRecipe will send internal errors to the related context (a contact or a conversation).

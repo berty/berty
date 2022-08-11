@@ -17,6 +17,7 @@ import (
 	"go.uber.org/zap"
 
 	"berty.tech/berty/v2/go/internal/logutil"
+	"berty.tech/berty/v2/go/pkg/cryptoutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
@@ -189,7 +190,7 @@ func (a *deviceKeystore) getOrComputeECDH(nameSpace string, pk crypto.PubKey, ow
 		return nil, err
 	}
 
-	skB, pkB, err := EdwardsToMontgomery(ownSK, pk)
+	skB, pkB, err := cryptoutil.EdwardsToMontgomery(ownSK, pk)
 	if err != nil {
 		return nil, err
 	}

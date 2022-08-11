@@ -20,7 +20,7 @@ import (
 	"github.com/mdp/qrterminal/v3"
 	"moul.io/godev"
 
-	"berty.tech/berty/v2/go/internal/bertylinks"
+	"berty.tech/berty/v2/go/pkg/bertylinks"
 	"berty.tech/berty/v2/go/pkg/bertyvcissuer"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
@@ -957,6 +957,11 @@ func contactRequestCommand(ctx context.Context, v *groupView, cmd string) error 
 func newMessageCommand(ctx context.Context, v *groupView, cmd string) error {
 	if cmd == "" {
 		return nil
+	}
+
+	// check for '/' messages
+	if strings.HasPrefix(cmd, "//") {
+		cmd = cmd[1:]
 	}
 
 	payload, err := proto.Marshal(&messengertypes.AppMessage_UserMessage{

@@ -15,6 +15,7 @@ import (
 	"golang.org/x/crypto/hkdf"
 	"golang.org/x/crypto/nacl/secretbox"
 
+	"berty.tech/berty/v2/go/pkg/cryptoutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
@@ -59,7 +60,7 @@ func SealEnvelope(payload []byte, ds *protocoltypes.DeviceSecret, deviceSK crypt
 		return nil, errcode.ErrSerialization.Wrap(err)
 	}
 
-	nonce, err := GenerateNonce()
+	nonce, err := cryptoutil.GenerateNonce()
 	if err != nil {
 		return nil, errcode.ErrCryptoNonceGeneration.Wrap(err)
 	}
@@ -91,7 +92,7 @@ func OpenEnvelopeHeaders(data []byte, g *protocoltypes.Group) (*protocoltypes.Me
 		return nil, nil, errcode.ErrDeserialization.Wrap(err)
 	}
 
-	nonce, err := NonceSliceToArray(env.Nonce)
+	nonce, err := cryptoutil.NonceSliceToArray(env.Nonce)
 	if err != nil {
 		return nil, nil, errcode.ErrSerialization.Wrap(err)
 	}

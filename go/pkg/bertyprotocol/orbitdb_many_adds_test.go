@@ -9,8 +9,8 @@ import (
 
 	"github.com/libp2p/go-libp2p-core/crypto"
 
-	"berty.tech/berty/v2/go/internal/cryptoutil"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
+	"berty.tech/berty/v2/go/pkg/cryptoutil"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
 	orbitdb "berty.tech/go-orbit-db"
 )
