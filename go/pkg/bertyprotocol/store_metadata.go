@@ -19,6 +19,7 @@ import (
 
 	"berty.tech/berty/v2/go/internal/cryptoutil"
 	"berty.tech/berty/v2/go/internal/logutil"
+	cryptoutil2 "berty.tech/berty/v2/go/pkg/cryptoutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
 	"berty.tech/berty/v2/go/pkg/tyber"
@@ -1109,7 +1110,7 @@ func newSecretEntryPayload(localDevicePrivKey crypto.PrivKey, remoteMemberPubKey
 		return nil, errcode.ErrSerialization.Wrap(err)
 	}
 
-	mongPriv, mongPub, err := cryptoutil.EdwardsToMontgomery(localDevicePrivKey, remoteMemberPubKey)
+	mongPriv, mongPub, err := cryptoutil2.EdwardsToMontgomery(localDevicePrivKey, remoteMemberPubKey)
 	if err != nil {
 		return nil, errcode.ErrCryptoKeyConversion.Wrap(err)
 	}

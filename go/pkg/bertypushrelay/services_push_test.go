@@ -9,11 +9,11 @@ import (
 	"golang.org/x/crypto/nacl/box"
 	"golang.org/x/net/context"
 
-	"berty.tech/berty/v2/go/internal/cryptoutil"
 	"berty.tech/berty/v2/go/internal/testutil"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/bertypush"
 	"berty.tech/berty/v2/go/pkg/bertypushrelay"
+	"berty.tech/berty/v2/go/pkg/cryptoutil"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
 	"berty.tech/berty/v2/go/pkg/pushtypes"
 )

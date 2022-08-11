@@ -1,21 +1,16 @@
-import { Icon } from '@ui-kitten/components'
 import linkify from 'linkify-it'
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Linking, View, TouchableOpacity } from 'react-native'
+import { Linking, View, TouchableOpacity, StyleSheet } from 'react-native'
 import Hyperlink from 'react-native-hyperlink'
 import tlds from 'tlds'
 
-import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
+import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useStyles } from '@berty/contexts/styles'
 import { WelshMessengerServiceClient } from '@berty/grpc-bridge/welsh-clients.gen'
 import { useMessengerClient, useThemeColor } from '@berty/hooks'
 import { useNavigation } from '@berty/navigation'
-import { InteractionUserMessage, ParsedInteraction } from '@berty/utils/api'
-import { pbDateToNum, timeFormat } from '@berty/utils/convert/time'
-import { Maybe } from '@berty/utils/type/maybe'
-
-import { UnifiedText } from '../../shared-components/UnifiedText'
+import { InteractionUserMessage } from '@berty/utils/api'
 
 const READ_MORE_MESSAGE_LENGTH = 325
 const READ_MORE_SUBSTR_LENGTH = 300
@@ -23,19 +18,6 @@ const READ_MORE_SUBSTR_LENGTH = 300
 const additionalTlds = ['crypto']
 
 const linkify_conf = linkify().tlds([...tlds, ...additionalTlds], true)
-
-const useStylesMessage = () => {
-	const { text, padding } = useStyles()
-	const colors = useThemeColor()
-	return {
-		dateMessage: [text.size.tiny, text.light, { color: colors['secondary-text'] }],
-		stateMessageValueMe: [
-			padding.left.scale(1.5),
-			text.size.tiny,
-			{ color: colors['background-header'] },
-		],
-	}
-}
 
 export async function isBertyDeepLink(
 	client: WelshMessengerServiceClient,
@@ -78,7 +60,6 @@ export const HyperlinkUserMessage: React.FC<{
 	const colors = useThemeColor()
 	const navigation = useNavigation()
 	const { margin, padding, column, border, text } = useStyles()
-	const { scaleSize } = useAppDimensions()
 	const [isReadMore, setReadMore] = useState<boolean>(true)
 	const { t } = useTranslation()
 
@@ -92,21 +73,14 @@ export const HyperlinkUserMessage: React.FC<{
 				padding.horizontal.scale(inte.isMine ? 11 : 13),
 				padding.vertical.scale(inte.isMine ? 7 : 9),
 				inte.isMine ? column.item.right : column.item.left,
-				isFollowedMessage && { marginLeft: 35 * scaleSize },
+				isFollowedMessage && { marginLeft: 35 },
 				{
 					backgroundColor: msgBackgroundColor,
 				},
 				isHighlight && {
+					...styles.hyperlinkHighlightWrapper,
 					borderColor: colors['background-header'],
-					borderWidth: 1,
 					shadowColor: colors.shadow,
-					shadowOffset: {
-						width: 0,
-						height: 8,
-					},
-					shadowOpacity: 0.44,
-					shadowRadius: 10.32,
-					elevation: 16,
 				},
 			]}
 		>
@@ -154,50 +128,15 @@ export const HyperlinkUserMessage: React.FC<{
 	)
 }
 
-export const TimestampStatusUserMessage: React.FC<{
-	inte: ParsedInteraction
-	lastInte: Maybe<ParsedInteraction>
-	isFollowedMessage: boolean | undefined
-	cmd: any
-}> = ({ inte, lastInte, isFollowedMessage, cmd }) => {
-	const sentDate = pbDateToNum(inte.sentDate)
-	const { row, margin, padding, flex } = useStyles()
-	const { scaleSize } = useAppDimensions()
-	const colors = useThemeColor()
-	const styles = useStylesMessage()
-	const { t } = useTranslation()
-
-	return (
-		<View
-			style={[
-				row.left,
-				flex.align.center,
-				margin.top.tiny,
-				margin.bottom.tiny,
-				inte.isMine && row.item.bottom,
-			]}
-		>
-			<UnifiedText style={[styles.dateMessage, isFollowedMessage && margin.left.scale(35)]}>
-				{sentDate > 0 ? timeFormat.fmtTimestamp3(sentDate) : ''}
-			</UnifiedText>
-			{!cmd && lastInte?.cid === inte.cid && (
-				<>
-					{inte.isMine && (
-						<Icon
-							name={inte.acknowledged ? 'navigation-2' : 'navigation-2-outline'}
-							width={12}
-							height={12}
-							fill={colors['background-header']}
-							style={[padding.left.tiny, { marginTop: 1 * scaleSize }]}
-						/>
-					)}
-					{inte.isMine && (
-						<UnifiedText style={styles.stateMessageValueMe}>
-							{t(inte.acknowledged ? 'chat.sent' : 'chat.sending').toLowerCase()}
-						</UnifiedText>
-					)}
-				</>
-			)}
-		</View>
-	)
-}
+const styles = StyleSheet.create({
+	hyperlinkHighlightWrapper: {
+		borderWidth: 1,
+		shadowOffset: {
+			width: 0,
+			height: 8,
+		},
+		shadowOpacity: 0.44,
+		shadowRadius: 10.32,
+		elevation: 16,
+	},
+})

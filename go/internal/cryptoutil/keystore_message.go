@@ -12,6 +12,7 @@ import (
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"golang.org/x/crypto/nacl/secretbox"
 
+	"berty.tech/berty/v2/go/pkg/cryptoutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
@@ -316,7 +317,7 @@ func (m *MessageKeystore) getPrecomputedKey(ctx context.Context, groupPK, device
 		return nil, errcode.ErrMessageKeyPersistenceGet.Wrap(err)
 	}
 
-	keyArray, err := KeySliceToArray(key)
+	keyArray, err := cryptoutil.KeySliceToArray(key)
 	if err != nil {
 		return nil, errcode.ErrSerialization
 	}
@@ -514,7 +515,7 @@ func (m *MessageKeystore) GetKeyForCID(ctx context.Context, id cid.Cid) (*[32]by
 		return nil, errcode.ErrInvalidInput
 	}
 
-	keyArray, err := KeySliceToArray(key)
+	keyArray, err := cryptoutil.KeySliceToArray(key)
 	if err != nil {
 		return nil, errcode.ErrSerialization
 	}

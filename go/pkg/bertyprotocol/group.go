@@ -15,6 +15,7 @@ import (
 	"berty.tech/berty/v2/go/internal/cryptoutil"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/internal/logutil"
+	cryptoutil2 "berty.tech/berty/v2/go/pkg/cryptoutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
 	"berty.tech/go-orbit-db/stores"
@@ -40,7 +41,7 @@ func NewGroupMultiMember() (*protocoltypes.Group, crypto.PrivKey, error) {
 		return nil, nil, errcode.ErrCryptoKeyGeneration.Wrap(err)
 	}
 
-	signingBytes, err := cryptoutil.SeedFromEd25519PrivateKey(signing)
+	signingBytes, err := cryptoutil2.SeedFromEd25519PrivateKey(signing)
 	if err != nil {
 		return nil, nil, errcode.ErrSerialization.Wrap(err)
 	}
@@ -432,7 +433,7 @@ func openDeviceSecret(m *protocoltypes.GroupMetadata, localMemberPrivateKey cryp
 		return nil, nil, errcode.ErrGroupSecretOtherDestMember
 	}
 
-	mongPriv, mongPub, err := cryptoutil.EdwardsToMontgomery(localMemberPrivateKey, senderDevicePubKey)
+	mongPriv, mongPub, err := cryptoutil2.EdwardsToMontgomery(localMemberPrivateKey, senderDevicePubKey)
 	if err != nil {
 		return nil, nil, errcode.ErrCryptoKeyConversion.Wrap(err)
 	}
@@ -452,7 +453,7 @@ func openDeviceSecret(m *protocoltypes.GroupMetadata, localMemberPrivateKey cryp
 	return senderDevicePubKey, decryptedSecret, nil
 }
 
-func groupIDToNonce(group *protocoltypes.Group) *[cryptoutil.NonceSize]byte {
+func groupIDToNonce(group *protocoltypes.Group) *[cryptoutil2.NonceSize]byte {
 	// Nonce doesn't need to be secret, random nor unpredictable, it just needs
 	// to be used only once for a given {sender, receiver} set and we will send
 	// only one SecretEntryPayload per {localDevicePrivKey, remoteMemberPubKey}
@@ -461,7 +462,7 @@ func groupIDToNonce(group *protocoltypes.Group) *[cryptoutil.NonceSize]byte {
 	//
 	// See https://pynacl.readthedocs.io/en/stable/secret/#nonce
 	// See Security Model here: https://nacl.cr.yp.to/box.html
-	var nonce [cryptoutil.NonceSize]byte
+	var nonce [cryptoutil2.NonceSize]byte
 
 	gid := group.GetPublicKey()
 

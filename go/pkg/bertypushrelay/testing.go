@@ -12,7 +12,7 @@ import (
 	"golang.org/x/crypto/nacl/box"
 	"google.golang.org/grpc"
 
-	"berty.tech/berty/v2/go/internal/cryptoutil"
+	"berty.tech/berty/v2/go/pkg/cryptoutil"
 	"berty.tech/berty/v2/go/pkg/pushtypes"
 )
 

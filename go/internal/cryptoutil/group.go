@@ -8,6 +8,7 @@ import (
 	"golang.org/x/crypto/hkdf"
 	"golang.org/x/crypto/sha3"
 
+	"berty.tech/berty/v2/go/pkg/cryptoutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
 )
 
@@ -23,8 +24,8 @@ type GroupWithLinkKey interface {
 	GetLinkKey() []byte
 }
 
-func ComputeLinkKey(publicKey, secret []byte) (*[KeySize]byte, error) {
-	arr := [KeySize]byte{}
+func ComputeLinkKey(publicKey, secret []byte) (*[cryptoutil.KeySize]byte, error) {
+	arr := [cryptoutil.KeySize]byte{}
 
 	kdf := hkdf.New(sha3.New256, secret, nil, publicKey)
 	if _, err := io.ReadFull(kdf, arr[:]); err != nil {
@@ -34,9 +35,9 @@ func ComputeLinkKey(publicKey, secret []byte) (*[KeySize]byte, error) {
 	return &arr, nil
 }
 
-func GetLinkKeyArray(m GroupWithLinkKey) (*[KeySize]byte, error) {
-	if len(m.GetLinkKey()) == KeySize {
-		arr := [KeySize]byte{}
+func GetLinkKeyArray(m GroupWithLinkKey) (*[cryptoutil.KeySize]byte, error) {
+	if len(m.GetLinkKey()) == cryptoutil.KeySize {
+		arr := [cryptoutil.KeySize]byte{}
 
 		for i, c := range m.GetLinkKey() {
 			arr[i] = c
@@ -48,8 +49,8 @@ func GetLinkKeyArray(m GroupWithLinkKey) (*[KeySize]byte, error) {
 	return ComputeLinkKey(m.GetPublicKey(), m.GetSecret())
 }
 
-func GetSharedSecret(m GroupWithLinkKey) *[KeySize]byte {
-	sharedSecret := [KeySize]byte{}
+func GetSharedSecret(m GroupWithLinkKey) *[cryptoutil.KeySize]byte {
+	sharedSecret := [cryptoutil.KeySize]byte{}
 	copy(sharedSecret[:], m.GetSecret())
 
 	return &sharedSecret
@@ -60,7 +61,7 @@ func GetGroupPushSecret(m GroupWithSecret) ([]byte, error) {
 		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("no secret known for group"))
 	}
 
-	arr := [KeySize]byte{}
+	arr := [cryptoutil.KeySize]byte{}
 
 	kdf := hkdf.New(sha3.New256, m.GetSecret(), nil, []byte(PushSecretNamespace))
 	if _, err := io.ReadFull(kdf, arr[:]); err != nil {
@@ -71,7 +72,7 @@ func GetGroupPushSecret(m GroupWithSecret) ([]byte, error) {
 }
 
 func CreatePushGroupReference(sender []byte, counter uint64, secret []byte) ([]byte, error) {
-	arr := [KeySize]byte{}
+	arr := [cryptoutil.KeySize]byte{}
 
 	buf := make([]byte, 8)
 	binary.BigEndian.PutUint64(buf, counter)

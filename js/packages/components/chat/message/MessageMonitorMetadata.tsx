@@ -1,14 +1,13 @@
 import { Icon } from '@ui-kitten/components'
 import React from 'react'
-import { View } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 
 import beapi from '@berty/api'
+import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useStyles } from '@berty/contexts/styles'
 import { useThemeColor } from '@berty/hooks'
 import { InteractionMonitorMetadata } from '@berty/utils/api'
 import { pbDateToNum, timeFormat } from '@berty/utils/convert/time'
-
-import { UnifiedText } from '../../shared-components/UnifiedText'
 
 const eventMonitorTypes = beapi.protocol.MonitorGroup.TypeEventMonitor
 
@@ -63,19 +62,11 @@ export const MessageMonitorMetadata: React.FC<{ inte: InteractionMonitorMetadata
 			console.log('undefined event type', me)
 			monitorPayloadTitle = 'undefined'
 	}
+
 	return (
 		<View style={[padding.vertical.tiny, padding.horizontal.medium]}>
 			<View style={[{ justifyContent: 'center', alignItems: 'flex-start' }, padding.small]}>
-				<View
-					style={[
-						{
-							alignItems: 'center',
-							justifyContent: 'center',
-							width: '100%',
-						},
-						margin.bottom.small,
-					]}
-				>
+				<View style={[styles.iconWrapper, margin.bottom.small]}>
 					<Icon name='monitor-outline' fill={colors['background-header']} width={25} height={25} />
 				</View>
 				<UnifiedText
@@ -113,3 +104,11 @@ export const MessageMonitorMetadata: React.FC<{ inte: InteractionMonitorMetadata
 		</View>
 	)
 }
+
+const styles = StyleSheet.create({
+	iconWrapper: {
+		alignItems: 'center',
+		justifyContent: 'center',
+		width: '100%',
+	},
+})

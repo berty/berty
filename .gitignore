@@ -6,6 +6,7 @@
 .env
 .projectile
 .tmp/
+.idea/
 *.bin
 *.swp
 core-sources.jar

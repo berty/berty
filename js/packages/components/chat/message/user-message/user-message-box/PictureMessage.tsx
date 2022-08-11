@@ -9,7 +9,7 @@ import { useNavigation } from '@berty/navigation'
 import { selectProtocolClient } from '@berty/redux/reducers/ui.reducer'
 import { getSource } from '@berty/utils/protocol/attachments'
 
-import { ImageCounter } from '../ImageCounter'
+import { ImageCounter } from '../../../ImageCounter'
 
 export const PictureMessage: React.FC<{
 	medias: beapi.messenger.IMedia[]
@@ -53,9 +53,7 @@ export const PictureMessage: React.FC<{
 			>
 				{medias.slice(0, medias.length > 4 ? 4 : medias.length).map((media, index) => (
 					<TouchableOpacity
-						onPress={() => {
-							navigation.navigate('Modals.ImageView', { images })
-						}}
+						onPress={() => navigation.navigate('Modals.ImageView', { images })}
 						onLongPress={onLongPress}
 						activeOpacity={1}
 						style={{
