@@ -310,13 +310,13 @@ func groupDeviceStatusHandler(logger *zap.Logger, v *groupView, e *protocoltypes
 		}
 
 		activeAddr := "<unknown>"
-		if len(event.GetMaddrs()) > 0 {
-			activeAddr = event.Maddrs[0]
+		if maddrs := event.GetMaddrs(); len(maddrs) > 0 {
+			activeAddr = maddrs[0]
 		}
 
 		activeTransport := "<unknown>"
-		if len(event.GetTransports()) > 0 {
-			activeTransport = event.Transports[0].String()
+		if tpts := event.GetTransports(); len(tpts) > 0 {
+			activeTransport = tpts[0].String()
 		}
 
 		payload = fmt.Sprintf("device status updated: connected <%.15s> on: %s(%s)", event.GetPeerID(), activeAddr, activeTransport)

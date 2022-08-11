@@ -47,7 +47,7 @@ func NewConnectednessManager() *ConnectednessManager {
 	}
 }
 
-// UpdateState update the current state of the manager
+// AssociatePeer associate a peer to a group
 func (m *ConnectednessManager) AssociatePeer(group string, peer peer.ID) {
 	m.muState.Lock()
 	defer m.muState.Unlock()
@@ -65,7 +65,7 @@ func (m *ConnectednessManager) AssociatePeer(group string, peer peer.ID) {
 	sg.notify.L.Unlock()
 }
 
-// UpdateState update the current state of the manager
+// UpdateState update peer current connectedness state
 func (m *ConnectednessManager) UpdateState(peer peer.ID, update ConnectednessType) {
 	m.muState.Lock()
 	defer m.muState.Unlock()
@@ -81,6 +81,7 @@ func (m *ConnectednessManager) UpdateState(peer peer.ID, update ConnectednessTyp
 	}
 }
 
+// WaitForConnectednessChange wait until the given `current` peers status differ from `local` peers state
 func (m *ConnectednessManager) WaitForConnectednessChange(ctx context.Context, gkey string, current PeersConnectedness) ([]peer.ID, bool) {
 	sg := m.getGroupStatus(gkey)
 
