@@ -965,6 +965,16 @@ func addAsContact(ctx context.Context, t *testing.T, senders, receivers []*berty
 	testutil.LogTree(t, "duration: %s", 0, false, time.Since(start))
 }
 
+func getContactGroup(ctx context.Context, t *testing.T, source *bertyprotocol.TestingProtocol, contact *bertyprotocol.TestingProtocol) *protocoltypes.GroupInfo_Reply {
+	// Get contact group
+	contactGroup, err := source.Client.GroupInfo(ctx, &protocoltypes.GroupInfo_Request{
+		ContactPK: getAccountPubKey(t, contact),
+	})
+	require.NoError(t, err)
+	require.NotNil(t, contactGroup)
+	return contactGroup
+}
+
 func sendMessageToContact(ctx context.Context, t *testing.T, messages []string, tps []*bertyprotocol.TestingProtocol) {
 	for _, sender := range tps {
 		for _, receiver := range tps {
@@ -974,11 +984,7 @@ func sendMessageToContact(ctx context.Context, t *testing.T, messages []string, 
 			}
 
 			// Get contact group
-			contactGroup, err := sender.Client.GroupInfo(ctx, &protocoltypes.GroupInfo_Request{
-				ContactPK: getAccountPubKey(t, receiver),
-			})
-			require.NoError(t, err)
-			require.NotNil(t, contactGroup)
+			contactGroup := getContactGroup(ctx, t, sender, receiver)
 
 			// Send messages on contact group
 			sendMessageOnGroup(ctx, t, []*bertyprotocol.TestingProtocol{sender}, []*bertyprotocol.TestingProtocol{receiver}, contactGroup.Group.PublicKey, messages)
