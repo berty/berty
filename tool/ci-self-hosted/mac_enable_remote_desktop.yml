@@ -1,6 +1,6 @@
 ---
 - name: Enable Remote Desktop on Mac CI runners
-  hosts: "{{ host_param | default('m1_mac_runners') }}"
+  hosts: "{{ host_param | default('private_m1_mac_runners') }}"
 
   pre_tasks:
     - import_tasks: utils/check_macos.yml

@@ -8,6 +8,7 @@ PLAYBOOKS    = m1_setup_runner \
                mac_install_xcode_version \
                mac_switch_to_xcode_version
 VERBOSE      ?= 0
+HOST_PARAM   ?=
 
 ifneq ("$(wildcard $(ENV_FILE))","")
     include $(ENV_FILE)
@@ -25,7 +26,7 @@ help:
 	@printf "\t%-32s -> %s\n" "generate_xcode_cookie" "Generate a cookie to download XCode"; \
 
 $(PLAYBOOKS):
-	ansible-playbook -i $(MAKEFILE_DIR)/inventory.yml $(MAKEFILE_DIR)/$@.yml $(if $(filter $(VERBOSE), 1), -vvv)
+	ansible-playbook -i $(MAKEFILE_DIR)/inventory.yml $(MAKEFILE_DIR)/$@.yml $(if $(filter $(VERBOSE), 1), -vvv) $(if $(HOST_PARAM),--extra-vars "host_param=$(HOST_PARAM)",) $(if $(filter $(VERBOSE), 1), -vvv)
 
 generate_xcode_cookie:
 	$(MAKEFILE_DIR)/xcode-cookie/gen_cookie.sh
