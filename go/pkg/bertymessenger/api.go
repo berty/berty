@@ -21,6 +21,8 @@ import (
 	ctxio "github.com/jbenet/go-context/io"
 	"go.uber.org/multierr"
 	"go.uber.org/zap"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 
 	"berty.tech/berty/v2/go/internal/bertylinks"
 	"berty.tech/berty/v2/go/internal/discordlog"
@@ -1138,9 +1140,9 @@ func (svc *service) monitorGroupPeersStatus(groupPK string) error {
 	go func() {
 		for {
 			statusEvent, err := cs.Recv()
-			switch err {
-			case nil: // ok
-			case io.EOF: // shutdown gracefully
+			switch {
+			case err == nil: // ok
+			case err == io.EOF, status.Code(err) != codes.Canceled: // shutdown gracefully
 				return
 			default:
 				svc.logger.Error("error while getting GroupDeviceStatus from protocol", zap.Error(err))
