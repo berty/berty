@@ -54,7 +54,7 @@ const initialState: UiState = {
 	notificationsInhibitors: [],
 	debugMode: false,
 	handledLink: false,
-	noNetworkWasSuggested: false,
+	noNetworkWasSuggested: true,
 }
 
 const rootInitialState = makeRoot(initialState)

@@ -51,7 +51,12 @@ export const NoNetwork: React.FC<NoNetworkProps> = props => {
 				<SecondaryAltButton onPress={props.onCancel}>
 					{t('main.home.no-network.cancel')}
 				</SecondaryAltButton>
-				<PrimaryAltButton onPress={() => navigate('Settings.Network')}>
+				<PrimaryAltButton
+					onPress={() => {
+						navigate('Settings.Network')
+						props.onCancel()
+					}}
+				>
 					{t('main.home.no-network.activate')}
 				</PrimaryAltButton>
 			</HorizontalDuoSmall>

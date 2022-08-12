@@ -124,7 +124,7 @@ export const Home: ScreenFC<'Chat.Home'> = ({ navigation: { navigate } }) => {
 			const data = await Network.getNetworkStateAsync()
 
 			if (!data.isConnected || !data.isInternetReachable) {
-				dispatch(setNoNetworkWasSuggested(true))
+				dispatch(setNoNetworkWasSuggested(false))
 			}
 		} catch (err) {
 			console.error(err)
