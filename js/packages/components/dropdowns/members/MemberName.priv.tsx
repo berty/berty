@@ -10,6 +10,7 @@ import { IMemberUserTypes } from './interfaces'
 
 interface MemberNameProps extends IMemberUserTypes {
 	displayName: string | null | undefined
+	isMe: boolean | null | undefined
 }
 
 const MemberUserTypes: React.FC<IMemberUserTypes> = ({ memberUserType = 'user' }) => {
@@ -38,10 +39,17 @@ const MemberUserTypes: React.FC<IMemberUserTypes> = ({ memberUserType = 'user' }
 	)
 }
 
-export const MemberName: React.FC<MemberNameProps> = ({ displayName, memberUserType = 'user' }) => {
+export const MemberName: React.FC<MemberNameProps> = ({
+	displayName,
+	isMe,
+	memberUserType = 'user',
+}) => {
 	return (
 		<View>
-			<UnifiedText>{displayName ?? ''}</UnifiedText>
+			<UnifiedText>
+				{displayName ?? ''}
+				{isMe ? ' (You)' : ''}
+			</UnifiedText>
 			<MemberUserTypes memberUserType={memberUserType} />
 		</View>
 	)

@@ -4,8 +4,12 @@ import { StyleSheet, TouchableOpacity, View } from 'react-native'
 
 import beapi from '@berty/api'
 import { useStyles } from '@berty/contexts/styles'
-import { useAppDispatch, useThemeColor } from '@berty/hooks'
-import { PeerNetworkStatus, getPeerFromMemberPK } from '@berty/redux/reducers/messenger.reducer'
+import { useAppDispatch, useAppSelector, useThemeColor } from '@berty/hooks'
+import {
+	PeerNetworkStatus,
+	getPeerFromMemberPK,
+	selectPeerNetworkStatusDict,
+} from '@berty/redux/reducers/messenger.reducer'
 
 import { DropdownPriv } from '../Dropdown.priv'
 import { MemberAvatarWithStatus } from './MemberAvatarWithStatus.priv'
@@ -32,6 +36,7 @@ const MemberItem: React.FC<MemberItemProps> = ({ onPress, convPK, item }) => {
 	const { padding } = useStyles()
 	const dispatch = useAppDispatch()
 	const [peer, setPeer] = React.useState<PeerNetworkStatus | null>(null)
+	const peers = useAppSelector(selectPeerNetworkStatusDict)
 
 	React.useEffect(() => {
 		const f = async () => {
@@ -43,13 +48,14 @@ const MemberItem: React.FC<MemberItemProps> = ({ onPress, convPK, item }) => {
 			const fallBackPeer: PeerNetworkStatus = {
 				id: '',
 				transport: beapi.messenger.StreamEvent.PeerStatusConnected.Transport.Unknown,
-				connectionStatus: beapi.protocol.GroupDeviceStatus.Type.TypeUnknown,
+				connectionStatus: beapi.protocol.GroupDeviceStatus.Type.TypePeerDisconnected,
 			}
 			setPeer((peerFromMemberPK.payload as PeerNetworkStatus) || fallBackPeer)
 		}
 
 		f()
-	}, [convPK, dispatch, item.publicKey, item.conversationPublicKey])
+		// we put peers dependencies to update the connectionStatus of peers
+	}, [convPK, dispatch, item.publicKey, item.conversationPublicKey, peers])
 
 	return peer ? (
 		<TouchableOpacity onPress={onPress} style={[styles.item, padding.horizontal.medium]}>
@@ -58,8 +64,9 @@ const MemberItem: React.FC<MemberItemProps> = ({ onPress, convPK, item }) => {
 					publicKey={item.publicKey}
 					convPK={convPK}
 					memberStatus={peer.connectionStatus}
+					isMe={item.isMe}
 				/>
-				<MemberName displayName={item.displayName} />
+				<MemberName displayName={item.displayName} isMe={item.isMe} />
 			</View>
 			<MemberTransport memberStatus={peer.connectionStatus} memberTransport={peer.transport} />
 		</TouchableOpacity>

@@ -65,6 +65,10 @@ type service struct {
 	pushReceiver          bertypush.MessengerPushReceiver
 	tyberCleanup          func()
 	logFilePath           string
+	cancelGroupStatus     map[string] /*groupPK */ context.CancelFunc
+	muCancelGroupStatus   sync.Mutex
+	knownPeers            map[string] /* peer.ID */ protocoltypes.GroupDeviceStatus_Type
+	muKnownPeers          sync.Mutex
 }
 
 type Opts struct {
@@ -218,6 +222,8 @@ func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (_ Service, err
 		handlerMutex:          sync.Mutex{},
 		ring:                  opts.Ring,
 		logFilePath:           opts.LogFilePath,
+		cancelGroupStatus:     make(map[string] /* groupPK */ context.CancelFunc),
+		knownPeers:            make(map[string] /* peer.ID */ protocoltypes.GroupDeviceStatus_Type),
 	}
 
 	svc.eventHandler = messengerpayloads.NewEventHandler(ctx, db, &MetaFetcherFromProtocolClient{client: client}, newPostActionsService(&svc), opts.Logger, svc.dispatcher, false)

@@ -2,7 +2,9 @@ package bertyprotocol
 
 import (
 	"context"
+	"encoding/base64"
 	"encoding/hex"
+	"fmt"
 	"strings"
 
 	"github.com/libp2p/go-libp2p-core/crypto"
@@ -10,6 +12,7 @@ import (
 	peer "github.com/libp2p/go-libp2p-core/peer"
 	manet "github.com/multiformats/go-multiaddr/net"
 	"github.com/pkg/errors"
+	"go.uber.org/zap"
 
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/internal/logutil"
@@ -99,58 +102,124 @@ func (s *service) DeactivateGroup(_ context.Context, req *protocoltypes.Deactiva
 }
 
 func (s *service) GroupDeviceStatus(req *protocoltypes.GroupDeviceStatus_Request, srv protocoltypes.ProtocolService_GroupDeviceStatusServer) error {
-	s.muGroupDeviceStatus.Lock()
-	defer s.muGroupDeviceStatus.Unlock()
+	ctx := srv.Context()
+	gkey := hex.EncodeToString(req.GroupPK)
+	peers := PeersConnectedness{}
 
-	// make a copy of statuses and send them
-	statusCopy := make(map[string]*protocoltypes.GroupDeviceStatus_Reply)
-	{
-		if groupDeviceStatus, ok := s.groupDeviceStatus[hex.EncodeToString(req.GroupPK)]; ok {
-			for id, status := range groupDeviceStatus {
-				statusCopy[id] = status
-				if err := srv.Send(status); err != nil {
-					return err
-				}
-			}
-		}
-	}
+	logger := s.logger.Named("pstatus")
+	logger.Debug("start monitor device status group", logutil.PrivateString("group_key", gkey))
 
 	for {
-		// wait until context is done or peer status cache is updated
-		if ok := s.groupDeviceNotify.Wait(s.ctx); !ok {
-			return errors.New("context canceled")
+		updated, ok := s.peerStatusManager.WaitForConnectednessChange(ctx, gkey, peers)
+		if !ok {
+			return nil // server context has expired
 		}
 
-		groupDeviceStatus, ok := s.groupDeviceStatus[hex.EncodeToString(req.GroupPK)]
-		if ok {
-			// check if there is an update for the group
-			if diff := diffStatusMaps(statusCopy, groupDeviceStatus); len(diff) > 0 {
-				for pid, status := range diff {
-					if err := srv.Send(status); err != nil {
-						return err
-					}
-					// update cache
-					statusCopy[pid] = status
+		// send updated peers
+		var err error
+		for _, peer := range updated {
+			var evt protocoltypes.GroupDeviceStatus_Reply
+
+			switch peers[peer] {
+			case ConnectednessTypeConnected:
+				evt.Type = protocoltypes.TypePeerConnected
+				var connected *protocoltypes.GroupDeviceStatus_Reply_PeerConnected
+				if connected, err = s.craftPeerConnectedMessage(peer); err == nil {
+					evt.Event, err = connected.Marshal()
+					logger.Debug("peer connected",
+						logutil.PrivateString("group_key", gkey),
+						logutil.PrivateString("peer", connected.PeerID),
+						logutil.PrivateString("devicePK", base64.URLEncoding.EncodeToString(connected.GetDevicePK())))
 				}
+
+			case ConnectednessTypeDisconnected:
+				evt.Type = protocoltypes.TypePeerDisconnected
+				disconnected := s.craftDeviceDisconnectedMessage(peer)
+				logger.Debug("peer disconnected",
+					logutil.PrivateString("group_key", gkey),
+					logutil.PrivateString("peer", disconnected.PeerID))
+				evt.Event, err = disconnected.Marshal()
+
+			case ConnectednessTypeReconnecting:
+				evt.Type = protocoltypes.TypePeerConnected
+				reconnecting := s.craftDeviceReconnectedMessage(peer)
+				logger.Debug("peer reconnecting",
+					logutil.PrivateString("group_key", gkey),
+					logutil.PrivateString("peer", reconnecting.PeerID))
+				evt.Event, err = reconnecting.Marshal()
+
+			default:
+				evt.Type = protocoltypes.TypeUnknown
+			}
+
+			if err != nil {
+				logger.Error("GroupDeviceStatus: unable to handle event", zap.Error(err))
+				continue
+			}
+
+			if err := srv.Send(&evt); err != nil {
+				logger.Debug("GroupDeviceStatus: failed to send event", zap.Error(err))
+				return err
 			}
 		}
 	}
 }
 
-func diffStatusMaps(origin, updated map[string]*protocoltypes.GroupDeviceStatus_Reply) map[string]*protocoltypes.GroupDeviceStatus_Reply {
-	diff := make(map[string]*protocoltypes.GroupDeviceStatus_Reply)
+func (s *service) craftPeerConnectedMessage(peer peer.ID) (*protocoltypes.GroupDeviceStatus_Reply_PeerConnected, error) {
+	pdg, ok := s.odb.GetDevicePKForPeerID(peer)
+	if !ok {
+		return nil, fmt.Errorf("PeerDeviceGroup unknown")
+	}
 
-	for id, statusUpdated := range updated {
-		if statusOrigin, found := origin[id]; found {
-			if statusOrigin.Type != statusUpdated.Type {
-				diff[id] = statusUpdated
+	devicePKRaw, err := pdg.DevicePK.Raw()
+	if err != nil {
+		return nil, fmt.Errorf("unable to get raw devicePK: %w", err)
+	}
+
+	connected := protocoltypes.GroupDeviceStatus_Reply_PeerConnected{
+		PeerID:   peer.Pretty(),
+		DevicePK: devicePKRaw,
+	}
+
+	activeConns := s.host.Network().ConnsToPeer(peer)
+	connected.Transports = make([]protocoltypes.GroupDeviceStatus_Transport, len(activeConns))
+	connected.Maddrs = make([]string, len(activeConns))
+
+CONN_LOOP:
+	for i, conn := range activeConns {
+		connected.Maddrs[i] = conn.RemoteMultiaddr().String()
+
+		// check for proximity transport
+		protocols := conn.RemoteMultiaddr().Protocols()
+		for _, protocol := range protocols {
+			switch protocol.Name {
+			case "nearby", "mc", "ble":
+				connected.Transports[i] = protocoltypes.TptProximity
+				continue CONN_LOOP
 			}
+		}
+
+		// otherwise, check for WAN/LAN addr
+		if manet.IsPrivateAddr(conn.RemoteMultiaddr()) {
+			connected.Transports[i] = protocoltypes.TptLAN
 		} else {
-			diff[id] = statusUpdated
+			connected.Transports[i] = protocoltypes.TptWAN
 		}
 	}
 
-	return diff
+	return &connected, nil
+}
+
+func (s *service) craftDeviceDisconnectedMessage(peer peer.ID) *protocoltypes.GroupDeviceStatus_Reply_PeerDisconnected {
+	return &protocoltypes.GroupDeviceStatus_Reply_PeerDisconnected{
+		PeerID: peer.Pretty(),
+	}
+}
+
+func (s *service) craftDeviceReconnectedMessage(peer peer.ID) *protocoltypes.GroupDeviceStatus_Reply_PeerReconnecting {
+	return &protocoltypes.GroupDeviceStatus_Reply_PeerReconnecting{
+		PeerID: peer.Pretty(),
+	}
 }
 
 func (s *service) MonitorGroup(req *protocoltypes.MonitorGroup_Request, srv protocoltypes.ProtocolService_MonitorGroupServer) error {
@@ -290,105 +359,4 @@ func monitorHandleDiscoveryEvent(e *tinder.EvtDriverMonitor, _ host.Host) *proto
 	}
 
 	return &m
-}
-
-func (s *service) monitorHandleGroupDeviceConnected(peer peer.ID) error {
-	pdg, ok := s.odb.GetDevicePKForPeerID(peer)
-	if !ok {
-		return errors.New("PeerDeviceGroup unknown")
-	}
-
-	devicePKRaw, err := pdg.DevicePK.Raw()
-	if err != nil {
-		return errors.Wrap(err, "unable to get raw devicePK")
-	}
-
-	connected := protocoltypes.GroupDeviceStatus_Reply_PeerConnected{
-		PeerID:   peer.Pretty(),
-		DevicePK: devicePKRaw,
-	}
-
-	activeConns := s.host.Network().ConnsToPeer(peer)
-	connected.Transports = make([]protocoltypes.GroupDeviceStatus_Transport, len(activeConns))
-	connected.Maddrs = make([]string, len(activeConns))
-
-CONN_LOOP:
-	for i, conn := range activeConns {
-		connected.Maddrs[i] = conn.RemoteMultiaddr().String()
-
-		// check for proximity transport
-		protocols := conn.RemoteMultiaddr().Protocols()
-		for _, protocol := range protocols {
-			switch protocol.Name {
-			case "nearby", "mc", "ble":
-				connected.Transports[i] = protocoltypes.TptProximity
-				continue CONN_LOOP
-			}
-		}
-
-		// otherwise, check for WAN/LAN addr
-		if manet.IsPrivateAddr(conn.RemoteMultiaddr()) {
-			connected.Transports[i] = protocoltypes.TptLAN
-		} else {
-			connected.Transports[i] = protocoltypes.TptWAN
-		}
-	}
-
-	eventBytes, err := connected.Marshal()
-	if err != nil {
-		return err
-	}
-
-	status := &protocoltypes.GroupDeviceStatus_Reply{
-		Type:  protocoltypes.TypePeerConnected,
-		Event: eventBytes,
-	}
-
-	s.updateGroupDeviceStatus(pdg.Group, peer, status)
-
-	return nil
-}
-
-func (s *service) monitorHandleGroupDeviceDisconnected(peer peer.ID) error {
-	pdg, ok := s.odb.GetDevicePKForPeerID(peer)
-	if !ok {
-		return errors.New("PeerDeviceGroup unknown")
-	}
-
-	event := &protocoltypes.GroupDeviceStatus_Reply_PeerDisconnected{
-		PeerID: peer.Pretty(),
-	}
-	eventBytes, err := event.Marshal()
-	if err != nil {
-		return err
-	}
-
-	status := &protocoltypes.GroupDeviceStatus_Reply{
-		Type:  protocoltypes.TypePeerDisconnected,
-		Event: eventBytes,
-	}
-
-	s.updateGroupDeviceStatus(pdg.Group, peer, status)
-
-	return nil
-}
-
-func (s *service) updateGroupDeviceStatus(group *protocoltypes.Group, peer peer.ID, status *protocoltypes.GroupDeviceStatus_Reply) {
-	s.muGroupDeviceStatus.Lock()
-	defer s.muGroupDeviceStatus.Unlock()
-
-	groupStatus, ok := s.groupDeviceStatus[group.GroupIDAsString()]
-	if ok {
-		if old, ok := groupStatus[peer.Pretty()]; ok {
-			if old.Type == status.Type {
-				return
-			}
-		}
-	} else {
-		groupStatus = make(map[string]*protocoltypes.GroupDeviceStatus_Reply)
-		s.groupDeviceStatus[group.GroupIDAsString()] = groupStatus
-	}
-
-	groupStatus[peer.Pretty()] = status
-	s.groupDeviceNotify.Broadcast()
 }

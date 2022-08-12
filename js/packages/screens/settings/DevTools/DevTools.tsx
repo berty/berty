@@ -478,7 +478,7 @@ const BodyDevTools: React.FC<{}> = withInAppNotification(({ showNotification }: 
 						setPersistentOption({
 							type: PersistentOptionsKeys.Debug,
 							payload: {
-								enable: persistentOptions?.debug.enable,
+								enable: !persistentOptions?.debug.enable,
 							},
 						}),
 					)

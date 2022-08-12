@@ -1,21 +1,15 @@
 import { Dictionary } from '@reduxjs/toolkit'
 import React from 'react'
 import { View } from 'react-native'
-import { useSelector } from 'react-redux'
 
 import beapi from '@berty/api'
 import { useStyles } from '@berty/contexts/styles'
 import { useThemeColor } from '@berty/hooks'
-import {
-	PersistentOptionsKeys,
-	selectPersistentOptions,
-} from '@berty/redux/reducers/persistentOptions.reducer'
 import { ParsedInteraction } from '@berty/utils/api'
 import { pbDateToNum, timeFormat } from '@berty/utils/convert/time'
 
 import { UnifiedText } from '../../shared-components/UnifiedText'
 import { MessageInvitation } from './MessageInvitation'
-import { MessageMonitorMetadata } from './MessageMonitorMetadata'
 import { UserMessage } from './user-message/UserMessage'
 
 //
@@ -33,7 +27,6 @@ export const Message: React.FC<{
 	scrollToCid: (cid: string) => void
 }> = React.memo(
 	({ inte, convKind, members, previousMessage, nextMessage, convPK, replyOf, scrollToCid }) => {
-		const persistentOptions = useSelector(selectPersistentOptions)
 		const { text, padding } = useStyles()
 		const colors = useThemeColor()
 
@@ -83,11 +76,6 @@ export const Message: React.FC<{
 					<MessageInvitation message={inte} />
 				</>
 			)
-		} else if (
-			inte.type === beapi.messenger.AppMessage.Type.TypeMonitorMetadata &&
-			persistentOptions[PersistentOptionsKeys.Debug].enable
-		) {
-			return <MessageMonitorMetadata inte={inte} />
 		} else {
 			return null
 		}

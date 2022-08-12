@@ -21,6 +21,8 @@ import (
 	ctxio "github.com/jbenet/go-context/io"
 	"go.uber.org/multierr"
 	"go.uber.org/zap"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 
 	"berty.tech/berty/v2/go/internal/bertylinks"
 	"berty.tech/berty/v2/go/internal/discordlog"
@@ -1090,6 +1092,11 @@ func (svc *service) ConversationOpen(ctx context.Context, req *messengertypes.Co
 
 	ret := messengertypes.ConversationOpen_Reply{}
 
+	if err := svc.monitorGroupPeersStatus(req.GroupPK); err != nil {
+		// only log an error here
+		svc.logger.Error("unable to monitor group peer status", zap.Error(err))
+	}
+
 	conv, updated, err := svc.db.SetConversationIsOpenStatus(req.GetGroupPK(), true)
 
 	if err != nil {
@@ -1103,6 +1110,119 @@ func (svc *service) ConversationOpen(ctx context.Context, req *messengertypes.Co
 	}
 
 	return &ret, nil
+}
+
+func (svc *service) monitorGroupPeersStatus(groupPK string) error {
+	svc.muCancelGroupStatus.Lock()
+	defer svc.muCancelGroupStatus.Unlock()
+
+	if _, found := svc.cancelGroupStatus[groupPK]; found {
+		// skip if already have a monitor group in progress
+		return fmt.Errorf("monitor peer status for group already running")
+	}
+
+	rawGroupPK, err := messengerutil.B64DecodeBytes(groupPK)
+	if err != nil {
+		svc.logger.Error("error while decoding groupPK", zap.Error(err))
+		return fmt.Errorf("error while decoding groupPK: %w", err)
+	}
+
+	subCtx, cancel := context.WithCancel(svc.ctx)
+	cs, err := svc.protocolClient.GroupDeviceStatus(subCtx, &protocoltypes.GroupDeviceStatus_Request{GroupPK: rawGroupPK})
+	if err != nil {
+		cancel()
+		return fmt.Errorf("unable to get group device status: %w", err)
+	}
+
+	svc.cancelGroupStatus[groupPK] = cancel
+
+	groupPeers := make(map[string]struct{})
+	go func() {
+		for {
+			statusEvent, err := cs.Recv()
+			switch {
+			case err == nil: // ok
+			case err == io.EOF, status.Code(err) != codes.Canceled: // shutdown gracefully
+				return
+			default:
+				svc.logger.Error("error while getting GroupDeviceStatus from protocol", zap.Error(err))
+				return
+			}
+
+			switch kind := statusEvent.Type; kind {
+			case protocoltypes.TypePeerConnected:
+				var connected protocoltypes.GroupDeviceStatus_Reply_PeerConnected
+				if err = connected.Unmarshal(statusEvent.Event); err != nil {
+					svc.logger.Error("unable to unmarshall", zap.Error(err))
+					continue
+				}
+
+				svc.muKnownPeers.Lock()
+				if status, ok := svc.knownPeers[connected.PeerID]; !ok || status != kind {
+					svc.knownPeers[connected.PeerID] = kind
+
+					var transport messengertypes.StreamEvent_PeerStatusConnected_Transport
+					if len(connected.Transports) > 0 {
+						switch connected.Transports[0] {
+						case protocoltypes.TptWAN:
+							transport = messengertypes.StreamEvent_PeerStatusConnected_WAN
+						case protocoltypes.TptLAN:
+							transport = messengertypes.StreamEvent_PeerStatusConnected_LAN
+						case protocoltypes.TptProximity:
+							transport = messengertypes.StreamEvent_PeerStatusConnected_Proximity
+						}
+					}
+
+					err = svc.dispatcher.StreamEvent(messengertypes.StreamEvent_TypePeerStatusConnected,
+						&messengertypes.StreamEvent_PeerStatusConnected{
+							PeerID:    connected.PeerID,
+							Transport: transport,
+						}, true)
+				}
+				svc.muKnownPeers.Unlock()
+
+				if _, ok := groupPeers[connected.PeerID]; !ok {
+					groupPeers[connected.PeerID] = struct{}{}
+					err = svc.dispatcher.StreamEvent(
+						messengertypes.StreamEvent_TypePeerStatusGroupAssociated,
+						&messengertypes.StreamEvent_PeerStatusGroupAssociated{
+							PeerID:   connected.PeerID,
+							DevicePK: messengerutil.B64EncodeBytes(connected.DevicePK),
+							GroupPK:  groupPK,
+						}, true)
+
+					if err != nil {
+						svc.logger.Error("unable to disaptch event event", zap.String("kind", statusEvent.Type.String()))
+						continue
+					}
+				}
+
+			case protocoltypes.TypePeerDisconnected:
+				var disconnected protocoltypes.GroupDeviceStatus_Reply_PeerDisconnected
+				if err = disconnected.Unmarshal(statusEvent.Event); err != nil {
+					svc.logger.Error("unable to unmarshall", zap.Error(err))
+					continue
+				}
+
+				svc.muKnownPeers.Lock()
+				if status, ok := svc.knownPeers[disconnected.PeerID]; !ok || status != kind {
+					svc.knownPeers[disconnected.PeerID] = kind
+					err = svc.dispatcher.StreamEvent(messengertypes.StreamEvent_TypePeerStatusDisconnected,
+						&messengertypes.StreamEvent_PeerStatusDisconnected{
+							PeerID: disconnected.PeerID,
+						}, true)
+				}
+				svc.muKnownPeers.Unlock()
+			}
+
+			if err != nil {
+				svc.logger.Error("unable to disaptch event event", zap.String("kind", statusEvent.Type.String()))
+				continue
+			}
+		}
+	}()
+
+	return nil
 }
 
 func (svc *service) ConversationClose(ctx context.Context, req *messengertypes.ConversationClose_Request) (*messengertypes.ConversationClose_Reply, error) {
@@ -1120,6 +1240,14 @@ func (svc *service) ConversationClose(ctx context.Context, req *messengertypes.C
 	} else if !updated {
 		return &ret, nil
 	}
+
+	// stop monitoring peer status
+	svc.muCancelGroupStatus.Lock()
+	if cancel, found := svc.cancelGroupStatus[req.GroupPK]; found {
+		cancel()
+		delete(svc.cancelGroupStatus, req.GroupPK)
+	}
+	svc.muCancelGroupStatus.Unlock()
 
 	if err := svc.dispatcher.StreamEvent(messengertypes.StreamEvent_TypeConversationUpdated, &messengertypes.StreamEvent_ConversationUpdated{Conversation: conv}, false); err != nil {
 		return nil, errcode.TODO.Wrap(err)
