@@ -28,5 +28,9 @@ help:
 $(PLAYBOOKS):
 	ansible-playbook -i $(MAKEFILE_DIR)/inventory.yml $(MAKEFILE_DIR)/$@.yml $(if $(filter $(VERBOSE), 1), -vvv) $(if $(HOST_PARAM),--extra-vars "host_param=$(HOST_PARAM)",) $(if $(filter $(VERBOSE), 1), -vvv)
 
-generate_xcode_cookie:
+generate_xcode_cookie: $(MAKEFILE_DIR)/xcode-cookie/vendor
 	$(MAKEFILE_DIR)/xcode-cookie/gen_cookie.sh
+
+$(MAKEFILE_DIR)/xcode-cookie/vendor: $(MAKEFILE_DIR)/xcode-cookie/Gemfile.lock
+	cd $(MAKEFILE_DIR)/xcode-cookie && bundle install
+	touch $@
