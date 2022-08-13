@@ -7,4 +7,4 @@
 
   roles:
     - actions_setup
-    - actions_service
+    - { role: actions_service, when: "'public_m1_mac_runners' in group_names" } # Disable daemon on private runner until this issue is fixed: https://developer.apple.com/forums/thread/100020
