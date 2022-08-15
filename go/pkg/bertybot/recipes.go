@@ -131,11 +131,16 @@ func DelayResponseRecipe(duration time.Duration) Recipe {
 }
 
 // AutoAcceptIncomingGroupInviteRecipe makes the bot "click" on the "join" button automatically.
-func AutoAcceptIncomingGroupInviteRecipe() Recipe {
+func AutoAcceptIncomingGroupInviteRecipe(confirmationMessage ...string) Recipe {
 	recipe := map[HandlerType][]Handler{}
 	recipe[IncomingGroupInvitationHandler] = []Handler{
 		func(ctx Context) {
-			err := ctx.ReplyString("I'll join asap !")
+			var err error
+			if confirmationMessage != nil {
+				err = ctx.ReplyString("I'll join asap!")
+			} else {
+				err = ctx.ReplyString(confirmationMessage[0])
+			}
 			if err != nil {
 				ctx.Logger.Error("reply failed", zap.Error(err))
 			}
@@ -149,9 +154,9 @@ func AutoAcceptIncomingGroupInviteRecipe() Recipe {
 			req := messengertypes.ConversationJoin_Request{Link: invLink}
 			_, err = ctx.Client.ConversationJoin(ctx.Context, &req)
 			if err != nil {
-				ctx.Logger.Error("conversation join failed", zap.Error(err))
+				ctx.Logger.Error("failed to join group", zap.Error(err))
 			}
-			ctx.Logger.Info("auto-accepting incoming group invite", zap.String("link: ", invLink))
+			ctx.Logger.Info("auto-joining incoming group", zap.String("link", invLink))
 		},
 	}
 	return recipe

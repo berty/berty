@@ -119,7 +119,7 @@ func (b *Bot) Start(ctx context.Context) error {
 
 func (b *Bot) CreateGroup(ctx context.Context, name string) (string, error) {
 	conv, err := b.client.ConversationCreate(ctx, &messengertypes.ConversationCreate_Request{
-		DisplayName:      "testGroup",
+		DisplayName:      name,
 		ContactsToInvite: nil,
 	})
 	if err != nil {
