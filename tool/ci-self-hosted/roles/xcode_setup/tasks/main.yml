@@ -18,9 +18,9 @@
   when: check_session.rc == 1
 
 - name: Create session cookie folder
-  command:
-    cmd: mkdir -p {{ session_folder }}
-    creates: "{{ session_folder }}"
+  file:
+    path: "{{ session_folder }}"
+    state: directory
   when: check_session.rc == 1
 
 - name: Upload session cookie on runners
@@ -32,9 +32,13 @@
   when: check_session.rc == 1
 
 - name: Get list of available XCode versions
+  environment:
+    FASTLANE_USER: "{{ FASTLANE_USER }}"
+    FASTLANE_PASSWORD: "{{ FASTLANE_PASSWORD }}"
+    BECOME_PASSWORD: "{{ ansible_become_password }}"
   shell:
     chdir: "{{ ansible_facts.user_dir }}"
-    cmd: /bin/zsh -ic "xcversion list | tail -n {{ xcode_version_list_size }}"
+    cmd: /bin/zsh -ic "echo $BECOME_PASSWORD | sudo -p '' -ES xcversion list | tail -n {{ xcode_version_list_size }}"
   changed_when: false
   register: xcode_version_list
   when: inventory_hostname == ansible_play_hosts[0]

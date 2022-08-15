@@ -6,8 +6,8 @@
 - name: Create launchd plist
   become: true
   template:
-    src: daemon.plist.j2
-    dest: "{{ launchd_daemon.path }}"
+    src: service.plist.j2
+    dest: "{{ launchd_service.path }}"
     validate: plutil %s
     force: true
 

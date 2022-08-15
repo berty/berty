@@ -3,9 +3,13 @@
 <plist version="1.0">
   <dict>
     <key>Label</key>
-    <string>{{ launchd_daemon.name }}</string>
-    <key>Program</key>
-    <string>{{ runner_folder }}/run.sh</string>
+    <string>{{ launchd_service.name }}</string>
+    <key>ProgramArguments</key>
+    <array>
+      <string>/bin/zsh</string>
+      <string>-ilc</string>
+      <string>"{{ runner_folder }}/run.sh"</string>
+    </array>
     <key>StandardOutPath</key>
     <string>{{ runner_folder }}/logs/run.stdout</string>
     <key>StandardErrorPath</key>
@@ -16,5 +20,16 @@
     <true/>
     <key>KeepAlive</key>
     <false/>
+    <key>WorkingDirectory</key>
+    <string>{{ runner_folder }}</string>
+    <key>EnvironmentVariables</key>
+    <dict>
+      <key>ACTIONS_RUNNER_SVC</key>
+      <string>1</string>
+    </dict>
+    <key>ProcessType</key>
+    <string>Interactive</string>
+    <key>SessionCreate</key>
+    <true/>
   </dict>
 </plist>

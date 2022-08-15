@@ -1,7 +1,7 @@
 - name: Create runner folder
-  command:
-    cmd: mkdir -p {{ runner_folder }}
-    creates: "{{ runner_folder }}"
+  file:
+    path: "{{ runner_folder }}"
+    state: directory
 
 - name: Download runner archive
   get_url:
@@ -24,7 +24,12 @@
 - name: Configure runner
   command:
     chdir: "{{ runner_folder }}"
-    cmd: ./config.sh --unattended --url {{ github_url }} --pat {{ config_token }} --name {{ inventory_hostname }}
+    cmd: ./config.sh --unattended --url {{ github_url }} --pat {{ config_token }} --labels {{ labels }} --name {{ inventory_hostname }}
+
+- name: Install gh (GitHub cli)
+  homebrew:
+    name:
+      - gh
 
 - import_role:
     name: asdf_setup

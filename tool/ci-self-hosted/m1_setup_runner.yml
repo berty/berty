@@ -1,10 +1,10 @@
 ---
 - name: Setup CI runners on M1 Macs
-  hosts: m1_mac_runners
+  hosts: "{{ host_param | default('m1_mac_runners') }}"
 
   pre_tasks:
     - import_tasks: utils/check_m1.yml
 
   roles:
     - actions_setup
-    - actions_daemon
+    - { role: actions_service, when: "'public_m1_mac_runners' in group_names" } # Disable daemon on private runner until this issue is fixed: https://developer.apple.com/forums/thread/100020

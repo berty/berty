@@ -48,7 +48,7 @@ jobs:
           #    github         pick the github runner configuration
           #    optimized      pick a dc4 runner if available or fallback on github one
           #
-          node .github/workflows/utils/mac-runner-matrix-builder.js optimized "${{ secrets.SELFHOSTED_STATUS_CHECK_TOKEN }}"
+          node .github/workflows/utils/mac-runner-matrix-builder.js optimized "${{ secrets.GITHUB_TOKEN }}"
 
   build-macos-app:
     name: Build Electron app (macOS)
@@ -67,9 +67,8 @@ jobs:
           filename: .github/workflows/utils/variables.json
 
       - name: Setup asdf
-        uses: aeddi/asdf-actions/setup@681862213369d8d868be8a2a7d6040c4d63027db
-        with:
-          skip_install: ${{ matrix.selfhosted }}
+        if: ${{ !matrix.selfhosted }}
+        uses: asdf-vm/actions/setup@v1
 
       - name: Setup go
         run: |

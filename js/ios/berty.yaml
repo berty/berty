@@ -157,9 +157,6 @@ targets:
     sources:
     - Berty
     - NotificationService/Common.swift
-    - path: ./Configs/GoogleService
-      group: Configs
-      buildPhase: none # will be added by a script
     - path: ../packages/assets/font
       name: Fonts
       group: Resources
@@ -187,14 +184,6 @@ targets:
       embed: false
 
     preBuildScripts:
-    - name: Copy GoogleService
-      script: |
-        PATH_TO_CONFIG=${SRCROOT}/Configs/GoogleService/GoogleService-Info-${PRODUCT_BUNDLE_IDENTIFIER}.plist
-        FILENAME_IN_BUNDLE=GoogleService-Info.plist
-        BUILD_APP_DIR=${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.app
-        echo cp ${PATH_TO_CONFIG} "$BUILD_APP_DIR/${FILENAME_IN_BUNDLE}"
-        cp ${PATH_TO_CONFIG} "${BUILD_APP_DIR}/${FILENAME_IN_BUNDLE}"
-
     - name: Start Packager
       script: |
         export RCT_METRO_PORT="${RCT_METRO_PORT:=8081}"

@@ -44,7 +44,7 @@ jobs:
           #    github       pick the github runner configuration
           #    optimized    pick a dc4 runner if available or fallback on github one
           #
-          node .github/workflows/utils/mac-runner-matrix-builder.js optimized "${{ secrets.SELFHOSTED_STATUS_CHECK_TOKEN }}"
+          node .github/workflows/utils/mac-runner-matrix-builder.js optimized "${{ secrets.GITHUB_TOKEN }}"
 
   build:
     needs: mac_runner_matrix_builder
@@ -70,7 +70,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0
+          fetch-depth: 1
           persist-credentials: false
 
       - name: Load variables from file
@@ -89,9 +89,8 @@ jobs:
           fi
 
       - name: Setup asdf
-        uses: aeddi/asdf-actions/setup@681862213369d8d868be8a2a7d6040c4d63027db
-        with:
-          skip_install: ${{ matrix.selfhosted }}
+        if: ${{ !matrix.selfhosted }}
+        uses: asdf-vm/actions/setup@v1
 
       - name: Setup go
         run: |
@@ -137,6 +136,7 @@ jobs:
           xcode-version: ${{ env.xcode_version }}
 
       - name: Check XCode version (Self-hosted runners)
+        if: ${{ matrix.selfhosted }}
         run: |
           installed_version="$(xcodebuild -version | head -n 1 | sed 's/Xcode //')"
           if [ "$xcode_version" != "$installed_version" ]; then
@@ -214,58 +214,7 @@ jobs:
 
       - name: Build iOS frameworks
         working-directory: js
-        run: make ios.gomobile
-
-  # Disable building and uploading the app to Yolo
-      # - name: Build the app archive
-      #   working-directory: js
-      #   run: |
-      #     xcodebuild archive \
-      #           CODE_SIGN_IDENTITY="" \
-      #           CODE_SIGNING_ALLOWED=NO \
-      #           ONLY_ACTIVE_ARCH=NO  \
-      #           EXCLUDED_ARCHS='armv7 armv7s' \
-      #           -workspace ios/Berty.xcworkspace \
-      #           -scheme "Berty Yolo" \
-      #           -sdk iphoneos \
-      #           -archivePath $RUNNER_TEMP/Berty.xcarchive
-
-      # - name: Setup macOS keychain
-      #   working-directory: tool/build/dummy-identity
-      #   run: |
-      #     set -x
-      #     KEYCHAIN_PATH=$RUNNER_TEMP/dummy.keychain
-
-      #     security create-keychain -p "dummypass" $KEYCHAIN_PATH
-      #     security default-keychain -s $KEYCHAIN_PATH
-      #     security unlock-keychain -p "dummypass" $KEYCHAIN_PATH
-      #     security set-keychain-settings $KEYCHAIN_PATH
-      #     security import berty-dummy.p12 -t priv -f pkcs12 -P "dummypass" -T /usr/bin/codesign -k $KEYCHAIN_PATH
-      #     security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "dummypass" $KEYCHAIN_PATH
-
-      # - name: Strip and sign the archive
-      #   working-directory: js
-      #   run: |
-      #     APP_PATH="$RUNNER_TEMP/Berty.xcarchive/Products/Applications/Berty Yolo.app"
-      #     find "$APP_PATH" -type f | while read FILE; do
-      #       if [ -z "$(file "$FILE" | grep Mach-O)" ]; then continue; fi
-      #       for ARCH in $(lipo -archs "$FILE" 2> /dev/null); do
-      #         if [[ ! "$ARCH" =~ ^arm64e?$ ]]; then
-      #           lipo -remove "$ARCH" "$FILE" -output "$FILE"
-      #         fi
-      #       done
-      #     done
-      #     codesign -fs "Berty Dummy" "$APP_PATH"
-      #     mkdir Payload
-      #     mv "$APP_PATH" Payload/
-      #     zip -r ${{ github.workspace }}/Berty\ Yolo.dummy-signed-ipa Payload
-
-      # - name: Upload the archive
-      #   uses: actions/upload-artifact@v3
-      #   with:
-      #     path: ${{ github.workspace }}/Berty Yolo.dummy-signed-ipa
-      #     name: berty-yolo-${{github.sha}}.dummy-signed-ipa
-      #     if-no-files-found: error
+        run: GOMOBILE_IOS_TARGET=iossimulator make ios.gomobile
 
       - name: Build the app for e2e testing
         working-directory: js/ios

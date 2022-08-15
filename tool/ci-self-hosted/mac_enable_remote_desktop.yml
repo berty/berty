@@ -1,0 +1,12 @@
+---
+- name: Enable Remote Desktop on Mac CI runners
+  hosts: "{{ host_param | default('private_m1_mac_runners') }}"
+
+  pre_tasks:
+    - import_tasks: utils/check_macos.yml
+
+  tasks:
+    - name: Enable Remote Desktop
+      become: true
+      command: /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -activate
+

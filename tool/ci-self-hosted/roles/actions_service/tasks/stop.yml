@@ -1,5 +1,5 @@
-- name: Stop Github Actions daemon
+- name: Stop Github Actions service
   become: yes
-  command: launchctl unload -w "{{ launchd_daemon.path }}"
+  command: launchctl unload -w "{{ launchd_service.path }}"
   register: launchctl_out
   changed_when: "'Could not find specified service' not in launchctl_out.stderr"

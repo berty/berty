@@ -52,6 +52,45 @@ jobs:
           echo "::set-output name=new-release-published::${{steps.semantic.outputs.new-release-published}}"
           echo "::set-output name=release-version::${{steps.semantic.outputs.release-version}}"
 
+  release-on-stores:
+    name: Release on stores
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup asdf
+        uses: asdf-vm/actions/setup@v1
+
+      - name: Setup jq
+        run: |
+          asdf plugin add jq
+          asdf install jq
+
+      - name: Get last commit message
+        env:
+          EVENT: ${{ toJson(github.event) }}
+        run: |
+          echo "$EVENT" > $RUNNER_TEMP/event
+          echo "commit_message=$(jq '.
+          | select(.commits != null)
+          | .after as $last_commit
+          | .commits
+          | map(select(.id == $last_commit))[0].message' $RUNNER_TEMP/event)" >> $GITHUB_ENV
+
+      - name: Dispatch event to release repo
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.REPOSITORY_DISPATCH }}
+          script: |
+            await github.rest.repos.createDispatchEvent({
+              owner: 'berty',
+              repo: 'release-on-stores',
+              event_type: 'Release on stores - Push on master',
+              client_payload: {"commit_message":${{ env.commit_message }}},
+            })
+
 
   post-semantic-release:
     needs: semantic-release
@@ -71,14 +110,12 @@ jobs:
         run: |
           asdf plugin add golang
           asdf install golang
-          echo "go_version=$(asdf current golang | xargs | cut -d ' ' -f 2)" >> $GITHUB_ENV
 
       - name: Setup node
         if: needs.semantic-release.outputs.new-release-published == 'true'
         run: |
           asdf plugin add nodejs
           asdf install nodejs
-          echo "node_version=$(asdf current nodejs | xargs | cut -d ' ' -f 2)" >> $GITHUB_ENV
 
       - name: "Publish npm package: @berty/api (Real)"
         if: needs.semantic-release.outputs.new-release-published == 'true'

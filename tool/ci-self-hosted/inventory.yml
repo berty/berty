@@ -12,12 +12,14 @@ all:
               ansible_become_password: "{{ lookup('env','M1_PASSWORD_3') }}"
           vars:
             github_url: https://github.com/berty # Shared within the Berty organization
+            labels: "public"
         private_m1_mac_runners:
           hosts:
             ci-macos-4.berty.io:
               ansible_become_password: "{{ lookup('env','M1_PASSWORD_4') }}"
           vars:
             github_url: https://github.com/berty/release-on-stores # Only used by the release-on-stores repo
+            labels: "private"
       vars:
         ansible_user: hetzner
         ansible_python_interpreter: /usr/bin/python3

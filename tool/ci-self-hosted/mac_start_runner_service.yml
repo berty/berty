@@ -1,11 +1,11 @@
 ---
 - name: Start public Mac CI runners
-  hosts: public_m1_mac_runners
+  hosts: "{{ host_param | default('public_m1_mac_runners') }}"
 
   pre_tasks:
     - import_tasks: utils/check_macos.yml
 
   tasks:
     - include_role:
-        name: actions_daemon
+        name: actions_service
         tasks_from: start

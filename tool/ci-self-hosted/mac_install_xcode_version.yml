@@ -1,6 +1,6 @@
 ---
 - name: Install a specific version of XCode
-  hosts: m1_mac_runners
+  hosts: "{{ host_param | default('m1_mac_runners') }}"
 
   pre_tasks:
     - import_tasks: utils/check_macos.yml
