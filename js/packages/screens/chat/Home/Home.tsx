@@ -24,11 +24,12 @@ import {
 	useAppSelector,
 } from '@berty/hooks'
 import { ScreenFC } from '@berty/navigation'
-import { selectPersistentOptions } from '@berty/redux/reducers/persistentOptions.reducer'
 import {
-	selectNoNetworkWasSuggested,
-	setNoNetworkWasSuggested,
-} from '@berty/redux/reducers/ui.reducer'
+	PersistentOptionsKeys,
+	selectNoNetworkPopupSuggested,
+	selectPersistentOptions,
+	setPersistentOption,
+} from '@berty/redux/reducers/persistentOptions.reducer'
 
 import { AddBot } from './components/AddBot'
 import { Conversations } from './components/Conversations'
@@ -118,24 +119,27 @@ export const Home: ScreenFC<'Chat.Home'> = ({ navigation: { navigate } }) => {
 	const [earliestResult, setEarliestResult] = useState('')
 
 	const dispatch = useAppDispatch()
-	const noNetworkWasSuggested = useAppSelector(selectNoNetworkWasSuggested)
+	const [noNetwork, setNoNetwork] = useState<boolean>(false)
+	const noNetworkPopupSuggested = useAppSelector(selectNoNetworkPopupSuggested)
 	const handleNetworkChange = React.useCallback(async () => {
+		if (noNetworkPopupSuggested) {
+			return
+		}
 		try {
 			const data = await Network.getNetworkStateAsync()
 
 			if (!data.isConnected || !data.isInternetReachable) {
-				dispatch(setNoNetworkWasSuggested(false))
+				setNoNetwork(true)
 			}
 		} catch (err) {
 			console.error(err)
 		}
-	}, [dispatch])
+	}, [noNetworkPopupSuggested])
 
+	// effect handle network change, no network popup
 	useEffect(() => {
-		if (noNetworkWasSuggested) {
-			handleNetworkChange()
-		}
-	}, [handleNetworkChange, noNetworkWasSuggested])
+		handleNetworkChange()
+	}, [handleNetworkChange, noNetwork, noNetworkPopupSuggested])
 
 	useEffect(() => {
 		let canceled = false
@@ -230,8 +234,18 @@ export const Home: ScreenFC<'Chat.Home'> = ({ navigation: { navigate } }) => {
 					}
 				}}
 			>
-				{!noNetworkWasSuggested && (
-					<NoNetwork onCancel={() => dispatch(setNoNetworkWasSuggested(true))} />
+				{!noNetworkPopupSuggested && noNetwork && (
+					<NoNetwork
+						onCancel={() => {
+							setNoNetwork(false)
+							dispatch(
+								setPersistentOption({
+									type: PersistentOptionsKeys.NoNetworkPopupSuggested,
+									payload: true,
+								}),
+							)
+						}}
+					/>
 				)}
 				{!searchText?.length ? (
 					<IncomingRequests items={requests} onLayout={onLayoutRequests} />

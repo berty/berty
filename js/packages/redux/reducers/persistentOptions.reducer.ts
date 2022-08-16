@@ -12,6 +12,7 @@ export enum PersistentOptionsKeys {
 	Configurations = 'configurations',
 	ProfileNotification = 'profileNotification',
 	DevMode = 'devMode',
+	NoNetworkPopupSuggested = 'noNetworkPopupSuggested',
 }
 
 type PersistentOptionsNotifications = {
@@ -59,6 +60,8 @@ type PersistentOptionsProfileNotification = {
 	[UpdatesProfileNotification]: number
 }
 
+type PersistentOptionsNoNetworkPopupSuggested = boolean
+
 type PersistentOptionsUpdate =
 	| {
 			type: typeof PersistentOptionsKeys.Notifications
@@ -88,6 +91,10 @@ type PersistentOptionsUpdate =
 			type: typeof PersistentOptionsKeys.DevMode
 			payload: Partial<PersistentOptionsDevMode>
 	  }
+	| {
+			type: typeof PersistentOptionsKeys.NoNetworkPopupSuggested
+			payload: Partial<PersistentOptionsNoNetworkPopupSuggested>
+	  }
 
 type PersistentOptions = {
 	[PersistentOptionsKeys.Notifications]: PersistentOptionsNotifications
@@ -97,6 +104,7 @@ type PersistentOptions = {
 	[PersistentOptionsKeys.Configurations]: PersistentOptionsConfigurations
 	[PersistentOptionsKeys.ProfileNotification]: PersistentOptionsProfileNotification
 	[PersistentOptionsKeys.DevMode]: PersistentOptionsDevMode
+	[PersistentOptionsKeys.NoNetworkPopupSuggested]: PersistentOptionsNoNetworkPopupSuggested
 }
 
 const defaultPersistentOptions = (): PersistentOptions => {
@@ -134,6 +142,7 @@ const defaultPersistentOptions = (): PersistentOptions => {
 		[PersistentOptionsKeys.DevMode]: {
 			enable: false,
 		},
+		[PersistentOptionsKeys.NoNetworkPopupSuggested]: false,
 	}
 }
 
@@ -170,5 +179,8 @@ export const selectPersistentOptions = (state: LocalRootState) => selectSlice(st
 export const { setPersistentOption } = slice.actions
 
 export const selectDevMode = (state: LocalRootState) => selectSlice(state).devMode
+
+export const selectNoNetworkPopupSuggested = (state: LocalRootState) =>
+	selectSlice(state).noNetworkPopupSuggested
 
 export default makeRoot(slice.reducer)
