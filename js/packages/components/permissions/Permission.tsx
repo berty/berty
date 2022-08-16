@@ -3,7 +3,6 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Platform, StatusBar, StyleSheet, View } from 'react-native'
 import { PermissionStatus, RESULTS } from 'react-native-permissions'
-import { useSelector } from 'react-redux'
 
 import audioLottie from '@berty/assets/lottie/audio-lottie.json'
 import cameraLottie from '@berty/assets/lottie/camera-lottie.json'
@@ -13,7 +12,6 @@ import { PrimaryButton, TertiaryAltButton } from '@berty/components'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useStyles } from '@berty/contexts/styles'
 import { useThemeColor } from '@berty/hooks'
-import { selectSelectedAccount } from '@berty/redux/reducers/ui.reducer'
 import { PermissionType } from '@berty/utils/permissions/permissions'
 
 const animations: Record<PermissionType, AnimatedLottieViewProps['source']> = {
@@ -40,12 +38,9 @@ export const Permission: React.FC<PermissionProps> = ({
 	const colors = useThemeColor()
 	const { border, margin, flex } = useStyles()
 	const { t } = useTranslation()
-	const selectedAccount = useSelector(selectSelectedAccount)
 
 	const altText =
-		permissionType === PermissionType.notification && !selectedAccount
-			? t('permission.skip')
-			: t('permission.cancel')
+		permissionType === PermissionType.notification ? t('permission.skip') : t('permission.cancel')
 
 	return (
 		<View style={[flex.tiny, { backgroundColor: colors['background-header'] }]}>
