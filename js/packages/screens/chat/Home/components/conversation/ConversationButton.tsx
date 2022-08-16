@@ -1,9 +1,9 @@
-import React from 'react'
-import { StyleSheet, TouchableHighlight, View } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { Keyboard, StyleSheet, TouchableHighlight, View } from 'react-native'
 
 import beapi from '@berty/api'
 import { useStyles } from '@berty/contexts/styles'
-import { useThemeColor } from '@berty/hooks'
+import { KeyboardStatus, useKeyboardStatus, useThemeColor } from '@berty/hooks'
 import { useNavigation } from '@berty/navigation'
 
 interface ConversationButtonProps {
@@ -17,24 +17,24 @@ export const ConversationButton: React.FC<ConversationButtonProps> = props => {
 	const { navigate } = useNavigation()
 	const colors = useThemeColor()
 	const { padding, row, opacity } = useStyles()
+	const keyboardStatus = useKeyboardStatus()
+	const [isPressed, setIsPressed] = useState<boolean>(false)
 
-	const onPress = () => {
-		if (props.type === beapi.messenger.Conversation.Type.MultiMemberType) {
+	// this effect is usefull to hide keyboard before navigate to a conversation (else we have UI issue)
+	useEffect(() => {
+		if (isPressed && keyboardStatus === KeyboardStatus.KEYBOARD_HIDDEN) {
+			setIsPressed(false)
 			navigate({
-				name: 'Chat.Group',
-				params: {
-					convId: props.publicKey,
-				},
-			})
-		} else {
-			navigate({
-				name: 'Chat.OneToOne',
+				name:
+					props.type === beapi.messenger.Conversation.Type.MultiMemberType
+						? 'Chat.Group'
+						: 'Chat.OneToOne',
 				params: {
 					convId: props.publicKey,
 				},
 			})
 		}
-	}
+	}, [isPressed, keyboardStatus, navigate, props.publicKey, props.type])
 
 	return (
 		<TouchableHighlight
@@ -45,7 +45,10 @@ export const ConversationButton: React.FC<ConversationButtonProps> = props => {
 					props.type !== beapi.messenger.Conversation.Type.MultiMemberType &&
 					opacity(0.6),
 			]}
-			onPress={onPress}
+			onPress={() => {
+				Keyboard.dismiss()
+				setIsPressed(true)
+			}}
 		>
 			<View style={[row.center, !props.isLast && styles.divider, padding.vertical.scale(7)]}>
 				{props.children}

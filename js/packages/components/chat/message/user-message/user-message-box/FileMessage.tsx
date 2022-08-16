@@ -54,6 +54,7 @@ export const FileMessage: React.FC<{
 				fill={isHighlight ? colors['background-header'] : colors['secondary-text']}
 			/>
 			<UnifiedText
+				numberOfLines={1}
 				style={[
 					{
 						fontStyle: 'italic',
