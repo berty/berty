@@ -1,7 +1,7 @@
 import Long from 'long'
 import React, { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Platform, StyleSheet, View } from 'react-native'
+import { Platform, View, StyleSheet } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import beapi from '@berty/api'
@@ -215,7 +215,7 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 													sending={sending}
 													setSending={setSending}
 													messengerClient={messengerClient}
-													handleCloseFileMenu={handleCloseFileMenu}
+													onClose={handleCloseFileMenu}
 												/>
 											</View>
 										)}

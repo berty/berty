@@ -13,27 +13,10 @@ import {
 import { RESULTS } from 'react-native-permissions'
 
 import { useThemeColor } from '@berty/hooks'
-import rnutil from '@berty/utils/react-native'
-import { PermissionType } from '@berty/utils/react-native/permissions'
+import { checkPermission } from '@berty/utils/permissions/checkPermissions'
+import { getPermissions, PermissionType } from '@berty/utils/permissions/permissions'
 
 import { RecordingState, voiceMemoBitrate, voiceMemoFormat, voiceMemoSampleRate } from './constant'
-
-enum MicPermStatus {
-	UNDEFINED = 0,
-	GRANTED = 1,
-	DENIED = 2,
-}
-const acquireMicPerm = async (navigate: any): Promise<MicPermStatus> => {
-	const permissionStatus = await rnutil.checkPermissions(PermissionType.audio, {
-		navigate,
-		navigateToPermScreenOnProblem: true,
-	})
-	if (permissionStatus === RESULTS.GRANTED) {
-		return MicPermStatus.GRANTED
-	}
-
-	return MicPermStatus.UNDEFINED
-}
 
 interface RecorderButtonProps {
 	setCurrentTime: (time: number) => void
@@ -145,21 +128,30 @@ export const RecorderButton: React.FC<RecorderButtonProps> = ({
 	}, [addMeteredValue, recorder, setRecorderFilePath])
 
 	const handlePressRecording = useCallback(async () => {
-		const permState = await acquireMicPerm(navigate)
-		if (permState !== MicPermStatus.GRANTED) {
-			setHelpMessageValue({ message: t('audio.record.tooltip.permission-denied') }) //'App is not allowed to record sound'
-			return
-		}
+		const initialStatus = (await getPermissions()).audio
 
-		clearHelpMessageValue()
-		setRecordingStart(Date.now())
-		setCurrentTime(Date.now())
-		setClearRecordingInterval(setInterval(() => setCurrentTime(Date.now()), 100))
-		meteredValuesRef.current = []
+		await checkPermission({
+			permissionType: PermissionType.audio,
+			navigate,
+			accept: () => {
+				// We check the initialStatus before ask it, to don't record after asking permission
+				// (In other apps, the recorder don't start after accept permission)
+				if (initialStatus === RESULTS.GRANTED) {
+					clearHelpMessageValue()
+					setRecordingStart(Date.now())
+					setCurrentTime(Date.now())
+					setClearRecordingInterval(setInterval(() => setCurrentTime(Date.now()), 100))
+					meteredValuesRef.current = []
 
-		createRecorder()
+					createRecorder()
 
-		setRecordingState(RecordingState.RECORDING)
+					setRecordingState(RecordingState.RECORDING)
+				}
+			},
+			deny: () => {
+				setHelpMessageValue({ message: t('audio.record.tooltip.permission-denied') }) //'App is not allowed to record sound'
+			},
+		})
 	}, [
 		clearHelpMessageValue,
 		createRecorder,

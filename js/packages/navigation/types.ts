@@ -3,7 +3,7 @@ import React from 'react'
 import { PermissionStatus } from 'react-native-permissions'
 
 import beapi from '@berty/api'
-import { PermissionType } from '@berty/utils/react-native/permissions'
+import { PermissionType } from '@berty/utils/permissions/permissions'
 
 export type ScreensParams = {
 	// Onboarding
@@ -21,17 +21,7 @@ export type ScreensParams = {
 
 	'Chat.Home': undefined
 	'Chat.ContactRequest': { contactId: string }
-	'Chat.NotificationAndProximityPermissions': {
-		permissionType: PermissionType
-		accept: () => Promise<void>
-		deny: () => Promise<void>
-	}
 	'Chat.Share': undefined
-	'Chat.Permissions': {
-		permissionType: PermissionType
-		permissionStatus: PermissionStatus
-		onComplete?: (() => Promise<void>) | (() => void)
-	}
 
 	// Create group
 
@@ -75,6 +65,12 @@ export type ScreensParams = {
 	'Settings.FakeData': undefined
 	'Settings.AddDevConversations': undefined
 	'Settings.DevText': { text: string }
+	'Settings.Permissions': {
+		permissionType: PermissionType
+		status: PermissionStatus
+		accept: () => Promise<void> | void
+		deny: () => Promise<void> | void
+	}
 
 	// Modals
 

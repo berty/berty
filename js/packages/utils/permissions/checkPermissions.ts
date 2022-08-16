@@ -5,54 +5,21 @@ import { PermissionStatus, RESULTS } from 'react-native-permissions'
 import beapi from '@berty/api'
 import { ScreensParams } from '@berty/navigation/types'
 
-import { PermissionType, getPermissions } from './permissions'
-
-export const checkPermissions = async (
-	permissionType: PermissionType,
-	options?: {
-		navigate: NavigationProp<ScreensParams>['navigate']
-		navigateToPermScreenOnProblem?: boolean
-		onComplete?: (() => Promise<void>) | (() => void)
-		onSuccess?: (() => Promise<void>) | (() => void)
-	},
-): Promise<PermissionStatus | undefined> => {
-	// if (Platform.OS === 'web') {
-	// 	return RESULTS.DENIED
-	// }
-	let status
-	try {
-		status = (await getPermissions())[permissionType]
-	} catch (err) {
-		console.warn('Check permission failed:', err)
-	}
-
-	if (
-		(status === RESULTS.DENIED || status === RESULTS.BLOCKED) &&
-		options?.navigateToPermScreenOnProblem &&
-		Platform.OS !== 'web'
-	) {
-		options.navigate('Chat.Permissions', {
-			permissionType,
-			permissionStatus: status,
-			onComplete: options?.onComplete,
-		})
-		return status
-	}
-
-	options?.onSuccess && options.onSuccess()
-	return status
-}
+import { getPermissions, PermissionType } from './permissions'
 
 const getPermissionStatusAndSwitch = async (
 	permissionType: PermissionType,
-	accept: () => Promise<void>,
-	deny: () => Promise<void>,
+	accept: () => Promise<void> | void,
+	deny: () => Promise<void> | void,
 	navigate: NavigationProp<ScreensParams>['navigate'],
 ) => {
 	let status: PermissionStatus = RESULTS.DENIED
 	try {
 		// check permission status
 		status = (await getPermissions())[permissionType]
+		if (Platform.OS === 'web') {
+			return status
+		}
 		switch (status) {
 			// run accept method when granted
 			case RESULTS.GRANTED:
@@ -61,8 +28,9 @@ const getPermissionStatusAndSwitch = async (
 			case RESULTS.DENIED:
 				// status is denied at the first launch of the app (https://github.com/zoontek/react-native-permissions#understanding-permission-flow)
 				// navigate to the permission screen to ask permission
-				navigate('Chat.NotificationAndProximityPermissions', {
+				navigate('Settings.Permissions', {
 					permissionType,
+					status,
 					accept,
 					deny,
 				})
@@ -73,8 +41,9 @@ const getPermissionStatusAndSwitch = async (
 				break
 			case RESULTS.BLOCKED:
 				// navigate to the permission screen to re-ask permission
-				navigate('Chat.NotificationAndProximityPermissions', {
+				navigate('Settings.Permissions', {
 					permissionType,
+					status,
 					accept,
 					deny,
 				})
@@ -86,13 +55,24 @@ const getPermissionStatusAndSwitch = async (
 	return status
 }
 
+export const checkPermission = async (options: {
+	permissionType: PermissionType
+	navigate: NavigationProp<ScreensParams>['navigate']
+	accept: () => Promise<void> | void
+	deny: () => Promise<void> | void
+}) => {
+	const { permissionType, navigate, accept, deny } = options
+
+	return getPermissionStatusAndSwitch(permissionType, accept, deny, navigate)
+}
+
 export const checkProximityPermission = async (options: {
 	setNetworkConfig: (newConfig: beapi.account.INetworkConfig) => Promise<void>
 	networkConfig: beapi.account.INetworkConfig
 	changedKey: ('bluetoothLe' | 'androidNearby' | 'appleMultipeerConnectivity')[]
 	navigate: NavigationProp<ScreensParams>['navigate']
-	accept?: () => Promise<void>
-	deny?: () => Promise<void>
+	accept?: () => Promise<void> | void
+	deny?: () => Promise<void> | void
 }) => {
 	const { setNetworkConfig, networkConfig, changedKey, navigate, accept, deny } = options
 
@@ -121,14 +101,4 @@ export const checkProximityPermission = async (options: {
 	}
 
 	return getPermissionStatusAndSwitch(PermissionType.proximity, handleAccept, handleDeny, navigate)
-}
-
-export const checkNotificationPermission = async (options: {
-	navigate: NavigationProp<ScreensParams>['navigate']
-	accept: () => Promise<void>
-	deny: () => Promise<void>
-}) => {
-	const { navigate, accept, deny } = options
-
-	return getPermissionStatusAndSwitch(PermissionType.notification, accept, deny, navigate)
 }
