@@ -85,6 +85,8 @@ func TestReplicationService_GroupSubscribe(t *testing.T) {
 }
 
 func TestReplicationService_GroupRegister(t *testing.T) {
+	testutil.FilterStability(t, testutil.Flappy)
+
 	ds := dssync.MutexWrap(datastore.NewMapDatastore())
 
 	ctx, cancel, mn, rdvp := bertyprotocol.TestHelperIPFSSetUp(t)
