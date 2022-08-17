@@ -1,0 +1,390 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Settings.Faq renders correctly 1`] = `
+<RNCSafeAreaProvider
+  onInsetsChange={[Function]}
+  style={
+    Array [
+      Object {
+        "flex": 1,
+      },
+      undefined,
+    ]
+  }
+>
+  <View
+    style={
+      Object {
+        "flex": 1,
+      }
+    }
+  >
+    <View
+      appearance="default"
+      level="1"
+      style={
+        Array [
+          Object {
+            "backgroundColor": "#FFFFFF",
+          },
+          Object {
+            "backgroundColor": "#FFFFFF",
+            "flex": 1,
+          },
+        ]
+      }
+    >
+      <View
+        style={
+          Array [
+            Object {
+              "alignItems": "center",
+              "height": 250,
+              "justifyContent": "center",
+              "top": "25%",
+            },
+            Object {
+              "margin": 32,
+            },
+          ]
+        }
+      >
+        <View
+          style={
+            Array [
+              Object {
+                "paddingHorizontal": 24,
+              },
+              Object {
+                "paddingBottom": 16,
+              },
+              Object {
+                "backgroundColor": "white",
+                "borderRadius": 20,
+                "elevation": 7,
+                "shadowColor": "black",
+                "shadowOffset": Object {
+                  "height": 10,
+                  "width": 0,
+                },
+                "shadowOpacity": 0.1,
+                "shadowRadius": 40,
+              },
+            ]
+          }
+        >
+          <View
+            style={
+              Object {
+                "transform": Array [
+                  Object {
+                    "scale": 1,
+                  },
+                ],
+              }
+            }
+          >
+            <RNSVGMock
+              fill="#535AE4"
+              height={60}
+              style={
+                Array [
+                  Object {
+                    "alignSelf": "center",
+                  },
+                  Object {
+                    "marginTop": 40,
+                  },
+                  Object {
+                    "marginBottom": 9,
+                  },
+                ]
+              }
+              viewBox="0 0 24 24"
+              width={60}
+            />
+          </View>
+          <View
+            style={Array []}
+          >
+            <Text
+              style={
+                Array [
+                  Object {
+                    "fontSize": 30,
+                  },
+                  Object {
+                    "color": "#383B62",
+                    "fontFamily": "Open Sans",
+                  },
+                  Array [
+                    Object {
+                      "textAlign": "center",
+                    },
+                    Object {
+                      "paddingTop": 9,
+                    },
+                    Object {
+                      "fontSize": 44,
+                      "lineHeight": 44,
+                    },
+                    Object {
+                      "fontFamily": "Bold Open Sans",
+                    },
+                  ],
+                ]
+              }
+            >
+              onboarding.web-views.title
+            </Text>
+            <View
+              style={
+                Array [
+                  Object {
+                    "paddingTop": 20,
+                  },
+                  Object {
+                    "flexDirection": "column",
+                  },
+                ]
+              }
+            >
+              <Text
+                style={
+                  Array [
+                    Object {
+                      "fontSize": 30,
+                    },
+                    Object {
+                      "color": "#383B62",
+                      "fontFamily": "Open Sans",
+                    },
+                    Array [
+                      Object {
+                        "textAlign": "center",
+                      },
+                    ],
+                  ]
+                }
+              >
+                onboarding.web-views.desc
+              </Text>
+            </View>
+            <View
+              style={
+                Array [
+                  Object {
+                    "marginTop": 16,
+                  },
+                ]
+              }
+            />
+          </View>
+          <View
+            style={
+              Array [
+                Object {
+                  "marginTop": 16,
+                },
+                Object {
+                  "marginBottom": 9,
+                },
+              ]
+            }
+          >
+            <View
+              style={
+                Object {
+                  "alignItems": "stretch",
+                  "flexDirection": "row",
+                  "justifyContent": "space-evenly",
+                }
+              }
+            >
+              <View
+                style={
+                  Array [
+                    Object {
+                      "flex": 1,
+                    },
+                    Object {
+                      "marginRight": 9,
+                    },
+                  ]
+                }
+              >
+                <View
+                  accessibilityLabel="onboarding.web-views.first-button"
+                  accessible={true}
+                  focusable={true}
+                  onClick={[Function]}
+                  onResponderGrant={[Function]}
+                  onResponderMove={[Function]}
+                  onResponderRelease={[Function]}
+                  onResponderTerminate={[Function]}
+                  onResponderTerminationRequest={[Function]}
+                  onStartShouldSetResponder={[Function]}
+                  style={
+                    Object {
+                      "alignItems": "center",
+                      "borderColor": "#D2D3E1",
+                      "borderRadius": 8,
+                      "borderWidth": 1,
+                      "flexDirection": "row",
+                      "height": 44,
+                      "justifyContent": "center",
+                      "opacity": 1,
+                    }
+                  }
+                >
+                  <View
+                    style={
+                      Object {
+                        "marginRight": 9,
+                      }
+                    }
+                  >
+                    <View
+                      style={
+                        Object {
+                          "transform": Array [
+                            Object {
+                              "scale": 1,
+                            },
+                          ],
+                        }
+                      }
+                    >
+                      <RNSVGMock
+                        fill="#D2D3E1"
+                        height={25}
+                        viewBox="0 0 24 24"
+                        width={25}
+                      />
+                    </View>
+                  </View>
+                  <Text
+                    style={
+                      Array [
+                        Object {
+                          "fontSize": 30,
+                        },
+                        Object {
+                          "color": "#383B62",
+                          "fontFamily": "Open Sans",
+                        },
+                        Array [
+                          Object {
+                            "textTransform": "uppercase",
+                          },
+                          Object {
+                            "color": "#D2D3E1",
+                          },
+                          Object {
+                            "fontFamily": "Bold Open Sans",
+                          },
+                        ],
+                      ]
+                    }
+                  >
+                    onboarding.web-views.first-button
+                  </Text>
+                </View>
+              </View>
+              <View
+                style={
+                  Array [
+                    Object {
+                      "flex": 1,
+                    },
+                    Object {
+                      "marginLeft": 9,
+                    },
+                  ]
+                }
+              >
+                <View
+                  accessibilityLabel="onboarding.web-views.second-button"
+                  accessible={true}
+                  focusable={true}
+                  onClick={[Function]}
+                  onResponderGrant={[Function]}
+                  onResponderMove={[Function]}
+                  onResponderRelease={[Function]}
+                  onResponderTerminate={[Function]}
+                  onResponderTerminationRequest={[Function]}
+                  onStartShouldSetResponder={[Function]}
+                  style={
+                    Object {
+                      "alignItems": "center",
+                      "backgroundColor": "#EAEAFB",
+                      "borderRadius": 8,
+                      "flexDirection": "row",
+                      "height": 44,
+                      "justifyContent": "center",
+                      "opacity": 1,
+                    }
+                  }
+                >
+                  <View
+                    style={
+                      Object {
+                        "marginRight": 9,
+                      }
+                    }
+                  >
+                    <View
+                      style={
+                        Object {
+                          "transform": Array [
+                            Object {
+                              "scale": 1,
+                            },
+                          ],
+                        }
+                      }
+                    >
+                      <RNSVGMock
+                        fill="#535AE4"
+                        height={25}
+                        viewBox="0 0 24 24"
+                        width={25}
+                      />
+                    </View>
+                  </View>
+                  <Text
+                    style={
+                      Array [
+                        Object {
+                          "fontSize": 30,
+                        },
+                        Object {
+                          "color": "#383B62",
+                          "fontFamily": "Open Sans",
+                        },
+                        Array [
+                          Object {
+                            "textTransform": "uppercase",
+                          },
+                          Object {
+                            "color": "#535AE4",
+                          },
+                          Object {
+                            "fontFamily": "Bold Open Sans",
+                          },
+                        ],
+                      ]
+                    }
+                  >
+                    onboarding.web-views.second-button
+                  </Text>
+                </View>
+              </View>
+            </View>
+          </View>
+        </View>
+      </View>
+    </View>
+  </View>
+</RNCSafeAreaProvider>
+`;
