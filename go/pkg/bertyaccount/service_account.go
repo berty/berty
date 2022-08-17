@@ -692,16 +692,17 @@ func (s *service) importAccount(ctx context.Context, req *accounttypes.ImportAcc
 
 	s.logger.Info("importing berty messenger account", zap.String("path", req.BackupPath))
 
-	if _, err := s.createAccount(ctx, &accounttypes.CreateAccount_Request{
+	createMeta, err := s.createAccount(ctx, &accounttypes.CreateAccount_Request{
 		AccountID:     req.AccountID,
 		AccountName:   req.AccountName,
 		NetworkConfig: req.NetworkConfig,
-	}, prog); err != nil {
+	}, prog)
+	if err != nil {
 		return nil, err
 	}
 
 	meta, err := s.openAccount(ctx, &accounttypes.OpenAccount_Request{
-		AccountID:     req.AccountID,
+		AccountID:     createMeta.AccountID,
 		Args:          append(req.Args, "-node.restore-export-path", req.BackupPath),
 		LoggerFilters: req.LoggerFilters,
 		NetworkConfig: req.NetworkConfig,
