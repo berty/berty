@@ -2,6 +2,7 @@ package bertyprotocol
 
 import (
 	"context"
+	"encoding/hex"
 	"fmt"
 	"path/filepath"
 	"sync"
@@ -13,7 +14,9 @@ import (
 	ds_sync "github.com/ipfs/go-datastore/sync"
 	ipfs_interface "github.com/ipfs/interface-go-ipfs-core"
 	"github.com/libp2p/go-libp2p-core/discovery"
+	"github.com/libp2p/go-libp2p-core/event"
 	"github.com/libp2p/go-libp2p-core/host"
+	"github.com/libp2p/go-libp2p-core/network"
 	peer "github.com/libp2p/go-libp2p-core/peer"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/pkg/errors"
@@ -48,29 +51,30 @@ type Service interface {
 
 type service struct {
 	// variables
-	ctx              context.Context
-	logger           *zap.Logger
-	ipfsCoreAPI      ipfsutil.ExtendedCoreAPI
-	odb              *BertyOrbitDB
-	accountGroup     *GroupContext
-	deviceKeystore   cryptoutil.DeviceKeystore
-	openedGroups     map[string]*GroupContext
-	lock             sync.RWMutex
-	authSession      atomic.Value
-	close            func() error
-	startedAt        time.Time
-	host             host.Host
-	groupDatastore   *cryptoutil.GroupDatastore
-	pushHandler      bertypush.PushHandler
-	accountCache     ds.Batching
-	messageKeystore  *cryptoutil.MessageKeystore
-	pushClients      map[string]*grpc.ClientConn
-	muPushClients    sync.RWMutex
-	discovery        discovery.Discovery
-	grpcInsecure     bool
-	refreshprocess   map[string]context.CancelFunc
-	muRefreshprocess sync.RWMutex
-	swiper           *Swiper
+	ctx               context.Context
+	logger            *zap.Logger
+	ipfsCoreAPI       ipfsutil.ExtendedCoreAPI
+	odb               *BertyOrbitDB
+	accountGroup      *GroupContext
+	deviceKeystore    cryptoutil.DeviceKeystore
+	openedGroups      map[string]*GroupContext
+	lock              sync.RWMutex
+	authSession       atomic.Value
+	close             func() error
+	startedAt         time.Time
+	host              host.Host
+	groupDatastore    *cryptoutil.GroupDatastore
+	pushHandler       bertypush.PushHandler
+	accountCache      ds.Batching
+	messageKeystore   *cryptoutil.MessageKeystore
+	pushClients       map[string]*grpc.ClientConn
+	muPushClients     sync.RWMutex
+	discovery         discovery.Discovery
+	grpcInsecure      bool
+	refreshprocess    map[string]context.CancelFunc
+	muRefreshprocess  sync.RWMutex
+	swiper            *Swiper
+	peerStatusManager *ConnectednessManager
 }
 
 // Opts contains optional configuration flags for building a new Client
@@ -283,16 +287,18 @@ func New(ctx context.Context, opts Opts) (_ Service, err error) {
 		openedGroups: map[string]*GroupContext{
 			string(acc.Group().PublicKey): acc,
 		},
-		accountCache:    opts.AccountCache,
-		messageKeystore: opts.MessageKeystore,
-		pushHandler:     pushHandler,
-		pushClients:     make(map[string]*grpc.ClientConn),
-		grpcInsecure:    opts.GRPCInsecureMode,
-		discovery:       disc,
-		refreshprocess:  make(map[string]context.CancelFunc),
+		accountCache:      opts.AccountCache,
+		messageKeystore:   opts.MessageKeystore,
+		pushHandler:       pushHandler,
+		pushClients:       make(map[string]*grpc.ClientConn),
+		grpcInsecure:      opts.GRPCInsecureMode,
+		discovery:         disc,
+		refreshprocess:    make(map[string]context.CancelFunc),
+		peerStatusManager: NewConnectednessManager(),
 	}
 
 	s.startTyberTinderMonitor()
+	s.startGroupDeviceMonitor()
 
 	return s, nil
 }
@@ -385,6 +391,73 @@ func (s *service) startTyberTinderMonitor() {
 			}
 		}
 	}()
+}
+
+func (s *service) startGroupDeviceMonitor() {
+	if s.host == nil {
+		return
+	}
+
+	// monitor exchange heads events
+	subHead, err := s.odb.EventBus().Subscribe(new(baseorbitdb.EventExchangeHeads))
+	if err != nil {
+		s.logger.Error("startGroupDeviceMonitor", zap.Error(errors.Wrap(err, "unable to subscribe odb event")))
+		return
+	}
+
+	// monitor peer connectednesschanged
+	subPeer, err := s.host.EventBus().Subscribe(new(event.EvtPeerConnectednessChanged))
+	if err != nil {
+		s.logger.Error("startGroupDeviceMonitor", zap.Error(errors.Wrap(err, "unable to subscribe odb event")))
+		subHead.Close()
+		return
+	}
+
+	go func() {
+		defer subHead.Close()
+		defer subPeer.Close()
+
+		for {
+			var evt interface{}
+
+			select {
+			case evt = <-subHead.Out():
+			case evt = <-subPeer.Out():
+			case <-s.ctx.Done():
+				return
+			}
+
+			switch e := evt.(type) {
+			case event.EvtPeerConnectednessChanged:
+				switch e.Connectedness {
+				case network.Connected:
+					s.peerStatusManager.UpdateState(e.Peer, ConnectednessTypeConnected)
+				case network.NotConnected:
+					s.peerStatusManager.UpdateState(e.Peer, ConnectednessTypeDisconnected)
+				}
+			case baseorbitdb.EventExchangeHeads:
+				if dpk, ok := s.odb.GetDevicePKForPeerID(e.Peer); ok {
+					gkey := hex.EncodeToString(dpk.Group.PublicKey)
+					s.peerStatusManager.AssociatePeer(gkey, e.Peer)
+				}
+			}
+		}
+	}()
+
+	// get status of peers in the peerstore
+	peers := s.host.Peerstore().Peers()
+	for _, peer := range peers {
+		// if we got some connected peer check their status
+		if s.host.Network().Connectedness(peer) == network.Connected {
+			s.peerStatusManager.UpdateState(peer, ConnectednessTypeConnected)
+		}
+
+		// if we already have some head exchange with this peer, associate it
+		if dpk, ok := s.odb.GetDevicePKForPeerID(peer); ok {
+			gkey := hex.EncodeToString(dpk.Group.PublicKey)
+			s.peerStatusManager.AssociatePeer(gkey, peer)
+		}
+	}
 }
 
 // Status contains results of status checks

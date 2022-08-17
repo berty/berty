@@ -1411,6 +1411,8 @@ OrbitDBMessageHeads is the payload sent on orbitdb to share peer&#39;s heads
 | ----- | ---- | ----- | ----------- |
 | address | [string](#string) |  |  |
 | heads | [bytes](#bytes) |  |  |
+| device_pk | [bytes](#bytes) |  |  |
+| peer_id | [string](#string) |  |  |
 
 <a name="berty.protocol.v1.OutOfStoreMessage"></a>
 

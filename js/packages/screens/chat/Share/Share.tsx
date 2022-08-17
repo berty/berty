@@ -1,21 +1,10 @@
-import Clipboard from '@react-native-clipboard/clipboard'
 import { useFocusEffect } from '@react-navigation/core'
 import { Layout } from '@ui-kitten/components'
 import { BarCodeScanner } from 'expo-barcode-scanner'
 import { Camera } from 'expo-camera'
 import React, { FC, ReactNode, useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import {
-	View,
-	Vibration,
-	StatusBar,
-	Share,
-	ScrollView,
-	Platform,
-	TextInput,
-	TouchableOpacity,
-} from 'react-native'
-import { RESULTS } from 'react-native-permissions'
+import { View, Vibration, StatusBar, ScrollView, TextInput, TouchableOpacity } from 'react-native'
 import QRCode from 'react-native-qrcode-svg'
 
 import logo from '@berty/assets/images/1_berty_picto.png'
@@ -29,8 +18,9 @@ import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
 import { useAccount, useMessengerClient, useThemeColor } from '@berty/hooks'
 import { ScreenFC, useNavigation } from '@berty/navigation'
-import { checkPermissions } from '@berty/utils/react-native/checkPermissions'
-import { PermissionType } from '@berty/utils/react-native/permissions'
+import { checkPermission } from '@berty/utils/permissions/checkPermissions'
+import { PermissionType } from '@berty/utils/permissions/permissions'
+import { shareBertyID } from '@berty/utils/react-native/share'
 
 const QrCode: FC<{ size: number }> = ({ size }) => {
 	const client = useMessengerClient()
@@ -196,20 +186,6 @@ export const ShareModal: ScreenFC<'Chat.Share'> = () => {
 	const account = useAccount()
 	const url = account.link
 
-	// const status = await checkPermissions(PermissionType.camera, {
-	// 	navigate,
-	// 	navigateToPermScreenOnProblem: true,
-	// })
-
-	const initScanner = useCallback(async () => {
-		const status = await checkPermissions(PermissionType.camera)
-		setIsScannerSelected(status !== RESULTS.DENIED && status !== RESULTS.BLOCKED)
-	}, [])
-
-	useEffect(() => {
-		initScanner()
-	}, [initScanner])
-
 	useFocusEffect(
 		useCallback(() => {
 			setIsScannerVisible(true)
@@ -220,46 +196,22 @@ export const ShareModal: ScreenFC<'Chat.Share'> = () => {
 	)
 
 	const toggleScanner = useCallback(async () => {
-		if (!isScannerSelected) {
-			const status = await checkPermissions(PermissionType.camera, {
-				navigate,
-				navigateToPermScreenOnProblem: true,
-				onSuccess: () => setIsScannerSelected(true),
-			})
-			if (status === RESULTS.DENIED || status === RESULTS.BLOCKED) {
-				return
-			}
-		}
-		setIsScannerSelected(!isScannerSelected)
+		await checkPermission({
+			permissionType: PermissionType.camera,
+			navigate,
+			deny: () => {},
+			accept: () => {
+				setIsScannerSelected(!isScannerSelected ? true : false)
+			},
+		})
 	}, [isScannerSelected, navigate])
-
-	const handleSwitchQr = useCallback(async () => {
-		if (!isScannerSelected) {
-			await checkPermissions(PermissionType.camera, {
-				navigate,
-				navigateToPermScreenOnProblem: true,
-				onComplete: () => {
-					toggleScanner()
-				},
-				onSuccess: () => {
-					toggleScanner()
-				},
-			})
-		} else {
-			toggleScanner()
-		}
-	}, [isScannerSelected, navigate, toggleScanner])
 
 	return (
 		<Layout style={[flex.tiny, { backgroundColor: colors['main-background'] }]}>
 			<StatusBar backgroundColor={colors['background-header']} barStyle='light-content' />
 			<ScrollView
-				style={[
-					margin.bottom.medium,
-					{
-						backgroundColor: colors['main-background'],
-					},
-				]}
+				contentContainerStyle={[flex.tiny]}
+				style={[margin.bottom.medium, { backgroundColor: colors['main-background'] }]}
 			>
 				<ShareContainer
 					element={isScannerSelected ? <ScanBody visible={isScannerVisible} /> : <ShareQr />}
@@ -272,7 +224,7 @@ export const ShareModal: ScreenFC<'Chat.Share'> = () => {
 								icon: 'camera-outline',
 								color: colors['background-header'],
 								style: [margin.right.scale(20), height(120), width(120)],
-								onPress: handleSwitchQr,
+								onPress: toggleScanner,
 							},
 							{
 								name: t('settings.share.invite'),
@@ -280,17 +232,7 @@ export const ShareModal: ScreenFC<'Chat.Share'> = () => {
 								color: colors['background-header'],
 								style: [height(120), height(120), width(120)],
 								onPress: async () => {
-									if (url) {
-										try {
-											if (Platform.OS === 'web') {
-												Clipboard.setString(url)
-											} else {
-												await Share.share({ url, message: url })
-											}
-										} catch (e) {
-											console.error(e)
-										}
-									}
+									await shareBertyID(url, t)
 								},
 							},
 						]}

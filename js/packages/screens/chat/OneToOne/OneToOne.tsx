@@ -10,7 +10,6 @@ import { ContactAvatar } from '@berty/components/avatars'
 import { ChatDate } from '@berty/components/chat/ChatDate'
 import { ChatFooter } from '@berty/components/chat/footer/ChatFooter'
 import { MessageList } from '@berty/components/chat/MessageList'
-import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
 import {
 	useContact,
@@ -23,10 +22,6 @@ import { ScreenFC } from '@berty/navigation'
 import { CustomTitleStyle } from '@berty/navigation/stacks'
 import { pbDateToNum } from '@berty/utils/convert/time'
 import { IOSOnlyKeyboardAvoidingView } from '@berty/utils/react-native/keyboardAvoiding'
-
-//
-// Chat
-//
 
 const NT = beapi.messenger.StreamEvent.Notified.Type
 
@@ -45,7 +40,6 @@ export const OneToOne: ScreenFC<'Chat.OneToOne'> = React.memo(
 		})
 
 		const { opacity, flex } = useStyles()
-		const { scaleSize } = useAppDimensions()
 		const colors = useThemeColor()
 		useReadEffect(params?.convId, 1000)
 		const { t } = useTranslation()
@@ -94,7 +88,7 @@ export const OneToOne: ScreenFC<'Chat.OneToOne'> = React.memo(
 						style={[!contact ? opacity(0.5) : null]}
 						onPress={() => navigate('Chat.OneToOneSettings', { convId: params.convId })}
 					>
-						<ContactAvatar size={40 * scaleSize} publicKey={conv?.contactPublicKey} />
+						<ContactAvatar size={40} publicKey={conv?.contactPublicKey} />
 					</TouchableOpacity>
 				),
 			})
@@ -131,7 +125,7 @@ export const OneToOne: ScreenFC<'Chat.OneToOne'> = React.memo(
 							<View
 								style={{
 									position: 'absolute',
-									top: 110 * scaleSize, // TODO Redefine
+									top: 110,
 									left: 0,
 									right: 0,
 								}}

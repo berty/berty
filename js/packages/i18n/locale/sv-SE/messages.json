@@ -153,7 +153,6 @@
 			"title": "Inställningar",
 			"proximity-button": "Kommunikation utanför rutnät",
 			"notifications-button": "Aviseringar",
-			"contact-convs-button": "Kontakt och konversationer",
 			"appearance-button": "",
 			"accounts-button": "Konton",
 			"network-button": "Nätverk",
@@ -219,12 +218,6 @@
 			"cancel": "Avbryt",
 			"name-input-placeholder": "Namn..."
 		},
-		"berty-services": {
-			"title": "",
-			"desc": "",
-			"button": "",
-			"skip": "Hoppa över och gör detta senare"
-		},
 		"delete-account": {
 			"title": "Radera konto!",
 			"first-desc": "Är du säker på att du vill radera ditt konto?",
@@ -246,6 +239,7 @@
 			"header-left-button": "Enhetsinformation",
 			"header-middle-button": "Generera låtsatsdata",
 			"header-right-button": "Starta om bakgrundstjänst",
+			"force-mock-button": "",
 			"simulate-button": "Simulera streaming fel",
 			"simulate-js-error-button": "Simulera JavaScript-fel",
 			"system-info-button": "Systeminformation",
@@ -258,6 +252,7 @@
 				"name": "Loggfilter",
 				"bullet-point": "Starta om appen efter att du ändrat detta fält"
 			},
+			"export-logs-button": "",
 			"add-dev-conversations-button": "Lägg till utvecklarkonversationer",
 			"share-button": {
 				"title": "Dela ID via Discord",
@@ -418,9 +413,15 @@
 			"title": "",
 			"media-button": "Medier, länkar & dokument",
 			"members-button": {
-				"title": "Medlemmar"
+				"title": ""
 			},
 			"add-member-button": "Lägg till medlem",
+			"members-dropdown": {
+				"search-placeholder": "",
+				"conversation-booster": "",
+				"replication-type": "",
+				"user-type": ""
+			},
 			"invite-button": "Bjud in via länk",
 			"save-button": "Spara konversation på servern"
 		},
@@ -496,9 +497,6 @@
 		"user-message": {
 			"read-more": "Läs mer",
 			"show-less": "Visa mindre"
-		},
-		"emojis": {
-			"matching": ""
 		}
 	},
 	"account": {
@@ -643,5 +641,8 @@
 		"minutes": "",
 		"hours": "",
 		"days": ""
+	},
+	"share": {
+		"sharing-id-message": ""
 	}
 }

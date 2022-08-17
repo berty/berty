@@ -1,3 +1,0 @@
-- name: Start Github Actions daemon
-  become: yes
-  command: launchctl load -w "{{ launchd_daemon.path }}"

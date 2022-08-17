@@ -1,36 +1,18 @@
 import { Icon } from '@ui-kitten/components'
 import React from 'react'
-import { View } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
 import { bertyMethodsHooks, useThemeColor } from '@berty/hooks'
 
-const useStylesHint = () => {
-	const { text, opacity, margin } = useStyles()
-	const { fontScale } = useAppDimensions()
-
-	return {
-		searchHintBodyText: [
-			text.align.center,
-			text.size.medium,
-			text.light,
-			opacity(0.8),
-			margin.top.large,
-			margin.bottom.small,
-			{ lineHeight: 20 * fontScale },
-		],
-	}
-}
-
 const _landingIconSize = 30
 
 export const HintBody = () => {
-	const { padding, opacity, row, text } = useStyles()
+	const { padding, opacity, row, text, margin } = useStyles()
 	const { scaleSize } = useAppDimensions()
 	const colors = useThemeColor()
-	const { searchHintBodyText } = useStylesHint()
 
 	const { reply: bannerQuote = {}, call, called } = bertyMethodsHooks.useBannerQuote()
 	React.useEffect(() => {
@@ -40,14 +22,11 @@ export const HintBody = () => {
 	}, [called, call])
 
 	return !bannerQuote?.quote ? null : (
-		<View style={[padding.horizontal.medium, { bottom: 0 }]}>
+		<View style={[padding.horizontal.medium]}>
 			<UnifiedText
 				style={[
-					text.align.center,
-					row.item.justify,
-					text.size.big,
+					styles.quote,
 					opacity(0.8),
-					text.bold,
 					{
 						color: `${colors['secondary-text']}90`,
 						marginHorizontal: _landingIconSize * scaleSize, // room for speech bubble icon
@@ -62,17 +41,21 @@ export const HintBody = () => {
 				width={_landingIconSize * scaleSize}
 				height={_landingIconSize * scaleSize}
 				fill={`${colors['secondary-text']}90`}
-				style={[
-					row.item.justify,
-					opacity(0.8),
-					{ position: 'absolute', bottom: 20 * scaleSize, right: 60 * scaleSize },
-				]}
+				style={[row.item.justify, styles.quoteIcon, opacity(0.8)]}
 			/>
-			<UnifiedText style={[searchHintBodyText, { color: `${colors['secondary-text']}90` }]}>
+			<UnifiedText
+				style={[
+					opacity(0.8),
+					margin.top.large,
+					margin.bottom.small,
+					styles.hint,
+					{ color: `${colors['secondary-text']}90` },
+				]}
+			>
 				{bannerQuote?.quote || ''}
 			</UnifiedText>
 			{bannerQuote?.author && (
-				<View style={[{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }]}>
+				<View style={[styles.author]}>
 					<UnifiedText
 						style={[
 							text.size.scale(15),
@@ -88,3 +71,15 @@ export const HintBody = () => {
 		</View>
 	)
 }
+
+const styles = StyleSheet.create({
+	quote: {
+		fontSize: 22,
+		fontFamily: 'Bold Open Sans',
+		textAlign: 'center',
+		alignSelf: 'center',
+	},
+	quoteIcon: { position: 'absolute', bottom: 20, right: 60 },
+	author: { flexDirection: 'row', justifyContent: 'center', alignItems: 'center' },
+	hint: { textAlign: 'center', fontFamily: 'Light Open Sans', fontSize: 15, lineHeight: 20 },
+})

@@ -9,8 +9,9 @@ import { useMessengerClient, usePlaySound, useThemeColor } from '@berty/hooks'
 export const EmojiKeyboard: FC<{
 	conversationPublicKey: string
 	targetCid: string
+	showBoard: boolean
 	hide: () => void
-}> = ({ conversationPublicKey, targetCid, hide }) => {
+}> = ({ conversationPublicKey, targetCid, showBoard, hide }) => {
 	const client = useMessengerClient()
 	const playSound = usePlaySound()
 	const colors = useThemeColor()
@@ -19,11 +20,12 @@ export const EmojiKeyboard: FC<{
 	return (
 		<View style={[padding.top.small]}>
 			<EmojiBoard
-				showBoard={true}
+				showBoard={showBoard}
 				hideBackSpace
-				onClick={(emoji: { name: string }) => {
-					client
-						?.interact({
+				onClick={async (emoji: { name: string }) => {
+					console.log('HERE0')
+					try {
+						await client?.interact({
 							conversationPublicKey,
 							type: beapi.messenger.AppMessage.Type.TypeUserReaction,
 							payload: beapi.messenger.AppMessage.UserReaction.encode({
@@ -32,13 +34,12 @@ export const EmojiKeyboard: FC<{
 							}).finish(),
 							targetCid,
 						})
-						.then(() => {
-							playSound('messageSent')
-							hide()
-						})
-						.catch((e: unknown) => {
-							console.warn('e sending message:', e)
-						})
+						playSound('messageSent')
+					} catch (e) {
+						console.warn('e sending message:', e)
+					}
+					console.log('HERE1')
+					hide()
 				}}
 				containerStyle={{
 					position: 'relative',

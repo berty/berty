@@ -153,7 +153,6 @@
 			"title": "Nastavení",
 			"proximity-button": "",
 			"notifications-button": "Oznámení",
-			"contact-convs-button": "",
 			"appearance-button": "",
 			"accounts-button": "",
 			"network-button": "",
@@ -219,12 +218,6 @@
 			"cancel": "Zrušit",
 			"name-input-placeholder": "Jméno..."
 		},
-		"berty-services": {
-			"title": "",
-			"desc": "",
-			"button": "",
-			"skip": ""
-		},
 		"delete-account": {
 			"title": "Smazat účet!",
 			"first-desc": "Opravdu chcete smazat svůj účet?",
@@ -246,6 +239,7 @@
 			"header-left-button": "Informace o zařízení",
 			"header-middle-button": "Vytvořit falešná data",
 			"header-right-button": "Restartovat démona",
+			"force-mock-button": "",
 			"simulate-button": "Simulovat chybu streamu",
 			"simulate-js-error-button": "",
 			"system-info-button": "Systémové informace",
@@ -258,6 +252,7 @@
 				"name": "",
 				"bullet-point": ""
 			},
+			"export-logs-button": "",
 			"add-dev-conversations-button": "Přidat vývojářské konverzace",
 			"share-button": {
 				"title": "Sdílet ID na Discordu",
@@ -418,9 +413,15 @@
 			"title": "",
 			"media-button": "Média, odkazy a dokumentace",
 			"members-button": {
-				"title": "Členové"
+				"title": ""
 			},
 			"add-member-button": "Přidat člena",
+			"members-dropdown": {
+				"search-placeholder": "",
+				"conversation-booster": "",
+				"replication-type": "",
+				"user-type": ""
+			},
 			"invite-button": "Pozvat pomocí odkazu",
 			"save-button": "Uložit konverzaci na server"
 		},
@@ -496,9 +497,6 @@
 		"user-message": {
 			"read-more": "",
 			"show-less": ""
-		},
-		"emojis": {
-			"matching": ""
 		}
 	},
 	"account": {
@@ -643,5 +641,8 @@
 		"minutes": "",
 		"hours": "",
 		"days": ""
+	},
+	"share": {
+		"sharing-id-message": ""
 	}
 }

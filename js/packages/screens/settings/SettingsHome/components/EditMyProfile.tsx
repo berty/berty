@@ -81,6 +81,7 @@ export const EditMyProfile: React.FC<EditProfileProps> = ({ hide }) => {
 		...initialState,
 		name: account.displayName || undefined,
 	})
+	const isValidName = state.name && state.name.trim() && state.name !== account.displayName
 
 	const handlePicturePressed = async () => {
 		try {
@@ -95,7 +96,7 @@ export const EditMyProfile: React.FC<EditProfileProps> = ({ hide }) => {
 				localDispatch({ type: 'SET_PICTURE', pic })
 			}
 		} catch (err: any) {
-			if (err?.code !== 'E_PICKER_CANCELLED') {
+			if (err.code !== 'E_PICKER_CANCELLED') {
 				localDispatch({ type: 'SET_ERROR', err })
 			}
 		}
@@ -131,7 +132,7 @@ export const EditMyProfile: React.FC<EditProfileProps> = ({ hide }) => {
 				updated = true
 			}
 
-			if (state.name && state.name !== account.displayName) {
+			if (isValidName) {
 				update.displayName = state.name
 				updated = true
 			}
@@ -209,7 +210,7 @@ export const EditMyProfile: React.FC<EditProfileProps> = ({ hide }) => {
 				</View>
 			)}
 			<SecondaryButton loading={state.saving} onPress={handleSave}>
-				{(state.name && state.name !== account.displayName) || state.pic
+				{isValidName || state.pic
 					? t('settings.edit-profile.save')
 					: t('settings.edit-profile.cancel')}
 			</SecondaryButton>

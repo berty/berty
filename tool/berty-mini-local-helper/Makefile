@@ -1,9 +1,11 @@
 ID ?= 42
+IDS ?= 42 32
 FORMAT ?= json
 TMPDIR ?= /tmp
 RUN_OPTS ?=
 DAEMON_OPTS ?=
 NAME ?= $(USER)-mini-$(ID)
+
 
 .PHONY: run
 run:
@@ -18,6 +20,12 @@ tail:
 loon:
 	@touch $(TMPDIR)/berty-mini-$(ID).log
 	loon $(TMPDIR)/berty-mini-$(ID).log
+
+.PHONY: multitail
+multitail:
+	@args='' ; for sid in $(IDS); do \
+		args="$$args $(TMPDIR)/berty-mini-$$sid.log"; \
+	done; loon -bgcolor $$args
 
 log-path:
 	@realpath $(TMPDIR)/berty-mini-$(ID).log

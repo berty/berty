@@ -6203,12 +6203,16 @@ export namespace berty {
                 interface IBox {
                     address?: (string|null);
                     heads?: (Uint8Array|null);
+                    devicePk?: (Uint8Array|null);
+                    peerId?: (string|null);
                 }
 
                 class Box implements IBox {
 
                     public address: string;
                     public heads: Uint8Array;
+                    public devicePk: Uint8Array;
+                    public peerId: string;
                     public static create(properties?: berty.protocol.v1.OrbitDBMessageHeads.IBox): berty.protocol.v1.OrbitDBMessageHeads.Box;
                     public static encode(message: berty.protocol.v1.OrbitDBMessageHeads.IBox, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.protocol.v1.OrbitDBMessageHeads.IBox, writer?: $protobuf.Writer): $protobuf.Writer;

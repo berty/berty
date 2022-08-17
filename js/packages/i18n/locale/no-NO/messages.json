@@ -153,7 +153,6 @@
 			"title": "Innstillinger",
 			"proximity-button": "",
 			"notifications-button": "Varsler",
-			"contact-convs-button": "",
 			"appearance-button": "",
 			"accounts-button": "",
 			"network-button": "",
@@ -219,12 +218,6 @@
 			"cancel": "Avbryt",
 			"name-input-placeholder": "Navn..."
 		},
-		"berty-services": {
-			"title": "",
-			"desc": "",
-			"button": "",
-			"skip": ""
-		},
 		"delete-account": {
 			"title": "Slett konto!",
 			"first-desc": "Er du sikker på at du vil slette din konto?",
@@ -246,6 +239,7 @@
 			"header-left-button": "Infoer om enheten",
 			"header-middle-button": "Generer falsk data",
 			"header-right-button": "Restart daemon",
+			"force-mock-button": "",
 			"simulate-button": "Simuler stream-feil",
 			"simulate-js-error-button": "",
 			"system-info-button": "System-info",
@@ -258,6 +252,7 @@
 				"name": "",
 				"bullet-point": ""
 			},
+			"export-logs-button": "",
 			"add-dev-conversations-button": "Legg til utviklersamtaler",
 			"share-button": {
 				"title": "Del ID på Discord",
@@ -418,9 +413,15 @@
 			"title": "",
 			"media-button": "Medier, lenker & dokumenter",
 			"members-button": {
-				"title": "Medlemmer"
+				"title": ""
 			},
 			"add-member-button": "Legg til medlem",
+			"members-dropdown": {
+				"search-placeholder": "",
+				"conversation-booster": "",
+				"replication-type": "",
+				"user-type": ""
+			},
 			"invite-button": "Inviter via lenke",
 			"save-button": "Lagre samtale på serveren"
 		},
@@ -496,9 +497,6 @@
 		"user-message": {
 			"read-more": "",
 			"show-less": ""
-		},
-		"emojis": {
-			"matching": ""
 		}
 	},
 	"account": {
@@ -643,5 +641,8 @@
 		"minutes": "",
 		"hours": "",
 		"days": ""
+	},
+	"share": {
+		"sharing-id-message": ""
 	}
 }

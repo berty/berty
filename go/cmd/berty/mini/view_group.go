@@ -133,10 +133,21 @@ func (v *groupView) loop(ctx context.Context) {
 		return
 	}
 
-	// subscribe to group metadata monitor
+	// Open conversation with local only first
+	gpk := base64.RawURLEncoding.EncodeToString(v.g.PublicKey)
+	if _, err := v.v.messenger.ConversationOpen(ctx, &messengertypes.ConversationOpen_Request{
+		GroupPK: gpk,
+	}); err == nil {
+		v.messages.Append(&historyMessage{
+			messageType: messageTypeError,
+			payload:     []byte("conversation opnned " + gpk),
+		})
+	}
+
+	// get GroupDeviceStatus
 	{
-		req := &protocoltypes.MonitorGroup_Request{GroupPK: v.g.PublicKey}
-		cl, err := v.v.protocol.MonitorGroup(ctx, req)
+		req := &protocoltypes.GroupDeviceStatus_Request{GroupPK: v.g.PublicKey}
+		cl, err := v.v.protocol.GroupDeviceStatus(ctx, req)
 		if err != nil {
 			panic(err)
 		}
@@ -157,7 +168,7 @@ func (v *groupView) loop(ctx context.Context) {
 					continue
 				}
 
-				groupMonitorEventHandler(v.logger, v, res.GetEvent())
+				groupDeviceStatusHandler(v.logger, v, res)
 			}
 		}()
 	}

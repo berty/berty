@@ -12,6 +12,11 @@ IOS_DEVICE ?=
 ANDROID_DEVICE ?=
 GO ?= go # this allows to override the go version used
 GO_TAGS ?= -tags "fts5 sqlite sqlite_unlock_notify"
+GOMOBILE_IOS_TARGET ?= ios
+GOMOBILE_ANDROID_TARGET ?= android
+IOS_BUNDLE_VERSION ?= $(shell echo -n $(shell git rev-list HEAD | wc -l))
+IOS_SHORT_BUNDLE_VERSION ?= $(shell echo "$(VERSION)" | cut -c2- | cut -f1 -d '-')
+IOS_COMMIT ?= $(shell git rev-parse HEAD)
 
 ## Internal variables
 
@@ -26,6 +31,7 @@ minimum_ios_ver = 12.0
 minimum_android_ver = 21
 ios_gomobile_cache="$(PWD)/ios/.gomobile-cache"
 android_gomobile_cache="$(PWD)/android/.gomobile-cache"
+xcodegen_cache="$(PWD)/ios/.xcodegen-cache"
 
 ## if (PWD != Makefile directory) then exit
 
@@ -400,7 +406,7 @@ ios/Frameworks/Bertybridge.xcframework: $(bridge_src)
 			-v $(ext_ldflags) \
 			$(GO_TAGS) \
 			-cache $(ios_gomobile_cache)/bertybridge \
-			-target ios \
+			-target $(GOMOBILE_IOS_TARGET) \
 			-iosversion $(minimum_ios_ver) \
 			./go/framework/bertybridge
 
@@ -420,7 +426,7 @@ ios/Frameworks/Bertypush.xcframework: $(bridge_src)
 			-v $(ext_ldflags) \
 			$(GO_TAGS) \
 			-cache $(ios_gomobile_cache)/bertypush \
-			-target ios \
+			-target $(GOMOBILE_IOS_TARGET) \
 			-iosversion $(minimum_ios_ver) \
 			./go/framework/bertypush
 
@@ -436,12 +442,12 @@ ios/Berty.xcodeproj: $(xcodegen_yml) $(call rwildcard,ios/Berty/Source,*) $(call
 	$(call check-program, xcodegen)
 	mkdir -p ios/Berty
 	touch ios/Berty/main.jsbundle
-	IOS_BUNDLE_VERSION=$(shell echo -n $(shell git rev-list HEAD | wc -l)) \
-	IOS_SHORT_BUNDLE_VERSION=$(shell echo "$(VERSION)" | cut -c2- | cut -f1 -d '-') \
-	IOS_COMMIT=$(shell git rev-parse HEAD) \
+	IOS_BUNDLE_VERSION=$(IOS_BUNDLE_VERSION) \
+	IOS_SHORT_BUNDLE_VERSION=$(IOS_SHORT_BUNDLE_VERSION) \
+	IOS_COMMIT=$(IOS_COMMIT) \
 	xcodegen \
 		--spec ios/berty.yaml \
-		--cache-path ios/.xcodegen-cache \
+		--cache-path $(xcodegen_cache) \
 		--use-cache
 	touch $@
 
@@ -461,7 +467,7 @@ android/libs/gobridge.aar: $(bridge_src)
 		-v $(ext_ldflags) \
 		$(GO_TAGS) \
 		-cache $(android_gomobile_cache) \
-		-target android \
+		-target $(GOMOBILE_ANDROID_TARGET) \
 		-androidapi $(minimum_android_ver) \
 		./go/framework/bertybridge
 	touch $@

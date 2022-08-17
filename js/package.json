@@ -40,7 +40,7 @@
     "linkify-it": "^3.0.3",
     "lottie-react-native": "^4.1.3",
     "mem": "^8.0.0",
-    "moment": "^2.29.2",
+    "moment": "^2.29.4",
     "multiaddr": "^10.0.1",
     "node-libs-react-native": "^1.2.1",
     "protobufjs": "^6.10.2",

@@ -135,6 +135,12 @@ func (event *StreamEvent) UnmarshalPayload() (proto.Message, error) {
 		message = &StreamEvent_Notified{}
 	case StreamEvent_TypeListEnded:
 		message = &StreamEvent_ListEnded{}
+	case StreamEvent_TypePeerStatusGroupAssociated:
+		message = &StreamEvent_PeerStatusGroupAssociated{}
+	case StreamEvent_TypePeerStatusConnected:
+		message = &StreamEvent_PeerStatusConnected{}
+	case StreamEvent_TypePeerStatusDisconnected:
+		message = &StreamEvent_PeerStatusDisconnected{}
 	default:
 		return nil, errcode.TODO.Wrap(fmt.Errorf("unsupported StreamEvent type: %q", event.GetType()))
 	}

@@ -226,7 +226,6 @@ func activateGroupContext(ctx context.Context, gc *GroupContext, contact crypto.
 
 			wg.Done()
 		}()
-
 		gc.logger.Info(fmt.Sprintf("FillMessageKeysHolderUsingPreviousData took %s", time.Since(start)))
 
 		start = time.Now()

@@ -153,7 +153,6 @@
 			"title": "Ajustes",
 			"proximity-button": "",
 			"notifications-button": "Notificaciones",
-			"contact-convs-button": "",
 			"appearance-button": "",
 			"accounts-button": "Cuentas",
 			"network-button": "",
@@ -219,12 +218,6 @@
 			"cancel": "Cancelar",
 			"name-input-placeholder": "Nombre..."
 		},
-		"berty-services": {
-			"title": "",
-			"desc": "",
-			"button": "",
-			"skip": "Omitir y hacer esto más tarde"
-		},
 		"delete-account": {
 			"title": "¡Eliminar cuenta!",
 			"first-desc": "¿Está seguro que desea eliminar su cuenta?",
@@ -246,6 +239,7 @@
 			"header-left-button": "Información del dispositivo",
 			"header-middle-button": "Generar datos falsos",
 			"header-right-button": "Reiniciar el servicio",
+			"force-mock-button": "",
 			"simulate-button": "Simular error de flujo",
 			"simulate-js-error-button": "Simular error de JavaScript",
 			"system-info-button": "Información del sistema",
@@ -258,6 +252,7 @@
 				"name": "Filtros de registro",
 				"bullet-point": "Reinicia la aplicación luego de cambiar este campo"
 			},
+			"export-logs-button": "",
 			"add-dev-conversations-button": "Agregar conversaciones de desarrollo",
 			"share-button": {
 				"title": "Compartir ID en discord",
@@ -418,9 +413,15 @@
 			"title": "",
 			"media-button": "Medios, enlaces y documentos",
 			"members-button": {
-				"title": "Miembros"
+				"title": ""
 			},
 			"add-member-button": "Agregar miembro",
+			"members-dropdown": {
+				"search-placeholder": "",
+				"conversation-booster": "",
+				"replication-type": "",
+				"user-type": ""
+			},
 			"invite-button": "Invitar a través de enlace",
 			"save-button": "Guardar la conversación en el servidor"
 		},
@@ -496,9 +497,6 @@
 		"user-message": {
 			"read-more": "Aprender más",
 			"show-less": "Mostrar menos"
-		},
-		"emojis": {
-			"matching": ""
 		}
 	},
 	"account": {
@@ -643,5 +641,8 @@
 		"minutes": "",
 		"hours": "",
 		"days": ""
+	},
+	"share": {
+		"sharing-id-message": ""
 	}
 }

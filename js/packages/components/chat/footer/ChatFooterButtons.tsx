@@ -2,30 +2,24 @@ import { Icon } from '@ui-kitten/components'
 import React from 'react'
 import { TouchableOpacity, TouchableOpacityProps, View, ActivityIndicator } from 'react-native'
 
-import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
+import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useStyles } from '@berty/contexts/styles'
 import { useThemeColor } from '@berty/hooks'
 
-import { UnifiedText } from '../../shared-components/UnifiedText'
-
 const chatInputButtonSizeMultiplier = 36
 
-const ChatInputButton: React.FC<{
+export const ChatInputButton: React.FC<{
 	iconName: string
 	iconPack?: string
 	onPress?: TouchableOpacityProps['onPress']
-	size?: number
 	iconRatio?: number
 	disabled?: boolean
 	vOffset?: number
 	loading?: boolean
-}> = React.memo(({ onPress, disabled, iconName, iconPack, size, iconRatio, vOffset, loading }) => {
-	const { scaleSize } = useAppDimensions()
+}> = React.memo(({ onPress, disabled, iconName, iconPack, iconRatio, vOffset, loading }) => {
 	const colors = useThemeColor()
+	const size = chatInputButtonSizeMultiplier
 
-	if (size === undefined) {
-		size = chatInputButtonSizeMultiplier * scaleSize
-	}
 	if (iconRatio === undefined) {
 		iconRatio = 0.5
 	}
@@ -45,7 +39,7 @@ const ChatInputButton: React.FC<{
 
 	return (
 		<TouchableOpacity style={style} disabled={disabled} onPress={onPress}>
-			<View style={vOffset && vOffset > 0 ? { paddingBottom: vOffset * scaleSize } : undefined}>
+			<View style={vOffset && vOffset > 0 ? { paddingBottom: vOffset } : undefined}>
 				{loading ? (
 					<ActivityIndicator size='small' color={colors['reverted-main-text']} />
 				) : (
@@ -70,13 +64,6 @@ export const SendButton: React.FC<{
 	<ChatInputButton iconName='paper-plane-outline' iconRatio={0.56} {...props} />
 ))
 
-export const CameraButton: React.FC<{
-	onPress?: TouchableOpacityProps['onPress']
-	disabled?: boolean
-}> = React.memo(props => (
-	<ChatInputButton iconName='camera' iconPack='custom' vOffset={1.5} iconRatio={0.44} {...props} />
-))
-
 export const RecordButton: React.FC<{
 	onPress?: TouchableOpacityProps['onPress']
 	disabled?: boolean
@@ -91,14 +78,14 @@ export const MoreButton: React.FC<{
 }> = React.memo(({ n, onPress, disabled }) => {
 	const colors = useThemeColor()
 	const { padding, border } = useStyles()
-	const { scaleSize } = useAppDimensions()
+
 	return (
 		<TouchableOpacity
 			style={[
 				{
 					backgroundColor: colors['input-background'],
-					width: chatInputButtonSizeMultiplier * scaleSize,
-					height: chatInputButtonSizeMultiplier * scaleSize,
+					width: chatInputButtonSizeMultiplier,
+					height: chatInputButtonSizeMultiplier,
 					justifyContent: 'center',
 					alignItems: 'center',
 				},
@@ -109,12 +96,7 @@ export const MoreButton: React.FC<{
 			disabled={disabled}
 		>
 			{!!n && <UnifiedText>{n}</UnifiedText>}
-			<Icon
-				name='plus'
-				width={26 * scaleSize}
-				height={26 * scaleSize}
-				fill={colors['secondary-text']}
-			/>
+			<Icon name='plus' width={26} height={26} fill={colors['secondary-text']} />
 		</TouchableOpacity>
 	)
 })

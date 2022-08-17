@@ -153,7 +153,6 @@
 			"title": "설정",
 			"proximity-button": "",
 			"notifications-button": "알림",
-			"contact-convs-button": "",
 			"appearance-button": "",
 			"accounts-button": "계정",
 			"network-button": "",
@@ -219,12 +218,6 @@
 			"cancel": "취소",
 			"name-input-placeholder": "이름..."
 		},
-		"berty-services": {
-			"title": "",
-			"desc": "",
-			"button": "",
-			"skip": ""
-		},
 		"delete-account": {
 			"title": "계정 삭제!",
 			"first-desc": "정말로 계정을 삭제해도 괜찮을까요?",
@@ -246,6 +239,7 @@
 			"header-left-button": "장치 정보",
 			"header-middle-button": "모조 데이터 생성",
 			"header-right-button": "데몬 재시작",
+			"force-mock-button": "",
 			"simulate-button": "",
 			"simulate-js-error-button": "",
 			"system-info-button": "시스템 정보",
@@ -258,6 +252,7 @@
 				"name": "로그 필터",
 				"bullet-point": "변경 후 재시작 필요"
 			},
+			"export-logs-button": "",
 			"add-dev-conversations-button": "",
 			"share-button": {
 				"title": "디스코드에 ID 공유",
@@ -418,9 +413,15 @@
 			"title": "",
 			"media-button": "미디어, 링크 및 문서",
 			"members-button": {
-				"title": "멤버"
+				"title": ""
 			},
 			"add-member-button": "멤버 추가",
+			"members-dropdown": {
+				"search-placeholder": "",
+				"conversation-booster": "",
+				"replication-type": "",
+				"user-type": ""
+			},
 			"invite-button": "링크로 초대",
 			"save-button": "서버에 대화내역 저장하기"
 		},
@@ -496,9 +497,6 @@
 		"user-message": {
 			"read-more": "",
 			"show-less": ""
-		},
-		"emojis": {
-			"matching": ""
 		}
 	},
 	"account": {
@@ -643,5 +641,8 @@
 		"minutes": "",
 		"hours": "",
 		"days": ""
+	},
+	"share": {
+		"sharing-id-message": ""
 	}
 }

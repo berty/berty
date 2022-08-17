@@ -1,6 +1,6 @@
 import { Icon } from '@ui-kitten/components'
 import React from 'react'
-import { View } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 
 import { useStyles } from '@berty/contexts/styles'
 import { useThemeColor } from '@berty/hooks'
@@ -15,11 +15,9 @@ export const ImageCounter: React.FC<{ count: number }> = ({ count }) => {
 		<View
 			style={[
 				{
-					flexDirection: 'row',
 					backgroundColor: colors['background-header'],
-					alignItems: 'center',
-					justifyContent: 'center',
 				},
+				styles.container,
 				padding.small,
 				border.radius.large,
 			]}
@@ -36,3 +34,11 @@ export const ImageCounter: React.FC<{ count: number }> = ({ count }) => {
 		</View>
 	)
 }
+
+const styles = StyleSheet.create({
+	container: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		justifyContent: 'center',
+	},
+})

@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/base64"
+	"encoding/hex"
 	"fmt"
 	"strings"
 	"sync"
@@ -12,10 +13,8 @@ import (
 	ipfscid "github.com/ipfs/go-cid"
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/libp2p/go-libp2p-core/network"
-	"github.com/libp2p/go-libp2p-core/peer"
-	"github.com/pkg/errors"
+	peer "github.com/libp2p/go-libp2p-core/peer"
 	"go.uber.org/zap"
-	"moul.io/u"
 
 	"berty.tech/berty/v2/go/internal/handshake"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
@@ -25,412 +24,27 @@ import (
 	"berty.tech/berty/v2/go/pkg/tyber"
 )
 
-type pendingRequestDetails struct {
-	contact     *protocoltypes.ShareableContact
-	ownMetadata []byte
-}
-
-type pendingRequest struct {
-	updateCh   chan *pendingRequestDetails
-	cancelFunc context.CancelFunc
-}
-
-type contactRequestsManager struct {
-	enabled        bool
-	seed           []byte
-	announceCancel context.CancelFunc
-	metadataStore  *MetadataStore
-	lock           sync.Mutex
-	ipfs           ipfsutil.ExtendedCoreAPI
-	accSK          crypto.PrivKey
-	ctx            context.Context
-	logger         *zap.Logger
-	swiper         *Swiper
-	toAdd          map[string]*pendingRequest
-}
-
-func (c *contactRequestsManager) metadataRequestDisabled(_ *protocoltypes.GroupMetadataEvent) error {
-	c.enabled = false
-	if c.announceCancel != nil {
-		c.announceCancel()
-		c.ipfs.RemoveStreamHandler(contactRequestV1)
-	}
-
-	c.announceCancel = nil
-
-	return nil
-}
-
-func (c *contactRequestsManager) metadataRequestEnabled(_ *protocoltypes.GroupMetadataEvent) error {
-	c.ipfs.SetStreamHandler(contactRequestV1, func(s network.Stream) { _ = c.incomingHandler(s) })
-
-	c.enabled = true
-	if c.announceCancel != nil {
-		return nil
-	}
-
-	return c.enableIncomingRequests()
-}
-
-func (c *contactRequestsManager) metadataRequestReset(evt *protocoltypes.GroupMetadataEvent) error {
-	e := &protocoltypes.AccountContactRequestReferenceReset{}
-	if err := e.Unmarshal(evt.Event); err != nil {
-		return errcode.ErrDeserialization.Wrap(err)
-	}
-
-	c.seed = e.PublicRendezvousSeed
-
-	if !c.enabled {
-		return nil
-	}
-
-	return c.enableIncomingRequests()
-}
-
-func cidBytesString(bytes []byte) string {
-	cid, err := ipfscid.Cast(bytes)
-	if err != nil {
-		return "error"
-	}
-	return cid.String()
-}
-
-func (c *contactRequestsManager) metadataRequestEnqueued(evt *protocoltypes.GroupMetadataEvent) error {
-	ctx := tyber.ContextWithConstantTraceID(c.ctx, "msgrcvd-"+cidBytesString(evt.EventContext.ID))
-	traceName := fmt.Sprintf("Received %s on group %s", strings.TrimPrefix(evt.Metadata.EventType.String(), "EventType"), base64.RawURLEncoding.EncodeToString(evt.EventContext.GroupPK))
-	c.logger.Debug(traceName, tyber.FormatStepLogFields(ctx, []tyber.Detail{}, tyber.UpdateTraceName(traceName))...)
-
-	e := &protocoltypes.AccountContactRequestEnqueued{}
-	if err := e.Unmarshal(evt.Event); err != nil {
-		return tyber.LogError(ctx, c.logger, "Failed to unmarshal event", err)
-	}
-
-	if err := c.enqueueRequest(context.TODO(), &protocoltypes.ShareableContact{
-		PK:                   e.Contact.PK,
-		PublicRendezvousSeed: e.Contact.PublicRendezvousSeed,
-	}, e.OwnMetadata); err != nil {
-		return tyber.LogError(ctx, c.logger, "Failed to enqueue request", err)
-	}
-
-	return nil
-}
-
-func (c *contactRequestsManager) metadataRequestSent(evt *protocoltypes.GroupMetadataEvent) error {
-	e := &protocoltypes.AccountContactRequestSent{}
-	if err := e.Unmarshal(evt.Event); err != nil {
-		return err
-	}
-
-	if request, ok := c.toAdd[string(e.ContactPK)]; ok {
-		request.cancelFunc()
-		delete(c.toAdd, string(e.ContactPK))
-	}
-
-	return nil
-}
-
-func (c *contactRequestsManager) metadataRequestReceived(evt *protocoltypes.GroupMetadataEvent) error {
-	e := &protocoltypes.AccountContactRequestReceived{}
-	if err := e.Unmarshal(evt.Event); err != nil {
-		return err
-	}
-
-	if request, ok := c.toAdd[string(e.ContactPK)]; ok {
-		request.cancelFunc()
-		delete(c.toAdd, string(e.ContactPK))
-	}
-
-	return nil
-}
-
-func (c *contactRequestsManager) enqueueRequest(tctx context.Context, contact *protocoltypes.ShareableContact, ownMetadata []byte) error {
-	tctx, _, endSection := tyber.Section(c.ctx, c.logger, "Requesting contact "+base64.RawURLEncoding.EncodeToString(contact.PK))
-
-	pk, err := crypto.UnmarshalEd25519PublicKey(contact.PK)
-	if err != nil {
-		endSection(err, "Failed to unmarshal contact public key")
-		return err
-	}
-
-	// contact already queued
-	if pending, ok := c.toAdd[string(contact.PK)]; ok {
-		pending.updateCh <- &pendingRequestDetails{
-			contact:     contact,
-			ownMetadata: ownMetadata,
-		}
-
-		endSection(nil, "Contact already queued")
-		return nil
-	}
-
-	swiperCh := make(chan peer.AddrInfo)
-	reqCtx, reqCancel := context.WithCancel(tctx)
-	parent := u.NewUniqueChild(reqCtx)
-	var wg sync.WaitGroup
-	pending := &pendingRequest{
-		updateCh:   make(chan *pendingRequestDetails),
-		cancelFunc: reqCancel,
-	}
-
-	go func() {
-		for {
-			select {
-			case details := <-pending.updateCh:
-				wg.Add(1)
-				parent.SetChild(func(ctx context.Context) {
-					c.swiper.WatchTopic(
-						ctx,
-						details.contact.PK,
-						details.contact.PublicRendezvousSeed,
-						swiperCh,
-						wg.Done,
-					)
-
-					close(swiperCh)
-				})
-			case <-reqCtx.Done():
-				parent.CloseChild()
-				// drain channel
-				go func() {
-					for range swiperCh {
-					}
-				}()
-
-				wg.Wait()
-				return
-			}
-		}
-	}()
-
-	pending.updateCh <- &pendingRequestDetails{
-		contact:     contact,
-		ownMetadata: ownMetadata,
-	}
-
-	c.toAdd[string(contact.PK)] = pending
-
-	// process addresses from swiper
-	go func() {
-		defer reqCancel()
-		for addr := range swiperCh {
-			// TODO(gfanton): Add tyber step
-			c.logger.Debug("swiper found a peer, connecting", logutil.PrivateString("peer", addr.ID.String()))
-			if err := c.ipfs.Swarm().Connect(reqCtx, addr); err != nil {
-				tyber.LogStep(tctx, c.logger, "Failed to connect to peer")
-				continue
-			}
-
-			stream, err := c.ipfs.NewStream(reqCtx, addr.ID, contactRequestV1)
-			if err != nil {
-				tyber.LogStep(tctx, c.logger, "Failed to open stream with peer")
-				continue
-			}
-
-			if err := c.performSend(reqCtx, pk, stream); err != nil {
-				tyber.LogStep(tctx, c.logger, "Contact request send failed")
-				continue
-			}
-
-			endSection(nil, "Contact request success")
-			return
-		}
-
-		endSection(nil, "unable to process contact request")
-	}()
-
-	return nil
-}
-
-func (c *contactRequestsManager) metadataWatcher(ctx context.Context) {
-	handlers := map[protocoltypes.EventType]func(*protocoltypes.GroupMetadataEvent) error{
-		protocoltypes.EventTypeAccountContactRequestDisabled:         c.metadataRequestDisabled,
-		protocoltypes.EventTypeAccountContactRequestEnabled:          c.metadataRequestEnabled,
-		protocoltypes.EventTypeAccountContactRequestReferenceReset:   c.metadataRequestReset,
-		protocoltypes.EventTypeAccountContactRequestOutgoingEnqueued: c.metadataRequestEnqueued,
-		protocoltypes.EventTypeAccountContactRequestOutgoingSent:     c.metadataRequestSent,
-		protocoltypes.EventTypeAccountContactRequestIncomingReceived: c.metadataRequestReceived,
-	}
-
-	c.lock.Lock()
-	enabled, contact := c.metadataStore.GetIncomingContactRequestsStatus()
-	c.enabled = enabled
-
-	if contact != nil {
-		c.seed = contact.PublicRendezvousSeed
-	}
-
-	if c.enabled && len(c.seed) > 0 {
-		if err := c.metadataRequestEnabled(&protocoltypes.GroupMetadataEvent{}); err != nil {
-			c.logger.Warn("unable to enable metadata request", zap.Error(err))
-		}
-	}
-
-	for _, contact := range c.metadataStore.ListContactsByStatus(protocoltypes.ContactStateToRequest) {
-		ownMeta, err := c.metadataStore.GetRequestOwnMetadataForContact(contact.PK)
-		if err != nil {
-			c.logger.Warn("error while retrieving own metadata for contact", logutil.PrivateBinary("pk", contact.PK), zap.Error(err))
-		}
-
-		if err := c.enqueueRequest(context.TODO(), contact, ownMeta); err != nil {
-			c.logger.Error("unable to enqueue contact request", zap.Error(err))
-		}
-	}
-	c.lock.Unlock()
-
-	chSub, err := c.metadataStore.EventBus().Subscribe(new(protocoltypes.GroupMetadataEvent))
-	if err != nil {
-		c.logger.Warn("unable to subscribe to group metadata event", zap.Error(err))
-		return
-	}
-
-	go func() {
-		defer chSub.Close()
-		for {
-			var evt interface{}
-			select {
-			case evt = <-chSub.Out():
-			case <-ctx.Done():
-				return
-			}
-
-			// @FIXME(gfanton): we should run this in a gorouting to potentially
-			// avoid to stuck the channel
-			e := evt.(protocoltypes.GroupMetadataEvent)
-			c.lock.Lock()
-			if handler, ok := handlers[e.Metadata.EventType]; ok {
-				if err := handler(&e); err != nil {
-					c.logger.Error("error while handling metadata store event", zap.Error(err))
-				}
-			}
-			c.lock.Unlock()
-		}
-	}()
-}
-
 const contactRequestV1 = "/berty/contact_req/1.0.0"
 
-func (c *contactRequestsManager) incomingHandler(stream network.Stream) (err error) {
-	ctx, _, endSection := tyber.Section(c.ctx, c.logger, "Responding to contact request")
-	defer func() { endSection(err, "", tyber.ForceReopen) }()
+type contactRequestsManager struct {
+	muManager sync.Mutex
 
-	defer func() {
-		if closeErr := stream.Reset(); closeErr != nil {
-			endSection(closeErr, "Failed to close stream with other peer", tyber.ForceReopen)
-		}
-	}()
+	rootCtx        context.Context
+	announceCancel context.CancelFunc
 
-	reader := ggio.NewDelimitedReader(stream, 2048)
-	writer := ggio.NewDelimitedWriter(stream)
+	lookupProcess   map[string]context.CancelFunc
+	muLookupProcess sync.Mutex
 
-	otherPK, err := handshake.ResponseUsingReaderWriter(ctx, c.logger, reader, writer, c.accSK)
-	if err != nil {
-		return errors.Wrap(err, "handshake failed")
-	}
+	logger *zap.Logger
 
-	otherPKBytes, err := otherPK.Raw()
-	if err != nil {
-		return errors.Wrap(err, "failed to marshal contact public key")
-	}
+	enabled bool
 
-	contact := &protocoltypes.ShareableContact{}
+	ownRendezvousSeed []byte
+	accSK             crypto.PrivKey
 
-	if err := reader.ReadMsg(contact); err != nil {
-		return errors.Wrap(err, "failed to retrieve contact information")
-	}
-
-	if err := contact.CheckFormat(protocoltypes.ShareableContactOptionsAllowMissingRDVSeed); err != nil {
-		return errors.Wrap(err, "invalid contact information format")
-	}
-
-	if !bytes.Equal(otherPKBytes, contact.PK) {
-		return errors.Wrap(err, "contact information does not match handshake data")
-	}
-
-	if _, err = c.metadataStore.ContactRequestIncomingReceived(ctx, &protocoltypes.ShareableContact{
-		PK:                   otherPKBytes,
-		PublicRendezvousSeed: contact.PublicRendezvousSeed,
-		Metadata:             contact.Metadata,
-	}); err != nil {
-		return errors.Wrap(err, "failed to add ContactRequestIncomingReceived event to metadata store")
-	}
-
-	return nil
-}
-
-func (c *contactRequestsManager) performSend(ctx context.Context, otherPK crypto.PubKey, stream network.Stream) error {
-	defer func() {
-		if err := stream.Close(); err != nil {
-			c.logger.Warn("error while closing stream with other peer", zap.Error(err))
-		}
-	}()
-
-	c.lock.Lock()
-	ok := c.metadataStore.checkContactStatus(otherPK, protocoltypes.ContactStateAdded)
-	c.lock.Unlock()
-
-	if ok {
-		// Nothing to do, contact has already been requested
-		return nil
-	}
-
-	_, contact := c.metadataStore.GetIncomingContactRequestsStatus()
-	if contact == nil {
-		return fmt.Errorf("unable to retrieve own contact information")
-	}
-
-	pkB, err := otherPK.Raw()
-	if err != nil {
-		return fmt.Errorf("unable to get raw pk: %w", err)
-	}
-
-	ownMetadata, err := c.metadataStore.GetRequestOwnMetadataForContact(pkB)
-	if err != nil {
-		c.logger.Warn("unable to get own metadata for contact", zap.Error(err))
-		ownMetadata = nil
-	}
-
-	contact.Metadata = ownMetadata
-
-	reader := ggio.NewDelimitedReader(stream, 2048)
-	writer := ggio.NewDelimitedWriter(stream)
-
-	if err := handshake.RequestUsingReaderWriter(ctx, c.logger, reader, writer, c.accSK, otherPK); err != nil {
-		return fmt.Errorf("an error occurred during handshake: %w", err)
-	}
-
-	if err := writer.WriteMsg(contact); err != nil {
-		return fmt.Errorf("an error occurred while sending own contact information: %w", err)
-	}
-
-	if _, err := c.metadataStore.ContactRequestOutgoingSent(ctx, otherPK); err != nil {
-		return fmt.Errorf("an error occurred while marking contact request as sent: %w", err)
-	}
-
-	return nil
-}
-
-func (c *contactRequestsManager) enableIncomingRequests() error {
-	c.logger.Debug("enableIncomingRequests start")
-
-	if c.announceCancel != nil {
-		c.announceCancel()
-	}
-
-	c.logger.Debug("enableIncomingRequests get public")
-	pkBytes, err := c.accSK.GetPublic().Raw()
-	if err != nil {
-		return err
-	}
-
-	var ctx context.Context
-
-	ctx, c.announceCancel = context.WithCancel(c.ctx)
-
-	c.logger.Debug("enableIncomingRequests run announce")
-	c.swiper.Announce(ctx, pkBytes, c.seed)
-
-	c.logger.Debug("enableIncomingRequests end")
-	return nil
+	ipfs          ipfsutil.ExtendedCoreAPI
+	swiper        *Swiper
+	metadataStore *MetadataStore
 }
 
 func initContactRequestsManager(ctx context.Context, s *Swiper, store *MetadataStore, ipfs ipfsutil.ExtendedCoreAPI, logger *zap.Logger) error {
@@ -440,16 +54,439 @@ func initContactRequestsManager(ctx context.Context, s *Swiper, store *MetadataS
 	}
 
 	cm := &contactRequestsManager{
+		lookupProcess: make(map[string]context.CancelFunc),
 		metadataStore: store,
 		ipfs:          ipfs,
-		logger:        logger,
+		logger:        logger.Named("req-mngr"),
 		accSK:         sk,
-		ctx:           ctx,
+		rootCtx:       ctx,
 		swiper:        s,
-		toAdd:         map[string]*pendingRequest{},
 	}
 
 	go cm.metadataWatcher(ctx)
 
 	return nil
+}
+
+func (c *contactRequestsManager) metadataWatcher(ctx context.Context) {
+	handlers := map[protocoltypes.EventType]func(context.Context, *protocoltypes.GroupMetadataEvent) error{
+		protocoltypes.EventTypeAccountContactRequestDisabled:         c.metadataRequestDisabled,
+		protocoltypes.EventTypeAccountContactRequestEnabled:          c.metadataRequestEnabled,
+		protocoltypes.EventTypeAccountContactRequestReferenceReset:   c.metadataRequestReset,
+		protocoltypes.EventTypeAccountContactRequestOutgoingEnqueued: c.metadataRequestEnqueued,
+
+		// @FIXME: looks like we don't need those events
+		protocoltypes.EventTypeAccountContactRequestOutgoingSent:     c.metadataRequestSent,
+		protocoltypes.EventTypeAccountContactRequestIncomingReceived: c.metadataRequestReceived,
+	}
+
+	// subscribe to new event
+	sub, err := c.metadataStore.EventBus().Subscribe(new(protocoltypes.GroupMetadataEvent))
+	if err != nil {
+		c.logger.Warn("unable to subscribe to group metadata event", zap.Error(err))
+		return
+	}
+
+	// recreate previous contact request state
+	enabled, contact := c.metadataStore.GetIncomingContactRequestsStatus()
+	if contact != nil {
+		c.ownRendezvousSeed = contact.PublicRendezvousSeed
+	}
+
+	if enabled {
+		if err := c.enableContactRequest(ctx); err != nil {
+			c.logger.Warn("unable to enable contact request", zap.Error(err))
+		}
+	}
+
+	// enqueue all contact with the `ToRequest` state
+	for _, contact := range c.metadataStore.ListContactsByStatus(protocoltypes.ContactStateToRequest) {
+		if err := c.enqueueRequest(ctx, contact); err != nil {
+			c.logger.Warn("unable to enqueue contact request", logutil.PrivateBinary("pk", contact.PK), zap.Error(err))
+		}
+	}
+
+	defer sub.Close()
+	for {
+		var evt interface{}
+		select {
+		case evt = <-sub.Out():
+		case <-ctx.Done():
+			return
+		}
+
+		// handle new events
+		e := evt.(protocoltypes.GroupMetadataEvent)
+		typ := e.GetMetadata().GetEventType()
+		hctx, _, endSection := tyber.Section(ctx, c.logger, fmt.Sprintf("handling event - %s", typ.String()))
+
+		c.muManager.Lock()
+
+		var err error
+		if handler, ok := handlers[typ]; ok {
+			if err = handler(hctx, &e); err != nil {
+				c.logger.Error("metadata store event handler", zap.String("event", typ.String()), zap.Error(err))
+			}
+		}
+
+		c.muManager.Unlock()
+
+		endSection(err, "")
+	}
+}
+
+func (c *contactRequestsManager) metadataRequestDisabled(_ context.Context, _ *protocoltypes.GroupMetadataEvent) error {
+	if !c.enabled {
+		c.logger.Warn("contact request already disabled")
+		return nil
+	}
+
+	c.enabled = false
+
+	c.disableAnnounce()
+
+	c.ipfs.RemoveStreamHandler(contactRequestV1)
+
+	return nil
+}
+
+func (c *contactRequestsManager) metadataRequestEnabled(ctx context.Context, evt *protocoltypes.GroupMetadataEvent) error {
+	e := &protocoltypes.AccountContactRequestEnabled{}
+	if err := e.Unmarshal(evt.Event); err != nil {
+		return errcode.ErrDeserialization.Wrap(err)
+	}
+
+	return c.enableContactRequest(ctx)
+}
+
+func (c *contactRequestsManager) enableContactRequest(ctx context.Context) error {
+	if c.enabled {
+		c.logger.Warn("contact request already enabled")
+		return nil
+	}
+
+	pkBytes, err := c.accSK.GetPublic().Raw()
+	if err != nil {
+		return fmt.Errorf("unable to get raw pk: %w", err)
+	}
+
+	c.ipfs.SetStreamHandler(contactRequestV1, func(s network.Stream) {
+		ctx, _, endSection := tyber.Section(c.rootCtx, c.logger, "receiving incoming contact request")
+
+		if err := c.handleIncomingRequest(ctx, s); err != nil {
+			c.logger.Error("unable to handle incoming contact request", zap.Error(err))
+		}
+
+		endSection(err, "")
+
+		if err := s.Reset(); err != nil {
+			c.logger.Error("unable to reset stream", zap.Error(err))
+		}
+	})
+
+	c.enabled = true
+	tyber.LogStep(ctx, c.logger, "enabled contact request")
+
+	// announce on swiper if we already got seed
+	if c.ownRendezvousSeed != nil {
+		return c.enableAnnounce(ctx, c.ownRendezvousSeed, pkBytes)
+	}
+
+	c.logger.Warn("no seed registered, reset will be needed before announcing")
+	return nil
+}
+
+func (c *contactRequestsManager) metadataRequestReset(ctx context.Context, evt *protocoltypes.GroupMetadataEvent) error {
+	e := &protocoltypes.AccountContactRequestReferenceReset{}
+	if err := e.Unmarshal(evt.Event); err != nil {
+		return errcode.ErrDeserialization.Wrap(err)
+	}
+
+	accPK, err := c.accSK.GetPublic().Raw()
+	if err != nil {
+		return fmt.Errorf("unable to get raw pk: %w", err)
+	}
+
+	switch {
+	case e.PublicRendezvousSeed == nil:
+		return fmt.Errorf("unable to reset with an empty seed")
+	case bytes.Equal(e.PublicRendezvousSeed, c.ownRendezvousSeed):
+		return fmt.Errorf("unable to reset twice with the same seed")
+	}
+
+	// updating rendezvous seed
+	tyber.LogStep(ctx, c.logger, "update rendezvous seed")
+	c.ownRendezvousSeed = e.PublicRendezvousSeed
+
+	// if contact request manager is disable don't run announce
+	if !c.enabled {
+		return nil
+	}
+
+	return c.enableAnnounce(ctx, c.ownRendezvousSeed, accPK)
+}
+
+func (c *contactRequestsManager) metadataRequestEnqueued(ctx context.Context, evt *protocoltypes.GroupMetadataEvent) error {
+	ctx = tyber.ContextWithConstantTraceID(ctx, "msgrcvd-"+cidBytesString(evt.EventContext.ID))
+
+	traceName := fmt.Sprintf("Received %s on group %s",
+		strings.TrimPrefix(evt.Metadata.EventType.String(), "EventType"), base64.RawURLEncoding.EncodeToString(evt.EventContext.GroupPK))
+	c.logger.Debug(traceName, tyber.FormatStepLogFields(ctx, []tyber.Detail{}, tyber.UpdateTraceName(traceName))...)
+
+	e := &protocoltypes.AccountContactRequestEnqueued{}
+	if err := e.Unmarshal(evt.Event); err != nil {
+		return tyber.LogError(ctx, c.logger, "Failed to unmarshal event", err)
+	}
+
+	// enqueue contact request
+	if err := c.enqueueRequest(ctx, e.Contact); err != nil {
+		return tyber.LogError(ctx, c.logger, "Failed to enqueue request", err)
+	}
+
+	return nil
+}
+
+func (c *contactRequestsManager) metadataRequestSent(_ context.Context, evt *protocoltypes.GroupMetadataEvent) error {
+	e := &protocoltypes.AccountContactRequestSent{}
+	if err := e.Unmarshal(evt.Event); err != nil {
+		return errcode.ErrDeserialization.Wrap(err)
+	}
+
+	// another device may have successfully sent contact request, try to cancel
+	// lookup if needed
+	c.cancelContactLookup(e.ContactPK)
+	return nil
+}
+
+func (c *contactRequestsManager) metadataRequestReceived(_ context.Context, evt *protocoltypes.GroupMetadataEvent) error {
+	e := &protocoltypes.AccountContactRequestReceived{}
+	if err := e.Unmarshal(evt.Event); err != nil {
+		return errcode.ErrDeserialization.Wrap(err)
+	}
+
+	// another device may have successfully sent contact request, try to cancel
+	// lookup if needed
+	c.cancelContactLookup(e.ContactPK)
+	return nil
+}
+
+func (c *contactRequestsManager) registerContactLookup(ctx context.Context, contactPK []byte) context.Context {
+	c.muLookupProcess.Lock()
+
+	key := hex.EncodeToString(contactPK)
+
+	// make sure to only have one process for this pk running
+	ctx, cancel := context.WithCancel(ctx)
+	if cancelProvious, ok := c.lookupProcess[key]; ok {
+		cancelProvious() // cancel previous lookup if needed
+	}
+	c.lookupProcess[key] = cancel
+
+	c.muLookupProcess.Unlock()
+	return ctx
+}
+
+func (c *contactRequestsManager) cancelContactLookup(contactPK []byte) {
+	c.muLookupProcess.Lock()
+
+	key := hex.EncodeToString(contactPK)
+
+	// cancel current lookup if needed
+	if cancel, ok := c.lookupProcess[key]; ok {
+		cancel()
+		delete(c.lookupProcess, key)
+	}
+
+	c.muLookupProcess.Unlock()
+}
+
+func (c *contactRequestsManager) enableAnnounce(ctx context.Context, seed, accPK []byte) error {
+	if seed == nil {
+		return fmt.Errorf("announcing with empty seed")
+	}
+
+	if c.announceCancel != nil { // is already enable
+		tyber.LogStep(ctx, c.logger, "canceling previous announce")
+		c.announceCancel()
+	}
+
+	ctx, c.announceCancel = context.WithCancel(ctx)
+	c.enabled = true
+
+	tyber.LogStep(ctx, c.logger, "announcing on swipper")
+	// start announcing on swiper, this method should take care ton announce as
+	// many time as needed
+	c.swiper.Announce(ctx, accPK, seed)
+	return nil
+}
+
+func (c *contactRequestsManager) disableAnnounce() {
+	if c.announceCancel != nil {
+		c.announceCancel()
+		c.announceCancel = nil
+	}
+}
+
+func (c *contactRequestsManager) enqueueRequest(ctx context.Context, to *protocoltypes.ShareableContact) (err error) {
+	ctx, _, endSection := tyber.Section(ctx, c.logger, "Enqueue contact request: "+base64.RawURLEncoding.EncodeToString(to.PK))
+
+	otherPK, err := crypto.UnmarshalEd25519PublicKey(to.PK)
+	if err != nil {
+		return err
+	}
+
+	if ok := c.metadataStore.checkContactStatus(otherPK, protocoltypes.ContactStateAdded); ok {
+		err = fmt.Errorf("contact already added")
+		endSection(err, "")
+		// contact already added,
+		return err
+	}
+
+	// register lookup process
+	ctx = c.registerContactLookup(ctx, to.PK)
+
+	// start watching topic on swiper, this method should take care of calling
+	// `FindPeer` as many times as needed
+	cpeers := c.swiper.WatchTopic(ctx, to.PK, to.PublicRendezvousSeed)
+	go func() {
+		var err error
+		for peer := range cpeers {
+			// get our sharable contact to send to other contact
+			if err = c.SendContactRequest(ctx, to, otherPK, peer); err != nil {
+				c.logger.Warn("unable to send contact request", zap.Error(err))
+			} else {
+				// succefully send contact request, leave the loop and cancel lookup
+				break
+			}
+		}
+
+		// cancel lookup process
+		c.cancelContactLookup(to.PK)
+
+		endSection(err, "")
+	}()
+
+	return nil
+}
+
+// SendContactRequest try to perform contact request with the given remote peer
+func (c *contactRequestsManager) SendContactRequest(ctx context.Context, to *protocoltypes.ShareableContact, otherPK crypto.PubKey, peer peer.AddrInfo) (err error) {
+	ctx, _, endSection := tyber.Section(ctx, c.logger, "sending contact request")
+	defer func() {
+		endSection(err, "")
+	}()
+
+	_, own := c.metadataStore.GetIncomingContactRequestsStatus()
+	if own == nil {
+		err = fmt.Errorf("unable to retrieve own contact information")
+		return
+	}
+
+	// get own metadata for contact
+	ownMetadata, err := c.metadataStore.GetRequestOwnMetadataForContact(to.PK)
+	if err != nil {
+		c.logger.Warn("unable to get own metadata for contact", zap.Error(err))
+		ownMetadata = nil
+	}
+	own.Metadata = ownMetadata
+
+	// make sure to have connection with the remote peer
+	if err := c.ipfs.Swarm().Connect(ctx, peer); err != nil {
+		return fmt.Errorf("unable to connect: %w", err)
+	}
+
+	// create a new stream with the remote peer
+	stream, err := c.ipfs.NewStream(ctx, peer.ID, contactRequestV1)
+	if err != nil {
+		return fmt.Errorf("unable to open stream: %w", err)
+	}
+
+	defer func() {
+		if err := stream.Close(); err != nil {
+			c.logger.Warn("error while closing stream with other peer", zap.Error(err))
+		}
+	}()
+
+	reader := ggio.NewDelimitedReader(stream, 2048)
+	writer := ggio.NewDelimitedWriter(stream)
+
+	c.logger.Debug("performing handshake")
+
+	tyber.LogStep(ctx, c.logger, "performing handshake")
+	if err := handshake.RequestUsingReaderWriter(ctx, c.logger, reader, writer, c.accSK, otherPK); err != nil {
+		return fmt.Errorf("an error occurred during handshake: %w", err)
+	}
+
+	tyber.LogStep(ctx, c.logger, "sending own contact")
+	// send own contact information
+	if err := writer.WriteMsg(own); err != nil {
+		return fmt.Errorf("an error occurred while sending own contact information: %w", err)
+	}
+
+	tyber.LogStep(ctx, c.logger, "mark contact request has sent")
+	// mark this contact request has send
+	if _, err := c.metadataStore.ContactRequestOutgoingSent(ctx, otherPK); err != nil {
+		return fmt.Errorf("an error occurred while marking contact request as sent: %w", err)
+	}
+
+	return nil
+}
+
+func (c *contactRequestsManager) handleIncomingRequest(ctx context.Context, stream network.Stream) (err error) {
+	reader := ggio.NewDelimitedReader(stream, 2048)
+	writer := ggio.NewDelimitedWriter(stream)
+
+	tyber.LogStep(ctx, c.logger, "responding to handshake")
+
+	otherPK, err := handshake.ResponseUsingReaderWriter(ctx, c.logger, reader, writer, c.accSK)
+	if err != nil {
+		return fmt.Errorf("handshake failed: %w", err)
+	}
+
+	otherPKBytes, err := otherPK.Raw()
+	if err != nil {
+		return fmt.Errorf("failed to marshal contact public key: %w", err)
+	}
+
+	contact := &protocoltypes.ShareableContact{}
+
+	tyber.LogStep(ctx, c.logger, "checking remote contact information")
+
+	// read remote contact information
+	if err := reader.ReadMsg(contact); err != nil {
+		return fmt.Errorf("failed to retrieve contact information: %w", err)
+	}
+
+	// validate contact pk
+	if !bytes.Equal(otherPKBytes, contact.PK) {
+		return fmt.Errorf("contact information does not match handshake data")
+	}
+
+	// check contact information format
+	if err := contact.CheckFormat(protocoltypes.ShareableContactOptionsAllowMissingRDVSeed); err != nil {
+		return fmt.Errorf("invalid contact information format: %w", err)
+	}
+
+	tyber.LogStep(ctx, c.logger, "marking contact request has received")
+
+	// mark contact request as received
+	_, err = c.metadataStore.ContactRequestIncomingReceived(ctx, &protocoltypes.ShareableContact{
+		PK:                   otherPKBytes,
+		PublicRendezvousSeed: contact.PublicRendezvousSeed,
+		Metadata:             contact.Metadata,
+	})
+
+	if err != nil {
+		return fmt.Errorf("invalid contact information format: %w", err)
+	}
+
+	return nil
+}
+
+func cidBytesString(bytes []byte) string {
+	cid, err := ipfscid.Cast(bytes)
+	if err != nil {
+		return "error"
+	}
+	return cid.String()
 }

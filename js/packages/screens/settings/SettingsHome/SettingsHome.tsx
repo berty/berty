@@ -50,7 +50,7 @@ import {
 	pushAvailable,
 	pushFilteringAvailable,
 } from '@berty/utils/notification/notif-push'
-import { checkProximityPermission } from '@berty/utils/react-native/checkPermissions'
+import { checkProximityPermission } from '@berty/utils/permissions/checkPermissions'
 import { serviceTypes } from '@berty/utils/remote-services/remote-services'
 
 import { EditMyProfile } from './components/EditMyProfile'
@@ -353,12 +353,6 @@ export const SettingsHome: ScreenFC<'Settings.Home'> = withInAppNotification(
 									<DividerItem />
 								</>
 							)}
-							<MenuItemWithIcon
-								iconName='eye-outline'
-								onPress={() => navigate('Settings.Appearance')}
-							>
-								{t('settings.home.appearance-button')}
-							</MenuItemWithIcon>
 						</ItemSection>
 						<ItemSection>
 							<MenuItemWithIcon

@@ -1,0 +1,3 @@
+- name: Start Github Actions service
+  become: yes
+  command: launchctl load -w "{{ launchd_service.path }}"

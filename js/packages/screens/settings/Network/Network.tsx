@@ -21,7 +21,7 @@ import {
 	selectEditedNetworkConfig,
 	setCurrentNetworkConfig,
 } from '@berty/redux/reducers/networkConfig.reducer'
-import { checkProximityPermission } from '@berty/utils/react-native/checkPermissions'
+import { checkProximityPermission } from '@berty/utils/permissions/checkPermissions'
 import { IOSOnlyKeyboardAvoidingView } from '@berty/utils/react-native/keyboardAvoiding'
 
 const Proximity: React.FC = () => {

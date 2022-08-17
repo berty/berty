@@ -1,0 +1,5 @@
+xcode_install_version: '2.8.1'
+FASTLANE_USER: "{{ lookup('env','FASTLANE_USER') }}"
+FASTLANE_PASSWORD: "{{ lookup('env','FASTLANE_PASSWORD') }}"
+session_folder: "{{ ansible_facts.user_dir }}/.fastlane/spaceship/{{ FASTLANE_USER }}"
+xcode_version_list_size: 20

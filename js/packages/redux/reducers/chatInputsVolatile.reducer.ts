@@ -62,11 +62,6 @@ function ensureEntityExists(state: LocalState, convPK: string): ChatInputVolatil
 
 const selectors = adapter.getSelectors(selectSlice)
 
-export const selectChatInputSelection = (
-	state: LocalRootState,
-	convPk: string,
-): ChatInputSelectionType => selectors.selectById(state, convPk)?.selection || null
-
 export const selectChatInputIsFocused = (state: LocalRootState, convPk: string): boolean =>
 	selectors.selectById(state, convPk)?.isFocused || false
 

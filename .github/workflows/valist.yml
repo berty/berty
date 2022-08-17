@@ -8,19 +8,21 @@ jobs:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     steps:
-      - uses: robinraju/release-downloader@v1.3
+      - uses: robinraju/release-downloader@v1.4
         with:
           repository: "berty/berty"
           latest: true
           tarBall: true
           zipBall: true
           fileName: "*"
-      - uses: valist-io/valist-github-action@v2.3.1
+      - uses: tenhaus/get-release-or-tag@v2
+        id: tag
+      - uses: valist-io/valist-github-action@v2.4.0
         with:
           private-key: ${{ secrets.VALIST_SIGNER }}
           account: berty
           project: berty
-          release: ${{ github.ref_name }}
+          release: ${{ steps.tag.outputs.tag }}
           path: '.'
 
           install-name: 'berty'

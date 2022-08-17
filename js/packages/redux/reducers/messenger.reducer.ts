@@ -148,7 +148,7 @@ export const getPeerFromMemberPK = createAsyncThunk(
 			return
 		}
 
-		// recup all devices to a specific member from a group
+		// get all devices to a specific member from a group
 		const devices = await getDevicesForConversationAndMember(messengerClient, convPK, memberPK)
 		// for the moment we don't support multi device so only devices[0] is filled
 		const devicePK = devices[0].publicKey
@@ -225,6 +225,7 @@ const slice = createSlice({
 		builder.addCase(
 			messengerActions[beapi.messenger.StreamEvent.Type.TypePeerStatusConnected],
 			(state, { payload }) => {
+				console.warn('Event TypePeerStatusConnected')
 				if (!payload.peerId || payload.transport === undefined || payload.transport === null) {
 					console.warn('PeerStatusConnected action without peerID or transport', payload)
 					return
@@ -239,6 +240,7 @@ const slice = createSlice({
 		builder.addCase(
 			messengerActions[beapi.messenger.StreamEvent.Type.TypePeerStatusDisconnected],
 			(state, { payload }) => {
+				console.warn('Event TypePeerStatusDisconnected')
 				if (!payload.peerId) {
 					console.warn('PeerStatusDisconnected action without peerID', payload)
 					return
@@ -262,6 +264,7 @@ const slice = createSlice({
 		builder.addCase(
 			messengerActions[beapi.messenger.StreamEvent.Type.TypePeerStatusGroupAssociated],
 			(state, { payload }) => {
+				console.warn('Event TypePeerStatusGroupAssociated')
 				if (!payload.peerId || !payload.groupPk || !payload.devicePk) {
 					console.warn(
 						'PeerStatusGroupAssociated action without peerID or groupPK or devicePK',

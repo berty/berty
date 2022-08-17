@@ -10,20 +10,34 @@ import { IMemberStatus } from './interfaces'
 interface MemberAvatarWithStatusProps extends IMemberStatus {
 	publicKey: Maybe<string>
 	convPK: Maybe<string>
+	isMe: boolean | null | undefined
 }
 
-const MemberStatus: React.FC<IMemberStatus> = ({ memberStatus }) => {
+interface MemberStatusProps extends IMemberStatus {
+	isMe: boolean | null | undefined
+}
+
+const connectedStatusColor = '#4CD31D'
+const reconnectingStatusColor = '#FF9900'
+const disconnectedStatusColor = '#AFAFAF'
+
+const MemberStatus: React.FC<MemberStatusProps> = ({ memberStatus, isMe }) => {
 	let backgroundColor
 	switch (memberStatus) {
 		case beapi.protocol.GroupDeviceStatus.Type.TypePeerConnected:
-			backgroundColor = '#4CD31D'
+			backgroundColor = connectedStatusColor
 			break
 		case beapi.protocol.GroupDeviceStatus.Type.TypePeerReconnecting:
-			backgroundColor = '#FF9900'
+			backgroundColor = reconnectingStatusColor
 			break
 		case beapi.protocol.GroupDeviceStatus.Type.TypePeerDisconnected:
-			backgroundColor = '#AFAFAF'
+			backgroundColor = disconnectedStatusColor
 			break
+	}
+
+	// overwrite backgroundColor as connected if it's you
+	if (isMe) {
+		backgroundColor = connectedStatusColor
 	}
 
 	return (
@@ -37,11 +51,12 @@ export const MemberAvatarWithStatus: React.FC<MemberAvatarWithStatusProps> = ({
 	publicKey,
 	convPK,
 	memberStatus,
+	isMe,
 }) => {
 	return (
 		<>
 			<MemberAvatar publicKey={publicKey} conversationPublicKey={convPK} size={32} />
-			<MemberStatus memberStatus={memberStatus} />
+			<MemberStatus memberStatus={memberStatus} isMe={isMe} />
 		</>
 	)
 }

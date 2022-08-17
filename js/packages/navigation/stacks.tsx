@@ -288,22 +288,6 @@ export const Navigation: React.FC = React.memo(() => {
 				}}
 			/>
 			<NavigationStack.Screen
-				name='Chat.Permissions'
-				component={Components.Chat.Permissions}
-				options={{
-					headerShown: false,
-					presentation: 'formSheet',
-				}}
-			/>
-			<NavigationStack.Screen
-				name='Chat.NotificationAndProximityPermissions'
-				component={Components.Chat.NotificationAndProximityPermissions}
-				options={{
-					headerShown: false,
-					presentation: 'formSheet',
-				}}
-			/>
-			<NavigationStack.Screen
 				name='Chat.Share'
 				component={Components.Chat.ShareModal}
 				options={BackgroundHeaderScreenOptions({
@@ -635,6 +619,14 @@ export const Navigation: React.FC = React.memo(() => {
 					...CustomTitleStyle(),
 					presentation: 'formSheet',
 				})}
+			/>
+			<NavigationStack.Screen
+				name='Settings.Permissions'
+				component={Components.Settings.Permissions}
+				options={{
+					headerShown: false,
+					presentation: 'formSheet',
+				}}
 			/>
 			<NavigationStack.Screen
 				name='Chat.ManageDeepLink'

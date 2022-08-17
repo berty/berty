@@ -48,7 +48,7 @@ jobs:
           #    github         pick the github runner configuration
           #    optimized      pick a dc4 runner if available or fallback on github one
           #
-          node .github/workflows/utils/mac-runner-matrix-builder.js optimized "${{ secrets.SELFHOSTED_STATUS_CHECK_TOKEN }}"
+          node .github/workflows/utils/mac-runner-matrix-builder.js optimized "${{ secrets.GITHUB_TOKEN }}"
 
   build-macos-app:
     name: Build Electron app (macOS)
@@ -67,23 +67,24 @@ jobs:
           filename: .github/workflows/utils/variables.json
 
       - name: Setup asdf
+        if: ${{ !matrix.selfhosted }}
         uses: asdf-vm/actions/setup@v1
 
       - name: Setup go
         run: |
-          asdf plugin add golang
+          asdf plugin add golang || ${{ matrix.selfhosted }}
           asdf install golang
           echo "go_version=$(asdf current golang | xargs | cut -d ' ' -f 2)" >> $GITHUB_ENV
 
       - name: Setup node
         run: |
-          asdf plugin add nodejs
+          asdf plugin add nodejs || ${{ matrix.selfhosted }}
           asdf install nodejs
           echo "node_version=$(asdf current nodejs | xargs | cut -d ' ' -f 2)" >> $GITHUB_ENV
 
       - name: Setup yarn
         run: |
-          asdf plugin add yarn
+          asdf plugin add yarn || ${{ matrix.selfhosted }}
           asdf install yarn
 
       - name: Cache go modules

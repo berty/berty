@@ -21,7 +21,7 @@ async function getMatrix() {
 	const runners = {
 		selfhosted: {
 			name: "self-hosted",
-			runner: ["self-hosted", "self-hosted"],
+			runner: ["self-hosted", "macOS", "public"],
 			selfhosted: true,
 		},
 		github: {

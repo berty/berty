@@ -19,7 +19,7 @@ import (
 	"go.uber.org/zap"
 	"golang.org/x/crypto/nacl/box"
 
-	"berty.tech/berty/v2/go/internal/bertylinks"
+	"berty.tech/berty/v2/go/pkg/bertylinks"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
 	"berty.tech/berty/v2/go/pkg/verifiablecredstypes"
 )

@@ -178,6 +178,7 @@ func (ld *LocalDiscovery) FindPeers(ctx context.Context, cid string, opts ...dis
 		cache.Lock()
 		for ctx.Err() == nil && counter <= limit {
 			if current == nil {
+				// unlock the mutex
 				// wait for new elements in the list
 				cache.cond.Wait()
 				current = cache.queue.Back()

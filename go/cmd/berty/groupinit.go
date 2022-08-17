@@ -10,7 +10,7 @@ import (
 	qrterminal "github.com/mdp/qrterminal/v3"
 	"github.com/peterbourgon/ff/v3/ffcli"
 
-	"berty.tech/berty/v2/go/internal/bertylinks"
+	"berty.tech/berty/v2/go/pkg/bertylinks"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
 )

@@ -98,7 +98,7 @@
 		"setup-finished": {
 			"title": "Setup finished!",
 			"desc": "You can now use the app, start adding contacts and talk freely and privately with them",
-			"button": "Start using berty"
+			"button": "Start using Berty"
 		},
 		"web-views": {
 			"title": "Web content permission",
@@ -497,9 +497,6 @@
 		"user-message": {
 			"read-more": "Read more",
 			"show-less": "Show less"
-		},
-		"emojis": {
-			"matching": "Emojis matching: {{word}}"
 		}
 	},
 	"account": {
@@ -644,5 +641,8 @@
 		"minutes": "{{minutes}} min",
 		"hours": "{{hours}} h",
 		"days": "{{days}} days"
+	},
+	"share": {
+		"sharing-id-message": "Let’s chat on Berty, a secure & p2p messaging app. Join me here:"
 	}
 }

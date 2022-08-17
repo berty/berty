@@ -44,7 +44,7 @@ jobs:
           #    github       pick the github runner configuration
           #    optimized    pick a dc4 runner if available or fallback on github one
           #
-          node .github/workflows/utils/mac-runner-matrix-builder.js optimized "${{ secrets.SELFHOSTED_STATUS_CHECK_TOKEN }}"
+          node .github/workflows/utils/mac-runner-matrix-builder.js optimized "${{ secrets.GITHUB_TOKEN }}"
 
   build:
     needs: mac_runner_matrix_builder
@@ -63,11 +63,14 @@ jobs:
           if [ -d js/ios/.gomobile-cache ]; then
             mv js/ios/.gomobile-cache $RUNNER_TEMP/.gomobile-cache
           fi
+          if [ -d js/ios/.xcodegen-cache ]; then
+            mv js/ios/.xcodegen-cache $RUNNER_TEMP/.xcodegen-cache
+          fi
 
       - name: Checkout
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0
+          fetch-depth: 1
           persist-credentials: false
 
       - name: Load variables from file
@@ -81,13 +84,17 @@ jobs:
           if [ -d $RUNNER_TEMP/.gomobile-cache ]; then
             mv $RUNNER_TEMP/.gomobile-cache js/ios/.gomobile-cache
           fi
+          if [ -d $RUNNER_TEMP/.xcodegen-cache ]; then
+            mv $RUNNER_TEMP/.xcodegen-cache js/ios/.xcodegen-cache
+          fi
 
       - name: Setup asdf
+        if: ${{ !matrix.selfhosted }}
         uses: asdf-vm/actions/setup@v1
 
       - name: Setup go
         run: |
-          asdf plugin add golang
+          asdf plugin add golang || ${{ matrix.selfhosted }}
           asdf install golang
           echo "go_version=$(asdf current golang | xargs | cut -d ' ' -f 2)" >> $GITHUB_ENV
 
@@ -96,33 +103,45 @@ jobs:
           # TMP fix for OpenSSL 1.1.1q install, see: https://github.com/openssl/openssl/issues/18733
           CFLAGS: -Wno-error=implicit-function-declaration
         run: |
-          asdf plugin add ruby
+          asdf plugin add ruby || ${{ matrix.selfhosted }}
           asdf install ruby
           echo "ruby_version=$(asdf current ruby | xargs | cut -d ' ' -f 2)" >> $GITHUB_ENV
 
       - name: Setup xcodegen
         run: |
-          asdf plugin add xcodegen
+          asdf plugin add xcodegen || ${{ matrix.selfhosted }}
           asdf install xcodegen
           echo "xcodegen_version=$(asdf current xcodegen | xargs | cut -d ' ' -f 2)" >> $GITHUB_ENV
 
       - name: Setup node
         run: |
-          asdf plugin add nodejs
+          asdf plugin add nodejs || ${{ matrix.selfhosted }}
           asdf install nodejs
           echo "node_version=$(asdf current nodejs | xargs | cut -d ' ' -f 2)" >> $GITHUB_ENV
 
       - name: Setup yarn
         run: |
-          asdf plugin add yarn
+          asdf plugin add yarn || ${{ matrix.selfhosted }}
           asdf install yarn
 
-      - name: Setup XCode
+      - name: Get XCode version from version file
+        run:
+          echo "xcode_version=$(cat js/ios/.xcode-version)" >> $GITHUB_ENV
+
+      - name: Setup XCode version (Github runners)
+        # Disabled on self-hosted because it requires authentication
         if: ${{ !matrix.selfhosted }}
-        # disabled on self-hosted because it requires authentication
         uses: maxim-lobanov/setup-xcode@v1.4.1
         with:
-          xcode-version: ${{ matrix.xcode }}
+          xcode-version: ${{ env.xcode_version }}
+
+      - name: Check XCode version (Self-hosted runners)
+        if: ${{ matrix.selfhosted }}
+        run: |
+          installed_version="$(xcodebuild -version | head -n 1 | sed 's/Xcode //')"
+          if [ "$xcode_version" != "$installed_version" ]; then
+              echo "::warning file=js/ios/.xcode-version,line=1,col=1::XCode version mismatch on self-hosted runner (required '$xcode_version' / installed '$installed_version')"
+          fi
 
       - name: Cache go modules
         uses: actions/cache@v2.1.6
@@ -135,8 +154,8 @@ jobs:
         uses: actions/cache@v2.1.6
         with:
           path: js/ios/vendor/bundle
-          key:          ${{ runner.os }}-go-${{ env.ruby_version }}-${{ env.json_cache-versions_ruby }}-${{ hashFiles('go/**/go.sum') }}
-          restore-keys: ${{ runner.os }}-go-${{ env.ruby_version }}-${{ env.json_cache-versions_ruby }}-
+          key:          ${{ runner.os }}-ruby-${{ env.ruby_version }}-${{ env.json_cache-versions_ruby }}-${{ hashFiles('js/ios/Gemfile*') }}
+          restore-keys: ${{ runner.os }}-ruby-${{ env.ruby_version }}-${{ env.json_cache-versions_ruby }}-
 
       - name: Cache node modules
         uses: actions/cache@v2.1.6
@@ -148,6 +167,8 @@ jobs:
       - name: Cache Bertybridge framework
         uses: n0izn0iz/mkache@5cedaeaf0b39a9220ae5a815cac8d2a924cee3ef
         if: github.ref != 'refs/heads/master' # this makes sure the VCS_REF is correct on master
+        env:
+          GOMOBILE_IOS_TARGET: iossimulator
         with:
           rule: ios/Frameworks/Bertybridge.xcframework
           makefile: js/Makefile
@@ -156,6 +177,8 @@ jobs:
       - name: Cache Bertypush framework
         uses: n0izn0iz/mkache@5cedaeaf0b39a9220ae5a815cac8d2a924cee3ef
         if: github.ref != 'refs/heads/master' # this makes sure the VCS_REF is correct on master
+        env:
+          GOMOBILE_IOS_TARGET: iossimulator
         with:
           rule: ios/Frameworks/Bertypush.xcframework
           makefile: js/Makefile
@@ -185,61 +208,13 @@ jobs:
 
       - name: Build XCode project and workspace
         working-directory: js
+        env:
+          LANG: en_US.UTF-8
         run: make ios.project
 
       - name: Build iOS frameworks
         working-directory: js
-        run: make ios.gomobile
-
-      - name: Build the app archive
-        working-directory: js
-        run: |
-          xcodebuild archive \
-                CODE_SIGN_IDENTITY="" \
-                CODE_SIGNING_ALLOWED=NO \
-                ONLY_ACTIVE_ARCH=NO  \
-                EXCLUDED_ARCHS='armv7 armv7s' \
-                -workspace ios/Berty.xcworkspace \
-                -scheme "Berty Yolo" \
-                -sdk iphoneos \
-                -archivePath $RUNNER_TEMP/Berty.xcarchive
-
-      - name: Setup macOS keychain
-        working-directory: tool/build/dummy-identity
-        run: |
-          set -x
-          KEYCHAIN_PATH=$RUNNER_TEMP/dummy.keychain
-
-          security create-keychain -p "dummypass" $KEYCHAIN_PATH
-          security default-keychain -s $KEYCHAIN_PATH
-          security unlock-keychain -p "dummypass" $KEYCHAIN_PATH
-          security set-keychain-settings $KEYCHAIN_PATH
-          security import berty-dummy.p12 -t priv -f pkcs12 -P "dummypass" -T /usr/bin/codesign -k $KEYCHAIN_PATH
-          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "dummypass" $KEYCHAIN_PATH
-
-      - name: Strip and sign the archive
-        working-directory: js
-        run: |
-          APP_PATH="$RUNNER_TEMP/Berty.xcarchive/Products/Applications/Berty Yolo.app"
-          find "$APP_PATH" -type f | while read FILE; do
-            if [ -z "$(file "$FILE" | grep Mach-O)" ]; then continue; fi
-            for ARCH in $(lipo -archs "$FILE" 2> /dev/null); do
-              if [[ ! "$ARCH" =~ ^arm64e?$ ]]; then
-                lipo -remove "$ARCH" "$FILE" -output "$FILE"
-              fi
-            done
-          done
-          codesign -fs "Berty Dummy" "$APP_PATH"
-          mkdir Payload
-          mv "$APP_PATH" Payload/
-          zip -r ${{ github.workspace }}/Berty\ Yolo.dummy-signed-ipa Payload
-
-      - name: Upload the archive
-        uses: actions/upload-artifact@v3
-        with:
-          path: ${{ github.workspace }}/Berty Yolo.dummy-signed-ipa
-          name: berty-yolo-${{github.sha}}.dummy-signed-ipa
-          if-no-files-found: error
+        run: GOMOBILE_IOS_TARGET=iossimulator make ios.gomobile
 
       - name: Build the app for e2e testing
         working-directory: js/ios
@@ -259,7 +234,7 @@ jobs:
           sleep 5
           # run test
           IOS_DEVICE="$E2E_TESTING_IOS_DEVICE" \
-          IOS_APP="$(find ~/Library/Developer/Xcode/DerivedData -name "Berty.app" | grep 'Products/AppStore Release-iphonesimulator/Berty.app')" \
+          IOS_APP=`ls -ladt1 "$HOME/Library/Developer/Xcode/DerivedData/"*"/Build/Products/AppStore Release-iphonesimulator/Berty.app" | head -n 1` \
           IOS_VERSION=$E2E_TESTING_IOS_VERSION \
           node e2e-tests/basic.js
           # kill appium

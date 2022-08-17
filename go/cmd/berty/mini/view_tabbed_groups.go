@@ -8,6 +8,7 @@ import (
 	"sync/atomic"
 
 	"github.com/gdamore/tcell"
+	"github.com/gogo/protobuf/proto"
 	"github.com/rivo/tview"
 
 	"berty.tech/berty/v2/go/pkg/messengertypes"
@@ -226,6 +227,70 @@ func (v *tabbedGroupsView) GetHistory() tview.Primitive {
 	return v.activeViewContainer
 }
 
+func (v *tabbedGroupsView) handleEventStream(ctx context.Context) error {
+	srv, err := v.messenger.EventStream(ctx, &messengertypes.EventStream_Request{})
+	if err != nil {
+		return fmt.Errorf("unable to monitor event stream: %w", err)
+	}
+
+	accountv := v.accountGroupView
+	gm := make(map[string][]string)
+	go func() {
+		for {
+			msg, err := srv.Recv()
+			if err != nil {
+				return
+			}
+
+			var merr error
+			switch msg.GetEvent().GetType() {
+			case messengertypes.StreamEvent_TypePeerStatusGroupAssociated:
+				var evt messengertypes.StreamEvent_PeerStatusGroupAssociated
+				if merr = proto.Unmarshal(msg.GetEvent().GetPayload(), &evt); err == nil {
+					m := fmt.Sprintf("<%.15s> associated to group: %.8s (DevicePK %.8s)",
+						evt.PeerID, evt.GroupPK, evt.DevicePK)
+					gm[evt.PeerID] = append(gm[evt.PeerID], evt.GroupPK)
+					accountv.messages.Append(&historyMessage{
+						messageType: messageTypeMeta,
+						payload:     []byte(m),
+					})
+				}
+
+			case messengertypes.StreamEvent_TypePeerStatusConnected:
+				var evt messengertypes.StreamEvent_PeerStatusConnected
+				if merr = proto.Unmarshal(msg.GetEvent().GetPayload(), &evt); err == nil {
+					m := fmt.Sprintf("<%.15s> just connected", evt.PeerID)
+					accountv.messages.Append(&historyMessage{
+						messageType: messageTypeMeta,
+						payload:     []byte(m),
+					})
+				}
+
+			case messengertypes.StreamEvent_TypePeerStatusDisconnected:
+				var evt messengertypes.StreamEvent_PeerStatusDisconnected
+				if merr = proto.Unmarshal(msg.GetEvent().GetPayload(), &evt); err == nil {
+					m := fmt.Sprintf("<%.15s> just disconnected", evt.PeerID)
+					accountv.messages.Append(&historyMessage{
+						messageType: messageTypeMeta,
+						payload:     []byte(m),
+					})
+				}
+			}
+
+			if merr != nil {
+				accountv.messages.Append(&historyMessage{
+					messageType: messageTypeError,
+					payload: []byte(
+						fmt.Sprintf("unable to unmarshall event stream message: %s", merr.Error()),
+					),
+				})
+			}
+		}
+	}()
+
+	return nil
+}
+
 func newTabbedGroups(ctx context.Context, g *protocoltypes.GroupInfo_Reply, protocol protocoltypes.ProtocolServiceClient, messenger messengertypes.MessengerServiceClient, app *tview.Application, displayName string) *tabbedGroupsView {
 	v := &tabbedGroupsView{
 		ctx:           ctx,
@@ -248,6 +313,10 @@ func newTabbedGroups(ctx context.Context, g *protocoltypes.GroupInfo_Reply, prot
 	v.accountGroupView.welcomeEventDisplay()
 
 	v.accountGroupView.loop(ctx)
+
+	if err := v.handleEventStream(ctx); err != nil {
+		panic(err)
+	}
 
 	return v
 }

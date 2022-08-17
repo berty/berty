@@ -4097,6 +4097,20 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       heads: {
                         type: "bytes",
                         id: 2
+                      },
+                      devicePk: {
+                        type: "bytes",
+                        id: 3,
+                        options: {
+                          "(gogoproto.customname)": "DevicePK"
+                        }
+                      },
+                      peerId: {
+                        type: "string",
+                        id: 4,
+                        options: {
+                          "(gogoproto.customname)": "PeerID"
+                        }
                       }
                     }
                   }

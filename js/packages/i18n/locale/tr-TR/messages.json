@@ -153,7 +153,6 @@
 			"title": "Ayarlar",
 			"proximity-button": "Bağımsız İletişim",
 			"notifications-button": "Bildirimler",
-			"contact-convs-button": "Bağlantı ve sohbetler",
 			"appearance-button": "",
 			"accounts-button": "Hesaplar",
 			"network-button": "Ağ",
@@ -219,12 +218,6 @@
 			"cancel": "İptal",
 			"name-input-placeholder": "İsim..."
 		},
-		"berty-services": {
-			"title": "Berty Servisleri",
-			"desc": "",
-			"button": "Berty Servislerini Kullan",
-			"skip": ""
-		},
 		"delete-account": {
 			"title": "Hesabı sil!",
 			"first-desc": "Hesabınızı silmek istediğinizden emin misiniz?",
@@ -246,6 +239,7 @@
 			"header-left-button": "Aygıt bilgileri",
 			"header-middle-button": "Sahte bilgi oluştur",
 			"header-right-button": "Arka plan programını yeniden başlat",
+			"force-mock-button": "",
 			"simulate-button": "Akış hatasını taklit et",
 			"simulate-js-error-button": "Javascript hatasını taklit et",
 			"system-info-button": "Sistem bilgisi",
@@ -258,6 +252,7 @@
 				"name": "Günlük filtreleri",
 				"bullet-point": "Bu alanı değiştirdikten sonra uygulamayı yeniden başlatın"
 			},
+			"export-logs-button": "",
 			"add-dev-conversations-button": "Geliştirici konuşmalarını ekle",
 			"share-button": {
 				"title": "ID'yi Discord'da paylaş",
@@ -418,9 +413,15 @@
 			"title": "",
 			"media-button": "Medyalar, linkler & dosyalar",
 			"members-button": {
-				"title": "Üyeler"
+				"title": ""
 			},
 			"add-member-button": "Üye ekle",
+			"members-dropdown": {
+				"search-placeholder": "",
+				"conversation-booster": "",
+				"replication-type": "",
+				"user-type": ""
+			},
 			"invite-button": "Link ile davet et",
 			"save-button": "Konuşmayı sunucuya kaydet"
 		},
@@ -496,9 +497,6 @@
 		"user-message": {
 			"read-more": "Daha fazla",
 			"show-less": "Daha az göster"
-		},
-		"emojis": {
-			"matching": ""
 		}
 	},
 	"account": {
@@ -643,5 +641,8 @@
 		"minutes": "",
 		"hours": "",
 		"days": ""
+	},
+	"share": {
+		"sharing-id-message": ""
 	}
 }

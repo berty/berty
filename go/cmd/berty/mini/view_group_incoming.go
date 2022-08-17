@@ -298,50 +298,46 @@ func handlerNoop(_ context.Context, _ *groupView, _ *protocoltypes.GroupMetadata
 	return nil
 }
 
-func groupMonitorEventHandler(logger *zap.Logger, v *groupView, e *protocoltypes.MonitorGroup_EventMonitor) {
+func groupDeviceStatusHandler(logger *zap.Logger, v *groupView, e *protocoltypes.GroupDeviceStatus_Reply) {
 	var payload string
 
 	switch t := e.GetType(); t {
-	case protocoltypes.TypeEventMonitorPeerJoin:
-		peerjoin := e.GetPeerJoin()
-		if peerjoin.IsSelf {
-			payload = "you just joined this group"
-		} else {
-			activeAddr := "<unknown>"
-			if len(peerjoin.GetMaddrs()) > 0 {
-				activeAddr = peerjoin.Maddrs[0]
-			}
-			payload = fmt.Sprintf("peer joined <%.15s> on: %s", peerjoin.GetPeerID(), activeAddr)
+	case protocoltypes.TypePeerConnected:
+		event := &protocoltypes.GroupDeviceStatus_Reply_PeerConnected{}
+		if err := event.Unmarshal(e.GetEvent()); err != nil {
+			logger.Error("unmarshal error", zap.Error(err))
+			return
 		}
 
-	case protocoltypes.TypeEventMonitorPeerLeave:
-		peerleave := e.GetPeerLeave()
-		if peerleave.IsSelf {
-			payload = "you just left this group"
-		} else {
-			payload = fmt.Sprintf("peer left <%.15s>", peerleave.GetPeerID())
-		}
-	case protocoltypes.TypeEventMonitorAdvertiseGroup:
-		advertisegroup := e.GetAdvertiseGroup()
-		drivername := advertisegroup.GetDriverName()
-		if drivername != "" {
-			payload = fmt.Sprintf("local peer advertised <%.15s> on `%s`, with %d maddrs",
-				advertisegroup.GetPeerID(), advertisegroup.GetDriverName(), len(advertisegroup.GetMaddrs()))
-		} else {
-			payload = fmt.Sprintf("local peer advertised <%.15s>", advertisegroup.GetPeerID())
+		activeAddr := "<unknown>"
+		if maddrs := event.GetMaddrs(); len(maddrs) > 0 {
+			activeAddr = maddrs[0]
 		}
 
-	case protocoltypes.TypeEventMonitorPeerFound:
-		peerfound := e.GetPeerFound()
-		drivername := peerfound.GetDriverName()
-		if drivername != "" {
-			payload = fmt.Sprintf("new peer found <%.15s> on `%s`, with %d maddrs",
-				peerfound.GetPeerID(), drivername, len(peerfound.GetMaddrs()))
-		} else {
-			payload = fmt.Sprintf("grabbed a peer <%.15s> ", peerfound.GetPeerID())
+		activeTransport := "<unknown>"
+		if tpts := event.GetTransports(); len(tpts) > 0 {
+			activeTransport = tpts[0].String()
 		}
+
+		payload = fmt.Sprintf("device status updated: connected <%.15s> on: %s(%s)", event.GetPeerID(), activeAddr, activeTransport)
+
+	case protocoltypes.TypePeerDisconnected:
+		event := &protocoltypes.GroupDeviceStatus_Reply_PeerDisconnected{}
+		if err := event.Unmarshal(e.GetEvent()); err != nil {
+			logger.Error("unmarshal error", zap.Error(err))
+			return
+		}
+		payload = fmt.Sprintf("device status updated: left <%.15s>", event.GetPeerID())
+
+	case protocoltypes.TypePeerReconnecting:
+		event := &protocoltypes.GroupDeviceStatus_Reply_PeerReconnecting{}
+		if err := event.Unmarshal(e.GetEvent()); err != nil {
+			logger.Error("unmarshal error", zap.Error(err))
+			return
+		}
+		payload = fmt.Sprintf("device status updated: reconnecting <%.15s>", event.GetPeerID())
 	default:
-		logger.Warn("unknow monitor event received")
+		logger.Warn("unknow group device status event received")
 		return
 	}
 

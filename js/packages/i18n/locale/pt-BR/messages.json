@@ -153,7 +153,6 @@
 			"title": "Configurações",
 			"proximity-button": "",
 			"notifications-button": "Notificações",
-			"contact-convs-button": "",
 			"appearance-button": "",
 			"accounts-button": "Contas",
 			"network-button": "",
@@ -219,12 +218,6 @@
 			"cancel": "Cancelar",
 			"name-input-placeholder": "Nome..."
 		},
-		"berty-services": {
-			"title": "",
-			"desc": "",
-			"button": "",
-			"skip": ""
-		},
 		"delete-account": {
 			"title": "Apagar conta!",
 			"first-desc": "Você tem certeza que deseja apagar sua conta?",
@@ -246,6 +239,7 @@
 			"header-left-button": "Informações do dispositivo",
 			"header-middle-button": "Gerar dados falsos",
 			"header-right-button": "Reiniciar daemon",
+			"force-mock-button": "",
 			"simulate-button": "Simular erro de transmissão",
 			"simulate-js-error-button": "Simular erro de JavaScript",
 			"system-info-button": "Informações do sistema",
@@ -258,6 +252,7 @@
 				"name": "",
 				"bullet-point": ""
 			},
+			"export-logs-button": "",
 			"add-dev-conversations-button": "Adicionar conversas de desenvolvimento",
 			"share-button": {
 				"title": "Compartilhar ID no Discord",
@@ -418,9 +413,15 @@
 			"title": "",
 			"media-button": "Mídias, links e documentos",
 			"members-button": {
-				"title": "Membros"
+				"title": ""
 			},
 			"add-member-button": "Adicionar membro",
+			"members-dropdown": {
+				"search-placeholder": "",
+				"conversation-booster": "",
+				"replication-type": "",
+				"user-type": ""
+			},
 			"invite-button": "Convidar por link",
 			"save-button": "Salvar conversa no servidor"
 		},
@@ -496,9 +497,6 @@
 		"user-message": {
 			"read-more": "",
 			"show-less": ""
-		},
-		"emojis": {
-			"matching": ""
 		}
 	},
 	"account": {
@@ -643,5 +641,8 @@
 		"minutes": "",
 		"hours": "",
 		"days": ""
+	},
+	"share": {
+		"sharing-id-message": ""
 	}
 }

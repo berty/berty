@@ -2,7 +2,6 @@ import { Icon } from '@ui-kitten/components'
 import React, { FC, useState } from 'react'
 import { View, TouchableOpacity } from 'react-native'
 
-import AddEmojiIcon from '@berty/assets/logo/add_emoji.svg'
 import { BottomModal } from '@berty/components'
 import { useLayout } from '@berty/components/hooks'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
@@ -38,7 +37,9 @@ export const MessageMenu: FC<{
 	cid: string
 	onSelectEmoji: (emoji: string) => void
 	replyInteraction: ReplyTargetInteraction
-}> = ({ convPk, cid, onSelectEmoji, replyInteraction }) => {
+	// this function hide the previous bottom modal (MessageMenu)
+	hide: () => void
+}> = ({ convPk, cid, onSelectEmoji, replyInteraction, hide }) => {
 	const colors = useThemeColor()
 	const { padding, border, margin } = useStyles()
 	const { windowWidth } = useAppDimensions()
@@ -56,6 +57,7 @@ export const MessageMenu: FC<{
 			},
 		},
 	]
+	// this state handle the bottom modal of EmojiKeyboard
 	const [isVisible, setIsVisible] = useState<boolean>(false)
 
 	return (
@@ -76,7 +78,7 @@ export const MessageMenu: FC<{
 							key={`conversation-menu-${emoji}-${index}`}
 							onPress={() => {
 								onSelectEmoji(emoji)
-								setIsVisible(false)
+								hide()
 							}}
 						>
 							<UnifiedText>{`${getEmojiByName(emoji as string)}`}</UnifiedText>
@@ -93,9 +95,11 @@ export const MessageMenu: FC<{
 								backgroundColor: colors['input-background'],
 							},
 						]}
-						onPress={() => setIsVisible(true)}
+						onPress={() => {
+							setIsVisible(true)
+						}}
 					>
-						<AddEmojiIcon width={17} height={17} fill={colors['background-header']} />
+						<Icon name='plus-outline' width={18} height={18} fill={colors['background-header']} />
 					</TouchableOpacity>
 				</View>
 			</View>
@@ -104,7 +108,7 @@ export const MessageMenu: FC<{
 					style={[padding.large, { flexDirection: 'row', alignItems: 'center' }]}
 					onPress={() => {
 						callback()
-						setIsVisible(false)
+						hide()
 					}}
 					key={title}
 				>
@@ -120,9 +124,13 @@ export const MessageMenu: FC<{
 			))}
 			<BottomModal isVisible={isVisible} setIsVisible={setIsVisible}>
 				<EmojiKeyboard
+					showBoard={isVisible}
 					conversationPublicKey={convPk}
 					targetCid={cid}
-					hide={() => setIsVisible(false)}
+					hide={() => {
+						setIsVisible(false)
+						hide()
+					}}
 				/>
 			</BottomModal>
 		</View>

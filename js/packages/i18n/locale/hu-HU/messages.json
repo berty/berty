@@ -153,7 +153,6 @@
 			"title": "Beállítások",
 			"proximity-button": "Hálózaton kívüli kommunikáció",
 			"notifications-button": "Értesítések",
-			"contact-convs-button": "Kapcsolat és beszélgetések",
 			"appearance-button": "",
 			"accounts-button": "Fiókok",
 			"network-button": "Hálózat",
@@ -219,12 +218,6 @@
 			"cancel": "Mégse",
 			"name-input-placeholder": "Név..."
 		},
-		"berty-services": {
-			"title": "Berty szolgáltatások",
-			"desc": "A Berty szolgáltatások aktiválása lehetővé teszik, hogy push értesítéseket kapjon a Berty Technologies szerverein keresztül, és hozzáférést biztosítson a csomópontokhoz a beszélgetés felállításához.",
-			"button": "Berty szolgáltatások használata",
-			"skip": ""
-		},
 		"delete-account": {
 			"title": "Fiók törlése!",
 			"first-desc": "Biztosan törölné a fiókját?",
@@ -246,6 +239,7 @@
 			"header-left-button": "Eszköz információk",
 			"header-middle-button": "Hamis információ készítése",
 			"header-right-button": "Daemon újraindítása",
+			"force-mock-button": "",
 			"simulate-button": "Stream hiba szimulálása",
 			"simulate-js-error-button": "JavaScript hiba szimulálása",
 			"system-info-button": "Rendszer információ",
@@ -258,6 +252,7 @@
 				"name": "Napló szűrők",
 				"bullet-point": "Módosítás után indítsa újra az alkalmazást"
 			},
+			"export-logs-button": "",
 			"add-dev-conversations-button": "Fejlesztői beszélgetés hozzáadása",
 			"share-button": {
 				"title": "ID megosztása Discordon",
@@ -418,9 +413,15 @@
 			"title": "",
 			"media-button": "Képek, linkek és dokumentumok",
 			"members-button": {
-				"title": "Tagok"
+				"title": ""
 			},
 			"add-member-button": "Résztvevők hozzáadása",
+			"members-dropdown": {
+				"search-placeholder": "",
+				"conversation-booster": "",
+				"replication-type": "",
+				"user-type": ""
+			},
 			"invite-button": "Meghívás linken keresztül",
 			"save-button": "Beszélgetés mentése szerverre"
 		},
@@ -496,9 +497,6 @@
 		"user-message": {
 			"read-more": "Tudj meg többet",
 			"show-less": "Kevesebb mutatása"
-		},
-		"emojis": {
-			"matching": "Emoji-k összevetése"
 		}
 	},
 	"account": {
@@ -643,5 +641,8 @@
 		"minutes": "",
 		"hours": "",
 		"days": ""
+	},
+	"share": {
+		"sharing-id-message": ""
 	}
 }

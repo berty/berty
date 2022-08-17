@@ -1,6 +1,6 @@
-import React, { useMemo } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { SectionList, StyleProp, TextStyle, TouchableHighlight, View } from 'react-native'
+import { Keyboard, SectionList, StyleProp, TextStyle, TouchableHighlight, View } from 'react-native'
 import { EdgeInsets } from 'react-native-safe-area-context'
 
 import beapi from '@berty/api'
@@ -8,9 +8,11 @@ import { ContactAvatar, ConversationAvatar } from '@berty/components/avatars'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useStyles } from '@berty/contexts/styles'
 import {
+	KeyboardStatus,
 	useContact,
-	useConversationInteractions,
 	useConversation,
+	useConversationInteractions,
+	useKeyboardStatus,
 	useThemeColor,
 } from '@berty/hooks'
 import { useNavigation } from '@berty/navigation'
@@ -115,10 +117,12 @@ const SearchResultItem: React.FC<SearchItemProps> = ({ data, kind, searchText = 
 	const { plainMessageText, searchResultHighlightText, nameHighlightText } = useStylesSearch()
 	const { navigate } = useNavigation()
 
-	let convPk: string
+	let convPk: string,
+		contactPk: string = ''
 	switch (kind) {
 		case SearchResultKind.Contact:
 			convPk = data.conversationPublicKey || ''
+			contactPk = data.publicKey
 			break
 		case SearchResultKind.Conversation:
 			convPk = data.publicKey || ''
@@ -129,17 +133,8 @@ const SearchResultItem: React.FC<SearchItemProps> = ({ data, kind, searchText = 
 	}
 	const conv = useConversation(convPk)
 
-	let contactPk: string
-	switch (kind) {
-		case SearchResultKind.Contact:
-			contactPk = data.publicKey
-			break
-		case SearchResultKind.Conversation:
-			contactPk = ''
-			break
-		case SearchResultKind.Interaction:
-			contactPk = conv?.contactPublicKey || ''
-			break
+	if (kind === SearchResultKind.Interaction) {
+		contactPk = conv?.contactPublicKey || ''
 	}
 	const contact = useContact(contactPk)
 
@@ -180,8 +175,6 @@ const SearchResultItem: React.FC<SearchItemProps> = ({ data, kind, searchText = 
 			}
 			console.log(data)
 			break
-		default:
-			return null
 	}
 
 	const date = pbDateToNum(inte?.sentDate)
@@ -242,26 +235,38 @@ const SearchResultItem: React.FC<SearchItemProps> = ({ data, kind, searchText = 
 		)
 	}
 
+	const keyboardStatus = useKeyboardStatus()
+	const [isPressed, setIsPressed] = useState<boolean>(false)
+
+	// this effect is usefull to hide keyboard before navigate to a conversation (else we have UI issue)
+	useEffect(() => {
+		if (isPressed && keyboardStatus === KeyboardStatus.KEYBOARD_HIDDEN) {
+			setIsPressed(false)
+			if (!conv) {
+				if (data.state === beapi.messenger.Contact.State.IncomingRequest) {
+					navigate('Chat.ContactRequest', { contactId: data.publicKey })
+				}
+				return
+			}
+			navigate({
+				name:
+					conv.type === beapi.messenger.Conversation.Type.ContactType
+						? 'Chat.OneToOne'
+						: 'Chat.Group',
+				params: {
+					convId: convPk,
+					scrollToMessage: kind === SearchResultKind.Interaction && inte ? inte.cid : null,
+				},
+			})
+		}
+	}, [conv, convPk, data.publicKey, data.state, inte, isPressed, keyboardStatus, kind, navigate])
+
 	return (
 		<TouchableHighlight
 			underlayColor={!conv ? 'transparent' : color.light.grey}
 			onPress={() => {
-				if (!conv) {
-					if (data.state === beapi.messenger.Contact.State.IncomingRequest) {
-						navigate('Chat.ContactRequest', { contactId: data.publicKey })
-					}
-					return
-				}
-				navigate({
-					name:
-						conv.type === beapi.messenger.Conversation.Type.ContactType
-							? 'Chat.OneToOne'
-							: 'Chat.Group',
-					params: {
-						convId: convPk,
-						scrollToMessage: kind === SearchResultKind.Interaction && inte ? inte.cid : null,
-					},
-				})
+				Keyboard.dismiss()
+				setIsPressed(true)
 			}}
 		>
 			<View style={[row.center, padding.medium, border.bottom.tiny, border.color.light.grey]}>

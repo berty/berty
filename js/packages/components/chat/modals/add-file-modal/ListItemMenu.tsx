@@ -2,9 +2,8 @@ import { Icon } from '@ui-kitten/components'
 import React from 'react'
 import { TouchableOpacity } from 'react-native'
 
+import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useStyles } from '@berty/contexts/styles'
-
-import { UnifiedText } from '../../../shared-components/UnifiedText'
 
 export const ListItemMenu: React.FC<{
 	title: string

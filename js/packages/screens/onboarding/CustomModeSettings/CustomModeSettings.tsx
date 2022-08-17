@@ -39,8 +39,8 @@ import {
 	setCurrentNetworkConfig,
 } from '@berty/redux/reducers/networkConfig.reducer'
 import { accountClient } from '@berty/utils/accounts/accountClient'
-import { checkProximityPermission } from '@berty/utils/react-native/checkPermissions'
-import { getPermissions, PermissionType } from '@berty/utils/react-native/permissions'
+import { checkProximityPermission } from '@berty/utils/permissions/checkPermissions'
+import { getPermissions, PermissionType } from '@berty/utils/permissions/permissions'
 
 interface AccordionRef {
 	open: () => void
