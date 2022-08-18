@@ -93,7 +93,7 @@ func (b *Bot) handleEvent(ctx context.Context, event *messengertypes.StreamEvent
 			context.UserMessage = receivedMessage.GetBody()
 			if len(b.commands) > 0 && len(context.UserMessage) > 1 && strings.HasPrefix(context.UserMessage, "/") {
 				if !context.IsMine && !context.IsReplay && !context.IsAck {
-					context.CommandArgs = strings.Split(context.UserMessage[1:], " ")
+					context.CommandArgs = strings.Split(strings.TrimSpace(context.UserMessage[1:]), " ")
 					command, found := b.commands[context.CommandArgs[0]]
 					if found {
 						b.logger.Debug("found handler", zap.Strings("args", context.CommandArgs))
