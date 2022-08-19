@@ -78,7 +78,7 @@ jobs:
           restore-keys: ${{ runner.OS }}-node-${{ env.node_version }}-${{ env.json_cache-versions_node }}-
 
       - name: Cache gobridge aar
-        uses: n0izn0iz/mkache@5cedaeaf0b39a9220ae5a815cac8d2a924cee3ef
+        uses: n0izn0iz/mkache@e50b8bcfdce346bc8c9c426bcd7a70d103d4d4f7
         if: github.ref != 'refs/heads/master' # this makes sure the VCS_REF is correct on master
         with:
           rule: android/libs/gobridge.aar
