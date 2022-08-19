@@ -50,7 +50,10 @@ export const BootstrapItemsPriv = () => {
 				</View>
 			))}
 			<DividerItem />
-			<AddButtonPriv onPress={() => setIsVisible(true)} />
+			<AddButtonPriv
+				accessibilityLabel={t('settings.network.bootstrap-button')}
+				onPress={() => setIsVisible(true)}
+			/>
 			<BottomModal isVisible={isVisible} setIsVisible={setIsVisible}>
 				{isEdit ? (
 					<AccordionEdit
