@@ -1,15 +1,16 @@
 import { fireEvent } from '@testing-library/react-native'
+import i18next from 'i18next'
+import { Platform } from 'react-native'
+
 import { mockServices } from '@berty/utils/testing/mockServices.test'
 import { renderScreen } from '@berty/utils/testing/renderScreen.test'
-import i18next from 'i18next'
 
 import { Network } from './Network'
-import { Platform } from 'react-native'
 
 test('Settings.Network renders correctly', async () => {
 	await mockServices()
 
-	const { toJSON, getByLabelText } = renderScreen('Settings.Network', Network)
+	const { toJSON } = renderScreen('Settings.Network', Network)
 	expect(toJSON()).toMatchSnapshot()
 })
 
