@@ -21,6 +21,10 @@ on:
       - "js/**"
       - "!js/packages/i18n/locale/*/*.json"
       - ".github/workflows/ios.yml"
+      
+concurrency:
+   group: ${{ github.workflow }}-${{ github.ref }}
+   cancel-in-progress: true
 
 jobs:
   mac_runner_matrix_builder:
