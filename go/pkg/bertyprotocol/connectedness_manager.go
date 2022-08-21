@@ -83,7 +83,9 @@ func (m *ConnectednessManager) UpdateState(peer peer.ID, update ConnectednessTyp
 
 // WaitForConnectednessChange wait until the given `current` peers status differ from `local` peers state
 func (m *ConnectednessManager) WaitForConnectednessChange(ctx context.Context, gkey string, current PeersConnectedness) ([]peer.ID, bool) {
+	m.muState.Lock()
 	sg := m.getGroupStatus(gkey)
+	m.muState.Unlock()
 
 	ok := true
 	sg.notify.L.Lock()

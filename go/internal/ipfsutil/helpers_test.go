@@ -106,7 +106,6 @@ func TestFullClose(t *testing.T) {
 			}
 			// n > 0
 			errcb <- errors.New("n > 0, expected EOF")
-			return
 		})
 
 		errca := make(chan error)

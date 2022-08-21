@@ -156,7 +156,7 @@ func NewTestingProtocol(ctx context.Context, t *testing.T, opts *TestingOpts, ds
 		DeviceKeystore: deviceKeystore,
 		IpfsCoreAPI:    node.API(),
 		OrbitDB:        odb,
-		TinderDriver:   node.Tinder(),
+		TinderService:  node.Tinder(),
 		PushKey:        opts.PushSK,
 		GroupDatastore: groupDatastore,
 	}

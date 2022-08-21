@@ -22,6 +22,7 @@ type registrationMessage struct {
 }
 
 type emitterClient struct {
+	logger *zap.Logger
 	client *emitter.Client
 	ctx    context.Context
 	cancel context.CancelFunc
@@ -35,19 +36,25 @@ type emitterClientManager struct {
 	inChan   chan *registrationMessage
 	mu       sync.Mutex
 	logger   *zap.Logger
+	wg       sync.WaitGroup
 }
 
 func (e *emitterClient) subscribeToServerUpdates(inChan chan *registrationMessage, psDetails *EmitterPubSubSubscriptionDetails) (err error) {
+	e.logger.Debug("subscribing", zap.String("chan", psDetails.ChannelName))
 	return e.client.Subscribe(psDetails.ReadKey, psDetails.ChannelName, func(client *emitter.Client, message emitter.Message) {
 		reg := &pb.RegistrationRecord{}
 
+		e.logger.Debug("receiving a message", zap.Any("topic", message.Topic()))
+
 		err := proto.Unmarshal(message.Payload(), reg)
 		if err != nil {
+			e.logger.Error("unable to unmarshall ", zap.Error(err))
 			return
 		}
 
 		pid, err := peer.Decode(reg.Id)
 		if err != nil {
+			e.logger.Error("unable to decode ", zap.Error(err))
 			return
 		}
 
@@ -55,9 +62,17 @@ func (e *emitterClient) subscribeToServerUpdates(inChan chan *registrationMessag
 		for i, addrBytes := range reg.Addrs {
 			maddrs[i], err = multiaddr.NewMultiaddrBytes(addrBytes)
 			if err != nil {
+				e.logger.Error("unable to decode multiaddr bytes", zap.Error(err))
 				return
 			}
 		}
+
+		var fields []string
+		for _, maddr := range maddrs {
+			fields = append(fields, maddr.String())
+		}
+
+		e.logger.Debug("receiving a peer", zap.String("topic", reg.Ns), zap.String("peer", pid.String()), zap.Strings("maddrs", fields))
 
 		inChan <- &registrationMessage{
 			registration: &rendezvous.Registration{
@@ -70,7 +85,7 @@ func (e *emitterClient) subscribeToServerUpdates(inChan chan *registrationMessag
 			},
 			psDetails: psDetails,
 		}
-	})
+	}, emitter.WithLast(1))
 }
 
 func (e *emitterClientManager) getClient(psDetails *EmitterPubSubSubscriptionDetails) (client *emitterClient, err error) {
@@ -86,6 +101,7 @@ func (e *emitterClientManager) getClient(psDetails *EmitterPubSubSubscriptionDet
 
 	wrapCtx, cancel := context.WithCancel(context.Background())
 	client = &emitterClient{
+		logger: e.logger.Named("cl"),
 		ctx:    wrapCtx,
 		cancel: cancel,
 		client: cl,
@@ -113,6 +129,9 @@ func (e *emitterClientManager) Subscribe(ctx context.Context, psDetailsStr strin
 
 	sliceName := makeOutChanName(psDetails.ServerAddr, psDetails.ChannelName)
 	if _, ok := e.outChans[sliceName]; !ok {
+		e.logger.Debug("subscribing",
+			zap.String("channel", psDetails.ChannelName), zap.String("target", psDetails.ServerAddr))
+
 		if err := client.subscribeToServerUpdates(e.inChan, psDetails); err != nil {
 			return nil, fmt.Errorf("unable to subscribe to broker's channel: %w", err)
 		}
@@ -151,11 +170,12 @@ func NewEmitterClient(ctx context.Context, opts *EmitterClientOptions) rendezvou
 	manager := &emitterClientManager{
 		ctx:      ctx,
 		clients:  map[string]*emitterClient{},
-		logger:   opts.Logger,
+		logger:   opts.Logger.Named("emitter"),
 		outChans: map[string][]chan *rendezvous.Registration{},
 		inChan:   make(chan *registrationMessage),
 	}
 
+	manager.logger.Debug("starting rdvp emitter client")
 	go func() {
 		for {
 			select {

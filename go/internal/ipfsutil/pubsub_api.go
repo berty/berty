@@ -6,7 +6,6 @@ import (
 
 	ipfs_interface "github.com/ipfs/interface-go-ipfs-core"
 	ipfs_iopts "github.com/ipfs/interface-go-ipfs-core/options"
-	p2p_disc "github.com/libp2p/go-libp2p-core/discovery"
 	p2p_peer "github.com/libp2p/go-libp2p-core/peer"
 	p2p_pubsub "github.com/libp2p/go-libp2p-pubsub"
 	"go.uber.org/zap"
@@ -16,18 +15,16 @@ import (
 
 type PubSubAPI struct {
 	*p2p_pubsub.PubSub
-	disc   p2p_disc.Discovery
 	logger *zap.Logger
 
 	muTopics sync.RWMutex
 	topics   map[string]*p2p_pubsub.Topic
 }
 
-func NewPubSubAPI(ctx context.Context, logger *zap.Logger, disc p2p_disc.Discovery, ps *p2p_pubsub.PubSub) ipfs_interface.PubSubAPI {
+func NewPubSubAPI(ctx context.Context, logger *zap.Logger, ps *p2p_pubsub.PubSub) ipfs_interface.PubSubAPI {
 	return &PubSubAPI{
 		PubSub: ps,
 
-		disc:   disc,
 		logger: logger,
 		topics: make(map[string]*p2p_pubsub.Topic),
 	}

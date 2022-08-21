@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"strings"
 	"sync"
+	"time"
 
 	ggio "github.com/gogo/protobuf/io"
 	ipfscid "github.com/ipfs/go-cid"
@@ -358,6 +359,8 @@ func (c *contactRequestsManager) enqueueRequest(ctx context.Context, to *protoco
 				// succefully send contact request, leave the loop and cancel lookup
 				break
 			}
+
+			time.Sleep(time.Second)
 		}
 
 		// cancel lookup process

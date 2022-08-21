@@ -207,11 +207,10 @@ func main() {
 					return errcode.TODO.Wrap(err)
 				}
 
+				logger.Info("connected to mqtt broker", zap.String("broker", emitterServer))
+
+				// syncDrivers = append(syncDrivers, mqttserv)
 				syncDrivers = append(syncDrivers, emitter)
-			} else if emitterServer != "" || emitterAdminKey != "" {
-				if err != nil {
-					return errcode.ErrInvalidInput.Wrap(fmt.Errorf("expected emitter-server and emitter-admin-key args"))
-				}
 			}
 
 			// start service

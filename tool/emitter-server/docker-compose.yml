@@ -6,5 +6,5 @@ services:
       - "8080:8080"
       - "4000:4000"
     environment:
-      - "EMITTER_LICENSE=PfA8INZBBcmxS4O3fj09pXaqZTJIwvJbJqFRpPmOsANZu75CEOIzfIuu3E3k-Q_wB2rCkv6qgOG3A57Q_OwPAQ:3"
-      # associated secret key Llo99jIV4vmN0BqJJO1Z5Y055DsPHnIS
+      - "EMITTER_LICENSE=PfA8IMohuWbuFm_jN3gegdx8c8Nqrd8CE9SYGS1MHOtUP8irEFdOS2nfL9SkZia6RUMBreHo_ZnwCPCgjoIMAQ:3"
+      # associated secret key bPcKwpuIP3gjjAKqb9EaAJYJnilISQhJ

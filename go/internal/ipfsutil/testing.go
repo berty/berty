@@ -5,9 +5,7 @@ import (
 	crand "crypto/rand"
 	"encoding/base64"
 	"fmt"
-	"math/rand"
 	"testing"
-	"time"
 
 	ipfs_mobile "github.com/ipfs-shipyard/gomobile-ipfs/go/pkg/ipfsmobile"
 	ds "github.com/ipfs/go-datastore"
@@ -23,7 +21,6 @@ import (
 	"github.com/libp2p/go-libp2p-core/peerstore"
 	"github.com/libp2p/go-libp2p-core/protocol"
 	"github.com/libp2p/go-libp2p-core/routing"
-	discovery "github.com/libp2p/go-libp2p-discovery"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	rendezvous "github.com/libp2p/go-libp2p-rendezvous"
 	p2p_rpdb "github.com/libp2p/go-libp2p-rendezvous/db/sqlcipher"
@@ -31,7 +28,7 @@ import (
 	"github.com/stretchr/testify/require"
 	"go.uber.org/zap"
 
-	"berty.tech/berty/v2/go/internal/tinder"
+	tinder "berty.tech/berty/v2/go/internal/tinder"
 )
 
 // CoreAPIMock implements ipfs.CoreAPI and adds some debugging helpers
@@ -39,7 +36,7 @@ type CoreAPIMock interface {
 	API() ExtendedCoreAPI
 
 	PubSub() *pubsub.PubSub
-	Tinder() tinder.Service
+	Tinder() *tinder.Service
 	MockNetwork() p2p_mocknet.Mocknet
 	MockNode() *ipfs_core.IpfsNode
 	Close()
@@ -130,45 +127,40 @@ func TestingCoreAPIUsingMockNet(ctx context.Context, t testing.TB, opts *Testing
 	repo := TestingRepo(t, ctx, datastore)
 
 	var ps *pubsub.PubSub
-	var disc tinder.Service
+	var stinder *tinder.Service
 	configureRouting := func(h host.Host, r routing.Routing) error {
 		var err error
-		drivers := []*tinder.Driver{}
+		drivers := []tinder.IDriver{}
 		if opts.RDVPeer.ID != "" {
-			// opts.Mocknet.ConnectPeers(node.Identity, opts.RDVPeer.ID)
 			h.Peerstore().AddAddrs(opts.RDVPeer.ID, opts.RDVPeer.Addrs, peerstore.PermanentAddrTTL)
-			// @FIXME(gfanton): use rand as argument
-			rdvp := tinder.NewRendezvousDiscovery(opts.Logger, h, opts.RDVPeer.ID, rand.New(rand.NewSource(rand.Int63())))
-			if _, err = opts.Mocknet.LinkPeers(h.ID(), opts.RDVPeer.ID); err != nil {
-				return err
-			}
-
-			driver := tinder.NewDriverFromUnregisterDiscovery("rdpv", rdvp, nil)
-			drivers = append(drivers, driver)
+			ms := tinder.NewMockDriverServer()
+			drivers = append(drivers, ms.Client(h))
 		}
 
 		if r != nil {
-			driver := tinder.NewDriverFromRouting("dht", r, nil)
+			driver := tinder.NewRoutingDiscoveryDriver("dht", r)
 			drivers = append(drivers, driver)
 		}
 
 		// minBackoff, maxBackoff := time.Second, time.Minute
 		// rng := rand.New(rand.NewSource(rand.Int63()))
-		tinderOpts := &tinder.Opts{
-			Logger:                 opts.Logger,
-			AdvertiseResetInterval: time.Minute,
-			AdvertiseGracePeriod:   time.Minute,
-			BackoffStrategy: &tinder.BackoffOpts{
-				StratFactory: discovery.NewFixedBackoff(time.Second),
-			},
-			// BackoffStratFactory: discovery.NewExponentialBackoff(minBackoff, maxBackoff, discovery.FullJitter, time.Second, 5.0, 0, rng),
-		}
+		// tinderOpts := &tinder.Opts{
+		// 	Logger:                 opts.Logger,
+		// 	AdvertiseResetInterval: time.Minute,
+		// 	AdvertiseGracePeriod:   time.Minute,
+		// 	BackoffStrategy: &tinder.BackoffOpts{
+		// 		StratFactory: discovery.NewFixedBackoff(time.Second),
+		// 	},
+		// BackoffStratFactory: discovery.NewExponentialBackoff(minBackoff, maxBackoff, discovery.FullJitter, time.Second, 5.0, 0, rng),
+		// }
 
-		disc, err = tinder.NewService(tinderOpts, h, drivers...)
+		// enable discovery monitor
+		stinder, err = tinder.NewService(h, opts.Logger, drivers...)
 		if err != nil {
 			return fmt.Errorf("unable to monitor discovery driver: %w", err)
 		}
 
+		disc := tinder.NewDiscoveryAdaptater(opts.Logger, stinder)
 		ps, err = pubsub.NewGossipSub(ctx, h, pubsub.WithDiscovery(disc))
 
 		return err
@@ -185,12 +177,12 @@ func TestingCoreAPIUsingMockNet(ctx context.Context, t testing.TB, opts *Testing
 
 	require.NoError(t, err, "failed to initialize IPFS node mock")
 	require.NotNil(t, ps, "pubsub should not be nil")
-	require.NotNil(t, disc, "discovery should not be nil")
+	require.NotNil(t, stinder, "discovery should not be nil")
 
 	exapi, err := NewExtendedCoreAPIFromNode(mnode.IpfsNode)
 	require.NoError(t, err, "unable to extend core api from node")
 
-	psapi := NewPubSubAPI(ctx, opts.Logger, disc, ps)
+	psapi := NewPubSubAPI(ctx, opts.Logger, ps)
 	exapi = InjectPubSubCoreAPIExtendedAdapter(exapi, psapi)
 	EnableConnLogger(ctx, opts.Logger, mnode.PeerHost())
 
@@ -199,7 +191,7 @@ func TestingCoreAPIUsingMockNet(ctx context.Context, t testing.TB, opts *Testing
 		mocknet: opts.Mocknet,
 		pubsub:  ps,
 		node:    mnode.IpfsNode,
-		tinder:  disc,
+		tinder:  stinder,
 	}
 
 	return api, func() {
@@ -250,7 +242,7 @@ type coreAPIMock struct {
 	pubsub  *pubsub.PubSub
 	mocknet p2p_mocknet.Mocknet
 	node    *ipfs_core.IpfsNode
-	tinder  tinder.Service
+	tinder  *tinder.Service
 }
 
 func (m *coreAPIMock) ConnMgr() ConnMgr {
@@ -285,11 +277,10 @@ func (m *coreAPIMock) PubSub() *pubsub.PubSub {
 	return m.pubsub
 }
 
-func (m *coreAPIMock) Tinder() tinder.Service {
+func (m *coreAPIMock) Tinder() *tinder.Service {
 	return m.tinder
 }
 
 func (m *coreAPIMock) Close() {
 	m.node.Close()
-	m.tinder.Close()
 }

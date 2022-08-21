@@ -198,7 +198,7 @@ func (m *Manager) getLocalProtocolServer() (bertyprotocol.Service, error) {
 		opts := bertyprotocol.Opts{
 			Host:             m.Node.Protocol.ipfsNode.PeerHost,
 			PubSub:           m.Node.Protocol.pubsub,
-			TinderDriver:     m.Node.Protocol.discovery,
+			TinderService:    m.Node.Protocol.tinder,
 			IpfsCoreAPI:      m.Node.Protocol.ipfsAPI,
 			Logger:           logger,
 			RootDatastore:    rootDS,

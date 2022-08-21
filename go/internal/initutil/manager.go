@@ -32,7 +32,7 @@ import (
 	"berty.tech/berty/v2/go/internal/notification"
 	proximity "berty.tech/berty/v2/go/internal/proximitytransport"
 	"berty.tech/berty/v2/go/internal/rendezvous"
-	"berty.tech/berty/v2/go/internal/tinder"
+	tinder "berty.tech/berty/v2/go/internal/tinder"
 	"berty.tech/berty/v2/go/pkg/bertymessenger"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/errcode"
@@ -150,7 +150,7 @@ type Manager struct {
 			mdnsService       p2p_mdns.Service
 			localdisc         *tinder.LocalDiscovery
 			pubsub            *pubsub.PubSub
-			discovery         tinder.Service
+			tinder            *tinder.Service
 			server            bertyprotocol.Service
 			ipfsAPIListeners  []net.Listener
 			ipfsWebUIListener net.Listener
@@ -393,7 +393,7 @@ func (m *Manager) Close(prog *progress.Progress) error {
 
 	prog.Get("close-tinder-service").SetAsCurrent()
 	if m.Node.Protocol.server != nil {
-		m.Node.Protocol.discovery.Close()
+		m.Node.Protocol.tinder.Close()
 		if m.Node.Protocol.localdisc != nil {
 			m.Node.Protocol.localdisc.Close()
 		}
