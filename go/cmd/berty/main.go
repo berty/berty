@@ -76,7 +76,6 @@ func runMain(args []string) error {
 				replicationServerCommand(),
 				peersCommand(),
 				exportCommand(),
-				omnisearchCommand(),
 				remoteLogsCommand(),
 				serviceKeyCommand(),
 				pushServerCommand(),
