@@ -40,6 +40,7 @@ var quotes = []Quote{
 	{"Tom Smothers", "The only valid censorship of ideas is the right of people not to listen."},
 	{"Ursula K. Le Guin", "Privacy, in fact, was almost as desirable for physics as it was for sex."},
 	{"Voltaire", "We have a natural right to make use of our pens as of our tongue, at our peril, risk and hazard."},
+	{"Jonathan Franzen", "Without privacy there was no point in being an individual."},
 }
 
 // RandomQuote returns a random quote from the quote list.
