@@ -43,7 +43,10 @@ type_password:
 	@osascript \
 		-e 'tell application "System Events"' \
 		-e 'set textToType to "$(PASSWORD)"' \
-		-e 'keystroke textToType' \
+		-e 'repeat with charToType in textToType' \
+		-e 'keystroke charToType' \
+		-e 'delay 0.042' \
+		-e 'end repeat' \
 		-e 'end tell'
 	@if [ $$? -ne 0 ]; then \
 		echo "\033[0;31mCheck if your terminal app has permission allowed in:\n\tPreferences → Security & Privacy → Privacy → Accessibility\033[0m"; \
