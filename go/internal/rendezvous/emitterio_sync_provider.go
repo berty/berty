@@ -20,6 +20,7 @@ type EmitterPubSub struct {
 	client     *emitter.Client
 	adminKey   string
 	serverAddr string
+	publicaddr string
 	logger     *zap.Logger
 }
 
@@ -30,13 +31,18 @@ type EmitterPubSubSubscriptionDetails struct {
 }
 
 type EmitterOptions struct {
-	Logger         *zap.Logger
-	EmitterOptions []func(*emitter.Client)
+	Logger           *zap.Logger
+	ServerPublicAddr string
+	EmitterOptions   []func(*emitter.Client)
 }
 
 func NewEmitterServer(serverAddr string, adminKey string, options *EmitterOptions) (*EmitterPubSub, error) {
 	if options == nil {
 		options = &EmitterOptions{}
+	}
+
+	if options.ServerPublicAddr == "" {
+		options.ServerPublicAddr = serverAddr
 	}
 
 	if options.Logger == nil {
@@ -54,6 +60,7 @@ func NewEmitterServer(serverAddr string, adminKey string, options *EmitterOption
 		client:     c,
 		adminKey:   adminKey,
 		logger:     options.Logger,
+		publicaddr: options.ServerPublicAddr,
 		serverAddr: serverAddr,
 	}
 
@@ -106,7 +113,7 @@ func (p *EmitterPubSub) Subscribe(ns string) (string, error) {
 	}
 
 	jsonData, err := json.Marshal(&EmitterPubSubSubscriptionDetails{
-		ServerAddr:  p.serverAddr,
+		ServerAddr:  p.publicaddr,
 		ReadKey:     readKey,
 		ChannelName: channel,
 	})
