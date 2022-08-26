@@ -2,17 +2,12 @@
 const https = require("https");
 
 // Function that request Github API to get self-hosted runners status
-async function getSelfHostedRunnersStatus(token) {
+async function getSelfHostedRunnersStatus() {
 	const options = {
-		hostname: "api.github.com",
-		path: "/repos/berty/berty/actions/runners",
+		hostname: "ghrunners-lambda.berty.io",
 		port: 443,
 		method: "GET",
 		timeout: 30000,
-		headers: {
-			"User-agent": "Mozilla/4.0 Custom User Agent",
-			Authorization: `token ${token}`,
-		},
 	};
 
 	return new Promise((resolve, reject) => {
@@ -45,9 +40,9 @@ async function getSelfHostedRunnersStatus(token) {
 }
 
 // Return hom many self-hosted runners are online
-async function getSelfHostedRunnersOnlineCount(token) {
+async function getSelfHostedRunnersOnlineCount() {
 	return new Promise((resolve, reject) => {
-		getSelfHostedRunnersStatus(token)
+		getSelfHostedRunnersStatus()
 			.then((json) => {
 				const stat = JSON.parse(json);
 				const total = stat.runners.length;
@@ -70,9 +65,9 @@ async function getSelfHostedRunnersOnlineCount(token) {
 }
 
 // Returns true if at least one self-hosted runner is available
-async function isSelfHostedRunnerAvailable(token) {
+async function isSelfHostedRunnerAvailable() {
 	try {
-		const json = await getSelfHostedRunnersStatus(token);
+		const json = await getSelfHostedRunnersStatus();
 		const stat = JSON.parse(json);
 
 		for (const runner of stat.runners) {
@@ -87,23 +82,22 @@ async function isSelfHostedRunnerAvailable(token) {
 
 // If executed as a script
 if (require.main === module) {
-	const token = process.argv[2];
-	const onlineCheck = process.argv[3];
+	const onlineCheck = process.argv[2];
 
-	if (!token || (onlineCheck && onlineCheck !== "online")) {
-		console.error(`Usage: ${process.argv[1]} <github_token> [online]`);
+	if (process.argv.length > 3 || (onlineCheck && onlineCheck !== "online")) {
+		console.error(`Usage: ${process.argv[1]} [online]`);
 		process.exit(1);
 	}
 
 	if (onlineCheck) {
-		getSelfHostedRunnersOnlineCount(token)
+		getSelfHostedRunnersOnlineCount()
 			.then((count) => console.log(count))
 			.catch((err) => {
 				console.error(err);
 				process.exit(1);
 			});
 	} else {
-		getSelfHostedRunnersStatus(token)
+		getSelfHostedRunnersStatus()
 			.then((json) => {
 				console.log(JSON.stringify(JSON.parse(json), undefined, 2));
 			})

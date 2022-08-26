@@ -3,16 +3,12 @@ const statusGetter = require("./get-self-hosted-runner-status");
 
 // Check parameters
 const mode = process.argv[2] || "self-hosted";
-const token = process.argv[3];
 
 if (
 	!["self-hosted", "github", "optimized"].includes(mode) ||
-	(mode === "optimized" && process.argv.length !== 4) ||
-	(mode !== "optimized" && process.argv.length !== 3 && process.argv[2])
+	process.argv.length > 3
 ) {
-	console.error(
-		`Usage: ${process.argv[1]} [self-hosted | github | optimized <github_token>]`
-	);
+	console.error(`Usage: ${process.argv[1]} [self-hosted | github | optimized]`);
 	process.exit(1);
 }
 
@@ -37,7 +33,7 @@ async function getMatrix() {
 		case "github":
 			return [runners.github];
 		case "optimized":
-			return (await statusGetter.isSelfHostedRunnerAvailable(token))
+			return (await statusGetter.isSelfHostedRunnerAvailable())
 				? [runners.selfhosted]
 				: [runners.github];
 	}

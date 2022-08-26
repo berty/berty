@@ -48,7 +48,7 @@ jobs:
           #    github         pick the github runner configuration
           #    optimized      pick a dc4 runner if available or fallback on github one
           #
-          node .github/workflows/utils/mac-runner-matrix-builder.js optimized "${{ secrets.GITHUB_TOKEN }}"
+          node .github/workflows/utils/mac-runner-matrix-builder.js optimized
 
   build-macos-app:
     name: Build Electron app (macOS)
