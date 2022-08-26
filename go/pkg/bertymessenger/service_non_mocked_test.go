@@ -24,7 +24,7 @@ import (
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
 
-func NonMockedTestingInfra(ctx context.Context, t *testing.T, accountAmount int) ([]messengertypes.MessengerServiceClient, []*bertyprotocol.TestingProtocol, func()) {
+func NonMockedTestingInfra(t *testing.T, accountAmount int) ([]messengertypes.MessengerServiceClient, []*bertyprotocol.TestingProtocol, func()) {
 	messengers := make([]messengertypes.MessengerServiceClient, accountAmount)
 	tps := make([]*bertyprotocol.TestingProtocol, accountAmount)
 	closeFuncs := ([]func())(nil)
@@ -37,8 +37,9 @@ func NonMockedTestingInfra(ctx context.Context, t *testing.T, accountAmount int)
 			_ = os.RemoveAll(tempDir)
 		})
 
-		man, err := initutil.New(ctx, nil)
+		man, err := initutil.New(nil)
 		assert.NoError(t, err)
+		closeFuncs = append(closeFuncs, func() { _ = man.Close(nil) })
 
 		fs := flag.NewFlagSet("man1", flag.ExitOnError)
 		man.SetupLoggingFlags(fs)              // also available at root level
@@ -89,7 +90,7 @@ func TestPeersCreateJoinConversationNonMocked(t *testing.T) {
 	logger, cleanup := testutil.Logger(t)
 	defer cleanup()
 	accountsAmount := 3
-	clients, _, cleanup := NonMockedTestingInfra(ctx, t, accountsAmount)
+	clients, _, cleanup := NonMockedTestingInfra(t, accountsAmount)
 	defer cleanup()
 
 	// create nodes

@@ -418,7 +418,7 @@ func (s *service) openManager(kind string, defaultLoggerStreams []logutil.Stream
 		kind = "mobile"
 	}
 
-	manager, err := initutil.New(context.Background(), &initutil.ManagerOpts{
+	manager, err := initutil.New(&initutil.ManagerOpts{
 		DoNotSetDefaultDir:   true,
 		DefaultLoggerStreams: defaultLoggerStreams,
 		NativeKeystore:       s.nativeKeystore,

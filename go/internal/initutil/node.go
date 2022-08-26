@@ -208,7 +208,7 @@ func (m *Manager) getLocalProtocolServer() (bertyprotocol.Service, error) {
 			GRPCInsecureMode: m.Node.Protocol.ServiceInsecureMode,
 		}
 
-		m.Node.Protocol.server, err = bertyprotocol.New(m.getContext(), opts)
+		m.Node.Protocol.server, err = bertyprotocol.New(opts)
 		if err != nil {
 			return nil, errcode.TODO.Wrap(err)
 		}

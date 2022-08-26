@@ -77,7 +77,9 @@ func (s *service) MultiMemberGroupLeave(ctx context.Context, req *protocoltypes.
 		return nil, errcode.ErrOrbitDBAppend.Wrap(err)
 	}
 
-	_ = s.deactivateGroup(pk)
+	if err := s.deactivateGroup(pk); err != nil {
+		return nil, errcode.ErrOrbitDBAppend.Wrap(err)
+	}
 
 	return &protocoltypes.MultiMemberGroupLeave_Reply{}, nil
 }

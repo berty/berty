@@ -201,7 +201,7 @@ type Manager struct {
 
 	// internal
 	ctx            context.Context
-	ctxCancel      func()
+	ctxCancel      context.CancelFunc
 	initLogger     *zap.Logger
 	workers        run.Group // replace by something more accurate
 	mutex          sync.Mutex
@@ -217,13 +217,13 @@ type ManagerOpts struct {
 	AccountID            string
 }
 
-func New(ctx context.Context, opts *ManagerOpts) (*Manager, error) {
+func New(opts *ManagerOpts) (*Manager, error) {
 	if opts == nil {
 		opts = &ManagerOpts{}
 	}
 
 	m := Manager{}
-	m.ctx, m.ctxCancel = context.WithCancel(ctx)
+	m.ctx, m.ctxCancel = context.WithCancel(context.Background())
 
 	m.accountID = opts.AccountID
 	if m.accountID == "" {
@@ -261,9 +261,11 @@ func New(ctx context.Context, opts *ManagerOpts) (*Manager, error) {
 		storagePath := configdir.New("berty-tech", "berty")
 		storageDirs := storagePath.QueryFolders(configdir.Global)
 		if len(storageDirs) == 0 {
+			m.ctxCancel()
 			return nil, fmt.Errorf("no storage path found")
 		}
 		if err := storageDirs[0].CreateParentDir(""); err != nil {
+			m.ctxCancel()
 			return nil, errcode.TODO.Wrap(err)
 		}
 		m.Datastore.defaultDir = storageDirs[0].Path

@@ -52,10 +52,11 @@ func testAddBerty(ctx context.Context, t *testing.T, node ipfsutil.CoreAPIMock, 
 	defer testutil.Close(t, odb)
 
 	replicate := false
-	gc, err := odb.OpenGroup(ctx, g, &iface.CreateDBOptions{
+	gc, err := odb.OpenGroup(g, &iface.CreateDBOptions{
 		Replicate: &replicate,
 	})
 	require.NoError(t, err)
+	defer gc.Close()
 
 	defer testutil.Close(t, gc)
 

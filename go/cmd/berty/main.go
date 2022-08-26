@@ -40,7 +40,7 @@ func runMain(args []string) error {
 	// init manager
 	{
 		var err error
-		manager, err = initutil.New(ctx, nil)
+		manager, err = initutil.New(nil)
 		if err != nil {
 			return errcode.TODO.Wrap(err)
 		}

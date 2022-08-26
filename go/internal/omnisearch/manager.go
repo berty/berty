@@ -25,8 +25,9 @@ func NewManagerFromManager(m *initutil.Manager) Provider {
 	return provider{m: m}
 }
 
-func NewManagerFromNothing(ctx context.Context) (Provider, error) {
-	m, err := initutil.New(ctx, nil)
+// TODO: close manager by calling m.Close()
+func NewManagerFromNoTHing(_ context.Context) (Provider, error) {
+	m, err := initutil.New(nil)
 	if err != nil {
 		return nil, err
 	}

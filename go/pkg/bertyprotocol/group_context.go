@@ -3,6 +3,7 @@ package bertyprotocol
 import (
 	"encoding/base64"
 	"fmt"
+	"sync/atomic"
 
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"go.uber.org/zap"
@@ -19,6 +20,7 @@ type GroupContext struct {
 	messageKeystore *cryptoutil.MessageKeystore
 	memberDevice    *cryptoutil.OwnMemberDevice
 	logger          *zap.Logger
+	closed          uint32
 }
 
 func (gc *GroupContext) MessageKeystore() *cryptoutil.MessageKeystore {
@@ -50,10 +52,16 @@ func (gc *GroupContext) DevicePubKey() crypto.PubKey {
 }
 
 func (gc *GroupContext) Close() error {
+	atomic.StoreUint32(&gc.closed, 1)
+
 	gc.metadataStore.Close()
 	gc.messageStore.Close()
 
 	return nil
+}
+
+func (gc *GroupContext) IsClosed() bool {
+	return atomic.LoadUint32(&gc.closed) != 0
 }
 
 func NewContextGroup(group *protocoltypes.Group, metadataStore *MetadataStore, messageStore *MessageStore, messageKeystore *cryptoutil.MessageKeystore, memberDevice *cryptoutil.OwnMemberDevice, logger *zap.Logger) *GroupContext {
@@ -68,5 +76,6 @@ func NewContextGroup(group *protocoltypes.Group, metadataStore *MetadataStore, m
 		messageKeystore: messageKeystore,
 		memberDevice:    memberDevice,
 		logger:          logger.With(logutil.PrivateString("group-id", fmt.Sprintf("%.6s", base64.StdEncoding.EncodeToString(group.PublicKey)))),
+		closed:          0,
 	}
 }
