@@ -419,7 +419,7 @@ func CreatePeersWithGroupTest(ctx context.Context, t testing.TB, pathBase string
 				t.Fatal(err)
 			}
 
-			gc, err := db.OpenGroup(ctx, g, nil)
+			gc, err := db.OpenGroup(g, nil)
 			if err != nil {
 				t.Fatalf("err: creating new group context, %v", err)
 			}
@@ -439,8 +439,12 @@ func CreatePeersWithGroupTest(ctx context.Context, t testing.TB, pathBase string
 					assert.NoError(t, err)
 				}
 
+				gc.Close()
+
 				if db := mp.DB; db != nil {
-					err := db.Close()
+					assert.NoError(t, err)
+
+					err = db.Close()
 					assert.NoError(t, err)
 				}
 

@@ -103,6 +103,7 @@ type BertyOrbitDB struct {
 	rotationInterval *rendezvous.RotationInterval
 	messageMarshaler *OrbitDBMessageMarshaler
 
+	ctx context.Context
 	// FIXME(gfanton): use real map instead of sync.Map
 	groups          *GroupMap           // map[string]*protocoltypes.Group
 	groupContexts   *GroupContextMap    // map[string]*GroupContext
@@ -181,6 +182,7 @@ func NewBertyOrbitDB(ctx context.Context, ipfs coreapi.CoreAPI, options *NewOrbi
 	}
 
 	bertyDB := &BertyOrbitDB{
+		ctx:              ctx,
 		messageMarshaler: mm,
 		BaseOrbitDB:      orbitDB,
 		keyStore:         ks,
@@ -225,7 +227,7 @@ func (s *BertyOrbitDB) openAccountGroup(ctx context.Context, options *orbitdb.Cr
 
 	l.Debug("Got account group", tyber.FormatStepLogFields(ctx, []tyber.Detail{{Name: "Group", Description: g.String()}})...)
 
-	gc, err := s.OpenGroup(ctx, g, options)
+	gc, err := s.OpenGroup(g, options)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
@@ -315,7 +317,7 @@ func (s *BertyOrbitDB) setHeadsForGroup(ctx context.Context, g *protocoltypes.Gr
 	return nil
 }
 
-func (s *BertyOrbitDB) OpenGroup(ctx context.Context, g *protocoltypes.Group, options *orbitdb.CreateDBOptions) (*GroupContext, error) {
+func (s *BertyOrbitDB) OpenGroup(g *protocoltypes.Group, options *orbitdb.CreateDBOptions) (*GroupContext, error) {
 	if s.deviceKeystore == nil || s.messageKeystore == nil {
 		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("db open in naive mode"))
 	}
@@ -337,10 +339,13 @@ func (s *BertyOrbitDB) OpenGroup(ctx context.Context, g *protocoltypes.Group, op
 		return nil, err
 	}
 
+	ctx, cancel := context.WithCancel(context.Background())
+
 	s.Logger().Debug("OpenGroup", tyber.FormatStepLogFields(ctx, tyber.ZapFieldsToDetails(zap.Any("public key", g.PublicKey), zap.Any("secret", g.Secret), zap.Stringer("type", g.GroupType)))...)
 
 	memberDevice, err := s.deviceKeystore.MemberDeviceForGroup(g)
 	if err != nil {
+		cancel()
 		return nil, errcode.ErrCryptoKeyGeneration.Wrap(err)
 	}
 
@@ -352,6 +357,7 @@ func (s *BertyOrbitDB) OpenGroup(ctx context.Context, g *protocoltypes.Group, op
 
 	// Force secret generation if missing
 	if _, err := s.messageKeystore.GetDeviceSecret(ctx, g, s.deviceKeystore); err != nil {
+		cancel()
 		return nil, errcode.ErrCryptoKeyGeneration.Wrap(err)
 	}
 
@@ -359,6 +365,7 @@ func (s *BertyOrbitDB) OpenGroup(ctx context.Context, g *protocoltypes.Group, op
 
 	metaImpl, err := s.groupMetadataStore(ctx, g, options)
 	if err != nil {
+		cancel()
 		return nil, errcode.ErrOrbitDBOpen.Wrap(err)
 	}
 	s.messageMarshaler.RegisterGroup(metaImpl.Address().String(), g)
@@ -367,13 +374,14 @@ func (s *BertyOrbitDB) OpenGroup(ctx context.Context, g *protocoltypes.Group, op
 
 	messagesImpl, err := s.groupMessageStore(ctx, g, options)
 	if err != nil {
+		cancel()
 		return nil, errcode.ErrOrbitDBOpen.Wrap(err)
 	}
 	s.messageMarshaler.RegisterGroup(messagesImpl.Address().String(), g)
 
 	s.Logger().Debug("Got message store", tyber.FormatStepLogFields(ctx, []tyber.Detail{})...)
 
-	gc := NewContextGroup(g, metaImpl, messagesImpl, s.messageKeystore, memberDevice, s.Logger())
+	gc := NewContextGroup(ctx, cancel, g, metaImpl, messagesImpl, s.messageKeystore, memberDevice, s.Logger())
 
 	s.Logger().Debug("Created group context", tyber.FormatStepLogFields(ctx, []tyber.Detail{})...)
 
@@ -422,6 +430,17 @@ func (s *BertyOrbitDB) OpenGroupReplication(ctx context.Context, g *protocoltype
 func (s *BertyOrbitDB) getGroupContext(id string) (*GroupContext, error) {
 	g, ok := s.groupContexts.Load(id)
 	if !ok {
+		return nil, errcode.ErrMissingMapKey
+	}
+
+	gc, ok := g.(*GroupContext)
+	if !ok {
+		s.groupContexts.Delete(id)
+		return nil, errors.New("cannot cast object to GroupContext")
+	}
+
+	if !gc.IsValid() {
+		s.groupContexts.Delete(id)
 		return nil, errcode.ErrMissingMapKey
 	}
 
@@ -482,7 +501,11 @@ func (s *BertyOrbitDB) storeForGroup(ctx context.Context, o iface.BaseOrbitDB, g
 	}
 
 	options.EventBus = eventbus.NewBus()
-	store, err := o.Open(ctx, name, options)
+
+	// @FIXME(d4ryl00): the given context is not the one of the group but one with
+	// a longer time life because go-orbitdb doesn't close correctly the group
+	// and that can lead of bugs when you close/open the same group.
+	store, err := o.Open(s.ctx, name, options)
 	if err != nil {
 		return nil, errcode.ErrOrbitDBOpen.Wrap(err)
 	}

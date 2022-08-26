@@ -60,10 +60,6 @@ func (s *service) deactivateGroup(pk crypto.PubKey) error {
 		return nil
 	}
 
-	if cg.Group().GroupType == protocoltypes.GroupTypeAccount {
-		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("can't deactivate account group"))
-	}
-
 	s.lock.Lock()
 	defer s.lock.Unlock()
 
@@ -100,7 +96,7 @@ func (s *service) activateGroup(ctx context.Context, pk crypto.PubKey, localOnly
 	case protocoltypes.GroupTypeContact, protocoltypes.GroupTypeMultiMember:
 		dbOpts := &iface.CreateDBOptions{LocalOnly: &localOnly}
 
-		gc, err := s.odb.OpenGroup(s.ctx, g, dbOpts)
+		gc, err := s.odb.OpenGroup(g, dbOpts)
 		if err != nil {
 			return errcode.TODO.Wrap(err)
 		}

@@ -532,8 +532,9 @@ func TestMetadataAliasLifecycle(t *testing.T) {
 	g, err := cryptoutil.GetGroupForContact(sk)
 	require.NoError(t, err)
 
-	cg0, err := peers[0].DB.OpenGroup(ctx, g, nil)
+	cg0, err := peers[0].DB.OpenGroup(g, nil)
 	require.NoError(t, err)
+	defer cg0.Close()
 
 	require.False(t, cg0.MetadataStore().Index().(*metadataStoreIndex).ownAliasKeySent)
 
@@ -552,8 +553,9 @@ func TestMetadataAliasLifecycle(t *testing.T) {
 	g, err = cryptoutil.GetGroupForContact(sk)
 	require.NoError(t, err)
 
-	cg1, err := peers[1].DB.OpenGroup(ctx, g, nil)
+	cg1, err := peers[1].DB.OpenGroup(g, nil)
 	require.NoError(t, err)
+	defer cg1.Close()
 
 	_ = cg1
 
