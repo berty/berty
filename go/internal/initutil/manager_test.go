@@ -111,8 +111,7 @@ func verifyRunningLeakDetection(t *testing.T) {
 
 func Example_flags() {
 	// init manager
-	ctx := context.Background()
-	manager, err := initutil.New(ctx, nil)
+	manager, err := initutil.New(nil)
 	if err != nil {
 		panic(err)
 	}
@@ -138,7 +137,7 @@ func Example_flags() {
 func Example_noflags() {
 	// init manager
 	ctx := context.Background()
-	manager, err := initutil.New(ctx, nil)
+	manager, err := initutil.New(nil)
 	if err != nil {
 		panic(err)
 	}
@@ -181,14 +180,12 @@ func Example_noflags() {
 
 func TestTwoConcurrentManagers(t *testing.T) {
 	var man1, man2 *initutil.Manager
-	var ctx1, ctx2 context.Context
 
 	// FIXME: automatically find an available port
 
 	// init man 1
 	{
-		ctx1 = context.Background()
-		manager, err := initutil.New(ctx1, nil)
+		manager, err := initutil.New(nil)
 		require.NoError(t, err)
 		require.NotNil(t, manager)
 		defer manager.Close(nil)
@@ -203,8 +200,7 @@ func TestTwoConcurrentManagers(t *testing.T) {
 
 	// init man 2
 	{
-		ctx2 = context.Background()
-		manager, err := initutil.New(ctx2, nil)
+		manager, err := initutil.New(nil)
 		require.NoError(t, err)
 		require.NotNil(t, manager)
 		defer manager.Close(nil)
@@ -233,42 +229,21 @@ func TestTwoConcurrentManagers(t *testing.T) {
 		require.NoError(t, err)
 		require.NotNil(t, client)
 
-		ret, err := client.InstanceGetConfiguration(ctx2, &protocoltypes.InstanceGetConfiguration_Request{})
+		ctx := context.Background()
+		ret, err := client.InstanceGetConfiguration(ctx, &protocoltypes.InstanceGetConfiguration_Request{})
 		require.NoError(t, err)
 		require.NotNil(t, ret.AccountPK)
 	}
-}
-
-func TestCloseByContext(t *testing.T) {
-	defer verifyRunningLeakDetection(t)
-
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
-
-	manager, err := initutil.New(ctx, nil)
-	require.NoError(t, err)
-	require.NotNil(t, manager)
-
-	// configure flags
-	fs := flag.NewFlagSet("test", flag.ExitOnError)
-	manager.SetupLoggingFlags(fs)
-	manager.SetupLocalProtocolServerFlags(fs)
-	manager.SetupEmptyGRPCListenersFlags(fs)
-	fs.Parse([]string{"-store.inmem", "-node.listeners=/ip4/127.0.0.1/tcp/0/grpc", "-log.filters=", "-log.ring-filters="})
-
-	server, err := manager.GetLocalProtocolServer()
-	require.NoError(t, err)
-	require.NotNil(t, server)
 }
 
 func TestFlagsLeak(t *testing.T) {
 	// FIXME : should call defer verifySetupLeakDetection(t)
 	// but maybe because when run test with other tests, still have some goroutine of previous tests are not done
 	defer verifyRunningLeakDetection(t)
-	ctx := context.Background()
-	manager, err := initutil.New(ctx, nil)
+	manager, err := initutil.New(nil)
 	require.NoError(t, err)
 	require.NotNil(t, manager)
+	defer manager.Close(nil)
 
 	// configure flags
 	fs := flag.NewFlagSet("test", flag.ExitOnError)
@@ -281,7 +256,7 @@ func TestFlagsLeak(t *testing.T) {
 
 func TestLocalProtocolServerAndClient(t *testing.T) {
 	ctx := context.Background()
-	manager, err := initutil.New(ctx, nil)
+	manager, err := initutil.New(nil)
 	require.NoError(t, err)
 	require.NotNil(t, manager)
 	defer manager.Close(nil)
@@ -309,8 +284,7 @@ func TestLocalProtocolServerAndClient(t *testing.T) {
 
 func TestLocalProtocolServerLeak(t *testing.T) {
 	defer verifyRunningLeakDetection(t)
-	ctx := context.Background()
-	manager, err := initutil.New(ctx, nil)
+	manager, err := initutil.New(nil)
 	require.NoError(t, err)
 	require.NotNil(t, manager)
 	defer manager.Close(nil)
@@ -330,8 +304,7 @@ func TestLocalProtocolServerLeak(t *testing.T) {
 func TestCloseOnUninited(t *testing.T) {
 	defer verifyRunningLeakDetection(t)
 
-	ctx := context.Background()
-	manager, err := initutil.New(ctx, nil)
+	manager, err := initutil.New(nil)
 	require.NoError(t, err)
 	require.NotNil(t, manager)
 	manager.Close(nil)
@@ -340,8 +313,7 @@ func TestCloseOnUninited(t *testing.T) {
 func TestClosingTwice(t *testing.T) {
 	defer verifyRunningLeakDetection(t)
 
-	ctx := context.Background()
-	manager, err := initutil.New(ctx, nil)
+	manager, err := initutil.New(nil)
 	require.NoError(t, err)
 	require.NotNil(t, manager)
 
@@ -370,8 +342,7 @@ func TestCloseOpenClose(t *testing.T) {
 func TestRacyClose(t *testing.T) {
 	defer verifyRunningLeakDetection(t)
 
-	ctx := context.Background()
-	manager, err := initutil.New(ctx, nil)
+	manager, err := initutil.New(nil)
 	require.NoError(t, err)
 	require.NotNil(t, manager)
 
