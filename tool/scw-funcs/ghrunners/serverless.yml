@@ -1,0 +1,19 @@
+service: ghrunners
+configValidationMode: off
+provider:
+  name: scaleway
+  runtime: go118
+
+plugins:
+  - serverless-scaleway-functions
+
+package:
+  patterns:
+    - '!node_modules/**'
+    - '!.gitignore'
+    - '!.git/**'
+    - '!*_test.go'
+
+functions:
+  runners:
+    handler: 'Runners'
