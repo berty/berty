@@ -9,13 +9,11 @@ import (
 	"fmt"
 	"io"
 	"sync"
-	"sync/atomic"
 	"time"
 
 	sqlite "github.com/flyingtime/gorm-sqlcipher"
 	// nolint:staticcheck // cannot use the new protobuf API while keeping gogoproto
 	"github.com/golang/protobuf/proto"
-	ipfscid "github.com/ipfs/go-cid"
 	ipfs_interface "github.com/ipfs/interface-go-ipfs-core"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
@@ -69,6 +67,10 @@ type service struct {
 	muCancelGroupStatus   sync.Mutex
 	knownPeers            map[string] /* peer.ID */ protocoltypes.GroupDeviceStatus_Type
 	muKnownPeers          sync.Mutex
+	cancelSubsCtx         func()
+	subsCtx               context.Context
+	subsMutex             *sync.Mutex
+	groupsToSubTo         map[string]struct{}
 }
 
 type Opts struct {
@@ -224,6 +226,8 @@ func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (_ Service, err
 		logFilePath:           opts.LogFilePath,
 		cancelGroupStatus:     make(map[string] /* groupPK */ context.CancelFunc),
 		knownPeers:            make(map[string] /* peer.ID */ protocoltypes.GroupDeviceStatus_Type),
+		subsMutex:             &sync.Mutex{},
+		groupsToSubTo:         make(map[string]struct{}),
 	}
 
 	svc.eventHandler = messengerpayloads.NewEventHandler(ctx, db, &MetaFetcherFromProtocolClient{client: client}, newPostActionsService(&svc), opts.Logger, svc.dispatcher, false)
@@ -285,70 +289,6 @@ func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (_ Service, err
 		return nil
 	}})
 
-	tyberSubsCtx, _, endSection := tyber.Section(context.TODO(), opts.Logger, "Subscribing to groups on MessengerService init")
-	defer func() { endSection(err, "") }()
-
-	// Subscribe to account group metadata
-	err = svc.subscribeToMetadata(tyberSubsCtx, icr.GetAccountGroupPK())
-	if err != nil {
-		return nil, fmt.Errorf("error while subscribing to account metadata: %w", err)
-	}
-
-	// subscribe to groups
-	{
-		convs, err := svc.db.GetAllConversations()
-		if err != nil {
-			return nil, fmt.Errorf("error while fetching conversations from db: %w", err)
-		}
-
-		for _, cv := range convs {
-			gpkb, err := messengerutil.B64DecodeBytes(cv.GetPublicKey())
-			if err != nil {
-				return nil, errcode.ErrDeserialization.Wrap(err)
-			}
-
-			go func() {
-				_, err = svc.protocolClient.ActivateGroup(svc.ctx, &protocoltypes.ActivateGroup_Request{GroupPK: gpkb})
-				if err != nil {
-					opts.Logger.Error("error while activating group", zap.Error(err))
-					return
-				}
-
-				if err := svc.subscribeToGroup(tyberSubsCtx, gpkb); err != nil {
-					opts.Logger.Error("error while subscribing to group metadata", zap.Error(err))
-					return
-				}
-			}()
-		}
-	}
-
-	// subscribe to contact groups
-	{
-		contacts, err := svc.db.GetContactsByState(mt.Contact_OutgoingRequestSent)
-		if err != nil {
-			return nil, errcode.ErrDBRead.Wrap(fmt.Errorf("error while fetching contacts from db: %w", err))
-		}
-		for _, c := range contacts {
-			gpkb, err := messengerutil.B64DecodeBytes(c.GetConversationPublicKey())
-			if err != nil {
-				return nil, errcode.ErrDeserialization.Wrap(err)
-			}
-
-			go func() {
-				_, err = svc.protocolClient.ActivateGroup(svc.ctx, &protocoltypes.ActivateGroup_Request{GroupPK: gpkb})
-				if err != nil {
-					opts.Logger.Error("error while activating contact group", zap.Error(err))
-					return
-				}
-
-				if err := svc.subscribeToMetadata(tyberSubsCtx, gpkb); err != nil {
-					opts.Logger.Error("error while subscribing to contact group metadata", zap.Error(err))
-					return
-				}
-			}()
-		}
-	}
-
 	if opts.PlatformPushToken != nil {
 		icr, err = client.InstanceGetConfiguration(ctx, &protocoltypes.InstanceGetConfiguration_Request{})
 		if err != nil {
@@ -364,187 +304,55 @@ func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (_ Service, err
 		}
 	}
 
+	// Subscribe to account group metadata
+	svc.groupsToSubTo[messengerutil.B64EncodeBytes(icr.GetAccountGroupPK())] = struct{}{}
+
+	// subscribe to groups
+	{
+		convs, err := svc.db.GetAllConversations()
+		if err != nil {
+			return nil, fmt.Errorf("error while fetching conversations from db: %w", err)
+		}
+
+		for _, cv := range convs {
+			gpkb, err := messengerutil.B64DecodeBytes(cv.GetPublicKey())
+			if err != nil {
+				return nil, errcode.ErrDeserialization.Wrap(err)
+			}
+
+			_, err = svc.protocolClient.ActivateGroup(ctx, &protocoltypes.ActivateGroup_Request{GroupPK: gpkb})
+			if err != nil {
+				return nil, errcode.TODO.Wrap(err)
+			}
+
+			svc.groupsToSubTo[cv.GetPublicKey()] = struct{}{}
+		}
+	}
+
+	// subscribe to contact groups
+	{
+		contacts, err := svc.db.GetContactsByState(mt.Contact_OutgoingRequestSent)
+		if err != nil {
+			return nil, errcode.ErrDBRead.Wrap(fmt.Errorf("error while fetching contacts from db: %w", err))
+		}
+		for _, c := range contacts {
+			gpkb, err := messengerutil.B64DecodeBytes(c.GetConversationPublicKey())
+			if err != nil {
+				return nil, errcode.ErrDeserialization.Wrap(err)
+			}
+
+			_, err = svc.protocolClient.ActivateGroup(ctx, &protocoltypes.ActivateGroup_Request{GroupPK: gpkb})
+			if err != nil {
+				return nil, errcode.TODO.Wrap(err)
+			}
+
+			svc.groupsToSubTo[c.GetConversationPublicKey()] = struct{}{}
+		}
+	}
+
+	go svc.manageSubscriptions()
+
 	return &svc, nil
-}
-
-func (svc *service) subscribeToMetadata(tctx context.Context, gpkb []byte) error {
-	tctx, newTrace := tyber.ContextWithTraceID(tctx)
-	traceName := "Subscribing to metadata on group " + messengerutil.B64EncodeBytes(gpkb)
-	if newTrace {
-		svc.logger.Debug(traceName, tyber.FormatTraceLogFields(tctx)...)
-		defer tyber.LogTraceEnd(tctx, svc.logger, "Successfully subscribed to metadata")
-	} else {
-		tyber.LogStep(tctx, svc.logger, traceName)
-	}
-
-	// subscribe
-	s, err := svc.protocolClient.GroupMetadataList(
-		svc.ctx,
-		&protocoltypes.GroupMetadataList_Request{GroupPK: gpkb},
-	)
-	if err != nil {
-		return errcode.ErrEventListMetadata.Wrap(err)
-	}
-	go func() {
-		for {
-			gme, err := s.Recv()
-			if err != nil {
-				svc.logStreamingError("group metadata", err)
-				return
-			}
-
-			cid, err := ipfscid.Cast(gme.EventContext.ID)
-			eventHandler := svc.eventHandler
-			if err != nil {
-				svc.logger.Error("failed to cast cid for logging", logutil.PrivateBinary("cid-bytes", gme.EventContext.ID))
-				ctx, _ := tyber.ContextWithTraceID(svc.eventHandler.Ctx())
-				eventHandler = eventHandler.WithContext(ctx)
-			} else {
-				eventHandler = eventHandler.WithContext(tyber.ContextWithConstantTraceID(svc.eventHandler.Ctx(), "msgrcvd-"+cid.String()))
-			}
-
-			svc.handlerMutex.Lock()
-			if err := eventHandler.HandleMetadataEvent(gme); err != nil {
-				_ = tyber.LogFatalError(eventHandler.Ctx(), eventHandler.Logger(), "Failed to handle protocol event", err)
-			} else {
-				eventHandler.Logger().Debug("Messenger event handler succeeded", tyber.FormatStepLogFields(eventHandler.Ctx(), []tyber.Detail{}, tyber.EndTrace)...)
-			}
-			svc.handlerMutex.Unlock()
-		}
-	}()
-	return nil
-}
-
-func (svc *service) subscribeToMessages(tctx context.Context, gpkb []byte) error {
-	tctx, newTrace := tyber.ContextWithTraceID(tctx)
-	traceName := "Subscribing to messages on group " + messengerutil.B64EncodeBytes(gpkb)
-	if newTrace {
-		svc.logger.Debug(traceName, tyber.FormatTraceLogFields(tctx)...)
-		defer tyber.LogTraceEnd(tctx, svc.logger, "Successfully subscribed to messages")
-	} else {
-		tyber.LogStep(tctx, svc.logger, traceName)
-	}
-
-	ms, err := svc.protocolClient.GroupMessageList(
-		svc.ctx,
-		&protocoltypes.GroupMessageList_Request{
-			GroupPK:  gpkb,
-			SinceNow: true,
-		},
-	)
-	if err != nil {
-		return errcode.ErrEventListMessage.Wrap(err)
-	}
-	go func() {
-		for {
-			gme, err := ms.Recv()
-			if err != nil {
-				svc.logStreamingError("group message", err)
-				return
-			}
-
-			var am mt.AppMessage
-			if err := proto.Unmarshal(gme.GetMessage(), &am); err != nil {
-				svc.logger.Warn("failed to unmarshal AppMessage", zap.Error(err))
-				return
-			}
-
-			cid, err := ipfscid.Cast(gme.EventContext.ID)
-			eventHandler := svc.eventHandler
-			if err != nil {
-				svc.logger.Error("failed to cast cid for logging", zap.String("type", am.GetType().String()), logutil.PrivateBinary("cid-bytes", gme.EventContext.ID))
-				ctx, _ := tyber.ContextWithTraceID(svc.eventHandler.Ctx())
-				eventHandler = eventHandler.WithContext(ctx)
-			} else {
-				eventHandler = eventHandler.WithContext(tyber.ContextWithConstantTraceID(svc.eventHandler.Ctx(), "msgrcvd-"+cid.String()))
-			}
-
-			svc.handlerMutex.Lock()
-			if err := eventHandler.HandleAppMessage(messengerutil.B64EncodeBytes(gpkb), gme, &am); err != nil {
-				_ = tyber.LogFatalError(eventHandler.Ctx(), eventHandler.Logger(), "Failed to handle AppMessage", err)
-			} else {
-				eventHandler.Logger().Debug("AppMessage handler succeeded", tyber.FormatStepLogFields(eventHandler.Ctx(), []tyber.Detail{}, tyber.EndTrace)...)
-			}
-			svc.handlerMutex.Unlock()
-		}
-	}()
-	return nil
-}
-
-var monitorCounter uint64
-
-func (svc *service) subscribeToGroupMonitor(groupPK []byte) error {
-	cl, err := svc.protocolClient.MonitorGroup(svc.ctx, &protocoltypes.MonitorGroup_Request{
-		GroupPK: groupPK,
-	})
-	if err != nil {
-		return fmt.Errorf("unable to monitor group: %w", err)
-	}
-
-	go func() {
-		for {
-			seqid := atomic.AddUint64(&monitorCounter, 1)
-			evt, err := cl.Recv()
-			switch err {
-			case nil:
-			// everything fine
-			case io.EOF:
-				return
-			case context.Canceled, context.DeadlineExceeded:
-				svc.logger.Warn("monitoring group interrupted", zap.Error(err))
-				return
-			default:
-				svc.logger.Error("error while monitoring group", zap.Error(err))
-				return
-			}
-
-			meta := mt.AppMessage_MonitorMetadata{
-				Event: evt.Event,
-			}
-
-			payload, err := proto.Marshal(&meta)
-			if err != nil {
-				svc.logger.Error("unable to marshal event")
-				continue
-			}
-
-			cid := fmt.Sprintf("__monitor-group-%d", seqid)
-			i := &mt.Interaction{
-				CID:                   cid,
-				Type:                  mt.AppMessage_TypeMonitorMetadata,
-				ConversationPublicKey: messengerutil.B64EncodeBytes(evt.GetGroupPK()),
-				Payload:               payload,
-				SentDate:              messengerutil.TimestampMs(time.Now()),
-			}
-
-			err = svc.dispatcher.StreamEvent(mt.StreamEvent_TypeInteractionUpdated, &mt.StreamEvent_InteractionUpdated{Interaction: i}, true)
-			if err != nil {
-				svc.logger.Error("unable to dispatch monitor event")
-			}
-		}
-	}()
-
-	return nil
-}
-
-func (svc *service) subscribeToGroup(tctx context.Context, gpkb []byte) error {
-	tctx, newTrace := tyber.ContextWithTraceID(tctx)
-	if newTrace {
-		svc.logger.Debug("Subscribing to group "+messengerutil.B64EncodeBytes(gpkb), tyber.FormatTraceLogFields(tctx)...)
-		defer tyber.LogTraceEnd(tctx, svc.logger, "Successfully subscribed to group")
-	}
-
-	if svc.isGroupMonitorEnabled {
-		if err := svc.subscribeToGroupMonitor(gpkb); err != nil {
-			return err
-		}
-	}
-
-	if err := svc.subscribeToMetadata(tctx, gpkb); err != nil {
-		return err
-	}
-
-	return svc.subscribeToMessages(tctx, gpkb)
 }
 
 func (svc *service) attachmentPrepare(ctx context.Context, attachment io.Reader) ([]byte, error) {
@@ -660,6 +468,7 @@ func (svc *service) sendAccountUserInfo(ctx context.Context, groupPK string) (er
 func (svc *service) Close() {
 	ctx, _ := tyber.ContextWithTraceID(svc.ctx)
 	svc.logger.Debug("Closing MessengerService", tyber.FormatTraceLogFields(ctx)...)
+	svc.closeSubscriptions()
 	svc.dispatcher.UnregisterAll()
 	svc.cancelFn()
 	svc.optsCleanup()
@@ -667,13 +476,17 @@ func (svc *service) Close() {
 }
 
 func (svc *service) ActivateGroup(groupPK []byte) error {
-	if _, err := svc.protocolClient.ActivateGroup(svc.ctx, &protocoltypes.ActivateGroup_Request{GroupPK: groupPK}); err != nil {
-		return err
-	}
+	svc.subsMutex.Lock()
+	defer svc.subsMutex.Unlock()
 
-	// subscribe to group
-	if err := svc.subscribeToGroup(svc.ctx, groupPK); err != nil {
-		return err
+	// mark group
+	svc.groupsToSubTo[messengerutil.B64EncodeBytes(groupPK)] = struct{}{}
+
+	// subscribe to group if app is active
+	if svc.subsCtx != nil {
+		if err := svc.subscribeToGroup(svc.subsCtx, svc.ctx, groupPK); err != nil {
+			return err
+		}
 	}
 
 	svc.logger.Debug("Subscribed to group", tyber.FormatStepLogFields(svc.ctx, []tyber.Detail{

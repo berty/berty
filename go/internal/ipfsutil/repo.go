@@ -52,7 +52,8 @@ func LoadRepoFromPath(path string, key []byte, salt []byte) (ipfs_repo.Repo, err
 	}
 
 	// init repo if needed
-	isInit, err := encrepo.IsInitialized(path, key, salt)
+	sqldsOpts := encrepo.SQLCipherDatastoreOptions{JournalMode: "WAL", PlaintextHeader: len(salt) != 0, Salt: salt}
+	isInit, err := encrepo.IsInitialized(path, key, sqldsOpts)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to check if repo is initialized")
 	}
@@ -69,12 +70,12 @@ func LoadRepoFromPath(path string, key []byte, salt []byte) (ipfs_repo.Repo, err
 
 		ucfg.Datastore.Spec = nil
 
-		if err := encrepo.Init(path, key, salt, ucfg); err != nil {
+		if err := encrepo.Init(path, key, sqldsOpts, ucfg); err != nil {
 			return nil, errors.Wrap(err, "failed to init repo")
 		}
 	}
 
-	return encrepo.Open(path, key, salt)
+	return encrepo.Open(path, key, sqldsOpts)
 }
 
 var DefaultSwarmListeners = []string{
@@ -139,7 +140,8 @@ func ResetExistingRepoIdentity(repo ipfs_repo.Repo, path string, key []byte, sal
 		return nil, errcode.ErrInternal.Wrap(err)
 	}
 
-	repo, err = encrepo.Open(path, key, salt)
+	sqldsOpts := encrepo.SQLCipherDatastoreOptions{JournalMode: "WAL", PlaintextHeader: len(salt) != 0, Salt: salt}
+	repo, err = encrepo.Open(path, key, sqldsOpts)
 	if err != nil {
 		return nil, errcode.ErrInternal.Wrap(err)
 	}

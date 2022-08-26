@@ -11,42 +11,79 @@ import (
 )
 
 func (m *Manager) SetupDatastoreFlags(fs *flag.FlagSet) {
-	dir := m.Datastore.Dir
+	dir := m.Datastore.AppDir
 	if dir == "" {
 		dir = m.Datastore.defaultDir
 	}
-	fs.StringVar(&m.Datastore.Dir, "store.dir", dir, "root datastore directory")
+	fs.StringVar(&m.Datastore.AppDir, "store.dir", dir, "root datastore directory")
+
+	fs.StringVar(&m.Datastore.SharedDir, "store.shared-dir", "", "shared root datastore directory")
+
 	fs.BoolVar(&m.Datastore.InMemory, "store.inmem", m.Datastore.InMemory, "disable datastore persistence")
 }
 
-func (m *Manager) GetDatastoreDir() (string, error) {
+func (m *Manager) GetAppDataDir() (string, error) {
 	defer m.prepareForGetter()()
 
-	return m.getDatastoreDir()
+	return m.getAppDataDir()
 }
 
-func (m *Manager) getDatastoreDir() (string, error) {
+func (m *Manager) getAppDataDir() (string, error) {
 	m.applyDefaults()
 
-	if m.Datastore.dir != "" {
-		return m.Datastore.dir, nil
-	} else if m.Datastore.InMemory {
+	if m.Datastore.appDir != "" {
+		return m.Datastore.appDir, nil
+	}
+
+	if m.Datastore.InMemory {
 		return accountutils.InMemoryDir, nil
 	}
 
-	dir, err := accountutils.GetDatastoreDir(m.Datastore.Dir)
+	err := accountutils.CreateDataDir(m.Datastore.AppDir)
 	if err != nil {
 		return "", err
 	}
-	m.Datastore.dir = dir
+	m.Datastore.appDir = m.Datastore.AppDir
 
-	inMemory := m.Datastore.dir == accountutils.InMemoryDir
+	inMemory := m.Datastore.appDir == accountutils.InMemoryDir
 	m.initLogger.Debug("datastore dir",
-		zap.String("dir", m.Datastore.dir),
+		zap.String("dir", m.Datastore.appDir),
 		zap.Bool("in-memory", inMemory),
 	)
 
-	return m.Datastore.dir, nil
+	return m.Datastore.appDir, nil
+}
+
+func (m *Manager) GetSharedDataDir() (string, error) {
+	defer m.prepareForGetter()()
+
+	return m.getSharedDataDir()
+}
+
+func (m *Manager) getSharedDataDir() (string, error) {
+	m.applyDefaults()
+
+	if m.Datastore.sharedDir != "" {
+		return m.Datastore.sharedDir, nil
+	}
+
+	if m.Datastore.InMemory {
+		return accountutils.InMemoryDir, nil
+	}
+
+	err := accountutils.CreateDataDir(m.Datastore.SharedDir)
+	if err != nil {
+		return "", err
+	}
+	m.Datastore.sharedDir = m.Datastore.SharedDir
+
+	inMemory := m.Datastore.sharedDir == accountutils.InMemoryDir
+	m.initLogger.Debug("datastore shared dir",
+		zap.String("dir", m.Datastore.sharedDir),
+		zap.Bool("in-memory", inMemory),
+	)
+
+	return m.Datastore.sharedDir, nil
 }
 
 func (m *Manager) GetRootDatastore() (datastore.Batching, error) {
@@ -62,7 +99,7 @@ func (m *Manager) getRootDatastore() (datastore.Batching, error) {
 		return m.Datastore.rootDS, nil
 	}
 
-	dir, err := m.getDatastoreDir()
+	dir, err := m.getSharedDataDir()
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
@@ -72,7 +109,7 @@ func (m *Manager) getRootDatastore() (datastore.Batching, error) {
 		return nil, errcode.ErrKeystoreGet.Wrap(err)
 	}
 
-	storageSalt, err := m.GetAccountStorageSalt()
+	storageSalt, err := m.GetAccountRootDatastoreSalt()
 	if err != nil {
 		return nil, errcode.ErrKeystoreGet.Wrap(err)
 	}

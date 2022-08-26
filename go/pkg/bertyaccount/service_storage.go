@@ -39,13 +39,13 @@ func (s *service) AppStorageGet(ctx context.Context, req *accounttypes.AppStorag
 		var storageSalt []byte
 		if s.nativeKeystore != nil {
 			var err error
-			if storageSalt, err = accountutils.GetOrCreateStorageSaltForAccount(s.nativeKeystore, accountID); err != nil {
+			if storageSalt, err = accountutils.GetOrCreateAppStorageSaltForAccount(s.nativeKeystore, accountID); err != nil {
 				return nil, err
 			}
 		}
 
 		var err error
-		if storage, err = accountutils.GetAccountAppStorage(s.rootdir, accountID, storageKey, storageSalt); err != nil {
+		if storage, err = accountutils.GetAccountAppStorage(s.appRootDir, accountID, storageKey, storageSalt); err != nil {
 			return nil, errcode.TODO.Wrap(err)
 		}
 		defer func() { outErr = multierr.Append(outErr, storage.Close()) }()
@@ -87,13 +87,13 @@ func (s *service) AppStoragePut(ctx context.Context, req *accounttypes.AppStorag
 		var storageSalt []byte
 		if s.nativeKeystore != nil {
 			var err error
-			if storageSalt, err = accountutils.GetOrCreateStorageSaltForAccount(s.nativeKeystore, accountID); err != nil {
+			if storageSalt, err = accountutils.GetOrCreateAppStorageSaltForAccount(s.nativeKeystore, accountID); err != nil {
 				return nil, err
 			}
 		}
 
 		var err error
-		if storage, err = accountutils.GetAccountAppStorage(s.rootdir, accountID, storageKey, storageSalt); err != nil {
+		if storage, err = accountutils.GetAccountAppStorage(s.appRootDir, accountID, storageKey, storageSalt); err != nil {
 			return nil, errcode.TODO.Wrap(err)
 		}
 		defer func() { outErr = multierr.Append(outErr, storage.Close()) }()
@@ -135,13 +135,13 @@ func (s *service) AppStorageRemove(ctx context.Context, req *accounttypes.AppSto
 		var storageSalt []byte
 		if s.nativeKeystore != nil {
 			var err error
-			if storageSalt, err = accountutils.GetOrCreateStorageSaltForAccount(s.nativeKeystore, accountID); err != nil {
+			if storageSalt, err = accountutils.GetOrCreateAppStorageSaltForAccount(s.nativeKeystore, accountID); err != nil {
 				return nil, err
 			}
 		}
 
 		var err error
-		if storage, err = accountutils.GetAccountAppStorage(s.rootdir, accountID, storageKey, storageSalt); err != nil {
+		if storage, err = accountutils.GetAccountAppStorage(s.appRootDir, accountID, storageKey, storageSalt); err != nil {
 			return nil, errcode.TODO.Wrap(err)
 		}
 		defer func() { outErr = multierr.Append(outErr, storage.Close()) }()

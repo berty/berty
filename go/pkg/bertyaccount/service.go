@@ -18,6 +18,7 @@ import (
 	"berty.tech/berty/v2/go/internal/initutil"
 	"berty.tech/berty/v2/go/internal/lifecycle"
 	"berty.tech/berty/v2/go/internal/logutil"
+	"berty.tech/berty/v2/go/internal/migrations"
 	mc "berty.tech/berty/v2/go/internal/multipeer-connectivity-driver"
 	"berty.tech/berty/v2/go/internal/notification"
 	proximity "berty.tech/berty/v2/go/internal/proximitytransport"
@@ -53,7 +54,8 @@ type Service interface {
 }
 
 type Options struct {
-	RootDirectory string
+	SharedRootDirectory string
+	AppRootDirectory    string
 
 	MDNSLocker            sync.Locker
 	Languages             []language.Tag
@@ -75,7 +77,8 @@ type service struct {
 	notifManager notification.Manager
 	logger       *zap.Logger
 
-	rootdir           string
+	appRootDir        string
+	sharedRootDir     string
 	languages         []language.Tag
 	muService         sync.RWMutex
 	initManager       *initutil.Manager
@@ -112,6 +115,10 @@ func (o *Options) applyDefault() {
 	if o.NotificationManager == nil {
 		o.NotificationManager = notification.NewLoggerManager(o.Logger)
 	}
+
+	if o.SharedRootDirectory == "" {
+		o.SharedRootDirectory = o.AppRootDirectory
+	}
 }
 
 func NewService(opts *Options) (_ Service, err error) {
@@ -119,13 +126,16 @@ func NewService(opts *Options) (_ Service, err error) {
 
 	var s *service
 	endSection := tyber.SimpleSection(rootCtx, opts.Logger, "Initializing AccountService")
-	defer func() { endSection(err, tyber.WithDetail("RootDir", s.rootdir)) }()
+	defer func() {
+		endSection(err, tyber.WithDetail("SharedRootDir", s.sharedRootDir), tyber.WithDetail("AppRootDir", s.appRootDir))
+	}()
 
 	opts.applyDefault()
 	s = &service{
 		mdnslocker:        opts.MDNSLocker,
 		languages:         opts.Languages,
-		rootdir:           opts.RootDirectory,
+		appRootDir:        opts.AppRootDirectory,
+		sharedRootDir:     opts.SharedRootDirectory,
 		rootCtx:           rootCtx,
 		rootCancel:        rootCancelCtx,
 		logger:            opts.Logger,
@@ -135,7 +145,7 @@ func NewService(opts *Options) (_ Service, err error) {
 		bleDriver:         opts.BleDriver,
 		nbDriver:          opts.NBDriver,
 		nativeKeystore:    opts.Keystore,
-		devicePushKeyPath: path.Join(opts.RootDirectory, accountutils.DefaultPushKeyFilename),
+		devicePushKeyPath: path.Join(opts.SharedRootDirectory, accountutils.DefaultPushKeyFilename),
 		serviceListeners:  opts.ServiceListeners,
 	}
 
@@ -144,9 +154,18 @@ func NewService(opts *Options) (_ Service, err error) {
 	// override grpc logger before manager start to avoid race condition
 	logutil.ReplaceGRPCLogger(opts.Logger.Named("grpc"))
 
+	if err := migrations.MigrateToLatest(migrations.Options{
+		AppDir:         s.appRootDir,
+		SharedDir:      s.sharedRootDir,
+		Logger:         s.logger,
+		NativeKeystore: s.nativeKeystore,
+	}); err != nil {
+		return nil, errcode.TODO.Wrap(err)
+	}
+
 	// init app storage
-	dbPath := filepath.Join(s.rootdir, "app.sqlite")
-	if err := os.MkdirAll(s.rootdir, 0o700); err != nil {
+	dbPath := filepath.Join(s.appRootDir, "app.sqlite")
+	if err := os.MkdirAll(s.appRootDir, 0o700); err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
 	storageKey := ([]byte)(nil)
@@ -158,12 +177,13 @@ func NewService(opts *Options) (_ Service, err error) {
 	}
 	storageSalt := ([]byte)(nil)
 	if s.nativeKeystore != nil {
-		storageSalt, err = accountutils.GetOrCreateMasterStorageSalt(s.nativeKeystore)
+		storageSalt, err = accountutils.GetOrCreateGlobalAppStorageSalt(s.nativeKeystore)
 		if err != nil {
 			return nil, errcode.TODO.Wrap(err)
 		}
 	}
-	appDatastore, err := encrepo.NewSQLCipherDatastore("sqlite3", dbPath, "data", storageKey, storageSalt)
+	sqldsOpts := encrepo.SQLCipherDatastoreOptions{JournalMode: "WAL", PlaintextHeader: len(storageSalt) != 0, Salt: storageSalt}
+	appDatastore, err := encrepo.NewSQLCipherDatastore("sqlite3", dbPath, "data", storageKey, sqldsOpts)
 	if err != nil {
 		return nil, errcode.ErrDBOpen.Wrap(err)
 	}

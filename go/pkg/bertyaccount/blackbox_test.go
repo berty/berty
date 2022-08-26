@@ -41,8 +41,8 @@ func TestFlow(t *testing.T) {
 
 	// init service
 	svc, err := bertyaccount.NewService(&bertyaccount.Options{
-		RootDirectory: filepath.Join(tempdir, "root"),
-		Logger:        logger,
+		AppRootDirectory: filepath.Join(tempdir, "root"),
+		Logger:           logger,
 	})
 	require.NoError(t, err)
 	defer svc.Close()
@@ -79,28 +79,18 @@ func TestFlow(t *testing.T) {
 		})
 		require.NoError(t, err)
 
-		// check that we only have init or ErrBertyAccountDataNotFound error.
-		// retry up to 10s.
-		var gotErr bool
-		for i := 0; i < 1000; i++ {
+		// check that we only have ErrBertyAccountDataNotFound error.
+		for {
 			msg, err := stream.Recv()
 			if err != nil {
 				require.Nil(t, msg)
 				require.True(t, errcode.Has(err, errcode.ErrBertyAccountDataNotFound))
-				gotErr = true
 				break
 			}
 
-			// the only kind of non-error message accepted is "init"
-			if msg != nil && msg.Progress != nil && msg.Progress.Doing != "" {
-				require.Equal(t, msg.Progress.Doing, "init")
-				require.NoError(t, err)
-				continue
-			}
-
-			time.Sleep(10 * time.Millisecond)
+			// we shouldn't receive any non-error message
+			t.FailNow()
 		}
-		require.True(t, gotErr)
 	}
 
 	// create a new account
@@ -270,7 +260,7 @@ func TestFlow(t *testing.T) {
 		require.Equal(t, lastProgress.Doing, "")
 		require.Equal(t, lastProgress.State, "done")
 		require.True(t, lastProgress.Completed > 1)
-		require.Equal(t, int(lastProgress.Completed), 11) // this test can be disabled if it breaks, the test just above can be considered as enough
+		require.Equal(t, int(lastProgress.Completed), 13) // this test can be disabled if it breaks, the test just above can be considered as enough
 		require.Equal(t, lastProgress.Completed, lastProgress.Total)
 		require.Equal(t, lastProgress.Progress, float32(1))
 
@@ -373,8 +363,8 @@ func TestImportExportFlow(t *testing.T) {
 
 	// init service
 	svc, err := bertyaccount.NewService(&bertyaccount.Options{
-		RootDirectory: filepath.Join(tempdir, "root"),
-		Logger:        logger,
+		AppRootDirectory: filepath.Join(tempdir, "root"),
+		Logger:           logger,
 	})
 	require.NoError(t, err)
 	defer svc.Close()
@@ -555,7 +545,7 @@ func TestImportExportFlow(t *testing.T) {
 		require.Equal(t, lastProgress.Doing, "")
 		require.Equal(t, lastProgress.State, "done")
 		require.True(t, lastProgress.Completed > 1)
-		require.Equal(t, int(lastProgress.Completed), 11) // this test can be disabled if it breaks, the test just above can be considered as enough
+		require.Equal(t, int(lastProgress.Completed), 13) // this test can be disabled if it breaks, the test just above can be considered as enough
 		require.Equal(t, lastProgress.Completed, lastProgress.Total)
 		require.Equal(t, lastProgress.Progress, float32(1))
 
@@ -662,7 +652,7 @@ func TestImportExportFlow(t *testing.T) {
 		require.Equal(t, lastProgress.Doing, "")
 		require.Equal(t, lastProgress.State, "done")
 		require.True(t, lastProgress.Completed > 1)
-		require.Equal(t, int(lastProgress.Completed), 11) // this test can be disabled if it breaks, the test just above can be considered as enough
+		require.Equal(t, int(lastProgress.Completed), 13) // this test can be disabled if it breaks, the test just above can be considered as enough
 		require.Equal(t, lastProgress.Completed, lastProgress.Total)
 		require.Equal(t, lastProgress.Progress, float32(1))
 

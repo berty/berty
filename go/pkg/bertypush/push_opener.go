@@ -226,7 +226,8 @@ func PushDecrypt(ctx context.Context, rootDir string, input []byte, opts *PushDe
 				return nil, nil
 			}
 
-			accountDir, err := accountutils.GetDatastoreDir(accountutils.GetAccountDir(rootDir, account.AccountID))
+			accountDir := accountutils.GetAccountDir(rootDir, account.AccountID)
+			err := accountutils.CreateDataDir(accountDir)
 			if err != nil {
 				return nil, err
 			}
@@ -238,20 +239,27 @@ func PushDecrypt(ctx context.Context, rootDir string, input []byte, opts *PushDe
 				}
 			}
 
-			var storageSalt []byte
+			var rootDatastoreSalt []byte
 			if opts.Keystore != nil {
-				if storageSalt, err = accountutils.GetOrCreateStorageSaltForAccount(opts.Keystore, account.AccountID); err != nil {
+				if rootDatastoreSalt, err = accountutils.GetOrCreateRootDatastoreSaltForAccount(opts.Keystore, account.AccountID); err != nil {
 					return nil, err
 				}
 			}
 
-			rootDS, err := accountutils.GetRootDatastoreForPath(accountDir, storageKey, storageSalt, opts.Logger)
+			rootDS, err := accountutils.GetRootDatastoreForPath(accountDir, storageKey, rootDatastoreSalt, opts.Logger)
 			if err != nil {
 				return nil, err
 			}
 			defer rootDS.Close()
 
-			db, dbCleanup, err := accountutils.GetMessengerDBForPath(accountDir, storageKey, opts.Logger)
+			var messengerDBSalt []byte
+			if opts.Keystore != nil {
+				if messengerDBSalt, err = accountutils.GetOrCreateMessengerDBSaltForAccount(opts.Keystore, account.AccountID); err != nil {
+					return nil, err
+				}
+			}
+
+			db, dbCleanup, err := accountutils.GetMessengerDBForPath(accountDir, storageKey, messengerDBSalt, opts.Logger)
 			if err != nil {
 				return nil, err
 			}

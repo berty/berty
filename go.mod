@@ -5,7 +5,7 @@ go 1.16
 require (
 	bazil.org/fuse v0.0.0-20200524192727-fb710f7dfd05 // indirect
 	berty.tech/go-ipfs-log v1.8.0
-	berty.tech/go-ipfs-repo-encrypted v1.1.3
+	berty.tech/go-ipfs-repo-encrypted v1.1.4
 	berty.tech/go-orbit-db v1.17.1
 	berty.tech/ipfs-webui-packed v1.0.0-v2.11.4-1
 	fyne.io/fyne/v2 v2.1.1
@@ -136,8 +136,8 @@ replace (
 	github.com/lucas-clemente/quic-go => github.com/lucas-clemente/quic-go v0.25.0
 
 	github.com/multiformats/go-multiaddr => github.com/berty/go-multiaddr v0.4.2-0.20220126184027-53e56f02fb68 // tmp, required for Android SDK30
-	github.com/mutecomm/go-sqlcipher/v4 => github.com/berty/go-sqlcipher/v4 v4.0.0-20211104165006-2c524b646cf0
+
+	github.com/mutecomm/go-sqlcipher/v4 => github.com/berty/go-sqlcipher/v4 v4.4.3-0.20220810151512-74ea78235b48 // plaintext header support
 	github.com/peterbourgon/ff/v3 => github.com/moul/ff/v3 v3.0.1 // temporary, see https://github.com/peterbourgon/ff/pull/67, https://github.com/peterbourgon/ff/issues/68
 	golang.org/x/mobile => github.com/aeddi/mobile v0.0.6 // temporary, see https://github.com/golang/mobile/pull/58
-
 )

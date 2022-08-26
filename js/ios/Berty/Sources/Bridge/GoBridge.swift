@@ -23,7 +23,8 @@ class GoBridge: NSObject {
 
     // protocol
     var bridgeMessenger: BertybridgeBridge?
-    let rootDir: String
+    let appRootDir: String
+    let sharedRootDir: String
 
     static func requiresMainQueueSetup() -> Bool {
         return true
@@ -31,7 +32,10 @@ class GoBridge: NSObject {
 
     override init() {
         // set berty dir for persistence
-        self.rootDir = try! RootDirGet()
+        self.sharedRootDir = try! RootDirGet()
+      
+        let docDir = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
+        self.appRootDir = docDir.appendingPathComponent("berty", isDirectory: true).path
 
         super.init()
     }
@@ -49,8 +53,11 @@ class GoBridge: NSObject {
 
     @objc func clearStorage(_ resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
         do {
-            if FileManager.default.fileExists(atPath: self.rootDir) {
-                try FileManager.default.removeItem(atPath: self.rootDir)
+            if FileManager.default.fileExists(atPath: self.appRootDir) {
+                try FileManager.default.removeItem(atPath: self.appRootDir)
+            }
+            if FileManager.default.fileExists(atPath: self.sharedRootDir) {
+                try FileManager.default.removeItem(atPath: self.sharedRootDir)
             }
             resolve(true)
         }
@@ -100,18 +107,29 @@ class GoBridge: NSObject {
 
             // @TODO(gfanton): make this dir in golang
             var isDirectory: ObjCBool = true
-            let exist = FileManager.default.fileExists(atPath: self.rootDir, isDirectory: &isDirectory)
+            var exist = FileManager.default.fileExists(atPath: self.sharedRootDir, isDirectory: &isDirectory)
             if !exist {
-                try FileManager.default.createDirectory(atPath: self.rootDir, withIntermediateDirectories: true, attributes: nil)
+                try FileManager.default.createDirectory(atPath: self.sharedRootDir, withIntermediateDirectories: true, attributes: nil)
+            }
+          
+            exist = FileManager.default.fileExists(atPath: self.appRootDir, isDirectory: &isDirectory)
+            if !exist {
+                try FileManager.default.createDirectory(atPath: self.appRootDir, withIntermediateDirectories: true, attributes: nil)
             }
 
             // Disable iOS backup
-            var url = URL(fileURLWithPath: self.rootDir)
             var values = URLResourceValues()
             values.isExcludedFromBackup = true
-            try url.setResourceValues(values)
+          
+            var appRootDirURL = URL(fileURLWithPath: self.appRootDir)
+            try appRootDirURL.setResourceValues(values)
 
-            config.setRootDir(self.rootDir)
+            var sharedRootDirURL = URL(fileURLWithPath: self.sharedRootDir)
+            try sharedRootDirURL.setResourceValues(values)
+
+            // Set root directories
+            config.setAppRootDir(self.appRootDir)
+            config.setSharedRootDir(self.sharedRootDir)
 
             let bridgeMessenger = BertybridgeNewBridge(config, &err)
             if err != nil {

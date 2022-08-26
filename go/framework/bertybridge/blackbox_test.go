@@ -35,7 +35,7 @@ func Example() {
 		}
 
 		// set bridge root dir
-		config.SetRootDir(tmpdir)
+		config.SetAppRootDir(tmpdir)
 
 		b, err = bertybridge.NewBridge(config)
 		checkErr(err)

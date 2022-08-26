@@ -238,6 +238,13 @@ func (s *service) MonitorGroup(req *protocoltypes.MonitorGroup_Request, srv prot
 		return errors.Wrap(err, "unable to subscribe pubsub topic event")
 	}
 
+	go func() {
+		<-srv.Context().Done()
+		if err := sub.Close(); err != nil {
+			s.logger.Error("failed to close monitor sub", zap.Error(err))
+		}
+	}()
+
 	// @FIXME(gfanton): cached found peers should be done inside driver monitor
 	cachedFoundPeers := make(map[peer.ID]ipfsutil.Multiaddrs)
 	for evt := range sub.Out() {

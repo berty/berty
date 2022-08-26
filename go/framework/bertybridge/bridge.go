@@ -181,7 +181,8 @@ func NewBridge(config *Config) (*Bridge, error) {
 	// setup berty account service
 	{
 		opts := account_svc.Options{
-			RootDirectory: config.RootDirPath,
+			AppRootDirectory:    config.AppRootDirPath,
+			SharedRootDirectory: config.SharedRootDirPath,
 
 			MDNSLocker:            b.mdnsLocker,
 			Languages:             b.langtags,

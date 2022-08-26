@@ -1,11 +1,8 @@
 package initutil
 
 import (
-	"path/filepath"
-
 	datastore "github.com/ipfs/go-datastore"
 
-	"berty.tech/berty/v2/go/internal/accountutils"
 	"berty.tech/berty/v2/go/internal/cryptoutil"
 	"berty.tech/berty/v2/go/internal/datastoreutil"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
@@ -48,15 +45,6 @@ func (m *Manager) getOrbitDB() (*bertyprotocol.BertyOrbitDB, error) {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	orbitDirectory, err := m.getDatastoreDir()
-	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
-	}
-
-	if orbitDirectory != accountutils.InMemoryDir {
-		orbitDirectory = filepath.Join(orbitDirectory, bertyprotocol.NamespaceOrbitDBDirectory)
-	}
-
 	logger, err := m.getLogger()
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
@@ -81,7 +69,6 @@ func (m *Manager) getOrbitDB() (*bertyprotocol.BertyOrbitDB, error) {
 	opts := &bertyprotocol.NewOrbitDBOptions{
 		NewOrbitDBOptions: baseorbitdb.NewOrbitDBOptions{
 			Cache:                cache,
-			Directory:            &orbitDirectory,
 			Logger:               logger,
 			DirectChannelFactory: directchannel.InitDirectChannelFactory(logger.Named("odb-dc"), node.PeerHost),
 		},

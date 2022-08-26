@@ -2,8 +2,8 @@ bazil.org/fuse v0.0.0-20200117225306-7b5117fecadc h1:utDghgcjE8u+EBjHOgYT+dJPcnD
 bazil.org/fuse v0.0.0-20200117225306-7b5117fecadc/go.mod h1:FbcW6z/2VytnFDhZfumh8Ss8zxHE6qpMP5sHTRe0EaM=
 berty.tech/go-ipfs-log v1.8.0 h1:fH9yuMBC7M0jwZUWEESK68Ft9aFXFuj9wkVoQxwxwoo=
 berty.tech/go-ipfs-log v1.8.0/go.mod h1:fhe//ai9/3IUyYlDlnsCuNIZXMERXZelYm66dxesLhs=
-berty.tech/go-ipfs-repo-encrypted v1.1.3 h1:/ZP4DFHk/4v5cI1/54QAQAagHNUguVyU4wQxt70Y0c4=
-berty.tech/go-ipfs-repo-encrypted v1.1.3/go.mod h1:kzmfcfUvtQWxBFbmjvmkkoOquwJfnFsEkG0xZy2G1YU=
+berty.tech/go-ipfs-repo-encrypted v1.1.4 h1:60yDJQxlQB21ln6IJCdGGDbwDaP6/6QwHu3unlVdBdY=
+berty.tech/go-ipfs-repo-encrypted v1.1.4/go.mod h1:31prmt4278qc0BKBvkLQ3Vy/93u+NCasU2Ge0Oqyi9s=
 berty.tech/go-orbit-db v1.17.1 h1:7EAaESB87djW0N957lQymVxpQaOcdeI5w+RgAdbo2Ls=
 berty.tech/go-orbit-db v1.17.1/go.mod h1:PzfAQcLXmhZlTCu2UELOYy/eS7hicNvMQLi2aPXb6p8=
 berty.tech/ipfs-webui-packed v1.0.0-v2.11.4-1 h1:xXAS7M/RcgIWia1XkXLueirm2zDXnMMNGb3UJhfRzbo=
@@ -157,8 +157,8 @@ github.com/berty/go-libp2p-rendezvous v0.0.0-20220809074102-2a4b093b3a90 h1:eAU7
 github.com/berty/go-libp2p-rendezvous v0.0.0-20220809074102-2a4b093b3a90/go.mod h1:T5TW6d2Xo9C4k9AhpPfxXcU8U6UJsZ9pQFEEb5I0Yj4=
 github.com/berty/go-multiaddr v0.4.2-0.20220126184027-53e56f02fb68 h1:Vzah9UzXtlo6aU3I+fGhRPQYBq3+El3DCga3u2TP+ig=
 github.com/berty/go-multiaddr v0.4.2-0.20220126184027-53e56f02fb68/go.mod h1:3KAxNkUqLTJ20AAwN4XVX4kZar+bR+gh4zgbfr3SNug=
-github.com/berty/go-sqlcipher/v4 v4.0.0-20211104165006-2c524b646cf0 h1:HtwAuU3JtvZLEmWZepp72J1pSVY9zjz0jem+Md7dpuE=
-github.com/berty/go-sqlcipher/v4 v4.0.0-20211104165006-2c524b646cf0/go.mod h1:mF2UmIpBnzFeBdu/ypTDb/LdbS0nk0dfSN1WUsWTjMA=
+github.com/berty/go-sqlcipher/v4 v4.4.3-0.20220810151512-74ea78235b48 h1:tHmYUj9It7qV3PPzg0Z5VRNmFaJaaYiu49fkqyw5NYI=
+github.com/berty/go-sqlcipher/v4 v4.4.3-0.20220810151512-74ea78235b48/go.mod h1:mF2UmIpBnzFeBdu/ypTDb/LdbS0nk0dfSN1WUsWTjMA=
 github.com/bgentry/speakeasy v0.1.0/go.mod h1:+zsyZBPWlz7T6j88CTgSN5bM796AkVf0kBD4zp0CCIs=
 github.com/blang/semver/v4 v4.0.0 h1:1PFHFE6yCCTv8C1TeyNNarDzntLi7wMI5i/pzqYIsAM=
 github.com/blang/semver/v4 v4.0.0/go.mod h1:IbckMUScFkM3pff0VJDNKRiT6TG/YpiHIM2yvyW5YoQ=

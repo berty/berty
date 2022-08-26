@@ -13,9 +13,12 @@ import (
 	"moul.io/u"
 
 	"berty.tech/berty/v2/go/internal/logutil"
+	"berty.tech/berty/v2/go/internal/testutil"
 )
 
 func TestPersistentIdentity(t *testing.T) {
+	testutil.FilterStability(t, testutil.Flappy)
+
 	if runtime.GOOS == "windows" {
 		t.Skip("disabled on windows")
 	}

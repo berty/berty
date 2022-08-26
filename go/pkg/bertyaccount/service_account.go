@@ -25,6 +25,7 @@ import (
 	"berty.tech/berty/v2/go/internal/config"
 	"berty.tech/berty/v2/go/internal/initutil"
 	"berty.tech/berty/v2/go/internal/logutil"
+	"berty.tech/berty/v2/go/internal/migrationsaccount"
 	mc "berty.tech/berty/v2/go/internal/multipeer-connectivity-driver"
 	"berty.tech/berty/v2/go/localization"
 	"berty.tech/berty/v2/go/pkg/accounttypes"
@@ -37,16 +38,6 @@ import (
 )
 
 func (s *service) openAccount(ctx context.Context, req *accounttypes.OpenAccount_Request, prog *progress.Progress) (*accounttypes.AccountMetadata, error) {
-	args := req.GetArgs()
-
-	if req.NetworkConfig == nil {
-		req.NetworkConfig, _ = s.NetworkConfigForAccount(ctx, req.AccountID)
-	}
-
-	args = AddArgsUsingNetworkConfig(req.NetworkConfig, args)
-
-	s.logger.Info("opening account with args", logutil.PrivateStrings("args", args))
-
 	if req.AccountID == "" {
 		return nil, errcode.ErrBertyAccountNoIDSpecified
 	}
@@ -60,19 +51,22 @@ func (s *service) openAccount(ctx context.Context, req *accounttypes.OpenAccount
 		return nil, errcode.ErrBertyAccountInvalidIDFormat
 	}
 
-	s.openedAccountID = filepath.Clean(req.AccountID)
-
-	accountStorePath := accountutils.GetAccountDir(s.rootdir, req.GetAccountID())
-
-	if _, err := os.Stat(accountStorePath); err != nil {
-		return nil, errcode.ErrBertyAccountDataNotFound.Wrap(err)
+	accountExists, err := s.accountExists(req.GetAccountID())
+	if err != nil {
+		return nil, errcode.TODO.Wrap(err)
+	}
+	if !accountExists {
+		return nil, errcode.ErrBertyAccountDataNotFound
 	}
 
 	if prog == nil {
 		prog = progress.New()
 		defer prog.Close()
 	}
-	prog.AddStep("init")
+
+	prog.AddStep("migrate")
+	prog.AddStep("setup-args")
+	prog.AddStep("update-last-opened")
 	prog.AddStep("setup-logger")
 	prog.AddStep("setup-manager")
 	prog.AddStep("setup-manager-logger")
@@ -83,23 +77,65 @@ func (s *service) openAccount(ctx context.Context, req *accounttypes.OpenAccount
 	prog.AddStep("setup-grpc-client")
 	prog.AddStep("setup-grpc-services")
 	prog.AddStep("finishing")
-	prog.Get("init").Start()
 
-	errCleanup := func() {
-		s.accountData = nil
+	// migrate account data
+	prog.Get("migrate").Start()
+	if err := migrationsaccount.MigrateToLatest(migrationsaccount.Options{
+		AppDir:         s.appRootDir,
+		SharedDir:      s.sharedRootDir,
+		AccountID:      req.AccountID,
+		Logger:         s.logger,
+		NativeKeystore: s.nativeKeystore,
+	}); err != nil {
+		return nil, errcode.TODO.Wrap(err)
 	}
 
-	args = append(args, "--store.dir", accountStorePath)
+	// setup manager args
+	prog.Get("setup-args").SetAsCurrent()
+	var (
+		args       []string
+		errCleanup func()
+	)
+	{
+		args = req.GetArgs()
 
-	if s.pushPlatformToken != nil {
-		data, err := s.pushPlatformToken.Marshal()
-		if err != nil {
-			return nil, errcode.ErrSerialization.Wrap(err)
+		if req.NetworkConfig == nil {
+			req.NetworkConfig, _ = s.NetworkConfigForAccount(ctx, req.AccountID)
 		}
 
-		args = append(args, "--node.default-push-token", base64.RawURLEncoding.EncodeToString(data))
+		args = AddArgsUsingNetworkConfig(req.NetworkConfig, args)
+
+		s.logger.Info("opening account with args", logutil.PrivateStrings("args", args))
+
+		s.openedAccountID = filepath.Clean(req.AccountID)
+
+		accountStorePath := accountutils.GetAccountDir(s.appRootDir, req.GetAccountID())
+		if _, err := os.Stat(accountStorePath); err != nil {
+			return nil, errcode.ErrBertyAccountDataNotFound.Wrap(err)
+		}
+
+		sharedAccountStorePath := accountutils.GetAccountDir(s.sharedRootDir, req.GetAccountID())
+		if _, err := os.Stat(sharedAccountStorePath); err != nil {
+			return nil, errcode.ErrBertyAccountDataNotFound.Wrap(err)
+		}
+
+		errCleanup = func() {
+			s.accountData = nil
+		}
+
+		args = append(args, "--store.dir", accountStorePath, "--store.shared-dir", sharedAccountStorePath)
+
+		if s.pushPlatformToken != nil {
+			data, err := s.pushPlatformToken.Marshal()
+			if err != nil {
+				return nil, errcode.ErrSerialization.Wrap(err)
+			}
+
+			args = append(args, "--node.default-push-token", base64.RawURLEncoding.EncodeToString(data))
+		}
 	}
 
+	prog.Get("update-last-opened").SetAsCurrent()
 	meta, err := s.updateAccountMetadataLastOpened(ctx, req.AccountID)
 	if err != nil {
 		errCleanup()
@@ -428,7 +464,7 @@ func (s *service) ListAccounts(ctx context.Context, _ *accounttypes.ListAccounts
 	s.muService.Lock()
 	defer s.muService.Unlock()
 
-	accounts, err := accountutils.ListAccounts(ctx, s.rootdir, s.nativeKeystore, s.logger)
+	accounts, err := accountutils.ListAccounts(ctx, s.sharedRootDir, s.nativeKeystore, s.logger)
 	if err != nil {
 		return nil, err
 	}
@@ -450,12 +486,12 @@ func (s *service) getAccountMetaForName(ctx context.Context, accountID string) (
 	var storageSalt []byte
 	if s.nativeKeystore != nil {
 		var err error
-		if storageSalt, err = accountutils.GetOrCreateStorageSaltForAccount(s.nativeKeystore, accountID); err != nil {
+		if storageSalt, err = accountutils.GetOrCreateRootDatastoreSaltForAccount(s.nativeKeystore, accountID); err != nil {
 			return nil, err
 		}
 	}
 
-	return accountutils.GetAccountMetaForName(ctx, s.rootdir, accountID, storageKey, storageSalt, s.logger)
+	return accountutils.GetAccountMetaForName(ctx, s.sharedRootDir, accountID, storageKey, storageSalt, s.logger)
 }
 
 func (s *service) DeleteAccount(ctx context.Context, request *accounttypes.DeleteAccount_Request) (_ *accounttypes.DeleteAccount_Reply, err error) {
@@ -481,7 +517,11 @@ func (s *service) DeleteAccount(ctx context.Context, request *accounttypes.Delet
 		return nil, errcode.ErrDBRead.Wrap(err)
 	}
 
-	if err := os.RemoveAll(accountutils.GetAccountDir(s.rootdir, request.AccountID)); err != nil {
+	if err := os.RemoveAll(accountutils.GetAccountDir(s.appRootDir, request.AccountID)); err != nil {
+		return nil, errcode.ErrBertyAccountFSError.Wrap(err)
+	}
+
+	if err := os.RemoveAll(accountutils.GetAccountDir(s.sharedRootDir, request.AccountID)); err != nil {
 		return nil, errcode.ErrBertyAccountFSError.Wrap(err)
 	}
 
@@ -500,12 +540,12 @@ func (s *service) putInAccountDatastore(ctx context.Context, accountID string, k
 	var storageSalt []byte
 	if s.nativeKeystore != nil {
 		var err error
-		if storageSalt, err = accountutils.GetOrCreateStorageSaltForAccount(s.nativeKeystore, accountID); err != nil {
+		if storageSalt, err = accountutils.GetOrCreateRootDatastoreSaltForAccount(s.nativeKeystore, accountID); err != nil {
 			return err
 		}
 	}
 
-	ds, err := accountutils.GetRootDatastoreForPath(accountutils.GetAccountDir(s.rootdir, accountID), storageKey, storageSalt, s.logger)
+	ds, err := accountutils.GetRootDatastoreForPath(accountutils.GetAccountDir(s.sharedRootDir, accountID), storageKey, storageSalt, s.logger)
 	if err != nil {
 		return err
 	}
@@ -551,7 +591,7 @@ func (s *service) createAccountMetadata(ctx context.Context, accountID string, n
 		return nil, errcode.ErrBertyAccountFSError.Wrap(err)
 	}
 
-	accountStorePath := accountutils.GetAccountDir(s.rootdir, accountID)
+	accountStorePath := accountutils.GetAccountDir(s.sharedRootDir, accountID)
 	if err := os.MkdirAll(accountStorePath, 0o700); err != nil {
 		return nil, err
 	}
@@ -696,7 +736,7 @@ func (s *service) importAccount(ctx context.Context, req *accounttypes.ImportAcc
 		AccountID:     req.AccountID,
 		AccountName:   req.AccountName,
 		NetworkConfig: req.NetworkConfig,
-	}, prog)
+	}, false, prog)
 	if err != nil {
 		return nil, err
 	}
@@ -737,22 +777,37 @@ func (s *service) importAccount(ctx context.Context, req *accounttypes.ImportAcc
 	}, nil
 }
 
-func (s *service) createAccount(ctx context.Context, req *accounttypes.CreateAccount_Request, prog *progress.Progress) (*accounttypes.AccountMetadata, error) {
+func (s *service) createAccount(ctx context.Context, req *accounttypes.CreateAccount_Request, migrate bool, prog *progress.Progress) (*accounttypes.AccountMetadata, error) {
 	if prog == nil {
 		prog = progress.New()
 		defer prog.Close()
 	}
-	// FIXME: add create specific steps
 
 	if req.AccountID != "" {
-		if _, err := s.getAccountMetaForName(ctx, req.AccountID); err == nil {
+		_, err := os.Stat(accountutils.GetAccountDir(s.appRootDir, req.AccountID))
+		if err == nil {
 			return nil, errcode.ErrBertyAccountAlreadyExists
+		}
+		if err != nil && !os.IsNotExist(err) {
+			return nil, errcode.TODO.Wrap(err)
 		}
 	} else {
 		var err error
 
 		req.AccountID, err = s.generateNewAccountID()
 		if err != nil {
+			return nil, errcode.TODO.Wrap(err)
+		}
+	}
+
+	if migrate {
+		if err := migrationsaccount.MigrateToLatest(migrationsaccount.Options{
+			AppDir:         s.appRootDir,
+			SharedDir:      s.sharedRootDir,
+			AccountID:      req.AccountID,
+			Logger:         s.logger,
+			NativeKeystore: s.nativeKeystore,
+		}); err != nil {
 			return nil, errcode.TODO.Wrap(err)
 		}
 	}
@@ -785,7 +840,7 @@ func (s *service) CreateAccount(ctx context.Context, req *accounttypes.CreateAcc
 	)
 	defer func() { endSection(err) }()
 
-	meta, err := s.createAccount(ctx, req, nil)
+	meta, err := s.createAccount(ctx, req, true, nil)
 	if err != nil {
 		return nil, errcode.ErrBertyAccountCreationFailed.Wrap(err)
 	}
@@ -838,6 +893,22 @@ func (s *service) UpdateAccount(ctx context.Context, req *accounttypes.UpdateAcc
 	)
 	defer func() { endSection(err) }()
 
+	// check if account exists
+	if _, err := os.Stat(accountutils.GetAccountDir(s.appRootDir, req.AccountID)); err != nil {
+		return nil, errcode.TODO.Wrap(err)
+	}
+
+	// migrate account
+	if err := migrationsaccount.MigrateToLatest(migrationsaccount.Options{
+		AppDir:         s.appRootDir,
+		SharedDir:      s.sharedRootDir,
+		NativeKeystore: s.nativeKeystore,
+		Logger:         s.logger,
+		AccountID:      req.AccountID,
+	}); err != nil {
+		return nil, errcode.TODO.Wrap(err)
+	}
+
 	meta, err := s.updateAccount(ctx, req)
 	if err != nil {
 		return nil, errcode.ErrBertyAccountUpdateFailed.Wrap(err)
@@ -858,15 +929,25 @@ func (s *service) generateNewAccountID() (string, error) {
 	for i := 0; ; i++ {
 		candidateID := fmt.Sprintf("%d", i)
 
-		accountDir := accountutils.GetAccountDir(s.rootdir, candidateID)
+		accountDir := accountutils.GetAccountDir(s.appRootDir, candidateID)
 		_, err := os.Stat(accountDir)
-		if os.IsNotExist(err) {
-			return candidateID, nil
+		if !os.IsNotExist(err) {
+			if err != nil {
+				return "", errcode.ErrBertyAccountIDGenFailed.Wrap(err)
+			}
+			continue
 		}
 
-		if err != nil {
-			return "", errcode.ErrBertyAccountIDGenFailed.Wrap(err)
+		sharedAccountDir := accountutils.GetAccountDir(s.sharedRootDir, candidateID)
+		_, err = os.Stat(sharedAccountDir)
+		if !os.IsNotExist(err) {
+			if err != nil {
+				return "", errcode.ErrBertyAccountIDGenFailed.Wrap(err)
+			}
+			continue
 		}
+
+		return candidateID, nil
 	}
 }
 
@@ -919,13 +1000,13 @@ func (s *service) NetworkConfigForAccount(ctx context.Context, accountID string)
 	var storageSalt []byte
 	if s.nativeKeystore != nil {
 		var err error
-		if storageSalt, err = accountutils.GetOrCreateStorageSaltForAccount(s.nativeKeystore, accountID); err != nil {
+		if storageSalt, err = accountutils.GetOrCreateRootDatastoreSaltForAccount(s.nativeKeystore, accountID); err != nil {
 			s.logger.Warn("unable to read network configuration for account: failed to get account storage salt", zap.Error(err), logutil.PrivateString("account-id", accountID))
 			return NetworkConfigGetDefault(), false
 		}
 	}
 
-	ds, err := accountutils.GetRootDatastoreForPath(accountutils.GetAccountDir(s.rootdir, accountID), storageKey, storageSalt, s.logger)
+	ds, err := accountutils.GetRootDatastoreForPath(accountutils.GetAccountDir(s.sharedRootDir, accountID), storageKey, storageSalt, s.logger)
 	if err != nil {
 		s.logger.Warn("unable to read network configuration for account: failed to get root datastore", zap.Error(err), logutil.PrivateString("account-id", accountID))
 		return NetworkConfigGetDefault(), false
@@ -1221,7 +1302,7 @@ func (s *service) PushReceive(ctx context.Context, req *accounttypes.PushReceive
 		}
 	}
 
-	rawPushData, accountData, err := bertypush.PushDecrypt(ctx, s.rootdir, payload, &bertypush.PushDecryptOpts{
+	rawPushData, accountData, err := bertypush.PushDecrypt(ctx, s.sharedRootDir, payload, &bertypush.PushDecryptOpts{
 		Logger: s.logger, ExcludedAccounts: excludedAccounts, Keystore: s.nativeKeystore,
 	})
 	if err != nil {
@@ -1280,4 +1361,16 @@ func (s *service) GetOpenedAccount(ctx context.Context, request *accounttypes.Ge
 		AccountID: s.openedAccountID,
 		Listeners: strings.Split(s.serviceListeners, ","),
 	}, nil
+}
+
+func (s *service) accountExists(accountID string) (bool, error) {
+	accountDir := accountutils.GetAccountDir(s.appRootDir, accountID)
+	_, err := os.Stat(accountDir)
+	if err == nil {
+		return true, nil
+	}
+	if os.IsNotExist(err) {
+		return false, nil
+	}
+	return false, err
 }
