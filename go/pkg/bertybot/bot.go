@@ -117,14 +117,14 @@ func (b *Bot) Start(ctx context.Context) error {
 	}
 }
 
-func (b *Bot) CreateGroup(ctx context.Context, name string) (string, error) {
+func (b *Bot) CreateGroup(ctx context.Context, name string) (*messengertypes.ConversationCreate_Reply, error) {
 	conv, err := b.client.ConversationCreate(ctx, &messengertypes.ConversationCreate_Request{
 		DisplayName:      name,
 		ContactsToInvite: nil,
 	})
 	if err != nil {
-		return "", fmt.Errorf("failed to create conversation: %w", err)
+		return nil, fmt.Errorf("failed to create conversation: %w", err)
 	}
 
-	return conv.GetPublicKey(), nil
+	return conv, nil
 }

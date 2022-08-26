@@ -130,33 +130,38 @@ func DelayResponseRecipe(duration time.Duration) Recipe {
 	return recipe
 }
 
+type AutoAcceptIncomingGroupInviteOpts struct {
+	ConfirmationMessage string
+}
+
 // AutoAcceptIncomingGroupInviteRecipe makes the bot "click" on the "join" button automatically.
-func AutoAcceptIncomingGroupInviteRecipe(confirmationMessage ...string) Recipe {
+func AutoAcceptIncomingGroupInviteRecipe(opts *AutoAcceptIncomingGroupInviteOpts) Recipe {
+	if opts == nil {
+		opts = &AutoAcceptIncomingGroupInviteOpts{
+			ConfirmationMessage: "I'll join asap!",
+		}
+	}
 	recipe := map[HandlerType][]Handler{}
 	recipe[IncomingGroupInvitationHandler] = []Handler{
 		func(ctx Context) {
-			var err error
-			if confirmationMessage != nil {
-				err = ctx.ReplyString("I'll join asap!")
-			} else {
-				err = ctx.ReplyString(confirmationMessage[0])
-			}
-			if err != nil {
+			if opts.ConfirmationMessage != "" {
+				err := ctx.ReplyString(opts.ConfirmationMessage)
 				ctx.Logger.Error("reply failed", zap.Error(err))
+				// continue
 			}
-
 			payload, err := ctx.Interaction.UnmarshalPayload()
 			if err != nil {
+				ctx.Logger.Error("parse payload", zap.Error(err))
 				return
 			}
-			invLink := payload.(*messengertypes.AppMessage_GroupInvitation).Link
 
-			req := messengertypes.ConversationJoin_Request{Link: invLink}
+			inviteLink := payload.(*messengertypes.AppMessage_GroupInvitation).Link
+			ctx.Logger.Info("auto-joining incoming group", zap.String("link", inviteLink))
+			req := messengertypes.ConversationJoin_Request{Link: inviteLink}
 			_, err = ctx.Client.ConversationJoin(ctx.Context, &req)
 			if err != nil {
 				ctx.Logger.Error("failed to join group", zap.Error(err))
 			}
-			ctx.Logger.Info("auto-joining incoming group", zap.String("link", invLink))
 		},
 	}
 	return recipe
