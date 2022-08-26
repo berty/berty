@@ -17,14 +17,12 @@ func TestClient_impl(t *testing.T) {
 }
 
 func TestEmptyArgs(t *testing.T) {
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
-
 	// initialize new client
-	client, err := New(ctx, Opts{})
+	client, err := New(Opts{})
 	require.NoError(t, err)
 	err = client.Close()
 	require.NoError(t, err)
+	client.Close()
 }
 
 func TestTestingProtocol(t *testing.T) {

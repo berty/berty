@@ -295,7 +295,7 @@ func TestingService(ctx context.Context, t *testing.T, opts Opts) (Service, func
 		opts.IpfsCoreAPI = mn.API()
 	}
 
-	service, err := New(ctx, opts)
+	service, err := New(opts)
 	if err != nil {
 		t.Fatalf("failed to initialize client: %v", err)
 	}

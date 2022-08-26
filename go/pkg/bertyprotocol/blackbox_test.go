@@ -38,10 +38,11 @@ func ExampleNew_basic() {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	client, err := bertyprotocol.New(ctx, bertyprotocol.Opts{})
+	client, err := bertyprotocol.New(bertyprotocol.Opts{})
 	if err != nil {
 		panic(err)
 	}
+	defer client.Close()
 
 	ret, err := client.InstanceGetConfiguration(ctx, &protocoltypes.InstanceGetConfiguration_Request{})
 	if err != nil {

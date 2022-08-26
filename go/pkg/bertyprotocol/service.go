@@ -13,6 +13,7 @@ import (
 	ds "github.com/ipfs/go-datastore"
 	ds_sync "github.com/ipfs/go-datastore/sync"
 	ipfs_interface "github.com/ipfs/interface-go-ipfs-core"
+	"github.com/libp2p/go-libp2p-core/crypto"
 	"github.com/libp2p/go-libp2p-core/discovery"
 	"github.com/libp2p/go-libp2p-core/event"
 	"github.com/libp2p/go-libp2p-core/host"
@@ -52,6 +53,7 @@ type Service interface {
 type service struct {
 	// variables
 	ctx               context.Context
+	ctxCancel         context.CancelFunc
 	logger            *zap.Logger
 	ipfsCoreAPI       ipfsutil.ExtendedCoreAPI
 	odb               *BertyOrbitDB
@@ -222,8 +224,11 @@ func (opts *Opts) applyDefaults(ctx context.Context) error {
 }
 
 // New initializes a new Service
-func New(ctx context.Context, opts Opts) (_ Service, err error) {
+func New(opts Opts) (_ Service, err error) {
+	ctx, cancel := context.WithCancel(context.Background())
+
 	if err := opts.applyDefaults(ctx); err != nil {
+		cancel()
 		return nil, errcode.TODO.Wrap(err)
 	}
 
@@ -236,6 +241,7 @@ func New(ctx context.Context, opts Opts) (_ Service, err error) {
 
 	acc, err := opts.OrbitDB.openAccountGroup(ctx, dbOpts, opts.IpfsCoreAPI)
 	if err != nil {
+		cancel()
 		return nil, errcode.TODO.Wrap(err)
 	}
 
@@ -248,6 +254,7 @@ func New(ctx context.Context, opts Opts) (_ Service, err error) {
 		opts.Logger.Debug("Tinder swiper is enabled", tyber.FormatStepLogFields(ctx, []tyber.Detail{})...)
 
 		if err := initContactRequestsManager(ctx, swiper, acc.metadataStore, opts.IpfsCoreAPI, opts.Logger); err != nil {
+			cancel()
 			return nil, errcode.TODO.Wrap(err)
 		}
 		disc = opts.TinderDriver
@@ -257,6 +264,7 @@ func New(ctx context.Context, opts Opts) (_ Service, err error) {
 	}
 
 	if err := opts.GroupDatastore.Put(ctx, acc.Group()); err != nil {
+		cancel()
 		return nil, errcode.ErrInternal.Wrap(fmt.Errorf("unable to add account group to group datastore, err: %w", err))
 	}
 
@@ -268,12 +276,14 @@ func New(ctx context.Context, opts Opts) (_ Service, err error) {
 			Logger:        opts.Logger,
 		})
 		if err != nil {
+			cancel()
 			return nil, errcode.ErrInternal.Wrap(fmt.Errorf("unable to init push handler: %w", err))
 		}
 	}
 
 	s := &service{
 		ctx:            ctx,
+		ctxCancel:      cancel,
 		host:           opts.Host,
 		ipfsCoreAPI:    opts.IpfsCoreAPI,
 		logger:         opts.Logger,
@@ -310,13 +320,26 @@ func (s *service) IpfsCoreAPI() ipfs_interface.CoreAPI {
 func (s *service) Close() error {
 	endSection := tyber.SimpleSection(tyber.ContextWithoutTraceID(s.ctx), s.logger, "Closing ProtocolService")
 
-	err := s.odb.Close()
+	var err error
+	for _, gc := range s.openedGroups {
+		pk, subErr := crypto.UnmarshalEd25519PublicKey(gc.group.PublicKey)
+		if subErr != nil {
+			err = multierr.Append(err, subErr)
+			continue
+		}
+		err = multierr.Append(err, s.deactivateGroup(pk))
+	}
+
+	err = multierr.Append(err, s.odb.Close())
 
 	if s.close != nil {
 		err = multierr.Append(err, s.close())
 	}
 
 	endSection(err)
+
+	s.ctxCancel()
+
 	return err
 }
 
