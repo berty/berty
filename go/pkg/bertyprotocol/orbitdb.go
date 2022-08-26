@@ -339,13 +339,10 @@ func (s *BertyOrbitDB) OpenGroup(g *protocoltypes.Group, options *orbitdb.Create
 		return nil, err
 	}
 
-	ctx, cancel := context.WithCancel(context.Background())
-
-	s.Logger().Debug("OpenGroup", tyber.FormatStepLogFields(ctx, tyber.ZapFieldsToDetails(zap.Any("public key", g.PublicKey), zap.Any("secret", g.Secret), zap.Stringer("type", g.GroupType)))...)
+	s.Logger().Debug("OpenGroup", tyber.FormatStepLogFields(s.ctx, tyber.ZapFieldsToDetails(zap.Any("public key", g.PublicKey), zap.Any("secret", g.Secret), zap.Stringer("type", g.GroupType)))...)
 
 	memberDevice, err := s.deviceKeystore.MemberDeviceForGroup(g)
 	if err != nil {
-		cancel()
 		return nil, errcode.ErrCryptoKeyGeneration.Wrap(err)
 	}
 
@@ -353,41 +350,38 @@ func (s *BertyOrbitDB) OpenGroup(g *protocoltypes.Group, options *orbitdb.Create
 	if err != nil {
 		mpkb = []byte{}
 	}
-	s.Logger().Debug("Got member device", tyber.FormatStepLogFields(ctx, []tyber.Detail{{Name: "DevicePublicKey", Description: base64.RawURLEncoding.EncodeToString(mpkb)}})...)
+	s.Logger().Debug("Got member device", tyber.FormatStepLogFields(s.ctx, []tyber.Detail{{Name: "DevicePublicKey", Description: base64.RawURLEncoding.EncodeToString(mpkb)}})...)
 
 	// Force secret generation if missing
-	if _, err := s.messageKeystore.GetDeviceSecret(ctx, g, s.deviceKeystore); err != nil {
-		cancel()
+	if _, err := s.messageKeystore.GetDeviceSecret(s.ctx, g, s.deviceKeystore); err != nil {
 		return nil, errcode.ErrCryptoKeyGeneration.Wrap(err)
 	}
 
-	s.Logger().Debug("Got device secret", tyber.FormatStepLogFields(ctx, []tyber.Detail{})...)
+	s.Logger().Debug("Got device secret", tyber.FormatStepLogFields(s.ctx, []tyber.Detail{})...)
 
-	metaImpl, err := s.groupMetadataStore(ctx, g, options)
+	metaImpl, err := s.groupMetadataStore(s.ctx, g, options)
 	if err != nil {
-		cancel()
 		return nil, errcode.ErrOrbitDBOpen.Wrap(err)
 	}
 	s.messageMarshaler.RegisterGroup(metaImpl.Address().String(), g)
 
-	s.Logger().Debug("Got metadata store", tyber.FormatStepLogFields(ctx, []tyber.Detail{})...)
+	s.Logger().Debug("Got metadata store", tyber.FormatStepLogFields(s.ctx, []tyber.Detail{})...)
 
-	messagesImpl, err := s.groupMessageStore(ctx, g, options)
+	messagesImpl, err := s.groupMessageStore(s.ctx, g, options)
 	if err != nil {
-		cancel()
 		return nil, errcode.ErrOrbitDBOpen.Wrap(err)
 	}
 	s.messageMarshaler.RegisterGroup(messagesImpl.Address().String(), g)
 
-	s.Logger().Debug("Got message store", tyber.FormatStepLogFields(ctx, []tyber.Detail{})...)
+	s.Logger().Debug("Got message store", tyber.FormatStepLogFields(s.ctx, []tyber.Detail{})...)
 
-	gc := NewContextGroup(ctx, cancel, g, metaImpl, messagesImpl, s.messageKeystore, memberDevice, s.Logger())
+	gc := NewContextGroup(g, metaImpl, messagesImpl, s.messageKeystore, memberDevice, s.Logger())
 
-	s.Logger().Debug("Created group context", tyber.FormatStepLogFields(ctx, []tyber.Detail{})...)
+	s.Logger().Debug("Created group context", tyber.FormatStepLogFields(s.ctx, []tyber.Detail{})...)
 
 	s.groupContexts.Store(groupID, gc)
 
-	s.Logger().Debug("Stored group context", tyber.FormatStepLogFields(ctx, []tyber.Detail{})...)
+	s.Logger().Debug("Stored group context", tyber.FormatStepLogFields(s.ctx, []tyber.Detail{})...)
 
 	return gc, nil
 }
@@ -439,7 +433,7 @@ func (s *BertyOrbitDB) getGroupContext(id string) (*GroupContext, error) {
 		return nil, errors.New("cannot cast object to GroupContext")
 	}
 
-	if !gc.IsValid() {
+	if gc.IsClosed() {
 		s.groupContexts.Delete(id)
 		return nil, errcode.ErrMissingMapKey
 	}

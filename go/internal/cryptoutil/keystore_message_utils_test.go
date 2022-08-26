@@ -106,8 +106,8 @@ func Test_EncryptMessagePayload(t *testing.T) {
 	mkh2, cleanup := cryptoutil.NewInMemMessageKeystore()
 	defer cleanup()
 
-	gc1 := bertyprotocol.NewContextGroup(ctx, cancel, g, nil, nil, mkh1, omd1, nil)
-	gc2 := bertyprotocol.NewContextGroup(ctx, cancel, g, nil, nil, mkh2, omd2, nil)
+	gc1 := bertyprotocol.NewContextGroup(g, nil, nil, mkh1, omd1, nil)
+	gc2 := bertyprotocol.NewContextGroup(g, nil, nil, mkh2, omd2, nil)
 
 	err = mkh1.RegisterChainKey(ctx, g, gc1.DevicePubKey(), ds1, true)
 	assert.NoError(t, err)
@@ -276,7 +276,7 @@ func Test_EncryptMessageEnvelope(t *testing.T) {
 	omd1, err := acc1.MemberDeviceForGroup(g)
 	assert.NoError(t, err)
 
-	gc1 := bertyprotocol.NewContextGroup(ctx, cancel, g, nil, nil, mkh1, omd1, nil)
+	gc1 := bertyprotocol.NewContextGroup(g, nil, nil, mkh1, omd1, nil)
 
 	ds1, err := bertyprotocol.NewDeviceSecret()
 	assert.NoError(t, err)
@@ -348,7 +348,7 @@ func Test_EncryptMessageEnvelopeAndDerive(t *testing.T) {
 	gPK, err := g.GetPubKey()
 	assert.NoError(t, err)
 
-	gc1 := bertyprotocol.NewContextGroup(ctx, cancel, g, nil, nil, mkh1, omd1, nil)
+	gc1 := bertyprotocol.NewContextGroup(g, nil, nil, mkh1, omd1, nil)
 
 	ds2, err := cryptoutil.NewDeviceSecret()
 	assert.NoError(t, err)

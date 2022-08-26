@@ -1,7 +1,6 @@
 package bertyprotocol
 
 import (
-	"context"
 	"encoding/base64"
 	"fmt"
 	"sync/atomic"
@@ -15,15 +14,13 @@ import (
 )
 
 type GroupContext struct {
-	ctx             context.Context
-	cancel          context.CancelFunc
 	group           *protocoltypes.Group
 	metadataStore   *MetadataStore
 	messageStore    *MessageStore
 	messageKeystore *cryptoutil.MessageKeystore
 	memberDevice    *cryptoutil.OwnMemberDevice
 	logger          *zap.Logger
-	valid           uint32
+	closed          uint32
 }
 
 func (gc *GroupContext) MessageKeystore() *cryptoutil.MessageKeystore {
@@ -55,33 +52,30 @@ func (gc *GroupContext) DevicePubKey() crypto.PubKey {
 }
 
 func (gc *GroupContext) Close() error {
+	atomic.StoreUint32(&gc.closed, 1)
+
 	gc.metadataStore.Close()
 	gc.messageStore.Close()
-
-	gc.cancel()
-
-	atomic.StoreUint32(&gc.valid, 0)
 
 	return nil
 }
 
-func (gc *GroupContext) IsValid() bool {
-	return atomic.LoadUint32(&gc.valid) != 0
+func (gc *GroupContext) IsClosed() bool {
+	return atomic.LoadUint32(&gc.closed) != 0
 }
 
-func NewContextGroup(ctx context.Context, cancel context.CancelFunc, group *protocoltypes.Group, metadataStore *MetadataStore, messageStore *MessageStore, messageKeystore *cryptoutil.MessageKeystore, memberDevice *cryptoutil.OwnMemberDevice, logger *zap.Logger) *GroupContext {
+func NewContextGroup(group *protocoltypes.Group, metadataStore *MetadataStore, messageStore *MessageStore, messageKeystore *cryptoutil.MessageKeystore, memberDevice *cryptoutil.OwnMemberDevice, logger *zap.Logger) *GroupContext {
 	if logger == nil {
 		logger = zap.NewNop()
 	}
 
 	return &GroupContext{
-		ctx:             ctx,
-		cancel:          cancel,
 		group:           group,
 		metadataStore:   metadataStore,
 		messageStore:    messageStore,
 		messageKeystore: messageKeystore,
 		memberDevice:    memberDevice,
 		logger:          logger.With(logutil.PrivateString("group-id", fmt.Sprintf("%.6s", base64.StdEncoding.EncodeToString(group.PublicKey)))),
+		closed:          0,
 	}
 }
