@@ -2,6 +2,7 @@ package bertymessenger
 
 import (
 	"context"
+	"time"
 
 	// nolint:staticcheck // cannot use the new protobuf API while keeping gogoproto
 	"github.com/golang/protobuf/proto"
@@ -19,56 +20,79 @@ import (
 )
 
 func (svc *service) manageSubscriptions() {
-	sub := func() {
-		svc.subsMutex.Lock()
-		defer svc.subsMutex.Unlock()
-		if svc.cancelSubsCtx != nil {
-			svc.logger.Error("sub to known groups already running")
-			return
-		}
-		ctx, cancel := context.WithCancel(svc.ctx)
-		svc.cancelSubsCtx = cancel
-		svc.subsCtx = ctx
+	const switchDelay = time.Second
 
-		var tyberErr error
-		tyberCtx, _, endSection := tyber.Section(context.TODO(), svc.logger, "Subscribing to known groups")
-		defer func() { endSection(tyberErr, "") }()
+	logger := svc.logger.Named("sub")
 
-		for groupPK := range svc.groupsToSubTo {
-			gpkb, err := messengerutil.B64DecodeBytes(groupPK)
-			if err != nil {
-				tyberErr = multierr.Append(tyberErr, err)
-				continue
-			}
-			if err := svc.subscribeToGroup(ctx, tyberCtx, gpkb); err != nil {
-				tyberErr = multierr.Append(tyberErr, err)
-				continue
-			}
-		}
-	}
-
-	currentState := svc.lcmanager.GetCurrentState()
-	if currentState == lifecycle.StateActive {
-		sub()
-	}
+	// start in inactive state, which should trigger the `startSubscription`
+	// method naturally when switching to active state at application startup
+	currentState := lifecycle.StateInactive
 	for {
 		if !svc.lcmanager.WaitForStateChange(svc.ctx, currentState) {
-			svc.closeSubscriptions()
-			return
+			break // leave the loop, context has expired
 		}
 
+		// update current state
 		currentState = svc.lcmanager.GetCurrentState()
 
 		switch currentState {
 		case lifecycle.StateActive:
-			sub()
+			svc.startSubscription(logger)
 		case lifecycle.StateInactive:
-			svc.closeSubscriptions()
+			svc.closeSubscriptions(logger)
 		}
+
+		// take a breathe, and wait a little to avoid a too fast change of
+		// context
+		time.Sleep(switchDelay)
+	}
+
+	// if we are in any other state than inactive, close subscription
+	if currentState != lifecycle.StateInactive {
+		svc.closeSubscriptions(logger)
 	}
 }
 
-func (svc *service) closeSubscriptions() {
+func (svc *service) startSubscription(logger *zap.Logger) {
+	svc.logger.Info("starting group subscription")
+
+	svc.subsMutex.Lock()
+	defer svc.subsMutex.Unlock()
+
+	if svc.cancelSubsCtx != nil {
+		logger.Error("sub to known groups already running")
+		return
+	}
+
+	ctx, cancel := context.WithCancel(svc.ctx)
+	svc.cancelSubsCtx = cancel
+	svc.subsCtx = ctx
+
+	var tyberErr error
+	tyberCtx, _, endSection := tyber.Section(context.TODO(), logger, "Subscribing to known groups")
+	defer func() { endSection(tyberErr, "") }()
+
+	for groupPK := range svc.groupsToSubTo {
+		gpkb, err := messengerutil.B64DecodeBytes(groupPK)
+		if err != nil {
+			logger.Error("unable subscribe, decode error", zap.String("gpk", string(groupPK)), zap.Error(err))
+			tyberErr = multierr.Append(tyberErr, err)
+			continue
+		}
+
+		if err := svc.subscribeToGroup(ctx, tyberCtx, gpkb); err != nil {
+			logger.Error("unable subscribe to group", zap.String("gpk", string(groupPK)), zap.Error(err))
+			tyberErr = multierr.Append(tyberErr, err)
+			continue
+		}
+
+		svc.logger.Debug("subscribe to group success", zap.String("gpk", string(groupPK)))
+	}
+}
+
+func (svc *service) closeSubscriptions(logger *zap.Logger) {
+	logger.Info("closing all group subscriptions")
+
 	svc.subsMutex.Lock()
 	defer svc.subsMutex.Unlock()
 
@@ -79,13 +103,13 @@ func (svc *service) closeSubscriptions() {
 	for groupPK := range svc.groupsToSubTo {
 		groupPKBytes, err := messengerutil.B64DecodeBytes(groupPK)
 		if err != nil {
-			svc.logger.Error("failed to decode group pk", zap.Error(err))
+			logger.Error("unable to close subscriptions, decode error", zap.String("gpk", string(groupPK)), zap.Error(err))
 			continue
 		}
 		if _, err := svc.protocolClient.DeactivateGroup(svc.subsCtx, &protocoltypes.DeactivateGroup_Request{
 			GroupPK: groupPKBytes,
 		}); err != nil {
-			svc.logger.Error("failed to deactivate group", zap.Error(err))
+			logger.Error("unable to deactivate group", zap.String("gpk", string(groupPK)), zap.Error(err))
 			continue
 		}
 	}
@@ -93,6 +117,7 @@ func (svc *service) closeSubscriptions() {
 	if svc.cancelSubsCtx != nil {
 		svc.cancelSubsCtx()
 	}
+
 	svc.subsCtx = nil
 	svc.cancelSubsCtx = nil
 }

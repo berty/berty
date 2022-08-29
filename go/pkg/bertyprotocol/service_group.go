@@ -86,46 +86,46 @@ func (s *service) activateGroup(ctx context.Context, pk crypto.PubKey, localOnly
 
 	g, err := s.getGroupForPK(ctx, pk)
 	if err != nil {
-		return errcode.TODO.Wrap(err)
+		return errcode.ErrInternal.Wrap(err)
 	}
 
 	s.lock.Lock()
 	defer s.lock.Unlock()
 
+	var contactPK crypto.PubKey
 	switch g.GroupType {
-	case protocoltypes.GroupTypeContact, protocoltypes.GroupTypeMultiMember:
-		dbOpts := &iface.CreateDBOptions{LocalOnly: &localOnly}
+	case protocoltypes.GroupTypeMultiMember:
+		// nothing to get here, simply continue, open and activate the group
 
-		gc, err := s.odb.OpenGroup(g, dbOpts)
-		if err != nil {
-			return errcode.TODO.Wrap(err)
-		}
-
-		var contactPK crypto.PubKey
-		if g.GroupType == protocoltypes.GroupTypeContact {
-			contact := s.accountGroup.metadataStore.GetContactFromGroupPK(id)
-			if contact != nil {
-				contactPK, err = contact.GetPubKey()
-				if err != nil {
-					return errcode.TODO.Wrap(err)
-				}
+	case protocoltypes.GroupTypeContact:
+		contact := s.accountGroup.metadataStore.GetContactFromGroupPK(id)
+		if contact != nil {
+			contactPK, err = contact.GetPubKey()
+			if err != nil {
+				return errcode.TODO.Wrap(err)
 			}
 		}
-
-		if err := ActivateGroupContext(s.ctx, gc, contactPK); err != nil {
-			return errcode.TODO.Wrap(err)
-		}
-
-		s.openedGroups[string(id)] = gc
-
-		TagGroupContextPeers(s.ctx, s.logger, gc, s.ipfsCoreAPI, 42)
-
-		return nil
 	case protocoltypes.GroupTypeAccount:
-		return errcode.ErrInternal.Wrap(fmt.Errorf("deviceKeystore group should already be opened"))
+		localOnly = true
+		// return nil
+	default:
+		return errcode.ErrInternal.Wrap(fmt.Errorf("unknown group type"))
 	}
 
-	return errcode.ErrInternal.Wrap(fmt.Errorf("unknown group type"))
+	dbOpts := &iface.CreateDBOptions{LocalOnly: &localOnly}
+	gc, err := s.odb.OpenGroup(g, dbOpts)
+	if err != nil {
+		return errcode.ErrBertyAccountOpenAccount.Wrap(err)
+	}
+
+	if err := ActivateGroupContext(s.ctx, gc, contactPK); err != nil {
+		return errcode.ErrGroupActivate.Wrap(err)
+	}
+
+	s.openedGroups[string(id)] = gc
+
+	TagGroupContextPeers(s.ctx, s.logger, gc, s.ipfsCoreAPI, 42)
+	return nil
 }
 
 func (s *service) GetContextGroupForID(id []byte) (*GroupContext, error) {

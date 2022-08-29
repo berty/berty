@@ -18,7 +18,6 @@ require (
 	github.com/atotto/clipboard v0.1.4
 	github.com/buicongtan1997/protoc-gen-swagger-config v0.0.0-20190801162412-b6396e884596
 	github.com/campoy/embedmd v1.0.0
-	github.com/cenkalti/backoff v2.2.1+incompatible
 	github.com/daixiang0/gci v0.3.2
 	github.com/denisbrodbeck/machineid v1.0.1
 	github.com/dgraph-io/ristretto v0.0.3 // indirect
