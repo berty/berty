@@ -13,6 +13,43 @@ import (
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
 
+func TestReactivateAccountGroup(t *testing.T) {
+	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Minute)
+	defer cancel()
+
+	logger, cleanup := testutil.Logger(t)
+	defer cleanup()
+
+	opts := bertyprotocol.TestingOpts{
+		Mocknet:     libp2p_mocknet.New(ctx),
+		Logger:      logger,
+		ConnectFunc: bertyprotocol.ConnectAll,
+	}
+
+	nodes, cleanup := bertyprotocol.NewTestingProtocolWithMockedPeers(ctx, t, &opts, nil, 1)
+	defer cleanup()
+
+	// get contact group
+	sub, err := nodes[0].Client.DebugListGroups(ctx, &protocoltypes.DebugListGroups_Request{})
+	require.NoError(t, err)
+	acc, err := sub.Recv()
+	require.NoError(t, err)
+	require.Equal(t, acc.GroupType, protocoltypes.GroupTypeAccount)
+	accPK := acc.GroupPK
+
+	// deactivate contact group on one end
+	_, err = nodes[0].Client.DeactivateGroup(ctx, &protocoltypes.DeactivateGroup_Request{
+		GroupPK: accPK,
+	})
+	require.NoError(t, err)
+
+	// reactivate group
+	_, err = nodes[0].Client.ActivateGroup(ctx, &protocoltypes.ActivateGroup_Request{
+		GroupPK: accPK,
+	})
+	require.NoError(t, err)
+}
+
 func TestDeactivateGroup(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Minute)
 	defer cancel()

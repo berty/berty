@@ -52,6 +52,8 @@ func (gc *GroupContext) DevicePubKey() crypto.PubKey {
 }
 
 func (gc *GroupContext) Close() error {
+	gc.logger.Debug("closing group context", zap.String("groupID", gc.group.GroupIDAsString()))
+
 	atomic.StoreUint32(&gc.closed, 1)
 
 	gc.metadataStore.Close()
