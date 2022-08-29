@@ -57,7 +57,13 @@ func (s *service) deactivateGroup(pk crypto.PubKey) error {
 
 	cg, err := s.GetContextGroupForID(id)
 	if err != nil || cg == nil {
+		// @FIXME(gfanton): should return an error code
 		return nil
+	}
+
+	if cg.group.GroupType == protocoltypes.GroupTypeAccount {
+		// @FIXME(gfanton): do not close manually close berty account for now
+		return errcode.ErrBertyAccount.Wrap(fmt.Errorf("cannot manually deactivate berty account"))
 	}
 
 	s.lock.Lock()
@@ -70,6 +76,18 @@ func (s *service) deactivateGroup(pk crypto.PubKey) error {
 
 	delete(s.openedGroups, string(id))
 
+	return nil
+}
+
+func (s *service) closeBertyAccount() error {
+	s.lock.Lock()
+	defer s.lock.Unlock()
+
+	if err := s.accountGroup.Close(); err != nil {
+		s.logger.Error("unable to close acount group", zap.Error(err))
+	}
+
+	delete(s.openedGroups, s.accountGroup.Group().GroupIDAsString())
 	return nil
 }
 
@@ -106,8 +124,7 @@ func (s *service) activateGroup(ctx context.Context, pk crypto.PubKey, localOnly
 			}
 		}
 	case protocoltypes.GroupTypeAccount:
-		localOnly = true
-		// return nil
+		return errcode.ErrBertyAccountAlreadyOpened
 	default:
 		return errcode.ErrInternal.Wrap(fmt.Errorf("unknown group type"))
 	}

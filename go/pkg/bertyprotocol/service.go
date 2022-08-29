@@ -328,6 +328,8 @@ func (s *service) Close() error {
 		err = multierr.Append(err, s.deactivateGroup(pk))
 	}
 
+	err = multierr.Append(err, s.closeBertyAccount())
+
 	err = multierr.Append(err, s.odb.Close())
 
 	if s.close != nil {

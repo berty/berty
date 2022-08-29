@@ -81,7 +81,9 @@ func (svc *service) startSubscription(logger *zap.Logger) {
 		}
 
 		if err := svc.subscribeToGroup(ctx, tyberCtx, gpkb); err != nil {
-			logger.Error("unable subscribe to group", zap.String("gpk", string(groupPK)), zap.Error(err))
+			if !errcode.Has(err, errcode.ErrBertyAccountAlreadyOpened) {
+				logger.Error("unable subscribe to group", zap.String("gpk", string(groupPK)), zap.Error(err))
+			}
 			tyberErr = multierr.Append(tyberErr, err)
 			continue
 		}
@@ -109,7 +111,10 @@ func (svc *service) closeSubscriptions(logger *zap.Logger) {
 		if _, err := svc.protocolClient.DeactivateGroup(svc.subsCtx, &protocoltypes.DeactivateGroup_Request{
 			GroupPK: groupPKBytes,
 		}); err != nil {
-			logger.Error("unable to deactivate group", zap.String("gpk", string(groupPK)), zap.Error(err))
+			if !errcode.Has(err, errcode.ErrBertyAccount) {
+				logger.Error("unable to deactivate group", zap.String("gpk", string(groupPK)), zap.Error(err))
+			}
+
 			continue
 		}
 	}
