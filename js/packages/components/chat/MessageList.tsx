@@ -142,13 +142,7 @@ export const MessageList: React.FC<{
 				),
 			[rawMessages],
 		)
-		const oldestMessage = useMemo(
-			() =>
-				messages.filter(msg => msg.type !== beapi.messenger.AppMessage.Type.TypeMonitorMetadata)[
-					messages.length - 1
-				],
-			[messages],
-		)
+		const oldestMessage = useMemo(() => messages[messages.length - 1], [messages])
 
 		const [fetchingFrom, setFetchingFrom] = useState<string | null>(null)
 		const [fetchedFirst, setFetchedFirst] = useState(rawMessages.length === 0)

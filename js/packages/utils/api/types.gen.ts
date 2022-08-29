@@ -67,22 +67,7 @@ export type AppMessagePayloadType<T> = T extends beapi.messenger.AppMessage.Type
 	? beapi.messenger.AppMessage.IAcknowledge
 	: T extends beapi.messenger.AppMessage.Type.TypeReplyOptions
 	? beapi.messenger.AppMessage.IReplyOptions
-	: T extends beapi.messenger.AppMessage.Type.TypeMonitorMetadata
-	? beapi.messenger.AppMessage.IMonitorMetadata
 	: never
-
-export type MonitorGroupPayloadType<T> =
-	T extends beapi.protocol.MonitorGroup.TypeEventMonitor.TypeEventMonitorUndefined
-		? undefined
-		: T extends beapi.protocol.MonitorGroup.TypeEventMonitor.TypeEventMonitorAdvertiseGroup
-		? beapi.protocol.MonitorGroup.IEventMonitorAdvertiseGroup
-		: T extends beapi.protocol.MonitorGroup.TypeEventMonitor.TypeEventMonitorPeerFound
-		? beapi.protocol.MonitorGroup.IEventMonitorPeerFound
-		: T extends beapi.protocol.MonitorGroup.TypeEventMonitor.TypeEventMonitorPeerJoin
-		? beapi.protocol.MonitorGroup.IEventMonitorPeerJoin
-		: T extends beapi.protocol.MonitorGroup.TypeEventMonitor.TypeEventMonitorPeerLeave
-		? beapi.protocol.MonitorGroup.IEventMonitorPeerLeave
-		: never
 
 export type InteractionUndefined = {
 	type: beapi.messenger.AppMessage.Type.Undefined
@@ -116,10 +101,6 @@ export type InteractionReplyOptions = {
 	type: beapi.messenger.AppMessage.Type.TypeReplyOptions
 	payload?: beapi.messenger.AppMessage.IReplyOptions
 } & Omit<beapi.messenger.IInteraction, 'payload' | 'type'>
-export type InteractionMonitorMetadata = {
-	type: beapi.messenger.AppMessage.Type.TypeMonitorMetadata
-	payload?: beapi.messenger.AppMessage.IMonitorMetadata
-} & Omit<beapi.messenger.IInteraction, 'payload' | 'type'>
 
 export type ParsedInteraction =
 	| InteractionUndefined
@@ -130,4 +111,3 @@ export type ParsedInteraction =
 	| InteractionSetUserInfo
 	| InteractionAcknowledge
 	| InteractionReplyOptions
-	| InteractionMonitorMetadata

@@ -2,10 +2,6 @@ package bertymessenger
 
 import (
 	"context"
-	"fmt"
-	"io"
-	"sync/atomic"
-	"time"
 
 	// nolint:staticcheck // cannot use the new protobuf API while keeping gogoproto
 	"github.com/golang/protobuf/proto"
@@ -205,62 +201,6 @@ func (svc *service) subscribeToMessages(ctx, tyberCtx context.Context, gpkb []by
 	return nil
 }
 
-var monitorCounter uint64
-
-func (svc *service) subscribeToGroupMonitor(ctx context.Context, groupPK []byte) error {
-	cl, err := svc.protocolClient.MonitorGroup(ctx, &protocoltypes.MonitorGroup_Request{
-		GroupPK: groupPK,
-	})
-	if err != nil {
-		return fmt.Errorf("unable to monitor group: %w", err)
-	}
-
-	go func() {
-		for {
-			seqid := atomic.AddUint64(&monitorCounter, 1)
-			evt, err := cl.Recv()
-			switch err {
-			case nil:
-			// everything fine
-			case io.EOF:
-				return
-			case context.Canceled, context.DeadlineExceeded:
-				svc.logger.Warn("monitoring group interrupted", zap.Error(err))
-				return
-			default:
-				svc.logger.Error("error while monitoring group", zap.Error(err))
-				return
-			}
-
-			meta := mt.AppMessage_MonitorMetadata{
-				Event: evt.Event,
-			}
-
-			payload, err := proto.Marshal(&meta)
-			if err != nil {
-				svc.logger.Error("unable to marshal event")
-				continue
-			}
-
-			cid := fmt.Sprintf("__monitor-group-%d", seqid)
-			i := &mt.Interaction{
-				CID:                   cid,
-				Type:                  mt.AppMessage_TypeMonitorMetadata,
-				ConversationPublicKey: messengerutil.B64EncodeBytes(evt.GetGroupPK()),
-				Payload:               payload,
-				SentDate:              messengerutil.TimestampMs(time.Now()),
-			}
-
-			err = svc.dispatcher.StreamEvent(mt.StreamEvent_TypeInteractionUpdated, &mt.StreamEvent_InteractionUpdated{Interaction: i}, true)
-			if err != nil {
-				svc.logger.Error("unable to dispatch monitor event")
-			}
-		}
-	}()
-
-	return nil
-}
-
 func (svc *service) subscribeToGroup(ctx, tyberCtx context.Context, gpkb []byte) error {
 	tyberCtx, newTrace := tyber.ContextWithTraceID(tyberCtx)
 	if newTrace {
@@ -272,12 +212,6 @@ func (svc *service) subscribeToGroup(ctx, tyberCtx context.Context, gpkb []byte)
 		GroupPK: gpkb,
 	}); err != nil {
 		return errcode.ErrGroupActivate.Wrap(err)
-	}
-
-	if svc.isGroupMonitorEnabled {
-		if err := svc.subscribeToGroupMonitor(ctx, gpkb); err != nil {
-			return err
-		}
 	}
 
 	if err := svc.subscribeToMetadata(ctx, tyberCtx, gpkb); err != nil {

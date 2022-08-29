@@ -350,6 +350,7 @@ func (c *contactRequestsManager) enqueueRequest(ctx context.Context, to *protoco
 	cpeers := c.swiper.WatchTopic(ctx, to.PK, to.PublicRendezvousSeed)
 	go func() {
 		var err error
+		// reqctx := network.WithUseTransient(ctx, "contact request")
 		for peer := range cpeers {
 			// get our sharable contact to send to other contact
 			if err = c.SendContactRequest(ctx, to, otherPK, peer); err != nil {

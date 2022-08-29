@@ -127,14 +127,6 @@
     - [MessageEnvelope](#berty.protocol.v1.MessageEnvelope)
     - [MessageHeaders](#berty.protocol.v1.MessageHeaders)
     - [MessageHeaders.MetadataEntry](#berty.protocol.v1.MessageHeaders.MetadataEntry)
-    - [MonitorGroup](#berty.protocol.v1.MonitorGroup)
-    - [MonitorGroup.EventMonitor](#berty.protocol.v1.MonitorGroup.EventMonitor)
-    - [MonitorGroup.EventMonitorAdvertiseGroup](#berty.protocol.v1.MonitorGroup.EventMonitorAdvertiseGroup)
-    - [MonitorGroup.EventMonitorPeerFound](#berty.protocol.v1.MonitorGroup.EventMonitorPeerFound)
-    - [MonitorGroup.EventMonitorPeerJoin](#berty.protocol.v1.MonitorGroup.EventMonitorPeerJoin)
-    - [MonitorGroup.EventMonitorPeerLeave](#berty.protocol.v1.MonitorGroup.EventMonitorPeerLeave)
-    - [MonitorGroup.Reply](#berty.protocol.v1.MonitorGroup.Reply)
-    - [MonitorGroup.Request](#berty.protocol.v1.MonitorGroup.Request)
     - [MultiMemberGrantAdminRole](#berty.protocol.v1.MultiMemberGrantAdminRole)
     - [MultiMemberGroupAddAliasResolver](#berty.protocol.v1.MultiMemberGroupAddAliasResolver)
     - [MultiMemberGroupAdminRoleGrant](#berty.protocol.v1.MultiMemberGroupAdminRoleGrant)
@@ -220,7 +212,6 @@
     - [GroupDeviceStatus.Type](#berty.protocol.v1.GroupDeviceStatus.Type)
     - [GroupType](#berty.protocol.v1.GroupType)
     - [InstanceGetConfiguration.SettingState](#berty.protocol.v1.InstanceGetConfiguration.SettingState)
-    - [MonitorGroup.TypeEventMonitor](#berty.protocol.v1.MonitorGroup.TypeEventMonitor)
     - [PeerList.Feature](#berty.protocol.v1.PeerList.Feature)
   
     - [ProtocolService](#berty.protocol.v1.ProtocolService)
@@ -942,9 +933,9 @@ TODO: signature of what ??? ensure it can&#39;t be replayed |
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | peer_id | [string](#string) |  |  |
-| device_pk | [string](#string) |  |  |
-| transport | [GroupDeviceStatus.Transport](#berty.protocol.v1.GroupDeviceStatus.Transport) |  |  |
-| maddr | [string](#string) |  |  |
+| device_pk | [bytes](#bytes) |  |  |
+| transports | [GroupDeviceStatus.Transport](#berty.protocol.v1.GroupDeviceStatus.Transport) | repeated |  |
+| maddrs | [string](#string) | repeated |  |
 
 <a name="berty.protocol.v1.GroupDeviceStatus.Reply.PeerDisconnected"></a>
 
@@ -968,7 +959,7 @@ TODO: signature of what ??? ensure it can&#39;t be replayed |
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| group_pk | [string](#string) |  |  |
+| group_pk | [bytes](#bytes) |  |  |
 
 <a name="berty.protocol.v1.GroupEnvelope"></a>
 
@@ -1186,82 +1177,6 @@ MessageHeaders is used in MessageEnvelope and only readable by invited group mem
 | key | [string](#string) |  |  |
 | value | [string](#string) |  |  |
 
-<a name="berty.protocol.v1.MonitorGroup"></a>
-
-### MonitorGroup
-
-<a name="berty.protocol.v1.MonitorGroup.EventMonitor"></a>
-
-### MonitorGroup.EventMonitor
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| type | [MonitorGroup.TypeEventMonitor](#berty.protocol.v1.MonitorGroup.TypeEventMonitor) |  |  |
-| advertise_group | [MonitorGroup.EventMonitorAdvertiseGroup](#berty.protocol.v1.MonitorGroup.EventMonitorAdvertiseGroup) |  |  |
-| peer_found | [MonitorGroup.EventMonitorPeerFound](#berty.protocol.v1.MonitorGroup.EventMonitorPeerFound) |  |  |
-| peer_join | [MonitorGroup.EventMonitorPeerJoin](#berty.protocol.v1.MonitorGroup.EventMonitorPeerJoin) |  |  |
-| peer_leave | [MonitorGroup.EventMonitorPeerLeave](#berty.protocol.v1.MonitorGroup.EventMonitorPeerLeave) |  |  |
-
-<a name="berty.protocol.v1.MonitorGroup.EventMonitorAdvertiseGroup"></a>
-
-### MonitorGroup.EventMonitorAdvertiseGroup
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| peer_id | [string](#string) |  | local peer id advertised |
-| maddrs | [string](#string) | repeated | maddrs should describe peer maddrs |
-| driver_name | [string](#string) |  | driver_name used to advertise the peer |
-| topic | [string](#string) |  | event topic |
-
-<a name="berty.protocol.v1.MonitorGroup.EventMonitorPeerFound"></a>
-
-### MonitorGroup.EventMonitorPeerFound
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| peer_id | [string](#string) |  | peer_id of the peer in this context |
-| maddrs | [string](#string) | repeated | maddrs of the peer in this context |
-| driver_name | [string](#string) |  | driver_name used to found the peer |
-| topic | [string](#string) |  | event topic |
-
-<a name="berty.protocol.v1.MonitorGroup.EventMonitorPeerJoin"></a>
-
-### MonitorGroup.EventMonitorPeerJoin
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| peer_id | [string](#string) |  | peer_id of the peer in this context |
-| maddrs | [string](#string) | repeated | maddrs of the peer in this context |
-| topic | [string](#string) |  | event topic |
-| is_self | [bool](#bool) |  | is_self indecitate if the given peer is you |
-
-<a name="berty.protocol.v1.MonitorGroup.EventMonitorPeerLeave"></a>
-
-### MonitorGroup.EventMonitorPeerLeave
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| peer_id | [string](#string) |  | peer_id of the peer in this context |
-| topic | [string](#string) |  | event topic |
-| is_self | [bool](#bool) |  | is_self indecitate if the given peer is you |
-
-<a name="berty.protocol.v1.MonitorGroup.Reply"></a>
-
-### MonitorGroup.Reply
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| event | [MonitorGroup.EventMonitor](#berty.protocol.v1.MonitorGroup.EventMonitor) |  | monitor event |
-| group_pk | [bytes](#bytes) |  | group_pk is the identifier of the group |
-
-<a name="berty.protocol.v1.MonitorGroup.Request"></a>
-
-### MonitorGroup.Request
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| group_pk | [bytes](#bytes) |  | filter_group_pk, if set, will filter event by group PK |
-
 <a name="berty.protocol.v1.MultiMemberGrantAdminRole"></a>
 
 ### MultiMemberGrantAdminRole
@@ -1412,7 +1327,7 @@ OrbitDBMessageHeads is the payload sent on orbitdb to share peer&#39;s heads
 | address | [string](#string) |  |  |
 | heads | [bytes](#bytes) |  |  |
 | device_pk | [bytes](#bytes) |  |  |
-| peer_id | [string](#string) |  |  |
+| peer_id | [bytes](#bytes) |  |  |
 
 <a name="berty.protocol.v1.OutOfStoreMessage"></a>
 
@@ -1956,18 +1871,6 @@ Progress define a generic object that can be used to display a progress bar for 
 | Disabled | 2 |  |
 | Unavailable | 3 |  |
 
-<a name="berty.protocol.v1.MonitorGroup.TypeEventMonitor"></a>
-
-### MonitorGroup.TypeEventMonitor
-
-| Name | Number | Description |
-| ---- | ------ | ----------- |
-| TypeEventMonitorUndefined | 0 |  |
-| TypeEventMonitorAdvertiseGroup | 1 |  |
-| TypeEventMonitorPeerFound | 2 |  |
-| TypeEventMonitorPeerJoin | 3 |  |
-| TypeEventMonitorPeerLeave | 4 |  |
-
 <a name="berty.protocol.v1.PeerList.Feature"></a>
 
 ### PeerList.Feature
@@ -2018,8 +1921,7 @@ Each Berty Protocol Instance is considered as a Berty device and is associated w
 | GroupInfo | [GroupInfo.Request](#berty.protocol.v1.GroupInfo.Request) | [GroupInfo.Reply](#berty.protocol.v1.GroupInfo.Reply) | GroupInfo retrieves information about a group |
 | ActivateGroup | [ActivateGroup.Request](#berty.protocol.v1.ActivateGroup.Request) | [ActivateGroup.Reply](#berty.protocol.v1.ActivateGroup.Reply) | ActivateGroup explicitly opens a group |
 | DeactivateGroup | [DeactivateGroup.Request](#berty.protocol.v1.DeactivateGroup.Request) | [DeactivateGroup.Reply](#berty.protocol.v1.DeactivateGroup.Reply) | DeactivateGroup closes a group |
-| GroupDeviceStatus | [GroupDeviceStatus.Request](#berty.protocol.v1.GroupDeviceStatus.Request) | [GroupDeviceStatus.Reply](#berty.protocol.v1.GroupDeviceStatus.Reply) stream | @TODO: GroupDeviceStatus monitor device status |
-| MonitorGroup | [MonitorGroup.Request](#berty.protocol.v1.MonitorGroup.Request) | [MonitorGroup.Reply](#berty.protocol.v1.MonitorGroup.Reply) stream | Monitor Group events |
+| GroupDeviceStatus | [GroupDeviceStatus.Request](#berty.protocol.v1.GroupDeviceStatus.Request) | [GroupDeviceStatus.Reply](#berty.protocol.v1.GroupDeviceStatus.Reply) stream | GroupDeviceStatus monitor device status |
 | DebugListGroups | [DebugListGroups.Request](#berty.protocol.v1.DebugListGroups.Request) | [DebugListGroups.Reply](#berty.protocol.v1.DebugListGroups.Reply) stream |  |
 | DebugInspectGroupStore | [DebugInspectGroupStore.Request](#berty.protocol.v1.DebugInspectGroupStore.Request) | [DebugInspectGroupStore.Reply](#berty.protocol.v1.DebugInspectGroupStore.Reply) stream |  |
 | DebugGroup | [DebugGroup.Request](#berty.protocol.v1.DebugGroup.Request) | [DebugGroup.Reply](#berty.protocol.v1.DebugGroup.Reply) |  |

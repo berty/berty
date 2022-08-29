@@ -341,9 +341,6 @@ message AppMessage {
     TypeSetUserInfo = 5;
     TypeAcknowledge = 6;
     TypeReplyOptions = 7;
-
-    // these shouldn't be sent on the network
-    TypeMonitorMetadata = 100;
   }
   message UserMessage {
     string body = 1;
@@ -367,9 +364,6 @@ message AppMessage {
   }
   message ReplyOptions {
     repeated ReplyOption options = 1;
-  }
-  message MonitorMetadata {
-    berty.protocol.v1.MonitorGroup.EventMonitor event = 1;
   }
 }
 

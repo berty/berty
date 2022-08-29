@@ -724,11 +724,6 @@ func (m *Manager) configIPFSRouting(h host.Host, r p2p_routing.Routing) error {
 		}
 	}()
 
-	pt, err := ipfsutil.NewPubsubMonitor(logger, h)
-	if err != nil {
-		return errcode.ErrIPFSSetupHost.Wrap(err)
-	}
-
 	cacheSize := 100
 	dialTimeout := time.Second * 20
 	backoffconnector := func(host host.Host) (*discovery.BackoffConnector, error) {
@@ -738,7 +733,6 @@ func (m *Manager) configIPFSRouting(h host.Host, r p2p_routing.Routing) error {
 	popts := []pubsub.Option{
 		pubsub.WithMessageSigning(true),
 		pubsub.WithPeerExchange(true),
-		pt.EventTracerOption(),
 	}
 
 	var disc p2p_disc.Discovery

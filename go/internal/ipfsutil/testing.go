@@ -164,21 +164,12 @@ func TestingCoreAPIUsingMockNet(ctx context.Context, t testing.TB, opts *Testing
 			// BackoffStratFactory: discovery.NewExponentialBackoff(minBackoff, maxBackoff, discovery.FullJitter, time.Second, 5.0, 0, rng),
 		}
 
-		// enable discovery monitor
 		disc, err = tinder.NewService(tinderOpts, h, drivers...)
 		if err != nil {
 			return fmt.Errorf("unable to monitor discovery driver: %w", err)
 		}
 
-		pubsubtracker, err := NewPubsubMonitor(opts.Logger, h)
-		if err != nil {
-			return err
-		}
-
-		ps, err = pubsub.NewGossipSub(ctx, h,
-			pubsub.WithDiscovery(disc),
-			pubsubtracker.EventTracerOption(),
-		)
+		ps, err = pubsub.NewGossipSub(ctx, h, pubsub.WithDiscovery(disc))
 
 		return err
 	}

@@ -2062,11 +2062,9 @@
         "TypeSetGroupInfo",
         "TypeSetUserInfo",
         "TypeAcknowledge",
-        "TypeReplyOptions",
-        "TypeMonitorMetadata"
+        "TypeReplyOptions"
       ],
-      "default": "Undefined",
-      "title": "- TypeMonitorMetadata: these shouldn't be sent on the network"
+      "default": "Undefined"
     },
     "v1BannerQuoteReply": {
       "type": "object",
