@@ -64,8 +64,7 @@ export const SharedMedias: ScreenFC<'Chat.SharedMedias'> = ({
 	const messages = useConversationInteractions(convPk).filter(
 		msg =>
 			msg.type === beapi.messenger.AppMessage.Type.TypeUserMessage ||
-			msg.type === beapi.messenger.AppMessage.Type.TypeGroupInvitation ||
-			msg.type === beapi.messenger.AppMessage.Type.TypeMonitorMetadata,
+			msg.type === beapi.messenger.AppMessage.Type.TypeGroupInvitation,
 	)
 
 	const pictures = React.useMemo(() => {

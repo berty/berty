@@ -8,21 +8,23 @@ import (
 	"io"
 	"io/ioutil"
 	"math"
+	mrand "math/rand"
 	"net"
 	"net/url"
 	"os"
 	"strings"
 	"time"
 
-	"github.com/cenkalti/backoff"
 	"github.com/gogo/protobuf/proto"
 	"github.com/grandcat/zeroconf"
 	ipfscid "github.com/ipfs/go-cid"
 	ctxio "github.com/jbenet/go-context/io"
+	discovery "github.com/libp2p/go-libp2p-discovery"
 	"go.uber.org/multierr"
 	"go.uber.org/zap"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"moul.io/srand"
 
 	"berty.tech/berty/v2/go/internal/discordlog"
 	"berty.tech/berty/v2/go/internal/logutil"
@@ -1760,8 +1762,12 @@ func (svc *service) TyberHostAttach(ctx context.Context, request *messengertypes
 		return nil, errcode.TODO.Wrap(fmt.Errorf("cannot attach to tyber without specified log path"))
 	}
 
-	backoff := backoff.NewExponentialBackOff()
-	backoff.MaxInterval = time.Minute
+	srand := mrand.New(mrand.NewSource(srand.MustSecure())) // nolint:gosec
+	backoffFactory := discovery.NewExponentialBackoff(time.Second, time.Minute*15,
+		discovery.FullJitter,
+		time.Second*5, 5.0, 0, srand)
+	backoff := backoffFactory()
+
 	var succeed bool
 
 	// can be stopped either by calling TyberHostAttach again, or when the svc.Close is called.
@@ -1805,7 +1811,7 @@ func (svc *service) TyberHostAttach(ctx context.Context, request *messengertypes
 				return
 			}
 
-			sleepDuration := backoff.NextBackOff()
+			sleepDuration := backoff.Delay()
 
 			svc.logger.Debug(
 				"tyber host attach",

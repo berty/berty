@@ -34,12 +34,6 @@ enumMapping(
 	'berty.messenger.v1.AppMessage.Type',
 	'beapi.messenger.AppMessage',
 )
-enumMapping(
-	'MonitorGroupPayloadType',
-	'berty.protocol.v1.MonitorGroup.TypeEventMonitor',
-	'beapi.protocol.MonitorGroup',
-	'EventMonitor',
-)
 
 console.log('')
 

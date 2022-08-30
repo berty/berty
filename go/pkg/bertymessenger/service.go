@@ -468,7 +468,6 @@ func (svc *service) sendAccountUserInfo(ctx context.Context, groupPK string) (er
 func (svc *service) Close() {
 	ctx, _ := tyber.ContextWithTraceID(svc.ctx)
 	svc.logger.Debug("Closing MessengerService", tyber.FormatTraceLogFields(ctx)...)
-	svc.closeSubscriptions()
 	svc.dispatcher.UnregisterAll()
 	svc.cancelFn()
 	svc.optsCleanup()

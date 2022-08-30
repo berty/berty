@@ -46,9 +46,9 @@ type Swiper struct {
 func NewSwiper(logger *zap.Logger, disc tinder.UnregisterDiscovery, rp *rendezvous.RotationInterval) *Swiper {
 	// we need to use math/rand here, but it is seeded from crypto/rand
 	srand := mrand.New(mrand.NewSource(srand.MustSecure())) // nolint:gosec
-	backoffstrat := discovery.NewExponentialBackoff(time.Second, time.Second*30,
+	backoffstrat := discovery.NewExponentialBackoff(time.Second, time.Second*20,
 		discovery.FullJitter,
-		time.Second, 5.0, 0, srand)
+		time.Second, 5.0, time.Second, srand)
 
 	return &Swiper{
 		backoffFactory:   backoffstrat,
@@ -182,14 +182,15 @@ func (s *Swiper) watchPeers(ctx context.Context, bstrat discovery.BackoffStrateg
 	for ctx.Err() == nil {
 		s.logger.Debug("swipper looking for peers", zap.String("topic", ns))
 
-		// wait 15 seconds before considering lookup as failed/done
-		fctx, cancel := context.WithTimeout(ctx, time.Second*15)
+		// wait 10 seconds before considering lookup as failed/done
+		fctx, cancel := context.WithTimeout(ctx, time.Second*10)
 
 		// use find peers while keeping his context
 		// disable caching and force re-trigger each driver on call
 		cpeer, err := s.disc.FindPeers(fctx, ns,
+			tinder.WatchdogDiscoverKeepContextOption,
 			tinder.WatchdogDiscoverForceOption,
-			tinder.WatchdogDiscoverKeepContextOption)
+		)
 		if err != nil {
 			cancel()
 			return fmt.Errorf("unable to find peers: %w", err)
@@ -197,15 +198,18 @@ func (s *Swiper) watchPeers(ctx context.Context, bstrat discovery.BackoffStrateg
 
 		// forward found peers
 		for peer := range cpeer {
+			s.logger.Debug("found a peers", logutil.PrivateString("peer", peer.String()), logutil.PrivateString("topic", ns))
 			out <- peer
 		}
 
 		cancel()
 
+		nextDelay := bstrat.Delay()
+		s.logger.Debug("swipper looking ended", zap.Duration("next_try", nextDelay))
+
 		// wait until the context is done, or the backoff delay expired
-		timeout := bstrat.Delay()
 		select {
-		case <-time.After(timeout):
+		case <-time.After(nextDelay):
 		case <-ctx.Done():
 		}
 	}

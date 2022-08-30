@@ -81,9 +81,6 @@ http:
  - selector: berty.protocol.v1.ProtocolService.GroupDeviceStatus
    post: /berty.protocol.v1/ProtocolService/GroupDeviceStatus
    body: "*"
- - selector: berty.protocol.v1.ProtocolService.MonitorGroup
-   post: /berty.protocol.v1/ProtocolService/MonitorGroup
-   body: "*"
  - selector: berty.protocol.v1.ProtocolService.DebugListGroups
    post: /berty.protocol.v1/ProtocolService/DebugListGroups
    body: "*"

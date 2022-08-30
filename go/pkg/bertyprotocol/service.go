@@ -18,7 +18,6 @@ import (
 	"github.com/libp2p/go-libp2p-core/event"
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/network"
-	peer "github.com/libp2p/go-libp2p-core/peer"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/pkg/errors"
 	"go.uber.org/multierr"
@@ -307,7 +306,6 @@ func New(opts Opts) (_ Service, err error) {
 		peerStatusManager: NewConnectednessManager(),
 	}
 
-	s.startTyberTinderMonitor()
 	s.startGroupDeviceMonitor()
 
 	return s, nil
@@ -327,8 +325,14 @@ func (s *service) Close() error {
 			err = multierr.Append(err, subErr)
 			continue
 		}
-		err = multierr.Append(err, s.deactivateGroup(pk))
+
+		derr := s.deactivateGroup(pk)
+		if derr != nil && !errcode.Has(derr, errcode.ErrBertyAccount) {
+			err = multierr.Append(derr, subErr)
+		}
 	}
+
+	err = multierr.Append(err, s.closeBertyAccount())
 
 	err = multierr.Append(err, s.odb.Close())
 
@@ -341,79 +345,6 @@ func (s *service) Close() error {
 	s.ctxCancel()
 
 	return err
-}
-
-func (s *service) startTyberTinderMonitor() {
-	if s.host == nil {
-		return
-	}
-
-	sub, err := s.host.EventBus().Subscribe([]interface{}{
-		new(ipfsutil.EvtPubSubTopic),
-		new(tinder.EvtDriverMonitor),
-	})
-	if err != nil {
-		s.logger.Error("failed to create sub", zap.Error(errors.Wrap(err, "unable to subscribe pubsub topic event")))
-		return
-	}
-
-	// @FIXME(gfanton): cached found peers should be done inside driver monitor
-	cachedFoundPeers := make(map[peer.ID]ipfsutil.Multiaddrs)
-	ch := sub.Out()
-	go func() {
-		for {
-			select {
-			case <-s.ctx.Done():
-				return
-			case evt := <-ch:
-				var monitorEvent *protocoltypes.MonitorGroup_EventMonitor
-
-				switch e := evt.(type) {
-				case ipfsutil.EvtPubSubTopic:
-					// handle this event
-					monitorEvent = monitorHandlePubsubEvent(&e, s.host)
-				case tinder.EvtDriverMonitor:
-					// check if we already know this peer in case of found peer
-					newMS := ipfsutil.NewMultiaddrs(e.AddrInfo.Addrs)
-					if ms, ok := cachedFoundPeers[e.AddrInfo.ID]; ok {
-						if ipfsutil.MultiaddrIsEqual(ms, newMS) {
-							continue
-						}
-					}
-
-					cachedFoundPeers[e.AddrInfo.ID] = newMS
-					monitorEvent = monitorHandleDiscoveryEvent(&e, s.host)
-				default:
-					monitorEvent = &protocoltypes.MonitorGroup_EventMonitor{
-						Type: protocoltypes.TypeEventMonitorUndefined,
-					}
-				}
-
-				switch monitorEvent.Type {
-				case protocoltypes.TypeEventMonitorPeerFound:
-					s.logger.Debug(TyberEventTinderPeerFound, tyber.FormatEventLogFields(s.ctx, []tyber.Detail{
-						{Name: "Topic", Description: monitorEvent.PeerFound.Topic},
-						{Name: "PeerID", Description: monitorEvent.PeerFound.PeerID},
-						{Name: "DriverName", Description: monitorEvent.PeerFound.DriverName},
-						{Name: "Maddrs", Description: fmt.Sprint(monitorEvent.PeerFound.Maddrs)},
-					})...)
-				case protocoltypes.TypeEventMonitorPeerJoin:
-					s.logger.Debug(TyberEventTinderPeerJoined, tyber.FormatEventLogFields(s.ctx, []tyber.Detail{
-						{Name: "Topic", Description: monitorEvent.PeerJoin.Topic},
-						{Name: "PeerID", Description: monitorEvent.PeerJoin.PeerID},
-						{Name: "IsSelf", Description: fmt.Sprint(monitorEvent.PeerJoin.IsSelf)},
-						{Name: "Maddrs", Description: fmt.Sprint(monitorEvent.PeerJoin.Maddrs)},
-					})...)
-				case protocoltypes.TypeEventMonitorPeerLeave:
-					s.logger.Debug(TyberEventTinderPeerLeft, tyber.FormatEventLogFields(s.ctx, []tyber.Detail{
-						{Name: "Topic", Description: monitorEvent.PeerLeave.Topic},
-						{Name: "PeerID", Description: monitorEvent.PeerLeave.PeerID},
-						{Name: "IsSelf", Description: fmt.Sprint(monitorEvent.PeerLeave.IsSelf)},
-					})...)
-				}
-			}
-		}
-	}()
 }
 
 func (s *service) startGroupDeviceMonitor() {

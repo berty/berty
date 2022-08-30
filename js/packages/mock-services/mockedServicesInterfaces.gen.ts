@@ -101,10 +101,6 @@ export interface IProtocolServiceMock {
 		beapi.protocol.GroupDeviceStatus.IRequest,
 		beapi.protocol.GroupDeviceStatus.IReply
 	>
-	MonitorGroup: ResponseStreamMock<
-		beapi.protocol.MonitorGroup.IRequest,
-		beapi.protocol.MonitorGroup.IReply
-	>
 	DebugListGroups: ResponseStreamMock<
 		beapi.protocol.DebugListGroups.IRequest,
 		beapi.protocol.DebugListGroups.IReply

@@ -17,7 +17,6 @@
     - [AppMessage](#berty.messenger.v1.AppMessage)
     - [AppMessage.Acknowledge](#berty.messenger.v1.AppMessage.Acknowledge)
     - [AppMessage.GroupInvitation](#berty.messenger.v1.AppMessage.GroupInvitation)
-    - [AppMessage.MonitorMetadata](#berty.messenger.v1.AppMessage.MonitorMetadata)
     - [AppMessage.ReplyOptions](#berty.messenger.v1.AppMessage.ReplyOptions)
     - [AppMessage.SetGroupInfo](#berty.messenger.v1.AppMessage.SetGroupInfo)
     - [AppMessage.SetUserInfo](#berty.messenger.v1.AppMessage.SetUserInfo)
@@ -303,14 +302,6 @@ AppMessage is the app layer format
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | link | [string](#string) |  | TODO: optimize message size |
-
-<a name="berty.messenger.v1.AppMessage.MonitorMetadata"></a>
-
-### AppMessage.MonitorMetadata
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| event | [berty.protocol.v1.MonitorGroup.EventMonitor](#berty.protocol.v1.MonitorGroup.EventMonitor) |  |  |
 
 <a name="berty.messenger.v1.AppMessage.ReplyOptions"></a>
 
@@ -1644,7 +1635,6 @@ status events
 | TypeSetUserInfo | 5 |  |
 | TypeAcknowledge | 6 |  |
 | TypeReplyOptions | 7 |  |
-| TypeMonitorMetadata | 100 | these shouldn&#39;t be sent on the network |
 
 <a name="berty.messenger.v1.BertyLink.Kind"></a>
 

@@ -2,10 +2,6 @@ package bertymessenger
 
 import (
 	"context"
-	"fmt"
-	"io"
-	"sync/atomic"
-	"time"
 
 	// nolint:staticcheck // cannot use the new protobuf API while keeping gogoproto
 	"github.com/golang/protobuf/proto"
@@ -23,82 +19,105 @@ import (
 )
 
 func (svc *service) manageSubscriptions() {
-	sub := func() {
+	logger := svc.logger.Named("sub")
+
+	subscribe := func() {
+		svc.logger.Info("starting group subscription")
+
 		svc.subsMutex.Lock()
 		defer svc.subsMutex.Unlock()
+
 		if svc.cancelSubsCtx != nil {
-			svc.logger.Error("sub to known groups already running")
+			logger.Error("sub to known groups already running")
 			return
 		}
+
 		ctx, cancel := context.WithCancel(svc.ctx)
 		svc.cancelSubsCtx = cancel
 		svc.subsCtx = ctx
 
 		var tyberErr error
-		tyberCtx, _, endSection := tyber.Section(context.TODO(), svc.logger, "Subscribing to known groups")
+		tyberCtx, _, endSection := tyber.Section(context.TODO(), logger, "Subscribing to known groups")
 		defer func() { endSection(tyberErr, "") }()
 
 		for groupPK := range svc.groupsToSubTo {
 			gpkb, err := messengerutil.B64DecodeBytes(groupPK)
 			if err != nil {
+				logger.Error("unable subscribe, decode error", zap.String("gpk", groupPK), zap.Error(err))
 				tyberErr = multierr.Append(tyberErr, err)
 				continue
 			}
+
 			if err := svc.subscribeToGroup(ctx, tyberCtx, gpkb); err != nil {
+				if !errcode.Has(err, errcode.ErrBertyAccountAlreadyOpened) {
+					logger.Error("unable subscribe to group", zap.String("gpk", groupPK), zap.Error(err))
+				}
 				tyberErr = multierr.Append(tyberErr, err)
 				continue
 			}
+
+			svc.logger.Debug("subscribe to group success", zap.String("gpk", groupPK))
 		}
 	}
 
-	currentState := svc.lcmanager.GetCurrentState()
-	if currentState == lifecycle.StateActive {
-		sub()
-	}
-	for {
-		if !svc.lcmanager.WaitForStateChange(svc.ctx, currentState) {
-			svc.closeSubscriptions()
+	unsubscribe := func() {
+		logger.Info("closing all group subscriptions")
+
+		svc.subsMutex.Lock()
+		defer svc.subsMutex.Unlock()
+
+		if svc.subsCtx == nil {
 			return
 		}
 
+		for groupPK := range svc.groupsToSubTo {
+			groupPKBytes, err := messengerutil.B64DecodeBytes(groupPK)
+			if err != nil {
+				logger.Error("unable to close subscriptions, decode error", zap.String("gpk", groupPK), zap.Error(err))
+				continue
+			}
+			if _, err := svc.protocolClient.DeactivateGroup(svc.subsCtx, &protocoltypes.DeactivateGroup_Request{
+				GroupPK: groupPKBytes,
+			}); err != nil {
+				if !errcode.Has(err, errcode.ErrBertyAccount) {
+					logger.Error("unable to deactivate group", zap.String("gpk", groupPK), zap.Error(err))
+				}
+
+				continue
+			}
+		}
+
+		if svc.cancelSubsCtx != nil {
+			svc.cancelSubsCtx()
+		}
+
+		svc.subsCtx = nil
+		svc.cancelSubsCtx = nil
+	}
+
+	// start in inactive state, which should trigger the `startSubscription`
+	// method naturally when switching to active state at application startup
+	currentState := lifecycle.StateInactive
+	for {
+		if !svc.lcmanager.WaitForStateChange(svc.ctx, currentState) {
+			break // leave the loop, context has expired
+		}
+
+		// update current state
 		currentState = svc.lcmanager.GetCurrentState()
 
 		switch currentState {
 		case lifecycle.StateActive:
-			sub()
+			subscribe()
 		case lifecycle.StateInactive:
-			svc.closeSubscriptions()
-		}
-	}
-}
-
-func (svc *service) closeSubscriptions() {
-	svc.subsMutex.Lock()
-	defer svc.subsMutex.Unlock()
-
-	if svc.subsCtx == nil {
-		return
-	}
-
-	for groupPK := range svc.groupsToSubTo {
-		groupPKBytes, err := messengerutil.B64DecodeBytes(groupPK)
-		if err != nil {
-			svc.logger.Error("failed to decode group pk", zap.Error(err))
-			continue
-		}
-		if _, err := svc.protocolClient.DeactivateGroup(svc.subsCtx, &protocoltypes.DeactivateGroup_Request{
-			GroupPK: groupPKBytes,
-		}); err != nil {
-			svc.logger.Error("failed to deactivate group", zap.Error(err))
-			continue
+			unsubscribe()
 		}
 	}
 
-	if svc.cancelSubsCtx != nil {
-		svc.cancelSubsCtx()
+	// if we are in any other state than inactive, close subscription
+	if currentState != lifecycle.StateInactive {
+		unsubscribe()
 	}
-	svc.subsCtx = nil
-	svc.cancelSubsCtx = nil
 }
 
 func (svc *service) subscribeToMetadata(ctx, tyberCtx context.Context, gpkb []byte) error {
@@ -205,62 +224,6 @@ func (svc *service) subscribeToMessages(ctx, tyberCtx context.Context, gpkb []by
 	return nil
 }
 
-var monitorCounter uint64
-
-func (svc *service) subscribeToGroupMonitor(ctx context.Context, groupPK []byte) error {
-	cl, err := svc.protocolClient.MonitorGroup(ctx, &protocoltypes.MonitorGroup_Request{
-		GroupPK: groupPK,
-	})
-	if err != nil {
-		return fmt.Errorf("unable to monitor group: %w", err)
-	}
-
-	go func() {
-		for {
-			seqid := atomic.AddUint64(&monitorCounter, 1)
-			evt, err := cl.Recv()
-			switch err {
-			case nil:
-			// everything fine
-			case io.EOF:
-				return
-			case context.Canceled, context.DeadlineExceeded:
-				svc.logger.Warn("monitoring group interrupted", zap.Error(err))
-				return
-			default:
-				svc.logger.Error("error while monitoring group", zap.Error(err))
-				return
-			}
-
-			meta := mt.AppMessage_MonitorMetadata{
-				Event: evt.Event,
-			}
-
-			payload, err := proto.Marshal(&meta)
-			if err != nil {
-				svc.logger.Error("unable to marshal event")
-				continue
-			}
-
-			cid := fmt.Sprintf("__monitor-group-%d", seqid)
-			i := &mt.Interaction{
-				CID:                   cid,
-				Type:                  mt.AppMessage_TypeMonitorMetadata,
-				ConversationPublicKey: messengerutil.B64EncodeBytes(evt.GetGroupPK()),
-				Payload:               payload,
-				SentDate:              messengerutil.TimestampMs(time.Now()),
-			}
-
-			err = svc.dispatcher.StreamEvent(mt.StreamEvent_TypeInteractionUpdated, &mt.StreamEvent_InteractionUpdated{Interaction: i}, true)
-			if err != nil {
-				svc.logger.Error("unable to dispatch monitor event")
-			}
-		}
-	}()
-
-	return nil
-}
-
 func (svc *service) subscribeToGroup(ctx, tyberCtx context.Context, gpkb []byte) error {
 	tyberCtx, newTrace := tyber.ContextWithTraceID(tyberCtx)
 	if newTrace {
@@ -272,12 +235,6 @@ func (svc *service) subscribeToGroup(ctx, tyberCtx context.Context, gpkb []byte)
 		GroupPK: gpkb,
 	}); err != nil {
 		return errcode.ErrGroupActivate.Wrap(err)
-	}
-
-	if svc.isGroupMonitorEnabled {
-		if err := svc.subscribeToGroupMonitor(ctx, gpkb); err != nil {
-			return err
-		}
 	}
 
 	if err := svc.subscribeToMetadata(ctx, tyberCtx, gpkb); err != nil {

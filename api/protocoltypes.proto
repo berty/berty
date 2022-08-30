@@ -93,9 +93,6 @@ service ProtocolService {
   // GroupDeviceStatus monitor device status
   rpc GroupDeviceStatus(GroupDeviceStatus.Request) returns (stream GroupDeviceStatus.Reply);
 
-  // Monitor Group events
-  rpc MonitorGroup(MonitorGroup.Request) returns (stream MonitorGroup.Reply);
-
   rpc DebugListGroups (DebugListGroups.Request) returns (stream DebugListGroups.Reply);
 
   rpc DebugInspectGroupStore (DebugInspectGroupStore.Request) returns (stream DebugInspectGroupStore.Reply);
@@ -1033,81 +1030,6 @@ message GroupDeviceStatus {
     bytes event = 2;
   }
 }
-
-message MonitorGroup {
-  enum TypeEventMonitor {
-    TypeEventMonitorUndefined = 0;
-    TypeEventMonitorAdvertiseGroup = 1;
-    TypeEventMonitorPeerFound = 2;
-    TypeEventMonitorPeerJoin = 3;
-    TypeEventMonitorPeerLeave = 4;
-  }
-
-  message EventMonitorAdvertiseGroup {
-    // local peer id advertised
-    string peer_id = 1 [(gogoproto.customname) = "PeerID"];
-    // maddrs should describe peer maddrs
-    repeated string maddrs = 2;
-    // driver_name used to advertise the peer
-    string driver_name = 3;
-    // event topic
-    string topic = 4;
-  }
-
-  message EventMonitorPeerFound {
-    // peer_id of the peer in this context
-    string peer_id = 1 [(gogoproto.customname) = "PeerID"];
-    // maddrs of the peer in this context
-    repeated string maddrs = 2;
-    // driver_name used to found the peer
-    string driver_name = 3;
-    // event topic
-    string topic = 4;
-  }
-
-  message EventMonitorPeerJoin {
-    // peer_id of the peer in this context
-    string peer_id = 1 [(gogoproto.customname) = "PeerID"];
-    // maddrs of the peer in this context
-    repeated string maddrs = 2;
-    // event topic
-    string topic = 3;
-    // is_self indecitate if the given peer is you
-    bool is_self = 4;
-  }
-
-  message EventMonitorPeerLeave {
-    // peer_id of the peer in this context
-    string peer_id = 1 [(gogoproto.customname) = "PeerID"];
-    // event topic
-    string topic = 3;
-    // is_self indecitate if the given peer is you
-    bool is_self = 4;
-  }
-
-  message EventMonitor {
-    TypeEventMonitor type = 1;
-
-    EventMonitorAdvertiseGroup advertise_group = 2;
-    EventMonitorPeerFound peer_found = 3;
-    EventMonitorPeerJoin peer_join = 4;
-    EventMonitorPeerLeave peer_leave = 5;
-  }
-
-  message Request {
-    // filter_group_pk, if set, will filter event by group PK
-    bytes group_pk = 1 [(gogoproto.customname) = "GroupPK"];
-  }
-
-  message Reply {
-    // monitor event
-    EventMonitor event = 1;
-
-    // group_pk is the identifier of the group
-    bytes group_pk = 2 [(gogoproto.customname) = "GroupPK"];
-  }
-}
-
 
 message DebugListGroups {
   message Request {
