@@ -325,7 +325,11 @@ func (s *service) Close() error {
 			err = multierr.Append(err, subErr)
 			continue
 		}
-		err = multierr.Append(err, s.deactivateGroup(pk))
+
+		derr := s.deactivateGroup(pk)
+		if derr != nil && !errcode.Has(derr, errcode.ErrBertyAccount) {
+			err = multierr.Append(derr, subErr)
+		}
 	}
 
 	err = multierr.Append(err, s.closeBertyAccount())

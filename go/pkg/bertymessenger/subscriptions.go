@@ -2,7 +2,6 @@ package bertymessenger
 
 import (
 	"context"
-	"time"
 
 	// nolint:staticcheck // cannot use the new protobuf API while keeping gogoproto
 	"github.com/golang/protobuf/proto"
@@ -20,8 +19,6 @@ import (
 )
 
 func (svc *service) manageSubscriptions() {
-	const switchDelay = time.Second
-
 	logger := svc.logger.Named("sub")
 
 	subscribe := func() {
@@ -46,20 +43,20 @@ func (svc *service) manageSubscriptions() {
 		for groupPK := range svc.groupsToSubTo {
 			gpkb, err := messengerutil.B64DecodeBytes(groupPK)
 			if err != nil {
-				logger.Error("unable subscribe, decode error", zap.String("gpk", string(groupPK)), zap.Error(err))
+				logger.Error("unable subscribe, decode error", zap.String("gpk", groupPK), zap.Error(err))
 				tyberErr = multierr.Append(tyberErr, err)
 				continue
 			}
 
 			if err := svc.subscribeToGroup(ctx, tyberCtx, gpkb); err != nil {
 				if !errcode.Has(err, errcode.ErrBertyAccountAlreadyOpened) {
-					logger.Error("unable subscribe to group", zap.String("gpk", string(groupPK)), zap.Error(err))
+					logger.Error("unable subscribe to group", zap.String("gpk", groupPK), zap.Error(err))
 				}
 				tyberErr = multierr.Append(tyberErr, err)
 				continue
 			}
 
-			svc.logger.Debug("subscribe to group success", zap.String("gpk", string(groupPK)))
+			svc.logger.Debug("subscribe to group success", zap.String("gpk", groupPK))
 		}
 	}
 
@@ -76,14 +73,14 @@ func (svc *service) manageSubscriptions() {
 		for groupPK := range svc.groupsToSubTo {
 			groupPKBytes, err := messengerutil.B64DecodeBytes(groupPK)
 			if err != nil {
-				logger.Error("unable to close subscriptions, decode error", zap.String("gpk", string(groupPK)), zap.Error(err))
+				logger.Error("unable to close subscriptions, decode error", zap.String("gpk", groupPK), zap.Error(err))
 				continue
 			}
 			if _, err := svc.protocolClient.DeactivateGroup(svc.subsCtx, &protocoltypes.DeactivateGroup_Request{
 				GroupPK: groupPKBytes,
 			}); err != nil {
 				if !errcode.Has(err, errcode.ErrBertyAccount) {
-					logger.Error("unable to deactivate group", zap.String("gpk", string(groupPK)), zap.Error(err))
+					logger.Error("unable to deactivate group", zap.String("gpk", groupPK), zap.Error(err))
 				}
 
 				continue

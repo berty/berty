@@ -83,12 +83,13 @@ func (s *service) closeBertyAccount() error {
 	s.lock.Lock()
 	defer s.lock.Unlock()
 
-	if err := s.accountGroup.Close(); err != nil {
+	err := s.accountGroup.Close()
+	if err != nil {
 		s.logger.Error("unable to close acount group", zap.Error(err))
 	}
 
 	delete(s.openedGroups, s.accountGroup.Group().GroupIDAsString())
-	return nil
+	return err
 }
 
 func (s *service) activateGroup(ctx context.Context, pk crypto.PubKey, localOnly bool) error {
