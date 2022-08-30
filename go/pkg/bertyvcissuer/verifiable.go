@@ -53,9 +53,7 @@ func (i *VCIssuer) initContextStore() error {
 	return nil
 }
 
-func (i *VCIssuer) createSignedProof(bertyID string, identifier string) ([]byte, error) {
-	now := time.Now()
-
+func (i *VCIssuer) CreateSignedProofForPeriod(bertyID string, identifier string, issued time.Time, expired time.Time) ([]byte, error) {
 	vc := &verifiable.Credential{
 		Context: []string{
 			"https://www.w3.org/2018/credentials/v1",
@@ -71,8 +69,8 @@ func (i *VCIssuer) createSignedProof(bertyID string, identifier string) ([]byte,
 			ID: i.issuerID,
 		},
 		Proofs:  []verifiable.Proof{},
-		Issued:  util.NewTime(now),
-		Expired: util.NewTime(now.AddDate(1, 0, 0)),
+		Issued:  util.NewTime(issued),
+		Expired: util.NewTime(expired),
 		Schemas: []verifiable.TypedID{},
 	}
 
@@ -89,4 +87,10 @@ func (i *VCIssuer) createSignedProof(bertyID string, identifier string) ([]byte,
 	}
 
 	return []byte(jws), nil
+}
+
+func (i *VCIssuer) CreateSignedProof(bertyID string, identifier string) ([]byte, error) {
+	now := time.Now()
+
+	return i.CreateSignedProofForPeriod(bertyID, identifier, now, now.AddDate(1, 0, 0))
 }

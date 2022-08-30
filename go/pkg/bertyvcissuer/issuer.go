@@ -450,7 +450,7 @@ func (i *VCIssuer) proof(w http.ResponseWriter, r *http.Request) {
 		code := r.PostForm.Get(ParamCode)
 
 		if code == state.Code {
-			signedProof, err := i.createSignedProof(state.BertyLink, state.Identifier)
+			signedProof, err := i.CreateSignedProof(state.BertyLink, state.Identifier)
 			if err != nil {
 				i.error(err, w, r)
 				return

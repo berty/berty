@@ -1,0 +1,14 @@
+type: google.api.Service
+config_version: 3
+
+http:
+ rules:
+ - selector: berty.directory.v1.DirectoryService.Register
+   post: /berty.directory.v1/DirectoryService/Register
+   body: "*"
+ - selector: berty.directory.v1.DirectoryService.Query
+   post: /berty.directory.v1/DirectoryService/Query
+   body: "*"
+ - selector: berty.directory.v1.DirectoryService.Unregister
+   post: /berty.directory.v1/DirectoryService/Unregister
+   body: "*"
