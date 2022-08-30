@@ -1,3 +1,4 @@
+import faker from '@faker-js/faker'
 import Long from 'long'
 import React, { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -83,16 +84,14 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 					const medias = [...addedMedias, ...additionalMedia].filter(
 						m => m?.cid,
 					) as beapi.messenger.IMedia[]
-					const reply = await messengerClient.interact({
-						conversationPublicKey: convPK,
-						type: beapi.messenger.AppMessage.Type.TypeUserMessage,
-						payload: buf,
-						mediaCids: medias.map(media => media.cid) as string[],
-						targetCid: activeReplyInte?.cid,
-					})
+
+					/* Optimistic cid */
+					const optimisticCid = faker.datatype.uuid()
+
+					/* Optimistic interaction */
 					const optimisticInteraction: beapi.messenger.IInteraction = {
 						medias,
-						cid: reply.cid,
+						cid: optimisticCid,
 						conversationPublicKey: convPK,
 						isMine: true,
 						type: beapi.messenger.AppMessage.Type.TypeUserMessage,
@@ -100,14 +99,35 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 						targetCid: activeReplyInte?.cid,
 						sentDate: Long.fromNumber(Date.now()).toString() as unknown as Long,
 					}
+
+					/* Add optimistic interaction to the store */
 					dispatch({
 						type: 'messenger/InteractionUpdated',
 						payload: { interaction: optimisticInteraction },
 					})
+
 					dispatch(removeActiveReplyInteraction({ convPK }))
 					dispatch(resetChatInput(convPK))
 					setMessage('')
 					playSound('messageSent')
+
+					/* Real interact flow */
+					messengerClient.interact({
+						conversationPublicKey: convPK,
+						type: beapi.messenger.AppMessage.Type.TypeUserMessage,
+						payload: buf,
+						mediaCids: medias.map(media => media.cid) as string[],
+						targetCid: activeReplyInte?.cid,
+					})
+
+					/* Delete optimistic interaction */
+					dispatch({
+						type: 'messenger/InteractionDeleted',
+						payload: {
+							cid: optimisticCid,
+							conversationPublicKey: convPK,
+						},
+					})
 				} catch (e) {
 					console.warn('e sending message:', e)
 					setSending(false)

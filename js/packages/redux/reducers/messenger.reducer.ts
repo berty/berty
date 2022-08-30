@@ -391,6 +391,7 @@ const slice = createSlice({
 		builder.addCase(
 			messengerActions[beapi.messenger.StreamEvent.Type.TypeInteractionDeleted],
 			(state, { payload }) => {
+				/* console.log('InteractionDeleted', payload.cid) */
 				if (!(payload.conversationPublicKey && payload.cid)) {
 					console.warn('InteractionDeleted action without id(s)', payload)
 					return
@@ -400,9 +401,15 @@ const slice = createSlice({
 					payload.conversationPublicKey,
 				)
 				if (!bucket) {
+					console.warn('InteractionDeleted no bucket found')
 					return
 				}
-				interactionsAdapter.removeOne(bucket.interactions, payload.cid)
+				interactionsBucketsAdapter.updateOne(state.interactionsBuckets, {
+					id: bucket.conversationPublicKey,
+					changes: {
+						interactions: interactionsAdapter.removeOne(bucket.interactions, payload.cid),
+					},
+				})
 			},
 		)
 		builder.addCase(
@@ -437,6 +444,7 @@ const slice = createSlice({
 
 				const inte = parseInteraction(payload.interaction)
 
+				/* Change optimisticCid into real cid */
 				interactionsBucketsAdapter.updateOne(state.interactionsBuckets, {
 					id: bucket.conversationPublicKey,
 					changes: {
