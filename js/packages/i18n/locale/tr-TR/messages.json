@@ -117,6 +117,12 @@
 			},
 			"input-placeholder": "Arama yap",
 			"no-contacts": "Şimdilik herhangi bir kişi veya chat'in yok",
+			"no-network": {
+				"title": "",
+				"description": "",
+				"cancel": "",
+				"activate": ""
+			},
 			"search": {
 				"no-results": "Sonuç bulunamadı"
 			},
