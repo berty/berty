@@ -117,6 +117,12 @@
 			},
 			"input-placeholder": "Căutare după cuvânt cheie",
 			"no-contacts": "Nu ai niciun contact sau conversații încă",
+			"no-network": {
+				"title": "",
+				"description": "",
+				"cancel": "",
+				"activate": ""
+			},
 			"search": {
 				"no-results": "Niciun rezultat găsit"
 			},
