@@ -117,6 +117,12 @@
 			},
 			"input-placeholder": "キーワードを検索",
 			"no-contacts": "連絡先やチャットはまだありません",
+			"no-network": {
+				"title": "",
+				"description": "",
+				"cancel": "",
+				"activate": ""
+			},
 			"search": {
 				"no-results": "結果はありません"
 			},
