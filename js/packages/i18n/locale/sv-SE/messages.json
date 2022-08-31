@@ -117,6 +117,12 @@
 			},
 			"input-placeholder": "Sökord",
 			"no-contacts": "Du har inga kontakter eller chatter ännu",
+			"no-network": {
+				"title": "",
+				"description": "",
+				"cancel": "",
+				"activate": ""
+			},
 			"search": {
 				"no-results": "Inga resultat hittades"
 			},
