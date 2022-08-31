@@ -117,6 +117,12 @@
 			},
 			"input-placeholder": "搜索關鍵詞",
 			"no-contacts": "您還沒有任何聯繫人或聊天",
+			"no-network": {
+				"title": "",
+				"description": "",
+				"cancel": "",
+				"activate": ""
+			},
 			"search": {
 				"no-results": "未找到結果"
 			},
