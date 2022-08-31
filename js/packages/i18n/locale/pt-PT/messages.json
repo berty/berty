@@ -117,6 +117,12 @@
 			},
 			"input-placeholder": "Pesquisar palavra-chave",
 			"no-contacts": "Ainda não tem nenhum contacto ou chat",
+			"no-network": {
+				"title": "",
+				"description": "",
+				"cancel": "",
+				"activate": ""
+			},
 			"search": {
 				"no-results": "Não foram encontrados resultados"
 			},
