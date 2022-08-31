@@ -117,6 +117,12 @@
 			},
 			"input-placeholder": "Zoek op trefwoord",
 			"no-contacts": "Je hebt nog geen contacten of gesprekken",
+			"no-network": {
+				"title": "",
+				"description": "",
+				"cancel": "",
+				"activate": ""
+			},
 			"search": {
 				"no-results": "Geen resultaten gevonden"
 			},
