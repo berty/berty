@@ -117,6 +117,12 @@
 			},
 			"input-placeholder": "Поиск ключевого слова",
 			"no-contacts": "У вас пока нет контактов или чатов",
+			"no-network": {
+				"title": "",
+				"description": "",
+				"cancel": "",
+				"activate": ""
+			},
 			"search": {
 				"no-results": "Ничего не найдено"
 			},
