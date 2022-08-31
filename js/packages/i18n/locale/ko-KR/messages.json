@@ -117,6 +117,12 @@
 			},
 			"input-placeholder": "",
 			"no-contacts": "",
+			"no-network": {
+				"title": "",
+				"description": "",
+				"cancel": "",
+				"activate": ""
+			},
 			"search": {
 				"no-results": "결과 없음"
 			},
