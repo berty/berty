@@ -117,6 +117,12 @@
 			},
 			"input-placeholder": "Cerca parola chiave",
 			"no-contacts": "Non hai ancora contatti o chat",
+			"no-network": {
+				"title": "",
+				"description": "",
+				"cancel": "",
+				"activate": ""
+			},
 			"search": {
 				"no-results": "Nessun risultato trovato"
 			},
