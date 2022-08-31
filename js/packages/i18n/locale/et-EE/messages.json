@@ -117,6 +117,12 @@
 			},
 			"input-placeholder": "Otsingu märgusõna",
 			"no-contacts": "Sul pole veel ühtegi kontakti ega vestlust",
+			"no-network": {
+				"title": "",
+				"description": "",
+				"cancel": "",
+				"activate": ""
+			},
 			"search": {
 				"no-results": "Otsingu vasteid ei leitud"
 			},
