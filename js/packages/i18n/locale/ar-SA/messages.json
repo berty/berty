@@ -117,6 +117,12 @@
 			},
 			"input-placeholder": "البحث عن الكلمات الرئيسية",
 			"no-contacts": "ليس لديك أي جهات اتصال أو محادثة حتى الآن",
+			"no-network": {
+				"title": "",
+				"description": "",
+				"cancel": "",
+				"activate": ""
+			},
 			"search": {
 				"no-results": "لا توجد نتائج"
 			},
