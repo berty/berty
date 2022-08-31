@@ -117,6 +117,12 @@
 			},
 			"input-placeholder": "Išči ključne besede",
 			"no-contacts": "",
+			"no-network": {
+				"title": "",
+				"description": "",
+				"cancel": "",
+				"activate": ""
+			},
 			"search": {
 				"no-results": "Ni zadetkov"
 			},
