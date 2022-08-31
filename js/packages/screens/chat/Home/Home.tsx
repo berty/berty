@@ -1,3 +1,4 @@
+import * as Network from 'expo-network'
 import pickBy from 'lodash/pickBy'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -10,7 +11,6 @@ import { PrimaryFloatingButton } from '@berty/components'
 import { useLayout } from '@berty/components/hooks'
 import { ButtonSettingV2 } from '@berty/components/shared-components'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
-import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
 import {
 	useContactsDict,
@@ -20,14 +20,22 @@ import {
 	useThemeColor,
 	useMessengerClient,
 	useNotificationsInhibitor,
+	useAppDispatch,
+	useAppSelector,
 } from '@berty/hooks'
 import { ScreenFC } from '@berty/navigation'
-import { selectPersistentOptions } from '@berty/redux/reducers/persistentOptions.reducer'
+import {
+	PersistentOptionsKeys,
+	selectNoNetworkPopupSuggested,
+	selectPersistentOptions,
+	setPersistentOption,
+} from '@berty/redux/reducers/persistentOptions.reducer'
 
 import { AddBot } from './components/AddBot'
 import { Conversations } from './components/Conversations'
 import { HomeHeader } from './components/Header'
 import { MultiAccount } from './components/MultiAccount'
+import { NoNetwork } from './components/NoNetwork'
 import { IncomingRequests } from './components/Requests'
 import { SearchComponent } from './components/Search'
 
@@ -49,21 +57,20 @@ export const Home: ScreenFC<'Chat.Home'> = ({ navigation: { navigate } }) => {
 	const conversations = useAllConversations()
 	const hasConversations = conversations.length > 0
 	const [layoutRequests, onLayoutRequests] = useLayout()
-	const [isOnTop, setIsOnTop] = useState<boolean>(false)
-	const [searchText, setSearchText] = useState<string>('')
-	const [refresh, setRefresh] = useState<boolean>(false)
+	const [isOnTop, setIsOnTop] = useState(false)
+	const [searchText, setSearchText] = useState('')
+	const [refresh, setRefresh] = useState(false)
 	const [isAddBot, setIsAddBot] = useState({
 		link: '',
 		displayName: '',
 		isVisible: false,
 	})
 
-	const [isLongPress, setIsLongPress] = useState<boolean>(false)
+	const [isLongPress, setIsLongPress] = useState(false)
 
 	const messengerClient = useMessengerClient()
 
 	const { text, opacity, flex, margin, border } = useStyles()
-	const { scaleSize, scaleHeight } = useAppDimensions()
 	const colors = useThemeColor()
 	const { t } = useTranslation()
 
@@ -88,7 +95,7 @@ export const Home: ScreenFC<'Chat.Home'> = ({ navigation: { navigate } }) => {
 
 	const conversationsDict = useConversationsDict()
 
-	const searchConversations = React.useMemo(
+	const searchConversations = useMemo(
 		() =>
 			searching
 				? pickBy(
@@ -103,13 +110,36 @@ export const Home: ScreenFC<'Chat.Home'> = ({ navigation: { navigate } }) => {
 
 	const contacts = useContactsDict()
 
-	const searchContacts = React.useMemo(
+	const searchContacts = useMemo(
 		() => (searching ? pickBy(contacts, val => searchCheck(val?.displayName)) : {}),
 		[contacts, searchCheck, searching],
 	)
 
-	const searchInteractions = React.useRef<beapi.messenger.IInteraction[]>([])
-	const [earliestResult, setEarliestResult] = React.useState('')
+	const searchInteractions = useRef<beapi.messenger.IInteraction[]>([])
+	const [earliestResult, setEarliestResult] = useState('')
+
+	const dispatch = useAppDispatch()
+	const [noNetwork, setNoNetwork] = useState<boolean>(false)
+	const noNetworkPopupSuggested = useAppSelector(selectNoNetworkPopupSuggested)
+	const handleNetworkChange = React.useCallback(async () => {
+		if (noNetworkPopupSuggested) {
+			return
+		}
+		try {
+			const data = await Network.getNetworkStateAsync()
+
+			if (!data.isConnected || !data.isInternetReachable) {
+				setNoNetwork(true)
+			}
+		} catch (err) {
+			console.error(err)
+		}
+	}, [noNetworkPopupSuggested])
+
+	// effect handle network change, no network popup
+	useEffect(() => {
+		handleNetworkChange()
+	}, [handleNetworkChange, noNetwork, noNetworkPopupSuggested])
 
 	useEffect(() => {
 		let canceled = false
@@ -204,6 +234,19 @@ export const Home: ScreenFC<'Chat.Home'> = ({ navigation: { navigate } }) => {
 					}
 				}}
 			>
+				{!noNetworkPopupSuggested && noNetwork && (
+					<NoNetwork
+						onCancel={() => {
+							setNoNetwork(false)
+							dispatch(
+								setPersistentOption({
+									type: PersistentOptionsKeys.NoNetworkPopupSuggested,
+									payload: true,
+								}),
+							)
+						}}
+					/>
+				)}
 				{!searchText?.length ? (
 					<IncomingRequests items={requests} onLayout={onLayoutRequests} />
 				) : null}
@@ -257,7 +300,7 @@ export const Home: ScreenFC<'Chat.Home'> = ({ navigation: { navigate } }) => {
 							<View style={{ backgroundColor: colors['main-background'] }}>
 								<View style={[flex.justify.center, flex.align.center, margin.top.scale(60)]}>
 									<View>
-										<EmptyChat width={350 * scaleSize} height={350 * scaleHeight} />
+										<EmptyChat width={350} height={350} />
 										<UnifiedText
 											style={[
 												text.align.center,

@@ -26,6 +26,8 @@ PODS:
     - ExpoModulesCore
   - EXMailComposer (11.1.1):
     - ExpoModulesCore
+  - EXNetwork (4.1.1):
+    - ExpoModulesCore
   - Expo (44.0.6):
     - ExpoModulesCore
   - ExpoModulesCore (0.6.5):
@@ -438,6 +440,7 @@ DEPENDENCIES:
   - EXImageLoader (from `../node_modules/expo-image-loader/ios`)
   - EXKeepAwake (from `../node_modules/expo-keep-awake/ios`)
   - EXMailComposer (from `../node_modules/expo-mail-composer/ios`)
+  - EXNetwork (from `../node_modules/expo-network/ios`)
   - Expo (from `../node_modules/expo/ios`)
   - ExpoModulesCore (from `../node_modules/expo-modules-core/ios`)
   - FBLazyVector (from `../node_modules/react-native/Libraries/FBLazyVector`)
@@ -554,6 +557,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/expo-keep-awake/ios"
   EXMailComposer:
     :path: "../node_modules/expo-mail-composer/ios"
+  EXNetwork:
+    :path: "../node_modules/expo-network/ios"
   Expo:
     :path: "../node_modules/expo/ios"
   ExpoModulesCore:
@@ -679,6 +684,7 @@ SPEC CHECKSUMS:
   EXImageLoader: 347b72c2ec2df65120ccec40ea65a4c4f24317ff
   EXKeepAwake: bf48d7f740a5cd2befed6cf9a49911d385c6c47d
   EXMailComposer: 290c110c14c1a022de752e85b8a9eea820a3ee5c
+  EXNetwork: 22ca5c25c0d8584c16d803648c39351d74ab5e9c
   Expo: 534e51e607aba8229293297da5585f4b26f50fa1
   ExpoModulesCore: 32c0ccb47f477d330ee93db72505380adf0de09a
   FBLazyVector: e686045572151edef46010a6f819ade377dfeb4b
