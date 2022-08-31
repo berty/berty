@@ -117,6 +117,12 @@
 			},
 			"input-placeholder": "Kulcsszó kereséshez",
 			"no-contacts": "Egyenlőre nincsenek ismerősei sem beszélgetései",
+			"no-network": {
+				"title": "",
+				"description": "",
+				"cancel": "",
+				"activate": ""
+			},
 			"search": {
 				"no-results": "Nincs találat"
 			},
