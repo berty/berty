@@ -117,6 +117,12 @@
 			},
 			"input-placeholder": "Vyhledat klíčové slovo",
 			"no-contacts": "Zatím nemáte žádné kontakty ani chaty",
+			"no-network": {
+				"title": "",
+				"description": "",
+				"cancel": "",
+				"activate": ""
+			},
 			"search": {
 				"no-results": "Nenalezeny žádné výsledky"
 			},
