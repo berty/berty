@@ -107,8 +107,6 @@ github.com/VividCortex/gohistogram v1.0.0/go.mod h1:Pf5mBqqDxYaXu3hDrrU+w6nw50o/
 github.com/aead/ecdh v0.2.0 h1:pYop54xVaq/CEREFEcukHRZfTdjiWvYIsZDXXrBapQQ=
 github.com/aead/ecdh v0.2.0/go.mod h1:a9HHtXuSo8J1Js1MwLQx2mBhkXMT6YwUmVVEY4tTB8U=
 github.com/aead/siphash v1.0.1/go.mod h1:Nywa3cDsYNNK3gaciGTWPwHt0wlpNV15vwmswBAUSII=
-github.com/aeddi/mobile v0.0.6 h1:9nXV2jWJOTrrouxG539YnheQVa9/G0tdI/9bS5HkGE4=
-github.com/aeddi/mobile v0.0.6/go.mod h1:pe2sM7Uk+2Su1y7u/6Z8KJ24D7lepUjFZbhFOrmDfuQ=
 github.com/afex/hystrix-go v0.0.0-20180502004556-fa1af6a1f4f5/go.mod h1:SkGFH1ia65gfNATL8TAiHDNxPzPdmEL5uirI2Uyuz6c=
 github.com/agl/ed25519 v0.0.0-20170116200512-5312a6153412 h1:w1UutsfOrms1J05zt7ISrnJIXKzwaspym5BTKGx93EI=
 github.com/agl/ed25519 v0.0.0-20170116200512-5312a6153412/go.mod h1:WPjqKcmVOxf0XSf3YxCJs6N6AOSrOx3obionmG7T0y0=
@@ -159,6 +157,8 @@ github.com/berty/go-multiaddr v0.4.2-0.20220126184027-53e56f02fb68 h1:Vzah9UzXtl
 github.com/berty/go-multiaddr v0.4.2-0.20220126184027-53e56f02fb68/go.mod h1:3KAxNkUqLTJ20AAwN4XVX4kZar+bR+gh4zgbfr3SNug=
 github.com/berty/go-sqlcipher/v4 v4.4.3-0.20220810151512-74ea78235b48 h1:tHmYUj9It7qV3PPzg0Z5VRNmFaJaaYiu49fkqyw5NYI=
 github.com/berty/go-sqlcipher/v4 v4.4.3-0.20220810151512-74ea78235b48/go.mod h1:mF2UmIpBnzFeBdu/ypTDb/LdbS0nk0dfSN1WUsWTjMA=
+github.com/berty/mobile v0.0.7 h1:c4UaGa43dCzTCgq2wkWwglbgLe8kLaS95mit7h94SV4=
+github.com/berty/mobile v0.0.7/go.mod h1:pe2sM7Uk+2Su1y7u/6Z8KJ24D7lepUjFZbhFOrmDfuQ=
 github.com/bgentry/speakeasy v0.1.0/go.mod h1:+zsyZBPWlz7T6j88CTgSN5bM796AkVf0kBD4zp0CCIs=
 github.com/blang/semver/v4 v4.0.0 h1:1PFHFE6yCCTv8C1TeyNNarDzntLi7wMI5i/pzqYIsAM=
 github.com/blang/semver/v4 v4.0.0/go.mod h1:IbckMUScFkM3pff0VJDNKRiT6TG/YpiHIM2yvyW5YoQ=
