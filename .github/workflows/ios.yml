@@ -53,6 +53,7 @@ jobs:
     env:
       E2E_TESTING_IOS_DEVICE: iPhone 11
       E2E_TESTING_IOS_VERSION: 15.2
+      CACHE_DIRS: js/android/.gomobile-cache; js/ios/.gomobile-cache; js/ios/.xcodegen-cache
     strategy:
       fail-fast: false
       matrix: ${{fromJson(needs.mac_runner_matrix_builder.outputs.matrix)}}
@@ -60,12 +61,14 @@ jobs:
       - name: Pre-checkout cleanup
         if: ${{ matrix.selfhosted }}
         run: |
-          if [ -d js/ios/.gomobile-cache ]; then
-            mv js/ios/.gomobile-cache $RUNNER_TEMP/.gomobile-cache
-          fi
-          if [ -d js/ios/.xcodegen-cache ]; then
-            mv js/ios/.xcodegen-cache $RUNNER_TEMP/.xcodegen-cache
-          fi
+          cache_dirs=(${CACHE_DIRS//;/ })
+          for cache_dir in ${cache_dirs[@]}; do
+            if [ -d "$cache_dir" ]; then
+              mkdir -p "$RUNNER_TEMP/$cache_dir"
+              rm -rf "$RUNNER_TEMP/$cache_dir"
+              mv "$cache_dir" "$RUNNER_TEMP/$cache_dir"
+            fi
+          done
 
       - name: Checkout
         uses: actions/checkout@v3
@@ -73,20 +76,20 @@ jobs:
           fetch-depth: 1
           persist-credentials: false
 
+      - name: Post-checkout cleanup
+        if: ${{ matrix.selfhosted }}
+        run: |
+          cache_dirs=(${CACHE_DIRS//;/ })
+          for cache_dir in ${cache_dirs[@]}; do
+            if [ -d "$RUNNER_TEMP/$cache_dir" ]; then
+              mv "$RUNNER_TEMP/$cache_dir" "$cache_dir"
+            fi
+          done
+
       - name: Load variables from file
         uses: antifree/json-to-variables@v1.0.1
         with:
           filename: .github/workflows/utils/variables.json
-
-      - name: Post-checkout cleanup
-        if: ${{ matrix.selfhosted }}
-        run: |
-          if [ -d $RUNNER_TEMP/.gomobile-cache ]; then
-            mv $RUNNER_TEMP/.gomobile-cache js/ios/.gomobile-cache
-          fi
-          if [ -d $RUNNER_TEMP/.xcodegen-cache ]; then
-            mv $RUNNER_TEMP/.xcodegen-cache js/ios/.xcodegen-cache
-          fi
 
       - name: Setup asdf
         if: ${{ !matrix.selfhosted }}
