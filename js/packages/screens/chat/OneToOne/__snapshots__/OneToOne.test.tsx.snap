@@ -585,6 +585,23 @@ exports[`Chat.OneToOne renders correctly 1`] = `
                       },
                     ]
                   }
+                />
+                <View
+                  onLayout={[Function]}
+                  style={
+                    Array [
+                      Object {
+                        "flexDirection": "column-reverse",
+                      },
+                      Object {
+                        "transform": Array [
+                          Object {
+                            "scaleY": -1,
+                          },
+                        ],
+                      },
+                    ]
+                  }
                 >
                   <View
                     style={
@@ -649,23 +666,6 @@ exports[`Chat.OneToOne renders correctly 1`] = `
                     </View>
                   </View>
                 </View>
-                <View
-                  onLayout={[Function]}
-                  style={
-                    Array [
-                      Object {
-                        "flexDirection": "column-reverse",
-                      },
-                      Object {
-                        "transform": Array [
-                          Object {
-                            "scaleY": -1,
-                          },
-                        ],
-                      },
-                    ]
-                  }
-                />
                 <View
                   onLayout={[Function]}
                   style={
@@ -813,6 +813,23 @@ exports[`Chat.OneToOne renders correctly 1`] = `
                       },
                     ]
                   }
+                />
+                <View
+                  onLayout={[Function]}
+                  style={
+                    Array [
+                      Object {
+                        "flexDirection": "column-reverse",
+                      },
+                      Object {
+                        "transform": Array [
+                          Object {
+                            "scaleY": -1,
+                          },
+                        ],
+                      },
+                    ]
+                  }
                 >
                   <View
                     style={
@@ -877,23 +894,6 @@ exports[`Chat.OneToOne renders correctly 1`] = `
                     </View>
                   </View>
                 </View>
-                <View
-                  onLayout={[Function]}
-                  style={
-                    Array [
-                      Object {
-                        "flexDirection": "column-reverse",
-                      },
-                      Object {
-                        "transform": Array [
-                          Object {
-                            "scaleY": -1,
-                          },
-                        ],
-                      },
-                    ]
-                  }
-                />
                 <View
                   onLayout={[Function]}
                   style={
@@ -1121,6 +1121,40 @@ exports[`Chat.OneToOne renders correctly 1`] = `
                       },
                     ]
                   }
+                />
+                <View
+                  onLayout={[Function]}
+                  style={
+                    Array [
+                      Object {
+                        "flexDirection": "column-reverse",
+                      },
+                      Object {
+                        "transform": Array [
+                          Object {
+                            "scaleY": -1,
+                          },
+                        ],
+                      },
+                    ]
+                  }
+                />
+                <View
+                  onLayout={[Function]}
+                  style={
+                    Array [
+                      Object {
+                        "flexDirection": "column-reverse",
+                      },
+                      Object {
+                        "transform": Array [
+                          Object {
+                            "scaleY": -1,
+                          },
+                        ],
+                      },
+                    ]
+                  }
                 >
                   <View
                     style={
@@ -1185,23 +1219,6 @@ exports[`Chat.OneToOne renders correctly 1`] = `
                     </View>
                   </View>
                 </View>
-                <View
-                  onLayout={[Function]}
-                  style={
-                    Array [
-                      Object {
-                        "flexDirection": "column-reverse",
-                      },
-                      Object {
-                        "transform": Array [
-                          Object {
-                            "scaleY": -1,
-                          },
-                        ],
-                      },
-                    ]
-                  }
-                />
                 <View
                   onLayout={[Function]}
                   style={
@@ -1379,23 +1396,6 @@ exports[`Chat.OneToOne renders correctly 1`] = `
                     </View>
                   </View>
                 </View>
-                <View
-                  onLayout={[Function]}
-                  style={
-                    Array [
-                      Object {
-                        "flexDirection": "column-reverse",
-                      },
-                      Object {
-                        "transform": Array [
-                          Object {
-                            "scaleY": -1,
-                          },
-                        ],
-                      },
-                    ]
-                  }
-                />
               </View>
             </RCTScrollView>
           </View>
