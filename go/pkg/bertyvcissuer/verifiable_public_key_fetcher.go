@@ -12,11 +12,7 @@ import (
 	"berty.tech/berty/v2/go/pkg/errcode"
 )
 
-func EmbeddedPublicKeyFetcher(issuerID, keyID string) (*verifier.PublicKey, error) {
-	if !strings.HasPrefix(issuerID, "did:key:z6Mk") {
-		return nil, fmt.Errorf("unexpected key format")
-	}
-
+func embeddedPublicKeyFetcher(issuerID string) (*verifier.PublicKey, error) {
 	_, rawData, err := multibase.Decode(issuerID[8:])
 	if err != nil {
 		return nil, err
@@ -31,4 +27,22 @@ func EmbeddedPublicKeyFetcher(issuerID, keyID string) (*verifier.PublicKey, erro
 		Value: rawData[2:],
 		JWK:   nil,
 	}, nil
+}
+
+func EmbeddedPublicKeyFetcher(issuerID, keyID string) (*verifier.PublicKey, error) {
+	if !strings.HasPrefix(issuerID, "did:key:z6Mk") {
+		return nil, fmt.Errorf("unexpected key format")
+	}
+
+	return embeddedPublicKeyFetcher(issuerID)
+}
+
+func EmbeddedPublicKeyFetcherAllowList(allowList []string) func(issuerID, keyID string) (*verifier.PublicKey, error) {
+	return func(issuerID, keyID string) (*verifier.PublicKey, error) {
+		if !strings.HasPrefix(issuerID, "did:key:z6Mk") {
+			return nil, fmt.Errorf("unexpected key format")
+		}
+
+		return embeddedPublicKeyFetcher(issuerID)
+	}
 }

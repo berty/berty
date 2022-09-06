@@ -1,12 +1,13 @@
 b79437c2a9f8c95bd1c75eab1972cdb22f831991  ../api/accounttypes.proto
 5e3b172a92d1a8f333f9a3efea106425a8a234c9  ../api/bertybridge.proto
+50ad9227254b8b0abb09a557feff7954fb8f9d27  ../api/bertydirectory.proto
 762b42ebd2cb8f749d22b014037d69d0f8ad02eb  ../api/bertyreplication.proto
 32a7fc91108297910b332969720c09576e9f938e  ../api/bertyverifiablecreds.proto
-9f42025e90b2e6da94afacf69ec9e5cb0b0d010a  ../api/errcode.proto
+c9a201bb6dc2e1ef5b6fd17f5195b551d17bef05  ../api/errcode.proto
 c314cc3d08e8849bd0693039e42da117c39efef5  ../api/go-internal/handshake.proto
 9b4665f0290b8e94e5ef4b80572a9304f587c2c7  ../api/go-internal/records.proto
 851d354abf878a3afd1e1759511b7b3ce297330f  ../api/go-internal/testutil.proto
 038786285fbde081c2458fb39723f3d8f5648330  ../api/messengertypes.proto
 8a16aed5c26c8c37bb8184d49d192fdce7f26574  ../api/protocoltypes.proto
 429ad083ef1963a77adc439239118d0db65c9d37  ../api/pushtypes.proto
-272c317470083205cb9907c53a68cab8cdb71b68  Makefile
+a0c9fafea6663cd3d17d9869d0393fc1a942083a  Makefile

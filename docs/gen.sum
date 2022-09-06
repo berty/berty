@@ -1,11 +1,13 @@
 b79437c2a9f8c95bd1c75eab1972cdb22f831991  ../api/accounttypes.proto
 e0a1655de0bd86e03bac131c96a7dcd0a616409d  ../api/accounttypes.yaml
 5e3b172a92d1a8f333f9a3efea106425a8a234c9  ../api/bertybridge.proto
+50ad9227254b8b0abb09a557feff7954fb8f9d27  ../api/bertydirectory.proto
+3b73d535305b1b52e0a1a02e5e5c7d9610f121f3  ../api/bertydirectory.yaml
 762b42ebd2cb8f749d22b014037d69d0f8ad02eb  ../api/bertyreplication.proto
 905a4386f317f51d3965a531d39a783c25ad8d0b  ../api/bertyreplication.yaml
 32a7fc91108297910b332969720c09576e9f938e  ../api/bertyverifiablecreds.proto
 c487da32080977a2ec757252b6187633327b5e07  ../api/bertyverifiablecreds.yaml
-9f42025e90b2e6da94afacf69ec9e5cb0b0d010a  ../api/errcode.proto
+c9a201bb6dc2e1ef5b6fd17f5195b551d17bef05  ../api/errcode.proto
 038786285fbde081c2458fb39723f3d8f5648330  ../api/messengertypes.proto
 0bf65c534c7bd4dd9453bfcc828a7be7b2d9dc2f  ../api/messengertypes.yaml
 8a16aed5c26c8c37bb8184d49d192fdce7f26574  ../api/protocoltypes.proto
