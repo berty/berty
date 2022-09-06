@@ -973,7 +973,7 @@ type EventMetadataReceived struct {
 }
 
 func constructorFactoryGroupMetadata(s *BertyOrbitDB, logger *zap.Logger) iface.StoreConstructor {
-	return func(ctx context.Context, ipfs coreapi.CoreAPI, identity *identityprovider.Identity, addr address.Address, options *iface.NewStoreOptions) (iface.Store, error) {
+	return func(ipfs coreapi.CoreAPI, identity *identityprovider.Identity, addr address.Address, options *iface.NewStoreOptions) (iface.Store, error) {
 		g, err := s.getGroupFromOptions(options)
 		if err != nil {
 			return nil, errcode.ErrInvalidInput.Wrap(err)
@@ -1013,9 +1013,12 @@ func constructorFactoryGroupMetadata(s *BertyOrbitDB, logger *zap.Logger) iface.
 			return nil, fmt.Errorf("unable to init emitters: %w", err)
 		}
 
+		ctx, cancel := context.WithCancel(context.Background())
+
 		if replication {
 			options.Index = basestore.NewNoopIndex
-			if err := store.InitBaseStore(ctx, ipfs, identity, addr, options); err != nil {
+			if err := store.InitBaseStore(ctx, cancel, ipfs, identity, addr, options); err != nil {
+				cancel()
 				return nil, errcode.ErrOrbitDBInit.Wrap(err)
 			}
 
@@ -1027,6 +1030,7 @@ func constructorFactoryGroupMetadata(s *BertyOrbitDB, logger *zap.Logger) iface.
 			new(stores.EventReplicated),
 		}, eventbus.BufSize(128))
 		if err != nil {
+			cancel()
 			return nil, fmt.Errorf("unable to subscribe to store events")
 		}
 
@@ -1089,7 +1093,8 @@ func constructorFactoryGroupMetadata(s *BertyOrbitDB, logger *zap.Logger) iface.
 		}()
 
 		options.Index = newMetadataIndex(ctx, g, md.Public(), s.deviceKeystore)
-		if err := store.InitBaseStore(ctx, ipfs, identity, addr, options); err != nil {
+		if err := store.InitBaseStore(ctx, cancel, ipfs, identity, addr, options); err != nil {
+			cancel()
 			return nil, errcode.ErrOrbitDBInit.Wrap(err)
 		}
 

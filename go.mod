@@ -5,7 +5,7 @@ go 1.18
 require (
 	berty.tech/go-ipfs-log v1.9.0
 	berty.tech/go-ipfs-repo-encrypted v1.2.2
-	berty.tech/go-orbit-db v1.18.0
+	berty.tech/go-orbit-db v1.19.0
 	berty.tech/ipfs-webui-packed v1.0.0-v2.11.4-1
 	fyne.io/fyne/v2 v2.1.1
 	github.com/Masterminds/semver v1.5.0
@@ -384,6 +384,7 @@ require (
 
 replace (
 	bazil.org/fuse => bazil.org/fuse v0.0.0-20200117225306-7b5117fecadc // specific version for iOS building
+	berty.tech/go-orbit-db => /home/rems14/go-orbit-db
 
 	github.com/agl/ed25519 => github.com/agl/ed25519 v0.0.0-20170116200512-5312a6153412 // latest commit before the author shutdown the repo; see https://github.com/golang/go/issues/20504
 	github.com/multiformats/go-multiaddr => github.com/gfanton/go-multiaddr v0.7.1-0.20221109002011-e39b3a49e793 // tmp, required for Android SDK30

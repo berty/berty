@@ -23,6 +23,7 @@ import (
 	"berty.tech/berty/v2/go/internal/cryptoutil"
 	"berty.tech/berty/v2/go/internal/datastoreutil"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
+	"berty.tech/berty/v2/go/internal/testutil"
 	orbitdb "berty.tech/go-orbit-db"
 	"berty.tech/go-orbit-db/pubsub/pubsubraw"
 )
@@ -375,6 +376,8 @@ func ConnectInLine(t testing.TB, m libp2p_mocknet.Mocknet) {
 func CreatePeersWithGroupTest(ctx context.Context, t testing.TB, pathBase string, memberCount int, deviceCount int) ([]*mockedPeer, crypto.PrivKey, func()) {
 	t.Helper()
 
+	logger, cleanupLogger := testutil.Logger(t)
+
 	var devKS cryptoutil.DeviceKeystore
 
 	mockedPeers := make([]*mockedPeer, memberCount*deviceCount)
@@ -393,6 +396,7 @@ func CreatePeersWithGroupTest(ctx context.Context, t testing.TB, pathBase string
 	_, cleanuprdvp := ipfsutil.TestingRDVP(ctx, t, rdvp)
 
 	ipfsopts := ipfsutil.TestingAPIOpts{
+		Logger:  logger,
 		Mocknet: mn,
 		RDVPeer: rdvp.Peerstore().PeerInfo(rdvp.ID()),
 	}
@@ -419,6 +423,9 @@ func CreatePeersWithGroupTest(ctx context.Context, t testing.TB, pathBase string
 			mk, cleanupMessageKeystore := cryptoutil.NewInMemMessageKeystore()
 
 			db, err := NewBertyOrbitDB(ctx, ca.API(), &NewOrbitDBOptions{
+				NewOrbitDBOptions: orbitdb.NewOrbitDBOptions{
+					Logger: logger,
+				},
 				DeviceKeystore:  devKS,
 				MessageKeystore: mk,
 			})
@@ -426,7 +433,7 @@ func CreatePeersWithGroupTest(ctx context.Context, t testing.TB, pathBase string
 				t.Fatal(err)
 			}
 
-			gc, err := db.OpenGroup(g, nil)
+			gc, err := db.OpenGroup(ctx, g, nil)
 			if err != nil {
 				t.Fatalf("err: creating new group context, %v", err)
 			}
@@ -472,6 +479,7 @@ func CreatePeersWithGroupTest(ctx context.Context, t testing.TB, pathBase string
 		}
 
 		cleanuprdvp()
+		cleanupLogger()
 
 		_ = rdvp.Close()
 	}
