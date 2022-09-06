@@ -61,11 +61,6 @@ func (s *service) deactivateGroup(pk crypto.PubKey) error {
 		return nil
 	}
 
-	if cg.group.GroupType == protocoltypes.GroupTypeAccount {
-		// @FIXME(gfanton): do not close manually close berty account for now
-		return errcode.ErrBertyAccount.Wrap(fmt.Errorf("cannot manually deactivate berty account"))
-	}
-
 	s.lock.Lock()
 	defer s.lock.Unlock()
 
@@ -79,28 +74,15 @@ func (s *service) deactivateGroup(pk crypto.PubKey) error {
 	return nil
 }
 
-func (s *service) closeBertyAccount() error {
-	s.lock.Lock()
-	defer s.lock.Unlock()
-
-	err := s.accountGroup.Close()
-	if err != nil {
-		s.logger.Error("unable to close acount group", zap.Error(err))
-	}
-
-	delete(s.openedGroups, s.accountGroup.Group().GroupIDAsString())
-	return err
-}
-
 func (s *service) activateGroup(ctx context.Context, pk crypto.PubKey, localOnly bool) error {
 	id, err := pk.Raw()
 	if err != nil {
 		return errcode.ErrSerialization.Wrap(err)
 	}
 
-	cg, err := s.GetContextGroupForID(id)
-	if err == nil && cg != nil {
-		return nil
+	_, err = s.GetContextGroupForID(id)
+	if err != nil && err != errcode.ErrGroupUnknown {
+		return err
 	}
 
 	g, err := s.getGroupForPK(ctx, pk)
@@ -125,24 +107,30 @@ func (s *service) activateGroup(ctx context.Context, pk crypto.PubKey, localOnly
 			}
 		}
 	case protocoltypes.GroupTypeAccount:
-		return errcode.ErrBertyAccountAlreadyOpened
+		localOnly = true
+		if s.accountGroup, err = s.odb.openAccountGroup(ctx, &iface.CreateDBOptions{EventBus: s.odb.EventBus(), LocalOnly: &localOnly}, s.ipfsCoreAPI); err != nil {
+			return err
+		}
+		s.openedGroups[string(id)] = s.accountGroup
+		return nil
 	default:
 		return errcode.ErrInternal.Wrap(fmt.Errorf("unknown group type"))
 	}
 
 	dbOpts := &iface.CreateDBOptions{LocalOnly: &localOnly}
-	gc, err := s.odb.OpenGroup(g, dbOpts)
+	gc, err := s.odb.OpenGroup(ctx, g, dbOpts)
 	if err != nil {
 		return errcode.ErrBertyAccountOpenAccount.Wrap(err)
 	}
 
-	if err := ActivateGroupContext(s.ctx, gc, contactPK); err != nil {
+	if err := gc.ActivateGroupContext(contactPK); err != nil {
+		gc.Close()
 		return errcode.ErrGroupActivate.Wrap(err)
 	}
 
 	s.openedGroups[string(id)] = gc
 
-	TagGroupContextPeers(s.ctx, s.logger, gc, s.ipfsCoreAPI, 42)
+	gc.TagGroupContextPeers(s.ipfsCoreAPI, 42)
 	return nil
 }
 
@@ -160,7 +148,7 @@ func (s *service) GetContextGroupForID(id []byte) (*GroupContext, error) {
 		return cg, nil
 	}
 
-	return nil, errcode.ErrInternal.Wrap(fmt.Errorf("unknown group or not activated yet"))
+	return nil, errcode.ErrGroupUnknown
 }
 
 func reindexGroupDatastore(ctx context.Context, gd *cryptoutil.GroupDatastore, m *MetadataStore, deviceKeystore cryptoutil.DeviceKeystore) error {

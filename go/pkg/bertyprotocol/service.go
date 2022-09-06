@@ -234,7 +234,9 @@ func New(opts Opts) (_ Service, err error) {
 	ctx, _, endSection := tyber.Section(tyber.ContextWithoutTraceID(ctx), opts.Logger, fmt.Sprintf("Initializing ProtocolService version %s", bertyversion.Version))
 	defer func() { endSection(err, "") }()
 
-	dbOpts := &iface.CreateDBOptions{LocalOnly: &opts.LocalOnly}
+	dbOpts := &iface.CreateDBOptions{
+		LocalOnly: &opts.LocalOnly,
+	}
 
 	acc, err := opts.OrbitDB.openAccountGroup(ctx, dbOpts, opts.IpfsCoreAPI)
 	if err != nil {
@@ -310,8 +312,6 @@ func (s *service) IpfsCoreAPI() ipfs_interface.CoreAPI {
 }
 
 func (s *service) Close() error {
-	s.ctxCancel()
-
 	endSection := tyber.SimpleSection(tyber.ContextWithoutTraceID(s.ctx), s.logger, "Closing ProtocolService")
 
 	var err error
@@ -333,12 +333,11 @@ func (s *service) Close() error {
 	// deactivate all groups
 	for _, pk := range pks {
 		derr := s.deactivateGroup(pk)
-		if derr != nil && !errcode.Has(derr, errcode.ErrBertyAccount) {
+		if derr != nil {
 			err = multierr.Append(derr, derr)
 		}
 	}
 
-	err = multierr.Append(err, s.closeBertyAccount())
 	err = multierr.Append(err, s.odb.Close())
 
 	if s.close != nil {
@@ -346,6 +345,8 @@ func (s *service) Close() error {
 	}
 
 	endSection(err)
+
+	s.ctxCancel()
 
 	return err
 }

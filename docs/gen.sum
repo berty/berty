@@ -7,7 +7,7 @@ e0a1655de0bd86e03bac131c96a7dcd0a616409d  ../api/accounttypes.yaml
 905a4386f317f51d3965a531d39a783c25ad8d0b  ../api/bertyreplication.yaml
 32a7fc91108297910b332969720c09576e9f938e  ../api/bertyverifiablecreds.proto
 c487da32080977a2ec757252b6187633327b5e07  ../api/bertyverifiablecreds.yaml
-c9a201bb6dc2e1ef5b6fd17f5195b551d17bef05  ../api/errcode.proto
+486f62176b5670aad95237f29cea11d16cbc9fa1  ../api/errcode.proto
 18f4402787527160b0aacf5524e44cf8c3ac16ad  ../api/messengertypes.proto
 b1a4d391237e859dff4988e16fae4595058d22cb  ../api/messengertypes.yaml
 4b02b0a87caabb590c2c6fee507d0987e5bf5d70  ../api/protocoltypes.proto

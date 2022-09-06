@@ -129,6 +129,7 @@ enum ErrCode {
   ErrGroupActivate = 1307;
   ErrGroupDeactivate = 1308;
   ErrGroupInfo = 1309;
+  ErrGroupUnknown = 1310;
 
   // Event errors
   ErrEventListMetadata = 1400;

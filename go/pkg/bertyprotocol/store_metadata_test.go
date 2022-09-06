@@ -26,9 +26,6 @@ import (
 func TestMetadataStoreSecret_Basic(t *testing.T) {
 	t.Skip("skipping as we don't care about this code now")
 
-	logger, cleanup := testutil.Logger(t)
-	defer cleanup()
-
 	// TODO: handle more cases (more members, more devices...)
 	memberCount := 2
 	deviceCount := 1
@@ -44,8 +41,8 @@ func TestMetadataStoreSecret_Basic(t *testing.T) {
 	msA := peers[0].GC.MetadataStore()
 	msB := peers[1].GC.MetadataStore()
 
-	go WatchNewMembersAndSendSecrets(ctx, logger, peers[0].GC)
-	go WatchNewMembersAndSendSecrets(ctx, logger, peers[1].GC)
+	go peers[0].GC.WatchNewMembersAndSendSecrets()
+	go peers[1].GC.WatchNewMembersAndSendSecrets()
 	go waitForBertyEventType(ctx, t, msA, protocoltypes.EventTypeGroupDeviceSecretAdded, 2, secretsAdded)
 	go waitForBertyEventType(ctx, t, msB, protocoltypes.EventTypeGroupDeviceSecretAdded, 2, secretsAdded)
 	inviteAllPeersToGroup(ctx, t, peers, groupSK)
@@ -532,7 +529,7 @@ func TestMetadataAliasLifecycle(t *testing.T) {
 	g, err := cryptoutil.GetGroupForContact(sk)
 	require.NoError(t, err)
 
-	cg0, err := peers[0].DB.OpenGroup(g, nil)
+	cg0, err := peers[0].DB.OpenGroup(ctx, g, nil)
 	require.NoError(t, err)
 	defer cg0.Close()
 
@@ -553,7 +550,7 @@ func TestMetadataAliasLifecycle(t *testing.T) {
 	g, err = cryptoutil.GetGroupForContact(sk)
 	require.NoError(t, err)
 
-	cg1, err := peers[1].DB.OpenGroup(g, nil)
+	cg1, err := peers[1].DB.OpenGroup(ctx, g, nil)
 	require.NoError(t, err)
 	defer cg1.Close()
 

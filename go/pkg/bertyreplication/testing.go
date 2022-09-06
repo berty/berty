@@ -83,7 +83,7 @@ func NewReplicationMockedPeer(ctx context.Context, t *testing.T, secret []byte, 
 	_ = sk
 
 	db, cleanup := DBForTests(t, zap.NewNop())
-	replServ, cleanupReplMan := TestHelperNewReplicationService(ctx, t, nil, opts.Mocknet, opts.RDVPeer, nil, db)
+	replServ, cleanupReplMan := TestHelperNewReplicationService(ctx, t, opts.Logger, opts.Mocknet, opts.RDVPeer, nil, db)
 
 	return &TestingReplicationPeer{
 			Service: replServ,

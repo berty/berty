@@ -374,7 +374,7 @@ func messageStoreAddMessage(ctx context.Context, g *protocoltypes.Group, md *cry
 }
 
 func constructorFactoryGroupMessage(s *BertyOrbitDB, logger *zap.Logger) iface.StoreConstructor {
-	return func(ctx context.Context, ipfs coreapi.CoreAPI, identity *identityprovider.Identity, addr address.Address, options *iface.NewStoreOptions) (iface.Store, error) {
+	return func(ipfs coreapi.CoreAPI, identity *identityprovider.Identity, addr address.Address, options *iface.NewStoreOptions) (iface.Store, error) {
 		g, err := s.getGroupFromOptions(options)
 		if err != nil {
 			return nil, errcode.ErrInvalidInput.Wrap(err)
@@ -406,23 +406,28 @@ func constructorFactoryGroupMessage(s *BertyOrbitDB, logger *zap.Logger) iface.S
 			deviceCaches: make(map[string]*groupCache),
 		}
 
+		ctx, cancel := context.WithCancel(context.Background())
+
 		go func() {
 			store.processMessageLoop(ctx)
 			logger.Debug("store message process loop ended", zap.Error(ctx.Err()))
 		}()
 
 		if store.emitters.groupMessage, err = store.eventBus.Emitter(new(protocoltypes.GroupMessageEvent)); err != nil {
+			cancel()
 			return nil, errcode.ErrOrbitDBInit.Wrap(err)
 		}
 
 		// for debug/test purpose
 		if store.emitters.groupCacheMessage, err = store.eventBus.Emitter(new(messageItem)); err != nil {
+			cancel()
 			return nil, errcode.ErrOrbitDBInit.Wrap(err)
 		}
 
 		options.Index = basestore.NewNoopIndex
 
-		if err := store.InitBaseStore(ctx, ipfs, identity, addr, options); err != nil {
+		if err := store.InitBaseStore(ctx, cancel, ipfs, identity, addr, options); err != nil {
+			cancel()
 			return nil, errcode.ErrOrbitDBInit.Wrap(err)
 		}
 

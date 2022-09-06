@@ -419,7 +419,7 @@ func testMessageKeyHolderCatchUp(t *testing.T, expectedNewDevices int, isSlow bo
 		devicesPK[i], deviceSecrets[i] = addDummyMemberInMetadataStore(ctx, t, ms1, peer.GC.Group(), peer.GC.MemberPubKey(), true)
 	}
 
-	for range bertyprotocol.FillMessageKeysHolderUsingPreviousData(ctx, peer.GC) {
+	for range peer.GC.FillMessageKeysHolderUsingPreviousData() {
 	}
 
 	gPK, err := peer.GC.Group().GetPubKey()
@@ -476,8 +476,7 @@ func testMessageKeyHolderSubscription(t *testing.T, expectedNewDevices int, isSl
 	devicesPK := make([]crypto.PubKey, expectedNewDevices)
 	deviceSecrets := make([]*protocoltypes.DeviceSecret, expectedNewDevices)
 
-	subCtx, subCancel := context.WithCancel(ctx)
-	ch := bertyprotocol.FillMessageKeysHolderUsingNewData(subCtx, peer.GC)
+	ch := peer.GC.FillMessageKeysHolderUsingNewData()
 
 	for i := 0; i < expectedNewDevices; i++ {
 		devicesPK[i], deviceSecrets[i] = addDummyMemberInMetadataStore(ctx, t, ms1, peer.GC.Group(), peer.GC.MemberPubKey(), true)
@@ -487,7 +486,6 @@ func testMessageKeyHolderSubscription(t *testing.T, expectedNewDevices int, isSl
 	for range ch {
 		i++
 		if i == expectedNewDevices {
-			subCancel()
 			break
 		}
 	}
