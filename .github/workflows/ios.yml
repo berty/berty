@@ -168,7 +168,7 @@ jobs:
           restore-keys: ${{ runner.OS }}-node-${{ env.node_version }}-${{ env.json_cache-versions_node }}-
 
       - name: Cache Bertybridge framework
-        uses: n0izn0iz/mkache@5cedaeaf0b39a9220ae5a815cac8d2a924cee3ef
+        uses: n0izn0iz/mkache@eed9cfe64d00dd64cbb36bec915d41dd6fab9f6c
         if: github.ref != 'refs/heads/master' # this makes sure the VCS_REF is correct on master
         env:
           GOMOBILE_IOS_TARGET: iossimulator
@@ -178,7 +178,7 @@ jobs:
           key: ios-gomobile-bridge-${{ env.go_version }}-${{ env.json_cache-versions_bridgeframework }}
 
       - name: Cache Bertypush framework
-        uses: n0izn0iz/mkache@5cedaeaf0b39a9220ae5a815cac8d2a924cee3ef
+        uses: n0izn0iz/mkache@eed9cfe64d00dd64cbb36bec915d41dd6fab9f6c
         if: github.ref != 'refs/heads/master' # this makes sure the VCS_REF is correct on master
         env:
           GOMOBILE_IOS_TARGET: iossimulator
