@@ -54,8 +54,6 @@ export const UserMessage: React.FC<UserMessageProps> = ({
 			inte={inte}
 			members={members}
 			convKind={convKind}
-			previousMessage={previousMessage}
-			nextMessage={nextMessage}
 			isGroup={isGroup}
 			isFollowedMessage={isFollowedMessage}
 		>
@@ -73,8 +71,6 @@ export const UserMessage: React.FC<UserMessageProps> = ({
 						inte={inte}
 						highlightCid={highlightCid}
 						isFollowedMessage={isFollowedMessage}
-						previousMessage={previousMessage}
-						nextMessage={nextMessage}
 						msgBackgroundColor={msgBackgroundColor}
 						msgTextColor={msgTextColor}
 						msgBorderColor={msgBorderColor || undefined}

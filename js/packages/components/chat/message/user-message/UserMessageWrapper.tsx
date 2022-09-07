@@ -4,7 +4,7 @@ import { View } from 'react-native'
 import beapi from '@berty/api'
 import { MemberAvatar } from '@berty/components/avatars'
 import { useStyles } from '@berty/contexts/styles'
-import { InteractionUserMessage, ParsedInteraction } from '@berty/utils/api'
+import { InteractionUserMessage } from '@berty/utils/api'
 
 const AVATAR_SIZE = 30
 const AVATAR_SPACE_RIGHT = 5
@@ -13,8 +13,6 @@ export const UserMessageWrapper: React.FC<{
 	inte: InteractionUserMessage
 	members?: { [key: string]: beapi.messenger.IMember | undefined }
 	convKind: beapi.messenger.Conversation.Type
-	previousMessage?: ParsedInteraction
-	nextMessage?: ParsedInteraction
 	children: React.ReactNode
 	isGroup: boolean
 	isFollowedMessage: boolean | undefined
