@@ -154,6 +154,7 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 			[sending, setMessage],
 		)
 
+		// Note: Maybe this effect slow down the app
 		useMountEffect(() => {
 			// Saving the draft is debounced because doing encryption + storage on every keystroke takes too much cpu
 			const interval = setInterval(() => {

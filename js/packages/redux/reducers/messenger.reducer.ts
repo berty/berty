@@ -440,7 +440,7 @@ const slice = createSlice({
 				interactionsBucketsAdapter.updateOne(state.interactionsBuckets, {
 					id: bucket.conversationPublicKey,
 					changes: {
-						interactions: interactionsAdapter.upsertOne(bucket.interactions, {
+						interactions: interactionsAdapter.addOne(bucket.interactions, {
 							...inte,
 							reactions: inte.reactions,
 							outOfStoreMessage: !!inte?.outOfStoreMessage,

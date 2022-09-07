@@ -1,4 +1,6 @@
+import faker from '@faker-js/faker'
 import { Icon } from '@ui-kitten/components'
+import Long from 'long'
 import React, { ComponentProps } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ScrollView, View, StatusBar, TouchableOpacity, Platform } from 'react-native'
@@ -10,7 +12,7 @@ import { ButtonSetting } from '@berty/components/shared-components/SettingsButto
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
-import { useContact, useConversation, useThemeColor } from '@berty/hooks'
+import { useAppDispatch, useContact, useConversation, useThemeColor } from '@berty/hooks'
 import { ScreenFC } from '@berty/navigation'
 
 const OneToOneHeader: React.FC<{ contact: any }> = ({ contact }) => {
@@ -43,9 +45,56 @@ const OneToOneBody: React.FC<{
 }> = ({ publicKey, isAccepted, navigation }) => {
 	const { padding } = useStyles()
 	const { t } = useTranslation()
+	const colors = useThemeColor()
+	const dispatch = useAppDispatch()
 
 	return (
 		<View style={[padding.horizontal.medium]}>
+			<ButtonSetting
+				name='Store 100 messages'
+				icon='folder-outline'
+				iconSize={30}
+				iconColor={colors['alt-secondary-background-header']}
+				onPress={() => {
+					if (!publicKey) {
+						console.warn('No available conversation')
+						return
+					}
+					navigation.goBack()
+					setTimeout(async () => {
+						await new Promise<void>(resolve => {
+							let i = 0
+							const interval = setInterval(() => {
+								if (i === 300) {
+									resolve()
+									clearInterval(interval)
+								}
+								const buf = beapi.messenger.AppMessage.UserMessage.encode({
+									body: i.toString(),
+								}).finish()
+
+								/* Optimistic cid */
+								const optimisticCid = faker.datatype.uuid()
+
+								/* Optimistic interaction */
+								const optimisticInteraction: beapi.messenger.IInteraction = {
+									cid: optimisticCid,
+									conversationPublicKey: publicKey,
+									isMine: true,
+									type: beapi.messenger.AppMessage.Type.TypeUserMessage,
+									payload: buf,
+									sentDate: Long.fromNumber(Date.now()).toString() as unknown as Long,
+								} /* Add optimistic interaction to the store */
+								dispatch({
+									type: 'messenger/InteractionUpdated',
+									payload: { interaction: optimisticInteraction },
+								})
+								i++
+							}, 100)
+						})
+					}, 2000)
+				}}
+			/>
 			<ButtonSetting
 				name={t('chat.one-to-one-settings.media-button')}
 				icon='image-outline'
