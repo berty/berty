@@ -13,7 +13,6 @@ import {
 	BootstrapAltDropdown,
 	RelayAltDropdown,
 } from '@berty/components'
-import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useAppDispatch, useSyncNetworkConfigOnScreenRemoved, useThemeColor } from '@berty/hooks'
 import { ScreenFC, useNavigation } from '@berty/navigation'
 import {
@@ -36,6 +35,7 @@ const Proximity: React.FC = () => {
 			{Platform.OS !== 'web' && (
 				<>
 					<MenuToggle
+						accessibilityLabel={t('settings.network.ble-button')}
 						isToggleOn={
 							blePerm === 'granted' &&
 							networkConfig?.bluetoothLe === beapi.account.NetworkConfig.Flag.Enabled
@@ -59,6 +59,7 @@ const Proximity: React.FC = () => {
 			{Platform.OS === 'ios' && (
 				<>
 					<MenuToggle
+						accessibilityLabel={t('settings.network.mc-button')}
 						isToggleOn={
 							blePerm === 'granted' &&
 							networkConfig?.appleMultipeerConnectivity === beapi.account.NetworkConfig.Flag.Enabled
@@ -82,6 +83,7 @@ const Proximity: React.FC = () => {
 			{Platform.OS === 'android' && (
 				<>
 					<MenuToggle
+						accessibilityLabel={t('settings.network.nearby-button')}
 						isToggleOn={
 							blePerm === 'granted' &&
 							networkConfig?.androidNearby === beapi.account.NetworkConfig.Flag.Enabled
@@ -103,6 +105,7 @@ const Proximity: React.FC = () => {
 				</>
 			)}
 			<MenuToggle
+				accessibilityLabel={t('settings.network.mdns-button')}
 				isToggleOn={networkConfig?.mdns === beapi.account.NetworkConfig.Flag.Enabled}
 				onPress={async () => {
 					dispatch(
@@ -123,7 +126,6 @@ const Proximity: React.FC = () => {
 }
 
 const NetworkBody: React.FC = () => {
-	const { scaleSize } = useAppDimensions()
 	const colors = useThemeColor()
 	const { t } = useTranslation()
 	const dispatch = useDispatch()
@@ -133,7 +135,7 @@ const NetworkBody: React.FC = () => {
 		<View style={{ backgroundColor: colors['secondary-background'], flex: 1 }}>
 			<ScrollView
 				bounces={false}
-				contentContainerStyle={{ paddingBottom: 12 * scaleSize }}
+				contentContainerStyle={{ paddingBottom: 12 }}
 				showsVerticalScrollIndicator={false}
 			>
 				{/*
