@@ -2,27 +2,27 @@
   "auth": {
     "services": {
       "rpl": {
-        "name": "",
-        "description": "",
+        "name": "Replicatie",
+        "description": "Deze service zal automatisch je gesprekken repliceren om je apparaat van de meest efficiënte netwerkprestaties te voorzien.",
         "benefitBadge": "Prestaties"
       },
       "psh": {
         "name": "Pushmeldingen",
-        "description": "",
+        "description": "Deze service staat je apparaat toe push-meldingen te ontvangen voor inkomende berichten.",
         "benefitBadge": "Prestaties"
       }
     },
-    "pageTitle": "",
-    "connectButton_one": "",
-    "connectButton_other": "",
+    "pageTitle": "Berty services",
+    "connectButton_one": "Service gebruiken",
+    "connectButton_other": "Geselecteerde services gebruiken",
     "privacyPolicyLabel": "Privacy Beleid"
   },
   "push": {
     "message": {
-      "title": ""
+      "title": "Nieuw bericht"
     },
     "error": {
-      "title": ""
+      "title": "Push decodering is mislukt"
     },
     "voiceMessage": {
       "bodyWithNumberOfMedia_one": "Stuurd een spraakbericht",
@@ -37,7 +37,7 @@
       "bodyWithNumberOfMedia_other": "Verstuur %[1]v foto's"
     },
     "media": {
-      "bodyWithNumberOfMedia_one": "",
+      "bodyWithNumberOfMedia_one": "Verzonden media",
       "bodyWithNumberOfMedia_other": ""
     },
     "reaction": {
