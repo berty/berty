@@ -123,6 +123,7 @@ endif
 	rm -rf ios/build
 	rm -rf ios/Pods
 	rm -rf ios/Frameworks/Bertybridge.xcframework
+	rm -rf ios/Frameworks/Bertypush.xcframework
 	rm -rf ios/vendor
 	rm -rf ios/Berty.xcodeproj
 	rm -rf ios/Berty.xcworkspace
