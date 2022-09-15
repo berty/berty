@@ -8,6 +8,6 @@ c314cc3d08e8849bd0693039e42da117c39efef5  ../api/go-internal/handshake.proto
 9b4665f0290b8e94e5ef4b80572a9304f587c2c7  ../api/go-internal/records.proto
 851d354abf878a3afd1e1759511b7b3ce297330f  ../api/go-internal/testutil.proto
 038786285fbde081c2458fb39723f3d8f5648330  ../api/messengertypes.proto
-8a16aed5c26c8c37bb8184d49d192fdce7f26574  ../api/protocoltypes.proto
+999cb5d5ff2cea24cfc89c01a7e44768bc58fd93  ../api/protocoltypes.proto
 429ad083ef1963a77adc439239118d0db65c9d37  ../api/pushtypes.proto
-a0c9fafea6663cd3d17d9869d0393fc1a942083a  Makefile
+083c726c454766d67ea1b64617565d459dce1b80  Makefile

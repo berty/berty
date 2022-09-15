@@ -1240,6 +1240,7 @@ message SystemInfo {
     int64 uid = 26 [(gogoproto.customname) = "UID"];
     string working_dir = 27;
     string system_username = 28;
+    string build_number = 29;
   }
 }
 

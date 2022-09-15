@@ -13,13 +13,10 @@ CI ?= false
 BUILD_DATE ?= `date +%s`
 VCS_REF ?= `git rev-parse --short HEAD`
 VERSION ?= `go run github.com/mdomke/git-semver/v5`
+CI_BUILD_NUMBER ?= 0000
 
 # must forward ${{ github.run_number }} (or equivalent) as $CI_BUILD_NUMBER
-ifneq ( ,$(CI_BUILD_NUMBER))
-	LDFLAGS ?= -ldflags="-X berty.tech/berty/v2/go/pkg/bertyversion.VcsRef=$(VCS_REF) -X berty.tech/berty/v2/go/pkg/bertyversion.Version=$(VERSION) -X berty.tech/berty/v2/go/pkg/bertyversion.BuildNumber=${CI_BUILD_NUMBER}"
-else
-	LDFLAGS ?= -ldflags="-X berty.tech/berty/v2/go/pkg/bertyversion.VcsRef=$(VCS_REF) -X berty.tech/berty/v2/go/pkg/bertyversion.Version=$(VERSION)"
-endif
+LDFLAGS ?= -ldflags="-X berty.tech/berty/v2/go/pkg/bertyversion.VcsRef=$(VCS_REF) -X berty.tech/berty/v2/go/pkg/bertyversion.Version=$(VERSION) -X berty.tech/berty/v2/go/pkg/bertyversion.BuildNumber=${CI_BUILD_NUMBER}"
 
 # @FIXME(gfanton): on macOS Monterey (12.0.x) we currently need to set the
 # environment variable `MallocNanoZone` to 0 to avoid a SIGABRT or SIGSEGV
