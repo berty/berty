@@ -1,8 +1,8 @@
 {
 	"onboarding": {
 		"getstarted": {
-			"screenTitle": "",
-			"title": "",
+			"screenTitle": "Chroń swoją prywatność",
+			"title": "Chroń swoją prywatność",
 			"desc": "",
 			"create-button": "",
 			"import-button": ""
@@ -70,8 +70,8 @@
 					},
 					"buttons": {
 						"add": "Dodaj",
-						"edit": "",
-						"delete": ""
+						"edit": "Edytuj",
+						"delete": "Usuń"
 					},
 					"multiaddress": "",
 					"alias": ""
@@ -104,12 +104,12 @@
 			"title": "",
 			"desc": "",
 			"first-button": "Anuluj",
-			"second-button": ""
+			"second-button": "Tak"
 		}
 	},
 	"main": {
 		"home": {
-			"title": "",
+			"title": "Berty",
 			"requests": {
 				"title": "Prośby",
 				"accept": "Akceptuj",
@@ -118,10 +118,10 @@
 			"input-placeholder": "Szukaj słowa",
 			"no-contacts": "Nie masz jeszcze żadnych kontaktów ani czatu",
 			"no-network": {
-				"title": "",
+				"title": "Nie znaleziono sieci!",
 				"description": "",
-				"cancel": "",
-				"activate": ""
+				"cancel": "NIE TERAZ",
+				"activate": "AKTYWUJ"
 			},
 			"search": {
 				"no-results": "Nie znaleziono wyników"
@@ -135,12 +135,12 @@
 				"add-members": "Dodaj członków",
 				"group-info": "Informacje o grupie",
 				"search-placeholder": "Szukaj",
-				"continue": "",
+				"continue": "Kontynuuj",
 				"create-group": ""
 			},
 			"create-group-finalize": {
-				"placeholder": "",
-				"about": "",
+				"placeholder": "Nazwa grupy",
+				"about": "O grupach",
 				"first-bullet-point": "",
 				"second-bullet-point": "",
 				"third-bullet-point": "",
@@ -149,7 +149,7 @@
 			},
 			"conversations": {
 				"request-sent": "",
-				"draft": ""
+				"draft": "Szkic: {{message}}"
 			}
 		},
 		"suggestion-display-name-initial": "Kliknij tutaj, aby dodać"
@@ -159,12 +159,12 @@
 			"title": "Ustawienia",
 			"proximity-button": "",
 			"notifications-button": "Powiadomienia",
-			"appearance-button": "",
+			"appearance-button": "Wygląd",
 			"accounts-button": "Konta",
-			"network-button": "",
+			"network-button": "Sieć",
 			"bug-button": "",
 			"about-button": "O Berty",
-			"version-button": "",
+			"version-button": "Wersja: {{version}}",
 			"devtools-button": "Narzędzia Deweloperskie"
 		},
 		"about": {
@@ -201,7 +201,7 @@
 			"request-button": ""
 		},
 		"network": {
-			"title": "",
+			"title": "Sieć",
 			"ble-button": "",
 			"mc-button": "",
 			"nearby-button": "",
@@ -330,7 +330,7 @@
 			"title": ""
 		},
 		"share": {
-			"invite": "",
+			"invite": "Zaproś",
 			"tap-to-scan": "",
 			"create-group": ""
 		}
@@ -355,22 +355,22 @@
 		"group-invitation": {
 			"join": "",
 			"password-label": "",
-			"password-placeholder": ""
+			"password-placeholder": "Hasło..."
 		},
 		"save-theme": {
 			"title": "",
 			"desc": "",
 			"placeholder": "",
 			"cancel": "Anuluj",
-			"add": ""
+			"add": "Dodaj!"
 		}
 	},
 	"chat": {
 		"title-unknown": "",
 		"sending": "Wysyłanie...",
-		"sent": "",
+		"sent": "Wyślij",
 		"contact-settings": {
-			"my-devices": ""
+			"my-devices": "Moje urządzenia"
 		},
 		"multi-member": {
 			"input-placeholder": "Wpisz tutaj..."
@@ -383,8 +383,8 @@
 			"warning-disable": {
 				"title": "",
 				"subtitle": "",
-				"accept": "",
-				"refuse": ""
+				"accept": "Aktywuj",
+				"refuse": "Pomiń"
 			},
 			"why-cant-disable": "",
 			"why-cant-disable-account": "",
@@ -433,8 +433,8 @@
 		},
 		"add-members": {
 			"members": "Członkowie",
-			"contacts": "",
-			"add": ""
+			"contacts": "Kontakty",
+			"add": "Dodaj!"
 		},
 		"multi-member-qr": {
 			"title": "QR Grupy"
@@ -447,7 +447,7 @@
 				"accept-button": "Akceptuj",
 				"accepted-button": "",
 				"error": "",
-				"you-invited": "",
+				"you-invited": "Zaprosiłeś",
 				"this-contact": "",
 				"to-a-group": ""
 			},
@@ -474,7 +474,7 @@
 		},
 		"files": {
 			"gallery": "Galeria",
-			"no-images": "",
+			"no-images": "Brak obrazów",
 			"camera": "Aparat",
 			"files": "Pliki",
 			"microphone": "Mikrofon",
@@ -491,8 +491,8 @@
 			"medias": "Media",
 			"links": "Linki",
 			"documents": "Dokumenty",
-			"file": "",
-			"picture": "",
+			"file": "Plik",
+			"picture": "Zdjęcie",
 			"audio": ""
 		},
 		"reply": {
@@ -502,7 +502,7 @@
 		},
 		"user-message": {
 			"read-more": "",
-			"show-less": ""
+			"show-less": "Pokaż mniej"
 		}
 	},
 	"account": {
@@ -514,7 +514,7 @@
 			"alert-push-fetch-failed": "",
 			"alert-push-perm-denied": "",
 			"alert-push-desc": "",
-			"alert-push-button": ""
+			"alert-push-button": "Kontynuuj"
 		}
 	},
 	"audio": {
@@ -554,7 +554,7 @@
 			"allow": "",
 			"settings": ""
 		},
-		"skip": "",
+		"skip": "Pomiń",
 		"cancel": "Anuluj",
 		"settings-text": ""
 	},
