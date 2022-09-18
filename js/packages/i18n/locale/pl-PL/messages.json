@@ -15,7 +15,7 @@
 				"first-point": "",
 				"second-point": "",
 				"third-point": "",
-				"back-button": "",
+				"back-button": "Wróć",
 				"accept-button": ""
 			}
 		},
@@ -84,11 +84,11 @@
 			"title": "Utwórz swoje konto",
 			"first-button": "",
 			"second-button": "",
-			"placeholder": "",
+			"placeholder": "Wybierz swój pseudonim",
 			"good-to-know": {
-				"title": "",
-				"first-point": "",
-				"second-point": ""
+				"title": "Dobrze wiedzieć:",
+				"first-point": "Twoje konto jest tworzone lokalnie",
+				"second-point": "Pseudonim jest opcjonalny i może zostać zmieniony później"
 			}
 		},
 		"generate-key": {
@@ -98,7 +98,7 @@
 		"setup-finished": {
 			"title": "Konfiguracja zakończona!",
 			"desc": "Teraz możesz korzystać z aplikacji, dodawać kontakty i rozmawiać z nimi swobodnie i prywatnie",
-			"button": ""
+			"button": "Zacznij używać Berty"
 		},
 		"web-views": {
 			"title": "",
@@ -148,7 +148,7 @@
 				"fifth-bullet-point": ""
 			},
 			"conversations": {
-				"request-sent": "",
+				"request-sent": "Żądanie wysłane. Oczekiwanie...",
 				"draft": "Szkic: {{message}}"
 			}
 		},
@@ -171,24 +171,24 @@
 			"title": "O Berty",
 			"faq-button": "",
 			"roadmap-button": "",
-			"policy-button": "",
-			"license-button": "",
+			"policy-button": "Polityka prywatności",
+			"license-button": "Licencje Open Source",
 			"terms-of-use": "Warunki użytkowania"
 		},
 		"accounts": {
 			"title": "Konta",
-			"backup-button": "",
+			"backup-button": "Kopia zapasowa",
 			"backup-notif-title": "",
 			"backup-notif-desc": "",
 			"accounts-button": "Konta",
 			"create-button": "",
 			"import-button": "",
 			"link-button": "",
-			"delete-button": "",
-			"delete-title": ""
+			"delete-button": "Usuń to konto",
+			"delete-title": "Usuwanie konta"
 		},
 		"appearance": {
-			"title": "",
+			"title": "Wygląd",
 			"dark-button": "",
 			"editor-button": "",
 			"theme-editor": {
@@ -229,7 +229,7 @@
 			"first-desc": "Czy na pewno chcesz usunąć swoje konto?",
 			"desc": "Proszę wpisać usuń, aby potwierdzić",
 			"cancel-button": "Anuluj",
-			"delete-button": ""
+			"delete-button": "Usuń"
 		},
 		"faq": {
 			"title": ""
@@ -238,7 +238,7 @@
 			"title": ""
 		},
 		"privacy-policy": {
-			"title": ""
+			"title": "Polityka prywatności"
 		},
 		"devtools": {
 			"title": "Narzędzia deweloperskie",
@@ -258,7 +258,7 @@
 				"name": "Filtry dzienników",
 				"bullet-point": "Uruchom ponownie aplikację po zmianie tego pola"
 			},
-			"export-logs-button": "",
+			"export-logs-button": "Eksportuj logi",
 			"add-dev-conversations-button": "Dodaj rozmowy deweloperskie",
 			"share-button": {
 				"title": "Udostępnij ID na discordzie",
@@ -314,11 +314,11 @@
 		},
 		"theme-editor": {
 			"randomize": "",
-			"save": "",
+			"save": "Zapisz ten motyw",
 			"export": "",
 			"share": "",
 			"import": "",
-			"delete": "",
+			"delete": "Usuń wszystkie niedomyślne motywy",
 			"bad-format-title": "",
 			"bad-format-desc": "",
 			"notification-file-saved": {
@@ -353,14 +353,14 @@
 			"dismiss-button": ""
 		},
 		"group-invitation": {
-			"join": "",
-			"password-label": "",
+			"join": "Dołącz do tej grupy",
+			"password-label": "Wprowadź hasło grupy",
 			"password-placeholder": "Hasło..."
 		},
 		"save-theme": {
-			"title": "",
+			"title": "Zapisywanie motywu",
 			"desc": "",
-			"placeholder": "",
+			"placeholder": "Nazwa motywu...",
 			"cancel": "Anuluj",
 			"add": "Dodaj!"
 		}
@@ -426,7 +426,7 @@
 				"search-placeholder": "",
 				"conversation-booster": "",
 				"replication-type": "",
-				"user-type": ""
+				"user-type": "Urządzenie użytkownika"
 			},
 			"invite-button": "Zaproś przez link",
 			"save-button": "Zapisz konwersację na serwerze"
@@ -449,7 +449,7 @@
 				"error": "",
 				"you-invited": "Zaprosiłeś",
 				"this-contact": "",
-				"to-a-group": ""
+				"to-a-group": "do grupy! 💌"
 			},
 			"infos-chat": {
 				"connection-confirmed": "👋 Połączenie Berty potwierdzone! 🎉",
@@ -496,18 +496,18 @@
 			"audio": ""
 		},
 		"reply": {
-			"response-to": "",
+			"response-to": "Odpowiedź na",
 			"replying-to": "",
 			"replied-to": ""
 		},
 		"user-message": {
-			"read-more": "",
+			"read-more": "Czytaj więcej",
 			"show-less": "Pokaż mniej"
 		}
 	},
 	"account": {
 		"deleting": "",
-		"creating": "",
+		"creating": "Tworzenie konta...",
 		"opening": {
 			"alert-push-title": "",
 			"alert-push-go-failed": "",
@@ -551,8 +551,8 @@
 			"desc": ""
 		},
 		"button-labels": {
-			"allow": "",
-			"settings": ""
+			"allow": "Zezwól",
+			"settings": "Przejdź do ustawień"
 		},
 		"skip": "Pomiń",
 		"cancel": "Anuluj",
@@ -611,8 +611,8 @@
 				"status": {
 					"datastore-found": "",
 					"datastore-not-found": "",
-					"ipfs-repo-found": "",
-					"ipfs-repo-not-found": "",
+					"ipfs-repo-found": "Znaleziono repozytorium IPFS",
+					"ipfs-repo-not-found": "Nie znaleziono repozytorium IPFS",
 					"messenger-db-found": "Znaleziono DB komunikatora",
 					"messenger-db-not-found": "Nie znaleziono DB komunikatora"
 				},
