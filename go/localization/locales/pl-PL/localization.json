@@ -19,7 +19,7 @@
   },
   "push": {
     "message": {
-      "title": ""
+      "title": "Nowa wiadomość"
     },
     "error": {
       "title": ""
@@ -33,7 +33,7 @@
       "bodyWithNumberOfMedia_other": ""
     },
     "photo": {
-      "bodyWithNumberOfMedia_one": "",
+      "bodyWithNumberOfMedia_one": "Wyślij zdjęcie",
       "bodyWithNumberOfMedia_other": ""
     },
     "media": {
