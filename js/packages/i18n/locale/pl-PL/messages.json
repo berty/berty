@@ -3,26 +3,26 @@
 		"getstarted": {
 			"screenTitle": "Chroń swoją prywatność",
 			"title": "Chroń swoją prywatność",
-			"desc": "",
-			"create-button": "",
-			"import-button": ""
+			"desc": "darmowe i bezpieczne wiadomości peer-to-peer",
+			"create-button": "Stwórz konto",
+			"import-button": "Importuj konto"
 		},
 		"default-mode": {
 			"summary": {
-				"title": "",
-				"screenTitle": "",
-				"subtitle": "",
-				"first-point": "",
-				"second-point": "",
-				"third-point": "",
+				"title": "Tryb domyślny",
+				"screenTitle": "Stwórz konto",
+				"subtitle": "Szybki start",
+				"first-point": "Zacznij od ustawień wstępnych, które oferują równowagę między prywatnością a komfortem, które odpowiadają większości użytkowników. Węzły Berty są używane do poprawy wydajności i komunikacji asynchronicznej.",
+				"second-point": "Powiadomienia push są domyślnie włączone i nie można ich jeszcze wyłączyć na systemie iOS.",
+				"third-point": "Aby samodzielnie dostosować równowagę między prywatnością a komfortem, wybierz tryb niestandardowy.",
 				"back-button": "Wróć",
-				"accept-button": ""
+				"accept-button": "Zaczynajmy"
 			}
 		},
 		"custom-mode": {
 			"summary": {
-				"screenTitle": "",
-				"title": "",
+				"screenTitle": "Utwórz konto - Dostosuj ustawienia",
+				"title": "Tryb niestandardowy",
 				"subtitle": "",
 				"first-point": "",
 				"second-point": "",
