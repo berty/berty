@@ -23,7 +23,7 @@
 			"summary": {
 				"screenTitle": "Utwórz konto - Dostosuj ustawienia",
 				"title": "Tryb niestandardowy",
-				"subtitle": "",
+				"subtitle": "Niestandardowa równowaga między prywatnością a komfortem",
 				"first-point": "",
 				"second-point": "",
 				"back-button": "",
@@ -33,7 +33,7 @@
 				"off-grid": {
 					"title": "",
 					"ble-button": "",
-					"nearby-button": "",
+					"nearby-button": "Android Nearby",
 					"mc-button": "",
 					"mdns-button": ""
 				},
@@ -76,14 +76,14 @@
 					"multiaddress": "",
 					"alias": ""
 				},
-				"all-button": "",
-				"accept-button": ""
+				"all-button": "Wszystkie",
+				"accept-button": "Zaczynajmy"
 			}
 		},
 		"create-account": {
 			"title": "Utwórz swoje konto",
-			"first-button": "",
-			"second-button": "",
+			"first-button": "Tryb Domyślny",
+			"second-button": "Tryb niestandardowy",
 			"placeholder": "Wybierz swój pseudonim",
 			"good-to-know": {
 				"title": "Dobrze wiedzieć:",
@@ -136,13 +136,13 @@
 				"group-info": "Informacje o grupie",
 				"search-placeholder": "Szukaj",
 				"continue": "Kontynuuj",
-				"create-group": ""
+				"create-group": "Utwórz grupę"
 			},
 			"create-group-finalize": {
 				"placeholder": "Nazwa grupy",
 				"about": "O grupach",
-				"first-bullet-point": "",
-				"second-bullet-point": "",
+				"first-bullet-point": "Każdy członek grupy może zmienić jej nazwę lub zaprosić nowych członków",
+				"second-bullet-point": "Możesz zapraszać członków przez link",
 				"third-bullet-point": "",
 				"fourth-bullet-point": "",
 				"fifth-bullet-point": ""
@@ -206,9 +206,9 @@
 			"mc-button": "",
 			"nearby-button": "",
 			"mdns-button": "Multiemisja DNS",
-			"memo-cell-button": "",
-			"medias-cell-button": "",
-			"dht-button": "",
+			"memo-cell-button": "Wczytuj wiadomości głosowe przez dane komórkowe",
+			"medias-cell-button": "Wczytuj multimedia przez dane komórkowe",
+			"dht-button": "Rozproszona Tablica Hash'ów",
 			"rdvp-button": "",
 			"relay-button": "",
 			"bootstrap-button": ""
@@ -232,10 +232,10 @@
 			"delete-button": "Usuń"
 		},
 		"faq": {
-			"title": ""
+			"title": "FAQ"
 		},
 		"roadmap": {
-			"title": ""
+			"title": "Plan działania"
 		},
 		"privacy-policy": {
 			"title": "Polityka prywatności"
@@ -416,7 +416,7 @@
 			}
 		},
 		"multi-member-settings": {
-			"title": "",
+			"title": "Ustawienia konwersacji",
 			"media-button": "Multimedia, linki i dokumenty",
 			"members-button": {
 				"title": ""
