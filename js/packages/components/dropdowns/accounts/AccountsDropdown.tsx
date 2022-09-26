@@ -31,12 +31,7 @@ export const AccountsDropdown: React.FC<AccountsDropdownProps> = props => {
 					]}
 					key={item.accountId}
 				>
-					<GenericAvatar
-						size={25}
-						cid={item.avatarCid}
-						colorSeed={item.publicKey}
-						nameSeed={item.name}
-					/>
+					<GenericAvatar size={25} colorSeed={item.publicKey} nameSeed={item.name} />
 					<UnifiedText style={styles.text}>{item.name}</UnifiedText>
 				</TouchableOpacity>
 			))}

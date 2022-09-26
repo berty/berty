@@ -20,7 +20,7 @@ const OneToOneHeader: React.FC<{ contact: any }> = ({ contact }) => {
 
 	return (
 		<View style={[flex.large, { alignItems: 'center' }]}>
-			<ContactAvatar size={100 * scaleSize} publicKey={contact.publicKey} pressable />
+			<ContactAvatar size={100 * scaleSize} publicKey={contact.publicKey} />
 			<UnifiedText
 				numberOfLines={1}
 				style={[
