@@ -50,7 +50,16 @@ run.web: $(node_modules)
 	cd $(js_dir) && yarn web
 
 .PHONY: build
-build: build.darwin build.linux build.windows
+build:
+ifeq ($(OS),Windows_NT)
+	$(MAKE) build.windows
+else ifeq ($(shell uname),Linux)
+	$(MAKE) build.linux
+else ifeq ($(shell uname),Darwin)
+	$(MAKE) build.darwin
+else
+	$(error "Current OS is not compatible with $(app_name)")
+endif
 
 .PHONY: build.darwin
 build.darwin: $(darwin_output)
@@ -107,4 +116,3 @@ $(node_modules): $(js_dir)/package.json
 generate:
 	cd go && go run ./gen > ../js/app/types/goTypes.ts
 .PHONY: generate
-	
