@@ -1,5 +1,5 @@
 import { Player } from '@react-native-community/audio-toolkit'
-import React, { createContext, useContext, useEffect, useState } from 'react'
+import React, { createContext, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 
 import { selectProtocolClient } from '@berty/redux/reducers/ui.reducer'
@@ -184,5 +184,3 @@ export const MusicPlayerProvider: React.FC = ({ children }) => {
 		</MusicPlayerContext.Provider>
 	)
 }
-
-export const useMusicPlayer = () => useContext(MusicPlayerContext)

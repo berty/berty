@@ -62,12 +62,6 @@ const selectors = adapter.getSelectors(selectSlice)
 export const selectChatInputText = (state: LocalRootState, convPk: string) =>
 	selectors.selectById(state, convPk)?.text || ''
 
-// emptyList helps memo, `(emptyList === emptyList) === true` where `([] === []) === false`
-const emptyList: never[] = []
-
-export const selectChatInputMediaList = (state: LocalRootState, convPk: string) =>
-	selectors.selectById(state, convPk)?.mediaList || emptyList
-
 export const selectActiveReplyInteraction = (state: LocalRootState, convPk: string) =>
 	selectors.selectById(state, convPk)?.activeReplyInteraction || null
 

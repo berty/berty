@@ -57,10 +57,6 @@ export const useAllContacts = () => {
 	return useAppSelector(m.selectAllContacts)
 }
 
-export const useMedias = (cids: string[]) => {
-	return useAppSelector(state => m.selectMedias(state, cids))
-}
-
 export const useInteractionAuthor = (convPk: string, cid: string) => {
 	return useAppSelector(state => m.selectInteractionAuthor(state, convPk, cid))
 }

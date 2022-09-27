@@ -409,15 +409,6 @@ export const Navigation: React.FC = React.memo(() => {
 					presentation: 'formSheet',
 				})}
 			/>
-			<NavigationStack.Screen
-				name='Chat.SharedMedias'
-				component={Components.Chat.SharedMedias}
-				options={BackgroundHeaderScreenOptions({
-					title: t('chat.shared-medias.title'),
-					...CustomTitleStyle(),
-					presentation: 'formSheet',
-				})}
-			/>
 			{/* Settings */}
 			<NavigationStack.Screen
 				name='Settings.Home'
@@ -634,14 +625,6 @@ export const Navigation: React.FC = React.memo(() => {
 				options={{
 					presentation: 'containedTransparentModal',
 					animation: 'fade',
-					headerShown: false,
-				}}
-			/>
-			<NavigationStack.Screen
-				name='Modals.ImageView'
-				component={Components.Chat.ImageView}
-				options={{
-					presentation: 'containedTransparentModal',
 					headerShown: false,
 				}}
 			/>

@@ -101,12 +101,6 @@ const MultiMemberSettingsBody: React.FC<{
 			</View>
 			{Platform.OS !== 'web' && <EnableNotificationsButton conversationPk={publicKey} />}
 			<FloatingMenuItemWithPrimaryIcon
-				iconName='image-outline'
-				onPress={() => navigation.navigate('Chat.SharedMedias', { convPk: publicKey })}
-			>
-				{t('chat.multi-member-settings.media-button')}
-			</FloatingMenuItemWithPrimaryIcon>
-			<FloatingMenuItemWithPrimaryIcon
 				iconName='attach-outline'
 				onPress={
 					link

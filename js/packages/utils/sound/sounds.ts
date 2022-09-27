@@ -3,15 +3,6 @@ import mapValues from 'lodash/mapValues'
 
 import { SoundKey, soundsMap } from './sound.types'
 
-export const playSoundFile = (encodedFile: string) => {
-	const p = new Player(`data:audio/aac;base64,${encodedFile}`, {
-		autoDestroy: false,
-		mixWithOthers: true,
-	})
-	p.play()
-	return p
-}
-
 // https://github.com/react-native-audio-toolkit/react-native-audio-toolkit/blob/master/docs/API.md
 const PlaybackCategories = {
 	Playback: 1,

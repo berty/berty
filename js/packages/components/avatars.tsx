@@ -1,6 +1,6 @@
 import palette from 'google-palette'
 import React from 'react'
-import { Image, View, ViewStyle, TouchableOpacity } from 'react-native'
+import { Image, View, ViewStyle } from 'react-native'
 import { useSelector } from 'react-redux'
 import { SHA3 } from 'sha3'
 
@@ -12,7 +12,6 @@ import BlueDevAvatar from '@berty/assets/images/berty_dev_blue_bg.png'
 import GreenDevAvatar from '@berty/assets/images/berty_dev_green_bg.png'
 import Logo from '@berty/assets/logo/1_berty_picto.svg'
 import { useAccount, useContact, useConversation, useMember, useThemeColor } from '@berty/hooks'
-import { navigate } from '@berty/navigation'
 import { selectPersistentOptions } from '@berty/redux/reducers/persistentOptions.reducer'
 import { Maybe } from '@berty/utils/type/maybe'
 
@@ -79,12 +78,7 @@ export const HardcodedAvatar: React.FC<{
 	}
 
 	return (
-		<TouchableOpacity
-			activeOpacity={0.9}
-			disabled
-			onPress={() => {
-				navigate('Modals.ImageView', { images: [avatar], previewOnly: true })
-			}}
+		<View
 			style={[
 				style,
 				{
@@ -101,7 +95,7 @@ export const HardcodedAvatar: React.FC<{
 					borderRadius: size / 2,
 				}}
 			/>
-		</TouchableOpacity>
+		</View>
 	)
 })
 
