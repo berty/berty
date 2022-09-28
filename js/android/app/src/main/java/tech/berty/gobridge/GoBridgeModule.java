@@ -15,7 +15,9 @@ import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.ReadableArray;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import tech.berty.android.BuildConfig;
 import tech.berty.rootdir.RootDirModule;
@@ -243,4 +245,13 @@ public class GoBridgeModule extends ReactContextBaseJavaModule {
 
     GoBridgeModule.bridgeMessenger = null;
   }
+
+    @Override
+    public Map<String, Object> getConstants() {
+        final Map<String, Object> constants = new HashMap<>();
+        if (BuildConfig.DEBUG_LOGS == true) {
+            constants.put("debug", true);
+        }
+        return constants;
+    }
 }

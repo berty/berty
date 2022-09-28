@@ -214,6 +214,7 @@ android {
         debug {
             applicationIdSuffix ".debug"
             signingConfig signingConfigs.debug
+            buildConfigField "boolean", "DEBUG_LOGS", "true"
         }
         release {
             // Caution! In production, you need to generate your own keystore file.
@@ -222,16 +223,19 @@ android {
             minifyEnabled enableProguardInReleaseBuilds
             shrinkResources true
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+            buildConfigField "boolean", "DEBUG_LOGS", "false"
         }
         releaseStaff {
             initWith release
             applicationIdSuffix ".staff"
             matchingFallbacks = ['release']
+            buildConfigField "boolean", "DEBUG_LOGS", "true"
         }
         releaseYolo {
             initWith release
             applicationIdSuffix ".yolo"
             matchingFallbacks = ['release']
+            buildConfigField "boolean", "DEBUG_LOGS", "true"
         }
     }
 
