@@ -417,7 +417,6 @@
 		},
 		"multi-member-settings": {
 			"title": "Conversation settings",
-			"media-button": "Medias, links & docs",
 			"members-button": {
 				"title": "Members Network Status ({{count}})"
 			},
