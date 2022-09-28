@@ -13,6 +13,8 @@ PODS:
     - ExpoModulesCore
   - EXConstants (13.0.2):
     - ExpoModulesCore
+  - EXErrorRecovery (3.0.5):
+    - ExpoModulesCore
   - EXFileSystem (13.1.4):
     - ExpoModulesCore
   - EXFont (10.0.5):
@@ -432,6 +434,7 @@ DEPENDENCIES:
   - EXBarCodeScanner (from `../node_modules/expo-barcode-scanner/ios`)
   - EXCamera (from `../node_modules/expo-camera/ios`)
   - EXConstants (from `../node_modules/expo-constants/ios`)
+  - EXErrorRecovery (from `../node_modules/expo-error-recovery/ios`)
   - EXFileSystem (from `../node_modules/expo-file-system/ios`)
   - EXFont (from `../node_modules/expo-font/ios`)
   - EXImageLoader (from `../node_modules/expo-image-loader/ios`)
@@ -542,6 +545,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/expo-camera/ios"
   EXConstants:
     :path: "../node_modules/expo-constants/ios"
+  EXErrorRecovery:
+    :path: "../node_modules/expo-error-recovery/ios"
   EXFileSystem:
     :path: "../node_modules/expo-file-system/ios"
   EXFont:
@@ -673,6 +678,7 @@ SPEC CHECKSUMS:
   EXBarCodeScanner: e5ca0062d8ad1c4c1d2e386d6a308d5a32213020
   EXCamera: 4a0d00d6d1e4703c31a75514d8bc804a2eab27bd
   EXConstants: 88bf79622fbd9b476c96d8ec57fe97ca44fe8e3c
+  EXErrorRecovery: b0d7582714a2cc896e94a2308a356f94dbf14ef7
   EXFileSystem: 08a3033ac372b6346becf07839e1ccef26fb1058
   EXFont: 2597c10ac85a69d348d44d7873eccf5a7576ef5e
   EXImageLoader: 347b72c2ec2df65120ccec40ea65a4c4f24317ff
@@ -690,7 +696,7 @@ SPEC CHECKSUMS:
   Flipper-PeerTalk: 116d8f857dc6ef55c7a5a75ea3ceaafe878aadc9
   Flipper-RSocket: 127954abe8b162fcaf68d2134d34dc2bd7076154
   FlipperKit: 651f50a42eb95c01b3e89a60996dd6aded529eeb
-  glog: 15e2ba430ddc61583e57e21be14de010560ba459
+  glog: 73c2498ac6884b13ede40eda8228cb1eee9d9d62
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
   lottie-ios: c058aeafa76daa4cf64d773554bccc8385d0150e
   lottie-react-native: b561920bba7ec727ec94a473b683cffba00faece

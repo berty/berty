@@ -51,6 +51,15 @@ class GoBridge: NSObject {
       }
     }
 
+    @objc func constantsToExport() -> [AnyHashable : Any]! {
+#if DEBUG_LOGS
+      let debug = true;
+#else
+      let debug = false;
+#endif
+      return ["debug": debug];
+    }
+
     @objc func clearStorage(_ resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
         do {
             if FileManager.default.fileExists(atPath: self.appRootDir) {
