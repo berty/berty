@@ -157,8 +157,8 @@ github.com/berty/go-multiaddr v0.4.2-0.20220126184027-53e56f02fb68 h1:Vzah9UzXtl
 github.com/berty/go-multiaddr v0.4.2-0.20220126184027-53e56f02fb68/go.mod h1:3KAxNkUqLTJ20AAwN4XVX4kZar+bR+gh4zgbfr3SNug=
 github.com/berty/go-sqlcipher/v4 v4.4.3-0.20220810151512-74ea78235b48 h1:tHmYUj9It7qV3PPzg0Z5VRNmFaJaaYiu49fkqyw5NYI=
 github.com/berty/go-sqlcipher/v4 v4.4.3-0.20220810151512-74ea78235b48/go.mod h1:mF2UmIpBnzFeBdu/ypTDb/LdbS0nk0dfSN1WUsWTjMA=
-github.com/berty/mobile v0.0.7 h1:c4UaGa43dCzTCgq2wkWwglbgLe8kLaS95mit7h94SV4=
-github.com/berty/mobile v0.0.7/go.mod h1:pe2sM7Uk+2Su1y7u/6Z8KJ24D7lepUjFZbhFOrmDfuQ=
+github.com/berty/mobile v0.0.8 h1:DoIuvRWaHPvrrVtLxg1ZFu9n1cTVQwkK1PkI6XbzC5M=
+github.com/berty/mobile v0.0.8/go.mod h1:pe2sM7Uk+2Su1y7u/6Z8KJ24D7lepUjFZbhFOrmDfuQ=
 github.com/bgentry/speakeasy v0.1.0/go.mod h1:+zsyZBPWlz7T6j88CTgSN5bM796AkVf0kBD4zp0CCIs=
 github.com/blang/semver/v4 v4.0.0 h1:1PFHFE6yCCTv8C1TeyNNarDzntLi7wMI5i/pzqYIsAM=
 github.com/blang/semver/v4 v4.0.0/go.mod h1:IbckMUScFkM3pff0VJDNKRiT6TG/YpiHIM2yvyW5YoQ=
