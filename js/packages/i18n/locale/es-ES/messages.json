@@ -1,17 +1,17 @@
 {
 	"onboarding": {
 		"getstarted": {
-			"screenTitle": "",
-			"title": "",
+			"screenTitle": "Protege tu privacidad",
+			"title": "Protege tu privacidad",
 			"desc": "mensajería peer-to-peer gratuita y segura",
-			"create-button": "",
-			"import-button": ""
+			"create-button": "Crear una nueva cuenta",
+			"import-button": "Importar cuenta"
 		},
 		"default-mode": {
 			"summary": {
-				"title": "",
-				"screenTitle": "",
-				"subtitle": "",
+				"title": "Modo predeterminado",
+				"screenTitle": "Crear cuenta",
+				"subtitle": "Empieza rápidamente",
 				"first-point": "",
 				"second-point": "",
 				"third-point": "",
