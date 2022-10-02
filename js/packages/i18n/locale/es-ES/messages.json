@@ -13,82 +13,82 @@
 				"screenTitle": "Crear cuenta",
 				"subtitle": "Empieza rápidamente",
 				"first-point": "",
-				"second-point": "",
+				"second-point": "Las notificaciones están activadas por defecto y no puedes desactivarlas en iOS.",
 				"third-point": "",
-				"back-button": "",
-				"accept-button": ""
+				"back-button": "Atrás",
+				"accept-button": "Comenzar"
 			}
 		},
 		"custom-mode": {
 			"summary": {
-				"screenTitle": "",
-				"title": "",
+				"screenTitle": "Crear cuenta - Personalizar configuración",
+				"title": "Modo personalizado",
 				"subtitle": "",
-				"first-point": "",
+				"first-point": "En este modo, ajuste todas las opciones individualmente para crear el equilibrio entre privacidad y comodidad deseado.",
 				"second-point": "",
-				"back-button": "",
-				"accept-button": ""
+				"back-button": "Atrás",
+				"accept-button": "Continuar"
 			},
 			"settings": {
 				"off-grid": {
-					"title": "",
+					"title": "Comunicación sin conexión",
 					"ble-button": "Bluetooth Low Energy",
-					"nearby-button": "",
-					"mc-button": "",
+					"nearby-button": "Android Cercano",
+					"mc-button": "Conectividad Multipeer de Apple",
 					"mdns-button": ""
 				},
 				"routing": {
-					"title": "",
+					"title": "Enrutamiento",
 					"dht-button": "Tabla Hash distribuida",
 					"rdvp-button": ""
 				},
 				"access": {
-					"title": "",
+					"title": "Accesibilidad de red",
 					"relay-button": "",
 					"bootstrap-button": ""
 				},
 				"modals": {
 					"add": {
 						"title": {
-							"relay": "",
+							"relay": "Añadir un nodo relé (TURN)",
 							"bootstrap": "",
 							"rdvp": ""
 						}
 					},
 					"edit": {
 						"title": {
-							"relay": "",
+							"relay": "Editar un nodo relé (TURN)",
 							"bootstrap": "",
 							"rdvp": ""
 						}
 					},
 					"errors": {
-						"alias-already-exists": "",
+						"alias-already-exists": "El alias ya existe",
 						"multiaddr-alread-exists": "",
-						"multiaddr-bad-format": "",
+						"multiaddr-bad-format": "Formato incorrecto de multi-dirección",
 						"multiaddr-p2p": ""
 					},
 					"buttons": {
 						"add": "Agregar",
-						"edit": "",
-						"delete": ""
+						"edit": "Editar",
+						"delete": "Suprimir"
 					},
 					"multiaddress": "",
-					"alias": ""
+					"alias": "Alias"
 				},
 				"all-button": "",
-				"accept-button": ""
+				"accept-button": "Comenzar"
 			}
 		},
 		"create-account": {
 			"title": "Crear una nueva cuenta",
-			"first-button": "",
-			"second-button": "",
+			"first-button": "Modo predeterminado",
+			"second-button": "Modo personalizado",
 			"placeholder": "Elige tu apodo",
 			"good-to-know": {
 				"title": "Buen saber:",
 				"first-point": "Su cuenta fue creada localmente",
-				"second-point": ""
+				"second-point": "El apodo es opcional y puede ser cambiado más tarde"
 			}
 		},
 		"generate-key": {
@@ -98,11 +98,11 @@
 		"setup-finished": {
 			"title": "¡Configuración finalizada!",
 			"desc": "Ahora puedes usar la aplicación, empieza a añadir contactos y habla libre y en privado con ellos",
-			"button": ""
+			"button": "Empezar a utilizar Berty"
 		},
 		"web-views": {
 			"title": "",
-			"desc": "",
+			"desc": "Berty está a punto de cargar el contenido de la web. ¿Quieres abrir esta página?",
 			"first-button": "Cancelar",
 			"second-button": "Sí"
 		}
@@ -229,7 +229,7 @@
 			"first-desc": "¿Está seguro que desea eliminar su cuenta?",
 			"desc": "Por favor, escriba borrar para confirmar",
 			"cancel-button": "Cancelar",
-			"delete-button": ""
+			"delete-button": "Suprimir"
 		},
 		"faq": {
 			"title": "PREGUNTAS FRECUENTES"
@@ -307,7 +307,7 @@
 			"add": "Agregar {{name}}",
 			"tag-bot": "Bot",
 			"tag-contact": "Contacto",
-			"tag-conversation": ""
+			"tag-conversation": "Conversación"
 		},
 		"ipfs-webui": {
 			"title": "IPFS WebUI"
@@ -318,9 +318,9 @@
 			"export": "Exportar el tema seleccionado como un archivo",
 			"share": "Compartir el tema seleccionado como archivo",
 			"import": "Importar un archivo de tema",
-			"delete": "",
-			"bad-format-title": "",
-			"bad-format-desc": "",
+			"delete": "Borrar todos los temas no predeterminados",
+			"bad-format-title": "Formato de tema incorrecto",
+			"bad-format-desc": "Formato incorrecto del archivo de tema",
 			"notification-file-saved": {
 				"title": "¡Dato guardado!",
 				"desc": "Disponible en el directorio de descargas"
@@ -330,8 +330,8 @@
 			"title": "Mi ID de Berty"
 		},
 		"share": {
-			"invite": "",
-			"tap-to-scan": "",
+			"invite": "Invitar",
+			"tap-to-scan": "Pulsa para escanear",
 			"create-group": "Crear grupo"
 		}
 	},
@@ -350,11 +350,11 @@
 			"contact-already-added-message": "No puedes añadir el mismo contacto varias veces"
 		},
 		"invalid-scan": {
-			"dismiss-button": ""
+			"dismiss-button": "Descartar"
 		},
 		"group-invitation": {
-			"join": "",
-			"password-label": "",
+			"join": "Unirse a este grupo",
+			"password-label": "Introduzca la contraseña del grupo",
 			"password-placeholder": "Contraseña..."
 		},
 		"save-theme": {
@@ -366,23 +366,23 @@
 		}
 	},
 	"chat": {
-		"title-unknown": "",
+		"title-unknown": "Conversación desconocida",
 		"sending": "Enviando...",
 		"sent": "Enviado",
 		"contact-settings": {
-			"my-devices": ""
+			"my-devices": "Mis dispositivos"
 		},
 		"multi-member": {
 			"input-placeholder": "Escribe aquí..."
 		},
 		"push-notifications": {
 			"title": "Notificaciones",
-			"unsupported": "",
-			"check-device-settings": "",
-			"check-account-settings": "",
+			"unsupported": "Notificaciones no soportadas",
+			"check-device-settings": "Esta conversación está configurada para recibir notificaciones push, pero las alertas han sido desactivadas en la configuración del sistema de tu dispositivo",
+			"check-account-settings": "Las notificaciones están deshabilitadas, comprueba la configuración de tu cuenta",
 			"warning-disable": {
-				"title": "",
-				"subtitle": "",
+				"title": "¿Quieres activar esta función?",
+				"subtitle": "Una vez activado, las notificaciones no se pueden desactivarse para una conversación específica.",
 				"accept": "Activar",
 				"refuse": "Omitir"
 			},
@@ -395,7 +395,7 @@
 			"warning-enable-all": {
 				"title": "",
 				"subtitle": "",
-				"refuse": "",
+				"refuse": "Denegar",
 				"accept": "Aceptar"
 			},
 			"warning-disable-mute": {
