@@ -50,12 +50,12 @@ func (s *Service) Advertises(ctx context.Context, topic string, opts ...Advertis
 	}
 	// @TODO(gfanton): add filter
 	for _, driver := range s.drivers {
-		// if aopts.Filters != nil {
-		// 	// skip filter driver
-		// 	if _, filter := aopts.Filters[driver.Name()]; filter {
-		// 		continue
-		// 	}
-		// }
+		if aopts.Filters != nil {
+			// skip filter driver
+			if _, filter := aopts.Filters[driver.Name()]; filter {
+				continue
+			}
+		}
 
 		go func(driver IDriver) {
 			if err := s.advertise(ctx, driver, topic); err != nil {
@@ -120,22 +120,3 @@ func (s *Service) advertise(ctx context.Context, d IDriver, topic string) error 
 		}
 	}
 }
-
-// func (s *Service) advertises(ctx context.Context, topic string, opts ...p2p_discovery.Option) {
-
-// 	// var filters []string
-// 	// if f, ok := optiotopic.Other[optionFilterDriver]; ok {
-// 	// 	if filters, ok = f.([]string); !ok {
-// 	// 		s.logger.Error("unable to parse filter driver option")
-// 	// 		return
-// 	// 	}
-// 	// }
-
-// 	for _, d := range s.drivers {
-// 		// if shoudlFilterDriver(d.Name, filters) {
-// 		// 	continue
-// 		// }
-
-// 		go s.advertise(ctx, d, topic, opts...)
-// 	}
-// }

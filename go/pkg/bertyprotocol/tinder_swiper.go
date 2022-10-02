@@ -167,7 +167,7 @@ func (s *Swiper) WatchTopic(ctx context.Context, topic, seed []byte) <-chan peer
 	return cpeers
 }
 
-func (s *Swiper) watchPeers(ctx context.Context, bstrat discovery.BackoffStrategy, out chan<- peer.AddrInfo, topic string) error {
+func (s *Swiper) watchPeers(ctx context.Context, _ discovery.BackoffStrategy, out chan<- peer.AddrInfo, topic string) error {
 	sub := s.tinder.Subscribe(topic)
 	defer sub.Close()
 	// func () {
@@ -190,7 +190,6 @@ func (s *Swiper) watchPeers(ctx context.Context, bstrat discovery.BackoffStrateg
 			select {
 			case <-time.After(timeout):
 			case <-ctx.Done():
-
 			}
 		}
 	}()
@@ -224,7 +223,11 @@ func (s *Swiper) Announce(ctx context.Context, topic, seed []byte) {
 			s.logger.Debug("self announce topic for time", logutil.PrivateString("topic", point.RotationTopic()))
 
 			actx, cancel := context.WithDeadline(ctx, point.Deadline())
-			s.tinder.Advertises(actx, point.RotationTopic())
+			if err := s.tinder.Advertises(actx, point.RotationTopic()); err != nil && err != ctx.Err() {
+				cancel()
+				<-time.After(time.Second * 10) // retry after 10sc
+				continue
+			}
 
 			select {
 			case <-actx.Done():

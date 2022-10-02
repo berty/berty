@@ -678,16 +678,6 @@ func (m *Manager) configIPFSRouting(h host.Host, r p2p_routing.Routing) error {
 		discovery.FullJitter,
 		time.Second, 10.0, 0, serverRng)
 
-	// tinderOpts := &tinder.Opts{
-	// 	Logger:                 logger,
-	// 	AdvertiseResetInterval: time.Hour,
-	// 	FindPeerResetInterval:  time.Minute * 10,
-	// 	AdvertiseGracePeriod:   time.Minute,
-	// 	BackoffStrategy: &tinder.BackoffOpts{
-	// 		StratFactory: backoffstrat,
-	// 	},
-	// }
-
 	m.Node.Protocol.tinder, err = tinder.NewService(h, logger, drivers...)
 	if err != nil {
 		return errcode.ErrIPFSSetupHost.Wrap(err)

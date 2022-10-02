@@ -108,7 +108,6 @@ func (s *MockDriverServer) Subscribe(ctx context.Context, topic string, buffsize
 			for _, peer := range s.pc.GetPeers(updated...) {
 				out <- peer
 			}
-
 		}
 
 		// we're done here, close the channel and decrement
@@ -214,7 +213,7 @@ const (
 	optionSubscribeBufferSize discOption = "tinder_subsize"
 )
 
-func mockBufferSize(size int) discovery.Option {
+func MockBufferSize(size int) discovery.Option {
 	return func(opts *discovery.Options) error {
 		if opts.Other == nil {
 			opts.Other = make(map[interface{}]interface{})

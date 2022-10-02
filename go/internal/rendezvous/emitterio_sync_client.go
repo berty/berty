@@ -36,7 +36,6 @@ type emitterClientManager struct {
 	inChan   chan *registrationMessage
 	mu       sync.Mutex
 	logger   *zap.Logger
-	wg       sync.WaitGroup
 }
 
 func (e *emitterClient) subscribeToServerUpdates(inChan chan *registrationMessage, psDetails *EmitterPubSubSubscriptionDetails) (err error) {

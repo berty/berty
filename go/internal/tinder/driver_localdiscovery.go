@@ -168,7 +168,8 @@ func (ld *LocalDiscovery) FindPeers(ctx context.Context, cid string, opts ...dis
 
 		for _, rec := range cache.recs {
 			out <- *rec.peer
-			if size = size - 1; size == 0 {
+			size--
+			if size == 0 {
 				break
 			}
 		}

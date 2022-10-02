@@ -142,18 +142,6 @@ func TestingCoreAPIUsingMockNet(ctx context.Context, t testing.TB, opts *Testing
 			drivers = append(drivers, driver)
 		}
 
-		// minBackoff, maxBackoff := time.Second, time.Minute
-		// rng := rand.New(rand.NewSource(rand.Int63()))
-		// tinderOpts := &tinder.Opts{
-		// 	Logger:                 opts.Logger,
-		// 	AdvertiseResetInterval: time.Minute,
-		// 	AdvertiseGracePeriod:   time.Minute,
-		// 	BackoffStrategy: &tinder.BackoffOpts{
-		// 		StratFactory: discovery.NewFixedBackoff(time.Second),
-		// 	},
-		// BackoffStratFactory: discovery.NewExponentialBackoff(minBackoff, maxBackoff, discovery.FullJitter, time.Second, 5.0, 0, rng),
-		// }
-
 		// enable discovery monitor
 		stinder, err = tinder.NewService(h, opts.Logger, drivers...)
 		if err != nil {

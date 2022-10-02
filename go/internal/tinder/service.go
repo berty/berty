@@ -5,11 +5,12 @@ import (
 	"fmt"
 	"sync"
 	"sync/atomic"
-	"time"
 
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"go.uber.org/zap"
+
+	"berty.tech/berty/v2/go/internal/logutil"
 )
 
 type Service struct {
@@ -24,10 +25,6 @@ type Service struct {
 	// subscribe
 	peersCache *peersCache
 	process    uint32
-}
-
-type RegisterOption struct {
-	gracePeriode time.Duration
 }
 
 func NewService(h host.Host, logger *zap.Logger, drivers ...IDriver) (*Service, error) {
@@ -52,7 +49,9 @@ func (s *Service) FindPeers(ctx context.Context, topic string) <-chan peer.AddrI
 
 	ctx, cancel := context.WithCancel(ctx)
 	go func() {
-		s.LookupPeers(ctx, topic)
+		if err := s.LookupPeers(ctx, topic); err != nil {
+			s.logger.Error("lookup failed", logutil.PrivateString("topic", topic), zap.Error(err))
+		}
 		cancel()
 	}()
 

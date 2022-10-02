@@ -70,7 +70,6 @@ func (s *Service) LookupPeers(ctx context.Context, topic string) error {
 
 			wg.Done()
 		}(d)
-
 	}
 
 	wg.Wait() // wait for process to finish

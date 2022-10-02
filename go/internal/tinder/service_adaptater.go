@@ -137,12 +137,20 @@ func (a *DiscoveryAdaptater) Advertise(_ context.Context, topic string, opts ...
 			a.muAdvertiser.Unlock()
 
 			// unregister from this topic if possible
-			a.service.UnRegister(ctx, topic)
+			if err := a.service.UnRegister(ctx, topic); err != nil {
+				a.logger.Debug("unregister failed",
+					logutil.PrivateString("topic", topic),
+					zap.Error(err),
+				)
+			}
 		})
 
 		// start advertising on this topic
-		a.service.Advertises(wctx, topic, AdvertisesFilterDrivers(LocalDiscoveryName))
-		a.logger.Debug("advertise started", logutil.PrivateString("topic", topic))
+		if err := a.service.Advertises(wctx, topic, AdvertisesFilterDrivers(LocalDiscoveryName)); err != nil {
+			a.logger.Error("advertise failed", logutil.PrivateString("topic", topic), zap.Error(err))
+		} else {
+			a.logger.Debug("advertise started", logutil.PrivateString("topic", topic))
+		}
 	}
 
 	a.muAdvertiser.Unlock()
