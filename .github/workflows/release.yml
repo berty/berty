@@ -185,7 +185,7 @@ jobs:
           "go_version={0}" -f (((asdf current golang) -replace '\s+', ' ') -Split ' ')[1] >> $env:GITHUB_ENV
 
       - name: Cache go modules
-        uses: actions/cache@v2.1.6
+        uses: actions/cache@v3.0.10
         with:
           path: ~/go/pkg/mod
           key:          ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-${{ hashFiles('go/**/go.sum') }}
