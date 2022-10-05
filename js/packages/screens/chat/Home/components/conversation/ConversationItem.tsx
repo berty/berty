@@ -62,26 +62,10 @@ export const ConversationItem: React.FC<
 		}
 	}
 
-	let messageType: 'picture' | 'audio' | '' = ''
-
 	const userDisplayName =
 		type === beapi.messenger.Conversation.Type.MultiMemberType
 			? displayName
 			: contact?.displayName || ''
-
-	if (!chatInputText && lastInte?.medias?.length) {
-		if (lastInte.medias[0].mimeType?.startsWith('image')) {
-			messageType = 'picture'
-			description = `${lastInte.isMine ? 'You' : userDisplayName} sent ${
-				lastInte.isMine ? userDisplayName : 'you'
-			} ${lastInte.medias.length > 1 ? `${lastInte.medias.length} pics` : 'a pic'}`
-		} else if (lastInte.medias[0].mimeType?.startsWith('audio')) {
-			messageType = 'audio'
-			description = `${lastInte.isMine ? 'You' : userDisplayName} sent ${
-				lastInte.isMine ? userDisplayName : 'you'
-			} ${lastInte.medias.length > 1 ? `${lastInte.medias.length} audio files` : 'an audio file'}`
-		}
-	}
 
 	if (chatInputIsSending) {
 		description = t('chat.sending')
@@ -116,7 +100,6 @@ export const ConversationItem: React.FC<
 					lastInte={lastInte}
 					chatInputIsSending={chatInputIsSending}
 					chatInputText={chatInputText}
-					messageType={messageType}
 					description={description ?? ''}
 					unreadCount={unreadCount ?? undefined}
 					isAccepted={isAccepted || type === beapi.messenger.Conversation.Type.MultiMemberType}

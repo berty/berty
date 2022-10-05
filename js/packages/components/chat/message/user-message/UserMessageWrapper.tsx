@@ -46,7 +46,6 @@ export const UserMessageWrapper: React.FC<{
 						publicKey={inte.memberPublicKey}
 						conversationPublicKey={inte.conversationPublicKey}
 						size={AVATAR_SIZE}
-						pressable
 					/>
 				</View>
 			)}

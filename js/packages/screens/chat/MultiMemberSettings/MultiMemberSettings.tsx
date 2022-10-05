@@ -3,10 +3,8 @@ import { Layout } from '@ui-kitten/components'
 import React, { ComponentProps } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View, ScrollView, Share, StatusBar, TouchableOpacity, Platform } from 'react-native'
-import ImagePicker, { ImageOrVideo } from 'react-native-image-crop-picker'
 import QRCode from 'react-native-qrcode-svg'
 
-import beapi from '@berty/api'
 import logo from '@berty/assets/images/1_berty_picto.png'
 import { FloatingMenuItemWithPrimaryIcon, MembersDropdown } from '@berty/components'
 import { MultiMemberAvatar } from '@berty/components/avatars'
@@ -14,12 +12,7 @@ import EnableNotificationsButton from '@berty/components/chat/EnableNotification
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
-import {
-	useConversation,
-	useConversationMembers,
-	useMessengerClient,
-	useThemeColor,
-} from '@berty/hooks'
+import { useConversation, useConversationMembers, useThemeColor } from '@berty/hooks'
 import { ScreenFC, useNavigation } from '@berty/navigation'
 import { Maybe } from '@berty/utils/type/maybe'
 
@@ -30,49 +23,6 @@ const GroupChatSettingsHeader: React.FC<{ publicKey: Maybe<string> }> = ({ publi
 	const colors = useThemeColor()
 	const qrCodeSize = Math.min(windowHeight, windowWidth) * 0.4
 	const { navigate } = useNavigation()
-	const client = useMessengerClient()
-
-	const handleSave = React.useCallback(
-		async (picture: ImageOrVideo) => {
-			try {
-				if (picture) {
-					const stream = await client?.mediaPrepare({})
-					if (!stream) {
-						throw new Error('failed to open prepareAttachment stream')
-					}
-
-					const avatarURI = picture?.path
-					await stream.emit({
-						info: {
-							mimeType: picture.mime,
-							filename: picture.filename,
-							displayName: picture.filename,
-						},
-						uri: avatarURI,
-					})
-
-					const reply = await stream.stopAndRecv()
-					if (!reply?.cid) {
-						throw new Error('invalid PrepareAttachment reply, missing cid')
-					}
-
-					const buf = beapi.messenger.AppMessage.SetGroupInfo.encode({
-						avatarCid: reply.cid,
-					}).finish()
-					await client?.interact({
-						conversationPublicKey: conv?.publicKey,
-						type: beapi.messenger.AppMessage.Type.TypeSetGroupInfo,
-						payload: buf,
-						mediaCids: [reply.cid],
-						metadata: true,
-					})
-				}
-			} catch (err) {
-				console.warn(err)
-			}
-		},
-		[conv?.publicKey, client],
-	)
 
 	return (
 		<View style={[row.center, padding.top.scale(30)]}>
@@ -90,27 +40,9 @@ const GroupChatSettingsHeader: React.FC<{ publicKey: Maybe<string> }> = ({ publi
 				}}
 			>
 				<View style={[{ alignItems: 'center' }]}>
-					<TouchableOpacity
-						style={{ position: 'absolute', top: -(90 * scaleSize) }}
-						onPress={async () => {
-							try {
-								const pic = await ImagePicker?.openPicker({
-									width: 400,
-									height: 400,
-									cropping: true,
-									cropperCircleOverlay: true,
-									mediaType: 'photo',
-								})
-								if (pic) {
-									await handleSave(pic)
-								}
-							} catch (err) {
-								console.log(err)
-							}
-						}}
-					>
+					<View style={{ position: 'absolute', top: -(90 * scaleSize) }}>
 						<MultiMemberAvatar publicKey={publicKey} size={80} />
-					</TouchableOpacity>
+					</View>
 					<UnifiedText style={[text.size.small]}>{conv?.displayName || ''}</UnifiedText>
 					<View style={[padding.top.scale(18 * scaleHeight)]}>
 						{conv?.link ? (
@@ -168,12 +100,6 @@ const MultiMemberSettingsBody: React.FC<{
 				/>
 			</View>
 			{Platform.OS !== 'web' && <EnableNotificationsButton conversationPk={publicKey} />}
-			<FloatingMenuItemWithPrimaryIcon
-				iconName='image-outline'
-				onPress={() => navigation.navigate('Chat.SharedMedias', { convPk: publicKey })}
-			>
-				{t('chat.multi-member-settings.media-button')}
-			</FloatingMenuItemWithPrimaryIcon>
 			<FloatingMenuItemWithPrimaryIcon
 				iconName='attach-outline'
 				onPress={

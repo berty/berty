@@ -57,14 +57,6 @@ export const useAllContacts = () => {
 	return useAppSelector(m.selectAllContacts)
 }
 
-export const useMedias = (cids: string[]) => {
-	return useAppSelector(state => m.selectMedias(state, cids))
-}
-
-export const useMedia = (cid: string) => {
-	return useAppSelector(state => m.selectMedia(state, cid))
-}
-
 export const useInteractionAuthor = (convPk: string, cid: string) => {
 	return useAppSelector(state => m.selectInteractionAuthor(state, convPk, cid))
 }
@@ -211,8 +203,8 @@ type Selectors = ObjectSelectors<typeof m>
 type No = ObjectSelectorsToHooks<typeof m>
 
 const getObjectSelectors = <T>(obj: T): ObjectSelectors<T> => {
-	const keys = Object.keys(obj).filter(k => k.startsWith('select'))
-	return keys.reduce((o, k) => ({...o, [k]: (obj as any)[k as any] }), {} as any)
+  const keys = Object.keys(obj).filter(k => k.startsWith('select'))
+  return keys.reduce((o, k) => ({...o, [k]: (obj as any)[k as any] }), {} as any)
 }
 
 const test = getObjectSelectors(m)

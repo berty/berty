@@ -417,7 +417,6 @@
 		},
 		"multi-member-settings": {
 			"title": "Conversation settings",
-			"media-button": "Medias, links & docs",
 			"members-button": {
 				"title": "Members Network Status ({{count}})"
 			},
@@ -463,7 +462,6 @@
 		},
 		"one-to-one-settings": {
 			"title": "Conversation settings",
-			"media-button": "Medias, links & docs",
 			"save-button": "Save conversation on server"
 		},
 		"replicate-group-settings": {
@@ -472,31 +470,7 @@
 			"connect-button": "Connect to Berty operated services",
 			"manage-add-button": "Manage or add services"
 		},
-		"files": {
-			"gallery": "Gallery",
-			"no-images": "No images",
-			"camera": "Camera",
-			"files": "Files",
-			"microphone": "Microphone",
-			"security-access": "Security Access",
-			"security-access-desc": "Tap here to open setting to allow access to your",
-			"save-to-gallery": "Save this file in Gallery",
-			"share": "Share",
-			"forward-berty": "Forward to Berty contact",
-			"forward": "Forward",
-			"image-saved": "Image saved in Gallery"
-		},
-		"shared-medias": {
-			"title": "Shared medias",
-			"medias": "Medias",
-			"links": "Links",
-			"documents": "Documents",
-			"file": "File",
-			"picture": "Picture",
-			"audio": "Audio"
-		},
 		"reply": {
-			"response-to": "Response to",
 			"replying-to": "You're replying to",
 			"replied-to": "Replied to"
 		},
@@ -515,17 +489,6 @@
 			"alert-push-perm-denied": "The permission request for Push Notification has been denied.",
 			"alert-push-desc": "You can try to activate this feature again in Settings at any time.",
 			"alert-push-button": "Continue"
-		}
-	},
-	"audio": {
-		"record": {
-			"tooltip": {
-				"usage": "Hold to record, release to send",
-				"not-sent": "Audio message has not been sent",
-				"permission-denied": "App is not allowed to record sound"
-			},
-			"slide-to-cancel": "<< Slide to cancel",
-			"cancel-button": "Cancel"
 		}
 	},
 	"permission": {

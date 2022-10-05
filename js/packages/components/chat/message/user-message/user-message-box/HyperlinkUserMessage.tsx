@@ -19,10 +19,7 @@ const additionalTlds = ['crypto']
 
 const linkify_conf = linkify().tlds([...tlds, ...additionalTlds], true)
 
-export async function isBertyDeepLink(
-	client: WelshMessengerServiceClient,
-	url: string,
-): Promise<boolean> {
+async function isBertyDeepLink(client: WelshMessengerServiceClient, url: string): Promise<boolean> {
 	return new Promise(resolve => {
 		client
 			.parseDeepLink({

@@ -2,7 +2,6 @@ import { StackScreenProps } from '@react-navigation/stack'
 import React from 'react'
 import { PermissionStatus } from 'react-native-permissions'
 
-import beapi from '@berty/api'
 import { PermissionType } from '@berty/utils/permissions/permissions'
 
 export type ScreensParams = {
@@ -39,7 +38,6 @@ export type ScreensParams = {
 	'Group.ChatSettingsMemberDetail': { convId: string; memberPk: string; displayName: string }
 	'Chat.MultiMemberQR': { convId: string }
 	'Chat.ReplicateGroupSettings': { convId: string }
-	'Chat.SharedMedias': { convPk: string }
 
 	// Settings
 
@@ -77,10 +75,6 @@ export type ScreensParams = {
 	'Chat.ManageDeepLink': {
 		type: 'qr' | 'link'
 		value: string
-	}
-	'Modals.ImageView': {
-		images: (beapi.messenger.IMedia & { uri?: string })[]
-		previewOnly?: boolean
 	}
 
 	// Account

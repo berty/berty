@@ -8,7 +8,6 @@ import { selectActiveReplyInteraction } from '@berty/redux/reducers/chatInputs.r
 import { CancelReplyPriv } from './CancelReply.priv'
 import { ReplyMessageProps } from './interface'
 import { ReplyMessagePriv } from './reply-message/ReplyMessage.priv'
-import { ReplyMessageWithAttachmentPriv } from './reply-message/ReplyMessageWithAttachment.priv'
 import { ReplyTargetAuthor } from './ReplyTargetAuthor.priv'
 
 export const ReplyMessageBarPriv: React.FC<ReplyMessageProps> = ({ convPK }) => {
@@ -30,11 +29,7 @@ export const ReplyMessageBarPriv: React.FC<ReplyMessageProps> = ({ convPK }) => 
 			]}
 		>
 			<ReplyTargetAuthor activeReplyInteraction={activeReplyInteraction} />
-			{activeReplyInteraction?.payload?.body ? (
-				<ReplyMessagePriv activeReplyInteraction={activeReplyInteraction} />
-			) : (
-				<ReplyMessageWithAttachmentPriv activeReplyInteraction={activeReplyInteraction} />
-			)}
+			<ReplyMessagePriv activeReplyInteraction={activeReplyInteraction} />
 			<CancelReplyPriv convPK={convPK} activeReplyInteraction={activeReplyInteraction} />
 		</View>
 	)

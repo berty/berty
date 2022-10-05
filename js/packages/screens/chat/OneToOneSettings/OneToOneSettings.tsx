@@ -1,12 +1,10 @@
 import { Icon } from '@ui-kitten/components'
-import React, { ComponentProps } from 'react'
-import { useTranslation } from 'react-i18next'
+import React from 'react'
 import { ScrollView, View, StatusBar, TouchableOpacity, Platform } from 'react-native'
 
 import beapi from '@berty/api'
 import { ContactAvatar } from '@berty/components/avatars'
 import EnableNotificationsButton from '@berty/components/chat/EnableNotificationsButton'
-import { ButtonSetting } from '@berty/components/shared-components/SettingsButtons'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
@@ -20,7 +18,7 @@ const OneToOneHeader: React.FC<{ contact: any }> = ({ contact }) => {
 
 	return (
 		<View style={[flex.large, { alignItems: 'center' }]}>
-			<ContactAvatar size={100 * scaleSize} publicKey={contact.publicKey} pressable />
+			<ContactAvatar size={100 * scaleSize} publicKey={contact.publicKey} />
 			<UnifiedText
 				numberOfLines={1}
 				style={[
@@ -39,18 +37,11 @@ const OneToOneHeader: React.FC<{ contact: any }> = ({ contact }) => {
 const OneToOneBody: React.FC<{
 	publicKey: string
 	isAccepted: boolean
-	navigation: ComponentProps<typeof OneToOneSettings>['navigation']
-}> = ({ publicKey, isAccepted, navigation }) => {
+}> = ({ publicKey, isAccepted }) => {
 	const { padding } = useStyles()
-	const { t } = useTranslation()
 
 	return (
 		<View style={[padding.horizontal.medium]}>
-			<ButtonSetting
-				name={t('chat.one-to-one-settings.media-button')}
-				icon='image-outline'
-				onPress={() => navigation.navigate('Chat.SharedMedias', { convPk: publicKey })}
-			/>
 			{isAccepted && Platform.OS !== 'web' && (
 				<EnableNotificationsButton conversationPk={publicKey} />
 			)}
@@ -118,11 +109,7 @@ export const OneToOneSettings: ScreenFC<'Chat.OneToOneSettings'> = ({
 					<View style={[padding.medium, { backgroundColor: colors['background-header'] }]}>
 						<OneToOneHeader contact={contact} />
 					</View>
-					<OneToOneBody
-						publicKey={conv.publicKey || ''}
-						isAccepted={isAccepted}
-						navigation={navigation}
-					/>
+					<OneToOneBody publicKey={conv.publicKey || ''} isAccepted={isAccepted} />
 				</ScrollView>
 			</View>
 		</>

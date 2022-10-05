@@ -7,7 +7,6 @@ import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useStyles } from '@berty/contexts/styles'
 import { useThemeColor } from '@berty/hooks'
 import { InteractionUserMessage, ParsedInteraction } from '@berty/utils/api'
-import { getMediaTypeFromMedias } from '@berty/utils/messenger/media'
 
 const AVATAR_SIZE = 30
 const AVATAR_SPACE_RIGHT = 5
@@ -82,11 +81,8 @@ export const RepliedTo: React.FC<UserMessageRepliedToProps> = props => {
 					numberOfLines={1}
 					style={[text.size.tiny, { color: props.msgTextColor, lineHeight: 17 }]}
 				>
-					{(props.replyOf?.type === beapi.messenger.AppMessage.Type.TypeUserMessage &&
-						props.replyOf?.payload?.body) ||
-						`${t('chat.reply.response-to')} ${t(
-							`chat.shared-medias.${getMediaTypeFromMedias(props.replyOf?.medias)}`,
-						)}`}
+					{props.replyOf?.type === beapi.messenger.AppMessage.Type.TypeUserMessage &&
+						props.replyOf?.payload?.body}
 				</UnifiedText>
 			</TouchableOpacity>
 		</View>

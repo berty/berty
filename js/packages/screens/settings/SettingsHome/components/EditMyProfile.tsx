@@ -1,8 +1,7 @@
 import { Icon } from '@ui-kitten/components'
 import React, { useReducer } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Pressable, View } from 'react-native'
-import ImagePicker, { ImageOrVideo } from 'react-native-image-crop-picker'
+import { View } from 'react-native'
 import { useSelector } from 'react-redux'
 
 import { SecondaryButton, SmallInput } from '@berty/components'
@@ -11,23 +10,15 @@ import { useStyles } from '@berty/contexts/styles'
 import { useAccount, useMessengerClient, useThemeColor, useUpdateAccount } from '@berty/hooks'
 import { selectSelectedAccount } from '@berty/redux/reducers/ui.reducer'
 
-import { ImagePic } from './ImagePic'
-import { ImagePlaceholder } from './ImagePlaceholder'
-
 type State = {
 	saving: boolean
 	name?: string
 	err?: any
-	pic?: ImageOrVideo
 }
 
 type Action =
 	| {
 			type: 'SAVE'
-	  }
-	| {
-			type: 'SET_PICTURE'
-			pic: ImageOrVideo
 	  }
 	| {
 			type: 'SET_NAME'
@@ -44,9 +35,6 @@ const reducer = (prevState: State, action: Action): State => {
 		case 'SAVE':
 			state.saving = true
 			delete state.err
-			return state
-		case 'SET_PICTURE':
-			state.pic = action.pic
 			return state
 		case 'SET_NAME':
 			state.name = action.name
@@ -83,54 +71,12 @@ export const EditMyProfile: React.FC<EditProfileProps> = ({ hide }) => {
 	})
 	const isValidName = state.name && state.name.trim() && state.name !== account.displayName
 
-	const handlePicturePressed = async () => {
-		try {
-			const pic = await ImagePicker.openPicker({
-				width: 400,
-				height: 400,
-				cropping: true,
-				cropperCircleOverlay: true,
-				mediaType: 'photo',
-			})
-			if (pic) {
-				localDispatch({ type: 'SET_PICTURE', pic })
-			}
-		} catch (err: any) {
-			if (err.code !== 'E_PICKER_CANCELLED') {
-				localDispatch({ type: 'SET_ERROR', err })
-			}
-		}
-	}
-
-	const avatarURI = state.pic?.path
-
 	const handleSave = async () => {
 		try {
 			localDispatch({ type: 'SAVE' })
 
 			const update: any = {}
 			let updated = false
-
-			if (state.pic) {
-				const stream = await client?.mediaPrepare({})
-				if (!stream) {
-					throw new Error('failed to open prepareAttachment stream')
-				}
-				await stream.emit({
-					info: {
-						mimeType: state.pic.mime,
-						filename: state.pic.filename,
-						displayName: state.pic.filename || 'picture',
-					},
-					uri: avatarURI,
-				})
-				const reply = await stream.stopAndRecv()
-				if (!reply?.cid) {
-					throw new Error('invalid PrepareAttachment reply, missing cid')
-				}
-				update.avatarCid = reply.cid
-				updated = true
-			}
 
 			if (isValidName) {
 				update.displayName = state.name
@@ -156,15 +102,12 @@ export const EditMyProfile: React.FC<EditProfileProps> = ({ hide }) => {
 	const { padding, margin, row, flex, text } = useStyles()
 
 	return (
-		<View style={[padding.horizontal.big]}>
+		<View style={[padding.horizontal.big, margin.top.small]}>
 			<UnifiedText style={[margin.small, margin.bottom.medium, text.size.huge, text.bold]}>
 				{t('settings.edit-profile.title')}
 			</UnifiedText>
 			<View style={[{ flexDirection: 'row', alignItems: 'center' }]}>
-				<Pressable onPress={handlePicturePressed}>
-					{state.pic ? <ImagePic avatarURI={avatarURI} /> : <ImagePlaceholder />}
-				</Pressable>
-				<View style={[flex.tiny, margin.left.medium]}>
+				<View style={[flex.tiny, margin.left.medium, margin.bottom.small]}>
 					<SmallInput
 						value={state.name}
 						onChangeText={name => localDispatch({ type: 'SET_NAME', name })}
@@ -210,9 +153,7 @@ export const EditMyProfile: React.FC<EditProfileProps> = ({ hide }) => {
 				</View>
 			)}
 			<SecondaryButton loading={state.saving} onPress={handleSave}>
-				{isValidName || state.pic
-					? t('settings.edit-profile.save')
-					: t('settings.edit-profile.cancel')}
+				{isValidName ? t('settings.edit-profile.save') : t('settings.edit-profile.cancel')}
 			</SecondaryButton>
 		</View>
 	)

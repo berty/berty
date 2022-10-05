@@ -126,7 +126,6 @@ export const MultiAccount: React.FC<{ onPress: () => void }> = ({ onPress }) => 
 								avatar={
 									<GenericAvatar
 										size={40}
-										cid={account?.avatarCid}
 										colorSeed={account?.publicKey}
 										nameSeed={account?.name}
 									/>

@@ -1,4 +1,3 @@
-import { Icon } from '@ui-kitten/components'
 import React from 'react'
 import { StyleSheet, View } from 'react-native'
 
@@ -12,7 +11,6 @@ import { MessageStatus } from './MessageStatus'
 
 interface ConversationDescStatusProps {
 	description: string
-	messageType: 'picture' | 'audio' | ''
 	chatInputText: string
 	unreadCount: number | undefined
 	lastInte: ParsedInteraction | undefined
@@ -22,7 +20,7 @@ interface ConversationDescStatusProps {
 
 export const ConversationDescStatus: React.FC<ConversationDescStatusProps> = props => {
 	const colors = useThemeColor()
-	const { flex, row, margin, text } = useStyles()
+	const { flex, row, text } = useStyles()
 
 	return (
 		<View
@@ -34,15 +32,6 @@ export const ConversationDescStatus: React.FC<ConversationDescStatusProps> = pro
 				},
 			]}
 		>
-			{!!props.messageType && (
-				<Icon
-					name={props.messageType === 'audio' ? 'headphones' : 'image'}
-					fill={colors['main-text']}
-					height={20}
-					width={20}
-					style={[margin.right.tiny]}
-				/>
-			)}
 			<UnifiedText
 				numberOfLines={1}
 				style={[

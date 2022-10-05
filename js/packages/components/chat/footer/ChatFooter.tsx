@@ -1,15 +1,13 @@
 import Long from 'long'
-import React, { useMemo, useState } from 'react'
+import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { Platform, View, StyleSheet } from 'react-native'
+import { View, StyleSheet } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import beapi from '@berty/api'
-import { BottomModal } from '@berty/components'
 import {
 	useAppDispatch,
 	useAppSelector,
-	useMedias,
 	useConversation,
 	usePlaySound,
 	useThemeColor,
@@ -20,7 +18,6 @@ import {
 	removeActiveReplyInteraction,
 	resetChatInput,
 	selectActiveReplyInteraction,
-	selectChatInputMediaList,
 	selectChatInputText,
 	setChatInputText,
 } from '@berty/redux/reducers/chatInputs.reducer'
@@ -30,11 +27,8 @@ import {
 } from '@berty/redux/reducers/chatInputsVolatile.reducer'
 import { useStateWithRef } from '@berty/utils/react-native/useStateWithRef'
 
-import { AddFileMenu } from '../modals/add-file-modal/AddFileMenu.modal'
-import { CameraButton } from './CameraButton'
-import { MoreButton, RecordButton, SendButton } from './ChatFooterButtons'
+import { SendButton } from './ChatFooterButtons'
 import { ChatTextInput } from './ChatTextInput'
-import { RecorderWrapper } from './recorder/RecorderWrapper'
 
 type ChatFooterProps = {
 	convPK: string
@@ -55,76 +49,59 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 		const draftMessage = useAppSelector(state => selectChatInputText(state, convPK))
 		const [message, setMessage, messageRef] = useStateWithRef(draftMessage)
 
-		const mediaCids = useAppSelector(state => selectChatInputMediaList(state, convPK))
 		const colors = useThemeColor()
 		const activeReplyInte = useAppSelector(state => selectActiveReplyInteraction(state, convPK))
 		const messengerClient = useMessengerClient()
 		const playSound = usePlaySound()
 		const conversation = useConversation(convPK)
 		const insets = useSafeAreaInsets()
-		const addedMedias = useMedias(mediaCids)
-		const [isVisible, setIsVisible] = useState<boolean>(false)
 
 		const isFake = !!(conversation as any)?.fake
-		const sendEnabled = !sending && !!(!isFake && (message || mediaCids.length > 0))
-		const horizontalGutter = 8
-		const showQuickButtons = useMemo(
-			() => !disabled && !sending && !message && mediaCids.length <= 0 && Platform.OS !== 'web',
-			[disabled, mediaCids.length, message, sending],
-		)
+		const sendEnabled = !sending && !!(!isFake && message)
 
-		const sendMessageBouncy = React.useCallback(
-			async (additionalMedia: beapi.messenger.IMedia[] = []) => {
-				try {
-					if (!messengerClient) {
-						throw new Error('no messenger client')
-					}
-					const buf = beapi.messenger.AppMessage.UserMessage.encode({ body: message }).finish()
-					const medias = [...addedMedias, ...additionalMedia].filter(
-						m => m?.cid,
-					) as beapi.messenger.IMedia[]
-					const reply = await messengerClient.interact({
-						conversationPublicKey: convPK,
-						type: beapi.messenger.AppMessage.Type.TypeUserMessage,
-						payload: buf,
-						mediaCids: medias.map(media => media.cid) as string[],
-						targetCid: activeReplyInte?.cid,
-					})
-					const optimisticInteraction: beapi.messenger.IInteraction = {
-						medias,
-						cid: reply.cid,
-						conversationPublicKey: convPK,
-						isMine: true,
-						type: beapi.messenger.AppMessage.Type.TypeUserMessage,
-						payload: buf,
-						targetCid: activeReplyInte?.cid,
-						sentDate: Long.fromNumber(Date.now()).toString() as unknown as Long,
-					}
-					dispatch({
-						type: 'messenger/InteractionUpdated',
-						payload: { interaction: optimisticInteraction },
-					})
-					dispatch(removeActiveReplyInteraction({ convPK }))
-					dispatch(resetChatInput(convPK))
-					setMessage('')
-					playSound('messageSent')
-				} catch (e) {
-					console.warn('e sending message:', e)
-					setSending(false)
+		const sendMessageBouncy = React.useCallback(async () => {
+			try {
+				if (!messengerClient) {
+					throw new Error('no messenger client')
 				}
-			},
-			[
-				activeReplyInte?.cid,
-				addedMedias,
-				convPK,
-				playSound,
-				dispatch,
-				message,
-				messengerClient,
-				setSending,
-				setMessage,
-			],
-		)
+				const buf = beapi.messenger.AppMessage.UserMessage.encode({ body: message }).finish()
+				const reply = await messengerClient.interact({
+					conversationPublicKey: convPK,
+					type: beapi.messenger.AppMessage.Type.TypeUserMessage,
+					payload: buf,
+					targetCid: activeReplyInte?.cid,
+				})
+				const optimisticInteraction: beapi.messenger.IInteraction = {
+					cid: reply.cid,
+					conversationPublicKey: convPK,
+					isMine: true,
+					type: beapi.messenger.AppMessage.Type.TypeUserMessage,
+					payload: buf,
+					targetCid: activeReplyInte?.cid,
+					sentDate: Long.fromNumber(Date.now()).toString() as unknown as Long,
+				}
+				dispatch({
+					type: 'messenger/InteractionUpdated',
+					payload: { interaction: optimisticInteraction },
+				})
+				dispatch(removeActiveReplyInteraction({ convPK }))
+				dispatch(resetChatInput(convPK))
+				setMessage('')
+				playSound('messageSent')
+			} catch (e) {
+				console.warn('e sending message:', e)
+				setSending(false)
+			}
+		}, [
+			activeReplyInte?.cid,
+			convPK,
+			playSound,
+			dispatch,
+			message,
+			messengerClient,
+			setSending,
+			setMessage,
+		])
 
 		const handlePressSend = React.useCallback(async () => {
 			if (sending) {
@@ -133,16 +110,6 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 			setSending(true)
 			await sendMessageBouncy()
 		}, [setSending, sendMessageBouncy, sending])
-
-		const handleCloseFileMenu = React.useCallback(
-			async (newMedias: beapi.messenger.IMedia[] | undefined) => {
-				if (newMedias) {
-					await sendMessageBouncy(newMedias)
-				}
-				setIsVisible(false)
-			},
-			[sendMessageBouncy],
-		)
 
 		const handleTextChange = React.useCallback(
 			(text: string) => {
@@ -165,9 +132,6 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 			}
 		})
 
-		// elements
-		const recordIcon = React.useMemo(() => showQuickButtons && <RecordButton />, [showQuickButtons])
-
 		// render
 		return (
 			<View style={{ backgroundColor: colors['main-background'] }}>
@@ -180,65 +144,20 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 						},
 					]}
 				>
-					<RecorderWrapper
-						component={recordIcon}
-						convPk={convPK}
-						disableLockMode={false}
-						disabled={!showQuickButtons}
-						setSending={setSending}
-						sending={sending}
-					>
-						<View style={styles.wrapper}>
-							<View style={{ marginRight: horizontalGutter }}>
-								{Platform.OS !== 'web' && (
-									<MoreButton
-										n={mediaCids.length}
-										onPress={() => setIsVisible(true)}
-										disabled={disabled || sending}
-									/>
-								)}
-							</View>
-							<ChatTextInput
-								editable={!sending && !disabled}
-								placeholder={sending ? t('chat.sending') : placeholder}
-								onChangeText={handleTextChange}
-								value={message}
-								handleTabletSubmit={handlePressSend}
-								convPK={convPK}
-							/>
-							<View style={{ marginLeft: horizontalGutter }}>
-								{showQuickButtons ? (
-									<>
-										{Platform.OS !== 'web' && (
-											<View style={{ marginRight: horizontalGutter }}>
-												<CameraButton
-													sending={sending}
-													setSending={setSending}
-													messengerClient={messengerClient}
-													onClose={handleCloseFileMenu}
-												/>
-											</View>
-										)}
-									</>
-								) : (
-									<SendButton onPress={handlePressSend} disabled={!sendEnabled} loading={sending} />
-								)}
-							</View>
+					<View style={styles.wrapper}>
+						<ChatTextInput
+							editable={!sending && !disabled}
+							placeholder={sending ? t('chat.sending') : placeholder}
+							onChangeText={handleTextChange}
+							value={message}
+							handleTabletSubmit={handlePressSend}
+							convPK={convPK}
+						/>
+						<View style={styles.send}>
+							<SendButton onPress={handlePressSend} disabled={!sendEnabled} loading={sending} />
 						</View>
-					</RecorderWrapper>
+					</View>
 				</View>
-				<BottomModal isVisible={isVisible} setIsVisible={setIsVisible}>
-					<AddFileMenu
-						onClose={handleCloseFileMenu}
-						setSending={val => {
-							setSending(val)
-							if (val) {
-								setIsVisible(false)
-							}
-						}}
-						sending={sending}
-					/>
-				</BottomModal>
 			</View>
 		)
 	},
@@ -249,6 +168,10 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		justifyContent: 'center',
 		alignItems: 'center',
+		marginRight: 12,
+	},
+	send: {
+		marginLeft: 10,
 	},
 	container: {
 		paddingLeft: 10,
