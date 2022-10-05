@@ -470,10 +470,6 @@
 			"connect-button": "Connect to Berty operated services",
 			"manage-add-button": "Manage or add services"
 		},
-		"reply": {
-			"replying-to": "You're replying to",
-			"replied-to": "Replied to"
-		},
 		"user-message": {
 			"read-more": "Read more",
 			"show-less": "Show less"

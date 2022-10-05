@@ -1,7 +1,5 @@
 import { createEntityAdapter, createSlice, PayloadAction } from '@reduxjs/toolkit'
 
-import { InteractionUserMessage } from '@berty/utils/api'
-
 /**
  *
  * State
@@ -14,23 +12,16 @@ const makeRoot = <T>(val: T) => ({
 	[sliceName]: val,
 })
 
-export interface ReplyTargetInteraction extends InteractionUserMessage {
-	backgroundColor: string
-	textColor: string
-}
-
 type ChatInputState = {
 	id: string
 	text: string
 	mediaList: string[] // cids
-	activeReplyInteraction: ReplyTargetInteraction | null
 }
 
 const newChatInputState: (convPK: string) => ChatInputState = convPK => ({
 	id: convPK,
 	text: '',
 	mediaList: [],
-	activeReplyInteraction: null,
 })
 
 const adapter = createEntityAdapter<ChatInputState>()
@@ -62,9 +53,6 @@ const selectors = adapter.getSelectors(selectSlice)
 export const selectChatInputText = (state: LocalRootState, convPk: string) =>
 	selectors.selectById(state, convPk)?.text || ''
 
-export const selectActiveReplyInteraction = (state: LocalRootState, convPk: string) =>
-	selectors.selectById(state, convPk)?.activeReplyInteraction || null
-
 /**
  *
  * Actions
@@ -91,30 +79,9 @@ const slice = createSlice({
 				},
 			})
 		},
-		setActiveReplyInteraction(
-			state,
-			{
-				payload: { convPK, activeReplyInteraction },
-			}: PayloadAction<{ convPK: string; activeReplyInteraction: ReplyTargetInteraction }>,
-		) {
-			ensureEntityExists(state, convPK)
-			adapter.updateOne(state, { id: convPK, changes: { activeReplyInteraction } })
-		},
-		removeActiveReplyInteraction(
-			state,
-			{ payload: { convPK } }: PayloadAction<{ convPK: string }>,
-		) {
-			ensureEntityExists(state, convPK)
-			adapter.updateOne(state, { id: convPK, changes: { activeReplyInteraction: null } })
-		},
 	},
 })
 
-export const {
-	resetChatInput,
-	setChatInputText,
-	setActiveReplyInteraction,
-	removeActiveReplyInteraction,
-} = slice.actions
+export const { resetChatInput, setChatInputText } = slice.actions
 
 export default makeRoot(slice.reducer)

@@ -57,10 +57,6 @@ export const useAllContacts = () => {
 	return useAppSelector(m.selectAllContacts)
 }
 
-export const useInteractionAuthor = (convPk: string, cid: string) => {
-	return useAppSelector(state => m.selectInteractionAuthor(state, convPk, cid))
-}
-
 export const useMember = (
 	conversationPublicKey: string | null | undefined,
 	publicKey: string | null | undefined,
