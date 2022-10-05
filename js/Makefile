@@ -17,6 +17,7 @@ GOMOBILE_ANDROID_TARGET ?= android
 IOS_BUNDLE_VERSION ?= $(shell echo -n $(shell git rev-list HEAD | wc -l))
 IOS_SHORT_BUNDLE_VERSION ?= $(shell echo "$(VERSION)" | cut -c2- | cut -f1 -d '-')
 IOS_COMMIT ?= $(shell git rev-parse HEAD)
+YOLO_SUFFIX ?= Yolo
 
 ## Internal variables
 
@@ -446,6 +447,7 @@ ios/Berty.xcodeproj: $(xcodegen_yml) $(call rwildcard,ios/Berty/Source,*) $(call
 	IOS_BUNDLE_VERSION=$(IOS_BUNDLE_VERSION) \
 	IOS_SHORT_BUNDLE_VERSION=$(IOS_SHORT_BUNDLE_VERSION) \
 	IOS_COMMIT=$(IOS_COMMIT) \
+	YOLO_SUFFIX=$(YOLO_SUFFIX) \
 	xcodegen \
 		--spec ios/berty.yaml \
 		--cache-path $(xcodegen_cache) \

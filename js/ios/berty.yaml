@@ -147,7 +147,7 @@ targets:
           OTHER_SWIFT_FLAGS: "-D CFG_STAFF -D DEBUG_LOGS $(inherited)"
         Yolo:
           DEVELOPMENT_TEAM: GR5463T564
-          PRODUCT_NAME: Berty Yolo
+          PRODUCT_NAME: 'Berty ${YOLO_SUFFIX}'
           PRODUCT_BUNDLE_IDENTIFIER: $(PRODUCT_IDENTIFIER).yolo
           ASSETCATALOG_COMPILER_APPICON_NAME: AppIconYolo
           CODE_SIGN_ENTITLEMENTS: Entitlements/Entreprise.entitlements
