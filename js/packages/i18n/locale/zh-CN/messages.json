@@ -417,7 +417,6 @@
 		},
 		"multi-member-settings": {
 			"title": "对话设置",
-			"media-button": "媒体、 链接和文档",
 			"members-button": {
 				"title": "成员网络状态 ({{count}})"
 			},
@@ -463,7 +462,6 @@
 		},
 		"one-to-one-settings": {
 			"title": "对话设置",
-			"media-button": "媒体、 链接和文档",
 			"save-button": "在服务器上保存对话"
 		},
 		"replicate-group-settings": {
@@ -472,31 +470,7 @@
 			"connect-button": "连接到 Berty 运营服务",
 			"manage-add-button": "管理或添加服务"
 		},
-		"files": {
-			"gallery": "相册",
-			"no-images": "无图像",
-			"camera": "摄像头",
-			"files": "文件",
-			"microphone": "麦克风",
-			"security-access": "安全访问",
-			"security-access-desc": "点击此处以设置您的访问权限",
-			"save-to-gallery": "将此文件保存到相册",
-			"share": "分享",
-			"forward-berty": "转发到 Berty 联系人",
-			"forward": "转发",
-			"image-saved": "图片已保存到相册"
-		},
-		"shared-medias": {
-			"title": "共享媒体",
-			"medias": "媒体",
-			"links": "链接",
-			"documents": "文件",
-			"file": "文件",
-			"picture": "图片",
-			"audio": "音频"
-		},
 		"reply": {
-			"response-to": "答复：",
 			"replying-to": "你正在回复",
 			"replied-to": "回复至"
 		},
@@ -515,17 +489,6 @@
 			"alert-push-perm-denied": "推送通知的权限请求已被拒绝。",
 			"alert-push-desc": "您可以随时尝试在“设置”中再次激活此功能。",
 			"alert-push-button": "继续"
-		}
-	},
-	"audio": {
-		"record": {
-			"tooltip": {
-				"usage": "按住来记录，释放以发送",
-				"not-sent": "音频消息未发送",
-				"permission-denied": "不允许应用程序录制声音"
-			},
-			"slide-to-cancel": "<< 滑动取消",
-			"cancel-button": "取消"
 		}
 	},
 	"permission": {
