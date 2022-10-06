@@ -417,7 +417,6 @@
 		},
 		"multi-member-settings": {
 			"title": "",
-			"media-button": "媒體、 鏈接和文檔",
 			"members-button": {
 				"title": ""
 			},
@@ -463,7 +462,6 @@
 		},
 		"one-to-one-settings": {
 			"title": "",
-			"media-button": "媒體、 鏈接和文檔",
 			"save-button": "在服務器上保存對話"
 		},
 		"replicate-group-settings": {
@@ -472,31 +470,7 @@
 			"connect-button": "連接到 Berty 運營服務",
 			"manage-add-button": "管理或添加服務"
 		},
-		"files": {
-			"gallery": "相冊",
-			"no-images": "",
-			"camera": "攝像頭",
-			"files": "文件",
-			"microphone": "麥克風",
-			"security-access": "安全訪問",
-			"security-access-desc": "點擊此處以設置您的訪問權限",
-			"save-to-gallery": "將此文件保存到相冊",
-			"share": "分享",
-			"forward-berty": "轉發到 Berty 聯繫人",
-			"forward": "轉發",
-			"image-saved": "圖片已保存到相冊"
-		},
-		"shared-medias": {
-			"title": "共享媒體",
-			"medias": "媒體",
-			"links": "鏈接",
-			"documents": "文件",
-			"file": "",
-			"picture": "",
-			"audio": ""
-		},
 		"reply": {
-			"response-to": "答覆：",
 			"replying-to": "你正在回復",
 			"replied-to": "回復至"
 		},
@@ -515,17 +489,6 @@
 			"alert-push-perm-denied": "",
 			"alert-push-desc": "",
 			"alert-push-button": ""
-		}
-	},
-	"audio": {
-		"record": {
-			"tooltip": {
-				"usage": "按住來錄音，釋放以發送",
-				"not-sent": "音頻消息未發送",
-				"permission-denied": "應用程序未被允許錄製聲音"
-			},
-			"slide-to-cancel": "<< 滑動以取消",
-			"cancel-button": "取消"
 		}
 	},
 	"permission": {
