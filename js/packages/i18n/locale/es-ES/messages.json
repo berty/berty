@@ -417,7 +417,6 @@
 		},
 		"multi-member-settings": {
 			"title": "",
-			"media-button": "Medios, enlaces y documentos",
 			"members-button": {
 				"title": ""
 			},
@@ -463,7 +462,6 @@
 		},
 		"one-to-one-settings": {
 			"title": "",
-			"media-button": "Medios, enlaces y documentos",
 			"save-button": "Guardar la conversación en el servidor"
 		},
 		"replicate-group-settings": {
@@ -472,31 +470,7 @@
 			"connect-button": "Conectarse a servicios operados por Berty",
 			"manage-add-button": "Administrar o añadir servicios"
 		},
-		"files": {
-			"gallery": "Galería",
-			"no-images": "Sin imágenes",
-			"camera": "Cámara",
-			"files": "Archivos",
-			"microphone": "Micrófono",
-			"security-access": "Acceso de seguridad",
-			"security-access-desc": "Toque aquí para abrir la configuración para permitir el acceso a su",
-			"save-to-gallery": "Guardar este archivo en la galería",
-			"share": "Compartir",
-			"forward-berty": "Reenviar a Contacto de Berty",
-			"forward": "Reenviar",
-			"image-saved": "Imagen guardada en la galería"
-		},
-		"shared-medias": {
-			"title": "Multimedia compartida",
-			"medias": "Multimedia",
-			"links": "Enlaces",
-			"documents": "Documentos",
-			"file": "",
-			"picture": "",
-			"audio": ""
-		},
 		"reply": {
-			"response-to": "Responder a",
 			"replying-to": "Estás respondiendo a",
 			"replied-to": "Respondido a"
 		},
@@ -515,17 +489,6 @@
 			"alert-push-perm-denied": "",
 			"alert-push-desc": "",
 			"alert-push-button": ""
-		}
-	},
-	"audio": {
-		"record": {
-			"tooltip": {
-				"usage": "Mantén presionado para grabar, suelta para enviar",
-				"not-sent": "El mensaje de audio no ha sido enviado",
-				"permission-denied": "La aplicación no tiene permitido grabar sonido"
-			},
-			"slide-to-cancel": "<< Desliza para cancelar",
-			"cancel-button": "Cancelar"
 		}
 	},
 	"permission": {
