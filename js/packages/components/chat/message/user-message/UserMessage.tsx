@@ -1,22 +1,16 @@
-import React, { useCallback, useState } from 'react'
+import React, { useState } from 'react'
 import { View } from 'react-native'
 
 import beapi from '@berty/api'
-import { BottomModal } from '@berty/components/modals'
 import {
 	useAppSelector,
 	useInteractionAuthor,
 	useLastConvInteraction,
-	useMessengerClient,
-	usePlaySound,
 	useThemeColor,
 } from '@berty/hooks'
 import { selectInteraction } from '@berty/redux/reducers/messenger.reducer'
 import { InteractionUserMessage, ParsedInteraction } from '@berty/utils/api'
 
-import { EmojiKeyboard } from '../../modals/EmojiKeyboard.modal'
-import { MessageMenu } from '../../modals/MessageMenu.modal'
-import { Reactions } from '../reactions/Reactions'
 import { GestureHandler } from './GestureHandler'
 import { getUserMessageState } from './getUserMessageState'
 import { RepliedTo } from './RepliedTo'
@@ -53,13 +47,8 @@ export const UserMessage: React.FC<UserMessageProps> = ({
 		selectInteraction(state, inte.conversationPublicKey || '', inte.targetCid || ''),
 	)
 	const repliedTo = useInteractionAuthor(replyOf?.conversationPublicKey || '', replyOf?.cid || '')
-	const playSound = usePlaySound()
-	const client = useMessengerClient()
 	const colors = useThemeColor()
-	const [messageLayoutWidth, setMessageLayoutWidth] = useState(0)
 	const [highlightCid, setHighlightCid] = useState<string | undefined | null>()
-	const [isMenuVisible, setIsMenuVisible] = useState(false)
-	const [isEmojiVisible, setIsEmojiVisible] = useState(false)
 
 	const {
 		name,
@@ -72,28 +61,6 @@ export const UserMessage: React.FC<UserMessageProps> = ({
 		msgSenderColor,
 		cmd,
 	} = getUserMessageState(inte, members, convKind, previousMessage, nextMessage, colors)
-
-	const handleSelectEmoji = useCallback(
-		(emoji: string, remove: boolean = false) => {
-			client
-				?.interact({
-					conversationPublicKey: convPK,
-					type: beapi.messenger.AppMessage.Type.TypeUserReaction,
-					payload: beapi.messenger.AppMessage.UserReaction.encode({
-						emoji,
-						state: !remove,
-					}).finish(),
-					targetCid: inte?.cid,
-				})
-				.then(() => {
-					playSound('messageSent')
-				})
-				.catch((e: unknown) => {
-					console.warn('e sending message:', e)
-				})
-		},
-		[client, convPK, playSound, inte?.cid],
-	)
 
 	return (
 		<UserMessageWrapper
@@ -134,8 +101,6 @@ export const UserMessage: React.FC<UserMessageProps> = ({
 					<GestureHandler
 						convPK={convPK}
 						inte={inte}
-						setIsMenuVisible={setIsMenuVisible}
-						setMessageLayoutWidth={setMessageLayoutWidth}
 						highlightCid={highlightCid}
 						isFollowedMessage={isFollowedMessage}
 						previousMessage={previousMessage}
@@ -144,14 +109,6 @@ export const UserMessage: React.FC<UserMessageProps> = ({
 						msgTextColor={msgTextColor}
 						msgBorderColor={msgBorderColor || undefined}
 					/>
-					{!!messageLayoutWidth && (
-						<Reactions
-							convPk={convPK}
-							cid={inte.cid!}
-							onEmojiKeyboard={() => setIsEmojiVisible(true)}
-							onPressEmoji={handleSelectEmoji}
-						/>
-					)}
 				</View>
 				{!isWithinCollapseDuration && (
 					<TimestampStatus
@@ -162,27 +119,6 @@ export const UserMessage: React.FC<UserMessageProps> = ({
 					/>
 				)}
 			</View>
-			<BottomModal isVisible={isMenuVisible} setIsVisible={setIsMenuVisible}>
-				<MessageMenu
-					convPk={convPK}
-					cid={inte.cid!}
-					onSelectEmoji={handleSelectEmoji}
-					replyInteraction={{
-						...inte,
-						backgroundColor: msgBackgroundColor,
-						textColor: msgTextColor,
-					}}
-					hide={() => setIsMenuVisible(false)}
-				/>
-			</BottomModal>
-			<BottomModal isVisible={isEmojiVisible} setIsVisible={setIsEmojiVisible}>
-				<EmojiKeyboard
-					conversationPublicKey={convPK}
-					targetCid={inte.cid!}
-					hide={() => setIsEmojiVisible(false)}
-					showBoard={isEmojiVisible}
-				/>
-			</BottomModal>
 		</UserMessageWrapper>
 	)
 }

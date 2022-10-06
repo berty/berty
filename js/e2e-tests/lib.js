@@ -37,9 +37,9 @@ const getCapabilitiesFromEnv = () => {
 				deviceName: process.env.IOS_DEVICE || 'iPhone 11',
 				app,
 				automationName: 'XCUITest', // UiAutomator2, Espresso, or UiAutomator1 for Android,
-				simulatorStartupTimeout: 10 * 60 * 1000,
-				wdaLaunchTimeout: 10 * 60 * 1000,
-				wdaConnectionTimeout: 10 * 60 * 1000,
+				simulatorStartupTimeout: 20 * 60 * 1000,
+				wdaLaunchTimeout: 20 * 60 * 1000,
+				wdaConnectionTimeout: 20 * 60 * 1000,
 			}
 		case 'Android':
 			return {
