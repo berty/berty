@@ -417,7 +417,6 @@
 		},
 		"multi-member-settings": {
 			"title": "",
-			"media-button": "Media, links & documenten",
 			"members-button": {
 				"title": ""
 			},
@@ -463,7 +462,6 @@
 		},
 		"one-to-one-settings": {
 			"title": "",
-			"media-button": "Media, links & documenten",
 			"save-button": "Gesprek opslaan op server"
 		},
 		"replicate-group-settings": {
@@ -472,31 +470,7 @@
 			"connect-button": "Gebruik diensten van Berty",
 			"manage-add-button": "Beheer of voeg diensten toe"
 		},
-		"files": {
-			"gallery": "Galerij",
-			"no-images": "",
-			"camera": "Camera",
-			"files": "Bestanden",
-			"microphone": "Microfoon",
-			"security-access": "Toegang tot beveiliging",
-			"security-access-desc": "Tik hier om instellingen te openen om toegang tot uw",
-			"save-to-gallery": "Dit bestand opslaan in de Galerij",
-			"share": "Deel",
-			"forward-berty": "Doorsturen naar Berty contact",
-			"forward": "Doorsturen",
-			"image-saved": "Afbeelding opgeslagen in Galerij"
-		},
-		"shared-medias": {
-			"title": "Gedeelde media",
-			"medias": "Media",
-			"links": "Koppelingen",
-			"documents": "Documenten",
-			"file": "",
-			"picture": "",
-			"audio": ""
-		},
 		"reply": {
-			"response-to": "Reactie op",
 			"replying-to": "Je reageert op",
 			"replied-to": "Gereageerd op"
 		},
@@ -515,17 +489,6 @@
 			"alert-push-perm-denied": "",
 			"alert-push-desc": "",
 			"alert-push-button": ""
-		}
-	},
-	"audio": {
-		"record": {
-			"tooltip": {
-				"usage": "Vasthouden om op te nemen, loslaten om te verzenden",
-				"not-sent": "Audiobericht is niet verzonden",
-				"permission-denied": "App mag geen geluid opnemen"
-			},
-			"slide-to-cancel": "<< Veeg om te annuleren",
-			"cancel-button": "Annuleren"
 		}
 	},
 	"permission": {
