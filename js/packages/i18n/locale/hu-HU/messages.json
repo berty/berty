@@ -417,7 +417,6 @@
 		},
 		"multi-member-settings": {
 			"title": "",
-			"media-button": "Képek, linkek és dokumentumok",
 			"members-button": {
 				"title": ""
 			},
@@ -463,7 +462,6 @@
 		},
 		"one-to-one-settings": {
 			"title": "",
-			"media-button": "Képek, linkek és dokumentumok",
 			"save-button": "Beszélgetés mentése szerverre"
 		},
 		"replicate-group-settings": {
@@ -472,31 +470,7 @@
 			"connect-button": "Kapcsolódás a Berty szolgáltatásához",
 			"manage-add-button": "Szolgáltatások kezelése és hozzáadása"
 		},
-		"files": {
-			"gallery": "Galéria",
-			"no-images": "Nincsenek képek",
-			"camera": "Kamera",
-			"files": "Fájlok",
-			"microphone": "Mikrofon",
-			"security-access": "Biztonsági Hozzáférés",
-			"security-access-desc": "Koppintson ide a beállítás megnyitásához, hogy engedélyezze",
-			"save-to-gallery": "Fájl mentése a Galériába",
-			"share": "Megosztás",
-			"forward-berty": "Továbbítás Berty-nek",
-			"forward": "Továbbítás",
-			"image-saved": "Kép mentve a galériába"
-		},
-		"shared-medias": {
-			"title": "Megosztott médiák",
-			"medias": "Médiák",
-			"links": "Hivatkozások",
-			"documents": "Dokumentumok",
-			"file": "",
-			"picture": "",
-			"audio": ""
-		},
 		"reply": {
-			"response-to": "Válasz neki",
 			"replying-to": "Válasz neki:",
 			"replied-to": "Válaszolt neki"
 		},
@@ -515,17 +489,6 @@
 			"alert-push-perm-denied": "",
 			"alert-push-desc": "",
 			"alert-push-button": ""
-		}
-	},
-	"audio": {
-		"record": {
-			"tooltip": {
-				"usage": "Tartsa lenyomva felvételhez, engedje el a küldéshez",
-				"not-sent": "Hangüzenet nem lett elküldve",
-				"permission-denied": "Az alkalmazásnak nem engedélyezett a hangfelvétel"
-			},
-			"slide-to-cancel": "<< Csúsztatás a megszakításhoz",
-			"cancel-button": "Mégse"
 		}
 	},
 	"permission": {
