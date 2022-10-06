@@ -417,7 +417,6 @@
 		},
 		"multi-member-settings": {
 			"title": "会話の設定",
-			"media-button": "メディア、リンク & ドキュメント",
 			"members-button": {
 				"title": ""
 			},
@@ -463,7 +462,6 @@
 		},
 		"one-to-one-settings": {
 			"title": "会話の設定",
-			"media-button": "メディア、リンク & ドキュメント",
 			"save-button": "会話をサーバーに保存"
 		},
 		"replicate-group-settings": {
@@ -472,31 +470,7 @@
 			"connect-button": "Berty が運営するサービスに接続する",
 			"manage-add-button": "サービスを管理または追加する"
 		},
-		"files": {
-			"gallery": "ギャラリー",
-			"no-images": "画像なし",
-			"camera": "カメラ",
-			"files": "ファイル",
-			"microphone": "マイク",
-			"security-access": "セキュリティ設定",
-			"security-access-desc": "ここをタップしてセキュリティ設定を開きアクセスを許可：",
-			"save-to-gallery": "このファイルをギャラリーに保存する",
-			"share": "共有",
-			"forward-berty": "Berty の連絡先に転送する",
-			"forward": "転送",
-			"image-saved": "画像をギャラリーに保存しました"
-		},
-		"shared-medias": {
-			"title": "共有メディア",
-			"medias": "メディア",
-			"links": "リンク",
-			"documents": "ドキュメント",
-			"file": "ファイル",
-			"picture": "画像",
-			"audio": "音声"
-		},
 		"reply": {
-			"response-to": "返信先",
 			"replying-to": "以下に返信：",
 			"replied-to": "返信済み："
 		},
@@ -515,17 +489,6 @@
 			"alert-push-perm-denied": "",
 			"alert-push-desc": "",
 			"alert-push-button": "続ける"
-		}
-	},
-	"audio": {
-		"record": {
-			"tooltip": {
-				"usage": "長押しで録音、離すと送信されます",
-				"not-sent": "音声メッセージは送信されていません",
-				"permission-denied": "アプリは音声の録音が許可されていません"
-			},
-			"slide-to-cancel": "スライドして中止",
-			"cancel-button": "キャンセル"
 		}
 	},
 	"permission": {
