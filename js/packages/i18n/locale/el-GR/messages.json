@@ -417,7 +417,6 @@
 		},
 		"multi-member-settings": {
 			"title": "",
-			"media-button": "",
 			"members-button": {
 				"title": ""
 			},
@@ -463,7 +462,6 @@
 		},
 		"one-to-one-settings": {
 			"title": "",
-			"media-button": "",
 			"save-button": ""
 		},
 		"replicate-group-settings": {
@@ -472,31 +470,7 @@
 			"connect-button": "",
 			"manage-add-button": ""
 		},
-		"files": {
-			"gallery": "",
-			"no-images": "",
-			"camera": "",
-			"files": "",
-			"microphone": "",
-			"security-access": "",
-			"security-access-desc": "",
-			"save-to-gallery": "",
-			"share": "",
-			"forward-berty": "",
-			"forward": "",
-			"image-saved": ""
-		},
-		"shared-medias": {
-			"title": "",
-			"medias": "",
-			"links": "",
-			"documents": "",
-			"file": "",
-			"picture": "",
-			"audio": ""
-		},
 		"reply": {
-			"response-to": "",
 			"replying-to": "",
 			"replied-to": ""
 		},
@@ -515,17 +489,6 @@
 			"alert-push-perm-denied": "",
 			"alert-push-desc": "",
 			"alert-push-button": ""
-		}
-	},
-	"audio": {
-		"record": {
-			"tooltip": {
-				"usage": "",
-				"not-sent": "",
-				"permission-denied": ""
-			},
-			"slide-to-cancel": "",
-			"cancel-button": ""
 		}
 	},
 	"permission": {
