@@ -417,7 +417,6 @@
 		},
 		"multi-member-settings": {
 			"title": "Настройки беседы",
-			"media-button": "Медиа, ссылки и документы",
 			"members-button": {
 				"title": ""
 			},
@@ -463,7 +462,6 @@
 		},
 		"one-to-one-settings": {
 			"title": "Настройки беседы",
-			"media-button": "Медиа, ссылки и документы",
 			"save-button": "Сохранить беседу на сервере"
 		},
 		"replicate-group-settings": {
@@ -472,31 +470,7 @@
 			"connect-button": "Подключиться к сервисам управляемым Berty",
 			"manage-add-button": "Управление и добавление сервисов"
 		},
-		"files": {
-			"gallery": "Галерея",
-			"no-images": "Изображений нет",
-			"camera": "Камера",
-			"files": "Файлы",
-			"microphone": "Микрофон",
-			"security-access": "Доступ безопасности",
-			"security-access-desc": "Нажмите здесь, чтобы открыть настройки доступа к: ",
-			"save-to-gallery": "Сохранить этот файл в Галерею",
-			"share": "Поделиться",
-			"forward-berty": "Переслать контакту в Berty",
-			"forward": "Переслать",
-			"image-saved": "Изображение сохранено в Галерее"
-		},
-		"shared-medias": {
-			"title": "Общие медиа",
-			"medias": "Медиа",
-			"links": "Ссылки",
-			"documents": "Документы",
-			"file": "",
-			"picture": "",
-			"audio": ""
-		},
 		"reply": {
-			"response-to": "Ответить",
 			"replying-to": "Вы отвечаете",
 			"replied-to": "В ответ"
 		},
@@ -515,17 +489,6 @@
 			"alert-push-perm-denied": "",
 			"alert-push-desc": "",
 			"alert-push-button": ""
-		}
-	},
-	"audio": {
-		"record": {
-			"tooltip": {
-				"usage": "Удерживайте для записи, отпустите чтобы отправить",
-				"not-sent": "Аудиосообщение не отправлено",
-				"permission-denied": "Приложению не разрешено записывать звук"
-			},
-			"slide-to-cancel": "<< Свайп для отмены",
-			"cancel-button": "Отменить"
 		}
 	},
 	"permission": {
