@@ -417,7 +417,6 @@
 		},
 		"multi-member-settings": {
 			"title": "",
-			"media-button": "Медия, линкове & документи",
 			"members-button": {
 				"title": ""
 			},
@@ -463,7 +462,6 @@
 		},
 		"one-to-one-settings": {
 			"title": "",
-			"media-button": "Медия, линкове & документи",
 			"save-button": "Запази разговора на сървъра"
 		},
 		"replicate-group-settings": {
@@ -472,31 +470,7 @@
 			"connect-button": "Свържи се с услуги на Berty",
 			"manage-add-button": "Управлявай и добави услуги"
 		},
-		"files": {
-			"gallery": "Галерия",
-			"no-images": "",
-			"camera": "Камера",
-			"files": "Файлове",
-			"microphone": "Микрофон",
-			"security-access": "Сигурен Достъп",
-			"security-access-desc": "Натисни тук за да отвориш настройките за да разрешид достъп до твойте",
-			"save-to-gallery": "Запази този файл в галерията",
-			"share": "Сподели",
-			"forward-berty": "Препрати до Berty контакт",
-			"forward": "Препрати",
-			"image-saved": "Изображението е запазено в галерията"
-		},
-		"shared-medias": {
-			"title": "",
-			"medias": "",
-			"links": "",
-			"documents": "",
-			"file": "",
-			"picture": "",
-			"audio": ""
-		},
 		"reply": {
-			"response-to": "",
 			"replying-to": "",
 			"replied-to": ""
 		},
@@ -515,17 +489,6 @@
 			"alert-push-perm-denied": "",
 			"alert-push-desc": "",
 			"alert-push-button": "Продължи"
-		}
-	},
-	"audio": {
-		"record": {
-			"tooltip": {
-				"usage": "",
-				"not-sent": "",
-				"permission-denied": ""
-			},
-			"slide-to-cancel": "",
-			"cancel-button": "Отказ"
 		}
 	},
 	"permission": {
