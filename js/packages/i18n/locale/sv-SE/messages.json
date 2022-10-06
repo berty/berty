@@ -417,7 +417,6 @@
 		},
 		"multi-member-settings": {
 			"title": "",
-			"media-button": "Medier, länkar & dokument",
 			"members-button": {
 				"title": ""
 			},
@@ -463,7 +462,6 @@
 		},
 		"one-to-one-settings": {
 			"title": "",
-			"media-button": "Medier, länkar & dokument",
 			"save-button": "Spara konversation på servern"
 		},
 		"replicate-group-settings": {
@@ -472,31 +470,7 @@
 			"connect-button": "Anslut till Berty-drivna tjänster",
 			"manage-add-button": "Hantera eller lägga till tjänster"
 		},
-		"files": {
-			"gallery": "Galleri",
-			"no-images": "Inga bilder",
-			"camera": "Kamera",
-			"files": "Filer",
-			"microphone": "Mikrofon",
-			"security-access": "Säkerhetsåtkomst",
-			"security-access-desc": "Tryck här för att öppna inställningen för att tillåta åtkomst till din",
-			"save-to-gallery": "Spara filen i galleriet",
-			"share": "Dela",
-			"forward-berty": "Vidarebefordra till Berty kontakt",
-			"forward": "Vidarebefordra",
-			"image-saved": "Bild sparad i galleriet"
-		},
-		"shared-medias": {
-			"title": "Delad media",
-			"medias": "Media",
-			"links": "Länkar",
-			"documents": "Dokument",
-			"file": "",
-			"picture": "",
-			"audio": ""
-		},
 		"reply": {
-			"response-to": "Svar till",
 			"replying-to": "Du svarar till",
 			"replied-to": "Svarat till"
 		},
@@ -515,17 +489,6 @@
 			"alert-push-perm-denied": "",
 			"alert-push-desc": "",
 			"alert-push-button": ""
-		}
-	},
-	"audio": {
-		"record": {
-			"tooltip": {
-				"usage": "Håll in för att spela in, släpp för att skicka",
-				"not-sent": "Ljudmeddelandet har inte skickats",
-				"permission-denied": "Appen saknar behörighet att spela in ljud"
-			},
-			"slide-to-cancel": "<< Svep för att avbryta",
-			"cancel-button": "Avbryt"
 		}
 	},
 	"permission": {
