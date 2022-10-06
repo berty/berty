@@ -417,7 +417,6 @@
 		},
 		"multi-member-settings": {
 			"title": "",
-			"media-button": "Medyalar, linkler & dosyalar",
 			"members-button": {
 				"title": ""
 			},
@@ -463,7 +462,6 @@
 		},
 		"one-to-one-settings": {
 			"title": "",
-			"media-button": "Medyalar, linkler & dosyalar",
 			"save-button": "Konuşmayı sunucuya kaydet"
 		},
 		"replicate-group-settings": {
@@ -472,31 +470,7 @@
 			"connect-button": "Berty tarafından işletilen servislere bağlan",
 			"manage-add-button": "Servisleri ekle veya yönet"
 		},
-		"files": {
-			"gallery": "Galeri",
-			"no-images": "",
-			"camera": "Kamera",
-			"files": "Dosyalar",
-			"microphone": "Mikrofon",
-			"security-access": "Güvenlik Erişimi",
-			"security-access-desc": "Hesabınıza erişime izin vermek üzere ayarı açmak için dokunun",
-			"save-to-gallery": "Bu dosyayı galeriye kaydet",
-			"share": "Paylaş",
-			"forward-berty": "Berty kişisine ilet",
-			"forward": "İlet",
-			"image-saved": "Resim galeriye kaydedildi"
-		},
-		"shared-medias": {
-			"title": "Paylaşılan medyalar",
-			"medias": "Medya",
-			"links": "Bağlantılar",
-			"documents": "Belgeler",
-			"file": "",
-			"picture": "",
-			"audio": ""
-		},
 		"reply": {
-			"response-to": "Yanıtla",
 			"replying-to": "Yanıtlıyorsun",
 			"replied-to": "Yanıtlandı"
 		},
@@ -515,17 +489,6 @@
 			"alert-push-perm-denied": "",
 			"alert-push-desc": "",
 			"alert-push-button": ""
-		}
-	},
-	"audio": {
-		"record": {
-			"tooltip": {
-				"usage": "Kaydetmek için basılı tut, göndermek için bırak",
-				"not-sent": "Sesli mesaj gönderilemedi",
-				"permission-denied": "Uygulamanın ses kaydetme yetkisi yok"
-			},
-			"slide-to-cancel": "<< İptal için kaydırın",
-			"cancel-button": "İptal"
 		}
 	},
 	"permission": {
