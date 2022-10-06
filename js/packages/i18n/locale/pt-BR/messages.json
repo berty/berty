@@ -417,7 +417,6 @@
 		},
 		"multi-member-settings": {
 			"title": "Configurações de conversa",
-			"media-button": "Mídias, links e documentos",
 			"members-button": {
 				"title": ""
 			},
@@ -463,7 +462,6 @@
 		},
 		"one-to-one-settings": {
 			"title": "Configurações das conversas",
-			"media-button": "Mídias, links e documentos",
 			"save-button": "Salvar conversa no servidor"
 		},
 		"replicate-group-settings": {
@@ -472,31 +470,7 @@
 			"connect-button": "Conectar-se a serviços operados pelo Berty",
 			"manage-add-button": "Gerenciar ou adicionar serviços"
 		},
-		"files": {
-			"gallery": "Galeria",
-			"no-images": "",
-			"camera": "Câmera",
-			"files": "Ficheiros",
-			"microphone": "Microfone",
-			"security-access": "Acesso de Segurança",
-			"security-access-desc": "Toque aqui para abrir a definição para permitir acesso ao seu",
-			"save-to-gallery": "Salvar arquivo na Galeria",
-			"share": "Compartilhar",
-			"forward-berty": "Encaminhar para contato Berty",
-			"forward": "Encaminhar",
-			"image-saved": "Imagem salva na Galeria"
-		},
-		"shared-medias": {
-			"title": "Mídias compartilhadas",
-			"medias": "Mídias",
-			"links": "",
-			"documents": "Documentos",
-			"file": "",
-			"picture": "",
-			"audio": ""
-		},
 		"reply": {
-			"response-to": "Responder para",
 			"replying-to": "Você está respondendo para",
 			"replied-to": "Respondeu para"
 		},
@@ -515,17 +489,6 @@
 			"alert-push-perm-denied": "A solicitação de permissão para Notificação por Push foi negada.",
 			"alert-push-desc": "Você pode tentar ativar este recurso novamente em Configurações a qualquer momento.",
 			"alert-push-button": "Continuar"
-		}
-	},
-	"audio": {
-		"record": {
-			"tooltip": {
-				"usage": "Segure para gravar, solte para enviar",
-				"not-sent": "A mensagem de áudio não foi enviada",
-				"permission-denied": "O app não tem permissão para gravar som"
-			},
-			"slide-to-cancel": "<< Deslize para cancelar",
-			"cancel-button": "Cancelar"
 		}
 	},
 	"permission": {
