@@ -52,6 +52,7 @@ jobs:
           echo "::set-output name=new-release-published::${{steps.semantic.outputs.new-release-published}}"
           echo "::set-output name=release-version::${{steps.semantic.outputs.release-version}}"
 
+
   release-on-stores:
     name: Release on stores
     runs-on: ubuntu-latest
@@ -87,8 +88,25 @@ jobs:
             await github.rest.repos.createDispatchEvent({
               owner: 'berty',
               repo: 'release-on-stores',
-              event_type: 'Release on stores - Push on master',
+              event_type: 'release',
               client_payload: {"commit_message":${{ env.commit_message }}},
+            })
+
+  release-ios-on-yolo:
+    name: Release iOS on Yolo
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: Dispatch event to release repo
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.REPOSITORY_DISPATCH }}
+          script: |
+            await github.rest.repos.createDispatchEvent({
+              owner: 'berty',
+              repo: 'release-on-stores',
+              event_type: 'yolo',
+              client_payload: {"pr_number":${{ github.event.pull_request.number }}},
             })
 
 
