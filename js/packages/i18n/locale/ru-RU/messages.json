@@ -470,10 +470,6 @@
 			"connect-button": "Подключиться к сервисам управляемым Berty",
 			"manage-add-button": "Управление и добавление сервисов"
 		},
-		"reply": {
-			"replying-to": "Вы отвечаете",
-			"replied-to": "В ответ"
-		},
 		"user-message": {
 			"read-more": "Подробнее",
 			"show-less": "Показать меньше"
