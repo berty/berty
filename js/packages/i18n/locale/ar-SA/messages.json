@@ -470,10 +470,6 @@
 			"connect-button": "",
 			"manage-add-button": ""
 		},
-		"reply": {
-			"replying-to": "أنت ترد على",
-			"replied-to": "ردَدتَ على"
-		},
 		"user-message": {
 			"read-more": "اقرأ المزيد",
 			"show-less": ""
