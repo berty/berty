@@ -470,10 +470,6 @@
 			"connect-button": "Свържи се с услуги на Berty",
 			"manage-add-button": "Управлявай и добави услуги"
 		},
-		"reply": {
-			"replying-to": "",
-			"replied-to": ""
-		},
 		"user-message": {
 			"read-more": "",
 			"show-less": ""
