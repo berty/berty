@@ -470,10 +470,6 @@
 			"connect-button": "Kapcsolódás a Berty szolgáltatásához",
 			"manage-add-button": "Szolgáltatások kezelése és hozzáadása"
 		},
-		"reply": {
-			"replying-to": "Válasz neki:",
-			"replied-to": "Válaszolt neki"
-		},
 		"user-message": {
 			"read-more": "Tudj meg többet",
 			"show-less": "Kevesebb mutatása"
