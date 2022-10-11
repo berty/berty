@@ -180,7 +180,6 @@ export const MessageList: React.FC<{
 						members={members}
 						previousMessage={index < messages.length - 1 ? messages[index + 1] : undefined}
 						nextMessage={index > 0 ? messages[index - 1] : undefined}
-						replyOf={messages.find(message => message.cid === item.targetCid)}
 						scrollToCid={handleScrollToCid}
 					/>
 				</>

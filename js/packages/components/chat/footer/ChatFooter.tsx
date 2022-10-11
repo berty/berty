@@ -15,9 +15,7 @@ import {
 	useMountEffect,
 } from '@berty/hooks'
 import {
-	removeActiveReplyInteraction,
 	resetChatInput,
-	selectActiveReplyInteraction,
 	selectChatInputText,
 	setChatInputText,
 } from '@berty/redux/reducers/chatInputs.reducer'
@@ -50,7 +48,6 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 		const [message, setMessage, messageRef] = useStateWithRef(draftMessage)
 
 		const colors = useThemeColor()
-		const activeReplyInte = useAppSelector(state => selectActiveReplyInteraction(state, convPK))
 		const messengerClient = useMessengerClient()
 		const playSound = usePlaySound()
 		const conversation = useConversation(convPK)
@@ -69,7 +66,6 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 					conversationPublicKey: convPK,
 					type: beapi.messenger.AppMessage.Type.TypeUserMessage,
 					payload: buf,
-					targetCid: activeReplyInte?.cid,
 				})
 				const optimisticInteraction: beapi.messenger.IInteraction = {
 					cid: reply.cid,
@@ -77,14 +73,12 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 					isMine: true,
 					type: beapi.messenger.AppMessage.Type.TypeUserMessage,
 					payload: buf,
-					targetCid: activeReplyInte?.cid,
 					sentDate: Long.fromNumber(Date.now()).toString() as unknown as Long,
 				}
 				dispatch({
 					type: 'messenger/InteractionUpdated',
 					payload: { interaction: optimisticInteraction },
 				})
-				dispatch(removeActiveReplyInteraction({ convPK }))
 				dispatch(resetChatInput(convPK))
 				setMessage('')
 				playSound('messageSent')
@@ -92,16 +86,7 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 				console.warn('e sending message:', e)
 				setSending(false)
 			}
-		}, [
-			activeReplyInte?.cid,
-			convPK,
-			playSound,
-			dispatch,
-			message,
-			messengerClient,
-			setSending,
-			setMessage,
-		])
+		}, [convPK, playSound, dispatch, message, messengerClient, setSending, setMessage])
 
 		const handlePressSend = React.useCallback(async () => {
 			if (sending) {

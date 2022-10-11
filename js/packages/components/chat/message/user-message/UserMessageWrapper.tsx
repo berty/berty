@@ -15,7 +15,6 @@ export const UserMessageWrapper: React.FC<{
 	convKind: beapi.messenger.Conversation.Type
 	previousMessage?: ParsedInteraction
 	nextMessage?: ParsedInteraction
-	replyOf?: ParsedInteraction
 	children: React.ReactNode
 	isGroup: boolean
 	isFollowedMessage: boolean | undefined

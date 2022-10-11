@@ -53,7 +53,6 @@
     "react-native-exception-handler": "^2.10.9",
     "react-native-flags": "^1.0.0",
     "react-native-fs": "^2.16.6",
-    "react-native-gesture-handler": "^1.8.0",
     "react-native-hyperlink": "^0.0.19",
     "react-native-in-app-notification": "3.2.0",
     "react-native-pager-view": "5.4.9",

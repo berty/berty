@@ -18,7 +18,6 @@ import {
 import { isTablet } from '@berty/utils/react-native/constants'
 
 import { ChatInputProps } from './interface'
-import { ReplyMessageBarPriv } from './reply/ReplyMessageBar.priv'
 
 export const ChatTextInput: React.FC<ChatInputProps> = React.memo(props => {
 	const { handleTabletSubmit, convPK, editable, placeholder, onChangeText, value } = props
@@ -52,7 +51,6 @@ export const ChatTextInput: React.FC<ChatInputProps> = React.memo(props => {
 				{ backgroundColor: `${colors['positive-asset']}70` },
 			]}
 		>
-			<ReplyMessageBarPriv convPK={convPK} />
 			<InputPriv
 				value={value}
 				editable={editable}
