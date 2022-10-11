@@ -470,10 +470,6 @@
 			"connect-button": "Připojit ke službám provozovaným Berty",
 			"manage-add-button": "Spravovat nebo přidat služby"
 		},
-		"reply": {
-			"replying-to": "",
-			"replied-to": ""
-		},
 		"user-message": {
 			"read-more": "",
 			"show-less": ""
