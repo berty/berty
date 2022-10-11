@@ -470,10 +470,6 @@
 			"connect-button": "Połącz z usługami świadczonymi przez Berty",
 			"manage-add-button": "Zarządzaj lub dodaj usługi"
 		},
-		"reply": {
-			"replying-to": "",
-			"replied-to": ""
-		},
 		"user-message": {
 			"read-more": "Czytaj więcej",
 			"show-less": "Pokaż mniej"
