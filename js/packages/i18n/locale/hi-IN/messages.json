@@ -470,10 +470,6 @@
 			"connect-button": "",
 			"manage-add-button": ""
 		},
-		"reply": {
-			"replying-to": "",
-			"replied-to": ""
-		},
 		"user-message": {
 			"read-more": "",
 			"show-less": ""
