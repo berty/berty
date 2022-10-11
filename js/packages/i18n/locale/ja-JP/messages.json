@@ -470,10 +470,6 @@
 			"connect-button": "Berty が運営するサービスに接続する",
 			"manage-add-button": "サービスを管理または追加する"
 		},
-		"reply": {
-			"replying-to": "以下に返信：",
-			"replied-to": "返信済み："
-		},
 		"user-message": {
 			"read-more": "もっと読む",
 			"show-less": "表示を隠す"
