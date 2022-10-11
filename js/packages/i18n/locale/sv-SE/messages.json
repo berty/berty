@@ -470,10 +470,6 @@
 			"connect-button": "Anslut till Berty-drivna tjänster",
 			"manage-add-button": "Hantera eller lägga till tjänster"
 		},
-		"reply": {
-			"replying-to": "Du svarar till",
-			"replied-to": "Svarat till"
-		},
 		"user-message": {
 			"read-more": "Läs mer",
 			"show-less": "Visa mindre"
