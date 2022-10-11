@@ -29,6 +29,8 @@ const getCapabilitiesFromEnv = () => {
 		throw new Error('no app provided')
 	}
 
+	const timeout = 60 * 60 * 1000
+
 	switch (platform) {
 		case 'iOS':
 			return {
@@ -37,9 +39,9 @@ const getCapabilitiesFromEnv = () => {
 				'appium:deviceName': process.env.IOS_DEVICE || 'iPhone 11',
 				'appium:app': app,
 				'appium:automationName': 'XCUITest', // UiAutomator2, Espresso, or UiAutomator1 for Android,
-				'appium:simulatorStartupTimeout': 10 * 60 * 1000,
-				'appium:wdaLaunchTimeout': 10 * 60 * 1000,
-				'appium:wdaConnectionTimeout': 10 * 60 * 1000,
+				'appium:simulatorStartupTimeout': timeout,
+				'appium:wdaLaunchTimeout': timeout,
+				'appium:wdaConnectionTimeout': timeout,
 				'appium:wdaStartupRetries': 4,
 			}
 		case 'Android':

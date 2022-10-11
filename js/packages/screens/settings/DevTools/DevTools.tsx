@@ -458,7 +458,7 @@ const BodyDevTools: React.FC<{}> = withInAppNotification(({ showNotification }: 
 		>
 			<ItemSection>
 				<AccountsDropdown
-					placeholder={t('settings.devtools.accounts-button')}
+					placeholder={t('settings.accounts.accounts-button')}
 					items={[...accounts].sort(
 						(a, b) => pbDateToNum(a.creationDate) - pbDateToNum(b.creationDate),
 					)}
@@ -469,7 +469,7 @@ const BodyDevTools: React.FC<{}> = withInAppNotification(({ showNotification }: 
 
 			<ItemSection>
 				<MenuItem onPress={useOnBoardingAfterClosing}>
-					{t('settings.devtools.create-button')}
+					{t('settings.accounts.create-button')}
 				</MenuItem>
 
 				{Platform.OS !== 'web' && (
@@ -485,11 +485,10 @@ const BodyDevTools: React.FC<{}> = withInAppNotification(({ showNotification }: 
 								importingAccountAfterClosing(filePath)
 							}}
 						>
-							{t('settings.devtools.import-button')}
+							{t('settings.accounts.import-button')}
 						</MenuItem>
 					</>
 				)}
-				{/* <ButtonSettingV2 text={t('settings.accounts.link-button')} disabled last /> */}
 			</ItemSection>
 			<View style={[padding.horizontal.medium]}>
 				<ButtonSetting
