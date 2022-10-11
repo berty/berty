@@ -470,10 +470,6 @@
 			"connect-button": "連接到 Berty 運營服務",
 			"manage-add-button": "管理或添加服務"
 		},
-		"reply": {
-			"replying-to": "你正在回復",
-			"replied-to": "回復至"
-		},
 		"user-message": {
 			"read-more": "",
 			"show-less": ""
