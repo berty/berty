@@ -470,10 +470,6 @@
 			"connect-button": "Gebruik diensten van Berty",
 			"manage-add-button": "Beheer of voeg diensten toe"
 		},
-		"reply": {
-			"replying-to": "Je reageert op",
-			"replied-to": "Gereageerd op"
-		},
 		"user-message": {
 			"read-more": "",
 			"show-less": ""
