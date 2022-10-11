@@ -34,7 +34,6 @@ import {
 import { AddBot } from './components/AddBot'
 import { Conversations } from './components/Conversations'
 import { HomeHeader } from './components/Header'
-import { MultiAccount } from './components/MultiAccount'
 import { NoNetwork } from './components/NoNetwork'
 import { IncomingRequests } from './components/Requests'
 import { SearchComponent } from './components/Search'
@@ -65,8 +64,6 @@ export const Home: ScreenFC<'Chat.Home'> = ({ navigation: { navigate } }) => {
 		displayName: '',
 		isVisible: false,
 	})
-
-	const [isLongPress, setIsLongPress] = useState(false)
 
 	const messengerClient = useMessengerClient()
 
@@ -258,8 +255,6 @@ export const Home: ScreenFC<'Chat.Home'> = ({ navigation: { navigate } }) => {
 					onChange={setSearchText}
 					refresh={refresh}
 					setRefresh={setRefresh}
-					onLongPress={setIsLongPress}
-					isMultiAccount={isLongPress}
 				/>
 				{searchText?.length ? (
 					<>
@@ -320,13 +315,6 @@ export const Home: ScreenFC<'Chat.Home'> = ({ navigation: { navigate } }) => {
 				)}
 			</ScrollView>
 			<PrimaryFloatingButton onPress={() => navigate('Chat.Share')} />
-			{isLongPress ? (
-				<MultiAccount
-					onPress={() => {
-						setIsLongPress(false)
-					}}
-				/>
-			) : null}
 			{isAddBot.isVisible ? (
 				<AddBot
 					link={isAddBot.link}

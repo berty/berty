@@ -21,20 +21,8 @@ export const HomeHeader: React.FC<
 		onChange: (value: string) => void
 		refresh: boolean
 		setRefresh: (value: boolean) => void
-		onLongPress: React.Dispatch<React.SetStateAction<boolean>>
-		isMultiAccount: boolean
 	}
-> = ({
-	hasRequests,
-	scrollRef,
-	isOnTop,
-	value,
-	onChange,
-	refresh,
-	setRefresh,
-	onLongPress,
-	isMultiAccount,
-}) => {
+> = ({ hasRequests, scrollRef, isOnTop, value, onChange, refresh, setRefresh }) => {
 	const { border, width, height, padding, margin } = useStyles()
 	const { scaleSize } = useAppDimensions()
 	const colors = useThemeColor()
@@ -112,14 +100,7 @@ export const HomeHeader: React.FC<
 								alignItems: 'center',
 							}}
 							onPress={() => {
-								if (isMultiAccount) {
-									onLongPress(false)
-								} else {
-									navigate('Settings.Home')
-								}
-							}}
-							onLongPress={() => {
-								onLongPress(true)
+								navigate('Settings.Home')
 							}}
 						>
 							<AccountAvatar size={35} />

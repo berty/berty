@@ -126,10 +126,6 @@
 			"search": {
 				"no-results": "No results found"
 			},
-			"multi-account": {
-				"create-button": "Create new account",
-				"import-button": "Import account"
-			},
 			"create-group": {
 				"title": "New Group",
 				"add-members": "Add members",
