@@ -470,10 +470,6 @@
 			"connect-button": "Koble til Berty-opererte tjenester",
 			"manage-add-button": "Administrer eller legg til tjenester"
 		},
-		"reply": {
-			"replying-to": "",
-			"replied-to": ""
-		},
 		"user-message": {
 			"read-more": "",
 			"show-less": ""
