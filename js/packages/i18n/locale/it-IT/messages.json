@@ -470,10 +470,6 @@
 			"connect-button": "Connettiti ai servizi gestiti da Berty",
 			"manage-add-button": "Gestisci o aggiungi servizi"
 		},
-		"reply": {
-			"replying-to": "Stai rispondendo a",
-			"replied-to": "Risposto a"
-		},
 		"user-message": {
 			"read-more": "",
 			"show-less": ""
