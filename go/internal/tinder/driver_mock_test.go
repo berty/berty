@@ -110,7 +110,7 @@ func TestMockSubscribe(t *testing.T) {
 		ctx, cancel := context.WithCancel(context.Background())
 		defer cancel()
 
-		out, err := client1.Subscribe(ctx, topic, mockBufferSize(2))
+		out, err := client1.Subscribe(ctx, topic, MockBufferSize(2))
 		require.NoError(t, err)
 
 		server.Advertise(topic, info2, time.Minute)
