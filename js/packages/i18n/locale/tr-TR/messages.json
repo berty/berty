@@ -470,10 +470,6 @@
 			"connect-button": "Berty tarafından işletilen servislere bağlan",
 			"manage-add-button": "Servisleri ekle veya yönet"
 		},
-		"reply": {
-			"replying-to": "Yanıtlıyorsun",
-			"replied-to": "Yanıtlandı"
-		},
 		"user-message": {
 			"read-more": "Daha fazla",
 			"show-less": "Daha az göster"
