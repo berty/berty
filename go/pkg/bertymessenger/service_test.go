@@ -23,7 +23,6 @@ import (
 	"berty.tech/berty/v2/go/internal/messengerutil"
 	"berty.tech/berty/v2/go/internal/testutil"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
-	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
 
 func TestServiceStream(t *testing.T) {
@@ -1376,55 +1375,19 @@ func TestAccountUpdate(t *testing.T) {
 
 	logger.Info("Starting test")
 
-	testBlock := []byte("hello world!")
-
-	stream, err := user.protocolClient.AttachmentPrepare(ctx)
-	require.NoError(t, err)
-	require.NoError(t, stream.Send(&protocoltypes.AttachmentPrepare_Request{})) // send header
-	const split = 5
-	require.NoError(t, stream.Send(&protocoltypes.AttachmentPrepare_Request{Block: testBlock[0:split]})) // send block
-	require.NoError(t, stream.Send(&protocoltypes.AttachmentPrepare_Request{Block: testBlock[split:]}))  // send block
-	reply, err := stream.CloseAndRecv()
-	require.NoError(t, err)
-
-	userAvatarCID := messengerutil.B64EncodeBytes(reply.GetAttachmentCID())
-
 	logger.Info("starting update")
 	const testName = "user"
-	_, err = user.client.AccountUpdate(ctx, &messengertypes.AccountUpdate_Request{DisplayName: testName, AvatarCID: userAvatarCID})
+	_, err := user.client.AccountUpdate(ctx, &messengertypes.AccountUpdate_Request{DisplayName: testName})
 	require.NoError(t, err)
 	logger.Info("waiting for propagation")
 	time.Sleep(4 * time.Second)
 	logger.Info("done waiting for propagation")
 
 	logger.Info("checking friends")
-	cids := []string(nil)
 	for _, friend := range friends {
 		logger.Info("checking node", zap.String("name", friend.account.GetDisplayName()))
 		userInFriend := friend.GetContact(t, userPK)
 		require.Equal(t, testName, userInFriend.GetDisplayName())
-		avatarCIDInFriend := userInFriend.GetAvatarCID()
-		require.NotEqual(t, userAvatarCID, avatarCIDInFriend)
-		for _, existingCID := range cids {
-			require.NotEqual(t, existingCID, avatarCIDInFriend)
-		}
-		cids = append(cids, userInFriend.GetAvatarCID())
-
-		// check attachment
-		cidBytes, err := messengerutil.B64DecodeBytes(avatarCIDInFriend)
-		require.NoError(t, err)
-		stream, err := friend.protocolClient.AttachmentRetrieve(ctx, &protocoltypes.AttachmentRetrieve_Request{AttachmentCID: cidBytes})
-		require.NoError(t, err)
-		data := []byte(nil)
-		for {
-			rsp, err := stream.Recv()
-			if err == io.EOF {
-				break
-			}
-			require.NoError(t, err)
-			data = append(data, rsp.GetBlock()...)
-		}
-		require.Equal(t, testBlock, data)
 	}
 
 	logger.Error("test done")
@@ -1481,22 +1444,9 @@ func TestFlappyAccountUpdateGroup(t *testing.T) {
 
 	logger.Info("Starting test")
 
-	testBlock := []byte("hello world!")
-
-	stream, err := user.client.MediaPrepare(ctx)
-	require.NoError(t, err)
-	require.NoError(t, stream.Send(&messengertypes.MediaPrepare_Request{Info: &messengertypes.Media{}})) // send header
-	const split = 5
-	require.NoError(t, stream.Send(&messengertypes.MediaPrepare_Request{Block: testBlock[0:split]})) // send block
-	require.NoError(t, stream.Send(&messengertypes.MediaPrepare_Request{Block: testBlock[split:]}))  // send block
-	reply, err := stream.CloseAndRecv()
-	require.NoError(t, err)
-
-	userAvatarCID := reply.GetCid()
-
 	logger.Info("starting update")
 	const testName = "user"
-	_, err = user.client.AccountUpdate(ctx, &messengertypes.AccountUpdate_Request{DisplayName: testName, AvatarCID: userAvatarCID})
+	_, err = user.client.AccountUpdate(ctx, &messengertypes.AccountUpdate_Request{DisplayName: testName})
 	require.NoError(t, err)
 	logger.Info("waiting for propagation")
 
@@ -1504,34 +1454,11 @@ func TestFlappyAccountUpdateGroup(t *testing.T) {
 	logger.Info("done waiting for propagation")
 
 	logger.Info("checking friends")
-	cids := []string(nil)
 	for _, friend := range friends {
 		logger.Info("checking node", zap.String("name", friend.account.GetDisplayName()))
 		userInFriend, ok := friend.members[conv.GetAccountMemberPublicKey()]
 		require.True(t, ok)
 		require.Equal(t, testName, userInFriend.GetDisplayName())
-		avatarCIDInFriend := userInFriend.GetAvatarCID()
-		require.NotEqual(t, userAvatarCID, avatarCIDInFriend)
-		for _, existingCID := range cids {
-			require.Equal(t, existingCID, avatarCIDInFriend)
-		}
-		cids = append(cids, userInFriend.GetAvatarCID())
-
-		// check attachment
-		cidBytes, err := messengerutil.B64DecodeBytes(avatarCIDInFriend)
-		require.NoError(t, err)
-		stream, err := friend.protocolClient.AttachmentRetrieve(ctx, &protocoltypes.AttachmentRetrieve_Request{AttachmentCID: cidBytes})
-		require.NoError(t, err)
-		data := []byte(nil)
-		for {
-			rsp, err := stream.Recv()
-			if err == io.EOF {
-				break
-			}
-			require.NoError(t, err)
-			data = append(data, rsp.GetBlock()...)
-		}
-		require.Equal(t, testBlock, data)
 	}
 
 	logger.Error("test done")
@@ -1547,30 +1474,14 @@ func TestSendBlob(t *testing.T) {
 
 	logger.Info("starting test")
 
-	testData := []byte("hello world!")
-
-	stream, err := user.protocolClient.AttachmentPrepare(ctx)
-	require.NoError(t, err)
-	require.NoError(t, stream.Send(&protocoltypes.AttachmentPrepare_Request{})) // send header
-	const split = 5
-	require.NoError(t, stream.Send(&protocoltypes.AttachmentPrepare_Request{Block: testData[0:split]})) // send block
-	require.NoError(t, stream.Send(&protocoltypes.AttachmentPrepare_Request{Block: testData[split:]}))  // send block
-	reply, err := stream.CloseAndRecv()
-	require.NoError(t, err)
-
 	logger.Info("starting send")
 
 	friendAsContact := user.GetContact(t, friend.GetAccount().GetPublicKey())
-
-	testCID := reply.GetAttachmentCID()
-
-	b64CID := messengerutil.B64EncodeBytes(testCID)
 
 	payload, err := proto.Marshal(&messengertypes.AppMessage_UserMessage{Body: "Hello"})
 	require.NoError(t, err)
 	_, err = user.client.Interact(ctx, &messengertypes.Interact_Request{
 		ConversationPublicKey: friendAsContact.GetConversationPublicKey(),
-		MediaCids:             []string{b64CID},
 		Payload:               payload,
 		Type:                  messengertypes.AppMessage_TypeUserMessage,
 	})
@@ -1592,31 +1503,6 @@ func TestSendBlob(t *testing.T) {
 	fmt.Println("inte", inte)
 
 	require.NotNil(t, inte)
-
-	fmt.Println("medias", inte.GetMedias())
-
-	require.NotEmpty(t, inte.GetMedias())
-	media := inte.GetMedias()[0]
-	require.NotNil(t, media)
-	cid := media.GetCID()
-	require.NotEmpty(t, cid)
-	require.Equal(t, messengerutil.B64EncodeBytes(testCID), cid)
-
-	// check attachment
-	cidBytes, err := messengerutil.B64DecodeBytes(cid)
-	require.NoError(t, err)
-	retStream, err := friend.protocolClient.AttachmentRetrieve(ctx, &protocoltypes.AttachmentRetrieve_Request{AttachmentCID: cidBytes})
-	require.NoError(t, err)
-	data := []byte(nil)
-	for {
-		rsp, err := retStream.Recv()
-		if err == io.EOF {
-			break
-		}
-		require.NoError(t, err)
-		data = append(data, rsp.GetBlock()...)
-	}
-	require.Equal(t, testData, data)
 }
 
 func TestSendMedia(t *testing.T) {
@@ -1627,31 +1513,12 @@ func TestSendMedia(t *testing.T) {
 	user := nodes[0]
 	friend := nodes[1]
 
-	logger.Info("starting test")
-
-	testData := []byte("hello world!")
-	testMedia := messengertypes.Media{MimeType: "meme/quality", Filename: "mes super vacances.webm", DisplayName: "Clique"}
-
-	stream, err := user.client.MediaPrepare(ctx)
-	require.NoError(t, err)
-	require.NoError(t, stream.Send(&messengertypes.MediaPrepare_Request{Info: &testMedia})) // send header
-	const split = 5
-	require.NoError(t, stream.Send(&messengertypes.MediaPrepare_Request{Block: testData[0:split]})) // send block
-	require.NoError(t, stream.Send(&messengertypes.MediaPrepare_Request{Block: testData[split:]}))  // send block
-	reply, err := stream.CloseAndRecv()
-	require.NoError(t, err)
-
-	logger.Info("starting send")
-
 	friendAsContact := user.GetContact(t, friend.GetAccount().GetPublicKey())
-
-	b64CID := reply.GetCid()
 
 	payload, err := proto.Marshal(&messengertypes.AppMessage_UserMessage{Body: "Hello"})
 	require.NoError(t, err)
 	_, err = user.client.Interact(ctx, &messengertypes.Interact_Request{
 		ConversationPublicKey: friendAsContact.GetConversationPublicKey(),
-		MediaCids:             []string{b64CID},
 		Payload:               payload,
 		Type:                  messengertypes.AppMessage_TypeUserMessage,
 	})
@@ -1673,47 +1540,6 @@ func TestSendMedia(t *testing.T) {
 	fmt.Println("inte", inte)
 
 	require.NotNil(t, inte)
-
-	fmt.Println("medias", inte.GetMedias())
-
-	require.NotEmpty(t, inte.GetMedias())
-	media := inte.GetMedias()[0]
-	require.NotNil(t, media)
-	cid := media.GetCID()
-	require.NotEmpty(t, cid)
-	require.Equal(t, b64CID, cid)
-
-	// check media
-	require.NoError(t, err)
-	retStream, err := friend.client.MediaRetrieve(ctx, &messengertypes.MediaRetrieve_Request{Cid: b64CID})
-	require.NoError(t, err)
-
-	// define expected result
-	expectedMedia := testMedia
-	expectedMedia.CID = cid
-	expectedMedia.InteractionCID = inte.GetCID()
-	expectedMedia.State = messengertypes.Media_StateNeverDownloaded // FIXME: should be Media_StateInCache
-
-	// get and check header
-	header, err := retStream.Recv()
-	require.NoError(t, err)
-	require.Equal(t, &expectedMedia, header.GetInfo())
-
-	// check blocks
-	data := []byte(nil)
-	for {
-		rsp, err := retStream.Recv()
-		if err == io.EOF {
-			break
-		}
-		require.NoError(t, err)
-		data = append(data, rsp.GetBlock()...)
-	}
-	require.Equal(t, testData, data)
-
-	// check that the media was sent on the event stream
-	clientMedia := friend.GetMedia(t, cid)
-	require.Equal(t, &expectedMedia, clientMedia)
 }
 
 func Test_exportMessengerData(t *testing.T) {

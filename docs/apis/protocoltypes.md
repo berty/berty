@@ -29,12 +29,6 @@
     - [AppMetadataSend](#berty.protocol.v1.AppMetadataSend)
     - [AppMetadataSend.Reply](#berty.protocol.v1.AppMetadataSend.Reply)
     - [AppMetadataSend.Request](#berty.protocol.v1.AppMetadataSend.Request)
-    - [AttachmentPrepare](#berty.protocol.v1.AttachmentPrepare)
-    - [AttachmentPrepare.Reply](#berty.protocol.v1.AttachmentPrepare.Reply)
-    - [AttachmentPrepare.Request](#berty.protocol.v1.AttachmentPrepare.Request)
-    - [AttachmentRetrieve](#berty.protocol.v1.AttachmentRetrieve)
-    - [AttachmentRetrieve.Reply](#berty.protocol.v1.AttachmentRetrieve.Reply)
-    - [AttachmentRetrieve.Request](#berty.protocol.v1.AttachmentRetrieve.Request)
     - [AuthExchangeResponse](#berty.protocol.v1.AuthExchangeResponse)
     - [AuthExchangeResponse.ServicesEntry](#berty.protocol.v1.AuthExchangeResponse.ServicesEntry)
     - [AuthServiceCompleteFlow](#berty.protocol.v1.AuthServiceCompleteFlow)
@@ -420,7 +414,6 @@ AccountServiceTokenRemoved indicates a token has removed
 | ----- | ---- | ----- | ----------- |
 | group_pk | [bytes](#bytes) |  | group_pk is the identifier of the group |
 | payload | [bytes](#bytes) |  | payload is the payload to send |
-| attachment_cids | [bytes](#bytes) | repeated | attachment_cids is a list of attachment cids |
 
 <a name="berty.protocol.v1.AppMetadata"></a>
 
@@ -452,48 +445,6 @@ AppMetadata is an app defined message, accessible to future group members
 | ----- | ---- | ----- | ----------- |
 | group_pk | [bytes](#bytes) |  | group_pk is the identifier of the group |
 | payload | [bytes](#bytes) |  | payload is the payload to send |
-| attachment_cids | [bytes](#bytes) | repeated | attachment_cids is a list of attachment cids |
-
-<a name="berty.protocol.v1.AttachmentPrepare"></a>
-
-### AttachmentPrepare
-
-<a name="berty.protocol.v1.AttachmentPrepare.Reply"></a>
-
-### AttachmentPrepare.Reply
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| attachment_cid | [bytes](#bytes) |  | attachment_cid is the cid of the (encrypted) file |
-
-<a name="berty.protocol.v1.AttachmentPrepare.Request"></a>
-
-### AttachmentPrepare.Request
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| block | [bytes](#bytes) |  | block is a plaintext block to append |
-| disable_encryption | [bool](#bool) |  | disable_encryption tells the protocol to store the file as plain text |
-
-<a name="berty.protocol.v1.AttachmentRetrieve"></a>
-
-### AttachmentRetrieve
-
-<a name="berty.protocol.v1.AttachmentRetrieve.Reply"></a>
-
-### AttachmentRetrieve.Reply
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| block | [bytes](#bytes) |  | block is a plaintext block to append |
-
-<a name="berty.protocol.v1.AttachmentRetrieve.Request"></a>
-
-### AttachmentRetrieve.Request
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| attachment_cid | [bytes](#bytes) |  | attachment_cid is the cid of the (encrypted) file |
 
 <a name="berty.protocol.v1.AuthExchangeResponse"></a>
 
@@ -852,7 +803,6 @@ EventContext adds context (its id, its parents and its attachments) to an event
 | id | [bytes](#bytes) |  | id is the CID of the underlying OrbitDB event |
 | parent_ids | [bytes](#bytes) | repeated | id are the the CIDs of the underlying parents of the OrbitDB event |
 | group_pk | [bytes](#bytes) |  | group_pk receiving the event |
-| attachment_cids | [bytes](#bytes) | repeated | attachment_cids is a list of attachment that can be retrieved |
 
 <a name="berty.protocol.v1.FirstLastCounters"></a>
 
@@ -970,7 +920,6 @@ GroupEnvelope is a publicly exposed structure containing a group metadata event
 | ----- | ---- | ----- | ----------- |
 | nonce | [bytes](#bytes) |  | nonce is used to encrypt the message |
 | event | [bytes](#bytes) |  | event is encrypted using a symmetric key shared among group members |
-| encrypted_attachment_cids | [bytes](#bytes) | repeated | encrypted_attachment_cids is a list of attachment CIDs encrypted specifically for replication services |
 
 <a name="berty.protocol.v1.GroupHeadsExport"></a>
 
@@ -1154,7 +1103,6 @@ MessageEnvelope is a publicly exposed structure containing a group secure messag
 | message_headers | [bytes](#bytes) |  | message_headers is an encrypted serialization using a symmetric key of a MessageHeaders message |
 | message | [bytes](#bytes) |  | message is an encrypted message, only readable by group members who previously received the appropriate chain key |
 | nonce | [bytes](#bytes) |  | nonce is a nonce for message headers |
-| encrypted_attachment_cids | [bytes](#bytes) | repeated | encrypted_attachment_cids is a list of attachment CIDs encrypted specifically for replication services |
 
 <a name="berty.protocol.v1.MessageHeaders"></a>
 
@@ -1410,10 +1358,6 @@ Progress define a generic object that can be used to display a progress bar for 
 <a name="berty.protocol.v1.ProtocolMetadata"></a>
 
 ### ProtocolMetadata
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| attachments_secrets | [bytes](#bytes) | repeated | attachments_secrets is a list of secret keys used retrieve attachments |
 
 <a name="berty.protocol.v1.PushDeviceServerRegistered"></a>
 
@@ -1932,8 +1876,6 @@ Each Berty Protocol Instance is considered as a Berty device and is associated w
 | ServicesTokenList | [ServicesTokenList.Request](#berty.protocol.v1.ServicesTokenList.Request) | [ServicesTokenList.Reply](#berty.protocol.v1.ServicesTokenList.Reply) stream | ServicesTokenList Retrieves the list of services tokens |
 | ReplicationServiceRegisterGroup | [ReplicationServiceRegisterGroup.Request](#berty.protocol.v1.ReplicationServiceRegisterGroup.Request) | [ReplicationServiceRegisterGroup.Reply](#berty.protocol.v1.ReplicationServiceRegisterGroup.Reply) | ReplicationServiceRegisterGroup Asks a replication service to distribute a group contents |
 | PeerList | [PeerList.Request](#berty.protocol.v1.PeerList.Request) | [PeerList.Reply](#berty.protocol.v1.PeerList.Reply) | PeerList returns a list of P2P peers |
-| AttachmentPrepare | [AttachmentPrepare.Request](#berty.protocol.v1.AttachmentPrepare.Request) stream | [AttachmentPrepare.Reply](#berty.protocol.v1.AttachmentPrepare.Reply) | AttachmentPrepare ... |
-| AttachmentRetrieve | [AttachmentRetrieve.Request](#berty.protocol.v1.AttachmentRetrieve.Request) | [AttachmentRetrieve.Reply](#berty.protocol.v1.AttachmentRetrieve.Reply) stream | AttachmentRetrieve returns an attachment data |
 | PushReceive | [PushReceive.Request](#berty.protocol.v1.PushReceive.Request) | [PushReceive.Reply](#berty.protocol.v1.PushReceive.Reply) | PushReceive handles a push payload, decrypts it if possible |
 | PushSend | [PushSend.Request](#berty.protocol.v1.PushSend.Request) | [PushSend.Reply](#berty.protocol.v1.PushSend.Reply) | PushSend sends a push payload to a specified list of group members |
 | PushShareToken | [PushShareToken.Request](#berty.protocol.v1.PushShareToken.Request) | [PushShareToken.Reply](#berty.protocol.v1.PushShareToken.Reply) | PushShareToken sends push tokens of own devices to a group |

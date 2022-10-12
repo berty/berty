@@ -44,17 +44,16 @@ var eventTypesMapper = map[protocoltypes.EventType]struct {
 	protocoltypes.EventTypePushMemberTokenUpdate:                  {Message: &protocoltypes.PushMemberTokenUpdate{}, SigChecker: sigCheckerDeviceSigned},
 }
 
-func newEventContext(eventID cid.Cid, parentIDs []cid.Cid, g *protocoltypes.Group, attachmentsCIDs [][]byte) *protocoltypes.EventContext {
+func newEventContext(eventID cid.Cid, parentIDs []cid.Cid, g *protocoltypes.Group) *protocoltypes.EventContext {
 	parentIDsBytes := make([][]byte, len(parentIDs))
 	for i, parentID := range parentIDs {
 		parentIDsBytes[i] = parentID.Bytes()
 	}
 
 	return &protocoltypes.EventContext{
-		ID:             eventID.Bytes(),
-		ParentIDs:      parentIDsBytes,
-		GroupPK:        g.PublicKey,
-		AttachmentCIDs: attachmentsCIDs,
+		ID:        eventID.Bytes(),
+		ParentIDs: parentIDsBytes,
+		GroupPK:   g.PublicKey,
 	}
 }
 
@@ -89,7 +88,7 @@ func getParentsForCID(log ipfslog.Log, c cid.Cid) []cid.Cid {
 	return ret
 }
 
-func newGroupMetadataEventFromEntry(_ ipfslog.Log, e ipfslog.Entry, metadata *protocoltypes.GroupMetadata, event proto.Message, g *protocoltypes.Group, attachmentsCIDs [][]byte) (*protocoltypes.GroupMetadataEvent, error) {
+func newGroupMetadataEventFromEntry(_ ipfslog.Log, e ipfslog.Entry, metadata *protocoltypes.GroupMetadata, event proto.Message, g *protocoltypes.Group) (*protocoltypes.GroupMetadataEvent, error) {
 	// TODO: if parent is a merge node we should return the next nodes of it
 
 	eventBytes, err := proto.Marshal(event)
@@ -99,7 +98,7 @@ func newGroupMetadataEventFromEntry(_ ipfslog.Log, e ipfslog.Entry, metadata *pr
 
 	// TODO(gfanton): getParentsCID use a lot of ressources, disable it until we need it
 	// evtCtx := newEventContext(e.GetHash(), getParentsForCID(log, e.GetHash()), g, attachmentsCIDs)
-	evtCtx := newEventContext(e.GetHash(), []cid.Cid{}, g, attachmentsCIDs)
+	evtCtx := newEventContext(e.GetHash(), []cid.Cid{}, g)
 
 	gme := protocoltypes.GroupMetadataEvent{
 		EventContext: evtCtx,
@@ -110,56 +109,47 @@ func newGroupMetadataEventFromEntry(_ ipfslog.Log, e ipfslog.Entry, metadata *pr
 	return &gme, nil
 }
 
-func openGroupEnvelope(g *protocoltypes.Group, envelopeBytes []byte, devKS cryptoutil.DeviceKeystore) (*protocoltypes.GroupMetadata, proto.Message, [][]byte, error) {
+func openGroupEnvelope(g *protocoltypes.Group, envelopeBytes []byte) (*protocoltypes.GroupMetadata, proto.Message, error) {
 	env := &protocoltypes.GroupEnvelope{}
 	if err := env.Unmarshal(envelopeBytes); err != nil {
-		return nil, nil, nil, errcode.ErrInvalidInput.Wrap(err)
+		return nil, nil, errcode.ErrInvalidInput.Wrap(err)
 	}
 
 	nonce, err := cryptoutil.NonceSliceToArray(env.Nonce)
 	if err != nil {
-		return nil, nil, nil, errcode.ErrSerialization.Wrap(err)
+		return nil, nil, errcode.ErrSerialization.Wrap(err)
 	}
 
 	data, ok := secretbox.Open(nil, env.Event, nonce, cryptoutil.GetSharedSecret(g))
 	if !ok {
-		return nil, nil, nil, errcode.ErrGroupMemberLogEventOpen
+		return nil, nil, errcode.ErrGroupMemberLogEventOpen
 	}
 
 	metadataEvent := &protocoltypes.GroupMetadata{}
 
 	err = metadataEvent.Unmarshal(data)
 	if err != nil {
-		return nil, nil, nil, errcode.TODO.Wrap(err)
+		return nil, nil, errcode.TODO.Wrap(err)
 	}
 
 	et, ok := eventTypesMapper[metadataEvent.EventType]
 	if !ok {
-		return nil, nil, nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("event type not found"))
+		return nil, nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("event type not found"))
 	}
 
 	payload := proto.Clone(et.Message)
 	if err := proto.Unmarshal(metadataEvent.Payload, payload); err != nil {
-		return nil, nil, nil, errcode.ErrDeserialization.Wrap(err)
+		return nil, nil, errcode.ErrDeserialization.Wrap(err)
 	}
 
 	if err := et.SigChecker(g, metadataEvent, payload); err != nil {
-		return nil, nil, nil, errcode.ErrCryptoSignatureVerification.Wrap(err)
+		return nil, nil, errcode.ErrCryptoSignatureVerification.Wrap(err)
 	}
 
-	attachmentsCIDs, err := cryptoutil.AttachmentCIDSliceDecrypt(g, env.GetEncryptedAttachmentCIDs())
-	if err != nil {
-		return nil, nil, nil, errcode.ErrCryptoDecrypt.Wrap(err)
-	}
-
-	if err := devKS.AttachmentSecretSlicePut(attachmentsCIDs, metadataEvent.GetProtocolMetadata().GetAttachmentsSecrets()); err != nil {
-		return nil, nil, nil, errcode.TODO.Wrap(err)
-	}
-
-	return metadataEvent, payload, attachmentsCIDs, nil
+	return metadataEvent, payload, nil
 }
 
-func sealGroupEnvelope(g *protocoltypes.Group, eventType protocoltypes.EventType, payload proto.Marshaler, payloadSig []byte, attachmentsCIDs [][]byte, attachmentsSecrets [][]byte) ([]byte, error) {
+func sealGroupEnvelope(g *protocoltypes.Group, eventType protocoltypes.EventType, payload proto.Marshaler, payloadSig []byte) ([]byte, error) {
 	payloadBytes, err := payload.Marshal()
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
@@ -174,7 +164,7 @@ func sealGroupEnvelope(g *protocoltypes.Group, eventType protocoltypes.EventType
 		EventType:        eventType,
 		Payload:          payloadBytes,
 		Sig:              payloadSig,
-		ProtocolMetadata: &protocoltypes.ProtocolMetadata{AttachmentsSecrets: attachmentsSecrets},
+		ProtocolMetadata: &protocoltypes.ProtocolMetadata{},
 	}
 
 	eventClearBytes, err := event.Marshal()
@@ -184,15 +174,9 @@ func sealGroupEnvelope(g *protocoltypes.Group, eventType protocoltypes.EventType
 
 	eventBytes := secretbox.Seal(nil, eventClearBytes, nonce, cryptoutil.GetSharedSecret(g))
 
-	eCIDs, err := cryptoutil.AttachmentCIDSliceEncrypt(g, attachmentsCIDs)
-	if err != nil {
-		return nil, errcode.ErrCryptoEncrypt.Wrap(err)
-	}
-
 	env := &protocoltypes.GroupEnvelope{
-		Event:                   eventBytes,
-		Nonce:                   nonce[:],
-		EncryptedAttachmentCIDs: eCIDs,
+		Event: eventBytes,
+		Nonce: nonce[:],
 	}
 
 	return env.Marshal()

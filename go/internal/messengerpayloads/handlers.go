@@ -173,7 +173,6 @@ func (h *EventHandler) HandleAppMessage(gpk string, gme *protocoltypes.GroupMess
 	muts := []tyber.StepMutator{
 		tyber.WithDetail("Type", am.GetType().String()),
 		tyber.WithCIDDetail("CID", gme.GetEventContext().GetID()),
-		tyber.WithDetail("MediasCount", strconv.Itoa(len(am.GetMedias()))),
 		tyber.WithDetail("TargetCID", am.GetTargetCID()),
 		tyber.WithDetail("LocalMemberPK", messengerutil.B64EncodeBytes(memPK)),
 		tyber.WithDetail("LocalDevicePK", messengerutil.B64EncodeBytes(devPK)),
@@ -193,16 +192,9 @@ func (h *EventHandler) HandleAppMessage(gpk string, gme *protocoltypes.GroupMess
 	}
 	tyber.LogStep(h.ctx, h.logger, "Generated interaction", tyber.WithJSONDetail("Interaction", i))
 
-	medias := i.GetMedias()
-	var mediasAdded []bool
-
 	// start a transaction
 	var isNew bool
 	if err := h.db.TX(h.ctx, func(tx *messengerdb.DBWrapper) error {
-		if mediasAdded, err = tx.AddMedias(medias); err != nil {
-			return logError("Failed to add medias", err)
-		}
-
 		interactionFetchRelations(tx, i, h.logger)
 
 		h.logger.Debug("Will handle app message", zap.Any("interaction", i), zap.Any("payload", amPayload))
@@ -233,14 +225,6 @@ func (h *EventHandler) HandleAppMessage(gpk string, gme *protocoltypes.GroupMess
 	if handler.isVisibleEvent && isNew {
 		if err := h.dispatchVisibleInteraction(i); err != nil {
 			h.logger.Error("Unable to dispatch notification for interaction", tyber.FormatStepLogFields(h.ctx, tyber.ZapFieldsToDetails(logutil.PrivateString("cid", i.CID), zap.Error(err)))...)
-		}
-	}
-
-	for i, media := range medias {
-		if mediasAdded[i] {
-			if err := h.dispatcher.StreamEvent(mt.StreamEvent_TypeMediaUpdated, &mt.StreamEvent_MediaUpdated{Media: media}, true); err != nil {
-				h.logger.Error("Unable to dispatch notification for media", tyber.FormatStepLogFields(h.ctx, tyber.ZapFieldsToDetails(logutil.PrivateString("cid", media.CID), zap.Error(err)))...)
-			}
 		}
 	}
 
@@ -810,7 +794,6 @@ func (h *EventHandler) groupMemberDeviceAdded(gme *protocoltypes.GroupMetadataEv
 	}
 	if userInfo != nil {
 		member.DisplayName = userInfo.GetDisplayName()
-		member.AvatarCID = userInfo.GetAvatarCID()
 	}
 
 	member, isNew, err := h.db.UpsertMember(mpk, gpk, *member)
@@ -897,7 +880,6 @@ func (h *EventHandler) handleAppMessageGroupInvitation(tx *messengerdb.DBWrapper
 
 func (h *EventHandler) handleAppMessageUserMessage(tx *messengerdb.DBWrapper, i *mt.Interaction, amPayload proto.Message) (*mt.Interaction, bool, error) {
 	// NOTE: it's ok to have an empty payload here since a user message can be only medias
-
 	i, isNew, err := tx.AddInteraction(*i)
 	if err != nil {
 		return nil, isNew, err
@@ -978,8 +960,7 @@ func (h *EventHandler) handleAppMessageSetUserInfo(tx *messengerdb.DBWrapper, i 
 		h.logger.Debug("interesting contact SetUserInfo")
 
 		c.DisplayName = payload.GetDisplayName()
-		c.AvatarCID = payload.GetAvatarCID()
-		err = tx.UpdateContact(cpk, mt.Contact{DisplayName: c.GetDisplayName(), AvatarCID: c.GetAvatarCID(), InfoDate: i.GetSentDate()})
+		err = tx.UpdateContact(cpk, mt.Contact{DisplayName: c.GetDisplayName(), InfoDate: i.GetSentDate()})
 		if err != nil {
 			return nil, false, err
 		}
@@ -1023,7 +1004,7 @@ func (h *EventHandler) handleAppMessageSetUserInfo(tx *messengerdb.DBWrapper, i 
 	member, isNew, err := tx.UpsertMember(
 		i.MemberPublicKey,
 		i.ConversationPublicKey,
-		mt.Member{DisplayName: payload.GetDisplayName(), AvatarCID: payload.GetAvatarCID(), InfoDate: i.GetSentDate()},
+		mt.Member{DisplayName: payload.GetDisplayName(), InfoDate: i.GetSentDate()},
 	)
 	if err != nil {
 		return nil, false, err
@@ -1115,14 +1096,8 @@ func interactionFromAppMessage(h *EventHandler, gpk string, gme *protocoltypes.G
 		ConversationPublicKey: gpk,
 		SentDate:              am.GetSentDate(),
 		DevicePublicKey:       dpk,
-		Medias:                am.GetMedias(),
 		MemberPublicKey:       mpk,
 		TargetCID:             am.GetTargetCID(),
-	}
-
-	for _, media := range i.Medias {
-		media.InteractionCID = i.CID
-		media.State = mt.Media_StateNeverDownloaded
 	}
 
 	return &i, nil
@@ -1281,12 +1256,9 @@ func (h *EventHandler) handleAppMessageSetGroupInfo(tx *messengerdb.DBWrapper, i
 		if payload.GetDisplayName() != "" {
 			c.DisplayName = payload.GetDisplayName()
 		}
-		if payload.GetAvatarCid() != "" {
-			c.AvatarCID = payload.GetAvatarCid()
-		}
 		c.InfoDate = i.GetSentDate()
 
-		_, err = tx.UpdateConversation(mt.Conversation{DisplayName: c.GetDisplayName(), AvatarCID: c.GetAvatarCID(), InfoDate: c.GetInfoDate(), PublicKey: c.GetPublicKey()})
+		_, err = tx.UpdateConversation(mt.Conversation{DisplayName: c.GetDisplayName(), InfoDate: c.GetInfoDate(), PublicKey: c.GetPublicKey()})
 		if err != nil {
 			return nil, false, err
 		}
@@ -1323,7 +1295,7 @@ func interactionFromOutOfStoreAppMessage(h *EventHandler, gPKBytes []byte, outOf
 
 	dpk := messengerutil.B64EncodeBytes(outOfStoreMessage.DevicePK)
 
-	h.logger.Debug("received app message", logutil.PrivateString("type", amt.String()), zap.Int("numMedias", len(am.GetMedias())))
+	h.logger.Debug("received app message", logutil.PrivateString("type", amt.String()))
 
 	mpk := ""
 	dev, err := h.db.GetDeviceByPK(dpk)
@@ -1342,13 +1314,7 @@ func interactionFromOutOfStoreAppMessage(h *EventHandler, gPKBytes []byte, outOf
 		SentDate:              am.GetSentDate(),
 		DevicePublicKey:       dpk,
 		MemberPublicKey:       mpk,
-		Medias:                am.GetMedias(),
 		OutOfStoreMessage:     true,
-	}
-
-	for _, media := range i.Medias {
-		media.InteractionCID = i.CID
-		media.State = mt.Media_StateNeverDownloaded
 	}
 
 	return &i, nil

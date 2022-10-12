@@ -40,27 +40,13 @@ func (x *AppMessage_Type) MarshalJSON() ([]byte, error) {
 	return json.Marshal(AppMessage_Undefined.String())
 }
 
-func (x AppMessage_Type) MarshalPayload(sentDate int64, target string, medias []*Media, payload proto.Message) ([]byte, error) {
+func (x AppMessage_Type) MarshalPayload(sentDate int64, target string, payload proto.Message) ([]byte, error) {
 	p, err := proto.Marshal(payload)
 	if err != nil {
 		return nil, err
 	}
 
-	return proto.Marshal(&AppMessage{Type: x, TargetCID: target, Payload: p, SentDate: sentDate, Medias: mediaSliceFilterForNetwork(medias)})
-}
-
-func mediaSliceFilterForNetwork(dbMedias []*Media) []*Media {
-	networkMedias := make([]*Media, len(dbMedias))
-	for i, dbMedia := range dbMedias {
-		networkMedias[i] = &Media{
-			CID:           dbMedia.GetCID(),
-			MimeType:      dbMedia.GetMimeType(),
-			Filename:      dbMedia.GetFilename(),
-			DisplayName:   dbMedia.GetDisplayName(),
-			MetadataBytes: dbMedia.GetMetadataBytes(),
-		}
-	}
-	return networkMedias
+	return proto.Marshal(&AppMessage{Type: x, TargetCID: target, Payload: p, SentDate: sentDate})
 }
 
 // UnmarshalPayload tries to parse an AppMessage payload in the corresponding type.
@@ -126,8 +112,6 @@ func (event *StreamEvent) UnmarshalPayload() (proto.Message, error) {
 		message = &StreamEvent_MemberUpdated{}
 	case StreamEvent_TypeDeviceUpdated:
 		message = &StreamEvent_DeviceUpdated{}
-	case StreamEvent_TypeMediaUpdated:
-		message = &StreamEvent_MediaUpdated{}
 	case StreamEvent_TypeNotified:
 		message = &StreamEvent_Notified{}
 	case StreamEvent_TypeListEnded:

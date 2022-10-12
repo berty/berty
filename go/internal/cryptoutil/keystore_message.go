@@ -398,56 +398,46 @@ func (m *MessageKeystore) OpenEnvelopePayload(
 	g *protocoltypes.Group,
 	ownPK crypto.PubKey,
 	id cid.Cid,
-) (*protocoltypes.EncryptedMessage, [][]byte, error) {
+) (*protocoltypes.EncryptedMessage, error) {
 	gPK, err := g.GetPubKey()
 	if err != nil {
-		return nil, nil, errcode.ErrDeserialization.Wrap(err)
+		return nil, errcode.ErrDeserialization.Wrap(err)
 	}
 
 	msgBytes, decryptInfo, err := m.OpenPayload(ctx, id, gPK, env.Message, headers)
 	if err != nil {
-		return nil, nil, errcode.ErrCryptoDecryptPayload.Wrap(err)
+		return nil, errcode.ErrCryptoDecryptPayload.Wrap(err)
 	}
 
 	if err := m.PostDecryptActions(ctx, decryptInfo, g, ownPK, headers); err != nil {
-		return nil, nil, errcode.TODO.Wrap(err)
+		return nil, errcode.TODO.Wrap(err)
 	}
 
 	var msg protocoltypes.EncryptedMessage
 	err = msg.Unmarshal(msgBytes)
 	if err != nil {
-		return nil, nil, errcode.ErrDeserialization.Wrap(err)
+		return nil, errcode.ErrDeserialization.Wrap(err)
 	}
 
-	attachmentsCIDs, err := AttachmentCIDSliceDecrypt(g, env.GetEncryptedAttachmentCIDs())
-	if err != nil {
-		return nil, nil, errcode.ErrCryptoDecrypt.Wrap(err)
-	}
-
-	return &msg, attachmentsCIDs, nil
+	return &msg, nil
 }
 
-func (m *MessageKeystore) OpenEnvelope(
-	ctx context.Context,
-	g *protocoltypes.Group,
-	ownPK crypto.PubKey,
-	data []byte, id cid.Cid,
-) (*protocoltypes.MessageHeaders, *protocoltypes.EncryptedMessage, [][]byte, error) {
+func (m *MessageKeystore) OpenEnvelope(ctx context.Context, g *protocoltypes.Group, ownPK crypto.PubKey, data []byte, id cid.Cid) (*protocoltypes.MessageHeaders, *protocoltypes.EncryptedMessage, error) {
 	if m == nil || g == nil {
-		return nil, nil, nil, errcode.ErrInvalidInput
+		return nil, nil, errcode.ErrInvalidInput
 	}
 
 	env, headers, err := OpenEnvelopeHeaders(data, g)
 	if err != nil {
-		return nil, nil, nil, errcode.ErrCryptoDecrypt.Wrap(err)
+		return nil, nil, errcode.ErrCryptoDecrypt.Wrap(err)
 	}
 
-	msg, attachmentsCIDs, err := m.OpenEnvelopePayload(ctx, env, headers, g, ownPK, id)
+	msg, err := m.OpenEnvelopePayload(ctx, env, headers, g, ownPK, id)
 	if err != nil {
-		return nil, nil, nil, errcode.TODO.Wrap(err)
+		return nil, nil, errcode.TODO.Wrap(err)
 	}
 
-	return headers, msg, attachmentsCIDs, nil
+	return headers, msg, nil
 }
 
 func (m *MessageKeystore) OpenPayload(ctx context.Context, id cid.Cid, groupPK crypto.PubKey, payload []byte, headers *protocoltypes.MessageHeaders) ([]byte, *DecryptInfo, error) {
@@ -560,7 +550,7 @@ func (m *MessageKeystore) putDeviceChainKey(ctx context.Context, groupPK, device
 	return nil
 }
 
-func (m *MessageKeystore) SealEnvelope(ctx context.Context, g *protocoltypes.Group, deviceSK crypto.PrivKey, payload []byte, attachmentsCIDs [][]byte) ([]byte, error) {
+func (m *MessageKeystore) SealEnvelope(ctx context.Context, g *protocoltypes.Group, deviceSK crypto.PrivKey, payload []byte) ([]byte, error) {
 	if m == nil {
 		return nil, errcode.ErrInvalidInput
 	}
@@ -582,7 +572,7 @@ func (m *MessageKeystore) SealEnvelope(ctx context.Context, g *protocoltypes.Gro
 		return nil, errcode.ErrInternal.Wrap(fmt.Errorf("unable to get device chainkey: %w", err))
 	}
 
-	env, err := SealEnvelope(payload, ds, deviceSK, g, attachmentsCIDs)
+	env, err := SealEnvelope(payload, ds, deviceSK, g)
 	if err != nil {
 		return nil, errcode.ErrCryptoEncrypt.Wrap(fmt.Errorf("unable to seal envelope: %w", err))
 	}

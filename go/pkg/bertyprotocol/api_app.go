@@ -22,7 +22,7 @@ func (s *service) AppMetadataSend(ctx context.Context, req *protocoltypes.AppMet
 	}
 	tyberLogGroupContext(ctx, s.logger, gc)
 
-	op, err := gc.MetadataStore().SendAppMetadata(ctx, req.Payload, req.GetAttachmentCIDs())
+	op, err := gc.MetadataStore().SendAppMetadata(ctx, req.Payload)
 	if err != nil {
 		return nil, errcode.ErrOrbitDBAppend.Wrap(err)
 	}
@@ -40,7 +40,7 @@ func (s *service) AppMessageSend(ctx context.Context, req *protocoltypes.AppMess
 	}
 	tyberLogGroupContext(ctx, s.logger, gc)
 
-	op, err := gc.MessageStore().AddMessage(ctx, req.Payload, req.GetAttachmentCIDs())
+	op, err := gc.MessageStore().AddMessage(ctx, req.Payload)
 	if err != nil {
 		return nil, errcode.ErrOrbitDBAppend.Wrap(err)
 	}

@@ -131,22 +131,22 @@ func TestDifferentStores(t *testing.T) {
 
 	require.Equal(t, hex.EncodeToString(rawPK), authorized1[0])
 
-	_, err = g1a.MetadataStore().SendAppMetadata(ctx, []byte("From 1 - 1"), nil)
+	_, err = g1a.MetadataStore().SendAppMetadata(ctx, []byte("From 1 - 1"))
 	require.NoError(t, err)
 
-	_, err = g2a.MetadataStore().SendAppMetadata(ctx, []byte("From 2 - 1"), nil)
+	_, err = g2a.MetadataStore().SendAppMetadata(ctx, []byte("From 2 - 1"))
 	require.NoError(t, err)
 
-	_, err = g1b.MetadataStore().SendAppMetadata(ctx, []byte("From 1 - 2"), nil)
+	_, err = g1b.MetadataStore().SendAppMetadata(ctx, []byte("From 1 - 2"))
 	require.NoError(t, err)
 
-	_, err = g2b.MetadataStore().SendAppMetadata(ctx, []byte("From 2 - 2"), nil)
+	_, err = g2b.MetadataStore().SendAppMetadata(ctx, []byte("From 2 - 2"))
 	require.NoError(t, err)
 
-	_, err = g1b.MetadataStore().SendAppMetadata(ctx, []byte("From 1 - 3"), nil)
+	_, err = g1b.MetadataStore().SendAppMetadata(ctx, []byte("From 1 - 3"))
 	require.NoError(t, err)
 
-	_, err = g2b.MetadataStore().SendAppMetadata(ctx, []byte("From 2 - 3"), nil)
+	_, err = g2b.MetadataStore().SendAppMetadata(ctx, []byte("From 2 - 3"))
 	require.NoError(t, err)
 
 	{

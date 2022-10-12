@@ -1,6 +1,6 @@
 import beapi from '@berty/api'
 
-import { UnaryType, RequestStreamType, ResponseStreamType } from './types'
+import { UnaryType, ResponseStreamType } from './types'
 
 export type ServiceClientType<S> = S extends beapi.protocol.ProtocolService
 	? WelshProtocolServiceClient
@@ -61,8 +61,6 @@ export interface WelshProtocolServiceClient {
 		beapi.protocol.ProtocolService['replicationServiceRegisterGroup']
 	>
 	peerList: UnaryType<beapi.protocol.ProtocolService['peerList']>
-	attachmentPrepare: RequestStreamType<beapi.protocol.ProtocolService['attachmentPrepare']>
-	attachmentRetrieve: ResponseStreamType<beapi.protocol.ProtocolService['attachmentRetrieve']>
 	pushReceive: UnaryType<beapi.protocol.ProtocolService['pushReceive']>
 	pushSend: UnaryType<beapi.protocol.ProtocolService['pushSend']>
 	pushShareToken: UnaryType<beapi.protocol.ProtocolService['pushShareToken']>
@@ -135,9 +133,6 @@ export interface WelshMessengerServiceClient {
 	replicationSetAutoEnable: UnaryType<beapi.messenger.MessengerService['replicationSetAutoEnable']>
 	bannerQuote: UnaryType<beapi.messenger.MessengerService['bannerQuote']>
 	instanceExportData: ResponseStreamType<beapi.messenger.MessengerService['instanceExportData']>
-	mediaPrepare: RequestStreamType<beapi.messenger.MessengerService['mediaPrepare']>
-	mediaRetrieve: ResponseStreamType<beapi.messenger.MessengerService['mediaRetrieve']>
-	mediaGetRelated: UnaryType<beapi.messenger.MessengerService['mediaGetRelated']>
 	messageSearch: UnaryType<beapi.messenger.MessengerService['messageSearch']>
 	listMemberDevices: ResponseStreamType<beapi.messenger.MessengerService['listMemberDevices']>
 	tyberHostSearch: ResponseStreamType<beapi.messenger.MessengerService['tyberHostSearch']>

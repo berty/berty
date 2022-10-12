@@ -90,15 +90,6 @@ http:
  - selector: berty.messenger.v1.MessengerService.InstanceExportData
    post: /berty.messenger.v1/MessengerService/InstanceExportData
    body: "*"
- - selector: berty.messenger.v1.MessengerService.MediaPrepare
-   post: /berty.messenger.v1/MessengerService/MediaPrepare
-   body: "*"
- - selector: berty.messenger.v1.MessengerService.MediaRetrieve
-   post: /berty.messenger.v1/MessengerService/MediaRetrieve
-   body: "*"
- - selector: berty.messenger.v1.MessengerService.MediaGetRelated
-   post: /berty.messenger.v1/MessengerService/MediaGetRelated
-   body: "*"
  - selector: berty.messenger.v1.MessengerService.MessageSearch
    post: /berty.messenger.v1/MessengerService/MessageSearch
    body: "*"

@@ -100,14 +100,11 @@ message DecryptedPush {
     Unknown = 0;
     Message = 1;
     Reaction = 2;
-    Media = 3;
-    Photo = 4;
-    Gif = 5;
-    VoiceMessage = 6;
+    reserved 3, 4, 5, 6; // Media, Photo, Gif, VoiceMessage
     GroupInvitation = 7;
     ConversationNameChanged = 8;
     MemberNameChanged = 9;
-    MemberPictureChanged = 10;
+    reserved 10; // MemberPictureChanged
     MemberDetailsChanged = 11;
     ReplyOptions = 12;
   }

@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"path"
-	"strings"
 	"time"
 
 	"github.com/gogo/protobuf/proto"
@@ -84,28 +83,6 @@ func PushEnrich(rawPushData *messengertypes.PushReceivedData, accountData *accou
 		err := proto.Unmarshal(rawPushData.Interaction.Payload, m)
 		if err != nil {
 			logger.Error("unable to unmarshal user message", logutil.PrivateString("cid", string(rawPushData.ProtocolData.Message.CID)), zap.Error(err))
-			break
-		}
-
-		if l := len(rawPushData.Interaction.Medias); l > 0 {
-			switch {
-			case !checkAllMediasHaveSameMime(rawPushData.Interaction.Medias):
-				d.PushType = pushtypes.DecryptedPush_Media
-
-			case strings.HasSuffix(rawPushData.Interaction.Medias[0].MimeType, "gif"):
-				d.PushType = pushtypes.DecryptedPush_Gif
-
-			case strings.HasPrefix(rawPushData.Interaction.Medias[0].MimeType, "image/") || rawPushData.Interaction.Medias[0].MimeType == "image":
-				d.PushType = pushtypes.DecryptedPush_Photo
-
-			case strings.HasPrefix(rawPushData.Interaction.Medias[0].MimeType, "audio/") || rawPushData.Interaction.Medias[0].MimeType == "audio":
-				d.PushType = pushtypes.DecryptedPush_VoiceMessage
-
-			default:
-				d.PushType = pushtypes.DecryptedPush_Media
-			}
-
-			payloadAttrs["medias-count"] = fmt.Sprintf("%d", l)
 			break
 		}
 
@@ -302,19 +279,4 @@ func PushDecrypt(ctx context.Context, rootDir string, input []byte, opts *PushDe
 
 	// only returning the first error
 	return nil, nil, errcode.ErrPushUnableToDecrypt.Wrap(errs[0])
-}
-
-func checkAllMediasHaveSameMime(medias []*messengertypes.Media) bool {
-	if len(medias) < 2 {
-		return true
-	}
-
-	firstType := medias[0].MimeType
-	for i := range medias {
-		if firstType != medias[i].MimeType {
-			return false
-		}
-	}
-
-	return true
 }

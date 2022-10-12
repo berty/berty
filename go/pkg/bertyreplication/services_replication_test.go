@@ -217,7 +217,7 @@ func TestReplicationService_ReplicateGroupStats_ReplicateGlobalStats(t *testing.
 	require.NoError(t, err)
 	defer gcPeer1.Close()
 
-	opMeta, err := gcPeer1.MetadataStore().SendAppMetadata(ctx, []byte("meta_1"), nil)
+	opMeta, err := gcPeer1.MetadataStore().SendAppMetadata(ctx, []byte("meta_1"))
 	require.NoError(t, err)
 
 	deadline := time.Now().Add(5 * time.Second)
@@ -262,7 +262,7 @@ func TestReplicationService_ReplicateGroupStats_ReplicateGlobalStats(t *testing.
 
 	previousUpdatedAt = res.Group.UpdatedAt
 
-	opMsg, err := gcPeer1.MessageStore().AddMessage(ctx, []byte("hey"), nil)
+	opMsg, err := gcPeer1.MessageStore().AddMessage(ctx, []byte("hey"))
 	require.NoError(t, err)
 
 	deadline = time.Now().Add(5 * time.Second)
@@ -307,7 +307,7 @@ func TestReplicationService_ReplicateGroupStats_ReplicateGlobalStats(t *testing.
 
 	previousUpdatedAt = res.Group.UpdatedAt
 
-	opMsg2, err := gcPeer1.MessageStore().AddMessage(ctx, []byte("hey 2"), nil)
+	opMsg2, err := gcPeer1.MessageStore().AddMessage(ctx, []byte("hey 2"))
 	require.NoError(t, err)
 
 	deadline = time.Now().Add(5 * time.Second)
@@ -452,10 +452,10 @@ func TestReplicationService_Flow(t *testing.T) {
 		sub2a, err := g2a.MetadataStore().EventBus().Subscribe(new(protocoltypes.GroupMetadataEvent))
 		require.NoError(t, err)
 
-		_, err = g1a.MetadataStore().SendAppMetadata(ctx, []byte("From 1 - 1"), nil)
+		_, err = g1a.MetadataStore().SendAppMetadata(ctx, []byte("From 1 - 1"))
 		require.NoError(t, err)
 
-		_, err = g2a.MetadataStore().SendAppMetadata(ctx, []byte("From 2 - 1"), nil)
+		_, err = g2a.MetadataStore().SendAppMetadata(ctx, []byte("From 2 - 1"))
 		require.NoError(t, err)
 
 		var evt interface{}
@@ -529,7 +529,7 @@ func TestReplicationService_Flow(t *testing.T) {
 		}()
 
 		for i := 0; i < messageAmount; i++ {
-			_, err = g1a.MetadataStore().SendAppMetadata(ctx, []byte(fmt.Sprintf("From 1 - 2: %d", i)), nil)
+			_, err = g1a.MetadataStore().SendAppMetadata(ctx, []byte(fmt.Sprintf("From 1 - 2: %d", i)))
 			require.NoError(t, err)
 		}
 

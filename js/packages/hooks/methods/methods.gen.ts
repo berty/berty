@@ -176,14 +176,6 @@ export type MessengerMethodsHooks = {
 		called: boolean
 		loading: boolean
 	}
-	useMediaGetRelated: () => {
-		error: any
-		call: (req?: beapi.messenger.MediaGetRelated.IRequest) => void
-		reply: beapi.messenger.MediaGetRelated.IReply | null
-		done: boolean
-		called: boolean
-		loading: boolean
-	}
 	useMessageSearch: () => {
 		error: any
 		call: (req?: beapi.messenger.MessageSearch.IRequest) => void

@@ -37,7 +37,7 @@ func SealPayload(payload []byte, ds *protocoltypes.DeviceSecret, deviceSK crypto
 	return secretbox.Seal(nil, payload, uint64AsNonce(ds.Counter+1), &msgKey), sig, nil
 }
 
-func SealEnvelope(payload []byte, ds *protocoltypes.DeviceSecret, deviceSK crypto.PrivKey, g *protocoltypes.Group, attachmentsCIDs [][]byte) ([]byte, error) {
+func SealEnvelope(payload []byte, ds *protocoltypes.DeviceSecret, deviceSK crypto.PrivKey, g *protocoltypes.Group) ([]byte, error) {
 	encryptedPayload, sig, err := SealPayload(payload, ds, deviceSK, g)
 	if err != nil {
 		return nil, errcode.ErrCryptoEncrypt.Wrap(err)
@@ -66,16 +66,10 @@ func SealEnvelope(payload []byte, ds *protocoltypes.DeviceSecret, deviceSK crypt
 
 	encryptedHeaders := secretbox.Seal(nil, headers, nonce, GetSharedSecret(g))
 
-	encryptedAttachmentsCIDs, err := AttachmentCIDSliceEncrypt(g, attachmentsCIDs)
-	if err != nil {
-		return nil, errcode.ErrCryptoEncrypt.Wrap(err)
-	}
-
 	env, err := proto.Marshal(&protocoltypes.MessageEnvelope{
-		MessageHeaders:          encryptedHeaders,
-		Message:                 encryptedPayload,
-		Nonce:                   nonce[:],
-		EncryptedAttachmentCIDs: encryptedAttachmentsCIDs,
+		MessageHeaders: encryptedHeaders,
+		Message:        encryptedPayload,
+		Nonce:          nonce[:],
 	})
 	if err != nil {
 		return nil, errcode.ErrSerialization.Wrap(err)

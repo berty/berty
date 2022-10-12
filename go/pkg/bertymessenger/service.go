@@ -27,7 +27,6 @@ import (
 	"berty.tech/berty/v2/go/internal/messengerpayloads"
 	"berty.tech/berty/v2/go/internal/messengerutil"
 	"berty.tech/berty/v2/go/internal/notification"
-	"berty.tech/berty/v2/go/internal/streamutil"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/bertypush"
 	"berty.tech/berty/v2/go/pkg/bertyversion"
@@ -355,49 +354,6 @@ func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (_ Service, err
 	return &svc, nil
 }
 
-func (svc *service) attachmentPrepare(ctx context.Context, attachment io.Reader) ([]byte, error) {
-	stream, err := svc.protocolClient.AttachmentPrepare(ctx)
-	if err != nil {
-		return nil, errcode.ErrAttachmentPrepare.Wrap(err)
-	}
-
-	// send header
-	if err := stream.Send(&protocoltypes.AttachmentPrepare_Request{}); err != nil {
-		return nil, errcode.ErrStreamHeaderWrite.Wrap(err)
-	}
-
-	// send body
-	if err := streamutil.FuncSink(make([]byte, 64*1024), attachment, func(b []byte) error {
-		return stream.Send(&protocoltypes.AttachmentPrepare_Request{Block: b})
-	}); err != nil {
-		return nil, errcode.ErrStreamSink.Wrap(err)
-	}
-
-	// signal end of data and pass cid
-	reply, err := stream.CloseAndRecv()
-	if err != nil {
-		return nil, errcode.ErrStreamCloseAndRecv.Wrap(err)
-	}
-	return reply.GetAttachmentCID(), nil
-}
-
-func (svc *service) attachmentRetrieve(ctx context.Context, cid string) (*io.PipeReader, error) {
-	cidBytes, err := messengerutil.B64DecodeBytes(cid)
-	if err != nil {
-		return nil, errcode.ErrDeserialization.Wrap(err)
-	}
-
-	stream, err := svc.protocolClient.AttachmentRetrieve(ctx, &protocoltypes.AttachmentRetrieve_Request{AttachmentCID: cidBytes})
-	if err != nil {
-		return nil, errcode.ErrAttachmentRetrieve.Wrap(err)
-	}
-
-	return streamutil.FuncReader(func() ([]byte, error) {
-		reply, err := stream.Recv()
-		return reply.GetBlock(), err
-	}, svc.logger), nil
-}
-
 func (svc *service) sendAccountUserInfo(ctx context.Context, groupPK string) (err error) {
 	ctx, _, endSection := tyber.Section(ctx, svc.logger, fmt.Sprintf("Sending account info to group %s", groupPK))
 	defer func() {
@@ -416,47 +372,16 @@ func (svc *service) sendAccountUserInfo(ctx context.Context, groupPK string) (er
 		return errcode.ErrDBRead.Wrap(err)
 	}
 
-	var avatarCID string
-	var attachmentCIDs [][]byte
-	var medias []*mt.Media
-	if acc.GetAvatarCID() != "" {
-		// TODO: add AttachmentRecrypt to bertyprotocol
-		avatar, err := svc.attachmentRetrieve(ctx, acc.GetAvatarCID())
-		if err != nil {
-			return errcode.ErrAttachmentRetrieve.Wrap(err)
-		}
-		avatarCIDBytes, err := svc.attachmentPrepare(ctx, avatar)
-		if err != nil {
-			return errcode.ErrAttachmentPrepare.Wrap(err)
-		}
-		avatarCID = messengerutil.B64EncodeBytes(avatarCIDBytes)
-		attachmentCIDs = [][]byte{avatarCIDBytes}
-
-		if medias, err = svc.db.GetMedias([]string{acc.GetAvatarCID()}); err != nil {
-			return errcode.ErrDBRead.Wrap(err)
-		}
-		if len(medias) < 1 {
-			return errcode.ErrInternal
-		}
-		medias[0].CID = avatarCID
-
-		svc.logger.Debug("Re-encrypted avatar", tyber.FormatStepLogFields(ctx, []tyber.Detail{
-			{Name: "OldAvatarCID", Description: acc.GetAvatarCID()},
-			{Name: "NewAvatarCID", Description: avatarCID},
-		})...)
-	}
-
 	am, err := mt.AppMessage_TypeSetUserInfo.MarshalPayload(
 		messengerutil.TimestampMs(time.Now()),
 		"",
-		medias,
-		&mt.AppMessage_SetUserInfo{DisplayName: acc.GetDisplayName(), AvatarCID: avatarCID},
+		&mt.AppMessage_SetUserInfo{DisplayName: acc.GetDisplayName()},
 	)
 	if err != nil {
 		return errcode.ErrSerialization.Wrap(err)
 	}
 
-	sendReply, err := svc.protocolClient.AppMetadataSend(ctx, &protocoltypes.AppMetadataSend_Request{GroupPK: pk, Payload: am, AttachmentCIDs: attachmentCIDs})
+	sendReply, err := svc.protocolClient.AppMetadataSend(ctx, &protocoltypes.AppMetadataSend_Request{GroupPK: pk, Payload: am})
 	if err != nil {
 		return errcode.ErrProtocolSend.Wrap(err)
 	}
@@ -510,7 +435,7 @@ func (svc *service) SendAck(cid, conversationPK string) error {
 
 	// TODO: Don't send ack if message is already acked to prevent spam in multimember groups
 	// Maybe wait a few seconds before checking since we're likely to receive the message before any ack
-	amp, err := mt.AppMessage_TypeAcknowledge.MarshalPayload(0, cid, nil, &mt.AppMessage_Acknowledge{})
+	amp, err := mt.AppMessage_TypeAcknowledge.MarshalPayload(0, cid, &mt.AppMessage_Acknowledge{})
 	if err != nil {
 		return logError("Failed to marshal acknowledge", err)
 	}

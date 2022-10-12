@@ -111,12 +111,6 @@ http:
  - selector: berty.protocol.v1.ProtocolService.PeerList
    post: /berty.protocol.v1/ProtocolService/PeerList
    body: "*"
- - selector: berty.protocol.v1.ProtocolService.AttachmentPrepare
-   post: /berty.protocol.v1/ProtocolService/AttachmentPrepare
-   body: "*"
- - selector: berty.protocol.v1.ProtocolService.AttachmentRetrieve
-   post: /berty.protocol.v1/ProtocolService/AttachmentRetrieve
-   body: "*"
  - selector: berty.protocol.v1.ProtocolService.PushReceive
    post: /berty.protocol.v1/ProtocolService/PushReceive
    body: "*"

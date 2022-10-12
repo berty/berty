@@ -1,7 +1,7 @@
 import pb from '@berty/api/root.pb'
 
 console.log("import beapi from '@berty/api'")
-console.log("import { UnaryMock, RequestStreamMock, ResponseStreamMock } from './types'")
+console.log("import { UnaryMock, ResponseStreamMock } from './types'")
 
 const services = [
 	'berty.protocol.v1.ProtocolService',
