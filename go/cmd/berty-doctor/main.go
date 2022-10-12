@@ -124,7 +124,7 @@ func main() {
 			fmt.Printf("[-] %d warns, %d errors.\n", warnc, errc)
 		}
 		if errc > 0 {
-			os.Exit(1)
+			os.Exit(1) // nolint:gocritic
 		}
 	}
 }
