@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
-	"os/signal"
 	"strings"
 	"sync"
 	"time"
@@ -32,6 +31,16 @@ func main() {
 	flag.Parse()
 	var wg sync.WaitGroup
 	ctx, cancel := context.WithTimeout(context.Background(), timeout)
+	defer cancel()
+
+	go func() {
+		<-ctx.Done()
+		if ctx.Err() == context.DeadlineExceeded {
+			time.Sleep(time.Second * 5)
+			// if process still running after 5sc, panic
+			panic("timeout while waiting for doctor to exit")
+		}
+	}()
 
 	// check for programs
 	wg.Add(1)
@@ -107,18 +116,6 @@ func main() {
 	// FIXME: android sdk
 	// FIXME: node version
 	// FIXME: check termcaps support for mini
-
-	// Cancel ctx on sigInt.
-	go func() {
-		signalChannel := make(chan os.Signal, 1)
-		signal.Notify(signalChannel, os.Interrupt)
-
-		select {
-		case <-signalChannel:
-			cancel()
-		case <-ctx.Done():
-		}
-	}()
 
 	// summary
 	{

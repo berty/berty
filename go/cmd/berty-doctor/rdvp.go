@@ -8,12 +8,14 @@ import (
 	"io"
 	"math"
 	"math/rand"
+	"os"
 	"runtime"
 	"strconv"
 	"sync"
 	"time"
 
 	"github.com/denisbrodbeck/machineid"
+	ipfs_log "github.com/ipfs/go-log/v2"
 	p2p "github.com/libp2p/go-libp2p"
 	"github.com/libp2p/go-libp2p-core/discovery"
 	"github.com/libp2p/go-libp2p-core/peer"
@@ -21,6 +23,7 @@ import (
 	"github.com/libp2p/go-libp2p/p2p/protocol/ping"
 	ma "github.com/multiformats/go-multiaddr"
 	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 	"moul.io/srand"
 
 	"berty.tech/berty/v2/go/internal/ipfsutil"
@@ -30,7 +33,22 @@ import (
 const timeRounding = time.Microsecond * 10
 
 func testRDVPs(ctx context.Context, gwg *sync.WaitGroup, addrs []string) {
-	defer (*gwg).Done()
+	defer gwg.Done()
+	var err error
+
+	logger := zap.NewNop()
+	if debug := os.Getenv("DOCTOR_DEBUG"); debug == "true" || debug == "yes" {
+		cfg := zap.NewDevelopmentConfig()
+		cfg.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
+		if logger, err = cfg.Build(); err != nil {
+			panic(err)
+		}
+
+		ipfs_log.SetDebugLogging()
+		ipfs_log.SetPrimaryCore(logger.Core())
+
+		logger.Debug("debug mode enable")
+	}
 
 	// Isolate each server
 	var pis []peer.AddrInfo
@@ -143,7 +161,7 @@ func testRDVPs(ctx context.Context, gwg *sync.WaitGroup, addrs []string) {
 
 						// Setup discovery
 						disc := tinder.NewRendezvousDiscovery(
-							zap.NewNop(),
+							logger.Named("tinder"),
 							host,
 							tgtPi.ID,
 							rand.New(rand.NewSource(srand.SafeFast())), //nolint:gosec
