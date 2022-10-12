@@ -114,7 +114,6 @@ func getDBModels() []interface{} {
 		&messengertypes.Member{},
 		&messengertypes.Device{},
 		&messengertypes.ConversationReplicationInfo{},
-		&messengertypes.Reaction{},
 		&messengertypes.MetadataEvent{},
 		&messengertypes.SharedPushToken{},
 	}
@@ -601,16 +600,6 @@ func (d *DBWrapper) GetPaginatedInteractions(opts *messengertypes.PaginatedInter
 		return nil, errcode.ErrDBRead.Wrap(fmt.Errorf("unable to fetch interactions: %w", err))
 	}
 
-	// TODO: find a way to do this in one SQL call instead of parsing and do a db call for each interaction
-	for _, interaction := range interactions {
-		var err error
-		// add reactions to interaction
-		interaction.Reactions, err = d.BuildReactionsView(interaction.CID)
-		if err != nil {
-			return nil, errcode.ErrDBRead.Wrap(err)
-		}
-	}
-
 	return interactions, nil
 }
 
@@ -836,9 +825,6 @@ func (d *DBWrapper) GetDBInfo() (*messengertypes.SystemInfo_DB, error) {
 	errs = multierr.Append(errs, err)
 
 	infos.ConversationReplicationInfo, err = d.dbModelRowsCount(messengertypes.ConversationReplicationInfo{})
-	errs = multierr.Append(errs, err)
-
-	infos.Reactions, err = d.dbModelRowsCount(messengertypes.Reaction{})
 	errs = multierr.Append(errs, err)
 
 	infos.MetadataEvents, err = d.dbModelRowsCount(messengertypes.MetadataEvent{})
@@ -1387,23 +1373,7 @@ func (d *DBWrapper) GetAugmentedInteraction(cid string) (*messengertypes.Interac
 		return nil, errcode.ErrDBRead.Wrap(err)
 	}
 
-	inte.Reactions, err = d.BuildReactionsView(cid)
-	if err != nil {
-		return nil, errcode.ErrDBRead.Wrap(err)
-	}
-
 	return inte, nil
-}
-
-func (d *DBWrapper) BuildReactionsView(cid string) ([]*messengertypes.Interaction_ReactionView, error) {
-	views := ([]*messengertypes.Interaction_ReactionView)(nil)
-	if err := d.db.Raw(
-		"SELECT count(*) AS count, emoji, MAX(is_mine) > 0 AS own_state FROM reactions WHERE target_cid = ? AND state = true GROUP BY emoji ORDER BY MIN(state_date) ASC",
-		cid,
-	).Scan(&views).Error; err != nil {
-		return nil, errcode.ErrDBRead.Wrap(err)
-	}
-	return views, nil
 }
 
 func (d *DBWrapper) wasMetadataEventHandled(id ipfscid.Cid) (bool, error) {
@@ -1511,53 +1481,6 @@ func (d *DBWrapper) KeepDatabaseLocalState() *messengertypes.LocalDatabaseState 
 	return keepDatabaseLocalState(d.db, d.log)
 }
 
-func (d *DBWrapper) GetCurrentReactionsByValueAndMember(memberPublicKey string, targetCID string, emoji string) ([]*messengertypes.Reaction, error) {
-	existingReactions := ([]*messengertypes.Reaction)(nil)
-	if err := d.db.Where(&messengertypes.Reaction{
-		MemberPublicKey: memberPublicKey,
-		TargetCID:       targetCID,
-		Emoji:           emoji,
-	}).Find(&existingReactions).Error; err != nil {
-		return nil, errcode.ErrDBRead.Wrap(err)
-	}
-
-	return existingReactions, nil
-}
-
-func (d *DBWrapper) CreateOrUpdateReaction(reaction *messengertypes.Reaction) (bool, error) {
-	updated := false
-
-	if err := d.TX(d.ctx, func(tx *DBWrapper) error {
-		existingReactions, err := tx.GetCurrentReactionsByValueAndMember(reaction.MemberPublicKey, reaction.TargetCID, reaction.Emoji)
-		if err != nil {
-			return err
-		}
-
-		if len(existingReactions) != 0 {
-			for _, r := range existingReactions {
-				if reaction.StateDate > r.StateDate {
-					if err := tx.db.Select("state", "state_date").Updates(&reaction).Error; err != nil {
-						return errcode.ErrDBWrite.Wrap(err)
-					}
-					updated = true
-				}
-			}
-		} else {
-			if err := tx.db.Create(&reaction).Error; err != nil {
-				return errcode.ErrDBWrite.Wrap(err)
-			}
-
-			updated = true
-		}
-
-		return nil
-	}); err != nil {
-		return false, err
-	}
-
-	return updated, nil
-}
-
 func (d *DBWrapper) MarkMemberAsConversationCreator(memberPK, conversationPK string) error {
 	member, err := d.GetMemberByPK(memberPK, conversationPK)
 	if err != nil {
@@ -1624,17 +1547,6 @@ func (d *DBWrapper) GetPushTokenSharedForConversation(pk string) ([]*messengerty
 	}
 
 	return tokens, nil
-}
-
-func (d *DBWrapper) GetInteractionReactionsForEmoji(cid string, emoji string) ([]*messengertypes.Reaction, error) {
-	var reactions []*messengertypes.Reaction
-	if err := d.db.
-		Where("target_cid = ? AND state = ? AND emoji = ?", cid, true, emoji).
-		Find(&reactions).
-		Error; err != nil {
-		return nil, errcode.ErrDBRead.Wrap(err)
-	}
-	return reactions, nil
 }
 
 func (d *DBWrapper) MuteConversation(pk string, until int64) error {

@@ -1137,13 +1137,16 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     values: {
                       Unknown: 0,
                       Message: 1,
-                      Reaction: 2,
                       GroupInvitation: 7,
                       ConversationNameChanged: 8,
                       MemberNameChanged: 9,
                       MemberDetailsChanged: 11
                     },
                     reserved: [
+                      [
+                        2,
+                        2
+                      ],
                       [
                         3,
                         3
@@ -4624,10 +4627,6 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   PushReceive: {
                     requestType: "PushReceive.Request",
                     responseType: "PushReceive.Reply"
-                  },
-                  InteractionReactionsForEmoji: {
-                    requestType: "InteractionReactionsForEmoji.Request",
-                    responseType: "InteractionReactionsForEmoji.Reply"
                   }
                 }
               },
@@ -5164,13 +5163,16 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     values: {
                       Undefined: 0,
                       TypeUserMessage: 1,
-                      TypeUserReaction: 2,
                       TypeGroupInvitation: 3,
                       TypeSetGroupInfo: 4,
                       TypeSetUserInfo: 5,
                       TypeAcknowledge: 6
                     },
                     reserved: [
+                      [
+                        2,
+                        2
+                      ],
                       [
                         7,
                         7
@@ -5182,18 +5184,6 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       body: {
                         type: "string",
                         id: 1
-                      }
-                    }
-                  },
-                  UserReaction: {
-                    fields: {
-                      state: {
-                        type: "bool",
-                        id: 1
-                      },
-                      emoji: {
-                        type: "string",
-                        id: 2
                       }
                     }
                   },
@@ -5313,10 +5303,6 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       conversationReplicationInfo: {
                         type: "int64",
                         id: 8
-                      },
-                      reactions: {
-                        type: "int64",
-                        id: 9
                       },
                       metadataEvents: {
                         type: "int64",
@@ -5555,14 +5541,6 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       "(gogoproto.customname)": "TargetCID"
                     }
                   },
-                  reactions: {
-                    rule: "repeated",
-                    type: "ReactionView",
-                    id: 16,
-                    options: {
-                      "(gogoproto.moretags)": "gorm:-"
-                    }
-                  },
                   outOfStoreMessage: {
                     type: "bool",
                     id: 17
@@ -5572,26 +5550,12 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   [
                     15,
                     15
+                  ],
+                  [
+                    16,
+                    16
                   ]
-                ],
-                nested: {
-                  ReactionView: {
-                    fields: {
-                      emoji: {
-                        type: "string",
-                        id: 1
-                      },
-                      ownState: {
-                        type: "bool",
-                        id: 2
-                      },
-                      count: {
-                        type: "uint64",
-                        id: 3
-                      }
-                    }
-                  }
-                }
+                ]
               },
               Contact: {
                 fields: {
@@ -6561,44 +6525,6 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   }
                 }
               },
-              Reaction: {
-                fields: {
-                  targetCid: {
-                    type: "string",
-                    id: 2,
-                    options: {
-                      "(gogoproto.moretags)": "gorm:column:target_cid;primaryKey",
-                      "(gogoproto.customname)": "TargetCID"
-                    }
-                  },
-                  memberPublicKey: {
-                    type: "string",
-                    id: 3,
-                    options: {
-                      "(gogoproto.moretags)": "gorm:primaryKey"
-                    }
-                  },
-                  emoji: {
-                    type: "string",
-                    id: 4,
-                    options: {
-                      "(gogoproto.moretags)": "gorm:primaryKey"
-                    }
-                  },
-                  isMine: {
-                    type: "bool",
-                    id: 5
-                  },
-                  state: {
-                    type: "bool",
-                    id: 6
-                  },
-                  stateDate: {
-                    type: "int64",
-                    id: 7
-                  }
-                }
-              },
               MessageSearch: {
                 fields: {},
                 nested: {
@@ -6831,35 +6757,6 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     fields: {
                       pushToken: {
                         type: "SharedPushToken",
-                        id: 1
-                      }
-                    }
-                  }
-                }
-              },
-              InteractionReactionsForEmoji: {
-                fields: {},
-                nested: {
-                  Request: {
-                    fields: {
-                      interactionCid: {
-                        type: "string",
-                        id: 1,
-                        options: {
-                          "(gogoproto.customname)": "InteractionCID"
-                        }
-                      },
-                      emoji: {
-                        type: "string",
-                        id: 2
-                      }
-                    }
-                  },
-                  Reply: {
-                    fields: {
-                      reactions: {
-                        rule: "repeated",
-                        type: "Reaction",
                         id: 1
                       }
                     }

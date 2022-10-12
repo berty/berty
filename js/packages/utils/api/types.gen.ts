@@ -53,8 +53,6 @@ export type AppMessagePayloadType<T> = T extends beapi.messenger.AppMessage.Type
 	? undefined
 	: T extends beapi.messenger.AppMessage.Type.TypeUserMessage
 	? beapi.messenger.AppMessage.IUserMessage
-	: T extends beapi.messenger.AppMessage.Type.TypeUserReaction
-	? beapi.messenger.AppMessage.IUserReaction
 	: T extends beapi.messenger.AppMessage.Type.TypeGroupInvitation
 	? beapi.messenger.AppMessage.IGroupInvitation
 	: T extends beapi.messenger.AppMessage.Type.TypeSetGroupInfo
@@ -72,10 +70,6 @@ export type InteractionUndefined = {
 export type InteractionUserMessage = {
 	type: beapi.messenger.AppMessage.Type.TypeUserMessage
 	payload?: beapi.messenger.AppMessage.IUserMessage
-} & Omit<beapi.messenger.IInteraction, 'payload' | 'type'>
-export type InteractionUserReaction = {
-	type: beapi.messenger.AppMessage.Type.TypeUserReaction
-	payload?: beapi.messenger.AppMessage.IUserReaction
 } & Omit<beapi.messenger.IInteraction, 'payload' | 'type'>
 export type InteractionGroupInvitation = {
 	type: beapi.messenger.AppMessage.Type.TypeGroupInvitation
@@ -97,7 +91,6 @@ export type InteractionAcknowledge = {
 export type ParsedInteraction =
 	| InteractionUndefined
 	| InteractionUserMessage
-	| InteractionUserReaction
 	| InteractionGroupInvitation
 	| InteractionSetGroupInfo
 	| InteractionSetUserInfo

@@ -93,18 +93,6 @@ func PushEnrich(rawPushData *messengertypes.PushReceivedData, accountData *accou
 		d.PushType = pushtypes.DecryptedPush_Message
 		payloadAttrs["message"] = m.Body
 
-	case messengertypes.AppMessage_TypeUserReaction:
-		d.PushType = pushtypes.DecryptedPush_Reaction
-		r := &messengertypes.AppMessage_UserReaction{}
-		err := proto.Unmarshal(rawPushData.Interaction.Payload, r)
-		if err != nil {
-			logger.Error("unable to unmarshal reaction", logutil.PrivateString("cid", string(rawPushData.ProtocolData.Message.CID)), zap.Error(err))
-			break
-		}
-
-		payloadAttrs["reaction"] = r.Emoji
-		// IDEA: ignore if reaction's targeted message is not send by the user if possible (i.e. not on iOS)
-
 	case messengertypes.AppMessage_TypeGroupInvitation:
 		d.PushType = pushtypes.DecryptedPush_GroupInvitation
 		invitation := &messengertypes.AppMessage_GroupInvitation{}

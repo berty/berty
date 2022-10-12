@@ -104,7 +104,6 @@ func (h *EventHandler) bindHandlers() {
 		mt.AppMessage_TypeGroupInvitation: {h.handleAppMessageGroupInvitation, true},
 		mt.AppMessage_TypeUserMessage:     {h.handleAppMessageUserMessage, true},
 		mt.AppMessage_TypeSetUserInfo:     {h.handleAppMessageSetUserInfo, false},
-		mt.AppMessage_TypeUserReaction:    {h.handleAppMessageUserReaction, false},
 		mt.AppMessage_TypeSetGroupInfo:    {h.handleAppMessageSetGroupInfo, false},
 	}
 }
@@ -1017,43 +1016,6 @@ func (h *EventHandler) handleAppMessageSetUserInfo(tx *messengerdb.DBWrapper, i 
 	h.logger.Info("dispatched member update", zap.Any("member", member), zap.Bool("isNew", isNew))
 
 	return i, false, nil
-}
-
-func (h *EventHandler) handleAppMessageUserReaction(tx *messengerdb.DBWrapper, i *mt.Interaction, amPayload proto.Message) (*mt.Interaction, bool, error) {
-	if len(i.GetPayload()) == 0 {
-		return nil, false, ErrNilPayload
-	}
-
-	return i, false, h.handleReaction(tx, i, amPayload)
-}
-
-func (h *EventHandler) handleReaction(tx *messengerdb.DBWrapper, i *mt.Interaction, amPayload proto.Message) error {
-	if len(i.MemberPublicKey) == 0 {
-		return errcode.ErrInvalidInput.Wrap(errors.New("empty member public key"))
-	}
-	if len(i.TargetCID) == 0 {
-		return errcode.ErrInvalidInput.Wrap(errors.New("empty target cid"))
-	}
-
-	updated, err := tx.CreateOrUpdateReaction(&mt.Reaction{
-		TargetCID:       i.TargetCID,
-		MemberPublicKey: i.MemberPublicKey,
-		Emoji:           amPayload.(interface{ GetEmoji() string }).GetEmoji(),
-		IsMine:          i.IsMine,
-		State:           amPayload.(interface{ GetState() bool }).GetState(),
-		StateDate:       i.GetSentDate(),
-	})
-	if err != nil {
-		return errcode.ErrDBRead.Wrap(err)
-	}
-
-	if updated {
-		if err := messengerutil.StreamInteraction(h.dispatcher, tx, i.TargetCID, false); err != nil {
-			h.logger.Debug("failed to stream updated target interaction after AddReaction", zap.Error(err))
-		}
-	}
-
-	return nil
 }
 
 func interactionFromAppMessage(h *EventHandler, gpk string, gme *protocoltypes.GroupMessageEvent, am *mt.AppMessage) (*mt.Interaction, error) {

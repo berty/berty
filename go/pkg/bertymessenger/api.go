@@ -1731,13 +1731,3 @@ func (svc *service) PushTokenSharedForConversation(request *messengertypes.PushT
 
 	return nil
 }
-
-func (svc *service) InteractionReactionsForEmoji(ctx context.Context, request *messengertypes.InteractionReactionsForEmoji_Request) (*messengertypes.InteractionReactionsForEmoji_Reply, error) {
-	reactions, err := svc.db.GetInteractionReactionsForEmoji(request.InteractionCID, request.Emoji)
-	if err != nil {
-		return nil, errcode.ErrDBRead.Wrap(err)
-	}
-	return &messengertypes.InteractionReactionsForEmoji_Reply{
-		Reactions: reactions,
-	}, nil
-}

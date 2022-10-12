@@ -95,9 +95,6 @@ service MessengerService {
 
   // PushReceive handles a push payload, decrypts it if possible, adds it to the local store
   rpc PushReceive(PushReceive.Request) returns (PushReceive.Reply);
-
-  // InteractionReactionsForEmoji returns a list of reactions on an interaction for a specific emoji
-  rpc InteractionReactionsForEmoji(InteractionReactionsForEmoji.Request) returns (InteractionReactionsForEmoji.Reply);
 }
 
 message PaginatedInteractionsOptions {
@@ -315,7 +312,7 @@ message AppMessage {
   enum Type {
     Undefined = 0;
     TypeUserMessage = 1;
-    TypeUserReaction = 2;
+    reserved 2; // TypeUserReaction = 2;
     TypeGroupInvitation = 3;
     TypeSetGroupInfo = 4;
     TypeSetUserInfo = 5;
@@ -324,10 +321,6 @@ message AppMessage {
   }
   message UserMessage {
     string body = 1;
-  }
-  message UserReaction {
-    bool state = 1;
-    string emoji = 2;
   }
   message GroupInvitation {
     string link = 2; // TODO: optimize message size
@@ -367,7 +360,6 @@ message SystemInfo {
     int64 devices = 6;
     int64 service_tokens = 7;
     int64 conversation_replication_info = 8;
-    int64 reactions = 9;
     int64 metadata_events = 10;
     reserved 11; // int64 medias = 11;
     int64 shared_push_tokens = 12;
@@ -419,12 +411,6 @@ message MetadataEvent {
 }
 
 message Interaction {
-  message ReactionView {
-    string emoji = 1;
-    bool own_state = 2;
-    uint64 count = 3;
-  }
-
   string cid = 1 [(gogoproto.moretags) = "gorm:\"primaryKey;column:cid\"", (gogoproto.customname) = "CID"];
   AppMessage.Type type = 2 [(gogoproto.moretags) = "gorm:\"index\""];
   string member_public_key = 7;
@@ -438,7 +424,7 @@ message Interaction {
   bool acknowledged = 10;
   string target_cid = 13 [(gogoproto.moretags) = "gorm:\"index;column:target_cid\"", (gogoproto.customname) = "TargetCID"];
   reserved 15; // repeated Media medias = 15;
-  repeated ReactionView reactions = 16 [(gogoproto.moretags) = "gorm:\"-\""]; // specific to client model
+  reserved 16; // repeated ReactionView reactions = 16 [(gogoproto.moretags) = "gorm:\"-\""]; // specific to client model
   bool out_of_store_message = 17;
 }
 
@@ -784,15 +770,6 @@ message LocalConversationState {
   Conversation.Type type = 4;
 }
 
-message Reaction {
-  string target_cid = 2 [(gogoproto.moretags) = "gorm:\"column:target_cid;primaryKey\"", (gogoproto.customname) = "TargetCID"];
-  string member_public_key = 3 [(gogoproto.moretags) = "gorm:\"primaryKey\""];
-  string emoji = 4 [(gogoproto.moretags) = "gorm:\"primaryKey\""];
-  bool is_mine = 5;
-  bool state = 6;
-  int64 state_date = 7;
-}
-
 message MessageSearch {
   message Request {
     string query = 1;
@@ -875,15 +852,5 @@ message PushTokenSharedForConversation {
   }
   message Reply {
     SharedPushToken push_token = 1;
-  }
-}
-
-message InteractionReactionsForEmoji {
-  message Request {
-    string interaction_cid = 1 [(gogoproto.customname) = "InteractionCID"];
-    string emoji = 2;
-  }
-  message Reply {
-    repeated Reaction reactions = 1;
   }
 }

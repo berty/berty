@@ -335,8 +335,4 @@ export interface IMessengerServiceMock {
 		beapi.messenger.PushTokenSharedForConversation.IReply
 	>
 	PushReceive: UnaryMock<beapi.messenger.PushReceive.IRequest, beapi.messenger.PushReceive.IReply>
-	InteractionReactionsForEmoji: UnaryMock<
-		beapi.messenger.InteractionReactionsForEmoji.IRequest,
-		beapi.messenger.InteractionReactionsForEmoji.IReply
-	>
 }

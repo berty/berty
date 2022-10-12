@@ -111,6 +111,3 @@ http:
  - selector: berty.messenger.v1.MessengerService.PushReceive
    post: /berty.messenger.v1/MessengerService/PushReceive
    body: "*"
- - selector: berty.messenger.v1.MessengerService.InteractionReactionsForEmoji
-   post: /berty.messenger.v1/MessengerService/InteractionReactionsForEmoji
-   body: "*"

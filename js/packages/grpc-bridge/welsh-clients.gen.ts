@@ -144,9 +144,6 @@ export interface WelshMessengerServiceClient {
 		beapi.messenger.MessengerService['pushTokenSharedForConversation']
 	>
 	pushReceive: UnaryType<beapi.messenger.MessengerService['pushReceive']>
-	interactionReactionsForEmoji: UnaryType<
-		beapi.messenger.MessengerService['interactionReactionsForEmoji']
-	>
 }
 
 export interface WelshBridgeServiceClient {

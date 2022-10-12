@@ -99,7 +99,7 @@ message DecryptedPush {
   enum PushType {
     Unknown = 0;
     Message = 1;
-    Reaction = 2;
+    reserved 2; // Reaction = 2;
     reserved 3, 4, 5, 6; // Media, Photo, Gif, VoiceMessage
     GroupInvitation = 7;
     ConversationNameChanged = 8;

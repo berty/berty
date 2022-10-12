@@ -52,14 +52,6 @@ func FormatDecryptedPush(decrypted *pushtypes.DecryptedPush, printer *message.Pr
 
 		fmtpush.Body = msg
 
-	case decrypted.PushType == pushtypes.DecryptedPush_Reaction:
-		var emoji string
-		if err = payload.get("reaction", &emoji); err != nil {
-			emoji = ":)"
-		}
-
-		fmtpush.Body = printer.Sprintf("push.reaction.bodyWithDisplayNameAndEmoji", decrypted.MemberDisplayName, emoji)
-
 	case decrypted.PushType == pushtypes.DecryptedPush_GroupInvitation:
 		var groupName string
 		if err = payload.get("group-name", &groupName); err != nil {

@@ -20,7 +20,6 @@
     - [AppMessage.SetGroupInfo](#berty.messenger.v1.AppMessage.SetGroupInfo)
     - [AppMessage.SetUserInfo](#berty.messenger.v1.AppMessage.SetUserInfo)
     - [AppMessage.UserMessage](#berty.messenger.v1.AppMessage.UserMessage)
-    - [AppMessage.UserReaction](#berty.messenger.v1.AppMessage.UserReaction)
     - [BannerQuote](#berty.messenger.v1.BannerQuote)
     - [BannerQuote.Reply](#berty.messenger.v1.BannerQuote.Reply)
     - [BannerQuote.Request](#berty.messenger.v1.BannerQuote.Request)
@@ -86,10 +85,6 @@
     - [Interact.Reply](#berty.messenger.v1.Interact.Reply)
     - [Interact.Request](#berty.messenger.v1.Interact.Request)
     - [Interaction](#berty.messenger.v1.Interaction)
-    - [Interaction.ReactionView](#berty.messenger.v1.Interaction.ReactionView)
-    - [InteractionReactionsForEmoji](#berty.messenger.v1.InteractionReactionsForEmoji)
-    - [InteractionReactionsForEmoji.Reply](#berty.messenger.v1.InteractionReactionsForEmoji.Reply)
-    - [InteractionReactionsForEmoji.Request](#berty.messenger.v1.InteractionReactionsForEmoji.Request)
     - [ListMemberDevices](#berty.messenger.v1.ListMemberDevices)
     - [ListMemberDevices.Reply](#berty.messenger.v1.ListMemberDevices.Reply)
     - [ListMemberDevices.Request](#berty.messenger.v1.ListMemberDevices.Request)
@@ -117,7 +112,6 @@
     - [PushTokenSharedForConversation](#berty.messenger.v1.PushTokenSharedForConversation)
     - [PushTokenSharedForConversation.Reply](#berty.messenger.v1.PushTokenSharedForConversation.Reply)
     - [PushTokenSharedForConversation.Request](#berty.messenger.v1.PushTokenSharedForConversation.Request)
-    - [Reaction](#berty.messenger.v1.Reaction)
     - [ReplicationServiceRegisterGroup](#berty.messenger.v1.ReplicationServiceRegisterGroup)
     - [ReplicationServiceRegisterGroup.Reply](#berty.messenger.v1.ReplicationServiceRegisterGroup.Reply)
     - [ReplicationServiceRegisterGroup.Request](#berty.messenger.v1.ReplicationServiceRegisterGroup.Request)
@@ -301,15 +295,6 @@ AppMessage is the app layer format
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | body | [string](#string) |  |  |
-
-<a name="berty.messenger.v1.AppMessage.UserReaction"></a>
-
-### AppMessage.UserReaction
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| state | [bool](#bool) |  |  |
-| emoji | [string](#string) |  |  |
 
 <a name="berty.messenger.v1.BannerQuote"></a>
 
@@ -805,39 +790,7 @@ to test more false-positive guesses.
 | sent_date | [int64](#int64) |  |  |
 | acknowledged | [bool](#bool) |  |  |
 | target_cid | [string](#string) |  |  |
-| reactions | [Interaction.ReactionView](#berty.messenger.v1.Interaction.ReactionView) | repeated | specific to client model |
 | out_of_store_message | [bool](#bool) |  |  |
-
-<a name="berty.messenger.v1.Interaction.ReactionView"></a>
-
-### Interaction.ReactionView
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| emoji | [string](#string) |  |  |
-| own_state | [bool](#bool) |  |  |
-| count | [uint64](#uint64) |  |  |
-
-<a name="berty.messenger.v1.InteractionReactionsForEmoji"></a>
-
-### InteractionReactionsForEmoji
-
-<a name="berty.messenger.v1.InteractionReactionsForEmoji.Reply"></a>
-
-### InteractionReactionsForEmoji.Reply
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| reactions | [Reaction](#berty.messenger.v1.Reaction) | repeated |  |
-
-<a name="berty.messenger.v1.InteractionReactionsForEmoji.Request"></a>
-
-### InteractionReactionsForEmoji.Request
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| interaction_cid | [string](#string) |  |  |
-| emoji | [string](#string) |  |  |
 
 <a name="berty.messenger.v1.ListMemberDevices"></a>
 
@@ -1053,19 +1006,6 @@ Composite primary key
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | conversation_pk | [string](#string) |  |  |
-
-<a name="berty.messenger.v1.Reaction"></a>
-
-### Reaction
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| target_cid | [string](#string) |  |  |
-| member_public_key | [string](#string) |  |  |
-| emoji | [string](#string) |  |  |
-| is_mine | [bool](#bool) |  |  |
-| state | [bool](#bool) |  |  |
-| state_date | [int64](#int64) |  |  |
 
 <a name="berty.messenger.v1.ReplicationServiceRegisterGroup"></a>
 
@@ -1356,7 +1296,6 @@ status events
 | devices | [int64](#int64) |  |  |
 | service_tokens | [int64](#int64) |  |  |
 | conversation_replication_info | [int64](#int64) |  |  |
-| reactions | [int64](#int64) |  |  |
 | metadata_events | [int64](#int64) |  |  |
 | shared_push_tokens | [int64](#int64) |  | older, more recent |
 
@@ -1432,7 +1371,6 @@ status events
 | ---- | ------ | ----------- |
 | Undefined | 0 |  |
 | TypeUserMessage | 1 |  |
-| TypeUserReaction | 2 |  |
 | TypeGroupInvitation | 3 |  |
 | TypeSetGroupInfo | 4 |  |
 | TypeSetUserInfo | 5 |  |
@@ -1568,7 +1506,6 @@ Today, most of the Berty Messenger logic is implemented directly in the applicat
 | PushShareTokenForConversation | [PushShareTokenForConversation.Request](#berty.messenger.v1.PushShareTokenForConversation.Request) | [PushShareTokenForConversation.Reply](#berty.messenger.v1.PushShareTokenForConversation.Reply) | PushShareTokenForConversation Share a push token for a conversation |
 | PushTokenSharedForConversation | [PushTokenSharedForConversation.Request](#berty.messenger.v1.PushTokenSharedForConversation.Request) | [PushTokenSharedForConversation.Reply](#berty.messenger.v1.PushTokenSharedForConversation.Reply) stream | PushTokenSharedForConversation |
 | PushReceive | [PushReceive.Request](#berty.messenger.v1.PushReceive.Request) | [PushReceive.Reply](#berty.messenger.v1.PushReceive.Reply) | PushReceive handles a push payload, decrypts it if possible, adds it to the local store |
-| InteractionReactionsForEmoji | [InteractionReactionsForEmoji.Request](#berty.messenger.v1.InteractionReactionsForEmoji.Request) | [InteractionReactionsForEmoji.Reply](#berty.messenger.v1.InteractionReactionsForEmoji.Reply) | InteractionReactionsForEmoji returns a list of reactions on an interaction for a specific emoji |
 
  
 

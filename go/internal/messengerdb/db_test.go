@@ -1005,10 +1005,6 @@ func Test_dbWrapper_getDBInfo(t *testing.T) {
 		db.db.Create(&messengertypes.ConversationReplicationInfo{CID: fmt.Sprintf("%d", i)})
 	}
 
-	for i := 0; i < 9; i++ {
-		db.db.Create(&messengertypes.Reaction{Emoji: fmt.Sprintf("%d", i)})
-	}
-
 	for i := 0; i < 10; i++ {
 		db.db.Create(&messengertypes.MetadataEvent{CID: fmt.Sprintf("%d", i)})
 	}
@@ -1032,7 +1028,6 @@ func Test_dbWrapper_getDBInfo(t *testing.T) {
 	require.Equal(t, int64(6), info.Devices)
 	require.Equal(t, int64(7), info.ServiceTokens)
 	require.Equal(t, int64(8), info.ConversationReplicationInfo)
-	require.Equal(t, int64(9), info.Reactions)
 	require.Equal(t, int64(10), info.MetadataEvents)
 	require.Equal(t, int64(11), info.SharedPushTokens)
 
@@ -1040,7 +1035,7 @@ func Test_dbWrapper_getDBInfo(t *testing.T) {
 	tables := []string(nil)
 	err = db.db.Raw("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' AND name NOT LIKE '%_fts%'").Scan(&tables).Error
 	require.NoError(t, err)
-	expectedTablesCount := 11
+	expectedTablesCount := 10
 	require.Equal(t, expectedTablesCount, len(tables), fmt.Sprintf("expected %d tables in DB, got tables %s", expectedTablesCount, strings.Join(tables, ", ")))
 }
 
@@ -1781,62 +1776,4 @@ func Test_dbWrapper_GetPushTokenSharedForConversation(t *testing.T) {
 	tokens, err := db.GetPushTokenSharedForConversation("conv1")
 	require.NoError(t, err)
 	require.Len(t, tokens, 2)
-}
-
-func Test_dbWrapper_GetInteractionReactionsForEmoji(t *testing.T) {
-	db, _, dispose := GetInMemoryTestDB(t)
-	defer dispose()
-
-	targetCID := "test_cid"
-	mpks := []string{"test_mpk_1", "test_mpk_2", "test_mpk_3", "test_mpk_4"}
-	date := int64(42)
-	emoji := "😼"
-
-	created, err := db.CreateOrUpdateReaction(&messengertypes.Reaction{
-		TargetCID:       targetCID,
-		MemberPublicKey: mpks[0],
-		Emoji:           emoji,
-		StateDate:       date,
-		State:           true,
-		IsMine:          true,
-	})
-	require.NoError(t, err)
-	require.True(t, created)
-
-	created, err = db.CreateOrUpdateReaction(&messengertypes.Reaction{
-		TargetCID:       targetCID,
-		MemberPublicKey: mpks[1],
-		Emoji:           emoji,
-		StateDate:       date,
-		State:           true,
-	})
-	require.NoError(t, err)
-	require.NoError(t, err)
-	require.True(t, created)
-
-	created, err = db.CreateOrUpdateReaction(&messengertypes.Reaction{
-		TargetCID:       targetCID,
-		MemberPublicKey: mpks[2],
-		Emoji:           emoji,
-		StateDate:       date,
-		State:           false,
-	})
-	require.NoError(t, err)
-	require.NoError(t, err)
-	require.True(t, created)
-
-	created, err = db.CreateOrUpdateReaction(&messengertypes.Reaction{
-		TargetCID:       targetCID,
-		MemberPublicKey: mpks[3],
-		Emoji:           "😿",
-		StateDate:       date,
-		State:           true,
-	})
-	require.NoError(t, err)
-	require.NoError(t, err)
-	require.True(t, created)
-
-	infos, err := db.GetInteractionReactionsForEmoji(targetCID, emoji)
-	require.NoError(t, err)
-	require.Len(t, infos, 2)
 }

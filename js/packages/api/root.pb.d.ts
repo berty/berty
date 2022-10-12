@@ -1858,7 +1858,6 @@ export namespace berty {
                 enum PushType {
                     Unknown = 0,
                     Message = 1,
-                    Reaction = 2,
                     GroupInvitation = 7,
                     ConversationNameChanged = 8,
                     MemberNameChanged = 9,
@@ -6730,8 +6729,6 @@ export namespace berty {
                 public pushTokenSharedForConversation(request: berty.messenger.v1.PushTokenSharedForConversation.IRequest): Promise<berty.messenger.v1.PushTokenSharedForConversation.Reply>;
                 public pushReceive(request: berty.messenger.v1.PushReceive.IRequest, callback: berty.messenger.v1.MessengerService.PushReceiveCallback): void;
                 public pushReceive(request: berty.messenger.v1.PushReceive.IRequest): Promise<berty.messenger.v1.PushReceive.Reply>;
-                public interactionReactionsForEmoji(request: berty.messenger.v1.InteractionReactionsForEmoji.IRequest, callback: berty.messenger.v1.MessengerService.InteractionReactionsForEmojiCallback): void;
-                public interactionReactionsForEmoji(request: berty.messenger.v1.InteractionReactionsForEmoji.IRequest): Promise<berty.messenger.v1.InteractionReactionsForEmoji.Reply>;
             }
 
             namespace MessengerService {
@@ -6807,8 +6804,6 @@ export namespace berty {
                 type PushTokenSharedForConversationCallback = (error: (Error|null), response?: berty.messenger.v1.PushTokenSharedForConversation.Reply) => void;
 
                 type PushReceiveCallback = (error: (Error|null), response?: berty.messenger.v1.PushReceive.Reply) => void;
-
-                type InteractionReactionsForEmojiCallback = (error: (Error|null), response?: berty.messenger.v1.InteractionReactionsForEmoji.Reply) => void;
             }
 
             interface IPaginatedInteractionsOptions {
@@ -7687,7 +7682,6 @@ export namespace berty {
                 enum Type {
                     Undefined = 0,
                     TypeUserMessage = 1,
-                    TypeUserReaction = 2,
                     TypeGroupInvitation = 3,
                     TypeSetGroupInfo = 4,
                     TypeSetUserInfo = 5,
@@ -7709,26 +7703,6 @@ export namespace berty {
                     public static verify(message: { [k: string]: any }): (string|null);
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.AppMessage.UserMessage;
                     public static toObject(message: berty.messenger.v1.AppMessage.UserMessage, options?: $protobuf.IConversionOptions): { [k: string]: any };
-                    public toJSON(): { [k: string]: any };
-                }
-
-                interface IUserReaction {
-                    state?: (boolean|null);
-                    emoji?: (string|null);
-                }
-
-                class UserReaction implements IUserReaction {
-
-                    public state: boolean;
-                    public emoji: string;
-                    public static create(properties?: berty.messenger.v1.AppMessage.IUserReaction): berty.messenger.v1.AppMessage.UserReaction;
-                    public static encode(message: berty.messenger.v1.AppMessage.IUserReaction, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.messenger.v1.AppMessage.IUserReaction, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.AppMessage.UserReaction;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.AppMessage.UserReaction;
-                    public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.AppMessage.UserReaction;
-                    public static toObject(message: berty.messenger.v1.AppMessage.UserReaction, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
 
@@ -7890,7 +7864,6 @@ export namespace berty {
                     devices?: (Long|null);
                     serviceTokens?: (Long|null);
                     conversationReplicationInfo?: (Long|null);
-                    reactions?: (Long|null);
                     metadataEvents?: (Long|null);
                     sharedPushTokens?: (Long|null);
                 }
@@ -7905,7 +7878,6 @@ export namespace berty {
                     public devices: Long;
                     public serviceTokens: Long;
                     public conversationReplicationInfo: Long;
-                    public reactions: Long;
                     public metadataEvents: Long;
                     public sharedPushTokens: Long;
                     public static create(properties?: berty.messenger.v1.SystemInfo.IDB): berty.messenger.v1.SystemInfo.DB;
@@ -8076,7 +8048,6 @@ export namespace berty {
                 sentDate?: (Long|null);
                 acknowledged?: (boolean|null);
                 targetCid?: (string|null);
-                reactions?: (berty.messenger.v1.Interaction.IReactionView[]|null);
                 outOfStoreMessage?: (boolean|null);
             }
 
@@ -8094,7 +8065,6 @@ export namespace berty {
                 public sentDate: Long;
                 public acknowledged: boolean;
                 public targetCid: string;
-                public reactions: berty.messenger.v1.Interaction.IReactionView[];
                 public outOfStoreMessage: boolean;
                 public static create(properties?: berty.messenger.v1.IInteraction): berty.messenger.v1.Interaction;
                 public static encode(message: berty.messenger.v1.IInteraction, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -8105,31 +8075,6 @@ export namespace berty {
                 public static fromObject(object: { [k: string]: any }): berty.messenger.v1.Interaction;
                 public static toObject(message: berty.messenger.v1.Interaction, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-            }
-
-            namespace Interaction {
-
-                interface IReactionView {
-                    emoji?: (string|null);
-                    ownState?: (boolean|null);
-                    count?: (Long|null);
-                }
-
-                class ReactionView implements IReactionView {
-
-                    public emoji: string;
-                    public ownState: boolean;
-                    public count: Long;
-                    public static create(properties?: berty.messenger.v1.Interaction.IReactionView): berty.messenger.v1.Interaction.ReactionView;
-                    public static encode(message: berty.messenger.v1.Interaction.IReactionView, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.messenger.v1.Interaction.IReactionView, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.Interaction.ReactionView;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.Interaction.ReactionView;
-                    public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.Interaction.ReactionView;
-                    public static toObject(message: berty.messenger.v1.Interaction.ReactionView, options?: $protobuf.IConversionOptions): { [k: string]: any };
-                    public toJSON(): { [k: string]: any };
-                }
             }
 
             interface IContact {
@@ -9584,34 +9529,6 @@ export namespace berty {
                 public toJSON(): { [k: string]: any };
             }
 
-            interface IReaction {
-                targetCid?: (string|null);
-                memberPublicKey?: (string|null);
-                emoji?: (string|null);
-                isMine?: (boolean|null);
-                state?: (boolean|null);
-                stateDate?: (Long|null);
-            }
-
-            class Reaction implements IReaction {
-
-                public targetCid: string;
-                public memberPublicKey: string;
-                public emoji: string;
-                public isMine: boolean;
-                public state: boolean;
-                public stateDate: Long;
-                public static create(properties?: berty.messenger.v1.IReaction): berty.messenger.v1.Reaction;
-                public static encode(message: berty.messenger.v1.IReaction, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.messenger.v1.IReaction, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.Reaction;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.Reaction;
-                public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.messenger.v1.Reaction;
-                public static toObject(message: berty.messenger.v1.Reaction, options?: $protobuf.IConversionOptions): { [k: string]: any };
-                public toJSON(): { [k: string]: any };
-            }
-
             interface IMessageSearch {
             }
 
@@ -10086,63 +10003,6 @@ export namespace berty {
                     public static verify(message: { [k: string]: any }): (string|null);
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.PushTokenSharedForConversation.Reply;
                     public static toObject(message: berty.messenger.v1.PushTokenSharedForConversation.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
-                    public toJSON(): { [k: string]: any };
-                }
-            }
-
-            interface IInteractionReactionsForEmoji {
-            }
-
-            class InteractionReactionsForEmoji implements IInteractionReactionsForEmoji {
-
-                public static create(properties?: berty.messenger.v1.IInteractionReactionsForEmoji): berty.messenger.v1.InteractionReactionsForEmoji;
-                public static encode(message: berty.messenger.v1.IInteractionReactionsForEmoji, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.messenger.v1.IInteractionReactionsForEmoji, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.InteractionReactionsForEmoji;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.InteractionReactionsForEmoji;
-                public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.messenger.v1.InteractionReactionsForEmoji;
-                public static toObject(message: berty.messenger.v1.InteractionReactionsForEmoji, options?: $protobuf.IConversionOptions): { [k: string]: any };
-                public toJSON(): { [k: string]: any };
-            }
-
-            namespace InteractionReactionsForEmoji {
-
-                interface IRequest {
-                    interactionCid?: (string|null);
-                    emoji?: (string|null);
-                }
-
-                class Request implements IRequest {
-
-                    public interactionCid: string;
-                    public emoji: string;
-                    public static create(properties?: berty.messenger.v1.InteractionReactionsForEmoji.IRequest): berty.messenger.v1.InteractionReactionsForEmoji.Request;
-                    public static encode(message: berty.messenger.v1.InteractionReactionsForEmoji.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.messenger.v1.InteractionReactionsForEmoji.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.InteractionReactionsForEmoji.Request;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.InteractionReactionsForEmoji.Request;
-                    public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.InteractionReactionsForEmoji.Request;
-                    public static toObject(message: berty.messenger.v1.InteractionReactionsForEmoji.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
-                    public toJSON(): { [k: string]: any };
-                }
-
-                interface IReply {
-                    reactions?: (berty.messenger.v1.IReaction[]|null);
-                }
-
-                class Reply implements IReply {
-
-                    public reactions: berty.messenger.v1.IReaction[];
-                    public static create(properties?: berty.messenger.v1.InteractionReactionsForEmoji.IReply): berty.messenger.v1.InteractionReactionsForEmoji.Reply;
-                    public static encode(message: berty.messenger.v1.InteractionReactionsForEmoji.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: berty.messenger.v1.InteractionReactionsForEmoji.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.InteractionReactionsForEmoji.Reply;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.InteractionReactionsForEmoji.Reply;
-                    public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.InteractionReactionsForEmoji.Reply;
-                    public static toObject(message: berty.messenger.v1.InteractionReactionsForEmoji.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
             }
