@@ -1,49 +1,49 @@
 {
 	"onboarding": {
 		"getstarted": {
-			"screenTitle": "",
-			"title": "",
-			"desc": "",
-			"create-button": "",
-			"import-button": ""
+			"screenTitle": "از حریم خصوصی خود محافظت کنید",
+			"title": "از حریم خصوصی خود محافظت کنید",
+			"desc": "پیام رسانی رایگان و ایمن همتا به همتا",
+			"create-button": "ساخت یک حساب کاربری",
+			"import-button": "بازنشانی یک حساب"
 		},
 		"default-mode": {
 			"summary": {
-				"title": "",
-				"screenTitle": "",
-				"subtitle": "",
-				"first-point": "",
-				"second-point": "",
-				"third-point": "",
-				"back-button": "",
-				"accept-button": ""
+				"title": "حالت پیشفرض",
+				"screenTitle": "ساخت حساب کاربری",
+				"subtitle": "آغاز سریع",
+				"first-point": "Save translation\nبا تنظیمات از پیش تعیین شده ای شروع کنید که تعادل حریم خصوصی/راحتی را ارائه می دهند که مناسب بیشتر افراد است. گره های Berty برای بهبود عملکرد و ارتباطات ناهمزمان استفاده می شوند.",
+				"second-point": "سیستم Push notification به‌طور پیش‌فرض فعال است و فعلن نمی‌توانید آن‌ها را در iOS غیرفعال کنید.",
+				"third-point": "برای سفارشی کردن تعادل حریم خصوصی/آسایش، حالت سفارشی را انتخاب کنید.",
+				"back-button": "قبل",
+				"accept-button": "بزن بریم"
 			}
 		},
 		"custom-mode": {
 			"summary": {
-				"screenTitle": "",
-				"title": "",
-				"subtitle": "",
-				"first-point": "",
-				"second-point": "",
-				"back-button": "",
-				"accept-button": ""
+				"screenTitle": "ایجاد حساب کاربری - تنظیمات سفارشی",
+				"title": "حالت سفارشی",
+				"subtitle": "تعادل سفارشی حریم خصوصی/راحتی",
+				"first-point": "در این حالت، تمام تنظیمات را به صورت جداگانه تنظیم کنید تا تعادلی بین حریم خصوصی و راحتی ایجاد شود که برای شما مناسب است.",
+				"second-point": "حالت پیشفرض را برای یک تجربه کولر روشن! انتخاب کنید.",
+				"back-button": "قبل",
+				"accept-button": "ادامه"
 			},
 			"settings": {
 				"off-grid": {
-					"title": "",
-					"ble-button": "",
-					"nearby-button": "",
-					"mc-button": "",
+					"title": "ارتباطات خارج از شبکه",
+					"ble-button": "بلوتوث کم مصرف",
+					"nearby-button": "اندروید در نزدیکی",
+					"mc-button": "قابلیت اتصال چندپایه اپل",
 					"mdns-button": ""
 				},
 				"routing": {
-					"title": "",
-					"dht-button": "",
-					"rdvp-button": ""
+					"title": "مسیریابی",
+					"dht-button": "جدول هش توزیع شده",
+					"rdvp-button": "گره های نقطه ی قرار ملاقات"
 				},
 				"access": {
-					"title": "",
+					"title": "دسترسی به شبکه",
 					"relay-button": "",
 					"bootstrap-button": ""
 				},
@@ -69,30 +69,30 @@
 						"multiaddr-p2p": ""
 					},
 					"buttons": {
-						"add": "",
-						"edit": "",
-						"delete": ""
+						"add": "اضافه",
+						"edit": "ویرایش",
+						"delete": "حذف"
 					},
-					"multiaddress": "",
-					"alias": ""
+					"multiaddress": "چندنشانی",
+					"alias": "نام مستعار"
 				},
-				"all-button": "",
-				"accept-button": ""
+				"all-button": "همه",
+				"accept-button": "بزن بریم"
 			}
 		},
 		"create-account": {
-			"title": "",
-			"first-button": "",
-			"second-button": "",
-			"placeholder": "",
+			"title": "حساب کاربری خود را ایجاد کنید",
+			"first-button": "حالت پیشفرض",
+			"second-button": "حالت سفارشی",
+			"placeholder": "اسم خود را انتخاب کنید",
 			"good-to-know": {
-				"title": "",
-				"first-point": "",
-				"second-point": ""
+				"title": "نکات مفید:",
+				"first-point": "حساب کاربری شما در داخل دستگاه ایجاد میشود",
+				"second-point": "انتخاب اسم اختیاری بوده و بعدن قابل تغییر است"
 			}
 		},
 		"generate-key": {
-			"title": "",
+			"title": "شروع گره Berty…",
 			"desc": ""
 		},
 		"setup-finished": {
@@ -156,60 +156,60 @@
 	},
 	"settings": {
 		"home": {
-			"title": "",
-			"proximity-button": "",
-			"notifications-button": "",
-			"appearance-button": "",
-			"accounts-button": "",
-			"network-button": "",
-			"bug-button": "",
-			"about-button": "",
-			"version-button": "",
-			"devtools-button": ""
+			"title": "تنظیمات",
+			"proximity-button": "ارتباطات خارج از شبکه",
+			"notifications-button": "اعلان ها",
+			"appearance-button": "ظاهر",
+			"accounts-button": "حسابها",
+			"network-button": "شبکه",
+			"bug-button": "گزارش ایراد",
+			"about-button": "درباره Berty",
+			"version-button": "ویرایش: {{version}}",
+			"devtools-button": "Devtools"
 		},
 		"about": {
-			"title": "",
-			"faq-button": "",
-			"roadmap-button": "",
-			"policy-button": "",
-			"license-button": "",
-			"terms-of-use": ""
+			"title": "درباره Berty",
+			"faq-button": "پرسش های متداول",
+			"roadmap-button": "نقشه راه",
+			"policy-button": "سیاست حفظ حریم خصوصی",
+			"license-button": "مجوزهای متن باز",
+			"terms-of-use": "شرایط استفاده"
 		},
 		"accounts": {
-			"title": "",
-			"backup-button": "",
-			"backup-notif-title": "",
-			"backup-notif-desc": "",
-			"accounts-button": "",
-			"create-button": "",
-			"import-button": "",
-			"link-button": "",
-			"delete-button": "",
-			"delete-title": ""
+			"title": "حسابها",
+			"backup-button": "پشتیبان گیری",
+			"backup-notif-title": "موفقیت آمیز",
+			"backup-notif-desc": "از حساب شما پشتیبان گرفته شد!",
+			"accounts-button": "حسابها",
+			"create-button": "ایجاد یک جساب",
+			"import-button": "بازنشانی یک حساب",
+			"link-button": "اتصال به دستگاه دیگر",
+			"delete-button": "این حساب را حذف کن",
+			"delete-title": "حذف حساب"
 		},
 		"appearance": {
-			"title": "",
-			"dark-button": "",
-			"editor-button": "",
+			"title": "ظاهر",
+			"dark-button": "حالت تاریک",
+			"editor-button": "ویرایشگر تم",
 			"theme-editor": {
-				"title": ""
+				"title": "ویرایشگر تم"
 			}
 		},
 		"contact-convs": {
-			"title": "",
-			"reset-button": "",
-			"request-button": ""
+			"title": "تماس و مکالمات",
+			"reset-button": "لینک تماس/کد QR من را بازنشانی کنید",
+			"request-button": "دریافت درخواست های تماس را مجاز کنید"
 		},
 		"network": {
-			"title": "",
-			"ble-button": "",
-			"mc-button": "",
-			"nearby-button": "",
+			"title": "شبکه",
+			"ble-button": "بلوتوث کم مصرف",
+			"mc-button": "قابلیت اتصال چندپایه",
+			"nearby-button": "اندروید در نزدیکی",
 			"mdns-button": "",
-			"memo-cell-button": "",
-			"medias-cell-button": "",
-			"dht-button": "",
-			"rdvp-button": "",
+			"memo-cell-button": "بارگذاری پیامهای صوتی از اینترنت سیمکارت",
+			"medias-cell-button": "بارگذاری فایلهای چند رسانه ای از اینترنت سیمکارت",
+			"dht-button": "جدول هش توزیع شده",
+			"rdvp-button": "گره های نقطه ی قرار ملاقات",
 			"relay-button": "",
 			"bootstrap-button": ""
 		},
@@ -217,11 +217,11 @@
 			"title": ""
 		},
 		"edit-profile": {
-			"title": "",
-			"qr-will-update": "",
-			"ocr-wont-update": "",
-			"save": "",
-			"cancel": "",
+			"title": "ویرایش مشخصات خودم",
+			"qr-will-update": "شناسه Berty شما(کد QR) به روز می شود",
+			"ocr-wont-update": "درخواست‌های تماس شما که در وضعیت انتظارند به‌روزرسانی نخواهند شد",
+			"save": "ذخیره تغییرات",
+			"cancel": "لغو",
 			"name-input-placeholder": ""
 		},
 		"delete-account": {
@@ -288,34 +288,34 @@
 				"name": "",
 				"bullet-point": ""
 			},
-			"footer-left-button": "",
-			"footer-middle-button": "",
-			"footer-right-button": ""
+			"footer-left-button": "اطلاعات دستگاه",
+			"footer-middle-button": "فهرست رویدادها",
+			"footer-right-button": "بازنشانی نرم افزار"
 		},
 		"system-info": {
-			"title": ""
+			"title": "مشخصات سیستم"
 		},
 		"fake-data": {
-			"title": "",
-			"contacts-button": "",
-			"multi-members-button": "",
-			"messages-button": "",
-			"delete-button": ""
+			"title": "تولید داده های جعلی",
+			"contacts-button": "تولید مخاطبین جعلی",
+			"multi-members-button": "تولید چند-کاربری جعلی",
+			"messages-button": "تولید پیام های جعلی",
+			"delete-button": "حذف داده های جعلی"
 		},
 		"add-dev-conversations": {
 			"title": "",
-			"add": "",
-			"tag-bot": "",
-			"tag-contact": "",
-			"tag-conversation": ""
+			"add": "اضافه کردن {{name}}",
+			"tag-bot": "بات",
+			"tag-contact": "مخاطب",
+			"tag-conversation": "مکالمه"
 		},
 		"ipfs-webui": {
-			"title": ""
+			"title": "واسط تحت وب IPFS"
 		},
 		"theme-editor": {
-			"randomize": "",
-			"save": "",
-			"export": "",
+			"randomize": "تولید تم",
+			"save": "ذخیره این تم",
+			"export": "این تم را بصورت یک فایل ذخیره کن",
 			"share": "",
 			"import": "",
 			"delete": "",
