@@ -22,7 +22,7 @@ import { MultiMemberContent } from './components/MultiMemberContent'
 
 const NT = beapi.messenger.StreamEvent.Notified.Type
 
-export const MultiMember: ScreenFC<'Chat.Group'> = ({ route: { params }, navigation }) => {
+export const MultiMember: ScreenFC<'Chat.MultiMember'> = ({ route: { params }, navigation }) => {
 	useNotificationsInhibitor(notif => {
 		if (
 			notif.type === NT.TypeMessageReceived &&
@@ -68,9 +68,7 @@ export const MultiMember: ScreenFC<'Chat.Group'> = ({ route: { params }, navigat
 				<TouchableOpacity
 					activeOpacity={conv ? 0.2 : 0.5}
 					style={[!conv ? opacity(0.5) : null]}
-					onPress={() =>
-						navigation.navigate('Group.MultiMemberSettings', { convId: params.convId })
-					}
+					onPress={() => navigation.navigate('Chat.MultiMemberSettings', { convId: params.convId })}
 				>
 					<MultiMemberAvatar publicKey={conv?.publicKey} size={40 * scaleSize} />
 				</TouchableOpacity>

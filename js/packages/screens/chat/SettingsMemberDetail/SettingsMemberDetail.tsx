@@ -11,7 +11,7 @@ import { useMember, useThemeColor } from '@berty/hooks'
 import { ScreenFC } from '@berty/navigation'
 import { Maybe } from '@berty/utils/type/maybe'
 
-const ChatSettingsMemberDetailHeader: React.FC<{
+const SettingsMemberDetailHeader: React.FC<{
 	convId: Maybe<string>
 	memberPk: Maybe<string>
 }> = ({ convId, memberPk }) => {
@@ -29,10 +29,10 @@ const ChatSettingsMemberDetailHeader: React.FC<{
 	)
 }
 
-const ChatSettingsMemberDetailBody: React.FC<{
+const SettingsMemberDetailBody: React.FC<{
 	convId: string
 	memberPk: string
-	navigation: ComponentProps<typeof ChatSettingsMemberDetail>['navigation']
+	navigation: ComponentProps<typeof SettingsMemberDetail>['navigation']
 }> = ({ convId, memberPk }) => {
 	const { padding, margin } = useStyles()
 	const { t } = useTranslation()
@@ -51,7 +51,7 @@ const ChatSettingsMemberDetailBody: React.FC<{
 	)
 }
 
-export const ChatSettingsMemberDetail: ScreenFC<'Group.ChatSettingsMemberDetail'> = ({
+export const SettingsMemberDetail: ScreenFC<'Chat.SettingsMemberDetail'> = ({
 	route,
 	navigation,
 }) => {
@@ -76,9 +76,9 @@ export const ChatSettingsMemberDetail: ScreenFC<'Group.ChatSettingsMemberDetail'
 			<StatusBar backgroundColor={colors['background-header']} barStyle='light-content' />
 			<ScrollView bounces={false}>
 				<View style={[padding.medium, { backgroundColor: colors['background-header'] }]}>
-					<ChatSettingsMemberDetailHeader convId={convId} memberPk={memberPk} />
+					<SettingsMemberDetailHeader convId={convId} memberPk={memberPk} />
 				</View>
-				<ChatSettingsMemberDetailBody
+				<SettingsMemberDetailBody
 					convId={convId || ''}
 					memberPk={memberPk || ''}
 					navigation={navigation}

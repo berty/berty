@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Chat.OneToOne renders correctly 1`] = `
+exports[`Chat.MultiMember renders correctly 1`] = `
 <RNCSafeAreaProvider
   onInsetsChange={[Function]}
   style={
@@ -79,6 +79,107 @@ exports[`Chat.OneToOne renders correctly 1`] = `
                 size="small"
               />
             </View>
+            <View
+              style={
+                Object {
+                  "left": 20,
+                  "position": "absolute",
+                  "right": 20,
+                  "transform": Array [
+                    Object {
+                      "translateY": 0,
+                    },
+                  ],
+                  "zIndex": 10,
+                }
+              }
+            >
+              <View
+                accessible={true}
+                focusable={true}
+                onClick={[Function]}
+                onResponderGrant={[Function]}
+                onResponderMove={[Function]}
+                onResponderRelease={[Function]}
+                onResponderTerminate={[Function]}
+                onResponderTerminationRequest={[Function]}
+                onStartShouldSetResponder={[Function]}
+                style={
+                  Object {
+                    "alignItems": "center",
+                    "backgroundColor": "white",
+                    "borderRadius": 18,
+                    "elevation": 12,
+                    "flexDirection": "row",
+                    "height": 40,
+                    "justifyContent": "space-between",
+                    "marginTop": 10,
+                    "opacity": 1,
+                    "paddingHorizontal": 5,
+                    "shadowColor": "black",
+                    "shadowOffset": Object {
+                      "height": 8,
+                      "width": 0,
+                    },
+                    "shadowOpacity": 0.1,
+                    "shadowRadius": 20,
+                  }
+                }
+              >
+                <View
+                  style={
+                    Object {
+                      "alignItems": "center",
+                      "flex": 1,
+                    }
+                  }
+                >
+                  <LottieViewMock
+                    autoPlay={true}
+                    loop={false}
+                    onAnimationFinish={[Function]}
+                    sourceHash="MA1AlOkt8/b/726yLgQYULUwXmaN9NMQqsePKCVtWnc="
+                    speed={1}
+                    style={
+                      Object {
+                        "height": 8,
+                      }
+                    }
+                  />
+                </View>
+                <View
+                  style={
+                    Object {
+                      "alignItems": "center",
+                      "backgroundColor": "#E9EAF1",
+                      "borderRadius": 100,
+                      "height": 28,
+                      "justifyContent": "center",
+                      "width": 28,
+                    }
+                  }
+                >
+                  <View
+                    style={
+                      Object {
+                        "transform": Array [
+                          Object {
+                            "scale": 1,
+                          },
+                        ],
+                      }
+                    }
+                  >
+                    <AssetMock
+                      color="#8E8E92"
+                      height={16}
+                      style={Array []}
+                      width={16}
+                    />
+                  </View>
+                </View>
+              </View>
+            </View>
             <RCTScrollView
               ListFooterComponent={null}
               contentContainerStyle={
@@ -91,411 +192,514 @@ exports[`Chat.OneToOne renders correctly 1`] = `
                 Array [
                   Object {
                     "acknowledged": false,
-                    "cid": "c18dc4aa-52db-4ac2-9c7a-843d8588c5bb",
-                    "conversationPublicKey": "10f6c634-00d3-4bbb-8c91-e5a1edd97511",
+                    "cid": "62a051a3-e0c8-4654-a4c5-37b65282e508",
+                    "conversationPublicKey": "3261ebb9-0dc2-4dcc-bc2d-22d3aa8e55e9",
                     "isMine": false,
-                    "memberPublicKey": "6ee9be51-9380-4f5d-ab48-d95f498424c2",
-                    "payload": undefined,
-                    "sentDate": "1653222415839",
-                    "type": 0,
-                  },
-                  Object {
-                    "acknowledged": true,
-                    "cid": "2b241872-a4cb-4062-9958-e0de1cf5c825",
-                    "conversationPublicKey": "10f6c634-00d3-4bbb-8c91-e5a1edd97511",
-                    "isMine": true,
-                    "memberPublicKey": "5cf2bc99-2721-407d-992b-a00fbdf302f2",
-                    "outOfStoreMessage": false,
+                    "memberPublicKey": "ad2c82b4-1c92-44ef-a71c-d8508a1f09ad",
                     "payload": undefined,
                     "reactions": Array [
                       Object {
                         "count": "1",
-                        "emoji": "🎁",
-                        "ownState": true,
+                        "emoji": "🎗️",
+                        "ownState": false,
                       },
                     ],
-                    "sentDate": "1653148204372",
+                    "sentDate": "1653268481851",
                     "type": 0,
                   },
                   Object {
                     "acknowledged": true,
-                    "cid": "7f165320-e8df-4cfc-90d9-29cfda0a3608",
-                    "conversationPublicKey": "10f6c634-00d3-4bbb-8c91-e5a1edd97511",
+                    "cid": "23333fe7-c0c5-419d-9604-791d9c9e0e43",
+                    "conversationPublicKey": "3261ebb9-0dc2-4dcc-bc2d-22d3aa8e55e9",
                     "isMine": false,
-                    "memberPublicKey": "6ee9be51-9380-4f5d-ab48-d95f498424c2",
-                    "outOfStoreMessage": false,
-                    "payload": undefined,
-                    "reactions": Array [
-                      Object {
-                        "count": "1",
-                        "emoji": "🎲",
-                        "ownState": false,
-                      },
-                      Object {
-                        "count": "2",
-                        "emoji": "🎮",
-                        "ownState": true,
-                      },
-                    ],
-                    "sentDate": "1653121570842",
-                    "type": 0,
-                  },
-                  Object {
-                    "acknowledged": true,
-                    "cid": "f5ac7498-95de-4849-a99c-5743c68690fc",
-                    "conversationPublicKey": "10f6c634-00d3-4bbb-8c91-e5a1edd97511",
-                    "isMine": true,
-                    "memberPublicKey": "5cf2bc99-2721-407d-992b-a00fbdf302f2",
-                    "outOfStoreMessage": false,
-                    "payload": undefined,
-                    "reactions": Array [
-                      Object {
-                        "count": "1",
-                        "emoji": "▪️",
-                        "ownState": false,
-                      },
-                      Object {
-                        "count": "1",
-                        "emoji": "⬛",
-                        "ownState": true,
-                      },
-                    ],
-                    "sentDate": "1653098079441",
-                    "type": 0,
-                  },
-                  Object {
-                    "acknowledged": true,
-                    "cid": "b2bfa5cc-5739-45a0-9ffb-83945f3c7693",
-                    "conversationPublicKey": "10f6c634-00d3-4bbb-8c91-e5a1edd97511",
-                    "isMine": true,
-                    "memberPublicKey": "5cf2bc99-2721-407d-992b-a00fbdf302f2",
-                    "outOfStoreMessage": false,
-                    "payload": undefined,
-                    "reactions": Array [
-                      Object {
-                        "count": "1",
-                        "emoji": "🔤",
-                        "ownState": true,
-                      },
-                      Object {
-                        "count": "1",
-                        "emoji": "⏯️",
-                        "ownState": true,
-                      },
-                    ],
-                    "sentDate": "1653041803632",
-                    "type": 0,
-                  },
-                  Object {
-                    "acknowledged": true,
-                    "cid": "ffe30a7b-50a9-45c4-bc2f-d3a3b6bbb2e7",
-                    "conversationPublicKey": "10f6c634-00d3-4bbb-8c91-e5a1edd97511",
-                    "isMine": true,
-                    "memberPublicKey": "5cf2bc99-2721-407d-992b-a00fbdf302f2",
-                    "outOfStoreMessage": false,
-                    "payload": undefined,
-                    "reactions": Array [
-                      Object {
-                        "count": "1",
-                        "emoji": "🌥️",
-                        "ownState": false,
-                      },
-                    ],
-                    "sentDate": "1653026109797",
-                    "type": 0,
-                  },
-                  Object {
-                    "acknowledged": true,
-                    "cid": "3372ebf1-91ff-47a0-b4a4-9cc1620972b7",
-                    "conversationPublicKey": "10f6c634-00d3-4bbb-8c91-e5a1edd97511",
-                    "isMine": true,
-                    "memberPublicKey": "5cf2bc99-2721-407d-992b-a00fbdf302f2",
+                    "memberPublicKey": "87938573-0199-42aa-9c78-68df8d7e0d51",
                     "outOfStoreMessage": false,
                     "payload": undefined,
                     "reactions": undefined,
-                    "sentDate": "1652999734164",
+                    "sentDate": "1653187788148",
                     "type": 0,
                   },
                   Object {
                     "acknowledged": false,
-                    "cid": "caa0537d-c45f-4720-be25-c439d896eea5",
-                    "conversationPublicKey": "10f6c634-00d3-4bbb-8c91-e5a1edd97511",
+                    "cid": "640f5629-4beb-46b4-9912-4438230ae7ec",
+                    "conversationPublicKey": "3261ebb9-0dc2-4dcc-bc2d-22d3aa8e55e9",
                     "isMine": true,
-                    "memberPublicKey": "5cf2bc99-2721-407d-992b-a00fbdf302f2",
+                    "memberPublicKey": "d77b6e79-48b7-4893-9e66-881e39816f5a",
                     "outOfStoreMessage": false,
                     "payload": undefined,
                     "reactions": Array [
                       Object {
-                        "count": "1",
-                        "emoji": "🌑",
+                        "count": "2",
+                        "emoji": "🍐",
+                        "ownState": false,
+                      },
+                      Object {
+                        "count": "3",
+                        "emoji": "💢",
+                        "ownState": true,
+                      },
+                      Object {
+                        "count": "3",
+                        "emoji": "🪔",
                         "ownState": true,
                       },
                       Object {
                         "count": "2",
-                        "emoji": "🤟",
-                        "ownState": true,
-                      },
-                      Object {
-                        "count": "2",
-                        "emoji": "🫑",
-                        "ownState": true,
+                        "emoji": "👩🏽‍🏫",
+                        "ownState": false,
                       },
                     ],
-                    "sentDate": "1652997174272",
+                    "sentDate": "1653185579879",
                     "type": 0,
                   },
                   Object {
-                    "acknowledged": false,
-                    "cid": "262131e8-567b-40fc-947b-639618faf2e6",
-                    "conversationPublicKey": "10f6c634-00d3-4bbb-8c91-e5a1edd97511",
-                    "isMine": true,
-                    "memberPublicKey": "5cf2bc99-2721-407d-992b-a00fbdf302f2",
+                    "acknowledged": true,
+                    "cid": "c847469b-3e90-46e0-86be-d475d1292da5",
+                    "conversationPublicKey": "3261ebb9-0dc2-4dcc-bc2d-22d3aa8e55e9",
+                    "isMine": false,
+                    "memberPublicKey": "f31ba273-df24-4bad-bf5a-0739ddd9c01e",
                     "outOfStoreMessage": false,
                     "payload": undefined,
                     "reactions": Array [
                       Object {
                         "count": "1",
                         "emoji": "🇻🇳",
-                        "ownState": false,
+                        "ownState": true,
+                      },
+                      Object {
+                        "count": "2",
+                        "emoji": "😑",
+                        "ownState": true,
+                      },
+                      Object {
+                        "count": "4",
+                        "emoji": "😭",
+                        "ownState": true,
                       },
                       Object {
                         "count": "1",
-                        "emoji": "🇱🇦",
+                        "emoji": "🧑🏽‍⚕️",
                         "ownState": false,
                       },
-                      Object {
-                        "count": "2",
-                        "emoji": "🧑🏾‍❤️‍💋‍🧑🏻",
-                        "ownState": true,
-                      },
-                      Object {
-                        "count": "2",
-                        "emoji": "🦵🏽",
-                        "ownState": true,
-                      },
                     ],
-                    "sentDate": "1652970282113",
+                    "sentDate": "1653147300665",
                     "type": 0,
                   },
                   Object {
                     "acknowledged": false,
-                    "cid": "3c65c9be-6659-4fc4-b415-ac5d63e66df5",
-                    "conversationPublicKey": "10f6c634-00d3-4bbb-8c91-e5a1edd97511",
+                    "cid": "c856d095-a64f-4736-83fd-c9f0fd71b619",
+                    "conversationPublicKey": "3261ebb9-0dc2-4dcc-bc2d-22d3aa8e55e9",
+                    "isMine": true,
+                    "memberPublicKey": "d77b6e79-48b7-4893-9e66-881e39816f5a",
+                    "outOfStoreMessage": false,
+                    "payload": undefined,
+                    "reactions": Array [
+                      Object {
+                        "count": "1",
+                        "emoji": "💛",
+                        "ownState": false,
+                      },
+                      Object {
+                        "count": "3",
+                        "emoji": "🅿️",
+                        "ownState": false,
+                      },
+                      Object {
+                        "count": "4",
+                        "emoji": "🔽",
+                        "ownState": true,
+                      },
+                      Object {
+                        "count": "2",
+                        "emoji": "🦜",
+                        "ownState": true,
+                      },
+                    ],
+                    "sentDate": "1653140294059",
+                    "type": 0,
+                  },
+                  Object {
+                    "acknowledged": false,
+                    "cid": "02db50a4-eb24-49bc-bcc8-59ec0dbc052f",
+                    "conversationPublicKey": "3261ebb9-0dc2-4dcc-bc2d-22d3aa8e55e9",
                     "isMine": false,
-                    "memberPublicKey": "6ee9be51-9380-4f5d-ab48-d95f498424c2",
+                    "memberPublicKey": "87938573-0199-42aa-9c78-68df8d7e0d51",
                     "outOfStoreMessage": false,
                     "payload": undefined,
                     "reactions": Array [
                       Object {
-                        "count": "1",
-                        "emoji": "🔫",
+                        "count": "3",
+                        "emoji": "🥶",
                         "ownState": true,
                       },
                       Object {
-                        "count": "1",
-                        "emoji": "🇬🇭",
+                        "count": "4",
+                        "emoji": "🇾🇹",
+                        "ownState": true,
+                      },
+                      Object {
+                        "count": "2",
+                        "emoji": "↙️",
                         "ownState": false,
                       },
-                      Object {
-                        "count": "1",
-                        "emoji": "🙏🏾",
-                        "ownState": true,
-                      },
                     ],
-                    "sentDate": "1652938811108",
+                    "sentDate": "1653062927479",
                     "type": 0,
                   },
                   Object {
-                    "acknowledged": true,
-                    "cid": "80186232-435c-4c24-aa48-1cf5af34896a",
-                    "conversationPublicKey": "10f6c634-00d3-4bbb-8c91-e5a1edd97511",
-                    "isMine": true,
-                    "memberPublicKey": "5cf2bc99-2721-407d-992b-a00fbdf302f2",
+                    "acknowledged": false,
+                    "cid": "ba9ff4d9-db86-45eb-b774-6278d9a90189",
+                    "conversationPublicKey": "3261ebb9-0dc2-4dcc-bc2d-22d3aa8e55e9",
+                    "isMine": false,
+                    "memberPublicKey": "ad2c82b4-1c92-44ef-a71c-d8508a1f09ad",
                     "outOfStoreMessage": false,
                     "payload": undefined,
                     "reactions": Array [
                       Object {
-                        "count": "1",
-                        "emoji": "🤧",
+                        "count": "3",
+                        "emoji": "🧦",
+                        "ownState": true,
+                      },
+                      Object {
+                        "count": "2",
+                        "emoji": "📼",
                         "ownState": false,
                       },
+                      Object {
+                        "count": "2",
+                        "emoji": "🤢",
+                        "ownState": false,
+                      },
+                      Object {
+                        "count": "2",
+                        "emoji": "☕",
+                        "ownState": true,
+                      },
+                      Object {
+                        "count": "4",
+                        "emoji": "🌴",
+                        "ownState": true,
+                      },
                     ],
-                    "sentDate": "1652925688213",
+                    "sentDate": "1653021263820",
                     "type": 0,
                   },
                   Object {
                     "acknowledged": true,
-                    "cid": "a11add78-9016-4143-ac77-141dc364bc50",
-                    "conversationPublicKey": "10f6c634-00d3-4bbb-8c91-e5a1edd97511",
+                    "cid": "453fdca0-3e63-48b8-8e86-be372bae4ef0",
+                    "conversationPublicKey": "3261ebb9-0dc2-4dcc-bc2d-22d3aa8e55e9",
                     "isMine": true,
-                    "memberPublicKey": "5cf2bc99-2721-407d-992b-a00fbdf302f2",
+                    "memberPublicKey": "d77b6e79-48b7-4893-9e66-881e39816f5a",
+                    "outOfStoreMessage": false,
+                    "payload": undefined,
+                    "reactions": Array [
+                      Object {
+                        "count": "3",
+                        "emoji": "👉🏻",
+                        "ownState": false,
+                      },
+                      Object {
+                        "count": "1",
+                        "emoji": "🏴",
+                        "ownState": false,
+                      },
+                    ],
+                    "sentDate": "1652991806301",
+                    "type": 0,
+                  },
+                  Object {
+                    "acknowledged": true,
+                    "cid": "dcfb258e-ff28-429e-8b92-7640164c388a",
+                    "conversationPublicKey": "3261ebb9-0dc2-4dcc-bc2d-22d3aa8e55e9",
+                    "isMine": true,
+                    "memberPublicKey": "d77b6e79-48b7-4893-9e66-881e39816f5a",
+                    "outOfStoreMessage": false,
+                    "payload": undefined,
+                    "reactions": Array [
+                      Object {
+                        "count": "3",
+                        "emoji": "🏊🏻‍♀️",
+                        "ownState": true,
+                      },
+                      Object {
+                        "count": "3",
+                        "emoji": "🔪",
+                        "ownState": true,
+                      },
+                      Object {
+                        "count": "3",
+                        "emoji": "🤏🏼",
+                        "ownState": false,
+                      },
+                      Object {
+                        "count": "1",
+                        "emoji": "🇦🇩",
+                        "ownState": false,
+                      },
+                      Object {
+                        "count": "1",
+                        "emoji": "👩🏻‍❤️‍💋‍👨🏽",
+                        "ownState": true,
+                      },
+                    ],
+                    "sentDate": "1652980305461",
+                    "type": 0,
+                  },
+                  Object {
+                    "acknowledged": true,
+                    "cid": "441e6ada-5800-44ef-aafe-8cb802a5c9cd",
+                    "conversationPublicKey": "3261ebb9-0dc2-4dcc-bc2d-22d3aa8e55e9",
+                    "isMine": false,
+                    "memberPublicKey": "87938573-0199-42aa-9c78-68df8d7e0d51",
                     "outOfStoreMessage": false,
                     "payload": undefined,
                     "reactions": undefined,
-                    "sentDate": "1652912478297",
-                    "type": 0,
-                  },
-                  Object {
-                    "acknowledged": false,
-                    "cid": "b891fbc8-9b55-456c-ae3f-04f90be6d174",
-                    "conversationPublicKey": "10f6c634-00d3-4bbb-8c91-e5a1edd97511",
-                    "isMine": true,
-                    "memberPublicKey": "5cf2bc99-2721-407d-992b-a00fbdf302f2",
-                    "outOfStoreMessage": false,
-                    "payload": undefined,
-                    "reactions": Array [
-                      Object {
-                        "count": "2",
-                        "emoji": "🧑🏻‍🔬",
-                        "ownState": true,
-                      },
-                      Object {
-                        "count": "2",
-                        "emoji": "🟢",
-                        "ownState": true,
-                      },
-                    ],
-                    "sentDate": "1652857398846",
+                    "sentDate": "1652921031317",
                     "type": 0,
                   },
                   Object {
                     "acknowledged": true,
-                    "cid": "54bd1f53-cac5-457f-948a-cef816a38362",
-                    "conversationPublicKey": "10f6c634-00d3-4bbb-8c91-e5a1edd97511",
-                    "isMine": true,
-                    "memberPublicKey": "5cf2bc99-2721-407d-992b-a00fbdf302f2",
-                    "outOfStoreMessage": false,
-                    "payload": undefined,
-                    "reactions": Array [
-                      Object {
-                        "count": "1",
-                        "emoji": "🇲🇩",
-                        "ownState": false,
-                      },
-                    ],
-                    "sentDate": "1652791427976",
-                    "type": 0,
-                  },
-                  Object {
-                    "acknowledged": true,
-                    "cid": "ca18c714-b877-436b-9d4d-93d9fa9085d1",
-                    "conversationPublicKey": "10f6c634-00d3-4bbb-8c91-e5a1edd97511",
-                    "isMine": true,
-                    "memberPublicKey": "5cf2bc99-2721-407d-992b-a00fbdf302f2",
-                    "outOfStoreMessage": false,
-                    "payload": undefined,
-                    "reactions": Array [
-                      Object {
-                        "count": "1",
-                        "emoji": "🦵🏻",
-                        "ownState": false,
-                      },
-                    ],
-                    "sentDate": "1652735525194",
-                    "type": 0,
-                  },
-                  Object {
-                    "acknowledged": false,
-                    "cid": "2cd419ae-4d34-4af1-a99e-bd4d64eb1c0e",
-                    "conversationPublicKey": "10f6c634-00d3-4bbb-8c91-e5a1edd97511",
+                    "cid": "8ffcbd95-9528-4605-bf23-e71fdc2f09b5",
+                    "conversationPublicKey": "3261ebb9-0dc2-4dcc-bc2d-22d3aa8e55e9",
                     "isMine": false,
-                    "memberPublicKey": "6ee9be51-9380-4f5d-ab48-d95f498424c2",
+                    "memberPublicKey": "87938573-0199-42aa-9c78-68df8d7e0d51",
                     "outOfStoreMessage": false,
                     "payload": undefined,
                     "reactions": Array [
                       Object {
                         "count": "2",
-                        "emoji": "🇷🇼",
-                        "ownState": true,
-                      },
-                    ],
-                    "sentDate": "1652724866098",
-                    "type": 0,
-                  },
-                  Object {
-                    "acknowledged": false,
-                    "cid": "c56c9a29-3b52-48e2-bd59-f8c0f8ee3343",
-                    "conversationPublicKey": "10f6c634-00d3-4bbb-8c91-e5a1edd97511",
-                    "isMine": false,
-                    "memberPublicKey": "6ee9be51-9380-4f5d-ab48-d95f498424c2",
-                    "outOfStoreMessage": false,
-                    "payload": undefined,
-                    "reactions": Array [
-                      Object {
-                        "count": "2",
-                        "emoji": "🎭",
+                        "emoji": "🔤",
                         "ownState": true,
                       },
                       Object {
                         "count": "1",
-                        "emoji": "🕝",
+                        "emoji": "🚉",
                         "ownState": false,
                       },
                       Object {
-                        "count": "1",
-                        "emoji": "🧚‍♀️",
-                        "ownState": true,
-                      },
-                      Object {
-                        "count": "1",
-                        "emoji": "🇼🇸",
-                        "ownState": true,
-                      },
-                    ],
-                    "sentDate": "1652658198726",
-                    "type": 0,
-                  },
-                  Object {
-                    "acknowledged": false,
-                    "cid": "15a58d45-eed7-442c-8dd5-219db147c35e",
-                    "conversationPublicKey": "10f6c634-00d3-4bbb-8c91-e5a1edd97511",
-                    "isMine": true,
-                    "memberPublicKey": "5cf2bc99-2721-407d-992b-a00fbdf302f2",
-                    "outOfStoreMessage": false,
-                    "payload": undefined,
-                    "reactions": Array [
-                      Object {
-                        "count": "1",
-                        "emoji": "🦢",
+                        "count": "2",
+                        "emoji": "🍒",
                         "ownState": false,
-                      },
-                    ],
-                    "sentDate": "1652644182588",
-                    "type": 0,
-                  },
-                  Object {
-                    "acknowledged": false,
-                    "cid": "7decad25-17fb-4305-a014-4fc1ae913aa7",
-                    "conversationPublicKey": "10f6c634-00d3-4bbb-8c91-e5a1edd97511",
-                    "isMine": true,
-                    "memberPublicKey": "5cf2bc99-2721-407d-992b-a00fbdf302f2",
-                    "outOfStoreMessage": false,
-                    "payload": undefined,
-                    "reactions": Array [
-                      Object {
-                        "count": "1",
-                        "emoji": "🎏",
-                        "ownState": true,
                       },
                       Object {
                         "count": "2",
-                        "emoji": "🪆",
-                        "ownState": true,
+                        "emoji": "🐕‍🦺",
+                        "ownState": false,
                       },
                     ],
-                    "sentDate": "1652563635709",
+                    "sentDate": "1652910368062",
                     "type": 0,
                   },
                   Object {
                     "acknowledged": true,
-                    "cid": "f19b7d05-f92c-44bb-b088-22f04a19dbe9",
-                    "conversationPublicKey": "10f6c634-00d3-4bbb-8c91-e5a1edd97511",
+                    "cid": "b5150bb5-7acb-4ea9-926c-5f991ae5d65b",
+                    "conversationPublicKey": "3261ebb9-0dc2-4dcc-bc2d-22d3aa8e55e9",
                     "isMine": true,
-                    "memberPublicKey": "5cf2bc99-2721-407d-992b-a00fbdf302f2",
+                    "memberPublicKey": "d77b6e79-48b7-4893-9e66-881e39816f5a",
                     "outOfStoreMessage": false,
                     "payload": undefined,
-                    "reactions": undefined,
-                    "sentDate": "1652523781084",
+                    "reactions": Array [
+                      Object {
+                        "count": "1",
+                        "emoji": "😻",
+                        "ownState": true,
+                      },
+                      Object {
+                        "count": "4",
+                        "emoji": "🈁",
+                        "ownState": true,
+                      },
+                    ],
+                    "sentDate": "1652824292740",
+                    "type": 0,
+                  },
+                  Object {
+                    "acknowledged": true,
+                    "cid": "e5134ea8-aa56-4ba6-a052-ae93412a576c",
+                    "conversationPublicKey": "3261ebb9-0dc2-4dcc-bc2d-22d3aa8e55e9",
+                    "isMine": false,
+                    "memberPublicKey": "f31ba273-df24-4bad-bf5a-0739ddd9c01e",
+                    "outOfStoreMessage": false,
+                    "payload": undefined,
+                    "reactions": Array [
+                      Object {
+                        "count": "3",
+                        "emoji": "🇪🇬",
+                        "ownState": false,
+                      },
+                      Object {
+                        "count": "1",
+                        "emoji": "🇬🇵",
+                        "ownState": true,
+                      },
+                      Object {
+                        "count": "1",
+                        "emoji": "☝🏻",
+                        "ownState": true,
+                      },
+                      Object {
+                        "count": "4",
+                        "emoji": "🗄️",
+                        "ownState": true,
+                      },
+                      Object {
+                        "count": "2",
+                        "emoji": "🤙",
+                        "ownState": false,
+                      },
+                    ],
+                    "sentDate": "1652804325236",
+                    "type": 0,
+                  },
+                  Object {
+                    "acknowledged": true,
+                    "cid": "ee1a9f45-e5c8-4562-80b9-c6b55f875b02",
+                    "conversationPublicKey": "3261ebb9-0dc2-4dcc-bc2d-22d3aa8e55e9",
+                    "isMine": false,
+                    "memberPublicKey": "87938573-0199-42aa-9c78-68df8d7e0d51",
+                    "outOfStoreMessage": false,
+                    "payload": undefined,
+                    "reactions": Array [
+                      Object {
+                        "count": "1",
+                        "emoji": "⏯️",
+                        "ownState": false,
+                      },
+                    ],
+                    "sentDate": "1652756114258",
+                    "type": 0,
+                  },
+                  Object {
+                    "acknowledged": false,
+                    "cid": "f66ad466-2009-45c6-af63-16302c7e83f6",
+                    "conversationPublicKey": "3261ebb9-0dc2-4dcc-bc2d-22d3aa8e55e9",
+                    "isMine": true,
+                    "memberPublicKey": "d77b6e79-48b7-4893-9e66-881e39816f5a",
+                    "outOfStoreMessage": false,
+                    "payload": undefined,
+                    "reactions": Array [
+                      Object {
+                        "count": "1",
+                        "emoji": "🆕",
+                        "ownState": true,
+                      },
+                      Object {
+                        "count": "3",
+                        "emoji": "😏",
+                        "ownState": true,
+                      },
+                    ],
+                    "sentDate": "1652691324682",
+                    "type": 0,
+                  },
+                  Object {
+                    "acknowledged": false,
+                    "cid": "24d97226-17f7-44fe-86f6-9bc06574ede8",
+                    "conversationPublicKey": "3261ebb9-0dc2-4dcc-bc2d-22d3aa8e55e9",
+                    "isMine": false,
+                    "memberPublicKey": "f31ba273-df24-4bad-bf5a-0739ddd9c01e",
+                    "outOfStoreMessage": false,
+                    "payload": undefined,
+                    "reactions": Array [
+                      Object {
+                        "count": "2",
+                        "emoji": "🥇",
+                        "ownState": false,
+                      },
+                    ],
+                    "sentDate": "1652640369404",
+                    "type": 0,
+                  },
+                  Object {
+                    "acknowledged": false,
+                    "cid": "5986aff9-cb65-4baf-8736-b18ea341987d",
+                    "conversationPublicKey": "3261ebb9-0dc2-4dcc-bc2d-22d3aa8e55e9",
+                    "isMine": false,
+                    "memberPublicKey": "ad2c82b4-1c92-44ef-a71c-d8508a1f09ad",
+                    "outOfStoreMessage": false,
+                    "payload": undefined,
+                    "reactions": Array [
+                      Object {
+                        "count": "2",
+                        "emoji": "🦶🏻",
+                        "ownState": false,
+                      },
+                    ],
+                    "sentDate": "1652587845679",
+                    "type": 0,
+                  },
+                  Object {
+                    "acknowledged": true,
+                    "cid": "2f1d7d2e-56dd-4629-88cb-12feaac431a2",
+                    "conversationPublicKey": "3261ebb9-0dc2-4dcc-bc2d-22d3aa8e55e9",
+                    "isMine": true,
+                    "memberPublicKey": "d77b6e79-48b7-4893-9e66-881e39816f5a",
+                    "outOfStoreMessage": false,
+                    "payload": undefined,
+                    "reactions": Array [
+                      Object {
+                        "count": "3",
+                        "emoji": "✊🏽",
+                        "ownState": true,
+                      },
+                      Object {
+                        "count": "2",
+                        "emoji": "🚵🏼‍♀️",
+                        "ownState": true,
+                      },
+                    ],
+                    "sentDate": "1652559605451",
+                    "type": 0,
+                  },
+                  Object {
+                    "acknowledged": true,
+                    "cid": "14c62d02-d195-4e67-8e55-cb046066abf2",
+                    "conversationPublicKey": "3261ebb9-0dc2-4dcc-bc2d-22d3aa8e55e9",
+                    "isMine": false,
+                    "memberPublicKey": "87938573-0199-42aa-9c78-68df8d7e0d51",
+                    "outOfStoreMessage": false,
+                    "payload": undefined,
+                    "reactions": Array [
+                      Object {
+                        "count": "3",
+                        "emoji": "🍨",
+                        "ownState": false,
+                      },
+                      Object {
+                        "count": "1",
+                        "emoji": "🥙",
+                        "ownState": true,
+                      },
+                    ],
+                    "sentDate": "1652525016756",
+                    "type": 0,
+                  },
+                  Object {
+                    "acknowledged": false,
+                    "cid": "589e5931-18e9-473a-b77d-98479e3b7112",
+                    "conversationPublicKey": "3261ebb9-0dc2-4dcc-bc2d-22d3aa8e55e9",
+                    "isMine": false,
+                    "memberPublicKey": "ad2c82b4-1c92-44ef-a71c-d8508a1f09ad",
+                    "outOfStoreMessage": false,
+                    "payload": undefined,
+                    "reactions": Array [
+                      Object {
+                        "count": "4",
+                        "emoji": "🇧🇪",
+                        "ownState": true,
+                      },
+                      Object {
+                        "count": "1",
+                        "emoji": "🅿️",
+                        "ownState": true,
+                      },
+                      Object {
+                        "count": "4",
+                        "emoji": "🥉",
+                        "ownState": true,
+                      },
+                    ],
+                    "sentDate": "1652504364181",
                     "type": 0,
                   },
                 ]
@@ -644,7 +848,7 @@ exports[`Chat.OneToOne renders correctly 1`] = `
                           ]
                         }
                       >
-                        May 22 2022
+                        May 23 2022
                       </Text>
                     </View>
                   </View>
@@ -666,6 +870,86 @@ exports[`Chat.OneToOne renders correctly 1`] = `
                     ]
                   }
                 />
+                <View
+                  onLayout={[Function]}
+                  style={
+                    Array [
+                      Object {
+                        "flexDirection": "column-reverse",
+                      },
+                      Object {
+                        "transform": Array [
+                          Object {
+                            "scaleY": -1,
+                          },
+                        ],
+                      },
+                    ]
+                  }
+                >
+                  <View
+                    style={
+                      Array [
+                        Object {
+                          "marginBottom": 4,
+                        },
+                      ]
+                    }
+                  >
+                    <View
+                      style={
+                        Array [
+                          Object {
+                            "alignSelf": "center",
+                          },
+                          Object {
+                            "borderRadius": 16,
+                          },
+                          Array [
+                            Object {
+                              "paddingHorizontal": 8,
+                            },
+                            Object {
+                              "paddingVertical": 2,
+                            },
+                          ],
+                          Object {
+                            "backgroundColor": "#F7F8FF",
+                          },
+                        ]
+                      }
+                    >
+                      <Text
+                        style={
+                          Array [
+                            Object {
+                              "fontSize": 30,
+                            },
+                            Object {
+                              "color": "#383B62",
+                              "fontFamily": "Open Sans",
+                            },
+                            Array [
+                              Array [
+                                Object {
+                                  "fontSize": 26,
+                                },
+                                Object {
+                                  "textAlign": "center",
+                                },
+                              ],
+                              Object {
+                                "color": "#979797",
+                              },
+                            ],
+                          ]
+                        }
+                      >
+                        May 22 2022
+                      </Text>
+                    </View>
+                  </View>
+                </View>
                 <View
                   onLayout={[Function]}
                   style={
@@ -796,23 +1080,6 @@ exports[`Chat.OneToOne renders correctly 1`] = `
                       },
                     ]
                   }
-                />
-                <View
-                  onLayout={[Function]}
-                  style={
-                    Array [
-                      Object {
-                        "flexDirection": "column-reverse",
-                      },
-                      Object {
-                        "transform": Array [
-                          Object {
-                            "scaleY": -1,
-                          },
-                        ],
-                      },
-                    ]
-                  }
                 >
                   <View
                     style={
@@ -877,40 +1144,6 @@ exports[`Chat.OneToOne renders correctly 1`] = `
                     </View>
                   </View>
                 </View>
-                <View
-                  onLayout={[Function]}
-                  style={
-                    Array [
-                      Object {
-                        "flexDirection": "column-reverse",
-                      },
-                      Object {
-                        "transform": Array [
-                          Object {
-                            "scaleY": -1,
-                          },
-                        ],
-                      },
-                    ]
-                  }
-                />
-                <View
-                  onLayout={[Function]}
-                  style={
-                    Array [
-                      Object {
-                        "flexDirection": "column-reverse",
-                      },
-                      Object {
-                        "transform": Array [
-                          Object {
-                            "scaleY": -1,
-                          },
-                        ],
-                      },
-                    ]
-                  }
-                />
                 <View
                   onLayout={[Function]}
                   style={
@@ -1121,6 +1354,40 @@ exports[`Chat.OneToOne renders correctly 1`] = `
                       },
                     ]
                   }
+                />
+                <View
+                  onLayout={[Function]}
+                  style={
+                    Array [
+                      Object {
+                        "flexDirection": "column-reverse",
+                      },
+                      Object {
+                        "transform": Array [
+                          Object {
+                            "scaleY": -1,
+                          },
+                        ],
+                      },
+                    ]
+                  }
+                />
+                <View
+                  onLayout={[Function]}
+                  style={
+                    Array [
+                      Object {
+                        "flexDirection": "column-reverse",
+                      },
+                      Object {
+                        "transform": Array [
+                          Object {
+                            "scaleY": -1,
+                          },
+                        ],
+                      },
+                    ]
+                  }
                 >
                   <View
                     style={
@@ -1201,40 +1468,6 @@ exports[`Chat.OneToOne renders correctly 1`] = `
                       },
                     ]
                   }
-                />
-                <View
-                  onLayout={[Function]}
-                  style={
-                    Array [
-                      Object {
-                        "flexDirection": "column-reverse",
-                      },
-                      Object {
-                        "transform": Array [
-                          Object {
-                            "scaleY": -1,
-                          },
-                        ],
-                      },
-                    ]
-                  }
-                />
-                <View
-                  onLayout={[Function]}
-                  style={
-                    Array [
-                      Object {
-                        "flexDirection": "column-reverse",
-                      },
-                      Object {
-                        "transform": Array [
-                          Object {
-                            "scaleY": -1,
-                          },
-                        ],
-                      },
-                    ]
-                  }
                 >
                   <View
                     style={
@@ -1299,6 +1532,23 @@ exports[`Chat.OneToOne renders correctly 1`] = `
                     </View>
                   </View>
                 </View>
+                <View
+                  onLayout={[Function]}
+                  style={
+                    Array [
+                      Object {
+                        "flexDirection": "column-reverse",
+                      },
+                      Object {
+                        "transform": Array [
+                          Object {
+                            "scaleY": -1,
+                          },
+                        ],
+                      },
+                    ]
+                  }
+                />
                 <View
                   onLayout={[Function]}
                   style={
@@ -1396,6 +1646,23 @@ exports[`Chat.OneToOne renders correctly 1`] = `
                     ]
                   }
                 />
+                <View
+                  onLayout={[Function]}
+                  style={
+                    Array [
+                      Object {
+                        "flexDirection": "column-reverse",
+                      },
+                      Object {
+                        "transform": Array [
+                          Object {
+                            "scaleY": -1,
+                          },
+                        ],
+                      },
+                    ]
+                  }
+                />
               </View>
             </RCTScrollView>
           </View>
@@ -1463,7 +1730,7 @@ exports[`Chat.OneToOne renders correctly 1`] = `
                     onFocus={[Function]}
                     onSelectionChange={[Function]}
                     onSubmitEditing={[Function]}
-                    placeholder="chat.one-to-one.input-placeholder"
+                    placeholder="chat.multi-member.input-placeholder"
                     placeholderTextColor="#979797"
                     rejectResponderTermination={true}
                     returnKeyType="default"

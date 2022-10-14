@@ -30,12 +30,12 @@ export type ScreensParams = {
 	// Chat
 
 	'Chat.OneToOne': { convId: string; scrollToMessage?: string | null }
-	'Chat.Group': { convId: string; scrollToMessage?: string | null }
+	'Chat.MultiMember': { convId: string; scrollToMessage?: string | null }
 	'Chat.OneToOneSettings': { convId: string }
 	'Chat.ContactSettings': { contactId: string }
-	'Group.MultiMemberSettings': { convId: string }
+	'Chat.MultiMemberSettings': { convId: string }
 	'Chat.MultiMemberSettingsAddMembers': { convPK: string }
-	'Group.ChatSettingsMemberDetail': { convId: string; memberPk: string; displayName: string }
+	'Chat.SettingsMemberDetail': { convId: string; memberPk: string; displayName: string }
 	'Chat.MultiMemberQR': { convId: string }
 	'Chat.ReplicateGroupSettings': { convId: string }
 

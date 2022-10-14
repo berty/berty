@@ -31,7 +31,7 @@ const MessageReceived: React.FC<any> = ({ onClose, title, message, ...props }) =
 							name:
 								payload.conversation.type === beapi.messenger.Conversation.Type.ContactType
 									? 'Chat.OneToOne'
-									: 'Chat.Group',
+									: 'Chat.MultiMember',
 							params: {
 								convId: payload.conversation?.publicKey,
 								scrollToMessage: payload?.interaction?.cid,

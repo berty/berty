@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Group.ChatSettingsMemberDetail renders correctly 1`] = `
+exports[`Chat.SettingsMemberDetail renders correctly 1`] = `
 <RNCSafeAreaProvider
   onInsetsChange={[Function]}
   style={

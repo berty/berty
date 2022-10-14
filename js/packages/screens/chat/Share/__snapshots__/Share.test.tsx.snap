@@ -39,13 +39,6 @@ exports[`Chat.Share renders correctly 1`] = `
       }
     >
       <RCTScrollView
-        contentContainerStyle={
-          Array [
-            Object {
-              "flex": 1,
-            },
-          ]
-        }
         style={
           Array [
             Object {

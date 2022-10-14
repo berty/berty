@@ -97,7 +97,7 @@ export const MemberBar: React.FC<MemberBarProps> = props => {
 
 	return (
 		<TouchableOpacity
-			onPress={() => navigation.navigate('Group.MultiMemberSettings', { convId: props.convId })}
+			onPress={() => navigation.navigate('Chat.MultiMemberSettings', { convId: props.convId })}
 			style={styles.container}
 		>
 			<View style={styles.barWidth}>
