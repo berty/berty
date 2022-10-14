@@ -33,13 +33,14 @@ const getCapabilitiesFromEnv = () => {
 		case 'iOS':
 			return {
 				platformName: 'iOS',
-				// platformVersion: process.env.IOS_VERSION || '15.5',
+				'appium:platformVersion': process.env.IOS_VERSION || '15.5',
 				'appium:deviceName': process.env.IOS_DEVICE || 'iPhone 11',
 				'appium:app': app,
 				'appium:automationName': 'XCUITest', // UiAutomator2, Espresso, or UiAutomator1 for Android,
-				'appium:simulatorStartupTimeout': 20 * 60 * 1000,
-				'appium:wdaLaunchTimeout': 20 * 60 * 1000,
-				'appium:wdaConnectionTimeout': 20 * 60 * 1000,
+				'appium:simulatorStartupTimeout': 10 * 60 * 1000,
+				'appium:wdaLaunchTimeout': 10 * 60 * 1000,
+				'appium:wdaConnectionTimeout': 10 * 60 * 1000,
+				'appium:wdaStartupRetries': 4,
 			}
 		case 'Android':
 			return {
