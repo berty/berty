@@ -1,0 +1,19 @@
+{
+  "name": "e2e-tests",
+  "version": "1.0.0",
+  "description": "To run the test you need to:",
+  "main": "basic.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "appium": "^2.0.0-beta.45"
+  },
+  "devDependencies": {
+    "appium-uiautomator2-driver": "^2.8.0",
+    "appium-xcuitest-driver": "^4.12.1",
+    "webdriverio": "^7.25.1"
+  }
+}
