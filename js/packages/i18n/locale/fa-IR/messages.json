@@ -96,45 +96,45 @@
 			"desc": ""
 		},
 		"setup-finished": {
-			"title": "",
-			"desc": "",
-			"button": ""
+			"title": "راه اندازی پایان یافت!",
+			"desc": "اکنون می توانید از برنامه استفاده کنید، شروع به اضافه کردن مخاطبین کنید و آزادانه و خصوصی با آنها صحبت کنید",
+			"button": "شروع به استفاده از Berty کنید"
 		},
 		"web-views": {
-			"title": "",
-			"desc": "",
-			"first-button": "",
-			"second-button": ""
+			"title": "مجوز دسترسی به محتوای وب",
+			"desc": "Berty در شرف بارگیری محتوا از وب است. آیا می خواهید این صفحه را باز کنید؟",
+			"first-button": "لغو",
+			"second-button": "بله"
 		}
 	},
 	"main": {
 		"home": {
-			"title": "",
+			"title": "Berty",
 			"requests": {
-				"title": "",
-				"accept": "",
-				"card-title": ""
+				"title": "درخواستها",
+				"accept": "تایید",
+				"card-title": "درخواست تماس!"
 			},
-			"input-placeholder": "",
-			"no-contacts": "",
+			"input-placeholder": "کلید واژه جستجو",
+			"no-contacts": "شما هنوز هیچ مخاطب یا گپی ندارید",
 			"no-network": {
-				"title": "",
-				"description": "",
-				"cancel": "",
-				"activate": ""
+				"title": "هیچ شبکه ای یافت نشد!",
+				"description": "شما آفلاین به نظر می رسید! قابلیت بلوتوث را برای چت با دوستان فعال کنید!",
+				"cancel": "الان نه",
+				"activate": "فعال سازی"
 			},
 			"search": {
-				"no-results": ""
+				"no-results": "هیچ نتیجه ای یافت نشد"
 			},
 			"multi-account": {
-				"create-button": "",
-				"import-button": ""
+				"create-button": "ایجاد حساب جدید",
+				"import-button": "بازنشانی حساب"
 			},
 			"create-group": {
-				"title": "",
-				"add-members": "",
-				"group-info": "",
-				"search-placeholder": "",
+				"title": "گروه جدید",
+				"add-members": "اضافه کردن اعضا",
+				"group-info": "مشخصات گروه",
+				"search-placeholder": "جستجو",
 				"continue": "",
 				"create-group": ""
 			},
