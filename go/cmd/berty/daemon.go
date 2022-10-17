@@ -128,6 +128,7 @@ func daemonCommand() *ffcli.Command {
 					fmt.Fprintf(os.Stderr, "  P2P peers: %-26d  Hostname: %-30s\n", ret.Protocol.P2P.ConnectedPeers, ret.Protocol.Process.HostName)
 					fmt.Fprintf(os.Stderr, "  Accounts=%-2d Contacts=%-2d Convs=%-2d Members=%-2d Devices=%-2d\n", ret.Messenger.DB.Accounts, ret.Messenger.DB.Contacts, ret.Messenger.DB.Conversations, ret.Messenger.DB.Members, ret.Messenger.DB.Devices)
 					fmt.Fprintf(os.Stderr, "  Work dir: %-50s\n", ret.Protocol.Process.WorkingDir)
+					fmt.Fprintf(os.Stderr, "  BuildNumber: %s\n", ret.Protocol.Process.BuildNumber)
 					printLock.Unlock()
 				})
 			}

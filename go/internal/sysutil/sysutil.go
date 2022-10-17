@@ -39,6 +39,7 @@ func SystemInfoProcess() (*protocoltypes.SystemInfo_Process, error) {
 		Arch:             runtime.GOARCH,
 		Version:          bertyversion.Version,
 		VcsRef:           bertyversion.VcsRef,
+		BuildNumber:      bertyversion.BuildNumber,
 		PID:              int64(syscall.Getpid()),
 		UID:              int64(syscall.Getuid()),
 		PPID:             int64(syscall.Getppid()),

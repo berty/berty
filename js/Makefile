@@ -2,6 +2,7 @@
 
 VERSION ?= `$(GO) run -mod=readonly -modfile=$(PWD)/../go.mod github.com/mdomke/git-semver/v5`
 VCS_REF ?= `git rev-parse --short HEAD`
+CI_BUILD_NUMBER ?= 0000
 BERTY_DAEMON_HOST ?= 127.0.0.1
 BERTY_DAEMON_PORT ?= 1337
 BERTY_DAEMON_OPTS ?= -p2p.webui-listener=""
@@ -24,7 +25,7 @@ YOLO_SUFFIX ?= Yolo
 rwildcard = $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2) $(filter $(subst *,%,$2),$d))
 check-program = $(foreach exec,$(1),$(if $(shell PATH="$(PATH)" which $(exec)),,$(error "Missing deps: no '$(exec)' in PATH")))
 kill-program-using-port = $(foreach port,$(1),$(eval pid ?= $(shell lsof -t -i :$(port))) $(if $(pid),$(shell kill $(pid)),))
-ext_ldflags = -ldflags="-X berty.tech/berty/v2/go/pkg/bertyversion.VcsRef=$(VCS_REF) -X berty.tech/berty/v2/go/pkg/bertyversion.Version=$(VERSION)"
+ext_ldflags = -ldflags="-X berty.tech/berty/v2/go/pkg/bertyversion.VcsRef=$(VCS_REF) -X berty.tech/berty/v2/go/pkg/bertyversion.Version=$(VERSION) -X berty.tech/berty/v2/go/pkg/bertyversion.BuildNumber=${CI_BUILD_NUMBER}"
 bridge_src := $(call rwildcard,../go,*.go *.m *.h) ../go.sum
 xcodegen_yml := $(wildcard $(PWD)/ios/*.yaml)
 required_java_ver = 18

@@ -88,7 +88,10 @@ jobs:
               owner: 'berty',
               repo: 'release-on-stores',
               event_type: 'Release on stores - Push on master',
-              client_payload: {"commit_message":${{ env.commit_message }}},
+              client_payload: {
+                "commit_message":${{ env.commit_message }},
+                "ci_build_number":${{ env.run_number }}
+              },
             })
 
 
