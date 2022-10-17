@@ -40,14 +40,6 @@ export type MessengerMethodsHooks = {
 		called: boolean
 		loading: boolean
 	}
-	useSendReplyOptions: () => {
-		error: any
-		call: (req?: beapi.messenger.SendReplyOptions.IRequest) => void
-		reply: beapi.messenger.SendReplyOptions.IReply | null
-		done: boolean
-		called: boolean
-		loading: boolean
-	}
 	useSystemInfo: () => {
 		error: any
 		call: (req?: beapi.messenger.SystemInfo.IRequest) => void

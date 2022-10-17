@@ -6,7 +6,6 @@ import (
 	"crypto/ed25519"
 	crand "crypto/rand"
 	"encoding/base64"
-	"encoding/json"
 	"fmt"
 	"io"
 	"os"
@@ -198,11 +197,6 @@ func commandList() []*command {
 			cmd:   replGroup,
 		},
 		{
-			title: "reply-options",
-			help:  `Sends a list of quick responses from JSON: [{"display": "Text offering a *yes* option", "payload": "yes"}]`,
-			cmd:   sendReplyOptions,
-		},
-		{
 			title: "export",
 			help:  `Saves an export of the current instance to the specified path`,
 			cmd:   exportAccount,
@@ -224,22 +218,6 @@ func commandList() []*command {
 			hideInLog: true,
 		},
 	}
-}
-
-func sendReplyOptions(ctx context.Context, v *groupView, cmd string) error {
-	options := []*messengertypes.ReplyOption{}
-	if err := json.Unmarshal([]byte(cmd), &options); err != nil {
-		return err
-	}
-
-	_, err := v.v.messenger.SendReplyOptions(ctx, &messengertypes.SendReplyOptions_Request{
-		GroupPK: v.g.PublicKey,
-		Options: &messengertypes.AppMessage_ReplyOptions{
-			Options: options,
-		},
-	})
-
-	return err
 }
 
 func credentialVerificationInit(ctx context.Context, v *groupView, service string) error {

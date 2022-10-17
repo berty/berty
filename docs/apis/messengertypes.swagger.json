@@ -1126,39 +1126,6 @@
         ]
       }
     },
-    "/berty.messenger.v1/MessengerService/SendReplyOptions": {
-      "post": {
-        "summary": "SendReplyOptions sends a list of prefilled response options to a group.",
-        "operationId": "MessengerService_SendReplyOptions",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v1SendReplyOptionsReply"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/runtimeError"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/v1SendReplyOptionsRequest"
-            }
-          }
-        ],
-        "tags": [
-          "MessengerService"
-        ]
-      }
-    },
     "/berty.messenger.v1/MessengerService/ServicesTokenList": {
       "post": {
         "summary": "ServicesTokenList Retrieves the list of service server tokens",
@@ -1344,17 +1311,6 @@
     }
   },
   "definitions": {
-    "AppMessageReplyOptions": {
-      "type": "object",
-      "properties": {
-        "options": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/v1ReplyOption"
-          }
-        }
-      }
-    },
     "BertyLinkBertyMessageRef": {
       "type": "object",
       "properties": {
@@ -1953,8 +1909,7 @@
         "TypeGroupInvitation",
         "TypeSetGroupInfo",
         "TypeSetUserInfo",
-        "TypeAcknowledge",
-        "TypeReplyOptions"
+        "TypeAcknowledge"
       ],
       "default": "Undefined"
     },
@@ -2141,12 +2096,6 @@
         "created_date": {
           "type": "string",
           "format": "int64"
-        },
-        "reply_options_cid": {
-          "type": "string"
-        },
-        "reply_options": {
-          "$ref": "#/definitions/v1Interaction"
         },
         "replication_info": {
           "type": "array",
@@ -2860,17 +2809,6 @@
         }
       }
     },
-    "v1ReplyOption": {
-      "type": "object",
-      "properties": {
-        "display": {
-          "type": "string"
-        },
-        "payload": {
-          "type": "string"
-        }
-      }
-    },
     "v1SendContactRequestReply": {
       "type": "object"
     },
@@ -2887,21 +2825,6 @@
         "own_metadata": {
           "type": "string",
           "format": "byte"
-        }
-      }
-    },
-    "v1SendReplyOptionsReply": {
-      "type": "object"
-    },
-    "v1SendReplyOptionsRequest": {
-      "type": "object",
-      "properties": {
-        "group_pk": {
-          "type": "string",
-          "format": "byte"
-        },
-        "options": {
-          "$ref": "#/definitions/AppMessageReplyOptions"
         }
       }
     },

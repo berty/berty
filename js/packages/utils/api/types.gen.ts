@@ -63,8 +63,6 @@ export type AppMessagePayloadType<T> = T extends beapi.messenger.AppMessage.Type
 	? beapi.messenger.AppMessage.ISetUserInfo
 	: T extends beapi.messenger.AppMessage.Type.TypeAcknowledge
 	? beapi.messenger.AppMessage.IAcknowledge
-	: T extends beapi.messenger.AppMessage.Type.TypeReplyOptions
-	? beapi.messenger.AppMessage.IReplyOptions
 	: never
 
 export type InteractionUndefined = {
@@ -95,10 +93,6 @@ export type InteractionAcknowledge = {
 	type: beapi.messenger.AppMessage.Type.TypeAcknowledge
 	payload?: beapi.messenger.AppMessage.IAcknowledge
 } & Omit<beapi.messenger.IInteraction, 'payload' | 'type'>
-export type InteractionReplyOptions = {
-	type: beapi.messenger.AppMessage.Type.TypeReplyOptions
-	payload?: beapi.messenger.AppMessage.IReplyOptions
-} & Omit<beapi.messenger.IInteraction, 'payload' | 'type'>
 
 export type ParsedInteraction =
 	| InteractionUndefined
@@ -108,4 +102,3 @@ export type ParsedInteraction =
 	| InteractionSetGroupInfo
 	| InteractionSetUserInfo
 	| InteractionAcknowledge
-	| InteractionReplyOptions

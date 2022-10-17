@@ -108,7 +108,6 @@ export interface WelshMessengerServiceClient {
 	devStreamLogs: ResponseStreamType<beapi.messenger.MessengerService['devStreamLogs']>
 	parseDeepLink: UnaryType<beapi.messenger.MessengerService['parseDeepLink']>
 	sendContactRequest: UnaryType<beapi.messenger.MessengerService['sendContactRequest']>
-	sendReplyOptions: UnaryType<beapi.messenger.MessengerService['sendReplyOptions']>
 	systemInfo: UnaryType<beapi.messenger.MessengerService['systemInfo']>
 	echoTest: ResponseStreamType<beapi.messenger.MessengerService['echoTest']>
 	echoDuplexTest: never

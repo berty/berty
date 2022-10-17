@@ -356,13 +356,6 @@ func (d *DBWrapper) UpdateConversationReadState(pk string, newUnread bool, event
 		updates["unread_count"] = gorm.Expr("unread_count + 1")
 	}
 
-	replyOptionsCID, err := d.GetReplyOptionsCIDForConversation(pk)
-	if err != nil {
-		return err
-	}
-
-	updates["reply_options_cid"] = replyOptionsCID
-
 	// db update
 	tx := d.db.Model(&messengertypes.Conversation{}).Where(&messengertypes.Conversation{PublicKey: pk}).Updates(updates)
 
@@ -473,7 +466,6 @@ func (d *DBWrapper) GetConversationByPK(publicKey string) (*messengertypes.Conve
 	conversation := &messengertypes.Conversation{}
 
 	if err := d.db.
-		Joins("ReplyOptions", d.db.Select("cid").Where("cid = conversations.reply_options_cid").Model(&messengertypes.Interaction{})).
 		Preload("ReplicationInfo").
 		First(
 			&conversation,
@@ -506,7 +498,7 @@ func (d *DBWrapper) GetMemberByPK(publicKey string, convPK string) (*messengerty
 func (d *DBWrapper) GetAllConversations() ([]*messengertypes.Conversation, error) {
 	convs := []*messengertypes.Conversation(nil)
 
-	return convs, d.db.Joins("ReplyOptions", d.db.Select("cid").Where("cid = conversations.reply_options_cid").Model(&messengertypes.Interaction{})).Preload("ReplicationInfo").Find(&convs).Error
+	return convs, d.db.Preload("ReplicationInfo").Find(&convs).Error
 }
 
 func (d *DBWrapper) GetAllMembers() ([]*messengertypes.Member, error) {
@@ -974,35 +966,6 @@ func (d *DBWrapper) AddInteraction(rawInte messengertypes.Interaction) (*messeng
 
 	d.logStep("Added interaction to db", tyber.WithJSONDetail("InteractionToAdd", rawInte), tyber.WithJSONDetail("FinalInteraction", i))
 	return i, isNew, nil
-}
-
-func (d *DBWrapper) GetReplyOptionsCIDForConversation(pk string) (string, error) {
-	if pk == "" {
-		return "", errcode.ErrInvalidInput.Wrap(fmt.Errorf("a conversation public key is required"))
-	}
-
-	cid := ""
-
-	if err := d.db.Model(&messengertypes.Interaction{}).
-		Raw(`SELECT cid
-			FROM interactions
-			WHERE conversation_public_key = ?
-			AND ROWID >
-				IFNULL ((
-					SELECT MAX(ROWID)
-					FROM interactions
-					WHERE conversation_public_key = ?
-					AND is_mine = true
-				), 0)
-			AND is_mine = false
-			AND type = ?
-			ORDER BY ROWID DESC
-			LIMIT 1
-		`, pk, pk, messengertypes.AppMessage_TypeReplyOptions).Scan(&cid).Error; err != nil {
-		return "", err
-	}
-
-	return cid, nil
 }
 
 func (d *DBWrapper) AttributeBacklogInteractions(devicePK, groupPK, memberPK string) ([]*messengertypes.Interaction, error) {

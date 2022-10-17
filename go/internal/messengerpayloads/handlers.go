@@ -104,7 +104,6 @@ func (h *EventHandler) bindHandlers() {
 		mt.AppMessage_TypeGroupInvitation: {h.handleAppMessageGroupInvitation, true},
 		mt.AppMessage_TypeUserMessage:     {h.handleAppMessageUserMessage, true},
 		mt.AppMessage_TypeSetUserInfo:     {h.handleAppMessageSetUserInfo, false},
-		mt.AppMessage_TypeReplyOptions:    {h.handleAppMessageReplyOptions, false},
 		mt.AppMessage_TypeUserReaction:    {h.handleAppMessageUserReaction, false},
 		mt.AppMessage_TypeSetGroupInfo:    {h.handleAppMessageSetGroupInfo, false},
 	}
@@ -1194,23 +1193,6 @@ func interactionConsumeAck(tx *messengerdb.DBWrapper, i *mt.Interaction, dispatc
 	}
 
 	return nil
-}
-
-func (h *EventHandler) handleAppMessageReplyOptions(tx *messengerdb.DBWrapper, i *mt.Interaction, _ proto.Message) (*mt.Interaction, bool, error) {
-	if len(i.GetPayload()) == 0 {
-		return nil, false, ErrNilPayload
-	}
-
-	i, isNew, err := tx.AddInteraction(*i)
-	if err != nil {
-		return nil, isNew, err
-	}
-
-	if err := messengerutil.StreamInteraction(h.dispatcher, tx, i.CID, isNew); err != nil {
-		return nil, isNew, err
-	}
-
-	return i, isNew, nil
 }
 
 func indexMessage(tx *messengerdb.DBWrapper, id string, am *mt.AppMessage) error {

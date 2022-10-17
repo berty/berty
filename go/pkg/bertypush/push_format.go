@@ -72,14 +72,12 @@ func FormatDecryptedPush(decrypted *pushtypes.DecryptedPush, printer *message.Pr
 		decrypted.PushType == pushtypes.DecryptedPush_Unknown,
 		decrypted.PushType == pushtypes.DecryptedPush_ConversationNameChanged,
 		decrypted.PushType == pushtypes.DecryptedPush_MemberNameChanged,
-		decrypted.PushType == pushtypes.DecryptedPush_MemberDetailsChanged,
-		decrypted.PushType == pushtypes.DecryptedPush_ReplyOptions:
+		decrypted.PushType == pushtypes.DecryptedPush_MemberDetailsChanged:
 		placeHolderMessages := map[pushtypes.DecryptedPush_PushType]string{
 			pushtypes.DecryptedPush_Unknown:                 "push.unknown.body",
 			pushtypes.DecryptedPush_ConversationNameChanged: "push.conversationNameChanged.body",
 			pushtypes.DecryptedPush_MemberNameChanged:       "push.memberNameChanged.body",
 			pushtypes.DecryptedPush_MemberDetailsChanged:    "push.memberDetailsChanged.body",
-			pushtypes.DecryptedPush_ReplyOptions:            "push.replyOptionsOffered.body",
 		}
 
 		fmtpush.Body = printer.Sprintf(placeHolderMessages[decrypted.PushType])

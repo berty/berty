@@ -21,9 +21,6 @@ http:
  - selector: berty.messenger.v1.MessengerService.SendContactRequest
    post: /berty.messenger.v1/MessengerService/SendContactRequest
    body: "*"
- - selector: berty.messenger.v1.MessengerService.SendReplyOptions
-   post: /berty.messenger.v1/MessengerService/SendReplyOptions
-   body: "*"
  - selector: berty.messenger.v1.MessengerService.SystemInfo
    post: /berty.messenger.v1/MessengerService/SystemInfo
    body: "*"

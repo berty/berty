@@ -17,7 +17,6 @@
     - [AppMessage](#berty.messenger.v1.AppMessage)
     - [AppMessage.Acknowledge](#berty.messenger.v1.AppMessage.Acknowledge)
     - [AppMessage.GroupInvitation](#berty.messenger.v1.AppMessage.GroupInvitation)
-    - [AppMessage.ReplyOptions](#berty.messenger.v1.AppMessage.ReplyOptions)
     - [AppMessage.SetGroupInfo](#berty.messenger.v1.AppMessage.SetGroupInfo)
     - [AppMessage.SetUserInfo](#berty.messenger.v1.AppMessage.SetUserInfo)
     - [AppMessage.UserMessage](#berty.messenger.v1.AppMessage.UserMessage)
@@ -125,13 +124,9 @@
     - [ReplicationSetAutoEnable](#berty.messenger.v1.ReplicationSetAutoEnable)
     - [ReplicationSetAutoEnable.Reply](#berty.messenger.v1.ReplicationSetAutoEnable.Reply)
     - [ReplicationSetAutoEnable.Request](#berty.messenger.v1.ReplicationSetAutoEnable.Request)
-    - [ReplyOption](#berty.messenger.v1.ReplyOption)
     - [SendContactRequest](#berty.messenger.v1.SendContactRequest)
     - [SendContactRequest.Reply](#berty.messenger.v1.SendContactRequest.Reply)
     - [SendContactRequest.Request](#berty.messenger.v1.SendContactRequest.Request)
-    - [SendReplyOptions](#berty.messenger.v1.SendReplyOptions)
-    - [SendReplyOptions.Reply](#berty.messenger.v1.SendReplyOptions.Reply)
-    - [SendReplyOptions.Request](#berty.messenger.v1.SendReplyOptions.Request)
     - [ServiceToken](#berty.messenger.v1.ServiceToken)
     - [ShareableBertyGroup](#berty.messenger.v1.ShareableBertyGroup)
     - [ShareableBertyGroup.Reply](#berty.messenger.v1.ShareableBertyGroup.Reply)
@@ -282,14 +277,6 @@ AppMessage is the app layer format
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | link | [string](#string) |  | TODO: optimize message size |
-
-<a name="berty.messenger.v1.AppMessage.ReplyOptions"></a>
-
-### AppMessage.ReplyOptions
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| options | [ReplyOption](#berty.messenger.v1.ReplyOption) | repeated |  |
 
 <a name="berty.messenger.v1.AppMessage.SetGroupInfo"></a>
 
@@ -487,8 +474,6 @@ to test more false-positive guesses.
 | account_member_public_key | [string](#string) |  |  |
 | local_device_public_key | [string](#string) |  |  |
 | created_date | [int64](#int64) |  |  |
-| reply_options_cid | [string](#string) |  |  |
-| reply_options | [Interaction](#berty.messenger.v1.Interaction) |  |  |
 | replication_info | [ConversationReplicationInfo](#berty.messenger.v1.ConversationReplicationInfo) | repeated |  |
 | info_date | [int64](#int64) |  | info_date is used when SetGroupInfo is called |
 | shared_push_token_identifier | [string](#string) |  |  |
@@ -1115,15 +1100,6 @@ Composite primary key
 | ----- | ---- | ----- | ----------- |
 | enabled | [bool](#bool) |  |  |
 
-<a name="berty.messenger.v1.ReplyOption"></a>
-
-### ReplyOption
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| display | [string](#string) |  |  |
-| payload | [string](#string) |  |  |
-
 <a name="berty.messenger.v1.SendContactRequest"></a>
 
 ### SendContactRequest
@@ -1141,23 +1117,6 @@ Composite primary key
 | berty_id | [BertyID](#berty.messenger.v1.BertyID) |  |  |
 | metadata | [bytes](#bytes) |  |  |
 | own_metadata | [bytes](#bytes) |  |  |
-
-<a name="berty.messenger.v1.SendReplyOptions"></a>
-
-### SendReplyOptions
-
-<a name="berty.messenger.v1.SendReplyOptions.Reply"></a>
-
-### SendReplyOptions.Reply
-
-<a name="berty.messenger.v1.SendReplyOptions.Request"></a>
-
-### SendReplyOptions.Request
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| group_pk | [bytes](#bytes) |  |  |
-| options | [AppMessage.ReplyOptions](#berty.messenger.v1.AppMessage.ReplyOptions) |  |  |
 
 <a name="berty.messenger.v1.ServiceToken"></a>
 
@@ -1478,7 +1437,6 @@ status events
 | TypeSetGroupInfo | 4 |  |
 | TypeSetUserInfo | 5 |  |
 | TypeAcknowledge | 6 |  |
-| TypeReplyOptions | 7 |  |
 
 <a name="berty.messenger.v1.BertyLink.Kind"></a>
 
@@ -1580,7 +1538,6 @@ Today, most of the Berty Messenger logic is implemented directly in the applicat
 | DevStreamLogs | [DevStreamLogs.Request](#berty.messenger.v1.DevStreamLogs.Request) | [DevStreamLogs.Reply](#berty.messenger.v1.DevStreamLogs.Reply) stream | DevStreamLogs streams logs from the ring-buffer. |
 | ParseDeepLink | [ParseDeepLink.Request](#berty.messenger.v1.ParseDeepLink.Request) | [ParseDeepLink.Reply](#berty.messenger.v1.ParseDeepLink.Reply) | ParseDeepLink parses a link in the form of berty://xxx or https://berty.tech/id# and returns a structure that can be used to display information. This action is read-only. |
 | SendContactRequest | [SendContactRequest.Request](#berty.messenger.v1.SendContactRequest.Request) | [SendContactRequest.Reply](#berty.messenger.v1.SendContactRequest.Reply) | SendContactRequest takes the payload received from ParseDeepLink and send a contact request using the Berty Protocol. |
-| SendReplyOptions | [SendReplyOptions.Request](#berty.messenger.v1.SendReplyOptions.Request) | [SendReplyOptions.Reply](#berty.messenger.v1.SendReplyOptions.Reply) | SendReplyOptions sends a list of prefilled response options to a group. |
 | SystemInfo | [SystemInfo.Request](#berty.messenger.v1.SystemInfo.Request) | [SystemInfo.Reply](#berty.messenger.v1.SystemInfo.Reply) | SystemInfo returns runtime information. |
 | EchoTest | [EchoTest.Request](#berty.messenger.v1.EchoTest.Request) | [EchoTest.Reply](#berty.messenger.v1.EchoTest.Reply) stream | Use to test stream. |
 | EchoDuplexTest | [EchoDuplexTest.Request](#berty.messenger.v1.EchoDuplexTest.Request) stream | [EchoDuplexTest.Reply](#berty.messenger.v1.EchoDuplexTest.Reply) stream | Use to test duplex stream. |

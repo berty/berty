@@ -1141,8 +1141,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       GroupInvitation: 7,
                       ConversationNameChanged: 8,
                       MemberNameChanged: 9,
-                      MemberDetailsChanged: 11,
-                      ReplyOptions: 12
+                      MemberDetailsChanged: 11
                     },
                     reserved: [
                       [
@@ -4496,10 +4495,6 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     requestType: "SendContactRequest.Request",
                     responseType: "SendContactRequest.Reply"
                   },
-                  SendReplyOptions: {
-                    requestType: "SendReplyOptions.Request",
-                    responseType: "SendReplyOptions.Reply"
-                  },
                   SystemInfo: {
                     requestType: "SystemInfo.Request",
                     responseType: "SystemInfo.Reply"
@@ -5102,29 +5097,6 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   }
                 }
               },
-              SendReplyOptions: {
-                fields: {},
-                nested: {
-                  Request: {
-                    fields: {
-                      groupPk: {
-                        type: "bytes",
-                        id: 1,
-                        options: {
-                          "(gogoproto.customname)": "GroupPK"
-                        }
-                      },
-                      options: {
-                        type: "AppMessage.ReplyOptions",
-                        id: 2
-                      }
-                    }
-                  },
-                  Reply: {
-                    fields: {}
-                  }
-                }
-              },
               BertyID: {
                 fields: {
                   publicRendezvousSeed: {
@@ -5196,9 +5168,14 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       TypeGroupInvitation: 3,
                       TypeSetGroupInfo: 4,
                       TypeSetUserInfo: 5,
-                      TypeAcknowledge: 6,
-                      TypeReplyOptions: 7
-                    }
+                      TypeAcknowledge: 6
+                    },
+                    reserved: [
+                      [
+                        7,
+                        7
+                      ]
+                    ]
                   },
                   UserMessage: {
                     fields: {
@@ -5258,27 +5235,6 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   },
                   Acknowledge: {
                     fields: {}
-                  },
-                  ReplyOptions: {
-                    fields: {
-                      options: {
-                        rule: "repeated",
-                        type: "ReplyOption",
-                        id: 1
-                      }
-                    }
-                  }
-                }
-              },
-              ReplyOption: {
-                fields: {
-                  display: {
-                    type: "string",
-                    id: 1
-                  },
-                  payload: {
-                    type: "string",
-                    id: 2
                   }
                 }
               },
@@ -5759,21 +5715,6 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     type: "int64",
                     id: 13
                   },
-                  replyOptionsCid: {
-                    type: "string",
-                    id: 14,
-                    options: {
-                      "(gogoproto.moretags)": "gorm:column:reply_options_cid",
-                      "(gogoproto.customname)": "ReplyOptionsCID"
-                    }
-                  },
-                  replyOptions: {
-                    type: "Interaction",
-                    id: 15,
-                    options: {
-                      "(gogoproto.customname)": "ReplyOptions"
-                    }
-                  },
                   replicationInfo: {
                     rule: "repeated",
                     type: "ConversationReplicationInfo",
@@ -5800,6 +5741,14 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   }
                 },
                 reserved: [
+                  [
+                    14,
+                    14
+                  ],
+                  [
+                    15,
+                    15
+                  ],
                   [
                     17,
                     17

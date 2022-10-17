@@ -957,29 +957,12 @@ func Test_dbWrapper_getConversationByPK(t *testing.T) {
 	require.Equal(t, "conversation_1", conversation.PublicKey)
 	require.NotEmpty(t, conversation.ReplicationInfo)
 	require.Equal(t, "cid_1", conversation.ReplicationInfo[0].CID)
-	require.Nil(t, conversation.ReplyOptions)
-
-	require.NoError(t, db.db.Create(&messengertypes.Interaction{
-		CID:                   "cid_2",
-		ConversationPublicKey: "conversation_1",
-	}).Error)
-	require.NoError(t, db.db.Updates(&messengertypes.Conversation{PublicKey: "conversation_1", ReplyOptionsCID: "cid_2"}).Error)
-
-	conversation, err = db.GetConversationByPK("conversation_1")
-	require.NoError(t, err)
-	require.NotNil(t, conversation)
-	require.Equal(t, "conversation_1", conversation.PublicKey)
-	require.NotNil(t, conversation.ReplyOptions)
-	require.Equal(t, "cid_2", conversation.ReplyOptionsCID)
-	require.Equal(t, "cid_2", conversation.ReplyOptions.CID)
 
 	db.db.Create(&messengertypes.Conversation{PublicKey: "conversation_2"})
 	conversation, err = db.GetConversationByPK("conversation_2")
 	require.NoError(t, err)
 	require.NotNil(t, conversation)
 	require.Equal(t, "conversation_2", conversation.PublicKey)
-	require.Nil(t, conversation.ReplyOptions)
-	require.Empty(t, conversation.ReplyOptionsCID)
 }
 
 func Test_dbWrapper_getDBInfo(t *testing.T) {
@@ -1369,43 +1352,6 @@ func Test_dbWrapper_addServiceToken(t *testing.T) {
 
 	tok = &messengertypes.ServiceToken{}
 	require.Error(t, db.db.Model(&messengertypes.ServiceToken{}).Where(&messengertypes.ServiceToken{TokenID: tok2.TokenID(), ServiceType: "srv2"}).First(&tok).Error)
-}
-
-func Test_dbWrapper_getReplyOptionsCIDForConversation(t *testing.T) {
-	db, _, dispose := GetInMemoryTestDB(t)
-	defer dispose()
-
-	cid, err := db.GetReplyOptionsCIDForConversation("")
-	require.Error(t, err)
-	require.Equal(t, "", cid)
-
-	cid, err = db.GetReplyOptionsCIDForConversation("unknown_conversation")
-	require.NoError(t, err)
-	require.Equal(t, "", cid)
-
-	db.db.Create(&messengertypes.Interaction{CID: "cid_1", Type: messengertypes.AppMessage_TypeReplyOptions, ConversationPublicKey: "conv_1", IsMine: false})
-
-	cid, err = db.GetReplyOptionsCIDForConversation("conv_1")
-	require.NoError(t, err)
-	require.Equal(t, "cid_1", cid)
-
-	db.db.Create(&messengertypes.Interaction{CID: "cid_2", Type: messengertypes.AppMessage_TypeUserMessage, ConversationPublicKey: "conv_1", IsMine: false})
-
-	cid, err = db.GetReplyOptionsCIDForConversation("conv_1")
-	require.NoError(t, err)
-	require.Equal(t, "cid_1", cid)
-
-	db.db.Create(&messengertypes.Interaction{CID: "cid_3", Type: messengertypes.AppMessage_TypeReplyOptions, ConversationPublicKey: "conv_1", IsMine: false})
-
-	cid, err = db.GetReplyOptionsCIDForConversation("conv_1")
-	require.NoError(t, err)
-	require.Equal(t, "cid_3", cid)
-
-	db.db.Create(&messengertypes.Interaction{CID: "cid_4", Type: messengertypes.AppMessage_TypeUserMessage, ConversationPublicKey: "conv_1", IsMine: true})
-
-	cid, err = db.GetReplyOptionsCIDForConversation("conv_1")
-	require.NoError(t, err)
-	require.Equal(t, "", cid)
 }
 
 func Test_dbWrapper_getLatestInteractionPerConversation(t *testing.T) {

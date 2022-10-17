@@ -106,7 +106,6 @@ message DecryptedPush {
     MemberNameChanged = 9;
     reserved 10; // MemberPictureChanged
     MemberDetailsChanged = 11;
-    ReplyOptions = 12;
   }
 
   string account_id = 1 [(gogoproto.customname) = "AccountID"];

@@ -139,9 +139,6 @@ func PushEnrich(rawPushData *messengertypes.PushReceivedData, accountData *accou
 	case messengertypes.AppMessage_TypeAcknowledge:
 		logger.Debug("received a push notification for an ack, this should not happen", logutil.PrivateString("cid", rawPushData.Interaction.CID))
 
-	case messengertypes.AppMessage_TypeReplyOptions:
-		d.PushType = pushtypes.DecryptedPush_ReplyOptions
-
 	default:
 		logger.Debug("unknown message type", zap.String("message-type", rawPushData.Interaction.Type.String()), logutil.PrivateString("cid", rawPushData.Interaction.CID))
 	}

@@ -34,9 +34,6 @@ service MessengerService {
   // SendContactRequest takes the payload received from ParseDeepLink and send a contact request using the Berty Protocol.
   rpc SendContactRequest(SendContactRequest.Request) returns (SendContactRequest.Reply);
 
-  // SendReplyOptions sends a list of prefilled response options to a group.
-  rpc SendReplyOptions (SendReplyOptions.Request) returns (SendReplyOptions.Reply);
-
   // SystemInfo returns runtime information.
   rpc SystemInfo(SystemInfo.Request) returns (SystemInfo.Reply);
 
@@ -296,14 +293,6 @@ message SendContactRequest {
   message Reply {}
 }
 
-message SendReplyOptions {
-  message Request {
-    bytes group_pk = 1 [(gogoproto.customname) = "GroupPK"];
-    AppMessage.ReplyOptions options = 2;
-  }
-  message Reply {}
-}
-
 message BertyID {
   bytes public_rendezvous_seed = 1;
   bytes account_pk = 2 [(gogoproto.customname) = "AccountPK"];
@@ -331,7 +320,7 @@ message AppMessage {
     TypeSetGroupInfo = 4;
     TypeSetUserInfo = 5;
     TypeAcknowledge = 6;
-    TypeReplyOptions = 7;
+    reserved 7; // TypeReplyOptions
   }
   message UserMessage {
     string body = 1;
@@ -353,14 +342,6 @@ message AppMessage {
   }
   message Acknowledge {
   }
-  message ReplyOptions {
-    repeated ReplyOption options = 1;
-  }
-}
-
-message ReplyOption {
-  string display = 1;
-  string payload = 2;
 }
 
 message SystemInfo {
@@ -508,8 +489,8 @@ message Conversation {
   string account_member_public_key = 11;
   string local_device_public_key = 12;
   int64 created_date = 13;
-  string reply_options_cid = 14 [(gogoproto.moretags) = "gorm:\"column:reply_options_cid\"", (gogoproto.customname) = "ReplyOptionsCID"];
-  Interaction reply_options = 15 [(gogoproto.customname) = "ReplyOptions"];
+  reserved 14; // string reply_options_cid = 14 [(gogoproto.moretags) = "gorm:\"column:reply_options_cid\"", (gogoproto.customname) = "ReplyOptionsCID"];
+  reserved 15; // Interaction reply_options = 15 [(gogoproto.customname) = "ReplyOptions"];
   repeated ConversationReplicationInfo replication_info = 16 [(gogoproto.moretags) = "gorm:\"foreignKey:ConversationPublicKey\""];
   reserved 17; // string avatar_cid = 17 [(gogoproto.moretags) = "gorm:\"column:avatar_cid\"", (gogoproto.customname) = "AvatarCID"];
   // info_date is used when SetGroupInfo is called

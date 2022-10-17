@@ -1270,20 +1270,6 @@ func (svc *service) BannerQuote(ctx context.Context, req *messengertypes.BannerQ
 	return &ret, nil
 }
 
-func (svc *service) SendReplyOptions(ctx context.Context, req *messengertypes.SendReplyOptions_Request) (*messengertypes.SendReplyOptions_Reply, error) {
-	payload, err := messengertypes.AppMessage_TypeReplyOptions.MarshalPayload(messengerutil.TimestampMs(time.Now()), "", req.Options)
-	if err != nil {
-		return nil, err
-	}
-
-	_, err = svc.protocolClient.AppMessageSend(ctx, &protocoltypes.AppMessageSend_Request{
-		GroupPK: req.GroupPK,
-		Payload: payload,
-	})
-
-	return &messengertypes.SendReplyOptions_Reply{}, err
-}
-
 func (svc *service) ReplicationSetAutoEnable(ctx context.Context, req *messengertypes.ReplicationSetAutoEnable_Request) (*messengertypes.ReplicationSetAutoEnable_Reply, error) {
 	config, err := svc.protocolClient.InstanceGetConfiguration(svc.ctx, &protocoltypes.InstanceGetConfiguration_Request{})
 	if err != nil {

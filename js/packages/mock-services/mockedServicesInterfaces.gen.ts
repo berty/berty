@@ -236,10 +236,6 @@ export interface IMessengerServiceMock {
 		beapi.messenger.SendContactRequest.IRequest,
 		beapi.messenger.SendContactRequest.IReply
 	>
-	SendReplyOptions: UnaryMock<
-		beapi.messenger.SendReplyOptions.IRequest,
-		beapi.messenger.SendReplyOptions.IReply
-	>
 	SystemInfo: UnaryMock<beapi.messenger.SystemInfo.IRequest, beapi.messenger.SystemInfo.IReply>
 	EchoTest: ResponseStreamMock<beapi.messenger.EchoTest.IRequest, beapi.messenger.EchoTest.IReply>
 	EchoDuplexTest: never
