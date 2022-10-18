@@ -178,11 +178,11 @@
 		"accounts": {
 			"title": "Konta",
 			"backup-button": "Kopia zapasowa",
-			"backup-notif-title": "",
+			"backup-notif-title": "Sukces",
 			"backup-notif-desc": "",
 			"accounts-button": "Konta",
 			"create-button": "",
-			"import-button": "",
+			"import-button": "Importuj konto",
 			"link-button": "",
 			"delete-button": "Usuń to konto",
 			"delete-title": "Usuwanie konta"
@@ -204,7 +204,7 @@
 			"title": "Sieć",
 			"ble-button": "",
 			"mc-button": "",
-			"nearby-button": "",
+			"nearby-button": "Android Nearby",
 			"mdns-button": "Multiemisja DNS",
 			"memo-cell-button": "Wczytuj wiadomości głosowe przez dane komórkowe",
 			"medias-cell-button": "Wczytuj multimedia przez dane komórkowe",
@@ -285,7 +285,7 @@
 			},
 			"tyber-attach": "",
 			"tyber-host-button": {
-				"name": "",
+				"name": "Tyber",
 				"bullet-point": "Uruchom ponownie aplikację po zmianie tego pola"
 			},
 			"footer-left-button": "Informacje o urządzeniu",
@@ -444,10 +444,10 @@
 				"group-invitation": "",
 				"refuse-button": "",
 				"accept-button": "Akceptuj",
-				"accepted-button": "",
+				"accepted-button": "Zaakceptowano",
 				"error": "",
 				"you-invited": "Zaprosiłeś",
-				"this-contact": "",
+				"this-contact": "ten kontakt",
 				"to-a-group": "do grupy! 💌"
 			},
 			"infos-chat": {
@@ -461,7 +461,7 @@
 			"input-placeholder": "Wpisz tutaj..."
 		},
 		"one-to-one-settings": {
-			"title": "",
+			"title": "Ustawienia konwersacji",
 			"save-button": "Zapisz konwersację na serwerze"
 		},
 		"replicate-group-settings": {
@@ -476,7 +476,7 @@
 		}
 	},
 	"account": {
-		"deleting": "",
+		"deleting": "Usuwanie konta...",
 		"creating": "Tworzenie konta...",
 		"opening": {
 			"alert-push-title": "",
@@ -605,7 +605,7 @@
 	"time-for": {
 		"minutes": "",
 		"hours": "",
-		"days": ""
+		"days": "{{days}} dni"
 	},
 	"share": {
 		"sharing-id-message": ""
