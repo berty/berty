@@ -29,7 +29,7 @@
       "bodyWithNumberOfMedia_other": ""
     },
     "gif": {
-      "bodyWithNumberOfMedia_one": "",
+      "bodyWithNumberOfMedia_one": "Wyślij gif",
       "bodyWithNumberOfMedia_other": ""
     },
     "photo": {
@@ -56,7 +56,7 @@
       "body": ""
     },
     "memberPictureChanged": {
-      "body": ""
+      "body": "Zaktualizowano zdjęcie profilowe"
     },
     "memberDetailsChanged": {
       "body": ""
