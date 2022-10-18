@@ -119,9 +119,6 @@ export class MessengerServiceMock implements Partial<IMessengerServiceMock> {
 		if (request.displayName) {
 			this.account.displayName = request.displayName
 		}
-		if (request.avatarCid) {
-			this.account.avatarCid = request.avatarCid
-		}
 		this.emitStreamEvent({
 			type: beapi.messenger.StreamEvent.Type.TypeAccountUpdated,
 			payload: beapi.messenger.StreamEvent.AccountUpdated.encode({
