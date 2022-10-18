@@ -134,18 +134,11 @@ export const MessageList: React.FC<{
 		const conversation = useConversation(id)
 		const messengerClient = useMessengerClient()
 		const members = useConversationMembersDict(id)
-		const rawMessages = useConversationInteractions(id)
-		const messages = useMemo(
-			() =>
-				rawMessages.filter(
-					message => message.type !== beapi.messenger.AppMessage.Type.TypeReplyOptions,
-				),
-			[rawMessages],
-		)
+		const messages = useConversationInteractions(id)
 		const oldestMessage = useMemo(() => messages[messages.length - 1], [messages])
 
 		const [fetchingFrom, setFetchingFrom] = useState<string | null>(null)
-		const [fetchedFirst, setFetchedFirst] = useState(rawMessages.length === 0)
+		const [fetchedFirst, setFetchedFirst] = useState(messages.length === 0)
 		const BeginningOfTimeComponent =
 			conversation?.type === beapi.messenger.Conversation.Type.ContactType
 				? InfosChat
