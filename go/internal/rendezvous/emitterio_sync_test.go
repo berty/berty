@@ -2,6 +2,7 @@ package rendezvous_test
 
 import (
 	"context"
+	"os"
 	"sync"
 	"sync/atomic"
 	"testing"
@@ -38,10 +39,15 @@ func getEmitterRendezvousClients(ctx context.Context, t *testing.T, hosts []host
 }
 
 func TestEmitterIOFlow(t *testing.T) {
-	const serverAddr = "tcp://127.0.0.1:8080"
-	const adminKey = "bPcKwpuIP3gjjAKqb9EaAJYJnilISQhJ"
-
+	// const adminKey = "bPcKwpuIP3gjjAKqb9EaAJYJnilISQhJ"
+	// const serverAddr = "tcp://127.0.0.1:8080"
 	const topic = "foo1"
+
+	serverAddr := os.Getenv("TEST_EMITTER_SERVER_ADDR")
+	adminKey := os.Getenv("TEST_EMITTER_ADMINKEY")
+	if adminKey == "" || serverAddr == "" {
+		t.Skip("cannot test emitter, no adminKey/serverAddr provided")
+	}
 
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()

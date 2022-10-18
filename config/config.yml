@@ -53,6 +53,8 @@ p2p:
     # svc ams
     - maddr: '/ip4/51.15.25.224/tcp/4040/p2p/12D3KooWHhDBv6DJJ4XDWjzEXq6sVNEs6VuxsV1WyBBEhPENHzcZ'
     # - maddr: '/ip4/51.15.25.224/udp/quic/4040/p2p/12D3KooWHhDBv6DJJ4XDWjzEXq6sVNEs6VuxsV1WyBBEhPENHzcZ'
+    # svc test
+    # - maddr: '/ip4/51.159.34.32/tcp/4040/p2p/12D3KooWLRUtgsmEwg7zC2d2JhQfYiXsS1BJBRXvrfBJA1Eo6aiY'
   static-relays:
     # berty relays fr
     # - '/ip4/51.159.21.214/tcp/4040/p2p/QmdT7AmhhnbuwvCpa5PH1ySK9HJVB82jr3fo1bxMxBPW6p'

@@ -193,6 +193,7 @@ func (s *Swiper) watchPeers(ctx context.Context, _ discovery.BackoffStrategy, ou
 			}
 		}
 	}()
+
 	for {
 		// wait until the context is done
 		select {
@@ -223,7 +224,7 @@ func (s *Swiper) Announce(ctx context.Context, topic, seed []byte) {
 			s.logger.Debug("self announce topic for time", logutil.PrivateString("topic", point.RotationTopic()))
 
 			actx, cancel := context.WithDeadline(ctx, point.Deadline())
-			if err := s.tinder.Advertises(actx, point.RotationTopic()); err != nil && err != ctx.Err() {
+			if err := s.tinder.StartAdvertises(actx, point.RotationTopic()); err != nil && err != ctx.Err() {
 				cancel()
 				<-time.After(time.Second * 10) // retry after 10sc
 				continue
@@ -232,8 +233,6 @@ func (s *Swiper) Announce(ctx context.Context, topic, seed []byte) {
 			select {
 			case <-actx.Done():
 				s.logger.Debug("rotation ended", logutil.PrivateString("topic", point.RotationTopic()))
-				// take a little breath and wait 1 second to avoid looping on advertise on network issue
-				time.Sleep(time.Second)
 			case <-ctx.Done():
 				s.logger.Debug("announce advertise ended", logutil.PrivateString("topic", point.RotationTopic()), zap.Error(ctx.Err()))
 			}

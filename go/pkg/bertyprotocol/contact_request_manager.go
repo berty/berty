@@ -315,6 +315,7 @@ func (c *contactRequestsManager) enableAnnounce(ctx context.Context, seed, accPK
 	c.enabled = true
 
 	tyber.LogStep(ctx, c.logger, "announcing on swipper")
+
 	// start announcing on swiper, this method should take care ton announce as
 	// many time as needed
 	c.swiper.Announce(ctx, accPK, seed)

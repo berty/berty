@@ -109,7 +109,7 @@ func testMultipleDriversSubscribe(t *testing.T, ctx context.Context, mn mocknet.
 	require.NoError(t, err)
 
 	// ...then advertise
-	err = s1.Advertises(ctx, topic)
+	err = s1.StartAdvertises(ctx, topic)
 	require.NoError(t, err)
 
 	{

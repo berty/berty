@@ -99,12 +99,12 @@ func TestMockedServiceSubscribePull(t *testing.T) {
 	mn := mocknet.New(ctx)
 	srv := NewMockDriverServer()
 
-	t.Run("pull enable", func(t *testing.T) {
+	t.Run("with pull", func(t *testing.T) {
 		const topic = "test_topic_1"
 		p1, s1 := newTestMockedService(t, logger, mn, srv)
 		_, s2 := newTestMockedService(t, logger, mn, srv)
 
-		err := s1.Advertises(ctx, topic)
+		err := s1.StartAdvertises(ctx, topic)
 		require.NoError(t, err)
 
 		err = srv.WaitForPeer(topic, p1.ID(), time.Second)
@@ -125,13 +125,13 @@ func TestMockedServiceSubscribePull(t *testing.T) {
 		}
 	})
 
-	t.Run("pull disable", func(t *testing.T) {
+	t.Run("no pull", func(t *testing.T) {
 		const topic = "test_topic_2"
 
 		p1, s1 := newTestMockedService(t, logger, mn, srv)
 		_, s2 := newTestMockedService(t, logger, mn, srv)
 
-		err := s1.Advertises(ctx, topic)
+		err := s1.StartAdvertises(ctx, topic)
 		require.NoError(t, err)
 
 		err = srv.WaitForPeer(topic, p1.ID(), time.Second)
@@ -167,7 +167,7 @@ func TestMockedServiceSubscribeDuplicatePeer(t *testing.T) {
 	p1, s1 := newTestMockedService(t, logger, mn, servers...)
 	_, s2 := newTestMockedService(t, logger, mn, servers...)
 
-	err := s1.Advertises(ctx, topic)
+	err := s1.StartAdvertises(ctx, topic)
 	require.NoError(t, err)
 
 	for _, s := range servers {

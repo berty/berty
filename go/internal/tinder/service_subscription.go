@@ -3,8 +3,6 @@ package tinder
 import (
 	"context"
 	"fmt"
-	"sync"
-	"sync/atomic"
 
 	"github.com/libp2p/go-libp2p-core/peer"
 	"go.uber.org/zap"
@@ -34,11 +32,11 @@ func (s *Subscription) Close() error {
 func (s *Service) Subscribe(topic string) *Subscription {
 	ctx, cancel := context.WithCancel(context.Background())
 	out := s.fadeOut(ctx, topic, 16)
-	go func() {
-		if err := s.WatchTopic(ctx, topic); err != nil {
-			s.logger.Error("unable to watch topic", zap.String("topic", topic), zap.Error(err))
-		}
-	}()
+
+	err := s.WatchTopic(ctx, topic)
+	if err != nil {
+		s.logger.Warn("unable to watch topic", zap.String("topic", topic), zap.Error(err))
+	}
 
 	return &Subscription{
 		service: s,
@@ -50,29 +48,21 @@ func (s *Service) Subscribe(topic string) *Subscription {
 }
 
 func (s *Service) LookupPeers(ctx context.Context, topic string) error {
-	var wg sync.WaitGroup
-	var success int32
+	var success int
 
 	for _, d := range s.drivers {
-		wg.Add(1)
-		go func(d IDriver) {
-			in, err := d.FindPeers(ctx, topic) // find peers should not hang there
-			switch err {
-			case nil: // ok
-				atomic.AddInt32(&success, 1)
-				s.logger.Debug("lookup for topic started", zap.String("driver", d.Name()), zap.String("topic", topic))
-				s.fadeIn(ctx, topic, in)
-			case ErrNotSupported: // do nothing
-			default:
-				s.logger.Error("lookup failed",
-					zap.String("driver", d.Name()), zap.String("topic", topic), zap.Error(err))
-			}
-
-			wg.Done()
-		}(d)
+		in, err := d.FindPeers(ctx, topic) // find peers should not hang there
+		switch err {
+		case nil: // ok
+			success++
+			s.logger.Debug("lookup for topic started", zap.String("driver", d.Name()), zap.String("topic", topic))
+			go s.fadeIn(ctx, topic, in)
+		case ErrNotSupported: // do nothing
+		default:
+			s.logger.Error("lookup failed",
+				zap.String("driver", d.Name()), zap.String("topic", topic), zap.Error(err))
+		}
 	}
-
-	wg.Wait() // wait for process to finish
 
 	if success == 0 {
 		return fmt.Errorf("no driver(s) were available for lookup")
@@ -81,36 +71,29 @@ func (s *Service) LookupPeers(ctx context.Context, topic string) error {
 	return nil
 }
 
-func (s *Service) WatchTopic(ctx context.Context, topic string) error {
-	var wg sync.WaitGroup
-	var success int32
+func (s *Service) WatchTopic(ctx context.Context, topic string) (err error) {
+	var success int
 
 	for _, d := range s.drivers {
 		s.logger.Debug("start subscribe", zap.String("driver", d.Name()), zap.String("topic", topic))
 
-		wg.Add(1)
-		go func(d IDriver) {
-			in, err := d.Subscribe(ctx, topic)
-			switch err {
-			case nil: // ok, start fadin
-				atomic.AddInt32(&success, 1)
-				s.logger.Debug("watching for topic update", zap.String("driver", d.Name()), zap.String("topic", topic))
-				s.fadeIn(ctx, topic, in)
-			case ErrNotSupported: // not, supported skipping
-			default:
-				s.logger.Error("unable to subscribe on topic",
-					zap.String("driver", d.Name()), zap.String("topic", topic), zap.Error(err))
-			}
+		in, err := d.Subscribe(ctx, topic)
+		switch err {
+		case nil: // ok, start fadin
+			success++
+			s.logger.Debug("watching for topic update", zap.String("driver", d.Name()), zap.String("topic", topic))
 
-			wg.Done()
-		}(d)
+			go s.fadeIn(ctx, topic, in)
+		case ErrNotSupported: // not, supported skipping
+		default:
+			s.logger.Error("unable to subscribe on topic",
+				zap.String("driver", d.Name()), zap.String("topic", topic), zap.Error(err))
+		}
 	}
-
-	wg.Wait() // wait for process to finish
 
 	if success == 0 {
-		return fmt.Errorf("no driver(s) were available for subscribe")
+		err = fmt.Errorf("no driver(s) were available for subscribe")
 	}
 
-	return nil
+	return
 }

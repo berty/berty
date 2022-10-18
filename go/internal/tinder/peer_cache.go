@@ -68,7 +68,8 @@ func (c *peersCache) UpdatePeer(topic string, p peer.AddrInfo) (isNew bool) {
 		c.peers[p.ID] = p
 	}
 
-	tu.peerUpdate[p.ID] = time.Now()
+	t := time.Now()
+	tu.peerUpdate[p.ID] = t
 
 	// notify topic that peers has been updated
 	tu.notify.Broadcast()

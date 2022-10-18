@@ -5,6 +5,7 @@ import (
 	crand "crypto/rand"
 	"encoding/base64"
 	"fmt"
+	"math/rand"
 	"testing"
 
 	ipfs_mobile "github.com/ipfs-shipyard/gomobile-ipfs/go/pkg/ipfsmobile"
@@ -128,13 +129,20 @@ func TestingCoreAPIUsingMockNet(ctx context.Context, t testing.TB, opts *Testing
 
 	var ps *pubsub.PubSub
 	var stinder *tinder.Service
+	var discAdaptater *tinder.DiscoveryAdaptater
+
 	configureRouting := func(h host.Host, r routing.Routing) error {
 		var err error
 		drivers := []tinder.IDriver{}
 		if opts.RDVPeer.ID != "" {
 			h.Peerstore().AddAddrs(opts.RDVPeer.ID, opts.RDVPeer.Addrs, peerstore.PermanentAddrTTL)
-			ms := tinder.NewMockDriverServer()
-			drivers = append(drivers, ms.Client(h))
+			cl := rendezvous.NewSyncInMemClient(ctx, h)
+			ms := tinder.NewRendezvousDiscovery(opts.Logger.Named("rdvp"), h, opts.RDVPeer.ID, rand.New(rand.NewSource(rand.Int63())), cl)
+			if _, err = opts.Mocknet.LinkPeers(h.ID(), opts.RDVPeer.ID); err != nil {
+				return err
+			}
+
+			drivers = append(drivers, ms)
 		}
 
 		if r != nil {
@@ -148,8 +156,8 @@ func TestingCoreAPIUsingMockNet(ctx context.Context, t testing.TB, opts *Testing
 			return fmt.Errorf("unable to monitor discovery driver: %w", err)
 		}
 
-		disc := tinder.NewDiscoveryAdaptater(opts.Logger, stinder)
-		ps, err = pubsub.NewGossipSub(ctx, h, pubsub.WithDiscovery(disc))
+		discAdaptater = tinder.NewDiscoveryAdaptater(opts.Logger, stinder)
+		ps, err = pubsub.NewGossipSub(ctx, h, pubsub.WithDiscovery(discAdaptater))
 
 		return err
 	}
@@ -183,6 +191,10 @@ func TestingCoreAPIUsingMockNet(ctx context.Context, t testing.TB, opts *Testing
 	}
 
 	return api, func() {
+		if discAdaptater != nil {
+			discAdaptater.Close()
+		}
+
 		_ = mnode.Close()
 		_ = mnode.PeerHost().Close()
 		_ = repo.Close()
@@ -217,7 +229,10 @@ func TestingRDVP(ctx context.Context, t testing.TB, h host.Host) (*rendezvous.Re
 	db, err := p2p_rpdb.OpenDB(ctx, ":memory:")
 	require.NoError(t, err)
 
-	svc := rendezvous.NewRendezvousService(h, db)
+	provider, err := rendezvous.NewSyncInMemProvider(h)
+	require.NoError(t, err)
+
+	svc := rendezvous.NewRendezvousService(h, db, provider)
 	cleanup := func() {
 		_ = db.Close() // dont use me for now as db is open in_memory
 	}

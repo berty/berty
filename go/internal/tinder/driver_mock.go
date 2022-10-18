@@ -57,7 +57,7 @@ func (s *MockDriverServer) FindPeers(topic string, limit int) <-chan peer.AddrIn
 		peer := peers[i]
 		if expire, ok := expires[peer.ID]; ok {
 			if time.Now().Before(expire) {
-				out <- peers[i]
+				out <- peer
 			} else {
 				delete(expires, peer.ID)
 			}
@@ -84,10 +84,10 @@ func (s *MockDriverServer) Exist(topic string, p peer.ID) (ok bool) {
 
 func (s *MockDriverServer) Subscribe(ctx context.Context, topic string, buffsize int) <-chan peer.AddrInfo {
 	// subtract 500ms to make sure to avoid data race and miss some event
-	start := time.Now().Add(-time.Millisecond * 500)
-
 	s.mx.Lock()
 	defer s.mx.Unlock()
+
+	start := time.Now()
 
 	peers := s.pc.GetPeersForTopics(topic)
 	knownPeers := make(PeersUpdate)

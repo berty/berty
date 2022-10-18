@@ -100,7 +100,10 @@ func (n *NetworkUpdate) subscribeToNetworkUpdate() {
 
 func (n *NetworkUpdate) Close() (err error) {
 	// use once to avoid panic if called twice
-	n.once.Do(func() { err = n.sub.Close() })
+	n.once.Do(func() {
+		err = n.sub.Close()
+	})
+
 	return err
 }
 

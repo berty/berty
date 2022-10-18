@@ -27,7 +27,7 @@ func (o *AdvertiseOptions) apply(opts ...AdvertiseOption) error {
 	return nil
 }
 
-func AdvertisesFilterDrivers(drivers ...string) AdvertiseOption {
+func StartAdvertisesFilterDrivers(drivers ...string) AdvertiseOption {
 	return func(opts *AdvertiseOptions) error {
 		opts.Filters = map[string]struct{}{}
 		for _, driver := range drivers {
@@ -39,7 +39,7 @@ func AdvertisesFilterDrivers(drivers ...string) AdvertiseOption {
 }
 
 // Register advertise topic on each of his driver
-func (s *Service) Advertises(ctx context.Context, topic string, opts ...AdvertiseOption) error {
+func (s *Service) StartAdvertises(ctx context.Context, topic string, opts ...AdvertiseOption) error {
 	if len(s.drivers) == 0 {
 		return fmt.Errorf("no driver available to advertise")
 	}
@@ -48,7 +48,7 @@ func (s *Service) Advertises(ctx context.Context, topic string, opts ...Advertis
 	if err := aopts.apply(opts...); err != nil {
 		return fmt.Errorf("failed to advertise: %w", err)
 	}
-	// @TODO(gfanton): add filter
+
 	for _, driver := range s.drivers {
 		if aopts.Filters != nil {
 			// skip filter driver
@@ -57,6 +57,7 @@ func (s *Service) Advertises(ctx context.Context, topic string, opts ...Advertis
 			}
 		}
 
+		// start background job
 		go func(driver IDriver) {
 			if err := s.advertise(ctx, driver, topic); err != nil {
 				s.logger.Debug("advertise ended", zap.Error(err))

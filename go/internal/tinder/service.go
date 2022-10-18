@@ -135,7 +135,7 @@ func (s *Service) fadeOut(ctx context.Context, topic string, bufsize int) <-chan
 }
 
 func (s *Service) Close() error {
-	return nil
+	return s.networkNotify.Close()
 }
 
 func (s *Service) GetProcess() uint32 { return atomic.LoadUint32(&s.process) }

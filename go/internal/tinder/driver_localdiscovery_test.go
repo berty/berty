@@ -39,7 +39,7 @@ func TestLocalDiscorvery(t *testing.T) {
 
 	const topic = "test_topic"
 
-	s1.Advertises(ctx, topic)
+	s1.StartAdvertises(ctx, topic)
 
 	// try a first lookup, should find nothing
 	{

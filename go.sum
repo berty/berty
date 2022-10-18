@@ -151,8 +151,8 @@ github.com/beorn7/perks v0.0.0-20180321164747-3a771d992973/go.mod h1:Dwedo/Wpr24
 github.com/beorn7/perks v1.0.0/go.mod h1:KWe93zE9D1o94FZ5RNwFwVgaQK1VOXiVxmqh+CedLV8=
 github.com/beorn7/perks v1.0.1 h1:VlbKKnNfV8bJzeqoa4cOKqO6bYr3WgKZxO8Z16+hsOM=
 github.com/beorn7/perks v1.0.1/go.mod h1:G2ZrVWU2WbWT9wwq4/hrbKbnv/1ERSJQ0ibhJ6rlkpw=
-github.com/berty/go-libp2p-rendezvous v0.0.0-20220927143406-f7347cb814d4 h1:RPYxEk0CawP6CmLqpQ3AhoFHpIBoT2ZGCCbIesuKqZU=
-github.com/berty/go-libp2p-rendezvous v0.0.0-20220927143406-f7347cb814d4/go.mod h1:T5TW6d2Xo9C4k9AhpPfxXcU8U6UJsZ9pQFEEb5I0Yj4=
+github.com/berty/go-libp2p-rendezvous v0.0.0-20221020165144-5fc9e26830f5 h1:q8kaMh2a0/R2jrnPGY9tKWpPBJjS0e5bka2ssNkR8WE=
+github.com/berty/go-libp2p-rendezvous v0.0.0-20221020165144-5fc9e26830f5/go.mod h1:T5TW6d2Xo9C4k9AhpPfxXcU8U6UJsZ9pQFEEb5I0Yj4=
 github.com/berty/go-multiaddr v0.4.2-0.20220126184027-53e56f02fb68 h1:Vzah9UzXtlo6aU3I+fGhRPQYBq3+El3DCga3u2TP+ig=
 github.com/berty/go-multiaddr v0.4.2-0.20220126184027-53e56f02fb68/go.mod h1:3KAxNkUqLTJ20AAwN4XVX4kZar+bR+gh4zgbfr3SNug=
 github.com/berty/go-sqlcipher/v4 v4.4.3-0.20220810151512-74ea78235b48 h1:tHmYUj9It7qV3PPzg0Z5VRNmFaJaaYiu49fkqyw5NYI=

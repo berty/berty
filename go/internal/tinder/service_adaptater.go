@@ -34,6 +34,8 @@ type DiscoveryAdaptater struct {
 	muAdvertiser      sync.Mutex
 	resetInterval     time.Duration
 	ttl               time.Duration
+
+	closeOnce sync.Once
 }
 
 func NewDiscoveryAdaptater(logger *zap.Logger, service *Service) *DiscoveryAdaptater {
@@ -112,6 +114,7 @@ func (a *DiscoveryAdaptater) Advertise(_ context.Context, topic string, opts ...
 	ctx := a.ctx
 
 	a.muAdvertiser.Lock()
+	defer a.muAdvertiser.Unlock()
 
 	start := time.Now()
 	if t, ok := a.watchdogAdvertise[topic]; ok {
@@ -123,16 +126,26 @@ func (a *DiscoveryAdaptater) Advertise(_ context.Context, topic string, opts ...
 	} else {
 		wctx, cancel := context.WithCancel(ctx)
 
+		// start advertising on this topic
+		if err := a.service.StartAdvertises(wctx, topic, StartAdvertisesFilterDrivers(LocalDiscoveryName)); err != nil {
+			a.logger.Error("advertise failed", logutil.PrivateString("topic", topic), zap.Error(err))
+			cancel()
+			return time.Minute, err
+		}
+
+		a.logger.Debug("advertise started", logutil.PrivateString("topic", topic))
+
 		// create a new watchdog
 		a.watchdogAdvertise[topic] = time.AfterFunc(a.resetInterval, func() {
 			// watchdog has expired, cancel advertise
+
+			a.muAdvertiser.Lock()
 			cancel()
 			a.logger.Debug("advertise expired",
 				logutil.PrivateString("topic", topic),
 				zap.Duration("duration", time.Since(start)),
 			)
 
-			a.muAdvertiser.Lock()
 			delete(a.watchdogAdvertise, topic)
 			a.muAdvertiser.Unlock()
 
@@ -144,31 +157,31 @@ func (a *DiscoveryAdaptater) Advertise(_ context.Context, topic string, opts ...
 				)
 			}
 		})
-
-		// start advertising on this topic
-		if err := a.service.Advertises(wctx, topic, AdvertisesFilterDrivers(LocalDiscoveryName)); err != nil {
-			a.logger.Error("advertise failed", logutil.PrivateString("topic", topic), zap.Error(err))
-		} else {
-			a.logger.Debug("advertise started", logutil.PrivateString("topic", topic))
-		}
 	}
-
-	a.muAdvertiser.Unlock()
 
 	return a.ttl, nil
 }
 
 func (a *DiscoveryAdaptater) Close() error {
-	a.cancel()
-
-	a.muDiscover.Lock()
-	for _, st := range a.watchdogDiscover {
-		if !st.timer.Stop() {
-			<-st.timer.C
+	a.closeOnce.Do(func() {
+		a.muDiscover.Lock()
+		a.cancel()
+		for _, st := range a.watchdogDiscover {
+			if !st.timer.Stop() {
+				<-st.timer.C
+			}
+			_ = st.sub.Close()
 		}
-		_ = st.sub.Close()
-	}
-	a.muDiscover.Unlock()
+		a.muDiscover.Unlock()
+
+		a.muAdvertiser.Lock()
+		for _, t := range a.watchdogAdvertise {
+			if !t.Stop() {
+				<-t.C
+			}
+		}
+		a.muAdvertiser.Unlock()
+	})
 
 	return nil
 }

@@ -715,8 +715,9 @@ func (m *Manager) configIPFSRouting(h host.Host, r p2p_routing.Routing) error {
 	// }
 
 	// disc = tinder.NewRotationDiscovery(logger.Named("rotation"), disc, rp)
-	disc := tinder.NewDiscoveryAdaptater(logger.Named("disc"), m.Node.Protocol.tinder)
-	popts = append(popts, pubsub.WithDiscovery(disc, pubsub.WithDiscoverConnector(backoffconnector)))
+	m.Node.Protocol.discAdaptater = tinder.NewDiscoveryAdaptater(logger.Named("disc"), m.Node.Protocol.tinder)
+	popts = append(popts, pubsub.WithDiscovery(
+		m.Node.Protocol.discAdaptater, pubsub.WithDiscoverConnector(backoffconnector)))
 
 	// pubsub.DiscoveryPollInterval = m.Node.Protocol.PollInterval
 	m.Node.Protocol.pubsub, err = pubsub.NewGossipSub(m.getContext(), h, popts...)
