@@ -442,7 +442,6 @@ const slice = createSlice({
 					changes: {
 						interactions: interactionsAdapter.upsertOne(bucket.interactions, {
 							...inte,
-							reactions: inte.reactions,
 							outOfStoreMessage: !!inte?.outOfStoreMessage,
 						}),
 					},

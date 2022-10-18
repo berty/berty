@@ -15,7 +15,7 @@ export const UserMessageBox: React.FC<UserMessageBoxProps> = ({
 	const isHighlight = highlightCid === inte.cid
 
 	return (
-		<View style={{ marginBottom: inte?.reactions?.length ? 10 : 0 }}>
+		<View>
 			<HyperlinkUserMessage
 				inte={inte}
 				msgBorderColor={msgBorderColor}
