@@ -60,9 +60,6 @@
     },
     "memberDetailsChanged": {
       "body": "Detalhe do membro atualizado"
-    },
-    "replyOptionsOffered": {
-      "body": "Opções de resposta oferecidas"
     }
   }
 }
