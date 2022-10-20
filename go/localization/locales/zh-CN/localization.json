@@ -60,9 +60,6 @@
     },
     "memberDetailsChanged": {
       "body": "会员详情已更新"
-    },
-    "replyOptionsOffered": {
-      "body": "提供的回复选项"
     }
   }
 }
