@@ -33,6 +33,7 @@ import {
 	useThemeColor,
 	useMessengerClient,
 	bertyMethodsHooks,
+	useCloseBridgeAfterClosing,
 } from '@berty/hooks'
 import { languages } from '@berty/i18n/locale/languages'
 import { GoBridge } from '@berty/native-modules/GoBridge'
@@ -351,6 +352,7 @@ const BodyDevTools: React.FC<{}> = withInAppNotification(({ showNotification }: 
 	const persistentOptions = useSelector(selectPersistentOptions)
 	const client = useMessengerClient()
 	const restart = useRestartAfterClosing()
+	const restartBridge = useCloseBridgeAfterClosing()
 	const selectedAccount = useAppSelector(selectSelectedAccount)
 	const [forceMock, setForceMock] = useState<boolean>(false)
 
@@ -437,6 +439,20 @@ const BodyDevTools: React.FC<{}> = withInAppNotification(({ showNotification }: 
 				actionToggle={handleForceMockToggle}
 			/>
 			<ButtonSetting
+				icon='monitor-outline'
+				iconColor={colors['alt-secondary-background-header']}
+				name={t('settings.devtools.select-node.title')}
+				onPress={() =>
+					navigate('Account.SelectNode', {
+						init: false,
+						action: async (_external: boolean, _address: string, _port: string) => {
+							showNeedRestartNotification(showNotification, restartBridge, t)
+							return true
+						},
+					})
+				}
+			/>
+			<ButtonSetting
 				icon='eye-outline'
 				iconColor={colors['alt-secondary-background-header']}
 				name={t('settings.home.appearance-button')}
@@ -516,8 +532,6 @@ const BodyDevTools: React.FC<{}> = withInAppNotification(({ showNotification }: 
 				iconSize={30}
 				iconColor={colors['alt-secondary-background-header']}
 				onPress={async () => {
-					console.log('remi: button')
-					// await logfileList()
 					await exportLogfile(selectedAccount)
 				}}
 			/>

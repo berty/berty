@@ -5,6 +5,10 @@ class NoopGoBirdge implements GoBridgeInterface {
 		return Promise.reject()
 	}
 
+	initBridgeRemote() {
+		return Promise.reject()
+	}
+
 	closeBridge() {
 		return Promise.reject()
 	}
@@ -16,6 +20,10 @@ class NoopGoBirdge implements GoBridgeInterface {
 	}
 
 	invokeBridgeMethod() {
+		return Promise.reject()
+	}
+
+	connectService() {
 		return Promise.reject()
 	}
 }

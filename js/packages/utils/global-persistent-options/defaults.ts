@@ -6,7 +6,7 @@ import {
 } from '@berty/utils/global-persistent-options/types'
 
 let tyberAddress = ''
-let debug = NativeModules.GoBridge?.getConstants().debug
+const debug = NativeModules.GoBridge?.getConstants().debug
 
 if (debug) {
 	tyberAddress = Platform.OS === 'android' ? '10.0.2.2:4242' : '127.0.0.1:4242'
