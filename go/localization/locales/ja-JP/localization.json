@@ -60,9 +60,6 @@
     },
     "memberDetailsChanged": {
       "body": "メンバーの詳細が更新されました"
-    },
-    "replyOptionsOffered": {
-      "body": "オファーされた返信オプション"
     }
   }
 }
