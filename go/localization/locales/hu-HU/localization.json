@@ -60,9 +60,6 @@
     },
     "memberDetailsChanged": {
       "body": "A résztvevő adatai frissítve"
-    },
-    "replyOptionsOffered": {
-      "body": "Felkínált válaszlehetőségek"
     }
   }
 }
