@@ -16,6 +16,7 @@ type Config struct {
 	CLIArgs           []string `json:"cliArgs"`
 	AppRootDirPath    string   `json:"appRootDir"`
 	SharedRootDirPath string   `json:"sharedRootDir"`
+	backendAddress    string
 }
 
 func NewConfig() *Config {
@@ -35,6 +36,7 @@ func (c *Config) SetLifeCycleDriver(lc LifeCycleDriver)           { c.lc = lc }
 func (c *Config) SetKeystoreDriver(d NativeKeystoreDriver)        { c.keystoreDriver = d }
 func (c *Config) SetAppRootDir(rootdir string)                    { c.AppRootDirPath = rootdir }
 func (c *Config) SetSharedRootDir(rootdir string)                 { c.SharedRootDirPath = rootdir }
+func (c *Config) SetBackendAddress(address string)                { c.backendAddress = address }
 func (c *Config) AppendCLIArg(arg string)                         { c.CLIArgs = append(c.CLIArgs, arg) }
 func (c *Config) SetPreferredLanguages(preferred string)          { c.languages = strings.Split(preferred, ",") }
 func (c *Config) AppendPreferredLanguage(preferred string) {

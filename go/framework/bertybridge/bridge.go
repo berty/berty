@@ -14,6 +14,7 @@ import (
 	"go.uber.org/zap"
 	"golang.org/x/text/language"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 
 	"berty.tech/berty/v2/go/internal/grpcutil"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
@@ -236,6 +237,138 @@ func NewBridge(config *Config) (*Bridge, error) {
 	// time.Sleep(10 * time.Millisecond) // let some time to the goroutine to warm up
 
 	return b, nil
+}
+
+func NewRemoteBridge(config *Config) (*Bridge, error) {
+	ctx := context.Background()
+
+	// create bridge instance
+	b := &Bridge{
+		errc:   make(chan error),
+		closec: make(chan struct{}),
+	}
+
+	// create cancel service
+	{
+		b.workers.Add(func() error {
+			// wait for closing signal
+			<-b.closec
+			return errcode.ErrBridgeInterrupted
+		}, func(error) {
+			b.onceCloser.Do(func() { close(b.closec) })
+		})
+	}
+
+	// setup logger
+	{
+		if nativeLogger := config.dLogger; nativeLogger != nil {
+			b.logger = newLogger(nativeLogger)
+		} else {
+			b.logger = zap.NewNop()
+		}
+
+		// @NOTE(gfanton): replace grpc logger as soon as possible to avoid DATA_RACE
+		logutil.ReplaceGRPCLogger(b.logger.Named("grpc"))
+	}
+
+	// parse language
+	{
+		fields := []string{}
+		for _, lang := range config.languages {
+			tag, err := language.Parse(lang)
+			if err != nil {
+				b.logger.Warn("unable to parse language", zap.String("lang", lang), zap.Error(err))
+				continue
+			}
+
+			fields = append(fields, tag.String())
+			b.langtags = append(b.langtags, tag)
+		}
+
+		b.logger.Info("user preferred language loaded", zap.Strings("language", fields))
+	}
+
+	// setup native bridge client
+	{
+		opts := &bridge_svc.Options{
+			Logger: b.logger,
+		}
+
+		b.serviceBridge = bridge_svc.NewService(opts)
+		b.grpcServer = grpc.NewServer()
+
+		bridge_svc.RegisterBridgeServiceServer(b.grpcServer, b.serviceBridge)
+
+		bl := grpcutil.NewBufListener(ctx, bufListenerSize)
+		b.workers.Add(func() error {
+			return b.grpcServer.Serve(bl)
+		}, func(error) {
+			b.serviceBridge.Close()
+			bl.Close()
+		})
+
+		// create native bridge client
+		ccBridge, err := bl.NewClientConn()
+		if err != nil {
+			return nil, errors.Wrap(err, "unable to get bridge gRPC ClientConn")
+		}
+
+		b.client = grpcutil.NewLazyClient(ccBridge)
+	}
+
+	// setup account client
+	{
+		ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
+		defer cancel()
+
+		opts := []grpc.DialOption{
+			grpc.WithBlock(),
+			grpc.WithInsecure(),
+		}
+		client, err := grpc.DialContext(ctx, config.backendAddress, opts...)
+		if err != nil {
+			return nil, err
+		}
+
+		b.serviceBridge.RegisterService("berty.account.v1.AccountService", client)
+	}
+
+	// start Bridge
+	b.logger.Debug("starting Bridge")
+	go func() {
+		b.errc <- b.workers.Run()
+	}()
+
+	return b, nil
+}
+
+func (b *Bridge) ConnectService(serviceName string, address string) error {
+	b.logger.Debug("connectService", zap.String("serviceName", serviceName), zap.String("address", address))
+
+	if serviceName == "" {
+		return errors.New("empty serviceName")
+	}
+
+	if address == "" {
+		return errors.New("empty address")
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	opts := []grpc.DialOption{
+		grpc.WithBlock(),
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
+	}
+
+	client, err := grpc.DialContext(ctx, address, opts...)
+	if err != nil {
+		return err
+	}
+
+	b.serviceBridge.RegisterService(serviceName, client)
+
+	return nil
 }
 
 func (b *Bridge) HandleState(appstate int) {

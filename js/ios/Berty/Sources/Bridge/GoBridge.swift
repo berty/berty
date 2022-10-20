@@ -153,6 +153,78 @@ class GoBridge: NSObject {
         }
     }
 
+  @objc func initBridgeRemote(_ address: String, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+      do {
+          if self.bridgeMessenger != nil {
+              throw NSError(domain: "tech.berty.gobridge", code: 1, userInfo: [NSLocalizedDescriptionKey : "already started"])
+          }
+
+          var err: NSError?
+          guard let config = BertybridgeNewConfig() else {
+              throw NSError(domain: "tech.berty.gobridge", code: 2, userInfo: [NSLocalizedDescriptionKey : "unable to create config"])
+          }
+
+          config.setLoggerDriver(LoggerDriver("tech.berty", "gomobile"))
+
+          // get user preferred languages
+          let preferredLanguages: String = Locale.preferredLanguages.joined(separator: ",")
+
+          config.setKeystoreDriver(KeystoreDriver.shared)
+          config.setPreferredLanguages(preferredLanguages)
+
+          // @TODO(gfanton): make this dir in golang
+          var isDirectory: ObjCBool = true
+          var exist = FileManager.default.fileExists(atPath: self.sharedRootDir, isDirectory: &isDirectory)
+          if !exist {
+              try FileManager.default.createDirectory(atPath: self.sharedRootDir, withIntermediateDirectories: true, attributes: nil)
+          }
+
+          exist = FileManager.default.fileExists(atPath: self.appRootDir, isDirectory: &isDirectory)
+          if !exist {
+              try FileManager.default.createDirectory(atPath: self.appRootDir, withIntermediateDirectories: true, attributes: nil)
+          }
+
+          // Disable iOS backup
+          var values = URLResourceValues()
+          values.isExcludedFromBackup = true
+
+          var appRootDirURL = URL(fileURLWithPath: self.appRootDir)
+          try appRootDirURL.setResourceValues(values)
+
+          var sharedRootDirURL = URL(fileURLWithPath: self.sharedRootDir)
+          try sharedRootDirURL.setResourceValues(values)
+
+          // Set root directories
+          config.setAppRootDir(self.appRootDir)
+          config.setSharedRootDir(self.sharedRootDir)
+
+          config.setBackendAddress(address)
+
+          let bridgeMessenger = BertybridgeNewRemoteBridge(config, &err)
+          if err != nil {
+              throw err!
+          }
+
+          self.bridgeMessenger = bridgeMessenger
+
+          resolve(true)
+      } catch let error as NSError {
+          reject("\(String(describing: error.code))", error.userInfo.description, error)
+      }
+  }
+
+  @objc func connectService(_ serviceName: String, address: String, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+      do {
+          guard let bridgeMessenger = self.bridgeMessenger else {
+              throw NSError(domain: "tech.berty.gobridge", code: 4, userInfo: [NSLocalizedDescriptionKey : "bridgeMessenger isn't started"])
+          }
+          try bridgeMessenger.connectService(serviceName, address: address)
+          resolve(true)
+      } catch let error as NSError {
+          reject("\(String(describing: error.code))", error.userInfo.description, error)
+      }
+  }
+
     @objc func closeBridge(_ resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
         do {
             if self.bridgeMessenger != nil {

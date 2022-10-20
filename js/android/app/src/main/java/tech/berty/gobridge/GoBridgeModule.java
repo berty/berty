@@ -13,6 +13,7 @@ import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.ReadableArray;
+import com.facebook.react.uimanager.annotations.ReactProp;
 
 import java.io.File;
 import java.util.HashMap;
@@ -175,6 +176,73 @@ public class GoBridgeModule extends ReactContextBaseJavaModule {
       promise.reject(err);
     }
   }
+
+    @ReactMethod
+    public void initBridgeRemote(String address, Promise promise) {
+        try {
+            if (bridgeMessenger != null) {
+                throw new Exception("bridge is already instantiated");
+            }
+
+            if (this.keystoreDriver == null) {
+                throw new Exception("keystoreDriver is not instantiated");
+            }
+
+            final Config config = Bertybridge.newConfig();
+            if (config == null) {
+                throw new Exception("");
+            }
+
+            // init logger
+            LoggerDriver logger = new LoggerDriver("tech.berty", "protocol");
+            config.setLoggerDriver(logger);
+
+            // load and set user preferred language
+            String tags = null;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                tags = Resources.getSystem().getConfiguration().getLocales().toLanguageTags();
+            } else {
+                tags = Resources.getSystem().getConfiguration().locale.toLanguageTag();
+            }
+            config.setPreferredLanguages(tags);
+
+            // set root dir
+            config.setAppRootDir(rootDir.getAbsolutePath());
+
+            // set temp dir
+            if (tempDir != null && !tempDir.exists()) {
+                if (!tempDir.mkdirs()) {
+                    throw new Exception("tempdir directory creation failed");
+                }
+            }
+            config.setAndroidCacheDir(tempDir.getAbsolutePath());
+
+            // set native keystore driver
+            config.setKeystoreDriver(this.keystoreDriver);
+
+            // set backend address
+            config.setBackendAddress(address);
+
+            this.bridgeMessenger = Bertybridge.newRemoteBridge(config);
+            promise.resolve(true);
+        } catch (Exception err) {
+            promise.reject(err);
+        }
+    }
+
+    @ReactMethod
+    public void connectService(String serviceName, String address, Promise promise) {
+        try {
+            if (bridgeMessenger == null) {
+                throw new Exception("bridge not started");
+            }
+
+            bridgeMessenger.connectService(serviceName, address);
+            promise.resolve(true);
+        } catch (Exception err) {
+            promise.reject(err);
+        }
+    }
 
   @ReactMethod
   public void closeBridge(Promise promise) {

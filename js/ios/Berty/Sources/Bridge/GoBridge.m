@@ -15,6 +15,15 @@ RCT_EXTERN_METHOD(clearStorage:(RCTPromiseResolveBlock)resolve
 RCT_EXTERN_METHOD(initBridge:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject);
 
+RCT_EXTERN_METHOD(initBridgeRemote:(NSString)address
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject);
+
+RCT_EXTERN_METHOD(connectService:(NSString)serviceName
+                  address:(NSString)address
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject);
+
 RCT_EXTERN_METHOD(log:(NSDictionary)opts);
 
 RCT_EXTERN_METHOD(closeBridge:(RCTPromiseResolveBlock)resolve
