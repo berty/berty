@@ -3,7 +3,6 @@ package bertypush
 import (
 	"encoding/json"
 	"fmt"
-	"strconv"
 
 	"golang.org/x/text/message"
 
@@ -53,32 +52,6 @@ func FormatDecryptedPush(decrypted *pushtypes.DecryptedPush, printer *message.Pr
 
 		fmtpush.Body = msg
 
-	case decrypted.PushType == pushtypes.DecryptedPush_Reaction:
-		var emoji string
-		if err = payload.get("reaction", &emoji); err != nil {
-			emoji = ":)"
-		}
-
-		fmtpush.Body = printer.Sprintf("push.reaction.bodyWithDisplayNameAndEmoji", decrypted.MemberDisplayName, emoji)
-
-	case decrypted.PushType == pushtypes.DecryptedPush_Photo, decrypted.PushType == pushtypes.DecryptedPush_Gif, decrypted.PushType == pushtypes.DecryptedPush_VoiceMessage, decrypted.PushType == pushtypes.DecryptedPush_Media:
-		formatKeys := map[pushtypes.DecryptedPush_PushType]string{
-			pushtypes.DecryptedPush_Photo:        "push.photo.bodyWithNumberOfMedia",
-			pushtypes.DecryptedPush_Gif:          "push.gif.bodyWithNumberOfMedia",
-			pushtypes.DecryptedPush_VoiceMessage: "push.voiceMessage.bodyWithNumberOfMedia",
-			pushtypes.DecryptedPush_Media:        "push.media.bodyWithNumberOfMedia",
-		}
-
-		var mediasCount string
-		_ = payload.get("medias-count", &mediasCount)
-
-		var c int
-		if c, err = strconv.Atoi(mediasCount); err != nil {
-			c = 1
-		}
-
-		fmtpush.Body = printer.Sprintf(formatKeys[decrypted.PushType], c)
-
 	case decrypted.PushType == pushtypes.DecryptedPush_GroupInvitation:
 		var groupName string
 		if err = payload.get("group-name", &groupName); err != nil {
@@ -91,16 +64,12 @@ func FormatDecryptedPush(decrypted *pushtypes.DecryptedPush, printer *message.Pr
 		decrypted.PushType == pushtypes.DecryptedPush_Unknown,
 		decrypted.PushType == pushtypes.DecryptedPush_ConversationNameChanged,
 		decrypted.PushType == pushtypes.DecryptedPush_MemberNameChanged,
-		decrypted.PushType == pushtypes.DecryptedPush_MemberPictureChanged,
-		decrypted.PushType == pushtypes.DecryptedPush_MemberDetailsChanged,
-		decrypted.PushType == pushtypes.DecryptedPush_ReplyOptions:
+		decrypted.PushType == pushtypes.DecryptedPush_MemberDetailsChanged:
 		placeHolderMessages := map[pushtypes.DecryptedPush_PushType]string{
 			pushtypes.DecryptedPush_Unknown:                 "push.unknown.body",
 			pushtypes.DecryptedPush_ConversationNameChanged: "push.conversationNameChanged.body",
 			pushtypes.DecryptedPush_MemberNameChanged:       "push.memberNameChanged.body",
-			pushtypes.DecryptedPush_MemberPictureChanged:    "push.memberPictureChanged.body",
 			pushtypes.DecryptedPush_MemberDetailsChanged:    "push.memberDetailsChanged.body",
-			pushtypes.DecryptedPush_ReplyOptions:            "push.replyOptionsOffered.body",
 		}
 
 		fmtpush.Body = printer.Sprintf(placeHolderMessages[decrypted.PushType])

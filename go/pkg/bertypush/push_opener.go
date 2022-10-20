@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"path"
-	"strings"
 	"time"
 
 	"github.com/gogo/protobuf/proto"
@@ -87,46 +86,12 @@ func PushEnrich(rawPushData *messengertypes.PushReceivedData, accountData *accou
 			break
 		}
 
-		if l := len(rawPushData.Interaction.Medias); l > 0 {
-			switch {
-			case !checkAllMediasHaveSameMime(rawPushData.Interaction.Medias):
-				d.PushType = pushtypes.DecryptedPush_Media
-
-			case strings.HasSuffix(rawPushData.Interaction.Medias[0].MimeType, "gif"):
-				d.PushType = pushtypes.DecryptedPush_Gif
-
-			case strings.HasPrefix(rawPushData.Interaction.Medias[0].MimeType, "image/") || rawPushData.Interaction.Medias[0].MimeType == "image":
-				d.PushType = pushtypes.DecryptedPush_Photo
-
-			case strings.HasPrefix(rawPushData.Interaction.Medias[0].MimeType, "audio/") || rawPushData.Interaction.Medias[0].MimeType == "audio":
-				d.PushType = pushtypes.DecryptedPush_VoiceMessage
-
-			default:
-				d.PushType = pushtypes.DecryptedPush_Media
-			}
-
-			payloadAttrs["medias-count"] = fmt.Sprintf("%d", l)
-			break
-		}
-
 		if m.Body == "" {
 			break
 		}
 
 		d.PushType = pushtypes.DecryptedPush_Message
 		payloadAttrs["message"] = m.Body
-
-	case messengertypes.AppMessage_TypeUserReaction:
-		d.PushType = pushtypes.DecryptedPush_Reaction
-		r := &messengertypes.AppMessage_UserReaction{}
-		err := proto.Unmarshal(rawPushData.Interaction.Payload, r)
-		if err != nil {
-			logger.Error("unable to unmarshal reaction", logutil.PrivateString("cid", string(rawPushData.ProtocolData.Message.CID)), zap.Error(err))
-			break
-		}
-
-		payloadAttrs["reaction"] = r.Emoji
-		// IDEA: ignore if reaction's targeted message is not send by the user if possible (i.e. not on iOS)
 
 	case messengertypes.AppMessage_TypeGroupInvitation:
 		d.PushType = pushtypes.DecryptedPush_GroupInvitation
@@ -161,9 +126,6 @@ func PushEnrich(rawPushData *messengertypes.PushReceivedData, accountData *accou
 
 	case messengertypes.AppMessage_TypeAcknowledge:
 		logger.Debug("received a push notification for an ack, this should not happen", logutil.PrivateString("cid", rawPushData.Interaction.CID))
-
-	case messengertypes.AppMessage_TypeReplyOptions:
-		d.PushType = pushtypes.DecryptedPush_ReplyOptions
 
 	default:
 		logger.Debug("unknown message type", zap.String("message-type", rawPushData.Interaction.Type.String()), logutil.PrivateString("cid", rawPushData.Interaction.CID))
@@ -302,19 +264,4 @@ func PushDecrypt(ctx context.Context, rootDir string, input []byte, opts *PushDe
 
 	// only returning the first error
 	return nil, nil, errcode.ErrPushUnableToDecrypt.Wrap(errs[0])
-}
-
-func checkAllMediasHaveSameMime(medias []*messengertypes.Media) bool {
-	if len(medias) < 2 {
-		return true
-	}
-
-	firstType := medias[0].MimeType
-	for i := range medias {
-		if firstType != medias[i].MimeType {
-			return false
-		}
-	}
-
-	return true
 }

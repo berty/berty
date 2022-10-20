@@ -193,7 +193,6 @@ type TestingAccount struct {
 	contacts      map[string]*messengertypes.Contact
 	members       map[string]*messengertypes.Member
 	interactions  map[string]*messengertypes.Interaction
-	medias        map[string]*messengertypes.Media
 }
 
 type RecvEvent struct {
@@ -215,7 +214,6 @@ func NewTestingAccount(ctx context.Context, t *testing.T, client messengertypes.
 		contacts:       make(map[string]*messengertypes.Contact),
 		members:        make(map[string]*messengertypes.Member),
 		interactions:   make(map[string]*messengertypes.Interaction),
-		medias:         make(map[string]*messengertypes.Media),
 	}
 }
 
@@ -283,7 +281,7 @@ func (a *TestingAccount) processEvent(t *testing.T, event *messengertypes.Stream
 		require.NoError(t, err)
 		contact := payload.(*messengertypes.StreamEvent_ContactUpdated).Contact
 		a.contacts[contact.GetPublicKey()] = contact
-		t.Log("contact updated in", a.account.GetDisplayName(), ", name:", contact.GetDisplayName(), ", mpk:", contact.GetPublicKey(), ", acid: ", contact.GetAvatarCID())
+		t.Log("contact updated in", a.account.GetDisplayName(), ", name:", contact.GetDisplayName(), ", mpk:", contact.GetPublicKey())
 	case messengertypes.StreamEvent_TypeConversationUpdated:
 		payload, err := event.UnmarshalPayload()
 		require.NoError(t, err)
@@ -300,11 +298,6 @@ func (a *TestingAccount) processEvent(t *testing.T, event *messengertypes.Stream
 		require.NoError(t, err)
 		inte := payload.(*messengertypes.StreamEvent_InteractionUpdated).Interaction
 		a.interactions[inte.GetCID()] = inte
-	case messengertypes.StreamEvent_TypeMediaUpdated:
-		payload, err := event.UnmarshalPayload()
-		require.NoError(t, err)
-		media := payload.(*messengertypes.StreamEvent_MediaUpdated).Media
-		a.medias[media.GetCID()] = media
 	}
 }
 
@@ -425,14 +418,6 @@ func (a *TestingAccount) GetAllConversations() map[string]*messengertypes.Conver
 		newMap[k] = v
 	}
 	return newMap
-}
-
-func (a *TestingAccount) GetMedia(t *testing.T, cid string) *messengertypes.Media {
-	a.processMutex.Lock()
-	defer a.processMutex.Unlock()
-	media, ok := a.medias[cid]
-	require.True(t, ok)
-	return media
 }
 
 func (a *TestingAccount) TryNextEvent(t *testing.T, timeout time.Duration) *messengertypes.StreamEvent {

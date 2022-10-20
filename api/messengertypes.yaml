@@ -21,9 +21,6 @@ http:
  - selector: berty.messenger.v1.MessengerService.SendContactRequest
    post: /berty.messenger.v1/MessengerService/SendContactRequest
    body: "*"
- - selector: berty.messenger.v1.MessengerService.SendReplyOptions
-   post: /berty.messenger.v1/MessengerService/SendReplyOptions
-   body: "*"
  - selector: berty.messenger.v1.MessengerService.SystemInfo
    post: /berty.messenger.v1/MessengerService/SystemInfo
    body: "*"
@@ -90,15 +87,6 @@ http:
  - selector: berty.messenger.v1.MessengerService.InstanceExportData
    post: /berty.messenger.v1/MessengerService/InstanceExportData
    body: "*"
- - selector: berty.messenger.v1.MessengerService.MediaPrepare
-   post: /berty.messenger.v1/MessengerService/MediaPrepare
-   body: "*"
- - selector: berty.messenger.v1.MessengerService.MediaRetrieve
-   post: /berty.messenger.v1/MessengerService/MediaRetrieve
-   body: "*"
- - selector: berty.messenger.v1.MessengerService.MediaGetRelated
-   post: /berty.messenger.v1/MessengerService/MediaGetRelated
-   body: "*"
  - selector: berty.messenger.v1.MessengerService.MessageSearch
    post: /berty.messenger.v1/MessengerService/MessageSearch
    body: "*"
@@ -122,7 +110,4 @@ http:
    body: "*"
  - selector: berty.messenger.v1.MessengerService.PushReceive
    post: /berty.messenger.v1/MessengerService/PushReceive
-   body: "*"
- - selector: berty.messenger.v1.MessengerService.InteractionReactionsForEmoji
-   post: /berty.messenger.v1/MessengerService/InteractionReactionsForEmoji
    body: "*"

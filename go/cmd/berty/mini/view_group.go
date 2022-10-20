@@ -208,9 +208,6 @@ func (v *groupView) loop(ctx context.Context) {
 				}
 				v.acks.Store(am.TargetCID, true)
 
-			case messengertypes.AppMessage_TypeReplyOptions:
-				// TODO:
-
 			case messengertypes.AppMessage_TypeUserMessage:
 				payload := amp.(*messengertypes.AppMessage_UserMessage)
 				v.messages.Prepend(&historyMessage{
@@ -319,33 +316,6 @@ func (v *groupView) loop(ctx context.Context) {
 						receivedAt:  receivedAt,
 					})
 					v.addBadge()
-
-				case messengertypes.AppMessage_TypeReplyOptions:
-					var payload messengertypes.AppMessage_ReplyOptions
-					err := proto.Unmarshal(am.GetPayload(), &payload)
-					if err != nil {
-						v.logger.Error("failed to unmarshal ReplyOptions", zap.Error(err))
-						continue
-					}
-
-					receivedAt := time.Unix(0, am.GetSentDate()*1000000)
-
-					v.messages.Append(&historyMessage{
-						messageType: messageTypeMessage,
-						payload:     []byte("Response options offered:"),
-						sender:      evt.Headers.DevicePK,
-						receivedAt:  receivedAt,
-					})
-
-					for i, o := range payload.Options {
-						v.messages.Append(&historyMessage{
-							messageType: messageTypeMessage,
-							payload:     []byte(fmt.Sprintf("  - %d: %s ==> %s", i, o.Display, o.Payload)),
-							sender:      evt.Headers.DevicePK,
-							receivedAt:  receivedAt,
-						})
-						v.addBadge()
-					}
 				}
 			}
 		}()

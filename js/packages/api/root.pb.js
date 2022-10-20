@@ -1137,18 +1137,37 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     values: {
                       Unknown: 0,
                       Message: 1,
-                      Reaction: 2,
-                      Media: 3,
-                      Photo: 4,
-                      Gif: 5,
-                      VoiceMessage: 6,
                       GroupInvitation: 7,
                       ConversationNameChanged: 8,
                       MemberNameChanged: 9,
-                      MemberPictureChanged: 10,
-                      MemberDetailsChanged: 11,
-                      ReplyOptions: 12
-                    }
+                      MemberDetailsChanged: 11
+                    },
+                    reserved: [
+                      [
+                        2,
+                        2
+                      ],
+                      [
+                        3,
+                        3
+                      ],
+                      [
+                        4,
+                        4
+                      ],
+                      [
+                        5,
+                        5
+                      ],
+                      [
+                        6,
+                        6
+                      ],
+                      [
+                        10,
+                        10
+                      ]
+                    ]
                   }
                 }
               },
@@ -1356,16 +1375,6 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     requestType: "PeerList.Request",
                     responseType: "PeerList.Reply"
                   },
-                  AttachmentPrepare: {
-                    requestType: "AttachmentPrepare.Request",
-                    requestStream: true,
-                    responseType: "AttachmentPrepare.Reply"
-                  },
-                  AttachmentRetrieve: {
-                    requestType: "AttachmentRetrieve.Request",
-                    responseType: "AttachmentRetrieve.Reply",
-                    responseStream: true
-                  },
                   PushReceive: {
                     requestType: "PushReceive.Request",
                     responseType: "PushReceive.Reply"
@@ -1543,16 +1552,14 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   event: {
                     type: "bytes",
                     id: 2
-                  },
-                  encryptedAttachmentCids: {
-                    rule: "repeated",
-                    type: "bytes",
-                    id: 3,
-                    options: {
-                      "(gogoproto.customname)": "EncryptedAttachmentCIDs"
-                    }
                   }
-                }
+                },
+                reserved: [
+                  [
+                    3,
+                    3
+                  ]
+                ]
               },
               MessageHeaders: {
                 fields: {
@@ -1579,13 +1586,13 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                 }
               },
               ProtocolMetadata: {
-                fields: {
-                  attachmentsSecrets: {
-                    rule: "repeated",
-                    type: "bytes",
-                    id: 1
-                  }
-                }
+                fields: {},
+                reserved: [
+                  [
+                    1,
+                    1
+                  ]
+                ]
               },
               EncryptedMessage: {
                 fields: {
@@ -1612,16 +1619,14 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   nonce: {
                     type: "bytes",
                     id: 3
-                  },
-                  encryptedAttachmentCids: {
-                    rule: "repeated",
-                    type: "bytes",
-                    id: 4,
-                    options: {
-                      "(gogoproto.customname)": "EncryptedAttachmentCIDs"
-                    }
                   }
-                }
+                },
+                reserved: [
+                  [
+                    4,
+                    4
+                  ]
+                ]
               },
               EventContext: {
                 fields: {
@@ -1646,16 +1651,14 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     options: {
                       "(gogoproto.customname)": "GroupPK"
                     }
-                  },
-                  attachmentCids: {
-                    rule: "repeated",
-                    type: "bytes",
-                    id: 4,
-                    options: {
-                      "(gogoproto.customname)": "AttachmentCIDs"
-                    }
                   }
-                }
+                },
+                reserved: [
+                  [
+                    4,
+                    4
+                  ]
+                ]
               },
               AppMetadata: {
                 fields: {
@@ -2507,16 +2510,14 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       payload: {
                         type: "bytes",
                         id: 2
-                      },
-                      attachmentCids: {
-                        rule: "repeated",
-                        type: "bytes",
-                        id: 3,
-                        options: {
-                          "(gogoproto.customname)": "AttachmentCIDs"
-                        }
                       }
-                    }
+                    },
+                    reserved: [
+                      [
+                        3,
+                        3
+                      ]
+                    ]
                   },
                   Reply: {
                     fields: {
@@ -2546,16 +2547,14 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       payload: {
                         type: "bytes",
                         id: 2
-                      },
-                      attachmentCids: {
-                        rule: "repeated",
-                        type: "bytes",
-                        id: 3,
-                        options: {
-                          "(gogoproto.customname)": "AttachmentCIDs"
-                        }
                       }
-                    }
+                    },
+                    reserved: [
+                      [
+                        3,
+                        3
+                      ]
+                    ]
                   },
                   Reply: {
                     fields: {
@@ -3562,58 +3561,6 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   BiDir: 3
                 }
               },
-              AttachmentPrepare: {
-                fields: {},
-                nested: {
-                  Request: {
-                    fields: {
-                      block: {
-                        type: "bytes",
-                        id: 1
-                      },
-                      disableEncryption: {
-                        type: "bool",
-                        id: 2
-                      }
-                    }
-                  },
-                  Reply: {
-                    fields: {
-                      attachmentCid: {
-                        type: "bytes",
-                        id: 1,
-                        options: {
-                          "(gogoproto.customname)": "AttachmentCID"
-                        }
-                      }
-                    }
-                  }
-                }
-              },
-              AttachmentRetrieve: {
-                fields: {},
-                nested: {
-                  Request: {
-                    fields: {
-                      attachmentCid: {
-                        type: "bytes",
-                        id: 1,
-                        options: {
-                          "(gogoproto.customname)": "AttachmentCID"
-                        }
-                      }
-                    }
-                  },
-                  Reply: {
-                    fields: {
-                      block: {
-                        type: "bytes",
-                        id: 2
-                      }
-                    }
-                  }
-                }
-              },
               Progress: {
                 fields: {
                   state: {
@@ -4551,10 +4498,6 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     requestType: "SendContactRequest.Request",
                     responseType: "SendContactRequest.Reply"
                   },
-                  SendReplyOptions: {
-                    requestType: "SendReplyOptions.Request",
-                    responseType: "SendReplyOptions.Reply"
-                  },
                   SystemInfo: {
                     requestType: "SystemInfo.Request",
                     responseType: "SystemInfo.Reply"
@@ -4650,20 +4593,6 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     responseType: "InstanceExportData.Reply",
                     responseStream: true
                   },
-                  MediaPrepare: {
-                    requestType: "MediaPrepare.Request",
-                    requestStream: true,
-                    responseType: "MediaPrepare.Reply"
-                  },
-                  MediaRetrieve: {
-                    requestType: "MediaRetrieve.Request",
-                    responseType: "MediaRetrieve.Reply",
-                    responseStream: true
-                  },
-                  MediaGetRelated: {
-                    requestType: "MediaGetRelated.Request",
-                    responseType: "MediaGetRelated.Reply"
-                  },
                   MessageSearch: {
                     requestType: "MessageSearch.Request",
                     responseType: "MessageSearch.Reply"
@@ -4698,10 +4627,6 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   PushReceive: {
                     requestType: "PushReceive.Request",
                     responseType: "PushReceive.Reply"
-                  },
-                  InteractionReactionsForEmoji: {
-                    requestType: "InteractionReactionsForEmoji.Request",
-                    responseType: "InteractionReactionsForEmoji.Reply"
                   }
                 }
               },
@@ -4729,15 +4654,17 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     type: "bool",
                     id: 4
                   },
-                  excludeMedias: {
-                    type: "bool",
-                    id: 5
-                  },
                   noBulk: {
                     type: "bool",
                     id: 6
                   }
-                }
+                },
+                reserved: [
+                  [
+                    5,
+                    5
+                  ]
+                ]
               },
               ConversationOpen: {
                 fields: {},
@@ -5169,29 +5096,6 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   }
                 }
               },
-              SendReplyOptions: {
-                fields: {},
-                nested: {
-                  Request: {
-                    fields: {
-                      groupPk: {
-                        type: "bytes",
-                        id: 1,
-                        options: {
-                          "(gogoproto.customname)": "GroupPK"
-                        }
-                      },
-                      options: {
-                        type: "AppMessage.ReplyOptions",
-                        id: 2
-                      }
-                    }
-                  },
-                  Reply: {
-                    fields: {}
-                  }
-                }
-              },
               BertyID: {
                 fields: {
                   publicRendezvousSeed: {
@@ -5240,11 +5144,6 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       "(gogoproto.jsontag)": "sentDate"
                     }
                   },
-                  medias: {
-                    rule: "repeated",
-                    type: "Media",
-                    id: 4
-                  },
                   targetCid: {
                     type: "string",
                     id: 5,
@@ -5253,36 +5152,38 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     }
                   }
                 },
+                reserved: [
+                  [
+                    4,
+                    4
+                  ]
+                ],
                 nested: {
                   Type: {
                     values: {
                       Undefined: 0,
                       TypeUserMessage: 1,
-                      TypeUserReaction: 2,
                       TypeGroupInvitation: 3,
                       TypeSetGroupInfo: 4,
                       TypeSetUserInfo: 5,
-                      TypeAcknowledge: 6,
-                      TypeReplyOptions: 7
-                    }
+                      TypeAcknowledge: 6
+                    },
+                    reserved: [
+                      [
+                        2,
+                        2
+                      ],
+                      [
+                        7,
+                        7
+                      ]
+                    ]
                   },
                   UserMessage: {
                     fields: {
                       body: {
                         type: "string",
                         id: 1
-                      }
-                    }
-                  },
-                  UserReaction: {
-                    fields: {
-                      state: {
-                        type: "bool",
-                        id: 1
-                      },
-                      emoji: {
-                        type: "string",
-                        id: 2
                       }
                     }
                   },
@@ -5299,51 +5200,31 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       displayName: {
                         type: "string",
                         id: 1
-                      },
-                      avatarCid: {
-                        type: "string",
-                        id: 2
                       }
-                    }
+                    },
+                    reserved: [
+                      [
+                        2,
+                        2
+                      ]
+                    ]
                   },
                   SetUserInfo: {
                     fields: {
                       displayName: {
                         type: "string",
                         id: 1
-                      },
-                      avatarCid: {
-                        type: "string",
-                        id: 2,
-                        options: {
-                          "(gogoproto.customname)": "AvatarCID"
-                        }
                       }
-                    }
+                    },
+                    reserved: [
+                      [
+                        2,
+                        2
+                      ]
+                    ]
                   },
                   Acknowledge: {
                     fields: {}
-                  },
-                  ReplyOptions: {
-                    fields: {
-                      options: {
-                        rule: "repeated",
-                        type: "ReplyOption",
-                        id: 1
-                      }
-                    }
-                  }
-                }
-              },
-              ReplyOption: {
-                fields: {
-                  display: {
-                    type: "string",
-                    id: 1
-                  },
-                  payload: {
-                    type: "string",
-                    id: 2
                   }
                 }
               },
@@ -5423,23 +5304,21 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                         type: "int64",
                         id: 8
                       },
-                      reactions: {
-                        type: "int64",
-                        id: 9
-                      },
                       metadataEvents: {
                         type: "int64",
                         id: 10
-                      },
-                      medias: {
-                        type: "int64",
-                        id: 11
                       },
                       sharedPushTokens: {
                         type: "int64",
                         id: 12
                       }
-                    }
+                    },
+                    reserved: [
+                      [
+                        11,
+                        11
+                      ]
+                    ]
                   }
                 }
               },
@@ -5495,14 +5374,6 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       "(gogoproto.moretags)": "gorm:default:true"
                     }
                   },
-                  avatarCid: {
-                    type: "string",
-                    id: 7,
-                    options: {
-                      "(gogoproto.moretags)": "gorm:column:avatar_cid",
-                      "(gogoproto.customname)": "AvatarCID"
-                    }
-                  },
                   autoSharePushTokenFlag: {
                     type: "bool",
                     id: 8
@@ -5527,7 +5398,13 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     type: "bool",
                     id: 13
                   }
-                }
+                },
+                reserved: [
+                  [
+                    7,
+                    7
+                  ]
+                ]
               },
               ServiceToken: {
                 fields: {
@@ -5664,96 +5541,21 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       "(gogoproto.customname)": "TargetCID"
                     }
                   },
-                  medias: {
-                    rule: "repeated",
-                    type: "Media",
-                    id: 15
-                  },
-                  reactions: {
-                    rule: "repeated",
-                    type: "ReactionView",
-                    id: 16,
-                    options: {
-                      "(gogoproto.moretags)": "gorm:-"
-                    }
-                  },
                   outOfStoreMessage: {
                     type: "bool",
                     id: 17
                   }
                 },
-                nested: {
-                  ReactionView: {
-                    fields: {
-                      emoji: {
-                        type: "string",
-                        id: 1
-                      },
-                      ownState: {
-                        type: "bool",
-                        id: 2
-                      },
-                      count: {
-                        type: "uint64",
-                        id: 3
-                      }
-                    }
-                  }
-                }
-              },
-              Media: {
-                fields: {
-                  cid: {
-                    type: "string",
-                    id: 1,
-                    options: {
-                      "(gogoproto.moretags)": "gorm:primaryKey;column:cid",
-                      "(gogoproto.customname)": "CID"
-                    }
-                  },
-                  mimeType: {
-                    type: "string",
-                    id: 2
-                  },
-                  filename: {
-                    type: "string",
-                    id: 3
-                  },
-                  displayName: {
-                    type: "string",
-                    id: 4
-                  },
-                  metadataBytes: {
-                    type: "bytes",
-                    id: 6
-                  },
-                  interactionCid: {
-                    type: "string",
-                    id: 100,
-                    options: {
-                      "(gogoproto.moretags)": "gorm:index;column:interaction_cid",
-                      "(gogoproto.customname)": "InteractionCID"
-                    }
-                  },
-                  state: {
-                    type: "State",
-                    id: 103
-                  }
-                },
-                nested: {
-                  State: {
-                    values: {
-                      StateUnknown: 0,
-                      StateNeverDownloaded: 1,
-                      StatePartiallyDownloaded: 2,
-                      StateDownloaded: 3,
-                      StateInCache: 4,
-                      StateInvalidCrypto: 5,
-                      StatePrepared: 100,
-                      StateAttached: 101
-                    }
-                  }
-                }
+                reserved: [
+                  [
+                    15,
+                    15
+                  ],
+                  [
+                    16,
+                    16
+                  ]
+                ]
               },
               Contact: {
                 fields: {
@@ -5780,14 +5582,6 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     type: "string",
                     id: 5
                   },
-                  avatarCid: {
-                    type: "string",
-                    id: 9,
-                    options: {
-                      "(gogoproto.moretags)": "gorm:column:avatar_cid",
-                      "(gogoproto.customname)": "AvatarCID"
-                    }
-                  },
                   createdDate: {
                     type: "int64",
                     id: 7
@@ -5809,6 +5603,12 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     id: 10
                   }
                 },
+                reserved: [
+                  [
+                    9,
+                    9
+                  ]
+                ],
                 nested: {
                   State: {
                     values: {
@@ -5879,35 +5679,12 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     type: "int64",
                     id: 13
                   },
-                  replyOptionsCid: {
-                    type: "string",
-                    id: 14,
-                    options: {
-                      "(gogoproto.moretags)": "gorm:column:reply_options_cid",
-                      "(gogoproto.customname)": "ReplyOptionsCID"
-                    }
-                  },
-                  replyOptions: {
-                    type: "Interaction",
-                    id: 15,
-                    options: {
-                      "(gogoproto.customname)": "ReplyOptions"
-                    }
-                  },
                   replicationInfo: {
                     rule: "repeated",
                     type: "ConversationReplicationInfo",
                     id: 16,
                     options: {
                       "(gogoproto.moretags)": "gorm:foreignKey:ConversationPublicKey"
-                    }
-                  },
-                  avatarCid: {
-                    type: "string",
-                    id: 17,
-                    options: {
-                      "(gogoproto.moretags)": "gorm:column:avatar_cid",
-                      "(gogoproto.customname)": "AvatarCID"
                     }
                   },
                   infoDate: {
@@ -5927,6 +5704,20 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     id: 21
                   }
                 },
+                reserved: [
+                  [
+                    14,
+                    14
+                  ],
+                  [
+                    15,
+                    15
+                  ],
+                  [
+                    17,
+                    17
+                  ]
+                ],
                 nested: {
                   Type: {
                     values: {
@@ -5982,14 +5773,6 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     type: "string",
                     id: 2
                   },
-                  avatarCid: {
-                    type: "string",
-                    id: 6,
-                    options: {
-                      "(gogoproto.moretags)": "gorm:column:avatar_cid",
-                      "(gogoproto.customname)": "AvatarCID"
-                    }
-                  },
                   conversationPublicKey: {
                     type: "string",
                     id: 3,
@@ -6021,7 +5804,13 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       "(gogoproto.moretags)": "gorm:foreignKey:MemberPublicKey;references:PublicKey"
                     }
                   }
-                }
+                },
+                reserved: [
+                  [
+                    6,
+                    6
+                  ]
+                ]
               },
               Device: {
                 fields: {
@@ -6110,13 +5899,18 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       TypeMemberUpdated: 8,
                       TypeDeviceUpdated: 9,
                       TypeNotified: 10,
-                      TypeMediaUpdated: 11,
                       TypeConversationPartialLoad: 12,
                       TypePeerStatusConnected: 13,
                       TypePeerStatusReconnecting: 14,
                       TypePeerStatusDisconnected: 15,
                       TypePeerStatusGroupAssociated: 16
-                    }
+                    },
+                    reserved: [
+                      [
+                        11,
+                        11
+                      ]
+                    ]
                   },
                   ConversationUpdated: {
                     fields: {
@@ -6192,14 +5986,6 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   ListEnded: {
                     fields: {}
                   },
-                  MediaUpdated: {
-                    fields: {
-                      media: {
-                        type: "Media",
-                        id: 1
-                      }
-                    }
-                  },
                   ConversationPartialLoad: {
                     fields: {
                       conversationPk: {
@@ -6213,13 +5999,14 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                         rule: "repeated",
                         type: "Interaction",
                         id: 2
-                      },
-                      medias: {
-                        rule: "repeated",
-                        type: "Media",
-                        id: 3
                       }
-                    }
+                    },
+                    reserved: [
+                      [
+                        3,
+                        3
+                      ]
+                    ]
                   },
                   Notified: {
                     fields: {
@@ -6470,16 +6257,14 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       displayName: {
                         type: "string",
                         id: 1
-                      },
-                      avatarCid: {
-                        type: "string",
-                        id: 2,
-                        options: {
-                          "(gogoproto.moretags)": "gorm:column:avatar_cid",
-                          "(gogoproto.customname)": "AvatarCID"
-                        }
                       }
-                    }
+                    },
+                    reserved: [
+                      [
+                        2,
+                        2
+                      ]
+                    ]
                   },
                   Reply: {
                     fields: {}
@@ -6579,11 +6364,6 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                         type: "string",
                         id: 3
                       },
-                      mediaCids: {
-                        rule: "repeated",
-                        type: "string",
-                        id: 4
-                      },
                       targetCid: {
                         type: "string",
                         id: 5,
@@ -6595,7 +6375,13 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                         type: "bool",
                         id: 6
                       }
-                    }
+                    },
+                    reserved: [
+                      [
+                        4,
+                        4
+                      ]
+                    ]
                   },
                   Reply: {
                     fields: {
@@ -6736,207 +6522,6 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   type: {
                     type: "Conversation.Type",
                     id: 4
-                  }
-                }
-              },
-              MediaPrepare: {
-                fields: {},
-                nested: {
-                  Request: {
-                    fields: {
-                      block: {
-                        type: "bytes",
-                        id: 1
-                      },
-                      info: {
-                        type: "Media",
-                        id: 2
-                      },
-                      uri: {
-                        type: "string",
-                        id: 3
-                      }
-                    }
-                  },
-                  Reply: {
-                    fields: {
-                      cid: {
-                        type: "string",
-                        id: 1
-                      }
-                    }
-                  }
-                }
-              },
-              MediaRetrieve: {
-                fields: {},
-                nested: {
-                  Request: {
-                    fields: {
-                      cid: {
-                        type: "string",
-                        id: 1
-                      }
-                    }
-                  },
-                  Reply: {
-                    fields: {
-                      block: {
-                        type: "bytes",
-                        id: 1
-                      },
-                      info: {
-                        type: "Media",
-                        id: 2
-                      }
-                    }
-                  }
-                }
-              },
-              MediaGetRelated: {
-                fields: {},
-                nested: {
-                  Request: {
-                    fields: {
-                      cid: {
-                        type: "string",
-                        id: 1,
-                        options: {
-                          "(gogoproto.customname)": "CID"
-                        }
-                      },
-                      mimeTypes: {
-                        rule: "repeated",
-                        type: "string",
-                        id: 3
-                      },
-                      fileNames: {
-                        rule: "repeated",
-                        type: "string",
-                        id: 4
-                      }
-                    },
-                    reserved: [
-                      [
-                        2,
-                        2
-                      ]
-                    ]
-                  },
-                  Reply: {
-                    fields: {
-                      media: {
-                        type: "Media",
-                        id: 1
-                      },
-                      end: {
-                        type: "bool",
-                        id: 2
-                      }
-                    }
-                  }
-                }
-              },
-              MediaMetadataType: {
-                values: {
-                  MetadataUnknown: 0,
-                  MetadataKeyValue: 1,
-                  MetadataAudioPreview: 2
-                }
-              },
-              MediaMetadata: {
-                fields: {
-                  items: {
-                    rule: "repeated",
-                    type: "MediaMetadataItem",
-                    id: 1
-                  }
-                }
-              },
-              MediaMetadataItem: {
-                fields: {
-                  metadataType: {
-                    type: "MediaMetadataType",
-                    id: 1
-                  },
-                  payload: {
-                    type: "bytes",
-                    id: 2
-                  }
-                }
-              },
-              MediaMetadataKV: {
-                fields: {
-                  key: {
-                    type: "string",
-                    id: 1
-                  },
-                  value: {
-                    type: "string",
-                    id: 2
-                  }
-                }
-              },
-              AudioPreview: {
-                fields: {
-                  volumeIntensities: {
-                    rule: "repeated",
-                    type: "uint32",
-                    id: 1
-                  },
-                  durationMs: {
-                    type: "uint32",
-                    id: 2
-                  },
-                  format: {
-                    type: "string",
-                    id: 3
-                  },
-                  bitrate: {
-                    type: "uint32",
-                    id: 4
-                  },
-                  samplingRate: {
-                    type: "uint32",
-                    id: 5
-                  }
-                }
-              },
-              Reaction: {
-                fields: {
-                  targetCid: {
-                    type: "string",
-                    id: 2,
-                    options: {
-                      "(gogoproto.moretags)": "gorm:column:target_cid;primaryKey",
-                      "(gogoproto.customname)": "TargetCID"
-                    }
-                  },
-                  memberPublicKey: {
-                    type: "string",
-                    id: 3,
-                    options: {
-                      "(gogoproto.moretags)": "gorm:primaryKey"
-                    }
-                  },
-                  emoji: {
-                    type: "string",
-                    id: 4,
-                    options: {
-                      "(gogoproto.moretags)": "gorm:primaryKey"
-                    }
-                  },
-                  isMine: {
-                    type: "bool",
-                    id: 5
-                  },
-                  state: {
-                    type: "bool",
-                    id: 6
-                  },
-                  stateDate: {
-                    type: "int64",
-                    id: 7
                   }
                 }
               },
@@ -7172,35 +6757,6 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     fields: {
                       pushToken: {
                         type: "SharedPushToken",
-                        id: 1
-                      }
-                    }
-                  }
-                }
-              },
-              InteractionReactionsForEmoji: {
-                fields: {},
-                nested: {
-                  Request: {
-                    fields: {
-                      interactionCid: {
-                        type: "string",
-                        id: 1,
-                        options: {
-                          "(gogoproto.customname)": "InteractionCID"
-                        }
-                      },
-                      emoji: {
-                        type: "string",
-                        id: 2
-                      }
-                    }
-                  },
-                  Reply: {
-                    fields: {
-                      reactions: {
-                        rule: "repeated",
-                        type: "Reaction",
                         id: 1
                       }
                     }

@@ -70,13 +70,6 @@ const membersBucketsSelectors = membersBucketsAdapter.getSelectors()
 
 const { selectById: selectMembersBucket } = membersBucketsAdapter.getSelectors()
 
-// NOTE: media is already plural of medium but is used as singular, hence the 's'
-const mediasAdapter = createEntityAdapter<beapi.messenger.IMedia>({
-	selectId: media => media.cid || '',
-})
-
-const mediasSelectors = mediasAdapter.getSelectors()
-
 // Peer network status
 export type GroupsDevicesToPeer = {
 	id: string // with groupPK-devicePK format
@@ -172,7 +165,6 @@ const getEntitiesInitialState = () => ({
 	contacts: contactsAdapter.getInitialState(),
 	interactionsBuckets: interactionsBucketsAdapter.getInitialState(),
 	membersBuckets: membersBucketsAdapter.getInitialState(),
-	medias: mediasAdapter.getInitialState(),
 	groupsDevicesToPeer: groupsDevicesToPeerAdapter.getInitialState(),
 	peersNetworkStatus: peerNetworkStatusAdapter.getInitialState(),
 })
@@ -343,16 +335,6 @@ const slice = createSlice({
 			},
 		)
 		builder.addCase(
-			messengerActions[beapi.messenger.StreamEvent.Type.TypeMediaUpdated],
-			(state, { payload }) => {
-				if (!payload.media) {
-					console.warn('MediaUpdated action without id', payload)
-					return
-				}
-				mediasAdapter.upsertOne(state.medias, payload.media)
-			},
-		)
-		builder.addCase(
 			messengerActions[beapi.messenger.StreamEvent.Type.TypeMemberUpdated],
 			(state, { payload }) => {
 				if (
@@ -442,7 +424,6 @@ const slice = createSlice({
 					changes: {
 						interactions: interactionsAdapter.upsertOne(bucket.interactions, {
 							...inte,
-							reactions: inte.reactions,
 							outOfStoreMessage: !!inte?.outOfStoreMessage,
 						}),
 					},
@@ -455,10 +436,6 @@ const slice = createSlice({
 				if (!payload.conversationPk) {
 					console.warn('ConversationPartialLoad action without id', payload)
 					return
-				}
-
-				if (payload.medias) {
-					mediasAdapter.upsertMany(state.medias, payload.medias)
 				}
 
 				const interactionsBucket = interactionsBucketsSelectors.selectById(
@@ -589,14 +566,6 @@ export const selectContactConversation = (state: LocalRootState, contactPk: stri
 		return undefined
 	}
 	return selectConversation(state, contact.conversationPublicKey)
-}
-
-export const selectMedia = (state: LocalRootState, cid: string) => {
-	return mediasSelectors.selectById(selectSlice(state).medias, cid)
-}
-
-export const selectMedias = (state: LocalRootState, cids: string[]) => {
-	return cids.map(cid => selectMedia(state, cid))
 }
 
 export const selectInteraction = (state: LocalRootState, convPk: string, cid: string) => {

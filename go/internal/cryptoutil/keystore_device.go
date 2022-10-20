@@ -11,12 +11,10 @@ import (
 	"sync"
 
 	"github.com/aead/ecdh"
-	ipfscid "github.com/ipfs/go-cid"
 	keystore "github.com/ipfs/go-ipfs-keystore"
 	"github.com/libp2p/go-libp2p-core/crypto"
 	"go.uber.org/zap"
 
-	"berty.tech/berty/v2/go/internal/logutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
@@ -28,12 +26,6 @@ type DeviceKeystore interface {
 	ContactGroupPrivKey(pk crypto.PubKey) (crypto.PrivKey, error)
 	MemberDeviceForGroup(g *protocoltypes.Group) (*OwnMemberDevice, error)
 	RestoreAccountKeys(accountKey crypto.PrivKey, accountProofKey crypto.PrivKey) error
-	AttachmentPrivKey(cid []byte) (crypto.PrivKey, error)
-	AttachmentPrivKeyPut(cid []byte, sk crypto.PrivKey) error
-	AttachmentSecret(cid []byte) ([]byte, error)
-	AttachmentSecretPut(cid []byte, secret []byte) error
-	AttachmentSecretSlice(cids [][]byte) ([][]byte, error)
-	AttachmentSecretSlicePut(cids, secrets [][]byte) error
 }
 
 type deviceKeystore struct {
@@ -253,97 +245,6 @@ func (a *deviceKeystore) RestoreAccountKeys(sk crypto.PrivKey, proofSK crypto.Pr
 		return err
 	}
 
-	return nil
-}
-
-func (a *deviceKeystore) AttachmentPrivKey(cidBytes []byte) (crypto.PrivKey, error) {
-	id, err := attachmentKeyIDFromCID(cidBytes)
-	if err != nil {
-		return nil, err
-	}
-
-	a.mu.Lock()
-	defer a.mu.Unlock()
-
-	key, err := a.ks.Get(id)
-	if err != nil {
-		return nil, errcode.ErrKeystoreGet.Wrap(err)
-	}
-
-	return key, nil
-}
-
-func (a *deviceKeystore) AttachmentPrivKeyPut(cidBytes []byte, sk crypto.PrivKey) error {
-	id, err := attachmentKeyIDFromCID(cidBytes)
-	if err != nil {
-		return err
-	}
-
-	a.mu.Lock()
-	defer a.mu.Unlock()
-
-	existing, err := a.ks.Get(id)
-	if err == nil && existing.Equals(sk) {
-		return nil // we already have the same key, do nothing instead of returning an error
-	}
-
-	err = a.ks.Put(id, sk)
-	if err != nil {
-		return errcode.ErrKeystorePut.Wrap(err)
-	}
-
-	return nil
-}
-
-func attachmentKeyIDFromCID(cidBytes []byte) (string, error) {
-	cid, err := ipfscid.Cast(cidBytes)
-	if err != nil {
-		return "", errcode.ErrDeserialization.Wrap(err)
-	}
-	return attachmentKeyV0Prefix + cid.String(), nil
-}
-
-func (a *deviceKeystore) AttachmentSecret(cidBytes []byte) ([]byte, error) {
-	key, err := a.AttachmentPrivKey(cidBytes)
-	if err != nil {
-		return nil, errcode.ErrKeystoreGet.Wrap(err)
-	}
-	s, err := attachmentKeyMarshal(key)
-	if err != nil {
-		return nil, errcode.ErrSerialization.Wrap(err)
-	}
-	return s, nil
-}
-
-func (a *deviceKeystore) AttachmentSecretPut(cidBytes []byte, s []byte) error {
-	sk, err := attachmentKeyUnmarshal(s)
-	if err != nil {
-		a.logger.Error("unable to unmarshal attachment secret", logutil.PrivateBinary("secret", s), logutil.PrivateBinary("cid-bytes", cidBytes), zap.Error(err))
-		return errcode.ErrDeserialization.Wrap(err)
-	}
-
-	err = a.AttachmentPrivKeyPut(cidBytes, sk)
-	if err != nil {
-		return errcode.ErrKeystorePut.Wrap(err)
-	}
-	return nil
-}
-
-func (a *deviceKeystore) AttachmentSecretSlice(cids [][]byte) ([][]byte, error) {
-	return mapBufArray(cids, a.AttachmentSecret)
-}
-
-func (a *deviceKeystore) AttachmentSecretSlicePut(cids, secrets [][]byte) error {
-	if len(cids) != len(secrets) {
-		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("length mismatch (%d cids for %d secrets)", len(cids), len(secrets)))
-	}
-
-	for i, cid := range cids {
-		err := a.AttachmentSecretPut(cid, secrets[i])
-		if err != nil {
-			return errcode.ErrForEach.Wrap(err)
-		}
-	}
 	return nil
 }
 

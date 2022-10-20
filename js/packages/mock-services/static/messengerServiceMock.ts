@@ -119,9 +119,6 @@ export class MessengerServiceMock implements Partial<IMessengerServiceMock> {
 		if (request.displayName) {
 			this.account.displayName = request.displayName
 		}
-		if (request.avatarCid) {
-			this.account.avatarCid = request.avatarCid
-		}
 		this.emitStreamEvent({
 			type: beapi.messenger.StreamEvent.Type.TypeAccountUpdated,
 			payload: beapi.messenger.StreamEvent.AccountUpdated.encode({
@@ -154,45 +151,6 @@ export class MessengerServiceMock implements Partial<IMessengerServiceMock> {
 	}
 
 	Interact = async (request: beapi.messenger.Interact.IRequest) => {
-		if (request.type === beapi.messenger.AppMessage.Type.TypeUserReaction) {
-			if (!request.payload) {
-				throw new Error('no reaction payload')
-			}
-			const payload = beapi.messenger.AppMessage.UserReaction.decode(request.payload)
-			const reactionCID = faker.datatype.uuid()
-			let target = getGoldenData().interactionsMap[request.conversationPublicKey || ''].find(
-				inte => inte.cid === request.targetCid,
-			)
-			if (!target) {
-				return { cid: reactionCID }
-			}
-			target = cloneDeep(target)
-			if (!target.reactions) {
-				target.reactions = []
-			}
-			target.reactions = target.reactions
-				.map(reaction => {
-					if (reaction.emoji !== payload.emoji) {
-						return reaction
-					}
-					if (!reaction.count) {
-						reaction.count = Long.ZERO
-					}
-					reaction.count.add(boolDiff(reaction.ownState || false, payload.state || false))
-					reaction.ownState = payload.state
-					return reaction
-				})
-				.filter(reactions => reactions.count?.isPositive())
-			this.emitStreamEvent({
-				type: beapi.messenger.StreamEvent.Type.TypeInteractionUpdated,
-				payload: beapi.messenger.StreamEvent.InteractionUpdated.encode({
-					interaction: target,
-				}).finish(),
-			})
-			this.bumpConversationLastUpdated(request.conversationPublicKey)
-			return { cid: reactionCID }
-		}
-
 		const cid = faker.datatype.uuid()
 		this.emitStreamEvent({
 			type: beapi.messenger.StreamEvent.Type.TypeInteractionUpdated,
@@ -504,17 +462,6 @@ export class MessengerServiceMock implements Partial<IMessengerServiceMock> {
 			}).finish(),
 		})
 	}
-}
-
-const boolDiff = (a: boolean, b: boolean) => {
-	if (a === b) {
-		return 0
-	}
-	if (!a && b) {
-		return 1
-	}
-	// a && !b
-	return -1
 }
 
 const firstCaptureGroup = (match: RegExpMatchArray | null) =>

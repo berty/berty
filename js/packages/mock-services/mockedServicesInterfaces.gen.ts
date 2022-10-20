@@ -1,6 +1,6 @@
 import beapi from '@berty/api'
 
-import { UnaryMock, RequestStreamMock, ResponseStreamMock } from './types'
+import { UnaryMock, ResponseStreamMock } from './types'
 
 export interface IProtocolServiceMock {
 	InstanceExportData: ResponseStreamMock<
@@ -132,14 +132,6 @@ export interface IProtocolServiceMock {
 		beapi.protocol.ReplicationServiceRegisterGroup.IReply
 	>
 	PeerList: UnaryMock<beapi.protocol.PeerList.IRequest, beapi.protocol.PeerList.IReply>
-	AttachmentPrepare: RequestStreamMock<
-		beapi.protocol.AttachmentPrepare.IRequest,
-		beapi.protocol.AttachmentPrepare.IReply
-	>
-	AttachmentRetrieve: ResponseStreamMock<
-		beapi.protocol.AttachmentRetrieve.IRequest,
-		beapi.protocol.AttachmentRetrieve.IReply
-	>
 	PushReceive: UnaryMock<beapi.protocol.PushReceive.IRequest, beapi.protocol.PushReceive.IReply>
 	PushSend: UnaryMock<beapi.protocol.PushSend.IRequest, beapi.protocol.PushSend.IReply>
 	PushShareToken: UnaryMock<
@@ -244,10 +236,6 @@ export interface IMessengerServiceMock {
 		beapi.messenger.SendContactRequest.IRequest,
 		beapi.messenger.SendContactRequest.IReply
 	>
-	SendReplyOptions: UnaryMock<
-		beapi.messenger.SendReplyOptions.IRequest,
-		beapi.messenger.SendReplyOptions.IReply
-	>
 	SystemInfo: UnaryMock<beapi.messenger.SystemInfo.IRequest, beapi.messenger.SystemInfo.IReply>
 	EchoTest: ResponseStreamMock<beapi.messenger.EchoTest.IRequest, beapi.messenger.EchoTest.IReply>
 	EchoDuplexTest: never
@@ -318,18 +306,6 @@ export interface IMessengerServiceMock {
 		beapi.messenger.InstanceExportData.IRequest,
 		beapi.messenger.InstanceExportData.IReply
 	>
-	MediaPrepare: RequestStreamMock<
-		beapi.messenger.MediaPrepare.IRequest,
-		beapi.messenger.MediaPrepare.IReply
-	>
-	MediaRetrieve: ResponseStreamMock<
-		beapi.messenger.MediaRetrieve.IRequest,
-		beapi.messenger.MediaRetrieve.IReply
-	>
-	MediaGetRelated: UnaryMock<
-		beapi.messenger.MediaGetRelated.IRequest,
-		beapi.messenger.MediaGetRelated.IReply
-	>
 	MessageSearch: UnaryMock<
 		beapi.messenger.MessageSearch.IRequest,
 		beapi.messenger.MessageSearch.IReply
@@ -359,8 +335,4 @@ export interface IMessengerServiceMock {
 		beapi.messenger.PushTokenSharedForConversation.IReply
 	>
 	PushReceive: UnaryMock<beapi.messenger.PushReceive.IRequest, beapi.messenger.PushReceive.IReply>
-	InteractionReactionsForEmoji: UnaryMock<
-		beapi.messenger.InteractionReactionsForEmoji.IRequest,
-		beapi.messenger.InteractionReactionsForEmoji.IReply
-	>
 }

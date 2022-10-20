@@ -114,8 +114,6 @@ func getDBModels() []interface{} {
 		&messengertypes.Member{},
 		&messengertypes.Device{},
 		&messengertypes.ConversationReplicationInfo{},
-		&messengertypes.Media{},
-		&messengertypes.Reaction{},
 		&messengertypes.MetadataEvent{},
 		&messengertypes.SharedPushToken{},
 	}
@@ -316,9 +314,6 @@ func (d *DBWrapper) UpdateConversation(c messengertypes.Conversation) (bool, err
 	if c.SharedPushTokenIdentifier != "" {
 		columns = append(columns, "shared_push_token_identifier")
 	}
-	if c.AvatarCID != "" {
-		columns = append(columns, "avatar_cid")
-	}
 	if c.InfoDate != 0 {
 		columns = append(columns, "info_date")
 	}
@@ -360,13 +355,6 @@ func (d *DBWrapper) UpdateConversationReadState(pk string, newUnread bool, event
 		updates["unread_count"] = gorm.Expr("unread_count + 1")
 	}
 
-	replyOptionsCID, err := d.GetReplyOptionsCIDForConversation(pk)
-	if err != nil {
-		return err
-	}
-
-	updates["reply_options_cid"] = replyOptionsCID
-
 	// db update
 	tx := d.db.Model(&messengertypes.Conversation{}).Where(&messengertypes.Conversation{PublicKey: pk}).Updates(updates)
 
@@ -400,7 +388,7 @@ func (d *DBWrapper) FirstOrCreateAccount(pk, link string) error {
 	return nil
 }
 
-func (d *DBWrapper) UpdateAccount(pk, url, displayName, avatarCID string) (*messengertypes.Account, error) {
+func (d *DBWrapper) UpdateAccount(pk, url, displayName string) (*messengertypes.Account, error) {
 	if pk == "" {
 		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("an account public key is required"))
 	}
@@ -413,9 +401,6 @@ func (d *DBWrapper) UpdateAccount(pk, url, displayName, avatarCID string) (*mess
 	}
 	if displayName != "" {
 		values["display_name"] = displayName
-	}
-	if avatarCID != "" {
-		values["avatar_cid"] = avatarCID
 	}
 
 	tx := d.db.Model(&messengertypes.Account{}).Where(&messengertypes.Account{PublicKey: pk}).Updates(values).First(&acc)
@@ -480,7 +465,6 @@ func (d *DBWrapper) GetConversationByPK(publicKey string) (*messengertypes.Conve
 	conversation := &messengertypes.Conversation{}
 
 	if err := d.db.
-		Joins("ReplyOptions", d.db.Select("cid").Where("cid = conversations.reply_options_cid").Model(&messengertypes.Interaction{})).
 		Preload("ReplicationInfo").
 		First(
 			&conversation,
@@ -513,7 +497,7 @@ func (d *DBWrapper) GetMemberByPK(publicKey string, convPK string) (*messengerty
 func (d *DBWrapper) GetAllConversations() ([]*messengertypes.Conversation, error) {
 	convs := []*messengertypes.Conversation(nil)
 
-	return convs, d.db.Joins("ReplyOptions", d.db.Select("cid").Where("cid = conversations.reply_options_cid").Model(&messengertypes.Interaction{})).Preload("ReplicationInfo").Find(&convs).Error
+	return convs, d.db.Preload("ReplicationInfo").Find(&convs).Error
 }
 
 func (d *DBWrapper) GetAllMembers() ([]*messengertypes.Member, error) {
@@ -540,7 +524,7 @@ func (d *DBWrapper) GetAllInteractions() ([]*messengertypes.Interaction, error) 
 	return interactions, d.db.Preload(clause.Associations).Find(&interactions).Error
 }
 
-func (d *DBWrapper) GetPaginatedInteractions(opts *messengertypes.PaginatedInteractionsOptions) ([]*messengertypes.Interaction, []*messengertypes.Media, error) {
+func (d *DBWrapper) GetPaginatedInteractions(opts *messengertypes.PaginatedInteractionsOptions) ([]*messengertypes.Interaction, error) {
 	if opts == nil {
 		opts = &messengertypes.PaginatedInteractionsOptions{}
 	}
@@ -551,24 +535,23 @@ func (d *DBWrapper) GetPaginatedInteractions(opts *messengertypes.PaginatedInter
 
 	var conversationPks, cids []string
 	interactions := []*messengertypes.Interaction(nil)
-	medias := []*messengertypes.Media(nil)
 	previousInteraction := (*messengertypes.Interaction)(nil)
 
 	if opts.ConversationPK != "" {
 		conversationPks = []string{opts.ConversationPK}
 	} else if err := d.db.Model(&messengertypes.Conversation{}).Pluck("public_key", &conversationPks).Error; err != nil {
-		return nil, nil, errcode.ErrDBRead.Wrap(fmt.Errorf("unable to list conversation ids: %w", err))
+		return nil, errcode.ErrDBRead.Wrap(fmt.Errorf("unable to list conversation ids: %w", err))
 	}
 
 	if opts.RefCID != "" {
 		var err error
 		previousInteraction, err = d.GetInteractionByCID(opts.RefCID)
 		if err != nil {
-			return nil, nil, errcode.ErrDBRead.Wrap(fmt.Errorf("unable to retrieve specified interaction: %w", err))
+			return nil, errcode.ErrDBRead.Wrap(fmt.Errorf("unable to retrieve specified interaction: %w", err))
 		}
 
 		if opts.ConversationPK != "" && previousInteraction.ConversationPublicKey != opts.ConversationPK {
-			return nil, nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("specified interaction cid and conversation pk doesn't match"))
+			return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("specified interaction cid and conversation pk doesn't match"))
 		}
 
 		conversationPks = []string{previousInteraction.ConversationPublicKey}
@@ -599,14 +582,14 @@ func (d *DBWrapper) GetPaginatedInteractions(opts *messengertypes.PaginatedInter
 			Order(order).
 			Pluck("cid", &cidsForConv).
 			Error; err != nil {
-			return nil, nil, errcode.ErrDBRead.Wrap(fmt.Errorf("unable to list latest cids for conversation: %w", err))
+			return nil, errcode.ErrDBRead.Wrap(fmt.Errorf("unable to list latest cids for conversation: %w", err))
 		}
 
 		cids = append(cids, cidsForConv...)
 	}
 
 	if len(cids) == 0 {
-		return nil, nil, nil
+		return nil, nil
 	}
 
 	if err := d.db.
@@ -614,31 +597,10 @@ func (d *DBWrapper) GetPaginatedInteractions(opts *messengertypes.PaginatedInter
 		Order(order).
 		Find(&interactions, cids).
 		Error; err != nil {
-		return nil, nil, errcode.ErrDBRead.Wrap(fmt.Errorf("unable to fetch interactions: %w", err))
+		return nil, errcode.ErrDBRead.Wrap(fmt.Errorf("unable to fetch interactions: %w", err))
 	}
 
-	if !opts.ExcludeMedias {
-		if err := d.db.
-			Preload(clause.Associations).
-			Model(&messengertypes.Media{}).
-			Where("media.interaction_cid IN (?)", cids).
-			Find(&medias).
-			Error; err != nil {
-			return nil, nil, errcode.ErrDBRead.Wrap(fmt.Errorf("unable to fetch medias: %w", err))
-		}
-	}
-
-	// TODO: find a way to do this in one SQL call instead of parsing and do a db call for each interaction
-	for _, interaction := range interactions {
-		var err error
-		// add reactions to interaction
-		interaction.Reactions, err = d.BuildReactionsView(interaction.CID)
-		if err != nil {
-			return nil, nil, errcode.ErrDBRead.Wrap(err)
-		}
-	}
-
-	return interactions, medias, nil
+	return interactions, nil
 }
 
 func (d *DBWrapper) GetInteractionByCID(cid string) (*messengertypes.Interaction, error) {
@@ -865,13 +827,7 @@ func (d *DBWrapper) GetDBInfo() (*messengertypes.SystemInfo_DB, error) {
 	infos.ConversationReplicationInfo, err = d.dbModelRowsCount(messengertypes.ConversationReplicationInfo{})
 	errs = multierr.Append(errs, err)
 
-	infos.Reactions, err = d.dbModelRowsCount(messengertypes.Reaction{})
-	errs = multierr.Append(errs, err)
-
 	infos.MetadataEvents, err = d.dbModelRowsCount(messengertypes.MetadataEvent{})
-	errs = multierr.Append(errs, err)
-
-	infos.Medias, err = d.dbModelRowsCount(messengertypes.Media{})
 	errs = multierr.Append(errs, err)
 
 	infos.SharedPushTokens, err = d.dbModelRowsCount(messengertypes.SharedPushToken{})
@@ -998,35 +954,6 @@ func (d *DBWrapper) AddInteraction(rawInte messengertypes.Interaction) (*messeng
 	return i, isNew, nil
 }
 
-func (d *DBWrapper) GetReplyOptionsCIDForConversation(pk string) (string, error) {
-	if pk == "" {
-		return "", errcode.ErrInvalidInput.Wrap(fmt.Errorf("a conversation public key is required"))
-	}
-
-	cid := ""
-
-	if err := d.db.Model(&messengertypes.Interaction{}).
-		Raw(`SELECT cid
-			FROM interactions
-			WHERE conversation_public_key = ?
-			AND ROWID >
-				IFNULL ((
-					SELECT MAX(ROWID)
-					FROM interactions
-					WHERE conversation_public_key = ?
-					AND is_mine = true
-				), 0)
-			AND is_mine = false
-			AND type = ?
-			ORDER BY ROWID DESC
-			LIMIT 1
-		`, pk, pk, messengertypes.AppMessage_TypeReplyOptions).Scan(&cid).Error; err != nil {
-		return "", err
-	}
-
-	return cid, nil
-}
-
 func (d *DBWrapper) AttributeBacklogInteractions(devicePK, groupPK, memberPK string) ([]*messengertypes.Interaction, error) {
 	if devicePK == "" {
 		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing device public key"))
@@ -1094,7 +1021,6 @@ func (d *DBWrapper) AddMember(memberPK, groupPK, displayName, avatarCID string, 
 	member := &messengertypes.Member{
 		PublicKey:             memberPK,
 		ConversationPublicKey: groupPK,
-		AvatarCID:             avatarCID,
 		IsCreator:             isCreator,
 		IsMe:                  isMe,
 		DisplayName:           displayName,
@@ -1310,141 +1236,6 @@ func (d *DBWrapper) SaveConversationReplicationInfo(c messengertypes.Conversatio
 	return nil
 }
 
-func (d *DBWrapper) AddMedias(medias []*messengertypes.Media) ([]bool, error) {
-	if len(medias) == 0 {
-		return []bool{}, nil
-	}
-
-	for _, m := range medias {
-		if err := messengerutil.EnsureValidBase64CID(m.GetCID()); err != nil {
-			return nil, errcode.ErrInvalidInput.Wrap(err)
-		}
-	}
-
-	var dbMedias []*messengertypes.Media
-	cids := make([]string, len(medias))
-	for i, m := range medias {
-		cids[i] = m.GetCID()
-	}
-	if err := d.db.Model(&messengertypes.Media{}).Where("cid IN ?", cids).Find(&dbMedias).Error; err != nil {
-		return nil, errcode.ErrDBRead.Wrap(err)
-	}
-
-	willAdd := make([]bool, len(medias))
-	for i, m := range medias {
-		found := false
-		for _, n := range dbMedias {
-			if m.GetCID() == n.GetCID() {
-				found = true
-				break
-			}
-		}
-		if !found {
-			willAdd[i] = true
-		}
-	}
-
-	if err := d.db.Clauses(clause.OnConflict{DoNothing: true}).Create(medias).Error; err != nil {
-		return nil, errcode.ErrDBWrite.Wrap(err)
-	}
-
-	d.logStep(fmt.Sprintf("Maybe added %d/%d medias to db", len(willAdd), len(medias)), tyber.WithJSONDetail("InputMedias", medias), tyber.WithJSONDetail("Added", willAdd))
-	return willAdd, nil
-}
-
-// atomic
-func (d *DBWrapper) GetMedias(cids []string) ([]*messengertypes.Media, error) {
-	if len(cids) == 0 {
-		return nil, nil
-	}
-	for _, c := range cids {
-		if err := messengerutil.EnsureValidBase64CID(c); err != nil {
-			return nil, errcode.ErrInvalidInput.Wrap(err)
-		}
-	}
-
-	var dbMedias []*messengertypes.Media
-	err := d.db.Model(&messengertypes.Media{}).Where("cid IN ?", cids).Find(&dbMedias).Error
-	if err != nil {
-		return nil, errcode.ErrDBRead.Wrap(err)
-	}
-
-	medias := make([]*messengertypes.Media, len(cids))
-	for i, cid := range cids {
-		medias[i] = &messengertypes.Media{CID: cid}
-		for _, dbMedia := range dbMedias {
-			if dbMedia.GetCID() == cid {
-				medias[i] = dbMedia
-			}
-		}
-	}
-	return medias, nil
-}
-
-func (d *DBWrapper) GetAllMedias() ([]*messengertypes.Media, error) {
-	var medias []*messengertypes.Media
-	err := d.db.Find(&medias).Error
-	if err != nil {
-		return nil, errcode.ErrDBRead.Wrap(err)
-	}
-	return medias, nil
-}
-
-type NextMediaOpts struct {
-	FileNames []string
-	MimeTypes []string
-}
-
-func (d *DBWrapper) GetNextMedia(lastCID string, opts NextMediaOpts) (*messengertypes.Media, error) {
-	cid := ""
-	media := &messengertypes.Media{}
-
-	query := `
-		SELECT media.cid
-		FROM interactions
-		JOIN media ON media.interaction_cid = interactions.cid
-		JOIN (
-			SELECT conversation_public_key, sent_date
-			FROM interactions
-			WHERE cid = (
-				SELECT interaction_cid FROM media WHERE cid = ?
-			)
-		) as ctx_ref
-		WHERE interactions.conversation_public_key = ctx_ref.conversation_public_key
-		AND interactions.sent_date > ctx_ref.sent_date`
-
-	queryArgs := []interface{}{lastCID}
-
-	if len(opts.MimeTypes) > 0 {
-		query += `
-		AND media.mime_type IN ?`
-		queryArgs = append(queryArgs, opts.MimeTypes)
-	}
-
-	if len(opts.FileNames) > 0 {
-		query += `
-		AND media.filename IN ?`
-		queryArgs = append(queryArgs, opts.FileNames)
-	}
-
-	query += `
-	LIMIT 1`
-
-	if err := d.db.Model(&messengertypes.Media{}).Raw(query, queryArgs...).Scan(&cid).Error; err != nil {
-		return nil, err
-	}
-
-	if cid == "" {
-		return nil, errcode.ErrNotFound
-	}
-
-	if err := d.db.Model(&messengertypes.Media{}).First(&media, &messengertypes.Media{CID: cid}).Error; err != nil {
-		return nil, errcode.ErrDBRead.Wrap(err)
-	}
-
-	return media, nil
-}
-
 func (d *DBWrapper) InteractionIndexText(interactionCID string, text string) error {
 	if d.disableFTS {
 		d.log.Info("full text search is not enabled")
@@ -1582,23 +1373,7 @@ func (d *DBWrapper) GetAugmentedInteraction(cid string) (*messengertypes.Interac
 		return nil, errcode.ErrDBRead.Wrap(err)
 	}
 
-	inte.Reactions, err = d.BuildReactionsView(cid)
-	if err != nil {
-		return nil, errcode.ErrDBRead.Wrap(err)
-	}
-
 	return inte, nil
-}
-
-func (d *DBWrapper) BuildReactionsView(cid string) ([]*messengertypes.Interaction_ReactionView, error) {
-	views := ([]*messengertypes.Interaction_ReactionView)(nil)
-	if err := d.db.Raw(
-		"SELECT count(*) AS count, emoji, MAX(is_mine) > 0 AS own_state FROM reactions WHERE target_cid = ? AND state = true GROUP BY emoji ORDER BY MIN(state_date) ASC",
-		cid,
-	).Scan(&views).Error; err != nil {
-		return nil, errcode.ErrDBRead.Wrap(err)
-	}
-	return views, nil
 }
 
 func (d *DBWrapper) wasMetadataEventHandled(id ipfscid.Cid) (bool, error) {
@@ -1706,53 +1481,6 @@ func (d *DBWrapper) KeepDatabaseLocalState() *messengertypes.LocalDatabaseState 
 	return keepDatabaseLocalState(d.db, d.log)
 }
 
-func (d *DBWrapper) GetCurrentReactionsByValueAndMember(memberPublicKey string, targetCID string, emoji string) ([]*messengertypes.Reaction, error) {
-	existingReactions := ([]*messengertypes.Reaction)(nil)
-	if err := d.db.Where(&messengertypes.Reaction{
-		MemberPublicKey: memberPublicKey,
-		TargetCID:       targetCID,
-		Emoji:           emoji,
-	}).Find(&existingReactions).Error; err != nil {
-		return nil, errcode.ErrDBRead.Wrap(err)
-	}
-
-	return existingReactions, nil
-}
-
-func (d *DBWrapper) CreateOrUpdateReaction(reaction *messengertypes.Reaction) (bool, error) {
-	updated := false
-
-	if err := d.TX(d.ctx, func(tx *DBWrapper) error {
-		existingReactions, err := tx.GetCurrentReactionsByValueAndMember(reaction.MemberPublicKey, reaction.TargetCID, reaction.Emoji)
-		if err != nil {
-			return err
-		}
-
-		if len(existingReactions) != 0 {
-			for _, r := range existingReactions {
-				if reaction.StateDate > r.StateDate {
-					if err := tx.db.Select("state", "state_date").Updates(&reaction).Error; err != nil {
-						return errcode.ErrDBWrite.Wrap(err)
-					}
-					updated = true
-				}
-			}
-		} else {
-			if err := tx.db.Create(&reaction).Error; err != nil {
-				return errcode.ErrDBWrite.Wrap(err)
-			}
-
-			updated = true
-		}
-
-		return nil
-	}); err != nil {
-		return false, err
-	}
-
-	return updated, nil
-}
-
 func (d *DBWrapper) MarkMemberAsConversationCreator(memberPK, conversationPK string) error {
 	member, err := d.GetMemberByPK(memberPK, conversationPK)
 	if err != nil {
@@ -1819,17 +1547,6 @@ func (d *DBWrapper) GetPushTokenSharedForConversation(pk string) ([]*messengerty
 	}
 
 	return tokens, nil
-}
-
-func (d *DBWrapper) GetInteractionReactionsForEmoji(cid string, emoji string) ([]*messengertypes.Reaction, error) {
-	var reactions []*messengertypes.Reaction
-	if err := d.db.
-		Where("target_cid = ? AND state = ? AND emoji = ?", cid, true, emoji).
-		Find(&reactions).
-		Error; err != nil {
-		return nil, errcode.ErrDBRead.Wrap(err)
-	}
-	return reactions, nil
 }
 
 func (d *DBWrapper) MuteConversation(pk string, until int64) error {

@@ -40,14 +40,6 @@ export type MessengerMethodsHooks = {
 		called: boolean
 		loading: boolean
 	}
-	useSendReplyOptions: () => {
-		error: any
-		call: (req?: beapi.messenger.SendReplyOptions.IRequest) => void
-		reply: beapi.messenger.SendReplyOptions.IReply | null
-		done: boolean
-		called: boolean
-		loading: boolean
-	}
 	useSystemInfo: () => {
 		error: any
 		call: (req?: beapi.messenger.SystemInfo.IRequest) => void
@@ -176,14 +168,6 @@ export type MessengerMethodsHooks = {
 		called: boolean
 		loading: boolean
 	}
-	useMediaGetRelated: () => {
-		error: any
-		call: (req?: beapi.messenger.MediaGetRelated.IRequest) => void
-		reply: beapi.messenger.MediaGetRelated.IReply | null
-		done: boolean
-		called: boolean
-		loading: boolean
-	}
 	useMessageSearch: () => {
 		error: any
 		call: (req?: beapi.messenger.MessageSearch.IRequest) => void
@@ -220,14 +204,6 @@ export type MessengerMethodsHooks = {
 		error: any
 		call: (req?: beapi.messenger.PushReceive.IRequest) => void
 		reply: beapi.messenger.PushReceive.IReply | null
-		done: boolean
-		called: boolean
-		loading: boolean
-	}
-	useInteractionReactionsForEmoji: () => {
-		error: any
-		call: (req?: beapi.messenger.InteractionReactionsForEmoji.IRequest) => void
-		reply: beapi.messenger.InteractionReactionsForEmoji.IReply | null
 		done: boolean
 		called: boolean
 		loading: boolean

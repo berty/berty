@@ -174,19 +174,6 @@ const genFakeInteractionsMap = ({
 				memberPublicKey: member.publicKey,
 				sentDate: Long.fromNumber(lastSent.getTime()),
 				acknowledged: faker.datatype.boolean(),
-				reactions: range(0, faker.datatype.number({ min: 0, max: 5 }))
-					.map(() => {
-						const ownState = faker.datatype.boolean()
-						const ownCount = ownState ? 1 : 0
-						return {
-							emoji: faker.internet.emoji(),
-							ownState,
-							count: Long.fromNumber(
-								faker.datatype.number({ min: 0, max: convMembers.length - 1 }) + ownCount,
-							),
-						}
-					})
-					.filter(reaction => reaction.count.gt(0)),
 			}
 			lastSent = faker.date.recent(1, lastSent)
 			intes[conv.publicKey || ''].push(inte)

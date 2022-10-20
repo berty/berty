@@ -812,36 +812,36 @@ func Test_dbWrapper_updateAccount(t *testing.T) {
 	db, _, dispose := GetInMemoryTestDB(t)
 	defer dispose()
 
-	acc, err := db.UpdateAccount("", "https://url1/", "DisplayName1", "")
+	acc, err := db.UpdateAccount("", "https://url1/", "DisplayName1")
 	require.Error(t, err)
 	require.True(t, errcode.Is(err, errcode.ErrInvalidInput))
 	require.Nil(t, acc)
 
-	acc, err = db.UpdateAccount("pk_1", "https://url1/", "DisplayName1", "")
+	acc, err = db.UpdateAccount("pk_1", "https://url1/", "DisplayName1")
 	require.Error(t, err)
 	require.Nil(t, acc)
 
 	db.db.Create(&messengertypes.Account{PublicKey: "pk_1"})
 
-	acc, err = db.UpdateAccount("pk_1", "", "", "")
+	acc, err = db.UpdateAccount("pk_1", "", "")
 	require.NoError(t, err)
 	require.NotNil(t, acc)
 	require.Equal(t, "", acc.Link)
 	require.Equal(t, "", acc.DisplayName)
 
-	acc, err = db.UpdateAccount("pk_1", "https://url1/", "DisplayName1", "")
+	acc, err = db.UpdateAccount("pk_1", "https://url1/", "DisplayName1")
 	require.NoError(t, err)
 	require.NotNil(t, acc)
 	require.Equal(t, "https://url1/", acc.Link)
 	require.Equal(t, "DisplayName1", acc.DisplayName)
 
-	acc, err = db.UpdateAccount("pk_1", "https://url2/", "", "")
+	acc, err = db.UpdateAccount("pk_1", "https://url2/", "")
 	require.NoError(t, err)
 	require.NotNil(t, acc)
 	require.Equal(t, "https://url2/", acc.Link)
 	require.Equal(t, "DisplayName1", acc.DisplayName)
 
-	acc, err = db.UpdateAccount("pk_1", "", "DisplayName2", "")
+	acc, err = db.UpdateAccount("pk_1", "", "DisplayName2")
 	require.NoError(t, err)
 	require.NotNil(t, acc)
 	require.Equal(t, "https://url2/", acc.Link)
@@ -957,29 +957,12 @@ func Test_dbWrapper_getConversationByPK(t *testing.T) {
 	require.Equal(t, "conversation_1", conversation.PublicKey)
 	require.NotEmpty(t, conversation.ReplicationInfo)
 	require.Equal(t, "cid_1", conversation.ReplicationInfo[0].CID)
-	require.Nil(t, conversation.ReplyOptions)
-
-	require.NoError(t, db.db.Create(&messengertypes.Interaction{
-		CID:                   "cid_2",
-		ConversationPublicKey: "conversation_1",
-	}).Error)
-	require.NoError(t, db.db.Updates(&messengertypes.Conversation{PublicKey: "conversation_1", ReplyOptionsCID: "cid_2"}).Error)
-
-	conversation, err = db.GetConversationByPK("conversation_1")
-	require.NoError(t, err)
-	require.NotNil(t, conversation)
-	require.Equal(t, "conversation_1", conversation.PublicKey)
-	require.NotNil(t, conversation.ReplyOptions)
-	require.Equal(t, "cid_2", conversation.ReplyOptionsCID)
-	require.Equal(t, "cid_2", conversation.ReplyOptions.CID)
 
 	db.db.Create(&messengertypes.Conversation{PublicKey: "conversation_2"})
 	conversation, err = db.GetConversationByPK("conversation_2")
 	require.NoError(t, err)
 	require.NotNil(t, conversation)
 	require.Equal(t, "conversation_2", conversation.PublicKey)
-	require.Nil(t, conversation.ReplyOptions)
-	require.Empty(t, conversation.ReplyOptionsCID)
 }
 
 func Test_dbWrapper_getDBInfo(t *testing.T) {
@@ -1022,19 +1005,11 @@ func Test_dbWrapper_getDBInfo(t *testing.T) {
 		db.db.Create(&messengertypes.ConversationReplicationInfo{CID: fmt.Sprintf("%d", i)})
 	}
 
-	for i := 0; i < 9; i++ {
-		db.db.Create(&messengertypes.Reaction{Emoji: fmt.Sprintf("%d", i)})
-	}
-
 	for i := 0; i < 10; i++ {
 		db.db.Create(&messengertypes.MetadataEvent{CID: fmt.Sprintf("%d", i)})
 	}
 
 	for i := 0; i < 11; i++ {
-		db.db.Create(&messengertypes.Media{CID: fmt.Sprintf("%d", i)})
-	}
-
-	for i := 0; i < 12; i++ {
 		db.db.Create(&messengertypes.SharedPushToken{
 			ConversationPublicKey: fmt.Sprintf("%d", i),
 			MemberPublicKey:       fmt.Sprintf("%d", i),
@@ -1053,16 +1028,14 @@ func Test_dbWrapper_getDBInfo(t *testing.T) {
 	require.Equal(t, int64(6), info.Devices)
 	require.Equal(t, int64(7), info.ServiceTokens)
 	require.Equal(t, int64(8), info.ConversationReplicationInfo)
-	require.Equal(t, int64(9), info.Reactions)
 	require.Equal(t, int64(10), info.MetadataEvents)
-	require.Equal(t, int64(11), info.Medias)
-	require.Equal(t, int64(12), info.SharedPushTokens)
+	require.Equal(t, int64(11), info.SharedPushTokens)
 
 	// Ensure all tables are in the debug data
 	tables := []string(nil)
 	err = db.db.Raw("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' AND name NOT LIKE '%_fts%'").Scan(&tables).Error
 	require.NoError(t, err)
-	expectedTablesCount := 12
+	expectedTablesCount := 10
 	require.Equal(t, expectedTablesCount, len(tables), fmt.Sprintf("expected %d tables in DB, got tables %s", expectedTablesCount, strings.Join(tables, ", ")))
 }
 
@@ -1376,169 +1349,7 @@ func Test_dbWrapper_addServiceToken(t *testing.T) {
 	require.Error(t, db.db.Model(&messengertypes.ServiceToken{}).Where(&messengertypes.ServiceToken{TokenID: tok2.TokenID(), ServiceType: "srv2"}).First(&tok).Error)
 }
 
-func Test_dbWrapper_getReplyOptionsCIDForConversation(t *testing.T) {
-	db, _, dispose := GetInMemoryTestDB(t)
-	defer dispose()
-
-	cid, err := db.GetReplyOptionsCIDForConversation("")
-	require.Error(t, err)
-	require.Equal(t, "", cid)
-
-	cid, err = db.GetReplyOptionsCIDForConversation("unknown_conversation")
-	require.NoError(t, err)
-	require.Equal(t, "", cid)
-
-	db.db.Create(&messengertypes.Interaction{CID: "cid_1", Type: messengertypes.AppMessage_TypeReplyOptions, ConversationPublicKey: "conv_1", IsMine: false})
-
-	cid, err = db.GetReplyOptionsCIDForConversation("conv_1")
-	require.NoError(t, err)
-	require.Equal(t, "cid_1", cid)
-
-	db.db.Create(&messengertypes.Interaction{CID: "cid_2", Type: messengertypes.AppMessage_TypeUserMessage, ConversationPublicKey: "conv_1", IsMine: false})
-
-	cid, err = db.GetReplyOptionsCIDForConversation("conv_1")
-	require.NoError(t, err)
-	require.Equal(t, "cid_1", cid)
-
-	db.db.Create(&messengertypes.Interaction{CID: "cid_3", Type: messengertypes.AppMessage_TypeReplyOptions, ConversationPublicKey: "conv_1", IsMine: false})
-
-	cid, err = db.GetReplyOptionsCIDForConversation("conv_1")
-	require.NoError(t, err)
-	require.Equal(t, "cid_3", cid)
-
-	db.db.Create(&messengertypes.Interaction{CID: "cid_4", Type: messengertypes.AppMessage_TypeUserMessage, ConversationPublicKey: "conv_1", IsMine: true})
-
-	cid, err = db.GetReplyOptionsCIDForConversation("conv_1")
-	require.NoError(t, err)
-	require.Equal(t, "", cid)
-}
-
-func Test_dbWrapper_addMedias_none(t *testing.T) {
-	db, _, dispose := GetInMemoryTestDB(t)
-	defer dispose()
-
-	added, err := db.AddMedias([]*messengertypes.Media{})
-	require.NoError(t, err)
-	require.Equal(t, []bool{}, added)
-
-	var medias []*messengertypes.Media
-	require.NoError(t, db.db.Find(&medias).Error)
-	require.Empty(t, medias)
-}
-
-func Test_dbWrapper_addMedias_one(t *testing.T) {
-	db, _, dispose := GetInMemoryTestDB(t)
-	defer dispose()
-
-	media := messengertypes.Media{
-		CID: "EiBnLu1b0PFzPcVd_QPPfhzIs0kmzAH2g0VUfiAqvIXMLg", InteractionCID: "testInteractionCID",
-		MimeType: "testMimeType", Filename: "testFilename", DisplayName: "testDisplayName",
-		State: messengertypes.Media_StateDownloaded,
-	}
-
-	added, err := db.AddMedias([]*messengertypes.Media{&media})
-	require.NoError(t, err)
-	require.Equal(t, []bool{true}, added)
-
-	var medias []*messengertypes.Media
-	require.NoError(t, db.db.Find(&medias).Error)
-
-	require.Equal(t, 1, len(medias))
-	require.Equal(t, &media, medias[0])
-}
-
-func Test_dbWrapper_addMedias_mix(t *testing.T) {
-	db, _, dispose := GetInMemoryTestDB(t)
-	defer dispose()
-
-	testMedias := []*messengertypes.Media{
-		{CID: "EiBnLu1b0PFzPcVd_QPPfhzIs0kmzAH2g0VUfiAqvIXMLg"},
-		{CID: "EiBnLu1b0PFzPcVd_QPPfhzIs1kmzAH2g0VUfiAqvIXMLg", MimeType: "testMimeType1", Filename: "testFilename1"},
-		{
-			CID: "EiBnLu1b0PFzPcVd_QPPfhzIs2kmzAH2g0VUfiAqvIXMLg", InteractionCID: "testInteractionCID", MimeType: "testMimeType2",
-			Filename: "testFilename2", DisplayName: "testDisplayName", State: messengertypes.Media_StateDownloaded,
-		},
-	}
-
-	added, err := db.AddMedias(testMedias)
-	require.NoError(t, err)
-	require.Equal(t, []bool{true, true, true}, added)
-	added, err = db.AddMedias(testMedias)
-	require.NoError(t, err)
-	require.Equal(t, []bool{false, false, false}, added)
-
-	var medias []*messengertypes.Media
-	require.NoError(t, db.db.Find(&medias).Error)
-	require.Equal(t, testMedias, medias)
-}
-
-func Test_dbWrapper_getMedias_none(t *testing.T) {
-	db, _, dispose := GetInMemoryTestDB(t)
-	defer dispose()
-
-	medias, err := db.GetMedias(nil)
-	require.NoError(t, err)
-	require.Empty(t, medias)
-
-	medias, err = db.GetMedias([]string{})
-	require.NoError(t, err)
-	require.Empty(t, medias)
-
-	testMedia := messengertypes.Media{CID: "EiBnLu1b0PFzPcVd_QPPfhzIs0kmzAH2g0VUfiAqvIXMLg"}
-	medias, err = db.GetMedias([]string{testMedia.CID})
-	require.NoError(t, err)
-	require.Equal(t, 1, len(medias))
-	require.Equal(t, &testMedia, medias[0])
-}
-
-func Test_dbWrapper_getMedias_one(t *testing.T) {
-	db, _, dispose := GetInMemoryTestDB(t)
-	defer dispose()
-
-	testMedia := messengertypes.Media{
-		CID: "EiBnLu1b0PFzPcVd_QPPfhzIs0kmzAH2g0VUfiAqvIXMLg", InteractionCID: "testInteractionCID",
-		MimeType: "testMimeType", Filename: "testFilename", DisplayName: "testDisplayName",
-		State: messengertypes.Media_StateDownloaded,
-	}
-
-	added, err := db.AddMedias([]*messengertypes.Media{&testMedia})
-	require.NoError(t, err)
-	require.Equal(t, []bool{true}, added)
-
-	medias, err := db.GetMedias([]string{testMedia.CID})
-	require.NoError(t, err)
-	require.Equal(t, 1, len(medias))
-	require.Equal(t, &testMedia, medias[0])
-}
-
-func Test_dbWrapper_getMedias_mix(t *testing.T) {
-	db, _, dispose := GetInMemoryTestDB(t)
-	defer dispose()
-
-	testMedias := []*messengertypes.Media{
-		{CID: "EiBnLu1b0PFzPcVd_QPPfhzIs0kmzAH2g0VUfiAqvIXMLg"},
-		{CID: "EiBnLu1b0PFzPcVd_QPPfhzIs1kmzAH2g0VUfiAqvIXMLg", MimeType: "testMimeType1", Filename: "testFilename1"},
-		{
-			CID: "EiBnLu1b0PFzPcVd_QPPfhzIs2kmzAH2g0VUfiAqvIXMLg", InteractionCID: "testInteractionCID", MimeType: "testMimeType2",
-			Filename: "testFilename2", DisplayName: "testDisplayName", State: messengertypes.Media_StateDownloaded,
-		},
-	}
-
-	added, err := db.AddMedias(testMedias)
-	require.NoError(t, err)
-	require.Equal(t, []bool{true, true, true}, added)
-
-	cids := make([]string, len(testMedias))
-	for i, m := range testMedias {
-		cids[i] = m.GetCID()
-	}
-
-	medias, err := db.GetMedias(cids)
-	require.NoError(t, err)
-	require.Equal(t, testMedias, medias)
-}
-
-func Test_dbWrapper_getLatestInteractionAndMediaPerConversation(t *testing.T) {
+func Test_dbWrapper_getLatestInteractionPerConversation(t *testing.T) {
 	db, _, dispose := GetInMemoryTestDB(t)
 	defer dispose()
 
@@ -1554,36 +1365,24 @@ func Test_dbWrapper_getLatestInteractionAndMediaPerConversation(t *testing.T) {
 				SentDate:              int64(i*100 + j),
 			}).Error
 			require.NoError(t, err)
-
-			if j >= 8 {
-				err := db.db.Create(&messengertypes.Media{
-					CID:            fmt.Sprintf("c%d_i%d_m", i, j),
-					InteractionCID: fmt.Sprintf("c%d_i%d", i, j),
-				}).Error
-				require.NoError(t, err)
-			}
 		}
 	}
 
-	interactions, medias, err := db.GetPaginatedInteractions(&messengertypes.PaginatedInteractionsOptions{Amount: 5})
+	interactions, err := db.GetPaginatedInteractions(&messengertypes.PaginatedInteractionsOptions{Amount: 5})
 	require.NoError(t, err)
 	require.Len(t, interactions, 40)
-	require.Len(t, medias, 3)
 
-	interactions, medias, err = db.GetPaginatedInteractions(&messengertypes.PaginatedInteractionsOptions{RefCID: "c9_i9", Amount: 5})
+	interactions, err = db.GetPaginatedInteractions(&messengertypes.PaginatedInteractionsOptions{RefCID: "c9_i9", Amount: 5})
 	require.NoError(t, err)
 	require.Len(t, interactions, 5)
-	require.Len(t, medias, 1)
 
-	interactions, medias, err = db.GetPaginatedInteractions(&messengertypes.PaginatedInteractionsOptions{RefCID: "c9_i7", Amount: 5, OldestToNewest: true})
+	interactions, err = db.GetPaginatedInteractions(&messengertypes.PaginatedInteractionsOptions{RefCID: "c9_i7", Amount: 5, OldestToNewest: true})
 	require.NoError(t, err)
 	require.Len(t, interactions, 2)
-	require.Len(t, medias, 2)
 
-	interactions, medias, err = db.GetPaginatedInteractions(&messengertypes.PaginatedInteractionsOptions{ConversationPK: "c8", RefCID: "c9_i9", Amount: 5})
+	interactions, err = db.GetPaginatedInteractions(&messengertypes.PaginatedInteractionsOptions{ConversationPK: "c8", RefCID: "c9_i9", Amount: 5})
 	require.Error(t, err)
 	require.Len(t, interactions, 0)
-	require.Len(t, medias, 0)
 }
 
 func Test_dbWrapper_getLatestInteractionAndMediaPerConversation_sorting(t *testing.T) {
@@ -1603,10 +1402,9 @@ func Test_dbWrapper_getLatestInteractionAndMediaPerConversation_sorting(t *testi
 		require.NoError(t, err)
 	}
 
-	interactions, medias, err := db.GetPaginatedInteractions(&messengertypes.PaginatedInteractionsOptions{ConversationPK: "c1", Amount: 5})
+	interactions, err := db.GetPaginatedInteractions(&messengertypes.PaginatedInteractionsOptions{ConversationPK: "c1", Amount: 5})
 	require.NoError(t, err)
 	require.Len(t, interactions, 5)
-	require.Len(t, medias, 0)
 
 	require.Equal(t, "c1_i99", interactions[0].CID)
 	require.Equal(t, "c1_i98", interactions[1].CID)
@@ -1614,10 +1412,9 @@ func Test_dbWrapper_getLatestInteractionAndMediaPerConversation_sorting(t *testi
 	require.Equal(t, "c1_i96", interactions[3].CID)
 	require.Equal(t, "c1_i95", interactions[4].CID)
 
-	interactions, medias, err = db.GetPaginatedInteractions(&messengertypes.PaginatedInteractionsOptions{ConversationPK: "c1", Amount: 5, RefCID: "c1_i95"})
+	interactions, err = db.GetPaginatedInteractions(&messengertypes.PaginatedInteractionsOptions{ConversationPK: "c1", Amount: 5, RefCID: "c1_i95"})
 	require.NoError(t, err)
 	require.Len(t, interactions, 5)
-	require.Len(t, medias, 0)
 
 	require.Equal(t, "c1_i94", interactions[0].CID)
 	require.Equal(t, "c1_i93", interactions[1].CID)
@@ -1625,19 +1422,17 @@ func Test_dbWrapper_getLatestInteractionAndMediaPerConversation_sorting(t *testi
 	require.Equal(t, "c1_i91", interactions[3].CID)
 	require.Equal(t, "c1_i90", interactions[4].CID)
 
-	interactions, medias, err = db.GetPaginatedInteractions(&messengertypes.PaginatedInteractionsOptions{ConversationPK: "c1", Amount: 5, RefCID: "c1_i03"})
+	interactions, err = db.GetPaginatedInteractions(&messengertypes.PaginatedInteractionsOptions{ConversationPK: "c1", Amount: 5, RefCID: "c1_i03"})
 	require.NoError(t, err)
 	require.Len(t, interactions, 3)
-	require.Len(t, medias, 0)
 
 	require.Equal(t, "c1_i02", interactions[0].CID)
 	require.Equal(t, "c1_i01", interactions[1].CID)
 	require.Equal(t, "c1_i00", interactions[2].CID)
 
-	interactions, medias, err = db.GetPaginatedInteractions(&messengertypes.PaginatedInteractionsOptions{ConversationPK: "c1", Amount: 5, OldestToNewest: true})
+	interactions, err = db.GetPaginatedInteractions(&messengertypes.PaginatedInteractionsOptions{ConversationPK: "c1", Amount: 5, OldestToNewest: true})
 	require.NoError(t, err)
 	require.Len(t, interactions, 5)
-	require.Len(t, medias, 0)
 
 	require.Equal(t, "c1_i00", interactions[0].CID)
 	require.Equal(t, "c1_i01", interactions[1].CID)
@@ -1645,10 +1440,9 @@ func Test_dbWrapper_getLatestInteractionAndMediaPerConversation_sorting(t *testi
 	require.Equal(t, "c1_i03", interactions[3].CID)
 	require.Equal(t, "c1_i04", interactions[4].CID)
 
-	interactions, medias, err = db.GetPaginatedInteractions(&messengertypes.PaginatedInteractionsOptions{ConversationPK: "c1", Amount: 5, RefCID: "c1_i04", OldestToNewest: true})
+	interactions, err = db.GetPaginatedInteractions(&messengertypes.PaginatedInteractionsOptions{ConversationPK: "c1", Amount: 5, RefCID: "c1_i04", OldestToNewest: true})
 	require.NoError(t, err)
 	require.Len(t, interactions, 5)
-	require.Len(t, medias, 0)
 
 	require.Equal(t, "c1_i05", interactions[0].CID)
 	require.Equal(t, "c1_i06", interactions[1].CID)
@@ -1656,10 +1450,9 @@ func Test_dbWrapper_getLatestInteractionAndMediaPerConversation_sorting(t *testi
 	require.Equal(t, "c1_i08", interactions[3].CID)
 	require.Equal(t, "c1_i09", interactions[4].CID)
 
-	interactions, medias, err = db.GetPaginatedInteractions(&messengertypes.PaginatedInteractionsOptions{ConversationPK: "c1", Amount: 5, RefCID: "c1_i96", OldestToNewest: true})
+	interactions, err = db.GetPaginatedInteractions(&messengertypes.PaginatedInteractionsOptions{ConversationPK: "c1", Amount: 5, RefCID: "c1_i96", OldestToNewest: true})
 	require.NoError(t, err)
 	require.Len(t, interactions, 3)
-	require.Len(t, medias, 0)
 
 	require.Equal(t, "c1_i97", interactions[0].CID)
 	require.Equal(t, "c1_i98", interactions[1].CID)
@@ -1983,62 +1776,4 @@ func Test_dbWrapper_GetPushTokenSharedForConversation(t *testing.T) {
 	tokens, err := db.GetPushTokenSharedForConversation("conv1")
 	require.NoError(t, err)
 	require.Len(t, tokens, 2)
-}
-
-func Test_dbWrapper_GetInteractionReactionsForEmoji(t *testing.T) {
-	db, _, dispose := GetInMemoryTestDB(t)
-	defer dispose()
-
-	targetCID := "test_cid"
-	mpks := []string{"test_mpk_1", "test_mpk_2", "test_mpk_3", "test_mpk_4"}
-	date := int64(42)
-	emoji := "😼"
-
-	created, err := db.CreateOrUpdateReaction(&messengertypes.Reaction{
-		TargetCID:       targetCID,
-		MemberPublicKey: mpks[0],
-		Emoji:           emoji,
-		StateDate:       date,
-		State:           true,
-		IsMine:          true,
-	})
-	require.NoError(t, err)
-	require.True(t, created)
-
-	created, err = db.CreateOrUpdateReaction(&messengertypes.Reaction{
-		TargetCID:       targetCID,
-		MemberPublicKey: mpks[1],
-		Emoji:           emoji,
-		StateDate:       date,
-		State:           true,
-	})
-	require.NoError(t, err)
-	require.NoError(t, err)
-	require.True(t, created)
-
-	created, err = db.CreateOrUpdateReaction(&messengertypes.Reaction{
-		TargetCID:       targetCID,
-		MemberPublicKey: mpks[2],
-		Emoji:           emoji,
-		StateDate:       date,
-		State:           false,
-	})
-	require.NoError(t, err)
-	require.NoError(t, err)
-	require.True(t, created)
-
-	created, err = db.CreateOrUpdateReaction(&messengertypes.Reaction{
-		TargetCID:       targetCID,
-		MemberPublicKey: mpks[3],
-		Emoji:           "😿",
-		StateDate:       date,
-		State:           true,
-	})
-	require.NoError(t, err)
-	require.NoError(t, err)
-	require.True(t, created)
-
-	infos, err := db.GetInteractionReactionsForEmoji(targetCID, emoji)
-	require.NoError(t, err)
-	require.Len(t, infos, 2)
 }

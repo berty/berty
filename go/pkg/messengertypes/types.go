@@ -40,27 +40,13 @@ func (x *AppMessage_Type) MarshalJSON() ([]byte, error) {
 	return json.Marshal(AppMessage_Undefined.String())
 }
 
-func (x AppMessage_Type) MarshalPayload(sentDate int64, target string, medias []*Media, payload proto.Message) ([]byte, error) {
+func (x AppMessage_Type) MarshalPayload(sentDate int64, target string, payload proto.Message) ([]byte, error) {
 	p, err := proto.Marshal(payload)
 	if err != nil {
 		return nil, err
 	}
 
-	return proto.Marshal(&AppMessage{Type: x, TargetCID: target, Payload: p, SentDate: sentDate, Medias: mediaSliceFilterForNetwork(medias)})
-}
-
-func mediaSliceFilterForNetwork(dbMedias []*Media) []*Media {
-	networkMedias := make([]*Media, len(dbMedias))
-	for i, dbMedia := range dbMedias {
-		networkMedias[i] = &Media{
-			CID:           dbMedia.GetCID(),
-			MimeType:      dbMedia.GetMimeType(),
-			Filename:      dbMedia.GetFilename(),
-			DisplayName:   dbMedia.GetDisplayName(),
-			MetadataBytes: dbMedia.GetMetadataBytes(),
-		}
-	}
-	return networkMedias
+	return proto.Marshal(&AppMessage{Type: x, TargetCID: target, Payload: p, SentDate: sentDate})
 }
 
 // UnmarshalPayload tries to parse an AppMessage payload in the corresponding type.
@@ -73,16 +59,12 @@ func (am AppMessage) UnmarshalPayload() (proto.Message, error) {
 		message = &AppMessage_Acknowledge{}
 	case AppMessage_TypeUserMessage:
 		message = &AppMessage_UserMessage{}
-	case AppMessage_TypeUserReaction:
-		message = &AppMessage_UserReaction{}
 	case AppMessage_TypeGroupInvitation:
 		message = &AppMessage_GroupInvitation{}
 	case AppMessage_TypeSetGroupInfo:
 		message = &AppMessage_SetGroupInfo{}
 	case AppMessage_TypeSetUserInfo:
 		message = &AppMessage_SetUserInfo{}
-	case AppMessage_TypeReplyOptions:
-		message = &AppMessage_ReplyOptions{}
 	default:
 		return nil, errcode.TODO.Wrap(fmt.Errorf("unsupported AppMessage type: %q", am.GetType()))
 	}
@@ -126,8 +108,6 @@ func (event *StreamEvent) UnmarshalPayload() (proto.Message, error) {
 		message = &StreamEvent_MemberUpdated{}
 	case StreamEvent_TypeDeviceUpdated:
 		message = &StreamEvent_DeviceUpdated{}
-	case StreamEvent_TypeMediaUpdated:
-		message = &StreamEvent_MediaUpdated{}
 	case StreamEvent_TypeNotified:
 		message = &StreamEvent_Notified{}
 	case StreamEvent_TypeListEnded:

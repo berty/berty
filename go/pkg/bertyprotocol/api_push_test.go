@@ -87,7 +87,7 @@ func Test_sealPushMessage_decryptOutOfStoreMessageEnv(t *testing.T) {
 
 	testPayload := []byte("test payload")
 
-	envBytes, err := cryptoutil.SealEnvelope(testPayload, otherDS, otherMD.PrivateDevice(), g, nil)
+	envBytes, err := cryptoutil.SealEnvelope(testPayload, otherDS, otherMD.PrivateDevice(), g)
 	require.NoError(t, err)
 
 	env, headers, err := cryptoutil.OpenEnvelopeHeaders(envBytes, g)
@@ -152,7 +152,7 @@ func TestService_PushReceive(t *testing.T) {
 	testPayload := []byte("test payload")
 	devicePushToken := "token_test"
 
-	envBytes, err := cryptoutil.SealEnvelope(testPayload, otherDS, otherMD.PrivateDevice(), g, nil)
+	envBytes, err := cryptoutil.SealEnvelope(testPayload, otherDS, otherMD.PrivateDevice(), g)
 	require.NoError(t, err)
 
 	env, headers, err := cryptoutil.OpenEnvelopeHeaders(envBytes, g)

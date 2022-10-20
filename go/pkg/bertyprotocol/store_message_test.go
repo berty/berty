@@ -49,7 +49,7 @@ func Test_AddMessage_ListMessages_manually_supplying_secrets(t *testing.T) {
 	err = peers[1].MKS.RegisterChainKey(ctx, peers[0].GC.Group(), dPK0, ds0, false)
 	require.NoError(t, err)
 
-	_, err = peers[0].GC.MessageStore().AddMessage(ctx, testMsg1, nil)
+	_, err = peers[0].GC.MessageStore().AddMessage(ctx, testMsg1)
 	require.NoError(t, err)
 
 	<-time.After(time.Millisecond * 500)
@@ -86,7 +86,7 @@ func Test_AddMessage_ListMessages_manually_supplying_secrets(t *testing.T) {
 
 	for i := 0; i < entriesCount; i++ {
 		payload := []byte(fmt.Sprintf("test message %d", i))
-		_, err = peers[0].GC.MessageStore().AddMessage(ctx, payload, nil)
+		_, err = peers[0].GC.MessageStore().AddMessage(ctx, payload)
 		require.NoError(t, err)
 	}
 
@@ -151,7 +151,7 @@ func Test_Add_Messages_To_Cache(t *testing.T) {
 
 	for i := 0; i < entriesCount; i++ {
 		payload := []byte(fmt.Sprintf("test message %d", i))
-		_, err = peers[0].GC.MessageStore().AddMessage(ctx, payload, nil)
+		_, err = peers[0].GC.MessageStore().AddMessage(ctx, payload)
 		require.NoError(t, err)
 	}
 
@@ -212,7 +212,7 @@ func Test_Add_Messages_To_Cache(t *testing.T) {
 	require.True(t, ok)
 	require.Equal(t, 0, size)
 
-	_, err = peers[0].GC.MessageStore().AddMessage(ctx, testMsg1, nil)
+	_, err = peers[0].GC.MessageStore().AddMessage(ctx, testMsg1)
 	require.NoError(t, err)
 
 	size, ok = peers[1].GC.MessageStore().CacheSizeForDevicePK(dPK0Raw)

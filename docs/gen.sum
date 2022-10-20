@@ -8,10 +8,10 @@ e0a1655de0bd86e03bac131c96a7dcd0a616409d  ../api/accounttypes.yaml
 32a7fc91108297910b332969720c09576e9f938e  ../api/bertyverifiablecreds.proto
 c487da32080977a2ec757252b6187633327b5e07  ../api/bertyverifiablecreds.yaml
 c9a201bb6dc2e1ef5b6fd17f5195b551d17bef05  ../api/errcode.proto
-038786285fbde081c2458fb39723f3d8f5648330  ../api/messengertypes.proto
-0bf65c534c7bd4dd9453bfcc828a7be7b2d9dc2f  ../api/messengertypes.yaml
-8a16aed5c26c8c37bb8184d49d192fdce7f26574  ../api/protocoltypes.proto
-082e4ffa1c0c8b0e1349e997b57abdaf0fcf2d86  ../api/protocoltypes.yaml
-429ad083ef1963a77adc439239118d0db65c9d37  ../api/pushtypes.proto
+18f4402787527160b0aacf5524e44cf8c3ac16ad  ../api/messengertypes.proto
+b1a4d391237e859dff4988e16fae4595058d22cb  ../api/messengertypes.yaml
+4b02b0a87caabb590c2c6fee507d0987e5bf5d70  ../api/protocoltypes.proto
+ed9abd8ee68a37459884723b91cd83aecadb8c04  ../api/protocoltypes.yaml
+e4a9d6765ed04780b20d6e4cbfa10162e36c5e48  ../api/pushtypes.proto
 00284c7d54f219f2d66852350c00cbff87a14620  ../api/pushtypes.yaml
 3b24f8f94b17cce89e535ea22432b75769bce542  Makefile

@@ -131,14 +131,9 @@ func (m *MessageStore) ProcessMessageQueueForDevicePK(ctx context.Context, devic
 
 func (m *MessageStore) processMessage(ctx context.Context, ownPK crypto.PubKey, message *messageItem) (*protocoltypes.GroupMessageEvent, error) {
 	// process message
-	msg, attachmentsCIDs, err := m.mks.OpenEnvelopePayload(ctx, message.env, message.headers, m.g, ownPK, message.hash)
+	msg, err := m.mks.OpenEnvelopePayload(ctx, message.env, message.headers, m.g, ownPK, message.hash)
 	if err != nil {
 		return nil, err
-	}
-
-	err = m.devKS.AttachmentSecretSlicePut(attachmentsCIDs, msg.GetProtocolMetadata().GetAttachmentsSecrets())
-	if err != nil {
-		m.logger.Error("unable to put attachments keys in keystore", zap.Error(err))
 	}
 
 	err = m.mks.UpdatePushGroupReferences(ctx, message.headers.DevicePK, message.headers.Counter, m.g)
@@ -147,7 +142,7 @@ func (m *MessageStore) processMessage(ctx context.Context, ownPK crypto.PubKey, 
 	}
 
 	entry := message.op.GetEntry()
-	eventContext := newEventContext(entry.GetHash(), entry.GetNext(), m.g, attachmentsCIDs)
+	eventContext := newEventContext(entry.GetHash(), entry.GetNext(), m.g)
 	return &protocoltypes.GroupMessageEvent{
 		EventContext: eventContext,
 		Headers:      message.headers,
@@ -305,7 +300,7 @@ func (m *MessageStore) ListEvents(ctx context.Context, since, until []byte, reve
 	return out, nil
 }
 
-func (m *MessageStore) AddMessage(ctx context.Context, payload []byte, attachmentsCIDs [][]byte) (operation.Operation, error) {
+func (m *MessageStore) AddMessage(ctx context.Context, payload []byte) (operation.Operation, error) {
 	ctx, newTrace := tyber.ContextWithTraceID(ctx)
 
 	if newTrace {
@@ -313,12 +308,11 @@ func (m *MessageStore) AddMessage(ctx context.Context, payload []byte, attachmen
 	}
 
 	m.logger.Debug(
-		fmt.Sprintf("Adding message to store with payload of %d bytes and %d attachment(s)", len(payload), len(attachmentsCIDs)),
+		fmt.Sprintf("Adding message to store with payload of %d bytes", len(payload)),
 		tyber.FormatStepLogFields(
 			ctx,
 			[]tyber.Detail{
 				{Name: "Payload", Description: string(payload)},
-				{Name: "Attachments cIDs", Description: fmt.Sprintf("%q", attachmentsCIDs)},
 			},
 		)...,
 	)
@@ -328,28 +322,19 @@ func (m *MessageStore) AddMessage(ctx context.Context, payload []byte, attachmen
 		return nil, errcode.ErrInternal.Wrap(err)
 	}
 
-	attachmentsSecrets, err := m.devKS.AttachmentSecretSlice(attachmentsCIDs)
-	if err != nil {
-		return nil, errcode.ErrKeystoreGet.Wrap(err)
-	}
-	m.logger.Debug(
-		"Secrets to encrypt message content retrieved successfully",
-		tyber.FormatStepLogFields(ctx, []tyber.Detail{})...,
-	)
-
-	return messageStoreAddMessage(ctx, m.g, md, m, payload, attachmentsCIDs, attachmentsSecrets)
+	return messageStoreAddMessage(ctx, m.g, md, m, payload)
 }
 
-func messageStoreAddMessage(ctx context.Context, g *protocoltypes.Group, md *cryptoutil.OwnMemberDevice, m *MessageStore, payload []byte, attachmentsCIDs [][]byte, attachmentsSecrets [][]byte) (operation.Operation, error) {
+func messageStoreAddMessage(ctx context.Context, g *protocoltypes.Group, md *cryptoutil.OwnMemberDevice, m *MessageStore, payload []byte) (operation.Operation, error) {
 	msg, err := (&protocoltypes.EncryptedMessage{
 		Plaintext:        payload,
-		ProtocolMetadata: &protocoltypes.ProtocolMetadata{AttachmentsSecrets: attachmentsSecrets},
+		ProtocolMetadata: &protocoltypes.ProtocolMetadata{},
 	}).Marshal()
 	if err != nil {
 		return nil, errcode.ErrInternal.Wrap(err)
 	}
 
-	env, err := m.mks.SealEnvelope(ctx, g, md.PrivateDevice(), msg, attachmentsCIDs)
+	env, err := m.mks.SealEnvelope(ctx, g, md.PrivateDevice(), msg)
 	if err != nil {
 		return nil, errcode.ErrCryptoEncrypt.Wrap(err)
 	}

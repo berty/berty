@@ -43,10 +43,6 @@ export const messengerActions = {
 		beapi.messenger.StreamEvent.INotified,
 		'messenger/Notified'
 	>('messenger/Notified'),
-	[beapi.messenger.StreamEvent.Type.TypeMediaUpdated]: createAction<
-		beapi.messenger.StreamEvent.IMediaUpdated,
-		'messenger/MediaUpdated'
-	>('messenger/MediaUpdated'),
 	[beapi.messenger.StreamEvent.Type.TypeConversationPartialLoad]: createAction<
 		beapi.messenger.StreamEvent.IConversationPartialLoad,
 		'messenger/ConversationPartialLoad'

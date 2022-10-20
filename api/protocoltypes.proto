@@ -118,12 +118,6 @@ service ProtocolService {
   // PeerList returns a list of P2P peers
   rpc PeerList(PeerList.Request) returns (PeerList.Reply);
 
-  // AttachmentPrepare ...
-  rpc AttachmentPrepare(stream AttachmentPrepare.Request) returns (AttachmentPrepare.Reply);
-
-  // AttachmentRetrieve returns an attachment data
-  rpc AttachmentRetrieve(AttachmentRetrieve.Request) returns (stream AttachmentRetrieve.Reply);
-
   // PushReceive handles a push payload, decrypts it if possible
   rpc PushReceive(PushReceive.Request) returns (PushReceive.Reply);
 
@@ -332,8 +326,7 @@ message GroupEnvelope {
   // event is encrypted using a symmetric key shared among group members
   bytes event = 2;
 
-  // encrypted_attachment_cids is a list of attachment CIDs encrypted specifically for replication services
-  repeated bytes encrypted_attachment_cids = 3  [(gogoproto.customname) = "EncryptedAttachmentCIDs"];
+  reserved 3; // repeated bytes encrypted_attachment_cids = 3  [(gogoproto.customname) = "EncryptedAttachmentCIDs"];
 }
 
 // MessageHeaders is used in MessageEnvelope and only readable by invited group members
@@ -353,7 +346,7 @@ message MessageHeaders {
 
 message ProtocolMetadata {
   // attachments_secrets is a list of secret keys used retrieve attachments
-  repeated bytes attachments_secrets = 1;
+  reserved 1; //repeated bytes attachments_secrets = 1;
 }
 
 // EncryptedMessage is used in MessageEnvelope and only readable by groups members that joined before the message was sent
@@ -377,7 +370,7 @@ message MessageEnvelope {
   bytes nonce = 3;
 
   // encrypted_attachment_cids is a list of attachment CIDs encrypted specifically for replication services
-  repeated bytes encrypted_attachment_cids = 4 [(gogoproto.customname) = "EncryptedAttachmentCIDs"];
+  reserved 4; // repeated bytes encrypted_attachment_cids = 4 [(gogoproto.customname) = "EncryptedAttachmentCIDs"];
 }
 
 // ***************************************************************************
@@ -396,7 +389,7 @@ message EventContext {
   bytes group_pk = 3[(gogoproto.customname) = "GroupPK"];
 
   // attachment_cids is a list of attachment that can be retrieved
-  repeated bytes attachment_cids = 4 [(gogoproto.customname) = "AttachmentCIDs"];
+  reserved 4; // repeated bytes attachment_cids = 4 [(gogoproto.customname) = "AttachmentCIDs"];
 }
 
 // AppMetadata is an app defined message, accessible to future group members
@@ -844,7 +837,7 @@ message AppMetadataSend {
     bytes payload = 2;
 
     // attachment_cids is a list of attachment cids
-    repeated bytes attachment_cids = 3 [(gogoproto.customname) = "AttachmentCIDs"];
+    reserved 3; // repeated bytes attachment_cids = 3 [(gogoproto.customname) = "AttachmentCIDs"];
   }
 
   message Reply {
@@ -861,7 +854,7 @@ message AppMessageSend {
     bytes payload = 2;
 
     // attachment_cids is a list of attachment cids
-    repeated bytes attachment_cids = 3 [(gogoproto.customname) = "AttachmentCIDs"];
+    reserved 3; // repeated bytes attachment_cids = 3 [(gogoproto.customname) = "AttachmentCIDs"];
   }
 
   message Reply {
@@ -1310,37 +1303,6 @@ enum Direction {
   InboundDir = 1;
   OutboundDir = 2;
   BiDir = 3;
-}
-
-message AttachmentPrepare {
-  message Request {
-    // block is a plaintext block to append
-    bytes block = 1;
-
-    /* Header data:
-    ** IMPORTANT: The first request must contain the header data and no block. Header data in following requests will be ignored
-    */
-
-    // disable_encryption tells the protocol to store the file as plain text
-    bool disable_encryption = 2;
-  }
-
-  message Reply {
-    // attachment_cid is the cid of the (encrypted) file
-    bytes attachment_cid = 1 [(gogoproto.customname) = "AttachmentCID"];
-  }
-}
-
-message AttachmentRetrieve {
-  message Request {
-    // attachment_cid is the cid of the (encrypted) file
-    bytes attachment_cid = 1 [(gogoproto.customname) = "AttachmentCID"];
-  }
-
-  message Reply {
-    // block is a plaintext block to append
-    bytes block = 2;
-  }
 }
 
 // Progress define a generic object that can be used to display a progress bar for long-running actions.

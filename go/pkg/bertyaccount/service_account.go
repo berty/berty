@@ -766,7 +766,6 @@ func (s *service) importAccount(ctx context.Context, req *accounttypes.ImportAcc
 		AccountID:   meta.AccountID,
 		AccountName: a.Account.DisplayName,
 		PublicKey:   a.Account.PublicKey,
-		AvatarCID:   a.Account.AvatarCID,
 	})
 	if err != nil {
 		return nil, errcode.ErrBertyAccountUpdateFailed.Wrap(err)

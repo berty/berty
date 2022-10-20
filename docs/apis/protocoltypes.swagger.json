@@ -110,82 +110,6 @@
         ]
       }
     },
-    "/berty.protocol.v1/ProtocolService/AttachmentPrepare": {
-      "post": {
-        "summary": "AttachmentPrepare ...",
-        "operationId": "ProtocolService_AttachmentPrepare",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v1AttachmentPrepareReply"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/runtimeError"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "description": " (streaming inputs)",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/v1AttachmentPrepareRequest"
-            }
-          }
-        ],
-        "tags": [
-          "ProtocolService"
-        ]
-      }
-    },
-    "/berty.protocol.v1/ProtocolService/AttachmentRetrieve": {
-      "post": {
-        "summary": "AttachmentRetrieve returns an attachment data",
-        "operationId": "ProtocolService_AttachmentRetrieve",
-        "responses": {
-          "200": {
-            "description": "A successful response.(streaming responses)",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "result": {
-                  "$ref": "#/definitions/v1AttachmentRetrieveReply"
-                },
-                "error": {
-                  "$ref": "#/definitions/runtimeStreamError"
-                }
-              },
-              "title": "Stream result of v1AttachmentRetrieveReply"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/runtimeError"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/v1AttachmentRetrieveRequest"
-            }
-          }
-        ],
-        "tags": [
-          "ProtocolService"
-        ]
-      }
-    },
     "/berty.protocol.v1/ProtocolService/AuthServiceCompleteFlow": {
       "post": {
         "summary": "AuthServiceCompleteFlow Completes an authentication flow",
@@ -1811,14 +1735,6 @@
           "type": "string",
           "format": "byte",
           "title": "payload is the payload to send"
-        },
-        "attachment_cids": {
-          "type": "array",
-          "items": {
-            "type": "string",
-            "format": "byte"
-          },
-          "title": "attachment_cids is a list of attachment cids"
         }
       }
     },
@@ -1843,58 +1759,6 @@
           "type": "string",
           "format": "byte",
           "title": "payload is the payload to send"
-        },
-        "attachment_cids": {
-          "type": "array",
-          "items": {
-            "type": "string",
-            "format": "byte"
-          },
-          "title": "attachment_cids is a list of attachment cids"
-        }
-      }
-    },
-    "v1AttachmentPrepareReply": {
-      "type": "object",
-      "properties": {
-        "attachment_cid": {
-          "type": "string",
-          "format": "byte",
-          "title": "attachment_cid is the cid of the (encrypted) file"
-        }
-      }
-    },
-    "v1AttachmentPrepareRequest": {
-      "type": "object",
-      "properties": {
-        "block": {
-          "type": "string",
-          "format": "byte",
-          "title": "block is a plaintext block to append"
-        },
-        "disable_encryption": {
-          "type": "boolean",
-          "title": "disable_encryption tells the protocol to store the file as plain text"
-        }
-      }
-    },
-    "v1AttachmentRetrieveReply": {
-      "type": "object",
-      "properties": {
-        "block": {
-          "type": "string",
-          "format": "byte",
-          "title": "block is a plaintext block to append"
-        }
-      }
-    },
-    "v1AttachmentRetrieveRequest": {
-      "type": "object",
-      "properties": {
-        "attachment_cid": {
-          "type": "string",
-          "format": "byte",
-          "title": "attachment_cid is the cid of the (encrypted) file"
         }
       }
     },
@@ -2249,14 +2113,6 @@
           "type": "string",
           "format": "byte",
           "title": "group_pk receiving the event"
-        },
-        "attachment_cids": {
-          "type": "array",
-          "items": {
-            "type": "string",
-            "format": "byte"
-          },
-          "title": "attachment_cids is a list of attachment that can be retrieved"
         }
       },
       "title": "EventContext adds context (its id, its parents and its attachments) to an event"
@@ -2818,17 +2674,7 @@
       "type": "object"
     },
     "v1ProtocolMetadata": {
-      "type": "object",
-      "properties": {
-        "attachments_secrets": {
-          "type": "array",
-          "items": {
-            "type": "string",
-            "format": "byte"
-          },
-          "title": "attachments_secrets is a list of secret keys used retrieve attachments"
-        }
-      }
+      "type": "object"
     },
     "v1PushReceiveReply": {
       "type": "object",

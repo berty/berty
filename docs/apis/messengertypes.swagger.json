@@ -745,39 +745,6 @@
         ]
       }
     },
-    "/berty.messenger.v1/MessengerService/InteractionReactionsForEmoji": {
-      "post": {
-        "summary": "InteractionReactionsForEmoji returns a list of reactions on an interaction for a specific emoji",
-        "operationId": "MessengerService_InteractionReactionsForEmoji",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v1InteractionReactionsForEmojiReply"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/runtimeError"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/v1InteractionReactionsForEmojiRequest"
-            }
-          }
-        ],
-        "tags": [
-          "MessengerService"
-        ]
-      }
-    },
     "/berty.messenger.v1/MessengerService/ListMemberDevices": {
       "post": {
         "summary": "ListMemberDevices Lists devices for a member",
@@ -812,115 +779,6 @@
             "required": true,
             "schema": {
               "$ref": "#/definitions/v1ListMemberDevicesRequest"
-            }
-          }
-        ],
-        "tags": [
-          "MessengerService"
-        ]
-      }
-    },
-    "/berty.messenger.v1/MessengerService/MediaGetRelated": {
-      "post": {
-        "summary": "MediaGetRelated Gets previous/next media to be played after current",
-        "operationId": "MessengerService_MediaGetRelated",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v1MediaGetRelatedReply"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/runtimeError"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/v1MediaGetRelatedRequest"
-            }
-          }
-        ],
-        "tags": [
-          "MessengerService"
-        ]
-      }
-    },
-    "/berty.messenger.v1/MessengerService/MediaPrepare": {
-      "post": {
-        "summary": "MediaPrepare allows to upload a file and returns a cid to attach to messages",
-        "operationId": "MessengerService_MediaPrepare",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v1MediaPrepareReply"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/runtimeError"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "description": " (streaming inputs)",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/v1MediaPrepareRequest"
-            }
-          }
-        ],
-        "tags": [
-          "MessengerService"
-        ]
-      }
-    },
-    "/berty.messenger.v1/MessengerService/MediaRetrieve": {
-      "post": {
-        "summary": "MediaRetrieve allows to download a file attached to a message",
-        "operationId": "MessengerService_MediaRetrieve",
-        "responses": {
-          "200": {
-            "description": "A successful response.(streaming responses)",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "result": {
-                  "$ref": "#/definitions/v1MediaRetrieveReply"
-                },
-                "error": {
-                  "$ref": "#/definitions/runtimeStreamError"
-                }
-              },
-              "title": "Stream result of v1MediaRetrieveReply"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/runtimeError"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/v1MediaRetrieveRequest"
             }
           }
         ],
@@ -1235,39 +1093,6 @@
         ]
       }
     },
-    "/berty.messenger.v1/MessengerService/SendReplyOptions": {
-      "post": {
-        "summary": "SendReplyOptions sends a list of prefilled response options to a group.",
-        "operationId": "MessengerService_SendReplyOptions",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v1SendReplyOptionsReply"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/runtimeError"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/v1SendReplyOptionsRequest"
-            }
-          }
-        ],
-        "tags": [
-          "MessengerService"
-        ]
-      }
-    },
     "/berty.messenger.v1/MessengerService/ServicesTokenList": {
       "post": {
         "summary": "ServicesTokenList Retrieves the list of service server tokens",
@@ -1453,17 +1278,6 @@
     }
   },
   "definitions": {
-    "AppMessageReplyOptions": {
-      "type": "object",
-      "properties": {
-        "options": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/v1ReplyOption"
-          }
-        }
-      }
-    },
     "BertyLinkBertyMessageRef": {
       "type": "object",
       "properties": {
@@ -1544,20 +1358,16 @@
       ],
       "default": "UnknownKind"
     },
-    "InteractionReactionView": {
-      "type": "object",
-      "properties": {
-        "emoji": {
-          "type": "string"
-        },
-        "own_state": {
-          "type": "boolean"
-        },
-        "count": {
-          "type": "string",
-          "format": "uint64"
-        }
-      }
+    "ContactState": {
+      "type": "string",
+      "enum": [
+        "Undefined",
+        "IncomingRequest",
+        "OutgoingRequestEnqueued",
+        "OutgoingRequestSent",
+        "Accepted"
+      ],
+      "default": "Undefined"
     },
     "OrbitDBReplicationStatus": {
       "type": "object",
@@ -1615,15 +1425,7 @@
           "type": "string",
           "format": "int64"
         },
-        "reactions": {
-          "type": "string",
-          "format": "int64"
-        },
         "metadata_events": {
-          "type": "string",
-          "format": "int64"
-        },
-        "medias": {
           "type": "string",
           "format": "int64"
         },
@@ -1774,9 +1576,6 @@
         },
         "replicate_new_groups_automatically": {
           "type": "boolean"
-        },
-        "avatar_cid": {
-          "type": "string"
         },
         "auto_share_push_token_flag": {
           "type": "boolean"
@@ -2046,9 +1845,6 @@
       "properties": {
         "display_name": {
           "type": "string"
-        },
-        "avatar_cid": {
-          "type": "string"
         }
       }
     },
@@ -2057,12 +1853,10 @@
       "enum": [
         "Undefined",
         "TypeUserMessage",
-        "TypeUserReaction",
         "TypeGroupInvitation",
         "TypeSetGroupInfo",
         "TypeSetUserInfo",
-        "TypeAcknowledge",
-        "TypeReplyOptions"
+        "TypeAcknowledge"
       ],
       "default": "Undefined"
     },
@@ -2145,12 +1939,9 @@
           "$ref": "#/definitions/v1Conversation"
         },
         "state": {
-          "$ref": "#/definitions/v1ContactState"
+          "$ref": "#/definitions/ContactState"
         },
         "display_name": {
-          "type": "string"
-        },
-        "avatar_cid": {
           "type": "string"
         },
         "created_date": {
@@ -2200,17 +1991,6 @@
           "title": "optional passphase to decrypt the link"
         }
       }
-    },
-    "v1ContactState": {
-      "type": "string",
-      "enum": [
-        "Undefined",
-        "IncomingRequest",
-        "OutgoingRequestEnqueued",
-        "OutgoingRequestSent",
-        "Accepted"
-      ],
-      "default": "Undefined"
     },
     "v1Conversation": {
       "type": "object",
@@ -2264,20 +2044,11 @@
           "type": "string",
           "format": "int64"
         },
-        "reply_options_cid": {
-          "type": "string"
-        },
-        "reply_options": {
-          "$ref": "#/definitions/v1Interaction"
-        },
         "replication_info": {
           "type": "array",
           "items": {
             "$ref": "#/definitions/v1ConversationReplicationInfo"
           }
-        },
-        "avatar_cid": {
-          "type": "string"
         },
         "info_date": {
           "type": "string",
@@ -2638,12 +2409,6 @@
         "conversation_public_key": {
           "type": "string"
         },
-        "media_cids": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
         "target_cid": {
           "type": "string"
         },
@@ -2693,42 +2458,8 @@
         "target_cid": {
           "type": "string"
         },
-        "medias": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/v1Media"
-          }
-        },
-        "reactions": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/InteractionReactionView"
-          }
-        },
         "out_of_store_message": {
           "type": "boolean"
-        }
-      }
-    },
-    "v1InteractionReactionsForEmojiReply": {
-      "type": "object",
-      "properties": {
-        "reactions": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/v1Reaction"
-          }
-        }
-      }
-    },
-    "v1InteractionReactionsForEmojiRequest": {
-      "type": "object",
-      "properties": {
-        "interaction_cid": {
-          "type": "string"
-        },
-        "emoji": {
-          "type": "string"
         }
       }
     },
@@ -2751,124 +2482,6 @@
         }
       }
     },
-    "v1Media": {
-      "type": "object",
-      "properties": {
-        "cid": {
-          "type": "string"
-        },
-        "mime_type": {
-          "type": "string"
-        },
-        "filename": {
-          "type": "string"
-        },
-        "display_name": {
-          "type": "string"
-        },
-        "metadata_bytes": {
-          "type": "string",
-          "format": "byte"
-        },
-        "interaction_cid": {
-          "type": "string",
-          "title": "these should not be sent on the bertyprotocol layer"
-        },
-        "state": {
-          "$ref": "#/definitions/v1MediaState"
-        }
-      }
-    },
-    "v1MediaGetRelatedReply": {
-      "type": "object",
-      "properties": {
-        "media": {
-          "$ref": "#/definitions/v1Media"
-        },
-        "end": {
-          "type": "boolean"
-        }
-      }
-    },
-    "v1MediaGetRelatedRequest": {
-      "type": "object",
-      "properties": {
-        "cid": {
-          "type": "string"
-        },
-        "mime_types": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "title": "bool previous = 2; // TODO: gets previous media instead of next"
-        },
-        "file_names": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        }
-      }
-    },
-    "v1MediaPrepareReply": {
-      "type": "object",
-      "properties": {
-        "cid": {
-          "type": "string"
-        }
-      }
-    },
-    "v1MediaPrepareRequest": {
-      "type": "object",
-      "properties": {
-        "block": {
-          "type": "string",
-          "format": "byte"
-        },
-        "info": {
-          "$ref": "#/definitions/v1Media"
-        },
-        "uri": {
-          "type": "string"
-        }
-      }
-    },
-    "v1MediaRetrieveReply": {
-      "type": "object",
-      "properties": {
-        "block": {
-          "type": "string",
-          "format": "byte"
-        },
-        "info": {
-          "$ref": "#/definitions/v1Media"
-        }
-      }
-    },
-    "v1MediaRetrieveRequest": {
-      "type": "object",
-      "properties": {
-        "cid": {
-          "type": "string"
-        }
-      }
-    },
-    "v1MediaState": {
-      "type": "string",
-      "enum": [
-        "StateUnknown",
-        "StateNeverDownloaded",
-        "StatePartiallyDownloaded",
-        "StateDownloaded",
-        "StateInCache",
-        "StateInvalidCrypto",
-        "StatePrepared",
-        "StateAttached"
-      ],
-      "default": "StateUnknown",
-      "title": "- StateNeverDownloaded: specific to media received\n - StatePrepared: specific to media sent"
-    },
     "v1Member": {
       "type": "object",
       "properties": {
@@ -2876,9 +2489,6 @@
           "type": "string"
         },
         "display_name": {
-          "type": "string"
-        },
-        "avatar_cid": {
           "type": "string"
         },
         "conversation_public_key": {
@@ -2995,10 +2605,6 @@
           "type": "boolean",
           "title": "oldest_to_newest Default sort of results is latest to oldest message"
         },
-        "exclude_medias": {
-          "type": "boolean",
-          "title": "exclude_medias Medias are included by default"
-        },
         "no_bulk": {
           "type": "boolean",
           "title": "no_bulk should interactions be via atomic update in the stream"
@@ -3087,30 +2693,6 @@
         }
       }
     },
-    "v1Reaction": {
-      "type": "object",
-      "properties": {
-        "target_cid": {
-          "type": "string"
-        },
-        "member_public_key": {
-          "type": "string"
-        },
-        "emoji": {
-          "type": "string"
-        },
-        "is_mine": {
-          "type": "boolean"
-        },
-        "state": {
-          "type": "boolean"
-        },
-        "state_date": {
-          "type": "string",
-          "format": "int64"
-        }
-      }
-    },
     "v1ReplicationSetAutoEnableReply": {
       "type": "object"
     },
@@ -3119,17 +2701,6 @@
       "properties": {
         "enabled": {
           "type": "boolean"
-        }
-      }
-    },
-    "v1ReplyOption": {
-      "type": "object",
-      "properties": {
-        "display": {
-          "type": "string"
-        },
-        "payload": {
-          "type": "string"
         }
       }
     },
@@ -3149,21 +2720,6 @@
         "own_metadata": {
           "type": "string",
           "format": "byte"
-        }
-      }
-    },
-    "v1SendReplyOptionsReply": {
-      "type": "object"
-    },
-    "v1SendReplyOptionsRequest": {
-      "type": "object",
-      "properties": {
-        "group_pk": {
-          "type": "string",
-          "format": "byte"
-        },
-        "options": {
-          "$ref": "#/definitions/AppMessageReplyOptions"
         }
       }
     },
@@ -3265,7 +2821,6 @@
         "TypeMemberUpdated",
         "TypeDeviceUpdated",
         "TypeNotified",
-        "TypeMediaUpdated",
         "TypeConversationPartialLoad",
         "TypePeerStatusConnected",
         "TypePeerStatusReconnecting",
