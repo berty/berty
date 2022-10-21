@@ -6,9 +6,17 @@ const androidScrollIntoView = (driver, label) => {
 }
 
 const waitForElementByAccessibilityId = async (driver, label, timeout = 30 * 1000) => {
-	const getElem = () => driver.$(`~${label}`)
-	await driver.waitUntil(() => getElem().isDisplayed(), { timeout, interval: 1000 })
-	return getElem()
+	const elem = await driver.$(`~${label}`)
+	console.log('elem', elem)
+
+	await elem.waitForDisplayed({ timeout })
+	// const result = await driver.waitUntil(async () => await driver.$(`~${label}`), {
+	// 	timeout,
+	// 	interval: 1000,
+	// })
+	// console.log('elem2', elem)
+
+	return elem
 }
 
 const pressButton = async (driver, label, timeout) => {
@@ -18,10 +26,11 @@ const pressButton = async (driver, label, timeout) => {
 
 const setInputValue = async (driver, label, value, timeout) => {
 	const input = await waitForElementByAccessibilityId(driver, label, timeout)
+	console.log('inputttt', input)
 	await input.setValue(value)
 }
 
-const getCapabilitiesFromEnv = () => {
+const getCapabilitiesFromEnv = deviceName => {
 	const platform = process.env.IOS_APP ? 'iOS' : 'Android'
 
 	const app = process.env.IOS_APP || process.env.ANDROID_APP
@@ -34,6 +43,7 @@ const getCapabilitiesFromEnv = () => {
 	switch (platform) {
 		case 'iOS':
 			return {
+				// https://github.com/appium/appium-xcuitest-driver#desired-capabilities
 				platformName: 'iOS',
 				'appium:platformVersion': process.env.IOS_VERSION || '15.5',
 				'appium:deviceName': process.env.IOS_DEVICE || 'iPhone 11',
@@ -43,6 +53,10 @@ const getCapabilitiesFromEnv = () => {
 				'appium:wdaLaunchTimeout': timeout,
 				'appium:wdaConnectionTimeout': timeout,
 				'appium:wdaStartupRetries': 4,
+				'appium:snapshotMaxDepth': 1000,
+				'appium:maxTypingFrequency': 20,
+				// 'appium:noReset': true,
+				// 'appium:fullReset': false,
 			}
 		case 'Android':
 			return {

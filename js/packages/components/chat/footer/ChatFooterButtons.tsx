@@ -36,7 +36,7 @@ const ChatInputButton: React.FC<{
 	)
 
 	return (
-		<TouchableOpacity style={style} disabled={disabled} onPress={onPress}>
+		<TouchableOpacity style={style} disabled={disabled} onPress={onPress} testID='ChatInputButton'>
 			<View style={vOffset && vOffset > 0 ? { paddingBottom: vOffset } : undefined}>
 				{loading ? (
 					<ActivityIndicator size='small' color={colors['reverted-main-text']} />

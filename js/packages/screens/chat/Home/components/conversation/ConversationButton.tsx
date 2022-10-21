@@ -38,6 +38,7 @@ export const ConversationButton: React.FC<ConversationButtonProps> = props => {
 
 	return (
 		<TouchableHighlight
+			testID='conversation'
 			underlayColor={`${colors['secondary-text']}80`}
 			style={[
 				padding.horizontal.medium,

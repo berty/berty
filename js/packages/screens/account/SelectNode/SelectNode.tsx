@@ -135,7 +135,7 @@ export const SelectNode: ScreenFC<'Account.SelectNode'> = ({ route }) => {
 				</ItemSection>
 				<ItemSection>
 					<MenuToggle
-						accessibilityLabel={t('settings.devtools.select-node.dont-ask')}
+						testID={t('settings.devtools.select-node.dont-ask')}
 						isToggleOn={dontAsk}
 						onPress={() => {
 							setDontAsk(!dontAsk)
@@ -145,6 +145,7 @@ export const SelectNode: ScreenFC<'Account.SelectNode'> = ({ route }) => {
 					</MenuToggle>
 				</ItemSection>
 				<CreateGroupFooterWithIcon
+					testID={t('settings.devtools.select-node.button-continue')}
 					title={t('settings.devtools.select-node.button-continue')}
 					icon='arrow-forward-outline'
 					action={async () => {

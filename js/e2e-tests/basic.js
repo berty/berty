@@ -14,12 +14,9 @@ const {
 const groupName = 'random-group-18708'
 const groupLink = `https://berty.tech/id#group/8ejngpAxnMQKGMuM2AUsuWi5BJg7m9bDN25hjn7mnfx4sgV7FooCqMcJrto7fbTTeRo4ZmwP78F113XJWkGS9d3LYb9Lox7hYKXMRPHZUMb1f5gZkQAwy5UG12QjFP5E5YGq7BtMBD5GcsRVRv7bfof1gKjjyKkzmkKZEmeLsw92BzYsDcuviBX5Vt1vsg3iFgWuxxjPxbmuFEu9kTdGVzhsxqF1Tk9gKnf9BrJQbsww2w3j5JqjpyBvNvzFzZJt1Vvt2wgFifriAnxAppZ5NqAHJBHr/name=${groupName}`
 
-const startAppAndCreateAccount = async caps => {
-	const driver = await wdio.remote({
-		port: 4723,
-		capabilities: caps,
-	})
-
+const joinGroupFromHome = async driver => {
+	await pressButton(driver, "Don't ask me again")
+	await pressButton(driver, 'Continue')
 	await pressButton(driver, 'Create an account')
 	await pressButton(driver, 'Default mode')
 	await pressButton(driver, "Let's go")
@@ -27,26 +24,36 @@ const startAppAndCreateAccount = async caps => {
 	await pressButton(driver, 'Continue')
 	await pressButton(driver, 'Start using Berty')
 
-	return driver
-}
-
-const joinGroupFromHome = async (driver, link) => {
-	await setInputValue(driver, 'Search keyword', link)
+	await setInputValue(driver, 'Search keyword', groupLink)
 	await pressButton(driver, 'Open Berty Link')
 	await pressButton(driver, 'Join this group')
 }
 
+const sendMessageToGroup = async (device, message) => {
+	await setInputValue(device, 'ChatTextInput', message)
+	await pressButton(device, 'ChatInputButton')
+}
+
 const main = async () => {
-	const capabilities = getCapabilitiesFromEnv()
+	const capabilities1 = getCapabilitiesFromEnv('iPhone 11')
+	const capabilities2 = getCapabilitiesFromEnv('iPhone 11 Pro')
 
-	const device = await startAppAndCreateAccount(capabilities)
+	const driver1 = await wdio.remote({
+		port: 4723,
+		capabilities: { ...capabilities1, 'appium:wdaLocalPort': 8101 },
+	})
+	const driver2 = await wdio.remote({
+		port: 4723,
+		capabilities: capabilities2,
+	})
 
-	await joinGroupFromHome(device, groupLink)
+	await Promise.all([joinGroupFromHome(driver1), joinGroupFromHome(driver2)])
 
-	// check that the group name is visible
-	await waitForElementByAccessibilityId(device, groupName)
+	await sendMessageToGroup(driver1, 'hello from device 1')
+	await sendMessageToGroup(driver2, 'hello from device 2')
 
-	await device.deleteSession()
+	// await device1.deleteSession()
+	// await device2.deleteSession()
 }
 
 main()

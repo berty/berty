@@ -131,7 +131,7 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 				>
 					<View style={styles.wrapper}>
 						<ChatTextInput
-							testID={t('chat.multi-member.input-placeholder')}
+							testID='ChatTextInput'
 							editable={!sending && !disabled}
 							placeholder={sending ? t('chat.sending') : placeholder}
 							onChangeText={handleTextChange}
