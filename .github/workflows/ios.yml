@@ -134,7 +134,7 @@ jobs:
       - name: Setup XCode version (Github runners)
         # Disabled on self-hosted because it requires authentication
         if: ${{ !matrix.selfhosted }}
-        uses: maxim-lobanov/setup-xcode@v1.4.1
+        uses: maxim-lobanov/setup-xcode@v1.5.1
         with:
           xcode-version: ${{ env.xcode_version }}
 
