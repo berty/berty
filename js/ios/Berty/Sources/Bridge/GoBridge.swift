@@ -23,6 +23,8 @@ class GoBridge: NSObject {
 
     // protocol
     var bridgeMessenger: BertybridgeBridge?
+    var remoteBridge: BertybridgeRemoteBridge?
+    var serviceClient: BertybridgeServiceClientProtocol?
     let appRootDir: String
     let sharedRootDir: String
 
@@ -42,10 +44,15 @@ class GoBridge: NSObject {
 
     deinit {
       do {
-        if self.bridgeMessenger != nil {
-            try self.bridgeMessenger?.close()
-            self.bridgeMessenger = nil
-        }
+          if self.bridgeMessenger != nil {
+              try self.bridgeMessenger?.close()
+              self.bridgeMessenger = nil
+          }
+          if self.remoteBridge != nil {
+              try self.remoteBridge?.close()
+              self.remoteBridge = nil
+          }
+          self.serviceClient = nil
       } catch let error as NSError {
         NSLog("\(String(describing: error.code))")
       }
@@ -95,12 +102,12 @@ class GoBridge: NSObject {
 
     @objc func initBridge(_ resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
         do {
-            if self.bridgeMessenger != nil {
+            if self.bridgeMessenger != nil || self.remoteBridge != nil || self.serviceClient != nil {
                 throw NSError(domain: "tech.berty.gobridge", code: 1, userInfo: [NSLocalizedDescriptionKey : "already started"])
             }
 
             var err: NSError?
-            guard let config = BertybridgeNewConfig() else {
+            guard let config = BertybridgeNewBridgeConfig() else {
                 throw NSError(domain: "tech.berty.gobridge", code: 2, userInfo: [NSLocalizedDescriptionKey : "unable to create config"])
             }
 
@@ -146,6 +153,7 @@ class GoBridge: NSObject {
             }
 
             self.bridgeMessenger = bridgeMessenger
+            self.serviceClient = bridgeMessenger // bridgeMessenger implements ServiceClient interface
 
             resolve(true)
         } catch let error as NSError {
@@ -155,57 +163,28 @@ class GoBridge: NSObject {
 
   @objc func initBridgeRemote(_ address: String, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
       do {
-          if self.bridgeMessenger != nil {
+          if self.remoteBridge != nil || self.bridgeMessenger != nil || self.serviceClient != nil {
               throw NSError(domain: "tech.berty.gobridge", code: 1, userInfo: [NSLocalizedDescriptionKey : "already started"])
           }
 
           var err: NSError?
-          guard let config = BertybridgeNewConfig() else {
+          guard let config = BertybridgeNewRemoteBridgeConfig() else {
               throw NSError(domain: "tech.berty.gobridge", code: 2, userInfo: [NSLocalizedDescriptionKey : "unable to create config"])
           }
 
           config.setLoggerDriver(LoggerDriver("tech.berty", "gomobile"))
 
-          // get user preferred languages
-          let preferredLanguages: String = Locale.preferredLanguages.joined(separator: ",")
-
-          config.setKeystoreDriver(KeystoreDriver.shared)
-          config.setPreferredLanguages(preferredLanguages)
-
-          // @TODO(gfanton): make this dir in golang
-          var isDirectory: ObjCBool = true
-          var exist = FileManager.default.fileExists(atPath: self.sharedRootDir, isDirectory: &isDirectory)
-          if !exist {
-              try FileManager.default.createDirectory(atPath: self.sharedRootDir, withIntermediateDirectories: true, attributes: nil)
-          }
-
-          exist = FileManager.default.fileExists(atPath: self.appRootDir, isDirectory: &isDirectory)
-          if !exist {
-              try FileManager.default.createDirectory(atPath: self.appRootDir, withIntermediateDirectories: true, attributes: nil)
-          }
-
           // Disable iOS backup
           var values = URLResourceValues()
           values.isExcludedFromBackup = true
 
-          var appRootDirURL = URL(fileURLWithPath: self.appRootDir)
-          try appRootDirURL.setResourceValues(values)
-
-          var sharedRootDirURL = URL(fileURLWithPath: self.sharedRootDir)
-          try sharedRootDirURL.setResourceValues(values)
-
-          // Set root directories
-          config.setAppRootDir(self.appRootDir)
-          config.setSharedRootDir(self.sharedRootDir)
-
-          config.setBackendAddress(address)
-
-          let bridgeMessenger = BertybridgeNewRemoteBridge(config, &err)
+          let remoteBridge = BertybridgeNewRemoteBridge(address, config, &err)
           if err != nil {
               throw err!
           }
 
-          self.bridgeMessenger = bridgeMessenger
+          self.remoteBridge = remoteBridge
+          self.serviceClient = remoteBridge // remoteBridge implements ServiceClient interface
 
           resolve(true)
       } catch let error as NSError {
@@ -215,10 +194,10 @@ class GoBridge: NSObject {
 
   @objc func connectService(_ serviceName: String, address: String, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
       do {
-          guard let bridgeMessenger = self.bridgeMessenger else {
-              throw NSError(domain: "tech.berty.gobridge", code: 4, userInfo: [NSLocalizedDescriptionKey : "bridgeMessenger isn't started"])
+          guard let remoteBridge = self.remoteBridge else {
+              throw NSError(domain: "tech.berty.gobridge", code: 4, userInfo: [NSLocalizedDescriptionKey : "remoteBridge isn't started"])
           }
-          try bridgeMessenger.connectService(serviceName, address: address)
+          try remoteBridge.connectService(serviceName, address: address)
           resolve(true)
       } catch let error as NSError {
           reject("\(String(describing: error.code))", error.userInfo.description, error)
@@ -231,6 +210,11 @@ class GoBridge: NSObject {
                 try self.bridgeMessenger?.close()
                 self.bridgeMessenger = nil
             }
+            if self.remoteBridge != nil {
+                try self.remoteBridge?.close()
+                self.remoteBridge = nil
+            }
+            self.serviceClient = nil
             resolve(true)
         } catch let error as NSError {
             reject("\(String(describing: error.code))", error.userInfo.description, error)
@@ -239,12 +223,12 @@ class GoBridge: NSObject {
 
     @objc func invokeBridgeMethod(_ method: String, b64message: String, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
         do {
-            guard let bridgeMessenger = self.bridgeMessenger else {
-                throw NSError(domain: "tech.berty.gobridge", code: 3, userInfo: [NSLocalizedDescriptionKey : "bridgeMessenger isn't started"])
+            guard let serviceClient = self.serviceClient else {
+                throw NSError(domain: "tech.berty.gobridge", code: 3, userInfo: [NSLocalizedDescriptionKey : "serviceClient isn't started"])
             }
 
             let promise = PromiseBlock(resolve, reject)
-            bridgeMessenger.invokeBridgeMethod(with: promise, method: method, b64message: b64message)
+            serviceClient.invokeBridgeMethod(with: promise, method: method, b64message: b64message)
         } catch let error as NSError {
             reject("\(String(describing: error.code))", error.userInfo.description, error)
         }
