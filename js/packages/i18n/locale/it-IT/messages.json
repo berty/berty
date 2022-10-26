@@ -249,6 +249,15 @@
 			"simulate-button": "Simula errore stream",
 			"simulate-js-error-button": "Simula errore JavaScript",
 			"system-info-button": "Informazioni di sistema",
+			"select-node": {
+				"title": "",
+				"node-type": "",
+				"address": "",
+				"account-port": "",
+				"messenger-port": "",
+				"dont-ask": "",
+				"button-continue": ""
+			},
 			"debug-button": "Debug",
 			"log-button": {
 				"name": "Formato log",
