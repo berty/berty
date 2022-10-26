@@ -249,6 +249,15 @@
 			"simulate-button": "Akış hatasını taklit et",
 			"simulate-js-error-button": "Javascript hatasını taklit et",
 			"system-info-button": "Sistem bilgisi",
+			"select-node": {
+				"title": "",
+				"node-type": "",
+				"address": "",
+				"account-port": "",
+				"messenger-port": "",
+				"dont-ask": "",
+				"button-continue": ""
+			},
 			"debug-button": "Hata ayıklama",
 			"log-button": {
 				"name": "Günlük biçimi",
