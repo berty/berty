@@ -249,6 +249,15 @@
 			"simulate-button": "模擬流錯誤",
 			"simulate-js-error-button": "模擬 JavaScript 錯誤",
 			"system-info-button": "系統信息",
+			"select-node": {
+				"title": "",
+				"node-type": "",
+				"address": "",
+				"account-port": "",
+				"messenger-port": "",
+				"dont-ask": "",
+				"button-continue": ""
+			},
 			"debug-button": "Debug",
 			"log-button": {
 				"name": "日誌格式",
