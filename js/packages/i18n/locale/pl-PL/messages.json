@@ -249,6 +249,15 @@
 			"simulate-button": "Symuluj błąd strumienia",
 			"simulate-js-error-button": "Symuluj błąd JavaScript",
 			"system-info-button": "Informacje systemowe",
+			"select-node": {
+				"title": "",
+				"node-type": "",
+				"address": "",
+				"account-port": "",
+				"messenger-port": "",
+				"dont-ask": "",
+				"button-continue": "Kontynuuj"
+			},
 			"debug-button": "Debuguj",
 			"log-button": {
 				"name": "Format dziennika",
