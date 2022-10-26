@@ -249,6 +249,15 @@
 			"simulate-button": "ストリームのエラーをシミュレーションする",
 			"simulate-js-error-button": "JavaScript のエラーをシミュレーションする",
 			"system-info-button": "システム情報",
+			"select-node": {
+				"title": "",
+				"node-type": "",
+				"address": "",
+				"account-port": "",
+				"messenger-port": "",
+				"dont-ask": "",
+				"button-continue": "続ける"
+			},
 			"debug-button": "デバッグ",
 			"log-button": {
 				"name": "ログの形式",
