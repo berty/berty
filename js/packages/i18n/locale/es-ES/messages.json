@@ -249,6 +249,15 @@
 			"simulate-button": "Simular error de flujo",
 			"simulate-js-error-button": "Simular error de JavaScript",
 			"system-info-button": "Información del sistema",
+			"select-node": {
+				"title": "",
+				"node-type": "",
+				"address": "",
+				"account-port": "",
+				"messenger-port": "",
+				"dont-ask": "",
+				"button-continue": ""
+			},
 			"debug-button": "Depurar",
 			"log-button": {
 				"name": "Formato de registro",
