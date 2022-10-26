@@ -249,6 +249,15 @@
 			"simulate-button": "Симулирай грешка в потока",
 			"simulate-js-error-button": "",
 			"system-info-button": "Система информация",
+			"select-node": {
+				"title": "",
+				"node-type": "",
+				"address": "",
+				"account-port": "",
+				"messenger-port": "",
+				"dont-ask": "",
+				"button-continue": "Продължи"
+			},
 			"debug-button": "Debug",
 			"log-button": {
 				"name": "",
