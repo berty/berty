@@ -249,6 +249,15 @@
 			"simulate-button": "Simulera streaming fel",
 			"simulate-js-error-button": "Simulera JavaScript-fel",
 			"system-info-button": "Systeminformation",
+			"select-node": {
+				"title": "",
+				"node-type": "",
+				"address": "",
+				"account-port": "",
+				"messenger-port": "",
+				"dont-ask": "",
+				"button-continue": ""
+			},
 			"debug-button": "Debug",
 			"log-button": {
 				"name": "Loggformat",
