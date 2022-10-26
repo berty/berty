@@ -180,24 +180,19 @@ export const Navigation: React.FC = React.memo(() => {
 							return false
 						}
 
-						reset({
-							index: 0,
-							routes: [
-								{
-									name: 'Account.InitialLaunch',
-								},
-							],
-						})
-
+						reset({ index: 0, routes: [{ name: 'Account.GoToLogInOrCreate' }] })
 						return true
 					},
 				}}
 				component={Components.Account.SelectNode}
-				options={{ headerShown: false }}
+				options={{
+					headerShown: false,
+					presentation: 'formSheet',
+				}}
 			/>
 			<NavigationStack.Screen
-				name='Account.InitialLaunch'
-				component={Components.Account.InitialLaunch}
+				name='Account.GoToLogInOrCreate'
+				component={Components.Account.GoToLogInOrCreate}
 				options={{ headerShown: false }}
 			/>
 			<NavigationStack.Screen

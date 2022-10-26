@@ -5,11 +5,7 @@ import { setStreamProgress, setStreamError, setStreamDone } from '@berty/redux/r
 import { AppDispatch, persistor } from '@berty/redux/store'
 import { accountClient, storageGet } from '@berty/utils/accounts/accountClient'
 import { defaultCLIArgs } from '@berty/utils/accounts/defaultCLIArgs'
-import {
-	AsyncStorageKeys,
-	NodeInfos,
-	getData,
-} from '@berty/utils/global-persistent-options/async-storage'
+import { AsyncStorageKeys, NodeInfos, getData } from '@berty/utils/async-storage/async-storage'
 import { defaultGlobalPersistentOptions } from '@berty/utils/global-persistent-options/defaults'
 import { GlobalPersistentOptionsKeys } from '@berty/utils/global-persistent-options/types'
 import { StreamProgressType } from '@berty/utils/protocol/progress.types'

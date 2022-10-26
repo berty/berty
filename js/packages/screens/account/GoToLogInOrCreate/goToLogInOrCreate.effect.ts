@@ -2,7 +2,7 @@ import beapi from '@berty/api'
 import { ScreensParams } from '@berty/navigation/types'
 import { refreshAccountList } from '@berty/utils/accounts/accountUtils'
 
-export const initialLaunch = async (): Promise<{ name: keyof ScreensParams; params?: any }> => {
+export const goToLogInOrCreate = async (): Promise<{ name: keyof ScreensParams; params?: any }> => {
 	const accounts = await refreshAccountList()
 
 	const lengthAccounts = Object.keys(accounts).length

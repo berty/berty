@@ -2,7 +2,7 @@ import React, { useEffect, useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { NativeModules, View } from 'react-native'
 
-import { CreateGroupFooterWithIcon, MenuToggle, ItemSection, SmallInput } from '@berty/components'
+import { CreateGroupFooterWithIcon, MenuToggle, ItemSection } from '@berty/components'
 import { LoaderDots } from '@berty/components/LoaderDots'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { StatusBarPrimary } from '@berty/components/StatusBarPrimary'
@@ -14,11 +14,15 @@ import {
 	NodeInfosDefault,
 	storeData,
 	getData,
-} from '@berty/utils/global-persistent-options/async-storage'
+} from '@berty/utils/async-storage/async-storage'
+
+import { LabelInput } from './components/LabelInput'
 
 export const SelectNode: ScreenFC<'Account.SelectNode'> = ({ route }) => {
+	// `action` is the action to do when the form is validated. This action can failed we must test the result.
+	// `init` is true when the screen is showed at the start of the app. In DevTools, `init` is false.
 	const { action, init } = route.params
-	const { column, flex, margin, padding, text, row } = useStyles()
+	const { column, margin, padding, text, row } = useStyles()
 	const { t } = useTranslation()
 	const [nodeInfos, setNodeInfos] = useState(NodeInfosDefault)
 	const [externalNode, setExternalNode] = useState(false)
@@ -26,7 +30,7 @@ export const SelectNode: ScreenFC<'Account.SelectNode'> = ({ route }) => {
 	const [accountPort, setAccountPort] = useState(NodeInfosDefault.accountPort)
 	const [messengerPort, setMessengerPort] = useState(NodeInfosDefault.messengerPort)
 	const [dontAsk, setDontAsk] = useState(false)
-	const [forceAsk, setForceAsk] = useState(false)
+	const [forceAsk, setForceAsk] = useState(false) // forceAsk is used to bypass `dontAsk` state if `action` failed
 	const debug = NativeModules.GoBridge?.getConstants().debug
 
 	const validate = useCallback(
@@ -62,7 +66,8 @@ export const SelectNode: ScreenFC<'Account.SelectNode'> = ({ route }) => {
 				setMessengerPort(selectNode.messengerPort)
 				setDontAsk(selectNode.dontAsk)
 			}
-
+			// Auto-validate the form
+			// The following condition is the same as the condition to render the form (before the return)
 			if (!forceAsk && init && (!debug || selectNode.dontAsk)) {
 				validate(
 					selectNode.external,
@@ -77,6 +82,9 @@ export const SelectNode: ScreenFC<'Account.SelectNode'> = ({ route }) => {
 		f().then()
 	}, [debug, init, validate, forceAsk])
 
+	// Render the form by default in debug mode
+	// `dontAsk` doesn't work if `init` is false to render the form in DevTools
+	// `forceAsk` force the form render because `action` failed
 	if (!forceAsk && init && (!debug || nodeInfos.dontAsk)) {
 		return (
 			<>
@@ -104,54 +112,24 @@ export const SelectNode: ScreenFC<'Account.SelectNode'> = ({ route }) => {
 					</MenuToggle>
 					{externalNode && (
 						<>
-							<View style={[row.center]}>
-								<View style={[row.item.justify, column.justify]}>
-									<UnifiedText style={[margin.left.medium, row.item.justify]}>
-										{t('settings.devtools.select-node.address')}
-									</UnifiedText>
-								</View>
-								<View style={[margin.left.medium, flex.tiny, row.item.justify]}>
-									<SmallInput
-										value={address}
-										onChangeText={setAddress}
-										placeholder={NodeInfosDefault.address}
-										autoCorrect={false}
-										textAlign={'right'}
-									/>
-								</View>
-							</View>
-							<View style={[row.center]}>
-								<View style={[row.item.justify, column.justify]}>
-									<UnifiedText style={[margin.left.medium, row.item.justify]}>
-										{t('settings.devtools.select-node.account-port')}
-									</UnifiedText>
-								</View>
-								<View style={[margin.left.medium, flex.tiny, row.item.justify]}>
-									<SmallInput
-										value={accountPort}
-										onChangeText={setAccountPort}
-										placeholder={NodeInfosDefault.accountPort}
-										autoCorrect={false}
-										textAlign={'right'}
-									/>
-								</View>
-							</View>
-							<View style={[row.center]}>
-								<View style={[row.item.justify, column.justify]}>
-									<UnifiedText style={[margin.left.medium, row.item.justify]}>
-										{t('settings.devtools.select-node.messenger-port')}
-									</UnifiedText>
-								</View>
-								<View style={[margin.left.medium, flex.tiny, row.item.justify]}>
-									<SmallInput
-										value={messengerPort}
-										onChangeText={setMessengerPort}
-										placeholder={NodeInfosDefault.messengerPort}
-										autoCorrect={false}
-										textAlign={'right'}
-									/>
-								</View>
-							</View>
+							<LabelInput
+								label={t('settings.devtools.select-node.address')}
+								value={address}
+								onChangeText={setAddress}
+								placeholder={NodeInfosDefault.address}
+							/>
+							<LabelInput
+								label={t('settings.devtools.select-node.account-port')}
+								value={accountPort}
+								onChangeText={setAccountPort}
+								placeholder={NodeInfosDefault.accountPort}
+							/>
+							<LabelInput
+								label={t('settings.devtools.select-node.messenger-port')}
+								value={messengerPort}
+								onChangeText={setMessengerPort}
+								placeholder={NodeInfosDefault.messengerPort}
+							/>
 						</>
 					)}
 				</ItemSection>

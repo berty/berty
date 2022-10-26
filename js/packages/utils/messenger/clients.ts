@@ -18,11 +18,7 @@ import { GoBridge } from '@berty/native-modules/GoBridge'
 import { streamEventToAction as streamEventToReduxAction } from '@berty/redux/messengerActions'
 import { setClients, setStreamError, setClearClients } from '@berty/redux/reducers/ui.reducer'
 import { AppDispatch } from '@berty/redux/store'
-import {
-	AsyncStorageKeys,
-	NodeInfos,
-	getData,
-} from '@berty/utils/global-persistent-options/async-storage'
+import { AsyncStorageKeys, NodeInfos, getData } from '@berty/utils/async-storage/async-storage'
 import { defaultGlobalPersistentOptions } from '@berty/utils/global-persistent-options/defaults'
 import { GlobalPersistentOptionsKeys } from '@berty/utils/global-persistent-options/types'
 
