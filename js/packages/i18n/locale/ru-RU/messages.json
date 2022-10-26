@@ -249,6 +249,15 @@
 			"simulate-button": "Симулировать ошибки в передаче данных",
 			"simulate-js-error-button": "Имитация ошибки JavaScript",
 			"system-info-button": "Информация о системе",
+			"select-node": {
+				"title": "",
+				"node-type": "",
+				"address": "",
+				"account-port": "",
+				"messenger-port": "",
+				"dont-ask": "",
+				"button-continue": ""
+			},
 			"debug-button": "Дебаг",
 			"log-button": {
 				"name": "Формат логов",
