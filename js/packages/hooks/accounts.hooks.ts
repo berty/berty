@@ -2,6 +2,7 @@ import { NavigationProp } from '@react-navigation/native'
 import { useCallback } from 'react'
 
 import beapi from '@berty/api'
+import { GoBridge } from '@berty/native-modules/GoBridge'
 import { useNavigation } from '@berty/navigation'
 import { ScreensParams } from '@berty/navigation/types'
 import { selectSelectedAccount } from '@berty/redux/reducers/ui.reducer'
@@ -60,10 +61,8 @@ const resetToClosing = (reset: NavigationProp<ScreensParams>['reset'], callback:
 export const useSwitchAccountAfterClosing = () => {
 	const { reset } = useNavigation()
 	return useCallback(
-		(selectedAccount: string | null) =>
-			resetToClosing(reset, () =>
-				reset({ routes: [{ name: 'Account.Opening', params: { selectedAccount } }] }),
-			),
+		(_selectedAccount: string | null) =>
+			resetToClosing(reset, () => reset({ routes: [{ name: 'Account.SelectNode', params: {} }] })),
 		[reset],
 	)
 }
@@ -102,5 +101,18 @@ export const useDeletingAccountAfterClosing = () => {
 				reset({ routes: [{ name: 'Account.Deleting', params: { selectedAccount } }] }),
 			),
 		[reset, selectedAccount],
+	)
+}
+
+export const useCloseBridgeAfterClosing = () => {
+	const { reset } = useNavigation()
+	return useCallback(
+		() =>
+			resetToClosing(reset, async () => {
+				await GoBridge.closeBridge()
+				reset({ routes: [{ name: 'Account.SelectNode' }] })
+			}),
+
+		[reset],
 	)
 }

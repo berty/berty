@@ -79,7 +79,11 @@ export type ScreensParams = {
 
 	// Account
 
-	'Account.InitialLaunch': undefined
+	'Account.GoToLogInOrCreate': undefined
+	'Account.SelectNode': {
+		init: boolean
+		action: (external: boolean, address: string, port: string) => Promise<boolean>
+	}
 	'Account.Opening': { selectedAccount: string; isNewAccount?: boolean }
 	'Account.Creating': undefined
 	// we know that it is a warning but it's ok since we don't persist the navigation state

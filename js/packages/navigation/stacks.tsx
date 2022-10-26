@@ -7,7 +7,7 @@ import { Icon } from '@ui-kitten/components'
 import mapValues from 'lodash/mapValues'
 import React, { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Linking, Platform, TouchableOpacity } from 'react-native'
+import { Alert, Linking, Platform, TouchableOpacity } from 'react-native'
 import { useSelector } from 'react-redux'
 
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
@@ -15,6 +15,7 @@ import { useStyles } from '@berty/contexts/styles'
 import { useAppDispatch, useThemeColor } from '@berty/hooks'
 import { selectHandledLink, setHandledLink } from '@berty/redux/reducers/ui.reducer'
 import * as RawComponents from '@berty/screens'
+import { initBridge } from '@berty/utils/bridge/bridge'
 
 import { ScreensParams } from './types'
 
@@ -148,10 +149,11 @@ export const Navigation: React.FC = React.memo(() => {
 	const { scaleSize } = useAppDimensions()
 	const { t } = useTranslation()
 	const { dispatch } = useNavigation()
+	const { reset } = useNavigation<NavigationProp<ScreensParams>>()
 
 	return (
 		<NavigationStack.Navigator
-			initialRouteName='Account.InitialLaunch'
+			initialRouteName='Account.SelectNode'
 			screenOptions={{
 				headerLeft:
 					Platform.OS === 'web'
@@ -168,8 +170,29 @@ export const Navigation: React.FC = React.memo(() => {
 		>
 			{/* Account */}
 			<NavigationStack.Screen
-				name='Account.InitialLaunch'
-				component={Components.Account.InitialLaunch}
+				name='Account.SelectNode'
+				initialParams={{
+					init: true,
+					action: async (external: boolean, address: string, port: string) => {
+						const res = await initBridge(external, address, port)
+						if (!res) {
+							Alert.alert('bridge: init failed')
+							return false
+						}
+
+						reset({ index: 0, routes: [{ name: 'Account.GoToLogInOrCreate' }] })
+						return true
+					},
+				}}
+				component={Components.Account.SelectNode}
+				options={{
+					headerShown: false,
+					presentation: 'formSheet',
+				}}
+			/>
+			<NavigationStack.Screen
+				name='Account.GoToLogInOrCreate'
+				component={Components.Account.GoToLogInOrCreate}
 				options={{ headerShown: false }}
 			/>
 			<NavigationStack.Screen

@@ -28,8 +28,6 @@ import (
 	"berty.tech/berty/v2/go/pkg/osversion"
 )
 
-const bufListenerSize = 256 * 1024
-
 var _ LifeCycleHandler = (*Bridge)(nil)
 
 type Bridge struct {
@@ -38,7 +36,6 @@ type Bridge struct {
 
 	serviceAccount account_svc.Service
 	serviceBridge  bridge_svc.Service
-	client         *grpcutil.LazyClient
 	grpcServer     *grpc.Server
 	onceCloser     sync.Once
 	workers        run.Group
@@ -50,9 +47,11 @@ type Bridge struct {
 
 	lifecycleManager    *lifecycle.Manager
 	notificationManager notification.Manager
+
+	ServiceClient
 }
 
-func NewBridge(config *Config) (*Bridge, error) {
+func NewBridge(config *BridgeConfig) (*Bridge, error) {
 	ctx := context.Background()
 
 	// create bridge instance
@@ -167,7 +166,7 @@ func NewBridge(config *Config) (*Bridge, error) {
 			return nil, errors.Wrap(err, "unable to get bridge gRPC ClientConn")
 		}
 
-		b.client = grpcutil.NewLazyClient(ccBridge)
+		b.ServiceClient = NewServiceClient(grpcutil.NewLazyClient(ccBridge))
 	}
 
 	// setup lifecycle manager
@@ -312,25 +311,6 @@ func (b *Bridge) Close() error {
 	return errs
 }
 
-type PromiseBlock interface {
-	CallResolve(reply string)
-	CallReject(error error)
-}
-
-func (b *Bridge) InvokeBridgeMethodWithPromiseBlock(promise PromiseBlock, method string, b64message string) {
-	go func() {
-		res, err := b.InvokeBridgeMethod(method, b64message)
-		// if an internal error occurred generate a new bridge error
-		if err != nil {
-			err = errors.Wrap(err, "unable to invoke bridge method")
-			promise.CallReject(err)
-			return
-		}
-
-		promise.CallResolve(res)
-	}()
-}
-
 func (b *Bridge) isClosed() bool {
 	select {
 	case <-b.closec:
@@ -338,21 +318,4 @@ func (b *Bridge) isClosed() bool {
 	default:
 		return false
 	}
-}
-
-func (b *Bridge) InvokeBridgeMethod(method string, b64message string) (string, error) {
-	in, err := grpcutil.NewLazyMessage().FromBase64(b64message)
-	if err != nil {
-		return "", err
-	}
-	desc := &grpcutil.LazyMethodDesc{
-		Name: method,
-	}
-
-	out, err := b.client.InvokeUnary(context.Background(), desc, in)
-	if err != nil {
-		return "", err
-	}
-
-	return out.Base64(), nil
 }

@@ -664,6 +664,165 @@ exports[`Settings.DevTools renders correctly 1`] = `
                         ]
                       }
                     >
+                      settings.devtools.select-node.title
+                    </Text>
+                  </View>
+                </View>
+                <View
+                  style={
+                    Array [
+                      Object {
+                        "alignItems": "stretch",
+                        "flexDirection": "row",
+                        "justifyContent": "space-evenly",
+                      },
+                      Object {
+                        "alignItems": "center",
+                      },
+                    ]
+                  }
+                >
+                  <View
+                    style={Object {}}
+                  >
+                    <View
+                      style={
+                        Object {
+                          "transform": Array [
+                            Object {
+                              "scale": 1,
+                            },
+                          ],
+                        }
+                      }
+                    >
+                      <RNSVGMock
+                        fill="#383B62"
+                        height={25}
+                        viewBox="0 0 24 24"
+                        width={25}
+                      />
+                    </View>
+                  </View>
+                </View>
+              </View>
+            </View>
+            <View
+              accessible={true}
+              focusable={true}
+              onClick={[Function]}
+              onResponderGrant={[Function]}
+              onResponderMove={[Function]}
+              onResponderRelease={[Function]}
+              onResponderTerminate={[Function]}
+              onResponderTerminationRequest={[Function]}
+              onStartShouldSetResponder={[Function]}
+              style={
+                Object {
+                  "backgroundColor": "#FFFFFF",
+                  "borderRadius": 16,
+                  "flex": 1,
+                  "marginTop": 20,
+                  "minHeight": 60,
+                  "opacity": 1,
+                  "shadowColor": "#000000",
+                  "shadowOffset": Object {
+                    "height": 1,
+                    "width": 0,
+                  },
+                  "shadowOpacity": 0.2,
+                  "shadowRadius": 2,
+                }
+              }
+            >
+              <View
+                style={
+                  Array [
+                    Object {
+                      "flex": 1,
+                    },
+                    Object {
+                      "alignItems": "stretch",
+                      "flexDirection": "row",
+                      "justifyContent": "space-between",
+                    },
+                    Object {
+                      "paddingHorizontal": 16,
+                    },
+                    null,
+                    Object {
+                      "alignItems": "center",
+                    },
+                  ]
+                }
+              >
+                <View
+                  style={
+                    Array [
+                      Object {
+                        "alignItems": "stretch",
+                        "flexDirection": "row",
+                        "justifyContent": "flex-start",
+                      },
+                      Object {
+                        "alignItems": "center",
+                      },
+                    ]
+                  }
+                >
+                  <View>
+                    <View
+                      style={
+                        Object {
+                          "transform": Array [
+                            Object {
+                              "scale": 1,
+                            },
+                          ],
+                        }
+                      }
+                    >
+                      <RNSVGMock
+                        fill="#3F426D"
+                        height={30}
+                        style={
+                          Array [
+                            false,
+                          ]
+                        }
+                        viewBox="0 0 24 24"
+                        width={30}
+                      />
+                    </View>
+                  </View>
+                  <View>
+                    <Text
+                      numberOfLines={2}
+                      style={
+                        Array [
+                          Object {
+                            "fontSize": 30,
+                          },
+                          Object {
+                            "color": "#383B62",
+                            "fontFamily": "Open Sans",
+                          },
+                          Array [
+                            Object {
+                              "paddingLeft": 9,
+                            },
+                            Object {
+                              "fontSize": 30,
+                            },
+                            Object {
+                              "color": "#383B62",
+                              "maxWidth": 600,
+                            },
+                            null,
+                          ],
+                        ]
+                      }
+                    >
                       settings.home.appearance-button
                     </Text>
                   </View>

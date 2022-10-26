@@ -392,6 +392,8 @@ PODS:
     - React-Core
   - RNBootSplash (3.2.6):
     - React-Core
+  - RNCAsyncStorage (1.17.10):
+    - React-Core
   - RNCClipboard (1.9.0):
     - React-Core
   - RNFS (2.18.0):
@@ -494,6 +496,7 @@ DEPENDENCIES:
   - "ReactNativeAudioToolkit (from `../node_modules/@react-native-community/audio-toolkit`)"
   - ReactNativeExceptionHandler (from `../node_modules/react-native-exception-handler`)
   - RNBootSplash (from `../node_modules/react-native-bootsplash`)
+  - "RNCAsyncStorage (from `../node_modules/@react-native-async-storage/async-storage`)"
   - "RNCClipboard (from `../node_modules/@react-native-clipboard/clipboard`)"
   - RNFS (from `../node_modules/react-native-fs`)
   - RNPermissions (from `../node_modules/react-native-permissions`)
@@ -634,6 +637,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-exception-handler"
   RNBootSplash:
     :path: "../node_modules/react-native-bootsplash"
+  RNCAsyncStorage:
+    :path: "../node_modules/@react-native-async-storage/async-storage"
   RNCClipboard:
     :path: "../node_modules/@react-native-clipboard/clipboard"
   RNFS:
@@ -720,6 +725,7 @@ SPEC CHECKSUMS:
   ReactNativeAudioToolkit: de9610f323e855ac6574be8c99621f3d57c5df06
   ReactNativeExceptionHandler: b11ff67c78802b2f62eed0e10e75cb1ef7947c60
   RNBootSplash: 51eef7e143faeab63f81ddbb7c1de38b8fba66ed
+  RNCAsyncStorage: 0c357f3156fcb16c8589ede67cc036330b6698ca
   RNCClipboard: 99fc8ad669a376b756fbc8098ae2fd05c0ed0668
   RNFS: 3ab21fa6c56d65566d1fb26c2228e2b6132e5e32
   RNPermissions: 4b54095940aea8c03fa3e6c92d4ac3647b31ed4e

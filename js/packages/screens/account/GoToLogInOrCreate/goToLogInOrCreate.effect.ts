@@ -1,24 +1,8 @@
 import beapi from '@berty/api'
-import { GoBridge } from '@berty/native-modules/GoBridge'
 import { ScreensParams } from '@berty/navigation/types'
 import { refreshAccountList } from '@berty/utils/accounts/accountUtils'
 
-const initBridge = async () => {
-	try {
-		console.log('bridge methods: ', Object.keys(GoBridge))
-		await GoBridge.initBridge()
-		console.log('bridge init done')
-	} catch (err: any) {
-		if (err?.message?.indexOf('already started') === -1) {
-			console.error('unable to init bridge: ', err)
-		} else {
-			console.log('bridge already started: ', err)
-		}
-	}
-}
-
-export const initialLaunch = async (): Promise<{ name: keyof ScreensParams; params?: any }> => {
-	await initBridge()
+export const goToLogInOrCreate = async (): Promise<{ name: keyof ScreensParams; params?: any }> => {
 	const accounts = await refreshAccountList()
 
 	const lengthAccounts = Object.keys(accounts).length

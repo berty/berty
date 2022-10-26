@@ -14,9 +14,11 @@ import {
 } from '@berty/grpc-bridge/welsh-clients.gen'
 import { MessengerServiceMock } from '@berty/mock-services/static/messengerServiceMock'
 import { ProtocolServiceMock } from '@berty/mock-services/static/protocolServiceMock'
+import { GoBridge } from '@berty/native-modules/GoBridge'
 import { streamEventToAction as streamEventToReduxAction } from '@berty/redux/messengerActions'
 import { setClients, setStreamError, setClearClients } from '@berty/redux/reducers/ui.reducer'
 import { AppDispatch } from '@berty/redux/store'
+import { AsyncStorageKeys, NodeInfos, getData } from '@berty/utils/async-storage/async-storage'
 import { defaultGlobalPersistentOptions } from '@berty/utils/global-persistent-options/defaults'
 import { GlobalPersistentOptionsKeys } from '@berty/utils/global-persistent-options/types'
 
@@ -127,6 +129,20 @@ const createMockClients = () => {
 	}
 }
 
+const connectService = async (serviceName: string, address: string) => {
+	try {
+		console.log('connect service')
+		await GoBridge.connectService(serviceName, address)
+		console.log('connect service done')
+	} catch (err: any) {
+		if (err?.message?.indexOf('already started') === -1) {
+			console.error('unable to init bridge: ', err)
+		} else {
+			console.log('bridge already started: ', err)
+		}
+	}
+}
+
 const createServicesClients = async (forceMock: boolean) => {
 	if (forceMock) {
 		return createMockClients()
@@ -161,6 +177,23 @@ const createServicesClients = async (forceMock: boolean) => {
 				logger.create('MESSENGER'),
 			),
 		}
+	}
+
+	const selectNode: NodeInfos | null = await getData(AsyncStorageKeys.SelectNode)
+
+	if (selectNode !== null && selectNode.external) {
+		const concatAddr = (address: string, port: string): string => {
+			return address + ':' + port
+		}
+
+		connectService(
+			'berty.protocol.v1.ProtocolService',
+			concatAddr(selectNode.address, selectNode.messengerPort),
+		)
+		connectService(
+			'berty.messenger.v1.MessengerService',
+			concatAddr(selectNode.address, selectNode.messengerPort),
+		)
 	}
 
 	return {

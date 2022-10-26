@@ -249,6 +249,15 @@
 			"simulate-button": "Simulate stream error",
 			"simulate-js-error-button": "Simulate JavaScript error",
 			"system-info-button": "System info",
+			"select-node": {
+				"title": "Select a node",
+				"node-type": "Internal / External node",
+				"address": "Address",
+				"account-port": "Account service port",
+				"messenger-port": "Messenger service port",
+				"dont-ask": "Don't ask me again",
+				"button-continue": "Continue"
+			},
 			"debug-button": "Debug",
 			"log-button": {
 				"name": "Log format",
