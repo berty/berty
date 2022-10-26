@@ -249,6 +249,15 @@
 			"simulate-button": "",
 			"simulate-js-error-button": "",
 			"system-info-button": "시스템 정보",
+			"select-node": {
+				"title": "",
+				"node-type": "",
+				"address": "",
+				"account-port": "",
+				"messenger-port": "",
+				"dont-ask": "",
+				"button-continue": ""
+			},
 			"debug-button": "디버그",
 			"log-button": {
 				"name": "로그 형식",
