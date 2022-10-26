@@ -249,6 +249,15 @@
 			"simulate-button": "",
 			"simulate-js-error-button": "حاكِ خطأ في جافا سكريبت",
 			"system-info-button": "معلومات النظام",
+			"select-node": {
+				"title": "",
+				"node-type": "",
+				"address": "",
+				"account-port": "",
+				"messenger-port": "",
+				"dont-ask": "",
+				"button-continue": ""
+			},
 			"debug-button": "نقّح",
 			"log-button": {
 				"name": "تنسيق السجل",
