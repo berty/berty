@@ -25,6 +25,11 @@ const setInputValue = async (driver, label, value, timeout) => {
 	await input.setValue(value)
 }
 
+const getTextInElement = async (driver, label) => {
+	const elem = await waitForElementByAccessibilityId(driver, label)
+	return await elem.getText()
+}
+
 const getCapabilitiesFromEnv = deviceName => {
 	const platform = process.env.IOS_APP ? 'iOS' : 'Android'
 	const timeout = 20 * 60 * 1000
@@ -71,8 +76,8 @@ const getCapabilitiesFromEnv = deviceName => {
 
 module.exports = {
 	androidScrollIntoView,
-	waitForElementByAccessibilityId,
 	pressButton,
 	setInputValue,
 	getCapabilitiesFromEnv,
+	getTextInElement,
 }

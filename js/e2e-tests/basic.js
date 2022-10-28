@@ -1,6 +1,5 @@
-const wdio = require('webdriverio')
-
-const { pressButton, setInputValue, getCapabilitiesFromEnv , waitForElementByAccessibilityId } = require('./lib')
+const { getDrivers, iphoneList } = require('./driver')
+const { pressButton, setInputValue, getTextInElement } = require('./lib')
 
 /**
  * This test does the onboarding, joins a group and sends a message to the group on two simulators
@@ -27,14 +26,12 @@ const joinGroupFromHome = async driver => {
 }
 
 const checkIfSenderMessageExist = async (device, senderName, message) => {
-  const senderNameElem = await waitForElementByAccessibilityId(device, senderName)
-  const messageElem = await waitForElementByAccessibilityId(device, message)
+	const senderNameText = await getTextInElement(device, senderName)
+	const messageText = await getTextInElement(device, message)
 
-  const senderNameText = await senderNameElem.getText()
-  const messageText = await messageElem.getText()
-  if (senderNameText !== senderName || messageText !== message) {
-    throw new Error(`contact message doesn't exist`)
-  }
+	if (senderNameText !== senderName || messageText !== message) {
+		throw new Error("contact message doesn't exist")
+	}
 }
 
 const sendMessageToGroup = async (device, message) => {
@@ -43,31 +40,23 @@ const sendMessageToGroup = async (device, message) => {
 }
 
 const main = async () => {
-	const capabilities1 = getCapabilitiesFromEnv('iPhone 11')
-	const capabilities2 = getCapabilitiesFromEnv('iPhone 11 Pro')
+	const drivers = await getDrivers(2)
 
-	const driver1Promise = wdio.remote({
-		port: 4723,
-		capabilities: { ...capabilities1, 'appium:wdaLocalPort': 8101 },
-	})
-	const driver2Promise = wdio.remote({
-		port: 4723,
-		capabilities: capabilities2,
-	})
+	if (drivers.length < 2) {
+		throw new Error('Not enough devices')
+	}
 
-	const [driver1, driver2] = await Promise.all([driver1Promise, driver2Promise])
+	await Promise.all(drivers.map(createAccount))
+	await Promise.all(drivers.map(joinGroupFromHome))
 
-	await Promise.all([createAccount(driver1), createAccount(driver2)])
-	await Promise.all([joinGroupFromHome(driver1), joinGroupFromHome(driver2)])
+	await sendMessageToGroup(drivers[0], 'hello from device 1')
+	await sendMessageToGroup(drivers[1], 'hello from device 2')
 
-	await sendMessageToGroup(driver1, 'hello from device 1')
-	await sendMessageToGroup(driver2, 'hello from device 2')
+	await checkIfSenderMessageExist(drivers[0], iphoneList[1], 'hello from device 2')
+	await checkIfSenderMessageExist(drivers[1], iphoneList[0], 'hello from device 1')
 
-  await checkIfSenderMessageExist(driver1, 'iPhone 11 Pro', 'hello from device 2')
-  await checkIfSenderMessageExist(driver2, 'iPhone 11', 'hello from device 1')
-
-	await driver1.deleteSession()
-	await driver2.deleteSession()
+	await drivers[0].deleteSession()
+	await drivers[1].deleteSession()
 }
 
 main()
