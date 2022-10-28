@@ -55,11 +55,7 @@ export const ActionCard: React.FC<ActionCardProps> = props => {
 
 				<View style={[margin.top.medium, margin.bottom.small]}>
 					<HorizontalDuoSmall>
-						<TertiaryButtonIconLeft
-							name='close'
-							onPress={props.onClose}
-							accessibilityLabel={props.cancelText}
-						>
+						<TertiaryButtonIconLeft name='close' onPress={props.onClose} testID={props.cancelText}>
 							{props.cancelText}
 						</TertiaryButtonIconLeft>
 						<SecondaryButtonIconLeft
@@ -67,7 +63,7 @@ export const ActionCard: React.FC<ActionCardProps> = props => {
 								props.onClose()
 								props.onConfirm()
 							}}
-							accessibilityLabel={props.confirmText}
+							testID={props.confirmText}
 						>
 							{props.confirmText}
 						</SecondaryButtonIconLeft>

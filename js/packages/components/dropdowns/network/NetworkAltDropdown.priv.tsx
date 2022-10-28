@@ -12,7 +12,7 @@ interface NetworkAltDropdownPrivProps extends NetworkProps {
 export const NetworkAltDropdownPriv: React.FC<NetworkAltDropdownPrivProps> = props => {
 	return (
 		<View style={styles.container}>
-			<DropdownPriv placeholder={props.placeholder} accessibilityLabel={props.accessibilityLabel}>
+			<DropdownPriv placeholder={props.placeholder} testID={props.testID}>
 				{props.children}
 			</DropdownPriv>
 		</View>

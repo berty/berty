@@ -10,12 +10,12 @@ test('Onboarding.GetStarted renders correctly', async () => {
 })
 
 /**
- * This test is only there as an example of getting an element by accessibilityLabel,
+ * This test is only there as an example of getting an element by testID,
  * it shouldn't be needed due to the snapshot test
  */
 test('create button exists', async () => {
-	const { getByLabelText } = renderScreen('Onboarding.GetStarted', GetStarted)
+	const { getByTestId } = renderScreen('Onboarding.GetStarted', GetStarted)
 
-	const createButton = getByLabelText(i18next.t('onboarding.getstarted.create-button'))
+	const createButton = getByTestId(i18next.t('onboarding.getstarted.create-button'))
 	expect(createButton).toBeTruthy()
 })

@@ -17,14 +17,14 @@ test('Settings.Network renders correctly', async () => {
 test('Settings.Network toggle onPress works', async () => {
 	await mockServices()
 
-	const { toJSON, getByLabelText } = renderScreen('Settings.Network', Network)
+	const { toJSON, getByTestId } = renderScreen('Settings.Network', Network)
 
-	const bleButton = getByLabelText(i18next.t('settings.network.ble-button'))
+	const bleButton = getByTestId(i18next.t('settings.network.ble-button'))
 	if (Platform.OS === 'ios') {
-		const mcButton = getByLabelText(i18next.t('settings.network.mc-button'))
+		const mcButton = getByTestId(i18next.t('settings.network.mc-button'))
 		fireEvent.press(mcButton)
 	} else {
-		const nearbyButton = getByLabelText(i18next.t('settings.network.nearby-button'))
+		const nearbyButton = getByTestId(i18next.t('settings.network.nearby-button'))
 		fireEvent.press(nearbyButton)
 	}
 	fireEvent.press(bleButton)
@@ -34,15 +34,11 @@ test('Settings.Network toggle onPress works', async () => {
 test('Settings.Network + button onPress works', async () => {
 	await mockServices()
 
-	const { toJSON, getByLabelText } = renderScreen('Settings.Network', Network)
+	const { toJSON, getByTestId } = renderScreen('Settings.Network', Network)
 
-	const bootstrapButton = getByLabelText(i18next.t('settings.network.bootstrap-button'))
-	const relayButton = getByLabelText(
-		i18next.t('onboarding.custom-mode.settings.access.relay-button'),
-	)
-	const rdvpButton = getByLabelText(
-		i18next.t('onboarding.custom-mode.settings.routing.rdvp-button'),
-	)
+	const bootstrapButton = getByTestId(i18next.t('settings.network.bootstrap-button'))
+	const relayButton = getByTestId(i18next.t('onboarding.custom-mode.settings.access.relay-button'))
+	const rdvpButton = getByTestId(i18next.t('onboarding.custom-mode.settings.routing.rdvp-button'))
 	fireEvent.press(bootstrapButton)
 	fireEvent.press(relayButton)
 	fireEvent.press(rdvpButton)

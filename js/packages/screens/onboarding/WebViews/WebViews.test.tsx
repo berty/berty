@@ -6,12 +6,12 @@ import { renderScreen } from '@berty/utils/testing/renderScreen.test'
 import { WebViews } from './WebViews'
 
 test('Onboarding.WebViews renders correctly', async () => {
-	const { toJSON, getByLabelText } = renderScreen('Onboarding.WebViews', WebViews, {
+	const { toJSON, getByTestId } = renderScreen('Onboarding.WebViews', WebViews, {
 		url: 'https://example.com',
 	})
 	expect(toJSON()).toMatchSnapshot()
 
-	const acceptButton = getByLabelText(i18next.t('onboarding.web-views.second-button'))
+	const acceptButton = getByTestId(i18next.t('onboarding.web-views.second-button'))
 	fireEvent.press(acceptButton)
 	expect(toJSON()).toMatchSnapshot()
 })

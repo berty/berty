@@ -374,7 +374,7 @@ const EnableDisableAll: React.FC<{ accordionRefs: AccordionRefs }> = ({ accordio
 			<View style={[padding.small]}>
 				<AltToggle
 					checked={isToggled}
-					accessibilityLabel={t('onboarding.custom-mode.settings.all-button')}
+					testID={t('onboarding.custom-mode.settings.all-button')}
 					onChange={async () => {
 						const toToggled = !isToggled
 						setIsToggled(toToggled)

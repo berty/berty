@@ -51,7 +51,7 @@ export const RelayItemsPriv = () => {
 			))}
 			<DividerItem />
 			<AddButtonPriv
-				accessibilityLabel={t('onboarding.custom-mode.settings.access.relay-button')}
+				testID={t('onboarding.custom-mode.settings.access.relay-button')}
 				onPress={() => setIsVisible(true)}
 			/>
 			<BottomModal isVisible={isVisible} setIsVisible={setIsVisible}>

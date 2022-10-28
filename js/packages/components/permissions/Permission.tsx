@@ -96,7 +96,7 @@ export const Permission: React.FC<PermissionProps> = ({
 						)}
 					</PrimaryButton>
 				</View>
-				<TertiaryAltButton onPress={onPressSecondary} accessibilityLabel={altText}>
+				<TertiaryAltButton onPress={onPressSecondary} testID={altText}>
 					{altText}
 				</TertiaryAltButton>
 			</View>

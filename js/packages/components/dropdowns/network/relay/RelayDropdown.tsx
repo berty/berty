@@ -12,7 +12,7 @@ export const RelayDropdown = forwardRef((props: NetworkProps, ref: ForwardedRef<
 	return (
 		<NetworkDropdownPriv
 			placeholder={t('onboarding.custom-mode.settings.access.relay-button')}
-			accessibilityLabel={props.accessibilityLabel}
+			testID={props.testID}
 			icon='earth'
 			ref={ref}
 		>

@@ -51,7 +51,7 @@ export const BootstrapItemsPriv = () => {
 			))}
 			<DividerItem />
 			<AddButtonPriv
-				accessibilityLabel={t('settings.network.bootstrap-button')}
+				testID={t('settings.network.bootstrap-button')}
 				onPress={() => setIsVisible(true)}
 			/>
 			<BottomModal isVisible={isVisible} setIsVisible={setIsVisible}>

@@ -35,7 +35,7 @@ const Proximity: React.FC = () => {
 			{Platform.OS !== 'web' && (
 				<>
 					<MenuToggle
-						accessibilityLabel={t('settings.network.ble-button')}
+						testID={t('settings.network.ble-button')}
 						isToggleOn={
 							blePerm === 'granted' &&
 							networkConfig?.bluetoothLe === beapi.account.NetworkConfig.Flag.Enabled
@@ -59,7 +59,7 @@ const Proximity: React.FC = () => {
 			{Platform.OS === 'ios' && (
 				<>
 					<MenuToggle
-						accessibilityLabel={t('settings.network.mc-button')}
+						testID={t('settings.network.mc-button')}
 						isToggleOn={
 							blePerm === 'granted' &&
 							networkConfig?.appleMultipeerConnectivity === beapi.account.NetworkConfig.Flag.Enabled
@@ -83,7 +83,7 @@ const Proximity: React.FC = () => {
 			{Platform.OS === 'android' && (
 				<>
 					<MenuToggle
-						accessibilityLabel={t('settings.network.nearby-button')}
+						testID={t('settings.network.nearby-button')}
 						isToggleOn={
 							blePerm === 'granted' &&
 							networkConfig?.androidNearby === beapi.account.NetworkConfig.Flag.Enabled
@@ -105,7 +105,7 @@ const Proximity: React.FC = () => {
 				</>
 			)}
 			<MenuToggle
-				accessibilityLabel={t('settings.network.mdns-button')}
+				testID={t('settings.network.mdns-button')}
 				isToggleOn={networkConfig?.mdns === beapi.account.NetworkConfig.Flag.Enabled}
 				onPress={async () => {
 					dispatch(

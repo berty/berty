@@ -12,12 +12,12 @@ interface DropdownPrivProps {
 	icon?: string
 	placeholder: string
 	children: React.ReactNode
-	accessibilityLabel?: string
+	testID?: string
 }
 
 export const DropdownPriv = forwardRef(
 	(
-		{ icon, children, accessibilityLabel, placeholder = '' }: DropdownPrivProps,
+		{ icon, children, testID, placeholder = '' }: DropdownPrivProps,
 		ref: ForwardedRef<DropdownRef>,
 	) => {
 		const { padding, margin } = useStyles()
@@ -99,7 +99,7 @@ export const DropdownPriv = forwardRef(
 					activeOpacity={0.9}
 					style={[padding.horizontal.medium, styles.button]}
 					onPress={toggleView}
-					accessibilityLabel={accessibilityLabel}
+					testID={testID}
 				>
 					{!!icon && (
 						<Icon

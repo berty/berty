@@ -82,7 +82,7 @@ const SetupFinishedBody = () => {
 					desc={t('onboarding.setup-finished.desc')}
 					button={{
 						text: t('onboarding.setup-finished.button'),
-						accessibilityLabel: t('onboarding.setup-finished.button'),
+						testID: t('onboarding.setup-finished.button'),
 						onPress: () => {
 							setIsFinished(true)
 							Vibration.vibrate([500])

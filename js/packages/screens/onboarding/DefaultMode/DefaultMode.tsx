@@ -117,7 +117,7 @@ const DefaultModeBody: React.FC = () => {
 						<PrimaryAltButton
 							loading={isPressed}
 							onPress={() => setIsPressed(true)}
-							accessibilityLabel={t('onboarding.default-mode.summary.accept-button')}
+							testID={t('onboarding.default-mode.summary.accept-button')}
 						>
 							{t('onboarding.default-mode.summary.accept-button')}
 						</PrimaryAltButton>

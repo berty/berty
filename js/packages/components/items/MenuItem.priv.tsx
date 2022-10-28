@@ -5,11 +5,7 @@ import { MenuItemProps } from './interfaces'
 
 export const MenuItemPriv: React.FC<MenuItemProps> = props => {
 	return (
-		<TouchableOpacity
-			style={styles.button}
-			onPress={props.onPress}
-			accessibilityLabel={props.accessibilityLabel}
-		>
+		<TouchableOpacity style={styles.button} onPress={props.onPress} testID={props.testID}>
 			{props.children}
 		</TouchableOpacity>
 	)

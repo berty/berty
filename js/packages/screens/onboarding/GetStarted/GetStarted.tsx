@@ -52,7 +52,7 @@ export const GetStarted: ScreenFC<'Onboarding.GetStarted'> = () => {
 				<View style={{ marginHorizontal: 60 }}>
 					<View style={[margin.top.huge]}>
 						<PrimaryButton
-							accessibilityLabel={t('onboarding.getstarted.create-button')}
+							testID={t('onboarding.getstarted.create-button')}
 							onPress={() => navigate('Onboarding.CreateAccount')}
 						>
 							{t('onboarding.getstarted.create-button')}

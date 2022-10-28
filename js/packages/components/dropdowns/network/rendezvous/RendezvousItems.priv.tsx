@@ -51,7 +51,7 @@ export const RendezvousItemsPriv = () => {
 			))}
 			<DividerItem />
 			<AddButtonPriv
-				accessibilityLabel={t('onboarding.custom-mode.settings.routing.rdvp-button')}
+				testID={t('onboarding.custom-mode.settings.routing.rdvp-button')}
 				onPress={() => setIsVisible(true)}
 			/>
 			<BottomModal isVisible={isVisible} setIsVisible={setIsVisible}>

@@ -1,3 +1,3 @@
 export interface StreamProgressProps {
-	accessibilityLabel?: string
+	testID?: string
 }

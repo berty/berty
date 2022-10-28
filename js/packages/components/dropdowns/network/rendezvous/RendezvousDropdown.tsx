@@ -13,7 +13,7 @@ export const RendezvousDropdown = forwardRef(
 		return (
 			<NetworkDropdownPriv
 				placeholder={t('onboarding.custom-mode.settings.routing.rdvp-button')}
-				accessibilityLabel={props.accessibilityLabel}
+				testID={props.testID}
 				icon='privacy'
 				ref={ref}
 			>

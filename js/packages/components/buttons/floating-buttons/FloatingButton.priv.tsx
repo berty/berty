@@ -10,8 +10,8 @@ export const FloatingButtonPriv: React.FC<TouchableOpacityProps> = props => {
 	return (
 		<View style={styles.container}>
 			<TouchableOpacity
+				{...props}
 				style={[{ marginBottom: 20, shadowColor: colors.shadow }, styles.button, props.style]}
-				onPress={props.onPress}
 			>
 				<Icon fill='white' name='plus' width={30} height={30} />
 			</TouchableOpacity>

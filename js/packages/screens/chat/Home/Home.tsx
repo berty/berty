@@ -265,7 +265,7 @@ export const Home: ScreenFC<'Chat.Home'> = ({ navigation: { navigate } }) => {
 									<ButtonSettingV2
 										text='Open Berty Link'
 										icon='external-link-outline'
-										accessibilityLabel='Open Berty Link'
+										testID='Open Berty Link'
 										onPress={() =>
 											navigate('Chat.ManageDeepLink', { type: 'link', value: searchText })
 										}

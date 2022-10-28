@@ -89,6 +89,7 @@ export const ManageGroupInvitation: React.FC<{
 	if (convId) {
 		navigationDispatch(
 			CommonActions.reset({
+				index: 1,
 				routes: [
 					{ name: 'Chat.Home' },
 					{
@@ -201,7 +202,7 @@ export const ManageGroupInvitation: React.FC<{
 							border.radius.small,
 							{ backgroundColor: colors['positive-asset'] },
 						]}
-						accessibilityLabel={t('modals.group-invitation.join')}
+						testID={t('modals.group-invitation.join')}
 					>
 						<UnifiedText
 							style={{
