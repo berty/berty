@@ -9,7 +9,8 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "appium": "^2.0.0-beta.45"
+    "appium": "^2.0.0-beta.45",
+    "dotenv": "^16.0.3"
   },
   "devDependencies": {
     "appium-uiautomator2-driver": "^2.8.0",

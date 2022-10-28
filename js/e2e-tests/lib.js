@@ -1,3 +1,5 @@
+require('dotenv').config()
+
 const androidScrollIntoView = (driver, label) => {
 	// this is black magic to scroll an element into view on android
 	driver.$(
@@ -7,14 +9,8 @@ const androidScrollIntoView = (driver, label) => {
 
 const waitForElementByAccessibilityId = async (driver, label, timeout = 30 * 1000) => {
 	const elem = await driver.$(`~${label}`)
-	console.log('elem', elem)
 
 	await elem.waitForDisplayed({ timeout })
-	// const result = await driver.waitUntil(async () => await driver.$(`~${label}`), {
-	// 	timeout,
-	// 	interval: 1000,
-	// })
-	// console.log('elem2', elem)
 
 	return elem
 }
@@ -26,14 +22,14 @@ const pressButton = async (driver, label, timeout) => {
 
 const setInputValue = async (driver, label, value, timeout) => {
 	const input = await waitForElementByAccessibilityId(driver, label, timeout)
-	console.log('inputttt', input)
 	await input.setValue(value)
 }
 
 const getCapabilitiesFromEnv = deviceName => {
 	const platform = process.env.IOS_APP ? 'iOS' : 'Android'
-
+	const timeout = 20 * 60 * 1000
 	const app = process.env.IOS_APP || process.env.ANDROID_APP
+
 	if (!app) {
 		throw new Error('no app provided')
 	}
@@ -52,9 +48,9 @@ const getCapabilitiesFromEnv = deviceName => {
 				'appium:simulatorStartupTimeout': timeout,
 				'appium:wdaLaunchTimeout': timeout,
 				'appium:wdaConnectionTimeout': timeout,
+				'appium:maxTypingFrequency': process.env.MAX_TYPING_FREQUENCY,
 				'appium:wdaStartupRetries': 4,
 				'appium:snapshotMaxDepth': 1000,
-				'appium:maxTypingFrequency': 20,
 				// 'appium:noReset': true,
 				// 'appium:fullReset': false,
 			}
@@ -69,7 +65,7 @@ const getCapabilitiesFromEnv = deviceName => {
 				'appium:automationName': 'UiAutomator2',
 			}
 		default:
-			throw new Error(`usupported platform: ${platform}`)
+			throw new Error(`unsupported platform: ${platform}`)
 	}
 }
 
