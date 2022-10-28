@@ -1,6 +1,6 @@
 const wdio = require('webdriverio')
 
-const { pressButton, setInputValue, getCapabilitiesFromEnv } = require('./lib')
+const { pressButton, setInputValue, getCapabilitiesFromEnv , waitForElementByAccessibilityId } = require('./lib')
 
 /**
  * This test does the onboarding, joins a group and sends a message to the group on two simulators
@@ -24,6 +24,17 @@ const joinGroupFromHome = async driver => {
 	await setInputValue(driver, 'Search keyword', groupLink)
 	await pressButton(driver, 'Open Berty Link')
 	await pressButton(driver, 'Join this group')
+}
+
+const checkIfSenderMessageExist = async (device, senderName, message) => {
+  const senderNameElem = await waitForElementByAccessibilityId(device, senderName)
+  const messageElem = await waitForElementByAccessibilityId(device, message)
+
+  const senderNameText = await senderNameElem.getText()
+  const messageText = await messageElem.getText()
+  if (senderNameText !== senderName || messageText !== message) {
+    throw new Error(`contact message doesn't exist`)
+  }
 }
 
 const sendMessageToGroup = async (device, message) => {
@@ -51,6 +62,9 @@ const main = async () => {
 
 	await sendMessageToGroup(driver1, 'hello from device 1')
 	await sendMessageToGroup(driver2, 'hello from device 2')
+
+  await checkIfSenderMessageExist(driver1, 'iPhone 11 Pro', 'hello from device 2')
+  await checkIfSenderMessageExist(driver2, 'iPhone 11', 'hello from device 1')
 
 	await driver1.deleteSession()
 	await driver2.deleteSession()
