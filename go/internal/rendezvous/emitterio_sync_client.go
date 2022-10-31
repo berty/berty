@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"sync"
 
-	emitter "github.com/emitter-io/go/v2"
+	emitter "github.com/berty/emitter-go/v2"
 	// nolint:staticcheck // cannot use the new protobuf API while keeping gogoproto
 	"github.com/golang/protobuf/proto"
 	"github.com/libp2p/go-libp2p-core/peer"
@@ -93,7 +93,8 @@ func (e *emitterClientManager) getClient(psDetails *EmitterPubSubSubscriptionDet
 		return
 	}
 
-	cl, err := emitter.Connect(psDetails.ServerAddr, func(client *emitter.Client, message emitter.Message) {})
+	noophandler := func(client *emitter.Client, message emitter.Message) {}
+	cl, err := emitter.Connect(psDetails.ServerAddr, noophandler, emitter.WithLogger(e.logger.Named("cl")))
 	if err != nil {
 		return
 	}

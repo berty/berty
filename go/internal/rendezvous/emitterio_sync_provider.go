@@ -6,7 +6,7 @@ import (
 	"math/big"
 	"time"
 
-	emitter "github.com/emitter-io/go/v2"
+	emitter "github.com/berty/emitter-go/v2"
 	// nolint:staticcheck // cannot use the new protobuf API while keeping gogoproto
 	"github.com/golang/protobuf/proto"
 	"github.com/libp2p/go-libp2p-core/peer"
@@ -53,7 +53,7 @@ func NewEmitterServer(serverAddr string, adminKey string, options *EmitterOption
 
 	c, err := emitter.Connect(serverAddr, func(_ *emitter.Client, msg emitter.Message) {
 		options.Logger.Debug("emitter received msg", zap.String("topic", msg.Topic()))
-	}, options.EmitterOptions...)
+	}, emitter.WithLogger(options.Logger.Named("cl")))
 	if err != nil {
 		options.Logger.Error("error on `Connect`", zap.Error(err))
 	}

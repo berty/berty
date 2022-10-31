@@ -64,7 +64,7 @@ func TestEmitterIOFlow(t *testing.T) {
 	require.NoError(t, err)
 
 	emitterPubSubSync, err := berty_rendezvous.NewEmitterServer(serverAddr, adminKey, &berty_rendezvous.EmitterOptions{
-		Logger: logger,
+		Logger: logger.Named("emitter"),
 	})
 	require.NoError(t, err)
 

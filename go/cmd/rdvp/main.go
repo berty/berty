@@ -200,7 +200,7 @@ func main() {
 
 			if emitterServer != "" && emitterAdminKey != "" {
 				emitter, err := rendezvous.NewEmitterServer(emitterServer, emitterAdminKey, &rendezvous.EmitterOptions{
-					Logger:           logger,
+					Logger:           logger.Named("emitter"),
 					ServerPublicAddr: emitterPublicAddr,
 				})
 				if err != nil {

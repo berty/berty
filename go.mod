@@ -16,13 +16,13 @@ require (
 	github.com/agl/ed25519 v0.0.0-20170116200512-5312a6153412
 	github.com/appleboy/go-fcm v0.1.5
 	github.com/atotto/clipboard v0.1.4
+	github.com/berty/emitter-go v0.0.0-20221031144724-5dae963c3622
 	github.com/buicongtan1997/protoc-gen-swagger-config v0.0.0-20190801162412-b6396e884596
 	github.com/campoy/embedmd v1.0.0
 	github.com/daixiang0/gci v0.3.2
 	github.com/denisbrodbeck/machineid v1.0.1
 	github.com/dgraph-io/ristretto v0.0.3 // indirect
 	github.com/eknkc/basex v1.0.1
-	github.com/emitter-io/go/v2 v2.0.9
 	github.com/fabiokung/shm v0.0.0-20150728212823-2852b0d79bae
 	github.com/fatih/color v1.13.0
 	github.com/flyingtime/gorm-sqlcipher v1.1.5
@@ -96,13 +96,13 @@ require (
 	github.com/shibukawa/configdir v0.0.0-20170330084843-e180dbdc8da0
 	github.com/sideshow/apns2 v0.20.0
 	github.com/skip2/go-qrcode v0.0.0-20200617195104-da1b6568686e
-	github.com/stretchr/testify v1.7.1
+	github.com/stretchr/testify v1.8.0
 	github.com/tailscale/depaware v0.0.0-20210622194025-720c4b409502
 	github.com/whyrusleeping/cbor-gen v0.0.0-20210713220151-be142a5ae1a8 // indirect
 	github.com/zcalusic/sysinfo v0.0.0-20200820110305-ef1bb2697bc2
 	go.uber.org/goleak v1.1.12
 	go.uber.org/multierr v1.7.0
-	go.uber.org/zap v1.20.0
+	go.uber.org/zap v1.23.0
 	golang.org/x/crypto v0.0.0-20220411220226-7b82a4e95df4
 	golang.org/x/mobile v0.0.0-20210220033013-bdb1ca9a1e08
 	golang.org/x/net v0.0.0-20211112202133-69e39bad7dc2
