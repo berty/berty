@@ -76,10 +76,7 @@ func init() {
       }
     ],
     "static-relays": [
-      "/ip4/51.15.25.224/tcp/4040/p2p/12D3KooWHhDBv6DJJ4XDWjzEXq6sVNEs6VuxsV1WyBBEhPENHzcZ",
-      "/ip4/147.75.80.110/tcp/4001/p2p/QmbFgm5zan8P6eWWmeyfncR5feYEMPbht5b1FW1C37aQ7y",
-      "/ip4/147.75.195.153/tcp/4001/p2p/QmW9m57aiBDHAkKj9nmFSEn7ZqrcF1fZS4bipsTCHburei",
-      "/ip4/147.75.70.221/tcp/4001/p2p/Qme8g49gm3q4Acp7xWBKg3nAa9fxZ1YmyDJdyGgoG6LsXh"
+      "/ip4/52.47.79.109/tcp/4040/p2p/12D3KooWKhUMFeJdRD4WuXE3f6boYPvxfgZJhRR4naxswdKpKFwG"
     ]
   }
 }`
