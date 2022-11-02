@@ -57,4 +57,4 @@ p2p:
     - '/ip4/52.47.79.109/tcp/4040/p2p/12D3KooWKhUMFeJdRD4WuXE3f6boYPvxfgZJhRR4naxswdKpKFwG'
     # ipfs relays
     # - "/ip4/104.131.131.82/tcp/4001/p2p/QmaCpDMGvV2BGHeYERUEnRQAwe3N8SzbUtfsmvsqQLuvuJ"
-    # - "/ip4/104.131.131.82/udp/4001/quic/p2p/QmaCpDMGvV2BGHeYERUEnRQAwe3N8SzbUtfsmvsqQLuvuJ"'
+    # - "/ip4/104.131.131.82/udp/4001/quic/p2p/QmaCpDMGvV2BGHeYERUEnRQAwe3N8SzbUtfsmvsqQLuvuJ"

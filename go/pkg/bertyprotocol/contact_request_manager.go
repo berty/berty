@@ -400,7 +400,7 @@ func (c *contactRequestsManager) SendContactRequest(ctx context.Context, to *pro
 	}
 
 	// create a new stream with the remote peer
-	stream, err := c.ipfs.NewStream(ctx, peer.ID, contactRequestV1)
+	stream, err := c.ipfs.NewStream(network.WithUseTransient(ctx, "req_mngr"), peer.ID, contactRequestV1)
 	if err != nil {
 		return fmt.Errorf("unable to open stream: %w", err)
 	}
