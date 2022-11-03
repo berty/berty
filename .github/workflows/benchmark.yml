@@ -1,0 +1,99 @@
+name: Go benchmark
+on:
+  push:
+    tags:
+      - v*
+    branches:
+      - master
+    paths:
+      - "go/**"
+      - "!go/**.md"
+      - "go.*"
+      - "**.go"
+      - ".github/workflows/benchmark.yml"
+  pull_request:
+    paths:
+      - "go/**"
+      - "!go/**.md"
+      - "go.*"
+      - "**.go"
+      - ".github/workflows/benchmark.yml"
+
+jobs:
+  benchmark:
+    name: Run benchmarks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup asdf
+        uses: asdf-vm/actions/setup@v1
+
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 50 # this is to make sure we obtain the target base commit#
+
+      - name: Setup go
+        run: |
+          asdf plugin add golang
+          asdf install golang
+          echo "go_version=$(asdf current golang | xargs | cut -d ' ' -f 2)" >> $GITHUB_ENV
+          go install golang.org/x/perf/cmd/benchstat@latest
+          asdf reshim golang
+
+      - name: Cache go modules
+        uses: actions/cache@v2.1.6
+        with:
+          path: ~/go/pkg/mod
+          key:          ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-${{ hashFiles('**/go.sum') }}
+          restore-keys: ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-
+
+      - name: Compile the project on Unix-like operating systems
+        working-directory: go
+        run: |
+          touch gen.sum # avoid triggering make generate
+          make go.install
+
+      - name: Run benchmark
+        run: make go.unittest | tee output_head.txt
+        working-directory: go
+        env:
+          TEST_SPEED: any
+          GO_TEST_PATH: ./internal/benchmark
+          GO_TEST_OPTS: -bench=. -test.benchmem -test.timeout=1200s -count=5 -tags "fts5 sqlite sqlite_unlock_notify"
+
+      - name: Checkout base commit
+        run: git checkout ${{ github.event.pull_request.base.sha }}
+
+      - name: Cache go modules (master)
+        uses: actions/cache@v2.1.6
+        with:
+          path: ~/go/pkg/mod
+          key:          ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-${{ hashFiles('**/go.sum') }}
+          restore-keys: ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-
+
+      - name: Compile the project on Unix-like operating systems (master)
+        working-directory: go
+        run: |
+          touch gen.sum # avoid triggering make generate
+          make go.install
+
+      - name: Fake benchmark (master)
+        run: cp  output_head.txt output_base.txt
+        working-directory: go
+
+      #      - name: Run benchmark (master)
+      #        run: make go.unittest | tee output_base.txt
+      #        working-directory: go
+      #        env:
+      #          TEST_SPEED: any
+      #          GO_TEST_PATH: ./internal/benchmark
+      #          GO_TEST_OPTS: -bench=. -test.benchmem -test.timeout=1200s -count=5 -tags "fts5 sqlite sqlite_unlock_notify"
+      #
+      - name: Benchstat
+        id: benchstat
+        run: |
+          echo 'Benchmark report' >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          benchstat output_head.txt output_base.txt >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+        working-directory: go
