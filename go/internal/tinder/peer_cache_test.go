@@ -2,6 +2,7 @@ package tinder
 
 import (
 	"context"
+	"runtime"
 	"testing"
 	"time"
 
@@ -13,6 +14,11 @@ import (
 
 func TestPeerCacheUpdatePeer(t *testing.T) {
 	const topic = "test_topic"
+
+	if runtime.GOOS == "windows" {
+		t.Skip("unittest not consistent on windows, skipping.")
+	}
+
 	peer := peer.AddrInfo{
 		ID: "hello",
 		Addrs: []ma.Multiaddr{
