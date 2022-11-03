@@ -4,7 +4,9 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"sync"
+	"time"
 
 	emitter "github.com/berty/emitter-go/v2"
 	// nolint:staticcheck // cannot use the new protobuf API while keeping gogoproto
@@ -15,6 +17,12 @@ import (
 	"github.com/multiformats/go-multiaddr"
 	"go.uber.org/zap"
 )
+
+type SyncClient interface {
+	rendezvous.RendezvousSyncClient
+
+	io.Closer
+}
 
 type registrationMessage struct {
 	registration *rendezvous.Registration
@@ -31,11 +39,28 @@ type emitterClient struct {
 
 type emitterClientManager struct {
 	ctx      context.Context
+	cancel   context.CancelFunc
 	clients  map[string]*emitterClient
 	outChans map[string][]chan *rendezvous.Registration
 	inChan   chan *registrationMessage
 	mu       sync.Mutex
 	logger   *zap.Logger
+}
+
+func (e *emitterClientManager) Close() (err error) {
+	e.mu.Lock()
+	for _, client := range e.clients {
+		client.Close()
+	}
+	e.cancel()
+	e.mu.Unlock()
+	return nil
+}
+
+func (e *emitterClient) Close() (err error) {
+	e.cancel()
+	e.client.Disconnect(time.Millisecond * 100)
+	return nil
 }
 
 func (e *emitterClient) subscribeToServerUpdates(inChan chan *registrationMessage, psDetails *EmitterPubSubSubscriptionDetails) (err error) {
@@ -158,7 +183,7 @@ type EmitterClientOptions struct {
 	Logger *zap.Logger
 }
 
-func NewEmitterClient(ctx context.Context, opts *EmitterClientOptions) rendezvous.RendezvousSyncClient {
+func NewEmitterClient(opts *EmitterClientOptions) SyncClient {
 	if opts == nil {
 		opts = &EmitterClientOptions{}
 	}
@@ -167,8 +192,10 @@ func NewEmitterClient(ctx context.Context, opts *EmitterClientOptions) rendezvou
 		opts.Logger = zap.NewNop()
 	}
 
+	ctx, cancel := context.WithCancel(context.Background())
 	manager := &emitterClientManager{
 		ctx:      ctx,
+		cancel:   cancel,
 		clients:  map[string]*emitterClient{},
 		logger:   opts.Logger.Named("emitter"),
 		outChans: map[string][]chan *rendezvous.Registration{},

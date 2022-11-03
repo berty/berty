@@ -219,6 +219,7 @@ func main() {
 				if err != nil {
 					return errcode.TODO.Wrap(err)
 				}
+				defer emitter.Close()
 
 				logger.Info("connected to mqtt broker", zap.String("broker", emitterServer))
 

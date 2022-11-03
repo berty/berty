@@ -611,8 +611,6 @@ func (m *Manager) configIPFSRouting(h host.Host, r p2p_routing.Routing) error {
 		return errcode.ErrIPFSSetupHost.Wrap(err)
 	}
 
-	ctx := m.getContext()
-
 	rdvpeers, err := m.getRdvpMaddrs()
 	if err != nil {
 		return errcode.ErrIPFSSetupHost.Wrap(err)
@@ -654,12 +652,12 @@ func (m *Manager) configIPFSRouting(h host.Host, r p2p_routing.Routing) error {
 		if lenrdvpeers := len(rdvpeers); lenrdvpeers > 0 {
 			for _, peer := range rdvpeers {
 				h.Peerstore().AddAddrs(peer.ID, peer.Addrs, peerstore.PermanentAddrTTL)
-				emitterclient := rendezvous.NewEmitterClient(ctx, &rendezvous.EmitterClientOptions{
+				m.Node.Protocol.emitterclient = rendezvous.NewEmitterClient(&rendezvous.EmitterClientOptions{
 					Logger: logger,
 				})
 
 				// mqttclient := rendezvous.NewMQTTClient(logger, baseopts)
-				udisc := tinder.NewRendezvousDiscovery(logger, h, peer.ID, rng, emitterclient)
+				udisc := tinder.NewRendezvousDiscovery(logger, h, peer.ID, rng, m.Node.Protocol.emitterclient)
 				drivers = append(drivers, udisc)
 			}
 		}

@@ -150,6 +150,7 @@ type Manager struct {
 			mdnsService       p2p_mdns.Service
 			localdisc         *tinder.LocalDiscovery
 			discAdaptater     *tinder.DiscoveryAdaptater
+			emitterclient     rendezvous.SyncClient
 			pubsub            *pubsub.PubSub
 			tinder            *tinder.Service
 			server            bertyprotocol.Service
@@ -395,12 +396,17 @@ func (m *Manager) Close(prog *progress.Progress) error {
 	prog.Get("close-tinder-service").SetAsCurrent()
 	if m.Node.Protocol.server != nil {
 		m.Node.Protocol.tinder.Close()
+
 		if m.Node.Protocol.localdisc != nil {
 			m.Node.Protocol.localdisc.Close()
 		}
 
 		if m.Node.Protocol.discAdaptater != nil {
 			m.Node.Protocol.discAdaptater.Close()
+		}
+
+		if m.Node.Protocol.emitterclient != nil {
+			m.Node.Protocol.emitterclient.Close()
 		}
 	}
 

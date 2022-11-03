@@ -71,12 +71,6 @@ func NewEmitterServer(serverAddr string, adminKey string, options *EmitterOption
 	return ps, nil
 }
 
-func (p *EmitterPubSub) Close() error {
-	p.client.Disconnect(time.Second)
-
-	return nil
-}
-
 func (p *EmitterPubSub) Register(pid peer.ID, ns string, addrs [][]byte, ttlAsSeconds int, counter uint64) {
 	p.logger.Debug("register", zap.String("pid", pid.String()), zap.String("ns", ns))
 
@@ -133,6 +127,11 @@ func (p *EmitterPubSub) Subscribe(ns string) (string, error) {
 
 func (p *EmitterPubSub) GetServiceType() string {
 	return EmitterServiceType
+}
+
+func (p *EmitterPubSub) Close() error {
+	p.client.Disconnect(time.Second)
+	return nil
 }
 
 func (p *EmitterPubSub) writeKeyForChannel(channelName string) (string, error) {

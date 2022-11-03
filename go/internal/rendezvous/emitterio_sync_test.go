@@ -32,7 +32,10 @@ func getEmitterRendezvousClients(ctx context.Context, t *testing.T, hosts []host
 
 	clients := make([]rendezvous.RendezvousClient, len(hosts)-1)
 	for i, host := range hosts[1:] {
-		syncClient := berty_rendezvous.NewEmitterClient(ctx, nil)
+		syncClient := berty_rendezvous.NewEmitterClient(nil)
+		t.Cleanup(func() {
+			syncClient.Close()
+		})
 		clients[i] = rendezvous.NewRendezvousClient(host, hosts[0].ID(), syncClient)
 	}
 	return clients
@@ -67,6 +70,7 @@ func TestEmitterIOFlow(t *testing.T) {
 		Logger: logger.Named("emitter"),
 	})
 	require.NoError(t, err)
+	defer emitterPubSubSync.Close()
 
 	svc, err := MakeRendezvousServiceTest(ctx, hosts[0], ":memory:", emitterPubSubSync)
 	require.NoError(t, err)
