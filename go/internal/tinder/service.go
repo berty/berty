@@ -58,8 +58,8 @@ func (s *Service) FindPeers(ctx context.Context, topic string) <-chan peer.AddrI
 	return s.fadeOut(ctx, topic, 16)
 }
 
-// UnRegister try to unregister topic on each of his driver
-func (s *Service) UnRegister(ctx context.Context, topic string) error {
+// Unregister try to unregister topic on each of his driver
+func (s *Service) Unregister(ctx context.Context, topic string) error {
 	var wg sync.WaitGroup
 	var success int32
 
@@ -78,7 +78,7 @@ func (s *Service) UnRegister(ctx context.Context, topic string) error {
 	wg.Wait()
 
 	if success == 0 {
-		return fmt.Errorf("no driver(s) were available for subscribe")
+		return fmt.Errorf("no driver(s) were available for unregister")
 	}
 
 	return nil

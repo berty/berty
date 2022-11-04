@@ -42,8 +42,9 @@ func getEmitterRendezvousClients(ctx context.Context, t *testing.T, hosts []host
 }
 
 func TestEmitterIOFlow(t *testing.T) {
-	// const adminKey = "bPcKwpuIP3gjjAKqb9EaAJYJnilISQhJ"
-	// const serverAddr = "tcp://127.0.0.1:8080"
+	// @NOTE(gfanton): see tools/emitter-server to test it
+	// TEST_EMITTER_SERVER_ADDR=<addr> TEST_EMITTER_ADMINKEY=<admin_key> go test .
+
 	const topic = "foo1"
 
 	serverAddr := os.Getenv("TEST_EMITTER_SERVER_ADDR")

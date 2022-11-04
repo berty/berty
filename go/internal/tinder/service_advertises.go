@@ -38,7 +38,7 @@ func StartAdvertisesFilterDrivers(drivers ...string) AdvertiseOption {
 	}
 }
 
-// Register advertise topic on each of his driver
+// StartAdvertises topic on each of service drivers
 func (s *Service) StartAdvertises(ctx context.Context, topic string, opts ...AdvertiseOption) error {
 	if len(s.drivers) == 0 {
 		return fmt.Errorf("no driver available to advertise")
@@ -116,7 +116,7 @@ func (s *Service) advertise(ctx context.Context, d IDriver, topic string) error 
 				// main context has expire, stop
 				return ctx.Err()
 			default:
-				// wait context has expire, continue
+				// waitContext has expire, continue
 			}
 		}
 	}

@@ -179,14 +179,7 @@ func (c *rendezvousDiscovery) findPeers(ctx context.Context, topic string, limit
 	return chPeer, err
 }
 
-func (c *rendezvousDiscovery) Subscribe(ctx context.Context, topic string, opts ...discovery.Option) (<-chan peer.AddrInfo, error) {
-	// Get options
-	// var options discovery.Options
-	// err := options.Apply(opts...)
-	// if err != nil {
-	// 	return nil, err
-	// }
-
+func (c *rendezvousDiscovery) Subscribe(ctx context.Context, topic string, _ ...discovery.Option) (<-chan peer.AddrInfo, error) {
 	ch, err := c.getSubscribtionForTopic(ctx, topic)
 	return ch, err
 }

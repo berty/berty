@@ -34,7 +34,7 @@ func TestLocalDiscorvery(t *testing.T) {
 	s1, err := NewService(p1, logger, disc1)
 	require.NoError(t, err)
 
-	s2, err := NewService(p1, logger, disc2)
+	s2, err := NewService(p2, logger, disc2)
 	require.NoError(t, err)
 
 	const topic = "test_topic"

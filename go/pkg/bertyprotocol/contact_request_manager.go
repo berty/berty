@@ -361,6 +361,8 @@ func (c *contactRequestsManager) enqueueRequest(ctx context.Context, to *protoco
 				break
 			}
 
+			// wait one second to avoid infinity loop on send contact request
+			// ex: when we dont have any network, send request can fail instantly
 			time.Sleep(time.Second)
 		}
 

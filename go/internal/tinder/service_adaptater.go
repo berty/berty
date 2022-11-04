@@ -53,11 +53,6 @@ func NewDiscoveryAdaptater(logger *zap.Logger, service *Service) *DiscoveryAdapt
 }
 
 func (a *DiscoveryAdaptater) FindPeers(ctx context.Context, topic string, opts ...discovery.Option) (<-chan peer.AddrInfo, error) {
-	// var option p2p_discovery.Option
-	// if err := option.Apply(opts...); err != nil {
-	// 	return nil, err
-	// }
-
 	a.muDiscover.Lock()
 	defer a.muDiscover.Unlock()
 
@@ -106,11 +101,6 @@ func (a *DiscoveryAdaptater) FindPeers(ctx context.Context, topic string, opts .
 }
 
 func (a *DiscoveryAdaptater) Advertise(_ context.Context, topic string, opts ...discovery.Option) (time.Duration, error) {
-	// var option p2p_discovery.Option
-	// if err := option.Apply(opts...); err != nil {
-	// 	return nil, err
-	// }
-
 	ctx := a.ctx
 
 	a.muAdvertiser.Lock()
@@ -150,7 +140,7 @@ func (a *DiscoveryAdaptater) Advertise(_ context.Context, topic string, opts ...
 			a.muAdvertiser.Unlock()
 
 			// unregister from this topic if possible
-			if err := a.service.UnRegister(ctx, topic); err != nil {
+			if err := a.service.Unregister(ctx, topic); err != nil {
 				a.logger.Debug("unregister failed",
 					logutil.PrivateString("topic", topic),
 					zap.Error(err),

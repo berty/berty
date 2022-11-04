@@ -222,8 +222,6 @@ func main() {
 				defer emitter.Close()
 
 				logger.Info("connected to mqtt broker", zap.String("broker", emitterServer))
-
-				// syncDrivers = append(syncDrivers, mqttserv)
 				syncDrivers = append(syncDrivers, emitter)
 			}
 
