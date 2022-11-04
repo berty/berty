@@ -33,6 +33,8 @@ func Test_service_exportAccountKey(t *testing.T) {
 	}, dsA)
 	defer closeNodeA()
 
+	// time.Sleep(time.Second * 5)
+
 	s, ok := nodeA.Service.(*service)
 	require.True(t, ok)
 
@@ -42,6 +44,7 @@ func Test_service_exportAccountKey(t *testing.T) {
 	defer os.Remove(tmpFile.Name())
 
 	tw := tar.NewWriter(tmpFile)
+
 	err = s.exportAccountKey(tw)
 	require.NoError(t, err)
 

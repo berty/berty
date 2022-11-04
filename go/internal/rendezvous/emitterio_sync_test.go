@@ -2,6 +2,7 @@ package rendezvous_test
 
 import (
 	"context"
+	"os"
 	"sync"
 	"sync/atomic"
 	"testing"
@@ -11,6 +12,7 @@ import (
 	rendezvous "github.com/libp2p/go-libp2p-rendezvous"
 	db "github.com/libp2p/go-libp2p-rendezvous/db/sqlcipher"
 	"github.com/libp2p/go-libp2p-rendezvous/test_utils"
+	"github.com/stretchr/testify/require"
 	"go.uber.org/zap"
 
 	berty_rendezvous "berty.tech/berty/v2/go/internal/rendezvous"
@@ -25,50 +27,57 @@ func MakeRendezvousServiceTest(ctx context.Context, host host.Host, path string,
 	return rendezvous.NewRendezvousService(host, dbi, rzs...), nil
 }
 
-func getRendezvousClients(ctx context.Context, t *testing.T, hosts []host.Host) []rendezvous.RendezvousClient {
+func getEmitterRendezvousClients(ctx context.Context, t *testing.T, hosts []host.Host) []rendezvous.RendezvousClient {
 	t.Helper()
-
-	ctx, _ = context.WithTimeout(context.Background(), time.Second*10)
 
 	clients := make([]rendezvous.RendezvousClient, len(hosts)-1)
 	for i, host := range hosts[1:] {
-		syncClient := berty_rendezvous.NewEmitterClient(ctx, nil)
+		syncClient := berty_rendezvous.NewEmitterClient(nil)
+		t.Cleanup(func() {
+			syncClient.Close()
+		})
 		clients[i] = rendezvous.NewRendezvousClient(host, hosts[0].ID(), syncClient)
 	}
 	return clients
 }
 
 func TestEmitterIOFlow(t *testing.T) {
-	t.Skip()
+	// @NOTE(gfanton): see tools/emitter-server to test it
+	// TEST_EMITTER_SERVER_ADDR=<addr> TEST_EMITTER_ADMINKEY=<admin_key> go test .
 
-	const serverAddr = "tcp://127.0.0.1:8080"
-	const adminKey = "Llo99jIV4vmN0BqJJO1Z5Y055DsPHnIS"
+	const topic = "foo1"
+
+	serverAddr := os.Getenv("TEST_EMITTER_SERVER_ADDR")
+	adminKey := os.Getenv("TEST_EMITTER_ADMINKEY")
+	if adminKey == "" || serverAddr == "" {
+		t.Skip("cannot test emitter, no adminKey/serverAddr provided")
+	}
 
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
 	// Instantiate server and clients
 	hosts := test_utils.GetRendezvousHosts(t, ctx, 4)
+	for _, h := range hosts {
+		t.Cleanup(func() {
+			_ = h.Close()
+		})
+	}
 
 	logger, err := zap.NewDevelopment()
-	if err != nil {
-		t.Fatal(err)
-	}
+	require.NoError(t, err)
 
 	emitterPubSubSync, err := berty_rendezvous.NewEmitterServer(serverAddr, adminKey, &berty_rendezvous.EmitterOptions{
-		Logger: logger,
+		Logger: logger.Named("emitter"),
 	})
-	if err != nil {
-		t.Fatal(err)
-	}
+	require.NoError(t, err)
+	defer emitterPubSubSync.Close()
 
 	svc, err := MakeRendezvousServiceTest(ctx, hosts[0], ":memory:", emitterPubSubSync)
-	if err != nil {
-		t.Fatal(err)
-	}
+	require.NoError(t, err)
 	defer svc.DB.Close()
 
-	clients := getRendezvousClients(ctx, t, hosts)
+	clients := getEmitterRendezvousClients(ctx, t, hosts)
 
 	regFound := int64(0)
 	wg := sync.WaitGroup{}
@@ -78,10 +87,8 @@ func TestEmitterIOFlow(t *testing.T) {
 	for _, client := range clients[1:] {
 		wg.Add(1)
 		ctx, cancel := context.WithTimeout(ctx, time.Second*5)
-		ch, err := client.DiscoverSubscribe(ctx, "foo1")
-		if err != nil {
-			t.Fatal(err)
-		}
+		ch, err := client.DiscoverSubscribe(ctx, topic)
+		require.NoError(t, err)
 
 		go func() {
 			regFoundForPeer := 0
@@ -107,14 +114,12 @@ func TestEmitterIOFlow(t *testing.T) {
 	}
 
 	for i := 0; i < announcementCount; i++ {
-		_, err = clients[1].Register(ctx, "foo1", rendezvous.DefaultTTL)
-		if err != nil {
-			t.Fatal(err)
-		}
+		_, err = clients[1].Register(ctx, topic, rendezvous.DefaultTTL)
+		require.NoError(t, err)
 	}
 
 	wg.Wait()
 	if regFound != int64(len(clients[1:]))*announcementCount {
-		t.Fatalf("expected %d records to be found got %d", int64(len(clients[1:])), regFound)
+		require.FailNowf(t, "number of records doesn't match", "expected %d records to be found got %d", int64(len(clients[1:])), regFound)
 	}
 }

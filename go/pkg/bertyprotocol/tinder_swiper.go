@@ -8,7 +8,6 @@ import (
 	"sync"
 	"time"
 
-	p2p_disc "github.com/libp2p/go-libp2p-core/discovery"
 	"github.com/libp2p/go-libp2p-core/peer"
 	discovery "github.com/libp2p/go-libp2p-discovery"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
@@ -17,7 +16,7 @@ import (
 
 	"berty.tech/berty/v2/go/internal/logutil"
 	"berty.tech/berty/v2/go/internal/rendezvous"
-	"berty.tech/berty/v2/go/internal/tinder"
+	tinder "berty.tech/berty/v2/go/internal/tinder"
 	"berty.tech/berty/v2/go/pkg/tyber"
 )
 
@@ -40,15 +39,15 @@ type Swiper struct {
 	rp *rendezvous.RotationInterval
 
 	logger *zap.Logger
-	disc   tinder.UnregisterDiscovery
+	tinder *tinder.Service
 }
 
-func NewSwiper(logger *zap.Logger, disc tinder.UnregisterDiscovery, rp *rendezvous.RotationInterval) *Swiper {
+func NewSwiper(logger *zap.Logger, tinder *tinder.Service, rp *rendezvous.RotationInterval) *Swiper {
 	// we need to use math/rand here, but it is seeded from crypto/rand
 	srand := mrand.New(mrand.NewSource(srand.MustSecure())) // nolint:gosec
-	backoffstrat := discovery.NewExponentialBackoff(time.Second, time.Second*20,
+	backoffstrat := discovery.NewExponentialBackoff(time.Second, time.Minute*10,
 		discovery.FullJitter,
-		time.Second, 5.0, time.Second, srand)
+		time.Second, 30.0, 0, srand)
 
 	return &Swiper{
 		backoffFactory:   backoffstrat,
@@ -56,7 +55,7 @@ func NewSwiper(logger *zap.Logger, disc tinder.UnregisterDiscovery, rp *rendezvo
 		topics:           make(map[string]*pubsub.Topic),
 		inprogressLookup: make(map[string]*swiperRequest),
 		rp:               rp,
-		disc:             disc,
+		tinder:           tinder,
 	}
 }
 
@@ -91,22 +90,12 @@ func (s *Swiper) RefreshContactRequest(ctx context.Context, topic []byte) (addrs
 	}()
 
 	// force find peers re check topic
-	cpeer, err := s.disc.FindPeers(req.ctx, req.rdvTopic,
-		tinder.WatchdogDiscoverKeepContextOption,
-		tinder.WatchdogDiscoverForceOption,
-		p2p_disc.Limit(1),
-	)
-	if err != nil {
-		err = fmt.Errorf("unable to find peers: %w", err)
-		return nil, err
-	}
-
+	cpeer := s.tinder.FindPeers(req.ctx, req.rdvTopic)
 	select {
 	case p := <-cpeer:
 		req.out <- p
 		return []peer.AddrInfo{p}, nil
 	case <-ctx.Done():
-
 		return nil, ctx.Err()
 	}
 }
@@ -120,8 +109,8 @@ func (s *Swiper) WatchTopic(ctx context.Context, topic, seed []byte) <-chan peer
 	defer s.muRequest.Unlock()
 
 	s.logger.Debug("start watch for peer with",
-		zap.String("topic", hex.EncodeToString(topic)),
-		zap.String("seed", hex.EncodeToString(seed)))
+		logutil.PrivateString("topic", string(topic)),
+		zap.String("seed", string(seed)))
 
 	var point *rendezvous.Point
 
@@ -153,7 +142,7 @@ func (s *Swiper) WatchTopic(ctx context.Context, topic, seed []byte) <-chan peer
 			s.muRequest.Unlock()
 
 			// start looking for peers for the given rotation topic
-			s.logger.Debug("looking for peers", zap.String("topic", point.RotationTopic()))
+			s.logger.Debug("looking for peers", logutil.PrivateString("topic", point.RotationTopic()))
 			if err := s.watchPeers(wctx, bstrat, cpeers, point.RotationTopic()); err != nil && err != context.DeadlineExceeded {
 				s.logger.Debug("watch until deadline ended", zap.Error(err))
 			}
@@ -178,44 +167,44 @@ func (s *Swiper) WatchTopic(ctx context.Context, topic, seed []byte) <-chan peer
 	return cpeers
 }
 
-func (s *Swiper) watchPeers(ctx context.Context, bstrat discovery.BackoffStrategy, out chan<- peer.AddrInfo, ns string) error {
-	for ctx.Err() == nil {
-		s.logger.Debug("swipper looking for peers", zap.String("topic", ns))
+func (s *Swiper) watchPeers(ctx context.Context, _ discovery.BackoffStrategy, out chan<- peer.AddrInfo, topic string) error {
+	sub := s.tinder.Subscribe(topic)
+	defer sub.Close()
+	// func () {
+	// 	if err := sub.Close(); err != nil {
+	// 		s.logger.Error("unable to close sub properly", zap.Error(err))
+	// 	}
+	// }()
 
-		// wait 10 seconds before considering lookup as failed/done
-		fctx, cancel := context.WithTimeout(ctx, time.Second*10)
+	s.logger.Debug("swipper watch peers started", logutil.PrivateString("topic", topic))
 
-		// use find peers while keeping his context
-		// disable caching and force re-trigger each driver on call
-		cpeer, err := s.disc.FindPeers(fctx, ns,
-			tinder.WatchdogDiscoverKeepContextOption,
-			tinder.WatchdogDiscoverForceOption,
-		)
-		if err != nil {
-			cancel()
-			return fmt.Errorf("unable to find peers: %w", err)
+	// start findpeers for pulls
+	go func() {
+		timeout := time.Minute // @TODO(gfanton): do we need to use backoffstartegy here ?
+		for ctx.Err() == nil {
+			s.logger.Debug("swiper pulling for peers", logutil.PrivateString("topic", topic))
+			if err := sub.Pull(); err != nil {
+				s.logger.Error("unable to pull for peer on subscription", zap.Error(err))
+			}
+
+			select {
+			case <-time.After(timeout):
+			case <-ctx.Done():
+			}
 		}
+	}()
 
-		// forward found peers
-		for peer := range cpeer {
-			s.logger.Debug("found a peers", logutil.PrivateString("peer", peer.String()), logutil.PrivateString("topic", ns))
-			out <- peer
-		}
-
-		cancel()
-
-		nextDelay := bstrat.Delay()
-		s.logger.Debug("swipper looking ended", zap.Duration("next_try", nextDelay))
-
-		// wait until the context is done, or the backoff delay expired
+	for {
+		// wait until the context is done
 		select {
-		case <-time.After(nextDelay):
+		case p := <-sub.Out():
+			s.logger.Debug("found a peers", logutil.PrivateString("topic", topic), zap.String("peer", p.String()))
+			out <- p
 		case <-ctx.Done():
+			s.logger.Debug("watch peers done", logutil.PrivateString("topic", topic))
+			return ctx.Err()
 		}
 	}
-
-	s.logger.Debug("swipper looking for peers done", zap.String("topic", ns))
-	return ctx.Err()
 }
 
 // watch looks for peers providing a resource
@@ -227,38 +216,28 @@ func (s *Swiper) Announce(ctx context.Context, topic, seed []byte) {
 		logutil.PrivateString("seed", string(seed)))
 
 	go func() {
-		for {
+		for ctx.Err() == nil {
 			if point == nil || time.Now().After(point.Deadline()) {
 				point = s.rp.NewRendezvousPointForPeriod(time.Now(), string(topic), seed)
 			}
 
-			s.logger.Debug("self announce topic for time", zap.String("topic", point.RotationTopic()))
+			s.logger.Debug("self announce topic for time", logutil.PrivateString("topic", point.RotationTopic()))
 
-			ttl, err := s.disc.Advertise(ctx, point.RotationTopic())
-			switch err {
-			case context.Canceled, context.DeadlineExceeded:
-				return
-			case nil:
-				// if no error and no ttl is set, wait 1 minutes before retrying
-				if ttl == 0 {
-					ttl = time.Minute
-				}
-			default:
-				s.logger.Error("failed to announce topic", zap.Error(err))
-				if ttl == 0 {
-					// if no ttl is set, wait 10 seconds before retrying
-					ttl = time.Second * 10
-				}
+			actx, cancel := context.WithDeadline(ctx, point.Deadline())
+			if err := s.tinder.StartAdvertises(actx, point.RotationTopic()); err != nil && err != ctx.Err() {
+				cancel()
+				<-time.After(time.Second * 10) // retry after 10sc
+				continue
 			}
 
 			select {
+			case <-actx.Done():
+				s.logger.Debug("rotation ended", logutil.PrivateString("topic", point.RotationTopic()))
 			case <-ctx.Done():
-				return
-			case <-time.After(point.TTL()):
-			case <-time.After(ttl):
+				s.logger.Debug("announce advertise ended", logutil.PrivateString("topic", point.RotationTopic()), zap.Error(ctx.Err()))
 			}
 
-			time.Sleep(time.Second)
+			cancel()
 		}
 	}()
 }

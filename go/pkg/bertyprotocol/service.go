@@ -14,7 +14,6 @@ import (
 	ds_sync "github.com/ipfs/go-datastore/sync"
 	ipfs_interface "github.com/ipfs/interface-go-ipfs-core"
 	"github.com/libp2p/go-libp2p-core/crypto"
-	"github.com/libp2p/go-libp2p-core/discovery"
 	"github.com/libp2p/go-libp2p-core/event"
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/network"
@@ -27,7 +26,7 @@ import (
 	"berty.tech/berty/v2/go/internal/cryptoutil"
 	"berty.tech/berty/v2/go/internal/datastoreutil"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
-	"berty.tech/berty/v2/go/internal/tinder"
+	tinder "berty.tech/berty/v2/go/internal/tinder"
 	"berty.tech/berty/v2/go/pkg/bertypush"
 	"berty.tech/berty/v2/go/pkg/bertyversion"
 	"berty.tech/berty/v2/go/pkg/errcode"
@@ -70,7 +69,6 @@ type service struct {
 	messageKeystore   *cryptoutil.MessageKeystore
 	pushClients       map[string]*grpc.ClientConn
 	muPushClients     sync.RWMutex
-	discovery         discovery.Discovery
 	grpcInsecure      bool
 	refreshprocess    map[string]context.CancelFunc
 	muRefreshprocess  sync.RWMutex
@@ -89,7 +87,7 @@ type Opts struct {
 	AccountCache     ds.Batching
 	MessageKeystore  *cryptoutil.MessageKeystore
 	OrbitDB          *BertyOrbitDB
-	TinderDriver     tinder.UnregisterDiscovery
+	TinderService    *tinder.Service
 	Host             host.Host
 	PubSub           *pubsub.PubSub
 	GRPCInsecureMode bool
@@ -246,19 +244,16 @@ func New(opts Opts) (_ Service, err error) {
 
 	opts.Logger.Debug("Opened account group", tyber.FormatStepLogFields(ctx, []tyber.Detail{{Name: "AccountGroup", Description: acc.group.String()}})...)
 
-	var disc discovery.Discovery
 	var swiper *Swiper
-	if opts.TinderDriver != nil {
-		swiper = NewSwiper(opts.Logger, opts.TinderDriver, opts.OrbitDB.rotationInterval)
+	if opts.TinderService != nil {
+		swiper = NewSwiper(opts.Logger, opts.TinderService, opts.OrbitDB.rotationInterval)
 		opts.Logger.Debug("Tinder swiper is enabled", tyber.FormatStepLogFields(ctx, []tyber.Detail{})...)
 
 		if err := initContactRequestsManager(ctx, swiper, acc.metadataStore, opts.IpfsCoreAPI, opts.Logger); err != nil {
 			cancel()
 			return nil, errcode.TODO.Wrap(err)
 		}
-		disc = opts.TinderDriver
 	} else {
-		disc = tinder.NoopDiscovery
 		opts.Logger.Warn("No tinder driver provided, incoming and outgoing contact requests won't be enabled", tyber.FormatStepLogFields(ctx, []tyber.Detail{})...)
 	}
 
@@ -301,7 +296,6 @@ func New(opts Opts) (_ Service, err error) {
 		pushHandler:       pushHandler,
 		pushClients:       make(map[string]*grpc.ClientConn),
 		grpcInsecure:      opts.GRPCInsecureMode,
-		discovery:         disc,
 		refreshprocess:    make(map[string]context.CancelFunc),
 		peerStatusManager: NewConnectednessManager(),
 	}

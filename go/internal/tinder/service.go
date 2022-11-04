@@ -3,152 +3,141 @@ package tinder
 import (
 	"context"
 	"fmt"
-	"io"
 	"sync"
-	"time"
+	"sync/atomic"
 
-	p2p_discovery "github.com/libp2p/go-libp2p-core/discovery"
-	p2p_event "github.com/libp2p/go-libp2p-core/event"
 	"github.com/libp2p/go-libp2p-core/host"
-	p2p_peer "github.com/libp2p/go-libp2p-core/peer"
+	"github.com/libp2p/go-libp2p-core/peer"
 	"go.uber.org/zap"
+
+	"berty.tech/berty/v2/go/internal/logutil"
 )
 
-const TinderPeer = "Berty/TinderPeer"
+type Service struct {
+	host          host.Host
+	logger        *zap.Logger
+	drivers       []IDriver
+	networkNotify *NetworkUpdate
 
-const (
-	DefaultFindPeerInterval     = time.Minute * 30
-	DefaultAdvertiseInterval    = time.Minute
-	DefaultAdvertiseGracePeriod = time.Second * 10
-)
+	topicCounter map[string]*Subscription
+	muTopics     sync.Mutex
 
-type EventMonitor int
-
-const (
-	TypeEventMonitorUnknown EventMonitor = iota
-	TypeEventMonitorDriverAdvertise
-	TypeEventMonitorDriverFoundPeer
-	TypeEventMonitorAdvertise
-	TypeEventMonitorFoundPeer
-)
-
-type EvtDriverMonitor struct {
-	EventType  EventMonitor
-	Topic      string
-	AddrInfo   p2p_peer.AddrInfo
-	DriverName string
+	// subscribe
+	peersCache *peersCache
+	process    uint32
 }
 
-type Service interface {
-	UnregisterDiscovery
-	io.Closer
-}
-
-type service struct {
-	p2p_discovery.Discovery
-	Unregisterer
-
-	logger *zap.Logger
-
-	nnotify *NetworkUpdate
-	emitter p2p_event.Emitter
-	doneCtx context.CancelFunc
-
-	onceClose sync.Once
-}
-
-type Opts struct {
-	Logger *zap.Logger
-
-	EnableDiscoveryMonitor bool
-
-	AdvertiseResetInterval time.Duration
-	AdvertiseGracePeriod   time.Duration
-	FindPeerResetInterval  time.Duration
-
-	// BackoffStrategy describes how backoff will be implemented on the
-	// FindPeer method. If none are provided, it will be disable alongside
-	// cache.
-	BackoffStrategy *BackoffOpts
-}
-
-func (o *Opts) applyDefault() {
-	if o.Logger == nil {
-		o.Logger = zap.NewNop()
-	}
-
-	o.Logger = o.Logger.Named("tinder")
-
-	if o.AdvertiseResetInterval == 0 && o.AdvertiseGracePeriod == 0 {
-		o.AdvertiseResetInterval = DefaultAdvertiseInterval
-		o.AdvertiseGracePeriod = DefaultAdvertiseGracePeriod
-	}
-
-	if o.FindPeerResetInterval == 0 {
-		o.FindPeerResetInterval = DefaultFindPeerInterval
-	}
-}
-
-func NewService(opts *Opts, h host.Host, drivers ...*Driver) (Service, error) {
-	// validate opts
-	opts.applyDefault()
-
-	for _, driver := range drivers {
-		if err := driver.applyDefault(); err != nil {
-			return nil, fmt.Errorf("invalid driver %w", err)
-		}
-	}
-
-	notify, err := NewNetworkUpdate(opts.Logger, h)
+func NewService(h host.Host, logger *zap.Logger, drivers ...IDriver) (*Service, error) {
+	nn, err := NewNetworkUpdate(logger, h)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("unable to init service: %w", err)
 	}
 
-	// create monitor update
-	emitter, err := h.EventBus().Emitter(new(EvtDriverMonitor))
-	if err != nil {
-		return nil, err
-	}
-
-	ctx, cancel := context.WithCancel(context.Background())
-
-	wa := newWatchdogsAdvertiser(ctx, opts.Logger, h, notify, opts.AdvertiseResetInterval, opts.AdvertiseGracePeriod, drivers)
-	wd, err := newWatchdogsDiscoverer(ctx, opts.Logger, h, opts.FindPeerResetInterval, opts.BackoffStrategy, drivers)
-	if err != nil {
-		cancel()
-		return nil, err
-	}
-
-	// compose discovery
-	var disc p2p_discovery.Discovery = &DriverDiscovery{
-		Advertiser: wa,
-		Discoverer: wd,
-	}
-
-	// enable monitor if needed
-	return &service{
-		Discovery:    disc,
-		Unregisterer: wa,
-
-		logger:  opts.Logger,
-		nnotify: notify,
-		emitter: emitter,
-		doneCtx: cancel,
+	return &Service{
+		host:          h,
+		logger:        logger.Named("tinder"),
+		drivers:       drivers,
+		networkNotify: nn,
+		topicCounter:  make(map[string]*Subscription),
+		peersCache:    newPeerCache(),
 	}, nil
 }
 
-func (s *service) Close() error {
-	s.doneCtx()
+func (s *Service) FindPeers(ctx context.Context, topic string) <-chan peer.AddrInfo {
+	s.muTopics.Lock()
+	defer s.muTopics.Unlock()
 
-	s.onceClose.Do(func() {
-		// we only want to log errors here, discard them on return
-		if err := s.emitter.Close(); err != nil {
-			s.logger.Warn("unable to close service emitter", zap.Error(err))
+	ctx, cancel := context.WithCancel(ctx)
+	go func() {
+		if err := s.LookupPeers(ctx, topic); err != nil {
+			s.logger.Error("lookup failed", logutil.PrivateString("topic", topic), zap.Error(err))
 		}
-		if err := s.nnotify.Close(); err != nil {
-			s.logger.Warn("unable to close network notify", zap.Error(err))
-		}
-	})
+		cancel()
+	}()
+
+	return s.fadeOut(ctx, topic, 16)
+}
+
+// Unregister try to unregister topic on each of his driver
+func (s *Service) Unregister(ctx context.Context, topic string) error {
+	var wg sync.WaitGroup
+	var success int32
+
+	for _, driver := range s.drivers {
+		wg.Add(1)
+		go func(driver IDriver) {
+			if err := driver.Unregister(ctx, topic); err != nil {
+				s.logger.Debug("unable to advertise", zap.Error(err))
+			} else {
+				atomic.AddInt32(&success, 1)
+			}
+			wg.Done()
+		}(driver)
+	}
+
+	wg.Wait()
+
+	if success == 0 {
+		return fmt.Errorf("no driver(s) were available for unregister")
+	}
 
 	return nil
 }
+
+func (s *Service) WatchPeers(ctx context.Context, topic string) <-chan peer.AddrInfo {
+	return s.fadeOut(ctx, topic, 16)
+}
+
+func (s *Service) fadeIn(ctx context.Context, topic string, in <-chan peer.AddrInfo) {
+	s.incProcess()
+	defer s.decProcess()
+
+	for {
+		select {
+		case p, ok := <-in:
+			if !ok {
+				return
+			}
+
+			if updated := s.peersCache.UpdatePeer(topic, p); updated {
+				s.logger.Debug("topic updated", zap.String("topic", topic), zap.String("peer", p.String()))
+			}
+		case <-ctx.Done():
+			return
+		}
+	}
+}
+
+func (s *Service) fadeOut(ctx context.Context, topic string, bufsize int) <-chan peer.AddrInfo {
+	out := make(chan peer.AddrInfo, bufsize)
+
+	go func() {
+		knownPeers := make(PeersUpdate)
+
+		for {
+			// Wait until `PeersCache` differ from `peerCache` peers status
+			updated, ok := s.peersCache.WaitForPeerUpdate(ctx, topic, knownPeers)
+			if !ok {
+				break
+			}
+
+			s.logger.Debug("got update on peer", zap.String("topic", topic), zap.Int("peers", len(updated)))
+			for _, peer := range s.peersCache.GetPeers(updated...) {
+				out <- peer
+			}
+		}
+
+		// we're done here, close the channel and decrement process
+		close(out)
+	}()
+
+	return out
+}
+
+func (s *Service) Close() error {
+	return s.networkNotify.Close()
+}
+
+func (s *Service) GetProcess() uint32 { return atomic.LoadUint32(&s.process) }
+func (s *Service) incProcess()        { atomic.AddUint32(&s.process, 1) }
+func (s *Service) decProcess()        { atomic.AddUint32(&s.process, ^(uint32)(0)) }

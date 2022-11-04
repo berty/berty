@@ -26,12 +26,12 @@ import (
 	mc "berty.tech/berty/v2/go/internal/multipeer-connectivity-driver"
 )
 
-const recProtocolID = protocol.ID("berty/p2p/localrecord")
-
-// LocalDiscoveryName is the name of the localdiscovery driver
-const LocalDiscoveryName = "localdiscovery"
-
 const (
+	// LocalDiscoveryName is the name of the localdiscovery driver
+	LocalDiscoveryName = "localdisc"
+
+	recProtocolID = protocol.ID("berty/p2p/localrecord")
+
 	minTTL   = 7200 * time.Second
 	maxLimit = 1000
 )
@@ -43,11 +43,11 @@ type LocalDiscovery struct {
 	h      host.Host
 	logger *zap.Logger
 
-	recs   map[string]time.Time
+	recs   map[string] /* topic */ time.Time
 	muRecs sync.RWMutex
 
-	caches   map[string]*linkedCache
-	muCaches sync.Mutex
+	caches   map[string] /* topic */ *linkedCache
+	muCaches sync.RWMutex
 }
 
 type linkedCache struct {
@@ -140,7 +140,50 @@ func (ld *LocalDiscovery) Advertise(ctx context.Context, cid string, opts ...dis
 }
 
 func (ld *LocalDiscovery) FindPeers(ctx context.Context, cid string, opts ...discovery.Option) (<-chan peer.AddrInfo, error) {
-	ld.logger.Debug("starting find peers", logutil.PrivateString("ns", cid))
+	// Get options
+	var options discovery.Options
+	err := options.Apply(opts...)
+	if err != nil {
+		return nil, err
+	}
+
+	limit := options.Limit
+	if limit == 0 || limit > maxLimit {
+		limit = maxLimit
+	}
+
+	ld.muCaches.RLock()
+	defer ld.muCaches.RUnlock()
+
+	var out chan peer.AddrInfo
+
+	if cache, ok := ld.caches[cid]; ok {
+		cache.Lock()
+		size := len(cache.recs)
+		if size > limit {
+			size = limit
+		}
+
+		out = make(chan peer.AddrInfo, size) // make the channel
+
+		for _, rec := range cache.recs {
+			out <- *rec.peer
+			size--
+			if size == 0 {
+				break
+			}
+		}
+		cache.Unlock()
+	} else {
+		out = make(chan peer.AddrInfo) // make the channel
+	}
+
+	close(out)
+	return out, nil
+}
+
+func (ld *LocalDiscovery) Subscribe(ctx context.Context, cid string, opts ...discovery.Option) (<-chan peer.AddrInfo, error) {
+	ld.logger.Debug("starting subscribe", logutil.PrivateString("ns", cid))
 	cpeer := make(chan peer.AddrInfo)
 
 	// Get options
@@ -239,7 +282,7 @@ func (ld *LocalDiscovery) getLocalReccord() *Records {
 	return &Records{Records: records}
 }
 
-func (ld *LocalDiscovery) Unregister(ctx context.Context, cid string) error {
+func (ld *LocalDiscovery) Unregister(ctx context.Context, cid string, _ ...discovery.Option) error {
 	ld.muRecs.Lock()
 	delete(ld.recs, cid)
 	ld.muRecs.Unlock()
@@ -257,7 +300,7 @@ func (ld *LocalDiscovery) sendRecordsToProximityPeers(ctx context.Context, recor
 				ld.logger.Debug("sending records to peer", zap.Stringer("peer", c.RemotePeer()))
 
 				if err := ld.sendRecordsTo(ctx, c.RemotePeer(), records); err != nil {
-					ld.logger.Error("unable to send records to newly connected peer",
+					ld.logger.Warn("unable to send records to newly connected peer",
 						zap.Error(err), zap.Stringer("peer", c.RemotePeer()))
 				}
 
@@ -281,7 +324,10 @@ func (ld *LocalDiscovery) handleStream(s network.Stream) {
 		return
 	}
 
-	pid := ld.h.Peerstore().PeerInfo(s.Conn().RemotePeer())
+	info := peer.AddrInfo{
+		ID:    s.Conn().RemotePeer(),
+		Addrs: []ma.Multiaddr{s.Conn().RemoteMultiaddr()},
+	}
 
 	// fill the remote cache
 	for _, record := range records.Records {
@@ -301,18 +347,18 @@ func (ld *LocalDiscovery) handleStream(s network.Stream) {
 		ld.muCaches.Unlock()
 
 		rec := &recCache{
-			peer:   &pid,
+			peer:   &info,
 			topic:  record.Cid,
 			expire: expire,
 		}
 
 		// update the given cache record and signal to other routine that we got an update
 		cache.Lock()
-		if cacheRec, ok := cache.recs[pid.ID]; ok {
-			cacheRec.peer = &pid
+		if cacheRec, ok := cache.recs[info.ID]; ok {
+			cacheRec.peer = &info
 			cacheRec.expire = expire
 		} else {
-			cache.recs[pid.ID] = rec
+			cache.recs[info.ID] = rec
 			cache.queue.PushBack(rec)
 		}
 
@@ -324,7 +370,7 @@ func (ld *LocalDiscovery) handleStream(s network.Stream) {
 func (ld *LocalDiscovery) sendRecordsTo(ctx context.Context, p peer.ID, records *Records) error {
 	s, err := ld.h.NewStream(ctx, p, recProtocolID)
 	if err != nil {
-		return fmt.Errorf("unable to create stream %w", err)
+		return fmt.Errorf("unable to create stream: %w", err)
 	}
 	defer s.Close()
 
@@ -360,7 +406,7 @@ func (ld *LocalDiscovery) handleConnection(ctx context.Context, p peer.ID) {
 			go func() {
 				records := ld.getLocalReccord()
 				if err := ld.sendRecordsTo(ctx, p, records); err != nil {
-					ld.logger.Error("unable to send local record",
+					ld.logger.Warn("unable to send local record",
 						logutil.PrivateString("peer", p.String()),
 						zap.Int("records", len(records.Records)),
 						zap.Error(err))
@@ -407,4 +453,8 @@ func (ld *LocalDiscovery) monitorConnection(ctx context.Context) error {
 	}()
 
 	return nil
+}
+
+func (ld *LocalDiscovery) Name() string {
+	return LocalDiscoveryName
 }

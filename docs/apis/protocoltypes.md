@@ -1866,6 +1866,7 @@ Each Berty Protocol Instance is considered as a Berty device and is associated w
 | ActivateGroup | [ActivateGroup.Request](#berty.protocol.v1.ActivateGroup.Request) | [ActivateGroup.Reply](#berty.protocol.v1.ActivateGroup.Reply) | ActivateGroup explicitly opens a group |
 | DeactivateGroup | [DeactivateGroup.Request](#berty.protocol.v1.DeactivateGroup.Request) | [DeactivateGroup.Reply](#berty.protocol.v1.DeactivateGroup.Reply) | DeactivateGroup closes a group |
 | GroupDeviceStatus | [GroupDeviceStatus.Request](#berty.protocol.v1.GroupDeviceStatus.Request) | [GroupDeviceStatus.Reply](#berty.protocol.v1.GroupDeviceStatus.Reply) stream | GroupDeviceStatus monitor device status |
+| MonitorGroup | [MonitorGroup.Request](#berty.protocol.v1.MonitorGroup.Request) | [MonitorGroup.Reply](#berty.protocol.v1.MonitorGroup.Reply) stream | Monitor Group events |
 | DebugListGroups | [DebugListGroups.Request](#berty.protocol.v1.DebugListGroups.Request) | [DebugListGroups.Reply](#berty.protocol.v1.DebugListGroups.Reply) stream |  |
 | DebugInspectGroupStore | [DebugInspectGroupStore.Request](#berty.protocol.v1.DebugInspectGroupStore.Request) | [DebugInspectGroupStore.Reply](#berty.protocol.v1.DebugInspectGroupStore.Reply) stream |  |
 | DebugGroup | [DebugGroup.Request](#berty.protocol.v1.DebugGroup.Request) | [DebugGroup.Reply](#berty.protocol.v1.DebugGroup.Reply) |  |

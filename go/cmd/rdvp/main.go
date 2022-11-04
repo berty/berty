@@ -22,6 +22,7 @@ import (
 	libp2p_rp "github.com/libp2p/go-libp2p-rendezvous"
 	libp2p_rpdb "github.com/libp2p/go-libp2p-rendezvous/db/sqlcipher"
 	"github.com/libp2p/go-libp2p/config"
+	libp2p_relayv1 "github.com/libp2p/go-libp2p/p2p/protocol/circuitv1/relay"
 	ma "github.com/multiformats/go-multiaddr"
 	"github.com/oklog/run"
 	ff "github.com/peterbourgon/ff/v3"
@@ -164,11 +165,12 @@ func main() {
 				libp2p.DefaultTransports,
 
 				// Nat & Relay service
-				libp2p.DefaultStaticRelays(),
+				// libp2p.DefaultStaticRelays(),
 
-				// @NOTE(gfanton): use more specific option
-				libp2p.EnableRelayService(),
-				libp2p.EnableNATService(),
+				// @NOTE(gfanton): init relay manually
+				libp2p.DisableRelay(),
+				// libp2p.EnableRelay(),
+				// libp2p.EnableNATService(),
 
 				// swarm listeners
 				libp2p.ListenAddrs(listeners...),
@@ -189,6 +191,17 @@ func main() {
 			defer host.Close()
 			logHostInfo(logger, host)
 
+			ressources := libp2p_relayv1.DefaultResources()
+			_, err = libp2p_relayv1.NewRelay(host,
+				libp2p_relayv1.WithResources(ressources),
+				// libp2p_relayv1.WithACL(acl)), // not use for now
+			)
+			if err != nil {
+				return fmt.Errorf("unable to start relay v1; %w", err)
+			}
+
+			logger.Debug("starting relay_v1", zap.Any("ressources", ressources))
+
 			db, err := libp2p_rpdb.OpenDB(ctx, serveURN)
 			if err != nil {
 				return errcode.TODO.Wrap(err)
@@ -200,18 +213,16 @@ func main() {
 
 			if emitterServer != "" && emitterAdminKey != "" {
 				emitter, err := rendezvous.NewEmitterServer(emitterServer, emitterAdminKey, &rendezvous.EmitterOptions{
-					Logger:           logger,
+					Logger:           logger.Named("emitter"),
 					ServerPublicAddr: emitterPublicAddr,
 				})
 				if err != nil {
 					return errcode.TODO.Wrap(err)
 				}
+				defer emitter.Close()
 
+				logger.Info("connected to mqtt broker", zap.String("broker", emitterServer))
 				syncDrivers = append(syncDrivers, emitter)
-			} else if emitterServer != "" || emitterAdminKey != "" {
-				if err != nil {
-					return errcode.ErrInvalidInput.Wrap(fmt.Errorf("expected emitter-server and emitter-admin-key args"))
-				}
 			}
 
 			// start service

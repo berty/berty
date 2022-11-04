@@ -14,6 +14,8 @@ import (
 	"berty.tech/berty/v2/go/internal/notify"
 )
 
+type AddrsFilter = bhost.AddrsFactory
+
 type NetworkUpdate struct {
 	logger       *zap.Logger
 	notify       *notify.Notify
@@ -44,26 +46,19 @@ func NewNetworkUpdate(logger *zap.Logger, h host.Host) (*NetworkUpdate, error) {
 	return nu, nil
 }
 
-func (n *NetworkUpdate) WaitForUpdate(ctx context.Context, currentAddrs []ma.Multiaddr, factory bhost.AddrsFactory) bool {
+func (n *NetworkUpdate) WaitForUpdate(ctx context.Context, currentAddrs []ma.Multiaddr) (diff []ma.Multiaddr, ok bool) {
 	n.locker.Lock()
 	defer n.locker.Unlock()
 
 	for {
 		// check for new/removed addrs
 		if diff := diffAddrs(currentAddrs, n.currentAddrs); len(diff) > 0 {
-			// filter addrs
-			if factory == nil {
-				return true
-			}
-
-			if filtered := factory(diff); len(filtered) > 0 {
-				return true
-			}
+			return diff, true
 		}
 
 		// wait until context is done or network is updated
 		if ok := n.notify.Wait(ctx); !ok {
-			return false
+			return []ma.Multiaddr{}, false
 		}
 	}
 }
@@ -105,7 +100,10 @@ func (n *NetworkUpdate) subscribeToNetworkUpdate() {
 
 func (n *NetworkUpdate) Close() (err error) {
 	// use once to avoid panic if called twice
-	n.once.Do(func() { err = n.sub.Close() })
+	n.once.Do(func() {
+		err = n.sub.Close()
+	})
+
 	return err
 }
 

@@ -1,47 +1,91 @@
 package tinder
 
 import (
+	"context"
+	"fmt"
 	"testing"
+	"time"
 
-	p2p_discovery "github.com/libp2p/go-libp2p-core/discovery"
-	p2p_host "github.com/libp2p/go-libp2p-core/host"
-	p2p_mock "github.com/libp2p/go-libp2p/p2p/net/mock"
+	"github.com/libp2p/go-libp2p-core/host"
+	"github.com/libp2p/go-libp2p-core/peer"
+	p2putil "github.com/libp2p/go-libp2p-netutil"
+	rendezvous "github.com/libp2p/go-libp2p-rendezvous"
+	dbrdvp "github.com/libp2p/go-libp2p-rendezvous/db/sqlite"
+	mocknet "github.com/libp2p/go-libp2p/p2p/net/mock"
+	ma "github.com/multiformats/go-multiaddr"
 	"github.com/stretchr/testify/require"
 )
 
-func testingPeers(t *testing.T, mn p2p_mock.Mocknet, n int) []p2p_host.Host {
+var (
+	ErrChannelNotEmpty = fmt.Errorf("channel not empty")
+	ErrChannelTimeout  = fmt.Errorf("waiting for channel: timeout")
+)
+
+func makeRendezvousService(t *testing.T, mn mocknet.Mocknet) (target peer.ID, svc *rendezvous.RendezvousService) {
+	ctx, cancel := context.WithCancel(context.Background())
+	t.Cleanup(cancel)
+
+	peer, err := mn.GenPeer()
+	require.NoError(t, err)
+
+	pubsubsync, err := rendezvous.NewSyncInMemProvider(peer)
+	require.NoError(t, err)
+
+	dbi, err := dbrdvp.OpenDB(ctx, ":memory:")
+	require.NoError(t, err)
+	t.Cleanup(func() { _ = dbi.Close() })
+
+	return peer.ID(), rendezvous.NewRendezvousService(peer, dbi, pubsubsync)
+}
+
+func testWaitForPeers(t *testing.T, out <-chan peer.AddrInfo, timeout time.Duration) (*peer.AddrInfo, error) {
 	t.Helper()
 
-	hs := make([]p2p_host.Host, n)
+	select {
+	case p := <-out:
+		return &p, nil
+	case <-time.After(timeout):
+		return nil, fmt.Errorf("timeout while waiting for peer")
+	}
+}
 
-	var err error
-	for i := range hs {
-		hs[i], err = mn.GenPeer()
-		require.NoError(t, err)
+func testDrainChannel(t *testing.T, out <-chan peer.AddrInfo, timeout time.Duration) error {
+	t.Helper()
 
-		// link with previously made peer
-		for j := 0; j < i; j++ {
-			if i != j {
-				_, err = mn.LinkPeers(hs[i].ID(), hs[j].ID())
-				require.NoError(t, err)
+	for {
+		select {
+		case _, ok := <-out:
+			if !ok {
+				return nil // ok
 			}
+
+			return fmt.Errorf("channel wasn't empty")
+		case <-time.After(timeout):
+			return fmt.Errorf("timeout while waiting for peer")
 		}
 	}
-
-	return hs
 }
 
-func testingMockedDriverClients(t *testing.T, s *MockDriverServer, hs ...p2p_host.Host) []UnregisterDiscovery {
+func testPeersChanToSlice(t *testing.T, out <-chan peer.AddrInfo) (peers []*peer.AddrInfo) {
 	t.Helper()
+	peers = []*peer.AddrInfo{}
 
-	drivers := make([]UnregisterDiscovery, len(hs))
-	for i := range drivers {
-		drivers[i] = NewMockedDriverClient("mocked", hs[i], s)
+	for p := range out {
+		peers = append(peers, &p)
 	}
 
-	return drivers
+	return
 }
 
-func testingDiscoveryOptions(opts ...p2p_discovery.Option) []p2p_discovery.Option {
-	return opts
+func genLocalPeer(t *testing.T, mn mocknet.Mocknet) host.Host {
+	sk, err := p2putil.RandTestBogusPrivateKey()
+	require.NoError(t, err)
+
+	a, err := ma.NewMultiaddr("/ip4/127.0.0.1/tcp/0")
+	require.NoError(t, err)
+
+	h, err := mn.AddPeer(sk, a)
+	require.NoError(t, err)
+
+	return h
 }

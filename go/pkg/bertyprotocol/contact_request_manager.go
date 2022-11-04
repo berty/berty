@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"strings"
 	"sync"
+	"time"
 
 	ggio "github.com/gogo/protobuf/io"
 	ipfscid "github.com/ipfs/go-cid"
@@ -314,6 +315,7 @@ func (c *contactRequestsManager) enableAnnounce(ctx context.Context, seed, accPK
 	c.enabled = true
 
 	tyber.LogStep(ctx, c.logger, "announcing on swipper")
+
 	// start announcing on swiper, this method should take care ton announce as
 	// many time as needed
 	c.swiper.Announce(ctx, accPK, seed)
@@ -358,6 +360,10 @@ func (c *contactRequestsManager) enqueueRequest(ctx context.Context, to *protoco
 				// succefully send contact request, leave the loop and cancel lookup
 				break
 			}
+
+			// wait one second to avoid infinity loop on send contact request
+			// ex: when we dont have any network, send request can fail instantly
+			time.Sleep(time.Second)
 		}
 
 		// cancel lookup process
@@ -396,7 +402,7 @@ func (c *contactRequestsManager) SendContactRequest(ctx context.Context, to *pro
 	}
 
 	// create a new stream with the remote peer
-	stream, err := c.ipfs.NewStream(ctx, peer.ID, contactRequestV1)
+	stream, err := c.ipfs.NewStream(network.WithUseTransient(ctx, "req_mngr"), peer.ID, contactRequestV1)
 	if err != nil {
 		return fmt.Errorf("unable to open stream: %w", err)
 	}

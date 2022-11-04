@@ -21,10 +21,9 @@ import (
 	ipfs_repo "github.com/ipfs/go-ipfs/repo"
 	libp2p "github.com/libp2p/go-libp2p"
 	connmgr "github.com/libp2p/go-libp2p-connmgr"
-	p2p_disc "github.com/libp2p/go-libp2p-core/discovery"
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/peer"
-	peerstore "github.com/libp2p/go-libp2p-core/peerstore"
+	"github.com/libp2p/go-libp2p-core/peerstore"
 	p2p_routing "github.com/libp2p/go-libp2p-core/routing"
 	discovery "github.com/libp2p/go-libp2p-discovery"
 	p2p_dht "github.com/libp2p/go-libp2p-kad-dht"
@@ -43,7 +42,7 @@ import (
 	mc "berty.tech/berty/v2/go/internal/multipeer-connectivity-driver"
 	proximity "berty.tech/berty/v2/go/internal/proximitytransport"
 	"berty.tech/berty/v2/go/internal/rendezvous"
-	"berty.tech/berty/v2/go/internal/tinder"
+	tinder "berty.tech/berty/v2/go/internal/tinder"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	ipfswebui "berty.tech/ipfs-webui-packed"
@@ -105,7 +104,6 @@ func (m *Manager) SetupLocalIPFSFlags(fs *flag.FlagSet) {
 	fs.BoolVar(&m.Node.Protocol.TinderDHTDriver, FlagNameP2PTinderDHTDriver, true, "if true dht driver will be enable for tinder")
 	fs.BoolVar(&m.Node.Protocol.TinderRDVPDriver, FlagNameP2PTinderRDVPDriver, true, "if true rdvp driver will be enable for tinder")
 	fs.BoolVar(&m.Node.Protocol.TinderLocalDiscoveryDriver, FlagNameP2PTinderLocalDiscoveryDriver, true, "if true localdiscovery driver will be enable for tinder")
-	fs.BoolVar(&m.Node.Protocol.DisableDiscoverFilterAddrs, FlagNameP2PDisableDiscoverAddrsFilter, false, "dont filter private addrs on discovery service")
 	fs.BoolVar(&m.Node.Protocol.AutoRelay, "p2p.autorelay", true, "enable autorelay, force private reachability")
 	fs.StringVar(&m.Node.Protocol.StaticRelays, FlagNameP2PStaticRelays, KeywordDefault, "list of static relay maddrs, `:default:` will use statics relays from the config")
 	fs.DurationVar(&m.Node.Protocol.MinBackoff, "p2p.min-backoff", time.Second*10, "minimum p2p backoff duration")
@@ -181,7 +179,7 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 
 	var routing ipfs_p2p.RoutingOption
 	if dhtmode > 0 && !m.Node.Protocol.DisableIPFSNetwork {
-		dhtopts := []p2p_dht.Option{p2p_dht.Concurrency(5)}
+		dhtopts := []p2p_dht.Option{p2p_dht.Concurrency(1)}
 
 		if !m.Node.Protocol.DHTRandomWalk {
 			dhtopts = append(dhtopts, p2p_dht.DisableAutoRefresh())
@@ -304,7 +302,7 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 		})
 	}
 
-	psapi := ipfsutil.NewPubSubAPI(m.getContext(), logger.Named("ps"), m.Node.Protocol.discovery, m.Node.Protocol.pubsub)
+	psapi := ipfsutil.NewPubSubAPI(m.getContext(), logger.Named("ps"), m.Node.Protocol.pubsub)
 	m.Node.Protocol.ipfsAPI = ipfsutil.InjectPubSubCoreAPIExtendedAdapter(m.Node.Protocol.ipfsAPI, psapi)
 
 	// enable conn logger
@@ -637,7 +635,7 @@ func (m *Manager) configIPFSRouting(h host.Host, r p2p_routing.Routing) error {
 	rng := mrand.New(mrand.NewSource(srand.MustSecure())) // nolint:gosec // we need to use math/rand here, but it is seeded from crypto/rand
 
 	// configure tinder drivers
-	var drivers []*tinder.Driver
+	var drivers []tinder.IDriver
 
 	// localdiscovery driver
 	if m.Node.Protocol.TinderLocalDiscoveryDriver {
@@ -646,44 +644,28 @@ func (m *Manager) configIPFSRouting(h host.Host, r p2p_routing.Routing) error {
 			return errcode.ErrIPFSSetupHost.Wrap(err)
 		}
 
-		filter := tinder.PrivateAddrOnly
-		if m.Node.Protocol.DisableDiscoverFilterAddrs {
-			filter = tinder.NoFilter
-		}
-
-		drivers = append(drivers,
-			tinder.NewDriverFromUnregisterDiscovery(tinder.LocalDiscoveryName, m.Node.Protocol.localdisc, filter))
+		drivers = append(drivers, m.Node.Protocol.localdisc)
 	}
 
 	// rdvp driver
 	if m.Node.Protocol.TinderRDVPDriver {
-		rdvpfilter := tinder.PublicAddrsOnly
-		if m.Node.Protocol.DisableDiscoverFilterAddrs {
-			rdvpfilter = tinder.NoFilter
-		}
-
 		if lenrdvpeers := len(rdvpeers); lenrdvpeers > 0 {
 			for _, peer := range rdvpeers {
 				h.Peerstore().AddAddrs(peer.ID, peer.Addrs, peerstore.PermanentAddrTTL)
-				udisc := tinder.NewRendezvousDiscovery(logger, h, peer.ID, rng)
+				m.Node.Protocol.emitterclient = rendezvous.NewEmitterClient(&rendezvous.EmitterClientOptions{
+					Logger: logger,
+				})
 
-				name := fmt.Sprintf("rdvp#%.6s", peer.ID)
-
-				drivers = append(drivers,
-					tinder.NewDriverFromUnregisterDiscovery(name, udisc, rdvpfilter))
+				// mqttclient := rendezvous.NewMQTTClient(logger, baseopts)
+				udisc := tinder.NewRendezvousDiscovery(logger, h, peer.ID, rng, m.Node.Protocol.emitterclient)
+				drivers = append(drivers, udisc)
 			}
 		}
 	}
 
 	// dht driver
 	if m.Node.Protocol.DHT != "none" && m.Node.Protocol.TinderDHTDriver {
-		dhtfilter := tinder.PublicAddrsOnly
-		if m.Node.Protocol.DisableDiscoverFilterAddrs {
-			dhtfilter = tinder.NoFilter
-		}
-
-		// dht driver
-		drivers = append(drivers, tinder.NewDriverFromRouting("dht", r, dhtfilter))
+		drivers = append(drivers, tinder.NewRoutingDiscoveryDriver("dht", r))
 	}
 
 	serverRng := mrand.New(mrand.NewSource(srand.MustSecure())) // nolint:gosec // we need to use math/rand here, but it is seeded from crypto/rand
@@ -694,17 +676,7 @@ func (m *Manager) configIPFSRouting(h host.Host, r p2p_routing.Routing) error {
 		discovery.FullJitter,
 		time.Second, 10.0, 0, serverRng)
 
-	tinderOpts := &tinder.Opts{
-		Logger:                 logger,
-		AdvertiseResetInterval: time.Hour,
-		FindPeerResetInterval:  time.Minute * 10,
-		AdvertiseGracePeriod:   time.Minute,
-		BackoffStrategy: &tinder.BackoffOpts{
-			StratFactory: backoffstrat,
-		},
-	}
-
-	m.Node.Protocol.discovery, err = tinder.NewService(tinderOpts, h, drivers...)
+	m.Node.Protocol.tinder, err = tinder.NewService(h, logger, drivers...)
 	if err != nil {
 		return errcode.ErrIPFSSetupHost.Wrap(err)
 	}
@@ -713,7 +685,7 @@ func (m *Manager) configIPFSRouting(h host.Host, r p2p_routing.Routing) error {
 	go func() {
 		<-m.getContext().Done()
 
-		m.Node.Protocol.discovery.Close()
+		m.Node.Protocol.tinder.Close()
 
 		if m.Node.Protocol.localdisc != nil {
 			m.Node.Protocol.localdisc.Close()
@@ -735,24 +707,15 @@ func (m *Manager) configIPFSRouting(h host.Host, r p2p_routing.Routing) error {
 		pubsub.WithPeerExchange(true),
 	}
 
-	var disc p2p_disc.Discovery
-	if m.Node.Protocol.TinderDiscover {
-		// filter localdiscovery from drivers since pubsub automatically share topic between connected peers
-		disc = tinder.NewFilterDriverDiscovery(m.Node.Protocol.discovery, tinder.LocalDiscoveryName)
-	} else {
-		disc = tinder.DriverDiscovery{
-			Discoverer: tinder.NoopDiscovery,
-			Advertiser: m.Node.Protocol.discovery,
-		}
-	}
-
 	// rp, err := m.getRotationInterval()
 	// if err != nil {
 	// 	return errcode.ErrIPFSSetupHost.Wrap(err)
 	// }
 
 	// disc = tinder.NewRotationDiscovery(logger.Named("rotation"), disc, rp)
-	popts = append(popts, pubsub.WithDiscovery(disc, pubsub.WithDiscoverConnector(backoffconnector)))
+	m.Node.Protocol.discAdaptater = tinder.NewDiscoveryAdaptater(logger.Named("disc"), m.Node.Protocol.tinder)
+	popts = append(popts, pubsub.WithDiscovery(
+		m.Node.Protocol.discAdaptater, pubsub.WithDiscoverConnector(backoffconnector)))
 
 	// pubsub.DiscoveryPollInterval = m.Node.Protocol.PollInterval
 	m.Node.Protocol.pubsub, err = pubsub.NewGossipSub(m.getContext(), h, popts...)

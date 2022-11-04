@@ -11,6 +11,7 @@ import (
 	"time"
 
 	sqlite "github.com/flyingtime/gorm-sqlcipher"
+	"github.com/golang/protobuf/proto"
 	libp2p_mocknet "github.com/libp2p/go-libp2p/p2p/net/mock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -125,13 +126,11 @@ func TestingInfra(ctx context.Context, t *testing.T, amount int, logger *zap.Log
 }
 
 func Testing1To1ProcessWholeStream(t *testing.T) (context.Context, []*TestingAccount, *zap.Logger, func()) {
-	t.Helper()
-
 	// PREPARE
 	logger, cleanup := testutil.Logger(t)
 	clean := cleanup
 
-	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	clean = u.CombineFuncs(cancel, clean)
 
 	const l = 2
@@ -147,22 +146,58 @@ func Testing1To1ProcessWholeStream(t *testing.T) (context.Context, []*TestingAcc
 		clean = u.CombineFuncs(close, clean)
 	}
 
-	logger.Info("Started nodes, waiting for settlement")
-	time.Sleep(4 * time.Second)
+	// @FIXME: link should already be ready at this point
+
+	friend := nodes[1]
+	require.Eventually(t, func() bool {
+		return friend.GetAccount().GetLink() != ""
+	}, time.Second*5, time.Millisecond*100)
 
 	user := nodes[0]
-	friend := nodes[1]
+	require.Eventually(t, func() bool {
+		fmt.Println("account", user.GetAccount().GetLink())
+		return user.GetAccount().GetLink() != ""
+	}, time.Second*5, time.Millisecond*100)
+
 	userPK := user.GetAccount().GetPublicKey()
 
-	_, err := user.client.ContactRequest(ctx, &messengertypes.ContactRequest_Request{Link: friend.GetAccount().GetLink()})
+	subctx, cancel := context.WithCancel(ctx)
+	defer cancel()
+
+	cl, err := friend.client.EventStream(subctx, &messengertypes.EventStream_Request{})
+	require.NoError(t, err)
+
+	_, err = user.client.ContactRequest(ctx, &messengertypes.ContactRequest_Request{Link: friend.GetAccount().GetLink()})
 	require.NoError(t, err)
 	logger.Info("waiting for request propagation")
-	time.Sleep(1 * time.Second)
+
+	// wait to receive contact request
+	for {
+		evt, err := cl.Recv()
+		require.NoError(t, err)
+
+		if evt.GetEvent().GetType() == messengertypes.StreamEvent_TypeNotified {
+			var notif messengertypes.StreamEvent_Notified
+			err := proto.Unmarshal(evt.GetEvent().Payload, &notif)
+			require.NoError(t, err)
+
+			if notif.GetType() == messengertypes.StreamEvent_Notified_TypeContactRequestReceived {
+				break
+			}
+		}
+	}
+
 	_, err = friend.client.ContactAccept(ctx, &messengertypes.ContactAccept_Request{PublicKey: userPK})
 	require.NoError(t, err)
 
 	logger.Info("waiting for contact settlement")
-	time.Sleep(4 * time.Second)
+	for {
+		evt, err := cl.Recv()
+		require.NoError(t, err)
+		if evt.GetEvent().GetType() == messengertypes.StreamEvent_TypeDeviceUpdated {
+			break
+		}
+	}
 
 	return ctx, nodes, logger, clean
 }

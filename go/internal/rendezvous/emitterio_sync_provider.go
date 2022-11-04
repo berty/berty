@@ -3,9 +3,10 @@ package rendezvous
 import (
 	"encoding/json"
 	"fmt"
+	"math/big"
 	"time"
 
-	emitter "github.com/emitter-io/go/v2"
+	emitter "github.com/berty/emitter-go/v2"
 	// nolint:staticcheck // cannot use the new protobuf API while keeping gogoproto
 	"github.com/golang/protobuf/proto"
 	"github.com/libp2p/go-libp2p-core/peer"
@@ -48,13 +49,16 @@ func NewEmitterServer(serverAddr string, adminKey string, options *EmitterOption
 	if options.Logger == nil {
 		options.Logger = zap.NewNop()
 	}
+	options.Logger = options.Logger.Named("emitter")
 
 	c, err := emitter.Connect(serverAddr, func(_ *emitter.Client, msg emitter.Message) {
-		fmt.Printf("[emitter] -> [B] received: '%s' topic: '%s'\n", msg.Payload(), msg.Topic())
-	}, options.EmitterOptions...)
+		options.Logger.Debug("emitter received msg", zap.String("topic", msg.Topic()))
+	}, emitter.WithLogger(options.Logger.Named("cl")))
 	if err != nil {
-		options.Logger.Error("Error on Client.Connect()", zap.Error(err))
+		options.Logger.Error("error on `Connect`", zap.Error(err))
 	}
+
+	options.Logger.Debug("connected to emitter", zap.String("target", serverAddr))
 
 	ps := &EmitterPubSub{
 		client:     c,
@@ -67,15 +71,10 @@ func NewEmitterServer(serverAddr string, adminKey string, options *EmitterOption
 	return ps, nil
 }
 
-func (p *EmitterPubSub) Close() error {
-	p.client.Disconnect(time.Second)
-
-	return nil
-}
-
 func (p *EmitterPubSub) Register(pid peer.ID, ns string, addrs [][]byte, ttlAsSeconds int, counter uint64) {
-	channel := p.channelForRendezvousPoint(ns)
+	p.logger.Debug("register", zap.String("pid", pid.String()), zap.String("ns", ns))
 
+	channel := channelForRendezvousPoint(ns)
 	writeKey, err := p.writeKeyForChannel(channel)
 	if err != nil {
 		p.logger.Error("unable to create topic for NS", zap.Error(err))
@@ -99,6 +98,8 @@ func (p *EmitterPubSub) Register(pid peer.ID, ns string, addrs [][]byte, ttlAsSe
 		p.logger.Error("unable to publish on channel", zap.Error(err))
 		return
 	}
+
+	p.logger.Debug("publishing done", zap.String("pid", pid.String()), zap.String("channel", channel))
 }
 
 func (p *EmitterPubSub) Unregister(_ peer.ID, _ string) {
@@ -106,7 +107,7 @@ func (p *EmitterPubSub) Unregister(_ peer.ID, _ string) {
 }
 
 func (p *EmitterPubSub) Subscribe(ns string) (string, error) {
-	channel := p.channelForRendezvousPoint(ns)
+	channel := channelForRendezvousPoint(ns)
 	readKey, err := p.readKeysForChannel(channel)
 	if err != nil {
 		return "", err
@@ -128,6 +129,11 @@ func (p *EmitterPubSub) GetServiceType() string {
 	return EmitterServiceType
 }
 
+func (p *EmitterPubSub) Close() error {
+	p.client.Disconnect(time.Second)
+	return nil
+}
+
 func (p *EmitterPubSub) writeKeyForChannel(channelName string) (string, error) {
 	return p.keyForChannel(channelName, "w")
 }
@@ -145,8 +151,16 @@ func (p *EmitterPubSub) keyForChannel(channelName string, permissions string) (s
 	return key, nil
 }
 
-func (p *EmitterPubSub) channelForRendezvousPoint(ns string) string {
-	return fmt.Sprintf("rendezvous/%s/", ns)
+func channelForRendezvousPoint(topic string) string {
+	// force base62 encoded topic (without '+' and '#' that are wildcard in the mqtt world)
+	topic = toBase62(topic)
+	return fmt.Sprintf("rdvp/%s/", topic)
+}
+
+func toBase62(topic string) string {
+	var i big.Int
+	i.SetBytes([]byte(topic))
+	return i.Text(62)
 }
 
 var (
