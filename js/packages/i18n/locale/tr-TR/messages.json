@@ -1,8 +1,8 @@
 {
 	"onboarding": {
 		"getstarted": {
-			"screenTitle": "",
-			"title": "",
+			"screenTitle": "Gizliliğinizi koruyun",
+			"title": "Gizliliğinizi koruyun",
 			"desc": "ücretsiz & güvenli eşler arası mesajlaşma",
 			"create-button": "Yeni bir hesap oluştur",
 			"import-button": "Hesabı içeri aktar"
@@ -10,10 +10,10 @@
 		"default-mode": {
 			"summary": {
 				"title": "Varsayılan Mod",
-				"screenTitle": "",
+				"screenTitle": "Hesap oluştur",
 				"subtitle": "Hızlıca Başla",
 				"first-point": "Senin için en uygun olan gizlilik/konfor dengesiyle başla. Berty düğümleri performans arttırmak ve asenkron iletişim sağlamak için kullanılır.",
-				"second-point": "",
+				"second-point": "Push mesajları açıktır ve bunu İOS üzerinden kapatamazsınız.",
 				"third-point": "Özelleştirilmiş gizlilik/konfor dengesi için, özelleştirme modunu seç.",
 				"back-button": "Geri",
 				"accept-button": "Başlayalım"
@@ -21,7 +21,7 @@
 		},
 		"custom-mode": {
 			"summary": {
-				"screenTitle": "",
+				"screenTitle": "Hesap oluştur - Ayarları özelleştir",
 				"title": "Özelleştirilmiş Mod",
 				"subtitle": "Özelleştirilmiş Gizlilik/Konfor Dengesi",
 				"first-point": "Bu modda tüm ayarları gizlilik ve konfor dengesi sana uygun hale gelene kadar değiştir.",
@@ -40,11 +40,11 @@
 				"routing": {
 					"title": "Yönlendirme",
 					"dht-button": "Dağıtık Hash Tablosu",
-					"rdvp-button": ""
+					"rdvp-button": "Randevu noktaları"
 				},
 				"access": {
 					"title": "Ağ Erişilebilirliği",
-					"relay-button": "",
+					"relay-button": "Relay nodları (TURN)",
 					"bootstrap-button": ""
 				},
 				"modals": {
