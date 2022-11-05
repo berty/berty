@@ -40,17 +40,17 @@
 				"routing": {
 					"title": "Yönlendirme",
 					"dht-button": "Dağıtık Hash Tablosu",
-					"rdvp-button": "Randevu noktaları"
+					"rdvp-button": "Randevu düğüm noktaları"
 				},
 				"access": {
 					"title": "Ağ Erişilebilirliği",
 					"relay-button": "Relay nodları (TURN)",
-					"bootstrap-button": ""
+					"bootstrap-button": "Boostrap Düğümleri"
 				},
 				"modals": {
 					"add": {
 						"title": {
-							"relay": "",
+							"relay": "Relay düğüm noktassı ekle (TURN)",
 							"bootstrap": "",
 							"rdvp": ""
 						}
