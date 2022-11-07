@@ -49,12 +49,9 @@ p2p:
   rdvp:
     # svc_fr_2
     - maddr: '/ip4/52.47.79.109/tcp/4040/p2p/12D3KooWKhUMFeJdRD4WuXE3f6boYPvxfgZJhRR4naxswdKpKFwG'
-    # - maddr: '/ip4/52.47.79.109/udp/4040/quic/p2p/12D3KooWKhUMFeJdRD4WuXE3f6boYPvxfgZJhRR4naxswdKpKFwG'
   static-relays:
-    # berty relays fr
-    # - '/ip4/51.159.21.214/tcp/4040/p2p/QmdT7AmhhnbuwvCpa5PH1ySK9HJVB82jr3fo1bxMxBPW6p'
-    # berty relays ams
-    - '/ip4/52.47.79.109/tcp/4040/p2p/12D3KooWKhUMFeJdRD4WuXE3f6boYPvxfgZJhRR4naxswdKpKFwG'
-    # ipfs relays
-    # - "/ip4/104.131.131.82/tcp/4001/p2p/QmaCpDMGvV2BGHeYERUEnRQAwe3N8SzbUtfsmvsqQLuvuJ"
-    # - "/ip4/104.131.131.82/udp/4001/quic/p2p/QmaCpDMGvV2BGHeYERUEnRQAwe3N8SzbUtfsmvsqQLuvuJ"
+    # svc fr 1
+    - '/ip4/51.159.21.214/tcp/6363/p2p/12D3KooWBoShE6E6uXveQWVunK7AJk6UReDBmiui5qFYWbug1Nf9'
+    - '/ip6/2001:bc8:2610:4200::/tcp/6363/p2p/12D3KooWBoShE6E6uXveQWVunK7AJk6UReDBmiui5qFYWbug1Nf9'
+    # svc ams 1
+    - '/ip4/51.15.25.224/tcp/6363/p2p/12D3KooWAHcEz4K5XAgRDav9fLuhiRY2wuXip385EmT5RoRkCmjr'
