@@ -443,7 +443,7 @@ func constructorFactoryGroupMessage(s *BertyOrbitDB, logger *zap.Logger) iface.S
 			return nil, fmt.Errorf("unable to subscribe to store events")
 		}
 
-		go func() {
+		go func(ctx context.Context) {
 			defer chSub.Close()
 			for {
 				var e interface{}
@@ -476,7 +476,7 @@ func constructorFactoryGroupMessage(s *BertyOrbitDB, logger *zap.Logger) iface.S
 					}
 				}
 			}
-		}()
+		}(ctx)
 
 		return store, nil
 	}
