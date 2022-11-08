@@ -12,7 +12,7 @@ import (
 
 // ContactRequestReference retrieves the necessary information to create a contact link
 func (s *service) ContactRequestReference(ctx context.Context, _ *protocoltypes.ContactRequestReference_Request) (*protocoltypes.ContactRequestReference_Reply, error) {
-	enabled, shareableContact := s.accountGroup.MetadataStore().GetIncomingContactRequestsStatus()
+	enabled, shareableContact := s.getAccountGroup().MetadataStore().GetIncomingContactRequestsStatus()
 	rdvSeed := []byte(nil)
 
 	if shareableContact != nil {
@@ -30,7 +30,7 @@ func (s *service) ContactRequestDisable(ctx context.Context, _ *protocoltypes.Co
 	ctx, _, endSection := tyber.Section(ctx, s.logger, "Disabling contact requests")
 	defer func() { endSection(err, "") }()
 
-	if _, err := s.accountGroup.MetadataStore().ContactRequestDisable(ctx); err != nil {
+	if _, err := s.getAccountGroup().MetadataStore().ContactRequestDisable(ctx); err != nil {
 		return nil, errcode.ErrOrbitDBAppend.Wrap(err)
 	}
 
@@ -42,11 +42,11 @@ func (s *service) ContactRequestEnable(ctx context.Context, _ *protocoltypes.Con
 	ctx, _, endSection := tyber.Section(ctx, s.logger, "Enabling contact requests")
 	defer func() { endSection(err, "") }()
 
-	if _, err := s.accountGroup.MetadataStore().ContactRequestEnable(ctx); err != nil {
+	if _, err := s.getAccountGroup().MetadataStore().ContactRequestEnable(ctx); err != nil {
 		return nil, errcode.ErrOrbitDBAppend.Wrap(err)
 	}
 
-	_, shareableContact := s.accountGroup.MetadataStore().GetIncomingContactRequestsStatus()
+	_, shareableContact := s.getAccountGroup().MetadataStore().GetIncomingContactRequestsStatus()
 	rdvSeed := []byte(nil)
 
 	if shareableContact != nil {
@@ -63,11 +63,11 @@ func (s *service) ContactRequestResetReference(ctx context.Context, _ *protocolt
 	ctx, _, endSection := tyber.Section(ctx, s.logger, "Resetting contact requests reference")
 	defer func() { endSection(err, "") }()
 
-	if _, err := s.accountGroup.MetadataStore().ContactRequestReferenceReset(ctx); err != nil {
+	if _, err := s.getAccountGroup().MetadataStore().ContactRequestReferenceReset(ctx); err != nil {
 		return nil, errcode.ErrOrbitDBAppend.Wrap(err)
 	}
 
-	_, shareableContact := s.accountGroup.MetadataStore().GetIncomingContactRequestsStatus()
+	_, shareableContact := s.getAccountGroup().MetadataStore().GetIncomingContactRequestsStatus()
 	rdvSeed := []byte(nil)
 
 	if shareableContact != nil {
@@ -91,7 +91,7 @@ func (s *service) ContactRequestSend(ctx context.Context, req *protocoltypes.Con
 		return nil, errcode.ErrInvalidInput
 	}
 
-	if _, err := s.accountGroup.MetadataStore().ContactRequestOutgoingEnqueue(ctx, shareableContact, req.OwnMetadata); err != nil {
+	if _, err := s.getAccountGroup().MetadataStore().ContactRequestOutgoingEnqueue(ctx, shareableContact, req.OwnMetadata); err != nil {
 		return nil, errcode.ErrOrbitDBAppend.Wrap(err)
 	}
 
@@ -108,7 +108,7 @@ func (s *service) ContactRequestAccept(ctx context.Context, req *protocoltypes.C
 		return nil, errcode.ErrDeserialization.Wrap(err)
 	}
 
-	if _, err := s.accountGroup.MetadataStore().ContactRequestIncomingAccept(ctx, pk); err != nil {
+	if _, err := s.getAccountGroup().MetadataStore().ContactRequestIncomingAccept(ctx, pk); err != nil {
 		return nil, errcode.ErrOrbitDBAppend.Wrap(err)
 	}
 
@@ -129,7 +129,7 @@ func (s *service) ContactRequestDiscard(ctx context.Context, req *protocoltypes.
 		return nil, errcode.ErrDeserialization.Wrap(err)
 	}
 
-	if _, err := s.accountGroup.MetadataStore().ContactRequestIncomingDiscard(ctx, pk); err != nil {
+	if _, err := s.getAccountGroup().MetadataStore().ContactRequestIncomingDiscard(ctx, pk); err != nil {
 		return nil, errcode.ErrOrbitDBAppend.Wrap(err)
 	}
 

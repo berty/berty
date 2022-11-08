@@ -297,8 +297,8 @@ func (s *service) PushSetServer(ctx context.Context, request *protocoltypes.Push
 }
 
 func (s *service) GetCurrentDevicePushConfig() (*protocoltypes.PushServiceReceiver, *protocoltypes.PushServer) {
-	currentToken := s.accountGroup.metadataStore.getCurrentDevicePushToken()
-	currentServer := s.accountGroup.metadataStore.getCurrentDevicePushServer()
+	currentToken := s.getAccountGroup().metadataStore.getCurrentDevicePushToken()
+	currentServer := s.getAccountGroup().metadataStore.getCurrentDevicePushServer()
 
 	return currentToken, currentServer
 }

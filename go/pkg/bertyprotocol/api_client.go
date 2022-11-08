@@ -72,12 +72,12 @@ func (s *service) InstanceGetConfiguration(ctx context.Context, req *protocoltyp
 		listeners[i] = addr.String()
 	}
 
-	member, err := s.accountGroup.MemberPubKey().Raw()
+	member, err := s.getAccountGroup().MemberPubKey().Raw()
 	if err != nil {
 		return nil, errcode.ErrSerialization.Wrap(err)
 	}
 
-	device, err := s.accountGroup.DevicePubKey().Raw()
+	device, err := s.getAccountGroup().DevicePubKey().Raw()
 	if err != nil {
 		return nil, errcode.ErrSerialization.Wrap(err)
 	}
@@ -85,10 +85,10 @@ func (s *service) InstanceGetConfiguration(ctx context.Context, req *protocoltyp
 	return &protocoltypes.InstanceGetConfiguration_Reply{
 		AccountPK:        member,
 		DevicePK:         device,
-		AccountGroupPK:   s.accountGroup.Group().PublicKey,
+		AccountGroupPK:   s.getAccountGroup().Group().PublicKey,
 		PeerID:           key.ID().Pretty(),
 		Listeners:        listeners,
-		DevicePushToken:  s.accountGroup.metadataStore.getCurrentDevicePushToken(),
-		DevicePushServer: s.accountGroup.metadataStore.getCurrentDevicePushServer(),
+		DevicePushToken:  s.getAccountGroup().metadataStore.getCurrentDevicePushToken(),
+		DevicePushServer: s.getAccountGroup().metadataStore.getCurrentDevicePushServer(),
 	}, nil
 }

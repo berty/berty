@@ -1037,7 +1037,7 @@ func constructorFactoryGroupMetadata(s *BertyOrbitDB, logger *zap.Logger) iface.
 		// Enable logs in the metadata index
 		store.setLogger(logger)
 
-		go func() {
+		go func(ctx context.Context) {
 			defer chSub.Close()
 
 			for {
@@ -1090,7 +1090,7 @@ func constructorFactoryGroupMetadata(s *BertyOrbitDB, logger *zap.Logger) iface.
 					}
 				}
 			}
-		}()
+		}(ctx)
 
 		options.Index = newMetadataIndex(ctx, g, md.Public(), s.deviceKeystore)
 		if err := store.InitBaseStore(ctx, cancel, ipfs, identity, addr, options); err != nil {
