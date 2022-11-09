@@ -12,23 +12,23 @@ import (
 	"sync"
 	"time"
 
-	ipfs_mobile "github.com/ipfs-shipyard/gomobile-ipfs/go/pkg/ipfsmobile"
 	datastore "github.com/ipfs/go-datastore"
-	ipfs_cfg "github.com/ipfs/go-ipfs-config"
-	ipfs_util "github.com/ipfs/go-ipfs/cmd/ipfs/util"
-	ipfs_core "github.com/ipfs/go-ipfs/core"
-	ipfs_p2p "github.com/ipfs/go-ipfs/core/node/libp2p"
-	ipfs_repo "github.com/ipfs/go-ipfs/repo"
+	ipfs_util "github.com/ipfs/kubo/cmd/ipfs/util"
+	ipfs_cfg "github.com/ipfs/kubo/config"
+	ipfs_core "github.com/ipfs/kubo/core"
+	ipfs_p2p "github.com/ipfs/kubo/core/node/libp2p"
+	ipfs_repo "github.com/ipfs/kubo/repo"
 	libp2p "github.com/libp2p/go-libp2p"
-	connmgr "github.com/libp2p/go-libp2p-connmgr"
-	"github.com/libp2p/go-libp2p-core/host"
-	"github.com/libp2p/go-libp2p-core/peer"
-	"github.com/libp2p/go-libp2p-core/peerstore"
-	p2p_routing "github.com/libp2p/go-libp2p-core/routing"
-	discovery "github.com/libp2p/go-libp2p-discovery"
 	p2p_dht "github.com/libp2p/go-libp2p-kad-dht"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
-	"github.com/libp2p/go-tcp-transport"
+	"github.com/libp2p/go-libp2p/core/host"
+	"github.com/libp2p/go-libp2p/core/peer"
+	"github.com/libp2p/go-libp2p/core/peerstore"
+	p2p_routing "github.com/libp2p/go-libp2p/core/routing"
+	"github.com/libp2p/go-libp2p/p2p/discovery/backoff"
+	"github.com/libp2p/go-libp2p/p2p/host/autorelay"
+	connmgr "github.com/libp2p/go-libp2p/p2p/net/connmgr"
+	tcpt "github.com/libp2p/go-libp2p/p2p/transport/tcp"
 	ma "github.com/multiformats/go-multiaddr"
 	manet "github.com/multiformats/go-multiaddr/net"
 	"go.uber.org/zap"
@@ -38,6 +38,7 @@ import (
 	"berty.tech/berty/v2/go/internal/config"
 	"berty.tech/berty/v2/go/internal/datastoreutil"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
+	ipfs_mobile "berty.tech/berty/v2/go/internal/ipfsutil/mobile"
 	"berty.tech/berty/v2/go/internal/logutil"
 	mc "berty.tech/berty/v2/go/internal/multipeer-connectivity-driver"
 	proximity "berty.tech/berty/v2/go/internal/proximitytransport"
@@ -286,7 +287,11 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 	// serve webui
 	if addr := m.Node.Protocol.IPFSWebUIListener; addr != "" {
 		dir := http.FileServer(ipfswebui.Dir())
-		server := &http.Server{Addr: addr, Handler: dir}
+		server := &http.Server{
+			Addr:              addr,
+			Handler:           dir,
+			ReadHeaderTimeout: time.Second * 5,
+		}
 
 		m.workers.Add(func() error {
 			var err error
@@ -311,10 +316,10 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 	lm := m.getLifecycleManager()
 
 	serverRng := mrand.New(mrand.NewSource(srand.MustSecure())) // nolint:gosec // we need to use math/rand here, but it is seeded from crypto/rand
-	backoffstrat := discovery.NewExponentialBackoff(
+	backoffstrat := backoff.NewExponentialBackoff(
 		time.Second,
 		time.Minute*10,
-		discovery.FullJitter,
+		backoff.FullJitter,
 		time.Second, 5.0, 0, serverRng)
 
 	peering := ipfsutil.NewPeeringService(
@@ -475,9 +480,12 @@ func (m *Manager) setupIPFSConfig(cfg *ipfs_cfg.Config) ([]libp2p.Option, error)
 	cfg.Swarm.ConnMgr.Type = "none"
 
 	// configure custom conn manager
-	cm := connmgr.NewConnManager(
-		cfg.Swarm.ConnMgr.LowWater, cfg.Swarm.ConnMgr.HighWater, ipfs_cfg.DefaultConnMgrGracePeriod,
+	cm, err := connmgr.NewConnManager(
+		cfg.Swarm.ConnMgr.LowWater, cfg.Swarm.ConnMgr.HighWater, connmgr.WithGracePeriod(ipfs_cfg.DefaultConnMgrGracePeriod),
 	)
+	if err != nil {
+		return nil, errcode.ErrIPFSSetupConfig.Wrap(err)
+	}
 
 	// wrap conn manager
 	m.Node.Protocol.connmngr = ipfsutil.NewBertyConnManager(logger.Named("connmgr"), cm)
@@ -563,26 +571,26 @@ func (m *Manager) setupIPFSConfig(cfg *ipfs_cfg.Config) ([]libp2p.Option, error)
 	// enable mdns
 	cfg.Discovery.MDNS.Enabled = false
 
-	// enable auto relay
-	if m.Node.Protocol.AutoRelay {
-		cfg.Swarm.RelayClient.Enabled = ipfs_cfg.True
-	} else {
-		cfg.Swarm.RelayClient.Enabled = ipfs_cfg.False
-		cfg.Swarm.Transports.Network.Relay = ipfs_cfg.False
-	}
+	// disable managed auto relay
+	cfg.Swarm.RelayClient.Enabled = ipfs_cfg.False
+	cfg.Swarm.Transports.Network.Relay = ipfs_cfg.True
 
 	pis, err := m.getStaticRelays()
 	if err != nil {
 		return nil, errcode.ErrIPFSSetupConfig.Wrap(err)
 	}
 
+	// add static relay
 	if len(pis) > 0 {
 		peers := make([]peer.AddrInfo, len(pis))
 		for i, p := range pis {
 			peers[i] = *p
 		}
 
-		p2popts = append(p2popts, libp2p.StaticRelays(peers))
+		p2popts = append(p2popts, libp2p.EnableAutoRelay(
+			autorelay.WithStaticRelays(peers),
+			autorelay.WithCircuitV1Support(),
+		))
 	}
 
 	// prefill peerstore with known rdvp servers
@@ -598,8 +606,8 @@ func (m *Manager) setupIPFSConfig(cfg *ipfs_cfg.Config) ([]libp2p.Option, error)
 	// @NOTE(gfanton): disable tcp transport so we can init a custom transport
 	// with reusport disable
 	cfg.Swarm.Transports.Network.TCP = ipfs_cfg.False
-	p2popts = append(p2popts, libp2p.Transport(tcp.NewTCPTransport,
-		tcp.DisableReuseport(),
+	p2popts = append(p2popts, libp2p.Transport(tcpt.NewTCPTransport,
+		tcpt.DisableReuseport(),
 	))
 
 	return p2popts, nil
@@ -670,10 +678,10 @@ func (m *Manager) configIPFSRouting(h host.Host, r p2p_routing.Routing) error {
 
 	serverRng := mrand.New(mrand.NewSource(srand.MustSecure())) // nolint:gosec // we need to use math/rand here, but it is seeded from crypto/rand
 
-	backoffstrat := discovery.NewExponentialBackoff(
+	backoffstrat := backoff.NewExponentialBackoff(
 		m.Node.Protocol.MinBackoff,
 		m.Node.Protocol.MaxBackoff,
-		discovery.FullJitter,
+		backoff.FullJitter,
 		time.Second, 10.0, 0, serverRng)
 
 	m.Node.Protocol.tinder, err = tinder.NewService(h, logger, drivers...)
@@ -698,8 +706,8 @@ func (m *Manager) configIPFSRouting(h host.Host, r p2p_routing.Routing) error {
 
 	cacheSize := 100
 	dialTimeout := time.Second * 20
-	backoffconnector := func(host host.Host) (*discovery.BackoffConnector, error) {
-		return discovery.NewBackoffConnector(host, cacheSize, dialTimeout, backoffstrat)
+	backoffconnector := func(host host.Host) (*backoff.BackoffConnector, error) {
+		return backoff.NewBackoffConnector(host, cacheSize, dialTimeout, backoffstrat)
 	}
 
 	popts := []pubsub.Option{

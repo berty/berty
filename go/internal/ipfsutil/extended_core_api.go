@@ -1,11 +1,11 @@
 package ipfsutil
 
 import (
-	ipfs_core "github.com/ipfs/go-ipfs/core"
-	ipfs_coreapi "github.com/ipfs/go-ipfs/core/coreapi"
 	ipfs_interface "github.com/ipfs/interface-go-ipfs-core"
-	"github.com/libp2p/go-libp2p-core/connmgr"
-	ipfs_host "github.com/libp2p/go-libp2p-core/host"
+	ipfs_core "github.com/ipfs/kubo/core"
+	ipfs_coreapi "github.com/ipfs/kubo/core/coreapi"
+	"github.com/libp2p/go-libp2p/core/connmgr"
+	ipfs_host "github.com/libp2p/go-libp2p/core/host"
 )
 
 type ConnMgr interface {

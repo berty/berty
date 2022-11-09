@@ -5,6 +5,7 @@ import (
 	"io"
 	"net"
 	"net/http"
+	"time"
 
 	grpcgw "github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/improbable-eng/grpc-web/go/grpcweb"
@@ -134,7 +135,8 @@ func (s *Server) Serve(l Listener) error {
 			)
 
 			serverWeb := http.Server{
-				Handler: http.HandlerFunc(wgrpc.ServeHTTP),
+				Handler:           http.HandlerFunc(wgrpc.ServeHTTP),
+				ReadHeaderTimeout: 5 * time.Second, // protect against Slowloris attack
 			}
 
 			serve = serverWeb.Serve
@@ -146,7 +148,8 @@ func (s *Server) Serve(l Listener) error {
 				return false
 			}
 			gatewayServer := http.Server{
-				Handler: s.GatewayMux,
+				Handler:           s.GatewayMux,
+				ReadHeaderTimeout: 5 * time.Second, // protect against Slowloris attack
 			}
 
 			serve = gatewayServer.Serve

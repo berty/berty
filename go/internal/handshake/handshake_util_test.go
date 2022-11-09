@@ -8,9 +8,9 @@ import (
 	"time"
 
 	ggio "github.com/gogo/protobuf/io"
-	p2pcrypto "github.com/libp2p/go-libp2p-core/crypto"
-	p2pnetwork "github.com/libp2p/go-libp2p-core/network"
-	p2ppeer "github.com/libp2p/go-libp2p-core/peer"
+	p2pcrypto "github.com/libp2p/go-libp2p/core/crypto"
+	p2pnetwork "github.com/libp2p/go-libp2p/core/network"
+	p2ppeer "github.com/libp2p/go-libp2p/core/peer"
 	p2pmocknet "github.com/libp2p/go-libp2p/p2p/net/mock"
 	"github.com/stretchr/testify/require"
 
@@ -62,7 +62,9 @@ func newMockedPeer(t *testing.T, ctx context.Context, ipfsOpts *ipfsutil.Testing
 func newMockedHandshake(t *testing.T, ctx context.Context) *mockedHandshake {
 	t.Helper()
 
-	mn := p2pmocknet.New(ctx)
+	mn := p2pmocknet.New()
+	t.Cleanup(func() { mn.Close() })
+
 	rdvp, err := mn.GenPeer()
 	require.NoError(t, err, "failed to generate mocked peer")
 
@@ -116,8 +118,6 @@ func newTestHandshakeContext(stream p2pnetwork.Stream, ownAccountID p2pcrypto.Pr
 }
 
 func runHandshakeTest(t *testing.T, requesterTest requesterTestFunc, responderTest responderTestFunc) {
-	t.Helper()
-
 	var wg sync.WaitGroup
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)

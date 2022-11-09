@@ -9,6 +9,7 @@ import (
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
+	"google.golang.org/grpc/credentials/insecure"
 
 	"berty.tech/berty/v2/go/internal/cryptoutil"
 	"berty.tech/berty/v2/go/internal/grpcutil"
@@ -86,7 +87,7 @@ func (s *service) ReplicationServiceRegisterGroup(ctx context.Context, request *
 	}
 
 	if s.grpcInsecure {
-		gopts = append(gopts, grpc.WithInsecure())
+		gopts = append(gopts, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	} else {
 		tlsconfig := credentials.NewTLS(&tls.Config{
 			MinVersion: tls.VersionTLS12,

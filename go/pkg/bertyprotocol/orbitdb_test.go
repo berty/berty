@@ -29,7 +29,9 @@ func TestDifferentStores(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	mn := mocknet.New(ctx)
+	mn := mocknet.New()
+	defer mn.Close()
+
 	rdvp, err := mn.GenPeer()
 	require.NoError(t, err, "failed to generate mocked peer")
 

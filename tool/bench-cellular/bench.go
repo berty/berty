@@ -11,9 +11,9 @@ import (
 	"strings"
 
 	"github.com/libp2p/go-libp2p"
-	"github.com/libp2p/go-libp2p-core/crypto"
+	"github.com/libp2p/go-libp2p/core/crypto"
 	quict "github.com/libp2p/go-libp2p-quic-transport"
-	tcpt "github.com/libp2p/go-tcp-transport"
+	tcpt "github.com/libp2p/go-libp2p/p2p/transport/tcp"
 	ma "github.com/multiformats/go-multiaddr"
 
 	golog "github.com/ipfs/go-log"

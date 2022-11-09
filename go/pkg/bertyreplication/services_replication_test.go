@@ -10,7 +10,7 @@ import (
 
 	"github.com/ipfs/go-datastore"
 	dssync "github.com/ipfs/go-datastore/sync"
-	"github.com/libp2p/go-libp2p-core/event"
+	"github.com/libp2p/go-libp2p/core/event"
 	mocknet "github.com/libp2p/go-libp2p/p2p/net/mock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -371,7 +371,9 @@ func TestReplicationService_Flow(t *testing.T) {
 	baseDS = dssync.MutexWrap(baseDS)
 	defer baseDS.Close()
 
-	mn := mocknet.New(ctx)
+	mn := mocknet.New()
+	defer mn.Close()
+
 	rdvp, err := mn.GenPeer()
 	require.NoError(t, err, "failed to generate mocked peer")
 
@@ -613,7 +615,9 @@ func TestReplicationService_InvalidFlow(t *testing.T) {
 	baseDS = dssync.MutexWrap(baseDS)
 	defer baseDS.Close()
 
-	mn := mocknet.New(ctx)
+	mn := mocknet.New()
+	defer mn.Close()
+
 	rdvp, err := mn.GenPeer()
 	require.NoError(t, err, "failed to generate mocked peer")
 

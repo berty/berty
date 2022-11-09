@@ -8,9 +8,9 @@ import (
 	"sync"
 	"time"
 
-	"github.com/libp2p/go-libp2p-core/peer"
-	discovery "github.com/libp2p/go-libp2p-discovery"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
+	"github.com/libp2p/go-libp2p/core/peer"
+	backoff "github.com/libp2p/go-libp2p/p2p/discovery/backoff"
 	"go.uber.org/zap"
 	"moul.io/srand"
 
@@ -21,7 +21,7 @@ import (
 )
 
 type swiperRequest struct {
-	bstrat    discovery.BackoffStrategy
+	bstrat    backoff.BackoffStrategy
 	wgRefresh *sync.WaitGroup
 	ctx       context.Context
 	out       chan<- peer.AddrInfo
@@ -31,7 +31,7 @@ type swiperRequest struct {
 type Swiper struct {
 	topics map[string]*pubsub.Topic
 
-	backoffFactory discovery.BackoffFactory
+	backoffFactory backoff.BackoffFactory
 
 	inprogressLookup map[string]*swiperRequest
 	muRequest        sync.Mutex
@@ -45,8 +45,8 @@ type Swiper struct {
 func NewSwiper(logger *zap.Logger, tinder *tinder.Service, rp *rendezvous.RotationInterval) *Swiper {
 	// we need to use math/rand here, but it is seeded from crypto/rand
 	srand := mrand.New(mrand.NewSource(srand.MustSecure())) // nolint:gosec
-	backoffstrat := discovery.NewExponentialBackoff(time.Second, time.Minute*10,
-		discovery.FullJitter,
+	backoffstrat := backoff.NewExponentialBackoff(time.Second, time.Minute*10,
+		backoff.FullJitter,
 		time.Second, 30.0, 0, srand)
 
 	return &Swiper{
@@ -167,7 +167,7 @@ func (s *Swiper) WatchTopic(ctx context.Context, topic, seed []byte) <-chan peer
 	return cpeers
 }
 
-func (s *Swiper) watchPeers(ctx context.Context, _ discovery.BackoffStrategy, out chan<- peer.AddrInfo, topic string) error {
+func (s *Swiper) watchPeers(ctx context.Context, _ backoff.BackoffStrategy, out chan<- peer.AddrInfo, topic string) error {
 	sub := s.tinder.Subscribe(topic)
 	defer sub.Close()
 	// func () {

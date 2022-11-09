@@ -6,20 +6,17 @@ package testutil
 import (
 	context "context"
 	fmt "fmt"
-	math "math"
-
 	proto "github.com/gogo/protobuf/proto"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
+	math "math"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
-var (
-	_ = proto.Marshal
-	_ = fmt.Errorf
-	_ = math.Inf
-)
+var _ = proto.Marshal
+var _ = fmt.Errorf
+var _ = math.Inf
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the proto package it is being compiled against.
@@ -39,23 +36,18 @@ func (*EchoTest) ProtoMessage()    {}
 func (*EchoTest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_0a2d367dd7245dca, []int{0}
 }
-
 func (m *EchoTest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_EchoTest.Unmarshal(m, b)
 }
-
 func (m *EchoTest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_EchoTest.Marshal(b, m, deterministic)
 }
-
 func (m *EchoTest) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_EchoTest.Merge(m, src)
 }
-
 func (m *EchoTest) XXX_Size() int {
 	return xxx_messageInfo_EchoTest.Size(m)
 }
-
 func (m *EchoTest) XXX_DiscardUnknown() {
 	xxx_messageInfo_EchoTest.DiscardUnknown(m)
 }
@@ -77,23 +69,18 @@ func (*EchoTest_Request) ProtoMessage()    {}
 func (*EchoTest_Request) Descriptor() ([]byte, []int) {
 	return fileDescriptor_0a2d367dd7245dca, []int{0, 0}
 }
-
 func (m *EchoTest_Request) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_EchoTest_Request.Unmarshal(m, b)
 }
-
 func (m *EchoTest_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_EchoTest_Request.Marshal(b, m, deterministic)
 }
-
 func (m *EchoTest_Request) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_EchoTest_Request.Merge(m, src)
 }
-
 func (m *EchoTest_Request) XXX_Size() int {
 	return xxx_messageInfo_EchoTest_Request.Size(m)
 }
-
 func (m *EchoTest_Request) XXX_DiscardUnknown() {
 	xxx_messageInfo_EchoTest_Request.DiscardUnknown(m)
 }
@@ -134,23 +121,18 @@ func (*EchoTest_Reply) ProtoMessage()    {}
 func (*EchoTest_Reply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_0a2d367dd7245dca, []int{0, 1}
 }
-
 func (m *EchoTest_Reply) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_EchoTest_Reply.Unmarshal(m, b)
 }
-
 func (m *EchoTest_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_EchoTest_Reply.Marshal(b, m, deterministic)
 }
-
 func (m *EchoTest_Reply) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_EchoTest_Reply.Merge(m, src)
 }
-
 func (m *EchoTest_Reply) XXX_Size() int {
 	return xxx_messageInfo_EchoTest_Reply.Size(m)
 }
-
 func (m *EchoTest_Reply) XXX_DiscardUnknown() {
 	xxx_messageInfo_EchoTest_Reply.DiscardUnknown(m)
 }
@@ -176,23 +158,18 @@ func (*EchoStreamTest) ProtoMessage()    {}
 func (*EchoStreamTest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_0a2d367dd7245dca, []int{1}
 }
-
 func (m *EchoStreamTest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_EchoStreamTest.Unmarshal(m, b)
 }
-
 func (m *EchoStreamTest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_EchoStreamTest.Marshal(b, m, deterministic)
 }
-
 func (m *EchoStreamTest) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_EchoStreamTest.Merge(m, src)
 }
-
 func (m *EchoStreamTest) XXX_Size() int {
 	return xxx_messageInfo_EchoStreamTest.Size(m)
 }
-
 func (m *EchoStreamTest) XXX_DiscardUnknown() {
 	xxx_messageInfo_EchoStreamTest.DiscardUnknown(m)
 }
@@ -214,23 +191,18 @@ func (*EchoStreamTest_Request) ProtoMessage()    {}
 func (*EchoStreamTest_Request) Descriptor() ([]byte, []int) {
 	return fileDescriptor_0a2d367dd7245dca, []int{1, 0}
 }
-
 func (m *EchoStreamTest_Request) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_EchoStreamTest_Request.Unmarshal(m, b)
 }
-
 func (m *EchoStreamTest_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_EchoStreamTest_Request.Marshal(b, m, deterministic)
 }
-
 func (m *EchoStreamTest_Request) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_EchoStreamTest_Request.Merge(m, src)
 }
-
 func (m *EchoStreamTest_Request) XXX_Size() int {
 	return xxx_messageInfo_EchoStreamTest_Request.Size(m)
 }
-
 func (m *EchoStreamTest_Request) XXX_DiscardUnknown() {
 	xxx_messageInfo_EchoStreamTest_Request.DiscardUnknown(m)
 }
@@ -271,23 +243,18 @@ func (*EchoStreamTest_Reply) ProtoMessage()    {}
 func (*EchoStreamTest_Reply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_0a2d367dd7245dca, []int{1, 1}
 }
-
 func (m *EchoStreamTest_Reply) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_EchoStreamTest_Reply.Unmarshal(m, b)
 }
-
 func (m *EchoStreamTest_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_EchoStreamTest_Reply.Marshal(b, m, deterministic)
 }
-
 func (m *EchoStreamTest_Reply) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_EchoStreamTest_Reply.Merge(m, src)
 }
-
 func (m *EchoStreamTest_Reply) XXX_Size() int {
 	return xxx_messageInfo_EchoStreamTest_Reply.Size(m)
 }
-
 func (m *EchoStreamTest_Reply) XXX_DiscardUnknown() {
 	xxx_messageInfo_EchoStreamTest_Reply.DiscardUnknown(m)
 }
@@ -313,23 +280,18 @@ func (*EchoDuplexTest) ProtoMessage()    {}
 func (*EchoDuplexTest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_0a2d367dd7245dca, []int{2}
 }
-
 func (m *EchoDuplexTest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_EchoDuplexTest.Unmarshal(m, b)
 }
-
 func (m *EchoDuplexTest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_EchoDuplexTest.Marshal(b, m, deterministic)
 }
-
 func (m *EchoDuplexTest) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_EchoDuplexTest.Merge(m, src)
 }
-
 func (m *EchoDuplexTest) XXX_Size() int {
 	return xxx_messageInfo_EchoDuplexTest.Size(m)
 }
-
 func (m *EchoDuplexTest) XXX_DiscardUnknown() {
 	xxx_messageInfo_EchoDuplexTest.DiscardUnknown(m)
 }
@@ -350,23 +312,18 @@ func (*EchoDuplexTest_Request) ProtoMessage()    {}
 func (*EchoDuplexTest_Request) Descriptor() ([]byte, []int) {
 	return fileDescriptor_0a2d367dd7245dca, []int{2, 0}
 }
-
 func (m *EchoDuplexTest_Request) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_EchoDuplexTest_Request.Unmarshal(m, b)
 }
-
 func (m *EchoDuplexTest_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_EchoDuplexTest_Request.Marshal(b, m, deterministic)
 }
-
 func (m *EchoDuplexTest_Request) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_EchoDuplexTest_Request.Merge(m, src)
 }
-
 func (m *EchoDuplexTest_Request) XXX_Size() int {
 	return xxx_messageInfo_EchoDuplexTest_Request.Size(m)
 }
-
 func (m *EchoDuplexTest_Request) XXX_DiscardUnknown() {
 	xxx_messageInfo_EchoDuplexTest_Request.DiscardUnknown(m)
 }
@@ -400,23 +357,18 @@ func (*EchoDuplexTest_Reply) ProtoMessage()    {}
 func (*EchoDuplexTest_Reply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_0a2d367dd7245dca, []int{2, 1}
 }
-
 func (m *EchoDuplexTest_Reply) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_EchoDuplexTest_Reply.Unmarshal(m, b)
 }
-
 func (m *EchoDuplexTest_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_EchoDuplexTest_Reply.Marshal(b, m, deterministic)
 }
-
 func (m *EchoDuplexTest_Reply) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_EchoDuplexTest_Reply.Merge(m, src)
 }
-
 func (m *EchoDuplexTest_Reply) XXX_Size() int {
 	return xxx_messageInfo_EchoDuplexTest_Reply.Size(m)
 }
-
 func (m *EchoDuplexTest_Reply) XXX_DiscardUnknown() {
 	xxx_messageInfo_EchoDuplexTest_Reply.DiscardUnknown(m)
 }
@@ -468,10 +420,8 @@ var fileDescriptor_0a2d367dd7245dca = []byte{
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
-var (
-	_ context.Context
-	_ grpc.ClientConn
-)
+var _ context.Context
+var _ grpc.ClientConn
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
@@ -580,16 +530,15 @@ type TestServiceServer interface {
 }
 
 // UnimplementedTestServiceServer can be embedded to have forward compatible implementations.
-type UnimplementedTestServiceServer struct{}
+type UnimplementedTestServiceServer struct {
+}
 
 func (*UnimplementedTestServiceServer) EchoTest(ctx context.Context, req *EchoTest_Request) (*EchoTest_Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method EchoTest not implemented")
 }
-
 func (*UnimplementedTestServiceServer) EchoStreamTest(req *EchoStreamTest_Request, srv TestService_EchoStreamTestServer) error {
 	return status.Errorf(codes.Unimplemented, "method EchoStreamTest not implemented")
 }
-
 func (*UnimplementedTestServiceServer) EchoDuplexTest(srv TestService_EchoDuplexTestServer) error {
 	return status.Errorf(codes.Unimplemented, "method EchoDuplexTest not implemented")
 }

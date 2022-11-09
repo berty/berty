@@ -4,7 +4,7 @@ import (
 	"context"
 	"strings"
 
-	"github.com/ipfs/go-ipfs/core"
+	"github.com/ipfs/kubo/core"
 	ma "github.com/multiformats/go-multiaddr"
 
 	"berty.tech/berty/v2/go/internal/ipfsutil"

@@ -12,7 +12,7 @@ import (
 
 	"github.com/gogo/protobuf/proto"
 	"github.com/ipfs/go-datastore"
-	ipfs_cfg "github.com/ipfs/go-ipfs-config"
+	ipfs_cfg "github.com/ipfs/kubo/config"
 	ma "github.com/multiformats/go-multiaddr"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"

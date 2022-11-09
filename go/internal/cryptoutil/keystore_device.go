@@ -12,7 +12,7 @@ import (
 
 	"github.com/aead/ecdh"
 	keystore "github.com/ipfs/go-ipfs-keystore"
-	"github.com/libp2p/go-libp2p-core/crypto"
+	"github.com/libp2p/go-libp2p/core/crypto"
 	"go.uber.org/zap"
 
 	"berty.tech/berty/v2/go/pkg/errcode"

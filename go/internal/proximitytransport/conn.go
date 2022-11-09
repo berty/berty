@@ -8,8 +8,9 @@ import (
 	"sync"
 	"time"
 
-	peer "github.com/libp2p/go-libp2p-core/peer"
-	tpt "github.com/libp2p/go-libp2p-core/transport"
+	"github.com/libp2p/go-libp2p/core/network"
+	peer "github.com/libp2p/go-libp2p/core/peer"
+	tpt "github.com/libp2p/go-libp2p/core/transport"
 	ma "github.com/multiformats/go-multiaddr"
 	manet "github.com/multiformats/go-multiaddr/net"
 	"github.com/pkg/errors"
@@ -75,9 +76,10 @@ func newConn(ctx context.Context, t *proximityTransport, remoteMa ma.Multiaddr, 
 
 	// Returns an upgraded CapableConn (muxed, addr filtered, secured, etc...)
 	if inbound {
-		return t.upgrader.UpgradeInbound(ctx, t, maconn)
+		return t.upgrader.Upgrade(ctx, t, maconn, network.DirInbound, remotePID, network.NullScope)
 	}
-	return t.upgrader.UpgradeOutbound(ctx, t, maconn, remotePID)
+
+	return t.upgrader.Upgrade(ctx, t, maconn, network.DirOutbound, remotePID, network.NullScope)
 }
 
 // Read reads data from the connection.

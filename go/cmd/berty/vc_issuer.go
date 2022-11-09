@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net"
 	"net/http"
+	"time"
 
 	"github.com/oklog/run"
 	"github.com/peterbourgon/ff/v3/ffcli"
@@ -95,13 +96,18 @@ func vcIssuerCommand() *ffcli.Command {
 				Logger: logger,
 			}
 
-			server, err := bertyvcissuer.New(vcConfig)
+			issuer, err := bertyvcissuer.New(vcConfig)
 			if err != nil {
 				return err
 			}
 
+			server := &http.Server{
+				Handler:           issuer,
+				ReadHeaderTimeout: time.Second * 5,
+			}
+
 			g.Add(func() error {
-				return http.Serve(l, server)
+				return server.Serve(l)
 			}, func(err error) {
 				l.Close()
 			})

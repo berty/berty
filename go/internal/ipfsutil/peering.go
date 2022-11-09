@@ -1,4 +1,4 @@
-// mostly from: https://github.com/ipfs/go-ipfs/blob/master/peering/peering.go
+// mostly from: https://github.com/ipfs/kubo/blob/master/peering/peering.go
 
 package ipfsutil
 
@@ -8,10 +8,10 @@ import (
 	"sync"
 	"time"
 
-	"github.com/libp2p/go-libp2p-core/host"
-	"github.com/libp2p/go-libp2p-core/network"
-	"github.com/libp2p/go-libp2p-core/peer"
-	discovery "github.com/libp2p/go-libp2p-discovery"
+	"github.com/libp2p/go-libp2p/core/host"
+	"github.com/libp2p/go-libp2p/core/network"
+	"github.com/libp2p/go-libp2p/core/peer"
+	backoff "github.com/libp2p/go-libp2p/p2p/discovery/backoff"
 	"github.com/multiformats/go-multiaddr"
 	"go.uber.org/zap"
 
@@ -42,7 +42,7 @@ const (
 type PeeringService struct {
 	host           host.Host
 	logger         *zap.Logger
-	backoffFactory discovery.BackoffFactory
+	backoffFactory backoff.BackoffFactory
 
 	muPeers sync.RWMutex
 	peers   map[peer.ID]*peerHandler
@@ -51,7 +51,7 @@ type PeeringService struct {
 
 // NewPeeringService constructs a new peering service. Peers can be added and
 // removed immediately, but connections won't be formed until `Start` is called.
-func NewPeeringService(logger *zap.Logger, host host.Host, fact discovery.BackoffFactory) *PeeringService {
+func NewPeeringService(logger *zap.Logger, host host.Host, fact backoff.BackoffFactory) *PeeringService {
 	return &PeeringService{
 		backoffFactory: fact,
 		logger:         logger,
@@ -211,7 +211,7 @@ type peerHandler struct {
 	logger *zap.Logger
 
 	addrs          []multiaddr.Multiaddr
-	backoffStrat   discovery.BackoffStrategy
+	backoffStrat   backoff.BackoffStrategy
 	reconnectTimer *time.Timer
 
 	muHandler sync.Mutex

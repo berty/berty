@@ -11,9 +11,9 @@ import (
 	datastore "github.com/ipfs/go-datastore"
 	ds_sync "github.com/ipfs/go-datastore/sync"
 	keystore "github.com/ipfs/go-ipfs-keystore"
-	"github.com/libp2p/go-libp2p-core/crypto"
-	"github.com/libp2p/go-libp2p-core/host"
-	"github.com/libp2p/go-libp2p-core/peer"
+	"github.com/libp2p/go-libp2p/core/crypto"
+	"github.com/libp2p/go-libp2p/core/host"
+	"github.com/libp2p/go-libp2p/core/peer"
 	libp2p_mocknet "github.com/libp2p/go-libp2p/p2p/net/mock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -32,7 +32,9 @@ func TestHelperIPFSSetUp(t *testing.T) (context.Context, context.CancelFunc, lib
 
 	ctx, cancel := context.WithCancel(context.Background())
 
-	mn := libp2p_mocknet.New(ctx)
+	mn := libp2p_mocknet.New()
+	t.Cleanup(func() { mn.Close() })
+
 	rdvp, err := mn.GenPeer()
 	require.NoError(t, err, "failed to generate mocked peer")
 
@@ -104,7 +106,7 @@ func NewTestingProtocol(ctx context.Context, t testing.TB, opts *TestingOpts, ds
 	if opts == nil {
 		opts = &TestingOpts{}
 	}
-	opts.applyDefaults(ctx)
+	opts.applyDefaults(ctx, t)
 
 	if ds == nil {
 		ds = ds_sync.MutexWrap(datastore.NewMapDatastore())
@@ -206,13 +208,16 @@ func NewTestingProtocol(ctx context.Context, t testing.TB, opts *TestingOpts, ds
 	return tp, cleanup
 }
 
-func (opts *TestingOpts) applyDefaults(ctx context.Context) {
+func (opts *TestingOpts) applyDefaults(ctx context.Context, t testing.TB) {
 	if opts.Logger == nil {
 		opts.Logger = zap.NewNop()
 	}
+
 	if opts.Mocknet == nil {
-		opts.Mocknet = libp2p_mocknet.New(ctx)
+		opts.Mocknet = libp2p_mocknet.New()
+		t.Cleanup(func() { opts.Mocknet.Close() })
 	}
+
 	if opts.ConnectFunc == nil {
 		opts.ConnectFunc = ConnectAll
 	}
@@ -220,7 +225,7 @@ func (opts *TestingOpts) applyDefaults(ctx context.Context) {
 
 func NewTestingProtocolWithMockedPeers(ctx context.Context, t testing.TB, opts *TestingOpts, ds datastore.Batching, amount int) ([]*TestingProtocol, func()) {
 	t.Helper()
-	opts.applyDefaults(ctx)
+	opts.applyDefaults(ctx, t)
 	logger := opts.Logger
 
 	if ds == nil {
@@ -379,7 +384,9 @@ func CreatePeersWithGroupTest(ctx context.Context, t testing.TB, pathBase string
 		t.Fatal(err)
 	}
 
-	mn := libp2p_mocknet.New(ctx)
+	mn := libp2p_mocknet.New()
+	t.Cleanup(func() { mn.Close() })
+
 	rdvp, err := mn.GenPeer()
 	require.NoError(t, err, "failed to generate mocked peer")
 

@@ -12,6 +12,7 @@ import (
 	datastore "github.com/ipfs/go-datastore"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 	"gorm.io/gorm"
 
 	"berty.tech/berty/v2/go/internal/accountutils"
@@ -240,7 +241,7 @@ func (m *Manager) getGRPCClientConn() (*grpc.ClientConn, error) {
 	clientOpts := []grpc.DialOption(nil)
 
 	if m.Node.GRPC.RemoteAddr != "" {
-		clientOpts = append(clientOpts, grpc.WithInsecure()) // make a flag for this?
+		clientOpts = append(clientOpts, grpc.WithTransportCredentials(insecure.NewCredentials())) // make a flag for this?
 		cc, err := grpc.Dial(m.Node.GRPC.RemoteAddr, clientOpts...)
 		if err != nil {
 			return nil, errcode.TODO.Wrap(err)

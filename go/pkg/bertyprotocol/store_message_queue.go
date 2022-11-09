@@ -5,7 +5,7 @@ import (
 	"sync"
 
 	"github.com/ipfs/go-cid"
-	"github.com/libp2p/go-libp2p-core/crypto"
+	"github.com/libp2p/go-libp2p/core/crypto"
 
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
 	"berty.tech/go-orbit-db/stores/operation"

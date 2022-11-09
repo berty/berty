@@ -11,7 +11,7 @@ import (
 
 	datastore "github.com/ipfs/go-datastore"
 	ds_sync "github.com/ipfs/go-datastore/sync"
-	"github.com/libp2p/go-libp2p-core/crypto"
+	"github.com/libp2p/go-libp2p/core/crypto"
 	libp2p_mocknet "github.com/libp2p/go-libp2p/p2p/net/mock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -170,7 +170,7 @@ func testMemberStore(t *testing.T, memberCount, deviceCount int) {
 func ipfsAPIUsingMockNet(ctx context.Context, t *testing.T) (ipfsutil.ExtendedCoreAPI, func()) {
 	ipfsopts := &ipfsutil.TestingAPIOpts{
 		Logger:    zap.NewNop(),
-		Mocknet:   libp2p_mocknet.New(ctx),
+		Mocknet:   libp2p_mocknet.New(),
 		Datastore: ds_sync.MutexWrap(datastore.NewMapDatastore()),
 	}
 

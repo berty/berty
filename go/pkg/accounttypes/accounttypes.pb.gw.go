@@ -25,15 +25,13 @@ import (
 )
 
 // Suppress "imported and not used" errors
-var (
-	_ codes.Code
-	_ io.Reader
-	_ status.Status
-	_ = runtime.String
-	_ = utilities.NewDoubleArray
-	_ = descriptor.ForMessage
-	_ = metadata.Join
-)
+var _ codes.Code
+var _ io.Reader
+var _ status.Status
+var _ = runtime.String
+var _ = utilities.NewDoubleArray
+var _ = descriptor.ForMessage
+var _ = metadata.Join
 
 func request_AccountService_OpenAccount_0(ctx context.Context, marshaler runtime.Marshaler, client AccountServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq OpenAccount_Request
@@ -49,6 +47,7 @@ func request_AccountService_OpenAccount_0(ctx context.Context, marshaler runtime
 
 	msg, err := client.OpenAccount(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
+
 }
 
 func local_request_AccountService_OpenAccount_0(ctx context.Context, marshaler runtime.Marshaler, server AccountServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -65,6 +64,7 @@ func local_request_AccountService_OpenAccount_0(ctx context.Context, marshaler r
 
 	msg, err := server.OpenAccount(ctx, &protoReq)
 	return msg, metadata, err
+
 }
 
 func request_AccountService_OpenAccountWithProgress_0(ctx context.Context, marshaler runtime.Marshaler, client AccountServiceClient, req *http.Request, pathParams map[string]string) (AccountService_OpenAccountWithProgressClient, runtime.ServerMetadata, error) {
@@ -89,6 +89,7 @@ func request_AccountService_OpenAccountWithProgress_0(ctx context.Context, marsh
 	}
 	metadata.HeaderMD = header
 	return stream, metadata, nil
+
 }
 
 func request_AccountService_CloseAccount_0(ctx context.Context, marshaler runtime.Marshaler, client AccountServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -105,6 +106,7 @@ func request_AccountService_CloseAccount_0(ctx context.Context, marshaler runtim
 
 	msg, err := client.CloseAccount(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
+
 }
 
 func local_request_AccountService_CloseAccount_0(ctx context.Context, marshaler runtime.Marshaler, server AccountServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -121,6 +123,7 @@ func local_request_AccountService_CloseAccount_0(ctx context.Context, marshaler 
 
 	msg, err := server.CloseAccount(ctx, &protoReq)
 	return msg, metadata, err
+
 }
 
 func request_AccountService_CloseAccountWithProgress_0(ctx context.Context, marshaler runtime.Marshaler, client AccountServiceClient, req *http.Request, pathParams map[string]string) (AccountService_CloseAccountWithProgressClient, runtime.ServerMetadata, error) {
@@ -145,6 +148,7 @@ func request_AccountService_CloseAccountWithProgress_0(ctx context.Context, mars
 	}
 	metadata.HeaderMD = header
 	return stream, metadata, nil
+
 }
 
 func request_AccountService_ListAccounts_0(ctx context.Context, marshaler runtime.Marshaler, client AccountServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -161,6 +165,7 @@ func request_AccountService_ListAccounts_0(ctx context.Context, marshaler runtim
 
 	msg, err := client.ListAccounts(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
+
 }
 
 func local_request_AccountService_ListAccounts_0(ctx context.Context, marshaler runtime.Marshaler, server AccountServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -177,6 +182,7 @@ func local_request_AccountService_ListAccounts_0(ctx context.Context, marshaler 
 
 	msg, err := server.ListAccounts(ctx, &protoReq)
 	return msg, metadata, err
+
 }
 
 func request_AccountService_DeleteAccount_0(ctx context.Context, marshaler runtime.Marshaler, client AccountServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -193,6 +199,7 @@ func request_AccountService_DeleteAccount_0(ctx context.Context, marshaler runti
 
 	msg, err := client.DeleteAccount(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
+
 }
 
 func local_request_AccountService_DeleteAccount_0(ctx context.Context, marshaler runtime.Marshaler, server AccountServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -209,6 +216,7 @@ func local_request_AccountService_DeleteAccount_0(ctx context.Context, marshaler
 
 	msg, err := server.DeleteAccount(ctx, &protoReq)
 	return msg, metadata, err
+
 }
 
 func request_AccountService_ImportAccount_0(ctx context.Context, marshaler runtime.Marshaler, client AccountServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -225,6 +233,7 @@ func request_AccountService_ImportAccount_0(ctx context.Context, marshaler runti
 
 	msg, err := client.ImportAccount(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
+
 }
 
 func local_request_AccountService_ImportAccount_0(ctx context.Context, marshaler runtime.Marshaler, server AccountServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -241,6 +250,7 @@ func local_request_AccountService_ImportAccount_0(ctx context.Context, marshaler
 
 	msg, err := server.ImportAccount(ctx, &protoReq)
 	return msg, metadata, err
+
 }
 
 func request_AccountService_ImportAccountWithProgress_0(ctx context.Context, marshaler runtime.Marshaler, client AccountServiceClient, req *http.Request, pathParams map[string]string) (AccountService_ImportAccountWithProgressClient, runtime.ServerMetadata, error) {
@@ -265,6 +275,7 @@ func request_AccountService_ImportAccountWithProgress_0(ctx context.Context, mar
 	}
 	metadata.HeaderMD = header
 	return stream, metadata, nil
+
 }
 
 func request_AccountService_CreateAccount_0(ctx context.Context, marshaler runtime.Marshaler, client AccountServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -281,6 +292,7 @@ func request_AccountService_CreateAccount_0(ctx context.Context, marshaler runti
 
 	msg, err := client.CreateAccount(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
+
 }
 
 func local_request_AccountService_CreateAccount_0(ctx context.Context, marshaler runtime.Marshaler, server AccountServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -297,6 +309,7 @@ func local_request_AccountService_CreateAccount_0(ctx context.Context, marshaler
 
 	msg, err := server.CreateAccount(ctx, &protoReq)
 	return msg, metadata, err
+
 }
 
 func request_AccountService_UpdateAccount_0(ctx context.Context, marshaler runtime.Marshaler, client AccountServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -313,6 +326,7 @@ func request_AccountService_UpdateAccount_0(ctx context.Context, marshaler runti
 
 	msg, err := client.UpdateAccount(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
+
 }
 
 func local_request_AccountService_UpdateAccount_0(ctx context.Context, marshaler runtime.Marshaler, server AccountServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -329,6 +343,7 @@ func local_request_AccountService_UpdateAccount_0(ctx context.Context, marshaler
 
 	msg, err := server.UpdateAccount(ctx, &protoReq)
 	return msg, metadata, err
+
 }
 
 func request_AccountService_GetGRPCListenerAddrs_0(ctx context.Context, marshaler runtime.Marshaler, client AccountServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -345,6 +360,7 @@ func request_AccountService_GetGRPCListenerAddrs_0(ctx context.Context, marshale
 
 	msg, err := client.GetGRPCListenerAddrs(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
+
 }
 
 func local_request_AccountService_GetGRPCListenerAddrs_0(ctx context.Context, marshaler runtime.Marshaler, server AccountServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -361,6 +377,7 @@ func local_request_AccountService_GetGRPCListenerAddrs_0(ctx context.Context, ma
 
 	msg, err := server.GetGRPCListenerAddrs(ctx, &protoReq)
 	return msg, metadata, err
+
 }
 
 func request_AccountService_LogfileList_0(ctx context.Context, marshaler runtime.Marshaler, client AccountServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -377,6 +394,7 @@ func request_AccountService_LogfileList_0(ctx context.Context, marshaler runtime
 
 	msg, err := client.LogfileList(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
+
 }
 
 func local_request_AccountService_LogfileList_0(ctx context.Context, marshaler runtime.Marshaler, server AccountServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -393,6 +411,7 @@ func local_request_AccountService_LogfileList_0(ctx context.Context, marshaler r
 
 	msg, err := server.LogfileList(ctx, &protoReq)
 	return msg, metadata, err
+
 }
 
 func request_AccountService_StreamLogfile_0(ctx context.Context, marshaler runtime.Marshaler, client AccountServiceClient, req *http.Request, pathParams map[string]string) (AccountService_StreamLogfileClient, runtime.ServerMetadata, error) {
@@ -417,6 +436,7 @@ func request_AccountService_StreamLogfile_0(ctx context.Context, marshaler runti
 	}
 	metadata.HeaderMD = header
 	return stream, metadata, nil
+
 }
 
 func request_AccountService_GetUsername_0(ctx context.Context, marshaler runtime.Marshaler, client AccountServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -433,6 +453,7 @@ func request_AccountService_GetUsername_0(ctx context.Context, marshaler runtime
 
 	msg, err := client.GetUsername(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
+
 }
 
 func local_request_AccountService_GetUsername_0(ctx context.Context, marshaler runtime.Marshaler, server AccountServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -449,6 +470,7 @@ func local_request_AccountService_GetUsername_0(ctx context.Context, marshaler r
 
 	msg, err := server.GetUsername(ctx, &protoReq)
 	return msg, metadata, err
+
 }
 
 func request_AccountService_NetworkConfigSet_0(ctx context.Context, marshaler runtime.Marshaler, client AccountServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -465,6 +487,7 @@ func request_AccountService_NetworkConfigSet_0(ctx context.Context, marshaler ru
 
 	msg, err := client.NetworkConfigSet(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
+
 }
 
 func local_request_AccountService_NetworkConfigSet_0(ctx context.Context, marshaler runtime.Marshaler, server AccountServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -481,6 +504,7 @@ func local_request_AccountService_NetworkConfigSet_0(ctx context.Context, marsha
 
 	msg, err := server.NetworkConfigSet(ctx, &protoReq)
 	return msg, metadata, err
+
 }
 
 func request_AccountService_NetworkConfigGet_0(ctx context.Context, marshaler runtime.Marshaler, client AccountServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -497,6 +521,7 @@ func request_AccountService_NetworkConfigGet_0(ctx context.Context, marshaler ru
 
 	msg, err := client.NetworkConfigGet(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
+
 }
 
 func local_request_AccountService_NetworkConfigGet_0(ctx context.Context, marshaler runtime.Marshaler, server AccountServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -513,6 +538,7 @@ func local_request_AccountService_NetworkConfigGet_0(ctx context.Context, marsha
 
 	msg, err := server.NetworkConfigGet(ctx, &protoReq)
 	return msg, metadata, err
+
 }
 
 func request_AccountService_NetworkConfigGetPreset_0(ctx context.Context, marshaler runtime.Marshaler, client AccountServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -529,6 +555,7 @@ func request_AccountService_NetworkConfigGetPreset_0(ctx context.Context, marsha
 
 	msg, err := client.NetworkConfigGetPreset(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
+
 }
 
 func local_request_AccountService_NetworkConfigGetPreset_0(ctx context.Context, marshaler runtime.Marshaler, server AccountServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -545,6 +572,7 @@ func local_request_AccountService_NetworkConfigGetPreset_0(ctx context.Context, 
 
 	msg, err := server.NetworkConfigGetPreset(ctx, &protoReq)
 	return msg, metadata, err
+
 }
 
 func request_AccountService_PushReceive_0(ctx context.Context, marshaler runtime.Marshaler, client AccountServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -561,6 +589,7 @@ func request_AccountService_PushReceive_0(ctx context.Context, marshaler runtime
 
 	msg, err := client.PushReceive(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
+
 }
 
 func local_request_AccountService_PushReceive_0(ctx context.Context, marshaler runtime.Marshaler, server AccountServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -577,6 +606,7 @@ func local_request_AccountService_PushReceive_0(ctx context.Context, marshaler r
 
 	msg, err := server.PushReceive(ctx, &protoReq)
 	return msg, metadata, err
+
 }
 
 func request_AccountService_PushPlatformTokenRegister_0(ctx context.Context, marshaler runtime.Marshaler, client AccountServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -593,6 +623,7 @@ func request_AccountService_PushPlatformTokenRegister_0(ctx context.Context, mar
 
 	msg, err := client.PushPlatformTokenRegister(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
+
 }
 
 func local_request_AccountService_PushPlatformTokenRegister_0(ctx context.Context, marshaler runtime.Marshaler, server AccountServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -609,6 +640,7 @@ func local_request_AccountService_PushPlatformTokenRegister_0(ctx context.Contex
 
 	msg, err := server.PushPlatformTokenRegister(ctx, &protoReq)
 	return msg, metadata, err
+
 }
 
 func request_AccountService_AppStoragePut_0(ctx context.Context, marshaler runtime.Marshaler, client AccountServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -625,6 +657,7 @@ func request_AccountService_AppStoragePut_0(ctx context.Context, marshaler runti
 
 	msg, err := client.AppStoragePut(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
+
 }
 
 func local_request_AccountService_AppStoragePut_0(ctx context.Context, marshaler runtime.Marshaler, server AccountServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -641,6 +674,7 @@ func local_request_AccountService_AppStoragePut_0(ctx context.Context, marshaler
 
 	msg, err := server.AppStoragePut(ctx, &protoReq)
 	return msg, metadata, err
+
 }
 
 func request_AccountService_AppStorageGet_0(ctx context.Context, marshaler runtime.Marshaler, client AccountServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -657,6 +691,7 @@ func request_AccountService_AppStorageGet_0(ctx context.Context, marshaler runti
 
 	msg, err := client.AppStorageGet(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
+
 }
 
 func local_request_AccountService_AppStorageGet_0(ctx context.Context, marshaler runtime.Marshaler, server AccountServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -673,6 +708,7 @@ func local_request_AccountService_AppStorageGet_0(ctx context.Context, marshaler
 
 	msg, err := server.AppStorageGet(ctx, &protoReq)
 	return msg, metadata, err
+
 }
 
 func request_AccountService_AppStorageRemove_0(ctx context.Context, marshaler runtime.Marshaler, client AccountServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -689,6 +725,7 @@ func request_AccountService_AppStorageRemove_0(ctx context.Context, marshaler ru
 
 	msg, err := client.AppStorageRemove(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
+
 }
 
 func local_request_AccountService_AppStorageRemove_0(ctx context.Context, marshaler runtime.Marshaler, server AccountServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -705,6 +742,7 @@ func local_request_AccountService_AppStorageRemove_0(ctx context.Context, marsha
 
 	msg, err := server.AppStorageRemove(ctx, &protoReq)
 	return msg, metadata, err
+
 }
 
 func request_AccountService_GetOpenedAccount_0(ctx context.Context, marshaler runtime.Marshaler, client AccountServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -721,6 +759,7 @@ func request_AccountService_GetOpenedAccount_0(ctx context.Context, marshaler ru
 
 	msg, err := client.GetOpenedAccount(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
+
 }
 
 func local_request_AccountService_GetOpenedAccount_0(ctx context.Context, marshaler runtime.Marshaler, server AccountServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -737,6 +776,7 @@ func local_request_AccountService_GetOpenedAccount_0(ctx context.Context, marsha
 
 	msg, err := server.GetOpenedAccount(ctx, &protoReq)
 	return msg, metadata, err
+
 }
 
 // RegisterAccountServiceHandlerServer registers the http handlers for service AccountService to "mux".
@@ -744,6 +784,7 @@ func local_request_AccountService_GetOpenedAccount_0(ctx context.Context, marsha
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
 // Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterAccountServiceHandlerFromEndpoint instead.
 func RegisterAccountServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server AccountServiceServer) error {
+
 	mux.Handle("POST", pattern_AccountService_OpenAccount_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
@@ -764,6 +805,7 @@ func RegisterAccountServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		}
 
 		forward_AccountService_OpenAccount_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("POST", pattern_AccountService_OpenAccountWithProgress_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -793,6 +835,7 @@ func RegisterAccountServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		}
 
 		forward_AccountService_CloseAccount_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("POST", pattern_AccountService_CloseAccountWithProgress_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -822,6 +865,7 @@ func RegisterAccountServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		}
 
 		forward_AccountService_ListAccounts_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("POST", pattern_AccountService_DeleteAccount_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -844,6 +888,7 @@ func RegisterAccountServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		}
 
 		forward_AccountService_DeleteAccount_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("POST", pattern_AccountService_ImportAccount_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -866,6 +911,7 @@ func RegisterAccountServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		}
 
 		forward_AccountService_ImportAccount_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("POST", pattern_AccountService_ImportAccountWithProgress_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -895,6 +941,7 @@ func RegisterAccountServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		}
 
 		forward_AccountService_CreateAccount_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("POST", pattern_AccountService_UpdateAccount_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -917,6 +964,7 @@ func RegisterAccountServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		}
 
 		forward_AccountService_UpdateAccount_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("POST", pattern_AccountService_GetGRPCListenerAddrs_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -939,6 +987,7 @@ func RegisterAccountServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		}
 
 		forward_AccountService_GetGRPCListenerAddrs_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("POST", pattern_AccountService_LogfileList_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -961,6 +1010,7 @@ func RegisterAccountServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		}
 
 		forward_AccountService_LogfileList_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("POST", pattern_AccountService_StreamLogfile_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -990,6 +1040,7 @@ func RegisterAccountServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		}
 
 		forward_AccountService_GetUsername_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("POST", pattern_AccountService_NetworkConfigSet_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1012,6 +1063,7 @@ func RegisterAccountServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		}
 
 		forward_AccountService_NetworkConfigSet_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("POST", pattern_AccountService_NetworkConfigGet_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1034,6 +1086,7 @@ func RegisterAccountServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		}
 
 		forward_AccountService_NetworkConfigGet_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("POST", pattern_AccountService_NetworkConfigGetPreset_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1056,6 +1109,7 @@ func RegisterAccountServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		}
 
 		forward_AccountService_NetworkConfigGetPreset_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("POST", pattern_AccountService_PushReceive_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1078,6 +1132,7 @@ func RegisterAccountServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		}
 
 		forward_AccountService_PushReceive_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("POST", pattern_AccountService_PushPlatformTokenRegister_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1100,6 +1155,7 @@ func RegisterAccountServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		}
 
 		forward_AccountService_PushPlatformTokenRegister_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("POST", pattern_AccountService_AppStoragePut_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1122,6 +1178,7 @@ func RegisterAccountServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		}
 
 		forward_AccountService_AppStoragePut_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("POST", pattern_AccountService_AppStorageGet_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1144,6 +1201,7 @@ func RegisterAccountServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		}
 
 		forward_AccountService_AppStorageGet_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("POST", pattern_AccountService_AppStorageRemove_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1166,6 +1224,7 @@ func RegisterAccountServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		}
 
 		forward_AccountService_AppStorageRemove_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("POST", pattern_AccountService_GetOpenedAccount_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1188,6 +1247,7 @@ func RegisterAccountServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		}
 
 		forward_AccountService_GetOpenedAccount_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	return nil
@@ -1230,6 +1290,7 @@ func RegisterAccountServiceHandler(ctx context.Context, mux *runtime.ServeMux, c
 // doesn't go through the normal gRPC flow (creating a gRPC client etc.) then it will be up to the passed in
 // "AccountServiceClient" to call the correct interceptors.
 func RegisterAccountServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux, client AccountServiceClient) error {
+
 	mux.Handle("POST", pattern_AccountService_OpenAccount_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
@@ -1247,6 +1308,7 @@ func RegisterAccountServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		}
 
 		forward_AccountService_OpenAccount_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("POST", pattern_AccountService_OpenAccountWithProgress_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1266,6 +1328,7 @@ func RegisterAccountServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		}
 
 		forward_AccountService_OpenAccountWithProgress_0(ctx, mux, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("POST", pattern_AccountService_CloseAccount_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1285,6 +1348,7 @@ func RegisterAccountServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		}
 
 		forward_AccountService_CloseAccount_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("POST", pattern_AccountService_CloseAccountWithProgress_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1304,6 +1368,7 @@ func RegisterAccountServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		}
 
 		forward_AccountService_CloseAccountWithProgress_0(ctx, mux, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("POST", pattern_AccountService_ListAccounts_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1323,6 +1388,7 @@ func RegisterAccountServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		}
 
 		forward_AccountService_ListAccounts_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("POST", pattern_AccountService_DeleteAccount_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1342,6 +1408,7 @@ func RegisterAccountServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		}
 
 		forward_AccountService_DeleteAccount_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("POST", pattern_AccountService_ImportAccount_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1361,6 +1428,7 @@ func RegisterAccountServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		}
 
 		forward_AccountService_ImportAccount_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("POST", pattern_AccountService_ImportAccountWithProgress_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1380,6 +1448,7 @@ func RegisterAccountServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		}
 
 		forward_AccountService_ImportAccountWithProgress_0(ctx, mux, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("POST", pattern_AccountService_CreateAccount_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1399,6 +1468,7 @@ func RegisterAccountServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		}
 
 		forward_AccountService_CreateAccount_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("POST", pattern_AccountService_UpdateAccount_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1418,6 +1488,7 @@ func RegisterAccountServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		}
 
 		forward_AccountService_UpdateAccount_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("POST", pattern_AccountService_GetGRPCListenerAddrs_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1437,6 +1508,7 @@ func RegisterAccountServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		}
 
 		forward_AccountService_GetGRPCListenerAddrs_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("POST", pattern_AccountService_LogfileList_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1456,6 +1528,7 @@ func RegisterAccountServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		}
 
 		forward_AccountService_LogfileList_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("POST", pattern_AccountService_StreamLogfile_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1475,6 +1548,7 @@ func RegisterAccountServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		}
 
 		forward_AccountService_StreamLogfile_0(ctx, mux, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("POST", pattern_AccountService_GetUsername_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1494,6 +1568,7 @@ func RegisterAccountServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		}
 
 		forward_AccountService_GetUsername_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("POST", pattern_AccountService_NetworkConfigSet_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1513,6 +1588,7 @@ func RegisterAccountServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		}
 
 		forward_AccountService_NetworkConfigSet_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("POST", pattern_AccountService_NetworkConfigGet_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1532,6 +1608,7 @@ func RegisterAccountServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		}
 
 		forward_AccountService_NetworkConfigGet_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("POST", pattern_AccountService_NetworkConfigGetPreset_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1551,6 +1628,7 @@ func RegisterAccountServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		}
 
 		forward_AccountService_NetworkConfigGetPreset_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("POST", pattern_AccountService_PushReceive_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1570,6 +1648,7 @@ func RegisterAccountServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		}
 
 		forward_AccountService_PushReceive_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("POST", pattern_AccountService_PushPlatformTokenRegister_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1589,6 +1668,7 @@ func RegisterAccountServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		}
 
 		forward_AccountService_PushPlatformTokenRegister_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("POST", pattern_AccountService_AppStoragePut_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1608,6 +1688,7 @@ func RegisterAccountServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		}
 
 		forward_AccountService_AppStoragePut_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("POST", pattern_AccountService_AppStorageGet_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1627,6 +1708,7 @@ func RegisterAccountServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		}
 
 		forward_AccountService_AppStorageGet_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("POST", pattern_AccountService_AppStorageRemove_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1646,6 +1728,7 @@ func RegisterAccountServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		}
 
 		forward_AccountService_AppStorageRemove_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("POST", pattern_AccountService_GetOpenedAccount_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -1665,6 +1748,7 @@ func RegisterAccountServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 		}
 
 		forward_AccountService_GetOpenedAccount_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	return nil

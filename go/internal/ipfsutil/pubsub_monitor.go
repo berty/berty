@@ -3,11 +3,11 @@ package ipfsutil
 import (
 	"sync"
 
-	"github.com/libp2p/go-libp2p-core/event"
-	host "github.com/libp2p/go-libp2p-core/host"
-	"github.com/libp2p/go-libp2p-core/peer"
 	ps "github.com/libp2p/go-libp2p-pubsub"
 	ps_pb "github.com/libp2p/go-libp2p-pubsub/pb"
+	"github.com/libp2p/go-libp2p/core/event"
+	host "github.com/libp2p/go-libp2p/core/host"
+	"github.com/libp2p/go-libp2p/core/peer"
 	"go.uber.org/zap"
 
 	"berty.tech/berty/v2/go/internal/logutil"

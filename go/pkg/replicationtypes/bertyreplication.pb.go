@@ -4,27 +4,23 @@
 package replicationtypes
 
 import (
+	protocoltypes "berty.tech/berty/v2/go/pkg/protocoltypes"
 	context "context"
 	fmt "fmt"
-	io "io"
-	math "math"
-	math_bits "math/bits"
-
 	_ "github.com/gogo/protobuf/gogoproto"
 	proto "github.com/gogo/protobuf/proto"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
-
-	protocoltypes "berty.tech/berty/v2/go/pkg/protocoltypes"
+	io "io"
+	math "math"
+	math_bits "math/bits"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
-var (
-	_ = proto.Marshal
-	_ = fmt.Errorf
-	_ = math.Inf
-)
+var _ = proto.Marshal
+var _ = fmt.Errorf
+var _ = math.Inf
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the proto package it is being compiled against.
@@ -50,11 +46,9 @@ func (*ReplicatedGroup) ProtoMessage()    {}
 func (*ReplicatedGroup) Descriptor() ([]byte, []int) {
 	return fileDescriptor_07ad8506da4f8389, []int{0}
 }
-
 func (m *ReplicatedGroup) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *ReplicatedGroup) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_ReplicatedGroup.Marshal(b, m, deterministic)
@@ -67,15 +61,12 @@ func (m *ReplicatedGroup) XXX_Marshal(b []byte, deterministic bool) ([]byte, err
 		return b[:n], nil
 	}
 }
-
 func (m *ReplicatedGroup) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ReplicatedGroup.Merge(m, src)
 }
-
 func (m *ReplicatedGroup) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *ReplicatedGroup) XXX_DiscardUnknown() {
 	xxx_messageInfo_ReplicatedGroup.DiscardUnknown(m)
 }
@@ -159,11 +150,9 @@ func (*ReplicatedGroupToken) ProtoMessage()    {}
 func (*ReplicatedGroupToken) Descriptor() ([]byte, []int) {
 	return fileDescriptor_07ad8506da4f8389, []int{1}
 }
-
 func (m *ReplicatedGroupToken) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *ReplicatedGroupToken) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_ReplicatedGroupToken.Marshal(b, m, deterministic)
@@ -176,15 +165,12 @@ func (m *ReplicatedGroupToken) XXX_Marshal(b []byte, deterministic bool) ([]byte
 		return b[:n], nil
 	}
 }
-
 func (m *ReplicatedGroupToken) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ReplicatedGroupToken.Merge(m, src)
 }
-
 func (m *ReplicatedGroupToken) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *ReplicatedGroupToken) XXX_DiscardUnknown() {
 	xxx_messageInfo_ReplicatedGroupToken.DiscardUnknown(m)
 }
@@ -226,7 +212,8 @@ func (m *ReplicatedGroupToken) GetCreatedAt() int64 {
 	return 0
 }
 
-type ReplicationServiceReplicateGroup struct{}
+type ReplicationServiceReplicateGroup struct {
+}
 
 func (m *ReplicationServiceReplicateGroup) Reset()         { *m = ReplicationServiceReplicateGroup{} }
 func (m *ReplicationServiceReplicateGroup) String() string { return proto.CompactTextString(m) }
@@ -234,11 +221,9 @@ func (*ReplicationServiceReplicateGroup) ProtoMessage()    {}
 func (*ReplicationServiceReplicateGroup) Descriptor() ([]byte, []int) {
 	return fileDescriptor_07ad8506da4f8389, []int{2}
 }
-
 func (m *ReplicationServiceReplicateGroup) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *ReplicationServiceReplicateGroup) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_ReplicationServiceReplicateGroup.Marshal(b, m, deterministic)
@@ -251,15 +236,12 @@ func (m *ReplicationServiceReplicateGroup) XXX_Marshal(b []byte, deterministic b
 		return b[:n], nil
 	}
 }
-
 func (m *ReplicationServiceReplicateGroup) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ReplicationServiceReplicateGroup.Merge(m, src)
 }
-
 func (m *ReplicationServiceReplicateGroup) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *ReplicationServiceReplicateGroup) XXX_DiscardUnknown() {
 	xxx_messageInfo_ReplicationServiceReplicateGroup.DiscardUnknown(m)
 }
@@ -278,11 +260,9 @@ func (*ReplicationServiceReplicateGroup_Request) ProtoMessage()    {}
 func (*ReplicationServiceReplicateGroup_Request) Descriptor() ([]byte, []int) {
 	return fileDescriptor_07ad8506da4f8389, []int{2, 0}
 }
-
 func (m *ReplicationServiceReplicateGroup_Request) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *ReplicationServiceReplicateGroup_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_ReplicationServiceReplicateGroup_Request.Marshal(b, m, deterministic)
@@ -295,15 +275,12 @@ func (m *ReplicationServiceReplicateGroup_Request) XXX_Marshal(b []byte, determi
 		return b[:n], nil
 	}
 }
-
 func (m *ReplicationServiceReplicateGroup_Request) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ReplicationServiceReplicateGroup_Request.Merge(m, src)
 }
-
 func (m *ReplicationServiceReplicateGroup_Request) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *ReplicationServiceReplicateGroup_Request) XXX_DiscardUnknown() {
 	xxx_messageInfo_ReplicationServiceReplicateGroup_Request.DiscardUnknown(m)
 }
@@ -329,11 +306,9 @@ func (*ReplicationServiceReplicateGroup_Reply) ProtoMessage()    {}
 func (*ReplicationServiceReplicateGroup_Reply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_07ad8506da4f8389, []int{2, 1}
 }
-
 func (m *ReplicationServiceReplicateGroup_Reply) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *ReplicationServiceReplicateGroup_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_ReplicationServiceReplicateGroup_Reply.Marshal(b, m, deterministic)
@@ -346,15 +321,12 @@ func (m *ReplicationServiceReplicateGroup_Reply) XXX_Marshal(b []byte, determini
 		return b[:n], nil
 	}
 }
-
 func (m *ReplicationServiceReplicateGroup_Reply) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ReplicationServiceReplicateGroup_Reply.Merge(m, src)
 }
-
 func (m *ReplicationServiceReplicateGroup_Reply) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *ReplicationServiceReplicateGroup_Reply) XXX_DiscardUnknown() {
 	xxx_messageInfo_ReplicationServiceReplicateGroup_Reply.DiscardUnknown(m)
 }
@@ -368,7 +340,8 @@ func (m *ReplicationServiceReplicateGroup_Reply) GetOK() bool {
 	return false
 }
 
-type ReplicateGlobalStats struct{}
+type ReplicateGlobalStats struct {
+}
 
 func (m *ReplicateGlobalStats) Reset()         { *m = ReplicateGlobalStats{} }
 func (m *ReplicateGlobalStats) String() string { return proto.CompactTextString(m) }
@@ -376,11 +349,9 @@ func (*ReplicateGlobalStats) ProtoMessage()    {}
 func (*ReplicateGlobalStats) Descriptor() ([]byte, []int) {
 	return fileDescriptor_07ad8506da4f8389, []int{3}
 }
-
 func (m *ReplicateGlobalStats) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *ReplicateGlobalStats) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_ReplicateGlobalStats.Marshal(b, m, deterministic)
@@ -393,22 +364,20 @@ func (m *ReplicateGlobalStats) XXX_Marshal(b []byte, deterministic bool) ([]byte
 		return b[:n], nil
 	}
 }
-
 func (m *ReplicateGlobalStats) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ReplicateGlobalStats.Merge(m, src)
 }
-
 func (m *ReplicateGlobalStats) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *ReplicateGlobalStats) XXX_DiscardUnknown() {
 	xxx_messageInfo_ReplicateGlobalStats.DiscardUnknown(m)
 }
 
 var xxx_messageInfo_ReplicateGlobalStats proto.InternalMessageInfo
 
-type ReplicateGlobalStats_Request struct{}
+type ReplicateGlobalStats_Request struct {
+}
 
 func (m *ReplicateGlobalStats_Request) Reset()         { *m = ReplicateGlobalStats_Request{} }
 func (m *ReplicateGlobalStats_Request) String() string { return proto.CompactTextString(m) }
@@ -416,11 +385,9 @@ func (*ReplicateGlobalStats_Request) ProtoMessage()    {}
 func (*ReplicateGlobalStats_Request) Descriptor() ([]byte, []int) {
 	return fileDescriptor_07ad8506da4f8389, []int{3, 0}
 }
-
 func (m *ReplicateGlobalStats_Request) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *ReplicateGlobalStats_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_ReplicateGlobalStats_Request.Marshal(b, m, deterministic)
@@ -433,15 +400,12 @@ func (m *ReplicateGlobalStats_Request) XXX_Marshal(b []byte, deterministic bool)
 		return b[:n], nil
 	}
 }
-
 func (m *ReplicateGlobalStats_Request) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ReplicateGlobalStats_Request.Merge(m, src)
 }
-
 func (m *ReplicateGlobalStats_Request) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *ReplicateGlobalStats_Request) XXX_DiscardUnknown() {
 	xxx_messageInfo_ReplicateGlobalStats_Request.DiscardUnknown(m)
 }
@@ -461,11 +425,9 @@ func (*ReplicateGlobalStats_Reply) ProtoMessage()    {}
 func (*ReplicateGlobalStats_Reply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_07ad8506da4f8389, []int{3, 1}
 }
-
 func (m *ReplicateGlobalStats_Reply) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *ReplicateGlobalStats_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_ReplicateGlobalStats_Reply.Marshal(b, m, deterministic)
@@ -478,15 +440,12 @@ func (m *ReplicateGlobalStats_Reply) XXX_Marshal(b []byte, deterministic bool) (
 		return b[:n], nil
 	}
 }
-
 func (m *ReplicateGlobalStats_Reply) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ReplicateGlobalStats_Reply.Merge(m, src)
 }
-
 func (m *ReplicateGlobalStats_Reply) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *ReplicateGlobalStats_Reply) XXX_DiscardUnknown() {
 	xxx_messageInfo_ReplicateGlobalStats_Reply.DiscardUnknown(m)
 }
@@ -521,7 +480,8 @@ func (m *ReplicateGlobalStats_Reply) GetTotalMessageEntries() int64 {
 	return 0
 }
 
-type ReplicateGroupStats struct{}
+type ReplicateGroupStats struct {
+}
 
 func (m *ReplicateGroupStats) Reset()         { *m = ReplicateGroupStats{} }
 func (m *ReplicateGroupStats) String() string { return proto.CompactTextString(m) }
@@ -529,11 +489,9 @@ func (*ReplicateGroupStats) ProtoMessage()    {}
 func (*ReplicateGroupStats) Descriptor() ([]byte, []int) {
 	return fileDescriptor_07ad8506da4f8389, []int{4}
 }
-
 func (m *ReplicateGroupStats) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *ReplicateGroupStats) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_ReplicateGroupStats.Marshal(b, m, deterministic)
@@ -546,15 +504,12 @@ func (m *ReplicateGroupStats) XXX_Marshal(b []byte, deterministic bool) ([]byte,
 		return b[:n], nil
 	}
 }
-
 func (m *ReplicateGroupStats) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ReplicateGroupStats.Merge(m, src)
 }
-
 func (m *ReplicateGroupStats) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *ReplicateGroupStats) XXX_DiscardUnknown() {
 	xxx_messageInfo_ReplicateGroupStats.DiscardUnknown(m)
 }
@@ -571,11 +526,9 @@ func (*ReplicateGroupStats_Request) ProtoMessage()    {}
 func (*ReplicateGroupStats_Request) Descriptor() ([]byte, []int) {
 	return fileDescriptor_07ad8506da4f8389, []int{4, 0}
 }
-
 func (m *ReplicateGroupStats_Request) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *ReplicateGroupStats_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_ReplicateGroupStats_Request.Marshal(b, m, deterministic)
@@ -588,15 +541,12 @@ func (m *ReplicateGroupStats_Request) XXX_Marshal(b []byte, deterministic bool) 
 		return b[:n], nil
 	}
 }
-
 func (m *ReplicateGroupStats_Request) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ReplicateGroupStats_Request.Merge(m, src)
 }
-
 func (m *ReplicateGroupStats_Request) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *ReplicateGroupStats_Request) XXX_DiscardUnknown() {
 	xxx_messageInfo_ReplicateGroupStats_Request.DiscardUnknown(m)
 }
@@ -620,11 +570,9 @@ func (*ReplicateGroupStats_Reply) ProtoMessage()    {}
 func (*ReplicateGroupStats_Reply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_07ad8506da4f8389, []int{4, 1}
 }
-
 func (m *ReplicateGroupStats_Reply) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *ReplicateGroupStats_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_ReplicateGroupStats_Reply.Marshal(b, m, deterministic)
@@ -637,15 +585,12 @@ func (m *ReplicateGroupStats_Reply) XXX_Marshal(b []byte, deterministic bool) ([
 		return b[:n], nil
 	}
 }
-
 func (m *ReplicateGroupStats_Reply) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ReplicateGroupStats_Reply.Merge(m, src)
 }
-
 func (m *ReplicateGroupStats_Reply) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *ReplicateGroupStats_Reply) XXX_DiscardUnknown() {
 	xxx_messageInfo_ReplicateGroupStats_Reply.DiscardUnknown(m)
 }
@@ -729,10 +674,8 @@ var fileDescriptor_07ad8506da4f8389 = []byte{
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
-var (
-	_ context.Context
-	_ grpc.ClientConn
-)
+var _ context.Context
+var _ grpc.ClientConn
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
@@ -792,16 +735,15 @@ type ReplicationServiceServer interface {
 }
 
 // UnimplementedReplicationServiceServer can be embedded to have forward compatible implementations.
-type UnimplementedReplicationServiceServer struct{}
+type UnimplementedReplicationServiceServer struct {
+}
 
 func (*UnimplementedReplicationServiceServer) ReplicateGroup(ctx context.Context, req *ReplicationServiceReplicateGroup_Request) (*ReplicationServiceReplicateGroup_Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ReplicateGroup not implemented")
 }
-
 func (*UnimplementedReplicationServiceServer) ReplicateGlobalStats(ctx context.Context, req *ReplicateGlobalStats_Request) (*ReplicateGlobalStats_Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ReplicateGlobalStats not implemented")
 }
-
 func (*UnimplementedReplicationServiceServer) ReplicateGroupStats(ctx context.Context, req *ReplicateGroupStats_Request) (*ReplicateGroupStats_Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ReplicateGroupStats not implemented")
 }
@@ -1315,7 +1257,6 @@ func encodeVarintBertyreplication(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-
 func (m *ReplicatedGroup) Size() (n int) {
 	if m == nil {
 		return 0
@@ -1496,11 +1437,9 @@ func (m *ReplicateGroupStats_Reply) Size() (n int) {
 func sovBertyreplication(x uint64) (n int) {
 	return (math_bits.Len64(x|1) + 6) / 7
 }
-
 func sozBertyreplication(x uint64) (n int) {
 	return sovBertyreplication(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-
 func (m *ReplicatedGroup) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1787,7 +1726,6 @@ func (m *ReplicatedGroup) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *ReplicatedGroupToken) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1989,7 +1927,6 @@ func (m *ReplicatedGroupToken) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *ReplicationServiceReplicateGroup) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -2040,7 +1977,6 @@ func (m *ReplicationServiceReplicateGroup) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *ReplicationServiceReplicateGroup_Request) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -2127,7 +2063,6 @@ func (m *ReplicationServiceReplicateGroup_Request) Unmarshal(dAtA []byte) error 
 	}
 	return nil
 }
-
 func (m *ReplicationServiceReplicateGroup_Reply) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -2198,7 +2133,6 @@ func (m *ReplicationServiceReplicateGroup_Reply) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *ReplicateGlobalStats) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -2249,7 +2183,6 @@ func (m *ReplicateGlobalStats) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *ReplicateGlobalStats_Request) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -2300,7 +2233,6 @@ func (m *ReplicateGlobalStats_Request) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *ReplicateGlobalStats_Reply) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -2427,7 +2359,6 @@ func (m *ReplicateGlobalStats_Reply) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *ReplicateGroupStats) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -2478,7 +2409,6 @@ func (m *ReplicateGroupStats) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *ReplicateGroupStats_Request) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -2561,7 +2491,6 @@ func (m *ReplicateGroupStats_Request) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *ReplicateGroupStats_Reply) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -2648,7 +2577,6 @@ func (m *ReplicateGroupStats_Reply) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func skipBertyreplication(dAtA []byte) (n int, err error) {
 	l := len(dAtA)
 	iNdEx := 0

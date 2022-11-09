@@ -8,7 +8,7 @@ import (
 	"flag"
 	"fmt"
 
-	"github.com/libp2p/go-libp2p-core/crypto"
+	"github.com/libp2p/go-libp2p/core/crypto"
 	"github.com/peterbourgon/ff/v3/ffcli"
 
 	"berty.tech/berty/v2/go/internal/cryptoutil"

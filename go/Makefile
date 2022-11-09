@@ -187,7 +187,7 @@ $(gen_sum): $(gen_src)
 		--workdir="/go/src/berty.tech/berty/go" \
 		--entrypoint="sh" \
 		--rm \
-		bertytech/protoc:28 \
+		bertytech/protoc:29 \
 		-xec 'make generate_local'; \
 	  $(MAKE) tidy \
 	)
@@ -195,6 +195,7 @@ $(gen_sum): $(gen_src)
 
 
 generate_local:
+	go version
 	$(call check-program, shasum protoc)
 	$(GO) run github.com/buicongtan1997/protoc-gen-swagger-config -i ../api/accounttypes.proto -o ../api/accounttypes.yaml
 	$(GO) run github.com/buicongtan1997/protoc-gen-swagger-config -i ../api/messengertypes.proto -o ../api/messengertypes.yaml
@@ -226,9 +227,10 @@ generate_local:
 
 
 go.fmt:
-	go run github.com/daixiang0/gci write \
-		--Section Standard --Section Default --Section 'Prefix(berty.tech)' .
-	go run mvdan.cc/gofumpt -w -s .
+	go run github.com/daixiang0/gci write . \
+		--skip-generated -s 'standard,default,prefix(berty.tech)'
+	go run mvdan.cc/gofumpt -w .
+
 .PHONY: go.fmt
 
 pkger.generate:

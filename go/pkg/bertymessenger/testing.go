@@ -92,7 +92,8 @@ func TestingService(ctx context.Context, t testing.TB, opts *TestingServiceOpts)
 
 func TestingInfra(ctx context.Context, t testing.TB, amount int, logger *zap.Logger) ([]messengertypes.MessengerServiceClient, []*bertyprotocol.TestingProtocol, func()) {
 	t.Helper()
-	mocknet := libp2p_mocknet.New(ctx)
+	mocknet := libp2p_mocknet.New()
+	t.Cleanup(func() { mocknet.Close() })
 
 	protocols, cleanup := bertyprotocol.NewTestingProtocolWithMockedPeers(ctx, t, &bertyprotocol.TestingOpts{Logger: logger, Mocknet: mocknet}, nil, amount)
 	clients := make([]messengertypes.MessengerServiceClient, amount)

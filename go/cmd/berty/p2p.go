@@ -11,8 +11,8 @@ import (
 	"io/ioutil"
 	"os"
 
-	libp2p_ci "github.com/libp2p/go-libp2p-core/crypto"
-	"github.com/libp2p/go-libp2p-core/peer"
+	libp2p_ci "github.com/libp2p/go-libp2p/core/crypto"
+	"github.com/libp2p/go-libp2p/core/peer"
 	"github.com/peterbourgon/ff/v3/ffcli"
 )
 
