@@ -25,15 +25,13 @@ import (
 )
 
 // Suppress "imported and not used" errors
-var (
-	_ codes.Code
-	_ io.Reader
-	_ status.Status
-	_ = runtime.String
-	_ = utilities.NewDoubleArray
-	_ = descriptor.ForMessage
-	_ = metadata.Join
-)
+var _ codes.Code
+var _ io.Reader
+var _ status.Status
+var _ = runtime.String
+var _ = utilities.NewDoubleArray
+var _ = descriptor.ForMessage
+var _ = metadata.Join
 
 func request_ReplicationService_ReplicateGroup_0(ctx context.Context, marshaler runtime.Marshaler, client ReplicationServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq ReplicationServiceReplicateGroup_Request
@@ -49,6 +47,7 @@ func request_ReplicationService_ReplicateGroup_0(ctx context.Context, marshaler 
 
 	msg, err := client.ReplicateGroup(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
+
 }
 
 func local_request_ReplicationService_ReplicateGroup_0(ctx context.Context, marshaler runtime.Marshaler, server ReplicationServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -65,6 +64,7 @@ func local_request_ReplicationService_ReplicateGroup_0(ctx context.Context, mars
 
 	msg, err := server.ReplicateGroup(ctx, &protoReq)
 	return msg, metadata, err
+
 }
 
 func request_ReplicationService_ReplicateGlobalStats_0(ctx context.Context, marshaler runtime.Marshaler, client ReplicationServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -81,6 +81,7 @@ func request_ReplicationService_ReplicateGlobalStats_0(ctx context.Context, mars
 
 	msg, err := client.ReplicateGlobalStats(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
+
 }
 
 func local_request_ReplicationService_ReplicateGlobalStats_0(ctx context.Context, marshaler runtime.Marshaler, server ReplicationServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -97,6 +98,7 @@ func local_request_ReplicationService_ReplicateGlobalStats_0(ctx context.Context
 
 	msg, err := server.ReplicateGlobalStats(ctx, &protoReq)
 	return msg, metadata, err
+
 }
 
 func request_ReplicationService_ReplicateGroupStats_0(ctx context.Context, marshaler runtime.Marshaler, client ReplicationServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -113,6 +115,7 @@ func request_ReplicationService_ReplicateGroupStats_0(ctx context.Context, marsh
 
 	msg, err := client.ReplicateGroupStats(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
+
 }
 
 func local_request_ReplicationService_ReplicateGroupStats_0(ctx context.Context, marshaler runtime.Marshaler, server ReplicationServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -129,6 +132,7 @@ func local_request_ReplicationService_ReplicateGroupStats_0(ctx context.Context,
 
 	msg, err := server.ReplicateGroupStats(ctx, &protoReq)
 	return msg, metadata, err
+
 }
 
 // RegisterReplicationServiceHandlerServer registers the http handlers for service ReplicationService to "mux".
@@ -136,6 +140,7 @@ func local_request_ReplicationService_ReplicateGroupStats_0(ctx context.Context,
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
 // Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterReplicationServiceHandlerFromEndpoint instead.
 func RegisterReplicationServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server ReplicationServiceServer) error {
+
 	mux.Handle("POST", pattern_ReplicationService_ReplicateGroup_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
@@ -156,6 +161,7 @@ func RegisterReplicationServiceHandlerServer(ctx context.Context, mux *runtime.S
 		}
 
 		forward_ReplicationService_ReplicateGroup_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("POST", pattern_ReplicationService_ReplicateGlobalStats_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -178,6 +184,7 @@ func RegisterReplicationServiceHandlerServer(ctx context.Context, mux *runtime.S
 		}
 
 		forward_ReplicationService_ReplicateGlobalStats_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("POST", pattern_ReplicationService_ReplicateGroupStats_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -200,6 +207,7 @@ func RegisterReplicationServiceHandlerServer(ctx context.Context, mux *runtime.S
 		}
 
 		forward_ReplicationService_ReplicateGroupStats_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	return nil
@@ -242,6 +250,7 @@ func RegisterReplicationServiceHandler(ctx context.Context, mux *runtime.ServeMu
 // doesn't go through the normal gRPC flow (creating a gRPC client etc.) then it will be up to the passed in
 // "ReplicationServiceClient" to call the correct interceptors.
 func RegisterReplicationServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux, client ReplicationServiceClient) error {
+
 	mux.Handle("POST", pattern_ReplicationService_ReplicateGroup_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
@@ -259,6 +268,7 @@ func RegisterReplicationServiceHandlerClient(ctx context.Context, mux *runtime.S
 		}
 
 		forward_ReplicationService_ReplicateGroup_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("POST", pattern_ReplicationService_ReplicateGlobalStats_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -278,6 +288,7 @@ func RegisterReplicationServiceHandlerClient(ctx context.Context, mux *runtime.S
 		}
 
 		forward_ReplicationService_ReplicateGlobalStats_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("POST", pattern_ReplicationService_ReplicateGroupStats_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -297,6 +308,7 @@ func RegisterReplicationServiceHandlerClient(ctx context.Context, mux *runtime.S
 		}
 
 		forward_ReplicationService_ReplicateGroupStats_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	return nil

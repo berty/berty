@@ -12,16 +12,17 @@ import (
 	"net/http"
 	"os"
 	"strings"
+	"time"
 
 	// nolint:staticcheck
+	libp2p_rp "github.com/berty/go-libp2p-rendezvous"
+	libp2p_rpdb "github.com/berty/go-libp2p-rendezvous/db/sqlcipher"
 	libp2p "github.com/libp2p/go-libp2p"
-	libp2p_ci "github.com/libp2p/go-libp2p-core/crypto"
-	libp2p_host "github.com/libp2p/go-libp2p-core/host"
-	metrics "github.com/libp2p/go-libp2p-core/metrics"
-	libp2p_peer "github.com/libp2p/go-libp2p-core/peer"
-	libp2p_rp "github.com/libp2p/go-libp2p-rendezvous"
-	libp2p_rpdb "github.com/libp2p/go-libp2p-rendezvous/db/sqlcipher"
 	"github.com/libp2p/go-libp2p/config"
+	libp2p_ci "github.com/libp2p/go-libp2p/core/crypto"
+	libp2p_host "github.com/libp2p/go-libp2p/core/host"
+	metrics "github.com/libp2p/go-libp2p/core/metrics"
+	libp2p_peer "github.com/libp2p/go-libp2p/core/peer"
 	libp2p_relayv1 "github.com/libp2p/go-libp2p/p2p/protocol/circuitv1/relay"
 	ma "github.com/multiformats/go-multiaddr"
 	"github.com/oklog/run"
@@ -252,7 +253,13 @@ func main() {
 					logger.Info("metrics listener",
 						zap.String("handler", "/metrics"),
 						zap.String("listener", ml.Addr().String()))
-					return http.Serve(ml, mux)
+
+					server := &http.Server{
+						Handler:           mux,
+						ReadHeaderTimeout: 3 * time.Second,
+					}
+
+					return server.Serve(ml)
 				}, func(error) {
 					ml.Close()
 				})

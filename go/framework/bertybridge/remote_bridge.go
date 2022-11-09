@@ -83,7 +83,7 @@ func NewRemoteBridge(address string, config *RemoteBridgeConfig) (*RemoteBridge,
 
 		opts := []grpc.DialOption{
 			grpc.WithBlock(),
-			grpc.WithInsecure(),
+			grpc.WithTransportCredentials(insecure.NewCredentials()),
 		}
 		client, err := grpc.DialContext(ctx, address, opts...)
 		if err != nil {

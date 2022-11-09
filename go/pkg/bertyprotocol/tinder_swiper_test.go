@@ -47,7 +47,7 @@ func TestAnnounceWatchForPeriod(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			mn := p2pmocknet.New(ctx)
+			mn := p2pmocknet.New()
 			rdvp, err := mn.GenPeer()
 			require.NoError(t, err, "failed to generate mocked peer")
 

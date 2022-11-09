@@ -52,7 +52,7 @@ func NewDriver(logger *zap.Logger) proximity.ProximityDriver {
 }
 
 //export BLEHandleFoundPeer
-func BLEHandleFoundPeer(remotePID *C.char) int { // nolint:golint // Need to prefix func name to avoid duplicate symbols between proximity drivers
+func BLEHandleFoundPeer(remotePID *C.char) int { // nolint:revive // Need to prefix func name to avoid duplicate symbols between proximity drivers
 	goPID := C.GoString(remotePID)
 
 	proximity.TransportMapMutex.RLock()
@@ -68,7 +68,7 @@ func BLEHandleFoundPeer(remotePID *C.char) int { // nolint:golint // Need to pre
 }
 
 //export BLEHandleLostPeer
-func BLEHandleLostPeer(remotePID *C.char) { // nolint:golint // Need to prefix func name to avoid duplicate symbols between proximity drivers
+func BLEHandleLostPeer(remotePID *C.char) { // nolint:revive // Need to prefix func name to avoid duplicate symbols between proximity drivers
 	goPID := C.GoString(remotePID)
 
 	proximity.TransportMapMutex.RLock()
@@ -81,7 +81,7 @@ func BLEHandleLostPeer(remotePID *C.char) { // nolint:golint // Need to prefix f
 }
 
 //export BLEReceiveFromPeer
-func BLEReceiveFromPeer(remotePID *C.char, payload unsafe.Pointer, length C.int) { // nolint:golint // Need to prefix func name to avoid duplicate symbols between proximity drivers
+func BLEReceiveFromPeer(remotePID *C.char, payload unsafe.Pointer, length C.int) { // nolint:revive // Need to prefix func name to avoid duplicate symbols between proximity drivers
 	goPID := C.GoString(remotePID)
 	goPayload := C.GoBytes(payload, length)
 
@@ -95,7 +95,7 @@ func BLEReceiveFromPeer(remotePID *C.char, payload unsafe.Pointer, length C.int)
 }
 
 //export BLELog
-func BLELog(level C.enum_level, message *C.char) { //nolint:golint
+func BLELog(level C.enum_level, message *C.char) { //nolint:revive
 	if gLogger == nil {
 		fmt.Println("logger not found")
 		return

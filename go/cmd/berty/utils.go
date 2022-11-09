@@ -5,7 +5,7 @@ import (
 	"io"
 	"strings"
 
-	libp2p_ci "github.com/libp2p/go-libp2p-core/crypto"
+	libp2p_ci "github.com/libp2p/go-libp2p/core/crypto"
 )
 
 func generateNewKeyPair(kind string, size int, src io.Reader) (libp2p_ci.PrivKey, error) {

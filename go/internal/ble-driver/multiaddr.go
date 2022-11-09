@@ -1,7 +1,7 @@
 package ble
 
 import (
-	peer "github.com/libp2p/go-libp2p-core/peer"
+	peer "github.com/libp2p/go-libp2p/core/peer"
 	ma "github.com/multiformats/go-multiaddr"
 )
 

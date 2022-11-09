@@ -25,15 +25,13 @@ import (
 )
 
 // Suppress "imported and not used" errors
-var (
-	_ codes.Code
-	_ io.Reader
-	_ status.Status
-	_ = runtime.String
-	_ = utilities.NewDoubleArray
-	_ = descriptor.ForMessage
-	_ = metadata.Join
-)
+var _ codes.Code
+var _ io.Reader
+var _ status.Status
+var _ = runtime.String
+var _ = utilities.NewDoubleArray
+var _ = descriptor.ForMessage
+var _ = metadata.Join
 
 func request_PushService_ServerInfo_0(ctx context.Context, marshaler runtime.Marshaler, client PushServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq PushServiceServerInfo_Request
@@ -49,6 +47,7 @@ func request_PushService_ServerInfo_0(ctx context.Context, marshaler runtime.Mar
 
 	msg, err := client.ServerInfo(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
+
 }
 
 func local_request_PushService_ServerInfo_0(ctx context.Context, marshaler runtime.Marshaler, server PushServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -65,6 +64,7 @@ func local_request_PushService_ServerInfo_0(ctx context.Context, marshaler runti
 
 	msg, err := server.ServerInfo(ctx, &protoReq)
 	return msg, metadata, err
+
 }
 
 func request_PushService_Send_0(ctx context.Context, marshaler runtime.Marshaler, client PushServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -81,6 +81,7 @@ func request_PushService_Send_0(ctx context.Context, marshaler runtime.Marshaler
 
 	msg, err := client.Send(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
+
 }
 
 func local_request_PushService_Send_0(ctx context.Context, marshaler runtime.Marshaler, server PushServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -97,6 +98,7 @@ func local_request_PushService_Send_0(ctx context.Context, marshaler runtime.Mar
 
 	msg, err := server.Send(ctx, &protoReq)
 	return msg, metadata, err
+
 }
 
 // RegisterPushServiceHandlerServer registers the http handlers for service PushService to "mux".
@@ -104,6 +106,7 @@ func local_request_PushService_Send_0(ctx context.Context, marshaler runtime.Mar
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
 // Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterPushServiceHandlerFromEndpoint instead.
 func RegisterPushServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server PushServiceServer) error {
+
 	mux.Handle("POST", pattern_PushService_ServerInfo_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
@@ -124,6 +127,7 @@ func RegisterPushServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux
 		}
 
 		forward_PushService_ServerInfo_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("POST", pattern_PushService_Send_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -146,6 +150,7 @@ func RegisterPushServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux
 		}
 
 		forward_PushService_Send_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	return nil
@@ -188,6 +193,7 @@ func RegisterPushServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn
 // doesn't go through the normal gRPC flow (creating a gRPC client etc.) then it will be up to the passed in
 // "PushServiceClient" to call the correct interceptors.
 func RegisterPushServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux, client PushServiceClient) error {
+
 	mux.Handle("POST", pattern_PushService_ServerInfo_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
@@ -205,6 +211,7 @@ func RegisterPushServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux
 		}
 
 		forward_PushService_ServerInfo_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	mux.Handle("POST", pattern_PushService_Send_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
@@ -224,6 +231,7 @@ func RegisterPushServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux
 		}
 
 		forward_PushService_Send_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
 	})
 
 	return nil

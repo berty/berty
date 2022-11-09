@@ -6,8 +6,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/libp2p/go-libp2p-core/host"
-	"github.com/libp2p/go-libp2p-core/peer"
+	"github.com/libp2p/go-libp2p/core/host"
+	"github.com/libp2p/go-libp2p/core/peer"
 	mocknet "github.com/libp2p/go-libp2p/p2p/net/mock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -22,7 +22,8 @@ func TestMockedServiceSubscribeMultipleDriver(t *testing.T) {
 
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
-	mn := mocknet.New(ctx)
+	mn := mocknet.New()
+	defer mn.Close()
 
 	cases := []struct {
 		NDriver, NPeersPerDriver int
@@ -96,7 +97,9 @@ func TestMockedServiceSubscribePull(t *testing.T) {
 	logger, cleanup := testutil.Logger(t)
 	defer cleanup()
 
-	mn := mocknet.New(ctx)
+	mn := mocknet.New()
+	defer mn.Close()
+
 	srv := NewMockDriverServer()
 
 	t.Run("with pull", func(t *testing.T) {
@@ -158,7 +161,9 @@ func TestMockedServiceSubscribeDuplicatePeer(t *testing.T) {
 	logger, cleanup := testutil.Logger(t)
 	defer cleanup()
 
-	mn := mocknet.New(ctx)
+	mn := mocknet.New()
+	defer mn.Close()
+
 	servers := make([]*MockDriverServer, NServers)
 	for i := range servers {
 		servers[i] = NewMockDriverServer()

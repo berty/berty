@@ -1,21 +1,5 @@
 package main
 
-import (
-	"context"
-	"encoding/base64"
-	"flag"
-	"fmt"
-	"net"
-	"net/http"
-	"strings"
-
-	"github.com/oklog/run"
-	"github.com/peterbourgon/ff/v3/ffcli"
-	"golang.org/x/crypto/ed25519"
-
-	"berty.tech/berty/v2/go/pkg/bertyauth"
-)
-
 // This server is a showcase of a PKCE OAuth 2 token issuer. Its behavior is to
 // generate a random identifier and sign it, thus allowing a no storage service
 // operation. The actual token contains a random identifier and the list of
@@ -25,12 +9,9 @@ import (
 //
 // For example the JSON response for /oauth/token can include:
 //  {
-//  "access_token":
-//  	"a_token",
-//  "token_type":
-//      "bearer",
-//  "scope":
-//  	"replication,contacts,backup",
+//  "access_token": "a_token",
+//  "token_type": "bearer",
+//  "scope": "replication,contacts,backup",
 // 	"services": {
 //      "replication": "host:1234",
 //      "contacts": "host:5678",
@@ -47,6 +28,24 @@ import (
 //
 //      curl "http://localhost:8080/authorize?..." -s | grep href= | cut -d'"' -f2 | sed 's/&amp;/\&/'
 //
+
+import (
+	"context"
+	"encoding/base64"
+	"flag"
+	"fmt"
+	"net"
+	"net/http"
+	"strings"
+	"time"
+
+	"github.com/oklog/run"
+	"github.com/peterbourgon/ff/v3/ffcli"
+	"golang.org/x/crypto/ed25519"
+
+	"berty.tech/berty/v2/go/pkg/bertyauth"
+)
+
 func tokenServerCommand() *ffcli.Command {
 	var (
 		secretFlag       = ""
@@ -130,7 +129,7 @@ func tokenServerCommand() *ffcli.Command {
 				services[values[0]] = values[1]
 			}
 
-			server, err := bertyauth.NewAuthTokenServer(secret, sk, services, &bertyauth.AuthTokenOptions{
+			auth, err := bertyauth.NewAuthTokenServer(secret, sk, services, &bertyauth.AuthTokenOptions{
 				Logger:           logger,
 				NoClick:          noClick,
 				PrivacyPolicyURL: privacyPolicyURL,
@@ -140,7 +139,7 @@ func tokenServerCommand() *ffcli.Command {
 			}
 
 			if generate {
-				token, err := server.IssueRandomTokenForServices()
+				token, err := auth.IssueRandomTokenForServices()
 				if err != nil {
 					return err
 				}
@@ -149,8 +148,13 @@ func tokenServerCommand() *ffcli.Command {
 				return nil
 			}
 
+			server := &http.Server{
+				Handler:           auth,
+				ReadHeaderTimeout: time.Second * 5,
+			}
+
 			g.Add(func() error {
-				return http.Serve(l, server)
+				return server.Serve(l)
 			}, func(err error) {
 				l.Close()
 			})

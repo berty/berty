@@ -21,6 +21,7 @@ import (
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/connectivity"
+	"google.golang.org/grpc/credentials/insecure"
 	"moul.io/srand"
 	"moul.io/u"
 	"moul.io/zapconfig"
@@ -150,7 +151,7 @@ func welcomebot() error {
 
 	// init messenger gRPC client
 	{
-		cc, err := grpc.DialContext(ctx, *nodeAddr, grpc.WithInsecure())
+		cc, err := grpc.DialContext(ctx, *nodeAddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 		if err != nil {
 			return fmt.Errorf("unable to connect with remote berty messenger node: %w", err)
 		}

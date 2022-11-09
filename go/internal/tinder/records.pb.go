@@ -5,20 +5,17 @@ package tinder
 
 import (
 	fmt "fmt"
+	_ "github.com/gogo/protobuf/gogoproto"
+	proto "github.com/gogo/protobuf/proto"
 	io "io"
 	math "math"
 	math_bits "math/bits"
-
-	_ "github.com/gogo/protobuf/gogoproto"
-	proto "github.com/gogo/protobuf/proto"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
-var (
-	_ = proto.Marshal
-	_ = fmt.Errorf
-	_ = math.Inf
-)
+var _ = proto.Marshal
+var _ = fmt.Errorf
+var _ = math.Inf
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the proto package it is being compiled against.
@@ -39,11 +36,9 @@ func (*Records) ProtoMessage()    {}
 func (*Records) Descriptor() ([]byte, []int) {
 	return fileDescriptor_4ec813e1227eb54c, []int{0}
 }
-
 func (m *Records) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *Records) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_Records.Marshal(b, m, deterministic)
@@ -56,15 +51,12 @@ func (m *Records) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return b[:n], nil
 	}
 }
-
 func (m *Records) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_Records.Merge(m, src)
 }
-
 func (m *Records) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *Records) XXX_DiscardUnknown() {
 	xxx_messageInfo_Records.DiscardUnknown(m)
 }
@@ -92,11 +84,9 @@ func (*Record) ProtoMessage()    {}
 func (*Record) Descriptor() ([]byte, []int) {
 	return fileDescriptor_4ec813e1227eb54c, []int{1}
 }
-
 func (m *Record) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *Record) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_Record.Marshal(b, m, deterministic)
@@ -109,15 +99,12 @@ func (m *Record) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return b[:n], nil
 	}
 }
-
 func (m *Record) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_Record.Merge(m, src)
 }
-
 func (m *Record) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *Record) XXX_DiscardUnknown() {
 	xxx_messageInfo_Record.DiscardUnknown(m)
 }
@@ -252,7 +239,6 @@ func encodeVarintRecords(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-
 func (m *Records) Size() (n int) {
 	if m == nil {
 		return 0
@@ -293,11 +279,9 @@ func (m *Record) Size() (n int) {
 func sovRecords(x uint64) (n int) {
 	return (math_bits.Len64(x|1) + 6) / 7
 }
-
 func sozRecords(x uint64) (n int) {
 	return sovRecords(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-
 func (m *Records) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -383,7 +367,6 @@ func (m *Records) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *Record) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -486,7 +469,6 @@ func (m *Record) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func skipRecords(dAtA []byte) (n int, err error) {
 	l := len(dAtA)
 	iNdEx := 0

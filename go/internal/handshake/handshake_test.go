@@ -8,8 +8,8 @@ import (
 	"time"
 
 	ggio "github.com/gogo/protobuf/io"
-	p2pcrypto "github.com/libp2p/go-libp2p-core/crypto"
-	p2pnetwork "github.com/libp2p/go-libp2p-core/network"
+	p2pcrypto "github.com/libp2p/go-libp2p/core/crypto"
+	p2pnetwork "github.com/libp2p/go-libp2p/core/network"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/zap"
 	"golang.org/x/crypto/nacl/box"

@@ -7,12 +7,12 @@ import (
 	"testing"
 	"time"
 
-	"github.com/libp2p/go-libp2p-core/host"
-	"github.com/libp2p/go-libp2p-core/peer"
+	rendezvous "github.com/berty/go-libp2p-rendezvous"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
-	rendezvous "github.com/libp2p/go-libp2p-rendezvous"
-	// rendezvous "github.com/libp2p/go-libp2p-rendezvous"
-	// rdvdb "github.com/libp2p/go-libp2p-rendezvous/db/sqlcipher"
+	"github.com/libp2p/go-libp2p/core/host"
+	"github.com/libp2p/go-libp2p/core/peer"
+	// rendezvous "github.com/berty/go-libp2p-rendezvous"
+	// rdvdb "github.com/berty/go-libp2p-rendezvous/db/sqlcipher"
 	mocknet "github.com/libp2p/go-libp2p/p2p/net/mock"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/zap"
@@ -26,7 +26,9 @@ func TestMultipleDriversSubscribe(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	mn := mocknet.New(ctx)
+	mn := mocknet.New()
+	defer mn.Close()
+
 	targetRdvp, _ := makeRendezvousService(t, mn)
 
 	cases := []struct {

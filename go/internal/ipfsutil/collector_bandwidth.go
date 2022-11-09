@@ -1,7 +1,7 @@
 package ipfsutil
 
 import (
-	metrics "github.com/libp2p/go-libp2p-core/metrics"
+	metrics "github.com/libp2p/go-libp2p/core/metrics"
 	prometheus "github.com/prometheus/client_golang/prometheus"
 )
 

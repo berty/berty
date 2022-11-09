@@ -6,23 +6,20 @@ package pushtypes
 import (
 	context "context"
 	fmt "fmt"
-	io "io"
-	math "math"
-	math_bits "math/bits"
-
 	_ "github.com/gogo/protobuf/gogoproto"
 	proto "github.com/gogo/protobuf/proto"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
+	io "io"
+	math "math"
+	math_bits "math/bits"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
-var (
-	_ = proto.Marshal
-	_ = fmt.Errorf
-	_ = math.Inf
-)
+var _ = proto.Marshal
+var _ = fmt.Errorf
+var _ = math.Inf
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the proto package it is being compiled against.
@@ -153,11 +150,9 @@ func (*PushServiceServerInfo) ProtoMessage()    {}
 func (*PushServiceServerInfo) Descriptor() ([]byte, []int) {
 	return fileDescriptor_c5d464d796a95f49, []int{0}
 }
-
 func (m *PushServiceServerInfo) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *PushServiceServerInfo) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_PushServiceServerInfo.Marshal(b, m, deterministic)
@@ -170,15 +165,12 @@ func (m *PushServiceServerInfo) XXX_Marshal(b []byte, deterministic bool) ([]byt
 		return b[:n], nil
 	}
 }
-
 func (m *PushServiceServerInfo) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_PushServiceServerInfo.Merge(m, src)
 }
-
 func (m *PushServiceServerInfo) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *PushServiceServerInfo) XXX_DiscardUnknown() {
 	xxx_messageInfo_PushServiceServerInfo.DiscardUnknown(m)
 }
@@ -197,11 +189,9 @@ func (*PushServiceServerInfo_Request) ProtoMessage()    {}
 func (*PushServiceServerInfo_Request) Descriptor() ([]byte, []int) {
 	return fileDescriptor_c5d464d796a95f49, []int{0, 0}
 }
-
 func (m *PushServiceServerInfo_Request) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *PushServiceServerInfo_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_PushServiceServerInfo_Request.Marshal(b, m, deterministic)
@@ -214,15 +204,12 @@ func (m *PushServiceServerInfo_Request) XXX_Marshal(b []byte, deterministic bool
 		return b[:n], nil
 	}
 }
-
 func (m *PushServiceServerInfo_Request) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_PushServiceServerInfo_Request.Merge(m, src)
 }
-
 func (m *PushServiceServerInfo_Request) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *PushServiceServerInfo_Request) XXX_DiscardUnknown() {
 	xxx_messageInfo_PushServiceServerInfo_Request.DiscardUnknown(m)
 }
@@ -246,11 +233,9 @@ func (*PushServiceServerInfo_Reply) ProtoMessage()    {}
 func (*PushServiceServerInfo_Reply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_c5d464d796a95f49, []int{0, 1}
 }
-
 func (m *PushServiceServerInfo_Reply) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *PushServiceServerInfo_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_PushServiceServerInfo_Reply.Marshal(b, m, deterministic)
@@ -263,15 +248,12 @@ func (m *PushServiceServerInfo_Reply) XXX_Marshal(b []byte, deterministic bool) 
 		return b[:n], nil
 	}
 }
-
 func (m *PushServiceServerInfo_Reply) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_PushServiceServerInfo_Reply.Merge(m, src)
 }
-
 func (m *PushServiceServerInfo_Reply) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *PushServiceServerInfo_Reply) XXX_DiscardUnknown() {
 	xxx_messageInfo_PushServiceServerInfo_Reply.DiscardUnknown(m)
 }
@@ -306,11 +288,9 @@ func (*PushServiceSupportedTokenType) ProtoMessage()    {}
 func (*PushServiceSupportedTokenType) Descriptor() ([]byte, []int) {
 	return fileDescriptor_c5d464d796a95f49, []int{1}
 }
-
 func (m *PushServiceSupportedTokenType) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *PushServiceSupportedTokenType) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_PushServiceSupportedTokenType.Marshal(b, m, deterministic)
@@ -323,15 +303,12 @@ func (m *PushServiceSupportedTokenType) XXX_Marshal(b []byte, deterministic bool
 		return b[:n], nil
 	}
 }
-
 func (m *PushServiceSupportedTokenType) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_PushServiceSupportedTokenType.Merge(m, src)
 }
-
 func (m *PushServiceSupportedTokenType) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *PushServiceSupportedTokenType) XXX_DiscardUnknown() {
 	xxx_messageInfo_PushServiceSupportedTokenType.DiscardUnknown(m)
 }
@@ -364,11 +341,9 @@ func (*PushServiceSend) ProtoMessage()    {}
 func (*PushServiceSend) Descriptor() ([]byte, []int) {
 	return fileDescriptor_c5d464d796a95f49, []int{2}
 }
-
 func (m *PushServiceSend) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *PushServiceSend) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_PushServiceSend.Marshal(b, m, deterministic)
@@ -381,15 +356,12 @@ func (m *PushServiceSend) XXX_Marshal(b []byte, deterministic bool) ([]byte, err
 		return b[:n], nil
 	}
 }
-
 func (m *PushServiceSend) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_PushServiceSend.Merge(m, src)
 }
-
 func (m *PushServiceSend) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *PushServiceSend) XXX_DiscardUnknown() {
 	xxx_messageInfo_PushServiceSend.DiscardUnknown(m)
 }
@@ -411,11 +383,9 @@ func (*PushServiceSend_Request) ProtoMessage()    {}
 func (*PushServiceSend_Request) Descriptor() ([]byte, []int) {
 	return fileDescriptor_c5d464d796a95f49, []int{2, 0}
 }
-
 func (m *PushServiceSend_Request) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *PushServiceSend_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_PushServiceSend_Request.Marshal(b, m, deterministic)
@@ -428,15 +398,12 @@ func (m *PushServiceSend_Request) XXX_Marshal(b []byte, deterministic bool) ([]b
 		return b[:n], nil
 	}
 }
-
 func (m *PushServiceSend_Request) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_PushServiceSend_Request.Merge(m, src)
 }
-
 func (m *PushServiceSend_Request) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *PushServiceSend_Request) XXX_DiscardUnknown() {
 	xxx_messageInfo_PushServiceSend_Request.DiscardUnknown(m)
 }
@@ -476,11 +443,9 @@ func (*PushServiceSend_Reply) ProtoMessage()    {}
 func (*PushServiceSend_Reply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_c5d464d796a95f49, []int{2, 1}
 }
-
 func (m *PushServiceSend_Reply) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *PushServiceSend_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_PushServiceSend_Reply.Marshal(b, m, deterministic)
@@ -493,15 +458,12 @@ func (m *PushServiceSend_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byt
 		return b[:n], nil
 	}
 }
-
 func (m *PushServiceSend_Reply) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_PushServiceSend_Reply.Merge(m, src)
 }
-
 func (m *PushServiceSend_Reply) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *PushServiceSend_Reply) XXX_DiscardUnknown() {
 	xxx_messageInfo_PushServiceSend_Reply.DiscardUnknown(m)
 }
@@ -523,11 +485,9 @@ func (*OutOfStoreMessageEnvelope) ProtoMessage()    {}
 func (*OutOfStoreMessageEnvelope) Descriptor() ([]byte, []int) {
 	return fileDescriptor_c5d464d796a95f49, []int{3}
 }
-
 func (m *OutOfStoreMessageEnvelope) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *OutOfStoreMessageEnvelope) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_OutOfStoreMessageEnvelope.Marshal(b, m, deterministic)
@@ -540,15 +500,12 @@ func (m *OutOfStoreMessageEnvelope) XXX_Marshal(b []byte, deterministic bool) ([
 		return b[:n], nil
 	}
 }
-
 func (m *OutOfStoreMessageEnvelope) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_OutOfStoreMessageEnvelope.Merge(m, src)
 }
-
 func (m *OutOfStoreMessageEnvelope) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *OutOfStoreMessageEnvelope) XXX_DiscardUnknown() {
 	xxx_messageInfo_OutOfStoreMessageEnvelope.DiscardUnknown(m)
 }
@@ -590,11 +547,9 @@ func (*PushExposedData) ProtoMessage()    {}
 func (*PushExposedData) Descriptor() ([]byte, []int) {
 	return fileDescriptor_c5d464d796a95f49, []int{4}
 }
-
 func (m *PushExposedData) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *PushExposedData) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_PushExposedData.Marshal(b, m, deterministic)
@@ -607,15 +562,12 @@ func (m *PushExposedData) XXX_Marshal(b []byte, deterministic bool) ([]byte, err
 		return b[:n], nil
 	}
 }
-
 func (m *PushExposedData) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_PushExposedData.Merge(m, src)
 }
-
 func (m *PushExposedData) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *PushExposedData) XXX_DiscardUnknown() {
 	xxx_messageInfo_PushExposedData.DiscardUnknown(m)
 }
@@ -650,11 +602,9 @@ func (*PushServiceOpaqueReceiver) ProtoMessage()    {}
 func (*PushServiceOpaqueReceiver) Descriptor() ([]byte, []int) {
 	return fileDescriptor_c5d464d796a95f49, []int{5}
 }
-
 func (m *PushServiceOpaqueReceiver) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *PushServiceOpaqueReceiver) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_PushServiceOpaqueReceiver.Marshal(b, m, deterministic)
@@ -667,15 +617,12 @@ func (m *PushServiceOpaqueReceiver) XXX_Marshal(b []byte, deterministic bool) ([
 		return b[:n], nil
 	}
 }
-
 func (m *PushServiceOpaqueReceiver) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_PushServiceOpaqueReceiver.Merge(m, src)
 }
-
 func (m *PushServiceOpaqueReceiver) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *PushServiceOpaqueReceiver) XXX_DiscardUnknown() {
 	xxx_messageInfo_PushServiceOpaqueReceiver.DiscardUnknown(m)
 }
@@ -721,11 +668,9 @@ func (*DecryptedPush) ProtoMessage()    {}
 func (*DecryptedPush) Descriptor() ([]byte, []int) {
 	return fileDescriptor_c5d464d796a95f49, []int{6}
 }
-
 func (m *DecryptedPush) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *DecryptedPush) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_DecryptedPush.Marshal(b, m, deterministic)
@@ -738,15 +683,12 @@ func (m *DecryptedPush) XXX_Marshal(b []byte, deterministic bool) ([]byte, error
 		return b[:n], nil
 	}
 }
-
 func (m *DecryptedPush) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_DecryptedPush.Merge(m, src)
 }
-
 func (m *DecryptedPush) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *DecryptedPush) XXX_DiscardUnknown() {
 	xxx_messageInfo_DecryptedPush.DiscardUnknown(m)
 }
@@ -864,11 +806,9 @@ func (*FormatedPush) ProtoMessage()    {}
 func (*FormatedPush) Descriptor() ([]byte, []int) {
 	return fileDescriptor_c5d464d796a95f49, []int{7}
 }
-
 func (m *FormatedPush) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *FormatedPush) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_FormatedPush.Marshal(b, m, deterministic)
@@ -881,15 +821,12 @@ func (m *FormatedPush) XXX_Marshal(b []byte, deterministic bool) ([]byte, error)
 		return b[:n], nil
 	}
 }
-
 func (m *FormatedPush) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_FormatedPush.Merge(m, src)
 }
-
 func (m *FormatedPush) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *FormatedPush) XXX_DiscardUnknown() {
 	xxx_messageInfo_FormatedPush.DiscardUnknown(m)
 }
@@ -1053,10 +990,8 @@ var fileDescriptor_c5d464d796a95f49 = []byte{
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
-var (
-	_ context.Context
-	_ grpc.ClientConn
-)
+var _ context.Context
+var _ grpc.ClientConn
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
@@ -1107,12 +1042,12 @@ type PushServiceServer interface {
 }
 
 // UnimplementedPushServiceServer can be embedded to have forward compatible implementations.
-type UnimplementedPushServiceServer struct{}
+type UnimplementedPushServiceServer struct {
+}
 
 func (*UnimplementedPushServiceServer) ServerInfo(ctx context.Context, req *PushServiceServerInfo_Request) (*PushServiceServerInfo_Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ServerInfo not implemented")
 }
-
 func (*UnimplementedPushServiceServer) Send(ctx context.Context, req *PushServiceSend_Request) (*PushServiceSend_Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Send not implemented")
 }
@@ -1783,7 +1718,6 @@ func encodeVarintPushtypes(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-
 func (m *PushServiceServerInfo) Size() (n int) {
 	if m == nil {
 		return 0
@@ -2065,11 +1999,9 @@ func (m *FormatedPush) Size() (n int) {
 func sovPushtypes(x uint64) (n int) {
 	return (math_bits.Len64(x|1) + 6) / 7
 }
-
 func sozPushtypes(x uint64) (n int) {
 	return sovPushtypes(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-
 func (m *PushServiceServerInfo) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -2121,7 +2053,6 @@ func (m *PushServiceServerInfo) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *PushServiceServerInfo_Request) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -2173,7 +2104,6 @@ func (m *PushServiceServerInfo_Request) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *PushServiceServerInfo_Reply) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -2293,7 +2223,6 @@ func (m *PushServiceServerInfo_Reply) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *PushServiceSupportedTokenType) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -2396,7 +2325,6 @@ func (m *PushServiceSupportedTokenType) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *PushServiceSend) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -2448,7 +2376,6 @@ func (m *PushServiceSend) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *PushServiceSend_Request) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -2589,7 +2516,6 @@ func (m *PushServiceSend_Request) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *PushServiceSend_Reply) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -2641,7 +2567,6 @@ func (m *PushServiceSend_Reply) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *OutOfStoreMessageEnvelope) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -2795,7 +2720,6 @@ func (m *OutOfStoreMessageEnvelope) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *PushExposedData) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -2915,7 +2839,6 @@ func (m *PushExposedData) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *PushServiceOpaqueReceiver) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -3033,7 +2956,6 @@ func (m *PushServiceOpaqueReceiver) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *DecryptedPush) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -3440,7 +3362,6 @@ func (m *DecryptedPush) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *FormatedPush) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -3711,7 +3632,6 @@ func (m *FormatedPush) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func skipPushtypes(dAtA []byte) (n int, err error) {
 	l := len(dAtA)
 	iNdEx := 0

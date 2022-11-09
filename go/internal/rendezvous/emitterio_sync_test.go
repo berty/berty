@@ -8,10 +8,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/libp2p/go-libp2p-core/host"
-	rendezvous "github.com/libp2p/go-libp2p-rendezvous"
-	db "github.com/libp2p/go-libp2p-rendezvous/db/sqlcipher"
-	"github.com/libp2p/go-libp2p-rendezvous/test_utils"
+	rendezvous "github.com/berty/go-libp2p-rendezvous"
+	db "github.com/berty/go-libp2p-rendezvous/db/sqlcipher"
+	"github.com/berty/go-libp2p-rendezvous/test_utils"
+	"github.com/libp2p/go-libp2p/core/host"
+	mocknet "github.com/libp2p/go-libp2p/p2p/net/mock"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/zap"
 
@@ -56,8 +57,11 @@ func TestEmitterIOFlow(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
+	mn := mocknet.New()
+	defer mn.Close()
+
 	// Instantiate server and clients
-	hosts := test_utils.GetRendezvousHosts(t, ctx, 4)
+	hosts := test_utils.GetRendezvousHosts(t, ctx, mn, 4)
 	for _, h := range hosts {
 		t.Cleanup(func() {
 			_ = h.Close()

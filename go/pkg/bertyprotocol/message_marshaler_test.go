@@ -1,7 +1,6 @@
 package bertyprotocol
 
 import (
-	"context"
 	"testing"
 	"time"
 
@@ -31,7 +30,9 @@ func TestRotationMessageMarshaler(t *testing.T) {
 		Heads:   []*entry.Entry{},
 	}
 
-	mn := mocknet.New(context.Background())
+	mn := mocknet.New()
+	defer mn.Close()
+
 	p, err := mn.GenPeer()
 	require.NoError(t, err)
 
@@ -63,7 +64,9 @@ func TestRotationMessageMarshaler(t *testing.T) {
 }
 
 func TestRotationMessageMarshalUnknownTopic(t *testing.T) {
-	mn := mocknet.New(context.Background())
+	mn := mocknet.New()
+	defer mn.Close()
+
 	msg := &iface.MessageExchangeHeads{
 		Address: "address_1",
 		Heads:   []*entry.Entry{},
@@ -86,7 +89,9 @@ func TestRotationMessageMarshalUnknownTopic(t *testing.T) {
 }
 
 func TestRotationMessageUnmarshalUnknownTopic(t *testing.T) {
-	mn := mocknet.New(context.Background())
+	mn := mocknet.New()
+	defer mn.Close()
+
 	msg := &iface.MessageExchangeHeads{
 		Address: "address_1",
 		Heads:   []*entry.Entry{},
@@ -143,7 +148,9 @@ func TestRotationMessageUnmarshalUnknownTopic(t *testing.T) {
 }
 
 func TestRotationMessageMarshalWrongKey(t *testing.T) {
-	mn := mocknet.New(context.Background())
+	mn := mocknet.New()
+	defer mn.Close()
+
 	msg := &iface.MessageExchangeHeads{
 		Address: "address_1",
 		Heads:   []*entry.Entry{},

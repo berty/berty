@@ -5,20 +5,17 @@ package verifiablecredstypes
 
 import (
 	fmt "fmt"
+	_ "github.com/gogo/protobuf/gogoproto"
+	proto "github.com/gogo/protobuf/proto"
 	io "io"
 	math "math"
 	math_bits "math/bits"
-
-	_ "github.com/gogo/protobuf/gogoproto"
-	proto "github.com/gogo/protobuf/proto"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
-var (
-	_ = proto.Marshal
-	_ = fmt.Errorf
-	_ = math.Inf
-)
+var _ = proto.Marshal
+var _ = fmt.Errorf
+var _ = math.Inf
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the proto package it is being compiled against.
@@ -112,11 +109,9 @@ func (*StateChallenge) ProtoMessage()    {}
 func (*StateChallenge) Descriptor() ([]byte, []int) {
 	return fileDescriptor_7caa6e71b2153f26, []int{0}
 }
-
 func (m *StateChallenge) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *StateChallenge) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_StateChallenge.Marshal(b, m, deterministic)
@@ -129,15 +124,12 @@ func (m *StateChallenge) XXX_Marshal(b []byte, deterministic bool) ([]byte, erro
 		return b[:n], nil
 	}
 }
-
 func (m *StateChallenge) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_StateChallenge.Merge(m, src)
 }
-
 func (m *StateChallenge) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *StateChallenge) XXX_DiscardUnknown() {
 	xxx_messageInfo_StateChallenge.DiscardUnknown(m)
 }
@@ -199,11 +191,9 @@ func (*StateCode) ProtoMessage()    {}
 func (*StateCode) Descriptor() ([]byte, []int) {
 	return fileDescriptor_7caa6e71b2153f26, []int{1}
 }
-
 func (m *StateCode) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *StateCode) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_StateCode.Marshal(b, m, deterministic)
@@ -216,15 +206,12 @@ func (m *StateCode) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return b[:n], nil
 	}
 }
-
 func (m *StateCode) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_StateCode.Merge(m, src)
 }
-
 func (m *StateCode) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *StateCode) XXX_DiscardUnknown() {
 	xxx_messageInfo_StateCode.DiscardUnknown(m)
 }
@@ -293,11 +280,9 @@ func (*AccountCryptoChallenge) ProtoMessage()    {}
 func (*AccountCryptoChallenge) Descriptor() ([]byte, []int) {
 	return fileDescriptor_7caa6e71b2153f26, []int{2}
 }
-
 func (m *AccountCryptoChallenge) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *AccountCryptoChallenge) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_AccountCryptoChallenge.Marshal(b, m, deterministic)
@@ -310,15 +295,12 @@ func (m *AccountCryptoChallenge) XXX_Marshal(b []byte, deterministic bool) ([]by
 		return b[:n], nil
 	}
 }
-
 func (m *AccountCryptoChallenge) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_AccountCryptoChallenge.Merge(m, src)
 }
-
 func (m *AccountCryptoChallenge) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *AccountCryptoChallenge) XXX_DiscardUnknown() {
 	xxx_messageInfo_AccountCryptoChallenge.DiscardUnknown(m)
 }
@@ -344,11 +326,9 @@ func (*SendVerificationCode) ProtoMessage()    {}
 func (*SendVerificationCode) Descriptor() ([]byte, []int) {
 	return fileDescriptor_7caa6e71b2153f26, []int{3}
 }
-
 func (m *SendVerificationCode) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *SendVerificationCode) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_SendVerificationCode.Marshal(b, m, deterministic)
@@ -361,15 +341,12 @@ func (m *SendVerificationCode) XXX_Marshal(b []byte, deterministic bool) ([]byte
 		return b[:n], nil
 	}
 }
-
 func (m *SendVerificationCode) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_SendVerificationCode.Merge(m, src)
 }
-
 func (m *SendVerificationCode) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *SendVerificationCode) XXX_DiscardUnknown() {
 	xxx_messageInfo_SendVerificationCode.DiscardUnknown(m)
 }
@@ -392,11 +369,9 @@ func (*SendVerificationCode_Request) ProtoMessage()    {}
 func (*SendVerificationCode_Request) Descriptor() ([]byte, []int) {
 	return fileDescriptor_7caa6e71b2153f26, []int{3, 0}
 }
-
 func (m *SendVerificationCode_Request) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *SendVerificationCode_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_SendVerificationCode_Request.Marshal(b, m, deterministic)
@@ -409,15 +384,12 @@ func (m *SendVerificationCode_Request) XXX_Marshal(b []byte, deterministic bool)
 		return b[:n], nil
 	}
 }
-
 func (m *SendVerificationCode_Request) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_SendVerificationCode_Request.Merge(m, src)
 }
-
 func (m *SendVerificationCode_Request) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *SendVerificationCode_Request) XXX_DiscardUnknown() {
 	xxx_messageInfo_SendVerificationCode_Request.DiscardUnknown(m)
 }
@@ -464,11 +436,9 @@ func (*SendVerificationCode_Reply) ProtoMessage()    {}
 func (*SendVerificationCode_Reply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_7caa6e71b2153f26, []int{3, 1}
 }
-
 func (m *SendVerificationCode_Reply) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *SendVerificationCode_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_SendVerificationCode_Reply.Marshal(b, m, deterministic)
@@ -481,15 +451,12 @@ func (m *SendVerificationCode_Reply) XXX_Marshal(b []byte, deterministic bool) (
 		return b[:n], nil
 	}
 }
-
 func (m *SendVerificationCode_Reply) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_SendVerificationCode_Reply.Merge(m, src)
 }
-
 func (m *SendVerificationCode_Reply) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *SendVerificationCode_Reply) XXX_DiscardUnknown() {
 	xxx_messageInfo_SendVerificationCode_Reply.DiscardUnknown(m)
 }
@@ -508,11 +475,9 @@ func (*ValidateIdentifier) ProtoMessage()    {}
 func (*ValidateIdentifier) Descriptor() ([]byte, []int) {
 	return fileDescriptor_7caa6e71b2153f26, []int{4}
 }
-
 func (m *ValidateIdentifier) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *ValidateIdentifier) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_ValidateIdentifier.Marshal(b, m, deterministic)
@@ -525,15 +490,12 @@ func (m *ValidateIdentifier) XXX_Marshal(b []byte, deterministic bool) ([]byte, 
 		return b[:n], nil
 	}
 }
-
 func (m *ValidateIdentifier) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ValidateIdentifier.Merge(m, src)
 }
-
 func (m *ValidateIdentifier) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *ValidateIdentifier) XXX_DiscardUnknown() {
 	xxx_messageInfo_ValidateIdentifier.DiscardUnknown(m)
 }
@@ -553,11 +515,9 @@ func (*ValidateIdentifier_Request) ProtoMessage()    {}
 func (*ValidateIdentifier_Request) Descriptor() ([]byte, []int) {
 	return fileDescriptor_7caa6e71b2153f26, []int{4, 0}
 }
-
 func (m *ValidateIdentifier_Request) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *ValidateIdentifier_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_ValidateIdentifier_Request.Marshal(b, m, deterministic)
@@ -570,15 +530,12 @@ func (m *ValidateIdentifier_Request) XXX_Marshal(b []byte, deterministic bool) (
 		return b[:n], nil
 	}
 }
-
 func (m *ValidateIdentifier_Request) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ValidateIdentifier_Request.Merge(m, src)
 }
-
 func (m *ValidateIdentifier_Request) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *ValidateIdentifier_Request) XXX_DiscardUnknown() {
 	xxx_messageInfo_ValidateIdentifier_Request.DiscardUnknown(m)
 }
@@ -605,11 +562,9 @@ func (*ValidateIdentifier_Reply) ProtoMessage()    {}
 func (*ValidateIdentifier_Reply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_7caa6e71b2153f26, []int{4, 1}
 }
-
 func (m *ValidateIdentifier_Reply) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *ValidateIdentifier_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_ValidateIdentifier_Reply.Marshal(b, m, deterministic)
@@ -622,15 +577,12 @@ func (m *ValidateIdentifier_Reply) XXX_Marshal(b []byte, deterministic bool) ([]
 		return b[:n], nil
 	}
 }
-
 func (m *ValidateIdentifier_Reply) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_ValidateIdentifier_Reply.Merge(m, src)
 }
-
 func (m *ValidateIdentifier_Reply) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *ValidateIdentifier_Reply) XXX_DiscardUnknown() {
 	xxx_messageInfo_ValidateIdentifier_Reply.DiscardUnknown(m)
 }
@@ -1086,7 +1038,6 @@ func encodeVarintBertyverifiablecreds(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-
 func (m *StateChallenge) Size() (n int) {
 	if m == nil {
 		return 0
@@ -1273,11 +1224,9 @@ func (m *ValidateIdentifier_Reply) Size() (n int) {
 func sovBertyverifiablecreds(x uint64) (n int) {
 	return (math_bits.Len64(x|1) + 6) / 7
 }
-
 func sozBertyverifiablecreds(x uint64) (n int) {
 	return sovBertyverifiablecreds(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-
 func (m *StateChallenge) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1493,7 +1442,6 @@ func (m *StateChallenge) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *StateCode) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1758,7 +1706,6 @@ func (m *StateCode) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *AccountCryptoChallenge) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1842,7 +1789,6 @@ func (m *AccountCryptoChallenge) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *SendVerificationCode) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1894,7 +1840,6 @@ func (m *SendVerificationCode) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *SendVerificationCode_Request) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -2074,7 +2019,6 @@ func (m *SendVerificationCode_Request) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *SendVerificationCode_Reply) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -2126,7 +2070,6 @@ func (m *SendVerificationCode_Reply) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *ValidateIdentifier) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -2178,7 +2121,6 @@ func (m *ValidateIdentifier) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *ValidateIdentifier_Request) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -2262,7 +2204,6 @@ func (m *ValidateIdentifier_Request) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *ValidateIdentifier_Reply) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -2346,7 +2287,6 @@ func (m *ValidateIdentifier_Reply) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func skipBertyverifiablecreds(dAtA []byte) (n int, err error) {
 	l := len(dAtA)
 	iNdEx := 0

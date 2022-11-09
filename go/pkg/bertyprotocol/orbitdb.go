@@ -11,9 +11,9 @@ import (
 	"github.com/ipfs/go-datastore"
 	ds_sync "github.com/ipfs/go-datastore/sync"
 	coreapi "github.com/ipfs/interface-go-ipfs-core"
-	"github.com/libp2p/go-eventbus"
-	"github.com/libp2p/go-libp2p-core/crypto"
-	peer "github.com/libp2p/go-libp2p-core/peer"
+	"github.com/libp2p/go-libp2p/core/crypto"
+	peer "github.com/libp2p/go-libp2p/core/peer"
+	"github.com/libp2p/go-libp2p/p2p/host/eventbus"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 

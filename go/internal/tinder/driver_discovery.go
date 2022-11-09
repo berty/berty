@@ -4,10 +4,10 @@ import (
 	"context"
 	"time"
 
-	"github.com/libp2p/go-libp2p-core/discovery"
-	"github.com/libp2p/go-libp2p-core/peer"
-	"github.com/libp2p/go-libp2p-core/routing"
-	p2p_disc "github.com/libp2p/go-libp2p-discovery"
+	"github.com/libp2p/go-libp2p/core/discovery"
+	"github.com/libp2p/go-libp2p/core/peer"
+	"github.com/libp2p/go-libp2p/core/routing"
+	disc_routing "github.com/libp2p/go-libp2p/p2p/discovery/routing"
 )
 
 type DiscoveryDriver struct {
@@ -16,7 +16,7 @@ type DiscoveryDriver struct {
 }
 
 func NewRoutingDiscoveryDriver(name string, routing routing.Routing) IDriver {
-	disc := p2p_disc.NewRoutingDiscovery(routing)
+	disc := disc_routing.NewRoutingDiscovery(routing)
 	return NewDiscoveryDriver(name, disc)
 }
 

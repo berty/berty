@@ -5,7 +5,7 @@ go 1.15
 require (
 	github.com/ipfs/go-log v1.0.4
 	github.com/libp2p/go-libp2p v0.13.0
-	github.com/libp2p/go-libp2p-core v0.8.0
+	github.com/libp2p/go-libp2p/core v0.8.0
 	github.com/libp2p/go-libp2p-kad-dht v0.11.1
 	github.com/libp2p/go-libp2p-peer v0.2.0
 	github.com/libp2p/go-libp2p-peerstore v0.2.6

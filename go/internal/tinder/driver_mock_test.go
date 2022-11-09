@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/libp2p/go-libp2p-core/peer"
+	"github.com/libp2p/go-libp2p/core/peer"
 	mocknet "github.com/libp2p/go-libp2p/p2p/net/mock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -17,7 +17,8 @@ func TestMockAdvertise(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	mn := mocknet.New(ctx)
+	mn := mocknet.New()
+	defer mn.Close()
 
 	p1, err := mn.GenPeer()
 	require.NoError(t, err)
@@ -41,7 +42,8 @@ func TestMockFindPeers(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	mn := mocknet.New(ctx)
+	mn := mocknet.New()
+	defer mn.Close()
 
 	p1, err := mn.GenPeer()
 	require.NoError(t, err)
@@ -87,10 +89,8 @@ func TestMockFindPeers(t *testing.T) {
 func TestMockSubscribe(t *testing.T) {
 	const topic = "test_topic'"
 
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
-
-	mn := mocknet.New(ctx)
+	mn := mocknet.New()
+	defer mn.Close()
 
 	p1, err := mn.GenPeer()
 	require.NoError(t, err)
@@ -150,7 +150,8 @@ func TestMockUnregister(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	mn := mocknet.New(ctx)
+	mn := mocknet.New()
+	defer mn.Close()
 
 	p1, err := mn.GenPeer()
 	require.NoError(t, err)

@@ -16,9 +16,9 @@ import (
 
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"github.com/google/uuid"
-	crypto "github.com/libp2p/go-libp2p-core/crypto"
-	pb "github.com/libp2p/go-libp2p-core/crypto/pb"
-	libp2p_peer "github.com/libp2p/go-libp2p-core/peer"
+	crypto "github.com/libp2p/go-libp2p/core/crypto"
+	pb "github.com/libp2p/go-libp2p/core/crypto/pb"
+	libp2p_peer "github.com/libp2p/go-libp2p/core/peer"
 	ma "github.com/multiformats/go-multiaddr"
 )
 

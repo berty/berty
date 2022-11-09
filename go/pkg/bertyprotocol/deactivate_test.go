@@ -22,7 +22,7 @@ import (
 // 	defer cleanup()
 
 // 	opts := bertyprotocol.TestingOpts{
-// 		Mocknet:     libp2p_mocknet.New(ctx),
+// 		Mocknet:     libp2p_mocknet.New(),
 // 		Logger:      logger,
 // 		ConnectFunc: bertyprotocol.ConnectAll,
 // 	}
@@ -59,7 +59,7 @@ func TestDeactivateGroup(t *testing.T) {
 	defer cleanup()
 
 	opts := bertyprotocol.TestingOpts{
-		Mocknet:     libp2p_mocknet.New(ctx),
+		Mocknet:     libp2p_mocknet.New(),
 		Logger:      logger,
 		ConnectFunc: bertyprotocol.ConnectAll,
 	}

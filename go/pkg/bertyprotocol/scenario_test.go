@@ -541,13 +541,11 @@ func TestScenario_ReplicateMessage(t *testing.T) {
 func testingScenario(t *testing.T, tcs []testCase, tf testFunc) {
 	if os.Getenv("WITH_GOLEAK") == "1" {
 		defer goleak.VerifyNone(t,
-			goleak.IgnoreTopFunction("github.com/syndtr/goleveldb/leveldb.(*DB).mpoolDrain"),           // inherited from one of the imports (init)
-			goleak.IgnoreTopFunction("github.com/ipfs/go-log/writer.(*MirrorWriter).logRoutine"),       // inherited from one of the imports (init)
-			goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p-connmgr.(*BasicConnMgr).background"), // inherited from github.com/ipfs/go-ipfs/core.NewNode
-			goleak.IgnoreTopFunction("github.com/jbenet/goprocess/periodic.callOnTicker.func1"),        // inherited from github.com/ipfs/go-ipfs/core.NewNode
-			goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p-connmgr.(*decayer).process"),         // inherited from github.com/ipfs/go-ipfs/core.NewNode)
-			goleak.IgnoreTopFunction("go.opencensus.io/stats/view.(*worker).start"),                    // inherited from github.com/ipfs/go-ipfs/core.NewNode)
-			goleak.IgnoreTopFunction("github.com/desertbit/timer.timerRoutine"),                        // inherited from github.com/ipfs/go-ipfs/core.NewNode)
+			goleak.IgnoreTopFunction("github.com/syndtr/goleveldb/leveldb.(*DB).mpoolDrain"),     // inherited from one of the imports (init)
+			goleak.IgnoreTopFunction("github.com/ipfs/go-log/writer.(*MirrorWriter).logRoutine"), // inherited from one of the imports (init)
+			goleak.IgnoreTopFunction("github.com/jbenet/goprocess/periodic.callOnTicker.func1"),  // inherited from github.com/ipfs/kubo/core.NewNode
+			goleak.IgnoreTopFunction("go.opencensus.io/stats/view.(*worker).start"),              // inherited from github.com/ipfs/kubo/core.NewNode)
+			goleak.IgnoreTopFunction("github.com/desertbit/timer.timerRoutine"),                  // inherited from github.com/ipfs/kubo/core.NewNode)
 			goleak.IgnoreTopFunction("go.opentelemetry.io/otel/instrumentation/grpctrace.wrapClientStream.func1"),
 			goleak.IgnoreTopFunction("go.opentelemetry.io/otel/instrumentation/grpctrace.StreamClientInterceptor.func1.1"),
 		)
@@ -559,11 +557,15 @@ func testingScenario(t *testing.T, tcs []testCase, tf testFunc) {
 
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
+
 			logger, cleanup := testutil.Logger(t)
 			defer cleanup()
 
+			mn := libp2p_mocknet.New()
+			defer mn.Close()
+
 			opts := bertyprotocol.TestingOpts{
-				Mocknet:     libp2p_mocknet.New(ctx),
+				Mocknet:     mn,
 				Logger:      logger,
 				ConnectFunc: tc.ConnectFunc,
 			}
@@ -588,13 +590,11 @@ func testingScenario(t *testing.T, tcs []testCase, tf testFunc) {
 func testingScenarioNonMocked(t *testing.T, tcs []testCase, tf testFunc) {
 	if os.Getenv("WITH_GOLEAK") == "1" {
 		defer goleak.VerifyNone(t,
-			goleak.IgnoreTopFunction("github.com/syndtr/goleveldb/leveldb.(*DB).mpoolDrain"),           // inherited from one of the imports (init)
-			goleak.IgnoreTopFunction("github.com/ipfs/go-log/writer.(*MirrorWriter).logRoutine"),       // inherited from one of the imports (init)
-			goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p-connmgr.(*BasicConnMgr).background"), // inherited from github.com/ipfs/go-ipfs/core.NewNode
-			goleak.IgnoreTopFunction("github.com/jbenet/goprocess/periodic.callOnTicker.func1"),        // inherited from github.com/ipfs/go-ipfs/core.NewNode
-			goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p-connmgr.(*decayer).process"),         // inherited from github.com/ipfs/go-ipfs/core.NewNode)
-			goleak.IgnoreTopFunction("go.opencensus.io/stats/view.(*worker).start"),                    // inherited from github.com/ipfs/go-ipfs/core.NewNode)
-			goleak.IgnoreTopFunction("github.com/desertbit/timer.timerRoutine"),                        // inherited from github.com/ipfs/go-ipfs/core.NewNode)
+			goleak.IgnoreTopFunction("github.com/syndtr/goleveldb/leveldb.(*DB).mpoolDrain"),     // inherited from one of the imports (init)
+			goleak.IgnoreTopFunction("github.com/ipfs/go-log/writer.(*MirrorWriter).logRoutine"), // inherited from one of the imports (init)
+			goleak.IgnoreTopFunction("github.com/jbenet/goprocess/periodic.callOnTicker.func1"),  // inherited from github.com/ipfs/kubo/core.NewNode
+			goleak.IgnoreTopFunction("go.opencensus.io/stats/view.(*worker).start"),              // inherited from github.com/ipfs/kubo/core.NewNode)
+			goleak.IgnoreTopFunction("github.com/desertbit/timer.timerRoutine"),                  // inherited from github.com/ipfs/kubo/core.NewNode)
 			goleak.IgnoreTopFunction("go.opentelemetry.io/otel/instrumentation/grpctrace.wrapClientStream.func1"),
 			goleak.IgnoreTopFunction("go.opentelemetry.io/otel/instrumentation/grpctrace.StreamClientInterceptor.func1.1"),
 		)
@@ -606,11 +606,15 @@ func testingScenarioNonMocked(t *testing.T, tcs []testCase, tf testFunc) {
 
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
+
 			logger, cleanup := testutil.Logger(t)
 			defer cleanup()
 
+			mn := libp2p_mocknet.New()
+			defer mn.Close()
+
 			opts := bertyprotocol.TestingOpts{
-				Mocknet:     libp2p_mocknet.New(ctx),
+				Mocknet:     mn,
 				Logger:      logger,
 				ConnectFunc: tc.ConnectFunc,
 			}

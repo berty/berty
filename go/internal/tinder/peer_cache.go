@@ -5,8 +5,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/libp2p/go-libp2p-core/peer"
-	"github.com/libp2p/go-libp2p-peerstore/addr"
+	"github.com/libp2p/go-libp2p/core/peer"
+	ma "github.com/multiformats/go-multiaddr"
 
 	"berty.tech/berty/v2/go/internal/notify"
 )
@@ -154,10 +154,27 @@ func (c *peersCache) getTopicUpdate(topic string) *topicUpdate {
 }
 
 func mergeAddrInfos(prevAi, newAi peer.AddrInfo) *peer.AddrInfo {
-	combinedAddrs := addr.UniqueSource(addr.Slice(prevAi.Addrs), addr.Slice(newAi.Addrs)).Addrs()
+	combinedAddrs := uniqueAddrs(prevAi.Addrs, newAi.Addrs)
 	if len(combinedAddrs) > len(prevAi.Addrs) {
 		combinedAi := &peer.AddrInfo{ID: prevAi.ID, Addrs: combinedAddrs}
 		return combinedAi
 	}
 	return nil
+}
+
+// mergeAddrs merges input address lists, leave only unique addresses
+func uniqueAddrs(addrss ...[]ma.Multiaddr) (uniqueAddrs []ma.Multiaddr) {
+	exists := make(map[string]bool)
+	for _, addrs := range addrss {
+		for _, addr := range addrs {
+			k := string(addr.Bytes())
+			if exists[k] {
+				continue
+			}
+
+			exists[k] = true
+			uniqueAddrs = append(uniqueAddrs, addr)
+		}
+	}
+	return uniqueAddrs
 }
