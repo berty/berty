@@ -203,7 +203,7 @@ targets:
     postBuildScripts:
     - name: Bundle React Native code and images
       script: |
-        export NODE_BINARY=node
+        export NODE_BINARY="$(zsh -ilc 'asdf which node' 2> /dev/null || echo node)"
         export ENTRY_FILE=index.ts
         ../node_modules/react-native/scripts/react-native-xcode.sh
 

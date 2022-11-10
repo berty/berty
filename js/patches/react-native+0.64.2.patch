@@ -11,7 +11,7 @@ index dd34c98..f406bbe 100644
  
          packageTask.dependsOn(currentAssetsCopyTask)
 diff --git a/node_modules/react-native/scripts/react_native_pods.rb b/node_modules/react-native/scripts/react_native_pods.rb
-index db9a34a..86d02ac 100644
+index db9a34a..8c125ff 100644
 --- a/node_modules/react-native/scripts/react_native_pods.rb
 +++ b/node_modules/react-native/scripts/react_native_pods.rb
 @@ -165,7 +165,9 @@ def use_react_native_codegen!(spec, options={})
@@ -30,7 +30,7 @@ index db9a34a..86d02ac 100644
      :input_files => [srcs_dir],
      :output_files => ["$(DERIVED_FILE_DIR)/codegen-#{codegen_modules_library_name}.log"].concat(generated_files),
 -    :script => "set -o pipefail\n\nbash -l -c '#{env_vars} CODEGEN_MODULES_LIBRARY_NAME=#{codegen_modules_library_name} #{File.join(__dir__, "generate-specs.sh")}' 2>&1 | tee \"${SCRIPT_OUTPUT_FILE_0}\"",
-+    :script => "set -o pipefail\n\nbash -l -c '#{env_vars} CODEGEN_MODULES_LIBRARY_NAME=#{codegen_modules_library_name} ../../node_modules/react-native/scripts/generate-specs.sh' 2>&1 | tee \"${SCRIPT_OUTPUT_FILE_0}\"",
++    :script => "set -o pipefail\nexport NODE_BINARY=\"$(zsh -ilc 'asdf which node' 2> /dev/null || echo '')\"\nbash -l -c '#{env_vars} CODEGEN_MODULES_LIBRARY_NAME=#{codegen_modules_library_name} ../../node_modules/react-native/scripts/generate-specs.sh' 2>&1 | tee \"${SCRIPT_OUTPUT_FILE_0}\"",
      :execution_position => :before_compile,
      :show_env_vars_in_log => true
    }
