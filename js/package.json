@@ -47,7 +47,7 @@
     "protobufjs": "^6.10.2",
     "react": "17.0.2",
     "react-i18next": "^11.14.3",
-    "react-native": "0.64.2",
+    "react-native": "0.64.4",
     "react-native-android-keyboard-adjust": "^1.2.0",
     "react-native-bootsplash": "^3.2.6",
     "react-native-document-picker": "^7.1.1",
