@@ -2,64 +2,64 @@
   "auth": {
     "services": {
       "rpl": {
-        "name": "",
-        "description": "",
-        "benefitBadge": ""
+        "name": "Reproduktion",
+        "description": "Denne tjeneste vil automatisk reproducere dine samtaler for at give din enhed den mest effektive netværksydeevne.",
+        "benefitBadge": "Ydeevne"
       },
       "psh": {
-        "name": "",
-        "description": "",
-        "benefitBadge": ""
+        "name": "Push-notifikationer",
+        "description": "Denne tjeneste tillader din enhed at modtage push-notifikationer for indkomne beskeder.",
+        "benefitBadge": "Ydeevne"
       }
     },
-    "pageTitle": "",
-    "connectButton_one": "",
-    "connectButton_other": "",
-    "privacyPolicyLabel": ""
+    "pageTitle": "Berty tjenester",
+    "connectButton_one": "Brug tjeneste",
+    "connectButton_other": "Brug valgte tjenester",
+    "privacyPolicyLabel": "Privatlivspolitik"
   },
   "push": {
     "message": {
-      "title": ""
+      "title": "Ny besked"
     },
     "error": {
-      "title": ""
+      "title": "Push-dekryptering mislykkedes"
     },
     "voiceMessage": {
-      "bodyWithNumberOfMedia_one": "",
-      "bodyWithNumberOfMedia_other": ""
+      "bodyWithNumberOfMedia_one": "Stemmebesked sendt",
+      "bodyWithNumberOfMedia_other": "%[1]v stemmebeskeder sendt"
     },
     "gif": {
-      "bodyWithNumberOfMedia_one": "",
-      "bodyWithNumberOfMedia_other": ""
+      "bodyWithNumberOfMedia_one": "Gif sendt",
+      "bodyWithNumberOfMedia_other": "%[1]v gifs sendt"
     },
     "photo": {
-      "bodyWithNumberOfMedia_one": "",
-      "bodyWithNumberOfMedia_other": ""
+      "bodyWithNumberOfMedia_one": "Billede sendt",
+      "bodyWithNumberOfMedia_other": "%[1]v billeder sendt"
     },
     "media": {
-      "bodyWithNumberOfMedia_one": "",
-      "bodyWithNumberOfMedia_other": ""
+      "bodyWithNumberOfMedia_one": "Medie sendt",
+      "bodyWithNumberOfMedia_other": "%[1]v medier sendt"
     },
     "reaction": {
-      "bodyWithDisplayNameAndEmoji": ""
+      "bodyWithDisplayNameAndEmoji": "%[1]v reagerede med %[2]v til din besked"
     },
     "groupInvitation": {
-      "bodyWithGroupName": ""
+      "bodyWithGroupName": "Inviterede dig til %[1]v"
     },
     "unknown": {
-      "body": ""
+      "body": "Noget nyt modtaget"
     },
     "conversationNameChanged": {
-      "body": ""
+      "body": "Samtalenavn opdateret"
     },
     "memberNameChanged": {
-      "body": ""
+      "body": "Vist navn opdateret"
     },
     "memberPictureChanged": {
-      "body": ""
+      "body": "Profilbillede opdateret"
     },
     "memberDetailsChanged": {
-      "body": ""
+      "body": "Medlemsdetalje opdateret"
     }
   }
 }
