@@ -3,19 +3,19 @@
 		"getstarted": {
 			"screenTitle": "Beskyt dit privatliv",
 			"title": "Beskyt dit privatliv",
-			"desc": "",
-			"create-button": "",
-			"import-button": ""
+			"desc": "gratis & sikker peer-to-peer chat",
+			"create-button": "Opret en konto",
+			"import-button": "Importer konto"
 		},
 		"default-mode": {
 			"summary": {
-				"title": "",
-				"screenTitle": "",
-				"subtitle": "",
+				"title": "Standard Tilstand",
+				"screenTitle": "Opret konto",
+				"subtitle": "Kom hurtigt i gang",
 				"first-point": "",
 				"second-point": "",
 				"third-point": "",
-				"back-button": "",
+				"back-button": "Tilbage",
 				"accept-button": ""
 			}
 		},
@@ -26,20 +26,20 @@
 				"subtitle": "",
 				"first-point": "",
 				"second-point": "",
-				"back-button": "",
-				"accept-button": ""
+				"back-button": "Tilbage",
+				"accept-button": "Fortsæt"
 			},
 			"settings": {
 				"off-grid": {
 					"title": "",
-					"ble-button": "",
-					"nearby-button": "",
-					"mc-button": "",
-					"mdns-button": ""
+					"ble-button": "Bluetooth Low Energy",
+					"nearby-button": "Android tæt på",
+					"mc-button": "Apple Multipeer-tilslutning",
+					"mdns-button": "Multicast-DNS (LAN)"
 				},
 				"routing": {
-					"title": "",
-					"dht-button": "",
+					"title": "Dirigering",
+					"dht-button": "Distribueret Hash Tabel",
 					"rdvp-button": ""
 				},
 				"access": {
@@ -74,30 +74,30 @@
 						"delete": ""
 					},
 					"multiaddress": "",
-					"alias": ""
+					"alias": "Alias"
 				},
-				"all-button": "",
+				"all-button": "Alle",
 				"accept-button": ""
 			}
 		},
 		"create-account": {
 			"title": "",
-			"first-button": "",
-			"second-button": "",
+			"first-button": "Standard tilstand",
+			"second-button": "Tilpasset tilstand",
 			"placeholder": "",
 			"good-to-know": {
-				"title": "",
-				"first-point": "",
-				"second-point": ""
+				"title": "Værd at vide:",
+				"first-point": "Din konto er oprettet lokalt",
+				"second-point": "Et kaldenavn er valgfrit og kan ændres senere"
 			}
 		},
 		"generate-key": {
-			"title": "",
-			"desc": ""
+			"title": "Starter Berty node…",
+			"desc": "Dette kan tage et par sekunder"
 		},
 		"setup-finished": {
-			"title": "",
-			"desc": "",
+			"title": "Opsætning fuldført!",
+			"desc": "Du kan nu bruge appen, begynd tilføjelse af kontakter og tal frit og privat med dem",
 			"button": ""
 		},
 		"web-views": {
@@ -132,31 +132,31 @@
 			},
 			"create-group": {
 				"title": "",
-				"add-members": "",
-				"group-info": "",
-				"search-placeholder": "",
-				"continue": "",
-				"create-group": ""
+				"add-members": "Tilføj medlemmer",
+				"group-info": "Gruppeinfo",
+				"search-placeholder": "Søg",
+				"continue": "Fortsæt",
+				"create-group": "Opret en gruppe"
 			},
 			"create-group-finalize": {
-				"placeholder": "",
-				"about": "",
-				"first-bullet-point": "",
-				"second-bullet-point": "",
-				"third-bullet-point": "",
-				"fourth-bullet-point": "",
-				"fifth-bullet-point": ""
+				"placeholder": "Gruppenavn",
+				"about": "Om grupper",
+				"first-bullet-point": "Alle i gruppen kan omdøbe den og invitere nye medlemmer",
+				"second-bullet-point": "Du kan invitere medlemmer via link",
+				"third-bullet-point": "Du kan forlade denne gruppe",
+				"fourth-bullet-point": "Du kan ikke slette denne gruppe",
+				"fifth-bullet-point": "Du kan ikke fjerne et medlem fra denne gruppe"
 			},
 			"conversations": {
-				"request-sent": "",
-				"draft": ""
+				"request-sent": "Anmodning sendt. Afventer...",
+				"draft": "Kladde: {{message}}"
 			}
 		},
-		"suggestion-display-name-initial": ""
+		"suggestion-display-name-initial": "Klik her for at tilføje"
 	},
 	"settings": {
 		"home": {
-			"title": "",
+			"title": "Indstillinger",
 			"proximity-button": "",
 			"notifications-button": "",
 			"appearance-button": "",
@@ -201,8 +201,8 @@
 			"request-button": ""
 		},
 		"network": {
-			"title": "",
-			"ble-button": "",
+			"title": "Netværk",
+			"ble-button": "Bluetooth Low Energy",
 			"mc-button": "",
 			"nearby-button": "",
 			"mdns-button": "",
@@ -227,54 +227,54 @@
 		"delete-account": {
 			"title": "",
 			"first-desc": "",
-			"desc": "",
-			"cancel-button": "",
-			"delete-button": ""
+			"desc": "Skriv delete for at bekræfte",
+			"cancel-button": "Annuller",
+			"delete-button": "Slet"
 		},
 		"faq": {
-			"title": ""
+			"title": "FAQ"
 		},
 		"roadmap": {
 			"title": ""
 		},
 		"privacy-policy": {
-			"title": ""
+			"title": "Privatlivspolitik"
 		},
 		"devtools": {
-			"title": "",
-			"header-left-button": "",
-			"header-middle-button": "",
+			"title": "Udvikler værktøjer",
+			"header-left-button": "Enhedsinfo",
+			"header-middle-button": "Generer falske data",
 			"header-right-button": "",
-			"force-mock-button": "",
-			"simulate-button": "",
-			"simulate-js-error-button": "",
-			"system-info-button": "",
+			"force-mock-button": "Gennemtving imitation",
+			"simulate-button": "Simuler streaming fejl",
+			"simulate-js-error-button": "Simuler JavaScript fejl",
+			"system-info-button": "Systeminfo",
 			"select-node": {
-				"title": "",
-				"node-type": "",
-				"address": "",
-				"account-port": "",
+				"title": "Vælg en node",
+				"node-type": "Intern / Ekstern node",
+				"address": "Adresse",
+				"account-port": "Kontotjeneste port",
 				"messenger-port": "",
-				"dont-ask": "",
-				"button-continue": ""
+				"dont-ask": "Spørg ikke igen",
+				"button-continue": "Fortsæt"
 			},
 			"debug-button": "",
 			"log-button": {
-				"name": "",
-				"bullet-point": ""
+				"name": "Logformat",
+				"bullet-point": "Genstart app efter ændring af dette felt"
 			},
 			"log-filters-button": {
-				"name": "",
-				"bullet-point": ""
+				"name": "Logfiltre",
+				"bullet-point": "Genstart app efter ændring af dette felt"
 			},
-			"export-logs-button": "",
-			"add-dev-conversations-button": "",
+			"export-logs-button": "Eksporter logfiler",
+			"add-dev-conversations-button": "Tilføj udviklersamtaler",
 			"share-button": {
-				"title": "",
+				"title": "Del ID på Discord",
 				"alert-title": "",
 				"alert-message": "",
-				"alert-accept-button": "",
-				"alert-cancel-button": ""
+				"alert-accept-button": "Jep 👍",
+				"alert-cancel-button": "Nej"
 			},
 			"native-bridge-button": "",
 			"dump-account-button": "",
@@ -282,20 +282,20 @@
 			"dump-conversations-button": "",
 			"dump-interactions-button": "",
 			"dump-members-button": "",
-			"stop-node-button": "",
-			"local-grpc-button": "",
+			"stop-node-button": "Stop node",
+			"local-grpc-button": "lokal gRPC",
 			"console-logs-button": "",
 			"ipfs-webui-button": "",
 			"send-to-all-button": {
 				"title": "",
-				"sending": "",
-				"test": "",
-				"tried": ""
+				"sending": "Sender...",
+				"test": "Test, ",
+				"tried": "✔ Forsøgt at sende til {{length}} kontakter"
 			},
 			"tyber-attach": "",
 			"tyber-host-button": {
 				"name": "",
-				"bullet-point": ""
+				"bullet-point": "Genstart app efter ændring af dette felt"
 			},
 			"footer-left-button": "",
 			"footer-middle-button": "",
@@ -352,48 +352,48 @@
 	},
 	"modals": {
 		"manage-deep-link": {
-			"invalid-link": "",
-			"invalid-qr": "",
-			"error": "",
-			"contact-already-added": "",
-			"contact-already-added-message": ""
+			"invalid-link": "Ugyldigt link!",
+			"invalid-qr": "Ugyldig QR kode!",
+			"error": "Fejl!",
+			"contact-already-added": "Kontakten er allerede tilføjet",
+			"contact-already-added-message": "Du kan ikke tilføje samme kontakt flere gange"
 		},
 		"invalid-scan": {
 			"dismiss-button": ""
 		},
 		"group-invitation": {
-			"join": "",
-			"password-label": "",
-			"password-placeholder": ""
+			"join": "Deltag i denne gruppe",
+			"password-label": "Angiv gruppekodeord",
+			"password-placeholder": "Adgangskode..."
 		},
 		"save-theme": {
-			"title": "",
-			"desc": "",
-			"placeholder": "",
-			"cancel": "",
-			"add": ""
+			"title": "Gemmer tema",
+			"desc": "Navngiv venligst dit tema!",
+			"placeholder": "Temanavn...",
+			"cancel": "Annuller",
+			"add": "Tilføj!"
 		}
 	},
 	"chat": {
-		"title-unknown": "",
-		"sending": "",
-		"sent": "",
+		"title-unknown": "Ukendt samtale",
+		"sending": "Sender...",
+		"sent": "Sendt",
 		"contact-settings": {
-			"my-devices": ""
+			"my-devices": "Mine enheder"
 		},
 		"multi-member": {
-			"input-placeholder": ""
+			"input-placeholder": "Skriv her..."
 		},
 		"push-notifications": {
-			"title": "",
-			"unsupported": "",
+			"title": "Notifikationer",
+			"unsupported": "Notifikationer ikke understøttet",
 			"check-device-settings": "",
 			"check-account-settings": "",
 			"warning-disable": {
 				"title": "",
 				"subtitle": "",
 				"accept": "",
-				"refuse": ""
+				"refuse": "Spring Over"
 			},
 			"why-cant-disable": "",
 			"why-cant-disable-account": "",
@@ -405,11 +405,11 @@
 				"title": "",
 				"subtitle": "",
 				"refuse": "",
-				"accept": ""
+				"accept": "Accepter"
 			},
 			"warning-disable-mute": {
-				"title": "",
-				"refuse": "",
+				"title": "Aktiver notifikationer for denne samtale?",
+				"refuse": "Behold tavs",
 				"accept": ""
 			},
 			"receive-push": "",
@@ -418,7 +418,7 @@
 			"show-in-app": ""
 		},
 		"devices": {
-			"title": "",
+			"title": "Enheder",
 			"push": {
 				"enabled": "",
 				"not-enabled": ""
@@ -429,10 +429,10 @@
 			"members-button": {
 				"title": ""
 			},
-			"add-member-button": "",
+			"add-member-button": "Tilføj medlem",
 			"members-dropdown": {
-				"search-placeholder": "",
-				"conversation-booster": "",
+				"search-placeholder": "Søg efter medlem",
+				"conversation-booster": "Tilføj en samtalesbooster",
 				"replication-type": "",
 				"user-type": ""
 			},
@@ -480,17 +480,17 @@
 			"manage-add-button": ""
 		},
 		"user-message": {
-			"read-more": "",
-			"show-less": ""
+			"read-more": "Læs mere",
+			"show-less": "Vis mindre"
 		}
 	},
 	"account": {
-		"deleting": "",
-		"creating": "",
+		"deleting": "Sletter konto...",
+		"creating": "Opretter konto...",
 		"opening": {
-			"alert-push-title": "",
-			"alert-push-go-failed": "",
-			"alert-push-fetch-failed": "",
+			"alert-push-title": "Push-notifikationer",
+			"alert-push-go-failed": "Der opstod en fejl under registrering til Berty push-notifikationstjenesten.",
+			"alert-push-fetch-failed": "Kunne ikke forbinde til Berty push-notifikationstjenesten.",
 			"alert-push-perm-denied": "",
 			"alert-push-desc": "",
 			"alert-push-button": ""
