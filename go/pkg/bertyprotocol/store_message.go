@@ -52,6 +52,9 @@ type MessageStore struct {
 	muDeviceCaches sync.RWMutex
 	cmessage       chan *messageItem
 	// muProcess       sync.RWMutex
+
+	ctx    context.Context
+	cancel context.CancelFunc
 }
 
 func (m *MessageStore) setLogger(l *zap.Logger) {
@@ -396,7 +399,11 @@ func constructorFactoryGroupMessage(s *BertyOrbitDB, logger *zap.Logger) iface.S
 			}
 		}
 
+		ctx, cancel := context.WithCancel(context.Background())
+
 		store := &MessageStore{
+			ctx:          ctx,
+			cancel:       cancel,
 			eventBus:     options.EventBus,
 			devKS:        s.deviceKeystore,
 			mks:          s.messageKeystore,
@@ -405,8 +412,6 @@ func constructorFactoryGroupMessage(s *BertyOrbitDB, logger *zap.Logger) iface.S
 			logger:       logger,
 			deviceCaches: make(map[string]*groupCache),
 		}
-
-		ctx, cancel := context.WithCancel(context.Background())
 
 		go func() {
 			store.processMessageLoop(ctx)
@@ -426,7 +431,7 @@ func constructorFactoryGroupMessage(s *BertyOrbitDB, logger *zap.Logger) iface.S
 
 		options.Index = basestore.NewNoopIndex
 
-		if err := store.InitBaseStore(ctx, cancel, ipfs, identity, addr, options); err != nil {
+		if err := store.InitBaseStore(ipfs, identity, addr, options); err != nil {
 			cancel()
 			return nil, errcode.ErrOrbitDBInit.Wrap(err)
 		}
@@ -557,4 +562,9 @@ func SealOutOfStoreMessageEnvelope(id cid.Cid, env *protocoltypes.MessageEnvelop
 		Box:            encryptedData,
 		GroupReference: pushGroupRef,
 	}, nil
+}
+
+func (m *MessageStore) Close() error {
+	m.cancel()
+	return m.BaseStore.Close()
 }
