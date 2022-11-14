@@ -46,6 +46,9 @@ type MetadataStore struct {
 	devKS  cryptoutil.DeviceKeystore
 	mks    *cryptoutil.MessageKeystore
 	logger *zap.Logger
+
+	ctx    context.Context
+	cancel context.CancelFunc
 }
 
 func isMultiMemberGroup(m *MetadataStore) bool {
@@ -1001,7 +1004,11 @@ func constructorFactoryGroupMetadata(s *BertyOrbitDB, logger *zap.Logger) iface.
 			}
 		}
 
+		ctx, cancel := context.WithCancel(context.Background())
+
 		store := &MetadataStore{
+			ctx:      ctx,
+			cancel:   cancel,
 			eventBus: options.EventBus,
 			g:        g,
 			mks:      s.messageKeystore,
@@ -1013,11 +1020,9 @@ func constructorFactoryGroupMetadata(s *BertyOrbitDB, logger *zap.Logger) iface.
 			return nil, fmt.Errorf("unable to init emitters: %w", err)
 		}
 
-		ctx, cancel := context.WithCancel(context.Background())
-
 		if replication {
 			options.Index = basestore.NewNoopIndex
-			if err := store.InitBaseStore(ctx, cancel, ipfs, identity, addr, options); err != nil {
+			if err := store.InitBaseStore(ipfs, identity, addr, options); err != nil {
 				cancel()
 				return nil, errcode.ErrOrbitDBInit.Wrap(err)
 			}
@@ -1093,7 +1098,7 @@ func constructorFactoryGroupMetadata(s *BertyOrbitDB, logger *zap.Logger) iface.
 		}(ctx)
 
 		options.Index = newMetadataIndex(ctx, g, md.Public(), s.deviceKeystore)
-		if err := store.InitBaseStore(ctx, cancel, ipfs, identity, addr, options); err != nil {
+		if err := store.InitBaseStore(ipfs, identity, addr, options); err != nil {
 			cancel()
 			return nil, errcode.ErrOrbitDBInit.Wrap(err)
 		}
@@ -1212,4 +1217,9 @@ func (m *MetadataStore) initEmitter() (err error) {
 func genNewSeed() (seed []byte, err error) {
 	seed, err = ioutil.ReadAll(io.LimitReader(crand.Reader, protocoltypes.RendezvousSeedLength))
 	return
+}
+
+func (m *MetadataStore) Close() error {
+	m.cancel()
+	return m.BaseStore.Close()
 }
