@@ -13,6 +13,7 @@ import (
 	coreapi "github.com/ipfs/interface-go-ipfs-core"
 	"github.com/libp2p/go-libp2p/core/crypto"
 	peer "github.com/libp2p/go-libp2p/core/peer"
+	"github.com/libp2p/go-libp2p/p2p/host/eventbus"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 
@@ -325,6 +326,10 @@ func (s *BertyOrbitDB) setHeadsForGroup(ctx context.Context, g *protocoltypes.Gr
 }
 
 func (s *BertyOrbitDB) OpenGroup(ctx context.Context, g *protocoltypes.Group, options *orbitdb.CreateDBOptions) (*GroupContext, error) {
+	if options == nil {
+		options = &orbitdb.CreateDBOptions{}
+	}
+
 	if s.deviceKeystore == nil || s.messageKeystore == nil {
 		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("db open in naive mode"))
 	}
@@ -373,6 +378,10 @@ func (s *BertyOrbitDB) OpenGroup(ctx context.Context, g *protocoltypes.Group, op
 	s.messageMarshaler.RegisterGroup(metaImpl.Address().String(), g)
 
 	s.Logger().Debug("Got metadata store", tyber.FormatStepLogFields(s.ctx, []tyber.Detail{})...)
+
+	// force to unshare the same EventBus between groupMetadataStore and groupMessageStore
+	// to avoid having a bunch of events which are not for the correct group
+	options.EventBus = eventbus.NewBus()
 
 	messagesImpl, err := s.groupMessageStore(ctx, g, options)
 	if err != nil {

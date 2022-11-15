@@ -108,7 +108,7 @@ func (s *service) activateGroup(ctx context.Context, pk crypto.PubKey, localOnly
 		}
 	case protocoltypes.GroupTypeAccount:
 		localOnly = true
-		if s.accountGroup, err = s.odb.openAccountGroup(ctx, &iface.CreateDBOptions{EventBus: s.odb.EventBus(), LocalOnly: &localOnly}, s.ipfsCoreAPI); err != nil {
+		if s.accountGroup, err = s.odb.openAccountGroup(ctx, &iface.CreateDBOptions{EventBus: s.accountEventBus, LocalOnly: &localOnly}, s.ipfsCoreAPI); err != nil {
 			return err
 		}
 		s.openedGroups[string(id)] = s.accountGroup
