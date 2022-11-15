@@ -100,7 +100,7 @@ type TestingOpts struct {
 	PushSK         *[32]byte
 }
 
-func NewTestingProtocol(ctx context.Context, t *testing.T, opts *TestingOpts, ds datastore.Batching) (*TestingProtocol, func()) {
+func NewTestingProtocol(ctx context.Context, t testing.TB, opts *TestingOpts, ds datastore.Batching) (*TestingProtocol, func()) {
 	if opts == nil {
 		opts = &TestingOpts{}
 	}
@@ -218,7 +218,7 @@ func (opts *TestingOpts) applyDefaults(ctx context.Context) {
 	}
 }
 
-func NewTestingProtocolWithMockedPeers(ctx context.Context, t *testing.T, opts *TestingOpts, ds datastore.Batching, amount int) ([]*TestingProtocol, func()) {
+func NewTestingProtocolWithMockedPeers(ctx context.Context, t testing.TB, opts *TestingOpts, ds datastore.Batching, amount int) ([]*TestingProtocol, func()) {
 	t.Helper()
 	opts.applyDefaults(ctx)
 	logger := opts.Logger
@@ -280,7 +280,7 @@ func NewTestingProtocolWithMockedPeers(ctx context.Context, t *testing.T, opts *
 }
 
 // TestingService returns a configured Client struct with in-memory contexts.
-func TestingService(ctx context.Context, t *testing.T, opts Opts) (Service, func()) {
+func TestingService(ctx context.Context, t testing.TB, opts Opts) (Service, func()) {
 	t.Helper()
 
 	if opts.Logger == nil {
@@ -308,7 +308,7 @@ func TestingService(ctx context.Context, t *testing.T, opts Opts) (Service, func
 	return service, cleanup
 }
 
-func TestingClientFromServer(ctx context.Context, t *testing.T, s *grpc.Server, svc Service, dialOpts ...grpc.DialOption) (client Client, cleanup func()) {
+func TestingClientFromServer(ctx context.Context, t testing.TB, s *grpc.Server, svc Service, dialOpts ...grpc.DialOption) (client Client, cleanup func()) {
 	t.Helper()
 
 	var err error
@@ -322,7 +322,7 @@ func TestingClientFromServer(ctx context.Context, t *testing.T, s *grpc.Server, 
 	return
 }
 
-func TestingClient(ctx context.Context, t *testing.T, svc Service, clientOpts []grpc.DialOption, serverOpts []grpc.ServerOption) (client Client, cleanup func()) {
+func TestingClient(ctx context.Context, t testing.TB, svc Service, clientOpts []grpc.DialOption, serverOpts []grpc.ServerOption) (client Client, cleanup func()) {
 	t.Helper()
 
 	var err error
@@ -335,10 +335,10 @@ func TestingClient(ctx context.Context, t *testing.T, svc Service, clientOpts []
 }
 
 // Connect Peers Helper
-type ConnectTestingProtocolFunc func(*testing.T, libp2p_mocknet.Mocknet)
+type ConnectTestingProtocolFunc func(testing.TB, libp2p_mocknet.Mocknet)
 
 // ConnectAll peers between themselves
-func ConnectAll(t *testing.T, m libp2p_mocknet.Mocknet) {
+func ConnectAll(t testing.TB, m libp2p_mocknet.Mocknet) {
 	t.Helper()
 
 	err := m.LinkAll()
@@ -353,7 +353,7 @@ func ConnectAll(t *testing.T, m libp2p_mocknet.Mocknet) {
 // │ 1 │───▶│ 2 │───▶│ 3 │─ ─ ─ ─ ▶│ x │
 // └───┘    └───┘    └───┘         └───┘
 
-func ConnectInLine(t *testing.T, m libp2p_mocknet.Mocknet) {
+func ConnectInLine(t testing.TB, m libp2p_mocknet.Mocknet) {
 	t.Helper()
 
 	peers := m.Peers()

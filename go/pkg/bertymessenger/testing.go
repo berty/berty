@@ -39,7 +39,7 @@ type TestingServiceOpts struct {
 	LogFilePath string
 }
 
-func TestingService(ctx context.Context, t *testing.T, opts *TestingServiceOpts) (messengertypes.MessengerServiceServer, func()) {
+func TestingService(ctx context.Context, t testing.TB, opts *TestingServiceOpts) (messengertypes.MessengerServiceServer, func()) {
 	t.Helper()
 	if opts.Logger == nil {
 		opts.Logger = zap.NewNop()
@@ -90,7 +90,7 @@ func TestingService(ctx context.Context, t *testing.T, opts *TestingServiceOpts)
 	return server, cleanup
 }
 
-func TestingInfra(ctx context.Context, t *testing.T, amount int, logger *zap.Logger) ([]messengertypes.MessengerServiceClient, []*bertyprotocol.TestingProtocol, func()) {
+func TestingInfra(ctx context.Context, t testing.TB, amount int, logger *zap.Logger) ([]messengertypes.MessengerServiceClient, []*bertyprotocol.TestingProtocol, func()) {
 	t.Helper()
 	mocknet := libp2p_mocknet.New(ctx)
 
@@ -125,7 +125,9 @@ func TestingInfra(ctx context.Context, t *testing.T, amount int, logger *zap.Log
 	return clients, protocols, cleanup
 }
 
-func Testing1To1ProcessWholeStream(t *testing.T) (context.Context, []*TestingAccount, *zap.Logger, func()) {
+func Testing1To1ProcessWholeStream(t testing.TB) (context.Context, []*TestingAccount, *zap.Logger, func()) {
+	t.Helper()
+
 	// PREPARE
 	logger, cleanup := testutil.Logger(t)
 	clean := cleanup
@@ -235,7 +237,7 @@ type RecvEvent struct {
 	err error
 }
 
-func NewTestingAccount(ctx context.Context, t *testing.T, client messengertypes.MessengerServiceClient, protocolClient protocoltypes.ProtocolServiceClient, logger *zap.Logger) *TestingAccount {
+func NewTestingAccount(ctx context.Context, t testing.TB, client messengertypes.MessengerServiceClient, protocolClient protocoltypes.ProtocolServiceClient, logger *zap.Logger) *TestingAccount {
 	t.Helper()
 	ctx, cancel := context.WithCancel(ctx)
 	return &TestingAccount{
@@ -259,7 +261,7 @@ func (a *TestingAccount) Close() {
 	a.closedMutex.Unlock()
 }
 
-func (a *TestingAccount) openStream(t *testing.T) {
+func (a *TestingAccount) openStream(t testing.TB) {
 	t.Helper()
 	a.openStreamOnce.Do(func() {
 		var err error
@@ -270,7 +272,7 @@ func (a *TestingAccount) openStream(t *testing.T) {
 	})
 }
 
-func (a *TestingAccount) ProcessWholeStream(t *testing.T) func() {
+func (a *TestingAccount) ProcessWholeStream(t testing.TB) func() {
 	ch := make(chan struct{})
 
 	a.openStream(t)
@@ -301,7 +303,7 @@ func (a *TestingAccount) ProcessWholeStream(t *testing.T) func() {
 	return func() { close(ch) }
 }
 
-func (a *TestingAccount) processEvent(t *testing.T, event *messengertypes.StreamEvent) {
+func (a *TestingAccount) processEvent(t testing.TB, event *messengertypes.StreamEvent) {
 	a.processMutex.Lock()
 	defer a.processMutex.Unlock()
 
@@ -340,7 +342,7 @@ func (a *TestingAccount) GetClient() messengertypes.MessengerServiceClient {
 	return a.client
 }
 
-func (a *TestingAccount) DrainInitEvents(t *testing.T) {
+func (a *TestingAccount) DrainInitEvents(t testing.TB) {
 	for {
 		event := a.TryNextEvent(t, 100*time.Millisecond)
 		if event == nil {
@@ -353,18 +355,18 @@ func (a *TestingAccount) DrainInitEvents(t *testing.T) {
 	}
 }
 
-func (a *TestingAccount) GetStream(t *testing.T) <-chan *RecvEvent {
+func (a *TestingAccount) GetStream(t testing.TB) <-chan *RecvEvent {
 	a.openStream(t)
 	return a.cstream
 }
 
-func (a *TestingAccount) SetName(t *testing.T, name string) {
+func (a *TestingAccount) SetName(t testing.TB, name string) {
 	t.Helper()
 	_, err := a.client.AccountUpdate(a.ctx, &messengertypes.AccountUpdate_Request{DisplayName: name})
 	require.NoError(t, err)
 }
 
-func (a *TestingAccount) SetNameAndDrainUpdate(t *testing.T, name string) {
+func (a *TestingAccount) SetNameAndDrainUpdate(t testing.TB, name string) {
 	t.Helper()
 	a.SetName(t, name)
 	event := a.NextEvent(t)
@@ -376,7 +378,7 @@ func (a *TestingAccount) SetNameAndDrainUpdate(t *testing.T, name string) {
 	require.Equal(t, name, account.DisplayName)
 }
 
-func (a *TestingAccount) NextEvent(t *testing.T) *messengertypes.StreamEvent {
+func (a *TestingAccount) NextEvent(t testing.TB) *messengertypes.StreamEvent {
 	t.Helper()
 	a.openStream(t)
 
@@ -403,7 +405,7 @@ func (a *TestingAccount) GetAccount() *messengertypes.Account {
 	return a.account
 }
 
-func (a *TestingAccount) GetContact(t *testing.T, pk string) *messengertypes.Contact {
+func (a *TestingAccount) GetContact(t testing.TB, pk string) *messengertypes.Contact {
 	a.processMutex.Lock()
 	defer a.processMutex.Unlock()
 	c, ok := a.contacts[pk]
@@ -421,7 +423,7 @@ func (a *TestingAccount) GetAllContacts() map[string]*messengertypes.Contact {
 	return newMap
 }
 
-func (a *TestingAccount) GetConversation(t *testing.T, pk string) *messengertypes.Conversation {
+func (a *TestingAccount) GetConversation(t testing.TB, pk string) *messengertypes.Conversation {
 	a.processMutex.Lock()
 	defer a.processMutex.Unlock()
 	conv, ok := a.conversations[pk]
@@ -429,7 +431,7 @@ func (a *TestingAccount) GetConversation(t *testing.T, pk string) *messengertype
 	return conv
 }
 
-func (a *TestingAccount) GetMember(t *testing.T, pk string) *messengertypes.Member {
+func (a *TestingAccount) GetMember(t testing.TB, pk string) *messengertypes.Member {
 	a.processMutex.Lock()
 	defer a.processMutex.Unlock()
 	member, ok := a.members[pk]
@@ -437,7 +439,7 @@ func (a *TestingAccount) GetMember(t *testing.T, pk string) *messengertypes.Memb
 	return member
 }
 
-func (a *TestingAccount) GetInteraction(t *testing.T, cid string) *messengertypes.Interaction {
+func (a *TestingAccount) GetInteraction(t testing.TB, cid string) *messengertypes.Interaction {
 	a.processMutex.Lock()
 	defer a.processMutex.Unlock()
 	interaction, ok := a.interactions[cid]
@@ -455,7 +457,7 @@ func (a *TestingAccount) GetAllConversations() map[string]*messengertypes.Conver
 	return newMap
 }
 
-func (a *TestingAccount) TryNextEvent(t *testing.T, timeout time.Duration) *messengertypes.StreamEvent {
+func (a *TestingAccount) TryNextEvent(t testing.TB, timeout time.Duration) *messengertypes.StreamEvent {
 	t.Helper()
 	a.openStream(t)
 
@@ -476,7 +478,7 @@ func (a *TestingAccount) TryNextEvent(t *testing.T, timeout time.Duration) *mess
 	return nil
 }
 
-func monitorEventStream(t *testing.T, stream messengertypes.MessengerService_EventStreamClient, expire time.Duration) <-chan *RecvEvent {
+func monitorEventStream(t testing.TB, stream messengertypes.MessengerService_EventStreamClient, expire time.Duration) <-chan *RecvEvent {
 	t.Helper()
 
 	cstream := make(chan *RecvEvent)

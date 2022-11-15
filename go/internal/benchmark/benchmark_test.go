@@ -1,4 +1,4 @@
-package bertymessenger_test
+package benchmark
 
 import (
 	"context"
@@ -19,31 +19,32 @@ import (
 	"berty.tech/berty/v2/go/pkg/messengertypes"
 )
 
-func TestPeersCreateJoinConversationNonMocked(t *testing.T) {
-	testutil.FilterStabilityAndSpeed(t, testutil.Broken, testutil.Slow)
-	// FIXME: fails due to initutil.ReplaceGRPCLogger data ra	ce
+func b64DecodeBytes(s string) ([]byte, error) {
+	return base64.RawURLEncoding.DecodeString(s)
+}
 
+func BenchmarkScenario(b *testing.B) {
 	ctx, cancel := context.WithTimeout(context.Background(), 100*time.Second)
 	defer cancel()
-	logger, cleanup := testutil.Logger(t)
+	logger, cleanup := testutil.Logger(b)
 	defer cleanup()
 	accountsAmount := 3
-	clients, _, cleanup := bertymessengertesting.NonMockedTestingInfra(t, accountsAmount)
+	clients, _, cleanup := bertymessengertesting.NonMockedTestingInfra(b, accountsAmount)
 	defer cleanup()
 
 	// create nodes
 	var creator *bertymessenger.TestingAccount
 	{
-		creator = bertymessenger.NewTestingAccount(ctx, t, clients[0], nil, logger)
+		creator = bertymessenger.NewTestingAccount(ctx, b, clients[0], nil, logger)
 		defer creator.Close()
-		creator.SetName(t, "Creator")
+		creator.SetName(b, "Creator")
 	}
 	joiners := make([]*bertymessenger.TestingAccount, accountsAmount-1)
 	{
 		for i := 0; i < accountsAmount-1; i++ {
-			joiners[i] = bertymessenger.NewTestingAccount(ctx, t, clients[i+1], nil, logger)
+			joiners[i] = bertymessenger.NewTestingAccount(ctx, b, clients[i+1], nil, logger)
 			defer joiners[i].Close()
-			joiners[i].SetName(t, "Joiner #"+strconv.Itoa(i))
+			joiners[i].SetName(b, "Joiner #"+strconv.Itoa(i))
 		}
 	}
 
@@ -53,20 +54,20 @@ func TestPeersCreateJoinConversationNonMocked(t *testing.T) {
 	// creator creates a new conversation
 	convName := "Ze Conv"
 	createdConv, err := creator.GetClient().ConversationCreate(ctx, &messengertypes.ConversationCreate_Request{DisplayName: convName})
-	require.NoError(t, err)
+	require.NoError(b, err)
 
 	// get conv link
 	gpk := createdConv.GetPublicKey()
 	gpkb, err := b64DecodeBytes(gpk)
-	require.NoError(t, err)
+	require.NoError(b, err)
 	sbg, err := creator.GetClient().ShareableBertyGroup(ctx, &messengertypes.ShareableBertyGroup_Request{GroupPK: gpkb, GroupName: convName})
-	require.NoError(t, err)
+	require.NoError(b, err)
 
 	// joiners join the conversation
 	for _, joiner := range joiners {
 		ret, err := joiner.GetClient().ConversationJoin(ctx, &messengertypes.ConversationJoin_Request{Link: sbg.GetWebURL()})
-		require.NoError(t, err)
-		require.Empty(t, ret)
+		require.NoError(b, err)
+		require.Empty(b, ret)
 	}
 
 	// wait for events propagation
@@ -75,45 +76,36 @@ func TestPeersCreateJoinConversationNonMocked(t *testing.T) {
 	// open streams and drain lists on all nodes
 	accounts := append([]*bertymessenger.TestingAccount{creator}, joiners...)
 	for _, account := range accounts {
-		account.DrainInitEvents(t)
+		account.DrainInitEvents(b)
 		account.Close()
 	}
 
 	// no more event
 	{
-		event := creator.TryNextEvent(t, 200*time.Millisecond)
-		require.Nil(t, event)
+		event := creator.TryNextEvent(b, 200*time.Millisecond)
+		require.Nil(b, event)
 		for _, joiner := range joiners {
-			event = joiner.TryNextEvent(t, 200*time.Millisecond)
-			require.Nil(t, event)
+			event = joiner.TryNextEvent(b, 200*time.Millisecond)
+			require.Nil(b, event)
 		}
 	}
 
 	// verify members in each account
 	for _, account := range accounts {
-		accountConv := account.GetConversation(t, gpk)
-		require.Equal(t, gpk, accountConv.GetPublicKey())
-		require.Equal(t, convName, accountConv.GetDisplayName())
-		mpk := account.GetConversation(t, gpk).GetAccountMemberPublicKey()
-		require.NotEmpty(t, mpk)
-		//displayName := account.GetAccount().GetDisplayName()
-		//for _, otherAccount := range accounts {
-		//	if otherAccount.GetAccount().GetPublicKey() == account.GetAccount().GetPublicKey() {
-		//		continue
-		//	}
-		//	member := otherAccount.GetMember(t, mpk)
-		//	require.Equal(t, displayName, member.GetDisplayName())
-		//	require.Equal(t, gpk, member.GetConversationPublicKey())
-		//}
+		accountConv := account.GetConversation(b, gpk)
+		require.Equal(b, gpk, accountConv.GetPublicKey())
+		require.Equal(b, convName, accountConv.GetDisplayName())
+		mpk := account.GetConversation(b, gpk).GetAccountMemberPublicKey()
+		require.NotEmpty(b, mpk)
 	}
 
 	subCtx, subCancel := context.WithTimeout(ctx, time.Second*45)
 	cl, err := clients[1].EventStream(subCtx, &messengertypes.EventStream_Request{
 		ShallowAmount: 1,
 	})
-	require.NoError(t, err)
+	require.NoError(b, err)
 
-	const messageCount = 20
+	messageCount := b.N
 
 	ce := make(chan *messengertypes.EventStream_Reply, messageCount)
 	var subErr error
@@ -136,7 +128,7 @@ func TestPeersCreateJoinConversationNonMocked(t *testing.T) {
 		payload, err := proto.Marshal(&messengertypes.AppMessage_UserMessage{
 			Body: fmt.Sprintf("message %d", i),
 		})
-		require.NoError(t, err)
+		require.NoError(b, err)
 
 		_, err = clients[0].Interact(
 			ctx,
@@ -146,7 +138,7 @@ func TestPeersCreateJoinConversationNonMocked(t *testing.T) {
 				ConversationPublicKey: gpk,
 			},
 		)
-		require.NoError(t, err, fmt.Sprintf("sent %d items", i))
+		require.NoError(b, err, fmt.Sprintf("sent %d items", i))
 	}
 
 	expectedMessages := make([]string, messageCount)
@@ -161,7 +153,7 @@ func TestPeersCreateJoinConversationNonMocked(t *testing.T) {
 
 		interaction := &messengertypes.StreamEvent_InteractionUpdated{}
 		err := proto.Unmarshal(evt.Event.Payload, interaction)
-		require.NoError(t, err)
+		require.NoError(b, err)
 
 		if interaction.Interaction.Type != messengertypes.AppMessage_TypeUserMessage {
 			continue
@@ -169,36 +161,32 @@ func TestPeersCreateJoinConversationNonMocked(t *testing.T) {
 
 		message := &messengertypes.AppMessage_UserMessage{}
 		err = proto.Unmarshal(interaction.Interaction.Payload, message)
-		require.NoError(t, err)
+		require.NoError(b, err)
 
 		foundMessage := false
 		for i, ref := range expectedMessages {
 			if message.Body == ref {
 				expectedMessages = append(expectedMessages[:i], expectedMessages[i+1:]...)
 				foundMessage = true
-				t.Log(fmt.Sprintf("     found message : %s", message.Body))
+				b.Log(fmt.Sprintf("     found message : %s", message.Body))
 				break
 			}
 		}
 
 		if !foundMessage {
-			t.Log(fmt.Sprintf("unexpected message : %s", message.Body))
+			b.Log(fmt.Sprintf("unexpected message : %s", message.Body))
 		}
 
 		if len(expectedMessages) == 0 {
 			break
 		}
 
-		t.Logf("remaining messages : %s", strings.Join(expectedMessages, ","))
+		b.Logf("remaining messages : %s", strings.Join(expectedMessages, ","))
 	}
 
-	assert.Empty(t, len(expectedMessages))
+	assert.Empty(b, len(expectedMessages))
 
-	require.NoError(t, err)
-	require.NoError(t, subErr)
+	require.NoError(b, err)
+	require.NoError(b, subErr)
 	cl.CloseSend()
-}
-
-func b64DecodeBytes(s string) ([]byte, error) {
-	return base64.RawURLEncoding.DecodeString(s)
 }
