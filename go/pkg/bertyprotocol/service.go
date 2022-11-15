@@ -17,6 +17,7 @@ import (
 	"github.com/libp2p/go-libp2p/core/event"
 	"github.com/libp2p/go-libp2p/core/host"
 	"github.com/libp2p/go-libp2p/core/network"
+	"github.com/libp2p/go-libp2p/p2p/host/eventbus"
 	"github.com/pkg/errors"
 	"go.uber.org/multierr"
 	"go.uber.org/zap"
@@ -74,6 +75,7 @@ type service struct {
 	muRefreshprocess  sync.RWMutex
 	swiper            *Swiper
 	peerStatusManager *ConnectednessManager
+	accountEventBus   event.Bus
 }
 
 // Opts contains optional configuration flags for building a new Client
@@ -234,7 +236,9 @@ func New(opts Opts) (_ Service, err error) {
 	ctx, _, endSection := tyber.Section(tyber.ContextWithoutTraceID(ctx), opts.Logger, fmt.Sprintf("Initializing ProtocolService version %s", bertyversion.Version))
 	defer func() { endSection(err, "") }()
 
+	accountEventBus := eventbus.NewBus()
 	dbOpts := &iface.CreateDBOptions{
+		EventBus:  accountEventBus,
 		LocalOnly: &opts.LocalOnly,
 	}
 
@@ -300,6 +304,7 @@ func New(opts Opts) (_ Service, err error) {
 		grpcInsecure:      opts.GRPCInsecureMode,
 		refreshprocess:    make(map[string]context.CancelFunc),
 		peerStatusManager: NewConnectednessManager(),
+		accountEventBus:   accountEventBus,
 	}
 
 	s.startGroupDeviceMonitor()
