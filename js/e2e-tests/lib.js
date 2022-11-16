@@ -33,23 +33,24 @@ const getCapabilitiesFromEnv = () => {
 		case 'iOS':
 			return {
 				platformName: 'iOS',
-				// platformVersion: process.env.IOS_VERSION || '15.5',
-				deviceName: process.env.IOS_DEVICE || 'iPhone 11',
-				app,
-				automationName: 'XCUITest', // UiAutomator2, Espresso, or UiAutomator1 for Android,
-				simulatorStartupTimeout: 20 * 60 * 1000,
-				wdaLaunchTimeout: 20 * 60 * 1000,
-				wdaConnectionTimeout: 20 * 60 * 1000,
+				'appium:platformVersion': process.env.IOS_VERSION || '15.5',
+				'appium:deviceName': process.env.IOS_DEVICE || 'iPhone 11',
+				'appium:app': app,
+				'appium:automationName': 'XCUITest', // UiAutomator2, Espresso, or UiAutomator1 for Android,
+				'appium:simulatorStartupTimeout': 10 * 60 * 1000,
+				'appium:wdaLaunchTimeout': 10 * 60 * 1000,
+				'appium:wdaConnectionTimeout': 10 * 60 * 1000,
+				'appium:wdaStartupRetries': 4,
 			}
 		case 'Android':
 			return {
 				platformName: 'Android',
 				// platformVersion: '8',
-				deviceName: 'Android Emulator',
-				app,
-				appPackage: 'tech.berty.android.debug',
-				appActivity: 'tech.berty.android.MainActivity',
-				automationName: 'UiAutomator2',
+				'appium:deviceName': 'Android Emulator',
+				'appium:app': app,
+				'appium:appPackage': 'tech.berty.android.debug',
+				'appium:appActivity': 'tech.berty.android.MainActivity',
+				'appium:automationName': 'UiAutomator2',
 			}
 		default:
 			throw new Error(`usupported platform: ${platform}`)

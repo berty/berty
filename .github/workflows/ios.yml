@@ -52,7 +52,7 @@ jobs:
     runs-on: ${{ matrix.runner }}
     env:
       E2E_TESTING_IOS_DEVICE: iPhone 11
-      E2E_TESTING_IOS_VERSION: 15.2
+      E2E_TESTING_IOS_VERSION: 15.5
       CACHE_DIRS: js/android/.gomobile-cache; js/ios/.gomobile-cache; js/ios/.xcodegen-cache
     strategy:
       fail-fast: false
@@ -228,17 +228,7 @@ jobs:
             -scheme "Berty AppStore" \
             -destination "name=$E2E_TESTING_IOS_DEVICE"
 
-      - name: Run basic e2e test
+      - name: Run e2e-tests
         working-directory: js
         run: |
-          # run appium in background
-          npx appium &
-          # wait for appium to be up
-          sleep 5
-          # run test
-          IOS_DEVICE="$E2E_TESTING_IOS_DEVICE" \
-          IOS_APP=`ls -ladt1 "$HOME/Library/Developer/Xcode/DerivedData/"*"/Build/Products/AppStore Release-iphonesimulator/Berty.app" | head -n 1` \
-          IOS_VERSION=$E2E_TESTING_IOS_VERSION \
-          node e2e-tests/basic.js
-          # kill appium
-          jobs -p | grep -o -E '\s\d+\s' | xargs kill
+          make e2e-tests.ci-flow

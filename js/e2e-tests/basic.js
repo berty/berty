@@ -16,7 +16,6 @@ const groupLink = `https://berty.tech/id#group/8ejngpAxnMQKGMuM2AUsuWi5BJg7m9bDN
 
 const startAppAndCreateAccount = async caps => {
 	const driver = await wdio.remote({
-		path: '/wd/hub',
 		port: 4723,
 		capabilities: caps,
 	})
