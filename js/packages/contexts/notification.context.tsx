@@ -38,7 +38,7 @@ const PushNotificationBridge: React.FC = withInAppNotification(({ showNotificati
 										{
 											name:
 												conv?.type === beapi.messenger.Conversation.Type.MultiMemberType
-													? 'Chat.Group'
+													? 'Chat.MultiMember'
 													: 'Chat.OneToOne',
 											params: {
 												convId: convPK,

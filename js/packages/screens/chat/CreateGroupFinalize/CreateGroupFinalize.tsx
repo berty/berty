@@ -187,7 +187,7 @@ export const CreateGroupFinalize: ScreenFC<'Chat.CreateGroupFinalize'> = () => {
 						name: 'Chat.Home',
 					},
 					{
-						name: 'Chat.Group',
+						name: 'Chat.MultiMember',
 						params: {
 							convId: reply.publicKey,
 						},

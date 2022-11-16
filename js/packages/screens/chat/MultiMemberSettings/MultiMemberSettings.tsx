@@ -88,7 +88,7 @@ const MultiMemberSettingsBody: React.FC<{
 					items={members}
 					publicKey={publicKey}
 					onChangeItem={member => {
-						navigation.navigate('Group.ChatSettingsMemberDetail', {
+						navigation.navigate('Chat.SettingsMemberDetail', {
 							convId: publicKey,
 							memberPk: member?.publicKey!,
 							displayName: member?.displayName || '',
@@ -136,7 +136,7 @@ const MultiMemberSettingsBody: React.FC<{
 	)
 }
 
-export const MultiMemberSettings: ScreenFC<'Group.MultiMemberSettings'> = ({
+export const MultiMemberSettings: ScreenFC<'Chat.MultiMemberSettings'> = ({
 	route,
 	navigation,
 }) => {

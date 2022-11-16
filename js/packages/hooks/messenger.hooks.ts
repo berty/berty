@@ -158,7 +158,7 @@ export const useReadEffect = (publicKey: Maybe<string>, timeout: Maybe<number>) 
 			const { routes } = navigation.getState()
 			for (let route of routes) {
 				if (
-					(route.name === 'Chat.OneToOne' || route.name === 'Chat.Group') &&
+					(route.name === 'Chat.OneToOne' || route.name === 'Chat.MultiMember') &&
 					(route.params as any)?.convId === publicKey
 				) {
 					return

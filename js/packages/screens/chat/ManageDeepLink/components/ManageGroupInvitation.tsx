@@ -85,13 +85,14 @@ export const ManageGroupInvitation: React.FC<{
 			)
 		}
 	}, [done, error, dispatch])
+
 	if (convId) {
 		navigationDispatch(
 			CommonActions.reset({
 				routes: [
 					{ name: 'Chat.Home' },
 					{
-						name: 'Chat.Group',
+						name: 'Chat.MultiMember',
 						params: {
 							convId,
 						},
@@ -103,9 +104,9 @@ export const ManageGroupInvitation: React.FC<{
 	if (error) {
 		return <InvalidScan type={type} error={error} />
 	}
-
 	return (
 		<View
+			accessibilityLabel='ManageDeepLink-ManageGroupInvitation'
 			style={[{ justifyContent: 'center', alignItems: 'center', height: '100%' }, padding.medium]}
 		>
 			<View

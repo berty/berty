@@ -27,7 +27,7 @@ export const ConversationButton: React.FC<ConversationButtonProps> = props => {
 			navigate({
 				name:
 					props.type === beapi.messenger.Conversation.Type.MultiMemberType
-						? 'Chat.Group'
+						? 'Chat.MultiMember'
 						: 'Chat.OneToOne',
 				params: {
 					convId: props.publicKey,

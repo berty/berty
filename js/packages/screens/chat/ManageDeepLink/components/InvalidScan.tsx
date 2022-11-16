@@ -170,7 +170,10 @@ const InvalidScan: React.FC<{ type: string; error: any }> = ({ type, error }) =>
 	}
 
 	return (
-		<View style={[padding.medium, { justifyContent: 'center', height: '100%' }]}>
+		<View
+			style={[padding.medium, { justifyContent: 'center', height: '100%' }]}
+			accessibilityLabel='ManageDeepLink-InvalidScan'
+		>
 			<View
 				onLayout={e => !layout && setLayout(e.nativeEvent.layout.height)}
 				style={[

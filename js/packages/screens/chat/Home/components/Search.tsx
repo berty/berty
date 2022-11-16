@@ -252,7 +252,7 @@ const SearchResultItem: React.FC<SearchItemProps> = ({ data, kind, searchText = 
 				name:
 					conv.type === beapi.messenger.Conversation.Type.ContactType
 						? 'Chat.OneToOne'
-						: 'Chat.Group',
+						: 'Chat.MultiMember',
 				params: {
 					convId: convPk,
 					scrollToMessage: kind === SearchResultKind.Interaction && inte ? inte.cid : null,

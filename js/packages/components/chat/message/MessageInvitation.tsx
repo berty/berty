@@ -83,7 +83,7 @@ const MessageInvitationReceived: React.FC<{ message: InteractionGroupInvitation 
 							routes: [
 								{ name: 'Chat.Home' },
 								{
-									name: 'Chat.Group',
+									name: 'Chat.MultiMember',
 									params: {
 										convId: convPk,
 									},

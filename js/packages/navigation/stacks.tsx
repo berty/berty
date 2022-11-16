@@ -363,7 +363,7 @@ export const Navigation: React.FC = React.memo(() => {
 				})}
 			/>
 			<NavigationStack.Screen
-				name='Chat.Group'
+				name='Chat.MultiMember'
 				component={Components.Chat.MultiMember}
 				options={ChatScreenOptions({
 					...ChatScreenOptions(),
@@ -388,7 +388,7 @@ export const Navigation: React.FC = React.memo(() => {
 				})}
 			/>
 			<NavigationStack.Screen
-				name='Group.MultiMemberSettings'
+				name='Chat.MultiMemberSettings'
 				component={Components.Chat.MultiMemberSettings}
 				options={BackgroundHeaderScreenOptions({
 					title: t('chat.multi-member-settings.title'),
@@ -397,8 +397,8 @@ export const Navigation: React.FC = React.memo(() => {
 				})}
 			/>
 			<NavigationStack.Screen
-				name='Group.ChatSettingsMemberDetail'
-				component={Components.Chat.ChatSettingsMemberDetail}
+				name='Chat.SettingsMemberDetail'
+				component={Components.Chat.SettingsMemberDetail}
 				options={BackgroundHeaderScreenOptions({
 					title: t('chat.multi-member-settings.title'),
 					headerTitle: () => <></>,
