@@ -36,17 +36,33 @@ jobs:
       - name: Setup asdf
         uses: asdf-vm/actions/setup@v1
 
-      - name: Setup go
+      - name: Setup go (Posix)
+        if: runner.os != 'Windows'
         run: |
           asdf plugin add golang
           asdf install golang
           echo "go_version=$(asdf current golang | xargs | cut -d ' ' -f 2)" >> $GITHUB_ENV
 
-      - name: Setup node
+      - name: Setup go (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          asdf plugin add golang
+          asdf install golang
+          "go_version={0}" -f (((asdf current golang) -replace '\s+', ' ') -Split ' ')[1] >> $env:GITHUB_ENV
+
+      - name: Setup node (Posix)
+        if: runner.os != 'Windows'
         run: |
           asdf plugin add nodejs
           asdf install nodejs
           echo "node_version=$(asdf current nodejs | xargs | cut -d ' ' -f 2)" >> $GITHUB_ENV
+
+      - name: Setup node (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          asdf plugin add nodejs
+          asdf install nodejs
+          "node_version={0}" -f (((asdf current nodejs) -replace '\s+', ' ') -Split ' ')[1] >> $env:GITHUB_ENV
 
       - name: Setup yarn
         run: |
@@ -94,4 +110,3 @@ jobs:
         uses: mxschmitt/action-tmate@v3
         with:
           limit-access-to-actor: true
-
