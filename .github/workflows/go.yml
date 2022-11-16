@@ -185,14 +185,14 @@ jobs:
         with:
           filename: .github/workflows/utils/variables.json
 
-      - name: Setup asdf
-        uses: asdf-vm/actions/setup@v1
+      - name: Get go version
+        shell: bash
+        run: echo "go_version=$(cat .tool-versions | grep '^golang [0-9]\+\.[0-9]\+\.[0-9]\+.*$' | cut -d ' ' -f 2)" >> $GITHUB_ENV
 
       - name: Setup go
-        run: |
-          asdf plugin add golang
-          asdf install golang
-          "go_version={0}" -f (((asdf current golang) -replace '\s+', ' ') -Split ' ')[1] >> $env:GITHUB_ENV
+        uses: actions/setup-go@v3
+        with:
+          go-version: ${{ env.go_version }}
 
       - name: Cache go modules
         uses: actions/cache@v2.1.6
