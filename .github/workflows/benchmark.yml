@@ -77,18 +77,14 @@ jobs:
           touch gen.sum # avoid triggering make generate
           make go.install
 
-      - name: Fake benchmark (master)
-        run: cp  output_head.txt output_base.txt
+      - name: Run benchmark (master)
+        run: make go.unittest | tee output_base.txt
         working-directory: go
+        env:
+          TEST_SPEED: any
+          GO_TEST_PATH: ./internal/benchmark
+          GO_TEST_OPTS: -bench=. -test.benchmem -test.timeout=1200s -count=5 -tags "fts5 sqlite sqlite_unlock_notify"
 
-      #      - name: Run benchmark (master)
-      #        run: make go.unittest | tee output_base.txt
-      #        working-directory: go
-      #        env:
-      #          TEST_SPEED: any
-      #          GO_TEST_PATH: ./internal/benchmark
-      #          GO_TEST_OPTS: -bench=. -test.benchmem -test.timeout=1200s -count=5 -tags "fts5 sqlite sqlite_unlock_notify"
-      #
       - name: Benchstat
         id: benchstat
         run: |
