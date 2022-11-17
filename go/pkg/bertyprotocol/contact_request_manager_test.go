@@ -7,6 +7,7 @@ import (
 	"time"
 
 	libp2p_mocknet "github.com/libp2p/go-libp2p/p2p/net/mock"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
 	"berty.tech/berty/v2/go/internal/testutil"
@@ -141,7 +142,12 @@ func TestContactRequestFlowWithoutIncoming(t *testing.T) {
 	testutil.FilterSpeed(t, testutil.Slow)
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
-	defer cancel()
+	defer func() {
+		if ctx.Err() != nil {
+			panic("need stack-trace")
+		}
+		cancel()
+	}()
 	logger, cleanup := testutil.Logger(t)
 	defer cleanup()
 
@@ -182,8 +188,6 @@ func TestContactRequestFlowWithoutIncoming(t *testing.T) {
 	require.NoError(t, err)
 	found := false
 
-	<-time.After(time.Second)
-
 	_, err = pts[1].Client.ContactRequestSend(ctx, &protocoltypes.ContactRequestSend_Request{
 		Contact: &protocoltypes.ShareableContact{
 			PK:                   config0.AccountPK,
@@ -195,7 +199,8 @@ func TestContactRequestFlowWithoutIncoming(t *testing.T) {
 
 	for {
 		evt, err := subMeta0.Recv()
-		if err == io.EOF || subMeta0.Context().Err() != nil {
+		if err != nil {
+			assert.NoError(t, err)
 			break
 		}
 
