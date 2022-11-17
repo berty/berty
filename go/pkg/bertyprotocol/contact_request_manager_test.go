@@ -145,8 +145,11 @@ func TestContactRequestFlowWithoutIncoming(t *testing.T) {
 	logger, cleanup := testutil.Logger(t)
 	defer cleanup()
 
+	mn := libp2p_mocknet.New()
+	defer mn.Close()
+
 	opts := TestingOpts{
-		Mocknet: libp2p_mocknet.New(),
+		Mocknet: mn,
 		Logger:  logger,
 	}
 
@@ -178,6 +181,8 @@ func TestContactRequestFlowWithoutIncoming(t *testing.T) {
 	})
 	require.NoError(t, err)
 	found := false
+
+	<-time.After(time.Second)
 
 	_, err = pts[1].Client.ContactRequestSend(ctx, &protocoltypes.ContactRequestSend_Request{
 		Contact: &protocoltypes.ShareableContact{
