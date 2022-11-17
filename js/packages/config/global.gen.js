@@ -63,7 +63,9 @@ export const globals = {
       }
     ],
     "static-relays": [
-      "/ip4/52.47.79.109/tcp/4040/p2p/12D3KooWKhUMFeJdRD4WuXE3f6boYPvxfgZJhRR4naxswdKpKFwG"
+      "/ip4/51.159.21.214/tcp/6363/p2p/12D3KooWBoShE6E6uXveQWVunK7AJk6UReDBmiui5qFYWbug1Nf9",
+      "/ip6/2001:bc8:2610:4200::/tcp/6363/p2p/12D3KooWBoShE6E6uXveQWVunK7AJk6UReDBmiui5qFYWbug1Nf9",
+      "/ip4/51.15.25.224/tcp/6363/p2p/12D3KooWAHcEz4K5XAgRDav9fLuhiRY2wuXip385EmT5RoRkCmjr"
     ]
   }
 };
