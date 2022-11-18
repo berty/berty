@@ -8,27 +8,27 @@ import (
 	"math/rand"
 	"testing"
 
-	ipfs_mobile "github.com/ipfs-shipyard/gomobile-ipfs/go/pkg/ipfsmobile"
+	rendezvous "github.com/berty/go-libp2p-rendezvous"
+	p2p_rpdb "github.com/berty/go-libp2p-rendezvous/db/sqlcipher"
 	ds "github.com/ipfs/go-datastore"
 	dsync "github.com/ipfs/go-datastore/sync"
-	ipfs_cfg "github.com/ipfs/go-ipfs-config"
-	ipfs_core "github.com/ipfs/go-ipfs/core"
-	ipfs_mock "github.com/ipfs/go-ipfs/core/mock"
-	ipfs_repo "github.com/ipfs/go-ipfs/repo"
-	p2p_ci "github.com/libp2p/go-libp2p-core/crypto"
-	host "github.com/libp2p/go-libp2p-core/host"
-	p2pnetwork "github.com/libp2p/go-libp2p-core/network"
-	p2p_peer "github.com/libp2p/go-libp2p-core/peer"
-	"github.com/libp2p/go-libp2p-core/peerstore"
-	"github.com/libp2p/go-libp2p-core/protocol"
-	"github.com/libp2p/go-libp2p-core/routing"
+	ipfs_cfg "github.com/ipfs/kubo/config"
+	ipfs_core "github.com/ipfs/kubo/core"
+	ipfs_mock "github.com/ipfs/kubo/core/mock"
+	ipfs_repo "github.com/ipfs/kubo/repo"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
-	rendezvous "github.com/libp2p/go-libp2p-rendezvous"
-	p2p_rpdb "github.com/libp2p/go-libp2p-rendezvous/db/sqlcipher"
+	p2p_ci "github.com/libp2p/go-libp2p/core/crypto"
+	host "github.com/libp2p/go-libp2p/core/host"
+	p2pnetwork "github.com/libp2p/go-libp2p/core/network"
+	p2p_peer "github.com/libp2p/go-libp2p/core/peer"
+	"github.com/libp2p/go-libp2p/core/peerstore"
+	"github.com/libp2p/go-libp2p/core/protocol"
+	"github.com/libp2p/go-libp2p/core/routing"
 	p2p_mocknet "github.com/libp2p/go-libp2p/p2p/net/mock"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/zap"
 
+	ipfs_mobile "berty.tech/berty/v2/go/internal/ipfsutil/mobile"
 	tinder "berty.tech/berty/v2/go/internal/tinder"
 )
 
@@ -207,7 +207,9 @@ func TestingCoreAPIUsingMockNet(ctx context.Context, t testing.TB, opts *Testing
 func TestingCoreAPI(ctx context.Context, t testing.TB) (CoreAPIMock, func()) {
 	t.Helper()
 
-	m := p2p_mocknet.New(ctx)
+	m := p2p_mocknet.New()
+	defer m.Close()
+
 	rdvPeer, err := m.GenPeer()
 	require.NoError(t, err)
 

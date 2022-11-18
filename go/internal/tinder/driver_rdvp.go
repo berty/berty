@@ -1,4 +1,4 @@
-// from https://github.com/libp2p/go-libp2p-rendezvous/blob/implement-spec/discovery.go
+// from https://github.com/berty/go-libp2p-rendezvous/blob/implement-spec/discovery.go
 // @NOTE(gfanton): we need to dedup this file to add unregister method
 
 package tinder
@@ -11,10 +11,10 @@ import (
 	"sync"
 	"time"
 
-	"github.com/libp2p/go-libp2p-core/discovery"
-	"github.com/libp2p/go-libp2p-core/host"
-	"github.com/libp2p/go-libp2p-core/peer"
-	p2p_rp "github.com/libp2p/go-libp2p-rendezvous"
+	p2p_rp "github.com/berty/go-libp2p-rendezvous"
+	"github.com/libp2p/go-libp2p/core/discovery"
+	"github.com/libp2p/go-libp2p/core/host"
+	"github.com/libp2p/go-libp2p/core/peer"
 	"go.uber.org/zap"
 )
 

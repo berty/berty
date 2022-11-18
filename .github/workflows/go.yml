@@ -30,6 +30,11 @@ jobs:
       - name: Setup asdf
         uses: asdf-vm/actions/setup@v1
 
+      - name: Setup golang
+        run: |
+          asdf plugin add golang
+          asdf install golang
+
       - name: Setup golangci-lint
         run: |
           asdf plugin add golangci-lint

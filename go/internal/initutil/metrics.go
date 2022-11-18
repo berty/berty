@@ -4,6 +4,7 @@ import (
 	"flag"
 	"net"
 	"net/http"
+	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/collectors"
@@ -67,7 +68,12 @@ func (m *Manager) getMetricsRegistry() (*prometheus.Registry, error) {
 			zap.String("handler", metricsHandler),
 			logutil.PrivateString("listener", l.Addr().String()))
 
-		return http.Serve(l, mux)
+		server := &http.Server{
+			Handler:           mux,
+			ReadHeaderTimeout: time.Second * 5,
+		}
+
+		return server.Serve(l)
 	}, func(error) {
 		if l != nil {
 			l.Close()

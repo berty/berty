@@ -14,7 +14,8 @@ import (
 
 func TestLocalDiscorvery(t *testing.T) {
 	ctx := context.Background()
-	mn := mocknet.New(ctx)
+	mn := mocknet.New()
+	defer mn.Close()
 
 	logger, cleanup := testutil.Logger(t)
 	defer cleanup()

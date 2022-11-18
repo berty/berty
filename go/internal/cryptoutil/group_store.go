@@ -10,7 +10,7 @@ import (
 	"io/ioutil"
 
 	"github.com/ipfs/go-datastore"
-	"github.com/libp2p/go-libp2p-core/crypto"
+	"github.com/libp2p/go-libp2p/core/crypto"
 	"golang.org/x/crypto/hkdf"
 
 	"berty.tech/berty/v2/go/internal/datastoreutil"

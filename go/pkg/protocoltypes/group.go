@@ -3,7 +3,7 @@ package protocoltypes
 import (
 	"encoding/hex"
 
-	"github.com/libp2p/go-libp2p-core/crypto"
+	"github.com/libp2p/go-libp2p/core/crypto"
 	"golang.org/x/crypto/ed25519"
 
 	"berty.tech/berty/v2/go/pkg/errcode"

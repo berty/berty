@@ -17,7 +17,7 @@ import (
 	"github.com/grandcat/zeroconf"
 	ipfscid "github.com/ipfs/go-cid"
 	ctxio "github.com/jbenet/go-context/io"
-	discovery "github.com/libp2p/go-libp2p-discovery"
+	backoff "github.com/libp2p/go-libp2p/p2p/discovery/backoff"
 	"go.uber.org/multierr"
 	"go.uber.org/zap"
 	"google.golang.org/grpc/codes"
@@ -1545,8 +1545,8 @@ func (svc *service) TyberHostAttach(ctx context.Context, request *messengertypes
 	}
 
 	srand := mrand.New(mrand.NewSource(srand.MustSecure())) // nolint:gosec
-	backoffFactory := discovery.NewExponentialBackoff(time.Second, time.Minute*15,
-		discovery.FullJitter,
+	backoffFactory := backoff.NewExponentialBackoff(time.Second, time.Minute*15,
+		backoff.FullJitter,
 		time.Second*5, 5.0, 0, srand)
 	backoff := backoffFactory()
 

@@ -7,6 +7,7 @@ import (
 
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 
 	"berty.tech/berty/v2/go/pkg/messengertypes"
 )
@@ -34,7 +35,7 @@ func WithMessengerGRPCConn(cc *grpc.ClientConn) NewOption {
 // It uses grpc.WithInsecure as dialer option and won't check any certificate.
 func WithInsecureMessengerGRPCAddr(addr string) NewOption {
 	return func(b *Bot) error {
-		cc, err := grpc.Dial(addr, grpc.WithInsecure())
+		cc, err := grpc.Dial(addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 		if err != nil {
 			return fmt.Errorf("dial error: %w", err)
 		}

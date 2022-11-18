@@ -12,9 +12,9 @@ import (
 
 	ggio "github.com/gogo/protobuf/io"
 	ipfscid "github.com/ipfs/go-cid"
-	"github.com/libp2p/go-libp2p-core/crypto"
-	"github.com/libp2p/go-libp2p-core/network"
-	peer "github.com/libp2p/go-libp2p-core/peer"
+	"github.com/libp2p/go-libp2p/core/crypto"
+	"github.com/libp2p/go-libp2p/core/network"
+	peer "github.com/libp2p/go-libp2p/core/peer"
 	"go.uber.org/zap"
 
 	"berty.tech/berty/v2/go/internal/handshake"

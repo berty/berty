@@ -4,11 +4,11 @@ import (
 	"context"
 	"os"
 
-	ipfs_core "github.com/ipfs/go-ipfs/core"
 	ipfs_interface "github.com/ipfs/interface-go-ipfs-core"
-	"github.com/libp2p/go-libp2p-core/host"
-	"github.com/libp2p/go-libp2p-core/network"
-	"github.com/libp2p/go-libp2p-core/protocol"
+	ipfs_core "github.com/ipfs/kubo/core"
+	"github.com/libp2p/go-libp2p/core/host"
+	"github.com/libp2p/go-libp2p/core/network"
+	"github.com/libp2p/go-libp2p/core/protocol"
 	ma "github.com/multiformats/go-multiaddr"
 	mafmt "github.com/multiformats/go-multiaddr-fmt"
 	manet "github.com/multiformats/go-multiaddr/net"
@@ -65,8 +65,7 @@ func (lr *LocalRecord) sendLocalRecord(ctx context.Context, c network.Conn) erro
 	if err != nil {
 		return err
 	}
-	s.SetProtocol(recProtocolID)
-	return nil
+	return s.SetProtocol(recProtocolID)
 }
 
 func (lr *LocalRecord) handleLocalRecords(s network.Stream) {

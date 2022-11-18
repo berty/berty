@@ -5,6 +5,7 @@ import (
 	"net"
 
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/test/bufconn"
 )
 
@@ -26,7 +27,7 @@ func (bl *BufListener) NewClientConn(opts ...grpc.DialOption) (*grpc.ClientConn,
 	}
 
 	baseOpts := []grpc.DialOption{
-		grpc.WithInsecure(),
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
 		grpc.WithContextDialer(dialer), // set pipe dialer
 	}
 

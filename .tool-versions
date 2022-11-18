@@ -40,7 +40,7 @@ ruby 3.1.2
 # It would be good to update it (when possible) to a version that fixes this log
 # issue and to update the golangci-lint Github Actions step accordingly.
 #-----
-golangci-lint 1.46.2
+golangci-lint 1.50.1
 
 #-----
 # jq 1.6 is simply the most recent version available to date (07/22).

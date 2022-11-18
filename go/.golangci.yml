@@ -2,11 +2,12 @@ run:
   deadline: 1m
   tests: false
   skip-files:
-    - ".*\\.pb\\.go"
-    - ".*\\.pb\\.gw\\.go"
-    - ".*\\.gen\\.go"
-    - "_test\\.go"
-    - "testing.go"
+    - ".*\\.pb\\.go$"
+    - ".*\\.pb\\.gw\\.go$"
+    - ".*\\.gen\\.go$"
+    - "_test\\.go$"
+    - "testing.go$"
+    - ".*doc\\.go$"
 
 linters-settings:
   golint:
@@ -31,7 +32,6 @@ linters:
   enable:
     - asciicheck
     - bodyclose
-    - deadcode
     - depguard
     - dogsled
     - errcheck
@@ -60,12 +60,10 @@ linters:
     - noctx
     #- nolintlint
     - exportloopref
-    - sqlclosecheck
     - staticcheck
-    - structcheck
     - typecheck
     - unconvert
     - unparam
     - unused
-    - varcheck
     - whitespace
+    - unused

@@ -9,15 +9,14 @@ import (
 	"sync/atomic"
 	"time"
 
-	ipfs_mobile "github.com/ipfs-shipyard/gomobile-ipfs/go/pkg/ipfsmobile"
 	ds "github.com/ipfs/go-datastore"
 	ds_sync "github.com/ipfs/go-datastore/sync"
 	ipfs_interface "github.com/ipfs/interface-go-ipfs-core"
-	"github.com/libp2p/go-libp2p-core/crypto"
-	"github.com/libp2p/go-libp2p-core/event"
-	"github.com/libp2p/go-libp2p-core/host"
-	"github.com/libp2p/go-libp2p-core/network"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
+	"github.com/libp2p/go-libp2p/core/crypto"
+	"github.com/libp2p/go-libp2p/core/event"
+	"github.com/libp2p/go-libp2p/core/host"
+	"github.com/libp2p/go-libp2p/core/network"
 	"github.com/pkg/errors"
 	"go.uber.org/multierr"
 	"go.uber.org/zap"
@@ -26,6 +25,7 @@ import (
 	"berty.tech/berty/v2/go/internal/cryptoutil"
 	"berty.tech/berty/v2/go/internal/datastoreutil"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
+	ipfs_mobile "berty.tech/berty/v2/go/internal/ipfsutil/mobile"
 	tinder "berty.tech/berty/v2/go/internal/tinder"
 	"berty.tech/berty/v2/go/pkg/bertypush"
 	"berty.tech/berty/v2/go/pkg/bertyversion"
@@ -310,9 +310,15 @@ func (s *service) IpfsCoreAPI() ipfs_interface.CoreAPI {
 }
 
 func (s *service) Close() error {
+	s.ctxCancel()
+
 	endSection := tyber.SimpleSection(tyber.ContextWithoutTraceID(s.ctx), s.logger, "Closing ProtocolService")
 
 	var err error
+	pks := []crypto.PubKey{}
+
+	// gather public keys
+	s.lock.Lock()
 	for _, gc := range s.openedGroups {
 		pk, subErr := crypto.UnmarshalEd25519PublicKey(gc.group.PublicKey)
 		if subErr != nil {
@@ -320,14 +326,19 @@ func (s *service) Close() error {
 			continue
 		}
 
+		pks = append(pks, pk)
+	}
+	s.lock.Unlock()
+
+	// deactivate all groups
+	for _, pk := range pks {
 		derr := s.deactivateGroup(pk)
 		if derr != nil && !errcode.Has(derr, errcode.ErrBertyAccount) {
-			err = multierr.Append(derr, subErr)
+			err = multierr.Append(derr, derr)
 		}
 	}
 
 	err = multierr.Append(err, s.closeBertyAccount())
-
 	err = multierr.Append(err, s.odb.Close())
 
 	if s.close != nil {
@@ -335,8 +346,6 @@ func (s *service) Close() error {
 	}
 
 	endSection(err)
-
-	s.ctxCancel()
 
 	return err
 }

@@ -5,7 +5,7 @@ import (
 	"encoding/base64"
 
 	ggio "github.com/gogo/protobuf/io"
-	p2pcrypto "github.com/libp2p/go-libp2p-core/crypto"
+	p2pcrypto "github.com/libp2p/go-libp2p/core/crypto"
 	"golang.org/x/crypto/nacl/box"
 
 	"berty.tech/berty/v2/go/internal/cryptoutil"

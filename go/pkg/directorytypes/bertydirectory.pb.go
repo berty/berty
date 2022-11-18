@@ -4,25 +4,21 @@
 package directorytypes
 
 import (
+	_ "berty.tech/berty/v2/go/pkg/protocoltypes"
 	context "context"
 	fmt "fmt"
-	math "math"
-
 	_ "github.com/gogo/protobuf/gogoproto"
 	proto "github.com/gogo/protobuf/proto"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
-
-	_ "berty.tech/berty/v2/go/pkg/protocoltypes"
+	math "math"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
-var (
-	_ = proto.Marshal
-	_ = fmt.Errorf
-	_ = math.Inf
-)
+var _ = proto.Marshal
+var _ = fmt.Errorf
+var _ = math.Inf
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the proto package it is being compiled against.
@@ -30,7 +26,8 @@ var (
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-type Register struct{}
+type Register struct {
+}
 
 func (m *Register) Reset()         { *m = Register{} }
 func (m *Register) String() string { return proto.CompactTextString(m) }
@@ -38,23 +35,18 @@ func (*Register) ProtoMessage()    {}
 func (*Register) Descriptor() ([]byte, []int) {
 	return fileDescriptor_dd73011b15fb0caf, []int{0}
 }
-
 func (m *Register) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Register.Unmarshal(m, b)
 }
-
 func (m *Register) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_Register.Marshal(b, m, deterministic)
 }
-
 func (m *Register) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_Register.Merge(m, src)
 }
-
 func (m *Register) XXX_Size() int {
 	return xxx_messageInfo_Register.Size(m)
 }
-
 func (m *Register) XXX_DiscardUnknown() {
 	xxx_messageInfo_Register.DiscardUnknown(m)
 }
@@ -76,23 +68,18 @@ func (*Register_Request) ProtoMessage()    {}
 func (*Register_Request) Descriptor() ([]byte, []int) {
 	return fileDescriptor_dd73011b15fb0caf, []int{0, 0}
 }
-
 func (m *Register_Request) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Register_Request.Unmarshal(m, b)
 }
-
 func (m *Register_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_Register_Request.Marshal(b, m, deterministic)
 }
-
 func (m *Register_Request) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_Register_Request.Merge(m, src)
 }
-
 func (m *Register_Request) XXX_Size() int {
 	return xxx_messageInfo_Register_Request.Size(m)
 }
-
 func (m *Register_Request) XXX_DiscardUnknown() {
 	xxx_messageInfo_Register_Request.DiscardUnknown(m)
 }
@@ -153,23 +140,18 @@ func (*Register_Reply) ProtoMessage()    {}
 func (*Register_Reply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_dd73011b15fb0caf, []int{0, 1}
 }
-
 func (m *Register_Reply) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Register_Reply.Unmarshal(m, b)
 }
-
 func (m *Register_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_Register_Reply.Marshal(b, m, deterministic)
 }
-
 func (m *Register_Reply) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_Register_Reply.Merge(m, src)
 }
-
 func (m *Register_Reply) XXX_Size() int {
 	return xxx_messageInfo_Register_Reply.Size(m)
 }
-
 func (m *Register_Reply) XXX_DiscardUnknown() {
 	xxx_messageInfo_Register_Reply.DiscardUnknown(m)
 }
@@ -197,7 +179,8 @@ func (m *Register_Reply) GetExpirationDate() int64 {
 	return 0
 }
 
-type Query struct{}
+type Query struct {
+}
 
 func (m *Query) Reset()         { *m = Query{} }
 func (m *Query) String() string { return proto.CompactTextString(m) }
@@ -205,23 +188,18 @@ func (*Query) ProtoMessage()    {}
 func (*Query) Descriptor() ([]byte, []int) {
 	return fileDescriptor_dd73011b15fb0caf, []int{1}
 }
-
 func (m *Query) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Query.Unmarshal(m, b)
 }
-
 func (m *Query) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_Query.Marshal(b, m, deterministic)
 }
-
 func (m *Query) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_Query.Merge(m, src)
 }
-
 func (m *Query) XXX_Size() int {
 	return xxx_messageInfo_Query.Size(m)
 }
-
 func (m *Query) XXX_DiscardUnknown() {
 	xxx_messageInfo_Query.DiscardUnknown(m)
 }
@@ -238,23 +216,18 @@ func (*Query_Request) ProtoMessage()    {}
 func (*Query_Request) Descriptor() ([]byte, []int) {
 	return fileDescriptor_dd73011b15fb0caf, []int{1, 0}
 }
-
 func (m *Query_Request) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Query_Request.Unmarshal(m, b)
 }
-
 func (m *Query_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_Query_Request.Marshal(b, m, deterministic)
 }
-
 func (m *Query_Request) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_Query_Request.Merge(m, src)
 }
-
 func (m *Query_Request) XXX_Size() int {
 	return xxx_messageInfo_Query_Request.Size(m)
 }
-
 func (m *Query_Request) XXX_DiscardUnknown() {
 	xxx_messageInfo_Query_Request.DiscardUnknown(m)
 }
@@ -281,23 +254,18 @@ func (*Query_Reply) ProtoMessage()    {}
 func (*Query_Reply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_dd73011b15fb0caf, []int{1, 1}
 }
-
 func (m *Query_Reply) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Query_Reply.Unmarshal(m, b)
 }
-
 func (m *Query_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_Query_Reply.Marshal(b, m, deterministic)
 }
-
 func (m *Query_Reply) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_Query_Reply.Merge(m, src)
 }
-
 func (m *Query_Reply) XXX_Size() int {
 	return xxx_messageInfo_Query_Reply.Size(m)
 }
-
 func (m *Query_Reply) XXX_DiscardUnknown() {
 	xxx_messageInfo_Query_Reply.DiscardUnknown(m)
 }
@@ -332,7 +300,8 @@ func (m *Query_Reply) GetVerifiedCredential() []byte {
 	return nil
 }
 
-type Unregister struct{}
+type Unregister struct {
+}
 
 func (m *Unregister) Reset()         { *m = Unregister{} }
 func (m *Unregister) String() string { return proto.CompactTextString(m) }
@@ -340,23 +309,18 @@ func (*Unregister) ProtoMessage()    {}
 func (*Unregister) Descriptor() ([]byte, []int) {
 	return fileDescriptor_dd73011b15fb0caf, []int{2}
 }
-
 func (m *Unregister) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Unregister.Unmarshal(m, b)
 }
-
 func (m *Unregister) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_Unregister.Marshal(b, m, deterministic)
 }
-
 func (m *Unregister) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_Unregister.Merge(m, src)
 }
-
 func (m *Unregister) XXX_Size() int {
 	return xxx_messageInfo_Unregister.Size(m)
 }
-
 func (m *Unregister) XXX_DiscardUnknown() {
 	xxx_messageInfo_Unregister.DiscardUnknown(m)
 }
@@ -375,23 +339,18 @@ func (*Unregister_Request) ProtoMessage()    {}
 func (*Unregister_Request) Descriptor() ([]byte, []int) {
 	return fileDescriptor_dd73011b15fb0caf, []int{2, 0}
 }
-
 func (m *Unregister_Request) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Unregister_Request.Unmarshal(m, b)
 }
-
 func (m *Unregister_Request) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_Unregister_Request.Marshal(b, m, deterministic)
 }
-
 func (m *Unregister_Request) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_Unregister_Request.Merge(m, src)
 }
-
 func (m *Unregister_Request) XXX_Size() int {
 	return xxx_messageInfo_Unregister_Request.Size(m)
 }
-
 func (m *Unregister_Request) XXX_DiscardUnknown() {
 	xxx_messageInfo_Unregister_Request.DiscardUnknown(m)
 }
@@ -419,7 +378,8 @@ func (m *Unregister_Request) GetUnlockSig() []byte {
 	return nil
 }
 
-type Unregister_Reply struct{}
+type Unregister_Reply struct {
+}
 
 func (m *Unregister_Reply) Reset()         { *m = Unregister_Reply{} }
 func (m *Unregister_Reply) String() string { return proto.CompactTextString(m) }
@@ -427,23 +387,18 @@ func (*Unregister_Reply) ProtoMessage()    {}
 func (*Unregister_Reply) Descriptor() ([]byte, []int) {
 	return fileDescriptor_dd73011b15fb0caf, []int{2, 1}
 }
-
 func (m *Unregister_Reply) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Unregister_Reply.Unmarshal(m, b)
 }
-
 func (m *Unregister_Reply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_Unregister_Reply.Marshal(b, m, deterministic)
 }
-
 func (m *Unregister_Reply) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_Unregister_Reply.Merge(m, src)
 }
-
 func (m *Unregister_Reply) XXX_Size() int {
 	return xxx_messageInfo_Unregister_Reply.Size(m)
 }
-
 func (m *Unregister_Reply) XXX_DiscardUnknown() {
 	xxx_messageInfo_Unregister_Reply.DiscardUnknown(m)
 }
@@ -466,23 +421,18 @@ func (*Record) ProtoMessage()    {}
 func (*Record) Descriptor() ([]byte, []int) {
 	return fileDescriptor_dd73011b15fb0caf, []int{3}
 }
-
 func (m *Record) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Record.Unmarshal(m, b)
 }
-
 func (m *Record) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_Record.Marshal(b, m, deterministic)
 }
-
 func (m *Record) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_Record.Merge(m, src)
 }
-
 func (m *Record) XXX_Size() int {
 	return xxx_messageInfo_Record.Size(m)
 }
-
 func (m *Record) XXX_DiscardUnknown() {
 	xxx_messageInfo_Record.DiscardUnknown(m)
 }
@@ -600,10 +550,8 @@ var fileDescriptor_dd73011b15fb0caf = []byte{
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
-var (
-	_ context.Context
-	_ grpc.ClientConn
-)
+var _ context.Context
+var _ grpc.ClientConn
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
@@ -684,16 +632,15 @@ type DirectoryServiceServer interface {
 }
 
 // UnimplementedDirectoryServiceServer can be embedded to have forward compatible implementations.
-type UnimplementedDirectoryServiceServer struct{}
+type UnimplementedDirectoryServiceServer struct {
+}
 
 func (*UnimplementedDirectoryServiceServer) Register(ctx context.Context, req *Register_Request) (*Register_Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Register not implemented")
 }
-
 func (*UnimplementedDirectoryServiceServer) Query(req *Query_Request, srv DirectoryService_QueryServer) error {
 	return status.Errorf(codes.Unimplemented, "method Query not implemented")
 }
-
 func (*UnimplementedDirectoryServiceServer) Unregister(ctx context.Context, req *Unregister_Request) (*Unregister_Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Unregister not implemented")
 }

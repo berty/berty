@@ -11,12 +11,13 @@ import (
 	"time"
 
 	"github.com/ipfs/go-cid"
-	"github.com/libp2p/go-libp2p-core/crypto"
+	"github.com/libp2p/go-libp2p/core/crypto"
 	"go.uber.org/zap"
 	"golang.org/x/crypto/nacl/box"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/backoff"
 	"google.golang.org/grpc/credentials"
+	"google.golang.org/grpc/credentials/insecure"
 
 	"berty.tech/berty/v2/go/internal/cryptoutil"
 	"berty.tech/berty/v2/go/internal/logutil"
@@ -63,7 +64,7 @@ func (s *service) getPushClient(host string) (pushtypes.PushServiceClient, error
 
 	var creds grpc.DialOption
 	if s.grpcInsecure {
-		creds = grpc.WithInsecure()
+		creds = grpc.WithTransportCredentials(insecure.NewCredentials())
 	} else {
 		tlsconfig := credentials.NewTLS(&tls.Config{
 			MinVersion: tls.VersionTLS12,

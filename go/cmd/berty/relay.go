@@ -14,10 +14,10 @@ import (
 	"time"
 
 	"github.com/libp2p/go-libp2p"
-	libp2p_ci "github.com/libp2p/go-libp2p-core/crypto"
-	metrics "github.com/libp2p/go-libp2p-core/metrics"
-	"github.com/libp2p/go-libp2p-core/peer"
 	libp2p_config "github.com/libp2p/go-libp2p/config"
+	libp2p_ci "github.com/libp2p/go-libp2p/core/crypto"
+	metrics "github.com/libp2p/go-libp2p/core/metrics"
+	"github.com/libp2p/go-libp2p/core/peer"
 	"github.com/libp2p/go-libp2p/p2p/protocol/circuitv2/relay"
 	ma "github.com/multiformats/go-multiaddr"
 	"github.com/peterbourgon/ff/v3/ffcli"
@@ -273,8 +273,13 @@ func relayServerCommand() *ffcli.Command {
 				mux := http.NewServeMux()
 				mux.Handle("/metrics", handerfor)
 
+				server := &http.Server{
+					Handler:           mux,
+					ReadHeaderTimeout: time.Second * 5,
+				}
+
 				go func() {
-					if err := http.Serve(ml, mux); err != nil {
+					if err := server.Serve(ml); err != nil {
 						logger.Error("metrics serve error", zap.Error(err))
 					}
 				}()

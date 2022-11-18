@@ -426,13 +426,15 @@ ios/Frameworks/Bertybridge.xcframework: $(bridge_src)
 	cd .. && $(GO) install golang.org/x/mobile/cmd/gobind
 	cd .. && $(GO) run golang.org/x/mobile/cmd/gomobile init
 	mkdir -p $(ios_gomobile_cache) ios/Frameworks
+
+# use `nowatchdog` tags, see https://github.com/libp2p/go-libp2p-connmgr/issues/98
 	cd .. && \
 		PATH="$(PATH):`go env GOPATH`/bin" \
 		CGO_CPPFLAGS=-DHAVE_GETHOSTUUID=0 \
 		$(GO) run golang.org/x/mobile/cmd/gomobile bind \
 			-o js/$@ \
 			-v $(ext_ldflags) \
-			$(GO_TAGS) \
+			$(GO_TAGS) -tags 'nowatchdog' \
 			-cache $(ios_gomobile_cache)/bertybridge \
 			-target $(GOMOBILE_IOS_TARGET) \
 			-iosversion $(minimum_ios_ver) \
@@ -446,13 +448,15 @@ ios/Frameworks/Bertypush.xcframework: $(bridge_src)
 	cd .. && $(GO) install golang.org/x/mobile/cmd/gobind
 	cd .. && $(GO) run golang.org/x/mobile/cmd/gomobile init
 	mkdir -p $(ios_gomobile_cache) ios/Frameworks
+
+# use `nowatchdog` tags, see https://github.com/libp2p/go-libp2p-connmgr/issues/98
 	cd .. && \
 		PATH="$(PATH):`go env GOPATH`/bin" \
 		CGO_CPPFLAGS=-DHAVE_GETHOSTUUID=0 \
 		$(GO) run golang.org/x/mobile/cmd/gomobile bind \
 			-o js/$@ \
 			-v $(ext_ldflags) \
-			$(GO_TAGS) \
+			$(GO_TAGS) -tags 'nowatchdog' \
 			-cache $(ios_gomobile_cache)/bertypush \
 			-target $(GOMOBILE_IOS_TARGET) \
 			-iosversion $(minimum_ios_ver) \

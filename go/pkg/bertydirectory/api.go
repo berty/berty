@@ -10,7 +10,7 @@ import (
 
 	"github.com/gofrs/uuid"
 	"github.com/hyperledger/aries-framework-go/pkg/doc/verifiable"
-	p2pcrypto "github.com/libp2p/go-libp2p-core/crypto"
+	p2pcrypto "github.com/libp2p/go-libp2p/core/crypto"
 	"github.com/piprate/json-gold/ld"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
