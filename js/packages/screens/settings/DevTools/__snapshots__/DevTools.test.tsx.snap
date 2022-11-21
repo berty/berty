@@ -409,7 +409,7 @@ exports[`Settings.DevTools renders correctly 1`] = `
                       ]
                     }
                   >
-                    settings.devtools.accounts-button
+                    settings.accounts.accounts-button
                   </Text>
                 </View>
                 <View
@@ -530,7 +530,7 @@ exports[`Settings.DevTools renders correctly 1`] = `
                       ]
                     }
                   >
-                    settings.devtools.create-button
+                    settings.accounts.create-button
                   </Text>
                 </View>
                 <View
@@ -607,7 +607,7 @@ exports[`Settings.DevTools renders correctly 1`] = `
                       ]
                     }
                   >
-                    settings.devtools.import-button
+                    settings.accounts.import-button
                   </Text>
                 </View>
                 <View

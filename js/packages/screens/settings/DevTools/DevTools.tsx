@@ -361,6 +361,7 @@ const BodyDevTools: React.FC<{}> = withInAppNotification(({ showNotification }: 
 	const restart = useRestartAfterClosing()
 	const restartBridge = useCloseBridgeAfterClosing()
 	const selectedAccount = useAppSelector(selectSelectedAccount)
+	const restartOnboarding = useOnBoardingAfterClosing()
 	const [forceMock, setForceMock] = useState<boolean>(false)
 
 	const addTyberHost = useCallback(
@@ -468,9 +469,7 @@ const BodyDevTools: React.FC<{}> = withInAppNotification(({ showNotification }: 
 			</ItemSection>
 
 			<ItemSection>
-				<MenuItem onPress={useOnBoardingAfterClosing}>
-					{t('settings.accounts.create-button')}
-				</MenuItem>
+				<MenuItem onPress={restartOnboarding}>{t('settings.accounts.create-button')}</MenuItem>
 
 				{Platform.OS !== 'web' && (
 					<>

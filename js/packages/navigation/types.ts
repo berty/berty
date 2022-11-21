@@ -79,7 +79,10 @@ export type ScreensParams = {
 
 	// Account
 
-	'Account.GoToLogInOrCreate': undefined
+	'Account.GoToLogInOrCreate': {
+		isCreate: boolean
+		selectedAccount?: string
+	}
 	'Account.SelectNode': {
 		init: boolean
 		action: (external: boolean, address: string, port: string) => Promise<boolean>
