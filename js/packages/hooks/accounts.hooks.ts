@@ -1,5 +1,6 @@
 import { NavigationProp } from '@react-navigation/native'
 import { useCallback } from 'react'
+import { Alert } from 'react-native'
 
 import beapi from '@berty/api'
 import { GoBridge } from '@berty/native-modules/GoBridge'
@@ -7,6 +8,7 @@ import { useNavigation } from '@berty/navigation'
 import { ScreensParams } from '@berty/navigation/types'
 import { selectSelectedAccount } from '@berty/redux/reducers/ui.reducer'
 import { createAccount, deleteAccount, updateAccount } from '@berty/utils/accounts'
+import { initBridge } from '@berty/utils/bridge/bridge'
 
 import { useAppSelector } from './core.hooks'
 import { useAccount } from './messenger.hooks'
@@ -61,8 +63,37 @@ const resetToClosing = (reset: NavigationProp<ScreensParams>['reset'], callback:
 export const useSwitchAccountAfterClosing = () => {
 	const { reset } = useNavigation()
 	return useCallback(
-		(_selectedAccount: string | null) =>
-			resetToClosing(reset, () => reset({ routes: [{ name: 'Account.SelectNode', params: {} }] })),
+		(selectedAccount: string | null) =>
+			resetToClosing(reset, () =>
+				reset({
+					routes: [
+						{
+							name: 'Account.SelectNode',
+							params: {
+								init: true,
+								action: async (external: boolean, address: string, port: string) => {
+									const res = await initBridge(external, address, port)
+									if (!res) {
+										Alert.alert('bridge: init failed')
+										return false
+									}
+
+									reset({
+										index: 0,
+										routes: [
+											{
+												name: 'Account.GoToLogInOrCreate',
+												params: { isCreate: false, selectedAccount },
+											},
+										],
+									})
+									return true
+								},
+							},
+						},
+					],
+				}),
+			),
 		[reset],
 	)
 }
@@ -76,7 +107,32 @@ export const useRestartAfterClosing = () => {
 export const useOnBoardingAfterClosing = () => {
 	const { reset } = useNavigation()
 	return useCallback(
-		() => resetToClosing(reset, () => reset({ routes: [{ name: 'Onboarding.GetStarted' }] })),
+		() =>
+			resetToClosing(reset, () =>
+				reset({
+					routes: [
+						{
+							name: 'Account.SelectNode',
+							params: {
+								init: false,
+								action: async (external: boolean, address: string, port: string) => {
+									const res = await initBridge(external, address, port)
+									if (!res) {
+										Alert.alert('bridge: init failed')
+										return false
+									}
+
+									reset({
+										index: 0,
+										routes: [{ name: 'Account.GoToLogInOrCreate', params: { isCreate: true } }],
+									})
+									return true
+								},
+							},
+						},
+					],
+				}),
+			),
 		[reset],
 	)
 }
@@ -86,7 +142,26 @@ export const useImportingAccountAfterClosing = () => {
 	return useCallback(
 		(filePath: string) =>
 			resetToClosing(reset, () =>
-				reset({ routes: [{ name: 'Account.Importing', params: { filePath } }] }),
+				reset({
+					routes: [
+						{
+							name: 'Account.SelectNode',
+							params: {
+								init: true,
+								action: async (external: boolean, address: string, port: string) => {
+									const res = await initBridge(external, address, port)
+									if (!res) {
+										Alert.alert('bridge: init failed')
+										return false
+									}
+
+									reset({ routes: [{ name: 'Account.Importing', params: { filePath } }] })
+									return true
+								},
+							},
+						},
+					],
+				}),
 			),
 		[reset],
 	)

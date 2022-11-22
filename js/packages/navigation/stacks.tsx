@@ -180,7 +180,10 @@ export const Navigation: React.FC = React.memo(() => {
 							return false
 						}
 
-						reset({ index: 0, routes: [{ name: 'Account.GoToLogInOrCreate' }] })
+						reset({
+							index: 0,
+							routes: [{ name: 'Account.GoToLogInOrCreate', params: { isCreate: false } }],
+						})
 						return true
 					},
 				}}

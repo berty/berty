@@ -4,11 +4,12 @@ import i18next from 'i18next'
 import Long from 'long'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Alert, ScrollView, StatusBar, Vibration, View } from 'react-native'
+import { Alert, Platform, ScrollView, StatusBar, Vibration, View } from 'react-native'
 import { withInAppNotification } from 'react-native-in-app-notification'
 import { useSelector } from 'react-redux'
 
 import beapi from '@berty/api'
+import { AccountsDropdown, DividerItem, ItemSection, MenuItem } from '@berty/components'
 import { DropDownPicker, Item } from '@berty/components/shared-components/DropDownPicker'
 import {
 	ButtonSetting,
@@ -34,6 +35,9 @@ import {
 	useMessengerClient,
 	bertyMethodsHooks,
 	useCloseBridgeAfterClosing,
+	useOnBoardingAfterClosing,
+	useImportingAccountAfterClosing,
+	useSwitchAccountAfterClosing,
 } from '@berty/hooks'
 import { languages } from '@berty/i18n/locale/languages'
 import { GoBridge } from '@berty/native-modules/GoBridge'
@@ -44,12 +48,15 @@ import {
 	setPersistentOption,
 } from '@berty/redux/reducers/persistentOptions.reducer'
 import {
+	selectAccounts,
 	selectSelectedAccount,
 	setDebugMode,
 	setStreamError,
 } from '@berty/redux/reducers/ui.reducer'
+import { importAccountFromDocumentPicker } from '@berty/utils/accounts'
 import { storageGet, storageSet } from '@berty/utils/accounts/accountClient'
 import { exportLogfile } from '@berty/utils/accounts/accountUtils'
+import { pbDateToNum } from '@berty/utils/convert/time'
 import { defaultGlobalPersistentOptions } from '@berty/utils/global-persistent-options/defaults'
 import { GlobalPersistentOptionsKeys } from '@berty/utils/global-persistent-options/types'
 import { showNeedRestartNotification } from '@berty/utils/notification/notif-in-app'
@@ -354,6 +361,7 @@ const BodyDevTools: React.FC<{}> = withInAppNotification(({ showNotification }: 
 	const restart = useRestartAfterClosing()
 	const restartBridge = useCloseBridgeAfterClosing()
 	const selectedAccount = useAppSelector(selectSelectedAccount)
+	const restartOnboarding = useOnBoardingAfterClosing()
 	const [forceMock, setForceMock] = useState<boolean>(false)
 
 	const addTyberHost = useCallback(
@@ -427,239 +435,297 @@ const BodyDevTools: React.FC<{}> = withInAppNotification(({ showNotification }: 
 		setForceMock(updateForceMock)
 	}, [forceMock])
 
+	const importingAccountAfterClosing = useImportingAccountAfterClosing()
+	const [isHandlingPress, setIsHandlingPress] = React.useState(false)
+	const accounts = useSelector(selectAccounts)
+	const switchAccount = useSwitchAccountAfterClosing()
+	const handlePress = React.useCallback(
+		async (item: beapi.account.IAccountMetadata) => {
+			if (isHandlingPress || !item.accountId) {
+				return
+			}
+			setIsHandlingPress(true)
+			if (selectedAccount !== item.accountId) {
+				switchAccount(item.accountId)
+			}
+			return
+		},
+		[isHandlingPress, selectedAccount, switchAccount],
+	)
+
 	return (
-		<View style={[padding.medium, flex.tiny, margin.bottom.small]}>
-			<ButtonSetting
-				name={t('settings.devtools.force-mock-button')}
-				icon='folder-outline'
-				iconSize={30}
-				iconColor={colors['alt-secondary-background-header']}
-				toggled
-				varToggle={forceMock}
-				actionToggle={handleForceMockToggle}
-			/>
-			<ButtonSetting
-				icon='monitor-outline'
-				iconColor={colors['alt-secondary-background-header']}
-				name={t('settings.devtools.select-node.title')}
-				onPress={() =>
-					navigate('Account.SelectNode', {
-						init: false,
-						action: async (_external: boolean, _address: string, _port: string) => {
-							showNeedRestartNotification(showNotification, restartBridge, t)
-							return true
-						},
-					})
-				}
-			/>
-			<ButtonSetting
-				icon='eye-outline'
-				iconColor={colors['alt-secondary-background-header']}
-				name={t('settings.home.appearance-button')}
-				onPress={() => navigate('Settings.Appearance')}
-			/>
-			<ButtonSetting
-				name={t('settings.devtools.system-info-button')}
-				icon='info-outline'
-				iconSize={30}
-				iconColor={colors['alt-secondary-background-header']}
-				onPress={() => navigate('Settings.SystemInfo')}
-			/>
-			<ButtonSetting
-				name={t('settings.devtools.simulate-button')}
-				icon='alert-triangle-outline'
-				iconSize={30}
-				iconColor={colors['alt-secondary-background-header']}
-				onPress={() => dispatch(setStreamError({ error: t('settings.devtools.simulate-button') }))}
-			/>
-			<ButtonSetting
-				name={t('settings.devtools.simulate-js-error-button')}
-				icon='alert-octagon'
-				iconPack='feather'
-				iconSize={30}
-				iconColor={colors['alt-secondary-background-header']}
-				onPress={() => {
-					throw new Error('test error')
-				}}
-			/>
-			<ButtonSetting
-				name={t('settings.devtools.debug-button')}
-				icon='monitor-outline'
-				iconSize={30}
-				iconColor={colors['alt-secondary-background-header']}
-				toggled
-				varToggle={persistentOptions.debug.enable}
-				actionToggle={() => {
-					dispatch(
-						setPersistentOption({
-							type: PersistentOptionsKeys.Debug,
-							payload: {
-								enable: !persistentOptions?.debug.enable,
-							},
-						}),
-					)
-				}}
-			/>
-			<StringOptionInput
-				name={t('settings.devtools.log-button.name')}
-				bulletPointValue={t('settings.devtools.log-button.bullet-point')}
-				getOptionValue={() => persistentOptions.log.format}
-				setOptionValue={val => {
-					dispatch(
-						setPersistentOption({
-							type: PersistentOptionsKeys.Log,
-							payload: { format: val },
-						}),
-					)
-					showNeedRestartNotification(showNotification, restart, t)
-				}}
-			/>
-			<StringOptionInput
-				name={t('settings.devtools.log-filters-button.name')}
-				bulletPointValue={t('settings.devtools.log-filters-button.bullet-point')}
-				getOptionValue={async () =>
-					(await storageGet(GlobalPersistentOptionsKeys.LogFilters)) ||
-					defaultGlobalPersistentOptions().logFilters.format
-				}
-				setOptionValue={async val => {
-					await storageSet(GlobalPersistentOptionsKeys.LogFilters, val)
-					showNeedRestartNotification(showNotification, restart, t)
-				}}
-			/>
-			<ButtonSetting
-				name={t('settings.devtools.export-logs-button')}
-				icon='file-text-outline'
-				iconSize={30}
-				iconColor={colors['alt-secondary-background-header']}
-				onPress={async () => {
-					await exportLogfile(selectedAccount)
-				}}
-			/>
-			<StringOptionInput
-				name={t('settings.devtools.tyber-host-button.name')}
-				bulletPointValue={t('settings.devtools.tyber-host-button.bullet-point')}
-				getOptionValue={async () =>
-					(await storageGet(GlobalPersistentOptionsKeys.TyberHost)) ||
-					defaultGlobalPersistentOptions().tyberHost.address
-				}
-				setOptionValue={async val => {
-					await storageSet(GlobalPersistentOptionsKeys.TyberHost, val)
-					showNeedRestartNotification(showNotification, restart, t)
-				}}
-			/>
-			{Object.entries(tyberHosts.current).map(([hostname, ipAddresses]) => (
+		<View
+			style={[flex.tiny, margin.bottom.small, { backgroundColor: colors['secondary-background'] }]}
+		>
+			<ItemSection>
+				<AccountsDropdown
+					placeholder={t('settings.accounts.accounts-button')}
+					items={[...accounts].sort(
+						(a, b) => pbDateToNum(a.creationDate) - pbDateToNum(b.creationDate),
+					)}
+					defaultValue={selectedAccount}
+					onChangeItem={handlePress}
+				/>
+			</ItemSection>
+
+			<ItemSection>
+				<MenuItem onPress={restartOnboarding}>{t('settings.accounts.create-button')}</MenuItem>
+
+				{Platform.OS !== 'web' && (
+					<>
+						<DividerItem />
+						<MenuItem
+							onPress={async () => {
+								const filePath = await importAccountFromDocumentPicker()
+								if (!filePath) {
+									console.warn("imported file doesn't exist")
+									return
+								}
+								importingAccountAfterClosing(filePath)
+							}}
+						>
+							{t('settings.accounts.import-button')}
+						</MenuItem>
+					</>
+				)}
+			</ItemSection>
+			<View style={[padding.horizontal.medium]}>
 				<ButtonSetting
-					key={hostname}
-					name={t('settings.devtools.tyber-attach', { host: hostname })}
-					icon='link-2-outline'
+					name={t('settings.devtools.force-mock-button')}
+					icon='folder-outline'
+					iconSize={30}
+					iconColor={colors['alt-secondary-background-header']}
+					toggled
+					varToggle={forceMock}
+					actionToggle={handleForceMockToggle}
+				/>
+				<ButtonSetting
+					icon='monitor-outline'
+					iconColor={colors['alt-secondary-background-header']}
+					name={t('settings.devtools.select-node.title')}
+					onPress={() =>
+						navigate('Account.SelectNode', {
+							init: false,
+							action: async (_external: boolean, _address: string, _port: string) => {
+								showNeedRestartNotification(showNotification, restartBridge, t)
+								return true
+							},
+						})
+					}
+				/>
+				<ButtonSetting
+					icon='eye-outline'
+					iconColor={colors['alt-secondary-background-header']}
+					name={t('settings.home.appearance-button')}
+					onPress={() => navigate('Settings.Appearance')}
+				/>
+				<ButtonSetting
+					name={t('settings.devtools.system-info-button')}
+					icon='info-outline'
+					iconSize={30}
+					iconColor={colors['alt-secondary-background-header']}
+					onPress={() => navigate('Settings.SystemInfo')}
+				/>
+				<ButtonSetting
+					name={t('settings.devtools.simulate-button')}
+					icon='alert-triangle-outline'
+					iconSize={30}
+					iconColor={colors['alt-secondary-background-header']}
+					onPress={() =>
+						dispatch(setStreamError({ error: t('settings.devtools.simulate-button') }))
+					}
+				/>
+				<ButtonSetting
+					name={t('settings.devtools.simulate-js-error-button')}
+					icon='alert-octagon'
+					iconPack='feather'
+					iconSize={30}
+					iconColor={colors['alt-secondary-background-header']}
+					onPress={() => {
+						throw new Error('test error')
+					}}
+				/>
+				<ButtonSetting
+					name={t('settings.devtools.debug-button')}
+					icon='monitor-outline'
+					iconSize={30}
+					iconColor={colors['alt-secondary-background-header']}
+					toggled
+					varToggle={persistentOptions.debug.enable}
+					actionToggle={() => {
+						dispatch(
+							setPersistentOption({
+								type: PersistentOptionsKeys.Debug,
+								payload: {
+									enable: !persistentOptions?.debug.enable,
+								},
+							}),
+						)
+					}}
+				/>
+				<StringOptionInput
+					name={t('settings.devtools.log-button.name')}
+					bulletPointValue={t('settings.devtools.log-button.bullet-point')}
+					getOptionValue={() => persistentOptions.log.format}
+					setOptionValue={val => {
+						dispatch(
+							setPersistentOption({
+								type: PersistentOptionsKeys.Log,
+								payload: { format: val },
+							}),
+						)
+						showNeedRestartNotification(showNotification, restart, t)
+					}}
+				/>
+				<StringOptionInput
+					name={t('settings.devtools.log-filters-button.name')}
+					bulletPointValue={t('settings.devtools.log-filters-button.bullet-point')}
+					getOptionValue={async () =>
+						(await storageGet(GlobalPersistentOptionsKeys.LogFilters)) ||
+						defaultGlobalPersistentOptions().logFilters.format
+					}
+					setOptionValue={async val => {
+						await storageSet(GlobalPersistentOptionsKeys.LogFilters, val)
+						showNeedRestartNotification(showNotification, restart, t)
+					}}
+				/>
+				<ButtonSetting
+					name={t('settings.devtools.export-logs-button')}
+					icon='file-text-outline'
 					iconSize={30}
 					iconColor={colors['alt-secondary-background-header']}
 					onPress={async () => {
-						try {
-							await client?.tyberHostAttach({
-								addresses: ipAddresses,
-							})
-						} catch (e) {
-							console.warn(e)
-						}
+						console.log('remi: button')
+						// await logfileList()
+						await exportLogfile(selectedAccount)
 					}}
-				>
-					<ButtonSettingItem
-						value={ipAddresses.join('\n')}
-						iconSize={15}
-						disabled
-						styleText={{ color: colors['secondary-text'] }}
-						styleContainer={[margin.bottom.tiny]}
-					/>
-				</ButtonSetting>
-			))}
-			<ButtonSetting
-				name={t('settings.devtools.add-dev-conversations-button')}
-				icon='plus-outline'
-				iconSize={30}
-				iconColor={colors['alt-secondary-background-header']}
-				onPress={() => navigation.navigate('Settings.AddDevConversations')}
-			/>
-			<DiscordShareButton />
-			<NativeCallButton />
-			<DumpAccount />
-			<DumpContacts />
-			<DumpConversations />
-			<DumpInteractions />
-			<DumpMembers />
-			<ButtonSetting
-				name={t('settings.devtools.stop-node-button')}
-				icon='activity-outline'
-				iconSize={30}
-				iconColor={colors['alt-secondary-background-header']}
-				onPress={() => GoBridge.closeBridge()}
-			/>
-			<ButtonSetting
-				name={t('settings.devtools.local-grpc-button')}
-				icon='hard-drive-outline'
-				iconSize={30}
-				iconColor={colors['alt-secondary-background-header']}
-				toggled
-				disabled
-			/>
-			<ButtonSetting
-				name={t('settings.devtools.console-logs-button')}
-				icon='folder-outline'
-				iconSize={30}
-				iconColor={colors['alt-secondary-background-header']}
-				actionIcon='arrow-ios-forward'
-				disabled
-			/>
-			<ButtonSetting
-				name={t('settings.devtools.ipfs-webui-button')}
-				icon='smartphone-outline'
-				iconSize={30}
-				iconColor={colors['alt-secondary-background-header']}
-				actionIcon='arrow-ios-forward'
-				onPress={() => navigate('Settings.IpfsWebUI')}
-			/>
-			<SendToAllContacts />
-			<PlaySound />
-			<DropDownPicker
-				items={items}
-				defaultValue={i18next.language}
-				onChangeItem={async (item: Item) => await i18next.changeLanguage(item.value)}
-			/>
-			<ButtonSetting
-				name={t('debug.inspector.show-button')}
-				icon='umbrella-outline'
-				iconSize={30}
-				iconColor={colors['alt-secondary-background-header']}
-				actionIcon='arrow-ios-forward'
-				onPress={() => dispatch(setDebugMode(true))}
-			/>
-			<ButtonSettingRow
-				state={[
-					{
-						name: t('settings.devtools.footer-left-button'),
-						icon: 'smartphone-outline',
-						color: colors['alt-secondary-background-header'],
-						style: _styles.buttonRow,
-						disabled: true,
-					},
-					{
-						name: t('settings.devtools.footer-middle-button'),
-						icon: 'list-outline',
-						color: colors['alt-secondary-background-header'],
-						style: _styles.buttonRow,
-						disabled: true,
-					},
-					{
-						name: t('settings.devtools.footer-right-button'),
-						icon: 'repeat-outline',
-						color: colors['warning-asset'],
-						style: _styles.lastButtonRow,
-						disabled: true,
-					},
-				]}
-				style={[_styles.buttonRowMarginTop]}
-				styleText={[text.bold]}
-			/>
+				/>
+				<StringOptionInput
+					name={t('settings.devtools.tyber-host-button.name')}
+					bulletPointValue={t('settings.devtools.tyber-host-button.bullet-point')}
+					getOptionValue={async () =>
+						(await storageGet(GlobalPersistentOptionsKeys.TyberHost)) ||
+						defaultGlobalPersistentOptions().tyberHost.address
+					}
+					setOptionValue={async val => {
+						await storageSet(GlobalPersistentOptionsKeys.TyberHost, val)
+						showNeedRestartNotification(showNotification, restart, t)
+					}}
+				/>
+				{Object.entries(tyberHosts.current).map(([hostname, ipAddresses]) => (
+					<ButtonSetting
+						key={hostname}
+						name={t('settings.devtools.tyber-attach', { host: hostname })}
+						icon='link-2-outline'
+						iconSize={30}
+						iconColor={colors['alt-secondary-background-header']}
+						onPress={async () => {
+							try {
+								await client?.tyberHostAttach({
+									addresses: ipAddresses,
+								})
+							} catch (e) {
+								console.warn(e)
+							}
+						}}
+					>
+						<ButtonSettingItem
+							value={ipAddresses.join('\n')}
+							iconSize={15}
+							disabled
+							styleText={{ color: colors['secondary-text'] }}
+							styleContainer={[margin.bottom.tiny]}
+						/>
+					</ButtonSetting>
+				))}
+				<ButtonSetting
+					name={t('settings.devtools.add-dev-conversations-button')}
+					icon='plus-outline'
+					iconSize={30}
+					iconColor={colors['alt-secondary-background-header']}
+					onPress={() => navigation.navigate('Settings.AddDevConversations')}
+				/>
+				<DiscordShareButton />
+				<NativeCallButton />
+				<DumpAccount />
+				<DumpContacts />
+				<DumpConversations />
+				<DumpInteractions />
+				<DumpMembers />
+				<ButtonSetting
+					name={t('settings.devtools.stop-node-button')}
+					icon='activity-outline'
+					iconSize={30}
+					iconColor={colors['alt-secondary-background-header']}
+					onPress={() => GoBridge.closeBridge()}
+				/>
+				<ButtonSetting
+					name={t('settings.devtools.local-grpc-button')}
+					icon='hard-drive-outline'
+					iconSize={30}
+					iconColor={colors['alt-secondary-background-header']}
+					toggled
+					disabled
+				/>
+				<ButtonSetting
+					name={t('settings.devtools.console-logs-button')}
+					icon='folder-outline'
+					iconSize={30}
+					iconColor={colors['alt-secondary-background-header']}
+					actionIcon='arrow-ios-forward'
+					disabled
+				/>
+				<ButtonSetting
+					name={t('settings.devtools.ipfs-webui-button')}
+					icon='smartphone-outline'
+					iconSize={30}
+					iconColor={colors['alt-secondary-background-header']}
+					actionIcon='arrow-ios-forward'
+					onPress={() => navigate('Settings.IpfsWebUI')}
+				/>
+				<SendToAllContacts />
+				<PlaySound />
+				<DropDownPicker
+					items={items}
+					defaultValue={i18next.language}
+					onChangeItem={async (item: Item) => await i18next.changeLanguage(item.value)}
+				/>
+				<ButtonSetting
+					name={t('debug.inspector.show-button')}
+					icon='umbrella-outline'
+					iconSize={30}
+					iconColor={colors['alt-secondary-background-header']}
+					actionIcon='arrow-ios-forward'
+					onPress={() => dispatch(setDebugMode(true))}
+				/>
+				<ButtonSettingRow
+					state={[
+						{
+							name: t('settings.devtools.footer-left-button'),
+							icon: 'smartphone-outline',
+							color: colors['alt-secondary-background-header'],
+							style: _styles.buttonRow,
+							disabled: true,
+						},
+						{
+							name: t('settings.devtools.footer-middle-button'),
+							icon: 'list-outline',
+							color: colors['alt-secondary-background-header'],
+							style: _styles.buttonRow,
+							disabled: true,
+						},
+						{
+							name: t('settings.devtools.footer-right-button'),
+							icon: 'repeat-outline',
+							color: colors['warning-asset'],
+							style: _styles.lastButtonRow,
+							disabled: true,
+						},
+					]}
+					style={[_styles.buttonRowMarginTop]}
+					styleText={[text.bold]}
+				/>
+			</View>
 		</View>
 	)
 })
