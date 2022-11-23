@@ -126,10 +126,6 @@
 			"search": {
 				"no-results": "결과 없음"
 			},
-			"multi-account": {
-				"create-button": "새 계정 만들기",
-				"import-button": "기존 계정 가져오기"
-			},
 			"create-group": {
 				"title": "새 그룹 만들기",
 				"add-members": "멤버 추가",
@@ -183,7 +179,6 @@
 			"accounts-button": "계정",
 			"create-button": "",
 			"import-button": "",
-			"link-button": "",
 			"delete-button": "",
 			"delete-title": ""
 		},
