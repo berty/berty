@@ -126,10 +126,6 @@
 			"search": {
 				"no-results": "Inga resultat hittades"
 			},
-			"multi-account": {
-				"create-button": "Skapa nytt konto",
-				"import-button": "Importera konto"
-			},
 			"create-group": {
 				"title": "Ny grupp",
 				"add-members": "Lägg till medlemmar",
@@ -183,7 +179,6 @@
 			"accounts-button": "Konton",
 			"create-button": "",
 			"import-button": "",
-			"link-button": "",
 			"delete-button": "",
 			"delete-title": ""
 		},
