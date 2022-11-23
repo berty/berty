@@ -126,10 +126,6 @@
 			"search": {
 				"no-results": "هیچ نتیجه ای یافت نشد"
 			},
-			"multi-account": {
-				"create-button": "ایجاد حساب جدید",
-				"import-button": "بازنشانی حساب"
-			},
 			"create-group": {
 				"title": "گروه جدید",
 				"add-members": "اضافه کردن اعضا",
@@ -183,7 +179,6 @@
 			"accounts-button": "حسابها",
 			"create-button": "ایجاد یک جساب",
 			"import-button": "بازنشانی یک حساب",
-			"link-button": "اتصال به دستگاه دیگر",
 			"delete-button": "این حساب را حذف کن",
 			"delete-title": "حذف حساب"
 		},
