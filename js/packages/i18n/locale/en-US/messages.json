@@ -126,10 +126,6 @@
 			"search": {
 				"no-results": "No results found"
 			},
-			"multi-account": {
-				"create-button": "Create new account",
-				"import-button": "Import account"
-			},
 			"create-group": {
 				"title": "New Group",
 				"add-members": "Add members",
@@ -183,7 +179,6 @@
 			"accounts-button": "Accounts",
 			"create-button": "Create an account",
 			"import-button": "Import an account",
-			"link-button": "Link another device",
 			"delete-button": "Delete this account",
 			"delete-title": "Account deletion"
 		},
