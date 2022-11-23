@@ -126,10 +126,6 @@
 			"search": {
 				"no-results": "Otsingu vasteid ei leitud"
 			},
-			"multi-account": {
-				"create-button": "Loo uus konto",
-				"import-button": "Impordi konto"
-			},
 			"create-group": {
 				"title": "Uus Grupp",
 				"add-members": "Lisa liikmeid",
@@ -183,7 +179,6 @@
 			"accounts-button": "",
 			"create-button": "",
 			"import-button": "",
-			"link-button": "",
 			"delete-button": "",
 			"delete-title": ""
 		},
