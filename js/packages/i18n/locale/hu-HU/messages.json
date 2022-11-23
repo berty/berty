@@ -126,10 +126,6 @@
 			"search": {
 				"no-results": "Nincs találat"
 			},
-			"multi-account": {
-				"create-button": "Új fiók létrehozása",
-				"import-button": "Fiók importálása"
-			},
 			"create-group": {
 				"title": "Új csoport",
 				"add-members": "Tag hozzáadása",
@@ -183,7 +179,6 @@
 			"accounts-button": "Fiókok",
 			"create-button": "Fiók létrehozása",
 			"import-button": "Fiók importálása",
-			"link-button": "Eszköz összekapcsolása",
 			"delete-button": "Fiók törlése",
 			"delete-title": ""
 		},
