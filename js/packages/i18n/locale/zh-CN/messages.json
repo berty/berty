@@ -126,10 +126,6 @@
 			"search": {
 				"no-results": "未找到结果"
 			},
-			"multi-account": {
-				"create-button": "创建新账号",
-				"import-button": "导入帐号"
-			},
 			"create-group": {
 				"title": "新建群组",
 				"add-members": "添加新成员",
@@ -183,7 +179,6 @@
 			"accounts-button": "账户",
 			"create-button": "创建账户",
 			"import-button": "导入账户",
-			"link-button": "连接其他设备",
 			"delete-button": "删除此账户",
 			"delete-title": "账户删除"
 		},
