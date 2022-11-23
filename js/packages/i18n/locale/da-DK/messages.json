@@ -126,10 +126,6 @@
 			"search": {
 				"no-results": ""
 			},
-			"multi-account": {
-				"create-button": "",
-				"import-button": ""
-			},
 			"create-group": {
 				"title": "",
 				"add-members": "Tilføj medlemmer",
@@ -183,7 +179,6 @@
 			"accounts-button": "",
 			"create-button": "",
 			"import-button": "",
-			"link-button": "",
 			"delete-button": "",
 			"delete-title": ""
 		},
