@@ -126,10 +126,6 @@
 			"search": {
 				"no-results": "未找到結果"
 			},
-			"multi-account": {
-				"create-button": "創建新賬戶",
-				"import-button": "導入帳號"
-			},
 			"create-group": {
 				"title": "新建群組",
 				"add-members": "添加成員",
@@ -183,7 +179,6 @@
 			"accounts-button": "賬戶",
 			"create-button": "",
 			"import-button": "",
-			"link-button": "",
 			"delete-button": "",
 			"delete-title": ""
 		},
