@@ -126,10 +126,6 @@
 			"search": {
 				"no-results": "結果はありません"
 			},
-			"multi-account": {
-				"create-button": "新しいアカウントを作成",
-				"import-button": "アカウントをインポート"
-			},
 			"create-group": {
 				"title": "新しいグループ",
 				"add-members": "メンバーを追加",
@@ -183,7 +179,6 @@
 			"accounts-button": "アカウント",
 			"create-button": "アカウントを作成",
 			"import-button": "アカウントをインポート",
-			"link-button": "別のデバイスをリンク",
 			"delete-button": "このアカウントを削除",
 			"delete-title": "アカウントの削除"
 		},
