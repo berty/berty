@@ -126,10 +126,6 @@
 			"search": {
 				"no-results": "لا توجد نتائج"
 			},
-			"multi-account": {
-				"create-button": "إنشاء حساب جديد",
-				"import-button": "استيراد الحساب"
-			},
 			"create-group": {
 				"title": "مجموعة جديدة",
 				"add-members": "إضافة أعضاء",
@@ -183,7 +179,6 @@
 			"accounts-button": "الحسابات",
 			"create-button": "أنشئ حسابًا",
 			"import-button": "استورد حسابًا",
-			"link-button": "اربط جهازًا آخر",
 			"delete-button": "احذف هذا الحساب",
 			"delete-title": "حذف الحساب"
 		},
