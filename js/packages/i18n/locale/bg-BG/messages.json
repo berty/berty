@@ -126,10 +126,6 @@
 			"search": {
 				"no-results": "Не са намерени резултати"
 			},
-			"multi-account": {
-				"create-button": "",
-				"import-button": "Заредете съществуващ акаунт"
-			},
 			"create-group": {
 				"title": "Създай Група",
 				"add-members": "Добави участник",
@@ -183,7 +179,6 @@
 			"accounts-button": "",
 			"create-button": "",
 			"import-button": "",
-			"link-button": "",
 			"delete-button": "",
 			"delete-title": ""
 		},
