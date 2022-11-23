@@ -126,10 +126,6 @@
 			"search": {
 				"no-results": "Sonuç bulunamadı"
 			},
-			"multi-account": {
-				"create-button": "Yeni hesap oluştur",
-				"import-button": "Hesabı içeri aktar"
-			},
 			"create-group": {
 				"title": "Yeni Grup",
 				"add-members": "Üyeler ekle",
@@ -183,7 +179,6 @@
 			"accounts-button": "Hesaplar",
 			"create-button": "Yeni hesap oluştur",
 			"import-button": "Hesabı içeri aktar",
-			"link-button": "Farklı bir cihaz bağla",
 			"delete-button": "Bu hesabı sil",
 			"delete-title": ""
 		},
