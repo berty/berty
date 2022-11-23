@@ -126,10 +126,6 @@
 			"search": {
 				"no-results": "Geen resultaten gevonden"
 			},
-			"multi-account": {
-				"create-button": "Nieuw account aanmaken",
-				"import-button": "Importeer account"
-			},
 			"create-group": {
 				"title": "Nieuwe Groep",
 				"add-members": "Deelnemers toevoegen",
@@ -183,7 +179,6 @@
 			"accounts-button": "Accounts",
 			"create-button": "",
 			"import-button": "",
-			"link-button": "",
 			"delete-button": "",
 			"delete-title": ""
 		},
