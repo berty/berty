@@ -126,10 +126,6 @@
 			"search": {
 				"no-results": "Ничего не найдено"
 			},
-			"multi-account": {
-				"create-button": "Создать новый аккаунт",
-				"import-button": "Импортировать аккаунт"
-			},
 			"create-group": {
 				"title": "Создать группу",
 				"add-members": "Добавить участника",
@@ -183,7 +179,6 @@
 			"accounts-button": "Аккаунты",
 			"create-button": "Создать аккаунт",
 			"import-button": "Импортировать аккаунт",
-			"link-button": "Привязать другое устройство",
 			"delete-button": "Удалить аккаунт",
 			"delete-title": "Удаление аккаунта"
 		},
