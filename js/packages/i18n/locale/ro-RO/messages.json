@@ -126,10 +126,6 @@
 			"search": {
 				"no-results": "Niciun rezultat găsit"
 			},
-			"multi-account": {
-				"create-button": "Creează un cont nou",
-				"import-button": "Importă cont"
-			},
 			"create-group": {
 				"title": "Grup nou",
 				"add-members": "Adaugă membri",
@@ -183,7 +179,6 @@
 			"accounts-button": "",
 			"create-button": "",
 			"import-button": "",
-			"link-button": "",
 			"delete-button": "",
 			"delete-title": ""
 		},
