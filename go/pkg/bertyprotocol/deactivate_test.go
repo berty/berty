@@ -179,7 +179,6 @@ func TestRaceReactivateAccountGroup(t *testing.T) {
 	addAsContact(ctx, t, nodes, nodes)
 	t.Log("sendMessageToContact")
 	sendMessageToContact(ctx, t, []string{"nodeA-nodeB"}, nodes)
-
 }
 
 func TestReactivateContactGroup(t *testing.T) {

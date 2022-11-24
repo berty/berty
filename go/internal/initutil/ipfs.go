@@ -28,6 +28,7 @@ import (
 	"github.com/libp2p/go-libp2p/p2p/discovery/backoff"
 	"github.com/libp2p/go-libp2p/p2p/host/autorelay"
 	connmgr "github.com/libp2p/go-libp2p/p2p/net/connmgr"
+	quict "github.com/libp2p/go-libp2p/p2p/transport/quic"
 	tcpt "github.com/libp2p/go-libp2p/p2p/transport/tcp"
 	ma "github.com/multiformats/go-multiaddr"
 	manet "github.com/multiformats/go-multiaddr/net"
@@ -600,8 +601,10 @@ func (m *Manager) setupIPFSConfig(cfg *ipfs_cfg.Config) ([]libp2p.Option, error)
 	// disable main ipfs pubsub
 	cfg.Pubsub.Enabled = ipfs_cfg.False
 
-	// @NOTE(gfanton): disable quic transport until find a fix on lte
+	// @NOTE(gfanton): disable quic transport so we can init a custom transport
+	// with reusport disable
 	cfg.Swarm.Transports.Network.QUIC = ipfs_cfg.False
+	p2popts = append(p2popts, libp2p.Transport(quict.NewTransport, quict.DisableReuseport()))
 
 	// @NOTE(gfanton): disable tcp transport so we can init a custom transport
 	// with reusport disable

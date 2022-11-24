@@ -2,6 +2,7 @@ ID ?= 42
 IDS ?= 42 32
 FORMAT ?= json
 TMPDIR ?= /tmp
+FILTERS ?= debug+:bty*,-*.grpc,error+:*
 RUN_OPTS ?=
 DAEMON_OPTS ?=
 NAME ?= $(USER)-mini-$(ID)
@@ -9,7 +10,7 @@ NAME ?= $(USER)-mini-$(ID)
 
 .PHONY: run
 run:
-	berty $(RUN_OPTS) --log.format=$(FORMAT) --log.file=$(TMPDIR)/berty-mini-$(ID).log mini -store.dir $(TMPDIR)/berty-mini-$(ID) $(DAEMON_OPTS)
+	berty $(RUN_OPTS) -log.file-filters="$(FILTERS)" -log.format=$(FORMAT) --log.file=$(TMPDIR)/berty-mini-$(ID).log mini -store.dir $(TMPDIR)/berty-mini-$(ID) $(DAEMON_OPTS)
 
 .PHONY: tail
 tail:

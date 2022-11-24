@@ -58,6 +58,8 @@ func verifyRunningLeakDetection(t *testing.T) {
 		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p/p2p/net/upgrader.(*Upgrader).setupMuxer"),                      // the closing routine has big timeout
 		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p/p2p/net/upgrader.(*listener).Accept"),                          // sometimes happening on CI, need more investigation
 		goleak.IgnoreTopFunction("berty.tech/berty/v2/go/internal/ipfsutil.(*mdnsService).startResolver.func1"),              // upstream issue of mdns, go wakeup periodiclly to do action before check exist, timeout about 10 seconds
+		goleak.IgnoreTopFunction("github.com/lucas-clemente/quic-go.(*packetHandlerMap).runCloseQueue"),                      // quic-go should be manager by libp2p
+		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p/p2p/transport/quic.(*reuse).gc"),                               // quic-go should be manager by libp2p
 		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p/p2p/host/basic.(*BasicHost).background"),                       // sometimes happening on CI, need more investigation
 		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p/p2p/host/basic.(*BasicHost).dialPeer"),                         // sometimes happening on CI, need more investigation
 		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p/p2p/host/relay.(*AutoRelay).background"),                       // sometimes happening on CI, need more investigation
@@ -66,16 +68,6 @@ func verifyRunningLeakDetection(t *testing.T) {
 		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p/p2p/protocol/identify.(*IDService).loop.func1"),                // sometimes happening on CI, need more investigation
 		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p/p2p/protocol/identify.(*ObservedAddrManager).worker"),          // sometimes happening on CI, need more investigation
 		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p/p2p/protocol/identify.(*peerHandler).loop"),                    // sometimes happening on CI, need more investigation
-		goleak.IgnoreTopFunction("github.com/lucas-clemente/quic-go.(*baseServer).accept"),                                   // sometimes happening on CI, need more investigation
-		goleak.IgnoreTopFunction("github.com/lucas-clemente/quic-go.(*baseServer).run"),                                      // sometimes happening on CI, need more investigation
-		goleak.IgnoreTopFunction("github.com/lucas-clemente/quic-go.(*client).dial"),                                         // the closing routine has big timeout
-		goleak.IgnoreTopFunction("github.com/lucas-clemente/quic-go.(*closedLocalSession).run"),                              // the closing routine has big timeout
-		goleak.IgnoreTopFunction("github.com/lucas-clemente/quic-go.(*incomingBidiStreamsMap).AcceptStream"),                 // sometimes happening on CI, need more investigation
-		goleak.IgnoreTopFunction("github.com/lucas-clemente/quic-go.(*receiveStream).readImpl"),                              // upstream code - the closing is did in go routine
-		goleak.IgnoreTopFunction("github.com/lucas-clemente/quic-go.(*sendQueue).Run"),                                       // the closing routine has big timeout
-		goleak.IgnoreTopFunction("github.com/lucas-clemente/quic-go.(*session).run"),                                         // sometimes happening on CI, need more investigation
-		goleak.IgnoreTopFunction("github.com/lucas-clemente/quic-go/internal/handshake.(*cryptoSetup).ReadHandshakeMessage"), // the closing routine has big timeout
-		goleak.IgnoreTopFunction("github.com/lucas-clemente/quic-go/internal/handshake.(*cryptoSetup).RunHandshake"),         // the closing routine has big timeout
 		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p/p2p/discovery/mdns_legacy.(*mdnsService).startResolver.func1"), // the closing routine has big timeout, should be managed by ipfs
 		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p/p2p/discovery/mdns.(*mdnsService).startResolver.func1"),        // the closing routine has big timeout, should be managed by ipfs
 		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p-kad-dht/providers.(*ProviderManager).GetProviders"),            // the closing routine has big timeout, should be managed by ipfs
