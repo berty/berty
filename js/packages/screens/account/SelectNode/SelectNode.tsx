@@ -102,7 +102,7 @@ export const SelectNode: ScreenFC<'Account.SelectNode'> = ({ route }) => {
 				</View>
 				<ItemSection>
 					<MenuToggle
-						accessibilityLabel={t('settings.devtools.select-node.node-type')}
+						testID={t('settings.devtools.select-node.node-type')}
 						isToggleOn={externalNode}
 						onPress={() => {
 							setExternalNode(!externalNode)
