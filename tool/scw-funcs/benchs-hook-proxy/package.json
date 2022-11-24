@@ -1,0 +1,15 @@
+{
+  "name": "gh-bench-hook",
+  "version": "1.0.0",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "serverless": "^3.25.1",
+    "serverless-scaleway-functions": "^0.4.4"
+  },
+  "description": ""
+}

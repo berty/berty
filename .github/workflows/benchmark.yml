@@ -24,6 +24,12 @@ jobs:
     name: Run benchmarks
     runs-on: ubuntu-latest
     steps:
+      - name: has secrets
+        env:
+          SSH_DEPLOY_KEY: ${{ secrets.BERTY_BENCH_KEY }}
+        run: |
+          echo "$SSH_DEPLOY_KEY" | wc -c
+
       - name: Setup asdf
         uses: asdf-vm/actions/setup@v1
 
@@ -202,3 +208,8 @@ jobs:
           </body>
           </html>
           EOF
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: "bench-${{ github.event.pull_request.number  }}"
+          path: go/pprof_html

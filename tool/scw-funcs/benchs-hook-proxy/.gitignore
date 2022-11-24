@@ -1,0 +1,4 @@
+.serverless
+package-lock.json
+secrets.json
+.env

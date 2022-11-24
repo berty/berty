@@ -1,0 +1,24 @@
+useDotenv: true
+service: benchshook
+configValidationMode: off
+provider:
+  name: scaleway
+  runtime: go119
+
+plugins:
+  - serverless-scaleway-functions
+
+package:
+  patterns:
+    - '!node_modules/**'
+    - '!.gitignore'
+    - '!.git/**'
+    - '!*_test.go'
+    - '!.env*'
+
+functions:
+  benchshook:
+    handler: 'BenchHooks'
+    secret:
+      GITHUB_SECRET: ${env:GITHUB_SECRET}
+      GITHUB_TOKEN: ${env:GITHUB_TOKEN}
