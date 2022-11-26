@@ -69,11 +69,11 @@
 						"multiaddr-p2p": ""
 					},
 					"buttons": {
-						"add": "",
-						"edit": "",
-						"delete": ""
+						"add": "Tilføj",
+						"edit": "Rediger",
+						"delete": "Slet"
 					},
-					"multiaddress": "",
+					"multiaddress": "Multiadresse",
 					"alias": "Alias"
 				},
 				"all-button": "Alle",
@@ -81,10 +81,10 @@
 			}
 		},
 		"create-account": {
-			"title": "",
+			"title": "Opret din konto",
 			"first-button": "Standard tilstand",
 			"second-button": "Tilpasset tilstand",
-			"placeholder": "",
+			"placeholder": "Vælg dit kaldenavn",
 			"good-to-know": {
 				"title": "Værd at vide:",
 				"first-point": "Din konto er oprettet lokalt",
@@ -98,36 +98,36 @@
 		"setup-finished": {
 			"title": "Opsætning fuldført!",
 			"desc": "Du kan nu bruge appen, begynd tilføjelse af kontakter og tal frit og privat med dem",
-			"button": ""
+			"button": "Begynd at bruge Berty"
 		},
 		"web-views": {
-			"title": "",
-			"desc": "",
-			"first-button": "",
-			"second-button": ""
+			"title": "Webindholds-tilladelse",
+			"desc": "Berty er ved at indlæse indhold fra internettet. Vil du åbne denne side?",
+			"first-button": "Annuller",
+			"second-button": "Ja"
 		}
 	},
 	"main": {
 		"home": {
-			"title": "",
+			"title": "Berty",
 			"requests": {
-				"title": "",
-				"accept": "",
-				"card-title": ""
+				"title": "Anmodninger",
+				"accept": "Accepter",
+				"card-title": "Anmodning om kontakt!"
 			},
-			"input-placeholder": "",
-			"no-contacts": "",
+			"input-placeholder": "Søg efter nøgleord",
+			"no-contacts": "Du har ingen kontakter eller chats endnu",
 			"no-network": {
-				"title": "",
-				"description": "",
-				"cancel": "",
-				"activate": ""
+				"title": "Intet Netværk Fundet!",
+				"description": "Det ligner du er offline! Aktiver Bluetooth-funktionen for at chatte med venner!",
+				"cancel": "IKKE NU",
+				"activate": "AKTIVER"
 			},
 			"search": {
-				"no-results": ""
+				"no-results": "Ingen resultater fundet"
 			},
 			"create-group": {
-				"title": "",
+				"title": "Ny Gruppe",
 				"add-members": "Tilføj medlemmer",
 				"group-info": "Gruppeinfo",
 				"search-placeholder": "Søg",
@@ -154,7 +154,7 @@
 		"home": {
 			"title": "Indstillinger",
 			"proximity-button": "",
-			"notifications-button": "",
+			"notifications-button": "Notifikationer",
 			"appearance-button": "",
 			"accounts-button": "",
 			"network-button": "",
@@ -185,22 +185,22 @@
 		"appearance": {
 			"title": "",
 			"dark-button": "",
-			"editor-button": "",
+			"editor-button": "Tema Redigering",
 			"theme-editor": {
-				"title": ""
+				"title": "Tema Redigering"
 			}
 		},
 		"contact-convs": {
-			"title": "",
-			"reset-button": "",
-			"request-button": ""
+			"title": "Kontakt og samtaler",
+			"reset-button": "Nulstil mit kontaktlink/QR-kode",
+			"request-button": "Tillad indgående kontaktanmodninger"
 		},
 		"network": {
 			"title": "Netværk",
 			"ble-button": "Bluetooth Low Energy",
-			"mc-button": "",
-			"nearby-button": "",
-			"mdns-button": "",
+			"mc-button": "Multipeer-tilslutning",
+			"nearby-button": "Android tæt på",
+			"mdns-button": "Multicast-DNS",
 			"memo-cell-button": "",
 			"medias-cell-button": "",
 			"dht-button": "",
