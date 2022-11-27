@@ -727,14 +727,14 @@ export const ButtonSettingItem: React.FC<ButtonSettingItem> = ({
 	styleText = {},
 }) => {
 	const _styles = useStylesButtonSettingItem()
-	const { row, padding, text } = useStyles()
+	const { row, text } = useStyles()
 	const colors = useThemeColor()
 
 	if (!color) {
 		color = colors['reverted-main-text']
 	}
 	return (
-		<View style={[row.left, padding.left.small, { alignItems: 'center' }, styleContainer]}>
+		<View style={[row.left, { alignItems: 'center', paddingLeft: 5 }, styleContainer]}>
 			<Icon
 				name={icon}
 				width={iconSize}

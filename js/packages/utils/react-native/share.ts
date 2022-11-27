@@ -13,7 +13,7 @@ export const shareBertyID = async (url: string | null | undefined, t: TFunction<
 			Clipboard.setString(url)
 		} else {
 			// i18n doesn't support this url value in argument
-			await Share.share({ url: message, message })
+			await Share.share({ message })
 		}
 	} catch (e) {
 		console.warn(e)

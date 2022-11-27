@@ -96,6 +96,7 @@ const ContactRequestBox: React.FC<{ contact: beapi.messenger.IContact; isAccepte
 						{t('chat.one-to-one.contact-request-box.refuse-button')}
 					</TertiaryButtonIconLeft>
 					<SecondaryButtonIconLeft
+						testID={t('chat.one-to-one.contact-request-box.accept-button')}
 						disabled={acceptDisabled}
 						loading={accepting}
 						onPress={async () => {

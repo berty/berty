@@ -196,6 +196,7 @@ const AddThisContact: React.FC<{
 				) : null}
 				<View style={padding.medium}>
 					<SecondaryButton
+						testID='AddContact'
 						onPress={() => {
 							isPassword
 								? requestContact({ link, passphrase: Buffer.from(password) })

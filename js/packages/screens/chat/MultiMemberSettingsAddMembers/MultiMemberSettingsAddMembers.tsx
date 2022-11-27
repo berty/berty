@@ -8,11 +8,10 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import beapi from '@berty/api'
 import {
 	CreateGroupFooterWithIcon,
-	CreateGroupHeader,
 	CreateGroupMemberList,
+	CreateGroupHeader,
 } from '@berty/components'
 import { ContactPicker } from '@berty/components/shared-components'
-import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
 import {
 	useAllContacts,
@@ -30,7 +29,6 @@ export const MultiMemberSettingsAddMembers: ScreenFC<'Chat.MultiMemberSettingsAd
 	navigation,
 }) => {
 	const { flex, margin } = useStyles()
-	const { scaleHeight, scaleSize } = useAppDimensions()
 	const colors = useThemeColor()
 	const { t } = useTranslation()
 	const client = useMessengerClient()
@@ -78,8 +76,8 @@ export const MultiMemberSettingsAddMembers: ScreenFC<'Chat.MultiMemberSettingsAd
 				<Icon
 					name='users'
 					pack='custom'
-					width={35 * scaleSize}
-					height={35 * scaleSize}
+					width={35}
+					height={35}
 					fill={colors['reverted-main-text']}
 				/>
 			),
@@ -93,10 +91,9 @@ export const MultiMemberSettingsAddMembers: ScreenFC<'Chat.MultiMemberSettingsAd
 				<CreateGroupMemberList />
 			</SafeAreaView>
 			<View style={{ flex: 1, backgroundColor: '#F2F2F2' }}>
-				<View style={{ top: -30 * scaleHeight, flex: 1 }}>
+				<View style={{ top: -30, flex: 1 }}>
 					<CreateGroupHeader
 						title={t('chat.add-members.contacts')}
-						first
 						style={[margin.bottom.scale(-1)]}
 					/>
 					<ContactPicker accountContacts={accountContacts} />

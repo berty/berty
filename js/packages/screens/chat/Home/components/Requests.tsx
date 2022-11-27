@@ -101,6 +101,7 @@ const ContactRequest: React.FC<beapi.messenger.IContact> = ({
 	const createdDate = pbDateToNum(createdDateStr) || Date.now()
 	return (
 		<TouchableOpacity
+			testID='RequestButton'
 			style={contactReqContainer}
 			onPress={() => {
 				if (conversationPublicKey) {

@@ -9,14 +9,12 @@ import {
 	CreateGroupMemberList,
 } from '@berty/components'
 import { ContactPicker } from '@berty/components/shared-components'
-import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
 import { useAllContacts, useThemeColor } from '@berty/hooks'
 import { ScreenFC, useNavigation } from '@berty/navigation'
 
 export const CreateGroupAddMembers: ScreenFC<'Chat.CreateGroupAddMembers'> = () => {
 	const { flex, margin } = useStyles()
-	const { scaleHeight } = useAppDimensions()
 	const colors = useThemeColor()
 	const navigation = useNavigation()
 	const { t } = useTranslation()
@@ -29,16 +27,16 @@ export const CreateGroupAddMembers: ScreenFC<'Chat.CreateGroupAddMembers'> = () 
 				<CreateGroupMemberList />
 			</View>
 			<View style={{ flex: 1, backgroundColor: '#F2F2F2' }}>
-				<View style={{ top: -30 * scaleHeight, flex: 1 }}>
+				<View style={{ top: -30, flex: 1 }}>
 					<CreateGroupHeader
 						title={t('main.home.create-group.add-members')}
-						first
 						style={[margin.bottom.scale(-1)]}
 					/>
 					<ContactPicker accountContacts={accountContacts} />
 				</View>
 			</View>
 			<CreateGroupFooterWithIcon
+				testID={t('main.home.create-group.continue')}
 				title={t('main.home.create-group.continue')}
 				icon='arrow-forward-outline'
 				action={() => navigation.navigate('Chat.CreateGroupFinalize')}
