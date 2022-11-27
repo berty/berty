@@ -22,7 +22,7 @@
 		"custom-mode": {
 			"summary": {
 				"screenTitle": "",
-				"title": "",
+				"title": "Tilpasset tilstand",
 				"subtitle": "",
 				"first-point": "",
 				"second-point": "",
@@ -184,7 +184,7 @@
 		},
 		"appearance": {
 			"title": "",
-			"dark-button": "",
+			"dark-button": "Mørketilstand",
 			"editor-button": "Tema Redigering",
 			"theme-editor": {
 				"title": "Tema Redigering"
@@ -203,25 +203,25 @@
 			"mdns-button": "Multicast-DNS",
 			"memo-cell-button": "",
 			"medias-cell-button": "",
-			"dht-button": "",
+			"dht-button": "Distribueret Hash Tabel",
 			"rdvp-button": "",
 			"relay-button": "",
 			"bootstrap-button": ""
 		},
 		"notifications": {
-			"title": ""
+			"title": "Notifikationer"
 		},
 		"edit-profile": {
-			"title": "",
-			"qr-will-update": "",
-			"ocr-wont-update": "",
-			"save": "",
-			"cancel": "",
-			"name-input-placeholder": ""
+			"title": "Rediger min profil",
+			"qr-will-update": "Dit Berty ID (QR-kode) vil blive opdateret",
+			"ocr-wont-update": "Dine ventende kontaktanmodninger vil ikke blive opdateret",
+			"save": "Gem ændringer",
+			"cancel": "Annuller",
+			"name-input-placeholder": "Navn..."
 		},
 		"delete-account": {
-			"title": "",
-			"first-desc": "",
+			"title": "Slet konto!",
+			"first-desc": "Er du sikker på, at du vil slette din konto?",
 			"desc": "Skriv delete for at bekræfte",
 			"cancel-button": "Annuller",
 			"delete-button": "Slet"
@@ -310,18 +310,18 @@
 			"title": "",
 			"add": "",
 			"tag-bot": "",
-			"tag-contact": "",
+			"tag-contact": "Kontakt",
 			"tag-conversation": ""
 		},
 		"ipfs-webui": {
-			"title": ""
+			"title": "IPFS WebUI"
 		},
 		"theme-editor": {
-			"randomize": "",
-			"save": "",
-			"export": "",
-			"share": "",
-			"import": "",
+			"randomize": "Generer tema",
+			"save": "Gem dette tema",
+			"export": "Eksporter valgte tema som fil",
+			"share": "Del valgte tema som fil",
+			"import": "Importer en temafil",
 			"delete": "",
 			"bad-format-title": "",
 			"bad-format-desc": "",
@@ -387,7 +387,7 @@
 			"warning-disable": {
 				"title": "",
 				"subtitle": "",
-				"accept": "",
+				"accept": "Aktiver",
 				"refuse": "Spring Over"
 			},
 			"why-cant-disable": "",
@@ -462,7 +462,7 @@
 				"refresh-button": ""
 			},
 			"incoming-input-placeholder": "",
-			"input-placeholder": ""
+			"input-placeholder": "Skriv her..."
 		},
 		"one-to-one-settings": {
 			"title": "",
