@@ -100,7 +100,7 @@ exports[`Account.SelectNode renders correctly 1`] = `
             "padding": 12,
           }
         }
-        testID="settings.devtools.select-node.node-type"
+        testID="SelectNodeType"
       >
         <View
           style={
@@ -233,7 +233,7 @@ exports[`Account.SelectNode renders correctly 1`] = `
             "padding": 12,
           }
         }
-        testID="settings.devtools.select-node.dont-ask"
+        testID="SelectNodeDontAsk"
       >
         <View
           style={
@@ -369,7 +369,7 @@ exports[`Account.SelectNode renders correctly 1`] = `
             "opacity": 1,
           }
         }
-        testID="settings.devtools.select-node.button-continue"
+        testID="SelectNodeContinue"
       >
         <Text
           style={

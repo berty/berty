@@ -12,6 +12,7 @@ import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useStyles } from '@berty/contexts/styles'
 import { bertyMethodsHooks, useAppDispatch, useConversation, useThemeColor } from '@berty/hooks'
 import { dispatch as navDispatch } from '@berty/navigation/rootRef'
+import * as testIDs from '@berty/utils/testing/testIDs.json'
 
 import InvalidScan from './InvalidScan'
 
@@ -202,7 +203,7 @@ export const ManageGroupInvitation: React.FC<{
 							border.radius.small,
 							{ backgroundColor: colors['positive-asset'] },
 						]}
-						testID={t('modals.group-invitation.join')}
+						testID={testIDs['group-join']}
 					>
 						<UnifiedText
 							style={{

@@ -219,7 +219,7 @@ exports[`Chat.Home renders correctly 1`] = `
                               },
                             ]
                           }
-                          testID="main.home.input-placeholder"
+                          testID="Search keyword"
                           underlineColorAndroid="transparent"
                           value=""
                         />

@@ -1301,7 +1301,7 @@ exports[`Onboarding.CustomModeSettings renders correctly 1`] = `
                             "paddingHorizontal": 16,
                           }
                         }
-                        testID="onboarding.custom-mode.settings.routing.rdvp-button"
+                        testID="RdvpButton"
                       >
                         <View
                           style={
@@ -2119,7 +2119,7 @@ exports[`Onboarding.CustomModeSettings renders correctly 1`] = `
                           "paddingHorizontal": 16,
                         }
                       }
-                      testID="onboarding.custom-mode.settings.access.relay-button"
+                      testID="RelayButton"
                     >
                       <View
                         style={
@@ -2786,7 +2786,7 @@ exports[`Onboarding.CustomModeSettings renders correctly 1`] = `
                           "paddingHorizontal": 16,
                         }
                       }
-                      testID="settings.network.bootstrap-button"
+                      testID="BootstrapButton"
                     >
                       <View
                         style={
@@ -3222,7 +3222,7 @@ exports[`Onboarding.CustomModeSettings renders correctly 1`] = `
                       "width": 50,
                     }
                   }
-                  testID="onboarding.custom-mode.settings.all-button"
+                  testID="NetworkAllButton"
                 >
                   <View
                     style={
@@ -4640,7 +4640,7 @@ exports[`Onboarding.CustomModeSettings renders correctly 2`] = `
                             "paddingHorizontal": 16,
                           }
                         }
-                        testID="onboarding.custom-mode.settings.routing.rdvp-button"
+                        testID="RdvpButton"
                       >
                         <View
                           style={
@@ -5458,7 +5458,7 @@ exports[`Onboarding.CustomModeSettings renders correctly 2`] = `
                           "paddingHorizontal": 16,
                         }
                       }
-                      testID="onboarding.custom-mode.settings.access.relay-button"
+                      testID="RelayButton"
                     >
                       <View
                         style={
@@ -6125,7 +6125,7 @@ exports[`Onboarding.CustomModeSettings renders correctly 2`] = `
                           "paddingHorizontal": 16,
                         }
                       }
-                      testID="settings.network.bootstrap-button"
+                      testID="BootstrapButton"
                     >
                       <View
                         style={
@@ -6561,7 +6561,7 @@ exports[`Onboarding.CustomModeSettings renders correctly 2`] = `
                       "width": 50,
                     }
                   }
-                  testID="onboarding.custom-mode.settings.all-button"
+                  testID="NetworkAllButton"
                 >
                   <View
                     style={
@@ -7979,7 +7979,7 @@ exports[`Onboarding.CustomModeSettings renders correctly 3`] = `
                             "paddingHorizontal": 16,
                           }
                         }
-                        testID="onboarding.custom-mode.settings.routing.rdvp-button"
+                        testID="RdvpButton"
                       >
                         <View
                           style={
@@ -8797,7 +8797,7 @@ exports[`Onboarding.CustomModeSettings renders correctly 3`] = `
                           "paddingHorizontal": 16,
                         }
                       }
-                      testID="onboarding.custom-mode.settings.access.relay-button"
+                      testID="RelayButton"
                     >
                       <View
                         style={
@@ -9464,7 +9464,7 @@ exports[`Onboarding.CustomModeSettings renders correctly 3`] = `
                           "paddingHorizontal": 16,
                         }
                       }
-                      testID="settings.network.bootstrap-button"
+                      testID="BootstrapButton"
                     >
                       <View
                         style={
@@ -9900,7 +9900,7 @@ exports[`Onboarding.CustomModeSettings renders correctly 3`] = `
                       "width": 50,
                     }
                   }
-                  testID="onboarding.custom-mode.settings.all-button"
+                  testID="NetworkAllButton"
                 >
                   <View
                     style={

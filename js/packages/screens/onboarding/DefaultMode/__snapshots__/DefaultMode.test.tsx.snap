@@ -408,7 +408,7 @@ exports[`Onboarding.DefaultMode renders correctly 1`] = `
                       "opacity": 1,
                     }
                   }
-                  testID="onboarding.default-mode.summary.accept-button"
+                  testID="LetsGoButton"
                 >
                   <Text
                     style={
@@ -856,7 +856,7 @@ exports[`Onboarding.DefaultMode renders correctly 2`] = `
                       "opacity": 1,
                     }
                   }
-                  testID="onboarding.default-mode.summary.accept-button"
+                  testID="LetsGoButton"
                 >
                   <ActivityIndicator
                     animating={true}

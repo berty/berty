@@ -1,6 +1,5 @@
-import i18next from 'i18next'
-
 import { renderScreen } from '@berty/utils/testing/renderScreen.test'
+import * as testIDs from '@berty/utils/testing/testIDs.json'
 
 import { GetStarted } from './GetStarted'
 
@@ -16,6 +15,6 @@ test('Onboarding.GetStarted renders correctly', async () => {
 test('create button exists', async () => {
 	const { getByTestId } = renderScreen('Onboarding.GetStarted', GetStarted)
 
-	const createButton = getByTestId(i18next.t('onboarding.getstarted.create-button'))
+	const createButton = getByTestId(testIDs['create-account-button'])
 	expect(createButton).toBeTruthy()
 })

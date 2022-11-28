@@ -160,7 +160,7 @@ exports[`Onboarding.GetStarted renders correctly 1`] = `
                   "opacity": 1,
                 }
               }
-              testID="onboarding.getstarted.create-button"
+              testID="CreateAccountButton"
             >
               <Text
                 style={

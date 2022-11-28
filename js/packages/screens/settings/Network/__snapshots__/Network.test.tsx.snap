@@ -88,7 +88,7 @@ exports[`Settings.Network + button onPress works 1`] = `
                     "padding": 12,
                   }
                 }
-                testID="settings.network.ble-button"
+                testID="BluetoothLowEnergyButton"
               >
                 <View
                   style={
@@ -212,7 +212,7 @@ exports[`Settings.Network + button onPress works 1`] = `
                     "padding": 12,
                   }
                 }
-                testID="settings.network.mc-button"
+                testID="MultipeerConnectivityButton"
               >
                 <View
                   style={
@@ -336,7 +336,7 @@ exports[`Settings.Network + button onPress works 1`] = `
                     "padding": 12,
                   }
                 }
-                testID="settings.network.mdns-button"
+                testID="MDNSButton"
               >
                 <View
                   style={
@@ -843,7 +843,7 @@ exports[`Settings.Network + button onPress works 1`] = `
                           "paddingHorizontal": 16,
                         }
                       }
-                      testID="onboarding.custom-mode.settings.routing.rdvp-button"
+                      testID="RdvpButton"
                     >
                       <View
                         style={
@@ -1493,7 +1493,7 @@ exports[`Settings.Network + button onPress works 1`] = `
                           "paddingHorizontal": 16,
                         }
                       }
-                      testID="onboarding.custom-mode.settings.access.relay-button"
+                      testID="RelayButton"
                     >
                       <View
                         style={
@@ -2134,7 +2134,7 @@ exports[`Settings.Network + button onPress works 1`] = `
                           "paddingHorizontal": 16,
                         }
                       }
-                      testID="settings.network.bootstrap-button"
+                      testID="BootstrapButton"
                     >
                       <View
                         style={
@@ -2593,7 +2593,7 @@ exports[`Settings.Network renders correctly 1`] = `
                     "padding": 12,
                   }
                 }
-                testID="settings.network.ble-button"
+                testID="BluetoothLowEnergyButton"
               >
                 <View
                   style={
@@ -2717,7 +2717,7 @@ exports[`Settings.Network renders correctly 1`] = `
                     "padding": 12,
                   }
                 }
-                testID="settings.network.mc-button"
+                testID="MultipeerConnectivityButton"
               >
                 <View
                   style={
@@ -2841,7 +2841,7 @@ exports[`Settings.Network renders correctly 1`] = `
                     "padding": 12,
                   }
                 }
-                testID="settings.network.mdns-button"
+                testID="MDNSButton"
               >
                 <View
                   style={
@@ -3348,7 +3348,7 @@ exports[`Settings.Network renders correctly 1`] = `
                           "paddingHorizontal": 16,
                         }
                       }
-                      testID="onboarding.custom-mode.settings.routing.rdvp-button"
+                      testID="RdvpButton"
                     >
                       <View
                         style={
@@ -3998,7 +3998,7 @@ exports[`Settings.Network renders correctly 1`] = `
                           "paddingHorizontal": 16,
                         }
                       }
-                      testID="onboarding.custom-mode.settings.access.relay-button"
+                      testID="RelayButton"
                     >
                       <View
                         style={
@@ -4639,7 +4639,7 @@ exports[`Settings.Network renders correctly 1`] = `
                           "paddingHorizontal": 16,
                         }
                       }
-                      testID="settings.network.bootstrap-button"
+                      testID="BootstrapButton"
                     >
                       <View
                         style={
@@ -5098,7 +5098,7 @@ exports[`Settings.Network toggle onPress works 1`] = `
                     "padding": 12,
                   }
                 }
-                testID="settings.network.ble-button"
+                testID="BluetoothLowEnergyButton"
               >
                 <View
                   style={
@@ -5222,7 +5222,7 @@ exports[`Settings.Network toggle onPress works 1`] = `
                     "padding": 12,
                   }
                 }
-                testID="settings.network.mc-button"
+                testID="MultipeerConnectivityButton"
               >
                 <View
                   style={
@@ -5346,7 +5346,7 @@ exports[`Settings.Network toggle onPress works 1`] = `
                     "padding": 12,
                   }
                 }
-                testID="settings.network.mdns-button"
+                testID="MDNSButton"
               >
                 <View
                   style={
@@ -5853,7 +5853,7 @@ exports[`Settings.Network toggle onPress works 1`] = `
                           "paddingHorizontal": 16,
                         }
                       }
-                      testID="onboarding.custom-mode.settings.routing.rdvp-button"
+                      testID="RdvpButton"
                     >
                       <View
                         style={
@@ -6503,7 +6503,7 @@ exports[`Settings.Network toggle onPress works 1`] = `
                           "paddingHorizontal": 16,
                         }
                       }
-                      testID="onboarding.custom-mode.settings.access.relay-button"
+                      testID="RelayButton"
                     >
                       <View
                         style={
@@ -7144,7 +7144,7 @@ exports[`Settings.Network toggle onPress works 1`] = `
                           "paddingHorizontal": 16,
                         }
                       }
-                      testID="settings.network.bootstrap-button"
+                      testID="BootstrapButton"
                     >
                       <View
                         style={

@@ -202,7 +202,7 @@ exports[`Settings.Permissions renders correctly 1`] = `
               "opacity": 1,
             }
           }
-          testID="permission.cancel"
+          testID="PermissonAltButton"
         >
           <Text
             style={
