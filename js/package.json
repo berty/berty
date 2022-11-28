@@ -68,7 +68,7 @@
     "react-native-tab-view": "^3.1.1",
     "react-native-v8": ">=0.64.2-patch.0 <0.64.3",
     "react-native-vector-icons": "^9.0.0",
-    "react-native-webview": "^11.14.3",
+    "react-native-webview": "^11.25.0",
     "react-redux": "^7.2.6",
     "redux": "^4.1.2",
     "redux-persist": "^6.0.0",
