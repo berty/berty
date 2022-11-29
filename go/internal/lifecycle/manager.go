@@ -9,40 +9,45 @@ import (
 
 type State int
 
+type Manager = manager[State]
+
 const (
 	StateActive State = iota
 	StateInactive
 )
 
-type Manager struct {
-	notify        *notify.Notify
-	currentState  State
-	tasks, waiter *sync.WaitGroup
+type manager[S comparable] struct {
+	currentState S
+
+	locker *sync.RWMutex
+	notify *notify.Notify
+	tasks  Tasks
+
+	groupWaiter sync.WaitGroup
 }
 
-func NewManager(initialState State) *Manager {
-	return &Manager{
+func NewManager[S comparable](initialState S) *manager[S] {
+	var locker sync.RWMutex
+	return &manager[S]{
 		currentState: initialState,
-		notify:       notify.New(&sync.Mutex{}),
-		tasks:        &sync.WaitGroup{},
-		waiter:       &sync.WaitGroup{},
+		locker:       &locker,
+		notify:       notify.New(&locker),
 	}
 }
 
 // UpdateState update the current state of the manager
-func (m *Manager) UpdateState(state State) {
-	m.notify.L.Lock()
+func (m *manager[S]) UpdateState(state S) {
+	m.locker.Lock()
 	if m.currentState != state {
 		m.currentState = state
 		m.notify.Broadcast()
 	}
-	m.notify.L.Unlock()
+	m.locker.Unlock()
 }
 
 // WaitForStateChange waits until the currentState changes from sourceState or ctx expires. A true value is returned in former case and false in latter.
-func (m *Manager) WaitForStateChange(ctx context.Context, sourceState State) bool {
-	m.waiter.Add(1)
-	m.notify.L.Lock()
+func (m *manager[S]) WaitForStateChange(ctx context.Context, sourceState S) bool {
+	m.locker.Lock()
 
 	ok := true
 	for sourceState == m.currentState && ok {
@@ -50,21 +55,25 @@ func (m *Manager) WaitForStateChange(ctx context.Context, sourceState State) boo
 		ok = m.notify.Wait(ctx)
 	}
 
-	m.notify.L.Unlock()
-	m.waiter.Done()
+	m.locker.Unlock()
 	return ok
 }
 
+// GetCurrentState return the current state of the manager
+func (m *manager[S]) GetCurrentState() (state S) {
+	m.locker.RLock()
+	state = m.currentState
+	m.locker.RUnlock()
+	return
+}
+
 // TaskWaitForStateChange is the same as `WaitForStateChange` but also return a
-// task that can be mark as done by the upper caller to notiy he is done
+// task that can be mark as done by the upper caller to notify he is done
 // handling the new state, done should always be called to avoid deadlock.
 // use `WaitForTasks` to wait for task to complete
-func (m *Manager) TaskWaitForStateChange(ctx context.Context, sourceState State) (Task, bool) {
-	m.waiter.Add(1)
-	defer m.waiter.Done()
-
-	m.notify.L.Lock()
-	defer m.notify.L.Unlock()
+func (m *manager[S]) TaskWaitForStateChange(ctx context.Context, sourceState S) (Task, bool) {
+	m.locker.Lock()
+	defer m.locker.Unlock()
 
 	for sourceState == m.currentState {
 		// wait until state has been changed or context has been cancel
@@ -73,20 +82,13 @@ func (m *Manager) TaskWaitForStateChange(ctx context.Context, sourceState State)
 		}
 	}
 
-	m.tasks.Add(1)
-	return &task{tasks: m.tasks}, true
-}
-
-// GetCurrentState return the current state of the manager
-func (m *Manager) GetCurrentState() (state State) {
-	m.notify.L.Lock()
-	state = m.currentState
-	m.notify.L.Unlock()
-	return
+	m.groupWaiter.Add(1)
+	return &task{t: &m.groupWaiter}, true
 }
 
 // WaitForTasks wait until all tasks returned by `TaskWaitForStateChange` are done
-func (m *Manager) WaitForTasks() {
-	m.waiter.Wait()
-	m.tasks.Wait()
+func (m *manager[S]) WaitForTasks() {
+	m.locker.RLock()
+	m.groupWaiter.Wait() // wait for all tasks to be done
+	m.locker.RUnlock()
 }
