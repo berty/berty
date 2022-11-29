@@ -248,7 +248,15 @@ func (b *Bridge) HandleState(appstate int) {
 	case AppStateInactive:
 		b.lifecycleManager.UpdateState(lifecycle.StateInactive)
 		b.logger.Info("app is in Inactive State")
+	default:
+		// unknown state
+		return
 	}
+
+	// wait that all tasks are done
+	b.lifecycleManager.WaitForTasks()
+
+	b.logger.Debug("all tasks for the current state have been processed")
 }
 
 func (b *Bridge) HandleTask() LifeCycleBackgroundTask {
