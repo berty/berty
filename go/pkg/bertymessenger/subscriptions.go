@@ -99,7 +99,8 @@ func (svc *service) manageSubscriptions() {
 	// method naturally when switching to active state at application startup
 	currentState := lifecycle.StateInactive
 	for {
-		if !svc.lcmanager.WaitForStateChange(svc.ctx, currentState) {
+		task, ok := svc.lcmanager.TaskWaitForStateChange(svc.ctx, currentState)
+		if !ok {
 			break // leave the loop, context has expired
 		}
 
@@ -112,6 +113,8 @@ func (svc *service) manageSubscriptions() {
 		case lifecycle.StateInactive:
 			unsubscribe()
 		}
+
+		task.Done()
 	}
 
 	// if we are in any other state than inactive, close subscription
