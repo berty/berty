@@ -35,7 +35,12 @@ func (s *service) getGroupForPK(ctx context.Context, pk crypto.PubKey) (*protoco
 		return nil, errcode.ErrInternal.Wrap(err)
 	}
 
-	if err = reindexGroupDatastore(ctx, s.groupDatastore, s.getAccountGroup().metadataStore, s.deviceKeystore); err != nil {
+	accountGroup := s.getAccountGroup()
+	if accountGroup == nil {
+		return nil, errcode.ErrGroupMissing
+	}
+
+	if err = reindexGroupDatastore(ctx, s.groupDatastore, accountGroup.metadataStore, s.deviceKeystore); err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
@@ -70,6 +75,10 @@ func (s *service) deactivateGroup(pk crypto.PubKey) error {
 	}
 
 	delete(s.openedGroups, string(id))
+
+	if cg.group.GroupType == protocoltypes.GroupTypeAccount {
+		s.accountGroup = nil
+	}
 
 	return nil
 }
