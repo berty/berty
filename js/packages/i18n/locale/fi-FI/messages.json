@@ -1,11 +1,11 @@
 {
 	"onboarding": {
 		"getstarted": {
-			"screenTitle": "",
+			"screenTitle": "Turvaa yksityisyytesi",
 			"title": "",
-			"desc": "",
-			"create-button": "",
-			"import-button": ""
+			"desc": "ilmaista & turvallista vertaisverkko viestintää",
+			"create-button": "Luo käyttäjä",
+			"import-button": "Tuo käyttäjä"
 		},
 		"default-mode": {
 			"summary": {
