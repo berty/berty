@@ -40,6 +40,19 @@ func (svc *service) manageSubscriptions() {
 		tyberCtx, _, endSection := tyber.Section(context.TODO(), logger, "Subscribing to known groups")
 		defer func() { endSection(tyberErr, "") }()
 
+		// Subscribing first to account group
+		icr, err := svc.protocolClient.InstanceGetConfiguration(ctx, &protocoltypes.InstanceGetConfiguration_Request{})
+		if err != nil {
+			logger.Error("manageSubscriptions error: unable to activate account group")
+		}
+
+		if err := svc.subscribeToGroup(ctx, tyberCtx, icr.GetAccountGroupPK()); err != nil {
+			if !errcode.Has(err, errcode.ErrBertyAccountAlreadyOpened) {
+				logger.Error("unable subscribe to group", zap.String("gpk", messengerutil.B64EncodeBytes(icr.GetAccountGroupPK())), zap.Error(err))
+			}
+			tyberErr = multierr.Append(tyberErr, err)
+		}
+
 		for groupPK := range svc.groupsToSubTo {
 			gpkb, err := messengerutil.B64DecodeBytes(groupPK)
 			if err != nil {

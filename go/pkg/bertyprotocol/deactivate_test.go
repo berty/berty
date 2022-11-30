@@ -147,17 +147,13 @@ func TestRaceReactivateAccountGroup(t *testing.T) {
 		}
 	}
 
-	// test communication between nodeA and nodeB
-	nodes := []*bertyprotocol.TestingProtocol{nodeA, nodeB}
-	addAsContact(ctx, t, nodes, nodes)
-	sendMessageToContact(ctx, t, []string{"pre-deactivate nodeA-nodeB"}, nodes)
-
 	// reactivate nodeA account group
 	nodeACfg, err := nodeA.Client.InstanceGetConfiguration(ctx, &protocoltypes.InstanceGetConfiguration_Request{})
 	require.NoError(t, err)
 	require.NotNil(t, nodeACfg)
 
 	deactivateFunc := func() {
+		t.Log("DeactivateGroup")
 		_, err := nodeA.Client.DeactivateGroup(ctx, &protocoltypes.DeactivateGroup_Request{
 			GroupPK: nodeACfg.AccountGroupPK,
 		})
@@ -165,6 +161,7 @@ func TestRaceReactivateAccountGroup(t *testing.T) {
 	}
 
 	activateFunc := func() {
+		t.Log("ActivateGroup")
 		_, err := nodeA.Client.ActivateGroup(ctx, &protocoltypes.ActivateGroup_Request{
 			GroupPK: nodeACfg.AccountGroupPK,
 		})
@@ -177,7 +174,12 @@ func TestRaceReactivateAccountGroup(t *testing.T) {
 
 	// test communication between nodeA and nodeB
 	time.Sleep(3 * time.Second)
-	sendMessageToContact(ctx, t, []string{"pre-deactivate nodeA-nodeB"}, nodes)
+	nodes := []*bertyprotocol.TestingProtocol{nodeA, nodeB}
+	t.Log("addAsContact")
+	addAsContact(ctx, t, nodes, nodes)
+	t.Log("sendMessageToContact")
+	sendMessageToContact(ctx, t, []string{"nodeA-nodeB"}, nodes)
+
 }
 
 func TestReactivateContactGroup(t *testing.T) {

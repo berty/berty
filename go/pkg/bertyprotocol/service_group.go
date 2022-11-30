@@ -108,6 +108,10 @@ func (s *service) activateGroup(ctx context.Context, pk crypto.PubKey, localOnly
 		// nothing to get here, simply continue, open and activate the group
 
 	case protocoltypes.GroupTypeContact:
+		if s.accountGroup == nil {
+		return errcode.ErrGroupActivate.Wrap(fmt.Errorf("accountGroup is deactivated"))
+		}
+
 		contact := s.accountGroup.metadataStore.GetContactFromGroupPK(id)
 		if contact != nil {
 			contactPK, err = contact.GetPubKey()

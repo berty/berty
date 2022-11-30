@@ -257,6 +257,10 @@ func (s *service) PushSetDeviceToken(ctx context.Context, request *protocoltypes
 
 	request.Receiver.RecipientPublicKey = s.pushHandler.PushPK()[:]
 
+	if s.accountGroup == nil {
+		return nil, errcode.ErrGroupActivate.Wrap(fmt.Errorf("accountGroup is deactivated"))
+	}
+
 	if currentReceiver := s.accountGroup.metadataStore.getCurrentDevicePushToken(); currentReceiver != nil && bytes.Equal(currentReceiver.Token, request.Receiver.Token) {
 		s.logger.Warn("push device token already set", logutil.PrivateString("b64 token", base64.StdEncoding.EncodeToString(request.Receiver.Token)))
 		return &protocoltypes.PushSetDeviceToken_Reply{}, nil
@@ -277,6 +281,10 @@ func (s *service) PushSetServer(ctx context.Context, request *protocoltypes.Push
 
 	if request.Server == nil {
 		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("no push server provided"))
+	}
+
+	if s.accountGroup == nil {
+		return nil, errcode.ErrGroupActivate.Wrap(fmt.Errorf("accountGroup is deactivated"))
 	}
 
 	if currentServer := s.accountGroup.metadataStore.getCurrentDevicePushServer(); currentServer != nil &&
