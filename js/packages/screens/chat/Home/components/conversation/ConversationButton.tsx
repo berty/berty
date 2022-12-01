@@ -5,6 +5,7 @@ import beapi from '@berty/api'
 import { useStyles } from '@berty/contexts/styles'
 import { KeyboardStatus, useKeyboardStatus, useThemeColor } from '@berty/hooks'
 import { useNavigation } from '@berty/navigation'
+import * as testIDs from '@berty/utils/testing/testIDs.json'
 
 interface ConversationButtonProps {
 	publicKey: string
@@ -38,6 +39,7 @@ export const ConversationButton: React.FC<ConversationButtonProps> = props => {
 
 	return (
 		<TouchableHighlight
+			testID={testIDs.conversation}
 			underlayColor={`${colors['secondary-text']}80`}
 			style={[
 				padding.horizontal.medium,

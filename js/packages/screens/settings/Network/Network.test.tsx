@@ -1,9 +1,9 @@
 import { fireEvent } from '@testing-library/react-native'
-import i18next from 'i18next'
 import { Platform } from 'react-native'
 
 import { mockServices } from '@berty/utils/testing/mockServices.test'
 import { renderScreen } from '@berty/utils/testing/renderScreen.test'
+import * as testIDs from '@berty/utils/testing/testIDs.json'
 
 import { Network } from './Network'
 
@@ -17,14 +17,14 @@ test('Settings.Network renders correctly', async () => {
 test('Settings.Network toggle onPress works', async () => {
 	await mockServices()
 
-	const { toJSON, getByLabelText } = renderScreen('Settings.Network', Network)
+	const { toJSON, getByTestId } = renderScreen('Settings.Network', Network)
 
-	const bleButton = getByLabelText(i18next.t('settings.network.ble-button'))
+	const bleButton = getByTestId(testIDs['ble-button'])
 	if (Platform.OS === 'ios') {
-		const mcButton = getByLabelText(i18next.t('settings.network.mc-button'))
+		const mcButton = getByTestId(testIDs['mc-button'])
 		fireEvent.press(mcButton)
 	} else {
-		const nearbyButton = getByLabelText(i18next.t('settings.network.nearby-button'))
+		const nearbyButton = getByTestId(testIDs['ble-button'])
 		fireEvent.press(nearbyButton)
 	}
 	fireEvent.press(bleButton)
@@ -34,15 +34,11 @@ test('Settings.Network toggle onPress works', async () => {
 test('Settings.Network + button onPress works', async () => {
 	await mockServices()
 
-	const { toJSON, getByLabelText } = renderScreen('Settings.Network', Network)
+	const { toJSON, getByTestId } = renderScreen('Settings.Network', Network)
 
-	const bootstrapButton = getByLabelText(i18next.t('settings.network.bootstrap-button'))
-	const relayButton = getByLabelText(
-		i18next.t('onboarding.custom-mode.settings.access.relay-button'),
-	)
-	const rdvpButton = getByLabelText(
-		i18next.t('onboarding.custom-mode.settings.routing.rdvp-button'),
-	)
+	const bootstrapButton = getByTestId(testIDs['bootstrap-button'])
+	const relayButton = getByTestId(testIDs['relay-button'])
+	const rdvpButton = getByTestId(testIDs['rdvp-button'])
 	fireEvent.press(bootstrapButton)
 	fireEvent.press(relayButton)
 	fireEvent.press(rdvpButton)

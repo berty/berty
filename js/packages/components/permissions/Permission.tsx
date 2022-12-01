@@ -13,6 +13,7 @@ import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useStyles } from '@berty/contexts/styles'
 import { useThemeColor } from '@berty/hooks'
 import { PermissionType } from '@berty/utils/permissions/permissions'
+import * as testIDs from '@berty/utils/testing/testIDs.json'
 
 const animations: Record<PermissionType, AnimatedLottieViewProps['source']> = {
 	audio: audioLottie,
@@ -96,7 +97,7 @@ export const Permission: React.FC<PermissionProps> = ({
 						)}
 					</PrimaryButton>
 				</View>
-				<TertiaryAltButton onPress={onPressSecondary} accessibilityLabel={altText}>
+				<TertiaryAltButton onPress={onPressSecondary} testID={testIDs['permission-alt-button']}>
 					{altText}
 				</TertiaryAltButton>
 			</View>

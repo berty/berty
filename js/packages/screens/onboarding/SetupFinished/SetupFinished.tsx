@@ -7,6 +7,7 @@ import OnboardingWrapper from '@berty/components/onboarding/OnboardingWrapper'
 import SwiperCard from '@berty/components/onboarding/SwiperCard'
 import { useNotificationsInhibitor, useThemeColor } from '@berty/hooks'
 import { ScreenFC, useNavigation } from '@berty/navigation'
+import * as testIDs from '@berty/utils/testing/testIDs.json'
 
 /**
  * FIXME: rewrite this component, the client ternaries always go through the first path
@@ -82,7 +83,7 @@ const SetupFinishedBody = () => {
 					desc={t('onboarding.setup-finished.desc')}
 					button={{
 						text: t('onboarding.setup-finished.button'),
-						accessibilityLabel: t('onboarding.setup-finished.button'),
+						testID: testIDs['start-using-button'],
 						onPress: () => {
 							setIsFinished(true)
 							Vibration.vibrate([500])

@@ -16,10 +16,7 @@ export const StreamProgressPriv: React.FC<StreamProgressProps> = props => {
 	const stream = useSelector(selectStreamProgress)
 
 	return (
-		<View
-			style={{ backgroundColor: colors['main-background'], flex: 1 }}
-			accessibilityLabel={props.accessibilityLabel}
-		>
+		<View style={{ backgroundColor: colors['main-background'], flex: 1 }} testID={props.testID}>
 			<UnifiedText style={[text.align.center, styles.title]}>
 				{stream?.stream || 'Test'}
 			</UnifiedText>

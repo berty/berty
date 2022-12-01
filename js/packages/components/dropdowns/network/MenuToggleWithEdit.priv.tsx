@@ -18,7 +18,7 @@ export const MenuToggleWithEditPriv: React.FC<
 
 	return (
 		<View style={margin.left.medium}>
-			<MenuItemPriv onPress={props.onPress} accessibilityLabel={props.accessibilityLabel}>
+			<MenuItemPriv onPress={props.onPress} testID={props.testID}>
 				<TextPriv>{props.children}</TextPriv>
 				{!!props.onPressModify && (
 					<TouchableOpacity onPress={props.onPressModify} style={{ marginRight: 10 }}>

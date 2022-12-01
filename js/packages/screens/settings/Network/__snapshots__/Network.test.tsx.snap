@@ -69,7 +69,6 @@ exports[`Settings.Network + button onPress works 1`] = `
               }
             >
               <View
-                accessibilityLabel="settings.network.ble-button"
                 accessible={true}
                 focusable={true}
                 onClick={[Function]}
@@ -89,6 +88,7 @@ exports[`Settings.Network + button onPress works 1`] = `
                     "padding": 12,
                   }
                 }
+                testID="BluetoothLowEnergyButton"
               >
                 <View
                   style={
@@ -193,7 +193,6 @@ exports[`Settings.Network + button onPress works 1`] = `
                 }
               />
               <View
-                accessibilityLabel="settings.network.mc-button"
                 accessible={true}
                 focusable={true}
                 onClick={[Function]}
@@ -213,6 +212,7 @@ exports[`Settings.Network + button onPress works 1`] = `
                     "padding": 12,
                   }
                 }
+                testID="MultipeerConnectivityButton"
               >
                 <View
                   style={
@@ -317,7 +317,6 @@ exports[`Settings.Network + button onPress works 1`] = `
                 }
               />
               <View
-                accessibilityLabel="settings.network.mdns-button"
                 accessible={true}
                 focusable={true}
                 onClick={[Function]}
@@ -337,6 +336,7 @@ exports[`Settings.Network + button onPress works 1`] = `
                     "padding": 12,
                   }
                 }
+                testID="MDNSButton"
               >
                 <View
                   style={
@@ -825,7 +825,6 @@ exports[`Settings.Network + button onPress works 1`] = `
                       }
                     />
                     <View
-                      accessibilityLabel="onboarding.custom-mode.settings.routing.rdvp-button"
                       accessible={true}
                       focusable={true}
                       onClick={[Function]}
@@ -844,6 +843,7 @@ exports[`Settings.Network + button onPress works 1`] = `
                           "paddingHorizontal": 16,
                         }
                       }
+                      testID="RdvpButton"
                     >
                       <View
                         style={
@@ -1475,7 +1475,6 @@ exports[`Settings.Network + button onPress works 1`] = `
                       }
                     />
                     <View
-                      accessibilityLabel="onboarding.custom-mode.settings.access.relay-button"
                       accessible={true}
                       focusable={true}
                       onClick={[Function]}
@@ -1494,6 +1493,7 @@ exports[`Settings.Network + button onPress works 1`] = `
                           "paddingHorizontal": 16,
                         }
                       }
+                      testID="RelayButton"
                     >
                       <View
                         style={
@@ -2116,7 +2116,6 @@ exports[`Settings.Network + button onPress works 1`] = `
                       }
                     />
                     <View
-                      accessibilityLabel="settings.network.bootstrap-button"
                       accessible={true}
                       focusable={true}
                       onClick={[Function]}
@@ -2135,6 +2134,7 @@ exports[`Settings.Network + button onPress works 1`] = `
                           "paddingHorizontal": 16,
                         }
                       }
+                      testID="BootstrapButton"
                     >
                       <View
                         style={
@@ -2574,7 +2574,6 @@ exports[`Settings.Network renders correctly 1`] = `
               }
             >
               <View
-                accessibilityLabel="settings.network.ble-button"
                 accessible={true}
                 focusable={true}
                 onClick={[Function]}
@@ -2594,6 +2593,7 @@ exports[`Settings.Network renders correctly 1`] = `
                     "padding": 12,
                   }
                 }
+                testID="BluetoothLowEnergyButton"
               >
                 <View
                   style={
@@ -2698,7 +2698,6 @@ exports[`Settings.Network renders correctly 1`] = `
                 }
               />
               <View
-                accessibilityLabel="settings.network.mc-button"
                 accessible={true}
                 focusable={true}
                 onClick={[Function]}
@@ -2718,6 +2717,7 @@ exports[`Settings.Network renders correctly 1`] = `
                     "padding": 12,
                   }
                 }
+                testID="MultipeerConnectivityButton"
               >
                 <View
                   style={
@@ -2822,7 +2822,6 @@ exports[`Settings.Network renders correctly 1`] = `
                 }
               />
               <View
-                accessibilityLabel="settings.network.mdns-button"
                 accessible={true}
                 focusable={true}
                 onClick={[Function]}
@@ -2842,6 +2841,7 @@ exports[`Settings.Network renders correctly 1`] = `
                     "padding": 12,
                   }
                 }
+                testID="MDNSButton"
               >
                 <View
                   style={
@@ -3330,7 +3330,6 @@ exports[`Settings.Network renders correctly 1`] = `
                       }
                     />
                     <View
-                      accessibilityLabel="onboarding.custom-mode.settings.routing.rdvp-button"
                       accessible={true}
                       focusable={true}
                       onClick={[Function]}
@@ -3349,6 +3348,7 @@ exports[`Settings.Network renders correctly 1`] = `
                           "paddingHorizontal": 16,
                         }
                       }
+                      testID="RdvpButton"
                     >
                       <View
                         style={
@@ -3980,7 +3980,6 @@ exports[`Settings.Network renders correctly 1`] = `
                       }
                     />
                     <View
-                      accessibilityLabel="onboarding.custom-mode.settings.access.relay-button"
                       accessible={true}
                       focusable={true}
                       onClick={[Function]}
@@ -3999,6 +3998,7 @@ exports[`Settings.Network renders correctly 1`] = `
                           "paddingHorizontal": 16,
                         }
                       }
+                      testID="RelayButton"
                     >
                       <View
                         style={
@@ -4621,7 +4621,6 @@ exports[`Settings.Network renders correctly 1`] = `
                       }
                     />
                     <View
-                      accessibilityLabel="settings.network.bootstrap-button"
                       accessible={true}
                       focusable={true}
                       onClick={[Function]}
@@ -4640,6 +4639,7 @@ exports[`Settings.Network renders correctly 1`] = `
                           "paddingHorizontal": 16,
                         }
                       }
+                      testID="BootstrapButton"
                     >
                       <View
                         style={
@@ -5079,7 +5079,6 @@ exports[`Settings.Network toggle onPress works 1`] = `
               }
             >
               <View
-                accessibilityLabel="settings.network.ble-button"
                 accessible={true}
                 focusable={true}
                 onClick={[Function]}
@@ -5099,6 +5098,7 @@ exports[`Settings.Network toggle onPress works 1`] = `
                     "padding": 12,
                   }
                 }
+                testID="BluetoothLowEnergyButton"
               >
                 <View
                   style={
@@ -5203,7 +5203,6 @@ exports[`Settings.Network toggle onPress works 1`] = `
                 }
               />
               <View
-                accessibilityLabel="settings.network.mc-button"
                 accessible={true}
                 focusable={true}
                 onClick={[Function]}
@@ -5223,6 +5222,7 @@ exports[`Settings.Network toggle onPress works 1`] = `
                     "padding": 12,
                   }
                 }
+                testID="MultipeerConnectivityButton"
               >
                 <View
                   style={
@@ -5327,7 +5327,6 @@ exports[`Settings.Network toggle onPress works 1`] = `
                 }
               />
               <View
-                accessibilityLabel="settings.network.mdns-button"
                 accessible={true}
                 focusable={true}
                 onClick={[Function]}
@@ -5347,6 +5346,7 @@ exports[`Settings.Network toggle onPress works 1`] = `
                     "padding": 12,
                   }
                 }
+                testID="MDNSButton"
               >
                 <View
                   style={
@@ -5835,7 +5835,6 @@ exports[`Settings.Network toggle onPress works 1`] = `
                       }
                     />
                     <View
-                      accessibilityLabel="onboarding.custom-mode.settings.routing.rdvp-button"
                       accessible={true}
                       focusable={true}
                       onClick={[Function]}
@@ -5854,6 +5853,7 @@ exports[`Settings.Network toggle onPress works 1`] = `
                           "paddingHorizontal": 16,
                         }
                       }
+                      testID="RdvpButton"
                     >
                       <View
                         style={
@@ -6485,7 +6485,6 @@ exports[`Settings.Network toggle onPress works 1`] = `
                       }
                     />
                     <View
-                      accessibilityLabel="onboarding.custom-mode.settings.access.relay-button"
                       accessible={true}
                       focusable={true}
                       onClick={[Function]}
@@ -6504,6 +6503,7 @@ exports[`Settings.Network toggle onPress works 1`] = `
                           "paddingHorizontal": 16,
                         }
                       }
+                      testID="RelayButton"
                     >
                       <View
                         style={
@@ -7126,7 +7126,6 @@ exports[`Settings.Network toggle onPress works 1`] = `
                       }
                     />
                     <View
-                      accessibilityLabel="settings.network.bootstrap-button"
                       accessible={true}
                       focusable={true}
                       onClick={[Function]}
@@ -7145,6 +7144,7 @@ exports[`Settings.Network toggle onPress works 1`] = `
                           "paddingHorizontal": 16,
                         }
                       }
+                      testID="BootstrapButton"
                     >
                       <View
                         style={

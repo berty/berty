@@ -23,7 +23,7 @@ interface MembersDropdownProps {
 	placeholder: string
 	defaultValue?: string | null
 	publicKey: string
-	accessibilityLabel?: string
+	testID?: string
 }
 
 interface MemberItemProps {
@@ -95,11 +95,7 @@ export const MembersDropdown: React.FC<MembersDropdownProps> = props => {
 				{ shadowColor: colors.shadow, backgroundColor: colors['main-background'] },
 			]}
 		>
-			<DropdownPriv
-				icon='users'
-				placeholder={props.placeholder}
-				accessibilityLabel={props.accessibilityLabel}
-			>
+			<DropdownPriv icon='users' placeholder={props.placeholder} testID={props.testID}>
 				<MembersDropdownHeader inputValue={value} setInputValue={setValue} />
 				{/* TODO: enable it when replication node is up */}
 				{/* <AddConversationBoosterButton /> */}

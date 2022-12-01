@@ -9,6 +9,7 @@ import { useStyles } from '@berty/contexts/styles'
 import { useNotificationsInhibitor, useThemeColor } from '@berty/hooks'
 import { ScreenFC, useNavigation } from '@berty/navigation'
 import { importAccountFromDocumentPicker } from '@berty/utils/accounts/accountBackup'
+import * as testIDs from '@berty/utils/testing/testIDs.json'
 
 export const GetStarted: ScreenFC<'Onboarding.GetStarted'> = () => {
 	useNotificationsInhibitor(() => true)
@@ -52,7 +53,7 @@ export const GetStarted: ScreenFC<'Onboarding.GetStarted'> = () => {
 				<View style={{ marginHorizontal: 60 }}>
 					<View style={[margin.top.huge]}>
 						<PrimaryButton
-							accessibilityLabel={t('onboarding.getstarted.create-button')}
+							testID={testIDs['create-account-button']}
 							onPress={() => navigate('Onboarding.CreateAccount')}
 						>
 							{t('onboarding.getstarted.create-button')}

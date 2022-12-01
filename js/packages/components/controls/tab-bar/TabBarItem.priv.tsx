@@ -25,7 +25,7 @@ export const TabBarItemPriv: React.FC<TabBarItemProps> = ({
 	return (
 		<TouchableOpacity
 			onPress={() => setEnable(name)}
-			accessibilityLabel={name}
+			testID={name}
 			style={[flex.tiny, padding.bottom.tiny]}
 			disabled={buttonDisabled}
 		>

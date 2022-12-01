@@ -1283,7 +1283,6 @@ exports[`Onboarding.CustomModeSettings renders correctly 1`] = `
                         }
                       />
                       <View
-                        accessibilityLabel="onboarding.custom-mode.settings.routing.rdvp-button"
                         accessible={true}
                         focusable={true}
                         onClick={[Function]}
@@ -1302,6 +1301,7 @@ exports[`Onboarding.CustomModeSettings renders correctly 1`] = `
                             "paddingHorizontal": 16,
                           }
                         }
+                        testID="RdvpButton"
                       >
                         <View
                           style={
@@ -2101,7 +2101,6 @@ exports[`Onboarding.CustomModeSettings renders correctly 1`] = `
                       }
                     />
                     <View
-                      accessibilityLabel="onboarding.custom-mode.settings.access.relay-button"
                       accessible={true}
                       focusable={true}
                       onClick={[Function]}
@@ -2120,6 +2119,7 @@ exports[`Onboarding.CustomModeSettings renders correctly 1`] = `
                           "paddingHorizontal": 16,
                         }
                       }
+                      testID="RelayButton"
                     >
                       <View
                         style={
@@ -2768,7 +2768,6 @@ exports[`Onboarding.CustomModeSettings renders correctly 1`] = `
                       }
                     />
                     <View
-                      accessibilityLabel="settings.network.bootstrap-button"
                       accessible={true}
                       focusable={true}
                       onClick={[Function]}
@@ -2787,6 +2786,7 @@ exports[`Onboarding.CustomModeSettings renders correctly 1`] = `
                           "paddingHorizontal": 16,
                         }
                       }
+                      testID="BootstrapButton"
                     >
                       <View
                         style={
@@ -3202,7 +3202,6 @@ exports[`Onboarding.CustomModeSettings renders correctly 1`] = `
                 }
               >
                 <View
-                  accessibilityLabel="onboarding.custom-mode.settings.all-button"
                   accessible={true}
                   focusable={true}
                   onClick={[Function]}
@@ -3223,6 +3222,7 @@ exports[`Onboarding.CustomModeSettings renders correctly 1`] = `
                       "width": 50,
                     }
                   }
+                  testID="NetworkAllButton"
                 >
                   <View
                     style={
@@ -4622,7 +4622,6 @@ exports[`Onboarding.CustomModeSettings renders correctly 2`] = `
                         }
                       />
                       <View
-                        accessibilityLabel="onboarding.custom-mode.settings.routing.rdvp-button"
                         accessible={true}
                         focusable={true}
                         onClick={[Function]}
@@ -4641,6 +4640,7 @@ exports[`Onboarding.CustomModeSettings renders correctly 2`] = `
                             "paddingHorizontal": 16,
                           }
                         }
+                        testID="RdvpButton"
                       >
                         <View
                           style={
@@ -5440,7 +5440,6 @@ exports[`Onboarding.CustomModeSettings renders correctly 2`] = `
                       }
                     />
                     <View
-                      accessibilityLabel="onboarding.custom-mode.settings.access.relay-button"
                       accessible={true}
                       focusable={true}
                       onClick={[Function]}
@@ -5459,6 +5458,7 @@ exports[`Onboarding.CustomModeSettings renders correctly 2`] = `
                           "paddingHorizontal": 16,
                         }
                       }
+                      testID="RelayButton"
                     >
                       <View
                         style={
@@ -6107,7 +6107,6 @@ exports[`Onboarding.CustomModeSettings renders correctly 2`] = `
                       }
                     />
                     <View
-                      accessibilityLabel="settings.network.bootstrap-button"
                       accessible={true}
                       focusable={true}
                       onClick={[Function]}
@@ -6126,6 +6125,7 @@ exports[`Onboarding.CustomModeSettings renders correctly 2`] = `
                           "paddingHorizontal": 16,
                         }
                       }
+                      testID="BootstrapButton"
                     >
                       <View
                         style={
@@ -6541,7 +6541,6 @@ exports[`Onboarding.CustomModeSettings renders correctly 2`] = `
                 }
               >
                 <View
-                  accessibilityLabel="onboarding.custom-mode.settings.all-button"
                   accessible={true}
                   focusable={true}
                   onClick={[Function]}
@@ -6562,6 +6561,7 @@ exports[`Onboarding.CustomModeSettings renders correctly 2`] = `
                       "width": 50,
                     }
                   }
+                  testID="NetworkAllButton"
                 >
                   <View
                     style={
@@ -7961,7 +7961,6 @@ exports[`Onboarding.CustomModeSettings renders correctly 3`] = `
                         }
                       />
                       <View
-                        accessibilityLabel="onboarding.custom-mode.settings.routing.rdvp-button"
                         accessible={true}
                         focusable={true}
                         onClick={[Function]}
@@ -7980,6 +7979,7 @@ exports[`Onboarding.CustomModeSettings renders correctly 3`] = `
                             "paddingHorizontal": 16,
                           }
                         }
+                        testID="RdvpButton"
                       >
                         <View
                           style={
@@ -8779,7 +8779,6 @@ exports[`Onboarding.CustomModeSettings renders correctly 3`] = `
                       }
                     />
                     <View
-                      accessibilityLabel="onboarding.custom-mode.settings.access.relay-button"
                       accessible={true}
                       focusable={true}
                       onClick={[Function]}
@@ -8798,6 +8797,7 @@ exports[`Onboarding.CustomModeSettings renders correctly 3`] = `
                           "paddingHorizontal": 16,
                         }
                       }
+                      testID="RelayButton"
                     >
                       <View
                         style={
@@ -9446,7 +9446,6 @@ exports[`Onboarding.CustomModeSettings renders correctly 3`] = `
                       }
                     />
                     <View
-                      accessibilityLabel="settings.network.bootstrap-button"
                       accessible={true}
                       focusable={true}
                       onClick={[Function]}
@@ -9465,6 +9464,7 @@ exports[`Onboarding.CustomModeSettings renders correctly 3`] = `
                           "paddingHorizontal": 16,
                         }
                       }
+                      testID="BootstrapButton"
                     >
                       <View
                         style={
@@ -9880,7 +9880,6 @@ exports[`Onboarding.CustomModeSettings renders correctly 3`] = `
                 }
               >
                 <View
-                  accessibilityLabel="onboarding.custom-mode.settings.all-button"
                   accessible={true}
                   focusable={true}
                   onClick={[Function]}
@@ -9901,6 +9900,7 @@ exports[`Onboarding.CustomModeSettings renders correctly 3`] = `
                       "width": 50,
                     }
                   }
+                  testID="NetworkAllButton"
                 >
                   <View
                     style={

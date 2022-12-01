@@ -81,7 +81,6 @@ exports[`Account.SelectNode renders correctly 1`] = `
       }
     >
       <View
-        accessibilityLabel="settings.devtools.select-node.node-type"
         accessible={true}
         focusable={true}
         onClick={[Function]}
@@ -101,6 +100,7 @@ exports[`Account.SelectNode renders correctly 1`] = `
             "padding": 12,
           }
         }
+        testID="SelectNodeType"
       >
         <View
           style={
@@ -214,7 +214,6 @@ exports[`Account.SelectNode renders correctly 1`] = `
       }
     >
       <View
-        accessibilityLabel="settings.devtools.select-node.dont-ask"
         accessible={true}
         focusable={true}
         onClick={[Function]}
@@ -234,6 +233,7 @@ exports[`Account.SelectNode renders correctly 1`] = `
             "padding": 12,
           }
         }
+        testID="SelectNodeDontAsk"
       >
         <View
           style={
@@ -369,6 +369,7 @@ exports[`Account.SelectNode renders correctly 1`] = `
             "opacity": 1,
           }
         }
+        testID="SelectNodeContinue"
       >
         <Text
           style={

@@ -279,7 +279,6 @@ exports[`Chat.ContactRequest renders correctly 1`] = `
                     }
                   >
                     <View
-                      accessibilityLabel="tabs.fingerprint"
                       accessible={true}
                       focusable={true}
                       onClick={[Function]}
@@ -296,6 +295,7 @@ exports[`Chat.ContactRequest renders correctly 1`] = `
                           "paddingBottom": 4,
                         }
                       }
+                      testID="tabs.fingerprint"
                     >
                       <View
                         style={
@@ -392,7 +392,6 @@ exports[`Chat.ContactRequest renders correctly 1`] = `
                       />
                     </View>
                     <View
-                      accessibilityLabel="tabs.info"
                       accessible={true}
                       focusable={true}
                       onClick={[Function]}
@@ -409,6 +408,7 @@ exports[`Chat.ContactRequest renders correctly 1`] = `
                           "paddingBottom": 4,
                         }
                       }
+                      testID="tabs.info"
                     >
                       <View
                         style={
@@ -510,7 +510,6 @@ exports[`Chat.ContactRequest renders correctly 1`] = `
                       />
                     </View>
                     <View
-                      accessibilityLabel="tabs.devices"
                       accessible={true}
                       focusable={true}
                       onClick={[Function]}
@@ -527,6 +526,7 @@ exports[`Chat.ContactRequest renders correctly 1`] = `
                           "paddingBottom": 4,
                         }
                       }
+                      testID="tabs.devices"
                     >
                       <View
                         style={

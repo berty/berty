@@ -22,6 +22,7 @@ import {
 } from '@berty/redux/reducers/networkConfig.reducer'
 import { checkProximityPermission } from '@berty/utils/permissions/checkPermissions'
 import { IOSOnlyKeyboardAvoidingView } from '@berty/utils/react-native/keyboardAvoiding'
+import * as testIDs from '@berty/utils/testing/testIDs.json'
 
 const Proximity: React.FC = () => {
 	const { navigate } = useNavigation()
@@ -35,7 +36,7 @@ const Proximity: React.FC = () => {
 			{Platform.OS !== 'web' && (
 				<>
 					<MenuToggle
-						accessibilityLabel={t('settings.network.ble-button')}
+						testID={testIDs['ble-button']}
 						isToggleOn={
 							blePerm === 'granted' &&
 							networkConfig?.bluetoothLe === beapi.account.NetworkConfig.Flag.Enabled
@@ -59,7 +60,7 @@ const Proximity: React.FC = () => {
 			{Platform.OS === 'ios' && (
 				<>
 					<MenuToggle
-						accessibilityLabel={t('settings.network.mc-button')}
+						testID={testIDs['mc-button']}
 						isToggleOn={
 							blePerm === 'granted' &&
 							networkConfig?.appleMultipeerConnectivity === beapi.account.NetworkConfig.Flag.Enabled
@@ -83,7 +84,7 @@ const Proximity: React.FC = () => {
 			{Platform.OS === 'android' && (
 				<>
 					<MenuToggle
-						accessibilityLabel={t('settings.network.nearby-button')}
+						testID={testIDs['nearby-button']}
 						isToggleOn={
 							blePerm === 'granted' &&
 							networkConfig?.androidNearby === beapi.account.NetworkConfig.Flag.Enabled
@@ -105,7 +106,7 @@ const Proximity: React.FC = () => {
 				</>
 			)}
 			<MenuToggle
-				accessibilityLabel={t('settings.network.mdns-button')}
+				testID={testIDs['mdns-button']}
 				isToggleOn={networkConfig?.mdns === beapi.account.NetworkConfig.Flag.Enabled}
 				onPress={async () => {
 					dispatch(

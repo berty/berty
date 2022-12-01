@@ -9,6 +9,7 @@ import { useAccount } from '@berty/hooks'
 import { useNavigation } from '@berty/navigation'
 import { storageSet } from '@berty/utils/accounts/accountClient'
 import { GlobalPersistentOptionsKeys } from '@berty/utils/global-persistent-options/types'
+import * as testIDs from '@berty/utils/testing/testIDs.json'
 
 export const CreateAccountBox: React.FC<{
 	defaultName: string
@@ -29,6 +30,7 @@ export const CreateAccountBox: React.FC<{
 					await storageSet(GlobalPersistentOptionsKeys.DisplayName, displayName)
 					navigate('Onboarding.DefaultMode')
 				},
+				testID: testIDs['default-mode-button'],
 			}}
 			secondButton={{
 				text: t('onboarding.create-account.second-button'),

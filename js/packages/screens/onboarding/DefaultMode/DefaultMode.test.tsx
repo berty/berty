@@ -1,15 +1,15 @@
 import { fireEvent } from '@testing-library/react-native'
-import i18next from 'i18next'
 
 import { renderScreen } from '@berty/utils/testing/renderScreen.test'
+import * as testIDs from '@berty/utils/testing/testIDs.json'
 
 import { DefaultMode } from './DefaultMode'
 
 test('Onboarding.DefaultMode renders correctly', async () => {
-	const { toJSON, getByLabelText } = renderScreen('Onboarding.DefaultMode', DefaultMode)
+	const { toJSON, getByTestId } = renderScreen('Onboarding.DefaultMode', DefaultMode)
 	expect(toJSON()).toMatchSnapshot()
 
-	const createButton = getByLabelText(i18next.t('onboarding.default-mode.summary.accept-button'))
+	const createButton = getByTestId(testIDs['lets-go-button'])
 	fireEvent.press(createButton)
 	expect(toJSON()).toMatchSnapshot()
 })

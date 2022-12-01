@@ -41,6 +41,7 @@ import {
 import { accountClient } from '@berty/utils/accounts/accountClient'
 import { checkProximityPermission } from '@berty/utils/permissions/checkPermissions'
 import { getPermissions, PermissionType } from '@berty/utils/permissions/permissions'
+import * as testIDs from '@berty/utils/testing/testIDs.json'
 
 interface AccordionRef {
 	open: () => void
@@ -374,7 +375,7 @@ const EnableDisableAll: React.FC<{ accordionRefs: AccordionRefs }> = ({ accordio
 			<View style={[padding.small]}>
 				<AltToggle
 					checked={isToggled}
-					accessibilityLabel={t('onboarding.custom-mode.settings.all-button')}
+					testID={testIDs['network-all-button']}
 					onChange={async () => {
 						const toToggled = !isToggled
 						setIsToggled(toToggled)

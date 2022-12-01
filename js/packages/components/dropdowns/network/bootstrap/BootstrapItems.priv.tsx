@@ -14,6 +14,7 @@ import {
 	selectBootstrap,
 	toggleFromBootstrap,
 } from '@berty/redux/reducers/networkConfig.reducer'
+import * as testIDs from '@berty/utils/testing/testIDs.json'
 
 import { AddButtonPriv } from '../AddButton.priv'
 import { MenuToggleWithEditPriv } from '../MenuToggleWithEdit.priv'
@@ -50,10 +51,7 @@ export const BootstrapItemsPriv = () => {
 				</View>
 			))}
 			<DividerItem />
-			<AddButtonPriv
-				accessibilityLabel={t('settings.network.bootstrap-button')}
-				onPress={() => setIsVisible(true)}
-			/>
+			<AddButtonPriv testID={testIDs['bootstrap-button']} onPress={() => setIsVisible(true)} />
 			<BottomModal isVisible={isVisible} setIsVisible={setIsVisible}>
 				{isEdit ? (
 					<AccordionEdit

@@ -183,7 +183,6 @@ exports[`Settings.Permissions renders correctly 1`] = `
           </View>
         </View>
         <View
-          accessibilityLabel="permission.cancel"
           accessible={true}
           focusable={true}
           onClick={[Function]}
@@ -203,6 +202,7 @@ exports[`Settings.Permissions renders correctly 1`] = `
               "opacity": 1,
             }
           }
+          testID="PermissonAltButton"
         >
           <Text
             style={

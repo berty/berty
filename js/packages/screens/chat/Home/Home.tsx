@@ -30,6 +30,7 @@ import {
 	selectPersistentOptions,
 	setPersistentOption,
 } from '@berty/redux/reducers/persistentOptions.reducer'
+import * as testIDs from '@berty/utils/testing/testIDs.json'
 
 import { AddBot } from './components/AddBot'
 import { Conversations } from './components/Conversations'
@@ -265,7 +266,7 @@ export const Home: ScreenFC<'Chat.Home'> = ({ navigation: { navigate } }) => {
 									<ButtonSettingV2
 										text='Open Berty Link'
 										icon='external-link-outline'
-										accessibilityLabel='Open Berty Link'
+										testID={testIDs['open-berty-link']}
 										onPress={() =>
 											navigate('Chat.ManageDeepLink', { type: 'link', value: searchText })
 										}

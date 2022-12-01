@@ -388,7 +388,6 @@ exports[`Onboarding.DefaultMode renders correctly 1`] = `
                 }
               >
                 <View
-                  accessibilityLabel="onboarding.default-mode.summary.accept-button"
                   accessible={true}
                   focusable={true}
                   onClick={[Function]}
@@ -409,6 +408,7 @@ exports[`Onboarding.DefaultMode renders correctly 1`] = `
                       "opacity": 1,
                     }
                   }
+                  testID="LetsGoButton"
                 >
                   <Text
                     style={
@@ -836,7 +836,6 @@ exports[`Onboarding.DefaultMode renders correctly 2`] = `
                 }
               >
                 <View
-                  accessibilityLabel="onboarding.default-mode.summary.accept-button"
                   accessible={true}
                   focusable={false}
                   onClick={[Function]}
@@ -857,6 +856,7 @@ exports[`Onboarding.DefaultMode renders correctly 2`] = `
                       "opacity": 1,
                     }
                   }
+                  testID="LetsGoButton"
                 >
                   <ActivityIndicator
                     animating={true}

@@ -21,6 +21,7 @@ make ios.release
 You can close the simulator that started since we only want to build the app
 
 Then grab the app path from the `info Installing` line in the command output, for example:
+
 ```
 info Installing "/Users/norman/Library/Developer/Xcode/DerivedData/Berty-fhgkrmolfophlogtwrazqwhipyex/Build/Products/AppStore Release-iphonesimulator/Berty.app"
 ```
@@ -28,7 +29,22 @@ info Installing "/Users/norman/Library/Developer/Xcode/DerivedData/Berty-fhgkrmo
 ### Run the test script
 
 ```sh
-IOS_APP=<path-to-the-app> node e2e-tests/basic.js
+IOS_APP=<path-to-the-app> node e2e-tests/src/tests/testName.js
+```
+
+#### Environment
+
+Instead of passing variables, you can either create a .env file and set variables in it
+
+Example
+
+```js
+MAX_TYPING_FREQUENCY = 20 // Maximum frequency of keystrokes for typing and clear. Defaults to 60 keystrokes per minute
+IOS_APP =
+	'/Users/norman/Library/Developer/Xcode/DerivedData/Berty-fhgkrmolfophlogtwrazqwhipyex/Build/Products/AppStore Release-iphonesimulator/Berty.app' // Full path to the application to be tested
+ANDROID_APP = '' // Full path to the application to be tested
+IOS_VERSION = '15.5' // The platform version of an emulator or a real device
+IOS_DEVICE = 'iPhone 11' // The name of the device under test
 ```
 
 ## Known errors

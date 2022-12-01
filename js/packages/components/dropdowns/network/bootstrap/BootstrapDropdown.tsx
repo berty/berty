@@ -13,7 +13,7 @@ export const BootstrapDropdown = forwardRef(
 		return (
 			<NetworkDropdownPriv
 				placeholder={t('onboarding.custom-mode.settings.access.bootstrap-button')}
-				accessibilityLabel={props.accessibilityLabel}
+				testID={props.testID}
 				icon='earth'
 				ref={ref}
 			>

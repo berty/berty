@@ -8,16 +8,18 @@ interface CreateGroupFooterWithIconProps {
 	title: string
 	icon: string
 	action: () => void
+	testID?: string
 }
 
 export const CreateGroupFooterWithIcon = ({
 	title,
 	icon,
 	action,
+	testID,
 }: CreateGroupFooterWithIconProps) => {
 	return (
 		<CreateGroupFooterPriv>
-			<SecondaryButtonIconRight name={icon} onPress={action}>
+			<SecondaryButtonIconRight testID={testID} name={icon} onPress={action}>
 				{title}
 			</SecondaryButtonIconRight>
 		</CreateGroupFooterPriv>

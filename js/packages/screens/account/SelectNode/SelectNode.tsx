@@ -15,6 +15,7 @@ import {
 	storeData,
 	getData,
 } from '@berty/utils/async-storage/async-storage'
+import * as testIDs from '@berty/utils/testing/testIDs.json'
 
 import { LabelInput } from './components/LabelInput'
 
@@ -102,7 +103,7 @@ export const SelectNode: ScreenFC<'Account.SelectNode'> = ({ route }) => {
 				</View>
 				<ItemSection>
 					<MenuToggle
-						accessibilityLabel={t('settings.devtools.select-node.node-type')}
+						testID={testIDs['select-node-type']}
 						isToggleOn={externalNode}
 						onPress={() => {
 							setExternalNode(!externalNode)
@@ -135,7 +136,7 @@ export const SelectNode: ScreenFC<'Account.SelectNode'> = ({ route }) => {
 				</ItemSection>
 				<ItemSection>
 					<MenuToggle
-						accessibilityLabel={t('settings.devtools.select-node.dont-ask')}
+						testID={testIDs['select-node-dont-ask']}
 						isToggleOn={dontAsk}
 						onPress={() => {
 							setDontAsk(!dontAsk)
@@ -145,6 +146,7 @@ export const SelectNode: ScreenFC<'Account.SelectNode'> = ({ route }) => {
 					</MenuToggle>
 				</ItemSection>
 				<CreateGroupFooterWithIcon
+					testID={testIDs['select-node-continue']}
 					title={t('settings.devtools.select-node.button-continue')}
 					icon='arrow-forward-outline'
 					action={async () => {

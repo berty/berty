@@ -231,7 +231,6 @@ exports[`Chat.ContactSettings renders correctly 1`] = `
                       }
                     >
                       <View
-                        accessibilityLabel="tabs.fingerprint"
                         accessible={true}
                         focusable={true}
                         onClick={[Function]}
@@ -248,6 +247,7 @@ exports[`Chat.ContactSettings renders correctly 1`] = `
                             "paddingBottom": 4,
                           }
                         }
+                        testID="tabs.fingerprint"
                       >
                         <View
                           style={
@@ -344,7 +344,6 @@ exports[`Chat.ContactSettings renders correctly 1`] = `
                         />
                       </View>
                       <View
-                        accessibilityLabel="tabs.info"
                         accessible={true}
                         focusable={true}
                         onClick={[Function]}
@@ -361,6 +360,7 @@ exports[`Chat.ContactSettings renders correctly 1`] = `
                             "paddingBottom": 4,
                           }
                         }
+                        testID="tabs.info"
                       >
                         <View
                           style={

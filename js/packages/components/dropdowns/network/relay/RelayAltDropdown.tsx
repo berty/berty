@@ -9,10 +9,7 @@ export const RelayAltDropdown: React.FC<NetworkProps> = props => {
 	const { t } = useTranslation()
 
 	return (
-		<NetworkAltDropdownPriv
-			placeholder={t('settings.network.relay-button')}
-			accessibilityLabel={props.accessibilityLabel}
-		>
+		<NetworkAltDropdownPriv placeholder={t('settings.network.relay-button')} testID={props.testID}>
 			<RelayItemsPriv />
 		</NetworkAltDropdownPriv>
 	)

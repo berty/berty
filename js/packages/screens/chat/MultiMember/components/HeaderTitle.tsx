@@ -62,7 +62,7 @@ export const HeaderTitle: React.FC<HeaderTitleProps> = props => {
 					}}
 					value={editValue}
 					onChange={({ nativeEvent }) => setEditValue(nativeEvent.text)}
-					accessibilityLabel={editValue}
+					testID={editValue}
 				/>
 				<TouchableOpacity onPress={editDisplayName}>
 					<Icon name='checkmark-outline' height={25} width={25} fill={colors['secondary-text']} />

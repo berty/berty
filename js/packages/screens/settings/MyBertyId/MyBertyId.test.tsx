@@ -9,10 +9,10 @@ import { MyBertyId } from './MyBertyId'
 test('Settings.MyBertyId renders correctly', async () => {
 	await mockServices()
 
-	const { toJSON, getByLabelText } = renderScreen('Settings.MyBertyId', MyBertyId)
+	const { toJSON, getByTestId } = renderScreen('Settings.MyBertyId', MyBertyId)
 	expect(toJSON()).toMatchSnapshot()
 
-	const button = getByLabelText(i18next.t('tabs.fingerprint'))
+	const button = getByTestId(i18next.t('tabs.fingerprint'))
 	fireEvent.press(button)
 	expect(toJSON()).toMatchSnapshot()
 })

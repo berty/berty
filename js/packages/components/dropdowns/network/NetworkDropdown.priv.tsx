@@ -32,7 +32,7 @@ export const NetworkDropdownPriv = forwardRef(
 					icon={props.icon}
 					ref={ref}
 					placeholder={props.placeholder}
-					accessibilityLabel={props.accessibilityLabel}
+					testID={props.testID}
 				>
 					{props.children}
 				</DropdownPriv>

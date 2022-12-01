@@ -30,7 +30,7 @@ const SwiperCard: React.FC<{
 	button?: {
 		text: string
 		onPress: () => void
-		accessibilityLabel?: string
+		testID?: string
 	}
 	secondButton?: {
 		text: string
@@ -76,16 +76,13 @@ const SwiperCard: React.FC<{
 					{children}
 					<View style={[margin.horizontal.large, margin.top.small]}>
 						{!!button && (
-							<PrimaryButton onPress={button.onPress} accessibilityLabel={button.text}>
+							<PrimaryButton onPress={button.onPress} testID={button.testID}>
 								{button.text}
 							</PrimaryButton>
 						)}
 						{!!secondButton && (
 							<View style={margin.top.small}>
-								<SecondaryButton
-									onPress={secondButton.onPress}
-									accessibilityLabel={secondButton.text}
-								>
+								<SecondaryButton onPress={secondButton.onPress}>
 									{secondButton.text}
 								</SecondaryButton>
 							</View>

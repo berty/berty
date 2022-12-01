@@ -24,6 +24,7 @@ import {
 	setChatInputIsSending,
 } from '@berty/redux/reducers/chatInputsVolatile.reducer'
 import { useStateWithRef } from '@berty/utils/react-native/useStateWithRef'
+import * as testIDs from '@berty/utils/testing/testIDs.json'
 
 import { SendButton } from './ChatFooterButtons'
 import { ChatTextInput } from './ChatTextInput'
@@ -131,6 +132,7 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 				>
 					<View style={styles.wrapper}>
 						<ChatTextInput
+							testID={testIDs['chat-text-input']}
 							editable={!sending && !disabled}
 							placeholder={sending ? t('chat.sending') : placeholder}
 							onChangeText={handleTextChange}

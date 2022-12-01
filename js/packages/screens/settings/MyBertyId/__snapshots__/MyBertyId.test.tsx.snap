@@ -176,7 +176,6 @@ exports[`Settings.MyBertyId renders correctly 1`] = `
                 }
               >
                 <View
-                  accessibilityLabel="tabs.qr"
                   accessible={true}
                   focusable={true}
                   onClick={[Function]}
@@ -193,6 +192,7 @@ exports[`Settings.MyBertyId renders correctly 1`] = `
                       "paddingBottom": 4,
                     }
                   }
+                  testID="tabs.qr"
                 >
                   <View
                     style={
@@ -289,7 +289,6 @@ exports[`Settings.MyBertyId renders correctly 1`] = `
                   />
                 </View>
                 <View
-                  accessibilityLabel="tabs.fingerprint"
                   accessible={true}
                   focusable={true}
                   onClick={[Function]}
@@ -306,6 +305,7 @@ exports[`Settings.MyBertyId renders correctly 1`] = `
                       "paddingBottom": 4,
                     }
                   }
+                  testID="tabs.fingerprint"
                 >
                   <View
                     style={
@@ -687,7 +687,6 @@ exports[`Settings.MyBertyId renders correctly 2`] = `
                 }
               >
                 <View
-                  accessibilityLabel="tabs.qr"
                   accessible={true}
                   focusable={true}
                   onClick={[Function]}
@@ -704,6 +703,7 @@ exports[`Settings.MyBertyId renders correctly 2`] = `
                       "paddingBottom": 4,
                     }
                   }
+                  testID="tabs.qr"
                 >
                   <View
                     style={
@@ -804,7 +804,6 @@ exports[`Settings.MyBertyId renders correctly 2`] = `
                   />
                 </View>
                 <View
-                  accessibilityLabel="tabs.fingerprint"
                   accessible={true}
                   focusable={true}
                   onClick={[Function]}
@@ -821,6 +820,7 @@ exports[`Settings.MyBertyId renders correctly 2`] = `
                       "paddingBottom": 4,
                     }
                   }
+                  testID="tabs.fingerprint"
                 >
                   <View
                     style={

@@ -92,12 +92,12 @@ e2e-tests.tests:
 	IOS_DEVICE="$(E2E_TESTING_IOS_DEVICE)" \
 	IOS_APP="$(if $(IOS_APP),$(IOS_APP),$(E2E_GET_IOS_APP))" \
 	IOS_VERSION="$(E2E_TESTING_IOS_VERSION)" \
-	node e2e-tests/basic.js
+	node ./e2e-tests/src/tests/2-simulators/joinGroupAndSendMessage.js 
 
 .PHONY: e2e-tests.ci-flow
 e2e-tests.ci-flow: e2e-tests/node_modules
 	$(call check-program, npx)
-	npx concurrently --kill-others -n server,tests -s 'command-tests' 'make e2e-tests.server' 'sleep 30; make e2e-tests.tests'
+	npx concurrently --kill-others -n server,tests -s 'command-tests' 'make e2e-tests.server' 'sleep 10; make e2e-tests.tests'
 
 .PHONY: test
 test: node_modules

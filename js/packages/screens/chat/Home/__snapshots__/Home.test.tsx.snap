@@ -199,7 +199,6 @@ exports[`Chat.Home renders correctly 1`] = `
                         }
                       >
                         <TextInput
-                          accessibilityLabel="main.home.input-placeholder"
                           allowFontScaling={true}
                           autoCapitalize="none"
                           autoCorrect={false}
@@ -220,6 +219,7 @@ exports[`Chat.Home renders correctly 1`] = `
                               },
                             ]
                           }
+                          testID="Search keyword"
                           underlineColorAndroid="transparent"
                           value=""
                         />

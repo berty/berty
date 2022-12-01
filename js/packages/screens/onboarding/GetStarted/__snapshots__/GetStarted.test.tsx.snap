@@ -140,7 +140,6 @@ exports[`Onboarding.GetStarted renders correctly 1`] = `
             }
           >
             <View
-              accessibilityLabel="onboarding.getstarted.create-button"
               accessible={true}
               focusable={true}
               onClick={[Function]}
@@ -161,6 +160,7 @@ exports[`Onboarding.GetStarted renders correctly 1`] = `
                   "opacity": 1,
                 }
               }
+              testID="CreateAccountButton"
             >
               <Text
                 style={

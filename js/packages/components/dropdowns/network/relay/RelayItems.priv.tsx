@@ -14,6 +14,7 @@ import {
 	selectStaticRelay,
 	toggleFromStaticRelay,
 } from '@berty/redux/reducers/networkConfig.reducer'
+import * as testIDs from '@berty/utils/testing/testIDs.json'
 
 import { AddButtonPriv } from '../AddButton.priv'
 import { MenuToggleWithEditPriv } from '../MenuToggleWithEdit.priv'
@@ -50,10 +51,7 @@ export const RelayItemsPriv = () => {
 				</View>
 			))}
 			<DividerItem />
-			<AddButtonPriv
-				accessibilityLabel={t('onboarding.custom-mode.settings.access.relay-button')}
-				onPress={() => setIsVisible(true)}
-			/>
+			<AddButtonPriv testID={testIDs['relay-button']} onPress={() => setIsVisible(true)} />
 			<BottomModal isVisible={isVisible} setIsVisible={setIsVisible}>
 				{isEdit ? (
 					<AccordionEdit

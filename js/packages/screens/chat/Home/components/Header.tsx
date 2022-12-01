@@ -9,6 +9,7 @@ import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
 import { useProfileNotification, useThemeColor } from '@berty/hooks'
 import { useNavigation } from '@berty/navigation'
+import * as testIDs from '@berty/utils/testing/testIDs.json'
 
 import { UnreadCount } from './UnreadCount'
 
@@ -88,7 +89,7 @@ export const HomeHeader: React.FC<
 								value={value}
 								onChangeText={onChange}
 								placeholder={t('main.home.input-placeholder')}
-								accessibilityLabel={t('main.home.input-placeholder')}
+								testID={testIDs['home-input']}
 								iconName='search-outline'
 							/>
 						</View>

@@ -3,6 +3,7 @@ import React from 'react'
 import { TouchableOpacity, TouchableOpacityProps, View, ActivityIndicator } from 'react-native'
 
 import { useThemeColor } from '@berty/hooks'
+import * as testIDs from '@berty/utils/testing/testIDs.json'
 
 const chatInputButtonSizeMultiplier = 36
 
@@ -36,7 +37,12 @@ const ChatInputButton: React.FC<{
 	)
 
 	return (
-		<TouchableOpacity style={style} disabled={disabled} onPress={onPress}>
+		<TouchableOpacity
+			style={style}
+			disabled={disabled}
+			onPress={onPress}
+			testID={testIDs['chat-input-button']}
+		>
 			<View style={vOffset && vOffset > 0 ? { paddingBottom: vOffset } : undefined}>
 				{loading ? (
 					<ActivityIndicator size='small' color={colors['reverted-main-text']} />

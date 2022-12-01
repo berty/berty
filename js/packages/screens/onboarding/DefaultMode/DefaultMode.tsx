@@ -11,6 +11,7 @@ import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { useStyles } from '@berty/contexts/styles'
 import { useNotificationsInhibitor, useThemeColor } from '@berty/hooks'
 import { ScreenFC, useNavigation } from '@berty/navigation'
+import * as testIDs from '@berty/utils/testing/testIDs.json'
 
 const DefaultModeBody: React.FC = () => {
 	const { goBack, navigate } = useNavigation()
@@ -117,7 +118,7 @@ const DefaultModeBody: React.FC = () => {
 						<PrimaryAltButton
 							loading={isPressed}
 							onPress={() => setIsPressed(true)}
-							accessibilityLabel={t('onboarding.default-mode.summary.accept-button')}
+							testID={testIDs['lets-go-button']}
 						>
 							{t('onboarding.default-mode.summary.accept-button')}
 						</PrimaryAltButton>

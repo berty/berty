@@ -14,5 +14,5 @@ export const StreamProgress: React.FC<StreamProgressProps> = props => {
 	if (streamError && !streamInProgress) {
 		return <StreamProgressErrorPriv />
 	}
-	return <StreamProgressPriv accessibilityLabel={props.accessibilityLabel} />
+	return <StreamProgressPriv testID={props.testID} />
 }

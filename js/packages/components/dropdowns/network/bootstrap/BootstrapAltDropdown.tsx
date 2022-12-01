@@ -11,7 +11,7 @@ export const BootstrapAltDropdown: React.FC<NetworkProps> = props => {
 	return (
 		<NetworkAltDropdownPriv
 			placeholder={t('settings.network.bootstrap-button')}
-			accessibilityLabel={props.accessibilityLabel}
+			testID={props.testID}
 		>
 			<BootstrapItemsPriv />
 		</NetworkAltDropdownPriv>
