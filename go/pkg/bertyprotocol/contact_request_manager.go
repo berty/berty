@@ -30,7 +30,8 @@ const contactRequestV1 = "/berty/contact_req/1.0.0"
 type contactRequestsManager struct {
 	muManager sync.Mutex
 
-	rootCtx        context.Context
+	ctx            context.Context
+	cancel         context.CancelFunc
 	announceCancel context.CancelFunc
 
 	lookupProcess   map[string]context.CancelFunc
@@ -48,11 +49,13 @@ type contactRequestsManager struct {
 	metadataStore *MetadataStore
 }
 
-func initContactRequestsManager(ctx context.Context, s *Swiper, store *MetadataStore, ipfs ipfsutil.ExtendedCoreAPI, logger *zap.Logger) error {
+func newContactRequestsManager(s *Swiper, store *MetadataStore, ipfs ipfsutil.ExtendedCoreAPI, logger *zap.Logger) (*contactRequestsManager, error) {
 	sk, err := store.devKS.AccountPrivKey()
 	if err != nil {
-		return err
+		return nil, err
 	}
+
+	ctx, cancel := context.WithCancel(context.Background())
 
 	cm := &contactRequestsManager{
 		lookupProcess: make(map[string]context.CancelFunc),
@@ -60,13 +63,41 @@ func initContactRequestsManager(ctx context.Context, s *Swiper, store *MetadataS
 		ipfs:          ipfs,
 		logger:        logger.Named("req-mngr"),
 		accSK:         sk,
-		rootCtx:       ctx,
+		ctx:           ctx,
+		cancel:        cancel,
 		swiper:        s,
 	}
 
 	go cm.metadataWatcher(ctx)
 
-	return nil
+	return cm, nil
+}
+
+func (c *contactRequestsManager) close() {
+	if c.isClosed() {
+		c.logger.Warn("contactRequestsManager already closed")
+		return
+	}
+
+	c.cancel()
+
+	c.muManager.Lock()
+	defer c.muManager.Unlock()
+
+	c.enabled = false
+
+	c.disableAnnounce()
+
+	c.ipfs.RemoveStreamHandler(contactRequestV1)
+}
+
+func (c *contactRequestsManager) isClosed() bool {
+	select {
+	case <-c.ctx.Done():
+		return true
+	default:
+		return false
+	}
 }
 
 func (c *contactRequestsManager) metadataWatcher(ctx context.Context) {
@@ -94,11 +125,13 @@ func (c *contactRequestsManager) metadataWatcher(ctx context.Context) {
 		c.ownRendezvousSeed = contact.PublicRendezvousSeed
 	}
 
+	c.muManager.Lock()
 	if enabled {
 		if err := c.enableContactRequest(ctx); err != nil {
 			c.logger.Warn("unable to enable contact request", zap.Error(err))
 		}
 	}
+	c.muManager.Unlock()
 
 	// enqueue all contact with the `ToRequest` state
 	for _, contact := range c.metadataStore.ListContactsByStatus(protocoltypes.ContactStateToRequest) {
@@ -172,7 +205,7 @@ func (c *contactRequestsManager) enableContactRequest(ctx context.Context) error
 	}
 
 	c.ipfs.SetStreamHandler(contactRequestV1, func(s network.Stream) {
-		ctx, _, endSection := tyber.Section(c.rootCtx, c.logger, "receiving incoming contact request")
+		ctx, _, endSection := tyber.Section(c.ctx, c.logger, "receiving incoming contact request")
 
 		if err := c.handleIncomingRequest(ctx, s); err != nil {
 			c.logger.Error("unable to handle incoming contact request", zap.Error(err))

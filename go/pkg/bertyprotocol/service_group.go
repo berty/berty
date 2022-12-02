@@ -109,7 +109,7 @@ func (s *service) activateGroup(ctx context.Context, pk crypto.PubKey, localOnly
 
 	case protocoltypes.GroupTypeContact:
 		if s.accountGroup == nil {
-		return errcode.ErrGroupActivate.Wrap(fmt.Errorf("accountGroup is deactivated"))
+			return errcode.ErrGroupActivate.Wrap(fmt.Errorf("accountGroup is deactivated"))
 		}
 
 		contact := s.accountGroup.metadataStore.GetContactFromGroupPK(id)
@@ -125,6 +125,15 @@ func (s *service) activateGroup(ctx context.Context, pk crypto.PubKey, localOnly
 			return err
 		}
 		s.openedGroups[string(id)] = s.accountGroup
+
+		// reinitialize contactRequestsManager
+		if s.contactRequestsManager != nil {
+			s.contactRequestsManager.close()
+
+			if s.contactRequestsManager, err = newContactRequestsManager(s.swiper, s.accountGroup.metadataStore, s.ipfsCoreAPI, s.logger); err != nil {
+				return errcode.TODO.Wrap(err)
+			}
+		}
 		return nil
 	default:
 		return errcode.ErrInternal.Wrap(fmt.Errorf("unknown group type"))
