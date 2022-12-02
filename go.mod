@@ -5,7 +5,7 @@ go 1.18
 require (
 	berty.tech/go-ipfs-log v1.9.0
 	berty.tech/go-ipfs-repo-encrypted v1.2.2
-	berty.tech/go-orbit-db v1.19.0
+	berty.tech/go-orbit-db v1.19.1
 	berty.tech/ipfs-webui-packed v1.0.0-v2.11.4-1
 	fyne.io/fyne/v2 v2.1.1
 	github.com/Masterminds/semver v1.5.0
@@ -391,5 +391,3 @@ replace (
 	github.com/peterbourgon/ff/v3 => github.com/moul/ff/v3 v3.0.1 // temporary, see https://github.com/peterbourgon/ff/pull/67, https://github.com/peterbourgon/ff/issues/68
 	golang.org/x/mobile => github.com/berty/mobile v0.0.8 // temporary, see https://github.com/golang/mobile/pull/58 and https://github.com/golang/mobile/pull/82
 )
-
-replace berty.tech/go-orbit-db => github.com/d4ryl00/go-orbit-db v1.14.1-0.20221124154125-33e02fff6139

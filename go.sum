@@ -4,6 +4,8 @@ berty.tech/go-ipfs-log v1.9.0 h1:nMdHntg3kOEDjqJodYkmnVpg7lL9HND1v5yMoydV0ZM=
 berty.tech/go-ipfs-log v1.9.0/go.mod h1:jVgWtE2TMnfLg9brRyypu33xLjqGWskNmuEaomXeUV0=
 berty.tech/go-ipfs-repo-encrypted v1.2.2 h1:lDt2dXWRD4cV1jHzO7cfwR5SO6lpv/dQc4LkLxOF+nk=
 berty.tech/go-ipfs-repo-encrypted v1.2.2/go.mod h1:qCtBIqlgd7CFmQ0Do/YqtqIFT6U5eNHANcdzkmz4e2o=
+berty.tech/go-orbit-db v1.19.1 h1:g96VBOj+IxTnd+Z+WRnve06Yi+ObEk8ie0+kgk5tRSA=
+berty.tech/go-orbit-db v1.19.1/go.mod h1:d+oh2ujZJW2c3IxihPNNqonR92/+EvhOIETylEJYwZc=
 berty.tech/ipfs-webui-packed v1.0.0-v2.11.4-1 h1:xXAS7M/RcgIWia1XkXLueirm2zDXnMMNGb3UJhfRzbo=
 berty.tech/ipfs-webui-packed v1.0.0-v2.11.4-1/go.mod h1:n+M4wWEjVxnA0itc1m9oOLAXrNyZr2tiOxLnA1tVnrQ=
 cloud.google.com/go v0.26.0/go.mod h1:aQUYkXzVsufM+DwF1aE+0xfcU+56JwCaLick0ClmMTw=
@@ -249,8 +251,6 @@ github.com/creack/pty v1.1.7/go.mod h1:lj5s0c3V2DBrqTV7llrYr5NG6My20zk30Fl46Y7Do
 github.com/creack/pty v1.1.9/go.mod h1:oKZEueFk5CKHvIhNR5MUki03XCEU+Q6VDXinZuGJ33E=
 github.com/cskr/pubsub v1.0.2 h1:vlOzMhl6PFn60gRlTQQsIfVwaPB/B/8MziK8FhEPt/0=
 github.com/cskr/pubsub v1.0.2/go.mod h1:/8MzYXk/NJAz782G8RPkFzXTZVu63VotefPnR9TIRis=
-github.com/d4ryl00/go-orbit-db v1.14.1-0.20221124154125-33e02fff6139 h1:1cJcl0mVIUxpTVY8Mz1SB+QA3ikIeBmnHDl66dYOlIk=
-github.com/d4ryl00/go-orbit-db v1.14.1-0.20221124154125-33e02fff6139/go.mod h1:d+oh2ujZJW2c3IxihPNNqonR92/+EvhOIETylEJYwZc=
 github.com/daixiang0/gci v0.8.2 h1:4VLVDNdJ+wkXxz/nr5QRrbeK+JCvkMVqYjUWB5EnPF4=
 github.com/daixiang0/gci v0.8.2/go.mod h1:EpVfrztufwVgQRXjnX4zuNinEpLj5OmMjtu/+MB0V0c=
 github.com/davecgh/go-spew v0.0.0-20171005155431-ecdeabc65495/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
