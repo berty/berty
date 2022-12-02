@@ -98,7 +98,7 @@
 		"setup-finished": {
 			"title": "设置完成！",
 			"desc": "您现在可以使用该应用，开始添加联系人以及与他们自由私下聊天",
-			"button": ""
+			"button": "开始使用 Berty"
 		},
 		"web-views": {
 			"title": "网页内容权限",
@@ -118,10 +118,10 @@
 			"input-placeholder": "搜索关键词",
 			"no-contacts": "您还没有任何联系人或聊天",
 			"no-network": {
-				"title": "",
-				"description": "",
-				"cancel": "",
-				"activate": ""
+				"title": "未找到网络！",
+				"description": "你看起来离线了！激活蓝牙功能来与朋友聊天 ！",
+				"cancel": "不是现在",
+				"activate": "激活"
 			},
 			"search": {
 				"no-results": "未找到结果"
@@ -245,12 +245,12 @@
 			"simulate-js-error-button": "模拟 JavaScript 错误",
 			"system-info-button": "系统信息",
 			"select-node": {
-				"title": "",
-				"node-type": "",
-				"address": "",
-				"account-port": "",
-				"messenger-port": "",
-				"dont-ask": "",
+				"title": "选择节点",
+				"node-type": "内部/外部节点",
+				"address": "地址",
+				"account-port": "账户服务端口",
+				"messenger-port": "Messenger 服务端口",
+				"dont-ask": "不再询问",
 				"button-continue": "继续"
 			},
 			"debug-button": "Debug",
@@ -427,7 +427,7 @@
 			"add-member-button": "添加成员",
 			"members-dropdown": {
 				"search-placeholder": "查找成员",
-				"conversation-booster": "",
+				"conversation-booster": "添加对话助推器",
 				"replication-type": "复制节点",
 				"user-type": "用户设备"
 			},
