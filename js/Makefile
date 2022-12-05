@@ -92,7 +92,7 @@ e2e-tests.tests:
 	IOS_DEVICE="$(E2E_TESTING_IOS_DEVICE)" \
 	IOS_APP="$(if $(IOS_APP),$(IOS_APP),$(E2E_GET_IOS_APP))" \
 	IOS_VERSION="$(E2E_TESTING_IOS_VERSION)" \
-	node ./e2e-tests/src/tests/2-simulators/joinGroupAndSendMessage.js 
+	node ./e2e-tests/src/tests/2-simulators/addContactAndSendOneToOneMessage.js 
 
 .PHONY: e2e-tests.ci-flow
 e2e-tests.ci-flow: e2e-tests/node_modules

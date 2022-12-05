@@ -15,6 +15,7 @@ import {
 	useThemeColor,
 } from '@berty/hooks'
 import { pbDateToNum, timeFormat } from '@berty/utils/convert/time'
+import * as testIDs from '@berty/utils/testing/testIDs.json'
 
 import { ContactAvatar } from './avatars'
 import { SecondaryButtonIconLeft, TertiaryButtonIconLeft, PrimaryButton } from './buttons'
@@ -96,7 +97,7 @@ const ContactRequestBox: React.FC<{ contact: beapi.messenger.IContact; isAccepte
 						{t('chat.one-to-one.contact-request-box.refuse-button')}
 					</TertiaryButtonIconLeft>
 					<SecondaryButtonIconLeft
-						testID={t('chat.one-to-one.contact-request-box.accept-button')}
+						testID={testIDs['accept-group']}
 						disabled={acceptDisabled}
 						loading={accepting}
 						onPress={async () => {
