@@ -316,7 +316,7 @@ export const Home: ScreenFC<'Chat.Home'> = ({ navigation: { navigate } }) => {
 				)}
 			</ScrollView>
 			<PrimaryFloatingButton
-				testID={testIDs['create-account-button']}
+				testID={testIDs['home-share']}
 				onPress={() => navigate('Chat.Share')}
 			/>
 			{isAddBot.isVisible ? (
