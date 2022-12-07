@@ -431,6 +431,7 @@ exports[`Chat.Home renders correctly 1`] = `
               "width": 52,
             }
           }
+          testID="HomeShare"
         >
           <View
             style={

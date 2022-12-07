@@ -475,6 +475,7 @@ exports[`Chat.Share renders correctly 1`] = `
                     "padding": 12,
                   }
                 }
+                testID="settings.share.create-group"
               >
                 <View
                   style={
