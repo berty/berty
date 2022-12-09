@@ -114,7 +114,7 @@ func (c *Client) Complete(uri string) (string, string, *verifiable.Credential, e
 		return "", "", nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("credential is not delivered for the current berty url (%s != %s)", c.bertyURL, parsedCredential.ID))
 	}
 
-	identifier, err := extractSubjectFromVC(parsedCredential)
+	identifier, err := ExtractSubjectFromVC(parsedCredential)
 	if err != nil {
 		return "", "", nil, errcode.ErrInvalidInput.Wrap(err)
 	}
@@ -122,7 +122,7 @@ func (c *Client) Complete(uri string) (string, string, *verifiable.Credential, e
 	return string(credentials), identifier, parsedCredential, nil
 }
 
-func extractSubjectFromVC(credential *verifiable.Credential) (string, error) {
+func ExtractSubjectFromVC(credential *verifiable.Credential) (string, error) {
 	if credential.Subject == nil {
 		return "", errcode.ErrNotFound
 	}
@@ -133,6 +133,8 @@ func extractSubjectFromVC(credential *verifiable.Credential) (string, error) {
 		}
 
 		return subjectList[0].ID, nil
+	} else if subject, ok := credential.Subject.(string); ok && subject != "" {
+		return subject, nil
 	}
 
 	return "", errcode.ErrNotFound

@@ -81,7 +81,7 @@ func (i *VCIssuer) CreateSignedProofForPeriod(bertyID string, identifier string,
 		return nil, fmt.Errorf("failed to marshal JWT claims of VC: %w", err)
 	}
 
-	jws, err := jwtClaims.MarshalJWS(verifiable.EdDSA, signer, "")
+	jws, err := jwtClaims.MarshalJWS(verifiable.EdDSA, signer, i.issuerID)
 	if err != nil {
 		return nil, fmt.Errorf("failed to sign VC inside JWT: %w", err)
 	}

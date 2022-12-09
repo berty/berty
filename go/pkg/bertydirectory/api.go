@@ -369,15 +369,12 @@ func (s *DirectoryService) checkVerifiedCredential(verifiedCredential []byte, ac
 		return "", errcode.ErrServicesDirectoryInvalidVerifiedCredentialID
 	}
 
-	if subjectList, ok := credential.Subject.([]verifiable.Subject); ok {
-		if len(subjectList) == 0 {
-			return "", errcode.ErrNotFound
-		}
-
-		return subjectList[0].ID, nil
+	subject, err := bertyvcissuer.ExtractSubjectFromVC(credential)
+	if err != nil {
+		return "", errcode.ErrServicesDirectoryInvalidVerifiedCredentialSubject.Wrap(err)
 	}
 
-	return "", errcode.ErrServicesDirectoryInvalidVerifiedCredentialSubject
+	return subject, nil
 }
 
 func registerReplyFromRecord(record *directorytypes.Record) *directorytypes.Register_Reply {

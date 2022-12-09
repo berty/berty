@@ -12,7 +12,25 @@ import (
 	"berty.tech/berty/v2/go/pkg/errcode"
 )
 
-func embeddedPublicKeyFetcher(issuerID string) (*verifier.PublicKey, error) {
+func embeddedPublicKeyFetcher(issuerID string, allowList []string) (*verifier.PublicKey, error) {
+	if !strings.HasPrefix(issuerID, "did:key:z6Mk") {
+		return nil, fmt.Errorf("unexpected key format")
+	}
+
+	if len(allowList) > 0 {
+		found := false
+		for _, allowed := range allowList {
+			if allowed == issuerID {
+				found = true
+				break
+			}
+		}
+
+		if !found {
+			return nil, errcode.ErrServicesDirectoryInvalidVerifiedCredentialID.Wrap(fmt.Errorf("issuer is not allowed"))
+		}
+	}
+
 	_, rawData, err := multibase.Decode(issuerID[8:])
 	if err != nil {
 		return nil, err
@@ -30,19 +48,11 @@ func embeddedPublicKeyFetcher(issuerID string) (*verifier.PublicKey, error) {
 }
 
 func EmbeddedPublicKeyFetcher(issuerID, keyID string) (*verifier.PublicKey, error) {
-	if !strings.HasPrefix(issuerID, "did:key:z6Mk") {
-		return nil, fmt.Errorf("unexpected key format")
-	}
-
-	return embeddedPublicKeyFetcher(issuerID)
+	return embeddedPublicKeyFetcher(issuerID, nil)
 }
 
 func EmbeddedPublicKeyFetcherAllowList(allowList []string) func(issuerID, keyID string) (*verifier.PublicKey, error) {
 	return func(issuerID, keyID string) (*verifier.PublicKey, error) {
-		if !strings.HasPrefix(issuerID, "did:key:z6Mk") {
-			return nil, fmt.Errorf("unexpected key format")
-		}
-
-		return embeddedPublicKeyFetcher(issuerID)
+		return embeddedPublicKeyFetcher(issuerID, allowList)
 	}
 }
