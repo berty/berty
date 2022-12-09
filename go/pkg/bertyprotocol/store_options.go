@@ -20,6 +20,19 @@ func DefaultOrbitDBOptions(g *protocoltypes.Group, options *orbitdb.CreateDBOpti
 		options = &orbitdb.CreateDBOptions{}
 	}
 
+	options = &orbitdb.CreateDBOptions{
+		Directory:               options.Directory,
+		Overwrite:               options.Overwrite,
+		LocalOnly:               options.LocalOnly,
+		StoreType:               options.StoreType,
+		AccessControllerAddress: options.AccessControllerAddress,
+		AccessController:        options.AccessController,
+		Replicate:               options.Replicate,
+		Cache:                   options.Cache,
+		EventBus:                options.EventBus,
+		Logger:                  options.Logger,
+	}
+
 	t := true
 	options.Create = &t
 

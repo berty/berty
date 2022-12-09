@@ -325,10 +325,6 @@ func (s *BertyOrbitDB) setHeadsForGroup(ctx context.Context, g *protocoltypes.Gr
 }
 
 func (s *BertyOrbitDB) OpenGroup(ctx context.Context, g *protocoltypes.Group, options *orbitdb.CreateDBOptions) (*GroupContext, error) {
-	if options == nil {
-		options = &orbitdb.CreateDBOptions{}
-	}
-
 	if s.deviceKeystore == nil || s.messageKeystore == nil {
 		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("db open in naive mode"))
 	}
@@ -380,7 +376,9 @@ func (s *BertyOrbitDB) OpenGroup(ctx context.Context, g *protocoltypes.Group, op
 
 	// force to unshare the same EventBus between groupMetadataStore and groupMessageStore
 	// to avoid having a bunch of events which are not for the correct group
-	options.EventBus = eventbus.NewBus()
+	if options != nil && options.EventBus != nil {
+		options.EventBus = eventbus.NewBus()
+	}
 
 	messagesImpl, err := s.groupMessageStore(ctx, g, options)
 	if err != nil {
@@ -525,6 +523,10 @@ func (s *BertyOrbitDB) storeForGroup(ctx context.Context, o iface.BaseOrbitDB, g
 }
 
 func (s *BertyOrbitDB) groupMetadataStore(ctx context.Context, g *protocoltypes.Group, options *orbitdb.CreateDBOptions) (*MetadataStore, error) {
+	if options == nil {
+		options = &orbitdb.CreateDBOptions{}
+	}
+
 	l := s.Logger().Named("metadataStore")
 	options.Logger = l
 
@@ -548,6 +550,10 @@ func (s *BertyOrbitDB) groupMetadataStore(ctx context.Context, g *protocoltypes.
 }
 
 func (s *BertyOrbitDB) groupMessageStore(ctx context.Context, g *protocoltypes.Group, options *orbitdb.CreateDBOptions) (*MessageStore, error) {
+	if options == nil {
+		options = &orbitdb.CreateDBOptions{}
+	}
+
 	l := s.Logger().Named("messageStore")
 	options.Logger = l
 
