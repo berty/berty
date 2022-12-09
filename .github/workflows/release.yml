@@ -148,7 +148,8 @@ jobs:
     strategy:
       matrix:
         config: [
-          {runs-on: 'ubuntu-latest',  goos: 'linux'},
+          # @FIXME(gfanton): latest ubuntu version broke `Install Linux Dependencies` step
+          {runs-on: 'ubuntu-20.04',  goos: 'linux'},
           {runs-on: 'macos-latest',  goos: 'darwin'},
           {runs-on: 'windows-latest', goos: 'windows'},
           # TODO: bertyguy
