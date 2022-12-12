@@ -33,10 +33,6 @@ func NewPushConfig() *PushConfig {
 }
 
 func (c *PushConfig) SetPreferredLanguages(lang string) { c.p.SetPreferredLanguages(lang) }
-func (c *PushConfig) SetDriverLogger(logger NativeLoggerDriver) {
-	l := newLogger(logger)
-	c.p.SetLogger(l)
-}
 
 type PushStandalone struct {
 	p *push.PushStandalone

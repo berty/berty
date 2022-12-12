@@ -8,12 +8,13 @@ import com.zoontek.rnbootsplash.RNBootSplash; // needed by react-native-bootspla
 import com.facebook.react.ReactActivityDelegate;
 import com.facebook.react.ReactRootView;
 
-import android.util.Log;
 import android.view.MotionEvent;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleObserver;
 import androidx.lifecycle.OnLifecycleEvent;
 import androidx.lifecycle.ProcessLifecycleOwner;
+
+import tech.berty.gobridge.Logger;
 
 public class MainActivity extends ReactActivity implements LifecycleObserver {
     private static final String TAG = "MainActivity";
@@ -41,14 +42,14 @@ public class MainActivity extends ReactActivity implements LifecycleObserver {
     public void onAppBackgrounded() {
         //App in background
         MainActivity.appState = AppState.Background;
-        Log.d(TAG, "AppState: " + MainActivity.appState);
+        Logger.d(TAG, "AppState: " + MainActivity.appState);
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     public void onAppForegrounded() {
         //App in foreground
         MainActivity.appState = AppState.Foreground;
-        Log.d(TAG, "AppState: " + MainActivity.appState);
+        Logger.d(TAG, "AppState: " + MainActivity.appState);
     }
 
     // needed by react-native-bootsplash
@@ -65,13 +66,13 @@ public class MainActivity extends ReactActivity implements LifecycleObserver {
     protected void onStop() {
         super.onStop();
         MainActivity.appState = AppState.Background;
-        Log.d(TAG, "AppState: " + MainActivity.appState);
+        Logger.d(TAG, "AppState: " + MainActivity.appState);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         MainActivity.appState = AppState.Background;
-        Log.d(TAG, "AppState: " + MainActivity.appState);
+        Logger.d(TAG, "AppState: " + MainActivity.appState);
     }
 }

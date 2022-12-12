@@ -32,9 +32,6 @@ class NotificationService: UNNotificationServiceExtension {
         let config = BertypushNewConfig()!
         let preferredLanguages: String = Locale.preferredLanguages.joined(separator: ",")
         config.setPreferredLanguages(preferredLanguages)
-        #if !CFG_APPSTORE
-        config.setLoggerDriver(LoggerDriver(oslogger))
-        #endif
         pushStandalone = BertypushNewPushStandalone(config)!
         super.init()
     }

@@ -9,6 +9,7 @@
 .idea/
 *.bin
 *.swp
+.vscode
 core-sources.jar
 coverage.txt
 dist/

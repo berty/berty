@@ -37,11 +37,7 @@ func NewRemoteBridge(address string, config *RemoteBridgeConfig) (*RemoteBridge,
 
 	// setup logger
 	{
-		if nativeLogger := config.dLogger; nativeLogger != nil {
-			b.logger = newLogger(nativeLogger)
-		} else {
-			b.logger = zap.NewNop()
-		}
+		b.logger = newLogger()
 
 		// @NOTE(gfanton): replace grpc logger as soon as possible to avoid DATA_RACE
 		logutil.ReplaceGRPCLogger(b.logger.Named("grpc"))

@@ -47,6 +47,7 @@ public class Logger {
                     break;
                 case Warn:
                     priority = Log.WARN;
+                    break;
                 case Error:
                     priority = Log.ERROR;
                     break;
