@@ -54,6 +54,7 @@ func verifyRunningLeakDetection(t *testing.T) {
 		goleak.IgnoreTopFunction("github.com/libp2p/go-flow-metrics.(*sweeper).runActive"),                                   // this goroutine has run always without stop                                       // upstream issue
 		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p/p2p/host/peerstore/pstoremem.(*memoryAddrBook).background"),    // upstream issue, no store close in upstream code
 		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p/p2p/net/swarm.(*DialBackoff).background"),                      // the cleanup take too much time, should be managed by ipfs
+		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p/p2p/net/swarm.(*activeDial).dial"),                             // the cleanup take too much time, should be managed by ipfs
 		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p/p2p/net/upgrader.(*Upgrader).setupMuxer"),                      // the closing routine has big timeout
 		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p/p2p/net/upgrader.(*listener).Accept"),                          // sometimes happening on CI, need more investigation
 		goleak.IgnoreTopFunction("berty.tech/berty/v2/go/internal/ipfsutil.(*mdnsService).startResolver.func1"),              // upstream issue of mdns, go wakeup periodiclly to do action before check exist, timeout about 10 seconds
@@ -77,6 +78,7 @@ func verifyRunningLeakDetection(t *testing.T) {
 		goleak.IgnoreTopFunction("github.com/lucas-clemente/quic-go/internal/handshake.(*cryptoSetup).RunHandshake"),         // the closing routine has big timeout
 		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p/p2p/discovery/mdns_legacy.(*mdnsService).startResolver.func1"), // the closing routine has big timeout, should be managed by ipfs
 		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p/p2p/discovery/mdns.(*mdnsService).startResolver.func1"),        // the closing routine has big timeout, should be managed by ipfs
+		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p-kad-dht/providers.(*ProviderManager).GetProviders"),            // the closing routine has big timeout, should be managed by ipfs
 		goleak.IgnoreTopFunction("github.com/libp2p/zeroconf/v2.(*client).mainloop"),                                         // the closing routine has big timeout, should be managed by ipfs
 		goleak.IgnoreTopFunction("github.com/libp2p/zeroconf/v2.(*client).periodicQuery"),                                    // the closing routine has big timeout, should be managed by ipfs
 		goleak.IgnoreTopFunction("github.com/ipfs/kubo/core/bootstrap.bootstrapConnect.func1 "),                              // the closing routine has big timeout, should be managed by ipfs

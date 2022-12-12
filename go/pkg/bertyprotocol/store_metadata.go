@@ -46,6 +46,9 @@ type MetadataStore struct {
 	devKS  cryptoutil.DeviceKeystore
 	mks    *cryptoutil.MessageKeystore
 	logger *zap.Logger
+
+	ctx    context.Context
+	cancel context.CancelFunc
 }
 
 func isMultiMemberGroup(m *MetadataStore) bool {
@@ -973,7 +976,7 @@ type EventMetadataReceived struct {
 }
 
 func constructorFactoryGroupMetadata(s *BertyOrbitDB, logger *zap.Logger) iface.StoreConstructor {
-	return func(ctx context.Context, ipfs coreapi.CoreAPI, identity *identityprovider.Identity, addr address.Address, options *iface.NewStoreOptions) (iface.Store, error) {
+	return func(ipfs coreapi.CoreAPI, identity *identityprovider.Identity, addr address.Address, options *iface.NewStoreOptions) (iface.Store, error) {
 		g, err := s.getGroupFromOptions(options)
 		if err != nil {
 			return nil, errcode.ErrInvalidInput.Wrap(err)
@@ -1001,7 +1004,11 @@ func constructorFactoryGroupMetadata(s *BertyOrbitDB, logger *zap.Logger) iface.
 			}
 		}
 
+		ctx, cancel := context.WithCancel(context.Background())
+
 		store := &MetadataStore{
+			ctx:      ctx,
+			cancel:   cancel,
 			eventBus: options.EventBus,
 			g:        g,
 			mks:      s.messageKeystore,
@@ -1015,7 +1022,8 @@ func constructorFactoryGroupMetadata(s *BertyOrbitDB, logger *zap.Logger) iface.
 
 		if replication {
 			options.Index = basestore.NewNoopIndex
-			if err := store.InitBaseStore(ctx, ipfs, identity, addr, options); err != nil {
+			if err := store.InitBaseStore(ipfs, identity, addr, options); err != nil {
+				cancel()
 				return nil, errcode.ErrOrbitDBInit.Wrap(err)
 			}
 
@@ -1027,13 +1035,14 @@ func constructorFactoryGroupMetadata(s *BertyOrbitDB, logger *zap.Logger) iface.
 			new(stores.EventReplicated),
 		}, eventbus.BufSize(128))
 		if err != nil {
+			cancel()
 			return nil, fmt.Errorf("unable to subscribe to store events")
 		}
 
 		// Enable logs in the metadata index
 		store.setLogger(logger)
 
-		go func() {
+		go func(ctx context.Context) {
 			defer chSub.Close()
 
 			for {
@@ -1086,10 +1095,11 @@ func constructorFactoryGroupMetadata(s *BertyOrbitDB, logger *zap.Logger) iface.
 					}
 				}
 			}
-		}()
+		}(ctx)
 
 		options.Index = newMetadataIndex(ctx, g, md.Public(), s.deviceKeystore)
-		if err := store.InitBaseStore(ctx, ipfs, identity, addr, options); err != nil {
+		if err := store.InitBaseStore(ipfs, identity, addr, options); err != nil {
+			cancel()
 			return nil, errcode.ErrOrbitDBInit.Wrap(err)
 		}
 
@@ -1207,4 +1217,9 @@ func (m *MetadataStore) initEmitter() (err error) {
 func genNewSeed() (seed []byte, err error) {
 	seed, err = ioutil.ReadAll(io.LimitReader(crand.Reader, protocoltypes.RendezvousSeedLength))
 	return
+}
+
+func (m *MetadataStore) Close() error {
+	m.cancel()
+	return m.BaseStore.Close()
 }

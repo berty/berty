@@ -221,7 +221,7 @@ func TestReplicationService_ReplicateGroupStats_ReplicateGlobalStats(t *testing.
 	previousCreatedAt := res.Group.CreatedAt
 	previousUpdatedAt := res.Group.UpdatedAt
 
-	gcPeer1, err := odb1.OpenGroup(g, nil)
+	gcPeer1, err := odb1.OpenGroup(ctx, g, nil)
 	require.NoError(t, err)
 	defer gcPeer1.Close()
 
@@ -429,16 +429,16 @@ func TestReplicationService_Flow(t *testing.T) {
 	gA, _, err := bertyprotocol.NewGroupMultiMember()
 	require.NoError(t, err)
 
-	g1a, err := odb1.OpenGroup(gA, nil)
+	g1a, err := odb1.OpenGroup(ctx, gA, nil)
 	require.NoError(t, err)
 	defer g1a.Close()
 
-	g2a, err := odb2.OpenGroup(gA, nil)
+	g2a, err := odb2.OpenGroup(ctx, gA, nil)
 	require.NoError(t, err)
 	defer g2a.Close()
 
-	require.NoError(t, bertyprotocol.ActivateGroupContext(ctx, g1a, nil))
-	require.NoError(t, bertyprotocol.ActivateGroupContext(ctx, g2a, nil))
+	require.NoError(t, g1a.ActivateGroupContext(nil))
+	require.NoError(t, g2a.ActivateGroupContext(nil))
 
 	groupReplicable, err := bertyprotocol.FilterGroupForReplication(gA)
 	require.NoError(t, err)
@@ -562,7 +562,7 @@ func TestReplicationService_Flow(t *testing.T) {
 		odb2 = bertyprotocol.NewTestOrbitDB(ctx, t, logger, api2, ipfsOpts2.Datastore)
 		defer odb2.Close()
 
-		g2a, err = odb2.OpenGroup(gA, nil)
+		g2a, err = odb2.OpenGroup(ctx, gA, nil)
 		require.NoError(t, err)
 		defer g2a.Close()
 

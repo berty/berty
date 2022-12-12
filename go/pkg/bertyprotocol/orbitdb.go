@@ -207,6 +207,14 @@ func NewBertyOrbitDB(ctx context.Context, ipfs coreapi.CoreAPI, options *NewOrbi
 func (s *BertyOrbitDB) openAccountGroup(ctx context.Context, options *orbitdb.CreateDBOptions, ipfsCoreAPI ipfsutil.ExtendedCoreAPI) (*GroupContext, error) {
 	l := s.Logger()
 
+	if options == nil {
+		options = &orbitdb.CreateDBOptions{}
+	}
+
+	if options.EventBus == nil {
+		options.EventBus = s.EventBus()
+	}
+
 	sk, err := s.deviceKeystore.AccountPrivKey()
 	if err != nil {
 		return nil, errcode.ErrOrbitDBOpen.Wrap(err)
@@ -227,23 +235,22 @@ func (s *BertyOrbitDB) openAccountGroup(ctx context.Context, options *orbitdb.Cr
 
 	l.Debug("Got account group", tyber.FormatStepLogFields(ctx, []tyber.Detail{{Name: "Group", Description: g.String()}})...)
 
-	gc, err := s.OpenGroup(g, options)
+	gc, err := s.OpenGroup(ctx, g, options)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
 	l.Debug("Opened account group", tyber.FormatStepLogFields(ctx, []tyber.Detail{})...)
 
-	if err := ActivateGroupContext(ctx, gc, nil); err != nil {
+	if err := gc.ActivateGroupContext(nil); err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
 	l.Debug("Account group context activated", tyber.FormatStepLogFields(ctx, []tyber.Detail{})...)
 
-	TagGroupContextPeers(ctx, l, gc, ipfsCoreAPI, 84)
+	gc.TagGroupContextPeers(ipfsCoreAPI, 84)
 
 	l.Debug("TagGroupContextPeers done", tyber.FormatStepLogFields(ctx, []tyber.Detail{})...)
-
 	return gc, nil
 }
 
@@ -317,7 +324,7 @@ func (s *BertyOrbitDB) setHeadsForGroup(ctx context.Context, g *protocoltypes.Gr
 	return nil
 }
 
-func (s *BertyOrbitDB) OpenGroup(g *protocoltypes.Group, options *orbitdb.CreateDBOptions) (*GroupContext, error) {
+func (s *BertyOrbitDB) OpenGroup(ctx context.Context, g *protocoltypes.Group, options *orbitdb.CreateDBOptions) (*GroupContext, error) {
 	if s.deviceKeystore == nil || s.messageKeystore == nil {
 		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("db open in naive mode"))
 	}
@@ -359,7 +366,7 @@ func (s *BertyOrbitDB) OpenGroup(g *protocoltypes.Group, options *orbitdb.Create
 
 	s.Logger().Debug("Got device secret", tyber.FormatStepLogFields(s.ctx, []tyber.Detail{})...)
 
-	metaImpl, err := s.groupMetadataStore(s.ctx, g, options)
+	metaImpl, err := s.groupMetadataStore(ctx, g, options)
 	if err != nil {
 		return nil, errcode.ErrOrbitDBOpen.Wrap(err)
 	}
@@ -367,8 +374,15 @@ func (s *BertyOrbitDB) OpenGroup(g *protocoltypes.Group, options *orbitdb.Create
 
 	s.Logger().Debug("Got metadata store", tyber.FormatStepLogFields(s.ctx, []tyber.Detail{})...)
 
-	messagesImpl, err := s.groupMessageStore(s.ctx, g, options)
+	// force to unshare the same EventBus between groupMetadataStore and groupMessageStore
+	// to avoid having a bunch of events which are not for the correct group
+	if options != nil && options.EventBus != nil {
+		options.EventBus = eventbus.NewBus()
+	}
+
+	messagesImpl, err := s.groupMessageStore(ctx, g, options)
 	if err != nil {
+		metaImpl.Close()
 		return nil, errcode.ErrOrbitDBOpen.Wrap(err)
 	}
 	s.messageMarshaler.RegisterGroup(messagesImpl.Address().String(), g)
@@ -494,12 +508,7 @@ func (s *BertyOrbitDB) storeForGroup(ctx context.Context, o iface.BaseOrbitDB, g
 		s.rotationInterval.RegisterRotation(time.Now(), addr.String(), key)
 	}
 
-	options.EventBus = eventbus.NewBus()
-
-	// @FIXME(d4ryl00): the given context is not the one of the group but one with
-	// a longer time life because go-orbitdb doesn't close correctly the group
-	// and that can lead of bugs when you close/open the same group.
-	store, err := o.Open(s.ctx, name, options)
+	store, err := o.Open(ctx, name, options)
 	if err != nil {
 		return nil, errcode.ErrOrbitDBOpen.Wrap(err)
 	}
@@ -514,7 +523,13 @@ func (s *BertyOrbitDB) storeForGroup(ctx context.Context, o iface.BaseOrbitDB, g
 }
 
 func (s *BertyOrbitDB) groupMetadataStore(ctx context.Context, g *protocoltypes.Group, options *orbitdb.CreateDBOptions) (*MetadataStore, error) {
-	l := s.Logger()
+	if options == nil {
+		options = &orbitdb.CreateDBOptions{}
+	}
+
+	l := s.Logger().Named("metadataStore")
+	options.Logger = l
+
 	l.Debug("Opening group metadata store", tyber.FormatStepLogFields(ctx, []tyber.Detail{{Name: "Group", Description: g.String()}, {Name: "Options", Description: fmt.Sprint(options)}}, tyber.Status(tyber.Running))...)
 
 	store, err := s.storeForGroup(ctx, s, g, options, groupMetadataStoreType, GroupOpenModeWrite)
@@ -535,6 +550,15 @@ func (s *BertyOrbitDB) groupMetadataStore(ctx context.Context, g *protocoltypes.
 }
 
 func (s *BertyOrbitDB) groupMessageStore(ctx context.Context, g *protocoltypes.Group, options *orbitdb.CreateDBOptions) (*MessageStore, error) {
+	if options == nil {
+		options = &orbitdb.CreateDBOptions{}
+	}
+
+	l := s.Logger().Named("messageStore")
+	options.Logger = l
+
+	l.Debug("Opening group message store", tyber.FormatStepLogFields(ctx, []tyber.Detail{{Name: "Group", Description: g.String()}, {Name: "Options", Description: fmt.Sprint(options)}}, tyber.Status(tyber.Running))...)
+
 	store, err := s.storeForGroup(ctx, s, g, options, groupMessageStoreType, GroupOpenModeWrite)
 	if err != nil {
 		return nil, errors.Wrap(err, "unable to open database")

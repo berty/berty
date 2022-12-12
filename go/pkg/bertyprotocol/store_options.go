@@ -4,6 +4,8 @@ import (
 	"context"
 	"encoding/hex"
 
+	"github.com/libp2p/go-libp2p/p2p/host/eventbus"
+
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
 	"berty.tech/go-ipfs-log/identityprovider"
@@ -27,10 +29,16 @@ func DefaultOrbitDBOptions(g *protocoltypes.Group, options *orbitdb.CreateDBOpti
 		AccessController:        options.AccessController,
 		Replicate:               options.Replicate,
 		Cache:                   options.Cache,
+		EventBus:                options.EventBus,
+		Logger:                  options.Logger,
 	}
 
 	t := true
 	options.Create = &t
+
+	if options.EventBus == nil {
+		options.EventBus = eventbus.NewBus()
+	}
 
 	if options.AccessController == nil {
 		options.AccessController, err = defaultACForGroup(g, storeType)

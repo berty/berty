@@ -70,6 +70,7 @@ type service struct {
 	subsCtx               context.Context
 	subsMutex             *sync.Mutex
 	groupsToSubTo         map[string]struct{}
+	accountGroup          []byte
 }
 
 type Opts struct {
@@ -227,6 +228,7 @@ func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (_ Service, err
 		knownPeers:            make(map[string] /* peer.ID */ protocoltypes.GroupDeviceStatus_Type),
 		subsMutex:             &sync.Mutex{},
 		groupsToSubTo:         make(map[string]struct{}),
+		accountGroup:          icr.GetAccountGroupPK(),
 	}
 
 	svc.eventHandler = messengerpayloads.NewEventHandler(ctx, db, &MetaFetcherFromProtocolClient{client: client}, newPostActionsService(&svc), opts.Logger, svc.dispatcher, false)
@@ -304,7 +306,7 @@ func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (_ Service, err
 	}
 
 	// Subscribe to account group metadata
-	svc.groupsToSubTo[messengerutil.B64EncodeBytes(icr.GetAccountGroupPK())] = struct{}{}
+	svc.accountGroup = icr.GetAccountGroupPK()
 
 	// subscribe to groups
 	{

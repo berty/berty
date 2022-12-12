@@ -17,6 +17,7 @@ import (
 	"github.com/libp2p/go-libp2p/core/event"
 	"github.com/libp2p/go-libp2p/core/host"
 	"github.com/libp2p/go-libp2p/core/network"
+	"github.com/libp2p/go-libp2p/p2p/host/eventbus"
 	"github.com/pkg/errors"
 	"go.uber.org/multierr"
 	"go.uber.org/zap"
@@ -50,30 +51,32 @@ type Service interface {
 
 type service struct {
 	// variables
-	ctx               context.Context
-	ctxCancel         context.CancelFunc
-	logger            *zap.Logger
-	ipfsCoreAPI       ipfsutil.ExtendedCoreAPI
-	odb               *BertyOrbitDB
-	accountGroup      *GroupContext
-	deviceKeystore    cryptoutil.DeviceKeystore
-	openedGroups      map[string]*GroupContext
-	lock              sync.RWMutex
-	authSession       atomic.Value
-	close             func() error
-	startedAt         time.Time
-	host              host.Host
-	groupDatastore    *cryptoutil.GroupDatastore
-	pushHandler       bertypush.PushHandler
-	accountCache      ds.Batching
-	messageKeystore   *cryptoutil.MessageKeystore
-	pushClients       map[string]*grpc.ClientConn
-	muPushClients     sync.RWMutex
-	grpcInsecure      bool
-	refreshprocess    map[string]context.CancelFunc
-	muRefreshprocess  sync.RWMutex
-	swiper            *Swiper
-	peerStatusManager *ConnectednessManager
+	ctx                    context.Context
+	ctxCancel              context.CancelFunc
+	logger                 *zap.Logger
+	ipfsCoreAPI            ipfsutil.ExtendedCoreAPI
+	odb                    *BertyOrbitDB
+	accountGroup           *GroupContext
+	deviceKeystore         cryptoutil.DeviceKeystore
+	openedGroups           map[string]*GroupContext
+	lock                   sync.RWMutex
+	authSession            atomic.Value
+	close                  func() error
+	startedAt              time.Time
+	host                   host.Host
+	groupDatastore         *cryptoutil.GroupDatastore
+	pushHandler            bertypush.PushHandler
+	accountCache           ds.Batching
+	messageKeystore        *cryptoutil.MessageKeystore
+	pushClients            map[string]*grpc.ClientConn
+	muPushClients          sync.RWMutex
+	grpcInsecure           bool
+	refreshprocess         map[string]context.CancelFunc
+	muRefreshprocess       sync.RWMutex
+	swiper                 *Swiper
+	peerStatusManager      *ConnectednessManager
+	accountEventBus        event.Bus
+	contactRequestsManager *contactRequestsManager
 }
 
 // Opts contains optional configuration flags for building a new Client
@@ -234,7 +237,11 @@ func New(opts Opts) (_ Service, err error) {
 	ctx, _, endSection := tyber.Section(tyber.ContextWithoutTraceID(ctx), opts.Logger, fmt.Sprintf("Initializing ProtocolService version %s", bertyversion.Version))
 	defer func() { endSection(err, "") }()
 
-	dbOpts := &iface.CreateDBOptions{LocalOnly: &opts.LocalOnly}
+	accountEventBus := eventbus.NewBus()
+	dbOpts := &iface.CreateDBOptions{
+		EventBus:  accountEventBus,
+		LocalOnly: &opts.LocalOnly,
+	}
 
 	acc, err := opts.OrbitDB.openAccountGroup(ctx, dbOpts, opts.IpfsCoreAPI)
 	if err != nil {
@@ -244,12 +251,13 @@ func New(opts Opts) (_ Service, err error) {
 
 	opts.Logger.Debug("Opened account group", tyber.FormatStepLogFields(ctx, []tyber.Detail{{Name: "AccountGroup", Description: acc.group.String()}})...)
 
+	var contactRequestsManager *contactRequestsManager
 	var swiper *Swiper
 	if opts.TinderService != nil {
 		swiper = NewSwiper(opts.Logger, opts.TinderService, opts.OrbitDB.rotationInterval)
 		opts.Logger.Debug("Tinder swiper is enabled", tyber.FormatStepLogFields(ctx, []tyber.Detail{})...)
 
-		if err := initContactRequestsManager(ctx, swiper, acc.metadataStore, opts.IpfsCoreAPI, opts.Logger); err != nil {
+		if contactRequestsManager, err = newContactRequestsManager(swiper, acc.metadataStore, opts.IpfsCoreAPI, opts.Logger); err != nil {
 			cancel()
 			return nil, errcode.TODO.Wrap(err)
 		}
@@ -291,13 +299,15 @@ func New(opts Opts) (_ Service, err error) {
 		openedGroups: map[string]*GroupContext{
 			string(acc.Group().PublicKey): acc,
 		},
-		accountCache:      opts.AccountCache,
-		messageKeystore:   opts.MessageKeystore,
-		pushHandler:       pushHandler,
-		pushClients:       make(map[string]*grpc.ClientConn),
-		grpcInsecure:      opts.GRPCInsecureMode,
-		refreshprocess:    make(map[string]context.CancelFunc),
-		peerStatusManager: NewConnectednessManager(),
+		accountCache:           opts.AccountCache,
+		messageKeystore:        opts.MessageKeystore,
+		pushHandler:            pushHandler,
+		pushClients:            make(map[string]*grpc.ClientConn),
+		grpcInsecure:           opts.GRPCInsecureMode,
+		refreshprocess:         make(map[string]context.CancelFunc),
+		peerStatusManager:      NewConnectednessManager(),
+		accountEventBus:        accountEventBus,
+		contactRequestsManager: contactRequestsManager,
 	}
 
 	s.startGroupDeviceMonitor()
@@ -310,8 +320,6 @@ func (s *service) IpfsCoreAPI() ipfs_interface.CoreAPI {
 }
 
 func (s *service) Close() error {
-	s.ctxCancel()
-
 	endSection := tyber.SimpleSection(tyber.ContextWithoutTraceID(s.ctx), s.logger, "Closing ProtocolService")
 
 	var err error
@@ -319,6 +327,12 @@ func (s *service) Close() error {
 
 	// gather public keys
 	s.lock.Lock()
+
+	if s.contactRequestsManager != nil {
+		s.contactRequestsManager.close()
+		s.contactRequestsManager = nil
+	}
+
 	for _, gc := range s.openedGroups {
 		pk, subErr := crypto.UnmarshalEd25519PublicKey(gc.group.PublicKey)
 		if subErr != nil {
@@ -333,12 +347,11 @@ func (s *service) Close() error {
 	// deactivate all groups
 	for _, pk := range pks {
 		derr := s.deactivateGroup(pk)
-		if derr != nil && !errcode.Has(derr, errcode.ErrBertyAccount) {
+		if derr != nil {
 			err = multierr.Append(derr, derr)
 		}
 	}
 
-	err = multierr.Append(err, s.closeBertyAccount())
 	err = multierr.Append(err, s.odb.Close())
 
 	if s.close != nil {
@@ -346,6 +359,8 @@ func (s *service) Close() error {
 	}
 
 	endSection(err)
+
+	s.ctxCancel()
 
 	return err
 }

@@ -5,7 +5,7 @@ go 1.18
 require (
 	berty.tech/go-ipfs-log v1.9.0
 	berty.tech/go-ipfs-repo-encrypted v1.2.2
-	berty.tech/go-orbit-db v1.18.0
+	berty.tech/go-orbit-db v1.19.1
 	berty.tech/ipfs-webui-packed v1.0.0-v2.11.4-1
 	fyne.io/fyne/v2 v2.1.1
 	github.com/Masterminds/semver v1.5.0

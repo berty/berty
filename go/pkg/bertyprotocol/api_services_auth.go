@@ -153,7 +153,12 @@ func (s *service) AuthServiceCompleteFlow(ctx context.Context, request *protocol
 		Expiration:        -1,
 	}
 
-	if _, err := s.accountGroup.metadataStore.SendAccountServiceTokenAdded(ctx, svcToken); err != nil {
+	accountGroup := s.getAccountGroup()
+	if accountGroup == nil {
+		return nil, errcode.ErrGroupMissing
+	}
+
+	if _, err := accountGroup.metadataStore.SendAccountServiceTokenAdded(ctx, svcToken); err != nil {
 		return nil, err
 	}
 
@@ -218,7 +223,12 @@ func (s *service) AuthServiceInitFlow(ctx context.Context, request *protocoltype
 }
 
 func (s *service) ServicesTokenList(request *protocoltypes.ServicesTokenList_Request, server protocoltypes.ProtocolService_ServicesTokenListServer) error {
-	for _, t := range s.accountGroup.metadataStore.listServiceTokens() {
+	accountGroup := s.getAccountGroup()
+	if accountGroup == nil {
+		return errcode.ErrGroupMissing
+	}
+
+	for _, t := range accountGroup.metadataStore.listServiceTokens() {
 		if server.Context().Err() != nil {
 			break
 		}
@@ -252,7 +262,12 @@ func (s *service) DebugAuthServiceSetToken(ctx context.Context, request *protoco
 		Expiration:        -1,
 	}
 
-	if _, err := s.accountGroup.metadataStore.SendAccountServiceTokenAdded(ctx, svcToken); err != nil {
+	accountGroup := s.getAccountGroup()
+	if accountGroup == nil {
+		return nil, errcode.ErrGroupMissing
+	}
+
+	if _, err := accountGroup.metadataStore.SendAccountServiceTokenAdded(ctx, svcToken); err != nil {
 		return nil, err
 	}
 

@@ -6548,6 +6548,7 @@ export namespace berty {
             ErrGroupActivate = 1307,
             ErrGroupDeactivate = 1308,
             ErrGroupInfo = 1309,
+            ErrGroupUnknown = 1310,
             ErrEventListMetadata = 1400,
             ErrEventListMessage = 1401,
             ErrMessageKeyPersistencePut = 1500,

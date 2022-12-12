@@ -160,12 +160,15 @@ func TestFlappyRestoreAccount(t *testing.T) {
 		testPayload3 := []byte("testMessage3")
 		testPayload4 := []byte("testMessage4")
 
-		op, err := serviceA.accountGroup.messageStore.AddMessage(ctx, testPayload1)
+		accountGroup := serviceA.getAccountGroup()
+		require.NotNil(t, accountGroup)
+
+		op, err := accountGroup.messageStore.AddMessage(ctx, testPayload1)
 		require.NoError(t, err)
 
 		expectedMessages[op.GetEntry().GetHash()] = testPayload1
 
-		op, err = serviceA.accountGroup.messageStore.AddMessage(ctx, testPayload2)
+		op, err = accountGroup.messageStore.AddMessage(ctx, testPayload2)
 		require.NoError(t, err)
 
 		expectedMessages[op.GetEntry().GetHash()] = testPayload2
@@ -236,7 +239,10 @@ func TestFlappyRestoreAccount(t *testing.T) {
 		require.NotEqual(t, nodeAInstanceConfig.DevicePK, nodeBInstanceConfig.DevicePK)
 		require.Equal(t, nodeAInstanceConfig.AccountGroupPK, nodeBInstanceConfig.AccountGroupPK)
 
-		entries := nodeB.Service.(*service).accountGroup.messageStore.OpLog().GetEntries()
+		accountGroup := nodeB.Service.(*service).getAccountGroup()
+		require.NotNil(t, accountGroup)
+
+		entries := accountGroup.messageStore.OpLog().GetEntries()
 		for _, evt := range entries.Slice() {
 			_, ok := expectedMessages[evt.GetHash()]
 			require.True(t, ok)

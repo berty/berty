@@ -59,7 +59,12 @@ func (s *service) ReplicationServiceRegisterGroup(ctx context.Context, request *
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	token, err := s.accountGroup.metadataStore.getServiceToken(request.TokenID)
+	accountGroup := s.getAccountGroup()
+	if accountGroup == nil {
+		return nil, errcode.ErrGroupMissing
+	}
+
+	token, err := accountGroup.metadataStore.getServiceToken(request.TokenID)
 	if err != nil {
 		return nil, errcode.ErrInvalidInput.Wrap(err)
 	}

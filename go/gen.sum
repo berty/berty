@@ -3,7 +3,7 @@ b79437c2a9f8c95bd1c75eab1972cdb22f831991  ../api/accounttypes.proto
 50ad9227254b8b0abb09a557feff7954fb8f9d27  ../api/bertydirectory.proto
 762b42ebd2cb8f749d22b014037d69d0f8ad02eb  ../api/bertyreplication.proto
 32a7fc91108297910b332969720c09576e9f938e  ../api/bertyverifiablecreds.proto
-c9a201bb6dc2e1ef5b6fd17f5195b551d17bef05  ../api/errcode.proto
+486f62176b5670aad95237f29cea11d16cbc9fa1  ../api/errcode.proto
 c314cc3d08e8849bd0693039e42da117c39efef5  ../api/go-internal/handshake.proto
 9b4665f0290b8e94e5ef4b80572a9304f587c2c7  ../api/go-internal/records.proto
 851d354abf878a3afd1e1759511b7b3ce297330f  ../api/go-internal/testutil.proto

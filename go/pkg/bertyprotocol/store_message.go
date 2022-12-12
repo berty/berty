@@ -52,6 +52,9 @@ type MessageStore struct {
 	muDeviceCaches sync.RWMutex
 	cmessage       chan *messageItem
 	// muProcess       sync.RWMutex
+
+	ctx    context.Context
+	cancel context.CancelFunc
 }
 
 func (m *MessageStore) setLogger(l *zap.Logger) {
@@ -374,7 +377,7 @@ func messageStoreAddMessage(ctx context.Context, g *protocoltypes.Group, md *cry
 }
 
 func constructorFactoryGroupMessage(s *BertyOrbitDB, logger *zap.Logger) iface.StoreConstructor {
-	return func(ctx context.Context, ipfs coreapi.CoreAPI, identity *identityprovider.Identity, addr address.Address, options *iface.NewStoreOptions) (iface.Store, error) {
+	return func(ipfs coreapi.CoreAPI, identity *identityprovider.Identity, addr address.Address, options *iface.NewStoreOptions) (iface.Store, error) {
 		g, err := s.getGroupFromOptions(options)
 		if err != nil {
 			return nil, errcode.ErrInvalidInput.Wrap(err)
@@ -396,7 +399,11 @@ func constructorFactoryGroupMessage(s *BertyOrbitDB, logger *zap.Logger) iface.S
 			}
 		}
 
+		ctx, cancel := context.WithCancel(context.Background())
+
 		store := &MessageStore{
+			ctx:          ctx,
+			cancel:       cancel,
 			eventBus:     options.EventBus,
 			devKS:        s.deviceKeystore,
 			mks:          s.messageKeystore,
@@ -412,17 +419,20 @@ func constructorFactoryGroupMessage(s *BertyOrbitDB, logger *zap.Logger) iface.S
 		}()
 
 		if store.emitters.groupMessage, err = store.eventBus.Emitter(new(protocoltypes.GroupMessageEvent)); err != nil {
+			cancel()
 			return nil, errcode.ErrOrbitDBInit.Wrap(err)
 		}
 
 		// for debug/test purpose
 		if store.emitters.groupCacheMessage, err = store.eventBus.Emitter(new(messageItem)); err != nil {
+			cancel()
 			return nil, errcode.ErrOrbitDBInit.Wrap(err)
 		}
 
 		options.Index = basestore.NewNoopIndex
 
-		if err := store.InitBaseStore(ctx, ipfs, identity, addr, options); err != nil {
+		if err := store.InitBaseStore(ipfs, identity, addr, options); err != nil {
+			cancel()
 			return nil, errcode.ErrOrbitDBInit.Wrap(err)
 		}
 
@@ -438,7 +448,7 @@ func constructorFactoryGroupMessage(s *BertyOrbitDB, logger *zap.Logger) iface.S
 			return nil, fmt.Errorf("unable to subscribe to store events")
 		}
 
-		go func() {
+		go func(ctx context.Context) {
 			defer chSub.Close()
 			for {
 				var e interface{}
@@ -471,7 +481,7 @@ func constructorFactoryGroupMessage(s *BertyOrbitDB, logger *zap.Logger) iface.S
 					}
 				}
 			}
-		}()
+		}(ctx)
 
 		return store, nil
 	}
@@ -552,4 +562,9 @@ func SealOutOfStoreMessageEnvelope(id cid.Cid, env *protocoltypes.MessageEnvelop
 		Box:            encryptedData,
 		GroupReference: pushGroupRef,
 	}, nil
+}
+
+func (m *MessageStore) Close() error {
+	m.cancel()
+	return m.BaseStore.Close()
 }

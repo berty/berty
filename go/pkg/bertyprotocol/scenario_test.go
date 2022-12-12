@@ -20,6 +20,7 @@ import (
 	"go.uber.org/goleak"
 	"go.uber.org/zap"
 
+	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/internal/testutil"
 	"berty.tech/berty/v2/go/pkg/authtypes"
 	"berty.tech/berty/v2/go/pkg/bertyauth"
@@ -377,13 +378,23 @@ func TestScenario_MessageAccountAndContactGroups(t *testing.T) {
 }
 
 func TestScenario_ReplicateMessage(t *testing.T) {
-	testutil.FilterStabilityAndSpeed(t, testutil.Stable, testutil.Slow)
+	testutil.FilterStabilityAndSpeed(t, testutil.Broken, testutil.Slow)
 
 	ctx, cancel, mn, rdvPeer := bertyprotocol.TestHelperIPFSSetUp(t)
 	defer cancel()
 
+	logger, cleanup := testutil.Logger(t)
+	defer cleanup()
+
+	// start RDVP server
+	_, cleanupRDVP := ipfsutil.TestingRDVP(ctx, t, rdvPeer)
+	closeRDVP := rdvPeer.Close
+	defer cleanupRDVP()
+	defer closeRDVP()
+
 	dsA := dsync.MutexWrap(ds.NewMapDatastore())
 	nodeA, closeNodeA := bertyprotocol.NewTestingProtocol(ctx, t, &bertyprotocol.TestingOpts{
+		Logger:  logger.Named("nodeA"),
 		Mocknet: mn,
 		RDVPeer: rdvPeer.Peerstore().PeerInfo(rdvPeer.ID()),
 	}, dsA)
@@ -391,6 +402,7 @@ func TestScenario_ReplicateMessage(t *testing.T) {
 
 	dsB := dsync.MutexWrap(ds.NewMapDatastore())
 	nodeB, closeNodeB := bertyprotocol.NewTestingProtocol(ctx, t, &bertyprotocol.TestingOpts{
+		Logger:  logger.Named("nodeB"),
 		Mocknet: mn,
 		RDVPeer: rdvPeer.Peerstore().PeerInfo(rdvPeer.ID()),
 	}, dsB)
@@ -399,6 +411,7 @@ func TestScenario_ReplicateMessage(t *testing.T) {
 	tokenSecret, tokenPK, tokenSK := bertyauth.HelperGenerateTokenIssuerSecrets(t)
 
 	replPeer, cancel := bertyreplication.NewReplicationMockedPeer(ctx, t, tokenSecret, tokenPK, &bertyprotocol.TestingOpts{
+		Logger:  logger.Named("repl"),
 		Mocknet: mn,
 		RDVPeer: rdvPeer.Peerstore().PeerInfo(rdvPeer.ID()),
 	})
@@ -430,7 +443,7 @@ func TestScenario_ReplicateMessage(t *testing.T) {
 	// token, err := issuer.IssueToken([]string{ServiceReplicationID})
 	// require.NoError(t, err)
 	//
-	// _, err = nodeA.Service.(*service).accountGroup.MetadataStore.SendAccountServiceTokenAdded(ctx, &protocoltypes.ServiceToken{
+	// _, err = nodeA.Service.(*service).getAccountGroup().MetadataStore.SendAccountServiceTokenAdded(ctx, &protocoltypes.ServiceToken{
 	//	Token: token,
 	//	SupportedServices: []*protocoltypes.ServiceTokenSupportedService{
 	//		{
@@ -495,6 +508,7 @@ func TestScenario_ReplicateMessage(t *testing.T) {
 	closeNodeA()
 
 	nodeB, closeNodeB = bertyprotocol.NewTestingProtocol(ctx, t, &bertyprotocol.TestingOpts{
+		Logger:  logger.Named("nodeB"),
 		Mocknet: mn,
 		RDVPeer: rdvPeer.Peerstore().PeerInfo(rdvPeer.ID()),
 	}, dsB)

@@ -21,7 +21,12 @@ func (s *service) MultiMemberGroupCreate(ctx context.Context, req *protocoltypes
 		return nil, errcode.ErrCryptoKeyGeneration.Wrap(err)
 	}
 
-	_, err = s.accountGroup.MetadataStore().GroupJoin(ctx, g)
+	accountGroup := s.getAccountGroup()
+	if accountGroup == nil {
+		return nil, errcode.ErrGroupMissing
+	}
+
+	_, err = accountGroup.MetadataStore().GroupJoin(ctx, g)
 	if err != nil {
 		return nil, errcode.ErrOrbitDBAppend.Wrap(err)
 	}
@@ -55,7 +60,12 @@ func (s *service) MultiMemberGroupJoin(ctx context.Context, req *protocoltypes.M
 	ctx, _, endSection := tyber.Section(ctx, s.logger, "Joining MultiMember group")
 	defer func() { endSection(err, "") }()
 
-	if _, err := s.accountGroup.MetadataStore().GroupJoin(ctx, req.Group); err != nil {
+	accountGroup := s.getAccountGroup()
+	if accountGroup == nil {
+		return nil, errcode.ErrGroupMissing
+	}
+
+	if _, err := accountGroup.MetadataStore().GroupJoin(ctx, req.Group); err != nil {
 		return nil, errcode.ErrOrbitDBAppend.Wrap(err)
 	}
 
@@ -72,7 +82,12 @@ func (s *service) MultiMemberGroupLeave(ctx context.Context, req *protocoltypes.
 		return nil, errcode.ErrDeserialization.Wrap(err)
 	}
 
-	_, err = s.accountGroup.MetadataStore().GroupLeave(ctx, pk)
+	accountGroup := s.getAccountGroup()
+	if accountGroup == nil {
+		return nil, errcode.ErrGroupMissing
+	}
+
+	_, err = accountGroup.MetadataStore().GroupLeave(ctx, pk)
 	if err != nil {
 		return nil, errcode.ErrOrbitDBAppend.Wrap(err)
 	}

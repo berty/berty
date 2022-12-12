@@ -40,6 +40,15 @@ func (svc *service) manageSubscriptions() {
 		tyberCtx, _, endSection := tyber.Section(context.TODO(), logger, "Subscribing to known groups")
 		defer func() { endSection(tyberErr, "") }()
 
+		// Subscribe to account group
+		if err := svc.subscribeToGroup(ctx, tyberCtx, svc.accountGroup); err != nil {
+			if !errcode.Has(err, errcode.ErrBertyAccountAlreadyOpened) {
+				logger.Error("unable subscribe to group", zap.String("gpk", messengerutil.B64EncodeBytes(svc.accountGroup)), zap.Error(err))
+			}
+			tyberErr = multierr.Append(tyberErr, err)
+		}
+
+		// subscribe to other groups
 		for groupPK := range svc.groupsToSubTo {
 			gpkb, err := messengerutil.B64DecodeBytes(groupPK)
 			if err != nil {
@@ -70,6 +79,16 @@ func (svc *service) manageSubscriptions() {
 			return
 		}
 
+		// unsubscribe accountGroup
+		if _, err := svc.protocolClient.DeactivateGroup(svc.subsCtx, &protocoltypes.DeactivateGroup_Request{
+			GroupPK: svc.accountGroup,
+		}); err != nil {
+			if !errcode.Has(err, errcode.ErrBertyAccount) {
+				logger.Error("unable to deactivate group", zap.String("gpk", messengerutil.B64EncodeBytes(svc.accountGroup)), zap.Error(err))
+			}
+		}
+
+		// unsubscribe other groups
 		for groupPK := range svc.groupsToSubTo {
 			groupPKBytes, err := messengerutil.B64DecodeBytes(groupPK)
 			if err != nil {
@@ -99,7 +118,8 @@ func (svc *service) manageSubscriptions() {
 	// method naturally when switching to active state at application startup
 	currentState := lifecycle.StateInactive
 	for {
-		if !svc.lcmanager.WaitForStateChange(svc.ctx, currentState) {
+		task, ok := svc.lcmanager.TaskWaitForStateChange(svc.ctx, currentState)
+		if !ok {
 			break // leave the loop, context has expired
 		}
 
@@ -112,6 +132,8 @@ func (svc *service) manageSubscriptions() {
 		case lifecycle.StateInactive:
 			unsubscribe()
 		}
+
+		task.Done()
 	}
 
 	// if we are in any other state than inactive, close subscription

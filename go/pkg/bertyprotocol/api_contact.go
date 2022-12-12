@@ -37,7 +37,7 @@ func (s *service) ContactBlock(ctx context.Context, req *protocoltypes.ContactBl
 		return nil, errcode.ErrDeserialization.Wrap(err)
 	}
 
-	if _, err := s.accountGroup.MetadataStore().ContactBlock(ctx, pk); err != nil {
+	if _, err := s.getAccountGroup().MetadataStore().ContactBlock(ctx, pk); err != nil {
 		return nil, errcode.ErrOrbitDBAppend.Wrap(err)
 	}
 
@@ -53,7 +53,7 @@ func (s *service) ContactUnblock(ctx context.Context, req *protocoltypes.Contact
 		return nil, errcode.ErrDeserialization.Wrap(err)
 	}
 
-	if _, err := s.accountGroup.MetadataStore().ContactUnblock(ctx, pk); err != nil {
+	if _, err := s.getAccountGroup().MetadataStore().ContactUnblock(ctx, pk); err != nil {
 		return nil, errcode.ErrOrbitDBAppend.Wrap(err)
 	}
 

@@ -21,14 +21,19 @@ import (
 )
 
 func (s *service) DebugListGroups(req *protocoltypes.DebugListGroups_Request, srv protocoltypes.ProtocolService_DebugListGroupsServer) error {
+	accountGroup := s.getAccountGroup()
+	if accountGroup == nil {
+		return errcode.ErrGroupMissing
+	}
+
 	if err := srv.SendMsg(&protocoltypes.DebugListGroups_Reply{
-		GroupPK:   s.accountGroup.group.PublicKey,
-		GroupType: s.accountGroup.group.GroupType,
+		GroupPK:   accountGroup.group.PublicKey,
+		GroupType: accountGroup.group.GroupType,
 	}); err != nil {
 		return err
 	}
 
-	for _, c := range s.accountGroup.MetadataStore().ListContactsByStatus(protocoltypes.ContactStateAdded) {
+	for _, c := range accountGroup.MetadataStore().ListContactsByStatus(protocoltypes.ContactStateAdded) {
 		pk, err := crypto.UnmarshalEd25519PublicKey(c.PK)
 		if err != nil {
 			return errcode.ErrDeserialization.Wrap(err)
@@ -53,7 +58,7 @@ func (s *service) DebugListGroups(req *protocoltypes.DebugListGroups_Request, sr
 		}
 	}
 
-	for _, g := range s.accountGroup.MetadataStore().ListMultiMemberGroups() {
+	for _, g := range accountGroup.MetadataStore().ListMultiMemberGroups() {
 		if err := srv.SendMsg(&protocoltypes.DebugListGroups_Reply{
 			GroupPK:   g.PublicKey,
 			GroupType: g.GroupType,
@@ -209,7 +214,11 @@ func (s *service) SystemInfo(ctx context.Context, request *protocoltypes.SystemI
 	}
 
 	// OrbitDB
-	status := s.accountGroup.metadataStore.ReplicationStatus()
+	accountGroup := s.getAccountGroup()
+	if accountGroup == nil {
+		return nil, errcode.ErrGroupMissing
+	}
+	status := accountGroup.metadataStore.ReplicationStatus()
 	reply.OrbitDB = &protocoltypes.SystemInfo_OrbitDB{
 		AccountMetadata: &protocoltypes.SystemInfo_OrbitDB_ReplicationStatus{
 			Progress: int64(status.GetProgress()),
