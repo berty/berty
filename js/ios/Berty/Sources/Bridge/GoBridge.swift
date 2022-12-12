@@ -19,8 +19,6 @@ struct BridgeError: LocalizedError {
 
 @objc(GoBridge)
 class GoBridge: NSObject {
-    let logger = LoggerDriver("tech.berty", "react")
-
     // protocol
     var bridgeMessenger: BertybridgeBridge?
     var remoteBridge: BertybridgeRemoteBridge?
@@ -85,13 +83,18 @@ class GoBridge: NSObject {
     @objc func log(_ opts: NSDictionary) {
         #if !CFG_APPSTORE
         if let message = opts["message"] as? String {
-            let type = opts["level"] as? String ?? "info"
+            let level = opts["level"] as? String ?? "INFO"
 
-            // set log level
-            let level = Level(rawValue: type.uppercased()) ?? Level.info
-
-            // log
-            self.logger.print(message as NSString, level: level, category: "react-native")
+            switch level.uppercased() {
+            case "DEBUG":
+                BertyLogger.debug(message)
+            case "WARN":
+                BertyLogger.warn(message)
+            case "ERROR":
+                BertyLogger.error(message)
+            default:
+                BertyLogger.info(message)
+            }
         }
         #endif
     }
@@ -110,8 +113,6 @@ class GoBridge: NSObject {
             guard let config = BertybridgeNewBridgeConfig() else {
                 throw NSError(domain: "tech.berty.gobridge", code: 2, userInfo: [NSLocalizedDescriptionKey : "unable to create config"])
             }
-
-            config.setLoggerDriver(LoggerDriver("tech.berty", "gomobile"))
 
             // get user preferred languages
             let preferredLanguages: String = Locale.preferredLanguages.joined(separator: ",")
@@ -155,6 +156,8 @@ class GoBridge: NSObject {
             self.bridgeMessenger = bridgeMessenger
             self.serviceClient = bridgeMessenger // bridgeMessenger implements ServiceClient interface
 
+          BertyLogger.useBridge(self.bridgeMessenger)
+
             resolve(true)
         } catch let error as NSError {
             reject("\(String(describing: error.code))", error.userInfo.description, error)
@@ -171,8 +174,6 @@ class GoBridge: NSObject {
           guard let config = BertybridgeNewRemoteBridgeConfig() else {
               throw NSError(domain: "tech.berty.gobridge", code: 2, userInfo: [NSLocalizedDescriptionKey : "unable to create config"])
           }
-
-          config.setLoggerDriver(LoggerDriver("tech.berty", "gomobile"))
 
           // Disable iOS backup
           var values = URLResourceValues()

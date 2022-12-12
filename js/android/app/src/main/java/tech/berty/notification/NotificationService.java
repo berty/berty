@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Build;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
@@ -20,8 +19,8 @@ import tech.berty.android.MainActivity;
 import tech.berty.android.MainApplication;
 import tech.berty.gobridge.GoBridgeModule;
 import tech.berty.gobridge.KeystoreDriver;
-import tech.berty.gobridge.LoggerDriver;
 import tech.berty.rootdir.RootDirModule;
+import tech.berty.gobridge.Logger;
 
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
@@ -35,7 +34,6 @@ import java.util.Map;
 
 public class NotificationService extends FirebaseMessagingService {
     private static final String TAG = "NotificationService";
-    private final static LoggerDriver logger = new LoggerDriver("tech.berty.notif", "gomobile");
     private final PushStandalone push;
 
     public static Task<String> getToken() {
@@ -54,9 +52,8 @@ public class NotificationService extends FirebaseMessagingService {
 
         PushConfig config = new PushConfig();
         config.setPreferredLanguages(tags);
-        config.setDriverLogger(logger);
         this.push = new PushStandalone(config);
-        Log.d(TAG, "NotificationService created");
+        Logger.d(TAG, "NotificationService created");
     }
 
 
@@ -66,7 +63,7 @@ public class NotificationService extends FirebaseMessagingService {
     }
 
     private void createPushNotification(FormatedPush fpush) {
-        Log.d(TAG, "createPushNotification called");
+        Logger.d(TAG, "createPushNotification called");
         NotificationHelper notificationHelper = new NotificationHelper(getBaseContext());
 
         // Create deepLink on click interaction
@@ -102,7 +99,7 @@ public class NotificationService extends FirebaseMessagingService {
     }
 
     private void createReactNativeEvent(String push) {
-        Log.d(TAG, "handle foreground push");
+        Logger.d(TAG, "handle foreground push");
         MainApplication application = (MainApplication) this.getApplication();
 
         // get react context
@@ -123,11 +120,11 @@ public class NotificationService extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
-        Log.d(TAG, "receiving remote message");
+        Logger.d(TAG, "receiving remote message");
 
         // Check if message contains a data payload.
         if (remoteMessage.getData().size() > 0) {
-            Log.d(TAG, "Message data payload");
+            Logger.d(TAG, "Message data payload");
 
             String data = remoteMessage.getData().get(Bertybridge.ServicePushPayloadKey);
             if (data != null) {
@@ -152,7 +149,7 @@ public class NotificationService extends FirebaseMessagingService {
                         this.createPushNotification(format);
                     }
                 } catch (Exception e) {
-                    Log.d(TAG, "Decrypt push error: " + e);
+                    Logger.d(TAG, "Decrypt push error: " + e);
                 }
             }
         }

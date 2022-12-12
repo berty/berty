@@ -3,7 +3,7 @@ package tech.berty.gobridge;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.util.Log;
+import tech.berty.gobridge.Logger;
 import android.util.Base64;
 
 import bertybridge.Bertybridge;
@@ -53,29 +53,29 @@ public class BertyNearbyDriver implements ProximityDriver {
         // we have to check if there are duplicated endpoints
         @Override
         public void onConnectionRequested(String endpointName, String endpointId, boolean isIncomingRequest) {
-            Log.i(TAG, String.format("onConnectionRequested called: userId=%s userName=%s", endpointId, endpointName));
+            Logger.i(TAG, String.format("onConnectionRequested called: userId=%s userName=%s", endpointId, endpointName));
 
             nearby.acceptConnection(endpointId, userMessageCallback, userAcceptCallback);
         }
 
         @Override
         public void onConnectionResult(final String endpointId, String endpointName, boolean isConnected) {
-            Log.i(TAG, String.format("onConnectionResult called: userId=%s userName=%s", endpointId, endpointName));
+            Logger.i(TAG, String.format("onConnectionResult called: userId=%s userName=%s", endpointId, endpointName));
 
             if (isConnected) {
-                Log.i(TAG, "Connected");
+                Logger.i(TAG, "Connected");
                 // inform BertyBridge that there is a new connection
                 mTransport.handleFoundPeer(endpointName);
             } else {
-                Log.e(TAG, "Rejected");
+                Logger.e(TAG, "Rejected");
                 // connection was rejected this has to be added later on
-                Log.e(TAG, String.format("onConnectionResult REJECTED: endpointId=%s unknown", endpointId));
+                Logger.e(TAG, String.format("onConnectionResult REJECTED: endpointId=%s unknown", endpointId));
             }
         }
 
         @Override
         public void onDisconnected(String endpointId, String endpointName) {
-            Log.i(TAG, String.format("onDisconnected called: userId=%s userName=%s", endpointId, endpointName));
+            Logger.i(TAG, String.format("onDisconnected called: userId=%s userName=%s", endpointId, endpointName));
 
             // inform BertyBridge that there is a new connection
             mTransport.handleLostPeer(endpointName);
@@ -85,10 +85,10 @@ public class BertyNearbyDriver implements ProximityDriver {
     UserMessageCallback userMessageCallback = new UserMessageCallback() {
         @Override
         public void onMessageReceived(String userId, byte[] payload) {
-            Log.d(TAG, String.format("onMessageReceived: userId=%s payload=%s payload(hex)=%s", userId, Base64.encodeToString(payload, Base64.DEFAULT), bytesToHex(payload)));
+            Logger.d(TAG, String.format("onMessageReceived: userId=%s payload=%s payload(hex)=%s", userId, Base64.encodeToString(payload, Base64.DEFAULT), bytesToHex(payload)));
             Endpoint endpoint = nearby.getConnectedUser(userId);
             if (endpoint == null) {
-                Log.e(TAG, String.format("onMessageReceived error: endpointId=%s not found", userId));
+                Logger.e(TAG, String.format("onMessageReceived error: endpointId=%s not found", userId));
                 return ;
             }
 
@@ -105,7 +105,7 @@ public class BertyNearbyDriver implements ProximityDriver {
         // we have to check if there are duplicated endpoints
         @Override
         public void onUserFound(String userName, String userId) {
-            Log.i(TAG, String.format("onUserFound called: userName=%s userId=%s", userName, userId));
+            Logger.i(TAG, String.format("onUserFound called: userName=%s userId=%s", userName, userId));
 
             // Request and accept connection since both run at the same time there is no client/server
             //nearby.acceptConnection(userId, userMessageCallback, userAcceptCallback);
@@ -114,14 +114,14 @@ public class BertyNearbyDriver implements ProximityDriver {
 
         @Override
         public void onUserLost(String userId) {
-            Log.i(TAG, String.format("onUserLost called: userId=%s", userId));
+            Logger.i(TAG, String.format("onUserLost called: userId=%s", userId));
         }
     };
 
     private final UserAcceptCallback userAcceptCallback = new UserAcceptCallback() {
         @Override
         public void onConnectionAccepted(boolean success, String userId, int error) {
-            Log.i(TAG, "Connection accept: " + success + " : " + userId);
+            Logger.i(TAG, "Connection accept: " + success + " : " + userId);
 
             // Check if connection is not accepted and request
             // We could handle error case here also accept request
@@ -134,7 +134,7 @@ public class BertyNearbyDriver implements ProximityDriver {
     private final UserRequestCallback userRequestCallback = new UserRequestCallback() {
         @Override
         public void onConnectionRequested(boolean requested, String userName, String userId, int error) {
-            Log.i(TAG, "Connection request: " + requested + " : " + userName + " : " + userId);
+            Logger.i(TAG, "Connection request: " + requested + " : " + userName + " : " + userId);
 
             // Handle multiple requests when error code
             if (error == 8012) {
@@ -154,11 +154,11 @@ public class BertyNearbyDriver implements ProximityDriver {
         for (String permission : permissions) {
             if (checkSelfPermission(context, permission)
                 != PackageManager.PERMISSION_GRANTED) {
-                Log.e(TAG, String.format("hasPermissions error: permission=%s not GRANTED", permission));
+                Logger.e(TAG, String.format("hasPermissions error: permission=%s not GRANTED", permission));
                 return false;
             }
         }
-        Log.d(TAG, "hasPermissions: all permissions are GRANTED");
+        Logger.d(TAG, "hasPermissions: all permissions are GRANTED");
         return true;
     }
 
@@ -168,13 +168,13 @@ public class BertyNearbyDriver implements ProximityDriver {
 
         mTransport = Bertybridge.getProximityTransport(ProtocolName);
         if (mTransport == null) {
-            Log.e(TAG, "proximityTransporter not found");
+            Logger.e(TAG, "proximityTransporter not found");
             return ;
         }
 
         if (!hasPermissions(mContext, REQUIRED_PERMISSIONS))
         {
-            Log.e(TAG, "start error: canceled");
+            Logger.e(TAG, "start error: canceled");
             return ;
         }
 
@@ -195,7 +195,7 @@ public class BertyNearbyDriver implements ProximityDriver {
 
     @Override
     public boolean sendToPeer(String remotePID, byte[] payload) {
-        Log.d(TAG, String.format("sendToPeer: userName=%s payload=%s payload(hex)=%s", remotePID, Base64.encodeToString(payload, Base64.DEFAULT), bytesToHex(payload)));
+        Logger.d(TAG, String.format("sendToPeer: userName=%s payload=%s payload(hex)=%s", remotePID, Base64.encodeToString(payload, Base64.DEFAULT), bytesToHex(payload)));
         Endpoint endpoint = nearby.getEndpointFromName(remotePID);
 
         if (endpoint != null) {
@@ -204,7 +204,7 @@ public class BertyNearbyDriver implements ProximityDriver {
             return true;
         }
 
-        Log.e(TAG, String.format("sendToPeer error: remotePID=%s not found", remotePID));
+        Logger.e(TAG, String.format("sendToPeer error: remotePID=%s not found", remotePID));
             return false;
     }
 
