@@ -32,6 +32,7 @@ type metadataStoreIndex struct {
 	devicePushServer         *protocoltypes.PushDeviceServerRegistered
 	membersPushTokens        map[string]*protocoltypes.PushMemberTokenUpdate
 	contactRequestMetadata   map[string][]byte
+	verifiedCredentials      []*protocoltypes.AccountVerifiedCredentialRegistered
 	contactRequestSeed       []byte
 	contactRequestEnabled    *bool
 	eventHandlers            map[protocoltypes.EventType][]func(event proto.Message) error
@@ -75,6 +76,7 @@ func (m *metadataStoreIndex) UpdateIndex(log ipfslog.Log, _ []ipfslog.Entry) err
 	m.contactRequestSeed = []byte(nil)
 	m.devicePushToken = nil
 	m.devicePushServer = nil
+	m.verifiedCredentials = nil
 	m.membersPushTokens = map[string]*protocoltypes.PushMemberTokenUpdate{}
 	m.handledEvents = map[string]struct{}{}
 
@@ -259,6 +261,13 @@ func (m *metadataStoreIndex) listContacts() map[string]*AccountContact {
 	}
 
 	return contacts
+}
+
+func (m *metadataStoreIndex) listVerifiedCredentials() []*protocoltypes.AccountVerifiedCredentialRegistered {
+	m.lock.RLock()
+	defer m.lock.RUnlock()
+
+	return m.verifiedCredentials
 }
 
 func (m *metadataStoreIndex) listMembers() []crypto.PubKey {
@@ -762,6 +771,17 @@ func (m *metadataStoreIndex) handlePushServerTokenRegistered(event proto.Message
 	return nil
 }
 
+func (m *metadataStoreIndex) handleAccountVerifiedCredentialRegistered(event proto.Message) error {
+	e, ok := event.(*protocoltypes.AccountVerifiedCredentialRegistered)
+	if !ok {
+		return errcode.ErrInvalidInput
+	}
+
+	m.verifiedCredentials = append(m.verifiedCredentials, e)
+
+	return nil
+}
+
 func (m *metadataStoreIndex) listAdmins() []crypto.PubKey {
 	m.lock.RLock()
 	defer m.lock.RUnlock()
@@ -926,6 +946,7 @@ func newMetadataIndex(ctx context.Context, g *protocoltypes.Group, md *cryptouti
 			protocoltypes.EventTypePushDeviceTokenRegistered:              {m.handlePushDeviceTokenRegistered},
 			protocoltypes.EventTypePushDeviceServerRegistered:             {m.handlePushServerTokenRegistered},
 			protocoltypes.EventTypeGroupMetadataPayloadSent:               {m.handleGroupMetadataPayloadSent},
+			protocoltypes.EventTypeAccountVerifiedCredentialRegistered:    {m.handleAccountVerifiedCredentialRegistered},
 		}
 
 		m.postIndexActions = []func() error{

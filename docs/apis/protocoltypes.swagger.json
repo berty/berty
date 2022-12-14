@@ -506,6 +506,72 @@
         ]
       }
     },
+    "/berty.protocol.v1/ProtocolService/CredentialVerificationServiceCompleteFlow": {
+      "post": {
+        "summary": "CredentialVerificationServiceCompleteFlow Completes a credential verification flow",
+        "operationId": "ProtocolService_CredentialVerificationServiceCompleteFlow",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1CredentialVerificationServiceCompleteFlowReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1CredentialVerificationServiceCompleteFlowRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProtocolService"
+        ]
+      }
+    },
+    "/berty.protocol.v1/ProtocolService/CredentialVerificationServiceInitFlow": {
+      "post": {
+        "summary": "CredentialVerificationServiceInitFlow Initialize a credential verification flow",
+        "operationId": "ProtocolService_CredentialVerificationServiceInitFlow",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1CredentialVerificationServiceInitFlowReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1CredentialVerificationServiceInitFlowRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProtocolService"
+        ]
+      }
+    },
     "/berty.protocol.v1/ProtocolService/DeactivateGroup": {
       "post": {
         "summary": "DeactivateGroup closes a group",
@@ -1454,6 +1520,39 @@
           "ProtocolService"
         ]
       }
+    },
+    "/berty.protocol.v1/ProtocolService/VerifiedCredentialsList": {
+      "post": {
+        "summary": "VerifiedCredentialsList Retrieves the list of verified credentials",
+        "operationId": "ProtocolService_VerifiedCredentialsList",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1VerifiedCredentialsListReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1VerifiedCredentialsListRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ProtocolService"
+        ]
+      }
     }
   },
   "definitions": {
@@ -1694,6 +1793,34 @@
           "items": {
             "$ref": "#/definitions/protobufAny"
           }
+        }
+      }
+    },
+    "v1AccountVerifiedCredentialRegistered": {
+      "type": "object",
+      "properties": {
+        "device_pk": {
+          "type": "string",
+          "format": "byte",
+          "title": "device_pk is the public key of the device sending the message"
+        },
+        "signed_identity_public_key": {
+          "type": "string",
+          "format": "byte"
+        },
+        "verified_credential": {
+          "type": "string"
+        },
+        "registration_date": {
+          "type": "string",
+          "format": "int64"
+        },
+        "expiration_date": {
+          "type": "string",
+          "format": "int64"
+        },
+        "identifier": {
+          "type": "string"
         }
       }
     },
@@ -1957,6 +2084,48 @@
         }
       }
     },
+    "v1CredentialVerificationServiceCompleteFlowReply": {
+      "type": "object",
+      "properties": {
+        "identifier": {
+          "type": "string"
+        }
+      }
+    },
+    "v1CredentialVerificationServiceCompleteFlowRequest": {
+      "type": "object",
+      "properties": {
+        "callback_uri": {
+          "type": "string"
+        }
+      }
+    },
+    "v1CredentialVerificationServiceInitFlowReply": {
+      "type": "object",
+      "properties": {
+        "url": {
+          "type": "string"
+        },
+        "secure_url": {
+          "type": "boolean"
+        }
+      }
+    },
+    "v1CredentialVerificationServiceInitFlowRequest": {
+      "type": "object",
+      "properties": {
+        "service_url": {
+          "type": "string"
+        },
+        "public_key": {
+          "type": "string",
+          "format": "byte"
+        },
+        "link": {
+          "type": "string"
+        }
+      }
+    },
     "v1DeactivateGroupReply": {
       "type": "object"
     },
@@ -2145,10 +2314,11 @@
         "EventTypePushMemberTokenUpdate",
         "EventTypePushDeviceTokenRegistered",
         "EventTypePushDeviceServerRegistered",
+        "EventTypeAccountVerifiedCredentialRegistered",
         "EventTypeGroupMetadataPayloadSent"
       ],
       "default": "EventTypeUndefined",
-      "title": "- EventTypeUndefined: EventTypeUndefined indicates that the value has not been set. Should not happen.\n - EventTypeGroupMemberDeviceAdded: EventTypeGroupMemberDeviceAdded indicates the payload includes that a member has added their device to the group\n - EventTypeGroupDeviceSecretAdded: EventTypeGroupDeviceSecretAdded indicates the payload includes that a member has sent their device secret to another member\n - EventTypeAccountGroupJoined: EventTypeAccountGroupJoined indicates the payload includes that the account has joined a group\n - EventTypeAccountGroupLeft: EventTypeAccountGroupLeft indicates the payload includes that the account has left a group\n - EventTypeAccountContactRequestDisabled: EventTypeAccountContactRequestDisabled indicates the payload includes that the account has disabled incoming contact requests\n - EventTypeAccountContactRequestEnabled: EventTypeAccountContactRequestEnabled indicates the payload includes that the account has enabled incoming contact requests\n - EventTypeAccountContactRequestReferenceReset: EventTypeAccountContactRequestReferenceReset indicates the payload includes that the account has a new contact request rendezvous seed\n - EventTypeAccountContactRequestOutgoingEnqueued: EventTypeAccountContactRequestEnqueued indicates the payload includes that the account will attempt to send a new contact request\n - EventTypeAccountContactRequestOutgoingSent: EventTypeAccountContactRequestSent indicates the payload includes that the account has sent a contact request\n - EventTypeAccountContactRequestIncomingReceived: EventTypeAccountContactRequestReceived indicates the payload includes that the account has received a contact request\n - EventTypeAccountContactRequestIncomingDiscarded: EventTypeAccountContactRequestIncomingDiscarded indicates the payload includes that the account has ignored a contact request\n - EventTypeAccountContactRequestIncomingAccepted: EventTypeAccountContactRequestAccepted indicates the payload includes that the account has accepted a contact request\n - EventTypeAccountContactBlocked: EventTypeAccountContactBlocked indicates the payload includes that the account has blocked a contact\n - EventTypeAccountContactUnblocked: EventTypeAccountContactUnblocked indicates the payload includes that the account has unblocked a contact\n - EventTypeContactAliasKeyAdded: EventTypeContactAliasKeyAdded indicates the payload includes that the contact group has received an alias key\n - EventTypeMultiMemberGroupAliasResolverAdded: EventTypeMultiMemberGroupAliasResolverAdded indicates the payload includes that a member of the group sent their alias proof\n - EventTypeMultiMemberGroupInitialMemberAnnounced: EventTypeMultiMemberGroupInitialMemberAnnounced indicates the payload includes that a member has authenticated themselves as the group owner\n - EventTypeMultiMemberGroupAdminRoleGranted: EventTypeMultiMemberGroupAdminRoleGranted indicates the payload includes that an admin of the group granted another member as an admin\n - EventTypeAccountServiceTokenAdded: EventTypeAccountServiceTokenAdded indicates that a new service provider has been registered for this account\n - EventTypeAccountServiceTokenRemoved: EventTypeAccountServiceTokenRemoved indicates that a service provider is not available anymore\n - EventTypeGroupReplicating: EventTypeGroupReplicating indicates that the group has been registered for replication on a server\n - EventTypePushMemberTokenUpdate: EventTypePushMemberTokenUpdate\n - EventTypePushDeviceTokenRegistered: EventTypePushDeviceTokenRegistered\n - EventTypePushDeviceServerRegistered: EventTypePushDeviceServerRegistered\n - EventTypeGroupMetadataPayloadSent: EventTypeGroupMetadataPayloadSent indicates the payload includes an app specific event, unlike messages stored on the message store it is encrypted using a static key"
+      "title": "- EventTypeUndefined: EventTypeUndefined indicates that the value has not been set. Should not happen.\n - EventTypeGroupMemberDeviceAdded: EventTypeGroupMemberDeviceAdded indicates the payload includes that a member has added their device to the group\n - EventTypeGroupDeviceSecretAdded: EventTypeGroupDeviceSecretAdded indicates the payload includes that a member has sent their device secret to another member\n - EventTypeAccountGroupJoined: EventTypeAccountGroupJoined indicates the payload includes that the account has joined a group\n - EventTypeAccountGroupLeft: EventTypeAccountGroupLeft indicates the payload includes that the account has left a group\n - EventTypeAccountContactRequestDisabled: EventTypeAccountContactRequestDisabled indicates the payload includes that the account has disabled incoming contact requests\n - EventTypeAccountContactRequestEnabled: EventTypeAccountContactRequestEnabled indicates the payload includes that the account has enabled incoming contact requests\n - EventTypeAccountContactRequestReferenceReset: EventTypeAccountContactRequestReferenceReset indicates the payload includes that the account has a new contact request rendezvous seed\n - EventTypeAccountContactRequestOutgoingEnqueued: EventTypeAccountContactRequestEnqueued indicates the payload includes that the account will attempt to send a new contact request\n - EventTypeAccountContactRequestOutgoingSent: EventTypeAccountContactRequestSent indicates the payload includes that the account has sent a contact request\n - EventTypeAccountContactRequestIncomingReceived: EventTypeAccountContactRequestReceived indicates the payload includes that the account has received a contact request\n - EventTypeAccountContactRequestIncomingDiscarded: EventTypeAccountContactRequestIncomingDiscarded indicates the payload includes that the account has ignored a contact request\n - EventTypeAccountContactRequestIncomingAccepted: EventTypeAccountContactRequestAccepted indicates the payload includes that the account has accepted a contact request\n - EventTypeAccountContactBlocked: EventTypeAccountContactBlocked indicates the payload includes that the account has blocked a contact\n - EventTypeAccountContactUnblocked: EventTypeAccountContactUnblocked indicates the payload includes that the account has unblocked a contact\n - EventTypeContactAliasKeyAdded: EventTypeContactAliasKeyAdded indicates the payload includes that the contact group has received an alias key\n - EventTypeMultiMemberGroupAliasResolverAdded: EventTypeMultiMemberGroupAliasResolverAdded indicates the payload includes that a member of the group sent their alias proof\n - EventTypeMultiMemberGroupInitialMemberAnnounced: EventTypeMultiMemberGroupInitialMemberAnnounced indicates the payload includes that a member has authenticated themselves as the group owner\n - EventTypeMultiMemberGroupAdminRoleGranted: EventTypeMultiMemberGroupAdminRoleGranted indicates the payload includes that an admin of the group granted another member as an admin\n - EventTypeAccountServiceTokenAdded: EventTypeAccountServiceTokenAdded indicates that a new service provider has been registered for this account\n - EventTypeAccountServiceTokenRemoved: EventTypeAccountServiceTokenRemoved indicates that a service provider is not available anymore\n - EventTypeGroupReplicating: EventTypeGroupReplicating indicates that the group has been registered for replication on a server\n - EventTypePushMemberTokenUpdate: EventTypePushMemberTokenUpdate\n - EventTypePushDeviceTokenRegistered: EventTypePushDeviceTokenRegistered\n - EventTypePushDeviceServerRegistered: EventTypePushDeviceServerRegistered\n - EventTypeAccountVerifiedCredentialRegistered: EventTypeAccountVerifiedCredentialRegistered\n - EventTypeGroupMetadataPayloadSent: EventTypeGroupMetadataPayloadSent indicates the payload includes an app specific event, unlike messages stored on the message store it is encrypted using a static key"
     },
     "v1Group": {
       "type": "object",
@@ -2967,6 +3137,20 @@
       }
     },
     "v1SystemInfoRequest": {
+      "type": "object"
+    },
+    "v1VerifiedCredentialsListReply": {
+      "type": "object",
+      "properties": {
+        "credentials": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1AccountVerifiedCredentialRegistered"
+          }
+        }
+      }
+    },
+    "v1VerifiedCredentialsListRequest": {
       "type": "object"
     }
   }

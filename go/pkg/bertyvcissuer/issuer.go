@@ -94,7 +94,7 @@ func New(config *Config) (*VCIssuer, error) {
 			return nil, err
 		}
 
-		config.IssuerID = fmt.Sprintf("did:key:%s", mbKey)
+		config.IssuerID = fmt.Sprintf("did:key:%s#%s", mbKey, mbKey)
 	}
 
 	if config.Flow == nil {

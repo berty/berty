@@ -18,7 +18,6 @@ import (
 
 	"berty.tech/berty/v2/go/internal/logutil"
 	"berty.tech/berty/v2/go/pkg/banner"
-	"berty.tech/berty/v2/go/pkg/bertyvcissuer"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
@@ -38,7 +37,6 @@ type groupView struct {
 	logger       *zap.Logger
 	hasNew       int32
 	lastSentCID  string
-	vcClient     *bertyvcissuer.Client
 }
 
 func (v *groupView) View() tview.Primitive {

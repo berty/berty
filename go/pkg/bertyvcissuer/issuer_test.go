@@ -184,7 +184,8 @@ func TestFlow(t *testing.T) {
 	)
 	require.NoError(t, err)
 	require.Equal(t, web, parsedCredential.ID)
-	foundSubject, err := extractSubjectFromVC(parsedCredential)
+	foundSubject, err := ExtractSubjectFromVC(parsedCredential)
+	require.NoError(t, err)
 	require.Equal(t, expectedIdentifier, foundSubject)
 	validCredentials := credentials
 	_ = validCredentials
@@ -216,10 +217,10 @@ func makeContentOfJWSInvalid(t *testing.T, credentials []byte) []byte {
 		t.Fail()
 	}
 
-	decoded, err := base64.StdEncoding.DecodeString(str[posStart+1 : posEnd])
+	decoded, err := base64.RawStdEncoding.DecodeString(str[posStart+1 : posEnd])
 	require.NoError(t, err)
 
-	encoded := base64.StdEncoding.EncodeToString([]byte(strings.Replace(string(decoded), "+33123456789", "+81234567890", 1)))
+	encoded := base64.RawStdEncoding.EncodeToString([]byte(strings.Replace(string(decoded), "+33123456789", "+81234567890", 1)))
 
 	str = str[0:posStart+1] + encoded + str[posEnd:]
 

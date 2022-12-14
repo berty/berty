@@ -29,6 +29,7 @@ import (
 	ipfs_mobile "berty.tech/berty/v2/go/internal/ipfsutil/mobile"
 	tinder "berty.tech/berty/v2/go/internal/tinder"
 	"berty.tech/berty/v2/go/pkg/bertypush"
+	"berty.tech/berty/v2/go/pkg/bertyvcissuer"
 	"berty.tech/berty/v2/go/pkg/bertyversion"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
@@ -77,6 +78,7 @@ type service struct {
 	peerStatusManager      *ConnectednessManager
 	accountEventBus        event.Bus
 	contactRequestsManager *contactRequestsManager
+	vcClient               *bertyvcissuer.Client
 }
 
 // Opts contains optional configuration flags for building a new Client

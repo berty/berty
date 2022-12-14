@@ -37,3 +37,5 @@ func (m *PhoneCodeSenderMockService) ValidateIdentifier(ctx context.Context, raw
 
 	return phonenumbers.Format(num, phonenumbers.E164), nil
 }
+
+var _ VerificationCodeSender = (*PhoneCodeSenderMockService)(nil)

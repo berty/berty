@@ -42,6 +42,7 @@ var eventTypesMapper = map[protocoltypes.EventType]struct {
 	protocoltypes.EventTypePushDeviceServerRegistered:             {Message: &protocoltypes.PushDeviceServerRegistered{}, SigChecker: sigCheckerDeviceSigned},
 	protocoltypes.EventTypePushDeviceTokenRegistered:              {Message: &protocoltypes.PushDeviceTokenRegistered{}, SigChecker: sigCheckerDeviceSigned},
 	protocoltypes.EventTypePushMemberTokenUpdate:                  {Message: &protocoltypes.PushMemberTokenUpdate{}, SigChecker: sigCheckerDeviceSigned},
+	protocoltypes.EventTypeAccountVerifiedCredentialRegistered:    {Message: &protocoltypes.AccountVerifiedCredentialRegistered{}, SigChecker: sigCheckerDeviceSigned},
 }
 
 func newEventContext(eventID cid.Cid, parentIDs []cid.Cid, g *protocoltypes.Group) *protocoltypes.EventContext {

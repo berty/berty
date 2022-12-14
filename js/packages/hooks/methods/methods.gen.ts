@@ -426,6 +426,30 @@ export type ProtocolMethodsHooks = {
 		called: boolean
 		loading: boolean
 	}
+	useCredentialVerificationServiceInitFlow: () => {
+		error: any
+		call: (req?: beapi.protocol.CredentialVerificationServiceInitFlow.IRequest) => void
+		reply: beapi.protocol.CredentialVerificationServiceInitFlow.IReply | null
+		done: boolean
+		called: boolean
+		loading: boolean
+	}
+	useCredentialVerificationServiceCompleteFlow: () => {
+		error: any
+		call: (req?: beapi.protocol.CredentialVerificationServiceCompleteFlow.IRequest) => void
+		reply: beapi.protocol.CredentialVerificationServiceCompleteFlow.IReply | null
+		done: boolean
+		called: boolean
+		loading: boolean
+	}
+	useVerifiedCredentialsList: () => {
+		error: any
+		call: (req?: beapi.protocol.VerifiedCredentialsList.IRequest) => void
+		reply: beapi.protocol.VerifiedCredentialsList.IReply | null
+		done: boolean
+		called: boolean
+		loading: boolean
+	}
 	useReplicationServiceRegisterGroup: () => {
 		error: any
 		call: (req?: beapi.protocol.ReplicationServiceRegisterGroup.IRequest) => void

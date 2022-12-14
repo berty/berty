@@ -102,6 +102,15 @@ http:
  - selector: berty.protocol.v1.ProtocolService.AuthServiceCompleteFlow
    post: /berty.protocol.v1/ProtocolService/AuthServiceCompleteFlow
    body: "*"
+ - selector: berty.protocol.v1.ProtocolService.CredentialVerificationServiceInitFlow
+   post: /berty.protocol.v1/ProtocolService/CredentialVerificationServiceInitFlow
+   body: "*"
+ - selector: berty.protocol.v1.ProtocolService.CredentialVerificationServiceCompleteFlow
+   post: /berty.protocol.v1/ProtocolService/CredentialVerificationServiceCompleteFlow
+   body: "*"
+ - selector: berty.protocol.v1.ProtocolService.VerifiedCredentialsList
+   post: /berty.protocol.v1/ProtocolService/VerifiedCredentialsList
+   body: "*"
  - selector: berty.protocol.v1.ProtocolService.ServicesTokenList
    post: /berty.protocol.v1/ProtocolService/ServicesTokenList
    body: "*"
