@@ -1,94 +1,94 @@
 {
 	"onboarding": {
 		"getstarted": {
-			"screenTitle": "",
-			"title": "",
-			"desc": "",
-			"create-button": "",
-			"import-button": ""
+			"screenTitle": "Chraňte své soukromí",
+			"title": "Chraňte své soukromí",
+			"desc": "bezplatné a bezpečné peer-to-peer zasílání zpráv",
+			"create-button": "Vytvořit účet",
+			"import-button": "Importovat účet"
 		},
 		"default-mode": {
 			"summary": {
-				"title": "",
-				"screenTitle": "",
-				"subtitle": "",
-				"first-point": "",
-				"second-point": "",
-				"third-point": "",
-				"back-button": "",
-				"accept-button": ""
+				"title": "Výchozí režim",
+				"screenTitle": "Vytvořit účet",
+				"subtitle": "Začínáme",
+				"first-point": "Začněte s přednastaveními, které nabízejí dobrý poměr soukromí a pohodlí pro většinu lidí. Uzly Berty jsou použity pro zvýšení výkonu a asynchronní komunikace.",
+				"second-point": "Oznámení jsou ve výchozím nastavení povolené a zatím je nelze na iOS vypnout.",
+				"third-point": "Pro vlastní nastavení poměru soukromí a pohodlí vyberte Vlastní režim.",
+				"back-button": "Zpět",
+				"accept-button": "Jdeme na to"
 			}
 		},
 		"custom-mode": {
 			"summary": {
-				"screenTitle": "",
-				"title": "",
-				"subtitle": "",
-				"first-point": "",
+				"screenTitle": "Vytvoření účtu - Přizpůsobení nastavení",
+				"title": "Vlastní režim",
+				"subtitle": "Vlastní poměr soukromí a pohodlí",
+				"first-point": "V tomto režimu můžete upravit každé nastavení zvlášť, abyste dostali poměr soukromí a pohodlí, který vám nejvíce vyhovuje.",
 				"second-point": "",
-				"back-button": "",
-				"accept-button": ""
+				"back-button": "Zpět",
+				"accept-button": "Pokračovat"
 			},
 			"settings": {
 				"off-grid": {
-					"title": "",
-					"ble-button": "",
-					"nearby-button": "",
-					"mc-button": "",
-					"mdns-button": ""
+					"title": "Off-Grid komunikace",
+					"ble-button": "Bluetooth Low Energy",
+					"nearby-button": "Android Okolí",
+					"mc-button": "Apple Multipeer Connectivity",
+					"mdns-button": "Multicast DNS (LAN)"
 				},
 				"routing": {
-					"title": "",
-					"dht-button": "",
+					"title": "Směrování",
+					"dht-button": "Distribuovaná Hashovací tabulka",
 					"rdvp-button": ""
 				},
 				"access": {
-					"title": "",
-					"relay-button": "",
-					"bootstrap-button": ""
+					"title": "Přístupnost sítě",
+					"relay-button": "Relay uzly (TURN)",
+					"bootstrap-button": "Bootstrap uzly"
 				},
 				"modals": {
 					"add": {
 						"title": {
-							"relay": "",
-							"bootstrap": "",
-							"rdvp": ""
+							"relay": "Přidat relay uzel (TURN)",
+							"bootstrap": "Přidat bootstrap uzel",
+							"rdvp": "Přidat RDVP uzel"
 						}
 					},
 					"edit": {
 						"title": {
-							"relay": "",
-							"bootstrap": "",
-							"rdvp": ""
+							"relay": "Upravit relay uzel (TURN)",
+							"bootstrap": "Upravit bootstrap uzel",
+							"rdvp": "Upravit RDVP uzel"
 						}
 					},
 					"errors": {
-						"alias-already-exists": "",
-						"multiaddr-alread-exists": "",
-						"multiaddr-bad-format": "",
-						"multiaddr-p2p": ""
+						"alias-already-exists": "Přezdívka již existuje",
+						"multiaddr-alread-exists": "Multiadresa již existuje",
+						"multiaddr-bad-format": "Špatný formát multiadresy",
+						"multiaddr-p2p": "Multiadresa by měla obsahovat P2P"
 					},
 					"buttons": {
 						"add": "Přidat",
-						"edit": "",
-						"delete": ""
+						"edit": "Upravit",
+						"delete": "Smazat"
 					},
-					"multiaddress": "",
-					"alias": ""
+					"multiaddress": "Multiadresa",
+					"alias": "Přezdívka"
 				},
-				"all-button": "",
-				"accept-button": ""
+				"all-button": "Vše",
+				"accept-button": "Jdeme na to"
 			}
 		},
 		"create-account": {
 			"title": "Vytvořit účet",
-			"first-button": "",
-			"second-button": "",
-			"placeholder": "",
+			"first-button": "Výchozí režim",
+			"second-button": "Vlastní režim",
+			"placeholder": "Vyberte svou přezdívku",
 			"good-to-know": {
-				"title": "",
-				"first-point": "",
-				"second-point": ""
+				"title": "Dobré vědět:",
+				"first-point": "Váš účet je vytvořen lokálně",
+				"second-point": "Přezdívka je nepovinná a může být později změněna"
 			}
 		},
 		"generate-key": {
@@ -98,115 +98,115 @@
 		"setup-finished": {
 			"title": "Nastavení dokončeno!",
 			"desc": "Teď už můžete aplikaci používat. Můžete začít přidávat kontakty a svobodně a soukromě s nimi komunikovat",
-			"button": ""
+			"button": "Začít používat Berty"
 		},
 		"web-views": {
-			"title": "",
-			"desc": "",
+			"title": "Oprávnění webového obsahu",
+			"desc": "Berty se chystá načíst obsah z webu. Chcete otevřít tuto stránku?",
 			"first-button": "Zrušit",
-			"second-button": ""
+			"second-button": "Ano"
 		}
 	},
 	"main": {
 		"home": {
-			"title": "",
+			"title": "Berty",
 			"requests": {
-				"title": "",
+				"title": "Žádosti",
 				"accept": "Přijmout",
 				"card-title": "Žádost o kontakt!"
 			},
 			"input-placeholder": "Vyhledat klíčové slovo",
 			"no-contacts": "Zatím nemáte žádné kontakty ani chaty",
 			"no-network": {
-				"title": "",
-				"description": "",
-				"cancel": "",
-				"activate": ""
+				"title": "Nenalezena žádná síť!",
+				"description": "Vypadáte offline! Aktivujte bluetooth k chatování s přáteli!",
+				"cancel": "TEĎ NE",
+				"activate": "AKTIVOVAT"
 			},
 			"search": {
 				"no-results": "Nenalezeny žádné výsledky"
 			},
 			"create-group": {
-				"title": "",
-				"add-members": "",
-				"group-info": "",
+				"title": "Nová skupina",
+				"add-members": "Přidat členy",
+				"group-info": "Informace o skupině",
 				"search-placeholder": "Vyhledat",
-				"continue": "",
-				"create-group": ""
+				"continue": "Pokračovat",
+				"create-group": "Vytvořit skupinu"
 			},
 			"create-group-finalize": {
-				"placeholder": "",
-				"about": "",
-				"first-bullet-point": "",
-				"second-bullet-point": "",
-				"third-bullet-point": "",
-				"fourth-bullet-point": "",
-				"fifth-bullet-point": ""
+				"placeholder": "Název skupiny",
+				"about": "O skupinách",
+				"first-bullet-point": "Kdokoliv ve skupině ji může přejmenovat nebo přidat nové členy",
+				"second-bullet-point": "Můžete pozvat členy pomocí odkazu",
+				"third-bullet-point": "Můžete opustit tuto skupinu",
+				"fourth-bullet-point": "Nemůžete smazat tuto skupinu",
+				"fifth-bullet-point": "Nemůžete odstranit člena z této skupiny"
 			},
 			"conversations": {
-				"request-sent": "",
-				"draft": ""
+				"request-sent": "Žádost odeslána. Čeká se...",
+				"draft": "Koncept: {{message}}"
 			}
 		},
-		"suggestion-display-name-initial": ""
+		"suggestion-display-name-initial": "Klikněte zde pro přidání"
 	},
 	"settings": {
 		"home": {
 			"title": "Nastavení",
-			"proximity-button": "",
+			"proximity-button": "Off-Grid komunikace",
 			"notifications-button": "Oznámení",
-			"appearance-button": "",
-			"accounts-button": "",
-			"network-button": "",
-			"bug-button": "",
+			"appearance-button": "Vzhled",
+			"accounts-button": "Účty",
+			"network-button": "Síť",
+			"bug-button": "Nahlásit chybu",
 			"about-button": "O projektu Berty",
-			"version-button": "",
+			"version-button": "Verze: {{version}}",
 			"devtools-button": "Nástroje pro vývojáře"
 		},
 		"about": {
 			"title": "O projektu Berty",
-			"faq-button": "",
-			"roadmap-button": "",
-			"policy-button": "",
-			"license-button": "",
+			"faq-button": "FAQ",
+			"roadmap-button": "Plán",
+			"policy-button": "Zásady ochrany soukromí",
+			"license-button": "Open source licence",
 			"terms-of-use": "Podmínky používání"
 		},
 		"accounts": {
-			"title": "",
-			"backup-button": "",
-			"backup-notif-title": "",
-			"backup-notif-desc": "",
-			"accounts-button": "",
-			"create-button": "",
-			"import-button": "",
-			"delete-button": "",
-			"delete-title": ""
+			"title": "Účty",
+			"backup-button": "Záloha",
+			"backup-notif-title": "Úspěch",
+			"backup-notif-desc": "Účet byl zálohován!",
+			"accounts-button": "Účty",
+			"create-button": "Vytvořit účet",
+			"import-button": "Importovat účet",
+			"delete-button": "Smazat tento účet",
+			"delete-title": "Smazání účtu"
 		},
 		"appearance": {
-			"title": "",
-			"dark-button": "",
-			"editor-button": "",
+			"title": "Vzhled",
+			"dark-button": "Tmavý režim",
+			"editor-button": "Editor motivů",
 			"theme-editor": {
-				"title": ""
+				"title": "Editor motivů"
 			}
 		},
 		"contact-convs": {
-			"title": "",
-			"reset-button": "",
-			"request-button": ""
+			"title": "Kontakty a konverzace",
+			"reset-button": "Resetovat můj kontaktní odkaz/QR kód",
+			"request-button": "Povolit příchozí žádosti o kontakt"
 		},
 		"network": {
-			"title": "",
-			"ble-button": "",
-			"mc-button": "",
-			"nearby-button": "",
+			"title": "Síť",
+			"ble-button": "Bluetooth Low Energy",
+			"mc-button": "Propojení více uživatelů",
+			"nearby-button": "Android Okolí",
 			"mdns-button": "Multicast DNS",
-			"memo-cell-button": "",
-			"medias-cell-button": "",
-			"dht-button": "",
+			"memo-cell-button": "Načítat hlasové zprávy na mobilním připojení",
+			"medias-cell-button": "Načítat média na mobilním připojení",
+			"dht-button": "Distribuovaná hashovací tabulka",
 			"rdvp-button": "",
-			"relay-button": "",
-			"bootstrap-button": ""
+			"relay-button": "Relay uzly",
+			"bootstrap-button": "Bootstrap uzly"
 		},
 		"notifications": {
 			"title": "Oznámení"
@@ -222,18 +222,18 @@
 		"delete-account": {
 			"title": "Smazat účet!",
 			"first-desc": "Opravdu chcete smazat svůj účet?",
-			"desc": "",
+			"desc": "Napište delete pro potvrzení",
 			"cancel-button": "Zrušit",
-			"delete-button": ""
+			"delete-button": "Smazat"
 		},
 		"faq": {
-			"title": ""
+			"title": "FAQ"
 		},
 		"roadmap": {
-			"title": ""
+			"title": "Plán"
 		},
 		"privacy-policy": {
-			"title": ""
+			"title": "Zásady ochrany soukromí"
 		},
 		"devtools": {
 			"title": "Nástroje pro vývojáře",
@@ -242,31 +242,31 @@
 			"header-right-button": "Restartovat démona",
 			"force-mock-button": "",
 			"simulate-button": "Simulovat chybu streamu",
-			"simulate-js-error-button": "",
+			"simulate-js-error-button": "Simulovat JavaScript error",
 			"system-info-button": "Systémové informace",
 			"select-node": {
-				"title": "",
-				"node-type": "",
-				"address": "",
-				"account-port": "",
-				"messenger-port": "",
-				"dont-ask": "",
-				"button-continue": ""
+				"title": "Vybrat uzel",
+				"node-type": "Interní / externí uzel",
+				"address": "Adresa",
+				"account-port": "Servisní port účtu",
+				"messenger-port": "Servisní port messengeru",
+				"dont-ask": "Příště se neptat",
+				"button-continue": "Pokračovat"
 			},
 			"debug-button": "Debugging",
 			"log-button": {
 				"name": "",
-				"bullet-point": ""
+				"bullet-point": "Restartovat aplikaci po změně tohoto pole"
 			},
 			"log-filters-button": {
 				"name": "",
-				"bullet-point": ""
+				"bullet-point": "Restartovat aplikaci po změně tohoto pole"
 			},
-			"export-logs-button": "",
+			"export-logs-button": "Exportovat protokoly",
 			"add-dev-conversations-button": "Přidat vývojářské konverzace",
 			"share-button": {
 				"title": "Sdílet ID na Discordu",
-				"alert-title": "",
+				"alert-title": "Chcete sdílet svůj QR kód na \"#dev-logs\" na Discordu Berty?",
 				"alert-message": "Toto umožní ostatním zaměstnancům naskenovat váš QR kód nebo zkopírovat kontaktní odkaz.",
 				"alert-accept-button": "Jo 👍",
 				"alert-cancel-button": "Ne"
@@ -290,7 +290,7 @@
 			"tyber-attach": "",
 			"tyber-host-button": {
 				"name": "",
-				"bullet-point": ""
+				"bullet-point": "Restartovat aplikaci po změně tohoto pole"
 			},
 			"footer-left-button": "Informace o zařízení",
 			"footer-middle-button": "Zobrazit události",
@@ -311,17 +311,17 @@
 			"add": "Přidat {{name}}",
 			"tag-bot": "Bot",
 			"tag-contact": "Kontakt",
-			"tag-conversation": ""
+			"tag-conversation": "Konverzace"
 		},
 		"ipfs-webui": {
 			"title": "IPFS WebUI"
 		},
 		"theme-editor": {
-			"randomize": "",
-			"save": "",
-			"export": "",
-			"share": "",
-			"import": "",
+			"randomize": "Generovat motiv",
+			"save": "Uložit motiv",
+			"export": "Exportovat vybraný motiv do souboru",
+			"share": "Sdílet vybraný motiv jako soubor",
+			"import": "Importovat soubor motivu",
 			"delete": "",
 			"bad-format-title": "",
 			"bad-format-desc": "",
@@ -409,35 +409,35 @@
 			},
 			"receive-push": "Přijímat push oznámení",
 			"hide-previews": "",
-			"auto-enable": "",
-			"show-in-app": ""
+			"auto-enable": "Povolit oznámení pro stávající i budoucí konverzace",
+			"show-in-app": "Zobrazovat oznámení v aplikaci"
 		},
 		"devices": {
 			"title": "Zařízení",
 			"push": {
-				"enabled": "",
+				"enabled": "Oznámení povolena",
 				"not-enabled": "Push oznámení zakázána"
 			}
 		},
 		"multi-member-settings": {
-			"title": "",
+			"title": "Natavení konverzace",
 			"members-button": {
-				"title": ""
+				"title": "Stav sítě členů ({{count}})"
 			},
 			"add-member-button": "Přidat člena",
 			"members-dropdown": {
-				"search-placeholder": "",
-				"conversation-booster": "",
-				"replication-type": "",
-				"user-type": ""
+				"search-placeholder": "Vyhledat člena",
+				"conversation-booster": "Přidat konverzační vylepšení",
+				"replication-type": "Replikační uzel",
+				"user-type": "Uživatelské zařízení"
 			},
 			"invite-button": "Pozvat pomocí odkazu",
 			"save-button": "Uložit konverzaci na server"
 		},
 		"add-members": {
 			"members": "Členové",
-			"contacts": "",
-			"add": ""
+			"contacts": "Kontakty",
+			"add": "Přidat!"
 		},
 		"multi-member-qr": {
 			"title": "QR skupina"
@@ -445,105 +445,105 @@
 		"one-to-one": {
 			"contact-request-box": {
 				"title": "Žádost o kontakt",
-				"group-invitation": "",
-				"refuse-button": "",
+				"group-invitation": "Pozvánka skupiny",
+				"refuse-button": "Odmítnout",
 				"accept-button": "Přijmout",
-				"accepted-button": "",
-				"error": "",
-				"you-invited": "",
-				"this-contact": "",
-				"to-a-group": ""
+				"accepted-button": "Přijmuto",
+				"error": "Chyba při přidávání do skupiny ☹️ Naše chyba!",
+				"you-invited": "Pozvali jste",
+				"this-contact": "tento kontakt",
+				"to-a-group": "do skupiny! 💌"
 			},
 			"infos-chat": {
 				"connection-confirmed": "👋 Berty spojení potvrzeno! 🎉",
 				"request-sent": "Žádost odeslána :plane:",
-				"incoming": "",
-				"outgoing": "",
-				"refresh-button": ""
+				"incoming": "Přijmout tento požadavek k odpovědi!",
+				"outgoing": "Čeká se na odpověď vašeho kontaktu, abyste se mohli připojit!",
+				"refresh-button": "Znovu odeslat žádost o kontakt"
 			},
 			"incoming-input-placeholder": "",
-			"input-placeholder": ""
+			"input-placeholder": "Pište zde..."
 		},
 		"one-to-one-settings": {
-			"title": "",
+			"title": "Natavení konverzace",
 			"save-button": "Uložit konverzaci na server"
 		},
 		"replicate-group-settings": {
 			"title": "Ukládání konverzace na server",
-			"no-registered-button": "",
+			"no-registered-button": "Není registrována žádná replikační služba",
 			"connect-button": "Připojit ke službám provozovaným Berty",
 			"manage-add-button": "Spravovat nebo přidat služby"
 		},
 		"user-message": {
-			"read-more": "",
-			"show-less": ""
+			"read-more": "Více informací",
+			"show-less": "Zobrazit méně"
 		}
 	},
 	"account": {
-		"deleting": "",
-		"creating": "",
+		"deleting": "Mazání účtu...",
+		"creating": "Vytváření účtu...",
 		"opening": {
-			"alert-push-title": "",
-			"alert-push-go-failed": "",
-			"alert-push-fetch-failed": "",
-			"alert-push-perm-denied": "",
-			"alert-push-desc": "",
-			"alert-push-button": ""
+			"alert-push-title": "Oznámení",
+			"alert-push-go-failed": "Došlo k chybě při registraci ke službě oznámení Berty.",
+			"alert-push-fetch-failed": "Nelze se připojit ke službě oznámení Berty.",
+			"alert-push-perm-denied": "Žádost o oprávnění k oznámením byla zamítnuta.",
+			"alert-push-desc": "Tuto funkci můžete kdykoli znovu aktivovat v Nastavení.",
+			"alert-push-button": "Pokračovat"
 		}
 	},
 	"permission": {
 		"notification": {
-			"title": "",
-			"desc": ""
+			"title": "Oznámení",
+			"desc": "Aplikace Berty potřebuje oprávnění k zasílání oznámení. Tato oznámení vás informují, když obržíte novou zprávu."
 		},
 		"proximity": {
-			"title": "",
-			"android-desc": "",
-			"ios-desc": ""
+			"title": "Bluetooth zprávy",
+			"android-desc": "Pro výměnu zpráv offline přes Bluetooth (ikdyž je aplikace na pozadí) vyžaduje Android API oprávnění k poloze. Data o vaší poloze nijak nepoužíváme.",
+			"ios-desc": "Pro výměnu zpráv offline přes Bluetooth, iOS API vyžaduje oprávnění."
 		},
 		"camera": {
 			"title": "Kamera",
-			"desc": ""
+			"desc": "Chcete autorizovat fotoaparát pro pořizování obrázků nebo skenování QR kódů?"
 		},
 		"audio": {
-			"title": "",
-			"desc": ""
+			"title": "Zvukové zprávy",
+			"desc": "K odesílání zvukových zpráv vašim kontaktům musíte povolit oprávnění k používání mikrofonu aplikací Berty."
 		},
 		"gallery": {
-			"title": "",
-			"desc": ""
+			"title": "Zasílání obrázků",
+			"desc": "K odesílání obrázků vašim kontaktům musíte aplikaci Berty povolit oprávnění pro přístup k fotografiím a jiným mediálním souborům na vašem zařízení."
 		},
 		"button-labels": {
-			"allow": "",
-			"settings": ""
+			"allow": "Povolit",
+			"settings": "Přejít do Nastavení"
 		},
-		"skip": "",
+		"skip": "Přeskočit",
 		"cancel": "Zrušit",
-		"settings-text": ""
+		"settings-text": "{{title}} oprávnění můžete povolit v Nastavení."
 	},
 	"notification": {
 		"need-restart": {
-			"title": "",
-			"desc": ""
+			"title": "Je vyžadován restart",
+			"desc": "Restartujte Berty pro uložení vašich dat a povolení oznámení!"
 		},
 		"submit-failed": {
-			"title": "",
-			"desc": ""
+			"title": "Chyba nemůže být nahlášena",
+			"desc": "Chybí e-mailová aplikace"
 		}
 	},
 	"error": {
 		"labels": {
-			"bug": "",
-			"crash": ""
+			"bug": "Detekována chyba",
+			"crash": "Detekována havárie"
 		},
-		"restart-app": "",
+		"restart-app": "Restartovat aplikaci",
 		"wtf-screen": {
-			"title": "",
-			"desc": "",
-			"desc-report": ""
+			"title": "Co selhalo?",
+			"desc": "Aplikace právě havarovala.",
+			"desc-report": "Klikněte na tlačítko pro ukončení a restart aplikace."
 		},
 		"sorry-screen": {
-			"title": "",
+			"title": "Omlouváme se za tuto chybu!",
 			"desc": "",
 			"desc-em": "",
 			"desc-report": ""
