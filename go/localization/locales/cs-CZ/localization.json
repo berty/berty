@@ -2,64 +2,64 @@
   "auth": {
     "services": {
       "rpl": {
-        "name": "",
-        "description": "",
+        "name": "Replikace",
+        "description": "Tato služba automaticky replikuje vaše konverzace, aby poskytla vašemu zařízení co nejúčinnější výkon sítě.",
         "benefitBadge": "Výkon"
       },
       "psh": {
-        "name": "",
-        "description": "",
+        "name": "Oznámení",
+        "description": "Tato služba umožňuje vašemu zařízení přijímat oznámení o příchozích zprávách.",
         "benefitBadge": "Výkon"
       }
     },
-    "pageTitle": "",
-    "connectButton_one": "",
-    "connectButton_other": "",
+    "pageTitle": "Služby Berty",
+    "connectButton_one": "Používat službu",
+    "connectButton_other": "Používat vybrané služby",
     "privacyPolicyLabel": "Zásady ochrany soukromí"
   },
   "push": {
     "message": {
-      "title": ""
+      "title": "Nová zpráva"
     },
     "error": {
-      "title": ""
+      "title": "Odšifrování oznámení selhalo"
     },
     "voiceMessage": {
-      "bodyWithNumberOfMedia_one": "",
-      "bodyWithNumberOfMedia_other": ""
+      "bodyWithNumberOfMedia_one": "Poslat hlasovou zprávu",
+      "bodyWithNumberOfMedia_other": "Odesláno %[1]v hlasových zpráv"
     },
     "gif": {
-      "bodyWithNumberOfMedia_one": "",
-      "bodyWithNumberOfMedia_other": ""
+      "bodyWithNumberOfMedia_one": "Poslat GIF",
+      "bodyWithNumberOfMedia_other": "Odesláno %[1]v GIFů"
     },
     "photo": {
-      "bodyWithNumberOfMedia_one": "",
-      "bodyWithNumberOfMedia_other": ""
+      "bodyWithNumberOfMedia_one": "Poslat fotografii",
+      "bodyWithNumberOfMedia_other": "Odesláno %[1]v fotografií"
     },
     "media": {
-      "bodyWithNumberOfMedia_one": "",
-      "bodyWithNumberOfMedia_other": ""
+      "bodyWithNumberOfMedia_one": "Poslat média",
+      "bodyWithNumberOfMedia_other": "Odesláno %[1]v médií"
     },
     "reaction": {
-      "bodyWithDisplayNameAndEmoji": ""
+      "bodyWithDisplayNameAndEmoji": "%[1]v reagovalo s %[2]v na vaši zprávu"
     },
     "groupInvitation": {
-      "bodyWithGroupName": ""
+      "bodyWithGroupName": "Vás pozval/a do %[1]v"
     },
     "unknown": {
-      "body": ""
+      "body": "Bylo přijato něco nového"
     },
     "conversationNameChanged": {
-      "body": ""
+      "body": "Název konverzace byl aktualizován"
     },
     "memberNameChanged": {
-      "body": ""
+      "body": "Zobrazované jméno bylo aktualizováno"
     },
     "memberPictureChanged": {
-      "body": ""
+      "body": "Profilový obrázek byl aktualizován"
     },
     "memberDetailsChanged": {
-      "body": ""
+      "body": "Detaily člena byly aktualizovány"
     }
   }
 }
