@@ -3835,6 +3835,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   identifier: {
                     type: "string",
                     id: 6
+                  },
+                  issuer: {
+                    type: "string",
+                    id: 7
                   }
                 }
               },
@@ -5439,6 +5443,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       sharedPushTokens: {
                         type: "int64",
                         id: 12
+                      },
+                      accountVerifiedCredentials: {
+                        type: "int64",
+                        id: 13
                       }
                     },
                     reserved: [
@@ -5525,6 +5533,14 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   hidePushPreviews: {
                     type: "bool",
                     id: 13
+                  },
+                  verifiedCredentials: {
+                    rule: "repeated",
+                    type: "AccountVerifiedCredential",
+                    id: 14,
+                    options: {
+                      "(gogoproto.moretags)": "gorm:foreignKey:AccountPK"
+                    }
                   }
                 },
                 reserved: [
@@ -5987,6 +6003,33 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     options: {
                       "(gogoproto.moretags)": "gorm:index"
                     }
+                  }
+                }
+              },
+              AccountVerifiedCredential: {
+                fields: {
+                  accountPk: {
+                    type: "string",
+                    id: 1,
+                    options: {
+                      "(gogoproto.customname)": "AccountPK"
+                    }
+                  },
+                  identifier: {
+                    type: "string",
+                    id: 2
+                  },
+                  registrationDate: {
+                    type: "int64",
+                    id: 3
+                  },
+                  expirationDate: {
+                    type: "int64",
+                    id: 4
+                  },
+                  issuer: {
+                    type: "string",
+                    id: 5
                   }
                 }
               },

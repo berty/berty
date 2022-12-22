@@ -14,6 +14,7 @@
     - [AccountUpdate](#berty-messenger-v1-AccountUpdate)
     - [AccountUpdate.Reply](#berty-messenger-v1-AccountUpdate-Reply)
     - [AccountUpdate.Request](#berty-messenger-v1-AccountUpdate-Request)
+    - [AccountVerifiedCredential](#berty-messenger-v1-AccountVerifiedCredential)
     - [AppMessage](#berty-messenger-v1-AppMessage)
     - [AppMessage.Acknowledge](#berty-messenger-v1-AppMessage-Acknowledge)
     - [AppMessage.GroupInvitation](#berty-messenger-v1-AppMessage-GroupInvitation)
@@ -193,6 +194,7 @@
 | muted_until | [int64](#int64) |  |  |
 | hide_in_app_notifications | [bool](#bool) |  |  |
 | hide_push_previews | [bool](#bool) |  |  |
+| verified_credentials | [AccountVerifiedCredential](#berty-messenger-v1-AccountVerifiedCredential) | repeated |  |
 
 <a name="berty-messenger-v1-AccountGet"></a>
 
@@ -247,6 +249,18 @@
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | display_name | [string](#string) |  |  |
+
+<a name="berty-messenger-v1-AccountVerifiedCredential"></a>
+
+### AccountVerifiedCredential
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| account_pk | [string](#string) |  |  |
+| identifier | [string](#string) |  |  |
+| registration_date | [int64](#int64) |  |  |
+| expiration_date | [int64](#int64) |  |  |
+| issuer | [string](#string) |  |  |
 
 <a name="berty-messenger-v1-AppMessage"></a>
 
@@ -1297,7 +1311,8 @@ status events
 | service_tokens | [int64](#int64) |  |  |
 | conversation_replication_info | [int64](#int64) |  |  |
 | metadata_events | [int64](#int64) |  |  |
-| shared_push_tokens | [int64](#int64) |  | older, more recent |
+| shared_push_tokens | [int64](#int64) |  |  |
+| account_verified_credentials | [int64](#int64) |  | older, more recent |
 
 <a name="berty-messenger-v1-SystemInfo-Messenger"></a>
 

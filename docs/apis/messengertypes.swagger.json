@@ -1432,6 +1432,10 @@
         "shared_push_tokens": {
           "type": "string",
           "format": "int64"
+        },
+        "account_verified_credentials": {
+          "type": "string",
+          "format": "int64"
         }
       }
     },
@@ -1597,6 +1601,12 @@
         },
         "hide_push_previews": {
           "type": "boolean"
+        },
+        "verified_credentials": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1AccountVerifiedCredential"
+          }
         }
       }
     },
@@ -1844,6 +1854,28 @@
       "type": "object",
       "properties": {
         "display_name": {
+          "type": "string"
+        }
+      }
+    },
+    "v1AccountVerifiedCredential": {
+      "type": "object",
+      "properties": {
+        "account_pk": {
+          "type": "string"
+        },
+        "identifier": {
+          "type": "string"
+        },
+        "registration_date": {
+          "type": "string",
+          "format": "int64"
+        },
+        "expiration_date": {
+          "type": "string",
+          "format": "int64"
+        },
+        "issuer": {
           "type": "string"
         }
       }

@@ -15,6 +15,8 @@ import (
 
 const (
 	TyberEventAcknowledgeReceived = "Acknowledge received"
+
+	MilliToNanoFactor = 1000000
 )
 
 func CheckDeviceIsMe(ctx context.Context, client protocoltypes.ProtocolServiceClient, gme *protocoltypes.GroupMessageEvent) (bool, error) {
@@ -56,7 +58,7 @@ func B64DecodeBytes(s string) ([]byte, error) {
 }
 
 func TimestampMs(t time.Time) int64 {
-	return t.UnixNano() / 1000000
+	return t.UnixNano() / MilliToNanoFactor
 }
 
 func EnsureValidBase64CID(str string) error {

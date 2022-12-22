@@ -116,6 +116,7 @@ func getDBModels() []interface{} {
 		&messengertypes.ConversationReplicationInfo{},
 		&messengertypes.MetadataEvent{},
 		&messengertypes.SharedPushToken{},
+		&messengertypes.AccountVerifiedCredential{},
 	}
 }
 
@@ -415,7 +416,10 @@ func (d *DBWrapper) UpdateAccount(pk, url, displayName string) (*messengertypes.
 // atomic
 func (d *DBWrapper) GetAccount() (*messengertypes.Account, error) {
 	var accounts []messengertypes.Account
-	if err := d.db.Model(&messengertypes.Account{}).Preload("ServiceTokens").Find(&accounts).Error; err != nil {
+	if err := d.db.Model(&messengertypes.Account{}).
+		Preload("ServiceTokens").
+		Preload("VerifiedCredentials").
+		Find(&accounts).Error; err != nil {
 		return nil, err
 	}
 	if len(accounts) == 0 {
@@ -831,6 +835,9 @@ func (d *DBWrapper) GetDBInfo() (*messengertypes.SystemInfo_DB, error) {
 	errs = multierr.Append(errs, err)
 
 	infos.SharedPushTokens, err = d.dbModelRowsCount(messengertypes.SharedPushToken{})
+	errs = multierr.Append(errs, err)
+
+	infos.AccountVerifiedCredentials, err = d.dbModelRowsCount(messengertypes.AccountVerifiedCredential{})
 	errs = multierr.Append(errs, err)
 
 	return infos, errs
@@ -1575,4 +1582,77 @@ func (d *DBWrapper) GetMuteStatusForConversation(key string) (accountMuted bool,
 	conversationMuted = mutedUntil > time.Now().UnixNano()/1000
 
 	return accountMuted, conversationMuted, nil
+}
+
+func (d *DBWrapper) SaveAccountVerifiedCredential(ev *protocoltypes.AccountVerifiedCredentialRegistered) error {
+	if ev.ExpirationDate <= messengerutil.MilliToNanoFactor {
+		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("invalid value for expiration date field"))
+	}
+
+	if ev.RegistrationDate <= messengerutil.MilliToNanoFactor || ev.RegistrationDate > ev.ExpirationDate {
+		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("invalid value for registration date field"))
+	}
+
+	if ev.Identifier == "" {
+		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("invalid value for identifier field"))
+	}
+
+	if ev.Issuer == "" {
+		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("invalid value for issuer field"))
+	}
+
+	acc, err := d.GetAccount()
+	if err != nil {
+		return errcode.ErrBertyAccountDataNotFound.Wrap(err)
+	}
+
+	if err := d.db.Transaction(func(tx *gorm.DB) error {
+		elt := &messengertypes.AccountVerifiedCredential{
+			AccountPK:        acc.PublicKey,
+			Identifier:       ev.Identifier,
+			ExpirationDate:   ev.ExpirationDate / messengerutil.MilliToNanoFactor,
+			RegistrationDate: ev.RegistrationDate / messengerutil.MilliToNanoFactor,
+			Issuer:           ev.Issuer,
+		}
+
+		count := int64(0)
+
+		if err := tx.
+			Model(&messengertypes.AccountVerifiedCredential{}).
+			Where("identifier == ? AND issuer == ? AND expiration_date >= ?", ev.Identifier, ev.Issuer, ev.ExpirationDate/messengerutil.MilliToNanoFactor).
+			Count(&count).
+			Error; err != nil {
+			return err
+		}
+
+		if count > 0 {
+			// Nothing to be done, a record already exists for this verified credential (same one or more recent)
+			return nil
+		}
+
+		if err := tx.
+			Model(&messengertypes.AccountVerifiedCredential{}).
+			Where("identifier == ? AND issuer == ? AND expiration_date < ?", ev.Identifier, ev.Issuer, ev.ExpirationDate/messengerutil.MilliToNanoFactor).
+			Count(&count).
+			Error; err != nil {
+			return err
+		}
+
+		if count > 0 {
+			if err := tx.
+				Delete(&messengertypes.AccountVerifiedCredential{}, "identifier == ? AND issuer == ? AND expiration_date < ?", ev.Identifier, ev.Issuer, ev.ExpirationDate/messengerutil.MilliToNanoFactor).
+				Error; err != nil {
+				return err
+			}
+		}
+		if err := tx.Model(&messengertypes.AccountVerifiedCredential{}).Create(elt).Error; err != nil {
+			return errcode.ErrDBWrite.Wrap(err)
+		}
+
+		return nil
+	}); err != nil {
+		return errcode.ErrDBWrite.Wrap(err)
+	}
+
+	return nil
 }

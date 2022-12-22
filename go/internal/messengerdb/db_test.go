@@ -624,7 +624,7 @@ func Test_dbWrapper_deleteInteractions(t *testing.T) {
 	require.Equal(t, "Qm0004", interaction.CID)
 }
 
-func Test_dbWrapper_getAccount(t *testing.T) {
+func Test_dbWrapper_GetAccount(t *testing.T) {
 	refAccount := &messengertypes.Account{
 		PublicKey: "pk1",
 		Link:      "https://link1/",
@@ -664,12 +664,36 @@ func Test_dbWrapper_getAccount(t *testing.T) {
 		ServiceType:       "srv1",
 		AuthenticationURL: "https://url1/",
 	}).Error)
+	require.NoError(t, db.db.Create(&messengertypes.AccountVerifiedCredential{
+		AccountPK:        refAccount.PublicKey,
+		Identifier:       "id1",
+		RegistrationDate: messengerutil.TimestampMs(time.Now()),
+		ExpirationDate:   messengerutil.TimestampMs(time.Now().Add(time.Hour)),
+		Issuer:           "iss1",
+	}).Error)
+	require.NoError(t, db.db.Create(&messengertypes.AccountVerifiedCredential{
+		AccountPK:        refAccount.PublicKey,
+		Identifier:       "id2",
+		RegistrationDate: messengerutil.TimestampMs(time.Now()),
+		ExpirationDate:   messengerutil.TimestampMs(time.Now().Add(time.Hour)),
+		Issuer:           "iss2",
+	}).Error)
+	require.NoError(t, db.db.Create(&messengertypes.AccountVerifiedCredential{
+		AccountPK:        refOtherAccount.PublicKey,
+		Identifier:       "id3",
+		RegistrationDate: messengerutil.TimestampMs(time.Now()),
+		ExpirationDate:   messengerutil.TimestampMs(time.Now().Add(time.Hour)),
+		Issuer:           "iss3",
+	}).Error)
 
 	acc, err = db.GetAccount()
 	require.NoError(t, err)
 	require.Equal(t, refAccount.PublicKey, acc.PublicKey)
 	require.Equal(t, refAccount.Link, acc.Link)
 	require.Len(t, acc.ServiceTokens, 1)
+	require.Len(t, acc.VerifiedCredentials, 2)
+	require.Contains(t, []string{acc.VerifiedCredentials[0].Identifier, acc.VerifiedCredentials[1].Identifier}, "id1")
+	require.Contains(t, []string{acc.VerifiedCredentials[0].Identifier, acc.VerifiedCredentials[1].Identifier}, "id2")
 	require.Equal(t, "tok1", acc.ServiceTokens[0].TokenID)
 	require.Equal(t, refAccount.PublicKey, acc.ServiceTokens[0].AccountPK)
 	require.Equal(t, "https://url1/", acc.ServiceTokens[0].AuthenticationURL)
@@ -973,43 +997,54 @@ func Test_dbWrapper_getDBInfo(t *testing.T) {
 	require.NoError(t, err)
 	require.Empty(t, info)
 
-	for i := 0; i < 1; i++ {
+	refCount := 0
+
+	for i := 0; i <= refCount; i++ {
 		db.db.Create(&messengertypes.Account{PublicKey: fmt.Sprintf("%d", i)})
 	}
+	refCount++
 
-	for i := 0; i < 2; i++ {
+	for i := 0; i <= refCount; i++ {
 		db.db.Create(&messengertypes.Contact{PublicKey: fmt.Sprintf("%d", i)})
 	}
+	refCount++
 
-	for i := 0; i < 3; i++ {
+	for i := 0; i <= refCount; i++ {
 		db.db.Create(&messengertypes.Interaction{CID: fmt.Sprintf("%d", i)})
 	}
+	refCount++
 
-	for i := 0; i < 4; i++ {
+	for i := 0; i <= refCount; i++ {
 		db.db.Create(&messengertypes.Conversation{PublicKey: fmt.Sprintf("%d", i)})
 	}
+	refCount++
 
-	for i := 0; i < 5; i++ {
+	for i := 0; i <= refCount; i++ {
 		db.db.Create(&messengertypes.Member{PublicKey: fmt.Sprintf("%d", i)})
 	}
+	refCount++
 
-	for i := 0; i < 6; i++ {
+	for i := 0; i <= refCount; i++ {
 		db.db.Create(&messengertypes.Device{PublicKey: fmt.Sprintf("%d", i)})
 	}
+	refCount++
 
-	for i := 0; i < 7; i++ {
+	for i := 0; i <= refCount; i++ {
 		db.db.Create(&messengertypes.ServiceToken{ServiceType: fmt.Sprintf("%d", i), TokenID: fmt.Sprintf("%d", i)})
 	}
+	refCount++
 
-	for i := 0; i < 8; i++ {
+	for i := 0; i <= refCount; i++ {
 		db.db.Create(&messengertypes.ConversationReplicationInfo{CID: fmt.Sprintf("%d", i)})
 	}
+	refCount++
 
-	for i := 0; i < 10; i++ {
+	for i := 0; i <= refCount; i++ {
 		db.db.Create(&messengertypes.MetadataEvent{CID: fmt.Sprintf("%d", i)})
 	}
+	refCount++
 
-	for i := 0; i < 11; i++ {
+	for i := 0; i <= refCount; i++ {
 		db.db.Create(&messengertypes.SharedPushToken{
 			ConversationPublicKey: fmt.Sprintf("%d", i),
 			MemberPublicKey:       fmt.Sprintf("%d", i),
@@ -1017,25 +1052,48 @@ func Test_dbWrapper_getDBInfo(t *testing.T) {
 			Token:                 fmt.Sprintf("%d", i),
 		})
 	}
+	refCount++
 
+	for i := 0; i <= refCount; i++ {
+		db.db.Create(&messengertypes.AccountVerifiedCredential{Identifier: fmt.Sprintf("%d", i), Issuer: fmt.Sprintf("%d", i), ExpirationDate: int64(i), RegistrationDate: int64(i)})
+	}
+	refCount++
+
+	require.Equal(t, len(getDBModels()), refCount)
+
+	refCount = 0
 	info, err = db.GetDBInfo()
 	require.NoError(t, err)
-	require.Equal(t, int64(1), info.Accounts)
-	require.Equal(t, int64(2), info.Contacts)
-	require.Equal(t, int64(3), info.Interactions)
-	require.Equal(t, int64(4), info.Conversations)
-	require.Equal(t, int64(5), info.Members)
-	require.Equal(t, int64(6), info.Devices)
-	require.Equal(t, int64(7), info.ServiceTokens)
-	require.Equal(t, int64(8), info.ConversationReplicationInfo)
-	require.Equal(t, int64(10), info.MetadataEvents)
-	require.Equal(t, int64(11), info.SharedPushTokens)
+	refCount++
+	require.Equal(t, int64(refCount), info.Accounts)
+	refCount++
+	require.Equal(t, int64(refCount), info.Contacts)
+	refCount++
+	require.Equal(t, int64(refCount), info.Interactions)
+	refCount++
+	require.Equal(t, int64(refCount), info.Conversations)
+	refCount++
+	require.Equal(t, int64(refCount), info.Members)
+	refCount++
+	require.Equal(t, int64(refCount), info.Devices)
+	refCount++
+	require.Equal(t, int64(refCount), info.ServiceTokens)
+	refCount++
+	require.Equal(t, int64(refCount), info.ConversationReplicationInfo)
+	refCount++
+	require.Equal(t, int64(refCount), info.MetadataEvents)
+	refCount++
+	require.Equal(t, int64(refCount), info.SharedPushTokens)
+	refCount++
+	require.Equal(t, int64(refCount), info.AccountVerifiedCredentials)
+
+	require.Equal(t, len(getDBModels()), refCount)
 
 	// Ensure all tables are in the debug data
 	tables := []string(nil)
 	err = db.db.Raw("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' AND name NOT LIKE '%_fts%'").Scan(&tables).Error
 	require.NoError(t, err)
-	expectedTablesCount := 10
+	expectedTablesCount := len(getDBModels())
 	require.Equal(t, expectedTablesCount, len(tables), fmt.Sprintf("expected %d tables in DB, got tables %s", expectedTablesCount, strings.Join(tables, ", ")))
 }
 
@@ -1776,4 +1834,59 @@ func Test_dbWrapper_GetPushTokenSharedForConversation(t *testing.T) {
 	tokens, err := db.GetPushTokenSharedForConversation("conv1")
 	require.NoError(t, err)
 	require.Len(t, tokens, 2)
+}
+
+func Test_dbWrapper_SaveAccountVerifiedCredential(t *testing.T) {
+	db, _, dispose := GetInMemoryTestDB(t)
+	defer dispose()
+
+	db.db.Create(&messengertypes.Account{PublicKey: "test1"})
+
+	err := db.SaveAccountVerifiedCredential(&protocoltypes.AccountVerifiedCredentialRegistered{})
+	require.Error(t, err)
+
+	count := int64(0)
+	err = db.db.Model(&messengertypes.AccountVerifiedCredential{}).Count(&count).Error
+	require.NoError(t, err)
+	require.Equal(t, int64(0), count)
+
+	err = db.SaveAccountVerifiedCredential(&protocoltypes.AccountVerifiedCredentialRegistered{
+		Identifier:       "id1",
+		RegistrationDate: 10 * messengerutil.MilliToNanoFactor,
+		ExpirationDate:   20 * messengerutil.MilliToNanoFactor,
+		Issuer:           "iss1",
+	})
+	require.NoError(t, err)
+
+	err = db.db.Model(&messengertypes.AccountVerifiedCredential{}).Count(&count).Error
+	require.NoError(t, err)
+	require.Equal(t, int64(1), count)
+
+	err = db.SaveAccountVerifiedCredential(&protocoltypes.AccountVerifiedCredentialRegistered{
+		Identifier:       "id1",
+		RegistrationDate: 9 * messengerutil.MilliToNanoFactor,
+		ExpirationDate:   19 * messengerutil.MilliToNanoFactor,
+		Issuer:           "iss1",
+	})
+	require.NoError(t, err)
+
+	err = db.db.Model(&messengertypes.AccountVerifiedCredential{}).Count(&count).Error
+	require.NoError(t, err)
+	require.Equal(t, int64(1), count)
+
+	entry := &messengertypes.AccountVerifiedCredential{}
+	err = db.db.Model(&messengertypes.AccountVerifiedCredential{}).First(&entry, &messengertypes.AccountVerifiedCredential{Identifier: "id1", ExpirationDate: 20}).Error
+	require.NoError(t, err)
+
+	err = db.SaveAccountVerifiedCredential(&protocoltypes.AccountVerifiedCredentialRegistered{
+		Identifier:       "id2",
+		ExpirationDate:   20 * messengerutil.MilliToNanoFactor,
+		RegistrationDate: 10 * messengerutil.MilliToNanoFactor,
+		Issuer:           "iss1",
+	})
+	require.NoError(t, err)
+
+	err = db.db.Model(&messengertypes.AccountVerifiedCredential{}).Count(&count).Error
+	require.NoError(t, err)
+	require.Equal(t, int64(2), count)
 }

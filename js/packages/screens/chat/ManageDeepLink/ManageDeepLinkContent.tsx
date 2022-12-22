@@ -25,6 +25,7 @@ export const ManageDeepLinkContent = (props: ManageDeepLinkContentProps) => {
 	const [reply, setReply] = useState<beapi.messenger.ParseDeepLink.Reply | null | undefined>(null)
 
 	useEffect(() => {
+		console.warn(['Parsing deeplink', props.link])
 		async function parseDeepLink() {
 			const result = await messengerClient?.parseDeepLink({ link: props.link })
 			console.log('result', result)

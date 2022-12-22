@@ -82,6 +82,7 @@ func (s *service) CredentialVerificationServiceCompleteFlow(ctx context.Context,
 		RegistrationDate:   parsedCredential.Issued.UnixNano(),
 		ExpirationDate:     parsedCredential.Expired.UnixNano(),
 		Identifier:         identifier,
+		Issuer:             parsedCredential.Issuer.ID,
 	})
 	if err != nil {
 		return nil, errcode.ErrInternal.Wrap(err)

@@ -7,7 +7,7 @@ d68d3b8c1df8df2c58dbb39b5a1ab6e7b86d9a1e  ../api/bertyverifiablecreds.proto
 c314cc3d08e8849bd0693039e42da117c39efef5  ../api/go-internal/handshake.proto
 9b4665f0290b8e94e5ef4b80572a9304f587c2c7  ../api/go-internal/records.proto
 851d354abf878a3afd1e1759511b7b3ce297330f  ../api/go-internal/testutil.proto
-18f4402787527160b0aacf5524e44cf8c3ac16ad  ../api/messengertypes.proto
-1e5ddadaf98ecfbc9c67163d92e58cabc98b8e4d  ../api/protocoltypes.proto
+3777c92f853175e0d1be49cd4dbbbbe7c3edb756  ../api/messengertypes.proto
+fd87bc4d8a4534f2d5cc1394e33ecb8f68281174  ../api/protocoltypes.proto
 e4a9d6765ed04780b20d6e4cbfa10162e36c5e48  ../api/pushtypes.proto
 14b884cc46303428a164603ccf86b83632ef39e9  Makefile
