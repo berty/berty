@@ -41,7 +41,7 @@ jobs:
           asdf reshim golang
 
       - name: Cache go modules
-        uses: actions/cache@v2.1.6
+        uses: actions/cache@v3.2.0
         with:
           path: ~/go/pkg/mod
           key:          ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-${{ hashFiles('**/go.sum') }}
@@ -65,7 +65,7 @@ jobs:
         run: git checkout ${{ github.event.pull_request.base.sha }}
 
       - name: Cache go modules (master)
-        uses: actions/cache@v2.1.6
+        uses: actions/cache@v3.2.0
         with:
           path: ~/go/pkg/mod
           key:          ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-${{ hashFiles('**/go.sum') }}
