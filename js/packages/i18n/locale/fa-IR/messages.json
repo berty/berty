@@ -35,7 +35,7 @@
 					"ble-button": "بلوتوث کم مصرف",
 					"nearby-button": "اندروید در نزدیکی",
 					"mc-button": "قابلیت اتصال چندپایه اپل",
-					"mdns-button": ""
+					"mdns-button": "DNS چند پخشی (شبکه محلی)"
 				},
 				"routing": {
 					"title": "مسیریابی",
@@ -44,28 +44,28 @@
 				},
 				"access": {
 					"title": "دسترسی به شبکه",
-					"relay-button": "",
-					"bootstrap-button": ""
+					"relay-button": "گره رله (فعال)",
+					"bootstrap-button": "گره بوت استرپ"
 				},
 				"modals": {
 					"add": {
 						"title": {
-							"relay": "",
-							"bootstrap": "",
-							"rdvp": ""
+							"relay": "افزودن گره رله (فعال)",
+							"bootstrap": "افزودن گره بوت استرپ",
+							"rdvp": "افزودن گره RDVP"
 						}
 					},
 					"edit": {
 						"title": {
-							"relay": "",
-							"bootstrap": "",
-							"rdvp": ""
+							"relay": "ویرایش گره رله (فعال)",
+							"bootstrap": "ویرایش گره بوت استرپ",
+							"rdvp": "ویرایش گره RDVP"
 						}
 					},
 					"errors": {
-						"alias-already-exists": "",
-						"multiaddr-alread-exists": "",
-						"multiaddr-bad-format": "",
+						"alias-already-exists": "نام مستعار از قبل وجود دارد",
+						"multiaddr-alread-exists": "نشانی چندگانه از قبل وجود دارد",
+						"multiaddr-bad-format": "فرمت نامعتبر نشانی چندگانه",
 						"multiaddr-p2p": ""
 					},
 					"buttons": {
