@@ -9,6 +9,8 @@ import {
 	ViewToken,
 	StyleSheet,
 	Animated,
+	NativeSyntheticEvent,
+	NativeScrollEvent,
 } from 'react-native'
 
 import beapi from '@berty/api'
@@ -27,7 +29,6 @@ import { pbDateToNum } from '@berty/utils/convert/time'
 import { InfosChat } from '../InfosChat'
 import { ChatDate } from './ChatDate'
 import { InfosMultiMember } from './InfosMultiMember'
-import { MemberBar } from './member-bar/MemberBar'
 import { Message } from './message'
 
 const CenteredActivityIndicator: React.FC<ActivityIndicatorProps> = React.memo(props => {
@@ -241,10 +242,10 @@ export const MessageList: React.FC<{
 			}
 		}, [fetchingFrom, oldestMessage?.cid])
 
-		const xVal = fadeAnim.interpolate({
-			inputRange: [0, 1],
-			outputRange: [0, 250],
-		})
+		/* const xVal = fadeAnim.interpolate({
+      inputRange: [0, 1],
+      outputRange: [0, 250],
+    }) */
 
 		return (
 			<View style={styles.container}>
@@ -253,11 +254,12 @@ export const MessageList: React.FC<{
 						<ActivityIndicator color={colors['background-header']} />
 					</View>
 				)}
-				{!!isGroup && (
+				{/* TODO: re enable or delete it when a decision will be take on member bar */}
+				{/*!!isGroup && (
 					<Animated.View style={[{ transform: [{ translateY: xVal }] }, styles.memberBar]}>
 						<MemberBar convId={id} />
 					</Animated.View>
-				)}
+				)*/}
 				<FlashList
 					overScrollMode='never'
 					initialScrollIndex={initialScrollIndex}
@@ -275,7 +277,7 @@ export const MessageList: React.FC<{
 					renderItem={renderItem}
 					onViewableItemsChanged={__DEV__ ? undefined : updateStickyDateCB}
 					estimatedItemSize={50}
-					onScrollEndDrag={event => {
+					onScrollEndDrag={(event: NativeSyntheticEvent<NativeScrollEvent>) => {
 						if (isGroup) {
 							if (event.nativeEvent.velocity?.y === 0) {
 								handleScrollEndDrag()
