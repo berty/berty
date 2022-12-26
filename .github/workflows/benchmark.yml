@@ -210,6 +210,13 @@ jobs:
           EOF
 
       - uses: actions/upload-artifact@v3
+        if: github.ref == 'refs/heads/master'
+        with:
+          name: "bench-master"
+          path: go/pprof_html
+
+      - uses: actions/upload-artifact@v3
+        if: github.ref != 'refs/heads/master'
         with:
           name: "bench-${{ github.event.pull_request.number  }}"
           path: go/pprof_html
