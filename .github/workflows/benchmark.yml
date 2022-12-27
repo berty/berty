@@ -24,8 +24,17 @@ jobs:
     name: Run benchmarks
     runs-on: ubuntu-latest
     steps:
+      - name: has secrets
+        env:
+          SSH_DEPLOY_KEY: ${{ secrets.BERTY_BENCH_KEY }}
+        run: |
+          echo "$SSH_DEPLOY_KEY" | wc -c
+
       - name: Setup asdf
         uses: asdf-vm/actions/setup@v1
+
+      - name: Setup Graphviz
+        uses: ts-graphviz/setup-graphviz@v1
 
       - name: Checkout
         uses: actions/checkout@v2
@@ -59,13 +68,15 @@ jobs:
         env:
           TEST_SPEED: any
           GO_TEST_PATH: ./internal/benchmark
-          GO_TEST_OPTS: -bench=. -test.benchmem -test.timeout=1200s -count=5 -tags "fts5 sqlite sqlite_unlock_notify"
+          GO_TEST_OPTS: -bench=. -test.benchmem -cpuprofile cpu_head.prof -memprofile mem_head.prof -test.timeout=1200s -count=5 -tags "fts5 sqlite sqlite_unlock_notify"
 
       - name: Checkout base commit
         run: git checkout ${{ github.event.pull_request.base.sha }}
+        if: github.event_name == 'pull_request'
 
       - name: Cache go modules (master)
         uses: actions/cache@v2.1.6
+        if: github.event_name == 'pull_request'
         with:
           path: ~/go/pkg/mod
           key:          ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-${{ hashFiles('**/go.sum') }}
@@ -73,23 +84,139 @@ jobs:
 
       - name: Compile the project on Unix-like operating systems (master)
         working-directory: go
+        if: github.event_name == 'pull_request'
         run: |
           touch gen.sum # avoid triggering make generate
           make go.install
 
       - name: Run benchmark (master)
         run: make go.unittest | tee output_base.txt
+        if: github.event_name == 'pull_request'
         working-directory: go
         env:
           TEST_SPEED: any
           GO_TEST_PATH: ./internal/benchmark
-          GO_TEST_OPTS: -bench=. -test.benchmem -test.timeout=1200s -count=5 -tags "fts5 sqlite sqlite_unlock_notify"
+          GO_TEST_OPTS: -bench=. -test.benchmem -cpuprofile cpu_base.prof -memprofile mem_base.prof -test.timeout=1200s -count=5 -tags "fts5 sqlite sqlite_unlock_notify"
 
       - name: Benchstat
-        id: benchstat
+        id: benchstat-master
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        run: |
+          echo 'Benchmark report' >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          benchstat output_head.txt >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+        working-directory: go
+
+      - name: Benchstat PR
+        id: benchstat-pr
+        if: github.event_name == 'pull_request'
         run: |
           echo 'Benchmark report' >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
           benchstat output_head.txt output_base.txt >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
         working-directory: go
+
+      - name: Generate pprof html files
+        id: pprof-html-files-no-relative
+        working-directory: go
+        run: |
+          mkdir -p pprof_html/head/{cpu,mem}/{top,flamegraph,peek,source}
+
+          go tool pprof -http 0.0.0.0:9402 -no_browser ./cpu_head.prof < /dev/null & # https://github.com/google/pprof/issues/401#issuecomment-739576424
+          sleep 2
+          curl http://localhost:9402/ui/ > pprof_html/head/cpu/index.html
+          curl http://localhost:9402/ui/top > pprof_html/head/cpu/top/index.html
+          curl http://localhost:9402/ui/flamegraph > pprof_html/head/cpu/flamegraph/index.html
+          curl http://localhost:9402/ui/peek > pprof_html/head/cpu/peek/index.html
+          curl http://localhost:9402/ui/source > pprof_html/head/cpu/source/index.html
+          pkill pprof
+          sleep 2
+
+          go tool pprof -http 0.0.0.0:9402 -no_browser ./mem_head.prof < /dev/null &
+          sleep 2
+          curl http://localhost:9402/ui/ > pprof_html/head/mem/index.html
+          curl http://localhost:9402/ui/top > pprof_html/head/mem/top/index.html
+          curl http://localhost:9402/ui/flamegraph > pprof_html/head/mem/flamegraph/index.html
+          curl http://localhost:9402/ui/peek > pprof_html/head/mem/peek/index.html
+          curl http://localhost:9402/ui/source > pprof_html/head/mem/source/index.html
+          pkill pprof
+          sleep 2
+
+          cat << EOF > pprof_html/index.html
+          <!DOCTYPE html>
+          <html>
+          <head>
+          <meta charset="UTF-8" />
+          <title>pprof output</title>
+          </head>
+          <body>
+          <h2>CPU output</h2>
+          <ul>
+            <li><a href="./head/cpu/">Graph</a></li>
+            <li><a href="./head/cpu/top/">Top</a></li>
+            <li><a href="./head/cpu/flamegraph/">Flamegraph</a></li>
+            <li><a href="./head/cpu/peek/">Peek</a></li>
+            <li><a href="./head/cpu/source/">Source</a></li>
+          </ul>
+          <h2>Memory output</h2>
+          <ul>
+            <li><a href="./head/mem/">Graph</a></li>
+            <li><a href="./head/mem/top/">Top</a></li>
+            <li><a href="./head/mem/flamegraph/">Flamegraph</a></li>
+            <li><a href="./head/mem/peek/">Peek</a></li>
+            <li><a href="./head/mem/source/">Source</a></li>
+          </ul>
+          EOF
+
+
+      - name: Generate pprof html files (PR)
+        id: pprof-html-files-pr
+        working-directory: go
+        run: |
+          mkdir -p pprof_html/base_comp/{cpu,mem}
+
+          go tool pprof -http 0.0.0.0:9402 --diff_base=./cpu_base.prof -no_browser ./cpu_head.prof < /dev/null &
+          sleep 2
+          curl http://localhost:9402/ui/ > pprof_html/base_comp/cpu/index.html
+          pkill pprof
+          sleep 2
+
+          go tool pprof -http 0.0.0.0:9402 --diff_base=./mem_base.prof -no_browser ./mem_head.prof < /dev/null &
+          sleep 2
+          curl http://localhost:9402/ui/ > pprof_html/base_comp/mem/index.html
+          pkill pprof
+          sleep 2
+
+          cat << EOF >> pprof_html/index.html
+          <h2>CPU diff against ${{ github.event.pull_request.base.sha }}</h2>
+          <ul>
+            <li><a href="./base_comp/cpu/">Graph</a></li>
+          </ul>
+          <h2>Memory diff against ${{ github.event.pull_request.base.sha }}</h2>
+          <ul>
+            <li><a href="./base_comp/mem/">Graph</a></li>
+          </ul>
+          EOF
+
+      - name: Generate pprof html files (footer)
+        id: pprof-html-files-footer
+        working-directory: go
+        run: |
+          cat << EOF >> pprof_html/index.html
+          </body>
+          </html>
+          EOF
+
+      - uses: actions/upload-artifact@v3
+        if: github.ref == 'refs/heads/master'
+        with:
+          name: "bench-master"
+          path: go/pprof_html
+
+      - uses: actions/upload-artifact@v3
+        if: github.ref != 'refs/heads/master'
+        with:
+          name: "bench-${{ github.event.pull_request.number  }}"
+          path: go/pprof_html
