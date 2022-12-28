@@ -24,12 +24,6 @@ jobs:
     name: Run benchmarks
     runs-on: ubuntu-latest
     steps:
-      - name: has secrets
-        env:
-          SSH_DEPLOY_KEY: ${{ secrets.BERTY_BENCH_KEY }}
-        run: |
-          echo "$SSH_DEPLOY_KEY" | wc -c
-
       - name: Setup asdf
         uses: asdf-vm/actions/setup@v1
 
@@ -37,7 +31,7 @@ jobs:
         uses: ts-graphviz/setup-graphviz@v1
 
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 50 # this is to make sure we obtain the target base commit#
 
@@ -100,7 +94,7 @@ jobs:
 
       - name: Benchstat
         id: benchstat-master
-        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        if: github.ref == 'refs/heads/master' && github.event_name != 'pull_request'
         run: |
           echo 'Benchmark report' >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
@@ -172,6 +166,7 @@ jobs:
 
 
       - name: Generate pprof html files (PR)
+        if: github.event_name == 'pull_request'
         id: pprof-html-files-pr
         working-directory: go
         run: |
@@ -209,14 +204,18 @@ jobs:
           </html>
           EOF
 
-      - uses: actions/upload-artifact@v3
+      # upload arifacts
+      #
+      - name: upload artifact (master)
+        uses: actions/upload-artifact@v3
         if: github.ref == 'refs/heads/master'
         with:
           name: "bench-master"
           path: go/pprof_html
 
-      - uses: actions/upload-artifact@v3
-        if: github.ref != 'refs/heads/master'
+      - name: upload artifact (PR)
+        uses: actions/upload-artifact@v3
+        if: github.event_name == 'pull_request'
         with:
           name: "bench-${{ github.event.pull_request.number  }}"
           path: go/pprof_html
