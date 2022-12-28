@@ -15,9 +15,9 @@ public class BertyLogger {
         BertyLogger.bridge = bridge
     }
 
-    private static func log(_ level: (String, Int), _ message: String) {
+    private static func log(_ level: (String, Int, OSLogType), _ message: String) {
         if (BertyLogger.bridge == nil) {
-            os_log("[%s] %s", level.0, message)
+            os_log("[%{public}s] [] %{public}s", type: level.2, level.0, message)
             return
         }
 
@@ -25,18 +25,18 @@ public class BertyLogger {
     }
 
     public static func debug(_ message: String) {
-        BertyLogger.log(("DEBUG", BertybridgeDebug), message)
+      BertyLogger.log(("DEBUG", BertybridgeDebug, .debug), message)
     }
 
     public static func info(_ message: String) {
-        BertyLogger.log(("INFO", BertybridgeInfo), message)
+      BertyLogger.log(("INFO", BertybridgeInfo, .info), message)
     }
 
     public static func warn(_ message: String) {
-        BertyLogger.log(("WARN", BertybridgeWarn), message)
+      BertyLogger.log(("WARN", BertybridgeWarn, .info), message)
     }
 
     public static func error(_ message: String) {
-        BertyLogger.log(("ERROR", BertybridgeError), message)
+      BertyLogger.log(("ERROR", BertybridgeError, .error), message)
     }
 }
