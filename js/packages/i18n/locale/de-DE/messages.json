@@ -4,30 +4,30 @@
 			"screenTitle": "",
 			"title": "",
 			"desc": "kostenloses und sicheres Peer-to-Peer-Messaging",
-			"create-button": "",
-			"import-button": ""
+			"create-button": "Ein Konto erstellen",
+			"import-button": "Ein Konto importieren"
 		},
 		"default-mode": {
 			"summary": {
 				"title": "",
-				"screenTitle": "",
+				"screenTitle": "Konto erstellen",
 				"subtitle": "",
 				"first-point": "",
 				"second-point": "",
 				"third-point": "",
-				"back-button": "",
-				"accept-button": ""
+				"back-button": "Zurück",
+				"accept-button": "Los geht's"
 			}
 		},
 		"custom-mode": {
 			"summary": {
-				"screenTitle": "",
+				"screenTitle": "Konto erstellen - Einstellungen anpassen",
 				"title": "",
 				"subtitle": "",
 				"first-point": "",
 				"second-point": "",
-				"back-button": "",
-				"accept-button": ""
+				"back-button": "Zurück",
+				"accept-button": "Weiter"
 			},
 			"settings": {
 				"off-grid": {
