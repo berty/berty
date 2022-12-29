@@ -12,6 +12,7 @@ const prefixFail = `${styles.red.open}[Fail]${styles.red.close}`;
 const prefixDone = `${styles.green.open}[Done]${styles.green.close}`;
 
 const firstName = "Archan"
+const lastName = "Agrawal"
 
 function printUsageAndExit(reason) {
 	const scriptPath = path.basename(__filename);
