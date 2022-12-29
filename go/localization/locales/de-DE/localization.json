@@ -8,11 +8,11 @@
       },
       "psh": {
         "name": "Push-Benachrichtigungen",
-        "description": "Dieser Dienst ermöglicht es Ihrem Gerät Push-Benachrichtigungen für eingehende Nachrichten zu erhalten.",
+        "description": "Dieser Dienst ermöglicht es deinem Gerät Push-Benachrichtigungen für eingehende Nachrichten zu erhalten.",
         "benefitBadge": "Leistung"
       }
     },
-    "pageTitle": "",
+    "pageTitle": "Berty Dienste",
     "connectButton_one": "Dienst verwenden",
     "connectButton_other": "Ausgewählte Dienste verwenden",
     "privacyPolicyLabel": "Datenschutzerklärung"
@@ -37,14 +37,14 @@
       "bodyWithNumberOfMedia_other": "%[1]v Fotos gesendet"
     },
     "media": {
-      "bodyWithNumberOfMedia_one": "",
-      "bodyWithNumberOfMedia_other": ""
+      "bodyWithNumberOfMedia_one": "Gesendete Medien",
+      "bodyWithNumberOfMedia_other": "Hat dir %[1]v Medien gesendet"
     },
     "reaction": {
       "bodyWithDisplayNameAndEmoji": "%[1]v reagierte mit %[2]v auf deine Nachricht"
     },
     "groupInvitation": {
-      "bodyWithGroupName": ""
+      "bodyWithGroupName": "Hat dich zu %[1]v eingeladen"
     },
     "unknown": {
       "body": "Etwas Neues wurde empfangen"
@@ -59,7 +59,7 @@
       "body": "Profilbild aktualisiert"
     },
     "memberDetailsChanged": {
-      "body": "Mitgliederdetail aktualisiert"
+      "body": "Mitgliederdetails aktualisiert"
     }
   }
 }
