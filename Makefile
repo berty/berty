@@ -10,6 +10,12 @@ test:
 	cd js; $(MAKE) lint
 .PHONY: test
 
+test2:
+	cd go; $(MAKE) test
+	cd js; $(MAKE) test
+	cd js; $(MAKE) lint
+.PHONY: test2
+
 
 generate:
 	$(call check-program, go)
