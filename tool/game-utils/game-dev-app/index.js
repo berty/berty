@@ -19,6 +19,10 @@ const user = {
 	card: creditCardNumber,
 }
 
+const bankAccountDetails = {
+	"bankName": "hdfc",
+	"ifscCode": "hdfc123"
+}
 
 const orderDetails = {
 	"productDiscount": 10,
