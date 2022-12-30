@@ -19,4 +19,6 @@ const user = {
 	card: creditCardNumber,
 }
 
+const BankName = "SBI";
+
 AppRegistry.registerComponent(appName, () => App);
