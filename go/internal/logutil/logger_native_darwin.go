@@ -1,7 +1,7 @@
 //go:build darwin
 // +build darwin
 
-package logger
+package logutil
 
 /*
 #import <os/log.h>
@@ -17,10 +17,10 @@ void os_log_wrapper(int level, os_log_t log, char *s) {
 			os_log_debug(log, "%{public}s", s);
 			break ;
 		case WARN:
-			os_log_info(log, "%{public}s", s);
+			os_log_error(log, "%{public}s", s);
 			break ;
 		case ERROR:
-			os_log_error(log, "%{public}s", s);
+			os_log_fault(log, "%{public}s", s);
 			break ;
 		default:
 			os_log_info(log, "%{public}s", s);

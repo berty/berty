@@ -30,9 +30,9 @@ func stableWidthCapitalColorLevelEncoder(l zapcore.Level, enc zapcore.PrimitiveA
 	case zapcore.DebugLevel:
 		enc.AppendString(fmt.Sprintf("\x1b[%dm%s\x1b[0m", Magenta, "DEBUG"))
 	case zapcore.InfoLevel:
-		enc.AppendString(fmt.Sprintf("\x1b[%dm%s\x1b[0m", Blue, "INFO "))
+		enc.AppendString(fmt.Sprintf("\x1b[%dm%s\x1b[0m", Blue, "INFO"))
 	case zapcore.WarnLevel:
-		enc.AppendString(fmt.Sprintf("\x1b[%dm%s\x1b[0m", Yellow, "WARN "))
+		enc.AppendString(fmt.Sprintf("\x1b[%dm%s\x1b[0m", Yellow, "WARN"))
 	case zapcore.ErrorLevel:
 		enc.AppendString(fmt.Sprintf("\x1b[%dm%s\x1b[0m", Red, "ERROR"))
 	case zapcore.DPanicLevel:

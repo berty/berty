@@ -14,6 +14,7 @@ import CoreMotion
 public class NotificationDriver: NSObject, BertybridgeNotificationDriverProtocol {
     public static var shared: NotificationDriver = NotificationDriver()
     public static var identifier: String = "tech.berty.ios.bridge.notification"
+    let logger: BertyLogger = BertyLogger("tech.berty.notif")
 
     func set(identifier: String) {
         NotificationDriver.identifier = identifier
@@ -33,7 +34,7 @@ public class NotificationDriver: NSObject, BertybridgeNotificationDriverProtocol
 
         UNUserNotificationCenter.current().add(request) { [weak self] error in
             if let error = error {
-                BertyLogger.warn("unable to schedule notification: \(error.localizedDescription)")
+                self!.logger.warn("unable to schedule notification: \(error.localizedDescription)")
                 return
             }
         }
@@ -49,7 +50,7 @@ public class NotificationDriver: NSObject, BertybridgeNotificationDriverProtocol
             case .authorized, .provisional:
                 self.schedule(notif)
             default:
-                BertyLogger.warn("unable to schedule notification, permission not granted")
+                self.logger.warn("unable to schedule notification, permission not granted")
                 break
             }
         }

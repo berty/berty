@@ -1,7 +1,7 @@
 //go:build !darwin && !android
 // +build !darwin,!android
 
-package logger
+package logutil
 
 import (
 	"fmt"

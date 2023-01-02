@@ -9,33 +9,76 @@ import os
 import Bertybridge
 
 public class BertyLogger {
+    public enum LogLevel: String {
+        case DEBUG
+        case INFO
+        case WARN
+        case ERROR
+      
+        var levelString: String {
+            return self.rawValue
+        }
+
+        var levelGo: Int {
+            switch self {
+            case .DEBUG:
+                return BertybridgeDebug
+            case .WARN:
+                return BertybridgeWarn
+            case .ERROR:
+                return BertybridgeError
+            default:
+                return BertybridgeInfo
+            }
+        }
+
+        var levelNative: OSLogType {
+            switch self {
+            case .DEBUG:
+                return .debug
+            case .WARN:
+                return .error
+            case .ERROR:
+                return .fault
+            default:
+                return .info
+            }
+        }
+    }
+
     private static var bridge: BertybridgeBridge? = nil;
 
     public static func useBridge(_ bridge: BertybridgeBridge?) {
         BertyLogger.bridge = bridge
     }
 
-    private static func log(_ level: (String, Int, OSLogType), _ message: String) {
+    var subsytem: String
+    public init(_ subsytem: String = "logger") {
+        self.subsytem = subsytem
+    }
+
+    public func log(_ level: LogLevel, _ message: String) {
         if (BertyLogger.bridge == nil) {
-            os_log("[%{public}s] [] %{public}s", type: level.2, level.0, message)
+            os_log("[%{public}s] [%{public}s] %{public}s", type: level.levelNative,
+                level.levelString, self.subsytem, message)
             return
         }
-        BertyLogger.bridge!.log(level.1, message: message)
+      BertyLogger.bridge!.log(level.levelGo, subsystem: self.subsytem, message: message)
     }
 
-    public static func debug(_ message: String) {
-        BertyLogger.log(("DEBUG", BertybridgeDebug, .debug), message)
+    public func debug(_ message: String) {
+        self.log(.DEBUG, message)
     }
 
-    public static func info(_ message: String) {
-        BertyLogger.log(("INFO", BertybridgeInfo, .info), message)
+    public func info(_ message: String) {
+        self.log(.INFO, message)
     }
 
-    public static func warn(_ message: String) {
-        BertyLogger.log(("WARN", BertybridgeWarn, .info), message)
+    public func warn(_ message: String) {
+        self.log(.WARN, message)
     }
 
-    public static func error(_ message: String) {
-        BertyLogger.log(("ERROR", BertybridgeError, .error), message)
+    public func error(_ message: String) {
+        self.log(.ERROR, message)
     }
 }

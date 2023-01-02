@@ -19,6 +19,8 @@ struct BridgeError: LocalizedError {
 
 @objc(GoBridge)
 class GoBridge: NSObject {
+    let logger = BertyLogger("tech.berty.react")
+
     // protocol
     var bridgeMessenger: BertybridgeBridge?
     var remoteBridge: BertybridgeRemoteBridge?
@@ -41,28 +43,28 @@ class GoBridge: NSObject {
     }
 
     deinit {
-      do {
-          if self.bridgeMessenger != nil {
-              try self.bridgeMessenger?.close()
-              self.bridgeMessenger = nil
-          }
-          if self.remoteBridge != nil {
-              try self.remoteBridge?.close()
-              self.remoteBridge = nil
-          }
-          self.serviceClient = nil
-      } catch let error as NSError {
-        NSLog("\(String(describing: error.code))")
-      }
+        do {
+            if self.bridgeMessenger != nil {
+                try self.bridgeMessenger?.close()
+                self.bridgeMessenger = nil
+            }
+            if self.remoteBridge != nil {
+                try self.remoteBridge?.close()
+                self.remoteBridge = nil
+            }
+            self.serviceClient = nil
+        } catch let error as NSError {
+            self.logger.error("\(String(describing: error.code))")
+        }
     }
 
     @objc func constantsToExport() -> [AnyHashable : Any]! {
-#if DEBUG_LOGS
-      let debug = true;
-#else
-      let debug = false;
-#endif
-      return ["debug": debug];
+        #if DEBUG_LOGS
+        let debug = true;
+        #else
+        let debug = false;
+        #endif
+        return ["debug": debug];
     }
 
     @objc func clearStorage(_ resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
@@ -85,16 +87,7 @@ class GoBridge: NSObject {
         if let message = opts["message"] as? String {
             let level = opts["level"] as? String ?? "INFO"
 
-            switch level.uppercased() {
-            case "DEBUG":
-                BertyLogger.debug(message)
-            case "WARN":
-                BertyLogger.warn(message)
-            case "ERROR":
-                BertyLogger.error(message)
-            default:
-                BertyLogger.info(message)
-            }
+            self.logger.log(BertyLogger.LogLevel(rawValue: level.uppercased()) ?? .INFO, message)
         }
         #endif
     }
@@ -156,7 +149,7 @@ class GoBridge: NSObject {
             self.bridgeMessenger = bridgeMessenger
             self.serviceClient = bridgeMessenger // bridgeMessenger implements ServiceClient interface
 
-          BertyLogger.useBridge(self.bridgeMessenger)
+            BertyLogger.useBridge(self.bridgeMessenger)
 
             resolve(true)
         } catch let error as NSError {
@@ -237,12 +230,12 @@ class GoBridge: NSObject {
 
     @objc func getProtocolAddr(_ resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
         do {
-          if self.bridgeMessenger == nil {
-              throw NSError(domain: "tech.berty.gobridge", code: 4, userInfo: [NSLocalizedDescriptionKey : "bridgeMessenger isn't started"])
-          }
+            if self.bridgeMessenger == nil {
+                throw NSError(domain: "tech.berty.gobridge", code: 4, userInfo: [NSLocalizedDescriptionKey : "bridgeMessenger isn't started"])
+            }
 
-          let addr: [String] = []
-          resolve(addr)
+            let addr: [String] = []
+            resolve(addr)
         } catch let error as NSError {
             reject("\(String(describing: error.code))", error.userInfo.description, error)
         }

@@ -12,6 +12,7 @@ import BackgroundTasks
 
 class LifeCycle: NSObject {
     static let shared: LifeCycle = LifeCycle()
+    let logger: BertyLogger = BertyLogger("tech.berty.lifecycle")
 
     @objc static func getSharedInstance() -> LifeCycle {
         return LifeCycle.shared
@@ -20,7 +21,7 @@ class LifeCycle: NSObject {
     @available(iOS 13.0, *)
     @objc
     public func registerBackgroundTask(identifier: String) {
-        BertyLogger.info("register background fetch task \(identifier)")
+        self.logger.info("register background fetch task \(identifier)")
         BGTaskScheduler.shared.register(forTaskWithIdentifier: identifier, using: nil) { (task) in
             switch task {
             case is BGProcessingTask:
@@ -38,21 +39,21 @@ class LifeCycle: NSObject {
     @available(iOS 13.0, *)
     func handle(task: BGTask) {
         guard let bgtask = LifeCycleDriver.shared.handleBackgroundTask() else {
-            BertyLogger.error("unable to get handlers")
+            self.logger.error("unable to get handlers")
             task.setTaskCompleted(success: false)
             return
         }
 
         task.expirationHandler = {
-            BertyLogger.info("handle expiracy")
+            self.logger.info("handle expiracy")
             bgtask.cancel()
         }
 
         DispatchQueue.global(qos: .background).async {
-            BertyLogger.info("starting background task")
+            self.logger.info("starting background task")
             let success = bgtask.execute()
             DispatchQueue.main.async {
-                BertyLogger.info("ending background with: success=\(success)")
+                self.logger.info("ending background with: success=\(success)")
                 task.setTaskCompleted(success: success)
             }
         }
@@ -64,10 +65,10 @@ class LifeCycle: NSObject {
         let request = BGAppRefreshTaskRequest(identifier: identifier)
         request.earliestBeginDate = Date(timeIntervalSinceNow: 60)
         do {
-            BertyLogger.info("scheduling app refresh")
+            self.logger.info("scheduling app refresh")
             try BGTaskScheduler.shared.submit(request)
         } catch {
-            BertyLogger.error("unable to submit task: %@")
+            self.logger.error("unable to submit task: %@")
         }
     }
 
@@ -77,17 +78,17 @@ class LifeCycle: NSObject {
         let request = BGProcessingTaskRequest(identifier: identifier)
         request.requiresNetworkConnectivity = true
         do {
-            BertyLogger.info("scheduling app processing")
+            self.logger.info("scheduling app processing")
             try BGTaskScheduler.shared.submit(request)
         } catch {
-            BertyLogger.error("unable to submit task: %@")
+            self.logger.error("unable to submit task: %@")
         }
     }
 
     @objc
     func startBackgroundTask(cancelAfter: Int, completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         guard let bgtask = LifeCycleDriver.shared.handleBackgroundTask() else {
-            BertyLogger.error("unable to get handler")
+            self.logger.error("unable to get handler")
             completionHandler(.noData)
             return
         }
@@ -113,7 +114,7 @@ class LifeCycle: NSObject {
 
     @objc
     func willTerminate() {
-        BertyLogger.info("will terminate")
+        self.logger.info("will terminate")
         LifeCycleDriver.shared.willTerminate()
     }
 }

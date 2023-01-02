@@ -1,7 +1,7 @@
 //go:build android
 // +build android
 
-package logger
+package logutil
 
 /*
 #cgo LDFLAGS: -llog

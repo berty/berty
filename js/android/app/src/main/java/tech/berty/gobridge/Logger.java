@@ -58,7 +58,7 @@ public class Logger {
             return ;
         }
 
-        Logger.mBridge.log(level.getGoLevel(), message);
+        Logger.mBridge.log(level.getGoLevel(), tag, message);
     }
 
     public static void v(String tag, String message) {

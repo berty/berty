@@ -74,7 +74,7 @@ func NewBridge(config *BridgeConfig) (*Bridge, error) {
 
 	// setup logger
 	{
-		b.logger = newLogger()
+		b.logger = logutil.NewNativeLogger("bertybridge")
 
 		// @NOTE(gfanton): replace grpc logger as soon as possible to avoid DATA_RACE
 		logutil.ReplaceGRPCLogger(b.logger.Named("grpc"))
@@ -332,6 +332,6 @@ const (
 	Error int = int(zapcore.ErrorLevel)
 )
 
-func (b *Bridge) Log(level int, message string) {
-	b.logger.Log(zapcore.Level(level), message)
+func (b *Bridge) Log(level int, subsystem string, message string) {
+	b.logger.Named(subsystem).Log(zapcore.Level(level), message)
 }

@@ -275,7 +275,7 @@ public class GoBridgeModule extends ReactContextBaseJavaModule {
                 remoteBridge.close();
             }
         } catch (Exception e) {
-           Logger.e(TAG, "bridge close error", e);
+            Logger.e(TAG, "bridge close error", e);
         }
 
         bridgeMessenger = null;
