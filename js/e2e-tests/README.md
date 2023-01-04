@@ -9,32 +9,10 @@ cd ..
 ### Start appium
 
 ```sh
-npx appium
+make e2e-tests.server
 ```
 
-### Build the app
-
-```sh
-make ios.release
-```
-
-You can close the simulator that started since we only want to build the app
-
-Then grab the app path from the `info Installing` line in the command output, for example:
-
-```
-info Installing "/Users/norman/Library/Developer/Xcode/DerivedData/Berty-fhgkrmolfophlogtwrazqwhipyex/Build/Products/AppStore Release-iphonesimulator/Berty.app"
-```
-
-### Run the test script
-
-```sh
-IOS_APP=<path-to-the-app> node e2e-tests/src/tests/testName.js
-```
-
-#### Environment
-
-Instead of passing variables, you can either create a .env file and set variables in it
+### Environment
 
 Example
 
@@ -42,10 +20,41 @@ Example
 MAX_TYPING_FREQUENCY = 20 // Maximum frequency of keystrokes for typing and clear. Defaults to 60 keystrokes per minute
 IOS_APP =
 	'/Users/norman/Library/Developer/Xcode/DerivedData/Berty-fhgkrmolfophlogtwrazqwhipyex/Build/Products/AppStore Release-iphonesimulator/Berty.app' // Full path to the application to be tested
-ANDROID_APP = '' // Full path to the application to be tested
+ANDROID_APP =
+	'/Users/lucasdecurtis/berty_fork/js/android/app/build/outputs/apk/debug/app-x86-debug.apk' // Full path to the apk to be tested
 IOS_VERSION = '15.5' // The platform version of an emulator or a real device
 IOS_DEVICE = 'iPhone 11' // The name of the device under test
 IS_DEBUG = 'true' // Tell appium to handle the SelectNode screen that will show up when app is in debug mode
+```
+
+### Build the app
+
+#### For IOS
+
+```sh
+make ios.release
+```
+
+You can close the simulator that started since we only want to build the app
+
+Then grab the app path from the `info Installing` line in the command output and add it in the .env file, for example:
+
+```
+info Installing "/Users/norman/Library/Developer/Xcode/DerivedData/Berty-fhgkrmolfophlogtwrazqwhipyex/Build/Products/AppStore Release-iphonesimulator/Berty.app"
+```
+
+#### For Android
+
+```sh
+make android.release
+```
+
+You then need to get the path to apk which can be found in folder "js/android/app/build/outputs/apk" and add it in the .env file
+
+### Run the test script
+
+```sh
+make e2e-tests.tests
 ```
 
 ## Known errors

@@ -38,13 +38,13 @@ const getAndroidCapabilities = deviceName => {
 	}
 
 	return {
-		platformName: 'Android',
-		// platformVersion: '8',
-		deviceName,
-		app,
-		appPackage: 'tech.berty.android.debug',
-		appActivity: 'tech.berty.android.MainActivity',
-		automationName: 'UiAutomator2',
+		platformName: 'android',
+		'appium:deviceName': deviceName,
+		'appium:app': app,
+		'appium:appPackage': 'tech.berty.android.debug',
+		'appium:appActivity': 'tech.berty.android.MainActivity',
+		'appium:automationName': 'uiautomator2',
+		'appium:autoGrantPermissions': true,
 	}
 }
 

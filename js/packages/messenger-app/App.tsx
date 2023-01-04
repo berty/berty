@@ -3,7 +3,7 @@ import { IconRegistry } from '@ui-kitten/components'
 import { EvaIconsPack } from '@ui-kitten/eva-icons'
 import * as Font from 'expo-font'
 import React from 'react'
-import { Platform, View } from 'react-native'
+import { LogBox, Platform, View } from 'react-native'
 import RNBootSplash from 'react-native-bootsplash'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { Provider as ReduxProvider } from 'react-redux'
@@ -26,6 +26,8 @@ import reduxStore from '@berty/redux/store'
 
 import { CustomIconsPack } from './custom-icons'
 import { FeatherIconsPack } from './feather-icons'
+
+LogBox.ignoreAllLogs()
 
 const BootSplashInhibitor: React.FC = () => {
 	useMountEffect(() => {

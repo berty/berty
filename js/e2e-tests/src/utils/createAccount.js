@@ -9,8 +9,12 @@ const createAccount = async driver => {
 	await pressButton(driver, `~${testIDs['create-account-button']}`)
 	await pressButton(driver, `~${testIDs['default-mode-button']}`)
 	await pressButton(driver, `~${testIDs['lets-go-button']}`)
-	await pressButton(driver, `~${testIDs['permission-alt-button']}`)
-	await pressButton(driver, '~Continue') // continue is the natif text of the alert after the perm request
+	let platformName = driver.capabilities.platformName
+
+	if (platformName === 'iOS') {
+		await pressButton(driver, `~${testIDs['permission-alt-button']}`)
+		await pressButton(driver, '~Continue') // continue is the natif text of the alert after the perm request
+	}
 	await pressButton(driver, `~${testIDs['start-using-button']}`)
 }
 

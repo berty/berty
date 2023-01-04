@@ -136,6 +136,7 @@ export const SelectNode: ScreenFC<'Account.SelectNode'> = ({ route }) => {
 				</ItemSection>
 				<ItemSection>
 					<MenuToggle
+						accessibilityLabel={testIDs['select-node-dont-ask']}
 						testID={testIDs['select-node-dont-ask']}
 						isToggleOn={dontAsk}
 						onPress={() => {
@@ -146,6 +147,7 @@ export const SelectNode: ScreenFC<'Account.SelectNode'> = ({ route }) => {
 					</MenuToggle>
 				</ItemSection>
 				<CreateGroupFooterWithIcon
+					accessibilityLabel={testIDs['select-node-continue']}
 					testID={testIDs['select-node-continue']}
 					title={t('settings.devtools.select-node.button-continue')}
 					icon='arrow-forward-outline'

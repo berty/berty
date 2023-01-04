@@ -52,6 +52,7 @@ export const ChatTextInput: React.FC<ChatInputProps> = React.memo(props => {
 			]}
 		>
 			<InputPriv
+				accessibilityLabel={props.accessibilityLabel}
 				testID={props.testID}
 				value={value}
 				editable={editable}

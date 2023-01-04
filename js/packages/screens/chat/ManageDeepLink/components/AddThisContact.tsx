@@ -197,6 +197,7 @@ const AddThisContact: React.FC<{
 				) : null}
 				<View style={padding.medium}>
 					<SecondaryButton
+						accessibilityLabel={testIDs['add-contact']}
 						testID={testIDs['add-contact']}
 						onPress={() => {
 							isPassword

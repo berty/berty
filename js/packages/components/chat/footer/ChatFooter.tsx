@@ -132,6 +132,7 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 				>
 					<View style={styles.wrapper}>
 						<ChatTextInput
+							accessibilityLabel={testIDs['chat-text-input']}
 							testID={testIDs['chat-text-input']}
 							editable={!sending && !disabled}
 							placeholder={sending ? t('chat.sending') : placeholder}

@@ -9,6 +9,7 @@ interface CreateGroupFooterWithIconProps {
 	icon: string
 	action: () => void
 	testID?: string
+	accessibilityLabel?: string
 }
 
 export const CreateGroupFooterWithIcon = ({
@@ -16,6 +17,7 @@ export const CreateGroupFooterWithIcon = ({
 	icon,
 	action,
 	testID,
+	accessibilityLabel,
 }: CreateGroupFooterWithIconProps) => {
 	const { padding, margin } = useStyles()
 
@@ -28,7 +30,12 @@ export const CreateGroupFooterWithIcon = ({
 				{ backgroundColor: '#F2F2F2' },
 			]}
 		>
-			<SecondaryButtonIconRight testID={testID} name={icon} onPress={action}>
+			<SecondaryButtonIconRight
+				accessibilityLabel={accessibilityLabel}
+				testID={testID}
+				name={icon}
+				onPress={action}
+			>
 				{title}
 			</SecondaryButtonIconRight>
 		</View>

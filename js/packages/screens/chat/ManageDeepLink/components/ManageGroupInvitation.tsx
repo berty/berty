@@ -203,6 +203,7 @@ export const ManageGroupInvitation: React.FC<{
 							border.radius.small,
 							{ backgroundColor: colors['positive-asset'] },
 						]}
+						accessibilityLabel={testIDs['group-join']}
 						testID={testIDs['group-join']}
 					>
 						<UnifiedText

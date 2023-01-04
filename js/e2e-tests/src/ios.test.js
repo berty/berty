@@ -1,4 +1,4 @@
-const { getIOSDrivers } = require('./lib/iosDriver')
+const { getIOSDrivers, iphoneList } = require('./lib/iosDriver')
 const {
 	addContactAndSendOneToOneMessage,
 } = require('./tests/2-simulators/addContactAndSendOneToOneMessage')
@@ -26,7 +26,9 @@ afterEach(async () => {
 })
 
 test('2 ios join a group and send a message in the group', async () => {
-	await expect(joinGroupAndSendMessage(drivers)).resolves.not.toThrow()
+	await expect(
+		joinGroupAndSendMessage(drivers, iphoneList[0], iphoneList[1]),
+	).resolves.not.toThrow()
 })
 
 test('2 ios add each other and send a message in a 1-to-1 conv', async () => {
