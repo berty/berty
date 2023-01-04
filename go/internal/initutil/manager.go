@@ -64,6 +64,7 @@ type Manager struct {
 	} `json:"Session,omitempty"`
 	Logging struct {
 		DefaultLoggerStreams []logutil.Stream
+		Native               bool   `json:"Native,omitempty"`
 		StderrFormat         string `json:"StderrFormat,omitempty"`
 		StderrFilters        string `json:"StderrFilters,omitempty"`
 		FilePath             string `json:"FilePath,omitempty"`
