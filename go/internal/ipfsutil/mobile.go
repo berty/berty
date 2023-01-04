@@ -28,11 +28,6 @@ const (
 	DHTNetworkDual
 )
 
-var NoopDHTOptions = []dht.Option{
-	dht.BootstrapPeers(),
-	dht.DisableProviders(),
-}
-
 type Config func(cfg *ipfs_config.Config) ([]p2p.Option, error)
 
 type MobileOptions struct {

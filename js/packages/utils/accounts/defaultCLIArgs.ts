@@ -7,6 +7,8 @@ export const defaultCLIArgs: string[] = [
 	// @FIXME(gfanton,aeddi): Disable public dht for now because it uses too many
 	// resources on the mobile. We should re-enable it when everything is
 	// stabilized.
+	'--p2p.dht=autoserver',
 	'--p2p.dht-network=lan',
+	// log format
 	'--log.format=console',
 ]
