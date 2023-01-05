@@ -141,11 +141,6 @@ const (
 	maxPrefixCount       = 3
 )
 
-// New creates a new DualDHT instance. Options provided are forwarded on to the two concrete
-// IpfsDHT internal constructions, modulo additional options used by the Dual DHT to enforce
-// the LAN-vs-WAN distinction.
-// Note: query or routing table functional options provided as arguments to this function
-// will be overriden by this constructor.
 func newDualDHT(ctx context.Context, h host.Host, net DHTNetworkMode, options ...dht.Option) (p2p_routing.Routing, error) {
 	switch net {
 	case DHTNetworkWan:
