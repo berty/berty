@@ -22,13 +22,13 @@ public class BertyLogger {
         var levelGo: Int {
             switch self {
             case .DEBUG:
-                return BertybridgeDebug
+                return BertybridgeLevelDebug
             case .WARN:
-                return BertybridgeWarn
+                return BertybridgeLevelWarn
             case .ERROR:
-                return BertybridgeError
+                return BertybridgeLevelError
             default:
-                return BertybridgeInfo
+                return BertybridgeLevelInfo
             }
         }
 

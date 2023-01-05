@@ -29,7 +29,11 @@ void os_log_wrapper(int level, os_log_t log, char *s) {
 */
 import "C"
 
-import "go.uber.org/zap/zapcore"
+import (
+	"fmt"
+
+	"go.uber.org/zap/zapcore"
+)
 
 func NativeLog(logLevel zapcore.Level, namespace string, message string) {
 	var level C.int = C.INFO
@@ -47,5 +51,5 @@ func NativeLog(logLevel zapcore.Level, namespace string, message string) {
 
 	log := C.os_log_create(C.CString(namespace), C.CString(""))
 
-	C.os_log_wrapper(level, log, C.CString(message))
+	C.os_log_wrapper(level, log, C.CString(fmt.Sprintf("[%s] %s", logLevel.CapitalString(), message)))
 }

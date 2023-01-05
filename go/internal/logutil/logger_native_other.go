@@ -10,6 +10,6 @@ import (
 	"go.uber.org/zap/zapcore"
 )
 
-func NativeLog(level zapcore.Level, namespace string, message string) {
-	fmt.Fprintln(os.Stderr, message)
+func NativeLog(logLevel zapcore.Level, namespace string, message string) {
+	fmt.Fprintf(os.Stderr, "[%s] [%s] %s\n", logLevel.CapitalString(), namespace, message)
 }

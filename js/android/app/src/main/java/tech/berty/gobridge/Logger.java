@@ -7,10 +7,10 @@ import tech.berty.android.BuildConfig;
 
 public class Logger {
     public enum LogLevel {
-        Debug(Bertybridge.Debug, Log.DEBUG),
-        Info(Bertybridge.Info, Log.INFO),
-        Warn(Bertybridge.Warn, Log.WARN),
-        Error(Bertybridge.Error, Log.ERROR);
+        Debug(Bertybridge.LevelDebug, Log.DEBUG),
+        Info(Bertybridge.LevelInfo, Log.INFO),
+        Warn(Bertybridge.LevelWarn, Log.WARN),
+        Error(Bertybridge.LevelError, Log.ERROR);
 
         private final long mGoLevel;
         private final int mNativeLevel;

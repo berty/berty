@@ -8,11 +8,12 @@ import (
 )
 
 type nativeCore struct {
-	enc zapcore.Encoder
+	subsystem string
+	enc       zapcore.Encoder
 }
 
-func NewNativeDriverCore(enc zapcore.Encoder) zapcore.Core {
-	return &nativeCore{enc: enc}
+func NewNativeDriverCore(subsystem string, enc zapcore.Encoder) zapcore.Core {
+	return &nativeCore{subsystem: subsystem, enc: enc}
 }
 
 func (nc *nativeCore) Enabled(level zapcore.Level) bool {
@@ -35,8 +36,8 @@ func (nc *nativeCore) Write(entry zapcore.Entry, fields []zapcore.Field) error {
 
 	NativeLog(
 		entry.Level,
-		entry.LoggerName,
-		fmt.Sprintf("[%s] [%s] %s", entry.Level.CapitalString(), entry.LoggerName, buff.String()),
+		fmt.Sprintf("%s.%s", nc.subsystem, entry.LoggerName),
+		buff.String(),
 	)
 	return nil
 }
@@ -55,10 +56,10 @@ func NewNativeLogger(subsystem string) *zap.Logger {
 
 	nativeEncoder := zapcore.NewConsoleEncoder(nativeEncoderConfig)
 
-	core := NewNativeDriverCore(nativeEncoder)
+	core := NewNativeDriverCore(subsystem, nativeEncoder)
 
 	// create logger
-	logger := zap.New(core).Named(subsystem)
+	logger := zap.New(core)
 
 	return logger
 }

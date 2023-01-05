@@ -9,7 +9,11 @@ package logutil
 */
 import "C"
 
-import "go.uber.org/zap/zapcore"
+import (
+	"fmt"
+
+	"go.uber.org/zap/zapcore"
+)
 
 func NativeLog(logLevel zapcore.Level, namespace string, message string) {
 	var level C.int = C.ANDROID_LOG_INFO
@@ -25,5 +29,5 @@ func NativeLog(logLevel zapcore.Level, namespace string, message string) {
 		level = C.ANDROID_LOG_ERROR
 	}
 
-	C.__android_log_write(level, C.CString(namespace), C.CString(message))
+	C.__android_log_write(level, C.CString(namespace), C.CString(fmt.Sprintf("[%s] %s", logLevel.CapitalString(), message)))
 }

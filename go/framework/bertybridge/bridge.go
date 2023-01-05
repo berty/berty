@@ -326,10 +326,10 @@ func (b *Bridge) isClosed() bool {
 }
 
 const (
-	Debug int = int(zapcore.DebugLevel)
-	Info  int = int(zapcore.InfoLevel)
-	Warn  int = int(zapcore.WarnLevel)
-	Error int = int(zapcore.ErrorLevel)
+	LevelDebug int = int(zapcore.DebugLevel)
+	LevelInfo  int = int(zapcore.InfoLevel)
+	LevelWarn  int = int(zapcore.WarnLevel)
+	LevelError int = int(zapcore.ErrorLevel)
 )
 
 func (b *Bridge) Log(level int, subsystem string, message string) {
