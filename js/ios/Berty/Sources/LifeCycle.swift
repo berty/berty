@@ -68,7 +68,7 @@ class LifeCycle: NSObject {
             self.logger.info("scheduling app refresh")
             try BGTaskScheduler.shared.submit(request)
         } catch {
-            self.logger.error("unable to submit task: %@")
+            self.logger.error("unable to submit task: \(error.localizedDescription)")
         }
     }
 
@@ -81,7 +81,7 @@ class LifeCycle: NSObject {
             self.logger.info("scheduling app processing")
             try BGTaskScheduler.shared.submit(request)
         } catch {
-            self.logger.error("unable to submit task: %@")
+            self.logger.error("unable to submit task: \(error.localizedDescription)")
         }
     }
 
