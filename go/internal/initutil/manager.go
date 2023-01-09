@@ -101,6 +101,7 @@ type Manager struct {
 			Announce                   string `json:"Announce,omitempty"`
 			Bootstrap                  string `json:"Bootstrap,omitempty"`
 			DHT                        string `json:"DHT,omitempty"`
+			DHTNetwork                 string `json:"DHTNetwork,omitempty"`
 			DHTRandomWalk              bool   `json:"DHTRandomWalk,omitempty"`
 			NoAnnounce                 string `json:"NoAnnounce,omitempty"`
 			TinderDiscover             bool   `json:"TinderDiscover,omitempty"`

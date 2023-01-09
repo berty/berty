@@ -4,9 +4,11 @@ export const defaultCLIArgs: string[] = [
 	'--p2p.high-water=60',
 	'--p2p.low-water=40',
 	'--p2p.webui-listener=:3000',
-	// @FIXME(gfanton,aeddi): Disable randomwalk for now because it uses too many
+	// @FIXME(gfanton,aeddi): Disable public dht for now because it uses too many
 	// resources on the mobile. We should re-enable it when everything is
 	// stabilized.
-	'--p2p.dht-randomwalk=false',
+	'--p2p.dht=autoserver',
+	'--p2p.dht-network=lan',
+	// log format
 	'--log.format=console',
 ]

@@ -86,6 +86,10 @@ const (
 	FlagValueP2PDHTAuto       = "auto"
 	FlagValueP2PDHTAutoServer = "autoserver"
 
+	FlagValueP2PDHTNetworkLAN  = "lan"
+	FlagValueP2PDHTNetworkWAN  = "wan"
+	FlagValueP2PDHTNetworkDual = "dual" // both lan & wan
+
 	ipfsIdentityLastUpdateKey = "ipfs_identity_last_update"
 )
 
@@ -100,6 +104,7 @@ func (m *Manager) SetupLocalIPFSFlags(fs *flag.FlagSet) {
 	fs.StringVar(&m.Node.Protocol.Bootstrap, FlagNameP2PBootstrap, KeywordDefault, "ipfs bootstrap node, `:default:` will set ipfs default bootstrap node")
 	fs.StringVar(&m.Node.Protocol.DHT, FlagNameP2PDHT, FlagValueP2PDHTClient, "dht mode, can be: `none`, `client`, `server`, `auto`, `autoserver`")
 	fs.BoolVar(&m.Node.Protocol.DHTRandomWalk, "p2p.dht-randomwalk", true, "if true dht will have randomwalk enable")
+	fs.StringVar(&m.Node.Protocol.DHTNetwork, "p2p.dht-network", FlagValueP2PDHTNetworkDual, "dht network type: lan, wan, dual")
 	fs.StringVar(&m.Node.Protocol.NoAnnounce, "p2p.swarm-no-announce", "", "IPFS exclude announce addrs")
 	fs.BoolVar(&m.Node.Protocol.MDNS.Enable, FlagNameP2PMDNS, true, "if true mdns will be enabled")
 	fs.BoolVar(&m.Node.Protocol.TinderDiscover, FlagNameP2PTinderDiscover, true, "if true enable tinder discovery")
@@ -179,6 +184,19 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 		return nil, nil, errcode.ErrIPFSInit.Wrap(err)
 	}
 
+	var dhtnet ipfsutil.DHTNetworkMode
+	switch m.Node.Protocol.DHTNetwork {
+	case FlagValueP2PDHTNetworkDual:
+		dhtnet = ipfsutil.DHTNetworkDual
+	case FlagValueP2PDHTNetworkLAN:
+		dhtnet = ipfsutil.DHTNetworkLan
+	case FlagValueP2PDHTNetworkWAN:
+		dhtnet = ipfsutil.DHTNetworkWan
+	default:
+		err := fmt.Errorf("invalid dht network")
+		return nil, nil, errcode.ErrIPFSInit.Wrap(err)
+	}
+
 	var routing ipfs_p2p.RoutingOption
 	if dhtmode > 0 && !m.Node.Protocol.DisableIPFSNetwork {
 		dhtopts := []p2p_dht.Option{p2p_dht.Concurrency(1)}
@@ -186,7 +204,7 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 		if !m.Node.Protocol.DHTRandomWalk {
 			dhtopts = append(dhtopts, p2p_dht.DisableAutoRefresh())
 		}
-		routing = ipfsutil.CustomRoutingOption(dhtmode, dhtopts...)
+		routing = ipfsutil.CustomRoutingOption(dhtmode, dhtnet, dhtopts...)
 	} else {
 		routing = ipfs_p2p.NilRouterOption
 	}
