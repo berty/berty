@@ -99,7 +99,7 @@ jobs:
           asdf install jq
 
       - name: Cache go modules
-        uses: actions/cache@v2.1.6
+        uses: actions/cache@v3.2.3
         with:
           path: ~/go/pkg/mod
           key:          ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-${{ hashFiles('**/go.sum') }}
@@ -172,14 +172,14 @@ jobs:
         working-directory: js
 
       - name: Cache node modules
-        uses: actions/cache@v2.1.6
+        uses: actions/cache@v3.2.3
         with:
           path: js/node_modules
           key:          ${{ runner.OS }}-node-${{ env.node_version }}-${{ env.json_cache-versions_node }}-${{ hashFiles('js/yarn.lock') }}
           restore-keys: ${{ runner.OS }}-node-${{ env.node_version }}-${{ env.json_cache-versions_node }}-
 
       - name: Cache go modules
-        uses: actions/cache@v2.1.6
+        uses: actions/cache@v3.2.3
         with:
           path: ~/go/pkg/mod
           key:          ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-${{ hashFiles('**/go.sum') }}

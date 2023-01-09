@@ -58,7 +58,7 @@ jobs:
 
       - name: Cache go modules
         if: github.event.inputs.mod == 'true' && runner.os != 'Windows'
-        uses: actions/cache@v2.1.6
+        uses: actions/cache@v3.2.3
         with:
           path: ~/go/pkg/mod
           key:          ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-${{ hashFiles('go/**/go.sum') }}
@@ -66,7 +66,7 @@ jobs:
 
       - name: Cache node modules
         if: github.event.inputs.mod == 'true' && runner.os != 'Windows'
-        uses: actions/cache@v2.1.6
+        uses: actions/cache@v3.2.3
         with:
           path: js/node_modules
           key:          ${{ runner.OS }}-node-${{ env.node_version }}-${{ env.json_cache-versions_node }}-${{ hashFiles('js/yarn.lock') }}

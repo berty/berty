@@ -147,21 +147,21 @@ jobs:
           fi
 
       - name: Cache go modules
-        uses: actions/cache@v2.1.6
+        uses: actions/cache@v3.2.3
         with:
           path: ~/go/pkg/mod
           key:          ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-${{ hashFiles('go/**/go.sum') }}
           restore-keys: ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-
 
       - name: Cache ruby modules
-        uses: actions/cache@v2.1.6
+        uses: actions/cache@v3.2.3
         with:
           path: js/ios/vendor/bundle
           key:          ${{ runner.os }}-ruby-${{ env.ruby_version }}-${{ env.json_cache-versions_ruby }}-${{ hashFiles('js/ios/Gemfile*') }}
           restore-keys: ${{ runner.os }}-ruby-${{ env.ruby_version }}-${{ env.json_cache-versions_ruby }}-
 
       - name: Cache node modules
-        uses: actions/cache@v2.1.6
+        uses: actions/cache@v3.2.3
         with:
           path: js/node_modules
           key:          ${{ runner.OS }}-node-${{ env.node_version }}-${{ env.json_cache-versions_node }}-${{ hashFiles('js/yarn.lock') }}
@@ -188,7 +188,7 @@ jobs:
           key: ios-gomobile-push-${{ env.go_version }}-${{ env.json_cache-versions_pushframework }}
 
       - name: Cache XCodeGen and XCode project
-        uses: actions/cache@v2.1.6
+        uses: actions/cache@v3.2.3
         with:
           path: |
             js/ios/Berty.xcodeproj
@@ -197,7 +197,7 @@ jobs:
           restore-keys: ios-xcodeproject-${{ env.xcodegen_version }}-${{ env.json_cache-versions_xcodeproject }}-
 
       - name: Cache Pods and XCode workspace
-        uses: actions/cache@v2.1.6
+        uses: actions/cache@v3.2.3
         with:
           path: |
             js/ios/Berty.xcworkspace
