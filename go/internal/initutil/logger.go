@@ -3,6 +3,7 @@ package initutil
 import (
 	"flag"
 	"fmt"
+	"runtime"
 	"strings"
 
 	"go.uber.org/zap"
@@ -18,6 +19,7 @@ func (m *Manager) SetupLoggingFlags(fs *flag.FlagSet) {
 	if m.Logging.FilePath == "" && m.Session.Kind != "" {
 		m.Logging.FilePath = "<store-dir>/logs"
 	}
+	fs.BoolVar(&m.Logging.Native, "log.native", false, "enable native logger (android & darwin only)")
 	fs.StringVar(&m.Logging.StderrFilters, "log.filters", m.Logging.StderrFilters, "stderr zapfilter configuration")
 	fs.StringVar(&m.Logging.StderrFormat, "log.format", m.Logging.StderrFormat, "stderr logging format. can be: json, console, color, light-console, light-color")
 	fs.StringVar(&m.Logging.FilePath, "log.file", m.Logging.FilePath, "log file path (pattern)")
@@ -76,6 +78,11 @@ func (m *Manager) getLogger() (*zap.Logger, error) {
 		m.Logging.FilePath = strings.ReplaceAll(m.Logging.FilePath, "<store-dir>", m.Datastore.AppDir)
 		streams = append(streams, logutil.NewFileStream(m.Logging.FileFilters, "json", m.Logging.FilePath, m.Session.Kind))
 	}
+	if m.Logging.Native && (runtime.GOOS == "darwin" || runtime.GOOS == "android") {
+		nativeLogger := logutil.NewNativeLogger("tech.berty")
+		streams = append(streams, logutil.NewCustomStream(m.Logging.StderrFilters, nativeLogger))
+	}
+
 	logger, loggerCleanup, err := logutil.NewLogger(streams...)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)

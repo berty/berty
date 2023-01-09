@@ -18,7 +18,7 @@ public enum AppState {
 public class LifeCycleDriver: NSObject, BertybridgeLifeCycleDriverProtocol {
     public static var shared: LifeCycleDriver = LifeCycleDriver()
     var handler: BertybridgeLifeCycleHandlerProtocol? = nil
-    let logger: LoggerDriver = LoggerDriver("tech.berty", "lifecycle")
+    let logger: BertyLogger = BertyLogger("tech.berty.lifecycle")
 
     public func register(_ handler: BertybridgeLifeCycleHandlerProtocol?) {
         self.handler = handler
@@ -40,7 +40,7 @@ public class LifeCycleDriver: NSObject, BertybridgeLifeCycleDriverProtocol {
         if let handler = self.handler {
             handler.handleState(state.getBridgeState())
         } else {
-            self.logger.print("no state handler set", level: .warn)
+            self.logger.warn("no state handler set")
         }
     }
 
@@ -48,8 +48,7 @@ public class LifeCycleDriver: NSObject, BertybridgeLifeCycleDriverProtocol {
         if let handler = self.handler {
             handler.willTerminate()
         } else {
-            self.logger.print("no state handler set", level: .warn)
-
+            self.logger.warn("no state handler set")
         }
     }
 }

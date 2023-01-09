@@ -30,7 +30,6 @@ func Example() {
 		config := bertybridge.NewBridgeConfig()
 		if false { // disabled in example, but not commented to be sure that compiler performs various checks
 			config.SetLifeCycleDriver(nil)
-			config.SetLoggerDriver(nil)
 			config.SetNotificationDriver(nil)
 		}
 

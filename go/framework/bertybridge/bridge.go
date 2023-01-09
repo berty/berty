@@ -12,6 +12,7 @@ import (
 	"github.com/pkg/errors"
 	"go.uber.org/multierr"
 	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 	"golang.org/x/text/language"
 	"google.golang.org/grpc"
 
@@ -73,11 +74,7 @@ func NewBridge(config *BridgeConfig) (*Bridge, error) {
 
 	// setup logger
 	{
-		if nativeLogger := config.dLogger; nativeLogger != nil {
-			b.logger = newLogger(nativeLogger)
-		} else {
-			b.logger = zap.NewNop()
-		}
+		b.logger = logutil.NewNativeLogger("bertybridge")
 
 		// @NOTE(gfanton): replace grpc logger as soon as possible to avoid DATA_RACE
 		logutil.ReplaceGRPCLogger(b.logger.Named("grpc"))
@@ -326,4 +323,15 @@ func (b *Bridge) isClosed() bool {
 	default:
 		return false
 	}
+}
+
+const (
+	LevelDebug int = int(zapcore.DebugLevel)
+	LevelInfo  int = int(zapcore.InfoLevel)
+	LevelWarn  int = int(zapcore.WarnLevel)
+	LevelError int = int(zapcore.ErrorLevel)
+)
+
+func (b *Bridge) Log(level int, subsystem string, message string) {
+	b.logger.Named(subsystem).Log(zapcore.Level(level), message)
 }

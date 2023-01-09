@@ -1,7 +1,6 @@
 package tech.berty.gobridge;
 
 import android.content.res.Resources;
-import android.util.Log;
 
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -23,11 +22,11 @@ import bertybridge.RemoteBridgeConfig;
 import bertybridge.ServiceClient;
 import tech.berty.android.BuildConfig;
 import tech.berty.gobridge.bledriver.BleInterface;
+import tech.berty.gobridge.Logger;
 import tech.berty.rootdir.RootDirModule;
 
 public class GoBridgeModule extends ReactContextBaseJavaModule {
     private final static String TAG = "GoBridge";
-    private final static LoggerDriver rnlogger = new LoggerDriver("tech.berty", "react");
     // protocol
     private static Bridge bridgeMessenger = null;
     private static RemoteBridge remoteBridge = null;
@@ -109,18 +108,10 @@ public class GoBridgeModule extends ReactContextBaseJavaModule {
 
         if (opts.hasKey("message")) {
             String message = opts.getString("message");
-            String type = opts.hasKey("level") ? opts.getString("level") : "info";
-
-            // set log level
-            LoggerLevel level;
-            try {
-                level = LoggerLevel.valueOf(type.toUpperCase());
-            } catch (Exception e) {
-                level = LoggerLevel.INFO;
-            }
+            String level = opts.hasKey("level") ? opts.getString("level") : "INFO";
 
             // log
-            GoBridgeModule.rnlogger.print(message, level, "react-native");
+            Logger.log(Logger.LogLevel.fromString(level), "react-native", message);
         }
     }
 
@@ -139,10 +130,6 @@ public class GoBridgeModule extends ReactContextBaseJavaModule {
             if (config == null) {
                 throw new Exception("");
             }
-
-            // init logger
-            LoggerDriver logger = new LoggerDriver("tech.berty", "protocol");
-            config.setLoggerDriver(logger);
 
             // set net driver
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
@@ -187,6 +174,9 @@ public class GoBridgeModule extends ReactContextBaseJavaModule {
 
             bridgeMessenger = Bertybridge.newBridge(config);
             serviceClient = bridgeMessenger; // bridgeMessenger implements ServiceClient interface
+
+            Logger.useBridge(bridgeMessenger);
+
             promise.resolve(true);
         } catch (Exception err) {
             promise.reject(err);
@@ -208,10 +198,6 @@ public class GoBridgeModule extends ReactContextBaseJavaModule {
             if (config == null) {
                 throw new Exception("");
             }
-
-            // init logger
-            LoggerDriver logger = new LoggerDriver("tech.berty", "protocol");
-            config.setLoggerDriver(logger);
 
             remoteBridge = Bertybridge.newRemoteBridge(address, config);
             serviceClient = remoteBridge; // remoteBridge implements ServiceClient interface
@@ -289,7 +275,7 @@ public class GoBridgeModule extends ReactContextBaseJavaModule {
                 remoteBridge.close();
             }
         } catch (Exception e) {
-            Log.i(TAG, "bridge close error", e);
+            Logger.e(TAG, "bridge close error", e);
         }
 
         bridgeMessenger = null;

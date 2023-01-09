@@ -39,6 +39,8 @@ func miniCommand() *ffcli.Command {
 
 			// mini does not support stderr logging
 			manager.Logging.StderrFilters = ""
+			// use native logger if available
+			manager.Logging.Native = true
 
 			// logger
 			logger, err := manager.GetLogger()

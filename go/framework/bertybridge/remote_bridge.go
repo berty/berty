@@ -25,6 +25,12 @@ type RemoteBridge struct {
 	ServiceClient
 }
 
+type RemoteBridgeConfig struct{}
+
+func NewRemoteBridgeConfig() *RemoteBridgeConfig {
+	return &RemoteBridgeConfig{}
+}
+
 func NewRemoteBridge(address string, config *RemoteBridgeConfig) (*RemoteBridge, error) {
 	if address == "" {
 		return nil, errcode.ErrInvalidInput
@@ -37,11 +43,7 @@ func NewRemoteBridge(address string, config *RemoteBridgeConfig) (*RemoteBridge,
 
 	// setup logger
 	{
-		if nativeLogger := config.dLogger; nativeLogger != nil {
-			b.logger = newLogger(nativeLogger)
-		} else {
-			b.logger = zap.NewNop()
-		}
+		b.logger = logutil.NewNativeLogger("bertybridge")
 
 		// @NOTE(gfanton): replace grpc logger as soon as possible to avoid DATA_RACE
 		logutil.ReplaceGRPCLogger(b.logger.Named("grpc"))

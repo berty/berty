@@ -2,7 +2,6 @@ package tech.berty.android;
 
 import android.app.Application;
 import android.content.Context;
-import android.util.Log;
 
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleObserver;
@@ -27,6 +26,7 @@ import tech.berty.gobridge.GoBridgePackage;
 import tech.berty.notification.NotificationPackage;
 import tech.berty.notification.NotificationService;
 import tech.berty.rootdir.RootDirPackage;
+import tech.berty.gobridge.Logger;
 
 public class MainApplication extends Application implements ReactApplication, LifecycleObserver {
     private static final String TAG = "MainApplication";
@@ -47,7 +47,6 @@ public class MainApplication extends Application implements ReactApplication, Li
 
             @Override
             protected List<ReactPackage> getPackages() {
-                @SuppressWarnings("UnnecessaryLocalVariable")
                 List<ReactPackage> packages = new PackageList(this).getPackages();
                 // Packages that cannot be autolinked yet can be added manually here, for example:
                 // packages.add(new MyReactNativePackage());
@@ -69,14 +68,14 @@ public class MainApplication extends Application implements ReactApplication, Li
     public void onAppBackgrounded() {
         //App in background
         MainApplication.appState = AppState.Background;
-        Log.d(TAG, "AppState" + MainApplication.appState);
+        Logger.d(TAG, "AppState" + MainApplication.appState);
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     public void onAppForegrounded() {
         //App in foreground
         MainApplication.appState = AppState.Foreground;
-        Log.d(TAG, "AppState" + MainApplication.appState);
+        Logger.d(TAG, "AppState" + MainApplication.appState);
     }
 
     @Override

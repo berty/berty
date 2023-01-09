@@ -1,7 +1,6 @@
 package tech.berty.gobridge.nearbydriver.base;
 
 import android.content.Context;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.collection.SimpleArrayMap;
@@ -35,7 +34,7 @@ import tech.berty.gobridge.nearbydriver.lifecycle.UserMessageCallback;
 import tech.berty.gobridge.nearbydriver.lifecycle.UserRequestCallback;
 import tech.berty.gobridge.nearbydriver.lifecycle.UserSearchCallback;
 import tech.berty.gobridge.nearbydriver.model.Endpoint;
-import tech.berty.gobridge.nearbydriver.util.BertyLogger;
+import tech.berty.gobridge.Logger;
 
 // Make the NBDriver class a Singleton
 public class NearbyDriver {
@@ -51,7 +50,7 @@ public class NearbyDriver {
     private Map<String, Endpoint> connectedMap = new ConcurrentHashMap<>();
 
     private NearbyDriver(Context context) {
-        BertyLogger.d(TAG, "new NDBDriver instance");
+        Logger.d(TAG, "new NDBDriver instance");
         if (mNBDriver != null) {
             throw new RuntimeException("Use getInstance() method to get the singleton instance of this class");
         }
@@ -63,7 +62,7 @@ public class NearbyDriver {
 
     // Singleton method
     public static synchronized NearbyDriver getInstance(Context appContext) {
-        BertyLogger.d(TAG, "getInstance called");
+        Logger.d(TAG, "getInstance called");
         if (mNBDriver == null) {
             mNBDriver = new NearbyDriver(appContext);
         }
@@ -83,11 +82,11 @@ public class NearbyDriver {
 
                 // kept info for connection
                 if (!foundMap.containsKey(endpointId)) {
-                    Log.d(TAG, "New User Found");
+                    Logger.d(TAG, "New User Found");
                     foundMap.put(endpointId, new Endpoint(endpointId, discoveredEndpointInfo.getEndpointName()));
                 } else {
                     // check if onDisconnect is always called
-                    Log.d(TAG, "User already Found");
+                    Logger.d(TAG, "User already Found");
                     return;
                 }
 
@@ -111,12 +110,12 @@ public class NearbyDriver {
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        BertyLogger.d("BertySDK", "Searching started");
+                        Logger.d("BertySDK", "Searching started");
                     }
                 }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                BertyLogger.d("BertySDK", "Searching failed: " + e.toString());
+                Logger.d("BertySDK", "Searching failed: " + e.toString());
             }
         });
     }
@@ -166,27 +165,27 @@ public class NearbyDriver {
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        BertyLogger.d("BertySDK", "Sharing success");
+                        Logger.d("BertySDK", "Sharing success");
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        BertyLogger.d("BertySDK", "Sharing failed: "  + e.toString());
+                        Logger.d("BertySDK", "Sharing failed: "  + e.toString());
                     }
                 });
     }
 
     private void handleRejectedConnection(String endpointId, UserConnectionCallback userConnectionCallback) {
-        BertyLogger.d("BertySDK", "Failed to connect to " + endpointId);
+        Logger.d("BertySDK", "Failed to connect to " + endpointId);
 
         Endpoint endpoint = foundMap.get(endpointId);
         if (endpoint == null) {
-            Log.e(TAG, String.format("onConnectionResult error: endpointId=%s unknown", endpointId));
+            Logger.e(TAG, String.format("onConnectionResult error: endpointId=%s unknown", endpointId));
             return ;
         }
 
-        BertyLogger.d("BertySDK", "Rejected endpoint removed " + endpointId);
+        Logger.d("BertySDK", "Rejected endpoint removed " + endpointId);
 
         // Remove from found
         foundMap.remove(endpointId);
@@ -197,11 +196,11 @@ public class NearbyDriver {
     private void handleConnectedToEndpoint(String endpointId, UserConnectionCallback userConnectionCallback) {
         Endpoint endpoint = foundMap.get(endpointId);
         if (endpoint == null) {
-            Log.e(TAG, String.format("onConnectionResult error: endpointId=%s unknown", endpointId));
+            Logger.e(TAG, String.format("onConnectionResult error: endpointId=%s unknown", endpointId));
             return ;
         }
 
-        BertyLogger.d("BertySDK", "Connected to " + endpointId);
+        Logger.d("BertySDK", "Connected to " + endpointId);
 
         // place in connected
         connectedMap.put(endpointId, endpoint);
@@ -210,30 +209,30 @@ public class NearbyDriver {
     }
 
     private void onHandleConnectionRequested(UserConnectionCallback userConnectionCallback, String endpointId, ConnectionInfo connectionInfo) {
-        Log.i(TAG, String.format("onConnectionRequested called: userName=%s userId=%s", connectionInfo.getEndpointName(), endpointId));
+        Logger.i(TAG, String.format("onConnectionRequested called: userName=%s userId=%s", connectionInfo.getEndpointName(), endpointId));
 
         // check if connection is incoming or not
         if (connectionInfo.isIncomingConnection()) {
-            Log.d(TAG, "Incoming Connection");
+            Logger.d(TAG, "Incoming Connection");
 
             if (foundMap.get(endpointId) == null) {
-                Log.d(TAG, "Incoming connection adding user");
+                Logger.d(TAG, "Incoming connection adding user");
                 foundMap.put(endpointId, new Endpoint(endpointId, connectionInfo.getEndpointName()));
 
                 userConnectionCallback.onConnectionRequested(connectionInfo.getEndpointName(), endpointId, true);
             } else {
-                Log.d(TAG, "Duplicate connection - accept connection");
+                Logger.d(TAG, "Duplicate connection - accept connection");
             }
 
         } else {
             // Connection is not incoming
-            Log.d(TAG, "Not incoming connection");
+            Logger.d(TAG, "Not incoming connection");
         }
 
         // check for the endpoint and accept
         if (foundMap.get(endpointId) != null) {
 
-            Log.d(TAG, "Connection is here you should accept");
+            Logger.d(TAG, "Connection is here you should accept");
 
             userConnectionCallback.onConnectionRequested(connectionInfo.getEndpointName(), endpointId, false);
         }
@@ -268,13 +267,13 @@ public class NearbyDriver {
                 switch (result.getStatus().getStatusCode()) {
                     case ConnectionsStatusCodes.STATUS_OK: {
                         handleConnectedToEndpoint(endpointId, userConnectionCallback);
-                        BertyLogger.d("BertySDK", "Connected to " + endpointId);
+                        Logger.d("BertySDK", "Connected to " + endpointId);
                         break;
                     }
                     case ConnectionsStatusCodes.STATUS_CONNECTION_REJECTED:
                     default: {
                         handleRejectedConnection(endpointId, userConnectionCallback);
-                        BertyLogger.d("BertySDK", "Failed to connect to " + endpointId);
+                        Logger.d("BertySDK", "Failed to connect to " + endpointId);
                     }
                 }
             }
@@ -286,13 +285,13 @@ public class NearbyDriver {
         }).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                BertyLogger.d("BertySDK", "Connection Requested0");
+                Logger.d("BertySDK", "Connection Requested0");
                 userRequestCallback.onConnectionRequested(true, userName, userId, 0);
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                BertyLogger.d("BertySDK", "Fail to request 0 " + e.toString());
+                Logger.d("BertySDK", "Fail to request 0 " + e.toString());
 
                 if (e.getMessage() != null) {
                     int getCode = Integer.parseInt(e.getMessage().replaceAll("[^0-9]", ""));
@@ -308,7 +307,7 @@ public class NearbyDriver {
     private void handleOnDisconnected(UserConnectionCallback userConnectionCallback, String endpointId) {
         // Remove endpoint to make sure!
         disconnectFrom(endpointId);
-        Log.d(TAG, "Disconnected from endpoint 100%");
+        Logger.d(TAG, "Disconnected from endpoint 100%");
 
         // Remove endpoint from connected
         Endpoint endpoint = connectedMap.get(endpointId);
@@ -316,7 +315,7 @@ public class NearbyDriver {
         if (endpoint != null) {
             connectedMap.remove(endpointId);
         } else {
-            Log.e(TAG, String.format("onDisconnected error: endpointId=%s not found", endpointId));
+            Logger.e(TAG, String.format("onDisconnected error: endpointId=%s not found", endpointId));
         }
 
         // Remove from found also
@@ -340,13 +339,13 @@ public class NearbyDriver {
             public void onPayloadReceived(@NonNull String s, @NonNull Payload payload) {
                 if (payload.getType() == Payload.Type.FILE) {
                     incomingFiles.put(payload.getId(), payload);
-                    BertyLogger.d("BertySDK", "Payload File incoming ");
+                    Logger.d("BertySDK", "Payload File incoming ");
                 } else {
                     try {
                         byte[] message = payload.asBytes();
                         userMessageCallback.onMessageReceived(s, message);
                     } catch (Exception e) {
-                        BertyLogger.e("BertySDK", "Payload Received Error " + e.toString());
+                        Logger.e("BertySDK", "Payload Received Error " + e.toString());
                     }
                 }
             }
@@ -355,39 +354,39 @@ public class NearbyDriver {
             public void onPayloadTransferUpdate(@NonNull String s, @NonNull PayloadTransferUpdate payloadTransferUpdate) {
                 if (payloadTransferUpdate.getStatus() == PayloadTransferUpdate.Status.SUCCESS) {
                     Payload payload = incomingFiles.remove(payloadTransferUpdate.getPayloadId());
-                    BertyLogger.d("BertySDK", "Payload Success ");
+                    Logger.d("BertySDK", "Payload Success ");
                     if (payload != null) {
                         if (payload.getType() == Payload.Type.FILE) {
-                            BertyLogger.d("BertySDK", "Payload File Success");
-                            BertyLogger.d("BertySDK", "Payload File Length " + payload.asFile().getSize());
-                            BertyLogger.d("BertySDK", "Payload File Bytes " + payload.asBytes());
+                            Logger.d("BertySDK", "Payload File Success");
+                            Logger.d("BertySDK", "Payload File Length " + payload.asFile().getSize());
+                            Logger.d("BertySDK", "Payload File Bytes " + payload.asBytes());
 
 
                             File payloadFile = payload.asFile().asJavaFile();
 
                             if (payloadFile != null) {
-                                BertyLogger.d("BertySDK", "Payload Not null");
+                                Logger.d("BertySDK", "Payload Not null");
                             } else {
-                                BertyLogger.d("BertySDK", "Payload null");
+                                Logger.d("BertySDK", "Payload null");
                             }
 
                             userMessageCallback.onFileReceived(userId, payload.asFile().asJavaFile());
                         }
                     }
                 } else if (payloadTransferUpdate.getStatus() == PayloadTransferUpdate.Status.IN_PROGRESS) {
-                    BertyLogger.d("BertySDK", "Payload In transfer " + payloadTransferUpdate.getBytesTransferred() + " out of " + payloadTransferUpdate.getTotalBytes());
+                    Logger.d("BertySDK", "Payload In transfer " + payloadTransferUpdate.getBytesTransferred() + " out of " + payloadTransferUpdate.getTotalBytes());
                 }
             }
         }).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                BertyLogger.d("BertySDK", "Accepted Connection Success0");
+                Logger.d("BertySDK", "Accepted Connection Success0");
                 userAcceptCallback.onConnectionAccepted(true, userId, 0);
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                BertyLogger.d("BertySDK", "Fail to accept0 " + e.toString());
+                Logger.d("BertySDK", "Fail to accept0 " + e.toString());
                 if (e.getMessage() != null) {
                     int getCode = Integer.parseInt(e.getMessage().replaceAll("[^0-9]", ""));
                     userAcceptCallback.onConnectionAccepted(false, userId, getCode);
@@ -434,11 +433,11 @@ public class NearbyDriver {
             mConnectionsClient.sendPayload(userId, Payload.fromBytes(message)).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
-                    BertyLogger.d("BertySDK", "Message sent successfully");
+                    Logger.d("BertySDK", "Message sent successfully");
                 }
             });
         } catch (Exception e) {
-            BertyLogger.d("BertySDK", "Message sent failed");
+            Logger.d("BertySDK", "Message sent failed");
         }
     }
 
@@ -449,22 +448,22 @@ public class NearbyDriver {
      * @param file   the file
      */
     public void sendFile(String userId, File file) {
-        BertyLogger.e("BertySDK", "File to be sent to " + userId + " , file size " + file.length());
+        Logger.e("BertySDK", "File to be sent to " + userId + " , file size " + file.length());
         try {
             mConnectionsClient.sendPayload(userId, Payload.fromFile(file)).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    BertyLogger.e("BertySDK", "File sending failed" + e.getMessage() + " : " + e.getCause() + " : " + Arrays.toString(e.getStackTrace()));
+                    Logger.e("BertySDK", "File sending failed" + e.getMessage() + " : " + e.getCause() + " : " + Arrays.toString(e.getStackTrace()));
                 }
             }).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
-                    BertyLogger.d("BertySDK", "File sending");
+                    Logger.d("BertySDK", "File sending");
 
                 }
             });
         } catch (Exception e) {
-            BertyLogger.e("BertySDK", "File sent failed" + e.getMessage() + " : " + e.getCause() + " : " + Arrays.toString(e.getStackTrace()));
+            Logger.e("BertySDK", "File sent failed" + e.getMessage() + " : " + e.getCause() + " : " + Arrays.toString(e.getStackTrace()));
         }
     }
 

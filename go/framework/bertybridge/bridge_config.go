@@ -5,7 +5,6 @@ import "strings"
 // Config is used to build a bertybridge configuration using only simple types or types returned by the bertybridge package.
 type BridgeConfig struct {
 	languages         []string
-	dLogger           NativeLoggerDriver
 	lc                LifeCycleDriver
 	notifdriver       NotificationDriver
 	bleDriver         ProximityDriver
@@ -25,7 +24,6 @@ func NewBridgeConfig() *BridgeConfig {
 	}
 }
 
-func (c *BridgeConfig) SetLoggerDriver(dLogger NativeLoggerDriver)      { c.dLogger = dLogger }
 func (c *BridgeConfig) SetNotificationDriver(driver NotificationDriver) { c.notifdriver = driver }
 func (c *BridgeConfig) SetMDNSLocker(driver NativeMDNSLockerDriver)     { c.mdnsLockerDriver = driver }
 func (c *BridgeConfig) SetBleDriver(driver ProximityDriver)             { c.bleDriver = driver }
