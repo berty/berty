@@ -2,7 +2,7 @@ const testIDs = require('../../../packages/utils/testing/testIDs.json')
 const { pressButton } = require('../lib/lib')
 
 const createAccount = async driver => {
-	if (process.env.IS_DEBUG) {
+	if (process.env.DEBUG_MODE) {
 		await pressButton(driver, `~${testIDs['select-node-dont-ask']}`)
 		await pressButton(driver, `~${testIDs['select-node-continue']}`)
 	}

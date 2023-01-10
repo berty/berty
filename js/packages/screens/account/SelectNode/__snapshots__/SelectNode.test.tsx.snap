@@ -214,6 +214,7 @@ exports[`Account.SelectNode renders correctly 1`] = `
       }
     >
       <View
+        accessibilityLabel="SelectNodeDontAsk"
         accessible={true}
         focusable={true}
         onClick={[Function]}
@@ -349,6 +350,7 @@ exports[`Account.SelectNode renders correctly 1`] = `
       }
     >
       <View
+        accessibilityLabel="SelectNodeContinue"
         accessible={true}
         focusable={true}
         onClick={[Function]}

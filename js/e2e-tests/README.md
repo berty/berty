@@ -24,7 +24,7 @@ ANDROID_APP =
 	'/Users/lucasdecurtis/berty_fork/js/android/app/build/outputs/apk/debug/app-x86-debug.apk' // Full path to the apk to be tested
 IOS_VERSION = '15.5' // The platform version of an emulator or a real device
 IOS_DEVICE = 'iPhone 11' // The name of the device under test
-IS_DEBUG = 'true' // Tell appium to handle the SelectNode screen that will show up when app is in debug mode
+DEBUG_MODE = 'true' // Tell appium to handle the SelectNode screen that will show up when app is in debug mode
 ```
 
 ### Build the app
