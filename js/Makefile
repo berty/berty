@@ -22,7 +22,7 @@ YOLO_SUFFIX ?= Yolo
 E2E_TESTING_IOS_DEVICE ?= iPhone 11
 E2E_TESTING_IOS_VERSION ?= 15.5
 E2E_GET_IOS_APP ?= $(shell ls -ladt1 "$(HOME)/Library/Developer/Xcode/DerivedData/"*"/Build/Products/AppStore Release-iphonesimulator/Berty.app" | head -n 1)
-
+E2E_GET_ANDROID_APP ?= $(shell ls -ladt1 "$(HOME)/.android/app/build/outputs/apk/debug/app-x86-debug.apk")
 ## Internal variables
 
 rwildcard = $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2) $(filter $(subst *,%,$2),$d))
@@ -92,6 +92,7 @@ e2e-tests.tests:
 	IOS_DEVICE="$(E2E_TESTING_IOS_DEVICE)" \
 	IOS_APP="$(if $(IOS_APP),$(IOS_APP),$(E2E_GET_IOS_APP))" \
 	IOS_VERSION="$(E2E_TESTING_IOS_VERSION)" \
+	ANDROID_APP="$(if $(ANDROID_APP),$(ANDROID_APP),$(E2E_GET_ANDROID_APP))" \
 	cd e2e-tests && npm test
 
 .PHONY: e2e-tests.ci-flow
@@ -100,7 +101,7 @@ e2e-tests.ci-flow: e2e-tests/node_modules
 	npx concurrently --kill-others -n server,tests -s 'command-tests' 'make e2e-tests.server' 'sleep 10; make e2e-tests.tests'
 
 .PHONY: test
-test: node_modules
+test: node_modules e2e-tests/node_modules
 	$(call check-program, yarn)
 	yarn test --coverage
 

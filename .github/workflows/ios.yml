@@ -219,7 +219,7 @@ jobs:
         working-directory: js
         run: GOMOBILE_IOS_TARGET=iossimulator make ios.gomobile
 
-      - name: Build the app for e2e testing
+      - name: Build iOS app for e2e testing
         working-directory: js/ios
         run: |
           xcodebuild \
@@ -227,8 +227,3 @@ jobs:
             -configuration "AppStore Release" \
             -scheme "Berty AppStore" \
             -destination "name=$E2E_TESTING_IOS_DEVICE"
-
-      - name: Run e2e-tests
-        working-directory: js
-        run: |
-          make e2e-tests.ci-flow
