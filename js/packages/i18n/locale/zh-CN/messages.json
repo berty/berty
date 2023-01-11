@@ -158,6 +158,7 @@
 			"appearance-button": "外观",
 			"accounts-button": "账户",
 			"network-button": "网络",
+			"linked-identities-button": "",
 			"bug-button": "提交错误",
 			"about-button": "关于 Berty",
 			"version-button": "版本: {{version}}",
@@ -337,6 +338,9 @@
 			"invite": "邀请",
 			"tap-to-scan": "点击扫描",
 			"create-group": "创建群組"
+		},
+		"linked-identities": {
+			"title": ""
 		}
 	},
 	"tabs": {
@@ -613,5 +617,19 @@
 	},
 	"share": {
 		"sharing-id-message": "让我们在 Berty 上聊天，这是一个安全的 p2p 消息应用。加入我："
+	},
+	"directory": {
+		"phone": {
+			"register": "",
+			"associated": "",
+			"expired": "",
+			"proof-service-unavailable": ""
+		},
+		"email": {
+			"register": "",
+			"associated": "",
+			"expired": "",
+			"proof-service-unavailable": ""
+		}
 	}
 }
