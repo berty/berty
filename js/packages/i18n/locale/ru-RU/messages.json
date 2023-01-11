@@ -158,6 +158,7 @@
 			"appearance-button": "Вид приложения",
 			"accounts-button": "Аккаунты",
 			"network-button": "Сеть",
+			"linked-identities-button": "",
 			"bug-button": "Сообщить об ошибке",
 			"about-button": "О Berty",
 			"version-button": "",
@@ -337,6 +338,9 @@
 			"invite": "Пригласить",
 			"tap-to-scan": "Нажми для сканирования",
 			"create-group": "Создать группу"
+		},
+		"linked-identities": {
+			"title": ""
 		}
 	},
 	"tabs": {
@@ -613,5 +617,19 @@
 	},
 	"share": {
 		"sharing-id-message": ""
+	},
+	"directory": {
+		"phone": {
+			"register": "",
+			"associated": "",
+			"expired": "",
+			"proof-service-unavailable": ""
+		},
+		"email": {
+			"register": "",
+			"associated": "",
+			"expired": "",
+			"proof-service-unavailable": ""
+		}
 	}
 }
