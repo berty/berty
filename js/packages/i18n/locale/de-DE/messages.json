@@ -158,6 +158,7 @@
 			"appearance-button": "Darstellung",
 			"accounts-button": "Konten",
 			"network-button": "Netzwerk",
+			"linked-identities-button": "",
 			"bug-button": "Einen Fehler senden",
 			"about-button": "Über Berty",
 			"version-button": "Version: {{version}}",
@@ -337,6 +338,9 @@
 			"invite": "Einladen",
 			"tap-to-scan": "Zum Scannen tippen",
 			"create-group": "Neue Gruppe erstellen"
+		},
+		"linked-identities": {
+			"title": ""
 		}
 	},
 	"tabs": {
@@ -613,5 +617,19 @@
 	},
 	"share": {
 		"sharing-id-message": "Lasst uns über Berty chatten, einer sicheren P2P basierten Nachrichtenapp. Du findest mich hier:"
+	},
+	"directory": {
+		"phone": {
+			"register": "",
+			"associated": "",
+			"expired": "",
+			"proof-service-unavailable": ""
+		},
+		"email": {
+			"register": "",
+			"associated": "",
+			"expired": "",
+			"proof-service-unavailable": ""
+		}
 	}
 }
