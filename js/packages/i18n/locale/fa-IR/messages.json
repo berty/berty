@@ -158,6 +158,7 @@
 			"appearance-button": "ظاهر",
 			"accounts-button": "حسابها",
 			"network-button": "شبکه",
+			"linked-identities-button": "",
 			"bug-button": "گزارش ایراد",
 			"about-button": "درباره Berty",
 			"version-button": "ویرایش: {{version}}",
@@ -337,6 +338,9 @@
 			"invite": "",
 			"tap-to-scan": "",
 			"create-group": ""
+		},
+		"linked-identities": {
+			"title": ""
 		}
 	},
 	"tabs": {
@@ -613,5 +617,19 @@
 	},
 	"share": {
 		"sharing-id-message": ""
+	},
+	"directory": {
+		"phone": {
+			"register": "",
+			"associated": "",
+			"expired": "",
+			"proof-service-unavailable": ""
+		},
+		"email": {
+			"register": "",
+			"associated": "",
+			"expired": "",
+			"proof-service-unavailable": ""
+		}
 	}
 }
