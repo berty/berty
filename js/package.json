@@ -103,7 +103,7 @@
     "babel-plugin-module-resolver": "^4.1.0",
     "babel-plugin-transform-remove-console": "^6.9.4",
     "concurrently": "^7.5.0",
-    "eslint": "^7.14.0",
+    "eslint": "^8.31.0",
     "eslint-config-react-app": "^7.0.0",
     "eslint-plugin-import": "^2.26.0",
     "jest": "^27.4.5",
