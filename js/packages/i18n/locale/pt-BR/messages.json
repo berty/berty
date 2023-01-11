@@ -158,6 +158,7 @@
 			"appearance-button": "Aparência",
 			"accounts-button": "Contas",
 			"network-button": "Rede",
+			"linked-identities-button": "",
 			"bug-button": "Informar um bug",
 			"about-button": "Sobre Berty",
 			"version-button": "Versão: {{version}}",
@@ -337,6 +338,9 @@
 			"invite": "Convidar",
 			"tap-to-scan": "",
 			"create-group": "Criar grupo"
+		},
+		"linked-identities": {
+			"title": ""
 		}
 	},
 	"tabs": {
@@ -613,5 +617,19 @@
 	},
 	"share": {
 		"sharing-id-message": ""
+	},
+	"directory": {
+		"phone": {
+			"register": "",
+			"associated": "",
+			"expired": "",
+			"proof-service-unavailable": ""
+		},
+		"email": {
+			"register": "",
+			"associated": "",
+			"expired": "",
+			"proof-service-unavailable": ""
+		}
 	}
 }
