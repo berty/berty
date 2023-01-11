@@ -158,6 +158,7 @@
 			"appearance-button": "",
 			"accounts-button": "Hesaplar",
 			"network-button": "Ağ",
+			"linked-identities-button": "",
 			"bug-button": "Hata bildir",
 			"about-button": "Berty Hakkında",
 			"version-button": "",
@@ -337,6 +338,9 @@
 			"invite": "",
 			"tap-to-scan": "",
 			"create-group": "Grup yarat"
+		},
+		"linked-identities": {
+			"title": ""
 		}
 	},
 	"tabs": {
@@ -613,5 +617,19 @@
 	},
 	"share": {
 		"sharing-id-message": ""
+	},
+	"directory": {
+		"phone": {
+			"register": "",
+			"associated": "",
+			"expired": "",
+			"proof-service-unavailable": ""
+		},
+		"email": {
+			"register": "",
+			"associated": "",
+			"expired": "",
+			"proof-service-unavailable": ""
+		}
 	}
 }
