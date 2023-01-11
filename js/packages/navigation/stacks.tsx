@@ -519,6 +519,17 @@ export const Navigation: React.FC = React.memo(() => {
 				}}
 			/>
 			<NavigationStack.Screen
+				name='Settings.LinkedIdentities'
+				component={Components.Settings.LinkedIdentities}
+				options={{
+					headerStyle: {
+						backgroundColor: colors['secondary-background'],
+					},
+					title: t('settings.linked-identities.title'),
+					presentation: 'formSheet',
+				}}
+			/>
+			<NavigationStack.Screen
 				name='Settings.AboutBerty'
 				component={Components.Settings.AboutBerty}
 				options={{

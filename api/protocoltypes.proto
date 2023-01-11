@@ -1416,6 +1416,8 @@ message AccountVerifiedCredentialRegistered {
   int64 expiration_date = 5;
 
   string identifier = 6;
+
+  string issuer = 7;
 }
 
 message PushMemberTokenUpdate {

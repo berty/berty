@@ -9,7 +9,13 @@ import { withInAppNotification } from 'react-native-in-app-notification'
 import { useSelector } from 'react-redux'
 
 import beapi from '@berty/api'
-import { AccountsDropdown, DividerItem, ItemSection, MenuItem } from '@berty/components'
+import {
+	AccountsDropdown,
+	DividerItem,
+	ItemSection,
+	MenuItem,
+	MenuItemWithIcon,
+} from '@berty/components'
 import { DropDownPicker, Item } from '@berty/components/shared-components/DropDownPicker'
 import {
 	ButtonSetting,
@@ -489,6 +495,17 @@ const BodyDevTools: React.FC<{}> = withInAppNotification(({ showNotification }: 
 					</>
 				)}
 			</ItemSection>
+
+			<ItemSection>
+				<DividerItem />
+				<MenuItemWithIcon
+					iconName='pricetags-outline'
+					onPress={() => navigate('Settings.LinkedIdentities')}
+				>
+					{t('settings.home.linked-identities-button')}
+				</MenuItemWithIcon>
+			</ItemSection>
+
 			<View style={[padding.horizontal.medium]}>
 				<ButtonSetting
 					name={t('settings.devtools.force-mock-button')}

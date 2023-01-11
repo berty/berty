@@ -5714,6 +5714,7 @@ export namespace berty {
                 registrationDate?: (Long|null);
                 expirationDate?: (Long|null);
                 identifier?: (string|null);
+                issuer?: (string|null);
             }
 
             class AccountVerifiedCredentialRegistered implements IAccountVerifiedCredentialRegistered {
@@ -5724,6 +5725,7 @@ export namespace berty {
                 public registrationDate: Long;
                 public expirationDate: Long;
                 public identifier: string;
+                public issuer: string;
                 public static create(properties?: berty.protocol.v1.IAccountVerifiedCredentialRegistered): berty.protocol.v1.AccountVerifiedCredentialRegistered;
                 public static encode(message: berty.protocol.v1.IAccountVerifiedCredentialRegistered, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.protocol.v1.IAccountVerifiedCredentialRegistered, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -8077,6 +8079,7 @@ export namespace berty {
                     conversationReplicationInfo?: (Long|null);
                     metadataEvents?: (Long|null);
                     sharedPushTokens?: (Long|null);
+                    accountVerifiedCredentials?: (Long|null);
                 }
 
                 class DB implements IDB {
@@ -8091,6 +8094,7 @@ export namespace berty {
                     public conversationReplicationInfo: Long;
                     public metadataEvents: Long;
                     public sharedPushTokens: Long;
+                    public accountVerifiedCredentials: Long;
                     public static create(properties?: berty.messenger.v1.SystemInfo.IDB): berty.messenger.v1.SystemInfo.DB;
                     public static encode(message: berty.messenger.v1.SystemInfo.IDB, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.messenger.v1.SystemInfo.IDB, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -8170,6 +8174,7 @@ export namespace berty {
                 mutedUntil?: (Long|null);
                 hideInAppNotifications?: (boolean|null);
                 hidePushPreviews?: (boolean|null);
+                verifiedCredentials?: (berty.messenger.v1.IAccountVerifiedCredential[]|null);
             }
 
             class Account implements IAccount {
@@ -8185,6 +8190,7 @@ export namespace berty {
                 public mutedUntil: Long;
                 public hideInAppNotifications: boolean;
                 public hidePushPreviews: boolean;
+                public verifiedCredentials: berty.messenger.v1.IAccountVerifiedCredential[];
                 public static create(properties?: berty.messenger.v1.IAccount): berty.messenger.v1.Account;
                 public static encode(message: berty.messenger.v1.IAccount, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.messenger.v1.IAccount, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -8494,6 +8500,32 @@ export namespace berty {
                 public static verify(message: { [k: string]: any }): (string|null);
                 public static fromObject(object: { [k: string]: any }): berty.messenger.v1.SharedPushToken;
                 public static toObject(message: berty.messenger.v1.SharedPushToken, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            interface IAccountVerifiedCredential {
+                accountPk?: (string|null);
+                identifier?: (string|null);
+                registrationDate?: (Long|null);
+                expirationDate?: (Long|null);
+                issuer?: (string|null);
+            }
+
+            class AccountVerifiedCredential implements IAccountVerifiedCredential {
+
+                public accountPk: string;
+                public identifier: string;
+                public registrationDate: Long;
+                public expirationDate: Long;
+                public issuer: string;
+                public static create(properties?: berty.messenger.v1.IAccountVerifiedCredential): berty.messenger.v1.AccountVerifiedCredential;
+                public static encode(message: berty.messenger.v1.IAccountVerifiedCredential, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.messenger.v1.IAccountVerifiedCredential, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.AccountVerifiedCredential;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.AccountVerifiedCredential;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.messenger.v1.AccountVerifiedCredential;
+                public static toObject(message: berty.messenger.v1.AccountVerifiedCredential, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 

@@ -35,7 +35,7 @@ func (m *PhoneCodeSenderMockService) ValidateIdentifier(ctx context.Context, raw
 		return "", errcode.ErrInvalidInput.Wrap(fmt.Errorf("phone number is invalid"))
 	}
 
-	return phonenumbers.Format(num, phonenumbers.E164), nil
+	return fmt.Sprintf("tel:%s", phonenumbers.Format(num, phonenumbers.E164)), nil
 }
 
 var _ VerificationCodeSender = (*PhoneCodeSenderMockService)(nil)

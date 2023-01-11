@@ -54,6 +54,7 @@ export type ScreensParams = {
 	'Settings.ContactAndConversations': undefined
 	'Settings.Appearance': undefined
 	'Settings.Accounts': undefined
+	'Settings.LinkedIdentities': undefined
 
 	'Settings.DevTools': undefined
 	'Settings.IpfsWebUI': undefined

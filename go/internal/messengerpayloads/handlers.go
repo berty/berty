@@ -95,6 +95,7 @@ func (h *EventHandler) bindHandlers() {
 		protocoltypes.EventTypePushDeviceTokenRegistered:              h.pushDeviceTokenRegistered,
 		protocoltypes.EventTypePushDeviceServerRegistered:             h.pushDeviceServerRegistered,
 		protocoltypes.EventTypePushMemberTokenUpdate:                  h.pushMemberTokenUpdate,
+		protocoltypes.EventTypeAccountVerifiedCredentialRegistered:    h.accountVerifiedCredentialRegistered,
 	}
 	h.appMessageHandlers = map[mt.AppMessage_Type]struct {
 		handler        func(tx *messengerdb.DBWrapper, i *mt.Interaction, amPayload proto.Message) (*mt.Interaction, bool, error)
@@ -1323,6 +1324,29 @@ func (h *EventHandler) pushMemberTokenUpdate(gme *protocoltypes.GroupMetadataEve
 
 	if err := h.db.UpdateDeviceSetPushToken(h.ctx, messengerutil.B64EncodeBytes(memberPKB), messengerutil.B64EncodeBytes(ev.DevicePK), messengerutil.B64EncodeBytes(gme.EventContext.GroupPK), hex.EncodeToString(tokenSum)); err != nil {
 		return err
+	}
+
+	return nil
+}
+
+func (h *EventHandler) accountVerifiedCredentialRegistered(gme *protocoltypes.GroupMetadataEvent) error {
+	var ev protocoltypes.AccountVerifiedCredentialRegistered
+	if err := proto.Unmarshal(gme.GetEvent(), &ev); err != nil {
+		return err
+	}
+
+	err := h.db.SaveAccountVerifiedCredential(&ev)
+	if err != nil {
+		return errcode.ErrDBWrite.Wrap(err)
+	}
+
+	acc, err := h.db.GetAccount()
+	if err != nil {
+		return errcode.ErrBertyAccountDataNotFound.Wrap(err)
+	}
+
+	if err := h.dispatcher.StreamEvent(mt.StreamEvent_TypeAccountUpdated, &mt.StreamEvent_AccountUpdated{Account: acc}, false); err != nil {
+		return errcode.ErrStreamWrite.Wrap(err)
 	}
 
 	return nil

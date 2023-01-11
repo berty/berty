@@ -186,7 +186,7 @@ func TestFlow(t *testing.T) {
 	require.Equal(t, web, parsedCredential.ID)
 	foundSubject, err := ExtractSubjectFromVC(parsedCredential)
 	require.NoError(t, err)
-	require.Equal(t, expectedIdentifier, foundSubject)
+	require.Equal(t, fmt.Sprintf("tel:%s", expectedIdentifier), foundSubject)
 	validCredentials := credentials
 	_ = validCredentials
 
