@@ -158,6 +158,7 @@
 			"appearance-button": "",
 			"accounts-button": "Fiókok",
 			"network-button": "Hálózat",
+			"linked-identities-button": "",
 			"bug-button": "Hibabejelentés",
 			"about-button": "Berty-ről",
 			"version-button": "",
@@ -337,6 +338,9 @@
 			"invite": "Meghívás",
 			"tap-to-scan": "Koppintson a szkenneléshez",
 			"create-group": "Csoport létrehozás"
+		},
+		"linked-identities": {
+			"title": ""
 		}
 	},
 	"tabs": {
@@ -613,5 +617,19 @@
 	},
 	"share": {
 		"sharing-id-message": ""
+	},
+	"directory": {
+		"phone": {
+			"register": "",
+			"associated": "",
+			"expired": "",
+			"proof-service-unavailable": ""
+		},
+		"email": {
+			"register": "",
+			"associated": "",
+			"expired": "",
+			"proof-service-unavailable": ""
+		}
 	}
 }
