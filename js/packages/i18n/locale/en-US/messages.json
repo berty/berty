@@ -158,6 +158,7 @@
 			"appearance-button": "Appearance",
 			"accounts-button": "Accounts",
 			"network-button": "Network",
+			"linked-identities-button": "",
 			"bug-button": "Submit a bug",
 			"about-button": "About Berty",
 			"version-button": "Version: {{version}}",
@@ -337,6 +338,9 @@
 			"invite": "Invite",
 			"tap-to-scan": "Tap to scan",
 			"create-group": "Create group"
+		},
+		"linked-identities": {
+			"title": ""
 		}
 	},
 	"tabs": {
@@ -613,5 +617,19 @@
 	},
 	"share": {
 		"sharing-id-message": "Let’s chat on Berty, a secure & p2p messaging app. Join me here:"
+	},
+	"directory": {
+		"phone": {
+			"register": "",
+			"associated": "",
+			"expired": "",
+			"proof-service-unavailable": ""
+		},
+		"email": {
+			"register": "",
+			"associated": "",
+			"expired": "",
+			"proof-service-unavailable": ""
+		}
 	}
 }
