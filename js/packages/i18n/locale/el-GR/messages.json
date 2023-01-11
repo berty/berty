@@ -158,6 +158,7 @@
 			"appearance-button": "",
 			"accounts-button": "",
 			"network-button": "",
+			"linked-identities-button": "",
 			"bug-button": "",
 			"about-button": "Σχετικά με το Berty",
 			"version-button": "",
@@ -337,6 +338,9 @@
 			"invite": "",
 			"tap-to-scan": "",
 			"create-group": ""
+		},
+		"linked-identities": {
+			"title": ""
 		}
 	},
 	"tabs": {
@@ -613,5 +617,19 @@
 	},
 	"share": {
 		"sharing-id-message": ""
+	},
+	"directory": {
+		"phone": {
+			"register": "",
+			"associated": "",
+			"expired": "",
+			"proof-service-unavailable": ""
+		},
+		"email": {
+			"register": "",
+			"associated": "",
+			"expired": "",
+			"proof-service-unavailable": ""
+		}
 	}
 }
