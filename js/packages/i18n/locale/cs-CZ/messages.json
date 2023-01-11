@@ -158,6 +158,7 @@
 			"appearance-button": "Vzhled",
 			"accounts-button": "Účty",
 			"network-button": "Síť",
+			"linked-identities-button": "",
 			"bug-button": "Nahlásit chybu",
 			"about-button": "O projektu Berty",
 			"version-button": "Verze: {{version}}",
@@ -337,6 +338,9 @@
 			"invite": "Pozvat",
 			"tap-to-scan": "Klepnutím skenovat",
 			"create-group": "Vytvořit skupinu"
+		},
+		"linked-identities": {
+			"title": ""
 		}
 	},
 	"tabs": {
@@ -613,5 +617,19 @@
 	},
 	"share": {
 		"sharing-id-message": "Pojďme chatovat na Berty, bezpečné P2P chatovací aplikaci. Připojte se ke mně:"
+	},
+	"directory": {
+		"phone": {
+			"register": "",
+			"associated": "",
+			"expired": "",
+			"proof-service-unavailable": ""
+		},
+		"email": {
+			"register": "",
+			"associated": "",
+			"expired": "",
+			"proof-service-unavailable": ""
+		}
 	}
 }
