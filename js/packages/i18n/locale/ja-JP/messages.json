@@ -158,6 +158,7 @@
 			"appearance-button": "外観",
 			"accounts-button": "アカウント",
 			"network-button": "ネットワーク",
+			"linked-identities-button": "",
 			"bug-button": "バグを送信",
 			"about-button": "Bertyについて",
 			"version-button": "",
@@ -337,6 +338,9 @@
 			"invite": "招待",
 			"tap-to-scan": "タップしてスキャン",
 			"create-group": "新しいグループを作成"
+		},
+		"linked-identities": {
+			"title": ""
 		}
 	},
 	"tabs": {
@@ -613,5 +617,19 @@
 	},
 	"share": {
 		"sharing-id-message": ""
+	},
+	"directory": {
+		"phone": {
+			"register": "",
+			"associated": "",
+			"expired": "",
+			"proof-service-unavailable": ""
+		},
+		"email": {
+			"register": "",
+			"associated": "",
+			"expired": "",
+			"proof-service-unavailable": ""
+		}
 	}
 }
