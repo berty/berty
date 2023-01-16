@@ -150,7 +150,7 @@ func testMakeRendezVousFactory(target peer.ID) testMakeDriver {
 		t.Helper()
 
 		syncClient := rendezvous.NewSyncInMemClient(context.Background(), p)
-		return NewRendezvousDiscovery(logger, p, target, rng, syncClient)
+		return NewRendezvousDiscovery(logger, p, target, rendezvous.DefaultAddrFactory, rng, syncClient)
 	}
 }
 

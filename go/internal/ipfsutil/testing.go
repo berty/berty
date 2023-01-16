@@ -137,7 +137,7 @@ func TestingCoreAPIUsingMockNet(ctx context.Context, t testing.TB, opts *Testing
 		if opts.RDVPeer.ID != "" {
 			h.Peerstore().AddAddrs(opts.RDVPeer.ID, opts.RDVPeer.Addrs, peerstore.PermanentAddrTTL)
 			cl := rendezvous.NewSyncInMemClient(ctx, h)
-			ms := tinder.NewRendezvousDiscovery(opts.Logger.Named("rdvp"), h, opts.RDVPeer.ID, rand.New(rand.NewSource(rand.Int63())), cl)
+			ms := tinder.NewRendezvousDiscovery(opts.Logger.Named("rdvp"), h, opts.RDVPeer.ID, rendezvous.DefaultAddrFactory, rand.New(rand.NewSource(rand.Int63())), cl)
 			if _, err = opts.Mocknet.LinkPeers(h.ID(), opts.RDVPeer.ID); err != nil {
 				return err
 			}

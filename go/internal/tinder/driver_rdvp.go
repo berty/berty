@@ -1,5 +1,4 @@
 // from https://github.com/berty/go-libp2p-rendezvous/blob/implement-spec/discovery.go
-// @NOTE(gfanton): we need to dedup this file to add unregister method
 
 package tinder
 
@@ -40,8 +39,8 @@ type rpRecord struct {
 	expire int64
 }
 
-func NewRendezvousDiscovery(logger *zap.Logger, host host.Host, rdvPeer peer.ID, rng *mrand.Rand, emitters ...p2p_rp.RendezvousSyncClient) IDriver {
-	rp := p2p_rp.NewRendezvousPoint(host, rdvPeer)
+func NewRendezvousDiscovery(logger *zap.Logger, host host.Host, rdvPeer peer.ID, factory p2p_rp.AddrsFactory, rng *mrand.Rand, emitters ...p2p_rp.RendezvousSyncClient) IDriver {
+	rp := p2p_rp.NewRendezvousPoint(host, rdvPeer, p2p_rp.ClientWithAddrsFactory(factory))
 	return &rendezvousDiscovery{
 		logger:    logger.Named("tinder/rdvp"),
 		rp:        rp,

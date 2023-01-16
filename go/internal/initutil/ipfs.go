@@ -678,6 +678,11 @@ func (m *Manager) configIPFSRouting(h host.Host, r p2p_routing.Routing) error {
 
 	// rdvp driver
 	if m.Node.Protocol.TinderRDVPDriver {
+		addrsFactory := tinder.PublicAddrsOnlyFactory
+		if m.Node.Protocol.DisableDiscoverFilterAddrs {
+			addrsFactory = tinder.AllAddrsFactory
+		}
+
 		if lenrdvpeers := len(rdvpeers); lenrdvpeers > 0 {
 			for _, peer := range rdvpeers {
 				h.Peerstore().AddAddrs(peer.ID, peer.Addrs, peerstore.PermanentAddrTTL)
@@ -686,7 +691,7 @@ func (m *Manager) configIPFSRouting(h host.Host, r p2p_routing.Routing) error {
 				})
 
 				// mqttclient := rendezvous.NewMQTTClient(logger, baseopts)
-				udisc := tinder.NewRendezvousDiscovery(logger, h, peer.ID, rng, m.Node.Protocol.emitterclient)
+				udisc := tinder.NewRendezvousDiscovery(logger, h, peer.ID, addrsFactory, rng, m.Node.Protocol.emitterclient)
 				drivers = append(drivers, udisc)
 			}
 		}
@@ -741,8 +746,8 @@ func (m *Manager) configIPFSRouting(h host.Host, r p2p_routing.Routing) error {
 	// 	return errcode.ErrIPFSSetupHost.Wrap(err)
 	// }
 
-	// disc = tinder.NewRotationDiscovery(logger.Named("rotation"), disc, rp)
-	m.Node.Protocol.discAdaptater = tinder.NewDiscoveryAdaptater(logger.Named("disc"), m.Node.Protocol.tinder)
+	m.Node.Protocol.discAdaptater = tinder.NewDiscoveryAdaptater(
+		logger.Named("disc"), m.Node.Protocol.tinder, tinder.FilterOutDrivers(tinder.LocalDiscoveryName))
 	popts = append(popts, pubsub.WithDiscovery(
 		m.Node.Protocol.discAdaptater, pubsub.WithDiscoverConnector(backoffconnector)))
 
