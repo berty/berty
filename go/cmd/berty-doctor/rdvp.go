@@ -164,7 +164,7 @@ func testRDVPs(ctx context.Context, gwg *sync.WaitGroup, addrs []string) {
 							logger.Named("tinder"),
 							host,
 							tgtPi.ID,
-							tinder.PublicAddrsOnlyFactory,
+							tinder.PrivateAddrsOnlyFactory,
 							rand.New(rand.NewSource(srand.SafeFast())), //nolint:gosec
 						)
 

@@ -12,8 +12,6 @@ import (
 	"github.com/libp2p/go-libp2p/core/host"
 	"github.com/libp2p/go-libp2p/core/peer"
 
-	// rendezvous "github.com/berty/go-libp2p-rendezvous"
-	// rdvdb "github.com/berty/go-libp2p-rendezvous/db/sqlcipher"
 	mocknet "github.com/libp2p/go-libp2p/p2p/net/mock"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/zap"

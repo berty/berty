@@ -24,11 +24,9 @@ func (s *Service) StartAdvertises(ctx context.Context, topic string, opts ...Opt
 	}
 
 	for _, driver := range s.drivers {
-		if aopts.DriverFilters != nil {
-			// skip filter driver
-			if _, skip := aopts.DriverFilters[driver.Name()]; skip {
-				continue
-			}
+		// skip filter driver
+		if aopts.DriverFilters.ShouldFilter(driver.Name()) {
+			continue
 		}
 
 		// start background job

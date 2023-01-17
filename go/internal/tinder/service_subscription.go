@@ -114,5 +114,5 @@ func (s *Service) WatchTopic(ctx context.Context, topic string, opts ...Option) 
 		err = fmt.Errorf("no driver(s) were available for subscribe")
 	}
 
-	return
+	return err
 }
