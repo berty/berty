@@ -398,6 +398,8 @@ PODS:
     - React-Core
   - RNCClipboard (1.9.0):
     - React-Core
+  - RNFlashList (1.4.0):
+    - React-Core
   - RNFS (2.18.0):
     - React
   - RNPermissions (3.1.0):
@@ -501,6 +503,7 @@ DEPENDENCIES:
   - RNBootSplash (from `../node_modules/react-native-bootsplash`)
   - "RNCAsyncStorage (from `../node_modules/@react-native-async-storage/async-storage`)"
   - "RNCClipboard (from `../node_modules/@react-native-clipboard/clipboard`)"
+  - "RNFlashList (from `../node_modules/@shopify/flash-list`)"
   - RNFS (from `../node_modules/react-native-fs`)
   - RNPermissions (from `../node_modules/react-native-permissions`)
   - RNScreens (from `../node_modules/react-native-screens`)
@@ -646,6 +649,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-async-storage/async-storage"
   RNCClipboard:
     :path: "../node_modules/@react-native-clipboard/clipboard"
+  RNFlashList:
+    :path: "../node_modules/@shopify/flash-list"
   RNFS:
     :path: "../node_modules/react-native-fs"
   RNPermissions:
@@ -733,6 +738,7 @@ SPEC CHECKSUMS:
   RNBootSplash: 51eef7e143faeab63f81ddbb7c1de38b8fba66ed
   RNCAsyncStorage: 0c357f3156fcb16c8589ede67cc036330b6698ca
   RNCClipboard: 99fc8ad669a376b756fbc8098ae2fd05c0ed0668
+  RNFlashList: 399bf6a0db68f594ad2c86aaff3ea39564f39f8a
   RNFS: 3ab21fa6c56d65566d1fb26c2228e2b6132e5e32
   RNPermissions: 4b54095940aea8c03fa3e6c92d4ac3647b31ed4e
   RNScreens: 4d79118be80f79fa1f4aa131909a1d6e86280af3
