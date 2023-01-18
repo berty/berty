@@ -1,4 +1,3 @@
-import { GoBridge } from '@berty/native-modules/GoBridge'
 import { setStreamProgress, setStreamError } from '@berty/redux/reducers/ui.reducer'
 import { AppDispatch, persistor, resetAccountStore } from '@berty/redux/store'
 
@@ -38,7 +37,6 @@ export const closeAccount = async (dispatch: AppDispatch) =>
 				}
 			})
 			await stream.start()
-			await GoBridge.closeBridge()
 		} catch (err) {
 			console.warn('Failed to close node:', err)
 			dispatch(resetAccountStore())

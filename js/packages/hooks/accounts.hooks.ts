@@ -56,44 +56,53 @@ export const useAccountServices = (): Array<beapi.messenger.IServiceToken> => {
 /**
  * hooks for differents actions after closing account
  */
-const resetToClosing = (reset: NavigationProp<ScreensParams>['reset'], callback: () => void) => {
+const resetToClosing = async (
+	reset: NavigationProp<ScreensParams>['reset'],
+	callback: () => void,
+) => {
 	reset({ routes: [{ name: 'Account.Closing', params: { callback } }] })
+}
+
+export const closeBridgeAndNavigateToOnboarding = async (
+	reset: NavigationProp<ScreensParams>['reset'],
+	selectedAccount: string | null,
+) => {
+	await GoBridge.closeBridge()
+	reset({
+		routes: [
+			{
+				name: 'Account.SelectNode',
+				params: {
+					init: true,
+					action: async (external: boolean, address: string, port: string) => {
+						const res = await initBridge(external, address, port)
+						if (!res) {
+							Alert.alert('bridge: init failed')
+							return false
+						}
+
+						reset({
+							index: 0,
+							routes: [
+								{
+									name: 'Account.GoToLogInOrCreate',
+									params: { isCreate: false, selectedAccount },
+								},
+							],
+						})
+						return true
+					},
+				},
+			},
+		],
+	})
 }
 
 export const useSwitchAccountAfterClosing = () => {
 	const { reset } = useNavigation()
 	return useCallback(
 		(selectedAccount: string | null) =>
-			resetToClosing(reset, () =>
-				reset({
-					routes: [
-						{
-							name: 'Account.SelectNode',
-							params: {
-								init: true,
-								action: async (external: boolean, address: string, port: string) => {
-									const res = await initBridge(external, address, port)
-									if (!res) {
-										Alert.alert('bridge: init failed')
-										return false
-									}
-
-									reset({
-										index: 0,
-										routes: [
-											{
-												name: 'Account.GoToLogInOrCreate',
-												params: { isCreate: false, selectedAccount },
-											},
-										],
-									})
-									return true
-								},
-							},
-						},
-					],
-				}),
-			),
+			resetToClosing(reset, async () => closeBridgeAndNavigateToOnboarding(reset, selectedAccount)),
 		[reset],
 	)
 }
