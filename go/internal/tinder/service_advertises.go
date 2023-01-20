@@ -12,49 +12,21 @@ import (
 
 const defaultTTL = time.Hour
 
-type AdvertiseOptions struct {
-	Filters map[string]struct{}
-}
-type AdvertiseOption func(opts *AdvertiseOptions) error
-
-func (o *AdvertiseOptions) apply(opts ...AdvertiseOption) error {
-	for _, opt := range opts {
-		if err := opt(o); err != nil {
-			return fmt.Errorf("uanble to apply option: %w", err)
-		}
-	}
-
-	return nil
-}
-
-func StartAdvertisesFilterDrivers(drivers ...string) AdvertiseOption {
-	return func(opts *AdvertiseOptions) error {
-		opts.Filters = map[string]struct{}{}
-		for _, driver := range drivers {
-			opts.Filters[driver] = struct{}{}
-		}
-
-		return nil
-	}
-}
-
 // StartAdvertises topic on each of service drivers
-func (s *Service) StartAdvertises(ctx context.Context, topic string, opts ...AdvertiseOption) error {
+func (s *Service) StartAdvertises(ctx context.Context, topic string, opts ...Option) error {
 	if len(s.drivers) == 0 {
 		return fmt.Errorf("no driver available to advertise")
 	}
 
-	var aopts AdvertiseOptions
+	var aopts Options
 	if err := aopts.apply(opts...); err != nil {
 		return fmt.Errorf("failed to advertise: %w", err)
 	}
 
 	for _, driver := range s.drivers {
-		if aopts.Filters != nil {
-			// skip filter driver
-			if _, filter := aopts.Filters[driver.Name()]; filter {
-				continue
-			}
+		// skip filter driver
+		if aopts.DriverFilters.ShouldFilter(driver.Name()) {
+			continue
 		}
 
 		// start background job

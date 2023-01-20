@@ -14,6 +14,7 @@ type Subscription struct {
 	service *Service
 	topic   string
 	out     <-chan peer.AddrInfo
+	opts    []Option
 }
 
 func (s *Subscription) Out() <-chan peer.AddrInfo {
@@ -21,7 +22,7 @@ func (s *Subscription) Out() <-chan peer.AddrInfo {
 }
 
 func (s *Subscription) Pull() error {
-	return s.service.LookupPeers(s.ctx, s.topic)
+	return s.service.LookupPeers(s.ctx, s.topic, s.opts...)
 }
 
 func (s *Subscription) Close() error {
@@ -29,11 +30,10 @@ func (s *Subscription) Close() error {
 	return nil
 }
 
-func (s *Service) Subscribe(topic string) *Subscription {
+func (s *Service) Subscribe(topic string, opts ...Option) *Subscription {
 	ctx, cancel := context.WithCancel(context.Background())
 	out := s.fadeOut(ctx, topic, 16)
-
-	err := s.WatchTopic(ctx, topic)
+	err := s.WatchTopic(ctx, topic, opts...)
 	if err != nil {
 		s.logger.Warn("unable to watch topic", zap.String("topic", topic), zap.Error(err))
 	}
@@ -44,13 +44,23 @@ func (s *Service) Subscribe(topic string) *Subscription {
 		ctx:     ctx,
 		cancel:  cancel,
 		topic:   topic,
+		opts:    opts,
 	}
 }
 
-func (s *Service) LookupPeers(ctx context.Context, topic string) error {
+func (s *Service) LookupPeers(ctx context.Context, topic string, opts ...Option) error {
 	var success int
 
+	var aopts Options
+	if err := aopts.apply(opts...); err != nil {
+		return fmt.Errorf("unable to apply option: %w", err)
+	}
+
 	for _, d := range s.drivers {
+		if aopts.DriverFilters.ShouldFilter(d.Name()) {
+			continue
+		}
+
 		in, err := d.FindPeers(ctx, topic) // find peers should not hang there
 		switch err {
 		case nil: // ok
@@ -71,10 +81,19 @@ func (s *Service) LookupPeers(ctx context.Context, topic string) error {
 	return nil
 }
 
-func (s *Service) WatchTopic(ctx context.Context, topic string) (err error) {
+func (s *Service) WatchTopic(ctx context.Context, topic string, opts ...Option) (err error) {
 	var success int
 
+	var aopts Options
+	if err := aopts.apply(opts...); err != nil {
+		return fmt.Errorf("unable to apply option: %w", err)
+	}
+
 	for _, d := range s.drivers {
+		if aopts.DriverFilters.ShouldFilter(d.Name()) {
+			continue
+		}
+
 		s.logger.Debug("start subscribe", zap.String("driver", d.Name()), zap.String("topic", topic))
 
 		in, err := d.Subscribe(ctx, topic)
@@ -95,5 +114,5 @@ func (s *Service) WatchTopic(ctx context.Context, topic string) (err error) {
 		err = fmt.Errorf("no driver(s) were available for subscribe")
 	}
 
-	return
+	return err
 }

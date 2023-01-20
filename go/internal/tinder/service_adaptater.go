@@ -20,9 +20,11 @@ type discoverySubscribtion struct {
 }
 
 type DiscoveryAdaptater struct {
-	ctx     context.Context
-	cancel  context.CancelFunc
-	logger  *zap.Logger
+	ctx         context.Context
+	cancel      context.CancelFunc
+	logger      *zap.Logger
+	defaultOpts []Option
+
 	service *Service
 
 	// watchdogDiscover
@@ -38,7 +40,7 @@ type DiscoveryAdaptater struct {
 	closeOnce sync.Once
 }
 
-func NewDiscoveryAdaptater(logger *zap.Logger, service *Service) *DiscoveryAdaptater {
+func NewDiscoveryAdaptater(logger *zap.Logger, service *Service, defaultOpts ...Option) *DiscoveryAdaptater {
 	ctx, cancel := context.WithCancel(context.Background())
 	return &DiscoveryAdaptater{
 		ctx:               ctx,
@@ -49,6 +51,7 @@ func NewDiscoveryAdaptater(logger *zap.Logger, service *Service) *DiscoveryAdapt
 		service:           service,
 		resetInterval:     time.Minute * 10,
 		ttl:               time.Minute * 5,
+		defaultOpts:       defaultOpts,
 	}
 }
 
@@ -70,7 +73,8 @@ func (a *DiscoveryAdaptater) FindPeers(ctx context.Context, topic string, opts .
 	start := time.Now()
 	a.logger.Debug("watchdogs looking for peers", logutil.PrivateString("topic", topic))
 
-	sub := a.service.Subscribe(topic)
+	// filter out local discovery
+	sub := a.service.Subscribe(topic, a.defaultOpts...)
 	// pull to fetch previous peers (FindPeers)
 	go func() {
 		if err := sub.Pull(); err != nil {
@@ -117,7 +121,8 @@ func (a *DiscoveryAdaptater) Advertise(_ context.Context, topic string, opts ...
 		wctx, cancel := context.WithCancel(ctx)
 
 		// start advertising on this topic
-		if err := a.service.StartAdvertises(wctx, topic, StartAdvertisesFilterDrivers(LocalDiscoveryName)); err != nil {
+		// filter out local discovery
+		if err := a.service.StartAdvertises(wctx, topic, a.defaultOpts...); err != nil {
 			a.logger.Error("advertise failed", logutil.PrivateString("topic", topic), zap.Error(err))
 			cancel()
 			return time.Minute, err
