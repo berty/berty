@@ -87,7 +87,7 @@ jobs:
             await github.rest.repos.createDispatchEvent({
               owner: 'berty',
               repo: 'release-on-stores',
-              event_type: 'Release on stores - Push on master',
+              event_type: 'release',
               client_payload: {"commit_message":${{ env.commit_message }}},
             })
 
