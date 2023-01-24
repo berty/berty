@@ -116,8 +116,9 @@ export const useRestartAfterClosing = () => {
 export const useOnBoardingAfterClosing = () => {
 	const { reset } = useNavigation()
 	return useCallback(
-		() =>
-			resetToClosing(reset, () =>
+		async () =>
+			await resetToClosing(reset, async () => {
+				await GoBridge.closeBridge()
 				reset({
 					routes: [
 						{
@@ -140,8 +141,8 @@ export const useOnBoardingAfterClosing = () => {
 							},
 						},
 					],
-				}),
-			),
+				})
+			}),
 		[reset],
 	)
 }
@@ -149,8 +150,9 @@ export const useOnBoardingAfterClosing = () => {
 export const useImportingAccountAfterClosing = () => {
 	const { reset } = useNavigation()
 	return useCallback(
-		(filePath: string) =>
-			resetToClosing(reset, () =>
+		async (filePath: string) =>
+			await resetToClosing(reset, async () => {
+				await GoBridge.closeBridge()
 				reset({
 					routes: [
 						{
@@ -170,8 +172,8 @@ export const useImportingAccountAfterClosing = () => {
 							},
 						},
 					],
-				}),
-			),
+				})
+			}),
 		[reset],
 	)
 }
