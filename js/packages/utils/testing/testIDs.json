@@ -20,5 +20,14 @@
 	"network-all-button": "NetworkAllButton",
 	"open-berty-link": "Open Berty Link",
 	"group-join": "JOIN THIS GROUP",
-	"home-input": "Search keyword"
+	"home-input": "Search keyword",
+	"home-share": "HomeShare",
+	"invite-button": "Invite",
+	"request-button": "RequestButton",
+	"create-group-first": "Create group",
+	"create-group-second": "Create a group",
+	"group-next-step": "Continue",
+	"group-name-input": "Group name",
+	"accept-group": "Accept",
+	"add-contact": "AddContact"
 }

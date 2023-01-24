@@ -137,7 +137,8 @@
     "modulePathIgnorePatterns": [
       "/node_modules/",
       ".gomobile-cache/",
-      "web/"
+      "web/",
+      "e2e-tests/"
     ],
     "moduleNameMapper": {
       "\\.(jpg|jpeg|gif|eot|otf|webp|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga|css|less|png|svg)$": "<rootDir>/__mocks__/assetMock.js",

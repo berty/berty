@@ -39,6 +39,7 @@ export const ConversationButton: React.FC<ConversationButtonProps> = props => {
 
 	return (
 		<TouchableHighlight
+			accessibilityLabel={testIDs.conversation}
 			testID={testIDs.conversation}
 			underlayColor={`${colors['secondary-text']}80`}
 			style={[

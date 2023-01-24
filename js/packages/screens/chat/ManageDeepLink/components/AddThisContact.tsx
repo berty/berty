@@ -18,6 +18,7 @@ import {
 } from '@berty/hooks'
 import { useNavigation } from '@berty/navigation'
 import { dispatch as navDispatch } from '@berty/navigation/rootRef'
+import * as testIDs from '@berty/utils/testing/testIDs.json'
 
 import InvalidScan from './InvalidScan'
 
@@ -196,6 +197,8 @@ const AddThisContact: React.FC<{
 				) : null}
 				<View style={padding.medium}>
 					<SecondaryButton
+						accessibilityLabel={testIDs['add-contact']}
+						testID={testIDs['add-contact']}
 						onPress={() => {
 							isPassword
 								? requestContact({ link, passphrase: Buffer.from(password) })

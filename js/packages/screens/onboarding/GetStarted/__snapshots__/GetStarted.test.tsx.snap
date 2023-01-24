@@ -140,6 +140,7 @@ exports[`Onboarding.GetStarted renders correctly 1`] = `
             }
           >
             <View
+              accessibilityLabel="CreateAccountButton"
               accessible={true}
               focusable={true}
               onClick={[Function]}

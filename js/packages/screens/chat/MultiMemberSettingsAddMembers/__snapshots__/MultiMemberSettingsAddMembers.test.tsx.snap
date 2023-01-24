@@ -86,37 +86,27 @@ exports[`Chat.MultiMemberSettingsAddMembers renders correctly 1`] = `
           <View
             style={
               Array [
-                false,
+                Object {
+                  "borderTopLeftRadius": 30,
+                  "borderTopRightRadius": 30,
+                },
+                Object {
+                  "backgroundColor": "#F2F2F2",
+                },
+                Array [
+                  Object {
+                    "marginBottom": -1,
+                  },
+                ],
               ]
             }
           >
             <View
-              accessible={true}
-              focusable={true}
-              onClick={[Function]}
-              onResponderGrant={[Function]}
-              onResponderMove={[Function]}
-              onResponderRelease={[Function]}
-              onResponderTerminate={[Function]}
-              onResponderTerminationRequest={[Function]}
-              onStartShouldSetResponder={[Function]}
               style={
                 Array [
                   Object {
-                    "borderTopLeftRadius": 30,
-                    "borderTopRightRadius": 30,
+                    "height": 90,
                   },
-                  false,
-                  false,
-                  false,
-                  Object {
-                    "backgroundColor": "#F2F2F2",
-                  },
-                  Array [
-                    Object {
-                      "marginBottom": -1,
-                    },
-                  ],
                 ]
               }
             >
@@ -124,7 +114,27 @@ exports[`Chat.MultiMemberSettingsAddMembers renders correctly 1`] = `
                 style={
                   Array [
                     Object {
-                      "height": 90,
+                      "marginTop": 16,
+                    },
+                    Object {
+                      "alignSelf": "center",
+                    },
+                    Object {
+                      "borderRadius": 4,
+                    },
+                    Object {
+                      "backgroundColor": "#97979770",
+                      "height": 5,
+                      "width": 60,
+                    },
+                  ]
+                }
+              />
+              <View
+                style={
+                  Array [
+                    Object {
+                      "marginTop": 9,
                     },
                   ]
                 }
@@ -133,75 +143,45 @@ exports[`Chat.MultiMemberSettingsAddMembers renders correctly 1`] = `
                   style={
                     Array [
                       Object {
-                        "marginTop": 16,
+                        "alignItems": "stretch",
+                        "flexDirection": "row",
+                        "justifyContent": "space-between",
                       },
                       Object {
-                        "alignSelf": "center",
+                        "paddingHorizontal": 16,
                       },
                       Object {
-                        "borderRadius": 4,
-                      },
-                      Object {
-                        "backgroundColor": "#97979770",
-                        "height": 5,
-                        "width": 60,
-                      },
-                    ]
-                  }
-                />
-                <View
-                  style={
-                    Array [
-                      Object {
-                        "marginTop": 9,
+                        "paddingTop": 9,
                       },
                     ]
                   }
                 >
-                  <View
+                  <Text
                     style={
                       Array [
                         Object {
-                          "alignItems": "stretch",
-                          "flexDirection": "row",
-                          "justifyContent": "space-between",
+                          "fontSize": 30,
                         },
                         Object {
-                          "paddingHorizontal": 16,
+                          "color": "#383B62",
+                          "fontFamily": "Open Sans",
                         },
-                        Object {
-                          "paddingTop": 9,
-                        },
+                        Array [
+                          Object {
+                            "fontFamily": "Bold Open Sans",
+                          },
+                          Object {
+                            "fontSize": 50,
+                          },
+                          Object {
+                            "alignSelf": "center",
+                          },
+                        ],
                       ]
                     }
                   >
-                    <Text
-                      style={
-                        Array [
-                          Object {
-                            "fontSize": 30,
-                          },
-                          Object {
-                            "color": "#383B62",
-                            "fontFamily": "Open Sans",
-                          },
-                          Array [
-                            Object {
-                              "fontFamily": "Bold Open Sans",
-                            },
-                            Object {
-                              "fontSize": 50,
-                            },
-                            Object {
-                              "alignSelf": "center",
-                            },
-                          ],
-                        ]
-                      }
-                    >
-                      chat.add-members.contacts
-                    </Text>
-                  </View>
+                    chat.add-members.contacts
+                  </Text>
                 </View>
               </View>
             </View>

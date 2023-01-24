@@ -45,6 +45,7 @@ export const ButtonSettingV2: React.FC<{
 	icon?: string | React.ReactNode
 	onPress?: () => void
 	testID?: string
+	accessibilityLabel?: string
 	toggle?: {
 		enable: boolean
 		value?: boolean
@@ -66,6 +67,7 @@ export const ButtonSettingV2: React.FC<{
 	disabled = false,
 	last = false,
 	testID,
+	accessibilityLabel,
 }) => {
 	const { padding, margin, opacity } = useStyles()
 	const { scaleSize } = useAppDimensions()
@@ -117,6 +119,7 @@ export const ButtonSettingV2: React.FC<{
 				onPress={!disabled ? onPress : () => {}}
 				activeOpacity={disabled ? disabledOpacity : 0.2}
 				testID={testID}
+				accessibilityLabel={accessibilityLabel}
 				style={[
 					padding.vertical.medium,
 					padding.horizontal.medium,
@@ -727,14 +730,14 @@ export const ButtonSettingItem: React.FC<ButtonSettingItem> = ({
 	styleText = {},
 }) => {
 	const _styles = useStylesButtonSettingItem()
-	const { row, padding, text } = useStyles()
+	const { row, text } = useStyles()
 	const colors = useThemeColor()
 
 	if (!color) {
 		color = colors['reverted-main-text']
 	}
 	return (
-		<View style={[row.left, padding.left.small, { alignItems: 'center' }, styleContainer]}>
+		<View style={[row.left, { alignItems: 'center', paddingLeft: 5 }, styleContainer]}>
 			<Icon
 				name={icon}
 				width={iconSize}

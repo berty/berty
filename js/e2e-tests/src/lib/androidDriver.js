@@ -2,7 +2,7 @@ const wdio = require('webdriverio')
 
 const { getAndroidCapabilities } = require('./lib')
 
-const androidList = ['Android Emulator']
+const androidList = ['Pixel_3_XL_API_29']
 
 async function initializeDriver(deviceName, port) {
 	return await wdio.remote({
@@ -17,7 +17,7 @@ async function getAndroidDrivers(numberOfDevices = 1) {
 	}
 
 	const drivers = []
-	let port = 8100
+	let port = 8110
 
 	for (let i = 0; i < numberOfDevices; i++) {
 		drivers.push(await initializeDriver(androidList[i], port))

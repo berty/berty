@@ -183,6 +183,7 @@ exports[`Settings.Permissions renders correctly 1`] = `
           </View>
         </View>
         <View
+          accessibilityLabel="PermissonAltButton"
           accessible={true}
           focusable={true}
           onClick={[Function]}

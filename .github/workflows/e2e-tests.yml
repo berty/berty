@@ -1,0 +1,66 @@
+name: e2e-tests
+on:
+  push:
+    tags:
+      - v*
+    branches:
+      - master
+    paths:
+      - "go/**"
+      - "!go/**.md"
+      - "go.*"
+      - "**.go"
+      - "js/**"
+      - ".github/workflows/ios.yml"
+  pull_request:
+    paths:
+      - "go/**"
+      - "!go/**.md"
+      - "go.*"
+      - "**.go"
+      - "js/**"
+      - "!js/packages/i18n/locale/*/*.json"
+      - ".github/workflows/ios.yml"
+  workflow_run:
+    workflows: [Android]
+    types:
+      - completed
+jobs:
+  mac_runner_matrix_builder:
+    name: macOS matrix builder
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 1
+
+      - name: Generate runner matrix (optimized)
+        id: set-matrix
+        run: |
+          # usage: node .github/workflows/mac-runner-matrix-builder.js STRATEGY
+          #
+          #  STRATEGY
+          #    self-hosted  pick the self-hosted runner configuration
+          #    github       pick the github runner configuration
+          #    optimized    pick a dc4 runner if available or fallback on github one
+          #
+          node .github/workflows/utils/mac-runner-matrix-builder.js optimized
+  build:
+    needs: mac_runner_matrix_builder
+    name: e2e-tests
+    runs-on: ${{ matrix.runner }}
+    env:
+      E2E_TESTING_IOS_DEVICE: iPhone 11
+      E2E_TESTING_IOS_VERSION: 15.5
+      CACHE_DIRS: js/android/.gomobile-cache; js/ios/.gomobile-cache; js/ios/.xcodegen-cache
+    strategy:
+      fail-fast: false
+      matrix: ${{fromJson(needs.mac_runner_matrix_builder.outputs.matrix)}}
+    steps:
+      - name: Run e2e-tests
+        working-directory: js
+        run: |
+          make e2e-tests.ci-flow

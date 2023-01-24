@@ -53,6 +53,7 @@ const ContactItem: React.FC<ContactItemProps> = ({ contact, added, separateBar =
 	return (
 		<View>
 			<TouchableOpacity
+				testID={contact.displayName ?? undefined}
 				onPress={() => {
 					if (added) {
 						dispatch(removeMemberFromInvitationListById(contact.publicKey!))

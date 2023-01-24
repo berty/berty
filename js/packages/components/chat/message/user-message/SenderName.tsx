@@ -20,6 +20,7 @@ export const SenderName: React.FC<SenderNameProps> = ({
 	return (
 		<View style={[isFollowedMessage && margin.left.scale(40)]}>
 			<UnifiedText
+				accessibilityLabel={name}
 				testID={name}
 				style={[text.bold, margin.bottom.tiny, text.size.tiny, { color: msgSenderColor }]}
 			>

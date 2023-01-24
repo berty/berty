@@ -41,6 +41,7 @@ const ChatInputButton: React.FC<{
 			style={style}
 			disabled={disabled}
 			onPress={onPress}
+			accessibilityLabel={testIDs['chat-input-button']}
 			testID={testIDs['chat-input-button']}
 		>
 			<View style={vOffset && vOffset > 0 ? { paddingBottom: vOffset } : undefined}>

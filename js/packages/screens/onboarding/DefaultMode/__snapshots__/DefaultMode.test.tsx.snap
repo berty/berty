@@ -388,6 +388,7 @@ exports[`Onboarding.DefaultMode renders correctly 1`] = `
                 }
               >
                 <View
+                  accessibilityLabel="LetsGoButton"
                   accessible={true}
                   focusable={true}
                   onClick={[Function]}
@@ -836,6 +837,7 @@ exports[`Onboarding.DefaultMode renders correctly 2`] = `
                 }
               >
                 <View
+                  accessibilityLabel="LetsGoButton"
                   accessible={true}
                   focusable={false}
                   onClick={[Function]}

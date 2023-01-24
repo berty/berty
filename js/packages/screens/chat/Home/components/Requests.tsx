@@ -11,6 +11,7 @@ import { useStyles } from '@berty/contexts/styles'
 import { useMessengerClient, usePlaySound, useThemeColor } from '@berty/hooks'
 import { useNavigation } from '@berty/navigation'
 import { pbDateToNum } from '@berty/utils/convert/time'
+import * as testIDs from '@berty/utils/testing/testIDs.json'
 
 import FromNow from './FromNow'
 import { UnreadCount } from './UnreadCount'
@@ -101,6 +102,7 @@ const ContactRequest: React.FC<beapi.messenger.IContact> = ({
 	const createdDate = pbDateToNum(createdDateStr) || Date.now()
 	return (
 		<TouchableOpacity
+			testID={testIDs['request-button']}
 			style={contactReqContainer}
 			onPress={() => {
 				if (conversationPublicKey) {

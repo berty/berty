@@ -76,7 +76,11 @@ const SwiperCard: React.FC<{
 					{children}
 					<View style={[margin.horizontal.large, margin.top.small]}>
 						{!!button && (
-							<PrimaryButton onPress={button.onPress} testID={button.testID}>
+							<PrimaryButton
+								onPress={button.onPress}
+								testID={button.testID}
+								accessibilityLabel={button.testID}
+							>
 								{button.text}
 							</PrimaryButton>
 						)}

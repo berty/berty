@@ -2225,10 +2225,8 @@ exports[`Settings.DevTools renders correctly 1`] = `
                             "justifyContent": "flex-start",
                           },
                           Object {
-                            "paddingLeft": 9,
-                          },
-                          Object {
                             "alignItems": "center",
+                            "paddingLeft": 5,
                           },
                           Array [
                             Object {
@@ -2552,10 +2550,8 @@ exports[`Settings.DevTools renders correctly 1`] = `
                             "justifyContent": "flex-start",
                           },
                           Object {
-                            "paddingLeft": 9,
-                          },
-                          Object {
                             "alignItems": "center",
+                            "paddingLeft": 5,
                           },
                           Array [
                             Object {
@@ -3038,10 +3034,8 @@ exports[`Settings.DevTools renders correctly 1`] = `
                             "justifyContent": "flex-start",
                           },
                           Object {
-                            "paddingLeft": 9,
-                          },
-                          Object {
                             "alignItems": "center",
+                            "paddingLeft": 5,
                           },
                           Array [
                             Object {

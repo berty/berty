@@ -88,6 +88,7 @@ export const HomeHeader: React.FC<
 							<MediumClearableInput
 								value={value}
 								onChangeText={onChange}
+								accessibilityLabel={testIDs['home-input']}
 								placeholder={t('main.home.input-placeholder')}
 								testID={testIDs['home-input']}
 								iconName='search-outline'

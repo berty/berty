@@ -227,7 +227,7 @@ export const ShareModal: ScreenFC<'Chat.Share'> = () => {
 								name: t('settings.share.invite'),
 								icon: 'link-outline',
 								color: colors['background-header'],
-								style: [height(120), height(120), width(120)],
+								style: [height(120), width(120)],
 								onPress: async () => {
 									await shareBertyID(url, t)
 								},
@@ -236,7 +236,10 @@ export const ShareModal: ScreenFC<'Chat.Share'> = () => {
 					/>
 				</ShareContainer>
 				<View style={[margin.horizontal.medium]}>
-					<FloatingMenuItem onPress={() => navigate('Chat.CreateGroupAddMembers')}>
+					<FloatingMenuItem
+						testID={t('settings.share.create-group')}
+						onPress={() => navigate('Chat.CreateGroupAddMembers')}
+					>
 						{t('settings.share.create-group')}
 					</FloatingMenuItem>
 					{__DEV__ && <DevLinkInput />}

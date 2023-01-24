@@ -266,6 +266,7 @@ export const Home: ScreenFC<'Chat.Home'> = ({ navigation: { navigate } }) => {
 									<ButtonSettingV2
 										text='Open Berty Link'
 										icon='external-link-outline'
+										accessibilityLabel={testIDs['open-berty-link']}
 										testID={testIDs['open-berty-link']}
 										onPress={() =>
 											navigate('Chat.ManageDeepLink', { type: 'link', value: searchText })
@@ -315,7 +316,10 @@ export const Home: ScreenFC<'Chat.Home'> = ({ navigation: { navigate } }) => {
 					</View>
 				)}
 			</ScrollView>
-			<PrimaryFloatingButton onPress={() => navigate('Chat.Share')} />
+			<PrimaryFloatingButton
+				testID={testIDs['home-share']}
+				onPress={() => navigate('Chat.Share')}
+			/>
 			{isAddBot.isVisible ? (
 				<AddBot
 					link={isAddBot.link}
