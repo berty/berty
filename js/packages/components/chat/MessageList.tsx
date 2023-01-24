@@ -1,13 +1,11 @@
+import { FlashList } from '@shopify/flash-list'
 import Long from 'long'
 import moment from 'moment'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
 	ActivityIndicator,
 	ActivityIndicatorProps,
-	FlatList,
-	ListRenderItem,
 	View,
-	Platform,
 	ViewToken,
 	StyleSheet,
 	Animated,
@@ -147,22 +145,18 @@ export const MessageList: React.FC<{
 				: NoopComponent
 
 		const initialScrollIndex = undefined
-		const flatListRef = React.useRef<FlatList>(null)
-
-		const handleScrollToIndexFailed = useCallback(() => {
-			flatListRef.current?.scrollToIndex({ index: 0 })
-		}, [])
+		const flashListRef = React.useRef<FlashList<ParsedInteraction> | null>(null)
 
 		const handleScrollToCid = useCallback(
 			cid => {
-				flatListRef.current?.scrollToIndex({
+				flashListRef.current?.scrollToIndex({
 					index: messages.findIndex(message => message.cid === cid),
 				})
 			},
 			[messages],
 		)
 
-		const renderItem: ListRenderItem<ParsedInteraction> = useCallback(
+		const renderItem = useCallback(
 			({ item, index }) => (
 				<>
 					{index > 0 && <DateSeparator current={item} next={messages[index - 1]} />}
@@ -254,7 +248,7 @@ export const MessageList: React.FC<{
 
 		return (
 			<View style={styles.container}>
-				{!fetchedFirst && (
+				{isLoadingMore && (
 					<View style={styles.loadingContainer}>
 						<ActivityIndicator color={colors['background-header']} />
 					</View>
@@ -264,13 +258,12 @@ export const MessageList: React.FC<{
 						<MemberBar convId={id} />
 					</Animated.View>
 				)}
-				<FlatList
+				<FlashList
 					overScrollMode='never'
 					initialScrollIndex={initialScrollIndex}
-					onScrollToIndexFailed={handleScrollToIndexFailed}
 					style={style}
 					contentContainerStyle={contentContainerStyle}
-					ref={flatListRef}
+					ref={flashListRef}
 					keyboardDismissMode='on-drag'
 					data={messages}
 					inverted
@@ -281,7 +274,7 @@ export const MessageList: React.FC<{
 					ListFooterComponent={listFooterComponent}
 					renderItem={renderItem}
 					onViewableItemsChanged={__DEV__ ? undefined : updateStickyDateCB}
-					initialNumToRender={20}
+					estimatedItemSize={50}
 					onScrollEndDrag={event => {
 						if (isGroup) {
 							if (event.nativeEvent.velocity?.y === 0) {
@@ -293,7 +286,6 @@ export const MessageList: React.FC<{
 					}}
 					onScrollBeginDrag={handleScrollBeginDrag}
 					onMomentumScrollEnd={isGroup ? handleScrollEndDrag : undefined}
-					disableVirtualization={Platform.OS === 'web'}
 				/>
 			</View>
 		)
