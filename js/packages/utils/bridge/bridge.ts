@@ -19,6 +19,7 @@ export const initBridge = async (
 	} catch (err: any) {
 		if (err?.message?.indexOf('already instantiated') !== -1) {
 			console.log('bridge already started: ', err)
+			return true
 		} else {
 			console.error('unable to init bridge: ', err)
 		}

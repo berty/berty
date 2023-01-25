@@ -1,6 +1,6 @@
 import React, { useEffect, useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { NativeModules, View } from 'react-native'
+import { NativeModules, Platform, View } from 'react-native'
 
 import { CreateGroupFooterWithIcon, MenuToggle, ItemSection } from '@berty/components'
 import { LoaderDots } from '@berty/components/LoaderDots'
@@ -46,7 +46,7 @@ export const SelectNode: ScreenFC<'Account.SelectNode'> = ({ route }) => {
 
 			await storeData(AsyncStorageKeys.SelectNode, nodeInfos)
 			const res = await action(externalNode, address, accountPort)
-			if (!res) {
+			if (!res && Platform.OS !== 'web') {
 				setForceAsk(true)
 			}
 		},

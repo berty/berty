@@ -1,6 +1,7 @@
 import { NavigationProp } from '@react-navigation/native'
 
 import beapi from '@berty/api'
+import { closeBridgeAndNavigateToOnboarding } from '@berty/hooks'
 import { ScreensParams } from '@berty/navigation/types'
 
 import { accountClient } from './accountClient'
@@ -22,13 +23,7 @@ export const deleteAccount = async (
 
 	if (!Object.values(accounts).length) {
 		// navigate to OnBoarding
-		reset({
-			routes: [
-				{
-					name: 'Onboarding.GetStarted',
-				},
-			],
-		})
+		closeBridgeAndNavigateToOnboarding(reset, null)
 	} else {
 		// open the last opened if an other account exist
 		let accountSelected: beapi.account.IAccountMetadata | null = null
