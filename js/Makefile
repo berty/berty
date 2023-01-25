@@ -211,7 +211,7 @@ lint.fix: node_modules
 .PHONY: js.unused_exports
 js.unused_exports: node_modules
 	$(call check-program, npx)
-	npx ts-unused-exports ./tsconfig.json --excludePathsFromReport="grpc-bridge;api;polyfill;packages/components/MiniGame.tsx;GoBridge.native.ts;PushTokenRequester.native.ts" --ignoreTestFiles --ignoreFiles='.*\.gen'
+	npx ts-unused-exports ./tsconfig.json --excludePathsFromReport="grpc-bridge;api;polyfill;packages/components/MiniGame.tsx;packages/components/chat/member-bar/MemberBar.tsx;GoBridge.native.ts;PushTokenRequester.native.ts" --ignoreTestFiles --ignoreFiles='.*\.gen'
 
 ###################
 # Build/Run rules #

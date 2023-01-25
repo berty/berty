@@ -71,7 +71,7 @@ export const HeaderTitle: React.FC<HeaderTitleProps> = props => {
 		)
 	}
 	return (
-		<TouchableOpacity onLongPress={() => setIsEdit(true)}>
+		<TouchableOpacity activeOpacity={1} onLongPress={() => setIsEdit(true)}>
 			<UnifiedText numberOfLines={1} style={[text.align.center, text.size.large, text.bold]}>
 				{props.conv?.displayName || ''}
 			</UnifiedText>

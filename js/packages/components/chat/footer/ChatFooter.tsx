@@ -93,9 +93,8 @@ export const ChatFooter: React.FC<ChatFooterProps> = React.memo(
 			if (sending) {
 				return
 			}
-			setSending(true)
 			await sendMessageBouncy()
-		}, [setSending, sendMessageBouncy, sending])
+		}, [sendMessageBouncy, sending])
 
 		const handleTextChange = React.useCallback(
 			(text: string) => {
