@@ -1,6 +1,13 @@
 package tech.berty.gobridge;
 
+import android.bluetooth.BluetoothAdapter;
 import android.content.res.Resources;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -171,6 +178,11 @@ public class GoBridgeModule extends ReactContextBaseJavaModule {
 
             // set native keystore driver
             config.setKeystoreDriver(this.keystoreDriver);
+
+            ConnectivityDriver connectivityDriver = new ConnectivityDriver(reactContext);
+            reactContext.registerReceiver(connectivityDriver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+            reactContext.registerReceiver(connectivityDriver, new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED));
+            config.setConnectivityDriver(connectivityDriver);
 
             bridgeMessenger = Bertybridge.newBridge(config);
             serviceClient = bridgeMessenger; // bridgeMessenger implements ServiceClient interface
