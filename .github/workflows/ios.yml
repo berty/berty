@@ -52,7 +52,8 @@ jobs:
     runs-on: ${{ matrix.runner }}
     env:
       E2E_TESTING_IOS_DEVICE: iPhone 11
-      E2E_TESTING_IOS_VERSION: 15.5
+      # TODO: fix hetzner
+      # E2E_TESTING_IOS_VERSION: 15.5
       CACHE_DIRS: js/android/.gomobile-cache; js/ios/.gomobile-cache; js/ios/.xcodegen-cache
     strategy:
       fail-fast: false
@@ -228,7 +229,8 @@ jobs:
             -scheme "Berty AppStore" \
             -destination "name=$E2E_TESTING_IOS_DEVICE"
 
-      - name: Run e2e-tests
-        working-directory: js
-        run: |
-          make e2e-tests.ci-flow
+      # TODO: fix hetzner
+      # - name: Run e2e-tests
+        # working-directory: js
+        # run: |
+          # make e2e-tests.ci-flow
