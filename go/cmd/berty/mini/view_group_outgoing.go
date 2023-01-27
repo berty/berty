@@ -239,6 +239,11 @@ func commandList() []*command {
 			cmd:   directoryServiceQuery,
 		},
 		{
+			title: "dd",
+			help:  `special debug messenger command`,
+			cmd:   newDebugMessengerCommand,
+		},
+		{
 			title:     "/",
 			help:      "",
 			cmd:       newSlashMessageCommand,
@@ -1140,7 +1145,12 @@ func contactRequestCommand(ctx context.Context, v *groupView, cmd string) error 
 	return err
 }
 
+func newDebugMessengerCommand(ctx context.Context, v *groupView, cmd string) error {
+	return newMessageCommand(ctx, v, fmt.Sprintf("/dd %s", cmd))
+}
+
 func newMessageCommand(ctx context.Context, v *groupView, cmd string) error {
+
 	if cmd == "" {
 		return nil
 	}

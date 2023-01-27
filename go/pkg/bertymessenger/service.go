@@ -74,6 +74,7 @@ type service struct {
 	groupsToSubTo         map[string]struct{}
 	accountGroup          []byte
 	grpcInsecure          bool
+	dd                    debugCommand
 
 	mt.UnimplementedMessengerServiceServer
 }
