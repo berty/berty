@@ -11,8 +11,8 @@ import (
 	"time"
 
 	"github.com/atotto/clipboard"
-	// nolint:staticcheck // cannot use the new protobuf API while keeping gogoproto
-	"github.com/golang/protobuf/proto"
+	"github.com/gdamore/tcell"
+	"github.com/golang/protobuf/proto" // nolint:staticcheck // cannot use the new protobuf API while keeping gogoproto
 	"github.com/ipfs/go-cid"
 	"github.com/mdp/qrterminal/v3"
 	"moul.io/godev"
@@ -52,6 +52,11 @@ func commandList() []*command {
 			title: "help",
 			help:  "Displays this message",
 			cmd:   cmdHelp,
+		},
+		{
+			title: "keyboard",
+			help:  "Lists keyboard shortcuts",
+			cmd:   cmdKeyboard,
 		},
 		{
 			title: "group new",
@@ -852,6 +857,54 @@ func cmdHelp(ctx context.Context, v *groupView, cmd string) error {
 
 		v.syncMessages <- &historyMessage{
 			payload: []byte(fmt.Sprintf("/%s%s  %s", cmd.title, strings.Repeat(" ", padding), cmd.help)),
+		}
+	}
+
+	return nil
+}
+
+func cmdKeyboard(ctx context.Context, v *groupView, cmd string) error {
+	longestHint := 0
+	help := [][]string(nil)
+
+	for _, command := range keyboardCommands() {
+		for _, shortcut := range command.shortcuts {
+			eventKey := tcell.NewEventKey(shortcut.key, 0, shortcut.modifier)
+			eventKeyName := eventKey.Name()
+
+			if len(eventKeyName) > longestHint {
+				longestHint = len(eventKeyName)
+			}
+
+			help = append(help, []string{
+				eventKeyName,
+				command.help,
+			})
+		}
+	}
+
+	lastItemCommandHelp := ""
+	sameLabel := "(same)"
+	for _, helpItem := range help {
+		commandHelp := helpItem[1]
+		if commandHelp == lastItemCommandHelp {
+			center := len(commandHelp)/2 - len(sameLabel)/2
+			if center < 0 {
+				center = 0
+			}
+
+			commandHelp = fmt.Sprintf("%s%s", strings.Repeat(" ", center), sameLabel)
+		} else {
+			lastItemCommandHelp = commandHelp
+		}
+
+		v.syncMessages <- &historyMessage{
+			payload: []byte(fmt.Sprintf(
+				"%s%s  %s",
+				helpItem[0],
+				strings.Repeat(" ", longestHint-len(helpItem[0])),
+				commandHelp,
+			)),
 		}
 	}
 
