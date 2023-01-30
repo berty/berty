@@ -135,6 +135,8 @@ func Main(ctx context.Context, opts *Opts) error {
 		})
 	*/
 
+	keyboardCommandsMap := buildKeyboardCommandMap()
+
 	app.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
 		/*
 
@@ -146,43 +148,14 @@ func Main(ctx context.Context, opts *Opts) error {
 			inactiveTimer.Reset(ShouldBecomeInactive)
 
 		*/
-
-		// nolint:exhaustive
-		switch event.Key() {
-		case tcell.KeyCtrlC:
-			app.Stop()
-		case tcell.KeyEsc:
-			app.Stop()
-		case tcell.KeyHome:
-			tabbedView.GetActiveViewGroup().messages.historyScroll.ScrollToBeginning()
-		case tcell.KeyEnd:
-			tabbedView.GetActiveViewGroup().messages.historyScroll.ScrollToEnd()
-		case tcell.KeyPgUp:
-			tabbedView.GetActiveViewGroup().ScrollToOffset(-10)
-		case tcell.KeyPgDn:
-			tabbedView.GetActiveViewGroup().ScrollToOffset(+10)
-		case tcell.KeyCtrlP:
-			tabbedView.PrevGroup()
-		case tcell.KeyCtrlN:
-			tabbedView.NextGroup()
-		case tcell.KeyUp:
-			if event.Modifiers() == tcell.ModAlt || event.Modifiers() == tcell.ModCtrl {
-				tabbedView.PrevGroup()
-			} else {
-				input.SetText(tabbedView.GetActiveViewGroup().inputHistory.Prev())
+		if _, ok := keyboardCommandsMap[event.Modifiers()]; ok {
+			if action, ok := keyboardCommandsMap[event.Modifiers()][event.Key()]; ok {
+				action(app, tabbedView, input)
+				return nil
 			}
-
-		case tcell.KeyDown:
-			if event.Modifiers() == tcell.ModAlt || event.Modifiers() == tcell.ModCtrl {
-				tabbedView.NextGroup()
-			} else {
-				input.SetText(tabbedView.GetActiveViewGroup().inputHistory.Next())
-			}
-		default:
-			return event
 		}
 
-		return nil
+		return event
 	})
 
 	if err := app.SetRoot(mainUI, true).SetFocus(mainUI).Run(); err != nil {

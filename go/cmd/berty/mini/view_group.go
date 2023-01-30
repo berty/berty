@@ -363,7 +363,7 @@ func (v *groupView) welcomeEventDisplay() {
 	v.messages.lock.Unlock()
 	v.messages.Append(&historyMessage{
 		messageType: messageTypeMeta,
-		payload:     []byte("type /help for available commands"),
+		payload:     []byte("type \"/help\" for available commands, \"/keyboard\" for navigation help"),
 	})
 
 	v.welcomeGroupEventDisplay()
