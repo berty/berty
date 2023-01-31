@@ -1527,9 +1527,18 @@
         "operationId": "ProtocolService_VerifiedCredentialsList",
         "responses": {
           "200": {
-            "description": "A successful response.",
+            "description": "A successful response.(streaming responses)",
             "schema": {
-              "$ref": "#/definitions/v1VerifiedCredentialsListReply"
+              "type": "object",
+              "properties": {
+                "result": {
+                  "$ref": "#/definitions/v1VerifiedCredentialsListReply"
+                },
+                "error": {
+                  "$ref": "#/definitions/runtimeStreamError"
+                }
+              },
+              "title": "Stream result of v1VerifiedCredentialsListReply"
             }
           },
           "default": {
@@ -3145,16 +3154,24 @@
     "v1VerifiedCredentialsListReply": {
       "type": "object",
       "properties": {
-        "credentials": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/v1AccountVerifiedCredentialRegistered"
-          }
+        "credential": {
+          "$ref": "#/definitions/v1AccountVerifiedCredentialRegistered"
         }
       }
     },
     "v1VerifiedCredentialsListRequest": {
-      "type": "object"
+      "type": "object",
+      "properties": {
+        "filter_identifier": {
+          "type": "string"
+        },
+        "filter_issuer": {
+          "type": "string"
+        },
+        "exclude_expired": {
+          "type": "boolean"
+        }
+      }
     }
   }
 }

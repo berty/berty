@@ -1778,11 +1778,17 @@ Progress define a generic object that can be used to display a progress bar for 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| credentials | [AccountVerifiedCredentialRegistered](#berty-protocol-v1-AccountVerifiedCredentialRegistered) | repeated |  |
+| credential | [AccountVerifiedCredentialRegistered](#berty-protocol-v1-AccountVerifiedCredentialRegistered) |  |  |
 
 <a name="berty-protocol-v1-VerifiedCredentialsList-Request"></a>
 
 ### VerifiedCredentialsList.Request
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| filter_identifier | [string](#string) |  |  |
+| filter_issuer | [string](#string) |  |  |
+| exclude_expired | [bool](#bool) |  |  |
 
  
 
@@ -1959,7 +1965,7 @@ Each Berty Protocol Instance is considered as a Berty device and is associated w
 | AuthServiceCompleteFlow | [AuthServiceCompleteFlow.Request](#berty-protocol-v1-AuthServiceCompleteFlow-Request) | [AuthServiceCompleteFlow.Reply](#berty-protocol-v1-AuthServiceCompleteFlow-Reply) | AuthServiceCompleteFlow Completes an authentication flow |
 | CredentialVerificationServiceInitFlow | [CredentialVerificationServiceInitFlow.Request](#berty-protocol-v1-CredentialVerificationServiceInitFlow-Request) | [CredentialVerificationServiceInitFlow.Reply](#berty-protocol-v1-CredentialVerificationServiceInitFlow-Reply) | CredentialVerificationServiceInitFlow Initialize a credential verification flow |
 | CredentialVerificationServiceCompleteFlow | [CredentialVerificationServiceCompleteFlow.Request](#berty-protocol-v1-CredentialVerificationServiceCompleteFlow-Request) | [CredentialVerificationServiceCompleteFlow.Reply](#berty-protocol-v1-CredentialVerificationServiceCompleteFlow-Reply) | CredentialVerificationServiceCompleteFlow Completes a credential verification flow |
-| VerifiedCredentialsList | [VerifiedCredentialsList.Request](#berty-protocol-v1-VerifiedCredentialsList-Request) | [VerifiedCredentialsList.Reply](#berty-protocol-v1-VerifiedCredentialsList-Reply) | VerifiedCredentialsList Retrieves the list of verified credentials |
+| VerifiedCredentialsList | [VerifiedCredentialsList.Request](#berty-protocol-v1-VerifiedCredentialsList-Request) | [VerifiedCredentialsList.Reply](#berty-protocol-v1-VerifiedCredentialsList-Reply) stream | VerifiedCredentialsList Retrieves the list of verified credentials |
 | ServicesTokenList | [ServicesTokenList.Request](#berty-protocol-v1-ServicesTokenList-Request) | [ServicesTokenList.Reply](#berty-protocol-v1-ServicesTokenList-Reply) stream | ServicesTokenList Retrieves the list of services tokens |
 | ReplicationServiceRegisterGroup | [ReplicationServiceRegisterGroup.Request](#berty-protocol-v1-ReplicationServiceRegisterGroup-Request) | [ReplicationServiceRegisterGroup.Reply](#berty-protocol-v1-ReplicationServiceRegisterGroup-Reply) | ReplicationServiceRegisterGroup Asks a replication service to distribute a group contents |
 | PeerList | [PeerList.Request](#berty-protocol-v1-PeerList-Request) | [PeerList.Reply](#berty-protocol-v1-PeerList-Reply) | PeerList returns a list of P2P peers |

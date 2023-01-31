@@ -136,7 +136,6 @@ type Manager struct {
 			PollInterval           time.Duration `json:"PollInterval,omitempty"`
 			PushPlatformToken      string        `json:"PushPlatformToken,omitempty"`
 			DevicePushKeyPath      string        `json:"DevicePushKeyPath,omitempty"`
-			ServiceInsecureMode    bool          `json:"ServiceInsecureMode,omitempty"`
 			RendezvousRotationBase time.Duration `json:"RendezvousRotationBase,omitempty"`
 
 			// internal
@@ -187,6 +186,10 @@ type Manager struct {
 			db        *gorm.DB
 			dbCleanup func()
 		}
+		DirectoryService struct {
+			db        *gorm.DB
+			dbCleanup func()
+		}
 		GRPC struct {
 			RemoteAddr       string `json:"RemoteAddr,omitempty"`
 			Listeners        string `json:"Listeners,omitempty"`
@@ -200,6 +203,7 @@ type Manager struct {
 			gatewayMux        *runtime.ServeMux
 			listeners         []grpcutil.Listener
 		} `json:"GRPC,omitempty"`
+		ServiceInsecureMode bool `json:"ServiceInsecureMode,omitempty"`
 	} `json:"Node,omitempty"`
 	InitTimeout time.Duration `json:"InitTimeout,omitempty"`
 
@@ -333,6 +337,7 @@ func (m *Manager) Close(prog *progress.Progress) error {
 	prog.AddStep("close-messenger-protocol-client")
 	prog.AddStep("cleanup-messenger-db")
 	prog.AddStep("cleanup-replication-db")
+	prog.AddStep("cleanup-directory-service-db")
 	prog.AddStep("close-protocol-server")
 	prog.AddStep("close-tinder-service")
 	prog.AddStep("close-mdns-service")
@@ -388,6 +393,11 @@ func (m *Manager) Close(prog *progress.Progress) error {
 	prog.Get("cleanup-replication-db").SetAsCurrent()
 	if m.Node.Replication.dbCleanup != nil {
 		m.Node.Replication.dbCleanup()
+	}
+
+	prog.Get("cleanup-directory-service-db").SetAsCurrent()
+	if m.Node.DirectoryService.dbCleanup != nil {
+		m.Node.DirectoryService.dbCleanup()
 	}
 
 	prog.Get("close-protocol-server").SetAsCurrent()

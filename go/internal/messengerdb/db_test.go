@@ -686,11 +686,45 @@ func Test_dbWrapper_GetAccount(t *testing.T) {
 		Issuer:           "iss3",
 	}).Error)
 
+	require.NoError(t, db.db.Create(&messengertypes.AccountDirectoryServiceRecord{
+		AccountPK:             refAccount.PublicKey,
+		Identifier:            "id1",
+		IdentifierProofIssuer: "iss1",
+		RegistrationDate:      messengerutil.TimestampMs(time.Now()),
+		ExpirationDate:        messengerutil.TimestampMs(time.Now().Add(time.Hour)),
+		ServerAddr:            "srv_ds_1",
+		Revoked:               false,
+		DirectoryRecordToken:  "tok_ds_1",
+	}).Error)
+
+	require.NoError(t, db.db.Create(&messengertypes.AccountDirectoryServiceRecord{
+		AccountPK:             refAccount.PublicKey,
+		Identifier:            "id2",
+		IdentifierProofIssuer: "iss2",
+		RegistrationDate:      messengerutil.TimestampMs(time.Now()),
+		ExpirationDate:        messengerutil.TimestampMs(time.Now().Add(time.Hour)),
+		ServerAddr:            "srv_ds_2",
+		Revoked:               false,
+		DirectoryRecordToken:  "tok_ds_2",
+	}).Error)
+
+	require.NoError(t, db.db.Create(&messengertypes.AccountDirectoryServiceRecord{
+		AccountPK:             refOtherAccount.PublicKey,
+		Identifier:            "id3",
+		IdentifierProofIssuer: "iss3",
+		RegistrationDate:      messengerutil.TimestampMs(time.Now()),
+		ExpirationDate:        messengerutil.TimestampMs(time.Now().Add(time.Hour)),
+		ServerAddr:            "srv_ds_3",
+		Revoked:               false,
+		DirectoryRecordToken:  "tok_ds_3",
+	}).Error)
+
 	acc, err = db.GetAccount()
 	require.NoError(t, err)
 	require.Equal(t, refAccount.PublicKey, acc.PublicKey)
 	require.Equal(t, refAccount.Link, acc.Link)
 	require.Len(t, acc.ServiceTokens, 1)
+
 	require.Len(t, acc.VerifiedCredentials, 2)
 	require.Contains(t, []string{acc.VerifiedCredentials[0].Identifier, acc.VerifiedCredentials[1].Identifier}, "id1")
 	require.Contains(t, []string{acc.VerifiedCredentials[0].Identifier, acc.VerifiedCredentials[1].Identifier}, "id2")
@@ -698,6 +732,15 @@ func Test_dbWrapper_GetAccount(t *testing.T) {
 	require.Equal(t, refAccount.PublicKey, acc.ServiceTokens[0].AccountPK)
 	require.Equal(t, "https://url1/", acc.ServiceTokens[0].AuthenticationURL)
 	require.Equal(t, "srv1", acc.ServiceTokens[0].ServiceType)
+
+	require.Len(t, acc.DirectoryServiceRecords, 2)
+	require.Contains(t, []string{acc.DirectoryServiceRecords[0].Identifier, acc.DirectoryServiceRecords[1].Identifier}, "id1")
+	require.Contains(t, []string{acc.DirectoryServiceRecords[0].Identifier, acc.DirectoryServiceRecords[1].Identifier}, "id2")
+	require.Equal(t, "tok_ds_1", acc.DirectoryServiceRecords[0].DirectoryRecordToken)
+	require.Equal(t, "iss1", acc.DirectoryServiceRecords[0].IdentifierProofIssuer)
+	require.Equal(t, refAccount.PublicKey, acc.DirectoryServiceRecords[0].AccountPK)
+	require.Equal(t, false, acc.DirectoryServiceRecords[0].Revoked)
+	require.Equal(t, "srv_ds_1", acc.DirectoryServiceRecords[0].ServerAddr)
 }
 
 func Test_dbWrapper_getAcknowledgementsCIDsForInteraction(t *testing.T) {
@@ -1059,6 +1102,11 @@ func Test_dbWrapper_getDBInfo(t *testing.T) {
 	}
 	refCount++
 
+	for i := 0; i <= refCount; i++ {
+		db.db.Create(&messengertypes.AccountDirectoryServiceRecord{Identifier: fmt.Sprintf("%d", i), ServerAddr: fmt.Sprintf("%d", i), ExpirationDate: int64(i), RegistrationDate: int64(i)})
+	}
+	refCount++
+
 	require.Equal(t, len(getDBModels()), refCount)
 
 	refCount = 0
@@ -1086,6 +1134,8 @@ func Test_dbWrapper_getDBInfo(t *testing.T) {
 	require.Equal(t, int64(refCount), info.SharedPushTokens)
 	refCount++
 	require.Equal(t, int64(refCount), info.AccountVerifiedCredentials)
+	refCount++
+	require.Equal(t, int64(refCount), info.AccountDirectoryServiceRecord)
 
 	require.Equal(t, len(getDBModels()), refCount)
 
@@ -1889,4 +1939,138 @@ func Test_dbWrapper_SaveAccountVerifiedCredential(t *testing.T) {
 	err = db.db.Model(&messengertypes.AccountVerifiedCredential{}).Count(&count).Error
 	require.NoError(t, err)
 	require.Equal(t, int64(2), count)
+}
+
+func Test_dbWrapper_SaveAccountDirectoryServiceRecord_GetAccountDirectoryServiceRecord_MarkAccountDirectoryServiceRecordAsRevoked(t *testing.T) {
+	db, _, dispose := GetInMemoryTestDB(t)
+	defer dispose()
+
+	db.db.Create(&messengertypes.Account{PublicKey: "test1"})
+
+	// marking as revoked non existing token
+	err := db.MarkAccountDirectoryServiceRecordAsRevoked("server1", "token1", 19)
+	require.Error(t, err)
+
+	// retrieving non existing token
+	record, err := db.GetAccountDirectoryServiceRecord("server1", "token1")
+	require.Error(t, err)
+
+	// saving a new token
+	err = db.SaveAccountDirectoryServiceRecord("acc1", &messengertypes.AppMessage_AccountDirectoryServiceRegistered{
+		Identifier:                     "id1",
+		IdentifierProofIssuer:          "iss1",
+		RegistrationDate:               10 * messengerutil.MilliToNanoFactor,
+		ExpirationDate:                 20 * messengerutil.MilliToNanoFactor,
+		ServerAddr:                     "server1",
+		DirectoryRecordToken:           "token1",
+		DirectoryRecordUnregisterToken: "unregister_token1",
+	})
+	require.NoError(t, err)
+
+	count := int64(0)
+
+	// checking that a single token exists
+	err = db.db.Model(&messengertypes.AccountDirectoryServiceRecord{}).Count(&count).Error
+	require.NoError(t, err)
+	require.Equal(t, int64(1), count)
+
+	// saving a new token
+	err = db.SaveAccountDirectoryServiceRecord("acc1", &messengertypes.AppMessage_AccountDirectoryServiceRegistered{
+		Identifier:                     "id2",
+		IdentifierProofIssuer:          "iss2",
+		RegistrationDate:               30 * messengerutil.MilliToNanoFactor,
+		ExpirationDate:                 40 * messengerutil.MilliToNanoFactor,
+		ServerAddr:                     "server2",
+		DirectoryRecordToken:           "token2",
+		DirectoryRecordUnregisterToken: "unregister_token2",
+	})
+	require.NoError(t, err)
+
+	count = int64(0)
+
+	// checking that a second token exists
+	err = db.db.Model(&messengertypes.AccountDirectoryServiceRecord{}).Count(&count).Error
+	require.NoError(t, err)
+	require.Equal(t, int64(2), count)
+
+	// checking token details
+	record, err = db.GetAccountDirectoryServiceRecord("server1", "token1")
+	require.NoError(t, err)
+	require.Equal(t, "id1", record.Identifier)
+	require.Equal(t, "iss1", record.IdentifierProofIssuer)
+	require.Equal(t, int64(10), record.RegistrationDate)
+	require.Equal(t, int64(20), record.ExpirationDate)
+	require.Equal(t, "server1", record.ServerAddr)
+	require.Equal(t, "token1", record.DirectoryRecordToken)
+	require.Equal(t, "unregister_token1", record.DirectoryRecordUnregisterToken)
+	require.Equal(t, false, record.Revoked)
+
+	// checking the second token details
+	record, err = db.GetAccountDirectoryServiceRecord("server2", "token2")
+	require.NoError(t, err)
+	require.Equal(t, "id2", record.Identifier)
+	require.Equal(t, "iss2", record.IdentifierProofIssuer)
+	require.Equal(t, int64(30), record.RegistrationDate)
+	require.Equal(t, int64(40), record.ExpirationDate)
+	require.Equal(t, "server2", record.ServerAddr)
+	require.Equal(t, "token2", record.DirectoryRecordToken)
+	require.Equal(t, "unregister_token2", record.DirectoryRecordUnregisterToken)
+	require.Equal(t, false, record.Revoked)
+
+	// marking the token as revoked
+	err = db.MarkAccountDirectoryServiceRecordAsRevoked("server1", "token1", int64(20))
+	require.NoError(t, err)
+
+	// marking the token as revoked a second time
+	err = db.MarkAccountDirectoryServiceRecordAsRevoked("server1", "token1", int64(20))
+	require.NoError(t, err)
+
+	// checking that the token is actually revoked
+	record, err = db.GetAccountDirectoryServiceRecord("server1", "token1")
+	require.NoError(t, err)
+	require.Equal(t, "id1", record.Identifier)
+	require.Equal(t, "iss1", record.IdentifierProofIssuer)
+	require.Equal(t, int64(10), record.RegistrationDate)
+	require.Equal(t, int64(20), record.ExpirationDate)
+	require.Equal(t, "server1", record.ServerAddr)
+	require.Equal(t, "token1", record.DirectoryRecordToken)
+	require.Equal(t, true, record.Revoked)
+
+	// checking that the second token is not revoked
+	record, err = db.GetAccountDirectoryServiceRecord("server2", "token2")
+	require.NoError(t, err)
+	require.Equal(t, "id2", record.Identifier)
+	require.Equal(t, "iss2", record.IdentifierProofIssuer)
+	require.Equal(t, int64(30), record.RegistrationDate)
+	require.Equal(t, int64(40), record.ExpirationDate)
+	require.Equal(t, "server2", record.ServerAddr)
+	require.Equal(t, "token2", record.DirectoryRecordToken)
+	require.Equal(t, false, record.Revoked)
+
+	// updating a token
+	err = db.SaveAccountDirectoryServiceRecord("acc1", &messengertypes.AppMessage_AccountDirectoryServiceRegistered{
+		Identifier:                     "id1",
+		IdentifierProofIssuer:          "iss1.1",
+		RegistrationDate:               50 * messengerutil.MilliToNanoFactor,
+		ExpirationDate:                 60 * messengerutil.MilliToNanoFactor,
+		ServerAddr:                     "server1",
+		DirectoryRecordToken:           "token1.1",
+		DirectoryRecordUnregisterToken: "unregister_token1.1",
+	})
+	require.NoError(t, err)
+
+	// checking updated token details
+	record, err = db.GetAccountDirectoryServiceRecord("server1", "token1")
+	require.Error(t, err)
+
+	record, err = db.GetAccountDirectoryServiceRecord("server1", "token1.1")
+	require.NoError(t, err)
+	require.Equal(t, "id1", record.Identifier)
+	require.Equal(t, "iss1.1", record.IdentifierProofIssuer)
+	require.Equal(t, int64(50), record.RegistrationDate)
+	require.Equal(t, int64(60), record.ExpirationDate)
+	require.Equal(t, "server1", record.ServerAddr)
+	require.Equal(t, "token1.1", record.DirectoryRecordToken)
+	require.Equal(t, "unregister_token1.1", record.DirectoryRecordUnregisterToken)
+	require.Equal(t, false, record.Revoked)
 }

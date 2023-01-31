@@ -24,14 +24,14 @@ message Register {
     bytes verified_credential = 1;
     int64 expiration_date = 2;
     int64 locked_until_date = 3;
-    string profile_uri = 4 [(gogoproto.customname) = "ProfileURI"];
+    string account_uri = 4 [(gogoproto.customname) = "AccountURI"];
     bool overwrite_existing_record = 5;
-    bytes unlock_key = 6;
   }
   message Reply {
     string directory_record_token = 1;
     string directory_identifier = 2;
     int64 expiration_date = 3;
+    string unregister_token = 4;
   }
 }
 
@@ -42,7 +42,7 @@ message Query {
   message Reply {
     string directory_identifier = 1;
     int64 expires_at = 2;
-    string profile_uri = 3 [(gogoproto.customname) = "ProfileURI"];
+    string account_uri = 3 [(gogoproto.customname) = "AccountURI"];
     bytes verified_credential = 4;
   }
 }
@@ -51,7 +51,7 @@ message Unregister {
   message Request {
     string directory_identifier = 1;
     string directory_record_token = 2;
-    bytes unlock_sig = 3; // sig of directory_record_token using the unlock_key, when not known (ie. device lost) the user can either wait for the record to expire or register again and then unregister
+    string unregister_token = 3; // when not known (ie. device lost) the user can either wait for the record to expire or register again (if the record is still present but unlocked) and then unregister
   }
   message Reply {}
 }
@@ -61,7 +61,7 @@ message Record {
   string directory_record_token = 2;
   int64 expires_at = 3;
   int64 locked_until = 4;
-  string unlock_key = 5;
-  string profile_uri = 6 [(gogoproto.customname) = "ProfileURI"];
+  string unregister_token = 5;
+  string account_uri = 6 [(gogoproto.customname) = "AccountURI"];
   bytes verified_credential = 7;
 }

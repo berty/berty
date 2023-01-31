@@ -101,11 +101,13 @@ func (h *EventHandler) bindHandlers() {
 		handler        func(tx *messengerdb.DBWrapper, i *mt.Interaction, amPayload proto.Message) (*mt.Interaction, bool, error)
 		isVisibleEvent bool
 	}{
-		mt.AppMessage_TypeAcknowledge:     {h.handleAppMessageAcknowledge, false},
-		mt.AppMessage_TypeGroupInvitation: {h.handleAppMessageGroupInvitation, true},
-		mt.AppMessage_TypeUserMessage:     {h.handleAppMessageUserMessage, true},
-		mt.AppMessage_TypeSetUserInfo:     {h.handleAppMessageSetUserInfo, false},
-		mt.AppMessage_TypeSetGroupInfo:    {h.handleAppMessageSetGroupInfo, false},
+		mt.AppMessage_TypeAcknowledge:                         {h.handleAppMessageAcknowledge, false},
+		mt.AppMessage_TypeGroupInvitation:                     {h.handleAppMessageGroupInvitation, true},
+		mt.AppMessage_TypeUserMessage:                         {h.handleAppMessageUserMessage, true},
+		mt.AppMessage_TypeSetUserInfo:                         {h.handleAppMessageSetUserInfo, false},
+		mt.AppMessage_TypeSetGroupInfo:                        {h.handleAppMessageSetGroupInfo, false},
+		mt.AppMessage_TypeAccountDirectoryServiceRegistered:   {h.handleAppMessageAccountDirectoryServiceRegistered, false},
+		mt.AppMessage_TypeAccountDirectoryServiceUnregistered: {h.handleAppMessageDirectoryServiceUnregistered, false},
 	}
 }
 
@@ -1222,6 +1224,68 @@ func (h *EventHandler) handleAppMessageSetGroupInfo(tx *messengerdb.DBWrapper, i
 	}
 
 	return nil, false, errcode.ErrInternal
+}
+
+func (h *EventHandler) handleAppMessageAccountDirectoryServiceRegistered(tx *messengerdb.DBWrapper, i *mt.Interaction, amPayload proto.Message) (*mt.Interaction, bool, error) {
+	if len(i.GetPayload()) == 0 {
+		return nil, false, ErrNilPayload
+	}
+
+	acc, err := tx.GetAccount()
+	if err != nil {
+		return nil, false, err
+	}
+
+	payload := amPayload.(*mt.AppMessage_AccountDirectoryServiceRegistered)
+	if acc.PublicKey != i.ConversationPublicKey {
+		return nil, false, errcode.ErrInvalidInput.Wrap(fmt.Errorf("message is not on account group"))
+	}
+
+	if err := tx.SaveAccountDirectoryServiceRecord(acc.PublicKey, payload); err != nil {
+		return nil, false, err
+	}
+
+	acc, err = tx.GetAccount()
+	if err != nil {
+		return nil, false, err
+	}
+
+	if err := h.dispatcher.StreamEvent(mt.StreamEvent_TypeAccountUpdated, &mt.StreamEvent_AccountUpdated{Account: acc}, false); err != nil {
+		return nil, false, err
+	}
+
+	return i, false, nil
+}
+
+func (h *EventHandler) handleAppMessageDirectoryServiceUnregistered(tx *messengerdb.DBWrapper, i *mt.Interaction, amPayload proto.Message) (*mt.Interaction, bool, error) {
+	if len(i.GetPayload()) == 0 {
+		return nil, false, ErrNilPayload
+	}
+
+	acc, err := tx.GetAccount()
+	if err != nil {
+		return nil, false, err
+	}
+
+	payload := amPayload.(*mt.AppMessage_AccountDirectoryServiceUnregistered)
+	if acc.PublicKey != i.ConversationPublicKey {
+		return nil, false, errcode.ErrInvalidInput.Wrap(fmt.Errorf("message is not on account group"))
+	}
+
+	if err := tx.MarkAccountDirectoryServiceRecordAsRevoked(payload.ServerAddr, payload.DirectoryRecordToken, payload.RemovalDate); err != nil {
+		return nil, false, err
+	}
+
+	acc, err = tx.GetAccount()
+	if err != nil {
+		return nil, false, err
+	}
+
+	if err := h.dispatcher.StreamEvent(mt.StreamEvent_TypeAccountUpdated, &mt.StreamEvent_AccountUpdated{Account: acc}, false); err != nil {
+		return nil, false, err
+	}
+
+	return i, false, nil
 }
 
 func interactionFromOutOfStoreAppMessage(h *EventHandler, gPKBytes []byte, outOfStoreMessage *protocoltypes.OutOfStoreMessage, am *mt.AppMessage) (*mt.Interaction, error) {

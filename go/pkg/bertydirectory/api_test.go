@@ -2,7 +2,6 @@ package bertydirectory
 
 import (
 	"context"
-	"crypto"
 	"crypto/ed25519"
 	crand "crypto/rand"
 	"fmt"
@@ -65,7 +64,7 @@ func getBertyIDWebLink(t *testing.T, accountPK, rdvSeed []byte) string {
 	return web1
 }
 
-func getTestDB(t *testing.T) *gorm.DB {
+func getTestDB(t *testing.T) Datastore {
 	t.Helper()
 
 	db, err := gorm.Open(sqlite.Open(fmt.Sprintf("file:memdb%d?mode=memory&cache=shared", time.Now().UnixNano())), &gorm.Config{
@@ -75,7 +74,12 @@ func getTestDB(t *testing.T) *gorm.DB {
 		t.Fatal(err)
 	}
 
-	return db
+	ds, err := NewSQLDatastore(db)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	return ds
 }
 
 func getVCSignedProof(t *testing.T, vcIssuer *bertyvcissuer.VCIssuer, bertyWebLink, identifier string) []byte {
@@ -134,7 +138,7 @@ func TestDirectoryService_Register(t *testing.T) {
 	// Registering with a bogus vc
 	reply, err := dirService.Register(context.TODO(), &directorytypes.Register_Request{
 		VerifiedCredential: signedProofNoBertyID,
-		ProfileURI:         web1,
+		AccountURI:         web1,
 	})
 	require.Error(t, err)
 	require.Nil(t, reply)
@@ -142,7 +146,7 @@ func TestDirectoryService_Register(t *testing.T) {
 	// Registering with an expired proof
 	reply, err = dirService.Register(context.TODO(), &directorytypes.Register_Request{
 		VerifiedCredential: signedProofExpired,
-		ProfileURI:         web1,
+		AccountURI:         web1,
 	})
 	require.Error(t, err)
 	require.Nil(t, reply)
@@ -150,7 +154,7 @@ func TestDirectoryService_Register(t *testing.T) {
 	// Valid initial registration
 	reply, err = dirService.Register(context.TODO(), &directorytypes.Register_Request{
 		VerifiedCredential: signedProof,
-		ProfileURI:         web1,
+		AccountURI:         web1,
 	})
 	require.NoError(t, err)
 	require.NotNil(t, reply)
@@ -158,7 +162,7 @@ func TestDirectoryService_Register(t *testing.T) {
 	// Renewing registration
 	reply, err = dirService.Register(context.TODO(), &directorytypes.Register_Request{
 		VerifiedCredential: signedProof,
-		ProfileURI:         web1,
+		AccountURI:         web1,
 	})
 	require.NoError(t, err)
 	require.NotNil(t, reply)
@@ -166,7 +170,7 @@ func TestDirectoryService_Register(t *testing.T) {
 	// Renewing with another seed
 	reply, err = dirService.Register(context.TODO(), &directorytypes.Register_Request{
 		VerifiedCredential: signedProof,
-		ProfileURI:         web1NewSeed,
+		AccountURI:         web1NewSeed,
 	})
 	require.Error(t, err)
 	require.Nil(t, reply)
@@ -174,7 +178,7 @@ func TestDirectoryService_Register(t *testing.T) {
 	// Renewing with another seed, enforcing it
 	reply, err = dirService.Register(context.TODO(), &directorytypes.Register_Request{
 		VerifiedCredential:      signedProof,
-		ProfileURI:              web1NewSeed,
+		AccountURI:              web1NewSeed,
 		OverwriteExistingRecord: true,
 	})
 	require.NoError(t, err)
@@ -183,7 +187,7 @@ func TestDirectoryService_Register(t *testing.T) {
 	// Overwrite with another pk, while locked
 	reply, err = dirService.Register(context.TODO(), &directorytypes.Register_Request{
 		VerifiedCredential:      signedProof2,
-		ProfileURI:              web2,
+		AccountURI:              web2,
 		OverwriteExistingRecord: true,
 	})
 	require.ErrorIs(t, err, errcode.ErrServicesDirectoryRecordLockedAndCantBeReplaced)
@@ -192,7 +196,7 @@ func TestDirectoryService_Register(t *testing.T) {
 	// Renewing registration, setting a locked until date
 	reply, err = dirService.Register(context.TODO(), &directorytypes.Register_Request{
 		VerifiedCredential: signedProof,
-		ProfileURI:         web1NewSeed,
+		AccountURI:         web1NewSeed,
 		LockedUntilDate:    time.Now().Add(time.Millisecond * 10).UnixNano(),
 	})
 	require.NoError(t, err)
@@ -203,7 +207,7 @@ func TestDirectoryService_Register(t *testing.T) {
 	// Overwrite with another pk, while unlocked
 	reply, err = dirService.Register(context.TODO(), &directorytypes.Register_Request{
 		VerifiedCredential:      signedProof2,
-		ProfileURI:              web2,
+		AccountURI:              web2,
 		OverwriteExistingRecord: true,
 		ExpirationDate:          time.Now().Add(time.Millisecond * 10).UnixNano(),
 	})
@@ -215,7 +219,7 @@ func TestDirectoryService_Register(t *testing.T) {
 	// Overwrite with another pk, while expired
 	reply, err = dirService.Register(context.TODO(), &directorytypes.Register_Request{
 		VerifiedCredential: signedProof,
-		ProfileURI:         web1,
+		AccountURI:         web1,
 	})
 	require.NoError(t, err)
 	require.NotNil(t, reply)
@@ -245,62 +249,43 @@ func TestDirectoryService_Unregister(t *testing.T) {
 	signedProof := getVCSignedProof(t, vcIssuer, web1, phone1)
 	signedProof2 := getVCSignedProof(t, vcIssuer, web2, phone2)
 
-	_, unlockSK1, err := ed25519.GenerateKey(crand.Reader)
-	require.NoError(t, err)
-
-	unlockPK2, unlockSK2, err := ed25519.GenerateKey(crand.Reader)
-	require.NoError(t, err)
-
 	registered1, err := c.Register(context.TODO(), &directorytypes.Register_Request{
 		VerifiedCredential: signedProof,
-		ProfileURI:         web1,
+		AccountURI:         web1,
 	})
 	require.NoError(t, err)
 	require.NotNil(t, registered1)
 
 	registered2, err := c.Register(context.TODO(), &directorytypes.Register_Request{
 		VerifiedCredential: signedProof2,
-		ProfileURI:         web2,
-		UnlockKey:          unlockPK2,
+		AccountURI:         web2,
 	})
 	require.NoError(t, err)
 	require.NotNil(t, registered2)
+	require.NotEmpty(t, registered2.DirectoryRecordToken)
+	require.NotEmpty(t, registered2.UnregisterToken)
+	require.NotEmpty(t, registered2.ExpirationDate)
 
-	// Not supported (no key on registration)
-	_, err = c.Unregister(context.TODO(), &directorytypes.Unregister_Request{
-		DirectoryIdentifier:  registered1.DirectoryIdentifier,
-		DirectoryRecordToken: registered1.DirectoryRecordToken,
-		UnlockSig:            nil,
-	})
-	require.Error(t, err)
-
-	// No sig provided
+	// No unregister token provided
 	_, err = c.Unregister(context.TODO(), &directorytypes.Unregister_Request{
 		DirectoryIdentifier:  registered2.DirectoryIdentifier,
 		DirectoryRecordToken: registered2.DirectoryRecordToken,
-		UnlockSig:            nil,
 	})
 	require.Error(t, err)
 
-	sig, err := unlockSK1.Sign(crand.Reader, []byte(registered2.DirectoryRecordToken), crypto.Hash(0))
-	require.NoError(t, err)
-
-	// Invalid sig provided
+	// Invalid unregister token provided
 	_, err = c.Unregister(context.TODO(), &directorytypes.Unregister_Request{
 		DirectoryIdentifier:  registered2.DirectoryIdentifier,
 		DirectoryRecordToken: registered2.DirectoryRecordToken,
-		UnlockSig:            sig,
+		UnregisterToken:      "invalid",
 	})
 	require.Error(t, err)
 
-	sig, err = unlockSK2.Sign(crand.Reader, []byte(registered2.DirectoryRecordToken), crypto.Hash(0))
-	require.NoError(t, err)
-
-	// Valid sig provided
+	// Valid unregister token provided
 	_, err = c.Unregister(context.TODO(), &directorytypes.Unregister_Request{
 		DirectoryIdentifier:  registered2.DirectoryIdentifier,
 		DirectoryRecordToken: registered2.DirectoryRecordToken,
-		UnlockSig:            sig,
+		UnregisterToken:      registered2.UnregisterToken,
 	})
 	require.NoError(t, err)
 
@@ -308,25 +293,26 @@ func TestDirectoryService_Unregister(t *testing.T) {
 	_, err = c.Unregister(context.TODO(), &directorytypes.Unregister_Request{
 		DirectoryIdentifier:  registered2.DirectoryIdentifier,
 		DirectoryRecordToken: registered2.DirectoryRecordToken,
-		UnlockSig:            sig,
+		UnregisterToken:      registered2.UnregisterToken,
 	})
 	require.Error(t, err)
 
 	// Already expired
-	_, err = c.Register(context.TODO(), &directorytypes.Register_Request{
+	registered2, err = c.Register(context.TODO(), &directorytypes.Register_Request{
 		VerifiedCredential:      signedProof2,
-		ProfileURI:              web2,
+		AccountURI:              web2,
 		OverwriteExistingRecord: true,
 		ExpirationDate:          time.Now().Add(time.Millisecond * 10).UnixNano(),
 	})
 	require.NoError(t, err)
+	require.NotNil(t, registered2)
 
 	time.Sleep(time.Millisecond * 11)
 
 	_, err = c.Unregister(context.TODO(), &directorytypes.Unregister_Request{
 		DirectoryIdentifier:  registered2.DirectoryIdentifier,
 		DirectoryRecordToken: registered2.DirectoryRecordToken,
-		UnlockSig:            sig,
+		UnregisterToken:      registered2.UnregisterToken,
 	})
 	require.Error(t, err)
 }
@@ -353,7 +339,7 @@ func queryEntriesAndCompare(t *testing.T, client directorytypes.DirectoryService
 		}
 
 		foundNumbers[val.DirectoryIdentifier] = &expectedResult{
-			uri: val.ProfileURI,
+			uri: val.AccountURI,
 			vc:  val.VerifiedCredential,
 		}
 	}
@@ -425,13 +411,13 @@ func TestDirectoryService_Query(t *testing.T) {
 
 	_, err := c.Register(context.TODO(), &directorytypes.Register_Request{
 		VerifiedCredential: signedProof,
-		ProfileURI:         web1,
+		AccountURI:         web1,
 	})
 	require.NoError(t, err)
 
 	_, err = c.Register(context.TODO(), &directorytypes.Register_Request{
 		VerifiedCredential: signedProof2,
-		ProfileURI:         web2,
+		AccountURI:         web2,
 	})
 	require.NoError(t, err)
 
@@ -444,7 +430,7 @@ func TestDirectoryService_Query(t *testing.T) {
 	// querying an expired record
 	_, err = c.Register(context.TODO(), &directorytypes.Register_Request{
 		VerifiedCredential: signedProof2,
-		ProfileURI:         web2,
+		AccountURI:         web2,
 		ExpirationDate:     time.Now().Add(time.Millisecond * 10).UnixNano(),
 	})
 	require.NoError(t, err)

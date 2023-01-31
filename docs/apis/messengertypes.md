@@ -5,6 +5,7 @@
 
 - [messengertypes.proto](#messengertypes-proto)
     - [Account](#berty-messenger-v1-Account)
+    - [AccountDirectoryServiceRecord](#berty-messenger-v1-AccountDirectoryServiceRecord)
     - [AccountGet](#berty-messenger-v1-AccountGet)
     - [AccountGet.Reply](#berty-messenger-v1-AccountGet-Reply)
     - [AccountGet.Request](#berty-messenger-v1-AccountGet-Request)
@@ -16,6 +17,8 @@
     - [AccountUpdate.Request](#berty-messenger-v1-AccountUpdate-Request)
     - [AccountVerifiedCredential](#berty-messenger-v1-AccountVerifiedCredential)
     - [AppMessage](#berty-messenger-v1-AppMessage)
+    - [AppMessage.AccountDirectoryServiceRegistered](#berty-messenger-v1-AppMessage-AccountDirectoryServiceRegistered)
+    - [AppMessage.AccountDirectoryServiceUnregistered](#berty-messenger-v1-AppMessage-AccountDirectoryServiceUnregistered)
     - [AppMessage.Acknowledge](#berty-messenger-v1-AppMessage-Acknowledge)
     - [AppMessage.GroupInvitation](#berty-messenger-v1-AppMessage-GroupInvitation)
     - [AppMessage.SetGroupInfo](#berty-messenger-v1-AppMessage-SetGroupInfo)
@@ -67,6 +70,15 @@
     - [DevStreamLogs.Reply](#berty-messenger-v1-DevStreamLogs-Reply)
     - [DevStreamLogs.Request](#berty-messenger-v1-DevStreamLogs-Request)
     - [Device](#berty-messenger-v1-Device)
+    - [DirectoryServiceQuery](#berty-messenger-v1-DirectoryServiceQuery)
+    - [DirectoryServiceQuery.Reply](#berty-messenger-v1-DirectoryServiceQuery-Reply)
+    - [DirectoryServiceQuery.Request](#berty-messenger-v1-DirectoryServiceQuery-Request)
+    - [DirectoryServiceRegister](#berty-messenger-v1-DirectoryServiceRegister)
+    - [DirectoryServiceRegister.Reply](#berty-messenger-v1-DirectoryServiceRegister-Reply)
+    - [DirectoryServiceRegister.Request](#berty-messenger-v1-DirectoryServiceRegister-Request)
+    - [DirectoryServiceUnregister](#berty-messenger-v1-DirectoryServiceUnregister)
+    - [DirectoryServiceUnregister.Reply](#berty-messenger-v1-DirectoryServiceUnregister-Reply)
+    - [DirectoryServiceUnregister.Request](#berty-messenger-v1-DirectoryServiceUnregister-Request)
     - [EchoDuplexTest](#berty-messenger-v1-EchoDuplexTest)
     - [EchoDuplexTest.Reply](#berty-messenger-v1-EchoDuplexTest-Reply)
     - [EchoDuplexTest.Request](#berty-messenger-v1-EchoDuplexTest-Request)
@@ -195,6 +207,23 @@
 | hide_in_app_notifications | [bool](#bool) |  |  |
 | hide_push_previews | [bool](#bool) |  |  |
 | verified_credentials | [AccountVerifiedCredential](#berty-messenger-v1-AccountVerifiedCredential) | repeated |  |
+| directory_service_records | [AccountDirectoryServiceRecord](#berty-messenger-v1-AccountDirectoryServiceRecord) | repeated |  |
+
+<a name="berty-messenger-v1-AccountDirectoryServiceRecord"></a>
+
+### AccountDirectoryServiceRecord
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| account_pk | [string](#string) |  |  |
+| identifier | [string](#string) |  |  |
+| identifier_proof_issuer | [string](#string) |  |  |
+| server_addr | [string](#string) |  |  |
+| registration_date | [int64](#int64) |  |  |
+| expiration_date | [int64](#int64) |  |  |
+| revoked | [bool](#bool) |  |  |
+| directory_record_token | [string](#string) |  |  |
+| directory_record_unregister_token | [string](#string) |  |  |
 
 <a name="berty-messenger-v1-AccountGet"></a>
 
@@ -273,6 +302,32 @@ AppMessage is the app layer format
 | payload | [bytes](#bytes) |  |  |
 | sent_date | [int64](#int64) |  |  |
 | target_cid | [string](#string) |  |  |
+
+<a name="berty-messenger-v1-AppMessage-AccountDirectoryServiceRegistered"></a>
+
+### AppMessage.AccountDirectoryServiceRegistered
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| identifier | [string](#string) |  |  |
+| identifier_proof_issuer | [string](#string) |  |  |
+| registration_date | [int64](#int64) |  |  |
+| expiration_date | [int64](#int64) |  |  |
+| server_addr | [string](#string) |  |  |
+| directory_record_token | [string](#string) |  |  |
+| directory_record_unregister_token | [string](#string) |  |  |
+
+<a name="berty-messenger-v1-AppMessage-AccountDirectoryServiceUnregistered"></a>
+
+### AppMessage.AccountDirectoryServiceUnregistered
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| identifier | [string](#string) |  |  |
+| identifier_proof_issuer | [string](#string) |  |  |
+| removal_date | [int64](#int64) |  |  |
+| server_addr | [string](#string) |  |  |
+| directory_record_token | [string](#string) |  |  |
 
 <a name="berty-messenger-v1-AppMessage-Acknowledge"></a>
 
@@ -658,6 +713,70 @@ to test more false-positive guesses.
 | ----- | ---- | ----- | ----------- |
 | public_key | [string](#string) |  |  |
 | member_public_key | [string](#string) |  |  |
+
+<a name="berty-messenger-v1-DirectoryServiceQuery"></a>
+
+### DirectoryServiceQuery
+
+<a name="berty-messenger-v1-DirectoryServiceQuery-Reply"></a>
+
+### DirectoryServiceQuery.Reply
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| directory_identifier | [string](#string) |  |  |
+| expires_at | [int64](#int64) |  |  |
+| account_uri | [string](#string) |  |  |
+| verified_credential | [bytes](#bytes) |  |  |
+
+<a name="berty-messenger-v1-DirectoryServiceQuery-Request"></a>
+
+### DirectoryServiceQuery.Request
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| server_addr | [string](#string) |  |  |
+| identifiers | [string](#string) | repeated |  |
+
+<a name="berty-messenger-v1-DirectoryServiceRegister"></a>
+
+### DirectoryServiceRegister
+
+<a name="berty-messenger-v1-DirectoryServiceRegister-Reply"></a>
+
+### DirectoryServiceRegister.Reply
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| directory_record_token | [string](#string) |  |  |
+
+<a name="berty-messenger-v1-DirectoryServiceRegister-Request"></a>
+
+### DirectoryServiceRegister.Request
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| identifier | [string](#string) |  |  |
+| proof_issuer | [string](#string) |  |  |
+| server_addr | [string](#string) |  |  |
+| expiration_date | [int64](#int64) |  |  |
+
+<a name="berty-messenger-v1-DirectoryServiceUnregister"></a>
+
+### DirectoryServiceUnregister
+
+<a name="berty-messenger-v1-DirectoryServiceUnregister-Reply"></a>
+
+### DirectoryServiceUnregister.Reply
+
+<a name="berty-messenger-v1-DirectoryServiceUnregister-Request"></a>
+
+### DirectoryServiceUnregister.Request
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| server_addr | [string](#string) |  |  |
+| directory_record_token | [string](#string) |  |  |
 
 <a name="berty-messenger-v1-EchoDuplexTest"></a>
 
@@ -1312,7 +1431,8 @@ status events
 | conversation_replication_info | [int64](#int64) |  |  |
 | metadata_events | [int64](#int64) |  |  |
 | shared_push_tokens | [int64](#int64) |  |  |
-| account_verified_credentials | [int64](#int64) |  | older, more recent |
+| account_verified_credentials | [int64](#int64) |  |  |
+| account_directory_service_record | [int64](#int64) |  | older, more recent |
 
 <a name="berty-messenger-v1-SystemInfo-Messenger"></a>
 
@@ -1390,6 +1510,8 @@ status events
 | TypeSetGroupInfo | 4 |  |
 | TypeSetUserInfo | 5 |  |
 | TypeAcknowledge | 6 |  |
+| TypeAccountDirectoryServiceRegistered | 8 |  |
+| TypeAccountDirectoryServiceUnregistered | 9 |  |
 
 <a name="berty-messenger-v1-BertyLink-Kind"></a>
 
@@ -1521,6 +1643,9 @@ Today, most of the Berty Messenger logic is implemented directly in the applicat
 | PushShareTokenForConversation | [PushShareTokenForConversation.Request](#berty-messenger-v1-PushShareTokenForConversation-Request) | [PushShareTokenForConversation.Reply](#berty-messenger-v1-PushShareTokenForConversation-Reply) | PushShareTokenForConversation Share a push token for a conversation |
 | PushTokenSharedForConversation | [PushTokenSharedForConversation.Request](#berty-messenger-v1-PushTokenSharedForConversation-Request) | [PushTokenSharedForConversation.Reply](#berty-messenger-v1-PushTokenSharedForConversation-Reply) stream | PushTokenSharedForConversation |
 | PushReceive | [PushReceive.Request](#berty-messenger-v1-PushReceive-Request) | [PushReceive.Reply](#berty-messenger-v1-PushReceive-Reply) | PushReceive handles a push payload, decrypts it if possible, adds it to the local store |
+| DirectoryServiceRegister | [DirectoryServiceRegister.Request](#berty-messenger-v1-DirectoryServiceRegister-Request) | [DirectoryServiceRegister.Reply](#berty-messenger-v1-DirectoryServiceRegister-Reply) | DirectoryServiceRegister registers a verified credential on a directory service |
+| DirectoryServiceUnregister | [DirectoryServiceUnregister.Request](#berty-messenger-v1-DirectoryServiceUnregister-Request) | [DirectoryServiceUnregister.Reply](#berty-messenger-v1-DirectoryServiceUnregister-Reply) | DirectoryServiceUnregister requests a directory service to remove a verified credential |
+| DirectoryServiceQuery | [DirectoryServiceQuery.Request](#berty-messenger-v1-DirectoryServiceQuery-Request) | [DirectoryServiceQuery.Reply](#berty-messenger-v1-DirectoryServiceQuery-Reply) stream | DirectoryServiceQuery queries a directory service for given identifiers |
 
  
 

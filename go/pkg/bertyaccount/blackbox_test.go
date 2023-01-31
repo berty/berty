@@ -332,7 +332,7 @@ func TestFlow(t *testing.T) {
 		require.Equal(t, lastProgress.Doing, "")
 		require.Equal(t, lastProgress.State, "done")
 		require.True(t, lastProgress.Completed > 1)
-		require.Equal(t, int(lastProgress.Completed), 17) // this test can be disabled if it breaks, the test just above can be considered as enough
+		require.Equal(t, int(lastProgress.Completed), 18) // this test can be disabled if it breaks, the test just above can be considered as enough
 		require.Equal(t, lastProgress.Completed, lastProgress.Total)
 		require.Equal(t, lastProgress.Progress, float32(1))
 

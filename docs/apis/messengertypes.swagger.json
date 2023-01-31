@@ -512,6 +512,114 @@
         ]
       }
     },
+    "/berty.messenger.v1/MessengerService/DirectoryServiceQuery": {
+      "post": {
+        "summary": "DirectoryServiceQuery queries a directory service for given identifiers",
+        "operationId": "MessengerService_DirectoryServiceQuery",
+        "responses": {
+          "200": {
+            "description": "A successful response.(streaming responses)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "result": {
+                  "$ref": "#/definitions/v1DirectoryServiceQueryReply"
+                },
+                "error": {
+                  "$ref": "#/definitions/runtimeStreamError"
+                }
+              },
+              "title": "Stream result of v1DirectoryServiceQueryReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1DirectoryServiceQueryRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MessengerService"
+        ]
+      }
+    },
+    "/berty.messenger.v1/MessengerService/DirectoryServiceRegister": {
+      "post": {
+        "summary": "DirectoryServiceRegister registers a verified credential on a directory service",
+        "operationId": "MessengerService_DirectoryServiceRegister",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1DirectoryServiceRegisterReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1DirectoryServiceRegisterRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MessengerService"
+        ]
+      }
+    },
+    "/berty.messenger.v1/MessengerService/DirectoryServiceUnregister": {
+      "post": {
+        "summary": "DirectoryServiceUnregister requests a directory service to remove a verified credential",
+        "operationId": "MessengerService_DirectoryServiceUnregister",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1DirectoryServiceUnregisterReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1DirectoryServiceUnregisterRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MessengerService"
+        ]
+      }
+    },
     "/berty.messenger.v1/MessengerService/EchoDuplexTest": {
       "post": {
         "summary": "Use to test duplex stream.",
@@ -1436,6 +1544,10 @@
         "account_verified_credentials": {
           "type": "string",
           "format": "int64"
+        },
+        "account_directory_service_record": {
+          "type": "string",
+          "format": "int64"
         }
       }
     },
@@ -1606,6 +1718,12 @@
           "type": "array",
           "items": {
             "$ref": "#/definitions/v1AccountVerifiedCredential"
+          }
+        },
+        "directory_service_records": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1AccountDirectoryServiceRecord"
           }
         }
       }
@@ -1806,6 +1924,40 @@
         }
       }
     },
+    "v1AccountDirectoryServiceRecord": {
+      "type": "object",
+      "properties": {
+        "account_pk": {
+          "type": "string"
+        },
+        "identifier": {
+          "type": "string"
+        },
+        "identifier_proof_issuer": {
+          "type": "string"
+        },
+        "server_addr": {
+          "type": "string"
+        },
+        "registration_date": {
+          "type": "string",
+          "format": "int64"
+        },
+        "expiration_date": {
+          "type": "string",
+          "format": "int64"
+        },
+        "revoked": {
+          "type": "boolean"
+        },
+        "directory_record_token": {
+          "type": "string"
+        },
+        "directory_record_unregister_token": {
+          "type": "string"
+        }
+      }
+    },
     "v1AccountGetReply": {
       "type": "object",
       "properties": {
@@ -1888,7 +2040,9 @@
         "TypeGroupInvitation",
         "TypeSetGroupInfo",
         "TypeSetUserInfo",
-        "TypeAcknowledge"
+        "TypeAcknowledge",
+        "TypeAccountDirectoryServiceRegistered",
+        "TypeAccountDirectoryServiceUnregistered"
       ],
       "default": "Undefined"
     },
@@ -2275,6 +2429,79 @@
           "type": "string"
         },
         "member_public_key": {
+          "type": "string"
+        }
+      }
+    },
+    "v1DirectoryServiceQueryReply": {
+      "type": "object",
+      "properties": {
+        "directory_identifier": {
+          "type": "string"
+        },
+        "expires_at": {
+          "type": "string",
+          "format": "int64"
+        },
+        "account_uri": {
+          "type": "string"
+        },
+        "verified_credential": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
+    "v1DirectoryServiceQueryRequest": {
+      "type": "object",
+      "properties": {
+        "server_addr": {
+          "type": "string"
+        },
+        "identifiers": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "v1DirectoryServiceRegisterReply": {
+      "type": "object",
+      "properties": {
+        "directory_record_token": {
+          "type": "string"
+        }
+      }
+    },
+    "v1DirectoryServiceRegisterRequest": {
+      "type": "object",
+      "properties": {
+        "identifier": {
+          "type": "string"
+        },
+        "proof_issuer": {
+          "type": "string"
+        },
+        "server_addr": {
+          "type": "string"
+        },
+        "expiration_date": {
+          "type": "string",
+          "format": "int64"
+        }
+      }
+    },
+    "v1DirectoryServiceUnregisterReply": {
+      "type": "object"
+    },
+    "v1DirectoryServiceUnregisterRequest": {
+      "type": "object",
+      "properties": {
+        "server_addr": {
+          "type": "string"
+        },
+        "directory_record_token": {
           "type": "string"
         }
       }

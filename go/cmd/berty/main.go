@@ -82,6 +82,7 @@ func runMain(args []string) error {
 				p2pCommand(),
 				relayServerCommand(),
 				vcIssuerCommand(),
+				directoryServiceCommand(),
 			},
 		}
 

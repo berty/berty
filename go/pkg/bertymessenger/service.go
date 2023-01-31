@@ -71,6 +71,7 @@ type service struct {
 	subsMutex             *sync.Mutex
 	groupsToSubTo         map[string]struct{}
 	accountGroup          []byte
+	grpcInsecure          bool
 }
 
 type Opts struct {
@@ -82,6 +83,7 @@ type Opts struct {
 	StateBackup         *mt.LocalDatabaseState
 	PlatformPushToken   *protocoltypes.PushServiceReceiver
 	Ring                *zapring.Core
+	GRPCInsecureMode    bool
 
 	// LogFilePath defines the location of the current session's log file.
 	//
@@ -229,6 +231,7 @@ func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (_ Service, err
 		subsMutex:             &sync.Mutex{},
 		groupsToSubTo:         make(map[string]struct{}),
 		accountGroup:          icr.GetAccountGroupPK(),
+		grpcInsecure:          opts.GRPCInsecureMode,
 	}
 
 	svc.eventHandler = messengerpayloads.NewEventHandler(ctx, db, &MetaFetcherFromProtocolClient{client: client}, newPostActionsService(&svc), opts.Logger, svc.dispatcher, false)

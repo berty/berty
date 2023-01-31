@@ -4,25 +4,38 @@ import (
 	"archive/tar"
 	"bytes"
 	"context"
+	crand "crypto/rand"
 	"encoding/base64"
 	"fmt"
 	"io"
 	"io/ioutil"
+	"net"
+	"net/http"
 	"os"
 	"strconv"
 	"strings"
 	"testing"
 	"time"
 
+	sqlite "github.com/flyingtime/gorm-sqlcipher"
 	"github.com/gogo/protobuf/proto"
+	"github.com/oklog/run"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/zap"
+	"golang.org/x/crypto/nacl/box"
+	"gorm.io/gorm"
 
+	"berty.tech/berty/v2/go/internal/grpcserver"
 	"berty.tech/berty/v2/go/internal/messengerdb"
 	"berty.tech/berty/v2/go/internal/messengerutil"
 	"berty.tech/berty/v2/go/internal/testutil"
+	"berty.tech/berty/v2/go/pkg/bertydirectory"
+	"berty.tech/berty/v2/go/pkg/bertyvcissuer"
+	"berty.tech/berty/v2/go/pkg/directorytypes"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
+	"berty.tech/berty/v2/go/pkg/protocoltypes"
+	"berty.tech/berty/v2/go/pkg/verifiablecredstypes"
 )
 
 func TestServiceStream(t *testing.T) {
@@ -1670,5 +1683,234 @@ func TestAck(t *testing.T) {
 		require.NotNil(t, retrievedInteraction)
 		require.Equal(t, retrievedInteraction.CID, interactRes.CID)
 		require.Equal(t, retrievedInteraction.Acknowledged, true)
+	}
+}
+
+func TestDirectoryService(t *testing.T) {
+	testutil.FilterStabilityAndSpeed(t, testutil.Stable, testutil.Slow)
+
+	// PREPARE
+	logger, cleanup := testutil.Logger(t)
+	defer cleanup()
+
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	const l = 3
+
+	clients, protocols, cleanup := TestingInfra(ctx, t, l, logger)
+	defer cleanup()
+
+	nodes := make([]*TestingAccount, l)
+	for i := range nodes {
+		nodes[i] = NewTestingAccount(ctx, t, clients[i], protocols[i].Client, logger)
+		nodes[i].SetName(t, fmt.Sprintf("node-%d", i))
+		closeFn := nodes[i].ProcessWholeStream(t)
+		defer closeFn()
+	}
+
+	logger.Info("Started nodes")
+	time.Sleep(4 * time.Second)
+
+	account0, err := nodes[0].client.AccountGet(ctx, &messengertypes.AccountGet_Request{})
+	require.NoError(t, err)
+	require.NotEmpty(t, account0)
+
+	account1, err := nodes[1].client.AccountGet(ctx, &messengertypes.AccountGet_Request{})
+	require.NoError(t, err)
+	require.NotEmpty(t, account1)
+
+	// TODO: actually mock, avoid opening an actual server, or at least let the system choose an open port
+	issuerListener := "127.0.0.1:6584"
+	issuerRootURL := "http://127.0.0.1:6584/"
+	directoryListener := "/ip4/127.0.0.1/tcp/6585/grpc"
+	directoryHost := "127.0.0.1:6585"
+
+	identifierClient0 := "+33123456789"
+	identifierClient1 := "+33234567890"
+
+	vcIssuer, closeVerifiedCredentialServer := testHelperVerifiedCredentialServer(issuerListener, issuerRootURL, t)
+	defer closeVerifiedCredentialServer()
+
+	_, closeDirectoryService := testHelperDirectoryServiceServer(ctx, t, directoryListener, nil)
+	defer closeDirectoryService()
+
+	directoryRecordToken0 := testHelperRegisterNewNumberOnDirectoryService(ctx, t, nodes[0], vcIssuer, directoryHost, identifierClient0)
+
+	testHelperGetQueryResult(ctx, t, nodes[2].client, directoryHost, []string{identifierClient0, identifierClient1}, map[string]string{identifierClient0: account0.Account.Link})
+
+	_ = testHelperRegisterNewNumberOnDirectoryService(ctx, t, nodes[1], vcIssuer, directoryHost, identifierClient1)
+
+	testHelperGetQueryResult(ctx, t, nodes[2].client, directoryHost, []string{identifierClient0, identifierClient1}, map[string]string{identifierClient0: account0.Account.Link, identifierClient1: account1.Account.Link})
+
+	_, err = nodes[0].client.DirectoryServiceUnregister(ctx, &messengertypes.DirectoryServiceUnregister_Request{
+		ServerAddr:           directoryHost,
+		DirectoryRecordToken: directoryRecordToken0,
+	})
+	require.NoError(t, err)
+
+	testHelperGetQueryResult(ctx, t, nodes[2].client, directoryHost, []string{identifierClient0, identifierClient1}, map[string]string{identifierClient1: account1.Account.Link})
+}
+
+func testHelperRegisterNewNumberOnDirectoryService(ctx context.Context, t *testing.T, node *TestingAccount, vcIssuer *bertyvcissuer.VCIssuer, directoryHost string, identifier string) string {
+	account0, err := node.client.AccountGet(ctx, &messengertypes.AccountGet_Request{})
+	require.NoError(t, err)
+	require.NotEmpty(t, account0)
+
+	pk0, err := messengerutil.B64DecodeBytes(account0.Account.PublicKey)
+	require.NoError(t, err)
+	require.NotEmpty(t, pk0)
+
+	initResponse, err := node.protocolClient.CredentialVerificationServiceInitFlow(ctx, &protocoltypes.CredentialVerificationServiceInitFlow_Request{
+		ServiceURL: vcIssuer.GetServerRootURL(),
+		PublicKey:  pk0,
+		Link:       account0.Account.Link,
+	})
+	require.NoError(t, err)
+	callbackURI := vcIssuer.TestHelperIssueTokenCallbackURI(t, initResponse.URL, identifier)
+
+	_, err = node.protocolClient.CredentialVerificationServiceCompleteFlow(ctx, &protocoltypes.CredentialVerificationServiceCompleteFlow_Request{
+		CallbackURI: callbackURI,
+	})
+	require.NoError(t, err)
+
+	// FIXME: Remove sleep, verified credential was not found by DirectoryServiceRegister without waiting for event to be dispatched
+	time.Sleep(time.Millisecond * 100)
+
+	registerResult, err := node.client.DirectoryServiceRegister(ctx, &messengertypes.DirectoryServiceRegister_Request{
+		ProofIssuer: vcIssuer.GetIssuerID(),
+		ServerAddr:  directoryHost,
+		Identifier:  identifier,
+	})
+
+	// FIXME: Remove sleep, make sure DirectoryServiceRegister DB event has been dispatched locally
+	time.Sleep(time.Millisecond * 100)
+
+	return registerResult.DirectoryRecordToken
+}
+
+func testHelperGetQueryResult(ctx context.Context, t *testing.T, client messengertypes.MessengerServiceClient, host string, queries []string, expectedResults map[string]string) {
+	directoryServiceResultsSrv, err := client.DirectoryServiceQuery(ctx, &messengertypes.DirectoryServiceQuery_Request{
+		ServerAddr:  host,
+		Identifiers: queries,
+	})
+	require.NoError(t, err)
+
+	countResults := 0
+
+	for {
+		result, err := directoryServiceResultsSrv.Recv()
+		if err != nil {
+			break
+		}
+
+		countResults++
+
+		require.Equal(t, expectedResults[result.DirectoryIdentifier], result.AccountURI)
+	}
+
+	require.Equal(t, len(expectedResults), countResults)
+}
+
+func testHelperVerifiedCredentialServer(issuerListener, issuerRootURL string, t *testing.T) (*bertyvcissuer.VCIssuer, func()) {
+	t.Helper()
+
+	_, issuerPriv, err := box.GenerateKey(crand.Reader)
+	require.NoError(t, err)
+
+	// FIXME: actually mock the server
+	l, err := net.Listen("tcp", issuerListener)
+	if err != nil {
+		t.Fail()
+	}
+
+	vcIssuer, err := bertyvcissuer.New(&bertyvcissuer.Config{
+		ServerRootURL: issuerRootURL,
+		IssuerSignKey: issuerPriv,
+		Flow: &bertyvcissuer.FlowConfig{
+			Type:          verifiablecredstypes.FlowType_FlowTypeCode,
+			CodeGenerator: bertyvcissuer.CodeGeneratorZero,
+			CodeSenderClient: &bertyvcissuer.PhoneCodeSenderMockService{
+				Logger: zap.NewNop(),
+			},
+		},
+	})
+	require.NoError(t, err)
+
+	server := &http.Server{
+		Handler:           vcIssuer,
+		ReadHeaderTimeout: time.Second * 5,
+	}
+
+	go func() {
+		server.Serve(l)
+	}()
+
+	return vcIssuer, func() {
+		server.Close()
+		l.Close()
+	}
+}
+
+func testHelperDirectoryServiceServer(ctx context.Context, t *testing.T, listenersStr string, allowedIssuers []string) (*bertydirectory.DirectoryService, func()) {
+	t.Helper()
+	ctx, cancel := context.WithCancel(ctx)
+
+	// FIXME: actually mock the server
+	workers := run.Group{}
+	workers.Add(func() error {
+		<-ctx.Done()
+		return ctx.Err()
+	}, func(error) {
+		cancel()
+	})
+
+	dsConfig := &bertydirectory.ServiceOpts{
+		AllowedIssuers: allowedIssuers,
+	}
+
+	db, err := gorm.Open(sqlite.Open(fmt.Sprintf("file:memdb%d?mode=memory&cache=shared", time.Now().UnixNano())), &gorm.Config{
+		DisableForeignKeyConstraintWhenMigrating: true,
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	ds, err := bertydirectory.NewSQLDatastore(db)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	directoryService, err := bertydirectory.New(ds, dsConfig)
+	if err != nil {
+		t.Fatal(err)
+		return nil, nil
+	}
+
+	server, mux, listeners, err := grpcserver.InitGRPCServer(&workers, &grpcserver.GRPCOpts{
+		Logger:                   zap.L(),
+		Listeners:                listenersStr,
+		ServiceID:                "testid",
+		KeepExistingGlobalLogger: true,
+	})
+	if err != nil {
+		t.Fatal(err)
+		return nil, nil
+	}
+
+	directorytypes.RegisterDirectoryServiceServer(server, directoryService)
+	if err := directorytypes.RegisterDirectoryServiceHandlerServer(ctx, mux, directoryService); err != nil {
+		t.Error(err)
+		return nil, nil
+	}
+
+	go workers.Run()
+
+	return directoryService, func() {
+		cancel()
+		server.Stop()
+		for _, l := range listeners {
+			l.Close()
+		}
 	}
 }

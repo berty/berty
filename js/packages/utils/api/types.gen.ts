@@ -61,6 +61,10 @@ export type AppMessagePayloadType<T> = T extends beapi.messenger.AppMessage.Type
 	? beapi.messenger.AppMessage.ISetUserInfo
 	: T extends beapi.messenger.AppMessage.Type.TypeAcknowledge
 	? beapi.messenger.AppMessage.IAcknowledge
+	: T extends beapi.messenger.AppMessage.Type.TypeAccountDirectoryServiceRegistered
+	? beapi.messenger.AppMessage.IAccountDirectoryServiceRegistered
+	: T extends beapi.messenger.AppMessage.Type.TypeAccountDirectoryServiceUnregistered
+	? beapi.messenger.AppMessage.IAccountDirectoryServiceUnregistered
 	: never
 
 export type InteractionUndefined = {
@@ -87,6 +91,14 @@ export type InteractionAcknowledge = {
 	type: beapi.messenger.AppMessage.Type.TypeAcknowledge
 	payload?: beapi.messenger.AppMessage.IAcknowledge
 } & Omit<beapi.messenger.IInteraction, 'payload' | 'type'>
+export type InteractionAccountDirectoryServiceRegistered = {
+	type: beapi.messenger.AppMessage.Type.TypeAccountDirectoryServiceRegistered
+	payload?: beapi.messenger.AppMessage.IAccountDirectoryServiceRegistered
+} & Omit<beapi.messenger.IInteraction, 'payload' | 'type'>
+export type InteractionAccountDirectoryServiceUnregistered = {
+	type: beapi.messenger.AppMessage.Type.TypeAccountDirectoryServiceUnregistered
+	payload?: beapi.messenger.AppMessage.IAccountDirectoryServiceUnregistered
+} & Omit<beapi.messenger.IInteraction, 'payload' | 'type'>
 
 export type ParsedInteraction =
 	| InteractionUndefined
@@ -95,3 +107,5 @@ export type ParsedInteraction =
 	| InteractionSetGroupInfo
 	| InteractionSetUserInfo
 	| InteractionAcknowledge
+	| InteractionAccountDirectoryServiceRegistered
+	| InteractionAccountDirectoryServiceUnregistered
