@@ -62,7 +62,9 @@ export interface WelshProtocolServiceClient {
 	credentialVerificationServiceCompleteFlow: UnaryType<
 		beapi.protocol.ProtocolService['credentialVerificationServiceCompleteFlow']
 	>
-	verifiedCredentialsList: UnaryType<beapi.protocol.ProtocolService['verifiedCredentialsList']>
+	verifiedCredentialsList: ResponseStreamType<
+		beapi.protocol.ProtocolService['verifiedCredentialsList']
+	>
 	servicesTokenList: ResponseStreamType<beapi.protocol.ProtocolService['servicesTokenList']>
 	replicationServiceRegisterGroup: UnaryType<
 		beapi.protocol.ProtocolService['replicationServiceRegisterGroup']
@@ -151,6 +153,13 @@ export interface WelshMessengerServiceClient {
 		beapi.messenger.MessengerService['pushTokenSharedForConversation']
 	>
 	pushReceive: UnaryType<beapi.messenger.MessengerService['pushReceive']>
+	directoryServiceRegister: UnaryType<beapi.messenger.MessengerService['directoryServiceRegister']>
+	directoryServiceUnregister: UnaryType<
+		beapi.messenger.MessengerService['directoryServiceUnregister']
+	>
+	directoryServiceQuery: ResponseStreamType<
+		beapi.messenger.MessengerService['directoryServiceQuery']
+	>
 }
 
 export interface WelshBridgeServiceClient {

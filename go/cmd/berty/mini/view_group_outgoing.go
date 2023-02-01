@@ -219,12 +219,152 @@ func commandList() []*command {
 			cmd:   credentialVerificationList,
 		},
 		{
+			title: "services directory register",
+			help:  `Registers a verified credential on a directory service`,
+			cmd:   directoryServiceRegister,
+		},
+		{
+			title: "services directory unregister",
+			help:  `Unregisters an announced verified credential`,
+			cmd:   directoryServiceUnregister,
+		},
+		{
+			title: "services directory list",
+			help:  `Lists announced verified credential`,
+			cmd:   directoryServiceList,
+		},
+		{
+			title: "services directory query",
+			help:  `Queries a directory service for specified identifiers`,
+			cmd:   directoryServiceQuery,
+		},
+		{
 			title:     "/",
 			help:      "",
 			cmd:       newSlashMessageCommand,
 			hideInLog: true,
 		},
 	}
+}
+
+func directoryServiceRegister(ctx context.Context, v *groupView, cmd string) error {
+	cmdTokens := strings.Split(cmd, " ")
+	if len(cmdTokens) != 2 && len(cmdTokens) != 3 {
+		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("expected 2 or 3 parameters (server addr, identifier, proof issuer)"))
+	}
+
+	serverAddr := cmdTokens[0]
+	identifier := cmdTokens[1]
+	proofIssuer := ""
+	if len(cmdTokens) == 3 {
+		proofIssuer = cmdTokens[2]
+	}
+
+	_, err := v.v.messenger.DirectoryServiceRegister(ctx, &messengertypes.DirectoryServiceRegister_Request{
+		Identifier:  identifier,
+		ProofIssuer: proofIssuer,
+		ServerAddr:  serverAddr,
+	})
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func directoryServiceUnregister(ctx context.Context, v *groupView, cmd string) error {
+	cmdTokens := strings.Split(cmd, " ")
+	if len(cmdTokens) < 2 {
+		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("expected 2 or 3 parameters"))
+	}
+
+	serverAddr := cmdTokens[0]
+	directoryRecordToken := cmdTokens[1]
+
+	_, err := v.v.messenger.DirectoryServiceUnregister(ctx, &messengertypes.DirectoryServiceUnregister_Request{
+		ServerAddr:           serverAddr,
+		DirectoryRecordToken: directoryRecordToken,
+	})
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func directoryServiceList(ctx context.Context, v *groupView, cmd string) error {
+	acc, err := v.v.messenger.AccountGet(ctx, &messengertypes.AccountGet_Request{})
+	if err != nil {
+		return err
+	}
+
+	for _, dsRecord := range acc.Account.DirectoryServiceRecords {
+		revokedPrefix := " "
+		if dsRecord.Revoked {
+			revokedPrefix = "⨯"
+		}
+
+		v.messages.Append(&historyMessage{
+			messageType: messageTypeMeta,
+			payload:     []byte(fmt.Sprintf("%s %s (%s): %s - %d", revokedPrefix, dsRecord.Identifier, dsRecord.DirectoryRecordToken, dsRecord.ServerAddr, dsRecord.ExpirationDate)),
+		})
+	}
+
+	return nil
+}
+
+func directoryServiceQuery(ctx context.Context, v *groupView, cmd string) error {
+	cmdTokens := strings.Split(cmd, " ")
+	if len(cmdTokens) != 2 {
+		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("expected 2 parameters (server_addr, comma-separated list of identifiers)"))
+	}
+
+	serverAddr := cmdTokens[0]
+	identifiers := strings.Split(cmdTokens[1], ",")
+
+	results, err := v.v.messenger.DirectoryServiceQuery(ctx, &messengertypes.DirectoryServiceQuery_Request{
+		ServerAddr:  serverAddr,
+		Identifiers: identifiers,
+	})
+	if err != nil {
+		return err
+	}
+
+	resultCount := 0
+	for {
+		result, err := results.Recv()
+		if err != nil {
+			break
+		}
+
+		if resultCount == 0 {
+			v.messages.Append(&historyMessage{
+				messageType: messageTypeMeta,
+				payload:     []byte("Query results:"),
+			})
+		}
+
+		resultCount++
+
+		v.messages.Append(&historyMessage{
+			messageType: messageTypeMeta,
+			payload:     []byte(fmt.Sprintf("%d %s: %s", resultCount, result.DirectoryIdentifier, result.AccountURI)),
+		})
+	}
+
+	if resultCount > 0 {
+		v.messages.Append(&historyMessage{
+			messageType: messageTypeMeta,
+			payload:     []byte(strings.Repeat("-", 30)),
+		})
+	} else {
+		v.messages.Append(&historyMessage{
+			messageType: messageTypeMeta,
+			payload:     []byte("No results found"),
+		})
+	}
+
+	return nil
 }
 
 func credentialVerificationInit(ctx context.Context, v *groupView, service string) error {
@@ -274,15 +414,24 @@ func credentialVerificationComplete(ctx context.Context, v *groupView, callbackU
 }
 
 func credentialVerificationList(ctx context.Context, v *groupView, _ string) error {
-	res, err := v.v.protocol.VerifiedCredentialsList(ctx, &protocoltypes.VerifiedCredentialsList_Request{})
+	resSrv, err := v.v.protocol.VerifiedCredentialsList(ctx, &protocoltypes.VerifiedCredentialsList_Request{})
 	if err != nil {
 		return err
 	}
 
-	for _, cred := range res.Credentials {
+	for {
+		cred, err := resSrv.Recv()
+		if err != nil {
+			if err != io.EOF {
+				v.messages.AppendErr(err)
+			}
+
+			break
+		}
+
 		v.messages.Append(&historyMessage{
 			messageType: messageTypeMeta,
-			payload:     []byte(fmt.Sprintf("> <%s>", cred.Identifier)),
+			payload:     []byte(fmt.Sprintf("> <%s> %s", cred.Credential.Identifier, time.Unix(0, cred.Credential.ExpirationDate).String())),
 		})
 	}
 

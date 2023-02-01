@@ -93,8 +93,29 @@ func (s *service) CredentialVerificationServiceCompleteFlow(ctx context.Context,
 	}, nil
 }
 
-func (s *service) VerifiedCredentialsList(ctx context.Context, request *protocoltypes.VerifiedCredentialsList_Request) (*protocoltypes.VerifiedCredentialsList_Reply, error) {
+func (s *service) VerifiedCredentialsList(request *protocoltypes.VerifiedCredentialsList_Request, server protocoltypes.ProtocolService_VerifiedCredentialsListServer) error {
+	now := time.Now().UnixNano()
 	credentials := s.accountGroup.metadataStore.ListVerifiedCredentials()
 
-	return &protocoltypes.VerifiedCredentialsList_Reply{Credentials: credentials}, nil
+	for _, credential := range credentials {
+		if request.FilterIdentifier != "" && credential.Identifier != request.FilterIdentifier {
+			continue
+		}
+
+		if request.ExcludeExpired && credential.ExpirationDate < now {
+			continue
+		}
+
+		if request.FilterIssuer != "" && credential.Issuer != request.FilterIssuer {
+			continue
+		}
+
+		if err := server.Send(&protocoltypes.VerifiedCredentialsList_Reply{
+			Credential: credential,
+		}); err != nil {
+			return errcode.ErrStreamWrite.Wrap(err)
+		}
+	}
+
+	return nil
 }

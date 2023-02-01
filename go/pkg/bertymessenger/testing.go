@@ -75,10 +75,11 @@ func TestingService(ctx context.Context, t testing.TB, opts *TestingServiceOpts)
 	)
 
 	server, err := New(opts.Client, &Opts{
-		Logger:      opts.Logger,
-		DB:          db,
-		Ring:        opts.Ring,
-		LogFilePath: opts.LogFilePath,
+		Logger:           opts.Logger,
+		DB:               db,
+		Ring:             opts.Ring,
+		LogFilePath:      opts.LogFilePath,
+		GRPCInsecureMode: true,
 	})
 	if err != nil {
 		cleanup()

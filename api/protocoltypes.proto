@@ -116,7 +116,7 @@ service ProtocolService {
   rpc CredentialVerificationServiceCompleteFlow (CredentialVerificationServiceCompleteFlow.Request) returns (CredentialVerificationServiceCompleteFlow.Reply);
 
   // VerifiedCredentialsList Retrieves the list of verified credentials
-  rpc VerifiedCredentialsList (VerifiedCredentialsList.Request) returns (VerifiedCredentialsList.Reply);
+  rpc VerifiedCredentialsList (VerifiedCredentialsList.Request) returns (stream VerifiedCredentialsList.Reply);
 
   // ServicesTokenList Retrieves the list of services tokens
   rpc ServicesTokenList (ServicesTokenList.Request) returns (stream ServicesTokenList.Reply);
@@ -1189,9 +1189,13 @@ message CredentialVerificationServiceCompleteFlow {
 }
 
 message VerifiedCredentialsList {
-  message Request {}
+  message Request {
+    string filter_identifier = 1;
+    string filter_issuer = 2;
+    bool exclude_expired = 3;
+  }
   message Reply {
-    repeated AccountVerifiedCredentialRegistered credentials = 1;
+    AccountVerifiedCredentialRegistered credential = 1;
   }
 }
 

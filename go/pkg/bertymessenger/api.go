@@ -3,6 +3,7 @@ package bertymessenger
 import (
 	"bufio"
 	"context"
+	"crypto/tls"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -20,7 +21,10 @@ import (
 	backoff "github.com/libp2p/go-libp2p/p2p/discovery/backoff"
 	"go.uber.org/multierr"
 	"go.uber.org/zap"
+	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/credentials"
+	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/status"
 	"moul.io/srand"
 
@@ -32,6 +36,7 @@ import (
 	"berty.tech/berty/v2/go/pkg/authtypes"
 	"berty.tech/berty/v2/go/pkg/banner"
 	"berty.tech/berty/v2/go/pkg/bertylinks"
+	"berty.tech/berty/v2/go/pkg/directorytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
@@ -1726,6 +1731,195 @@ func (svc *service) PushTokenSharedForConversation(request *messengertypes.PushT
 	for _, token := range tokens {
 		if err := server.Send(&messengertypes.PushTokenSharedForConversation_Reply{PushToken: token}); err != nil {
 			return errcode.ErrStreamWrite.Wrap(err)
+		}
+	}
+
+	return nil
+}
+
+func (svc *service) getDirectoryServiceClient(ctx context.Context, serverAddr string) (directorytypes.DirectoryServiceClient, error) {
+	gopts := []grpc.DialOption(nil)
+
+	if svc.grpcInsecure {
+		gopts = append(gopts, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	} else {
+		tlsconfig := credentials.NewTLS(&tls.Config{
+			MinVersion: tls.VersionTLS12,
+		})
+		gopts = append(gopts, grpc.WithTransportCredentials(tlsconfig))
+	}
+
+	cc, err := grpc.DialContext(ctx, serverAddr, gopts...)
+	if err != nil {
+		return nil, errcode.ErrStreamWrite.Wrap(err)
+	}
+
+	return directorytypes.NewDirectoryServiceClient(cc), nil
+}
+
+func (svc *service) getVerifiedCredentialFromProtocol(ctx context.Context, identifier, issuer string) (*protocoltypes.AccountVerifiedCredentialRegistered, error) {
+	subCtx, cancel := context.WithCancel(ctx)
+	defer cancel()
+
+	vcs, err := svc.db.GetVerifiedCredentials(identifier, issuer)
+	if err != nil {
+		return nil, errcode.ErrInvalidInput.Wrap(err)
+	}
+
+	srv, err := svc.protocolClient.VerifiedCredentialsList(subCtx, &protocoltypes.VerifiedCredentialsList_Request{
+		FilterIssuer:     vcs[0].Issuer,
+		FilterIdentifier: vcs[0].Identifier,
+		ExcludeExpired:   true,
+	})
+	if err != nil {
+		return nil, errcode.ErrInternal.Wrap(err)
+	}
+
+	// Taking only the first result
+	srvVC, err := srv.Recv()
+	if err != nil {
+		if err == io.EOF {
+			return nil, errcode.ErrNotFound
+		}
+
+		return nil, errcode.ErrStreamRead.Wrap(err)
+	}
+
+	return srvVC.Credential, nil
+}
+
+func (svc *service) DirectoryServiceRegister(ctx context.Context, request *messengertypes.DirectoryServiceRegister_Request) (*messengertypes.DirectoryServiceRegister_Reply, error) {
+	selectedRegisteredVC, err := svc.getVerifiedCredentialFromProtocol(ctx, request.Identifier, request.ProofIssuer)
+	if err != nil {
+		return nil, errcode.ErrNotFound.Wrap(err)
+	}
+
+	client, err := svc.getDirectoryServiceClient(ctx, request.ServerAddr)
+	if err != nil {
+		return nil, errcode.ErrInternal.Wrap(err)
+	}
+
+	acc, err := svc.db.GetAccount()
+	if err != nil {
+		svc.logger.Error("AccountUpdate: failed to get account", zap.Error(err))
+		return nil, errcode.TODO.Wrap(err)
+	}
+
+	shareableID, err := svc.internalInstanceShareableBertyID(ctx, &messengertypes.InstanceShareableBertyID_Request{
+		DisplayName: acc.DisplayName,
+	})
+	if err != nil {
+		return nil, errcode.ErrInternal.Wrap(err)
+	}
+
+	// TODO: request.ExpirationDate
+	registrationResponse, err := client.Register(ctx, &directorytypes.Register_Request{
+		VerifiedCredential: []byte(selectedRegisteredVC.VerifiedCredential),
+		AccountURI:         shareableID.WebURL,
+	})
+	if err != nil {
+		return nil, errcode.ErrServicesDirectory.Wrap(err)
+	}
+
+	am, err := messengertypes.AppMessage_TypeAccountDirectoryServiceRegistered.MarshalPayload(messengerutil.TimestampMs(time.Now()), "", &messengertypes.AppMessage_AccountDirectoryServiceRegistered{
+		Identifier:                     selectedRegisteredVC.Identifier,
+		IdentifierProofIssuer:          selectedRegisteredVC.Issuer,
+		RegistrationDate:               time.Now().UnixNano(),
+		ExpirationDate:                 registrationResponse.ExpirationDate,
+		ServerAddr:                     request.ServerAddr,
+		DirectoryRecordToken:           registrationResponse.DirectoryRecordToken,
+		DirectoryRecordUnregisterToken: registrationResponse.UnregisterToken,
+	})
+	if err != nil {
+		return nil, errcode.ErrSerialization.Wrap(err)
+	}
+
+	_, err = svc.protocolClient.AppMessageSend(ctx, &protocoltypes.AppMessageSend_Request{GroupPK: svc.accountGroup, Payload: am})
+	if err != nil {
+		return nil, errcode.ErrProtocolSend.Wrap(err)
+	}
+
+	return &messengertypes.DirectoryServiceRegister_Reply{
+		DirectoryRecordToken: registrationResponse.DirectoryRecordToken,
+	}, nil
+}
+
+func (svc *service) DirectoryServiceUnregister(ctx context.Context, request *messengertypes.DirectoryServiceUnregister_Request) (*messengertypes.DirectoryServiceUnregister_Reply, error) {
+	if request.DirectoryRecordToken == "" {
+		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing directory_record_token"))
+	}
+
+	if request.ServerAddr == "" {
+		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing server_addr"))
+	}
+
+	record, err := svc.db.GetAccountDirectoryServiceRecord(request.ServerAddr, request.DirectoryRecordToken)
+	if err != nil {
+		return nil, errcode.ErrNotFound.Wrap(errcode.ErrNotFound)
+	}
+
+	client, err := svc.getDirectoryServiceClient(ctx, request.ServerAddr)
+	if err != nil {
+		return nil, errcode.ErrInternal.Wrap(err)
+	}
+
+	_, err = client.Unregister(ctx, &directorytypes.Unregister_Request{
+		DirectoryIdentifier:  record.Identifier,
+		DirectoryRecordToken: record.DirectoryRecordToken,
+		UnregisterToken:      record.DirectoryRecordUnregisterToken,
+	})
+	if err != nil {
+		return nil, errcode.ErrServicesDirectory.Wrap(err)
+	}
+
+	am, err := messengertypes.AppMessage_TypeAccountDirectoryServiceUnregistered.MarshalPayload(messengerutil.TimestampMs(time.Now()), "", &messengertypes.AppMessage_AccountDirectoryServiceUnregistered{
+		DirectoryRecordToken: record.DirectoryRecordToken,
+	})
+	if err != nil {
+		return nil, errcode.ErrSerialization.Wrap(err)
+	}
+
+	_, err = svc.protocolClient.AppMetadataSend(ctx, &protocoltypes.AppMetadataSend_Request{GroupPK: svc.accountGroup, Payload: am})
+	if err != nil {
+		return nil, errcode.ErrProtocolSend.Wrap(err)
+	}
+
+	return &messengertypes.DirectoryServiceUnregister_Reply{}, nil
+}
+
+func (svc *service) DirectoryServiceQuery(request *messengertypes.DirectoryServiceQuery_Request, server messengertypes.MessengerService_DirectoryServiceQueryServer) error {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	client, err := svc.getDirectoryServiceClient(ctx, request.ServerAddr)
+	if err != nil {
+		return errcode.ErrInternal.Wrap(err)
+	}
+
+	results, err := client.Query(ctx, &directorytypes.Query_Request{
+		DirectoryIdentifiers: request.Identifiers,
+	})
+	if err != nil {
+		return errcode.ErrServicesDirectory.Wrap(err)
+	}
+
+	for {
+		result, err := results.Recv()
+		if err != nil {
+			if err == io.EOF {
+				break
+			}
+
+			return err
+		}
+
+		if err := server.Send(&messengertypes.DirectoryServiceQuery_Reply{
+			DirectoryIdentifier: result.DirectoryIdentifier,
+			ExpiresAt:           result.ExpiresAt,
+			AccountURI:          result.AccountURI,
+			VerifiedCredential:  result.VerifiedCredential,
+		}); err != nil {
+			return err
 		}
 	}
 

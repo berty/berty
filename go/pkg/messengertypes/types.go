@@ -65,6 +65,10 @@ func (am AppMessage) UnmarshalPayload() (proto.Message, error) {
 		message = &AppMessage_SetGroupInfo{}
 	case AppMessage_TypeSetUserInfo:
 		message = &AppMessage_SetUserInfo{}
+	case AppMessage_TypeAccountDirectoryServiceRegistered:
+		message = &AppMessage_AccountDirectoryServiceRegistered{}
+	case AppMessage_TypeAccountDirectoryServiceUnregistered:
+		message = &AppMessage_AccountDirectoryServiceUnregistered{}
 	default:
 		return nil, errcode.TODO.Wrap(fmt.Errorf("unsupported AppMessage type: %q", am.GetType()))
 	}

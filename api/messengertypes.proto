@@ -95,6 +95,15 @@ service MessengerService {
 
   // PushReceive handles a push payload, decrypts it if possible, adds it to the local store
   rpc PushReceive(PushReceive.Request) returns (PushReceive.Reply);
+
+  // DirectoryServiceRegister registers a verified credential on a directory service
+  rpc DirectoryServiceRegister(DirectoryServiceRegister.Request) returns (DirectoryServiceRegister.Reply);
+
+  // DirectoryServiceUnregister requests a directory service to remove a verified credential
+  rpc DirectoryServiceUnregister(DirectoryServiceUnregister.Request) returns (DirectoryServiceUnregister.Reply);
+
+  // DirectoryServiceQuery queries a directory service for given identifiers
+  rpc DirectoryServiceQuery(DirectoryServiceQuery.Request) returns (stream DirectoryServiceQuery.Reply);
 }
 
 message PaginatedInteractionsOptions {
@@ -318,6 +327,8 @@ message AppMessage {
     TypeSetUserInfo = 5;
     TypeAcknowledge = 6;
     reserved 7; // TypeReplyOptions
+    TypeAccountDirectoryServiceRegistered = 8;
+    TypeAccountDirectoryServiceUnregistered = 9;
   }
   message UserMessage {
     string body = 1;
@@ -334,6 +345,24 @@ message AppMessage {
     reserved 2; // string avatar_cid = 2 [(gogoproto.customname) = "AvatarCID"]; // TODO: optimize message size
   }
   message Acknowledge {
+  }
+
+  message AccountDirectoryServiceRegistered {
+    string identifier = 1;
+    string identifier_proof_issuer = 2;
+    int64 registration_date = 3;
+    int64 expiration_date = 4;
+    string server_addr = 5;
+    string directory_record_token = 6;
+    string directory_record_unregister_token = 7;
+  }
+
+  message AccountDirectoryServiceUnregistered {
+    string identifier = 1;
+    string identifier_proof_issuer = 2;
+    int64 removal_date = 3;
+    string server_addr = 4;
+    string directory_record_token = 5;
   }
 }
 
@@ -364,6 +393,7 @@ message SystemInfo {
     reserved 11; // int64 medias = 11;
     int64 shared_push_tokens = 12;
     int64 account_verified_credentials = 13;
+    int64 account_directory_service_record = 14;
     // older, more recent
   }
 }
@@ -395,6 +425,7 @@ message Account {
   bool hide_in_app_notifications = 12;
   bool hide_push_previews = 13;
   repeated AccountVerifiedCredential verified_credentials = 14 [(gogoproto.moretags) = "gorm:\"foreignKey:AccountPK\""];
+  repeated AccountDirectoryServiceRecord directory_service_records = 15 [(gogoproto.moretags) = "gorm:\"foreignKey:AccountPK\""];
 }
 
 message ServiceToken {
@@ -526,6 +557,18 @@ message AccountVerifiedCredential {
   int64 registration_date = 3;
   int64 expiration_date = 4;
   string issuer = 5;
+}
+
+message AccountDirectoryServiceRecord {
+  string account_pk = 1 [(gogoproto.customname) = "AccountPK"];
+  string identifier = 2 [(gogoproto.moretags) = "gorm:\"index:,unique,composite:uniqueDirectoryRecordServerIdentifier\""];
+  string identifier_proof_issuer = 3;
+  string server_addr = 4 [(gogoproto.moretags) = "gorm:\"index:,unique,composite:uniqueDirectoryRecordServerIdentifier\""];
+  int64 registration_date = 5;
+  int64 expiration_date = 6;
+  bool revoked = 7;
+  string directory_record_token = 8;
+  string directory_record_unregister_token = 9;
 }
 
 message ContactMetadata {
@@ -862,5 +905,38 @@ message PushTokenSharedForConversation {
   }
   message Reply {
     SharedPushToken push_token = 1;
+  }
+}
+
+message DirectoryServiceRegister {
+  message Request {
+    string identifier = 1;
+    string proof_issuer = 2;
+    string server_addr = 3;
+    int64 expiration_date = 4;
+  }
+  message Reply {
+    string directory_record_token = 1;
+  }
+}
+
+message DirectoryServiceUnregister {
+  message Request {
+    string server_addr = 1;
+    string directory_record_token = 2;
+  }
+  message Reply {}
+}
+
+message DirectoryServiceQuery {
+  message Request {
+    string server_addr = 1;
+    repeated string identifiers = 2;
+  }
+  message Reply {
+    string directory_identifier = 1;
+    int64 expires_at = 2;
+    string account_uri = 3 [(gogoproto.customname) = "AccountURI"];
+    bytes verified_credential = 4;
   }
 }

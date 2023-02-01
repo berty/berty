@@ -208,6 +208,22 @@ export type MessengerMethodsHooks = {
 		called: boolean
 		loading: boolean
 	}
+	useDirectoryServiceRegister: () => {
+		error: any
+		call: (req?: beapi.messenger.DirectoryServiceRegister.IRequest) => void
+		reply: beapi.messenger.DirectoryServiceRegister.IReply | null
+		done: boolean
+		called: boolean
+		loading: boolean
+	}
+	useDirectoryServiceUnregister: () => {
+		error: any
+		call: (req?: beapi.messenger.DirectoryServiceUnregister.IRequest) => void
+		reply: beapi.messenger.DirectoryServiceUnregister.IReply | null
+		done: boolean
+		called: boolean
+		loading: boolean
+	}
 }
 export type ProtocolMethodsHooks = {
 	useInstanceGetConfiguration: () => {
@@ -438,14 +454,6 @@ export type ProtocolMethodsHooks = {
 		error: any
 		call: (req?: beapi.protocol.CredentialVerificationServiceCompleteFlow.IRequest) => void
 		reply: beapi.protocol.CredentialVerificationServiceCompleteFlow.IReply | null
-		done: boolean
-		called: boolean
-		loading: boolean
-	}
-	useVerifiedCredentialsList: () => {
-		error: any
-		call: (req?: beapi.protocol.VerifiedCredentialsList.IRequest) => void
-		reply: beapi.protocol.VerifiedCredentialsList.IReply | null
 		done: boolean
 		called: boolean
 		loading: boolean

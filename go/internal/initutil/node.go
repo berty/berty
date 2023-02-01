@@ -48,7 +48,7 @@ const (
 func (m *Manager) SetupLocalProtocolServerFlags(fs *flag.FlagSet) {
 	m.Node.Protocol.requiredByClient = true
 	fs.StringVar(&m.Node.Protocol.PushPlatformToken, "node.default-push-token", "", "base 64 encoded default platform push token")
-	fs.BoolVar(&m.Node.Protocol.ServiceInsecureMode, "node.service-insecure", false, "use insecure connection on services")
+	fs.BoolVar(&m.Node.ServiceInsecureMode, "node.service-insecure", false, "use insecure connection on services")
 	m.SetupDatastoreFlags(fs)
 	m.SetupLocalIPFSFlags(fs)
 	// p2p.remote-ipfs
@@ -206,7 +206,7 @@ func (m *Manager) getLocalProtocolServer() (bertyprotocol.Service, error) {
 			DeviceKeystore:   deviceKS,
 			OrbitDB:          odb,
 			PushKey:          pushKey,
-			GRPCInsecureMode: m.Node.Protocol.ServiceInsecureMode,
+			GRPCInsecureMode: m.Node.ServiceInsecureMode,
 		}
 
 		m.Node.Protocol.server, err = bertyprotocol.New(opts)
@@ -492,8 +492,22 @@ func (m *Manager) GetReplicationDB() (*gorm.DB, error) {
 }
 
 func (m *Manager) getReplicationDB() (*gorm.DB, error) {
-	if m.Node.Replication.db != nil {
-		return m.Node.Replication.db, nil
+	return m.getServiceDB(&m.Node.Replication.db, &m.Node.Replication.dbCleanup, accountutils.GetReplicationDBForPath)
+}
+
+func (m *Manager) GetDirectoryServiceDB() (*gorm.DB, error) {
+	defer m.prepareForGetter()()
+
+	return m.getDirectoryServiceDB()
+}
+
+func (m *Manager) getDirectoryServiceDB() (*gorm.DB, error) {
+	return m.getServiceDB(&m.Node.DirectoryService.db, &m.Node.DirectoryService.dbCleanup, accountutils.GetDirectoryServiceDBForPath)
+}
+
+func (m *Manager) getServiceDB(dbPtr **gorm.DB, cleanupPtr *func(), dbOpenerFunc func(dir string, logger *zap.Logger) (*gorm.DB, func(), error)) (*gorm.DB, error) {
+	if *dbPtr != nil {
+		return *dbPtr, nil
 	}
 
 	logger, err := m.getLogger()
@@ -506,12 +520,15 @@ func (m *Manager) getReplicationDB() (*gorm.DB, error) {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	m.Node.Replication.db, m.Node.Replication.dbCleanup, err = accountutils.GetReplicationDBForPath(dir, logger)
+	db, dbCleanup, err := dbOpenerFunc(dir, logger)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	return m.Node.Replication.db, nil
+	*cleanupPtr = dbCleanup
+	*dbPtr = db
+
+	return *dbPtr, nil
 }
 
 func (m *Manager) restoreMessengerDataFromExport() error {
@@ -638,6 +655,7 @@ func (m *Manager) getLocalMessengerServer() (messengertypes.MessengerServiceServ
 		Ring:                m.Logging.ring,
 		PlatformPushToken:   pushPlatformToken,
 		LogFilePath:         currentLogfilePath,
+		GRPCInsecureMode:    m.Node.ServiceInsecureMode,
 	}
 	messengerServer, err := bertymessenger.New(protocolClient, &opts)
 	if err != nil {

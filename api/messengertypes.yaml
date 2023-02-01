@@ -111,3 +111,12 @@ http:
  - selector: berty.messenger.v1.MessengerService.PushReceive
    post: /berty.messenger.v1/MessengerService/PushReceive
    body: "*"
+ - selector: berty.messenger.v1.MessengerService.DirectoryServiceRegister
+   post: /berty.messenger.v1/MessengerService/DirectoryServiceRegister
+   body: "*"
+ - selector: berty.messenger.v1.MessengerService.DirectoryServiceUnregister
+   post: /berty.messenger.v1/MessengerService/DirectoryServiceUnregister
+   body: "*"
+ - selector: berty.messenger.v1.MessengerService.DirectoryServiceQuery
+   post: /berty.messenger.v1/MessengerService/DirectoryServiceQuery
+   body: "*"

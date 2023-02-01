@@ -131,7 +131,7 @@ export interface IProtocolServiceMock {
 		beapi.protocol.CredentialVerificationServiceCompleteFlow.IRequest,
 		beapi.protocol.CredentialVerificationServiceCompleteFlow.IReply
 	>
-	VerifiedCredentialsList: UnaryMock<
+	VerifiedCredentialsList: ResponseStreamMock<
 		beapi.protocol.VerifiedCredentialsList.IRequest,
 		beapi.protocol.VerifiedCredentialsList.IReply
 	>
@@ -347,4 +347,16 @@ export interface IMessengerServiceMock {
 		beapi.messenger.PushTokenSharedForConversation.IReply
 	>
 	PushReceive: UnaryMock<beapi.messenger.PushReceive.IRequest, beapi.messenger.PushReceive.IReply>
+	DirectoryServiceRegister: UnaryMock<
+		beapi.messenger.DirectoryServiceRegister.IRequest,
+		beapi.messenger.DirectoryServiceRegister.IReply
+	>
+	DirectoryServiceUnregister: UnaryMock<
+		beapi.messenger.DirectoryServiceUnregister.IRequest,
+		beapi.messenger.DirectoryServiceUnregister.IReply
+	>
+	DirectoryServiceQuery: ResponseStreamMock<
+		beapi.messenger.DirectoryServiceQuery.IRequest,
+		beapi.messenger.DirectoryServiceQuery.IReply
+	>
 }

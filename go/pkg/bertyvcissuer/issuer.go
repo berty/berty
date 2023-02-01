@@ -9,6 +9,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"net/url"
+	"testing"
 	"time"
 
 	ariesDocLD "github.com/hyperledger/aries-framework-go/pkg/doc/ld"
@@ -234,53 +236,63 @@ func (i *VCIssuer) computeChallenge(timestamp time.Time, bertyIDLink string, non
 	return boxed, parsedLink, nil
 }
 
-func (i *VCIssuer) checkAuthenticateChallenge(w http.ResponseWriter, r *http.Request) {
-	challengeStr := r.URL.Query().Get(ParamChallenge)
-	challengeSigStr := r.URL.Query().Get(ParamChallengeSig)
-
+func (i *VCIssuer) checkAndGetChallenge(challengeStr string) (*verifiablecredstypes.StateChallenge, []byte, error) {
 	challengeBytes, err := base64.URLEncoding.DecodeString(challengeStr)
 	if err != nil {
-		i.error(err, w, r)
-		return
+		return nil, nil, err
 	}
 
 	decryptedChallengeBytes, ok := box.OpenAnonymous(nil, challengeBytes, i.issuerPub, i.issuerPriv)
 	if !ok {
-		i.error(ErrChallengeAuthenticity, w, r)
-		return
+		return nil, nil, ErrChallengeAuthenticity
 	}
 
 	challenge := &verifiablecredstypes.StateChallenge{}
 	if err := challenge.Unmarshal(decryptedChallengeBytes); err != nil {
-		i.error(ErrChallengeVerify, w, r)
-		return
+		return nil, nil, ErrChallengeVerify
 	}
 
 	issuedAt := time.Now()
 	if err := issuedAt.UnmarshalBinary(challenge.Timestamp); err != nil {
-		i.error(ErrChallengeVerify, w, r)
-		return
+		return nil, nil, ErrChallengeVerify
 	}
 
 	if issuedAt.Before(time.Now().Add(-cryptoChallengeTimeout)) {
-		i.error(ErrChallengeExpired, w, r)
-		return
+		return nil, nil, ErrChallengeExpired
 	}
 
+	return challenge, challengeBytes, nil
+}
+
+func (i *VCIssuer) checkChallengeIssuerSig(challenge *verifiablecredstypes.StateChallenge, challengeBytes []byte, challengeSigStr string) error {
 	challengeClientSig, err := base64.URLEncoding.DecodeString(challengeSigStr)
 	if err != nil {
-		i.error(err, w, r)
-		return
+		return err
 	}
 
 	link, err := bertylinks.UnmarshalLink(challenge.BertyLink, nil)
 	if err != nil {
+		return err
+	}
+
+	if ok := ed25519.Verify(link.BertyID.AccountPK, challengeBytes, challengeClientSig); !ok {
+		return ErrChallengeFailed
+	}
+
+	return nil
+}
+
+func (i *VCIssuer) checkAuthenticateChallenge(w http.ResponseWriter, r *http.Request) {
+	challengeStr := r.URL.Query().Get(ParamChallenge)
+	challenge, challengeBytes, err := i.checkAndGetChallenge(challengeStr)
+	if err != nil {
 		i.error(err, w, r)
 		return
 	}
 
-	if ok := ed25519.Verify(link.BertyID.AccountPK, challengeBytes, challengeClientSig); !ok {
-		i.error(ErrChallengeFailed, w, r)
+	challengeSigStr := r.URL.Query().Get(ParamChallengeSig)
+	if err := i.checkChallengeIssuerSig(challenge, challengeBytes, challengeSigStr); err != nil {
+		i.error(err, w, r)
 		return
 	}
 
@@ -482,4 +494,56 @@ func (i *VCIssuer) proof(w http.ResponseWriter, r *http.Request) {
 		i.error(err, w, r)
 		return
 	}
+}
+
+func (i *VCIssuer) TestHelperIssueTokenCallbackURI(t *testing.T, initURL string, identifier string) string {
+	t.Helper()
+
+	timestamp, err := time.Now().MarshalBinary()
+	if err != nil {
+		t.Error(err)
+		return ""
+	}
+
+	parsedInitURL, err := url.Parse(initURL)
+	if err != nil {
+		t.Error(err)
+		return ""
+	}
+
+	challengeStr := parsedInitURL.Query().Get(ParamChallenge)
+	challenge, challengeBytes, err := i.checkAndGetChallenge(challengeStr)
+	if err != nil {
+		t.Error(err)
+		return ""
+	}
+
+	challengeSigStr := parsedInitURL.Query().Get(ParamChallengeSig)
+	if err := i.checkChallengeIssuerSig(challenge, challengeBytes, challengeSigStr); err != nil {
+		t.Error(err)
+		return ""
+	}
+
+	stateCode := &verifiablecredstypes.StateCode{
+		Timestamp:   timestamp,
+		BertyLink:   challenge.BertyLink,
+		RedirectURI: challenge.RedirectURI,
+		State:       challenge.State,
+	}
+
+	signedProof, err := i.CreateSignedProof(challenge.BertyLink, identifier)
+	if err != nil {
+		t.Error(err)
+		return ""
+	}
+
+	return makeRedirectSuccessURI(stateCode.RedirectURI, stateCode.State, signedProof)
+}
+
+func (i *VCIssuer) GetIssuerID() string {
+	return i.issuerID
+}
+
+func (i *VCIssuer) GetServerRootURL() string {
+	return i.serverRootURL
 }

@@ -25,11 +25,12 @@ import (
 )
 
 type GRPCOpts struct {
-	Logger        *zap.Logger
-	AuthPublicKey string
-	AuthSecret    string
-	Listeners     string
-	ServiceID     string
+	Logger                   *zap.Logger
+	AuthPublicKey            string
+	AuthSecret               string
+	Listeners                string
+	ServiceID                string
+	KeepExistingGlobalLogger bool
 }
 
 func InitGRPCServer(workers *run.Group, opts *GRPCOpts) (*grpc.Server, *grpcgw.ServeMux, []grpcutil.Listener, error) {
@@ -55,8 +56,10 @@ func InitGRPCServer(workers *run.Group, opts *GRPCOpts) (*grpc.Server, *grpcgw.S
 
 	zapOpts := []grpc_zap.Option{}
 
-	// override grpc logger
-	logutil.ReplaceGRPCLogger(grpcLogger)
+	if !opts.KeepExistingGlobalLogger {
+		// override grpc logger
+		logutil.ReplaceGRPCLogger(grpcLogger)
+	}
 
 	// noop auth func
 	authFunc := func(ctx context.Context) (context.Context, error) { return ctx, nil }

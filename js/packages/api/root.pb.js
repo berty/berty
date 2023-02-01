@@ -1372,7 +1372,8 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   },
                   VerifiedCredentialsList: {
                     requestType: "VerifiedCredentialsList.Request",
-                    responseType: "VerifiedCredentialsList.Reply"
+                    responseType: "VerifiedCredentialsList.Reply",
+                    responseStream: true
                   },
                   ServicesTokenList: {
                     requestType: "ServicesTokenList.Request",
@@ -3256,12 +3257,24 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                 fields: {},
                 nested: {
                   Request: {
-                    fields: {}
+                    fields: {
+                      filterIdentifier: {
+                        type: "string",
+                        id: 1
+                      },
+                      filterIssuer: {
+                        type: "string",
+                        id: 2
+                      },
+                      excludeExpired: {
+                        type: "bool",
+                        id: 3
+                      }
+                    }
                   },
                   Reply: {
                     fields: {
-                      credentials: {
-                        rule: "repeated",
+                      credential: {
                         type: "AccountVerifiedCredentialRegistered",
                         id: 1
                       }
@@ -4759,6 +4772,19 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   PushReceive: {
                     requestType: "PushReceive.Request",
                     responseType: "PushReceive.Reply"
+                  },
+                  DirectoryServiceRegister: {
+                    requestType: "DirectoryServiceRegister.Request",
+                    responseType: "DirectoryServiceRegister.Reply"
+                  },
+                  DirectoryServiceUnregister: {
+                    requestType: "DirectoryServiceUnregister.Request",
+                    responseType: "DirectoryServiceUnregister.Reply"
+                  },
+                  DirectoryServiceQuery: {
+                    requestType: "DirectoryServiceQuery.Request",
+                    responseType: "DirectoryServiceQuery.Reply",
+                    responseStream: true
                   }
                 }
               },
@@ -5298,7 +5324,9 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       TypeGroupInvitation: 3,
                       TypeSetGroupInfo: 4,
                       TypeSetUserInfo: 5,
-                      TypeAcknowledge: 6
+                      TypeAcknowledge: 6,
+                      TypeAccountDirectoryServiceRegistered: 8,
+                      TypeAccountDirectoryServiceUnregistered: 9
                     },
                     reserved: [
                       [
@@ -5357,6 +5385,62 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   },
                   Acknowledge: {
                     fields: {}
+                  },
+                  AccountDirectoryServiceRegistered: {
+                    fields: {
+                      identifier: {
+                        type: "string",
+                        id: 1
+                      },
+                      identifierProofIssuer: {
+                        type: "string",
+                        id: 2
+                      },
+                      registrationDate: {
+                        type: "int64",
+                        id: 3
+                      },
+                      expirationDate: {
+                        type: "int64",
+                        id: 4
+                      },
+                      serverAddr: {
+                        type: "string",
+                        id: 5
+                      },
+                      directoryRecordToken: {
+                        type: "string",
+                        id: 6
+                      },
+                      directoryRecordUnregisterToken: {
+                        type: "string",
+                        id: 7
+                      }
+                    }
+                  },
+                  AccountDirectoryServiceUnregistered: {
+                    fields: {
+                      identifier: {
+                        type: "string",
+                        id: 1
+                      },
+                      identifierProofIssuer: {
+                        type: "string",
+                        id: 2
+                      },
+                      removalDate: {
+                        type: "int64",
+                        id: 3
+                      },
+                      serverAddr: {
+                        type: "string",
+                        id: 4
+                      },
+                      directoryRecordToken: {
+                        type: "string",
+                        id: 5
+                      }
+                    }
                   }
                 }
               },
@@ -5447,6 +5531,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       accountVerifiedCredentials: {
                         type: "int64",
                         id: 13
+                      },
+                      accountDirectoryServiceRecord: {
+                        type: "int64",
+                        id: 14
                       }
                     },
                     reserved: [
@@ -5538,6 +5626,14 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     rule: "repeated",
                     type: "AccountVerifiedCredential",
                     id: 14,
+                    options: {
+                      "(gogoproto.moretags)": "gorm:foreignKey:AccountPK"
+                    }
+                  },
+                  directoryServiceRecords: {
+                    rule: "repeated",
+                    type: "AccountDirectoryServiceRecord",
+                    id: 15,
                     options: {
                       "(gogoproto.moretags)": "gorm:foreignKey:AccountPK"
                     }
@@ -6030,6 +6126,55 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   issuer: {
                     type: "string",
                     id: 5
+                  }
+                }
+              },
+              AccountDirectoryServiceRecord: {
+                fields: {
+                  accountPk: {
+                    type: "string",
+                    id: 1,
+                    options: {
+                      "(gogoproto.customname)": "AccountPK"
+                    }
+                  },
+                  identifier: {
+                    type: "string",
+                    id: 2,
+                    options: {
+                      "(gogoproto.moretags)": "gorm:index:,unique,composite:uniqueDirectoryRecordServerIdentifier"
+                    }
+                  },
+                  identifierProofIssuer: {
+                    type: "string",
+                    id: 3
+                  },
+                  serverAddr: {
+                    type: "string",
+                    id: 4,
+                    options: {
+                      "(gogoproto.moretags)": "gorm:index:,unique,composite:uniqueDirectoryRecordServerIdentifier"
+                    }
+                  },
+                  registrationDate: {
+                    type: "int64",
+                    id: 5
+                  },
+                  expirationDate: {
+                    type: "int64",
+                    id: 6
+                  },
+                  revoked: {
+                    type: "bool",
+                    id: 7
+                  },
+                  directoryRecordToken: {
+                    type: "string",
+                    id: 8
+                  },
+                  directoryRecordUnregisterToken: {
+                    type: "string",
+                    id: 9
                   }
                 }
               },
@@ -6929,6 +7074,100 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       pushToken: {
                         type: "SharedPushToken",
                         id: 1
+                      }
+                    }
+                  }
+                }
+              },
+              DirectoryServiceRegister: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      identifier: {
+                        type: "string",
+                        id: 1
+                      },
+                      proofIssuer: {
+                        type: "string",
+                        id: 2
+                      },
+                      serverAddr: {
+                        type: "string",
+                        id: 3
+                      },
+                      expirationDate: {
+                        type: "int64",
+                        id: 4
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {
+                      directoryRecordToken: {
+                        type: "string",
+                        id: 1
+                      }
+                    }
+                  }
+                }
+              },
+              DirectoryServiceUnregister: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      serverAddr: {
+                        type: "string",
+                        id: 1
+                      },
+                      directoryRecordToken: {
+                        type: "string",
+                        id: 2
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {}
+                  }
+                }
+              },
+              DirectoryServiceQuery: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      serverAddr: {
+                        type: "string",
+                        id: 1
+                      },
+                      identifiers: {
+                        rule: "repeated",
+                        type: "string",
+                        id: 2
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {
+                      directoryIdentifier: {
+                        type: "string",
+                        id: 1
+                      },
+                      expiresAt: {
+                        type: "int64",
+                        id: 2
+                      },
+                      accountUri: {
+                        type: "string",
+                        id: 3,
+                        options: {
+                          "(gogoproto.customname)": "AccountURI"
+                        }
+                      },
+                      verifiedCredential: {
+                        type: "bytes",
+                        id: 4
                       }
                     }
                   }

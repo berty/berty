@@ -29,15 +29,16 @@ import (
 )
 
 const (
-	InMemoryDir                 = ":memory:"
-	DefaultPushKeyFilename      = "push.key"
-	AccountMetafileName         = "account_meta"
-	AccountNetConfFileName      = "account_net_conf"
-	MessengerDatabaseFilename   = "messenger.sqlite"
-	ReplicationDatabaseFilename = "replication.sqlite"
-	StorageKeyName              = "storage"
-	StorageKeySize              = 32
-	StorageSaltSize             = 16
+	InMemoryDir                      = ":memory:"
+	DefaultPushKeyFilename           = "push.key"
+	AccountMetafileName              = "account_meta"
+	AccountNetConfFileName           = "account_net_conf"
+	MessengerDatabaseFilename        = "messenger.sqlite"
+	ReplicationDatabaseFilename      = "replication.sqlite"
+	DirectoryServiceDatabaseFilename = "directoryservice.sqlite"
+	StorageKeyName                   = "storage"
+	StorageKeySize                   = 32
+	StorageSaltSize                  = 16
 )
 
 func GetDevicePushKeyForPath(filePath string, createIfMissing bool) (pk *[cryptoutil.KeySize]byte, sk *[cryptoutil.KeySize]byte, err error) {
@@ -276,8 +277,16 @@ func GetMessengerDBForPath(dir string, key []byte, salt []byte, logger *zap.Logg
 }
 
 func GetReplicationDBForPath(dir string, logger *zap.Logger) (*gorm.DB, func(), error) {
+	return getServiceDBForPath(dir, ReplicationDatabaseFilename, logger)
+}
+
+func GetDirectoryServiceDBForPath(dir string, logger *zap.Logger) (*gorm.DB, func(), error) {
+	return getServiceDBForPath(dir, DirectoryServiceDatabaseFilename, logger)
+}
+
+func getServiceDBForPath(dir string, serviceFilename string, logger *zap.Logger) (*gorm.DB, func(), error) {
 	if dir != InMemoryDir {
-		dir = path.Join(dir, ReplicationDatabaseFilename)
+		dir = path.Join(dir, serviceFilename)
 	}
 
 	return GetGormDBForPath(dir, nil, nil, logger)

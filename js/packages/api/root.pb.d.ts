@@ -4999,10 +4999,16 @@ export namespace berty {
             namespace VerifiedCredentialsList {
 
                 interface IRequest {
+                    filterIdentifier?: (string|null);
+                    filterIssuer?: (string|null);
+                    excludeExpired?: (boolean|null);
                 }
 
                 class Request implements IRequest {
 
+                    public filterIdentifier: string;
+                    public filterIssuer: string;
+                    public excludeExpired: boolean;
                     public static create(properties?: berty.protocol.v1.VerifiedCredentialsList.IRequest): berty.protocol.v1.VerifiedCredentialsList.Request;
                     public static encode(message: berty.protocol.v1.VerifiedCredentialsList.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.protocol.v1.VerifiedCredentialsList.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -5015,12 +5021,12 @@ export namespace berty {
                 }
 
                 interface IReply {
-                    credentials?: (berty.protocol.v1.IAccountVerifiedCredentialRegistered[]|null);
+                    credential?: (berty.protocol.v1.IAccountVerifiedCredentialRegistered|null);
                 }
 
                 class Reply implements IReply {
 
-                    public credentials: berty.protocol.v1.IAccountVerifiedCredentialRegistered[];
+                    public credential?: (berty.protocol.v1.IAccountVerifiedCredentialRegistered|null);
                     public static create(properties?: berty.protocol.v1.VerifiedCredentialsList.IReply): berty.protocol.v1.VerifiedCredentialsList.Reply;
                     public static encode(message: berty.protocol.v1.VerifiedCredentialsList.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.protocol.v1.VerifiedCredentialsList.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -6942,6 +6948,12 @@ export namespace berty {
                 public pushTokenSharedForConversation(request: berty.messenger.v1.PushTokenSharedForConversation.IRequest): Promise<berty.messenger.v1.PushTokenSharedForConversation.Reply>;
                 public pushReceive(request: berty.messenger.v1.PushReceive.IRequest, callback: berty.messenger.v1.MessengerService.PushReceiveCallback): void;
                 public pushReceive(request: berty.messenger.v1.PushReceive.IRequest): Promise<berty.messenger.v1.PushReceive.Reply>;
+                public directoryServiceRegister(request: berty.messenger.v1.DirectoryServiceRegister.IRequest, callback: berty.messenger.v1.MessengerService.DirectoryServiceRegisterCallback): void;
+                public directoryServiceRegister(request: berty.messenger.v1.DirectoryServiceRegister.IRequest): Promise<berty.messenger.v1.DirectoryServiceRegister.Reply>;
+                public directoryServiceUnregister(request: berty.messenger.v1.DirectoryServiceUnregister.IRequest, callback: berty.messenger.v1.MessengerService.DirectoryServiceUnregisterCallback): void;
+                public directoryServiceUnregister(request: berty.messenger.v1.DirectoryServiceUnregister.IRequest): Promise<berty.messenger.v1.DirectoryServiceUnregister.Reply>;
+                public directoryServiceQuery(request: berty.messenger.v1.DirectoryServiceQuery.IRequest, callback: berty.messenger.v1.MessengerService.DirectoryServiceQueryCallback): void;
+                public directoryServiceQuery(request: berty.messenger.v1.DirectoryServiceQuery.IRequest): Promise<berty.messenger.v1.DirectoryServiceQuery.Reply>;
             }
 
             namespace MessengerService {
@@ -7017,6 +7029,12 @@ export namespace berty {
                 type PushTokenSharedForConversationCallback = (error: (Error|null), response?: berty.messenger.v1.PushTokenSharedForConversation.Reply) => void;
 
                 type PushReceiveCallback = (error: (Error|null), response?: berty.messenger.v1.PushReceive.Reply) => void;
+
+                type DirectoryServiceRegisterCallback = (error: (Error|null), response?: berty.messenger.v1.DirectoryServiceRegister.Reply) => void;
+
+                type DirectoryServiceUnregisterCallback = (error: (Error|null), response?: berty.messenger.v1.DirectoryServiceUnregister.Reply) => void;
+
+                type DirectoryServiceQueryCallback = (error: (Error|null), response?: berty.messenger.v1.DirectoryServiceQuery.Reply) => void;
             }
 
             interface IPaginatedInteractionsOptions {
@@ -7898,7 +7916,9 @@ export namespace berty {
                     TypeGroupInvitation = 3,
                     TypeSetGroupInfo = 4,
                     TypeSetUserInfo = 5,
-                    TypeAcknowledge = 6
+                    TypeAcknowledge = 6,
+                    TypeAccountDirectoryServiceRegistered = 8,
+                    TypeAccountDirectoryServiceUnregistered = 9
                 }
 
                 interface IUserMessage {
@@ -7986,6 +8006,62 @@ export namespace berty {
                     public static verify(message: { [k: string]: any }): (string|null);
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.AppMessage.Acknowledge;
                     public static toObject(message: berty.messenger.v1.AppMessage.Acknowledge, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+
+                interface IAccountDirectoryServiceRegistered {
+                    identifier?: (string|null);
+                    identifierProofIssuer?: (string|null);
+                    registrationDate?: (Long|null);
+                    expirationDate?: (Long|null);
+                    serverAddr?: (string|null);
+                    directoryRecordToken?: (string|null);
+                    directoryRecordUnregisterToken?: (string|null);
+                }
+
+                class AccountDirectoryServiceRegistered implements IAccountDirectoryServiceRegistered {
+
+                    public identifier: string;
+                    public identifierProofIssuer: string;
+                    public registrationDate: Long;
+                    public expirationDate: Long;
+                    public serverAddr: string;
+                    public directoryRecordToken: string;
+                    public directoryRecordUnregisterToken: string;
+                    public static create(properties?: berty.messenger.v1.AppMessage.IAccountDirectoryServiceRegistered): berty.messenger.v1.AppMessage.AccountDirectoryServiceRegistered;
+                    public static encode(message: berty.messenger.v1.AppMessage.IAccountDirectoryServiceRegistered, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.messenger.v1.AppMessage.IAccountDirectoryServiceRegistered, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.AppMessage.AccountDirectoryServiceRegistered;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.AppMessage.AccountDirectoryServiceRegistered;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.AppMessage.AccountDirectoryServiceRegistered;
+                    public static toObject(message: berty.messenger.v1.AppMessage.AccountDirectoryServiceRegistered, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+
+                interface IAccountDirectoryServiceUnregistered {
+                    identifier?: (string|null);
+                    identifierProofIssuer?: (string|null);
+                    removalDate?: (Long|null);
+                    serverAddr?: (string|null);
+                    directoryRecordToken?: (string|null);
+                }
+
+                class AccountDirectoryServiceUnregistered implements IAccountDirectoryServiceUnregistered {
+
+                    public identifier: string;
+                    public identifierProofIssuer: string;
+                    public removalDate: Long;
+                    public serverAddr: string;
+                    public directoryRecordToken: string;
+                    public static create(properties?: berty.messenger.v1.AppMessage.IAccountDirectoryServiceUnregistered): berty.messenger.v1.AppMessage.AccountDirectoryServiceUnregistered;
+                    public static encode(message: berty.messenger.v1.AppMessage.IAccountDirectoryServiceUnregistered, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.messenger.v1.AppMessage.IAccountDirectoryServiceUnregistered, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.AppMessage.AccountDirectoryServiceUnregistered;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.AppMessage.AccountDirectoryServiceUnregistered;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.AppMessage.AccountDirectoryServiceUnregistered;
+                    public static toObject(message: berty.messenger.v1.AppMessage.AccountDirectoryServiceUnregistered, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
             }
@@ -8080,6 +8156,7 @@ export namespace berty {
                     metadataEvents?: (Long|null);
                     sharedPushTokens?: (Long|null);
                     accountVerifiedCredentials?: (Long|null);
+                    accountDirectoryServiceRecord?: (Long|null);
                 }
 
                 class DB implements IDB {
@@ -8095,6 +8172,7 @@ export namespace berty {
                     public metadataEvents: Long;
                     public sharedPushTokens: Long;
                     public accountVerifiedCredentials: Long;
+                    public accountDirectoryServiceRecord: Long;
                     public static create(properties?: berty.messenger.v1.SystemInfo.IDB): berty.messenger.v1.SystemInfo.DB;
                     public static encode(message: berty.messenger.v1.SystemInfo.IDB, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.messenger.v1.SystemInfo.IDB, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -8175,6 +8253,7 @@ export namespace berty {
                 hideInAppNotifications?: (boolean|null);
                 hidePushPreviews?: (boolean|null);
                 verifiedCredentials?: (berty.messenger.v1.IAccountVerifiedCredential[]|null);
+                directoryServiceRecords?: (berty.messenger.v1.IAccountDirectoryServiceRecord[]|null);
             }
 
             class Account implements IAccount {
@@ -8191,6 +8270,7 @@ export namespace berty {
                 public hideInAppNotifications: boolean;
                 public hidePushPreviews: boolean;
                 public verifiedCredentials: berty.messenger.v1.IAccountVerifiedCredential[];
+                public directoryServiceRecords: berty.messenger.v1.IAccountDirectoryServiceRecord[];
                 public static create(properties?: berty.messenger.v1.IAccount): berty.messenger.v1.Account;
                 public static encode(message: berty.messenger.v1.IAccount, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.messenger.v1.IAccount, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -8526,6 +8606,40 @@ export namespace berty {
                 public static verify(message: { [k: string]: any }): (string|null);
                 public static fromObject(object: { [k: string]: any }): berty.messenger.v1.AccountVerifiedCredential;
                 public static toObject(message: berty.messenger.v1.AccountVerifiedCredential, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            interface IAccountDirectoryServiceRecord {
+                accountPk?: (string|null);
+                identifier?: (string|null);
+                identifierProofIssuer?: (string|null);
+                serverAddr?: (string|null);
+                registrationDate?: (Long|null);
+                expirationDate?: (Long|null);
+                revoked?: (boolean|null);
+                directoryRecordToken?: (string|null);
+                directoryRecordUnregisterToken?: (string|null);
+            }
+
+            class AccountDirectoryServiceRecord implements IAccountDirectoryServiceRecord {
+
+                public accountPk: string;
+                public identifier: string;
+                public identifierProofIssuer: string;
+                public serverAddr: string;
+                public registrationDate: Long;
+                public expirationDate: Long;
+                public revoked: boolean;
+                public directoryRecordToken: string;
+                public directoryRecordUnregisterToken: string;
+                public static create(properties?: berty.messenger.v1.IAccountDirectoryServiceRecord): berty.messenger.v1.AccountDirectoryServiceRecord;
+                public static encode(message: berty.messenger.v1.IAccountDirectoryServiceRecord, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.messenger.v1.IAccountDirectoryServiceRecord, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.AccountDirectoryServiceRecord;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.AccountDirectoryServiceRecord;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.messenger.v1.AccountDirectoryServiceRecord;
+                public static toObject(message: berty.messenger.v1.AccountDirectoryServiceRecord, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
@@ -10246,6 +10360,185 @@ export namespace berty {
                     public static verify(message: { [k: string]: any }): (string|null);
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.PushTokenSharedForConversation.Reply;
                     public static toObject(message: berty.messenger.v1.PushTokenSharedForConversation.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+            }
+
+            interface IDirectoryServiceRegister {
+            }
+
+            class DirectoryServiceRegister implements IDirectoryServiceRegister {
+
+                public static create(properties?: berty.messenger.v1.IDirectoryServiceRegister): berty.messenger.v1.DirectoryServiceRegister;
+                public static encode(message: berty.messenger.v1.IDirectoryServiceRegister, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.messenger.v1.IDirectoryServiceRegister, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.DirectoryServiceRegister;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.DirectoryServiceRegister;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.messenger.v1.DirectoryServiceRegister;
+                public static toObject(message: berty.messenger.v1.DirectoryServiceRegister, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            namespace DirectoryServiceRegister {
+
+                interface IRequest {
+                    identifier?: (string|null);
+                    proofIssuer?: (string|null);
+                    serverAddr?: (string|null);
+                    expirationDate?: (Long|null);
+                }
+
+                class Request implements IRequest {
+
+                    public identifier: string;
+                    public proofIssuer: string;
+                    public serverAddr: string;
+                    public expirationDate: Long;
+                    public static create(properties?: berty.messenger.v1.DirectoryServiceRegister.IRequest): berty.messenger.v1.DirectoryServiceRegister.Request;
+                    public static encode(message: berty.messenger.v1.DirectoryServiceRegister.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.messenger.v1.DirectoryServiceRegister.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.DirectoryServiceRegister.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.DirectoryServiceRegister.Request;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.DirectoryServiceRegister.Request;
+                    public static toObject(message: berty.messenger.v1.DirectoryServiceRegister.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+
+                interface IReply {
+                    directoryRecordToken?: (string|null);
+                }
+
+                class Reply implements IReply {
+
+                    public directoryRecordToken: string;
+                    public static create(properties?: berty.messenger.v1.DirectoryServiceRegister.IReply): berty.messenger.v1.DirectoryServiceRegister.Reply;
+                    public static encode(message: berty.messenger.v1.DirectoryServiceRegister.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.messenger.v1.DirectoryServiceRegister.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.DirectoryServiceRegister.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.DirectoryServiceRegister.Reply;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.DirectoryServiceRegister.Reply;
+                    public static toObject(message: berty.messenger.v1.DirectoryServiceRegister.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+            }
+
+            interface IDirectoryServiceUnregister {
+            }
+
+            class DirectoryServiceUnregister implements IDirectoryServiceUnregister {
+
+                public static create(properties?: berty.messenger.v1.IDirectoryServiceUnregister): berty.messenger.v1.DirectoryServiceUnregister;
+                public static encode(message: berty.messenger.v1.IDirectoryServiceUnregister, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.messenger.v1.IDirectoryServiceUnregister, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.DirectoryServiceUnregister;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.DirectoryServiceUnregister;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.messenger.v1.DirectoryServiceUnregister;
+                public static toObject(message: berty.messenger.v1.DirectoryServiceUnregister, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            namespace DirectoryServiceUnregister {
+
+                interface IRequest {
+                    serverAddr?: (string|null);
+                    directoryRecordToken?: (string|null);
+                }
+
+                class Request implements IRequest {
+
+                    public serverAddr: string;
+                    public directoryRecordToken: string;
+                    public static create(properties?: berty.messenger.v1.DirectoryServiceUnregister.IRequest): berty.messenger.v1.DirectoryServiceUnregister.Request;
+                    public static encode(message: berty.messenger.v1.DirectoryServiceUnregister.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.messenger.v1.DirectoryServiceUnregister.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.DirectoryServiceUnregister.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.DirectoryServiceUnregister.Request;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.DirectoryServiceUnregister.Request;
+                    public static toObject(message: berty.messenger.v1.DirectoryServiceUnregister.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+
+                interface IReply {
+                }
+
+                class Reply implements IReply {
+
+                    public static create(properties?: berty.messenger.v1.DirectoryServiceUnregister.IReply): berty.messenger.v1.DirectoryServiceUnregister.Reply;
+                    public static encode(message: berty.messenger.v1.DirectoryServiceUnregister.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.messenger.v1.DirectoryServiceUnregister.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.DirectoryServiceUnregister.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.DirectoryServiceUnregister.Reply;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.DirectoryServiceUnregister.Reply;
+                    public static toObject(message: berty.messenger.v1.DirectoryServiceUnregister.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+            }
+
+            interface IDirectoryServiceQuery {
+            }
+
+            class DirectoryServiceQuery implements IDirectoryServiceQuery {
+
+                public static create(properties?: berty.messenger.v1.IDirectoryServiceQuery): berty.messenger.v1.DirectoryServiceQuery;
+                public static encode(message: berty.messenger.v1.IDirectoryServiceQuery, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.messenger.v1.IDirectoryServiceQuery, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.DirectoryServiceQuery;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.DirectoryServiceQuery;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.messenger.v1.DirectoryServiceQuery;
+                public static toObject(message: berty.messenger.v1.DirectoryServiceQuery, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            namespace DirectoryServiceQuery {
+
+                interface IRequest {
+                    serverAddr?: (string|null);
+                    identifiers?: (string[]|null);
+                }
+
+                class Request implements IRequest {
+
+                    public serverAddr: string;
+                    public identifiers: string[];
+                    public static create(properties?: berty.messenger.v1.DirectoryServiceQuery.IRequest): berty.messenger.v1.DirectoryServiceQuery.Request;
+                    public static encode(message: berty.messenger.v1.DirectoryServiceQuery.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.messenger.v1.DirectoryServiceQuery.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.DirectoryServiceQuery.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.DirectoryServiceQuery.Request;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.DirectoryServiceQuery.Request;
+                    public static toObject(message: berty.messenger.v1.DirectoryServiceQuery.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+
+                interface IReply {
+                    directoryIdentifier?: (string|null);
+                    expiresAt?: (Long|null);
+                    accountUri?: (string|null);
+                    verifiedCredential?: (Uint8Array|null);
+                }
+
+                class Reply implements IReply {
+
+                    public directoryIdentifier: string;
+                    public expiresAt: Long;
+                    public accountUri: string;
+                    public verifiedCredential: Uint8Array;
+                    public static create(properties?: berty.messenger.v1.DirectoryServiceQuery.IReply): berty.messenger.v1.DirectoryServiceQuery.Reply;
+                    public static encode(message: berty.messenger.v1.DirectoryServiceQuery.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.messenger.v1.DirectoryServiceQuery.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.DirectoryServiceQuery.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.DirectoryServiceQuery.Reply;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.DirectoryServiceQuery.Reply;
+                    public static toObject(message: berty.messenger.v1.DirectoryServiceQuery.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
             }

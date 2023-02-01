@@ -117,6 +117,7 @@ func getDBModels() []interface{} {
 		&messengertypes.MetadataEvent{},
 		&messengertypes.SharedPushToken{},
 		&messengertypes.AccountVerifiedCredential{},
+		&messengertypes.AccountDirectoryServiceRecord{},
 	}
 }
 
@@ -419,6 +420,7 @@ func (d *DBWrapper) GetAccount() (*messengertypes.Account, error) {
 	if err := d.db.Model(&messengertypes.Account{}).
 		Preload("ServiceTokens").
 		Preload("VerifiedCredentials").
+		Preload("DirectoryServiceRecords").
 		Find(&accounts).Error; err != nil {
 		return nil, err
 	}
@@ -838,6 +840,9 @@ func (d *DBWrapper) GetDBInfo() (*messengertypes.SystemInfo_DB, error) {
 	errs = multierr.Append(errs, err)
 
 	infos.AccountVerifiedCredentials, err = d.dbModelRowsCount(messengertypes.AccountVerifiedCredential{})
+	errs = multierr.Append(errs, err)
+
+	infos.AccountDirectoryServiceRecord, err = d.dbModelRowsCount(messengertypes.AccountDirectoryServiceRecord{})
 	errs = multierr.Append(errs, err)
 
 	return infos, errs
@@ -1655,4 +1660,136 @@ func (d *DBWrapper) SaveAccountVerifiedCredential(ev *protocoltypes.AccountVerif
 	}
 
 	return nil
+}
+
+func (d *DBWrapper) GetVerifiedCredentials(identifier string, issuer string) ([]*messengertypes.AccountVerifiedCredential, error) {
+	now := time.Now()
+
+	result := []*messengertypes.AccountVerifiedCredential(nil)
+	qs := d.db.Model(&messengertypes.AccountVerifiedCredential{})
+	if issuer != "" {
+		qs.Where("issuer = ?", issuer)
+	}
+
+	err := qs.Where("identifier = ? AND expiration_date > ?", identifier, now.Unix()/messengerutil.MilliToNanoFactor).Find(&result).Error
+	if err != nil {
+		return nil, errcode.ErrDBRead.Wrap(err)
+	}
+
+	if len(result) == 0 {
+		return nil, errcode.ErrNotFound.Wrap(fmt.Errorf("no verified credentials found"))
+	}
+
+	return result, nil
+}
+
+func (d *DBWrapper) SaveAccountDirectoryServiceRecord(accountPK string, message *messengertypes.AppMessage_AccountDirectoryServiceRegistered) error {
+	return d.db.Transaction(func(tx *gorm.DB) error {
+		count := int64(0)
+
+		if err := tx.Model(&messengertypes.AccountDirectoryServiceRecord{}).Where(
+			"identifier = ? AND server_addr = ? AND expiration_date >= ?", message.Identifier, message.ServerAddr, message.ExpirationDate/messengerutil.MilliToNanoFactor,
+		).Count(&count).Error; err != nil {
+			return errcode.ErrDBRead.Wrap(err)
+		}
+
+		if count > 0 {
+			return errcode.ErrDBEntryAlreadyExists
+		}
+
+		if err := tx.Delete(&messengertypes.AccountDirectoryServiceRecord{}, "identifier = ? AND server_addr = ? AND expiration_date < ?", message.Identifier, message.ServerAddr, message.ExpirationDate/messengerutil.MilliToNanoFactor).Error; err != nil {
+			return errcode.ErrDBWrite.Wrap(err)
+		}
+
+		if message.DirectoryRecordUnregisterToken == "" {
+			return errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing DirectoryRecordUnregisterToken"))
+		}
+
+		if accountPK == "" {
+			return errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing accountPK"))
+		}
+
+		if message.Identifier == "" {
+			return errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing Identifier"))
+		}
+
+		if message.IdentifierProofIssuer == "" {
+			return errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing IdentifierProofIssuer"))
+		}
+
+		if message.ServerAddr == "" {
+			return errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing ServerAddr"))
+		}
+
+		if message.RegistrationDate == 0 {
+			return errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing RegistrationDate"))
+		}
+
+		if message.ExpirationDate == 0 {
+			return errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing ExpirationDate"))
+		}
+
+		if message.DirectoryRecordToken == "" {
+			return errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing DirectoryRecordToken"))
+		}
+
+		serviceRecord := &messengertypes.AccountDirectoryServiceRecord{
+			AccountPK:                      accountPK,
+			Identifier:                     message.Identifier,
+			IdentifierProofIssuer:          message.IdentifierProofIssuer,
+			ServerAddr:                     message.ServerAddr,
+			RegistrationDate:               message.RegistrationDate / messengerutil.MilliToNanoFactor,
+			ExpirationDate:                 message.ExpirationDate / messengerutil.MilliToNanoFactor,
+			DirectoryRecordToken:           message.DirectoryRecordToken,
+			DirectoryRecordUnregisterToken: message.DirectoryRecordUnregisterToken,
+		}
+
+		q := tx.Create(serviceRecord)
+
+		if err := q.Error; err != nil {
+			return errcode.ErrDBWrite.Wrap(err)
+		}
+
+		return nil
+	})
+}
+
+func (d *DBWrapper) MarkAccountDirectoryServiceRecordAsRevoked(serverAddr string, token string, removalDate int64) error {
+	return d.db.Transaction(func(tx *gorm.DB) error {
+		record := &messengertypes.AccountDirectoryServiceRecord{}
+
+		query := d.db.Model(&messengertypes.AccountDirectoryServiceRecord{}).Where(record, &messengertypes.AccountDirectoryServiceRecord{
+			ServerAddr:           serverAddr,
+			DirectoryRecordToken: token,
+		}, "expiration_date <= ?", removalDate).Update("revoked", true)
+
+		if err := query.Error; err != nil {
+			return errcode.ErrDBRead.Wrap(err)
+		}
+
+		if query.RowsAffected == 0 {
+			return errcode.ErrNotFound
+		}
+
+		return nil
+	})
+}
+
+func (d *DBWrapper) GetAccountDirectoryServiceRecord(serviceAddr string, recordToken string) (*messengertypes.AccountDirectoryServiceRecord, error) {
+	count := int64(0)
+	serviceRecord := &messengertypes.AccountDirectoryServiceRecord{}
+
+	if err := d.db.Model(&messengertypes.AccountDirectoryServiceRecord{}).
+		Where("directory_record_token = ? AND server_addr = ?", recordToken, serviceAddr).
+		Find(&serviceRecord).
+		Count(&count).
+		Error; err != nil {
+		return nil, errcode.ErrDBRead.Wrap(err)
+	}
+
+	if count == 0 {
+		return nil, errcode.ErrNotFound
+	}
+
+	return serviceRecord, nil
 }

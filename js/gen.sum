@@ -1,4 +1,4 @@
-3777c92f853175e0d1be49cd4dbbbbe7c3edb756  ../api/messengertypes.proto
+84fedb751ef818097d14d13940ac185d72032a2c  ../api/protocoltypes.proto
 87b3030159f1cacabd77390290140800dc0164c2  Makefile
 b79437c2a9f8c95bd1c75eab1972cdb22f831991  ../api/accounttypes.proto
-fd87bc4d8a4534f2d5cc1394e33ecb8f68281174  ../api/protocoltypes.proto
+cff44b531a749ab6d7f6b5113216aa490ece09eb  ../api/messengertypes.proto
