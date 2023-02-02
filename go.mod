@@ -78,6 +78,7 @@ require (
 	github.com/skip2/go-qrcode v0.0.0-20200617195104-da1b6568686e
 	github.com/stretchr/testify v1.8.1
 	github.com/tailscale/depaware v0.0.0-20210622194025-720c4b409502
+	github.com/tj/assert v0.0.3
 	github.com/zcalusic/sysinfo v0.0.0-20200820110305-ef1bb2697bc2
 	go.uber.org/goleak v1.1.12
 	go.uber.org/multierr v1.8.0

@@ -426,7 +426,7 @@ func TestScenario_ReplicateMessage(t *testing.T) {
 	require.NoError(t, err)
 
 	// Create MultiMember Group
-	group := createMultiMemberGroupInstance(ctx, t, nodeA, nodeB)
+	group := bertyprotocol.CreateMultiMemberGroupInstance(ctx, t, nodeA, nodeB)
 
 	// TODO: handle services auth
 	_ = tokenSK
@@ -643,171 +643,8 @@ func testingScenarioNonMocked(t *testing.T, tcs []testCase, tf testFunc) {
 	}
 }
 
-func createMultiMemberGroupInstance(ctx context.Context, t *testing.T, tps ...*bertyprotocol.TestingProtocol) *protocoltypes.Group {
-	testutil.LogTree(t, "Create and Join MultiMember Group", 0, true)
-	start := time.Now()
-
-	ntps := len(tps)
-
-	// Create group
-	group, _, err := bertyprotocol.NewGroupMultiMember()
-	require.NoError(t, err)
-
-	// Get Instance Configurations
-	{
-		testutil.LogTree(t, "Get Instance Configuration", 1, true)
-		start := time.Now()
-
-		// check if everything is ready
-		for _, pt := range tps {
-			_, err := pt.Client.InstanceGetConfiguration(ctx, &protocoltypes.InstanceGetConfiguration_Request{})
-			require.NoError(t, err)
-		}
-
-		testutil.LogTree(t, "duration: %s", 1, false, time.Since(start))
-	}
-
-	// Join Group
-	{
-		testutil.LogTree(t, "Join Group", 1, true)
-		start := time.Now()
-
-		for _, pt := range tps {
-			req := protocoltypes.MultiMemberGroupJoin_Request{
-				Group: group,
-			}
-
-			// pt join group
-			_, err = pt.Client.MultiMemberGroupJoin(ctx, &req)
-			require.NoError(t, err)
-		}
-
-		testutil.LogTree(t, "duration: %s", 1, false, time.Since(start))
-	}
-
-	// Get Member/Device PKs
-	memberPKs := make([][]byte, ntps)
-	devicePKs := make([][]byte, ntps)
-	{
-		testutil.LogTree(t, "Get Member/Device PKs", 1, true)
-		start := time.Now()
-
-		for i, pt := range tps {
-			res, err := pt.Client.GroupInfo(ctx, &protocoltypes.GroupInfo_Request{
-				GroupPK: group.PublicKey,
-			})
-			require.NoError(t, err)
-			assert.Equal(t, group.PublicKey, res.Group.PublicKey)
-
-			memberPKs[i] = res.MemberPK
-			devicePKs[i] = res.DevicePK
-		}
-
-		testutil.LogTree(t, "duration: %s", 1, false, time.Since(start))
-	}
-
-	// Activate Group
-	{
-		testutil.LogTree(t, "Activate Group", 1, true)
-		start := time.Now()
-
-		for i, pt := range tps {
-			_, err := pt.Client.ActivateGroup(ctx, &protocoltypes.ActivateGroup_Request{
-				GroupPK: group.PublicKey,
-			})
-
-			assert.NoError(t, err, fmt.Sprintf("error for client %d", i))
-		}
-
-		testutil.LogTree(t, "duration: %s", 1, false, time.Since(start))
-	}
-
-	// Exchange Secrets
-	{
-		testutil.LogTree(t, "Exchange Secrets", 1, true)
-		start := time.Now()
-
-		wg := sync.WaitGroup{}
-		secretsReceivedLock := sync.Mutex{}
-		secretsReceived := make([]map[string]struct{}, ntps)
-		wg.Add(ntps)
-
-		nSuccess := int64(0)
-		for i := range tps {
-			go func(i int) {
-				tp := tps[i]
-
-				defer wg.Done()
-
-				secretsReceived[i] = map[string]struct{}{}
-
-				ctx, cancel := context.WithCancel(ctx)
-				defer cancel()
-
-				sub, inErr := tp.Client.GroupMetadataList(ctx, &protocoltypes.GroupMetadataList_Request{
-					GroupPK: group.PublicKey,
-				})
-				if inErr != nil {
-					assert.NoError(t, err, fmt.Sprintf("error for client %d", i))
-					return
-				}
-
-				for {
-					evt, inErr := sub.Recv()
-					if inErr != nil {
-						if inErr != io.EOF {
-							assert.NoError(t, err, fmt.Sprintf("error for client %d", i))
-						}
-
-						break
-					}
-
-					if source, err := isEventAddSecretTargetedToMember(memberPKs[i], evt); err != nil {
-						tps[i].Opts.Logger.Error("err:", zap.Error(inErr))
-						assert.NoError(t, err, fmt.Sprintf("error for client %d", i))
-
-						break
-					} else if source != nil {
-						secretsReceivedLock.Lock()
-						secretsReceived[i][string(source)] = struct{}{}
-						done := len(secretsReceived[i]) == ntps
-						secretsReceivedLock.Unlock()
-
-						if done {
-							atomic.AddInt64(&nSuccess, 1)
-							nSuccess := atomic.LoadInt64(&nSuccess)
-
-							got := fmt.Sprintf("%d/%d", nSuccess, ntps)
-							tps[i].Opts.Logger.Debug("received all secrets", zap.String("ok", got))
-							return
-						}
-					}
-				}
-			}(i)
-		}
-
-		wg.Wait()
-
-		secretsReceivedLock.Lock()
-		ok := true
-		for i := range secretsReceived {
-			if !assert.Equal(t, ntps, len(secretsReceived[i]), fmt.Sprintf("mismatch for client %d", i)) {
-				ok = false
-			}
-		}
-		require.True(t, ok)
-		secretsReceivedLock.Unlock()
-
-		testutil.LogTree(t, "duration: %s", 1, false, time.Since(start))
-	}
-
-	testutil.LogTree(t, "duration: %s", 0, false, time.Since(start))
-
-	return group
-}
-
 func createMultiMemberGroup(ctx context.Context, t *testing.T, tps ...*bertyprotocol.TestingProtocol) (groupID []byte) {
-	return createMultiMemberGroupInstance(ctx, t, tps...).PublicKey
+	return bertyprotocol.CreateMultiMemberGroupInstance(ctx, t, tps...).PublicKey
 }
 
 func addAsContact(ctx context.Context, t *testing.T, senders, receivers []*bertyprotocol.TestingProtocol) {
@@ -1222,26 +1059,6 @@ func sendMessageOnGroup(ctx context.Context, t *testing.T, senders, receivers []
 		testutil.LogTree(t, "duration: %s", 1, false, time.Since(start))
 	}
 	testutil.LogTree(t, "duration: %s", 0, false, time.Since(start))
-}
-
-func isEventAddSecretTargetedToMember(ownRawPK []byte, evt *protocoltypes.GroupMetadataEvent) ([]byte, error) {
-	// Only count EventTypeGroupDeviceSecretAdded events
-	if evt.Metadata.EventType != protocoltypes.EventTypeGroupDeviceSecretAdded {
-		return nil, nil
-	}
-
-	sec := &protocoltypes.GroupAddDeviceSecret{}
-	err := sec.Unmarshal(evt.Event)
-	if err != nil {
-		return nil, err
-	}
-
-	// Filter out events targeted at other members
-	if !bytes.Equal(ownRawPK, sec.DestMemberPK) {
-		return nil, nil
-	}
-
-	return sec.DevicePK, nil
 }
 
 func getAccountPubKey(t *testing.T, tp *bertyprotocol.TestingProtocol) []byte {
