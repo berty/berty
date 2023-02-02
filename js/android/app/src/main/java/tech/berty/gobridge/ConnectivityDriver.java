@@ -29,17 +29,16 @@ public class ConnectivityDriver extends BroadcastReceiver implements IConnectivi
     private ConnectivityInfo mCurrentState;
 
     public ConnectivityDriver(Context context) {
-        Logger.d(TAG, "ConnectivityDriver created " + Bertybridge.ConnectivityStateUnknown);
+        Logger.d(TAG, "Init");
         this.mHandlers = new ArrayList();
         this.updateState(context);
     }
 
-    // TODO fix crash
     private static long getCellularType(Context context) {
         TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
 
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-            Logger.d(TAG, "getting cellular type: permission denied");
+            Logger.e(TAG, "Getting cellular type: permission denied");
             return Bertybridge.ConnectivityCellularUnknown;
         }
 
@@ -142,7 +141,7 @@ public class ConnectivityDriver extends BroadcastReceiver implements IConnectivi
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Logger.d(TAG, "received event");
+        Logger.d(TAG, "Network state changed");
         this.updateState(context);
     }
 

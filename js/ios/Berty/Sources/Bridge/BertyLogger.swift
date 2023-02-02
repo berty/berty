@@ -59,8 +59,10 @@ public class BertyLogger {
 
     public func log(_ level: LogLevel, _ message: String) {
         if (BertyLogger.bridge == nil) {
-            os_log("[%{public}s] [%{public}s] %{public}s", type: level.levelNative,
-                level.levelString, self.subsytem, message)
+            let log = OSLog(subsystem: self.subsytem, category: self.subsytem)
+
+            os_log("[%{public}s] %{public}s", log: log, type: level.levelNative,
+                level.levelString, message)
             return
         }
       BertyLogger.bridge!.log(level.levelGo, subsystem: self.subsytem, message: message)

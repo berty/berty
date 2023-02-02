@@ -1,66 +1,51 @@
 package bertybridge
 
-// type ConnectivityState int
-// const (
-// 	ConnectivityStateUnknown ConnectivityState = iota
-// 	ConnectivityStateOff
-// 	ConnectivityStateOn
-// )
+import "berty.tech/berty/v2/go/internal/netmanager"
 
-// type ConnectivityNetType int
-// const (
-// 	ConnectivityNetUnknown ConnectivityNetType = iota
-// 	ConnectivityNetNone
-// 	ConnectivityNetWifi
-// 	ConnectivityNetEthernet
-// 	ConnectivityNetCellular
-// )
+const (
+	ConnectivityStateUnknown int  = int(netmanager.ConnectivityStateUnknown) 
+	ConnectivityStateOff          = int(netmanager.ConnectivityStateOff)
+	ConnectivityStateOn           = int(netmanager.ConnectivityStateOn)
 
-// type ConnectivityCellularType int
-// const (
-// 	ConnectivityCellularUnknown ConnectivityCellularType = iota
-// 	ConnectivityCellularNone
-// 	ConnectivityCellular2G
-// 	ConnectivityCellular3G
-// 	ConnectivityCellular4G
-// 	ConnectivityCellular5G
-// )
+	ConnectivityNetUnknown        = int(netmanager.ConnectivityNetUnknown)
+	ConnectivityNetNone           = int(netmanager.ConnectivityNetNone)
+	ConnectivityNetWifi           = int(netmanager.ConnectivityNetWifi)
+	ConnectivityNetEthernet       = int(netmanager.ConnectivityNetEthernet)
+	ConnectivityNetCellular       = int(netmanager.ConnectivityNetCellular)
 
-// type ConnectivityInfo struct {
-// 	State        ConnectivityState
-// 	Metering     ConnectivityState
-// 	Bluetooth    ConnectivityState
-// 	NetType      ConnectivityNetType
-// 	CellularType ConnectivityCellularType
-// }
+	ConnectivityCellularUnknown   = int(netmanager.ConnectivityCellularUnknown)
+	ConnectivityCellularNone      = int(netmanager.ConnectivityCellularNone)
+	ConnectivityCellular2G        = int(netmanager.ConnectivityCellular2G)
+	ConnectivityCellular3G        = int(netmanager.ConnectivityCellular3G)
+	ConnectivityCellular4G        = int(netmanager.ConnectivityCellular4G)
+	ConnectivityCellular5G        = int(netmanager.ConnectivityCellular5G)
+)
 
-// func NewConnectivityInfo() *ConnectivityInfo {
-// 	return &ConnectivityInfo{
-// 		State:        ConnectivityStateUnknown,
-// 		Metering:     ConnectivityStateUnknown,
-// 		Bluetooth:    ConnectivityStateUnknown,
-// 		NetType:      ConnectivityNetUnknown,
-// 		CellularType: ConnectivityCellularUnknown,
-// 	}
-// }
+type ConnectivityInfo struct {
+	info   *netmanager.ConnectivityInfo
+}
 
-// func (ci *ConnectivityInfo) GetState() int                    { return int(ci.State) }
-// func (ci *ConnectivityInfo) GetMetering() int                 { return int(ci.Metering) }
-// func (ci *ConnectivityInfo) GetBluetooth() int                { return int(ci.Bluetooth) }
-// func (ci *ConnectivityInfo) GetNetType() int                  { return int(ci.NetType) }
-// func (ci *ConnectivityInfo) GetCellularType() int             { return int(ci.CellularType) }
+func NewConnectivityInfo() *ConnectivityInfo {
+	return &ConnectivityInfo{ netmanager.NewConnectivityInfo() }
+}
 
-// func (ci *ConnectivityInfo) SetState(state int)               { ci.State = ConnectivityState(state) }
-// func (ci *ConnectivityInfo) SetMetering(metering int)         { ci.Metering = ConnectivityState(metering) }
-// func (ci *ConnectivityInfo) SetBluetooth(bluetooth int)       { ci.Bluetooth = ConnectivityState(bluetooth) }
-// func (ci *ConnectivityInfo) SetNetType(netType int)           { ci.NetType = ConnectivityNetType(netType) }
-// func (ci *ConnectivityInfo) SetCellularType(cellularType int) { ci.CellularType = ConnectivityCellularType(cellularType) }
+func (ci *ConnectivityInfo) GetState() int                    { return int(ci.info.GetState()) }
+func (ci *ConnectivityInfo) GetMetering() int                 { return int(ci.info.GetMetering()) }
+func (ci *ConnectivityInfo) GetBluetooth() int                { return int(ci.info.GetBluetooth()) }
+func (ci *ConnectivityInfo) GetNetType() int                  { return int(ci.info.GetNetType()) }
+func (ci *ConnectivityInfo) GetCellularType() int             { return int(ci.info.GetCellularType()) }
 
-// type ConnectivityHandler interface {
-// 	HandleConnectivityUpdate(connectivityInfo *ConnectivityInfo)
-// }
+func (ci *ConnectivityInfo) SetState(state int)               { ci.info.SetState(netmanager.ConnectivityState(state)) }
+func (ci *ConnectivityInfo) SetMetering(metering int)         { ci.info.SetMetering(netmanager.ConnectivityState(metering)) }
+func (ci *ConnectivityInfo) SetBluetooth(bluetooth int)       { ci.info.SetBluetooth(netmanager.ConnectivityState(bluetooth)) }
+func (ci *ConnectivityInfo) SetNetType(netType int)           { ci.info.SetNetType(netmanager.ConnectivityNetType(netType)) }
+func (ci *ConnectivityInfo) SetCellularType(cellularType int) { ci.info.SetCellularType(netmanager.ConnectivityCellularType(cellularType)) }
 
-// type ConnectivityDriver interface {
-// 	GetCurrentState() *ConnectivityInfo
-// 	RegisterHandler(handler ConnectivityHandler)
-// }
+type IConnectivityHandler interface {
+	HandleConnectivityUpdate(connectivityInfo *ConnectivityInfo)
+}
+
+type IConnectivityDriver interface {
+	GetCurrentState() *ConnectivityInfo
+	RegisterHandler(handler IConnectivityHandler)
+}
