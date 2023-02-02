@@ -110,7 +110,7 @@ func (gc *GroupContext) activateGroupContext(contact crypto.PubKey, selfAnnounce
 		go func() {
 			for pk := range chNewData {
 				if !pk.Equals(gc.memberDevice.PrivateDevice().GetPublic()) {
-					gc.logger.Warn("gc member device public key device doesn't match")
+					gc.logger.Warn("gc member device public key doesn't match")
 				}
 			}
 		}()
@@ -119,7 +119,7 @@ func (gc *GroupContext) activateGroupContext(contact crypto.PubKey, selfAnnounce
 		go func() {
 			for pk := range chMember {
 				if !pk.Equals(gc.memberDevice.PrivateMember().GetPublic()) {
-					gc.logger.Warn("gc member public key device doesn't match")
+					gc.logger.Warn("gc member device public key doesn't match")
 				}
 			}
 		}()
@@ -134,7 +134,7 @@ func (gc *GroupContext) activateGroupContext(contact crypto.PubKey, selfAnnounce
 		go func() {
 			for pk := range chPreviousData {
 				if !pk.Equals(gc.memberDevice.PrivateDevice().GetPublic()) {
-					gc.logger.Warn("gc member device public key device doesn't match")
+					gc.logger.Warn("gc member device public key doesn't match")
 				}
 			}
 
@@ -146,7 +146,7 @@ func (gc *GroupContext) activateGroupContext(contact crypto.PubKey, selfAnnounce
 		go func() {
 			for pk := range chSecrets {
 				if !pk.Equals(gc.memberDevice.PrivateMember().GetPublic()) {
-					gc.logger.Warn("gc member public key device doesn't match")
+					gc.logger.Warn("gc member device public key doesn't match")
 				}
 			}
 
