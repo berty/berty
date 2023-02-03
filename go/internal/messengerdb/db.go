@@ -14,7 +14,7 @@ import (
 	"gorm.io/gorm/clause"
 	"gorm.io/gorm/logger"
 
-	"berty.tech/berty/v2/go/internal/logutil"
+	"berty.tech/berty/v2/go/pkg/logutil"
 	"berty.tech/berty/v2/go/internal/messengerutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"

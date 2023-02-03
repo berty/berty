@@ -24,7 +24,7 @@ import (
 	"berty.tech/weshnet/pkg/ble-driver"
 	"berty.tech/berty/v2/go/internal/config"
 	"berty.tech/berty/v2/go/internal/initutil"
-	"berty.tech/berty/v2/go/internal/logutil"
+	"berty.tech/berty/v2/go/pkg/logutil"
 	"berty.tech/berty/v2/go/internal/migrationsaccount"
 	mc "berty.tech/weshnet/pkg/multipeer-connectivity-driver"
 	"berty.tech/berty/v2/go/localization"

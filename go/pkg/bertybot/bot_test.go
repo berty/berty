@@ -8,7 +8,7 @@ import (
 	"github.com/gogo/protobuf/proto"
 	"github.com/stretchr/testify/require"
 
-	"berty.tech/berty/v2/go/internal/testutil"
+	"berty.tech/berty/v2/go/pkg/testutil"
 	"berty.tech/berty/v2/go/pkg/bertymessenger"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
 )

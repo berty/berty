@@ -40,7 +40,7 @@ import (
 	"berty.tech/berty/v2/go/internal/datastoreutil"
 	"berty.tech/weshnet/pkg/ipfsutil"
 	ipfs_mobile "berty.tech/weshnet/pkg/ipfsutil/mobile"
-	"berty.tech/berty/v2/go/internal/logutil"
+	"berty.tech/berty/v2/go/pkg/logutil"
 	mc "berty.tech/weshnet/pkg/multipeer-connectivity-driver"
 	proximity "berty.tech/weshnet/pkg/proximitytransport"
 	"berty.tech/weshnet/pkg/rendezvous"

@@ -22,7 +22,7 @@ import (
 	"moul.io/zapring"
 
 	"berty.tech/weshnet/pkg/lifecycle"
-	"berty.tech/berty/v2/go/internal/logutil"
+	"berty.tech/berty/v2/go/pkg/logutil"
 	"berty.tech/berty/v2/go/internal/messengerdb"
 	"berty.tech/berty/v2/go/internal/messengerpayloads"
 	"berty.tech/berty/v2/go/internal/messengerutil"

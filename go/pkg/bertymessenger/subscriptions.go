@@ -10,7 +10,7 @@ import (
 	"go.uber.org/zap"
 
 	"berty.tech/weshnet/pkg/lifecycle"
-	"berty.tech/berty/v2/go/internal/logutil"
+	"berty.tech/berty/v2/go/pkg/logutil"
 	"berty.tech/berty/v2/go/internal/messengerutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	mt "berty.tech/berty/v2/go/pkg/messengertypes"

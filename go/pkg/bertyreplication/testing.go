@@ -19,9 +19,9 @@ import (
 	"gorm.io/gorm"
 	"moul.io/zapgorm2"
 
-	"berty.tech/berty/v2/go/internal/testutil"
 	"berty.tech/berty/v2/go/pkg/bertyauth"
 	"berty.tech/berty/v2/go/pkg/errcode"
+	"berty.tech/berty/v2/go/pkg/testutil"
 	orbitdb "berty.tech/go-orbit-db"
 	"berty.tech/weshnet"
 	"berty.tech/weshnet/pkg/authtypes"

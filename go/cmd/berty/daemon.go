@@ -11,7 +11,7 @@ import (
 	"github.com/mdp/qrterminal/v3"
 	"github.com/peterbourgon/ff/v3/ffcli"
 
-	"berty.tech/berty/v2/go/internal/logutil"
+	"berty.tech/berty/v2/go/pkg/logutil"
 	"berty.tech/berty/v2/go/pkg/banner"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"

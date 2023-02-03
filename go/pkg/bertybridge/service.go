@@ -6,7 +6,7 @@ import (
 
 	"go.uber.org/zap"
 
-	"berty.tech/berty/v2/go/internal/grpcutil"
+	"berty.tech/berty/v2/go/pkg/grpcutil"
 )
 
 type Service interface {

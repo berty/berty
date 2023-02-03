@@ -17,7 +17,7 @@ import (
 	"berty.tech/weshnet/pkg/androidnearby"
 	"berty.tech/berty/v2/go/internal/initutil"
 	"berty.tech/weshnet/pkg/lifecycle"
-	"berty.tech/berty/v2/go/internal/logutil"
+	"berty.tech/berty/v2/go/pkg/logutil"
 	"berty.tech/berty/v2/go/internal/migrations"
 	mc "berty.tech/weshnet/pkg/multipeer-connectivity-driver"
 	"berty.tech/berty/v2/go/internal/notification"

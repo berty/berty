@@ -16,9 +16,9 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"berty.tech/berty/v2/go/internal/grpcutil"
+	"berty.tech/berty/v2/go/pkg/grpcutil"
 	"berty.tech/weshnet/pkg/ipfsutil"
-	"berty.tech/berty/v2/go/internal/logutil"
+	"berty.tech/berty/v2/go/pkg/logutil"
 	"berty.tech/weshnet/pkg/authtypes"
 	"berty.tech/berty/v2/go/pkg/bertyauth"
 	"berty.tech/berty/v2/go/pkg/errcode"

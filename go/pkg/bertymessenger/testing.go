@@ -25,7 +25,7 @@ import (
 	"moul.io/zapgorm2"
 	"moul.io/zapring"
 
-	"berty.tech/berty/v2/go/internal/testutil"
+	"berty.tech/berty/v2/go/pkg/testutil"
 	"berty.tech/weshnet"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
 	"berty.tech/weshnet/pkg/protocoltypes"

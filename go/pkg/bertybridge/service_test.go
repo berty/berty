@@ -10,8 +10,8 @@ import (
 	"go.uber.org/zap"
 	grpc "google.golang.org/grpc"
 
-	"berty.tech/berty/v2/go/internal/grpcutil"
-	"berty.tech/berty/v2/go/internal/testutil"
+	"berty.tech/berty/v2/go/pkg/grpcutil"
+	"berty.tech/berty/v2/go/pkg/testutil"
 	errcode "berty.tech/berty/v2/go/pkg/errcode"
 )
 

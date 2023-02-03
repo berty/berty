@@ -16,7 +16,7 @@ import (
 	"go.uber.org/zap"
 	"gorm.io/gorm"
 
-	"berty.tech/berty/v2/go/internal/logutil"
+	"berty.tech/berty/v2/go/pkg/logutil"
 	"berty.tech/berty/v2/go/internal/messengerdb"
 	"berty.tech/berty/v2/go/internal/messengerutil"
 	"berty.tech/berty/v2/go/pkg/errcode"

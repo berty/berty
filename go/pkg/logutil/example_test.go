@@ -1,7 +1,7 @@
 package logutil_test
 
 import (
-	"berty.tech/berty/v2/go/internal/logutil"
+	"berty.tech/berty/v2/go/pkg/logutil"
 )
 
 func Example_logall() {

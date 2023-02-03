@@ -25,10 +25,10 @@ import (
 	"moul.io/zapring"
 
 	"berty.tech/berty/v2/go/internal/accountutils"
-	"berty.tech/berty/v2/go/internal/grpcutil"
+	"berty.tech/berty/v2/go/pkg/grpcutil"
 	"berty.tech/weshnet/pkg/ipfsutil"
 	"berty.tech/weshnet/pkg/lifecycle"
-	"berty.tech/berty/v2/go/internal/logutil"
+	"berty.tech/berty/v2/go/pkg/logutil"
 	"berty.tech/berty/v2/go/internal/notification"
 	proximity "berty.tech/weshnet/pkg/proximitytransport"
 	"berty.tech/weshnet/pkg/rendezvous"

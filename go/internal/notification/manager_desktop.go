@@ -6,7 +6,7 @@ import (
 	"github.com/gen2brain/beeep"
 	"go.uber.org/zap"
 
-	"berty.tech/berty/v2/go/internal/logutil"
+	"berty.tech/berty/v2/go/pkg/logutil"
 	pack "berty.tech/berty/v2/go/internal/packingutil"
 )
 

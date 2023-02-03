@@ -16,17 +16,17 @@ import (
 	"golang.org/x/text/language"
 	"google.golang.org/grpc"
 
-	"berty.tech/berty/v2/go/internal/grpcutil"
-	"berty.tech/weshnet/pkg/ipfsutil"
-	"berty.tech/weshnet/pkg/lifecycle"
-	"berty.tech/berty/v2/go/internal/logutil"
+	"berty.tech/berty/v2/go/pkg/grpcutil"
 	"berty.tech/berty/v2/go/internal/notification"
-	proximity "berty.tech/weshnet/pkg/proximitytransport"
 	"berty.tech/berty/v2/go/pkg/accounttypes"
 	account_svc "berty.tech/berty/v2/go/pkg/bertyaccount"
 	bridge_svc "berty.tech/berty/v2/go/pkg/bertybridge"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/osversion"
+	"berty.tech/weshnet/pkg/ipfsutil"
+	"berty.tech/weshnet/pkg/lifecycle"
+	"berty.tech/berty/v2/go/pkg/logutil"
+	proximity "berty.tech/weshnet/pkg/proximitytransport"
 )
 
 var _ LifeCycleHandler = (*Bridge)(nil)

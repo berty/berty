@@ -3,7 +3,7 @@ package testutil_test
 import (
 	"testing"
 
-	"berty.tech/berty/v2/go/internal/testutil"
+	"berty.tech/berty/v2/go/pkg/testutil"
 )
 
 func TestFilterRace(t *testing.T) {

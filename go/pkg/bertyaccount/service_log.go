@@ -9,7 +9,7 @@ import (
 	"path/filepath"
 
 	"berty.tech/berty/v2/go/internal/accountutils"
-	"berty.tech/berty/v2/go/internal/logutil"
+	"berty.tech/berty/v2/go/pkg/logutil"
 	"berty.tech/berty/v2/go/pkg/accounttypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
 )

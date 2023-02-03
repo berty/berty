@@ -29,7 +29,7 @@ import (
 	"moul.io/srand"
 
 	"berty.tech/berty/v2/go/internal/discordlog"
-	"berty.tech/berty/v2/go/internal/logutil"
+	"berty.tech/berty/v2/go/pkg/logutil"
 	"berty.tech/berty/v2/go/internal/messengerdb"
 	"berty.tech/berty/v2/go/internal/messengerutil"
 	"berty.tech/weshnet/pkg/sysutil"

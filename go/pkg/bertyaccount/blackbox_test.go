@@ -19,8 +19,8 @@ import (
 	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc"
 
-	"berty.tech/berty/v2/go/internal/grpcutil"
-	"berty.tech/berty/v2/go/internal/testutil"
+	"berty.tech/berty/v2/go/pkg/grpcutil"
+	"berty.tech/berty/v2/go/pkg/testutil"
 	"berty.tech/berty/v2/go/pkg/accounttypes"
 	"berty.tech/berty/v2/go/pkg/bertyaccount"
 	"berty.tech/berty/v2/go/pkg/errcode"

@@ -10,10 +10,10 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 
-	"berty.tech/berty/v2/go/internal/grpcutil"
-	"berty.tech/berty/v2/go/internal/logutil"
+	"berty.tech/berty/v2/go/pkg/grpcutil"
 	bridge_svc "berty.tech/berty/v2/go/pkg/bertybridge"
 	"berty.tech/berty/v2/go/pkg/errcode"
+	"berty.tech/berty/v2/go/pkg/logutil"
 )
 
 type RemoteBridge struct {

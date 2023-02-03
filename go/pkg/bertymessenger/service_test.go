@@ -29,12 +29,12 @@ import (
 	"berty.tech/berty/v2/go/internal/grpcserver"
 	"berty.tech/berty/v2/go/internal/messengerdb"
 	"berty.tech/berty/v2/go/internal/messengerutil"
-	"berty.tech/berty/v2/go/internal/testutil"
 	"berty.tech/berty/v2/go/pkg/bertydirectory"
 	"berty.tech/berty/v2/go/pkg/bertyvcissuer"
 	"berty.tech/berty/v2/go/pkg/directorytypes"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
+	"berty.tech/berty/v2/go/pkg/testutil"
 	"berty.tech/berty/v2/go/pkg/verifiablecredstypes"
 )
 

@@ -36,7 +36,7 @@ import (
 	"moul.io/srand"
 
 	"berty.tech/weshnet/pkg/ipfsutil"
-	"berty.tech/berty/v2/go/internal/logutil"
+	"berty.tech/berty/v2/go/pkg/logutil"
 	"berty.tech/weshnet/pkg/rendezvous"
 	"berty.tech/berty/v2/go/pkg/errcode"
 )

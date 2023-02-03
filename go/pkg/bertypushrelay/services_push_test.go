@@ -10,7 +10,7 @@ import (
 	"golang.org/x/net/context"
 
 	"berty.tech/weshnet/pkg/cryptoutil"
-	"berty.tech/berty/v2/go/internal/testutil"
+	"berty.tech/berty/v2/go/pkg/testutil"
 	"berty.tech/weshnet"
 	"berty.tech/berty/v2/go/pkg/bertypush"
 	"berty.tech/berty/v2/go/pkg/bertypushrelay"
