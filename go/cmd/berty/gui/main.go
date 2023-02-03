@@ -8,11 +8,11 @@ import (
 	"fyne.io/fyne/v2"
 	"go.uber.org/zap"
 
-	"berty.tech/berty/v2/go/internal/lifecycle"
+	"berty.tech/weshnet/pkg/lifecycle"
 	assets "berty.tech/berty/v2/go/pkg/assets"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
-	"berty.tech/berty/v2/go/pkg/protocoltypes"
+	"berty.tech/weshnet/pkg/protocoltypes"
 )
 
 // Opts ...

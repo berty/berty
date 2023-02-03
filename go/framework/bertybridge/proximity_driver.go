@@ -1,7 +1,7 @@
 package bertybridge
 
 import (
-	proximity "berty.tech/berty/v2/go/internal/proximitytransport"
+	proximity "berty.tech/weshnet/pkg/proximitytransport"
 )
 
 type ProximityDriver interface {

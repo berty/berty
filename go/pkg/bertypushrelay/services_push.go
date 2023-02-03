@@ -11,11 +11,11 @@ import (
 	"golang.org/x/crypto/curve25519"
 	"golang.org/x/crypto/nacl/box"
 
-	"berty.tech/berty/v2/go/internal/cryptoutil"
+	"berty.tech/weshnet/pkg/cryptoutil"
 	"berty.tech/berty/v2/go/internal/logutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
-	"berty.tech/berty/v2/go/pkg/protocoltypes"
-	"berty.tech/berty/v2/go/pkg/pushtypes"
+	"berty.tech/weshnet/pkg/protocoltypes"
+	"berty.tech/weshnet/pkg/pushtypes"
 )
 
 const ServicePushPayloadMax = 4096 // FIXME: find an appropriate value
@@ -32,6 +32,8 @@ type pushService struct {
 	publicKey           *[cryptoutil.KeySize]byte
 	dispatchers         map[string]PushDispatcher
 	supportedTokenTypes []*pushtypes.PushServiceSupportedTokenType
+
+	pushtypes.UnimplementedPushServiceServer
 }
 
 func PushDispatcherKey(tokenType pushtypes.PushServiceTokenType, bundleID string) string {

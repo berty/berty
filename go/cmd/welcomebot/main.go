@@ -27,7 +27,7 @@ import (
 	"moul.io/zapconfig"
 
 	"berty.tech/berty/v2/go/pkg/bertylinks"
-	"berty.tech/berty/v2/go/pkg/bertyversion"
+	"berty.tech/weshnet/pkg/bertyversion"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
 )
 

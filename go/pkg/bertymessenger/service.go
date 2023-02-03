@@ -21,19 +21,19 @@ import (
 	"moul.io/zapgorm2"
 	"moul.io/zapring"
 
-	"berty.tech/berty/v2/go/internal/lifecycle"
+	"berty.tech/weshnet/pkg/lifecycle"
 	"berty.tech/berty/v2/go/internal/logutil"
 	"berty.tech/berty/v2/go/internal/messengerdb"
 	"berty.tech/berty/v2/go/internal/messengerpayloads"
 	"berty.tech/berty/v2/go/internal/messengerutil"
 	"berty.tech/berty/v2/go/internal/notification"
-	"berty.tech/berty/v2/go/pkg/bertyprotocol"
+	"berty.tech/weshnet"
 	"berty.tech/berty/v2/go/pkg/bertypush"
-	"berty.tech/berty/v2/go/pkg/bertyversion"
+	"berty.tech/weshnet/pkg/bertyversion"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	mt "berty.tech/berty/v2/go/pkg/messengertypes"
-	"berty.tech/berty/v2/go/pkg/protocoltypes"
-	"berty.tech/berty/v2/go/pkg/tyber"
+	"berty.tech/weshnet/pkg/protocoltypes"
+	"berty.tech/weshnet/pkg/tyber"
 )
 
 type Service interface {
@@ -128,8 +128,8 @@ func (opts *Opts) applyDefaults() (func(), error) {
 	return cleanup, nil
 }
 
-func databaseStateRestoreAccountHandler(statePointer *mt.LocalDatabaseState) bertyprotocol.RestoreAccountHandler {
-	return bertyprotocol.RestoreAccountHandler{
+func databaseStateRestoreAccountHandler(statePointer *mt.LocalDatabaseState) weshnet.RestoreAccountHandler {
+	return weshnet.RestoreAccountHandler{
 		Handler: func(header *tar.Header, reader *tar.Reader) (bool, error) {
 			if header.Name != exportLocalDBState {
 				return false, nil
@@ -157,8 +157,8 @@ func databaseStateRestoreAccountHandler(statePointer *mt.LocalDatabaseState) ber
 	}
 }
 
-func RestoreFromAccountExport(ctx context.Context, reader io.Reader, coreAPI ipfs_interface.CoreAPI, odb *bertyprotocol.BertyOrbitDB, localDBState *mt.LocalDatabaseState, logger *zap.Logger) error {
-	return bertyprotocol.RestoreAccountExport(ctx, reader, coreAPI, odb, logger, databaseStateRestoreAccountHandler(localDBState))
+func RestoreFromAccountExport(ctx context.Context, reader io.Reader, coreAPI ipfs_interface.CoreAPI, odb *weshnet.BertyOrbitDB, localDBState *mt.LocalDatabaseState, logger *zap.Logger) error {
+	return weshnet.RestoreAccountExport(ctx, reader, coreAPI, odb, logger, databaseStateRestoreAccountHandler(localDBState))
 }
 
 func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (_ Service, err error) {

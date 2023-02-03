@@ -6,7 +6,7 @@ package messengerpayloads
 //
 //	"github.com/stretchr/testify/require"
 //
-//	"berty.tech/berty/v2/go/pkg/bertyprotocol"
+//	"berty.tech/weshnet"
 //	"berty.tech/berty/v2/go/pkg/messengertypes"
 //)
 //
@@ -27,7 +27,7 @@ package messengerpayloads
 //	ctx, cancel := context.WithCancel(context.Background())
 //	db, dispose := getInMemoryTestDB(t)
 //
-//	protocolClient, protocolClientDispose := bertyprotocol.NewTestingProtocol(ctx, t, nil, nil)
+//	protocolClient, protocolClientDispose := weshnet.NewTestingProtocol(ctx, t, nil, nil)
 //
 //	castedService := (*service)(nil)
 //	serviceDispose := func() {}

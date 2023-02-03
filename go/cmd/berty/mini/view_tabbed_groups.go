@@ -12,7 +12,7 @@ import (
 	"github.com/rivo/tview"
 
 	"berty.tech/berty/v2/go/pkg/messengertypes"
-	"berty.tech/berty/v2/go/pkg/protocoltypes"
+	"berty.tech/weshnet/pkg/protocoltypes"
 )
 
 type tabbedGroupsView struct {

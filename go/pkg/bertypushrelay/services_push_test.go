@@ -9,13 +9,13 @@ import (
 	"golang.org/x/crypto/nacl/box"
 	"golang.org/x/net/context"
 
-	"berty.tech/berty/v2/go/internal/cryptoutil"
+	"berty.tech/weshnet/pkg/cryptoutil"
 	"berty.tech/berty/v2/go/internal/testutil"
-	"berty.tech/berty/v2/go/pkg/bertyprotocol"
+	"berty.tech/weshnet"
 	"berty.tech/berty/v2/go/pkg/bertypush"
 	"berty.tech/berty/v2/go/pkg/bertypushrelay"
-	"berty.tech/berty/v2/go/pkg/protocoltypes"
-	"berty.tech/berty/v2/go/pkg/pushtypes"
+	"berty.tech/weshnet/pkg/protocoltypes"
+	"berty.tech/weshnet/pkg/pushtypes"
 )
 
 var (
@@ -77,7 +77,7 @@ func Test_decodeOpaqueReceiver(t *testing.T) {
 		RecipientPublicKey: pushTestRecipient1PK[:],
 	}
 
-	opaqueToken, err := bertyprotocol.PushSealTokenForServer(receiver, &protocoltypes.PushServer{
+	opaqueToken, err := weshnet.PushSealTokenForServer(receiver, &protocoltypes.PushServer{
 		ServerKey: pushDefaultServerPK[:],
 	})
 
@@ -100,7 +100,7 @@ func Test_decodeOpaqueReceiver(t *testing.T) {
 		RecipientPublicKey: pushTestRecipient1PK[:],
 	}
 
-	opaqueToken, err = bertyprotocol.PushSealTokenForServer(receiver, &protocoltypes.PushServer{
+	opaqueToken, err = weshnet.PushSealTokenForServer(receiver, &protocoltypes.PushServer{
 		ServerKey: pushDefaultServerPK[:],
 	})
 
@@ -118,7 +118,7 @@ func Test_decodeOpaqueReceiver(t *testing.T) {
 		RecipientPublicKey: pushTestRecipient1PK[:],
 	}
 
-	opaqueToken, err = bertyprotocol.PushSealTokenForServer(receiver, &protocoltypes.PushServer{
+	opaqueToken, err = weshnet.PushSealTokenForServer(receiver, &protocoltypes.PushServer{
 		ServerKey: pushDefaultServerPK[:],
 	})
 
@@ -136,7 +136,7 @@ func Test_decodeOpaqueReceiver(t *testing.T) {
 		RecipientPublicKey: pushTestRecipient1PK[:],
 	}
 
-	opaqueToken, err = bertyprotocol.PushSealTokenForServer(receiver, &protocoltypes.PushServer{
+	opaqueToken, err = weshnet.PushSealTokenForServer(receiver, &protocoltypes.PushServer{
 		ServerKey: pushTestRecipient1PK[:], // encrypted for another server
 	})
 

@@ -4,7 +4,7 @@ import (
 	"crypto/sha256"
 	"encoding/base64"
 
-	"berty.tech/berty/v2/go/internal/cryptoutil"
+	"berty.tech/weshnet/pkg/cryptoutil"
 )
 
 type AuthSession struct {

@@ -13,11 +13,11 @@ import (
 	"golang.org/x/crypto/nacl/box"
 	"google.golang.org/grpc"
 
-	"berty.tech/berty/v2/go/internal/cryptoutil"
+	"berty.tech/weshnet/pkg/cryptoutil"
 	"berty.tech/berty/v2/go/internal/testutil"
-	"berty.tech/berty/v2/go/pkg/bertyprotocol"
-	"berty.tech/berty/v2/go/pkg/protocoltypes"
-	"berty.tech/berty/v2/go/pkg/pushtypes"
+	"berty.tech/weshnet"
+	"berty.tech/weshnet/pkg/protocoltypes"
+	"berty.tech/weshnet/pkg/pushtypes"
 )
 
 func PushServerForTests(ctx context.Context, t testing.TB, dispatchers []PushDispatcher, logger *zap.Logger) (PushService, *[32]byte, string, context.CancelFunc) {
@@ -69,10 +69,10 @@ func TestService_PushReceive(t *testing.T) {
 	require.NoError(t, err)
 	require.NotNil(t, pushServer)
 
-	tp, cancel := bertyprotocol.NewTestingProtocol(ctx, t, &bertyprotocol.TestingOpts{PushSK: devicePushSK}, nil)
+	tp, cancel := weshnet.NewTestingProtocol(ctx, t, &weshnet.TestingOpts{PushSK: devicePushSK}, nil)
 	defer cancel()
 
-	g, gSK, err := bertyprotocol.NewGroupMultiMember()
+	g, gSK, err := weshnet.NewGroupMultiMember()
 	require.NoError(t, err)
 
 	s := tp.Service
@@ -92,10 +92,10 @@ func TestService_PushReceive(t *testing.T) {
 	_, err = s.ActivateGroup(ctx, &protocoltypes.ActivateGroup_Request{GroupPK: gPK})
 	require.NoError(t, err)
 
-	gc, err := s.(bertyprotocol.ServiceMethods).GetContextGroupForID(g.PublicKey)
+	gc, err := s.(weshnet.ServiceMethods).GetContextGroupForID(g.PublicKey)
 	require.NoError(t, err)
 
-	otherMD, otherDS := bertyprotocol.CreateVirtualOtherPeerSecretsShareSecret(t, ctx, []*bertyprotocol.MetadataStore{gc.MetadataStore()})
+	otherMD, otherDS := weshnet.CreateVirtualOtherPeerSecretsShareSecret(t, ctx, []*weshnet.MetadataStore{gc.MetadataStore()})
 
 	testPayload := []byte("test payload")
 	devicePushToken := "token_test"
@@ -109,10 +109,10 @@ func TestService_PushReceive(t *testing.T) {
 	dummyCID, err := cid.Parse("QmWATWQ7fVPP2EFGu71UkfnqhYXDYH566qy47CnJDgvs8u")
 	require.NoError(t, err)
 
-	oosMsgEnv, err := bertyprotocol.SealOutOfStoreMessageEnvelope(dummyCID, env, headers, g)
+	oosMsgEnv, err := weshnet.SealOutOfStoreMessageEnvelope(dummyCID, env, headers, g)
 	require.NoError(t, err)
 
-	opaqueToken, err := bertyprotocol.PushSealTokenForServer(&protocoltypes.PushServiceReceiver{
+	opaqueToken, err := weshnet.PushSealTokenForServer(&protocoltypes.PushServiceReceiver{
 		TokenType:          dispatcher.TokenType(),
 		BundleID:           testutil.PushMockBundleID,
 		Token:              []byte(devicePushToken),

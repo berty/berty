@@ -4,8 +4,8 @@
 package accounttypes
 
 import (
-	protocoltypes "berty.tech/berty/v2/go/pkg/protocoltypes"
-	pushtypes "berty.tech/berty/v2/go/pkg/pushtypes"
+	protocoltypes "berty.tech/weshnet/pkg/protocoltypes"
+	pushtypes "berty.tech/weshnet/pkg/pushtypes"
 	context "context"
 	fmt "fmt"
 	_ "github.com/gogo/protobuf/gogoproto"

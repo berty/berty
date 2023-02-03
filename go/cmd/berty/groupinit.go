@@ -11,7 +11,7 @@ import (
 	"github.com/peterbourgon/ff/v3/ffcli"
 
 	"berty.tech/berty/v2/go/pkg/bertylinks"
-	"berty.tech/berty/v2/go/pkg/bertyprotocol"
+	"berty.tech/weshnet"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
 )
 
@@ -44,7 +44,7 @@ func groupinitCommand() *ffcli.Command {
 				return flag.ErrHelp
 			}
 
-			g, _, err := bertyprotocol.NewGroupMultiMember()
+			g, _, err := weshnet.NewGroupMultiMember()
 			if err != nil {
 				return err
 			}

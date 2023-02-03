@@ -3,7 +3,7 @@ package testutil
 import (
 	"testing"
 
-	"berty.tech/berty/v2/go/pkg/protocoltypes"
+	"berty.tech/weshnet/pkg/protocoltypes"
 )
 
 func TestFilterAppMetadata(t *testing.T, events <-chan *protocoltypes.GroupMetadataEvent) []*protocoltypes.AppMetadata {

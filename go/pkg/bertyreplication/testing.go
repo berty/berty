@@ -19,15 +19,15 @@ import (
 	"gorm.io/gorm"
 	"moul.io/zapgorm2"
 
-	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/internal/testutil"
-	"berty.tech/berty/v2/go/pkg/authtypes"
 	"berty.tech/berty/v2/go/pkg/bertyauth"
 	"berty.tech/berty/v2/go/pkg/errcode"
-	"berty.tech/berty/v2/go/pkg/protocoltypes"
-	"berty.tech/berty/v2/go/pkg/replicationtypes"
-	"berty.tech/berty/v2/go/pkg/weshnet"
 	orbitdb "berty.tech/go-orbit-db"
+	"berty.tech/weshnet"
+	"berty.tech/weshnet/pkg/authtypes"
+	"berty.tech/weshnet/pkg/ipfsutil"
+	"berty.tech/weshnet/pkg/protocoltypes"
+	"berty.tech/weshnet/pkg/replicationtypes"
 	"berty.tech/weshnet/pkg/tinder"
 )
 

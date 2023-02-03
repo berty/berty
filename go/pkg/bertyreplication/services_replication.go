@@ -10,13 +10,13 @@ import (
 	"gorm.io/gorm"
 
 	"berty.tech/berty/v2/go/internal/messengerutil"
-	"berty.tech/berty/v2/go/pkg/authtypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
-	"berty.tech/berty/v2/go/pkg/protocoltypes"
-	"berty.tech/berty/v2/go/pkg/replicationtypes"
 	orbitdb "berty.tech/go-orbit-db"
 	"berty.tech/go-orbit-db/iface"
 	"berty.tech/go-orbit-db/stores"
+	"berty.tech/weshnet/pkg/authtypes"
+	"berty.tech/weshnet/pkg/protocoltypes"
+	"berty.tech/weshnet/pkg/replicationtypes"
 )
 
 type BertyOrbitDB interface {
@@ -30,6 +30,8 @@ type replicationService struct {
 	ctx       context.Context
 	db        *gorm.DB
 	startedAt time.Time
+
+	replicationtypes.UnimplementedReplicationServiceServer
 }
 
 func (s *replicationService) ReplicateGlobalStats(ctx context.Context, request *replicationtypes.ReplicateGlobalStats_Request) (*replicationtypes.ReplicateGlobalStats_Reply, error) {

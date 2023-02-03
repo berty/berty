@@ -35,17 +35,17 @@ import (
 	"go.uber.org/zap"
 	"moul.io/srand"
 
-	ble "berty.tech/berty/v2/go/internal/ble-driver"
+	ble "berty.tech/weshnet/pkg/ble-driver"
 	"berty.tech/berty/v2/go/internal/config"
 	"berty.tech/berty/v2/go/internal/datastoreutil"
-	"berty.tech/berty/v2/go/internal/ipfsutil"
-	ipfs_mobile "berty.tech/berty/v2/go/internal/ipfsutil/mobile"
+	"berty.tech/weshnet/pkg/ipfsutil"
+	ipfs_mobile "berty.tech/weshnet/pkg/ipfsutil/mobile"
 	"berty.tech/berty/v2/go/internal/logutil"
-	mc "berty.tech/berty/v2/go/internal/multipeer-connectivity-driver"
-	proximity "berty.tech/berty/v2/go/internal/proximitytransport"
-	"berty.tech/berty/v2/go/internal/rendezvous"
-	tinder "berty.tech/berty/v2/go/internal/tinder"
-	"berty.tech/berty/v2/go/pkg/bertyprotocol"
+	mc "berty.tech/weshnet/pkg/multipeer-connectivity-driver"
+	proximity "berty.tech/weshnet/pkg/proximitytransport"
+	"berty.tech/weshnet/pkg/rendezvous"
+	tinder "berty.tech/weshnet/pkg/tinder"
+	"berty.tech/weshnet"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	ipfswebui "berty.tech/ipfs-webui-packed"
 )
@@ -383,7 +383,7 @@ func (m *Manager) setupIPFSRepo(ctx context.Context) (*ipfs_mobile.RepoMobile, e
 			return nil, errcode.ErrIPFSSetupRepo.Wrap(err)
 		}
 
-		ipfsDS := datastoreutil.NewNamespacedDatastore(rootDS, datastore.NewKey(bertyprotocol.NamespaceIPFSDatastore))
+		ipfsDS := datastoreutil.NewNamespacedDatastore(rootDS, datastore.NewKey(weshnet.NamespaceIPFSDatastore))
 
 		repo, err = ipfsutil.CreateMockedRepo(ipfsDS)
 		if err != nil {

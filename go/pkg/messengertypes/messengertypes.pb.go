@@ -4,7 +4,7 @@
 package messengertypes
 
 import (
-	protocoltypes "berty.tech/berty/v2/go/pkg/protocoltypes"
+	protocoltypes "berty.tech/weshnet/pkg/protocoltypes"
 	context "context"
 	fmt "fmt"
 	_ "github.com/gogo/protobuf/gogoproto"

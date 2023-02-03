@@ -12,7 +12,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"berty.tech/berty/v2/go/pkg/authtypes"
+	"berty.tech/weshnet/pkg/authtypes"
 )
 
 func mustReadAllBytes(t *testing.T, reader io.ReadCloser) []byte {
