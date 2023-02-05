@@ -41,7 +41,7 @@ export class App extends React.Component<{}, State> {
 		Dimensions.addEventListener("change", this.updateDimension);
 		if (shouldUseWebsocket) {
 			//HandleMessages()
-			WebsocketClient.send("init_config", "/tmp/tyber-websocket")
+			WebsocketClient.send("init_config", "/tmp/tyber-websocket");
 		} else {
 			document.addEventListener("astilectron-ready", HandleAstilectronMessages);
 			document.addEventListener("astilectron-ready", InitAstilectronConfig);
@@ -51,7 +51,10 @@ export class App extends React.Component<{}, State> {
 	componentWillUnmount() {
 		this.themeMediaQuery.removeEventListener("change", this.updateTheme);
 		Dimensions.removeEventListener("change", this.updateDimension);
-		document.removeEventListener("astilectron-ready", HandleAstilectronMessages);
+		document.removeEventListener(
+			"astilectron-ready",
+			HandleAstilectronMessages
+		);
 		document.removeEventListener("astilectron-ready", InitAstilectronConfig);
 	}
 

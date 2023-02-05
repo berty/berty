@@ -6,7 +6,11 @@ import {
 	parserUpdateTraceEventToTrace,
 } from "../types/TraceType";
 import { OpenSession } from "../bridge/JsToGo";
-import { ParserCreateTraceEvent, ParserUpdateTraceEvent, ParserCreateStepEvent } from "../types/goTypes"
+import {
+	ParserCreateTraceEvent,
+	ParserUpdateTraceEvent,
+	ParserCreateStepEvent,
+} from "../types/goTypes";
 
 let onInitNodeListCallback: (nodes: Node[]) => void;
 
@@ -62,25 +66,45 @@ export const OnAddToTraceList = (updateCallback: (trace: Trace) => void) => {
 };
 
 export const AddToTraceList = (goPayload: ParserCreateTraceEvent) => {
-	onAddToTraceListCallback(parserCreateTraceEventToTrace(goPayload));
+	try {
+		onAddToTraceListCallback(parserCreateTraceEventToTrace(goPayload));
+	} catch {
+		console.error(`Handler AddToTraceList called but not set`);
+	}
 };
 
 let onUpdateTraceListCallback: (trace: Trace) => void;
 
 export const OnUpdateTraceList = (updateCallback: (trace: Trace) => void) => {
-	onUpdateTraceListCallback = updateCallback;
+	try {
+		onUpdateTraceListCallback = updateCallback;
+	} catch {
+		console.error(`Handler OnUpdateTraceList called but not set`);
+	}
 };
 
 export const UpdateTraceList = (goPayload: ParserUpdateTraceEvent) => {
-	onUpdateTraceListCallback(parserUpdateTraceEventToTrace(goPayload));
+	try {
+		onUpdateTraceListCallback(parserUpdateTraceEventToTrace(goPayload));
+	} catch {
+		console.error(`Handler UpdateTraceList called but not set`);
+	}
 };
 
 let onAddToStepListCallback: (trace: Trace) => void;
 
 export const OnAddToStepList = (updateCallback: (trace: Trace) => void) => {
-	onAddToStepListCallback = updateCallback;
+	try {
+		onAddToStepListCallback = updateCallback;
+	} catch {
+		console.error(`Handler OnAddToStepList called but not set`);
+	}
 };
 
 export const AddToStepList = (goPayload: ParserCreateStepEvent) => {
-	onAddToStepListCallback(parserCreateStepEventToTrace(goPayload));
+	try {
+		onAddToStepListCallback(parserCreateStepEventToTrace(goPayload));
+	} catch {
+		console.error(`Handler AddToStepList called but not set`);
+	}
 };

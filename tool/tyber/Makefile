@@ -11,9 +11,10 @@ js_dir=$(makefile_dir)/js
 js_src=$(call rwildcard,$(js_dir)/app,*) $(call rwildcard,$(js_dir)/assets,*)
 js_build=$(js_dir)/web-build
 node_modules=$(js_dir)/node_modules
+unix_arch=$(if $(shell PATH="$(PATH)" which uname &> /dev/null && uname -m | grep arm64),arm64,amd64)
 output_dir=$(makefile_dir)/output
-darwin_output=$(output_dir)/darwin-amd64/$(app_name).app
-linux_output=$(output_dir)/linux-amd64/$(app_name)
+darwin_output=$(output_dir)/darwin-$(unix_arch)/$(app_name).app
+linux_output=$(output_dir)/linux-$(unix_arch)/$(app_name)
 windows_output=$(output_dir)/windows-amd64/$(app_name).exe
 
 .PHONY: help

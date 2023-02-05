@@ -213,7 +213,7 @@ export const NodeList = withStyles(nodeList, (theme) => ({
 	},
 	nodeList: {
 		flex: 1,
-		overflow: "scroll",
+		overflow: "auto",
 		backgroundColor: theme["background-basic-color-2"],
 	},
 	node: {

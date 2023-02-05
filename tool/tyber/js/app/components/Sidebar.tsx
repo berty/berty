@@ -30,7 +30,7 @@ class sidebar extends React.Component<any> {
 		const { style } = this.props.eva;
 
 		return (
-			<View style={style.sidebar}>
+			<View style={[style.sidebar]}>
 				<View style={style.header}>
 					<Avatar size="large" source={require("../../assets/icon.png")} />
 					<Text category="h4" style={style.headerTitle}>
