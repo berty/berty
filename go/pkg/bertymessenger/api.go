@@ -32,7 +32,7 @@ import (
 	"berty.tech/berty/v2/go/pkg/logutil"
 	"berty.tech/berty/v2/go/internal/messengerdb"
 	"berty.tech/berty/v2/go/internal/messengerutil"
-	"berty.tech/weshnet/pkg/sysutil"
+	"berty.tech/berty/v2/go/internal/sysutil"
 	"berty.tech/weshnet/pkg/authtypes"
 	"berty.tech/berty/v2/go/pkg/banner"
 	"berty.tech/berty/v2/go/pkg/bertylinks"
