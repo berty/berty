@@ -17,7 +17,7 @@ import (
 	"moul.io/zapconfig"
 
 	"berty.tech/berty/v2/go/pkg/bertybot"
-	"berty.tech/weshnet/pkg/bertyversion"
+	"berty.tech/berty/v2/go/pkg/bertyversion"
 )
 
 var (
