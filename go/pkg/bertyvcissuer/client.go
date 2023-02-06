@@ -16,7 +16,7 @@ import (
 	"github.com/piprate/json-gold/ld"
 
 	"berty.tech/berty/v2/go/pkg/errcode"
-	"berty.tech/weshnet/pkg/verifiablecredstypes"
+	"berty.tech/berty/v2/go/pkg/verifiablecredstypes"
 )
 
 const DefaultRedirectURI = "berty://vc"

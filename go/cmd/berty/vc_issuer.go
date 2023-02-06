@@ -14,7 +14,7 @@ import (
 	"github.com/peterbourgon/ff/v3/ffcli"
 
 	"berty.tech/berty/v2/go/pkg/bertyvcissuer"
-	"berty.tech/weshnet/pkg/verifiablecredstypes"
+	"berty.tech/berty/v2/go/pkg/verifiablecredstypes"
 )
 
 func vcIssuerCommand() *ffcli.Command {

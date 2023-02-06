@@ -21,7 +21,7 @@ import (
 
 	"berty.tech/berty/v2/go/pkg/bertylinks"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
-	"berty.tech/weshnet/pkg/verifiablecredstypes"
+	"berty.tech/berty/v2/go/pkg/verifiablecredstypes"
 )
 
 func TestFlow(t *testing.T) {
