@@ -82,6 +82,7 @@ require (
 	gopkg.in/square/go-jose.v2 v2.6.0
 	gorm.io/gorm v1.22.3
 	moul.io/godev v1.7.0
+	moul.io/openfiles v1.2.0
 	moul.io/progress v1.4.0
 	moul.io/srand v1.6.1
 	moul.io/testman v1.5.0
@@ -380,7 +381,6 @@ require (
 	lukechampine.com/blake3 v1.1.7 // indirect
 	moul.io/banner v1.0.1 // indirect
 	moul.io/motd v1.0.0 // indirect
-	moul.io/openfiles v1.2.0 // indirect
 	nhooyr.io/websocket v1.8.6 // indirect
 	rsc.io/qr v0.2.0 // indirect
 )

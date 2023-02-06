@@ -3,7 +3,7 @@
 
 package sysutil
 
-import "berty.tech/berty/v2/go/pkg/protocoltypes"
+import "berty.tech/weshnet/pkg/protocoltypes"
 
 func appendCustomSystemInfo(reply *protocoltypes.SystemInfo_Process) error {
 	return nil
