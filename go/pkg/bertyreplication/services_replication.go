@@ -16,7 +16,7 @@ import (
 	"berty.tech/go-orbit-db/stores"
 	"berty.tech/weshnet/pkg/authtypes"
 	"berty.tech/weshnet/pkg/protocoltypes"
-	"berty.tech/weshnet/pkg/replicationtypes"
+	"berty.tech/berty/v2/go/pkg/replicationtypes"
 )
 
 type BertyOrbitDB interface {

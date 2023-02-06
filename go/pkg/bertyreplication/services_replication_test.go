@@ -21,12 +21,12 @@ import (
 	"berty.tech/berty/v2/go/pkg/bertyauth"
 	"berty.tech/berty/v2/go/pkg/bertyreplication"
 	"berty.tech/berty/v2/go/pkg/errcode"
+	"berty.tech/berty/v2/go/pkg/replicationtypes"
 	orbitdb "berty.tech/go-orbit-db"
 	"berty.tech/weshnet"
 	"berty.tech/weshnet/pkg/authtypes"
 	"berty.tech/weshnet/pkg/ipfsutil"
 	"berty.tech/weshnet/pkg/protocoltypes"
-	"berty.tech/weshnet/pkg/replicationtypes"
 	"berty.tech/weshnet/pkg/testutil"
 	"berty.tech/weshnet/pkg/tinder"
 )
