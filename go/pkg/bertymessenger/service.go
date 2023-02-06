@@ -29,7 +29,7 @@ import (
 	"berty.tech/berty/v2/go/internal/notification"
 	"berty.tech/weshnet"
 	"berty.tech/berty/v2/go/pkg/bertypush"
-	"berty.tech/berty/v2/go/pkg/bertyversion"
+	"berty.tech/berty/v2/go/internal/bertyversion"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	mt "berty.tech/berty/v2/go/pkg/messengertypes"
 	"berty.tech/weshnet/pkg/protocoltypes"
