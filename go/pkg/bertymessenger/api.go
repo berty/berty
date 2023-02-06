@@ -41,7 +41,7 @@ import (
 	"berty.tech/berty/v2/go/pkg/messengertypes"
 	"berty.tech/weshnet/pkg/protocoltypes"
 	"berty.tech/berty/v2/go/pkg/tempdir"
-	"berty.tech/weshnet/pkg/tyber"
+	"berty.tech/berty/v2/go/pkg/tyber"
 )
 
 func (svc *service) DevShareInstanceBertyID(ctx context.Context, req *messengertypes.DevShareInstanceBertyID_Request) (*messengertypes.DevShareInstanceBertyID_Reply, error) {

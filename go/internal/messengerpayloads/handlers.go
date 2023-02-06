@@ -22,7 +22,7 @@ import (
 	"berty.tech/berty/v2/go/pkg/errcode"
 	mt "berty.tech/berty/v2/go/pkg/messengertypes"
 	"berty.tech/weshnet/pkg/protocoltypes"
-	"berty.tech/weshnet/pkg/tyber"
+	"berty.tech/berty/v2/go/pkg/tyber"
 )
 
 var ErrNilPayload = errcode.ErrInvalidInput.Wrap(errors.New("nil payload"))

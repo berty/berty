@@ -33,8 +33,8 @@ import (
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
 	"berty.tech/weshnet/pkg/protocoltypes"
-	"berty.tech/weshnet/pkg/tyber"
-	"berty.tech/weshnet/pkg/username"
+	"berty.tech/berty/v2/go/pkg/tyber"
+	"berty.tech/berty/v2/go/internal/username"
 )
 
 func (s *service) openAccount(ctx context.Context, req *accounttypes.OpenAccount_Request, prog *progress.Progress) (*accounttypes.AccountMetadata, error) {

@@ -10,7 +10,7 @@ import (
 
 	"berty.tech/berty/v2/go/pkg/bertyversion"
 	"berty.tech/weshnet/pkg/protocoltypes"
-	"berty.tech/weshnet/pkg/username"
+	"berty.tech/berty/v2/go/internal/username"
 )
 
 func SystemInfoProcess() (*protocoltypes.SystemInfo_Process, error) {
