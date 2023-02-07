@@ -3,7 +3,7 @@ syntax = "proto3";
 package berty.account.v1;
 
 import "gogoproto/gogo.proto";
-import "pushtypes.proto";
+import "pushtypes/pushtypes.proto";
 import "protocoltypes.proto";
 
 option go_package = "berty.tech/berty/go/pkg/accounttypes";
@@ -141,7 +141,7 @@ message OpenAccountWithProgress {
     string session_kind = 4;
   }
   message Reply {
-    berty.protocol.v1.Progress progress = 1;
+    weshnet.protocol.v1.Progress progress = 1;
   }
 }
 
@@ -154,7 +154,7 @@ message CloseAccount {
 message CloseAccountWithProgress {
   message Request {}
   message Reply {
-    berty.protocol.v1.Progress progress = 1;
+    weshnet.protocol.v1.Progress progress = 1;
   }
 }
 
@@ -209,7 +209,7 @@ message ImportAccountWithProgress {
     string session_kind = 7;
   }
   message Reply {
-    berty.protocol.v1.Progress progress = 1;
+    weshnet.protocol.v1.Progress progress = 1;
     AccountMetadata account_metadata = 2;
   }
 }
@@ -360,17 +360,17 @@ message NetworkConfigGetPreset {
 message PushReceive {
   message Request {
     string payload = 1;
-    push.v1.PushServiceTokenType token_type = 2;
+    weshnet.push.v1.PushServiceTokenType token_type = 2;
   }
   message Reply {
-    push.v1.DecryptedPush push_data = 1;
-    push.v1.FormatedPush push = 2;
+    weshnet.push.v1.DecryptedPush push_data = 1;
+    weshnet.push.v1.FormatedPush push = 2;
   }
 }
 
 message PushPlatformTokenRegister {
   message Request {
-    protocol.v1.PushServiceReceiver receiver = 1;
+    weshnet.protocol.v1.PushServiceReceiver receiver = 1;
   }
   message Reply {}
 }

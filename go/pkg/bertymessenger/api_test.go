@@ -20,12 +20,12 @@ import (
 	"moul.io/u"
 	"moul.io/zapring"
 
-	"berty.tech/berty/v2/go/pkg/logutil"
-	"berty.tech/berty/v2/go/pkg/testutil"
 	"berty.tech/berty/v2/go/pkg/bertylinks"
-	"berty.tech/weshnet"
 	"berty.tech/berty/v2/go/pkg/errcode"
+	"berty.tech/berty/v2/go/pkg/logutil"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
+	"berty.tech/berty/v2/go/pkg/testutil"
+	"berty.tech/weshnet"
 	"berty.tech/weshnet/pkg/protocoltypes"
 )
 

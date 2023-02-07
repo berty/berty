@@ -10,7 +10,7 @@ option (gogoproto.goproto_unkeyed_all) = false;
 option (gogoproto.goproto_unrecognized_all) = false;
 option (gogoproto.goproto_sizecache_all) = false;
 
-// MessengerService is the top-level API that uses the Berty Protocol to implement the Berty Messenger specific logic.
+// MessengerService is the top-level API that uses the weshnet.protocol to implement the Berty Messenger specific logic.
 // Today, most of the Berty Messenger logic is implemented directly in the application (see the /js folder of this repo).
 service MessengerService {
   // InstanceShareableBertyID returns a Berty ID that can be shared as a string, QR code or deep link.
@@ -31,7 +31,7 @@ service MessengerService {
   // This action is read-only.
   rpc ParseDeepLink(ParseDeepLink.Request) returns (ParseDeepLink.Reply);
 
-  // SendContactRequest takes the payload received from ParseDeepLink and send a contact request using the Berty Protocol.
+  // SendContactRequest takes the payload received from ParseDeepLink and send a contact request using the weshnet.protocol.
   rpc SendContactRequest(SendContactRequest.Request) returns (SendContactRequest.Reply);
 
   // SystemInfo returns runtime information.
@@ -59,7 +59,7 @@ service MessengerService {
   rpc ConversationMute(ConversationMute.Request) returns (ConversationMute.Reply);
 
   // ServicesTokenList Retrieves the list of service server tokens
-  rpc ServicesTokenList(protocol.v1.ServicesTokenList.Request) returns (stream protocol.v1.ServicesTokenList.Reply);
+  rpc ServicesTokenList(weshnet.protocol.v1.ServicesTokenList.Request) returns (stream weshnet.protocol.v1.ServicesTokenList.Reply);
 
   // ReplicationServiceRegisterGroup Asks a replication service to distribute a group contents
   rpc ReplicationServiceRegisterGroup(ReplicationServiceRegisterGroup.Request) returns (ReplicationServiceRegisterGroup.Reply);
@@ -270,7 +270,7 @@ message BertyLink {
     bytes group_public_key = 20;
     bytes group_secret = 21;
     bytes group_secret_sig = 22;
-    berty.protocol.v1.GroupType group_type = 23; // clear
+    weshnet.protocol.v1.GroupType group_type = 23; // clear
     bytes group_sign_pub = 24;
     bytes group_link_key_sig = 25;
   }
@@ -306,7 +306,7 @@ message BertyID {
 }
 
 message BertyGroup {
-  berty.protocol.v1.Group group = 1;
+  weshnet.protocol.v1.Group group = 1;
   string display_name = 2;
 }
 
@@ -369,12 +369,12 @@ message AppMessage {
 message SystemInfo {
   message Request {}
   message Reply {
-    berty.protocol.v1.SystemInfo.Reply protocol = 1;
+    weshnet.protocol.v1.SystemInfo.Reply protocol = 1;
     Messenger messenger = 2;
   }
 
   message Messenger {
-    berty.protocol.v1.SystemInfo.Process process = 1;
+    weshnet.protocol.v1.SystemInfo.Process process = 1;
     repeated string warns = 2;
     bool protocol_in_same_process = 3;
     DB db = 4 [(gogoproto.customname) = "DB"];
@@ -439,7 +439,7 @@ message ServiceToken {
 message MetadataEvent {
   string cid = 1 [(gogoproto.moretags) = "gorm:\"primaryKey;column:cid\"", (gogoproto.customname) = "CID"];
   string conversation_public_key = 2 [(gogoproto.moretags) = "gorm:\"index\""];
-  protocol.v1.EventType metadata_event_type = 3;
+  weshnet.protocol.v1.EventType metadata_event_type = 3;
   bytes payload = 4;
 }
 
@@ -865,7 +865,7 @@ message PushSetAutoShare {
 }
 
 message PushReceivedData {
-  protocol.v1.PushReceive.Reply protocol_data = 1;
+  weshnet.protocol.v1.PushReceive.Reply protocol_data = 1;
   Interaction interaction = 2;
   bool already_received = 3;
   bool account_muted = 4;

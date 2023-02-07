@@ -21,11 +21,11 @@ import (
 	"gorm.io/gorm"
 	"moul.io/zapgorm2"
 
-	"berty.tech/weshnet/pkg/cryptoutil"
-	"berty.tech/berty/v2/go/pkg/logutil"
 	"berty.tech/berty/v2/go/pkg/accounttypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
+	"berty.tech/berty/v2/go/pkg/logutil"
 	encrepo "berty.tech/go-ipfs-repo-encrypted"
+	"berty.tech/weshnet/pkg/cryptoutil"
 )
 
 const (

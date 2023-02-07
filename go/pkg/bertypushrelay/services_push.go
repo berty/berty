@@ -11,9 +11,9 @@ import (
 	"golang.org/x/crypto/curve25519"
 	"golang.org/x/crypto/nacl/box"
 
-	"berty.tech/weshnet/pkg/cryptoutil"
-	"berty.tech/berty/v2/go/pkg/logutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
+	"berty.tech/berty/v2/go/pkg/logutil"
+	"berty.tech/weshnet/pkg/cryptoutil"
 	"berty.tech/weshnet/pkg/protocoltypes"
 	"berty.tech/weshnet/pkg/pushtypes"
 )

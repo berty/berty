@@ -13,7 +13,7 @@ test:
 
 generate:
 	$(call check-program, go)
-	touch api/*.proto
+	$(shell find ../api -type f -name '*.proto' -exec touch {} \;) # touch all proto files to force regeneration
 	cd go; $(MAKE) generate
 	cd docs; $(MAKE) generate
 	cd js; $(MAKE) generate
@@ -24,7 +24,7 @@ generate:
 
 regenerate:
 	$(call check-program, go)
-	touch api/*.proto
+	$(shell find ../api -type f -name '*.proto' -exec touch {} \;) # touch all proto files to force regeneration
 	cd go; $(MAKE) regenerate
 	cd docs; $(MAKE) regenerate
 	cd js; $(MAKE) regenerate

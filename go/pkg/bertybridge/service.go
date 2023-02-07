@@ -31,6 +31,8 @@ type service struct {
 
 	streams   map[string]*grpcutil.LazyStream
 	muStreams sync.RWMutex
+
+	UnimplementedBridgeServiceServer
 }
 
 func (o *Options) applyDefault() {

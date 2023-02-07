@@ -10,8 +10,8 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"berty.tech/berty/v2/go/internal/initutil"
-	"berty.tech/weshnet"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
+	"berty.tech/weshnet"
 	"berty.tech/weshnet/pkg/protocoltypes"
 )
 

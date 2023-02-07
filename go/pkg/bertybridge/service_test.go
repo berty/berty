@@ -10,9 +10,9 @@ import (
 	"go.uber.org/zap"
 	grpc "google.golang.org/grpc"
 
+	errcode "berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/grpcutil"
 	"berty.tech/berty/v2/go/pkg/testutil"
-	errcode "berty.tech/berty/v2/go/pkg/errcode"
 )
 
 const echoStringTest = "Im sorry Dave, Im afraid I cant do that"

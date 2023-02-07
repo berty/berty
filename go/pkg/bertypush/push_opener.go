@@ -17,8 +17,8 @@ import (
 	"berty.tech/berty/v2/go/pkg/accounttypes"
 	"berty.tech/berty/v2/go/pkg/bertylinks"
 	"berty.tech/berty/v2/go/pkg/errcode"
-	"berty.tech/berty/v2/go/pkg/messengertypes"
 	"berty.tech/berty/v2/go/pkg/logutil"
+	"berty.tech/berty/v2/go/pkg/messengertypes"
 	"berty.tech/weshnet/pkg/pushtypes"
 )
 

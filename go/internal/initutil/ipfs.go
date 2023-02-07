@@ -35,19 +35,19 @@ import (
 	"go.uber.org/zap"
 	"moul.io/srand"
 
-	ble "berty.tech/weshnet/pkg/ble-driver"
 	"berty.tech/berty/v2/go/internal/config"
 	"berty.tech/berty/v2/go/internal/datastoreutil"
+	"berty.tech/berty/v2/go/pkg/errcode"
+	"berty.tech/berty/v2/go/pkg/logutil"
+	ipfswebui "berty.tech/ipfs-webui-packed"
+	"berty.tech/weshnet"
+	ble "berty.tech/weshnet/pkg/ble-driver"
 	"berty.tech/weshnet/pkg/ipfsutil"
 	ipfs_mobile "berty.tech/weshnet/pkg/ipfsutil/mobile"
-	"berty.tech/berty/v2/go/pkg/logutil"
 	mc "berty.tech/weshnet/pkg/multipeer-connectivity-driver"
 	proximity "berty.tech/weshnet/pkg/proximitytransport"
 	"berty.tech/weshnet/pkg/rendezvous"
 	tinder "berty.tech/weshnet/pkg/tinder"
-	"berty.tech/weshnet"
-	"berty.tech/berty/v2/go/pkg/errcode"
-	ipfswebui "berty.tech/ipfs-webui-packed"
 )
 
 // Set the Java Android BLE driver

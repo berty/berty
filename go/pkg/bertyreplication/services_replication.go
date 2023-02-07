@@ -11,12 +11,12 @@ import (
 
 	"berty.tech/berty/v2/go/internal/messengerutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
+	"berty.tech/berty/v2/go/pkg/replicationtypes"
 	orbitdb "berty.tech/go-orbit-db"
 	"berty.tech/go-orbit-db/iface"
 	"berty.tech/go-orbit-db/stores"
 	"berty.tech/weshnet/pkg/authtypes"
 	"berty.tech/weshnet/pkg/protocoltypes"
-	"berty.tech/berty/v2/go/pkg/replicationtypes"
 )
 
 type BertyOrbitDB interface {

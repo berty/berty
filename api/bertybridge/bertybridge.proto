@@ -3,7 +3,7 @@ syntax = "proto3";
 package berty.bridge.v1;
 
 import "gogoproto/gogo.proto";
-import "errcode.proto";
+import "bertyerrcode/bertyerrcode.proto";
 
 option go_package = "berty.tech/berty/go/pkg/bertybridge";
 

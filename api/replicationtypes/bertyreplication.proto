@@ -46,7 +46,7 @@ message ReplicatedGroupToken {
 
 message ReplicationServiceReplicateGroup {
   message Request {
-    berty.protocol.v1.Group group = 1;
+    weshnet.protocol.v1.Group group = 1;
   }
   message Reply {
     bool ok = 1 [(gogoproto.customname) = "OK"];

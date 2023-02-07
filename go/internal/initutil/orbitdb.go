@@ -3,15 +3,15 @@ package initutil
 import (
 	datastore "github.com/ipfs/go-datastore"
 
-	"berty.tech/weshnet/pkg/cryptoutil"
 	"berty.tech/berty/v2/go/internal/datastoreutil"
-	"berty.tech/weshnet/pkg/ipfsutil"
-	"berty.tech/weshnet/pkg/rendezvous"
-	"berty.tech/weshnet"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/go-orbit-db/baseorbitdb"
 	"berty.tech/go-orbit-db/pubsub/directchannel"
 	"berty.tech/go-orbit-db/pubsub/pubsubraw"
+	"berty.tech/weshnet"
+	"berty.tech/weshnet/pkg/cryptoutil"
+	"berty.tech/weshnet/pkg/ipfsutil"
+	"berty.tech/weshnet/pkg/rendezvous"
 )
 
 func (m *Manager) GetRotationInterval() (rp *rendezvous.RotationInterval, err error) {

@@ -9,8 +9,8 @@ import (
 	"moul.io/openfiles"
 
 	"berty.tech/berty/v2/go/internal/bertyversion"
-	"berty.tech/weshnet/pkg/protocoltypes"
 	"berty.tech/berty/v2/go/internal/username"
+	"berty.tech/weshnet/pkg/protocoltypes"
 )
 
 func SystemInfoProcess() (*protocoltypes.SystemInfo_Process, error) {

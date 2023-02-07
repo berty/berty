@@ -16,8 +16,8 @@ import (
 	"github.com/rivo/tview"
 	"go.uber.org/zap"
 
-	"berty.tech/berty/v2/go/pkg/logutil"
 	"berty.tech/berty/v2/go/pkg/banner"
+	"berty.tech/berty/v2/go/pkg/logutil"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
 	"berty.tech/weshnet/pkg/protocoltypes"
 )

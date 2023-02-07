@@ -12,9 +12,9 @@ import (
 	"github.com/mr-tron/base58"
 	"golang.org/x/crypto/sha3"
 
-	"berty.tech/weshnet/pkg/cryptoutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
+	"berty.tech/weshnet/pkg/cryptoutil"
 	"berty.tech/weshnet/pkg/protocoltypes"
 )
 

@@ -21,19 +21,19 @@ import (
 	"moul.io/zapgorm2"
 	"moul.io/zapring"
 
-	"berty.tech/weshnet/pkg/lifecycle"
-	"berty.tech/berty/v2/go/pkg/logutil"
+	"berty.tech/berty/v2/go/internal/bertyversion"
 	"berty.tech/berty/v2/go/internal/messengerdb"
 	"berty.tech/berty/v2/go/internal/messengerpayloads"
 	"berty.tech/berty/v2/go/internal/messengerutil"
 	"berty.tech/berty/v2/go/internal/notification"
-	"berty.tech/weshnet"
 	"berty.tech/berty/v2/go/pkg/bertypush"
-	"berty.tech/berty/v2/go/internal/bertyversion"
 	"berty.tech/berty/v2/go/pkg/errcode"
+	"berty.tech/berty/v2/go/pkg/logutil"
 	mt "berty.tech/berty/v2/go/pkg/messengertypes"
-	"berty.tech/weshnet/pkg/protocoltypes"
 	"berty.tech/berty/v2/go/pkg/tyber"
+	"berty.tech/weshnet"
+	"berty.tech/weshnet/pkg/lifecycle"
+	"berty.tech/weshnet/pkg/protocoltypes"
 )
 
 type Service interface {
@@ -72,6 +72,8 @@ type service struct {
 	groupsToSubTo         map[string]struct{}
 	accountGroup          []byte
 	grpcInsecure          bool
+
+	mt.UnimplementedMessengerServiceServer
 }
 
 type Opts struct {

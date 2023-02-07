@@ -25,20 +25,20 @@ import (
 	"moul.io/zapring"
 
 	"berty.tech/berty/v2/go/internal/accountutils"
+	"berty.tech/berty/v2/go/internal/notification"
+	"berty.tech/berty/v2/go/pkg/bertymessenger"
+	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/grpcutil"
+	"berty.tech/berty/v2/go/pkg/logutil"
+	"berty.tech/berty/v2/go/pkg/messengertypes"
+	"berty.tech/berty/v2/go/pkg/tyber"
+	"berty.tech/weshnet"
 	"berty.tech/weshnet/pkg/ipfsutil"
 	"berty.tech/weshnet/pkg/lifecycle"
-	"berty.tech/berty/v2/go/pkg/logutil"
-	"berty.tech/berty/v2/go/internal/notification"
+	"berty.tech/weshnet/pkg/protocoltypes"
 	proximity "berty.tech/weshnet/pkg/proximitytransport"
 	"berty.tech/weshnet/pkg/rendezvous"
 	tinder "berty.tech/weshnet/pkg/tinder"
-	"berty.tech/berty/v2/go/pkg/bertymessenger"
-	"berty.tech/weshnet"
-	"berty.tech/berty/v2/go/pkg/errcode"
-	"berty.tech/berty/v2/go/pkg/messengertypes"
-	"berty.tech/weshnet/pkg/protocoltypes"
-	"berty.tech/berty/v2/go/pkg/tyber"
 )
 
 const (

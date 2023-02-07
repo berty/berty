@@ -11,12 +11,12 @@ import (
 	"github.com/hyperledger/aries-framework-go/pkg/doc/verifiable"
 	"github.com/piprate/json-gold/ld"
 
-	"berty.tech/berty/v2/go/internal/cryptoutil"
 	"berty.tech/berty/v2/go/pkg/bertylinks"
 	"berty.tech/berty/v2/go/pkg/bertyvcissuer"
 	"berty.tech/berty/v2/go/pkg/directorytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
+	"berty.tech/weshnet/pkg/cryptoutil"
 )
 
 func inMinMaxDefault(value, min, max, def int64) int64 {

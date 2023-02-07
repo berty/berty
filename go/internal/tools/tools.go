@@ -7,6 +7,8 @@
 package tools
 
 import (
+	// required by Makefile
+	_ "github.com/bufbuild/buf/cmd/buf"
 	// build tool
 	_ "github.com/buicongtan1997/protoc-gen-swagger-config"
 	// required by Makefile
@@ -39,6 +41,8 @@ import (
 	_ "golang.org/x/mobile/cmd/gomobile"
 	// required by Makefile
 	_ "golang.org/x/tools/cmd/goimports"
+	// required by protoc
+	_ "google.golang.org/grpc/cmd/protoc-gen-go-grpc"
 	// required by Makefile
 	_ "moul.io/testman"
 	// required by Makefile

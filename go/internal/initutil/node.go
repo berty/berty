@@ -16,17 +16,17 @@ import (
 	"gorm.io/gorm"
 
 	"berty.tech/berty/v2/go/internal/accountutils"
-	"berty.tech/weshnet/pkg/cryptoutil"
 	"berty.tech/berty/v2/go/internal/datastoreutil"
 	"berty.tech/berty/v2/go/internal/grpcserver"
+	"berty.tech/berty/v2/go/pkg/bertymessenger"
+	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/grpcutil"
+	"berty.tech/berty/v2/go/pkg/logutil"
+	"berty.tech/berty/v2/go/pkg/messengertypes"
+	"berty.tech/weshnet"
+	"berty.tech/weshnet/pkg/cryptoutil"
 	"berty.tech/weshnet/pkg/ipfsutil"
 	"berty.tech/weshnet/pkg/lifecycle"
-	"berty.tech/berty/v2/go/pkg/logutil"
-	"berty.tech/berty/v2/go/pkg/bertymessenger"
-	"berty.tech/weshnet"
-	"berty.tech/berty/v2/go/pkg/errcode"
-	"berty.tech/berty/v2/go/pkg/messengertypes"
 	"berty.tech/weshnet/pkg/protocoltypes"
 )
 

@@ -9,13 +9,13 @@ import (
 	"go.uber.org/multierr"
 	"go.uber.org/zap"
 
-	"berty.tech/weshnet/pkg/lifecycle"
-	"berty.tech/berty/v2/go/pkg/logutil"
 	"berty.tech/berty/v2/go/internal/messengerutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
+	"berty.tech/berty/v2/go/pkg/logutil"
 	mt "berty.tech/berty/v2/go/pkg/messengertypes"
-	"berty.tech/weshnet/pkg/protocoltypes"
 	"berty.tech/berty/v2/go/pkg/tyber"
+	"berty.tech/weshnet/pkg/lifecycle"
+	"berty.tech/weshnet/pkg/protocoltypes"
 )
 
 func (svc *service) manageSubscriptions() {

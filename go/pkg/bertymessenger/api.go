@@ -29,19 +29,19 @@ import (
 	"moul.io/srand"
 
 	"berty.tech/berty/v2/go/internal/discordlog"
-	"berty.tech/berty/v2/go/pkg/logutil"
 	"berty.tech/berty/v2/go/internal/messengerdb"
 	"berty.tech/berty/v2/go/internal/messengerutil"
 	"berty.tech/berty/v2/go/internal/sysutil"
-	"berty.tech/weshnet/pkg/authtypes"
 	"berty.tech/berty/v2/go/pkg/banner"
 	"berty.tech/berty/v2/go/pkg/bertylinks"
 	"berty.tech/berty/v2/go/pkg/directorytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
+	"berty.tech/berty/v2/go/pkg/logutil"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
-	"berty.tech/weshnet/pkg/protocoltypes"
 	"berty.tech/berty/v2/go/pkg/tempdir"
 	"berty.tech/berty/v2/go/pkg/tyber"
+	"berty.tech/weshnet/pkg/authtypes"
+	"berty.tech/weshnet/pkg/protocoltypes"
 )
 
 func (svc *service) DevShareInstanceBertyID(ctx context.Context, req *messengertypes.DevShareInstanceBertyID_Request) (*messengertypes.DevShareInstanceBertyID_Reply, error) {

@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package testutil;
 
-option go_package = "berty.tech/berty/go/internal/testutil";
+option go_package = "berty.tech/berty/go/pkg/testutil";
 
 service TestService {
   // use to test unary

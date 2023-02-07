@@ -33,9 +33,9 @@ import (
 	"berty.tech/berty/v2/go/pkg/bertyvcissuer"
 	"berty.tech/berty/v2/go/pkg/directorytypes"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
-	"berty.tech/berty/v2/go/pkg/protocoltypes"
 	"berty.tech/berty/v2/go/pkg/testutil"
 	"berty.tech/berty/v2/go/pkg/verifiablecredstypes"
+	"berty.tech/weshnet/pkg/protocoltypes"
 )
 
 func TestServiceStream(t *testing.T) {

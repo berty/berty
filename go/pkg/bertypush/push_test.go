@@ -18,15 +18,15 @@ import (
 
 	"berty.tech/berty/v2/go/internal/accountutils"
 	"berty.tech/berty/v2/go/internal/messengerutil"
-	"berty.tech/berty/v2/go/pkg/testutil"
 	"berty.tech/berty/v2/go/pkg/accounttypes"
 	"berty.tech/berty/v2/go/pkg/bertyaccount"
 	"berty.tech/berty/v2/go/pkg/bertyauth"
 	"berty.tech/berty/v2/go/pkg/bertypush"
 	"berty.tech/berty/v2/go/pkg/bertypushrelay"
-	"berty.tech/berty/v2/go/pkg/messengertypes"
-	"berty.tech/weshnet/pkg/authtypes"
 	"berty.tech/berty/v2/go/pkg/logutil"
+	"berty.tech/berty/v2/go/pkg/messengertypes"
+	"berty.tech/berty/v2/go/pkg/testutil"
+	"berty.tech/weshnet/pkg/authtypes"
 	"berty.tech/weshnet/pkg/protocoltypes"
 	"berty.tech/weshnet/pkg/pushtypes"
 )

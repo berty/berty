@@ -13,9 +13,9 @@ import (
 	"golang.org/x/crypto/nacl/box"
 	"google.golang.org/grpc"
 
-	"berty.tech/weshnet/pkg/cryptoutil"
 	"berty.tech/berty/v2/go/pkg/testutil"
 	"berty.tech/weshnet"
+	"berty.tech/weshnet/pkg/cryptoutil"
 	"berty.tech/weshnet/pkg/protocoltypes"
 	"berty.tech/weshnet/pkg/pushtypes"
 )

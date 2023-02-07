@@ -7,10 +7,10 @@ import (
 	"github.com/ipfs/kubo/core"
 	ma "github.com/multiformats/go-multiaddr"
 
-	"berty.tech/weshnet/pkg/ipfsutil"
 	"berty.tech/berty/v2/go/pkg/accounttypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
+	"berty.tech/weshnet/pkg/ipfsutil"
 	"berty.tech/weshnet/pkg/protocoltypes"
 )
 

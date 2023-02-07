@@ -9,9 +9,9 @@ import (
 	"path/filepath"
 
 	"berty.tech/berty/v2/go/internal/accountutils"
-	"berty.tech/berty/v2/go/pkg/logutil"
 	"berty.tech/berty/v2/go/pkg/accounttypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
+	"berty.tech/berty/v2/go/pkg/logutil"
 )
 
 func (s *service) LogfileList(ctx context.Context, req *accounttypes.LogfileList_Request) (*accounttypes.LogfileList_Reply, error) {

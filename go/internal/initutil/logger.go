@@ -9,8 +9,8 @@ import (
 	"go.uber.org/zap"
 	"moul.io/zapring"
 
-	"berty.tech/berty/v2/go/pkg/logutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
+	"berty.tech/berty/v2/go/pkg/logutil"
 )
 
 const DefaultLoggingFilters = "info+:bty*,-*.grpc,error+:*"
