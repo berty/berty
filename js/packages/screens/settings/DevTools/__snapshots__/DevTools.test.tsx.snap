@@ -754,6 +754,164 @@ exports[`Settings.DevTools renders correctly 1`] = `
               style={
                 Array [
                   Object {
+                    "marginTop": 24,
+                  },
+                  Object {
+                    "marginHorizontal": 16,
+                  },
+                  Object {
+                    "backgroundColor": "white",
+                    "borderRadius": 14,
+                  },
+                ]
+              }
+            >
+              <View
+                accessible={true}
+                focusable={true}
+                onClick={[Function]}
+                onResponderGrant={[Function]}
+                onResponderMove={[Function]}
+                onResponderRelease={[Function]}
+                onResponderTerminate={[Function]}
+                onResponderTerminationRequest={[Function]}
+                onStartShouldSetResponder={[Function]}
+                style={
+                  Object {
+                    "alignItems": "center",
+                    "flexDirection": "row",
+                    "height": 48,
+                    "justifyContent": "space-between",
+                    "opacity": 1,
+                    "padding": 12,
+                  }
+                }
+              >
+                <View
+                  style={
+                    Object {
+                      "flexDirection": "row",
+                    }
+                  }
+                >
+                  <View
+                    style={
+                      Object {
+                        "transform": Array [
+                          Object {
+                            "scale": 1,
+                          },
+                        ],
+                      }
+                    }
+                  >
+                    <RNSVGMock
+                      fill="#535AE4"
+                      height={20}
+                      viewBox="0 0 24 24"
+                      width={20}
+                    />
+                  </View>
+                  <View
+                    style={
+                      Object {
+                        "width": "75%",
+                      }
+                    }
+                  >
+                    <Text
+                      numberOfLines={1}
+                      style={
+                        Array [
+                          Object {
+                            "fontSize": 30,
+                          },
+                          Object {
+                            "color": "#383B62",
+                            "fontFamily": "Open Sans",
+                          },
+                          Array [
+                            Object {
+                              "marginLeft": 9,
+                            },
+                          ],
+                        ]
+                      }
+                    >
+                      settings.devtools.allow-unsecure-grpc
+                    </Text>
+                  </View>
+                </View>
+                <View
+                  accessible={true}
+                  focusable={true}
+                  onClick={[Function]}
+                  onResponderGrant={[Function]}
+                  onResponderMove={[Function]}
+                  onResponderRelease={[Function]}
+                  onResponderTerminate={[Function]}
+                  onResponderTerminationRequest={[Function]}
+                  onStartShouldSetResponder={[Function]}
+                  style={
+                    Object {
+                      "backgroundColor": "#EDF0F3",
+                      "borderColor": "#535AE4",
+                      "borderRadius": 30,
+                      "borderWidth": 1,
+                      "height": 27,
+                      "opacity": 1,
+                      "width": 50,
+                    }
+                  }
+                >
+                  <View
+                    style={
+                      Object {
+                        "alignItems": "center",
+                        "backgroundColor": "white",
+                        "borderRadius": 30,
+                        "height": 25,
+                        "justifyContent": "center",
+                        "left": 0,
+                        "position": "absolute",
+                        "width": 25,
+                      }
+                    }
+                  >
+                    <View
+                      style={
+                        Object {
+                          "opacity": 0,
+                        }
+                      }
+                    >
+                      <View
+                        style={
+                          Object {
+                            "transform": Array [
+                              Object {
+                                "scale": 1,
+                              },
+                            ],
+                          }
+                        }
+                      >
+                        <RNSVGMock
+                          fill="#535AE4"
+                          height={18}
+                          viewBox="0 0 24 24"
+                          width={18}
+                        />
+                      </View>
+                    </View>
+                  </View>
+                </View>
+              </View>
+            </View>
+            <View
+              style={
+                Array [
+                  Object {
                     "paddingHorizontal": 16,
                   },
                 ]

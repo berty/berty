@@ -241,6 +241,7 @@
 			"header-left-button": "Device infos",
 			"header-middle-button": "Generate fake data",
 			"header-right-button": "Restart daemon",
+			"allow-unsecure-grpc": "Allow Unsecure GRPC connections",
 			"force-mock-button": "Force mock",
 			"simulate-button": "Simulate stream error",
 			"simulate-js-error-button": "Simulate JavaScript error",
@@ -622,13 +623,13 @@
 		"phone": {
 			"register": "Link a new phone number",
 			"associated": "Your phone number {{identifier}} is confirmed until {{expiration}}",
-			"expired" :"The validation of your phone number {{identifier}} has expired on {{expiration}}",
+			"expired": "The validation of your phone number {{identifier}} has expired on {{expiration}}",
 			"proof-service-unavailable": "Unable to link your phone number for now, please try again later"
 		},
 		"email": {
 			"register": "Link a new email address",
 			"associated": "Your email address {{identifier}} is confirmed until {{expiration}}",
-			"expired" :"The validation of your email address {{identifier}} has expired on {{expiration}}",
+			"expired": "The validation of your email address {{identifier}} has expired on {{expiration}}",
 			"proof-service-unavailable": "Unable to link your email address for now, please try again later"
 		}
 	}
