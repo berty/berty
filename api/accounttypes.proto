@@ -316,6 +316,7 @@ message NetworkConfig {
   TorFlag tor = 8;
   Flag mdns = 9 [(gogoproto.customname) = "MDNS"];
   Flag show_default_services = 10;
+  Flag allow_unsecure_grpc_connections = 11 [(gogoproto.customname) = "AllowUnsecureGRPCConnections"];
 }
 
 enum NetworkConfigPreset {
