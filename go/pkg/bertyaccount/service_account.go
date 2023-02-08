@@ -957,29 +957,31 @@ func NetworkConfigGetDefault() *accounttypes.NetworkConfig {
 	}
 
 	return &accounttypes.NetworkConfig{
-		Bootstrap:                  []string{initutil.KeywordDefault},
-		Rendezvous:                 []string{initutil.KeywordDefault},
-		StaticRelay:                []string{initutil.KeywordDefault},
-		DHT:                        accounttypes.NetworkConfig_DHTClient,
-		BluetoothLE:                accounttypes.NetworkConfig_Disabled,
-		AndroidNearby:              accounttypes.NetworkConfig_Disabled,
-		AppleMultipeerConnectivity: accounttypes.NetworkConfig_Disabled,
-		MDNS:                       accounttypes.NetworkConfig_Enabled,
-		Tor:                        accounttypes.NetworkConfig_TorDisabled,
+		Bootstrap:                    []string{initutil.KeywordDefault},
+		Rendezvous:                   []string{initutil.KeywordDefault},
+		StaticRelay:                  []string{initutil.KeywordDefault},
+		DHT:                          accounttypes.NetworkConfig_DHTClient,
+		BluetoothLE:                  accounttypes.NetworkConfig_Disabled,
+		AndroidNearby:                accounttypes.NetworkConfig_Disabled,
+		AppleMultipeerConnectivity:   accounttypes.NetworkConfig_Disabled,
+		MDNS:                         accounttypes.NetworkConfig_Enabled,
+		Tor:                          accounttypes.NetworkConfig_TorDisabled,
+		AllowUnsecureGRPCConnections: accounttypes.NetworkConfig_Disabled,
 	}
 }
 
 func NetworkConfigGetBlank() *accounttypes.NetworkConfig {
 	return &accounttypes.NetworkConfig{
-		Bootstrap:                  []string{initutil.KeywordDefault},
-		Rendezvous:                 []string{initutil.KeywordDefault},
-		StaticRelay:                []string{initutil.KeywordDefault},
-		DHT:                        accounttypes.NetworkConfig_DHTUndefined,
-		BluetoothLE:                accounttypes.NetworkConfig_Undefined,
-		AndroidNearby:              accounttypes.NetworkConfig_Undefined,
-		AppleMultipeerConnectivity: accounttypes.NetworkConfig_Undefined,
-		MDNS:                       accounttypes.NetworkConfig_Undefined,
-		Tor:                        accounttypes.NetworkConfig_TorUndefined,
+		Bootstrap:                    []string{initutil.KeywordDefault},
+		Rendezvous:                   []string{initutil.KeywordDefault},
+		StaticRelay:                  []string{initutil.KeywordDefault},
+		DHT:                          accounttypes.NetworkConfig_DHTUndefined,
+		BluetoothLE:                  accounttypes.NetworkConfig_Undefined,
+		AndroidNearby:                accounttypes.NetworkConfig_Undefined,
+		AppleMultipeerConnectivity:   accounttypes.NetworkConfig_Undefined,
+		MDNS:                         accounttypes.NetworkConfig_Undefined,
+		Tor:                          accounttypes.NetworkConfig_TorUndefined,
+		AllowUnsecureGRPCConnections: accounttypes.NetworkConfig_Undefined,
 	}
 }
 
@@ -1137,6 +1139,7 @@ func AddArgsUsingNetworkConfig(m *accounttypes.NetworkConfig, args []string) []s
 	args = addFlagValueArgs(args, initutil.FlagNameP2PMultipeerConnectivity, mc.Supported, defaultConfig.AppleMultipeerConnectivity, m.AppleMultipeerConnectivity)
 	args = addFlagValueArgs(args, initutil.FlagNameP2PNearby, nb.Supported, defaultConfig.AndroidNearby, m.AndroidNearby)
 	args = addFlagValueArgs(args, initutil.FlagNameP2PMDNS, true, defaultConfig.MDNS, m.MDNS)
+	args = addFlagValueArgs(args, initutil.FlagNameAllowInsecureService, true, defaultConfig.AllowUnsecureGRPCConnections, m.AllowUnsecureGRPCConnections)
 
 	args = AddDHTArgsUsingNetworkConfig(m, args, defaultConfig)
 	args = AddRDVPArgsUsingNetworkConfig(m, args, defaultConfig)

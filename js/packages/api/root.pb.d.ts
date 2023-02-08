@@ -1234,6 +1234,7 @@ export namespace berty {
                 tor?: (berty.account.v1.NetworkConfig.TorFlag|null);
                 mdns?: (berty.account.v1.NetworkConfig.Flag|null);
                 showDefaultServices?: (berty.account.v1.NetworkConfig.Flag|null);
+                allowUnsecureGrpcConnections?: (berty.account.v1.NetworkConfig.Flag|null);
             }
 
             class NetworkConfig implements INetworkConfig {
@@ -1248,6 +1249,7 @@ export namespace berty {
                 public tor: berty.account.v1.NetworkConfig.TorFlag;
                 public mdns: berty.account.v1.NetworkConfig.Flag;
                 public showDefaultServices: berty.account.v1.NetworkConfig.Flag;
+                public allowUnsecureGrpcConnections: berty.account.v1.NetworkConfig.Flag;
                 public static create(properties?: berty.account.v1.INetworkConfig): berty.account.v1.NetworkConfig;
                 public static encode(message: berty.account.v1.INetworkConfig, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.account.v1.INetworkConfig, writer?: $protobuf.Writer): $protobuf.Writer;

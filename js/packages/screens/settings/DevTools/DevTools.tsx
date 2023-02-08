@@ -15,6 +15,7 @@ import {
 	ItemSection,
 	MenuItem,
 	MenuItemWithIcon,
+	MenuToggleWithIcon,
 } from '@berty/components'
 import { DropDownPicker, Item } from '@berty/components/shared-components/DropDownPicker'
 import {
@@ -44,10 +45,15 @@ import {
 	useOnBoardingAfterClosing,
 	useImportingAccountAfterClosing,
 	useSwitchAccountAfterClosing,
+	useSyncNetworkConfigOnScreenRemoved,
 } from '@berty/hooks'
 import { languages } from '@berty/i18n/locale/languages'
 import { GoBridge } from '@berty/native-modules/GoBridge'
 import { ScreenFC, useNavigation } from '@berty/navigation'
+import {
+	selectEditedNetworkConfig,
+	setCurrentNetworkConfig,
+} from '@berty/redux/reducers/networkConfig.reducer'
 import {
 	PersistentOptionsKeys,
 	selectPersistentOptions,
@@ -369,6 +375,7 @@ const BodyDevTools: React.FC<{}> = withInAppNotification(({ showNotification }: 
 	const selectedAccount = useAppSelector(selectSelectedAccount)
 	const restartOnboarding = useOnBoardingAfterClosing()
 	const [forceMock, setForceMock] = useState<boolean>(false)
+	const networkConfig = useSelector(selectEditedNetworkConfig)
 
 	const addTyberHost = useCallback(
 		(host: string, addresses: string[]) => {
@@ -506,6 +513,28 @@ const BodyDevTools: React.FC<{}> = withInAppNotification(({ showNotification }: 
 				</MenuItemWithIcon>
 			</ItemSection>
 
+			<ItemSection>
+				<MenuToggleWithIcon
+					iconName='unlock-outline'
+					onPress={() =>
+						dispatch(
+							setCurrentNetworkConfig({
+								...networkConfig,
+								allowUnsecureGrpcConnections:
+									networkConfig?.allowUnsecureGrpcConnections ===
+									beapi.account.NetworkConfig.Flag.Enabled
+										? beapi.account.NetworkConfig.Flag.Disabled
+										: beapi.account.NetworkConfig.Flag.Enabled,
+							}),
+						)
+					}
+					isToggleOn={
+						networkConfig?.allowUnsecureGrpcConnections === beapi.account.NetworkConfig.Flag.Enabled
+					}
+				>
+					{t('settings.devtools.allow-unsecure-grpc')}
+				</MenuToggleWithIcon>
+			</ItemSection>
 			<View style={[padding.horizontal.medium]}>
 				<ButtonSetting
 					name={t('settings.devtools.force-mock-button')}
@@ -750,6 +779,7 @@ const BodyDevTools: React.FC<{}> = withInAppNotification(({ showNotification }: 
 export const DevTools: ScreenFC<'Settings.DevTools'> = () => {
 	const colors = useThemeColor()
 	const { padding } = useStyles()
+	useSyncNetworkConfigOnScreenRemoved()
 
 	return (
 		<Layout style={{ backgroundColor: colors['main-background'], flex: 1 }}>

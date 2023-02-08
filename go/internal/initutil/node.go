@@ -33,6 +33,7 @@ import (
 const (
 	FlagNameNodeListeners         = "node.listeners"
 	FlagNameNodeAccountListeners  = "node.account.listeners"
+	FlagNameAllowInsecureService  = "node.service-insecure"
 	FlagValueNodeListeners        = "/ip4/127.0.0.1/tcp/9091/grpc"
 	FlagValueNodeAccountListeners = "/ip4/127.0.0.1/tcp/9092/grpc"
 
@@ -48,7 +49,7 @@ const (
 func (m *Manager) SetupLocalProtocolServerFlags(fs *flag.FlagSet) {
 	m.Node.Protocol.requiredByClient = true
 	fs.StringVar(&m.Node.Protocol.PushPlatformToken, "node.default-push-token", "", "base 64 encoded default platform push token")
-	fs.BoolVar(&m.Node.ServiceInsecureMode, "node.service-insecure", false, "use insecure connection on services")
+	fs.BoolVar(&m.Node.ServiceInsecureMode, FlagNameAllowInsecureService, false, "use insecure connection on services")
 	m.SetupDatastoreFlags(fs)
 	m.SetupLocalIPFSFlags(fs)
 	// p2p.remote-ipfs

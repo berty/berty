@@ -211,32 +211,34 @@ func (s *service) NetworkConfigGetPreset(ctx context.Context, req *accounttypes.
 
 		return &accounttypes.NetworkConfigGetPreset_Reply{
 			Config: &accounttypes.NetworkConfig{
-				Bootstrap:                  []string{initutil.KeywordDefault},
-				AndroidNearby:              androidNearby,
-				DHT:                        accounttypes.NetworkConfig_DHTClient,
-				AppleMultipeerConnectivity: appleMC,
-				BluetoothLE:                bluetoothLE,
-				MDNS:                       accounttypes.NetworkConfig_Enabled,
-				Rendezvous:                 []string{initutil.KeywordDefault},
-				Tor:                        accounttypes.NetworkConfig_TorOptional,
-				StaticRelay:                []string{initutil.KeywordDefault},
-				ShowDefaultServices:        accounttypes.NetworkConfig_Enabled,
+				Bootstrap:                    []string{initutil.KeywordDefault},
+				AndroidNearby:                androidNearby,
+				DHT:                          accounttypes.NetworkConfig_DHTClient,
+				AppleMultipeerConnectivity:   appleMC,
+				BluetoothLE:                  bluetoothLE,
+				MDNS:                         accounttypes.NetworkConfig_Enabled,
+				Rendezvous:                   []string{initutil.KeywordDefault},
+				Tor:                          accounttypes.NetworkConfig_TorOptional,
+				StaticRelay:                  []string{initutil.KeywordDefault},
+				ShowDefaultServices:          accounttypes.NetworkConfig_Enabled,
+				AllowUnsecureGRPCConnections: accounttypes.NetworkConfig_Disabled,
 			},
 		}, nil
 	}
 
 	return &accounttypes.NetworkConfigGetPreset_Reply{
 		Config: &accounttypes.NetworkConfig{
-			Bootstrap:                  []string{initutil.KeywordNone},
-			AndroidNearby:              accounttypes.NetworkConfig_Disabled,
-			DHT:                        accounttypes.NetworkConfig_DHTDisabled,
-			AppleMultipeerConnectivity: accounttypes.NetworkConfig_Disabled,
-			BluetoothLE:                accounttypes.NetworkConfig_Disabled,
-			MDNS:                       accounttypes.NetworkConfig_Disabled,
-			Rendezvous:                 []string{initutil.KeywordNone},
-			Tor:                        accounttypes.NetworkConfig_TorDisabled,
-			StaticRelay:                []string{initutil.KeywordNone},
-			ShowDefaultServices:        accounttypes.NetworkConfig_Disabled,
+			Bootstrap:                    []string{initutil.KeywordNone},
+			AndroidNearby:                accounttypes.NetworkConfig_Disabled,
+			DHT:                          accounttypes.NetworkConfig_DHTDisabled,
+			AppleMultipeerConnectivity:   accounttypes.NetworkConfig_Disabled,
+			BluetoothLE:                  accounttypes.NetworkConfig_Disabled,
+			MDNS:                         accounttypes.NetworkConfig_Disabled,
+			Rendezvous:                   []string{initutil.KeywordNone},
+			Tor:                          accounttypes.NetworkConfig_TorDisabled,
+			StaticRelay:                  []string{initutil.KeywordNone},
+			ShowDefaultServices:          accounttypes.NetworkConfig_Disabled,
+			AllowUnsecureGRPCConnections: accounttypes.NetworkConfig_Disabled,
 		},
 	}, nil
 }

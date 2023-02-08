@@ -746,6 +746,13 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   showDefaultServices: {
                     type: "Flag",
                     id: 10
+                  },
+                  allowUnsecureGrpcConnections: {
+                    type: "Flag",
+                    id: 11,
+                    options: {
+                      "(gogoproto.customname)": "AllowUnsecureGRPCConnections"
+                    }
                   }
                 },
                 nested: {
