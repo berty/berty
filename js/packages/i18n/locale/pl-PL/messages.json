@@ -241,6 +241,7 @@
 			"header-left-button": "Informacje o urządzeniu",
 			"header-middle-button": "Generuj fałszywe dane",
 			"header-right-button": "Zrestartuj daemon",
+			"allow-unsecure-grpc": "",
 			"force-mock-button": "",
 			"simulate-button": "Symuluj błąd strumienia",
 			"simulate-js-error-button": "Symuluj błąd JavaScript",
