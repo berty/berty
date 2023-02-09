@@ -241,6 +241,7 @@
 			"header-left-button": "معلومات الجهاز",
 			"header-middle-button": "توليد بيانات مزيفة",
 			"header-right-button": "إعادة تشغيل الرديمون",
+			"allow-unsecure-grpc": "",
 			"force-mock-button": "",
 			"simulate-button": "",
 			"simulate-js-error-button": "حاكِ خطأ في جافا سكريبت",
