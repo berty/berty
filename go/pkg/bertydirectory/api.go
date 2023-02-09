@@ -19,6 +19,8 @@ type DirectoryService struct {
 	maxExpiration     time.Duration
 	maxLockTime       time.Duration
 	allowedIssuers    []string
+
+	directorytypes.UnimplementedDirectoryServiceServer
 }
 
 type ServiceOpts struct {
