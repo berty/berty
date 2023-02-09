@@ -241,6 +241,7 @@
 			"header-left-button": "",
 			"header-middle-button": "",
 			"header-right-button": "",
+			"allow-unsecure-grpc": "",
 			"force-mock-button": "",
 			"simulate-button": "",
 			"simulate-js-error-button": "",
