@@ -241,6 +241,7 @@
 			"header-left-button": "Информация за устройства",
 			"header-middle-button": "Генерирай фалшиви данни",
 			"header-right-button": "Рестартирай daemon-а",
+			"allow-unsecure-grpc": "",
 			"force-mock-button": "",
 			"simulate-button": "Симулирай грешка в потока",
 			"simulate-js-error-button": "",
