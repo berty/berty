@@ -241,6 +241,7 @@
 			"header-left-button": "设备信息",
 			"header-middle-button": "生成伪数据",
 			"header-right-button": "重启守护进程",
+			"allow-unsecure-grpc": "",
 			"force-mock-button": "强制模拟",
 			"simulate-button": "模拟流错误",
 			"simulate-js-error-button": "模拟 JavaScript 错误",
