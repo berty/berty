@@ -241,6 +241,7 @@
 			"header-left-button": "Enhedsinfo",
 			"header-middle-button": "Generer falske data",
 			"header-right-button": "",
+			"allow-unsecure-grpc": "",
 			"force-mock-button": "Gennemtving imitation",
 			"simulate-button": "Simuler streaming fejl",
 			"simulate-js-error-button": "Simuler JavaScript fejl",
