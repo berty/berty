@@ -241,6 +241,7 @@
 			"header-left-button": "Eszköz információk",
 			"header-middle-button": "Hamis információ készítése",
 			"header-right-button": "Daemon újraindítása",
+			"allow-unsecure-grpc": "",
 			"force-mock-button": "",
 			"simulate-button": "Stream hiba szimulálása",
 			"simulate-js-error-button": "JavaScript hiba szimulálása",
