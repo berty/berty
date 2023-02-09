@@ -241,6 +241,7 @@
 			"header-left-button": "Informații dispozitiv",
 			"header-middle-button": "Generează date false",
 			"header-right-button": "Reporneşte daemonul",
+			"allow-unsecure-grpc": "",
 			"force-mock-button": "",
 			"simulate-button": "",
 			"simulate-js-error-button": "",
