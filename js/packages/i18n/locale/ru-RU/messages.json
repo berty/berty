@@ -241,6 +241,7 @@
 			"header-left-button": "Информация об устройстве",
 			"header-middle-button": "Сгенерировать фальшивые данные",
 			"header-right-button": "Перезапустить демон",
+			"allow-unsecure-grpc": "",
 			"force-mock-button": "",
 			"simulate-button": "Симулировать ошибки в передаче данных",
 			"simulate-js-error-button": "Имитация ошибки JavaScript",
