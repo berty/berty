@@ -241,6 +241,7 @@
 			"header-left-button": "Infoer om enheten",
 			"header-middle-button": "Generer falsk data",
 			"header-right-button": "Restart daemon",
+			"allow-unsecure-grpc": "",
 			"force-mock-button": "",
 			"simulate-button": "Simuler stream-feil",
 			"simulate-js-error-button": "",
