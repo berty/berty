@@ -241,6 +241,7 @@
 			"header-left-button": "Aygıt bilgileri",
 			"header-middle-button": "Sahte bilgi oluştur",
 			"header-right-button": "Arka plan programını yeniden başlat",
+			"allow-unsecure-grpc": "",
 			"force-mock-button": "",
 			"simulate-button": "Akış hatasını taklit et",
 			"simulate-js-error-button": "Javascript hatasını taklit et",
