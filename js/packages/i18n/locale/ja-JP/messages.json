@@ -241,6 +241,7 @@
 			"header-left-button": "端末情報",
 			"header-middle-button": "偽装データを生成する",
 			"header-right-button": "サービス／デーモンを再起動する",
+			"allow-unsecure-grpc": "",
 			"force-mock-button": "",
 			"simulate-button": "ストリームのエラーをシミュレーションする",
 			"simulate-js-error-button": "JavaScript のエラーをシミュレーションする",
