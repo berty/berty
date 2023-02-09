@@ -110,7 +110,7 @@ func (gc *GroupContext) activateGroupContext(contact crypto.PubKey, selfAnnounce
 		go func() {
 			for pk := range chNewData {
 				if !pk.Equals(gc.memberDevice.PrivateDevice().GetPublic()) {
-					gc.logger.Warn("gc member device public key device doesn't match")
+					gc.logger.Warn("gc member device public key doesn't match")
 				}
 			}
 		}()
@@ -118,50 +118,47 @@ func (gc *GroupContext) activateGroupContext(contact crypto.PubKey, selfAnnounce
 		chMember := gc.WatchNewMembersAndSendSecrets()
 		go func() {
 			for pk := range chMember {
-				if pk.Equals(gc.memberDevice.PrivateMember().GetPublic()) {
-					gc.logger.Warn("gc member public key device doesn't match")
+				if !pk.Equals(gc.memberDevice.PrivateMember().GetPublic()) {
+					gc.logger.Warn("gc member device public key doesn't match")
 				}
 			}
 		}()
 	}
 
-	start := time.Now()
-
 	{
 		wg := sync.WaitGroup{}
 		wg.Add(2)
+		start := time.Now()
 
 		chPreviousData := gc.FillMessageKeysHolderUsingPreviousData()
 		go func() {
 			for pk := range chPreviousData {
 				if !pk.Equals(gc.memberDevice.PrivateDevice().GetPublic()) {
-					gc.logger.Warn("gc member device public key device doesn't match")
+					gc.logger.Warn("gc member device public key doesn't match")
 				}
 			}
 
+			gc.logger.Info(fmt.Sprintf("FillMessageKeysHolderUsingPreviousData took %s", time.Since(start)))
 			wg.Done()
 		}()
-		gc.logger.Info(fmt.Sprintf("FillMessageKeysHolderUsingPreviousData took %s", time.Since(start)))
 
-		start = time.Now()
 		chSecrets := gc.SendSecretsToExistingMembers(contact)
 		go func() {
 			for pk := range chSecrets {
 				if !pk.Equals(gc.memberDevice.PrivateMember().GetPublic()) {
-					gc.logger.Warn("gc member public key device doesn't match")
+					gc.logger.Warn("gc member device public key doesn't match")
 				}
 			}
 
+			gc.logger.Info(fmt.Sprintf("SendSecretsToExistingMembers took %s", time.Since(start)))
 			wg.Done()
 		}()
 
 		wg.Wait()
 	}
 
-	gc.logger.Info(fmt.Sprintf("SendSecretsToExistingMembers took %s", time.Since(start)))
-
 	if selfAnnouncement {
-		start = time.Now()
+		start := time.Now()
 		_, err := gc.MetadataStore().AddDeviceToGroup(gc.ctx)
 		if err != nil {
 			return errcode.ErrInternal.Wrap(err)
