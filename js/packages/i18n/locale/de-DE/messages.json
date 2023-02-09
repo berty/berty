@@ -241,6 +241,7 @@
 			"header-left-button": "Geräteinformationen",
 			"header-middle-button": "Fake-Daten generieren",
 			"header-right-button": "Daemon neu starten",
+			"allow-unsecure-grpc": "",
 			"force-mock-button": "Spott erzwingen",
 			"simulate-button": "Streamfehler simulieren",
 			"simulate-js-error-button": "JavaScript-Fehler simulieren",
