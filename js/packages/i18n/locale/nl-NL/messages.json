@@ -241,6 +241,7 @@
 			"header-left-button": "Apparaat informatie",
 			"header-middle-button": "Nep gegevens genereren",
 			"header-right-button": "Daemon herstarten",
+			"allow-unsecure-grpc": "",
 			"force-mock-button": "",
 			"simulate-button": "Simuleer stream fout",
 			"simulate-js-error-button": "Simuleer JavaScript-fout",
