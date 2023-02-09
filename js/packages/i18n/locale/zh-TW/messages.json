@@ -241,6 +241,7 @@
 			"header-left-button": "設備信息",
 			"header-middle-button": "生成偽數據",
 			"header-right-button": "重啟守護進程",
+			"allow-unsecure-grpc": "",
 			"force-mock-button": "",
 			"simulate-button": "模擬流錯誤",
 			"simulate-js-error-button": "模擬 JavaScript 錯誤",
