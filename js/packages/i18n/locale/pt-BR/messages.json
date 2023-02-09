@@ -241,6 +241,7 @@
 			"header-left-button": "Informações do dispositivo",
 			"header-middle-button": "Gerar dados falsos",
 			"header-right-button": "Reiniciar daemon",
+			"allow-unsecure-grpc": "",
 			"force-mock-button": "",
 			"simulate-button": "Simular erro de transmissão",
 			"simulate-js-error-button": "Simular erro de JavaScript",
