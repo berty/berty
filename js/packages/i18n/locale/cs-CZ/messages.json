@@ -241,6 +241,7 @@
 			"header-left-button": "Informace o zařízení",
 			"header-middle-button": "Vytvořit falešná data",
 			"header-right-button": "Restartovat démona",
+			"allow-unsecure-grpc": "",
 			"force-mock-button": "Vynutit mockování",
 			"simulate-button": "Simulovat chybu streamu",
 			"simulate-js-error-button": "Simulovat JavaScript error",
