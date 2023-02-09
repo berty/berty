@@ -241,6 +241,7 @@
 			"header-left-button": "Información del dispositivo",
 			"header-middle-button": "Generar datos falsos",
 			"header-right-button": "Reiniciar el servicio",
+			"allow-unsecure-grpc": "",
 			"force-mock-button": "",
 			"simulate-button": "Simular error de flujo",
 			"simulate-js-error-button": "Simular error de JavaScript",
