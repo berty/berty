@@ -241,6 +241,7 @@
 			"header-left-button": "Enhetsinformation",
 			"header-middle-button": "Generera låtsatsdata",
 			"header-right-button": "Starta om bakgrundstjänst",
+			"allow-unsecure-grpc": "",
 			"force-mock-button": "",
 			"simulate-button": "Simulera streaming fel",
 			"simulate-js-error-button": "Simulera JavaScript-fel",
