@@ -241,6 +241,7 @@
 			"header-left-button": "장치 정보",
 			"header-middle-button": "모조 데이터 생성",
 			"header-right-button": "데몬 재시작",
+			"allow-unsecure-grpc": "",
 			"force-mock-button": "",
 			"simulate-button": "",
 			"simulate-js-error-button": "",
