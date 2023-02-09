@@ -241,6 +241,7 @@
 			"header-left-button": "Infos sur l'appareil",
 			"header-middle-button": "Générer de fausses données",
 			"header-right-button": "Redémarrer le démon",
+			"allow-unsecure-grpc": "",
 			"force-mock-button": "",
 			"simulate-button": "Simuler une erreur de stream",
 			"simulate-js-error-button": "Simuler une erreur JavaScript",
