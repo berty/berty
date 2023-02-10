@@ -70,8 +70,8 @@
 					},
 					"buttons": {
 						"add": "Hozzáadás",
-						"edit": "",
-						"delete": ""
+						"edit": "Szerkeszt",
+						"delete": "Törlöl"
 					},
 					"multiaddress": "",
 					"alias": ""
@@ -82,8 +82,8 @@
 		},
 		"create-account": {
 			"title": "Fiók létrehozása",
-			"first-button": "",
-			"second-button": "",
+			"first-button": "Alapértelmezett mód",
+			"second-button": "Egyéni mód",
 			"placeholder": "Válaszd ki a beceneved",
 			"good-to-know": {
 				"title": "Jobb ha tudod:",
@@ -109,7 +109,7 @@
 	},
 	"main": {
 		"home": {
-			"title": "",
+			"title": "Berty",
 			"requests": {
 				"title": "Kérések",
 				"accept": "Elfogadás",
@@ -118,7 +118,7 @@
 			"input-placeholder": "Kulcsszó kereséshez",
 			"no-contacts": "Egyenlőre nincsenek ismerősei sem beszélgetései",
 			"no-network": {
-				"title": "",
+				"title": "Nem található hálózat!",
 				"description": "",
 				"cancel": "",
 				"activate": ""
@@ -131,8 +131,8 @@
 				"add-members": "Tag hozzáadása",
 				"group-info": "Csoport infó",
 				"search-placeholder": "Keresés",
-				"continue": "",
-				"create-group": ""
+				"continue": "Folytat",
+				"create-group": "Csoport létrehozása"
 			},
 			"create-group-finalize": {
 				"placeholder": "Csoport neve",
@@ -155,7 +155,7 @@
 			"title": "Beállítások",
 			"proximity-button": "Hálózaton kívüli kommunikáció",
 			"notifications-button": "Értesítések",
-			"appearance-button": "",
+			"appearance-button": "Megjelenítés",
 			"accounts-button": "Fiókok",
 			"network-button": "Hálózat",
 			"linked-identities-button": "",
@@ -181,10 +181,10 @@
 			"create-button": "Fiók létrehozása",
 			"import-button": "Fiók importálása",
 			"delete-button": "Fiók törlése",
-			"delete-title": ""
+			"delete-title": "Fiók törölve"
 		},
 		"appearance": {
-			"title": "",
+			"title": "Megjelenítés",
 			"dark-button": "Sötét mód",
 			"editor-button": "Téma testreszabása",
 			"theme-editor": {
@@ -225,7 +225,7 @@
 			"first-desc": "Biztosan törölné a fiókját?",
 			"desc": "A megerősítéshez írja be hogy \"delete\"",
 			"cancel-button": "Mégse",
-			"delete-button": ""
+			"delete-button": "Törlöl"
 		},
 		"faq": {
 			"title": "GYIK"
@@ -249,11 +249,11 @@
 			"select-node": {
 				"title": "",
 				"node-type": "",
-				"address": "",
+				"address": "Cím",
 				"account-port": "",
 				"messenger-port": "",
 				"dont-ask": "",
-				"button-continue": ""
+				"button-continue": "Folytat"
 			},
 			"debug-button": "Hibakeresés",
 			"log-button": {
@@ -451,9 +451,9 @@
 			"contact-request-box": {
 				"title": "Kapcsolat felkérés",
 				"group-invitation": "",
-				"refuse-button": "",
+				"refuse-button": "Elutasít",
 				"accept-button": "Elfogadás",
-				"accepted-button": "",
+				"accepted-button": "Elfogadás",
 				"error": "Hiba történt a csoportba való felvételkor ☹️ A mi hibánk!",
 				"you-invited": "Meghívtál",
 				"this-contact": "ez a kapcsolat",
@@ -470,7 +470,7 @@
 			"input-placeholder": "Írjon ide..."
 		},
 		"one-to-one-settings": {
-			"title": "",
+			"title": "Beszélgetés beállítása",
 			"save-button": "Beszélgetés mentése szerverre"
 		},
 		"replicate-group-settings": {
@@ -485,15 +485,15 @@
 		}
 	},
 	"account": {
-		"deleting": "",
-		"creating": "",
+		"deleting": "Fiók törlése...",
+		"creating": "Fiók létrehozása...",
 		"opening": {
 			"alert-push-title": "Push értesítések",
-			"alert-push-go-failed": "",
-			"alert-push-fetch-failed": "",
-			"alert-push-perm-denied": "",
-			"alert-push-desc": "",
-			"alert-push-button": ""
+			"alert-push-go-failed": "Hiba történt a Berty push értesítés regisztrálásakor.",
+			"alert-push-fetch-failed": "Sikertelen csatlakozás a Berty push értesítés szolgáltatáshoz.",
+			"alert-push-perm-denied": "Engedélykérés elutasítva a push értesítésekhez.",
+			"alert-push-desc": "Bármikor újraaktiválhatja ezt a funkciót a Beállítások között.",
+			"alert-push-button": "Folytat"
 		}
 	},
 	"permission": {
@@ -532,8 +532,8 @@
 			"desc": "Indítsa újra a Bertyt az adatok mentéséhez és az értesítések engedélyezéséhez!"
 		},
 		"submit-failed": {
-			"title": "",
-			"desc": ""
+			"title": "Hibabejelentés nem lehetséges",
+			"desc": "Nem található levelző alkalmazás"
 		}
 	},
 	"error": {
@@ -612,9 +612,9 @@
 		}
 	},
 	"time-for": {
-		"minutes": "",
-		"hours": "",
-		"days": ""
+		"minutes": "{{minutes}} perc",
+		"hours": "{{hours}} óra",
+		"days": "{{days}} nap"
 	},
 	"share": {
 		"sharing-id-message": ""
