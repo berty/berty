@@ -89,7 +89,6 @@ jobs:
 
       - name: Compile the testing binaries
         run: |
-          pushd ./go/pkg/bertyprotocol  && go test -c -o ./tests.bin . && popd
           pushd ./go/pkg/bertymessenger && go test -tags "fts5 sqlite sqlite_unlock_notify" -c -o ./tests.bin . && popd
 
       - name: Check go.mod and go.sum
