@@ -46,7 +46,7 @@ require (
 	github.com/jbenet/go-context v0.0.0-20150711004518-d14ea06fba99
 	github.com/juju/fslock v0.0.0-20160525022230-4d5c94c67b4b
 	github.com/kr/pretty v0.3.0
-	github.com/libp2p/go-libp2p v0.23.3
+	github.com/libp2p/go-libp2p v0.23.4
 	github.com/libp2p/go-libp2p-kad-dht v0.18.0
 	github.com/libp2p/go-libp2p-pubsub v0.8.1
 	github.com/libp2p/go-libp2p-record v0.2.0
@@ -57,7 +57,7 @@ require (
 	github.com/mdp/qrterminal v1.0.1
 	github.com/mdp/qrterminal/v3 v3.0.0
 	github.com/mr-tron/base58 v1.2.0
-	github.com/multiformats/go-multiaddr v0.7.0
+	github.com/multiformats/go-multiaddr v0.8.0
 	github.com/multiformats/go-multiaddr-dns v0.3.1
 	github.com/multiformats/go-multiaddr-fmt v0.1.0
 	github.com/multiformats/go-multibase v0.1.1
@@ -191,7 +191,7 @@ require (
 	github.com/imdario/mergo v0.3.11 // indirect
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
 	github.com/ipfs/bbloom v0.0.4 // indirect
-	github.com/ipfs/go-bitfield v1.0.0 // indirect
+	github.com/ipfs/go-bitfield v1.1.0 // indirect
 	github.com/ipfs/go-bitswap v0.10.2 // indirect
 	github.com/ipfs/go-block-format v0.0.3 // indirect
 	github.com/ipfs/go-blockservice v0.4.0 // indirect
@@ -225,6 +225,7 @@ require (
 	github.com/ipfs/go-ipld-git v0.1.1 // indirect
 	github.com/ipfs/go-ipld-legacy v0.1.1 // indirect
 	github.com/ipfs/go-ipns v0.3.0 // indirect
+	github.com/ipfs/go-libipfs v0.1.0 // indirect
 	github.com/ipfs/go-log v1.0.5 // indirect
 	github.com/ipfs/go-merkledag v0.6.0 // indirect
 	github.com/ipfs/go-metrics-interface v0.0.1 // indirect
@@ -233,7 +234,7 @@ require (
 	github.com/ipfs/go-path v0.3.0 // indirect
 	github.com/ipfs/go-peertaskqueue v0.7.1 // indirect
 	github.com/ipfs/go-pinning-service-http-client v0.1.2 // indirect
-	github.com/ipfs/go-unixfs v0.4.0 // indirect
+	github.com/ipfs/go-unixfs v0.4.3 // indirect
 	github.com/ipfs/go-unixfsnode v1.4.0 // indirect
 	github.com/ipfs/go-verifcid v0.0.2 // indirect
 	github.com/ipfs/tar-utils v0.0.2 // indirect
