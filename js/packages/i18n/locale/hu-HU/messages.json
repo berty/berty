@@ -410,7 +410,7 @@
 			"warning-disable-mute": {
 				"title": "",
 				"refuse": "",
-				"accept": ""
+				"accept": "Némítás feloldása"
 			},
 			"receive-push": "Értesítések bekapcsolása",
 			"hide-previews": "",
@@ -431,10 +431,10 @@
 			},
 			"add-member-button": "Résztvevők hozzáadása",
 			"members-dropdown": {
-				"search-placeholder": "",
+				"search-placeholder": "Tag keresése",
 				"conversation-booster": "",
-				"replication-type": "",
-				"user-type": ""
+				"replication-type": "Replikációs csomópont",
+				"user-type": "Felhasználói eszköz"
 			},
 			"invite-button": "Meghívás linken keresztül",
 			"save-button": "Beszélgetés mentése szerverre"
@@ -450,7 +450,7 @@
 		"one-to-one": {
 			"contact-request-box": {
 				"title": "Kapcsolat felkérés",
-				"group-invitation": "",
+				"group-invitation": "Meghívás csoportba",
 				"refuse-button": "Elutasít",
 				"accept-button": "Elfogadás",
 				"accepted-button": "Elfogadás",
@@ -464,7 +464,7 @@
 				"request-sent": "Kérés Elküldve ✈",
 				"incoming": "Elfogadja ezt a kérést a válaszhoz!",
 				"outgoing": "Várjuk a válaszod a kacsolódáshoz!",
-				"refresh-button": ""
+				"refresh-button": "Próbálja újra a kapcsolatfelvételi kérést"
 			},
 			"incoming-input-placeholder": "Fogadja el az írási kérelmet ide...",
 			"input-placeholder": "Írjon ide..."
