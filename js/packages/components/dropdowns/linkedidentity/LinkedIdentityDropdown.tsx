@@ -4,8 +4,10 @@ import { useTranslation } from 'react-i18next'
 import { StyleSheet, View } from 'react-native'
 
 import beapi from '@berty/api'
+import { SecondaryButton } from '@berty/components'
 import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useStyles } from '@berty/contexts/styles'
+import { ServiceClientType } from '@berty/grpc-bridge/welsh-clients.gen'
 import { pbDateToNum } from '@berty/utils/convert/time'
 import { IdentityType, mailPrefix, telPrefix } from '@berty/utils/linkedidentities/types'
 
@@ -13,11 +15,33 @@ import { DropdownPriv } from '../Dropdown.priv'
 
 interface LinkedIdentityDropdownProps {
 	identity: beapi.messenger.IAccountVerifiedCredential
-	knownDirectoryServices: {
-		[key: string]: {
-			supports: IdentityType[]
-		}
-	}
+	knownDirectoryServices: { address: string; capabilities: string[] }[]
+	messengerClient: ServiceClientType<beapi.messenger.MessengerService> | null
+	account: beapi.messenger.IAccount
+}
+
+const registerOnDirectory = async (
+	client: ServiceClientType<beapi.messenger.MessengerService>,
+	serverAddr: string,
+	identifier: string,
+	proofIssuer: string,
+) => {
+	await client.directoryServiceRegister({
+		identifier: identifier,
+		proofIssuer: proofIssuer,
+		serverAddr: serverAddr,
+	})
+}
+
+const unregisterFromDirectoryService = async (
+	client: ServiceClientType<beapi.messenger.MessengerService>,
+	serverAddr: string,
+	recordToken: string,
+) => {
+	await client.directoryServiceUnregister({
+		directoryRecordToken: recordToken,
+		serverAddr: serverAddr,
+	})
 }
 
 const getIdentityType = (identifier: string): IdentityType | undefined => {
@@ -57,10 +81,25 @@ export const LinkedIdentityDropdown: React.FC<LinkedIdentityDropdownProps> = pro
 	const expirationDate = new Date(pbDateToNum(props.identity.expirationDate))
 	const isExpired = expirationDate < now
 	const identifierType = getIdentityType(props.identity.identifier || '')
-	// TODO: announce on discovery service
+
+	const recordRegistrations =
+		props.account.directoryServiceRecords?.filter(
+			record => record.identifier === props.identity.identifier,
+		) || []
 
 	const formattedIdentifier = formatIdentifier(props.identity.identifier || '')
 	const { text } = useStyles()
+	const activeRegistrations =
+		recordRegistrations.filter(
+			record => !record.revoked && pbDateToNum(record.expirationDate) > Date.now(),
+		) || []
+	const firstServiceAddr = props.knownDirectoryServices
+		.filter(e => e.capabilities.some(cap => cap === identifierType))
+		.at(0)?.address
+
+	if (!identifierType || props.messengerClient === null) {
+		return null
+	}
 
 	return (
 		<DropdownPriv placeholder={formattedIdentifier}>
@@ -72,17 +111,64 @@ export const LinkedIdentityDropdown: React.FC<LinkedIdentityDropdownProps> = pro
 						directory.phone.associated
 						directory.email.associated
 					*/}
-					{identifierType !== undefined &&
-						(isExpired
-							? t(`directory.${identifierType}.expired`, {
-									identifier: formattedIdentifier,
-									expiration: expirationDate,
-							  })
-							: t(`directory.${identifierType}.associated`, {
-									identifier: formattedIdentifier,
-									expiration: expirationDate,
-							  }))}
+					{isExpired
+						? t(`directory.${identifierType}.expired`, {
+								identifier: formattedIdentifier,
+								expiration: expirationDate,
+						  })
+						: t(`directory.${identifierType}.associated`, {
+								identifier: formattedIdentifier,
+								expiration: expirationDate,
+						  })}
 				</UnifiedText>
+				{!isExpired && activeRegistrations.length === 0 && firstServiceAddr ? (
+					<SecondaryButton
+						onPress={() =>
+							registerOnDirectory(
+								props.messengerClient!,
+								firstServiceAddr,
+								props.identity.identifier!,
+								props.identity.issuer!,
+							)
+						}
+					>
+						<UnifiedText>
+							{
+								/*
+								Ignore check for i18n missing keys
+									directory.phone.register-service
+									directory.email.register-service
+									directory.phone.unregister-service
+									directory.email.unregister-service
+									*/
+								t(`directory.${identifierType}.register-service`, { service: firstServiceAddr })
+							}
+						</UnifiedText>
+					</SecondaryButton>
+				) : null}
+				{activeRegistrations.map(e => (
+					<SecondaryButton
+						onPress={() =>
+							unregisterFromDirectoryService(
+								props.messengerClient!,
+								e.serverAddr!,
+								e.directoryRecordToken!,
+							)
+						}
+					>
+						<UnifiedText>
+							{
+								/*
+									Ignore check for i18n missing keys
+										directory.phone.unregister-service
+										directory.email.unregister-service
+									*/
+
+								t(`directory.${identifierType}.unregister-service`, { service: e.serverAddr })
+							}
+						</UnifiedText>
+					</SecondaryButton>
+				))}
 			</View>
 		</DropdownPriv>
 	)
@@ -90,7 +176,7 @@ export const LinkedIdentityDropdown: React.FC<LinkedIdentityDropdownProps> = pro
 
 const styles = StyleSheet.create({
 	item: {
-		flexDirection: 'row',
+		flexDirection: 'column',
 		alignItems: 'center',
 		paddingLeft: 32,
 		paddingVertical: 12,

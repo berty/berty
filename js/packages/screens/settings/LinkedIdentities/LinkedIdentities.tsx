@@ -8,9 +8,11 @@ import {
 	DividerItem,
 	ItemSection,
 	LinkedIdentityDropdown,
-	LinkedIdentityProofServerDropdown,
+	DebugServerAddr,
 	MenuItem,
+	DebugServersAddrCapabilities,
 } from '@berty/components'
+import { UnifiedText } from '@berty/components/shared-components/UnifiedText'
 import { useAppDimensions } from '@berty/contexts/app-dimensions.context'
 import { ServiceClientType } from '@berty/grpc-bridge/welsh-clients.gen'
 import { useAccount, useMessengerClient, useProtocolClient, useThemeColor } from '@berty/hooks'
@@ -72,9 +74,14 @@ export const LinkedIdentities: ScreenFC<'Settings.LinkedIdentities'> = () => {
 	const colors = useThemeColor()
 	const { t } = useTranslation()
 	const [proofServerURL, setProofServerURL] = useState('http://localhost:7001')
-	const [knownDirectoryServices] = useState({
-		'http://localhost:7002': { supports: [IdentityType.PHONE] },
-	})
+	const [knownDirectoryServices, setKnownDirectoryServices] = useState<
+		{ address: string; capabilities: string[] }[]
+	>([
+		{
+			address: 'localhost:9091',
+			capabilities: [IdentityType.PHONE],
+		},
+	])
 
 	return (
 		<View style={{ backgroundColor: colors['secondary-background'], flex: 1 }}>
@@ -84,7 +91,20 @@ export const LinkedIdentities: ScreenFC<'Settings.LinkedIdentities'> = () => {
 				showsVerticalScrollIndicator={false}
 			>
 				<ItemSection>
-					<LinkedIdentityProofServerDropdown onChange={setProofServerURL} value={proofServerURL} />
+					<DebugServerAddr
+						onChange={setProofServerURL}
+						value={proofServerURL}
+						dropdownTitle={'Debug tool: proof server URL'}
+					/>
+				</ItemSection>
+
+				<ItemSection>
+					<DebugServersAddrCapabilities
+						onChange={setKnownDirectoryServices}
+						values={knownDirectoryServices}
+						possibleCapabilities={IdentityType}
+						dropdownTitle={'Debug tool: directory server host:port'}
+					/>
 				</ItemSection>
 
 				<ItemSection>
@@ -115,7 +135,7 @@ export const LinkedIdentities: ScreenFC<'Settings.LinkedIdentities'> = () => {
 							})
 						}
 					>
-						{t('directory.email.register')}
+						<UnifiedText>{t('directory.email.register')}</UnifiedText>
 					</MenuItem>
 				</ItemSection>
 
@@ -126,6 +146,8 @@ export const LinkedIdentities: ScreenFC<'Settings.LinkedIdentities'> = () => {
 								<LinkedIdentityDropdown
 									identity={e}
 									knownDirectoryServices={knownDirectoryServices}
+									messengerClient={messengerClient}
+									account={account}
 								/>
 								{index !== (account.verifiedCredentials?.length || 0) - 1 ? <DividerItem /> : null}
 							</Fragment>
