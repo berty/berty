@@ -11,7 +11,7 @@ package username
 // Could be improved using Android Java API
 // https://medium.com/capital-one-tech/how-to-get-an-android-device-nickname-d5eab12f4ced
 
-const char* BertyGetDeviceName() {
+const char* GetDeviceName() {
 	char model[PROP_VALUE_MAX + 1];
 	int len = __system_property_get("ro.product.model", model);
 	char *name = malloc(len + 1);
@@ -29,7 +29,7 @@ import "unsafe"
 const defaultUsername = "android#1337"
 
 func getUsername() string {
-	cstring := C.BertyGetDeviceName()
+	cstring := C.GetDeviceName()
 	username := C.GoString(cstring)
 	C.free(unsafe.Pointer(cstring))
 

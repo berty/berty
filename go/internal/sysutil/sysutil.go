@@ -9,7 +9,7 @@ import (
 	"moul.io/openfiles"
 
 	"berty.tech/berty/v2/go/internal/bertyversion"
-	"berty.tech/berty/v2/go/internal/username"
+	"berty.tech/berty/v2/go/pkg/username"
 	"berty.tech/weshnet/pkg/protocoltypes"
 )
 

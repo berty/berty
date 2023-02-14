@@ -9,7 +9,7 @@ package username
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
-const char* BertyGetDeviceName() {
+const char* GetDeviceName() {
 	NSString *deviceName = [[UIDevice currentDevice] name];
 	char *copy = strdup([deviceName UTF8String]);
 
@@ -23,7 +23,7 @@ import "unsafe"
 const defaultUsername = "ios#1337"
 
 func getUsername() string {
-	cstring := C.BertyGetDeviceName()
+	cstring := C.GetDeviceName()
 	username := C.GoString(cstring)
 	C.free(unsafe.Pointer(cstring))
 
