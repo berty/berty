@@ -2,9 +2,9 @@
 version: v1
 deps:
   - remote: buf.build
-    owner: d4ryl00
+    owner: berty
     repository: weshnet
-    commit: 3b6e31c0b7154f46a48648a4d038af36
+    commit: c338a245b272410395d03d8295d7f19e
   - remote: buf.build
     owner: gogo
     repository: protobuf

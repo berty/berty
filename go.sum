@@ -242,8 +242,8 @@ github.com/creack/pty v1.1.9/go.mod h1:oKZEueFk5CKHvIhNR5MUki03XCEU+Q6VDXinZuGJ3
 github.com/creack/pty v1.1.18 h1:n56/Zwd5o6whRC5PMGretI4IdRLlmBXYNjScPaBgsbY=
 github.com/cskr/pubsub v1.0.2 h1:vlOzMhl6PFn60gRlTQQsIfVwaPB/B/8MziK8FhEPt/0=
 github.com/cskr/pubsub v1.0.2/go.mod h1:/8MzYXk/NJAz782G8RPkFzXTZVu63VotefPnR9TIRis=
-github.com/d4ryl00/weshnet-fork v0.0.0-20230210085955-4d2dc68ea4b4 h1:yDTAJ55OA9rtDjUMcllTKBiKX2dBtCF1fxjlVnOJfW8=
-github.com/d4ryl00/weshnet-fork v0.0.0-20230210085955-4d2dc68ea4b4/go.mod h1:421JAz6kGga1yHihQ1dTAEC9+ER0s/sf2xtkbyQvEHw=
+github.com/d4ryl00/weshnet-fork v0.0.0-20230215100159-56e0b892c37d h1:Su16K14fxd390VDx99ELZhXVaiksWod/3yP1+qUPxlg=
+github.com/d4ryl00/weshnet-fork v0.0.0-20230215100159-56e0b892c37d/go.mod h1:fzWU2FOB/A7xFsRHV4ZCT24uJ4IZSxeqxJYxxeod5S8=
 github.com/daixiang0/gci v0.8.2 h1:4VLVDNdJ+wkXxz/nr5QRrbeK+JCvkMVqYjUWB5EnPF4=
 github.com/daixiang0/gci v0.8.2/go.mod h1:EpVfrztufwVgQRXjnX4zuNinEpLj5OmMjtu/+MB0V0c=
 github.com/davecgh/go-spew v0.0.0-20171005155431-ecdeabc65495/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=

@@ -1,8 +1,8 @@
 version: v1
-name: buf.build/d4ryl00/berty
+name: buf.build/berty/berty
 deps:
   - buf.build/gogo/protobuf
-  - buf.build/d4ryl00/weshnet
+  - buf.build/berty/weshnet
 breaking:
   use:
     - FILE
