@@ -1,15 +1,18 @@
 version: 2
+# @NOTE(gfanton): we use 0 as pull-request-limit to only enable security update.
+# see: https://docs.github.com/en/code-security/dependabot/dependabot-security-updates/configuring-dependabot-security-updates#overriding-the-default-behavior-with-a-configuration-file
 updates:
   - package-ecosystem: "npm"
     directory: "/js"
     schedule:
       interval: "daily"
-    open-pull-requests-limit: 5
+    # Disable version updates for npm dependencies (enable only security update)
+    open-pull-requests-limit: 0
     commit-message:
       prefix: "fix"
-      prefix-development: "chore"
       include: "scope"
     labels:
+      - "security"
       - "t/javascript"
       - "dependencies"
 
@@ -17,8 +20,10 @@ updates:
     directory: "/"
     schedule:
       interval: daily
-    open-pull-requests-limit: 5
+    # Disable version updates for docker dependencies (enable only security update)
+    open-pull-requests-limit: 0
     labels:
+      - "security"
       - "t/docker"
       - "dependencies"
 
@@ -26,8 +31,10 @@ updates:
     directory: "/"
     schedule:
       interval: daily
-    open-pull-requests-limit: 5
+    # Disable version updates for github dependencies (enable only security update)
+    open-pull-requests-limit: 0
     labels:
+      - "security"
       - "t/github-actions"
       - "dependencies"
 
@@ -35,7 +42,9 @@ updates:
     directory: "/"
     schedule:
       interval: daily
-    open-pull-requests-limit: 5
+    # Disable version updates for gomod dependencies (enable only security update)
+    open-pull-requests-limit: 0
     labels:
+      - "security"
       - "t/golang"
       - "dependencies"
