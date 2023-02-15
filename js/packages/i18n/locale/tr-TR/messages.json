@@ -624,13 +624,17 @@
 			"register": "",
 			"associated": "",
 			"expired": "",
-			"proof-service-unavailable": ""
+			"proof-service-unavailable": "",
+			"register-service": "",
+			"unregister-service": ""
 		},
 		"email": {
 			"register": "",
 			"associated": "",
 			"expired": "",
-			"proof-service-unavailable": ""
+			"proof-service-unavailable": "",
+			"register-service": "",
+			"unregister-service": ""
 		}
 	}
 }
