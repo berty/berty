@@ -511,6 +511,12 @@ const BodyDevTools: React.FC<{}> = withInAppNotification(({ showNotification }: 
 				>
 					{t('settings.home.linked-identities-button')}
 				</MenuItemWithIcon>
+				<MenuItemWithIcon
+					iconName='book-outline'
+					onPress={() => navigate('Settings.DirectorySearch')}
+				>
+					{t('settings.home.directory-search-button')}
+				</MenuItemWithIcon>
 			</ItemSection>
 
 			<ItemSection>

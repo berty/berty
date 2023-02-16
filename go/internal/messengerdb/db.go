@@ -1769,6 +1769,8 @@ func (d *DBWrapper) MarkAccountDirectoryServiceRecordAsRevoked(serverAddr string
 
 		if query.RowsAffected == 0 {
 			return errcode.ErrNotFound
+		} else if query.RowsAffected > 1 {
+			d.log.Warn("expected a single result", zap.Int64("count", query.RowsAffected))
 		}
 
 		return nil
@@ -1780,15 +1782,16 @@ func (d *DBWrapper) GetAccountDirectoryServiceRecord(serviceAddr string, recordT
 	serviceRecord := &messengertypes.AccountDirectoryServiceRecord{}
 
 	if err := d.db.Model(&messengertypes.AccountDirectoryServiceRecord{}).
-		Where("directory_record_token = ? AND server_addr = ?", recordToken, serviceAddr).
-		Find(&serviceRecord).
+		Find(&serviceRecord, "directory_record_token = ? AND server_addr = ?", recordToken, serviceAddr).
 		Count(&count).
 		Error; err != nil {
 		return nil, errcode.ErrDBRead.Wrap(err)
 	}
 
 	if count == 0 {
-		return nil, errcode.ErrNotFound
+		return nil, errcode.ErrNotFound.Wrap(fmt.Errorf("unable to find directory service record"))
+	} else if count > 1 {
+		d.log.Warn("found more results than expected", zap.Int("count", int(count)))
 	}
 
 	return serviceRecord, nil

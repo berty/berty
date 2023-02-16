@@ -55,6 +55,7 @@ export type ScreensParams = {
 	'Settings.Appearance': undefined
 	'Settings.Accounts': undefined
 	'Settings.LinkedIdentities': undefined
+	'Settings.DirectorySearch': undefined
 
 	'Settings.DevTools': undefined
 	'Settings.IpfsWebUI': undefined

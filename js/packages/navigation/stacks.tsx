@@ -530,6 +530,17 @@ export const Navigation: React.FC = React.memo(() => {
 				}}
 			/>
 			<NavigationStack.Screen
+				name='Settings.DirectorySearch'
+				component={Components.Settings.DirectorySearch}
+				options={{
+					headerStyle: {
+						backgroundColor: colors['secondary-background'],
+					},
+					title: t('settings.directory-search.title'),
+					presentation: 'formSheet',
+				}}
+			/>
+			<NavigationStack.Screen
 				name='Settings.AboutBerty'
 				component={Components.Settings.AboutBerty}
 				options={{

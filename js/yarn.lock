@@ -10399,6 +10399,11 @@ phin@^2.9.1:
   resolved "https://registry.yarnpkg.com/phin/-/phin-2.9.3.tgz#f9b6ac10a035636fb65dfc576aaaa17b8743125c"
   integrity sha512-CzFr90qM24ju5f88quFC/6qohjC144rehe5n6DH900lgXmUe86+xCKc10ev56gRKC4/BkHUoG4uSiQgBiIXwDA==
 
+phone@^3.1.33:
+  version "3.1.33"
+  resolved "https://registry.yarnpkg.com/phone/-/phone-3.1.33.tgz#78d8b20493cb665c95c566c53545f9138c746f4e"
+  integrity sha512-mTDJ9NsXyRxxsnhEZpdNO6PFoPxSzEW0s5gjaxgTv8rqmIcyfbNBZpKxmdifr6jJVL/0oSwiHHvL2+SNL9BVFw==
+
 picocolors@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/picocolors/-/picocolors-1.0.0.tgz#cb5bdc74ff3f51892236eaf79d68bc44564ab81c"

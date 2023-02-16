@@ -51,7 +51,7 @@ func (ds *SQLDatastore) Put(record *directorytypes.Record) error {
 }
 
 func (ds *SQLDatastore) Del(identifier string) error {
-	query := ds.db.Model(&directorytypes.Record{}).Delete("directory_identifier = ?", identifier)
+	query := ds.db.Delete(&directorytypes.Record{}, "directory_identifier = ?", identifier)
 
 	if err := query.Error; err != nil {
 		return errcode.ErrDBWrite.Wrap(err)
