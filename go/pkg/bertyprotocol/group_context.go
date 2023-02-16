@@ -104,6 +104,9 @@ func (gc *GroupContext) activateGroupContext(contact crypto.PubKey, selfAnnounce
 	// syncChMKH := make(chan bool, 1)
 	// syncChSecrets := make(chan bool, 1)
 
+	wgFinished := sync.WaitGroup{}
+	wgFinished.Add(1)
+
 	{
 		// Fill keystore
 		chNewData := gc.FillMessageKeysHolderUsingNewData()
@@ -117,9 +120,15 @@ func (gc *GroupContext) activateGroupContext(contact crypto.PubKey, selfAnnounce
 
 		chMember := gc.WatchNewMembersAndSendSecrets()
 		go func() {
+			calledDone := false
 			for pk := range chMember {
 				if !pk.Equals(gc.memberDevice.PrivateMember().GetPublic()) {
 					gc.logger.Warn("gc member device public key doesn't match")
+				} else {
+					if !calledDone {
+						wgFinished.Done()
+						calledDone = true
+					}
 				}
 			}
 		}()
@@ -159,7 +168,7 @@ func (gc *GroupContext) activateGroupContext(contact crypto.PubKey, selfAnnounce
 
 	if selfAnnouncement {
 		start := time.Now()
-		_, err := gc.MetadataStore().AddDeviceToGroup(gc.ctx)
+		op, err := gc.MetadataStore().AddDeviceToGroup(gc.ctx)
 		if err != nil {
 			return errcode.ErrInternal.Wrap(err)
 		}
@@ -167,8 +176,9 @@ func (gc *GroupContext) activateGroupContext(contact crypto.PubKey, selfAnnounce
 		gc.logger.Info(fmt.Sprintf("AddDeviceToGroup took %s", time.Since(start)))
 
 		// op.
-		// if op != nil {
-		// 	// Waiting for async events to be handled
+		if op != nil {
+			// Waiting for async events to be handled
+			wgFinished.Wait()
 		// 	if ok := <-syncChMKH; !ok {
 		// 		return errcode.ErrInternal.Wrap(fmt.Errorf("error while registering own secrets"))
 		// 	}
@@ -176,7 +186,7 @@ func (gc *GroupContext) activateGroupContext(contact crypto.PubKey, selfAnnounce
 		// 	if ok := <-syncChSecrets; !ok {
 		// 		return errcode.ErrInternal.Wrap(fmt.Errorf("error while sending own secrets"))
 		// 	}
-		// }
+		}
 	}
 
 	return nil
