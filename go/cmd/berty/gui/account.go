@@ -10,8 +10,8 @@ import (
 	qrcode "github.com/skip2/go-qrcode"
 	"go.uber.org/zap"
 
-	"berty.tech/berty/v2/go/pkg/logutil"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
+	"berty.tech/weshnet/pkg/logutil"
 )
 
 // ACCOUNT LINK

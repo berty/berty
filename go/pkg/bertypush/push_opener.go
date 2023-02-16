@@ -17,8 +17,9 @@ import (
 	"berty.tech/berty/v2/go/pkg/accounttypes"
 	"berty.tech/berty/v2/go/pkg/bertylinks"
 	"berty.tech/berty/v2/go/pkg/errcode"
-	"berty.tech/berty/v2/go/pkg/logutil"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
+	weshnet_push "berty.tech/weshnet/pkg/bertypush"
+	"berty.tech/weshnet/pkg/logutil"
 	"berty.tech/weshnet/pkg/pushtypes"
 )
 
@@ -229,7 +230,7 @@ func PushDecrypt(ctx context.Context, rootDir string, input []byte, opts *PushDe
 
 			wrappedDB := messengerdb.NewDBWrapper(db, opts.Logger)
 
-			pushHandler, err := NewPushHandler(&PushHandlerOpts{
+			pushHandler, err := weshnet_push.NewPushHandler(&weshnet_push.PushHandlerOpts{
 				Logger:        opts.Logger,
 				RootDatastore: rootDS,
 				PushKey:       pushSK,

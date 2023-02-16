@@ -5,7 +5,7 @@ import (
 
 	"github.com/pkg/errors"
 
-	"berty.tech/berty/v2/go/pkg/grpcutil"
+	"berty.tech/berty/v2/go/internal/grpcutil"
 )
 
 type PromiseBlock interface {

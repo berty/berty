@@ -11,11 +11,11 @@ import (
 
 	"berty.tech/berty/v2/go/internal/messengerutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
-	"berty.tech/berty/v2/go/pkg/logutil"
 	mt "berty.tech/berty/v2/go/pkg/messengertypes"
-	"berty.tech/berty/v2/go/pkg/tyber"
 	"berty.tech/weshnet/pkg/lifecycle"
+	"berty.tech/weshnet/pkg/logutil"
 	"berty.tech/weshnet/pkg/protocoltypes"
+	"berty.tech/weshnet/pkg/tyber"
 )
 
 func (svc *service) manageSubscriptions() {

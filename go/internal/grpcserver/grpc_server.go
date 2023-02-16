@@ -16,12 +16,12 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"berty.tech/berty/v2/go/pkg/bertyauth"
+	"berty.tech/berty/v2/go/internal/grpcutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
-	"berty.tech/berty/v2/go/pkg/grpcutil"
-	"berty.tech/berty/v2/go/pkg/logutil"
 	"berty.tech/weshnet/pkg/authtypes"
+	"berty.tech/weshnet/pkg/bertyauth"
 	"berty.tech/weshnet/pkg/ipfsutil"
+	"berty.tech/weshnet/pkg/logutil"
 )
 
 type GRPCOpts struct {

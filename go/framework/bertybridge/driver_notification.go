@@ -6,7 +6,7 @@ import (
 	"go.uber.org/zap"
 
 	"berty.tech/berty/v2/go/internal/notification"
-	"berty.tech/berty/v2/go/pkg/logutil"
+	"berty.tech/weshnet/pkg/logutil"
 )
 
 type NotificationDriver interface {

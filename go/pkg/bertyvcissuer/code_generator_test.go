@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"berty.tech/berty/v2/go/pkg/bertyvcissuer"
-	"berty.tech/berty/v2/go/pkg/verifiablecredstypes"
+	"berty.tech/weshnet/pkg/verifiablecredstypes"
 )
 
 func Test_CodeGeneratorEightDigits(t *testing.T) {

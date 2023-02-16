@@ -18,15 +18,16 @@ import (
 	"berty.tech/berty/v2/go/internal/accountutils"
 	"berty.tech/berty/v2/go/internal/datastoreutil"
 	"berty.tech/berty/v2/go/internal/grpcserver"
+	berty_grpcutil "berty.tech/berty/v2/go/internal/grpcutil"
 	"berty.tech/berty/v2/go/pkg/bertymessenger"
 	"berty.tech/berty/v2/go/pkg/errcode"
-	"berty.tech/berty/v2/go/pkg/grpcutil"
-	"berty.tech/berty/v2/go/pkg/logutil"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
 	"berty.tech/weshnet"
 	"berty.tech/weshnet/pkg/cryptoutil"
+	"berty.tech/weshnet/pkg/grpcutil"
 	"berty.tech/weshnet/pkg/ipfsutil"
 	"berty.tech/weshnet/pkg/lifecycle"
+	"berty.tech/weshnet/pkg/logutil"
 	"berty.tech/weshnet/pkg/protocoltypes"
 )
 
@@ -441,7 +442,7 @@ func (m *Manager) getGRPCServer() (*grpc.Server, *grpcgw.ServeMux, error) {
 	return m.Node.GRPC.server, m.Node.GRPC.gatewayMux, nil
 }
 
-func (m *Manager) GetGRPCListeners() []grpcutil.Listener {
+func (m *Manager) GetGRPCListeners() []berty_grpcutil.Listener {
 	m.mutex.Lock()
 	defer m.mutex.Unlock()
 	return m.Node.GRPC.listeners

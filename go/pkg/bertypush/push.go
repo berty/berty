@@ -8,6 +8,7 @@ import (
 	"berty.tech/berty/v2/go/internal/messengerdb"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
+	weshnet_push "berty.tech/weshnet/pkg/bertypush"
 	"berty.tech/weshnet/pkg/protocoltypes"
 )
 
@@ -17,7 +18,7 @@ type EventHandler interface {
 
 type messengerPushReceiver struct {
 	logger       *zap.Logger
-	pushHandler  PushHandler
+	pushHandler  weshnet_push.PushHandler
 	eventHandler EventHandler
 	db           *messengerdb.DBWrapper
 }
@@ -26,7 +27,7 @@ type MessengerPushReceiver interface {
 	PushReceive(ctx context.Context, input []byte) (*messengertypes.PushReceive_Reply, error)
 }
 
-func NewPushReceiver(pushHandler PushHandler, evtHandler EventHandler, db *messengerdb.DBWrapper, logger *zap.Logger) MessengerPushReceiver {
+func NewPushReceiver(pushHandler weshnet_push.PushHandler, evtHandler EventHandler, db *messengerdb.DBWrapper, logger *zap.Logger) MessengerPushReceiver {
 	if logger == nil {
 		logger = zap.NewNop()
 	}

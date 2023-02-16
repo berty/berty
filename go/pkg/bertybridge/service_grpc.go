@@ -10,8 +10,8 @@ import (
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
 
+	"berty.tech/berty/v2/go/internal/grpcutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
-	"berty.tech/berty/v2/go/pkg/grpcutil"
 )
 
 // ClientInvokeUnary invoke a unary method

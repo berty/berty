@@ -6,7 +6,7 @@ import (
 
 	grpc "google.golang.org/grpc"
 
-	"berty.tech/berty/v2/go/pkg/grpcutil"
+	"berty.tech/berty/v2/go/internal/grpcutil"
 )
 
 type client struct {

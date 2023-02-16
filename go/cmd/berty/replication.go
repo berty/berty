@@ -8,8 +8,8 @@ import (
 	"github.com/peterbourgon/ff/v3/ffcli"
 
 	"berty.tech/berty/v2/go/pkg/bertyreplication"
-	"berty.tech/berty/v2/go/pkg/replicationtypes"
 	"berty.tech/weshnet/pkg/authtypes"
+	"berty.tech/weshnet/pkg/replicationtypes"
 )
 
 func replicationServerCommand() *ffcli.Command {

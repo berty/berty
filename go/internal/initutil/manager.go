@@ -25,20 +25,21 @@ import (
 	"moul.io/zapring"
 
 	"berty.tech/berty/v2/go/internal/accountutils"
+	berty_grpcutil "berty.tech/berty/v2/go/internal/grpcutil"
 	"berty.tech/berty/v2/go/internal/notification"
 	"berty.tech/berty/v2/go/pkg/bertymessenger"
 	"berty.tech/berty/v2/go/pkg/errcode"
-	"berty.tech/berty/v2/go/pkg/grpcutil"
-	"berty.tech/berty/v2/go/pkg/logutil"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
-	"berty.tech/berty/v2/go/pkg/tyber"
 	"berty.tech/weshnet"
+	"berty.tech/weshnet/pkg/grpcutil"
 	"berty.tech/weshnet/pkg/ipfsutil"
 	"berty.tech/weshnet/pkg/lifecycle"
+	"berty.tech/weshnet/pkg/logutil"
 	"berty.tech/weshnet/pkg/protocoltypes"
 	proximity "berty.tech/weshnet/pkg/proximitytransport"
 	"berty.tech/weshnet/pkg/rendezvous"
 	tinder "berty.tech/weshnet/pkg/tinder"
+	"berty.tech/weshnet/pkg/tyber"
 )
 
 const (
@@ -201,7 +202,7 @@ type Manager struct {
 			bufServer         *grpc.Server
 			bufServerListener *grpcutil.BufListener
 			gatewayMux        *runtime.ServeMux
-			listeners         []grpcutil.Listener
+			listeners         []berty_grpcutil.Listener
 		} `json:"GRPC,omitempty"`
 		ServiceInsecureMode bool `json:"ServiceInsecureMode,omitempty"`
 	} `json:"Node,omitempty"`

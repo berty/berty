@@ -6,8 +6,8 @@ import (
 
 	"go.uber.org/zap"
 
-	"berty.tech/berty/v2/go/pkg/logutil"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
+	"berty.tech/weshnet/pkg/logutil"
 )
 
 // Recipe is a set of handlers that performs common behaviors.

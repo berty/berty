@@ -16,7 +16,7 @@ import (
 	"berty.tech/berty/v2/go/pkg/bertymessenger"
 	bertymessengertesting "berty.tech/berty/v2/go/pkg/bertymessenger/testing"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
-	"berty.tech/berty/v2/go/pkg/testutil"
+	"berty.tech/weshnet/pkg/testutil"
 )
 
 func TestPeersCreateJoinConversationNonMocked(t *testing.T) {

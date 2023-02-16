@@ -13,11 +13,11 @@ import (
 	"golang.org/x/crypto/nacl/box"
 	"google.golang.org/grpc"
 
-	"berty.tech/berty/v2/go/pkg/testutil"
 	"berty.tech/weshnet"
 	"berty.tech/weshnet/pkg/cryptoutil"
 	"berty.tech/weshnet/pkg/protocoltypes"
 	"berty.tech/weshnet/pkg/pushtypes"
+	"berty.tech/weshnet/pkg/testutil"
 )
 
 func PushServerForTests(ctx context.Context, t testing.TB, dispatchers []PushDispatcher, logger *zap.Logger) (PushService, *[32]byte, string, context.CancelFunc) {

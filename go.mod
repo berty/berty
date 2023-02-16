@@ -80,8 +80,6 @@ require (
 	golang.org/x/xerrors v0.0.0-20220609144429-65e65417b02f
 	google.golang.org/grpc v1.50.1
 	google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.1.0
-	google.golang.org/grpc/examples v0.0.0-20200922230038-4e932bbcb079
-	gopkg.in/square/go-jose.v2 v2.6.0
 	gorm.io/gorm v1.22.3
 	moul.io/godev v1.7.0
 	moul.io/openfiles v1.2.0
@@ -90,7 +88,6 @@ require (
 	moul.io/testman v1.5.0
 	moul.io/u v1.27.0
 	moul.io/zapconfig v1.4.0
-	moul.io/zapfilter v1.7.0
 	moul.io/zapgorm2 v1.1.1
 	moul.io/zapring v1.3.3
 	mvdan.cc/gofumpt v0.4.0
@@ -99,8 +96,6 @@ require (
 require (
 	bazil.org/fuse v0.0.0-20200524192727-fb710f7dfd05 // indirect
 	berty.tech/go-ipfs-log v1.9.0 // indirect
-	cloud.google.com/go/compute v1.14.0 // indirect
-	cloud.google.com/go/compute/metadata v0.2.1 // indirect
 	contrib.go.opencensus.io/exporter/prometheus v0.4.0 // indirect
 	github.com/AndreasBriese/bbloom v0.0.0-20190825152654-46b345b51c96 // indirect
 	github.com/Azure/go-ansiterm v0.0.0-20210617225240-d185dfc1b5a1 // indirect
@@ -271,7 +266,6 @@ require (
 	github.com/libp2p/go-doh-resolver v0.4.0 // indirect
 	github.com/libp2p/go-flow-metrics v0.1.0 // indirect
 	github.com/libp2p/go-libp2p-asn-util v0.2.0 // indirect
-	github.com/libp2p/go-libp2p-blankhost v0.3.0 // indirect
 	github.com/libp2p/go-libp2p-core v0.20.1 // indirect
 	github.com/libp2p/go-libp2p-gostream v0.3.0 // indirect
 	github.com/libp2p/go-libp2p-http v0.2.1 // indirect
@@ -403,19 +397,21 @@ require (
 	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/genproto v0.0.0-20221202195650-67e5cbc046fd // indirect
 	google.golang.org/protobuf v1.28.2-0.20220831092852-f930b1dc76e8 // indirect
+	gopkg.in/square/go-jose.v2 v2.6.0 // indirect
 	gopkg.in/tomb.v1 v1.0.0-20141024135613-dd632973f1e7 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	lukechampine.com/blake3 v1.1.7 // indirect
 	moul.io/banner v1.0.1 // indirect
 	moul.io/motd v1.0.0 // indirect
+	moul.io/zapfilter v1.7.0 // indirect
 	nhooyr.io/websocket v1.8.6 // indirect
 	rsc.io/qr v0.2.0 // indirect
 )
 
 replace (
 	bazil.org/fuse => bazil.org/fuse v0.0.0-20200117225306-7b5117fecadc // specific version for iOS building
-	berty.tech/weshnet => github.com/d4ryl00/weshnet-fork v0.0.0-20230215100159-56e0b892c37d
+	berty.tech/weshnet => github.com/d4ryl00/weshnet-fork v0.0.0-20230216162216-c8c356fecdb7
 	github.com/agl/ed25519 => github.com/agl/ed25519 v0.0.0-20170116200512-5312a6153412 // latest commit before the author shutdown the repo; see https://github.com/golang/go/issues/20504
 	github.com/multiformats/go-multiaddr => github.com/gfanton/go-multiaddr v0.7.1-0.20221109002011-e39b3a49e793 // tmp, required for Android SDK30
 	github.com/mutecomm/go-sqlcipher/v4 => github.com/berty/go-sqlcipher/v4 v4.4.3-0.20220810151512-74ea78235b48 // plaintext header support

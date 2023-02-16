@@ -10,7 +10,7 @@ import (
 
 	"berty.tech/berty/v2/go/pkg/bertymessenger"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
-	"berty.tech/berty/v2/go/pkg/testutil"
+	"berty.tech/weshnet/pkg/testutil"
 )
 
 func TestFlappyBotCommunication(t *testing.T) {

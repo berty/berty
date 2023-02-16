@@ -28,12 +28,13 @@ import (
 	"berty.tech/berty/v2/go/internal/notification"
 	"berty.tech/berty/v2/go/pkg/bertypush"
 	"berty.tech/berty/v2/go/pkg/errcode"
-	"berty.tech/berty/v2/go/pkg/logutil"
 	mt "berty.tech/berty/v2/go/pkg/messengertypes"
-	"berty.tech/berty/v2/go/pkg/tyber"
 	"berty.tech/weshnet"
+	weshnet_push "berty.tech/weshnet/pkg/bertypush"
 	"berty.tech/weshnet/pkg/lifecycle"
+	"berty.tech/weshnet/pkg/logutil"
 	"berty.tech/weshnet/pkg/protocoltypes"
+	"berty.tech/weshnet/pkg/tyber"
 )
 
 type Service interface {
@@ -237,7 +238,7 @@ func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (_ Service, err
 	}
 
 	svc.eventHandler = messengerpayloads.NewEventHandler(ctx, db, &MetaFetcherFromProtocolClient{client: client}, newPostActionsService(&svc), opts.Logger, svc.dispatcher, false)
-	svc.pushReceiver = bertypush.NewPushReceiver(bertypush.NewPushHandlerViaProtocol(ctx, client), svc.eventHandler, svc.db, opts.Logger)
+	svc.pushReceiver = bertypush.NewPushReceiver(weshnet_push.NewPushHandlerViaProtocol(ctx, client), svc.eventHandler, svc.db, opts.Logger)
 
 	// get or create account in DB
 	{

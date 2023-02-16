@@ -14,8 +14,8 @@ import (
 	"berty.tech/berty/v2/go/internal/messengerutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
-	"berty.tech/berty/v2/go/pkg/tyber"
 	"berty.tech/weshnet/pkg/protocoltypes"
+	"berty.tech/weshnet/pkg/tyber"
 )
 
 func getEventsReplayerForDB(ctx context.Context, client protocoltypes.ProtocolServiceClient, log *zap.Logger) func(db *messengerdb.DBWrapper) error {

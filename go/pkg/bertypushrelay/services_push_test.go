@@ -9,13 +9,13 @@ import (
 	"golang.org/x/crypto/nacl/box"
 	"golang.org/x/net/context"
 
-	"berty.tech/berty/v2/go/pkg/bertypush"
 	"berty.tech/berty/v2/go/pkg/bertypushrelay"
-	"berty.tech/berty/v2/go/pkg/testutil"
 	"berty.tech/weshnet"
+	weshnet_push "berty.tech/weshnet/pkg/bertypush"
 	"berty.tech/weshnet/pkg/cryptoutil"
 	"berty.tech/weshnet/pkg/protocoltypes"
 	"berty.tech/weshnet/pkg/pushtypes"
+	"berty.tech/weshnet/pkg/testutil"
 )
 
 var (
@@ -167,26 +167,26 @@ func Test_encryptPushPayloadForReceiver_decryptPushDataFromServer(t *testing.T) 
 
 	require.NotEqual(t, encrypted1, encrypted2)
 
-	decrypted1, err := bertypush.DecryptPushDataFromServer(encrypted1, pushDefaultServerPK, pushTestRecipient1SK)
+	decrypted1, err := weshnet_push.DecryptPushDataFromServer(encrypted1, pushDefaultServerPK, pushTestRecipient1SK)
 	require.NoError(t, err)
 	require.Equal(t, ref, decrypted1)
 
-	decrypted1, err = bertypush.DecryptPushDataFromServer(encrypted1, pushTestRecipient1PK, pushTestRecipient1SK) // invalid server pk
+	decrypted1, err = weshnet_push.DecryptPushDataFromServer(encrypted1, pushTestRecipient1PK, pushTestRecipient1SK) // invalid server pk
 	require.Error(t, err)
 
-	decrypted1, err = bertypush.DecryptPushDataFromServer(encrypted1, pushDefaultServerPK, pushDefaultServerSK) // invalid dest sk
+	decrypted1, err = weshnet_push.DecryptPushDataFromServer(encrypted1, pushDefaultServerPK, pushDefaultServerSK) // invalid dest sk
 	require.Error(t, err)
 
-	decrypted1, err = bertypush.DecryptPushDataFromServer(nil, pushDefaultServerPK, pushTestRecipient1SK)
+	decrypted1, err = weshnet_push.DecryptPushDataFromServer(nil, pushDefaultServerPK, pushTestRecipient1SK)
 	require.Error(t, err)
 
-	decrypted1, err = bertypush.DecryptPushDataFromServer(encrypted1, nil, pushTestRecipient1SK)
+	decrypted1, err = weshnet_push.DecryptPushDataFromServer(encrypted1, nil, pushTestRecipient1SK)
 	require.Error(t, err)
 
-	decrypted1, err = bertypush.DecryptPushDataFromServer(encrypted1, pushDefaultServerPK, nil)
+	decrypted1, err = weshnet_push.DecryptPushDataFromServer(encrypted1, pushDefaultServerPK, nil)
 	require.Error(t, err)
 
-	decrypted1, err = bertypush.DecryptPushDataFromServer([]byte("invalid data"), pushDefaultServerPK, nil)
+	decrypted1, err = weshnet_push.DecryptPushDataFromServer([]byte("invalid data"), pushDefaultServerPK, nil)
 	require.Error(t, err)
 }
 
