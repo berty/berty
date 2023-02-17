@@ -19,6 +19,7 @@ import (
 	"berty.tech/berty/v2/go/internal/datastoreutil"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/internal/testutil"
+	"berty.tech/berty/v2/go/internal/tinder"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
 
@@ -26,24 +27,17 @@ func TestDifferentStores(t *testing.T) {
 	testutil.FilterSpeed(t, testutil.Slow)
 	logger, cleanup := testutil.Logger(t)
 	defer cleanup()
+
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
 	mn := mocknet.New()
 	defer mn.Close()
 
-	rdvp, err := mn.GenPeer()
-	require.NoError(t, err, "failed to generate mocked peer")
-
-	defer rdvp.Close()
-
-	_, cleanrdvp := ipfsutil.TestingRDVP(ctx, t, rdvp)
-	defer cleanrdvp()
-
 	ipfsOpts := &ipfsutil.TestingAPIOpts{
-		Logger:  logger,
-		Mocknet: mn,
-		RDVPeer: rdvp.Peerstore().PeerInfo(rdvp.ID()),
+		Logger:          logger,
+		Mocknet:         mn,
+		DiscoveryServer: tinder.NewMockDriverServer(),
 	}
 
 	pathBase, err := ioutil.TempDir("", "odb_manyaddstest")
@@ -60,14 +54,12 @@ func TestDifferentStores(t *testing.T) {
 
 	defer testutil.Close(t, baseDS)
 
-	api1, cleanup := ipfsutil.TestingCoreAPIUsingMockNet(ctx, t, ipfsOpts)
-	defer cleanup()
+	api1 := ipfsutil.TestingCoreAPIUsingMockNet(ctx, t, ipfsOpts)
 
 	odb1 := NewTestOrbitDB(ctx, t, logger, api1, datastoreutil.NewNamespacedDatastore(baseDS, datastore.NewKey("peer1")))
 	defer testutil.Close(t, odb1)
 
-	api2, cleanup := ipfsutil.TestingCoreAPIUsingMockNet(ctx, t, ipfsOpts)
-	defer cleanup()
+	api2 := ipfsutil.TestingCoreAPIUsingMockNet(ctx, t, ipfsOpts)
 
 	odb2 := NewTestOrbitDB(ctx, t, logger, api2, datastoreutil.NewNamespacedDatastore(baseDS, datastore.NewKey("peer2")))
 	defer testutil.Close(t, odb2)

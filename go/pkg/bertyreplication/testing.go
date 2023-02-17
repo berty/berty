@@ -10,7 +10,6 @@ import (
 	sqlite "github.com/flyingtime/gorm-sqlcipher"
 	"github.com/ipfs/go-datastore"
 	ds_sync "github.com/ipfs/go-datastore/sync"
-	"github.com/libp2p/go-libp2p/core/peer"
 	libp2p_mocknet "github.com/libp2p/go-libp2p/p2p/net/mock"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/zap"
@@ -18,6 +17,7 @@ import (
 	"moul.io/zapgorm2"
 
 	"berty.tech/berty/v2/go/internal/ipfsutil"
+	"berty.tech/berty/v2/go/internal/tinder"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	orbitdb "berty.tech/go-orbit-db"
 )
@@ -46,18 +46,18 @@ func DBForTests(t testing.TB, logger *zap.Logger) (*gorm.DB, func()) {
 	}
 }
 
-func TestHelperNewReplicationService(ctx context.Context, t *testing.T, logger *zap.Logger, mn libp2p_mocknet.Mocknet, rdvp peer.AddrInfo, ds datastore.Batching, db *gorm.DB) (*replicationService, context.CancelFunc) {
+func TestHelperNewReplicationService(ctx context.Context, t *testing.T, logger *zap.Logger, mn libp2p_mocknet.Mocknet, msrv *tinder.MockDriverServer, ds datastore.Batching, db *gorm.DB) *replicationService {
 	t.Helper()
 
 	if ds == nil {
 		ds = ds_sync.MutexWrap(datastore.NewMapDatastore())
 	}
 
-	api, cleanup := ipfsutil.TestingCoreAPIUsingMockNet(ctx, t, &ipfsutil.TestingAPIOpts{
-		Logger:    logger,
-		Mocknet:   mn,
-		RDVPeer:   rdvp,
-		Datastore: ds,
+	api := ipfsutil.TestingCoreAPIUsingMockNet(ctx, t, &ipfsutil.TestingAPIOpts{
+		Logger:          logger,
+		Mocknet:         mn,
+		DiscoveryServer: msrv,
+		Datastore:       ds,
 	})
 	odb, err := bertyprotocol.NewBertyOrbitDB(ctx, api.API(), &bertyprotocol.NewOrbitDBOptions{
 		NewOrbitDBOptions: orbitdb.NewOrbitDBOptions{
@@ -74,7 +74,7 @@ func TestHelperNewReplicationService(ctx context.Context, t *testing.T, logger *
 	svc, ok := repl.(*replicationService)
 	require.True(t, ok)
 
-	return svc, cleanup
+	return svc
 }
 
 func NewReplicationMockedPeer(ctx context.Context, t *testing.T, secret []byte, sk ed25519.PublicKey, opts *bertyprotocol.TestingOpts) (*TestingReplicationPeer, func()) {
@@ -83,12 +83,9 @@ func NewReplicationMockedPeer(ctx context.Context, t *testing.T, secret []byte, 
 	_ = sk
 
 	db, cleanup := DBForTests(t, zap.NewNop())
-	replServ, cleanupReplMan := TestHelperNewReplicationService(ctx, t, opts.Logger, opts.Mocknet, opts.RDVPeer, nil, db)
+	replServ := TestHelperNewReplicationService(ctx, t, opts.Logger, opts.Mocknet, opts.DiscoveryServer, nil, db)
 
 	return &TestingReplicationPeer{
-			Service: replServ,
-		}, func() {
-			cleanupReplMan()
-			cleanup()
-		}
+		Service: replServ,
+	}, cleanup
 }

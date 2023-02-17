@@ -4,8 +4,6 @@ import (
 	"context"
 	crand "crypto/rand"
 	"encoding/base64"
-	"fmt"
-	"math/rand"
 	"testing"
 
 	rendezvous "github.com/berty/go-libp2p-rendezvous"
@@ -15,15 +13,14 @@ import (
 	ipfs_cfg "github.com/ipfs/kubo/config"
 	ipfs_core "github.com/ipfs/kubo/core"
 	ipfs_mock "github.com/ipfs/kubo/core/mock"
+	ipfs_p2p "github.com/ipfs/kubo/core/node/libp2p"
 	ipfs_repo "github.com/ipfs/kubo/repo"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	p2p_ci "github.com/libp2p/go-libp2p/core/crypto"
 	host "github.com/libp2p/go-libp2p/core/host"
 	p2pnetwork "github.com/libp2p/go-libp2p/core/network"
 	p2p_peer "github.com/libp2p/go-libp2p/core/peer"
-	"github.com/libp2p/go-libp2p/core/peerstore"
 	"github.com/libp2p/go-libp2p/core/protocol"
-	"github.com/libp2p/go-libp2p/core/routing"
 	p2p_mocknet "github.com/libp2p/go-libp2p/p2p/net/mock"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/zap"
@@ -108,16 +105,22 @@ func TestingRepo(t testing.TB, ctx context.Context, datastore ds.Datastore) ipfs
 }
 
 type TestingAPIOpts struct {
-	Logger    *zap.Logger
-	Mocknet   p2p_mocknet.Mocknet
-	RDVPeer   p2p_peer.AddrInfo
-	Datastore ds.Batching
+	Logger          *zap.Logger
+	Mocknet         p2p_mocknet.Mocknet
+	Datastore       ds.Batching
+	DiscoveryServer *tinder.MockDriverServer
 }
 
 // TestingCoreAPIUsingMockNet returns a fully initialized mocked Core API with the given mocknet
-func TestingCoreAPIUsingMockNet(ctx context.Context, t testing.TB, opts *TestingAPIOpts) (CoreAPIMock, func()) {
+func TestingCoreAPIUsingMockNet(ctx context.Context, t testing.TB, opts *TestingAPIOpts) CoreAPIMock {
 	if opts.Logger == nil {
 		opts.Logger = zap.NewNop()
+	}
+
+	msrv := opts.DiscoveryServer
+	if msrv == nil {
+		t.Log("warning: no discovery available")
+		msrv = tinder.NewMockDriverServer()
 	}
 
 	datastore := opts.Datastore
@@ -127,49 +130,30 @@ func TestingCoreAPIUsingMockNet(ctx context.Context, t testing.TB, opts *Testing
 
 	repo := TestingRepo(t, ctx, datastore)
 
-	var ps *pubsub.PubSub
-	var stinder *tinder.Service
-	var discAdaptater *tinder.DiscoveryAdaptater
-
-	configureRouting := func(h host.Host, r routing.Routing) error {
-		var err error
-		drivers := []tinder.IDriver{}
-		if opts.RDVPeer.ID != "" {
-			h.Peerstore().AddAddrs(opts.RDVPeer.ID, opts.RDVPeer.Addrs, peerstore.PermanentAddrTTL)
-			cl := rendezvous.NewSyncInMemClient(ctx, h)
-			ms := tinder.NewRendezvousDiscovery(opts.Logger.Named("rdvp"), h, opts.RDVPeer.ID, rendezvous.DefaultAddrFactory, rand.New(rand.NewSource(rand.Int63())), cl)
-			if _, err = opts.Mocknet.LinkPeers(h.ID(), opts.RDVPeer.ID); err != nil {
-				return err
-			}
-
-			drivers = append(drivers, ms)
-		}
-
-		if r != nil {
-			driver := tinder.NewRoutingDiscoveryDriver("dht", r)
-			drivers = append(drivers, driver)
-		}
-
-		// enable discovery monitor
-		stinder, err = tinder.NewService(h, opts.Logger, drivers...)
-		if err != nil {
-			return fmt.Errorf("unable to monitor discovery driver: %w", err)
-		}
-
-		discAdaptater = tinder.NewDiscoveryAdaptater(opts.Logger, stinder)
-		ps, err = pubsub.NewGossipSub(ctx, h, pubsub.WithDiscovery(discAdaptater))
-
-		return err
-	}
-
 	mrepo := ipfs_mobile.NewRepoMobile("", repo)
+	t.Cleanup(func() { mrepo.Close() })
+
 	mnode, err := NewIPFSMobile(ctx, mrepo, &MobileOptions{
-		HostOption:        ipfs_mock.MockHostOption(opts.Mocknet),
-		RoutingConfigFunc: configureRouting,
+		HostOption:    ipfs_mock.MockHostOption(opts.Mocknet),
+		RoutingOption: ipfs_p2p.NilRouterOption,
 		ExtraOpts: map[string]bool{
 			"pubsub": false,
 		},
 	})
+	t.Cleanup(func() { mnode.Close() })
+	h := mnode.PeerHost()
+
+	mockDriver := msrv.Client(h)
+
+	// enable discovery monitor
+	stinder, err := tinder.NewService(h, opts.Logger, mockDriver)
+	require.NoError(t, err)
+
+	discAdaptater := tinder.NewDiscoveryAdaptater(opts.Logger, stinder)
+	t.Cleanup(func() { discAdaptater.Close() })
+
+	ps, err := pubsub.NewGossipSub(ctx, h, pubsub.WithDiscovery(discAdaptater))
+	require.NoError(t, err)
 
 	require.NoError(t, err, "failed to initialize IPFS node mock")
 	require.NotNil(t, ps, "pubsub should not be nil")
@@ -190,41 +174,24 @@ func TestingCoreAPIUsingMockNet(ctx context.Context, t testing.TB, opts *Testing
 		tinder:  stinder,
 	}
 
-	return api, func() {
-		if discAdaptater != nil {
-			discAdaptater.Close()
-		}
-
-		_ = mnode.Close()
-		_ = mnode.PeerHost().Close()
-		_ = repo.Close()
-	}
+	return api
 }
 
 // TestingCoreAPI returns a fully initialized mocked Core API.
 // If you want to do some tests involving multiple peers you should use
 // `TestingCoreAPIUsingMockNet` with the same mocknet instead.
-func TestingCoreAPI(ctx context.Context, t testing.TB) (CoreAPIMock, func()) {
+func TestingCoreAPI(ctx context.Context, t testing.TB) CoreAPIMock {
 	t.Helper()
 
 	m := p2p_mocknet.New()
-	defer m.Close()
+	t.Cleanup(func() { m.Close() })
 
-	rdvPeer, err := m.GenPeer()
-	require.NoError(t, err)
-
-	_, cleanrdvp := TestingRDVP(ctx, t, rdvPeer)
-	api, cleanapi := TestingCoreAPIUsingMockNet(ctx, t, &TestingAPIOpts{
-		Mocknet: m,
-		RDVPeer: rdvPeer.Network().Peerstore().PeerInfo(rdvPeer.ID()),
+	api := TestingCoreAPIUsingMockNet(ctx, t, &TestingAPIOpts{
+		Mocknet:         m,
+		DiscoveryServer: tinder.NewMockDriverServer(),
 	})
 
-	cleanup := func() {
-		cleanapi()
-		cleanrdvp()
-		_ = rdvPeer.Close()
-	}
-	return api, cleanup
+	return api
 }
 
 func TestingRDVP(ctx context.Context, t testing.TB, h host.Host) (*rendezvous.RendezvousService, func()) {

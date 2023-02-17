@@ -13,6 +13,7 @@ import (
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/internal/rendezvous"
 	"berty.tech/berty/v2/go/internal/testutil"
+	"berty.tech/berty/v2/go/internal/tinder"
 )
 
 func TestAnnounceWatchForPeriod(t *testing.T) {
@@ -48,27 +49,18 @@ func TestAnnounceWatchForPeriod(t *testing.T) {
 			defer cancel()
 
 			mn := p2pmocknet.New()
-			rdvp, err := mn.GenPeer()
-			require.NoError(t, err, "failed to generate mocked peer")
-
-			defer rdvp.Close()
-
-			_, rdv_cleanup := ipfsutil.TestingRDVP(ctx, t, rdvp)
-			defer rdv_cleanup()
+			defer mn.Close()
 
 			opts := &ipfsutil.TestingAPIOpts{
-				Logger:  logger,
-				Mocknet: mn,
-				RDVPeer: rdvp.Peerstore().PeerInfo(rdvp.ID()),
+				Logger:          logger,
+				Mocknet:         mn,
+				DiscoveryServer: tinder.NewMockDriverServer(),
 			}
 
-			apiA, cleanup := ipfsutil.TestingCoreAPIUsingMockNet(ctx, t, opts)
-			defer cleanup()
+			apiA := ipfsutil.TestingCoreAPIUsingMockNet(ctx, t, opts)
+			apiB := ipfsutil.TestingCoreAPIUsingMockNet(ctx, t, opts)
 
-			apiB, cleanup := ipfsutil.TestingCoreAPIUsingMockNet(ctx, t, opts)
-			defer cleanup()
-
-			err = mn.LinkAll()
+			err := mn.LinkAll()
 			require.NoError(t, err)
 			err = mn.ConnectAllButSelf()
 			require.NoError(t, err)

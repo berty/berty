@@ -164,16 +164,16 @@ func testMemberStore(t *testing.T, memberCount, deviceCount int) {
 	}
 }
 
-func ipfsAPIUsingMockNet(ctx context.Context, t *testing.T) (ipfsutil.ExtendedCoreAPI, func()) {
+func ipfsAPIUsingMockNet(ctx context.Context, t *testing.T) ipfsutil.ExtendedCoreAPI {
 	ipfsopts := &ipfsutil.TestingAPIOpts{
 		Logger:    zap.NewNop(),
 		Mocknet:   libp2p_mocknet.New(),
 		Datastore: ds_sync.MutexWrap(datastore.NewMapDatastore()),
 	}
 
-	node, cleanupNode := ipfsutil.TestingCoreAPIUsingMockNet(ctx, t, ipfsopts)
+	node := ipfsutil.TestingCoreAPIUsingMockNet(ctx, t, ipfsopts)
 
-	return node.API(), cleanupNode
+	return node.API()
 }
 
 func TestFlappyMetadataRendezvousPointLifecycle(t *testing.T) {
@@ -186,8 +186,7 @@ func TestFlappyMetadataRendezvousPointLifecycle(t *testing.T) {
 	peers, _, cleanup := CreatePeersWithGroupTest(ctx, t, "/tmp/member_test", 1, 1)
 	defer cleanup()
 
-	api, cleanupNode := ipfsAPIUsingMockNet(ctx, t)
-	defer cleanupNode()
+	api := ipfsAPIUsingMockNet(ctx, t)
 
 	ownCG, err := peers[0].DB.openAccountGroup(ctx, nil, api)
 	assert.NoError(t, err)
@@ -259,8 +258,7 @@ func TestMetadataContactLifecycle(t *testing.T) {
 		contacts = make([]*protocoltypes.ShareableContact, peersCount)
 	)
 
-	api, cleanupNode := ipfsAPIUsingMockNet(ctx, t)
-	defer cleanupNode()
+	api := ipfsAPIUsingMockNet(ctx, t)
 
 	for i, p := range peers {
 		ownCG[i], err = p.DB.openAccountGroup(ctx, nil, api)
@@ -569,8 +567,7 @@ func TestMetadataGroupsLifecycle(t *testing.T) {
 	peers, _, cleanup := CreatePeersWithGroupTest(ctx, t, "/tmp/member_test", 1, 1)
 	defer cleanup()
 
-	api, cleanupNode := ipfsAPIUsingMockNet(ctx, t)
-	defer cleanupNode()
+	api := ipfsAPIUsingMockNet(ctx, t)
 
 	ownCG, err := peers[0].DB.openAccountGroup(ctx, nil, api)
 	assert.NoError(t, err)
@@ -694,8 +691,7 @@ func TestFlappyMultiDevices_Basic(t *testing.T) {
 	peers, _, cleanup := CreatePeersWithGroupTest(ctx, t, "/tmp/multidevices_test", memberCount, deviceCount)
 	defer cleanup()
 
-	api, cleanupNode := ipfsAPIUsingMockNet(ctx, t)
-	defer cleanupNode()
+	api := ipfsAPIUsingMockNet(ctx, t)
 	// make peer index
 	pi := [][]int{}
 	for i := 0; i < memberCount; i++ {

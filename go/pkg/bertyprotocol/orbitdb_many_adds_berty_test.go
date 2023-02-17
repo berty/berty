@@ -110,24 +110,10 @@ func testAddBerty(ctx context.Context, t *testing.T, node ipfsutil.CoreAPIMock, 
 }
 
 func TestAddBerty(t *testing.T) {
-	// var rLimit syscall.Rlimit
-	//
-	// if err := syscall.Getrlimit(syscall.RLIMIT_NOFILE, &rLimit); err != nil {
-	// 	t.Fatalf("Error getting rlimit %v", err)
-	// }
-	//
-	// rLimit.Max = 100
-	// rLimit.Cur = 100
-	//
-	// if err := syscall.Setrlimit(syscall.RLIMIT_NOFILE, &rLimit); err != nil {
-	// 	t.Fatalf("Error setting rlimit %v", err)
-	// }
-	//
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	api, cleanup := ipfsutil.TestingCoreAPI(ctx, t)
-	defer cleanup()
+	api := ipfsutil.TestingCoreAPI(ctx, t)
 
 	pathBase, err := ioutil.TempDir("", "manyaddstest")
 	if err != nil {

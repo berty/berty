@@ -83,7 +83,6 @@ func (s *MockDriverServer) Exist(topic string, p peer.ID) (ok bool) {
 }
 
 func (s *MockDriverServer) Subscribe(ctx context.Context, topic string, buffsize int) <-chan peer.AddrInfo {
-	// subtract 500ms to make sure to avoid data race and miss some event
 	s.mx.Lock()
 	defer s.mx.Unlock()
 

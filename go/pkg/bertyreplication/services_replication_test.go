@@ -20,6 +20,7 @@ import (
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/internal/messengerutil"
 	"berty.tech/berty/v2/go/internal/testutil"
+	"berty.tech/berty/v2/go/internal/tinder"
 	"berty.tech/berty/v2/go/pkg/authtypes"
 	"berty.tech/berty/v2/go/pkg/bertyauth"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
@@ -33,15 +34,17 @@ import (
 func TestNewReplicationService(t *testing.T) {
 	t.Skip("replication is not working, skipping for now")
 
-	ctx, cancel, mn, rdvp := bertyprotocol.TestHelperIPFSSetUp(t)
+	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
+	mn := mocknet.New()
+	defer mn.Close()
+
 	ds := dssync.MutexWrap(datastore.NewMapDatastore())
-	api, cleanup := ipfsutil.TestingCoreAPIUsingMockNet(ctx, t, &ipfsutil.TestingAPIOpts{
-		Mocknet: mn,
-		RDVPeer: rdvp.Peerstore().PeerInfo(rdvp.ID()),
+	api := ipfsutil.TestingCoreAPIUsingMockNet(ctx, t, &ipfsutil.TestingAPIOpts{
+		Mocknet:         mn,
+		DiscoveryServer: tinder.NewMockDriverServer(),
 	})
-	defer cleanup()
 
 	orbitdbCache := bertyprotocol.NewOrbitDatastoreCache(ds)
 
@@ -64,14 +67,18 @@ func TestNewReplicationService(t *testing.T) {
 func TestReplicationService_GroupSubscribe(t *testing.T) {
 	t.Skip("replication is not working, skipping for now")
 
-	ctx, cancel, mn, rdvp := bertyprotocol.TestHelperIPFSSetUp(t)
+	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
+
+	mn := mocknet.New()
+	defer mn.Close()
+
+	msrv := tinder.NewMockDriverServer()
 
 	db, cleanup := bertyreplication.DBForTests(t, zap.NewNop())
 	defer cleanup()
 
-	repl, cancel := bertyreplication.TestHelperNewReplicationService(ctx, t, nil, mn, rdvp.Peerstore().PeerInfo(rdvp.ID()), nil, db)
-	defer cancel()
+	repl := bertyreplication.TestHelperNewReplicationService(ctx, t, nil, mn, msrv, nil, db)
 
 	g, _, err := bertyprotocol.NewGroupMultiMember()
 	require.NoError(t, err)
@@ -95,14 +102,18 @@ func TestReplicationService_GroupRegister(t *testing.T) {
 
 	ds := dssync.MutexWrap(datastore.NewMapDatastore())
 
-	ctx, cancel, mn, rdvp := bertyprotocol.TestHelperIPFSSetUp(t)
+	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
+
+	mn := mocknet.New()
+	defer mn.Close()
+
+	msrv := tinder.NewMockDriverServer()
 
 	db, cleanup := bertyreplication.DBForTests(t, zap.NewNop())
 	defer cleanup()
 
-	repl, cancel := bertyreplication.TestHelperNewReplicationService(ctx, t, nil, mn, rdvp.Peerstore().PeerInfo(rdvp.ID()), ds, db)
-	defer cancel()
+	repl := bertyreplication.TestHelperNewReplicationService(ctx, t, nil, mn, msrv, ds, db)
 
 	g, _, err := bertyprotocol.NewGroupMultiMember()
 	require.NoError(t, err)
@@ -129,8 +140,7 @@ func TestReplicationService_GroupRegister(t *testing.T) {
 	cancel()
 
 	// Test reopening the replication manager, the previously registered group should be present
-	repl, cancel = bertyreplication.TestHelperNewReplicationService(ctx, t, nil, mn, rdvp.Peerstore().PeerInfo(rdvp.ID()), ds, db)
-	defer cancel()
+	repl = bertyreplication.TestHelperNewReplicationService(ctx, t, nil, mn, msrv, ds, db)
 
 	ok := repl.OrbitDB().IsGroupLoaded(g.GroupIDAsString())
 	require.True(t, ok)
@@ -141,27 +151,30 @@ func TestReplicationService_ReplicateGroupStats_ReplicateGlobalStats(t *testing.
 
 	ds := dssync.MutexWrap(datastore.NewMapDatastore())
 
-	ctx, cancel, mn, rdvp := bertyprotocol.TestHelperIPFSSetUp(t)
+	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
+
+	mn := mocknet.New()
+	defer mn.Close()
+
+	msrv := tinder.NewMockDriverServer()
 
 	peer1DS := dssync.MutexWrap(datastore.NewMapDatastore())
 
 	ipfsOpts1 := &ipfsutil.TestingAPIOpts{
-		Logger:    zap.NewNop(),
-		Mocknet:   mn,
-		RDVPeer:   rdvp.Peerstore().PeerInfo(rdvp.ID()),
-		Datastore: datastoreutil.NewNamespacedDatastore(peer1DS, datastore.NewKey("peer1")),
+		Logger:          zap.NewNop(),
+		Mocknet:         mn,
+		DiscoveryServer: msrv,
+		Datastore:       datastoreutil.NewNamespacedDatastore(peer1DS, datastore.NewKey("peer1")),
 	}
 
-	api1, cleanupAPI1 := ipfsutil.TestingCoreAPIUsingMockNet(ctx, t, ipfsOpts1)
+	api1 := ipfsutil.TestingCoreAPIUsingMockNet(ctx, t, ipfsOpts1)
 	odb1 := bertyprotocol.NewTestOrbitDB(ctx, t, zap.NewNop(), api1, ipfsOpts1.Datastore)
-	defer cleanupAPI1()
 
 	db, cleanup := bertyreplication.DBForTests(t, zap.NewNop())
 	defer cleanup()
 
-	repl, cancel := bertyreplication.TestHelperNewReplicationService(ctx, t, nil, mn, rdvp.Peerstore().PeerInfo(rdvp.ID()), ds, db)
-	defer cancel()
+	repl := bertyreplication.TestHelperNewReplicationService(ctx, t, nil, mn, msrv, ds, db)
 
 	require.NoError(t, mn.LinkAll())
 	require.NoError(t, mn.ConnectAllButSelf())
@@ -193,20 +206,20 @@ func TestReplicationService_ReplicateGroupStats_ReplicateGlobalStats(t *testing.
 	require.Equal(t, int64(0), globalStats.TotalMetadataEntries)
 	require.Equal(t, int64(0), globalStats.TotalMessageEntries)
 
-	res, err := repl.ReplicateGroupStats(ctx, &replicationtypes.ReplicateGroupStats_Request{})
+	_, err = repl.ReplicateGroupStats(ctx, &replicationtypes.ReplicateGroupStats_Request{})
 	require.Error(t, err)
 
-	res, err = repl.ReplicateGroupStats(ctx, &replicationtypes.ReplicateGroupStats_Request{
+	_, err = repl.ReplicateGroupStats(ctx, &replicationtypes.ReplicateGroupStats_Request{
 		GroupPublicKey: messengerutil.B64EncodeBytes([]byte("invalid_pk")),
 	})
 	require.Error(t, err)
 
-	res, err = repl.ReplicateGroupStats(ctx, &replicationtypes.ReplicateGroupStats_Request{
+	res, err := repl.ReplicateGroupStats(ctx, &replicationtypes.ReplicateGroupStats_Request{
 		GroupPublicKey: messengerutil.B64EncodeBytes(replGroup.PublicKey),
 	})
 	require.NoError(t, err)
 
-	t.Log(fmt.Sprintf("%+v", res.GetGroup()))
+	t.Logf("%+v", res.GetGroup())
 
 	require.Equal(t, messengerutil.B64EncodeBytes(replGroup.PublicKey), res.Group.PublicKey)
 	require.Equal(t, "", res.Group.SignPub)
@@ -254,7 +267,7 @@ func TestReplicationService_ReplicateGroupStats_ReplicateGlobalStats(t *testing.
 	})
 	require.NoError(t, err)
 
-	t.Log(fmt.Sprintf("%+v", res.GetGroup()))
+	t.Logf("%+v", res.GetGroup())
 
 	require.Equal(t, messengerutil.B64EncodeBytes(replGroup.PublicKey), res.Group.PublicKey)
 	require.Equal(t, "", res.Group.SignPub)
@@ -299,7 +312,7 @@ func TestReplicationService_ReplicateGroupStats_ReplicateGlobalStats(t *testing.
 	})
 	require.NoError(t, err)
 
-	t.Log(fmt.Sprintf("%+v", res.GetGroup()))
+	t.Logf("%+v", res.GetGroup())
 
 	require.Equal(t, messengerutil.B64EncodeBytes(replGroup.PublicKey), res.Group.PublicKey)
 	require.Equal(t, "", res.Group.SignPub)
@@ -344,7 +357,7 @@ func TestReplicationService_ReplicateGroupStats_ReplicateGlobalStats(t *testing.
 	})
 	require.NoError(t, err)
 
-	t.Log(fmt.Sprintf("%+v", res.GetGroup()))
+	t.Logf("%+v", res.GetGroup())
 
 	require.Equal(t, messengerutil.B64EncodeBytes(replGroup.PublicKey), res.Group.PublicKey)
 	require.Equal(t, "", res.Group.SignPub)
@@ -366,6 +379,7 @@ func TestReplicationService_Flow(t *testing.T) {
 
 	logger, cleanup := testutil.Logger(t)
 	defer cleanup()
+
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
@@ -384,6 +398,8 @@ func TestReplicationService_Flow(t *testing.T) {
 	mn := mocknet.New()
 	defer mn.Close()
 
+	msrv := tinder.NewMockDriverServer()
+
 	rdvp, err := mn.GenPeer()
 	require.NoError(t, err, "failed to generate mocked peer")
 
@@ -393,30 +409,30 @@ func TestReplicationService_Flow(t *testing.T) {
 	defer cleanrdvp()
 
 	ipfsOpts1 := &ipfsutil.TestingAPIOpts{
-		Logger:    logger,
-		Mocknet:   mn,
-		RDVPeer:   rdvp.Peerstore().PeerInfo(rdvp.ID()),
-		Datastore: datastoreutil.NewNamespacedDatastore(baseDS, datastore.NewKey("peer1")),
+		Logger:          logger,
+		Mocknet:         mn,
+		DiscoveryServer: msrv,
+		Datastore:       datastoreutil.NewNamespacedDatastore(baseDS, datastore.NewKey("peer1")),
 	}
 
 	ipfsOpts2 := &ipfsutil.TestingAPIOpts{
-		Logger:    logger,
-		Mocknet:   mn,
-		RDVPeer:   rdvp.Peerstore().PeerInfo(rdvp.ID()),
-		Datastore: datastoreutil.NewNamespacedDatastore(baseDS, datastore.NewKey("peer2")),
+		Logger:          logger,
+		Mocknet:         mn,
+		DiscoveryServer: msrv,
+		Datastore:       datastoreutil.NewNamespacedDatastore(baseDS, datastore.NewKey("peer2")),
 	}
 
 	require.NoError(t, mn.ConnectAllButSelf())
 
-	api1, cleanupAPI1 := ipfsutil.TestingCoreAPIUsingMockNet(ctx, t, ipfsOpts1)
+	api1 := ipfsutil.TestingCoreAPIUsingMockNet(ctx, t, ipfsOpts1)
 	odb1 := bertyprotocol.NewTestOrbitDB(ctx, t, logger, api1, ipfsOpts1.Datastore)
-	api2, cleanupAPI2 := ipfsutil.TestingCoreAPIUsingMockNet(ctx, t, ipfsOpts2)
+	api2 := ipfsutil.TestingCoreAPIUsingMockNet(ctx, t, ipfsOpts2)
 	odb2 := bertyprotocol.NewTestOrbitDB(ctx, t, logger, api2, ipfsOpts2.Datastore)
 
 	tokenSecret, tokenPK, _ := bertyauth.HelperGenerateTokenIssuerSecrets(t)
 	replPeer, cancel := bertyreplication.NewReplicationMockedPeer(ctx, t, tokenSecret, tokenPK, &bertyprotocol.TestingOpts{
-		Mocknet: mn,
-		RDVPeer: rdvp.Peerstore().PeerInfo(rdvp.ID()),
+		Mocknet:         mn,
+		DiscoveryServer: msrv,
 	})
 	defer cancel()
 
@@ -506,8 +522,6 @@ func TestReplicationService_Flow(t *testing.T) {
 		assert.Equal(t, 2, len(ops2))
 
 		odb2.Close()
-		cleanupAPI2()
-
 	}
 	t.Log(" --- Sent sync messages ---")
 	t.Log(" --- Closed peer 2 ---")
@@ -549,15 +563,13 @@ func TestReplicationService_Flow(t *testing.T) {
 		require.NoError(t, err)
 
 		odb1.Close()
-		cleanupAPI1()
 	}
 	t.Log(" --- Sent async messages, should be replicated on service ---")
 	t.Log(" --- Closed peer 1 ---")
 
 	t.Log(" --- Opening peer 2, and its db ---")
 	{
-		api2, cleanupAPI2 = ipfsutil.TestingCoreAPIUsingMockNet(ctx, t, ipfsOpts2)
-		defer cleanupAPI2()
+		api2 = ipfsutil.TestingCoreAPIUsingMockNet(ctx, t, ipfsOpts2)
 
 		odb2 = bertyprotocol.NewTestOrbitDB(ctx, t, logger, api2, ipfsOpts2.Datastore)
 		defer odb2.Close()
@@ -630,18 +642,12 @@ func TestReplicationService_InvalidFlow(t *testing.T) {
 	mn := mocknet.New()
 	defer mn.Close()
 
-	rdvp, err := mn.GenPeer()
-	require.NoError(t, err, "failed to generate mocked peer")
-
-	defer rdvp.Close()
-
-	_, cleanrdvp := ipfsutil.TestingRDVP(ctx, t, rdvp)
-	defer cleanrdvp()
+	msrv := tinder.NewMockDriverServer()
 
 	tokenSecret, tokenPK, _ := bertyauth.HelperGenerateTokenIssuerSecrets(t)
 	replPeer, cancel := bertyreplication.NewReplicationMockedPeer(ctx, t, tokenSecret, tokenPK, &bertyprotocol.TestingOpts{
-		Mocknet: mn,
-		RDVPeer: rdvp.Peerstore().PeerInfo(rdvp.ID()),
+		Mocknet:         mn,
+		DiscoveryServer: msrv,
 	})
 	defer cancel()
 

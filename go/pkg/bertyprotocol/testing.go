@@ -12,7 +12,6 @@ import (
 	ds_sync "github.com/ipfs/go-datastore/sync"
 	keystore "github.com/ipfs/go-ipfs-keystore"
 	"github.com/libp2p/go-libp2p/core/crypto"
-	"github.com/libp2p/go-libp2p/core/host"
 	"github.com/libp2p/go-libp2p/core/peer"
 	libp2p_mocknet "github.com/libp2p/go-libp2p/p2p/net/mock"
 	"github.com/stretchr/testify/assert"
@@ -24,23 +23,10 @@ import (
 	"berty.tech/berty/v2/go/internal/datastoreutil"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/internal/testutil"
+	"berty.tech/berty/v2/go/internal/tinder"
 	orbitdb "berty.tech/go-orbit-db"
 	"berty.tech/go-orbit-db/pubsub/pubsubraw"
 )
-
-func TestHelperIPFSSetUp(t *testing.T) (context.Context, context.CancelFunc, libp2p_mocknet.Mocknet, host.Host) {
-	t.Helper()
-
-	ctx, cancel := context.WithCancel(context.Background())
-
-	mn := libp2p_mocknet.New()
-	t.Cleanup(func() { mn.Close() })
-
-	rdvp, err := mn.GenPeer()
-	require.NoError(t, err, "failed to generate mocked peer")
-
-	return ctx, cancel, mn, rdvp
-}
 
 func NewTestOrbitDB(ctx context.Context, t *testing.T, logger *zap.Logger, node ipfsutil.CoreAPIMock, baseDS datastore.Batching) *BertyOrbitDB {
 	t.Helper()
@@ -93,14 +79,14 @@ type TestingProtocol struct {
 }
 
 type TestingOpts struct {
-	Logger         *zap.Logger
-	Mocknet        libp2p_mocknet.Mocknet
-	RDVPeer        peer.AddrInfo
-	DeviceKeystore cryptoutil.DeviceKeystore
-	CoreAPIMock    ipfsutil.CoreAPIMock
-	OrbitDB        *BertyOrbitDB
-	ConnectFunc    ConnectTestingProtocolFunc
-	PushSK         *[32]byte
+	Logger          *zap.Logger
+	Mocknet         libp2p_mocknet.Mocknet
+	DiscoveryServer *tinder.MockDriverServer
+	DeviceKeystore  cryptoutil.DeviceKeystore
+	CoreAPIMock     ipfsutil.CoreAPIMock
+	OrbitDB         *BertyOrbitDB
+	ConnectFunc     ConnectTestingProtocolFunc
+	PushSK          *[32]byte
 }
 
 func NewTestingProtocol(ctx context.Context, t testing.TB, opts *TestingOpts, ds datastore.Batching) (*TestingProtocol, func()) {
@@ -114,21 +100,22 @@ func NewTestingProtocol(ctx context.Context, t testing.TB, opts *TestingOpts, ds
 	}
 
 	ipfsopts := &ipfsutil.TestingAPIOpts{
-		Logger:    opts.Logger,
-		Mocknet:   opts.Mocknet,
-		RDVPeer:   opts.RDVPeer,
-		Datastore: ds,
+		Logger:          opts.Logger,
+		Mocknet:         opts.Mocknet,
+		DiscoveryServer: opts.DiscoveryServer,
+		Datastore:       ds,
 	}
 
 	node := opts.CoreAPIMock
-	cleanupNode := func() {}
 	if node == nil {
-		node, cleanupNode = ipfsutil.TestingCoreAPIUsingMockNet(ctx, t, ipfsopts)
+		node = ipfsutil.TestingCoreAPIUsingMockNet(ctx, t, ipfsopts)
 	}
 
 	deviceKeystore := opts.DeviceKeystore
 	if deviceKeystore == nil {
-		deviceKeystore = cryptoutil.NewDeviceKeystore(ipfsutil.NewDatastoreKeystore(datastoreutil.NewNamespacedDatastore(ds, datastore.NewKey(NamespaceDeviceKeystore))), nil)
+		deviceKeystore = cryptoutil.NewDeviceKeystore(
+			ipfsutil.NewDatastoreKeystore(datastoreutil.NewNamespacedDatastore(ds, datastore.NewKey(NamespaceDeviceKeystore))),
+			nil)
 	}
 
 	odb := opts.OrbitDB
@@ -204,7 +191,6 @@ func NewTestingProtocol(ctx context.Context, t testing.TB, opts *TestingOpts, ds
 		server.Stop()
 		cleanupClient()
 		cleanupService()
-		cleanupNode()
 	}
 	return tp, cleanup
 }
@@ -233,22 +219,9 @@ func NewTestingProtocolWithMockedPeers(ctx context.Context, t testing.TB, opts *
 		ds = ds_sync.MutexWrap(datastore.NewMapDatastore())
 	}
 
-	cleanupRDVP := func() {}
-	closeRDVP := func() error { return nil }
-
-	if opts.RDVPeer.ID == "" {
-		rdvpeer, err := opts.Mocknet.GenPeer()
-		require.NoError(t, err)
-		require.NotNil(t, rdvpeer)
-
-		_, cleanupRDVP = ipfsutil.TestingRDVP(ctx, t, rdvpeer)
-		closeRDVP = rdvpeer.Close
-
-		opts.RDVPeer = rdvpeer.Peerstore().PeerInfo(rdvpeer.ID())
+	if opts.DiscoveryServer == nil {
+		opts.DiscoveryServer = tinder.NewMockDriverServer()
 	}
-
-	rdvpnet := opts.Mocknet.Net(opts.RDVPeer.ID)
-	require.NotNil(t, rdvpnet)
 
 	cls := make([]func(), amount)
 	tps := make([]*TestingProtocol, amount)
@@ -262,25 +235,10 @@ func NewTestingProtocolWithMockedPeers(ctx context.Context, t testing.TB, opts *
 
 	opts.ConnectFunc(t, opts.Mocknet)
 
-	for _, net := range opts.Mocknet.Nets() {
-		if net != rdvpnet {
-			_, err := opts.Mocknet.LinkNets(net, rdvpnet)
-			assert.NoError(t, err)
-
-			_, err = opts.Mocknet.ConnectNets(net, rdvpnet)
-			assert.NoError(t, err)
-		}
-	}
-
 	cleanup := func() {
 		for i := range cls {
 			cls[i]()
 		}
-
-		cleanupRDVP()
-
-		rdvpnet.Close()
-		closeRDVP()
 	}
 	return tps, cleanup
 }
@@ -293,11 +251,9 @@ func TestingService(ctx context.Context, t testing.TB, opts Opts) (Service, func
 		opts.Logger = zap.NewNop()
 	}
 
-	cleanupNode := func() {}
-
 	if opts.IpfsCoreAPI == nil {
 		var mn ipfsutil.CoreAPIMock
-		mn, cleanupNode = ipfsutil.TestingCoreAPI(ctx, t)
+		mn = ipfsutil.TestingCoreAPI(ctx, t)
 		opts.IpfsCoreAPI = mn.API()
 	}
 
@@ -308,7 +264,6 @@ func TestingService(ctx context.Context, t testing.TB, opts Opts) (Service, func
 
 	cleanup := func() {
 		service.Close()
-		cleanupNode()
 	}
 
 	return service, cleanup
@@ -390,22 +345,17 @@ func CreatePeersWithGroupTest(ctx context.Context, t testing.TB, pathBase string
 	mn := libp2p_mocknet.New()
 	t.Cleanup(func() { mn.Close() })
 
-	rdvp, err := mn.GenPeer()
-	require.NoError(t, err, "failed to generate mocked peer")
-
-	_, cleanuprdvp := ipfsutil.TestingRDVP(ctx, t, rdvp)
-
 	ipfsopts := ipfsutil.TestingAPIOpts{
-		Logger:  logger,
-		Mocknet: mn,
-		RDVPeer: rdvp.Peerstore().PeerInfo(rdvp.ID()),
+		Logger:          logger,
+		Mocknet:         mn,
+		DiscoveryServer: tinder.NewMockDriverServer(),
 	}
 	deviceIndex := 0
 
 	cls := make([]func(), memberCount)
 	for i := 0; i < memberCount; i++ {
 		for j := 0; j < deviceCount; j++ {
-			ca, cleanupNode := ipfsutil.TestingCoreAPIUsingMockNet(ctx, t, &ipfsopts)
+			ca := ipfsutil.TestingCoreAPIUsingMockNet(ctx, t, &ipfsopts)
 
 			if j == 0 {
 				devKS = cryptoutil.NewDeviceKeystore(keystore.NewMemKeystore(), nil)
@@ -462,7 +412,6 @@ func CreatePeersWithGroupTest(ctx context.Context, t testing.TB, pathBase string
 					assert.NoError(t, err)
 				}
 
-				cleanupNode()
 				cleanupMessageKeystore()
 			}
 
@@ -478,10 +427,7 @@ func CreatePeersWithGroupTest(ctx context.Context, t testing.TB, pathBase string
 			cleanup()
 		}
 
-		cleanuprdvp()
 		cleanupLogger()
-
-		_ = rdvp.Close()
 	}
 }
 
