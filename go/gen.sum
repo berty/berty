@@ -1,5 +1,5 @@
 a9af891326f09ad6b03caab4b878b10af58ef05f  ../api/accounttypes/accounttypes.proto
-486f62176b5670aad95237f29cea11d16cbc9fa1  ../api/berty/errcode.proto
+e53f08e68280e1d345b419731c6a13c26c7890a5  ../api/berty/errcode.proto
 37a8eae718cea9f59591bc32797f7e9974dd12da  ../api/bertybridge/bertybridge.proto
 f61e300fb23e02f14c27147496286e3e8daa7a6a  ../api/directorytypes/bertydirectory.proto
 851d354abf878a3afd1e1759511b7b3ce297330f  ../api/go-internal/testutil.proto

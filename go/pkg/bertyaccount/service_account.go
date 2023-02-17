@@ -30,6 +30,7 @@ import (
 	"berty.tech/weshnet/localization"
 	nb "berty.tech/weshnet/pkg/androidnearby"
 	"berty.tech/weshnet/pkg/ble-driver"
+	weshnet_errcode "berty.tech/weshnet/pkg/errcode"
 	"berty.tech/weshnet/pkg/logutil"
 	mc "berty.tech/weshnet/pkg/multipeer-connectivity-driver"
 	"berty.tech/weshnet/pkg/protocoltypes"
@@ -1308,7 +1309,7 @@ func (s *service) PushReceive(ctx context.Context, req *accounttypes.PushReceive
 		Logger: s.logger, ExcludedAccounts: excludedAccounts, Keystore: s.nativeKeystore,
 	})
 	if err != nil {
-		return nil, errcode.ErrPushUnableToDecrypt.Wrap(err)
+		return nil, weshnet_errcode.ErrPushUnableToDecrypt.Wrap(err)
 	}
 
 	pushData, err := bertypush.PushEnrich(rawPushData, accountData, s.logger)

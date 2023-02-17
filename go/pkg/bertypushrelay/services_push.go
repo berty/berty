@@ -13,6 +13,7 @@ import (
 
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/weshnet/pkg/cryptoutil"
+	weshnet_errcode "berty.tech/weshnet/pkg/errcode"
 	"berty.tech/weshnet/pkg/logutil"
 	"berty.tech/weshnet/pkg/protocoltypes"
 	"berty.tech/weshnet/pkg/pushtypes"
@@ -112,7 +113,7 @@ func InternalDecodeOpaqueReceiver(publicKey *[cryptoutil.KeySize]byte, privateKe
 	}
 
 	if _, ok := dispatchers[PushDispatcherKey(pushReceiver.TokenType, pushReceiver.BundleID)]; !ok {
-		return nil, errcode.ErrPushUnknownProvider.Wrap(fmt.Errorf("unsupported bundle id"))
+		return nil, weshnet_errcode.ErrPushUnknownProvider.Wrap(fmt.Errorf("unsupported bundle id"))
 	}
 
 	return pushReceiver, nil
@@ -150,7 +151,7 @@ func (d *pushService) sendSingle(rawPayload []byte, receiver *pushtypes.PushServ
 
 	dispatcher, ok := d.dispatchers[PushDispatcherKey(pushReceiver.TokenType, pushReceiver.BundleID)]
 	if !ok {
-		return errcode.ErrPushUnknownProvider.Wrap(fmt.Errorf("unsupported %s", PushDispatcherKey(pushReceiver.TokenType, pushReceiver.BundleID)))
+		return weshnet_errcode.ErrPushUnknownProvider.Wrap(fmt.Errorf("unsupported %s", PushDispatcherKey(pushReceiver.TokenType, pushReceiver.BundleID)))
 	}
 
 	payloadBytes, err := d.encryptPushPayloadForReceiver(rawPayload, pushReceiver.RecipientPublicKey)
@@ -159,7 +160,7 @@ func (d *pushService) sendSingle(rawPayload []byte, receiver *pushtypes.PushServ
 	}
 
 	if err := dispatcher.Dispatch(payloadBytes, pushReceiver); err != nil {
-		return errcode.ErrPushProvider.Wrap(err)
+		return weshnet_errcode.ErrPushProvider.Wrap(err)
 	}
 
 	return nil

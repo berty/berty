@@ -31,6 +31,7 @@ import (
 	mt "berty.tech/berty/v2/go/pkg/messengertypes"
 	"berty.tech/weshnet"
 	weshnet_push "berty.tech/weshnet/pkg/bertypush"
+	weshnet_errcode "berty.tech/weshnet/pkg/errcode"
 	"berty.tech/weshnet/pkg/lifecycle"
 	"berty.tech/weshnet/pkg/logutil"
 	"berty.tech/weshnet/pkg/protocoltypes"
@@ -479,12 +480,12 @@ func (svc *service) sharePushTokenForConversation(conversation *mt.Conversation)
 
 	if account.DevicePushToken == nil {
 		svc.logger.Warn("no push token known, won't share it")
-		return errcode.ErrPushUnknownDestination.Wrap(fmt.Errorf("no push token known, won't share it"))
+		return weshnet_errcode.ErrPushUnknownDestination.Wrap(fmt.Errorf("no push token known, won't share it"))
 	}
 
 	if account.DevicePushServer == nil {
 		svc.logger.Warn("no push server known, won't share push token")
-		return errcode.ErrPushUnknownProvider.Wrap(fmt.Errorf("no push server known, won't share push token"))
+		return weshnet_errcode.ErrPushUnknownProvider.Wrap(fmt.Errorf("no push server known, won't share push token"))
 	}
 
 	pushServer := &protocoltypes.PushServer{}

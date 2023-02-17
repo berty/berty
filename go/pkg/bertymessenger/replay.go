@@ -14,6 +14,7 @@ import (
 	"berty.tech/berty/v2/go/internal/messengerutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
+	weshnet_errcode "berty.tech/weshnet/pkg/errcode"
 	"berty.tech/weshnet/pkg/protocoltypes"
 	"berty.tech/weshnet/pkg/tyber"
 )
@@ -70,7 +71,7 @@ func replayLogsToDB(ctx context.Context, client protocoltypes.ProtocolServiceCli
 				GroupPK:   groupPK,
 				LocalOnly: true,
 			}); err != nil {
-				return errcode.ErrGroupActivate.Wrap(err)
+				return weshnet_errcode.ErrGroupActivate.Wrap(err)
 			}
 
 			if err := processMetadataList(groupPK, handler, client); err != nil {
@@ -88,7 +89,7 @@ func replayLogsToDB(ctx context.Context, client protocoltypes.ProtocolServiceCli
 			if _, err := client.DeactivateGroup(ctx, &protocoltypes.DeactivateGroup_Request{
 				GroupPK: groupPK,
 			}); err != nil {
-				return errcode.ErrGroupDeactivate.Wrap(err)
+				return weshnet_errcode.ErrGroupDeactivate.Wrap(err)
 			}
 		}
 	}

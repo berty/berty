@@ -15,6 +15,7 @@ import (
 	"berty.tech/go-orbit-db/iface"
 	"berty.tech/go-orbit-db/stores"
 	"berty.tech/weshnet/pkg/authtypes"
+	weshnet_errcode "berty.tech/weshnet/pkg/errcode"
 	"berty.tech/weshnet/pkg/protocoltypes"
 	"berty.tech/weshnet/pkg/replicationtypes"
 )
@@ -64,11 +65,11 @@ func (s *replicationService) ReplicateGroupStats(ctx context.Context, request *r
 
 func (s *replicationService) GroupRegister(token, tokenIssuer string, group *protocoltypes.Group) error {
 	if token == "" {
-		return errcode.ErrServiceReplication.Wrap(fmt.Errorf("missing token"))
+		return weshnet_errcode.ErrServiceReplication.Wrap(fmt.Errorf("missing token"))
 	}
 
 	if tokenIssuer == "" {
-		return errcode.ErrServiceReplication.Wrap(fmt.Errorf("missing token issuer"))
+		return weshnet_errcode.ErrServiceReplication.Wrap(fmt.Errorf("missing token issuer"))
 	}
 
 	pkStr := messengerutil.B64EncodeBytes(group.PublicKey)
