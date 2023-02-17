@@ -10,8 +10,8 @@ import (
 	libp2p_mocknet "github.com/libp2p/go-libp2p/p2p/net/mock"
 	"github.com/stretchr/testify/require"
 
-	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/internal/testutil"
+	"berty.tech/berty/v2/go/internal/tinder"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
 )
@@ -23,37 +23,33 @@ func TestReactivateAccountGroup(t *testing.T) {
 	logger, cleanup := testutil.Logger(t)
 	defer cleanup()
 
-	ctx, cancel, mn, rdvPeer := bertyprotocol.TestHelperIPFSSetUp(t)
-	defer cancel()
+	mn := libp2p_mocknet.New()
+	defer mn.Close()
 
-	// start RDVP server
-	_, cleanupRDVP := ipfsutil.TestingRDVP(ctx, t, rdvPeer)
-	closeRDVP := rdvPeer.Close
-	defer cleanupRDVP()
-	defer closeRDVP()
+	msrv := tinder.NewMockDriverServer()
 
 	// Setup 3 nodes
 	dsA := dsync.MutexWrap(ds.NewMapDatastore())
 	nodeA, closeNodeA := bertyprotocol.NewTestingProtocol(ctx, t, &bertyprotocol.TestingOpts{
-		Logger:  logger.Named("nodeA"),
-		Mocknet: mn,
-		RDVPeer: rdvPeer.Peerstore().PeerInfo(rdvPeer.ID()),
+		Logger:          logger.Named("nodeA"),
+		Mocknet:         mn,
+		DiscoveryServer: msrv,
 	}, dsA)
 	defer closeNodeA()
 
 	dsB := dsync.MutexWrap(ds.NewMapDatastore())
 	nodeB, closeNodeB := bertyprotocol.NewTestingProtocol(ctx, t, &bertyprotocol.TestingOpts{
-		Logger:  logger.Named("nodeB"),
-		Mocknet: mn,
-		RDVPeer: rdvPeer.Peerstore().PeerInfo(rdvPeer.ID()),
+		Logger:          logger.Named("nodeB"),
+		Mocknet:         mn,
+		DiscoveryServer: msrv,
 	}, dsB)
 	defer closeNodeB()
 
 	dsC := dsync.MutexWrap(ds.NewMapDatastore())
 	nodeC, closeNodeC := bertyprotocol.NewTestingProtocol(ctx, t, &bertyprotocol.TestingOpts{
-		Logger:  logger.Named("nodeC"),
-		Mocknet: mn,
-		RDVPeer: rdvPeer.Peerstore().PeerInfo(rdvPeer.ID()),
+		Logger:          logger.Named("nodeC"),
+		Mocknet:         mn,
+		DiscoveryServer: msrv,
 	}, dsC)
 	defer closeNodeC()
 
@@ -63,13 +59,6 @@ func TestReactivateAccountGroup(t *testing.T) {
 
 	err = mn.ConnectAllButSelf()
 	require.NoError(t, err)
-
-	for _, net := range mn.Nets() {
-		if net != rdvPeer.Network() {
-			_, err = mn.ConnectNets(net, rdvPeer.Network())
-			require.NoError(t, err)
-		}
-	}
 
 	// test communication between nodeA and nodeB
 	nodes := []*bertyprotocol.TestingProtocol{nodeA, nodeB}
@@ -107,29 +96,25 @@ func TestRaceReactivateAccountGroup(t *testing.T) {
 	logger, cleanup := testutil.Logger(t)
 	defer cleanup()
 
-	ctx, cancel, mn, rdvPeer := bertyprotocol.TestHelperIPFSSetUp(t)
-	defer cancel()
+	mn := libp2p_mocknet.New()
+	defer mn.Close()
 
-	// start RDVP server
-	_, cleanupRDVP := ipfsutil.TestingRDVP(ctx, t, rdvPeer)
-	closeRDVP := rdvPeer.Close
-	defer cleanupRDVP()
-	defer closeRDVP()
+	msrv := tinder.NewMockDriverServer()
 
 	// Setup 2 nodes
 	dsA := dsync.MutexWrap(ds.NewMapDatastore())
 	nodeA, closeNodeA := bertyprotocol.NewTestingProtocol(ctx, t, &bertyprotocol.TestingOpts{
-		Logger:  logger.Named("nodeA"),
-		Mocknet: mn,
-		RDVPeer: rdvPeer.Peerstore().PeerInfo(rdvPeer.ID()),
+		Logger:          logger.Named("nodeA"),
+		Mocknet:         mn,
+		DiscoveryServer: msrv,
 	}, dsA)
 	defer closeNodeA()
 
 	dsB := dsync.MutexWrap(ds.NewMapDatastore())
 	nodeB, closeNodeB := bertyprotocol.NewTestingProtocol(ctx, t, &bertyprotocol.TestingOpts{
-		Logger:  logger.Named("nodeB"),
-		Mocknet: mn,
-		RDVPeer: rdvPeer.Peerstore().PeerInfo(rdvPeer.ID()),
+		Logger:          logger.Named("nodeB"),
+		Mocknet:         mn,
+		DiscoveryServer: msrv,
 	}, dsB)
 	defer closeNodeB()
 
@@ -139,13 +124,6 @@ func TestRaceReactivateAccountGroup(t *testing.T) {
 
 	err = mn.ConnectAllButSelf()
 	require.NoError(t, err)
-
-	for _, net := range mn.Nets() {
-		if net != rdvPeer.Network() {
-			_, err = mn.ConnectNets(net, rdvPeer.Network())
-			require.NoError(t, err)
-		}
-	}
 
 	// reactivate nodeA account group
 	nodeACfg, err := nodeA.Client.InstanceGetConfiguration(ctx, &protocoltypes.InstanceGetConfiguration_Request{})

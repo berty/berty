@@ -2,6 +2,7 @@ package bertyprotocol
 
 import (
 	"archive/tar"
+	"context"
 	"io"
 	"io/ioutil"
 	"os"
@@ -11,25 +12,32 @@ import (
 	ds "github.com/ipfs/go-datastore"
 	dsync "github.com/ipfs/go-datastore/sync"
 	"github.com/libp2p/go-libp2p/core/crypto"
+	mocknet "github.com/libp2p/go-libp2p/p2p/net/mock"
 	"github.com/stretchr/testify/require"
 
 	"berty.tech/berty/v2/go/internal/cryptoutil"
 	"berty.tech/berty/v2/go/internal/datastoreutil"
 	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/internal/testutil"
+	"berty.tech/berty/v2/go/internal/tinder"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
 	orbitdb "berty.tech/go-orbit-db"
 	"berty.tech/go-orbit-db/pubsub/pubsubraw"
 )
 
 func Test_service_exportAccountKey(t *testing.T) {
-	ctx, cancel, mn, rdvPeer := TestHelperIPFSSetUp(t)
+	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
+
+	mn := mocknet.New()
+	defer mn.Close()
+
+	msrv := tinder.NewMockDriverServer()
 
 	dsA := dsync.MutexWrap(ds.NewMapDatastore())
 	nodeA, closeNodeA := NewTestingProtocol(ctx, t, &TestingOpts{
-		Mocknet: mn,
-		RDVPeer: rdvPeer.Peerstore().PeerInfo(rdvPeer.ID()),
+		Mocknet:         mn,
+		DiscoveryServer: msrv,
 	}, dsA)
 	defer closeNodeA()
 
@@ -74,13 +82,18 @@ func Test_service_exportAccountKey(t *testing.T) {
 }
 
 func Test_service_exportAccountProofKey(t *testing.T) {
-	ctx, cancel, mn, rdvPeer := TestHelperIPFSSetUp(t)
+	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
+
+	mn := mocknet.New()
+	defer mn.Close()
+
+	msrv := tinder.NewMockDriverServer()
 
 	dsA := dsync.MutexWrap(ds.NewMapDatastore())
 	nodeA, closeNodeA := NewTestingProtocol(ctx, t, &TestingOpts{
-		Mocknet: mn,
-		RDVPeer: rdvPeer.Peerstore().PeerInfo(rdvPeer.ID()),
+		Mocknet:         mn,
+		DiscoveryServer: msrv,
 	}, dsA)
 	defer closeNodeA()
 
@@ -124,11 +137,16 @@ func Test_service_exportAccountProofKey(t *testing.T) {
 func TestFlappyRestoreAccount(t *testing.T) {
 	testutil.FilterStability(t, testutil.Flappy)
 
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
 	logger, cleanup := testutil.Logger(t)
 	defer cleanup()
 
-	ctx, cancel, mn, rdvPeer := TestHelperIPFSSetUp(t)
-	defer cancel()
+	mn := mocknet.New()
+	defer mn.Close()
+
+	msrv := tinder.NewMockDriverServer()
 
 	tmpFile, err := ioutil.TempFile(os.TempDir(), "test-export-")
 	require.NoError(t, err)
@@ -145,7 +163,6 @@ func TestFlappyRestoreAccount(t *testing.T) {
 		dsA := dsync.MutexWrap(ds.NewMapDatastore())
 		nodeA, closeNodeA := NewTestingProtocol(ctx, t, &TestingOpts{
 			Mocknet: mn,
-			RDVPeer: rdvPeer.Peerstore().PeerInfo(rdvPeer.ID()),
 		}, dsA)
 
 		serviceA, ok := nodeA.Service.(*service)
@@ -200,12 +217,10 @@ func TestFlappyRestoreAccount(t *testing.T) {
 
 	{
 		dsB := dsync.MutexWrap(ds.NewMapDatastore())
-		ipfsNodeB, cleanupNodeB := ipfsutil.TestingCoreAPIUsingMockNet(ctx, t, &ipfsutil.TestingAPIOpts{
+		ipfsNodeB := ipfsutil.TestingCoreAPIUsingMockNet(ctx, t, &ipfsutil.TestingAPIOpts{
 			Mocknet:   mn,
-			RDVPeer:   rdvPeer.Peerstore().PeerInfo(rdvPeer.ID()),
 			Datastore: dsB,
 		})
-		defer cleanupNodeB()
 
 		dksB := cryptoutil.NewDeviceKeystore(ipfsutil.NewDatastoreKeystore(datastoreutil.NewNamespacedDatastore(dsB, ds.NewKey(NamespaceDeviceKeystore))), nil)
 
@@ -223,11 +238,11 @@ func TestFlappyRestoreAccount(t *testing.T) {
 		require.NoError(t, err)
 
 		nodeB, closeNodeB := NewTestingProtocol(ctx, t, &TestingOpts{
-			Mocknet:        mn,
-			RDVPeer:        rdvPeer.Peerstore().PeerInfo(rdvPeer.ID()),
-			DeviceKeystore: dksB,
-			CoreAPIMock:    ipfsNodeB,
-			OrbitDB:        odb,
+			Mocknet:         mn,
+			DiscoveryServer: msrv,
+			DeviceKeystore:  dksB,
+			CoreAPIMock:     ipfsNodeB,
+			OrbitDB:         odb,
 		}, dsB)
 		defer closeNodeB()
 

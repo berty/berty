@@ -15,6 +15,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"berty.tech/berty/v2/go/internal/ipfsutil"
+	"berty.tech/berty/v2/go/internal/tinder"
 )
 
 const testProtocolID = "/berty/handshake_test/1.0.0"
@@ -28,8 +29,6 @@ type mockedPeer struct {
 type mockedHandshake struct {
 	requester *mockedPeer
 	responder *mockedPeer
-
-	cleanup func()
 }
 
 type requesterTestFunc func(
@@ -45,18 +44,18 @@ type responderTestFunc func(
 	wg *sync.WaitGroup,
 )
 
-func newMockedPeer(t *testing.T, ctx context.Context, ipfsOpts *ipfsutil.TestingAPIOpts) (*mockedPeer, func()) {
+func newMockedPeer(t *testing.T, ctx context.Context, ipfsOpts *ipfsutil.TestingAPIOpts) *mockedPeer {
 	accountID, _, err := p2pcrypto.GenerateEd25519Key(crand.Reader)
 	require.NoError(t, err, "can't create new identity")
 
-	coreAPI, cleanup := ipfsutil.TestingCoreAPIUsingMockNet(ctx, t, ipfsOpts)
+	coreAPI := ipfsutil.TestingCoreAPIUsingMockNet(ctx, t, ipfsOpts)
 	peerInfo := coreAPI.MockNode().Peerstore.PeerInfo(coreAPI.MockNode().Identity)
 
 	return &mockedPeer{
 		accountID: accountID,
 		coreAPI:   coreAPI,
 		peerInfo:  peerInfo,
-	}, cleanup
+	}
 }
 
 func newMockedHandshake(t *testing.T, ctx context.Context) *mockedHandshake {
@@ -65,37 +64,24 @@ func newMockedHandshake(t *testing.T, ctx context.Context) *mockedHandshake {
 	mn := p2pmocknet.New()
 	t.Cleanup(func() { mn.Close() })
 
-	rdvp, err := mn.GenPeer()
-	require.NoError(t, err, "failed to generate mocked peer")
-
-	_, rdv_cleanup := ipfsutil.TestingRDVP(ctx, t, rdvp)
-
 	opts := &ipfsutil.TestingAPIOpts{
-		Mocknet: mn,
-		RDVPeer: rdvp.Peerstore().PeerInfo(rdvp.ID()),
+		Mocknet:         mn,
+		DiscoveryServer: tinder.NewMockDriverServer(),
 	}
-	requester, req_cleanup := newMockedPeer(t, ctx, opts)
-	responder, res_cleanup := newMockedPeer(t, ctx, opts)
+	requester := newMockedPeer(t, ctx, opts)
+	responder := newMockedPeer(t, ctx, opts)
 
 	// link responder & requester
-	err = opts.Mocknet.LinkAll()
+	err := opts.Mocknet.LinkAll()
 	require.NoError(t, err, "can't link peers")
 
 	// connect responder & requester
 	err = opts.Mocknet.ConnectAllButSelf()
 	require.NoError(t, err, "can't connect peers")
 
-	cleanup := func() {
-		res_cleanup()
-		req_cleanup()
-		rdv_cleanup()
-		rdvp.Close()
-	}
-
 	return &mockedHandshake{
 		requester: requester,
 		responder: responder,
-		cleanup:   cleanup,
 	}
 }
 
@@ -104,7 +90,6 @@ func (mh *mockedHandshake) close(t *testing.T) {
 
 	mh.requester.coreAPI.Close()
 	mh.responder.coreAPI.Close()
-	mh.cleanup()
 }
 
 func newTestHandshakeContext(stream p2pnetwork.Stream, ownAccountID p2pcrypto.PrivKey, peerAccountID p2pcrypto.PubKey) *handshakeContext {

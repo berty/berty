@@ -20,8 +20,8 @@ import (
 	"go.uber.org/goleak"
 	"go.uber.org/zap"
 
-	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/internal/testutil"
+	"berty.tech/berty/v2/go/internal/tinder"
 	"berty.tech/berty/v2/go/pkg/authtypes"
 	"berty.tech/berty/v2/go/pkg/bertyauth"
 	"berty.tech/berty/v2/go/pkg/bertyprotocol"
@@ -380,40 +380,39 @@ func TestScenario_MessageAccountAndContactGroups(t *testing.T) {
 func TestScenario_ReplicateMessage(t *testing.T) {
 	testutil.FilterStabilityAndSpeed(t, testutil.Broken, testutil.Slow)
 
-	ctx, cancel, mn, rdvPeer := bertyprotocol.TestHelperIPFSSetUp(t)
-	defer cancel()
-
 	logger, cleanup := testutil.Logger(t)
 	defer cleanup()
 
-	// start RDVP server
-	_, cleanupRDVP := ipfsutil.TestingRDVP(ctx, t, rdvPeer)
-	closeRDVP := rdvPeer.Close
-	defer cleanupRDVP()
-	defer closeRDVP()
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	mn := libp2p_mocknet.New()
+	defer mn.Close()
+
+	msrv := tinder.NewMockDriverServer()
 
 	dsA := dsync.MutexWrap(ds.NewMapDatastore())
 	nodeA, closeNodeA := bertyprotocol.NewTestingProtocol(ctx, t, &bertyprotocol.TestingOpts{
-		Logger:  logger.Named("nodeA"),
-		Mocknet: mn,
-		RDVPeer: rdvPeer.Peerstore().PeerInfo(rdvPeer.ID()),
+		Logger:          logger.Named("nodeA"),
+		Mocknet:         mn,
+		DiscoveryServer: msrv,
 	}, dsA)
 	defer closeNodeA()
 
 	dsB := dsync.MutexWrap(ds.NewMapDatastore())
 	nodeB, closeNodeB := bertyprotocol.NewTestingProtocol(ctx, t, &bertyprotocol.TestingOpts{
-		Logger:  logger.Named("nodeB"),
-		Mocknet: mn,
-		RDVPeer: rdvPeer.Peerstore().PeerInfo(rdvPeer.ID()),
+		Logger:          logger.Named("nodeB"),
+		Mocknet:         mn,
+		DiscoveryServer: msrv,
 	}, dsB)
 	defer closeNodeB()
 
 	tokenSecret, tokenPK, tokenSK := bertyauth.HelperGenerateTokenIssuerSecrets(t)
 
 	replPeer, cancel := bertyreplication.NewReplicationMockedPeer(ctx, t, tokenSecret, tokenPK, &bertyprotocol.TestingOpts{
-		Logger:  logger.Named("repl"),
-		Mocknet: mn,
-		RDVPeer: rdvPeer.Peerstore().PeerInfo(rdvPeer.ID()),
+		Logger:          logger.Named("repl"),
+		Mocknet:         mn,
+		DiscoveryServer: msrv,
 	})
 	defer cancel()
 
@@ -422,13 +421,6 @@ func TestScenario_ReplicateMessage(t *testing.T) {
 
 	err = mn.ConnectAllButSelf()
 	require.NoError(t, err)
-
-	for _, net := range mn.Nets() {
-		if net != rdvPeer.Network() {
-			_, err = mn.ConnectNets(net, rdvPeer.Network())
-			assert.NoError(t, err)
-		}
-	}
 
 	err = mn.ConnectAllButSelf()
 	require.NoError(t, err)
@@ -508,9 +500,9 @@ func TestScenario_ReplicateMessage(t *testing.T) {
 	closeNodeA()
 
 	nodeB, closeNodeB = bertyprotocol.NewTestingProtocol(ctx, t, &bertyprotocol.TestingOpts{
-		Logger:  logger.Named("nodeB"),
-		Mocknet: mn,
-		RDVPeer: rdvPeer.Peerstore().PeerInfo(rdvPeer.ID()),
+		Logger:          logger.Named("nodeB"),
+		Mocknet:         mn,
+		DiscoveryServer: msrv,
 	}, dsB)
 	defer closeNodeB()
 
@@ -523,6 +515,7 @@ func TestScenario_ReplicateMessage(t *testing.T) {
 	_, err = nodeB.Service.ActivateGroup(ctx, &protocoltypes.ActivateGroup_Request{
 		GroupPK: group.PublicKey,
 	})
+	assert.NoError(t, err)
 
 	time.Sleep(time.Second * 5)
 
@@ -967,7 +960,6 @@ func addAsContact(ctx context.Context, t *testing.T, senders, receivers []*berty
 			require.NoError(t, err)
 
 			activateDuration += time.Since(substart)
-			substart = time.Now()
 		}
 	}
 
@@ -1117,7 +1109,7 @@ func sendMessageOnGroup(ctx context.Context, t *testing.T, senders, receivers []
 
 					// Check if message was already received
 					receivedMessagesLock.Lock()
-					alreadyReceived, _ := subReceivedMessages[receiverID][string(res.Message)]
+					alreadyReceived := subReceivedMessages[receiverID][string(res.Message)]
 					if alreadyReceived {
 						receivedMessagesLock.Unlock()
 						continue
@@ -1199,7 +1191,7 @@ func sendMessageOnGroup(ctx context.Context, t *testing.T, senders, receivers []
 
 					// Check if message was already received
 					receivedMessagesLock.Lock()
-					alreadyReceived, _ := listReceivedMessages[receiverID][string(res.Message)]
+					alreadyReceived := listReceivedMessages[receiverID][string(res.Message)]
 					if alreadyReceived {
 						receivedMessagesLock.Unlock()
 						continue
