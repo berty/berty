@@ -7,7 +7,7 @@ console.log("import beapi from '@berty/api'")
 console.log("\nimport { UnaryType, ResponseStreamType } from './types'")
 
 const services = [
-	'berty.protocol.v1.ProtocolService',
+	'weshnet.protocol.v1.ProtocolService',
 	'berty.account.v1.AccountService',
 	'berty.messenger.v1.MessengerService',
 	'berty.bridge.v1.BridgeService',
