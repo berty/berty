@@ -141,6 +141,8 @@ github.com/berty/go-sqlcipher/v4 v4.4.3-0.20220810151512-74ea78235b48 h1:tHmYUj9
 github.com/berty/go-sqlcipher/v4 v4.4.3-0.20220810151512-74ea78235b48/go.mod h1:mF2UmIpBnzFeBdu/ypTDb/LdbS0nk0dfSN1WUsWTjMA=
 github.com/berty/mobile v0.0.8 h1:DoIuvRWaHPvrrVtLxg1ZFu9n1cTVQwkK1PkI6XbzC5M=
 github.com/berty/mobile v0.0.8/go.mod h1:pe2sM7Uk+2Su1y7u/6Z8KJ24D7lepUjFZbhFOrmDfuQ=
+github.com/berty/weshnet v0.0.0-20230220141506-25ba11a37bcc h1:pyLrACNTFQPqA3z2yO+Da4bA6HuNDUpE4pWqlThgYDA=
+github.com/berty/weshnet v0.0.0-20230220141506-25ba11a37bcc/go.mod h1:baTqxUyS4g0bfp+kpj7B1LiTg/ISfPpOrgr7PjUEw14=
 github.com/bgentry/speakeasy v0.1.0/go.mod h1:+zsyZBPWlz7T6j88CTgSN5bM796AkVf0kBD4zp0CCIs=
 github.com/blang/semver/v4 v4.0.0 h1:1PFHFE6yCCTv8C1TeyNNarDzntLi7wMI5i/pzqYIsAM=
 github.com/blang/semver/v4 v4.0.0/go.mod h1:IbckMUScFkM3pff0VJDNKRiT6TG/YpiHIM2yvyW5YoQ=
@@ -240,8 +242,6 @@ github.com/creack/pty v1.1.9/go.mod h1:oKZEueFk5CKHvIhNR5MUki03XCEU+Q6VDXinZuGJ3
 github.com/creack/pty v1.1.18 h1:n56/Zwd5o6whRC5PMGretI4IdRLlmBXYNjScPaBgsbY=
 github.com/cskr/pubsub v1.0.2 h1:vlOzMhl6PFn60gRlTQQsIfVwaPB/B/8MziK8FhEPt/0=
 github.com/cskr/pubsub v1.0.2/go.mod h1:/8MzYXk/NJAz782G8RPkFzXTZVu63VotefPnR9TIRis=
-github.com/d4ryl00/weshnet-fork v0.0.0-20230216162216-c8c356fecdb7 h1:oy1cfc6Z9FZK6cyWi6jU1efZah/bm6IJ9g0oT8JjY/k=
-github.com/d4ryl00/weshnet-fork v0.0.0-20230216162216-c8c356fecdb7/go.mod h1:baTqxUyS4g0bfp+kpj7B1LiTg/ISfPpOrgr7PjUEw14=
 github.com/daixiang0/gci v0.8.2 h1:4VLVDNdJ+wkXxz/nr5QRrbeK+JCvkMVqYjUWB5EnPF4=
 github.com/daixiang0/gci v0.8.2/go.mod h1:EpVfrztufwVgQRXjnX4zuNinEpLj5OmMjtu/+MB0V0c=
 github.com/davecgh/go-spew v0.0.0-20171005155431-ecdeabc65495/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
