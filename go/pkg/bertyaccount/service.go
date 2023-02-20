@@ -14,21 +14,21 @@ import (
 	"golang.org/x/text/language"
 
 	"berty.tech/berty/v2/go/internal/accountutils"
-	"berty.tech/berty/v2/go/internal/androidnearby"
 	"berty.tech/berty/v2/go/internal/initutil"
-	"berty.tech/berty/v2/go/internal/lifecycle"
-	"berty.tech/berty/v2/go/internal/logutil"
 	"berty.tech/berty/v2/go/internal/migrations"
-	mc "berty.tech/berty/v2/go/internal/multipeer-connectivity-driver"
 	"berty.tech/berty/v2/go/internal/notification"
-	proximity "berty.tech/berty/v2/go/internal/proximitytransport"
 	"berty.tech/berty/v2/go/pkg/accounttypes"
 	"berty.tech/berty/v2/go/pkg/bertybridge"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
-	"berty.tech/berty/v2/go/pkg/protocoltypes"
-	"berty.tech/berty/v2/go/pkg/tyber"
 	encrepo "berty.tech/go-ipfs-repo-encrypted"
+	"berty.tech/weshnet/pkg/androidnearby"
+	"berty.tech/weshnet/pkg/lifecycle"
+	"berty.tech/weshnet/pkg/logutil"
+	mc "berty.tech/weshnet/pkg/multipeer-connectivity-driver"
+	"berty.tech/weshnet/pkg/protocoltypes"
+	proximity "berty.tech/weshnet/pkg/proximitytransport"
+	"berty.tech/weshnet/pkg/tyber"
 )
 
 // Servicex is AccountServiceServer
@@ -93,6 +93,8 @@ type service struct {
 	appStorage        datastore.Datastore
 	serviceListeners  string
 	openedAccountID   string
+
+	accounttypes.UnimplementedAccountServiceServer
 }
 
 func (o *Options) applyDefault() {

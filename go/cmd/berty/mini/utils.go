@@ -6,7 +6,7 @@ import (
 
 	"berty.tech/berty/v2/go/pkg/bertylinks"
 	"berty.tech/berty/v2/go/pkg/errcode"
-	"berty.tech/berty/v2/go/pkg/protocoltypes"
+	"berty.tech/weshnet/pkg/protocoltypes"
 )
 
 func openGroupFromString(url string) (*protocoltypes.Group, error) {

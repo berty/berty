@@ -10,10 +10,11 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 
-	"berty.tech/berty/v2/go/internal/grpcutil"
-	"berty.tech/berty/v2/go/internal/logutil"
+	berty_grpcutil "berty.tech/berty/v2/go/internal/grpcutil"
 	bridge_svc "berty.tech/berty/v2/go/pkg/bertybridge"
 	"berty.tech/berty/v2/go/pkg/errcode"
+	"berty.tech/weshnet/pkg/grpcutil"
+	"berty.tech/weshnet/pkg/logutil"
 )
 
 type RemoteBridge struct {
@@ -75,7 +76,7 @@ func NewRemoteBridge(address string, config *RemoteBridgeConfig) (*RemoteBridge,
 			return nil, errors.Wrap(err, "unable to get bridge gRPC ClientConn")
 		}
 
-		b.ServiceClient = NewServiceClient(grpcutil.NewLazyClient(ccBridge))
+		b.ServiceClient = NewServiceClient(berty_grpcutil.NewLazyClient(ccBridge))
 	}
 
 	// setup account client

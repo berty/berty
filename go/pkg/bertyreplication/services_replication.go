@@ -10,13 +10,14 @@ import (
 	"gorm.io/gorm"
 
 	"berty.tech/berty/v2/go/internal/messengerutil"
-	"berty.tech/berty/v2/go/pkg/authtypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
-	"berty.tech/berty/v2/go/pkg/protocoltypes"
-	"berty.tech/berty/v2/go/pkg/replicationtypes"
 	orbitdb "berty.tech/go-orbit-db"
 	"berty.tech/go-orbit-db/iface"
 	"berty.tech/go-orbit-db/stores"
+	"berty.tech/weshnet/pkg/authtypes"
+	weshnet_errcode "berty.tech/weshnet/pkg/errcode"
+	"berty.tech/weshnet/pkg/protocoltypes"
+	"berty.tech/weshnet/pkg/replicationtypes"
 )
 
 type BertyOrbitDB interface {
@@ -30,6 +31,8 @@ type replicationService struct {
 	ctx       context.Context
 	db        *gorm.DB
 	startedAt time.Time
+
+	replicationtypes.UnimplementedReplicationServiceServer
 }
 
 func (s *replicationService) ReplicateGlobalStats(ctx context.Context, request *replicationtypes.ReplicateGlobalStats_Request) (*replicationtypes.ReplicateGlobalStats_Reply, error) {
@@ -62,11 +65,11 @@ func (s *replicationService) ReplicateGroupStats(ctx context.Context, request *r
 
 func (s *replicationService) GroupRegister(token, tokenIssuer string, group *protocoltypes.Group) error {
 	if token == "" {
-		return errcode.ErrServiceReplication.Wrap(fmt.Errorf("missing token"))
+		return weshnet_errcode.ErrServiceReplication.Wrap(fmt.Errorf("missing token"))
 	}
 
 	if tokenIssuer == "" {
-		return errcode.ErrServiceReplication.Wrap(fmt.Errorf("missing token issuer"))
+		return weshnet_errcode.ErrServiceReplication.Wrap(fmt.Errorf("missing token issuer"))
 	}
 
 	pkStr := messengerutil.B64EncodeBytes(group.PublicKey)

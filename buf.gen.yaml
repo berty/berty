@@ -1,0 +1,12 @@
+version: v1
+plugins:
+  - plugin: gogo
+    out: ./../..
+  - plugin: go-grpc
+    out: ./
+    opt: module=berty.tech/berty
+  - plugin: grpc-gateway
+    out: ./
+    opt:
+      - module=berty.tech/berty
+      - generate_unbound_methods=true

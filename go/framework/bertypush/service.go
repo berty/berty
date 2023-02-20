@@ -8,9 +8,9 @@ import (
 	"golang.org/x/text/message"
 
 	"berty.tech/berty/v2/go/internal/accountutils"
-	"berty.tech/berty/v2/go/localization"
 	"berty.tech/berty/v2/go/pkg/bertypush"
-	"berty.tech/berty/v2/go/pkg/pushtypes"
+	"berty.tech/weshnet/localization"
+	"berty.tech/weshnet/pkg/pushtypes"
 )
 
 type FormatedPush pushtypes.FormatedPush

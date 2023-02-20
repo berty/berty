@@ -6,8 +6,8 @@ import (
 	"github.com/gen2brain/beeep"
 	"go.uber.org/zap"
 
-	"berty.tech/berty/v2/go/internal/logutil"
 	pack "berty.tech/berty/v2/go/internal/packingutil"
+	"berty.tech/weshnet/pkg/logutil"
 )
 
 // DesktopManager is a Manager

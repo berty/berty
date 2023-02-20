@@ -1,0 +1,942 @@
+syntax = "proto3";
+
+package berty.messenger.v1;
+
+import "gogoproto/gogo.proto";
+import "protocoltypes.proto";
+
+option go_package = "berty.tech/berty/go/pkg/messengertypes";
+option (gogoproto.goproto_unkeyed_all) = false;
+option (gogoproto.goproto_unrecognized_all) = false;
+option (gogoproto.goproto_sizecache_all) = false;
+
+// MessengerService is the top-level API that uses the weshnet.protocol to implement the Berty Messenger specific logic.
+// Today, most of the Berty Messenger logic is implemented directly in the application (see the /js folder of this repo).
+service MessengerService {
+  // InstanceShareableBertyID returns a Berty ID that can be shared as a string, QR code or deep link.
+  rpc InstanceShareableBertyID(InstanceShareableBertyID.Request) returns (InstanceShareableBertyID.Reply);
+
+  // ShareableBertyGroup returns a Berty Group that can be shared as a string, QR code or deep link.
+  rpc ShareableBertyGroup(ShareableBertyGroup.Request) returns (ShareableBertyGroup.Reply);
+
+  // DevShareInstanceBertyID shares your Berty ID on a dev channel.
+  // TODO: remove for public.
+  rpc DevShareInstanceBertyID(DevShareInstanceBertyID.Request) returns (DevShareInstanceBertyID.Reply);
+
+  // DevStreamLogs streams logs from the ring-buffer.
+  rpc DevStreamLogs(DevStreamLogs.Request) returns (stream DevStreamLogs.Reply);
+
+  // ParseDeepLink parses a link in the form of berty://xxx or https://berty.tech/id# and returns a structure
+  // that can be used to display information.
+  // This action is read-only.
+  rpc ParseDeepLink(ParseDeepLink.Request) returns (ParseDeepLink.Reply);
+
+  // SendContactRequest takes the payload received from ParseDeepLink and send a contact request using the weshnet.protocol.
+  rpc SendContactRequest(SendContactRequest.Request) returns (SendContactRequest.Reply);
+
+  // SystemInfo returns runtime information.
+  rpc SystemInfo(SystemInfo.Request) returns (SystemInfo.Reply);
+
+  // Use to test stream.
+  rpc EchoTest(EchoTest.Request) returns (stream EchoTest.Reply);
+
+  // Use to test duplex stream.
+  rpc EchoDuplexTest(stream EchoDuplexTest.Request) returns (stream EchoDuplexTest.Reply);
+
+  rpc ConversationStream(ConversationStream.Request) returns (stream ConversationStream.Reply);
+  rpc EventStream(EventStream.Request) returns (stream EventStream.Reply);
+  rpc ConversationCreate(ConversationCreate.Request) returns (ConversationCreate.Reply);
+  rpc ConversationJoin(ConversationJoin.Request) returns (ConversationJoin.Reply);
+  rpc AccountGet(AccountGet.Request) returns (AccountGet.Reply);
+  rpc AccountUpdate(AccountUpdate.Request) returns (AccountUpdate.Reply);
+  rpc AccountPushConfigure(AccountPushConfigure.Request) returns (AccountPushConfigure.Reply);
+  rpc ContactRequest(ContactRequest.Request) returns (ContactRequest.Reply);
+  rpc ContactAccept(ContactAccept.Request) returns (ContactAccept.Reply);
+  rpc Interact(Interact.Request) returns (Interact.Reply);
+  rpc ConversationOpen(ConversationOpen.Request) returns (ConversationOpen.Reply);
+  rpc ConversationClose(ConversationClose.Request) returns (ConversationClose.Reply);
+  rpc ConversationLoad(ConversationLoad.Request) returns (ConversationLoad.Reply);
+  rpc ConversationMute(ConversationMute.Request) returns (ConversationMute.Reply);
+
+  // ServicesTokenList Retrieves the list of service server tokens
+  rpc ServicesTokenList(weshnet.protocol.v1.ServicesTokenList.Request) returns (stream weshnet.protocol.v1.ServicesTokenList.Reply);
+
+  // ReplicationServiceRegisterGroup Asks a replication service to distribute a group contents
+  rpc ReplicationServiceRegisterGroup(ReplicationServiceRegisterGroup.Request) returns (ReplicationServiceRegisterGroup.Reply);
+
+  // ReplicationSetAutoEnable Sets whether new groups should be replicated automatically or not
+  rpc ReplicationSetAutoEnable(ReplicationSetAutoEnable.Request) returns (ReplicationSetAutoEnable.Reply);
+
+  // BannerQuote returns the quote of the day.
+  rpc BannerQuote(BannerQuote.Request) returns (BannerQuote.Reply);
+
+  // InstanceExportData exports instance data
+  rpc InstanceExportData (InstanceExportData.Request) returns (stream InstanceExportData.Reply);
+
+  // MessageSearch
+  rpc MessageSearch (MessageSearch.Request) returns (MessageSearch.Reply);
+
+  // ListMemberDevices Lists devices for a member
+  rpc ListMemberDevices(ListMemberDevices.Request) returns (stream ListMemberDevices.Reply);
+
+  // TyberHostSearch
+  rpc TyberHostSearch (TyberHostSearch.Request) returns (stream TyberHostSearch.Reply);
+  // TyberHostAttach
+  rpc TyberHostAttach (TyberHostAttach.Request) returns (TyberHostAttach.Reply);
+
+  // PushSetAutoShare Sets whether new groups should receive our push token automatically or not
+  rpc PushSetAutoShare(PushSetAutoShare.Request) returns (PushSetAutoShare.Reply);
+
+  // PushShareTokenForConversation Share a push token for a conversation
+  rpc PushShareTokenForConversation(PushShareTokenForConversation.Request) returns (PushShareTokenForConversation.Reply);
+
+  // PushTokenSharedForConversation
+  rpc PushTokenSharedForConversation(PushTokenSharedForConversation.Request) returns (stream PushTokenSharedForConversation.Reply);
+
+  // PushReceive handles a push payload, decrypts it if possible, adds it to the local store
+  rpc PushReceive(PushReceive.Request) returns (PushReceive.Reply);
+
+  // DirectoryServiceRegister registers a verified credential on a directory service
+  rpc DirectoryServiceRegister(DirectoryServiceRegister.Request) returns (DirectoryServiceRegister.Reply);
+
+  // DirectoryServiceUnregister requests a directory service to remove a verified credential
+  rpc DirectoryServiceUnregister(DirectoryServiceUnregister.Request) returns (DirectoryServiceUnregister.Reply);
+
+  // DirectoryServiceQuery queries a directory service for given identifiers
+  rpc DirectoryServiceQuery(DirectoryServiceQuery.Request) returns (stream DirectoryServiceQuery.Reply);
+}
+
+message PaginatedInteractionsOptions {
+  // amount Number of entries to be returned. Default is 5.
+  int32 amount = 1;
+
+  // ref_cid Reference CID for used for pagination defaulting to oldest/newest depending on sorting. When specified this CID won't be included in the results.
+  string ref_cid = 2 [(gogoproto.customname) = "RefCID"];
+
+  // conversation_pk Filter by conversation, otherwise X latest message of each conversation are returned
+  string conversation_pk = 3 [(gogoproto.customname) = "ConversationPK"];
+
+  // oldest_to_newest Default sort of results is latest to oldest message
+  bool oldest_to_newest = 4;
+
+  // exclude_medias Medias are included by default
+  reserved 5; // bool exclude_medias = 5;
+
+  // no_bulk should interactions be via atomic update in the stream
+  bool no_bulk = 6;
+}
+
+message ConversationOpen {
+  message Request {
+    string group_pk = 1 [(gogoproto.customname) = "GroupPK"];
+  }
+  message Reply {}
+}
+
+message ConversationClose {
+  message Request {
+    string group_pk = 1 [(gogoproto.customname) = "GroupPK"];
+  }
+  message Reply {}
+}
+
+message ConversationLoad {
+  message Request {
+    PaginatedInteractionsOptions options = 1;
+  }
+  message Reply {}
+}
+
+message ConversationMute {
+  message Request {
+    string group_pk = 1 [(gogoproto.customname) = "GroupPK"];
+    int64 muted_until = 2;
+    bool unmute = 3;
+    bool mute_forever = 4;
+  }
+  message Reply {}
+}
+
+message EchoTest {
+  message Request {
+    uint64 delay = 1; // in ms
+    string echo = 2;
+    bool trigger_error = 3;
+  }
+  message Reply {
+    string echo = 1;
+  }
+}
+
+message EchoDuplexTest {
+  message Request {
+    string echo = 2;
+    bool trigger_error = 3;
+  }
+  message Reply {
+    string echo = 1;
+  }
+}
+
+
+message InstanceShareableBertyID {
+  message Request {
+    // reset will regenerate a new link
+    bool reset = 1;
+    string display_name = 2;
+    // optional passphase to encrypt the link
+    bytes passphrase = 3;
+  }
+  message Reply {
+    BertyLink link = 1;
+    string internal_url = 2 [(gogoproto.customname) = "InternalURL"];
+    string web_url = 3 [(gogoproto.customname) = "WebURL"];
+  }
+}
+
+message ShareableBertyGroup {
+  message Request {
+    bytes group_pk = 1 [(gogoproto.customname) = "GroupPK"];
+    string group_name = 2;
+  }
+  message Reply {
+    BertyLink link = 1;
+    string internal_url = 2 [(gogoproto.customname) = "InternalURL"];
+    string web_url = 3 [(gogoproto.customname) = "WebURL"];
+  }
+}
+
+message DevShareInstanceBertyID {
+  message Request {
+    // reset will regenerate a new link
+    bool reset = 1;
+    string display_name = 2;
+  }
+  message Reply {}
+}
+
+message DevStreamLogs {
+  message Request {}
+  message Reply {
+    string line = 1;
+  }
+}
+
+message ParseDeepLink {
+  message Request {
+    string link = 1;
+    // optional passphase to decrypt the link
+    bytes passphrase = 2;
+  }
+  message Reply {
+    BertyLink link = 1;
+  }
+}
+
+message BertyLink {
+  Kind kind = 1;
+  BertyID berty_id = 2 [(gogoproto.customname) = "BertyID"];
+  BertyGroup berty_group = 3;
+  BertyMessageRef berty_message_ref = 5;
+  Encrypted encrypted = 4;
+
+  // Encrypted is a clear structure containing clear and encrypted fields.
+  //
+  // We prefer to use a clear struct with encrypted fields instead of a simple
+  // encrypted struct, to improves chances of having a valid structure even
+  // with an invalid passphase. This will force an attacker to have more resources
+  // to test more false-positive guesses.
+  message Encrypted {
+    // kind is a clear representation of the unencrypted link type.
+    Kind kind = 1;
+    // nonce is a clear field used by scrypt as "salt" to derive the passphrase and
+    // also used by cipher.NewCTR as "iv" to initialize a stream cipher.
+    bytes nonce = 2;
+    // display_name is an optional clear representation of the display name.
+    string display_name = 3;
+    // checksum is an optional field used to check if the decryption was successful.
+    // the length is customizable (SHAKE256). a longer checksum means less conflicts.
+    // having more conflicts may be bad in term of UX, but make it easier for an attacker
+    // to run an offline bruteforce.
+    bytes checksum = 4;
+
+    // contact_v1: all bytes fields are encrypted
+
+    bytes contact_public_rendezvous_seed = 10;
+    bytes contact_account_pk = 11 [(gogoproto.customname) = "ContactAccountPK"];
+
+    // group_v1: all bytes fields are encrypted
+
+    bytes group_public_key = 20;
+    bytes group_secret = 21;
+    bytes group_secret_sig = 22;
+    weshnet.protocol.v1.GroupType group_type = 23; // clear
+    bytes group_sign_pub = 24;
+    bytes group_link_key_sig = 25;
+  }
+
+  enum Kind {
+    UnknownKind = 0;
+    ContactInviteV1Kind = 1;
+    GroupV1Kind = 2;
+    EncryptedV1Kind = 3;
+    MessageV1Kind = 4;
+  }
+
+  message BertyMessageRef {
+    string account_id = 1 [(gogoproto.customname) = "AccountID"];
+    string group_pk = 2 [(gogoproto.customname) = "GroupPK"];
+    string message_id = 3 [(gogoproto.customname) = "MessageID"];
+  }
+}
+
+message SendContactRequest {
+  message Request {
+    BertyID berty_id = 1 [(gogoproto.customname) = "BertyID"];
+    bytes metadata = 2;
+    bytes own_metadata = 3;
+  }
+  message Reply {}
+}
+
+message BertyID {
+  bytes public_rendezvous_seed = 1;
+  bytes account_pk = 2 [(gogoproto.customname) = "AccountPK"];
+  string display_name = 3;
+}
+
+message BertyGroup {
+  weshnet.protocol.v1.Group group = 1;
+  string display_name = 2;
+}
+
+// AppMessage is the app layer format
+message AppMessage {
+  Type type = 1;
+  bytes payload = 2;
+  int64 sent_date = 3 [(gogoproto.jsontag) = "sentDate"];
+  reserved 4; // repeated Media medias = 4;
+  string target_cid = 5 [(gogoproto.customname) = "TargetCID"];
+
+  enum Type {
+    Undefined = 0;
+    TypeUserMessage = 1;
+    reserved 2; // TypeUserReaction = 2;
+    TypeGroupInvitation = 3;
+    TypeSetGroupInfo = 4;
+    TypeSetUserInfo = 5;
+    TypeAcknowledge = 6;
+    reserved 7; // TypeReplyOptions
+    TypeAccountDirectoryServiceRegistered = 8;
+    TypeAccountDirectoryServiceUnregistered = 9;
+  }
+  message UserMessage {
+    string body = 1;
+  }
+  message GroupInvitation {
+    string link = 2; // TODO: optimize message size
+  }
+  message SetGroupInfo {
+    string display_name = 1;
+    reserved 2; // string avatar_cid = 2; // TODO: optimize message size
+  }
+  message SetUserInfo {
+    string display_name = 1;
+    reserved 2; // string avatar_cid = 2 [(gogoproto.customname) = "AvatarCID"]; // TODO: optimize message size
+  }
+  message Acknowledge {
+  }
+
+  message AccountDirectoryServiceRegistered {
+    string identifier = 1;
+    string identifier_proof_issuer = 2;
+    int64 registration_date = 3;
+    int64 expiration_date = 4;
+    string server_addr = 5;
+    string directory_record_token = 6;
+    string directory_record_unregister_token = 7;
+  }
+
+  message AccountDirectoryServiceUnregistered {
+    string identifier = 1;
+    string identifier_proof_issuer = 2;
+    int64 removal_date = 3;
+    string server_addr = 4;
+    string directory_record_token = 5;
+  }
+}
+
+message SystemInfo {
+  message Request {}
+  message Reply {
+    weshnet.protocol.v1.SystemInfo.Reply protocol = 1;
+    Messenger messenger = 2;
+  }
+
+  message Messenger {
+    weshnet.protocol.v1.SystemInfo.Process process = 1;
+    repeated string warns = 2;
+    bool protocol_in_same_process = 3;
+    DB db = 4 [(gogoproto.customname) = "DB"];
+  }
+
+  message DB {
+    int64 accounts = 1;
+    int64 contacts = 2;
+    int64 conversations = 3;
+    int64 interactions = 4;
+    int64 members = 5;
+    int64 devices = 6;
+    int64 service_tokens = 7;
+    int64 conversation_replication_info = 8;
+    int64 metadata_events = 10;
+    reserved 11; // int64 medias = 11;
+    int64 shared_push_tokens = 12;
+    int64 account_verified_credentials = 13;
+    int64 account_directory_service_record = 14;
+    // older, more recent
+  }
+}
+
+message ConversationJoin {
+  message Request {
+    string link = 1;
+    // optional passphase to decrypt the link
+    bytes passphrase = 2;
+  }
+  message Reply {}
+}
+
+// APP MODEL
+
+// NOTE: public keys should be base64 encoded using golang's URLEncoding.WithPadding(NoPadding) format
+
+message Account {
+  string public_key = 1 [(gogoproto.moretags) = "gorm:\"primaryKey\""];
+  string display_name = 2;
+  string link = 3;
+  repeated ServiceToken service_tokens = 5 [(gogoproto.moretags) = "gorm:\"foreignKey:AccountPK\""];
+  bool replicate_new_groups_automatically = 6 [(gogoproto.moretags) = "gorm:\"default:true\""];
+  reserved 7; // string avatar_cid = 7 [(gogoproto.moretags) = "gorm:\"column:avatar_cid\"", (gogoproto.customname) = "AvatarCID"];
+  bool auto_share_push_token_flag = 8;
+  bytes device_push_token = 9;
+  bytes device_push_server = 10;
+  int64 muted_until = 11;
+  bool hide_in_app_notifications = 12;
+  bool hide_push_previews = 13;
+  repeated AccountVerifiedCredential verified_credentials = 14 [(gogoproto.moretags) = "gorm:\"foreignKey:AccountPK\""];
+  repeated AccountDirectoryServiceRecord directory_service_records = 15 [(gogoproto.moretags) = "gorm:\"foreignKey:AccountPK\""];
+}
+
+message ServiceToken {
+  string account_pk = 1 [(gogoproto.customname) = "AccountPK"];
+  string token_id = 2 [(gogoproto.moretags) = "gorm:\"primaryKey\"", (gogoproto.customname) = "TokenID"];
+  string service_type = 3 [(gogoproto.moretags) = "gorm:\"primaryKey\"", (gogoproto.customname) = "ServiceType"];
+  string authentication_url = 4  [(gogoproto.customname) = "AuthenticationURL"];
+  int64 expiration = 5;
+}
+
+message MetadataEvent {
+  string cid = 1 [(gogoproto.moretags) = "gorm:\"primaryKey;column:cid\"", (gogoproto.customname) = "CID"];
+  string conversation_public_key = 2 [(gogoproto.moretags) = "gorm:\"index\""];
+  weshnet.protocol.v1.EventType metadata_event_type = 3;
+  bytes payload = 4;
+}
+
+message Interaction {
+  string cid = 1 [(gogoproto.moretags) = "gorm:\"primaryKey;column:cid\"", (gogoproto.customname) = "CID"];
+  AppMessage.Type type = 2 [(gogoproto.moretags) = "gorm:\"index\""];
+  string member_public_key = 7;
+  string device_public_key = 12;
+  Member member = 8 [(gogoproto.moretags) = "gorm:\"foreignKey:PublicKey;references:MemberPublicKey\""];
+  string conversation_public_key = 3 [(gogoproto.moretags) = "gorm:\"index\""];
+  Conversation conversation = 4;
+  bytes payload = 5;
+  bool is_mine = 6;
+  int64 sent_date = 9 [(gogoproto.moretags) = "gorm:\"index\""];
+  bool acknowledged = 10;
+  string target_cid = 13 [(gogoproto.moretags) = "gorm:\"index;column:target_cid\"", (gogoproto.customname) = "TargetCID"];
+  reserved 15; // repeated Media medias = 15;
+  reserved 16; // repeated ReactionView reactions = 16 [(gogoproto.moretags) = "gorm:\"-\""]; // specific to client model
+  bool out_of_store_message = 17;
+}
+
+message Contact {
+  string public_key = 1 [(gogoproto.moretags) = "gorm:\"primaryKey\""];
+  string conversation_public_key = 2;
+  Conversation conversation = 3;
+  State state = 4;
+  string display_name = 5;
+  reserved 9; // string avatar_cid = 9  [(gogoproto.moretags) = "gorm:\"column:avatar_cid\"", (gogoproto.customname) = "AvatarCID"];
+  int64 created_date = 7;
+  // specific to outgoing requests
+  int64 sent_date = 8;
+  repeated Device devices = 6 [(gogoproto.moretags) = "gorm:\"foreignKey:MemberPublicKey\""];
+  int64 info_date = 10;
+
+  enum State {
+    Undefined = 0;
+    IncomingRequest = 1;
+    OutgoingRequestEnqueued = 2;
+    OutgoingRequestSent = 3;
+    Accepted = 4;
+  }
+}
+
+message Conversation {
+  enum Type {
+    Undefined = 0;
+    AccountType = 1;
+    ContactType = 2;
+    MultiMemberType = 3;
+  }
+
+  string public_key = 1 [(gogoproto.moretags) = "gorm:\"primaryKey\""];
+  Type type = 2;
+  bool is_open = 3;
+  string display_name = 4;
+  string link = 5;
+  int32 unread_count = 6;
+  // last_update is used to sort conversations, it should be updated for each "visible" event
+  int64 last_update = 7;
+  // specific to ContactType conversations
+  string contact_public_key = 8;
+  // specific to ContactType conversations
+  Contact contact = 9;
+  // specific to MultiMemberType conversations
+  repeated Member members = 10;
+  string account_member_public_key = 11;
+  string local_device_public_key = 12;
+  int64 created_date = 13;
+  reserved 14; // string reply_options_cid = 14 [(gogoproto.moretags) = "gorm:\"column:reply_options_cid\"", (gogoproto.customname) = "ReplyOptionsCID"];
+  reserved 15; // Interaction reply_options = 15 [(gogoproto.customname) = "ReplyOptions"];
+  repeated ConversationReplicationInfo replication_info = 16 [(gogoproto.moretags) = "gorm:\"foreignKey:ConversationPublicKey\""];
+  reserved 17; // string avatar_cid = 17 [(gogoproto.moretags) = "gorm:\"column:avatar_cid\"", (gogoproto.customname) = "AvatarCID"];
+  // info_date is used when SetGroupInfo is called
+  int64 info_date = 18;
+  string shared_push_token_identifier = 19;
+  string local_member_public_key = 20;
+  int64 muted_until = 21;
+}
+
+message ConversationReplicationInfo {
+  string cid = 1 [(gogoproto.moretags) = "gorm:\"primaryKey;column:cid\"", (gogoproto.customname) = "CID"];
+  string conversation_public_key = 2;
+  string member_public_key = 3;
+  string authentication_url = 4 [(gogoproto.customname) = "AuthenticationURL"];
+  string replication_server = 5;
+}
+
+message Member { // Composite primary key
+  string public_key = 1 [(gogoproto.moretags) = "gorm:\"primaryKey\""];
+  string display_name = 2;
+  reserved 6; // string avatar_cid = 6 [(gogoproto.moretags) = "gorm:\"column:avatar_cid\"", (gogoproto.customname) = "AvatarCID"];
+  string conversation_public_key = 3 [(gogoproto.moretags) = "gorm:\"primaryKey\""];
+  bool is_me = 9;
+  bool is_creator = 8;
+  int64 info_date = 7;
+  Conversation conversation = 4;
+  repeated Device devices = 5 [(gogoproto.moretags) = "gorm:\"foreignKey:MemberPublicKey;references:PublicKey\""];
+}
+
+message Device {
+  string public_key = 1 [(gogoproto.moretags) = "gorm:\"primaryKey\""];
+  string member_public_key = 2 [(gogoproto.moretags) = "gorm:\"index\""];
+}
+
+message SharedPushToken {
+  string device_public_key = 1 [(gogoproto.moretags) = "gorm:\"index\""];
+  string member_public_key = 2 [(gogoproto.moretags) = "gorm:\"index\""];
+  string conversation_public_key = 3 [(gogoproto.moretags) = "gorm:\"index\""];
+  string token = 4 [(gogoproto.moretags) = "gorm:\"index\""];
+}
+
+message AccountVerifiedCredential {
+  string account_pk = 1 [(gogoproto.customname) = "AccountPK"];
+  string identifier = 2;
+  int64 registration_date = 3;
+  int64 expiration_date = 4;
+  string issuer = 5;
+}
+
+message AccountDirectoryServiceRecord {
+  string account_pk = 1 [(gogoproto.customname) = "AccountPK"];
+  string identifier = 2 [(gogoproto.moretags) = "gorm:\"index:,unique,composite:uniqueDirectoryRecordServerIdentifier\""];
+  string identifier_proof_issuer = 3;
+  string server_addr = 4 [(gogoproto.moretags) = "gorm:\"index:,unique,composite:uniqueDirectoryRecordServerIdentifier\""];
+  int64 registration_date = 5;
+  int64 expiration_date = 6;
+  bool revoked = 7;
+  string directory_record_token = 8;
+  string directory_record_unregister_token = 9;
+}
+
+message ContactMetadata {
+  string display_name = 1;
+}
+
+message StreamEvent {
+  Type type = 1;
+  bytes payload = 2;
+  // specific to "*Updated" events
+  bool is_new = 3;
+
+  enum Type {
+    Undefined = 0;
+    TypeListEnded = 1;
+    TypeConversationUpdated = 2;
+    TypeConversationDeleted = 3;
+    TypeInteractionUpdated = 4;
+    TypeInteractionDeleted = 5;
+    TypeContactUpdated = 6;
+    TypeAccountUpdated = 7;
+    TypeMemberUpdated = 8;
+    TypeDeviceUpdated = 9;
+    TypeNotified = 10;
+    reserved 11; // TypeMediaUpdated = 11;
+    TypeConversationPartialLoad = 12;
+    TypePeerStatusConnected = 13;
+    TypePeerStatusReconnecting = 14;
+    TypePeerStatusDisconnected = 15;
+    TypePeerStatusGroupAssociated = 16;
+  }
+  message ConversationUpdated {
+    Conversation conversation = 1;
+  }
+  message ConversationDeleted {
+    string public_key = 1;
+  }
+  message InteractionUpdated {
+    Interaction interaction = 1;
+  }
+  message InteractionDeleted {
+    string cid = 1  [(gogoproto.customname) = "CID"];
+    string conversation_public_key = 2;
+  }
+  message ContactUpdated {
+    Contact contact = 1;
+  }
+  message AccountUpdated {
+    Account account = 1;
+  }
+  message MemberUpdated {
+    Member member = 1;
+  }
+  message DeviceUpdated {
+    Device device = 1;
+  }
+  message ListEnded {}
+  message ConversationPartialLoad {
+    string conversation_pk = 1 [(gogoproto.customname) = "ConversationPK"];
+    repeated Interaction interactions = 2;
+    reserved 3; // repeated Media medias = 3;
+  }
+  message Notified {
+    Type type = 1;
+    string title = 3;
+    string body = 4;
+    bytes payload = 5;
+    enum Type {
+      Unknown = 0;
+      TypeBasic = 1;
+      TypeMessageReceived = 2;
+      TypeContactRequestSent = 3;
+      TypeContactRequestReceived = 4;
+      TypeGroupInvitation = 5;
+    }
+    message Basic {}
+    message MessageReceived {
+      Interaction interaction = 1;
+      Conversation conversation = 2;
+      Contact contact = 3;
+    }
+    message ContactRequestSent {
+      Contact contact = 3;
+    }
+    message ContactRequestReceived {
+      Contact contact = 3;
+    }
+    message GroupInvitation {
+      Conversation conversation = 2;
+      Contact contact = 3;
+    }
+  }
+
+  // status events
+  message PeerStatusConnected {
+    enum Transport {
+      Unknown = 0;
+      LAN = 1;
+      WAN = 2;
+      Proximity = 3;
+    }
+
+    string peer_id = 1 [(gogoproto.customname) = "PeerID"];
+    Transport transport = 2;
+  }
+  message PeerStatusReconnecting {
+    string peer_id = 1 [(gogoproto.customname) = "PeerID"];
+  }
+  message PeerStatusDisconnected {
+    string peer_id = 1 [(gogoproto.customname) = "PeerID"];
+  }
+  message PeerStatusGroupAssociated {
+    string peer_id = 1 [(gogoproto.customname) = "PeerID"];
+    string device_pk = 2 [(gogoproto.customname) = "DevicePK"];
+    string group_pk = 3 [(gogoproto.customname) = "GroupPK"];
+  }
+}
+
+message ConversationStream {
+  message Request {
+    uint64 count = 1;
+    uint64 page = 2;
+  }
+  message Reply {
+    Conversation conversation = 1;
+  }
+}
+
+message ConversationCreate {
+  message Request {
+    string display_name = 1;
+    repeated string contacts_to_invite = 2; // public keys
+  }
+  message Reply {
+    string public_key = 1;
+  }
+}
+
+message AccountGet {
+  message Request {}
+  message Reply {
+    Account account = 1;
+  }
+}
+
+message EventStream {
+  message Request {
+    int32 shallow_amount = 1;
+  }
+  message Reply {
+    StreamEvent event = 1;
+  }
+}
+
+message AccountUpdate {
+  message Request {
+    string display_name = 1;
+    reserved 2; // string avatar_cid = 2 [(gogoproto.moretags) = "gorm:\"column:avatar_cid\"", (gogoproto.customname) = "AvatarCID"];
+  }
+  message Reply {}
+}
+
+message AccountPushConfigure {
+  message Request {
+    int64 muted_until = 1;
+    bool unmute = 2;
+    bool mute_forever = 3;
+    bool hide_in_app_notifications = 4;
+    bool hide_push_previews = 5;
+    bool show_in_app_notifications = 6;
+    bool show_push_previews = 7;
+  }
+  message Reply {}
+}
+
+message ContactRequest {
+  message Request {
+    string link = 1;
+    // optional passphase to decrypt the link
+    bytes passphrase = 2;
+  }
+  message Reply {}
+}
+
+message ContactAccept {
+  message Request {
+    string public_key = 1;
+  }
+  message Reply {}
+}
+
+message Interact {
+  message Request {
+    AppMessage.Type type = 1;
+    bytes payload = 2;
+    string conversation_public_key = 3;
+    reserved 4; // repeated string media_cids = 4;
+    string target_cid = 5 [(gogoproto.customname) = "TargetCID"];
+    bool metadata = 6;
+  }
+  message Reply {
+    string cid = 1 [(gogoproto.customname) = "CID"];
+  }
+}
+
+message ReplicationServiceRegisterGroup {
+  message Request {
+    string token_id = 1 [(gogoproto.customname) = "TokenID"];
+    string conversation_public_key = 2;
+  }
+  message Reply {}
+}
+
+message ReplicationSetAutoEnable {
+  message Request {
+    bool enabled = 1;
+  }
+  message Reply {
+  }
+}
+
+message BannerQuote {
+  message Request {
+    bool random = 1;
+  }
+  message Reply {
+    string quote = 1;
+    string author = 2;
+  }
+}
+
+message InstanceExportData {
+  message Request {}
+  message Reply {
+    bytes exported_data = 1;
+  }
+}
+
+message LocalDatabaseState {
+  string public_key = 1;
+  string display_name = 2;
+  bool replicate_flag = 3;
+  repeated LocalConversationState local_conversations_state = 4;
+  string account_link = 5;
+  bool auto_share_push_token_flag = 6;
+}
+
+message LocalConversationState {
+  string public_key = 1;
+  int32 unread_count = 2;
+  bool is_open = 3;
+  Conversation.Type type = 4;
+}
+
+message MessageSearch {
+  message Request {
+    string query = 1;
+    int64 before_date = 2;
+    int64 after_date = 3;
+    int32 limit = 4;
+    string ref_cid = 5 [(gogoproto.customname) = "RefCID"];
+    bool oldest_to_newest = 6;
+  }
+  message Reply {
+    repeated Interaction results = 1;
+  }
+}
+
+message TyberHostSearch {
+  message Request {
+  }
+  message Reply {
+    string hostname = 1;
+    repeated string ipv4 = 2 [(gogoproto.customname) = "IPv4"];
+    repeated string ipv6 = 3 [(gogoproto.customname) = "IPv6"];
+  }
+}
+
+message TyberHostAttach {
+  message Request {
+    repeated string addresses = 1;
+  }
+  message Reply {
+    string address = 1;
+  }
+}
+
+message PushSetAutoShare {
+  message Request {
+    bool enabled = 1;
+  }
+  message Reply {
+  }
+}
+
+message PushReceivedData {
+  weshnet.protocol.v1.PushReceive.Reply protocol_data = 1;
+  Interaction interaction = 2;
+  bool already_received = 3;
+  bool account_muted = 4;
+  bool conversation_muted = 5;
+  bool hide_preview = 6;
+}
+
+message PushReceive {
+  message Request {
+    bytes payload = 1;
+  }
+  message Reply {
+    PushReceivedData data = 1;
+  }
+}
+
+message ListMemberDevices {
+  message Request {
+    string conversation_pk = 1 [(gogoproto.customname) = "ConversationPK"];
+    string member_pk = 2 [(gogoproto.customname) = "MemberPK"];
+  }
+  message Reply {
+    Device device = 1;
+  }
+}
+
+message PushShareTokenForConversation {
+  message Request {
+    string conversation_pk = 1 [(gogoproto.customname) = "ConversationPK"];
+  }
+  message Reply {}
+}
+
+message PushTokenSharedForConversation {
+  message Request {
+    string conversation_pk = 1 [(gogoproto.customname) = "ConversationPK"];
+  }
+  message Reply {
+    SharedPushToken push_token = 1;
+  }
+}
+
+message DirectoryServiceRegister {
+  message Request {
+    string identifier = 1;
+    string proof_issuer = 2;
+    string server_addr = 3;
+    int64 expiration_date = 4;
+  }
+  message Reply {
+    string directory_record_token = 1;
+  }
+}
+
+message DirectoryServiceUnregister {
+  message Request {
+    string server_addr = 1;
+    string directory_record_token = 2;
+  }
+  message Reply {}
+}
+
+message DirectoryServiceQuery {
+  message Request {
+    string server_addr = 1;
+    repeated string identifiers = 2;
+  }
+  message Reply {
+    string directory_identifier = 1;
+    int64 expires_at = 2;
+    string account_uri = 3 [(gogoproto.customname) = "AccountURI"];
+    bytes verified_credential = 4;
+  }
+}

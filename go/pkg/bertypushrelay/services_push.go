@@ -11,11 +11,12 @@ import (
 	"golang.org/x/crypto/curve25519"
 	"golang.org/x/crypto/nacl/box"
 
-	"berty.tech/berty/v2/go/internal/cryptoutil"
-	"berty.tech/berty/v2/go/internal/logutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
-	"berty.tech/berty/v2/go/pkg/protocoltypes"
-	"berty.tech/berty/v2/go/pkg/pushtypes"
+	"berty.tech/weshnet/pkg/cryptoutil"
+	weshnet_errcode "berty.tech/weshnet/pkg/errcode"
+	"berty.tech/weshnet/pkg/logutil"
+	"berty.tech/weshnet/pkg/protocoltypes"
+	"berty.tech/weshnet/pkg/pushtypes"
 )
 
 const ServicePushPayloadMax = 4096 // FIXME: find an appropriate value
@@ -32,6 +33,8 @@ type pushService struct {
 	publicKey           *[cryptoutil.KeySize]byte
 	dispatchers         map[string]PushDispatcher
 	supportedTokenTypes []*pushtypes.PushServiceSupportedTokenType
+
+	pushtypes.UnimplementedPushServiceServer
 }
 
 func PushDispatcherKey(tokenType pushtypes.PushServiceTokenType, bundleID string) string {
@@ -110,7 +113,7 @@ func InternalDecodeOpaqueReceiver(publicKey *[cryptoutil.KeySize]byte, privateKe
 	}
 
 	if _, ok := dispatchers[PushDispatcherKey(pushReceiver.TokenType, pushReceiver.BundleID)]; !ok {
-		return nil, errcode.ErrPushUnknownProvider.Wrap(fmt.Errorf("unsupported bundle id"))
+		return nil, weshnet_errcode.ErrPushUnknownProvider.Wrap(fmt.Errorf("unsupported bundle id"))
 	}
 
 	return pushReceiver, nil
@@ -148,7 +151,7 @@ func (d *pushService) sendSingle(rawPayload []byte, receiver *pushtypes.PushServ
 
 	dispatcher, ok := d.dispatchers[PushDispatcherKey(pushReceiver.TokenType, pushReceiver.BundleID)]
 	if !ok {
-		return errcode.ErrPushUnknownProvider.Wrap(fmt.Errorf("unsupported %s", PushDispatcherKey(pushReceiver.TokenType, pushReceiver.BundleID)))
+		return weshnet_errcode.ErrPushUnknownProvider.Wrap(fmt.Errorf("unsupported %s", PushDispatcherKey(pushReceiver.TokenType, pushReceiver.BundleID)))
 	}
 
 	payloadBytes, err := d.encryptPushPayloadForReceiver(rawPayload, pushReceiver.RecipientPublicKey)
@@ -157,7 +160,7 @@ func (d *pushService) sendSingle(rawPayload []byte, receiver *pushtypes.PushServ
 	}
 
 	if err := dispatcher.Dispatch(payloadBytes, pushReceiver); err != nil {
-		return errcode.ErrPushProvider.Wrap(err)
+		return weshnet_errcode.ErrPushProvider.Wrap(err)
 	}
 
 	return nil

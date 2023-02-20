@@ -12,14 +12,16 @@ import (
 	"go.uber.org/zap"
 
 	"berty.tech/berty/v2/go/internal/accountutils"
-	"berty.tech/berty/v2/go/internal/logutil"
 	"berty.tech/berty/v2/go/internal/messengerdb"
 	"berty.tech/berty/v2/go/internal/messengerpayloads"
 	"berty.tech/berty/v2/go/pkg/accounttypes"
 	"berty.tech/berty/v2/go/pkg/bertylinks"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
-	"berty.tech/berty/v2/go/pkg/pushtypes"
+	weshnet_push "berty.tech/weshnet/pkg/bertypush"
+	weshnet_errcode "berty.tech/weshnet/pkg/errcode"
+	"berty.tech/weshnet/pkg/logutil"
+	"berty.tech/weshnet/pkg/pushtypes"
 )
 
 func PushDecryptStandalone(logger *zap.Logger, rootDir string, inputB64 string, ks accountutils.NativeKeystore) (*pushtypes.DecryptedPush, error) {
@@ -33,7 +35,7 @@ func PushDecryptStandalone(logger *zap.Logger, rootDir string, inputB64 string, 
 
 	rawPushData, accountData, err := PushDecrypt(ctx, rootDir, input, &PushDecryptOpts{Logger: logger, Keystore: ks})
 	if err != nil {
-		return nil, errcode.ErrPushUnableToDecrypt.Wrap(err)
+		return nil, weshnet_errcode.ErrPushUnableToDecrypt.Wrap(err)
 	}
 
 	return PushEnrich(rawPushData, accountData, logger)
@@ -158,7 +160,7 @@ func PushDecrypt(ctx context.Context, rootDir string, input []byte, opts *PushDe
 
 	_, pushSK, err := accountutils.GetDevicePushKeyForPath(path.Join(rootDir, accountutils.DefaultPushKeyFilename), false)
 	if err != nil {
-		return nil, nil, errcode.ErrPushUnableToDecrypt.Wrap(fmt.Errorf("device has no known push key"))
+		return nil, nil, weshnet_errcode.ErrPushUnableToDecrypt.Wrap(fmt.Errorf("device has no known push key"))
 	}
 
 	accounts, err := accountutils.ListAccounts(ctx, rootDir, opts.Keystore, opts.Logger)
@@ -229,7 +231,7 @@ func PushDecrypt(ctx context.Context, rootDir string, input []byte, opts *PushDe
 
 			wrappedDB := messengerdb.NewDBWrapper(db, opts.Logger)
 
-			pushHandler, err := NewPushHandler(&PushHandlerOpts{
+			pushHandler, err := weshnet_push.NewPushHandler(&weshnet_push.PushHandlerOpts{
 				Logger:        opts.Logger,
 				RootDatastore: rootDS,
 				PushKey:       pushSK,
@@ -263,5 +265,5 @@ func PushDecrypt(ctx context.Context, rootDir string, input []byte, opts *PushDe
 	}
 
 	// only returning the first error
-	return nil, nil, errcode.ErrPushUnableToDecrypt.Wrap(errs[0])
+	return nil, nil, weshnet_errcode.ErrPushUnableToDecrypt.Wrap(errs[0])
 }

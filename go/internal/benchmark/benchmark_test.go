@@ -13,10 +13,10 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"berty.tech/berty/v2/go/internal/testutil"
 	"berty.tech/berty/v2/go/pkg/bertymessenger"
 	bertymessengertesting "berty.tech/berty/v2/go/pkg/bertymessenger/testing"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
+	"berty.tech/weshnet/pkg/testutil"
 )
 
 func b64DecodeBytes(s string) ([]byte, error) {

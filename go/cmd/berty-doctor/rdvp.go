@@ -26,8 +26,8 @@ import (
 	"go.uber.org/zap/zapcore"
 	"moul.io/srand"
 
-	"berty.tech/berty/v2/go/internal/ipfsutil"
-	"berty.tech/berty/v2/go/internal/tinder"
+	"berty.tech/weshnet/pkg/ipfsutil"
+	"berty.tech/weshnet/pkg/tinder"
 )
 
 const timeRounding = time.Microsecond * 10

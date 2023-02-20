@@ -53,3 +53,9 @@ jq 1.6
 # There is no contraindication for updating it.
 #-----
 java openjdk-18.0.1.1
+
+#-----
+# yq 4.30.8 is simply the most recent version available to date (02/23).
+# There is no contraindication for updating it.
+#-----
+yq 4.30.8

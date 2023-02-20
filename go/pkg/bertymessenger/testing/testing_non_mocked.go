@@ -10,14 +10,14 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"berty.tech/berty/v2/go/internal/initutil"
-	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
-	"berty.tech/berty/v2/go/pkg/protocoltypes"
+	"berty.tech/weshnet"
+	"berty.tech/weshnet/pkg/protocoltypes"
 )
 
-func NonMockedTestingInfra(t testing.TB, accountAmount int) ([]messengertypes.MessengerServiceClient, []*bertyprotocol.TestingProtocol, func()) {
+func NonMockedTestingInfra(t testing.TB, accountAmount int) ([]messengertypes.MessengerServiceClient, []*weshnet.TestingProtocol, func()) {
 	messengers := make([]messengertypes.MessengerServiceClient, accountAmount)
-	tps := make([]*bertyprotocol.TestingProtocol, accountAmount)
+	tps := make([]*weshnet.TestingProtocol, accountAmount)
 	closeFuncs := ([]func())(nil)
 
 	for i := 0; i < accountAmount; i++ {
@@ -53,7 +53,7 @@ func NonMockedTestingInfra(t testing.TB, accountAmount int) ([]messengertypes.Me
 		messengers[i], err = man.GetMessengerClient()
 		assert.NoError(t, err)
 
-		tps[i] = &bertyprotocol.TestingProtocol{
+		tps[i] = &weshnet.TestingProtocol{
 			Client: &WrappedMessengerClient{protocolClient},
 		}
 	}

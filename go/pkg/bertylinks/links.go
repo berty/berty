@@ -12,10 +12,10 @@ import (
 	"github.com/mr-tron/base58"
 	"golang.org/x/crypto/sha3"
 
-	"berty.tech/berty/v2/go/internal/cryptoutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
-	"berty.tech/berty/v2/go/pkg/protocoltypes"
+	"berty.tech/weshnet/pkg/cryptoutil"
+	"berty.tech/weshnet/pkg/protocoltypes"
 )
 
 // MarshalLink returns shareable web and internal URLs.

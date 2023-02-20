@@ -19,7 +19,7 @@ import (
 	"moul.io/u"
 
 	"berty.tech/berty/v2/go/internal/initutil"
-	"berty.tech/berty/v2/go/pkg/protocoltypes"
+	"berty.tech/weshnet/pkg/protocoltypes"
 )
 
 func verifySetupLeakDetection(t *testing.T) {
@@ -57,7 +57,7 @@ func verifyRunningLeakDetection(t *testing.T) {
 		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p/p2p/net/swarm.(*activeDial).dial"),                             // the cleanup take too much time, should be managed by ipfs
 		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p/p2p/net/upgrader.(*Upgrader).setupMuxer"),                      // the closing routine has big timeout
 		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p/p2p/net/upgrader.(*listener).Accept"),                          // sometimes happening on CI, need more investigation
-		goleak.IgnoreTopFunction("berty.tech/berty/v2/go/internal/ipfsutil.(*mdnsService).startResolver.func1"),              // upstream issue of mdns, go wakeup periodiclly to do action before check exist, timeout about 10 seconds
+		goleak.IgnoreTopFunction("berty.tech/weshnet/pkg/ipfsutil.(*mdnsService).startResolver.func1"),                       // upstream issue of mdns, go wakeup periodiclly to do action before check exist, timeout about 10 seconds
 		goleak.IgnoreTopFunction("github.com/lucas-clemente/quic-go.(*packetHandlerMap).runCloseQueue"),                      // quic-go should be manager by libp2p
 		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p/p2p/transport/quic.(*reuse).gc"),                               // quic-go should be manager by libp2p
 		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p/p2p/host/basic.(*BasicHost).background"),                       // sometimes happening on CI, need more investigation

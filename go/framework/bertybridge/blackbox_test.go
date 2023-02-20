@@ -16,7 +16,7 @@ import (
 	"berty.tech/berty/v2/go/framework/bertybridge"
 	"berty.tech/berty/v2/go/pkg/accounttypes"
 	bridge_svc "berty.tech/berty/v2/go/pkg/bertybridge"
-	"berty.tech/berty/v2/go/pkg/protocoltypes"
+	"berty.tech/weshnet/pkg/protocoltypes"
 )
 
 func Example() {
@@ -181,7 +181,7 @@ func Example() {
 		// Serialize request
 		in := &bridge_svc.ClientInvokeUnary_Request{
 			MethodDesc: &bridge_svc.MethodDesc{
-				Name: "/berty.protocol.v1.ProtocolService/InstanceGetConfiguration",
+				Name: "/weshnet.protocol.v1.ProtocolService/InstanceGetConfiguration",
 			},
 			Payload: payload,
 		}

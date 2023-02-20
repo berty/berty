@@ -3,11 +3,11 @@ package bertymessenger
 import (
 	"go.uber.org/zap"
 
-	"berty.tech/berty/v2/go/internal/logutil"
 	"berty.tech/berty/v2/go/internal/messengerutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
-	"berty.tech/berty/v2/go/pkg/tyber"
+	"berty.tech/weshnet/pkg/logutil"
+	"berty.tech/weshnet/pkg/tyber"
 )
 
 type serviceEventHandlerPostActions struct {

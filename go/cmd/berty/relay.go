@@ -28,8 +28,8 @@ import (
 	"go.uber.org/zap/zapcore"
 	"moul.io/srand"
 
-	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
+	"berty.tech/weshnet/pkg/ipfsutil"
 )
 
 const (

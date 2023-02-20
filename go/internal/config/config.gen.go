@@ -4,7 +4,7 @@ package config
 import (
 	"encoding/json"
 
-	"berty.tech/berty/v2/go/pkg/protocoltypes"
+	"berty.tech/weshnet/pkg/protocoltypes"
 )
 
 var Config protocoltypes.Config

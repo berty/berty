@@ -7,9 +7,9 @@ import (
 	"github.com/appleboy/go-fcm"
 	"go.uber.org/zap"
 
-	"berty.tech/berty/v2/go/pkg/errcode"
-	"berty.tech/berty/v2/go/pkg/protocoltypes"
-	"berty.tech/berty/v2/go/pkg/pushtypes"
+	weshnet_errcode "berty.tech/weshnet/pkg/errcode"
+	"berty.tech/weshnet/pkg/protocoltypes"
+	"berty.tech/weshnet/pkg/pushtypes"
 )
 
 type pushDispatcherFCM struct {
@@ -43,7 +43,7 @@ func PushDispatcherLoadFirebaseAPIKey(logger *zap.Logger, input *string) ([]Push
 func pushDispatcherLoadFCMAPIKey(logger *zap.Logger, apiKeyDetails string) (PushDispatcher, error) {
 	splitResult := strings.SplitN(apiKeyDetails, ":", 2)
 	if len(splitResult) != 2 {
-		return nil, errcode.ErrPushInvalidServerConfig
+		return nil, weshnet_errcode.ErrPushInvalidServerConfig
 	}
 
 	appID := splitResult[0]
@@ -51,7 +51,7 @@ func pushDispatcherLoadFCMAPIKey(logger *zap.Logger, apiKeyDetails string) (Push
 
 	client, err := fcm.NewClient(apiKey)
 	if err != nil {
-		return nil, errcode.ErrPushInvalidServerConfig.Wrap(err)
+		return nil, weshnet_errcode.ErrPushInvalidServerConfig.Wrap(err)
 	}
 
 	dispatcher := &pushDispatcherFCM{
@@ -73,11 +73,11 @@ func (d *pushDispatcherFCM) Dispatch(payload []byte, receiver *protocoltypes.Pus
 
 	res, err := d.client.Send(msg)
 	if err != nil {
-		return errcode.ErrPushProvider.Wrap(err)
+		return weshnet_errcode.ErrPushProvider.Wrap(err)
 	}
 
 	if res.Error != nil {
-		return errcode.ErrPushProvider.Wrap(res.Error)
+		return weshnet_errcode.ErrPushProvider.Wrap(res.Error)
 	}
 
 	return nil

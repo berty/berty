@@ -3,7 +3,7 @@
 
 ## Table of Contents
 
-- [messengertypes.proto](#messengertypes-proto)
+- [messengertypes/messengertypes.proto](#messengertypes_messengertypes-proto)
     - [Account](#berty-messenger-v1-Account)
     - [AccountDirectoryServiceRecord](#berty-messenger-v1-AccountDirectoryServiceRecord)
     - [AccountGet](#berty-messenger-v1-AccountGet)
@@ -184,10 +184,10 @@
   
 - [Scalar Value Types](#scalar-value-types)
 
-<a name="messengertypes-proto"></a>
+<a name="messengertypes_messengertypes-proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## messengertypes.proto
+## messengertypes/messengertypes.proto
 
 <a name="berty-messenger-v1-Account"></a>
 
@@ -392,7 +392,7 @@ AppMessage is the app layer format
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| group | [berty.protocol.v1.Group](#berty-protocol-v1-Group) |  |  |
+| group | [weshnet.protocol.v1.Group](#weshnet-protocol-v1-Group) |  |  |
 | display_name | [string](#string) |  |  |
 
 <a name="berty-messenger-v1-BertyID"></a>
@@ -448,7 +448,7 @@ to test more false-positive guesses.
 | group_public_key | [bytes](#bytes) |  |  |
 | group_secret | [bytes](#bytes) |  |  |
 | group_secret_sig | [bytes](#bytes) |  |  |
-| group_type | [berty.protocol.v1.GroupType](#berty-protocol-v1-GroupType) |  | clear |
+| group_type | [weshnet.protocol.v1.GroupType](#weshnet-protocol-v1-GroupType) |  | clear |
 | group_sign_pub | [bytes](#bytes) |  |  |
 | group_link_key_sig | [bytes](#bytes) |  |  |
 
@@ -1019,7 +1019,7 @@ Composite primary key
 | ----- | ---- | ----- | ----------- |
 | cid | [string](#string) |  |  |
 | conversation_public_key | [string](#string) |  |  |
-| metadata_event_type | [berty.protocol.v1.EventType](#berty-protocol-v1-EventType) |  |  |
+| metadata_event_type | [weshnet.protocol.v1.EventType](#weshnet-protocol-v1-EventType) |  |  |
 | payload | [bytes](#bytes) |  |  |
 
 <a name="berty-messenger-v1-PaginatedInteractionsOptions"></a>
@@ -1081,7 +1081,7 @@ Composite primary key
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| protocol_data | [berty.protocol.v1.PushReceive.Reply](#berty-protocol-v1-PushReceive-Reply) |  |  |
+| protocol_data | [weshnet.protocol.v1.PushReceive.Reply](#weshnet-protocol-v1-PushReceive-Reply) |  |  |
 | interaction | [Interaction](#berty-messenger-v1-Interaction) |  |  |
 | already_received | [bool](#bool) |  |  |
 | account_muted | [bool](#bool) |  |  |
@@ -1440,7 +1440,7 @@ status events
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| process | [berty.protocol.v1.SystemInfo.Process](#berty-protocol-v1-SystemInfo-Process) |  |  |
+| process | [weshnet.protocol.v1.SystemInfo.Process](#weshnet-protocol-v1-SystemInfo-Process) |  |  |
 | warns | [string](#string) | repeated |  |
 | protocol_in_same_process | [bool](#bool) |  |  |
 | db | [SystemInfo.DB](#berty-messenger-v1-SystemInfo-DB) |  |  |
@@ -1451,7 +1451,7 @@ status events
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| protocol | [berty.protocol.v1.SystemInfo.Reply](#berty-protocol-v1-SystemInfo-Reply) |  |  |
+| protocol | [weshnet.protocol.v1.SystemInfo.Reply](#weshnet-protocol-v1-SystemInfo-Reply) |  |  |
 | messenger | [SystemInfo.Messenger](#berty-messenger-v1-SystemInfo-Messenger) |  |  |
 
 <a name="berty-messenger-v1-SystemInfo-Request"></a>
@@ -1602,7 +1602,7 @@ status events
 <a name="berty-messenger-v1-MessengerService"></a>
 
 ### MessengerService
-MessengerService is the top-level API that uses the Berty Protocol to implement the Berty Messenger specific logic.
+MessengerService is the top-level API that uses the weshnet.protocol to implement the Berty Messenger specific logic.
 Today, most of the Berty Messenger logic is implemented directly in the application (see the /js folder of this repo).
 
 | Method Name | Request Type | Response Type | Description |
@@ -1612,7 +1612,7 @@ Today, most of the Berty Messenger logic is implemented directly in the applicat
 | DevShareInstanceBertyID | [DevShareInstanceBertyID.Request](#berty-messenger-v1-DevShareInstanceBertyID-Request) | [DevShareInstanceBertyID.Reply](#berty-messenger-v1-DevShareInstanceBertyID-Reply) | DevShareInstanceBertyID shares your Berty ID on a dev channel. TODO: remove for public. |
 | DevStreamLogs | [DevStreamLogs.Request](#berty-messenger-v1-DevStreamLogs-Request) | [DevStreamLogs.Reply](#berty-messenger-v1-DevStreamLogs-Reply) stream | DevStreamLogs streams logs from the ring-buffer. |
 | ParseDeepLink | [ParseDeepLink.Request](#berty-messenger-v1-ParseDeepLink-Request) | [ParseDeepLink.Reply](#berty-messenger-v1-ParseDeepLink-Reply) | ParseDeepLink parses a link in the form of berty://xxx or https://berty.tech/id# and returns a structure that can be used to display information. This action is read-only. |
-| SendContactRequest | [SendContactRequest.Request](#berty-messenger-v1-SendContactRequest-Request) | [SendContactRequest.Reply](#berty-messenger-v1-SendContactRequest-Reply) | SendContactRequest takes the payload received from ParseDeepLink and send a contact request using the Berty Protocol. |
+| SendContactRequest | [SendContactRequest.Request](#berty-messenger-v1-SendContactRequest-Request) | [SendContactRequest.Reply](#berty-messenger-v1-SendContactRequest-Reply) | SendContactRequest takes the payload received from ParseDeepLink and send a contact request using the weshnet.protocol. |
 | SystemInfo | [SystemInfo.Request](#berty-messenger-v1-SystemInfo-Request) | [SystemInfo.Reply](#berty-messenger-v1-SystemInfo-Reply) | SystemInfo returns runtime information. |
 | EchoTest | [EchoTest.Request](#berty-messenger-v1-EchoTest-Request) | [EchoTest.Reply](#berty-messenger-v1-EchoTest-Reply) stream | Use to test stream. |
 | EchoDuplexTest | [EchoDuplexTest.Request](#berty-messenger-v1-EchoDuplexTest-Request) stream | [EchoDuplexTest.Reply](#berty-messenger-v1-EchoDuplexTest-Reply) stream | Use to test duplex stream. |
@@ -1630,7 +1630,7 @@ Today, most of the Berty Messenger logic is implemented directly in the applicat
 | ConversationClose | [ConversationClose.Request](#berty-messenger-v1-ConversationClose-Request) | [ConversationClose.Reply](#berty-messenger-v1-ConversationClose-Reply) |  |
 | ConversationLoad | [ConversationLoad.Request](#berty-messenger-v1-ConversationLoad-Request) | [ConversationLoad.Reply](#berty-messenger-v1-ConversationLoad-Reply) |  |
 | ConversationMute | [ConversationMute.Request](#berty-messenger-v1-ConversationMute-Request) | [ConversationMute.Reply](#berty-messenger-v1-ConversationMute-Reply) |  |
-| ServicesTokenList | [.berty.protocol.v1.ServicesTokenList.Request](#berty-protocol-v1-ServicesTokenList-Request) | [.berty.protocol.v1.ServicesTokenList.Reply](#berty-protocol-v1-ServicesTokenList-Reply) stream | ServicesTokenList Retrieves the list of service server tokens |
+| ServicesTokenList | [.weshnet.protocol.v1.ServicesTokenList.Request](#weshnet-protocol-v1-ServicesTokenList-Request) | [.weshnet.protocol.v1.ServicesTokenList.Reply](#weshnet-protocol-v1-ServicesTokenList-Reply) stream | ServicesTokenList Retrieves the list of service server tokens |
 | ReplicationServiceRegisterGroup | [ReplicationServiceRegisterGroup.Request](#berty-messenger-v1-ReplicationServiceRegisterGroup-Request) | [ReplicationServiceRegisterGroup.Reply](#berty-messenger-v1-ReplicationServiceRegisterGroup-Reply) | ReplicationServiceRegisterGroup Asks a replication service to distribute a group contents |
 | ReplicationSetAutoEnable | [ReplicationSetAutoEnable.Request](#berty-messenger-v1-ReplicationSetAutoEnable-Request) | [ReplicationSetAutoEnable.Reply](#berty-messenger-v1-ReplicationSetAutoEnable-Reply) | ReplicationSetAutoEnable Sets whether new groups should be replicated automatically or not |
 | BannerQuote | [BannerQuote.Request](#berty-messenger-v1-BannerQuote-Request) | [BannerQuote.Reply](#berty-messenger-v1-BannerQuote-Reply) | BannerQuote returns the quote of the day. |

@@ -25,15 +25,15 @@ import (
 	"moul.io/zapgorm2"
 	"moul.io/zapring"
 
-	"berty.tech/berty/v2/go/internal/testutil"
-	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
-	"berty.tech/berty/v2/go/pkg/protocoltypes"
+	"berty.tech/weshnet"
+	"berty.tech/weshnet/pkg/protocoltypes"
+	"berty.tech/weshnet/pkg/testutil"
 )
 
 type TestingServiceOpts struct {
 	Logger      *zap.Logger
-	Client      bertyprotocol.Client
+	Client      weshnet.Client
 	Index       int
 	Ring        *zapring.Core
 	LogFilePath string
@@ -47,8 +47,8 @@ func TestingService(ctx context.Context, t testing.TB, opts *TestingServiceOpts)
 
 	cleanup := func() {}
 	if opts.Client == nil {
-		var protocol *bertyprotocol.TestingProtocol
-		protocol, cleanup = bertyprotocol.NewTestingProtocol(ctx, t, nil, nil)
+		var protocol *weshnet.TestingProtocol
+		protocol, cleanup = weshnet.NewTestingProtocol(ctx, t, nil, nil)
 		opts.Client = protocol.Client
 		// required to avoid "writing on closing socket",
 		// should be better to have something blocking instead
@@ -91,12 +91,12 @@ func TestingService(ctx context.Context, t testing.TB, opts *TestingServiceOpts)
 	return server, cleanup
 }
 
-func TestingInfra(ctx context.Context, t testing.TB, amount int, logger *zap.Logger) ([]messengertypes.MessengerServiceClient, []*bertyprotocol.TestingProtocol, func()) {
+func TestingInfra(ctx context.Context, t testing.TB, amount int, logger *zap.Logger) ([]messengertypes.MessengerServiceClient, []*weshnet.TestingProtocol, func()) {
 	t.Helper()
 	mocknet := libp2p_mocknet.New()
 	t.Cleanup(func() { mocknet.Close() })
 
-	protocols, cleanup := bertyprotocol.NewTestingProtocolWithMockedPeers(ctx, t, &bertyprotocol.TestingOpts{Logger: logger, Mocknet: mocknet}, nil, amount)
+	protocols, cleanup := weshnet.NewTestingProtocolWithMockedPeers(ctx, t, &weshnet.TestingOpts{Logger: logger, Mocknet: mocknet}, nil, amount)
 	clients := make([]messengertypes.MessengerServiceClient, amount)
 
 	// setup client

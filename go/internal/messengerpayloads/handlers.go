@@ -16,13 +16,14 @@ import (
 	"go.uber.org/zap"
 	"gorm.io/gorm"
 
-	"berty.tech/berty/v2/go/internal/logutil"
 	"berty.tech/berty/v2/go/internal/messengerdb"
 	"berty.tech/berty/v2/go/internal/messengerutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	mt "berty.tech/berty/v2/go/pkg/messengertypes"
-	"berty.tech/berty/v2/go/pkg/protocoltypes"
-	"berty.tech/berty/v2/go/pkg/tyber"
+	weshnet_errcode "berty.tech/weshnet/pkg/errcode"
+	"berty.tech/weshnet/pkg/logutil"
+	"berty.tech/weshnet/pkg/protocoltypes"
+	"berty.tech/weshnet/pkg/tyber"
 )
 
 var ErrNilPayload = errcode.ErrInvalidInput.Wrap(errors.New("nil payload"))
@@ -441,7 +442,7 @@ func (h *EventHandler) accountContactRequestOutgoingSent(gme *protocoltypes.Grou
 	// Check if the event is emitted by the current user
 	ownMemberPK, ownDevicePK, err := h.metaFetcher.OwnMemberAndDevicePKForConversation(h.ctx, gme.EventContext.GroupPK)
 	if err != nil {
-		return errcode.ErrGroupInfo.Wrap(err)
+		return weshnet_errcode.ErrGroupInfo.Wrap(err)
 	}
 
 	var contact *mt.Contact
@@ -515,7 +516,7 @@ func (h *EventHandler) accountContactRequestIncomingReceived(gme *protocoltypes.
 	// Check if the event is emitted by the current user
 	ownMemberPK, ownDevicePK, err := h.metaFetcher.OwnMemberAndDevicePKForConversation(h.ctx, gme.EventContext.GroupPK)
 	if err != nil {
-		return errcode.ErrGroupInfo.Wrap(err)
+		return weshnet_errcode.ErrGroupInfo.Wrap(err)
 	}
 
 	// create new contact conversation
@@ -664,7 +665,7 @@ func (h *EventHandler) multiMemberGroupInitialMemberAnnounced(gme *protocoltypes
 		if err == gorm.ErrRecordNotFound {
 			ownMemberPK, _, err := h.metaFetcher.OwnMemberAndDevicePKForConversation(h.ctx, gpkb)
 			if err != nil {
-				return errcode.ErrGroupInfo.Wrap(err)
+				return weshnet_errcode.ErrGroupInfo.Wrap(err)
 			}
 
 			isMe := bytes.Equal(ownMemberPK, mpkb)
@@ -724,7 +725,7 @@ func (h *EventHandler) groupMemberDeviceAdded(gme *protocoltypes.GroupMetadataEv
 	// Check if the event is emitted by the current user
 	ownMemberPK, _, err := h.metaFetcher.OwnMemberAndDevicePKForConversation(h.ctx, gme.EventContext.GroupPK)
 	if err != nil {
-		return errcode.ErrGroupInfo.Wrap(err)
+		return weshnet_errcode.ErrGroupInfo.Wrap(err)
 	}
 
 	isMe := bytes.Equal(ownMemberPK, mpkb)

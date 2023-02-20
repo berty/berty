@@ -21,19 +21,21 @@ import (
 	"moul.io/zapgorm2"
 	"moul.io/zapring"
 
-	"berty.tech/berty/v2/go/internal/lifecycle"
-	"berty.tech/berty/v2/go/internal/logutil"
+	"berty.tech/berty/v2/go/internal/bertyversion"
 	"berty.tech/berty/v2/go/internal/messengerdb"
 	"berty.tech/berty/v2/go/internal/messengerpayloads"
 	"berty.tech/berty/v2/go/internal/messengerutil"
 	"berty.tech/berty/v2/go/internal/notification"
-	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/bertypush"
-	"berty.tech/berty/v2/go/pkg/bertyversion"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	mt "berty.tech/berty/v2/go/pkg/messengertypes"
-	"berty.tech/berty/v2/go/pkg/protocoltypes"
-	"berty.tech/berty/v2/go/pkg/tyber"
+	"berty.tech/weshnet"
+	weshnet_push "berty.tech/weshnet/pkg/bertypush"
+	weshnet_errcode "berty.tech/weshnet/pkg/errcode"
+	"berty.tech/weshnet/pkg/lifecycle"
+	"berty.tech/weshnet/pkg/logutil"
+	"berty.tech/weshnet/pkg/protocoltypes"
+	"berty.tech/weshnet/pkg/tyber"
 )
 
 type Service interface {
@@ -72,6 +74,8 @@ type service struct {
 	groupsToSubTo         map[string]struct{}
 	accountGroup          []byte
 	grpcInsecure          bool
+
+	mt.UnimplementedMessengerServiceServer
 }
 
 type Opts struct {
@@ -128,8 +132,8 @@ func (opts *Opts) applyDefaults() (func(), error) {
 	return cleanup, nil
 }
 
-func databaseStateRestoreAccountHandler(statePointer *mt.LocalDatabaseState) bertyprotocol.RestoreAccountHandler {
-	return bertyprotocol.RestoreAccountHandler{
+func databaseStateRestoreAccountHandler(statePointer *mt.LocalDatabaseState) weshnet.RestoreAccountHandler {
+	return weshnet.RestoreAccountHandler{
 		Handler: func(header *tar.Header, reader *tar.Reader) (bool, error) {
 			if header.Name != exportLocalDBState {
 				return false, nil
@@ -157,8 +161,8 @@ func databaseStateRestoreAccountHandler(statePointer *mt.LocalDatabaseState) ber
 	}
 }
 
-func RestoreFromAccountExport(ctx context.Context, reader io.Reader, coreAPI ipfs_interface.CoreAPI, odb *bertyprotocol.BertyOrbitDB, localDBState *mt.LocalDatabaseState, logger *zap.Logger) error {
-	return bertyprotocol.RestoreAccountExport(ctx, reader, coreAPI, odb, logger, databaseStateRestoreAccountHandler(localDBState))
+func RestoreFromAccountExport(ctx context.Context, reader io.Reader, coreAPI ipfs_interface.CoreAPI, odb *weshnet.BertyOrbitDB, localDBState *mt.LocalDatabaseState, logger *zap.Logger) error {
+	return weshnet.RestoreAccountExport(ctx, reader, coreAPI, odb, logger, databaseStateRestoreAccountHandler(localDBState))
 }
 
 func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (_ Service, err error) {
@@ -235,7 +239,7 @@ func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (_ Service, err
 	}
 
 	svc.eventHandler = messengerpayloads.NewEventHandler(ctx, db, &MetaFetcherFromProtocolClient{client: client}, newPostActionsService(&svc), opts.Logger, svc.dispatcher, false)
-	svc.pushReceiver = bertypush.NewPushReceiver(bertypush.NewPushHandlerViaProtocol(ctx, client), svc.eventHandler, svc.db, opts.Logger)
+	svc.pushReceiver = bertypush.NewPushReceiver(weshnet_push.NewPushHandlerViaProtocol(ctx, client), svc.eventHandler, svc.db, opts.Logger)
 
 	// get or create account in DB
 	{
@@ -476,12 +480,12 @@ func (svc *service) sharePushTokenForConversation(conversation *mt.Conversation)
 
 	if account.DevicePushToken == nil {
 		svc.logger.Warn("no push token known, won't share it")
-		return errcode.ErrPushUnknownDestination.Wrap(fmt.Errorf("no push token known, won't share it"))
+		return weshnet_errcode.ErrPushUnknownDestination.Wrap(fmt.Errorf("no push token known, won't share it"))
 	}
 
 	if account.DevicePushServer == nil {
 		svc.logger.Warn("no push server known, won't share push token")
-		return errcode.ErrPushUnknownProvider.Wrap(fmt.Errorf("no push server known, won't share push token"))
+		return weshnet_errcode.ErrPushUnknownProvider.Wrap(fmt.Errorf("no push server known, won't share push token"))
 	}
 
 	pushServer := &protocoltypes.PushServer{}

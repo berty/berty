@@ -12,7 +12,7 @@ import (
 	yaml "gopkg.in/yaml.v3"
 	"moul.io/u"
 
-	"berty.tech/berty/v2/go/pkg/protocoltypes"
+	"berty.tech/weshnet/pkg/protocoltypes"
 )
 
 var (
@@ -59,7 +59,7 @@ export const globals = %s;
 package config
 
 import "encoding/json"
-import "berty.tech/berty/v2/go/pkg/protocoltypes"
+import "berty.tech/weshnet/pkg/protocoltypes"
 
 var Config protocoltypes.Config
 

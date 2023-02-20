@@ -16,17 +16,18 @@ import (
 	"golang.org/x/text/language"
 	"google.golang.org/grpc"
 
-	"berty.tech/berty/v2/go/internal/grpcutil"
-	"berty.tech/berty/v2/go/internal/ipfsutil"
-	"berty.tech/berty/v2/go/internal/lifecycle"
-	"berty.tech/berty/v2/go/internal/logutil"
+	berty_grpcutil "berty.tech/berty/v2/go/internal/grpcutil"
 	"berty.tech/berty/v2/go/internal/notification"
-	proximity "berty.tech/berty/v2/go/internal/proximitytransport"
 	"berty.tech/berty/v2/go/pkg/accounttypes"
 	account_svc "berty.tech/berty/v2/go/pkg/bertyaccount"
 	bridge_svc "berty.tech/berty/v2/go/pkg/bertybridge"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/osversion"
+	"berty.tech/weshnet/pkg/grpcutil"
+	"berty.tech/weshnet/pkg/ipfsutil"
+	"berty.tech/weshnet/pkg/lifecycle"
+	"berty.tech/weshnet/pkg/logutil"
+	proximity "berty.tech/weshnet/pkg/proximitytransport"
 )
 
 var _ LifeCycleHandler = (*Bridge)(nil)
@@ -163,7 +164,7 @@ func NewBridge(config *BridgeConfig) (*Bridge, error) {
 			return nil, errors.Wrap(err, "unable to get bridge gRPC ClientConn")
 		}
 
-		b.ServiceClient = NewServiceClient(grpcutil.NewLazyClient(ccBridge))
+		b.ServiceClient = NewServiceClient(berty_grpcutil.NewLazyClient(ccBridge))
 	}
 
 	// setup lifecycle manager

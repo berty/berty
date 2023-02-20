@@ -5,10 +5,13 @@ FROM    golang:1.18-alpine as builder
 # install deps
 RUN     apk --no-cache add make git go rsync libc-dev openssh docker npm
 # install compilers
-WORKDIR $GOPATH/src/berty.tech/berty
+WORKDIR $GOPATH/src/berty.tech/weshnet
 COPY    go.mod go.sum ./
 RUN     go install -mod=readonly \
+		  github.com/bufbuild/buf/cmd/buf \
+		  google.golang.org/protobuf/cmd/protoc-gen-go \
           github.com/gogo/protobuf/protoc-gen-gogo \
+		  google.golang.org/grpc/cmd/protoc-gen-go-grpc \
           github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway \
           github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger \
           github.com/pseudomuto/protoc-gen-doc/cmd/protoc-gen-doc \
@@ -24,5 +27,5 @@ COPY    --from=pgg     /go/bin/* /go/bin/
 COPY    --from=builder /go/bin/* /go/bin/
 COPY    --from=pgg     /protobuf /protobuf
 ENV     GOPATH=/go \
-        PATH=/go/bin:/node/node_modules/.bin:${PATH} \
+        PATH=/go/bin:/node/node_modules/.bin:${PATH}:/usr/local/bin \
         GOROOT=/usr/local/go

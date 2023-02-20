@@ -3,15 +3,15 @@ package initutil
 import (
 	datastore "github.com/ipfs/go-datastore"
 
-	"berty.tech/berty/v2/go/internal/cryptoutil"
 	"berty.tech/berty/v2/go/internal/datastoreutil"
-	"berty.tech/berty/v2/go/internal/ipfsutil"
-	"berty.tech/berty/v2/go/internal/rendezvous"
-	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/go-orbit-db/baseorbitdb"
 	"berty.tech/go-orbit-db/pubsub/directchannel"
 	"berty.tech/go-orbit-db/pubsub/pubsubraw"
+	"berty.tech/weshnet"
+	"berty.tech/weshnet/pkg/cryptoutil"
+	"berty.tech/weshnet/pkg/ipfsutil"
+	"berty.tech/weshnet/pkg/rendezvous"
 )
 
 func (m *Manager) GetRotationInterval() (rp *rendezvous.RotationInterval, err error) {
@@ -33,7 +33,7 @@ func (m *Manager) getRotationInterval() (*rendezvous.RotationInterval, error) {
 	return m.Node.Protocol.rotationInterval, nil
 }
 
-func (m *Manager) getOrbitDB() (*bertyprotocol.BertyOrbitDB, error) {
+func (m *Manager) getOrbitDB() (*weshnet.BertyOrbitDB, error) {
 	m.applyDefaults()
 
 	if m.Node.Protocol.orbitDB != nil {
@@ -56,9 +56,9 @@ func (m *Manager) getOrbitDB() (*bertyprotocol.BertyOrbitDB, error) {
 	}
 
 	var (
-		deviceDS = ipfsutil.NewDatastoreKeystore(datastoreutil.NewNamespacedDatastore(rootDS, datastore.NewKey(bertyprotocol.NamespaceDeviceKeystore)))
+		deviceDS = ipfsutil.NewDatastoreKeystore(datastoreutil.NewNamespacedDatastore(rootDS, datastore.NewKey(weshnet.NamespaceDeviceKeystore)))
 		deviceKS = cryptoutil.NewDeviceKeystore(deviceDS, nil)
-		cache    = bertyprotocol.NewOrbitDatastoreCache(rootDS)
+		cache    = weshnet.NewOrbitDatastoreCache(rootDS)
 	)
 
 	rp, err := m.getRotationInterval()
@@ -66,7 +66,7 @@ func (m *Manager) getOrbitDB() (*bertyprotocol.BertyOrbitDB, error) {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	opts := &bertyprotocol.NewOrbitDBOptions{
+	opts := &weshnet.NewOrbitDBOptions{
 		NewOrbitDBOptions: baseorbitdb.NewOrbitDBOptions{
 			Cache:                cache,
 			Logger:               logger,
@@ -86,7 +86,7 @@ func (m *Manager) getOrbitDB() (*bertyprotocol.BertyOrbitDB, error) {
 		opts.PubSub = pubsubraw.NewPubSub(node.PubSub, self.ID(), opts.Logger, nil)
 	}
 
-	odb, err := bertyprotocol.NewBertyOrbitDB(m.getContext(), ipfs, opts)
+	odb, err := weshnet.NewBertyOrbitDB(m.getContext(), ipfs, opts)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
@@ -96,7 +96,7 @@ func (m *Manager) getOrbitDB() (*bertyprotocol.BertyOrbitDB, error) {
 	return odb, nil
 }
 
-func (m *Manager) GetOrbitDB() (*bertyprotocol.BertyOrbitDB, error) {
+func (m *Manager) GetOrbitDB() (*weshnet.BertyOrbitDB, error) {
 	defer m.prepareForGetter()()
 
 	return m.getOrbitDB()

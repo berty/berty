@@ -21,11 +21,12 @@ import (
 	"gorm.io/gorm"
 	"moul.io/zapgorm2"
 
-	"berty.tech/berty/v2/go/internal/cryptoutil"
-	"berty.tech/berty/v2/go/internal/logutil"
 	"berty.tech/berty/v2/go/pkg/accounttypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	encrepo "berty.tech/go-ipfs-repo-encrypted"
+	"berty.tech/weshnet/pkg/cryptoutil"
+	weshnet_errcode "berty.tech/weshnet/pkg/errcode"
+	"berty.tech/weshnet/pkg/logutil"
 )
 
 const (
@@ -69,7 +70,7 @@ func GetDevicePushKeyForPath(filePath string, createIfMissing bool) (pk *[crypto
 
 		return pk, sk, nil
 	} else if err != nil {
-		return nil, nil, errcode.ErrPushUnableToDecrypt.Wrap(fmt.Errorf("unable to get device push key"))
+		return nil, nil, weshnet_errcode.ErrPushUnableToDecrypt.Wrap(fmt.Errorf("unable to get device push key"))
 	}
 
 	pkVal := [cryptoutil.KeySize]byte{}

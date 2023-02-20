@@ -11,7 +11,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"go.uber.org/zap"
 
-	"berty.tech/berty/v2/go/internal/logutil"
+	"berty.tech/weshnet/pkg/logutil"
 )
 
 const metricsHandler = "/metrics"

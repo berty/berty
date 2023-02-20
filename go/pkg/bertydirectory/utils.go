@@ -11,12 +11,12 @@ import (
 	"github.com/hyperledger/aries-framework-go/pkg/doc/verifiable"
 	"github.com/piprate/json-gold/ld"
 
-	"berty.tech/berty/v2/go/internal/cryptoutil"
 	"berty.tech/berty/v2/go/pkg/bertylinks"
-	"berty.tech/berty/v2/go/pkg/bertyvcissuer"
 	"berty.tech/berty/v2/go/pkg/directorytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
+	weshnet_vc "berty.tech/weshnet/pkg/bertyvcissuer"
+	"berty.tech/weshnet/pkg/cryptoutil"
 )
 
 func inMinMaxDefault(value, min, max, def int64) int64 {
@@ -105,9 +105,9 @@ func isExistingRecordBeingRenewed(record *directorytypes.Record, accountPK, acco
 func checkVerifiedCredential(allowedIssuers []string, verifiedCredential []byte, accountPK []byte) (string, error) {
 	credentialsOpts := []verifiable.CredentialOpt{verifiable.WithJSONLDDocumentLoader(ld.NewDefaultDocumentLoader(http.DefaultClient))}
 	if len(allowedIssuers) == 0 {
-		credentialsOpts = append([]verifiable.CredentialOpt{verifiable.WithPublicKeyFetcher(bertyvcissuer.EmbeddedPublicKeyFetcher)}, credentialsOpts...)
+		credentialsOpts = append([]verifiable.CredentialOpt{verifiable.WithPublicKeyFetcher(weshnet_vc.EmbeddedPublicKeyFetcher)}, credentialsOpts...)
 	} else {
-		credentialsOpts = append([]verifiable.CredentialOpt{verifiable.WithPublicKeyFetcher(bertyvcissuer.EmbeddedPublicKeyFetcherAllowList(allowedIssuers))}, credentialsOpts...)
+		credentialsOpts = append([]verifiable.CredentialOpt{verifiable.WithPublicKeyFetcher(weshnet_vc.EmbeddedPublicKeyFetcherAllowList(allowedIssuers))}, credentialsOpts...)
 	}
 
 	credential, err := verifiable.ParseCredential(verifiedCredential, credentialsOpts...)
@@ -140,7 +140,7 @@ func checkVerifiedCredential(allowedIssuers []string, verifiedCredential []byte,
 		return "", errcode.ErrServicesDirectoryInvalidVerifiedCredentialID
 	}
 
-	subject, err := bertyvcissuer.ExtractSubjectFromVC(credential)
+	subject, err := weshnet_vc.ExtractSubjectFromVC(credential)
 	if err != nil {
 		return "", errcode.ErrServicesDirectoryInvalidVerifiedCredentialSubject.Wrap(err)
 	}

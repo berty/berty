@@ -20,21 +20,22 @@ import (
 	"moul.io/u"
 
 	"berty.tech/berty/v2/go/internal/accountutils"
-	nb "berty.tech/berty/v2/go/internal/androidnearby"
-	"berty.tech/berty/v2/go/internal/ble-driver"
 	"berty.tech/berty/v2/go/internal/config"
 	"berty.tech/berty/v2/go/internal/initutil"
-	"berty.tech/berty/v2/go/internal/logutil"
 	"berty.tech/berty/v2/go/internal/migrationsaccount"
-	mc "berty.tech/berty/v2/go/internal/multipeer-connectivity-driver"
-	"berty.tech/berty/v2/go/localization"
 	"berty.tech/berty/v2/go/pkg/accounttypes"
 	"berty.tech/berty/v2/go/pkg/bertypush"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
-	"berty.tech/berty/v2/go/pkg/protocoltypes"
-	"berty.tech/berty/v2/go/pkg/tyber"
-	"berty.tech/berty/v2/go/pkg/username"
+	"berty.tech/weshnet/localization"
+	nb "berty.tech/weshnet/pkg/androidnearby"
+	"berty.tech/weshnet/pkg/ble-driver"
+	weshnet_errcode "berty.tech/weshnet/pkg/errcode"
+	"berty.tech/weshnet/pkg/logutil"
+	mc "berty.tech/weshnet/pkg/multipeer-connectivity-driver"
+	"berty.tech/weshnet/pkg/protocoltypes"
+	"berty.tech/weshnet/pkg/tyber"
+	"berty.tech/weshnet/pkg/username"
 )
 
 func (s *service) openAccount(ctx context.Context, req *accounttypes.OpenAccount_Request, prog *progress.Progress) (*accounttypes.AccountMetadata, error) {
@@ -1308,7 +1309,7 @@ func (s *service) PushReceive(ctx context.Context, req *accounttypes.PushReceive
 		Logger: s.logger, ExcludedAccounts: excludedAccounts, Keystore: s.nativeKeystore,
 	})
 	if err != nil {
-		return nil, errcode.ErrPushUnableToDecrypt.Wrap(err)
+		return nil, weshnet_errcode.ErrPushUnableToDecrypt.Wrap(err)
 	}
 
 	pushData, err := bertypush.PushEnrich(rawPushData, accountData, s.logger)

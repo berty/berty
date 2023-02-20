@@ -8,10 +8,10 @@ import (
 
 	"github.com/peterbourgon/ff/v3/ffcli"
 
-	"berty.tech/berty/v2/go/internal/cryptoutil"
-	"berty.tech/berty/v2/go/pkg/authtypes"
 	"berty.tech/berty/v2/go/pkg/bertypushrelay"
-	"berty.tech/berty/v2/go/pkg/pushtypes"
+	"berty.tech/weshnet/pkg/authtypes"
+	"berty.tech/weshnet/pkg/cryptoutil"
+	"berty.tech/weshnet/pkg/pushtypes"
 )
 
 func pushServerCommand() *ffcli.Command {

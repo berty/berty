@@ -6,7 +6,7 @@ import (
 
 	"golang.org/x/text/message"
 
-	"berty.tech/berty/v2/go/pkg/pushtypes"
+	"berty.tech/weshnet/pkg/pushtypes"
 )
 
 type formatedPayload map[string]string

@@ -25,20 +25,21 @@ import (
 	"moul.io/zapring"
 
 	"berty.tech/berty/v2/go/internal/accountutils"
-	"berty.tech/berty/v2/go/internal/grpcutil"
-	"berty.tech/berty/v2/go/internal/ipfsutil"
-	"berty.tech/berty/v2/go/internal/lifecycle"
-	"berty.tech/berty/v2/go/internal/logutil"
+	berty_grpcutil "berty.tech/berty/v2/go/internal/grpcutil"
 	"berty.tech/berty/v2/go/internal/notification"
-	proximity "berty.tech/berty/v2/go/internal/proximitytransport"
-	"berty.tech/berty/v2/go/internal/rendezvous"
-	tinder "berty.tech/berty/v2/go/internal/tinder"
 	"berty.tech/berty/v2/go/pkg/bertymessenger"
-	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
-	"berty.tech/berty/v2/go/pkg/protocoltypes"
-	"berty.tech/berty/v2/go/pkg/tyber"
+	"berty.tech/weshnet"
+	"berty.tech/weshnet/pkg/grpcutil"
+	"berty.tech/weshnet/pkg/ipfsutil"
+	"berty.tech/weshnet/pkg/lifecycle"
+	"berty.tech/weshnet/pkg/logutil"
+	"berty.tech/weshnet/pkg/protocoltypes"
+	proximity "berty.tech/weshnet/pkg/proximitytransport"
+	"berty.tech/weshnet/pkg/rendezvous"
+	tinder "berty.tech/weshnet/pkg/tinder"
+	"berty.tech/weshnet/pkg/tyber"
 )
 
 const (
@@ -154,13 +155,13 @@ type Manager struct {
 			emitterclient     rendezvous.SyncClient
 			pubsub            *pubsub.PubSub
 			tinder            *tinder.Service
-			server            bertyprotocol.Service
+			server            weshnet.Service
 			ipfsAPIListeners  []net.Listener
 			ipfsWebUIListener net.Listener
 			client            protocoltypes.ProtocolServiceClient
 			requiredByClient  bool
 			ipfsWebUICleanup  func()
-			orbitDB           *bertyprotocol.BertyOrbitDB
+			orbitDB           *weshnet.BertyOrbitDB
 			rotationInterval  *rendezvous.RotationInterval
 		}
 		Messenger struct {
@@ -172,7 +173,7 @@ type Manager struct {
 			ExportPathToRestore  string `json:"ExportPathToRestore,omitempty"`
 
 			// internal
-			protocolClient      bertyprotocol.Client
+			protocolClient      weshnet.Client
 			server              bertymessenger.Service
 			lcmanager           *lifecycle.Manager
 			notificationManager notification.Manager
@@ -201,7 +202,7 @@ type Manager struct {
 			bufServer         *grpc.Server
 			bufServerListener *grpcutil.BufListener
 			gatewayMux        *runtime.ServeMux
-			listeners         []grpcutil.Listener
+			listeners         []berty_grpcutil.Listener
 		} `json:"GRPC,omitempty"`
 		ServiceInsecureMode bool `json:"ServiceInsecureMode,omitempty"`
 	} `json:"Node,omitempty"`

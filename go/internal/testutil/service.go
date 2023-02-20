@@ -9,12 +9,14 @@ import (
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 
-	"berty.tech/berty/v2/go/internal/grpcutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
+	"berty.tech/weshnet/pkg/grpcutil"
 )
 
 type service struct {
 	logger *zap.Logger
+
+	UnimplementedTestServiceServer
 }
 
 type Options struct {

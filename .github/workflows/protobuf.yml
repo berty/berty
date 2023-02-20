@@ -136,7 +136,6 @@ jobs:
           APIARY_API_KEY: "${{ secrets.APIARY_API_KEY }}"
         if: ${{ env.APIARY_API_KEY != 0 }}
         run: |
-          apiary publish --api-name=bertyprotocol  --path="docs/.tmp/openapi/bertyprotocol.swagger.json"  || true
           apiary publish --api-name=bertymessenger --path="docs/.tmp/openapi/bertymessenger.swagger.json" || true
 
   gen-js:

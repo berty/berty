@@ -42,5 +42,5 @@ Makefile @berty/build-owners
 ##
 
 # public APIs
-/go/pkg/bertyprotocol/ @berty/go-owners @moul
-/api/bertyprotocol.proto @berty/go-owners @berty/js-owners @moul
+/go/pkg/bertymessenger/ @berty/go-owners @moul
+/api/messengertypes/messengertypes.proto @berty/go-owners @berty/js-owners @moul

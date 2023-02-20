@@ -10,7 +10,7 @@ import (
 	"gorm.io/gorm"
 	"moul.io/zapgorm2"
 
-	"berty.tech/berty/v2/go/internal/testutil"
+	"berty.tech/weshnet/pkg/testutil"
 )
 
 type GetInMemoryTestDBOpts int32

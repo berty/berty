@@ -20,12 +20,13 @@ import (
 	"golang.org/x/crypto/curve25519"
 	"golang.org/x/crypto/nacl/box"
 
-	"berty.tech/berty/v2/go/internal/cryptoutil"
 	"berty.tech/berty/v2/go/pkg/bertylinks"
 	"berty.tech/berty/v2/go/pkg/bertyvcissuer/templates"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
-	"berty.tech/berty/v2/go/pkg/verifiablecredstypes"
+	weshnet_vc "berty.tech/weshnet/pkg/bertyvcissuer"
+	"berty.tech/weshnet/pkg/cryptoutil"
+	"berty.tech/weshnet/pkg/verifiablecredstypes"
 )
 
 const cryptoChallengeTimeout = 10 * time.Minute
@@ -141,9 +142,9 @@ func New(config *Config) (*VCIssuer, error) {
 func (i *VCIssuer) serveMux() *http.ServeMux {
 	mux := http.NewServeMux()
 
-	mux.HandleFunc(PathChallenge, i.challenge)
-	mux.HandleFunc(PathAuthenticate, i.authenticate)
-	mux.HandleFunc(PathProof, i.proof)
+	mux.HandleFunc(weshnet_vc.PathChallenge, i.challenge)
+	mux.HandleFunc(weshnet_vc.PathAuthenticate, i.authenticate)
+	mux.HandleFunc(weshnet_vc.PathProof, i.proof)
 
 	return mux
 }
@@ -166,20 +167,20 @@ func (i *VCIssuer) error(err error, w http.ResponseWriter, _ *http.Request) {
 }
 
 func (i *VCIssuer) challenge(w http.ResponseWriter, r *http.Request) {
-	bertyID := r.URL.Query().Get(ParamBertyID)
+	bertyID := r.URL.Query().Get(weshnet_vc.ParamBertyID)
 	nonce, err := cryptoutil.GenerateNonce()
 	if err != nil {
 		i.error(err, w, r)
 		return
 	}
 
-	state := r.URL.Query().Get(ParamState)
+	state := r.URL.Query().Get(weshnet_vc.ParamState)
 	if len(state) == 0 {
 		i.error(ErrFlowStateMissing, w, r)
 		return
 	}
 
-	redirectURI := r.URL.Query().Get(ParamRedirectURI)
+	redirectURI := r.URL.Query().Get(weshnet_vc.ParamRedirectURI)
 	if len(redirectURI) == 0 {
 		i.error(ErrFlowRedirectURIMissing, w, r)
 		return
@@ -283,14 +284,14 @@ func (i *VCIssuer) checkChallengeIssuerSig(challenge *verifiablecredstypes.State
 }
 
 func (i *VCIssuer) checkAuthenticateChallenge(w http.ResponseWriter, r *http.Request) {
-	challengeStr := r.URL.Query().Get(ParamChallenge)
+	challengeStr := r.URL.Query().Get(weshnet_vc.ParamChallenge)
 	challenge, challengeBytes, err := i.checkAndGetChallenge(challengeStr)
 	if err != nil {
 		i.error(err, w, r)
 		return
 	}
 
-	challengeSigStr := r.URL.Query().Get(ParamChallengeSig)
+	challengeSigStr := r.URL.Query().Get(weshnet_vc.ParamChallengeSig)
 	if err := i.checkChallengeIssuerSig(challenge, challengeBytes, challengeSigStr); err != nil {
 		i.error(err, w, r)
 		return
@@ -359,7 +360,7 @@ func (i *VCIssuer) openVerifiableContext(stateBase64 string) (*verifiablecredsty
 }
 
 func (i *VCIssuer) authenticate(w http.ResponseWriter, r *http.Request) {
-	stateStr := r.URL.Query().Get(ParamContext)
+	stateStr := r.URL.Query().Get(weshnet_vc.ParamContext)
 	if len(stateStr) == 0 {
 		i.checkAuthenticateChallenge(w, r)
 		return
@@ -378,7 +379,7 @@ func (i *VCIssuer) authenticate(w http.ResponseWriter, r *http.Request) {
 			i.error(err, w, r)
 			return
 		}
-		state.Identifier = r.PostForm.Get(ParamIdentifier)
+		state.Identifier = r.PostForm.Get(weshnet_vc.ParamIdentifier)
 		if len(state.Identifier) == 0 {
 			r.Method = http.MethodGet
 			i.authenticate(w, r)
@@ -434,7 +435,7 @@ func (i *VCIssuer) authenticate(w http.ResponseWriter, r *http.Request) {
 }
 
 func (i *VCIssuer) proof(w http.ResponseWriter, r *http.Request) {
-	stateStr := r.URL.Query().Get(ParamContext)
+	stateStr := r.URL.Query().Get(weshnet_vc.ParamContext)
 	if len(stateStr) == 0 {
 		i.error(fmt.Errorf("missing context"), w, r)
 		return
@@ -459,7 +460,7 @@ func (i *VCIssuer) proof(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		code := r.PostForm.Get(ParamCode)
+		code := r.PostForm.Get(weshnet_vc.ParamCode)
 
 		if code == state.Code {
 			signedProof, err := i.CreateSignedProof(state.BertyLink, state.Identifier)
@@ -511,14 +512,14 @@ func (i *VCIssuer) TestHelperIssueTokenCallbackURI(t *testing.T, initURL string,
 		return ""
 	}
 
-	challengeStr := parsedInitURL.Query().Get(ParamChallenge)
+	challengeStr := parsedInitURL.Query().Get(weshnet_vc.ParamChallenge)
 	challenge, challengeBytes, err := i.checkAndGetChallenge(challengeStr)
 	if err != nil {
 		t.Error(err)
 		return ""
 	}
 
-	challengeSigStr := parsedInitURL.Query().Get(ParamChallengeSig)
+	challengeSigStr := parsedInitURL.Query().Get(weshnet_vc.ParamChallengeSig)
 	if err := i.checkChallengeIssuerSig(challenge, challengeBytes, challengeSigStr); err != nil {
 		t.Error(err)
 		return ""

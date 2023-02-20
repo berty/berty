@@ -10,9 +10,10 @@ import (
 	"go.uber.org/zap"
 	grpc "google.golang.org/grpc"
 
-	"berty.tech/berty/v2/go/internal/grpcutil"
-	"berty.tech/berty/v2/go/internal/testutil"
+	berty_testutil "berty.tech/berty/v2/go/internal/testutil"
 	errcode "berty.tech/berty/v2/go/pkg/errcode"
+	"berty.tech/weshnet/pkg/grpcutil"
+	"berty.tech/weshnet/pkg/testutil"
 )
 
 const echoStringTest = "Im sorry Dave, Im afraid I cant do that"
@@ -35,7 +36,7 @@ func TestUnaryService(t *testing.T) {
 
 	// call `testutil.TestService/EchoTest` with empty request,
 	{
-		input := &testutil.EchoTest_Request{
+		input := &berty_testutil.EchoTest_Request{
 			Echo:         echoStringTest,
 			TriggerError: false,
 		}
@@ -68,7 +69,7 @@ func TestUnaryServiceError(t *testing.T) {
 
 	// call `testutil.TestService/EchoTest` with empty request,
 	{
-		input := &testutil.EchoTest_Request{
+		input := &berty_testutil.EchoTest_Request{
 			Echo:         echoStringTest,
 			TriggerError: true,
 		}
@@ -103,7 +104,7 @@ func TestStreamService(t *testing.T) {
 	// call instance `MessengerService/EchoTest`
 	var streamid string
 	{
-		input := &testutil.EchoTest_Request{
+		input := &berty_testutil.EchoTest_Request{
 			Delay: 10,
 			Echo:  echoStringTest,
 		}
@@ -136,7 +137,7 @@ func TestStreamService(t *testing.T) {
 			assert.Equal(t, GRPCErrCode_OK, res.Error.GrpcErrorCode)
 			assert.Equal(t, errcode.Undefined, res.Error.ErrorCode)
 
-			var output testutil.EchoTest_Reply
+			var output berty_testutil.EchoTest_Reply
 			err = proto.Unmarshal(res.Payload, &output)
 			require.NoError(t, err)
 
@@ -169,7 +170,7 @@ func TestStreamServiceError(t *testing.T) {
 	// test echoTest error
 	var streamid string
 	{
-		input := &testutil.EchoTest_Request{
+		input := &berty_testutil.EchoTest_Request{
 			TriggerError: true,
 			Delay:        0,
 			Echo:         echoStringTest,
@@ -238,7 +239,7 @@ func TestDuplexStreamService(t *testing.T) {
 
 	// send echo test
 	{
-		input := &testutil.EchoDuplexTest_Request{
+		input := &berty_testutil.EchoDuplexTest_Request{
 			Echo: echoStringTest,
 		}
 		payload, err := proto.Marshal(input)
@@ -269,7 +270,7 @@ func TestDuplexStreamService(t *testing.T) {
 				assert.Equal(t, GRPCErrCode_OK, res.Error.GrpcErrorCode)
 				assert.Equal(t, errcode.Undefined, res.Error.ErrorCode)
 
-				var output testutil.EchoDuplexTest_Reply
+				var output berty_testutil.EchoDuplexTest_Reply
 				err = proto.Unmarshal(res.Payload, &output)
 				require.NoError(t, err)
 
@@ -310,7 +311,7 @@ func TestDuplexStreamServiceError(t *testing.T) {
 
 	// send echo test
 	{
-		input := &testutil.EchoDuplexTest_Request{
+		input := &berty_testutil.EchoDuplexTest_Request{
 			Echo: echoStringTest,
 		}
 		payload, err := proto.Marshal(input)
@@ -341,7 +342,7 @@ func TestDuplexStreamServiceError(t *testing.T) {
 				assert.Equal(t, GRPCErrCode_OK, res.Error.GrpcErrorCode)
 				assert.Equal(t, errcode.Undefined, res.Error.ErrorCode)
 
-				var output testutil.EchoDuplexTest_Reply
+				var output berty_testutil.EchoDuplexTest_Reply
 				err = proto.Unmarshal(res.Payload, &output)
 				require.NoError(t, err)
 
@@ -351,7 +352,7 @@ func TestDuplexStreamServiceError(t *testing.T) {
 	}
 
 	{
-		input := &testutil.EchoDuplexTest_Request{
+		input := &berty_testutil.EchoDuplexTest_Request{
 			Echo:         echoStringTest,
 			TriggerError: true,
 		}
@@ -415,7 +416,7 @@ func createBridgeTestingClient(t *testing.T, ctx context.Context, logger *zap.Lo
 
 	t.Cleanup(func() { l.Close() })
 
-	tcc, srv := testutil.TestingNewServiceClient(ctx, t, &testutil.Options{
+	tcc, srv := berty_testutil.TestingNewServiceClient(ctx, t, &berty_testutil.Options{
 		Logger: logger,
 	})
 

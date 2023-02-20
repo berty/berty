@@ -16,18 +16,19 @@ import (
 	"gorm.io/gorm"
 
 	"berty.tech/berty/v2/go/internal/accountutils"
-	"berty.tech/berty/v2/go/internal/cryptoutil"
 	"berty.tech/berty/v2/go/internal/datastoreutil"
 	"berty.tech/berty/v2/go/internal/grpcserver"
-	"berty.tech/berty/v2/go/internal/grpcutil"
-	"berty.tech/berty/v2/go/internal/ipfsutil"
-	"berty.tech/berty/v2/go/internal/lifecycle"
-	"berty.tech/berty/v2/go/internal/logutil"
+	berty_grpcutil "berty.tech/berty/v2/go/internal/grpcutil"
 	"berty.tech/berty/v2/go/pkg/bertymessenger"
-	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
-	"berty.tech/berty/v2/go/pkg/protocoltypes"
+	"berty.tech/weshnet"
+	"berty.tech/weshnet/pkg/cryptoutil"
+	"berty.tech/weshnet/pkg/grpcutil"
+	"berty.tech/weshnet/pkg/ipfsutil"
+	"berty.tech/weshnet/pkg/lifecycle"
+	"berty.tech/weshnet/pkg/logutil"
+	"berty.tech/weshnet/pkg/protocoltypes"
 )
 
 const (
@@ -131,7 +132,7 @@ func (m *Manager) applyPreset() error {
 	return nil
 }
 
-func (m *Manager) GetLocalProtocolServer() (bertyprotocol.Service, error) {
+func (m *Manager) GetLocalProtocolServer() (weshnet.Service, error) {
 	defer m.prepareForGetter()()
 
 	if m.getContext().Err() != nil {
@@ -154,7 +155,7 @@ func (m *Manager) getPushSecretKey() (*[cryptoutil.KeySize]byte, error) {
 	return pushKey, nil
 }
 
-func (m *Manager) getLocalProtocolServer() (bertyprotocol.Service, error) {
+func (m *Manager) getLocalProtocolServer() (weshnet.Service, error) {
 	if m.Node.Protocol.server != nil {
 		return m.Node.Protocol.server, nil
 	}
@@ -187,7 +188,7 @@ func (m *Manager) getLocalProtocolServer() (bertyprotocol.Service, error) {
 	// protocol service
 	{
 		var (
-			deviceDS = ipfsutil.NewDatastoreKeystore(datastoreutil.NewNamespacedDatastore(rootDS, datastore.NewKey(bertyprotocol.NamespaceDeviceKeystore)))
+			deviceDS = ipfsutil.NewDatastoreKeystore(datastoreutil.NewNamespacedDatastore(rootDS, datastore.NewKey(weshnet.NamespaceDeviceKeystore)))
 			deviceKS = cryptoutil.NewDeviceKeystore(deviceDS, nil)
 		)
 
@@ -197,7 +198,7 @@ func (m *Manager) getLocalProtocolServer() (bertyprotocol.Service, error) {
 		}
 
 		// initialize new protocol client
-		opts := bertyprotocol.Opts{
+		opts := weshnet.Opts{
 			Host:             m.Node.Protocol.ipfsNode.PeerHost,
 			PubSub:           m.Node.Protocol.pubsub,
 			TinderService:    m.Node.Protocol.tinder,
@@ -210,7 +211,7 @@ func (m *Manager) getLocalProtocolServer() (bertyprotocol.Service, error) {
 			GRPCInsecureMode: m.Node.ServiceInsecureMode,
 		}
 
-		m.Node.Protocol.server, err = bertyprotocol.New(opts)
+		m.Node.Protocol.server, err = weshnet.New(opts)
 		if err != nil {
 			return nil, errcode.TODO.Wrap(err)
 		}
@@ -441,7 +442,7 @@ func (m *Manager) getGRPCServer() (*grpc.Server, *grpcgw.ServeMux, error) {
 	return m.Node.GRPC.server, m.Node.GRPC.gatewayMux, nil
 }
 
-func (m *Manager) GetGRPCListeners() []grpcutil.Listener {
+func (m *Manager) GetGRPCListeners() []berty_grpcutil.Listener {
 	m.mutex.Lock()
 	defer m.mutex.Unlock()
 	return m.Node.GRPC.listeners
@@ -623,7 +624,7 @@ func (m *Manager) getLocalMessengerServer() (messengertypes.MessengerServiceServ
 	}
 
 	// protocol client
-	protocolClient, err := bertyprotocol.NewClient(m.getContext(), protocolServer, nil, nil) // FIXME: setup tracing
+	protocolClient, err := weshnet.NewClient(m.getContext(), protocolServer, nil, nil) // FIXME: setup tracing
 	if err != nil {
 		return nil, errcode.TODO.Wrap(fmt.Errorf("unable to init protocol client: %w", err))
 	}

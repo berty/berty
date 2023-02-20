@@ -23,7 +23,7 @@ import (
 	"berty.tech/berty/v2/go/pkg/directorytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
-	"berty.tech/berty/v2/go/pkg/verifiablecredstypes"
+	"berty.tech/weshnet/pkg/verifiablecredstypes"
 )
 
 func getVCIssuer(t *testing.T) *bertyvcissuer.VCIssuer {

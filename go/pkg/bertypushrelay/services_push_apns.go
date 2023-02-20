@@ -11,10 +11,10 @@ import (
 	"github.com/sideshow/apns2/payload"
 	"go.uber.org/zap"
 
-	"berty.tech/berty/v2/go/internal/logutil"
-	"berty.tech/berty/v2/go/pkg/errcode"
-	"berty.tech/berty/v2/go/pkg/protocoltypes"
-	"berty.tech/berty/v2/go/pkg/pushtypes"
+	weshnet_errcode "berty.tech/weshnet/pkg/errcode"
+	"berty.tech/weshnet/pkg/logutil"
+	"berty.tech/weshnet/pkg/protocoltypes"
+	"berty.tech/weshnet/pkg/pushtypes"
 )
 
 const (
@@ -53,7 +53,7 @@ func PushDispatcherLoadAPNSCertificates(logger *zap.Logger, input *string) ([]Pu
 func pushDispatcherLoadAPNSCertificate(logger *zap.Logger, path string) (PushDispatcher, error) {
 	cert, err := certificate.FromP12File(path, "")
 	if err != nil {
-		return nil, errcode.ErrPushInvalidServerConfig
+		return nil, weshnet_errcode.ErrPushInvalidServerConfig
 	}
 
 	bundleID := ""
@@ -65,7 +65,7 @@ func pushDispatcherLoadAPNSCertificate(logger *zap.Logger, path string) (PushDis
 	}
 
 	if bundleID == "" {
-		return nil, errcode.ErrPushMissingBundleID
+		return nil, weshnet_errcode.ErrPushMissingBundleID
 	}
 
 	production := !strings.Contains(cert.Leaf.Subject.CommonName, appleCertDevNamePart)
@@ -108,9 +108,9 @@ func (d *pushDispatcherAPNS) Dispatch(data []byte, receiver *protocoltypes.PushS
 	response, err := d.client.Push(notification)
 
 	if err != nil {
-		return errcode.ErrPushProvider.Wrap(err)
+		return weshnet_errcode.ErrPushProvider.Wrap(err)
 	} else if response.StatusCode != 200 {
-		return errcode.ErrPushProvider.Wrap(fmt.Errorf("apns: status %d, reason %s", response.StatusCode, response.Reason))
+		return weshnet_errcode.ErrPushProvider.Wrap(fmt.Errorf("apns: status %d, reason %s", response.StatusCode, response.Reason))
 	}
 
 	return nil

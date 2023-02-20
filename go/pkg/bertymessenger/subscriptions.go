@@ -9,13 +9,14 @@ import (
 	"go.uber.org/multierr"
 	"go.uber.org/zap"
 
-	"berty.tech/berty/v2/go/internal/lifecycle"
-	"berty.tech/berty/v2/go/internal/logutil"
 	"berty.tech/berty/v2/go/internal/messengerutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	mt "berty.tech/berty/v2/go/pkg/messengertypes"
-	"berty.tech/berty/v2/go/pkg/protocoltypes"
-	"berty.tech/berty/v2/go/pkg/tyber"
+	weshnet_errcode "berty.tech/weshnet/pkg/errcode"
+	"berty.tech/weshnet/pkg/lifecycle"
+	"berty.tech/weshnet/pkg/logutil"
+	"berty.tech/weshnet/pkg/protocoltypes"
+	"berty.tech/weshnet/pkg/tyber"
 )
 
 func (svc *service) manageSubscriptions() {
@@ -256,7 +257,7 @@ func (svc *service) subscribeToGroup(ctx, tyberCtx context.Context, gpkb []byte)
 	if _, err := svc.protocolClient.ActivateGroup(ctx, &protocoltypes.ActivateGroup_Request{
 		GroupPK: gpkb,
 	}); err != nil {
-		return errcode.ErrGroupActivate.Wrap(err)
+		return weshnet_errcode.ErrGroupActivate.Wrap(err)
 	}
 
 	if err := svc.subscribeToMetadata(ctx, tyberCtx, gpkb); err != nil {

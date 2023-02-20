@@ -5,7 +5,7 @@ import (
 
 	"go.uber.org/zap"
 
-	"berty.tech/berty/v2/go/internal/logutil"
+	"berty.tech/weshnet/pkg/logutil"
 )
 
 // LoggerManager is a Manager

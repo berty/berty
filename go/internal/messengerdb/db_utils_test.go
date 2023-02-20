@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/require"
 	"gorm.io/gorm"
 
-	"berty.tech/berty/v2/go/internal/testutil"
+	"berty.tech/weshnet/pkg/testutil"
 )
 
 type modelAccountV1 struct {

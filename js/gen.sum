@@ -1,4 +1,4 @@
-14019bd423bb8235f649c5f4323752b0814cce3a  ../api/accounttypes.proto
-361a589f15fe3756af97a3f1100afa267bf3318d  Makefile
-84fedb751ef818097d14d13940ac185d72032a2c  ../api/protocoltypes.proto
-cff44b531a749ab6d7f6b5113216aa490ece09eb  ../api/messengertypes.proto
+37a8eae718cea9f59591bc32797f7e9974dd12da  ../api/bertybridge/bertybridge.proto
+767f5e928a0e77216004ce6640980109c9ba3bc6  Makefile
+a9af891326f09ad6b03caab4b878b10af58ef05f  ../api/accounttypes/accounttypes.proto
+d003721c8356f30dd7dbb49fa4df0e1c24144fc8  ../api/messengertypes/messengertypes.proto

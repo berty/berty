@@ -4,7 +4,7 @@ console.log("import beapi from '@berty/api'")
 console.log("import { UnaryMock, ResponseStreamMock } from './types'")
 
 const services = [
-	'berty.protocol.v1.ProtocolService',
+	'weshnet.protocol.v1.ProtocolService',
 	'berty.account.v1.AccountService',
 	'berty.messenger.v1.MessengerService',
 ]
@@ -20,7 +20,7 @@ const fullTypeName = obj => {
 	}
 	names.reverse()
 	names = names.filter(name => name !== 'v1')
-	names = names.map(part => (part === 'berty' ? 'beapi' : part))
+	names = names.map(part => (part === 'berty' || part === 'weshnet' ? 'beapi' : part))
 	return names.join('.')
 }
 

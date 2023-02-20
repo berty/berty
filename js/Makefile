@@ -92,7 +92,7 @@ e2e-tests.tests:
 	IOS_DEVICE="$(E2E_TESTING_IOS_DEVICE)" \
 	IOS_APP="$(if $(IOS_APP),$(IOS_APP),$(E2E_GET_IOS_APP))" \
 	IOS_VERSION="$(E2E_TESTING_IOS_VERSION)" \
-	node ./e2e-tests/src/tests/2-simulators/joinGroupAndSendMessage.js 
+	node ./e2e-tests/src/tests/2-simulators/joinGroupAndSendMessage.js
 
 .PHONY: e2e-tests.ci-flow
 e2e-tests.ci-flow: e2e-tests/node_modules
@@ -182,6 +182,7 @@ gen.clean:
 	  packages/*/*.pb.js \
 	  packages/*/*.pb.d.ts \
 	)
+	rm -fr $(pbjs_proto_weshnet_dir)
 	@#TODO add more generated files here
 
 #### Lint
@@ -347,9 +348,19 @@ daemon.start.docker:
 
 pbjs_common_flags := --force-long -p ../api -p node_modules/@googleapis/googleapis -p `$(GO) list -m -modfile=../go.mod -mod=mod -f {{.Dir}} github.com/grpc-ecosystem/grpc-gateway`/third_party/googleapis -p `$(GO) list -m -modfile=../go.mod -mod=mod -f {{.Dir}} github.com/gogo/protobuf` -p node_modules/@protocolbuffers/protobuf/src
 
-pbjs_protos := ../api/accounttypes.proto ../api/bertybridge.proto ../api/protocoltypes.proto ../api/messengertypes.proto ../api/pushtypes.proto
+pbjs_proto_berty_dir := ../api
+pbjs_berty_protos := $(pbjs_proto_berty_dir)/accounttypes/accounttypes.proto $(pbjs_proto_berty_dir)/bertybridge/bertybridge.proto $(pbjs_proto_berty_dir)/messengertypes/messengertypes.proto
+pbjs_proto_weshnet_dir := packages/api/vendor
+pbjs_weshnet_protos := $(pbjs_proto_weshnet_dir)/protocoltypes.proto $(pbjs_proto_weshnet_dir)/pushtypes/pushtypes.proto
+pbjs_protos := $(pbjs_berty_protos) $(pbjs_weshnet_protos)
 
-packages/api/root.pb.js: $(wildcard ../api/*) node_modules
+buf.lock := ../api/buf.lock
+proto_commit_hash := $(shell yq '(.deps | with_entries(select(.value.repository == "weshnet"))).0.commit' $(buf.lock))
+$(pbjs_weshnet_protos): $(buf.lock)
+	mkdir -p $(pbjs_proto_weshnet_dir)
+	buf export buf.build/berty/weshnet:$(proto_commit_hash) --output $(pbjs_proto_weshnet_dir)
+
+packages/api/root.pb.js: $(pbjs_berty_protos) $(pbjs_weshnet_protos) node_modules
 	$(call check-program, npx)
 	npx pbjs $(pbjs_common_flags) \
 		--no-comments \
@@ -403,7 +414,7 @@ _gen.config:
 
 ##### gen.sum
 
-gensum_src := Makefile ../api/protocoltypes.proto ../api/messengertypes.proto ../api/accounttypes.proto
+gensum_src := Makefile $(pbjs_berty_protos)
 gen.sum: $(gensum_src)
 	$(call check-program, shasum)
 	@shasum $(gensum_src) | sort > gen.sum.tmp

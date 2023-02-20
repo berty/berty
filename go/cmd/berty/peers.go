@@ -10,7 +10,7 @@ import (
 	"moul.io/godev"
 
 	"berty.tech/berty/v2/go/pkg/errcode"
-	"berty.tech/berty/v2/go/pkg/protocoltypes"
+	"berty.tech/weshnet/pkg/protocoltypes"
 )
 
 func peersCommand() *ffcli.Command {

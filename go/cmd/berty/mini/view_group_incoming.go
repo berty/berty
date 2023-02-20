@@ -10,7 +10,7 @@ import (
 	"go.uber.org/zap"
 
 	"berty.tech/berty/v2/go/pkg/errcode"
-	"berty.tech/berty/v2/go/pkg/protocoltypes"
+	"berty.tech/weshnet/pkg/protocoltypes"
 )
 
 func handlerAccountGroupJoined(ctx context.Context, v *groupView, e *protocoltypes.GroupMetadataEvent, isHistory bool) error {

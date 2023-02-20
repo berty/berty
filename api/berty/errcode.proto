@@ -1,0 +1,176 @@
+syntax = "proto3";
+
+package berty.errcode;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "berty.tech/berty/go/pkg/errcode";
+
+option (gogoproto.goproto_enum_prefix_all) = false;
+option (gogoproto.marshaler_all) = true;
+option (gogoproto.unmarshaler_all) = true;
+option (gogoproto.sizer_all) = true;
+
+enum ErrCode {
+  //----------------
+  // Special errors
+  //----------------
+
+  Undefined = 0; // default value, should never be set manually
+
+  TODO = 666;              // indicates that you plan to create an error later
+  ErrNotImplemented = 777; // indicates that a method is not implemented yet
+  ErrInternal = 888; // indicates an unknown error (without Code), i.e. in gRPC
+
+  //----------------
+  // Generic errors
+  //----------------
+
+  // Parameters and I/O errors
+
+  ErrInvalidInput = 100;
+  ErrInvalidRange = 101;
+  ErrMissingInput = 102;
+  ErrSerialization = 103;
+  ErrDeserialization = 104;
+  ErrStreamRead = 105;
+  ErrStreamWrite = 106;
+  ErrStreamTransform = 110;
+  ErrStreamSendAndClose = 111;
+  ErrStreamHeaderWrite = 112;
+  ErrStreamHeaderRead = 115;
+  ErrStreamSink = 113;
+  ErrStreamCloseAndRecv = 114;
+  ErrMissingMapKey = 107;
+  ErrDBWrite = 108;
+  ErrDBRead = 109;
+  ErrDBDestroy = 120;
+  ErrDBMigrate = 121;
+  ErrDBReplay = 122;
+  ErrDBRestore = 123;
+  ErrDBOpen = 124;
+  ErrDBClose = 125;
+
+  // Crypto errors
+
+  ErrCryptoRandomGeneration = 200;
+  ErrCryptoKeyGeneration = 201;
+  ErrCryptoNonceGeneration = 202;
+  ErrCryptoSignature = 203;
+  ErrCryptoSignatureVerification = 204;
+  ErrCryptoDecrypt = 205;
+  ErrCryptoDecryptPayload = 206;
+  ErrCryptoEncrypt = 207;
+  ErrCryptoKeyConversion = 208;
+  ErrCryptoCipherInit = 209;
+  ErrCryptoKeyDerivation = 210;
+
+  // Pattern errors
+
+  ErrMap = 300;
+  ErrForEach = 301;
+
+  // Keystore errors
+
+  ErrKeystoreGet = 400;
+  ErrKeystorePut = 401;
+  ErrNotFound = 404; // generic
+
+  //-----------------
+  // Specific errors
+  //-----------------
+
+  // IPFS errors
+
+  ErrIPFSAdd = 1050;
+  ErrIPFSGet = 1051;
+  ErrIPFSInit = 1052;
+  ErrIPFSSetupConfig = 1053;
+  ErrIPFSSetupRepo = 1054;
+  ErrIPFSSetupHost = 1055;
+
+  // Event errors
+  ErrEventListMetadata = 1400;
+  ErrEventListMessage = 1401;
+
+  // Bridge errors
+
+  ErrBridgeInterrupted = 1600;
+  ErrBridgeNotRunning = 1601;
+
+  //------------------
+  // Messenger errors
+  //------------------
+
+  ErrMessengerInvalidDeepLink = 2000;
+  ErrMessengerDeepLinkRequiresPassphrase = 2001;
+  ErrMessengerDeepLinkInvalidPassphrase = 2002;
+  ErrMessengerStreamEvent = 2003;
+  ErrMessengerContactMetadataUnmarshal = 2004;
+
+  // DB errors
+
+  ErrDBEntryAlreadyExists = 2100;
+  ErrDBAddConversation = 2101;
+  ErrDBAddContactRequestOutgoingSent = 2102;
+  ErrDBAddContactRequestOutgoingEnqueud = 2103;
+  ErrDBAddContactRequestIncomingReceived = 2104;
+  ErrDBAddContactRequestIncomingAccepted = 2105;
+  ErrDBAddGroupMemberDeviceAdded = 2106;
+  ErrDBMultipleRecords = 2107;
+
+  // Replay errors
+
+  ErrReplayProcessGroupMetadata = 2200;
+  ErrReplayProcessGroupMessage = 2201;
+
+  // API internals errors
+
+  ErrAttachmentPrepare = 2300;
+  ErrAttachmentRetrieve = 2301;
+  ErrProtocolSend = 2302;
+  ErrProtocolEventUnmarshal = 2303;
+  ErrProtocolGetGroupInfo = 2304;
+
+  // Test Error
+  ErrTestEcho = 2401;
+  ErrTestEchoRecv = 2402;
+  ErrTestEchoSend = 2403;
+
+  // -----------------
+  // CLI
+  // -----------------
+
+  ErrCLINoTermcaps = 3001;
+
+  ErrServicesDirectory = 4200;
+  ErrServicesDirectoryInvalidVerifiedCredentialSubject = 4201;
+  ErrServicesDirectoryExistingRecordNotFound = 4202;
+  ErrServicesDirectoryRecordLockedAndCantBeReplaced = 4203;
+  ErrServicesDirectoryExplicitReplaceFlagRequired = 4204;
+  ErrServicesDirectoryInvalidVerifiedCredential = 4205;
+  ErrServicesDirectoryExpiredVerifiedCredential = 4206;
+  ErrServicesDirectoryInvalidVerifiedCredentialID = 4207;
+
+  ErrBertyAccount = 5000;
+  ErrBertyAccountNoIDSpecified = 5001;
+  ErrBertyAccountAlreadyOpened = 5002;
+  ErrBertyAccountInvalidIDFormat = 5003;
+  ErrBertyAccountLoggerDecorator = 5004;
+  ErrBertyAccountGRPCClient = 5005;
+  ErrBertyAccountOpenAccount = 5006;
+  ErrBertyAccountDataNotFound = 5007;
+  ErrBertyAccountMetadataUpdate = 5008;
+  ErrBertyAccountManagerOpen = 5009;
+  ErrBertyAccountManagerClose = 5010;
+  ErrBertyAccountInvalidCLIArgs = 5011;
+  ErrBertyAccountFSError = 5012;
+  ErrBertyAccountAlreadyExists = 5013;
+  ErrBertyAccountNoBackupSpecified = 5014;
+  ErrBertyAccountIDGenFailed = 5015;
+  ErrBertyAccountCreationFailed = 5016;
+  ErrBertyAccountUpdateFailed = 5017;
+  ErrAppStorageNotSupported = 5018;
+}
+
+message ErrDetails { repeated ErrCode codes = 1; }

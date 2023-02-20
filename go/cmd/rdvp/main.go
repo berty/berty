@@ -35,10 +35,10 @@ import (
 	"go.uber.org/zap/zapcore"
 	"moul.io/srand"
 
-	"berty.tech/berty/v2/go/internal/ipfsutil"
-	"berty.tech/berty/v2/go/internal/logutil"
-	"berty.tech/berty/v2/go/internal/rendezvous"
 	"berty.tech/berty/v2/go/pkg/errcode"
+	"berty.tech/weshnet/pkg/ipfsutil"
+	"berty.tech/weshnet/pkg/logutil"
+	"berty.tech/weshnet/pkg/rendezvous"
 )
 
 func main() {

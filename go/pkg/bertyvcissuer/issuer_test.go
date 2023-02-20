@@ -21,7 +21,8 @@ import (
 
 	"berty.tech/berty/v2/go/pkg/bertylinks"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
-	"berty.tech/berty/v2/go/pkg/verifiablecredstypes"
+	weshnet_vc "berty.tech/weshnet/pkg/bertyvcissuer"
+	"berty.tech/weshnet/pkg/verifiablecredstypes"
 )
 
 func TestFlow(t *testing.T) {
@@ -52,13 +53,13 @@ func TestFlow(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	req := httptest.NewRequest("GET", fmt.Sprintf("http://example.com/%s", PathChallenge), nil)
+	req := httptest.NewRequest("GET", fmt.Sprintf("http://example.com/%s", weshnet_vc.PathChallenge), nil)
 	wri := httptest.NewRecorder()
 	issuer.challenge(wri, req)
 
 	require.Equal(t, 400, wri.Code)
 
-	req = httptest.NewRequest("GET", fmt.Sprintf("http://example.com/%s?berty_id=", PathChallenge), nil)
+	req = httptest.NewRequest("GET", fmt.Sprintf("http://example.com/%s?berty_id=", weshnet_vc.PathChallenge), nil)
 	wri = httptest.NewRecorder()
 	issuer.challenge(wri, req)
 
@@ -73,7 +74,7 @@ func TestFlow(t *testing.T) {
 	_, web, err := bertylinks.MarshalLink(link)
 	require.NoError(t, err)
 
-	req = httptest.NewRequest("GET", fmt.Sprintf("http://example.com/%s?berty_id=%s&redirect_uri=%s&state=%s", PathChallenge, url.QueryEscape(web), DefaultRedirectURI, state), nil)
+	req = httptest.NewRequest("GET", fmt.Sprintf("http://example.com/%s?berty_id=%s&redirect_uri=%s&state=%s", weshnet_vc.PathChallenge, url.QueryEscape(web), weshnet_vc.DefaultRedirectURI, state), nil)
 	wri = httptest.NewRecorder()
 	issuer.challenge(wri, req)
 	require.Equal(t, 200, wri.Code)
@@ -88,17 +89,17 @@ func TestFlow(t *testing.T) {
 	challengeSig, err := accountPriv.Sign(crand.Reader, challenge, crypto.Hash(0))
 	require.NoError(t, err)
 
-	req = httptest.NewRequest("GET", fmt.Sprintf("http://example.com/%s?&challenge=%sFAIL&challenge_sig=%s", PathAuthenticate, challengeStruct.Challenge, base64.URLEncoding.EncodeToString(challengeSig)), nil)
+	req = httptest.NewRequest("GET", fmt.Sprintf("http://example.com/%s?&challenge=%sFAIL&challenge_sig=%s", weshnet_vc.PathAuthenticate, challengeStruct.Challenge, base64.URLEncoding.EncodeToString(challengeSig)), nil)
 	wri = httptest.NewRecorder()
 	issuer.authenticate(wri, req)
 	require.Equal(t, 400, wri.Code)
 
-	req = httptest.NewRequest("GET", fmt.Sprintf("http://example.com/%s?&challenge=%s&challenge_sig=%sFAIL", PathAuthenticate, challengeStruct.Challenge, base64.URLEncoding.EncodeToString(challengeSig)), nil)
+	req = httptest.NewRequest("GET", fmt.Sprintf("http://example.com/%s?&challenge=%s&challenge_sig=%sFAIL", weshnet_vc.PathAuthenticate, challengeStruct.Challenge, base64.URLEncoding.EncodeToString(challengeSig)), nil)
 	wri = httptest.NewRecorder()
 	issuer.authenticate(wri, req)
 	require.Equal(t, 400, wri.Code)
 
-	req = httptest.NewRequest("GET", fmt.Sprintf("http://example.com/%s?&challenge=%s&challenge_sig=%s", PathAuthenticate, challengeStruct.Challenge, base64.URLEncoding.EncodeToString(challengeSig)), nil)
+	req = httptest.NewRequest("GET", fmt.Sprintf("http://example.com/%s?&challenge=%s&challenge_sig=%s", weshnet_vc.PathAuthenticate, challengeStruct.Challenge, base64.URLEncoding.EncodeToString(challengeSig)), nil)
 	wri = httptest.NewRecorder()
 	issuer.authenticate(wri, req)
 	require.Equal(t, 302, wri.Code)
@@ -179,12 +180,12 @@ func TestFlow(t *testing.T) {
 
 	parsedCredential, err := verifiable.ParseCredential(
 		credentials,
-		verifiable.WithPublicKeyFetcher(EmbeddedPublicKeyFetcher),
+		verifiable.WithPublicKeyFetcher(weshnet_vc.EmbeddedPublicKeyFetcher),
 		verifiable.WithJSONLDDocumentLoader(ld.NewDefaultDocumentLoader(http.DefaultClient)),
 	)
 	require.NoError(t, err)
 	require.Equal(t, web, parsedCredential.ID)
-	foundSubject, err := ExtractSubjectFromVC(parsedCredential)
+	foundSubject, err := weshnet_vc.ExtractSubjectFromVC(parsedCredential)
 	require.NoError(t, err)
 	require.Equal(t, fmt.Sprintf("tel:%s", expectedIdentifier), foundSubject)
 	validCredentials := credentials
@@ -193,7 +194,7 @@ func TestFlow(t *testing.T) {
 	credentials = makeSignatureOfJWSInvalid(t, validCredentials)
 	parsedCredential, err = verifiable.ParseCredential(
 		credentials,
-		verifiable.WithPublicKeyFetcher(EmbeddedPublicKeyFetcher),
+		verifiable.WithPublicKeyFetcher(weshnet_vc.EmbeddedPublicKeyFetcher),
 		verifiable.WithJSONLDDocumentLoader(ld.NewDefaultDocumentLoader(http.DefaultClient)),
 	)
 	require.Error(t, err)
@@ -201,7 +202,7 @@ func TestFlow(t *testing.T) {
 	credentials = makeContentOfJWSInvalid(t, validCredentials)
 	parsedCredential, err = verifiable.ParseCredential(
 		credentials,
-		verifiable.WithPublicKeyFetcher(EmbeddedPublicKeyFetcher),
+		verifiable.WithPublicKeyFetcher(weshnet_vc.EmbeddedPublicKeyFetcher),
 		verifiable.WithJSONLDDocumentLoader(ld.NewDefaultDocumentLoader(http.DefaultClient)),
 	)
 	require.Error(t, err)

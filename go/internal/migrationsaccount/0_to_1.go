@@ -7,9 +7,9 @@ import (
 	"go.uber.org/zap"
 
 	"berty.tech/berty/v2/go/internal/accountutils"
-	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/internal/migrationutils"
 	"berty.tech/berty/v2/go/pkg/errcode"
+	"berty.tech/weshnet/pkg/ipfsutil"
 )
 
 var migration0To1 = migration{

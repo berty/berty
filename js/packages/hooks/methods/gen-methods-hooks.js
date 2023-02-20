@@ -22,4 +22,4 @@ const methodsHooks = (name, svcType, prefix) => {
 }
 
 methodsHooks('MessengerMethodsHooks', 'berty.messenger.v1.MessengerService', 'beapi.messenger')
-methodsHooks('ProtocolMethodsHooks', 'berty.protocol.v1.ProtocolService', 'beapi.protocol')
+methodsHooks('ProtocolMethodsHooks', 'weshnet.protocol.v1.ProtocolService', 'beapi.protocol')

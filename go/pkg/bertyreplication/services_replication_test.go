@@ -17,18 +17,18 @@ import (
 	"go.uber.org/zap"
 
 	"berty.tech/berty/v2/go/internal/datastoreutil"
-	"berty.tech/berty/v2/go/internal/ipfsutil"
 	"berty.tech/berty/v2/go/internal/messengerutil"
-	"berty.tech/berty/v2/go/internal/testutil"
-	"berty.tech/berty/v2/go/internal/tinder"
-	"berty.tech/berty/v2/go/pkg/authtypes"
-	"berty.tech/berty/v2/go/pkg/bertyauth"
-	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/bertyreplication"
 	"berty.tech/berty/v2/go/pkg/errcode"
-	"berty.tech/berty/v2/go/pkg/protocoltypes"
-	"berty.tech/berty/v2/go/pkg/replicationtypes"
 	orbitdb "berty.tech/go-orbit-db"
+	"berty.tech/weshnet"
+	"berty.tech/weshnet/pkg/authtypes"
+	"berty.tech/weshnet/pkg/bertyauth"
+	"berty.tech/weshnet/pkg/ipfsutil"
+	"berty.tech/weshnet/pkg/protocoltypes"
+	"berty.tech/weshnet/pkg/replicationtypes"
+	"berty.tech/weshnet/pkg/testutil"
+	"berty.tech/weshnet/pkg/tinder"
 )
 
 func TestNewReplicationService(t *testing.T) {
@@ -46,9 +46,9 @@ func TestNewReplicationService(t *testing.T) {
 		DiscoveryServer: tinder.NewMockDriverServer(),
 	})
 
-	orbitdbCache := bertyprotocol.NewOrbitDatastoreCache(ds)
+	orbitdbCache := weshnet.NewOrbitDatastoreCache(ds)
 
-	odb, err := bertyprotocol.NewBertyOrbitDB(ctx, api.API(), &bertyprotocol.NewOrbitDBOptions{
+	odb, err := weshnet.NewBertyOrbitDB(ctx, api.API(), &weshnet.NewOrbitDBOptions{
 		NewOrbitDBOptions: orbitdb.NewOrbitDBOptions{
 			Logger: zap.NewNop(),
 			Cache:  orbitdbCache,
@@ -80,10 +80,10 @@ func TestReplicationService_GroupSubscribe(t *testing.T) {
 
 	repl := bertyreplication.TestHelperNewReplicationService(ctx, t, nil, mn, msrv, nil, db)
 
-	g, _, err := bertyprotocol.NewGroupMultiMember()
+	g, _, err := weshnet.NewGroupMultiMember()
 	require.NoError(t, err)
 
-	replGroup, err := bertyprotocol.FilterGroupForReplication(g)
+	replGroup, err := weshnet.FilterGroupForReplication(g)
 	require.NoError(t, err)
 
 	err = repl.GroupSubscribe(replGroup, messengerutil.B64EncodeBytes(replGroup.PublicKey))
@@ -115,10 +115,10 @@ func TestReplicationService_GroupRegister(t *testing.T) {
 
 	repl := bertyreplication.TestHelperNewReplicationService(ctx, t, nil, mn, msrv, ds, db)
 
-	g, _, err := bertyprotocol.NewGroupMultiMember()
+	g, _, err := weshnet.NewGroupMultiMember()
 	require.NoError(t, err)
 
-	replGroup, err := bertyprotocol.FilterGroupForReplication(g)
+	replGroup, err := weshnet.FilterGroupForReplication(g)
 	require.NoError(t, err)
 
 	err = repl.GroupRegister("token", "issuer", replGroup)
@@ -169,7 +169,7 @@ func TestReplicationService_ReplicateGroupStats_ReplicateGlobalStats(t *testing.
 	}
 
 	api1 := ipfsutil.TestingCoreAPIUsingMockNet(ctx, t, ipfsOpts1)
-	odb1 := bertyprotocol.NewTestOrbitDB(ctx, t, zap.NewNop(), api1, ipfsOpts1.Datastore)
+	odb1 := weshnet.NewTestOrbitDB(ctx, t, zap.NewNop(), api1, ipfsOpts1.Datastore)
 
 	db, cleanup := bertyreplication.DBForTests(t, zap.NewNop())
 	defer cleanup()
@@ -189,10 +189,10 @@ func TestReplicationService_ReplicateGroupStats_ReplicateGlobalStats(t *testing.
 
 	startedAt := globalStats.StartedAt
 
-	g, _, err := bertyprotocol.NewGroupMultiMember()
+	g, _, err := weshnet.NewGroupMultiMember()
 	require.NoError(t, err)
 
-	replGroup, err := bertyprotocol.FilterGroupForReplication(g)
+	replGroup, err := weshnet.FilterGroupForReplication(g)
 	require.NoError(t, err)
 
 	err = repl.GroupRegister("token", "issuer", replGroup)
@@ -425,12 +425,12 @@ func TestReplicationService_Flow(t *testing.T) {
 	require.NoError(t, mn.ConnectAllButSelf())
 
 	api1 := ipfsutil.TestingCoreAPIUsingMockNet(ctx, t, ipfsOpts1)
-	odb1 := bertyprotocol.NewTestOrbitDB(ctx, t, logger, api1, ipfsOpts1.Datastore)
+	odb1 := weshnet.NewTestOrbitDB(ctx, t, logger, api1, ipfsOpts1.Datastore)
 	api2 := ipfsutil.TestingCoreAPIUsingMockNet(ctx, t, ipfsOpts2)
-	odb2 := bertyprotocol.NewTestOrbitDB(ctx, t, logger, api2, ipfsOpts2.Datastore)
+	odb2 := weshnet.NewTestOrbitDB(ctx, t, logger, api2, ipfsOpts2.Datastore)
 
 	tokenSecret, tokenPK, _ := bertyauth.HelperGenerateTokenIssuerSecrets(t)
-	replPeer, cancel := bertyreplication.NewReplicationMockedPeer(ctx, t, tokenSecret, tokenPK, &bertyprotocol.TestingOpts{
+	replPeer, cancel := bertyreplication.NewReplicationMockedPeer(ctx, t, tokenSecret, tokenPK, &weshnet.TestingOpts{
 		Mocknet:         mn,
 		DiscoveryServer: msrv,
 	})
@@ -442,7 +442,7 @@ func TestReplicationService_Flow(t *testing.T) {
 	err = mn.ConnectAllButSelf()
 	require.NoError(t, err)
 
-	gA, _, err := bertyprotocol.NewGroupMultiMember()
+	gA, _, err := weshnet.NewGroupMultiMember()
 	require.NoError(t, err)
 
 	g1a, err := odb1.OpenGroup(ctx, gA, nil)
@@ -456,7 +456,7 @@ func TestReplicationService_Flow(t *testing.T) {
 	require.NoError(t, g1a.ActivateGroupContext(nil))
 	require.NoError(t, g2a.ActivateGroupContext(nil))
 
-	groupReplicable, err := bertyprotocol.FilterGroupForReplication(gA)
+	groupReplicable, err := weshnet.FilterGroupForReplication(gA)
 	require.NoError(t, err)
 
 	t.Log(" --- Register group on replication service ---")
@@ -571,7 +571,7 @@ func TestReplicationService_Flow(t *testing.T) {
 	{
 		api2 = ipfsutil.TestingCoreAPIUsingMockNet(ctx, t, ipfsOpts2)
 
-		odb2 = bertyprotocol.NewTestOrbitDB(ctx, t, logger, api2, ipfsOpts2.Datastore)
+		odb2 = weshnet.NewTestOrbitDB(ctx, t, logger, api2, ipfsOpts2.Datastore)
 		defer odb2.Close()
 
 		g2a, err = odb2.OpenGroup(ctx, gA, nil)
@@ -645,16 +645,16 @@ func TestReplicationService_InvalidFlow(t *testing.T) {
 	msrv := tinder.NewMockDriverServer()
 
 	tokenSecret, tokenPK, _ := bertyauth.HelperGenerateTokenIssuerSecrets(t)
-	replPeer, cancel := bertyreplication.NewReplicationMockedPeer(ctx, t, tokenSecret, tokenPK, &bertyprotocol.TestingOpts{
+	replPeer, cancel := bertyreplication.NewReplicationMockedPeer(ctx, t, tokenSecret, tokenPK, &weshnet.TestingOpts{
 		Mocknet:         mn,
 		DiscoveryServer: msrv,
 	})
 	defer cancel()
 
-	gA, _, err := bertyprotocol.NewGroupMultiMember()
+	gA, _, err := weshnet.NewGroupMultiMember()
 	require.NoError(t, err)
 
-	groupReplicable, err := bertyprotocol.FilterGroupForReplication(gA)
+	groupReplicable, err := weshnet.FilterGroupForReplication(gA)
 	require.NoError(t, err)
 
 	groupReplicable.LinkKey = []byte("nope this is invalid")

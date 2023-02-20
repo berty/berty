@@ -20,13 +20,13 @@ import (
 	"moul.io/u"
 	"moul.io/zapring"
 
-	"berty.tech/berty/v2/go/internal/logutil"
-	"berty.tech/berty/v2/go/internal/testutil"
 	"berty.tech/berty/v2/go/pkg/bertylinks"
-	"berty.tech/berty/v2/go/pkg/bertyprotocol"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
-	"berty.tech/berty/v2/go/pkg/protocoltypes"
+	"berty.tech/weshnet"
+	"berty.tech/weshnet/pkg/logutil"
+	"berty.tech/weshnet/pkg/protocoltypes"
+	"berty.tech/weshnet/pkg/testutil"
 )
 
 func TestServiceDevStreamLogs(t *testing.T) {
@@ -250,8 +250,8 @@ func TestServiceShareableBertyGroup(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	var protocol *bertyprotocol.TestingProtocol
-	protocol, cleanup := bertyprotocol.NewTestingProtocol(ctx, t, nil, nil)
+	var protocol *weshnet.TestingProtocol
+	protocol, cleanup := weshnet.NewTestingProtocol(ctx, t, nil, nil)
 
 	// required to avoid "writing on closing socket",
 	// should be better to have something blocking instead
@@ -265,7 +265,7 @@ func TestServiceShareableBertyGroup(t *testing.T) {
 	})
 	defer cleanup()
 
-	g, _, err := bertyprotocol.NewGroupMultiMember()
+	g, _, err := weshnet.NewGroupMultiMember()
 	require.NoError(t, err)
 
 	_, err = protocol.Client.MultiMemberGroupJoin(ctx, &protocoltypes.MultiMemberGroupJoin_Request{

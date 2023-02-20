@@ -8,7 +8,7 @@ import (
 
 	"go.uber.org/multierr"
 
-	"berty.tech/berty/v2/go/pkg/protocoltypes"
+	"berty.tech/weshnet/pkg/protocoltypes"
 )
 
 func appendCustomSystemInfo(reply *protocoltypes.SystemInfo_Process) error {
