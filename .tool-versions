@@ -59,3 +59,9 @@ java openjdk-18.0.1.1
 # There is no contraindication for updating it.
 #-----
 yq 4.30.8
+
+#-----
+# buf 1.14.0 is simply the most recent version available to date (02/23).
+# There is no contraindication for updating it.
+#-----
+buf 1.14.0
