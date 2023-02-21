@@ -290,10 +290,10 @@ export const conversationPushToggleState = async ({
 			})
 		}
 	} catch (e) {
-		if ((e as GRPCError).Code === beapi.errcode.ErrCode.ErrPushUnknownDestination) {
+		if ((e as GRPCError).Code === beapi.weshnet_errcode.ErrCode.ErrPushUnknownDestination) {
 			Alert.alert('', t('chat.push-notifications.errors.no-token'))
 			throw new Error()
-		} else if ((e as GRPCError).Code === beapi.errcode.ErrCode.ErrPushUnknownDestination) {
+		} else if ((e as GRPCError).Code === beapi.weshnet_errcode.ErrCode.ErrPushUnknownDestination) {
 			Alert.alert('', t('chat.push-notifications.errors.no-server'))
 			throw new Error()
 		} else {

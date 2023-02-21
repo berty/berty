@@ -11263,4 +11263,135 @@ export namespace weshnet {
             }
         }
     }
+
+    namespace errcode {
+
+        enum ErrCode {
+            Undefined = 0,
+            TODO = 666,
+            ErrNotImplemented = 777,
+            ErrInternal = 888,
+            ErrInvalidInput = 100,
+            ErrInvalidRange = 101,
+            ErrMissingInput = 102,
+            ErrSerialization = 103,
+            ErrDeserialization = 104,
+            ErrStreamRead = 105,
+            ErrStreamWrite = 106,
+            ErrStreamTransform = 110,
+            ErrStreamSendAndClose = 111,
+            ErrStreamHeaderWrite = 112,
+            ErrStreamHeaderRead = 115,
+            ErrStreamSink = 113,
+            ErrStreamCloseAndRecv = 114,
+            ErrMissingMapKey = 107,
+            ErrDBWrite = 108,
+            ErrDBRead = 109,
+            ErrDBDestroy = 120,
+            ErrDBMigrate = 121,
+            ErrDBReplay = 122,
+            ErrDBRestore = 123,
+            ErrDBOpen = 124,
+            ErrDBClose = 125,
+            ErrCryptoRandomGeneration = 200,
+            ErrCryptoKeyGeneration = 201,
+            ErrCryptoNonceGeneration = 202,
+            ErrCryptoSignature = 203,
+            ErrCryptoSignatureVerification = 204,
+            ErrCryptoDecrypt = 205,
+            ErrCryptoDecryptPayload = 206,
+            ErrCryptoEncrypt = 207,
+            ErrCryptoKeyConversion = 208,
+            ErrCryptoCipherInit = 209,
+            ErrCryptoKeyDerivation = 210,
+            ErrMap = 300,
+            ErrForEach = 301,
+            ErrKeystoreGet = 400,
+            ErrKeystorePut = 401,
+            ErrNotFound = 404,
+            ErrOrbitDBInit = 1000,
+            ErrOrbitDBOpen = 1001,
+            ErrOrbitDBAppend = 1002,
+            ErrOrbitDBDeserialization = 1003,
+            ErrOrbitDBStoreCast = 1004,
+            ErrHandshakeOwnEphemeralKeyGenSend = 1100,
+            ErrHandshakePeerEphemeralKeyRecv = 1101,
+            ErrHandshakeRequesterAuthenticateBoxKeyGen = 1102,
+            ErrHandshakeResponderAcceptBoxKeyGen = 1103,
+            ErrHandshakeRequesterHello = 1104,
+            ErrHandshakeResponderHello = 1105,
+            ErrHandshakeRequesterAuthenticate = 1106,
+            ErrHandshakeResponderAccept = 1107,
+            ErrHandshakeRequesterAcknowledge = 1108,
+            ErrContactRequestSameAccount = 1200,
+            ErrContactRequestContactAlreadyAdded = 1201,
+            ErrContactRequestContactBlocked = 1202,
+            ErrContactRequestContactUndefined = 1203,
+            ErrContactRequestIncomingAlreadyReceived = 1204,
+            ErrGroupMemberLogEventOpen = 1300,
+            ErrGroupMemberLogEventSignature = 1301,
+            ErrGroupMemberUnknownGroupID = 1302,
+            ErrGroupSecretOtherDestMember = 1303,
+            ErrGroupSecretAlreadySentToMember = 1304,
+            ErrGroupInvalidType = 1305,
+            ErrGroupMissing = 1306,
+            ErrGroupActivate = 1307,
+            ErrGroupDeactivate = 1308,
+            ErrGroupInfo = 1309,
+            ErrGroupUnknown = 1310,
+            ErrGroupOpen = 1311,
+            ErrMessageKeyPersistencePut = 1500,
+            ErrMessageKeyPersistenceGet = 1501,
+            ErrServicesAuth = 4000,
+            ErrServicesAuthNotInitialized = 4001,
+            ErrServicesAuthWrongState = 4002,
+            ErrServicesAuthInvalidResponse = 4003,
+            ErrServicesAuthServer = 4004,
+            ErrServicesAuthCodeChallenge = 4005,
+            ErrServicesAuthServiceInvalidToken = 4006,
+            ErrServicesAuthServiceNotSupported = 4007,
+            ErrServicesAuthUnknownToken = 4008,
+            ErrServicesAuthInvalidURL = 4009,
+            ErrServiceReplication = 4100,
+            ErrServiceReplicationServer = 4101,
+            ErrServiceReplicationMissingEndpoint = 4102,
+            ErrServicesDirectory = 4200,
+            ErrServicesDirectoryInvalidVerifiedCredentialSubject = 4201,
+            ErrServicesDirectoryExistingRecordNotFound = 4202,
+            ErrServicesDirectoryRecordLockedAndCantBeReplaced = 4203,
+            ErrServicesDirectoryExplicitReplaceFlagRequired = 4204,
+            ErrServicesDirectoryInvalidVerifiedCredential = 4205,
+            ErrServicesDirectoryExpiredVerifiedCredential = 4206,
+            ErrServicesDirectoryInvalidVerifiedCredentialID = 4207,
+            ErrPush = 6000,
+            ErrPushWrongAccount = 6001,
+            ErrPushUnableToDecrypt = 6002,
+            ErrPushInvalidPayload = 6003,
+            ErrPushInvalidServerConfig = 6004,
+            ErrPushMissingBundleID = 6005,
+            ErrPushUnknownDestination = 6006,
+            ErrPushProvider = 6007,
+            ErrPushUnknownProvider = 6008,
+            ErrNoProvidersConfigured = 6009,
+            ErrInvalidPrivateKey = 6010
+        }
+
+        interface IErrDetails {
+            codes?: (weshnet.errcode.ErrCode[]|null);
+        }
+
+        class ErrDetails implements IErrDetails {
+
+            public codes: weshnet.errcode.ErrCode[];
+            public static create(properties?: weshnet.errcode.IErrDetails): weshnet.errcode.ErrDetails;
+            public static encode(message: weshnet.errcode.IErrDetails, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static encodeDelimited(message: weshnet.errcode.IErrDetails, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.errcode.ErrDetails;
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.errcode.ErrDetails;
+            public static verify(message: { [k: string]: any }): (string|null);
+            public static fromObject(object: { [k: string]: any }): weshnet.errcode.ErrDetails;
+            public static toObject(message: weshnet.errcode.ErrDetails, options?: $protobuf.IConversionOptions): { [k: string]: any };
+            public toJSON(): { [k: string]: any };
+        }
+    }
 }
