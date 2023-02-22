@@ -159,6 +159,7 @@
 			"accounts-button": "حسابها",
 			"network-button": "شبکه",
 			"linked-identities-button": "",
+			"directory-search-button": "",
 			"bug-button": "گزارش ایراد",
 			"about-button": "درباره Berty",
 			"version-button": "ویرایش: {{version}}",
@@ -341,6 +342,9 @@
 			"create-group": ""
 		},
 		"linked-identities": {
+			"title": ""
+		},
+		"directory-search": {
 			"title": ""
 		}
 	},
