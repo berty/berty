@@ -159,6 +159,7 @@
 			"accounts-button": "賬戶",
 			"network-button": "",
 			"linked-identities-button": "",
+			"directory-search-button": "",
 			"bug-button": "",
 			"about-button": "關於 Berty",
 			"version-button": "",
@@ -341,6 +342,9 @@
 			"create-group": ""
 		},
 		"linked-identities": {
+			"title": ""
+		},
+		"directory-search": {
 			"title": ""
 		}
 	},
