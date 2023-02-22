@@ -159,6 +159,7 @@
 			"accounts-button": "Cuentas",
 			"network-button": "",
 			"linked-identities-button": "",
+			"directory-search-button": "",
 			"bug-button": "",
 			"about-button": "Acerca de Berty",
 			"version-button": "",
@@ -341,6 +342,9 @@
 			"create-group": "Crear grupo"
 		},
 		"linked-identities": {
+			"title": ""
+		},
+		"directory-search": {
 			"title": ""
 		}
 	},
