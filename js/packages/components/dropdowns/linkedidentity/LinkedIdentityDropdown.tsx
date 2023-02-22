@@ -146,8 +146,9 @@ export const LinkedIdentityDropdown: React.FC<LinkedIdentityDropdownProps> = pro
 						</UnifiedText>
 					</SecondaryButton>
 				) : null}
-				{activeRegistrations.map(e => (
+				{activeRegistrations.map((e, idx) => (
 					<SecondaryButton
+						key={idx}
 						onPress={() =>
 							unregisterFromDirectoryService(
 								props.messengerClient!,

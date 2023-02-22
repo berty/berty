@@ -1728,6 +1728,7 @@ func TestDirectoryService(t *testing.T) {
 
 	identifierClient0 := "+33123456789"
 	identifierClient1 := "+33234567890"
+	identifierClient2 := "+33345678901"
 
 	vcIssuer, closeVerifiedCredentialServer := testHelperVerifiedCredentialServer(issuerListener, issuerRootURL, t)
 	defer closeVerifiedCredentialServer()
@@ -1737,11 +1738,31 @@ func TestDirectoryService(t *testing.T) {
 
 	directoryRecordToken0 := testHelperRegisterNewNumberOnDirectoryService(ctx, t, nodes[0], vcIssuer, directoryHost, identifierClient0)
 
-	testHelperGetQueryResult(ctx, t, nodes[2].client, directoryHost, []string{identifierClient0, identifierClient1}, map[string]string{identifierClient0: account0.Account.Link})
+	testHelperGetQueryResult(ctx, t, nodes[2].client, directoryHost, []string{identifierClient0, identifierClient1, identifierClient2}, map[string]string{identifierClient0: account0.Account.Link})
 
-	_ = testHelperRegisterNewNumberOnDirectoryService(ctx, t, nodes[1], vcIssuer, directoryHost, identifierClient1)
+	directoryRecordToken1 := testHelperRegisterNewNumberOnDirectoryService(ctx, t, nodes[0], vcIssuer, directoryHost, identifierClient1)
 
-	testHelperGetQueryResult(ctx, t, nodes[2].client, directoryHost, []string{identifierClient0, identifierClient1}, map[string]string{identifierClient0: account0.Account.Link, identifierClient1: account1.Account.Link})
+	require.NotEqual(t, directoryRecordToken0, directoryRecordToken1)
+
+	fmt.Println(directoryRecordToken0)
+	fmt.Println(directoryRecordToken1)
+
+	testHelperGetQueryResult(ctx, t, nodes[2].client, directoryHost, []string{identifierClient0, identifierClient1, identifierClient2}, map[string]string{identifierClient0: account0.Account.Link, identifierClient1: account0.Account.Link})
+
+	_ = testHelperRegisterNewNumberOnDirectoryService(ctx, t, nodes[1], vcIssuer, directoryHost, identifierClient2)
+
+	testHelperGetQueryResult(ctx, t, nodes[2].client, directoryHost, []string{identifierClient0, identifierClient1, identifierClient2}, map[string]string{identifierClient0: account0.Account.Link, identifierClient1: account0.Account.Link, identifierClient2: account1.Account.Link})
+
+	_, err = nodes[0].client.DirectoryServiceUnregister(ctx, &messengertypes.DirectoryServiceUnregister_Request{
+		ServerAddr:           directoryHost,
+		DirectoryRecordToken: directoryRecordToken1,
+	})
+	require.NoError(t, err)
+
+	// FIXME: Remove sleep
+	time.Sleep(time.Millisecond * 100)
+
+	// testHelperGetQueryResult(ctx, t, nodes[2].client, directoryHost, []string{identifierClient0, identifierClient1, identifierClient2}, map[string]string{identifierClient1: account0.Account.Link, identifierClient2: account1.Account.Link})
 
 	_, err = nodes[0].client.DirectoryServiceUnregister(ctx, &messengertypes.DirectoryServiceUnregister_Request{
 		ServerAddr:           directoryHost,
@@ -1749,7 +1770,10 @@ func TestDirectoryService(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	testHelperGetQueryResult(ctx, t, nodes[2].client, directoryHost, []string{identifierClient0, identifierClient1}, map[string]string{identifierClient1: account1.Account.Link})
+	// FIXME: Remove sleep
+	time.Sleep(time.Millisecond * 100)
+
+	testHelperGetQueryResult(ctx, t, nodes[2].client, directoryHost, []string{identifierClient0, identifierClient1, identifierClient2}, map[string]string{identifierClient2: account1.Account.Link})
 }
 
 func testHelperRegisterNewNumberOnDirectoryService(ctx context.Context, t *testing.T, node *TestingAccount, vcIssuer *bertyvcissuer.VCIssuer, directoryHost string, identifier string) string {

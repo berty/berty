@@ -749,6 +749,101 @@ exports[`Settings.DevTools renders correctly 1`] = `
                   />
                 </View>
               </View>
+              <View
+                accessible={true}
+                focusable={true}
+                onClick={[Function]}
+                onResponderGrant={[Function]}
+                onResponderMove={[Function]}
+                onResponderRelease={[Function]}
+                onResponderTerminate={[Function]}
+                onResponderTerminationRequest={[Function]}
+                onStartShouldSetResponder={[Function]}
+                style={
+                  Object {
+                    "alignItems": "center",
+                    "flexDirection": "row",
+                    "height": 48,
+                    "justifyContent": "space-between",
+                    "opacity": 1,
+                    "padding": 12,
+                  }
+                }
+              >
+                <View
+                  style={
+                    Object {
+                      "flexDirection": "row",
+                    }
+                  }
+                >
+                  <View
+                    style={
+                      Object {
+                        "transform": Array [
+                          Object {
+                            "scale": 1,
+                          },
+                        ],
+                      }
+                    }
+                  >
+                    <RNSVGMock
+                      fill="#535AE4"
+                      height={20}
+                      viewBox="0 0 24 24"
+                      width={20}
+                    />
+                  </View>
+                  <View
+                    style={
+                      Object {
+                        "width": "75%",
+                      }
+                    }
+                  >
+                    <Text
+                      numberOfLines={1}
+                      style={
+                        Array [
+                          Object {
+                            "fontSize": 30,
+                          },
+                          Object {
+                            "color": "#383B62",
+                            "fontFamily": "Open Sans",
+                          },
+                          Array [
+                            Object {
+                              "marginLeft": 9,
+                            },
+                          ],
+                        ]
+                      }
+                    >
+                      settings.home.directory-search-button
+                    </Text>
+                  </View>
+                </View>
+                <View
+                  style={
+                    Object {
+                      "transform": Array [
+                        Object {
+                          "scale": 1,
+                        },
+                      ],
+                    }
+                  }
+                >
+                  <RNSVGMock
+                    fill="#393C63"
+                    height={20}
+                    viewBox="0 0 24 24"
+                    width={20}
+                  />
+                </View>
+              </View>
             </View>
             <View
               style={

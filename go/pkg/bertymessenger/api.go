@@ -1855,7 +1855,7 @@ func (svc *service) DirectoryServiceUnregister(ctx context.Context, request *mes
 
 	record, err := svc.db.GetAccountDirectoryServiceRecord(request.ServerAddr, request.DirectoryRecordToken)
 	if err != nil {
-		return nil, errcode.ErrNotFound.Wrap(errcode.ErrNotFound)
+		return nil, errcode.ErrNotFound.Wrap(err)
 	}
 
 	client, err := svc.getDirectoryServiceClient(ctx, request.ServerAddr)
@@ -1869,7 +1869,10 @@ func (svc *service) DirectoryServiceUnregister(ctx context.Context, request *mes
 		UnregisterToken:      record.DirectoryRecordUnregisterToken,
 	})
 	if err != nil {
-		return nil, errcode.ErrServicesDirectory.Wrap(err)
+		// record is not found and has probably expired/been unregistered on another device
+		if !errcode.Is(err, errcode.ErrNotFound) {
+			return nil, errcode.ErrServicesDirectory.Wrap(err)
+		}
 	}
 
 	am, err := messengertypes.AppMessage_TypeAccountDirectoryServiceUnregistered.MarshalPayload(messengerutil.TimestampMs(time.Now()), "", &messengertypes.AppMessage_AccountDirectoryServiceUnregistered{

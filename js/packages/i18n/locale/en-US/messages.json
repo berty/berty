@@ -159,6 +159,7 @@
 			"accounts-button": "Accounts",
 			"network-button": "Network",
 			"linked-identities-button": "Linked identities",
+			"directory-search-button": "Directory search",
 			"bug-button": "Submit a bug",
 			"about-button": "About Berty",
 			"version-button": "Version: {{version}}",
@@ -342,6 +343,9 @@
 		},
 		"linked-identities": {
 			"title": "Linked identities"
+		},
+		"directory-search": {
+			"title": "Directory search"
 		}
 	},
 	"tabs": {

@@ -2919,7 +2919,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     type: "string",
                     id: 2,
                     options: {
-                      "(gogoproto.moretags)": "gorm:index:,unique,composite:uniqueDirectoryRecordServerIdentifier"
+                      "(gogoproto.moretags)": "gorm:uniqueIndex:uniqueDirectoryRecordServerIdentifier"
                     }
                   },
                   identifierProofIssuer: {
@@ -2930,7 +2930,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     type: "string",
                     id: 4,
                     options: {
-                      "(gogoproto.moretags)": "gorm:index:,unique,composite:uniqueDirectoryRecordServerIdentifier"
+                      "(gogoproto.moretags)": "gorm:uniqueIndex:uniqueDirectoryRecordServerIdentifier"
                     }
                   },
                   registrationDate: {

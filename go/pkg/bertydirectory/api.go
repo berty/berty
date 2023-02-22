@@ -13,7 +13,7 @@ import (
 
 type DirectoryService struct {
 	logger            *zap.Logger
-	db                Datastore
+	ds                Datastore
 	defaultExpiration time.Duration
 	defaultLockTime   time.Duration
 	maxExpiration     time.Duration
@@ -32,7 +32,7 @@ type ServiceOpts struct {
 	AllowedIssuers    []string
 }
 
-func New(db Datastore, opts *ServiceOpts) (*DirectoryService, error) {
+func New(ds Datastore, opts *ServiceOpts) (*DirectoryService, error) {
 	if opts == nil {
 		opts = &ServiceOpts{}
 	}
@@ -62,7 +62,7 @@ func New(db Datastore, opts *ServiceOpts) (*DirectoryService, error) {
 	}
 
 	svc := &DirectoryService{
-		db:                db,
+		ds:                ds,
 		defaultExpiration: opts.DefaultExpiration,
 		defaultLockTime:   opts.DefaultLockTime,
 		maxExpiration:     opts.MaxExpiration,
@@ -100,7 +100,7 @@ func (s *DirectoryService) Register(_ context.Context, request *directorytypes.R
 		return nil, errcode.ErrInternal.Wrap(err)
 	}
 
-	if err := s.db.Put(&directorytypes.Record{
+	if err := s.ds.Put(&directorytypes.Record{
 		DirectoryIdentifier:  directoryIdentifier,
 		DirectoryRecordToken: recordToken,
 		ExpiresAt:            expirationDate,
@@ -124,7 +124,7 @@ func (s *DirectoryService) checkExistingRecord(directoryIdentifier string, reque
 	unregisterToken := ""
 	recordToken := ""
 
-	existingRecord, err := s.db.Get(directoryIdentifier)
+	existingRecord, err := s.ds.Get(directoryIdentifier)
 	if err != nil && err != errcode.ErrNotFound {
 		return "", "", err
 	}
@@ -160,7 +160,7 @@ func (s *DirectoryService) checkExistingRecord(directoryIdentifier string, reque
 
 func (s *DirectoryService) Query(request *directorytypes.Query_Request, server directorytypes.DirectoryService_QueryServer) error {
 	for _, identifier := range request.DirectoryIdentifiers {
-		result, err := s.db.Get(identifier)
+		result, err := s.ds.Get(identifier)
 		if err != nil {
 			if err == errcode.ErrNotFound {
 				continue
@@ -188,7 +188,7 @@ func (s *DirectoryService) Unregister(_ context.Context, request *directorytypes
 		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("no unregister token provided"))
 	}
 
-	existingRecord, err := s.db.Get(request.DirectoryIdentifier)
+	existingRecord, err := s.ds.Get(request.DirectoryIdentifier)
 	if err != nil {
 		return nil, errcode.ErrDBRead.Wrap(err)
 	}
@@ -201,7 +201,7 @@ func (s *DirectoryService) Unregister(_ context.Context, request *directorytypes
 		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("invalid unregister token"))
 	}
 
-	if err := s.db.Del(request.DirectoryIdentifier); err != nil {
+	if err := s.ds.Del(request.DirectoryIdentifier); err != nil {
 		return nil, errcode.ErrDBWrite.Wrap(err)
 	}
 
