@@ -159,6 +159,7 @@
 			"accounts-button": "",
 			"network-button": "",
 			"linked-identities-button": "",
+			"directory-search-button": "",
 			"bug-button": "",
 			"about-button": "حول برتي",
 			"version-button": "",
@@ -341,6 +342,9 @@
 			"create-group": "أنشئ مجموعة"
 		},
 		"linked-identities": {
+			"title": ""
+		},
+		"directory-search": {
 			"title": ""
 		}
 	},
