@@ -159,6 +159,7 @@
 			"accounts-button": "アカウント",
 			"network-button": "ネットワーク",
 			"linked-identities-button": "",
+			"directory-search-button": "",
 			"bug-button": "バグを送信",
 			"about-button": "Bertyについて",
 			"version-button": "",
@@ -341,6 +342,9 @@
 			"create-group": "新しいグループを作成"
 		},
 		"linked-identities": {
+			"title": ""
+		},
+		"directory-search": {
 			"title": ""
 		}
 	},
