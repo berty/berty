@@ -159,6 +159,7 @@
 			"accounts-button": "Účty",
 			"network-button": "Síť",
 			"linked-identities-button": "",
+			"directory-search-button": "",
 			"bug-button": "Nahlásit chybu",
 			"about-button": "O projektu Berty",
 			"version-button": "Verze: {{version}}",
@@ -341,6 +342,9 @@
 			"create-group": "Vytvořit skupinu"
 		},
 		"linked-identities": {
+			"title": ""
+		},
+		"directory-search": {
 			"title": ""
 		}
 	},
