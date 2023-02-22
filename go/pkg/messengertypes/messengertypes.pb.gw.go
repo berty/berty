@@ -34,6 +34,40 @@ var _ = utilities.NewDoubleArray
 var _ = descriptor.ForMessage
 var _ = metadata.Join
 
+func request_MessengerService_InstanceGetConfiguration_0(ctx context.Context, marshaler runtime.Marshaler, client MessengerServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq InstanceGetConfiguration_Request
+	var metadata runtime.ServerMetadata
+
+	newReader, berr := utilities.IOReaderFactory(req.Body)
+	if berr != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
+	}
+	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+
+	msg, err := client.InstanceGetConfiguration(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+
+}
+
+func local_request_MessengerService_InstanceGetConfiguration_0(ctx context.Context, marshaler runtime.Marshaler, server MessengerServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq InstanceGetConfiguration_Request
+	var metadata runtime.ServerMetadata
+
+	newReader, berr := utilities.IOReaderFactory(req.Body)
+	if berr != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
+	}
+	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+
+	msg, err := server.InstanceGetConfiguration(ctx, &protoReq)
+	return msg, metadata, err
+
+}
+
 func request_MessengerService_InstanceShareableBertyID_0(ctx context.Context, marshaler runtime.Marshaler, client MessengerServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq InstanceShareableBertyID_Request
 	var metadata runtime.ServerMetadata
@@ -1294,6 +1328,29 @@ func request_MessengerService_DirectoryServiceQuery_0(ctx context.Context, marsh
 // Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterMessengerServiceHandlerFromEndpoint instead.
 func RegisterMessengerServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server MessengerServiceServer) error {
 
+	mux.Handle("POST", pattern_MessengerService_InstanceGetConfiguration_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_MessengerService_InstanceGetConfiguration_0(rctx, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
+		ctx = runtime.NewServerMetadataContext(ctx, md)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_MessengerService_InstanceGetConfiguration_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
 	mux.Handle("POST", pattern_MessengerService_InstanceShareableBertyID_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
@@ -2055,6 +2112,26 @@ func RegisterMessengerServiceHandler(ctx context.Context, mux *runtime.ServeMux,
 // doesn't go through the normal gRPC flow (creating a gRPC client etc.) then it will be up to the passed in
 // "MessengerServiceClient" to call the correct interceptors.
 func RegisterMessengerServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux, client MessengerServiceClient) error {
+
+	mux.Handle("POST", pattern_MessengerService_InstanceGetConfiguration_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		rctx, err := runtime.AnnotateContext(ctx, mux, req)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_MessengerService_InstanceGetConfiguration_0(rctx, inboundMarshaler, client, req, pathParams)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_MessengerService_InstanceGetConfiguration_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
 
 	mux.Handle("POST", pattern_MessengerService_InstanceShareableBertyID_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
@@ -2840,6 +2917,8 @@ func RegisterMessengerServiceHandlerClient(ctx context.Context, mux *runtime.Ser
 }
 
 var (
+	pattern_MessengerService_InstanceGetConfiguration_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"berty.messenger.v1.MessengerService", "InstanceGetConfiguration"}, "", runtime.AssumeColonVerbOpt(true)))
+
 	pattern_MessengerService_InstanceShareableBertyID_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"berty.messenger.v1.MessengerService", "InstanceShareableBertyID"}, "", runtime.AssumeColonVerbOpt(true)))
 
 	pattern_MessengerService_ShareableBertyGroup_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"berty.messenger.v1.MessengerService", "ShareableBertyGroup"}, "", runtime.AssumeColonVerbOpt(true)))
@@ -2920,6 +2999,8 @@ var (
 )
 
 var (
+	forward_MessengerService_InstanceGetConfiguration_0 = runtime.ForwardResponseMessage
+
 	forward_MessengerService_InstanceShareableBertyID_0 = runtime.ForwardResponseMessage
 
 	forward_MessengerService_ShareableBertyGroup_0 = runtime.ForwardResponseMessage

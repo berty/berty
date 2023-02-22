@@ -19,6 +19,8 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type MessengerServiceClient interface {
+	// InstanceGetConfiguration returns the configuration of the instance.
+	InstanceGetConfiguration(ctx context.Context, in *InstanceGetConfiguration_Request, opts ...grpc.CallOption) (*InstanceGetConfiguration_Reply, error)
 	// InstanceShareableBertyID returns a Berty ID that can be shared as a string, QR code or deep link.
 	InstanceShareableBertyID(ctx context.Context, in *InstanceShareableBertyID_Request, opts ...grpc.CallOption) (*InstanceShareableBertyID_Reply, error)
 	// ShareableBertyGroup returns a Berty Group that can be shared as a string, QR code or deep link.
@@ -94,6 +96,15 @@ type messengerServiceClient struct {
 
 func NewMessengerServiceClient(cc grpc.ClientConnInterface) MessengerServiceClient {
 	return &messengerServiceClient{cc}
+}
+
+func (c *messengerServiceClient) InstanceGetConfiguration(ctx context.Context, in *InstanceGetConfiguration_Request, opts ...grpc.CallOption) (*InstanceGetConfiguration_Reply, error) {
+	out := new(InstanceGetConfiguration_Reply)
+	err := c.cc.Invoke(ctx, "/berty.messenger.v1.MessengerService/InstanceGetConfiguration", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *messengerServiceClient) InstanceShareableBertyID(ctx context.Context, in *InstanceShareableBertyID_Request, opts ...grpc.CallOption) (*InstanceShareableBertyID_Reply, error) {
@@ -703,6 +714,8 @@ func (x *messengerServiceDirectoryServiceQueryClient) Recv() (*DirectoryServiceQ
 // All implementations must embed UnimplementedMessengerServiceServer
 // for forward compatibility
 type MessengerServiceServer interface {
+	// InstanceGetConfiguration returns the configuration of the instance.
+	InstanceGetConfiguration(context.Context, *InstanceGetConfiguration_Request) (*InstanceGetConfiguration_Reply, error)
 	// InstanceShareableBertyID returns a Berty ID that can be shared as a string, QR code or deep link.
 	InstanceShareableBertyID(context.Context, *InstanceShareableBertyID_Request) (*InstanceShareableBertyID_Reply, error)
 	// ShareableBertyGroup returns a Berty Group that can be shared as a string, QR code or deep link.
@@ -777,6 +790,9 @@ type MessengerServiceServer interface {
 type UnimplementedMessengerServiceServer struct {
 }
 
+func (UnimplementedMessengerServiceServer) InstanceGetConfiguration(context.Context, *InstanceGetConfiguration_Request) (*InstanceGetConfiguration_Reply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method InstanceGetConfiguration not implemented")
+}
 func (UnimplementedMessengerServiceServer) InstanceShareableBertyID(context.Context, *InstanceShareableBertyID_Request) (*InstanceShareableBertyID_Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method InstanceShareableBertyID not implemented")
 }
@@ -905,6 +921,24 @@ type UnsafeMessengerServiceServer interface {
 
 func RegisterMessengerServiceServer(s grpc.ServiceRegistrar, srv MessengerServiceServer) {
 	s.RegisterService(&MessengerService_ServiceDesc, srv)
+}
+
+func _MessengerService_InstanceGetConfiguration_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(InstanceGetConfiguration_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MessengerServiceServer).InstanceGetConfiguration(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/berty.messenger.v1.MessengerService/InstanceGetConfiguration",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MessengerServiceServer).InstanceGetConfiguration(ctx, req.(*InstanceGetConfiguration_Request))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _MessengerService_InstanceShareableBertyID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -1654,6 +1688,10 @@ var MessengerService_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "berty.messenger.v1.MessengerService",
 	HandlerType: (*MessengerServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "InstanceGetConfiguration",
+			Handler:    _MessengerService_InstanceGetConfiguration_Handler,
+		},
 		{
 			MethodName: "InstanceShareableBertyID",
 			Handler:    _MessengerService_InstanceShareableBertyID_Handler,

@@ -44,6 +44,21 @@ import (
 	"berty.tech/weshnet/pkg/tyber"
 )
 
+func (svc *service) InstanceGetConfiguration(ctx context.Context, req *messengertypes.InstanceGetConfiguration_Request) (*messengertypes.InstanceGetConfiguration_Reply, error) {
+	svc.handlerMutex.Lock()
+	defer svc.handlerMutex.Unlock()
+
+	config, err := svc.protocolClient.InstanceGetConfiguration(ctx, &protocoltypes.InstanceGetConfiguration_Request{})
+	if err != nil {
+		return nil, errcode.TODO.Wrap(err)
+	}
+
+	return &messengertypes.InstanceGetConfiguration_Reply{
+		PeerID:    config.PeerID,
+		Listeners: config.Listeners,
+	}, nil
+}
+
 func (svc *service) DevShareInstanceBertyID(ctx context.Context, req *messengertypes.DevShareInstanceBertyID_Request) (*messengertypes.DevShareInstanceBertyID_Reply, error) {
 	svc.handlerMutex.Lock()
 	defer svc.handlerMutex.Unlock()

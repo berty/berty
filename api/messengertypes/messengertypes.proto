@@ -13,6 +13,9 @@ option (gogoproto.goproto_sizecache_all) = false;
 // MessengerService is the top-level API that uses the weshnet.protocol to implement the Berty Messenger specific logic.
 // Today, most of the Berty Messenger logic is implemented directly in the application (see the /js folder of this repo).
 service MessengerService {
+  // InstanceGetConfiguration returns the configuration of the instance.
+  rpc InstanceGetConfiguration(InstanceGetConfiguration.Request) returns (InstanceGetConfiguration.Reply);
+
   // InstanceShareableBertyID returns a Berty ID that can be shared as a string, QR code or deep link.
   rpc InstanceShareableBertyID(InstanceShareableBertyID.Request) returns (InstanceShareableBertyID.Reply);
 
@@ -104,6 +107,16 @@ service MessengerService {
 
   // DirectoryServiceQuery queries a directory service for given identifiers
   rpc DirectoryServiceQuery(DirectoryServiceQuery.Request) returns (stream DirectoryServiceQuery.Reply);
+}
+
+message InstanceGetConfiguration {
+  message Request {}
+  message Reply {
+    // peer_id is the peer id of the current IPFS node
+    string peer_id = 4 [(gogoproto.customname) = "PeerID"];
+
+    repeated string listeners = 5;
+  }
 }
 
 message PaginatedInteractionsOptions {

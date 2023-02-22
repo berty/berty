@@ -15,7 +15,6 @@ import (
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
 	"berty.tech/weshnet/pkg/logutil"
-	"berty.tech/weshnet/pkg/protocoltypes"
 )
 
 func daemonCommand() *ffcli.Command {
@@ -64,19 +63,13 @@ func daemonCommand() *ffcli.Command {
 				if err != nil {
 					return err
 				}
-				_, err = manager.GetLocalMessengerServer()
-				if err != nil {
-					return err
-				}
-			}
 
-			// connect to the local client
-			{
-				protocolClient, err := manager.GetProtocolClient()
+				messengerClient, err := manager.GetLocalMessengerServer()
 				if err != nil {
 					return err
 				}
-				info, err := protocolClient.InstanceGetConfiguration(ctx, &protocoltypes.InstanceGetConfiguration_Request{})
+
+				info, err := messengerClient.InstanceGetConfiguration(ctx, &messengertypes.InstanceGetConfiguration_Request{})
 				if err != nil {
 					return errcode.TODO.Wrap(err)
 				}
