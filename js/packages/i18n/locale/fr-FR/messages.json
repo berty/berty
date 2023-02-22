@@ -13,7 +13,7 @@
 				"screenTitle": "Créez votre compte",
 				"subtitle": "Démarrer rapidement",
 				"first-point": "Commencer par des préréglages qui offrent un équilibre entre intimité et confort qui convient au plus grand nombre. Les nœuds Berty sont utilisés pour améliorer les performances et la communication asynchrone.",
-				"second-point": "",
+				"second-point": "Les notifications sont activées par défaut et vous ne pouvez pas encore les désactiver sur IOS.",
 				"third-point": "Pour un équilibre de vie privée/confort personnalisé, sélectionnez le Mode Personnalisé.",
 				"back-button": "Retour",
 				"accept-button": "C'est parti"
@@ -82,8 +82,8 @@
 		},
 		"create-account": {
 			"title": "Créer votre compte",
-			"first-button": "",
-			"second-button": "",
+			"first-button": "Mode par défaut",
+			"second-button": "Mode personnalisé",
 			"placeholder": "Choisissez votre pseudo",
 			"good-to-know": {
 				"title": "Bon à savoir :",
@@ -98,7 +98,7 @@
 		"setup-finished": {
 			"title": "Configuration terminée !",
 			"desc": "Vous pouvez dés maintenant utiliser l'application, ajoutez vos contacts et parler en toute tranquillité avec eux",
-			"button": ""
+			"button": "Démarrer avec Berty"
 		},
 		"web-views": {
 			"title": "Autorisation de contenu Web",
@@ -118,10 +118,10 @@
 			"input-placeholder": "Mots-clés de recherche",
 			"no-contacts": "Vous n'avez pas encore de contact ou de conversation",
 			"no-network": {
-				"title": "",
-				"description": "",
-				"cancel": "",
-				"activate": ""
+				"title": "Aucun réseau trouvé !",
+				"description": "Vous semblez hors ligne ! Activez le Bluetooth pour parler avec vos amis !",
+				"cancel": "PAS MAINTENANT",
+				"activate": "ACTIVER"
 			},
 			"search": {
 				"no-results": "Aucun résultat trouvé"
@@ -131,8 +131,8 @@
 				"add-members": "Ajouter des membres",
 				"group-info": "Informations du groupe",
 				"search-placeholder": "Rechercher",
-				"continue": "",
-				"create-group": ""
+				"continue": "Continuer",
+				"create-group": "Créer un groupe"
 			},
 			"create-group-finalize": {
 				"placeholder": "Nom du groupe",
@@ -159,9 +159,10 @@
 			"accounts-button": "Comptes",
 			"network-button": "Réseau",
 			"linked-identities-button": "",
+			"directory-search-button": "",
 			"bug-button": "Soumettre un bug",
 			"about-button": "À propos de Berty",
-			"version-button": "",
+			"version-button": "Version : {{version}}",
 			"devtools-button": "Devtools"
 		},
 		"about": {
@@ -241,19 +242,19 @@
 			"header-left-button": "Infos sur l'appareil",
 			"header-middle-button": "Générer de fausses données",
 			"header-right-button": "Redémarrer le démon",
-			"allow-unsecure-grpc": "",
+			"allow-unsecure-grpc": "Autoriser les connexions GRPC non sécurisées",
 			"force-mock-button": "",
 			"simulate-button": "Simuler une erreur de stream",
 			"simulate-js-error-button": "Simuler une erreur JavaScript",
 			"system-info-button": "Infos système",
 			"select-node": {
-				"title": "",
-				"node-type": "",
-				"address": "",
+				"title": "Sélectionnez un noeud",
+				"node-type": "Nœud interne / externe",
+				"address": "Adresse",
 				"account-port": "",
 				"messenger-port": "",
-				"dont-ask": "",
-				"button-continue": ""
+				"dont-ask": "Ne plus me demander",
+				"button-continue": "Continuer"
 			},
 			"debug-button": "Debug",
 			"log-button": {
@@ -264,7 +265,7 @@
 				"name": "Filtres de logs",
 				"bullet-point": "Redémarrer l'application après avoir modifié ce champ"
 			},
-			"export-logs-button": "",
+			"export-logs-button": "Exporter les logs",
 			"add-dev-conversations-button": "Ajouter conversations de dev",
 			"share-button": {
 				"title": "Partager l'ID sur Discord",
@@ -313,7 +314,7 @@
 			"add": "Ajouter {{name}}",
 			"tag-bot": "Bot",
 			"tag-contact": "Contact",
-			"tag-conversation": ""
+			"tag-conversation": "Conversation"
 		},
 		"ipfs-webui": {
 			"title": "Interface web IPFS"
@@ -342,6 +343,9 @@
 		},
 		"linked-identities": {
 			"title": ""
+		},
+		"directory-search": {
+			"title": ""
 		}
 	},
 	"tabs": {
@@ -359,10 +363,10 @@
 			"contact-already-added-message": "Vous ne pouvez pas ajouter le même contact plusieurs fois"
 		},
 		"invalid-scan": {
-			"dismiss-button": ""
+			"dismiss-button": "Refuser"
 		},
 		"group-invitation": {
-			"join": "",
+			"join": "Rejoindre ce groupe",
 			"password-label": "Saisir le mot de passe du groupe",
 			"password-placeholder": "Mot de passe..."
 		},
@@ -375,7 +379,7 @@
 		}
 	},
 	"chat": {
-		"title-unknown": "",
+		"title-unknown": "Conversation inconnue",
 		"sending": "Envoi...",
 		"sent": "Envoyé",
 		"contact-settings": {
@@ -388,21 +392,21 @@
 			"title": "Notifications",
 			"unsupported": "Notifications non prises en charge",
 			"check-device-settings": "Cette conversation est configurée pour recevoir des notifications push, mais les alertes ont été désactivées dans les paramètres système de votre appareil",
-			"check-account-settings": "",
+			"check-account-settings": "Les notifications sont désactivées, vérifiez les paramètres de votre compte",
 			"warning-disable": {
 				"title": "Voulez-vous activer cette fonctionnalité ?",
 				"subtitle": "Une fois activées, les notifications push ne peuvent pas être désactivées pour une conversation spécifique.",
 				"accept": "Activer",
 				"refuse": "Ignorer"
 			},
-			"why-cant-disable": "",
-			"why-cant-disable-account": "",
+			"why-cant-disable": "Les notifications ne peuvent pas être désactivées pour une conversation spécifique",
+			"why-cant-disable-account": "Les notifications ne peuvent pas être désactivées mais vous pouvez désactiver totalement les notifications de Berty via les paramètres de votre système d'exploitation.",
 			"errors": {
 				"no-token": "Votre appareil n'est pas compatible avec les notifications push",
 				"no-server": "Vous devez d'abord enregistrer un relais push"
 			},
 			"warning-enable-all": {
-				"title": "",
+				"title": "Activer les notifications pour toutes les conversations ?",
 				"subtitle": "",
 				"refuse": "",
 				"accept": "Accepter"
