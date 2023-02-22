@@ -159,6 +159,7 @@
 			"accounts-button": "账户",
 			"network-button": "网络",
 			"linked-identities-button": "",
+			"directory-search-button": "",
 			"bug-button": "提交错误",
 			"about-button": "关于 Berty",
 			"version-button": "版本: {{version}}",
@@ -341,6 +342,9 @@
 			"create-group": "创建群組"
 		},
 		"linked-identities": {
+			"title": ""
+		},
+		"directory-search": {
 			"title": ""
 		}
 	},
