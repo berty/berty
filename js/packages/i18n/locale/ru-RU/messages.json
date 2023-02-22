@@ -159,6 +159,7 @@
 			"accounts-button": "Аккаунты",
 			"network-button": "Сеть",
 			"linked-identities-button": "",
+			"directory-search-button": "",
 			"bug-button": "Сообщить об ошибке",
 			"about-button": "О Berty",
 			"version-button": "",
@@ -341,6 +342,9 @@
 			"create-group": "Создать группу"
 		},
 		"linked-identities": {
+			"title": ""
+		},
+		"directory-search": {
 			"title": ""
 		}
 	},
