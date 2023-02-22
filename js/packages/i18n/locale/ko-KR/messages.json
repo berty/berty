@@ -159,6 +159,7 @@
 			"accounts-button": "계정",
 			"network-button": "",
 			"linked-identities-button": "",
+			"directory-search-button": "",
 			"bug-button": "",
 			"about-button": "Berty에 대해",
 			"version-button": "",
@@ -341,6 +342,9 @@
 			"create-group": ""
 		},
 		"linked-identities": {
+			"title": ""
+		},
+		"directory-search": {
 			"title": ""
 		}
 	},
