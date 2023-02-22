@@ -159,6 +159,7 @@
 			"accounts-button": "Hesaplar",
 			"network-button": "Ağ",
 			"linked-identities-button": "",
+			"directory-search-button": "",
 			"bug-button": "Hata bildir",
 			"about-button": "Berty Hakkında",
 			"version-button": "",
@@ -341,6 +342,9 @@
 			"create-group": "Grup yarat"
 		},
 		"linked-identities": {
+			"title": ""
+		},
+		"directory-search": {
 			"title": ""
 		}
 	},
