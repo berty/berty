@@ -351,7 +351,7 @@ pbjs_common_flags := --force-long -p ../api -p node_modules/@googleapis/googleap
 pbjs_proto_berty_dir := ../api
 pbjs_berty_protos := $(pbjs_proto_berty_dir)/accounttypes/accounttypes.proto $(pbjs_proto_berty_dir)/bertybridge/bertybridge.proto $(pbjs_proto_berty_dir)/messengertypes/messengertypes.proto
 pbjs_proto_weshnet_dir := packages/api/vendor
-pbjs_weshnet_protos := $(pbjs_proto_weshnet_dir)/protocoltypes.proto $(pbjs_proto_weshnet_dir)/pushtypes/pushtypes.proto
+pbjs_weshnet_protos := $(pbjs_proto_weshnet_dir)/protocoltypes.proto $(pbjs_proto_weshnet_dir)/errcode/errcode.proto $(pbjs_proto_weshnet_dir)/pushtypes/pushtypes.proto
 pbjs_protos := $(pbjs_berty_protos) $(pbjs_weshnet_protos)
 
 buf.lock := ../api/buf.lock

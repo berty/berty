@@ -5,7 +5,7 @@ import beapi from '@berty/api'
 class GRPCError extends Error {
 	public EOF: boolean
 	public OK: boolean
-	public Code: beapi.errcode.ErrCode
+	public Code: beapi.errcode.ErrCode | beapi.weshnet_errcode.ErrCode
 	public GrpcCode: beapi.bridge.GRPCErrCode
 
 	public error: beapi.bridge.Error
@@ -41,7 +41,7 @@ class GRPCError extends Error {
 		return beapi.errcode.ErrDetails.create({})
 	}
 
-	public errCode(): beapi.errcode.ErrCode {
+	public errCode(): beapi.errcode.ErrCode | beapi.weshnet_errcode.ErrCode {
 		return this.Code
 	}
 

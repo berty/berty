@@ -153,7 +153,7 @@ const InvalidScan: React.FC<{ type: string; error: any }> = ({ type, error }) =>
 	const { t } = useTranslation()
 
 	const isContactAlreadyAdded = error?.error?.errorDetails?.codes?.includes(
-		beapi.errcode.ErrCode.ErrContactRequestContactAlreadyAdded,
+		beapi.weshnet_errcode.ErrCode.ErrContactRequestContactAlreadyAdded,
 	)
 	let errorMessage = error.toString()
 	let title = ''
