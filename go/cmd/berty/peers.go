@@ -10,7 +10,7 @@ import (
 	"moul.io/godev"
 
 	"berty.tech/berty/v2/go/pkg/errcode"
-	"berty.tech/weshnet/pkg/protocoltypes"
+	"berty.tech/berty/v2/go/pkg/messengertypes"
 )
 
 func peersCommand() *ffcli.Command {
@@ -18,9 +18,9 @@ func peersCommand() *ffcli.Command {
 	fsBuilder := func() (*flag.FlagSet, error) {
 		fs := flag.NewFlagSet("peers", flag.ExitOnError)
 		fs.String("config", "", "config file (optional)")
-		manager.SetupLoggingFlags(fs)             // also available at root level
-		manager.SetupLocalProtocolServerFlags(fs) // by default, start a new local messenger server,
-		manager.SetupRemoteNodeFlags(fs)          // but allow to set a remote server instead
+		manager.SetupLoggingFlags(fs)              // also available at root level
+		manager.SetupLocalMessengerServerFlags(fs) // by default, start a new local messenger server,
+		manager.SetupRemoteNodeFlags(fs)           // but allow to set a remote server instead
 		fs.DurationVar(&refreshEveryFlag, "peers.refresh", refreshEveryFlag, "refresh every DURATION (0: no refresh)")
 		return fs, nil
 	}
@@ -38,13 +38,13 @@ func peersCommand() *ffcli.Command {
 			}
 
 			// messenger client
-			protocol, err := manager.GetProtocolClient()
+			messenger, err := manager.GetMessengerClient()
 			if err != nil {
 				return err
 			}
 
 			for {
-				ret, err := protocol.PeerList(ctx, &protocoltypes.PeerList_Request{})
+				ret, err := messenger.PeerList(ctx, &messengertypes.PeerList_Request{})
 				if err != nil {
 					return errcode.TODO.Wrap(err)
 				}

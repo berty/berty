@@ -50,12 +50,26 @@ func (svc *service) InstanceGetConfiguration(ctx context.Context, req *messenger
 
 	config, err := svc.protocolClient.InstanceGetConfiguration(ctx, &protocoltypes.InstanceGetConfiguration_Request{})
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ErrProtocolCallInstanceGetConfiguration.Wrap(err)
 	}
 
 	return &messengertypes.InstanceGetConfiguration_Reply{
 		PeerID:    config.PeerID,
 		Listeners: config.Listeners,
+	}, nil
+}
+
+func (svc *service) PeerList(ctx context.Context, req *messengertypes.PeerList_Request) (*messengertypes.PeerList_Reply, error) {
+	svc.handlerMutex.Lock()
+	defer svc.handlerMutex.Unlock()
+
+	peers, err := svc.protocolClient.PeerList(ctx, &protocoltypes.PeerList_Request{})
+	if err != nil {
+		return nil, errcode.ErrProtocolCallPeerList.Wrap(err)
+	}
+
+	return &messengertypes.PeerList_Reply{
+		Peers: peers.Peers,
 	}, nil
 }
 

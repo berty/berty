@@ -82,6 +82,9 @@ service MessengerService {
   // ListMemberDevices Lists devices for a member
   rpc ListMemberDevices(ListMemberDevices.Request) returns (stream ListMemberDevices.Reply);
 
+  // PeerList returns a list of P2P peers
+  rpc PeerList(PeerList.Request) returns (PeerList.Reply);
+
   // TyberHostSearch
   rpc TyberHostSearch (TyberHostSearch.Request) returns (stream TyberHostSearch.Reply);
   // TyberHostAttach
@@ -902,6 +905,13 @@ message ListMemberDevices {
   }
   message Reply {
     Device device = 1;
+  }
+}
+
+message PeerList {
+  message Request {}
+  message Reply {
+    repeated weshnet.protocol.v1.PeerList.Peer peers = 1;
   }
 }
 

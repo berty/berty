@@ -70,6 +70,8 @@ type MessengerServiceClient interface {
 	MessageSearch(ctx context.Context, in *MessageSearch_Request, opts ...grpc.CallOption) (*MessageSearch_Reply, error)
 	// ListMemberDevices Lists devices for a member
 	ListMemberDevices(ctx context.Context, in *ListMemberDevices_Request, opts ...grpc.CallOption) (MessengerService_ListMemberDevicesClient, error)
+	// PeerList returns a list of P2P peers
+	PeerList(ctx context.Context, in *PeerList_Request, opts ...grpc.CallOption) (*PeerList_Reply, error)
 	// TyberHostSearch
 	TyberHostSearch(ctx context.Context, in *TyberHostSearch_Request, opts ...grpc.CallOption) (MessengerService_TyberHostSearchClient, error)
 	// TyberHostAttach
@@ -560,6 +562,15 @@ func (x *messengerServiceListMemberDevicesClient) Recv() (*ListMemberDevices_Rep
 	return m, nil
 }
 
+func (c *messengerServiceClient) PeerList(ctx context.Context, in *PeerList_Request, opts ...grpc.CallOption) (*PeerList_Reply, error) {
+	out := new(PeerList_Reply)
+	err := c.cc.Invoke(ctx, "/berty.messenger.v1.MessengerService/PeerList", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *messengerServiceClient) TyberHostSearch(ctx context.Context, in *TyberHostSearch_Request, opts ...grpc.CallOption) (MessengerService_TyberHostSearchClient, error) {
 	stream, err := c.cc.NewStream(ctx, &MessengerService_ServiceDesc.Streams[8], "/berty.messenger.v1.MessengerService/TyberHostSearch", opts...)
 	if err != nil {
@@ -765,6 +776,8 @@ type MessengerServiceServer interface {
 	MessageSearch(context.Context, *MessageSearch_Request) (*MessageSearch_Reply, error)
 	// ListMemberDevices Lists devices for a member
 	ListMemberDevices(*ListMemberDevices_Request, MessengerService_ListMemberDevicesServer) error
+	// PeerList returns a list of P2P peers
+	PeerList(context.Context, *PeerList_Request) (*PeerList_Reply, error)
 	// TyberHostSearch
 	TyberHostSearch(*TyberHostSearch_Request, MessengerService_TyberHostSearchServer) error
 	// TyberHostAttach
@@ -882,6 +895,9 @@ func (UnimplementedMessengerServiceServer) MessageSearch(context.Context, *Messa
 }
 func (UnimplementedMessengerServiceServer) ListMemberDevices(*ListMemberDevices_Request, MessengerService_ListMemberDevicesServer) error {
 	return status.Errorf(codes.Unimplemented, "method ListMemberDevices not implemented")
+}
+func (UnimplementedMessengerServiceServer) PeerList(context.Context, *PeerList_Request) (*PeerList_Reply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PeerList not implemented")
 }
 func (UnimplementedMessengerServiceServer) TyberHostSearch(*TyberHostSearch_Request, MessengerService_TyberHostSearchServer) error {
 	return status.Errorf(codes.Unimplemented, "method TyberHostSearch not implemented")
@@ -1510,6 +1526,24 @@ func (x *messengerServiceListMemberDevicesServer) Send(m *ListMemberDevices_Repl
 	return x.ServerStream.SendMsg(m)
 }
 
+func _MessengerService_PeerList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PeerList_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MessengerServiceServer).PeerList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/berty.messenger.v1.MessengerService/PeerList",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MessengerServiceServer).PeerList(ctx, req.(*PeerList_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _MessengerService_TyberHostSearch_Handler(srv interface{}, stream grpc.ServerStream) error {
 	m := new(TyberHostSearch_Request)
 	if err := stream.RecvMsg(m); err != nil {
@@ -1779,6 +1813,10 @@ var MessengerService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "MessageSearch",
 			Handler:    _MessengerService_MessageSearch_Handler,
+		},
+		{
+			MethodName: "PeerList",
+			Handler:    _MessengerService_PeerList_Handler,
 		},
 		{
 			MethodName: "TyberHostAttach",
