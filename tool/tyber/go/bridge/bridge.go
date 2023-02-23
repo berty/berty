@@ -8,9 +8,9 @@ import (
 	"path/filepath"
 	"sync"
 
-	"berty.tech/berty/tool/tyber/go/config"
-	"berty.tech/berty/tool/tyber/go/logger"
-	"berty.tech/berty/tool/tyber/go/parser"
+	"berty.tech/berty/v2/tool/tyber/go/config"
+	"berty.tech/berty/v2/tool/tyber/go/logger"
+	"berty.tech/berty/v2/tool/tyber/go/parser"
 	"github.com/asticode/go-astilectron"
 )
 

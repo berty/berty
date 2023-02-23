@@ -110,11 +110,11 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Build Docker images
-        working-directory: tool/compose-integration
+        working-directory: tool/integration-compose
         run: docker-compose build
 
       - name: Run integration test suite
-        working-directory: tool/compose-integration
+        working-directory: tool/integration-compose
         run: make
       #- name: Store benchmark result
       #  uses: rhysd/github-action-benchmark@v1

@@ -3,8 +3,8 @@ package analyzer
 import (
 	"errors"
 
-	"berty.tech/berty/tool/tyber/go/parser"
-	"berty.tech/berty/v2/go/pkg/tyber"
+	"berty.tech/berty/v2/tool/tyber/go/parser"
+	"berty.tech/weshnet/pkg/tyber"
 )
 
 type Group struct {

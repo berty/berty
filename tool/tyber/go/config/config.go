@@ -8,7 +8,7 @@ import (
 
 	"github.com/grandcat/zeroconf"
 
-	"berty.tech/berty/tool/tyber/go/logger"
+	"berty.tech/berty/v2/tool/tyber/go/logger"
 	"github.com/pkg/errors"
 )
 
@@ -32,7 +32,7 @@ type Config struct {
 
 func New(ctx context.Context, l *logger.Logger) *Config {
 	return &Config{
-		//logger: l.Named("config"),
+		// logger: l.Named("config"),
 		logger: l, //.Named("config"),
 		ctx:    ctx,
 	}
@@ -43,7 +43,7 @@ func (c *Config) Init(dataPath string) error {
 	c.sessionsPath = filepath.Join(c.dataPath, sessionsSubpath)
 	c.settingsPath = filepath.Join(c.dataPath, settingsFilename)
 
-	if err := os.MkdirAll(c.sessionsPath, 0755); err != nil {
+	if err := os.MkdirAll(c.sessionsPath, 0o755); err != nil {
 		return errors.Wrap(err, "sessions directory creation failed")
 	}
 

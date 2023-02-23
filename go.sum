@@ -8,6 +8,8 @@ berty.tech/go-orbit-db v1.19.1 h1:g96VBOj+IxTnd+Z+WRnve06Yi+ObEk8ie0+kgk5tRSA=
 berty.tech/go-orbit-db v1.19.1/go.mod h1:d+oh2ujZJW2c3IxihPNNqonR92/+EvhOIETylEJYwZc=
 berty.tech/ipfs-webui-packed v1.0.0-v2.11.4-1 h1:xXAS7M/RcgIWia1XkXLueirm2zDXnMMNGb3UJhfRzbo=
 berty.tech/ipfs-webui-packed v1.0.0-v2.11.4-1/go.mod h1:n+M4wWEjVxnA0itc1m9oOLAXrNyZr2tiOxLnA1tVnrQ=
+berty.tech/weshnet v1.0.1 h1:3zi57D6plsin8AD9Ogmj4CZaMwJoTMAOA7v92k7D/sI=
+berty.tech/weshnet v1.0.1/go.mod h1:baTqxUyS4g0bfp+kpj7B1LiTg/ISfPpOrgr7PjUEw14=
 cloud.google.com/go v0.26.0/go.mod h1:aQUYkXzVsufM+DwF1aE+0xfcU+56JwCaLick0ClmMTw=
 cloud.google.com/go v0.31.0/go.mod h1:aQUYkXzVsufM+DwF1aE+0xfcU+56JwCaLick0ClmMTw=
 cloud.google.com/go v0.34.0/go.mod h1:aQUYkXzVsufM+DwF1aE+0xfcU+56JwCaLick0ClmMTw=
@@ -141,8 +143,6 @@ github.com/berty/go-sqlcipher/v4 v4.4.3-0.20220810151512-74ea78235b48 h1:tHmYUj9
 github.com/berty/go-sqlcipher/v4 v4.4.3-0.20220810151512-74ea78235b48/go.mod h1:mF2UmIpBnzFeBdu/ypTDb/LdbS0nk0dfSN1WUsWTjMA=
 github.com/berty/mobile v0.0.8 h1:DoIuvRWaHPvrrVtLxg1ZFu9n1cTVQwkK1PkI6XbzC5M=
 github.com/berty/mobile v0.0.8/go.mod h1:pe2sM7Uk+2Su1y7u/6Z8KJ24D7lepUjFZbhFOrmDfuQ=
-github.com/berty/weshnet v0.0.0-20230220141506-25ba11a37bcc h1:pyLrACNTFQPqA3z2yO+Da4bA6HuNDUpE4pWqlThgYDA=
-github.com/berty/weshnet v0.0.0-20230220141506-25ba11a37bcc/go.mod h1:baTqxUyS4g0bfp+kpj7B1LiTg/ISfPpOrgr7PjUEw14=
 github.com/bgentry/speakeasy v0.1.0/go.mod h1:+zsyZBPWlz7T6j88CTgSN5bM796AkVf0kBD4zp0CCIs=
 github.com/blang/semver/v4 v4.0.0 h1:1PFHFE6yCCTv8C1TeyNNarDzntLi7wMI5i/pzqYIsAM=
 github.com/blang/semver/v4 v4.0.0/go.mod h1:IbckMUScFkM3pff0VJDNKRiT6TG/YpiHIM2yvyW5YoQ=

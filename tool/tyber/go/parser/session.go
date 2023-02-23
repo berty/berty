@@ -6,8 +6,8 @@ import (
 	"io"
 	"sync"
 
-	"berty.tech/berty/tool/tyber/go/logger"
-	"berty.tech/berty/v2/go/pkg/tyber"
+	"berty.tech/berty/v2/tool/tyber/go/logger"
+	"berty.tech/weshnet/pkg/tyber"
 	"github.com/pkg/errors"
 )
 

@@ -5,8 +5,8 @@ import (
 	"errors"
 	"strings"
 
-	"berty.tech/berty/tool/tyber/go/logger"
-	"berty.tech/berty/tool/tyber/go/parser"
+	"berty.tech/berty/v2/tool/tyber/go/logger"
+	"berty.tech/berty/v2/tool/tyber/go/parser"
 )
 
 type Analyzer struct {

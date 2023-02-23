@@ -4,7 +4,7 @@ import (
 	"context"
 	"log"
 
-	"berty.tech/berty/tool/tyber/go/bridge"
+	"berty.tech/berty/v2/tool/tyber/go/bridge"
 )
 
 func main() {

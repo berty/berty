@@ -12,7 +12,7 @@ import (
 
 	"github.com/libp2p/go-libp2p"
 	"github.com/libp2p/go-libp2p/core/crypto"
-	quict "github.com/libp2p/go-libp2p-quic-transport"
+	quict "github.com/libp2p/go-libp2p/p2p/transport/quic"
 	tcpt "github.com/libp2p/go-libp2p/p2p/transport/tcp"
 	ma "github.com/multiformats/go-multiaddr"
 

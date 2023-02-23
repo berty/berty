@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"sync"
 
-	"berty.tech/berty/tool/tyber/go/bridge"
+	"berty.tech/berty/v2/tool/tyber/go/bridge"
 	"github.com/gorilla/websocket"
 	"go.uber.org/multierr"
 )
