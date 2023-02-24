@@ -12,10 +12,10 @@ import (
 	"strings"
 	"syscall"
 
-	"berty.tech/berty/tool/tyber/go/bind"
-	"berty.tech/berty/tool/tyber/go/bridge"
-	"berty.tech/berty/tool/tyber/go/cmd"
-	"berty.tech/berty/tool/tyber/go/parser"
+	"berty.tech/berty/v2/tool/tyber/go/bind"
+	"berty.tech/berty/v2/tool/tyber/go/bridge"
+	"berty.tech/berty/v2/tool/tyber/go/cmd"
+	"berty.tech/berty/v2/tool/tyber/go/parser"
 	"github.com/asticode/go-astikit"
 	"github.com/asticode/go-astilectron"
 	bootstrap "github.com/asticode/go-astilectron-bootstrap"
@@ -149,7 +149,7 @@ func list() *ffcli.Command {
 			}
 
 			if *output != "" {
-				return ioutil.WriteFile(*output, jsonSessions, 0644)
+				return ioutil.WriteFile(*output, jsonSessions, 0o644)
 			}
 
 			fmt.Println(string(jsonSessions))
@@ -276,7 +276,7 @@ func analyze() *ffcli.Command {
 			}
 
 			if *output != "" {
-				return ioutil.WriteFile(*output, jsonReport, 0644)
+				return ioutil.WriteFile(*output, jsonReport, 0o644)
 			}
 
 			fmt.Println(string(jsonReport))
@@ -285,6 +285,7 @@ func analyze() *ffcli.Command {
 		},
 	}
 }
+
 func delete() *ffcli.Command {
 	fs := flag.NewFlagSet("tyber delete", flag.ExitOnError)
 	all := fs.Bool("a", false, "Delete all sessions")

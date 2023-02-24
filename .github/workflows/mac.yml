@@ -14,7 +14,6 @@ on:
       - ".github/workflows/go.yml"
       - "js/**"
       - "config/**"
-      - "tool/generate-i18n-testlang"
       - ".github/workflows/js.yml"
   pull_request:
     paths:
@@ -26,7 +25,6 @@ on:
       - ".github/workflows/go.yml"
       - "js/**"
       - "config/**"
-      - "tool/generate-i18n-testlang"
       - ".github/workflows/js.yml"
 
 jobs:

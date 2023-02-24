@@ -9,16 +9,17 @@ import (
 	"math/rand"
 	"strconv"
 
-	"github.com/libp2p/go-libp2p"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
-	routing "github.com/libp2p/go-libp2p-routing"
 	ma "github.com/multiformats/go-multiaddr"
 	manet "github.com/multiformats/go-multiaddr/net"
 
+	"github.com/libp2p/go-libp2p"
 	"github.com/libp2p/go-libp2p/core/event"
 	"github.com/libp2p/go-libp2p/core/host"
 	"github.com/libp2p/go-libp2p/core/network"
 	"github.com/libp2p/go-libp2p/core/peer"
+	"github.com/libp2p/go-libp2p/core/routing"
+	"github.com/libp2p/go-libp2p/p2p/host/autorelay"
 )
 
 var tcpBertyRelays = []string{
@@ -129,10 +130,13 @@ func createServerHost(ctx context.Context, gOpts *globalOpts, sOpts *serverOpts)
 			staticRelays = append(staticRelays, *pi)
 		}
 
-		opts = append(opts, libp2p.StaticRelays(staticRelays))
+		opts = append(opts, libp2p.EnableAutoRelay(
+			autorelay.WithCircuitV1Support(),
+			autorelay.WithStaticRelays(staticRelays),
+		))
 	}
 
-	return libp2p.New(ctx, opts...) // Create host
+	return libp2p.New(opts...) // Create host
 }
 
 func printHint(h host.Host, gOpts *globalOpts, sOpts *serverOpts) {

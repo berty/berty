@@ -122,14 +122,14 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         continue-on-error: true
-        working-directory: tool
-        run: go run ./publish-npm-package -path=../js/packages/api -version=${{ needs.semantic-release.outputs.release-version }}
+        working-directory: tool/publish-npm-package
+        run: go run . -path=../../js/packages/api -version=${{ needs.semantic-release.outputs.release-version }}
       # Next step also sets up a .npmrc file for automatic publishing to npm
 
       - name: "Publish npm package: @berty/api (DryRun)"
         if: needs.semantic-release.outputs.new-release-published != 'true'
-        working-directory: tool
-        run: go run ./publish-npm-package -path=../js/packages/api -version=0.0.0 -dry-run
+        working-directory: tool/publish-npm-package
+        run: go run . -path=../../js/packages/api -version=0.0.0 -dry-run
 
       - name: Register version on pkg.go.dev
         if: needs.semantic-release.outputs.new-release-published == 'true'

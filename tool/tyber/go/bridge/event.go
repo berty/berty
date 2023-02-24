@@ -3,7 +3,7 @@ package bridge
 import (
 	"fmt"
 
-	"berty.tech/berty/tool/tyber/go/parser"
+	"berty.tech/berty/v2/tool/tyber/go/parser"
 )
 
 // EventKind ...

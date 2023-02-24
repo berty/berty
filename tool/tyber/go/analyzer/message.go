@@ -5,9 +5,9 @@ import (
 	"errors"
 	"time"
 
-	"berty.tech/berty/tool/tyber/go/parser"
 	mt "berty.tech/berty/v2/go/pkg/messengertypes"
-	"berty.tech/berty/v2/go/pkg/tyber"
+	"berty.tech/berty/v2/tool/tyber/go/parser"
+	"berty.tech/weshnet/pkg/tyber"
 )
 
 type Message struct {

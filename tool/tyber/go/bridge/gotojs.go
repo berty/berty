@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"sync"
 
-	"berty.tech/berty/tool/tyber/go/logger"
-	"berty.tech/berty/tool/tyber/go/parser"
+	"berty.tech/berty/v2/tool/tyber/go/logger"
+	"berty.tech/berty/v2/tool/tyber/go/parser"
 	"github.com/asticode/go-astilectron"
 	bootstrap "github.com/asticode/go-astilectron-bootstrap"
 )

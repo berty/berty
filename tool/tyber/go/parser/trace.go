@@ -1,7 +1,7 @@
 package parser
 
 import (
-	"berty.tech/berty/v2/go/pkg/tyber"
+	"berty.tech/weshnet/pkg/tyber"
 )
 
 // Trace

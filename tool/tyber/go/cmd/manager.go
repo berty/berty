@@ -6,10 +6,10 @@ import (
 	"log"
 	"time"
 
-	"berty.tech/berty/tool/tyber/go/analyzer"
-	"berty.tech/berty/tool/tyber/go/config"
-	"berty.tech/berty/tool/tyber/go/logger"
-	"berty.tech/berty/tool/tyber/go/parser"
+	"berty.tech/berty/v2/tool/tyber/go/analyzer"
+	"berty.tech/berty/v2/tool/tyber/go/config"
+	"berty.tech/berty/v2/tool/tyber/go/logger"
+	"berty.tech/berty/v2/tool/tyber/go/parser"
 )
 
 type Manager struct {

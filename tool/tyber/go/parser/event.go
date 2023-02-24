@@ -3,7 +3,7 @@ package parser
 import (
 	"time"
 
-	"berty.tech/berty/v2/go/pkg/tyber"
+	"berty.tech/weshnet/pkg/tyber"
 )
 
 type Status struct {

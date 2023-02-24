@@ -13,8 +13,8 @@ import (
 
 	"github.com/libp2p/go-libp2p"
 	"github.com/libp2p/go-libp2p/core/host"
-	peer "github.com/libp2p/go-libp2p-peer"
-	peerstore "github.com/libp2p/go-libp2p/p2p/host/peerstore"
+	"github.com/libp2p/go-libp2p/core/peer"
+	"github.com/libp2p/go-libp2p/core/peerstore"
 	p2pping "github.com/libp2p/go-libp2p/p2p/protocol/ping"
 	ma "github.com/multiformats/go-multiaddr"
 )
@@ -32,7 +32,7 @@ type clientOpts struct {
 	size    int
 }
 
-func createClientHost(ctx context.Context, gOpts *globalOpts) (host.Host, error) {
+func createClientHost(gOpts *globalOpts) (host.Host, error) {
 	opts, err := globalOptsToLibp2pOpts(gOpts) // Get identity and transport
 	if err != nil {
 		return nil, err
@@ -43,7 +43,7 @@ func createClientHost(ctx context.Context, gOpts *globalOpts) (host.Host, error)
 		libp2p.ListenAddrs(), // On client mode, set no listener
 	)
 
-	return libp2p.New(ctx, opts...) // Create host
+	return libp2p.New(opts...) // Create host
 }
 
 func addDestToPeerstore(h host.Host, dest string) (peer.ID, error) {
@@ -74,7 +74,7 @@ func addDestToPeerstore(h host.Host, dest string) (peer.ID, error) {
 		}
 	}
 
-	peerid, err := peer.IDB58Decode(pid)
+	peerid, err := peer.Decode(pid)
 	if err != nil {
 		return "", err
 	}
@@ -184,7 +184,7 @@ func download(ctx context.Context, h host.Host, peerid peer.ID, cOpts *clientOpt
 }
 
 func runClient(ctx context.Context, gOpts *globalOpts, cOpts *clientOpts) error {
-	h, err := createClientHost(ctx, gOpts)
+	h, err := createClientHost(gOpts)
 	if err != nil {
 		return fmt.Errorf("client host creation failed: %v", err)
 	}

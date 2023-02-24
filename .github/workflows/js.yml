@@ -8,13 +8,11 @@ on:
     paths:
       - "js/**"
       - "config/**"
-      - "tool/generate-i18n-testlang"
       - ".github/workflows/js.yml"
   pull_request:
     paths:
       - "js/**"
       - "config/**"
-      - "tool/generate-i18n-testlang"
       - ".github/workflows/js.yml"
 
 jobs:
