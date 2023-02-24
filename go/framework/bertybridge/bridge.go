@@ -17,7 +17,6 @@ import (
 	"google.golang.org/grpc"
 
 	berty_grpcutil "berty.tech/berty/v2/go/internal/grpcutil"
-	"berty.tech/berty/v2/go/internal/netmanager"
 	"berty.tech/berty/v2/go/internal/notification"
 	"berty.tech/berty/v2/go/pkg/accounttypes"
 	account_svc "berty.tech/berty/v2/go/pkg/bertyaccount"
@@ -28,6 +27,7 @@ import (
 	"berty.tech/weshnet/pkg/ipfsutil"
 	"berty.tech/weshnet/pkg/lifecycle"
 	"berty.tech/weshnet/pkg/logutil"
+	"berty.tech/weshnet/pkg/netmanager"
 	proximity "berty.tech/weshnet/pkg/proximitytransport"
 )
 
@@ -47,7 +47,7 @@ type Bridge struct {
 	mdnsLocker     sync.Locker
 	logger         *zap.Logger
 	langtags       []language.Tag
-	currentState   *ConnectivityInfo
+	netmanager     *netmanager.NetManager
 
 	lifecycleManager    *lifecycle.Manager
 	notificationManager notification.Manager
@@ -180,7 +180,7 @@ func NewBridge(config *BridgeConfig) (*Bridge, error) {
 	// setup connectivity driver
 	{
 		if config.connectivityDriver != nil {
-			b.currentState = config.connectivityDriver.GetCurrentState()
+			b.netmanager = netmanager.NewNetManager(*config.connectivityDriver.GetCurrentState().info)
 			config.connectivityDriver.RegisterHandler(b)
 		}
 	}
@@ -348,7 +348,7 @@ func (b *Bridge) Log(level int, subsystem string, message string) {
 }
 
 func (b *Bridge) HandleConnectivityUpdate(info *ConnectivityInfo) {
-	b.logger.Info("Connectivity update", zap.Any("info", info))
+	b.logger.Info("Connectivity update", zap.Any("info", info.info.String()))
 
-	b.currentState = info
+	b.netmanager.UpdateState(*info.info)
 }

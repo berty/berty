@@ -32,7 +32,7 @@ func (c *BridgeConfig) SetNetDriver(driver NativeNetDriver)             { c.netD
 func (c *BridgeConfig) SetNBDriver(driver ProximityDriver)              { c.nbDriver = driver }
 func (c *BridgeConfig) SetLifeCycleDriver(lc LifeCycleDriver)           { c.lc = lc }
 func (c *BridgeConfig) SetKeystoreDriver(d NativeKeystoreDriver)        { c.keystoreDriver = d }
-func (c *BridgeConfig) SetConnectivityDriver(d IConnectivityDriver)      { c.connectivityDriver = d }
+func (c *BridgeConfig) SetConnectivityDriver(d IConnectivityDriver)     { c.connectivityDriver = d }
 func (c *BridgeConfig) SetAppRootDir(rootdir string)                    { c.AppRootDirPath = rootdir }
 func (c *BridgeConfig) SetSharedRootDir(rootdir string)                 { c.SharedRootDirPath = rootdir }
 func (c *BridgeConfig) AppendCLIArg(arg string)                         { c.CLIArgs = append(c.CLIArgs, arg) }
