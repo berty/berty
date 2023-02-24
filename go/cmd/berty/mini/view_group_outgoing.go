@@ -1150,7 +1150,6 @@ func newDebugMessengerCommand(ctx context.Context, v *groupView, cmd string) err
 }
 
 func newMessageCommand(ctx context.Context, v *groupView, cmd string) error {
-
 	if cmd == "" {
 		return nil
 	}

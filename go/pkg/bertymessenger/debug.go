@@ -4,18 +4,18 @@ import (
 	"context"
 	"fmt"
 	"net"
+	"net/http"
+	"net/http/pprof"
 	"strconv"
 	"strings"
 	"sync"
 	"sync/atomic"
 
-	"net/http"
-	"net/http/pprof"
+	"github.com/gogo/protobuf/proto"
+	"go.uber.org/zap"
 
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
-	"github.com/gogo/protobuf/proto"
-	"go.uber.org/zap"
 )
 
 type debugCommand struct {
@@ -48,7 +48,7 @@ func (svc *service) debug(ctx context.Context, req *messengertypes.Interact_Requ
 	}
 }
 
-func (svc *service) monitorCmd(ctx context.Context, req *messengertypes.Interact_Request, args []string) error {
+func (svc *service) monitorCmd(_ context.Context, _ *messengertypes.Interact_Request, args []string) error {
 	isEnable := svc.dd.pprofEnable
 
 	if len(args) == 0 {
@@ -71,7 +71,7 @@ func (svc *service) monitorCmd(ctx context.Context, req *messengertypes.Interact
 			listn = fmt.Sprintf("0.0.0.0:%d", port)
 		}
 
-		l, err := net.Listen("tcp", listn)
+		l, err := net.Listen("tcp", listn) // nolint:gosec
 		if err != nil {
 			return errcode.ErrInternal.Wrap(fmt.Errorf("unable to listen: %w", err))
 		}
@@ -87,7 +87,11 @@ func (svc *service) monitorCmd(ctx context.Context, req *messengertypes.Interact
 		mux.HandleFunc("/debug/pprof/trace", pprof.Trace)
 
 		// start serve
-		go http.Serve(l, mux)
+		go func() {
+			if err := http.Serve(l, mux); err != nil { // nolint:gosec
+				svc.logger.Error("unable to serve debug command", zap.Error(err))
+			}
+		}()
 
 	case isEnable && args[0] == "stop":
 		if l := svc.dd.pprofListn; l != nil {
@@ -105,7 +109,7 @@ func (svc *service) monitorCmd(ctx context.Context, req *messengertypes.Interact
 	return nil
 }
 
-func (svc *service) sendCmd(ctx context.Context, req *messengertypes.Interact_Request, args []string) error {
+func (svc *service) sendCmd(_ context.Context, req *messengertypes.Interact_Request, args []string) error {
 	if len(args) == 0 {
 		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("send require a number as argument"))
 	}
@@ -154,7 +158,7 @@ func (svc *service) sendCmd(ctx context.Context, req *messengertypes.Interact_Re
 			}
 		}
 
-		svc.logger.Debug("sending debug message done", zap.Uint64("nubmers", nmsgs))
+		svc.logger.Debug("sending debug message done", zap.Uint64("numbers", nmsgs))
 	}()
 
 	return nil

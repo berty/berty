@@ -932,7 +932,7 @@ func (svc *service) Interact(ctx context.Context, req *messengertypes.Interact_R
 		const debugcmd = "/dd"
 		if strings.HasPrefix(m.Body, debugcmd) {
 			svc.logger.Debug("[DD] handling command", zap.String("cmd", m.Body))
-			return &messengertypes.Interact_Reply{}, svc.debug(ctx, req, strings.TrimLeft(m.Body, debugcmd))
+			return &messengertypes.Interact_Reply{}, svc.debug(ctx, req, strings.TrimPrefix(m.Body, debugcmd))
 		}
 
 		// no debug command, ignore and continue
