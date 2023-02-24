@@ -1,4 +1,10 @@
-import { ParserAppStep, ParserCreateStepEvent, ParserCreateTraceEvent, ParserUpdateTraceEvent, TyberDetail } from "./goTypes";
+import {
+	ParserAppStep,
+	ParserCreateStepEvent,
+	ParserCreateTraceEvent,
+	ParserUpdateTraceEvent,
+	TyberDetail,
+} from "./goTypes";
 import { Status } from "./StatusType";
 
 export interface Detail {
@@ -12,7 +18,7 @@ export interface Step {
 	started: Date;
 	finished: Date;
 	status: Status;
-	updateTraceName: string
+	updateTraceName: string;
 }
 
 export interface Trace {
@@ -28,7 +34,7 @@ export interface Trace {
 export const tyberDetailToDetail = (goDetail: TyberDetail) => ({
 	name: goDetail.name,
 	description: goDetail.description,
-})
+});
 
 export const parserAppStepToStep = (goStep: ParserAppStep): Step => ({
 	name: goStep.name,
@@ -37,9 +43,11 @@ export const parserAppStepToStep = (goStep: ParserAppStep): Step => ({
 	finished: new Date(goStep.finished),
 	status: goStep.status as Status,
 	updateTraceName: goStep.updateTraceName,
-})
+});
 
-export const parserCreateTraceEventToTrace = (event: ParserCreateTraceEvent): Trace => ({
+export const parserCreateTraceEventToTrace = (
+	event: ParserCreateTraceEvent
+): Trace => ({
 	id: event.id,
 	name: event.name,
 	initialName: event.initialName,
@@ -49,7 +57,9 @@ export const parserCreateTraceEventToTrace = (event: ParserCreateTraceEvent): Tr
 	status: event.status as Status,
 });
 
-export const parserUpdateTraceEventToTrace = (event: ParserUpdateTraceEvent): Trace => ({
+export const parserUpdateTraceEventToTrace = (
+	event: ParserUpdateTraceEvent
+): Trace => ({
 	id: event.id,
 	name: event.name,
 	steps: [],
@@ -58,7 +68,9 @@ export const parserUpdateTraceEventToTrace = (event: ParserUpdateTraceEvent): Tr
 	status: event.status as Status,
 });
 
-export const parserCreateStepEventToTrace = (event: ParserCreateStepEvent): Trace => ({
+export const parserCreateStepEventToTrace = (
+	event: ParserCreateStepEvent
+): Trace => ({
 	id: event.parentID,
 	steps: [parserAppStepToStep(event)],
 	// All values bellow will be ignored

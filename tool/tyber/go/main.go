@@ -27,9 +27,9 @@ import (
 const (
 	center    = true
 	height    = 700
-	minHeight = 350
+	minHeight = 500
 	width     = 1200
-	minWidth  = 500
+	minWidth  = 1180
 )
 
 // App properties
