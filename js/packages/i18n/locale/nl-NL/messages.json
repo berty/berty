@@ -9,32 +9,32 @@
 		},
 		"default-mode": {
 			"summary": {
-				"title": "",
-				"screenTitle": "",
-				"subtitle": "",
-				"first-point": "",
-				"second-point": "",
+				"title": "Standaard modus",
+				"screenTitle": "Maak een account",
+				"subtitle": "Snel aan de slag",
+				"first-point": "Begin met voorinstellingen die een privacy/comfortbalans bieden die bij de meest past. Berty nodes worden gebruikt om prestaties en asynchrone communicatie te verbeteren.",
+				"second-point": "Push-meldingen zijn standaard ingeschakeld en je kunt deze nog niet uitschakelen in iOS.",
 				"third-point": "",
 				"back-button": "Terug",
-				"accept-button": ""
+				"accept-button": "Laten we beginnen"
 			}
 		},
 		"custom-mode": {
 			"summary": {
-				"screenTitle": "",
-				"title": "",
-				"subtitle": "",
+				"screenTitle": "Account maken - Instellingen aanpassen",
+				"title": "Aangepaste Modus",
+				"subtitle": "Aangepaste Privacy/Comfort Balans",
 				"first-point": "",
 				"second-point": "",
-				"back-button": "",
-				"accept-button": ""
+				"back-button": "Terug",
+				"accept-button": "Doorgaan"
 			},
 			"settings": {
 				"off-grid": {
-					"title": "",
+					"title": "Off-Grid Communicatie",
 					"ble-button": "Bluetooth Low Energy",
-					"nearby-button": "",
-					"mc-button": "",
+					"nearby-button": "Android Nearby",
+					"mc-button": "Apple Multipeer Connectiviteit",
 					"mdns-button": ""
 				},
 				"routing": {
@@ -43,7 +43,7 @@
 					"rdvp-button": ""
 				},
 				"access": {
-					"title": "",
+					"title": "Netwerk toegankelijkheid",
 					"relay-button": "",
 					"bootstrap-button": ""
 				},
@@ -63,31 +63,31 @@
 						}
 					},
 					"errors": {
-						"alias-already-exists": "",
+						"alias-already-exists": "Alias bestaat al",
 						"multiaddr-alread-exists": "",
 						"multiaddr-bad-format": "",
 						"multiaddr-p2p": ""
 					},
 					"buttons": {
 						"add": "Toevoegen",
-						"edit": "",
-						"delete": ""
+						"edit": "Bewerken",
+						"delete": "Verwijderen"
 					},
 					"multiaddress": "",
-					"alias": ""
+					"alias": "Alias"
 				},
-				"all-button": "",
-				"accept-button": ""
+				"all-button": "Alle",
+				"accept-button": "Aan de slag"
 			}
 		},
 		"create-account": {
 			"title": "Maak jouw account",
-			"first-button": "",
-			"second-button": "",
+			"first-button": "Standaard modus",
+			"second-button": "Aangepaste modus",
 			"placeholder": "Kies uw bijnaam",
 			"good-to-know": {
 				"title": "Goed om te weten:",
-				"first-point": "Uw account is lokaal aangemaakt",
+				"first-point": "Uw account wordt lokaal aangemaakt",
 				"second-point": "Bijnaam is optioneel en kan later bewerkt worden"
 			}
 		},
@@ -98,7 +98,7 @@
 		"setup-finished": {
 			"title": "Setup voltooid!",
 			"desc": "Je kunt nu de app gebruiken, begin met het toevoegen van contacten om vrij en privé te communiceren",
-			"button": ""
+			"button": "Start met Berty"
 		},
 		"web-views": {
 			"title": "",
@@ -118,10 +118,10 @@
 			"input-placeholder": "Zoek op trefwoord",
 			"no-contacts": "Je hebt nog geen contacten of gesprekken",
 			"no-network": {
-				"title": "",
+				"title": "Geen Netwerk gevonden!",
 				"description": "",
-				"cancel": "",
-				"activate": ""
+				"cancel": "NIET NU",
+				"activate": "ACTIVEREN"
 			},
 			"search": {
 				"no-results": "Geen resultaten gevonden"
@@ -131,8 +131,8 @@
 				"add-members": "Deelnemers toevoegen",
 				"group-info": "Groep info",
 				"search-placeholder": "Zoeken",
-				"continue": "",
-				"create-group": ""
+				"continue": "Doorgaan",
+				"create-group": "Nieuwe groep aanmaken"
 			},
 			"create-group-finalize": {
 				"placeholder": "Groepsnaam",
@@ -144,7 +144,7 @@
 				"fifth-bullet-point": "Je kunt een lid van deze groep niet verwijderen"
 			},
 			"conversations": {
-				"request-sent": "",
+				"request-sent": "Verzoek verzonden. In behandeling...",
 				"draft": "Concept: {{message}}"
 			}
 		},
@@ -153,11 +153,11 @@
 	"settings": {
 		"home": {
 			"title": "Instellingen",
-			"proximity-button": "",
+			"proximity-button": "Off-Grid Communicatie",
 			"notifications-button": "Notificaties",
 			"appearance-button": "",
 			"accounts-button": "Accounts",
-			"network-button": "",
+			"network-button": "Netwerk",
 			"linked-identities-button": "",
 			"directory-search-button": "",
 			"bug-button": "",
@@ -201,7 +201,7 @@
 			"title": "",
 			"ble-button": "Bluetooth Low Energy",
 			"mc-button": "",
-			"nearby-button": "",
+			"nearby-button": "Android Nearby",
 			"mdns-button": "Multicast DNS",
 			"memo-cell-button": "",
 			"medias-cell-button": "",
