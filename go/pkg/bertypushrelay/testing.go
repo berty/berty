@@ -21,6 +21,8 @@ import (
 )
 
 func PushServerForTests(ctx context.Context, t testing.TB, dispatchers []PushDispatcher, logger *zap.Logger) (PushService, *[32]byte, string, context.CancelFunc) {
+	cancel := func() {}
+
 	secret := make([]byte, cryptoutil.KeySize)
 	_, err := crand.Read(secret)
 	require.NoError(t, err)
@@ -31,7 +33,7 @@ func PushServerForTests(ctx context.Context, t testing.TB, dispatchers []PushDis
 	pushService, err := NewPushService(pushSK, dispatchers, logger)
 	require.NoError(t, err)
 
-	ctx, cancel := context.WithCancel(ctx)
+	ctx, ctxCancel := context.WithCancel(ctx)
 	server := grpc.NewServer()
 
 	mux := grpcgw.NewServeMux()
@@ -49,6 +51,11 @@ func PushServerForTests(ctx context.Context, t testing.TB, dispatchers []PushDis
 			cancel()
 		}
 	}()
+
+	cancel = func() {
+		ctxCancel()
+		server.Stop()
+	}
 
 	return pushService, pushPK, l.Addr().String(), cancel
 }
