@@ -187,7 +187,7 @@ const createServicesClients = async (forceMock: boolean) => {
 		}
 
 		connectService(
-			'berty.protocol.v1.ProtocolService',
+			'weshnet.protocol.v1.ProtocolService',
 			concatAddr(selectNode.address, selectNode.messengerPort),
 		)
 		connectService(
