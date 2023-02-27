@@ -56,6 +56,8 @@ type MessengerServiceClient interface {
 	ConversationClose(ctx context.Context, in *ConversationClose_Request, opts ...grpc.CallOption) (*ConversationClose_Reply, error)
 	ConversationLoad(ctx context.Context, in *ConversationLoad_Request, opts ...grpc.CallOption) (*ConversationLoad_Reply, error)
 	ConversationMute(ctx context.Context, in *ConversationMute_Request, opts ...grpc.CallOption) (*ConversationMute_Reply, error)
+	// PushSetDeviceToken registers a push token for the current device
+	PushSetDeviceToken(ctx context.Context, in *PushSetDeviceToken_Request, opts ...grpc.CallOption) (*PushSetDeviceToken_Reply, error)
 	// ServicesTokenList Retrieves the list of service server tokens
 	ServicesTokenList(ctx context.Context, in *protocoltypes.ServicesTokenList_Request, opts ...grpc.CallOption) (MessengerService_ServicesTokenListClient, error)
 	// ReplicationServiceRegisterGroup Asks a replication service to distribute a group contents
@@ -430,6 +432,15 @@ func (c *messengerServiceClient) ConversationMute(ctx context.Context, in *Conve
 	return out, nil
 }
 
+func (c *messengerServiceClient) PushSetDeviceToken(ctx context.Context, in *PushSetDeviceToken_Request, opts ...grpc.CallOption) (*PushSetDeviceToken_Reply, error) {
+	out := new(PushSetDeviceToken_Reply)
+	err := c.cc.Invoke(ctx, "/berty.messenger.v1.MessengerService/PushSetDeviceToken", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *messengerServiceClient) ServicesTokenList(ctx context.Context, in *protocoltypes.ServicesTokenList_Request, opts ...grpc.CallOption) (MessengerService_ServicesTokenListClient, error) {
 	stream, err := c.cc.NewStream(ctx, &MessengerService_ServiceDesc.Streams[5], "/berty.messenger.v1.MessengerService/ServicesTokenList", opts...)
 	if err != nil {
@@ -762,6 +773,8 @@ type MessengerServiceServer interface {
 	ConversationClose(context.Context, *ConversationClose_Request) (*ConversationClose_Reply, error)
 	ConversationLoad(context.Context, *ConversationLoad_Request) (*ConversationLoad_Reply, error)
 	ConversationMute(context.Context, *ConversationMute_Request) (*ConversationMute_Reply, error)
+	// PushSetDeviceToken registers a push token for the current device
+	PushSetDeviceToken(context.Context, *PushSetDeviceToken_Request) (*PushSetDeviceToken_Reply, error)
 	// ServicesTokenList Retrieves the list of service server tokens
 	ServicesTokenList(*protocoltypes.ServicesTokenList_Request, MessengerService_ServicesTokenListServer) error
 	// ReplicationServiceRegisterGroup Asks a replication service to distribute a group contents
@@ -874,6 +887,9 @@ func (UnimplementedMessengerServiceServer) ConversationLoad(context.Context, *Co
 }
 func (UnimplementedMessengerServiceServer) ConversationMute(context.Context, *ConversationMute_Request) (*ConversationMute_Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ConversationMute not implemented")
+}
+func (UnimplementedMessengerServiceServer) PushSetDeviceToken(context.Context, *PushSetDeviceToken_Request) (*PushSetDeviceToken_Reply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PushSetDeviceToken not implemented")
 }
 func (UnimplementedMessengerServiceServer) ServicesTokenList(*protocoltypes.ServicesTokenList_Request, MessengerService_ServicesTokenListServer) error {
 	return status.Errorf(codes.Unimplemented, "method ServicesTokenList not implemented")
@@ -1391,6 +1407,24 @@ func _MessengerService_ConversationMute_Handler(srv interface{}, ctx context.Con
 	return interceptor(ctx, in, info, handler)
 }
 
+func _MessengerService_PushSetDeviceToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PushSetDeviceToken_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MessengerServiceServer).PushSetDeviceToken(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/berty.messenger.v1.MessengerService/PushSetDeviceToken",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MessengerServiceServer).PushSetDeviceToken(ctx, req.(*PushSetDeviceToken_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _MessengerService_ServicesTokenList_Handler(srv interface{}, stream grpc.ServerStream) error {
 	m := new(protocoltypes.ServicesTokenList_Request)
 	if err := stream.RecvMsg(m); err != nil {
@@ -1797,6 +1831,10 @@ var MessengerService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ConversationMute",
 			Handler:    _MessengerService_ConversationMute_Handler,
+		},
+		{
+			MethodName: "PushSetDeviceToken",
+			Handler:    _MessengerService_PushSetDeviceToken_Handler,
 		},
 		{
 			MethodName: "ReplicationServiceRegisterGroup",

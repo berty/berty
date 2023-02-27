@@ -298,7 +298,7 @@ func (s *service) OpenAccountWithProgress(req *accounttypes.OpenAccountWithProgr
 			_ = step
 			snapshot := prog.Snapshot()
 			err := server.Send(&accounttypes.OpenAccountWithProgress_Reply{
-				Progress: &protocoltypes.Progress{
+				Progress: &accounttypes.Progress{
 					State:     string(snapshot.State),
 					Doing:     snapshot.Doing,
 					Progress:  float32(snapshot.Progress),
@@ -379,7 +379,7 @@ func (s *service) CloseAccountWithProgress(req *accounttypes.CloseAccountWithPro
 			_ = step
 			snapshot := prog.Snapshot()
 			err := server.Send(&accounttypes.CloseAccountWithProgress_Reply{
-				Progress: &protocoltypes.Progress{
+				Progress: &accounttypes.Progress{
 					State:     string(snapshot.State),
 					Doing:     snapshot.Doing,
 					Progress:  float32(snapshot.Progress),
@@ -646,7 +646,7 @@ func (s *service) ImportAccountWithProgress(req *accounttypes.ImportAccountWithP
 			_ = step
 			snapshot := prog.Snapshot()
 			err := server.Send(&accounttypes.ImportAccountWithProgress_Reply{
-				Progress: &protocoltypes.Progress{
+				Progress: &accounttypes.Progress{
 					State:     string(snapshot.State),
 					Doing:     snapshot.Doing,
 					Progress:  float32(snapshot.Progress),
@@ -1347,12 +1347,12 @@ func (s *service) PushPlatformTokenRegister(ctx context.Context, request *accoun
 		return &accounttypes.PushPlatformTokenRegister_Reply{}, nil
 	}
 
-	client, err := s.initManager.GetProtocolClient()
+	messenger, err := s.initManager.GetMessengerClient()
 	if err != nil {
 		return nil, errcode.ErrInternal.Wrap(err)
 	}
 
-	if _, err := client.PushSetDeviceToken(ctx, &protocoltypes.PushSetDeviceToken_Request{Receiver: request.Receiver}); err != nil {
+	if _, err := messenger.PushSetDeviceToken(ctx, &messengertypes.PushSetDeviceToken_Request{Receiver: request.Receiver}); err != nil {
 		return nil, errcode.ErrInternal.Wrap(err)
 	}
 

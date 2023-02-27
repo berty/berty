@@ -61,6 +61,9 @@ service MessengerService {
   rpc ConversationLoad(ConversationLoad.Request) returns (ConversationLoad.Reply);
   rpc ConversationMute(ConversationMute.Request) returns (ConversationMute.Reply);
 
+  // PushSetDeviceToken registers a push token for the current device
+  rpc PushSetDeviceToken(PushSetDeviceToken.Request) returns (PushSetDeviceToken.Reply);
+
   // ServicesTokenList Retrieves the list of service server tokens
   rpc ServicesTokenList(weshnet.protocol.v1.ServicesTokenList.Request) returns (stream weshnet.protocol.v1.ServicesTokenList.Reply);
 
@@ -169,6 +172,13 @@ message ConversationMute {
     int64 muted_until = 2;
     bool unmute = 3;
     bool mute_forever = 4;
+  }
+  message Reply {}
+}
+
+message PushSetDeviceToken {
+  message Request {
+    weshnet.protocol.v1.PushServiceReceiver receiver = 1;
   }
   message Reply {}
 }
