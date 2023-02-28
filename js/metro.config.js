@@ -24,5 +24,6 @@ module.exports = {
 		assetExts: defaultAssetExts.filter(ext => ext !== 'svg'),
 		sourceExts: [...defaultSourceExts, 'svg'],
 		blacklistRE: exclusionList([/\.gomobile-cache\/.*/, /^web\/.*/]),
+		resolverMainFields: ['sbmodern', 'react-native', 'browser', 'main'],
 	},
 }

@@ -69,6 +69,7 @@ help:
 	@echo "  lint.fix             Run eslint and fix errors"
 	@echo "  js.unused_exports    Run ts-unused-exports"
 	@echo "  metro.start          Start React-Native Metro (app debug)"
+	@echo "  storybook            Start Storybook"
 	@echo "  web.debug            Start Craco (web app debug)"
 	@echo "  web.daemon.start     Start Berty account daemon for web"
 	@echo "  web.build            Build a production build for web"
@@ -329,6 +330,11 @@ metro.start: node_modules
 	$(call check-program, npx)
 	$(call kill-program-using-port, $(METRO_RN_PORT))
 	npx react-native start --port=$(METRO_RN_PORT)
+
+.PHONY: storybook
+storybook: node_modules
+	$(call check-program, yarn)
+	yarn storybook
 
 #### Go daemon
 
