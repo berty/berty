@@ -8707,10 +8707,10 @@ levn@~0.3.0:
     prelude-ls "~1.1.2"
     type-check "~0.3.2"
 
-libphonenumber-js@^1.10.15:
-  version "1.10.15"
-  resolved "https://registry.yarnpkg.com/libphonenumber-js/-/libphonenumber-js-1.10.15.tgz#cad454adb5bf271bc820bbf7dd66776afcda7be6"
-  integrity sha512-sLeVLmWX17VCKKulc+aDIRHS95TxoTsKMRJi5s5gJdwlqNzMWcBCtSHHruVyXjqfi67daXM2SnLf2juSrdx5Sg==
+libphonenumber-js@^1.10.21:
+  version "1.10.21"
+  resolved "https://registry.yarnpkg.com/libphonenumber-js/-/libphonenumber-js-1.10.21.tgz#860312cbec1389e36e28389161025c7817a3ae32"
+  integrity sha512-/udZhx49av2r2gZR/+xXSrwcR8smX/sDNrVpOFrvW+CA26TfYTVZfwb3MIDvmwAYMLs7pXuJjZX0VxxGpqPhsA==
 
 lines-and-columns@^1.1.6:
   version "1.2.4"

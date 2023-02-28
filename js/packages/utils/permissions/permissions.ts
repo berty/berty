@@ -17,6 +17,7 @@ export enum PermissionType {
 	notification = 'notification',
 	camera = 'camera',
 	gallery = 'gallery',
+	contacts = 'contacts',
 }
 
 const permissionsByDevice: Record<
@@ -41,6 +42,11 @@ const permissionsByDevice: Record<
 	gallery: Platform.select({
 		ios: PERMISSIONS?.IOS?.PHOTO_LIBRARY,
 		android: PERMISSIONS?.ANDROID?.READ_EXTERNAL_STORAGE,
+		web: undefined,
+	}),
+	contacts: Platform.select({
+		ios: PERMISSIONS?.IOS?.CONTACTS,
+		android: PERMISSIONS?.ANDROID?.READ_CONTACTS,
 		web: undefined,
 	}),
 }
@@ -87,6 +93,7 @@ export const acquirePermission = async (
 	}
 	const permission = permissionsByDevice[permissionType]
 	if (!permission) {
+		console.warn(`unsupported permission ${permissionType} for device`)
 		return RESULTS.UNAVAILABLE
 	}
 	return await request(permission)
@@ -98,4 +105,5 @@ export const defaultPermissionStatus: Permissions = Object.freeze({
 	[PermissionType.camera]: RESULTS.DENIED,
 	[PermissionType.audio]: RESULTS.DENIED,
 	[PermissionType.gallery]: RESULTS.DENIED,
+	[PermissionType.contacts]: RESULTS.DENIED,
 })

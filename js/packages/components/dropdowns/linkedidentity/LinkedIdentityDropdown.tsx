@@ -93,9 +93,9 @@ export const LinkedIdentityDropdown: React.FC<LinkedIdentityDropdownProps> = pro
 		recordRegistrations.filter(
 			record => !record.revoked && pbDateToNum(record.expirationDate) > Date.now(),
 		) || []
-	const firstServiceAddr = props.knownDirectoryServices
-		.filter(e => e.capabilities.some(cap => cap === identifierType))
-		.at(0)?.address
+	const firstServiceAddr = props.knownDirectoryServices.filter(e =>
+		e.capabilities.some(cap => cap === identifierType),
+	)[0]?.address
 
 	if (!identifierType || props.messengerClient === null) {
 		return null

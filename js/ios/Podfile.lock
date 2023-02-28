@@ -111,6 +111,8 @@ PODS:
     - RNPermissions
   - Permission-Camera (3.1.0):
     - RNPermissions
+  - Permission-Contacts (3.1.0):
+    - RNPermissions
   - Permission-Microphone (3.1.0):
     - RNPermissions
   - Permission-Notifications (3.1.0):
@@ -463,6 +465,7 @@ DEPENDENCIES:
   - lottie-react-native (from `../node_modules/lottie-react-native`)
   - Permission-BluetoothPeripheral (from `../node_modules/react-native-permissions/ios/BluetoothPeripheral`)
   - Permission-Camera (from `../node_modules/react-native-permissions/ios/Camera`)
+  - Permission-Contacts (from `../node_modules/react-native-permissions/ios/Contacts`)
   - Permission-Microphone (from `../node_modules/react-native-permissions/ios/Microphone`)
   - Permission-Notifications (from `../node_modules/react-native-permissions/ios/Notifications`)
   - Permission-PhotoLibrary (from `../node_modules/react-native-permissions/ios/PhotoLibrary`)
@@ -573,6 +576,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-permissions/ios/BluetoothPeripheral"
   Permission-Camera:
     :path: "../node_modules/react-native-permissions/ios/Camera"
+  Permission-Contacts:
+    :path: "../node_modules/react-native-permissions/ios/Contacts"
   Permission-Microphone:
     :path: "../node_modules/react-native-permissions/ios/Microphone"
   Permission-Notifications:
@@ -700,6 +705,7 @@ SPEC CHECKSUMS:
   OpenSSL-Universal: 1aa4f6a6ee7256b83db99ec1ccdaa80d10f9af9b
   Permission-BluetoothPeripheral: e3bdcbf170bd1760881633941d4021b3d8e77f5a
   Permission-Camera: 0db4fd6e1c556c1cf47f38b989a8084cea3ec3dd
+  Permission-Contacts: c9c3306280576546619fc9ae7489012ed9fe091f
   Permission-Microphone: 7b75718196244a6e59dd60f82f12962562c2ea12
   Permission-Notifications: e247d69c22ae72770d1c5314ad6ccd1256c57c83
   Permission-PhotoLibrary: 9dcf80d1353d81b9f1e210c34291591236aaf2b6
@@ -749,6 +755,6 @@ SPEC CHECKSUMS:
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
   ZXingObjC: fdbb269f25dd2032da343e06f10224d62f537bdb
 
-PODFILE CHECKSUM: 74d1603c5d5208e5c5c7543ff40bb9ca813f4f67
+PODFILE CHECKSUM: 10c6b2674e898d0c104ff6e3a2fe60a359b43678
 
 COCOAPODS: 1.11.3

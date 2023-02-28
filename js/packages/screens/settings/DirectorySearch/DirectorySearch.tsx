@@ -1,6 +1,8 @@
+import libPhoneNumber, { CountryCode } from 'libphonenumber-js'
 import { phone } from 'phone'
 import React, { useState } from 'react'
-import { ActivityIndicator, ScrollView, View } from 'react-native'
+import { ActivityIndicator, Alert, ScrollView, View, NativeModules, Platform } from 'react-native'
+import { RESULTS } from 'react-native-permissions'
 
 import beapi from '@berty/api'
 import { DebugServersAddrCapabilities, ItemSection, SmallInput } from '@berty/components'
@@ -12,11 +14,49 @@ import { ServiceClientType } from '@berty/grpc-bridge/welsh-clients.gen'
 import { useMessengerClient, useThemeColor } from '@berty/hooks'
 import { ScreenFC } from '@berty/navigation'
 import { IdentityType } from '@berty/utils/linkedidentities/types'
+import { acquirePermission, PermissionType } from '@berty/utils/permissions/permissions'
 import * as testIDs from '@berty/utils/testing/testIDs.json'
+
+type AddressBookContact = {
+	givenName: string
+	middleName: string
+	familyName: string
+	namePrefix: string
+	nameSuffix: string
+	emailAddresses: string[]
+	phoneNumbers: string[]
+}
+
+type MatchedAddressBookContact = AddressBookContact & {
+	identifier: string
+}
 
 type SearchResult = {
 	results: beapi.messenger.DirectoryServiceQuery.Reply[]
 	errors: string[]
+}
+
+const normalizePhoneNumber = (phoneNumber: string) => {
+	const deviceLanguage: string =
+		Platform.OS === 'ios'
+			? NativeModules.SettingsManager.settings.AppleLocale ||
+			  NativeModules.SettingsManager.settings.AppleLanguages[0] //iOS 13
+			: NativeModules.I18nManager.localeIdentifier
+
+	const deviceCountry = deviceLanguage.substring(deviceLanguage.length - 2) as CountryCode
+
+	const parsedPhoneNumber = libPhoneNumber(phoneNumber, {
+		defaultCountry: deviceCountry,
+	})
+
+	if (parsedPhoneNumber == undefined) {
+		return ['', '']
+	}
+
+	const queryPhoneNumber = `tel:${parsedPhoneNumber.formatInternational().replace(/ /g, '')}`
+	const displayPhoneNumber = parsedPhoneNumber.formatInternational()
+
+	return [queryPhoneNumber, displayPhoneNumber]
 }
 
 const searchOnDirectoryService = async (
@@ -90,6 +130,9 @@ export const DirectorySearch: ScreenFC<'Settings.DirectorySearch'> = ({
 			capabilities: [IdentityType.PHONE],
 		},
 	])
+	const [userMappedContacts, setUserMappedContacts] = useState<{
+		[key: string]: MatchedAddressBookContact
+	}>({})
 
 	const updateSearchResults = React.useCallback(
 		(resultSearchId: number, results: SearchResult) => {
@@ -147,21 +190,95 @@ export const DirectorySearch: ScreenFC<'Settings.DirectorySearch'> = ({
 				</ItemSection>
 
 				<ItemSection>
+					<PrimaryButton
+						onPress={async () => {
+							const status = await acquirePermission(PermissionType.contacts)
+							if (status !== RESULTS.GRANTED) {
+								console.warn(status)
+								Alert.alert('Access to address book has been denied, unable to search for contacts')
+								return
+							}
+
+							try {
+								const contactsJSON = (await NativeModules.AddressBook.getAllContacts()) as string
+								const contacts = JSON.parse(contactsJSON) as AddressBookContact[]
+								const userMappedContacts = Object.fromEntries(
+									contacts
+										.map(
+											c =>
+												c.phoneNumbers
+													.map(phoneNumber => normalizePhoneNumber(phoneNumber))
+													.filter(
+														([queryPhoneNumber, displayedPhoneNumber]) =>
+															queryPhoneNumber !== '' && displayedPhoneNumber !== '',
+													)
+													.map(([queryPhoneNumber, displayedPhoneNumber]) => [
+														queryPhoneNumber,
+														{ ...c, identifier: displayedPhoneNumber },
+													]) as [string, MatchedAddressBookContact][],
+										)
+										.reduce(
+											(previousValue, currentValue) => [...previousValue, ...currentValue],
+											[],
+										),
+								)
+								setUserMappedContacts(userMappedContacts)
+
+								setSearchId(Date.now())
+								setSearchResults({ results: [], errors: [] })
+
+								// TODO: make multiple queries when searching a large number of contacts
+								const resultsShown = await searchOnDirectoryService(
+									messengerClient!,
+									knownDirectoryServices,
+									Object.keys(userMappedContacts),
+									searchId,
+									updateSearchResults,
+								)
+
+								if (resultsShown) {
+									setSearchId(0)
+								}
+							} catch (e) {
+								console.warn(e)
+							}
+						}}
+					>
+						{'Search from address book'}
+					</PrimaryButton>
+				</ItemSection>
+
+				<ItemSection>
 					{searchId !== 0 ? <ActivityIndicator /> : null}
 					{searchResults.errors.map((error, idx) => (
 						<UnifiedText key={idx}>{error}</UnifiedText>
 					))}
-					{searchResults.results.map((result, idx) => (
-						<ButtonSettingV2
-							key={idx}
-							text={result.directoryIdentifier}
-							icon='external-link-outline'
-							testID={testIDs['open-berty-link']}
-							onPress={() =>
-								navigate('Chat.ManageDeepLink', { type: 'link', value: result.accountUri })
+					{
+						// TODO: Sort by contact name if any
+						searchResults.results.map((result, idx) => {
+							let mappedContact: MatchedAddressBookContact | undefined
+							let contactName = ''
+							let displayedIdentifier = result.directoryIdentifier
+
+							if (result.directoryIdentifier in userMappedContacts) {
+								mappedContact = userMappedContacts[result.directoryIdentifier]
+								contactName = `${mappedContact.givenName} ${mappedContact.familyName} \n`
+								displayedIdentifier = mappedContact.identifier
 							}
-						/>
-					))}
+
+							return (
+								<ButtonSettingV2
+									key={idx}
+									text={`${contactName}${displayedIdentifier || result.directoryIdentifier}`}
+									icon='external-link-outline'
+									testID={testIDs['open-berty-link']}
+									onPress={() =>
+										navigate('Chat.ManageDeepLink', { type: 'link', value: result.accountUri })
+									}
+								/>
+							)
+						})
+					}
 				</ItemSection>
 			</ScrollView>
 		</View>

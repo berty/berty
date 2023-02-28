@@ -22,6 +22,7 @@ import expo.modules.ReactNativeHostWrapper;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
+import tech.berty.addressbook.AddressBookPackage;
 import tech.berty.gobridge.GoBridgePackage;
 import tech.berty.notification.NotificationPackage;
 import tech.berty.notification.NotificationService;
@@ -53,6 +54,7 @@ public class MainApplication extends Application implements ReactApplication, Li
                 packages.add(new NotificationPackage());
                 packages.add(new RootDirPackage());
                 packages.add(new GoBridgePackage());
+                packages.add(new AddressBookPackage());
                 return packages;
             }
 
