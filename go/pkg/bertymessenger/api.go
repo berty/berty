@@ -920,6 +920,25 @@ func (svc *service) Interact(ctx context.Context, req *messengertypes.Interact_R
 	gpk := req.GetConversationPublicKey()
 	payloadType := req.GetType()
 
+	// check for debug command
+	switch payloadType {
+	case messengertypes.AppMessage_TypeUserMessage:
+		var m messengertypes.AppMessage_UserMessage
+		if err := proto.Unmarshal(req.Payload, &m); err != nil {
+			return nil, errcode.ErrInvalidInput.Wrap(err)
+		}
+
+		// handle debug input
+		const debugcmd = "/dd"
+		if strings.HasPrefix(m.Body, debugcmd) {
+			svc.logger.Debug("[DD] handling command", zap.String("cmd", m.Body))
+			return &messengertypes.Interact_Reply{}, svc.debug(ctx, req, strings.TrimPrefix(m.Body, debugcmd))
+		}
+
+		// no debug command, ignore and continue
+	default:
+	}
+
 	ctx, newTrace, endSection := tyber.Section(ctx, svc.logger, fmt.Sprintf("Interacting with %s on group %s", strings.TrimPrefix(payloadType.String(), "Type"), gpk))
 	defer func() {
 		if err != nil {
