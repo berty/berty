@@ -1,7 +1,6 @@
-import libPhoneNumber, { CountryCode } from 'libphonenumber-js'
-import { phone } from 'phone'
+import { parseNumber, formatNumber, CountryCode } from 'libphonenumber-js'
 import React, { useState } from 'react'
-import { ActivityIndicator, Alert, ScrollView, View, NativeModules, Platform } from 'react-native'
+import { ActivityIndicator, Alert, ScrollView, View, NativeModules } from 'react-native'
 import { RESULTS } from 'react-native-permissions'
 
 import beapi from '@berty/api'
@@ -36,25 +35,18 @@ type SearchResult = {
 	errors: string[]
 }
 
-const normalizePhoneNumber = (phoneNumber: string) => {
-	const deviceLanguage: string =
-		Platform.OS === 'ios'
-			? NativeModules.SettingsManager.settings.AppleLocale ||
-			  NativeModules.SettingsManager.settings.AppleLanguages[0] //iOS 13
-			: NativeModules.I18nManager.localeIdentifier
-
-	const deviceCountry = deviceLanguage.substring(deviceLanguage.length - 2) as CountryCode
-
-	const parsedPhoneNumber = libPhoneNumber(phoneNumber, {
-		defaultCountry: deviceCountry,
+const normalizePhoneNumber = (phoneNumber: string, deviceCountry: string | undefined) => {
+	const parsedPhoneNumber = parseNumber(phoneNumber, {
+		defaultCountry: deviceCountry as CountryCode | undefined,
+		extended: true,
 	})
 
-	if (parsedPhoneNumber == undefined) {
+	if (!('possible' in parsedPhoneNumber) || !parsedPhoneNumber.possible) {
 		return ['', '']
 	}
 
-	const queryPhoneNumber = `tel:${parsedPhoneNumber.formatInternational().replace(/ /g, '')}`
-	const displayPhoneNumber = parsedPhoneNumber.formatInternational()
+	const queryPhoneNumber = `tel:${formatNumber(parsedPhoneNumber, 'E.164')}`
+	const displayPhoneNumber = formatNumber(parsedPhoneNumber, 'INTERNATIONAL')
 
 	return [queryPhoneNumber, displayPhoneNumber]
 }
@@ -71,15 +63,6 @@ const searchOnDirectoryService = async (
 
 	await Promise.all(
 		knownDirectoryServices.map(async service => {
-			identifiers = identifiers.map(identifier => {
-				const parsedPhone = phone(identifier, { validateMobilePrefix: false })
-				if (parsedPhone.isValid) {
-					return `tel:${parsedPhone.phoneNumber}`
-				}
-
-				return identifier
-			})
-
 			const stream = await client.directoryServiceQuery({
 				identifiers: identifiers,
 				serverAddr: service.address,
@@ -200,14 +183,25 @@ export const DirectorySearch: ScreenFC<'Settings.DirectorySearch'> = ({
 							}
 
 							try {
-								const contactsJSON = (await NativeModules.AddressBook.getAllContacts()) as string
+								let deviceCountry: string | undefined
+								try {
+									deviceCountry = (await NativeModules.AddressBook.getDeviceCountry()) as string
+									if (deviceCountry.match(/^[A-Z]{2,3}$/) === null) {
+										console.warn(`unusual locale retrieved: ${deviceCountry}`)
+										deviceCountry = undefined
+									}
+								} catch (e) {
+									console.warn("unable to retrieve device's locale")
+								}
+
+								const contactsJSON: string = await NativeModules.AddressBook.getAllContacts()
 								const contacts = JSON.parse(contactsJSON) as AddressBookContact[]
 								const userMappedContacts = Object.fromEntries(
 									contacts
 										.map(
 											c =>
 												c.phoneNumbers
-													.map(phoneNumber => normalizePhoneNumber(phoneNumber))
+													.map(phoneNumber => normalizePhoneNumber(phoneNumber, deviceCountry))
 													.filter(
 														([queryPhoneNumber, displayedPhoneNumber]) =>
 															queryPhoneNumber !== '' && displayedPhoneNumber !== '',
@@ -255,7 +249,7 @@ export const DirectorySearch: ScreenFC<'Settings.DirectorySearch'> = ({
 					))}
 					{
 						// TODO: Sort by contact name if any
-						searchResults.results.map((result, idx) => {
+						searchResults.results.map(result => {
 							let mappedContact: MatchedAddressBookContact | undefined
 							let contactName = ''
 							let displayedIdentifier = result.directoryIdentifier
@@ -268,7 +262,7 @@ export const DirectorySearch: ScreenFC<'Settings.DirectorySearch'> = ({
 
 							return (
 								<ButtonSettingV2
-									key={idx}
+									key={result.directoryIdentifier}
 									text={`${contactName}${displayedIdentifier || result.directoryIdentifier}`}
 									icon='external-link-outline'
 									testID={testIDs['open-berty-link']}

@@ -95,6 +95,10 @@ class AddressBook: NSObject {
     }
   }
 
+  @objc func getDeviceCountry(_ resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+    resolve(NSLocale.current.regionCode)
+  }
+
   @objc static func requiresMainQueueSetup() -> Bool {
     false
   }

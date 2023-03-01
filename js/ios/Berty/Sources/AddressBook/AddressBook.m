@@ -12,4 +12,7 @@
 RCT_EXTERN_METHOD(getAllContacts:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject);
 
+RCT_EXTERN_METHOD(getDeviceCountry:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject);
+
 @end

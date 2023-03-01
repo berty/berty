@@ -2,6 +2,7 @@ package tech.berty.addressbook;
 
 import android.content.ContentResolver;
 import android.database.Cursor;
+import android.os.Build;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.CommonDataKinds.StructuredName;
 import android.provider.ContactsContract.Contacts;
@@ -19,6 +20,7 @@ import org.json.JSONStringer;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 
 public class AddressBookModule extends ReactContextBaseJavaModule {
@@ -108,6 +110,18 @@ public class AddressBookModule extends ReactContextBaseJavaModule {
         } catch (Exception e) {
             promise.reject("unable to fetch contacts", e);
         }
+    }
+
+    @ReactMethod
+    public void getDeviceCountry(Promise promise) {
+        Locale userLocale = null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            userLocale = getReactApplicationContext().getResources().getConfiguration().getLocales().get(0);
+        } else {
+            userLocale = getReactApplicationContext().getResources().getConfiguration().locale;
+        }
+
+        promise.resolve(userLocale.getCountry());
     }
 
     @NonNull
