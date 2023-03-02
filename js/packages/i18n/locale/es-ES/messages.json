@@ -522,6 +522,10 @@
 			"title": "",
 			"desc": ""
 		},
+		"contacts": {
+			"title": "Contactos",
+			"desc": ""
+		},
 		"button-labels": {
 			"allow": "Permitir",
 			"settings": "Ir a Ajustes"
