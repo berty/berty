@@ -522,6 +522,10 @@
 			"title": "Mensagens de imagem",
 			"desc": "Para enviar imagens para seus contatos, você precisa autorizar o Berty a acessar fotos e outras mídias armazenadas em seu dispositivo."
 		},
+		"contacts": {
+			"title": "Contatos",
+			"desc": ""
+		},
 		"button-labels": {
 			"allow": "Autorizar",
 			"settings": "Ir para Configurações"
