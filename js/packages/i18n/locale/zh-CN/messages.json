@@ -522,6 +522,10 @@
 			"title": "图片消息",
 			"desc": "要将图像发送给您的联系人，您必须授权 Berty 访问存储在您设备上的照片和其他媒体。"
 		},
+		"contacts": {
+			"title": "联系人列表",
+			"desc": ""
+		},
 		"button-labels": {
 			"allow": "允许",
 			"settings": "转到设置"
