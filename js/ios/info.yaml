@@ -32,6 +32,7 @@ targets:
         NSLocationWhenInUseUsageDescription: ''
         NSPhotoLibraryUsageDescription: Used to personalize the app and send photos
         NSMicrophoneUsageDescription: Used for voice recording
+        NSContactsUsageDescription: Find your contacts already using Berty
         Shake:
           APIClientID: '$(SHAKE_API_ID)'
           APIClientSecret: '$(SHAKE_API_SECRET)'

@@ -20,7 +20,8 @@ const animations: Record<PermissionType, AnimatedLottieViewProps['source']> = {
 	camera: cameraLottie,
 	notification: notificationLottie,
 	proximity: proximityLottie,
-	gallery: cameraLottie, // get a lottie file for gallery
+	gallery: cameraLottie, // FIXME: get a lottie file for gallery
+	contacts: notificationLottie, // FIXME: get a lottie file for contacts
 }
 
 interface PermissionProps {
@@ -63,6 +64,7 @@ export const Permission: React.FC<PermissionProps> = ({
 						permission.camera.title
 						permission.audio.title
 						permission.gallery.title
+						permission.contacts.title
 					*/}
 					{t(`permission.${permissionType}.title`)}
 				</UnifiedText>
@@ -72,6 +74,7 @@ export const Permission: React.FC<PermissionProps> = ({
 						permission.camera.desc
 						permission.audio.desc
 						permission.gallery.desc
+						permission.contacts.desc
 					*/}
 					{permissionType === PermissionType.proximity
 						? Platform.OS === 'ios'

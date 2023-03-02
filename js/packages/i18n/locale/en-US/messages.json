@@ -522,6 +522,10 @@
 			"title": "Image Messaging",
 			"desc": "To send images to your contacts, you must authorize Berty to access photos and other media stored on your device."
 		},
+		"contacts": {
+			"title": "Contacts",
+			"desc": "To easily search for your contacts already using the application, you must authorize Berty to access your address book."
+		},
 		"button-labels": {
 			"allow": "Allow",
 			"settings": "Go to Settings"
