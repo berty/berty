@@ -522,6 +522,10 @@
 			"title": "Zasílání obrázků",
 			"desc": "K odesílání obrázků vašim kontaktům musíte aplikaci Berty povolit oprávnění pro přístup k fotografiím a jiným mediálním souborům na vašem zařízení."
 		},
+		"contacts": {
+			"title": "Kontakty",
+			"desc": ""
+		},
 		"button-labels": {
 			"allow": "Povolit",
 			"settings": "Přejít do Nastavení"
