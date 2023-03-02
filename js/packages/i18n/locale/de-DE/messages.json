@@ -522,6 +522,10 @@
 			"title": "Bilderübermittlung",
 			"desc": "Um Bilder an deine Kontakte zu senden, musst du Berty dazu berechtigen, auf Fotos und Medien deines Gerät zugreifen zu dürfen."
 		},
+		"contacts": {
+			"title": "Kontakte",
+			"desc": ""
+		},
 		"button-labels": {
 			"allow": "Zulassen",
 			"settings": "Gehe zu den Einstellungen"
