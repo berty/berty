@@ -522,6 +522,10 @@
 			"title": "Képüzenetek",
 			"desc": "Ha képeket szeretne küldeni a kapcsolatainak, engedélyeznie kell a Berty számára, hogy hozzáférjen az eszközén tárolt fényképekhez és egyéb médiához."
 		},
+		"contacts": {
+			"title": "Kapcsolatok",
+			"desc": ""
+		},
 		"button-labels": {
 			"allow": "Engedélyezni",
 			"settings": "Ugorj a beállításokhoz"
