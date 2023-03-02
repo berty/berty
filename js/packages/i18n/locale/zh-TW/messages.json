@@ -522,6 +522,10 @@
 			"title": "",
 			"desc": ""
 		},
+		"contacts": {
+			"title": "聯繫人列表",
+			"desc": ""
+		},
 		"button-labels": {
 			"allow": "允許",
 			"settings": "轉到設置"
