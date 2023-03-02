@@ -522,6 +522,10 @@
 			"title": "",
 			"desc": ""
 		},
+		"contacts": {
+			"title": "Kontakter",
+			"desc": ""
+		},
 		"button-labels": {
 			"allow": "Tillåt",
 			"settings": "Gå till inställningar"
