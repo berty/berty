@@ -522,6 +522,10 @@
 			"title": "",
 			"desc": ""
 		},
+		"contacts": {
+			"title": "Contacten",
+			"desc": ""
+		},
 		"button-labels": {
 			"allow": "Toestaan",
 			"settings": "Ga naar Instellingen"
