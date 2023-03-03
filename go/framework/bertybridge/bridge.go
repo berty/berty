@@ -27,6 +27,7 @@ import (
 	"berty.tech/weshnet/pkg/ipfsutil"
 	"berty.tech/weshnet/pkg/lifecycle"
 	"berty.tech/weshnet/pkg/logutil"
+	"berty.tech/weshnet/pkg/netmanager"
 	proximity "berty.tech/weshnet/pkg/proximitytransport"
 )
 
@@ -46,6 +47,7 @@ type Bridge struct {
 	mdnsLocker     sync.Locker
 	logger         *zap.Logger
 	langtags       []language.Tag
+	netmanager     *netmanager.NetManager
 
 	lifecycleManager    *lifecycle.Manager
 	notificationManager notification.Manager
@@ -172,6 +174,14 @@ func NewBridge(config *BridgeConfig) (*Bridge, error) {
 		b.lifecycleManager = lifecycle.NewManager(lifecycle.StateActive)
 		if lifecycleHandler := config.lc; lifecycleHandler != nil {
 			lifecycleHandler.RegisterHandler(b)
+		}
+	}
+
+	// setup connectivity driver
+	{
+		if config.connectivityDriver != nil {
+			b.netmanager = netmanager.NewNetManager(*config.connectivityDriver.GetCurrentState().info)
+			config.connectivityDriver.RegisterHandler(b)
 		}
 	}
 
@@ -335,4 +345,10 @@ const (
 
 func (b *Bridge) Log(level int, subsystem string, message string) {
 	b.logger.Named(subsystem).Log(zapcore.Level(level), message)
+}
+
+func (b *Bridge) HandleConnectivityUpdate(info *ConnectivityInfo) {
+	b.logger.Info("Connectivity update", zap.Any("info", info.info.String()))
+
+	b.netmanager.UpdateState(*info.info)
 }

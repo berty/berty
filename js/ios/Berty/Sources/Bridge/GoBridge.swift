@@ -25,6 +25,7 @@ class GoBridge: NSObject {
     var bridgeMessenger: BertybridgeBridge?
     var remoteBridge: BertybridgeRemoteBridge?
     var serviceClient: BertybridgeServiceClientProtocol?
+    var connectivityDriver = ConnectivityDriver()
     let appRootDir: String
     let sharedRootDir: String
 
@@ -140,6 +141,8 @@ class GoBridge: NSObject {
             // Set root directories
             config.setAppRootDir(self.appRootDir)
             config.setSharedRootDir(self.sharedRootDir)
+
+            config.setConnectivityDriver(self.connectivityDriver);
 
             let bridgeMessenger = BertybridgeNewBridge(config, &err)
             if err != nil {
