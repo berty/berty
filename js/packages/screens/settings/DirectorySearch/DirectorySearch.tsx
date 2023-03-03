@@ -17,11 +17,7 @@ import { acquirePermission, PermissionType } from '@berty/utils/permissions/perm
 import * as testIDs from '@berty/utils/testing/testIDs.json'
 
 type AddressBookContact = {
-	givenName: string
-	middleName: string
-	familyName: string
-	namePrefix: string
-	nameSuffix: string
+	fullName: string
 	emailAddresses: string[]
 	phoneNumbers: string[]
 }
@@ -127,6 +123,40 @@ export const DirectorySearch: ScreenFC<'Settings.DirectorySearch'> = ({
 			return true
 		},
 		[searchId, setSearchResults],
+	)
+
+	const sortedResults = React.useMemo(
+		() =>
+			searchResults.results
+				.map(result => {
+					let mappedContact: MatchedAddressBookContact | undefined
+					let displayedIdentifier = result.directoryIdentifier
+
+					if (result.directoryIdentifier in userMappedContacts) {
+						mappedContact = userMappedContacts[result.directoryIdentifier]
+						displayedIdentifier = mappedContact.identifier
+					}
+
+					return [result, mappedContact?.fullName || '', displayedIdentifier] as [
+						beapi.messenger.DirectoryServiceQuery.Reply,
+						string,
+						string,
+					]
+				})
+				.sort(
+					([_, contactNameA, displayedIdentifierA], [__, contactNameB, displayedIdentifierB]) => {
+						if (contactNameA !== '' && contactNameB !== '') {
+							return contactNameA.localeCompare(contactNameB)
+						} else if (contactNameA !== '' && contactNameB === '') {
+							return 1
+						} else if (contactNameA !== '' && contactNameB === '') {
+							return -1
+						}
+
+						return displayedIdentifierA.localeCompare(displayedIdentifierB)
+					},
+				),
+		[searchResults.results, userMappedContacts],
 	)
 
 	return (
@@ -247,32 +277,21 @@ export const DirectorySearch: ScreenFC<'Settings.DirectorySearch'> = ({
 					{searchResults.errors.map((error, idx) => (
 						<UnifiedText key={idx}>{error}</UnifiedText>
 					))}
-					{
-						// TODO: Sort by contact name if any
-						searchResults.results.map(result => {
-							let mappedContact: MatchedAddressBookContact | undefined
-							let contactName = ''
-							let displayedIdentifier = result.directoryIdentifier
-
-							if (result.directoryIdentifier in userMappedContacts) {
-								mappedContact = userMappedContacts[result.directoryIdentifier]
-								contactName = `${mappedContact.givenName} ${mappedContact.familyName} \n`
-								displayedIdentifier = mappedContact.identifier
-							}
-
-							return (
-								<ButtonSettingV2
-									key={result.directoryIdentifier}
-									text={`${contactName}${displayedIdentifier || result.directoryIdentifier}`}
-									icon='external-link-outline'
-									testID={testIDs['open-berty-link']}
-									onPress={() =>
-										navigate('Chat.ManageDeepLink', { type: 'link', value: result.accountUri })
-									}
-								/>
-							)
-						})
-					}
+					{sortedResults.map(([result, contactName, displayedIdentifier]) => {
+						return (
+							<ButtonSettingV2
+								key={result.directoryIdentifier}
+								text={`${contactName ? contactName + '\n' : ''}${
+									displayedIdentifier || result.directoryIdentifier
+								}`}
+								icon='external-link-outline'
+								testID={testIDs['open-berty-link']}
+								onPress={() =>
+									navigate('Chat.ManageDeepLink', { type: 'link', value: result.accountUri })
+								}
+							/>
+						)
+					})}
 				</ItemSection>
 			</ScrollView>
 		</View>

@@ -81,6 +81,7 @@ public class AddressBookModule extends ReactContextBaseJavaModule {
             while (cur.moveToNext()) {
                 String id = getCursorValue(cur, Contacts._ID);
                 AddressBookContact contact = getContactInformation(cr, id);
+                contact.fullName = getCursorValue(cur, Contacts.DISPLAY_NAME);
 
                 contacts.add(contact);
             }
