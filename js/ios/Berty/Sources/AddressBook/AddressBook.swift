@@ -14,6 +14,7 @@ struct AddressBookContact: Codable {
   var familyName: String
   var namePrefix: String
   var nameSuffix: String
+  var fullName: String
   var emailAddresses: [String]
   var phoneNumbers: [String]
 }
@@ -37,15 +38,16 @@ func getAllContactsPriv() throws -> [AddressBookContact] {
   let store = CNContactStore()
 
   do {
-    let keysToFetch = [
-      CNContactEmailAddressesKey,
-      CNContactPhoneNumbersKey,
-      CNContactFamilyNameKey,
-      CNContactGivenNameKey,
-      CNContactMiddleNameKey,
-      CNContactNamePrefixKey,
-      CNContactNameSuffixKey
-    ] as [CNKeyDescriptor]
+    let keysToFetch: [CNKeyDescriptor] = [
+      CNContactEmailAddressesKey as CNKeyDescriptor,
+      CNContactPhoneNumbersKey as CNKeyDescriptor,
+      CNContactFamilyNameKey as CNKeyDescriptor,
+      CNContactGivenNameKey as CNKeyDescriptor,
+      CNContactMiddleNameKey as CNKeyDescriptor,
+      CNContactNamePrefixKey as CNKeyDescriptor,
+      CNContactNameSuffixKey as CNKeyDescriptor,
+      CNContactFormatter.descriptorForRequiredKeys(for: .fullName)
+    ]
     let req = CNContactFetchRequest(keysToFetch: keysToFetch)
     var contacts = [] as [AddressBookContact]
 
@@ -61,12 +63,18 @@ func getAllContactsPriv() throws -> [AddressBookContact] {
         phoneNumbers.append(phoneNumber.value.stringValue)
       }
 
+      var fullName = ""
+      if let formattedName = CNContactFormatter.string(from: contact, style: .fullName) {
+        fullName = formattedName
+      }
+
       contacts.append(AddressBookContact(
               givenName: contact.givenName,
               middleName: contact.middleName,
               familyName: contact.familyName,
               namePrefix: contact.namePrefix,
               nameSuffix: contact.nameSuffix,
+              fullName: fullName,
               emailAddresses: emailAddresses,
               phoneNumbers: phoneNumbers))
     }

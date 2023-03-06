@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 class AddressBookContact {
+    protected String fullName;
     protected String givenName;
     protected String middleName;
     protected String familyName;
@@ -35,6 +36,7 @@ class AddressBookContact {
     public void toJSON(@NonNull JSONStringer builder) throws JSONException {
         builder.object();
 
+        builder.key("fullName").value(this.fullName);
         builder.key("givenName").value(this.givenName);
         builder.key("middleName").value(this.middleName);
         builder.key("familyName").value(this.familyName);
