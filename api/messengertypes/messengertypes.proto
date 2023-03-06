@@ -13,6 +13,9 @@ option (gogoproto.goproto_sizecache_all) = false;
 // MessengerService is the top-level API that uses the weshnet.protocol to implement the Berty Messenger specific logic.
 // Today, most of the Berty Messenger logic is implemented directly in the application (see the /js folder of this repo).
 service MessengerService {
+  // InstanceGetConfiguration returns the configuration of the instance.
+  rpc InstanceGetConfiguration(InstanceGetConfiguration.Request) returns (InstanceGetConfiguration.Reply);
+
   // InstanceShareableBertyID returns a Berty ID that can be shared as a string, QR code or deep link.
   rpc InstanceShareableBertyID(InstanceShareableBertyID.Request) returns (InstanceShareableBertyID.Reply);
 
@@ -58,6 +61,9 @@ service MessengerService {
   rpc ConversationLoad(ConversationLoad.Request) returns (ConversationLoad.Reply);
   rpc ConversationMute(ConversationMute.Request) returns (ConversationMute.Reply);
 
+  // PushSetDeviceToken registers a push token for the current device
+  rpc PushSetDeviceToken(PushSetDeviceToken.Request) returns (PushSetDeviceToken.Reply);
+
   // ServicesTokenList Retrieves the list of service server tokens
   rpc ServicesTokenList(weshnet.protocol.v1.ServicesTokenList.Request) returns (stream weshnet.protocol.v1.ServicesTokenList.Reply);
 
@@ -78,6 +84,9 @@ service MessengerService {
 
   // ListMemberDevices Lists devices for a member
   rpc ListMemberDevices(ListMemberDevices.Request) returns (stream ListMemberDevices.Reply);
+
+  // PeerList returns a list of P2P peers
+  rpc PeerList(PeerList.Request) returns (PeerList.Reply);
 
   // TyberHostSearch
   rpc TyberHostSearch (TyberHostSearch.Request) returns (stream TyberHostSearch.Reply);
@@ -104,6 +113,16 @@ service MessengerService {
 
   // DirectoryServiceQuery queries a directory service for given identifiers
   rpc DirectoryServiceQuery(DirectoryServiceQuery.Request) returns (stream DirectoryServiceQuery.Reply);
+}
+
+message InstanceGetConfiguration {
+  message Request {}
+  message Reply {
+    // peer_id is the peer id of the current IPFS node
+    string peer_id = 4 [(gogoproto.customname) = "PeerID"];
+
+    repeated string listeners = 5;
+  }
 }
 
 message PaginatedInteractionsOptions {
@@ -153,6 +172,13 @@ message ConversationMute {
     int64 muted_until = 2;
     bool unmute = 3;
     bool mute_forever = 4;
+  }
+  message Reply {}
+}
+
+message PushSetDeviceToken {
+  message Request {
+    weshnet.protocol.v1.PushServiceReceiver receiver = 1;
   }
   message Reply {}
 }
@@ -889,6 +915,13 @@ message ListMemberDevices {
   }
   message Reply {
     Device device = 1;
+  }
+}
+
+message PeerList {
+  message Request {}
+  message Reply {
+    repeated weshnet.protocol.v1.PeerList.Peer peers = 1;
   }
 }
 

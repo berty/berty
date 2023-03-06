@@ -24,7 +24,6 @@ import (
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
 	"berty.tech/weshnet/pkg/grpcutil"
-	"berty.tech/weshnet/pkg/protocoltypes"
 	"berty.tech/weshnet/pkg/testutil"
 )
 
@@ -156,7 +155,7 @@ func TestFlow(t *testing.T) {
 		stream, err := cl.CloseAccountWithProgress(ctx, &accounttypes.CloseAccountWithProgress_Request{})
 		require.NoError(t, err)
 		steps := 0
-		var lastProgress *protocoltypes.Progress
+		var lastProgress *accounttypes.Progress
 		for {
 			msg, err := stream.Recv()
 			if err == io.EOF {
@@ -238,7 +237,7 @@ func TestFlow(t *testing.T) {
 		})
 		require.NoError(t, err)
 		steps := 0
-		var lastProgress *protocoltypes.Progress
+		var lastProgress *accounttypes.Progress
 		for {
 			msg, err := stream.Recv()
 			if err == io.EOF {
@@ -275,7 +274,7 @@ func TestFlow(t *testing.T) {
 		stream, err := cl.CloseAccountWithProgress(ctx, &accounttypes.CloseAccountWithProgress_Request{})
 		require.NoError(t, err)
 		steps := 0
-		var lastProgress *protocoltypes.Progress
+		var lastProgress *accounttypes.Progress
 		for {
 			msg, err := stream.Recv()
 			if err == io.EOF {
@@ -432,7 +431,7 @@ func TestImportExportFlow(t *testing.T) {
 		stream, err := cl.CloseAccountWithProgress(ctx, &accounttypes.CloseAccountWithProgress_Request{})
 		require.NoError(t, err)
 		steps := 0
-		var lastProgress *protocoltypes.Progress
+		var lastProgress *accounttypes.Progress
 		for {
 			msg, err := stream.Recv()
 			if err == io.EOF {
@@ -522,7 +521,7 @@ func TestImportExportFlow(t *testing.T) {
 		})
 		require.NoError(t, err)
 		steps := 0
-		var lastProgress *protocoltypes.Progress
+		var lastProgress *accounttypes.Progress
 		var lastMsg *accounttypes.ImportAccountWithProgress_Reply
 		for {
 			msg, err := stream.Recv()
@@ -595,7 +594,7 @@ func TestImportExportFlow(t *testing.T) {
 		stream, err := cl.CloseAccountWithProgress(ctx, &accounttypes.CloseAccountWithProgress_Request{})
 		require.NoError(t, err)
 		steps := 0
-		var lastProgress *protocoltypes.Progress
+		var lastProgress *accounttypes.Progress
 		for {
 			msg, err := stream.Recv()
 			if err == io.EOF {
@@ -630,7 +629,7 @@ func TestImportExportFlow(t *testing.T) {
 		})
 		require.NoError(t, err)
 		steps := 0
-		var lastProgress *protocoltypes.Progress
+		var lastProgress *accounttypes.Progress
 		for {
 			msg, err := stream.Recv()
 			if err == io.EOF {

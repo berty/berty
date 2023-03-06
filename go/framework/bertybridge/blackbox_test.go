@@ -16,7 +16,7 @@ import (
 	"berty.tech/berty/v2/go/framework/bertybridge"
 	"berty.tech/berty/v2/go/pkg/accounttypes"
 	bridge_svc "berty.tech/berty/v2/go/pkg/bertybridge"
-	"berty.tech/weshnet/pkg/protocoltypes"
+	"berty.tech/berty/v2/go/pkg/messengertypes"
 )
 
 func Example() {
@@ -174,14 +174,14 @@ func Example() {
 	// make unary call to underlying `BertyMessenger` Service
 	{
 		// create `InstanceGetConfiguration` Input
-		input := &protocoltypes.InstanceGetConfiguration_Request{}
+		input := &messengertypes.InstanceGetConfiguration_Request{}
 		payload, err := proto.Marshal(input)
 		checkErr(err)
 
 		// Serialize request
 		in := &bridge_svc.ClientInvokeUnary_Request{
 			MethodDesc: &bridge_svc.MethodDesc{
-				Name: "/weshnet.protocol.v1.ProtocolService/InstanceGetConfiguration",
+				Name: "/berty.messenger.v1.MessengerService/InstanceGetConfiguration",
 			},
 			Payload: payload,
 		}
@@ -197,7 +197,7 @@ func Example() {
 		err = decodeProtoMessage(ret, &output)
 		checkErr(err)
 
-		var res protocoltypes.InstanceGetConfiguration_Reply
+		var res messengertypes.InstanceGetConfiguration_Reply
 		err = proto.Unmarshal(output.Payload, &res)
 		checkErr(err)
 

@@ -133,6 +133,16 @@ message OpenAccount {
   }
 }
 
+// Progress define a generic object that can be used to display a progress bar for long-running actions.
+message Progress {
+  string state = 1;
+  string doing = 2;
+  float progress = 3;
+  uint64 completed = 4;
+  uint64 total = 5;
+  uint64 delay = 6;
+}
+
 message OpenAccountWithProgress {
   message Request {
     repeated string args = 1;
@@ -141,7 +151,7 @@ message OpenAccountWithProgress {
     string session_kind = 4;
   }
   message Reply {
-    weshnet.protocol.v1.Progress progress = 1;
+    Progress progress = 1;
   }
 }
 
@@ -154,7 +164,7 @@ message CloseAccount {
 message CloseAccountWithProgress {
   message Request {}
   message Reply {
-    weshnet.protocol.v1.Progress progress = 1;
+    Progress progress = 1;
   }
 }
 
@@ -209,7 +219,7 @@ message ImportAccountWithProgress {
     string session_kind = 7;
   }
   message Reply {
-    weshnet.protocol.v1.Progress progress = 1;
+    Progress progress = 1;
     AccountMetadata account_metadata = 2;
   }
 }

@@ -131,6 +131,8 @@ enum ErrCode {
   ErrProtocolSend = 2302;
   ErrProtocolEventUnmarshal = 2303;
   ErrProtocolGetGroupInfo = 2304;
+  ErrProtocolCallInstanceGetConfiguration = 2305;
+  ErrProtocolCallPeerList = 2306;
 
   // Test Error
   ErrTestEcho = 2401;
