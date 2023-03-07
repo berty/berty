@@ -31,6 +31,13 @@ type SearchResult = {
 	errors: string[]
 }
 
+type DirectoryService = {
+	address: string
+	capabilities: string[]
+}
+
+const MAX_IDENTIFIERS_PER_QUERY = 50
+
 const normalizePhoneNumber = (phoneNumber: string, deviceCountry: string | undefined) => {
 	const parsedPhoneNumber = parseNumber(phoneNumber, {
 		defaultCountry: deviceCountry as CountryCode | undefined,
@@ -47,9 +54,41 @@ const normalizePhoneNumber = (phoneNumber: string, deviceCountry: string | undef
 	return [queryPhoneNumber, displayPhoneNumber]
 }
 
+const searchQuery = (
+	client: ServiceClientType<beapi.messenger.MessengerService>,
+	service: DirectoryService,
+	identifiers: string[],
+) => {
+	return new Promise<beapi.messenger.DirectoryServiceQuery.Reply[]>(async (resolve, reject) => {
+		const stream = await client.directoryServiceQuery({
+			identifiers: identifiers,
+			serverAddr: service.address,
+		})
+
+		let results: beapi.messenger.DirectoryServiceQuery.Reply[] = []
+
+		stream.onMessage((message, err) => {
+			if (err !== null) {
+				if (!err.EOF) {
+					reject(err)
+					return
+				}
+
+				resolve(results)
+				return
+			}
+
+			if (message !== null) {
+				results.push(message)
+			}
+		})
+		await stream.start()
+	})
+}
+
 const searchOnDirectoryService = async (
 	client: ServiceClientType<beapi.messenger.MessengerService>,
-	knownDirectoryServices: { address: string; capabilities: string[] }[],
+	knownDirectoryServices: DirectoryService[],
 	identifiers: string[],
 	searchId: number,
 	setSearchResults: (arg0: number, arg1: SearchResult) => boolean,
@@ -57,29 +96,32 @@ const searchOnDirectoryService = async (
 	let results: beapi.messenger.DirectoryServiceQuery.Reply[] = []
 	let errors: string[] = []
 
-	await Promise.all(
-		knownDirectoryServices.map(async service => {
-			const stream = await client.directoryServiceQuery({
-				identifiers: identifiers,
-				serverAddr: service.address,
-			})
+	identifiers = [...identifiers]
 
-			stream.onMessage((message, err) => {
-				if (err !== null) {
-					if (!err.EOF) {
-						errors.push(err.message)
-					}
+	let promises: Promise<void>[] = []
 
-					return
-				}
+	while (identifiers.length > 0) {
+		const identifiersChunk = identifiers.slice(0, MAX_IDENTIFIERS_PER_QUERY)
+		identifiers = identifiers.slice(MAX_IDENTIFIERS_PER_QUERY)
 
-				if (message !== null) {
-					results.push(message)
-				}
-			})
-			await stream.start().catch(err => errors.push(err))
-		}),
-	)
+		for (const directoryService of knownDirectoryServices) {
+			promises.push(
+				searchQuery(client, directoryService, identifiersChunk)
+					.then(subResults => {
+						results = results.concat(subResults)
+					})
+					.catch(err => {
+						if (err instanceof Error) {
+							err = err.toString()
+						}
+
+						errors.push(err)
+					}),
+			)
+		}
+	}
+
+	await Promise.all(promises)
 
 	if (results.length === 0) {
 		// TODO: i18n
@@ -101,9 +143,7 @@ export const DirectorySearch: ScreenFC<'Settings.DirectorySearch'> = ({
 		errors: [],
 	})
 	const messengerClient = useMessengerClient()
-	const [knownDirectoryServices, setKnownDirectoryServices] = useState<
-		{ address: string; capabilities: string[] }[]
-	>([
+	const [knownDirectoryServices, setKnownDirectoryServices] = useState<DirectoryService[]>([
 		{
 			address: 'localhost:9091',
 			capabilities: [IdentityType.PHONE],
