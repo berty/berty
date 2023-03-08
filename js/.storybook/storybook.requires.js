@@ -45,6 +45,10 @@ if (parameters) {
 
 const getStories = () => {
   return {
+    "./packages/components/buttons/Button.stories.tsx": require("../packages/components/buttons/Button.stories.tsx"),
+    "./packages/components/controls/Controls.stories.tsx": require("../packages/components/controls/Controls.stories.tsx"),
+    "./packages/components/dropdowns/Dropdown.stories.tsx": require("../packages/components/dropdowns/Dropdown.stories.tsx"),
+    "./packages/components/inputs/Input.stories.tsx": require("../packages/components/inputs/Input.stories.tsx"),
     "./packages/screens/chat/Home/components/HomeComponents.stories.tsx": require("../packages/screens/chat/Home/components/HomeComponents.stories.tsx"),
     "./packages/screens/chat/Home/Home.stories.tsx": require("../packages/screens/chat/Home/Home.stories.tsx"),
   };

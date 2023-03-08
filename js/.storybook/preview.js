@@ -10,9 +10,14 @@ import { FeatherIconsPack } from '../packages/messenger-app/feather-icons'
 import { CustomIconsPack } from '../packages/messenger-app/custom-icons'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { NavigationContainer } from '@react-navigation/native'
+import { ScrollView, StyleSheet, View } from 'react-native'
 
 export const decorators = []
 export const parameters = {}
+
+export const ScroolViewDecorator = (getStory, context) => (
+	<ScrollView style={styles.scrollview}>{getStory(context)}</ScrollView>
+)
 
 export const AppDecorator = (getStory, context) => (
 	<SafeAreaProvider>
@@ -43,3 +48,10 @@ export const NavigationDecorator = story => {
 		</NavigationContainer>
 	)
 }
+
+export const Spacer = () => <View style={styles.spacer} />
+
+const styles = StyleSheet.create({
+	scrollview: { padding: 16, height: '100%' },
+	spacer: { height: 16 },
+})
