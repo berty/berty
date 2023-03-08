@@ -456,6 +456,7 @@ func (s *service) openManager(kind string, defaultLoggerStreams []logutil.Stream
 	manager.SetBleDriver(s.bleDriver)
 	manager.SetNBDriver(s.nbDriver)
 	manager.SetMDNSLocker(s.mdnslocker)
+	manager.SetNetManager(s.netmanager)
 	manager.SetLifecycleManager(s.lifecycleManager)
 
 	return manager, nil

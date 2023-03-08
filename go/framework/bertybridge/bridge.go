@@ -179,7 +179,9 @@ func NewBridge(config *BridgeConfig) (*Bridge, error) {
 
 	// setup connectivity driver
 	{
-		if config.connectivityDriver != nil {
+		if config.connectivityDriver == nil {
+			b.netmanager = netmanager.NewNetManager(netmanager.ConnectivityInfo{})
+		} else {
 			b.netmanager = netmanager.NewNetManager(*config.connectivityDriver.GetCurrentState().info)
 			config.connectivityDriver.RegisterHandler(b)
 		}
@@ -192,6 +194,7 @@ func NewBridge(config *BridgeConfig) (*Bridge, error) {
 			SharedRootDirectory: config.SharedRootDirPath,
 
 			MDNSLocker:            b.mdnsLocker,
+			NetManager:            b.netmanager,
 			Languages:             b.langtags,
 			ServiceClientRegister: b.serviceBridge,
 			NotificationManager:   b.notificationManager,
