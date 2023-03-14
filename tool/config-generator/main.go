@@ -12,14 +12,14 @@ import (
 	yaml "gopkg.in/yaml.v3"
 	"moul.io/u"
 
-	"berty.tech/weshnet/pkg/protocoltypes"
+	config "berty.tech/berty/v2/go/pkg/config"
 )
 
 var (
 	ConfigYML  = path.Join("config", "config.yml")
 	ConfigJSON = path.Join("config", "config.gen.json")
 	JSGlobal   = path.Join("js", "packages", "config", "global.gen.js")
-	GoConfig   = path.Join("go", "internal", "config", "config.gen.go")
+	GoConfig   = path.Join("go", "pkg", "config", "config.gen.go")
 	TmpDir     = path.Join("config", ".tmp")
 )
 
@@ -27,7 +27,7 @@ func main() {
 	root := ".." // maybe should be dynamic or using getwd
 
 	log.Printf("[+] parsing    %s", ConfigYML)
-	var config protocoltypes.Config
+	var config config.BertyConfig
 	{
 		p := path.Join(root, ConfigYML)
 		data, err := ioutil.ReadFile(p)
@@ -59,13 +59,12 @@ export const globals = %s;
 package config
 
 import "encoding/json"
-import "berty.tech/weshnet/pkg/protocoltypes"
 
-var Config protocoltypes.Config
+var Config BertyConfig
 
 // FIXME: make it more nicely
 func init() {
-        var input = %s
+	var input = %s
 	err := json.Unmarshal([]byte(input), &Config)
 	if err != nil {
 		panic(err)

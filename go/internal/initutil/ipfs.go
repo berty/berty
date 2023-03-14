@@ -35,8 +35,8 @@ import (
 	"go.uber.org/zap"
 	"moul.io/srand"
 
-	"berty.tech/berty/v2/go/internal/config"
 	"berty.tech/berty/v2/go/internal/datastoreutil"
+	"berty.tech/berty/v2/go/pkg/config"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	ipfswebui "berty.tech/ipfs-webui-packed"
 	"berty.tech/weshnet"

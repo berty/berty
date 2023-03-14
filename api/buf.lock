@@ -4,7 +4,7 @@ deps:
   - remote: buf.build
     owner: berty
     repository: weshnet
-    commit: d210d459c3134f4bb2de11dc7351f2f2
+    commit: a6fd534fea63469abf6b659d2415a472
   - remote: buf.build
     owner: gogo
     repository: protobuf

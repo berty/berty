@@ -5095,14 +5095,14 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
             nested: {
               ProtocolService: {
                 methods: {
-                  InstanceExportData: {
-                    requestType: "InstanceExportData.Request",
-                    responseType: "InstanceExportData.Reply",
+                  ServiceExportData: {
+                    requestType: "ServiceExportData.Request",
+                    responseType: "ServiceExportData.Reply",
                     responseStream: true
                   },
-                  InstanceGetConfiguration: {
-                    requestType: "InstanceGetConfiguration.Request",
-                    responseType: "InstanceGetConfiguration.Reply"
+                  ServiceGetConfiguration: {
+                    requestType: "ServiceGetConfiguration.Request",
+                    responseType: "ServiceGetConfiguration.Reply"
                   },
                   ContactRequestReference: {
                     requestType: "ContactRequestReference.Request",
@@ -5986,7 +5986,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   }
                 }
               },
-              InstanceExportData: {
+              ServiceExportData: {
                 fields: {},
                 nested: {
                   Request: {
@@ -6002,7 +6002,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   }
                 }
               },
-              InstanceGetConfiguration: {
+              ServiceGetConfiguration: {
                 fields: {},
                 nested: {
                   SettingState: {
@@ -7524,7 +7524,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   Feature: {
                     values: {
                       UnknownFeature: 0,
-                      BertyFeature: 1,
+                      WeshFeature: 1,
                       BLEFeature: 2,
                       LocalFeature: 3,
                       TorFeature: 4,
