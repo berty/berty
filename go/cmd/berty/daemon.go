@@ -76,7 +76,7 @@ func daemonCommand() *ffcli.Command {
 				if err != nil {
 					return err
 				}
-				info, err := protocolClient.InstanceGetConfiguration(ctx, &protocoltypes.InstanceGetConfiguration_Request{})
+				info, err := protocolClient.ServiceGetConfiguration(ctx, &protocoltypes.ServiceGetConfiguration_Request{})
 				if err != nil {
 					return errcode.TODO.Wrap(err)
 				}

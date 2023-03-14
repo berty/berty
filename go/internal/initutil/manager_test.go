@@ -140,7 +140,7 @@ func Example_noflags() {
 	}
 
 	// retrieve config
-	ret, err := client.InstanceGetConfiguration(ctx, &protocoltypes.InstanceGetConfiguration_Request{})
+	ret, err := client.ServiceGetConfiguration(ctx, &protocoltypes.ServiceGetConfiguration_Request{})
 	if err != nil {
 		panic(err)
 	}
@@ -204,7 +204,7 @@ func TestTwoConcurrentManagers(t *testing.T) {
 		require.NotNil(t, client)
 
 		ctx := context.Background()
-		ret, err := client.InstanceGetConfiguration(ctx, &protocoltypes.InstanceGetConfiguration_Request{})
+		ret, err := client.ServiceGetConfiguration(ctx, &protocoltypes.ServiceGetConfiguration_Request{})
 		require.NoError(t, err)
 		require.NotNil(t, ret.AccountPK)
 	}
@@ -251,7 +251,7 @@ func TestLocalProtocolServerAndClient(t *testing.T) {
 	require.NoError(t, err)
 	require.NotNil(t, client)
 
-	ret, err := client.InstanceGetConfiguration(ctx, &protocoltypes.InstanceGetConfiguration_Request{})
+	ret, err := client.ServiceGetConfiguration(ctx, &protocoltypes.ServiceGetConfiguration_Request{})
 	require.NoError(t, err)
 	require.NotNil(t, ret.AccountPK)
 }

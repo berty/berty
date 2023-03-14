@@ -46,7 +46,7 @@ func Main(ctx context.Context, opts *Opts) error {
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
-	config, err := opts.ProtocolClient.InstanceGetConfiguration(ctx, &protocoltypes.InstanceGetConfiguration_Request{})
+	config, err := opts.ProtocolClient.ServiceGetConfiguration(ctx, &protocoltypes.ServiceGetConfiguration_Request{})
 	if err != nil {
 		return errcode.TODO.Wrap(err)
 	}

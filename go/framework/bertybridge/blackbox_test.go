@@ -127,7 +127,7 @@ func Example() {
 
 	// check for GRPC listeners
 	{
-		// create `InstanceGetConfiguration` Input
+		// create `ServiceGetConfiguration` Input
 		input := &accounttypes.GetGRPCListenerAddrs_Request{}
 		payload, err := proto.Marshal(input)
 		checkErr(err)
@@ -173,15 +173,15 @@ func Example() {
 
 	// make unary call to underlying `BertyMessenger` Service
 	{
-		// create `InstanceGetConfiguration` Input
-		input := &protocoltypes.InstanceGetConfiguration_Request{}
+		// create `ServiceGetConfiguration` Input
+		input := &protocoltypes.ServiceGetConfiguration_Request{}
 		payload, err := proto.Marshal(input)
 		checkErr(err)
 
 		// Serialize request
 		in := &bridge_svc.ClientInvokeUnary_Request{
 			MethodDesc: &bridge_svc.MethodDesc{
-				Name: "/weshnet.protocol.v1.ProtocolService/InstanceGetConfiguration",
+				Name: "/weshnet.protocol.v1.ProtocolService/ServiceGetConfiguration",
 			},
 			Payload: payload,
 		}
@@ -197,7 +197,7 @@ func Example() {
 		err = decodeProtoMessage(ret, &output)
 		checkErr(err)
 
-		var res protocoltypes.InstanceGetConfiguration_Reply
+		var res protocoltypes.ServiceGetConfiguration_Reply
 		err = proto.Unmarshal(output.Payload, &res)
 		checkErr(err)
 

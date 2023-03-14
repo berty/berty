@@ -48,7 +48,7 @@ func TestNewReplicationService(t *testing.T) {
 
 	orbitdbCache := weshnet.NewOrbitDatastoreCache(ds)
 
-	odb, err := weshnet.NewBertyOrbitDB(ctx, api.API(), &weshnet.NewOrbitDBOptions{
+	odb, err := weshnet.NewWeshOrbitDB(ctx, api.API(), &weshnet.NewOrbitDBOptions{
 		NewOrbitDBOptions: orbitdb.NewOrbitDBOptions{
 			Logger: zap.NewNop(),
 			Cache:  orbitdbCache,

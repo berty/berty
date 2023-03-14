@@ -162,7 +162,7 @@ func databaseStateRestoreAccountHandler(statePointer *mt.LocalDatabaseState) wes
 	}
 }
 
-func RestoreFromAccountExport(ctx context.Context, reader io.Reader, coreAPI ipfs_interface.CoreAPI, odb *weshnet.BertyOrbitDB, localDBState *mt.LocalDatabaseState, logger *zap.Logger) error {
+func RestoreFromAccountExport(ctx context.Context, reader io.Reader, coreAPI ipfs_interface.CoreAPI, odb *weshnet.WeshOrbitDB, localDBState *mt.LocalDatabaseState, logger *zap.Logger) error {
 	return weshnet.RestoreAccountExport(ctx, reader, coreAPI, odb, logger, databaseStateRestoreAccountHandler(localDBState))
 }
 
@@ -198,7 +198,7 @@ func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (_ Service, err
 
 	ctx, cancel = context.WithCancel(context.Background())
 
-	icr, err := client.InstanceGetConfiguration(ctx, &protocoltypes.InstanceGetConfiguration_Request{})
+	icr, err := client.ServiceGetConfiguration(ctx, &protocoltypes.ServiceGetConfiguration_Request{})
 	cancel()
 	if err != nil {
 		return nil, errcode.TODO.Wrap(fmt.Errorf("error while getting instance configuration: %w", err))
@@ -299,7 +299,7 @@ func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (_ Service, err
 	}})
 
 	if opts.PlatformPushToken != nil {
-		icr, err = client.InstanceGetConfiguration(ctx, &protocoltypes.InstanceGetConfiguration_Request{})
+		icr, err = client.ServiceGetConfiguration(ctx, &protocoltypes.ServiceGetConfiguration_Request{})
 		if err != nil {
 			return nil, err
 		}

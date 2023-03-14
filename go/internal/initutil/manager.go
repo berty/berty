@@ -161,7 +161,7 @@ type Manager struct {
 			client            protocoltypes.ProtocolServiceClient
 			requiredByClient  bool
 			ipfsWebUICleanup  func()
-			orbitDB           *weshnet.BertyOrbitDB
+			orbitDB           *weshnet.WeshOrbitDB
 			rotationInterval  *rendezvous.RotationInterval
 		}
 		Messenger struct {

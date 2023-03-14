@@ -565,7 +565,7 @@ func setDisplayName(_ context.Context, v *groupView, cmd string) error {
 }
 
 func debugIPFSCommand(ctx context.Context, v *groupView, _ string) error {
-	config, err := v.v.protocol.InstanceGetConfiguration(ctx, &protocoltypes.InstanceGetConfiguration_Request{})
+	config, err := v.v.protocol.ServiceGetConfiguration(ctx, &protocoltypes.ServiceGetConfiguration_Request{})
 	if err != nil {
 		return err
 	}
