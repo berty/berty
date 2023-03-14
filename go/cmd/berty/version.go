@@ -8,7 +8,7 @@ import (
 
 	"github.com/peterbourgon/ff/v3/ffcli"
 
-	"berty.tech/berty/v2/go/internal/bertyversion"
+	"berty.tech/berty/v2/go/pkg/bertyversion"
 )
 
 func versionCommand() *ffcli.Command {
