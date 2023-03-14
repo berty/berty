@@ -1,111 +1,118 @@
-# Berty `js/`
+# Berty Messenger
 
 ## Introduction
 
-This folder contains most of the Typescript and Javascript code needed for the Berty Messenger mobile apps. The code is **organized into packages** in `./js/packages`. Only some of them are freestanding.
+This folder contains most of the Typescript and Javascript code needed for the Berty Messenger mobile app. The code is **organized into packages** in [./packages](./packages). Only some of them are freestanding.
 
-**Please, read the main [`README.md`](../README.md) file first.**
+## Run the app
 
-- [Berty `js/`](#berty--js--)
-  - [Packages](#---packages)
-  - [Usage](#usage)
-    - [Running the mobile apps for development](#running-the-mobile-apps-for-development)
-  - [Requirements](#requirements)
-    - [Requirements for working on iOS and Android apps](#requirements-for-working-on-ios-and-android-apps)
-    - [General React Native requirements](#general-react-native-requirements)
-    - [iOS dev requirements](#ios-dev-requirements)
-    - [Android dev requirements](#android-dev-requirements)
-  - [Known issues and troubleshooting](#known-issues-and-troubleshooting)
+💡 First, verify you have the relevant [requirements](#Setup) 😉
 
-## 📦 Packages
+Build and serve mobile UI:
 
-| directory                                                                   | description                                                                                    |
-| --------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
-| [api/](https://github.com/berty/berty/tree/master/js/packages/api)          | Interfaces with the [Berty golang services](https://github.com/berty/berty/tree/master/go/pkg) |
-| [messenger-app/](./packages/messenger-app/)                                         | Berty Messenger react root                                                                 |
-| [i18n/](./packages/i18n)                                        | Locale support files                                                                           |
-| [components](./packages/components) | React Native components |
-| [go-bridge/](./packages/go-bridge)                                          | Berty daemon native module
-| [grpc-bridge/](./packages/grpc-bridge)                                      | Collection of grpc utilities used to interface with the daemon                                                                   |
-| [navigation/](./packages/navigation)                                        | Berty Messenger + react-native-navigation                                                     |
-| [store/](./packages/store)                                                  | App state control using React hooks and Context |
-| [styles/](./packages/styles)                                                | Generates StyleSheet utilities and styles that conform to our design specs                     |
-
-## 🔨 Usage
-
-```shell
-$ cd ./js
-$ make help
+```bash
+$ make metro.start
 ```
 
-### Running the mobile apps for development
+Run iOS app in debug mode:
 
-💡 First, verify you have the [relevant Requirements](#requirements) 😉
+```bash
+# Generate dependencies (Xcode files, gomobile, etc.):
+$ make ios.app_deps
 
-```console
-## Optional if not modifying any .proto file
-## Generate files using protobuf
+$ make ios.debug
+# or setting the device id:
+$ IOS_DEVICE="your-emulator-id" make ios.debug
+
+# 💡 You can check available virtual iOS devices with
+$ xcrun simctl list
+```
+
+Run Android in debug mode:
+
+```bash
+# Generate dependencies (Android files, gomobile, etc.):
+$ make android.app_deps
+
+$ make android.debug
+# Optional if using only one device
+# Run this with different Android device IDs
+$ ANDROID_DEVICE="your-emulator-id" make android.debug
+
+# 💡 You can check available Android Virtual Devices with
+$ adb devices
+```
+
+```bash
+# Optional if not modifying any .proto file
+# Generate files using protobuf
 $ make generate
 
-## Build and serve mobile UI
-$ make metro.start
-
-## Optional if using only one device
-## Run this with different ports to test with multiple devices
+# Optional if using only one device
+# Run this with different ports to test with multiple devices
 $ BERTY_DAEMON_PORT=1337 make daemon.start
 $ BERTY_DAEMON_PORT=1338 make daemon.start
 
-## iOS
-## Run iOS app in debug mode
-$ make ios.debug
-## Optional if using only one device
-## Run this with different iOS device names
-$ IOS_DEVICE=__IOS_DEVICE_NAME_1__ make ios.debug
-$ IOS_DEVICE=__IOS_DEVICE_NAME_2__ make ios.debug
-
-💡 You can check available virtual iOS devices with `xcrun simctl list`
-
-## Android
-## Run Android app in debug mode
-$ make android.debug
-## Optional if using only one device
-## Run this with different Android device IDs
-$ ANDROID_DEVICE=__ANDROID_DEVICE_ID_1__ make android.debug
-$ ANDROID_DEVICE=__ANDROID_DEVICE_ID_2__ make android.debug
-
-💡 You can check available Android Virtual Devices with `adb devices`
-
-## Web
-## Run Berty daemon for the web app
+# Web
+# Run Berty daemon for the web app
 make web.daemon.start
-## Run web app in debug mode
+# Run web app in debug mode
 $ make web.debug
-## Open http://localhost:3002/#/ip4/127.0.0.1/tcp/9092/grpcws in your browser
+# Open http://localhost:3002/#/ip4/127.0.0.1/tcp/9092/grpcws in your browser
 ```
 
-## 🧳 Requirements
+List of all available commands:
 
-### Requirements for working on iOS and Android apps
+```bash
+$ make help
+```
 
-- The [General React Native requirements](#general-react-native-requirements)
-- [iOS dev reqs](#ios-dev-requirements) **and/or** [Android dev reqs](#android-dev-requirements)
-- [Watchman](https://facebook.github.io/watchman/docs/install/) to enable live reloading
-- [Docker Desktop](https://docs.docker.com/docker-for-mac/install/)
+## Setup
 
-💡 `$GOPATH` may need to be set explicitly (usually `$HOME/go`)
+### The Berty Messenger installation involves:
 
-### General React Native requirements
+1. Installing the common dependencies
+2. Installing the dependencies for IOS
+3. Installing the dependencies for Android
 
-- Homebrew or package manager of choice
-- Node >= 14.x
-- The [yarn package manager](https://classic.yarnpkg.com/en/)
+<details><summary>Install the common dependencies (mandatory)</summary>
 
-### iOS dev requirements
+1. Install `asdf` tool version manager following its [tutorial](https://asdf-vm.com/guide/getting-started.html).
+
+> **Warning**: if you are using `nvm` you may face some incompatibility issues with `asdf` during the build process.
+
+2. Run the initial setup script in the root project's folder:
+
+   ```bash
+   $ cd berty # root folder
+
+   $ make asdf.install_tools
+   ```
+
+   If you have an issue related with gpg, eg:
+   "Missing one or more of the following dependencies: tar, gpg"
+   You can try solve this issue using: `$ brew install gpg`
+
+3. [Docker Desktop](https://docs.docker.com/docker-for-mac/install/)
+
+</details>
+
+<details><summary>IOS dev requirements</summary>
 
 - Mac OS X
-- XCode _(latest stable)_
+- [XCode _(latest stable)_](https://developer.apple.com/download/all/?q=Xcode)
 
-### Android dev requirements
+Run:
+
+```bash
+$ cd js
+
+$ make ios.app_deps
+```
+
+</details>
+
+<details><summary>Android dev requirements</summary>
 
 - An Android app **development environment**, e.g. [Android Studio](https://developer.android.com/studio/install)
 - **Android SDK**, with the following enabled (in Android Studio Code in `Tools --> SDK Manager`):
@@ -116,6 +123,31 @@ $ make web.debug
   - Cmake
   - Android SDK Command-line Tools
 - A physical or virtual **Android device** (in Android Studio, `Tools --> AVD Manager`)
-- **Java 8**. If you already have another version of Java, you can use a version manager and Homebrew to add another installation. Some nice instructions are given [here](https://java.christmas/2019/16).
 
 💡 Check you can run all the commands `sdkmanager`, `emulator`, `ndk-bundle`, and `adb` (these are binaries in `$ANDROID_HOME` subfolders)
+
+Run:
+
+```bash
+$ cd js
+
+$ make android.app_deps
+```
+
+</details>
+
+##
+
+## 🗂️ Directory layout
+
+| directory                                                          | description                                                                                    |
+| ------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------- |
+| [api/](https://github.com/berty/berty/tree/master/js/packages/api) | Interfaces with the [Berty golang services](https://github.com/berty/berty/tree/master/go/pkg) |
+| [messenger-app/](./packages/messenger-app/)                        | Berty Messenger react root                                                                     |
+| [i18n/](./packages/i18n)                                           | Locale support files                                                                           |
+| [components](./packages/components)                                | React Native components                                                                        |
+| [go-bridge/](./packages/native-modules/GoBridge)                   | Berty daemon native module                                                                     |
+| [grpc-bridge/](./packages/grpc-bridge)                             | Collection of grpc utilities used to interface with the daemon                                 |
+| [navigation/](./packages/navigation)                               | Berty Messenger + react-native-navigation                                                      |
+| [redux/](./packages/redux)                                         | App state control using React hooks and Context                                                |
+| [styles/](./packages/contexts/styles/)                             | Generates StyleSheet utilities and styles that conform to our design specs                     |
