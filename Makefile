@@ -37,7 +37,6 @@ tidy:
 	$(call check-program, go)
 	go mod tidy
 	cd js; go mod tidy
-	cd tool; go mod tidy
 	cd tool/tyber/go; go mod tidy
 .PHONY: tidy
 
@@ -62,7 +61,7 @@ doctor.verbose:
 
 
 clean:
-	-cd tool/berty-mini-local-helper; $(MAKE) clean
+	-cd tool/berty-mini/local-helper; $(MAKE) clean
 	-cd tool/tyber; $(MAKE) clean
 	-cd tool/deployments/welcomebot; $(MAKE) clean
 	-cd tool/deployments/testbot; $(MAKE) clean
