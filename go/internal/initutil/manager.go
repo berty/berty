@@ -173,7 +173,7 @@ type Manager struct {
 			ExportPathToRestore  string `json:"ExportPathToRestore,omitempty"`
 
 			// internal
-			protocolClient      weshnet.Client
+			protocolClient      weshnet.ServiceClient
 			server              bertymessenger.Service
 			lcmanager           *lifecycle.Manager
 			notificationManager notification.Manager

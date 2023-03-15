@@ -407,9 +407,9 @@ func createBridgeTestingClient(t *testing.T, ctx context.Context, logger *zap.Lo
 
 	RegisterBridgeServiceServer(srv, svc)
 
-	l := grpcutil.NewBufListener(ctx, 2048)
+	l := grpcutil.NewBufListener(2048)
 
-	cc, err := l.NewClientConn()
+	cc, err := l.NewClientConn(ctx)
 	require.NoError(t, err)
 
 	go srv.Serve(l.Listener)

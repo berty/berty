@@ -63,7 +63,7 @@ func NewRemoteBridge(address string, config *RemoteBridgeConfig) (*RemoteBridge,
 
 		bridge_svc.RegisterBridgeServiceServer(b.grpcServer, b.serviceBridge)
 
-		bl := grpcutil.NewBufListener(ctx, bufListenerSize)
+		bl := grpcutil.NewBufListener(bufListenerSize)
 		go func() {
 			if err := b.grpcServer.Serve(bl); err != nil {
 				b.logger.Debug("Remote bridge GRPC server failed", zap.Error(err))
@@ -71,7 +71,7 @@ func NewRemoteBridge(address string, config *RemoteBridgeConfig) (*RemoteBridge,
 		}()
 
 		// create native bridge client
-		ccBridge, err := bl.NewClientConn()
+		ccBridge, err := bl.NewClientConn(ctx)
 		if err != nil {
 			return nil, errors.Wrap(err, "unable to get bridge gRPC ClientConn")
 		}

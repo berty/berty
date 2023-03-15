@@ -45,6 +45,7 @@ func verifyRunningLeakDetection(t *testing.T) {
 	// sometimes if timeout is quite short - not enough for below functions to finished
 	time.Sleep(5 * time.Second)
 	goleak.VerifyNone(t,
+		goleak.IgnoreTopFunction("berty.tech/weshnet/pkg/tinder.(*Service).fadeIn"),                                          // ignore this since it is used by the DHT in the background
 		goleak.IgnoreTopFunction("github.com/desertbit/timer.timerRoutine"),                                                  // called by init() in github.com/desertbit/timer/timers.go, refer in grpc-web
 		goleak.IgnoreTopFunction("github.com/ipfs/go-log/writer.(*MirrorWriter).logRoutine"),                                 // global writer created at github.com/ipfs/go-log@v1.0.4/writer/option.go, refer by github.com/ipfs/, like go-bitswap
 		goleak.IgnoreTopFunction("github.com/jbenet/goprocess.(*process).doClose"),                                           // sometimes happening on CI, need more investigation

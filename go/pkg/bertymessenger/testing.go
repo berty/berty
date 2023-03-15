@@ -33,7 +33,7 @@ import (
 
 type TestingServiceOpts struct {
 	Logger      *zap.Logger
-	Client      weshnet.Client
+	Client      weshnet.ServiceClient
 	Index       int
 	Ring        *zapring.Core
 	LogFilePath string

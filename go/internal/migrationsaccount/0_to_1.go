@@ -69,7 +69,7 @@ func apply0To1(opts Options) error {
 	// create account ipfs repo
 	opts.Logger.Info("creating account ipfs repo")
 	dbPath := filepath.Join(opts.accountAppDir, "ipfs.sqlite")
-	ipfsRepo, err := ipfsutil.LoadRepoFromPath(dbPath, storageKey, ipfsSalt)
+	ipfsRepo, err := ipfsutil.LoadEncryptedRepoFromPath(dbPath, storageKey, ipfsSalt)
 	if err != nil {
 		return errcode.ErrIPFSSetupRepo.Wrap(err)
 	}

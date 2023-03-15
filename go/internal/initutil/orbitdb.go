@@ -14,6 +14,11 @@ import (
 	"berty.tech/weshnet/pkg/rendezvous"
 )
 
+const (
+	DefaultBertyGroupMetadataStoreType = "berty_group_metadata"
+	DefaultBertyGroupMessageStoreType  = "berty_group_messages"
+)
+
 func (m *Manager) GetRotationInterval() (rp *rendezvous.RotationInterval, err error) {
 	m.mutex.Lock()
 	rp, err = m.getRotationInterval()
@@ -67,6 +72,8 @@ func (m *Manager) getOrbitDB() (*weshnet.WeshOrbitDB, error) {
 	}
 
 	opts := &weshnet.NewOrbitDBOptions{
+		GroupMetadataStoreType: DefaultBertyGroupMetadataStoreType,
+		GroupMessageStoreType:  DefaultBertyGroupMessageStoreType,
 		NewOrbitDBOptions: baseorbitdb.NewOrbitDBOptions{
 			Cache:                cache,
 			Logger:               logger,

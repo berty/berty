@@ -669,9 +669,9 @@ func createAccountClient(ctx context.Context, t *testing.T, s accounttypes.Accou
 	srv := grpc.NewServer()
 	accounttypes.RegisterAccountServiceServer(srv, s)
 
-	l := grpcutil.NewBufListener(ctx, 2048)
+	l := grpcutil.NewBufListener(2048)
 
-	cc, err := l.NewClientConn()
+	cc, err := l.NewClientConn(ctx)
 	assert.NoError(t, err)
 
 	cl := accounttypes.NewAccountServiceClient(cc)

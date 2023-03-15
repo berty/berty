@@ -211,7 +211,7 @@ func (m *Manager) getLocalProtocolServer() (weshnet.Service, error) {
 			GRPCInsecureMode: m.Node.ServiceInsecureMode,
 		}
 
-		m.Node.Protocol.server, err = weshnet.New(opts)
+		m.Node.Protocol.server, err = weshnet.NewService(opts)
 		if err != nil {
 			return nil, errcode.TODO.Wrap(err)
 		}
@@ -277,8 +277,8 @@ func (m *Manager) getGRPCClientConn() (*grpc.ClientConn, error) {
 		grpcServer := grpc.NewServer(serverOpts...)
 
 		// buffer-based client conn
-		bl := grpcutil.NewBufListener(m.getContext(), 256*1024)
-		cc, err := bl.NewClientConn(clientOpts...)
+		bl := grpcutil.NewBufListener(256 * 1024)
+		cc, err := bl.NewClientConn(m.getContext(), clientOpts...)
 		if err != nil {
 			return nil, errcode.TODO.Wrap(err)
 		}
@@ -623,8 +623,7 @@ func (m *Manager) getLocalMessengerServer() (messengertypes.MessengerServiceServ
 		return nil, errcode.TODO.Wrap(fmt.Errorf("unable to init local protocol server: %w", err))
 	}
 
-	// protocol client
-	protocolClient, err := weshnet.NewClient(m.getContext(), protocolServer, nil, nil) // FIXME: setup tracing
+	protocolClient, err := weshnet.NewClientFromService(m.getContext(), grpc.NewServer(), protocolServer) // FIXME: setup tracing
 	if err != nil {
 		return nil, errcode.TODO.Wrap(fmt.Errorf("unable to init protocol client: %w", err))
 	}

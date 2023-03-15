@@ -409,7 +409,7 @@ func (m *Manager) setupIPFSRepo(ctx context.Context) (*ipfs_mobile.RepoMobile, e
 	}
 	dbPath := filepath.Join(appDir, "ipfs.sqlite")
 
-	repo, err = ipfsutil.LoadRepoFromPath(dbPath, storageKey, ipfsDatastoreSalt)
+	repo, err = ipfsutil.LoadEncryptedRepoFromPath(dbPath, storageKey, ipfsDatastoreSalt)
 	if err != nil {
 		return nil, errcode.ErrIPFSSetupRepo.Wrap(err)
 	}
