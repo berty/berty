@@ -260,10 +260,12 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 			return nil, nil, errcode.ErrIPFSInit.Wrap(err)
 		}
 
+		initalConnectivity := netmanager.ConnectivityInfo{}
+
 		// if multicast interfaces is found, start mdns service
 		if len(ifaces) > 0 {
-			state := m.Node.Protocol.NetManager.GetCurrentState()
-			if state.NetType == netmanager.ConnectivityNetWifi {
+			initalConnectivity = m.Node.Protocol.NetManager.GetCurrentState()
+			if initalConnectivity.NetType == netmanager.ConnectivityNetWifi {
 				mdnslogger.Info("starting mdns")
 				if err := mdnsService.Start(); err != nil {
 					return nil, nil, errcode.ErrIPFSInit.Wrap(err)
@@ -276,7 +278,13 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 		m.Node.Protocol.mdnsService = mdnsService
 
 		go func() {
-			ipfsutil.MDNSNetworkManagerHandler(ctx, logger, m.Node.Protocol.NetManager, mdnsService)
+			mdnNetworkManagerConfig := ipfsutil.MdnsNetworkManagerConfig{
+				Logger:              logger,
+				NetManager:          m.Node.Protocol.NetManager,
+				Service:             mdnsService,
+				InitialConnectivity: initalConnectivity,
+			}
+			ipfsutil.MDNSNetworkManagerHandler(ctx, mdnNetworkManagerConfig)
 		}()
 	}
 
