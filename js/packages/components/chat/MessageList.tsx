@@ -29,6 +29,7 @@ import { pbDateToNum } from '@berty/utils/convert/time'
 import { InfosChat } from '../InfosChat'
 import { ChatDate } from './ChatDate'
 import { InfosMultiMember } from './InfosMultiMember'
+import { MemberBar } from './member-bar/MemberBar'
 import { Message } from './message'
 
 const CenteredActivityIndicator: React.FC<ActivityIndicatorProps> = React.memo(props => {
@@ -242,11 +243,6 @@ export const MessageList: React.FC<{
 			}
 		}, [fetchingFrom, oldestMessage?.cid])
 
-		/* const xVal = fadeAnim.interpolate({
-      inputRange: [0, 1],
-      outputRange: [0, 250],
-    }) */
-
 		return (
 			<View style={styles.container}>
 				{isLoadingMore && (
@@ -254,12 +250,11 @@ export const MessageList: React.FC<{
 						<ActivityIndicator color={colors['background-header']} />
 					</View>
 				)}
-				{/* TODO: re enable or delete it when a decision will be take on member bar */}
-				{/*!!isGroup && (
-					<Animated.View style={[{ transform: [{ translateY: xVal }] }, styles.memberBar]}>
+				{isGroup ? (
+					<View style={[styles.memberBar]}>
 						<MemberBar convId={id} />
-					</Animated.View>
-				)*/}
+					</View>
+				) : null}
 				<FlashList
 					overScrollMode='never'
 					initialScrollIndex={initialScrollIndex}

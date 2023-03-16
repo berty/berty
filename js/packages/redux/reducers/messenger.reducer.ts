@@ -80,6 +80,7 @@ export type PeerNetworkStatus = {
 	id: string // PeerID
 	transport: beapi.messenger.StreamEvent.PeerStatusConnected.Transport
 	connectionStatus: beapi.protocol.GroupDeviceStatus.Type
+	alreadyConnected: boolean
 }
 
 const groupsDevicesToPeerAdapter = createEntityAdapter<GroupsDevicesToPeer>()
@@ -226,6 +227,7 @@ const slice = createSlice({
 					id: payload.peerId,
 					transport: payload.transport,
 					connectionStatus: beapi.protocol.GroupDeviceStatus.Type.TypePeerConnected,
+					alreadyConnected: true,
 				})
 			},
 		)
@@ -237,7 +239,10 @@ const slice = createSlice({
 					console.warn('PeerStatusDisconnected action without peerID', payload)
 					return
 				}
-				peerNetworkStatusAdapter.removeOne(state.peersNetworkStatus, payload.peerId)
+				peerNetworkStatusAdapter.updateOne(state.peersNetworkStatus, {
+					id: payload.peerId,
+					changes: { connectionStatus: beapi.protocol.GroupDeviceStatus.Type.TypePeerDisconnected },
+				})
 			},
 		)
 		builder.addCase(

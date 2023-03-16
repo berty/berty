@@ -8,25 +8,19 @@ import { MemberBarItem } from './interfaces'
 
 export const AvatarWrapper: React.FC<{ member: MemberBarItem; convId: string; index: number }> =
 	props => {
-		let borderColor = '#8E8E92'
-		if (
-			props.member.networkStatus?.connectionStatus ===
-			beapi.protocol.GroupDeviceStatus.Type.TypePeerConnected
-		) {
-			borderColor = '#0FBE00'
-		}
-		if (
-			props.member.networkStatus?.connectionStatus ===
-			beapi.protocol.GroupDeviceStatus.Type.TypePeerReconnecting
-		) {
-			borderColor = '#F9B70F'
-		}
-
 		return (
 			<View
 				style={[
 					styles.avatarWrapper,
-					{ borderColor, backgroundColor: '#FFFFFF', zIndex: props.index },
+					{
+						zIndex: props.index,
+						opacity:
+							props.member.alreadyConnected &&
+							props.member.networkStatus.connectionStatus !==
+								beapi.protocol.GroupDeviceStatus.Type.TypePeerConnected
+								? 0.3
+								: 1,
+					},
 				]}
 			>
 				<MemberAvatar
