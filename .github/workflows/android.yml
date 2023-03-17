@@ -107,7 +107,7 @@ jobs:
             https://github.com/google/bundletool/releases/download/1.8.2/bundletool-all-1.8.2.jar \
             -O /tmp/bundletool.jar
           java -jar /tmp/bundletool.jar build-apks \
-            --bundle=android/app/build/outputs/bundle/releaseYolo/app-releaseYolo.aab \
+            --bundle=${{ github.workspace }}/app.aab \
             --output=${{ github.workspace }}/app.apks \
             --mode=universal
           cd ${{ github.workspace }} && unzip app.apks
@@ -119,3 +119,4 @@ jobs:
           path: ${{ github.workspace }}/universal.apk
           name: berty-universal-${{github.sha}}.apk
           if-no-files-found: error
+
