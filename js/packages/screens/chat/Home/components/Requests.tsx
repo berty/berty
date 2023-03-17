@@ -1,7 +1,7 @@
 import { Icon } from '@ui-kitten/components'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { ScrollView, TouchableOpacity, View } from 'react-native'
+import { LayoutChangeEvent, ScrollView, TouchableOpacity, View } from 'react-native'
 
 import beapi from '@berty/api'
 import { ContactAvatar } from '@berty/components/avatars'
@@ -210,7 +210,12 @@ const ContactRequest: React.FC<beapi.messenger.IContact> = ({
 	)
 }
 
-export const IncomingRequests: React.FC<any> = ({ items, onLayout }) => {
+type IncomingRequestsProps = {
+	items: beapi.messenger.IContact[]
+	onLayout?: (e: LayoutChangeEvent) => void
+}
+
+export const IncomingRequests: React.FC<IncomingRequestsProps> = ({ items, onLayout }) => {
 	const { padding, text, row } = useStyles()
 	const { scaleSize } = useAppDimensions()
 	const colors = useThemeColor()

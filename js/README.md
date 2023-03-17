@@ -151,3 +151,20 @@ $ make android.app_deps
 | [navigation/](./packages/navigation)                               | Berty Messenger + react-native-navigation                                                      |
 | [redux/](./packages/redux)                                         | App state control using React hooks and Context                                                |
 | [styles/](./packages/contexts/styles/)                             | Generates StyleSheet utilities and styles that conform to our design specs                     |
+
+## Storybook 🎨
+
+We added Storybook into this project to facilitate UI component development and testing.
+Running Storybook is as simple as executing the command:
+
+```bash
+$ cd js
+$ make storybook
+```
+
+💡 If you encounter a blank page after running the Storybook command, it is recommended to follow these steps:
+
+1. Stop metro and close the emulator.
+2. Open the emulator an the App within it. Press 'R'.
+3. Run the Storybook command `$ make storybook`.
+4. And then reload the app within the emulator pressing the key 'R'. It will force the app load the new bundle.

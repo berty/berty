@@ -10,8 +10,7 @@ interface VerticalButtonsProps {
 	children: string[]
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const VerticalButtons: React.FC<VerticalButtonsProps> = props => {
+export const VerticalButtons: React.FC<VerticalButtonsProps> = props => {
 	return (
 		<View>
 			<PrimaryButton onPress={props.onPressTop}>{props.children[0]}</PrimaryButton>

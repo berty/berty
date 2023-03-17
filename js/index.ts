@@ -26,4 +26,9 @@ if (!__DEV__) {
 
 initI18N()
 
-AppRegistry.registerComponent(appName, () => App)
+if (__DEV__ && process.env.STORYBOOK) {
+	const Storybook = require('./.storybook').default
+	AppRegistry.registerComponent(appName, () => Storybook)
+} else {
+	AppRegistry.registerComponent(appName, () => App)
+}
