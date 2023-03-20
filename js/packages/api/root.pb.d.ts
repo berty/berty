@@ -6658,10 +6658,10 @@ export namespace weshnet {
             class ProtocolService extends $protobuf.rpc.Service {
 
                 public static create(rpcImpl: $protobuf.RPCImpl, requestDelimited?: boolean, responseDelimited?: boolean): ProtocolService;
-                public instanceExportData(request: weshnet.protocol.v1.InstanceExportData.IRequest, callback: weshnet.protocol.v1.ProtocolService.InstanceExportDataCallback): void;
-                public instanceExportData(request: weshnet.protocol.v1.InstanceExportData.IRequest): Promise<weshnet.protocol.v1.InstanceExportData.Reply>;
-                public instanceGetConfiguration(request: weshnet.protocol.v1.InstanceGetConfiguration.IRequest, callback: weshnet.protocol.v1.ProtocolService.InstanceGetConfigurationCallback): void;
-                public instanceGetConfiguration(request: weshnet.protocol.v1.InstanceGetConfiguration.IRequest): Promise<weshnet.protocol.v1.InstanceGetConfiguration.Reply>;
+                public serviceExportData(request: weshnet.protocol.v1.ServiceExportData.IRequest, callback: weshnet.protocol.v1.ProtocolService.ServiceExportDataCallback): void;
+                public serviceExportData(request: weshnet.protocol.v1.ServiceExportData.IRequest): Promise<weshnet.protocol.v1.ServiceExportData.Reply>;
+                public serviceGetConfiguration(request: weshnet.protocol.v1.ServiceGetConfiguration.IRequest, callback: weshnet.protocol.v1.ProtocolService.ServiceGetConfigurationCallback): void;
+                public serviceGetConfiguration(request: weshnet.protocol.v1.ServiceGetConfiguration.IRequest): Promise<weshnet.protocol.v1.ServiceGetConfiguration.Reply>;
                 public contactRequestReference(request: weshnet.protocol.v1.ContactRequestReference.IRequest, callback: weshnet.protocol.v1.ProtocolService.ContactRequestReferenceCallback): void;
                 public contactRequestReference(request: weshnet.protocol.v1.ContactRequestReference.IRequest): Promise<weshnet.protocol.v1.ContactRequestReference.Reply>;
                 public contactRequestDisable(request: weshnet.protocol.v1.ContactRequestDisable.IRequest, callback: weshnet.protocol.v1.ProtocolService.ContactRequestDisableCallback): void;
@@ -6752,9 +6752,9 @@ export namespace weshnet {
 
             namespace ProtocolService {
 
-                type InstanceExportDataCallback = (error: (Error|null), response?: weshnet.protocol.v1.InstanceExportData.Reply) => void;
+                type ServiceExportDataCallback = (error: (Error|null), response?: weshnet.protocol.v1.ServiceExportData.Reply) => void;
 
-                type InstanceGetConfigurationCallback = (error: (Error|null), response?: weshnet.protocol.v1.InstanceGetConfiguration.Reply) => void;
+                type ServiceGetConfigurationCallback = (error: (Error|null), response?: weshnet.protocol.v1.ServiceGetConfiguration.Reply) => void;
 
                 type ContactRequestReferenceCallback = (error: (Error|null), response?: weshnet.protocol.v1.ContactRequestReference.Reply) => void;
 
@@ -7620,37 +7620,37 @@ export namespace weshnet {
                 public toJSON(): { [k: string]: any };
             }
 
-            interface IInstanceExportData {
+            interface IServiceExportData {
             }
 
-            class InstanceExportData implements IInstanceExportData {
+            class ServiceExportData implements IServiceExportData {
 
-                public static create(properties?: weshnet.protocol.v1.IInstanceExportData): weshnet.protocol.v1.InstanceExportData;
-                public static encode(message: weshnet.protocol.v1.IInstanceExportData, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: weshnet.protocol.v1.IInstanceExportData, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.protocol.v1.InstanceExportData;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.protocol.v1.InstanceExportData;
+                public static create(properties?: weshnet.protocol.v1.IServiceExportData): weshnet.protocol.v1.ServiceExportData;
+                public static encode(message: weshnet.protocol.v1.IServiceExportData, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: weshnet.protocol.v1.IServiceExportData, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.protocol.v1.ServiceExportData;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.protocol.v1.ServiceExportData;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.InstanceExportData;
-                public static toObject(message: weshnet.protocol.v1.InstanceExportData, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.ServiceExportData;
+                public static toObject(message: weshnet.protocol.v1.ServiceExportData, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
-            namespace InstanceExportData {
+            namespace ServiceExportData {
 
                 interface IRequest {
                 }
 
                 class Request implements IRequest {
 
-                    public static create(properties?: weshnet.protocol.v1.InstanceExportData.IRequest): weshnet.protocol.v1.InstanceExportData.Request;
-                    public static encode(message: weshnet.protocol.v1.InstanceExportData.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: weshnet.protocol.v1.InstanceExportData.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.protocol.v1.InstanceExportData.Request;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.protocol.v1.InstanceExportData.Request;
+                    public static create(properties?: weshnet.protocol.v1.ServiceExportData.IRequest): weshnet.protocol.v1.ServiceExportData.Request;
+                    public static encode(message: weshnet.protocol.v1.ServiceExportData.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: weshnet.protocol.v1.ServiceExportData.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.protocol.v1.ServiceExportData.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.protocol.v1.ServiceExportData.Request;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.InstanceExportData.Request;
-                    public static toObject(message: weshnet.protocol.v1.InstanceExportData.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.ServiceExportData.Request;
+                    public static toObject(message: weshnet.protocol.v1.ServiceExportData.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
 
@@ -7661,35 +7661,35 @@ export namespace weshnet {
                 class Reply implements IReply {
 
                     public exportedData: Uint8Array;
-                    public static create(properties?: weshnet.protocol.v1.InstanceExportData.IReply): weshnet.protocol.v1.InstanceExportData.Reply;
-                    public static encode(message: weshnet.protocol.v1.InstanceExportData.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: weshnet.protocol.v1.InstanceExportData.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.protocol.v1.InstanceExportData.Reply;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.protocol.v1.InstanceExportData.Reply;
+                    public static create(properties?: weshnet.protocol.v1.ServiceExportData.IReply): weshnet.protocol.v1.ServiceExportData.Reply;
+                    public static encode(message: weshnet.protocol.v1.ServiceExportData.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: weshnet.protocol.v1.ServiceExportData.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.protocol.v1.ServiceExportData.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.protocol.v1.ServiceExportData.Reply;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.InstanceExportData.Reply;
-                    public static toObject(message: weshnet.protocol.v1.InstanceExportData.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.ServiceExportData.Reply;
+                    public static toObject(message: weshnet.protocol.v1.ServiceExportData.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
             }
 
-            interface IInstanceGetConfiguration {
+            interface IServiceGetConfiguration {
             }
 
-            class InstanceGetConfiguration implements IInstanceGetConfiguration {
+            class ServiceGetConfiguration implements IServiceGetConfiguration {
 
-                public static create(properties?: weshnet.protocol.v1.IInstanceGetConfiguration): weshnet.protocol.v1.InstanceGetConfiguration;
-                public static encode(message: weshnet.protocol.v1.IInstanceGetConfiguration, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: weshnet.protocol.v1.IInstanceGetConfiguration, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.protocol.v1.InstanceGetConfiguration;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.protocol.v1.InstanceGetConfiguration;
+                public static create(properties?: weshnet.protocol.v1.IServiceGetConfiguration): weshnet.protocol.v1.ServiceGetConfiguration;
+                public static encode(message: weshnet.protocol.v1.IServiceGetConfiguration, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: weshnet.protocol.v1.IServiceGetConfiguration, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.protocol.v1.ServiceGetConfiguration;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.protocol.v1.ServiceGetConfiguration;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.InstanceGetConfiguration;
-                public static toObject(message: weshnet.protocol.v1.InstanceGetConfiguration, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.ServiceGetConfiguration;
+                public static toObject(message: weshnet.protocol.v1.ServiceGetConfiguration, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
-            namespace InstanceGetConfiguration {
+            namespace ServiceGetConfiguration {
 
                 enum SettingState {
                     Unknown = 0,
@@ -7703,14 +7703,14 @@ export namespace weshnet {
 
                 class Request implements IRequest {
 
-                    public static create(properties?: weshnet.protocol.v1.InstanceGetConfiguration.IRequest): weshnet.protocol.v1.InstanceGetConfiguration.Request;
-                    public static encode(message: weshnet.protocol.v1.InstanceGetConfiguration.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: weshnet.protocol.v1.InstanceGetConfiguration.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.protocol.v1.InstanceGetConfiguration.Request;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.protocol.v1.InstanceGetConfiguration.Request;
+                    public static create(properties?: weshnet.protocol.v1.ServiceGetConfiguration.IRequest): weshnet.protocol.v1.ServiceGetConfiguration.Request;
+                    public static encode(message: weshnet.protocol.v1.ServiceGetConfiguration.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: weshnet.protocol.v1.ServiceGetConfiguration.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.protocol.v1.ServiceGetConfiguration.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.protocol.v1.ServiceGetConfiguration.Request;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.InstanceGetConfiguration.Request;
-                    public static toObject(message: weshnet.protocol.v1.InstanceGetConfiguration.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.ServiceGetConfiguration.Request;
+                    public static toObject(message: weshnet.protocol.v1.ServiceGetConfiguration.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
 
@@ -7720,10 +7720,10 @@ export namespace weshnet {
                     accountGroupPk?: (Uint8Array|null);
                     peerId?: (string|null);
                     listeners?: (string[]|null);
-                    bleEnabled?: (weshnet.protocol.v1.InstanceGetConfiguration.SettingState|null);
-                    wifiP2pEnabled?: (weshnet.protocol.v1.InstanceGetConfiguration.SettingState|null);
-                    mdnsEnabled?: (weshnet.protocol.v1.InstanceGetConfiguration.SettingState|null);
-                    relayEnabled?: (weshnet.protocol.v1.InstanceGetConfiguration.SettingState|null);
+                    bleEnabled?: (weshnet.protocol.v1.ServiceGetConfiguration.SettingState|null);
+                    wifiP2pEnabled?: (weshnet.protocol.v1.ServiceGetConfiguration.SettingState|null);
+                    mdnsEnabled?: (weshnet.protocol.v1.ServiceGetConfiguration.SettingState|null);
+                    relayEnabled?: (weshnet.protocol.v1.ServiceGetConfiguration.SettingState|null);
                     devicePushToken?: (weshnet.protocol.v1.IPushServiceReceiver|null);
                     devicePushServer?: (weshnet.protocol.v1.IPushServer|null);
                 }
@@ -7735,20 +7735,20 @@ export namespace weshnet {
                     public accountGroupPk: Uint8Array;
                     public peerId: string;
                     public listeners: string[];
-                    public bleEnabled: weshnet.protocol.v1.InstanceGetConfiguration.SettingState;
-                    public wifiP2pEnabled: weshnet.protocol.v1.InstanceGetConfiguration.SettingState;
-                    public mdnsEnabled: weshnet.protocol.v1.InstanceGetConfiguration.SettingState;
-                    public relayEnabled: weshnet.protocol.v1.InstanceGetConfiguration.SettingState;
+                    public bleEnabled: weshnet.protocol.v1.ServiceGetConfiguration.SettingState;
+                    public wifiP2pEnabled: weshnet.protocol.v1.ServiceGetConfiguration.SettingState;
+                    public mdnsEnabled: weshnet.protocol.v1.ServiceGetConfiguration.SettingState;
+                    public relayEnabled: weshnet.protocol.v1.ServiceGetConfiguration.SettingState;
                     public devicePushToken?: (weshnet.protocol.v1.IPushServiceReceiver|null);
                     public devicePushServer?: (weshnet.protocol.v1.IPushServer|null);
-                    public static create(properties?: weshnet.protocol.v1.InstanceGetConfiguration.IReply): weshnet.protocol.v1.InstanceGetConfiguration.Reply;
-                    public static encode(message: weshnet.protocol.v1.InstanceGetConfiguration.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: weshnet.protocol.v1.InstanceGetConfiguration.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.protocol.v1.InstanceGetConfiguration.Reply;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.protocol.v1.InstanceGetConfiguration.Reply;
+                    public static create(properties?: weshnet.protocol.v1.ServiceGetConfiguration.IReply): weshnet.protocol.v1.ServiceGetConfiguration.Reply;
+                    public static encode(message: weshnet.protocol.v1.ServiceGetConfiguration.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: weshnet.protocol.v1.ServiceGetConfiguration.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.protocol.v1.ServiceGetConfiguration.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.protocol.v1.ServiceGetConfiguration.Reply;
                     public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.InstanceGetConfiguration.Reply;
-                    public static toObject(message: weshnet.protocol.v1.InstanceGetConfiguration.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.ServiceGetConfiguration.Reply;
+                    public static toObject(message: weshnet.protocol.v1.ServiceGetConfiguration.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
             }
@@ -10288,7 +10288,7 @@ export namespace weshnet {
 
                 enum Feature {
                     UnknownFeature = 0,
-                    BertyFeature = 1,
+                    WeshFeature = 1,
                     BLEFeature = 2,
                     LocalFeature = 3,
                     TorFeature = 4,

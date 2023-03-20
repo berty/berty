@@ -19,7 +19,7 @@ func main() {
 
 	replicationProtocol := protocoltypes.NewProtocolServiceClient(replication)
 
-	resp, err := replicationProtocol.InstanceGetConfiguration(ctx, &protocoltypes.InstanceGetConfiguration_Request{})
+	resp, err := replicationProtocol.ServiceGetConfiguration(ctx, &protocoltypes.ServiceGetConfiguration_Request{})
 	if err != nil {
 		panic(err)
 		return

@@ -14,6 +14,11 @@ import (
 	"berty.tech/weshnet/pkg/rendezvous"
 )
 
+const (
+	DefaultBertyGroupMetadataStoreType = "berty_group_metadata"
+	DefaultBertyGroupMessageStoreType  = "berty_group_messages"
+)
+
 func (m *Manager) GetRotationInterval() (rp *rendezvous.RotationInterval, err error) {
 	m.mutex.Lock()
 	rp, err = m.getRotationInterval()
@@ -33,7 +38,7 @@ func (m *Manager) getRotationInterval() (*rendezvous.RotationInterval, error) {
 	return m.Node.Protocol.rotationInterval, nil
 }
 
-func (m *Manager) getOrbitDB() (*weshnet.BertyOrbitDB, error) {
+func (m *Manager) getOrbitDB() (*weshnet.WeshOrbitDB, error) {
 	m.applyDefaults()
 
 	if m.Node.Protocol.orbitDB != nil {
@@ -67,6 +72,8 @@ func (m *Manager) getOrbitDB() (*weshnet.BertyOrbitDB, error) {
 	}
 
 	opts := &weshnet.NewOrbitDBOptions{
+		GroupMetadataStoreType: DefaultBertyGroupMetadataStoreType,
+		GroupMessageStoreType:  DefaultBertyGroupMessageStoreType,
 		NewOrbitDBOptions: baseorbitdb.NewOrbitDBOptions{
 			Cache:                cache,
 			Logger:               logger,
@@ -86,7 +93,7 @@ func (m *Manager) getOrbitDB() (*weshnet.BertyOrbitDB, error) {
 		opts.PubSub = pubsubraw.NewPubSub(node.PubSub, self.ID(), opts.Logger, nil)
 	}
 
-	odb, err := weshnet.NewBertyOrbitDB(m.getContext(), ipfs, opts)
+	odb, err := weshnet.NewWeshOrbitDB(m.getContext(), ipfs, opts)
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
@@ -96,7 +103,7 @@ func (m *Manager) getOrbitDB() (*weshnet.BertyOrbitDB, error) {
 	return odb, nil
 }
 
-func (m *Manager) GetOrbitDB() (*weshnet.BertyOrbitDB, error) {
+func (m *Manager) GetOrbitDB() (*weshnet.WeshOrbitDB, error) {
 	defer m.prepareForGetter()()
 
 	return m.getOrbitDB()

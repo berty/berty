@@ -3,13 +3,13 @@ import beapi from '@berty/api'
 import { UnaryMock, ResponseStreamMock } from './types'
 
 export interface IProtocolServiceMock {
-	InstanceExportData: ResponseStreamMock<
-		beapi.protocol.InstanceExportData.IRequest,
-		beapi.protocol.InstanceExportData.IReply
+	ServiceExportData: ResponseStreamMock<
+		beapi.protocol.ServiceExportData.IRequest,
+		beapi.protocol.ServiceExportData.IReply
 	>
-	InstanceGetConfiguration: UnaryMock<
-		beapi.protocol.InstanceGetConfiguration.IRequest,
-		beapi.protocol.InstanceGetConfiguration.IReply
+	ServiceGetConfiguration: UnaryMock<
+		beapi.protocol.ServiceGetConfiguration.IRequest,
+		beapi.protocol.ServiceGetConfiguration.IReply
 	>
 	ContactRequestReference: UnaryMock<
 		beapi.protocol.ContactRequestReference.IRequest,

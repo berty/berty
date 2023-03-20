@@ -161,7 +161,7 @@ type Manager struct {
 			client            protocoltypes.ProtocolServiceClient
 			requiredByClient  bool
 			ipfsWebUICleanup  func()
-			orbitDB           *weshnet.BertyOrbitDB
+			orbitDB           *weshnet.WeshOrbitDB
 			rotationInterval  *rendezvous.RotationInterval
 		}
 		Messenger struct {
@@ -173,7 +173,7 @@ type Manager struct {
 			ExportPathToRestore  string `json:"ExportPathToRestore,omitempty"`
 
 			// internal
-			protocolClient      weshnet.Client
+			protocolClient      weshnet.ServiceClient
 			server              bertymessenger.Service
 			lcmanager           *lifecycle.Manager
 			notificationManager notification.Manager

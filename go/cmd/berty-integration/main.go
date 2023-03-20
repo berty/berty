@@ -18,8 +18,8 @@ import (
 	"go.uber.org/zap"
 	"moul.io/u"
 
-	"berty.tech/berty/v2/go/internal/config"
 	"berty.tech/berty/v2/go/internal/initutil"
+	"berty.tech/berty/v2/go/pkg/config"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
 )
 

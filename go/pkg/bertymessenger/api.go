@@ -103,7 +103,7 @@ func (svc *service) internalInstanceShareableBertyID(ctx context.Context, req *m
 	if req == nil {
 		req = &messengertypes.InstanceShareableBertyID_Request{}
 	}
-	config, err := svc.protocolClient.InstanceGetConfiguration(ctx, &protocoltypes.InstanceGetConfiguration_Request{})
+	config, err := svc.protocolClient.ServiceGetConfiguration(ctx, &protocoltypes.ServiceGetConfiguration_Request{})
 	if err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
@@ -1295,7 +1295,7 @@ func (svc *service) BannerQuote(ctx context.Context, req *messengertypes.BannerQ
 }
 
 func (svc *service) ReplicationSetAutoEnable(ctx context.Context, req *messengertypes.ReplicationSetAutoEnable_Request) (*messengertypes.ReplicationSetAutoEnable_Reply, error) {
-	config, err := svc.protocolClient.InstanceGetConfiguration(svc.ctx, &protocoltypes.InstanceGetConfiguration_Request{})
+	config, err := svc.protocolClient.ServiceGetConfiguration(svc.ctx, &protocoltypes.ServiceGetConfiguration_Request{})
 	if err != nil {
 		return nil, err
 	}
@@ -1325,7 +1325,7 @@ func (svc *service) InstanceExportData(_ *messengertypes.InstanceExportData_Requ
 
 	defer os.Remove(tmpFile.Name())
 
-	cl, err := svc.protocolClient.InstanceExportData(server.Context(), &protocoltypes.InstanceExportData_Request{})
+	cl, err := svc.protocolClient.ServiceExportData(server.Context(), &protocoltypes.ServiceExportData_Request{})
 	if err != nil {
 		return errcode.ErrInternal.Wrap(err)
 	}
@@ -1644,7 +1644,7 @@ func (svc *service) TyberHostAttach(ctx context.Context, request *messengertypes
 }
 
 func (svc *service) PushSetAutoShare(ctx context.Context, request *messengertypes.PushSetAutoShare_Request) (*messengertypes.PushSetAutoShare_Reply, error) {
-	config, err := svc.protocolClient.InstanceGetConfiguration(svc.ctx, &protocoltypes.InstanceGetConfiguration_Request{})
+	config, err := svc.protocolClient.ServiceGetConfiguration(svc.ctx, &protocoltypes.ServiceGetConfiguration_Request{})
 	if err != nil {
 		return nil, err
 	}

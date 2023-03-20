@@ -13,8 +13,8 @@ export type ServiceClientType<S> = S extends beapi.protocol.ProtocolService
 	: never
 
 export interface WelshProtocolServiceClient {
-	instanceExportData: ResponseStreamType<beapi.protocol.ProtocolService['instanceExportData']>
-	instanceGetConfiguration: UnaryType<beapi.protocol.ProtocolService['instanceGetConfiguration']>
+	serviceExportData: ResponseStreamType<beapi.protocol.ProtocolService['serviceExportData']>
+	serviceGetConfiguration: UnaryType<beapi.protocol.ProtocolService['serviceGetConfiguration']>
 	contactRequestReference: UnaryType<beapi.protocol.ProtocolService['contactRequestReference']>
 	contactRequestDisable: UnaryType<beapi.protocol.ProtocolService['contactRequestDisable']>
 	contactRequestEnable: UnaryType<beapi.protocol.ProtocolService['contactRequestEnable']>

@@ -152,7 +152,7 @@ func NewBridge(config *BridgeConfig) (*Bridge, error) {
 
 		bridge_svc.RegisterBridgeServiceServer(b.grpcServer, b.serviceBridge)
 
-		bl := grpcutil.NewBufListener(ctx, bufListenerSize)
+		bl := grpcutil.NewBufListener(bufListenerSize)
 		b.workers.Add(func() error {
 			return b.grpcServer.Serve(bl)
 		}, func(error) {
@@ -161,7 +161,7 @@ func NewBridge(config *BridgeConfig) (*Bridge, error) {
 		})
 
 		// create native bridge client
-		ccBridge, err := bl.NewClientConn()
+		ccBridge, err := bl.NewClientConn(ctx)
 		if err != nil {
 			return nil, errors.Wrap(err, "unable to get bridge gRPC ClientConn")
 		}
@@ -215,7 +215,7 @@ func NewBridge(config *BridgeConfig) (*Bridge, error) {
 		// register services bridge client
 		accounttypes.RegisterAccountServiceServer(s, b.serviceAccount)
 
-		bl := grpcutil.NewBufListener(ctx, bufListenerSize)
+		bl := grpcutil.NewBufListener(bufListenerSize)
 		b.workers.Add(func() error {
 			return s.Serve(bl)
 		}, func(error) {
@@ -224,7 +224,7 @@ func NewBridge(config *BridgeConfig) (*Bridge, error) {
 		})
 
 		// bind account to native bridge
-		ccAccount, err := bl.NewClientConn()
+		ccAccount, err := bl.NewClientConn(ctx)
 		if err != nil {
 			return nil, errors.Wrap(err, "unable to get bridge gRPC ClientConn")
 		}

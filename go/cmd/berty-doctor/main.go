@@ -14,7 +14,7 @@ import (
 	"github.com/fatih/color"
 	"moul.io/u"
 
-	"berty.tech/berty/v2/go/internal/config"
+	"berty.tech/berty/v2/go/pkg/config"
 )
 
 const (

@@ -256,7 +256,7 @@ func (s *Server) ConnectToPeer(ctx context.Context, request *ConnectToPeer_Reque
 	s.Messenger = messengertypes.NewMessengerServiceClient(s.Cc)
 	s.Protocol = protocoltypes.NewProtocolServiceClient(s.Cc)
 
-	resp, err := s.Protocol.InstanceGetConfiguration(ctx, &protocoltypes.InstanceGetConfiguration_Request{})
+	resp, err := s.Protocol.ServiceGetConfiguration(ctx, &protocoltypes.ServiceGetConfiguration_Request{})
 	if err != nil {
 		return response, logging.LogErr(err)
 	}
@@ -546,7 +546,7 @@ func (s *Server) TestConnectionToPeer(ctx context.Context, request *TestConnecti
 		}
 
 		temp := protocoltypes.NewProtocolServiceClient(cc)
-		_, err = temp.InstanceGetConfiguration(ctx, &protocoltypes.InstanceGetConfiguration_Request{})
+		_, err = temp.ServiceGetConfiguration(ctx, &protocoltypes.ServiceGetConfiguration_Request{})
 		if err != nil {
 			if count > int(request.Tries) {
 				return response, logging.LogErr(err)

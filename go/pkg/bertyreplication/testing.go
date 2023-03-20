@@ -68,7 +68,7 @@ func TestHelperNewReplicationService(ctx context.Context, t *testing.T, logger *
 		DiscoveryServer: msrv,
 		Datastore:       ds,
 	})
-	odb, err := weshnet.NewBertyOrbitDB(ctx, api.API(), &weshnet.NewOrbitDBOptions{
+	odb, err := weshnet.NewWeshOrbitDB(ctx, api.API(), &weshnet.NewOrbitDBOptions{
 		NewOrbitDBOptions: orbitdb.NewOrbitDBOptions{
 			Logger: logger,
 			Cache:  weshnet.NewOrbitDatastoreCache(ds),

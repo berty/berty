@@ -226,10 +226,10 @@ export type MessengerMethodsHooks = {
 	}
 }
 export type ProtocolMethodsHooks = {
-	useInstanceGetConfiguration: () => {
+	useServiceGetConfiguration: () => {
 		error: any
-		call: (req?: beapi.protocol.InstanceGetConfiguration.IRequest) => void
-		reply: beapi.protocol.InstanceGetConfiguration.IReply | null
+		call: (req?: beapi.protocol.ServiceGetConfiguration.IRequest) => void
+		reply: beapi.protocol.ServiceGetConfiguration.IReply | null
 		done: boolean
 		called: boolean
 		loading: boolean

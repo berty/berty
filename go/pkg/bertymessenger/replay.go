@@ -30,7 +30,7 @@ func replayLogsToDB(ctx context.Context, client protocoltypes.ProtocolServiceCli
 	defer func() { endSection(err, "") }()
 
 	// Get account infos
-	cfg, err := client.InstanceGetConfiguration(ctx, &protocoltypes.InstanceGetConfiguration_Request{})
+	cfg, err := client.ServiceGetConfiguration(ctx, &protocoltypes.ServiceGetConfiguration_Request{})
 	if err != nil {
 		return errcode.TODO.Wrap(err)
 	}
