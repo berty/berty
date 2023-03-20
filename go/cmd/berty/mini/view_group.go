@@ -138,7 +138,7 @@ func (v *groupView) loop(ctx context.Context) {
 	}); err == nil {
 		v.messages.Append(&historyMessage{
 			messageType: messageTypeError,
-			payload:     []byte("conversation opnned " + gpk),
+			payload:     []byte("conversation opened " + gpk),
 		})
 	}
 
