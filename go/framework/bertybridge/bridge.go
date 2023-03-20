@@ -17,6 +17,7 @@ import (
 	"google.golang.org/grpc"
 
 	berty_grpcutil "berty.tech/berty/v2/go/internal/grpcutil"
+	"berty.tech/berty/v2/go/internal/mdns"
 	"berty.tech/berty/v2/go/internal/notification"
 	"berty.tech/berty/v2/go/pkg/accounttypes"
 	account_svc "berty.tech/berty/v2/go/pkg/bertyaccount"
@@ -24,7 +25,6 @@ import (
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/osversion"
 	"berty.tech/weshnet/pkg/grpcutil"
-	"berty.tech/weshnet/pkg/ipfsutil"
 	"berty.tech/weshnet/pkg/lifecycle"
 	"berty.tech/weshnet/pkg/logutil"
 	"berty.tech/weshnet/pkg/netmanager"
@@ -90,7 +90,7 @@ func NewBridge(config *BridgeConfig) (*Bridge, error) {
 				net:    config.netDriver,
 				logger: b.logger,
 			}
-			ipfsutil.SetNetDriver(inet)
+			mdns.SetNetDriver(inet)
 			manet.SetNetInterface(inet)
 		}
 	}
