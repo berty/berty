@@ -36,6 +36,8 @@ import (
 	"moul.io/srand"
 
 	"berty.tech/berty/v2/go/internal/datastoreutil"
+	"berty.tech/berty/v2/go/internal/encryptedrepo"
+	"berty.tech/berty/v2/go/internal/mdns"
 	"berty.tech/berty/v2/go/pkg/config"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	ipfswebui "berty.tech/ipfs-webui-packed"
@@ -243,11 +245,11 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 		h := mnode.PeerHost()
 		mdnslogger := logger.Named("mdns")
 
-		dh := ipfsutil.DiscoveryHandler(ctx, mdnslogger, h)
-		mdnsService := ipfsutil.NewMdnsService(mdnslogger, h, ipfsutil.MDNSServiceName, dh)
+		dh := mdns.DiscoveryHandler(ctx, mdnslogger, h)
+		mdnsService := mdns.NewMdnsService(mdnslogger, h, mdns.MDNSServiceName, dh)
 
 		// get multicast interfaces
-		ifaces, err := ipfsutil.GetMulticastInterfaces()
+		ifaces, err := mdns.GetMulticastInterfaces()
 		if err != nil {
 			return nil, nil, errcode.ErrIPFSInit.Wrap(err)
 		}
@@ -409,7 +411,7 @@ func (m *Manager) setupIPFSRepo(ctx context.Context) (*ipfs_mobile.RepoMobile, e
 	}
 	dbPath := filepath.Join(appDir, "ipfs.sqlite")
 
-	repo, err = ipfsutil.LoadEncryptedRepoFromPath(dbPath, storageKey, ipfsDatastoreSalt)
+	repo, err = encryptedrepo.LoadEncryptedRepoFromPath(dbPath, storageKey, ipfsDatastoreSalt)
 	if err != nil {
 		return nil, errcode.ErrIPFSSetupRepo.Wrap(err)
 	}
@@ -450,7 +452,7 @@ func (m *Manager) resetRepoIdentityIfExpired(ctx context.Context, repo ipfs_repo
 	}
 
 	if lastUpdate.Before(time.Now().Add(-rendezvousRotationBase)) {
-		repo, err = ipfsutil.ResetExistingRepoIdentity(repo, dbPath, storageKey, ipfsDatastoreSalt)
+		repo, err = encryptedrepo.ResetExistingEncryptedRepoIdentity(repo, dbPath, storageKey, ipfsDatastoreSalt)
 		if err != nil {
 			return nil, errcode.ErrInternal.Wrap(err)
 		}

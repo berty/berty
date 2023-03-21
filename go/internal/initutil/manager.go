@@ -26,6 +26,7 @@ import (
 
 	"berty.tech/berty/v2/go/internal/accountutils"
 	berty_grpcutil "berty.tech/berty/v2/go/internal/grpcutil"
+	"berty.tech/berty/v2/go/internal/mdns"
 	"berty.tech/berty/v2/go/internal/notification"
 	"berty.tech/berty/v2/go/pkg/bertymessenger"
 	"berty.tech/berty/v2/go/pkg/errcode"
@@ -117,7 +118,7 @@ type Manager struct {
 			MDNS                       struct {
 				Enable       bool `json:"Enable,omitempty"`
 				DriverLocker sync.Locker
-				NetAddrs     ipfsutil.NetAddrs
+				NetAddrs     mdns.NetAddrs
 			} `json:"MDNS,omitempty"`
 			Ble struct {
 				Enable bool `json:"Enable,omitempty"`

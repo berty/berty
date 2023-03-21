@@ -59,4 +59,4 @@ yq 4.30.8
 # buf 1.14.0 is simply the most recent version available to date (02/23).
 # There is no contraindication for updating it.
 #-----
-buf 1.14.0
+buf 1.15.1
