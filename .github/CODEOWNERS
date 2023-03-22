@@ -9,9 +9,6 @@
 ## by folders
 ##
 
-# root files (config, doc, etc)
-/* @moul
-
 # doc
 /docs/ @berty/tech
 
@@ -19,7 +16,7 @@
 /js/ @berty/js-owners
 
 # golang files
-/go/ @berty/go-owners @moul
+/go/ @berty/go-owners
 /go/internal/ @berty/go-owners
 
 # protos
@@ -42,5 +39,5 @@ Makefile @berty/build-owners
 ##
 
 # public APIs
-/go/pkg/bertymessenger/ @berty/go-owners @moul
-/api/messengertypes/messengertypes.proto @berty/go-owners @berty/js-owners @moul
+/go/pkg/bertymessenger/ @berty/go-owners
+/api/messengertypes/messengertypes.proto @berty/go-owners @berty/js-owners
