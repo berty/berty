@@ -1,8 +1,6 @@
 name: "Bug report"
 description: Report a bug found while using the Berty apps or packages.
 labels: ["bug", "🔍 Ready for Review"]
-assignees:
-- peletron
 body:
   - type: checkboxes
     attributes:
