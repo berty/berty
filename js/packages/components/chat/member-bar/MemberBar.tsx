@@ -1,6 +1,5 @@
-import LottieView from 'lottie-react-native'
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { StyleSheet, TouchableOpacity, View } from 'react-native'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import { ActivityIndicator, StyleSheet, TouchableOpacity, View } from 'react-native'
 
 import beapi from '@berty/api'
 import {
@@ -27,7 +26,6 @@ interface MemberBarProps {
 
 export const MemberBar: React.FC<MemberBarProps> = props => {
 	const navigation = useNavigation()
-	const [animationStep, setAnimationStep] = useState(0)
 	const messengerClient = useMessengerClient()
 	const dispatch = useAppDispatch()
 	const peers = useAppSelector(selectPeerNetworkStatusDict)
@@ -38,8 +36,6 @@ export const MemberBar: React.FC<MemberBarProps> = props => {
 
 	const [memberList, setMemberList] = useState<MemberBarItem[] | undefined>(undefined)
 	const [isOneConnected, setIsOneConnected] = useState<boolean>(false)
-
-	const cometAnim = useRef<LottieView>(null)
 
 	const handleMemberList = useCallback(async () => {
 		const list: MemberBarItem[] = []
@@ -55,14 +51,18 @@ export const MemberBar: React.FC<MemberBarProps> = props => {
 			)
 			const peer = action.payload as PeerNetworkStatus
 
-			if (peer?.connectionStatus === beapi.protocol.GroupDeviceStatus.Type.TypePeerConnected) {
+			if (
+				peer?.alreadyConnected ||
+				peer?.connectionStatus === beapi.protocol.GroupDeviceStatus.Type.TypePeerConnected
+			) {
 				connected = true
+				list.push({
+					networkStatus: peer,
+					publicKey: member.publicKey ?? undefined,
+					alreadyConnected: peer?.alreadyConnected,
+				})
 			}
 
-			list.push({
-				networkStatus: peer,
-				publicKey: member.publicKey ?? undefined,
-			})
 			// TODO: find a optimized way to push in the list 5 interested peers and not 5 firsts members
 			if (list.length >= 5) {
 				break
@@ -70,10 +70,6 @@ export const MemberBar: React.FC<MemberBarProps> = props => {
 		}
 
 		setIsOneConnected(connected)
-		if (!connected) {
-			// reset animation
-			setAnimationStep(0)
-		}
 
 		setMemberList(
 			list.sort((a, b) => {
@@ -101,34 +97,10 @@ export const MemberBar: React.FC<MemberBarProps> = props => {
 			style={styles.container}
 		>
 			<View style={styles.barWidth}>
-				{animationStep === 0 && (
-					<LottieView
-						autoPlay
-						style={styles.lottieWidth}
-						source={require('@berty/assets/lottie/network_status_animations/orange.json')}
-						loop={false}
-						speed={1}
-						ref={cometAnim}
-						onAnimationFinish={() => {
-							if (isOneConnected) {
-								setAnimationStep(1)
-							} else {
-								cometAnim.current?.play()
-							}
-						}}
-					/>
-				)}
-				{animationStep === 1 && (
-					<LottieView
-						autoPlay
-						style={styles.lottieWidth}
-						source={require('@berty/assets/lottie/network_status_animations/blue.json')}
-						onAnimationFinish={() => setAnimationStep(2)}
-						loop={false}
-					/>
-				)}
-				{animationStep === 2 && memberList !== undefined && (
+				{isOneConnected && memberList !== undefined ? (
 					<Avatars convId={props.convId} membersLength={members.length} memberList={memberList} />
+				) : (
+					<ActivityIndicator />
 				)}
 			</View>
 			<Boosted />

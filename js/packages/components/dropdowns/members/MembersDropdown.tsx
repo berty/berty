@@ -49,6 +49,7 @@ const MemberItem: React.FC<MemberItemProps> = ({ onPress, convPK, item }) => {
 				id: '',
 				transport: beapi.messenger.StreamEvent.PeerStatusConnected.Transport.Unknown,
 				connectionStatus: beapi.protocol.GroupDeviceStatus.Type.TypePeerDisconnected,
+				alreadyConnected: false,
 			}
 			setPeer((peerFromMemberPK.payload as PeerNetworkStatus) || fallBackPeer)
 		}
