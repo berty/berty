@@ -18,6 +18,7 @@ import (
 	"go.uber.org/zap"
 
 	"berty.tech/weshnet/pkg/logutil"
+	"berty.tech/weshnet/pkg/netmanager"
 )
 
 const (
@@ -273,4 +274,38 @@ func filterMulticastInterfaces(ifaces []net.Interface) []net.Interface {
 	}
 
 	return interfaces
+}
+
+type NetworkManagerConfig struct {
+	Logger              *zap.Logger
+	NetManager          *netmanager.NetManager
+	Service             p2p_mdns.Service
+	InitialConnectivity netmanager.ConnectivityInfo
+}
+
+func NetworkManagerHandler(ctx context.Context, cfg NetworkManagerConfig) {
+	currentState := cfg.InitialConnectivity
+
+	for {
+		ok, _ := cfg.NetManager.WaitForStateChange(ctx, &currentState,
+			netmanager.ConnectivityNetTypeChanged)
+
+		if !ok {
+			return
+		}
+
+		currentState = cfg.NetManager.GetCurrentState()
+
+		if err := cfg.Service.Close(); err != nil {
+			cfg.Logger.Warn("mdns clould not be closed", zap.Error(err))
+		}
+
+		if currentState.NetType == netmanager.ConnectivityNetWifi {
+			cfg.Logger.Info("wifi connectivity restored, restarting mdns")
+
+			if err := cfg.Service.Start(); err != nil {
+				cfg.Logger.Warn("mdns clould not start", zap.Error(err))
+			}
+		}
+	}
 }
