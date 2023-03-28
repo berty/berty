@@ -8,9 +8,9 @@ import (
 	"testing"
 	"time"
 
+	"github.com/ipfs/go-cid"
 	"github.com/ipfs/go-datastore"
 	dssync "github.com/ipfs/go-datastore/sync"
-	"github.com/libp2p/go-libp2p/core/event"
 	mocknet "github.com/libp2p/go-libp2p/p2p/net/mock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -21,6 +21,8 @@ import (
 	"berty.tech/berty/v2/go/pkg/bertyreplication"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	orbitdb "berty.tech/go-orbit-db"
+	"berty.tech/go-orbit-db/iface"
+	"berty.tech/go-orbit-db/stores"
 	"berty.tech/weshnet"
 	"berty.tech/weshnet/pkg/authtypes"
 	"berty.tech/weshnet/pkg/bertyauth"
@@ -32,8 +34,6 @@ import (
 )
 
 func TestNewReplicationService(t *testing.T) {
-	t.Skip("replication is not working, skipping for now")
-
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
@@ -56,8 +56,7 @@ func TestNewReplicationService(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	db, cleanup := bertyreplication.DBForTests(t, nil)
-	defer cleanup()
+	db := bertyreplication.DBForTests(t, nil)
 
 	repl, err := bertyreplication.NewReplicationService(ctx, db, odb, zap.NewNop())
 	require.NoError(t, err)
@@ -65,8 +64,6 @@ func TestNewReplicationService(t *testing.T) {
 }
 
 func TestReplicationService_GroupSubscribe(t *testing.T) {
-	t.Skip("replication is not working, skipping for now")
-
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
@@ -75,10 +72,9 @@ func TestReplicationService_GroupSubscribe(t *testing.T) {
 
 	msrv := tinder.NewMockDriverServer()
 
-	db, cleanup := bertyreplication.DBForTests(t, zap.NewNop())
-	defer cleanup()
+	db := bertyreplication.DBForTests(t, zap.NewNop())
 
-	repl := bertyreplication.TestHelperNewReplicationService(ctx, t, nil, mn, msrv, nil, db)
+	repl, _ := bertyreplication.TestHelperNewReplicationService(ctx, t, nil, mn, msrv, nil, db)
 
 	g, _, err := weshnet.NewGroupMultiMember()
 	require.NoError(t, err)
@@ -96,8 +92,6 @@ func TestReplicationService_GroupSubscribe(t *testing.T) {
 }
 
 func TestReplicationService_GroupRegister(t *testing.T) {
-	t.Skip("replication is not working, skipping for now")
-
 	testutil.FilterStability(t, testutil.Flappy)
 
 	ds := dssync.MutexWrap(datastore.NewMapDatastore())
@@ -110,10 +104,9 @@ func TestReplicationService_GroupRegister(t *testing.T) {
 
 	msrv := tinder.NewMockDriverServer()
 
-	db, cleanup := bertyreplication.DBForTests(t, zap.NewNop())
-	defer cleanup()
+	db := bertyreplication.DBForTests(t, zap.NewNop())
 
-	repl := bertyreplication.TestHelperNewReplicationService(ctx, t, nil, mn, msrv, ds, db)
+	repl, _ := bertyreplication.TestHelperNewReplicationService(ctx, t, nil, mn, msrv, ds, db)
 
 	g, _, err := weshnet.NewGroupMultiMember()
 	require.NoError(t, err)
@@ -140,15 +133,13 @@ func TestReplicationService_GroupRegister(t *testing.T) {
 	cancel()
 
 	// Test reopening the replication manager, the previously registered group should be present
-	repl = bertyreplication.TestHelperNewReplicationService(ctx, t, nil, mn, msrv, ds, db)
+	repl, _ = bertyreplication.TestHelperNewReplicationService(ctx, t, nil, mn, msrv, ds, db)
 
 	ok := repl.OrbitDB().IsGroupLoaded(g.GroupIDAsString())
 	require.True(t, ok)
 }
 
 func TestReplicationService_ReplicateGroupStats_ReplicateGlobalStats(t *testing.T) {
-	t.Skip("KUBO: instable test, disable it for now")
-
 	ds := dssync.MutexWrap(datastore.NewMapDatastore())
 
 	ctx, cancel := context.WithCancel(context.Background())
@@ -171,10 +162,9 @@ func TestReplicationService_ReplicateGroupStats_ReplicateGlobalStats(t *testing.
 	api1 := ipfsutil.TestingCoreAPIUsingMockNet(ctx, t, ipfsOpts1)
 	odb1 := weshnet.NewTestOrbitDB(ctx, t, zap.NewNop(), api1, ipfsOpts1.Datastore)
 
-	db, cleanup := bertyreplication.DBForTests(t, zap.NewNop())
-	defer cleanup()
+	db := bertyreplication.DBForTests(t, zap.NewNop())
 
-	repl := bertyreplication.TestHelperNewReplicationService(ctx, t, nil, mn, msrv, ds, db)
+	repl, _ := bertyreplication.TestHelperNewReplicationService(ctx, t, nil, mn, msrv, ds, db)
 
 	require.NoError(t, mn.LinkAll())
 	require.NoError(t, mn.ConnectAllButSelf())
@@ -373,8 +363,6 @@ func TestReplicationService_ReplicateGroupStats_ReplicateGlobalStats(t *testing.
 }
 
 func TestReplicationService_Flow(t *testing.T) {
-	t.Skip("replication is not working, skipping for now")
-
 	testutil.FilterSpeed(t, testutil.Slow)
 
 	logger, cleanup := testutil.Logger(t)
@@ -399,15 +387,6 @@ func TestReplicationService_Flow(t *testing.T) {
 	defer mn.Close()
 
 	msrv := tinder.NewMockDriverServer()
-
-	rdvp, err := mn.GenPeer()
-	require.NoError(t, err, "failed to generate mocked peer")
-
-	defer rdvp.Close()
-
-	_, cleanrdvp := ipfsutil.TestingRDVP(ctx, t, rdvp)
-	defer cleanrdvp()
-
 	ipfsOpts1 := &ipfsutil.TestingAPIOpts{
 		Logger:          logger,
 		Mocknet:         mn,
@@ -422,24 +401,19 @@ func TestReplicationService_Flow(t *testing.T) {
 		Datastore:       datastoreutil.NewNamespacedDatastore(baseDS, datastore.NewKey("peer2")),
 	}
 
-	require.NoError(t, mn.ConnectAllButSelf())
-
 	api1 := ipfsutil.TestingCoreAPIUsingMockNet(ctx, t, ipfsOpts1)
 	odb1 := weshnet.NewTestOrbitDB(ctx, t, logger, api1, ipfsOpts1.Datastore)
 	api2 := ipfsutil.TestingCoreAPIUsingMockNet(ctx, t, ipfsOpts2)
 	odb2 := weshnet.NewTestOrbitDB(ctx, t, logger, api2, ipfsOpts2.Datastore)
 
 	tokenSecret, tokenPK, _ := bertyauth.HelperGenerateTokenIssuerSecrets(t)
-	replPeer, cancel := bertyreplication.NewReplicationMockedPeer(ctx, t, tokenSecret, tokenPK, &weshnet.TestingOpts{
+	replPeer := bertyreplication.NewReplicationMockedPeer(ctx, t, tokenSecret, tokenPK, &weshnet.TestingOpts{
 		Mocknet:         mn,
 		DiscoveryServer: msrv,
 	})
 	defer cancel()
 
 	err = mn.LinkAll()
-	require.NoError(t, err)
-
-	err = mn.ConnectAllButSelf()
 	require.NoError(t, err)
 
 	gA, _, err := weshnet.NewGroupMultiMember()
@@ -470,160 +444,91 @@ func TestReplicationService_Flow(t *testing.T) {
 		})
 		require.NoError(t, err)
 	}
-	t.Log(" --- Registered group on replication service ---")
+	// end register group
 
 	t.Log(" --- Sending sync messages ---")
 	{
-		sub1a, err := g1a.MetadataStore().EventBus().Subscribe(new(protocoltypes.GroupMetadataEvent))
+		ctx, cancel := context.WithTimeout(ctx, time.Second*5)
+		defer cancel()
+
+		m1, m2 := g1a.MetadataStore(), g2a.MetadataStore()
+
+		op1, err := m1.SendAppMetadata(ctx, []byte("From 1 - 1"))
 		require.NoError(t, err)
 
-		sub2a, err := g2a.MetadataStore().EventBus().Subscribe(new(protocoltypes.GroupMetadataEvent))
+		op2, err := m2.SendAppMetadata(ctx, []byte("From 2 - 1"))
 		require.NoError(t, err)
 
-		_, err = g1a.MetadataStore().SendAppMetadata(ctx, []byte("From 1 - 1"))
+		entries := []cid.Cid{op1.GetEntry().GetHash(), op2.GetEntry().GetHash()}
+
+		err = WaitForEntries(ctx, m1, entries...)
 		require.NoError(t, err)
 
-		_, err = g2a.MetadataStore().SendAppMetadata(ctx, []byte("From 2 - 1"))
+		err = WaitForEntries(ctx, m2, entries...)
 		require.NoError(t, err)
 
-		var evt interface{}
-		subs := []event.Subscription{sub1a, sub2a}
-		for _, sub := range subs {
-			for i := 0; i < 2; {
-				select {
-				case <-time.After(time.Second * 2):
-					require.FailNow(t, "timeout while waiting for message")
-				case evt = <-sub.Out():
-				}
-
-				if evt.(protocoltypes.GroupMetadataEvent).Metadata.EventType == protocoltypes.EventTypeGroupMetadataPayloadSent {
-					i++
-				}
-			}
-			sub.Close()
-		}
-
-		// wait for event to be fully replicated
-		// @FIXME(gfanton) this should not happen, edit metadatastore to emit when
-		// event has been replicated only ?
-		time.Sleep(time.Second)
-
-		evts1, err := g1a.MetadataStore().ListEvents(ctx, nil, nil, false)
+		evts1, err := m1.ListEvents(ctx, nil, nil, false)
 		require.NoError(t, err)
 		ops1 := testutil.TestFilterAppMetadata(t, evts1)
 		require.NoError(t, err)
+		assert.Equal(t, 2, len(ops1))
 
-		evts2, err := g2a.MetadataStore().ListEvents(ctx, nil, nil, false)
+		evts2, err := m2.ListEvents(ctx, nil, nil, false)
 		require.NoError(t, err)
 		ops2 := testutil.TestFilterAppMetadata(t, evts2)
 		require.NoError(t, err)
-
-		assert.Equal(t, 2, len(ops1))
 		assert.Equal(t, 2, len(ops2))
-
-		odb2.Close()
 	}
-	t.Log(" --- Sent sync messages ---")
-	t.Log(" --- Closed peer 2 ---")
+	// sending sync message done
+
+	t.Log(" --- Disconnect peer 2 from peer 1 and repl service ---")
+	{
+		p2 := mn.Host(api2.MockNode().Identity)
+		p2.Network().ClosePeer(api1.MockNode().Identity)
+		p2.Network().ClosePeer(replPeer.CoreAPI.MockNode().Identity)
+	}
+	// disconnect peer 2 done
 
 	const messageAmount = 50
+	entries := make([]cid.Cid, messageAmount)
 
-	t.Log(" --- Sending async messages ---")
+	t.Logf(" --- Sending %d async messages ---", messageAmount)
 	{
+		ctx, cancel := context.WithTimeout(ctx, time.Second*2)
+		defer cancel()
 
-		sub2a, err := g1a.MetadataStore().EventBus().Subscribe(new(protocoltypes.GroupMetadataEvent))
-		require.NoError(t, err)
-
-		cerr := make(chan error)
-		go func() {
-			var evt interface{}
-			defer close(cerr)
-			defer sub2a.Close()
-
-			for i := 0; i < messageAmount; {
-				select {
-				case <-time.After(time.Second * 5):
-					cerr <- fmt.Errorf("timeout while waiting for event")
-					return
-				case evt = <-sub2a.Out():
-				}
-
-				if evt.(protocoltypes.GroupMetadataEvent).Metadata.EventType == protocoltypes.EventTypeGroupMetadataPayloadSent {
-					i++
-				}
-			}
-		}()
+		m1 := g1a.MetadataStore()
 
 		for i := 0; i < messageAmount; i++ {
-			_, err = g1a.MetadataStore().SendAppMetadata(ctx, []byte(fmt.Sprintf("From 1 - 2: %d", i)))
+			op, err := m1.SendAppMetadata(ctx, []byte(fmt.Sprintf("From 1 - 2: %d", i)))
 			require.NoError(t, err)
+			entries[i] = op.GetEntry().GetHash()
 		}
 
-		err = <-cerr
+		err = WaitForEntries(ctx, m1, entries...)
 		require.NoError(t, err)
-
-		odb1.Close()
 	}
-	t.Log(" --- Sent async messages, should be replicated on service ---")
-	t.Log(" --- Closed peer 1 ---")
+	// sending async message done
 
-	t.Log(" --- Opening peer 2, and its db ---")
+	t.Log(" --- peer 2 connect to replication service and wait for async messages ---")
 	{
-		api2 = ipfsutil.TestingCoreAPIUsingMockNet(ctx, t, ipfsOpts2)
+		ctx, cancel := context.WithTimeout(ctx, time.Second*5)
+		defer cancel()
 
-		odb2 = weshnet.NewTestOrbitDB(ctx, t, logger, api2, ipfsOpts2.Datastore)
-		defer odb2.Close()
-
-		g2a, err = odb2.OpenGroup(ctx, gA, nil)
-		require.NoError(t, err)
-		defer g2a.Close()
-
-		sub2a, err := g2a.MetadataStore().EventBus().Subscribe(new(protocoltypes.GroupMetadataEvent))
+		// reconnect peer 2 to peer 1
+		m2 := g2a.MetadataStore()
+		p2 := mn.Host(api2.MockNode().Identity)
+		repladdrs := replPeer.CoreAPI.MockNode().Peerstore.PeerInfo(replPeer.CoreAPI.MockNode().Identity)
+		err = p2.Connect(ctx, repladdrs)
 		require.NoError(t, err)
 
-		cerr := make(chan error)
-		go func() {
-			var evt interface{}
-
-			defer close(cerr)
-			defer sub2a.Close()
-
-			for i := 0; i < messageAmount; {
-				select {
-				case <-time.After(time.Second * 5):
-					cerr <- fmt.Errorf("timeout while waiting for event")
-					return
-				case evt = <-sub2a.Out():
-				}
-
-				if evt.(protocoltypes.GroupMetadataEvent).Metadata.EventType == protocoltypes.EventTypeGroupMetadataPayloadSent {
-					i++
-				}
-			}
-		}()
-
-		err = mn.LinkAll()
+		err := WaitForEntries(ctx, m2, entries...)
 		require.NoError(t, err)
-
-		err = mn.ConnectAllButSelf()
-		require.NoError(t, err)
-
-		err = <-cerr
-		require.NoError(t, err)
-
-		t.Log(" --- Waited for peer 2 to replicate data ---")
-
-		evts2, err := g2a.MetadataStore().ListEvents(ctx, nil, nil, false)
-		require.NoError(t, err)
-		ops2 := testutil.TestFilterAppMetadata(t, evts2)
-		require.NoError(t, err)
-		assert.Equal(t, messageAmount+2, len(ops2)) // ammount of message + 2 sync
 	}
+	// peer 2 test done
 }
 
 func TestReplicationService_InvalidFlow(t *testing.T) {
-	t.Skip("replication is not working, skipping for now")
-
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
@@ -645,7 +550,7 @@ func TestReplicationService_InvalidFlow(t *testing.T) {
 	msrv := tinder.NewMockDriverServer()
 
 	tokenSecret, tokenPK, _ := bertyauth.HelperGenerateTokenIssuerSecrets(t)
-	replPeer, cancel := bertyreplication.NewReplicationMockedPeer(ctx, t, tokenSecret, tokenPK, &weshnet.TestingOpts{
+	replPeer := bertyreplication.NewReplicationMockedPeer(ctx, t, tokenSecret, tokenPK, &weshnet.TestingOpts{
 		Mocknet:         mn,
 		DiscoveryServer: msrv,
 	})
@@ -670,4 +575,36 @@ func TestReplicationService_InvalidFlow(t *testing.T) {
 		Group: groupReplicable,
 	})
 	require.Error(t, err)
+}
+
+func WaitForEntries(ctx context.Context, store iface.Store, hashs ...cid.Cid) error {
+	sub, err := store.EventBus().Subscribe(new(stores.EventReplicated))
+	if err != nil {
+		return fmt.Errorf("unable to subscribe to store: %w", err)
+	}
+	defer sub.Close()
+
+	missing := map[cid.Cid]struct{}{}
+	for _, hash := range hashs {
+		if _, found := store.OpLog().Get(hash); found {
+			continue
+		}
+
+		missing[hash] = struct{}{}
+	}
+
+	for len(missing) > 0 {
+		select {
+		case e := <-sub.Out():
+			evt := e.(stores.EventReplicated)
+			for _, entry := range evt.Entries {
+				delete(missing, entry.GetHash())
+			}
+
+		case <-ctx.Done():
+			return fmt.Errorf("%w (missing %d elements)", ctx.Err(), len(missing))
+		}
+	}
+
+	return nil
 }

@@ -32,10 +32,11 @@ import (
 )
 
 type TestingReplicationPeer struct {
+	CoreAPI ipfsutil.CoreAPIMock
 	Service ReplicationService
 }
 
-func DBForTests(t testing.TB, logger *zap.Logger) (*gorm.DB, func()) {
+func DBForTests(t testing.TB, logger *zap.Logger) *gorm.DB {
 	if logger == nil {
 		logger = zap.NewNop()
 	}
@@ -48,14 +49,15 @@ func DBForTests(t testing.TB, logger *zap.Logger) (*gorm.DB, func()) {
 		require.NoError(t, err)
 	}
 
-	return db, func() {
-		sqlDB, err := db.DB()
-		require.NoError(t, err)
-		sqlDB.Close()
-	}
+	sqlDB, err := db.DB()
+	require.NoError(t, err)
+
+	t.Cleanup(func() { _ = sqlDB.Close() })
+
+	return db
 }
 
-func TestHelperNewReplicationService(ctx context.Context, t *testing.T, logger *zap.Logger, mn libp2p_mocknet.Mocknet, msrv *tinder.MockDriverServer, ds datastore.Batching, db *gorm.DB) *replicationService {
+func TestHelperNewReplicationService(ctx context.Context, t *testing.T, logger *zap.Logger, mn libp2p_mocknet.Mocknet, msrv *tinder.MockDriverServer, ds datastore.Batching, db *gorm.DB) (*replicationService, ipfsutil.CoreAPIMock) {
 	t.Helper()
 
 	if ds == nil {
@@ -68,7 +70,11 @@ func TestHelperNewReplicationService(ctx context.Context, t *testing.T, logger *
 		DiscoveryServer: msrv,
 		Datastore:       ds,
 	})
+
 	odb, err := weshnet.NewWeshOrbitDB(ctx, api.API(), &weshnet.NewOrbitDBOptions{
+		// GroupMetadataStoreType: initutil.DefaultBertyGroupMetadataStoreType,
+		// GroupMessageStoreType:  initutil.DefaultBertyGroupMessageStoreType,
+		ReplicationMode: true,
 		NewOrbitDBOptions: orbitdb.NewOrbitDBOptions{
 			Logger: logger,
 			Cache:  weshnet.NewOrbitDatastoreCache(ds),
@@ -83,20 +89,22 @@ func TestHelperNewReplicationService(ctx context.Context, t *testing.T, logger *
 	svc, ok := repl.(*replicationService)
 	require.True(t, ok)
 
-	return svc
+	return svc, api
 }
 
-func NewReplicationMockedPeer(ctx context.Context, t *testing.T, secret []byte, sk ed25519.PublicKey, opts *weshnet.TestingOpts) (*TestingReplicationPeer, func()) {
+func NewReplicationMockedPeer(ctx context.Context, t *testing.T, secret []byte, sk ed25519.PublicKey, opts *weshnet.TestingOpts) *TestingReplicationPeer {
 	// TODO: handle auth
 	_ = secret
 	_ = sk
 
-	db, cleanup := DBForTests(t, zap.NewNop())
-	replServ := TestHelperNewReplicationService(ctx, t, opts.Logger, opts.Mocknet, opts.DiscoveryServer, nil, db)
+	db := DBForTests(t, zap.NewNop())
+
+	replServ, api := TestHelperNewReplicationService(ctx, t, opts.Logger, opts.Mocknet, opts.DiscoveryServer, nil, db)
 
 	return &TestingReplicationPeer{
+		CoreAPI: api,
 		Service: replServ,
-	}, cleanup
+	}
 }
 
 func TestReplicateMessage(t *testing.T) {
@@ -131,7 +139,7 @@ func TestReplicateMessage(t *testing.T) {
 
 	tokenSecret, tokenPK, tokenSK := bertyauth.HelperGenerateTokenIssuerSecrets(t)
 
-	replPeer, cancel := NewReplicationMockedPeer(ctx, t, tokenSecret, tokenPK, &weshnet.TestingOpts{
+	replPeer := NewReplicationMockedPeer(ctx, t, tokenSecret, tokenPK, &weshnet.TestingOpts{
 		Logger:          logger.Named("repl"),
 		Mocknet:         mn,
 		DiscoveryServer: msrv,
