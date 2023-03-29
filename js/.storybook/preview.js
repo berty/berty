@@ -3,6 +3,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { NavigationContainer } from '@react-navigation/native'
 import { ScrollView, StyleSheet, View } from 'react-native'
 import AppCommonProviders from '@berty/contexts/AppCommonProviders'
+import './addons'
 
 export const decorators = []
 export const parameters = {}
@@ -23,6 +24,7 @@ export const NavigationDecorator = story => {
 		<NavigationContainer independent={true}>
 			<StoryBookStack.Navigator>
 				<StoryBookStack.Screen
+					screenOptions={{ headerShown: false }}
 					name='MyStorybookScreen'
 					component={Screen}
 					options={{ header: () => null }}

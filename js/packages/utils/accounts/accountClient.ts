@@ -15,6 +15,15 @@ import { convertMAddr } from '../ipfs/convertMAddr'
 const createAccountClient = () => {
 	const middleware = logger.create('ACCOUNT')
 
+	const isRunningStorybook = __DEV__ && process.env.STORYBOOK
+	if (isRunningStorybook) {
+		return createServiceClient(
+			beapi.account.AccountService,
+			rpcMock(new AccountServiceMock()),
+			middleware,
+		)
+	}
+
 	if (Platform.OS === 'web') {
 		if (window.location.hash) {
 			const defaultMAddr =

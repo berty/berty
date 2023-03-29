@@ -75,6 +75,7 @@ help:
 	@echo "  web.build            Build a production build for web"
 	@echo "  regenerate           Clean and generate Protobuf files"
 	@echo "  test                 Run tests"
+	@echo "  snapshot             Update snapshot files"
 	@echo "  e2e-tests.server     Run appium server"
 	@echo "  e2e-tests.tests      Run appium e2e tests"
 
@@ -104,6 +105,11 @@ e2e-tests.ci-flow: e2e-tests/node_modules
 test: node_modules
 	$(call check-program, yarn)
 	yarn test --coverage
+
+.PHONY: snapshot
+snapshot: node_modules
+	$(call check-program, yarn)
+	yarn test -u
 
 #### Gen
 

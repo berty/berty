@@ -51,6 +51,8 @@ const getStories = () => {
     "./packages/components/inputs/Input.stories.tsx": require("../packages/components/inputs/Input.stories.tsx"),
     "./packages/screens/chat/Home/components/HomeComponents.stories.tsx": require("../packages/screens/chat/Home/components/HomeComponents.stories.tsx"),
     "./packages/screens/chat/Home/Home.stories.tsx": require("../packages/screens/chat/Home/Home.stories.tsx"),
+    "./packages/screens/onboarding/Onboarding.stories.tsx": require("../packages/screens/onboarding/Onboarding.stories.tsx"),
+    "./packages/screens/settings/Settings.stories.tsx": require("../packages/screens/settings/Settings.stories.tsx"),
   };
 };
 
