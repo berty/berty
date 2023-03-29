@@ -29,6 +29,7 @@ import (
 	"github.com/libp2p/go-libp2p/p2p/host/autorelay"
 	connmgr "github.com/libp2p/go-libp2p/p2p/net/connmgr"
 	quict "github.com/libp2p/go-libp2p/p2p/transport/quic"
+	"github.com/libp2p/go-libp2p/p2p/transport/quicreuse"
 	tcpt "github.com/libp2p/go-libp2p/p2p/transport/tcp"
 	ma "github.com/multiformats/go-multiaddr"
 	manet "github.com/multiformats/go-multiaddr/net"
@@ -495,11 +496,13 @@ func (m *Manager) setupIPFSConfig(cfg *ipfs_cfg.Config) ([]libp2p.Option, error)
 	}
 
 	// disable original connection manager
-	cfg.Swarm.ConnMgr.Type = "none"
+	cfg.Swarm.ConnMgr.Type = ipfs_cfg.NewOptionalString("none")
 
 	// configure custom conn manager
 	cm, err := connmgr.NewConnManager(
-		cfg.Swarm.ConnMgr.LowWater, cfg.Swarm.ConnMgr.HighWater, connmgr.WithGracePeriod(ipfs_cfg.DefaultConnMgrGracePeriod),
+		int(cfg.Swarm.ConnMgr.LowWater.WithDefault(50)),
+		int(cfg.Swarm.ConnMgr.HighWater.WithDefault(100)),
+		connmgr.WithGracePeriod(ipfs_cfg.DefaultConnMgrGracePeriod),
 	)
 	if err != nil {
 		return nil, errcode.ErrIPFSSetupConfig.Wrap(err)
@@ -607,7 +610,7 @@ func (m *Manager) setupIPFSConfig(cfg *ipfs_cfg.Config) ([]libp2p.Option, error)
 
 		p2popts = append(p2popts, libp2p.EnableAutoRelay(
 			autorelay.WithStaticRelays(peers),
-			autorelay.WithCircuitV1Support(),
+			// autorelay.WithCircuitV1Support(),
 		))
 	}
 
@@ -621,7 +624,7 @@ func (m *Manager) setupIPFSConfig(cfg *ipfs_cfg.Config) ([]libp2p.Option, error)
 	// @NOTE(gfanton): disable quic transport so we can init a custom transport
 	// with reusport disable
 	cfg.Swarm.Transports.Network.QUIC = ipfs_cfg.False
-	p2popts = append(p2popts, libp2p.Transport(quict.NewTransport, quict.DisableReuseport()))
+	p2popts = append(p2popts, libp2p.Transport(quict.NewTransport), libp2p.QUICReuse(quicreuse.NewConnManager, quicreuse.DisableReuseport()))
 
 	// @NOTE(gfanton): disable tcp transport so we can init a custom transport
 	// with reusport disable

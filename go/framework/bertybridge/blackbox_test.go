@@ -20,6 +20,9 @@ import (
 )
 
 func Example() {
+	// disable ressources manager for the sake of this example
+	os.Setenv("LIBP2P_RCMGR", "false")
+
 	tmpdir, err := ioutil.TempDir("", "example")
 	checkErr(err)
 	defer os.RemoveAll(tmpdir)
@@ -208,6 +211,7 @@ func Example() {
 	// Output:
 	// [+] initialized.
 	// [+] account created.
+	// go-libp2p resource manager protection disabled
 	// [+] account opened.
 	// [+] has grpc-web listener:            false
 	// [+] has websocket listener:           true

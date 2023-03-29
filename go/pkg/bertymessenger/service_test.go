@@ -1675,7 +1675,7 @@ func TestAck(t *testing.T) {
 	})
 	require.NoError(t, err)
 	require.NotEmpty(t, interactRes.GetCID())
-	time.Sleep(1 * time.Second)
+	time.Sleep(2 * time.Second)
 
 	// check reply interaction in nodes
 	for _, user := range nodes {

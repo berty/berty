@@ -9,6 +9,7 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"os"
 	"runtime"
 	"sync"
 	"testing"
@@ -60,6 +61,9 @@ func verifyRunningLeakDetection(t *testing.T) {
 		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p/p2p/net/upgrader.(*listener).Accept"),                          // sometimes happening on CI, need more investigation
 		goleak.IgnoreTopFunction("berty.tech/weshnet/pkg/ipfsutil.(*mdnsService).startResolver.func1"),                       // upstream issue of mdns, go wakeup periodiclly to do action before check exist, timeout about 10 seconds
 		goleak.IgnoreTopFunction("github.com/lucas-clemente/quic-go.(*packetHandlerMap).runCloseQueue"),                      // quic-go should be manager by libp2p
+		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p/p2p/transport/quicreuse.(*reuse).gc"),                          // managed by ipfs
+		goleak.IgnoreTopFunction("github.com/quic-go/quic-go.(*packetHandlerMap).runCloseQueue"),                             // managed by ipfs
+		goleak.IgnoreTopFunction("net/http.(*persistConn).writeLoop"),                                                        // managed by ipfs
 		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p/p2p/transport/quic.(*reuse).gc"),                               // quic-go should be manager by libp2p
 		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p/p2p/host/basic.(*BasicHost).background"),                       // sometimes happening on CI, need more investigation
 		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p/p2p/host/basic.(*BasicHost).dialPeer"),                         // sometimes happening on CI, need more investigation
@@ -110,6 +114,9 @@ func Example_flags() {
 }
 
 func Example_noflags() {
+	// disable ressources manager for the sake of this example
+	os.Setenv("LIBP2P_RCMGR", "false")
+
 	// init manager
 	ctx := context.Background()
 	manager, err := initutil.New(nil)
@@ -150,6 +157,7 @@ func Example_noflags() {
 	fmt.Println(ret.AccountPK != nil)
 
 	// Output:
+	// go-libp2p resource manager protection disabled
 	// true
 }
 
