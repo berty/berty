@@ -254,15 +254,6 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 		dh := mdns.DiscoveryHandler(ctx, mdnslogger, h)
 		mdnsService := mdns.NewMdnsService(mdnslogger, h, mdns.MDNSServiceName, dh)
 
-		// get multicast interfaces
-		ifaces, err := mdns.GetMulticastInterfaces()
-		if err != nil {
-			return nil, nil, errcode.ErrIPFSInit.Wrap(err)
-		}
-
-		initalConnectivity := netmanager.ConnectivityInfo{}
-
-		// if multicast interfaces is found, start mdns service
 		if m.Node.Protocol.NetManager == nil {
 			m.Node.Protocol.NetManager = netmanager.NewNetManager(netmanager.ConnectivityInfo{
 				State:   netmanager.ConnectivityStateOn,
@@ -271,28 +262,15 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 			mdnslogger.Info("no network manager provided")
 		}
 
-		if len(ifaces) > 0 {
-			initalConnectivity = m.Node.Protocol.NetManager.GetCurrentState()
-			if initalConnectivity.NetType == netmanager.ConnectivityNetWifi {
-				mdnslogger.Info("starting mdns")
-				if err := mdnsService.Start(); err != nil {
-					return nil, nil, errcode.ErrIPFSInit.Wrap(err)
-				}
-			}
-		} else {
-			mdnslogger.Error("unable to start mdns service, no multicast interfaces found")
-		}
-
 		m.Node.Protocol.mdnsService = mdnsService
 
 		go func() {
-			mdnNetworkManagerConfig := mdns.NetworkManagerConfig{
-				Logger:              logger,
-				NetManager:          m.Node.Protocol.NetManager,
-				Service:             mdnsService,
-				InitialConnectivity: initalConnectivity,
+			mdnsNetworkManagerConfig := mdns.NetworkManagerConfig{
+				Logger:     logger,
+				NetManager: m.Node.Protocol.NetManager,
+				Service:    mdnsService,
 			}
-			mdns.NetworkManagerHandler(ctx, mdnNetworkManagerConfig)
+			mdns.NetworkManagerHandler(ctx, mdnsNetworkManagerConfig)
 		}()
 	}
 

@@ -58,31 +58,28 @@ func TestMdns(t *testing.T) {
 
 	require.NotNil(t, net)
 
-	svc := &fakeService{0, 0, sync.Mutex{}, sync.WaitGroup{}, sync.WaitGroup{}}
+	svc := &fakeService{}
 
 	go func() {
-		mdnNetworkManagerConfig := NetworkManagerConfig{
-			Logger:              logger,
-			NetManager:          net,
-			Service:             svc,
-			InitialConnectivity: netmanager.ConnectivityInfo{},
+		mdnsNetworkManagerConfig := NetworkManagerConfig{
+			Logger:     logger,
+			NetManager: net,
+			Service:    svc,
 		}
-		NetworkManagerHandler(ctx, mdnNetworkManagerConfig)
+		NetworkManagerHandler(ctx, mdnsNetworkManagerConfig)
 	}()
 
 	require.Equal(t, 0, svc.getCloseCount())
 	require.Equal(t, 0, svc.getStartCount())
 
-	svc.wgClose.Add(1)
 	svc.wgStart.Add(1)
 	net.UpdateState(netmanager.ConnectivityInfo{
 		State:   netmanager.ConnectivityStateOn,
 		NetType: netmanager.ConnectivityNetWifi,
 	})
-	svc.wgClose.Wait()
 	svc.wgStart.Wait()
 
-	require.Equal(t, 1, svc.getCloseCount())
+	require.Equal(t, 0, svc.getCloseCount())
 	require.Equal(t, 1, svc.getStartCount())
 
 	svc.wgClose.Add(1)
@@ -91,18 +88,16 @@ func TestMdns(t *testing.T) {
 	})
 	svc.wgClose.Wait()
 
-	require.Equal(t, 2, svc.getCloseCount())
+	require.Equal(t, 1, svc.getCloseCount())
 	require.Equal(t, 1, svc.getStartCount())
 
-	svc.wgClose.Add(1)
 	svc.wgStart.Add(1)
 	net.UpdateState(netmanager.ConnectivityInfo{
 		State:   netmanager.ConnectivityStateOn,
 		NetType: netmanager.ConnectivityNetWifi,
 	})
-	svc.wgClose.Wait()
 	svc.wgStart.Wait()
 
-	require.Equal(t, 3, svc.getCloseCount())
+	require.Equal(t, 1, svc.getCloseCount())
 	require.Equal(t, 2, svc.getStartCount())
 }

@@ -277,14 +277,13 @@ func filterMulticastInterfaces(ifaces []net.Interface) []net.Interface {
 }
 
 type NetworkManagerConfig struct {
-	Logger              *zap.Logger
-	NetManager          *netmanager.NetManager
-	Service             p2p_mdns.Service
-	InitialConnectivity netmanager.ConnectivityInfo
+	Logger     *zap.Logger
+	NetManager *netmanager.NetManager
+	Service    p2p_mdns.Service
 }
 
 func NetworkManagerHandler(ctx context.Context, cfg NetworkManagerConfig) {
-	currentState := cfg.InitialConnectivity
+	currentState := netmanager.ConnectivityInfo{}
 
 	for {
 		ok, _ := cfg.NetManager.WaitForStateChange(ctx, &currentState,
@@ -296,15 +295,15 @@ func NetworkManagerHandler(ctx context.Context, cfg NetworkManagerConfig) {
 
 		currentState = cfg.NetManager.GetCurrentState()
 
-		if err := cfg.Service.Close(); err != nil {
-			cfg.Logger.Warn("mdns clould not be closed", zap.Error(err))
-		}
-
 		if currentState.NetType == netmanager.ConnectivityNetWifi {
 			cfg.Logger.Info("wifi connectivity restored, restarting mdns")
 
 			if err := cfg.Service.Start(); err != nil {
 				cfg.Logger.Warn("mdns clould not start", zap.Error(err))
+			}
+		} else {
+			if err := cfg.Service.Close(); err != nil {
+				cfg.Logger.Warn("mdns clould not be closed", zap.Error(err))
 			}
 		}
 	}
