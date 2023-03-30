@@ -26,6 +26,7 @@ import (
 	"berty.tech/weshnet/pkg/lifecycle"
 	"berty.tech/weshnet/pkg/logutil"
 	mc "berty.tech/weshnet/pkg/multipeer-connectivity-driver"
+	"berty.tech/weshnet/pkg/netmanager"
 	"berty.tech/weshnet/pkg/protocoltypes"
 	proximity "berty.tech/weshnet/pkg/proximitytransport"
 	"berty.tech/weshnet/pkg/tyber"
@@ -58,6 +59,7 @@ type Options struct {
 	AppRootDirectory    string
 
 	MDNSLocker            sync.Locker
+	NetManager            *netmanager.NetManager
 	Languages             []language.Tag
 	ServiceClientRegister bertybridge.ServiceClientRegister
 	LifecycleManager      *lifecycle.Manager
@@ -74,6 +76,7 @@ type service struct {
 	rootCancel context.CancelFunc
 
 	mdnslocker   sync.Locker
+	netmanager   *netmanager.NetManager
 	notifManager notification.Manager
 	logger       *zap.Logger
 
@@ -135,6 +138,7 @@ func NewService(opts *Options) (_ Service, err error) {
 	opts.applyDefault()
 	s = &service{
 		mdnslocker:        opts.MDNSLocker,
+		netmanager:        opts.NetManager,
 		languages:         opts.Languages,
 		appRootDir:        opts.AppRootDirectory,
 		sharedRootDir:     opts.SharedRootDirectory,

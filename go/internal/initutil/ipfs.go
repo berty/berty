@@ -47,6 +47,7 @@ import (
 	ipfs_mobile "berty.tech/weshnet/pkg/ipfsutil/mobile"
 	"berty.tech/weshnet/pkg/logutil"
 	mc "berty.tech/weshnet/pkg/multipeer-connectivity-driver"
+	"berty.tech/weshnet/pkg/netmanager"
 	proximity "berty.tech/weshnet/pkg/proximitytransport"
 	"berty.tech/weshnet/pkg/rendezvous"
 	tinder "berty.tech/weshnet/pkg/tinder"
@@ -65,6 +66,11 @@ func (m *Manager) SetNBDriver(d proximity.ProximityDriver) {
 // Set mdns locker
 func (m *Manager) SetMDNSLocker(mlock sync.Locker) {
 	m.Node.Protocol.MDNS.DriverLocker = mlock
+}
+
+// Set network manager
+func (m *Manager) SetNetManager(netmanager *netmanager.NetManager) {
+	m.Node.Protocol.NetManager = netmanager
 }
 
 const (
@@ -248,23 +254,24 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 		dh := mdns.DiscoveryHandler(ctx, mdnslogger, h)
 		mdnsService := mdns.NewMdnsService(mdnslogger, h, mdns.MDNSServiceName, dh)
 
-		// get multicast interfaces
-		ifaces, err := mdns.GetMulticastInterfaces()
-		if err != nil {
-			return nil, nil, errcode.ErrIPFSInit.Wrap(err)
-		}
-
-		// if multicast interfaces is found, start mdns service
-		if len(ifaces) > 0 {
-			mdnslogger.Info("starting mdns")
-			if err := mdnsService.Start(); err != nil {
-				return nil, nil, errcode.ErrIPFSInit.Wrap(err)
-			}
-		} else {
-			mdnslogger.Error("unable to start mdns service, no multicast interfaces found")
+		if m.Node.Protocol.NetManager == nil {
+			m.Node.Protocol.NetManager = netmanager.NewNetManager(netmanager.ConnectivityInfo{
+				State:   netmanager.ConnectivityStateOn,
+				NetType: netmanager.ConnectivityNetWifi,
+			})
+			mdnslogger.Info("no network manager provided")
 		}
 
 		m.Node.Protocol.mdnsService = mdnsService
+
+		go func() {
+			mdnsNetworkManagerConfig := mdns.NetworkManagerConfig{
+				Logger:     logger,
+				NetManager: m.Node.Protocol.NetManager,
+				Service:    mdnsService,
+			}
+			mdns.NetworkManagerHandler(ctx, mdnsNetworkManagerConfig)
+		}()
 	}
 
 	// init extended api

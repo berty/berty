@@ -36,6 +36,7 @@ import (
 	"berty.tech/weshnet/pkg/ipfsutil"
 	"berty.tech/weshnet/pkg/lifecycle"
 	"berty.tech/weshnet/pkg/logutil"
+	"berty.tech/weshnet/pkg/netmanager"
 	"berty.tech/weshnet/pkg/protocoltypes"
 	proximity "berty.tech/weshnet/pkg/proximitytransport"
 	"berty.tech/weshnet/pkg/rendezvous"
@@ -139,6 +140,7 @@ type Manager struct {
 			PushPlatformToken      string        `json:"PushPlatformToken,omitempty"`
 			DevicePushKeyPath      string        `json:"DevicePushKeyPath,omitempty"`
 			RendezvousRotationBase time.Duration `json:"RendezvousRotationBase,omitempty"`
+			NetManager             *netmanager.NetManager
 
 			// internal
 			DisableDiscoverFilterAddrs bool

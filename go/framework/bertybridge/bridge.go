@@ -47,7 +47,9 @@ type Bridge struct {
 	mdnsLocker     sync.Locker
 	logger         *zap.Logger
 	langtags       []language.Tag
-	netmanager     *netmanager.NetManager
+
+	connectivityDriver IConnectivityDriver
+	netmanager         *netmanager.NetManager
 
 	lifecycleManager    *lifecycle.Manager
 	notificationManager notification.Manager
@@ -180,6 +182,7 @@ func NewBridge(config *BridgeConfig) (*Bridge, error) {
 	// setup connectivity driver
 	{
 		if config.connectivityDriver != nil {
+			b.connectivityDriver = config.connectivityDriver
 			b.netmanager = netmanager.NewNetManager(*config.connectivityDriver.GetCurrentState().info)
 			config.connectivityDriver.RegisterHandler(b)
 		}
@@ -192,6 +195,7 @@ func NewBridge(config *BridgeConfig) (*Bridge, error) {
 			SharedRootDirectory: config.SharedRootDirPath,
 
 			MDNSLocker:            b.mdnsLocker,
+			NetManager:            b.netmanager,
 			Languages:             b.langtags,
 			ServiceClientRegister: b.serviceBridge,
 			NotificationManager:   b.notificationManager,
