@@ -12,6 +12,7 @@ import (
 	"github.com/rivo/tview"
 
 	"berty.tech/berty/v2/go/pkg/messengertypes"
+	"berty.tech/weshnet/pkg/netmanager"
 	"berty.tech/weshnet/pkg/protocoltypes"
 )
 
@@ -30,6 +31,7 @@ type tabbedGroupsView struct {
 	displayName            string
 	contactStates          map[string]protocoltypes.ContactState
 	contactNames           map[string]string
+	netmanager             *netmanager.NetManager
 }
 
 func (v *tabbedGroupsView) getChannelViewGroups() []*groupView {
@@ -291,7 +293,7 @@ func (v *tabbedGroupsView) handleEventStream(ctx context.Context) error {
 	return nil
 }
 
-func newTabbedGroups(ctx context.Context, g *protocoltypes.GroupInfo_Reply, protocol protocoltypes.ProtocolServiceClient, messenger messengertypes.MessengerServiceClient, app *tview.Application, displayName string) *tabbedGroupsView {
+func newTabbedGroups(ctx context.Context, g *protocoltypes.GroupInfo_Reply, protocol protocoltypes.ProtocolServiceClient, messenger messengertypes.MessengerServiceClient, app *tview.Application, displayName string, netmanger *netmanager.NetManager) *tabbedGroupsView {
 	v := &tabbedGroupsView{
 		ctx:           ctx,
 		topics:        tview.NewTable(),
@@ -301,6 +303,7 @@ func newTabbedGroups(ctx context.Context, g *protocoltypes.GroupInfo_Reply, prot
 		contactStates: map[string]protocoltypes.ContactState{},
 		contactNames:  map[string]string{},
 		displayName:   displayName,
+		netmanager:    netmanger,
 	}
 
 	v.accountGroupView = newViewGroup(v, g.Group, g.MemberPK, g.DevicePK, globalLogger)

@@ -20,6 +20,7 @@ import (
 	"berty.tech/berty/v2/go/pkg/bertylinks"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
+	"berty.tech/weshnet/pkg/netmanager"
 	"berty.tech/weshnet/pkg/protocoltypes"
 )
 
@@ -242,6 +243,16 @@ func commandList() []*command {
 			title: "dd",
 			help:  `special debug messenger command`,
 			cmd:   newDebugMessengerCommand,
+		},
+		{
+			title: "netmanager get",
+			help:  `Get a netmanager state`,
+			cmd:   newDebugNetManagerGetCommand,
+		},
+		{
+			title: "netmanager set",
+			help:  `Set a netmanager state`,
+			cmd:   newDebugNetManagerSetCommand,
 		},
 		{
 			title:     "/",
@@ -1171,6 +1182,83 @@ func newMessageCommand(ctx context.Context, v *groupView, cmd string) error {
 	}
 
 	v.lastSentCID = ret.CID
+
+	return nil
+}
+
+func newDebugNetManagerGetCommand(ctx context.Context, v *groupView, cmd string) error {
+	if cmd != "" {
+		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("expected no argument"))
+	}
+
+	v.syncMessages <- &historyMessage{
+		messageType: messageTypeMeta,
+		payload:     []byte(v.v.netmanager.GetCurrentState().String()),
+	}
+
+	return nil
+}
+
+func newDebugNetManagerSetCommand(ctx context.Context, v *groupView, cmd string) error {
+	if cmd == "" {
+		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("expected arguments ex: `/netmanager set bluetooth=on nettype=mobile`"))
+	}
+
+	newConnectivityState := v.v.netmanager.GetCurrentState()
+
+	for _, opt := range strings.Split(cmd, " ") {
+		opt = strings.TrimSpace(opt)
+		if opt == "" {
+			continue
+		}
+
+		parts := strings.Split(opt, "=")
+		if len(parts) != 2 {
+			return errcode.ErrInvalidInput.Wrap(fmt.Errorf("expected a key=value arguments"))
+		}
+
+		switch strings.ToLower(parts[0]) {
+		case "state":
+			state, err := netmanager.ParseConnectivityState(parts[1])
+			if err != nil {
+				return errcode.ErrInvalidInput.Wrap(err)
+			}
+			newConnectivityState.State = state
+		case "metering":
+			metering, err := netmanager.ParseConnectivityState(parts[1])
+			if err != nil {
+				return errcode.ErrInvalidInput.Wrap(err)
+			}
+			newConnectivityState.Metering = metering
+		case "bluetooth":
+			bluetooth, err := netmanager.ParseConnectivityState(parts[1])
+			if err != nil {
+				return errcode.ErrInvalidInput.Wrap(err)
+			}
+			newConnectivityState.Bluetooth = bluetooth
+		case "nettype":
+			nettype, err := netmanager.ParseConnectivityNetType(parts[1])
+			if err != nil {
+				return errcode.ErrInvalidInput.Wrap(err)
+			}
+			newConnectivityState.NetType = nettype
+		case "cellulartype":
+			cellulartype, err := netmanager.ParseConnectivityCellularType(parts[1])
+			if err != nil {
+				return errcode.ErrInvalidInput.Wrap(err)
+			}
+			newConnectivityState.CellularType = cellulartype
+		default:
+			return errcode.ErrInvalidInput.Wrap(fmt.Errorf("unknown option %q", parts[0]))
+		}
+	}
+
+	v.v.netmanager.UpdateState(newConnectivityState)
+
+	v.syncMessages <- &historyMessage{
+		messageType: messageTypeMeta,
+		payload:     []byte(v.v.netmanager.GetCurrentState().String()),
+	}
 
 	return nil
 }

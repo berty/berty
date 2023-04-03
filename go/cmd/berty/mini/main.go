@@ -16,6 +16,7 @@ import (
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
 	"berty.tech/weshnet/pkg/lifecycle"
+	"berty.tech/weshnet/pkg/netmanager"
 	"berty.tech/weshnet/pkg/protocoltypes"
 )
 
@@ -26,6 +27,7 @@ type Opts struct {
 	GroupInvitation  string
 	DisplayName      string
 	LifecycleManager *lifecycle.Manager
+	NetManager       *netmanager.NetManager
 }
 
 var globalLogger *zap.Logger
@@ -66,7 +68,7 @@ func Main(ctx context.Context, opts *Opts) error {
 		globalLogger = zap.NewNop()
 	}
 
-	tabbedView := newTabbedGroups(ctx, accountGroup, opts.ProtocolClient, opts.MessengerClient, app, opts.DisplayName)
+	tabbedView := newTabbedGroups(ctx, accountGroup, opts.ProtocolClient, opts.MessengerClient, app, opts.DisplayName, opts.NetManager)
 	if len(opts.GroupInvitation) > 0 {
 		req := &protocoltypes.GroupMetadataList_Request{GroupPK: accountGroup.Group.PublicKey}
 		cl, err := tabbedView.protocol.GroupMetadataList(ctx, req)
