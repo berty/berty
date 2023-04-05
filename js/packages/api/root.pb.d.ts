@@ -5450,7 +5450,7 @@ export namespace berty {
             }
 
             interface IPushReceivedData {
-                protocolData?: (weshnet.protocol.v1.PushReceive.IReply|null);
+                protocolData?: (Uint8Array|null);
                 interaction?: (berty.messenger.v1.IInteraction|null);
                 alreadyReceived?: (boolean|null);
                 accountMuted?: (boolean|null);
@@ -5460,7 +5460,7 @@ export namespace berty {
 
             class PushReceivedData implements IPushReceivedData {
 
-                public protocolData?: (weshnet.protocol.v1.PushReceive.IReply|null);
+                public protocolData: Uint8Array;
                 public interaction?: (berty.messenger.v1.IInteraction|null);
                 public alreadyReceived: boolean;
                 public accountMuted: boolean;

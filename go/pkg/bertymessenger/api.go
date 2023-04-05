@@ -1677,7 +1677,7 @@ func (svc *service) PushSetAutoShare(ctx context.Context, request *messengertype
 	return &messengertypes.PushSetAutoShare_Reply{}, nil
 }
 
-func (svc *service) interactionDelayedActions(id ipfscid.Cid, groupPK []byte) {
+func (svc *service) interactionDelayedActions(id ipfscid.Cid, _ []byte) {
 	// TODO: decouple action from this method
 
 	if !id.Defined() {
@@ -1693,24 +1693,27 @@ func (svc *service) interactionDelayedActions(id ipfscid.Cid, groupPK []byte) {
 	// svc.handlerMutex.Lock()
 	// defer svc.handlerMutex.Unlock()
 
-	svc.logger.Info("attempting to push interaction", logutil.PrivateString("cid", id.String()))
-	_, err := svc.protocolClient.PushSend(svc.ctx, &protocoltypes.PushSend_Request{
-		CID:            id.Bytes(),
-		GroupPublicKey: groupPK,
-	})
-	if err != nil {
-		svc.logger.Error("unable to push interaction", zap.Error(err), logutil.PrivateString("cid", id.String()))
-		return
-	}
+	// FIXME(push): fix push send interaction
+	svc.logger.Info("push send not available", logutil.PrivateString("cid", id.String()))
+	// svc.logger.Info("attempting to push interaction", logutil.PrivateString("cid", id.String()))
+	// _, err := svc.protocolClient.PushSend(svc.ctx, &protocoltypes.PushSend_Request{
+	// 	CID:            id.Bytes(),
+	// 	GroupPublicKey: groupPK,
+	// })
+	// if err != nil {
+	// 	svc.logger.Error("unable to push interaction", zap.Error(err), logutil.PrivateString("cid", id.String()))
+	// 	return
+	// }
 
-	svc.logger.Info("pushed interaction", logutil.PrivateString("cid", id.String()))
+	// svc.logger.Info("pushed interaction", logutil.PrivateString("cid", id.String()))
 }
 
 func (svc *service) PushReceive(ctx context.Context, request *messengertypes.PushReceive_Request) (*messengertypes.PushReceive_Reply, error) {
 	svc.handlerMutex.Lock()
 	defer svc.handlerMutex.Unlock()
 
-	return svc.pushReceiver.PushReceive(ctx, request.Payload)
+	// FIXME(push) pushreceive not implemented
+	return nil, fmt.Errorf("not implemented")
 }
 
 func (svc *service) ListMemberDevices(request *messengertypes.ListMemberDevices_Request, server messengertypes.MessengerService_ListMemberDevicesServer) error {

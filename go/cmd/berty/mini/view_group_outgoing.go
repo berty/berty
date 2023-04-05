@@ -706,40 +706,41 @@ func debugInspectStoreCommand(ctx context.Context, v *groupView, cmd string) err
 }
 
 func debugPushCommand(ctx context.Context, v *groupView, _ string) error {
-	if v.lastSentCID == "" {
-		return fmt.Errorf("last message is unknown")
-	}
+	// if v.lastSentCID == "" {
+	// 	return fmt.Errorf("last message is unknown")
+	// }
 
-	c, err := cid.Parse(v.lastSentCID)
-	if err != nil {
-		return err
-	}
+	// c, err := cid.Parse(v.lastSentCID)
+	// if err != nil {
+	// 	return err
+	// }
 
-	res, err := v.v.protocol.PushSend(ctx, &protocoltypes.PushSend_Request{
-		CID:            c.Bytes(),
-		GroupPublicKey: v.g.PublicKey,
-	})
-	if err != nil {
-		return err
-	}
+	// res, err := v.v.protocol.PushSend(ctx, &protocoltypes.PushSend_Request{
+	// 	CID:            c.Bytes(),
+	// 	GroupPublicKey: v.g.PublicKey,
+	// })
+	// if err != nil {
+	// 	return err
+	// }
 
-	if len(res.GroupMembers) == 0 {
-		return fmt.Errorf("no push targets found")
-	}
+	// if len(res.GroupMembers) == 0 {
+	// 	return fmt.Errorf("no push targets found")
+	// }
 
-	targets := []string(nil)
-	for _, m := range res.GroupMembers {
-		for _, d := range m.DevicePKs {
-			targets = append(targets, pkAsShortID(d))
-		}
-	}
+	// targets := []string(nil)
+	// for _, m := range res.GroupMembers {
+	// 	for _, d := range m.DevicePKs {
+	// 		targets = append(targets, pkAsShortID(d))
+	// 	}
+	// }
 
-	v.syncMessages <- &historyMessage{
-		receivedAt: time.Now(),
-		payload:    []byte(fmt.Sprintf("push sent to %s", strings.Join(targets, ", "))),
-	}
+	// v.syncMessages <- &historyMessage{
+	// 	receivedAt: time.Now(),
+	// 	payload:    []byte(fmt.Sprintf("push sent to %s", strings.Join(targets, ", "))),
+	// }
 
-	return nil
+	// FIXME(push):
+	return fmt.Errorf("unimplemented")
 }
 
 func formatDebugInspectGroupStoreReply(rep *protocoltypes.DebugInspectGroupStore_Reply, storeType protocoltypes.DebugInspectGroupLogType) []byte {

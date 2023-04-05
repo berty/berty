@@ -1081,7 +1081,9 @@ Composite primary key
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| protocol_data | [weshnet.protocol.v1.PushReceive.Reply](#weshnet-protocol-v1-PushReceive-Reply) |  |  |
+| protocol_data | [bytes](#bytes) |  | weshnet.protocol.v1.PushReceive.Reply protocol_data = 1;
+
+@FIXME(push): weshnet.protocol.v1.PushReceive.Reply has been removed |
 | interaction | [Interaction](#berty-messenger-v1-Interaction) |  |  |
 | already_received | [bool](#bool) |  |  |
 | account_muted | [bool](#bool) |  |  |

@@ -9,14 +9,12 @@ import (
 	"strings"
 
 	grpcgw "github.com/grpc-ecosystem/grpc-gateway/runtime"
-	datastore "github.com/ipfs/go-datastore"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"gorm.io/gorm"
 
 	"berty.tech/berty/v2/go/internal/accountutils"
-	"berty.tech/berty/v2/go/internal/datastoreutil"
 	"berty.tech/berty/v2/go/internal/grpcserver"
 	berty_grpcutil "berty.tech/berty/v2/go/internal/grpcutil"
 	"berty.tech/berty/v2/go/pkg/bertymessenger"
@@ -25,10 +23,10 @@ import (
 	"berty.tech/weshnet"
 	"berty.tech/weshnet/pkg/cryptoutil"
 	"berty.tech/weshnet/pkg/grpcutil"
-	"berty.tech/weshnet/pkg/ipfsutil"
 	"berty.tech/weshnet/pkg/lifecycle"
 	"berty.tech/weshnet/pkg/logutil"
 	"berty.tech/weshnet/pkg/protocoltypes"
+	"berty.tech/weshnet/pkg/secretstore"
 )
 
 const (
@@ -187,14 +185,17 @@ func (m *Manager) getLocalProtocolServer() (weshnet.Service, error) {
 
 	// protocol service
 	{
-		var (
-			deviceDS = ipfsutil.NewDatastoreKeystore(datastoreutil.NewNamespacedDatastore(rootDS, datastore.NewKey(weshnet.NamespaceDeviceKeystore)))
-			deviceKS = cryptoutil.NewDeviceKeystore(deviceDS, nil)
-		)
+		st, err := secretstore.NewSecretStore(rootDS, &secretstore.NewSecretStoreOptions{
+			Logger:               logger.Named("st"),
+			PreComputedKeysCount: 100,
+		})
+		if err != nil {
+			return nil, fmt.Errorf("unable to create new secret store: %w", err)
+		}
 
 		pushKey, err := m.getPushSecretKey()
 		if err != nil {
-			return nil, errcode.TODO.Wrap(err)
+			return nil, fmt.Errorf("unable to get push secret: %w", err)
 		}
 
 		// initialize new protocol client
@@ -205,7 +206,7 @@ func (m *Manager) getLocalProtocolServer() (weshnet.Service, error) {
 			IpfsCoreAPI:      m.Node.Protocol.ipfsAPI,
 			Logger:           logger,
 			RootDatastore:    rootDS,
-			DeviceKeystore:   deviceKS,
+			SecretStore:      st,
 			OrbitDB:          odb,
 			PushKey:          pushKey,
 			GRPCInsecureMode: m.Node.ServiceInsecureMode,

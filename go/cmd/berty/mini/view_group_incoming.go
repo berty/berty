@@ -31,8 +31,8 @@ func handlerAccountGroupJoined(ctx context.Context, v *groupView, e *protocoltyp
 	return nil
 }
 
-func handlerGroupDeviceSecretAdded(_ context.Context, v *groupView, e *protocoltypes.GroupMetadataEvent, isHistory bool) error {
-	casted := &protocoltypes.GroupAddDeviceSecret{}
+func handlerGroupDeviceChainKeyAdded(_ context.Context, v *groupView, e *protocoltypes.GroupMetadataEvent, isHistory bool) error {
+	casted := &protocoltypes.GroupAddDeviceChainKey{}
 	if err := casted.Unmarshal(e.Event); err != nil {
 		return err
 	}
@@ -367,7 +367,7 @@ func metadataEventHandler(ctx context.Context, v *groupView, e *protocoltypes.Gr
 		protocoltypes.EventTypeAccountGroupJoined:                     handlerAccountGroupJoined,
 		protocoltypes.EventTypeAccountGroupLeft:                       handlerAccountGroupLeft,
 		protocoltypes.EventTypeContactAliasKeyAdded:                   handlerContactAliasKeyAdded,
-		protocoltypes.EventTypeGroupDeviceSecretAdded:                 handlerGroupDeviceSecretAdded,
+		protocoltypes.EventTypeGroupDeviceChainKeyAdded:               handlerGroupDeviceChainKeyAdded,
 		protocoltypes.EventTypeGroupMemberDeviceAdded:                 handlerGroupMemberDeviceAdded,
 		protocoltypes.EventTypeGroupMetadataPayloadSent:               nil, // do it later
 		protocoltypes.EventTypeMultiMemberGroupAdminRoleGranted:       nil, // do it later

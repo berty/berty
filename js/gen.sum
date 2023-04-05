@@ -1,4 +1,4 @@
+0742af7e0633bfcd484b8055c188475b3c7ceb41  ../api/messengertypes/messengertypes.proto
+2f188970ec9796db62ad965f777ce38ee3a824de  Makefile
 37a8eae718cea9f59591bc32797f7e9974dd12da  ../api/bertybridge/bertybridge.proto
 a9af891326f09ad6b03caab4b878b10af58ef05f  ../api/accounttypes/accounttypes.proto
-d78a1e60c7f29ac353982fc702dbd951db3ddc89  ../api/messengertypes/messengertypes.proto
-f01fe6f803fe0bb6f95405c7a5049d9b1277dbdc  Makefile
