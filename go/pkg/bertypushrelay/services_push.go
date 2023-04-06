@@ -120,27 +120,29 @@ func InternalDecodeOpaqueReceiver(publicKey *[cryptoutil.KeySize]byte, privateKe
 }
 
 func InternalEncryptPushPayloadForReceiver(privateKey *[cryptoutil.KeySize]byte, rawPayload, recipientPublicKey []byte) ([]byte, error) {
-	nonce, err := cryptoutil.GenerateNonce()
-	if err != nil {
-		return nil, errcode.ErrCryptoNonceGeneration.Wrap(err)
-	}
+	// FIXME(push): `pushtypes.PushExposedData` doesn't exist anymore
 
-	receiverKey, err := cryptoutil.KeySliceToArray(recipientPublicKey)
-	if err != nil {
-		return nil, errcode.ErrSerialization.Wrap(err)
-	}
+	// nonce, err := cryptoutil.GenerateNonce()
+	// if err != nil {
+	// 	return nil, errcode.ErrCryptoNonceGeneration.Wrap(err)
+	// }
 
-	boxed := box.Seal(nil, rawPayload, nonce, receiverKey, privateKey)
+	// receiverKey, err := cryptoutil.KeySliceToArray(recipientPublicKey)
+	// if err != nil {
+	// 	return nil, errcode.ErrSerialization.Wrap(err)
+	// }
 
-	payloadBytes, err := (&pushtypes.PushExposedData{
-		Nonce: nonce[:],
-		Box:   boxed,
-	}).Marshal()
-	if err != nil {
-		return nil, errcode.ErrSerialization.Wrap(err)
-	}
+	// boxed := box.Seal(nil, rawPayload, nonce, receiverKey, privateKey)
 
-	return payloadBytes, nil
+	// payloadBytes, err := (&pushtypes.PushExposedData{
+	// 	Nonce: nonce[:],
+	// 	Box:   boxed,
+	// }).Marshal()
+	// if err != nil {
+	// 	return nil, errcode.ErrSerialization.Wrap(err)
+	// }
+
+	return []byte{}, nil
 }
 
 func (d *pushService) sendSingle(rawPayload []byte, receiver *pushtypes.PushServiceOpaqueReceiver) error {

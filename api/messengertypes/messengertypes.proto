@@ -865,7 +865,8 @@ message PushSetAutoShare {
 }
 
 message PushReceivedData {
-  weshnet.protocol.v1.PushReceive.Reply protocol_data = 1;
+  // weshnet.protocol.v1.PushReceive.Reply protocol_data = 1;
+  bytes protocol_data = 1; // @FIXME(push): weshnet.protocol.v1.PushReceive.Reply has been removed
   Interaction interaction = 2;
   bool already_received = 3;
   bool account_muted = 4;

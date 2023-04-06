@@ -1,17 +1,15 @@
 package initutil
 
 import (
-	datastore "github.com/ipfs/go-datastore"
+	"fmt"
 
-	"berty.tech/berty/v2/go/internal/datastoreutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/go-orbit-db/baseorbitdb"
 	"berty.tech/go-orbit-db/pubsub/directchannel"
 	"berty.tech/go-orbit-db/pubsub/pubsubraw"
 	"berty.tech/weshnet"
-	"berty.tech/weshnet/pkg/cryptoutil"
-	"berty.tech/weshnet/pkg/ipfsutil"
 	"berty.tech/weshnet/pkg/rendezvous"
+	"berty.tech/weshnet/pkg/secretstore"
 )
 
 const (
@@ -60,15 +58,18 @@ func (m *Manager) getOrbitDB() (*weshnet.WeshOrbitDB, error) {
 		return nil, errcode.TODO.Wrap(err)
 	}
 
-	var (
-		deviceDS = ipfsutil.NewDatastoreKeystore(datastoreutil.NewNamespacedDatastore(rootDS, datastore.NewKey(weshnet.NamespaceDeviceKeystore)))
-		deviceKS = cryptoutil.NewDeviceKeystore(deviceDS, nil)
-		cache    = weshnet.NewOrbitDatastoreCache(rootDS)
-	)
+	st, err := secretstore.NewSecretStore(rootDS, &secretstore.NewSecretStoreOptions{
+		Logger:               logger.Named("st"),
+		PreComputedKeysCount: 100,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("unable to create new secret store")
+	}
 
+	cache := weshnet.NewOrbitDatastoreCache(rootDS)
 	rp, err := m.getRotationInterval()
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, fmt.Errorf("unable to get rotation interval")
 	}
 
 	opts := &weshnet.NewOrbitDBOptions{
@@ -80,7 +81,7 @@ func (m *Manager) getOrbitDB() (*weshnet.WeshOrbitDB, error) {
 			DirectChannelFactory: directchannel.InitDirectChannelFactory(logger.Named("odb-dc"), node.PeerHost),
 		},
 		Datastore:        rootDS,
-		DeviceKeystore:   deviceKS,
+		SecretStore:      st,
 		RotationInterval: rp,
 	}
 

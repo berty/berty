@@ -3736,7 +3736,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
               PushReceivedData: {
                 fields: {
                   protocolData: {
-                    type: "weshnet.protocol.v1.PushReceive.Reply",
+                    type: "bytes",
                     id: 1
                   },
                   interaction: {

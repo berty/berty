@@ -25,12 +25,10 @@ import (
 	"berty.tech/berty/v2/go/internal/messengerpayloads"
 	"berty.tech/berty/v2/go/internal/messengerutil"
 	"berty.tech/berty/v2/go/internal/notification"
-	"berty.tech/berty/v2/go/pkg/bertypush"
 	"berty.tech/berty/v2/go/pkg/bertyversion"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	mt "berty.tech/berty/v2/go/pkg/messengertypes"
 	"berty.tech/weshnet"
-	weshnet_push "berty.tech/weshnet/pkg/bertypush"
 	weshnet_errcode "berty.tech/weshnet/pkg/errcode"
 	"berty.tech/weshnet/pkg/lifecycle"
 	"berty.tech/weshnet/pkg/logutil"
@@ -61,7 +59,6 @@ type service struct {
 	lcmanager             *lifecycle.Manager
 	eventHandler          *messengerpayloads.EventHandler
 	ring                  *zapring.Core
-	pushReceiver          bertypush.MessengerPushReceiver
 	tyberCleanup          func()
 	logFilePath           string
 	cancelGroupStatus     map[string] /*groupPK */ context.CancelFunc
@@ -75,6 +72,7 @@ type service struct {
 	accountGroup          []byte
 	grpcInsecure          bool
 	dd                    debugCommand
+	// pushReceiver          bertypush.MessengerPushReceiver // FIXME(push): unavailable
 
 	mt.UnimplementedMessengerServiceServer
 }
@@ -240,7 +238,9 @@ func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (_ Service, err
 	}
 
 	svc.eventHandler = messengerpayloads.NewEventHandler(ctx, db, &MetaFetcherFromProtocolClient{client: client}, newPostActionsService(&svc), opts.Logger, svc.dispatcher, false)
-	svc.pushReceiver = bertypush.NewPushReceiver(weshnet_push.NewPushHandlerViaProtocol(ctx, client), svc.eventHandler, svc.db, opts.Logger)
+
+	// @FIXME(push): temporary use noop push receiver
+	// svc.pushReceiver = bertypush.NewNoopPushReceiver()
 
 	// get or create account in DB
 	{
@@ -304,13 +304,14 @@ func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (_ Service, err
 			return nil, err
 		}
 
-		if icr.DevicePushToken == nil || (icr.DevicePushToken.TokenType == opts.PlatformPushToken.TokenType && !bytes.Equal(icr.DevicePushToken.Token, opts.PlatformPushToken.Token)) {
-			if _, err := client.PushSetDeviceToken(ctx, &protocoltypes.PushSetDeviceToken_Request{
-				Receiver: opts.PlatformPushToken,
-			}); err != nil {
-				return nil, errcode.ErrInternal.Wrap(err)
-			}
-		}
+		// FIXME(push): PushSetDeviceToken not available anymore
+		// if icr.DevicePushToken == nil || (icr.DevicePushToken.TokenType == opts.PlatformPushToken.TokenType && !bytes.Equal(icr.DevicePushToken.Token, opts.PlatformPushToken.Token)) {
+		// if _, err := client.PushSetDeviceToken(ctx, &protocoltypes.PushSetDeviceToken_Request{
+		// 	Receiver: opts.PlatformPushToken,
+		// }); err != nil {
+		// 	return nil, errcode.ErrInternal.Wrap(err)
+		// }
+		// }
 	}
 
 	// Subscribe to account group metadata
@@ -522,19 +523,20 @@ func (svc *service) sharePushTokenForConversationInternal(conversation *mt.Conve
 
 	tokenIdentifier := makeSharedPushIdentifier(pushServer, pushToken)
 
-	pubKey, err := messengerutil.B64DecodeBytes(conversation.PublicKey)
-	if err != nil {
-		return errcode.ErrSerialization.Wrap(err)
-	}
+	// pubKey, err := messengerutil.B64DecodeBytes(conversation.PublicKey)
+	// if err != nil {
+	// 	return errcode.ErrSerialization.Wrap(err)
+	// }
 
 	if conversation.SharedPushTokenIdentifier != tokenIdentifier {
-		if _, err := svc.protocolClient.PushShareToken(svc.ctx, &protocoltypes.PushShareToken_Request{
-			GroupPK:  pubKey,
-			Server:   pushServer,
-			Receiver: pushToken,
-		}); err != nil {
-			return err
-		}
+		// FIXME(push): push share token not available anymore
+		// if _, err := svc.protocolClient.PushShareToken(svc.ctx, &protocoltypes.PushShareToken_Request{
+		// 	GroupPK:  pubKey,
+		// 	Server:   pushServer,
+		// 	Receiver: pushToken,
+		// }); err != nil {
+		// 	return err
+		// }
 
 		if _, err := svc.db.UpdateConversation(mt.Conversation{PublicKey: conversation.PublicKey, SharedPushTokenIdentifier: tokenIdentifier}); err != nil {
 			return errcode.ErrDBWrite.Wrap(err)

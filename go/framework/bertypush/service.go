@@ -1,6 +1,7 @@
 package bertypush
 
 import (
+	"fmt"
 	"strings"
 
 	"go.uber.org/zap"
@@ -8,7 +9,6 @@ import (
 	"golang.org/x/text/message"
 
 	"berty.tech/berty/v2/go/internal/accountutils"
-	"berty.tech/berty/v2/go/pkg/bertypush"
 	"berty.tech/weshnet/localization"
 	"berty.tech/weshnet/pkg/pushtypes"
 )
@@ -74,11 +74,14 @@ type NativeKeystoreDriver interface {
 }
 
 func (s *PushStandalone) Decrypt(rootDir string, inputB64 string, ks NativeKeystoreDriver) (*FormatedPush, error) {
-	decrypted, err := bertypush.PushDecryptStandalone(s.logger, rootDir, inputB64, ks)
-	if err != nil {
-		return nil, err
-	}
+	// decrypted, err := bertypush.PushDecryptStandalone(s.logger, rootDir, inputB64, ks)
+	// if err != nil {
+	// 	return nil, err
+	// }
 
-	formated := bertypush.FormatDecryptedPush(decrypted, s.printer)
-	return (*FormatedPush)(formated), err
+	// formated := bertypush.FormatDecryptedPush(decrypted, s.printer)
+	// return (*FormatedPush)(formated), err
+
+	// FIXME(push): need bertypush re implementation
+	return nil, fmt.Errorf("not implemented")
 }

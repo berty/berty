@@ -4369,11 +4369,11 @@
           "fields": [
             {
               "name": "protocol_data",
-              "description": "",
+              "description": "weshnet.protocol.v1.PushReceive.Reply protocol_data = 1;\n\n@FIXME(push): weshnet.protocol.v1.PushReceive.Reply has been removed",
               "label": "",
-              "type": "Reply",
-              "longType": "weshnet.protocol.v1.PushReceive.Reply",
-              "fullType": "weshnet.protocol.v1.PushReceive.Reply",
+              "type": "bytes",
+              "longType": "bytes",
+              "fullType": "bytes",
               "ismap": false,
               "isoneof": false,
               "oneofdecl": "",
