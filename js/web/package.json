@@ -42,7 +42,9 @@
     "node": ">=14"
   },
   "resolutions": {
-    "react-error-overlay": "6.0.9"
+    "react-error-overlay": "6.0.9",
+    "@babel/core": "^7.16.12",
+    "babel-loader": "8.1.0"
   },
   "build": {
     "extends": null,

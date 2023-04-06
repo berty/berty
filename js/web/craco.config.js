@@ -31,9 +31,7 @@ module.exports = {
 			)
 
 			webpackConfig.module.rules.push({
-				test: [
-					/node_modules\/react-native-qrcode-svg.*\.(js|jsx)$/,
-				],
+				test: [/node_modules\/react-native-qrcode-svg.*\.(js|jsx)$/],
 				use: {
 					loader: 'babel-loader',
 					options: {
