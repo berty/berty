@@ -1,7 +1,6 @@
 import { Player } from '@react-native-community/audio-toolkit'
 import { Layout } from '@ui-kitten/components'
 import i18next from 'i18next'
-import Long from 'long'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Alert, Platform, ScrollView, StatusBar, Vibration, View } from 'react-native'
@@ -25,9 +24,6 @@ import {
 	StringOptionInput,
 } from '@berty/components/shared-components/SettingsButtons'
 import { useStyles } from '@berty/contexts/styles'
-import { createServiceClient } from '@berty/grpc-bridge'
-import * as middleware from '@berty/grpc-bridge/middleware'
-import { bridge as rpcBridge } from '@berty/grpc-bridge/rpc'
 import {
 	useAllConversations,
 	useAllInteractions,
@@ -126,58 +122,6 @@ const HeaderDevTools: React.FC<{}> = () => {
 				styleText={[text.bold]}
 			/>
 		</View>
-	)
-}
-
-const NativeCallButton: React.FC = () => {
-	// create middleware(s) if needed
-	const messengerMiddlewares = middleware.chain(
-		__DEV__ ? middleware.logger.create('MESSENGER') : null,
-	)
-	const colors = useThemeColor()
-
-	const messengerClient = createServiceClient(
-		beapi.messenger.MessengerService,
-		rpcBridge,
-		messengerMiddlewares,
-	)
-	const { t } = useTranslation()
-	let i = 0
-	return (
-		<ButtonSetting
-			name={t('settings.devtools.native-bridge-button')}
-			icon='activity-outline'
-			iconSize={30}
-			iconColor={colors['secondary-text']}
-			onPress={() => {
-				const n = i
-				++i
-				console.info(`start of the EchoTest stream #${n}`)
-				messengerClient
-					.echoTest({
-						echo: `hello number #${n}`,
-						delay: Long.fromNumber(1000),
-					})
-					.then(stream => {
-						stream.onMessage(res => {
-							if (res) {
-								Vibration.vibrate(500)
-							}
-						})
-
-						setTimeout(stream.stop, 10000)
-						return stream.start()
-					})
-					.catch(err => {
-						if (err?.EOF) {
-							console.info(`end of the EchoTest stream #${n}`)
-						} else if (err) {
-							console.warn(err)
-						}
-					})
-				++i
-			}}
-		/>
 	)
 }
 
@@ -698,7 +642,6 @@ const BodyDevTools: React.FC<{}> = withInAppNotification(({ showNotification }: 
 					onPress={() => navigation.navigate('Settings.AddDevConversations')}
 				/>
 				<DiscordShareButton />
-				<NativeCallButton />
 				<DumpAccount />
 				<DumpContacts />
 				<DumpConversations />
@@ -716,7 +659,6 @@ const BodyDevTools: React.FC<{}> = withInAppNotification(({ showNotification }: 
 					icon='hard-drive-outline'
 					iconSize={30}
 					iconColor={colors['alt-secondary-background-header']}
-					toggled
 					disabled
 				/>
 				<ButtonSetting
