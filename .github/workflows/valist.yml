@@ -17,16 +17,14 @@ jobs:
           fileName: "*"
       - uses: tenhaus/get-release-or-tag@v2
         id: tag
-      - uses: valist-io/valist-github-action@v2.5.6
+      - uses: valist-io/valist-github-action@v2
         with:
           private-key: ${{ secrets.VALIST_SIGNER }}
           account: berty
           project: berty
           release: ${{ steps.tag.outputs.tag }}
-          path: '.'
 
-          install-name: 'berty'
-          install-darwin-amd64: './berty_darwin_amd64.tar.gz'
-          install-darwin-arm64: './berty_darwin_arm64.tar.gz'
-          install-linux-amd64: './berty_linux_amd64.tar.gz'
-          install-windows-amd64: './berty_windows_amd64.zip'
+          platform-darwin-amd64: './berty_darwin_amd64.tar.gz'
+          platform-darwin-arm64: './berty_darwin_arm64.tar.gz'
+          platform-linux-amd64: './berty_linux_amd64.tar.gz'
+          platform-windows-amd64: './berty_windows_amd64.zip'
