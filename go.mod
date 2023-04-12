@@ -6,7 +6,7 @@ require (
 	berty.tech/go-ipfs-repo-encrypted v1.2.2
 	berty.tech/go-orbit-db v1.20.1
 	berty.tech/ipfs-webui-packed v1.0.0-v2.11.4-1
-	berty.tech/weshnet v1.4.1
+	berty.tech/weshnet v1.5.0
 	fyne.io/fyne/v2 v2.1.1
 	github.com/Masterminds/semver v1.5.0
 	github.com/appleboy/go-fcm v0.1.5
