@@ -70,6 +70,7 @@ func miniCommand() *ffcli.Command {
 				Logger:           miniLogger,
 				DisplayName:      manager.Node.Messenger.DisplayName,
 				LifecycleManager: lcmanager,
+				NetManager:       manager.Node.Protocol.NetManager,
 			})
 		},
 	}

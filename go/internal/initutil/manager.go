@@ -237,6 +237,9 @@ func New(opts *ManagerOpts) (*Manager, error) {
 	m := Manager{}
 	m.ctx, m.ctxCancel = context.WithCancel(context.Background())
 
+	// default netmanager
+	m.SetNetManager(netmanager.NewNoopNetManager())
+
 	m.accountID = opts.AccountID
 	if m.accountID == "" {
 		m.accountID = "0"

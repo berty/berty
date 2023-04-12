@@ -124,6 +124,10 @@ func (o *Options) applyDefault() {
 	if o.SharedRootDirectory == "" {
 		o.SharedRootDirectory = o.AppRootDirectory
 	}
+
+	if o.NetManager == nil {
+		o.NetManager = netmanager.NewNoopNetManager()
+	}
 }
 
 func NewService(opts *Options) (_ Service, err error) {

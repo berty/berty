@@ -252,23 +252,13 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 		mdnslogger := logger.Named("mdns")
 
 		dh := mdns.DiscoveryHandler(ctx, mdnslogger, h)
-		mdnsService := mdns.NewMdnsService(mdnslogger, h, mdns.MDNSServiceName, dh)
-
-		if m.Node.Protocol.NetManager == nil {
-			m.Node.Protocol.NetManager = netmanager.NewNetManager(netmanager.ConnectivityInfo{
-				State:   netmanager.ConnectivityStateOn,
-				NetType: netmanager.ConnectivityNetWifi,
-			})
-			mdnslogger.Info("no network manager provided")
-		}
-
-		m.Node.Protocol.mdnsService = mdnsService
+		m.Node.Protocol.mdnsService = mdns.NewMdnsService(mdnslogger, h, mdns.MDNSServiceName, dh)
 
 		go func() {
 			mdnsNetworkManagerConfig := mdns.NetworkManagerConfig{
 				Logger:     logger,
 				NetManager: m.Node.Protocol.NetManager,
-				Service:    mdnsService,
+				Service:    m.Node.Protocol.mdnsService,
 			}
 			mdns.NetworkManagerHandler(ctx, mdnsNetworkManagerConfig)
 		}()
