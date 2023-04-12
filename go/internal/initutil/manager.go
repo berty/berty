@@ -238,10 +238,7 @@ func New(opts *ManagerOpts) (*Manager, error) {
 	m.ctx, m.ctxCancel = context.WithCancel(context.Background())
 
 	// default netmanager
-	m.SetNetManager(netmanager.NewNetManager(netmanager.ConnectivityInfo{
-		State:   netmanager.ConnectivityStateOn,
-		NetType: netmanager.ConnectivityNetWifi,
-	}))
+	m.SetNetManager(netmanager.NewNoopNetManager())
 
 	m.accountID = opts.AccountID
 	if m.accountID == "" {
