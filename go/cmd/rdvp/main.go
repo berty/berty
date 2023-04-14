@@ -23,7 +23,7 @@ import (
 	libp2p_host "github.com/libp2p/go-libp2p/core/host"
 	metrics "github.com/libp2p/go-libp2p/core/metrics"
 	libp2p_peer "github.com/libp2p/go-libp2p/core/peer"
-
+	libp2p_relayv2 "github.com/libp2p/go-libp2p/p2p/protocol/circuitv2/relay"
 	ma "github.com/multiformats/go-multiaddr"
 	"github.com/oklog/run"
 	ff "github.com/peterbourgon/ff/v3"
@@ -188,6 +188,15 @@ func main() {
 
 			defer host.Close()
 			logHostInfo(logger, host)
+
+			_, err = libp2p_relayv2.New(host,
+				// disable limits for now to have an equivalent off a relay v1
+				libp2p_relayv2.WithInfiniteLimits(),
+				libp2p_relayv2.WithResources(libp2p_relayv2.DefaultResources()),
+			)
+			if err != nil {
+				return fmt.Errorf("unable to start relay v2; %w", err)
+			}
 
 			db, err := libp2p_rpdb.OpenDB(ctx, serveURN)
 			if err != nil {

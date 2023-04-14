@@ -592,8 +592,8 @@ func (m *Manager) setupIPFSConfig(cfg *ipfs_cfg.Config) ([]libp2p.Option, error)
 	// enable mdns
 	cfg.Discovery.MDNS.Enabled = false
 
-	// disable managed auto relay
-	cfg.Swarm.RelayClient.Enabled = ipfs_cfg.False
+	// make sure  auto relay is enable
+	cfg.Swarm.RelayClient.Enabled = ipfs_cfg.True
 	cfg.Swarm.Transports.Network.Relay = ipfs_cfg.True
 
 	pis, err := m.getStaticRelays()
@@ -792,7 +792,7 @@ func (m *Manager) getStaticRelays() ([]*peer.AddrInfo, error) {
 	defaultMaddrs := config.Config.P2P.StaticRelays
 
 	var addrs []string
-	for _, v := range strings.Split(m.Node.Protocol.RdvpMaddrs, ",") {
+	for _, v := range strings.Split(m.Node.Protocol.StaticRelays, ",") {
 		switch v {
 		case KeywordDefault:
 			addrs = append(addrs, defaultMaddrs...)
