@@ -3,7 +3,6 @@ package bertymessengertesting
 import (
 	"flag"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"testing"
 
@@ -21,11 +20,11 @@ func NonMockedTestingInfra(t testing.TB, accountAmount int) ([]messengertypes.Me
 	closeFuncs := ([]func())(nil)
 
 	for i := 0; i < accountAmount; i++ {
-		tempDir, err := ioutil.TempDir("", fmt.Sprintf("berty-main-%d", i))
+		tempDir, err := os.CreateTemp("", fmt.Sprintf("berty-main-%d", i))
 		assert.NoError(t, err)
 
 		closeFuncs = append(closeFuncs, func() {
-			_ = os.RemoveAll(tempDir)
+			_ = os.RemoveAll(tempDir.Name())
 		})
 
 		man, err := initutil.New(nil)
@@ -40,7 +39,7 @@ func NonMockedTestingInfra(t testing.TB, accountAmount int) ([]messengertypes.Me
 		man.SetupRemoteNodeFlags(fs)           // mini can be run against an already running server
 		man.SetupInitTimeout(fs)
 
-		err = fs.Parse([]string{"-store.dir", tempDir})
+		err = fs.Parse([]string{"-store.dir", tempDir.Name()})
 		assert.NoError(t, err)
 
 		ipfs, _, err := man.GetLocalIPFS()

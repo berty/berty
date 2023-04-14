@@ -1665,7 +1665,9 @@ func TestAck(t *testing.T) {
 	require.NotNil(t, convPK)
 
 	// send message
-	payload, err := proto.Marshal(&messengertypes.AppMessage_UserMessage{Body: "Hello"})
+	payload, err := proto.Marshal(&messengertypes.AppMessage_UserMessage{
+		Body: "Hello",
+	})
 	require.NoError(t, err)
 
 	interactRes, err := user.client.Interact(ctx, &messengertypes.Interact_Request{

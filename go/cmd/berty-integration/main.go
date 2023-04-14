@@ -9,7 +9,6 @@ import (
 	"errors"
 	"flag"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"runtime"
 	"time"
@@ -66,7 +65,7 @@ type integration struct {
 
 func (i *integration) init() error {
 	var err error
-	i.tempdir, err = ioutil.TempDir("", "berty-integration")
+	i.tempdir, err = os.MkdirTemp("", "berty-integration")
 	if err != nil {
 		return err
 	}

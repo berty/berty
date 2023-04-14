@@ -26,7 +26,6 @@ import (
 	"github.com/libp2p/go-libp2p/core/peerstore"
 	p2p_routing "github.com/libp2p/go-libp2p/core/routing"
 	"github.com/libp2p/go-libp2p/p2p/discovery/backoff"
-	"github.com/libp2p/go-libp2p/p2p/host/autorelay"
 	connmgr "github.com/libp2p/go-libp2p/p2p/net/connmgr"
 	quict "github.com/libp2p/go-libp2p/p2p/transport/quic"
 	"github.com/libp2p/go-libp2p/p2p/transport/quicreuse"
@@ -608,10 +607,7 @@ func (m *Manager) setupIPFSConfig(cfg *ipfs_cfg.Config) ([]libp2p.Option, error)
 			peers[i] = *p
 		}
 
-		p2popts = append(p2popts, libp2p.EnableAutoRelay(
-			autorelay.WithStaticRelays(peers),
-			// autorelay.WithCircuitV1Support(),
-		))
+		p2popts = append(p2popts, libp2p.EnableAutoRelayWithStaticRelays(peers))
 	}
 
 	// prefill peerstore with known rdvp servers

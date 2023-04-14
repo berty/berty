@@ -190,7 +190,7 @@ func main() {
 			logHostInfo(logger, host)
 
 			_, err = libp2p_relayv2.New(host,
-				// disable limits for now to have an equivalent off a relay v1
+				// disable limits for now to have an equivalent of a relay v1
 				libp2p_relayv2.WithInfiniteLimits(),
 				libp2p_relayv2.WithResources(libp2p_relayv2.DefaultResources()),
 			)

@@ -8,7 +8,6 @@ import (
 	"flag"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"os"
 
 	libp2p_ci "github.com/libp2p/go-libp2p/core/crypto"
@@ -57,13 +56,13 @@ func p2pIdentityGenerateCommand() *ffcli.Command {
 			var output io.Writer = os.Stdout
 			var stderr io.Writer = os.Stderr
 			if noprint {
-				output = ioutil.Discard
-				stderr = ioutil.Discard
+				output = io.Discard
+				stderr = io.Discard
 			} else {
 				o, _ := os.Stdout.Stat()
 				if (o.Mode() & os.ModeCharDevice) != os.ModeCharDevice {
 					// if redirect to a pipe discard stderr
-					stderr = ioutil.Discard
+					stderr = io.Discard
 				}
 			}
 
@@ -132,7 +131,7 @@ func p2pIdentityLoadCommand() *ffcli.Command {
 			o, _ := os.Stdout.Stat()
 			if (o.Mode() & os.ModeCharDevice) != os.ModeCharDevice {
 				// if redirect to a pipe discard stderr
-				stderr = ioutil.Discard
+				stderr = io.Discard
 			}
 
 			// load raw key data
