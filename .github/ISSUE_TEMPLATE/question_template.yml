@@ -1,6 +1,6 @@
 name: "Question"
 description: Ask a question about this project.
-labels: ["question", "🔍 Ready for Review"]
+labels: ["question"]
 body:
   - type: checkboxes
     attributes:
