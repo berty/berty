@@ -1,6 +1,6 @@
 name: "Feature request"
 description: Suggest an idea for this project.
-labels: [":rocket: feature-request", "🔍 Ready for Review"]
+labels: [":rocket: feature-request"]
 body:
   - type: checkboxes
     attributes:
