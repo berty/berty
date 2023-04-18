@@ -195,6 +195,7 @@ exports[`Chat.ContactRequest renders correctly 1`] = `
                         }
                       >
                         <Text
+                          adjustsFontSizeToFit={true}
                           style={
                             Array [
                               Object {
@@ -208,6 +209,8 @@ exports[`Chat.ContactRequest renders correctly 1`] = `
                                 "color": "#FFFFFF",
                                 "fontSize": 70,
                                 "includeFontPadding": false,
+                                "paddingBottom": 7,
+                                "textAlign": "center",
                               },
                             ]
                           }

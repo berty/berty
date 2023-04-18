@@ -122,6 +122,7 @@ exports[`Settings.Home renders correctly 1`] = `
                         }
                       >
                         <Text
+                          adjustsFontSizeToFit={true}
                           style={
                             Array [
                               Object {
@@ -135,6 +136,8 @@ exports[`Settings.Home renders correctly 1`] = `
                                 "color": "#FFFFFF",
                                 "fontSize": 25,
                                 "includeFontPadding": false,
+                                "paddingBottom": 2.5,
+                                "textAlign": "center",
                               },
                             ]
                           }

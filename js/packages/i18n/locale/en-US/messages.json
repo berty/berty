@@ -276,7 +276,6 @@
 				"alert-accept-button": "Yep 👍",
 				"alert-cancel-button": "Nope"
 			},
-			"native-bridge-button": "Test Native Bridge",
 			"dump-account-button": "Dump account",
 			"dump-contacts-button": "Dump contacts",
 			"dump-conversations-button": "Dump conversations",
