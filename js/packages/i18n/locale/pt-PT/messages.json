@@ -10,12 +10,12 @@
 		"default-mode": {
 			"summary": {
 				"title": "",
-				"screenTitle": "",
+				"screenTitle": "Criar uma nova conta",
 				"subtitle": "",
 				"first-point": "",
 				"second-point": "",
 				"third-point": "",
-				"back-button": "",
+				"back-button": "Voltar",
 				"accept-button": ""
 			}
 		},
