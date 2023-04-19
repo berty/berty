@@ -591,7 +591,7 @@ func (m *Manager) setupIPFSConfig(cfg *ipfs_cfg.Config) ([]libp2p.Option, error)
 	// enable mdns
 	cfg.Discovery.MDNS.Enabled = false
 
-	// make sure  auto relay is enable
+	// make sure relay is enable
 	cfg.Swarm.RelayClient.Enabled = ipfs_cfg.True
 	cfg.Swarm.Transports.Network.Relay = ipfs_cfg.True
 

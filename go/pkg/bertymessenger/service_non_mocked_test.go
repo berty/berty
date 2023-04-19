@@ -28,8 +28,7 @@ func TestPeersCreateJoinConversationNonMocked(t *testing.T) {
 	logger, cleanup := testutil.Logger(t)
 	defer cleanup()
 	accountsAmount := 3
-	clients, _, cleanup := bertymessengertesting.NonMockedTestingInfra(t, accountsAmount)
-	defer cleanup()
+	clients, _ := bertymessengertesting.NonMockedTestingInfra(t, accountsAmount)
 
 	// create nodes
 	var creator *bertymessenger.TestingAccount

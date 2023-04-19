@@ -69,11 +69,14 @@ jobs:
         run: git checkout ${{ github.event.pull_request.base.sha }}
         if: github.event_name == 'pull_request'
 
+      # run setup go a second time in case the version change
       - name: Setup go (master)
+        if: github.event_name == 'pull_request'
         run: |
           asdf install golang
-          asdf reshim golang
           echo "go_version=$(asdf current golang | xargs | cut -d ' ' -f 2)" >> $GITHUB_ENV
+          go install golang.org/x/perf/cmd/benchstat@latest
+          asdf reshim golang
 
       - name: Cache go modules (master)
         uses: actions/cache@v2.1.6
