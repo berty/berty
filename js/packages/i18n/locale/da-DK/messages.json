@@ -224,7 +224,9 @@
 		"delete-account": {
 			"title": "Slet konto!",
 			"first-desc": "Er du sikker på, at du vil slette din konto?",
-			"desc": "Skriv delete for at bekræfte",
+			"desc-please": "",
+			"desc-delete": "",
+			"desc-confirm": "",
 			"cancel-button": "Annuller",
 			"delete-button": "Slet"
 		},
@@ -274,7 +276,6 @@
 				"alert-accept-button": "Jep 👍",
 				"alert-cancel-button": "Nej"
 			},
-			"native-bridge-button": "",
 			"dump-account-button": "",
 			"dump-contacts-button": "",
 			"dump-conversations-button": "",
