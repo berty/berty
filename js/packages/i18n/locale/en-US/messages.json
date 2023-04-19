@@ -224,7 +224,9 @@
 		"delete-account": {
 			"title": "Delete account!",
 			"first-desc": "Are you sure you want to delete your account?",
-			"desc": "Please type delete to confirm",
+			"desc-please": "",
+			"desc-delete": "",
+			"desc-confirm": "",
 			"cancel-button": "Cancel",
 			"delete-button": "Delete"
 		},
@@ -274,7 +276,6 @@
 				"alert-accept-button": "Yep 👍",
 				"alert-cancel-button": "Nope"
 			},
-			"native-bridge-button": "Test Native Bridge",
 			"dump-account-button": "Dump account",
 			"dump-contacts-button": "Dump contacts",
 			"dump-conversations-button": "Dump conversations",
