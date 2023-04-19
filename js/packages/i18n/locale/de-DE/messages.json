@@ -224,7 +224,9 @@
 		"delete-account": {
 			"title": "Mein Konto löschen!",
 			"first-desc": "Sind Sie sicher, dass Sie Ihr Konto löschen möchten?",
-			"desc": "Bitte löschen zum Bestätigen eingeben",
+			"desc-please": "",
+			"desc-delete": "",
+			"desc-confirm": "",
 			"cancel-button": "Abbrechen",
 			"delete-button": "Löschen"
 		},
@@ -274,7 +276,6 @@
 				"alert-accept-button": "Ja 👍",
 				"alert-cancel-button": "Nein"
 			},
-			"native-bridge-button": "Native Bridge testen",
 			"dump-account-button": "Kontodaten exportieren",
 			"dump-contacts-button": "Kontakte exportieren",
 			"dump-conversations-button": "Unterhaltungen exportieren",
