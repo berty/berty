@@ -60,6 +60,10 @@ jobs:
         working-directory: js
         run: make node_modules
 
+      - name: Fetch web node modules
+        working-directory: js
+        run: make web/node_modules
+
       - name: Run tests
         working-directory: js
         run: make test
@@ -67,10 +71,6 @@ jobs:
       - name: Lint
         working-directory: js
         run: make lint
-
-      - name: Fetch web node modules
-        working-directory: js
-        run: make web/node_modules
 
       - name: Build web client
         working-directory: js
