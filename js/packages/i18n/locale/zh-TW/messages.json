@@ -224,7 +224,9 @@
 		"delete-account": {
 			"title": "刪除帳戶！",
 			"first-desc": "您確定要刪除您的帳戶嗎？",
-			"desc": "請輸入delete以確認",
+			"desc-please": "",
+			"desc-delete": "",
+			"desc-confirm": "",
 			"cancel-button": "取消",
 			"delete-button": ""
 		},
@@ -274,7 +276,6 @@
 				"alert-accept-button": "好 👍",
 				"alert-cancel-button": "不"
 			},
-			"native-bridge-button": "測試本機橋接器",
 			"dump-account-button": "轉儲帳戶",
 			"dump-contacts-button": "轉儲聯繫人",
 			"dump-conversations-button": "轉儲對話",
