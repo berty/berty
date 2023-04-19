@@ -224,7 +224,9 @@
 		"delete-account": {
 			"title": "Fiók törlése!",
 			"first-desc": "Biztosan törölné a fiókját?",
-			"desc": "A megerősítéshez írja be hogy \"delete\"",
+			"desc-please": "",
+			"desc-delete": "",
+			"desc-confirm": "",
 			"cancel-button": "Mégse",
 			"delete-button": "Törlöl"
 		},
@@ -274,7 +276,6 @@
 				"alert-accept-button": "Igen 👍",
 				"alert-cancel-button": "Nem"
 			},
-			"native-bridge-button": "Native Bridge tesztelése",
 			"dump-account-button": "Fiók kiírása",
 			"dump-contacts-button": "Kapcsolatok kiírása",
 			"dump-conversations-button": "Beszélgetések kiírása",
