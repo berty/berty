@@ -224,7 +224,9 @@
 		"delete-account": {
 			"title": "删除帐户！",
 			"first-desc": "您确定要删除您的帐户吗？",
-			"desc": "请输入delete以确认",
+			"desc-please": "",
+			"desc-delete": "",
+			"desc-confirm": "",
 			"cancel-button": "取消",
 			"delete-button": "删除"
 		},
@@ -274,7 +276,6 @@
 				"alert-accept-button": "好",
 				"alert-cancel-button": "不"
 			},
-			"native-bridge-button": "测试本机桥接器",
 			"dump-account-button": "转储帐户",
 			"dump-contacts-button": "转储联系人",
 			"dump-conversations-button": "转储对话",
