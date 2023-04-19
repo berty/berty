@@ -224,7 +224,9 @@
 		"delete-account": {
 			"title": "Radera konto!",
 			"first-desc": "Är du säker på att du vill radera ditt konto?",
-			"desc": "Vänligen skriv \"delete\" för att bekräfta",
+			"desc-please": "",
+			"desc-delete": "",
+			"desc-confirm": "",
 			"cancel-button": "Avbryt",
 			"delete-button": ""
 		},
@@ -274,7 +276,6 @@
 				"alert-accept-button": "Javisst 👍",
 				"alert-cancel-button": "Nej"
 			},
-			"native-bridge-button": "Testa Native Bridge",
 			"dump-account-button": "Dumpa konto",
 			"dump-contacts-button": "Dumpa kontakter",
 			"dump-conversations-button": "Dumpa konversationer",
