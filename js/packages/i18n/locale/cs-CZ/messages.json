@@ -224,7 +224,9 @@
 		"delete-account": {
 			"title": "Smazat účet!",
 			"first-desc": "Opravdu chcete smazat svůj účet?",
-			"desc": "Napište delete pro potvrzení",
+			"desc-please": "",
+			"desc-delete": "",
+			"desc-confirm": "",
 			"cancel-button": "Zrušit",
 			"delete-button": "Smazat"
 		},
@@ -274,7 +276,6 @@
 				"alert-accept-button": "Jo 👍",
 				"alert-cancel-button": "Ne"
 			},
-			"native-bridge-button": "Testovat Native Bridge",
 			"dump-account-button": "Výpis účtu",
 			"dump-contacts-button": "Výpis kontaktů",
 			"dump-conversations-button": "Výpis konverzací",
