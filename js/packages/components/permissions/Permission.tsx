@@ -31,12 +31,8 @@ interface PermissionProps {
 	onPressSecondary: () => Promise<void> | void
 }
 
-export const Permission: React.FC<PermissionProps> = ({
-	permissionType,
-	permissionStatus,
-	onPressPrimary,
-	onPressSecondary,
-}) => {
+export const Permission: React.FC<PermissionProps> = props => {
+	const { permissionType, permissionStatus, onPressPrimary, onPressSecondary } = props
 	const colors = useThemeColor()
 	const { border, margin, flex } = useStyles()
 	const { t } = useTranslation()
@@ -129,6 +125,7 @@ const styles = StyleSheet.create({
 		textAlign: 'center',
 	},
 	blocked: {
+		textAlign: 'center',
 		lineHeight: 25,
 		marginTop: 10,
 		fontSize: 17,
