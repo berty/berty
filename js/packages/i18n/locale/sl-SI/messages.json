@@ -224,7 +224,9 @@
 		"delete-account": {
 			"title": "Izbriši račun!",
 			"first-desc": "",
-			"desc": "",
+			"desc-please": "",
+			"desc-delete": "",
+			"desc-confirm": "",
 			"cancel-button": "Prekini",
 			"delete-button": ""
 		},
@@ -274,7 +276,6 @@
 				"alert-accept-button": "",
 				"alert-cancel-button": ""
 			},
-			"native-bridge-button": "",
 			"dump-account-button": "",
 			"dump-contacts-button": "",
 			"dump-conversations-button": "",
