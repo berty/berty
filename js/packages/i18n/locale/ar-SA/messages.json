@@ -224,7 +224,9 @@
 		"delete-account": {
 			"title": "حذف الحساب!",
 			"first-desc": "هل أنت متأكد من أنك تريد حذف حسابك؟",
-			"desc": "الرجاء كتابة \"حذف\" للتأكيد",
+			"desc-please": "",
+			"desc-delete": "",
+			"desc-confirm": "",
 			"cancel-button": "ألغ",
 			"delete-button": "احذف"
 		},
@@ -274,7 +276,6 @@
 				"alert-accept-button": "نعم 👍",
 				"alert-cancel-button": "لا"
 			},
-			"native-bridge-button": "",
 			"dump-account-button": "",
 			"dump-contacts-button": "",
 			"dump-conversations-button": "",
