@@ -224,7 +224,9 @@
 		"delete-account": {
 			"title": "계정 삭제!",
 			"first-desc": "정말로 계정을 삭제해도 괜찮을까요?",
-			"desc": "삭제하려면 delete를 입력하세요",
+			"desc-please": "",
+			"desc-delete": "",
+			"desc-confirm": "",
 			"cancel-button": "취소",
 			"delete-button": ""
 		},
@@ -274,7 +276,6 @@
 				"alert-accept-button": "좋아요 👍",
 				"alert-cancel-button": "아뇨"
 			},
-			"native-bridge-button": "네이티브 브릿지 테스트",
 			"dump-account-button": "",
 			"dump-contacts-button": "",
 			"dump-conversations-button": "",
