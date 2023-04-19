@@ -224,7 +224,9 @@
 		"delete-account": {
 			"title": "Supprimer le compte !",
 			"first-desc": "Êtes-vous sûr de vouloir supprimer votre compte ?",
-			"desc": "Veuillez saisir \"delete\" pour confirmer",
+			"desc-please": "Veuillez saisir ",
+			"desc-delete": "supprimer",
+			"desc-confirm": " pour confirmer",
 			"cancel-button": "Annuler",
 			"delete-button": "Supprimer"
 		},
@@ -274,7 +276,6 @@
 				"alert-accept-button": "Oui 👍",
 				"alert-cancel-button": "Non"
 			},
-			"native-bridge-button": "Tester la passerelle native",
 			"dump-account-button": "Extraire le compte",
 			"dump-contacts-button": "Extraire les contacts",
 			"dump-conversations-button": "Extraire les conversations",
