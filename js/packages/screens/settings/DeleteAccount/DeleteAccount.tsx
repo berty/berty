@@ -11,7 +11,8 @@ import { useThemeColor, useDeletingAccountAfterClosing } from '@berty/hooks'
 import { ScreenFC } from '@berty/navigation'
 
 export const DeleteAccount: ScreenFC<'Settings.DeleteAccount'> = () => {
-	const { padding, text, margin } = useStyles()
+	const { padding, margin } = useStyles()
+	const _styles = _useStyles()
 	const [deleteConfirmation, setDeleteConfirmation] = useState('')
 	const colors = useThemeColor()
 	const { t } = useTranslation()
@@ -22,7 +23,7 @@ export const DeleteAccount: ScreenFC<'Settings.DeleteAccount'> = () => {
 	const DELETE_STR = t('settings.delete-account.delete-button').toLowerCase()
 
 	return (
-		<Layout style={{ backgroundColor: '#E35179', flex: 1 }}>
+		<Layout style={_styles.layout}>
 			<StatusBar backgroundColor={colors['secondary-background-header']} barStyle='light-content' />
 			<ErrorCard
 				title={t('settings.delete-account.title')}
@@ -36,14 +37,16 @@ export const DeleteAccount: ScreenFC<'Settings.DeleteAccount'> = () => {
 				}}
 			>
 				<View style={[padding.horizontal.medium, padding.bottom.medium]}>
-					<UnifiedText
-						style={[
-							text.align.center,
-							text.light,
-							{ color: colors['secondary-background-header'] },
-						]}
-					>
-						{t('settings.delete-account.desc')}
+					<UnifiedText>
+						<UnifiedText style={_styles.light}>
+							{t('settings.delete-account.desc-please')}
+						</UnifiedText>
+						<UnifiedText style={_styles.bold}>
+							{t('settings.delete-account.desc-delete')}
+						</UnifiedText>
+						<UnifiedText style={_styles.light}>
+							{t('settings.delete-account.desc-confirm')}
+						</UnifiedText>
 					</UnifiedText>
 				</View>
 				<View style={[margin.vertical.medium]}>
@@ -57,4 +60,15 @@ export const DeleteAccount: ScreenFC<'Settings.DeleteAccount'> = () => {
 			</ErrorCard>
 		</Layout>
 	)
+}
+
+const _useStyles = () => {
+	const { text } = useStyles()
+	const colors = useThemeColor()
+
+	return {
+		layout: { backgroundColor: '#E35179', flex: 1 },
+		light: [text.light, text.align.center, { color: colors['secondary-background-header'] }],
+		bold: [text.bold, text.align.center, { color: colors['secondary-background-header'] }],
+	}
 }

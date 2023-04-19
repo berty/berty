@@ -101,6 +101,7 @@ exports[`Settings.MyBertyId renders correctly 1`] = `
                   }
                 >
                   <Text
+                    adjustsFontSizeToFit={true}
                     style={
                       Array [
                         Object {
@@ -114,6 +115,8 @@ exports[`Settings.MyBertyId renders correctly 1`] = `
                           "color": "#FFFFFF",
                           "fontSize": 45,
                           "includeFontPadding": false,
+                          "paddingBottom": 4.5,
+                          "textAlign": "center",
                         },
                       ]
                     }
@@ -612,6 +615,7 @@ exports[`Settings.MyBertyId renders correctly 2`] = `
                   }
                 >
                   <Text
+                    adjustsFontSizeToFit={true}
                     style={
                       Array [
                         Object {
@@ -625,6 +629,8 @@ exports[`Settings.MyBertyId renders correctly 2`] = `
                           "color": "#FFFFFF",
                           "fontSize": 45,
                           "includeFontPadding": false,
+                          "paddingBottom": 4.5,
+                          "textAlign": "center",
                         },
                       ]
                     }

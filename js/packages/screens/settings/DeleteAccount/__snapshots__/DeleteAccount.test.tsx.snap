@@ -231,21 +231,88 @@ exports[`Settings.DeleteAccount renders correctly 1`] = `
                         "color": "#383B62",
                         "fontFamily": "Open Sans",
                       },
-                      Array [
-                        Object {
-                          "textAlign": "center",
-                        },
-                        Object {
-                          "fontFamily": "Light Open Sans",
-                        },
-                        Object {
-                          "color": "#F64278",
-                        },
-                      ],
+                      undefined,
                     ]
                   }
                 >
-                  settings.delete-account.desc
+                  <Text
+                    style={
+                      Array [
+                        Object {
+                          "fontSize": 30,
+                        },
+                        Object {
+                          "color": "#383B62",
+                          "fontFamily": "Open Sans",
+                        },
+                        Array [
+                          Object {
+                            "fontFamily": "Light Open Sans",
+                          },
+                          Object {
+                            "textAlign": "center",
+                          },
+                          Object {
+                            "color": "#F64278",
+                          },
+                        ],
+                      ]
+                    }
+                  >
+                    settings.delete-account.desc-please
+                  </Text>
+                  <Text
+                    style={
+                      Array [
+                        Object {
+                          "fontSize": 30,
+                        },
+                        Object {
+                          "color": "#383B62",
+                          "fontFamily": "Open Sans",
+                        },
+                        Array [
+                          Object {
+                            "fontFamily": "Bold Open Sans",
+                          },
+                          Object {
+                            "textAlign": "center",
+                          },
+                          Object {
+                            "color": "#F64278",
+                          },
+                        ],
+                      ]
+                    }
+                  >
+                    settings.delete-account.desc-delete
+                  </Text>
+                  <Text
+                    style={
+                      Array [
+                        Object {
+                          "fontSize": 30,
+                        },
+                        Object {
+                          "color": "#383B62",
+                          "fontFamily": "Open Sans",
+                        },
+                        Array [
+                          Object {
+                            "fontFamily": "Light Open Sans",
+                          },
+                          Object {
+                            "textAlign": "center",
+                          },
+                          Object {
+                            "color": "#F64278",
+                          },
+                        ],
+                      ]
+                    }
+                  >
+                    settings.delete-account.desc-confirm
+                  </Text>
                 </Text>
               </View>
               <View

@@ -148,6 +148,7 @@ exports[`Chat.MultiMemberQR renders correctly 1`] = `
                       }
                     >
                       <Text
+                        adjustsFontSizeToFit={true}
                         style={
                           Array [
                             Object {
@@ -161,6 +162,8 @@ exports[`Chat.MultiMemberQR renders correctly 1`] = `
                               "color": "#FFFFFF",
                               "fontSize": 40,
                               "includeFontPadding": false,
+                              "paddingBottom": 4,
+                              "textAlign": "center",
                             },
                           ]
                         }

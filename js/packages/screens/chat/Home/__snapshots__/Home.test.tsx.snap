@@ -292,6 +292,7 @@ exports[`Chat.Home renders correctly 1`] = `
                             }
                           >
                             <Text
+                              adjustsFontSizeToFit={true}
                               style={
                                 Array [
                                   Object {
@@ -305,6 +306,8 @@ exports[`Chat.Home renders correctly 1`] = `
                                     "color": "#FFFFFF",
                                     "fontSize": 17.5,
                                     "includeFontPadding": false,
+                                    "paddingBottom": 1.75,
+                                    "textAlign": "center",
                                   },
                                 ]
                               }

@@ -162,6 +162,7 @@ exports[`Chat.Share renders correctly 1`] = `
                             }
                           >
                             <Text
+                              adjustsFontSizeToFit={true}
                               style={
                                 Array [
                                   Object {
@@ -175,6 +176,8 @@ exports[`Chat.Share renders correctly 1`] = `
                                     "color": "#FFFFFF",
                                     "fontSize": 12,
                                     "includeFontPadding": false,
+                                    "paddingBottom": 1.2,
+                                    "textAlign": "center",
                                   },
                                 ]
                               }
