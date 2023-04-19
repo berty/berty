@@ -224,7 +224,9 @@
 		"delete-account": {
 			"title": "Удалить аккаунт!",
 			"first-desc": "Вы уверены, что хотите удалить свой аккаунт?",
-			"desc": "Пожалуйста, напишите \"удалить\", чтобы подтвердить",
+			"desc-please": "",
+			"desc-delete": "",
+			"desc-confirm": "",
 			"cancel-button": "Отменить",
 			"delete-button": "Удалить"
 		},
@@ -274,7 +276,6 @@
 				"alert-accept-button": "Ага 👍",
 				"alert-cancel-button": "Неа"
 			},
-			"native-bridge-button": "Тест Native Bridge",
 			"dump-account-button": "Дамп аккаунта",
 			"dump-contacts-button": "Дамп контактов",
 			"dump-conversations-button": "Дамп бесед",
