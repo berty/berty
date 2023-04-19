@@ -224,7 +224,9 @@
 		"delete-account": {
 			"title": "Slett konto!",
 			"first-desc": "Er du sikker på at du vil slette din konto?",
-			"desc": "Vennligst skriv \"slett\" for å bekrefte",
+			"desc-please": "",
+			"desc-delete": "",
+			"desc-confirm": "",
 			"cancel-button": "Avbryt",
 			"delete-button": ""
 		},
@@ -274,7 +276,6 @@
 				"alert-accept-button": "Yep 👍",
 				"alert-cancel-button": "Nei"
 			},
-			"native-bridge-button": "Test Original Bro",
 			"dump-account-button": "Dump konto",
 			"dump-contacts-button": "Dump kontakter",
 			"dump-conversations-button": "Dump samtaler",
