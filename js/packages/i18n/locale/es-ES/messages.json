@@ -224,7 +224,9 @@
 		"delete-account": {
 			"title": "¡Eliminar cuenta!",
 			"first-desc": "¿Está seguro que desea eliminar su cuenta?",
-			"desc": "Por favor, escriba borrar para confirmar",
+			"desc-please": "",
+			"desc-delete": "",
+			"desc-confirm": "",
 			"cancel-button": "Cancelar",
 			"delete-button": "Suprimir"
 		},
@@ -274,7 +276,6 @@
 				"alert-accept-button": "Sí 👍",
 				"alert-cancel-button": "Nop"
 			},
-			"native-bridge-button": "Pruebar el puente nativo",
 			"dump-account-button": "Remover cuenta",
 			"dump-contacts-button": "Remover contactos",
 			"dump-conversations-button": "Remover conversaciones",
