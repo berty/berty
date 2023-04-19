@@ -224,7 +224,9 @@
 		"delete-account": {
 			"title": "Apagar conta!",
 			"first-desc": "Você tem certeza que deseja apagar sua conta?",
-			"desc": "Por favor, digite \"apagar\" para confirmar",
+			"desc-please": "",
+			"desc-delete": "",
+			"desc-confirm": "",
 			"cancel-button": "Cancelar",
 			"delete-button": ""
 		},
@@ -274,7 +276,6 @@
 				"alert-accept-button": "Sim 👍",
 				"alert-cancel-button": "Não"
 			},
-			"native-bridge-button": "Testar Ponte Nativa",
 			"dump-account-button": "Despejar conta",
 			"dump-contacts-button": "Despejar contatos",
 			"dump-conversations-button": "Despejar conversas",
