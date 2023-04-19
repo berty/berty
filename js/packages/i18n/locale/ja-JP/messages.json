@@ -224,7 +224,9 @@
 		"delete-account": {
 			"title": "アカウントを削除します!",
 			"first-desc": "本当にアカウントを削除しますか？",
-			"desc": "承認するには delete と入力してください",
+			"desc-please": "",
+			"desc-delete": "",
+			"desc-confirm": "",
 			"cancel-button": "キャンセル",
 			"delete-button": "削除"
 		},
@@ -274,7 +276,6 @@
 				"alert-accept-button": "いいよん 👍",
 				"alert-cancel-button": "いいえ"
 			},
-			"native-bridge-button": "Native Bridge をテスト",
 			"dump-account-button": "アカウントを書き出す",
 			"dump-contacts-button": "連絡先を書き出す",
 			"dump-conversations-button": "会話を書き出す",
