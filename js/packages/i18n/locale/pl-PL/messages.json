@@ -224,7 +224,9 @@
 		"delete-account": {
 			"title": "Usuń konto!",
 			"first-desc": "Czy na pewno chcesz usunąć swoje konto?",
-			"desc": "Proszę wpisać usuń, aby potwierdzić",
+			"desc-please": "",
+			"desc-delete": "",
+			"desc-confirm": "",
 			"cancel-button": "Anuluj",
 			"delete-button": "Usuń"
 		},
@@ -274,7 +276,6 @@
 				"alert-accept-button": "Tak👍",
 				"alert-cancel-button": "Nie"
 			},
-			"native-bridge-button": "Test natywnego mostu",
 			"dump-account-button": "Zrzuć konto",
 			"dump-contacts-button": "Zrzuć kontakty",
 			"dump-conversations-button": "Zrzuć rozmowy",
