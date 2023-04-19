@@ -224,7 +224,9 @@
 		"delete-account": {
 			"title": "Hesabı sil!",
 			"first-desc": "Hesabınızı silmek istediğinizden emin misiniz?",
-			"desc": "Lütfen onaylamak için delete yazın",
+			"desc-please": "",
+			"desc-delete": "",
+			"desc-confirm": "",
 			"cancel-button": "İptal",
 			"delete-button": "Sil"
 		},
@@ -274,7 +276,6 @@
 				"alert-accept-button": "Evet 👍",
 				"alert-cancel-button": "Hayır"
 			},
-			"native-bridge-button": "Yerel Köprüyü Test Et",
 			"dump-account-button": "Hesabı dök",
 			"dump-contacts-button": "Kişileri dök",
 			"dump-conversations-button": "Konuşmaları dök",
