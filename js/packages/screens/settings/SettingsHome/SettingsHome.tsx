@@ -2,7 +2,7 @@ import { Icon } from '@ui-kitten/components'
 import * as MailComposer from 'expo-mail-composer'
 import React, { useContext } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Platform, ScrollView, TouchableOpacity, View } from 'react-native'
+import { Platform, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native'
 import { withInAppNotification } from 'react-native-in-app-notification'
 import { RESULTS } from 'react-native-permissions'
 import { useDispatch, useSelector } from 'react-redux'
@@ -56,7 +56,7 @@ import { serviceTypes } from '@berty/utils/remote-services/remote-services'
 import { EditMyProfile } from './components/EditMyProfile'
 
 const ProfileButton: React.FC<{ show: () => void }> = ({ show }) => {
-	const { padding, margin, border, text } = useStyles()
+	const { padding, margin, border, text, flex } = useStyles()
 	const { scaleSize } = useAppDimensions()
 	const colors = useThemeColor()
 	const account = useAccount()
@@ -81,31 +81,26 @@ const ProfileButton: React.FC<{ show: () => void }> = ({ show }) => {
 				>
 					<View style={{ flexDirection: 'row', alignItems: 'center' }}>
 						<AccountAvatar size={50 * scaleSize} />
-						<UnifiedText style={[padding.left.medium, text.bold]}>
+						<UnifiedText
+							style={[padding.left.medium, text.bold, flex.tiny]}
+							numberOfLines={2}
+							ellipsizeMode='tail'
+						>
 							{account.displayName || ''}
 						</UnifiedText>
+						<TouchableOpacity
+							style={[padding.scale(8), border.radius.scale(100), styles.qrCode]}
+							onPress={() => navigate('Settings.MyBertyId')}
+						>
+							<Icon
+								name='qr'
+								pack='custom'
+								fill={colors['background-header']}
+								width={20 * scaleSize}
+								height={20 * scaleSize}
+							/>
+						</TouchableOpacity>
 					</View>
-					<TouchableOpacity
-						style={[
-							padding.scale(8),
-							border.radius.scale(100),
-							{
-								backgroundColor: '#EDEDED',
-								alignItems: 'center',
-								justifyContent: 'center',
-								flexDirection: 'row',
-							},
-						]}
-						onPress={() => navigate('Settings.MyBertyId')}
-					>
-						<Icon
-							name='qr'
-							pack='custom'
-							fill={colors['background-header']}
-							width={20 * scaleSize}
-							height={20 * scaleSize}
-						/>
-					</TouchableOpacity>
 				</View>
 			</TouchableOpacity>
 		</>
@@ -427,3 +422,12 @@ export const SettingsHome: ScreenFC<'Settings.Home'> = withInAppNotification(
 		)
 	},
 )
+
+const styles = StyleSheet.create({
+	qrCode: {
+		backgroundColor: '#EDEDED',
+		alignItems: 'center',
+		justifyContent: 'center',
+		flexDirection: 'row',
+	},
+})

@@ -149,6 +149,8 @@ exports[`Settings.Home renders correctly 1`] = `
                   </View>
                 </View>
                 <Text
+                  ellipsizeMode="tail"
+                  numberOfLines={2}
                   style={
                     Array [
                       Object {
@@ -165,52 +167,55 @@ exports[`Settings.Home renders correctly 1`] = `
                         Object {
                           "fontFamily": "Bold Open Sans",
                         },
+                        Object {
+                          "flex": 1,
+                        },
                       ],
                     ]
                   }
                 >
                   
                 </Text>
-              </View>
-              <View
-                accessible={true}
-                focusable={true}
-                onClick={[Function]}
-                onResponderGrant={[Function]}
-                onResponderMove={[Function]}
-                onResponderRelease={[Function]}
-                onResponderTerminate={[Function]}
-                onResponderTerminationRequest={[Function]}
-                onStartShouldSetResponder={[Function]}
-                style={
-                  Object {
-                    "alignItems": "center",
-                    "backgroundColor": "#EDEDED",
-                    "borderRadius": 100,
-                    "flexDirection": "row",
-                    "justifyContent": "center",
-                    "opacity": 1,
-                    "padding": 8,
-                  }
-                }
-              >
                 <View
+                  accessible={true}
+                  focusable={true}
+                  onClick={[Function]}
+                  onResponderGrant={[Function]}
+                  onResponderMove={[Function]}
+                  onResponderRelease={[Function]}
+                  onResponderTerminate={[Function]}
+                  onResponderTerminationRequest={[Function]}
+                  onStartShouldSetResponder={[Function]}
                   style={
                     Object {
-                      "transform": Array [
-                        Object {
-                          "scale": 1,
-                        },
-                      ],
+                      "alignItems": "center",
+                      "backgroundColor": "#EDEDED",
+                      "borderRadius": 100,
+                      "flexDirection": "row",
+                      "justifyContent": "center",
+                      "opacity": 1,
+                      "padding": 8,
                     }
                   }
                 >
-                  <AssetMock
-                    color="#535AE4"
-                    height={20}
-                    style={Array []}
-                    width={20}
-                  />
+                  <View
+                    style={
+                      Object {
+                        "transform": Array [
+                          Object {
+                            "scale": 1,
+                          },
+                        ],
+                      }
+                    }
+                  >
+                    <AssetMock
+                      color="#535AE4"
+                      height={20}
+                      style={Array []}
+                      width={20}
+                    />
+                  </View>
                 </View>
               </View>
             </View>
