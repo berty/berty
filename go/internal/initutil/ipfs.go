@@ -348,7 +348,7 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 	}
 	// enable lifecycle conn
 	m.Node.Protocol.connlifecycle, err = ipfsutil.NewConnLifecycle(
-		ctx, logger.Named("ipfs-lc"), m.Node.Protocol.ipfsNode.PeerHost, peering, lm,
+		ctx, logger.Named("ipfs-lc"), m.Node.Protocol.ipfsNode.PeerHost, peering, lm, m.Node.Protocol.NetManager,
 	)
 	if err != nil {
 		return nil, nil, errcode.ErrIPFSInit.Wrap(err)
