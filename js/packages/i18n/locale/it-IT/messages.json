@@ -1,49 +1,49 @@
 {
 	"onboarding": {
 		"getstarted": {
-			"screenTitle": "",
-			"title": "",
-			"desc": "",
-			"create-button": "",
-			"import-button": ""
+			"screenTitle": "Proteggi la tua privacy",
+			"title": "Proteggi la tua privacy",
+			"desc": "messaggistica peer-to-peer gratuita e sicura",
+			"create-button": "Crea un account",
+			"import-button": "Importa account"
 		},
 		"default-mode": {
 			"summary": {
-				"title": "",
-				"screenTitle": "",
-				"subtitle": "",
-				"first-point": "",
-				"second-point": "",
-				"third-point": "",
-				"back-button": "",
-				"accept-button": ""
+				"title": "Modalità Predefinita",
+				"screenTitle": "Crea account",
+				"subtitle": "Guida rapida",
+				"first-point": "Inizia con impostazioni che offrono un equilibrio privacy/comfort adatto nella maggior parte dei casi. I nodi Berty sono utilizzati per migliorare le prestazioni e la comunicazione asincrona.",
+				"second-point": "Le notifiche push sono abilitate per impostazione predefinita e non è ancora possibile disabilitarle su iOS.",
+				"third-point": "Per un equilibrio di privacy/comfort personalizzato, selezionare Modalità Personalizzata.",
+				"back-button": "Indietro",
+				"accept-button": "Andiamo"
 			}
 		},
 		"custom-mode": {
 			"summary": {
-				"screenTitle": "",
-				"title": "",
-				"subtitle": "",
-				"first-point": "",
-				"second-point": "",
-				"back-button": "",
-				"accept-button": ""
+				"screenTitle": "Crea account - Personalizza le impostazioni",
+				"title": "Modalità Personalizzata",
+				"subtitle": "Equilibrio Privacy/Comfort personalizzato",
+				"first-point": "In questa modalità, regola tutte le impostazioni individualmente per creare l'equilibrio di privacy e comfort che più adatto a te.",
+				"second-point": "Per un'esperienza chiavi in mano, seleziona Modalità Predefinita.",
+				"back-button": "Indietro",
+				"accept-button": "Prosegui"
 			},
 			"settings": {
 				"off-grid": {
 					"title": "",
-					"ble-button": "",
-					"nearby-button": "",
+					"ble-button": "Bluetooth Low Energy",
+					"nearby-button": "Android Nelle vicinanze",
 					"mc-button": "",
-					"mdns-button": ""
+					"mdns-button": "Multicast DNS (LAN)"
 				},
 				"routing": {
-					"title": "",
-					"dht-button": "",
+					"title": "Routing",
+					"dht-button": "Tabella Hash Distribuita",
 					"rdvp-button": ""
 				},
 				"access": {
-					"title": "",
+					"title": "Accessibilità alla rete",
 					"relay-button": "",
 					"bootstrap-button": ""
 				},
@@ -63,32 +63,32 @@
 						}
 					},
 					"errors": {
-						"alias-already-exists": "",
-						"multiaddr-alread-exists": "",
-						"multiaddr-bad-format": "",
-						"multiaddr-p2p": ""
+						"alias-already-exists": "Alias già esistente",
+						"multiaddr-alread-exists": "Indirizzo multiplo già esistente",
+						"multiaddr-bad-format": "Formato errato di indirizzo multiplo",
+						"multiaddr-p2p": "L'indirizzo multiplo dovrebbe contenere un p2p"
 					},
 					"buttons": {
 						"add": "Aggiungi",
-						"edit": "",
-						"delete": ""
+						"edit": "Modifica",
+						"delete": "Elimina"
 					},
-					"multiaddress": "",
-					"alias": ""
+					"multiaddress": "Indirizzo multiplo",
+					"alias": "Alias"
 				},
-				"all-button": "",
-				"accept-button": ""
+				"all-button": "Tutti",
+				"accept-button": "Andiamo"
 			}
 		},
 		"create-account": {
 			"title": "Crea il tuo account",
-			"first-button": "",
-			"second-button": "",
+			"first-button": "Modalità Predefinita",
+			"second-button": "Modalità Personalizzata",
 			"placeholder": "Scegli il tuo nome utente",
 			"good-to-know": {
 				"title": "Buono a sapersi:",
 				"first-point": "Il tuo account viene creato localmente",
-				"second-point": ""
+				"second-point": "Il nome utente è facoltativo e può essere modificato in un secondo momento"
 			}
 		},
 		"generate-key": {
@@ -98,18 +98,18 @@
 		"setup-finished": {
 			"title": "Installazione terminata!",
 			"desc": "Ora è possibile utilizzare l'app, iniziare ad aggiungere contatti e parlare liberamente e privatamente con essi",
-			"button": ""
+			"button": "Inizia a usare Berty"
 		},
 		"web-views": {
-			"title": "",
-			"desc": "",
+			"title": "Permessi contenuti web",
+			"desc": "Berty sta per caricare contenuti dal web. Vuoi aprire questa pagina?",
 			"first-button": "Annulla",
-			"second-button": ""
+			"second-button": "Sì"
 		}
 	},
 	"main": {
 		"home": {
-			"title": "",
+			"title": "Berty",
 			"requests": {
 				"title": "Richieste",
 				"accept": "Accetta",
@@ -118,10 +118,10 @@
 			"input-placeholder": "Cerca parola chiave",
 			"no-contacts": "Non hai ancora contatti o chat",
 			"no-network": {
-				"title": "",
-				"description": "",
-				"cancel": "",
-				"activate": ""
+				"title": "Nessuna Rete trovata!",
+				"description": "Sembri offline! Attiva la funzionalità Bluetooth per chattare con gli amici!",
+				"cancel": "NON ADESSO",
+				"activate": "ATTIVA"
 			},
 			"search": {
 				"no-results": "Nessun risultato trovato"
@@ -131,8 +131,8 @@
 				"add-members": "Aggiungi membri",
 				"group-info": "Info gruppo",
 				"search-placeholder": "Cerca",
-				"continue": "",
-				"create-group": ""
+				"continue": "Continua",
+				"create-group": "Crea un gruppo"
 			},
 			"create-group-finalize": {
 				"placeholder": "Nome gruppo",
@@ -144,7 +144,7 @@
 				"fifth-bullet-point": "Non puoi rimuovere un membro da questo gruppo"
 			},
 			"conversations": {
-				"request-sent": "",
+				"request-sent": "Richiesta inviata. In attesa...",
 				"draft": "Bozza: {{message}}"
 			}
 		},
@@ -155,32 +155,32 @@
 			"title": "Impostazioni",
 			"proximity-button": "",
 			"notifications-button": "Notifiche",
-			"appearance-button": "",
+			"appearance-button": "Aspetto",
 			"accounts-button": "Account",
-			"network-button": "",
-			"linked-identities-button": "",
-			"directory-search-button": "",
-			"bug-button": "",
+			"network-button": "Rete",
+			"linked-identities-button": "Identità collegate",
+			"directory-search-button": "Ricerca directory",
+			"bug-button": "Segnala un bug",
 			"about-button": "Su Berty",
-			"version-button": "",
+			"version-button": "Versione: {{version}}",
 			"devtools-button": "Devtools"
 		},
 		"about": {
 			"title": "Su Berty",
-			"faq-button": "",
-			"roadmap-button": "",
-			"policy-button": "",
-			"license-button": "",
+			"faq-button": "FAQ",
+			"roadmap-button": "Roadmap",
+			"policy-button": "Informativa sulla privacy",
+			"license-button": "Licenze Open Source",
 			"terms-of-use": "Termini di utilizzo"
 		},
 		"accounts": {
 			"title": "Account",
-			"backup-button": "",
-			"backup-notif-title": "",
-			"backup-notif-desc": "",
+			"backup-button": "Backup",
+			"backup-notif-title": "Successo",
+			"backup-notif-desc": "Il backup dell'account è completato!",
 			"accounts-button": "Account",
-			"create-button": "",
-			"import-button": "",
+			"create-button": "Crea un account",
+			"import-button": "Importa un account",
 			"delete-button": "",
 			"delete-title": ""
 		},
