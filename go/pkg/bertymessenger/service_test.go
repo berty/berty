@@ -1665,7 +1665,9 @@ func TestAck(t *testing.T) {
 	require.NotNil(t, convPK)
 
 	// send message
-	payload, err := proto.Marshal(&messengertypes.AppMessage_UserMessage{Body: "Hello"})
+	payload, err := proto.Marshal(&messengertypes.AppMessage_UserMessage{
+		Body: "Hello",
+	})
 	require.NoError(t, err)
 
 	interactRes, err := user.client.Interact(ctx, &messengertypes.Interact_Request{
@@ -1675,7 +1677,7 @@ func TestAck(t *testing.T) {
 	})
 	require.NoError(t, err)
 	require.NotEmpty(t, interactRes.GetCID())
-	time.Sleep(1 * time.Second)
+	time.Sleep(2 * time.Second)
 
 	// check reply interaction in nodes
 	for _, user := range nodes {

@@ -29,13 +29,15 @@ func BenchmarkScenario(b *testing.B) {
 	logger, cleanup := testutil.Logger(b)
 	defer cleanup()
 	accountsAmount := 3
-	clients, _, cleanup := bertymessengertesting.NonMockedTestingInfra(b, accountsAmount)
-	defer cleanup()
+	clients, _ := bertymessengertesting.NonMockedTestingInfra(b, accountsAmount)
 
 	// create nodes
 	var creator *bertymessenger.TestingAccount
 	{
+
+		require.NotNil(b, clients[0])
 		creator = bertymessenger.NewTestingAccount(ctx, b, clients[0], nil, logger)
+		require.NotNil(b, creator)
 		defer creator.Close()
 		creator.SetName(b, "Creator")
 	}

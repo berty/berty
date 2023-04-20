@@ -23,7 +23,7 @@ import (
 	libp2p_host "github.com/libp2p/go-libp2p/core/host"
 	metrics "github.com/libp2p/go-libp2p/core/metrics"
 	libp2p_peer "github.com/libp2p/go-libp2p/core/peer"
-	libp2p_relayv1 "github.com/libp2p/go-libp2p/p2p/protocol/circuitv1/relay"
+	libp2p_relayv2 "github.com/libp2p/go-libp2p/p2p/protocol/circuitv2/relay"
 	ma "github.com/multiformats/go-multiaddr"
 	"github.com/oklog/run"
 	ff "github.com/peterbourgon/ff/v3"
@@ -166,12 +166,9 @@ func main() {
 				libp2p.DefaultTransports,
 
 				// Nat & Relay service
-				// libp2p.DefaultStaticRelays(),
 
 				// @NOTE(gfanton): init relay manually
 				libp2p.DisableRelay(),
-				// libp2p.EnableRelay(),
-				// libp2p.EnableNATService(),
 
 				// swarm listeners
 				libp2p.ListenAddrs(listeners...),
@@ -192,16 +189,14 @@ func main() {
 			defer host.Close()
 			logHostInfo(logger, host)
 
-			ressources := libp2p_relayv1.DefaultResources()
-			_, err = libp2p_relayv1.NewRelay(host,
-				libp2p_relayv1.WithResources(ressources),
-				// libp2p_relayv1.WithACL(acl)), // not use for now
+			_, err = libp2p_relayv2.New(host,
+				// disable limits for now to have an equivalent of a relay v1
+				libp2p_relayv2.WithInfiniteLimits(),
+				libp2p_relayv2.WithResources(libp2p_relayv2.DefaultResources()),
 			)
 			if err != nil {
-				return fmt.Errorf("unable to start relay v1; %w", err)
+				return fmt.Errorf("unable to start relay v2; %w", err)
 			}
-
-			logger.Debug("starting relay_v1", zap.Any("ressources", ressources))
 
 			db, err := libp2p_rpdb.OpenDB(ctx, serveURN)
 			if err != nil {

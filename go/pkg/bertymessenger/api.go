@@ -6,7 +6,6 @@ import (
 	"crypto/tls"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"math"
 	mrand "math/rand"
 	"net"
@@ -1318,7 +1317,7 @@ func (svc *service) ReplicationSetAutoEnable(ctx context.Context, req *messenger
 }
 
 func (svc *service) InstanceExportData(_ *messengertypes.InstanceExportData_Request, server messengertypes.MessengerService_InstanceExportDataServer) error {
-	tmpFile, err := ioutil.TempFile(tempdir.TempDir(), "export-")
+	tmpFile, err := os.CreateTemp(tempdir.TempDir(), "export-")
 	if err != nil {
 		return errcode.ErrInternal.Wrap(err)
 	}

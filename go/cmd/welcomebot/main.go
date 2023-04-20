@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
-	"io/ioutil"
 	"math/rand"
 	"os"
 	"os/signal"
@@ -123,7 +122,7 @@ func welcomebot() error {
 	// init store
 	{
 		if u.FileExists(*storePath) {
-			data, err := ioutil.ReadFile(*storePath)
+			data, err := os.ReadFile(*storePath)
 			if err != nil {
 				return fmt.Errorf("read %q: %w", *storePath, err)
 			}
@@ -602,7 +601,7 @@ func (bot *Bot) saveStore() {
 	}
 
 	// write file
-	if err := ioutil.WriteFile(bot.storePath, data, 0o600); err != nil {
+	if err := os.WriteFile(bot.storePath, data, 0o600); err != nil {
 		panic(fmt.Errorf("write store file: %w", err))
 	}
 	bot.storeWholeConvLock.Unlock()

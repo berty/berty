@@ -3,11 +3,10 @@ package bertymessengertesting
 import (
 	"flag"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	"berty.tech/berty/v2/go/internal/initutil"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
@@ -15,22 +14,23 @@ import (
 	"berty.tech/weshnet/pkg/protocoltypes"
 )
 
-func NonMockedTestingInfra(t testing.TB, accountAmount int) ([]messengertypes.MessengerServiceClient, []*weshnet.TestingProtocol, func()) {
+func NonMockedTestingInfra(t testing.TB, accountAmount int) ([]messengertypes.MessengerServiceClient, []*weshnet.TestingProtocol) {
 	messengers := make([]messengertypes.MessengerServiceClient, accountAmount)
 	tps := make([]*weshnet.TestingProtocol, accountAmount)
-	closeFuncs := ([]func())(nil)
 
 	for i := 0; i < accountAmount; i++ {
-		tempDir, err := ioutil.TempDir("", fmt.Sprintf("berty-main-%d", i))
-		assert.NoError(t, err)
+		tempDir, err := os.MkdirTemp("", fmt.Sprintf("berty-main-%d", i))
 
-		closeFuncs = append(closeFuncs, func() {
+		require.NoError(t, err)
+		t.Cleanup(func() {
 			_ = os.RemoveAll(tempDir)
 		})
 
 		man, err := initutil.New(nil)
-		assert.NoError(t, err)
-		closeFuncs = append(closeFuncs, func() { _ = man.Close(nil) })
+		require.NoError(t, err)
+		t.Cleanup(func() {
+			_ = man.Close(nil)
+		})
 
 		fs := flag.NewFlagSet("man1", flag.ExitOnError)
 		man.SetupLoggingFlags(fs)              // also available at root level
@@ -41,28 +41,24 @@ func NonMockedTestingInfra(t testing.TB, accountAmount int) ([]messengertypes.Me
 		man.SetupInitTimeout(fs)
 
 		err = fs.Parse([]string{"-store.dir", tempDir})
-		assert.NoError(t, err)
+		require.NoError(t, err)
 
-		ipfs, _, err := man.GetLocalIPFS()
-		assert.NoError(t, err)
-		closeFuncs = append(closeFuncs, func() { _ = ipfs.Close() })
+		_, _, err = man.GetLocalIPFS()
+		require.NoError(t, err)
 
 		protocolClient, err := man.GetProtocolClient()
-		assert.NoError(t, err)
+		require.NoError(t, err)
 
 		messengers[i], err = man.GetMessengerClient()
-		assert.NoError(t, err)
+		require.NotNil(t, messengers[i])
+		require.NoError(t, err)
 
 		tps[i] = &weshnet.TestingProtocol{
 			Client: &WrappedMessengerClient{protocolClient},
 		}
 	}
 
-	return messengers, tps, func() {
-		for i := len(closeFuncs) - 1; i >= 0; i-- {
-			closeFuncs[i]()
-		}
-	}
+	return messengers, tps
 }
 
 type WrappedMessengerClient struct {

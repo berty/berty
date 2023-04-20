@@ -2,7 +2,7 @@
 # golang 1.18.4 is simply the most recent version available to date (07/22).
 # There is no contraindication for updating it.
 #-----
-golang 1.18.4
+golang 1.19.7
 
 #-----
 # node 16.16.0 is the most recent LTS version available to date (07/22).

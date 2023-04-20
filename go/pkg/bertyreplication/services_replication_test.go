@@ -224,6 +224,9 @@ func TestReplicationService_ReplicateGroupStats_ReplicateGlobalStats(t *testing.
 	previousCreatedAt := res.Group.CreatedAt
 	previousUpdatedAt := res.Group.UpdatedAt
 
+	// force waiting to avoid false positive on the ci
+	time.Sleep(100 * time.Millisecond)
+
 	gcPeer1, err := odb1.OpenGroup(ctx, g, nil)
 	require.NoError(t, err)
 	defer gcPeer1.Close()

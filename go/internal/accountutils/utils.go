@@ -5,7 +5,6 @@ import (
 	crand "crypto/rand"
 	"encoding/hex"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path"
 	"path/filepath"
@@ -43,7 +42,7 @@ const (
 )
 
 func GetDevicePushKeyForPath(filePath string, createIfMissing bool) (pk *[cryptoutil.KeySize]byte, sk *[cryptoutil.KeySize]byte, err error) {
-	contents, err := ioutil.ReadFile(filePath)
+	contents, err := os.ReadFile(filePath)
 	if os.IsNotExist(err) && createIfMissing {
 		if err := os.MkdirAll(path.Dir(filePath), 0o700); err != nil {
 			return nil, nil, errcode.ErrInternal.Wrap(err)
@@ -64,7 +63,7 @@ func GetDevicePushKeyForPath(filePath string, createIfMissing bool) (pk *[crypto
 			return nil, nil, errcode.ErrInternal.Wrap(err)
 		}
 
-		if err := ioutil.WriteFile(filePath, contents, 0o600); err != nil {
+		if err := os.WriteFile(filePath, contents, 0o600); err != nil {
 			return nil, nil, errcode.ErrInternal.Wrap(err)
 		}
 
@@ -97,7 +96,7 @@ func ListAccounts(ctx context.Context, rootDir string, ks NativeKeystore, logger
 		return nil, errcode.ErrBertyAccountFSError.Wrap(err)
 	}
 
-	subitems, err := ioutil.ReadDir(accountsDir)
+	subitems, err := os.ReadDir(accountsDir)
 	if err != nil {
 		return nil, errcode.ErrBertyAccountFSError.Wrap(err)
 	}

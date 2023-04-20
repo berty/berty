@@ -3,6 +3,7 @@ package encryptedrepo
 import (
 	"fmt"
 	"path/filepath"
+	"time"
 
 	ipfs_cfg "github.com/ipfs/kubo/config"
 	ipfs_repo "github.com/ipfs/kubo/repo"
@@ -81,8 +82,8 @@ func upgradeToPersistentConfig(cfg *ipfs_cfg.Config) (*ipfs_cfg.Config, error) {
 	}
 
 	cfgCopy.Reprovider = ipfs_cfg.Reprovider{
-		Interval: "12h",
-		Strategy: "all",
+		Interval: ipfs_cfg.NewOptionalDuration(time.Hour * 12),
+		Strategy: ipfs_cfg.NewOptionalString("all"),
 	}
 
 	cfgCopy.Datastore = ipfs_cfg.Datastore{
