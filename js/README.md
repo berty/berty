@@ -100,7 +100,7 @@ $ make help
 <details><summary>IOS dev requirements</summary>
 
 - Mac OS X
-- [XCode _(latest stable)_](https://developer.apple.com/download/all/?q=Xcode)
+- [XCode _14.x_](https://developer.apple.com/download/all/?q=Xcode)
 
 Run:
 
