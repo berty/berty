@@ -1,5 +1,18 @@
+diff --git a/node_modules/react-native/ReactCommon/yoga/yoga/Yoga.cpp b/node_modules/react-native/ReactCommon/yoga/yoga/Yoga.cpp
+index 97e6407..8c4da9d 100644
+--- a/node_modules/react-native/ReactCommon/yoga/yoga/Yoga.cpp
++++ b/node_modules/react-native/ReactCommon/yoga/yoga/Yoga.cpp
+@@ -2286,7 +2286,7 @@ static float YGDistributeFreeSpaceSecondPass(
+         depth,
+         generationCount);
+     node->setLayoutHadOverflow(
+-        node->getLayout().hadOverflow() |
++        node->getLayout().hadOverflow() ||
+         currentRelativeChild->getLayout().hadOverflow());
+   }
+   return deltaFreeSpace;
 diff --git a/node_modules/react-native/react.gradle b/node_modules/react-native/react.gradle
-index dd34c98..f406bbe 100644
+index 847edf5..4743ae9 100644
 --- a/node_modules/react-native/react.gradle
 +++ b/node_modules/react-native/react.gradle
 @@ -299,6 +299,7 @@ afterEvaluate {
@@ -11,7 +24,7 @@ index dd34c98..f406bbe 100644
  
          packageTask.dependsOn(currentAssetsCopyTask)
 diff --git a/node_modules/react-native/scripts/react_native_pods.rb b/node_modules/react-native/scripts/react_native_pods.rb
-index db9a34a..8c125ff 100644
+index db9a34a..2dc8d52 100644
 --- a/node_modules/react-native/scripts/react_native_pods.rb
 +++ b/node_modules/react-native/scripts/react_native_pods.rb
 @@ -165,7 +165,9 @@ def use_react_native_codegen!(spec, options={})
