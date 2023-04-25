@@ -168,3 +168,17 @@ $ make storybook
 2. Open the emulator an the App within it. Press 'R'.
 3. Run the Storybook command `$ make storybook`.
 4. And then reload the app within the emulator pressing the key 'R'. It will force the app load the new bundle.
+
+## Flipper
+
+Flipper is a tool for debugging iOS, Android and React Native apps.
+We use it for profiling the app and to recuperate some logs that we don't have in metro.
+
+To allow all features, you have to install flipper `0.162.0` version.
+⚠️ When you upgrade react-native you have to find the correct version to run with.
+
+To run it you just have to run the flipper desktop app and select the device application you want.
+A known issue is that we are unable to connect our android device. Just verify in the settings of flipper your `platform-tools` path is good (`https://stackoverflow.com/a/72608113/10961298`).
+
+This is a short video on what it can be expected for the profiler feature (`https://www.loom.com/share/0b0353df7e6445ecbbfd6e2e8cca784d`).
+In this video we profile the debug app, but we really advise you to profile the release app.
