@@ -51,7 +51,7 @@ jobs:
     name: Build for iOS
     runs-on: ${{ matrix.runner }}
     env:
-      E2E_TESTING_IOS_DEVICE: iPhone 11
+      E2E_TESTING_IOS_DEVICE: iPhone 14
       # TODO: fix hetzner
       # E2E_TESTING_IOS_VERSION: 15.5
       CACHE_DIRS: js/android/.gomobile-cache; js/ios/.gomobile-cache; js/ios/.xcodegen-cache
