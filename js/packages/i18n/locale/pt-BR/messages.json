@@ -40,7 +40,7 @@
 				"routing": {
 					"title": "Roteamento",
 					"dht-button": "Tabela Hash Distribuída",
-					"rdvp-button": ""
+					"rdvp-button": "Nós pontos de encontro"
 				},
 				"access": {
 					"title": "Acessibilidade de rede",
@@ -58,7 +58,7 @@
 					"edit": {
 						"title": {
 							"relay": "",
-							"bootstrap": "",
+							"bootstrap": "Editar um nó de inicialização",
 							"rdvp": ""
 						}
 					},
@@ -98,7 +98,7 @@
 		"setup-finished": {
 			"title": "Configuração finalizada!",
 			"desc": "Agora você pode usar o aplicativo, comece a adicionar contatos e conversar de forma livre e privada com eles",
-			"button": ""
+			"button": "Comece a usar o Berty"
 		},
 		"web-views": {
 			"title": "Permissão de conteúdo web",
@@ -118,10 +118,10 @@
 			"input-placeholder": "Pesquisar palavra-chave",
 			"no-contacts": "Você não tem nenhum contato ou conversa ainda",
 			"no-network": {
-				"title": "",
-				"description": "",
+				"title": "Nenhuma rede encontrada!",
+				"description": "Você parece estar sem conexão! Ative o Bluetooth para conversar com amigos!",
 				"cancel": "",
-				"activate": ""
+				"activate": "ATIVAR"
 			},
 			"search": {
 				"no-results": "Nenhum resultado encontrado"
@@ -153,12 +153,12 @@
 	"settings": {
 		"home": {
 			"title": "Configurações",
-			"proximity-button": "",
+			"proximity-button": "Comunicação fora da rede/Off-Grid",
 			"notifications-button": "Notificações",
 			"appearance-button": "Aparência",
 			"accounts-button": "Contas",
 			"network-button": "Rede",
-			"linked-identities-button": "",
+			"linked-identities-button": "Identidades vinculadas",
 			"directory-search-button": "",
 			"bug-button": "Informar um bug",
 			"about-button": "Sobre Berty",
