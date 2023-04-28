@@ -135,7 +135,9 @@ Components = mapValues(RawComponents, SubComponents =>
 		(Component: React.FC): React.FC =>
 			React.memo(props => (
 				<>
-					{Platform.OS !== 'web' ? <DeepLinkBridge /> : null}
+					{Platform.OS !== 'web' && !('OpeningAccount' in SubComponents) ? (
+						<DeepLinkBridge />
+					) : null}
 					<Component {...props} />
 				</>
 			)),
