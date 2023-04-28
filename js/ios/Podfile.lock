@@ -43,61 +43,64 @@ PODS:
     - React-Core (= 0.64.4)
     - React-jsi (= 0.64.4)
     - ReactCommon/turbomodule/core (= 0.64.4)
-  - Flipper (0.87.0):
-    - Flipper-Folly (~> 2.5)
-    - Flipper-RSocket (~> 1.3)
+  - Flipper (0.162.0):
+    - Flipper-Folly (~> 2.6)
+  - Flipper-Boost-iOSX (1.76.0.1.11)
   - Flipper-DoubleConversion (1.1.7)
-  - Flipper-Folly (2.5.3):
-    - boost-for-react-native
+  - Flipper-Fmt (7.1.7)
+  - Flipper-Folly (2.6.10):
+    - Flipper-Boost-iOSX
     - Flipper-DoubleConversion
+    - Flipper-Fmt (= 7.1.7)
     - Flipper-Glog
     - libevent (~> 2.1.12)
-    - OpenSSL-Universal (= 1.1.180)
+    - OpenSSL-Universal (= 1.1.1100)
   - Flipper-Glog (0.3.5)
   - Flipper-PeerTalk (0.0.4)
-  - Flipper-RSocket (1.3.1):
-    - Flipper-Folly (~> 2.5)
-  - FlipperKit (0.87.0):
-    - FlipperKit/Core (= 0.87.0)
-  - FlipperKit/Core (0.87.0):
-    - Flipper (~> 0.87.0)
+  - Flipper-RSocket (1.4.3):
+    - Flipper-Folly (~> 2.6)
+  - FlipperKit (0.162.0):
+    - FlipperKit/Core (= 0.162.0)
+  - FlipperKit/Core (0.162.0):
+    - Flipper (~> 0.162.0)
     - FlipperKit/CppBridge
     - FlipperKit/FBCxxFollyDynamicConvert
     - FlipperKit/FBDefines
     - FlipperKit/FKPortForwarding
-  - FlipperKit/CppBridge (0.87.0):
-    - Flipper (~> 0.87.0)
-  - FlipperKit/FBCxxFollyDynamicConvert (0.87.0):
-    - Flipper-Folly (~> 2.5)
-  - FlipperKit/FBDefines (0.87.0)
-  - FlipperKit/FKPortForwarding (0.87.0):
+    - SocketRocket (~> 0.6.0)
+  - FlipperKit/CppBridge (0.162.0):
+    - Flipper (~> 0.162.0)
+  - FlipperKit/FBCxxFollyDynamicConvert (0.162.0):
+    - Flipper-Folly (~> 2.6)
+  - FlipperKit/FBDefines (0.162.0)
+  - FlipperKit/FKPortForwarding (0.162.0):
     - CocoaAsyncSocket (~> 7.6)
     - Flipper-PeerTalk (~> 0.0.4)
-  - FlipperKit/FlipperKitHighlightOverlay (0.87.0)
-  - FlipperKit/FlipperKitLayoutHelpers (0.87.0):
+  - FlipperKit/FlipperKitHighlightOverlay (0.162.0)
+  - FlipperKit/FlipperKitLayoutHelpers (0.162.0):
     - FlipperKit/Core
     - FlipperKit/FlipperKitHighlightOverlay
     - FlipperKit/FlipperKitLayoutTextSearchable
-  - FlipperKit/FlipperKitLayoutIOSDescriptors (0.87.0):
+  - FlipperKit/FlipperKitLayoutIOSDescriptors (0.162.0):
     - FlipperKit/Core
     - FlipperKit/FlipperKitHighlightOverlay
     - FlipperKit/FlipperKitLayoutHelpers
     - YogaKit (~> 1.18)
-  - FlipperKit/FlipperKitLayoutPlugin (0.87.0):
+  - FlipperKit/FlipperKitLayoutPlugin (0.162.0):
     - FlipperKit/Core
     - FlipperKit/FlipperKitHighlightOverlay
     - FlipperKit/FlipperKitLayoutHelpers
     - FlipperKit/FlipperKitLayoutIOSDescriptors
     - FlipperKit/FlipperKitLayoutTextSearchable
     - YogaKit (~> 1.18)
-  - FlipperKit/FlipperKitLayoutTextSearchable (0.87.0)
-  - FlipperKit/FlipperKitNetworkPlugin (0.87.0):
+  - FlipperKit/FlipperKitLayoutTextSearchable (0.162.0)
+  - FlipperKit/FlipperKitNetworkPlugin (0.162.0):
     - FlipperKit/Core
-  - FlipperKit/FlipperKitReactPlugin (0.87.0):
+  - FlipperKit/FlipperKitReactPlugin (0.162.0):
     - FlipperKit/Core
-  - FlipperKit/FlipperKitUserDefaultsPlugin (0.87.0):
+  - FlipperKit/FlipperKitUserDefaultsPlugin (0.162.0):
     - FlipperKit/Core
-  - FlipperKit/SKIOSNetworkPlugin (0.87.0):
+  - FlipperKit/SKIOSNetworkPlugin (0.162.0):
     - FlipperKit/Core
     - FlipperKit/FlipperKitNetworkPlugin
   - glog (0.3.5)
@@ -106,7 +109,7 @@ PODS:
   - lottie-react-native (4.1.3):
     - lottie-ios (~> 3.2.3)
     - React-Core
-  - OpenSSL-Universal (1.1.180)
+  - OpenSSL-Universal (1.1.1100)
   - Permission-BluetoothPeripheral (3.1.0):
     - RNPermissions
   - Permission-Camera (3.1.0):
@@ -318,8 +321,6 @@ PODS:
     - React-Core
   - react-native-document-picker (7.1.1):
     - React-Core
-  - react-native-pager-view (5.4.9):
-    - React-Core
   - react-native-restart (0.0.22):
     - React-Core
   - react-native-safe-area-context (3.4.1):
@@ -415,6 +416,7 @@ PODS:
     - React
   - RNVectorIcons (9.0.0):
     - React-Core
+  - SocketRocket (0.6.0)
   - Yoga (1.14.0)
   - YogaKit (1.18.1):
     - Yoga (~> 1.14)
@@ -442,25 +444,25 @@ DEPENDENCIES:
   - EXWebBrowser (from `../node_modules/expo-web-browser/ios`)
   - FBLazyVector (from `../node_modules/react-native/Libraries/FBLazyVector`)
   - FBReactNativeSpec (from `../node_modules/react-native/React/FBReactNativeSpec`)
-  - Flipper (= 0.87.0)
+  - Flipper (= 0.162.0)
   - Flipper-DoubleConversion (= 1.1.7)
-  - Flipper-Folly (= 2.5.3)
+  - Flipper-Folly (~> 2.6)
   - Flipper-Glog (from `./glog/glog.podspec`)
   - Flipper-PeerTalk (~> 0.0.4)
-  - Flipper-RSocket (= 1.3.1)
-  - FlipperKit (= 0.87.0)
-  - FlipperKit/Core (= 0.87.0)
-  - FlipperKit/CppBridge (= 0.87.0)
-  - FlipperKit/FBCxxFollyDynamicConvert (= 0.87.0)
-  - FlipperKit/FBDefines (= 0.87.0)
-  - FlipperKit/FKPortForwarding (= 0.87.0)
-  - FlipperKit/FlipperKitHighlightOverlay (= 0.87.0)
-  - FlipperKit/FlipperKitLayoutPlugin (= 0.87.0)
-  - FlipperKit/FlipperKitLayoutTextSearchable (= 0.87.0)
-  - FlipperKit/FlipperKitNetworkPlugin (= 0.87.0)
-  - FlipperKit/FlipperKitReactPlugin (= 0.87.0)
-  - FlipperKit/FlipperKitUserDefaultsPlugin (= 0.87.0)
-  - FlipperKit/SKIOSNetworkPlugin (= 0.87.0)
+  - Flipper-RSocket (~> 1.4)
+  - FlipperKit (= 0.162.0)
+  - FlipperKit/Core (= 0.162.0)
+  - FlipperKit/CppBridge (= 0.162.0)
+  - FlipperKit/FBCxxFollyDynamicConvert (= 0.162.0)
+  - FlipperKit/FBDefines (= 0.162.0)
+  - FlipperKit/FKPortForwarding (= 0.162.0)
+  - FlipperKit/FlipperKitHighlightOverlay (= 0.162.0)
+  - FlipperKit/FlipperKitLayoutPlugin (= 0.162.0)
+  - FlipperKit/FlipperKitLayoutTextSearchable (= 0.162.0)
+  - FlipperKit/FlipperKitNetworkPlugin (= 0.162.0)
+  - FlipperKit/FlipperKitReactPlugin (= 0.162.0)
+  - FlipperKit/FlipperKitUserDefaultsPlugin (= 0.162.0)
+  - FlipperKit/SKIOSNetworkPlugin (= 0.162.0)
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
   - lottie-react-native (from `../node_modules/lottie-react-native`)
   - Permission-BluetoothPeripheral (from `../node_modules/react-native-permissions/ios/BluetoothPeripheral`)
@@ -485,7 +487,6 @@ DEPENDENCIES:
   - "react-native-blur (from `../node_modules/@react-native-community/blur`)"
   - "react-native-cameraroll (from `../node_modules/@react-native-community/cameraroll`)"
   - react-native-document-picker (from `../node_modules/react-native-document-picker`)
-  - react-native-pager-view (from `../node_modules/react-native-pager-view`)
   - react-native-restart (from `../node_modules/react-native-restart`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - react-native-webview (from `../node_modules/react-native-webview`)
@@ -520,7 +521,9 @@ SPEC REPOS:
     - boost-for-react-native
     - CocoaAsyncSocket
     - Flipper
+    - Flipper-Boost-iOSX
     - Flipper-DoubleConversion
+    - Flipper-Fmt
     - Flipper-Folly
     - Flipper-PeerTalk
     - Flipper-RSocket
@@ -528,6 +531,7 @@ SPEC REPOS:
     - libevent
     - lottie-ios
     - OpenSSL-Universal
+    - SocketRocket
     - YogaKit
     - ZXingObjC
 
@@ -612,8 +616,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-community/cameraroll"
   react-native-document-picker:
     :path: "../node_modules/react-native-document-picker"
-  react-native-pager-view:
-    :path: "../node_modules/react-native-pager-view"
   react-native-restart:
     :path: "../node_modules/react-native-restart"
   react-native-safe-area-context:
@@ -691,18 +693,20 @@ SPEC CHECKSUMS:
   EXWebBrowser: f1573262c5de753987ed526c630076eda130804d
   FBLazyVector: fa8275d5086566e22a26ddc385ab5772e7f9b1bd
   FBReactNativeSpec: ef21c027c390feb45d77ce27e044133056305245
-  Flipper: 1bd2db48dcc31e4b167b9a33ec1df01c2ded4893
+  Flipper: 1cdd72ffa916071754a41e9684fb9bcaa4b690bf
+  Flipper-Boost-iOSX: fd1e2b8cbef7e662a122412d7ac5f5bea715403c
   Flipper-DoubleConversion: 38631e41ef4f9b12861c67d17cb5518d06badc41
-  Flipper-Folly: 755929a4f851b2fb2c347d533a23f191b008554c
+  Flipper-Fmt: 60cbdd92fc254826e61d669a5d87ef7015396a9b
+  Flipper-Folly: 584845625005ff068a6ebf41f857f468decd26b3
   Flipper-Glog: ad8dd8dda19819daedb79db389c96a4f362e4d9c
   Flipper-PeerTalk: 116d8f857dc6ef55c7a5a75ea3ceaafe878aadc9
-  Flipper-RSocket: 127954abe8b162fcaf68d2134d34dc2bd7076154
-  FlipperKit: 651f50a42eb95c01b3e89a60996dd6aded529eeb
+  Flipper-RSocket: d9d9ade67cbecf6ac10730304bf5607266dd2541
+  FlipperKit: 87dd306eef9927220672f98266e68bdab6c7cd69
   glog: 73c2498ac6884b13ede40eda8228cb1eee9d9d62
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
   lottie-ios: c058aeafa76daa4cf64d773554bccc8385d0150e
   lottie-react-native: b561920bba7ec727ec94a473b683cffba00faece
-  OpenSSL-Universal: 1aa4f6a6ee7256b83db99ec1ccdaa80d10f9af9b
+  OpenSSL-Universal: ebc357f1e6bc71fa463ccb2fe676756aff50e88c
   Permission-BluetoothPeripheral: e3bdcbf170bd1760881633941d4021b3d8e77f5a
   Permission-Camera: 0db4fd6e1c556c1cf47f38b989a8084cea3ec3dd
   Permission-Contacts: c9c3306280576546619fc9ae7489012ed9fe091f
@@ -723,7 +727,6 @@ SPEC CHECKSUMS:
   react-native-blur: cad4d93b364f91e7b7931b3fa935455487e5c33c
   react-native-cameraroll: 2957f2bce63ae896a848fbe0d5352c1bd4d20866
   react-native-document-picker: f4cc4df2eff8c9015d862a59bdaef11a153f1292
-  react-native-pager-view: 3ee7d4c7697fb3ef788346e834a60cca97ed8540
   react-native-restart: 733a51ad137f15b0f8dc34c4082e55af7da00979
   react-native-safe-area-context: 9e40fb181dac02619414ba1294d6c2a807056ab9
   react-native-webview: b83cf1aa6b4453fe53ffcc5896c36cdf37f0383f
@@ -751,10 +754,11 @@ SPEC CHECKSUMS:
   RNShare: edd621a71124961e29a7ba43a84bd1c6f9980d88
   RNSVG: 551acb6562324b1d52a4e0758f7ca0ec234e278f
   RNVectorIcons: 4143ba35feebab8fdbe6bc43d1e776b393d47ac8
+  SocketRocket: fccef3f9c5cedea1353a9ef6ada904fde10d6608
   Yoga: d1fc3575b8b68891ff5ef3c276daa855e841eb32
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
   ZXingObjC: fdbb269f25dd2032da343e06f10224d62f537bdb
 
-PODFILE CHECKSUM: 10c6b2674e898d0c104ff6e3a2fe60a359b43678
+PODFILE CHECKSUM: 1b2b1a40ea12c55581ee7a904d2ca4affe99fd49
 
 COCOAPODS: 1.11.3

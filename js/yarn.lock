@@ -13629,10 +13629,10 @@ raw-body@2.5.1:
     iconv-lite "0.4.24"
     unpipe "1.0.0"
 
-react-devtools-core@^4.6.0:
-  version "4.16.0"
-  resolved "https://registry.yarnpkg.com/react-devtools-core/-/react-devtools-core-4.16.0.tgz#c640ab15b98d077bc47f10f84fc8ed3633f537bd"
-  integrity sha512-fqyVbp+wVVey6O4uVBk5s3J/vTiPludp7lulr6a8asTBm7DIA0vLBbjmAOLCnOlkWcgdy4mjsqOgNCbu8uICWw==
+react-devtools-core@4.24.3, react-devtools-core@^4.6.0:
+  version "4.24.3"
+  resolved "https://registry.yarnpkg.com/react-devtools-core/-/react-devtools-core-4.24.3.tgz#371fef3f5c639db0dc59eeef334dd5e10ac61661"
+  integrity sha512-+htKZxLxDN14jhRG3+IXRiJqNSGHUiPYrMtv9e7qlZxcbKeJjVs+C/hd8kZF5rydp3faBwFN6ZpTaZnLA3/ZGA==
   dependencies:
     shell-quote "^1.6.1"
     ws "^7"
@@ -13765,11 +13765,6 @@ react-native-iphone-x-helper@^1.2.0:
   version "1.3.1"
   resolved "https://registry.yarnpkg.com/react-native-iphone-x-helper/-/react-native-iphone-x-helper-1.3.1.tgz#20c603e9a0e765fd6f97396638bdeb0e5a60b010"
   integrity sha512-HOf0jzRnq2/aFUcdCJ9w9JGzN3gdEg0zFE4FyYlp4jtidqU03D5X7ZegGKfT1EWteR0gPBGp9ye5T5FvSWi9Yg==
-
-react-native-pager-view@5.4.9:
-  version "5.4.9"
-  resolved "https://registry.yarnpkg.com/react-native-pager-view/-/react-native-pager-view-5.4.9.tgz#c0d40847cfeda5a4e729b53271b0ee0fedff3eb5"
-  integrity sha512-D6tzxpwMGdl6CXgtskGWhKRc5cJakCazESRGt7PkqnpyiH3N35ft1KmR82pCSQetAFlytFiToeu3a/dG5CELvA==
 
 react-native-permissions@^3.1.0:
   version "3.1.0"

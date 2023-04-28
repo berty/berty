@@ -12,6 +12,9 @@
     "storybook-prestart": "sb-rn-get-stories",
     "storybook": "STORYBOOK=true yarn start --reset-cache"
   },
+  "resolutions": {
+    "react-devtools-core": "4.24.3"
+  },
   "dependencies": {
     "@eva-design/eva": "^2.1.0",
     "@improbable-eng/grpc-web": "^0.15.0",
@@ -61,7 +64,6 @@
     "react-native-fs": "^2.16.6",
     "react-native-hyperlink": "^0.0.19",
     "react-native-in-app-notification": "3.2.0",
-    "react-native-pager-view": "5.4.9",
     "react-native-permissions": "^3.1.0",
     "react-native-progress": "^5.0.0",
     "react-native-qrcode-svg": "6.1.1",
