@@ -10,7 +10,7 @@ import (
 	"testing"
 	"time"
 
-	sqlite "github.com/flyingtime/gorm-sqlcipher"
+	sqlite "github.com/berty/gorm-sqlcipher"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/zap"
 	"golang.org/x/crypto/nacl/box"

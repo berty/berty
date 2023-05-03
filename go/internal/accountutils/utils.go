@@ -11,7 +11,7 @@ import (
 	"strings"
 	"time"
 
-	sqlite "github.com/flyingtime/gorm-sqlcipher"
+	sqlite "github.com/berty/gorm-sqlcipher"
 	"github.com/gogo/protobuf/proto"
 	"github.com/ipfs/go-datastore"
 	sync_ds "github.com/ipfs/go-datastore/sync"

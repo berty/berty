@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	sqlite "github.com/flyingtime/gorm-sqlcipher"
+	sqlite "github.com/berty/gorm-sqlcipher"
 	"go.uber.org/multierr"
 	"gorm.io/gorm"
 

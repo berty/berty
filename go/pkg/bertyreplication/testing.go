@@ -8,7 +8,7 @@ import (
 	"testing"
 	"time"
 
-	sqlite "github.com/flyingtime/gorm-sqlcipher"
+	sqlite "github.com/berty/gorm-sqlcipher"
 	"github.com/ipfs/go-datastore"
 	ds "github.com/ipfs/go-datastore"
 	ds_sync "github.com/ipfs/go-datastore/sync"

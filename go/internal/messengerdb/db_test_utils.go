@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	sqlite "github.com/flyingtime/gorm-sqlcipher"
+	sqlite "github.com/berty/gorm-sqlcipher"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
 	"moul.io/zapgorm2"
