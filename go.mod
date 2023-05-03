@@ -12,6 +12,7 @@ require (
 	github.com/appleboy/go-fcm v0.1.5
 	github.com/atotto/clipboard v0.1.4
 	github.com/berty/go-libp2p-rendezvous v0.4.1
+	github.com/berty/gorm-sqlcipher v1.1.6
 	github.com/bufbuild/buf v1.13.1
 	github.com/buicongtan1997/protoc-gen-swagger-config v0.0.0-20200705084907-1342b78c1a7e
 	github.com/campoy/embedmd v1.0.0
@@ -20,7 +21,6 @@ require (
 	github.com/eknkc/basex v1.0.1
 	github.com/fabiokung/shm v0.0.0-20150728212823-2852b0d79bae
 	github.com/fatih/color v1.13.0
-	github.com/flyingtime/gorm-sqlcipher v1.1.5
 	github.com/gdamore/tcell v1.4.0
 	github.com/gen2brain/beeep v0.0.0-20200526185328-e9c15c258e28
 	github.com/githubnemo/CompileDaemon v1.4.0
@@ -81,7 +81,7 @@ require (
 	golang.org/x/xerrors v0.0.0-20220907171357-04be3eba64a2
 	google.golang.org/grpc v1.50.1
 	google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.3.0
-	gorm.io/gorm v1.22.3
+	gorm.io/gorm v1.25.0
 	moul.io/godev v1.7.0
 	moul.io/openfiles v1.2.0
 	moul.io/progress v1.4.0
@@ -258,7 +258,7 @@ require (
 	github.com/jdxcode/netrc v0.0.0-20221124155335-4616370d1a84 // indirect
 	github.com/jinzhu/copier v0.0.0-20190924061706-b57f9002281a // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
-	github.com/jinzhu/now v1.1.2 // indirect
+	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/kilic/bls12-381 v0.1.1-0.20210503002446-7b7597926c69 // indirect
 	github.com/klauspost/compress v1.16.0 // indirect
 	github.com/klauspost/cpuid/v2 v2.2.3 // indirect
