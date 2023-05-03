@@ -84,7 +84,7 @@ type Manager struct {
 		Listener string `json:"Listener,omitempty"`
 		Pedantic bool   `json:"Pedantic,omitempty"`
 
-		registry *prometheus.Registry
+		registerer prometheus.Registerer
 	} `json:"Metrics,omitempty"`
 	Datastore struct {
 		AppDir    string `json:"AppDir,omitempty"`

@@ -402,6 +402,10 @@ require (
 	rsc.io/qr v0.2.0 // indirect
 )
 
+replace berty.tech/weshnet => ../weshnet
+
+replace berty.tech/go-orbit-db => ../go-orbit-db
+
 replace (
 	bazil.org/fuse => bazil.org/fuse v0.0.0-20200117225306-7b5117fecadc // specific version for iOS building
 
