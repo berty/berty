@@ -5,6 +5,7 @@ import (
 	"strconv"
 	"strings"
 
+	//nolint:blank-imports // We need this to load the "sqlite3" driver.
 	_ "github.com/mutecomm/go-sqlcipher/v4"
 	"gorm.io/gorm"
 	"gorm.io/gorm/callbacks"
@@ -61,13 +62,13 @@ func (dialector Dialector) ClauseBuilders() map[string]clause.ClauseBuilder {
 		"INSERT": func(c clause.Clause, builder clause.Builder) {
 			if insert, ok := c.Expression.(clause.Insert); ok {
 				if stmt, ok := builder.(*gorm.Statement); ok {
-					stmt.WriteString("INSERT ")
+					_, _ = stmt.WriteString("INSERT ")
 					if insert.Modifier != "" {
-						stmt.WriteString(insert.Modifier)
-						stmt.WriteByte(' ')
+						_, _ = stmt.WriteString(insert.Modifier)
+						_ = stmt.WriteByte(' ')
 					}
 
-					stmt.WriteString("INTO ")
+					_, _ = stmt.WriteString("INTO ")
 					if insert.Table.Name == "" {
 						stmt.WriteQuoted(stmt.Table)
 					} else {
@@ -82,15 +83,15 @@ func (dialector Dialector) ClauseBuilders() map[string]clause.ClauseBuilder {
 		"LIMIT": func(c clause.Clause, builder clause.Builder) {
 			if limit, ok := c.Expression.(clause.Limit); ok {
 				if limit.Limit != nil && *limit.Limit >= 0 {
-					builder.WriteString("LIMIT ")
-					builder.WriteString(strconv.Itoa(*limit.Limit))
+					_, _ = builder.WriteString("LIMIT ")
+					_, _ = builder.WriteString(strconv.Itoa(*limit.Limit))
 				}
 				if limit.Offset > 0 {
 					if limit.Limit != nil && *limit.Limit >= 0 {
-						builder.WriteString(" ")
+						_, _ = builder.WriteString(" ")
 					}
-					builder.WriteString("OFFSET ")
-					builder.WriteString(strconv.Itoa(limit.Offset))
+					_, _ = builder.WriteString("OFFSET ")
+					_, _ = builder.WriteString(strconv.Itoa(limit.Offset))
 				}
 			}
 		},
@@ -122,22 +123,22 @@ func (dialector Dialector) Migrator(db *gorm.DB) gorm.Migrator {
 }
 
 func (dialector Dialector) BindVarTo(writer clause.Writer, stmt *gorm.Statement, v interface{}) {
-	writer.WriteByte('?')
+	_ = writer.WriteByte('?')
 }
 
 func (dialector Dialector) QuoteTo(writer clause.Writer, str string) {
-	writer.WriteByte('`')
+	_ = writer.WriteByte('`')
 	if strings.Contains(str, ".") {
 		for idx, str := range strings.Split(str, ".") {
 			if idx > 0 {
-				writer.WriteString(".`")
+				_, _ = writer.WriteString(".`")
 			}
-			writer.WriteString(str)
-			writer.WriteByte('`')
+			_, _ = writer.WriteString(str)
+			_ = writer.WriteByte('`')
 		}
 	} else {
-		writer.WriteString(str)
-		writer.WriteByte('`')
+		_, _ = writer.WriteString(str)
+		_ = writer.WriteByte('`')
 	}
 }
 
@@ -153,9 +154,8 @@ func (dialector Dialector) DataTypeOf(field *schema.Field) string {
 		if field.AutoIncrement && !field.PrimaryKey {
 			// https://www.sqlite.org/autoinc.html
 			return "integer PRIMARY KEY AUTOINCREMENT"
-		} else {
-			return "integer"
 		}
+		return "integer"
 	case schema.Float:
 		return "real"
 	case schema.String:
@@ -169,12 +169,12 @@ func (dialector Dialector) DataTypeOf(field *schema.Field) string {
 	return string(field.DataType)
 }
 
-func (dialectopr Dialector) SavePoint(tx *gorm.DB, name string) error {
+func (dialector Dialector) SavePoint(tx *gorm.DB, name string) error {
 	tx.Exec("SAVEPOINT " + name)
 	return nil
 }
 
-func (dialectopr Dialector) RollbackTo(tx *gorm.DB, name string) error {
+func (dialector Dialector) RollbackTo(tx *gorm.DB, name string) error {
 	tx.Exec("ROLLBACK TO SAVEPOINT " + name)
 	return nil
 }

@@ -28,7 +28,7 @@ func (m *Migrator) RunWithoutForeignKey(fc func() error) error {
 
 func (m Migrator) HasTable(value interface{}) bool {
 	var count int
-	m.Migrator.RunWithValue(value, func(stmt *gorm.Statement) error {
+	_ = m.Migrator.RunWithValue(value, func(stmt *gorm.Statement) error {
 		return m.DB.Raw("SELECT count(*) FROM sqlite_master WHERE type='table' AND name=?", stmt.Table).Row().Scan(&count)
 	})
 	return count > 0
@@ -53,16 +53,18 @@ func (m Migrator) DropTable(values ...interface{}) error {
 
 func (m Migrator) HasColumn(value interface{}, name string) bool {
 	var count int
-	m.Migrator.RunWithValue(value, func(stmt *gorm.Statement) error {
+	_ = m.Migrator.RunWithValue(value, func(stmt *gorm.Statement) error {
 		if field := stmt.Schema.LookUpField(name); field != nil {
 			name = field.DBName
 		}
 
 		if name != "" {
-			m.DB.Raw(
+			if err := m.DB.Raw(
 				"SELECT count(*) FROM sqlite_master WHERE type = ? AND tbl_name = ? AND (sql LIKE ? OR sql LIKE ? OR sql LIKE ?)",
 				"table", stmt.Table, `%"`+name+`" %`, `%`+name+` %`, "%`"+name+"`%",
-			).Row().Scan(&count)
+			).Row().Scan(&count); err != nil {
+				return err
+			}
 		}
 		return nil
 	})
@@ -78,9 +80,12 @@ func (m Migrator) AlterColumn(value interface{}, name string) error {
 					newTableName = stmt.Table + "__temp"
 				)
 
-				m.DB.Raw("SELECT sql FROM sqlite_master WHERE type = ? AND tbl_name = ? AND name = ?", "table", stmt.Table, stmt.Table).Row().Scan(&createSQL)
+				if err := m.DB.Raw("SELECT sql FROM sqlite_master WHERE type = ? AND tbl_name = ? AND name = ?", "table", stmt.Table, stmt.Table).Row().Scan(&createSQL); err != nil {
+					return err
+				}
 
-				if reg, err := regexp.Compile("(`|'|\"| )" + field.DBName + "(`|'|\"| ) .*?,"); err == nil {
+				reg, err := regexp.Compile("(`|'|\"| )" + field.DBName + "(`|'|\"| ) .*?,")
+				if err == nil {
 					tableReg, err := regexp.Compile(" ('|`|\"| )" + stmt.Table + "('|`|\"| ) ")
 					if err != nil {
 						return err
@@ -109,12 +114,10 @@ func (m Migrator) AlterColumn(value interface{}, name string) error {
 						}
 						return nil
 					})
-				} else {
-					return err
 				}
-			} else {
-				return fmt.Errorf("failed to alter field with name %v", name)
+				return err
 			}
+			return fmt.Errorf("failed to alter field with name %v", name)
 		})
 	})
 }
@@ -130,9 +133,12 @@ func (m Migrator) DropColumn(value interface{}, name string) error {
 			newTableName = stmt.Table + "__temp"
 		)
 
-		m.DB.Raw("SELECT sql FROM sqlite_master WHERE type = ? AND tbl_name = ? AND name = ?", "table", stmt.Table, stmt.Table).Row().Scan(&createSQL)
+		if err := m.DB.Raw("SELECT sql FROM sqlite_master WHERE type = ? AND tbl_name = ? AND name = ?", "table", stmt.Table, stmt.Table).Row().Scan(&createSQL); err != nil {
+			return err
+		}
 
-		if reg, err := regexp.Compile("(`|'|\"| )" + name + "(`|'|\"| ) .*?,"); err == nil {
+		reg, err := regexp.Compile("(`|'|\"| )" + name + "(`|'|\"| ) .*?,")
+		if err == nil {
 			tableReg, err := regexp.Compile(" ('|`|\"| )" + stmt.Table + "('|`|\"| ) ")
 			if err != nil {
 				return err
@@ -163,9 +169,8 @@ func (m Migrator) DropColumn(value interface{}, name string) error {
 				}
 				return nil
 			})
-		} else {
-			return err
 		}
+		return err
 	})
 }
 
@@ -179,13 +184,11 @@ func (m Migrator) DropConstraint(interface{}, string) error {
 
 func (m Migrator) HasConstraint(value interface{}, name string) bool {
 	var count int64
-	m.RunWithValue(value, func(stmt *gorm.Statement) error {
-		m.DB.Raw(
+	_ = m.RunWithValue(value, func(stmt *gorm.Statement) error {
+		return m.DB.Raw(
 			"SELECT count(*) FROM sqlite_master WHERE type = ? AND tbl_name = ? AND (sql LIKE ? OR sql LIKE ? OR sql LIKE ?)",
 			"table", stmt.Table, `%CONSTRAINT "`+name+`" %`, `%CONSTRAINT `+name+` %`, "%CONSTRAINT `"+name+"`%",
 		).Row().Scan(&count)
-
-		return nil
 	})
 
 	return count > 0
@@ -193,7 +196,7 @@ func (m Migrator) HasConstraint(value interface{}, name string) bool {
 
 func (m Migrator) CurrentDatabase() (name string) {
 	var null interface{}
-	m.DB.Raw("PRAGMA database_list").Row().Scan(&null, &name, &null)
+	_ = m.DB.Raw("PRAGMA database_list").Row().Scan(&null, &name, &null)
 	return
 }
 
@@ -246,15 +249,17 @@ func (m Migrator) CreateIndex(value interface{}, name string) error {
 
 func (m Migrator) HasIndex(value interface{}, name string) bool {
 	var count int
-	m.RunWithValue(value, func(stmt *gorm.Statement) error {
+	_ = m.RunWithValue(value, func(stmt *gorm.Statement) error {
 		if idx := stmt.Schema.LookIndex(name); idx != nil {
 			name = idx.Name
 		}
 
 		if name != "" {
-			m.DB.Raw(
+			if err := m.DB.Raw(
 				"SELECT count(*) FROM sqlite_master WHERE type = ? AND tbl_name = ? AND name = ?", "index", stmt.Table, name,
-			).Row().Scan(&count)
+			).Row().Scan(&count); err != nil {
+				return err
+			}
 		}
 		return nil
 	})
@@ -264,7 +269,9 @@ func (m Migrator) HasIndex(value interface{}, name string) bool {
 func (m Migrator) RenameIndex(value interface{}, oldName, newName string) error {
 	return m.RunWithValue(value, func(stmt *gorm.Statement) error {
 		var sql string
-		m.DB.Raw("SELECT sql FROM sqlite_master WHERE type = ? AND tbl_name = ? AND name = ?", "index", stmt.Table, oldName).Row().Scan(&sql)
+		if err := m.DB.Raw("SELECT sql FROM sqlite_master WHERE type = ? AND tbl_name = ? AND name = ?", "index", stmt.Table, oldName).Row().Scan(&sql); err != nil {
+			return err
+		}
 		if sql != "" {
 			return m.DB.Exec(strings.Replace(sql, oldName, newName, 1)).Error
 		}
