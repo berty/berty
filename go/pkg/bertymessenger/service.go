@@ -11,7 +11,6 @@ import (
 	"sync"
 	"time"
 
-	sqlite "github.com/berty/gorm-sqlcipher"
 	// nolint:staticcheck // cannot use the new protobuf API while keeping gogoproto
 	"github.com/golang/protobuf/proto"
 	ipfs_interface "github.com/ipfs/interface-go-ipfs-core"
@@ -21,6 +20,7 @@ import (
 	"moul.io/zapgorm2"
 	"moul.io/zapring"
 
+	sqlite "berty.tech/berty/v2/go/internal/gorm-sqlcipher"
 	"berty.tech/berty/v2/go/internal/messengerdb"
 	"berty.tech/berty/v2/go/internal/messengerpayloads"
 	"berty.tech/berty/v2/go/internal/messengerutil"

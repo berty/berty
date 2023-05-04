@@ -11,7 +11,6 @@ import (
 	"strings"
 	"time"
 
-	sqlite "github.com/berty/gorm-sqlcipher"
 	"github.com/gogo/protobuf/proto"
 	"github.com/ipfs/go-datastore"
 	sync_ds "github.com/ipfs/go-datastore/sync"
@@ -20,6 +19,7 @@ import (
 	"gorm.io/gorm"
 	"moul.io/zapgorm2"
 
+	sqlite "berty.tech/berty/v2/go/internal/gorm-sqlcipher"
 	"berty.tech/berty/v2/go/pkg/accounttypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	encrepo "berty.tech/go-ipfs-repo-encrypted"

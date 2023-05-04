@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"time"
 
-	sqlite "github.com/berty/gorm-sqlcipher"
 	"go.uber.org/multierr"
 	"gorm.io/gorm"
 
+	sqlite "berty.tech/berty/v2/go/internal/gorm-sqlcipher"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
 )
