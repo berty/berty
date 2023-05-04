@@ -6,11 +6,17 @@ FILTERS ?= debug+:bty*,-*.grpc,error+:*
 RUN_OPTS ?=
 DAEMON_OPTS ?=
 NAME ?= $(USER)-mini-$(ID)
+GRAFANA_PORT ?= $(shell printf "9%03d" "$(ID)")
+METRICS_PORT ?= $(shell printf "42%03d" "$(ID)")
 
 
 .PHONY: run
-run:
-	berty $(RUN_OPTS) -log.file-filters="$(FILTERS)" -log.format=$(FORMAT) --log.file=$(TMPDIR)/berty-mini-$(ID).log mini -store.dir $(TMPDIR)/berty-mini-$(ID) $(DAEMON_OPTS)
+run: metrics.register
+	berty $(RUN_OPTS) \
+		-log.file-filters="$(FILTERS)" -log.format=$(FORMAT) --log.file=$(TMPDIR)/berty-mini-$(ID).log mini \
+			-store.dir $(TMPDIR)/berty-mini-$(ID) \
+			-metrics.listener="/ip4/0.0.0.0/tcp/$(METRICS_PORT)" \
+			$(DAEMON_OPTS)
 
 .PHONY: tail
 tail:
@@ -27,6 +33,14 @@ multitail:
 	@args='' ; for sid in $(IDS); do \
 		args="$$args $(TMPDIR)/berty-mini-$$sid.log"; \
 	done; loon -bgcolor $$args
+
+.PHONY: metrics
+metrics:;  docker compose up
+
+metrics.register:
+	[ -z `docker compose ps -q discovery` ] \
+		|| docker compose exec -it discovery wget -qO- "http://localhost:4848/addtarget?target=host.docker.internal:${METRICS_PORT}&labels=mini_id:${ID}" 2>/dev/null \
+		|| true
 
 log-path:
 	@realpath $(TMPDIR)/berty-mini-$(ID).log

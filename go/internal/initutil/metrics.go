@@ -2,10 +2,12 @@ package initutil
 
 import (
 	"flag"
-	"net"
+	"fmt"
 	"net/http"
 	"time"
 
+	"github.com/multiformats/go-multiaddr"
+	manet "github.com/multiformats/go-multiaddr/net"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/collectors"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
@@ -21,17 +23,22 @@ func (m *Manager) SetupMetricsFlags(fs *flag.FlagSet) {
 	fs.BoolVar(&m.Metrics.Pedantic, "metrics.pedantic", false, "Enable Metrics pedantic for debug")
 }
 
-func (m *Manager) GetMetricsRegistry() (*prometheus.Registry, error) {
+func (m *Manager) GetMetricsRegistry() (prometheus.Registerer, error) {
 	defer m.prepareForGetter()()
 
 	return m.getMetricsRegistry()
 }
 
-func (m *Manager) getMetricsRegistry() (*prometheus.Registry, error) {
+func (m *Manager) getMetricsRegistry() (prometheus.Registerer, error) {
 	m.applyDefaults()
 
-	if m.Metrics.registry != nil {
-		return m.Metrics.registry, nil
+	if m.Metrics.registerer != nil {
+		return m.Metrics.registerer, nil
+	}
+
+	if m.Metrics.Listener == "" {
+		m.Metrics.registerer = prometheus.DefaultRegisterer
+		return m.Metrics.registerer, nil
 	}
 
 	logger, err := m.getLogger()
@@ -39,46 +46,57 @@ func (m *Manager) getMetricsRegistry() (*prometheus.Registry, error) {
 		return nil, err
 	}
 
+	var registry *prometheus.Registry
 	if m.Metrics.Pedantic {
-		m.Metrics.registry = prometheus.NewPedanticRegistry()
+		registry = prometheus.NewPedanticRegistry()
 	} else {
-		m.Metrics.registry = prometheus.NewRegistry()
+		registry = prometheus.NewRegistry()
 	}
 
-	m.Metrics.registry.MustRegister(collectors.NewBuildInfoCollector())
-	m.Metrics.registry.MustRegister(collectors.NewGoCollector())
+	registry.MustRegister(collectors.NewBuildInfoCollector())
+	registry.MustRegister(collectors.NewGoCollector())
+
+	m.Metrics.registerer = registry
+
+	laddr, err := multiaddr.NewMultiaddr(m.Metrics.Listener)
+	if err != nil {
+		return nil, fmt.Errorf("unable to parse multiaddr: %w", err)
+	}
 
 	mux := http.NewServeMux()
-	var l net.Listener
-	m.workers.Add(func() error {
-		var err error
+	l, err := manet.Listen(laddr)
+	if err != nil {
+		return nil, err
+	}
 
-		l, err = net.Listen("tcp", m.Metrics.Listener)
-		if err != nil {
-			return err
+	handerfor := promhttp.HandlerFor(
+		registry,
+		promhttp.HandlerOpts{Registry: registry},
+	)
+
+	mux.Handle(metricsHandler, handerfor)
+	logger.Info("metrics listener",
+		zap.String("handler", metricsHandler),
+		logutil.PrivateString("listener", l.Addr().String()))
+
+	server := &http.Server{
+		Handler:           mux,
+		ReadHeaderTimeout: time.Second * 5,
+	}
+
+	go func() {
+		if err := server.Serve(manet.NetListener(l)); err != nil {
+			logger.Info("unable to serve metrics",
+				logutil.PrivateString("listener", l.Addr().String()),
+				zap.Error(err))
 		}
+	}()
 
-		handerfor := promhttp.HandlerFor(
-			m.Metrics.registry,
-			promhttp.HandlerOpts{Registry: m.Metrics.registry},
-		)
+	ctx := m.getContext()
+	go func() {
+		<-ctx.Done()
+		server.Close()
+	}()
 
-		mux.Handle(metricsHandler, handerfor)
-		logger.Info("metrics listener",
-			zap.String("handler", metricsHandler),
-			logutil.PrivateString("listener", l.Addr().String()))
-
-		server := &http.Server{
-			Handler:           mux,
-			ReadHeaderTimeout: time.Second * 5,
-		}
-
-		return server.Serve(l)
-	}, func(error) {
-		if l != nil {
-			l.Close()
-		}
-	})
-
-	return m.Metrics.registry, nil
+	return registry, nil
 }

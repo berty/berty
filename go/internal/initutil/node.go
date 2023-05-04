@@ -198,18 +198,24 @@ func (m *Manager) getLocalProtocolServer() (weshnet.Service, error) {
 			return nil, fmt.Errorf("unable to get push secret: %w", err)
 		}
 
+		prom, err := m.getMetricsRegistry()
+		if err != nil {
+			return nil, fmt.Errorf("unable to get metrics registry")
+		}
+
 		// initialize new protocol client
 		opts := weshnet.Opts{
-			Host:             m.Node.Protocol.ipfsNode.PeerHost,
-			PubSub:           m.Node.Protocol.pubsub,
-			TinderService:    m.Node.Protocol.tinder,
-			IpfsCoreAPI:      m.Node.Protocol.ipfsAPI,
-			Logger:           logger,
-			RootDatastore:    rootDS,
-			SecretStore:      st,
-			OrbitDB:          odb,
-			PushKey:          pushKey,
-			GRPCInsecureMode: m.Node.ServiceInsecureMode,
+			Host:               m.Node.Protocol.ipfsNode.PeerHost,
+			PubSub:             m.Node.Protocol.pubsub,
+			TinderService:      m.Node.Protocol.tinder,
+			IpfsCoreAPI:        m.Node.Protocol.ipfsAPI,
+			Logger:             logger,
+			RootDatastore:      rootDS,
+			SecretStore:        st,
+			OrbitDB:            odb,
+			PushKey:            pushKey,
+			GRPCInsecureMode:   m.Node.ServiceInsecureMode,
+			PrometheusRegister: prom,
 		}
 
 		m.Node.Protocol.server, err = weshnet.NewService(opts)
