@@ -1,0 +1,8 @@
+global:
+  scrape_interval: 1m
+  scrape_timeout: 10s
+scrape_configs:
+- job_name: berty-metrics
+  sample_limit: 10000
+  file_sd_configs:
+    - files: ["/home/ec2-user/prometheus-sd-1.yaml"]

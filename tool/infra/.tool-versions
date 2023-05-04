@@ -1,0 +1,5 @@
+#-----
+# awscli 2.11.17 is simply the most recent version available to date (05/23).
+# There is no contraindication for updating it.
+#-----
+awscli 2.11.17

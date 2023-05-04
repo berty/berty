@@ -1,0 +1,9 @@
+{
+  "StackName": "{{ STACK_NAME }}",
+  "TemplateBody": "{{ TEMPLATE_BODY }}",
+  "DisableRollback": true,
+  "OnFailure": "ROLLBACK",
+  "TimeoutInMinutes": 15,
+  "ClientRequestToken": "{{ CLIENT_TOKEN }}",
+  "EnableTerminationProtection": true
+}

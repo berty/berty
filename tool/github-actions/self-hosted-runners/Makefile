@@ -1,12 +1,6 @@
 MAKEFILE_DIR = $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 ENV_FILE     = $(MAKEFILE_DIR)/.env
-PLAYBOOKS    = m1_setup_runner \
-               mac_enable_remote_desktop \
-               mac_disable_remote_desktop \
-               mac_start_runner_service \
-               mac_stop_runner_service \
-               mac_install_xcode_version \
-               mac_switch_to_xcode_version
+PLAYBOOKS    = $(basename $(shell cd $(MAKEFILE_DIR) && ls *.yml | grep -v inventory.yml) .yml)
 VERBOSE      ?= 0
 HOST_PARAM   ?=
 TYPE_DELAY   ?= 5

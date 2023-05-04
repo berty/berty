@@ -1,0 +1,6 @@
+###
+# COMPONENT_NAME is set by the Makefile (equal to current folder name)
+# CLIENT_TOKEN is set by the Makefile (md5 hash of current folder files)
+###
+COMPONENT_DESCRIPTION="Fetch and install asdf"
+COMPONENT_VERSION=1.0.0

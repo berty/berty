@@ -1,0 +1,42 @@
+name: {{ COMPONENT_NAME }}
+description: {{ COMPONENT_DESCRIPTION }}
+schemaVersion: 1.0
+
+parameters:
+  - GoVersion:
+      description: Go version used to compile the binary
+      type: string
+  - BinVersion:
+      description: Relay bin version to install
+      type: string
+
+phases:
+  - name: build
+    steps:
+      - name: Dependencies
+        action: ExecuteBash
+        inputs:
+          commands:
+            - yum install gcc -y
+            - HOME=/root bash -ic '
+                asdf plugin add golang || true;
+                asdf install golang {{ GoVersion }};
+                asdf global golang {{ GoVersion }}
+              '
+
+      - name: Build
+        action: ExecuteBash
+        inputs:
+          commands:
+            - HOME=/root bash -ic '
+                GOBIN=/usr/local/bin go install github.com/libp2p/go-libp2p-relay-daemon/cmd/libp2p-relay-daemon@{{ BinVersion }};
+                chown ec2-user:ec2-user /usr/local/bin/libp2p-relay-daemon
+              '
+
+  - name: validate
+    steps:
+      - name: Version
+        action: ExecuteBash
+        inputs:
+          commands:
+            - libp2p-relay-daemon --help

@@ -1,0 +1,49 @@
+name: {{ COMPONENT_NAME }}
+description: {{ COMPONENT_DESCRIPTION }}
+schemaVersion: 1.0
+
+parameters:
+  - Remote:
+      description: Remote / fork where to fetch Berty code
+      type: string
+  - Branch:
+      description: Branch to fetch
+      type: string
+
+phases:
+  - name: build
+    steps:
+      - name: Download
+        action: ExecuteBash
+        inputs:
+          commands:
+            - '[ -d /tmp/berty ] && rm -rf /tmp/berty'
+            - git clone --depth 1 --branch "{{ Branch }}" "https://github.com/{{ Remote }}/berty.git" /tmp/berty
+
+      - name: Dependencies
+        action: ExecuteBash
+        inputs:
+          commands:
+            - yum install gcc -y
+            - HOME=/root bash -ic '
+                asdf plugin add golang || true;
+                cd /tmp/berty && asdf install golang;
+              '
+
+      - name: Build
+        action: ExecuteBash
+        inputs:
+          commands:
+            - HOME=/root bash -ic '
+                cd /tmp/berty && go mod download;
+                cd go && go build -o /usr/local/bin/rdvp ./cmd/rdvp;
+                chown ec2-user:ec2-user /usr/local/bin/rdvp
+              '
+
+  - name: validate
+    steps:
+      - name: Version
+        action: ExecuteBash
+        inputs:
+          commands:
+            - rdvp --help

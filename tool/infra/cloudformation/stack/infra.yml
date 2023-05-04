@@ -1,0 +1,146 @@
+Mappings:
+  RegionMap:
+    eu-west-3:
+     RelayAMI: "ami-0a4ed2edc0ce9ca0c"
+
+Resources:
+  # VPC w/ Internet Access
+  VPC:
+    Type: 'AWS::EC2::VPC'
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      EnableDnsSupport: true
+      EnableDnsHostnames: false
+      InstanceTenancy: default
+
+  InternetGateway:
+    Type: 'AWS::EC2::InternetGateway'
+
+  InternetGatewayAttachment:
+    Type: 'AWS::EC2::VPCGatewayAttachment'
+    Properties:
+      InternetGatewayId: !Ref InternetGateway
+      VpcId: !Ref VPC
+
+  # 2 Subnets w/ Internet Access on different AZs
+  Subnet1:
+    Type: 'AWS::EC2::Subnet'
+    Properties:
+      VpcId: !Ref VPC
+      AvailabilityZone: !Select [ 0, !GetAZs  '' ]
+      CidrBlock: 10.0.1.0/24
+
+  Subnet2:
+    Type: 'AWS::EC2::Subnet'
+    Properties:
+      VpcId: !Ref VPC
+      AvailabilityZone: !Select [ 1, !GetAZs  '' ]
+      CidrBlock: 10.0.2.0/24
+
+  RouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref VPC
+
+  DefaultPublicRoute:
+    Type: AWS::EC2::Route
+    DependsOn: InternetGatewayAttachment
+    Properties:
+      RouteTableId: !Ref RouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref InternetGateway
+
+  Subnet1RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref RouteTable
+      SubnetId: !Ref Subnet1
+
+  Subnet2RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref RouteTable
+      SubnetId: !Ref Subnet2
+
+  # Relays Instances
+  RelaySecurityGroup:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      GroupDescription: Open both TCP and QUIC (UDP) ports from 0.0.0.0/0
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: '4001'
+          ToPort: '4001'
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: udp
+          FromPort: '4001'
+          ToPort: '4001'
+          CidrIp: 0.0.0.0/0
+      VpcId: !Ref VPC
+
+  EC2CloudwatchAgentRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: [ec2.amazonaws.com]
+            Action: ['sts:AssumeRole']
+      Path: /
+      ManagedPolicyArns:
+        - arn:aws:iam::406944788069:role/AWSCloudWatchAgentServerRole
+
+  Ec2SsmInstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Path: /
+      Roles: [!Ref EC2CloudwatchAgentRole]
+
+  Relay1:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: !FindInMap [RegionMap, !Ref "AWS::Region", RelayAMI]
+      InstanceType: m6i.large
+      IamInstanceProfile: !Ref Ec2SsmInstanceProfile
+      SubnetId: !Ref Subnet1
+      SecurityGroupIds:
+        - !Ref RelaySecurityGroup
+      Tags : [ {"Key" : "Name", "Value" : "Relay1"} ]
+
+  Relay1IPAddress:
+    Type: AWS::EC2::EIP
+
+  Relay1IPAssociaction:
+    Type: AWS::EC2::EIPAssociation
+    Properties:
+      InstanceId: !Ref Relay1
+      EIP: !Ref Relay1IPAddress
+
+  Relay2:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: !FindInMap [RegionMap, !Ref "AWS::Region", RelayAMI]
+      InstanceType: m6i.large
+      IamInstanceProfile: !Ref Ec2SsmInstanceProfile
+      SubnetId: !Ref Subnet2
+      SecurityGroupIds:
+        - !Ref RelaySecurityGroup
+      Tags : [ {"Key" : "Name", "Value" : "Relay2"} ]
+
+  Relay2IPAddress:
+    Type: AWS::EC2::EIP
+
+  Relay2IPAssociaction:
+    Type: AWS::EC2::EIPAssociation
+    Properties:
+      InstanceId: !Ref Relay2
+      EIP: !Ref Relay2IPAddress
+
+Outputs:
+  PublicIp1:
+    Description: "Relay #1 Public IPv4"
+    Value: !GetAtt Relay1.PublicIp
+  PublicIp2:
+    Description: "Relay #2 Public IPv4"
+    Value: !GetAtt Relay2.PublicIp
