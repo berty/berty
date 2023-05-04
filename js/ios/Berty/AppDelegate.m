@@ -140,6 +140,15 @@ RCTRootView *rootView = [self.reactDelegate createRootViewWithBridge:bridge
 {
   return [RCTLinkingManager application:application openURL:url options:options];
 }
+// For universal links
+- (BOOL)application:(UIApplication *)application continueUserActivity:(nonnull NSUserActivity *)userActivity
+ restorationHandler:(nonnull void (^)(NSArray<id<UIUserActivityRestoring>> * _Nullable))restorationHandler
+{
+ return [RCTLinkingManager application:application
+                  continueUserActivity:userActivity
+                    restorationHandler:restorationHandler];
+}
+
 
 // Callbacks for APNS token request
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
