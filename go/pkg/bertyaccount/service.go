@@ -8,7 +8,9 @@ import (
 	"path/filepath"
 	"sync"
 
+	_ "github.com/glebarez/go-sqlite"
 	"github.com/ipfs/go-datastore"
+	"github.com/ipfs/go-ds-sql/sqlite"
 	"go.uber.org/multierr"
 	"go.uber.org/zap"
 	"golang.org/x/text/language"
@@ -21,7 +23,6 @@ import (
 	"berty.tech/berty/v2/go/pkg/bertybridge"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
-	encrepo "berty.tech/go-ipfs-repo-encrypted"
 	"berty.tech/weshnet/pkg/androidnearby"
 	"berty.tech/weshnet/pkg/lifecycle"
 	"berty.tech/weshnet/pkg/logutil"
@@ -178,27 +179,28 @@ func NewService(opts *Options) (_ Service, err error) {
 	if err := os.MkdirAll(s.appRootDir, 0o700); err != nil {
 		return nil, errcode.TODO.Wrap(err)
 	}
-	storageKey := ([]byte)(nil)
-	if s.nativeKeystore != nil {
-		storageKey, err = accountutils.GetOrCreateMasterStorageKey(s.nativeKeystore)
-		if err != nil {
-			return nil, errcode.TODO.Wrap(err)
-		}
-	}
-	storageSalt := ([]byte)(nil)
-	if s.nativeKeystore != nil {
-		storageSalt, err = accountutils.GetOrCreateGlobalAppStorageSalt(s.nativeKeystore)
-		if err != nil {
-			return nil, errcode.TODO.Wrap(err)
-		}
-	}
-	sqldsOpts := encrepo.SQLCipherDatastoreOptions{JournalMode: "WAL", PlaintextHeader: len(storageSalt) != 0, Salt: storageSalt}
-	appDatastore, err := encrepo.NewSQLCipherDatastore("sqlite3", dbPath, "data", storageKey, sqldsOpts)
-	if err != nil {
-		return nil, errcode.ErrDBOpen.Wrap(err)
-	}
-	s.appStorage = encrepo.NewNamespacedDatastore(appDatastore, datastore.NewKey("app-storage"))
 
+	// get SQLite version
+
+	// appDatastore, err := encrepo.NewSQLCipherDatastore("sqlite3", dbPath, "data", storageKey, sqldsOpts)
+	// if err != nil {
+	// 	return nil, errcode.ErrDBOpen.Wrap(err)
+	// }
+
+	dsn := fmt.Sprintf("%s?_jounal_mode=WAL", dbPath)
+	sqlopts := sqlite.Options{
+		Driver:   "sqlite",
+		DSN:      dsn,
+		Table:    "ipfsrepo",
+		NoCreate: false,
+	}
+
+	ds, err := sqlopts.Create()
+	if err != nil {
+		return nil, fmt.Errorf("unable to create sql ds store: %w", err)
+	}
+
+	s.appStorage = ds
 	return s, nil
 }
 

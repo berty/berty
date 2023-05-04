@@ -7,7 +7,6 @@ import (
 	"time"
 
 	ipfscid "github.com/ipfs/go-cid"
-	sqlite3 "github.com/mutecomm/go-sqlcipher/v4"
 	"go.uber.org/multierr"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
@@ -167,15 +166,6 @@ func (d *DBWrapper) dbModelRowsCount(model interface{}) (int64, error) {
 	return count, d.db.Model(model).Count(&count).Error
 }
 
-func isSQLiteError(err error, sqliteErr sqlite3.ErrNo) bool {
-	e, ok := err.(sqlite3.Error)
-	if !ok {
-		return false
-	}
-
-	return e.Code == sqliteErr
-}
-
 func (d *DBWrapper) TX(ctx context.Context, txFunc func(*DBWrapper) error) (err error) {
 	if !d.inTx {
 		tctx, _, endSection := tyber.Section(ctx, d.log, "Starting database transaction")
@@ -270,7 +260,7 @@ func (d *DBWrapper) AddConversation(groupPK, ownMemberPK, ownDevicePK string) (*
 	}
 
 	if err := d.db.Create(&conversation).Error; err != nil {
-		if isSQLiteError(err, sqlite3.ErrConstraint) {
+		if isSQLiteError(err, SQLITE_CONSTRAINT) {
 			return nil, errcode.ErrDBEntryAlreadyExists.Wrap(err)
 		}
 
@@ -383,7 +373,7 @@ func (d *DBWrapper) FirstOrCreateAccount(pk, link string) error {
 			&messengertypes.Account{},
 			&messengertypes.Account{PublicKey: pk, Link: link},
 		).
-		Error; err != nil && !isSQLiteError(err, sqlite3.ErrConstraint) {
+		Error; err != nil && !isSQLiteError(err, SQLITE_CONSTRAINT) {
 		return err
 	}
 

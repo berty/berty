@@ -13,6 +13,7 @@ import (
 	"time"
 
 	datastore "github.com/ipfs/go-datastore"
+	"github.com/ipfs/go-ds-sql/sqlite"
 	ipfs_util "github.com/ipfs/kubo/cmd/ipfs/util"
 	ipfs_cfg "github.com/ipfs/kubo/config"
 	ipfs_core "github.com/ipfs/kubo/core"
@@ -35,13 +36,12 @@ import (
 	"go.uber.org/zap"
 	"moul.io/srand"
 
-	"berty.tech/berty/v2/go/internal/datastoreutil"
 	"berty.tech/berty/v2/go/internal/encryptedrepo"
 	"berty.tech/berty/v2/go/internal/mdns"
+	"berty.tech/berty/v2/go/internal/repo"
 	"berty.tech/berty/v2/go/pkg/config"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	ipfswebui "berty.tech/ipfs-webui-packed"
-	"berty.tech/weshnet"
 	ble "berty.tech/weshnet/pkg/ble-driver"
 	"berty.tech/weshnet/pkg/ipfsutil"
 	ipfs_mobile "berty.tech/weshnet/pkg/ipfsutil/mobile"
@@ -374,51 +374,39 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 
 func (m *Manager) setupIPFSRepo(ctx context.Context) (*ipfs_mobile.RepoMobile, error) {
 	var err error
-	var repo ipfs_repo.Repo
 
+	var dbfile, appdir string
 	if m.Datastore.InMemory {
-		rootDS, err := m.getRootDatastore()
+		appdir, dbfile = ":memory:", ":memory:"
+	} else {
+		appdir, err := m.getAppDataDir()
 		if err != nil {
-			return nil, errcode.ErrIPFSSetupRepo.Wrap(err)
+			return nil, errcode.TODO.Wrap(err)
 		}
 
-		ipfsDS := datastoreutil.NewNamespacedDatastore(rootDS, datastore.NewKey(weshnet.NamespaceIPFSDatastore))
-
-		repo, err = ipfsutil.CreateMockedRepo(ipfsDS)
-		if err != nil {
-			return nil, errcode.ErrIPFSSetupRepo.Wrap(err)
-		}
-
-		return ipfs_mobile.NewRepoMobile(":memory:", repo), nil
+		dbfile = filepath.Join(appdir, "ipfs.sqlite")
 	}
 
-	storageKey, err := m.GetAccountStorageKey()
+	dsn := fmt.Sprintf("%s?_jounal_mode=WAL", dbfile)
+	sqlopts := sqlite.Options{
+		Driver:   "sqlite",
+		DSN:      dsn,
+		Table:    "ipfsrepo",
+		NoCreate: false,
+	}
+
+	ds, err := sqlopts.Create()
 	if err != nil {
-		return nil, errcode.ErrKeystoreGet.Wrap(err)
+		return nil, fmt.Errorf("unable to create sql ds store: %w", err)
 	}
 
-	ipfsDatastoreSalt, err := m.GetAccountIPFSDatastoreSalt()
+	// return ipfs_mobile.NewRepoMobile(dbPath, repo), nil
+	r, err := repo.OpenDSRepo(ds)
 	if err != nil {
-		return nil, errcode.ErrKeystoreGet.Wrap(err)
+		return nil, fmt.Errorf("unable to open repo: %w", err)
 	}
 
-	appDir, err := m.getAppDataDir()
-	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
-	}
-	dbPath := filepath.Join(appDir, "ipfs.sqlite")
-
-	repo, err = encryptedrepo.LoadEncryptedRepoFromPath(dbPath, storageKey, ipfsDatastoreSalt)
-	if err != nil {
-		return nil, errcode.ErrIPFSSetupRepo.Wrap(err)
-	}
-
-	repo, err = m.resetRepoIdentityIfExpired(ctx, repo, dbPath, storageKey, ipfsDatastoreSalt)
-	if err != nil {
-		return nil, errcode.ErrIPFSSetupRepo.Wrap(err)
-	}
-
-	return ipfs_mobile.NewRepoMobile(dbPath, repo), nil
+	return ipfs_mobile.NewRepoMobile(appdir, r), nil
 }
 
 func (m *Manager) resetRepoIdentityIfExpired(ctx context.Context, repo ipfs_repo.Repo, dbPath string, storageKey []byte, ipfsDatastoreSalt []byte) (ipfs_repo.Repo, error) {

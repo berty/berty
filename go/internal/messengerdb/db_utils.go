@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	sqlite "github.com/berty/gorm-sqlcipher"
+	sqlite "github.com/glebarez/sqlite"
 	"go.uber.org/multierr"
 	"gorm.io/gorm"
 
@@ -158,7 +158,7 @@ func getDBTablesSchemas(db *gorm.DB) (map[string][]*ColumnInfo, error) {
 		tableInfos := []*ColumnInfo{}
 		rows, err := db.Raw("PRAGMA table_info(" + tableNameAndSQL.Name + ");").Rows()
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("failed to info(%s): %w", tableNameAndSQL.Name, err)
 		}
 
 		defer func() { _ = rows.Close() }()

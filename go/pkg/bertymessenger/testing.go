@@ -10,7 +10,7 @@ import (
 	"testing"
 	"time"
 
-	sqlite "github.com/berty/gorm-sqlcipher"
+	sqlite "github.com/glebarez/sqlite"
 	"github.com/golang/protobuf/proto"
 	libp2p_mocknet "github.com/libp2p/go-libp2p/p2p/net/mock"
 	"github.com/stretchr/testify/assert"

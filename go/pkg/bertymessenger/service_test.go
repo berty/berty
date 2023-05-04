@@ -17,7 +17,7 @@ import (
 	"testing"
 	"time"
 
-	sqlite "github.com/berty/gorm-sqlcipher"
+	sqlite "github.com/glebarez/sqlite"
 	"github.com/gogo/protobuf/proto"
 	"github.com/oklog/run"
 	"github.com/stretchr/testify/assert"
