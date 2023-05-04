@@ -1,6 +1,5 @@
 MAKEFILE_DIR   := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 STACK_DIR      := $(MAKEFILE_DIR)/stack
-STACK_NAME     := stack
 
 stack:
 	@`# Set md5 hash of related files as client token for moustache generation`; \
@@ -8,7 +7,6 @@ stack:
 \
 	`# Set other required variables`; \
 	export STACK_NAME='$@'; \
-	export CLIENT_TOKEN=$$(cat $(STACK_DIR)/infra.yml); \
 \
 	`# Generate aws-cli json using moustache template`; \
 	GEN_JSON=$$($(MO) -u $(STACK_DIR)/specs.template.json); \
@@ -30,4 +28,3 @@ stack:
 		&& printf "Stack creation : $$(tput setaf 2)Succeeded$$(tput sgr0)\n" \
 		|| printf "Stack creation : $$(tput setaf 1)Failed$$(tput sgr0)\n"; \
 	fi
-
