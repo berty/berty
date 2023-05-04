@@ -200,7 +200,7 @@ func (m *Manager) getLocalProtocolServer() (weshnet.Service, error) {
 
 		prom, err := m.getMetricsRegistry()
 		if err != nil {
-			return nil, fmt.Errorf("unable to get metrics registery")
+			return nil, fmt.Errorf("unable to get metrics registry")
 		}
 
 		// initialize new protocol client

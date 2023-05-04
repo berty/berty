@@ -1,0 +1,13 @@
+apiVersion: 1
+
+providers:
+  - name: libp2p # A uniquely identifiable name for the provider
+    folder: libp2p_official # The folder where to place the dashboards
+    type: file
+    options:
+      path: /etc/grafana/libp2p_dashboards
+  - name: Berty # A uniquely identifiable name for the provider
+    folder: berty_custom # The folder where to place the dashboards
+    type: file
+    options:
+      path: /etc/grafana/berty_dashboards

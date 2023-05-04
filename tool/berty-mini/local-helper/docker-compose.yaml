@@ -1,0 +1,53 @@
+version: '3'
+
+services:
+  grafana:
+    container_name: grafana
+    image: grafana/grafana
+    ports:
+        - "3000:3000"
+    depends_on:
+        - prometheus
+    volumes:
+        - ./metrics/grafana.ini:/etc/grafana/grafana.ini
+        - ./metrics/provisioning:/etc/grafana/provisioning
+        - ./metrics/libp2p_dashboards:/etc/grafana/libp2p_dashboards
+        - ./metrics/berty_dashboards:/etc/grafana/berty_dashboards
+    networks:
+        - monitoring
+
+  prometheus:
+    container_name: prometheus
+    image: prom/prometheus
+    volumes:
+      - ./metrics/prometheus.yaml:/etc/prometheus/prometheus.yml
+    extra_hosts:
+        - host.docker.internal:host-gateway
+    depends_on:
+      - discovery
+    ports:
+      - "9090:9090"
+    networks:
+      - monitoring
+
+  discovery:
+    container_name: discovery
+    image: golang:1.19-alpine
+    volumes:
+        - go-cache:/usr/local/go/pkg
+        - ./metrics/discovery:/app
+    extra_hosts:
+        - host.docker.internal:host-gateway
+    working_dir: /app
+    command: "go run . -port=4848"
+    ports:
+        - "4848:4848"
+    networks:
+        - monitoring
+
+
+networks:
+  monitoring:
+
+volumes:
+    go-cache:
