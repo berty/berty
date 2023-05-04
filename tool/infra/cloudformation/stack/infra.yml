@@ -1,7 +1,7 @@
 Mappings:
   RegionMap:
     eu-west-3:
-     BertyAMI: "ami-0504c4f1ad6f0d2ad"
+     RelayAMI: "ami-0a4ed2edc0ce9ca0c"
 
 Resources:
   # VPC w/ Internet Access
@@ -100,7 +100,7 @@ Resources:
   Relay1:
     Type: AWS::EC2::Instance
     Properties:
-      ImageId: !FindInMap [RegionMap, !Ref "AWS::Region", BertyAMI]
+      ImageId: !FindInMap [RegionMap, !Ref "AWS::Region", RelayAMI]
       InstanceType: m6i.large
       IamInstanceProfile: !Ref Ec2SsmInstanceProfile
       SubnetId: !Ref Subnet1
@@ -120,7 +120,7 @@ Resources:
   Relay2:
     Type: AWS::EC2::Instance
     Properties:
-      ImageId: !FindInMap [RegionMap, !Ref "AWS::Region", BertyAMI]
+      ImageId: !FindInMap [RegionMap, !Ref "AWS::Region", RelayAMI]
       InstanceType: m6i.large
       IamInstanceProfile: !Ref Ec2SsmInstanceProfile
       SubnetId: !Ref Subnet2
