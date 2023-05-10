@@ -7,3 +7,4 @@
 */
 
 "BertyPushMessage" = "Nuovo messaggio";
+"BertyPushMessageError" = "È stato ricevuto un nuovo messaggio, ma si è verificato un errore durante la decifratura";
