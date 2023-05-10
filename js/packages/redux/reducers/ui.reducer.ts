@@ -25,8 +25,8 @@ type UiState = {
 	notificationsInhibitors: NotificationsInhibitor[]
 	// variable for AppInspector
 	debugMode: boolean
-	// TODO: fix the way to handle deeplink, this variable is needed to know the handle status of the link
-	handledLink: boolean
+	// deeplink or universal link
+	handledLink: string | null
 }
 
 /**
@@ -51,7 +51,7 @@ const initialState: UiState = {
 	streamProgress: null,
 	notificationsInhibitors: [],
 	debugMode: false,
-	handledLink: false,
+	handledLink: null,
 }
 
 const rootInitialState = makeRoot(initialState)
@@ -132,7 +132,7 @@ const slice = createSlice({
 		setDebugMode(state: UiState, { payload }: PayloadAction<boolean>) {
 			state.debugMode = payload
 		},
-		setHandledLink(state: UiState, { payload }: PayloadAction<boolean>) {
+		setHandledLink(state: UiState, { payload }: PayloadAction<string | null>) {
 			state.handledLink = payload
 		},
 	},
