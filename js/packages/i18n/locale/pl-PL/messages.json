@@ -1,29 +1,29 @@
 {
 	"onboarding": {
 		"getstarted": {
-			"screenTitle": "",
-			"title": "",
-			"desc": "",
-			"create-button": "",
-			"import-button": ""
+			"screenTitle": "Chroń swoją prywatność",
+			"title": "Chroń swoją prywatność",
+			"desc": "darmowe i bezpieczne wiadomości peer-to-peer",
+			"create-button": "Stwórz konto",
+			"import-button": "Importuj konto"
 		},
 		"default-mode": {
 			"summary": {
-				"title": "",
-				"screenTitle": "",
-				"subtitle": "",
-				"first-point": "",
-				"second-point": "",
-				"third-point": "",
-				"back-button": "",
-				"accept-button": ""
+				"title": "Tryb domyślny",
+				"screenTitle": "Stwórz konto",
+				"subtitle": "Szybki start",
+				"first-point": "Zacznij od ustawień wstępnych, które oferują równowagę między prywatnością a komfortem, które odpowiadają większości użytkowników. Węzły Berty są używane do poprawy wydajności i komunikacji asynchronicznej.",
+				"second-point": "Powiadomienia push są domyślnie włączone i nie można ich jeszcze wyłączyć na systemie iOS.",
+				"third-point": "Aby samodzielnie dostosować równowagę między prywatnością a komfortem, wybierz tryb niestandardowy.",
+				"back-button": "Wróć",
+				"accept-button": "Zaczynajmy"
 			}
 		},
 		"custom-mode": {
 			"summary": {
-				"screenTitle": "",
-				"title": "",
-				"subtitle": "",
+				"screenTitle": "Utwórz konto - Dostosuj ustawienia",
+				"title": "Tryb niestandardowy",
+				"subtitle": "Niestandardowa równowaga między prywatnością a komfortem",
 				"first-point": "",
 				"second-point": "",
 				"back-button": "",
@@ -33,7 +33,7 @@
 				"off-grid": {
 					"title": "",
 					"ble-button": "",
-					"nearby-button": "",
+					"nearby-button": "Android Nearby",
 					"mc-button": "",
 					"mdns-button": ""
 				},
@@ -70,25 +70,25 @@
 					},
 					"buttons": {
 						"add": "Dodaj",
-						"edit": "",
-						"delete": ""
+						"edit": "Edytuj",
+						"delete": "Usuń"
 					},
 					"multiaddress": "",
 					"alias": ""
 				},
-				"all-button": "",
-				"accept-button": ""
+				"all-button": "Wszystkie",
+				"accept-button": "Zaczynajmy"
 			}
 		},
 		"create-account": {
 			"title": "Utwórz swoje konto",
-			"first-button": "",
-			"second-button": "",
-			"placeholder": "",
+			"first-button": "Tryb Domyślny",
+			"second-button": "Tryb niestandardowy",
+			"placeholder": "Wybierz swój pseudonim",
 			"good-to-know": {
-				"title": "",
-				"first-point": "",
-				"second-point": ""
+				"title": "Dobrze wiedzieć:",
+				"first-point": "Twoje konto jest tworzone lokalnie",
+				"second-point": "Pseudonim jest opcjonalny i może zostać zmieniony później"
 			}
 		},
 		"generate-key": {
@@ -98,18 +98,18 @@
 		"setup-finished": {
 			"title": "Konfiguracja zakończona!",
 			"desc": "Teraz możesz korzystać z aplikacji, dodawać kontakty i rozmawiać z nimi swobodnie i prywatnie",
-			"button": ""
+			"button": "Zacznij używać Berty"
 		},
 		"web-views": {
 			"title": "",
 			"desc": "",
 			"first-button": "Anuluj",
-			"second-button": ""
+			"second-button": "Tak"
 		}
 	},
 	"main": {
 		"home": {
-			"title": "",
+			"title": "Berty",
 			"requests": {
 				"title": "Prośby",
 				"accept": "Akceptuj",
@@ -117,33 +117,35 @@
 			},
 			"input-placeholder": "Szukaj słowa",
 			"no-contacts": "Nie masz jeszcze żadnych kontaktów ani czatu",
+			"no-network": {
+				"title": "Nie znaleziono sieci!",
+				"description": "",
+				"cancel": "NIE TERAZ",
+				"activate": "AKTYWUJ"
+			},
 			"search": {
 				"no-results": "Nie znaleziono wyników"
-			},
-			"multi-account": {
-				"create-button": "Utwórz nowe konto",
-				"import-button": "Importuj konto"
 			},
 			"create-group": {
 				"title": "Nowa Grupa",
 				"add-members": "Dodaj członków",
 				"group-info": "Informacje o grupie",
 				"search-placeholder": "Szukaj",
-				"continue": "",
-				"create-group": ""
+				"continue": "Kontynuuj",
+				"create-group": "Utwórz grupę"
 			},
 			"create-group-finalize": {
-				"placeholder": "",
-				"about": "",
-				"first-bullet-point": "",
-				"second-bullet-point": "",
+				"placeholder": "Nazwa grupy",
+				"about": "O grupach",
+				"first-bullet-point": "Każdy członek grupy może zmienić jej nazwę lub zaprosić nowych członków",
+				"second-bullet-point": "Możesz zapraszać członków przez link",
 				"third-bullet-point": "",
 				"fourth-bullet-point": "",
 				"fifth-bullet-point": ""
 			},
 			"conversations": {
-				"request-sent": "",
-				"draft": ""
+				"request-sent": "Żądanie wysłane. Oczekiwanie...",
+				"draft": "Szkic: {{message}}"
 			}
 		},
 		"suggestion-display-name-initial": "Kliknij tutaj, aby dodać"
@@ -153,36 +155,37 @@
 			"title": "Ustawienia",
 			"proximity-button": "",
 			"notifications-button": "Powiadomienia",
-			"appearance-button": "",
+			"appearance-button": "Wygląd",
 			"accounts-button": "Konta",
-			"network-button": "",
+			"network-button": "Sieć",
+			"linked-identities-button": "",
+			"directory-search-button": "",
 			"bug-button": "",
 			"about-button": "O Berty",
-			"version-button": "",
+			"version-button": "Wersja: {{version}}",
 			"devtools-button": "Narzędzia Deweloperskie"
 		},
 		"about": {
 			"title": "O Berty",
 			"faq-button": "",
 			"roadmap-button": "",
-			"policy-button": "",
-			"license-button": "",
+			"policy-button": "Polityka prywatności",
+			"license-button": "Licencje Open Source",
 			"terms-of-use": "Warunki użytkowania"
 		},
 		"accounts": {
 			"title": "Konta",
-			"backup-button": "",
-			"backup-notif-title": "",
+			"backup-button": "Kopia zapasowa",
+			"backup-notif-title": "Sukces",
 			"backup-notif-desc": "",
 			"accounts-button": "Konta",
 			"create-button": "",
-			"import-button": "",
-			"link-button": "",
-			"delete-button": "",
-			"delete-title": ""
+			"import-button": "Importuj konto",
+			"delete-button": "Usuń to konto",
+			"delete-title": "Usuwanie konta"
 		},
 		"appearance": {
-			"title": "",
+			"title": "Wygląd",
 			"dark-button": "",
 			"editor-button": "",
 			"theme-editor": {
@@ -195,14 +198,14 @@
 			"request-button": ""
 		},
 		"network": {
-			"title": "",
+			"title": "Sieć",
 			"ble-button": "",
 			"mc-button": "",
-			"nearby-button": "",
+			"nearby-button": "Android Nearby",
 			"mdns-button": "Multiemisja DNS",
-			"memo-cell-button": "",
-			"medias-cell-button": "",
-			"dht-button": "",
+			"memo-cell-button": "Wczytuj wiadomości głosowe przez dane komórkowe",
+			"medias-cell-button": "Wczytuj multimedia przez dane komórkowe",
+			"dht-button": "Rozproszona Tablica Hash'ów",
 			"rdvp-button": "",
 			"relay-button": "",
 			"bootstrap-button": ""
@@ -221,28 +224,40 @@
 		"delete-account": {
 			"title": "Usuń konto!",
 			"first-desc": "Czy na pewno chcesz usunąć swoje konto?",
-			"desc": "Proszę wpisać usuń, aby potwierdzić",
+			"desc-please": "",
+			"desc-delete": "",
+			"desc-confirm": "",
 			"cancel-button": "Anuluj",
-			"delete-button": ""
+			"delete-button": "Usuń"
 		},
 		"faq": {
-			"title": ""
+			"title": "FAQ"
 		},
 		"roadmap": {
-			"title": ""
+			"title": "Plan działania"
 		},
 		"privacy-policy": {
-			"title": ""
+			"title": "Polityka prywatności"
 		},
 		"devtools": {
 			"title": "Narzędzia deweloperskie",
 			"header-left-button": "Informacje o urządzeniu",
 			"header-middle-button": "Generuj fałszywe dane",
 			"header-right-button": "Zrestartuj daemon",
+			"allow-unsecure-grpc": "",
 			"force-mock-button": "",
 			"simulate-button": "Symuluj błąd strumienia",
 			"simulate-js-error-button": "Symuluj błąd JavaScript",
 			"system-info-button": "Informacje systemowe",
+			"select-node": {
+				"title": "",
+				"node-type": "",
+				"address": "",
+				"account-port": "",
+				"messenger-port": "",
+				"dont-ask": "",
+				"button-continue": "Kontynuuj"
+			},
 			"debug-button": "Debuguj",
 			"log-button": {
 				"name": "Format dziennika",
@@ -252,7 +267,7 @@
 				"name": "Filtry dzienników",
 				"bullet-point": "Uruchom ponownie aplikację po zmianie tego pola"
 			},
-			"export-logs-button": "",
+			"export-logs-button": "Eksportuj logi",
 			"add-dev-conversations-button": "Dodaj rozmowy deweloperskie",
 			"share-button": {
 				"title": "Udostępnij ID na discordzie",
@@ -261,7 +276,6 @@
 				"alert-accept-button": "Tak👍",
 				"alert-cancel-button": "Nie"
 			},
-			"native-bridge-button": "Test natywnego mostu",
 			"dump-account-button": "Zrzuć konto",
 			"dump-contacts-button": "Zrzuć kontakty",
 			"dump-conversations-button": "Zrzuć rozmowy",
@@ -279,7 +293,7 @@
 			},
 			"tyber-attach": "",
 			"tyber-host-button": {
-				"name": "",
+				"name": "Tyber",
 				"bullet-point": "Uruchom ponownie aplikację po zmianie tego pola"
 			},
 			"footer-left-button": "Informacje o urządzeniu",
@@ -308,11 +322,11 @@
 		},
 		"theme-editor": {
 			"randomize": "",
-			"save": "",
+			"save": "Zapisz ten motyw",
 			"export": "",
 			"share": "",
 			"import": "",
-			"delete": "",
+			"delete": "Usuń wszystkie niedomyślne motywy",
 			"bad-format-title": "",
 			"bad-format-desc": "",
 			"notification-file-saved": {
@@ -324,9 +338,15 @@
 			"title": ""
 		},
 		"share": {
-			"invite": "",
+			"invite": "Zaproś",
 			"tap-to-scan": "",
 			"create-group": ""
+		},
+		"linked-identities": {
+			"title": ""
+		},
+		"directory-search": {
+			"title": ""
 		}
 	},
 	"tabs": {
@@ -347,24 +367,24 @@
 			"dismiss-button": ""
 		},
 		"group-invitation": {
-			"join": "",
-			"password-label": "",
-			"password-placeholder": ""
+			"join": "Dołącz do tej grupy",
+			"password-label": "Wprowadź hasło grupy",
+			"password-placeholder": "Hasło..."
 		},
 		"save-theme": {
-			"title": "",
+			"title": "Zapisywanie motywu",
 			"desc": "",
-			"placeholder": "",
+			"placeholder": "Nazwa motywu...",
 			"cancel": "Anuluj",
-			"add": ""
+			"add": "Dodaj!"
 		}
 	},
 	"chat": {
 		"title-unknown": "",
 		"sending": "Wysyłanie...",
-		"sent": "",
+		"sent": "Wyślij",
 		"contact-settings": {
-			"my-devices": ""
+			"my-devices": "Moje urządzenia"
 		},
 		"multi-member": {
 			"input-placeholder": "Wpisz tutaj..."
@@ -377,8 +397,8 @@
 			"warning-disable": {
 				"title": "",
 				"subtitle": "",
-				"accept": "",
-				"refuse": ""
+				"accept": "Aktywuj",
+				"refuse": "Pomiń"
 			},
 			"why-cant-disable": "",
 			"why-cant-disable-account": "",
@@ -410,8 +430,7 @@
 			}
 		},
 		"multi-member-settings": {
-			"title": "",
-			"media-button": "Multimedia, linki i dokumenty",
+			"title": "Ustawienia konwersacji",
 			"members-button": {
 				"title": ""
 			},
@@ -420,15 +439,15 @@
 				"search-placeholder": "",
 				"conversation-booster": "",
 				"replication-type": "",
-				"user-type": ""
+				"user-type": "Urządzenie użytkownika"
 			},
 			"invite-button": "Zaproś przez link",
 			"save-button": "Zapisz konwersację na serwerze"
 		},
 		"add-members": {
 			"members": "Członkowie",
-			"contacts": "",
-			"add": ""
+			"contacts": "Kontakty",
+			"add": "Dodaj!"
 		},
 		"multi-member-qr": {
 			"title": "QR Grupy"
@@ -439,11 +458,11 @@
 				"group-invitation": "",
 				"refuse-button": "",
 				"accept-button": "Akceptuj",
-				"accepted-button": "",
+				"accepted-button": "Zaakceptowano",
 				"error": "",
-				"you-invited": "",
-				"this-contact": "",
-				"to-a-group": ""
+				"you-invited": "Zaprosiłeś",
+				"this-contact": "ten kontakt",
+				"to-a-group": "do grupy! 💌"
 			},
 			"infos-chat": {
 				"connection-confirmed": "👋 Połączenie Berty potwierdzone! 🎉",
@@ -456,8 +475,7 @@
 			"input-placeholder": "Wpisz tutaj..."
 		},
 		"one-to-one-settings": {
-			"title": "",
-			"media-button": "Multimedia, linki i dokumenty",
+			"title": "Ustawienia konwersacji",
 			"save-button": "Zapisz konwersację na serwerze"
 		},
 		"replicate-group-settings": {
@@ -466,60 +484,21 @@
 			"connect-button": "Połącz z usługami świadczonymi przez Berty",
 			"manage-add-button": "Zarządzaj lub dodaj usługi"
 		},
-		"files": {
-			"gallery": "Galeria",
-			"no-images": "",
-			"camera": "Aparat",
-			"files": "Pliki",
-			"microphone": "Mikrofon",
-			"security-access": "Dostęp do zabezpieczeń",
-			"security-access-desc": "Dotknij tutaj, żeby otworzyć ustawienie, aby zezwolić na dostęp do Twojego",
-			"save-to-gallery": "Zapisz ten plik w galerii",
-			"share": "Udostępnij",
-			"forward-berty": "Przekaż do kontaktu Berty",
-			"forward": "Przekaż",
-			"image-saved": "Obraz zapisany w galerii"
-		},
-		"shared-medias": {
-			"title": "Współdzielone media",
-			"medias": "Media",
-			"links": "Linki",
-			"documents": "Dokumenty",
-			"file": "",
-			"picture": "",
-			"audio": ""
-		},
-		"reply": {
-			"response-to": "",
-			"replying-to": "",
-			"replied-to": ""
-		},
 		"user-message": {
-			"read-more": "",
-			"show-less": ""
+			"read-more": "Czytaj więcej",
+			"show-less": "Pokaż mniej"
 		}
 	},
 	"account": {
-		"deleting": "",
-		"creating": "",
+		"deleting": "Usuwanie konta...",
+		"creating": "Tworzenie konta...",
 		"opening": {
 			"alert-push-title": "",
 			"alert-push-go-failed": "",
 			"alert-push-fetch-failed": "",
 			"alert-push-perm-denied": "",
 			"alert-push-desc": "",
-			"alert-push-button": ""
-		}
-	},
-	"audio": {
-		"record": {
-			"tooltip": {
-				"usage": "Przytrzymaj aby nagrywać, puść, aby wysłać",
-				"not-sent": "Wiadomość audio nie została wysłana",
-				"permission-denied": "Aplikacja nie może nagrywać dźwięku"
-			},
-			"slide-to-cancel": "<< Przesuń aby anulować",
-			"cancel-button": "Anuluj"
+			"alert-push-button": "Kontynuuj"
 		}
 	},
 	"permission": {
@@ -544,11 +523,15 @@
 			"title": "",
 			"desc": ""
 		},
-		"button-labels": {
-			"allow": "",
-			"settings": ""
+		"contacts": {
+			"title": "Kontakty",
+			"desc": ""
 		},
-		"skip": "",
+		"button-labels": {
+			"allow": "Zezwól",
+			"settings": "Przejdź do ustawień"
+		},
+		"skip": "Pomiń",
 		"cancel": "Anuluj",
 		"settings-text": ""
 	},
@@ -605,8 +588,8 @@
 				"status": {
 					"datastore-found": "",
 					"datastore-not-found": "",
-					"ipfs-repo-found": "",
-					"ipfs-repo-not-found": "",
+					"ipfs-repo-found": "Znaleziono repozytorium IPFS",
+					"ipfs-repo-not-found": "Nie znaleziono repozytorium IPFS",
 					"messenger-db-found": "Znaleziono DB komunikatora",
 					"messenger-db-not-found": "Nie znaleziono DB komunikatora"
 				},
@@ -640,9 +623,27 @@
 	"time-for": {
 		"minutes": "",
 		"hours": "",
-		"days": ""
+		"days": "{{days}} dni"
 	},
 	"share": {
 		"sharing-id-message": ""
+	},
+	"directory": {
+		"phone": {
+			"register": "",
+			"associated": "",
+			"expired": "",
+			"proof-service-unavailable": "",
+			"register-service": "",
+			"unregister-service": ""
+		},
+		"email": {
+			"register": "",
+			"associated": "",
+			"expired": "",
+			"proof-service-unavailable": "",
+			"register-service": "",
+			"unregister-service": ""
+		}
 	}
 }
