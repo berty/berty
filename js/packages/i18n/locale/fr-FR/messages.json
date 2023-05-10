@@ -13,7 +13,7 @@
 				"screenTitle": "Créez votre compte",
 				"subtitle": "Démarrer rapidement",
 				"first-point": "Commencer par des préréglages qui offrent un équilibre entre intimité et confort qui convient au plus grand nombre. Les nœuds Berty sont utilisés pour améliorer les performances et la communication asynchrone.",
-				"second-point": "",
+				"second-point": "Les notifications sont activées par défaut et vous ne pouvez pas encore les désactiver sur IOS.",
 				"third-point": "Pour un équilibre de vie privée/confort personnalisé, sélectionnez le Mode Personnalisé.",
 				"back-button": "Retour",
 				"accept-button": "C'est parti"
@@ -82,8 +82,8 @@
 		},
 		"create-account": {
 			"title": "Créer votre compte",
-			"first-button": "",
-			"second-button": "",
+			"first-button": "Mode par défaut",
+			"second-button": "Mode personnalisé",
 			"placeholder": "Choisissez votre pseudo",
 			"good-to-know": {
 				"title": "Bon à savoir :",
@@ -98,7 +98,7 @@
 		"setup-finished": {
 			"title": "Configuration terminée !",
 			"desc": "Vous pouvez dés maintenant utiliser l'application, ajoutez vos contacts et parler en toute tranquillité avec eux",
-			"button": ""
+			"button": "Démarrer avec Berty"
 		},
 		"web-views": {
 			"title": "Autorisation de contenu Web",
@@ -117,20 +117,22 @@
 			},
 			"input-placeholder": "Mots-clés de recherche",
 			"no-contacts": "Vous n'avez pas encore de contact ou de conversation",
+			"no-network": {
+				"title": "Aucun réseau trouvé !",
+				"description": "Vous semblez hors ligne ! Activez le Bluetooth pour parler avec vos amis !",
+				"cancel": "PAS MAINTENANT",
+				"activate": "ACTIVER"
+			},
 			"search": {
 				"no-results": "Aucun résultat trouvé"
-			},
-			"multi-account": {
-				"create-button": "Créer un nouveau compte",
-				"import-button": "Importer un compte"
 			},
 			"create-group": {
 				"title": "Nouveau groupe",
 				"add-members": "Ajouter des membres",
 				"group-info": "Informations du groupe",
 				"search-placeholder": "Rechercher",
-				"continue": "",
-				"create-group": ""
+				"continue": "Continuer",
+				"create-group": "Créer un groupe"
 			},
 			"create-group-finalize": {
 				"placeholder": "Nom du groupe",
@@ -156,9 +158,11 @@
 			"appearance-button": "Apparence",
 			"accounts-button": "Comptes",
 			"network-button": "Réseau",
+			"linked-identities-button": "",
+			"directory-search-button": "",
 			"bug-button": "Soumettre un bug",
 			"about-button": "À propos de Berty",
-			"version-button": "",
+			"version-button": "Version : {{version}}",
 			"devtools-button": "Devtools"
 		},
 		"about": {
@@ -177,7 +181,6 @@
 			"accounts-button": "Comptes",
 			"create-button": "Créer un nouveau compte",
 			"import-button": "Importer un compte",
-			"link-button": "Lier cet appareil",
 			"delete-button": "Supprimer ce compte",
 			"delete-title": "Supprimer le compte"
 		},
@@ -221,7 +224,9 @@
 		"delete-account": {
 			"title": "Supprimer le compte !",
 			"first-desc": "Êtes-vous sûr de vouloir supprimer votre compte ?",
-			"desc": "Veuillez saisir \"delete\" pour confirmer",
+			"desc-please": "Veuillez saisir ",
+			"desc-delete": "supprimer",
+			"desc-confirm": " pour confirmer",
 			"cancel-button": "Annuler",
 			"delete-button": "Supprimer"
 		},
@@ -239,10 +244,20 @@
 			"header-left-button": "Infos sur l'appareil",
 			"header-middle-button": "Générer de fausses données",
 			"header-right-button": "Redémarrer le démon",
+			"allow-unsecure-grpc": "Autoriser les connexions GRPC non sécurisées",
 			"force-mock-button": "",
 			"simulate-button": "Simuler une erreur de stream",
 			"simulate-js-error-button": "Simuler une erreur JavaScript",
 			"system-info-button": "Infos système",
+			"select-node": {
+				"title": "Sélectionnez un noeud",
+				"node-type": "Nœud interne / externe",
+				"address": "Adresse",
+				"account-port": "",
+				"messenger-port": "",
+				"dont-ask": "Ne plus me demander",
+				"button-continue": "Continuer"
+			},
 			"debug-button": "Debug",
 			"log-button": {
 				"name": "Format de log",
@@ -252,7 +267,7 @@
 				"name": "Filtres de logs",
 				"bullet-point": "Redémarrer l'application après avoir modifié ce champ"
 			},
-			"export-logs-button": "",
+			"export-logs-button": "Exporter les logs",
 			"add-dev-conversations-button": "Ajouter conversations de dev",
 			"share-button": {
 				"title": "Partager l'ID sur Discord",
@@ -261,7 +276,6 @@
 				"alert-accept-button": "Oui 👍",
 				"alert-cancel-button": "Non"
 			},
-			"native-bridge-button": "Tester la passerelle native",
 			"dump-account-button": "Extraire le compte",
 			"dump-contacts-button": "Extraire les contacts",
 			"dump-conversations-button": "Extraire les conversations",
@@ -301,7 +315,7 @@
 			"add": "Ajouter {{name}}",
 			"tag-bot": "Bot",
 			"tag-contact": "Contact",
-			"tag-conversation": ""
+			"tag-conversation": "Conversation"
 		},
 		"ipfs-webui": {
 			"title": "Interface web IPFS"
@@ -327,6 +341,12 @@
 			"invite": "Inviter",
 			"tap-to-scan": "Appuyer pour scanner",
 			"create-group": "Créer un groupe"
+		},
+		"linked-identities": {
+			"title": ""
+		},
+		"directory-search": {
+			"title": ""
 		}
 	},
 	"tabs": {
@@ -344,10 +364,10 @@
 			"contact-already-added-message": "Vous ne pouvez pas ajouter le même contact plusieurs fois"
 		},
 		"invalid-scan": {
-			"dismiss-button": ""
+			"dismiss-button": "Refuser"
 		},
 		"group-invitation": {
-			"join": "",
+			"join": "Rejoindre ce groupe",
 			"password-label": "Saisir le mot de passe du groupe",
 			"password-placeholder": "Mot de passe..."
 		},
@@ -360,7 +380,7 @@
 		}
 	},
 	"chat": {
-		"title-unknown": "",
+		"title-unknown": "Conversation inconnue",
 		"sending": "Envoi...",
 		"sent": "Envoyé",
 		"contact-settings": {
@@ -373,21 +393,21 @@
 			"title": "Notifications",
 			"unsupported": "Notifications non prises en charge",
 			"check-device-settings": "Cette conversation est configurée pour recevoir des notifications push, mais les alertes ont été désactivées dans les paramètres système de votre appareil",
-			"check-account-settings": "",
+			"check-account-settings": "Les notifications sont désactivées, vérifiez les paramètres de votre compte",
 			"warning-disable": {
 				"title": "Voulez-vous activer cette fonctionnalité ?",
 				"subtitle": "Une fois activées, les notifications push ne peuvent pas être désactivées pour une conversation spécifique.",
 				"accept": "Activer",
 				"refuse": "Ignorer"
 			},
-			"why-cant-disable": "",
-			"why-cant-disable-account": "",
+			"why-cant-disable": "Les notifications ne peuvent pas être désactivées pour une conversation spécifique",
+			"why-cant-disable-account": "Les notifications ne peuvent pas être désactivées mais vous pouvez désactiver totalement les notifications de Berty via les paramètres de votre système d'exploitation.",
 			"errors": {
 				"no-token": "Votre appareil n'est pas compatible avec les notifications push",
 				"no-server": "Vous devez d'abord enregistrer un relais push"
 			},
 			"warning-enable-all": {
-				"title": "",
+				"title": "Activer les notifications pour toutes les conversations ?",
 				"subtitle": "",
 				"refuse": "",
 				"accept": "Accepter"
@@ -411,7 +431,6 @@
 		},
 		"multi-member-settings": {
 			"title": "Paramètres de la conversation",
-			"media-button": "Médias, liens & documents",
 			"members-button": {
 				"title": ""
 			},
@@ -457,7 +476,6 @@
 		},
 		"one-to-one-settings": {
 			"title": "Paramètres de la conversation",
-			"media-button": "Médias, liens & documents",
 			"save-button": "Enregistrer la conversation sur un serveur"
 		},
 		"replicate-group-settings": {
@@ -465,34 +483,6 @@
 			"no-registered-button": "Aucun service de réplication enregistré",
 			"connect-button": "Se connecter aux services opérés par Berty",
 			"manage-add-button": "Gérer ou ajouter des services"
-		},
-		"files": {
-			"gallery": "Galerie",
-			"no-images": "Pas d'images",
-			"camera": "Caméra",
-			"files": "Fichiers",
-			"microphone": "Microphone",
-			"security-access": "Accès sécurisé",
-			"security-access-desc": "Appuyez ici pour ouvrir le paramètre pour autoriser l'accès à votre",
-			"save-to-gallery": "Enregistrer ce fichier dans la galerie",
-			"share": "Partager",
-			"forward-berty": "Transférer au contact Berty",
-			"forward": "Transférer",
-			"image-saved": "Image enregistrée dans la galerie"
-		},
-		"shared-medias": {
-			"title": "Médias partagés",
-			"medias": "Médias",
-			"links": "Liens",
-			"documents": "Documents",
-			"file": "",
-			"picture": "",
-			"audio": ""
-		},
-		"reply": {
-			"response-to": "Répondre à",
-			"replying-to": "Vous répondez à",
-			"replied-to": "Répondu à"
 		},
 		"user-message": {
 			"read-more": "En savoir plus",
@@ -509,17 +499,6 @@
 			"alert-push-perm-denied": "",
 			"alert-push-desc": "",
 			"alert-push-button": ""
-		}
-	},
-	"audio": {
-		"record": {
-			"tooltip": {
-				"usage": "Maintenir pour enregistrer, relâcher pour envoyer",
-				"not-sent": "Le message audio n’a pas été envoyé",
-				"permission-denied": "L'application n'est pas autorisée à enregistrer du son"
-			},
-			"slide-to-cancel": "<< Glisser pour annuler",
-			"cancel-button": "Annuler"
 		}
 	},
 	"permission": {
@@ -543,6 +522,10 @@
 		"gallery": {
 			"title": "Messagerie d'images",
 			"desc": "Pour envoyer des images à vos contacts, vous devez autoriser Berty à accéder aux photos et autres médias stockés sur votre appareil."
+		},
+		"contacts": {
+			"title": "Contacts",
+			"desc": ""
 		},
 		"button-labels": {
 			"allow": "Autoriser",
@@ -644,5 +627,23 @@
 	},
 	"share": {
 		"sharing-id-message": ""
+	},
+	"directory": {
+		"phone": {
+			"register": "",
+			"associated": "",
+			"expired": "",
+			"proof-service-unavailable": "",
+			"register-service": "",
+			"unregister-service": ""
+		},
+		"email": {
+			"register": "",
+			"associated": "",
+			"expired": "",
+			"proof-service-unavailable": "",
+			"register-service": "",
+			"unregister-service": ""
+		}
 	}
 }
