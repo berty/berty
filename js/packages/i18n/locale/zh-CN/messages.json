@@ -98,7 +98,7 @@
 		"setup-finished": {
 			"title": "设置完成！",
 			"desc": "您现在可以使用该应用，开始添加联系人以及与他们自由私下聊天",
-			"button": "开始使用 berty"
+			"button": "开始使用 Berty"
 		},
 		"web-views": {
 			"title": "网页内容权限",
@@ -117,12 +117,14 @@
 			},
 			"input-placeholder": "搜索关键词",
 			"no-contacts": "您还没有任何联系人或聊天",
+			"no-network": {
+				"title": "未找到网络！",
+				"description": "你看起来离线了！激活蓝牙功能来与朋友聊天 ！",
+				"cancel": "不是现在",
+				"activate": "激活"
+			},
 			"search": {
 				"no-results": "未找到结果"
-			},
-			"multi-account": {
-				"create-button": "创建新账号",
-				"import-button": "导入帐号"
 			},
 			"create-group": {
 				"title": "新建群组",
@@ -156,6 +158,8 @@
 			"appearance-button": "外观",
 			"accounts-button": "账户",
 			"network-button": "网络",
+			"linked-identities-button": "",
+			"directory-search-button": "",
 			"bug-button": "提交错误",
 			"about-button": "关于 Berty",
 			"version-button": "版本: {{version}}",
@@ -177,7 +181,6 @@
 			"accounts-button": "账户",
 			"create-button": "创建账户",
 			"import-button": "导入账户",
-			"link-button": "连接其他设备",
 			"delete-button": "删除此账户",
 			"delete-title": "账户删除"
 		},
@@ -221,7 +224,9 @@
 		"delete-account": {
 			"title": "删除帐户！",
 			"first-desc": "您确定要删除您的帐户吗？",
-			"desc": "请输入delete以确认",
+			"desc-please": "",
+			"desc-delete": "",
+			"desc-confirm": "",
 			"cancel-button": "取消",
 			"delete-button": "删除"
 		},
@@ -239,10 +244,20 @@
 			"header-left-button": "设备信息",
 			"header-middle-button": "生成伪数据",
 			"header-right-button": "重启守护进程",
+			"allow-unsecure-grpc": "",
 			"force-mock-button": "强制模拟",
 			"simulate-button": "模拟流错误",
 			"simulate-js-error-button": "模拟 JavaScript 错误",
 			"system-info-button": "系统信息",
+			"select-node": {
+				"title": "选择节点",
+				"node-type": "内部/外部节点",
+				"address": "地址",
+				"account-port": "账户服务端口",
+				"messenger-port": "Messenger 服务端口",
+				"dont-ask": "不再询问",
+				"button-continue": "继续"
+			},
 			"debug-button": "Debug",
 			"log-button": {
 				"name": "日志格式",
@@ -261,7 +276,6 @@
 				"alert-accept-button": "好",
 				"alert-cancel-button": "不"
 			},
-			"native-bridge-button": "测试本机桥接器",
 			"dump-account-button": "转储帐户",
 			"dump-contacts-button": "转储联系人",
 			"dump-conversations-button": "转储对话",
@@ -327,6 +341,12 @@
 			"invite": "邀请",
 			"tap-to-scan": "点击扫描",
 			"create-group": "创建群組"
+		},
+		"linked-identities": {
+			"title": ""
+		},
+		"directory-search": {
+			"title": ""
 		}
 	},
 	"tabs": {
@@ -411,14 +431,13 @@
 		},
 		"multi-member-settings": {
 			"title": "对话设置",
-			"media-button": "媒体、 链接和文档",
 			"members-button": {
 				"title": "成员网络状态 ({{count}})"
 			},
 			"add-member-button": "添加成员",
 			"members-dropdown": {
 				"search-placeholder": "查找成员",
-				"conversation-booster": "",
+				"conversation-booster": "添加对话助推器",
 				"replication-type": "复制节点",
 				"user-type": "用户设备"
 			},
@@ -457,7 +476,6 @@
 		},
 		"one-to-one-settings": {
 			"title": "对话设置",
-			"media-button": "媒体、 链接和文档",
 			"save-button": "在服务器上保存对话"
 		},
 		"replicate-group-settings": {
@@ -465,34 +483,6 @@
 			"no-registered-button": "未注册复制服务",
 			"connect-button": "连接到 Berty 运营服务",
 			"manage-add-button": "管理或添加服务"
-		},
-		"files": {
-			"gallery": "相册",
-			"no-images": "无图像",
-			"camera": "摄像头",
-			"files": "文件",
-			"microphone": "麦克风",
-			"security-access": "安全访问",
-			"security-access-desc": "点击此处以设置您的访问权限",
-			"save-to-gallery": "将此文件保存到相册",
-			"share": "分享",
-			"forward-berty": "转发到 Berty 联系人",
-			"forward": "转发",
-			"image-saved": "图片已保存到相册"
-		},
-		"shared-medias": {
-			"title": "共享媒体",
-			"medias": "媒体",
-			"links": "链接",
-			"documents": "文件",
-			"file": "文件",
-			"picture": "图片",
-			"audio": "音频"
-		},
-		"reply": {
-			"response-to": "答复：",
-			"replying-to": "你正在回复",
-			"replied-to": "回复至"
 		},
 		"user-message": {
 			"read-more": "查看更多",
@@ -509,17 +499,6 @@
 			"alert-push-perm-denied": "推送通知的权限请求已被拒绝。",
 			"alert-push-desc": "您可以随时尝试在“设置”中再次激活此功能。",
 			"alert-push-button": "继续"
-		}
-	},
-	"audio": {
-		"record": {
-			"tooltip": {
-				"usage": "按住来记录，释放以发送",
-				"not-sent": "音频消息未发送",
-				"permission-denied": "不允许应用程序录制声音"
-			},
-			"slide-to-cancel": "<< 滑动取消",
-			"cancel-button": "取消"
 		}
 	},
 	"permission": {
@@ -543,6 +522,10 @@
 		"gallery": {
 			"title": "图片消息",
 			"desc": "要将图像发送给您的联系人，您必须授权 Berty 访问存储在您设备上的照片和其他媒体。"
+		},
+		"contacts": {
+			"title": "联系人列表",
+			"desc": ""
 		},
 		"button-labels": {
 			"allow": "允许",
@@ -644,5 +627,23 @@
 	},
 	"share": {
 		"sharing-id-message": "让我们在 Berty 上聊天，这是一个安全的 p2p 消息应用。加入我："
+	},
+	"directory": {
+		"phone": {
+			"register": "",
+			"associated": "",
+			"expired": "",
+			"proof-service-unavailable": "",
+			"register-service": "",
+			"unregister-service": ""
+		},
+		"email": {
+			"register": "",
+			"associated": "",
+			"expired": "",
+			"proof-service-unavailable": "",
+			"register-service": "",
+			"unregister-service": ""
+		}
 	}
 }
