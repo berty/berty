@@ -40,12 +40,12 @@
 				"routing": {
 					"title": "Roteamento",
 					"dht-button": "Tabela Hash Distribuída",
-					"rdvp-button": "Nós pontos de encontro"
+					"rdvp-button": "Rendezvous Point Nodes"
 				},
 				"access": {
 					"title": "Acessibilidade de rede",
-					"relay-button": "Nós de retransmissão (TURN)",
-					"bootstrap-button": "Pontos de inicialização"
+					"relay-button": "Relay Nodes (TURN)",
+					"bootstrap-button": "Bootstrap Nodes"
 				},
 				"modals": {
 					"add": {
