@@ -158,8 +158,8 @@
 			"appearance-button": "Appearance",
 			"accounts-button": "Accounts",
 			"network-button": "Network",
-			"linked-identities-button": "Linked identities",
-			"directory-search-button": "Directory search",
+			"linked-identities-button": "",
+			"directory-search-button": "",
 			"bug-button": "Submit a bug",
 			"about-button": "About Berty",
 			"version-button": "Version: {{version}}",
@@ -224,9 +224,9 @@
 		"delete-account": {
 			"title": "Delete account!",
 			"first-desc": "Are you sure you want to delete your account?",
-			"desc-please": "Please type ",
-			"desc-delete": "delete",
-			"desc-confirm": " to confirm",
+			"desc-please": "",
+			"desc-delete": "",
+			"desc-confirm": "",
 			"cancel-button": "Cancel",
 			"delete-button": "Delete"
 		},
@@ -244,7 +244,7 @@
 			"header-left-button": "Device infos",
 			"header-middle-button": "Generate fake data",
 			"header-right-button": "Restart daemon",
-			"allow-unsecure-grpc": "Allow Unsecure GRPC connections",
+			"allow-unsecure-grpc": "",
 			"force-mock-button": "Force mock",
 			"simulate-button": "Simulate stream error",
 			"simulate-js-error-button": "Simulate JavaScript error",
@@ -343,10 +343,10 @@
 			"create-group": "Create group"
 		},
 		"linked-identities": {
-			"title": "Linked identities"
+			"title": ""
 		},
 		"directory-search": {
-			"title": "Directory search"
+			"title": ""
 		}
 	},
 	"tabs": {
@@ -524,8 +524,8 @@
 			"desc": "To send images to your contacts, you must authorize Berty to access photos and other media stored on your device."
 		},
 		"contacts": {
-			"title": "Contacts",
-			"desc": "To easily search for your contacts already using the application, you must authorize Berty to access your address book."
+			"title": "",
+			"desc": ""
 		},
 		"button-labels": {
 			"allow": "Allow",
@@ -630,20 +630,20 @@
 	},
 	"directory": {
 		"phone": {
-			"register": "Link a new phone number",
-			"associated": "Your phone number {{identifier}} is confirmed until {{expiration}}",
-			"expired": "The validation of your phone number {{identifier}} has expired on {{expiration}}",
-			"proof-service-unavailable": "Unable to link your phone number for now, please try again later",
-			"register-service": "Announce on {{service}}",
-			"unregister-service": "Remove announcement from {{service}}"
+			"register": "",
+			"associated": "",
+			"expired": "",
+			"proof-service-unavailable": "",
+			"register-service": "",
+			"unregister-service": ""
 		},
 		"email": {
-			"register": "Link a new email address",
-			"associated": "Your email address {{identifier}} is confirmed until {{expiration}}",
-			"expired": "The validation of your email address {{identifier}} has expired on {{expiration}}",
-			"proof-service-unavailable": "Unable to link your email address for now, please try again later",
-			"register-service": "Announce on {{service}}",
-			"unregister-service": "Remove announcement from {{service}}"
+			"register": "",
+			"associated": "",
+			"expired": "",
+			"proof-service-unavailable": "",
+			"register-service": "",
+			"unregister-service": ""
 		}
 	}
 }

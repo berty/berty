@@ -98,7 +98,7 @@
 		"setup-finished": {
 			"title": "セットアップが完了しました!",
 			"desc": "アプリが使えるようになりました。連絡先に相手を追加すると、自由かつプライベートに話せます。",
-			"button": "Berty の使用を開始"
+			"button": ""
 		},
 		"web-views": {
 			"title": "Web コンテンツのアクセス許可",
@@ -117,12 +117,14 @@
 			},
 			"input-placeholder": "キーワードを検索",
 			"no-contacts": "連絡先やチャットはまだありません",
+			"no-network": {
+				"title": "",
+				"description": "",
+				"cancel": "",
+				"activate": ""
+			},
 			"search": {
 				"no-results": "結果はありません"
-			},
-			"multi-account": {
-				"create-button": "新しいアカウントを作成",
-				"import-button": "アカウントをインポート"
 			},
 			"create-group": {
 				"title": "新しいグループ",
@@ -156,6 +158,8 @@
 			"appearance-button": "外観",
 			"accounts-button": "アカウント",
 			"network-button": "ネットワーク",
+			"linked-identities-button": "",
+			"directory-search-button": "",
 			"bug-button": "バグを送信",
 			"about-button": "Bertyについて",
 			"version-button": "",
@@ -177,7 +181,6 @@
 			"accounts-button": "アカウント",
 			"create-button": "アカウントを作成",
 			"import-button": "アカウントをインポート",
-			"link-button": "別のデバイスをリンク",
 			"delete-button": "このアカウントを削除",
 			"delete-title": "アカウントの削除"
 		},
@@ -221,7 +224,9 @@
 		"delete-account": {
 			"title": "アカウントを削除します!",
 			"first-desc": "本当にアカウントを削除しますか？",
-			"desc": "承認するには delete と入力してください",
+			"desc-please": "",
+			"desc-delete": "",
+			"desc-confirm": "",
 			"cancel-button": "キャンセル",
 			"delete-button": "削除"
 		},
@@ -239,10 +244,20 @@
 			"header-left-button": "端末情報",
 			"header-middle-button": "偽装データを生成する",
 			"header-right-button": "サービス／デーモンを再起動する",
+			"allow-unsecure-grpc": "",
 			"force-mock-button": "",
 			"simulate-button": "ストリームのエラーをシミュレーションする",
 			"simulate-js-error-button": "JavaScript のエラーをシミュレーションする",
 			"system-info-button": "システム情報",
+			"select-node": {
+				"title": "",
+				"node-type": "",
+				"address": "",
+				"account-port": "",
+				"messenger-port": "",
+				"dont-ask": "",
+				"button-continue": "続ける"
+			},
 			"debug-button": "デバッグ",
 			"log-button": {
 				"name": "ログの形式",
@@ -261,7 +276,6 @@
 				"alert-accept-button": "いいよん 👍",
 				"alert-cancel-button": "いいえ"
 			},
-			"native-bridge-button": "Native Bridge をテスト",
 			"dump-account-button": "アカウントを書き出す",
 			"dump-contacts-button": "連絡先を書き出す",
 			"dump-conversations-button": "会話を書き出す",
@@ -327,6 +341,12 @@
 			"invite": "招待",
 			"tap-to-scan": "タップしてスキャン",
 			"create-group": "新しいグループを作成"
+		},
+		"linked-identities": {
+			"title": ""
+		},
+		"directory-search": {
+			"title": ""
 		}
 	},
 	"tabs": {
@@ -411,7 +431,6 @@
 		},
 		"multi-member-settings": {
 			"title": "会話の設定",
-			"media-button": "メディア、リンク & ドキュメント",
 			"members-button": {
 				"title": ""
 			},
@@ -457,7 +476,6 @@
 		},
 		"one-to-one-settings": {
 			"title": "会話の設定",
-			"media-button": "メディア、リンク & ドキュメント",
 			"save-button": "会話をサーバーに保存"
 		},
 		"replicate-group-settings": {
@@ -465,34 +483,6 @@
 			"no-registered-button": "会話の複製サービスが登録されていません",
 			"connect-button": "Berty が運営するサービスに接続する",
 			"manage-add-button": "サービスを管理または追加する"
-		},
-		"files": {
-			"gallery": "ギャラリー",
-			"no-images": "画像なし",
-			"camera": "カメラ",
-			"files": "ファイル",
-			"microphone": "マイク",
-			"security-access": "セキュリティ設定",
-			"security-access-desc": "ここをタップしてセキュリティ設定を開きアクセスを許可：",
-			"save-to-gallery": "このファイルをギャラリーに保存する",
-			"share": "共有",
-			"forward-berty": "Berty の連絡先に転送する",
-			"forward": "転送",
-			"image-saved": "画像をギャラリーに保存しました"
-		},
-		"shared-medias": {
-			"title": "共有メディア",
-			"medias": "メディア",
-			"links": "リンク",
-			"documents": "ドキュメント",
-			"file": "ファイル",
-			"picture": "画像",
-			"audio": "音声"
-		},
-		"reply": {
-			"response-to": "返信先",
-			"replying-to": "以下に返信：",
-			"replied-to": "返信済み："
 		},
 		"user-message": {
 			"read-more": "もっと読む",
@@ -509,17 +499,6 @@
 			"alert-push-perm-denied": "",
 			"alert-push-desc": "",
 			"alert-push-button": "続ける"
-		}
-	},
-	"audio": {
-		"record": {
-			"tooltip": {
-				"usage": "長押しで録音、離すと送信されます",
-				"not-sent": "音声メッセージは送信されていません",
-				"permission-denied": "アプリは音声の録音が許可されていません"
-			},
-			"slide-to-cancel": "スライドして中止",
-			"cancel-button": "キャンセル"
 		}
 	},
 	"permission": {
@@ -543,6 +522,10 @@
 		"gallery": {
 			"title": "画像メッセージ",
 			"desc": "連絡先に画像を送信するには、Bertyにデバイスに保存されている写真やその他のメディアにアクセスすることを許可する必要があります。"
+		},
+		"contacts": {
+			"title": "連絡先",
+			"desc": ""
 		},
 		"button-labels": {
 			"allow": "許可する",
@@ -644,5 +627,23 @@
 	},
 	"share": {
 		"sharing-id-message": ""
+	},
+	"directory": {
+		"phone": {
+			"register": "",
+			"associated": "",
+			"expired": "",
+			"proof-service-unavailable": "",
+			"register-service": "",
+			"unregister-service": ""
+		},
+		"email": {
+			"register": "",
+			"associated": "",
+			"expired": "",
+			"proof-service-unavailable": "",
+			"register-service": "",
+			"unregister-service": ""
+		}
 	}
 }

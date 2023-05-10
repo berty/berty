@@ -117,12 +117,14 @@
 			},
 			"input-placeholder": "搜索關鍵詞",
 			"no-contacts": "您還沒有任何聯繫人或聊天",
+			"no-network": {
+				"title": "",
+				"description": "",
+				"cancel": "",
+				"activate": ""
+			},
 			"search": {
 				"no-results": "未找到結果"
-			},
-			"multi-account": {
-				"create-button": "創建新賬戶",
-				"import-button": "導入帳號"
 			},
 			"create-group": {
 				"title": "新建群組",
@@ -156,6 +158,8 @@
 			"appearance-button": "",
 			"accounts-button": "賬戶",
 			"network-button": "",
+			"linked-identities-button": "",
+			"directory-search-button": "",
 			"bug-button": "",
 			"about-button": "關於 Berty",
 			"version-button": "",
@@ -177,7 +181,6 @@
 			"accounts-button": "賬戶",
 			"create-button": "",
 			"import-button": "",
-			"link-button": "",
 			"delete-button": "",
 			"delete-title": ""
 		},
@@ -221,7 +224,9 @@
 		"delete-account": {
 			"title": "刪除帳戶！",
 			"first-desc": "您確定要刪除您的帳戶嗎？",
-			"desc": "請輸入delete以確認",
+			"desc-please": "",
+			"desc-delete": "",
+			"desc-confirm": "",
 			"cancel-button": "取消",
 			"delete-button": ""
 		},
@@ -239,10 +244,20 @@
 			"header-left-button": "設備信息",
 			"header-middle-button": "生成偽數據",
 			"header-right-button": "重啟守護進程",
+			"allow-unsecure-grpc": "",
 			"force-mock-button": "",
 			"simulate-button": "模擬流錯誤",
 			"simulate-js-error-button": "模擬 JavaScript 錯誤",
 			"system-info-button": "系統信息",
+			"select-node": {
+				"title": "",
+				"node-type": "",
+				"address": "",
+				"account-port": "",
+				"messenger-port": "",
+				"dont-ask": "",
+				"button-continue": ""
+			},
 			"debug-button": "Debug",
 			"log-button": {
 				"name": "日誌格式",
@@ -261,7 +276,6 @@
 				"alert-accept-button": "好 👍",
 				"alert-cancel-button": "不"
 			},
-			"native-bridge-button": "測試本機橋接器",
 			"dump-account-button": "轉儲帳戶",
 			"dump-contacts-button": "轉儲聯繫人",
 			"dump-conversations-button": "轉儲對話",
@@ -327,6 +341,12 @@
 			"invite": "",
 			"tap-to-scan": "",
 			"create-group": ""
+		},
+		"linked-identities": {
+			"title": ""
+		},
+		"directory-search": {
+			"title": ""
 		}
 	},
 	"tabs": {
@@ -411,7 +431,6 @@
 		},
 		"multi-member-settings": {
 			"title": "",
-			"media-button": "媒體、 鏈接和文檔",
 			"members-button": {
 				"title": ""
 			},
@@ -457,7 +476,6 @@
 		},
 		"one-to-one-settings": {
 			"title": "",
-			"media-button": "媒體、 鏈接和文檔",
 			"save-button": "在服務器上保存對話"
 		},
 		"replicate-group-settings": {
@@ -465,34 +483,6 @@
 			"no-registered-button": "未註冊複製服務",
 			"connect-button": "連接到 Berty 運營服務",
 			"manage-add-button": "管理或添加服務"
-		},
-		"files": {
-			"gallery": "相冊",
-			"no-images": "",
-			"camera": "攝像頭",
-			"files": "文件",
-			"microphone": "麥克風",
-			"security-access": "安全訪問",
-			"security-access-desc": "點擊此處以設置您的訪問權限",
-			"save-to-gallery": "將此文件保存到相冊",
-			"share": "分享",
-			"forward-berty": "轉發到 Berty 聯繫人",
-			"forward": "轉發",
-			"image-saved": "圖片已保存到相冊"
-		},
-		"shared-medias": {
-			"title": "共享媒體",
-			"medias": "媒體",
-			"links": "鏈接",
-			"documents": "文件",
-			"file": "",
-			"picture": "",
-			"audio": ""
-		},
-		"reply": {
-			"response-to": "答覆：",
-			"replying-to": "你正在回復",
-			"replied-to": "回復至"
 		},
 		"user-message": {
 			"read-more": "",
@@ -509,17 +499,6 @@
 			"alert-push-perm-denied": "",
 			"alert-push-desc": "",
 			"alert-push-button": ""
-		}
-	},
-	"audio": {
-		"record": {
-			"tooltip": {
-				"usage": "按住來錄音，釋放以發送",
-				"not-sent": "音頻消息未發送",
-				"permission-denied": "應用程序未被允許錄製聲音"
-			},
-			"slide-to-cancel": "<< 滑動以取消",
-			"cancel-button": "取消"
 		}
 	},
 	"permission": {
@@ -542,6 +521,10 @@
 		},
 		"gallery": {
 			"title": "",
+			"desc": ""
+		},
+		"contacts": {
+			"title": "聯繫人列表",
 			"desc": ""
 		},
 		"button-labels": {
@@ -644,5 +627,23 @@
 	},
 	"share": {
 		"sharing-id-message": ""
+	},
+	"directory": {
+		"phone": {
+			"register": "",
+			"associated": "",
+			"expired": "",
+			"proof-service-unavailable": "",
+			"register-service": "",
+			"unregister-service": ""
+		},
+		"email": {
+			"register": "",
+			"associated": "",
+			"expired": "",
+			"proof-service-unavailable": "",
+			"register-service": "",
+			"unregister-service": ""
+		}
 	}
 }

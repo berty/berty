@@ -117,12 +117,14 @@
 			},
 			"input-placeholder": "Ключова дума",
 			"no-contacts": "Все още нямате никакви контакти или чат",
+			"no-network": {
+				"title": "",
+				"description": "",
+				"cancel": "",
+				"activate": ""
+			},
 			"search": {
 				"no-results": "Не са намерени резултати"
-			},
-			"multi-account": {
-				"create-button": "",
-				"import-button": "Заредете съществуващ акаунт"
 			},
 			"create-group": {
 				"title": "Създай Група",
@@ -156,6 +158,8 @@
 			"appearance-button": "",
 			"accounts-button": "",
 			"network-button": "",
+			"linked-identities-button": "",
+			"directory-search-button": "",
 			"bug-button": "",
 			"about-button": "Относно Berty",
 			"version-button": "",
@@ -177,7 +181,6 @@
 			"accounts-button": "",
 			"create-button": "",
 			"import-button": "",
-			"link-button": "",
 			"delete-button": "",
 			"delete-title": ""
 		},
@@ -221,7 +224,9 @@
 		"delete-account": {
 			"title": "Изтрии акаунт!",
 			"first-desc": "Наистина ли искате да изтриете акаунта си?",
-			"desc": "Напиши delete за потвърждение",
+			"desc-please": "",
+			"desc-delete": "",
+			"desc-confirm": "",
 			"cancel-button": "Отказ",
 			"delete-button": ""
 		},
@@ -239,10 +244,20 @@
 			"header-left-button": "Информация за устройства",
 			"header-middle-button": "Генерирай фалшиви данни",
 			"header-right-button": "Рестартирай daemon-а",
+			"allow-unsecure-grpc": "",
 			"force-mock-button": "",
 			"simulate-button": "Симулирай грешка в потока",
 			"simulate-js-error-button": "",
 			"system-info-button": "Система информация",
+			"select-node": {
+				"title": "",
+				"node-type": "",
+				"address": "",
+				"account-port": "",
+				"messenger-port": "",
+				"dont-ask": "",
+				"button-continue": "Продължи"
+			},
 			"debug-button": "Debug",
 			"log-button": {
 				"name": "",
@@ -261,7 +276,6 @@
 				"alert-accept-button": "Да 👍",
 				"alert-cancel-button": "Не"
 			},
-			"native-bridge-button": "Тествай Native Bridge",
 			"dump-account-button": "Свали този акаунт",
 			"dump-contacts-button": "Свали контактите",
 			"dump-conversations-button": "Свали разговорите",
@@ -327,6 +341,12 @@
 			"invite": "",
 			"tap-to-scan": "",
 			"create-group": ""
+		},
+		"linked-identities": {
+			"title": ""
+		},
+		"directory-search": {
+			"title": ""
 		}
 	},
 	"tabs": {
@@ -411,7 +431,6 @@
 		},
 		"multi-member-settings": {
 			"title": "",
-			"media-button": "Медия, линкове & документи",
 			"members-button": {
 				"title": ""
 			},
@@ -457,7 +476,6 @@
 		},
 		"one-to-one-settings": {
 			"title": "",
-			"media-button": "Медия, линкове & документи",
 			"save-button": "Запази разговора на сървъра"
 		},
 		"replicate-group-settings": {
@@ -465,34 +483,6 @@
 			"no-registered-button": "Няма регистриран съвър за репликация",
 			"connect-button": "Свържи се с услуги на Berty",
 			"manage-add-button": "Управлявай и добави услуги"
-		},
-		"files": {
-			"gallery": "Галерия",
-			"no-images": "",
-			"camera": "Камера",
-			"files": "Файлове",
-			"microphone": "Микрофон",
-			"security-access": "Сигурен Достъп",
-			"security-access-desc": "Натисни тук за да отвориш настройките за да разрешид достъп до твойте",
-			"save-to-gallery": "Запази този файл в галерията",
-			"share": "Сподели",
-			"forward-berty": "Препрати до Berty контакт",
-			"forward": "Препрати",
-			"image-saved": "Изображението е запазено в галерията"
-		},
-		"shared-medias": {
-			"title": "",
-			"medias": "",
-			"links": "",
-			"documents": "",
-			"file": "",
-			"picture": "",
-			"audio": ""
-		},
-		"reply": {
-			"response-to": "",
-			"replying-to": "",
-			"replied-to": ""
 		},
 		"user-message": {
 			"read-more": "",
@@ -509,17 +499,6 @@
 			"alert-push-perm-denied": "",
 			"alert-push-desc": "",
 			"alert-push-button": "Продължи"
-		}
-	},
-	"audio": {
-		"record": {
-			"tooltip": {
-				"usage": "",
-				"not-sent": "",
-				"permission-denied": ""
-			},
-			"slide-to-cancel": "",
-			"cancel-button": "Отказ"
 		}
 	},
 	"permission": {
@@ -541,6 +520,10 @@
 			"desc": ""
 		},
 		"gallery": {
+			"title": "",
+			"desc": ""
+		},
+		"contacts": {
 			"title": "",
 			"desc": ""
 		},
@@ -644,5 +627,23 @@
 	},
 	"share": {
 		"sharing-id-message": ""
+	},
+	"directory": {
+		"phone": {
+			"register": "",
+			"associated": "",
+			"expired": "",
+			"proof-service-unavailable": "",
+			"register-service": "",
+			"unregister-service": ""
+		},
+		"email": {
+			"register": "",
+			"associated": "",
+			"expired": "",
+			"proof-service-unavailable": "",
+			"register-service": "",
+			"unregister-service": ""
+		}
 	}
 }

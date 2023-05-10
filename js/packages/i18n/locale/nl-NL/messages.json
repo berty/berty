@@ -9,32 +9,32 @@
 		},
 		"default-mode": {
 			"summary": {
-				"title": "",
-				"screenTitle": "",
-				"subtitle": "",
-				"first-point": "",
-				"second-point": "",
+				"title": "Standaard modus",
+				"screenTitle": "Maak een account",
+				"subtitle": "Snel aan de slag",
+				"first-point": "Begin met voorinstellingen die een privacy/comfortbalans bieden die bij de meest past. Berty nodes worden gebruikt om prestaties en asynchrone communicatie te verbeteren.",
+				"second-point": "Push-meldingen zijn standaard ingeschakeld en je kunt deze nog niet uitschakelen in iOS.",
 				"third-point": "",
 				"back-button": "Terug",
-				"accept-button": ""
+				"accept-button": "Laten we beginnen"
 			}
 		},
 		"custom-mode": {
 			"summary": {
-				"screenTitle": "",
-				"title": "",
-				"subtitle": "",
+				"screenTitle": "Account maken - Instellingen aanpassen",
+				"title": "Aangepaste Modus",
+				"subtitle": "Aangepaste Privacy/Comfort Balans",
 				"first-point": "",
 				"second-point": "",
-				"back-button": "",
-				"accept-button": ""
+				"back-button": "Terug",
+				"accept-button": "Doorgaan"
 			},
 			"settings": {
 				"off-grid": {
-					"title": "",
+					"title": "Off-Grid Communicatie",
 					"ble-button": "Bluetooth Low Energy",
-					"nearby-button": "",
-					"mc-button": "",
+					"nearby-button": "Android Nearby",
+					"mc-button": "Apple Multipeer Connectiviteit",
 					"mdns-button": ""
 				},
 				"routing": {
@@ -43,7 +43,7 @@
 					"rdvp-button": ""
 				},
 				"access": {
-					"title": "",
+					"title": "Netwerk toegankelijkheid",
 					"relay-button": "",
 					"bootstrap-button": ""
 				},
@@ -63,31 +63,31 @@
 						}
 					},
 					"errors": {
-						"alias-already-exists": "",
+						"alias-already-exists": "Alias bestaat al",
 						"multiaddr-alread-exists": "",
 						"multiaddr-bad-format": "",
 						"multiaddr-p2p": ""
 					},
 					"buttons": {
 						"add": "Toevoegen",
-						"edit": "",
-						"delete": ""
+						"edit": "Bewerken",
+						"delete": "Verwijderen"
 					},
 					"multiaddress": "",
-					"alias": ""
+					"alias": "Alias"
 				},
-				"all-button": "",
-				"accept-button": ""
+				"all-button": "Alle",
+				"accept-button": "Aan de slag"
 			}
 		},
 		"create-account": {
 			"title": "Maak jouw account",
-			"first-button": "",
-			"second-button": "",
+			"first-button": "Standaard modus",
+			"second-button": "Aangepaste modus",
 			"placeholder": "Kies uw bijnaam",
 			"good-to-know": {
 				"title": "Goed om te weten:",
-				"first-point": "Uw account is lokaal aangemaakt",
+				"first-point": "Uw account wordt lokaal aangemaakt",
 				"second-point": "Bijnaam is optioneel en kan later bewerkt worden"
 			}
 		},
@@ -98,7 +98,7 @@
 		"setup-finished": {
 			"title": "Setup voltooid!",
 			"desc": "Je kunt nu de app gebruiken, begin met het toevoegen van contacten om vrij en privé te communiceren",
-			"button": ""
+			"button": "Start met Berty"
 		},
 		"web-views": {
 			"title": "",
@@ -117,20 +117,22 @@
 			},
 			"input-placeholder": "Zoek op trefwoord",
 			"no-contacts": "Je hebt nog geen contacten of gesprekken",
+			"no-network": {
+				"title": "Geen Netwerk gevonden!",
+				"description": "",
+				"cancel": "NIET NU",
+				"activate": "ACTIVEREN"
+			},
 			"search": {
 				"no-results": "Geen resultaten gevonden"
-			},
-			"multi-account": {
-				"create-button": "Nieuw account aanmaken",
-				"import-button": "Importeer account"
 			},
 			"create-group": {
 				"title": "Nieuwe Groep",
 				"add-members": "Deelnemers toevoegen",
 				"group-info": "Groep info",
 				"search-placeholder": "Zoeken",
-				"continue": "",
-				"create-group": ""
+				"continue": "Doorgaan",
+				"create-group": "Nieuwe groep aanmaken"
 			},
 			"create-group-finalize": {
 				"placeholder": "Groepsnaam",
@@ -142,7 +144,7 @@
 				"fifth-bullet-point": "Je kunt een lid van deze groep niet verwijderen"
 			},
 			"conversations": {
-				"request-sent": "",
+				"request-sent": "Verzoek verzonden. In behandeling...",
 				"draft": "Concept: {{message}}"
 			}
 		},
@@ -151,11 +153,13 @@
 	"settings": {
 		"home": {
 			"title": "Instellingen",
-			"proximity-button": "",
+			"proximity-button": "Off-Grid Communicatie",
 			"notifications-button": "Notificaties",
 			"appearance-button": "",
 			"accounts-button": "Accounts",
-			"network-button": "",
+			"network-button": "Netwerk",
+			"linked-identities-button": "",
+			"directory-search-button": "",
 			"bug-button": "",
 			"about-button": "Over Berty",
 			"version-button": "",
@@ -177,7 +181,6 @@
 			"accounts-button": "Accounts",
 			"create-button": "",
 			"import-button": "",
-			"link-button": "",
 			"delete-button": "",
 			"delete-title": ""
 		},
@@ -198,7 +201,7 @@
 			"title": "",
 			"ble-button": "Bluetooth Low Energy",
 			"mc-button": "",
-			"nearby-button": "",
+			"nearby-button": "Android Nearby",
 			"mdns-button": "Multicast DNS",
 			"memo-cell-button": "",
 			"medias-cell-button": "",
@@ -221,7 +224,9 @@
 		"delete-account": {
 			"title": "Account verwijderen!",
 			"first-desc": "Weet je zeker dat je je account wilt verwijderen?",
-			"desc": "Typ verwijder om te bevestigen",
+			"desc-please": "",
+			"desc-delete": "",
+			"desc-confirm": "",
 			"cancel-button": "Annuleren",
 			"delete-button": ""
 		},
@@ -239,10 +244,20 @@
 			"header-left-button": "Apparaat informatie",
 			"header-middle-button": "Nep gegevens genereren",
 			"header-right-button": "Daemon herstarten",
+			"allow-unsecure-grpc": "",
 			"force-mock-button": "",
 			"simulate-button": "Simuleer stream fout",
 			"simulate-js-error-button": "Simuleer JavaScript-fout",
 			"system-info-button": "Systeem informatie",
+			"select-node": {
+				"title": "",
+				"node-type": "",
+				"address": "",
+				"account-port": "",
+				"messenger-port": "",
+				"dont-ask": "",
+				"button-continue": ""
+			},
 			"debug-button": "Debug",
 			"log-button": {
 				"name": "Log formaat",
@@ -261,7 +276,6 @@
 				"alert-accept-button": "Yep 👍",
 				"alert-cancel-button": "Nope"
 			},
-			"native-bridge-button": "Native Bridge testen",
 			"dump-account-button": "Dump account",
 			"dump-contacts-button": "Dump contacten",
 			"dump-conversations-button": "Dump gesprekken",
@@ -327,6 +341,12 @@
 			"invite": "",
 			"tap-to-scan": "",
 			"create-group": ""
+		},
+		"linked-identities": {
+			"title": ""
+		},
+		"directory-search": {
+			"title": ""
 		}
 	},
 	"tabs": {
@@ -411,7 +431,6 @@
 		},
 		"multi-member-settings": {
 			"title": "",
-			"media-button": "Media, links & documenten",
 			"members-button": {
 				"title": ""
 			},
@@ -457,7 +476,6 @@
 		},
 		"one-to-one-settings": {
 			"title": "",
-			"media-button": "Media, links & documenten",
 			"save-button": "Gesprek opslaan op server"
 		},
 		"replicate-group-settings": {
@@ -465,34 +483,6 @@
 			"no-registered-button": "Geen replicatie service geregistreerd",
 			"connect-button": "Gebruik diensten van Berty",
 			"manage-add-button": "Beheer of voeg diensten toe"
-		},
-		"files": {
-			"gallery": "Galerij",
-			"no-images": "",
-			"camera": "Camera",
-			"files": "Bestanden",
-			"microphone": "Microfoon",
-			"security-access": "Toegang tot beveiliging",
-			"security-access-desc": "Tik hier om instellingen te openen om toegang tot uw",
-			"save-to-gallery": "Dit bestand opslaan in de Galerij",
-			"share": "Deel",
-			"forward-berty": "Doorsturen naar Berty contact",
-			"forward": "Doorsturen",
-			"image-saved": "Afbeelding opgeslagen in Galerij"
-		},
-		"shared-medias": {
-			"title": "Gedeelde media",
-			"medias": "Media",
-			"links": "Koppelingen",
-			"documents": "Documenten",
-			"file": "",
-			"picture": "",
-			"audio": ""
-		},
-		"reply": {
-			"response-to": "Reactie op",
-			"replying-to": "Je reageert op",
-			"replied-to": "Gereageerd op"
 		},
 		"user-message": {
 			"read-more": "",
@@ -509,17 +499,6 @@
 			"alert-push-perm-denied": "",
 			"alert-push-desc": "",
 			"alert-push-button": ""
-		}
-	},
-	"audio": {
-		"record": {
-			"tooltip": {
-				"usage": "Vasthouden om op te nemen, loslaten om te verzenden",
-				"not-sent": "Audiobericht is niet verzonden",
-				"permission-denied": "App mag geen geluid opnemen"
-			},
-			"slide-to-cancel": "<< Veeg om te annuleren",
-			"cancel-button": "Annuleren"
 		}
 	},
 	"permission": {
@@ -542,6 +521,10 @@
 		},
 		"gallery": {
 			"title": "",
+			"desc": ""
+		},
+		"contacts": {
+			"title": "Contacten",
 			"desc": ""
 		},
 		"button-labels": {
@@ -644,5 +627,23 @@
 	},
 	"share": {
 		"sharing-id-message": ""
+	},
+	"directory": {
+		"phone": {
+			"register": "",
+			"associated": "",
+			"expired": "",
+			"proof-service-unavailable": "",
+			"register-service": "",
+			"unregister-service": ""
+		},
+		"email": {
+			"register": "",
+			"associated": "",
+			"expired": "",
+			"proof-service-unavailable": "",
+			"register-service": "",
+			"unregister-service": ""
+		}
 	}
 }

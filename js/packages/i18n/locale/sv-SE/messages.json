@@ -117,12 +117,14 @@
 			},
 			"input-placeholder": "Sökord",
 			"no-contacts": "Du har inga kontakter eller chatter ännu",
+			"no-network": {
+				"title": "",
+				"description": "",
+				"cancel": "",
+				"activate": ""
+			},
 			"search": {
 				"no-results": "Inga resultat hittades"
-			},
-			"multi-account": {
-				"create-button": "Skapa nytt konto",
-				"import-button": "Importera konto"
 			},
 			"create-group": {
 				"title": "Ny grupp",
@@ -156,6 +158,8 @@
 			"appearance-button": "",
 			"accounts-button": "Konton",
 			"network-button": "Nätverk",
+			"linked-identities-button": "",
+			"directory-search-button": "",
 			"bug-button": "Rapportera en bugg",
 			"about-button": "Om Berty",
 			"version-button": "",
@@ -177,7 +181,6 @@
 			"accounts-button": "Konton",
 			"create-button": "",
 			"import-button": "",
-			"link-button": "",
 			"delete-button": "",
 			"delete-title": ""
 		},
@@ -221,7 +224,9 @@
 		"delete-account": {
 			"title": "Radera konto!",
 			"first-desc": "Är du säker på att du vill radera ditt konto?",
-			"desc": "Vänligen skriv \"delete\" för att bekräfta",
+			"desc-please": "",
+			"desc-delete": "",
+			"desc-confirm": "",
 			"cancel-button": "Avbryt",
 			"delete-button": ""
 		},
@@ -239,10 +244,20 @@
 			"header-left-button": "Enhetsinformation",
 			"header-middle-button": "Generera låtsatsdata",
 			"header-right-button": "Starta om bakgrundstjänst",
+			"allow-unsecure-grpc": "",
 			"force-mock-button": "",
 			"simulate-button": "Simulera streaming fel",
 			"simulate-js-error-button": "Simulera JavaScript-fel",
 			"system-info-button": "Systeminformation",
+			"select-node": {
+				"title": "",
+				"node-type": "",
+				"address": "",
+				"account-port": "",
+				"messenger-port": "",
+				"dont-ask": "",
+				"button-continue": ""
+			},
 			"debug-button": "Debug",
 			"log-button": {
 				"name": "Loggformat",
@@ -261,7 +276,6 @@
 				"alert-accept-button": "Javisst 👍",
 				"alert-cancel-button": "Nej"
 			},
-			"native-bridge-button": "Testa Native Bridge",
 			"dump-account-button": "Dumpa konto",
 			"dump-contacts-button": "Dumpa kontakter",
 			"dump-conversations-button": "Dumpa konversationer",
@@ -327,6 +341,12 @@
 			"invite": "",
 			"tap-to-scan": "",
 			"create-group": "Skapa grupp"
+		},
+		"linked-identities": {
+			"title": ""
+		},
+		"directory-search": {
+			"title": ""
 		}
 	},
 	"tabs": {
@@ -411,7 +431,6 @@
 		},
 		"multi-member-settings": {
 			"title": "",
-			"media-button": "Medier, länkar & dokument",
 			"members-button": {
 				"title": ""
 			},
@@ -457,7 +476,6 @@
 		},
 		"one-to-one-settings": {
 			"title": "",
-			"media-button": "Medier, länkar & dokument",
 			"save-button": "Spara konversation på servern"
 		},
 		"replicate-group-settings": {
@@ -465,34 +483,6 @@
 			"no-registered-button": "Ingen replikeringstjänst registrerad",
 			"connect-button": "Anslut till Berty-drivna tjänster",
 			"manage-add-button": "Hantera eller lägga till tjänster"
-		},
-		"files": {
-			"gallery": "Galleri",
-			"no-images": "Inga bilder",
-			"camera": "Kamera",
-			"files": "Filer",
-			"microphone": "Mikrofon",
-			"security-access": "Säkerhetsåtkomst",
-			"security-access-desc": "Tryck här för att öppna inställningen för att tillåta åtkomst till din",
-			"save-to-gallery": "Spara filen i galleriet",
-			"share": "Dela",
-			"forward-berty": "Vidarebefordra till Berty kontakt",
-			"forward": "Vidarebefordra",
-			"image-saved": "Bild sparad i galleriet"
-		},
-		"shared-medias": {
-			"title": "Delad media",
-			"medias": "Media",
-			"links": "Länkar",
-			"documents": "Dokument",
-			"file": "",
-			"picture": "",
-			"audio": ""
-		},
-		"reply": {
-			"response-to": "Svar till",
-			"replying-to": "Du svarar till",
-			"replied-to": "Svarat till"
 		},
 		"user-message": {
 			"read-more": "Läs mer",
@@ -509,17 +499,6 @@
 			"alert-push-perm-denied": "",
 			"alert-push-desc": "",
 			"alert-push-button": ""
-		}
-	},
-	"audio": {
-		"record": {
-			"tooltip": {
-				"usage": "Håll in för att spela in, släpp för att skicka",
-				"not-sent": "Ljudmeddelandet har inte skickats",
-				"permission-denied": "Appen saknar behörighet att spela in ljud"
-			},
-			"slide-to-cancel": "<< Svep för att avbryta",
-			"cancel-button": "Avbryt"
 		}
 	},
 	"permission": {
@@ -542,6 +521,10 @@
 		},
 		"gallery": {
 			"title": "",
+			"desc": ""
+		},
+		"contacts": {
+			"title": "Kontakter",
 			"desc": ""
 		},
 		"button-labels": {
@@ -644,5 +627,23 @@
 	},
 	"share": {
 		"sharing-id-message": ""
+	},
+	"directory": {
+		"phone": {
+			"register": "",
+			"associated": "",
+			"expired": "",
+			"proof-service-unavailable": "",
+			"register-service": "",
+			"unregister-service": ""
+		},
+		"email": {
+			"register": "",
+			"associated": "",
+			"expired": "",
+			"proof-service-unavailable": "",
+			"register-service": "",
+			"unregister-service": ""
+		}
 	}
 }

@@ -10,12 +10,12 @@
 		"default-mode": {
 			"summary": {
 				"title": "",
-				"screenTitle": "",
+				"screenTitle": "Criar uma nova conta",
 				"subtitle": "",
 				"first-point": "",
 				"second-point": "",
 				"third-point": "",
-				"back-button": "",
+				"back-button": "Voltar",
 				"accept-button": ""
 			}
 		},
@@ -117,12 +117,14 @@
 			},
 			"input-placeholder": "Pesquisar palavra-chave",
 			"no-contacts": "Ainda não tem nenhum contacto ou chat",
+			"no-network": {
+				"title": "",
+				"description": "",
+				"cancel": "",
+				"activate": ""
+			},
 			"search": {
 				"no-results": "Não foram encontrados resultados"
-			},
-			"multi-account": {
-				"create-button": "",
-				"import-button": ""
 			},
 			"create-group": {
 				"title": "Novo Grupo",
@@ -156,6 +158,8 @@
 			"appearance-button": "",
 			"accounts-button": "",
 			"network-button": "",
+			"linked-identities-button": "",
+			"directory-search-button": "",
 			"bug-button": "",
 			"about-button": "",
 			"version-button": "",
@@ -177,7 +181,6 @@
 			"accounts-button": "",
 			"create-button": "",
 			"import-button": "",
-			"link-button": "",
 			"delete-button": "",
 			"delete-title": ""
 		},
@@ -221,7 +224,9 @@
 		"delete-account": {
 			"title": "",
 			"first-desc": "",
-			"desc": "",
+			"desc-please": "",
+			"desc-delete": "",
+			"desc-confirm": "",
 			"cancel-button": "Cancelar",
 			"delete-button": ""
 		},
@@ -239,10 +244,20 @@
 			"header-left-button": "",
 			"header-middle-button": "",
 			"header-right-button": "",
+			"allow-unsecure-grpc": "",
 			"force-mock-button": "",
 			"simulate-button": "",
 			"simulate-js-error-button": "",
 			"system-info-button": "",
+			"select-node": {
+				"title": "",
+				"node-type": "",
+				"address": "",
+				"account-port": "",
+				"messenger-port": "",
+				"dont-ask": "",
+				"button-continue": ""
+			},
 			"debug-button": "",
 			"log-button": {
 				"name": "",
@@ -261,7 +276,6 @@
 				"alert-accept-button": "",
 				"alert-cancel-button": ""
 			},
-			"native-bridge-button": "",
 			"dump-account-button": "",
 			"dump-contacts-button": "",
 			"dump-conversations-button": "",
@@ -327,6 +341,12 @@
 			"invite": "",
 			"tap-to-scan": "",
 			"create-group": ""
+		},
+		"linked-identities": {
+			"title": ""
+		},
+		"directory-search": {
+			"title": ""
 		}
 	},
 	"tabs": {
@@ -411,7 +431,6 @@
 		},
 		"multi-member-settings": {
 			"title": "",
-			"media-button": "",
 			"members-button": {
 				"title": ""
 			},
@@ -457,7 +476,6 @@
 		},
 		"one-to-one-settings": {
 			"title": "",
-			"media-button": "",
 			"save-button": ""
 		},
 		"replicate-group-settings": {
@@ -465,34 +483,6 @@
 			"no-registered-button": "",
 			"connect-button": "",
 			"manage-add-button": ""
-		},
-		"files": {
-			"gallery": "",
-			"no-images": "",
-			"camera": "",
-			"files": "",
-			"microphone": "",
-			"security-access": "",
-			"security-access-desc": "",
-			"save-to-gallery": "",
-			"share": "",
-			"forward-berty": "",
-			"forward": "",
-			"image-saved": ""
-		},
-		"shared-medias": {
-			"title": "",
-			"medias": "",
-			"links": "",
-			"documents": "",
-			"file": "",
-			"picture": "",
-			"audio": ""
-		},
-		"reply": {
-			"response-to": "",
-			"replying-to": "",
-			"replied-to": ""
 		},
 		"user-message": {
 			"read-more": "",
@@ -509,17 +499,6 @@
 			"alert-push-perm-denied": "",
 			"alert-push-desc": "",
 			"alert-push-button": ""
-		}
-	},
-	"audio": {
-		"record": {
-			"tooltip": {
-				"usage": "",
-				"not-sent": "",
-				"permission-denied": ""
-			},
-			"slide-to-cancel": "",
-			"cancel-button": "Cancelar"
 		}
 	},
 	"permission": {
@@ -541,6 +520,10 @@
 			"desc": ""
 		},
 		"gallery": {
+			"title": "",
+			"desc": ""
+		},
+		"contacts": {
 			"title": "",
 			"desc": ""
 		},
@@ -644,5 +627,23 @@
 	},
 	"share": {
 		"sharing-id-message": ""
+	},
+	"directory": {
+		"phone": {
+			"register": "",
+			"associated": "",
+			"expired": "",
+			"proof-service-unavailable": "",
+			"register-service": "",
+			"unregister-service": ""
+		},
+		"email": {
+			"register": "",
+			"associated": "",
+			"expired": "",
+			"proof-service-unavailable": "",
+			"register-service": "",
+			"unregister-service": ""
+		}
 	}
 }

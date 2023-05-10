@@ -1,94 +1,94 @@
 {
 	"onboarding": {
 		"getstarted": {
-			"screenTitle": "",
-			"title": "",
+			"screenTitle": "Protege tu privacidad",
+			"title": "Protege tu privacidad",
 			"desc": "mensajería peer-to-peer gratuita y segura",
-			"create-button": "",
-			"import-button": ""
+			"create-button": "Crear una nueva cuenta",
+			"import-button": "Importar cuenta"
 		},
 		"default-mode": {
 			"summary": {
-				"title": "",
-				"screenTitle": "",
-				"subtitle": "",
+				"title": "Modo predeterminado",
+				"screenTitle": "Crear cuenta",
+				"subtitle": "Empieza rápidamente",
 				"first-point": "",
-				"second-point": "",
+				"second-point": "Las notificaciones están activadas por defecto y no puedes desactivarlas en iOS.",
 				"third-point": "",
-				"back-button": "",
-				"accept-button": ""
+				"back-button": "Atrás",
+				"accept-button": "Comenzar"
 			}
 		},
 		"custom-mode": {
 			"summary": {
-				"screenTitle": "",
-				"title": "",
+				"screenTitle": "Crear cuenta - Personalizar configuración",
+				"title": "Modo personalizado",
 				"subtitle": "",
-				"first-point": "",
+				"first-point": "En este modo, ajuste todas las opciones individualmente para crear el equilibrio entre privacidad y comodidad deseado.",
 				"second-point": "",
-				"back-button": "",
-				"accept-button": ""
+				"back-button": "Atrás",
+				"accept-button": "Continuar"
 			},
 			"settings": {
 				"off-grid": {
-					"title": "",
+					"title": "Comunicación sin conexión",
 					"ble-button": "Bluetooth Low Energy",
-					"nearby-button": "",
-					"mc-button": "",
+					"nearby-button": "Android Cercano",
+					"mc-button": "Conectividad Multipeer de Apple",
 					"mdns-button": ""
 				},
 				"routing": {
-					"title": "",
+					"title": "Enrutamiento",
 					"dht-button": "Tabla Hash distribuida",
 					"rdvp-button": ""
 				},
 				"access": {
-					"title": "",
+					"title": "Accesibilidad de red",
 					"relay-button": "",
 					"bootstrap-button": ""
 				},
 				"modals": {
 					"add": {
 						"title": {
-							"relay": "",
+							"relay": "Añadir un nodo relé (TURN)",
 							"bootstrap": "",
 							"rdvp": ""
 						}
 					},
 					"edit": {
 						"title": {
-							"relay": "",
+							"relay": "Editar un nodo relé (TURN)",
 							"bootstrap": "",
 							"rdvp": ""
 						}
 					},
 					"errors": {
-						"alias-already-exists": "",
+						"alias-already-exists": "El alias ya existe",
 						"multiaddr-alread-exists": "",
-						"multiaddr-bad-format": "",
+						"multiaddr-bad-format": "Formato incorrecto de multi-dirección",
 						"multiaddr-p2p": ""
 					},
 					"buttons": {
 						"add": "Agregar",
-						"edit": "",
-						"delete": ""
+						"edit": "Editar",
+						"delete": "Suprimir"
 					},
 					"multiaddress": "",
-					"alias": ""
+					"alias": "Alias"
 				},
 				"all-button": "",
-				"accept-button": ""
+				"accept-button": "Comenzar"
 			}
 		},
 		"create-account": {
 			"title": "Crear una nueva cuenta",
-			"first-button": "",
-			"second-button": "",
+			"first-button": "Modo predeterminado",
+			"second-button": "Modo personalizado",
 			"placeholder": "Elige tu apodo",
 			"good-to-know": {
 				"title": "Buen saber:",
 				"first-point": "Su cuenta fue creada localmente",
-				"second-point": ""
+				"second-point": "El apodo es opcional y puede ser cambiado más tarde"
 			}
 		},
 		"generate-key": {
@@ -98,11 +98,11 @@
 		"setup-finished": {
 			"title": "¡Configuración finalizada!",
 			"desc": "Ahora puedes usar la aplicación, empieza a añadir contactos y habla libre y en privado con ellos",
-			"button": ""
+			"button": "Empezar a utilizar Berty"
 		},
 		"web-views": {
 			"title": "",
-			"desc": "",
+			"desc": "Berty está a punto de cargar el contenido de la web. ¿Quieres abrir esta página?",
 			"first-button": "Cancelar",
 			"second-button": "Sí"
 		}
@@ -117,12 +117,14 @@
 			},
 			"input-placeholder": "Buscar palabra clave",
 			"no-contacts": "Aún no tienes ningún contacto o chat",
+			"no-network": {
+				"title": "",
+				"description": "",
+				"cancel": "",
+				"activate": ""
+			},
 			"search": {
 				"no-results": "No se encontraron resultados"
-			},
-			"multi-account": {
-				"create-button": "Crear una nueva cuenta",
-				"import-button": "Importar cuenta"
 			},
 			"create-group": {
 				"title": "Grupo nuevo",
@@ -156,6 +158,8 @@
 			"appearance-button": "",
 			"accounts-button": "Cuentas",
 			"network-button": "",
+			"linked-identities-button": "",
+			"directory-search-button": "",
 			"bug-button": "",
 			"about-button": "Acerca de Berty",
 			"version-button": "",
@@ -177,7 +181,6 @@
 			"accounts-button": "Cuentas",
 			"create-button": "",
 			"import-button": "",
-			"link-button": "",
 			"delete-button": "",
 			"delete-title": ""
 		},
@@ -221,9 +224,11 @@
 		"delete-account": {
 			"title": "¡Eliminar cuenta!",
 			"first-desc": "¿Está seguro que desea eliminar su cuenta?",
-			"desc": "Por favor, escriba borrar para confirmar",
+			"desc-please": "",
+			"desc-delete": "",
+			"desc-confirm": "",
 			"cancel-button": "Cancelar",
-			"delete-button": ""
+			"delete-button": "Suprimir"
 		},
 		"faq": {
 			"title": "PREGUNTAS FRECUENTES"
@@ -239,10 +244,20 @@
 			"header-left-button": "Información del dispositivo",
 			"header-middle-button": "Generar datos falsos",
 			"header-right-button": "Reiniciar el servicio",
+			"allow-unsecure-grpc": "",
 			"force-mock-button": "",
 			"simulate-button": "Simular error de flujo",
 			"simulate-js-error-button": "Simular error de JavaScript",
 			"system-info-button": "Información del sistema",
+			"select-node": {
+				"title": "",
+				"node-type": "",
+				"address": "",
+				"account-port": "",
+				"messenger-port": "",
+				"dont-ask": "",
+				"button-continue": ""
+			},
 			"debug-button": "Depurar",
 			"log-button": {
 				"name": "Formato de registro",
@@ -261,7 +276,6 @@
 				"alert-accept-button": "Sí 👍",
 				"alert-cancel-button": "Nop"
 			},
-			"native-bridge-button": "Pruebar el puente nativo",
 			"dump-account-button": "Remover cuenta",
 			"dump-contacts-button": "Remover contactos",
 			"dump-conversations-button": "Remover conversaciones",
@@ -301,7 +315,7 @@
 			"add": "Agregar {{name}}",
 			"tag-bot": "Bot",
 			"tag-contact": "Contacto",
-			"tag-conversation": ""
+			"tag-conversation": "Conversación"
 		},
 		"ipfs-webui": {
 			"title": "IPFS WebUI"
@@ -312,9 +326,9 @@
 			"export": "Exportar el tema seleccionado como un archivo",
 			"share": "Compartir el tema seleccionado como archivo",
 			"import": "Importar un archivo de tema",
-			"delete": "",
-			"bad-format-title": "",
-			"bad-format-desc": "",
+			"delete": "Borrar todos los temas no predeterminados",
+			"bad-format-title": "Formato de tema incorrecto",
+			"bad-format-desc": "Formato incorrecto del archivo de tema",
 			"notification-file-saved": {
 				"title": "¡Dato guardado!",
 				"desc": "Disponible en el directorio de descargas"
@@ -324,9 +338,15 @@
 			"title": "Mi ID de Berty"
 		},
 		"share": {
-			"invite": "",
-			"tap-to-scan": "",
+			"invite": "Invitar",
+			"tap-to-scan": "Pulsa para escanear",
 			"create-group": "Crear grupo"
+		},
+		"linked-identities": {
+			"title": ""
+		},
+		"directory-search": {
+			"title": ""
 		}
 	},
 	"tabs": {
@@ -344,11 +364,11 @@
 			"contact-already-added-message": "No puedes añadir el mismo contacto varias veces"
 		},
 		"invalid-scan": {
-			"dismiss-button": ""
+			"dismiss-button": "Descartar"
 		},
 		"group-invitation": {
-			"join": "",
-			"password-label": "",
+			"join": "Unirse a este grupo",
+			"password-label": "Introduzca la contraseña del grupo",
 			"password-placeholder": "Contraseña..."
 		},
 		"save-theme": {
@@ -360,23 +380,23 @@
 		}
 	},
 	"chat": {
-		"title-unknown": "",
+		"title-unknown": "Conversación desconocida",
 		"sending": "Enviando...",
 		"sent": "Enviado",
 		"contact-settings": {
-			"my-devices": ""
+			"my-devices": "Mis dispositivos"
 		},
 		"multi-member": {
 			"input-placeholder": "Escribe aquí..."
 		},
 		"push-notifications": {
 			"title": "Notificaciones",
-			"unsupported": "",
-			"check-device-settings": "",
-			"check-account-settings": "",
+			"unsupported": "Notificaciones no soportadas",
+			"check-device-settings": "Esta conversación está configurada para recibir notificaciones push, pero las alertas han sido desactivadas en la configuración del sistema de tu dispositivo",
+			"check-account-settings": "Las notificaciones están deshabilitadas, comprueba la configuración de tu cuenta",
 			"warning-disable": {
-				"title": "",
-				"subtitle": "",
+				"title": "¿Quieres activar esta función?",
+				"subtitle": "Una vez activado, las notificaciones no se pueden desactivarse para una conversación específica.",
 				"accept": "Activar",
 				"refuse": "Omitir"
 			},
@@ -389,7 +409,7 @@
 			"warning-enable-all": {
 				"title": "",
 				"subtitle": "",
-				"refuse": "",
+				"refuse": "Denegar",
 				"accept": "Aceptar"
 			},
 			"warning-disable-mute": {
@@ -411,7 +431,6 @@
 		},
 		"multi-member-settings": {
 			"title": "",
-			"media-button": "Medios, enlaces y documentos",
 			"members-button": {
 				"title": ""
 			},
@@ -457,7 +476,6 @@
 		},
 		"one-to-one-settings": {
 			"title": "",
-			"media-button": "Medios, enlaces y documentos",
 			"save-button": "Guardar la conversación en el servidor"
 		},
 		"replicate-group-settings": {
@@ -465,34 +483,6 @@
 			"no-registered-button": "Ningún servicio de replicación registrado",
 			"connect-button": "Conectarse a servicios operados por Berty",
 			"manage-add-button": "Administrar o añadir servicios"
-		},
-		"files": {
-			"gallery": "Galería",
-			"no-images": "Sin imágenes",
-			"camera": "Cámara",
-			"files": "Archivos",
-			"microphone": "Micrófono",
-			"security-access": "Acceso de seguridad",
-			"security-access-desc": "Toque aquí para abrir la configuración para permitir el acceso a su",
-			"save-to-gallery": "Guardar este archivo en la galería",
-			"share": "Compartir",
-			"forward-berty": "Reenviar a Contacto de Berty",
-			"forward": "Reenviar",
-			"image-saved": "Imagen guardada en la galería"
-		},
-		"shared-medias": {
-			"title": "Multimedia compartida",
-			"medias": "Multimedia",
-			"links": "Enlaces",
-			"documents": "Documentos",
-			"file": "",
-			"picture": "",
-			"audio": ""
-		},
-		"reply": {
-			"response-to": "Responder a",
-			"replying-to": "Estás respondiendo a",
-			"replied-to": "Respondido a"
 		},
 		"user-message": {
 			"read-more": "Aprender más",
@@ -509,17 +499,6 @@
 			"alert-push-perm-denied": "",
 			"alert-push-desc": "",
 			"alert-push-button": ""
-		}
-	},
-	"audio": {
-		"record": {
-			"tooltip": {
-				"usage": "Mantén presionado para grabar, suelta para enviar",
-				"not-sent": "El mensaje de audio no ha sido enviado",
-				"permission-denied": "La aplicación no tiene permitido grabar sonido"
-			},
-			"slide-to-cancel": "<< Desliza para cancelar",
-			"cancel-button": "Cancelar"
 		}
 	},
 	"permission": {
@@ -542,6 +521,10 @@
 		},
 		"gallery": {
 			"title": "",
+			"desc": ""
+		},
+		"contacts": {
+			"title": "Contactos",
 			"desc": ""
 		},
 		"button-labels": {
@@ -644,5 +627,23 @@
 	},
 	"share": {
 		"sharing-id-message": ""
+	},
+	"directory": {
+		"phone": {
+			"register": "",
+			"associated": "",
+			"expired": "",
+			"proof-service-unavailable": "",
+			"register-service": "",
+			"unregister-service": ""
+		},
+		"email": {
+			"register": "",
+			"associated": "",
+			"expired": "",
+			"proof-service-unavailable": "",
+			"register-service": "",
+			"unregister-service": ""
+		}
 	}
 }

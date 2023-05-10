@@ -1,8 +1,8 @@
 {
 	"onboarding": {
 		"getstarted": {
-			"screenTitle": "",
-			"title": "",
+			"screenTitle": "Gizliliğinizi koruyun",
+			"title": "Gizliliğinizi koruyun",
 			"desc": "ücretsiz & güvenli eşler arası mesajlaşma",
 			"create-button": "Yeni bir hesap oluştur",
 			"import-button": "Hesabı içeri aktar"
@@ -10,10 +10,10 @@
 		"default-mode": {
 			"summary": {
 				"title": "Varsayılan Mod",
-				"screenTitle": "",
+				"screenTitle": "Hesap oluştur",
 				"subtitle": "Hızlıca Başla",
 				"first-point": "Senin için en uygun olan gizlilik/konfor dengesiyle başla. Berty düğümleri performans arttırmak ve asenkron iletişim sağlamak için kullanılır.",
-				"second-point": "",
+				"second-point": "Push mesajları açıktır ve bunu İOS üzerinden kapatamazsınız.",
 				"third-point": "Özelleştirilmiş gizlilik/konfor dengesi için, özelleştirme modunu seç.",
 				"back-button": "Geri",
 				"accept-button": "Başlayalım"
@@ -21,7 +21,7 @@
 		},
 		"custom-mode": {
 			"summary": {
-				"screenTitle": "",
+				"screenTitle": "Hesap oluştur - Ayarları özelleştir",
 				"title": "Özelleştirilmiş Mod",
 				"subtitle": "Özelleştirilmiş Gizlilik/Konfor Dengesi",
 				"first-point": "Bu modda tüm ayarları gizlilik ve konfor dengesi sana uygun hale gelene kadar değiştir.",
@@ -40,17 +40,17 @@
 				"routing": {
 					"title": "Yönlendirme",
 					"dht-button": "Dağıtık Hash Tablosu",
-					"rdvp-button": ""
+					"rdvp-button": "Randevu düğüm noktaları"
 				},
 				"access": {
 					"title": "Ağ Erişilebilirliği",
-					"relay-button": "",
-					"bootstrap-button": ""
+					"relay-button": "Relay nodları (TURN)",
+					"bootstrap-button": "Boostrap Düğümleri"
 				},
 				"modals": {
 					"add": {
 						"title": {
-							"relay": "",
+							"relay": "Relay düğüm noktassı ekle (TURN)",
 							"bootstrap": "",
 							"rdvp": ""
 						}
@@ -117,12 +117,14 @@
 			},
 			"input-placeholder": "Arama yap",
 			"no-contacts": "Şimdilik herhangi bir kişi veya chat'in yok",
+			"no-network": {
+				"title": "",
+				"description": "",
+				"cancel": "",
+				"activate": ""
+			},
 			"search": {
 				"no-results": "Sonuç bulunamadı"
-			},
-			"multi-account": {
-				"create-button": "Yeni hesap oluştur",
-				"import-button": "Hesabı içeri aktar"
 			},
 			"create-group": {
 				"title": "Yeni Grup",
@@ -156,6 +158,8 @@
 			"appearance-button": "",
 			"accounts-button": "Hesaplar",
 			"network-button": "Ağ",
+			"linked-identities-button": "",
+			"directory-search-button": "",
 			"bug-button": "Hata bildir",
 			"about-button": "Berty Hakkında",
 			"version-button": "",
@@ -177,7 +181,6 @@
 			"accounts-button": "Hesaplar",
 			"create-button": "Yeni hesap oluştur",
 			"import-button": "Hesabı içeri aktar",
-			"link-button": "Farklı bir cihaz bağla",
 			"delete-button": "Bu hesabı sil",
 			"delete-title": ""
 		},
@@ -221,7 +224,9 @@
 		"delete-account": {
 			"title": "Hesabı sil!",
 			"first-desc": "Hesabınızı silmek istediğinizden emin misiniz?",
-			"desc": "Lütfen onaylamak için delete yazın",
+			"desc-please": "",
+			"desc-delete": "",
+			"desc-confirm": "",
 			"cancel-button": "İptal",
 			"delete-button": "Sil"
 		},
@@ -239,10 +244,20 @@
 			"header-left-button": "Aygıt bilgileri",
 			"header-middle-button": "Sahte bilgi oluştur",
 			"header-right-button": "Arka plan programını yeniden başlat",
+			"allow-unsecure-grpc": "",
 			"force-mock-button": "",
 			"simulate-button": "Akış hatasını taklit et",
 			"simulate-js-error-button": "Javascript hatasını taklit et",
 			"system-info-button": "Sistem bilgisi",
+			"select-node": {
+				"title": "",
+				"node-type": "",
+				"address": "",
+				"account-port": "",
+				"messenger-port": "",
+				"dont-ask": "",
+				"button-continue": ""
+			},
 			"debug-button": "Hata ayıklama",
 			"log-button": {
 				"name": "Günlük biçimi",
@@ -261,7 +276,6 @@
 				"alert-accept-button": "Evet 👍",
 				"alert-cancel-button": "Hayır"
 			},
-			"native-bridge-button": "Yerel Köprüyü Test Et",
 			"dump-account-button": "Hesabı dök",
 			"dump-contacts-button": "Kişileri dök",
 			"dump-conversations-button": "Konuşmaları dök",
@@ -327,6 +341,12 @@
 			"invite": "",
 			"tap-to-scan": "",
 			"create-group": "Grup yarat"
+		},
+		"linked-identities": {
+			"title": ""
+		},
+		"directory-search": {
+			"title": ""
 		}
 	},
 	"tabs": {
@@ -411,7 +431,6 @@
 		},
 		"multi-member-settings": {
 			"title": "",
-			"media-button": "Medyalar, linkler & dosyalar",
 			"members-button": {
 				"title": ""
 			},
@@ -457,7 +476,6 @@
 		},
 		"one-to-one-settings": {
 			"title": "",
-			"media-button": "Medyalar, linkler & dosyalar",
 			"save-button": "Konuşmayı sunucuya kaydet"
 		},
 		"replicate-group-settings": {
@@ -465,34 +483,6 @@
 			"no-registered-button": "Hiçbir çoğaltma servisi kaydedilmedi",
 			"connect-button": "Berty tarafından işletilen servislere bağlan",
 			"manage-add-button": "Servisleri ekle veya yönet"
-		},
-		"files": {
-			"gallery": "Galeri",
-			"no-images": "",
-			"camera": "Kamera",
-			"files": "Dosyalar",
-			"microphone": "Mikrofon",
-			"security-access": "Güvenlik Erişimi",
-			"security-access-desc": "Hesabınıza erişime izin vermek üzere ayarı açmak için dokunun",
-			"save-to-gallery": "Bu dosyayı galeriye kaydet",
-			"share": "Paylaş",
-			"forward-berty": "Berty kişisine ilet",
-			"forward": "İlet",
-			"image-saved": "Resim galeriye kaydedildi"
-		},
-		"shared-medias": {
-			"title": "Paylaşılan medyalar",
-			"medias": "Medya",
-			"links": "Bağlantılar",
-			"documents": "Belgeler",
-			"file": "",
-			"picture": "",
-			"audio": ""
-		},
-		"reply": {
-			"response-to": "Yanıtla",
-			"replying-to": "Yanıtlıyorsun",
-			"replied-to": "Yanıtlandı"
 		},
 		"user-message": {
 			"read-more": "Daha fazla",
@@ -509,17 +499,6 @@
 			"alert-push-perm-denied": "",
 			"alert-push-desc": "",
 			"alert-push-button": ""
-		}
-	},
-	"audio": {
-		"record": {
-			"tooltip": {
-				"usage": "Kaydetmek için basılı tut, göndermek için bırak",
-				"not-sent": "Sesli mesaj gönderilemedi",
-				"permission-denied": "Uygulamanın ses kaydetme yetkisi yok"
-			},
-			"slide-to-cancel": "<< İptal için kaydırın",
-			"cancel-button": "İptal"
 		}
 	},
 	"permission": {
@@ -542,6 +521,10 @@
 		},
 		"gallery": {
 			"title": "Fotoğrafla Mesajlaşma",
+			"desc": ""
+		},
+		"contacts": {
+			"title": "Kişiler",
 			"desc": ""
 		},
 		"button-labels": {
@@ -644,5 +627,23 @@
 	},
 	"share": {
 		"sharing-id-message": ""
+	},
+	"directory": {
+		"phone": {
+			"register": "",
+			"associated": "",
+			"expired": "",
+			"proof-service-unavailable": "",
+			"register-service": "",
+			"unregister-service": ""
+		},
+		"email": {
+			"register": "",
+			"associated": "",
+			"expired": "",
+			"proof-service-unavailable": "",
+			"register-service": "",
+			"unregister-service": ""
+		}
 	}
 }
