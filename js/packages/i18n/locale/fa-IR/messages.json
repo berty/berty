@@ -1,134 +1,136 @@
 {
 	"onboarding": {
 		"getstarted": {
-			"screenTitle": "",
-			"title": "",
-			"desc": "",
-			"create-button": "",
-			"import-button": ""
+			"screenTitle": "از حریم خصوصی خود محافظت کنید",
+			"title": "از حریم خصوصی خود محافظت کنید",
+			"desc": "پیام رسانی رایگان و ایمن همتا به همتا",
+			"create-button": "ساخت یک حساب کاربری",
+			"import-button": "بازنشانی یک حساب"
 		},
 		"default-mode": {
 			"summary": {
-				"title": "",
-				"screenTitle": "",
-				"subtitle": "",
-				"first-point": "",
-				"second-point": "",
-				"third-point": "",
-				"back-button": "",
-				"accept-button": ""
+				"title": "حالت پیشفرض",
+				"screenTitle": "ساخت حساب کاربری",
+				"subtitle": "آغاز سریع",
+				"first-point": "Save translation\nبا تنظیمات از پیش تعیین شده ای شروع کنید که تعادل حریم خصوصی/راحتی را ارائه می دهند که مناسب بیشتر افراد است. گره های Berty برای بهبود عملکرد و ارتباطات ناهمزمان استفاده می شوند.",
+				"second-point": "سیستم Push notification به‌طور پیش‌فرض فعال است و فعلن نمی‌توانید آن‌ها را در iOS غیرفعال کنید.",
+				"third-point": "برای سفارشی کردن تعادل حریم خصوصی/آسایش، حالت سفارشی را انتخاب کنید.",
+				"back-button": "قبل",
+				"accept-button": "بزن بریم"
 			}
 		},
 		"custom-mode": {
 			"summary": {
-				"screenTitle": "",
-				"title": "",
-				"subtitle": "",
-				"first-point": "",
-				"second-point": "",
-				"back-button": "",
-				"accept-button": ""
+				"screenTitle": "ایجاد حساب کاربری - تنظیمات سفارشی",
+				"title": "حالت سفارشی",
+				"subtitle": "تعادل سفارشی حریم خصوصی/راحتی",
+				"first-point": "در این حالت، تمام تنظیمات را به صورت جداگانه تنظیم کنید تا تعادلی بین حریم خصوصی و راحتی ایجاد شود که برای شما مناسب است.",
+				"second-point": "حالت پیشفرض را برای یک تجربه کولر روشن! انتخاب کنید.",
+				"back-button": "قبل",
+				"accept-button": "ادامه"
 			},
 			"settings": {
 				"off-grid": {
-					"title": "",
-					"ble-button": "",
-					"nearby-button": "",
-					"mc-button": "",
-					"mdns-button": ""
+					"title": "ارتباطات خارج از شبکه",
+					"ble-button": "بلوتوث کم مصرف",
+					"nearby-button": "اندروید در نزدیکی",
+					"mc-button": "قابلیت اتصال چندپایه اپل",
+					"mdns-button": "DNS چند پخشی (شبکه محلی)"
 				},
 				"routing": {
-					"title": "",
-					"dht-button": "",
-					"rdvp-button": ""
+					"title": "مسیریابی",
+					"dht-button": "جدول هش توزیع شده",
+					"rdvp-button": "گره های نقطه ی قرار ملاقات"
 				},
 				"access": {
-					"title": "",
-					"relay-button": "",
-					"bootstrap-button": ""
+					"title": "دسترسی به شبکه",
+					"relay-button": "گره رله (فعال)",
+					"bootstrap-button": "گره بوت استرپ"
 				},
 				"modals": {
 					"add": {
 						"title": {
-							"relay": "",
-							"bootstrap": "",
-							"rdvp": ""
+							"relay": "افزودن گره رله (فعال)",
+							"bootstrap": "افزودن گره بوت استرپ",
+							"rdvp": "افزودن گره RDVP"
 						}
 					},
 					"edit": {
 						"title": {
-							"relay": "",
-							"bootstrap": "",
-							"rdvp": ""
+							"relay": "ویرایش گره رله (فعال)",
+							"bootstrap": "ویرایش گره بوت استرپ",
+							"rdvp": "ویرایش گره RDVP"
 						}
 					},
 					"errors": {
-						"alias-already-exists": "",
-						"multiaddr-alread-exists": "",
-						"multiaddr-bad-format": "",
+						"alias-already-exists": "نام مستعار از قبل وجود دارد",
+						"multiaddr-alread-exists": "نشانی چندگانه از قبل وجود دارد",
+						"multiaddr-bad-format": "فرمت نامعتبر نشانی چندگانه",
 						"multiaddr-p2p": ""
 					},
 					"buttons": {
-						"add": "",
-						"edit": "",
-						"delete": ""
+						"add": "اضافه",
+						"edit": "ویرایش",
+						"delete": "حذف"
 					},
-					"multiaddress": "",
-					"alias": ""
+					"multiaddress": "چندنشانی",
+					"alias": "نام مستعار"
 				},
-				"all-button": "",
-				"accept-button": ""
+				"all-button": "همه",
+				"accept-button": "بزن بریم"
 			}
 		},
 		"create-account": {
-			"title": "",
-			"first-button": "",
-			"second-button": "",
-			"placeholder": "",
+			"title": "حساب کاربری خود را ایجاد کنید",
+			"first-button": "حالت پیشفرض",
+			"second-button": "حالت سفارشی",
+			"placeholder": "اسم خود را انتخاب کنید",
 			"good-to-know": {
-				"title": "",
-				"first-point": "",
-				"second-point": ""
+				"title": "نکات مفید:",
+				"first-point": "حساب کاربری شما در داخل دستگاه ایجاد میشود",
+				"second-point": "انتخاب اسم اختیاری بوده و بعدن قابل تغییر است"
 			}
 		},
 		"generate-key": {
-			"title": "",
+			"title": "شروع گره Berty…",
 			"desc": ""
 		},
 		"setup-finished": {
-			"title": "",
-			"desc": "",
-			"button": ""
+			"title": "راه اندازی پایان یافت!",
+			"desc": "اکنون می توانید از برنامه استفاده کنید، شروع به اضافه کردن مخاطبین کنید و آزادانه و خصوصی با آنها صحبت کنید",
+			"button": "شروع به استفاده از Berty کنید"
 		},
 		"web-views": {
-			"title": "",
-			"desc": "",
-			"first-button": "",
-			"second-button": ""
+			"title": "مجوز دسترسی به محتوای وب",
+			"desc": "Berty در شرف بارگیری محتوا از وب است. آیا می خواهید این صفحه را باز کنید؟",
+			"first-button": "لغو",
+			"second-button": "بله"
 		}
 	},
 	"main": {
 		"home": {
-			"title": "",
+			"title": "Berty",
 			"requests": {
-				"title": "",
-				"accept": "",
-				"card-title": ""
+				"title": "درخواستها",
+				"accept": "تایید",
+				"card-title": "درخواست تماس!"
 			},
-			"input-placeholder": "",
-			"no-contacts": "",
+			"input-placeholder": "کلید واژه جستجو",
+			"no-contacts": "شما هنوز هیچ مخاطب یا گپی ندارید",
+			"no-network": {
+				"title": "هیچ شبکه ای یافت نشد!",
+				"description": "شما آفلاین به نظر می رسید! قابلیت بلوتوث را برای چت با دوستان فعال کنید!",
+				"cancel": "الان نه",
+				"activate": "فعال سازی"
+			},
 			"search": {
-				"no-results": ""
-			},
-			"multi-account": {
-				"create-button": "",
-				"import-button": ""
+				"no-results": "هیچ نتیجه ای یافت نشد"
 			},
 			"create-group": {
-				"title": "",
-				"add-members": "",
-				"group-info": "",
-				"search-placeholder": "",
+				"title": "گروه جدید",
+				"add-members": "اضافه کردن اعضا",
+				"group-info": "مشخصات گروه",
+				"search-placeholder": "جستجو",
 				"continue": "",
 				"create-group": ""
 			},
@@ -150,60 +152,61 @@
 	},
 	"settings": {
 		"home": {
-			"title": "",
-			"proximity-button": "",
-			"notifications-button": "",
-			"appearance-button": "",
-			"accounts-button": "",
-			"network-button": "",
-			"bug-button": "",
-			"about-button": "",
-			"version-button": "",
-			"devtools-button": ""
+			"title": "تنظیمات",
+			"proximity-button": "ارتباطات خارج از شبکه",
+			"notifications-button": "اعلان ها",
+			"appearance-button": "ظاهر",
+			"accounts-button": "حسابها",
+			"network-button": "شبکه",
+			"linked-identities-button": "",
+			"directory-search-button": "",
+			"bug-button": "گزارش ایراد",
+			"about-button": "درباره Berty",
+			"version-button": "ویرایش: {{version}}",
+			"devtools-button": "Devtools"
 		},
 		"about": {
-			"title": "",
-			"faq-button": "",
-			"roadmap-button": "",
-			"policy-button": "",
-			"license-button": "",
-			"terms-of-use": ""
+			"title": "درباره Berty",
+			"faq-button": "پرسش های متداول",
+			"roadmap-button": "نقشه راه",
+			"policy-button": "سیاست حفظ حریم خصوصی",
+			"license-button": "مجوزهای متن باز",
+			"terms-of-use": "شرایط استفاده"
 		},
 		"accounts": {
-			"title": "",
-			"backup-button": "",
-			"backup-notif-title": "",
-			"backup-notif-desc": "",
-			"accounts-button": "",
-			"create-button": "",
-			"import-button": "",
-			"link-button": "",
-			"delete-button": "",
-			"delete-title": ""
+			"title": "حسابها",
+			"backup-button": "پشتیبان گیری",
+			"backup-notif-title": "موفقیت آمیز",
+			"backup-notif-desc": "از حساب شما پشتیبان گرفته شد!",
+			"accounts-button": "حسابها",
+			"create-button": "ایجاد یک جساب",
+			"import-button": "بازنشانی یک حساب",
+			"delete-button": "این حساب را حذف کن",
+			"delete-title": "حذف حساب"
 		},
 		"appearance": {
-			"title": "",
-			"dark-button": "",
-			"editor-button": "",
+			"title": "ظاهر",
+			"dark-button": "حالت تاریک",
+			"editor-button": "ویرایشگر تم",
 			"theme-editor": {
-				"title": ""
+				"title": "ویرایشگر تم"
 			}
 		},
 		"contact-convs": {
-			"title": "",
-			"reset-button": "",
-			"request-button": ""
+			"title": "تماس و مکالمات",
+			"reset-button": "لینک تماس/کد QR من را بازنشانی کنید",
+			"request-button": "دریافت درخواست های تماس را مجاز کنید"
 		},
 		"network": {
-			"title": "",
-			"ble-button": "",
-			"mc-button": "",
-			"nearby-button": "",
+			"title": "شبکه",
+			"ble-button": "بلوتوث کم مصرف",
+			"mc-button": "قابلیت اتصال چندپایه",
+			"nearby-button": "اندروید در نزدیکی",
 			"mdns-button": "",
-			"memo-cell-button": "",
-			"medias-cell-button": "",
-			"dht-button": "",
-			"rdvp-button": "",
+			"memo-cell-button": "بارگذاری پیامهای صوتی از اینترنت سیمکارت",
+			"medias-cell-button": "بارگذاری فایلهای چند رسانه ای از اینترنت سیمکارت",
+			"dht-button": "جدول هش توزیع شده",
+			"rdvp-button": "گره های نقطه ی قرار ملاقات",
 			"relay-button": "",
 			"bootstrap-button": ""
 		},
@@ -211,17 +214,19 @@
 			"title": ""
 		},
 		"edit-profile": {
-			"title": "",
-			"qr-will-update": "",
-			"ocr-wont-update": "",
-			"save": "",
-			"cancel": "",
+			"title": "ویرایش مشخصات خودم",
+			"qr-will-update": "شناسه Berty شما(کد QR) به روز می شود",
+			"ocr-wont-update": "درخواست‌های تماس شما که در وضعیت انتظارند به‌روزرسانی نخواهند شد",
+			"save": "ذخیره تغییرات",
+			"cancel": "لغو",
 			"name-input-placeholder": ""
 		},
 		"delete-account": {
 			"title": "",
 			"first-desc": "",
-			"desc": "",
+			"desc-please": "",
+			"desc-delete": "",
+			"desc-confirm": "",
 			"cancel-button": "",
 			"delete-button": ""
 		},
@@ -239,10 +244,20 @@
 			"header-left-button": "",
 			"header-middle-button": "",
 			"header-right-button": "",
+			"allow-unsecure-grpc": "",
 			"force-mock-button": "",
 			"simulate-button": "",
 			"simulate-js-error-button": "",
 			"system-info-button": "",
+			"select-node": {
+				"title": "",
+				"node-type": "",
+				"address": "",
+				"account-port": "",
+				"messenger-port": "",
+				"dont-ask": "",
+				"button-continue": ""
+			},
 			"debug-button": "",
 			"log-button": {
 				"name": "",
@@ -261,7 +276,6 @@
 				"alert-accept-button": "",
 				"alert-cancel-button": ""
 			},
-			"native-bridge-button": "",
 			"dump-account-button": "",
 			"dump-contacts-button": "",
 			"dump-conversations-button": "",
@@ -282,34 +296,34 @@
 				"name": "",
 				"bullet-point": ""
 			},
-			"footer-left-button": "",
-			"footer-middle-button": "",
-			"footer-right-button": ""
+			"footer-left-button": "اطلاعات دستگاه",
+			"footer-middle-button": "فهرست رویدادها",
+			"footer-right-button": "بازنشانی نرم افزار"
 		},
 		"system-info": {
-			"title": ""
+			"title": "مشخصات سیستم"
 		},
 		"fake-data": {
-			"title": "",
-			"contacts-button": "",
-			"multi-members-button": "",
-			"messages-button": "",
-			"delete-button": ""
+			"title": "تولید داده های جعلی",
+			"contacts-button": "تولید مخاطبین جعلی",
+			"multi-members-button": "تولید چند-کاربری جعلی",
+			"messages-button": "تولید پیام های جعلی",
+			"delete-button": "حذف داده های جعلی"
 		},
 		"add-dev-conversations": {
 			"title": "",
-			"add": "",
-			"tag-bot": "",
-			"tag-contact": "",
-			"tag-conversation": ""
+			"add": "اضافه کردن {{name}}",
+			"tag-bot": "بات",
+			"tag-contact": "مخاطب",
+			"tag-conversation": "مکالمه"
 		},
 		"ipfs-webui": {
-			"title": ""
+			"title": "واسط تحت وب IPFS"
 		},
 		"theme-editor": {
-			"randomize": "",
-			"save": "",
-			"export": "",
+			"randomize": "تولید تم",
+			"save": "ذخیره این تم",
+			"export": "این تم را بصورت یک فایل ذخیره کن",
 			"share": "",
 			"import": "",
 			"delete": "",
@@ -327,6 +341,12 @@
 			"invite": "",
 			"tap-to-scan": "",
 			"create-group": ""
+		},
+		"linked-identities": {
+			"title": ""
+		},
+		"directory-search": {
+			"title": ""
 		}
 	},
 	"tabs": {
@@ -411,7 +431,6 @@
 		},
 		"multi-member-settings": {
 			"title": "",
-			"media-button": "",
 			"members-button": {
 				"title": ""
 			},
@@ -457,7 +476,6 @@
 		},
 		"one-to-one-settings": {
 			"title": "",
-			"media-button": "",
 			"save-button": ""
 		},
 		"replicate-group-settings": {
@@ -465,34 +483,6 @@
 			"no-registered-button": "",
 			"connect-button": "",
 			"manage-add-button": ""
-		},
-		"files": {
-			"gallery": "",
-			"no-images": "",
-			"camera": "",
-			"files": "",
-			"microphone": "",
-			"security-access": "",
-			"security-access-desc": "",
-			"save-to-gallery": "",
-			"share": "",
-			"forward-berty": "",
-			"forward": "",
-			"image-saved": ""
-		},
-		"shared-medias": {
-			"title": "",
-			"medias": "",
-			"links": "",
-			"documents": "",
-			"file": "",
-			"picture": "",
-			"audio": ""
-		},
-		"reply": {
-			"response-to": "",
-			"replying-to": "",
-			"replied-to": ""
 		},
 		"user-message": {
 			"read-more": "",
@@ -509,17 +499,6 @@
 			"alert-push-perm-denied": "",
 			"alert-push-desc": "",
 			"alert-push-button": ""
-		}
-	},
-	"audio": {
-		"record": {
-			"tooltip": {
-				"usage": "",
-				"not-sent": "",
-				"permission-denied": ""
-			},
-			"slide-to-cancel": "",
-			"cancel-button": ""
 		}
 	},
 	"permission": {
@@ -541,6 +520,10 @@
 			"desc": ""
 		},
 		"gallery": {
+			"title": "",
+			"desc": ""
+		},
+		"contacts": {
 			"title": "",
 			"desc": ""
 		},
@@ -644,5 +627,23 @@
 	},
 	"share": {
 		"sharing-id-message": ""
+	},
+	"directory": {
+		"phone": {
+			"register": "",
+			"associated": "",
+			"expired": "",
+			"proof-service-unavailable": "",
+			"register-service": "",
+			"unregister-service": ""
+		},
+		"email": {
+			"register": "",
+			"associated": "",
+			"expired": "",
+			"proof-service-unavailable": "",
+			"register-service": "",
+			"unregister-service": ""
+		}
 	}
 }
