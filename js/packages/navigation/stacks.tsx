@@ -5,7 +5,7 @@ import {
 } from '@react-navigation/native-stack'
 import { Icon } from '@ui-kitten/components'
 import mapValues from 'lodash/mapValues'
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Alert, Linking, Platform, TouchableOpacity } from 'react-native'
 import { useSelector } from 'react-redux'
@@ -77,51 +77,36 @@ const AltBackgroundHeaderScreenOptions: (
 	}
 }
 
-function useLinking(): [string | null, unknown] {
-	const [url, setUrl] = useState<string | null>(null)
-	const [error, setError] = useState<unknown>()
-
-	const initialUrl = useCallback(async () => {
-		try {
-			const linkingUrl = await Linking.getInitialURL()
-			if (linkingUrl) {
-				setUrl(linkingUrl)
-			}
-		} catch (ex) {
-			setError(ex)
-		}
-	}, [])
-
-	useEffect(() => {
-		const handleOpenUrl = (event: { url: string }) => {
-			console.log('handleOpenUrl:', event.url)
-			setUrl(null)
-			setUrl(event.url)
-		}
-
-		// for initial render
-		initialUrl().then(() => {
-			Linking.addEventListener('url', handleOpenUrl)
-		})
-
-		return () => Linking.removeEventListener('url', handleOpenUrl)
-	}, [initialUrl])
-
-	return [url, error]
-}
-
 const DeepLinkBridge: React.FC = React.memo(() => {
-	const [url, error] = useLinking()
 	const navigation = useNavigation<NavigationProp<ScreensParams>>()
 	const dispatch = useAppDispatch()
 	const handledLink = useSelector(selectHandledLink)
 
 	useEffect(() => {
-		if (!handledLink && url && !error && !(url as string).startsWith('berty://services-auth')) {
-			dispatch(setHandledLink(true))
-			navigation.navigate('Chat.ManageDeepLink', { type: 'link', value: url })
+		const loadLink = async () => {
+			const linkingUrl = await Linking.getInitialURL()
+			if (linkingUrl) {
+				dispatch(setHandledLink(linkingUrl))
+			}
+
+			const handleOpenUrl = (event: { url: string }) => {
+				dispatch(setHandledLink(event.url))
+			}
+
+			Linking.addEventListener('url', handleOpenUrl)
 		}
-	}, [dispatch, handledLink, error, navigation, url])
+
+		loadLink()
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [])
+
+	useEffect(() => {
+		if (handledLink) {
+			dispatch(setHandledLink(null))
+			navigation.navigate('Chat.ManageDeepLink', { type: 'link', value: handledLink })
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [handledLink])
 
 	return null
 })
