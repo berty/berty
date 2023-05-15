@@ -1,14 +1,16 @@
 package migrationsaccount
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 
+	sqlds "github.com/ipfs/go-ds-sql/sqlite"
 	"go.uber.org/zap"
 
 	"berty.tech/berty/v2/go/internal/accountutils"
-	"berty.tech/berty/v2/go/internal/encryptedrepo"
 	"berty.tech/berty/v2/go/internal/migrationutils"
+	"berty.tech/berty/v2/go/internal/repo"
 	"berty.tech/berty/v2/go/pkg/errcode"
 )
 
@@ -20,7 +22,7 @@ var migration0To1 = migration{
 
 func apply0To1(opts Options) error {
 	// get secrets
-	var storageKey, appStorageSalt, ipfsSalt, messengerDBSalt, rootDatastoreSalt []byte
+	var storageKey, appStorageSalt, messengerDBSalt, rootDatastoreSalt []byte
 	if opts.NativeKeystore != nil {
 		opts.Logger.Info("getting account secrets")
 
@@ -33,10 +35,10 @@ func apply0To1(opts Options) error {
 		if err != nil {
 			return errcode.TODO.Wrap(err)
 		}
-		ipfsSalt, err = accountutils.GetOrCreateIPFSDatastoreSaltForAccount(opts.NativeKeystore, opts.AccountID)
-		if err != nil {
-			return errcode.TODO.Wrap(err)
-		}
+		// ipfsSalt, err = accountutils.GetOrCreateIPFSDatastoreSaltForAccount(opts.NativeKeystore, opts.AccountID)
+		// if err != nil {
+		// 	return errcode.TODO.Wrap(err)
+		// }
 		messengerDBSalt, err = accountutils.GetOrCreateMessengerDBSaltForAccount(opts.NativeKeystore, opts.AccountID)
 		if err != nil {
 			return errcode.TODO.Wrap(err)
@@ -68,11 +70,26 @@ func apply0To1(opts Options) error {
 
 	// create account ipfs repo
 	opts.Logger.Info("creating account ipfs repo")
-	dbPath := filepath.Join(opts.accountAppDir, "ipfs.sqlite")
-	ipfsRepo, err := encryptedrepo.LoadEncryptedRepoFromPath(dbPath, storageKey, ipfsSalt)
+	dbfile := filepath.Join(opts.accountAppDir, "ipfs.sqlite")
+
+	dsn := fmt.Sprintf("%s?_jounal_mode=WAL", dbfile)
+	sqlopts := sqlds.Options{
+		Driver:   "sqlite",
+		DSN:      dsn,
+		Table:    "ipfsrepo",
+		NoCreate: false,
+	}
+
+	ds, err := sqlopts.Create()
+	if err != nil {
+		return fmt.Errorf("unable to create sql ds store: %w", err)
+	}
+
+	ipfsRepo, err := repo.OpenDSRepo(ds)
 	if err != nil {
 		return errcode.ErrIPFSSetupRepo.Wrap(err)
 	}
+
 	if err := ipfsRepo.Close(); err != nil {
 		return errcode.TODO.Wrap(err)
 	}
