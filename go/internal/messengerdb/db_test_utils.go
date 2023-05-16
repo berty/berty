@@ -68,6 +68,8 @@ func GetInMemoryTestDB(t testing.TB, opts ...GetInMemoryTestDBOpts) (*DBWrapper,
 		t.Fatal(err)
 	}
 
+	d.SetMaxOpenConns(1)
+
 	return wrappedDB, db, func() {
 		_ = d.Close()
 		loggerCleanup()
