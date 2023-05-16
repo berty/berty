@@ -44,8 +44,38 @@ foo@bar:~$ berty daemon
 Now you can interact with the daemon API.
 
 ### Mini
+This part is so you can quickly use Berty Mini in your terminal, this is not an in-depth explanation about all the commands.
 
-TODO
+To open Berty Mini run:
+```console
+foo@bar:~$ berty mini
+```
+Or in the `berty/go/cmd/berty` folder enter
+```console
+foo@bar:~$ go run . mini
+```
+
+#### Help
+`/help` To get all available commands in berty mini, and what they do.
+
+#### Contact
+`/contact share qr` To get a QR code you can scan with a phone. </br>
+`/contact share qr` To get a QR code you can scan with a phone. </br>
+`/contact accept all` To accept all incomming contact requests.
+
+#### Navigation
+For details, use `/keyboard`
+
+Most important: </br>
+`ctrl + n` To go to the chats below. </br>
+`ctrl + p` To go to the chats above.
+
+Alternatively you can use the following: </br>
+`ctrl + arrow down` To go to the chat below. </br>
+`ctrl + arrow up` To go to the chat above.
+
+Closing Berty mini: </br>
+`ctrl + c` To exit Berty mini, or use `esc`.
 
 ### Share Invite
 
