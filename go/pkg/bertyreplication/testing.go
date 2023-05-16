@@ -8,7 +8,6 @@ import (
 	"testing"
 	"time"
 
-	sqlite "github.com/berty/gorm-sqlcipher"
 	"github.com/ipfs/go-datastore"
 	ds "github.com/ipfs/go-datastore"
 	ds_sync "github.com/ipfs/go-datastore/sync"
@@ -19,6 +18,7 @@ import (
 	"gorm.io/gorm"
 	"moul.io/zapgorm2"
 
+	sqlite "berty.tech/berty/v2/go/internal/gorm-sqlcipher"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	orbitdb "berty.tech/go-orbit-db"
 	"berty.tech/weshnet"

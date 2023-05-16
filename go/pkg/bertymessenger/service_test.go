@@ -17,7 +17,6 @@ import (
 	"testing"
 	"time"
 
-	sqlite "github.com/berty/gorm-sqlcipher"
 	"github.com/gogo/protobuf/proto"
 	"github.com/oklog/run"
 	"github.com/stretchr/testify/assert"
@@ -26,6 +25,7 @@ import (
 	"golang.org/x/crypto/nacl/box"
 	"gorm.io/gorm"
 
+	sqlite "berty.tech/berty/v2/go/internal/gorm-sqlcipher"
 	"berty.tech/berty/v2/go/internal/grpcserver"
 	"berty.tech/berty/v2/go/internal/messengerdb"
 	"berty.tech/berty/v2/go/internal/messengerutil"

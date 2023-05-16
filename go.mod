@@ -12,7 +12,6 @@ require (
 	github.com/appleboy/go-fcm v0.1.5
 	github.com/atotto/clipboard v0.1.4
 	github.com/berty/go-libp2p-rendezvous v0.4.1
-	github.com/berty/gorm-sqlcipher v1.1.6
 	github.com/bufbuild/buf v1.13.1
 	github.com/buicongtan1997/protoc-gen-swagger-config v0.0.0-20200705084907-1342b78c1a7e
 	github.com/campoy/embedmd v1.0.0

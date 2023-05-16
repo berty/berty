@@ -10,7 +10,6 @@ import (
 	"testing"
 	"time"
 
-	sqlite "github.com/berty/gorm-sqlcipher"
 	"github.com/golang/protobuf/proto"
 	libp2p_mocknet "github.com/libp2p/go-libp2p/p2p/net/mock"
 	"github.com/stretchr/testify/assert"
@@ -25,6 +24,7 @@ import (
 	"moul.io/zapgorm2"
 	"moul.io/zapring"
 
+	sqlite "berty.tech/berty/v2/go/internal/gorm-sqlcipher"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
 	"berty.tech/weshnet"
 	"berty.tech/weshnet/pkg/protocoltypes"

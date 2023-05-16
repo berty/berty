@@ -10,7 +10,6 @@ import (
 	"testing"
 	"time"
 
-	sqlite "github.com/berty/gorm-sqlcipher"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/zap"
 	"golang.org/x/crypto/nacl/box"
@@ -18,6 +17,7 @@ import (
 	"google.golang.org/grpc/test/bufconn"
 	"gorm.io/gorm"
 
+	sqlite "berty.tech/berty/v2/go/internal/gorm-sqlcipher"
 	"berty.tech/berty/v2/go/pkg/bertylinks"
 	"berty.tech/berty/v2/go/pkg/bertyvcissuer"
 	"berty.tech/berty/v2/go/pkg/directorytypes"

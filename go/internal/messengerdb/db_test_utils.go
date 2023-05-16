@@ -5,11 +5,11 @@ import (
 	"testing"
 	"time"
 
-	sqlite "github.com/berty/gorm-sqlcipher"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
 	"moul.io/zapgorm2"
 
+	sqlite "berty.tech/berty/v2/go/internal/gorm-sqlcipher"
 	"berty.tech/weshnet/pkg/testutil"
 )
 
