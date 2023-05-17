@@ -1758,7 +1758,7 @@ func (d *DBWrapper) MarkAccountDirectoryServiceRecordAsRevoked(serverAddr string
 	return d.db.Transaction(func(tx *gorm.DB) error {
 		record := &messengertypes.AccountDirectoryServiceRecord{}
 
-		query := d.db.Model(&messengertypes.AccountDirectoryServiceRecord{}).Where(record, &messengertypes.AccountDirectoryServiceRecord{
+		query := tx.Model(&messengertypes.AccountDirectoryServiceRecord{}).Where(record, &messengertypes.AccountDirectoryServiceRecord{
 			ServerAddr:           serverAddr,
 			DirectoryRecordToken: token,
 		}, "expiration_date <= ?", removalDate).Update("revoked", true)

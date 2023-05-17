@@ -332,10 +332,14 @@ func GetGormDBForPath(dbPath string, key []byte, salt []byte, logger *zap.Logger
 		return nil, nil, errcode.TODO.Wrap(err)
 	}
 
+	sqlDB, err := db.DB()
+	if err != nil {
+		return nil, nil, fmt.Errorf("unable to gorm underlying db: %w", err)
+	}
+
+	sqlDB.SetMaxOpenConns(1)
+
 	return db, func() {
-		sqlDB, _ := db.DB()
-		if sqlDB != nil {
-			sqlDB.Close()
-		}
+		_ = sqlDB.Close()
 	}, nil
 }
