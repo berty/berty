@@ -7,13 +7,13 @@ export const shareBertyID = async (url: string | null | undefined, t: TFunction<
 		console.warn('Share Berty ID, url is null or undefined')
 		return
 	}
-	const message = `${t('share.sharing-id-message')} ${url}`
 	try {
 		if (Platform.OS === 'web') {
 			Clipboard.setString(url)
 		} else {
-			// i18n doesn't support this url value in argument
-			await Share.share({ url: message, message })
+			const message = `${t('share.sharing-id-message')}`
+			const content = Platform.OS === 'ios' ? { url, message } : { message: `${message} ${url}` }
+			await Share.share(content)
 		}
 	} catch (e) {
 		console.warn(e)
