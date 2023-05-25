@@ -713,9 +713,16 @@ func Test_dbWrapper_GetAccount(t *testing.T) {
 	require.NoError(t, db.db.Delete(refOtherAccount).Error)
 
 	require.NoError(t, db.db.Create(&messengertypes.ServiceToken{
-		AccountPK:         refAccount.PublicKey,
-		TokenID:           "tok1",
-		ServiceType:       "srv1",
+		AccountPK: refAccount.PublicKey,
+		TokenID:   "tokID1",
+		Token:     "tok1",
+		SupportedServices: []*messengertypes.ServiceTokenSupportedServiceRecord{
+			{
+				TokenID: "tokID1",
+				Type:    "type1",
+				Address: "addr1",
+			},
+		},
 		AuthenticationURL: "https://url1/",
 	}).Error)
 	require.NoError(t, db.db.Create(&messengertypes.AccountVerifiedCredential{
@@ -782,10 +789,12 @@ func Test_dbWrapper_GetAccount(t *testing.T) {
 	require.Len(t, acc.VerifiedCredentials, 2)
 	require.Contains(t, []string{acc.VerifiedCredentials[0].Identifier, acc.VerifiedCredentials[1].Identifier}, "id1")
 	require.Contains(t, []string{acc.VerifiedCredentials[0].Identifier, acc.VerifiedCredentials[1].Identifier}, "id2")
-	require.Equal(t, "tok1", acc.ServiceTokens[0].TokenID)
+	require.Equal(t, "tokID1", acc.ServiceTokens[0].TokenID)
 	require.Equal(t, refAccount.PublicKey, acc.ServiceTokens[0].AccountPK)
 	require.Equal(t, "https://url1/", acc.ServiceTokens[0].AuthenticationURL)
-	require.Equal(t, "srv1", acc.ServiceTokens[0].ServiceType)
+	require.Len(t, acc.ServiceTokens[0].SupportedServices, 1)
+	require.Equal(t, "type1", acc.ServiceTokens[0].SupportedServices[0].Type)
+	require.Equal(t, "addr1", acc.ServiceTokens[0].SupportedServices[0].Address)
 
 	require.Len(t, acc.DirectoryServiceRecords, 2)
 	require.Contains(t, []string{acc.DirectoryServiceRecords[0].Identifier, acc.DirectoryServiceRecords[1].Identifier}, "id1")
@@ -1127,7 +1136,12 @@ func Test_dbWrapper_getDBInfo(t *testing.T) {
 	refCount++
 
 	for i := 0; i <= refCount; i++ {
-		db.db.Create(&messengertypes.ServiceToken{ServiceType: fmt.Sprintf("%d", i), TokenID: fmt.Sprintf("%d", i)})
+		db.db.Create(&messengertypes.ServiceTokenSupportedServiceRecord{Type: fmt.Sprintf("%d", i), Address: fmt.Sprintf("%d", i)})
+	}
+	refCount++
+
+	for i := 0; i <= refCount; i++ {
+		db.db.Create(&messengertypes.ServiceToken{Token: fmt.Sprintf("%d", i), TokenID: fmt.Sprintf("%d", i)})
 	}
 	refCount++
 
@@ -1208,6 +1222,8 @@ func Test_dbWrapper_getDBInfo(t *testing.T) {
 	require.Equal(t, int64(refCount), info.Members)
 	refCount++
 	require.Equal(t, int64(refCount), info.Devices)
+	refCount++
+	require.Equal(t, int64(refCount), info.ServiceTokenSupportedServiceRecords)
 	refCount++
 	require.Equal(t, int64(refCount), info.ServiceTokens)
 	refCount++
@@ -1523,55 +1539,6 @@ func Test_dbWrapper_isConversationOpened(t *testing.T) {
 	opened, err = db.IsConversationOpened("convo_b")
 	require.NoError(t, err)
 	require.False(t, opened)
-}
-
-func Test_dbWrapper_addServiceToken(t *testing.T) {
-	db, _, dispose := GetInMemoryTestDB(t)
-	defer dispose()
-
-	tok1 := &protocoltypes.ServiceToken{
-		Token:             "tok1",
-		AuthenticationURL: "https://url1/",
-		SupportedServices: []*protocoltypes.ServiceTokenSupportedService{
-			{ServiceType: "srv1"},
-			{ServiceType: "srv2"},
-		},
-	}
-
-	tok2 := &protocoltypes.ServiceToken{
-		Token:             "tok2",
-		AuthenticationURL: "https://url2/",
-		SupportedServices: []*protocoltypes.ServiceTokenSupportedService{
-			{ServiceType: "srv3"},
-			{ServiceType: "srv4"},
-		},
-	}
-
-	db.db.Create(&messengertypes.Account{PublicKey: "accountpk"})
-
-	err := db.AddServiceToken(tok1)
-	require.NoError(t, err)
-
-	err = db.AddServiceToken(tok2)
-	require.NoError(t, err)
-
-	tok := &messengertypes.ServiceToken{}
-	require.NoError(t, db.db.Model(&messengertypes.ServiceToken{}).Where(&messengertypes.ServiceToken{TokenID: tok1.TokenID(), ServiceType: "srv1"}).First(&tok).Error)
-	require.Equal(t, tok1.TokenID(), tok.TokenID)
-	require.Equal(t, "srv1", tok.ServiceType)
-	require.Equal(t, tok1.AuthenticationURL, tok.AuthenticationURL)
-
-	tok = &messengertypes.ServiceToken{}
-	require.NoError(t, db.db.Model(&messengertypes.ServiceToken{}).Where(&messengertypes.ServiceToken{TokenID: tok2.TokenID(), ServiceType: "srv3"}).First(&tok).Error)
-	require.Equal(t, tok2.TokenID(), tok.TokenID)
-	require.Equal(t, "srv3", tok.ServiceType)
-	require.Equal(t, tok2.AuthenticationURL, tok.AuthenticationURL)
-
-	tok = &messengertypes.ServiceToken{}
-	require.Error(t, db.db.Model(&messengertypes.ServiceToken{}).Where(&messengertypes.ServiceToken{TokenID: tok1.TokenID(), ServiceType: "srv3"}).First(&tok).Error)
-
-	tok = &messengertypes.ServiceToken{}
-	require.Error(t, db.db.Model(&messengertypes.ServiceToken{}).Where(&messengertypes.ServiceToken{TokenID: tok2.TokenID(), ServiceType: "srv2"}).First(&tok).Error)
 }
 
 func Test_dbWrapper_getLatestInteractionPerConversation(t *testing.T) {

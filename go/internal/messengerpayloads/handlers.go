@@ -88,7 +88,6 @@ func (h *EventHandler) bindHandlers() {
 		protocoltypes.EventTypeAccountContactRequestIncomingAccepted:  h.accountContactRequestIncomingAccepted,
 		protocoltypes.EventTypeGroupMemberDeviceAdded:                 h.groupMemberDeviceAdded,
 		protocoltypes.EventTypeGroupMetadataPayloadSent:               h.groupMetadataPayloadSent,
-		protocoltypes.EventTypeAccountServiceTokenAdded:               h.accountServiceTokenAdded,
 		protocoltypes.EventTypeGroupReplicating:                       h.groupReplicating,
 		protocoltypes.EventTypeMultiMemberGroupInitialMemberAnnounced: h.multiMemberGroupInitialMemberAnnounced,
 		protocoltypes.EventTypeAccountVerifiedCredentialRegistered:    h.accountVerifiedCredentialRegistered,
@@ -107,6 +106,7 @@ func (h *EventHandler) bindHandlers() {
 		mt.AppMessage_TypePushSetDeviceToken:                  {h.handleAppMessagePushSetDeviceToken, false},
 		mt.AppMessage_TypePushSetServer:                       {h.handleAppMessagePushSetServer, false},
 		mt.AppMessage_TypePushSetMemberToken:                  {h.handleAppMessagePushSetMemberToken, false},
+		mt.AppMessage_TypeServiceAddToken:                     {h.handleAppMessageServiceAddToken, false},
 	}
 }
 
@@ -226,29 +226,6 @@ func (h *EventHandler) HandleAppMessage(gpk string, gme *protocoltypes.GroupMess
 		if err := h.dispatchVisibleInteraction(i); err != nil {
 			h.logger.Error("Unable to dispatch notification for interaction", tyber.FormatStepLogFields(h.ctx, tyber.ZapFieldsToDetails(logutil.PrivateString("cid", i.CID), zap.Error(err)))...)
 		}
-	}
-
-	return nil
-}
-
-func (h *EventHandler) accountServiceTokenAdded(gme *protocoltypes.GroupMetadataEvent) error {
-	var ev protocoltypes.AccountServiceTokenAdded
-	if err := proto.Unmarshal(gme.GetEvent(), &ev); err != nil {
-		return errcode.ErrDeserialization.Wrap(err)
-	}
-
-	if err := h.db.AddServiceToken(ev.ServiceToken); err != nil {
-		return errcode.ErrDBWrite.Wrap(err)
-	}
-
-	// dispatch event
-	acc, err := h.db.GetAccount()
-	if err != nil {
-		return errcode.ErrDBRead.Wrap(err)
-	}
-
-	if err := h.dispatcher.StreamEvent(mt.StreamEvent_TypeAccountUpdated, &mt.StreamEvent_AccountUpdated{Account: acc}, false); err != nil {
-		return errcode.TODO.Wrap(err)
 	}
 
 	return nil
@@ -893,9 +870,11 @@ func (h *EventHandler) handleAppMessageUserMessage(tx *messengerdb.DBWrapper, i 
 		return i, isNew, nil
 	}
 
-	tx.PostAction(func(d *messengerdb.DBWrapper) error {
+	if err := tx.PostAction(func(d *messengerdb.DBWrapper) error {
 		return h.postHandlerActions.InteractionReceived(i)
-	})
+	}); err != nil {
+		return nil, isNew, err
+	}
 
 	// notify
 
@@ -1311,13 +1290,15 @@ func (h *EventHandler) handleAppMessagePushSetDeviceToken(tx *messengerdb.DBWrap
 		return nil, false, err
 	}
 
-	tx.PostAction(func(d *messengerdb.DBWrapper) error {
+	if err := tx.PostAction(func(d *messengerdb.DBWrapper) error {
 		if err := h.postHandlerActions.PushServerOrTokenRegistered(acc); err != nil {
 			return err
 		}
 
 		return h.dispatcher.StreamEvent(mt.StreamEvent_TypeAccountUpdated, &mt.StreamEvent_AccountUpdated{Account: acc}, false)
-	})
+	}); err != nil {
+		return nil, false, err
+	}
 
 	return i, false, nil
 }
@@ -1346,13 +1327,15 @@ func (h *EventHandler) handleAppMessagePushSetServer(tx *messengerdb.DBWrapper, 
 		return nil, false, err
 	}
 
-	tx.PostAction(func(_ *messengerdb.DBWrapper) error {
+	if err := tx.PostAction(func(_ *messengerdb.DBWrapper) error {
 		if err := h.postHandlerActions.PushServerOrTokenRegistered(acc); err != nil {
 			return err
 		}
 
 		return h.dispatcher.StreamEvent(mt.StreamEvent_TypeAccountUpdated, &mt.StreamEvent_AccountUpdated{Account: acc}, false)
-	})
+	}); err != nil {
+		return nil, false, err
+	}
 
 	return i, false, nil
 }
@@ -1382,10 +1365,10 @@ func (h *EventHandler) handleAppMessagePushSetMemberToken(tx *messengerdb.DBWrap
 	if conv, err := tx.GetConversationByPK(i.ConversationPublicKey); err != nil {
 		h.logger.Warn("unknown conversation", logutil.PrivateString("conversation-pk", i.ConversationPublicKey))
 		return nil, false, err
-	} else {
-		tx.PostAction(func(d *messengerdb.DBWrapper) error {
-			return h.dispatcher.StreamEvent(mt.StreamEvent_TypeConversationUpdated, &mt.StreamEvent_ConversationUpdated{Conversation: conv}, false)
-		})
+	} else if err := tx.PostAction(func(d *messengerdb.DBWrapper) error {
+		return h.dispatcher.StreamEvent(mt.StreamEvent_TypeConversationUpdated, &mt.StreamEvent_ConversationUpdated{Conversation: conv}, false)
+	}); err != nil {
+		return nil, false, err
 	}
 
 	return i, false, nil
@@ -1430,16 +1413,6 @@ func interactionFromOutOfStoreAppMessage(h *EventHandler, gPKBytes []byte, outOf
 	}
 
 	return &i, nil
-}
-
-func (h *EventHandler) isEventFromCurrentDevice(conversationPK []byte, devicePK []byte) (bool, error) {
-	// FIXME: this is currently only used on the account group, we might require it in other contexts
-	_, ownDevPK, err := h.metaFetcher.OwnMemberAndDevicePKForConversation(h.ctx, conversationPK)
-	if err != nil {
-		return false, errcode.ErrInternal.Wrap(err)
-	}
-
-	return bytes.Equal(devicePK, ownDevPK), nil
 }
 
 func (h *EventHandler) accountVerifiedCredentialRegistered(gme *protocoltypes.GroupMetadataEvent) error {
@@ -1521,4 +1494,37 @@ func (h *EventHandler) HandleOutOfStoreAppMessage(groupPK []byte, message *proto
 	}
 
 	return i, isNew, nil
+}
+
+func (h *EventHandler) handleAppMessageServiceAddToken(tx *messengerdb.DBWrapper, i *mt.Interaction, amPayload proto.Message) (*mt.Interaction, bool, error) {
+	if len(i.GetPayload()) == 0 {
+		return nil, false, ErrNilPayload
+	}
+
+	acc, err := tx.GetAccount()
+	if err != nil {
+		return nil, false, err
+	}
+
+	payload := amPayload.(*mt.AppMessage_ServiceAddToken)
+	if acc.PublicKey != i.ConversationPublicKey {
+		return nil, false, errcode.ErrInvalidInput.Wrap(fmt.Errorf("message is not on account group"))
+	}
+
+	if err := tx.AddServiceToken(acc.PublicKey, payload); err != nil {
+		return nil, false, err
+	}
+
+	token, err := tx.GetServiceToken(acc.PublicKey, payload.TokenID())
+	if err != nil {
+		return nil, false, err
+	}
+
+	if err := tx.PostAction(func(d *messengerdb.DBWrapper) error {
+		return h.dispatcher.StreamEvent(mt.StreamEvent_TypeServiceTokenAdded, &mt.StreamEvent_ServiceTokenAdded{Token: token}, false)
+	}); err != nil {
+		return nil, false, err
+	}
+
+	return i, false, nil
 }

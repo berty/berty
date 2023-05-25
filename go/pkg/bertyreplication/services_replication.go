@@ -10,11 +10,11 @@ import (
 	"gorm.io/gorm"
 
 	"berty.tech/berty/v2/go/internal/messengerutil"
+	"berty.tech/berty/v2/go/pkg/authtypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	orbitdb "berty.tech/go-orbit-db"
 	"berty.tech/go-orbit-db/iface"
 	"berty.tech/go-orbit-db/stores"
-	"berty.tech/weshnet/pkg/authtypes"
 	weshnet_errcode "berty.tech/weshnet/pkg/errcode"
 	"berty.tech/weshnet/pkg/protocoltypes"
 	"berty.tech/weshnet/pkg/replicationtypes"

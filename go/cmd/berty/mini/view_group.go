@@ -109,7 +109,7 @@ func (v *groupView) loop(ctx context.Context) {
 	var lastMessageID, lastMetadataID []byte
 
 	wg := sync.WaitGroup{}
-	wg.Add(3)
+	wg.Add(4)
 
 	go func() {
 		wg.Done()
@@ -345,6 +345,32 @@ func (v *groupView) loop(ctx context.Context) {
 
 				// @TODO: Log this
 				metadataEventHandler(ctx, v, evt, false, v.logger)
+			}
+		}()
+	}
+
+	// subscribe to app events
+	{
+		events, err := v.v.messenger.EventStream(ctx, &messengertypes.EventStream_Request{ShallowAmount: -1})
+		if err != nil {
+			panic(err)
+		}
+
+		// put received events in a channel
+		go func() {
+			wg.Done()
+			for {
+				evt, err := events.Recv()
+				if err != nil {
+					if err != io.EOF {
+						v.syncMessages <- &historyMessage{
+							messageType: messageTypeError,
+							payload:     []byte(err.Error()),
+						}
+					}
+					return
+				}
+				streamEventHandler(ctx, v, evt, false, v.logger)
 			}
 		}()
 	}

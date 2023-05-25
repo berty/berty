@@ -137,6 +137,20 @@ enum ErrCode {
   ErrTestEchoRecv = 2402;
   ErrTestEchoSend = 2403;
 
+  // Services Auth
+
+  ErrServicesAuth = 4000;
+  ErrServicesAuthNotInitialized = 4001;
+  ErrServicesAuthWrongState = 4002;
+  ErrServicesAuthInvalidResponse = 4003;
+  ErrServicesAuthServer = 4004;
+  ErrServicesAuthCodeChallenge = 4005;
+  ErrServicesAuthServiceInvalidToken = 4006;
+  ErrServicesAuthServiceNotSupported = 4007;
+  ErrServicesAuthUnknownToken = 4008;
+  ErrServicesAuthInvalidURL = 4009;
+
+
   // -----------------
   // CLI
   // -----------------

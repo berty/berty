@@ -1,22 +1,28 @@
-package messengerdb
+package dbfetcher
 
 import (
 	"fmt"
 
+	"berty.tech/berty/v2/go/internal/messengerdb"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
 )
 
-// implement bertypush.DBFetcher
+type DBFetcher interface {
+	GetAccount() (*messengertypes.Account, error)
+	GetContactByPK(publicKey string) (*messengertypes.Contact, error)
+	GetCurrentPushServers() ([]*messengertypes.PushServer, error)
+	GetMuteStatusForConversation(key string) (accountMuted bool, conversationMuted bool, err error)
+}
 
 type dbFetcher struct {
-	db        *DBWrapper
+	*messengerdb.DBWrapper
 	accountPK string
 }
 
-func NewDBFetcher(accountPK string, db *DBWrapper) *dbFetcher {
+func NewDBFetcher(accountPK string, db *messengerdb.DBWrapper) DBFetcher {
 	return &dbFetcher{
-		db:        db,
+		DBWrapper: db,
 		accountPK: accountPK,
 	}
 }
@@ -24,7 +30,7 @@ func NewDBFetcher(accountPK string, db *DBWrapper) *dbFetcher {
 func (f *dbFetcher) GetCurrentPushServers() ([]*messengertypes.PushServer, error) {
 	pushServers := []*messengertypes.PushServer(nil)
 
-	if f.db == nil {
+	if f.DBWrapper == nil {
 		return nil, errcode.ErrInternal.Wrap(fmt.Errorf("db not initialized"))
 	}
 
@@ -32,7 +38,7 @@ func (f *dbFetcher) GetCurrentPushServers() ([]*messengertypes.PushServer, error
 		return nil, errcode.ErrInternal.Wrap(fmt.Errorf("account group not initialized"))
 	}
 
-	pushServerRecords, err := f.db.GetPushServerRecords(f.accountPK)
+	pushServerRecords, err := f.GetPushServerRecords(f.accountPK)
 	if err != nil {
 		return nil, errcode.ErrPushServerNotFound.Wrap(err)
 	}

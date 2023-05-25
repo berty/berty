@@ -69,6 +69,10 @@ func (am AppMessage) UnmarshalPayload() (proto.Message, error) {
 		message = &AppMessage_AccountDirectoryServiceRegistered{}
 	case AppMessage_TypeAccountDirectoryServiceUnregistered:
 		message = &AppMessage_AccountDirectoryServiceUnregistered{}
+	case AppMessage_TypeServiceAddToken:
+		message = &AppMessage_ServiceAddToken{}
+	case AppMessage_TypeServiceRemoveToken:
+		message = &AppMessage_ServiceRemoveToken{}
 	case AppMessage_TypePushSetDeviceToken:
 		message = &AppMessage_PushSetDeviceToken{}
 	case AppMessage_TypePushSetServer:

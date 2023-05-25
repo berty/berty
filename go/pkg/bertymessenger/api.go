@@ -31,13 +31,13 @@ import (
 	"berty.tech/berty/v2/go/internal/messengerdb"
 	"berty.tech/berty/v2/go/internal/messengerutil"
 	"berty.tech/berty/v2/go/internal/sysutil"
+	"berty.tech/berty/v2/go/pkg/authtypes"
 	"berty.tech/berty/v2/go/pkg/banner"
 	"berty.tech/berty/v2/go/pkg/bertylinks"
 	"berty.tech/berty/v2/go/pkg/directorytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
 	"berty.tech/berty/v2/go/pkg/tempdir"
-	"berty.tech/weshnet/pkg/authtypes"
 	"berty.tech/weshnet/pkg/logutil"
 	"berty.tech/weshnet/pkg/protocoltypes"
 	"berty.tech/weshnet/pkg/tyber"
@@ -265,8 +265,11 @@ func (svc *service) autoReplicateGroupOnAllServers(groupPK []byte) {
 		return
 	}
 	for _, s := range acc.ServiceTokens {
-		if s.ServiceType == authtypes.ServiceReplicationID {
-			replicationServices[s.AuthenticationURL] = s
+		for _, ss := range s.SupportedServices {
+			if ss.Type == authtypes.ServiceReplicationID {
+				replicationServices[s.AuthenticationURL] = s
+				break
+			}
 		}
 	}
 
@@ -1227,32 +1230,6 @@ func (svc *service) ConversationClose(ctx context.Context, req *messengertypes.C
 	return &ret, nil
 }
 
-func (svc *service) ServicesTokenList(req *protocoltypes.ServicesTokenList_Request, server messengertypes.MessengerService_ServicesTokenListServer) error {
-	cl, err := svc.protocolClient.ServicesTokenList(server.Context(), req)
-	if err != nil {
-		return err
-	}
-
-	for {
-		item, err := cl.Recv()
-		if err == io.EOF {
-			break
-		}
-
-		if err != nil {
-			svc.logger.Error("error while getting token info from protocol", zap.Error(err))
-			return err
-		}
-
-		if err := server.Send(item); err != nil {
-			svc.logger.Error("error while sending token info to client", zap.Error(err))
-			return err
-		}
-	}
-
-	return nil
-}
-
 func (svc *service) ReplicationServiceRegisterGroup(ctx context.Context, req *messengertypes.ReplicationServiceRegisterGroup_Request) (*messengertypes.ReplicationServiceRegisterGroup_Reply, error) {
 	gpk := req.GetConversationPublicKey()
 	if gpk == "" {
@@ -1266,9 +1243,28 @@ func (svc *service) ReplicationServiceRegisterGroup(ctx context.Context, req *me
 		return nil, errcode.ErrInvalidInput.Wrap(err)
 	}
 
+	serviceToken, err := svc.db.GetServiceToken(messengerutil.B64EncodeBytes(svc.accountGroup), req.TokenID)
+	if err != nil {
+		svc.logger.Error("failed to get service token", logutil.PrivateString("public-key", gpk), logutil.PrivateString("token-id", req.TokenID), zap.Error(err))
+		return nil, errcode.ErrNotFound.Wrap(err)
+	}
+
+	var address string
+	for _, service := range serviceToken.SupportedServices {
+		if service.Type == authtypes.ServiceReplicationID {
+			address = service.Address
+			break
+		}
+	}
+	if address == "" {
+		svc.logger.Error("no replication service found", logutil.PrivateString("public-key", gpk), logutil.PrivateString("token-id", req.TokenID))
+		return nil, errcode.ErrNotFound.Wrap(fmt.Errorf("no replication service found"))
+	}
 	_, err = svc.protocolClient.ReplicationServiceRegisterGroup(ctx, &protocoltypes.ReplicationServiceRegisterGroup_Request{
-		TokenID: req.TokenID,
-		GroupPK: gpkb,
+		GroupPK:           gpkb,
+		Token:             serviceToken.Token,
+		AuthenticationURL: serviceToken.AuthenticationURL,
+		ReplicationServer: address,
 	})
 
 	if err != nil {

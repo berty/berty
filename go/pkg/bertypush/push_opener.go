@@ -12,6 +12,7 @@ import (
 	"go.uber.org/zap"
 
 	"berty.tech/berty/v2/go/internal/accountutils"
+	"berty.tech/berty/v2/go/internal/dbfetcher"
 	"berty.tech/berty/v2/go/internal/messengerdb"
 	"berty.tech/berty/v2/go/internal/messengerpayloads"
 	"berty.tech/berty/v2/go/pkg/accounttypes"
@@ -229,9 +230,12 @@ func PushDecrypt(ctx context.Context, rootDir string, input []byte, opts *PushDe
 			defer dbCleanup()
 
 			wrappedDB := messengerdb.NewDBWrapper(db, opts.Logger)
-			dbFetcher := messengerdb.NewDBFetcher(account.PublicKey, wrappedDB)
+			dbFetcher := dbfetcher.NewDBFetcher(account.PublicKey, wrappedDB)
 
 			weshClient, err := weshnet.NewOutOfStoreMessageServiceClient(weshnet.WithRootDatastore(rootDS))
+			if err != nil {
+				return nil, errcode.ErrInternal.Wrap(fmt.Errorf("unable to initialize weshnet client: %w", err))
+			}
 
 			pushHandler, err := NewPushHandler(weshClient, dbFetcher, pushSK, &PushHandlerOpts{
 				Logger: opts.Logger,
@@ -241,7 +245,7 @@ func PushDecrypt(ctx context.Context, rootDir string, input []byte, opts *PushDe
 			}
 
 			evtHandler := messengerpayloads.NewEventHandler(ctx, wrappedDB, nil, messengertypes.NewPostActionsServiceNoop(), opts.Logger, nil, false)
-			pushReceiver := NewPushReceiver(pushHandler, evtHandler, wrappedDB, opts.Logger)
+			pushReceiver := NewPushReceiver(pushHandler, evtHandler, dbFetcher, opts.Logger)
 
 			reply, err = pushReceiver.PushReceive(ctx, input)
 			if err != nil {

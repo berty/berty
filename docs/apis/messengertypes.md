@@ -24,9 +24,19 @@
     - [AppMessage.PushSetDeviceToken](#berty-messenger-v1-AppMessage-PushSetDeviceToken)
     - [AppMessage.PushSetMemberToken](#berty-messenger-v1-AppMessage-PushSetMemberToken)
     - [AppMessage.PushSetServer](#berty-messenger-v1-AppMessage-PushSetServer)
+    - [AppMessage.ServiceAddToken](#berty-messenger-v1-AppMessage-ServiceAddToken)
+    - [AppMessage.ServiceRemoveToken](#berty-messenger-v1-AppMessage-ServiceRemoveToken)
     - [AppMessage.SetGroupInfo](#berty-messenger-v1-AppMessage-SetGroupInfo)
     - [AppMessage.SetUserInfo](#berty-messenger-v1-AppMessage-SetUserInfo)
     - [AppMessage.UserMessage](#berty-messenger-v1-AppMessage-UserMessage)
+    - [AuthExchangeResponse](#berty-messenger-v1-AuthExchangeResponse)
+    - [AuthExchangeResponse.ServicesEntry](#berty-messenger-v1-AuthExchangeResponse-ServicesEntry)
+    - [AuthServiceCompleteFlow](#berty-messenger-v1-AuthServiceCompleteFlow)
+    - [AuthServiceCompleteFlow.Reply](#berty-messenger-v1-AuthServiceCompleteFlow-Reply)
+    - [AuthServiceCompleteFlow.Request](#berty-messenger-v1-AuthServiceCompleteFlow-Request)
+    - [AuthServiceInitFlow](#berty-messenger-v1-AuthServiceInitFlow)
+    - [AuthServiceInitFlow.Reply](#berty-messenger-v1-AuthServiceInitFlow-Reply)
+    - [AuthServiceInitFlow.Request](#berty-messenger-v1-AuthServiceInitFlow-Request)
     - [BannerQuote](#berty-messenger-v1-BannerQuote)
     - [BannerQuote.Reply](#berty-messenger-v1-BannerQuote-Reply)
     - [BannerQuote.Request](#berty-messenger-v1-BannerQuote-Request)
@@ -66,6 +76,9 @@
     - [ConversationStream](#berty-messenger-v1-ConversationStream)
     - [ConversationStream.Reply](#berty-messenger-v1-ConversationStream-Reply)
     - [ConversationStream.Request](#berty-messenger-v1-ConversationStream-Request)
+    - [DebugAuthServiceSetToken](#berty-messenger-v1-DebugAuthServiceSetToken)
+    - [DebugAuthServiceSetToken.Reply](#berty-messenger-v1-DebugAuthServiceSetToken-Reply)
+    - [DebugAuthServiceSetToken.Request](#berty-messenger-v1-DebugAuthServiceSetToken-Request)
     - [DevShareInstanceBertyID](#berty-messenger-v1-DevShareInstanceBertyID)
     - [DevShareInstanceBertyID.Reply](#berty-messenger-v1-DevShareInstanceBertyID-Reply)
     - [DevShareInstanceBertyID.Request](#berty-messenger-v1-DevShareInstanceBertyID-Request)
@@ -157,6 +170,12 @@
     - [SendContactRequest.Reply](#berty-messenger-v1-SendContactRequest-Reply)
     - [SendContactRequest.Request](#berty-messenger-v1-SendContactRequest-Request)
     - [ServiceToken](#berty-messenger-v1-ServiceToken)
+    - [ServiceTokenSupportedService](#berty-messenger-v1-ServiceTokenSupportedService)
+    - [ServiceTokenSupportedServiceRecord](#berty-messenger-v1-ServiceTokenSupportedServiceRecord)
+    - [ServicesTokenCode](#berty-messenger-v1-ServicesTokenCode)
+    - [ServicesTokenList](#berty-messenger-v1-ServicesTokenList)
+    - [ServicesTokenList.Reply](#berty-messenger-v1-ServicesTokenList-Reply)
+    - [ServicesTokenList.Request](#berty-messenger-v1-ServicesTokenList-Request)
     - [ShareableBertyGroup](#berty-messenger-v1-ShareableBertyGroup)
     - [ShareableBertyGroup.Reply](#berty-messenger-v1-ShareableBertyGroup-Reply)
     - [ShareableBertyGroup.Request](#berty-messenger-v1-ShareableBertyGroup-Request)
@@ -181,6 +200,7 @@
     - [StreamEvent.PeerStatusDisconnected](#berty-messenger-v1-StreamEvent-PeerStatusDisconnected)
     - [StreamEvent.PeerStatusGroupAssociated](#berty-messenger-v1-StreamEvent-PeerStatusGroupAssociated)
     - [StreamEvent.PeerStatusReconnecting](#berty-messenger-v1-StreamEvent-PeerStatusReconnecting)
+    - [StreamEvent.ServiceTokenAdded](#berty-messenger-v1-StreamEvent-ServiceTokenAdded)
     - [SystemInfo](#berty-messenger-v1-SystemInfo)
     - [SystemInfo.DB](#berty-messenger-v1-SystemInfo-DB)
     - [SystemInfo.Messenger](#berty-messenger-v1-SystemInfo-Messenger)
@@ -386,6 +406,25 @@ AppMessage is the app layer format
 | ----- | ---- | ----- | ----------- |
 | server | [PushServer](#berty-messenger-v1-PushServer) |  |  |
 
+<a name="berty-messenger-v1-AppMessage-ServiceAddToken"></a>
+
+### AppMessage.ServiceAddToken
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| token | [string](#string) |  |  |
+| supported_services | [ServiceTokenSupportedService](#berty-messenger-v1-ServiceTokenSupportedService) | repeated |  |
+| authentication_url | [string](#string) |  |  |
+| expiration | [int64](#int64) |  |  |
+
+<a name="berty-messenger-v1-AppMessage-ServiceRemoveToken"></a>
+
+### AppMessage.ServiceRemoveToken
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| tokenid | [string](#string) |  |  |
+
 <a name="berty-messenger-v1-AppMessage-SetGroupInfo"></a>
 
 ### AppMessage.SetGroupInfo
@@ -409,6 +448,69 @@ AppMessage is the app layer format
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | body | [string](#string) |  |  |
+
+<a name="berty-messenger-v1-AuthExchangeResponse"></a>
+
+### AuthExchangeResponse
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| access_token | [string](#string) |  |  |
+| scope | [string](#string) |  |  |
+| error | [string](#string) |  |  |
+| error_description | [string](#string) |  |  |
+| services | [AuthExchangeResponse.ServicesEntry](#berty-messenger-v1-AuthExchangeResponse-ServicesEntry) | repeated |  |
+
+<a name="berty-messenger-v1-AuthExchangeResponse-ServicesEntry"></a>
+
+### AuthExchangeResponse.ServicesEntry
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| key | [string](#string) |  |  |
+| value | [string](#string) |  |  |
+
+<a name="berty-messenger-v1-AuthServiceCompleteFlow"></a>
+
+### AuthServiceCompleteFlow
+
+<a name="berty-messenger-v1-AuthServiceCompleteFlow-Reply"></a>
+
+### AuthServiceCompleteFlow.Reply
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| token_id | [string](#string) |  |  |
+
+<a name="berty-messenger-v1-AuthServiceCompleteFlow-Request"></a>
+
+### AuthServiceCompleteFlow.Request
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| callback_url | [string](#string) |  |  |
+
+<a name="berty-messenger-v1-AuthServiceInitFlow"></a>
+
+### AuthServiceInitFlow
+
+<a name="berty-messenger-v1-AuthServiceInitFlow-Reply"></a>
+
+### AuthServiceInitFlow.Reply
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| url | [string](#string) |  |  |
+| secure_url | [bool](#bool) |  |  |
+
+<a name="berty-messenger-v1-AuthServiceInitFlow-Request"></a>
+
+### AuthServiceInitFlow.Request
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| auth_url | [string](#string) |  |  |
+| services | [string](#string) | repeated |  |
 
 <a name="berty-messenger-v1-BannerQuote"></a>
 
@@ -717,6 +819,23 @@ to test more false-positive guesses.
 | ----- | ---- | ----- | ----------- |
 | count | [uint64](#uint64) |  |  |
 | page | [uint64](#uint64) |  |  |
+
+<a name="berty-messenger-v1-DebugAuthServiceSetToken"></a>
+
+### DebugAuthServiceSetToken
+
+<a name="berty-messenger-v1-DebugAuthServiceSetToken-Reply"></a>
+
+### DebugAuthServiceSetToken.Reply
+
+<a name="berty-messenger-v1-DebugAuthServiceSetToken-Request"></a>
+
+### DebugAuthServiceSetToken.Request
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| token | [AuthExchangeResponse](#berty-messenger-v1-AuthExchangeResponse) |  |  |
+| authentication_url | [string](#string) |  |  |
 
 <a name="berty-messenger-v1-DevShareInstanceBertyID"></a>
 
@@ -1390,9 +1509,55 @@ Composite primary key
 | ----- | ---- | ----- | ----------- |
 | account_pk | [string](#string) |  |  |
 | token_id | [string](#string) |  |  |
-| service_type | [string](#string) |  |  |
+| token | [string](#string) |  |  |
+| supported_services | [ServiceTokenSupportedServiceRecord](#berty-messenger-v1-ServiceTokenSupportedServiceRecord) | repeated |  |
 | authentication_url | [string](#string) |  |  |
 | expiration | [int64](#int64) |  |  |
+
+<a name="berty-messenger-v1-ServiceTokenSupportedService"></a>
+
+### ServiceTokenSupportedService
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| type | [string](#string) |  |  |
+| address | [string](#string) |  |  |
+
+<a name="berty-messenger-v1-ServiceTokenSupportedServiceRecord"></a>
+
+### ServiceTokenSupportedServiceRecord
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| token_id | [string](#string) |  |  |
+| type | [string](#string) |  |  |
+| address | [string](#string) |  |  |
+
+<a name="berty-messenger-v1-ServicesTokenCode"></a>
+
+### ServicesTokenCode
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| services | [string](#string) | repeated |  |
+| code_challenge | [string](#string) |  |  |
+| token_id | [string](#string) |  |  |
+
+<a name="berty-messenger-v1-ServicesTokenList"></a>
+
+### ServicesTokenList
+
+<a name="berty-messenger-v1-ServicesTokenList-Reply"></a>
+
+### ServicesTokenList.Reply
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| service | [ServiceToken](#berty-messenger-v1-ServiceToken) |  |  |
+
+<a name="berty-messenger-v1-ServicesTokenList-Request"></a>
+
+### ServicesTokenList.Request
 
 <a name="berty-messenger-v1-ShareableBertyGroup"></a>
 
@@ -1591,6 +1756,14 @@ status events
 | ----- | ---- | ----- | ----------- |
 | peer_id | [string](#string) |  |  |
 
+<a name="berty-messenger-v1-StreamEvent-ServiceTokenAdded"></a>
+
+### StreamEvent.ServiceTokenAdded
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| token | [ServiceToken](#berty-messenger-v1-ServiceToken) |  |  |
+
 <a name="berty-messenger-v1-SystemInfo"></a>
 
 ### SystemInfo
@@ -1607,6 +1780,7 @@ status events
 | interactions | [int64](#int64) |  |  |
 | members | [int64](#int64) |  |  |
 | devices | [int64](#int64) |  |  |
+| service_token_supported_service_records | [int64](#int64) |  |  |
 | service_tokens | [int64](#int64) |  |  |
 | conversation_replication_info | [int64](#int64) |  |  |
 | metadata_events | [int64](#int64) |  |  |
@@ -1695,9 +1869,11 @@ status events
 | TypeAcknowledge | 6 |  |
 | TypeAccountDirectoryServiceRegistered | 8 |  |
 | TypeAccountDirectoryServiceUnregistered | 9 |  |
-| TypePushSetDeviceToken | 10 |  |
-| TypePushSetServer | 11 |  |
-| TypePushSetMemberToken | 12 |  |
+| TypeServiceAddToken | 10 |  |
+| TypeServiceRemoveToken | 11 |  |
+| TypePushSetDeviceToken | 12 |  |
+| TypePushSetServer | 13 |  |
+| TypePushSetMemberToken | 14 |  |
 
 <a name="berty-messenger-v1-BertyLink-Kind"></a>
 
@@ -1780,6 +1956,7 @@ status events
 | TypePeerStatusReconnecting | 14 |  |
 | TypePeerStatusDisconnected | 15 |  |
 | TypePeerStatusGroupAssociated | 16 |  |
+| TypeServiceTokenAdded | 17 |  |
 
  
 
@@ -1816,7 +1993,6 @@ Today, most of the Berty Messenger logic is implemented directly in the applicat
 | ConversationClose | [ConversationClose.Request](#berty-messenger-v1-ConversationClose-Request) | [ConversationClose.Reply](#berty-messenger-v1-ConversationClose-Reply) |  |
 | ConversationLoad | [ConversationLoad.Request](#berty-messenger-v1-ConversationLoad-Request) | [ConversationLoad.Reply](#berty-messenger-v1-ConversationLoad-Reply) |  |
 | ConversationMute | [ConversationMute.Request](#berty-messenger-v1-ConversationMute-Request) | [ConversationMute.Reply](#berty-messenger-v1-ConversationMute-Reply) |  |
-| ServicesTokenList | [.weshnet.protocol.v1.ServicesTokenList.Request](#weshnet-protocol-v1-ServicesTokenList-Request) | [.weshnet.protocol.v1.ServicesTokenList.Reply](#weshnet-protocol-v1-ServicesTokenList-Reply) stream | ServicesTokenList Retrieves the list of service server tokens |
 | ReplicationServiceRegisterGroup | [ReplicationServiceRegisterGroup.Request](#berty-messenger-v1-ReplicationServiceRegisterGroup-Request) | [ReplicationServiceRegisterGroup.Reply](#berty-messenger-v1-ReplicationServiceRegisterGroup-Reply) | ReplicationServiceRegisterGroup Asks a replication service to distribute a group contents |
 | ReplicationSetAutoEnable | [ReplicationSetAutoEnable.Request](#berty-messenger-v1-ReplicationSetAutoEnable-Request) | [ReplicationSetAutoEnable.Reply](#berty-messenger-v1-ReplicationSetAutoEnable-Reply) | ReplicationSetAutoEnable Sets whether new groups should be replicated automatically or not |
 | BannerQuote | [BannerQuote.Request](#berty-messenger-v1-BannerQuote-Request) | [BannerQuote.Reply](#berty-messenger-v1-BannerQuote-Reply) | BannerQuote returns the quote of the day. |
@@ -1825,6 +2001,10 @@ Today, most of the Berty Messenger logic is implemented directly in the applicat
 | ListMemberDevices | [ListMemberDevices.Request](#berty-messenger-v1-ListMemberDevices-Request) | [ListMemberDevices.Reply](#berty-messenger-v1-ListMemberDevices-Reply) stream | ListMemberDevices Lists devices for a member |
 | TyberHostSearch | [TyberHostSearch.Request](#berty-messenger-v1-TyberHostSearch-Request) | [TyberHostSearch.Reply](#berty-messenger-v1-TyberHostSearch-Reply) stream | TyberHostSearch |
 | TyberHostAttach | [TyberHostAttach.Request](#berty-messenger-v1-TyberHostAttach-Request) | [TyberHostAttach.Reply](#berty-messenger-v1-TyberHostAttach-Reply) | TyberHostAttach |
+| DebugAuthServiceSetToken | [DebugAuthServiceSetToken.Request](#berty-messenger-v1-DebugAuthServiceSetToken-Request) | [DebugAuthServiceSetToken.Reply](#berty-messenger-v1-DebugAuthServiceSetToken-Reply) | DebugAuthServiceSetToken sets the service token directly without using the PKCE OAuth 2 token issuer |
+| ServicesTokenList | [ServicesTokenList.Request](#berty-messenger-v1-ServicesTokenList-Request) | [ServicesTokenList.Reply](#berty-messenger-v1-ServicesTokenList-Reply) stream | ServicesTokenList Retrieves the list of service server tokens |
+| AuthServiceInitFlow | [AuthServiceInitFlow.Request](#berty-messenger-v1-AuthServiceInitFlow-Request) | [AuthServiceInitFlow.Reply](#berty-messenger-v1-AuthServiceInitFlow-Reply) | AuthServiceInitFlow Initialize an authentication flow |
+| AuthServiceCompleteFlow | [AuthServiceCompleteFlow.Request](#berty-messenger-v1-AuthServiceCompleteFlow-Request) | [AuthServiceCompleteFlow.Reply](#berty-messenger-v1-AuthServiceCompleteFlow-Reply) | AuthServiceCompleteFlow Completes an authentication flow |
 | PushSetAutoShare | [PushSetAutoShare.Request](#berty-messenger-v1-PushSetAutoShare-Request) | [PushSetAutoShare.Reply](#berty-messenger-v1-PushSetAutoShare-Reply) | PushSetAutoShare Sets whether new groups should receive our push token automatically or not |
 | PushShareTokenForConversation | [PushShareTokenForConversation.Request](#berty-messenger-v1-PushShareTokenForConversation-Request) | [PushShareTokenForConversation.Reply](#berty-messenger-v1-PushShareTokenForConversation-Reply) | PushShareTokenForConversation Share a push token for a conversation |
 | PushTokenSharedForConversation | [PushTokenSharedForConversation.Request](#berty-messenger-v1-PushTokenSharedForConversation-Request) | [PushTokenSharedForConversation.Reply](#berty-messenger-v1-PushTokenSharedForConversation-Reply) stream | PushTokenSharedForConversation |

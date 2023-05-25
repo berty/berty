@@ -5,13 +5,12 @@ import (
 	"fmt"
 	"time"
 
-	ds "github.com/ipfs/go-datastore"
 	"go.uber.org/zap"
 	"golang.org/x/crypto/curve25519"
 	"golang.org/x/crypto/nacl/box"
 
+	"berty.tech/berty/v2/go/internal/dbfetcher"
 	"berty.tech/berty/v2/go/pkg/errcode"
-	"berty.tech/berty/v2/go/pkg/messengertypes"
 	"berty.tech/berty/v2/go/pkg/pushtypes"
 	"berty.tech/weshnet/pkg/cryptoutil"
 	oosmtypes "berty.tech/weshnet/pkg/outofstoremessagetypes"
@@ -20,17 +19,12 @@ import (
 
 const InMemoryDir = ":memory:"
 
-type DBFetcher interface {
-	GetCurrentPushServers() ([]*messengertypes.PushServer, error)
-}
-
 type pushHandler struct {
 	logger        *zap.Logger
 	pushSK        *[cryptoutil.KeySize]byte
 	pushPK        *[cryptoutil.KeySize]byte
-	accountCache  ds.Datastore
 	serviceClient oosmtypes.OutOfStoreMessageServiceClient
-	dbFetcher     DBFetcher
+	dbFetcher     dbfetcher.DBFetcher
 }
 
 func (s *pushHandler) PushPK() *[cryptoutil.KeySize]byte {
@@ -53,15 +47,13 @@ type PushHandlerOpts struct {
 	Logger *zap.Logger
 }
 
-func (opts *PushHandlerOpts) applyPushDefaults() error {
+func (opts *PushHandlerOpts) applyPushDefaults() {
 	if opts.Logger == nil {
 		opts.Logger = zap.NewNop()
 	}
-
-	return nil
 }
 
-func NewPushHandler(serviceClient oosmtypes.OutOfStoreMessageServiceClient, dbFetcher DBFetcher, pushSK *[cryptoutil.KeySize]byte, opts *PushHandlerOpts) (PushHandler, error) {
+func NewPushHandler(serviceClient oosmtypes.OutOfStoreMessageServiceClient, dbFetcher dbfetcher.DBFetcher, pushSK *[cryptoutil.KeySize]byte, opts *PushHandlerOpts) (PushHandler, error) {
 	if serviceClient == nil {
 		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("no service client specified"))
 	}
@@ -74,9 +66,7 @@ func NewPushHandler(serviceClient oosmtypes.OutOfStoreMessageServiceClient, dbFe
 		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("no cross account push key specified"))
 	}
 
-	if err := opts.applyPushDefaults(); err != nil {
-		return nil, err
-	}
+	opts.applyPushDefaults()
 
 	h := &pushHandler{
 		serviceClient: serviceClient,
@@ -123,7 +113,7 @@ func (s *pushHandler) PushReceive(ctx context.Context, payload []byte) (*protoco
 	return oosMessage, nil
 }
 
-func (s *pushHandler) getPushServerPubKey(ctx context.Context) (*[cryptoutil.KeySize]byte, error) {
+func (s *pushHandler) getPushServerPubKey(_ context.Context) (*[cryptoutil.KeySize]byte, error) {
 	pushServers, err := s.dbFetcher.GetCurrentPushServers()
 	if err != nil {
 		return nil, errcode.ErrInternal.Wrap(fmt.Errorf("unable to get push servers: %w", err))

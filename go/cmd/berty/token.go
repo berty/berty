@@ -43,7 +43,7 @@ import (
 	"github.com/peterbourgon/ff/v3/ffcli"
 	"golang.org/x/crypto/ed25519"
 
-	"berty.tech/weshnet/pkg/bertyauth"
+	"berty.tech/berty/v2/go/pkg/bertyauth"
 )
 
 func tokenServerCommand() *ffcli.Command {

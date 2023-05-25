@@ -176,7 +176,7 @@ func (svc *service) PushTokenSharedForConversation(request *messengertypes.PushT
 	return nil
 }
 
-func (s *service) PushSend(ctx context.Context, request *messengertypes.PushSend_Request) (*messengertypes.PushSend_Reply, error) {
+func (svc *service) PushSend(ctx context.Context, request *messengertypes.PushSend_Request) (*messengertypes.PushSend_Reply, error) {
 	groupPKb, err := messengerutil.B64DecodeBytes(request.GroupPK)
 	if err != nil {
 		return nil, errcode.ErrInvalidInput.Wrap(err)
@@ -190,7 +190,7 @@ func (s *service) PushSend(ctx context.Context, request *messengertypes.PushSend
 		return nil, errcode.ErrInternal.Wrap(err)
 	}
 
-	pushTargets, memberDevices, err := s.getPushTargetsByServer(request.GroupPK, request.GroupMembers)
+	pushTargets, memberDevices, err := svc.getPushTargetsByServer(request.GroupPK, request.GroupMembers)
 	if err != nil {
 		return nil, errcode.ErrInternal.Wrap(err)
 	}
@@ -201,7 +201,7 @@ func (s *service) PushSend(ctx context.Context, request *messengertypes.PushSend
 	}
 
 	if len(pushTargets) == 0 {
-		s.logger.Info("PushSend - pushing - no targets", logutil.PrivateString("cid", cid.String()))
+		svc.logger.Info("PushSend - pushing - no targets", logutil.PrivateString("cid", cid.String()))
 		return &messengertypes.PushSend_Reply{}, nil
 	}
 
@@ -211,17 +211,17 @@ func (s *service) PushSend(ctx context.Context, request *messengertypes.PushSend
 	for serverAddr, pushTokens := range pushTargets {
 		// @FIXME(gfanton): find a better way to get service token
 		go func(serverAddr string, pushTokens []*pushtypes.PushServiceOpaqueReceiver) {
-			s.logger.Info("PushSend - pushing", logutil.PrivateString("cid", cid.String()), logutil.PrivateString("server", serverAddr))
+			svc.logger.Info("PushSend - pushing", logutil.PrivateString("cid", cid.String()), logutil.PrivateString("server", serverAddr))
 			defer wg.Done()
 
 			if len(pushTokens) == 0 {
-				s.logger.Info("no push receivers", logutil.PrivateString("push-server", serverAddr))
+				svc.logger.Info("no push receivers", logutil.PrivateString("push-server", serverAddr))
 				return
 			}
 
-			client, err := s.getPushClient(serverAddr)
+			client, err := svc.getPushClient(serverAddr)
 			if err != nil {
-				s.logger.Error("error while dialing push server", logutil.PrivateString("push-server", serverAddr), zap.Error(err))
+				svc.logger.Error("error while dialing push server", logutil.PrivateString("push-server", serverAddr), zap.Error(err))
 				return
 			}
 
@@ -231,11 +231,11 @@ func (s *service) PushSend(ctx context.Context, request *messengertypes.PushSend
 				Receivers: pushTokens,
 			}, grpc.WaitForReady(true))
 			if err != nil {
-				s.logger.Error("error while dialing push server", logutil.PrivateString("push-server", serverAddr), zap.Error(err))
+				svc.logger.Error("error while dialing push server", logutil.PrivateString("push-server", serverAddr), zap.Error(err))
 				return
 			}
 
-			s.logger.Debug("send push notification successfully", logutil.PrivateString("cid", cid.String()), logutil.PrivateString("endpoint", serverAddr))
+			svc.logger.Debug("send push notification successfully", logutil.PrivateString("cid", cid.String()), logutil.PrivateString("endpoint", serverAddr))
 		}(serverAddr, pushTokens)
 	}
 

@@ -19,11 +19,11 @@ import (
 	"moul.io/zapgorm2"
 
 	sqlite "berty.tech/berty/v2/go/internal/gorm-sqlcipher"
+	"berty.tech/berty/v2/go/pkg/authtypes"
+	"berty.tech/berty/v2/go/pkg/bertyauth"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	orbitdb "berty.tech/go-orbit-db"
 	"berty.tech/weshnet"
-	"berty.tech/weshnet/pkg/authtypes"
-	"berty.tech/weshnet/pkg/bertyauth"
 	"berty.tech/weshnet/pkg/ipfsutil"
 	"berty.tech/weshnet/pkg/protocoltypes"
 	"berty.tech/weshnet/pkg/replicationtypes"

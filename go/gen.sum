@@ -1,8 +1,8 @@
 4da4ed0dac27f6f8f66f66944f591d0e77c7327f  ../api/accounttypes/accounttypes.proto
-ac765af2f1ef8caab623dd8ff0d46897a641f610  ../api/berty/errcode.proto
+033630a883f817b9fc6fa7414319fbb056d793b8  ../api/berty/errcode.proto
 37a8eae718cea9f59591bc32797f7e9974dd12da  ../api/bertybridge/bertybridge.proto
 f61e300fb23e02f14c27147496286e3e8daa7a6a  ../api/directorytypes/bertydirectory.proto
 851d354abf878a3afd1e1759511b7b3ce297330f  ../api/go-internal/testutil.proto
-72dbdae7582a3dc4479b41d965ac7944dadbf2e7  ../api/messengertypes/messengertypes.proto
+a3317dce422b63f7a69953311bfe05035f8e476c  ../api/messengertypes/messengertypes.proto
 73f733b36b77e35ee6ffc0a6d02bf381d6d9b52c  ../api/pushtypes/bertypushtypes.proto
 618dad8c61831528f9fbffeb6f187bc90bae5d70  Makefile

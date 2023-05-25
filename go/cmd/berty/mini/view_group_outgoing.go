@@ -489,7 +489,7 @@ func exportAccount(ctx context.Context, v *groupView, path string) error {
 }
 
 func authInit(ctx context.Context, v *groupView, cmd string) error {
-	rep, err := v.v.protocol.AuthServiceInitFlow(ctx, &protocoltypes.AuthServiceInitFlow_Request{
+	rep, err := v.v.messenger.AuthServiceInitFlow(ctx, &messengertypes.AuthServiceInitFlow_Request{
 		AuthURL: strings.TrimSpace(cmd),
 	})
 	if err != nil {
@@ -519,7 +519,7 @@ func authInit(ctx context.Context, v *groupView, cmd string) error {
 }
 
 func authComplete(ctx context.Context, v *groupView, cmd string) error {
-	_, err := v.v.protocol.AuthServiceCompleteFlow(ctx, &protocoltypes.AuthServiceCompleteFlow_Request{
+	_, err := v.v.messenger.AuthServiceCompleteFlow(ctx, &messengertypes.AuthServiceCompleteFlow_Request{
 		CallbackURL: strings.TrimSpace(cmd),
 	})
 
@@ -527,7 +527,7 @@ func authComplete(ctx context.Context, v *groupView, cmd string) error {
 }
 
 func servicesList(ctx context.Context, v *groupView, _ string) error {
-	cl, err := v.v.protocol.ServicesTokenList(ctx, &protocoltypes.ServicesTokenList_Request{})
+	cl, err := v.v.messenger.ServicesTokenList(ctx, &messengertypes.ServicesTokenList_Request{})
 	if err != nil {
 		return err
 	}
@@ -544,7 +544,7 @@ func servicesList(ctx context.Context, v *groupView, _ string) error {
 		for _, service := range item.Service.SupportedServices {
 			v.messages.Append(&historyMessage{
 				messageType: messageTypeMeta,
-				payload:     []byte(fmt.Sprintf("token: %s - service: %s, %s", item.TokenID, service.ServiceType, service.ServiceEndpoint)),
+				payload:     []byte(fmt.Sprintf("token: %s - service: %s, %s", item.Service.TokenID, service.Type, service.Address)),
 			})
 		}
 	}

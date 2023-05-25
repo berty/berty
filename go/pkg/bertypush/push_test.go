@@ -19,13 +19,13 @@ import (
 	"berty.tech/berty/v2/go/internal/accountutils"
 	"berty.tech/berty/v2/go/internal/messengerutil"
 	"berty.tech/berty/v2/go/pkg/accounttypes"
+	"berty.tech/berty/v2/go/pkg/authtypes"
 	"berty.tech/berty/v2/go/pkg/bertyaccount"
+	"berty.tech/berty/v2/go/pkg/bertyauth"
 	"berty.tech/berty/v2/go/pkg/bertypush"
 	"berty.tech/berty/v2/go/pkg/bertypushrelay"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
 	"berty.tech/berty/v2/go/pkg/pushtypes"
-	"berty.tech/weshnet/pkg/authtypes"
-	"berty.tech/weshnet/pkg/bertyauth"
 	"berty.tech/weshnet/pkg/logutil"
 	"berty.tech/weshnet/pkg/protocoltypes"
 	"berty.tech/weshnet/pkg/testutil"
@@ -120,8 +120,8 @@ func TestPushDecryptStandalone(t *testing.T) {
 	randomToken, err := bertyauth.IssueRandomToken(tokenIssuer, services)
 	require.NoError(t, err)
 
-	_, err = protocol1.DebugAuthServiceSetToken(ctx, &protocoltypes.DebugAuthServiceSetToken_Request{
-		Token: &protocoltypes.AuthExchangeResponse{
+	_, err = messenger1.DebugAuthServiceSetToken(ctx, &messengertypes.DebugAuthServiceSetToken_Request{
+		Token: &messengertypes.AuthExchangeResponse{
 			AccessToken: randomToken,
 			Scope:       authtypes.ServicePushID,
 			Services:    services,

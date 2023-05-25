@@ -112,6 +112,7 @@ func getDBModels() []interface{} {
 	return []interface{}{
 		&messengertypes.Conversation{},
 		&messengertypes.Account{},
+		&messengertypes.ServiceTokenSupportedServiceRecord{},
 		&messengertypes.ServiceToken{},
 		&messengertypes.Contact{},
 		&messengertypes.Interaction{},
@@ -462,6 +463,7 @@ func (d *DBWrapper) GetAccount() (*messengertypes.Account, error) {
 	var accounts []messengertypes.Account
 	if err := d.db.Model(&messengertypes.Account{}).
 		Preload("ServiceTokens").
+		Preload("ServiceTokens." + clause.Associations).
 		Preload("VerifiedCredentials").
 		Preload("DirectoryServiceRecords").
 		Preload("PushDeviceToken").
@@ -910,6 +912,9 @@ func (d *DBWrapper) GetDBInfo() (*messengertypes.SystemInfo_DB, error) {
 	infos.Devices, err = d.dbModelRowsCount(messengertypes.Device{})
 	errs = multierr.Append(errs, err)
 
+	infos.ServiceTokenSupportedServiceRecords, err = d.dbModelRowsCount(messengertypes.ServiceTokenSupportedServiceRecord{})
+	errs = multierr.Append(errs, err)
+
 	infos.ServiceTokens, err = d.dbModelRowsCount(messengertypes.ServiceToken{})
 	errs = multierr.Append(errs, err)
 
@@ -1260,26 +1265,61 @@ func (d *dbLogWrapper) Trace(ctx context.Context, begin time.Time, fc func() (st
 	d.Interface.Trace(ctx, begin, fc, err)
 }
 
-func (d *DBWrapper) AddServiceToken(serviceToken *protocoltypes.ServiceToken) error {
+func (d *DBWrapper) AddServiceToken(accountPK string, serviceToken *messengertypes.AppMessage_ServiceAddToken) error {
+	if accountPK == "" {
+		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("no account public key specified"))
+	}
+
+	if serviceToken == nil {
+		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("no service token specified"))
+	}
+
+	if serviceToken.Token == "" {
+		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("no token specified"))
+	}
+
 	if len(serviceToken.SupportedServices) == 0 {
 		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("no services specified"))
 	}
 
+	if serviceToken.AuthenticationURL == "" {
+		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("no authentication url specified"))
+	}
+
 	if err := d.TX(d.ctx, func(tx *DBWrapper) error {
-		acc, err := tx.GetAccount()
-		if err != nil {
-			return errcode.ErrInvalidInput.Wrap(fmt.Errorf("no account found in db"))
+		// create the service token
+		res := tx.db.Clauses(clause.OnConflict{
+			Columns: []clause.Column{{Name: "token_id"}},
+			DoUpdates: clause.Assignments(map[string]interface{}{
+				"account_pk":         accountPK,
+				"token":              serviceToken.Token,
+				"authentication_url": serviceToken.AuthenticationURL,
+				"expiration":         serviceToken.Expiration,
+			}),
+		}).Create(&messengertypes.ServiceToken{
+			AccountPK:         accountPK,
+			TokenID:           serviceToken.TokenID(),
+			Token:             serviceToken.Token,
+			AuthenticationURL: serviceToken.AuthenticationURL,
+			Expiration:        serviceToken.Expiration,
+		})
+
+		if err := res.Error; err != nil {
+			return errcode.ErrDBWrite.Wrap(err)
 		}
 
+		// create the supported services
 		for _, s := range serviceToken.SupportedServices {
-			res := tx.db.Clauses(clause.OnConflict{DoNothing: true}).Create(&messengertypes.ServiceToken{
-				AccountPK:         acc.PublicKey,
-				TokenID:           serviceToken.TokenID(),
-				ServiceType:       s.ServiceType,
-				AuthenticationURL: serviceToken.AuthenticationURL,
-				Expiration:        serviceToken.Expiration,
+			res := tx.db.Clauses(clause.OnConflict{
+				Columns: []clause.Column{{Name: "token_id"}, {Name: "type"}},
+				DoUpdates: clause.Assignments(map[string]interface{}{
+					"address": s.Address,
+				}),
+			}).Create(&messengertypes.ServiceTokenSupportedServiceRecord{
+				TokenID: serviceToken.TokenID(),
+				Type:    s.Type,
+				Address: s.Address,
 			})
-
 			if err := res.Error; err != nil {
 				return errcode.ErrDBWrite.Wrap(err)
 			}
@@ -1292,6 +1332,60 @@ func (d *DBWrapper) AddServiceToken(serviceToken *protocoltypes.ServiceToken) er
 
 	d.logStep("Maybe added service token to db", tyber.WithJSONDetail("ServiceToken", serviceToken))
 	return nil
+}
+
+// GetServiceToken returns the service token for the given accountPK and tokenID.
+func (d *DBWrapper) GetServiceTokens(accountPK string) ([]*messengertypes.ServiceToken, error) {
+	if accountPK == "" {
+		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing accountPK"))
+	}
+
+	count := int64(0)
+	serviceTokens := []*messengertypes.ServiceToken(nil)
+
+	if err := d.db.Model(&messengertypes.ServiceToken{}).
+		Preload("SupportedServices").
+		Find(&serviceTokens, "account_pk = ?", accountPK).
+		Count(&count).
+		Error; err != nil {
+		return nil, errcode.ErrDBRead.Wrap(err)
+	}
+
+	if count == 0 {
+		return nil, errcode.ErrNotFound.Wrap(fmt.Errorf("unable to find that account"))
+	}
+
+	return serviceTokens, nil
+}
+
+// GetServiceTokens returns the service tokens for the given accountPK.
+func (d *DBWrapper) GetServiceToken(accountPK, tokenID string) (*messengertypes.ServiceToken, error) {
+	if accountPK == "" {
+		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing accountPK"))
+	}
+
+	if tokenID == "" {
+		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing tokenID"))
+	}
+
+	count := int64(0)
+	serviceToken := &messengertypes.ServiceToken{}
+
+	if err := d.db.Model(&messengertypes.ServiceToken{}).
+		Preload("SupportedServices").
+		Find(&serviceToken, "account_pk = ? AND token_id = ?", accountPK, tokenID).
+		Count(&count).
+		Error; err != nil {
+		return nil, errcode.ErrDBRead.Wrap(err)
+	}
+
+	if count == 0 {
+		return nil, errcode.ErrNotFound.Wrap(fmt.Errorf("unable to find that account"))
+	} else if count > 1 {
+		d.log.Warn("found more results than expected", zap.Int("count", int(count)))
+	}
+
+	return serviceToken, nil
 }
 
 func (d *DBWrapper) AccountUpdateFlag(pk string, flagName string, enabled bool) error {

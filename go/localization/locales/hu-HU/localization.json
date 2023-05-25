@@ -1,0 +1,68 @@
+{
+  "auth": {
+    "services": {
+      "rpl": {
+        "name": "P2P replikáció",
+        "description": "Ez a szolgáltatás automatikusan újraállítja a beszélgetéseket, hogy eszköze a leghatékonyabb hálózati teljesítményt nyújtsa.",
+        "benefitBadge": "Teljesítmény"
+      },
+      "psh": {
+        "name": "Push értesítések",
+        "description": "Ez a szolgáltatás lehetővé teszi, hogy készüléke push értesítéseket kapjon a bejövő üzenetekről.",
+        "benefitBadge": "Teljesítmény"
+      }
+    },
+    "pageTitle": "Berty szolgáltatások",
+    "connectButton_one": "Szolgáltatás használata",
+    "connectButton_other": "Kiválasztott szolgáltatások használata",
+    "privacyPolicyLabel": "Adatvédelmi irányelvek"
+  },
+  "push": {
+    "message": {
+      "title": "Új üzenet"
+    },
+    "error": {
+      "title": "A push visszafejtés nem sikerült"
+    },
+    "voiceMessage": {
+      "bodyWithNumberOfMedia_one": "Hangüzenetet küldött",
+      "bodyWithNumberOfMedia_other": "Elküldött hangüzenetek"
+    },
+    "gif": {
+      "bodyWithNumberOfMedia_one": "Küldött egy gifet",
+      "bodyWithNumberOfMedia_other": "Elküldött gifek"
+    },
+    "photo": {
+      "bodyWithNumberOfMedia_one": "Küldött egy fotót",
+      "bodyWithNumberOfMedia_other": "Elküldött fotók"
+    },
+    "media": {
+      "bodyWithNumberOfMedia_one": "Elküldött média",
+      "bodyWithNumberOfMedia_other": "Elküldött média anyagok"
+    },
+    "reaction": {
+      "bodyWithDisplayNameAndEmoji": "Reagált az üzenetre"
+    },
+    "groupInvitation": {
+      "bodyWithGroupName": "Meghívott a csoportba"
+    },
+    "unknown": {
+      "body": "Valami új érkezett"
+    },
+    "conversationNameChanged": {
+      "body": "A beszélgetés neve frissítve"
+    },
+    "memberNameChanged": {
+      "body": "A megjelenített név frissítve"
+    },
+    "memberPictureChanged": {
+      "body": "Profilkép frissítve"
+    },
+    "memberDetailsChanged": {
+      "body": "A résztvevő adatai frissítve"
+    },
+    "replyOptionsOffered": {
+      "body": "Felkínált válaszlehetőségek"
+    }
+  }
+}

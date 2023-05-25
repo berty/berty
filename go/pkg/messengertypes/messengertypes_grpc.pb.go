@@ -7,7 +7,6 @@
 package messengertypes
 
 import (
-	protocoltypes "berty.tech/weshnet/pkg/protocoltypes"
 	context "context"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
@@ -43,7 +42,6 @@ const (
 	MessengerService_ConversationClose_FullMethodName               = "/berty.messenger.v1.MessengerService/ConversationClose"
 	MessengerService_ConversationLoad_FullMethodName                = "/berty.messenger.v1.MessengerService/ConversationLoad"
 	MessengerService_ConversationMute_FullMethodName                = "/berty.messenger.v1.MessengerService/ConversationMute"
-	MessengerService_ServicesTokenList_FullMethodName               = "/berty.messenger.v1.MessengerService/ServicesTokenList"
 	MessengerService_ReplicationServiceRegisterGroup_FullMethodName = "/berty.messenger.v1.MessengerService/ReplicationServiceRegisterGroup"
 	MessengerService_ReplicationSetAutoEnable_FullMethodName        = "/berty.messenger.v1.MessengerService/ReplicationSetAutoEnable"
 	MessengerService_BannerQuote_FullMethodName                     = "/berty.messenger.v1.MessengerService/BannerQuote"
@@ -52,6 +50,10 @@ const (
 	MessengerService_ListMemberDevices_FullMethodName               = "/berty.messenger.v1.MessengerService/ListMemberDevices"
 	MessengerService_TyberHostSearch_FullMethodName                 = "/berty.messenger.v1.MessengerService/TyberHostSearch"
 	MessengerService_TyberHostAttach_FullMethodName                 = "/berty.messenger.v1.MessengerService/TyberHostAttach"
+	MessengerService_DebugAuthServiceSetToken_FullMethodName        = "/berty.messenger.v1.MessengerService/DebugAuthServiceSetToken"
+	MessengerService_ServicesTokenList_FullMethodName               = "/berty.messenger.v1.MessengerService/ServicesTokenList"
+	MessengerService_AuthServiceInitFlow_FullMethodName             = "/berty.messenger.v1.MessengerService/AuthServiceInitFlow"
+	MessengerService_AuthServiceCompleteFlow_FullMethodName         = "/berty.messenger.v1.MessengerService/AuthServiceCompleteFlow"
 	MessengerService_PushSetAutoShare_FullMethodName                = "/berty.messenger.v1.MessengerService/PushSetAutoShare"
 	MessengerService_PushShareTokenForConversation_FullMethodName   = "/berty.messenger.v1.MessengerService/PushShareTokenForConversation"
 	MessengerService_PushTokenSharedForConversation_FullMethodName  = "/berty.messenger.v1.MessengerService/PushTokenSharedForConversation"
@@ -103,8 +105,6 @@ type MessengerServiceClient interface {
 	ConversationClose(ctx context.Context, in *ConversationClose_Request, opts ...grpc.CallOption) (*ConversationClose_Reply, error)
 	ConversationLoad(ctx context.Context, in *ConversationLoad_Request, opts ...grpc.CallOption) (*ConversationLoad_Reply, error)
 	ConversationMute(ctx context.Context, in *ConversationMute_Request, opts ...grpc.CallOption) (*ConversationMute_Reply, error)
-	// ServicesTokenList Retrieves the list of service server tokens
-	ServicesTokenList(ctx context.Context, in *protocoltypes.ServicesTokenList_Request, opts ...grpc.CallOption) (MessengerService_ServicesTokenListClient, error)
 	// ReplicationServiceRegisterGroup Asks a replication service to distribute a group contents
 	ReplicationServiceRegisterGroup(ctx context.Context, in *ReplicationServiceRegisterGroup_Request, opts ...grpc.CallOption) (*ReplicationServiceRegisterGroup_Reply, error)
 	// ReplicationSetAutoEnable Sets whether new groups should be replicated automatically or not
@@ -121,6 +121,14 @@ type MessengerServiceClient interface {
 	TyberHostSearch(ctx context.Context, in *TyberHostSearch_Request, opts ...grpc.CallOption) (MessengerService_TyberHostSearchClient, error)
 	// TyberHostAttach
 	TyberHostAttach(ctx context.Context, in *TyberHostAttach_Request, opts ...grpc.CallOption) (*TyberHostAttach_Reply, error)
+	// DebugAuthServiceSetToken sets the service token directly without using the PKCE OAuth 2 token issuer
+	DebugAuthServiceSetToken(ctx context.Context, in *DebugAuthServiceSetToken_Request, opts ...grpc.CallOption) (*DebugAuthServiceSetToken_Reply, error)
+	// ServicesTokenList Retrieves the list of service server tokens
+	ServicesTokenList(ctx context.Context, in *ServicesTokenList_Request, opts ...grpc.CallOption) (MessengerService_ServicesTokenListClient, error)
+	// AuthServiceInitFlow Initialize an authentication flow
+	AuthServiceInitFlow(ctx context.Context, in *AuthServiceInitFlow_Request, opts ...grpc.CallOption) (*AuthServiceInitFlow_Reply, error)
+	// AuthServiceCompleteFlow Completes an authentication flow
+	AuthServiceCompleteFlow(ctx context.Context, in *AuthServiceCompleteFlow_Request, opts ...grpc.CallOption) (*AuthServiceCompleteFlow_Reply, error)
 	// PushSetAutoShare Sets whether new groups should receive our push token automatically or not
 	PushSetAutoShare(ctx context.Context, in *PushSetAutoShare_Request, opts ...grpc.CallOption) (*PushSetAutoShare_Reply, error)
 	// PushShareTokenForConversation Share a push token for a conversation
@@ -472,38 +480,6 @@ func (c *messengerServiceClient) ConversationMute(ctx context.Context, in *Conve
 	return out, nil
 }
 
-func (c *messengerServiceClient) ServicesTokenList(ctx context.Context, in *protocoltypes.ServicesTokenList_Request, opts ...grpc.CallOption) (MessengerService_ServicesTokenListClient, error) {
-	stream, err := c.cc.NewStream(ctx, &MessengerService_ServiceDesc.Streams[5], MessengerService_ServicesTokenList_FullMethodName, opts...)
-	if err != nil {
-		return nil, err
-	}
-	x := &messengerServiceServicesTokenListClient{stream}
-	if err := x.ClientStream.SendMsg(in); err != nil {
-		return nil, err
-	}
-	if err := x.ClientStream.CloseSend(); err != nil {
-		return nil, err
-	}
-	return x, nil
-}
-
-type MessengerService_ServicesTokenListClient interface {
-	Recv() (*protocoltypes.ServicesTokenList_Reply, error)
-	grpc.ClientStream
-}
-
-type messengerServiceServicesTokenListClient struct {
-	grpc.ClientStream
-}
-
-func (x *messengerServiceServicesTokenListClient) Recv() (*protocoltypes.ServicesTokenList_Reply, error) {
-	m := new(protocoltypes.ServicesTokenList_Reply)
-	if err := x.ClientStream.RecvMsg(m); err != nil {
-		return nil, err
-	}
-	return m, nil
-}
-
 func (c *messengerServiceClient) ReplicationServiceRegisterGroup(ctx context.Context, in *ReplicationServiceRegisterGroup_Request, opts ...grpc.CallOption) (*ReplicationServiceRegisterGroup_Reply, error) {
 	out := new(ReplicationServiceRegisterGroup_Reply)
 	err := c.cc.Invoke(ctx, MessengerService_ReplicationServiceRegisterGroup_FullMethodName, in, out, opts...)
@@ -532,7 +508,7 @@ func (c *messengerServiceClient) BannerQuote(ctx context.Context, in *BannerQuot
 }
 
 func (c *messengerServiceClient) InstanceExportData(ctx context.Context, in *InstanceExportData_Request, opts ...grpc.CallOption) (MessengerService_InstanceExportDataClient, error) {
-	stream, err := c.cc.NewStream(ctx, &MessengerService_ServiceDesc.Streams[6], MessengerService_InstanceExportData_FullMethodName, opts...)
+	stream, err := c.cc.NewStream(ctx, &MessengerService_ServiceDesc.Streams[5], MessengerService_InstanceExportData_FullMethodName, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -573,7 +549,7 @@ func (c *messengerServiceClient) MessageSearch(ctx context.Context, in *MessageS
 }
 
 func (c *messengerServiceClient) ListMemberDevices(ctx context.Context, in *ListMemberDevices_Request, opts ...grpc.CallOption) (MessengerService_ListMemberDevicesClient, error) {
-	stream, err := c.cc.NewStream(ctx, &MessengerService_ServiceDesc.Streams[7], MessengerService_ListMemberDevices_FullMethodName, opts...)
+	stream, err := c.cc.NewStream(ctx, &MessengerService_ServiceDesc.Streams[6], MessengerService_ListMemberDevices_FullMethodName, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -605,7 +581,7 @@ func (x *messengerServiceListMemberDevicesClient) Recv() (*ListMemberDevices_Rep
 }
 
 func (c *messengerServiceClient) TyberHostSearch(ctx context.Context, in *TyberHostSearch_Request, opts ...grpc.CallOption) (MessengerService_TyberHostSearchClient, error) {
-	stream, err := c.cc.NewStream(ctx, &MessengerService_ServiceDesc.Streams[8], MessengerService_TyberHostSearch_FullMethodName, opts...)
+	stream, err := c.cc.NewStream(ctx, &MessengerService_ServiceDesc.Streams[7], MessengerService_TyberHostSearch_FullMethodName, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -639,6 +615,65 @@ func (x *messengerServiceTyberHostSearchClient) Recv() (*TyberHostSearch_Reply, 
 func (c *messengerServiceClient) TyberHostAttach(ctx context.Context, in *TyberHostAttach_Request, opts ...grpc.CallOption) (*TyberHostAttach_Reply, error) {
 	out := new(TyberHostAttach_Reply)
 	err := c.cc.Invoke(ctx, MessengerService_TyberHostAttach_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *messengerServiceClient) DebugAuthServiceSetToken(ctx context.Context, in *DebugAuthServiceSetToken_Request, opts ...grpc.CallOption) (*DebugAuthServiceSetToken_Reply, error) {
+	out := new(DebugAuthServiceSetToken_Reply)
+	err := c.cc.Invoke(ctx, MessengerService_DebugAuthServiceSetToken_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *messengerServiceClient) ServicesTokenList(ctx context.Context, in *ServicesTokenList_Request, opts ...grpc.CallOption) (MessengerService_ServicesTokenListClient, error) {
+	stream, err := c.cc.NewStream(ctx, &MessengerService_ServiceDesc.Streams[8], MessengerService_ServicesTokenList_FullMethodName, opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &messengerServiceServicesTokenListClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type MessengerService_ServicesTokenListClient interface {
+	Recv() (*ServicesTokenList_Reply, error)
+	grpc.ClientStream
+}
+
+type messengerServiceServicesTokenListClient struct {
+	grpc.ClientStream
+}
+
+func (x *messengerServiceServicesTokenListClient) Recv() (*ServicesTokenList_Reply, error) {
+	m := new(ServicesTokenList_Reply)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func (c *messengerServiceClient) AuthServiceInitFlow(ctx context.Context, in *AuthServiceInitFlow_Request, opts ...grpc.CallOption) (*AuthServiceInitFlow_Reply, error) {
+	out := new(AuthServiceInitFlow_Reply)
+	err := c.cc.Invoke(ctx, MessengerService_AuthServiceInitFlow_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *messengerServiceClient) AuthServiceCompleteFlow(ctx context.Context, in *AuthServiceCompleteFlow_Request, opts ...grpc.CallOption) (*AuthServiceCompleteFlow_Reply, error) {
+	out := new(AuthServiceCompleteFlow_Reply)
+	err := c.cc.Invoke(ctx, MessengerService_AuthServiceCompleteFlow_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -820,8 +855,6 @@ type MessengerServiceServer interface {
 	ConversationClose(context.Context, *ConversationClose_Request) (*ConversationClose_Reply, error)
 	ConversationLoad(context.Context, *ConversationLoad_Request) (*ConversationLoad_Reply, error)
 	ConversationMute(context.Context, *ConversationMute_Request) (*ConversationMute_Reply, error)
-	// ServicesTokenList Retrieves the list of service server tokens
-	ServicesTokenList(*protocoltypes.ServicesTokenList_Request, MessengerService_ServicesTokenListServer) error
 	// ReplicationServiceRegisterGroup Asks a replication service to distribute a group contents
 	ReplicationServiceRegisterGroup(context.Context, *ReplicationServiceRegisterGroup_Request) (*ReplicationServiceRegisterGroup_Reply, error)
 	// ReplicationSetAutoEnable Sets whether new groups should be replicated automatically or not
@@ -838,6 +871,14 @@ type MessengerServiceServer interface {
 	TyberHostSearch(*TyberHostSearch_Request, MessengerService_TyberHostSearchServer) error
 	// TyberHostAttach
 	TyberHostAttach(context.Context, *TyberHostAttach_Request) (*TyberHostAttach_Reply, error)
+	// DebugAuthServiceSetToken sets the service token directly without using the PKCE OAuth 2 token issuer
+	DebugAuthServiceSetToken(context.Context, *DebugAuthServiceSetToken_Request) (*DebugAuthServiceSetToken_Reply, error)
+	// ServicesTokenList Retrieves the list of service server tokens
+	ServicesTokenList(*ServicesTokenList_Request, MessengerService_ServicesTokenListServer) error
+	// AuthServiceInitFlow Initialize an authentication flow
+	AuthServiceInitFlow(context.Context, *AuthServiceInitFlow_Request) (*AuthServiceInitFlow_Reply, error)
+	// AuthServiceCompleteFlow Completes an authentication flow
+	AuthServiceCompleteFlow(context.Context, *AuthServiceCompleteFlow_Request) (*AuthServiceCompleteFlow_Reply, error)
 	// PushSetAutoShare Sets whether new groups should receive our push token automatically or not
 	PushSetAutoShare(context.Context, *PushSetAutoShare_Request) (*PushSetAutoShare_Reply, error)
 	// PushShareTokenForConversation Share a push token for a conversation
@@ -934,9 +975,6 @@ func (UnimplementedMessengerServiceServer) ConversationLoad(context.Context, *Co
 func (UnimplementedMessengerServiceServer) ConversationMute(context.Context, *ConversationMute_Request) (*ConversationMute_Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ConversationMute not implemented")
 }
-func (UnimplementedMessengerServiceServer) ServicesTokenList(*protocoltypes.ServicesTokenList_Request, MessengerService_ServicesTokenListServer) error {
-	return status.Errorf(codes.Unimplemented, "method ServicesTokenList not implemented")
-}
 func (UnimplementedMessengerServiceServer) ReplicationServiceRegisterGroup(context.Context, *ReplicationServiceRegisterGroup_Request) (*ReplicationServiceRegisterGroup_Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ReplicationServiceRegisterGroup not implemented")
 }
@@ -960,6 +998,18 @@ func (UnimplementedMessengerServiceServer) TyberHostSearch(*TyberHostSearch_Requ
 }
 func (UnimplementedMessengerServiceServer) TyberHostAttach(context.Context, *TyberHostAttach_Request) (*TyberHostAttach_Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method TyberHostAttach not implemented")
+}
+func (UnimplementedMessengerServiceServer) DebugAuthServiceSetToken(context.Context, *DebugAuthServiceSetToken_Request) (*DebugAuthServiceSetToken_Reply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DebugAuthServiceSetToken not implemented")
+}
+func (UnimplementedMessengerServiceServer) ServicesTokenList(*ServicesTokenList_Request, MessengerService_ServicesTokenListServer) error {
+	return status.Errorf(codes.Unimplemented, "method ServicesTokenList not implemented")
+}
+func (UnimplementedMessengerServiceServer) AuthServiceInitFlow(context.Context, *AuthServiceInitFlow_Request) (*AuthServiceInitFlow_Reply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AuthServiceInitFlow not implemented")
+}
+func (UnimplementedMessengerServiceServer) AuthServiceCompleteFlow(context.Context, *AuthServiceCompleteFlow_Request) (*AuthServiceCompleteFlow_Reply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AuthServiceCompleteFlow not implemented")
 }
 func (UnimplementedMessengerServiceServer) PushSetAutoShare(context.Context, *PushSetAutoShare_Request) (*PushSetAutoShare_Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PushSetAutoShare not implemented")
@@ -1438,27 +1488,6 @@ func _MessengerService_ConversationMute_Handler(srv interface{}, ctx context.Con
 	return interceptor(ctx, in, info, handler)
 }
 
-func _MessengerService_ServicesTokenList_Handler(srv interface{}, stream grpc.ServerStream) error {
-	m := new(protocoltypes.ServicesTokenList_Request)
-	if err := stream.RecvMsg(m); err != nil {
-		return err
-	}
-	return srv.(MessengerServiceServer).ServicesTokenList(m, &messengerServiceServicesTokenListServer{stream})
-}
-
-type MessengerService_ServicesTokenListServer interface {
-	Send(*protocoltypes.ServicesTokenList_Reply) error
-	grpc.ServerStream
-}
-
-type messengerServiceServicesTokenListServer struct {
-	grpc.ServerStream
-}
-
-func (x *messengerServiceServicesTokenListServer) Send(m *protocoltypes.ServicesTokenList_Reply) error {
-	return x.ServerStream.SendMsg(m)
-}
-
 func _MessengerService_ReplicationServiceRegisterGroup_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ReplicationServiceRegisterGroup_Request)
 	if err := dec(in); err != nil {
@@ -1608,6 +1637,81 @@ func _MessengerService_TyberHostAttach_Handler(srv interface{}, ctx context.Cont
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(MessengerServiceServer).TyberHostAttach(ctx, req.(*TyberHostAttach_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _MessengerService_DebugAuthServiceSetToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DebugAuthServiceSetToken_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MessengerServiceServer).DebugAuthServiceSetToken(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: MessengerService_DebugAuthServiceSetToken_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MessengerServiceServer).DebugAuthServiceSetToken(ctx, req.(*DebugAuthServiceSetToken_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _MessengerService_ServicesTokenList_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(ServicesTokenList_Request)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(MessengerServiceServer).ServicesTokenList(m, &messengerServiceServicesTokenListServer{stream})
+}
+
+type MessengerService_ServicesTokenListServer interface {
+	Send(*ServicesTokenList_Reply) error
+	grpc.ServerStream
+}
+
+type messengerServiceServicesTokenListServer struct {
+	grpc.ServerStream
+}
+
+func (x *messengerServiceServicesTokenListServer) Send(m *ServicesTokenList_Reply) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func _MessengerService_AuthServiceInitFlow_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AuthServiceInitFlow_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MessengerServiceServer).AuthServiceInitFlow(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: MessengerService_AuthServiceInitFlow_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MessengerServiceServer).AuthServiceInitFlow(ctx, req.(*AuthServiceInitFlow_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _MessengerService_AuthServiceCompleteFlow_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AuthServiceCompleteFlow_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MessengerServiceServer).AuthServiceCompleteFlow(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: MessengerService_AuthServiceCompleteFlow_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MessengerServiceServer).AuthServiceCompleteFlow(ctx, req.(*AuthServiceCompleteFlow_Request))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1898,6 +2002,18 @@ var MessengerService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _MessengerService_TyberHostAttach_Handler,
 		},
 		{
+			MethodName: "DebugAuthServiceSetToken",
+			Handler:    _MessengerService_DebugAuthServiceSetToken_Handler,
+		},
+		{
+			MethodName: "AuthServiceInitFlow",
+			Handler:    _MessengerService_AuthServiceInitFlow_Handler,
+		},
+		{
+			MethodName: "AuthServiceCompleteFlow",
+			Handler:    _MessengerService_AuthServiceCompleteFlow_Handler,
+		},
+		{
 			MethodName: "PushSetAutoShare",
 			Handler:    _MessengerService_PushSetAutoShare_Handler,
 		},
@@ -1958,11 +2074,6 @@ var MessengerService_ServiceDesc = grpc.ServiceDesc{
 			ServerStreams: true,
 		},
 		{
-			StreamName:    "ServicesTokenList",
-			Handler:       _MessengerService_ServicesTokenList_Handler,
-			ServerStreams: true,
-		},
-		{
 			StreamName:    "InstanceExportData",
 			Handler:       _MessengerService_InstanceExportData_Handler,
 			ServerStreams: true,
@@ -1975,6 +2086,11 @@ var MessengerService_ServiceDesc = grpc.ServiceDesc{
 		{
 			StreamName:    "TyberHostSearch",
 			Handler:       _MessengerService_TyberHostSearch_Handler,
+			ServerStreams: true,
+		},
+		{
+			StreamName:    "ServicesTokenList",
+			Handler:       _MessengerService_ServicesTokenList_Handler,
 			ServerStreams: true,
 		},
 		{

@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"io"
 	"sync"
+	"sync/atomic"
 	"time"
 
 	// nolint:staticcheck // cannot use the new protobuf API while keeping gogoproto
@@ -20,6 +21,7 @@ import (
 	"moul.io/zapgorm2"
 	"moul.io/zapring"
 
+	"berty.tech/berty/v2/go/internal/dbfetcher"
 	sqlite "berty.tech/berty/v2/go/internal/gorm-sqlcipher"
 	"berty.tech/berty/v2/go/internal/messengerdb"
 	"berty.tech/berty/v2/go/internal/messengerpayloads"
@@ -79,7 +81,7 @@ type service struct {
 	accountGroup          []byte
 	grpcInsecure          bool
 	dd                    debugCommand
-	// pushReceiver          bertypush.MessengerPushReceiver // FIXME(push): unavailable
+	authSession           atomic.Value
 
 	mt.UnimplementedMessengerServiceServer
 }
@@ -248,8 +250,8 @@ func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (_ Service, err
 
 	svc.eventHandler = messengerpayloads.NewEventHandler(ctx, db, &MetaFetcherFromProtocolClient{client: client}, newPostActionsService(&svc), opts.Logger, svc.dispatcher, false)
 	svc.pushHandler = (bertypush.PushHandler)(nil)
+	dbFetcher := dbfetcher.NewDBFetcher(pkStr, db)
 	if opts.PushKey != nil {
-		dbFetcher := messengerdb.NewDBFetcher(pkStr, db)
 		svc.pushHandler, err = bertypush.NewPushHandler(client, dbFetcher, opts.PushKey, &bertypush.PushHandlerOpts{
 			Logger: opts.Logger,
 		})
@@ -258,7 +260,7 @@ func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (_ Service, err
 			return nil, errcode.ErrInternal.Wrap(fmt.Errorf("unable to init push handler: %w", err))
 		}
 	}
-	svc.pushReceiver = bertypush.NewPushReceiver(svc.pushHandler, svc.eventHandler, svc.db, opts.Logger)
+	svc.pushReceiver = bertypush.NewPushReceiver(svc.pushHandler, svc.eventHandler, dbFetcher, opts.Logger)
 
 	// get or create account in DB
 	{

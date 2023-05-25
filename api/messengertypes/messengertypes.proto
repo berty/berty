@@ -62,9 +62,6 @@ service MessengerService {
   rpc ConversationLoad(ConversationLoad.Request) returns (ConversationLoad.Reply);
   rpc ConversationMute(ConversationMute.Request) returns (ConversationMute.Reply);
 
-  // ServicesTokenList Retrieves the list of service server tokens
-  rpc ServicesTokenList(weshnet.protocol.v1.ServicesTokenList.Request) returns (stream weshnet.protocol.v1.ServicesTokenList.Reply);
-
   // ReplicationServiceRegisterGroup Asks a replication service to distribute a group contents
   rpc ReplicationServiceRegisterGroup(ReplicationServiceRegisterGroup.Request) returns (ReplicationServiceRegisterGroup.Reply);
 
@@ -87,6 +84,18 @@ service MessengerService {
   rpc TyberHostSearch (TyberHostSearch.Request) returns (stream TyberHostSearch.Reply);
   // TyberHostAttach
   rpc TyberHostAttach (TyberHostAttach.Request) returns (TyberHostAttach.Reply);
+
+  // DebugAuthServiceSetToken sets the service token directly without using the PKCE OAuth 2 token issuer
+  rpc DebugAuthServiceSetToken(DebugAuthServiceSetToken.Request) returns (DebugAuthServiceSetToken.Reply);
+
+  // ServicesTokenList Retrieves the list of service server tokens
+  rpc ServicesTokenList(ServicesTokenList.Request) returns (stream ServicesTokenList.Reply);
+
+  // AuthServiceInitFlow Initialize an authentication flow
+  rpc AuthServiceInitFlow (AuthServiceInitFlow.Request) returns (AuthServiceInitFlow.Reply);
+
+  // AuthServiceCompleteFlow Completes an authentication flow
+  rpc AuthServiceCompleteFlow (AuthServiceCompleteFlow.Request) returns (AuthServiceCompleteFlow.Reply);
 
   // PushSetAutoShare Sets whether new groups should receive our push token automatically or not
   rpc PushSetAutoShare(PushSetAutoShare.Request) returns (PushSetAutoShare.Reply);
@@ -191,7 +200,6 @@ message EchoDuplexTest {
     string echo = 1;
   }
 }
-
 
 message InstanceShareableBertyID {
   message Request {
@@ -343,9 +351,11 @@ message AppMessage {
     reserved 7; // TypeReplyOptions
     TypeAccountDirectoryServiceRegistered = 8;
     TypeAccountDirectoryServiceUnregistered = 9;
-    TypePushSetDeviceToken = 10;
-    TypePushSetServer = 11;
-    TypePushSetMemberToken = 12;
+    TypeServiceAddToken = 10;
+    TypeServiceRemoveToken = 11;
+    TypePushSetDeviceToken = 12;
+    TypePushSetServer = 13;
+    TypePushSetMemberToken = 14;
   }
   message UserMessage {
     string body = 1;
@@ -382,6 +392,17 @@ message AppMessage {
     string directory_record_token = 5;
   }
 
+  message ServiceAddToken {
+    string token = 1;
+    repeated ServiceTokenSupportedService supported_services = 2;
+    string authentication_url = 3  [(gogoproto.customname) = "AuthenticationURL"];
+    int64 expiration = 4;
+  }
+
+  message ServiceRemoveToken {
+    string tokenid = 2 [(gogoproto.customname) = "TokenID"];
+  }
+
   message PushSetDeviceToken {
     push.v1.PushServiceReceiver device_token = 1;
   }
@@ -416,8 +437,9 @@ message SystemInfo {
     int64 interactions = 4;
     int64 members = 5;
     int64 devices = 6;
-    int64 service_tokens = 7;
-    int64 conversation_replication_info = 8;
+    int64 service_token_supported_service_records = 7;
+    int64 service_tokens = 8;
+    int64 conversation_replication_info = 9;
     int64 metadata_events = 10;
     reserved 11; // int64 medias = 11;
     int64 push_member_token = 12;
@@ -438,6 +460,42 @@ message ConversationJoin {
   }
   message Reply {}
 }
+
+message DebugAuthServiceSetToken {
+  message Request {
+    AuthExchangeResponse token = 1;
+    string authentication_url = 2 [(gogoproto.customname) = "AuthenticationURL"];
+  }
+  message Reply {}
+}
+
+message ServicesTokenList {
+  message Request{}
+  message Reply{
+    ServiceToken service = 2;
+  }
+}
+
+message AuthServiceCompleteFlow {
+  message Request{
+    string callback_url = 1 [(gogoproto.customname) = "CallbackURL"];
+  }
+  message Reply{
+    string token_id = 1 [(gogoproto.customname) = "TokenID"];
+  }
+}
+
+message AuthServiceInitFlow {
+  message Request {
+    string auth_url = 1 [(gogoproto.customname) = "AuthURL"];
+    repeated string services = 3;
+  }
+  message Reply {
+    string url = 1 [(gogoproto.customname) = "URL"];
+    bool secure_url = 2 [(gogoproto.customname) = "SecureURL"];
+  }
+}
+
 
 // APP MODEL
 
@@ -460,12 +518,24 @@ message Account {
   repeated AccountDirectoryServiceRecord directory_service_records = 15 [(gogoproto.moretags) = "gorm:\"foreignKey:AccountPK\""];
 }
 
+message ServiceTokenSupportedService {
+  string type = 2 [(gogoproto.moretags) = "gorm:\"primaryKey\""];
+  string address = 3;
+}
+
+message ServiceTokenSupportedServiceRecord {
+  string token_id = 1 [(gogoproto.customname) = "TokenID", (gogoproto.moretags) = "gorm:\"primaryKey\""];
+  string type = 2 [(gogoproto.moretags) = "gorm:\"primaryKey\""];
+  string address = 3;
+}
+
 message ServiceToken {
   string account_pk = 1 [(gogoproto.customname) = "AccountPK"];
   string token_id = 2 [(gogoproto.moretags) = "gorm:\"primaryKey\"", (gogoproto.customname) = "TokenID"];
-  string service_type = 3 [(gogoproto.moretags) = "gorm:\"primaryKey\"", (gogoproto.customname) = "ServiceType"];
-  string authentication_url = 4  [(gogoproto.customname) = "AuthenticationURL"];
-  int64 expiration = 5;
+  string token = 3;
+  repeated ServiceTokenSupportedServiceRecord supported_services = 4 [(gogoproto.moretags) = "gorm:\"foreignKey:TokenID\""];
+  string authentication_url = 5  [(gogoproto.customname) = "AuthenticationURL"];
+  int64 expiration = 6;
 }
 
 message MetadataEvent {
@@ -649,6 +719,7 @@ message StreamEvent {
     TypePeerStatusReconnecting = 14;
     TypePeerStatusDisconnected = 15;
     TypePeerStatusGroupAssociated = 16;
+    TypeServiceTokenAdded = 17;
   }
   message ConversationUpdated {
     Conversation conversation = 1;
@@ -734,6 +805,9 @@ message StreamEvent {
     string peer_id = 1 [(gogoproto.customname) = "PeerID"];
     string device_pk = 2 [(gogoproto.customname) = "DevicePK"];
     string group_pk = 3 [(gogoproto.customname) = "GroupPK"];
+  }
+  message ServiceTokenAdded {
+    ServiceToken token = 1;
   }
 }
 
@@ -1073,3 +1147,16 @@ message PushSetServer {
   message Reply {}
 }
 
+message AuthExchangeResponse {
+  string access_token = 1;
+  string scope = 2;
+  string error = 3;
+  string error_description = 4;
+  map<string, string> services = 5;
+}
+
+message ServicesTokenCode {
+  repeated string services = 1;
+  string code_challenge = 2;
+  string token_id = 3 [(gogoproto.customname) = "TokenID"];
+}

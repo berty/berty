@@ -1,0 +1,11 @@
+{
+  "key1": "message1",
+  "key2": "message2",
+  "nested": {
+    "key1" : "nested_message_1"
+  },
+  "keyWithValue": "%[1]v just connected",
+  "keyWithMultipleValue": "%[1]v and %[2]v just connected",
+  "keyWithPluralCount_one": "there is %[1]v star in the sky",
+  "keyWithPluralCount_other": "there are %[1]v stars in the sky"
+}

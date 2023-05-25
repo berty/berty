@@ -1,0 +1,68 @@
+{
+  "auth": {
+    "services": {
+      "rpl": {
+        "name": "",
+        "description": "",
+        "benefitBadge": "Prestaties"
+      },
+      "psh": {
+        "name": "Pushmeldingen",
+        "description": "",
+        "benefitBadge": "Prestaties"
+      }
+    },
+    "pageTitle": "",
+    "connectButton_one": "",
+    "connectButton_other": "",
+    "privacyPolicyLabel": "Privacy Beleid"
+  },
+  "push": {
+    "message": {
+      "title": ""
+    },
+    "error": {
+      "title": ""
+    },
+    "voiceMessage": {
+      "bodyWithNumberOfMedia_one": "Stuurd een spraakbericht",
+      "bodyWithNumberOfMedia_other": "Verzonden %[1]v spraak berichten"
+    },
+    "gif": {
+      "bodyWithNumberOfMedia_one": "Stuur een gif",
+      "bodyWithNumberOfMedia_other": "Verstuur %[1]v gifs"
+    },
+    "photo": {
+      "bodyWithNumberOfMedia_one": "Stuur een foto",
+      "bodyWithNumberOfMedia_other": "Verstuur %[1]v foto's"
+    },
+    "media": {
+      "bodyWithNumberOfMedia_one": "",
+      "bodyWithNumberOfMedia_other": ""
+    },
+    "reaction": {
+      "bodyWithDisplayNameAndEmoji": "%[1]v reageerde met %[2]v op uw bericht"
+    },
+    "groupInvitation": {
+      "bodyWithGroupName": ""
+    },
+    "unknown": {
+      "body": ""
+    },
+    "conversationNameChanged": {
+      "body": ""
+    },
+    "memberNameChanged": {
+      "body": ""
+    },
+    "memberPictureChanged": {
+      "body": ""
+    },
+    "memberDetailsChanged": {
+      "body": ""
+    },
+    "replyOptionsOffered": {
+      "body": ""
+    }
+  }
+}

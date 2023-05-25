@@ -26,7 +26,7 @@ import (
 // If targetGroupMembers is empty, all members of the conversation will be targeted.
 // If no devices are provided, all devices of the targeted members will be targeted.
 // You cannot provide devices without the members they belong to.
-func (s *service) getPushTargetsByServer(conversationPK string, targetGroupMembers []*messengertypes.MemberWithDevices) (map[string][]*pushtypes.PushServiceOpaqueReceiver, []*messengertypes.MemberWithDevices, error) {
+func (svc *service) getPushTargetsByServer(conversationPK string, targetGroupMembers []*messengertypes.MemberWithDevices) (map[string][]*pushtypes.PushServiceOpaqueReceiver, []*messengertypes.MemberWithDevices, error) {
 	pushTargets := []*messengertypes.PushMemberToken(nil)
 	pushMemberDevicesTargets := []*messengertypes.MemberWithDevices(nil)
 	serverTokens := map[string][]*pushtypes.PushServiceOpaqueReceiver{}
@@ -36,15 +36,15 @@ func (s *service) getPushTargetsByServer(conversationPK string, targetGroupMembe
 		return nil, nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("conversationPK is required"))
 	}
 
-	conversation, err := s.db.GetConversationByPK(conversationPK)
+	conversation, err := svc.db.GetConversationByPK(conversationPK)
 	if err != nil {
 		return nil, nil, errcode.ErrInternal.Wrap(err)
 	}
 
-	if targetGroupMembers == nil || len(targetGroupMembers) == 0 {
+	if len(targetGroupMembers) == 0 {
 		switch conversation.Type {
 		case messengertypes.Conversation_MultiMemberType:
-			members, err := s.db.GetMembersByConversation(conversationPK)
+			members, err := svc.db.GetMembersByConversation(conversationPK)
 			if err != nil {
 				return nil, nil, errcode.ErrInternal.Wrap(err)
 			}
@@ -56,9 +56,9 @@ func (s *service) getPushTargetsByServer(conversationPK string, targetGroupMembe
 				}
 
 				localTargetDevices := []string(nil)
-				devices, err := s.db.GetDevicesForMember(conversationPK, m.PublicKey)
+				devices, err := svc.db.GetDevicesForMember(conversationPK, m.PublicKey)
 				if err != nil {
-					s.logger.Warn("unable to get devices for member", zap.Error(err))
+					svc.logger.Warn("unable to get devices for member", zap.Error(err))
 					continue
 				}
 
@@ -79,12 +79,12 @@ func (s *service) getPushTargetsByServer(conversationPK string, targetGroupMembe
 			}
 		case messengertypes.Conversation_ContactType:
 			localTargetDevices := []string(nil)
-			contact, err := s.db.GetContactByConversation(conversation.PublicKey)
+			contact, err := svc.db.GetContactByConversation(conversation.PublicKey)
 			if err != nil {
 				return nil, nil, errcode.ErrInternal.Wrap(err)
 			}
 
-			devices, err := s.db.GetDevicesForContact(conversationPK, contact.PublicKey)
+			devices, err := svc.db.GetDevicesForContact(conversationPK, contact.PublicKey)
 			if err != nil {
 				return nil, nil, errcode.ErrInternal.Wrap(err)
 			}
@@ -106,11 +106,11 @@ func (s *service) getPushTargetsByServer(conversationPK string, targetGroupMembe
 		for _, memberAndDevices := range targetGroupMembers {
 			localTargetDevices := []string(nil)
 			if memberAndDevices.MemberPK == "" {
-				s.logger.Warn("memberPK is required")
+				svc.logger.Warn("memberPK is required")
 				continue
 			}
 
-			devices, err := s.db.GetDevicesForMember(conversationPK, memberAndDevices.MemberPK)
+			devices, err := svc.db.GetDevicesForMember(conversationPK, memberAndDevices.MemberPK)
 			if err != nil {
 				return nil, nil, errcode.ErrInternal.Wrap(err)
 			}
@@ -138,7 +138,7 @@ func (s *service) getPushTargetsByServer(conversationPK string, targetGroupMembe
 						break
 					}
 					if i == len(devices)-1 {
-						s.logger.Warn("device not found for member", logutil.PrivateString("device", pkB), logutil.PrivateString("member", memberAndDevices.MemberPK))
+						svc.logger.Warn("device not found for member", logutil.PrivateString("device", pkB), logutil.PrivateString("member", memberAndDevices.MemberPK))
 					}
 				}
 			}
@@ -153,9 +153,9 @@ func (s *service) getPushTargetsByServer(conversationPK string, targetGroupMembe
 	}
 
 	for _, d := range targetDevices {
-		pushTokens, err := s.db.GetPushMemberTokens(conversationPK, d)
+		pushTokens, err := svc.db.GetPushMemberTokens(conversationPK, d)
 		if err != nil {
-			s.logger.Info("unable to get push token for device")
+			svc.logger.Info("unable to get push token for device")
 			continue
 		}
 
@@ -170,16 +170,16 @@ func (s *service) getPushTargetsByServer(conversationPK string, targetGroupMembe
 }
 
 // getPushClient returns a GRPC client to the given push notification server.
-func (s *service) getPushClient(host string) (pushtypes.PushServiceClient, error) {
-	s.muPushClients.Lock()
-	defer s.muPushClients.Unlock()
+func (svc *service) getPushClient(host string) (pushtypes.PushServiceClient, error) {
+	svc.muPushClients.Lock()
+	defer svc.muPushClients.Unlock()
 
-	if cc, ok := s.pushClients[host]; ok {
+	if cc, ok := svc.pushClients[host]; ok {
 		return pushtypes.NewPushServiceClient(cc), nil
 	}
 
 	var creds grpc.DialOption
-	if s.grpcInsecure {
+	if svc.grpcInsecure {
 		creds = grpc.WithTransportCredentials(insecure.NewCredentials())
 	} else {
 		tlsconfig := credentials.NewTLS(&tls.Config{
@@ -199,11 +199,11 @@ func (s *service) getPushClient(host string) (pushtypes.PushServiceClient, error
 		MinConnectTimeout: time.Second * 10,
 	})
 
-	cc, err := grpc.DialContext(s.ctx, host, creds, connectParams)
+	cc, err := grpc.DialContext(svc.ctx, host, creds, connectParams)
 	if err != nil {
 		return nil, err
 	}
-	s.pushClients[host] = cc
+	svc.pushClients[host] = cc
 
 	return pushtypes.NewPushServiceClient(cc), err
 }
