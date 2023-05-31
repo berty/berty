@@ -1,11 +1,15 @@
+# To see the date when a version was updated, use git blame:
+# https://github.com/berty/berty/blame/master/.tool-versions
+
 #-----
-# golang 1.18.4 is simply the most recent version available to date (07/22).
+# This is simply the most recent version available to date of the lowest 
+# major version of Go which is allowed by kubo.
 # There is no contraindication for updating it.
 #-----
 golang 1.19.7
 
 #-----
-# node 16.16.0 is the most recent LTS version available to date (07/22).
+# This is the most recent LTS version available to date.
 #
 # In addition, from version 1.17 of node, a new version of OpenSSL is used and
 # prevent our project from building.
@@ -14,49 +18,49 @@ golang 1.19.7
 nodejs 16.16.0
 
 #-----
-# xcodegen 2.29.0 is simply the most recent version available to date (07/22).
+# This is simply the most recent xcodegen version available to date.
 # There is no contraindication for updating it.
 #-----
 xcodegen 2.29.0
 
 #-----
-# yarn 1.22.19 is simply the most recent version available to date (07/22).
+# This is simply the most recent yarn version available to date.
 # There is no contraindication for updating it.
 #-----
 yarn 1.22.19
 
 #-----
-# ruby 3.1.3 is simply the most recent version available to date (02/23).
+# This is simply the most recent ruby version available to date.
 # There is no contraindication for updating it.
 #-----
 ruby 3.1.3
 
 #-----
-# golangci-lint 1.51.2 is simply the most recent version available to date (07/22).
+# This is simply the most recent golangci-lint version available to date.
 #
 #-----
 golangci-lint 1.51.2
 
 #-----
-# jq 1.6 is simply the most recent version available to date (07/22).
+# This is simply the most recent jq version available to date.
 # There is no contraindication for updating it.
 #-----
 jq 1.6
 
 #-----
-# java openjdk-18.0.1.1 is simply the most recent version available to date (07/22).
+# This is simply the most recent java openjdk version available to date.
 # There is no contraindication for updating it.
 #-----
 java openjdk-18.0.1.1
 
 #-----
-# yq 4.30.8 is simply the most recent version available to date (02/23).
+# This is simply the most recent yq version available to date.
 # There is no contraindication for updating it.
 #-----
 yq 4.30.8
 
 #-----
-# buf 1.14.0 is simply the most recent version available to date (02/23).
+# This is simply the most recent buf version available to date.
 # There is no contraindication for updating it.
 #-----
 buf 1.15.1
