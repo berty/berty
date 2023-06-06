@@ -162,6 +162,9 @@ func Example_noflags() {
 }
 
 func TestTwoConcurrentManagers(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
 	var man1, man2 *initutil.Manager
 
 	// FIXME: automatically find an available port
@@ -202,7 +205,7 @@ func TestTwoConcurrentManagers(t *testing.T) {
 		require.NoError(t, err)
 		require.NotNil(t, server)
 
-		go man1.RunWorkers()
+		go man1.RunWorkers(ctx)
 		time.Sleep(time.Second * 2)
 	}
 

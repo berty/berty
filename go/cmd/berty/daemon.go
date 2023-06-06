@@ -132,7 +132,7 @@ func daemonCommand() *ffcli.Command {
 				})
 			}
 
-			return manager.RunWorkers()
+			return manager.RunWorkers(ctx)
 		},
 	}
 }

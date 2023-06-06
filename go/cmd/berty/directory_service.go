@@ -76,7 +76,7 @@ func directoryServiceCommand() *ffcli.Command {
 				return err
 			}
 
-			return manager.RunWorkers()
+			return manager.RunWorkers(ctx)
 		},
 	}
 }
