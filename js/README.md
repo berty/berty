@@ -25,7 +25,7 @@ $ make ios.debug
 $ IOS_DEVICE="your-emulator-id" make ios.debug
 
 # 💡 You can check available virtual iOS devices with
-$ xcrun simctl list
+$ xcrun xctrace list devices
 ```
 
 Run Android in debug mode:
