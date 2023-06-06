@@ -324,9 +324,7 @@ func (m *Manager) RunWorkers(ctx context.Context) error {
 		case <-ctx.Done():
 			return ctx.Err()
 		}
-
 	}, func(err error) {
-
 		m.ctxCancel()
 	})
 	return m.workers.Run()
