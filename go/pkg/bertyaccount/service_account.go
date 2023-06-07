@@ -243,7 +243,7 @@ func (s *service) openAccount(ctx context.Context, req *accounttypes.OpenAccount
 
 	if initManager.Session.Kind != "mobile" {
 		go func() {
-			if err := initManager.RunWorkers(); err != nil {
+			if err := initManager.RunWorkers(ctx); err != nil {
 				s.logger.Error("error in workers", zap.Error(err))
 			}
 		}()

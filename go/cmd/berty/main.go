@@ -103,6 +103,7 @@ func runMain(args []string) error {
 			process.Add(func() error {
 				return root.ParseAndRun(ctx, args)
 			}, func(error) {
+				fmt.Println("interrupted, closing...")
 				ctxCancel()
 			})
 		}

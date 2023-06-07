@@ -316,10 +316,14 @@ func (m *Manager) getContext() context.Context {
 	return m.ctx
 }
 
-func (m *Manager) RunWorkers() error {
+func (m *Manager) RunWorkers(ctx context.Context) error {
 	m.workers.Add(func() error {
-		<-m.getContext().Done()
-		return m.getContext().Err()
+		select {
+		case <-m.getContext().Done():
+			return m.getContext().Err()
+		case <-ctx.Done():
+			return ctx.Err()
+		}
 	}, func(err error) {
 		m.ctxCancel()
 	})

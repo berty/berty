@@ -104,7 +104,7 @@ func pushServerCommand() *ffcli.Command {
 				return err
 			}
 
-			return manager.RunWorkers()
+			return manager.RunWorkers(ctx)
 		},
 	}
 }
