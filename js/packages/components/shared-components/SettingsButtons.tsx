@@ -631,7 +631,7 @@ const useStylesButtonSettingRow = () => {
 
 export const ButtonSettingRow: React.FC<ButtonSettingRowProps> = ({
 	state,
-	numberOfLines = 1,
+	numberOfLines = 2,
 	style = null,
 	styleText = null,
 	isScroll = false,
