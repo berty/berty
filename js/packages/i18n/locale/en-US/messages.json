@@ -158,8 +158,8 @@
 			"appearance-button": "Appearance",
 			"accounts-button": "Accounts",
 			"network-button": "Network",
-			"linked-identities-button": "",
-			"directory-search-button": "",
+			"linked-identities-button": "Linked Identities",
+			"directory-search-button": "Directory Search",
 			"bug-button": "Submit a bug",
 			"about-button": "About Berty",
 			"version-button": "Version: {{version}}",
@@ -242,9 +242,9 @@
 		"devtools": {
 			"title": "Dev tools",
 			"header-left-button": "Device infos",
-			"header-middle-button": "Generate fake data",
+			"header-middle-button": "Fake data",
 			"header-right-button": "Restart daemon",
-			"allow-unsecure-grpc": "",
+			"allow-unsecure-grpc": "Allow unsecure gRPC",
 			"force-mock-button": "Force mock",
 			"simulate-button": "Simulate stream error",
 			"simulate-js-error-button": "Simulate JavaScript error",
@@ -343,10 +343,10 @@
 			"create-group": "Create group"
 		},
 		"linked-identities": {
-			"title": ""
+			"title": "Linked Identities"
 		},
 		"directory-search": {
-			"title": ""
+			"title": "Directory Search"
 		}
 	},
 	"tabs": {
