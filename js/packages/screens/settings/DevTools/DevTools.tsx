@@ -591,7 +591,6 @@ const BodyDevTools: React.FC<{}> = withInAppNotification(({ showNotification }: 
 					iconSize={30}
 					iconColor={colors['alt-secondary-background-header']}
 					onPress={async () => {
-						console.log('remi: button')
 						// await logfileList()
 						await exportLogfile(selectedAccount)
 					}}

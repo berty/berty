@@ -15,7 +15,7 @@ if (debug) {
 export const defaultGlobalPersistentOptions = (): GlobalPersistentOptions => {
 	return {
 		[GlobalPersistentOptionsKeys.LogFilters]: {
-			format: debug ? 'debug+:bty*,-*.grpc,error+:*' : '-*',
+			format: debug ? 'debug+:bertybridge.bty*,-*.grpc,error+:*' : '-*',
 		},
 		[GlobalPersistentOptionsKeys.TyberHost]: {
 			address: tyberAddress,
