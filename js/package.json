@@ -119,6 +119,7 @@
     "metro-react-native-babel-preset": "^0.75.1",
     "patch-package": "^6.4.7",
     "postinstall-postinstall": "^2.1.0",
+    "prettier": "^2.8.8",
     "react-dom": "^18.2.0",
     "react-native-dotenv": "^3.4.8",
     "react-native-svg-transformer": "^0.14.3",
