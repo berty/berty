@@ -319,7 +319,7 @@ exports[`Chat.Share renders correctly 1`] = `
                     />
                   </View>
                   <Text
-                    numberOfLines={1}
+                    numberOfLines={2}
                     style={
                       Array [
                         Object {
@@ -396,7 +396,7 @@ exports[`Chat.Share renders correctly 1`] = `
                     />
                   </View>
                   <Text
-                    numberOfLines={1}
+                    numberOfLines={2}
                     style={
                       Array [
                         Object {

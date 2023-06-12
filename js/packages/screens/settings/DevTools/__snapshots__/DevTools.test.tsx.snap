@@ -133,7 +133,7 @@ exports[`Settings.DevTools renders correctly 1`] = `
                       />
                     </View>
                     <Text
-                      numberOfLines={1}
+                      numberOfLines={2}
                       style={
                         Array [
                           Object {
@@ -215,7 +215,7 @@ exports[`Settings.DevTools renders correctly 1`] = `
                       />
                     </View>
                     <Text
-                      numberOfLines={1}
+                      numberOfLines={2}
                       style={
                         Array [
                           Object {
@@ -296,7 +296,7 @@ exports[`Settings.DevTools renders correctly 1`] = `
                       />
                     </View>
                     <Text
-                      numberOfLines={1}
+                      numberOfLines={2}
                       style={
                         Array [
                           Object {
@@ -7751,7 +7751,7 @@ exports[`Settings.DevTools renders correctly 1`] = `
                       />
                     </View>
                     <Text
-                      numberOfLines={1}
+                      numberOfLines={2}
                       style={
                         Array [
                           Object {
@@ -7833,7 +7833,7 @@ exports[`Settings.DevTools renders correctly 1`] = `
                       />
                     </View>
                     <Text
-                      numberOfLines={1}
+                      numberOfLines={2}
                       style={
                         Array [
                           Object {
@@ -7914,7 +7914,7 @@ exports[`Settings.DevTools renders correctly 1`] = `
                       />
                     </View>
                     <Text
-                      numberOfLines={1}
+                      numberOfLines={2}
                       style={
                         Array [
                           Object {
