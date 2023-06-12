@@ -1,7 +1,6 @@
 import React from 'react'
-import { Modal, View, TouchableOpacity, StyleSheet, LayoutChangeEvent } from 'react-native'
+import { Modal, View, TouchableOpacity, StyleSheet, KeyboardAvoidingView } from 'react-native'
 
-import { useStyles } from '@berty/contexts/styles'
 import { useThemeColor } from '@berty/hooks'
 
 interface BottomModalProps {
@@ -12,29 +11,20 @@ interface BottomModalProps {
 
 export const BottomModal: React.FC<BottomModalProps> = ({ children, isVisible, setIsVisible }) => {
 	const colors = useThemeColor()
-	const { padding } = useStyles()
-	const [childrenHeight, setChildrenHeight] = React.useState<number>(0)
 
 	return (
 		<Modal animationType='slide' transparent={true} visible={isVisible}>
-			<View
-				onLayout={({ nativeEvent: { layout } }: LayoutChangeEvent) => {
-					setChildrenHeight(layout.height)
-				}}
-				style={[
-					styles.container,
-					{ backgroundColor: colors['main-background'] },
-					padding.bottom.medium,
-				]}
-			>
-				{children}
-			</View>
-			<View style={[StyleSheet.absoluteFill, styles.blur, { bottom: childrenHeight }]}>
+			<View style={styles.container}>
 				<TouchableOpacity
+					style={styles.blur}
 					activeOpacity={0}
-					style={[StyleSheet.absoluteFill]}
 					onPress={() => setIsVisible(false)}
 				/>
+				<KeyboardAvoidingView behavior='padding'>
+					<View style={{ backgroundColor: colors['main-background'], paddingBottom: 30 }}>
+						{children}
+					</View>
+				</KeyboardAvoidingView>
 			</View>
 		</Modal>
 	)
@@ -42,14 +32,16 @@ export const BottomModal: React.FC<BottomModalProps> = ({ children, isVisible, s
 
 const styles = StyleSheet.create({
 	container: {
+		flex: 1,
+		justifyContent: 'flex-end',
 		borderTopLeftRadius: 30,
 		borderTopRightRadius: 30,
-		position: 'absolute',
-		bottom: 0,
+		paddingBottom: 0,
 		right: 0,
 		left: 0,
 	},
 	blur: {
+		flex: 1,
 		elevation: 6,
 		zIndex: 6,
 	},
