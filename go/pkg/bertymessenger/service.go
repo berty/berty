@@ -414,6 +414,11 @@ func (svc *service) ActivateGroup(groupPK []byte) error {
 	svc.subsMutex.Lock()
 	defer svc.subsMutex.Unlock()
 
+	if _, ok := svc.groupsToSubTo[messengerutil.B64EncodeBytes(groupPK)]; ok {
+		svc.logger.Warn("Already subscribed to group. Don't call subscribeToGroup again.", zap.String("gpk", messengerutil.B64EncodeBytes(groupPK)))
+		return nil
+	}
+
 	// mark group
 	svc.groupsToSubTo[messengerutil.B64EncodeBytes(groupPK)] = struct{}{}
 
