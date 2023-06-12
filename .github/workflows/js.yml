@@ -17,6 +17,8 @@ on:
 
 jobs:
   build-and-lint:
+    # Check repository owner so that we don't run on a fork.
+    if: github.repository_owner == 'berty'
     runs-on: ubuntu-latest
     name: Build, lint and test JS
     steps:

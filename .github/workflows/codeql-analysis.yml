@@ -39,6 +39,8 @@ on:
 
 jobs:
   analyze:
+    # Check repository owner so that we don't run on a fork.
+    if: github.repository_owner == 'berty'
     name: Analyze
     runs-on: ubuntu-latest
 

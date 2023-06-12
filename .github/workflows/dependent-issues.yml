@@ -17,6 +17,8 @@ on:
 
 jobs:
   check:
+    # Check repository owner so that we don't run on a fork.
+    if: github.repository_owner == 'berty'
     runs-on: ubuntu-latest
     steps:
       - uses: z0al/dependent-issues@v1.5.1

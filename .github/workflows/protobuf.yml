@@ -64,6 +64,8 @@ on:
       - "**/Podfile.lock"
 jobs:
   gen-go-and-docs:
+    # Check repository owner so that we don't run on a fork.
+    if: github.repository_owner == 'berty'
     name: Generate go protobuf and docs
     runs-on: ubuntu-latest
     container: bertytech/protoc:31
@@ -137,6 +139,8 @@ jobs:
           apiary publish --api-name=bertymessenger --path="docs/.tmp/openapi/bertymessenger.swagger.json" || true
 
   gen-js:
+    # Check repository owner so that we don't run on a fork.
+    if: github.repository_owner == 'berty'
     name: Generate js protobuf
     runs-on: ubuntu-latest
     container: bertytech/protoc:31

@@ -21,6 +21,8 @@ on:
 
 jobs:
   benchmark:
+    # Check repository owner so that we don't run on a fork.
+    if: github.repository_owner == 'berty'
     name: Run benchmarks
     runs-on: ubuntu-latest
     steps:

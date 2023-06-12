@@ -29,6 +29,8 @@ on:
 
 jobs:
   mac_runner_matrix_builder:
+    # Check repository owner so that we don't run on a fork.
+    if: github.repository_owner == 'berty'
     name: macOS matrix builder
     runs-on: ubuntu-latest
     outputs:
@@ -50,6 +52,8 @@ jobs:
           node .github/workflows/utils/mac-runner-matrix-builder.js optimized
 
   build-macos-app:
+    # Check repository owner so that we don't run on a fork.
+    if: github.repository_owner == 'berty'
     name: Build Electron app (macOS)
     needs: mac_runner_matrix_builder
     runs-on: ${{ matrix.runner }}

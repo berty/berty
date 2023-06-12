@@ -24,6 +24,8 @@ on:
 
 jobs:
   build:
+    # Check repository owner so that we don't run on a fork.
+    if: github.repository_owner == 'berty'
     name: Build for Android
     runs-on: ubuntu-latest
     steps:

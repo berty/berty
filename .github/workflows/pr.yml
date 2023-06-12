@@ -8,6 +8,8 @@ on:
 
 jobs:
   preview:
+    # Check repository owner so that we don't run on a fork.
+    if: github.repository_owner == 'berty'
     name: Release Note Preview
     runs-on: ubuntu-latest
     steps:
