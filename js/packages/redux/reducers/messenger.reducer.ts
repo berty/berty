@@ -195,20 +195,6 @@ const makeRoot = <T>(val: T) => ({
 const rootInitialState = makeRoot(initialState)
 type LocalRootState = typeof rootInitialState
 
-/**
- *
- * Actions
- *
- */
-
-const defaultDisplayName = (seed: string | null | undefined) => {
-	let suffix = '1337'
-	if (seed) {
-		suffix = seed.substring(0, 4)
-	}
-	return `anon#${suffix}`
-}
-
 const slice = createSlice({
 	name: 'messenger',
 	initialState,
@@ -351,7 +337,8 @@ const slice = createSlice({
 
 				const member = cloneDeep(payload.member)
 				if (!member.displayName) {
-					member.displayName = defaultDisplayName(member.publicKey)
+					// It fixes https://github.com/berty/berty/issues/4687
+					return
 				}
 
 				const membersBucket = selectMembersBucket(
