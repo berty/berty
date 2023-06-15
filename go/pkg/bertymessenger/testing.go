@@ -10,8 +10,8 @@ import (
 	"testing"
 	"time"
 
+	libp2p_mocknet "github.com/berty/go-libp2p-mock"
 	"github.com/golang/protobuf/proto"
-	libp2p_mocknet "github.com/libp2p/go-libp2p/p2p/net/mock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/zap"
