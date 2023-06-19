@@ -561,9 +561,9 @@ message AccountVerifiedCredential {
 
 message AccountDirectoryServiceRecord {
   string account_pk = 1 [(gogoproto.customname) = "AccountPK"];
-  string identifier = 2 [(gogoproto.moretags) = "gorm:\"uniqueIndex:uniqueDirectoryRecordServerIdentifier\""];
+  string identifier = 2 [(gogoproto.moretags) = "gorm:\"primaryKey\""];
   string identifier_proof_issuer = 3;
-  string server_addr = 4 [(gogoproto.moretags) = "gorm:\"uniqueIndex:uniqueDirectoryRecordServerIdentifier\""];
+  string server_addr = 4 [(gogoproto.moretags) = "gorm:\"primaryKey\""];
   int64 registration_date = 5;
   int64 expiration_date = 6;
   bool revoked = 7;
