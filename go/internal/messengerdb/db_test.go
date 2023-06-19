@@ -12,6 +12,7 @@ import (
 	"golang.org/x/net/context"
 	"gorm.io/gorm"
 
+	sqlite "berty.tech/berty/v2/go/internal/gorm-sqlcipher"
 	"berty.tech/berty/v2/go/internal/messengerutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
@@ -2073,4 +2074,21 @@ func Test_dbWrapper_SaveAccountDirectoryServiceRecord_GetAccountDirectoryService
 	require.Equal(t, "token1.1", record.DirectoryRecordToken)
 	require.Equal(t, "unregister_token1.1", record.DirectoryRecordUnregisterToken)
 	require.Equal(t, false, record.Revoked)
+}
+
+func TestDBAutoMigrateTwice(t *testing.T) {
+	const dbName = "test.db"
+
+	db, err := gorm.Open(sqlite.Open(fmt.Sprintf("file:%s?mode=memory&cache=shared", dbName)), &gorm.Config{})
+	require.NoError(t, err)
+
+	err = db.AutoMigrate(getDBModels()...)
+	require.NoError(t, err)
+
+	err = db.AutoMigrate(getDBModels()...)
+	require.NoError(t, err)
+
+	sqlDB, err := db.DB()
+	require.NoError(t, err)
+	sqlDB.Close()
 }
