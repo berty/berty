@@ -7,7 +7,7 @@ var Config BertyConfig
 
 // FIXME: make it more nicely
 func init() {
-	var input = `
+	input := `
 {
   "berty": {
     "contacts": {
