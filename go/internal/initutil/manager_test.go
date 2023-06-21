@@ -76,15 +76,16 @@ func verifyRunningLeakDetection(t *testing.T) {
 		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p/p2p/discovery/mdns_legacy.(*mdnsService).startResolver.func1"), // the closing routine has big timeout, should be managed by ipfs
 		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p/p2p/discovery/mdns.(*mdnsService).startResolver.func1"),        // the closing routine has big timeout, should be managed by ipfs
 		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p-kad-dht/providers.(*ProviderManager).GetProviders"),            // the closing routine has big timeout, should be managed by ipfs
-		goleak.IgnoreTopFunction("github.com/libp2p/zeroconf/v2.(*client).mainloop"),                                         // the closing routine has big timeout, should be managed by ipfs
-		goleak.IgnoreTopFunction("github.com/libp2p/zeroconf/v2.(*client).periodicQuery"),                                    // the closing routine has big timeout, should be managed by ipfs
-		goleak.IgnoreTopFunction("github.com/ipfs/kubo/core/bootstrap.bootstrapConnect.func1 "),                              // the closing routine has big timeout, should be managed by ipfs
-		goleak.IgnoreTopFunction("go.opencensus.io/stats/view.(*worker).start"),                                              // called by init() in berty/go/internal/grpcutil/server.go
-		goleak.IgnoreTopFunction("go.uber.org/fx.withTimeout"),                                                               // sometimes happening on CI, need more investigation
-		goleak.IgnoreTopFunction("internal/poll.runtime_pollWait"),                                                           // upstream issue of mdns, go wakeup periodiclly to do action before check exist, timeout about 10 seconds
-		goleak.IgnoreTopFunction("net.(*netFD).connect.func2"),                                                               // FIXME - many libraries used this code
-		goleak.IgnoreTopFunction("sync.runtime_Semacquire"),                                                                  // the closing routine has big timeout
-		goleak.IgnoreTopFunction("sync.runtime_SemacquireMutex"),                                                             // sometimes happening on CI, need more investigation
+		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p-kad-dht/dual.(*DHT).FindProvidersAsync.func1"),
+		goleak.IgnoreTopFunction("github.com/libp2p/zeroconf/v2.(*client).mainloop"),            // the closing routine has big timeout, should be managed by ipfs
+		goleak.IgnoreTopFunction("github.com/libp2p/zeroconf/v2.(*client).periodicQuery"),       // the closing routine has big timeout, should be managed by ipfs
+		goleak.IgnoreTopFunction("github.com/ipfs/kubo/core/bootstrap.bootstrapConnect.func1 "), // the closing routine has big timeout, should be managed by ipfs
+		goleak.IgnoreTopFunction("go.opencensus.io/stats/view.(*worker).start"),                 // called by init() in berty/go/internal/grpcutil/server.go
+		goleak.IgnoreTopFunction("go.uber.org/fx.withTimeout"),                                  // sometimes happening on CI, need more investigation
+		goleak.IgnoreTopFunction("internal/poll.runtime_pollWait"),                              // upstream issue of mdns, go wakeup periodiclly to do action before check exist, timeout about 10 seconds
+		goleak.IgnoreTopFunction("net.(*netFD).connect.func2"),                                  // FIXME - many libraries used this code
+		goleak.IgnoreTopFunction("sync.runtime_Semacquire"),                                     // the closing routine has big timeout
+		goleak.IgnoreTopFunction("sync.runtime_SemacquireMutex"),                                // sometimes happening on CI, need more investigation
 	)
 }
 
