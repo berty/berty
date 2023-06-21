@@ -3,8 +3,6 @@ package messengerpayloads
 import (
 	"bytes"
 	"context"
-	"crypto/sha256"
-	"encoding/hex"
 	"errors"
 	"fmt"
 	"strconv"
@@ -93,9 +91,6 @@ func (h *EventHandler) bindHandlers() {
 		protocoltypes.EventTypeAccountServiceTokenAdded:               h.accountServiceTokenAdded,
 		protocoltypes.EventTypeGroupReplicating:                       h.groupReplicating,
 		protocoltypes.EventTypeMultiMemberGroupInitialMemberAnnounced: h.multiMemberGroupInitialMemberAnnounced,
-		protocoltypes.EventTypePushDeviceTokenRegistered:              h.pushDeviceTokenRegistered,
-		protocoltypes.EventTypePushDeviceServerRegistered:             h.pushDeviceServerRegistered,
-		protocoltypes.EventTypePushMemberTokenUpdate:                  h.pushMemberTokenUpdate,
 		protocoltypes.EventTypeAccountVerifiedCredentialRegistered:    h.accountVerifiedCredentialRegistered,
 	}
 	h.appMessageHandlers = map[mt.AppMessage_Type]struct {
@@ -109,6 +104,9 @@ func (h *EventHandler) bindHandlers() {
 		mt.AppMessage_TypeSetGroupInfo:                        {h.handleAppMessageSetGroupInfo, false},
 		mt.AppMessage_TypeAccountDirectoryServiceRegistered:   {h.handleAppMessageAccountDirectoryServiceRegistered, false},
 		mt.AppMessage_TypeAccountDirectoryServiceUnregistered: {h.handleAppMessageDirectoryServiceUnregistered, false},
+		mt.AppMessage_TypePushSetDeviceToken:                  {h.handleAppMessagePushSetDeviceToken, false},
+		mt.AppMessage_TypePushSetServer:                       {h.handleAppMessagePushSetServer, false},
+		mt.AppMessage_TypePushSetMemberToken:                  {h.handleAppMessagePushSetMemberToken, false},
 	}
 }
 
@@ -895,9 +893,9 @@ func (h *EventHandler) handleAppMessageUserMessage(tx *messengerdb.DBWrapper, i 
 		return i, isNew, nil
 	}
 
-	if err := h.postHandlerActions.InteractionReceived(i); err != nil {
-		return nil, isNew, err
-	}
+	tx.PostAction(func(d *messengerdb.DBWrapper) error {
+		return h.postHandlerActions.InteractionReceived(i)
+	})
 
 	// notify
 
@@ -1289,6 +1287,110 @@ func (h *EventHandler) handleAppMessageDirectoryServiceUnregistered(tx *messenge
 	return i, false, nil
 }
 
+func (h *EventHandler) handleAppMessagePushSetDeviceToken(tx *messengerdb.DBWrapper, i *mt.Interaction, amPayload proto.Message) (*mt.Interaction, bool, error) {
+	if len(i.GetPayload()) == 0 {
+		return nil, false, ErrNilPayload
+	}
+
+	acc, err := tx.GetAccount()
+	if err != nil {
+		return nil, false, err
+	}
+
+	payload := amPayload.(*mt.AppMessage_PushSetDeviceToken)
+	if acc.PublicKey != i.ConversationPublicKey {
+		return nil, false, errcode.ErrInvalidInput.Wrap(fmt.Errorf("message is not on account group"))
+	}
+
+	if err := tx.SavePushDeviceToken(acc.PublicKey, payload); err != nil {
+		return nil, false, err
+	}
+
+	acc, err = tx.GetAccount()
+	if err != nil {
+		return nil, false, err
+	}
+
+	tx.PostAction(func(d *messengerdb.DBWrapper) error {
+		if err := h.postHandlerActions.PushServerOrTokenRegistered(acc); err != nil {
+			return err
+		}
+
+		return h.dispatcher.StreamEvent(mt.StreamEvent_TypeAccountUpdated, &mt.StreamEvent_AccountUpdated{Account: acc}, false)
+	})
+
+	return i, false, nil
+}
+
+func (h *EventHandler) handleAppMessagePushSetServer(tx *messengerdb.DBWrapper, i *mt.Interaction, amPayload proto.Message) (*mt.Interaction, bool, error) {
+	if len(i.GetPayload()) == 0 {
+		return nil, false, ErrNilPayload
+	}
+
+	acc, err := tx.GetAccount()
+	if err != nil {
+		return nil, false, err
+	}
+
+	payload := amPayload.(*mt.AppMessage_PushSetServer)
+	if acc.PublicKey != i.ConversationPublicKey {
+		return nil, false, errcode.ErrInvalidInput.Wrap(fmt.Errorf("message is not on account group"))
+	}
+
+	if err := tx.SavePushServer(acc.PublicKey, payload); err != nil {
+		return nil, false, err
+	}
+
+	acc, err = tx.GetAccount()
+	if err != nil {
+		return nil, false, err
+	}
+
+	tx.PostAction(func(_ *messengerdb.DBWrapper) error {
+		if err := h.postHandlerActions.PushServerOrTokenRegistered(acc); err != nil {
+			return err
+		}
+
+		return h.dispatcher.StreamEvent(mt.StreamEvent_TypeAccountUpdated, &mt.StreamEvent_AccountUpdated{Account: acc}, false)
+	})
+
+	return i, false, nil
+}
+
+func (h *EventHandler) handleAppMessagePushSetMemberToken(tx *messengerdb.DBWrapper, i *mt.Interaction, amPayload proto.Message) (*mt.Interaction, bool, error) {
+	if len(i.GetPayload()) == 0 {
+		return nil, false, ErrNilPayload
+	}
+
+	payload := amPayload.(*mt.AppMessage_PushSetMemberToken)
+	if i.Conversation == nil {
+		return nil, false, errcode.ErrInvalidInput.Wrap(fmt.Errorf("unable to find the conversation"))
+	}
+
+	tokenIdentifier := messengerutil.MakeSharedPushIdentifier(payload.MemberToken.Server.Key, payload.MemberToken.Token)
+
+	if i.IsMine {
+		if err := tx.SavePushLocalDeviceSharedToken(tokenIdentifier, i.ConversationPublicKey); err != nil {
+			return nil, false, err
+		}
+	}
+
+	if err := tx.SavePushMemberToken(tokenIdentifier, i.ConversationPublicKey, payload); err != nil {
+		return nil, false, err
+	}
+
+	if conv, err := tx.GetConversationByPK(i.ConversationPublicKey); err != nil {
+		h.logger.Warn("unknown conversation", logutil.PrivateString("conversation-pk", i.ConversationPublicKey))
+		return nil, false, err
+	} else {
+		tx.PostAction(func(d *messengerdb.DBWrapper) error {
+			return h.dispatcher.StreamEvent(mt.StreamEvent_TypeConversationUpdated, &mt.StreamEvent_ConversationUpdated{Conversation: conv}, false)
+		})
+	}
+
+	return i, false, nil
+}
+
 func interactionFromOutOfStoreAppMessage(h *EventHandler, gPKBytes []byte, outOfStoreMessage *protocoltypes.OutOfStoreMessage, am *mt.AppMessage) (*mt.Interaction, error) {
 	amt := am.GetType()
 	_, c, err := ipfscid.CidFromBytes(outOfStoreMessage.CID)
@@ -1340,60 +1442,6 @@ func (h *EventHandler) isEventFromCurrentDevice(conversationPK []byte, devicePK 
 	return bytes.Equal(devicePK, ownDevPK), nil
 }
 
-func (h *EventHandler) pushDeviceTokenRegistered(gme *protocoltypes.GroupMetadataEvent) error {
-	var ev protocoltypes.PushDeviceTokenRegistered
-	if err := proto.Unmarshal(gme.GetEvent(), &ev); err != nil {
-		return err
-	}
-
-	if ok, err := h.isEventFromCurrentDevice(gme.EventContext.GroupPK, ev.DevicePK); err != nil {
-		return errcode.ErrInternal.Wrap(err)
-	} else if !ok {
-		h.logger.Info("event is from another device, ignoring")
-		return nil
-	}
-
-	if newlyHandled, err := h.db.MarkMetadataEventHandled(gme.EventContext); err != nil {
-		return errcode.ErrDBWrite.Wrap(err)
-	} else if !newlyHandled {
-		h.logger.Info("event has already been handled, ignoring")
-		return nil
-	}
-
-	account, err := h.db.UpdateDevicePushToken(ev.Token)
-	if err != nil {
-		return errcode.ErrDBWrite.Wrap(err)
-	}
-
-	if err := h.postHandlerActions.PushServerOrTokenRegistered(account); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (h *EventHandler) pushMemberTokenUpdate(gme *protocoltypes.GroupMetadataEvent) error {
-	var ev protocoltypes.PushMemberTokenUpdate
-	if err := proto.Unmarshal(gme.GetEvent(), &ev); err != nil {
-		return err
-	}
-
-	tokenHash := sha256.New()
-	tokenHash.Write(ev.Token)
-	tokenSum := tokenHash.Sum(nil)
-
-	memberPKB, _, err := h.metaFetcher.OwnMemberAndDevicePKForConversation(h.ctx, gme.EventContext.GroupPK)
-	if err != nil {
-		return err
-	}
-
-	if err := h.db.UpdateDeviceSetPushToken(h.ctx, messengerutil.B64EncodeBytes(memberPKB), messengerutil.B64EncodeBytes(ev.DevicePK), messengerutil.B64EncodeBytes(gme.EventContext.GroupPK), hex.EncodeToString(tokenSum)); err != nil {
-		return err
-	}
-
-	return nil
-}
-
 func (h *EventHandler) accountVerifiedCredentialRegistered(gme *protocoltypes.GroupMetadataEvent) error {
 	var ev protocoltypes.AccountVerifiedCredentialRegistered
 	if err := proto.Unmarshal(gme.GetEvent(), &ev); err != nil {
@@ -1412,36 +1460,6 @@ func (h *EventHandler) accountVerifiedCredentialRegistered(gme *protocoltypes.Gr
 
 	if err := h.dispatcher.StreamEvent(mt.StreamEvent_TypeAccountUpdated, &mt.StreamEvent_AccountUpdated{Account: acc}, false); err != nil {
 		return errcode.ErrStreamWrite.Wrap(err)
-	}
-
-	return nil
-}
-
-func (h *EventHandler) pushDeviceServerRegistered(gme *protocoltypes.GroupMetadataEvent) error {
-	var ev protocoltypes.PushDeviceServerRegistered
-	if err := proto.Unmarshal(gme.GetEvent(), &ev); err != nil {
-		return err
-	}
-
-	if ok, err := h.isEventFromCurrentDevice(gme.EventContext.GroupPK, ev.DevicePK); err != nil {
-		return errcode.ErrInternal.Wrap(err)
-	} else if !ok {
-		return nil
-	}
-
-	if newlyHandled, err := h.db.MarkMetadataEventHandled(gme.EventContext); err != nil {
-		return errcode.ErrDBWrite.Wrap(err)
-	} else if !newlyHandled {
-		return nil
-	}
-
-	account, err := h.db.UpdateDevicePushServer(ev.Server)
-	if err != nil {
-		return errcode.ErrDBWrite.Wrap(err)
-	}
-
-	if err := h.postHandlerActions.PushServerOrTokenRegistered(account); err != nil {
-		return err
 	}
 
 	return nil

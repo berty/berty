@@ -171,6 +171,21 @@ enum ErrCode {
   ErrBertyAccountCreationFailed = 5016;
   ErrBertyAccountUpdateFailed = 5017;
   ErrAppStorageNotSupported = 5018;
+
+  // Push Services
+
+  ErrPush = 6000;
+  ErrPushWrongAccount = 6001;
+  ErrPushUnableToDecrypt = 6002;
+  ErrPushInvalidPayload = 6003;
+  ErrPushInvalidServerConfig = 6004;
+  ErrPushMissingBundleID = 6005;
+  ErrPushUnknownDestination = 6006;
+  ErrPushProvider = 6007;
+  ErrPushUnknownProvider = 6008;
+  ErrNoProvidersConfigured = 6009;
+  ErrInvalidPrivateKey = 6010;
+  ErrPushServerNotFound = 6011;
 }
 
 message ErrDetails { repeated ErrCode codes = 1; }

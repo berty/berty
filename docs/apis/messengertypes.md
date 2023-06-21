@@ -21,6 +21,9 @@
     - [AppMessage.AccountDirectoryServiceUnregistered](#berty-messenger-v1-AppMessage-AccountDirectoryServiceUnregistered)
     - [AppMessage.Acknowledge](#berty-messenger-v1-AppMessage-Acknowledge)
     - [AppMessage.GroupInvitation](#berty-messenger-v1-AppMessage-GroupInvitation)
+    - [AppMessage.PushSetDeviceToken](#berty-messenger-v1-AppMessage-PushSetDeviceToken)
+    - [AppMessage.PushSetMemberToken](#berty-messenger-v1-AppMessage-PushSetMemberToken)
+    - [AppMessage.PushSetServer](#berty-messenger-v1-AppMessage-PushSetServer)
     - [AppMessage.SetGroupInfo](#berty-messenger-v1-AppMessage-SetGroupInfo)
     - [AppMessage.SetUserInfo](#berty-messenger-v1-AppMessage-SetUserInfo)
     - [AppMessage.UserMessage](#berty-messenger-v1-AppMessage-UserMessage)
@@ -104,6 +107,7 @@
     - [LocalConversationState](#berty-messenger-v1-LocalConversationState)
     - [LocalDatabaseState](#berty-messenger-v1-LocalDatabaseState)
     - [Member](#berty-messenger-v1-Member)
+    - [MemberWithDevices](#berty-messenger-v1-MemberWithDevices)
     - [MessageSearch](#berty-messenger-v1-MessageSearch)
     - [MessageSearch.Reply](#berty-messenger-v1-MessageSearch-Reply)
     - [MessageSearch.Request](#berty-messenger-v1-MessageSearch-Request)
@@ -112,13 +116,31 @@
     - [ParseDeepLink](#berty-messenger-v1-ParseDeepLink)
     - [ParseDeepLink.Reply](#berty-messenger-v1-ParseDeepLink-Reply)
     - [ParseDeepLink.Request](#berty-messenger-v1-ParseDeepLink-Request)
+    - [PushDeviceToken](#berty-messenger-v1-PushDeviceToken)
+    - [PushLocalDeviceSharedToken](#berty-messenger-v1-PushLocalDeviceSharedToken)
+    - [PushMemberToken](#berty-messenger-v1-PushMemberToken)
+    - [PushMemberTokenUpdate](#berty-messenger-v1-PushMemberTokenUpdate)
     - [PushReceive](#berty-messenger-v1-PushReceive)
     - [PushReceive.Reply](#berty-messenger-v1-PushReceive-Reply)
     - [PushReceive.Request](#berty-messenger-v1-PushReceive-Request)
     - [PushReceivedData](#berty-messenger-v1-PushReceivedData)
+    - [PushSend](#berty-messenger-v1-PushSend)
+    - [PushSend.Reply](#berty-messenger-v1-PushSend-Reply)
+    - [PushSend.Request](#berty-messenger-v1-PushSend-Request)
+    - [PushServer](#berty-messenger-v1-PushServer)
+    - [PushServerRecord](#berty-messenger-v1-PushServerRecord)
     - [PushSetAutoShare](#berty-messenger-v1-PushSetAutoShare)
     - [PushSetAutoShare.Reply](#berty-messenger-v1-PushSetAutoShare-Reply)
     - [PushSetAutoShare.Request](#berty-messenger-v1-PushSetAutoShare-Request)
+    - [PushSetDeviceToken](#berty-messenger-v1-PushSetDeviceToken)
+    - [PushSetDeviceToken.Reply](#berty-messenger-v1-PushSetDeviceToken-Reply)
+    - [PushSetDeviceToken.Request](#berty-messenger-v1-PushSetDeviceToken-Request)
+    - [PushSetServer](#berty-messenger-v1-PushSetServer)
+    - [PushSetServer.Reply](#berty-messenger-v1-PushSetServer-Reply)
+    - [PushSetServer.Request](#berty-messenger-v1-PushSetServer-Request)
+    - [PushShareToken](#berty-messenger-v1-PushShareToken)
+    - [PushShareToken.Reply](#berty-messenger-v1-PushShareToken-Reply)
+    - [PushShareToken.Request](#berty-messenger-v1-PushShareToken-Request)
     - [PushShareTokenForConversation](#berty-messenger-v1-PushShareTokenForConversation)
     - [PushShareTokenForConversation.Reply](#berty-messenger-v1-PushShareTokenForConversation-Reply)
     - [PushShareTokenForConversation.Request](#berty-messenger-v1-PushShareTokenForConversation-Request)
@@ -138,7 +160,6 @@
     - [ShareableBertyGroup](#berty-messenger-v1-ShareableBertyGroup)
     - [ShareableBertyGroup.Reply](#berty-messenger-v1-ShareableBertyGroup-Reply)
     - [ShareableBertyGroup.Request](#berty-messenger-v1-ShareableBertyGroup-Request)
-    - [SharedPushToken](#berty-messenger-v1-SharedPushToken)
     - [StreamEvent](#berty-messenger-v1-StreamEvent)
     - [StreamEvent.AccountUpdated](#berty-messenger-v1-StreamEvent-AccountUpdated)
     - [StreamEvent.ContactUpdated](#berty-messenger-v1-StreamEvent-ContactUpdated)
@@ -201,8 +222,8 @@
 | service_tokens | [ServiceToken](#berty-messenger-v1-ServiceToken) | repeated |  |
 | replicate_new_groups_automatically | [bool](#bool) |  |  |
 | auto_share_push_token_flag | [bool](#bool) |  |  |
-| device_push_token | [bytes](#bytes) |  |  |
-| device_push_server | [bytes](#bytes) |  |  |
+| push_device_token | [PushDeviceToken](#berty-messenger-v1-PushDeviceToken) |  |  |
+| push_server_records | [PushServerRecord](#berty-messenger-v1-PushServerRecord) | repeated |  |
 | muted_until | [int64](#int64) |  |  |
 | hide_in_app_notifications | [bool](#bool) |  |  |
 | hide_push_previews | [bool](#bool) |  |  |
@@ -340,6 +361,30 @@ AppMessage is the app layer format
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | link | [string](#string) |  | TODO: optimize message size |
+
+<a name="berty-messenger-v1-AppMessage-PushSetDeviceToken"></a>
+
+### AppMessage.PushSetDeviceToken
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| device_token | [berty.push.v1.PushServiceReceiver](#berty-push-v1-PushServiceReceiver) |  |  |
+
+<a name="berty-messenger-v1-AppMessage-PushSetMemberToken"></a>
+
+### AppMessage.PushSetMemberToken
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| member_token | [PushMemberTokenUpdate](#berty-messenger-v1-PushMemberTokenUpdate) |  |  |
+
+<a name="berty-messenger-v1-AppMessage-PushSetServer"></a>
+
+### AppMessage.PushSetServer
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| server | [PushServer](#berty-messenger-v1-PushServer) |  |  |
 
 <a name="berty-messenger-v1-AppMessage-SetGroupInfo"></a>
 
@@ -530,9 +575,10 @@ to test more false-positive guesses.
 | created_date | [int64](#int64) |  |  |
 | replication_info | [ConversationReplicationInfo](#berty-messenger-v1-ConversationReplicationInfo) | repeated |  |
 | info_date | [int64](#int64) |  | info_date is used when SetGroupInfo is called |
-| shared_push_token_identifier | [string](#string) |  |  |
 | local_member_public_key | [string](#string) |  |  |
 | muted_until | [int64](#int64) |  |  |
+| push_local_device_shared_tokens | [PushLocalDeviceSharedToken](#berty-messenger-v1-PushLocalDeviceSharedToken) | repeated |  |
+| push_member_tokens | [PushMemberToken](#berty-messenger-v1-PushMemberToken) | repeated |  |
 
 <a name="berty-messenger-v1-ConversationClose"></a>
 
@@ -986,6 +1032,15 @@ Composite primary key
 | conversation | [Conversation](#berty-messenger-v1-Conversation) |  |  |
 | devices | [Device](#berty-messenger-v1-Device) | repeated |  |
 
+<a name="berty-messenger-v1-MemberWithDevices"></a>
+
+### MemberWithDevices
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| member_pk | [string](#string) |  |  |
+| devices_pks | [string](#string) | repeated |  |
+
 <a name="berty-messenger-v1-MessageSearch"></a>
 
 ### MessageSearch
@@ -1055,6 +1110,50 @@ Composite primary key
 | link | [string](#string) |  |  |
 | passphrase | [bytes](#bytes) |  | optional passphase to decrypt the link |
 
+<a name="berty-messenger-v1-PushDeviceToken"></a>
+
+### PushDeviceToken
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| account_pk | [string](#string) |  | account_pk is the account public key that owns the device token |
+| token_type | [berty.push.v1.PushServiceTokenType](#berty-push-v1-PushServiceTokenType) |  | token_type is the type of the token used, it allows us to act as a proxy to the appropriate push server |
+| bundle_id | [string](#string) |  | bundle_id is the app identifier |
+| token | [bytes](#bytes) |  | token is the device identifier used |
+| public_key | [bytes](#bytes) |  | public_key is the public key which will be used to encrypt the payload |
+
+<a name="berty-messenger-v1-PushLocalDeviceSharedToken"></a>
+
+### PushLocalDeviceSharedToken
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| token_id | [string](#string) |  |  |
+| conversation_public_key | [string](#string) |  | group_pk is the public key of the group for whom the token is for |
+
+<a name="berty-messenger-v1-PushMemberToken"></a>
+
+### PushMemberToken
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| token_id | [string](#string) |  | token_id is the id of the token |
+| conversation_public_key | [string](#string) |  | group_pk is the public key of the group for whom the token is for |
+| device_pk | [string](#string) |  | device_pk is the public key of the device sending the message |
+| server_addr | [string](#string) |  | server_addr is the push server address |
+| server_key | [bytes](#bytes) |  | server_key is the push server public key |
+| token | [bytes](#bytes) |  | token is the sealed token of the device |
+
+<a name="berty-messenger-v1-PushMemberTokenUpdate"></a>
+
+### PushMemberTokenUpdate
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| device_pk | [string](#string) |  | device_pk is the public key of the device sending the message |
+| server | [PushServer](#berty-messenger-v1-PushServer) |  | server is the push server to use |
+| token | [bytes](#bytes) |  | token is the sealed token of the device |
+
 <a name="berty-messenger-v1-PushReceive"></a>
 
 ### PushReceive
@@ -1081,14 +1180,53 @@ Composite primary key
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| protocol_data | [bytes](#bytes) |  | weshnet.protocol.v1.PushReceive.Reply protocol_data = 1;
-
-@FIXME(push): weshnet.protocol.v1.PushReceive.Reply has been removed |
+| protocol_data | [weshnet.protocol.v1.OutOfStoreReceive.Reply](#weshnet-protocol-v1-OutOfStoreReceive-Reply) |  |  |
 | interaction | [Interaction](#berty-messenger-v1-Interaction) |  |  |
 | already_received | [bool](#bool) |  |  |
 | account_muted | [bool](#bool) |  |  |
 | conversation_muted | [bool](#bool) |  |  |
 | hide_preview | [bool](#bool) |  |  |
+
+<a name="berty-messenger-v1-PushSend"></a>
+
+### PushSend
+
+<a name="berty-messenger-v1-PushSend-Reply"></a>
+
+### PushSend.Reply
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| group_members | [MemberWithDevices](#berty-messenger-v1-MemberWithDevices) | repeated |  |
+
+<a name="berty-messenger-v1-PushSend-Request"></a>
+
+### PushSend.Request
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| cid | [bytes](#bytes) |  |  |
+| group_pk | [string](#string) |  |  |
+| group_members | [MemberWithDevices](#berty-messenger-v1-MemberWithDevices) | repeated |  |
+
+<a name="berty-messenger-v1-PushServer"></a>
+
+### PushServer
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| addr | [string](#string) |  |  |
+| key | [bytes](#bytes) |  |  |
+
+<a name="berty-messenger-v1-PushServerRecord"></a>
+
+### PushServerRecord
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| account_pk | [string](#string) |  |  |
+| server_addr | [string](#string) |  |  |
+| server_key | [bytes](#bytes) |  |  |
 
 <a name="berty-messenger-v1-PushSetAutoShare"></a>
 
@@ -1105,6 +1243,57 @@ Composite primary key
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | enabled | [bool](#bool) |  |  |
+
+<a name="berty-messenger-v1-PushSetDeviceToken"></a>
+
+### PushSetDeviceToken
+
+<a name="berty-messenger-v1-PushSetDeviceToken-Reply"></a>
+
+### PushSetDeviceToken.Reply
+
+<a name="berty-messenger-v1-PushSetDeviceToken-Request"></a>
+
+### PushSetDeviceToken.Request
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| receiver | [berty.push.v1.PushServiceReceiver](#berty-push-v1-PushServiceReceiver) |  |  |
+
+<a name="berty-messenger-v1-PushSetServer"></a>
+
+### PushSetServer
+
+<a name="berty-messenger-v1-PushSetServer-Reply"></a>
+
+### PushSetServer.Reply
+
+<a name="berty-messenger-v1-PushSetServer-Request"></a>
+
+### PushSetServer.Request
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| server | [PushServer](#berty-messenger-v1-PushServer) |  |  |
+
+<a name="berty-messenger-v1-PushShareToken"></a>
+
+### PushShareToken
+
+<a name="berty-messenger-v1-PushShareToken-Reply"></a>
+
+### PushShareToken.Reply
+
+<a name="berty-messenger-v1-PushShareToken-Request"></a>
+
+### PushShareToken.Request
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| device_pk | [string](#string) |  |  |
+| group_pk | [string](#string) |  |  |
+| server | [PushServer](#berty-messenger-v1-PushServer) |  |  |
+| receiver | [berty.push.v1.PushServiceReceiver](#berty-push-v1-PushServiceReceiver) |  |  |
 
 <a name="berty-messenger-v1-PushShareTokenForConversation"></a>
 
@@ -1132,7 +1321,7 @@ Composite primary key
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| push_token | [SharedPushToken](#berty-messenger-v1-SharedPushToken) |  |  |
+| token | [PushMemberToken](#berty-messenger-v1-PushMemberToken) |  |  |
 
 <a name="berty-messenger-v1-PushTokenSharedForConversation-Request"></a>
 
@@ -1227,17 +1416,6 @@ Composite primary key
 | ----- | ---- | ----- | ----------- |
 | group_pk | [bytes](#bytes) |  |  |
 | group_name | [string](#string) |  |  |
-
-<a name="berty-messenger-v1-SharedPushToken"></a>
-
-### SharedPushToken
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| device_public_key | [string](#string) |  |  |
-| member_public_key | [string](#string) |  |  |
-| conversation_public_key | [string](#string) |  |  |
-| token | [string](#string) |  |  |
 
 <a name="berty-messenger-v1-StreamEvent"></a>
 
@@ -1432,9 +1610,12 @@ status events
 | service_tokens | [int64](#int64) |  |  |
 | conversation_replication_info | [int64](#int64) |  |  |
 | metadata_events | [int64](#int64) |  |  |
-| shared_push_tokens | [int64](#int64) |  |  |
+| push_member_token | [int64](#int64) |  |  |
 | account_verified_credentials | [int64](#int64) |  |  |
-| account_directory_service_record | [int64](#int64) |  | older, more recent |
+| account_directory_service_record | [int64](#int64) |  |  |
+| push_device_token | [int64](#int64) |  |  |
+| push_server_record | [int64](#int64) |  |  |
+| push_local_device_shared_token | [int64](#int64) |  | older, more recent |
 
 <a name="berty-messenger-v1-SystemInfo-Messenger"></a>
 
@@ -1514,6 +1695,9 @@ status events
 | TypeAcknowledge | 6 |  |
 | TypeAccountDirectoryServiceRegistered | 8 |  |
 | TypeAccountDirectoryServiceUnregistered | 9 |  |
+| TypePushSetDeviceToken | 10 |  |
+| TypePushSetServer | 11 |  |
+| TypePushSetMemberToken | 12 |  |
 
 <a name="berty-messenger-v1-BertyLink-Kind"></a>
 
@@ -1645,6 +1829,9 @@ Today, most of the Berty Messenger logic is implemented directly in the applicat
 | PushShareTokenForConversation | [PushShareTokenForConversation.Request](#berty-messenger-v1-PushShareTokenForConversation-Request) | [PushShareTokenForConversation.Reply](#berty-messenger-v1-PushShareTokenForConversation-Reply) | PushShareTokenForConversation Share a push token for a conversation |
 | PushTokenSharedForConversation | [PushTokenSharedForConversation.Request](#berty-messenger-v1-PushTokenSharedForConversation-Request) | [PushTokenSharedForConversation.Reply](#berty-messenger-v1-PushTokenSharedForConversation-Reply) stream | PushTokenSharedForConversation |
 | PushReceive | [PushReceive.Request](#berty-messenger-v1-PushReceive-Request) | [PushReceive.Reply](#berty-messenger-v1-PushReceive-Reply) | PushReceive handles a push payload, decrypts it if possible, adds it to the local store |
+| PushSend | [PushSend.Request](#berty-messenger-v1-PushSend-Request) | [PushSend.Reply](#berty-messenger-v1-PushSend-Reply) | PushSend sends a push payload to a specified list of group members |
+| PushSetDeviceToken | [PushSetDeviceToken.Request](#berty-messenger-v1-PushSetDeviceToken-Request) | [PushSetDeviceToken.Reply](#berty-messenger-v1-PushSetDeviceToken-Reply) | PushSetDeviceToken registers a push token for the current device |
+| PushSetServer | [PushSetServer.Request](#berty-messenger-v1-PushSetServer-Request) | [PushSetServer.Reply](#berty-messenger-v1-PushSetServer-Reply) | PushSetServer registers a push server for the current device |
 | DirectoryServiceRegister | [DirectoryServiceRegister.Request](#berty-messenger-v1-DirectoryServiceRegister-Request) | [DirectoryServiceRegister.Reply](#berty-messenger-v1-DirectoryServiceRegister-Reply) | DirectoryServiceRegister registers a verified credential on a directory service |
 | DirectoryServiceUnregister | [DirectoryServiceUnregister.Request](#berty-messenger-v1-DirectoryServiceUnregister-Request) | [DirectoryServiceUnregister.Reply](#berty-messenger-v1-DirectoryServiceUnregister-Reply) | DirectoryServiceUnregister requests a directory service to remove a verified credential |
 | DirectoryServiceQuery | [DirectoryServiceQuery.Request](#berty-messenger-v1-DirectoryServiceQuery-Request) | [DirectoryServiceQuery.Reply](#berty-messenger-v1-DirectoryServiceQuery-Reply) stream | DirectoryServiceQuery queries a directory service for given identifiers |

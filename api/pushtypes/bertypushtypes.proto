@@ -1,0 +1,143 @@
+syntax = "proto3";
+
+package berty.push.v1;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "berty.tech/berty/go/pkg/pushtypes";
+
+option (gogoproto.marshaler_all) = true;
+option (gogoproto.unmarshaler_all) = true;
+option (gogoproto.sizer_all) = true;
+
+// PushService
+service PushService {
+  // ServerInfo retrieves metadata about the current push service
+  rpc ServerInfo (PushServiceServerInfo.Request) returns (PushServiceServerInfo.Reply);
+
+  // Send dispatch a push payload to one or multiple recipients
+  rpc Send(PushServiceSend.Request) returns (PushServiceSend.Reply);
+}
+
+message PushServiceReceiver {
+  // token_type is the type of the token used, it allows us to act as a proxy to the appropriate push server
+  PushServiceTokenType token_type = 1;
+
+  // bundle_id is the app identifier
+  string bundle_id = 2 [(gogoproto.customname) = "BundleID"];
+
+  // token is the device identifier used
+  bytes token = 3;
+
+  // public_key is the public key which will be used to encrypt the payload
+  bytes recipient_public_key = 4;
+}
+
+message PushServiceServerInfo {
+  message Request {}
+
+  message Reply {
+    // public_key the public key used to encrypt data to the server (ie. a PushServiceReceiver),
+    // to be used with NaCl's Seal and Open
+    bytes public_key = 1;
+
+    // supported_token_types list of token types supported by the server
+    repeated PushServiceSupportedTokenType supported_token_types = 2;
+  }
+}
+
+message PushServiceSupportedTokenType {
+  string app_bundle_id = 1 [(gogoproto.customname) = "AppBundleID"];
+  PushServiceTokenType token_type = 2;
+}
+
+enum PushServiceTokenType {
+  PushTokenUndefined = 0;
+
+  // PushTokenMQTT: Platform independent
+  PushTokenMQTT = 1;
+
+  // PushTokenApplePushNotificationService: iOS, iPadOS, tvOS, macOS
+  PushTokenApplePushNotificationService = 2;
+
+  // PushTokenFirebaseCloudMessaging: Android with GMS, Chrome OS
+  PushTokenFirebaseCloudMessaging = 3;
+
+  // PushTokenWindowsPushNotificationService: Windows, XBox
+  PushTokenWindowsPushNotificationService = 4;
+
+  // PushTokenHuaweiPushKit: Huawei Android devices with AppGallery
+  PushTokenHuaweiPushKit = 5;
+
+  // PushTokenAmazonDeviceMessaging: Fire OS devices
+  PushTokenAmazonDeviceMessaging = 6;
+}
+
+message PushServiceSend {
+  message Request {
+    bytes envelope = 1;
+
+    PushServicePriority priority = 2;
+
+    repeated PushServiceOpaqueReceiver receivers = 3;
+  }
+
+  message Reply {}
+}
+
+message OutOfStoreExposedData {
+  bytes nonce = 1;
+  bytes box = 2;
+}
+
+
+enum PushServicePriority {
+  PushPriorityUndefined = 0;
+  PushPriorityLow = 1;
+  PushPriorityNormal = 2;
+}
+
+message PushServiceOpaqueReceiver {
+  bytes opaque_token = 1;
+  string service_addr = 2;
+}
+
+
+message DecryptedPush {
+  enum PushType {
+    Unknown = 0;
+    Message = 1;
+    reserved 2; // Reaction = 2;
+    reserved 3, 4, 5, 6; // Media, Photo, Gif, VoiceMessage
+    GroupInvitation = 7;
+    ConversationNameChanged = 8;
+    MemberNameChanged = 9;
+    reserved 10; // MemberPictureChanged
+    MemberDetailsChanged = 11;
+  }
+
+  string account_id = 1 [(gogoproto.customname) = "AccountID"];
+  string account_name = 2;
+  string conversation_public_key = 3;
+  string conversation_display_name = 4;
+  string member_public_key = 5;
+  string member_display_name = 6;
+  PushType push_type = 7;
+  string payload_attrs_json = 8 [(gogoproto.customname) = "PayloadAttrsJSON"];
+  string deep_link = 9;
+  bool already_received = 10;
+  bool account_muted = 11;
+  bool conversation_muted = 12;
+  bool hide_preview = 13;
+}
+
+message FormatedPush {
+  DecryptedPush.PushType push_type = 1;
+  string title = 2;
+  string subtitle = 3;
+  string body = 4;
+  string deep_link = 5;
+  bool muted = 6;
+  bool hide_preview = 7;
+  string conversation_identifier = 8;
+}

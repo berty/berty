@@ -27,3 +27,11 @@ func pkAsShortID(pk []byte) string {
 
 	return "--------"
 }
+
+func shortStringID(pk string) string {
+	if len(pk) > 8 {
+		return pk[0:8]
+	}
+
+	return pk
+}

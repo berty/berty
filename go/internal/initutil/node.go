@@ -20,6 +20,7 @@ import (
 	"berty.tech/berty/v2/go/pkg/bertymessenger"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
+	"berty.tech/berty/v2/go/pkg/pushtypes"
 	"berty.tech/weshnet"
 	"berty.tech/weshnet/pkg/cryptoutil"
 	"berty.tech/weshnet/pkg/grpcutil"
@@ -193,11 +194,6 @@ func (m *Manager) getLocalProtocolServer() (weshnet.Service, error) {
 			return nil, fmt.Errorf("unable to create new secret store: %w", err)
 		}
 
-		pushKey, err := m.getPushSecretKey()
-		if err != nil {
-			return nil, fmt.Errorf("unable to get push secret: %w", err)
-		}
-
 		prom, err := m.getMetricsRegistry()
 		if err != nil {
 			return nil, fmt.Errorf("unable to get metrics registry")
@@ -213,7 +209,6 @@ func (m *Manager) getLocalProtocolServer() (weshnet.Service, error) {
 			RootDatastore:      rootDS,
 			SecretStore:        st,
 			OrbitDB:            odb,
-			PushKey:            pushKey,
 			GRPCInsecureMode:   m.Node.ServiceInsecureMode,
 			PrometheusRegister: prom,
 		}
@@ -638,9 +633,14 @@ func (m *Manager) getLocalMessengerServer() (messengertypes.MessengerServiceServ
 
 	lcmanager := m.getLifecycleManager()
 
-	pushPlatformToken := (*protocoltypes.PushServiceReceiver)(nil)
+	pushKey, err := m.getPushSecretKey()
+	if err != nil {
+		return nil, errcode.TODO.Wrap(err)
+	}
+
+	pushPlatformToken := (*pushtypes.PushServiceReceiver)(nil)
 	if m.Node.Protocol.PushPlatformToken != "" {
-		pushPlatformToken = &protocoltypes.PushServiceReceiver{}
+		pushPlatformToken = &pushtypes.PushServiceReceiver{}
 
 		data, err := base64.RawURLEncoding.DecodeString(m.Node.Protocol.PushPlatformToken)
 		if err != nil {
@@ -661,6 +661,7 @@ func (m *Manager) getLocalMessengerServer() (messengertypes.MessengerServiceServ
 		LifeCycleManager:    lcmanager,
 		StateBackup:         m.Node.Messenger.localDBState,
 		Ring:                m.Logging.ring,
+		PushKey:             pushKey,
 		PlatformPushToken:   pushPlatformToken,
 		LogFilePath:         currentLogfilePath,
 		GRPCInsecureMode:    m.Node.ServiceInsecureMode,

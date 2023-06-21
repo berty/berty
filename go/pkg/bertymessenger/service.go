@@ -4,7 +4,6 @@ import (
 	"archive/tar"
 	"bytes"
 	"context"
-	"encoding/base64"
 	"errors"
 	"fmt"
 	"io"
@@ -15,6 +14,7 @@ import (
 	"github.com/golang/protobuf/proto"
 	ipfs_interface "github.com/ipfs/interface-go-ipfs-core"
 	"go.uber.org/zap"
+	"google.golang.org/grpc"
 	"gorm.io/gorm"
 	"moul.io/u"
 	"moul.io/zapgorm2"
@@ -25,11 +25,14 @@ import (
 	"berty.tech/berty/v2/go/internal/messengerpayloads"
 	"berty.tech/berty/v2/go/internal/messengerutil"
 	"berty.tech/berty/v2/go/internal/notification"
+	"berty.tech/berty/v2/go/pkg/bertypush"
 	"berty.tech/berty/v2/go/pkg/bertyversion"
 	"berty.tech/berty/v2/go/pkg/errcode"
+	"berty.tech/berty/v2/go/pkg/messengertypes"
 	mt "berty.tech/berty/v2/go/pkg/messengertypes"
+	"berty.tech/berty/v2/go/pkg/pushtypes"
 	"berty.tech/weshnet"
-	weshnet_errcode "berty.tech/weshnet/pkg/errcode"
+	"berty.tech/weshnet/pkg/cryptoutil"
 	"berty.tech/weshnet/pkg/lifecycle"
 	"berty.tech/weshnet/pkg/logutil"
 	"berty.tech/weshnet/pkg/protocoltypes"
@@ -59,6 +62,10 @@ type service struct {
 	lcmanager             *lifecycle.Manager
 	eventHandler          *messengerpayloads.EventHandler
 	ring                  *zapring.Core
+	pushReceiver          bertypush.MessengerPushReceiver
+	pushHandler           bertypush.PushHandler
+	pushClients           map[string]*grpc.ClientConn
+	muPushClients         sync.RWMutex
 	tyberCleanup          func()
 	logFilePath           string
 	cancelGroupStatus     map[string] /*groupPK */ context.CancelFunc
@@ -84,7 +91,8 @@ type Opts struct {
 	NotificationManager notification.Manager
 	LifeCycleManager    *lifecycle.Manager
 	StateBackup         *mt.LocalDatabaseState
-	PlatformPushToken   *protocoltypes.PushServiceReceiver
+	PushKey             *[cryptoutil.KeySize]byte
+	PlatformPushToken   *pushtypes.PushServiceReceiver
 	Ring                *zapring.Core
 	GRPCInsecureMode    bool
 
@@ -235,12 +243,22 @@ func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (_ Service, err
 		groupsToSubTo:         make(map[string]struct{}),
 		accountGroup:          icr.GetAccountGroupPK(),
 		grpcInsecure:          opts.GRPCInsecureMode,
+		pushClients:           make(map[string]*grpc.ClientConn),
 	}
 
 	svc.eventHandler = messengerpayloads.NewEventHandler(ctx, db, &MetaFetcherFromProtocolClient{client: client}, newPostActionsService(&svc), opts.Logger, svc.dispatcher, false)
-
-	// @FIXME(push): temporary use noop push receiver
-	// svc.pushReceiver = bertypush.NewNoopPushReceiver()
+	svc.pushHandler = (bertypush.PushHandler)(nil)
+	if opts.PushKey != nil {
+		dbFetcher := messengerdb.NewDBFetcher(pkStr, db)
+		svc.pushHandler, err = bertypush.NewPushHandler(client, dbFetcher, opts.PushKey, &bertypush.PushHandlerOpts{
+			Logger: opts.Logger,
+		})
+		if err != nil {
+			cancel()
+			return nil, errcode.ErrInternal.Wrap(fmt.Errorf("unable to init push handler: %w", err))
+		}
+	}
+	svc.pushReceiver = bertypush.NewPushReceiver(svc.pushHandler, svc.eventHandler, svc.db, opts.Logger)
 
 	// get or create account in DB
 	{
@@ -299,19 +317,16 @@ func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (_ Service, err
 	}})
 
 	if opts.PlatformPushToken != nil {
-		icr, err = client.ServiceGetConfiguration(ctx, &protocoltypes.ServiceGetConfiguration_Request{})
-		if err != nil {
-			return nil, err
+		token, err := db.GetPushDeviceToken(pkStr)
+		if err != nil && !errcode.Is(err, errcode.ErrNotFound) {
+			return nil, errcode.ErrInternal.Wrap(err)
+		} else if errcode.Is(err, errcode.ErrNotFound) || (token.TokenType == opts.PlatformPushToken.TokenType && !bytes.Equal(token.Token, opts.PlatformPushToken.Token)) {
+			if _, err := svc.PushSetDeviceToken(ctx, &messengertypes.PushSetDeviceToken_Request{
+				Receiver: opts.PlatformPushToken,
+			}); err != nil {
+				return nil, errcode.ErrInternal.Wrap(err)
+			}
 		}
-
-		// FIXME(push): PushSetDeviceToken not available anymore
-		// if icr.DevicePushToken == nil || (icr.DevicePushToken.TokenType == opts.PlatformPushToken.TokenType && !bytes.Equal(icr.DevicePushToken.Token, opts.PlatformPushToken.Token)) {
-		// if _, err := client.PushSetDeviceToken(ctx, &protocoltypes.PushSetDeviceToken_Request{
-		// 	Receiver: opts.PlatformPushToken,
-		// }); err != nil {
-		// 	return nil, errcode.ErrInternal.Wrap(err)
-		// }
-		// }
 	}
 
 	// Subscribe to account group metadata
@@ -469,128 +484,6 @@ func (svc *service) SendAck(cid, conversationPK string) error {
 		return logError("Protocol error", err)
 	}
 	tyber.LogStep(svc.ctx, svc.logger, "Acknowledge sent", tyber.WithCIDDetail("CID", reply.GetCID()))
-
-	return nil
-}
-
-func (svc *service) sharePushTokenForConversation(conversation *mt.Conversation) error {
-	if conversation == nil {
-		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("no conversation supplied"))
-	}
-
-	svc.logger.Info("sharing push token", logutil.PrivateString("conversation-pk", conversation.PublicKey))
-
-	account, err := svc.db.GetAccount()
-	if err != nil {
-		return errcode.ErrDBRead.Wrap(err)
-	}
-
-	if account.DevicePushToken == nil {
-		svc.logger.Warn("no push token known, won't share it")
-		return weshnet_errcode.ErrPushUnknownDestination.Wrap(fmt.Errorf("no push token known, won't share it"))
-	}
-
-	if account.DevicePushServer == nil {
-		svc.logger.Warn("no push server known, won't share push token")
-		return weshnet_errcode.ErrPushUnknownProvider.Wrap(fmt.Errorf("no push server known, won't share push token"))
-	}
-
-	pushServer := &protocoltypes.PushServer{}
-	if err := pushServer.Unmarshal(account.DevicePushServer); err != nil {
-		return errcode.ErrDeserialization.Wrap(fmt.Errorf("unable to unmarshal push server: %w", err))
-	}
-
-	pushToken := &protocoltypes.PushServiceReceiver{}
-	if err := pushToken.Unmarshal(account.DevicePushToken); err != nil {
-		return errcode.ErrDeserialization.Wrap(fmt.Errorf("unable to unmarshal device push token: %w", err))
-	}
-
-	if err := svc.sharePushTokenForConversationInternal(conversation, pushServer, pushToken); err != nil {
-		return errcode.ErrInternal.Wrap(fmt.Errorf("unable to share device push token: %w", err))
-	}
-
-	return nil
-}
-
-func (svc *service) sharePushTokenForConversationInternal(conversation *mt.Conversation, pushServer *protocoltypes.PushServer, pushToken *protocoltypes.PushServiceReceiver) error {
-	if len(pushToken.Token) == 0 {
-		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing token in PushServiceReceiver"))
-	}
-	if pushToken.TokenType == 0 {
-		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("wrong token type in PushServiceReceiver"))
-	}
-	if len(pushToken.RecipientPublicKey) == 0 {
-		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing recipient public key in PushServiceReceiver"))
-	}
-	if len(pushToken.BundleID) == 0 {
-		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing bundleID in PushServiceReceiver"))
-	}
-
-	tokenIdentifier := makeSharedPushIdentifier(pushServer, pushToken)
-
-	// pubKey, err := messengerutil.B64DecodeBytes(conversation.PublicKey)
-	// if err != nil {
-	// 	return errcode.ErrSerialization.Wrap(err)
-	// }
-
-	if conversation.SharedPushTokenIdentifier != tokenIdentifier {
-		// FIXME(push): push share token not available anymore
-		// if _, err := svc.protocolClient.PushShareToken(svc.ctx, &protocoltypes.PushShareToken_Request{
-		// 	GroupPK:  pubKey,
-		// 	Server:   pushServer,
-		// 	Receiver: pushToken,
-		// }); err != nil {
-		// 	return err
-		// }
-
-		if _, err := svc.db.UpdateConversation(mt.Conversation{PublicKey: conversation.PublicKey, SharedPushTokenIdentifier: tokenIdentifier}); err != nil {
-			return errcode.ErrDBWrite.Wrap(err)
-		}
-
-		conv, err := svc.db.GetConversationByPK(conversation.PublicKey)
-		if err != nil {
-			return errcode.ErrDBRead.Wrap(err)
-		}
-
-		if err := svc.dispatcher.StreamEvent(mt.StreamEvent_TypeConversationUpdated, &mt.StreamEvent_ConversationUpdated{Conversation: conv}, false); err != nil {
-			return errcode.TODO.Wrap(err)
-		}
-	}
-
-	return nil
-}
-
-func makeSharedPushIdentifier(server *protocoltypes.PushServer, token *protocoltypes.PushServiceReceiver) string {
-	// @TODO(@gfanton): make something smarter here
-	b64serverKey := base64.StdEncoding.EncodeToString(server.ServerKey)
-	b64token := base64.StdEncoding.EncodeToString(token.Token)
-
-	return fmt.Sprintf("%s-%s", b64serverKey, b64token)
-}
-
-func (svc *service) pushDeviceTokenBroadcast(account *mt.Account) error {
-	conversations, err := svc.db.GetAllConversations()
-	if err != nil {
-		return errcode.ErrDBRead.Wrap(err)
-	}
-
-	svc.logger.Info("sharing push token", zap.Int("conversation-count", len(conversations)))
-
-	server := &protocoltypes.PushServer{}
-	if err := server.Unmarshal(account.DevicePushServer); err != nil {
-		return errcode.ErrDeserialization.Wrap(err)
-	}
-
-	token := &protocoltypes.PushServiceReceiver{}
-	if err := token.Unmarshal(account.DevicePushToken); err != nil {
-		return errcode.ErrDeserialization.Wrap(err)
-	}
-
-	for _, c := range conversations {
-		if err := svc.sharePushTokenForConversationInternal(c, server, token); err != nil {
-			svc.logger.Error("unable to share push token on conversation", logutil.PrivateString("conversation-pk", c.PublicKey), zap.Error(err))
-		}
-	}
 
 	return nil
 }

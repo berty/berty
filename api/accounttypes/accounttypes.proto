@@ -3,7 +3,7 @@ syntax = "proto3";
 package berty.account.v1;
 
 import "gogoproto/gogo.proto";
-import "pushtypes/pushtypes.proto";
+import "pushtypes/bertypushtypes.proto";
 import "protocoltypes.proto";
 
 option go_package = "berty.tech/berty/go/pkg/accounttypes";
@@ -360,17 +360,17 @@ message NetworkConfigGetPreset {
 message PushReceive {
   message Request {
     string payload = 1;
-    weshnet.push.v1.PushServiceTokenType token_type = 2;
+    berty.push.v1.PushServiceTokenType token_type = 2;
   }
   message Reply {
-    weshnet.push.v1.DecryptedPush push_data = 1;
-    weshnet.push.v1.FormatedPush push = 2;
+    berty.push.v1.DecryptedPush push_data = 1;
+    berty.push.v1.FormatedPush push = 2;
   }
 }
 
 message PushPlatformTokenRegister {
   message Request {
-    weshnet.protocol.v1.PushServiceReceiver receiver = 1;
+    push.v1.PushServiceReceiver receiver = 1;
   }
   message Reply {}
 }

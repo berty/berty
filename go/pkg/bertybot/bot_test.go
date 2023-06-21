@@ -22,7 +22,7 @@ func TestFlappyBotCommunication(t *testing.T) {
 	clients, _, cleanup := bertymessenger.TestingInfra(ctx, t, 2, logger)
 	defer cleanup()
 
-	botClient, userClient := clients[0], clients[1]
+	botClient, userClient := clients[0].Client, clients[1].Client
 
 	var commandCalled bool
 

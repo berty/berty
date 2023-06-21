@@ -12,6 +12,9 @@ import (
 
 	libp2p_mocknet "github.com/berty/go-libp2p-mock"
 	"github.com/golang/protobuf/proto"
+	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
+	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
+	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/zap"
@@ -34,12 +37,20 @@ import (
 type TestingServiceOpts struct {
 	Logger      *zap.Logger
 	Client      weshnet.ServiceClient
+	DB          *gorm.DB
 	Index       int
 	Ring        *zapring.Core
 	LogFilePath string
+	PushSK      *[32]byte
 }
 
-func TestingService(ctx context.Context, t testing.TB, opts *TestingServiceOpts) (messengertypes.MessengerServiceServer, func()) {
+type TestingService struct {
+	Logger  *zap.Logger
+	Service Service
+	Client  ServiceClient
+}
+
+func NewTestingService(ctx context.Context, t testing.TB, opts *TestingServiceOpts) (*TestingService, func()) {
 	t.Helper()
 	if opts.Logger == nil {
 		opts.Logger = zap.NewNop()
@@ -48,7 +59,7 @@ func TestingService(ctx context.Context, t testing.TB, opts *TestingServiceOpts)
 	cleanup := func() {}
 	if opts.Client == nil {
 		var protocol *weshnet.TestingProtocol
-		protocol, cleanup = weshnet.NewTestingProtocol(ctx, t, nil, nil)
+		protocol, cleanup = weshnet.NewTestingProtocol(ctx, t, &weshnet.TestingOpts{Logger: opts.Logger}, nil)
 		opts.Client = protocol.Client
 		// required to avoid "writing on closing socket",
 		// should be better to have something blocking instead
@@ -57,74 +68,113 @@ func TestingService(ctx context.Context, t testing.TB, opts *TestingServiceOpts)
 
 	zapLogger := zapgorm2.New(opts.Logger.Named("gorm"))
 	zapLogger.SetAsDefault()
-	db, err := gorm.Open(sqlite.Open("file:memdb"+strconv.Itoa(opts.Index)+"?mode=memory&cache=shared"), &gorm.Config{
-		Logger:                                   zapLogger,
-		DisableForeignKeyConstraintWhenMigrating: true,
-	})
-	if err != nil {
-		cleanup()
-		require.NoError(t, err)
-	}
-	cleanup = u.CombineFuncs(
-		func() {
-			sqlDB, err := db.DB()
-			assert.NoError(t, err)
-			sqlDB.Close()
-		},
-		cleanup,
-	)
 
-	server, err := New(opts.Client, &Opts{
+	if opts.DB == nil {
+		db, err := gorm.Open(sqlite.Open("file:memdb"+strconv.Itoa(opts.Index)+"?mode=memory&cache=shared"), &gorm.Config{
+			Logger:                                   zapLogger,
+			DisableForeignKeyConstraintWhenMigrating: true,
+		})
+		if err != nil {
+			cleanup()
+			assert.NoError(t, err)
+		}
+		opts.DB = db
+		cleanup = u.CombineFuncs(
+			func() {
+				sqlDB, err := db.DB()
+				assert.NoError(t, err)
+				sqlDB.Close()
+			},
+			cleanup,
+		)
+	}
+
+	service, err := New(opts.Client, &Opts{
 		Logger:           opts.Logger,
-		DB:               db,
+		DB:               opts.DB,
 		Ring:             opts.Ring,
 		LogFilePath:      opts.LogFilePath,
 		GRPCInsecureMode: true,
+		PushKey:          opts.PushSK,
 	})
 	if err != nil {
 		cleanup()
 		require.NoError(t, err)
 	}
 
-	cleanup = u.CombineFuncs(func() { server.Close() }, cleanup)
+	// setup client
+	grpcLogger := opts.Logger.Named("grpc")
+	zapOpts := []grpc_zap.Option{}
 
-	return server, cleanup
+	serverOpts := []grpc.ServerOption{
+		grpc_middleware.WithUnaryServerChain(
+			grpc_ctxtags.UnaryServerInterceptor(grpc_ctxtags.WithFieldExtractor(grpc_ctxtags.CodeGenRequestFieldExtractor)),
+			grpc_zap.UnaryServerInterceptor(grpcLogger, zapOpts...),
+		),
+		grpc_middleware.WithStreamServerChain(
+			grpc_ctxtags.StreamServerInterceptor(grpc_ctxtags.WithFieldExtractor(grpc_ctxtags.CodeGenRequestFieldExtractor)),
+			grpc_zap.StreamServerInterceptor(grpcLogger, zapOpts...),
+		),
+	}
+
+	clientOpts := []grpc.DialOption{
+		grpc.WithChainUnaryInterceptor(),
+		grpc.WithChainStreamInterceptor(),
+	}
+
+	server := grpc.NewServer(serverOpts...)
+	client, cleanupClient := TestingClientFromServer(ctx, t, server, service, clientOpts...)
+
+	ts := &TestingService{
+		Service: service,
+		Client:  client,
+		Logger:  opts.Logger,
+	}
+
+	cleanup = u.CombineFuncs(func() {
+		cleanupClient()
+		service.Close()
+	}, cleanup)
+
+	return ts, cleanup
 }
 
-func TestingInfra(ctx context.Context, t testing.TB, amount int, logger *zap.Logger) ([]messengertypes.MessengerServiceClient, []*weshnet.TestingProtocol, func()) {
+func TestingClientFromServer(ctx context.Context, t testing.TB, s *grpc.Server, svc Service, dialOpts ...grpc.DialOption) (client ServiceClient, cleanup func()) {
+	t.Helper()
+
+	var err error
+
+	client, err = NewClientFromService(ctx, s, svc, dialOpts...)
+	require.NoError(t, err)
+	cleanup = func() {
+		client.Close()
+	}
+
+	return
+}
+
+func TestingInfra(ctx context.Context, t testing.TB, amount int, logger *zap.Logger) ([]*TestingService, []*weshnet.TestingProtocol, func()) {
 	t.Helper()
 	mocknet := libp2p_mocknet.New()
 	t.Cleanup(func() { mocknet.Close() })
 
 	protocols, cleanup := weshnet.NewTestingProtocolWithMockedPeers(ctx, t, &weshnet.TestingOpts{Logger: logger, Mocknet: mocknet}, nil, amount)
-	clients := make([]messengertypes.MessengerServiceClient, amount)
+	tss := make([]*TestingService, amount)
 
 	// setup client
 	for i, p := range protocols {
 		// new messenger service
-		svc, cleanupMessengerService := TestingService(ctx, t, &TestingServiceOpts{Logger: logger, Client: p.Client, Index: i})
+		ts, cleanupMessengerService := NewTestingService(ctx, t, &TestingServiceOpts{Logger: logger, Client: p.Client, Index: i})
 
-		// new messenger client
-		lis := bufconn.Listen(4 * 1024 * 1024)
-		s := grpc.NewServer()
-		messengertypes.RegisterMessengerServiceServer(s, svc)
-		go func() {
-			err := s.Serve(lis)
-			require.NoError(t, err)
-		}()
-
-		conn, err := grpc.DialContext(ctx, "bufnet", grpc.WithContextDialer(mkBufDialer(lis)), grpc.WithInsecure())
-		require.NoError(t, err)
 		cleanup = u.CombineFuncs(func() {
-			require.NoError(t, conn.Close())
 			cleanupMessengerService()
 		}, cleanup)
-		clients[i] = messengertypes.NewMessengerServiceClient(conn)
+		tss[i] = ts
 	}
 
 	require.NoError(t, mocknet.ConnectAllButSelf())
 
-	return clients, protocols, cleanup
+	return tss, protocols, cleanup
 }
 
 func Testing1To1ProcessWholeStream(t testing.TB) (context.Context, []*TestingAccount, *zap.Logger, func()) {
@@ -144,7 +194,7 @@ func Testing1To1ProcessWholeStream(t testing.TB) (context.Context, []*TestingAcc
 
 	nodes := make([]*TestingAccount, l)
 	for i := range nodes {
-		nodes[i] = NewTestingAccount(ctx, t, clients[i], protocols[i].Client, logger)
+		nodes[i] = NewTestingAccount(ctx, t, clients[i].Client, protocols[i].Client, logger)
 		nodes[i].SetName(t, fmt.Sprintf("node-%d", i))
 		close := nodes[i].ProcessWholeStream(t)
 		clean = u.CombineFuncs(close, clean)

@@ -56,6 +56,9 @@ const (
 	MessengerService_PushShareTokenForConversation_FullMethodName   = "/berty.messenger.v1.MessengerService/PushShareTokenForConversation"
 	MessengerService_PushTokenSharedForConversation_FullMethodName  = "/berty.messenger.v1.MessengerService/PushTokenSharedForConversation"
 	MessengerService_PushReceive_FullMethodName                     = "/berty.messenger.v1.MessengerService/PushReceive"
+	MessengerService_PushSend_FullMethodName                        = "/berty.messenger.v1.MessengerService/PushSend"
+	MessengerService_PushSetDeviceToken_FullMethodName              = "/berty.messenger.v1.MessengerService/PushSetDeviceToken"
+	MessengerService_PushSetServer_FullMethodName                   = "/berty.messenger.v1.MessengerService/PushSetServer"
 	MessengerService_DirectoryServiceRegister_FullMethodName        = "/berty.messenger.v1.MessengerService/DirectoryServiceRegister"
 	MessengerService_DirectoryServiceUnregister_FullMethodName      = "/berty.messenger.v1.MessengerService/DirectoryServiceUnregister"
 	MessengerService_DirectoryServiceQuery_FullMethodName           = "/berty.messenger.v1.MessengerService/DirectoryServiceQuery"
@@ -126,6 +129,12 @@ type MessengerServiceClient interface {
 	PushTokenSharedForConversation(ctx context.Context, in *PushTokenSharedForConversation_Request, opts ...grpc.CallOption) (MessengerService_PushTokenSharedForConversationClient, error)
 	// PushReceive handles a push payload, decrypts it if possible, adds it to the local store
 	PushReceive(ctx context.Context, in *PushReceive_Request, opts ...grpc.CallOption) (*PushReceive_Reply, error)
+	// PushSend sends a push payload to a specified list of group members
+	PushSend(ctx context.Context, in *PushSend_Request, opts ...grpc.CallOption) (*PushSend_Reply, error)
+	// PushSetDeviceToken registers a push token for the current device
+	PushSetDeviceToken(ctx context.Context, in *PushSetDeviceToken_Request, opts ...grpc.CallOption) (*PushSetDeviceToken_Reply, error)
+	// PushSetServer registers a push server for the current device
+	PushSetServer(ctx context.Context, in *PushSetServer_Request, opts ...grpc.CallOption) (*PushSetServer_Reply, error)
 	// DirectoryServiceRegister registers a verified credential on a directory service
 	DirectoryServiceRegister(ctx context.Context, in *DirectoryServiceRegister_Request, opts ...grpc.CallOption) (*DirectoryServiceRegister_Reply, error)
 	// DirectoryServiceUnregister requests a directory service to remove a verified credential
@@ -695,6 +704,33 @@ func (c *messengerServiceClient) PushReceive(ctx context.Context, in *PushReceiv
 	return out, nil
 }
 
+func (c *messengerServiceClient) PushSend(ctx context.Context, in *PushSend_Request, opts ...grpc.CallOption) (*PushSend_Reply, error) {
+	out := new(PushSend_Reply)
+	err := c.cc.Invoke(ctx, MessengerService_PushSend_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *messengerServiceClient) PushSetDeviceToken(ctx context.Context, in *PushSetDeviceToken_Request, opts ...grpc.CallOption) (*PushSetDeviceToken_Reply, error) {
+	out := new(PushSetDeviceToken_Reply)
+	err := c.cc.Invoke(ctx, MessengerService_PushSetDeviceToken_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *messengerServiceClient) PushSetServer(ctx context.Context, in *PushSetServer_Request, opts ...grpc.CallOption) (*PushSetServer_Reply, error) {
+	out := new(PushSetServer_Reply)
+	err := c.cc.Invoke(ctx, MessengerService_PushSetServer_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *messengerServiceClient) DirectoryServiceRegister(ctx context.Context, in *DirectoryServiceRegister_Request, opts ...grpc.CallOption) (*DirectoryServiceRegister_Reply, error) {
 	out := new(DirectoryServiceRegister_Reply)
 	err := c.cc.Invoke(ctx, MessengerService_DirectoryServiceRegister_FullMethodName, in, out, opts...)
@@ -810,6 +846,12 @@ type MessengerServiceServer interface {
 	PushTokenSharedForConversation(*PushTokenSharedForConversation_Request, MessengerService_PushTokenSharedForConversationServer) error
 	// PushReceive handles a push payload, decrypts it if possible, adds it to the local store
 	PushReceive(context.Context, *PushReceive_Request) (*PushReceive_Reply, error)
+	// PushSend sends a push payload to a specified list of group members
+	PushSend(context.Context, *PushSend_Request) (*PushSend_Reply, error)
+	// PushSetDeviceToken registers a push token for the current device
+	PushSetDeviceToken(context.Context, *PushSetDeviceToken_Request) (*PushSetDeviceToken_Reply, error)
+	// PushSetServer registers a push server for the current device
+	PushSetServer(context.Context, *PushSetServer_Request) (*PushSetServer_Reply, error)
 	// DirectoryServiceRegister registers a verified credential on a directory service
 	DirectoryServiceRegister(context.Context, *DirectoryServiceRegister_Request) (*DirectoryServiceRegister_Reply, error)
 	// DirectoryServiceUnregister requests a directory service to remove a verified credential
@@ -930,6 +972,15 @@ func (UnimplementedMessengerServiceServer) PushTokenSharedForConversation(*PushT
 }
 func (UnimplementedMessengerServiceServer) PushReceive(context.Context, *PushReceive_Request) (*PushReceive_Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PushReceive not implemented")
+}
+func (UnimplementedMessengerServiceServer) PushSend(context.Context, *PushSend_Request) (*PushSend_Reply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PushSend not implemented")
+}
+func (UnimplementedMessengerServiceServer) PushSetDeviceToken(context.Context, *PushSetDeviceToken_Request) (*PushSetDeviceToken_Reply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PushSetDeviceToken not implemented")
+}
+func (UnimplementedMessengerServiceServer) PushSetServer(context.Context, *PushSetServer_Request) (*PushSetServer_Reply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PushSetServer not implemented")
 }
 func (UnimplementedMessengerServiceServer) DirectoryServiceRegister(context.Context, *DirectoryServiceRegister_Request) (*DirectoryServiceRegister_Reply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DirectoryServiceRegister not implemented")
@@ -1636,6 +1687,60 @@ func _MessengerService_PushReceive_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
+func _MessengerService_PushSend_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PushSend_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MessengerServiceServer).PushSend(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: MessengerService_PushSend_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MessengerServiceServer).PushSend(ctx, req.(*PushSend_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _MessengerService_PushSetDeviceToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PushSetDeviceToken_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MessengerServiceServer).PushSetDeviceToken(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: MessengerService_PushSetDeviceToken_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MessengerServiceServer).PushSetDeviceToken(ctx, req.(*PushSetDeviceToken_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _MessengerService_PushSetServer_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PushSetServer_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MessengerServiceServer).PushSetServer(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: MessengerService_PushSetServer_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MessengerServiceServer).PushSetServer(ctx, req.(*PushSetServer_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _MessengerService_DirectoryServiceRegister_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(DirectoryServiceRegister_Request)
 	if err := dec(in); err != nil {
@@ -1803,6 +1908,18 @@ var MessengerService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "PushReceive",
 			Handler:    _MessengerService_PushReceive_Handler,
+		},
+		{
+			MethodName: "PushSend",
+			Handler:    _MessengerService_PushSend_Handler,
+		},
+		{
+			MethodName: "PushSetDeviceToken",
+			Handler:    _MessengerService_PushSetDeviceToken_Handler,
+		},
+		{
+			MethodName: "PushSetServer",
+			Handler:    _MessengerService_PushSetServer_Handler,
 		},
 		{
 			MethodName: "DirectoryServiceRegister",
