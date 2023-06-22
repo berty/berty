@@ -10,10 +10,28 @@ import { selectStreamProgress } from '@berty/redux/reducers/ui.reducer'
 
 import { StreamProgressProps } from './interfaces'
 
+const messages = [
+	'Hang tight!\nBerty is retrieving the latest data from the local database.',
+	'Just a moment longer!\nBerty is accessing the local records to provide you with up-to-date information.',
+	'Berty is working on fetching the data from the local database. Thank you for your patience.',
+	'Sit tight!\nBerty is accessing the local database to bring you the requested data.',
+	'Fetching data from the local storage. We appreciate your patience while loading the information.',
+]
+
 export const StreamProgressPriv: React.FC<StreamProgressProps> = props => {
 	const { text } = useStyles()
 	const colors = useThemeColor()
 	const stream = useSelector(selectStreamProgress)
+	const [extraLabel, setExtraLabel] = React.useState<string | undefined>(undefined)
+
+	React.useEffect(() => {
+		if (stream) {
+			setInterval(() => {
+				setExtraLabel(messages[Math.floor(Math.random() * messages.length)])
+			}, 10000)
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [])
 
 	return (
 		<View style={{ backgroundColor: colors['main-background'], flex: 1 }} testID={props.testID}>
@@ -21,6 +39,7 @@ export const StreamProgressPriv: React.FC<StreamProgressProps> = props => {
 				{stream?.stream || 'Test'}
 			</UnifiedText>
 			<View style={styles.content}>
+				<UnifiedText style={[text.align.center, styles.waiting]}>{extraLabel}</UnifiedText>
 				<UnifiedText style={[text.align.center]}>{stream?.msg.doing || 'Doing'}</UnifiedText>
 				<UnifiedText style={[text.align.center]}>
 					{stream?.msg.completed || '0'} / {stream?.msg.total || '6'}
@@ -46,5 +65,10 @@ const styles = StyleSheet.create({
 		flex: 1,
 		alignItems: 'center',
 		justifyContent: 'center',
+	},
+	waiting: {
+		margin: 8,
+		padding: 8,
+		height: 100,
 	},
 })
