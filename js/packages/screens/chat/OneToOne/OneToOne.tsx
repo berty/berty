@@ -3,7 +3,6 @@ import { useFocusEffect } from '@react-navigation/native'
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Keyboard, TouchableOpacity, View, Platform } from 'react-native'
-import AndroidKeyboardAdjust from 'react-native-android-keyboard-adjust'
 
 import beapi from '@berty/api'
 import { ContactAvatar } from '@berty/components/avatars'
@@ -57,15 +56,6 @@ export const OneToOne: ScreenFC<'Chat.OneToOne'> = React.memo(
 		const [showStickyDate, setShowStickyDate] = useState(false)
 		const [keyboardIsHidden, setKeyboardIsHidden] = useState(false)
 		const headerHeight = useHeaderHeight()
-
-		useFocusEffect(
-			React.useCallback(() => {
-				if (Platform.OS === 'android') {
-					AndroidKeyboardAdjust?.setAdjustResize()
-					return () => AndroidKeyboardAdjust?.setAdjustPan()
-				}
-			}, []),
-		)
 
 		useFocusEffect(
 			React.useCallback(() => {
