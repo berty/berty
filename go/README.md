@@ -24,7 +24,7 @@ make doctor
 * [`./cmd/...`](./cmd): binaries / entrypoints
     * `cd go; make install`
 * [`./pkg/...`](./pkg): packages especially made to be imported by other projects
-    * [`./bertyprotocol`](./pkg/bertyprotocol): the [Berty Protocol](https://berty.tech/protocol)
+    * [`./bertyprotocol`](./pkg/bertyprotocol): the [Wesh Protocol](https://berty.tech/protocol)
     * ...
 * [`./internal/`](./internal): internal packages that can be useful to understand how things are working under the hood
     * _you won't be able to import them directly from your projects; if you think that an internal package should be made public, open an issue_
@@ -142,7 +142,7 @@ USAGE
   berty [global flags] <subcommand> [flags] [args...]
 
 SUBCOMMANDS
-  daemon          start a full Berty instance (Berty Protocol + Berty Messenger)
+  daemon          start a full Berty instance (Wesh Protocol + Berty Messenger)
   account-daemon  start a full Berty instance (Berty Account)
   mini            start a terminal-based mini berty client (some messaging features not compatible with the app)
   banner          print the Berty banner of the day

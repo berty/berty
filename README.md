@@ -45,14 +45,14 @@ To compile and run the mobile application on your device, see [js/README.md](js/
 You can `go run` or `go install` the CLI tool located in `go/cmd/berty`.
 The two main command line utilities are:
 
-- `berty mini`: a CLI messaging app using the Berty Protocol.
-- `berty daemon`: a full node manageable through the Berty Protocol API.
+- `berty mini`: a CLI messaging app using the Wesh Protocol.
+- `berty daemon`: a full node manageable through the Wesh Protocol API.
 
 ## Introduction
 
 > **Warning**: Berty is still under active development and should not yet be used to exchange sensitive data.
 
-**[Berty](https://berty.tech/)** is a privacy-first messaging application built on top of [the Berty Protocol](https://berty.tech/docs/protocol/).
+**[Berty](https://berty.tech/)** is a privacy-first messaging application built on top of [the Wesh Protocol](https://berty.tech/docs/protocol/).
 
 - *Secure and private* :
     - Messages are end-to-end encrypted by default
@@ -91,13 +91,13 @@ More info on [berty/community](https://github.com/berty/community).
 
 ## Development Status
 
-The current Berty implementation is using the [Berty Protocol](https://berty.tech/docs/protocol/), which means the encryption technique is safe, and it works as a peer-to-peer app!
+The current Berty implementation is using the [Wesh Protocol](https://berty.tech/docs/protocol/), which means the encryption technique is safe, and it works as a peer-to-peer app!
 
 Alas, Berty has not yet been hardened, so please avoid using it on devices with weak sandboxes, such as unpatchable devices that use old Android versions.
 
-The current Berty Protocol is _partially implemented_.
+The current Wesh Protocol is _partially implemented_.
 
-The API will continue to evolve in the near future. As such, we cannot yet guarantee none-breaking changes, or any kind of API stability. Be prepared for a rough ride if you start rolling the Berty Protocol in your application.
+The API will continue to evolve in the near future. As such, we cannot yet guarantee none-breaking changes, or any kind of API stability. Be prepared for a rough ride if you start rolling the Wesh Protocol in your application.
 
 _We will have an open beta for the different packages and applications soon, so anyone will be able to give it a try. [Subscribe](https://tech.us20.list-manage.com/subscribe/post?u=5ca3993c7f0b8f646dcda714b&id=4d7828715b) to our newsletter if you wish to be notified._
 
@@ -107,14 +107,14 @@ _We will have an open beta for the different packages and applications soon, so 
 
 <!-- _TODO: add a high-level schema of how things are connected together_ -->
 
-### Berty Protocol
+### Wesh Protocol
 
 [![go.dev reference](https://img.shields.io/badge/go.dev-reference-007d9c?logo=go&logoColor=white)](https://pkg.go.dev/berty.tech/berty/v2/go/pkg/bertyprotocol?tab=doc)
 [![Code coverage](https://codecov.io/gh/berty/berty/branch/master/graph/badge.svg?token=rBPpNHNNow&flag=go.unittests)](https://codecov.io/gh/berty/berty)
 
-The Berty Protocol comes with a generic, but full-featured SDK allowing developers to write peer-to-peer applications. You can just focus on high-level features for your app, we will take care of the rest (encryption, identities, network routing, group management, account management, device management, application lifecycle).
+The Wesh Protocol comes with a generic, but full-featured SDK allowing developers to write peer-to-peer applications. You can just focus on high-level features for your app, we will take care of the rest (encryption, identities, network routing, group management, account management, device management, application lifecycle).
 
-The main concept of the _Berty Protocol_ is called the "group", a virtual place where multiple devices can share messages and metadata using [OrbitDB](https://github.com/orbitdb), which itself relies on the InterPlanetary File System ([IPFS](https://en.wikipedia.org/wiki/InterPlanetary_File_System))
+The main concept of the _Wesh Protocol_ is called the "group", a virtual place where multiple devices can share messages and metadata using [OrbitDB](https://github.com/orbitdb), which itself relies on the InterPlanetary File System ([IPFS](https://en.wikipedia.org/wiki/InterPlanetary_File_System))
 
 <!-- _TODO: add usage examples_ -->
 
@@ -128,16 +128,15 @@ git clone https://github.com/berty/berty
 
 [![Code coverage](https://codecov.io/gh/berty/berty/branch/master/graph/badge.svg?token=rBPpNHNNow&flag=js.unittests)](https://codecov.io/gh/berty/berty)
 
-The Berty Messenger, or simply Berty, is a messaging application written in [React Native](https://reactnative.dev/), that uses the Berty Protocol through [gomobile-ipfs](https://github.com/ipfs-shipyard/gomobile-ipfs), which, in turns, is using [gomobile](https://github.com/golang/mobile).
+The Berty Messenger, or simply Berty, is a messaging application written in [React Native](https://reactnative.dev/), that uses the Wesh Protocol through [gomobile-ipfs](https://github.com/ipfs-shipyard/gomobile-ipfs), which, in turns, is using [gomobile](https://github.com/golang/mobile).
 
 ## Main items in the repo
 
 - [./go](go): Where all the Golang code lies.
-  - [./go/pkg/**bertyprotocol**](go/pkg/bertyprotocol): **Berty Protocol** _Golang SDK_ to create secure and autonomous groups using _IPFS_.
   - [./go/framework/bertybridge](go/framework/bertybridge): The gomobile entrypoint.
   - [./go/cmd/**berty**](go/cmd/berty): The main **Berty CLI**:
-    - `berty daemon`: Runs the whole Berty Protocol instance.
-    - `berty mini`: Simple CLI messenger application using Berty Protocol.
+    - `berty daemon`: Runs the whole Wesh Protocol instance.
+    - `berty mini`: Simple CLI messenger application using Wesh Protocol.
   - [./go/cmd/**rdvp**](go/cmd/rdvp): A Rendez-Vous Point server.
   - [./go/cmd/**welcomebot**](go/cmd/welcomebot): An onboarding bot used during the early phase.
   - [./go/cmd/**testbot**](go/cmd/testbot): A bot used by integration tests and developers.
