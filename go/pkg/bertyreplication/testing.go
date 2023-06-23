@@ -8,10 +8,10 @@ import (
 	"testing"
 	"time"
 
+	libp2p_mocknet "github.com/berty/go-libp2p-mock"
 	"github.com/ipfs/go-datastore"
 	ds "github.com/ipfs/go-datastore"
 	ds_sync "github.com/ipfs/go-datastore/sync"
-	libp2p_mocknet "github.com/libp2p/go-libp2p/p2p/net/mock"
 	"github.com/stretchr/testify/require"
 	"github.com/tj/assert"
 	"go.uber.org/zap"
