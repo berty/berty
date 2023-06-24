@@ -32,6 +32,8 @@ export type StreamEventPayloadType<T> = T extends beapi.messenger.StreamEvent.Ty
 	? beapi.messenger.StreamEvent.IPeerStatusDisconnected
 	: T extends beapi.messenger.StreamEvent.Type.TypePeerStatusGroupAssociated
 	? beapi.messenger.StreamEvent.IPeerStatusGroupAssociated
+	: T extends beapi.messenger.StreamEvent.Type.TypeServiceTokenAdded
+	? beapi.messenger.StreamEvent.IServiceTokenAdded
 	: never
 
 export type StreamEventNotifiedPayloadType<T> =
@@ -65,6 +67,16 @@ export type AppMessagePayloadType<T> = T extends beapi.messenger.AppMessage.Type
 	? beapi.messenger.AppMessage.IAccountDirectoryServiceRegistered
 	: T extends beapi.messenger.AppMessage.Type.TypeAccountDirectoryServiceUnregistered
 	? beapi.messenger.AppMessage.IAccountDirectoryServiceUnregistered
+	: T extends beapi.messenger.AppMessage.Type.TypeServiceAddToken
+	? beapi.messenger.AppMessage.IServiceAddToken
+	: T extends beapi.messenger.AppMessage.Type.TypeServiceRemoveToken
+	? beapi.messenger.AppMessage.IServiceRemoveToken
+	: T extends beapi.messenger.AppMessage.Type.TypePushSetDeviceToken
+	? beapi.messenger.AppMessage.IPushSetDeviceToken
+	: T extends beapi.messenger.AppMessage.Type.TypePushSetServer
+	? beapi.messenger.AppMessage.IPushSetServer
+	: T extends beapi.messenger.AppMessage.Type.TypePushSetMemberToken
+	? beapi.messenger.AppMessage.IPushSetMemberToken
 	: never
 
 export type InteractionUndefined = {
@@ -99,6 +111,26 @@ export type InteractionAccountDirectoryServiceUnregistered = {
 	type: beapi.messenger.AppMessage.Type.TypeAccountDirectoryServiceUnregistered
 	payload?: beapi.messenger.AppMessage.IAccountDirectoryServiceUnregistered
 } & Omit<beapi.messenger.IInteraction, 'payload' | 'type'>
+export type InteractionServiceAddToken = {
+	type: beapi.messenger.AppMessage.Type.TypeServiceAddToken
+	payload?: beapi.messenger.AppMessage.IServiceAddToken
+} & Omit<beapi.messenger.IInteraction, 'payload' | 'type'>
+export type InteractionServiceRemoveToken = {
+	type: beapi.messenger.AppMessage.Type.TypeServiceRemoveToken
+	payload?: beapi.messenger.AppMessage.IServiceRemoveToken
+} & Omit<beapi.messenger.IInteraction, 'payload' | 'type'>
+export type InteractionPushSetDeviceToken = {
+	type: beapi.messenger.AppMessage.Type.TypePushSetDeviceToken
+	payload?: beapi.messenger.AppMessage.IPushSetDeviceToken
+} & Omit<beapi.messenger.IInteraction, 'payload' | 'type'>
+export type InteractionPushSetServer = {
+	type: beapi.messenger.AppMessage.Type.TypePushSetServer
+	payload?: beapi.messenger.AppMessage.IPushSetServer
+} & Omit<beapi.messenger.IInteraction, 'payload' | 'type'>
+export type InteractionPushSetMemberToken = {
+	type: beapi.messenger.AppMessage.Type.TypePushSetMemberToken
+	payload?: beapi.messenger.AppMessage.IPushSetMemberToken
+} & Omit<beapi.messenger.IInteraction, 'payload' | 'type'>
 
 export type ParsedInteraction =
 	| InteractionUndefined
@@ -109,3 +141,8 @@ export type ParsedInteraction =
 	| InteractionAcknowledge
 	| InteractionAccountDirectoryServiceRegistered
 	| InteractionAccountDirectoryServiceUnregistered
+	| InteractionServiceAddToken
+	| InteractionServiceRemoveToken
+	| InteractionPushSetDeviceToken
+	| InteractionPushSetServer
+	| InteractionPushSetMemberToken
