@@ -6,8 +6,8 @@ buildscript {
         androidXAnnotation = "1.2.0"
         buildToolsVersion = "29.0.3"
         minSdkVersion = 23
-        compileSdkVersion = 30
-        targetSdkVersion = 30
+        compileSdkVersion = 31
+        targetSdkVersion = 31
         ndkVersion = "22.1.7171670"
     }
     repositories {
