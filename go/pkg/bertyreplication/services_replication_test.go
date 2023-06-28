@@ -472,13 +472,13 @@ func TestReplicationService_Flow(t *testing.T) {
 
 		evts1, err := m1.ListEvents(ctx, nil, nil, false)
 		require.NoError(t, err)
-		ops1 := testutil.TestFilterAppMetadata(t, evts1)
+		ops1 := testutil.TestFilterGroupMetadataPayloadSent(t, evts1)
 		require.NoError(t, err)
 		assert.Equal(t, 2, len(ops1))
 
 		evts2, err := m2.ListEvents(ctx, nil, nil, false)
 		require.NoError(t, err)
-		ops2 := testutil.TestFilterAppMetadata(t, evts2)
+		ops2 := testutil.TestFilterGroupMetadataPayloadSent(t, evts2)
 		require.NoError(t, err)
 		assert.Equal(t, 2, len(ops2))
 	}

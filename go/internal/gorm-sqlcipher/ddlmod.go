@@ -1,4 +1,4 @@
-//nolint // file imported from go-gorm sqlite driver
+// nolint // file imported from go-gorm sqlite driver
 package sqlite
 
 import (

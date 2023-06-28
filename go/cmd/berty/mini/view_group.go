@@ -31,8 +31,8 @@ type groupView struct {
 	memberPK     []byte
 	devicePK     []byte
 	acks         sync.Map
-	devices      map[string]*protocoltypes.GroupAddMemberDevice
-	secrets      map[string]*protocoltypes.GroupAddDeviceChainKey
+	devices      map[string]*protocoltypes.GroupMemberDeviceAdded
+	secrets      map[string]*protocoltypes.GroupDeviceChainKeyAdded
 	muAggregates sync.Mutex
 	logger       *zap.Logger
 	hasNew       int32
@@ -100,8 +100,8 @@ func newViewGroup(v *tabbedGroupsView, g *protocoltypes.Group, memberPK, deviceP
 		syncMessages: make(chan *historyMessage),
 		inputHistory: newInputHistory(),
 		logger:       logger.With(logutil.PrivateString("group", pkAsShortID(g.PublicKey))),
-		devices:      map[string]*protocoltypes.GroupAddMemberDevice{},
-		secrets:      map[string]*protocoltypes.GroupAddDeviceChainKey{},
+		devices:      map[string]*protocoltypes.GroupMemberDeviceAdded{},
+		secrets:      map[string]*protocoltypes.GroupDeviceChainKeyAdded{},
 	}
 }
 

@@ -289,7 +289,7 @@ func (h *EventHandler) groupReplicating(gme *protocoltypes.GroupMetadataEvent) e
 }
 
 func (h *EventHandler) groupMetadataPayloadSent(gme *protocoltypes.GroupMetadataEvent) error {
-	var appMetadata protocoltypes.AppMetadata
+	var appMetadata protocoltypes.GroupMetadataPayloadSent
 	if err := proto.Unmarshal(gme.GetEvent(), &appMetadata); err != nil {
 		return err
 	}
@@ -357,7 +357,7 @@ func (h *EventHandler) accountGroupJoined(gme *protocoltypes.GroupMetadataEvent)
 }
 
 func (h *EventHandler) accountContactRequestOutgoingEnqueued(gme *protocoltypes.GroupMetadataEvent) error {
-	var ev protocoltypes.AccountContactRequestEnqueued
+	var ev protocoltypes.AccountContactRequestOutgoingEnqueued
 	if err := proto.Unmarshal(gme.GetEvent(), &ev); err != nil {
 		return errcode.ErrProtocolEventUnmarshal.Wrap(err)
 	}
@@ -428,7 +428,7 @@ func (h *EventHandler) accountContactRequestOutgoingEnqueued(gme *protocoltypes.
 }
 
 func (h *EventHandler) accountContactRequestOutgoingSent(gme *protocoltypes.GroupMetadataEvent) error {
-	var ev protocoltypes.AccountContactRequestSent
+	var ev protocoltypes.AccountContactRequestOutgoingSent
 	if err := proto.Unmarshal(gme.GetEvent(), &ev); err != nil {
 		return err
 	}
@@ -492,7 +492,7 @@ func (h *EventHandler) accountContactRequestOutgoingSent(gme *protocoltypes.Grou
 }
 
 func (h *EventHandler) accountContactRequestIncomingReceived(gme *protocoltypes.GroupMetadataEvent) error {
-	var ev protocoltypes.AccountContactRequestReceived
+	var ev protocoltypes.AccountContactRequestIncomingReceived
 	if err := proto.Unmarshal(gme.GetEvent(), &ev); err != nil {
 		return err
 	}
@@ -572,7 +572,7 @@ func (h *EventHandler) accountContactRequestIncomingReceived(gme *protocoltypes.
 }
 
 func (h *EventHandler) accountContactRequestIncomingAccepted(gme *protocoltypes.GroupMetadataEvent) error {
-	var ev protocoltypes.AccountContactRequestAccepted
+	var ev protocoltypes.AccountContactRequestIncomingAccepted
 	if err := proto.Unmarshal(gme.GetEvent(), &ev); err != nil {
 		return err
 	}
@@ -644,7 +644,7 @@ func (h *EventHandler) contactRequestAccepted(contact *mt.Contact, memberPK []by
 }
 
 func (h *EventHandler) multiMemberGroupInitialMemberAnnounced(gme *protocoltypes.GroupMetadataEvent) error {
-	var ev protocoltypes.MultiMemberInitialMember
+	var ev protocoltypes.MultiMemberGroupInitialMemberAnnounced
 	if err := proto.Unmarshal(gme.GetEvent(), &ev); err != nil {
 		return err
 	}
@@ -705,7 +705,7 @@ func (h *EventHandler) multiMemberGroupInitialMemberAnnounced(gme *protocoltypes
 // * on ContactGroup when you or your contact add a new device
 // * on MultiMemberGroup when you or anyone in a multimember group adds a new device
 func (h *EventHandler) groupMemberDeviceAdded(gme *protocoltypes.GroupMetadataEvent) error {
-	var ev protocoltypes.GroupAddMemberDevice
+	var ev protocoltypes.GroupMemberDeviceAdded
 	if err := proto.Unmarshal(gme.GetEvent(), &ev); err != nil {
 		return err
 	}
