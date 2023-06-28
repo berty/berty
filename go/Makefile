@@ -183,7 +183,7 @@ $(gen_sum): $(gen_src)
 		--workdir="/go/src/berty.tech/berty/go" \
 		--entrypoint="sh" \
 		--rm \
-		bertytech/buf:1 \
+		bertytech/buf:2 \
 		-xec 'make generate_local'; \
 	  $(MAKE) tidy \
 	)
