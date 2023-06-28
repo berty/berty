@@ -32,7 +32,7 @@ func handlerAccountGroupJoined(ctx context.Context, v *groupView, e *protocoltyp
 }
 
 func handlerGroupDeviceChainKeyAdded(_ context.Context, v *groupView, e *protocoltypes.GroupMetadataEvent, isHistory bool) error {
-	casted := &protocoltypes.GroupAddDeviceChainKey{}
+	casted := &protocoltypes.GroupDeviceChainKeyAdded{}
 	if err := casted.Unmarshal(e.Event); err != nil {
 		return err
 	}
@@ -51,7 +51,7 @@ func handlerGroupDeviceChainKeyAdded(_ context.Context, v *groupView, e *protoco
 }
 
 func handlerGroupMemberDeviceAdded(_ context.Context, v *groupView, e *protocoltypes.GroupMetadataEvent, isHistory bool) error {
-	casted := &protocoltypes.GroupAddMemberDevice{}
+	casted := &protocoltypes.GroupMemberDeviceAdded{}
 	if err := casted.Unmarshal(e.Event); err != nil {
 		return err
 	}
@@ -70,7 +70,7 @@ func handlerGroupMemberDeviceAdded(_ context.Context, v *groupView, e *protocolt
 }
 
 func handlerAccountContactRequestOutgoingSent(ctx context.Context, v *groupView, e *protocoltypes.GroupMetadataEvent, isHistory bool) error {
-	casted := &protocoltypes.AccountContactRequestSent{}
+	casted := &protocoltypes.AccountContactRequestOutgoingSent{}
 	if err := casted.Unmarshal(e.Event); err != nil {
 		return err
 	}
@@ -117,7 +117,7 @@ func handlerAccountGroupLeft(_ context.Context, v *groupView, e *protocoltypes.G
 }
 
 func handlerAccountContactRequestIncomingReceived(ctx context.Context, v *groupView, e *protocoltypes.GroupMetadataEvent, isHistory bool) error {
-	casted := &protocoltypes.AccountContactRequestReceived{}
+	casted := &protocoltypes.AccountContactRequestIncomingReceived{}
 	if err := casted.Unmarshal(e.Event); err != nil {
 		return err
 	}
@@ -152,7 +152,7 @@ func handlerAccountContactRequestIncomingReceived(ctx context.Context, v *groupV
 }
 
 func handlerAccountContactRequestIncomingDiscarded(_ context.Context, v *groupView, e *protocoltypes.GroupMetadataEvent, isHistory bool) error {
-	casted := &protocoltypes.AccountContactRequestDiscarded{}
+	casted := &protocoltypes.AccountContactRequestIncomingDiscarded{}
 	if err := casted.Unmarshal(e.Event); err != nil {
 		return err
 	}
@@ -173,7 +173,7 @@ func handlerAccountContactRequestIncomingDiscarded(_ context.Context, v *groupVi
 }
 
 func handlerMultiMemberGroupInitialMemberAnnounced(_ context.Context, v *groupView, e *protocoltypes.GroupMetadataEvent, isHistory bool) error {
-	casted := &protocoltypes.MultiMemberInitialMember{}
+	casted := &protocoltypes.MultiMemberGroupInitialMemberAnnounced{}
 	if err := casted.Unmarshal(e.Event); err != nil {
 		return err
 	}
@@ -188,7 +188,7 @@ func handlerMultiMemberGroupInitialMemberAnnounced(_ context.Context, v *groupVi
 }
 
 func handlerAccountContactRequestOutgoingEnqueued(ctx context.Context, v *groupView, e *protocoltypes.GroupMetadataEvent, isHistory bool) error {
-	casted := &protocoltypes.AccountContactRequestEnqueued{}
+	casted := &protocoltypes.AccountContactRequestOutgoingEnqueued{}
 	if err := casted.Unmarshal(e.Event); err != nil {
 		return err
 	}
@@ -234,7 +234,7 @@ func handlerAccountContactRequestOutgoingEnqueued(ctx context.Context, v *groupV
 }
 
 func handlerContactAliasKeyAdded(_ context.Context, v *groupView, e *protocoltypes.GroupMetadataEvent, isHistory bool) error {
-	casted := &protocoltypes.ContactAddAliasKey{}
+	casted := &protocoltypes.ContactAliasKeyAdded{}
 	if err := casted.Unmarshal(e.Event); err != nil {
 		return err
 	}
@@ -249,7 +249,7 @@ func handlerContactAliasKeyAdded(_ context.Context, v *groupView, e *protocoltyp
 }
 
 func handlerMultiMemberGroupAliasResolverAdded(_ context.Context, v *groupView, e *protocoltypes.GroupMetadataEvent, isHistory bool) error {
-	casted := &protocoltypes.MultiMemberGroupAddAliasResolver{}
+	casted := &protocoltypes.MultiMemberGroupAliasResolverAdded{}
 	if err := casted.Unmarshal(e.Event); err != nil {
 		return err
 	}
@@ -264,7 +264,7 @@ func handlerMultiMemberGroupAliasResolverAdded(_ context.Context, v *groupView, 
 }
 
 func handlerAccountContactRequestIncomingAccepted(ctx context.Context, v *groupView, e *protocoltypes.GroupMetadataEvent, isHistory bool) error {
-	casted := &protocoltypes.AccountContactRequestSent{}
+	casted := &protocoltypes.AccountContactRequestOutgoingSent{}
 	if err := casted.Unmarshal(e.Event); err != nil {
 		return err
 	}
