@@ -479,7 +479,7 @@ ios/Frameworks/Bertypush.xcframework: $(bridge_src)
 		$(GO) run golang.org/x/mobile/cmd/gomobile bind \
 			-o js/$@ \
 			-v $(ext_ldflags) \
-			$(GO_TAGS) -tags 'nowatchdog' \
+			$(GO_TAGS) -tags 'nowatchdog,noproximitytransport' \
 			-cache $(ios_gomobile_cache)/bertypush \
 			-target $(GOMOBILE_IOS_TARGET) \
 			-iosversion $(minimum_ios_ver) \
