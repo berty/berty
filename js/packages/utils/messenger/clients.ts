@@ -232,7 +232,7 @@ export const openClients = async (
 
 	// request push notifications token
 	if (Platform.OS === 'ios' || Platform.OS === 'android') {
-		await requestAndPersistPushToken(protocolClient).catch(e => console.warn(e))
+		await requestAndPersistPushToken(messengerClient).catch(e => console.warn(e))
 	}
 
 	// call messenger client event stream

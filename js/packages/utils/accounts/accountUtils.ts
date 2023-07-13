@@ -5,8 +5,10 @@ import Share from 'react-native-share'
 
 import beapi from '@berty/api'
 import { GRPCError } from '@berty/grpc-bridge'
+import { ServiceClientType } from '@berty/grpc-bridge/welsh-clients.gen'
 import { setAccounts } from '@berty/redux/reducers/ui.reducer'
 import store from '@berty/redux/store'
+import { serviceTypes } from '@berty/utils/remote-services/remote-services'
 
 import { createAndSaveFile } from '../react-native/file-system'
 import { accountClient } from './accountClient'
@@ -94,4 +96,15 @@ export const exportLogfile = async (accountId: string | null) => {
 			console.warn(err)
 		}
 	}
+}
+
+export const hasKnownPushServer = (
+	account: ServiceClientType<beapi.messenger.Account> | null | undefined,
+): boolean => {
+	const hasKnownPushServer = account?.serviceTokens?.some(t => {
+		return t.supportedServices?.some(s => {
+			return s.type === serviceTypes.Push
+		})
+	})
+	return hasKnownPushServer
 }

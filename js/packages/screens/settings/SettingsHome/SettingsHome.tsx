@@ -43,6 +43,7 @@ import {
 } from '@berty/redux/reducers/persistentOptions.reducer'
 import { selectProtocolClient, selectSelectedAccount } from '@berty/redux/reducers/ui.reducer'
 import { accountClient } from '@berty/utils/accounts/accountClient'
+import { hasKnownPushServer } from '@berty/utils/accounts/accountUtils'
 import { numberifyLong } from '@berty/utils/convert/long'
 import {
 	accountPushToggleState,
@@ -50,7 +51,6 @@ import {
 	pushFilteringAvailable,
 } from '@berty/utils/notification/notif-push'
 import { checkProximityPermission } from '@berty/utils/permissions/checkPermissions'
-import { serviceTypes } from '@berty/utils/remote-services/remote-services'
 
 import { EditMyProfile } from './components/EditMyProfile'
 
@@ -130,7 +130,9 @@ export const SettingsHome: ScreenFC<'Settings.Home'> = withInAppNotification(() 
 	} = bertyMethodsHooks.useSystemInfo()
 	const [isVisible, setIsVisible] = React.useState<boolean>(false)
 
-	const hasKnownPushServer = account.serviceTokens?.some(t => t.serviceType === serviceTypes.Push)
+	const knownPushServer = React.useCallback(() => {
+		return hasKnownPushServer(account)
+	}, [account])
 
 	// get system info
 	React.useEffect(() => {
@@ -273,7 +275,7 @@ export const SettingsHome: ScreenFC<'Settings.Home'> = withInAppNotification(() 
 									<MenuToggleWithIcon
 										iconName='bell-outline'
 										isToggleOn={
-											hasKnownPushServer &&
+											knownPushServer() &&
 											numberifyLong(account.mutedUntil) < Date.now() &&
 											(permissions.notification === RESULTS.GRANTED ||
 												permissions.notification === RESULTS.LIMITED)

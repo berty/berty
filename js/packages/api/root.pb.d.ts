@@ -3960,6 +3960,7 @@ export namespace berty {
                     accountDirectoryServiceRecord?: (Long|null);
                     pushDeviceToken?: (Long|null);
                     pushServerRecord?: (Long|null);
+                    pushLocalDeviceSharedToken?: (Long|null);
                 }
 
                 class DB implements IDB {
@@ -3979,6 +3980,7 @@ export namespace berty {
                     public accountDirectoryServiceRecord: Long;
                     public pushDeviceToken: Long;
                     public pushServerRecord: Long;
+                    public pushLocalDeviceSharedToken: Long;
                     public static create(properties?: berty.messenger.v1.SystemInfo.IDB): berty.messenger.v1.SystemInfo.DB;
                     public static encode(message: berty.messenger.v1.SystemInfo.IDB, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.messenger.v1.SystemInfo.IDB, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -4507,9 +4509,9 @@ export namespace berty {
                 createdDate?: (Long|null);
                 replicationInfo?: (berty.messenger.v1.IConversationReplicationInfo[]|null);
                 infoDate?: (Long|null);
-                sharedPushTokenIdentifier?: (string|null);
                 localMemberPublicKey?: (string|null);
                 mutedUntil?: (Long|null);
+                pushLocalDeviceSharedTokens?: (berty.messenger.v1.IPushLocalDeviceSharedToken[]|null);
                 pushMemberTokens?: (berty.messenger.v1.IPushMemberToken[]|null);
             }
 
@@ -4530,9 +4532,9 @@ export namespace berty {
                 public createdDate: Long;
                 public replicationInfo: berty.messenger.v1.IConversationReplicationInfo[];
                 public infoDate: Long;
-                public sharedPushTokenIdentifier: string;
                 public localMemberPublicKey: string;
                 public mutedUntil: Long;
+                public pushLocalDeviceSharedTokens: berty.messenger.v1.IPushLocalDeviceSharedToken[];
                 public pushMemberTokens: berty.messenger.v1.IPushMemberToken[];
                 public static create(properties?: berty.messenger.v1.IConversation): berty.messenger.v1.Conversation;
                 public static encode(message: berty.messenger.v1.IConversation, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -6733,7 +6735,28 @@ export namespace berty {
                 public toJSON(): { [k: string]: any };
             }
 
+            interface IPushLocalDeviceSharedToken {
+                tokenId?: (string|null);
+                conversationPublicKey?: (string|null);
+            }
+
+            class PushLocalDeviceSharedToken implements IPushLocalDeviceSharedToken {
+
+                public tokenId: string;
+                public conversationPublicKey: string;
+                public static create(properties?: berty.messenger.v1.IPushLocalDeviceSharedToken): berty.messenger.v1.PushLocalDeviceSharedToken;
+                public static encode(message: berty.messenger.v1.IPushLocalDeviceSharedToken, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.messenger.v1.IPushLocalDeviceSharedToken, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.PushLocalDeviceSharedToken;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.PushLocalDeviceSharedToken;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.messenger.v1.PushLocalDeviceSharedToken;
+                public static toObject(message: berty.messenger.v1.PushLocalDeviceSharedToken, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
             interface IPushMemberToken {
+                tokenId?: (string|null);
                 conversationPublicKey?: (string|null);
                 devicePk?: (string|null);
                 serverAddr?: (string|null);
@@ -6743,6 +6766,7 @@ export namespace berty {
 
             class PushMemberToken implements IPushMemberToken {
 
+                public tokenId: string;
                 public conversationPublicKey: string;
                 public devicePk: string;
                 public serverAddr: string;

@@ -959,7 +959,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
               PushServiceReceiver: {
                 fields: {
                   tokenType: {
-                    type: "push.v1.PushServiceTokenType",
+                    type: "PushServiceTokenType",
                     id: 1
                   },
                   bundleId: {
@@ -2725,6 +2725,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       pushServerRecord: {
                         type: "int64",
                         id: 16
+                      },
+                      pushLocalDeviceSharedToken: {
+                        type: "int64",
+                        id: 17
                       }
                     },
                     reserved: [
@@ -3278,17 +3282,21 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     type: "int64",
                     id: 18
                   },
-                  sharedPushTokenIdentifier: {
+                  localMemberPublicKey: {
                     type: "string",
                     id: 19
                   },
-                  localMemberPublicKey: {
-                    type: "string",
-                    id: 20
-                  },
                   mutedUntil: {
                     type: "int64",
-                    id: 21
+                    id: 20
+                  },
+                  pushLocalDeviceSharedTokens: {
+                    rule: "repeated",
+                    type: "PushLocalDeviceSharedToken",
+                    id: 21,
+                    options: {
+                      "(gogoproto.moretags)": "gorm:foreignKey:ConversationPublicKey"
+                    }
                   },
                   pushMemberTokens: {
                     rule: "repeated",
@@ -3539,14 +3547,14 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     id: 1,
                     options: {
                       "(gogoproto.customname)": "AccountPK",
-                      "(gogoproto.moretags)": "gorm:uniqueIndex:uniquePushServerRecord"
+                      "(gogoproto.moretags)": "gorm:primaryKey"
                     }
                   },
                   serverAddr: {
                     type: "string",
                     id: 2,
                     options: {
-                      "(gogoproto.moretags)": "gorm:uniqueIndex:uniquePushServerRecord"
+                      "(gogoproto.moretags)": "gorm:primaryKey"
                     }
                   },
                   serverKey: {
@@ -4587,37 +4595,54 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   }
                 }
               },
-              PushMemberToken: {
+              PushLocalDeviceSharedToken: {
                 fields: {
-                  conversationPublicKey: {
+                  tokenId: {
                     type: "string",
                     id: 1,
                     options: {
-                      "(gogoproto.moretags)": "gorm:primaryKey"
+                      "(gogoproto.moretags)": "gorm:primaryKey",
+                      "(gogoproto.customname)": "TokenID"
                     }
+                  },
+                  conversationPublicKey: {
+                    type: "string",
+                    id: 2
+                  }
+                }
+              },
+              PushMemberToken: {
+                fields: {
+                  tokenId: {
+                    type: "string",
+                    id: 1,
+                    options: {
+                      "(gogoproto.moretags)": "gorm:primaryKey",
+                      "(gogoproto.customname)": "TokenID"
+                    }
+                  },
+                  conversationPublicKey: {
+                    type: "string",
+                    id: 2
                   },
                   devicePk: {
                     type: "string",
-                    id: 2,
+                    id: 3,
                     options: {
-                      "(gogoproto.moretags)": "gorm:primaryKey",
                       "(gogoproto.customname)": "DevicePK"
                     }
                   },
                   serverAddr: {
                     type: "string",
-                    id: 3,
-                    options: {
-                      "(gogoproto.moretags)": "gorm:primaryKey"
-                    }
+                    id: 4
                   },
                   serverKey: {
                     type: "bytes",
-                    id: 4
+                    id: 5
                   },
                   token: {
                     type: "bytes",
-                    id: 5
+                    id: 6
                   }
                 }
               },

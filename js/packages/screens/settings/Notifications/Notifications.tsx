@@ -16,6 +16,7 @@ import { useAccount, useMessengerClient, useOneToOneContact, useThemeColor } fro
 import { useAllConversations } from '@berty/hooks'
 import { ScreenFC, useNavigation } from '@berty/navigation'
 import { selectProtocolClient } from '@berty/redux/reducers/ui.reducer'
+import { hasKnownPushServer } from '@berty/utils/accounts/accountUtils'
 import { numberifyLong } from '@berty/utils/convert/long'
 import {
 	accountPushToggleState,
@@ -24,7 +25,6 @@ import {
 	pushFilteringAvailable,
 	pushAvailable,
 } from '@berty/utils/notification/notif-push'
-import { serviceTypes } from '@berty/utils/remote-services/remote-services'
 
 const oneSecond = 1000
 const oneMinute = oneSecond * 60
@@ -58,6 +58,12 @@ const MutedConversationButton = ({
 	const { scaleSize } = useAppDimensions()
 
 	const contact = useOneToOneContact(conversation.publicKey || '')
+	const pushTokenShared = useMemo(
+		() =>
+			Array.isArray(conversation?.pushLocalDeviceSharedTokens) &&
+			conversation?.pushLocalDeviceSharedTokens.length > 0,
+		[conversation],
+	)
 
 	return (
 		<ButtonSettingV2
@@ -89,8 +95,7 @@ const MutedConversationButton = ({
 				}
 			}}
 			oppositeNode={
-				conversation.sharedPushTokenIdentifier &&
-				numberifyLong(conversation.mutedUntil) - Date.now() < oneYear ? (
+				pushTokenShared && numberifyLong(conversation.mutedUntil) - Date.now() < oneYear ? (
 					<UnifiedText style={{ color: colors['warning-asset'] }}>
 						{timeoutDisplay(t, numberifyLong(conversation.mutedUntil))}
 					</UnifiedText>
@@ -117,10 +122,7 @@ export const Notifications: ScreenFC<'Settings.Notifications'> = () => {
 	const { scaleSize } = useAppDimensions()
 	const colors = useThemeColor()
 	const account = useAccount()
-	const hasPushToken = useMemo(
-		() => account.serviceTokens?.some(t => t.serviceType === serviceTypes.Push),
-		[account.serviceTokens],
-	)
+	const hasPushToken = useMemo(() => hasKnownPushServer(account), [account])
 	const accountUnmuted = useMemo(
 		() => numberifyLong(account.mutedUntil) < Date.now(),
 		[account.mutedUntil],
@@ -140,9 +142,13 @@ export const Notifications: ScreenFC<'Settings.Notifications'> = () => {
 	const mutedConversations = useMemo(
 		() =>
 			pushEnabled && pushFilteringAvailable
-				? conversations.filter(
-						c => c && (!c.sharedPushTokenIdentifier || numberifyLong(c.mutedUntil) > Date.now()),
-				  )
+				? conversations.filter(c => {
+						const pushTokenShared =
+							Array.isArray(c?.pushLocalDeviceSharedTokens) &&
+							c?.pushLocalDeviceSharedTokens.length > 0
+
+						return c && (!pushTokenShared || numberifyLong(c.mutedUntil) > Date.now())
+				  })
 				: [],
 		[pushEnabled, conversations],
 	)
