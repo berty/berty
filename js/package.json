@@ -65,7 +65,7 @@
     "react-native-fs": "^2.16.6",
     "react-native-hyperlink": "^0.0.19",
     "react-native-in-app-notification": "3.2.0",
-    "react-native-permissions": "3.8.4",
+    "react-native-permissions": "^3.8.4",
     "react-native-progress": "^5.0.0",
     "react-native-qrcode-svg": "6.1.1",
     "react-native-restart": "^0.0.22",
