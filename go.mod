@@ -406,7 +406,6 @@ require (
 
 replace (
 	bazil.org/fuse => bazil.org/fuse v0.0.0-20200117225306-7b5117fecadc // specific version for iOS building
-	berty.tech/weshnet => /Users/d4ryl00/weshnet
 
 	github.com/multiformats/go-multiaddr => github.com/berty/go-multiaddr v0.7.1-0.20221227155345-2f7904a06393 // tmp, required for Android SDK30
 	github.com/mutecomm/go-sqlcipher/v4 => github.com/berty/go-sqlcipher/v4 v4.4.3-0.20220810151512-74ea78235b48 // plaintext header support
@@ -414,3 +413,5 @@ replace (
 	go.opentelemetry.io/otel => go.opentelemetry.io/otel v1.11.1 // https://github.com/open-telemetry/opentelemetry-go/issues/3548
 	golang.org/x/mobile => github.com/berty/mobile v0.0.8 // temporary, see https://github.com/golang/mobile/pull/58 and https://github.com/golang/mobile/pull/82
 )
+
+replace berty.tech/weshnet => github.com/d4ryl00/weshnet v0.0.0-20230630143127-82947d776fdc
