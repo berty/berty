@@ -11,6 +11,7 @@ import (
 	"berty.tech/berty/v2/go/localization"
 	"berty.tech/berty/v2/go/pkg/bertypush"
 	"berty.tech/berty/v2/go/pkg/pushtypes"
+	"berty.tech/weshnet/pkg/logutil"
 )
 
 type FormatedPush pushtypes.FormatedPush
@@ -42,10 +43,11 @@ type PushStandalone struct {
 }
 
 func NewPushStandalone(c *Config) *PushStandalone {
-	logger := zap.NewNop()
+	if c.logger == nil {
+		c.logger = logutil.NewNativeLogger("bertybridge")
 
-	if c.logger != nil {
-		logger = c.logger
+		// @NOTE(gfanton): replace grpc logger as soon as possible to avoid DATA_RACE
+		logutil.ReplaceGRPCLogger(c.logger.Named("grpc"))
 	}
 
 	tags := []language.Tag{}
@@ -53,19 +55,19 @@ func NewPushStandalone(c *Config) *PushStandalone {
 	for _, lang := range c.languages {
 		tag, err := language.Parse(lang)
 		if err != nil {
-			logger.Warn("unable to parse language", zap.String("lang", lang), zap.Error(err))
+			c.logger.Warn("unable to parse language", zap.String("lang", lang), zap.Error(err))
 			continue
 		}
 
 		fields = append(fields, tag.String())
 		tags = append(tags, tag)
 	}
-	logger.Info("user preferred language loaded", zap.Strings("language", fields))
+	c.logger.Info("user preferred language loaded", zap.Strings("language", fields))
 
 	catalog := localization.Catalog()
 	return &PushStandalone{
 		printer: catalog.NewPrinter(tags...),
-		logger:  logger,
+		logger:  c.logger,
 	}
 }
 

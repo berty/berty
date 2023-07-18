@@ -16,15 +16,17 @@ import (
 
 func pushServerCommand() *ffcli.Command {
 	var (
-		apns *string
-		fcm  *string
-		sk   *string
+		apns        *string
+		fcmBundleID *string
+		fcmKeys     *string
+		sk          *string
 	)
 
 	fsBuilder := func() (*flag.FlagSet, error) {
 		fs := flag.NewFlagSet("berty push-server", flag.ExitOnError)
 		apns = fs.String("apns", "", "Apple's apns certs path, comma-separated")
-		fcm = fs.String("fcm", "", "Firebase's FCM API keys, formatted like app_id:api_key and comma-separated")
+		fcmBundleID = fs.String("fcm-bundleid", "", "App BundleID. Require if the GOOGLE_APPLICATION_CREDENTIALS env var is set for FCM credentials")
+		fcmKeys = fs.String("fcm-keys", "", "Firebase's FCM API keys, formatted like app_id:api_key.json and comma-separated, if the GOOGLE_APPLICATION_CREDENTIALS env var is not set")
 		sk = fs.String("push-private-key", "", "Push server private key, base64 formatted")
 		manager.SetupLoggingFlags(fs) // also available at root level
 		manager.SetupProtocolAuth(fs)
@@ -82,7 +84,7 @@ func pushServerCommand() *ffcli.Command {
 
 			dispatchers = append(dispatchers, apnsDispatchers...)
 
-			fcmDispatchers, err := bertypushrelay.PushDispatcherLoadFirebaseAPIKey(logger, fcm)
+			fcmDispatchers, err := bertypushrelay.PushDispatcherLoadFirebaseAPIKey(ctx, logger, fcmBundleID, fcmKeys)
 			if err != nil {
 				return err
 			}

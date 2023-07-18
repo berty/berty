@@ -232,7 +232,7 @@ func PushDecrypt(ctx context.Context, rootDir string, input []byte, opts *PushDe
 			wrappedDB := messengerdb.NewDBWrapper(db, opts.Logger)
 			dbFetcher := dbfetcher.NewDBFetcher(account.PublicKey, wrappedDB)
 
-			weshClient, err := weshnet.NewOutOfStoreMessageServiceClient(weshnet.WithRootDatastore(rootDS))
+			weshClient, err := weshnet.NewOutOfStoreMessageServiceClient(weshnet.WithRootDatastore(rootDS), weshnet.WithLogger(opts.Logger))
 			if err != nil {
 				return nil, errcode.ErrInternal.Wrap(fmt.Errorf("unable to initialize weshnet client: %w", err))
 			}
