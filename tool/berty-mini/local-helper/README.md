@@ -6,7 +6,7 @@ A simple Makefile that helps running multiple berty mini instances
 
 ```console
 # start a berty mini instance in a shell
-$ make run ID=1
+$ ID=1 make run 
 Account
  9L7gKAZS                             /\
                                  /\  / /\  ______
@@ -27,7 +27,7 @@ Account
 
 ```console
 # in another shell you can read the logs in real time
-$ make tail ID=43
+$ ID=43 make tail
 tail -f /tmp/berty-mini-1.log
 {"level":"debug","ts":1592558366.0639644,"logger":"tinder/multi","caller":"tinder/driver_multi.go:94","msg":"looking for peers","key":"/provider/bafkreihyblbn2mnoscxta7wvaookji6qdrjo2sgel2ysyxqxrvccllv4ru"}
 {"level":"warn","ts":1592558366.0640278,"logger":"tinder/multi","caller":"tinder/driver_multi.go:61","msg":"failed to advertise","driver":"rdvp","key":"/provider/bafkreihyblbn2mnoscxta7wvaookji6qdrjo2sgel2ysyxqxrvccllv4ru","error":"context canceled"}
@@ -45,7 +45,7 @@ tail -f /tmp/berty-mini-1.log
 
 ```console
 # you can also get some logging statistics
-$ make watch-log-stats ID=1
+$ ID=1 make watch-log-stats
 Every 2,0s: make log-stats                                                                                                                                                                                                                                                                                                                                                                              fwrz: Fri Jun 19 11:20:53 2020
 
 make[1]: Entering directory '/home/moul/go/src/berty.tech/berty/tool/berty-mini-local-helper'
