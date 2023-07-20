@@ -53,9 +53,8 @@ export const accountPushToggleState = async ({
 	}
 
 	const permissions = await getPermissions()
-	const knownPushServer = hasKnownPushServer(account)
 	if (
-		!knownPushServer ||
+		!hasKnownPushServer(account) ||
 		numberifyLong(account.mutedUntil) > Date.now() ||
 		!(permissions.notification === RESULTS.GRANTED || permissions.notification === RESULTS.LIMITED)
 	) {
@@ -110,7 +109,6 @@ const enablePushPermission = async (
 	navigate: any,
 ): Promise<PushNotificationStatus> => {
 	const account = await messengerClient.accountGet({})
-	const knownPushServer = hasKnownPushServer(account.account)
 
 	try {
 		// Get or ask for permission
@@ -150,7 +148,7 @@ const enablePushPermission = async (
 	}
 
 	// Register push server secrets if needed
-	if (!knownPushServer) {
+	if (!hasKnownPushServer(account.account)) {
 		// When we don't have network connection the servicesAuthViaDefault function hang so we manually set a timeout
 		const timeout = new Promise(resolve => setTimeout(() => resolve('timeout'), 7000))
 		const pushStatus = await Promise.race([

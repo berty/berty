@@ -46,7 +46,13 @@ export const useAccountServices = (): Array<beapi.messenger.IServiceToken> => {
 		account.serviceTokens.reduce(
 			(tokens, t) => ({
 				...tokens,
-				[`${t.authenticationUrl}-${t.serviceType}`]: t,
+				...t.supportedServices?.reduce(
+					(services, s) => ({
+						...services,
+						[`${t.authenticationUrl}-${s.type}`]: t,
+					}),
+					{},
+				),
 			}),
 			{},
 		),

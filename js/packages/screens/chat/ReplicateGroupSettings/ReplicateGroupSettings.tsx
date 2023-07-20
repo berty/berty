@@ -2,7 +2,6 @@ import { Layout } from '@ui-kitten/components'
 import React, { ComponentProps } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ScrollView, View } from 'react-native'
-import { useSelector } from 'react-redux'
 
 import beapi from '@berty/api'
 import { ButtonSetting, FactionButtonSetting } from '@berty/components/shared-components'
@@ -14,7 +13,6 @@ import {
 	useThemeColor,
 } from '@berty/hooks'
 import { ScreenFC } from '@berty/navigation'
-import { selectProtocolClient } from '@berty/redux/reducers/ui.reducer'
 import {
 	replicateGroup,
 	servicesAuthViaDefault,
@@ -35,7 +33,7 @@ type TokenUsageStatus = {
 
 const getAllReplicationStatusForConversation = (
 	conversation: beapi.messenger.IConversation | undefined,
-	services: Array<beapi.messenger.IServiceToken>,
+	tokens: Array<beapi.messenger.IServiceToken>,
 ): Array<TokenUsageStatus> => {
 	const allServers =
 		conversation?.replicationInfo?.reduce<{
@@ -56,17 +54,19 @@ const getAllReplicationStatusForConversation = (
 			}
 		}, {}) || {}
 
-	for (const s of services.filter(t => t.serviceType === serviceTypes.Replication)) {
-		if (typeof s.authenticationUrl !== 'string') {
+	for (const t of tokens.filter(t =>
+		t.supportedServices?.some(ss => ss.type === serviceTypes.Replication),
+	)) {
+		if (typeof t.authenticationUrl !== 'string') {
 			continue
 		}
 
-		allServers[s.authenticationUrl] = {
+		allServers[t.authenticationUrl] = {
 			status:
-				allServers[s.authenticationUrl] !== undefined
+				allServers[t.authenticationUrl] !== undefined
 					? replicationServerStatus.KnownServerEnabled
 					: replicationServerStatus.KnownServerNotEnabled,
-			service: s,
+			service: t,
 		}
 	}
 
@@ -105,7 +105,6 @@ const ReplicateGroupContent: React.FC<{
 	const { margin, flex, padding } = useStyles()
 	const colors = useThemeColor()
 	const { t } = useTranslation()
-	const protocolClient = useSelector(selectProtocolClient)
 
 	const replicationStatus = getAllReplicationStatusForConversation(conversation, services)
 
@@ -145,7 +144,7 @@ const ReplicateGroupContent: React.FC<{
 				iconColor={colors['background-header']}
 				alone={true}
 				onPress={async () => {
-					await servicesAuthViaDefault(protocolClient, [serviceTypes.Replication])
+					await servicesAuthViaDefault(client, [serviceTypes.Replication])
 				}}
 			/>
 			<ButtonSetting
