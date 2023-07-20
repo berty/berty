@@ -64,7 +64,7 @@ require (
 	github.com/pseudomuto/protoc-gen-doc v1.5.1
 	github.com/rivo/tview v0.0.0-20200712113419-c65badfc3d92
 	github.com/shibukawa/configdir v0.0.0-20170330084843-e180dbdc8da0
-	github.com/sideshow/apns2 v0.20.0
+	github.com/sideshow/apns2 v0.23.0
 	github.com/skip2/go-qrcode v0.0.0-20200617195104-da1b6568686e
 	github.com/stretchr/testify v1.8.2
 	github.com/tailscale/depaware v0.0.0-20210622194025-720c4b409502
@@ -146,7 +146,6 @@ require (
 	github.com/dgraph-io/badger v1.6.2 // indirect
 	github.com/dgraph-io/badger/v2 v2.2007.3 // indirect
 	github.com/dgraph-io/ristretto v0.0.3 // indirect
-	github.com/dgrijalva/jwt-go v3.2.0+incompatible // indirect
 	github.com/dgryski/go-farm v0.0.0-20190423205320-6a90982ecee2 // indirect
 	github.com/docker/cli v20.10.23+incompatible // indirect
 	github.com/docker/distribution v2.8.1+incompatible // indirect
@@ -422,7 +421,7 @@ require (
 replace (
 	bazil.org/fuse => bazil.org/fuse v0.0.0-20200117225306-7b5117fecadc // specific version for iOS building
 
-	berty.tech/weshnet => github.com/d4ryl00/weshnet v0.0.0-20230718230138-f4ad470698b9
+	berty.tech/weshnet => github.com/d4ryl00/weshnet v0.0.0-20230720084312-6c00f4d586a3
 	github.com/multiformats/go-multiaddr => github.com/berty/go-multiaddr v0.7.1-0.20221227155345-2f7904a06393 // tmp, required for Android SDK30
 	github.com/mutecomm/go-sqlcipher/v4 => github.com/berty/go-sqlcipher/v4 v4.4.3-0.20220810151512-74ea78235b48 // plaintext header support
 	github.com/peterbourgon/ff/v3 => github.com/moul/ff/v3 v3.0.1 // temporary, see https://github.com/peterbourgon/ff/pull/67, https://github.com/peterbourgon/ff/issues/68

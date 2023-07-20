@@ -18,7 +18,7 @@ import (
 
 const (
 	asn1UID              = "0.9.2342.19200300.100.1.1"
-	appleCertDevNamePart = "Apple Development IOS Push Services"
+	appleCertDevNamePart = "Apple Sandbox Push Services"
 )
 
 type pushDispatcherAPNS struct {
