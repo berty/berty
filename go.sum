@@ -8,6 +8,8 @@ berty.tech/go-orbit-db v1.22.0 h1:BiUGk9ukOKJMQ2YlQV/e9gjR9TOedIa9LUDfjp9CVHA=
 berty.tech/go-orbit-db v1.22.0/go.mod h1:RC3/C/igfM7b2RuT7WIloOHbFz9zZTJxB3jOEqC6UWA=
 berty.tech/ipfs-webui-packed v1.0.0-v2.11.4-1 h1:xXAS7M/RcgIWia1XkXLueirm2zDXnMMNGb3UJhfRzbo=
 berty.tech/ipfs-webui-packed v1.0.0-v2.11.4-1/go.mod h1:n+M4wWEjVxnA0itc1m9oOLAXrNyZr2tiOxLnA1tVnrQ=
+berty.tech/weshnet v1.13.0 h1:ugYbDH5+TCuE599l83vdruIDGE9XE6S3IKcKTjAyud4=
+berty.tech/weshnet v1.13.0/go.mod h1:BNV2f0xxLFIPwNJNf8KprEAGfIqvzGh8uu7QGhRxe7w=
 cloud.google.com/go v0.26.0/go.mod h1:aQUYkXzVsufM+DwF1aE+0xfcU+56JwCaLick0ClmMTw=
 cloud.google.com/go v0.31.0/go.mod h1:aQUYkXzVsufM+DwF1aE+0xfcU+56JwCaLick0ClmMTw=
 cloud.google.com/go v0.34.0/go.mod h1:aQUYkXzVsufM+DwF1aE+0xfcU+56JwCaLick0ClmMTw=
@@ -256,8 +258,6 @@ github.com/creack/pty v1.1.9/go.mod h1:oKZEueFk5CKHvIhNR5MUki03XCEU+Q6VDXinZuGJ3
 github.com/creack/pty v1.1.18 h1:n56/Zwd5o6whRC5PMGretI4IdRLlmBXYNjScPaBgsbY=
 github.com/cskr/pubsub v1.0.2 h1:vlOzMhl6PFn60gRlTQQsIfVwaPB/B/8MziK8FhEPt/0=
 github.com/cskr/pubsub v1.0.2/go.mod h1:/8MzYXk/NJAz782G8RPkFzXTZVu63VotefPnR9TIRis=
-github.com/d4ryl00/weshnet v0.0.0-20230720084312-6c00f4d586a3 h1:ildWtmFwYSD7pFpGtZMgX3PAa3oMrfIQNF8AU3ZTeJ0=
-github.com/d4ryl00/weshnet v0.0.0-20230720084312-6c00f4d586a3/go.mod h1:BNV2f0xxLFIPwNJNf8KprEAGfIqvzGh8uu7QGhRxe7w=
 github.com/daixiang0/gci v0.8.2 h1:4VLVDNdJ+wkXxz/nr5QRrbeK+JCvkMVqYjUWB5EnPF4=
 github.com/daixiang0/gci v0.8.2/go.mod h1:EpVfrztufwVgQRXjnX4zuNinEpLj5OmMjtu/+MB0V0c=
 github.com/davecgh/go-spew v0.0.0-20171005155431-ecdeabc65495/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=

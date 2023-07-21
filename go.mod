@@ -6,7 +6,7 @@ require (
 	berty.tech/go-ipfs-repo-encrypted v1.3.0
 	berty.tech/go-orbit-db v1.22.0
 	berty.tech/ipfs-webui-packed v1.0.0-v2.11.4-1
-	berty.tech/weshnet v1.12.1
+	berty.tech/weshnet v1.13.0
 	firebase.google.com/go/v4 v4.12.0
 	fyne.io/fyne/v2 v2.1.1
 	github.com/Masterminds/semver v1.5.0
@@ -421,7 +421,6 @@ require (
 replace (
 	bazil.org/fuse => bazil.org/fuse v0.0.0-20200117225306-7b5117fecadc // specific version for iOS building
 
-	berty.tech/weshnet => github.com/d4ryl00/weshnet v0.0.0-20230720084312-6c00f4d586a3
 	github.com/multiformats/go-multiaddr => github.com/berty/go-multiaddr v0.7.1-0.20221227155345-2f7904a06393 // tmp, required for Android SDK30
 	github.com/mutecomm/go-sqlcipher/v4 => github.com/berty/go-sqlcipher/v4 v4.4.3-0.20220810151512-74ea78235b48 // plaintext header support
 	github.com/peterbourgon/ff/v3 => github.com/moul/ff/v3 v3.0.1 // temporary, see https://github.com/peterbourgon/ff/pull/67, https://github.com/peterbourgon/ff/issues/68
