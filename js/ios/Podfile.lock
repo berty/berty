@@ -13,6 +13,8 @@ PODS:
     - ExpoModulesCore
   - EXConstants (13.0.2):
     - ExpoModulesCore
+  - EXErrorRecovery (3.0.5):
+    - ExpoModulesCore
   - EXFileSystem (13.1.4):
     - ExpoModulesCore
   - EXFont (10.0.5):
@@ -108,17 +110,17 @@ PODS:
     - lottie-ios (~> 3.2.3)
     - React-Core
   - OpenSSL-Universal (1.1.1100)
-  - Permission-BluetoothPeripheral (3.1.0):
+  - Permission-BluetoothPeripheral (3.8.4):
     - RNPermissions
-  - Permission-Camera (3.1.0):
+  - Permission-Camera (3.8.4):
     - RNPermissions
-  - Permission-Contacts (3.1.0):
+  - Permission-Contacts (3.8.4):
     - RNPermissions
-  - Permission-Microphone (3.1.0):
+  - Permission-Microphone (3.8.4):
     - RNPermissions
-  - Permission-Notifications (3.1.0):
+  - Permission-Notifications (3.8.4):
     - RNPermissions
-  - Permission-PhotoLibrary (3.1.0):
+  - Permission-PhotoLibrary (3.8.4):
     - RNPermissions
   - RCT-Folly (2020.01.13.00):
     - boost-for-react-native
@@ -403,7 +405,7 @@ PODS:
     - React-Core
   - RNFS (2.18.0):
     - React
-  - RNPermissions (3.1.0):
+  - RNPermissions (3.8.4):
     - React-Core
   - RNScreens (3.9.0):
     - React-Core
@@ -430,6 +432,7 @@ DEPENDENCIES:
   - EXBarCodeScanner (from `../node_modules/expo-barcode-scanner/ios`)
   - EXCamera (from `../node_modules/expo-camera/ios`)
   - EXConstants (from `../node_modules/expo-constants/ios`)
+  - EXErrorRecovery (from `../node_modules/expo-error-recovery/ios`)
   - EXFileSystem (from `../node_modules/expo-file-system/ios`)
   - EXFont (from `../node_modules/expo-font/ios`)
   - EXImageLoader (from `../node_modules/expo-image-loader/ios`)
@@ -543,6 +546,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/expo-camera/ios"
   EXConstants:
     :path: "../node_modules/expo-constants/ios"
+  EXErrorRecovery:
+    :path: "../node_modules/expo-error-recovery/ios"
   EXFileSystem:
     :path: "../node_modules/expo-file-system/ios"
   EXFont:
@@ -676,6 +681,7 @@ SPEC CHECKSUMS:
   EXBarCodeScanner: e5ca0062d8ad1c4c1d2e386d6a308d5a32213020
   EXCamera: 4a0d00d6d1e4703c31a75514d8bc804a2eab27bd
   EXConstants: d2594b4b1c48a2c6933622dbc2156543cfd5326b
+  EXErrorRecovery: b0d7582714a2cc896e94a2308a356f94dbf14ef7
   EXFileSystem: 08a3033ac372b6346becf07839e1ccef26fb1058
   EXFont: 2597c10ac85a69d348d44d7873eccf5a7576ef5e
   EXImageLoader: 347b72c2ec2df65120ccec40ea65a4c4f24317ff
@@ -694,19 +700,19 @@ SPEC CHECKSUMS:
   Flipper-Folly: 584845625005ff068a6ebf41f857f468decd26b3
   Flipper-Glog: ad8dd8dda19819daedb79db389c96a4f362e4d9c
   Flipper-PeerTalk: 116d8f857dc6ef55c7a5a75ea3ceaafe878aadc9
-  Flipper-RSocket: 127954abe8b162fcaf68d2134d34dc2bd7076154
-  FlipperKit: 651f50a42eb95c01b3e89a60996dd6aded529eeb
-  glog: 04b94705f318337d7ead9e6d17c019bd9b1f6b1b
+  Flipper-RSocket: d9d9ade67cbecf6ac10730304bf5607266dd2541
+  FlipperKit: 87dd306eef9927220672f98266e68bdab6c7cd69
+  glog: 73c2498ac6884b13ede40eda8228cb1eee9d9d62
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
   lottie-ios: c058aeafa76daa4cf64d773554bccc8385d0150e
   lottie-react-native: b561920bba7ec727ec94a473b683cffba00faece
   OpenSSL-Universal: ebc357f1e6bc71fa463ccb2fe676756aff50e88c
-  Permission-BluetoothPeripheral: e3bdcbf170bd1760881633941d4021b3d8e77f5a
-  Permission-Camera: 0db4fd6e1c556c1cf47f38b989a8084cea3ec3dd
-  Permission-Contacts: c9c3306280576546619fc9ae7489012ed9fe091f
-  Permission-Microphone: 7b75718196244a6e59dd60f82f12962562c2ea12
-  Permission-Notifications: e247d69c22ae72770d1c5314ad6ccd1256c57c83
-  Permission-PhotoLibrary: 9dcf80d1353d81b9f1e210c34291591236aaf2b6
+  Permission-BluetoothPeripheral: 2b88a131074edafd8a46a5cda4ba610ec986d2fb
+  Permission-Camera: 7ec9ee99704766ff9b90198183387a7f5d82b0c1
+  Permission-Contacts: 81a5fd864aa38af8edd201e9f5f8c4691b123e5c
+  Permission-Microphone: 3c985f25f8f89889c9e056622476deb291877194
+  Permission-Notifications: e06c4b115105e9aed6ed8d03c9894c23c1051731
+  Permission-PhotoLibrary: 6db9318df71ad74e9774cecedde95285f5a32d6a
   RCT-Folly: ec7a233ccc97cc556cf7237f0db1ff65b986f27c
   RCTRequired: f85fa00af016059cf88b90b8f8ff9a6af9e4b6c3
   RCTTypeSafety: 5279aaf0fb1ad715cbbbbee32d5c98c72598bc9c
@@ -743,7 +749,7 @@ SPEC CHECKSUMS:
   RNCClipboard: 99fc8ad669a376b756fbc8098ae2fd05c0ed0668
   RNFlashList: 399bf6a0db68f594ad2c86aaff3ea39564f39f8a
   RNFS: 3ab21fa6c56d65566d1fb26c2228e2b6132e5e32
-  RNPermissions: 4b54095940aea8c03fa3e6c92d4ac3647b31ed4e
+  RNPermissions: f1b49dd05fa9b83993cd05a9ee115247944d8f1a
   RNScreens: 4d79118be80f79fa1f4aa131909a1d6e86280af3
   RNShare: edd621a71124961e29a7ba43a84bd1c6f9980d88
   RNSVG: 551acb6562324b1d52a4e0758f7ca0ec234e278f
