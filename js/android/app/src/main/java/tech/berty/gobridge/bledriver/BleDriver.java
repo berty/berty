@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 
@@ -114,9 +115,20 @@ public class BleDriver {
         }
 
         // Check BLE permissions
-        if (mAppContext.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            mLogger.e(TAG, "initSystemBle: BLE permissions not granted");
-            return false;
+        String[] permissions;
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S) {
+            permissions = new String[]{Manifest.permission.ACCESS_FINE_LOCATION};
+        } else {
+            permissions = new String[]{Manifest.permission.BLUETOOTH_SCAN,
+                Manifest.permission.BLUETOOTH_ADVERTISE,
+                Manifest.permission.BLUETOOTH_CONNECT
+            };
+        }
+        for (int i = 0; i < permissions.length; i++) {
+            if (mAppContext.checkSelfPermission(permissions[i]) != PackageManager.PERMISSION_GRANTED) {
+                mLogger.e(TAG, String.format("initSystemBle: %s permissions not granted", permissions[i]));
+                return false;
+            }
         }
 
         // Initializes Bluetooth adapter.

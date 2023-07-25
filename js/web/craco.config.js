@@ -98,6 +98,9 @@ module.exports = {
 			'lottie-react-native': path.resolve(
 				path.resolve(__dirname, './node_modules/react-native-web-lottie'),
 			),
+			'react-native-permissions': path.resolve(
+				path.resolve(__dirname, './node_modules/react-native-permissions'),
+			),
 		},
 	},
 }
