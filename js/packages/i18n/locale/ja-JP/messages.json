@@ -539,10 +539,6 @@
 		"need-restart": {
 			"title": "再起動が必要です",
 			"desc": "Bertyを再起動してデータを保存し、通知を有効にしてください！"
-		},
-		"submit-failed": {
-			"title": "",
-			"desc": ""
 		}
 	},
 	"error": {

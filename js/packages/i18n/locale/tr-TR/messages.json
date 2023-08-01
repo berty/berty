@@ -539,10 +539,6 @@
 		"need-restart": {
 			"title": "Yeniden başlatma gerekli",
 			"desc": "Verilerini kaydetmek ve bildirimleri açmak için Berty'i yeniden başlat!"
-		},
-		"submit-failed": {
-			"title": "",
-			"desc": ""
 		}
 	},
 	"error": {

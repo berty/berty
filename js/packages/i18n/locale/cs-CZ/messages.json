@@ -539,10 +539,6 @@
 		"need-restart": {
 			"title": "Je vyžadován restart",
 			"desc": "Restartujte Berty pro uložení vašich dat a povolení oznámení!"
-		},
-		"submit-failed": {
-			"title": "Chyba nemůže být nahlášena",
-			"desc": "Chybí e-mailová aplikace"
 		}
 	},
 	"error": {
