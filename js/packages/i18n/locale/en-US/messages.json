@@ -539,10 +539,6 @@
 		"need-restart": {
 			"title": "Restart required",
 			"desc": "Restart Berty to save your data and enable notifications!"
-		},
-		"submit-failed": {
-			"title": "Bug can not be submitted",
-			"desc": "Mail application is missing"
 		}
 	},
 	"error": {

@@ -539,10 +539,6 @@
 		"need-restart": {
 			"title": "Neustart erforderlich",
 			"desc": "Berty neu starten, um Daten zu speichern und Benachrichtigungen zu aktivieren!"
-		},
-		"submit-failed": {
-			"title": "Fehler kann nicht übermittelt werden",
-			"desc": "Mail-Anwendung fehlt"
 		}
 	},
 	"error": {

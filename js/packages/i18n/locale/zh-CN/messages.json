@@ -539,10 +539,6 @@
 		"need-restart": {
 			"title": "需要重新启动",
 			"desc": "重新启动 Berty 以保存您的数据并启用通知！"
-		},
-		"submit-failed": {
-			"title": "无法提交 Bug",
-			"desc": "缺少邮件应用程序"
 		}
 	},
 	"error": {

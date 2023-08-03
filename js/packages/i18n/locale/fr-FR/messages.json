@@ -539,10 +539,6 @@
 		"need-restart": {
 			"title": "Redémarrage nécessaire",
 			"desc": "Redémarrez Berty pour sauvegarder vos données et activer les notifications !"
-		},
-		"submit-failed": {
-			"title": "",
-			"desc": ""
 		}
 	},
 	"error": {

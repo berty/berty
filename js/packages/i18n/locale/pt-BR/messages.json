@@ -539,10 +539,6 @@
 		"need-restart": {
 			"title": "Requer reinicialização",
 			"desc": "Reinicie o Berty para salvar seus dados e ativar as notificações!"
-		},
-		"submit-failed": {
-			"title": "",
-			"desc": ""
 		}
 	},
 	"error": {

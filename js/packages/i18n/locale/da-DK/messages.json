@@ -539,10 +539,6 @@
 		"need-restart": {
 			"title": "",
 			"desc": ""
-		},
-		"submit-failed": {
-			"title": "",
-			"desc": ""
 		}
 	},
 	"error": {

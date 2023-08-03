@@ -539,10 +539,6 @@
 		"need-restart": {
 			"title": "Újraindítás szükséges",
 			"desc": "Indítsa újra a Bertyt az adatok mentéséhez és az értesítések engedélyezéséhez!"
-		},
-		"submit-failed": {
-			"title": "Hibabejelentés nem lehetséges",
-			"desc": "Nem található levelző alkalmazás"
 		}
 	},
 	"error": {
