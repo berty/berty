@@ -112,24 +112,36 @@ const ScanBody: FC<{ visible: boolean }> = ({ visible = true }) => {
 }
 
 const ShareQr: FC = () => {
-	const { margin } = useStyles()
+	const { margin, flex } = useStyles()
 	const { windowWidth, windowHeight, scaleSize } = useAppDimensions()
 	const account = useAccount()
 	const qrCodeSize = Math.min(windowHeight, windowWidth) * 0.45
 
 	return (
-		<View>
+		<View
+			style={[
+				{
+					alignItems: 'center',
+					justifyContent: 'center',
+				},
+			]}
+		>
 			<View
 				style={[
+					flex.align.center,
+					flex.justify.center,
+					flex.direction.row,
 					margin.top.big,
 					margin.bottom.small,
-					{ alignItems: 'center', flexDirection: 'row', justifyContent: 'center' },
+					margin.horizontal.big,
 				]}
 			>
 				<View style={[margin.right.small]}>
 					<AccountAvatar size={24 * scaleSize} />
 				</View>
-				<UnifiedText>{account.displayName || ''}</UnifiedText>
+				<UnifiedText numberOfLines={2} ellipsizeMode='tail'>
+					{account.displayName || ''}
+				</UnifiedText>
 			</View>
 			<QrCode size={qrCodeSize} />
 		</View>

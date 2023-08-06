@@ -89,10 +89,28 @@ exports[`Chat.Share renders correctly 1`] = `
                 ]
               }
             >
-              <View>
+              <View
+                style={
+                  Array [
+                    Object {
+                      "alignItems": "center",
+                      "justifyContent": "center",
+                    },
+                  ]
+                }
+              >
                 <View
                   style={
                     Array [
+                      Object {
+                        "alignItems": "center",
+                      },
+                      Object {
+                        "justifyContent": "center",
+                      },
+                      Object {
+                        "flexDirection": "row",
+                      },
                       Object {
                         "marginTop": 32,
                       },
@@ -100,9 +118,7 @@ exports[`Chat.Share renders correctly 1`] = `
                         "marginBottom": 9,
                       },
                       Object {
-                        "alignItems": "center",
-                        "flexDirection": "row",
-                        "justifyContent": "center",
+                        "marginHorizontal": 32,
                       },
                     ]
                   }
@@ -190,6 +206,8 @@ exports[`Chat.Share renders correctly 1`] = `
                     </View>
                   </View>
                   <Text
+                    ellipsizeMode="tail"
+                    numberOfLines={2}
                     style={
                       Array [
                         Object {
