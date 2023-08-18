@@ -46,6 +46,7 @@ export type ScreensParams = {
 	'Settings.Roadmap': undefined
 	'Settings.Faq': undefined
 	'Settings.PrivacyPolicy': undefined
+	'Settings.CodeLicense': undefined
 
 	'Settings.Home': undefined
 	'Settings.MyBertyId': undefined

@@ -239,6 +239,9 @@
 		"privacy-policy": {
 			"title": "Privatlivspolitik"
 		},
+		"license": {
+			"title": ""
+		},
 		"devtools": {
 			"title": "Udvikler værktøjer",
 			"header-left-button": "Enhedsinfo",

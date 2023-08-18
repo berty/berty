@@ -239,6 +239,9 @@
 		"privacy-policy": {
 			"title": "プライバシーポリシー"
 		},
+		"license": {
+			"title": ""
+		},
 		"devtools": {
 			"title": "開発用ツール",
 			"header-left-button": "端末情報",

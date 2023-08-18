@@ -239,6 +239,9 @@
 		"privacy-policy": {
 			"title": ""
 		},
+		"license": {
+			"title": ""
+		},
 		"devtools": {
 			"title": "Verktøy for utviklere",
 			"header-left-button": "Infoer om enheten",

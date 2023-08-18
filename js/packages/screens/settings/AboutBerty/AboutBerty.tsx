@@ -39,7 +39,10 @@ export const AboutBerty: ScreenFC<'Settings.AboutBerty'> = () => {
 						{t('settings.about.policy-button')}
 					</MenuItemWithIcon>
 					<DividerItem />
-					<MenuItemWithIcon iconName='info-outline'>
+					<MenuItemWithIcon
+						iconName='info-outline'
+						onPress={() => navigate('Settings.CodeLicense')}
+					>
 						{t('settings.about.license-button')}
 					</MenuItemWithIcon>
 				</ItemSection>

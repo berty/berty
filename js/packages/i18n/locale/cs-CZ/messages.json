@@ -239,6 +239,9 @@
 		"privacy-policy": {
 			"title": "Zásady ochrany soukromí"
 		},
+		"license": {
+			"title": ""
+		},
 		"devtools": {
 			"title": "Nástroje pro vývojáře",
 			"header-left-button": "Informace o zařízení",
