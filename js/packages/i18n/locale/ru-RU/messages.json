@@ -239,6 +239,9 @@
 		"privacy-policy": {
 			"title": "Политика Конфиденциальности"
 		},
+		"license": {
+			"title": ""
+		},
 		"devtools": {
 			"title": "Инструменты для разработчиков",
 			"header-left-button": "Информация об устройстве",

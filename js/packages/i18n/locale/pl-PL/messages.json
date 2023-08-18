@@ -239,6 +239,9 @@
 		"privacy-policy": {
 			"title": "Polityka prywatności"
 		},
+		"license": {
+			"title": ""
+		},
 		"devtools": {
 			"title": "Narzędzia deweloperskie",
 			"header-left-button": "Informacje o urządzeniu",

@@ -239,6 +239,9 @@
 		"privacy-policy": {
 			"title": "Gizlilik Politikası"
 		},
+		"license": {
+			"title": ""
+		},
 		"devtools": {
 			"title": "Geliştirici araçları",
 			"header-left-button": "Aygıt bilgileri",

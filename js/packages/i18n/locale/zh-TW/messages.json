@@ -239,6 +239,9 @@
 		"privacy-policy": {
 			"title": ""
 		},
+		"license": {
+			"title": ""
+		},
 		"devtools": {
 			"title": "開發工具",
 			"header-left-button": "設備信息",

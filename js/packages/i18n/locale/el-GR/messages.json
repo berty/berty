@@ -239,6 +239,9 @@
 		"privacy-policy": {
 			"title": ""
 		},
+		"license": {
+			"title": ""
+		},
 		"devtools": {
 			"title": "",
 			"header-left-button": "",

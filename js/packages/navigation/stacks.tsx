@@ -647,6 +647,15 @@ export const Navigation: React.FC = React.memo(() => {
 				})}
 			/>
 			<NavigationStack.Screen
+				name='Settings.CodeLicense'
+				component={Components.Settings.CodeLicense}
+				options={BackgroundHeaderScreenOptions({
+					title: t('settings.license.title'),
+					...CustomTitleStyle(),
+					presentation: 'formSheet',
+				})}
+			/>
+			<NavigationStack.Screen
 				name='Settings.Permissions'
 				component={Components.Settings.Permissions}
 				options={{

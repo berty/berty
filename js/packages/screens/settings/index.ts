@@ -3,6 +3,7 @@ export { TermsOfUse } from './TermsOfUse/TermsOfUse'
 export { Roadmap } from './Roadmap/Roadmap'
 export { Faq } from './Faq/Faq'
 export { PrivacyPolicy } from './PrivacyPolicy/PrivacyPolicy'
+export { CodeLicense } from './CodeLicense/CodeLicense'
 
 export { SettingsHome } from './SettingsHome/SettingsHome'
 export { MyBertyId } from './MyBertyId/MyBertyId'

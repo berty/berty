@@ -239,6 +239,9 @@
 		"privacy-policy": {
 			"title": "Adatvédelmi irányelvek"
 		},
+		"license": {
+			"title": ""
+		},
 		"devtools": {
 			"title": "Fejlesztői eszközök",
 			"header-left-button": "Eszköz információk",
