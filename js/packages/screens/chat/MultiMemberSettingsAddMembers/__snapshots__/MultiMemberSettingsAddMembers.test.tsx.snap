@@ -235,7 +235,7 @@ exports[`Chat.MultiMemberSettingsAddMembers renders correctly 1`] = `
               style={
                 Object {
                   "alignItems": "center",
-                  "backgroundColor": "#F7F8FE",
+                  "backgroundColor": "#F2F2F2",
                   "borderRadius": 14,
                   "flexDirection": "row",
                   "height": 42,
