@@ -106,7 +106,7 @@ export const ContactPicker: React.FC<ContactPickerProps> = ({ accountContacts })
 
 	return (
 		<View
-			style={[padding.horizontal.large, padding.top.small, { flex: 1, backgroundColor: '#F7F8FD' }]}
+			style={[padding.horizontal.large, padding.top.small, { flex: 1, backgroundColor: '#FFFFFF' }]}
 		>
 			<MediumInput
 				value={searchText}

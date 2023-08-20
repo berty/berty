@@ -198,7 +198,7 @@ export const CreateGroupFinalize: ScreenFC<'Chat.CreateGroupFinalize'> = () => {
 	}, [done, error, reset, reply, dispatch])
 
 	return (
-		<Layout style={[flex.tiny, { backgroundColor: '#F7F8FD' }]}>
+		<Layout style={[flex.tiny, { backgroundColor: '#FFFFFF' }]}>
 			<IOSOnlyKeyboardAvoidingView behavior='position'>
 				<ScrollView>
 					<View style={{ backgroundColor: colors['background-header'] }}>
