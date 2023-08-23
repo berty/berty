@@ -52,7 +52,7 @@
     "moment": "^2.29.4",
     "multiaddr": "^10.0.1",
     "node-libs-react-native": "^1.2.1",
-    "protobufjs": "^6.10.2",
+    "protobufjs": "^6.11.4",
     "react": "17.0.2",
     "react-i18next": "^11.14.3",
     "react-native": "0.64.4",
