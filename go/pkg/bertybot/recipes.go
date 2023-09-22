@@ -116,6 +116,38 @@ func EchoRecipe(prefix string) Recipe {
 	return recipe
 }
 
+func ReplyRecipe(replier func(ctx Context) string) Recipe {
+	recipe := map[HandlerType][]Handler{}
+	recipe[UserMessageHandler] = []Handler{
+		func(ctx Context) {
+			// skip old events
+			if ctx.IsReplay {
+				return
+			}
+			// do not reply to myself
+			if ctx.IsMine {
+				return
+			}
+			// only reply once
+			if !ctx.IsNew {
+				return
+			}
+
+			reply := replier(ctx)
+			if reply == "" {
+				return
+			}
+
+			ctx.Logger.Info("replying", logutil.PrivateString("input", ctx.UserMessage), logutil.PrivateString("reply", reply), logutil.PrivateString("conversation", ctx.ConversationPK))
+			err := ctx.ReplyString(reply)
+			if err != nil {
+				ctx.Logger.Error("reply failed", zap.Error(err))
+			}
+		},
+	}
+	return recipe
+}
+
 // DelayResponseRecipe will wait for the specified duration before handling an event.
 func DelayResponseRecipe(duration time.Duration) Recipe {
 	recipe := map[HandlerType][]Handler{}
@@ -134,7 +166,31 @@ func DelayResponseRecipe(duration time.Duration) Recipe {
 // AutoAcceptIncomingContactRequestRecipe makes the bot "click" on the "accept" button automatically.
 // NOT YET IMPLEMENTED.
 func AutoAcceptIncomingGroupInviteRecipe() Recipe {
-	panic("not implemented.")
+	recipe := map[HandlerType][]Handler{}
+	recipe[GroupInvitationHandler] = []Handler{
+		func(ctx Context) {
+			if !ctx.IsNew {
+				return
+			}
+			if ctx.Interaction.GetType() != messengertypes.AppMessage_TypeGroupInvitation {
+				return
+			}
+			ctx.Logger.Info("auto-accepting group invitation", zap.Any("group", ctx.Conversation))
+			invit, err := ctx.Interaction.UnmarshalPayload()
+			if err != nil {
+				ctx.Logger.Error("failed to unmarshal group invitation")
+				return
+			}
+			req := &messengertypes.ConversationJoin_Request{
+				Link: invit.(*messengertypes.AppMessage_GroupInvitation).Link,
+			}
+			_, err = ctx.Client.ConversationJoin(ctx.Context, req)
+			if err != nil {
+				ctx.Logger.Error("conversation join failed", zap.Error(err))
+			}
+		},
+	}
+	return recipe
 }
 
 // SendErrorToClientRecipe will send internal errors to the related context (a contact or a conversation).

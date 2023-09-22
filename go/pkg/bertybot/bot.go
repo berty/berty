@@ -1,14 +1,18 @@
 package bertybot
 
 import (
+	"bytes"
 	"context"
 	"fmt"
+	"io/ioutil"
 	"sync"
 	"time"
 
+	"github.com/pkg/errors"
 	"go.uber.org/zap"
 	"moul.io/u"
 
+	"berty.tech/berty/v2/go/internal/streamutil"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
 )
 
@@ -28,6 +32,7 @@ type Bot struct {
 		conversations map[string]*messengertypes.Conversation
 		mutex         sync.Mutex
 	}
+	avatarData *avatarData
 }
 
 // New initializes a new Bot.
@@ -61,10 +66,81 @@ func New(opts ...NewOption) (*Bot, error) {
 	{
 		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 		defer cancel()
-		req := &messengertypes.InstanceShareableBertyID_Request{
+
+		{
+			req := &messengertypes.AccountUpdate_Request{}
+
+			acc, err := b.client.AccountGet(ctx, &messengertypes.AccountGet_Request{})
+			if err != nil {
+				return nil, fmt.Errorf("bot: cannot retrieve berty account: %w", err)
+			}
+
+			if b.avatarData != nil {
+				currentAvatar := (*avatarData)(nil)
+				accountAvatarCID := acc.GetAccount().GetAvatarCID()
+				if accountAvatarCID != "" {
+					stream, err := b.client.MediaRetrieve(ctx, &messengertypes.MediaRetrieve_Request{Cid: accountAvatarCID})
+					if err != nil {
+						return nil, errors.Wrap(err, "fetch current avatar")
+					}
+					header, err := stream.Recv()
+					if err != nil {
+						return nil, errors.Wrap(err, "read header")
+					}
+
+					data, err := ioutil.ReadAll(streamutil.FuncReader(func() ([]byte, error) {
+						r, err := stream.Recv()
+						return r.GetBlock(), err
+					}, b.logger))
+					if err != nil {
+						return nil, errors.Wrap(err, "read avatar")
+					}
+
+					currentAvatar = &avatarData{
+						bytes:    data,
+						mimeType: header.GetInfo().GetMimeType(),
+					}
+				}
+
+				if currentAvatar == nil || currentAvatar.mimeType != b.avatarData.mimeType || !bytes.Equal(currentAvatar.bytes, b.avatarData.bytes) {
+					stream, err := b.client.MediaPrepare(ctx)
+					if err != nil {
+						return nil, errors.Wrap(err, "start prepare avatar")
+					}
+					if err := stream.Send(&messengertypes.MediaPrepare_Request{Info: &messengertypes.Media{
+						MimeType: b.avatarData.mimeType,
+					}}); err != nil {
+						return nil, errors.Wrap(err, "send media info")
+					}
+					if err := streamutil.FuncSink(make([]byte, 64*1024), bytes.NewReader(b.avatarData.bytes), func(block []byte) error {
+						return stream.Send(&messengertypes.MediaPrepare_Request{Block: block})
+					}); err != nil {
+						return nil, errors.Wrap(err, "prepare avatar")
+					}
+					res, err := stream.CloseAndRecv()
+					if err != nil {
+						return nil, errors.Wrap(err, "read avatar cid")
+					}
+					req.AvatarCID = res.GetCid()
+				}
+			}
+
+			if acc.GetAccount().GetDisplayName() != b.displayName {
+				req.DisplayName = b.displayName
+			}
+
+			if req.DisplayName != "" || req.AvatarCID != "" {
+				_, err := b.client.AccountUpdate(ctx, req)
+				if err != nil {
+					return nil, fmt.Errorf("bot: cannot retrieve berty ID: %w", err)
+				}
+			}
+		}
+
+		req2 := &messengertypes.InstanceShareableBertyID_Request{
 			DisplayName: b.displayName,
 		}
-		ret, err := b.client.InstanceShareableBertyID(ctx, req)
+		ret, err := b.client.InstanceShareableBertyID(ctx, req2)
 		if err != nil {
 			return nil, fmt.Errorf("bot: cannot retrieve berty ID: %w", err)
 		}
@@ -82,6 +158,10 @@ func (b *Bot) BertyIDURL() string {
 // PublicKey returns the public key of the messenger node.
 func (b *Bot) PublicKey() string {
 	return u.B64Encode(b.bertyID.Link.BertyID.AccountPK)
+}
+
+func (b *Bot) Client() messengertypes.MessengerServiceClient {
+	return b.client
 }
 
 // Start starts the main event loop and can be stopped by canceling the passed context.

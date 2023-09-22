@@ -60,6 +60,19 @@ func WithDisplayName(name string) NewOption {
 	}
 }
 
+type avatarData struct {
+	bytes    []byte
+	mimeType string
+}
+
+// WithDisplayName sets the name of the bot, by default, the name will be named "My Berty Bot".
+func WithAvatar(avatarBytes []byte, mimeType string) NewOption {
+	return func(b *Bot) error {
+		b.avatarData = &avatarData{bytes: avatarBytes, mimeType: mimeType}
+		return nil
+	}
+}
+
 // WithReplay will process replayed (old) events as if they just happened.
 func WithReplay() NewOption {
 	return func(b *Bot) error {
