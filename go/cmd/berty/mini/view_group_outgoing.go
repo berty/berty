@@ -1078,7 +1078,7 @@ func cmdKeyboard(ctx context.Context, v *groupView, cmd string) error {
 }
 
 func newSlashMessageCommand(ctx context.Context, v *groupView, cmd string) error {
-	return newMessageCommand(ctx, v, strings.TrimPrefix(cmd, "/"))
+	return newMessageCommand(ctx, v, fmt.Sprintf("/%s", cmd))
 }
 
 func contactAcceptCommand(ctx context.Context, v *groupView, cmd string) error {
