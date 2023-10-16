@@ -3,7 +3,6 @@ package bertyreplication_test
 import (
 	"context"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"testing"
 	"time"
@@ -374,7 +373,7 @@ func TestReplicationService_Flow(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	pathBase, err := ioutil.TempDir("", "odb_replication_service")
+	pathBase, err := os.MkdirTemp("", "odb_replication_service")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -535,7 +534,7 @@ func TestReplicationService_InvalidFlow(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	pathBase, err := ioutil.TempDir("", "odb_replication_service")
+	pathBase, err := os.MkdirTemp("", "odb_replication_service")
 	if err != nil {
 		t.Fatal(err)
 	}

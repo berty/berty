@@ -8,7 +8,6 @@ package bertybridge_test
 import (
 	"encoding/base64"
 	"fmt"
-	"io/ioutil"
 	"os"
 
 	"github.com/gogo/protobuf/proto"
@@ -23,7 +22,7 @@ func Example() {
 	// disable ressources manager for the sake of this example
 	os.Setenv("LIBP2P_RCMGR", "false")
 
-	tmpdir, err := ioutil.TempDir("", "example")
+	tmpdir, err := os.MkdirTemp("", "example")
 	checkErr(err)
 	defer os.RemoveAll(tmpdir)
 
