@@ -1,6 +1,6 @@
 module berty.tech/berty/v2
 
-go 1.19
+go 1.20
 
 require (
 	berty.tech/go-ipfs-repo-encrypted v1.3.0
