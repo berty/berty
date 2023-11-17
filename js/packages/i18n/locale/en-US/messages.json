@@ -203,8 +203,6 @@
 			"mc-button": "Multipeer Connectivity",
 			"nearby-button": "Android Nearby",
 			"mdns-button": "Multicast DNS",
-			"memo-cell-button": "Load voice memo on cellular",
-			"medias-cell-button": "Load medias on cellular",
 			"dht-button": "Distributed Hash Table",
 			"rdvp-button": "Rendezvous Point Nodes",
 			"relay-button": "Relay Nodes",

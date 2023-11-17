@@ -139,20 +139,6 @@ const NetworkBody: React.FC = () => {
 				contentContainerStyle={{ paddingBottom: 12 }}
 				showsVerticalScrollIndicator={false}
 			>
-				{/*
-				<ItemSection>
-					<ButtonSettingV2
-						text={t('settings.network.memo-cell-button')}
-						toggle={{ enable: true }}
-						disabled
-					/>
-					<ButtonSettingV2
-						text={t('settings.network.medias-cell-button')}
-						toggle={{ enable: true }}
-						disabled
-					/>
-				</ItemSection>
-				*/}
 				<Proximity />
 				<ItemSection>
 					<MenuToggle

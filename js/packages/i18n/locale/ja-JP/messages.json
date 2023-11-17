@@ -203,8 +203,6 @@
 			"mc-button": "マルチピア接続",
 			"nearby-button": "Android Nearby",
 			"mdns-button": "マルチキャストDNS",
-			"memo-cell-button": "",
-			"medias-cell-button": "",
 			"dht-button": "分散ハッシュテーブル",
 			"rdvp-button": "ランデブーポイントノード",
 			"relay-button": "リレーノード",
