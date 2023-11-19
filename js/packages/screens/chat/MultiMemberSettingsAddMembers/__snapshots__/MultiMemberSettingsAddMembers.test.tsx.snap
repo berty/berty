@@ -32,7 +32,7 @@ exports[`Chat.MultiMemberSettingsAddMembers renders correctly 1`] = `
               "flex": 1,
             },
             Object {
-              "backgroundColor": "#F2F2F2",
+              "backgroundColor": "#FFFFFF",
             },
           ],
         ]
@@ -70,7 +70,7 @@ exports[`Chat.MultiMemberSettingsAddMembers renders correctly 1`] = `
       <View
         style={
           Object {
-            "backgroundColor": "#F2F2F2",
+            "backgroundColor": "#FFFFFF",
             "flex": 1,
           }
         }
@@ -110,7 +110,7 @@ exports[`Chat.MultiMemberSettingsAddMembers renders correctly 1`] = `
                   false,
                   false,
                   Object {
-                    "backgroundColor": "#F2F2F2",
+                    "backgroundColor": "#FFFFFF",
                   },
                   Array [
                     Object {
@@ -216,7 +216,7 @@ exports[`Chat.MultiMemberSettingsAddMembers renders correctly 1`] = `
                   "paddingTop": 9,
                 },
                 Object {
-                  "backgroundColor": "#F2F2F2",
+                  "backgroundColor": "#FFFFFF",
                   "flex": 1,
                 },
               ]
@@ -235,7 +235,7 @@ exports[`Chat.MultiMemberSettingsAddMembers renders correctly 1`] = `
               style={
                 Object {
                   "alignItems": "center",
-                  "backgroundColor": "#F7F8FE",
+                  "backgroundColor": "#F2F2F2",
                   "borderRadius": 14,
                   "flexDirection": "row",
                   "height": 42,
@@ -355,7 +355,7 @@ exports[`Chat.MultiMemberSettingsAddMembers renders correctly 1`] = `
               "marginBottom": 9,
             },
             Object {
-              "backgroundColor": "#F2F2F2",
+              "backgroundColor": "#FFFFFF",
             },
           ]
         }

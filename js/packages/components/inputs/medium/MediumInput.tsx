@@ -24,7 +24,7 @@ export const MediumInput: React.FC<InputWithIconProps> = props => {
 
 const styles = StyleSheet.create({
 	button: {
-		backgroundColor: '#F7F8FE',
+		backgroundColor: '#F2F2F2',
 		borderRadius: 14,
 		height: 42,
 		paddingHorizontal: 12,

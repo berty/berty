@@ -343,7 +343,7 @@ exports[`Account.SelectNode renders correctly 1`] = `
             "marginBottom": 9,
           },
           Object {
-            "backgroundColor": "#F2F2F2",
+            "backgroundColor": "#FFFFFF",
           },
         ]
       }
