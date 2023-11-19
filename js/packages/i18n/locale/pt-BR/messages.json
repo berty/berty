@@ -203,8 +203,6 @@
 			"mc-button": "",
 			"nearby-button": "",
 			"mdns-button": "DNS Multicast",
-			"memo-cell-button": "",
-			"medias-cell-button": "",
 			"dht-button": "Tabela Hash Distribuída",
 			"rdvp-button": "",
 			"relay-button": "",
