@@ -6,7 +6,6 @@ import (
 	"encoding/base64"
 	"flag"
 	"fmt"
-	mrand "math/rand"
 	"net"
 	"net/http"
 	"os"
@@ -26,7 +25,6 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
-	"moul.io/srand"
 
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/weshnet/pkg/ipfsutil"
@@ -103,8 +101,6 @@ func relayServerCommand() *ffcli.Command {
 			if len(args) > 0 {
 				return flag.ErrHelp
 			}
-
-			mrand.Seed(srand.MustSecure())
 
 			var logger *zap.Logger
 			{
