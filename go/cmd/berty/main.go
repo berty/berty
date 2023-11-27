@@ -4,14 +4,12 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	mrand "math/rand"
 	"os"
 	"strings"
 
 	"github.com/oklog/run"
 	ff "github.com/peterbourgon/ff/v3"
 	"github.com/peterbourgon/ff/v3/ffcli"
-	"moul.io/srand"
 
 	"berty.tech/berty/v2/go/internal/initutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
@@ -33,7 +31,6 @@ func main() {
 }
 
 func runMain(args []string) error {
-	mrand.Seed(srand.MustSecure())
 	ctx, ctxCancel := context.WithCancel(context.Background())
 	defer ctxCancel()
 

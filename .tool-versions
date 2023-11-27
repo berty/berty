@@ -2,11 +2,11 @@
 # https://github.com/berty/berty/blame/master/.tool-versions
 
 #-----
-# This is simply the most recent version available to date of the lowest 
+# This is simply the most recent version available to date of the lowest
 # major version of Go which is allowed by kubo.
 # There is no contraindication for updating it.
 #-----
-golang 1.19.7
+golang 1.20.11
 
 #-----
 # This is the most recent LTS version available to date.
