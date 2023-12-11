@@ -27,7 +27,7 @@ func Codes(err error) []ErrCode {
 		return codesFromGRPCStatus(st)
 	}
 
-	if code := Code(err); code != -1 {
+	if code := currentCode(err); code != -1 {
 		codes = []ErrCode{code}
 	}
 	if cause := genericCause(err); cause != nil {
@@ -51,13 +51,13 @@ func Has(err error, code WithCode) bool {
 	return false
 }
 
-// Is returns true if the top-level error (not the FirstCode) is actually an ErrCode of the same value
+// Is returns true if the top-level error (it doesn't unwrap it) is actually an ErrCode of the same value
 func Is(err error, code WithCode) bool {
-	return Code(err) == code.Code()
+	return currentCode(err) == code.Code()
 }
 
-// Code returns the code of the actual error without trying to unwrap it, or -1.
-func Code(err error) ErrCode {
+// currentCode returns the code of the actual error without trying to unwrap it, or -1.
+func currentCode(err error) ErrCode {
 	if err == nil {
 		return -1
 	}
@@ -72,6 +72,23 @@ func Code(err error) ErrCode {
 			return codes[0]
 		}
 		return -1
+	}
+
+	return -1
+}
+
+// Code walks the passed error and returns the code of the first ErrCode met, or -1.
+func Code(err error) ErrCode {
+	if err == nil {
+		return -1
+	}
+
+	if code := currentCode(err); code != -1 {
+		return code
+	}
+
+	if cause := genericCause(err); cause != nil {
+		return Code(cause)
 	}
 
 	return -1
@@ -97,24 +114,7 @@ func LastCode(err error) ErrCode {
 		return -1
 	}
 
-	return Code(err)
-}
-
-// FirstCode walks the passed error and returns the code of the first ErrCode met, or -1.
-func FirstCode(err error) ErrCode {
-	if err == nil {
-		return -1
-	}
-
-	if code := Code(err); code != -1 {
-		return code
-	}
-
-	if cause := genericCause(err); cause != nil {
-		return FirstCode(cause)
-	}
-
-	return -1
+	return currentCode(err)
 }
 
 func genericCause(err error) error {
