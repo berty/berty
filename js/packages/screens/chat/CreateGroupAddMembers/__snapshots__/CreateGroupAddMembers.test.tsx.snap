@@ -235,7 +235,7 @@ exports[`Chat.CreateGroupAddMembers renders correctly 1`] = `
               style={
                 Object {
                   "alignItems": "center",
-                  "backgroundColor": "#F2F2F2",
+                  "backgroundColor": "#F7F8FE",
                   "borderRadius": 14,
                   "flexDirection": "row",
                   "height": 42,
