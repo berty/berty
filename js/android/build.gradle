@@ -6,8 +6,8 @@ buildscript {
         androidXAnnotation = "1.2.0"
         buildToolsVersion = "29.0.3"
         minSdkVersion = 23
-        compileSdkVersion = 31
-        targetSdkVersion = 31
+        compileSdkVersion = 33
+        targetSdkVersion = 33
         ndkVersion = "23.1.7779620"
     }
     repositories {
@@ -62,8 +62,8 @@ allprojects {
         project ->
             if (project.hasProperty("android")) {
                 android {
-                    compileSdkVersion = 31
-                    buildToolsVersion = "29.0.3"
+                    compileSdkVersion = 33
+                    buildToolsVersion = "33.0.1"
                 }
             }
     }

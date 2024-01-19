@@ -3929,6 +3929,11 @@
   dependencies:
     merge-options "^3.0.4"
 
+"@react-native-camera-roll/camera-roll@5.0.1":
+  version "5.0.1"
+  resolved "https://registry.yarnpkg.com/@react-native-camera-roll/camera-roll/-/camera-roll-5.0.1.tgz#278a2280db9b1f1326fc9202f1b265cec89c51e6"
+  integrity sha512-C+6glzmhNLJV2GIZTjmd0zyNUiUVoSZ+iEWWpYTXHjqmuiAgXSfpPPKY5nv95ONLY3wL1N2O3T1vQNzdIa0O6Q==
+
 "@react-native-clipboard/clipboard@^1.9.0":
   version "1.9.0"
   resolved "https://registry.yarnpkg.com/@react-native-clipboard/clipboard/-/clipboard-1.9.0.tgz#68d6a18545b1f986098d5fb1cd710b53c322e066"
@@ -3949,11 +3954,6 @@
   integrity sha512-GtDBhpX2pQcjl4VopOC8FktrVufrEfYRwVeMQ2WWckqKIv2BdwvlvWvj88L1WmEdBr9UNcm3rtgz+d+YXkmirA==
   dependencies:
     prop-types "^15.5.10"
-
-"@react-native-community/cameraroll@^4.1.2":
-  version "4.1.2"
-  resolved "https://registry.yarnpkg.com/@react-native-community/cameraroll/-/cameraroll-4.1.2.tgz#489c6bb6137571540d93c543d5fcf8c652b548ec"
-  integrity sha512-jkdhMByMKD2CZ/5MPeBieYn8vkCfC4MOTouPpBpps3I8N6HUYJk+1JnDdktVYl2WINnqXpQptDA2YptVyifYAg==
 
 "@react-native-community/cli-debugger-ui@^5.0.1":
   version "5.0.1"
@@ -13837,9 +13837,9 @@ react-native-vector-icons@^9.0.0:
     yargs "^16.1.1"
 
 react-native-webview@^11.14.3:
-  version "11.14.3"
-  resolved "https://registry.yarnpkg.com/react-native-webview/-/react-native-webview-11.14.3.tgz#31da92b8fd21f4d1192e057867478598153a6f5d"
-  integrity sha512-y/+7mE6by/uLGSIVmlp1xpJvL37rAuOL90EWTJYKZWL5iM8lN+pQkj/zwcPcGu4zNmuHdXXUk/cMR8hE89mNYg==
+  version "11.26.1"
+  resolved "https://registry.yarnpkg.com/react-native-webview/-/react-native-webview-11.26.1.tgz#658c09ed5162dc170b361e48c2dd26c9712879da"
+  integrity sha512-hC7BkxOpf+z0UKhxFSFTPAM4shQzYmZHoELa6/8a/MspcjEP7ukYKpuSUTLDywQditT8yI9idfcKvfZDKQExGw==
   dependencies:
     escape-string-regexp "2.0.0"
     invariant "2.2.4"
