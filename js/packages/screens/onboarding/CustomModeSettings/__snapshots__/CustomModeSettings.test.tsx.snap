@@ -90,6 +90,7 @@ exports[`Onboarding.CustomModeSettings renders correctly 1`] = `
                     style={
                       Object {
                         "flex": 1,
+                        "paddingRight": 30,
                       }
                     }
                   >
@@ -139,7 +140,7 @@ exports[`Onboarding.CustomModeSettings renders correctly 1`] = `
                               "fontFamily": "Bold Open Sans",
                             },
                             Object {
-                              "alignSelf": "center",
+                              "alignSelf": "flex-start",
                               "color": "#535AE4",
                             },
                           ],
@@ -148,42 +149,6 @@ exports[`Onboarding.CustomModeSettings renders correctly 1`] = `
                     >
                       onboarding.custom-mode.settings.off-grid.title
                     </Text>
-                  </View>
-                  <View
-                    accessible={true}
-                    focusable={true}
-                    onClick={[Function]}
-                    onResponderGrant={[Function]}
-                    onResponderMove={[Function]}
-                    onResponderRelease={[Function]}
-                    onResponderTerminate={[Function]}
-                    onResponderTerminationRequest={[Function]}
-                    onStartShouldSetResponder={[Function]}
-                    style={
-                      Object {
-                        "flex": 1,
-                        "opacity": 1,
-                      }
-                    }
-                  >
-                    <View
-                      style={
-                        Object {
-                          "transform": Array [
-                            Object {
-                              "scale": 1,
-                            },
-                          ],
-                        }
-                      }
-                    >
-                      <RNSVGMock
-                        fill="#535AE4"
-                        height={30}
-                        viewBox="0 0 24 24"
-                        width={30}
-                      />
-                    </View>
                   </View>
                 </View>
               </View>
@@ -734,6 +699,7 @@ exports[`Onboarding.CustomModeSettings renders correctly 1`] = `
                     style={
                       Object {
                         "flex": 1,
+                        "paddingRight": 30,
                       }
                     }
                   >
@@ -783,7 +749,7 @@ exports[`Onboarding.CustomModeSettings renders correctly 1`] = `
                               "fontFamily": "Bold Open Sans",
                             },
                             Object {
-                              "alignSelf": "center",
+                              "alignSelf": "flex-start",
                               "color": "#535AE4",
                             },
                           ],
@@ -792,42 +758,6 @@ exports[`Onboarding.CustomModeSettings renders correctly 1`] = `
                     >
                       onboarding.custom-mode.settings.routing.title
                     </Text>
-                  </View>
-                  <View
-                    accessible={true}
-                    focusable={true}
-                    onClick={[Function]}
-                    onResponderGrant={[Function]}
-                    onResponderMove={[Function]}
-                    onResponderRelease={[Function]}
-                    onResponderTerminate={[Function]}
-                    onResponderTerminationRequest={[Function]}
-                    onStartShouldSetResponder={[Function]}
-                    style={
-                      Object {
-                        "flex": 1,
-                        "opacity": 1,
-                      }
-                    }
-                  >
-                    <View
-                      style={
-                        Object {
-                          "transform": Array [
-                            Object {
-                              "scale": 1,
-                            },
-                          ],
-                        }
-                      }
-                    >
-                      <RNSVGMock
-                        fill="#535AE4"
-                        height={30}
-                        viewBox="0 0 24 24"
-                        width={30}
-                      />
-                    </View>
                   </View>
                 </View>
               </View>
@@ -1704,6 +1634,7 @@ exports[`Onboarding.CustomModeSettings renders correctly 1`] = `
                     style={
                       Object {
                         "flex": 1,
+                        "paddingRight": 30,
                       }
                     }
                   >
@@ -1753,7 +1684,7 @@ exports[`Onboarding.CustomModeSettings renders correctly 1`] = `
                               "fontFamily": "Bold Open Sans",
                             },
                             Object {
-                              "alignSelf": "center",
+                              "alignSelf": "flex-start",
                               "color": "#535AE4",
                             },
                           ],
@@ -1762,42 +1693,6 @@ exports[`Onboarding.CustomModeSettings renders correctly 1`] = `
                     >
                       onboarding.custom-mode.settings.access.title
                     </Text>
-                  </View>
-                  <View
-                    accessible={true}
-                    focusable={true}
-                    onClick={[Function]}
-                    onResponderGrant={[Function]}
-                    onResponderMove={[Function]}
-                    onResponderRelease={[Function]}
-                    onResponderTerminate={[Function]}
-                    onResponderTerminationRequest={[Function]}
-                    onStartShouldSetResponder={[Function]}
-                    style={
-                      Object {
-                        "flex": 1,
-                        "opacity": 1,
-                      }
-                    }
-                  >
-                    <View
-                      style={
-                        Object {
-                          "transform": Array [
-                            Object {
-                              "scale": 1,
-                            },
-                          ],
-                        }
-                      }
-                    >
-                      <RNSVGMock
-                        fill="#535AE4"
-                        height={30}
-                        viewBox="0 0 24 24"
-                        width={30}
-                      />
-                    </View>
                   </View>
                 </View>
               </View>
@@ -3390,6 +3285,7 @@ exports[`Onboarding.CustomModeSettings renders correctly 2`] = `
                     style={
                       Object {
                         "flex": 1,
+                        "paddingRight": 30,
                       }
                     }
                   >
@@ -3439,7 +3335,7 @@ exports[`Onboarding.CustomModeSettings renders correctly 2`] = `
                               "fontFamily": "Bold Open Sans",
                             },
                             Object {
-                              "alignSelf": "center",
+                              "alignSelf": "flex-start",
                               "color": "#535AE4",
                             },
                           ],
@@ -3448,42 +3344,6 @@ exports[`Onboarding.CustomModeSettings renders correctly 2`] = `
                     >
                       onboarding.custom-mode.settings.off-grid.title
                     </Text>
-                  </View>
-                  <View
-                    accessible={true}
-                    focusable={true}
-                    onClick={[Function]}
-                    onResponderGrant={[Function]}
-                    onResponderMove={[Function]}
-                    onResponderRelease={[Function]}
-                    onResponderTerminate={[Function]}
-                    onResponderTerminationRequest={[Function]}
-                    onStartShouldSetResponder={[Function]}
-                    style={
-                      Object {
-                        "flex": 1,
-                        "opacity": 1,
-                      }
-                    }
-                  >
-                    <View
-                      style={
-                        Object {
-                          "transform": Array [
-                            Object {
-                              "scale": 1,
-                            },
-                          ],
-                        }
-                      }
-                    >
-                      <RNSVGMock
-                        fill="#535AE4"
-                        height={30}
-                        viewBox="0 0 24 24"
-                        width={30}
-                      />
-                    </View>
                   </View>
                 </View>
               </View>
@@ -4034,6 +3894,7 @@ exports[`Onboarding.CustomModeSettings renders correctly 2`] = `
                     style={
                       Object {
                         "flex": 1,
+                        "paddingRight": 30,
                       }
                     }
                   >
@@ -4083,7 +3944,7 @@ exports[`Onboarding.CustomModeSettings renders correctly 2`] = `
                               "fontFamily": "Bold Open Sans",
                             },
                             Object {
-                              "alignSelf": "center",
+                              "alignSelf": "flex-start",
                               "color": "#535AE4",
                             },
                           ],
@@ -4092,42 +3953,6 @@ exports[`Onboarding.CustomModeSettings renders correctly 2`] = `
                     >
                       onboarding.custom-mode.settings.routing.title
                     </Text>
-                  </View>
-                  <View
-                    accessible={true}
-                    focusable={true}
-                    onClick={[Function]}
-                    onResponderGrant={[Function]}
-                    onResponderMove={[Function]}
-                    onResponderRelease={[Function]}
-                    onResponderTerminate={[Function]}
-                    onResponderTerminationRequest={[Function]}
-                    onStartShouldSetResponder={[Function]}
-                    style={
-                      Object {
-                        "flex": 1,
-                        "opacity": 1,
-                      }
-                    }
-                  >
-                    <View
-                      style={
-                        Object {
-                          "transform": Array [
-                            Object {
-                              "scale": 1,
-                            },
-                          ],
-                        }
-                      }
-                    >
-                      <RNSVGMock
-                        fill="#535AE4"
-                        height={30}
-                        viewBox="0 0 24 24"
-                        width={30}
-                      />
-                    </View>
                   </View>
                 </View>
               </View>
@@ -5004,6 +4829,7 @@ exports[`Onboarding.CustomModeSettings renders correctly 2`] = `
                     style={
                       Object {
                         "flex": 1,
+                        "paddingRight": 30,
                       }
                     }
                   >
@@ -5053,7 +4879,7 @@ exports[`Onboarding.CustomModeSettings renders correctly 2`] = `
                               "fontFamily": "Bold Open Sans",
                             },
                             Object {
-                              "alignSelf": "center",
+                              "alignSelf": "flex-start",
                               "color": "#535AE4",
                             },
                           ],
@@ -5062,42 +4888,6 @@ exports[`Onboarding.CustomModeSettings renders correctly 2`] = `
                     >
                       onboarding.custom-mode.settings.access.title
                     </Text>
-                  </View>
-                  <View
-                    accessible={true}
-                    focusable={true}
-                    onClick={[Function]}
-                    onResponderGrant={[Function]}
-                    onResponderMove={[Function]}
-                    onResponderRelease={[Function]}
-                    onResponderTerminate={[Function]}
-                    onResponderTerminationRequest={[Function]}
-                    onStartShouldSetResponder={[Function]}
-                    style={
-                      Object {
-                        "flex": 1,
-                        "opacity": 1,
-                      }
-                    }
-                  >
-                    <View
-                      style={
-                        Object {
-                          "transform": Array [
-                            Object {
-                              "scale": 1,
-                            },
-                          ],
-                        }
-                      }
-                    >
-                      <RNSVGMock
-                        fill="#535AE4"
-                        height={30}
-                        viewBox="0 0 24 24"
-                        width={30}
-                      />
-                    </View>
                   </View>
                 </View>
               </View>
@@ -6690,6 +6480,7 @@ exports[`Onboarding.CustomModeSettings renders correctly 3`] = `
                     style={
                       Object {
                         "flex": 1,
+                        "paddingRight": 30,
                       }
                     }
                   >
@@ -6739,7 +6530,7 @@ exports[`Onboarding.CustomModeSettings renders correctly 3`] = `
                               "fontFamily": "Bold Open Sans",
                             },
                             Object {
-                              "alignSelf": "center",
+                              "alignSelf": "flex-start",
                               "color": "#535AE4",
                             },
                           ],
@@ -6748,42 +6539,6 @@ exports[`Onboarding.CustomModeSettings renders correctly 3`] = `
                     >
                       onboarding.custom-mode.settings.off-grid.title
                     </Text>
-                  </View>
-                  <View
-                    accessible={true}
-                    focusable={true}
-                    onClick={[Function]}
-                    onResponderGrant={[Function]}
-                    onResponderMove={[Function]}
-                    onResponderRelease={[Function]}
-                    onResponderTerminate={[Function]}
-                    onResponderTerminationRequest={[Function]}
-                    onStartShouldSetResponder={[Function]}
-                    style={
-                      Object {
-                        "flex": 1,
-                        "opacity": 1,
-                      }
-                    }
-                  >
-                    <View
-                      style={
-                        Object {
-                          "transform": Array [
-                            Object {
-                              "scale": 1,
-                            },
-                          ],
-                        }
-                      }
-                    >
-                      <RNSVGMock
-                        fill="#535AE4"
-                        height={30}
-                        viewBox="0 0 24 24"
-                        width={30}
-                      />
-                    </View>
                   </View>
                 </View>
               </View>
@@ -7334,6 +7089,7 @@ exports[`Onboarding.CustomModeSettings renders correctly 3`] = `
                     style={
                       Object {
                         "flex": 1,
+                        "paddingRight": 30,
                       }
                     }
                   >
@@ -7383,7 +7139,7 @@ exports[`Onboarding.CustomModeSettings renders correctly 3`] = `
                               "fontFamily": "Bold Open Sans",
                             },
                             Object {
-                              "alignSelf": "center",
+                              "alignSelf": "flex-start",
                               "color": "#535AE4",
                             },
                           ],
@@ -7392,42 +7148,6 @@ exports[`Onboarding.CustomModeSettings renders correctly 3`] = `
                     >
                       onboarding.custom-mode.settings.routing.title
                     </Text>
-                  </View>
-                  <View
-                    accessible={true}
-                    focusable={true}
-                    onClick={[Function]}
-                    onResponderGrant={[Function]}
-                    onResponderMove={[Function]}
-                    onResponderRelease={[Function]}
-                    onResponderTerminate={[Function]}
-                    onResponderTerminationRequest={[Function]}
-                    onStartShouldSetResponder={[Function]}
-                    style={
-                      Object {
-                        "flex": 1,
-                        "opacity": 1,
-                      }
-                    }
-                  >
-                    <View
-                      style={
-                        Object {
-                          "transform": Array [
-                            Object {
-                              "scale": 1,
-                            },
-                          ],
-                        }
-                      }
-                    >
-                      <RNSVGMock
-                        fill="#535AE4"
-                        height={30}
-                        viewBox="0 0 24 24"
-                        width={30}
-                      />
-                    </View>
                   </View>
                 </View>
               </View>
@@ -8304,6 +8024,7 @@ exports[`Onboarding.CustomModeSettings renders correctly 3`] = `
                     style={
                       Object {
                         "flex": 1,
+                        "paddingRight": 30,
                       }
                     }
                   >
@@ -8353,7 +8074,7 @@ exports[`Onboarding.CustomModeSettings renders correctly 3`] = `
                               "fontFamily": "Bold Open Sans",
                             },
                             Object {
-                              "alignSelf": "center",
+                              "alignSelf": "flex-start",
                               "color": "#535AE4",
                             },
                           ],
@@ -8362,42 +8083,6 @@ exports[`Onboarding.CustomModeSettings renders correctly 3`] = `
                     >
                       onboarding.custom-mode.settings.access.title
                     </Text>
-                  </View>
-                  <View
-                    accessible={true}
-                    focusable={true}
-                    onClick={[Function]}
-                    onResponderGrant={[Function]}
-                    onResponderMove={[Function]}
-                    onResponderRelease={[Function]}
-                    onResponderTerminate={[Function]}
-                    onResponderTerminationRequest={[Function]}
-                    onStartShouldSetResponder={[Function]}
-                    style={
-                      Object {
-                        "flex": 1,
-                        "opacity": 1,
-                      }
-                    }
-                  >
-                    <View
-                      style={
-                        Object {
-                          "transform": Array [
-                            Object {
-                              "scale": 1,
-                            },
-                          ],
-                        }
-                      }
-                    >
-                      <RNSVGMock
-                        fill="#535AE4"
-                        height={30}
-                        viewBox="0 0 24 24"
-                        width={30}
-                      />
-                    </View>
                   </View>
                 </View>
               </View>
