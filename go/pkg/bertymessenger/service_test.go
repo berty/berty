@@ -8,7 +8,6 @@ import (
 	"encoding/base64"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net"
 	"net/http"
 	"os"
@@ -1566,7 +1565,7 @@ func Test_exportMessengerData(t *testing.T) {
 	gormDB.Create(&messengertypes.Conversation{PublicKey: "pk_conv_2", UnreadCount: 2000, IsOpen: true})
 	gormDB.Create(&messengertypes.Conversation{PublicKey: "pk_conv_3", UnreadCount: 3000, IsOpen: false})
 
-	tmpFile, err := ioutil.TempFile(os.TempDir(), "messenger-export-")
+	tmpFile, err := os.CreateTemp(os.TempDir(), "messenger-export-")
 	require.NoError(t, err)
 
 	err = exportMessengerData(tmpFile, db)
