@@ -176,6 +176,9 @@ targets:
     - sdk: Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/CoreBluetooth.framework
       root: DEVELOPER_DIR
       link: true
+    - sdk: usr/lib/libresolv.tbd
+      root: SDKROOT
+      link: true
     - framework: ./Frameworks/Bertybridge.xcframework
       embed: false
     - framework: "${SRCROOT}/../node_modules/expo-file-system/ios/EXFileSystem.xcframework"
@@ -257,6 +260,9 @@ targets:
         embed: false
       - framework: "${PODS_ROOT}/OpenSSL-Universal/Frameworks/OpenSSL.xcframework"
         embed: false
+      - sdk: usr/lib/libresolv.tbd
+        root: SDKROOT
+        link: true
 
 include:
 - info.yaml

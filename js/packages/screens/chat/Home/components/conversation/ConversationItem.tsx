@@ -72,6 +72,7 @@ export const ConversationItem: React.FC<
 	} else if (chatInputText) {
 		description = t('main.home.conversations.draft', {
 			message: chatInputText,
+			interpolation: { escapeValue: false },
 		})
 	}
 

@@ -203,8 +203,6 @@
 			"mc-button": "多节点连接",
 			"nearby-button": "附近的移动设备",
 			"mdns-button": "多播DNS",
-			"memo-cell-button": "在蜂窝中加载语音备忘录",
-			"medias-cell-button": "在蜂窝网络上加载媒体",
 			"dht-button": "分布式哈希表",
 			"rdvp-button": "Rendezvous 节点",
 			"relay-button": "中继节点",

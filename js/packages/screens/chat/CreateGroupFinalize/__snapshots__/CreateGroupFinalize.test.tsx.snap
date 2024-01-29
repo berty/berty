@@ -32,7 +32,7 @@ exports[`Chat.CreateGroupFinalize renders correctly 1`] = `
               "flex": 1,
             },
             Object {
-              "backgroundColor": "#F2F2F2",
+              "backgroundColor": "#FFFFFF",
             },
           ],
         ]
@@ -106,7 +106,7 @@ exports[`Chat.CreateGroupFinalize renders correctly 1`] = `
                           false,
                           false,
                           Object {
-                            "backgroundColor": "#F2F2F2",
+                            "backgroundColor": "#FFFFFF",
                           },
                           Array [
                             Object {
@@ -207,7 +207,7 @@ exports[`Chat.CreateGroupFinalize renders correctly 1`] = `
                   style={
                     Array [
                       Object {
-                        "backgroundColor": "#F2F2F2",
+                        "backgroundColor": "#FFFFFF",
                       },
                     ]
                   }
@@ -241,7 +241,7 @@ exports[`Chat.CreateGroupFinalize renders correctly 1`] = `
                         },
                         false,
                         Object {
-                          "backgroundColor": "#F2F2F2",
+                          "backgroundColor": "#FFFFFF",
                         },
                         null,
                       ]
@@ -922,7 +922,7 @@ exports[`Chat.CreateGroupFinalize renders correctly 1`] = `
                               "marginBottom": 9,
                             },
                             Object {
-                              "backgroundColor": "#F2F2F2",
+                              "backgroundColor": "#FFFFFF",
                             },
                           ]
                         }

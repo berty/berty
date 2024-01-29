@@ -8,7 +8,6 @@ package bertyaccount_test
 import (
 	"context"
 	"io"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
@@ -30,7 +29,7 @@ import (
 
 func TestFlow(t *testing.T) {
 	// prepare deps
-	tempdir, err := ioutil.TempDir("", "berty-account")
+	tempdir, err := os.MkdirTemp("", "berty-account")
 	require.NoError(t, err)
 	defer os.RemoveAll(tempdir)
 
@@ -352,7 +351,7 @@ func TestFlow(t *testing.T) {
 
 func TestImportExportFlow(t *testing.T) {
 	// prepare deps
-	tempdir, err := ioutil.TempDir("", "berty-account")
+	tempdir, err := os.MkdirTemp("", "berty-account")
 	require.NoError(t, err)
 	defer os.RemoveAll(tempdir)
 

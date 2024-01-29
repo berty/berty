@@ -1,7 +1,6 @@
 package main
 
 import (
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -30,7 +29,7 @@ func TestPersistentIdentity(t *testing.T) {
 	var tempdir string
 	{
 		var err error
-		tempdir, err = ioutil.TempDir("", "berty-main")
+		tempdir, err = os.MkdirTemp("", "berty-main")
 		require.NoError(t, err)
 		defer os.RemoveAll(tempdir)
 	}

@@ -7,6 +7,7 @@
     "ios": "react-native run-ios",
     "start": "react-native start",
     "test": "jest --silent",
+    "test-snapshot-update": "jest -u",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "postinstall": "patch-package && node ./fix-types.js && npx jetify",
     "storybook-prestart": "sb-rn-get-stories",

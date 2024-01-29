@@ -7,7 +7,6 @@ import (
 	"flag"
 	"fmt"
 	"log"
-	mrand "math/rand"
 	"net"
 	"net/http"
 	"os"
@@ -33,7 +32,6 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
-	"moul.io/srand"
 
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/weshnet/pkg/ipfsutil"
@@ -104,7 +102,6 @@ func main() {
 				return flag.ErrHelp
 			}
 
-			mrand.Seed(srand.MustSecure())
 			logger, cleanup, err := logutil.NewLogger(logutil.NewStdStream(logFilters, logFormat, logToFile))
 			if err != nil {
 				return errcode.TODO.Wrap(err)

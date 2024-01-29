@@ -4,7 +4,6 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"math/rand"
 	"os"
 	"strings"
 	"syscall"
@@ -12,7 +11,6 @@ import (
 	qrterminal "github.com/mdp/qrterminal/v3"
 	"github.com/oklog/run"
 	"go.uber.org/zap"
-	"moul.io/srand"
 	"moul.io/u"
 	"moul.io/zapconfig"
 
@@ -32,7 +30,6 @@ var (
 
 func main() {
 	flag.Parse()
-	rand.Seed(srand.MustSecure())
 	if err := Main(); err != nil {
 		fmt.Fprintf(os.Stderr, "error: %+v\n", err)
 		os.Exit(1)

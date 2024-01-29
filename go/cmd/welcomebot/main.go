@@ -6,7 +6,7 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
-	"math/rand"
+	mrand "math/rand"
 	"os"
 	"os/signal"
 	"os/user"
@@ -21,7 +21,6 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/connectivity"
 	"google.golang.org/grpc/credentials/insecure"
-	"moul.io/srand"
 	"moul.io/u"
 	"moul.io/zapconfig"
 
@@ -103,10 +102,11 @@ func welcomebot() error {
 	defer cancel()
 
 	flag.Parse()
-	rand.Seed(srand.MustSecure())
 
 	// init bot
-	bot := &Bot{storeConvMap: make(map[*Conversation]*sync.Mutex)}
+	bot := &Bot{
+		storeConvMap: make(map[*Conversation]*sync.Mutex),
+	}
 
 	// init logger
 	{
@@ -674,5 +674,5 @@ func getRandomReply() string {
 		"May we have a chat about our love relationship future ?",
 		"That's cool. I copy.",
 	}
-	return available[rand.Intn(len(available))] // nolint:gosec // absolutely no importance in this case
+	return available[mrand.Intn(len(available))] // nolint:gosec // absolutely no importance in this case
 }

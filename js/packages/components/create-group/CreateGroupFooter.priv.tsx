@@ -12,7 +12,7 @@ export const CreateGroupFooterPriv: React.FC = props => {
 				padding.horizontal.huge,
 				padding.vertical.large,
 				margin.bottom.small,
-				{ backgroundColor: '#F2F2F2' },
+				{ backgroundColor: '#FFFFFF' },
 			]}
 		>
 			{props.children}

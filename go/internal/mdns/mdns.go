@@ -3,7 +3,7 @@ package mdns
 import (
 	"context"
 	"errors"
-	"math/rand"
+	mrand "math/rand"
 	"net"
 	"strings"
 	"sync"
@@ -90,7 +90,7 @@ func NewMdnsService(logger *zap.Logger, host host.Host, serviceName string, noti
 		host:        host,
 		serviceName: serviceName,
 		// generate a random string between 32 and 63 characters long
-		peerName: randomString(32 + rand.Intn(32)), // nolint:gosec
+		peerName: randomString(32 + mrand.Intn(32)), // nolint:gosec
 		notifee:  notifee,
 	}
 	s.ctx, s.ctxCancel = context.WithCancel(context.Background())
@@ -257,7 +257,7 @@ func randomString(l int) string {
 	const alphabet = "abcdefghijklmnopqrstuvwxyz0123456789"
 	s := make([]byte, 0, l)
 	for i := 0; i < l; i++ {
-		s = append(s, alphabet[rand.Intn(len(alphabet))]) // nolint:gosec
+		s = append(s, alphabet[mrand.Intn(len(alphabet))]) // nolint:gosec
 	}
 	return string(s)
 }
