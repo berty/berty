@@ -222,9 +222,9 @@
 		"delete-account": {
 			"title": "Delete account!",
 			"first-desc": "Are you sure you want to delete your account?",
-			"desc-please": "",
-			"desc-delete": "",
-			"desc-confirm": "",
+			"desc-please": "Please type ",
+			"desc-delete": "delete",
+			"desc-confirm": " to confirm",
 			"cancel-button": "Cancel",
 			"delete-button": "Delete"
 		},
