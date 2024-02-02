@@ -18,6 +18,7 @@ export const TextPriv: React.FC<{}> = props => {
 
 const styles = StyleSheet.create({
 	container: {
-		width: '75%',
+		width: '90%',
+		flexShrink: 1,
 	},
 })
