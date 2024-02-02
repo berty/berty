@@ -80,7 +80,7 @@ const ConfigPart: React.FC<{
 					alignItems: 'center',
 				}}
 			>
-				<View style={{ flex: 1 }}>
+				<View style={{ flex: 1, paddingRight: 30 }}>
 					<Icon
 						width={iconSize * scaleSize}
 						height={iconSize * scaleSize}
@@ -96,14 +96,14 @@ const ConfigPart: React.FC<{
 							text.bold,
 							{
 								color: colors['background-header'],
-								alignSelf: 'center',
+								alignSelf: 'flex-start',
 							},
 						]}
 					>
 						{title}
 					</UnifiedText>
 				</View>
-				<TouchableOpacity
+				{/* <TouchableOpacity
 					style={{ flex: 1 }}
 					onPress={() => {
 						// TODO navigate to the help page
@@ -115,7 +115,7 @@ const ConfigPart: React.FC<{
 						name='info-outline'
 						fill={colors['background-header']}
 					/>
-				</TouchableOpacity>
+				</TouchableOpacity> */}
 			</View>
 		</View>
 	)
