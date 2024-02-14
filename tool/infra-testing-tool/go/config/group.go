@@ -5,12 +5,15 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"infratesting/logging"
 	"strconv"
 	"strings"
+
+	"go.uber.org/zap"
 )
 
 type Group struct {
+	logger *zap.Logger
+
 	Name  string `yaml:"name"`
 	Tests []Test `yaml:"tests"`
 }
@@ -136,7 +139,7 @@ func (c *NodeGroup) parseGroups() error {
 func (g Group) Hash() [16]byte {
 	bytes, err := json.Marshal(g)
 	if err != nil {
-		logging.Log(err)
+		panic(err)
 	}
 
 	return md5.Sum(bytes)

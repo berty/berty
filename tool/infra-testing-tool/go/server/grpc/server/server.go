@@ -4,12 +4,10 @@ import (
 	"bytes"
 	"context"
 	"encoding/gob"
-	"errors"
 	"fmt"
 	"infratesting/aws"
 	"infratesting/config"
 	"infratesting/iac/components/networking"
-	"infratesting/logging"
 	"io"
 	"os"
 	"strings"
@@ -19,6 +17,7 @@ import (
 	"berty.tech/berty/v2/go/pkg/messengertypes"
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
 	"github.com/anaskhan96/soup"
+	"go.uber.org/zap"
 	"google.golang.org/grpc"
 )
 
@@ -62,6 +61,7 @@ func NewTestSession(ctx context.Context, ct *config.Test) *TestSession {
 }
 
 type Server struct {
+	logger    *zap.Logger
 	Cc        *grpc.ClientConn
 	Messenger messengertypes.MessengerServiceClient
 	Protocol  protocoltypes.ProtocolServiceClient
@@ -85,8 +85,10 @@ type Server struct {
 }
 
 // NewServer returns server with initialised internal maps
-func NewServer() *Server {
+func NewServer(logger *zap.Logger) *Server {
+	go startProcessCheck(logger)
 	return &Server{
+		logger:            logger.Named("server"),
 		Groups:            make(map[string]*protocoltypes.Group),
 		Tests:             make(map[string]map[int64]*config.Test),
 		TestSessions:      make(map[string]map[int64]*TestSession),
@@ -97,14 +99,11 @@ func NewServer() *Server {
 }
 
 func (s *Server) mustEmbedUnimplementedProxyServer() {
-	logging.Log("unimplemented proxy server")
 	panic("implement me")
 }
 
 // IsTestRunning checks if a specific test is running at the moment
 func (s *Server) IsTestRunning(ctx context.Context, request *IsTestRunning_Request) (response *IsTestRunning_Response, err error) {
-	logging.Log(fmt.Sprintf("IsTestRunning - incoming request: %+v", request))
-
 	s.muTests.Lock()
 	defer s.muTests.Unlock()
 
@@ -119,11 +118,10 @@ func (s *Server) IsTestRunning(ctx context.Context, request *IsTestRunning_Reque
 
 // NewTest adds a test to the peers' test memory
 func (s *Server) NewTest(ctx context.Context, request *NewTest_Request) (response *NewTest_Response, err error) {
-	logging.Log(fmt.Sprintf("NewTest - incoming request: %+v", request))
 	response = new(NewTest_Response)
 
 	if s.Groups[request.GroupName] == nil {
-		return response, logging.LogErr(errors.New(ErrNotInGroup))
+		return response, fmt.Errorf("group `%s` does not exist", request.GroupName)
 	}
 
 	test := &config.Test{
@@ -143,7 +141,7 @@ func (s *Server) NewTest(ctx context.Context, request *NewTest_Request) (respons
 
 	s.Lock.Unlock()
 
-	return response, logging.LogErr(err)
+	return response, nil
 }
 
 // StopTest stops all tests
@@ -155,7 +153,7 @@ func (s *Server) StopTest(ctx context.Context, request *StopTest_Request) (res *
 	for _, gtest := range s.TestSessions {
 		for index, ts := range gtest {
 			elapsed := ts.Stop()
-			logging.Log(fmt.Sprintf("test [%d] ended in %dm%ds", index, int(elapsed.Minutes()), int(elapsed.Seconds())))
+			s.logger.Info("test ended ", zap.Int64("test_index", index), zap.Duration("elpased", elapsed))
 
 			// @TODO: keep trace of the test
 			delete(gtest, index)
@@ -164,15 +162,13 @@ func (s *Server) StopTest(ctx context.Context, request *StopTest_Request) (res *
 
 	s.muTests.Unlock()
 
-	return res, logging.LogErr(err)
+	return res, nil
 }
 
 // StartTest starts a specific test
 func (s *Server) StartTest(ctx context.Context, request *StartTest_Request) (response *StartTest_Response, err error) {
 	// @TODO: maybe make this command sync, and stream interaction to let the
 	// client know when all the interaction has been sent
-
-	logging.Log(fmt.Sprintf("StartTest - incoming request: %+v", request))
 	response = new(StartTest_Response)
 
 	var ct *config.Test
@@ -184,7 +180,7 @@ func (s *Server) StartTest(ctx context.Context, request *StartTest_Request) (res
 	if gtest, ok := s.Tests[request.GroupName]; ok {
 		if ct, ok = gtest[request.TestN]; !ok {
 			s.muTests.Unlock()
-			return response, logging.LogErr(errors.New(ErrTestNotExist))
+			return response, fmt.Errorf("%w: Test(%d) - %s", ErrTestNotExist, request.TestN, request.GroupName)
 		}
 	}
 
@@ -192,11 +188,14 @@ func (s *Server) StartTest(ctx context.Context, request *StartTest_Request) (res
 	if gtest, ok := s.TestSessions[request.GroupName]; ok {
 		if ts, ok = gtest[request.TestN]; ok {
 			s.muTests.Unlock()
-			return response, logging.LogErr(errors.New(ErrTestNotExist))
+			return response, fmt.Errorf("%w: Test(%d) - %s", ErrTestNotExist, request.TestN, request.GroupName)
 		}
+	} else {
+		s.TestSessions[request.GroupName] = make(map[int64]*TestSession)
 	}
 
 	sctx := context.Background()
+
 	ts = NewTestSession(sctx, ct)
 	s.TestSessions[request.GroupName][request.TestN] = ts
 
@@ -204,7 +203,7 @@ func (s *Server) StartTest(ctx context.Context, request *StartTest_Request) (res
 
 	time.Sleep(time.Second * 5)
 
-	logging.Log(fmt.Sprintf("starting test: %+v", ct))
+	s.logger.Debug("starting test", zap.Any("config_test", ct))
 
 	go func() {
 		var x int
@@ -214,42 +213,40 @@ func (s *Server) StartTest(ctx context.Context, request *StartTest_Request) (res
 				message := ConstructTextMessage(ct.SizeInternal)
 				err = s.SendTextMessage(sctx, request.GroupName, message)
 				if err != nil {
-					logging.Log(err.Error())
+					s.logger.Error("unable to send message", zap.Error(err))
 				}
 
 			case config.TestTypeMedia:
 				image, err := ConstructImageMessage(ct.SizeInternal)
 				if err != nil {
-					logging.Log(err.Error())
+					s.logger.Error("unable to construct image message", zap.Error(err))
 					continue
 				}
 
 				err = s.SendImageMessage(sctx, request.GroupName, image)
 				if err != nil {
-					logging.Log(err.Error())
+					s.logger.Error("unable to send image message", zap.Error(err))
 				}
 			}
 
-			logging.Log(fmt.Sprintf("sent message to group: %s", request.GroupName))
+			s.logger.Debug("sent message to group", zap.String("group_name", request.GroupName))
 			time.Sleep(time.Second * time.Duration(ct.IntervalInternal))
 		}
 
-		logging.Log(fmt.Sprintf("sent %d messages to %s\n", x, request.GroupName))
+		s.logger.Debug("sent %d messages to", zap.Int("count", x), zap.String("group_name", request.GroupName))
 	}()
 
-	return response, logging.LogErr(err)
+	return response, nil
 }
 
 // ConnectToPeer connects to a peer based on the request
 func (s *Server) ConnectToPeer(ctx context.Context, request *ConnectToPeer_Request) (response *ConnectToPeer_Response, err error) {
-	logging.Log(fmt.Sprintf("ConnectToPeer - incoming request: %+v", request))
 	response = new(ConnectToPeer_Response)
 
 	host := fmt.Sprintf("%s:%s", request.Host, request.Port)
-
 	cc, err := grpc.DialContext(ctx, host, grpc.FailOnNonTempDialError(true), grpc.WithInsecure())
 	if err != nil {
-		return response, logging.LogErr(err)
+		return response, fmt.Errorf("unable to dial remote peer: %s", host)
 	}
 
 	s.Cc = cc
@@ -258,49 +255,51 @@ func (s *Server) ConnectToPeer(ctx context.Context, request *ConnectToPeer_Reque
 
 	resp, err := s.Protocol.ServiceGetConfiguration(ctx, &protocoltypes.ServiceGetConfiguration_Request{})
 	if err != nil {
-		return response, logging.LogErr(err)
+		return response, fmt.Errorf("unable to get configuration: %w", err)
 	}
 
 	s.DevicePK = resp.DevicePK
 
-	return response, logging.LogErr(err)
+	return response, nil
 }
 
 func (s *Server) UploadLogs(ctx context.Context, request *UploadLogs_Request) (response *UploadLogs_Response, err error) {
-	logging.Log(fmt.Sprintf("UploadLogs - incoming request: %+v", request))
 	response = new(UploadLogs_Response)
 
 	uploadCount := 0
 
-	path := "/home/ec2-user/logs"
+	path := "/home/ec2-user/logs/berty"
 	fileInfo, err := os.ReadDir(path)
 	if err != nil {
-		return response, logging.LogErr(err)
+		return response, fmt.Errorf("error while reading dir(%s): %w", path, err)
 	}
 
 	for _, file := range fileInfo {
 		if !file.IsDir() {
-			err = aws.UploadFile(fmt.Sprintf("%s/%s", path, file.Name()), fmt.Sprintf("test-run-%s/%s/%s", request.Folder, request.Name, file.Name()))
+			err = aws.UploadFile(
+				s.logger,
+				fmt.Sprintf("%s/%s", path, file.Name()),
+				fmt.Sprintf("test-run-%s/%s/%s", request.Folder, request.Name, file.Name()))
 			if err != nil {
-				return response, logging.LogErr(err)
+				return response, fmt.Errorf("unable to upload file: %w", err)
 			}
 			uploadCount += 1
 		}
 	}
 
 	response.UploadCount = int64(uploadCount)
+	s.logger.Info("upload done", zap.Int("count", uploadCount), zap.String("path", path))
 
-	return response, logging.LogErr(err)
+	return response, nil
 }
 
 // CreateInvite creates an invite and returns the invite blob from the berty protocoltypes api
 func (s *Server) CreateInvite(ctx context.Context, request *CreateInvite_Request) (response *CreateInvite_Response, err error) {
-	logging.Log(fmt.Sprintf("CreateInvite - incoming request: %+v", request))
 	response = new(CreateInvite_Response)
 
 	resCreate, err := s.Protocol.MultiMemberGroupCreate(ctx, &protocoltypes.MultiMemberGroupCreate_Request{})
 	if err != nil {
-		return response, logging.LogErr(err)
+		return response, fmt.Errorf("unable to create multi-member group: %w", err)
 	}
 
 	invite, err := s.Messenger.ShareableBertyGroup(ctx, &messengertypes.ShareableBertyGroup_Request{
@@ -312,7 +311,7 @@ func (s *Server) CreateInvite(ctx context.Context, request *CreateInvite_Request
 	}
 
 	if invite == nil {
-		return response, logging.LogErr(errors.New("created invite was of type nil, something else went wrong"))
+		return response, fmt.Errorf("empty invite")
 	}
 
 	s.Lock.Lock()
@@ -322,7 +321,7 @@ func (s *Server) CreateInvite(ctx context.Context, request *CreateInvite_Request
 	// activate group
 	_, err = s.Protocol.ActivateGroup(ctx, &protocoltypes.ActivateGroup_Request{GroupPK: resCreate.GroupPK})
 	if err != nil {
-		return response, logging.LogErr(err)
+		return response, fmt.Errorf("unable to activate account: %w", err)
 	}
 
 	// encode invite into gob
@@ -331,7 +330,7 @@ func (s *Server) CreateInvite(ctx context.Context, request *CreateInvite_Request
 
 	err = enc.Encode(invite)
 	if err != nil {
-		return response, logging.LogErr(err)
+		return response, fmt.Errorf("unable to encode invite: %w", err)
 	}
 
 	return &CreateInvite_Response{Invite: n.Bytes()}, err
@@ -339,11 +338,12 @@ func (s *Server) CreateInvite(ctx context.Context, request *CreateInvite_Request
 
 // JoinGroup takes in the invite blob from the berty protocol api and join the group
 func (s *Server) JoinGroup(ctx context.Context, request *JoinGroup_Request) (response *JoinGroup_Response, err error) {
-	logging.Log(fmt.Sprintf("JoinGroup - incoming request: %+v", request))
 	response = new(JoinGroup_Response)
 
+	// @FIXME: we need some lock here
+
 	if s.Groups[request.GroupName] != nil {
-		return response, logging.LogErr(errors.New(ErrAlreadyInGroup))
+		return response, ErrAlreadyInGroup
 	}
 
 	// decode gob into invite
@@ -353,7 +353,7 @@ func (s *Server) JoinGroup(ctx context.Context, request *JoinGroup_Request) (res
 	var invite messengertypes.ShareableBertyGroup_Reply
 	err = dec.Decode(&invite)
 	if err != nil {
-		return response, logging.LogErr(err)
+		return response, fmt.Errorf("decode shareable group error: %w", err)
 	}
 
 	link := invite.GetLink()
@@ -361,33 +361,32 @@ func (s *Server) JoinGroup(ctx context.Context, request *JoinGroup_Request) (res
 		Group: link.BertyGroup.GetGroup(),
 	})
 	if err != nil {
-		return response, logging.LogErr(err)
+		return response, fmt.Errorf("unable to join multi-member groupa: %w", err)
 	}
 
 	// activate group
 	_, err = s.Protocol.ActivateGroup(ctx, &protocoltypes.ActivateGroup_Request{GroupPK: invite.Link.GetBertyGroup().Group.PublicKey})
 	if err != nil {
-		return response, logging.LogErr(err)
+		return response, fmt.Errorf("unable to activate group: %w", err)
 	}
 
 	s.Lock.Lock()
 	s.Groups[request.GroupName] = invite.Link.GetBertyGroup().Group
 	s.Lock.Unlock()
 
-	return response, logging.LogErr(err)
+	return response, nil
 }
 
 // StartReceiveMessage starts a goroutine on the server that reads messages in a specific group
 func (s *Server) StartReceiveMessage(ctx context.Context, request *StartReceiveMessage_Request) (response *StartReceiveMessage_Response, err error) {
-	logging.Log(fmt.Sprintf("StartReveiveMessage - incoming request: %+v", request))
 	response = new(StartReceiveMessage_Response)
 
 	if s.Groups[request.GroupName] == nil {
-		return response, logging.LogErr(errors.New(ErrNotInGroup))
+		return response, fmt.Errorf("no group named `%s`: %w", request.GroupName, ErrNotInGroup)
 	}
 
 	if s.ReceivingMessages[request.GroupName] {
-		logging.Log(ErrAlreadyReceiving)
+		s.logger.Warn("aleady receiving mesages", zap.String("group_name", request.GroupName), zap.Error(ErrAlreadyReceiving))
 		return response, nil
 	}
 
@@ -406,27 +405,28 @@ func (s *Server) StartReceiveMessage(ctx context.Context, request *StartReceiveM
 				SinceNow: true,
 			})
 			if err != nil {
-				logging.Log(err.Error())
+				s.logger.Error("unable to list message from  group", zap.Error(err))
+				return
 			}
 
 			for {
 				evt, err := cl.Recv()
 				if err != nil {
 					if err != io.EOF {
-						logging.Log(err.Error())
+						s.logger.Debug(err.Error())
 					}
 					break
 				}
 
 				// this doesn't work  ??
 				if !s.ReceivingMessages[request.GroupName] {
-					logging.Log(fmt.Sprintf("done receiving messages in group %s", request.GroupName))
+					s.logger.Debug("done receiving messages in group", zap.String("group_name", request.GroupName))
 					break
 				}
 
 				_, am, err := messengertypes.UnmarshalAppMessage(evt.GetMessage())
 				if err != nil {
-					logging.Log(err.Error())
+					s.logger.Error("unable to unmarshalAppMessage", zap.Error(err))
 					continue
 				}
 
@@ -462,7 +462,7 @@ func (s *Server) StartReceiveMessage(ctx context.Context, request *StartReceiveM
 					if !isDupe {
 						// prepend
 						// we prepend instead of append to make dupes be detected faster
-						logging.Log(fmt.Sprintf("received message: %s", currentMessage.PayloadHash))
+						s.logger.Debug("received message", zap.String("payload", currentMessage.PayloadHash))
 						s.Messages[request.GroupName] = append([]Message{currentMessage}, s.Messages[request.GroupName]...)
 					}
 					s.Lock.Unlock()
@@ -473,42 +473,40 @@ func (s *Server) StartReceiveMessage(ctx context.Context, request *StartReceiveM
 		}
 	}()
 
-	return response, logging.LogErr(err)
+	return response, nil
 }
 
 // StopReceiveMessage stops the receiving goroutine
 func (s *Server) StopReceiveMessage(ctx context.Context, request *StopReceiveMessage_Request) (response *StopReceiveMessage_Response, err error) {
-	logging.Log(fmt.Sprintf("StopReceiveMessage - incoming request: %+v", request))
 	response = new(StopReceiveMessage_Response)
 
 	if s.Groups[request.GroupName] == nil {
-		return response, logging.LogErr(errors.New(ErrNotInGroup))
+		return response, fmt.Errorf("receive message not running")
 	}
 
 	s.Lock.Lock()
 	s.ReceivingMessages[request.GroupName] = false
 	s.Lock.Unlock()
 
-	return response, logging.LogErr(err)
+	return response, nil
 }
 
 // AddReplication ready's a replication server by contacting the token server.
 func (s *Server) AddReplication(ctx context.Context, request *AddReplication_Request) (response *AddReplication_Response, err error) {
-	logging.Log(fmt.Sprintf("AddReplication - incoming request: %+v", request))
 	response = new(AddReplication_Response)
 
 	initFlowResp, err := s.Protocol.AuthServiceInitFlow(ctx, &protocoltypes.AuthServiceInitFlow_Request{
 		AuthURL: fmt.Sprintf("http://%s:%v", request.TokenIp, networking.ReplPort),
 	})
 	if err != nil {
-		return response, logging.LogErr(err)
+		return response, fmt.Errorf("auth service init flow failed: %w", err)
 	}
 
 	URL := initFlowResp.URL
 	URL = strings.ReplaceAll(URL, "https", "http")
 	res, err := soup.Get(URL)
 	if err != nil {
-		return response, logging.LogErr(err)
+		return response, fmt.Errorf("soup unable to get url: %w", err)
 	}
 
 	doc := soup.HTMLParse(res)
@@ -519,20 +517,16 @@ func (s *Server) AddReplication(ctx context.Context, request *AddReplication_Req
 		CallbackURL: callbackURL,
 	})
 
-	return response, logging.LogErr(err)
+	return response, fmt.Errorf("unable to authenticate to service: %w", err)
 }
 
 // TestConnection always returns true
 func (s *Server) TestConnection(ctx context.Context, request *TestConnection_Request) (response *TestConnection_Response, err error) {
-	logging.Log(fmt.Sprintf("TestConnection - incoming request: %+v", request))
-	// response = new(TestConnection_Response)
-
 	return &TestConnection_Response{Success: true}, err
 }
 
 // TestConnectionToPeer always returns true
 func (s *Server) TestConnectionToPeer(ctx context.Context, request *TestConnectionToPeer_Request) (response *TestConnectionToPeer_Response, err error) {
-	logging.Log(fmt.Sprintf("TestConnectionToPeer - incoming request: %+v", request))
 	response = new(TestConnectionToPeer_Response)
 
 	host := fmt.Sprintf("%s:%s", request.Host, request.Port)
@@ -542,14 +536,14 @@ func (s *Server) TestConnectionToPeer(ctx context.Context, request *TestConnecti
 
 		cc, err := grpc.DialContext(ctx, host, grpc.FailOnNonTempDialError(true), grpc.WithInsecure())
 		if err != nil {
-			logging.Log(err.Error())
+			s.logger.Error("unable to dial remote host", zap.Error(err))
 		}
 
 		temp := protocoltypes.NewProtocolServiceClient(cc)
 		_, err = temp.ServiceGetConfiguration(ctx, &protocoltypes.ServiceGetConfiguration_Request{})
 		if err != nil {
 			if count > int(request.Tries) {
-				return response, logging.LogErr(err)
+				return response, fmt.Errorf("too many tries: %d", count)
 			} else {
 				count += 1
 				time.Sleep(time.Second * 5)
@@ -563,7 +557,6 @@ func (s *Server) TestConnectionToPeer(ctx context.Context, request *TestConnecti
 }
 
 func (s *Server) AddReliability(ctx context.Context, request *AddReliability_Request) (response *AddReliability_Response, err error) {
-	logging.Log(fmt.Sprintf("AddReliability - incoming request: %+v", request))
 	response = new(AddReliability_Response)
 
 	s.Reliability.Odds = request.Odds

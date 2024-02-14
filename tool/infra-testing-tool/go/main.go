@@ -2,12 +2,12 @@ package main
 
 import (
 	"infratesting/cmd"
+	"os"
 )
 
 func main() {
 	err := cmd.Execute()
 	if err != nil {
-		panic(err)
+		os.Exit(1)
 	}
-
 }

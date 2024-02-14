@@ -29,7 +29,7 @@ source /home/ec2-user/.bashrc
 	-p2p.rdvp='{{.rdvp }}' \
 	-p2p.tinder-rdvp-driver=true \
 	-log.format=json \
-	-log.file=/home/ec2-user/logs/
+	-log.file=/home/ec2-user/logs/berty/berty.log.json
 `
 
 	bootstrapUserData = `berty daemon \
@@ -41,7 +41,7 @@ source /home/ec2-user/.bashrc
 	-p2p.tinder-rdvp-driver=false \
 	-p2p.swarm-listeners="{{.listener }}" \
 	-log.format=json \
-	-log.file=/home/ec2-user/logs/
+	-log.file=/home/ec2-user/logs/berty/berty.log.json
 `
 
 	rdvpUserData = `rdvp serve -pk {{.pk | printf "%s" }} \
@@ -54,7 +54,7 @@ source /home/ec2-user/.bashrc
 	-announce "{{.announce }}" \
 	-l "{{.listener }}" \
 	-log.format=json \
-	-log.file=/home/ec2-user/logs/log.json
+	-log.file=/home/ec2-user/logs/berty/berty.log.json
 `
 
 	replicationUserData = `berty repl-server \
@@ -70,6 +70,6 @@ berty token-server \
 	-auth.secret {{.tokenSecret }} \
 	-auth.sk {{.tokenSk }} \
 	-log.format=json \
-	-log.file=/home/ec2-user/
+	-log.file=/home/ec2-user/logs/berty/berty.log.json
 `
 )

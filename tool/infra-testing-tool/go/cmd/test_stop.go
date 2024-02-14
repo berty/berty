@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"infratesting/aws"
 	"infratesting/config"
-	"infratesting/logging"
 	"infratesting/server/grpc/server"
 	"infratesting/testing"
 	"strconv"
@@ -14,6 +13,7 @@ import (
 	"time"
 
 	"github.com/spf13/cobra"
+	"go.uber.org/zap"
 )
 
 var testStopCmd = &cobra.Command{
@@ -23,7 +23,7 @@ var testStopCmd = &cobra.Command{
 
 		c, err := loadConfig()
 		if err != nil {
-			return logging.LogErr(err)
+			return fmt.Errorf("uanble to load config: %w", err)
 		}
 
 		return stopTest(ctx, &c)
@@ -31,9 +31,9 @@ var testStopCmd = &cobra.Command{
 }
 
 func stopTest(ctx context.Context, c *config.Config) error {
-	availablePeers, err := testing.GetAllEligiblePeers(aws.Ec2TagType, []string{config.NodeTypePeer})
+	availablePeers, err := testing.GetAllEligiblePeers(ctx, logger, aws.Ec2TagType, []string{config.NodeTypePeer})
 	if err != nil {
-		return logging.LogErr(err)
+		return fmt.Errorf("unable to get node eligible peer: %w", err)
 	}
 
 	t := time.Now()
@@ -43,14 +43,14 @@ func stopTest(ctx context.Context, c *config.Config) error {
 		peer.MatchNodeToPeer(*c)
 		_, err := peer.P.StopTest(ctx, &server.StopTest_Request{})
 		if err != nil {
-			return logging.LogErr(err)
+			return fmt.Errorf("unable to stop test server: %w", err)
 		}
 	}
 
 	// upload logs
-	allNodes, err := testing.GetAllEligiblePeers(aws.Ec2TagType, config.GetAllTypes())
+	allNodes, err := testing.GetAllEligiblePeers(ctx, logger, aws.Ec2TagType, config.GetAllTypes())
 	if err != nil {
-		return logging.LogErr(err)
+		return fmt.Errorf("unable to get all eligible peer: %w", err)
 	}
 
 	uploadWg := sync.WaitGroup{}
@@ -63,15 +63,16 @@ func stopTest(ctx context.Context, c *config.Config) error {
 				Name:   strings.ReplaceAll(allNodes[i].Tags[aws.Ec2TagName], ".", "-"),
 			})
 			if err != nil {
-				logging.LogErr(err)
+				logger.Error("unable to upload logs", zap.Error(err))
 				return
 			}
 
-			bucketName, err := aws.GetBucketName()
+			bucketName, err := aws.GetBucketName(logger)
 			if err != nil {
-				panic(logging.LogErr(err))
+				logger.Error("unable to get bucket name", zap.Error(err))
+			} else {
+				logger.Debug("uploaded log file(s) to bucket", zap.String("bucket", bucketName), zap.String("tag", allNodes[i].Tags[aws.Ec2TagName]), zap.Int64("files", resp.UploadCount))
 			}
-			logging.Log(fmt.Sprintf("%v uploaded: %v files to bucket: %s", allNodes[i].Tags[aws.Ec2TagName], resp.UploadCount, bucketName))
 
 			uploadWg.Done()
 		}(i)

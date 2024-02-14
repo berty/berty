@@ -2,14 +2,14 @@ package cmd
 
 import (
 	"github.com/spf13/cobra"
-	"infratesting/logging"
+	"go.uber.org/zap"
 )
 
 var (
 	versionCmd = &cobra.Command{
 		Use: "version",
 		Run: func(cmd *cobra.Command, args []string) {
-			logging.Log("version x.y.z")
+			logger.Debug("infra", zap.String("version", "z.y.z"))
 		},
 	}
 )

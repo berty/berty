@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"context"
 	"fmt"
 	"infratesting/aws"
 	"infratesting/config"
@@ -16,6 +17,9 @@ import (
 var deployCmd = &cobra.Command{
 	Use: "deploy",
 	RunE: func(cmd *cobra.Command, args []string) error {
+		ctx, cancel := context.WithCancel(context.Background())
+		defer cancel()
+
 		wd, err := os.Getwd()
 		if err != nil {
 			return err
@@ -24,31 +28,32 @@ var deployCmd = &cobra.Command{
 		var t testing.T
 		terraformOptions := terraform.WithDefaultRetryableErrors(&t, &terraform.Options{
 			TerraformDir: fmt.Sprintf("%s/%s", wd, DefaultFolderName),
+			Logger:       logging.TerraformLogger(logger),
 		})
 
+		logger.Info("init and apply terrform file...")
 		terraform.InitAndApply(&t, terraformOptions)
-
 		if t.Failed() {
-			panic("something went wrong while applying")
+			logger.Fatal("something went wrong while applying")
 		}
-
-		logging.Log("attempting to connect to peers' berty-infra-server")
-		logging.Log("this could take a while ...")
 
 		c, err := loadConfig()
 		if err != nil {
-			return logging.LogErr(err)
+			return fmt.Errorf("unable to load config: %w", err)
 		}
+
+		logger.Info("attempting to connect to peers berty-infra-server")
+		logger.Info("this could take a while ...")
 
 		aws.SetRegion(c.Settings.Region)
 		infratesting.SetDeploy()
 
-		_, err = infratesting.GetAllEligiblePeers(aws.Ec2TagType, config.AllPeerTypes)
+		_, err = infratesting.GetAllEligiblePeers(ctx, logger, aws.Ec2TagType, config.AllPeerTypes)
 		if err != nil {
-			return err
+			return fmt.Errorf("unable to get all eligible peers: %w", err)
 		} else {
-			logging.Log("successfully connected to all peers")
-			logging.Log("deployment is now complete")
+			logger.Info("successfully connected to all peers")
+			logger.Info("deployment is now complete")
 		}
 
 		return nil

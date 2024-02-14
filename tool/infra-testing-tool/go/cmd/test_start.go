@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"infratesting/aws"
 	"infratesting/config"
-	"infratesting/logging"
 	"infratesting/server/grpc/server"
 	"infratesting/testing"
 	"math/rand"
@@ -17,6 +16,7 @@ import (
 
 	"berty.tech/berty/v2/go/pkg/messengertypes"
 	"github.com/spf13/cobra"
+	"go.uber.org/zap"
 )
 
 var testStartCmd = &cobra.Command{
@@ -26,10 +26,14 @@ var testStartCmd = &cobra.Command{
 
 		c, err := loadConfig()
 		if err != nil {
-			return err
+			return fmt.Errorf("unable to load config: %w", err)
 		}
 
-		return startTest(ctx, &c)
+		if err := startTest(ctx, &c); err != nil {
+			return fmt.Errorf("unable to start test: %w", err)
+		}
+
+		return nil
 	},
 }
 
@@ -40,25 +44,25 @@ func startTest(ctx context.Context, c *config.Config) error {
 	}
 
 	if amountOfGroups == 0 {
-		logging.Log("there are no tests configured in the config")
+		logger.Debug("there are no tests configured in the config")
 		return nil
 	}
 
 	aws.SetRegion(c.Settings.Region)
 
-	availablePeers, err := testing.GetAllEligiblePeers(aws.Ec2TagType, []string{config.NodeTypePeer})
+	availablePeers, err := testing.GetAllEligiblePeers(ctx, logger, aws.Ec2TagType, []string{config.NodeTypePeer})
 	if err != nil {
-		return logging.LogErr(err)
+		return fmt.Errorf("unable to get node eligible peers: %w", err)
 	}
 
-	availableRepl, err := testing.GetAllEligiblePeers(aws.Ec2TagType, []string{config.NodeTypeReplication})
+	availableRepl, err := testing.GetAllEligiblePeers(ctx, logger, aws.Ec2TagType, []string{config.NodeTypeReplication})
 	if err != nil {
-		return logging.LogErr(err)
+		return fmt.Errorf("unable to get repl eligible peers: %w", err)
 	}
 
-	allPeers, err := testing.GetAllPeers()
+	allPeers, err := testing.GetAllPeers(ctx, logger)
 	if err != nil {
-		return logging.LogErr(err)
+		return fmt.Errorf("unable to get all peers: %w", err)
 	}
 
 	// temporary group object
@@ -78,7 +82,7 @@ func startTest(ctx context.Context, c *config.Config) error {
 			group := groups[availablePeers[i].ConfigGroups[g].Name]
 
 			group.Name = availablePeers[i].ConfigGroups[g].Name
-			group.Peers = append(group.Peers, &availablePeers[i])
+			group.Peers = append(group.Peers, availablePeers[i])
 
 			if len(group.Tests) == 0 {
 				group.Tests = availablePeers[i].ConfigGroups[g].Tests
@@ -101,7 +105,7 @@ func startTest(ctx context.Context, c *config.Config) error {
 			})
 
 			if err != nil {
-				return logging.LogErr(err)
+				return fmt.Errorf("unable to add replication service: %w", err)
 			}
 		}
 	}
@@ -115,7 +119,7 @@ func startTest(ctx context.Context, c *config.Config) error {
 					GroupName: availablePeers[i].ConfigGroups[g].Name,
 				})
 				if err != nil {
-					return logging.LogErr(err)
+					return fmt.Errorf("unable to create invite: %w", err)
 				}
 
 				gr := groups[availablePeers[i].ConfigGroups[g].Name]
@@ -127,17 +131,17 @@ func startTest(ctx context.Context, c *config.Config) error {
 				var inv messengertypes.ShareableBertyGroup_Reply
 				err = dec.Decode(&inv)
 				if err != nil {
-					_ = logging.LogErr(err)
+					logger.Warn("unable to decode invite", zap.Error(err))
 				}
 
 				// invite url
-				// logging.Log(inv.WebURL)
+				// logger.Debug(inv.WebURL)
 
 				_, err = availablePeers[i].P.StartReceiveMessage(ctx, &server.StartReceiveMessage_Request{
 					GroupName: availablePeers[i].ConfigGroups[g].Name,
 				})
 				if err != nil {
-					return logging.LogErr(err)
+					return fmt.Errorf("unable to start receive message: %w", err)
 				}
 
 			} else {
@@ -147,8 +151,8 @@ func startTest(ctx context.Context, c *config.Config) error {
 					Invite:    groups[availablePeers[i].ConfigGroups[g].Name].Pk,
 				})
 				if err != nil {
-					if !strings.Contains(err.Error(), server.ErrAlreadyInGroup) {
-						return logging.LogErr(err)
+					if !strings.Contains(err.Error(), server.ErrAlreadyInGroup.Error()) {
+						return fmt.Errorf("unable to join group: %w", err)
 					}
 				}
 
@@ -156,7 +160,7 @@ func startTest(ctx context.Context, c *config.Config) error {
 					GroupName: availablePeers[i].ConfigGroups[g].Name,
 				})
 				if err != nil {
-					return logging.LogErr(err)
+					return fmt.Errorf("unable to start receive message: %w", err)
 				}
 			}
 		}
@@ -179,6 +183,10 @@ func startTest(ctx context.Context, c *config.Config) error {
 	var newTestWG sync.WaitGroup
 	var startTestWG sync.WaitGroup
 
+	if len(groupArray) == 0 {
+		logger.Warn("no group to test")
+	}
+
 	// iterate over groups
 	for g := range groupArray {
 		// iterate over tests in groups
@@ -200,10 +208,11 @@ func startTest(ctx context.Context, c *config.Config) error {
 						Interval:  int64(groupArray[groupIndex].Tests[testIndex].IntervalInternal),
 						Amount:    int64(groupArray[groupIndex].Tests[testIndex].AmountInternal),
 					})
-					logging.Log(fmt.Sprintf("added test - test: '%v' in group: '%v' on node: %v", testIndex, groupArray[groupIndex].Name, groupArray[g].Peers[peerIndex].Tags[aws.Ec2TagName]))
+
+					logger.Debug("added test", zap.Int("index", testIndex), zap.String("group", groupArray[g].Name), zap.String("node", groupArray[g].Peers[peerIndex].Tags[aws.Ec2TagName]))
 
 					if err != nil {
-						logging.Log(err.Error())
+						logger.Error("unable to create new test", zap.Error(err))
 					}
 
 					newTestWG.Done()
@@ -216,19 +225,19 @@ func startTest(ctx context.Context, c *config.Config) error {
 						TestN:     int64(testIndex),
 					})
 					if err != nil {
-						logging.Log(err.Error())
+						logger.Error("unable to start test", zap.Error(err))
+					} else {
+						time.Sleep(time.Second * 3)
+
+						logger.Debug("started test", zap.Int("index", testIndex), zap.String("group", groupArray[g].Name), zap.String("node", groupArray[g].Peers[peerIndex].Tags[aws.Ec2TagName]))
 					}
-					time.Sleep(time.Second * 3)
-
-					logging.Log(fmt.Sprintf("started test - test: '%v' in group: '%v' on node: %v", testIndex, groupArray[g].Name, groupArray[g].Peers[peerIndex].Tags[aws.Ec2TagName]))
-
 					startTestWG.Done()
 				}(&newTestWG, &startTestWG)
 			}
 		}
 
 		startTestWG.Wait()
-		logging.Log("test started, use `stop-test` command to stop and get the the logs for this session")
+		logger.Debug("test started, use `stop-test` command to stop and get the the logs for this session")
 	}
 
 	return nil

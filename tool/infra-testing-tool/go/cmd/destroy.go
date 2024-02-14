@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"infratesting/logging"
 	"os"
 	"testing"
 
@@ -22,12 +23,13 @@ var (
 			var t testing.T
 			terraformOptions := terraform.WithDefaultRetryableErrors(&t, &terraform.Options{
 				TerraformDir: fmt.Sprintf("%s/%s", wd, DefaultFolderName),
+				Logger:       logging.TerraformLogger(logger),
 			})
 
 			terraform.Destroy(&t, terraformOptions)
 
 			if t.Failed() {
-				panic("something went wrong while destroying")
+				logger.Fatal("terraform unable to destroy")
 			}
 
 			return nil

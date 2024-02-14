@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"infratesting/aws"
 	"infratesting/config"
-	"infratesting/logging"
 	"infratesting/server/grpc/server"
 	"infratesting/testing"
 	"math/rand"
@@ -18,6 +17,7 @@ import (
 	"time"
 
 	"berty.tech/berty/v2/go/pkg/messengertypes"
+	"go.uber.org/zap"
 
 	"github.com/spf13/cobra"
 )
@@ -45,23 +45,22 @@ var testRunAndStopCmd = &cobra.Command{
 
 		c, err := loadConfig()
 		if err != nil {
-			return logging.LogErr(err)
+			return fmt.Errorf("unable to load config: %w", err)
 		}
 
 		// @TODO: handle error correctly
 		// need better logging system
 		res, err := runTestFlow(ctx, timeout, c)
 		if err != nil {
-			return logging.LogErr(err)
+			return fmt.Errorf("failed to run test: %w", err)
 		}
 
-		logging.Log(
-			fmt.Sprintf("elpased: %dm%ds", int(res.elapsed.Minutes()), int(res.elapsed.Seconds())),
-		)
-
-		logging.Log("stopping the test now...")
-
-		return stopTest(ctx, &c)
+		logger.Debug("test ended", zap.Duration("elpased", res.elapsed))
+		logger.Debug("stopping the test now...")
+		if err := stopTest(ctx, &c); err != nil {
+			return fmt.Errorf("unable to stop tests: %w", err)
+		}
+		return nil
 	},
 }
 
@@ -70,48 +69,39 @@ func updoadLogs(ctx context.Context, res *Result, c config.Config) error {
 	ctx, cancel := contextHandleSignal(ctx, syscall.SIGINT)
 	defer cancel()
 
-	logging.Log("uploading logs... (ctrl+c to cancel)")
-
-	allNodes, err := testing.GetAllEligiblePeers(aws.Ec2TagType, config.GetAllTypes())
+	logger.Debug("uploading logs... (ctrl+c to cancel)")
+	allNodes, err := testing.GetAllEligiblePeers(ctx, logger, aws.Ec2TagType, config.GetAllTypes())
 	if err != nil {
-		return logging.LogErr(err)
+		return fmt.Errorf("unable to get Eligible Peers: %w", err)
 	}
 
-	cerr := make([]chan error, len(allNodes))
+	wg := sync.WaitGroup{}
 	for n := range allNodes {
-		cerr[n] = make(chan error, 1)
+		wg.Add(1)
 		go func(n int) {
+			defer wg.Done()
 			name := allNodes[n].Name
 			resp, err := allNodes[n].P.UploadLogs(ctx, &server.UploadLogs_Request{
 				Folder: strconv.FormatInt(res.started.Unix(), 10),
 				Name:   strings.ReplaceAll(allNodes[n].Tags[aws.Ec2TagName], ".", "-"),
 			})
 			if err != nil {
-				cerr[n] <- logging.LogErr(fmt.Errorf("[%s]: %w", name, err))
+				logger.Error("unable to upload log", zap.String("node_name", name), zap.Error(err))
 				return
 			}
 
-			bucketName, err := aws.GetBucketName()
+			bucketName, err := aws.GetBucketName(logger)
 			if err != nil {
-				cerr[n] <- logging.LogErr(fmt.Errorf("[%s]: %w", name, err))
+				logger.Error("unable to get bucket name", zap.String("node_name", name), zap.Error(err))
 				return
 			}
-			logging.Log(fmt.Sprintf("%v uploaded: %v files to bucket: %s", allNodes[n].Tags[aws.Ec2TagName], resp.UploadCount, bucketName))
 
-			cerr[n] <- nil
+			logger.Debug("uploaded log file(s) to bucket", zap.String("bucket", bucketName), zap.String("tag", allNodes[n].Tags[aws.Ec2TagName]), zap.Int64("files", resp.UploadCount))
 		}(n)
 	}
 
-	for _, c := range cerr {
-		select {
-		case <-ctx.Done():
-			return ctx.Err()
-		case err := <-c:
-			if err != nil {
-				logging.LogErr(err)
-			}
-		}
-	}
+	// wait for multiple upload to finish
+	wg.Wait()
 
 	return nil
 }
@@ -136,25 +126,25 @@ func runTestFlow(ctx context.Context, timeout time.Duration, c config.Config) (*
 	}
 
 	if amountOfGroups == 0 {
-		logging.Log("there are no tests configured in the config")
+		logger.Warn("there are no tests configured in the config")
 		return res, nil
 	}
 
 	aws.SetRegion(c.Settings.Region)
 
-	availablePeers, err := testing.GetAllEligiblePeers(aws.Ec2TagType, []string{config.NodeTypePeer})
+	availablePeers, err := testing.GetAllEligiblePeers(ctx, logger, aws.Ec2TagType, []string{config.NodeTypePeer})
 	if err != nil {
-		return res, logging.LogErr(err)
+		return res, fmt.Errorf("unable to get node eligible peers: %w", err)
 	}
 
-	availableRepl, err := testing.GetAllEligiblePeers(aws.Ec2TagType, []string{config.NodeTypeReplication})
+	availableRepl, err := testing.GetAllEligiblePeers(ctx, logger, aws.Ec2TagType, []string{config.NodeTypeReplication})
 	if err != nil {
-		return res, logging.LogErr(err)
+		return res, fmt.Errorf("unable to get repl eligible peers: %w", err)
 	}
 
-	allPeers, err := testing.GetAllPeers()
+	allPeers, err := testing.GetAllPeers(ctx, logger)
 	if err != nil {
-		return res, logging.LogErr(err)
+		return res, fmt.Errorf("unable to get all peers: %w", err)
 	}
 
 	// temporary group object
@@ -174,7 +164,7 @@ func runTestFlow(ctx context.Context, timeout time.Duration, c config.Config) (*
 			group := groups[availablePeers[i].ConfigGroups[g].Name]
 
 			group.Name = availablePeers[i].ConfigGroups[g].Name
-			group.Peers = append(group.Peers, &availablePeers[i])
+			group.Peers = append(group.Peers, availablePeers[i])
 
 			if len(group.Tests) == 0 {
 				group.Tests = availablePeers[i].ConfigGroups[g].Tests
@@ -197,7 +187,7 @@ func runTestFlow(ctx context.Context, timeout time.Duration, c config.Config) (*
 			})
 
 			if err != nil {
-				return res, logging.LogErr(err)
+				return res, fmt.Errorf("unable to add replication service: %w", err)
 			}
 		}
 	}
@@ -211,7 +201,7 @@ func runTestFlow(ctx context.Context, timeout time.Duration, c config.Config) (*
 					GroupName: availablePeers[i].ConfigGroups[g].Name,
 				})
 				if err != nil {
-					return res, logging.LogErr(err)
+					return res, fmt.Errorf("unable to create invite: %w", err)
 				}
 
 				gr := groups[availablePeers[i].ConfigGroups[g].Name]
@@ -223,17 +213,17 @@ func runTestFlow(ctx context.Context, timeout time.Duration, c config.Config) (*
 				var inv messengertypes.ShareableBertyGroup_Reply
 				err = dec.Decode(&inv)
 				if err != nil {
-					_ = logging.LogErr(err)
+					logger.Warn("unable to decode invite", zap.Error(err))
 				}
 
 				// invite url
-				// logging.Log(inv.WebURL)
+				// logger.Debug(inv.WebURL)
 
 				_, err = availablePeers[i].P.StartReceiveMessage(ctx, &server.StartReceiveMessage_Request{
 					GroupName: availablePeers[i].ConfigGroups[g].Name,
 				})
 				if err != nil {
-					return res, logging.LogErr(err)
+					return res, fmt.Errorf("unable to start receive message: %w", err)
 				}
 
 			} else {
@@ -243,8 +233,8 @@ func runTestFlow(ctx context.Context, timeout time.Duration, c config.Config) (*
 					Invite:    groups[availablePeers[i].ConfigGroups[g].Name].Pk,
 				})
 				if err != nil {
-					if !strings.Contains(err.Error(), server.ErrAlreadyInGroup) {
-						return res, logging.LogErr(err)
+					if !strings.Contains(err.Error(), server.ErrAlreadyInGroup.Error()) {
+						return res, fmt.Errorf("unable to join group: %w", err)
 					}
 				}
 
@@ -252,7 +242,7 @@ func runTestFlow(ctx context.Context, timeout time.Duration, c config.Config) (*
 					GroupName: availablePeers[i].ConfigGroups[g].Name,
 				})
 				if err != nil {
-					return res, logging.LogErr(err)
+					return res, fmt.Errorf("unable to start receive message: %w", err)
 				}
 			}
 		}
@@ -275,6 +265,10 @@ func runTestFlow(ctx context.Context, timeout time.Duration, c config.Config) (*
 	var newTestWG sync.WaitGroup
 	var startTestWG sync.WaitGroup
 
+	if len(groupArray) == 0 {
+		return res, fmt.Errorf("no group/peers found")
+	}
+
 	// iterate over groups
 	for g := range groupArray {
 		// iterate over tests in groups
@@ -287,6 +281,7 @@ func runTestFlow(ctx context.Context, timeout time.Duration, c config.Config) (*
 				testIndex := j
 				peerIndex := k
 				go func(newTestWG, startTestWG *sync.WaitGroup) {
+					defer startTestWG.Done()
 					// create new test with correct variables
 					_, err = groupArray[groupIndex].Peers[peerIndex].P.NewTest(ctx, &server.NewTest_Request{
 						GroupName: groupArray[groupIndex].Name,
@@ -296,11 +291,13 @@ func runTestFlow(ctx context.Context, timeout time.Duration, c config.Config) (*
 						Interval:  int64(groupArray[groupIndex].Tests[testIndex].IntervalInternal),
 						Amount:    int64(groupArray[groupIndex].Tests[testIndex].AmountInternal),
 					})
-					logging.Log(fmt.Sprintf("added test - test: '%v' in group: '%v' on node: %v", testIndex, groupArray[groupIndex].Name, groupArray[g].Peers[peerIndex].Tags[aws.Ec2TagName]))
 
 					if err != nil {
-						logging.Log(err.Error())
+						logger.Warn("unable to start test", zap.Error(err))
+						// @TODO: maybe return here
 					}
+
+					logger.Debug("added test", zap.Int("index", testIndex), zap.String("group", groupArray[g].Name), zap.String("node", groupArray[g].Peers[peerIndex].Tags[aws.Ec2TagName]))
 
 					newTestWG.Done()
 					// makes sure all tests are synced up
@@ -312,13 +309,12 @@ func runTestFlow(ctx context.Context, timeout time.Duration, c config.Config) (*
 						TestN:     int64(testIndex),
 					})
 					if err != nil {
-						logging.Log(err.Error())
+						logger.Warn("unable to start test", zap.Error(err))
+						// @TODO: maybe return here
 					}
 					time.Sleep(time.Second * 3)
 
-					logging.Log(fmt.Sprintf("started test - test: '%v' in group: '%v' on node: %v", testIndex, groupArray[g].Name, groupArray[g].Peers[peerIndex].Tags[aws.Ec2TagName]))
-
-					startTestWG.Done()
+					logger.Debug("started test", zap.Int("index", testIndex), zap.String("group", groupArray[g].Name), zap.String("node", groupArray[g].Peers[peerIndex].Tags[aws.Ec2TagName]))
 				}(&newTestWG, &startTestWG)
 			}
 		}
@@ -327,9 +323,9 @@ func runTestFlow(ctx context.Context, timeout time.Duration, c config.Config) (*
 	}
 
 	if ctx.Err() == nil {
-		logging.Log("all interaction has been sent, use ctrl+c to stop the test")
+		logger.Debug("all interaction has been sent, use ctrl+c to stop the test")
 	} else {
-		logging.Log(fmt.Sprintf("the test ended prematurely: %s", ctx.Err().Error()))
+		logger.Error("the test ended prematurely", zap.Error(ctx.Err()))
 	}
 
 	<-ctx.Done()

@@ -6,7 +6,6 @@ import (
 	"infratesting/aws"
 	"infratesting/config"
 	"infratesting/iac/components/networking"
-	"infratesting/logging"
 	"infratesting/server/grpc/server"
 	"strconv"
 	"sync"
@@ -14,6 +13,7 @@ import (
 
 	"berty.tech/berty/v2/go/pkg/protocoltypes"
 	"github.com/aws/aws-sdk-go/service/ec2"
+	"go.uber.org/zap"
 	"google.golang.org/grpc"
 )
 
@@ -41,7 +41,9 @@ func SetDeploy() {
 }
 
 // NewPeer returns a peer with default variables already instantiated
-func NewPeer(ip string, tags []*ec2.Tag) (p Peer, err error) {
+func NewPeer(ctx context.Context, logger *zap.Logger, ip string, tags []*ec2.Tag) (p *Peer, err error) {
+	p = &Peer{}
+
 	p.Ip = ip
 
 	p.Groups = make(map[string]*protocoltypes.Group)
@@ -58,90 +60,82 @@ func NewPeer(ip string, tags []*ec2.Tag) (p Peer, err error) {
 
 	}
 
+	cc, err := grpc.DialContext(ctx, p.GetHost(),
+		grpc.WithInsecure(), grpc.WithBackoffConfig(grpc.BackoffConfig{
+			MaxDelay: time.Second * 5,
+		}))
+	if err != nil {
+		return nil, fmt.Errorf("unable to dial host: %w", err)
+	}
+
 	if deploy {
 		if isPeer {
 			// connecting to peer
 			// but in deployment
 			// meaning there will be no further testing
 			// and there are looping connects if it fails
-			var count int
-			for {
-				var cc *grpc.ClientConn
-				var err error
-				ctx := context.Background()
-				cc, _ = grpc.DialContext(ctx, p.GetHost(), grpc.FailOnNonTempDialError(true), grpc.WithInsecure())
+			for count := 1; ; count++ {
+				switch {
+				case count >= 60:
+					return nil, fmt.Errorf("unable to test connection with peer")
+				case count > 1:
+					logger.Info("retry to connect", zap.Int("attempt", count))
+					time.Sleep(time.Second)
+				default:
+				}
 
 				temp := server.NewProxyClient(cc)
 
 				resp, err := temp.IsProcessRunning(ctx, &server.IsProcessRunning_Request{})
 				if err != nil || !resp.Running {
-					count += 1
-					time.Sleep(time.Second * 5)
+					logger.Warn("is process running", zap.Error(err))
+					continue
 				}
 
 				_, err = temp.TestConnection(ctx, &server.TestConnection_Request{})
 				if err != nil {
-					count += 1
-					time.Sleep(time.Second * 5)
-				} else {
-					_, err = temp.TestConnectionToPeer(ctx, &server.TestConnectionToPeer_Request{
-						Tries: 1,
-						Host:  "localhost",
-						Port:  strconv.Itoa(networking.BertyGRPCPort),
-					})
-					if err != nil {
-						count += 1
-						time.Sleep(time.Second * 5)
-					} else {
-						break
-					}
+					logger.Warn("Test Connection failed", zap.Error(err))
+					continue
 				}
 
-				logging.Log("waiting ...")
-				if count > 60 {
-					logging.Log("timeout")
-					return p, logging.LogErr(err)
+				_, err = temp.TestConnectionToPeer(ctx, &server.TestConnectionToPeer_Request{
+					Tries: 1,
+					Host:  "localhost",
+					Port:  strconv.Itoa(networking.BertyGRPCPort),
+				})
+				if err != nil {
+					logger.Warn("test connection to peer error", zap.Error(err))
+					continue
 				}
 
+				// leave the loop
+				break
 			}
 		} else {
-			var count int
-			for {
+			for count := 0; ; count++ {
+				if count > 60 {
+					return nil, fmt.Errorf("unable to connect test connection, timeout")
+				}
+
 				// node is not a peer
 				// just connect to it, but don't connect to underlying peer
-				var cc *grpc.ClientConn
-				ctx := context.Background()
-
-				cc, _ = grpc.DialContext(ctx, p.GetHost(), grpc.FailOnNonTempDialError(true), grpc.WithInsecure())
 				p.P = server.NewProxyClient(cc)
-
 				_, err = p.P.TestConnection(ctx, &server.TestConnection_Request{})
-
 				if err != nil {
-					if count > 60 {
-						return p, logging.LogErr(err)
-					} else {
-						count += 1
-						time.Sleep(time.Second * 5)
-					}
-				} else {
-					break
+					logger.Error("unable to test connection", zap.Error(err))
+					continue
 				}
+
+				break
 			}
 		}
 	} else {
 		if isPeer {
 			// connecting to peer
-
-			var cc *grpc.ClientConn
-			ctx := context.Background()
-
-			cc, _ = grpc.DialContext(ctx, p.GetHost(), grpc.FailOnNonTempDialError(true), grpc.WithInsecure())
 			p.P = server.NewProxyClient(cc)
-
 			_, err = p.P.TestConnection(ctx, &server.TestConnection_Request{})
 			if err != nil {
-				return p, logging.LogErr(err)
+				return nil, fmt.Errorf("unable to test connection: %w", err)
 			}
 
 			_, err = p.P.ConnectToPeer(ctx, &server.ConnectToPeer_Request{
@@ -149,27 +143,27 @@ func NewPeer(ip string, tags []*ec2.Tag) (p Peer, err error) {
 				Port: "9091",
 			})
 			if err != nil {
-				return p, logging.LogErr(err)
+				return nil, fmt.Errorf("unable to test connection: %w", err)
 			}
 
 		} else {
 			// connecting to non peer
 
-			var cc *grpc.ClientConn
-			ctx := context.Background()
+			// var cc *grpc.ClientConn
+			// ctx := context.Background()
 
-			cc, _ = grpc.DialContext(ctx, p.GetHost(), grpc.FailOnNonTempDialError(true), grpc.WithInsecure())
+			// cc, err = grpc.DialContext(ctx, p.GetHost(), grpc.FailOnNonTempDialError(true), grpc.WithInsecure())
 			p.P = server.NewProxyClient(cc)
-
 			_, err = p.P.TestConnection(ctx, &server.TestConnection_Request{})
 			if err != nil {
-				return p, logging.LogErr(err)
+				return nil, fmt.Errorf("unable to test connection: %w", err)
 			}
-
 		}
 	}
 
-	return p, err
+	logger.Info("successfully connected to host", zap.String("host", p.GetHost()))
+
+	return p, nil
 }
 
 func (p *Peer) GetHost() string {
@@ -193,10 +187,10 @@ func (p *Peer) MatchNodeToPeer(c config.Config) {
 }
 
 // GetAllEligiblePeers returns all peers who are potentially eligible to connect to via gRPC
-func GetAllEligiblePeers(tagKey string, tagValues []string) (peers []Peer, err error) {
+func GetAllEligiblePeers(ctx context.Context, logger *zap.Logger, tagKey string, tagValues []string) (peers []*Peer, err error) {
 	instances, err := aws.DescribeInstances()
 	if err != nil {
-		return peers, logging.LogErr(err)
+		return nil, fmt.Errorf("unable to describe instances: %w", err)
 	}
 
 	for _, instance := range instances {
@@ -224,9 +218,9 @@ func GetAllEligiblePeers(tagKey string, tagValues []string) (peers []Peer, err e
 							panic("peer not publicly accessible")
 						}
 
-						p, err := NewPeer(ip, instance.Tags)
+						p, err := NewPeer(ctx, logger, ip, instance.Tags)
 						if err != nil {
-							return nil, logging.LogErr(err)
+							return nil, fmt.Errorf("unable create new peer: %w", err)
 						}
 						p.Name = *instance.InstanceId
 
@@ -239,10 +233,11 @@ func GetAllEligiblePeers(tagKey string, tagValues []string) (peers []Peer, err e
 	return peers, nil
 }
 
-func GetAllPeers() (peers []Peer, err error) {
+func GetAllPeers(ctx context.Context, logger *zap.Logger) (peers []*Peer, err error) {
+	peers = []*Peer{}
 	instances, err := aws.DescribeInstances()
 	if err != nil {
-		return peers, logging.LogErr(err)
+		return nil, fmt.Errorf("unable to describe instances: %w", err)
 	}
 
 	for _, instance := range instances {
@@ -261,18 +256,17 @@ func GetAllPeers() (peers []Peer, err error) {
 		}
 
 		if ip == "" {
-			panic("peer not publicly accessible")
+			return nil, fmt.Errorf("unable to get all peers")
 		}
 
-		p, err := NewPeer(ip, instance.Tags)
+		p, err := NewPeer(ctx, logger, ip, instance.Tags)
 		if err != nil {
-			return nil, logging.LogErr(err)
+			return nil, fmt.Errorf("create new peer: %w", err)
 		}
+
 		p.Name = *instance.InstanceId
-
 		peers = append(peers, p)
-
 	}
 
-	return peers, err
+	return peers, nil
 }

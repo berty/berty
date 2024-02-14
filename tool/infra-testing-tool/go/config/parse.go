@@ -1,12 +1,13 @@
 package config
 
 import (
+	"fmt"
 	"infratesting/aws"
 	"infratesting/iac"
 	"infratesting/iac/components/ec2"
 	"infratesting/iac/components/various"
-	"infratesting/logging"
 
+	"go.uber.org/zap"
 	"gopkg.in/yaml.v3"
 )
 
@@ -19,21 +20,21 @@ import (
 // then it iterates over every component in Components and generates HCL
 // for now it just gets printed out to console
 
-func Parse(b []byte) (components []iac.Component, err error) {
-	logging.Log("loading config")
+func Parse(logger *zap.Logger, b []byte) (components []iac.Component, err error) {
+	logger.Debug("loading config")
 
 	// unmarshal into Config struct
 	err = yaml.Unmarshal(b, &config)
 	if err != nil {
-		return components, err
+		return components, fmt.Errorf("unable to unmarshal yaml: %w", err)
 	}
 
 	err = config.Validate()
 	if err != nil {
-		return components, err
+		return components, fmt.Errorf("unable to validate config: %w", err)
 	}
 
-	logging.Log("parsing config")
+	logger.Debug("parsing config")
 
 	// gathering information about networking and servers
 	// this needs to be done in a separate pass
@@ -43,7 +44,7 @@ func Parse(b []byte) (components []iac.Component, err error) {
 		return components, err
 	}
 
-	logging.Log("generating components")
+	logger.Debug("generating components")
 
 	// iterate over connections and compose appropriate HCL components
 	for i := range config.Attributes.Connections {
@@ -86,9 +87,9 @@ func Parse(b []byte) (components []iac.Component, err error) {
 		components = append(components, config.Peer[i].components...)
 	}
 
-	bucket, err := aws.GetBucketName()
+	bucket, err := aws.GetBucketName(logger)
 	if err != nil {
-		return nil, logging.LogErr(err)
+		return nil, fmt.Errorf("unable to get bucket name: %w", err)
 	}
 
 	// iam role
@@ -101,7 +102,7 @@ func Parse(b []byte) (components []iac.Component, err error) {
 	ami.Region = GetRegion()
 	amiComponents, err := ami.Validate()
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("unable to validate ami: %w", err)
 	}
 	components = prependComponents(components, amiComponents)
 
@@ -118,8 +119,8 @@ func prependComponents(array []iac.Component, item iac.Component) []iac.Componen
 	return append([]iac.Component{item}, array...)
 }
 
-func ToHCL(components []iac.Component) (_ []iac.Component, hcl string) {
-	logging.Log("converting components to HCL")
+func ToHCL(logger *zap.Logger, components []iac.Component) (_ []iac.Component, hcl string) {
+	logger.Debug("converting components to HCL")
 
 	for i, component := range components {
 		// convert the components into HCL compatible strings

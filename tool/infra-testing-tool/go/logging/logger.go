@@ -2,18 +2,20 @@ package logging
 
 import (
 	"fmt"
-	"io"
-	"math"
 	"os"
-	"runtime"
-	"strings"
+	"time"
 
-	log "github.com/sirupsen/logrus"
+	mlogger "github.com/gruntwork-io/terratest/modules/logger"
+	"github.com/gruntwork-io/terratest/modules/testing"
+	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 )
 
 const (
 	callDepth = 3
 )
+
+var logpath string
 
 func init() {
 	dirname, err := os.UserHomeDir()
@@ -21,63 +23,82 @@ func init() {
 		panic(err)
 	}
 
-	_, err = os.Stat(fmt.Sprintf("%s/logs", dirname))
+	_, err = os.Stat(fmt.Sprintf("%s/logs/berty", dirname))
 	if os.IsNotExist(err) {
-		err = os.MkdirAll(fmt.Sprintf("%s/logs", dirname), 0755)
+		err = os.MkdirAll(fmt.Sprintf("%s/logs/berty", dirname), 0755)
 		if err != nil {
 			panic(err)
 		}
 	}
 
-	logFile, err := os.OpenFile(fmt.Sprintf("%s/logs/berty-infra-server.log", dirname), os.O_CREATE|os.O_APPEND|os.O_RDWR, 0755)
+	logpath = fmt.Sprintf("%s/logs/berty/berty-infra-server.log", dirname)
+}
+
+type zapTestLogger struct {
+	l *zap.Logger
+}
+
+func (z *zapTestLogger) Logf(t testing.TestingT, format string, args ...interface{}) {
+	if format != "" {
+		msg := fmt.Sprintf(format, args...)
+		z.l.Sugar().Info(msg)
+	}
+}
+
+func TerraformLogger(logger *zap.Logger) *mlogger.Logger {
+	return mlogger.New(&zapTestLogger{logger})
+}
+
+func NewFileLogger(level zapcore.Level) (*zap.Logger, error) {
+	logFile, err := os.OpenFile(logpath, os.O_CREATE|os.O_APPEND|os.O_RDWR, 0755)
 	if err != nil {
-		panic(err)
+		return nil, fmt.Errorf("unable to open file(%s): %w", logpath, err)
 	}
-
-	mw := io.MultiWriter(os.Stdout, logFile)
-	log.SetOutput(mw)
+	encoder := newFileEncoder()
+	fileSync := zapcore.AddSync(logFile)
+	core := zapcore.NewCore(encoder, fileSync, zapcore.DebugLevel)
+	return zap.New(core), nil
 }
 
-func callerPrefix(callDepth int) string {
-	_, file, line, ok := runtime.Caller(callDepth)
-	if ok {
-		// Truncate file name at last file name separator.
-		if index := strings.LastIndex(file, "/"); index >= 0 {
-			file = file[index+1:]
-		} else if index = strings.LastIndex(file, "\\"); index >= 0 {
-			file = file[index+1:]
-		}
-	} else {
-		file = "???"
-		line = 1
-	}
-
-	return fmt.Sprintf("%s:%d", file, line)
+func NewConsoleLogger(level zapcore.Level) (*zap.Logger, error) {
+	encoder := newConsoleEncoder()
+	stdoutLock := zapcore.Lock(os.Stdout)
+	core := zapcore.NewCore(encoder, stdoutLock, level)
+	return zap.New(core), nil
 }
 
-func Log(i interface{}) {
-	actualLog(fmt.Sprint(i))
-}
-
-func LogErr(err error) error {
+func NewTeeLogger(level zapcore.Level) (*zap.Logger, error) {
+	// file log
+	logFile, err := os.OpenFile(logpath, os.O_CREATE|os.O_APPEND|os.O_RDWR, 0755)
 	if err != nil {
-		actualLog(err.Error())
-		return err
+		return nil, fmt.Errorf("unable to open file(%s): %w", logpath, err)
 	}
+	fileEncoder := newFileEncoder()
+	fileSync := zapcore.AddSync(logFile)
 
-	return nil
+	// console
+	consoleEncoder := newConsoleEncoder()
+	stdoutLock := zapcore.Lock(os.Stdout)
+
+	// tee log
+	core := zapcore.NewTee(
+		zapcore.NewCore(fileEncoder, fileSync, zapcore.DebugLevel),
+		zapcore.NewCore(consoleEncoder, stdoutLock, level),
+	)
+
+	return zap.New(core), nil
 }
 
-func actualLog(s string) {
-	prefix := pad(callerPrefix(callDepth))
-	log.Info(fmt.Sprintf("%v - %v", prefix, s))
+func newFileEncoder() zapcore.Encoder {
+	fileConfig := zap.NewProductionEncoderConfig()
+	fileConfig.EncodeLevel = zapcore.CapitalLevelEncoder
+	return zapcore.NewJSONEncoder(fileConfig)
 }
 
-func pad(s string) string {
-	remainder := int(math.Sqrt(math.Pow(float64(20-len(s)), float64(2))))
-	for i := 0; i < remainder; i += 1 {
-		s += " "
-	}
-
-	return s
+func newConsoleEncoder() zapcore.Encoder {
+	// console log
+	consoleConfig := zap.NewDevelopmentEncoderConfig()
+	consoleConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
+	consoleConfig.EncodeTime = zapcore.TimeEncoderOfLayout(time.Stamp)
+	return zapcore.NewConsoleEncoder(consoleConfig)
 }
