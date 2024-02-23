@@ -30,16 +30,23 @@ func (d *pushDispatcherFCM) TokenType() pushtypes.PushServiceTokenType {
 // PushDispatcherLoadFirebaseAPIKey creates the FCM clients.
 // If the `GOOGLE_APPLICATION_CREDENTIALS` env var is set, it will be used to create only one client.
 // Otherwise, the `keys` parameter will be used, formatted like app_id:api_key.json and comma-separated to create the corresponding clients.
-func PushDispatcherLoadFirebaseAPIKey(ctx context.Context, logger *zap.Logger, bundleID, keys *string) ([]PushDispatcher, error) {
+func PushDispatcherLoadFirebaseAPIKey(ctx context.Context, logger *zap.Logger, bundleInput, keys *string) ([]PushDispatcher, error) {
 	var err error
 
 	if os.Getenv("GOOGLE_APPLICATION_CREDENTIALS") != "" {
-		if bundleID == nil || *bundleID == "" {
+		if bundleInput == nil || *bundleInput == "" {
 			return nil, errcode.ErrPushMissingBundleID
 		}
 
-		dispatchers := make([]PushDispatcher, 1)
-		dispatchers[0], err = pushDispatcherLoadFCMAPIKey(ctx, logger, *bundleID)
+		bundleIDs := strings.Split(*bundleInput, ",")
+		dispatchers := make([]PushDispatcher, len(bundleIDs))
+		for i, id := range bundleIDs {
+			var err error
+			dispatchers[i], err = pushDispatcherLoadFCMAPIKey(ctx, logger, id)
+			if err != nil {
+				return nil, err
+			}
+		}
 		return dispatchers, err
 	}
 
