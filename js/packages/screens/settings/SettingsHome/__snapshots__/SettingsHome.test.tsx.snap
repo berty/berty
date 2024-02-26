@@ -285,7 +285,8 @@ exports[`Settings.Home renders correctly 1`] = `
                 <View
                   style={
                     Object {
-                      "width": "75%",
+                      "flexShrink": 1,
+                      "width": "90%",
                     }
                   }
                 >
@@ -434,7 +435,8 @@ exports[`Settings.Home renders correctly 1`] = `
                 <View
                   style={
                     Object {
-                      "width": "75%",
+                      "flexShrink": 1,
+                      "width": "90%",
                     }
                   }
                 >
@@ -554,7 +556,8 @@ exports[`Settings.Home renders correctly 1`] = `
                 <View
                   style={
                     Object {
-                      "width": "75%",
+                      "flexShrink": 1,
+                      "width": "90%",
                     }
                   }
                 >
@@ -657,7 +660,8 @@ exports[`Settings.Home renders correctly 1`] = `
                 <View
                   style={
                     Object {
-                      "width": "75%",
+                      "flexShrink": 1,
+                      "width": "90%",
                     }
                   }
                 >
@@ -777,7 +781,8 @@ exports[`Settings.Home renders correctly 1`] = `
                 <View
                   style={
                     Object {
-                      "width": "75%",
+                      "flexShrink": 1,
+                      "width": "90%",
                     }
                   }
                 >

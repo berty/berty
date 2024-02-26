@@ -77,7 +77,8 @@ exports[`Settings.Appearance renders correctly 1`] = `
               <View
                 style={
                   Object {
-                    "width": "75%",
+                    "flexShrink": 1,
+                    "width": "90%",
                   }
                 }
               >
