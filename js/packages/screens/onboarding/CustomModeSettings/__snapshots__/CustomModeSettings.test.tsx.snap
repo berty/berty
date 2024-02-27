@@ -224,7 +224,8 @@ exports[`Onboarding.CustomModeSettings renders correctly 1`] = `
                       <View
                         style={
                           Object {
-                            "width": "75%",
+                            "flexShrink": 1,
+                            "width": "90%",
                           }
                         }
                       >
@@ -388,7 +389,8 @@ exports[`Onboarding.CustomModeSettings renders correctly 1`] = `
                       <View
                         style={
                           Object {
-                            "width": "75%",
+                            "flexShrink": 1,
+                            "width": "90%",
                           }
                         }
                       >
@@ -552,7 +554,8 @@ exports[`Onboarding.CustomModeSettings renders correctly 1`] = `
                       <View
                         style={
                           Object {
-                            "width": "75%",
+                            "flexShrink": 1,
+                            "width": "90%",
                           }
                         }
                       >
@@ -833,7 +836,8 @@ exports[`Onboarding.CustomModeSettings renders correctly 1`] = `
                       <View
                         style={
                           Object {
-                            "width": "75%",
+                            "flexShrink": 1,
+                            "width": "90%",
                           }
                         }
                       >
@@ -1111,7 +1115,8 @@ exports[`Onboarding.CustomModeSettings renders correctly 1`] = `
                             <View
                               style={
                                 Object {
-                                  "width": "75%",
+                                  "flexShrink": 1,
+                                  "width": "90%",
                                 }
                               }
                             >
@@ -1881,7 +1886,8 @@ exports[`Onboarding.CustomModeSettings renders correctly 1`] = `
                           <View
                             style={
                               Object {
-                                "width": "75%",
+                                "flexShrink": 1,
+                                "width": "90%",
                               }
                             }
                           >
@@ -2535,7 +2541,8 @@ exports[`Onboarding.CustomModeSettings renders correctly 1`] = `
                           <View
                             style={
                               Object {
-                                "width": "75%",
+                                "flexShrink": 1,
+                                "width": "90%",
                               }
                             }
                           >
@@ -3419,7 +3426,8 @@ exports[`Onboarding.CustomModeSettings renders correctly 2`] = `
                       <View
                         style={
                           Object {
-                            "width": "75%",
+                            "flexShrink": 1,
+                            "width": "90%",
                           }
                         }
                       >
@@ -3583,7 +3591,8 @@ exports[`Onboarding.CustomModeSettings renders correctly 2`] = `
                       <View
                         style={
                           Object {
-                            "width": "75%",
+                            "flexShrink": 1,
+                            "width": "90%",
                           }
                         }
                       >
@@ -3747,7 +3756,8 @@ exports[`Onboarding.CustomModeSettings renders correctly 2`] = `
                       <View
                         style={
                           Object {
-                            "width": "75%",
+                            "flexShrink": 1,
+                            "width": "90%",
                           }
                         }
                       >
@@ -4028,7 +4038,8 @@ exports[`Onboarding.CustomModeSettings renders correctly 2`] = `
                       <View
                         style={
                           Object {
-                            "width": "75%",
+                            "flexShrink": 1,
+                            "width": "90%",
                           }
                         }
                       >
@@ -4306,7 +4317,8 @@ exports[`Onboarding.CustomModeSettings renders correctly 2`] = `
                             <View
                               style={
                                 Object {
-                                  "width": "75%",
+                                  "flexShrink": 1,
+                                  "width": "90%",
                                 }
                               }
                             >
@@ -5076,7 +5088,8 @@ exports[`Onboarding.CustomModeSettings renders correctly 2`] = `
                           <View
                             style={
                               Object {
-                                "width": "75%",
+                                "flexShrink": 1,
+                                "width": "90%",
                               }
                             }
                           >
@@ -5730,7 +5743,8 @@ exports[`Onboarding.CustomModeSettings renders correctly 2`] = `
                           <View
                             style={
                               Object {
-                                "width": "75%",
+                                "flexShrink": 1,
+                                "width": "90%",
                               }
                             }
                           >
@@ -6614,7 +6628,8 @@ exports[`Onboarding.CustomModeSettings renders correctly 3`] = `
                       <View
                         style={
                           Object {
-                            "width": "75%",
+                            "flexShrink": 1,
+                            "width": "90%",
                           }
                         }
                       >
@@ -6778,7 +6793,8 @@ exports[`Onboarding.CustomModeSettings renders correctly 3`] = `
                       <View
                         style={
                           Object {
-                            "width": "75%",
+                            "flexShrink": 1,
+                            "width": "90%",
                           }
                         }
                       >
@@ -6942,7 +6958,8 @@ exports[`Onboarding.CustomModeSettings renders correctly 3`] = `
                       <View
                         style={
                           Object {
-                            "width": "75%",
+                            "flexShrink": 1,
+                            "width": "90%",
                           }
                         }
                       >
@@ -7223,7 +7240,8 @@ exports[`Onboarding.CustomModeSettings renders correctly 3`] = `
                       <View
                         style={
                           Object {
-                            "width": "75%",
+                            "flexShrink": 1,
+                            "width": "90%",
                           }
                         }
                       >
@@ -7501,7 +7519,8 @@ exports[`Onboarding.CustomModeSettings renders correctly 3`] = `
                             <View
                               style={
                                 Object {
-                                  "width": "75%",
+                                  "flexShrink": 1,
+                                  "width": "90%",
                                 }
                               }
                             >
@@ -8271,7 +8290,8 @@ exports[`Onboarding.CustomModeSettings renders correctly 3`] = `
                           <View
                             style={
                               Object {
-                                "width": "75%",
+                                "flexShrink": 1,
+                                "width": "90%",
                               }
                             }
                           >
@@ -8925,7 +8945,8 @@ exports[`Onboarding.CustomModeSettings renders correctly 3`] = `
                           <View
                             style={
                               Object {
-                                "width": "75%",
+                                "flexShrink": 1,
+                                "width": "90%",
                               }
                             }
                           >
