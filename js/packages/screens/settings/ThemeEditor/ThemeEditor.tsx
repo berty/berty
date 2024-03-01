@@ -76,7 +76,7 @@ const BodyFileThemeEditor: React.FC<{}> = withInAppNotification(({ showNotificat
 				onPress={async () => {
 					try {
 						const document = await openThemeColorFile()
-						if (!document) {
+						if (!document || !document.name) {
 							return
 						}
 						const themeColors = JSON.parse(await importColorThemeFileFromStorage(document.uri))
