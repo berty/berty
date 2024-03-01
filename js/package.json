@@ -59,7 +59,7 @@
     "react-native": "0.64.4",
     "react-native-android-keyboard-adjust": "^1.2.0",
     "react-native-bootsplash": "^3.2.6",
-    "react-native-document-picker": "^7.1.1",
+    "react-native-document-picker": "^8.2.2",
     "react-native-exception-handler": "^2.10.9",
     "react-native-flags": "^1.0.0",
     "react-native-fs": "^2.16.6",
