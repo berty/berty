@@ -228,7 +228,7 @@ func startTest(ctx context.Context, c *config.Config) error {
 		}
 
 		startTestWG.Wait()
-		logging.Log("test started, use `stop-test` command to stop and get the the logs for this session")
+		logging.Log("test started, use `stop-test` command to stop and get the logs for this session")
 	}
 
 	return nil
