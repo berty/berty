@@ -107,6 +107,8 @@ _We will have an open beta for the different packages and applications soon, so 
 
 <!-- _TODO: add a high-level schema of how things are connected together_ -->
 
+![Berty Messenger High Level Architecture](docs/architecture/Berty_Messenger_Architecture.jpg)
+
 ### Wesh Protocol
 
 [![go.dev reference](https://img.shields.io/badge/go.dev-reference-007d9c?logo=go&logoColor=white)](https://pkg.go.dev/berty.tech/berty/v2/go/pkg/bertyprotocol?tab=doc)
