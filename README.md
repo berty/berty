@@ -65,7 +65,7 @@ The two main command line utilities are:
 - *Open* :
     - Free forever and open-source
 
-**Berty** is designed to be used as an everyday messaging application. Nonetheless, it was built to primarily serve the following use cases:
+**Berty** is designed to be used as a communication tool when all other traditional messengers fail. Berty Messenger serves the following use cases:
 
 - When you need to share sensitive information over untrusted networks, for instance while traveling
 - If you want to communicate anonymously
@@ -99,13 +99,13 @@ The current Wesh Protocol is _partially implemented_.
 
 The API will continue to evolve in the near future. As such, we cannot yet guarantee none-breaking changes, or any kind of API stability. Be prepared for a rough ride if you start rolling the Wesh Protocol in your application.
 
-_We will have an open beta for the different packages and applications soon, so anyone will be able to give it a try. [Subscribe](https://tech.us20.list-manage.com/subscribe/post?u=5ca3993c7f0b8f646dcda714b&id=4d7828715b) to our newsletter if you wish to be notified._
+_[Subscribe](https://tech.us20.list-manage.com/subscribe/post?u=5ca3993c7f0b8f646dcda714b&id=4d7828715b) to our newsletter if you wish to be notified about the latest features and releases._
 
 **Note: The repositories are being opened progressively, and there will be additional modifications and updates soon.**
 
 ## Under the hood
 
-<!-- _TODO: add a high-level schema of how things are connected together_ -->
+![Berty Messenger High Level Architecture](docs/architecture/Berty_Messenger_Architecture.jpg)
 
 ### Wesh Protocol
 
