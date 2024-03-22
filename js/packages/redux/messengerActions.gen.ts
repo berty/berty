@@ -63,4 +63,8 @@ export const messengerActions = {
 		beapi.messenger.StreamEvent.IPeerStatusGroupAssociated,
 		'messenger/PeerStatusGroupAssociated'
 	>('messenger/PeerStatusGroupAssociated'),
+	[beapi.messenger.StreamEvent.Type.TypeServiceTokenAdded]: createAction<
+		beapi.messenger.StreamEvent.IServiceTokenAdded,
+		'messenger/ServiceTokenAdded'
+	>('messenger/ServiceTokenAdded'),
 }

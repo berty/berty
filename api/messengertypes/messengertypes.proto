@@ -4,11 +4,15 @@ package berty.messenger.v1;
 
 import "gogoproto/gogo.proto";
 import "protocoltypes.proto";
+import "pushtypes/bertypushtypes.proto";
 
 option go_package = "berty.tech/berty/go/pkg/messengertypes";
 option (gogoproto.goproto_unkeyed_all) = false;
 option (gogoproto.goproto_unrecognized_all) = false;
 option (gogoproto.goproto_sizecache_all) = false;
+option (gogoproto.marshaler_all) = true;
+option (gogoproto.unmarshaler_all) = true;
+option (gogoproto.sizer_all) = true;
 
 // MessengerService is the top-level API that uses the weshnet.protocol to implement the Berty Messenger specific logic.
 // Today, most of the Berty Messenger logic is implemented directly in the application (see the /js folder of this repo).
@@ -58,9 +62,6 @@ service MessengerService {
   rpc ConversationLoad(ConversationLoad.Request) returns (ConversationLoad.Reply);
   rpc ConversationMute(ConversationMute.Request) returns (ConversationMute.Reply);
 
-  // ServicesTokenList Retrieves the list of service server tokens
-  rpc ServicesTokenList(weshnet.protocol.v1.ServicesTokenList.Request) returns (stream weshnet.protocol.v1.ServicesTokenList.Reply);
-
   // ReplicationServiceRegisterGroup Asks a replication service to distribute a group contents
   rpc ReplicationServiceRegisterGroup(ReplicationServiceRegisterGroup.Request) returns (ReplicationServiceRegisterGroup.Reply);
 
@@ -84,6 +85,18 @@ service MessengerService {
   // TyberHostAttach
   rpc TyberHostAttach (TyberHostAttach.Request) returns (TyberHostAttach.Reply);
 
+  // DebugAuthServiceSetToken sets the service token directly without using the PKCE OAuth 2 token issuer
+  rpc DebugAuthServiceSetToken(DebugAuthServiceSetToken.Request) returns (DebugAuthServiceSetToken.Reply);
+
+  // ServicesTokenList Retrieves the list of service server tokens
+  rpc ServicesTokenList(ServicesTokenList.Request) returns (stream ServicesTokenList.Reply);
+
+  // AuthServiceInitFlow Initialize an authentication flow
+  rpc AuthServiceInitFlow (AuthServiceInitFlow.Request) returns (AuthServiceInitFlow.Reply);
+
+  // AuthServiceCompleteFlow Completes an authentication flow
+  rpc AuthServiceCompleteFlow (AuthServiceCompleteFlow.Request) returns (AuthServiceCompleteFlow.Reply);
+
   // PushSetAutoShare Sets whether new groups should receive our push token automatically or not
   rpc PushSetAutoShare(PushSetAutoShare.Request) returns (PushSetAutoShare.Reply);
 
@@ -95,6 +108,16 @@ service MessengerService {
 
   // PushReceive handles a push payload, decrypts it if possible, adds it to the local store
   rpc PushReceive(PushReceive.Request) returns (PushReceive.Reply);
+
+  // PushSend sends a push payload to a specified list of group members
+  rpc PushSend(PushSend.Request) returns (PushSend.Reply);
+
+  // PushSetDeviceToken registers a push token for the current device
+  rpc PushSetDeviceToken(PushSetDeviceToken.Request) returns (PushSetDeviceToken.Reply);
+
+  // PushSetServer registers a push server for the current device
+  rpc PushSetServer(PushSetServer.Request) returns (PushSetServer.Reply);
+
 
   // DirectoryServiceRegister registers a verified credential on a directory service
   rpc DirectoryServiceRegister(DirectoryServiceRegister.Request) returns (DirectoryServiceRegister.Reply);
@@ -177,7 +200,6 @@ message EchoDuplexTest {
     string echo = 1;
   }
 }
-
 
 message InstanceShareableBertyID {
   message Request {
@@ -329,6 +351,11 @@ message AppMessage {
     reserved 7; // TypeReplyOptions
     TypeAccountDirectoryServiceRegistered = 8;
     TypeAccountDirectoryServiceUnregistered = 9;
+    TypeServiceAddToken = 10;
+    TypeServiceRemoveToken = 11;
+    TypePushSetDeviceToken = 12;
+    TypePushSetServer = 13;
+    TypePushSetMemberToken = 14;
   }
   message UserMessage {
     string body = 1;
@@ -364,6 +391,29 @@ message AppMessage {
     string server_addr = 4;
     string directory_record_token = 5;
   }
+
+  message ServiceAddToken {
+    string token = 1;
+    repeated ServiceTokenSupportedService supported_services = 2;
+    string authentication_url = 3  [(gogoproto.customname) = "AuthenticationURL"];
+    int64 expiration = 4;
+  }
+
+  message ServiceRemoveToken {
+    string tokenid = 2 [(gogoproto.customname) = "TokenID"];
+  }
+
+  message PushSetDeviceToken {
+    push.v1.PushServiceReceiver device_token = 1;
+  }
+
+  message PushSetServer {
+    PushServer server = 1;
+  }
+
+  message PushSetMemberToken {
+    PushMemberTokenUpdate member_token = 1;
+  }
 }
 
 message SystemInfo {
@@ -387,13 +437,17 @@ message SystemInfo {
     int64 interactions = 4;
     int64 members = 5;
     int64 devices = 6;
-    int64 service_tokens = 7;
-    int64 conversation_replication_info = 8;
+    int64 service_token_supported_service_records = 7;
+    int64 service_tokens = 8;
+    int64 conversation_replication_info = 9;
     int64 metadata_events = 10;
     reserved 11; // int64 medias = 11;
-    int64 shared_push_tokens = 12;
+    int64 push_member_token = 12;
     int64 account_verified_credentials = 13;
     int64 account_directory_service_record = 14;
+    int64 push_device_token = 15;
+    int64 push_server_record = 16;
+    int64 push_local_device_shared_token = 17;
     // older, more recent
   }
 }
@@ -407,6 +461,42 @@ message ConversationJoin {
   message Reply {}
 }
 
+message DebugAuthServiceSetToken {
+  message Request {
+    AuthExchangeResponse token = 1;
+    string authentication_url = 2 [(gogoproto.customname) = "AuthenticationURL"];
+  }
+  message Reply {}
+}
+
+message ServicesTokenList {
+  message Request{}
+  message Reply{
+    ServiceToken service = 2;
+  }
+}
+
+message AuthServiceCompleteFlow {
+  message Request{
+    string callback_url = 1 [(gogoproto.customname) = "CallbackURL"];
+  }
+  message Reply{
+    string token_id = 1 [(gogoproto.customname) = "TokenID"];
+  }
+}
+
+message AuthServiceInitFlow {
+  message Request {
+    string auth_url = 1 [(gogoproto.customname) = "AuthURL"];
+    repeated string services = 3;
+  }
+  message Reply {
+    string url = 1 [(gogoproto.customname) = "URL"];
+    bool secure_url = 2 [(gogoproto.customname) = "SecureURL"];
+  }
+}
+
+
 // APP MODEL
 
 // NOTE: public keys should be base64 encoded using golang's URLEncoding.WithPadding(NoPadding) format
@@ -419,8 +509,8 @@ message Account {
   bool replicate_new_groups_automatically = 6 [(gogoproto.moretags) = "gorm:\"default:true\""];
   reserved 7; // string avatar_cid = 7 [(gogoproto.moretags) = "gorm:\"column:avatar_cid\"", (gogoproto.customname) = "AvatarCID"];
   bool auto_share_push_token_flag = 8;
-  bytes device_push_token = 9;
-  bytes device_push_server = 10;
+  PushDeviceToken push_device_token = 9 [(gogoproto.moretags) = "gorm:\"foreignKey:AccountPK\""];
+  repeated PushServerRecord push_server_records = 10 [(gogoproto.moretags) = "gorm:\"foreignKey:AccountPK\""];
   int64 muted_until = 11;
   bool hide_in_app_notifications = 12;
   bool hide_push_previews = 13;
@@ -428,12 +518,24 @@ message Account {
   repeated AccountDirectoryServiceRecord directory_service_records = 15 [(gogoproto.moretags) = "gorm:\"foreignKey:AccountPK\""];
 }
 
+message ServiceTokenSupportedService {
+  string type = 2 [(gogoproto.moretags) = "gorm:\"primaryKey\""];
+  string address = 3;
+}
+
+message ServiceTokenSupportedServiceRecord {
+  string token_id = 1 [(gogoproto.customname) = "TokenID", (gogoproto.moretags) = "gorm:\"primaryKey\""];
+  string type = 2 [(gogoproto.moretags) = "gorm:\"primaryKey\""];
+  string address = 3;
+}
+
 message ServiceToken {
   string account_pk = 1 [(gogoproto.customname) = "AccountPK"];
   string token_id = 2 [(gogoproto.moretags) = "gorm:\"primaryKey\"", (gogoproto.customname) = "TokenID"];
-  string service_type = 3 [(gogoproto.moretags) = "gorm:\"primaryKey\"", (gogoproto.customname) = "ServiceType"];
-  string authentication_url = 4  [(gogoproto.customname) = "AuthenticationURL"];
-  int64 expiration = 5;
+  string token = 3;
+  repeated ServiceTokenSupportedServiceRecord supported_services = 4 [(gogoproto.moretags) = "gorm:\"foreignKey:TokenID\""];
+  string authentication_url = 5  [(gogoproto.customname) = "AuthenticationURL"];
+  int64 expiration = 6;
 }
 
 message MetadataEvent {
@@ -463,7 +565,7 @@ message Interaction {
 
 message Contact {
   string public_key = 1 [(gogoproto.moretags) = "gorm:\"primaryKey\""];
-  string conversation_public_key = 2;
+  string conversation_public_key = 2 [(gogoproto.moretags) = "gorm:\"primaryKey\""];
   Conversation conversation = 3;
   State state = 4;
   string display_name = 5;
@@ -471,7 +573,7 @@ message Contact {
   int64 created_date = 7;
   // specific to outgoing requests
   int64 sent_date = 8;
-  repeated Device devices = 6 [(gogoproto.moretags) = "gorm:\"foreignKey:MemberPublicKey\""];
+  repeated Device devices = 6 [(gogoproto.moretags) = "gorm:\"foreignKey:MemberPublicKey;references:PublicKey\""];
   int64 info_date = 10;
 
   enum State {
@@ -514,9 +616,10 @@ message Conversation {
   reserved 17; // string avatar_cid = 17 [(gogoproto.moretags) = "gorm:\"column:avatar_cid\"", (gogoproto.customname) = "AvatarCID"];
   // info_date is used when SetGroupInfo is called
   int64 info_date = 18;
-  string shared_push_token_identifier = 19;
-  string local_member_public_key = 20;
-  int64 muted_until = 21;
+  string local_member_public_key = 19;
+  int64 muted_until = 20;
+  repeated PushLocalDeviceSharedToken push_local_device_shared_tokens = 21 [(gogoproto.moretags) = "gorm:\"foreignKey:ConversationPublicKey\""];
+  repeated PushMemberToken push_member_tokens = 22 [(gogoproto.moretags) = "gorm:\"foreignKey:ConversationPublicKey\""];
 }
 
 message ConversationReplicationInfo {
@@ -544,13 +647,6 @@ message Device {
   string member_public_key = 2 [(gogoproto.moretags) = "gorm:\"index\""];
 }
 
-message SharedPushToken {
-  string device_public_key = 1 [(gogoproto.moretags) = "gorm:\"index\""];
-  string member_public_key = 2 [(gogoproto.moretags) = "gorm:\"index\""];
-  string conversation_public_key = 3 [(gogoproto.moretags) = "gorm:\"index\""];
-  string token = 4 [(gogoproto.moretags) = "gorm:\"index\""];
-}
-
 message AccountVerifiedCredential {
   string account_pk = 1 [(gogoproto.customname) = "AccountPK"];
   string identifier = 2;
@@ -569,6 +665,30 @@ message AccountDirectoryServiceRecord {
   bool revoked = 7;
   string directory_record_token = 8;
   string directory_record_unregister_token = 9;
+}
+
+message PushDeviceToken {
+  // account_pk is the account public key that owns the device token
+  string account_pk = 1 [(gogoproto.customname) = "AccountPK", (gogoproto.moretags) = "gorm:\"primaryKey\""];
+  // token_type is the type of the token used, it allows us to act as a proxy to the appropriate push server
+  push.v1.PushServiceTokenType token_type = 2;
+
+  // bundle_id is the app identifier
+  string bundle_id = 3 [(gogoproto.customname) = "BundleID"];
+
+  // token is the device identifier used
+  bytes token = 4;
+
+  // public_key is the public key which will be used to encrypt the payload
+  bytes public_key = 5;
+}
+
+message PushServerRecord {
+  string account_pk = 1 [(gogoproto.customname) = "AccountPK", (gogoproto.moretags) = "gorm:\"primaryKey\""];
+
+  string server_addr = 2 [(gogoproto.moretags) = "gorm:\"primaryKey\""];
+
+  bytes server_key = 3;
 }
 
 message ContactMetadata {
@@ -599,6 +719,7 @@ message StreamEvent {
     TypePeerStatusReconnecting = 14;
     TypePeerStatusDisconnected = 15;
     TypePeerStatusGroupAssociated = 16;
+    TypeServiceTokenAdded = 17;
   }
   message ConversationUpdated {
     Conversation conversation = 1;
@@ -684,6 +805,9 @@ message StreamEvent {
     string peer_id = 1 [(gogoproto.customname) = "PeerID"];
     string device_pk = 2 [(gogoproto.customname) = "DevicePK"];
     string group_pk = 3 [(gogoproto.customname) = "GroupPK"];
+  }
+  message ServiceTokenAdded {
+    ServiceToken token = 1;
   }
 }
 
@@ -856,6 +980,13 @@ message TyberHostAttach {
   }
 }
 
+message PushSetDeviceToken {
+  message Request {
+    push.v1.PushServiceReceiver receiver = 1;
+  }
+  message Reply {}
+}
+
 message PushSetAutoShare {
   message Request {
     bool enabled = 1;
@@ -865,8 +996,7 @@ message PushSetAutoShare {
 }
 
 message PushReceivedData {
-  // weshnet.protocol.v1.PushReceive.Reply protocol_data = 1;
-  bytes protocol_data = 1; // @FIXME(push): weshnet.protocol.v1.PushReceive.Reply has been removed
+  weshnet.protocol.v1.OutOfStoreReceive.Reply protocol_data = 1;
   Interaction interaction = 2;
   bool already_received = 3;
   bool account_muted = 4;
@@ -905,7 +1035,7 @@ message PushTokenSharedForConversation {
     string conversation_pk = 1 [(gogoproto.customname) = "ConversationPK"];
   }
   message Reply {
-    SharedPushToken push_token = 1;
+    PushMemberToken token = 1;
   }
 }
 
@@ -940,4 +1070,93 @@ message DirectoryServiceQuery {
     string account_uri = 3 [(gogoproto.customname) = "AccountURI"];
     bytes verified_credential = 4;
   }
+}
+
+message PushServer {
+  string addr = 1;
+  bytes key = 2;
+}
+
+message PushLocalDeviceSharedToken {
+  string token_id = 1 [(gogoproto.moretags) = "gorm:\"primaryKey\"", (gogoproto.customname) = "TokenID"];
+  // group_pk is the public key of the group for whom the token is for
+  string conversation_public_key = 2;
+}
+
+message PushMemberToken {
+  // token_id is the id of the token
+  string token_id = 1 [(gogoproto.moretags) = "gorm:\"primaryKey\"", (gogoproto.customname) = "TokenID"];
+
+  // group_pk is the public key of the group for whom the token is for
+  string conversation_public_key = 2;
+
+  // device_pk is the public key of the device sending the message
+  string device_pk = 3 [(gogoproto.customname) = "DevicePK"];
+
+  // server_addr is the push server address
+  string server_addr = 4;
+
+  // server_key is the push server public key
+  bytes server_key = 5;
+
+  // token is the sealed token of the device
+  bytes token = 6;
+}
+
+message PushMemberTokenUpdate {
+  // device_pk is the public key of the device sending the message
+  string device_pk = 1 [(gogoproto.customname) = "DevicePK"];
+
+  // server is the push server to use
+  PushServer server = 2;
+
+  // token is the sealed token of the device
+  bytes token = 3;
+}
+
+message MemberWithDevices {
+  string member_pk = 1 [(gogoproto.customname) = "MemberPK"];
+  repeated string devices_pks = 2 [(gogoproto.customname) = "DevicePKs"];
+}
+
+message PushSend {
+  message Request {
+    bytes cid = 1 [(gogoproto.customname) = "CID"];
+    string group_pk = 2 [(gogoproto.customname) = "GroupPK"];
+    repeated MemberWithDevices group_members = 3;
+  }
+  message Reply {
+    repeated MemberWithDevices group_members = 1;
+  }
+}
+
+message PushShareToken {
+  message Request {
+    string device_pk = 1 [(gogoproto.customname) = "DevicePK"];
+    string group_pk = 2 [(gogoproto.customname) = "GroupPK"];
+    PushServer server = 3;
+    push.v1.PushServiceReceiver receiver = 4;
+  }
+  message Reply {}
+}
+
+message PushSetServer {
+  message Request {
+    PushServer server = 1;
+  }
+  message Reply {}
+}
+
+message AuthExchangeResponse {
+  string access_token = 1;
+  string scope = 2;
+  string error = 3;
+  string error_description = 4;
+  map<string, string> services = 5;
+}
+
+message ServicesTokenCode {
+  repeated string services = 1;
+  string code_challenge = 2;
+  string token_id = 3 [(gogoproto.customname) = "TokenID"];
 }

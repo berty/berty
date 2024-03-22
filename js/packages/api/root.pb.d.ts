@@ -1489,13 +1489,13 @@ export namespace berty {
 
                 interface IRequest {
                     payload?: (string|null);
-                    tokenType?: (weshnet.push.v1.PushServiceTokenType|null);
+                    tokenType?: (berty.push.v1.PushServiceTokenType|null);
                 }
 
                 class Request implements IRequest {
 
                     public payload: string;
-                    public tokenType: weshnet.push.v1.PushServiceTokenType;
+                    public tokenType: berty.push.v1.PushServiceTokenType;
                     public static create(properties?: berty.account.v1.PushReceive.IRequest): berty.account.v1.PushReceive.Request;
                     public static encode(message: berty.account.v1.PushReceive.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.account.v1.PushReceive.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -1508,14 +1508,14 @@ export namespace berty {
                 }
 
                 interface IReply {
-                    pushData?: (weshnet.push.v1.IDecryptedPush|null);
-                    push?: (weshnet.push.v1.IFormatedPush|null);
+                    pushData?: (berty.push.v1.IDecryptedPush|null);
+                    push?: (berty.push.v1.IFormatedPush|null);
                 }
 
                 class Reply implements IReply {
 
-                    public pushData?: (weshnet.push.v1.IDecryptedPush|null);
-                    public push?: (weshnet.push.v1.IFormatedPush|null);
+                    public pushData?: (berty.push.v1.IDecryptedPush|null);
+                    public push?: (berty.push.v1.IFormatedPush|null);
                     public static create(properties?: berty.account.v1.PushReceive.IReply): berty.account.v1.PushReceive.Reply;
                     public static encode(message: berty.account.v1.PushReceive.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.account.v1.PushReceive.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -1547,12 +1547,12 @@ export namespace berty {
             namespace PushPlatformTokenRegister {
 
                 interface IRequest {
-                    receiver?: (weshnet.protocol.v1.IPushServiceReceiver|null);
+                    receiver?: (berty.push.v1.IPushServiceReceiver|null);
                 }
 
                 class Request implements IRequest {
 
-                    public receiver?: (weshnet.protocol.v1.IPushServiceReceiver|null);
+                    public receiver?: (berty.push.v1.IPushServiceReceiver|null);
                     public static create(properties?: berty.account.v1.PushPlatformTokenRegister.IRequest): berty.account.v1.PushPlatformTokenRegister.Request;
                     public static encode(message: berty.account.v1.PushPlatformTokenRegister.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.account.v1.PushPlatformTokenRegister.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -1579,6 +1579,326 @@ export namespace berty {
                     public static toObject(message: berty.account.v1.PushPlatformTokenRegister.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
+            }
+        }
+    }
+
+    namespace push {
+
+        namespace v1 {
+
+            class PushService extends $protobuf.rpc.Service {
+
+                public static create(rpcImpl: $protobuf.RPCImpl, requestDelimited?: boolean, responseDelimited?: boolean): PushService;
+                public serverInfo(request: berty.push.v1.PushServiceServerInfo.IRequest, callback: berty.push.v1.PushService.ServerInfoCallback): void;
+                public serverInfo(request: berty.push.v1.PushServiceServerInfo.IRequest): Promise<berty.push.v1.PushServiceServerInfo.Reply>;
+                public send(request: berty.push.v1.PushServiceSend.IRequest, callback: berty.push.v1.PushService.SendCallback): void;
+                public send(request: berty.push.v1.PushServiceSend.IRequest): Promise<berty.push.v1.PushServiceSend.Reply>;
+            }
+
+            namespace PushService {
+
+                type ServerInfoCallback = (error: (Error|null), response?: berty.push.v1.PushServiceServerInfo.Reply) => void;
+
+                type SendCallback = (error: (Error|null), response?: berty.push.v1.PushServiceSend.Reply) => void;
+            }
+
+            interface IPushServiceReceiver {
+                tokenType?: (berty.push.v1.PushServiceTokenType|null);
+                bundleId?: (string|null);
+                token?: (Uint8Array|null);
+                recipientPublicKey?: (Uint8Array|null);
+            }
+
+            class PushServiceReceiver implements IPushServiceReceiver {
+
+                public tokenType: berty.push.v1.PushServiceTokenType;
+                public bundleId: string;
+                public token: Uint8Array;
+                public recipientPublicKey: Uint8Array;
+                public static create(properties?: berty.push.v1.IPushServiceReceiver): berty.push.v1.PushServiceReceiver;
+                public static encode(message: berty.push.v1.IPushServiceReceiver, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.push.v1.IPushServiceReceiver, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.push.v1.PushServiceReceiver;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.push.v1.PushServiceReceiver;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.push.v1.PushServiceReceiver;
+                public static toObject(message: berty.push.v1.PushServiceReceiver, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            interface IPushServiceServerInfo {
+            }
+
+            class PushServiceServerInfo implements IPushServiceServerInfo {
+
+                public static create(properties?: berty.push.v1.IPushServiceServerInfo): berty.push.v1.PushServiceServerInfo;
+                public static encode(message: berty.push.v1.IPushServiceServerInfo, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.push.v1.IPushServiceServerInfo, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.push.v1.PushServiceServerInfo;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.push.v1.PushServiceServerInfo;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.push.v1.PushServiceServerInfo;
+                public static toObject(message: berty.push.v1.PushServiceServerInfo, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            namespace PushServiceServerInfo {
+
+                interface IRequest {
+                }
+
+                class Request implements IRequest {
+
+                    public static create(properties?: berty.push.v1.PushServiceServerInfo.IRequest): berty.push.v1.PushServiceServerInfo.Request;
+                    public static encode(message: berty.push.v1.PushServiceServerInfo.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.push.v1.PushServiceServerInfo.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.push.v1.PushServiceServerInfo.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.push.v1.PushServiceServerInfo.Request;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.push.v1.PushServiceServerInfo.Request;
+                    public static toObject(message: berty.push.v1.PushServiceServerInfo.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+
+                interface IReply {
+                    publicKey?: (Uint8Array|null);
+                    supportedTokenTypes?: (berty.push.v1.IPushServiceSupportedTokenType[]|null);
+                }
+
+                class Reply implements IReply {
+
+                    public publicKey: Uint8Array;
+                    public supportedTokenTypes: berty.push.v1.IPushServiceSupportedTokenType[];
+                    public static create(properties?: berty.push.v1.PushServiceServerInfo.IReply): berty.push.v1.PushServiceServerInfo.Reply;
+                    public static encode(message: berty.push.v1.PushServiceServerInfo.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.push.v1.PushServiceServerInfo.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.push.v1.PushServiceServerInfo.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.push.v1.PushServiceServerInfo.Reply;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.push.v1.PushServiceServerInfo.Reply;
+                    public static toObject(message: berty.push.v1.PushServiceServerInfo.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+            }
+
+            interface IPushServiceSupportedTokenType {
+                appBundleId?: (string|null);
+                tokenType?: (berty.push.v1.PushServiceTokenType|null);
+            }
+
+            class PushServiceSupportedTokenType implements IPushServiceSupportedTokenType {
+
+                public appBundleId: string;
+                public tokenType: berty.push.v1.PushServiceTokenType;
+                public static create(properties?: berty.push.v1.IPushServiceSupportedTokenType): berty.push.v1.PushServiceSupportedTokenType;
+                public static encode(message: berty.push.v1.IPushServiceSupportedTokenType, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.push.v1.IPushServiceSupportedTokenType, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.push.v1.PushServiceSupportedTokenType;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.push.v1.PushServiceSupportedTokenType;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.push.v1.PushServiceSupportedTokenType;
+                public static toObject(message: berty.push.v1.PushServiceSupportedTokenType, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            enum PushServiceTokenType {
+                PushTokenUndefined = 0,
+                PushTokenMQTT = 1,
+                PushTokenApplePushNotificationService = 2,
+                PushTokenFirebaseCloudMessaging = 3,
+                PushTokenWindowsPushNotificationService = 4,
+                PushTokenHuaweiPushKit = 5,
+                PushTokenAmazonDeviceMessaging = 6
+            }
+
+            interface IPushServiceSend {
+            }
+
+            class PushServiceSend implements IPushServiceSend {
+
+                public static create(properties?: berty.push.v1.IPushServiceSend): berty.push.v1.PushServiceSend;
+                public static encode(message: berty.push.v1.IPushServiceSend, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.push.v1.IPushServiceSend, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.push.v1.PushServiceSend;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.push.v1.PushServiceSend;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.push.v1.PushServiceSend;
+                public static toObject(message: berty.push.v1.PushServiceSend, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            namespace PushServiceSend {
+
+                interface IRequest {
+                    envelope?: (Uint8Array|null);
+                    priority?: (berty.push.v1.PushServicePriority|null);
+                    receivers?: (berty.push.v1.IPushServiceOpaqueReceiver[]|null);
+                }
+
+                class Request implements IRequest {
+
+                    public envelope: Uint8Array;
+                    public priority: berty.push.v1.PushServicePriority;
+                    public receivers: berty.push.v1.IPushServiceOpaqueReceiver[];
+                    public static create(properties?: berty.push.v1.PushServiceSend.IRequest): berty.push.v1.PushServiceSend.Request;
+                    public static encode(message: berty.push.v1.PushServiceSend.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.push.v1.PushServiceSend.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.push.v1.PushServiceSend.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.push.v1.PushServiceSend.Request;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.push.v1.PushServiceSend.Request;
+                    public static toObject(message: berty.push.v1.PushServiceSend.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+
+                interface IReply {
+                }
+
+                class Reply implements IReply {
+
+                    public static create(properties?: berty.push.v1.PushServiceSend.IReply): berty.push.v1.PushServiceSend.Reply;
+                    public static encode(message: berty.push.v1.PushServiceSend.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.push.v1.PushServiceSend.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.push.v1.PushServiceSend.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.push.v1.PushServiceSend.Reply;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.push.v1.PushServiceSend.Reply;
+                    public static toObject(message: berty.push.v1.PushServiceSend.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+            }
+
+            interface IOutOfStoreExposedData {
+                nonce?: (Uint8Array|null);
+                box?: (Uint8Array|null);
+            }
+
+            class OutOfStoreExposedData implements IOutOfStoreExposedData {
+
+                public nonce: Uint8Array;
+                public box: Uint8Array;
+                public static create(properties?: berty.push.v1.IOutOfStoreExposedData): berty.push.v1.OutOfStoreExposedData;
+                public static encode(message: berty.push.v1.IOutOfStoreExposedData, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.push.v1.IOutOfStoreExposedData, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.push.v1.OutOfStoreExposedData;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.push.v1.OutOfStoreExposedData;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.push.v1.OutOfStoreExposedData;
+                public static toObject(message: berty.push.v1.OutOfStoreExposedData, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            enum PushServicePriority {
+                PushPriorityUndefined = 0,
+                PushPriorityLow = 1,
+                PushPriorityNormal = 2
+            }
+
+            interface IPushServiceOpaqueReceiver {
+                opaqueToken?: (Uint8Array|null);
+                serviceAddr?: (string|null);
+            }
+
+            class PushServiceOpaqueReceiver implements IPushServiceOpaqueReceiver {
+
+                public opaqueToken: Uint8Array;
+                public serviceAddr: string;
+                public static create(properties?: berty.push.v1.IPushServiceOpaqueReceiver): berty.push.v1.PushServiceOpaqueReceiver;
+                public static encode(message: berty.push.v1.IPushServiceOpaqueReceiver, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.push.v1.IPushServiceOpaqueReceiver, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.push.v1.PushServiceOpaqueReceiver;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.push.v1.PushServiceOpaqueReceiver;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.push.v1.PushServiceOpaqueReceiver;
+                public static toObject(message: berty.push.v1.PushServiceOpaqueReceiver, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            interface IDecryptedPush {
+                accountId?: (string|null);
+                accountName?: (string|null);
+                conversationPublicKey?: (string|null);
+                conversationDisplayName?: (string|null);
+                memberPublicKey?: (string|null);
+                memberDisplayName?: (string|null);
+                pushType?: (berty.push.v1.DecryptedPush.PushType|null);
+                payloadAttrsJson?: (string|null);
+                deepLink?: (string|null);
+                alreadyReceived?: (boolean|null);
+                accountMuted?: (boolean|null);
+                conversationMuted?: (boolean|null);
+                hidePreview?: (boolean|null);
+            }
+
+            class DecryptedPush implements IDecryptedPush {
+
+                public accountId: string;
+                public accountName: string;
+                public conversationPublicKey: string;
+                public conversationDisplayName: string;
+                public memberPublicKey: string;
+                public memberDisplayName: string;
+                public pushType: berty.push.v1.DecryptedPush.PushType;
+                public payloadAttrsJson: string;
+                public deepLink: string;
+                public alreadyReceived: boolean;
+                public accountMuted: boolean;
+                public conversationMuted: boolean;
+                public hidePreview: boolean;
+                public static create(properties?: berty.push.v1.IDecryptedPush): berty.push.v1.DecryptedPush;
+                public static encode(message: berty.push.v1.IDecryptedPush, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.push.v1.IDecryptedPush, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.push.v1.DecryptedPush;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.push.v1.DecryptedPush;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.push.v1.DecryptedPush;
+                public static toObject(message: berty.push.v1.DecryptedPush, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            namespace DecryptedPush {
+
+                enum PushType {
+                    Unknown = 0,
+                    Message = 1,
+                    GroupInvitation = 7,
+                    ConversationNameChanged = 8,
+                    MemberNameChanged = 9,
+                    MemberDetailsChanged = 11
+                }
+            }
+
+            interface IFormatedPush {
+                pushType?: (berty.push.v1.DecryptedPush.PushType|null);
+                title?: (string|null);
+                subtitle?: (string|null);
+                body?: (string|null);
+                deepLink?: (string|null);
+                muted?: (boolean|null);
+                hidePreview?: (boolean|null);
+                conversationIdentifier?: (string|null);
+            }
+
+            class FormatedPush implements IFormatedPush {
+
+                public pushType: berty.push.v1.DecryptedPush.PushType;
+                public title: string;
+                public subtitle: string;
+                public body: string;
+                public deepLink: string;
+                public muted: boolean;
+                public hidePreview: boolean;
+                public conversationIdentifier: string;
+                public static create(properties?: berty.push.v1.IFormatedPush): berty.push.v1.FormatedPush;
+                public static encode(message: berty.push.v1.IFormatedPush, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.push.v1.IFormatedPush, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.push.v1.FormatedPush;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.push.v1.FormatedPush;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.push.v1.FormatedPush;
+                public static toObject(message: berty.push.v1.FormatedPush, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
             }
         }
     }
@@ -2153,6 +2473,16 @@ export namespace berty {
             ErrTestEcho = 2401,
             ErrTestEchoRecv = 2402,
             ErrTestEchoSend = 2403,
+            ErrServicesAuth = 4000,
+            ErrServicesAuthNotInitialized = 4001,
+            ErrServicesAuthWrongState = 4002,
+            ErrServicesAuthInvalidResponse = 4003,
+            ErrServicesAuthServer = 4004,
+            ErrServicesAuthCodeChallenge = 4005,
+            ErrServicesAuthServiceInvalidToken = 4006,
+            ErrServicesAuthServiceNotSupported = 4007,
+            ErrServicesAuthUnknownToken = 4008,
+            ErrServicesAuthInvalidURL = 4009,
             ErrCLINoTermcaps = 3001,
             ErrServicesDirectory = 4200,
             ErrServicesDirectoryInvalidVerifiedCredentialSubject = 4201,
@@ -2180,7 +2510,19 @@ export namespace berty {
             ErrBertyAccountIDGenFailed = 5015,
             ErrBertyAccountCreationFailed = 5016,
             ErrBertyAccountUpdateFailed = 5017,
-            ErrAppStorageNotSupported = 5018
+            ErrAppStorageNotSupported = 5018,
+            ErrPush = 6000,
+            ErrPushWrongAccount = 6001,
+            ErrPushUnableToDecrypt = 6002,
+            ErrPushInvalidPayload = 6003,
+            ErrPushInvalidServerConfig = 6004,
+            ErrPushMissingBundleID = 6005,
+            ErrPushUnknownDestination = 6006,
+            ErrPushProvider = 6007,
+            ErrPushUnknownProvider = 6008,
+            ErrNoProvidersConfigured = 6009,
+            ErrInvalidPrivateKey = 6010,
+            ErrPushServerNotFound = 6011
         }
 
         interface IErrDetails {
@@ -2255,8 +2597,6 @@ export namespace berty {
                 public conversationLoad(request: berty.messenger.v1.ConversationLoad.IRequest): Promise<berty.messenger.v1.ConversationLoad.Reply>;
                 public conversationMute(request: berty.messenger.v1.ConversationMute.IRequest, callback: berty.messenger.v1.MessengerService.ConversationMuteCallback): void;
                 public conversationMute(request: berty.messenger.v1.ConversationMute.IRequest): Promise<berty.messenger.v1.ConversationMute.Reply>;
-                public servicesTokenList(request: weshnet.protocol.v1.ServicesTokenList.IRequest, callback: berty.messenger.v1.MessengerService.ServicesTokenListCallback): void;
-                public servicesTokenList(request: weshnet.protocol.v1.ServicesTokenList.IRequest): Promise<weshnet.protocol.v1.ServicesTokenList.Reply>;
                 public replicationServiceRegisterGroup(request: berty.messenger.v1.ReplicationServiceRegisterGroup.IRequest, callback: berty.messenger.v1.MessengerService.ReplicationServiceRegisterGroupCallback): void;
                 public replicationServiceRegisterGroup(request: berty.messenger.v1.ReplicationServiceRegisterGroup.IRequest): Promise<berty.messenger.v1.ReplicationServiceRegisterGroup.Reply>;
                 public replicationSetAutoEnable(request: berty.messenger.v1.ReplicationSetAutoEnable.IRequest, callback: berty.messenger.v1.MessengerService.ReplicationSetAutoEnableCallback): void;
@@ -2273,6 +2613,14 @@ export namespace berty {
                 public tyberHostSearch(request: berty.messenger.v1.TyberHostSearch.IRequest): Promise<berty.messenger.v1.TyberHostSearch.Reply>;
                 public tyberHostAttach(request: berty.messenger.v1.TyberHostAttach.IRequest, callback: berty.messenger.v1.MessengerService.TyberHostAttachCallback): void;
                 public tyberHostAttach(request: berty.messenger.v1.TyberHostAttach.IRequest): Promise<berty.messenger.v1.TyberHostAttach.Reply>;
+                public debugAuthServiceSetToken(request: berty.messenger.v1.DebugAuthServiceSetToken.IRequest, callback: berty.messenger.v1.MessengerService.DebugAuthServiceSetTokenCallback): void;
+                public debugAuthServiceSetToken(request: berty.messenger.v1.DebugAuthServiceSetToken.IRequest): Promise<berty.messenger.v1.DebugAuthServiceSetToken.Reply>;
+                public servicesTokenList(request: berty.messenger.v1.ServicesTokenList.IRequest, callback: berty.messenger.v1.MessengerService.ServicesTokenListCallback): void;
+                public servicesTokenList(request: berty.messenger.v1.ServicesTokenList.IRequest): Promise<berty.messenger.v1.ServicesTokenList.Reply>;
+                public authServiceInitFlow(request: berty.messenger.v1.AuthServiceInitFlow.IRequest, callback: berty.messenger.v1.MessengerService.AuthServiceInitFlowCallback): void;
+                public authServiceInitFlow(request: berty.messenger.v1.AuthServiceInitFlow.IRequest): Promise<berty.messenger.v1.AuthServiceInitFlow.Reply>;
+                public authServiceCompleteFlow(request: berty.messenger.v1.AuthServiceCompleteFlow.IRequest, callback: berty.messenger.v1.MessengerService.AuthServiceCompleteFlowCallback): void;
+                public authServiceCompleteFlow(request: berty.messenger.v1.AuthServiceCompleteFlow.IRequest): Promise<berty.messenger.v1.AuthServiceCompleteFlow.Reply>;
                 public pushSetAutoShare(request: berty.messenger.v1.PushSetAutoShare.IRequest, callback: berty.messenger.v1.MessengerService.PushSetAutoShareCallback): void;
                 public pushSetAutoShare(request: berty.messenger.v1.PushSetAutoShare.IRequest): Promise<berty.messenger.v1.PushSetAutoShare.Reply>;
                 public pushShareTokenForConversation(request: berty.messenger.v1.PushShareTokenForConversation.IRequest, callback: berty.messenger.v1.MessengerService.PushShareTokenForConversationCallback): void;
@@ -2281,6 +2629,12 @@ export namespace berty {
                 public pushTokenSharedForConversation(request: berty.messenger.v1.PushTokenSharedForConversation.IRequest): Promise<berty.messenger.v1.PushTokenSharedForConversation.Reply>;
                 public pushReceive(request: berty.messenger.v1.PushReceive.IRequest, callback: berty.messenger.v1.MessengerService.PushReceiveCallback): void;
                 public pushReceive(request: berty.messenger.v1.PushReceive.IRequest): Promise<berty.messenger.v1.PushReceive.Reply>;
+                public pushSend(request: berty.messenger.v1.PushSend.IRequest, callback: berty.messenger.v1.MessengerService.PushSendCallback): void;
+                public pushSend(request: berty.messenger.v1.PushSend.IRequest): Promise<berty.messenger.v1.PushSend.Reply>;
+                public pushSetDeviceToken(request: berty.messenger.v1.PushSetDeviceToken.IRequest, callback: berty.messenger.v1.MessengerService.PushSetDeviceTokenCallback): void;
+                public pushSetDeviceToken(request: berty.messenger.v1.PushSetDeviceToken.IRequest): Promise<berty.messenger.v1.PushSetDeviceToken.Reply>;
+                public pushSetServer(request: berty.messenger.v1.PushSetServer.IRequest, callback: berty.messenger.v1.MessengerService.PushSetServerCallback): void;
+                public pushSetServer(request: berty.messenger.v1.PushSetServer.IRequest): Promise<berty.messenger.v1.PushSetServer.Reply>;
                 public directoryServiceRegister(request: berty.messenger.v1.DirectoryServiceRegister.IRequest, callback: berty.messenger.v1.MessengerService.DirectoryServiceRegisterCallback): void;
                 public directoryServiceRegister(request: berty.messenger.v1.DirectoryServiceRegister.IRequest): Promise<berty.messenger.v1.DirectoryServiceRegister.Reply>;
                 public directoryServiceUnregister(request: berty.messenger.v1.DirectoryServiceUnregister.IRequest, callback: berty.messenger.v1.MessengerService.DirectoryServiceUnregisterCallback): void;
@@ -2337,8 +2691,6 @@ export namespace berty {
 
                 type ConversationMuteCallback = (error: (Error|null), response?: berty.messenger.v1.ConversationMute.Reply) => void;
 
-                type ServicesTokenListCallback = (error: (Error|null), response?: weshnet.protocol.v1.ServicesTokenList.Reply) => void;
-
                 type ReplicationServiceRegisterGroupCallback = (error: (Error|null), response?: berty.messenger.v1.ReplicationServiceRegisterGroup.Reply) => void;
 
                 type ReplicationSetAutoEnableCallback = (error: (Error|null), response?: berty.messenger.v1.ReplicationSetAutoEnable.Reply) => void;
@@ -2355,6 +2707,14 @@ export namespace berty {
 
                 type TyberHostAttachCallback = (error: (Error|null), response?: berty.messenger.v1.TyberHostAttach.Reply) => void;
 
+                type DebugAuthServiceSetTokenCallback = (error: (Error|null), response?: berty.messenger.v1.DebugAuthServiceSetToken.Reply) => void;
+
+                type ServicesTokenListCallback = (error: (Error|null), response?: berty.messenger.v1.ServicesTokenList.Reply) => void;
+
+                type AuthServiceInitFlowCallback = (error: (Error|null), response?: berty.messenger.v1.AuthServiceInitFlow.Reply) => void;
+
+                type AuthServiceCompleteFlowCallback = (error: (Error|null), response?: berty.messenger.v1.AuthServiceCompleteFlow.Reply) => void;
+
                 type PushSetAutoShareCallback = (error: (Error|null), response?: berty.messenger.v1.PushSetAutoShare.Reply) => void;
 
                 type PushShareTokenForConversationCallback = (error: (Error|null), response?: berty.messenger.v1.PushShareTokenForConversation.Reply) => void;
@@ -2362,6 +2722,12 @@ export namespace berty {
                 type PushTokenSharedForConversationCallback = (error: (Error|null), response?: berty.messenger.v1.PushTokenSharedForConversation.Reply) => void;
 
                 type PushReceiveCallback = (error: (Error|null), response?: berty.messenger.v1.PushReceive.Reply) => void;
+
+                type PushSendCallback = (error: (Error|null), response?: berty.messenger.v1.PushSend.Reply) => void;
+
+                type PushSetDeviceTokenCallback = (error: (Error|null), response?: berty.messenger.v1.PushSetDeviceToken.Reply) => void;
+
+                type PushSetServerCallback = (error: (Error|null), response?: berty.messenger.v1.PushSetServer.Reply) => void;
 
                 type DirectoryServiceRegisterCallback = (error: (Error|null), response?: berty.messenger.v1.DirectoryServiceRegister.Reply) => void;
 
@@ -3251,7 +3617,12 @@ export namespace berty {
                     TypeSetUserInfo = 5,
                     TypeAcknowledge = 6,
                     TypeAccountDirectoryServiceRegistered = 8,
-                    TypeAccountDirectoryServiceUnregistered = 9
+                    TypeAccountDirectoryServiceUnregistered = 9,
+                    TypeServiceAddToken = 10,
+                    TypeServiceRemoveToken = 11,
+                    TypePushSetDeviceToken = 12,
+                    TypePushSetServer = 13,
+                    TypePushSetMemberToken = 14
                 }
 
                 interface IUserMessage {
@@ -3397,6 +3768,102 @@ export namespace berty {
                     public static toObject(message: berty.messenger.v1.AppMessage.AccountDirectoryServiceUnregistered, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
+
+                interface IServiceAddToken {
+                    token?: (string|null);
+                    supportedServices?: (berty.messenger.v1.IServiceTokenSupportedService[]|null);
+                    authenticationUrl?: (string|null);
+                    expiration?: (Long|null);
+                }
+
+                class ServiceAddToken implements IServiceAddToken {
+
+                    public token: string;
+                    public supportedServices: berty.messenger.v1.IServiceTokenSupportedService[];
+                    public authenticationUrl: string;
+                    public expiration: Long;
+                    public static create(properties?: berty.messenger.v1.AppMessage.IServiceAddToken): berty.messenger.v1.AppMessage.ServiceAddToken;
+                    public static encode(message: berty.messenger.v1.AppMessage.IServiceAddToken, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.messenger.v1.AppMessage.IServiceAddToken, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.AppMessage.ServiceAddToken;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.AppMessage.ServiceAddToken;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.AppMessage.ServiceAddToken;
+                    public static toObject(message: berty.messenger.v1.AppMessage.ServiceAddToken, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+
+                interface IServiceRemoveToken {
+                    tokenid?: (string|null);
+                }
+
+                class ServiceRemoveToken implements IServiceRemoveToken {
+
+                    public tokenid: string;
+                    public static create(properties?: berty.messenger.v1.AppMessage.IServiceRemoveToken): berty.messenger.v1.AppMessage.ServiceRemoveToken;
+                    public static encode(message: berty.messenger.v1.AppMessage.IServiceRemoveToken, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.messenger.v1.AppMessage.IServiceRemoveToken, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.AppMessage.ServiceRemoveToken;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.AppMessage.ServiceRemoveToken;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.AppMessage.ServiceRemoveToken;
+                    public static toObject(message: berty.messenger.v1.AppMessage.ServiceRemoveToken, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+
+                interface IPushSetDeviceToken {
+                    deviceToken?: (berty.push.v1.IPushServiceReceiver|null);
+                }
+
+                class PushSetDeviceToken implements IPushSetDeviceToken {
+
+                    public deviceToken?: (berty.push.v1.IPushServiceReceiver|null);
+                    public static create(properties?: berty.messenger.v1.AppMessage.IPushSetDeviceToken): berty.messenger.v1.AppMessage.PushSetDeviceToken;
+                    public static encode(message: berty.messenger.v1.AppMessage.IPushSetDeviceToken, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.messenger.v1.AppMessage.IPushSetDeviceToken, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.AppMessage.PushSetDeviceToken;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.AppMessage.PushSetDeviceToken;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.AppMessage.PushSetDeviceToken;
+                    public static toObject(message: berty.messenger.v1.AppMessage.PushSetDeviceToken, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+
+                interface IPushSetServer {
+                    server?: (berty.messenger.v1.IPushServer|null);
+                }
+
+                class PushSetServer implements IPushSetServer {
+
+                    public server?: (berty.messenger.v1.IPushServer|null);
+                    public static create(properties?: berty.messenger.v1.AppMessage.IPushSetServer): berty.messenger.v1.AppMessage.PushSetServer;
+                    public static encode(message: berty.messenger.v1.AppMessage.IPushSetServer, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.messenger.v1.AppMessage.IPushSetServer, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.AppMessage.PushSetServer;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.AppMessage.PushSetServer;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.AppMessage.PushSetServer;
+                    public static toObject(message: berty.messenger.v1.AppMessage.PushSetServer, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+
+                interface IPushSetMemberToken {
+                    memberToken?: (berty.messenger.v1.IPushMemberTokenUpdate|null);
+                }
+
+                class PushSetMemberToken implements IPushSetMemberToken {
+
+                    public memberToken?: (berty.messenger.v1.IPushMemberTokenUpdate|null);
+                    public static create(properties?: berty.messenger.v1.AppMessage.IPushSetMemberToken): berty.messenger.v1.AppMessage.PushSetMemberToken;
+                    public static encode(message: berty.messenger.v1.AppMessage.IPushSetMemberToken, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.messenger.v1.AppMessage.IPushSetMemberToken, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.AppMessage.PushSetMemberToken;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.AppMessage.PushSetMemberToken;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.AppMessage.PushSetMemberToken;
+                    public static toObject(message: berty.messenger.v1.AppMessage.PushSetMemberToken, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
             }
 
             interface ISystemInfo {
@@ -3484,12 +3951,16 @@ export namespace berty {
                     interactions?: (Long|null);
                     members?: (Long|null);
                     devices?: (Long|null);
+                    serviceTokenSupportedServiceRecords?: (Long|null);
                     serviceTokens?: (Long|null);
                     conversationReplicationInfo?: (Long|null);
                     metadataEvents?: (Long|null);
-                    sharedPushTokens?: (Long|null);
+                    pushMemberToken?: (Long|null);
                     accountVerifiedCredentials?: (Long|null);
                     accountDirectoryServiceRecord?: (Long|null);
+                    pushDeviceToken?: (Long|null);
+                    pushServerRecord?: (Long|null);
+                    pushLocalDeviceSharedToken?: (Long|null);
                 }
 
                 class DB implements IDB {
@@ -3500,12 +3971,16 @@ export namespace berty {
                     public interactions: Long;
                     public members: Long;
                     public devices: Long;
+                    public serviceTokenSupportedServiceRecords: Long;
                     public serviceTokens: Long;
                     public conversationReplicationInfo: Long;
                     public metadataEvents: Long;
-                    public sharedPushTokens: Long;
+                    public pushMemberToken: Long;
                     public accountVerifiedCredentials: Long;
                     public accountDirectoryServiceRecord: Long;
+                    public pushDeviceToken: Long;
+                    public pushServerRecord: Long;
+                    public pushLocalDeviceSharedToken: Long;
                     public static create(properties?: berty.messenger.v1.SystemInfo.IDB): berty.messenger.v1.SystemInfo.DB;
                     public static encode(message: berty.messenger.v1.SystemInfo.IDB, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.messenger.v1.SystemInfo.IDB, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -3573,6 +4048,228 @@ export namespace berty {
                 }
             }
 
+            interface IDebugAuthServiceSetToken {
+            }
+
+            class DebugAuthServiceSetToken implements IDebugAuthServiceSetToken {
+
+                public static create(properties?: berty.messenger.v1.IDebugAuthServiceSetToken): berty.messenger.v1.DebugAuthServiceSetToken;
+                public static encode(message: berty.messenger.v1.IDebugAuthServiceSetToken, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.messenger.v1.IDebugAuthServiceSetToken, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.DebugAuthServiceSetToken;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.DebugAuthServiceSetToken;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.messenger.v1.DebugAuthServiceSetToken;
+                public static toObject(message: berty.messenger.v1.DebugAuthServiceSetToken, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            namespace DebugAuthServiceSetToken {
+
+                interface IRequest {
+                    token?: (berty.messenger.v1.IAuthExchangeResponse|null);
+                    authenticationUrl?: (string|null);
+                }
+
+                class Request implements IRequest {
+
+                    public token?: (berty.messenger.v1.IAuthExchangeResponse|null);
+                    public authenticationUrl: string;
+                    public static create(properties?: berty.messenger.v1.DebugAuthServiceSetToken.IRequest): berty.messenger.v1.DebugAuthServiceSetToken.Request;
+                    public static encode(message: berty.messenger.v1.DebugAuthServiceSetToken.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.messenger.v1.DebugAuthServiceSetToken.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.DebugAuthServiceSetToken.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.DebugAuthServiceSetToken.Request;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.DebugAuthServiceSetToken.Request;
+                    public static toObject(message: berty.messenger.v1.DebugAuthServiceSetToken.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+
+                interface IReply {
+                }
+
+                class Reply implements IReply {
+
+                    public static create(properties?: berty.messenger.v1.DebugAuthServiceSetToken.IReply): berty.messenger.v1.DebugAuthServiceSetToken.Reply;
+                    public static encode(message: berty.messenger.v1.DebugAuthServiceSetToken.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.messenger.v1.DebugAuthServiceSetToken.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.DebugAuthServiceSetToken.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.DebugAuthServiceSetToken.Reply;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.DebugAuthServiceSetToken.Reply;
+                    public static toObject(message: berty.messenger.v1.DebugAuthServiceSetToken.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+            }
+
+            interface IServicesTokenList {
+            }
+
+            class ServicesTokenList implements IServicesTokenList {
+
+                public static create(properties?: berty.messenger.v1.IServicesTokenList): berty.messenger.v1.ServicesTokenList;
+                public static encode(message: berty.messenger.v1.IServicesTokenList, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.messenger.v1.IServicesTokenList, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.ServicesTokenList;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.ServicesTokenList;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.messenger.v1.ServicesTokenList;
+                public static toObject(message: berty.messenger.v1.ServicesTokenList, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            namespace ServicesTokenList {
+
+                interface IRequest {
+                }
+
+                class Request implements IRequest {
+
+                    public static create(properties?: berty.messenger.v1.ServicesTokenList.IRequest): berty.messenger.v1.ServicesTokenList.Request;
+                    public static encode(message: berty.messenger.v1.ServicesTokenList.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.messenger.v1.ServicesTokenList.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.ServicesTokenList.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.ServicesTokenList.Request;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.ServicesTokenList.Request;
+                    public static toObject(message: berty.messenger.v1.ServicesTokenList.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+
+                interface IReply {
+                    service?: (berty.messenger.v1.IServiceToken|null);
+                }
+
+                class Reply implements IReply {
+
+                    public service?: (berty.messenger.v1.IServiceToken|null);
+                    public static create(properties?: berty.messenger.v1.ServicesTokenList.IReply): berty.messenger.v1.ServicesTokenList.Reply;
+                    public static encode(message: berty.messenger.v1.ServicesTokenList.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.messenger.v1.ServicesTokenList.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.ServicesTokenList.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.ServicesTokenList.Reply;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.ServicesTokenList.Reply;
+                    public static toObject(message: berty.messenger.v1.ServicesTokenList.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+            }
+
+            interface IAuthServiceCompleteFlow {
+            }
+
+            class AuthServiceCompleteFlow implements IAuthServiceCompleteFlow {
+
+                public static create(properties?: berty.messenger.v1.IAuthServiceCompleteFlow): berty.messenger.v1.AuthServiceCompleteFlow;
+                public static encode(message: berty.messenger.v1.IAuthServiceCompleteFlow, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.messenger.v1.IAuthServiceCompleteFlow, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.AuthServiceCompleteFlow;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.AuthServiceCompleteFlow;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.messenger.v1.AuthServiceCompleteFlow;
+                public static toObject(message: berty.messenger.v1.AuthServiceCompleteFlow, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            namespace AuthServiceCompleteFlow {
+
+                interface IRequest {
+                    callbackUrl?: (string|null);
+                }
+
+                class Request implements IRequest {
+
+                    public callbackUrl: string;
+                    public static create(properties?: berty.messenger.v1.AuthServiceCompleteFlow.IRequest): berty.messenger.v1.AuthServiceCompleteFlow.Request;
+                    public static encode(message: berty.messenger.v1.AuthServiceCompleteFlow.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.messenger.v1.AuthServiceCompleteFlow.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.AuthServiceCompleteFlow.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.AuthServiceCompleteFlow.Request;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.AuthServiceCompleteFlow.Request;
+                    public static toObject(message: berty.messenger.v1.AuthServiceCompleteFlow.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+
+                interface IReply {
+                    tokenId?: (string|null);
+                }
+
+                class Reply implements IReply {
+
+                    public tokenId: string;
+                    public static create(properties?: berty.messenger.v1.AuthServiceCompleteFlow.IReply): berty.messenger.v1.AuthServiceCompleteFlow.Reply;
+                    public static encode(message: berty.messenger.v1.AuthServiceCompleteFlow.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.messenger.v1.AuthServiceCompleteFlow.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.AuthServiceCompleteFlow.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.AuthServiceCompleteFlow.Reply;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.AuthServiceCompleteFlow.Reply;
+                    public static toObject(message: berty.messenger.v1.AuthServiceCompleteFlow.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+            }
+
+            interface IAuthServiceInitFlow {
+            }
+
+            class AuthServiceInitFlow implements IAuthServiceInitFlow {
+
+                public static create(properties?: berty.messenger.v1.IAuthServiceInitFlow): berty.messenger.v1.AuthServiceInitFlow;
+                public static encode(message: berty.messenger.v1.IAuthServiceInitFlow, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.messenger.v1.IAuthServiceInitFlow, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.AuthServiceInitFlow;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.AuthServiceInitFlow;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.messenger.v1.AuthServiceInitFlow;
+                public static toObject(message: berty.messenger.v1.AuthServiceInitFlow, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            namespace AuthServiceInitFlow {
+
+                interface IRequest {
+                    authUrl?: (string|null);
+                    services?: (string[]|null);
+                }
+
+                class Request implements IRequest {
+
+                    public authUrl: string;
+                    public services: string[];
+                    public static create(properties?: berty.messenger.v1.AuthServiceInitFlow.IRequest): berty.messenger.v1.AuthServiceInitFlow.Request;
+                    public static encode(message: berty.messenger.v1.AuthServiceInitFlow.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.messenger.v1.AuthServiceInitFlow.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.AuthServiceInitFlow.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.AuthServiceInitFlow.Request;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.AuthServiceInitFlow.Request;
+                    public static toObject(message: berty.messenger.v1.AuthServiceInitFlow.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+
+                interface IReply {
+                    url?: (string|null);
+                    secureUrl?: (boolean|null);
+                }
+
+                class Reply implements IReply {
+
+                    public url: string;
+                    public secureUrl: boolean;
+                    public static create(properties?: berty.messenger.v1.AuthServiceInitFlow.IReply): berty.messenger.v1.AuthServiceInitFlow.Reply;
+                    public static encode(message: berty.messenger.v1.AuthServiceInitFlow.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.messenger.v1.AuthServiceInitFlow.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.AuthServiceInitFlow.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.AuthServiceInitFlow.Reply;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.AuthServiceInitFlow.Reply;
+                    public static toObject(message: berty.messenger.v1.AuthServiceInitFlow.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+            }
+
             interface IAccount {
                 publicKey?: (string|null);
                 displayName?: (string|null);
@@ -3580,8 +4277,8 @@ export namespace berty {
                 serviceTokens?: (berty.messenger.v1.IServiceToken[]|null);
                 replicateNewGroupsAutomatically?: (boolean|null);
                 autoSharePushTokenFlag?: (boolean|null);
-                devicePushToken?: (Uint8Array|null);
-                devicePushServer?: (Uint8Array|null);
+                pushDeviceToken?: (berty.messenger.v1.IPushDeviceToken|null);
+                pushServerRecords?: (berty.messenger.v1.IPushServerRecord[]|null);
                 mutedUntil?: (Long|null);
                 hideInAppNotifications?: (boolean|null);
                 hidePushPreviews?: (boolean|null);
@@ -3597,8 +4294,8 @@ export namespace berty {
                 public serviceTokens: berty.messenger.v1.IServiceToken[];
                 public replicateNewGroupsAutomatically: boolean;
                 public autoSharePushTokenFlag: boolean;
-                public devicePushToken: Uint8Array;
-                public devicePushServer: Uint8Array;
+                public pushDeviceToken?: (berty.messenger.v1.IPushDeviceToken|null);
+                public pushServerRecords: berty.messenger.v1.IPushServerRecord[];
                 public mutedUntil: Long;
                 public hideInAppNotifications: boolean;
                 public hidePushPreviews: boolean;
@@ -3615,10 +4312,53 @@ export namespace berty {
                 public toJSON(): { [k: string]: any };
             }
 
+            interface IServiceTokenSupportedService {
+                type?: (string|null);
+                address?: (string|null);
+            }
+
+            class ServiceTokenSupportedService implements IServiceTokenSupportedService {
+
+                public type: string;
+                public address: string;
+                public static create(properties?: berty.messenger.v1.IServiceTokenSupportedService): berty.messenger.v1.ServiceTokenSupportedService;
+                public static encode(message: berty.messenger.v1.IServiceTokenSupportedService, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.messenger.v1.IServiceTokenSupportedService, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.ServiceTokenSupportedService;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.ServiceTokenSupportedService;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.messenger.v1.ServiceTokenSupportedService;
+                public static toObject(message: berty.messenger.v1.ServiceTokenSupportedService, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            interface IServiceTokenSupportedServiceRecord {
+                tokenId?: (string|null);
+                type?: (string|null);
+                address?: (string|null);
+            }
+
+            class ServiceTokenSupportedServiceRecord implements IServiceTokenSupportedServiceRecord {
+
+                public tokenId: string;
+                public type: string;
+                public address: string;
+                public static create(properties?: berty.messenger.v1.IServiceTokenSupportedServiceRecord): berty.messenger.v1.ServiceTokenSupportedServiceRecord;
+                public static encode(message: berty.messenger.v1.IServiceTokenSupportedServiceRecord, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.messenger.v1.IServiceTokenSupportedServiceRecord, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.ServiceTokenSupportedServiceRecord;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.ServiceTokenSupportedServiceRecord;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.messenger.v1.ServiceTokenSupportedServiceRecord;
+                public static toObject(message: berty.messenger.v1.ServiceTokenSupportedServiceRecord, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
             interface IServiceToken {
                 accountPk?: (string|null);
                 tokenId?: (string|null);
-                serviceType?: (string|null);
+                token?: (string|null);
+                supportedServices?: (berty.messenger.v1.IServiceTokenSupportedServiceRecord[]|null);
                 authenticationUrl?: (string|null);
                 expiration?: (Long|null);
             }
@@ -3627,7 +4367,8 @@ export namespace berty {
 
                 public accountPk: string;
                 public tokenId: string;
-                public serviceType: string;
+                public token: string;
+                public supportedServices: berty.messenger.v1.IServiceTokenSupportedServiceRecord[];
                 public authenticationUrl: string;
                 public expiration: Long;
                 public static create(properties?: berty.messenger.v1.IServiceToken): berty.messenger.v1.ServiceToken;
@@ -3768,9 +4509,10 @@ export namespace berty {
                 createdDate?: (Long|null);
                 replicationInfo?: (berty.messenger.v1.IConversationReplicationInfo[]|null);
                 infoDate?: (Long|null);
-                sharedPushTokenIdentifier?: (string|null);
                 localMemberPublicKey?: (string|null);
                 mutedUntil?: (Long|null);
+                pushLocalDeviceSharedTokens?: (berty.messenger.v1.IPushLocalDeviceSharedToken[]|null);
+                pushMemberTokens?: (berty.messenger.v1.IPushMemberToken[]|null);
             }
 
             class Conversation implements IConversation {
@@ -3790,9 +4532,10 @@ export namespace berty {
                 public createdDate: Long;
                 public replicationInfo: berty.messenger.v1.IConversationReplicationInfo[];
                 public infoDate: Long;
-                public sharedPushTokenIdentifier: string;
                 public localMemberPublicKey: string;
                 public mutedUntil: Long;
+                public pushLocalDeviceSharedTokens: berty.messenger.v1.IPushLocalDeviceSharedToken[];
+                public pushMemberTokens: berty.messenger.v1.IPushMemberToken[];
                 public static create(properties?: berty.messenger.v1.IConversation): berty.messenger.v1.Conversation;
                 public static encode(message: berty.messenger.v1.IConversation, writer?: $protobuf.Writer): $protobuf.Writer;
                 public static encodeDelimited(message: berty.messenger.v1.IConversation, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -3892,30 +4635,6 @@ export namespace berty {
                 public toJSON(): { [k: string]: any };
             }
 
-            interface ISharedPushToken {
-                devicePublicKey?: (string|null);
-                memberPublicKey?: (string|null);
-                conversationPublicKey?: (string|null);
-                token?: (string|null);
-            }
-
-            class SharedPushToken implements ISharedPushToken {
-
-                public devicePublicKey: string;
-                public memberPublicKey: string;
-                public conversationPublicKey: string;
-                public token: string;
-                public static create(properties?: berty.messenger.v1.ISharedPushToken): berty.messenger.v1.SharedPushToken;
-                public static encode(message: berty.messenger.v1.ISharedPushToken, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: berty.messenger.v1.ISharedPushToken, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.SharedPushToken;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.SharedPushToken;
-                public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): berty.messenger.v1.SharedPushToken;
-                public static toObject(message: berty.messenger.v1.SharedPushToken, options?: $protobuf.IConversionOptions): { [k: string]: any };
-                public toJSON(): { [k: string]: any };
-            }
-
             interface IAccountVerifiedCredential {
                 accountPk?: (string|null);
                 identifier?: (string|null);
@@ -3973,6 +4692,54 @@ export namespace berty {
                 public static verify(message: { [k: string]: any }): (string|null);
                 public static fromObject(object: { [k: string]: any }): berty.messenger.v1.AccountDirectoryServiceRecord;
                 public static toObject(message: berty.messenger.v1.AccountDirectoryServiceRecord, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            interface IPushDeviceToken {
+                accountPk?: (string|null);
+                tokenType?: (berty.push.v1.PushServiceTokenType|null);
+                bundleId?: (string|null);
+                token?: (Uint8Array|null);
+                publicKey?: (Uint8Array|null);
+            }
+
+            class PushDeviceToken implements IPushDeviceToken {
+
+                public accountPk: string;
+                public tokenType: berty.push.v1.PushServiceTokenType;
+                public bundleId: string;
+                public token: Uint8Array;
+                public publicKey: Uint8Array;
+                public static create(properties?: berty.messenger.v1.IPushDeviceToken): berty.messenger.v1.PushDeviceToken;
+                public static encode(message: berty.messenger.v1.IPushDeviceToken, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.messenger.v1.IPushDeviceToken, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.PushDeviceToken;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.PushDeviceToken;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.messenger.v1.PushDeviceToken;
+                public static toObject(message: berty.messenger.v1.PushDeviceToken, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            interface IPushServerRecord {
+                accountPk?: (string|null);
+                serverAddr?: (string|null);
+                serverKey?: (Uint8Array|null);
+            }
+
+            class PushServerRecord implements IPushServerRecord {
+
+                public accountPk: string;
+                public serverAddr: string;
+                public serverKey: Uint8Array;
+                public static create(properties?: berty.messenger.v1.IPushServerRecord): berty.messenger.v1.PushServerRecord;
+                public static encode(message: berty.messenger.v1.IPushServerRecord, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.messenger.v1.IPushServerRecord, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.PushServerRecord;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.PushServerRecord;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.messenger.v1.PushServerRecord;
+                public static toObject(message: berty.messenger.v1.PushServerRecord, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
@@ -4034,7 +4801,8 @@ export namespace berty {
                     TypePeerStatusConnected = 13,
                     TypePeerStatusReconnecting = 14,
                     TypePeerStatusDisconnected = 15,
-                    TypePeerStatusGroupAssociated = 16
+                    TypePeerStatusGroupAssociated = 16,
+                    TypeServiceTokenAdded = 17
                 }
 
                 interface IConversationUpdated {
@@ -4434,6 +5202,24 @@ export namespace berty {
                     public static verify(message: { [k: string]: any }): (string|null);
                     public static fromObject(object: { [k: string]: any }): berty.messenger.v1.StreamEvent.PeerStatusGroupAssociated;
                     public static toObject(message: berty.messenger.v1.StreamEvent.PeerStatusGroupAssociated, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+
+                interface IServiceTokenAdded {
+                    token?: (berty.messenger.v1.IServiceToken|null);
+                }
+
+                class ServiceTokenAdded implements IServiceTokenAdded {
+
+                    public token?: (berty.messenger.v1.IServiceToken|null);
+                    public static create(properties?: berty.messenger.v1.StreamEvent.IServiceTokenAdded): berty.messenger.v1.StreamEvent.ServiceTokenAdded;
+                    public static encode(message: berty.messenger.v1.StreamEvent.IServiceTokenAdded, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.messenger.v1.StreamEvent.IServiceTokenAdded, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.StreamEvent.ServiceTokenAdded;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.StreamEvent.ServiceTokenAdded;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.StreamEvent.ServiceTokenAdded;
+                    public static toObject(message: berty.messenger.v1.StreamEvent.ServiceTokenAdded, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
             }
@@ -5396,6 +6182,59 @@ export namespace berty {
                 }
             }
 
+            interface IPushSetDeviceToken {
+            }
+
+            class PushSetDeviceToken implements IPushSetDeviceToken {
+
+                public static create(properties?: berty.messenger.v1.IPushSetDeviceToken): berty.messenger.v1.PushSetDeviceToken;
+                public static encode(message: berty.messenger.v1.IPushSetDeviceToken, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.messenger.v1.IPushSetDeviceToken, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.PushSetDeviceToken;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.PushSetDeviceToken;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.messenger.v1.PushSetDeviceToken;
+                public static toObject(message: berty.messenger.v1.PushSetDeviceToken, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            namespace PushSetDeviceToken {
+
+                interface IRequest {
+                    receiver?: (berty.push.v1.IPushServiceReceiver|null);
+                }
+
+                class Request implements IRequest {
+
+                    public receiver?: (berty.push.v1.IPushServiceReceiver|null);
+                    public static create(properties?: berty.messenger.v1.PushSetDeviceToken.IRequest): berty.messenger.v1.PushSetDeviceToken.Request;
+                    public static encode(message: berty.messenger.v1.PushSetDeviceToken.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.messenger.v1.PushSetDeviceToken.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.PushSetDeviceToken.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.PushSetDeviceToken.Request;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.PushSetDeviceToken.Request;
+                    public static toObject(message: berty.messenger.v1.PushSetDeviceToken.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+
+                interface IReply {
+                }
+
+                class Reply implements IReply {
+
+                    public static create(properties?: berty.messenger.v1.PushSetDeviceToken.IReply): berty.messenger.v1.PushSetDeviceToken.Reply;
+                    public static encode(message: berty.messenger.v1.PushSetDeviceToken.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.messenger.v1.PushSetDeviceToken.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.PushSetDeviceToken.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.PushSetDeviceToken.Reply;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.PushSetDeviceToken.Reply;
+                    public static toObject(message: berty.messenger.v1.PushSetDeviceToken.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+            }
+
             interface IPushSetAutoShare {
             }
 
@@ -5450,7 +6289,7 @@ export namespace berty {
             }
 
             interface IPushReceivedData {
-                protocolData?: (Uint8Array|null);
+                protocolData?: (weshnet.protocol.v1.OutOfStoreReceive.IReply|null);
                 interaction?: (berty.messenger.v1.IInteraction|null);
                 alreadyReceived?: (boolean|null);
                 accountMuted?: (boolean|null);
@@ -5460,7 +6299,7 @@ export namespace berty {
 
             class PushReceivedData implements IPushReceivedData {
 
-                public protocolData: Uint8Array;
+                public protocolData?: (weshnet.protocol.v1.OutOfStoreReceive.IReply|null);
                 public interaction?: (berty.messenger.v1.IInteraction|null);
                 public alreadyReceived: boolean;
                 public accountMuted: boolean;
@@ -5679,12 +6518,12 @@ export namespace berty {
                 }
 
                 interface IReply {
-                    pushToken?: (berty.messenger.v1.ISharedPushToken|null);
+                    token?: (berty.messenger.v1.IPushMemberToken|null);
                 }
 
                 class Reply implements IReply {
 
-                    public pushToken?: (berty.messenger.v1.ISharedPushToken|null);
+                    public token?: (berty.messenger.v1.IPushMemberToken|null);
                     public static create(properties?: berty.messenger.v1.PushTokenSharedForConversation.IReply): berty.messenger.v1.PushTokenSharedForConversation.Reply;
                     public static encode(message: berty.messenger.v1.PushTokenSharedForConversation.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: berty.messenger.v1.PushTokenSharedForConversation.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -5874,6 +6713,335 @@ export namespace berty {
                     public static toObject(message: berty.messenger.v1.DirectoryServiceQuery.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
+            }
+
+            interface IPushServer {
+                addr?: (string|null);
+                key?: (Uint8Array|null);
+            }
+
+            class PushServer implements IPushServer {
+
+                public addr: string;
+                public key: Uint8Array;
+                public static create(properties?: berty.messenger.v1.IPushServer): berty.messenger.v1.PushServer;
+                public static encode(message: berty.messenger.v1.IPushServer, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.messenger.v1.IPushServer, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.PushServer;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.PushServer;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.messenger.v1.PushServer;
+                public static toObject(message: berty.messenger.v1.PushServer, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            interface IPushLocalDeviceSharedToken {
+                tokenId?: (string|null);
+                conversationPublicKey?: (string|null);
+            }
+
+            class PushLocalDeviceSharedToken implements IPushLocalDeviceSharedToken {
+
+                public tokenId: string;
+                public conversationPublicKey: string;
+                public static create(properties?: berty.messenger.v1.IPushLocalDeviceSharedToken): berty.messenger.v1.PushLocalDeviceSharedToken;
+                public static encode(message: berty.messenger.v1.IPushLocalDeviceSharedToken, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.messenger.v1.IPushLocalDeviceSharedToken, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.PushLocalDeviceSharedToken;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.PushLocalDeviceSharedToken;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.messenger.v1.PushLocalDeviceSharedToken;
+                public static toObject(message: berty.messenger.v1.PushLocalDeviceSharedToken, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            interface IPushMemberToken {
+                tokenId?: (string|null);
+                conversationPublicKey?: (string|null);
+                devicePk?: (string|null);
+                serverAddr?: (string|null);
+                serverKey?: (Uint8Array|null);
+                token?: (Uint8Array|null);
+            }
+
+            class PushMemberToken implements IPushMemberToken {
+
+                public tokenId: string;
+                public conversationPublicKey: string;
+                public devicePk: string;
+                public serverAddr: string;
+                public serverKey: Uint8Array;
+                public token: Uint8Array;
+                public static create(properties?: berty.messenger.v1.IPushMemberToken): berty.messenger.v1.PushMemberToken;
+                public static encode(message: berty.messenger.v1.IPushMemberToken, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.messenger.v1.IPushMemberToken, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.PushMemberToken;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.PushMemberToken;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.messenger.v1.PushMemberToken;
+                public static toObject(message: berty.messenger.v1.PushMemberToken, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            interface IPushMemberTokenUpdate {
+                devicePk?: (string|null);
+                server?: (berty.messenger.v1.IPushServer|null);
+                token?: (Uint8Array|null);
+            }
+
+            class PushMemberTokenUpdate implements IPushMemberTokenUpdate {
+
+                public devicePk: string;
+                public server?: (berty.messenger.v1.IPushServer|null);
+                public token: Uint8Array;
+                public static create(properties?: berty.messenger.v1.IPushMemberTokenUpdate): berty.messenger.v1.PushMemberTokenUpdate;
+                public static encode(message: berty.messenger.v1.IPushMemberTokenUpdate, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.messenger.v1.IPushMemberTokenUpdate, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.PushMemberTokenUpdate;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.PushMemberTokenUpdate;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.messenger.v1.PushMemberTokenUpdate;
+                public static toObject(message: berty.messenger.v1.PushMemberTokenUpdate, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            interface IMemberWithDevices {
+                memberPk?: (string|null);
+                devicesPks?: (string[]|null);
+            }
+
+            class MemberWithDevices implements IMemberWithDevices {
+
+                public memberPk: string;
+                public devicesPks: string[];
+                public static create(properties?: berty.messenger.v1.IMemberWithDevices): berty.messenger.v1.MemberWithDevices;
+                public static encode(message: berty.messenger.v1.IMemberWithDevices, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.messenger.v1.IMemberWithDevices, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.MemberWithDevices;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.MemberWithDevices;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.messenger.v1.MemberWithDevices;
+                public static toObject(message: berty.messenger.v1.MemberWithDevices, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            interface IPushSend {
+            }
+
+            class PushSend implements IPushSend {
+
+                public static create(properties?: berty.messenger.v1.IPushSend): berty.messenger.v1.PushSend;
+                public static encode(message: berty.messenger.v1.IPushSend, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.messenger.v1.IPushSend, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.PushSend;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.PushSend;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.messenger.v1.PushSend;
+                public static toObject(message: berty.messenger.v1.PushSend, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            namespace PushSend {
+
+                interface IRequest {
+                    cid?: (Uint8Array|null);
+                    groupPk?: (string|null);
+                    groupMembers?: (berty.messenger.v1.IMemberWithDevices[]|null);
+                }
+
+                class Request implements IRequest {
+
+                    public cid: Uint8Array;
+                    public groupPk: string;
+                    public groupMembers: berty.messenger.v1.IMemberWithDevices[];
+                    public static create(properties?: berty.messenger.v1.PushSend.IRequest): berty.messenger.v1.PushSend.Request;
+                    public static encode(message: berty.messenger.v1.PushSend.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.messenger.v1.PushSend.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.PushSend.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.PushSend.Request;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.PushSend.Request;
+                    public static toObject(message: berty.messenger.v1.PushSend.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+
+                interface IReply {
+                    groupMembers?: (berty.messenger.v1.IMemberWithDevices[]|null);
+                }
+
+                class Reply implements IReply {
+
+                    public groupMembers: berty.messenger.v1.IMemberWithDevices[];
+                    public static create(properties?: berty.messenger.v1.PushSend.IReply): berty.messenger.v1.PushSend.Reply;
+                    public static encode(message: berty.messenger.v1.PushSend.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.messenger.v1.PushSend.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.PushSend.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.PushSend.Reply;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.PushSend.Reply;
+                    public static toObject(message: berty.messenger.v1.PushSend.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+            }
+
+            interface IPushShareToken {
+            }
+
+            class PushShareToken implements IPushShareToken {
+
+                public static create(properties?: berty.messenger.v1.IPushShareToken): berty.messenger.v1.PushShareToken;
+                public static encode(message: berty.messenger.v1.IPushShareToken, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.messenger.v1.IPushShareToken, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.PushShareToken;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.PushShareToken;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.messenger.v1.PushShareToken;
+                public static toObject(message: berty.messenger.v1.PushShareToken, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            namespace PushShareToken {
+
+                interface IRequest {
+                    devicePk?: (string|null);
+                    groupPk?: (string|null);
+                    server?: (berty.messenger.v1.IPushServer|null);
+                    receiver?: (berty.push.v1.IPushServiceReceiver|null);
+                }
+
+                class Request implements IRequest {
+
+                    public devicePk: string;
+                    public groupPk: string;
+                    public server?: (berty.messenger.v1.IPushServer|null);
+                    public receiver?: (berty.push.v1.IPushServiceReceiver|null);
+                    public static create(properties?: berty.messenger.v1.PushShareToken.IRequest): berty.messenger.v1.PushShareToken.Request;
+                    public static encode(message: berty.messenger.v1.PushShareToken.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.messenger.v1.PushShareToken.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.PushShareToken.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.PushShareToken.Request;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.PushShareToken.Request;
+                    public static toObject(message: berty.messenger.v1.PushShareToken.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+
+                interface IReply {
+                }
+
+                class Reply implements IReply {
+
+                    public static create(properties?: berty.messenger.v1.PushShareToken.IReply): berty.messenger.v1.PushShareToken.Reply;
+                    public static encode(message: berty.messenger.v1.PushShareToken.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.messenger.v1.PushShareToken.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.PushShareToken.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.PushShareToken.Reply;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.PushShareToken.Reply;
+                    public static toObject(message: berty.messenger.v1.PushShareToken.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+            }
+
+            interface IPushSetServer {
+            }
+
+            class PushSetServer implements IPushSetServer {
+
+                public static create(properties?: berty.messenger.v1.IPushSetServer): berty.messenger.v1.PushSetServer;
+                public static encode(message: berty.messenger.v1.IPushSetServer, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.messenger.v1.IPushSetServer, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.PushSetServer;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.PushSetServer;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.messenger.v1.PushSetServer;
+                public static toObject(message: berty.messenger.v1.PushSetServer, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            namespace PushSetServer {
+
+                interface IRequest {
+                    server?: (berty.messenger.v1.IPushServer|null);
+                }
+
+                class Request implements IRequest {
+
+                    public server?: (berty.messenger.v1.IPushServer|null);
+                    public static create(properties?: berty.messenger.v1.PushSetServer.IRequest): berty.messenger.v1.PushSetServer.Request;
+                    public static encode(message: berty.messenger.v1.PushSetServer.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.messenger.v1.PushSetServer.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.PushSetServer.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.PushSetServer.Request;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.PushSetServer.Request;
+                    public static toObject(message: berty.messenger.v1.PushSetServer.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+
+                interface IReply {
+                }
+
+                class Reply implements IReply {
+
+                    public static create(properties?: berty.messenger.v1.PushSetServer.IReply): berty.messenger.v1.PushSetServer.Reply;
+                    public static encode(message: berty.messenger.v1.PushSetServer.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: berty.messenger.v1.PushSetServer.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.PushSetServer.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.PushSetServer.Reply;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): berty.messenger.v1.PushSetServer.Reply;
+                    public static toObject(message: berty.messenger.v1.PushSetServer.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+            }
+
+            interface IAuthExchangeResponse {
+                accessToken?: (string|null);
+                scope?: (string|null);
+                error?: (string|null);
+                errorDescription?: (string|null);
+                services?: ({ [k: string]: string }|null);
+            }
+
+            class AuthExchangeResponse implements IAuthExchangeResponse {
+
+                public accessToken: string;
+                public scope: string;
+                public error: string;
+                public errorDescription: string;
+                public services: { [k: string]: string };
+                public static create(properties?: berty.messenger.v1.IAuthExchangeResponse): berty.messenger.v1.AuthExchangeResponse;
+                public static encode(message: berty.messenger.v1.IAuthExchangeResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.messenger.v1.IAuthExchangeResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.AuthExchangeResponse;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.AuthExchangeResponse;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.messenger.v1.AuthExchangeResponse;
+                public static toObject(message: berty.messenger.v1.AuthExchangeResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            interface IServicesTokenCode {
+                services?: (string[]|null);
+                codeChallenge?: (string|null);
+                tokenId?: (string|null);
+            }
+
+            class ServicesTokenCode implements IServicesTokenCode {
+
+                public services: string[];
+                public codeChallenge: string;
+                public tokenId: string;
+                public static create(properties?: berty.messenger.v1.IServicesTokenCode): berty.messenger.v1.ServicesTokenCode;
+                public static encode(message: berty.messenger.v1.IServicesTokenCode, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: berty.messenger.v1.IServicesTokenCode, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): berty.messenger.v1.ServicesTokenCode;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): berty.messenger.v1.ServicesTokenCode;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): berty.messenger.v1.ServicesTokenCode;
+                public static toObject(message: berty.messenger.v1.ServicesTokenCode, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
             }
         }
     }
@@ -6676,6 +7844,10 @@ export namespace weshnet {
                 public contactRequestAccept(request: weshnet.protocol.v1.ContactRequestAccept.IRequest): Promise<weshnet.protocol.v1.ContactRequestAccept.Reply>;
                 public contactRequestDiscard(request: weshnet.protocol.v1.ContactRequestDiscard.IRequest, callback: weshnet.protocol.v1.ProtocolService.ContactRequestDiscardCallback): void;
                 public contactRequestDiscard(request: weshnet.protocol.v1.ContactRequestDiscard.IRequest): Promise<weshnet.protocol.v1.ContactRequestDiscard.Reply>;
+                public shareContact(request: weshnet.protocol.v1.ShareContact.IRequest, callback: weshnet.protocol.v1.ProtocolService.ShareContactCallback): void;
+                public shareContact(request: weshnet.protocol.v1.ShareContact.IRequest): Promise<weshnet.protocol.v1.ShareContact.Reply>;
+                public decodeContact(request: weshnet.protocol.v1.DecodeContact.IRequest, callback: weshnet.protocol.v1.ProtocolService.DecodeContactCallback): void;
+                public decodeContact(request: weshnet.protocol.v1.DecodeContact.IRequest): Promise<weshnet.protocol.v1.DecodeContact.Reply>;
                 public contactBlock(request: weshnet.protocol.v1.ContactBlock.IRequest, callback: weshnet.protocol.v1.ProtocolService.ContactBlockCallback): void;
                 public contactBlock(request: weshnet.protocol.v1.ContactBlock.IRequest): Promise<weshnet.protocol.v1.ContactBlock.Reply>;
                 public contactUnblock(request: weshnet.protocol.v1.ContactUnblock.IRequest, callback: weshnet.protocol.v1.ProtocolService.ContactUnblockCallback): void;
@@ -6716,36 +7888,22 @@ export namespace weshnet {
                 public debugInspectGroupStore(request: weshnet.protocol.v1.DebugInspectGroupStore.IRequest): Promise<weshnet.protocol.v1.DebugInspectGroupStore.Reply>;
                 public debugGroup(request: weshnet.protocol.v1.DebugGroup.IRequest, callback: weshnet.protocol.v1.ProtocolService.DebugGroupCallback): void;
                 public debugGroup(request: weshnet.protocol.v1.DebugGroup.IRequest): Promise<weshnet.protocol.v1.DebugGroup.Reply>;
-                public debugAuthServiceSetToken(request: weshnet.protocol.v1.DebugAuthServiceSetToken.IRequest, callback: weshnet.protocol.v1.ProtocolService.DebugAuthServiceSetTokenCallback): void;
-                public debugAuthServiceSetToken(request: weshnet.protocol.v1.DebugAuthServiceSetToken.IRequest): Promise<weshnet.protocol.v1.DebugAuthServiceSetToken.Reply>;
                 public systemInfo(request: weshnet.protocol.v1.SystemInfo.IRequest, callback: weshnet.protocol.v1.ProtocolService.SystemInfoCallback): void;
                 public systemInfo(request: weshnet.protocol.v1.SystemInfo.IRequest): Promise<weshnet.protocol.v1.SystemInfo.Reply>;
-                public authServiceInitFlow(request: weshnet.protocol.v1.AuthServiceInitFlow.IRequest, callback: weshnet.protocol.v1.ProtocolService.AuthServiceInitFlowCallback): void;
-                public authServiceInitFlow(request: weshnet.protocol.v1.AuthServiceInitFlow.IRequest): Promise<weshnet.protocol.v1.AuthServiceInitFlow.Reply>;
-                public authServiceCompleteFlow(request: weshnet.protocol.v1.AuthServiceCompleteFlow.IRequest, callback: weshnet.protocol.v1.ProtocolService.AuthServiceCompleteFlowCallback): void;
-                public authServiceCompleteFlow(request: weshnet.protocol.v1.AuthServiceCompleteFlow.IRequest): Promise<weshnet.protocol.v1.AuthServiceCompleteFlow.Reply>;
                 public credentialVerificationServiceInitFlow(request: weshnet.protocol.v1.CredentialVerificationServiceInitFlow.IRequest, callback: weshnet.protocol.v1.ProtocolService.CredentialVerificationServiceInitFlowCallback): void;
                 public credentialVerificationServiceInitFlow(request: weshnet.protocol.v1.CredentialVerificationServiceInitFlow.IRequest): Promise<weshnet.protocol.v1.CredentialVerificationServiceInitFlow.Reply>;
                 public credentialVerificationServiceCompleteFlow(request: weshnet.protocol.v1.CredentialVerificationServiceCompleteFlow.IRequest, callback: weshnet.protocol.v1.ProtocolService.CredentialVerificationServiceCompleteFlowCallback): void;
                 public credentialVerificationServiceCompleteFlow(request: weshnet.protocol.v1.CredentialVerificationServiceCompleteFlow.IRequest): Promise<weshnet.protocol.v1.CredentialVerificationServiceCompleteFlow.Reply>;
                 public verifiedCredentialsList(request: weshnet.protocol.v1.VerifiedCredentialsList.IRequest, callback: weshnet.protocol.v1.ProtocolService.VerifiedCredentialsListCallback): void;
                 public verifiedCredentialsList(request: weshnet.protocol.v1.VerifiedCredentialsList.IRequest): Promise<weshnet.protocol.v1.VerifiedCredentialsList.Reply>;
-                public servicesTokenList(request: weshnet.protocol.v1.ServicesTokenList.IRequest, callback: weshnet.protocol.v1.ProtocolService.ServicesTokenListCallback): void;
-                public servicesTokenList(request: weshnet.protocol.v1.ServicesTokenList.IRequest): Promise<weshnet.protocol.v1.ServicesTokenList.Reply>;
                 public replicationServiceRegisterGroup(request: weshnet.protocol.v1.ReplicationServiceRegisterGroup.IRequest, callback: weshnet.protocol.v1.ProtocolService.ReplicationServiceRegisterGroupCallback): void;
                 public replicationServiceRegisterGroup(request: weshnet.protocol.v1.ReplicationServiceRegisterGroup.IRequest): Promise<weshnet.protocol.v1.ReplicationServiceRegisterGroup.Reply>;
                 public peerList(request: weshnet.protocol.v1.PeerList.IRequest, callback: weshnet.protocol.v1.ProtocolService.PeerListCallback): void;
                 public peerList(request: weshnet.protocol.v1.PeerList.IRequest): Promise<weshnet.protocol.v1.PeerList.Reply>;
-                public pushReceive(request: weshnet.protocol.v1.PushReceive.IRequest, callback: weshnet.protocol.v1.ProtocolService.PushReceiveCallback): void;
-                public pushReceive(request: weshnet.protocol.v1.PushReceive.IRequest): Promise<weshnet.protocol.v1.PushReceive.Reply>;
-                public pushSend(request: weshnet.protocol.v1.PushSend.IRequest, callback: weshnet.protocol.v1.ProtocolService.PushSendCallback): void;
-                public pushSend(request: weshnet.protocol.v1.PushSend.IRequest): Promise<weshnet.protocol.v1.PushSend.Reply>;
-                public pushShareToken(request: weshnet.protocol.v1.PushShareToken.IRequest, callback: weshnet.protocol.v1.ProtocolService.PushShareTokenCallback): void;
-                public pushShareToken(request: weshnet.protocol.v1.PushShareToken.IRequest): Promise<weshnet.protocol.v1.PushShareToken.Reply>;
-                public pushSetDeviceToken(request: weshnet.protocol.v1.PushSetDeviceToken.IRequest, callback: weshnet.protocol.v1.ProtocolService.PushSetDeviceTokenCallback): void;
-                public pushSetDeviceToken(request: weshnet.protocol.v1.PushSetDeviceToken.IRequest): Promise<weshnet.protocol.v1.PushSetDeviceToken.Reply>;
-                public pushSetServer(request: weshnet.protocol.v1.PushSetServer.IRequest, callback: weshnet.protocol.v1.ProtocolService.PushSetServerCallback): void;
-                public pushSetServer(request: weshnet.protocol.v1.PushSetServer.IRequest): Promise<weshnet.protocol.v1.PushSetServer.Reply>;
+                public outOfStoreReceive(request: weshnet.protocol.v1.OutOfStoreReceive.IRequest, callback: weshnet.protocol.v1.ProtocolService.OutOfStoreReceiveCallback): void;
+                public outOfStoreReceive(request: weshnet.protocol.v1.OutOfStoreReceive.IRequest): Promise<weshnet.protocol.v1.OutOfStoreReceive.Reply>;
+                public outOfStoreSeal(request: weshnet.protocol.v1.OutOfStoreSeal.IRequest, callback: weshnet.protocol.v1.ProtocolService.OutOfStoreSealCallback): void;
+                public outOfStoreSeal(request: weshnet.protocol.v1.OutOfStoreSeal.IRequest): Promise<weshnet.protocol.v1.OutOfStoreSeal.Reply>;
                 public refreshContactRequest(request: weshnet.protocol.v1.RefreshContactRequest.IRequest, callback: weshnet.protocol.v1.ProtocolService.RefreshContactRequestCallback): void;
                 public refreshContactRequest(request: weshnet.protocol.v1.RefreshContactRequest.IRequest): Promise<weshnet.protocol.v1.RefreshContactRequest.Reply>;
             }
@@ -6769,6 +7927,10 @@ export namespace weshnet {
                 type ContactRequestAcceptCallback = (error: (Error|null), response?: weshnet.protocol.v1.ContactRequestAccept.Reply) => void;
 
                 type ContactRequestDiscardCallback = (error: (Error|null), response?: weshnet.protocol.v1.ContactRequestDiscard.Reply) => void;
+
+                type ShareContactCallback = (error: (Error|null), response?: weshnet.protocol.v1.ShareContact.Reply) => void;
+
+                type DecodeContactCallback = (error: (Error|null), response?: weshnet.protocol.v1.DecodeContact.Reply) => void;
 
                 type ContactBlockCallback = (error: (Error|null), response?: weshnet.protocol.v1.ContactBlock.Reply) => void;
 
@@ -6810,13 +7972,7 @@ export namespace weshnet {
 
                 type DebugGroupCallback = (error: (Error|null), response?: weshnet.protocol.v1.DebugGroup.Reply) => void;
 
-                type DebugAuthServiceSetTokenCallback = (error: (Error|null), response?: weshnet.protocol.v1.DebugAuthServiceSetToken.Reply) => void;
-
                 type SystemInfoCallback = (error: (Error|null), response?: weshnet.protocol.v1.SystemInfo.Reply) => void;
-
-                type AuthServiceInitFlowCallback = (error: (Error|null), response?: weshnet.protocol.v1.AuthServiceInitFlow.Reply) => void;
-
-                type AuthServiceCompleteFlowCallback = (error: (Error|null), response?: weshnet.protocol.v1.AuthServiceCompleteFlow.Reply) => void;
 
                 type CredentialVerificationServiceInitFlowCallback = (error: (Error|null), response?: weshnet.protocol.v1.CredentialVerificationServiceInitFlow.Reply) => void;
 
@@ -6824,21 +7980,13 @@ export namespace weshnet {
 
                 type VerifiedCredentialsListCallback = (error: (Error|null), response?: weshnet.protocol.v1.VerifiedCredentialsList.Reply) => void;
 
-                type ServicesTokenListCallback = (error: (Error|null), response?: weshnet.protocol.v1.ServicesTokenList.Reply) => void;
-
                 type ReplicationServiceRegisterGroupCallback = (error: (Error|null), response?: weshnet.protocol.v1.ReplicationServiceRegisterGroup.Reply) => void;
 
                 type PeerListCallback = (error: (Error|null), response?: weshnet.protocol.v1.PeerList.Reply) => void;
 
-                type PushReceiveCallback = (error: (Error|null), response?: weshnet.protocol.v1.PushReceive.Reply) => void;
+                type OutOfStoreReceiveCallback = (error: (Error|null), response?: weshnet.protocol.v1.OutOfStoreReceive.Reply) => void;
 
-                type PushSendCallback = (error: (Error|null), response?: weshnet.protocol.v1.PushSend.Reply) => void;
-
-                type PushShareTokenCallback = (error: (Error|null), response?: weshnet.protocol.v1.PushShareToken.Reply) => void;
-
-                type PushSetDeviceTokenCallback = (error: (Error|null), response?: weshnet.protocol.v1.PushSetDeviceToken.Reply) => void;
-
-                type PushSetServerCallback = (error: (Error|null), response?: weshnet.protocol.v1.PushSetServer.Reply) => void;
+                type OutOfStoreSealCallback = (error: (Error|null), response?: weshnet.protocol.v1.OutOfStoreSeal.Reply) => void;
 
                 type RefreshContactRequestCallback = (error: (Error|null), response?: weshnet.protocol.v1.RefreshContactRequest.Reply) => void;
             }
@@ -6853,7 +8001,7 @@ export namespace weshnet {
             enum EventType {
                 EventTypeUndefined = 0,
                 EventTypeGroupMemberDeviceAdded = 1,
-                EventTypeGroupDeviceSecretAdded = 2,
+                EventTypeGroupDeviceChainKeyAdded = 2,
                 EventTypeAccountGroupJoined = 101,
                 EventTypeAccountGroupLeft = 102,
                 EventTypeAccountContactRequestDisabled = 103,
@@ -6870,12 +8018,7 @@ export namespace weshnet {
                 EventTypeMultiMemberGroupAliasResolverAdded = 301,
                 EventTypeMultiMemberGroupInitialMemberAnnounced = 302,
                 EventTypeMultiMemberGroupAdminRoleGranted = 303,
-                EventTypeAccountServiceTokenAdded = 401,
-                EventTypeAccountServiceTokenRemoved = 402,
                 EventTypeGroupReplicating = 403,
-                EventTypePushMemberTokenUpdate = 404,
-                EventTypePushDeviceTokenRegistered = 405,
-                EventTypePushDeviceServerRegistered = 406,
                 EventTypeAccountVerifiedCredentialRegistered = 500,
                 EventTypeGroupMetadataPayloadSent = 1001
             }
@@ -7108,167 +8251,167 @@ export namespace weshnet {
                 public toJSON(): { [k: string]: any };
             }
 
-            interface IAppMetadata {
+            interface IGroupMetadataPayloadSent {
                 devicePk?: (Uint8Array|null);
                 message?: (Uint8Array|null);
             }
 
-            class AppMetadata implements IAppMetadata {
+            class GroupMetadataPayloadSent implements IGroupMetadataPayloadSent {
 
                 public devicePk: Uint8Array;
                 public message: Uint8Array;
-                public static create(properties?: weshnet.protocol.v1.IAppMetadata): weshnet.protocol.v1.AppMetadata;
-                public static encode(message: weshnet.protocol.v1.IAppMetadata, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: weshnet.protocol.v1.IAppMetadata, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.protocol.v1.AppMetadata;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.protocol.v1.AppMetadata;
+                public static create(properties?: weshnet.protocol.v1.IGroupMetadataPayloadSent): weshnet.protocol.v1.GroupMetadataPayloadSent;
+                public static encode(message: weshnet.protocol.v1.IGroupMetadataPayloadSent, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: weshnet.protocol.v1.IGroupMetadataPayloadSent, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.protocol.v1.GroupMetadataPayloadSent;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.protocol.v1.GroupMetadataPayloadSent;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.AppMetadata;
-                public static toObject(message: weshnet.protocol.v1.AppMetadata, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.GroupMetadataPayloadSent;
+                public static toObject(message: weshnet.protocol.v1.GroupMetadataPayloadSent, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
-            interface IContactAddAliasKey {
+            interface IContactAliasKeyAdded {
                 devicePk?: (Uint8Array|null);
                 aliasPk?: (Uint8Array|null);
             }
 
-            class ContactAddAliasKey implements IContactAddAliasKey {
+            class ContactAliasKeyAdded implements IContactAliasKeyAdded {
 
                 public devicePk: Uint8Array;
                 public aliasPk: Uint8Array;
-                public static create(properties?: weshnet.protocol.v1.IContactAddAliasKey): weshnet.protocol.v1.ContactAddAliasKey;
-                public static encode(message: weshnet.protocol.v1.IContactAddAliasKey, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: weshnet.protocol.v1.IContactAddAliasKey, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.protocol.v1.ContactAddAliasKey;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.protocol.v1.ContactAddAliasKey;
+                public static create(properties?: weshnet.protocol.v1.IContactAliasKeyAdded): weshnet.protocol.v1.ContactAliasKeyAdded;
+                public static encode(message: weshnet.protocol.v1.IContactAliasKeyAdded, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: weshnet.protocol.v1.IContactAliasKeyAdded, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.protocol.v1.ContactAliasKeyAdded;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.protocol.v1.ContactAliasKeyAdded;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.ContactAddAliasKey;
-                public static toObject(message: weshnet.protocol.v1.ContactAddAliasKey, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.ContactAliasKeyAdded;
+                public static toObject(message: weshnet.protocol.v1.ContactAliasKeyAdded, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
-            interface IGroupAddMemberDevice {
+            interface IGroupMemberDeviceAdded {
                 memberPk?: (Uint8Array|null);
                 devicePk?: (Uint8Array|null);
                 memberSig?: (Uint8Array|null);
             }
 
-            class GroupAddMemberDevice implements IGroupAddMemberDevice {
+            class GroupMemberDeviceAdded implements IGroupMemberDeviceAdded {
 
                 public memberPk: Uint8Array;
                 public devicePk: Uint8Array;
                 public memberSig: Uint8Array;
-                public static create(properties?: weshnet.protocol.v1.IGroupAddMemberDevice): weshnet.protocol.v1.GroupAddMemberDevice;
-                public static encode(message: weshnet.protocol.v1.IGroupAddMemberDevice, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: weshnet.protocol.v1.IGroupAddMemberDevice, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.protocol.v1.GroupAddMemberDevice;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.protocol.v1.GroupAddMemberDevice;
+                public static create(properties?: weshnet.protocol.v1.IGroupMemberDeviceAdded): weshnet.protocol.v1.GroupMemberDeviceAdded;
+                public static encode(message: weshnet.protocol.v1.IGroupMemberDeviceAdded, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: weshnet.protocol.v1.IGroupMemberDeviceAdded, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.protocol.v1.GroupMemberDeviceAdded;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.protocol.v1.GroupMemberDeviceAdded;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.GroupAddMemberDevice;
-                public static toObject(message: weshnet.protocol.v1.GroupAddMemberDevice, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.GroupMemberDeviceAdded;
+                public static toObject(message: weshnet.protocol.v1.GroupMemberDeviceAdded, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
-            interface IDeviceSecret {
+            interface IDeviceChainKey {
                 chainKey?: (Uint8Array|null);
                 counter?: (Long|null);
             }
 
-            class DeviceSecret implements IDeviceSecret {
+            class DeviceChainKey implements IDeviceChainKey {
 
                 public chainKey: Uint8Array;
                 public counter: Long;
-                public static create(properties?: weshnet.protocol.v1.IDeviceSecret): weshnet.protocol.v1.DeviceSecret;
-                public static encode(message: weshnet.protocol.v1.IDeviceSecret, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: weshnet.protocol.v1.IDeviceSecret, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.protocol.v1.DeviceSecret;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.protocol.v1.DeviceSecret;
+                public static create(properties?: weshnet.protocol.v1.IDeviceChainKey): weshnet.protocol.v1.DeviceChainKey;
+                public static encode(message: weshnet.protocol.v1.IDeviceChainKey, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: weshnet.protocol.v1.IDeviceChainKey, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.protocol.v1.DeviceChainKey;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.protocol.v1.DeviceChainKey;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.DeviceSecret;
-                public static toObject(message: weshnet.protocol.v1.DeviceSecret, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.DeviceChainKey;
+                public static toObject(message: weshnet.protocol.v1.DeviceChainKey, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
-            interface IGroupAddDeviceSecret {
+            interface IGroupDeviceChainKeyAdded {
                 devicePk?: (Uint8Array|null);
                 destMemberPk?: (Uint8Array|null);
                 payload?: (Uint8Array|null);
             }
 
-            class GroupAddDeviceSecret implements IGroupAddDeviceSecret {
+            class GroupDeviceChainKeyAdded implements IGroupDeviceChainKeyAdded {
 
                 public devicePk: Uint8Array;
                 public destMemberPk: Uint8Array;
                 public payload: Uint8Array;
-                public static create(properties?: weshnet.protocol.v1.IGroupAddDeviceSecret): weshnet.protocol.v1.GroupAddDeviceSecret;
-                public static encode(message: weshnet.protocol.v1.IGroupAddDeviceSecret, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: weshnet.protocol.v1.IGroupAddDeviceSecret, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.protocol.v1.GroupAddDeviceSecret;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.protocol.v1.GroupAddDeviceSecret;
+                public static create(properties?: weshnet.protocol.v1.IGroupDeviceChainKeyAdded): weshnet.protocol.v1.GroupDeviceChainKeyAdded;
+                public static encode(message: weshnet.protocol.v1.IGroupDeviceChainKeyAdded, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: weshnet.protocol.v1.IGroupDeviceChainKeyAdded, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.protocol.v1.GroupDeviceChainKeyAdded;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.protocol.v1.GroupDeviceChainKeyAdded;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.GroupAddDeviceSecret;
-                public static toObject(message: weshnet.protocol.v1.GroupAddDeviceSecret, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.GroupDeviceChainKeyAdded;
+                public static toObject(message: weshnet.protocol.v1.GroupDeviceChainKeyAdded, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
-            interface IMultiMemberGroupAddAliasResolver {
+            interface IMultiMemberGroupAliasResolverAdded {
                 devicePk?: (Uint8Array|null);
                 aliasResolver?: (Uint8Array|null);
                 aliasProof?: (Uint8Array|null);
             }
 
-            class MultiMemberGroupAddAliasResolver implements IMultiMemberGroupAddAliasResolver {
+            class MultiMemberGroupAliasResolverAdded implements IMultiMemberGroupAliasResolverAdded {
 
                 public devicePk: Uint8Array;
                 public aliasResolver: Uint8Array;
                 public aliasProof: Uint8Array;
-                public static create(properties?: weshnet.protocol.v1.IMultiMemberGroupAddAliasResolver): weshnet.protocol.v1.MultiMemberGroupAddAliasResolver;
-                public static encode(message: weshnet.protocol.v1.IMultiMemberGroupAddAliasResolver, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: weshnet.protocol.v1.IMultiMemberGroupAddAliasResolver, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.protocol.v1.MultiMemberGroupAddAliasResolver;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.protocol.v1.MultiMemberGroupAddAliasResolver;
+                public static create(properties?: weshnet.protocol.v1.IMultiMemberGroupAliasResolverAdded): weshnet.protocol.v1.MultiMemberGroupAliasResolverAdded;
+                public static encode(message: weshnet.protocol.v1.IMultiMemberGroupAliasResolverAdded, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: weshnet.protocol.v1.IMultiMemberGroupAliasResolverAdded, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.protocol.v1.MultiMemberGroupAliasResolverAdded;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.protocol.v1.MultiMemberGroupAliasResolverAdded;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.MultiMemberGroupAddAliasResolver;
-                public static toObject(message: weshnet.protocol.v1.MultiMemberGroupAddAliasResolver, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.MultiMemberGroupAliasResolverAdded;
+                public static toObject(message: weshnet.protocol.v1.MultiMemberGroupAliasResolverAdded, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
-            interface IMultiMemberGrantAdminRole {
+            interface IMultiMemberGroupAdminRoleGranted {
                 devicePk?: (Uint8Array|null);
                 granteeMemberPk?: (Uint8Array|null);
             }
 
-            class MultiMemberGrantAdminRole implements IMultiMemberGrantAdminRole {
+            class MultiMemberGroupAdminRoleGranted implements IMultiMemberGroupAdminRoleGranted {
 
                 public devicePk: Uint8Array;
                 public granteeMemberPk: Uint8Array;
-                public static create(properties?: weshnet.protocol.v1.IMultiMemberGrantAdminRole): weshnet.protocol.v1.MultiMemberGrantAdminRole;
-                public static encode(message: weshnet.protocol.v1.IMultiMemberGrantAdminRole, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: weshnet.protocol.v1.IMultiMemberGrantAdminRole, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.protocol.v1.MultiMemberGrantAdminRole;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.protocol.v1.MultiMemberGrantAdminRole;
+                public static create(properties?: weshnet.protocol.v1.IMultiMemberGroupAdminRoleGranted): weshnet.protocol.v1.MultiMemberGroupAdminRoleGranted;
+                public static encode(message: weshnet.protocol.v1.IMultiMemberGroupAdminRoleGranted, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: weshnet.protocol.v1.IMultiMemberGroupAdminRoleGranted, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.protocol.v1.MultiMemberGroupAdminRoleGranted;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.protocol.v1.MultiMemberGroupAdminRoleGranted;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.MultiMemberGrantAdminRole;
-                public static toObject(message: weshnet.protocol.v1.MultiMemberGrantAdminRole, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.MultiMemberGroupAdminRoleGranted;
+                public static toObject(message: weshnet.protocol.v1.MultiMemberGroupAdminRoleGranted, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
-            interface IMultiMemberInitialMember {
+            interface IMultiMemberGroupInitialMemberAnnounced {
                 memberPk?: (Uint8Array|null);
             }
 
-            class MultiMemberInitialMember implements IMultiMemberInitialMember {
+            class MultiMemberGroupInitialMemberAnnounced implements IMultiMemberGroupInitialMemberAnnounced {
 
                 public memberPk: Uint8Array;
-                public static create(properties?: weshnet.protocol.v1.IMultiMemberInitialMember): weshnet.protocol.v1.MultiMemberInitialMember;
-                public static encode(message: weshnet.protocol.v1.IMultiMemberInitialMember, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: weshnet.protocol.v1.IMultiMemberInitialMember, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.protocol.v1.MultiMemberInitialMember;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.protocol.v1.MultiMemberInitialMember;
+                public static create(properties?: weshnet.protocol.v1.IMultiMemberGroupInitialMemberAnnounced): weshnet.protocol.v1.MultiMemberGroupInitialMemberAnnounced;
+                public static encode(message: weshnet.protocol.v1.IMultiMemberGroupInitialMemberAnnounced, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: weshnet.protocol.v1.IMultiMemberGroupInitialMemberAnnounced, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.protocol.v1.MultiMemberGroupInitialMemberAnnounced;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.protocol.v1.MultiMemberGroupInitialMemberAnnounced;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.MultiMemberInitialMember;
-                public static toObject(message: weshnet.protocol.v1.MultiMemberInitialMember, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.MultiMemberGroupInitialMemberAnnounced;
+                public static toObject(message: weshnet.protocol.v1.MultiMemberGroupInitialMemberAnnounced, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
@@ -7408,113 +8551,113 @@ export namespace weshnet {
                 public toJSON(): { [k: string]: any };
             }
 
-            interface IAccountContactRequestEnqueued {
+            interface IAccountContactRequestOutgoingEnqueued {
                 devicePk?: (Uint8Array|null);
                 groupPk?: (Uint8Array|null);
                 contact?: (weshnet.protocol.v1.IShareableContact|null);
                 ownMetadata?: (Uint8Array|null);
             }
 
-            class AccountContactRequestEnqueued implements IAccountContactRequestEnqueued {
+            class AccountContactRequestOutgoingEnqueued implements IAccountContactRequestOutgoingEnqueued {
 
                 public devicePk: Uint8Array;
                 public groupPk: Uint8Array;
                 public contact?: (weshnet.protocol.v1.IShareableContact|null);
                 public ownMetadata: Uint8Array;
-                public static create(properties?: weshnet.protocol.v1.IAccountContactRequestEnqueued): weshnet.protocol.v1.AccountContactRequestEnqueued;
-                public static encode(message: weshnet.protocol.v1.IAccountContactRequestEnqueued, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: weshnet.protocol.v1.IAccountContactRequestEnqueued, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.protocol.v1.AccountContactRequestEnqueued;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.protocol.v1.AccountContactRequestEnqueued;
+                public static create(properties?: weshnet.protocol.v1.IAccountContactRequestOutgoingEnqueued): weshnet.protocol.v1.AccountContactRequestOutgoingEnqueued;
+                public static encode(message: weshnet.protocol.v1.IAccountContactRequestOutgoingEnqueued, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: weshnet.protocol.v1.IAccountContactRequestOutgoingEnqueued, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.protocol.v1.AccountContactRequestOutgoingEnqueued;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.protocol.v1.AccountContactRequestOutgoingEnqueued;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.AccountContactRequestEnqueued;
-                public static toObject(message: weshnet.protocol.v1.AccountContactRequestEnqueued, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.AccountContactRequestOutgoingEnqueued;
+                public static toObject(message: weshnet.protocol.v1.AccountContactRequestOutgoingEnqueued, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
-            interface IAccountContactRequestSent {
+            interface IAccountContactRequestOutgoingSent {
                 devicePk?: (Uint8Array|null);
                 contactPk?: (Uint8Array|null);
             }
 
-            class AccountContactRequestSent implements IAccountContactRequestSent {
+            class AccountContactRequestOutgoingSent implements IAccountContactRequestOutgoingSent {
 
                 public devicePk: Uint8Array;
                 public contactPk: Uint8Array;
-                public static create(properties?: weshnet.protocol.v1.IAccountContactRequestSent): weshnet.protocol.v1.AccountContactRequestSent;
-                public static encode(message: weshnet.protocol.v1.IAccountContactRequestSent, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: weshnet.protocol.v1.IAccountContactRequestSent, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.protocol.v1.AccountContactRequestSent;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.protocol.v1.AccountContactRequestSent;
+                public static create(properties?: weshnet.protocol.v1.IAccountContactRequestOutgoingSent): weshnet.protocol.v1.AccountContactRequestOutgoingSent;
+                public static encode(message: weshnet.protocol.v1.IAccountContactRequestOutgoingSent, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: weshnet.protocol.v1.IAccountContactRequestOutgoingSent, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.protocol.v1.AccountContactRequestOutgoingSent;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.protocol.v1.AccountContactRequestOutgoingSent;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.AccountContactRequestSent;
-                public static toObject(message: weshnet.protocol.v1.AccountContactRequestSent, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.AccountContactRequestOutgoingSent;
+                public static toObject(message: weshnet.protocol.v1.AccountContactRequestOutgoingSent, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
-            interface IAccountContactRequestReceived {
+            interface IAccountContactRequestIncomingReceived {
                 devicePk?: (Uint8Array|null);
                 contactPk?: (Uint8Array|null);
                 contactRendezvousSeed?: (Uint8Array|null);
                 contactMetadata?: (Uint8Array|null);
             }
 
-            class AccountContactRequestReceived implements IAccountContactRequestReceived {
+            class AccountContactRequestIncomingReceived implements IAccountContactRequestIncomingReceived {
 
                 public devicePk: Uint8Array;
                 public contactPk: Uint8Array;
                 public contactRendezvousSeed: Uint8Array;
                 public contactMetadata: Uint8Array;
-                public static create(properties?: weshnet.protocol.v1.IAccountContactRequestReceived): weshnet.protocol.v1.AccountContactRequestReceived;
-                public static encode(message: weshnet.protocol.v1.IAccountContactRequestReceived, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: weshnet.protocol.v1.IAccountContactRequestReceived, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.protocol.v1.AccountContactRequestReceived;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.protocol.v1.AccountContactRequestReceived;
+                public static create(properties?: weshnet.protocol.v1.IAccountContactRequestIncomingReceived): weshnet.protocol.v1.AccountContactRequestIncomingReceived;
+                public static encode(message: weshnet.protocol.v1.IAccountContactRequestIncomingReceived, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: weshnet.protocol.v1.IAccountContactRequestIncomingReceived, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.protocol.v1.AccountContactRequestIncomingReceived;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.protocol.v1.AccountContactRequestIncomingReceived;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.AccountContactRequestReceived;
-                public static toObject(message: weshnet.protocol.v1.AccountContactRequestReceived, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.AccountContactRequestIncomingReceived;
+                public static toObject(message: weshnet.protocol.v1.AccountContactRequestIncomingReceived, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
-            interface IAccountContactRequestDiscarded {
+            interface IAccountContactRequestIncomingDiscarded {
                 devicePk?: (Uint8Array|null);
                 contactPk?: (Uint8Array|null);
             }
 
-            class AccountContactRequestDiscarded implements IAccountContactRequestDiscarded {
+            class AccountContactRequestIncomingDiscarded implements IAccountContactRequestIncomingDiscarded {
 
                 public devicePk: Uint8Array;
                 public contactPk: Uint8Array;
-                public static create(properties?: weshnet.protocol.v1.IAccountContactRequestDiscarded): weshnet.protocol.v1.AccountContactRequestDiscarded;
-                public static encode(message: weshnet.protocol.v1.IAccountContactRequestDiscarded, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: weshnet.protocol.v1.IAccountContactRequestDiscarded, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.protocol.v1.AccountContactRequestDiscarded;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.protocol.v1.AccountContactRequestDiscarded;
+                public static create(properties?: weshnet.protocol.v1.IAccountContactRequestIncomingDiscarded): weshnet.protocol.v1.AccountContactRequestIncomingDiscarded;
+                public static encode(message: weshnet.protocol.v1.IAccountContactRequestIncomingDiscarded, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: weshnet.protocol.v1.IAccountContactRequestIncomingDiscarded, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.protocol.v1.AccountContactRequestIncomingDiscarded;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.protocol.v1.AccountContactRequestIncomingDiscarded;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.AccountContactRequestDiscarded;
-                public static toObject(message: weshnet.protocol.v1.AccountContactRequestDiscarded, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.AccountContactRequestIncomingDiscarded;
+                public static toObject(message: weshnet.protocol.v1.AccountContactRequestIncomingDiscarded, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
-            interface IAccountContactRequestAccepted {
+            interface IAccountContactRequestIncomingAccepted {
                 devicePk?: (Uint8Array|null);
                 contactPk?: (Uint8Array|null);
                 groupPk?: (Uint8Array|null);
             }
 
-            class AccountContactRequestAccepted implements IAccountContactRequestAccepted {
+            class AccountContactRequestIncomingAccepted implements IAccountContactRequestIncomingAccepted {
 
                 public devicePk: Uint8Array;
                 public contactPk: Uint8Array;
                 public groupPk: Uint8Array;
-                public static create(properties?: weshnet.protocol.v1.IAccountContactRequestAccepted): weshnet.protocol.v1.AccountContactRequestAccepted;
-                public static encode(message: weshnet.protocol.v1.IAccountContactRequestAccepted, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: weshnet.protocol.v1.IAccountContactRequestAccepted, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.protocol.v1.AccountContactRequestAccepted;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.protocol.v1.AccountContactRequestAccepted;
+                public static create(properties?: weshnet.protocol.v1.IAccountContactRequestIncomingAccepted): weshnet.protocol.v1.AccountContactRequestIncomingAccepted;
+                public static encode(message: weshnet.protocol.v1.IAccountContactRequestIncomingAccepted, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: weshnet.protocol.v1.IAccountContactRequestIncomingAccepted, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.protocol.v1.AccountContactRequestIncomingAccepted;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.protocol.v1.AccountContactRequestIncomingAccepted;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.AccountContactRequestAccepted;
-                public static toObject(message: weshnet.protocol.v1.AccountContactRequestAccepted, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.AccountContactRequestIncomingAccepted;
+                public static toObject(message: weshnet.protocol.v1.AccountContactRequestIncomingAccepted, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
@@ -7555,46 +8698,6 @@ export namespace weshnet {
                 public static verify(message: { [k: string]: any }): (string|null);
                 public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.AccountContactUnblocked;
                 public static toObject(message: weshnet.protocol.v1.AccountContactUnblocked, options?: $protobuf.IConversionOptions): { [k: string]: any };
-                public toJSON(): { [k: string]: any };
-            }
-
-            interface IAccountServiceTokenAdded {
-                devicePk?: (Uint8Array|null);
-                serviceToken?: (weshnet.protocol.v1.IServiceToken|null);
-            }
-
-            class AccountServiceTokenAdded implements IAccountServiceTokenAdded {
-
-                public devicePk: Uint8Array;
-                public serviceToken?: (weshnet.protocol.v1.IServiceToken|null);
-                public static create(properties?: weshnet.protocol.v1.IAccountServiceTokenAdded): weshnet.protocol.v1.AccountServiceTokenAdded;
-                public static encode(message: weshnet.protocol.v1.IAccountServiceTokenAdded, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: weshnet.protocol.v1.IAccountServiceTokenAdded, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.protocol.v1.AccountServiceTokenAdded;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.protocol.v1.AccountServiceTokenAdded;
-                public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.AccountServiceTokenAdded;
-                public static toObject(message: weshnet.protocol.v1.AccountServiceTokenAdded, options?: $protobuf.IConversionOptions): { [k: string]: any };
-                public toJSON(): { [k: string]: any };
-            }
-
-            interface IAccountServiceTokenRemoved {
-                devicePk?: (Uint8Array|null);
-                tokenId?: (string|null);
-            }
-
-            class AccountServiceTokenRemoved implements IAccountServiceTokenRemoved {
-
-                public devicePk: Uint8Array;
-                public tokenId: string;
-                public static create(properties?: weshnet.protocol.v1.IAccountServiceTokenRemoved): weshnet.protocol.v1.AccountServiceTokenRemoved;
-                public static encode(message: weshnet.protocol.v1.IAccountServiceTokenRemoved, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: weshnet.protocol.v1.IAccountServiceTokenRemoved, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.protocol.v1.AccountServiceTokenRemoved;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.protocol.v1.AccountServiceTokenRemoved;
-                public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.AccountServiceTokenRemoved;
-                public static toObject(message: weshnet.protocol.v1.AccountServiceTokenRemoved, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
@@ -7724,8 +8827,6 @@ export namespace weshnet {
                     wifiP2pEnabled?: (weshnet.protocol.v1.ServiceGetConfiguration.SettingState|null);
                     mdnsEnabled?: (weshnet.protocol.v1.ServiceGetConfiguration.SettingState|null);
                     relayEnabled?: (weshnet.protocol.v1.ServiceGetConfiguration.SettingState|null);
-                    devicePushToken?: (weshnet.protocol.v1.IPushServiceReceiver|null);
-                    devicePushServer?: (weshnet.protocol.v1.IPushServer|null);
                 }
 
                 class Reply implements IReply {
@@ -7739,8 +8840,6 @@ export namespace weshnet {
                     public wifiP2pEnabled: weshnet.protocol.v1.ServiceGetConfiguration.SettingState;
                     public mdnsEnabled: weshnet.protocol.v1.ServiceGetConfiguration.SettingState;
                     public relayEnabled: weshnet.protocol.v1.ServiceGetConfiguration.SettingState;
-                    public devicePushToken?: (weshnet.protocol.v1.IPushServiceReceiver|null);
-                    public devicePushServer?: (weshnet.protocol.v1.IPushServer|null);
                     public static create(properties?: weshnet.protocol.v1.ServiceGetConfiguration.IReply): weshnet.protocol.v1.ServiceGetConfiguration.Reply;
                     public static encode(message: weshnet.protocol.v1.ServiceGetConfiguration.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: weshnet.protocol.v1.ServiceGetConfiguration.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -8122,6 +9221,114 @@ export namespace weshnet {
                     public static verify(message: { [k: string]: any }): (string|null);
                     public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.ContactRequestDiscard.Reply;
                     public static toObject(message: weshnet.protocol.v1.ContactRequestDiscard.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+            }
+
+            interface IShareContact {
+            }
+
+            class ShareContact implements IShareContact {
+
+                public static create(properties?: weshnet.protocol.v1.IShareContact): weshnet.protocol.v1.ShareContact;
+                public static encode(message: weshnet.protocol.v1.IShareContact, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: weshnet.protocol.v1.IShareContact, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.protocol.v1.ShareContact;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.protocol.v1.ShareContact;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.ShareContact;
+                public static toObject(message: weshnet.protocol.v1.ShareContact, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            namespace ShareContact {
+
+                interface IRequest {
+                }
+
+                class Request implements IRequest {
+
+                    public static create(properties?: weshnet.protocol.v1.ShareContact.IRequest): weshnet.protocol.v1.ShareContact.Request;
+                    public static encode(message: weshnet.protocol.v1.ShareContact.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: weshnet.protocol.v1.ShareContact.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.protocol.v1.ShareContact.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.protocol.v1.ShareContact.Request;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.ShareContact.Request;
+                    public static toObject(message: weshnet.protocol.v1.ShareContact.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+
+                interface IReply {
+                    encodedContact?: (Uint8Array|null);
+                }
+
+                class Reply implements IReply {
+
+                    public encodedContact: Uint8Array;
+                    public static create(properties?: weshnet.protocol.v1.ShareContact.IReply): weshnet.protocol.v1.ShareContact.Reply;
+                    public static encode(message: weshnet.protocol.v1.ShareContact.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: weshnet.protocol.v1.ShareContact.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.protocol.v1.ShareContact.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.protocol.v1.ShareContact.Reply;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.ShareContact.Reply;
+                    public static toObject(message: weshnet.protocol.v1.ShareContact.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+            }
+
+            interface IDecodeContact {
+            }
+
+            class DecodeContact implements IDecodeContact {
+
+                public static create(properties?: weshnet.protocol.v1.IDecodeContact): weshnet.protocol.v1.DecodeContact;
+                public static encode(message: weshnet.protocol.v1.IDecodeContact, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: weshnet.protocol.v1.IDecodeContact, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.protocol.v1.DecodeContact;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.protocol.v1.DecodeContact;
+                public static verify(message: { [k: string]: any }): (string|null);
+                public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.DecodeContact;
+                public static toObject(message: weshnet.protocol.v1.DecodeContact, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public toJSON(): { [k: string]: any };
+            }
+
+            namespace DecodeContact {
+
+                interface IRequest {
+                    encodedContact?: (Uint8Array|null);
+                }
+
+                class Request implements IRequest {
+
+                    public encodedContact: Uint8Array;
+                    public static create(properties?: weshnet.protocol.v1.DecodeContact.IRequest): weshnet.protocol.v1.DecodeContact.Request;
+                    public static encode(message: weshnet.protocol.v1.DecodeContact.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: weshnet.protocol.v1.DecodeContact.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.protocol.v1.DecodeContact.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.protocol.v1.DecodeContact.Request;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.DecodeContact.Request;
+                    public static toObject(message: weshnet.protocol.v1.DecodeContact.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+
+                interface IReply {
+                    contact?: (weshnet.protocol.v1.IShareableContact|null);
+                }
+
+                class Reply implements IReply {
+
+                    public contact?: (weshnet.protocol.v1.IShareableContact|null);
+                    public static create(properties?: weshnet.protocol.v1.DecodeContact.IReply): weshnet.protocol.v1.DecodeContact.Reply;
+                    public static encode(message: weshnet.protocol.v1.DecodeContact.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: weshnet.protocol.v1.DecodeContact.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.protocol.v1.DecodeContact.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.protocol.v1.DecodeContact.Reply;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.DecodeContact.Reply;
+                    public static toObject(message: weshnet.protocol.v1.DecodeContact.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
                     public toJSON(): { [k: string]: any };
                 }
             }
@@ -9339,87 +10546,6 @@ export namespace weshnet {
                 }
             }
 
-            interface IAuthExchangeResponse {
-                accessToken?: (string|null);
-                scope?: (string|null);
-                error?: (string|null);
-                errorDescription?: (string|null);
-                services?: ({ [k: string]: string }|null);
-            }
-
-            class AuthExchangeResponse implements IAuthExchangeResponse {
-
-                public accessToken: string;
-                public scope: string;
-                public error: string;
-                public errorDescription: string;
-                public services: { [k: string]: string };
-                public static create(properties?: weshnet.protocol.v1.IAuthExchangeResponse): weshnet.protocol.v1.AuthExchangeResponse;
-                public static encode(message: weshnet.protocol.v1.IAuthExchangeResponse, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: weshnet.protocol.v1.IAuthExchangeResponse, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.protocol.v1.AuthExchangeResponse;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.protocol.v1.AuthExchangeResponse;
-                public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.AuthExchangeResponse;
-                public static toObject(message: weshnet.protocol.v1.AuthExchangeResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
-                public toJSON(): { [k: string]: any };
-            }
-
-            interface IDebugAuthServiceSetToken {
-            }
-
-            class DebugAuthServiceSetToken implements IDebugAuthServiceSetToken {
-
-                public static create(properties?: weshnet.protocol.v1.IDebugAuthServiceSetToken): weshnet.protocol.v1.DebugAuthServiceSetToken;
-                public static encode(message: weshnet.protocol.v1.IDebugAuthServiceSetToken, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: weshnet.protocol.v1.IDebugAuthServiceSetToken, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.protocol.v1.DebugAuthServiceSetToken;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.protocol.v1.DebugAuthServiceSetToken;
-                public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.DebugAuthServiceSetToken;
-                public static toObject(message: weshnet.protocol.v1.DebugAuthServiceSetToken, options?: $protobuf.IConversionOptions): { [k: string]: any };
-                public toJSON(): { [k: string]: any };
-            }
-
-            namespace DebugAuthServiceSetToken {
-
-                interface IRequest {
-                    token?: (weshnet.protocol.v1.IAuthExchangeResponse|null);
-                    authenticationUrl?: (string|null);
-                }
-
-                class Request implements IRequest {
-
-                    public token?: (weshnet.protocol.v1.IAuthExchangeResponse|null);
-                    public authenticationUrl: string;
-                    public static create(properties?: weshnet.protocol.v1.DebugAuthServiceSetToken.IRequest): weshnet.protocol.v1.DebugAuthServiceSetToken.Request;
-                    public static encode(message: weshnet.protocol.v1.DebugAuthServiceSetToken.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: weshnet.protocol.v1.DebugAuthServiceSetToken.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.protocol.v1.DebugAuthServiceSetToken.Request;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.protocol.v1.DebugAuthServiceSetToken.Request;
-                    public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.DebugAuthServiceSetToken.Request;
-                    public static toObject(message: weshnet.protocol.v1.DebugAuthServiceSetToken.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
-                    public toJSON(): { [k: string]: any };
-                }
-
-                interface IReply {
-                }
-
-                class Reply implements IReply {
-
-                    public static create(properties?: weshnet.protocol.v1.DebugAuthServiceSetToken.IReply): weshnet.protocol.v1.DebugAuthServiceSetToken.Reply;
-                    public static encode(message: weshnet.protocol.v1.DebugAuthServiceSetToken.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: weshnet.protocol.v1.DebugAuthServiceSetToken.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.protocol.v1.DebugAuthServiceSetToken.Reply;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.protocol.v1.DebugAuthServiceSetToken.Reply;
-                    public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.DebugAuthServiceSetToken.Reply;
-                    public static toObject(message: weshnet.protocol.v1.DebugAuthServiceSetToken.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
-                    public toJSON(): { [k: string]: any };
-                }
-            }
-
             enum DebugInspectGroupLogType {
                 DebugInspectGroupLogTypeUndefined = 0,
                 DebugInspectGroupLogTypeMessage = 1,
@@ -9500,120 +10626,6 @@ export namespace weshnet {
                 public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.ServiceToken;
                 public static toObject(message: weshnet.protocol.v1.ServiceToken, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-            }
-
-            interface IAuthServiceCompleteFlow {
-            }
-
-            class AuthServiceCompleteFlow implements IAuthServiceCompleteFlow {
-
-                public static create(properties?: weshnet.protocol.v1.IAuthServiceCompleteFlow): weshnet.protocol.v1.AuthServiceCompleteFlow;
-                public static encode(message: weshnet.protocol.v1.IAuthServiceCompleteFlow, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: weshnet.protocol.v1.IAuthServiceCompleteFlow, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.protocol.v1.AuthServiceCompleteFlow;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.protocol.v1.AuthServiceCompleteFlow;
-                public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.AuthServiceCompleteFlow;
-                public static toObject(message: weshnet.protocol.v1.AuthServiceCompleteFlow, options?: $protobuf.IConversionOptions): { [k: string]: any };
-                public toJSON(): { [k: string]: any };
-            }
-
-            namespace AuthServiceCompleteFlow {
-
-                interface IRequest {
-                    callbackUrl?: (string|null);
-                }
-
-                class Request implements IRequest {
-
-                    public callbackUrl: string;
-                    public static create(properties?: weshnet.protocol.v1.AuthServiceCompleteFlow.IRequest): weshnet.protocol.v1.AuthServiceCompleteFlow.Request;
-                    public static encode(message: weshnet.protocol.v1.AuthServiceCompleteFlow.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: weshnet.protocol.v1.AuthServiceCompleteFlow.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.protocol.v1.AuthServiceCompleteFlow.Request;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.protocol.v1.AuthServiceCompleteFlow.Request;
-                    public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.AuthServiceCompleteFlow.Request;
-                    public static toObject(message: weshnet.protocol.v1.AuthServiceCompleteFlow.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
-                    public toJSON(): { [k: string]: any };
-                }
-
-                interface IReply {
-                    tokenId?: (string|null);
-                }
-
-                class Reply implements IReply {
-
-                    public tokenId: string;
-                    public static create(properties?: weshnet.protocol.v1.AuthServiceCompleteFlow.IReply): weshnet.protocol.v1.AuthServiceCompleteFlow.Reply;
-                    public static encode(message: weshnet.protocol.v1.AuthServiceCompleteFlow.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: weshnet.protocol.v1.AuthServiceCompleteFlow.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.protocol.v1.AuthServiceCompleteFlow.Reply;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.protocol.v1.AuthServiceCompleteFlow.Reply;
-                    public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.AuthServiceCompleteFlow.Reply;
-                    public static toObject(message: weshnet.protocol.v1.AuthServiceCompleteFlow.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
-                    public toJSON(): { [k: string]: any };
-                }
-            }
-
-            interface IAuthServiceInitFlow {
-            }
-
-            class AuthServiceInitFlow implements IAuthServiceInitFlow {
-
-                public static create(properties?: weshnet.protocol.v1.IAuthServiceInitFlow): weshnet.protocol.v1.AuthServiceInitFlow;
-                public static encode(message: weshnet.protocol.v1.IAuthServiceInitFlow, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: weshnet.protocol.v1.IAuthServiceInitFlow, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.protocol.v1.AuthServiceInitFlow;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.protocol.v1.AuthServiceInitFlow;
-                public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.AuthServiceInitFlow;
-                public static toObject(message: weshnet.protocol.v1.AuthServiceInitFlow, options?: $protobuf.IConversionOptions): { [k: string]: any };
-                public toJSON(): { [k: string]: any };
-            }
-
-            namespace AuthServiceInitFlow {
-
-                interface IRequest {
-                    authUrl?: (string|null);
-                    services?: (string[]|null);
-                }
-
-                class Request implements IRequest {
-
-                    public authUrl: string;
-                    public services: string[];
-                    public static create(properties?: weshnet.protocol.v1.AuthServiceInitFlow.IRequest): weshnet.protocol.v1.AuthServiceInitFlow.Request;
-                    public static encode(message: weshnet.protocol.v1.AuthServiceInitFlow.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: weshnet.protocol.v1.AuthServiceInitFlow.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.protocol.v1.AuthServiceInitFlow.Request;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.protocol.v1.AuthServiceInitFlow.Request;
-                    public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.AuthServiceInitFlow.Request;
-                    public static toObject(message: weshnet.protocol.v1.AuthServiceInitFlow.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
-                    public toJSON(): { [k: string]: any };
-                }
-
-                interface IReply {
-                    url?: (string|null);
-                    secureUrl?: (boolean|null);
-                }
-
-                class Reply implements IReply {
-
-                    public url: string;
-                    public secureUrl: boolean;
-                    public static create(properties?: weshnet.protocol.v1.AuthServiceInitFlow.IReply): weshnet.protocol.v1.AuthServiceInitFlow.Reply;
-                    public static encode(message: weshnet.protocol.v1.AuthServiceInitFlow.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: weshnet.protocol.v1.AuthServiceInitFlow.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.protocol.v1.AuthServiceInitFlow.Reply;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.protocol.v1.AuthServiceInitFlow.Reply;
-                    public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.AuthServiceInitFlow.Reply;
-                    public static toObject(message: weshnet.protocol.v1.AuthServiceInitFlow.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
-                    public toJSON(): { [k: string]: any };
-                }
             }
 
             interface ICredentialVerificationServiceInitFlow {
@@ -9791,83 +10803,6 @@ export namespace weshnet {
                 }
             }
 
-            interface IServicesTokenList {
-            }
-
-            class ServicesTokenList implements IServicesTokenList {
-
-                public static create(properties?: weshnet.protocol.v1.IServicesTokenList): weshnet.protocol.v1.ServicesTokenList;
-                public static encode(message: weshnet.protocol.v1.IServicesTokenList, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: weshnet.protocol.v1.IServicesTokenList, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.protocol.v1.ServicesTokenList;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.protocol.v1.ServicesTokenList;
-                public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.ServicesTokenList;
-                public static toObject(message: weshnet.protocol.v1.ServicesTokenList, options?: $protobuf.IConversionOptions): { [k: string]: any };
-                public toJSON(): { [k: string]: any };
-            }
-
-            namespace ServicesTokenList {
-
-                interface IRequest {
-                }
-
-                class Request implements IRequest {
-
-                    public static create(properties?: weshnet.protocol.v1.ServicesTokenList.IRequest): weshnet.protocol.v1.ServicesTokenList.Request;
-                    public static encode(message: weshnet.protocol.v1.ServicesTokenList.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: weshnet.protocol.v1.ServicesTokenList.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.protocol.v1.ServicesTokenList.Request;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.protocol.v1.ServicesTokenList.Request;
-                    public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.ServicesTokenList.Request;
-                    public static toObject(message: weshnet.protocol.v1.ServicesTokenList.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
-                    public toJSON(): { [k: string]: any };
-                }
-
-                interface IReply {
-                    tokenId?: (string|null);
-                    service?: (weshnet.protocol.v1.IServiceToken|null);
-                }
-
-                class Reply implements IReply {
-
-                    public tokenId: string;
-                    public service?: (weshnet.protocol.v1.IServiceToken|null);
-                    public static create(properties?: weshnet.protocol.v1.ServicesTokenList.IReply): weshnet.protocol.v1.ServicesTokenList.Reply;
-                    public static encode(message: weshnet.protocol.v1.ServicesTokenList.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: weshnet.protocol.v1.ServicesTokenList.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.protocol.v1.ServicesTokenList.Reply;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.protocol.v1.ServicesTokenList.Reply;
-                    public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.ServicesTokenList.Reply;
-                    public static toObject(message: weshnet.protocol.v1.ServicesTokenList.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
-                    public toJSON(): { [k: string]: any };
-                }
-            }
-
-            interface IServicesTokenCode {
-                services?: (string[]|null);
-                codeChallenge?: (string|null);
-                tokenId?: (string|null);
-            }
-
-            class ServicesTokenCode implements IServicesTokenCode {
-
-                public services: string[];
-                public codeChallenge: string;
-                public tokenId: string;
-                public static create(properties?: weshnet.protocol.v1.IServicesTokenCode): weshnet.protocol.v1.ServicesTokenCode;
-                public static encode(message: weshnet.protocol.v1.IServicesTokenCode, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: weshnet.protocol.v1.IServicesTokenCode, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.protocol.v1.ServicesTokenCode;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.protocol.v1.ServicesTokenCode;
-                public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.ServicesTokenCode;
-                public static toObject(message: weshnet.protocol.v1.ServicesTokenCode, options?: $protobuf.IConversionOptions): { [k: string]: any };
-                public toJSON(): { [k: string]: any };
-            }
-
             interface IReplicationServiceRegisterGroup {
             }
 
@@ -9887,14 +10822,18 @@ export namespace weshnet {
             namespace ReplicationServiceRegisterGroup {
 
                 interface IRequest {
-                    tokenId?: (string|null);
                     groupPk?: (Uint8Array|null);
+                    token?: (string|null);
+                    authenticationUrl?: (string|null);
+                    replicationServer?: (string|null);
                 }
 
                 class Request implements IRequest {
 
-                    public tokenId: string;
                     public groupPk: Uint8Array;
+                    public token: string;
+                    public authenticationUrl: string;
+                    public replicationServer: string;
                     public static create(properties?: weshnet.protocol.v1.ReplicationServiceRegisterGroup.IRequest): weshnet.protocol.v1.ReplicationServiceRegisterGroup.Request;
                     public static encode(message: weshnet.protocol.v1.ReplicationServiceRegisterGroup.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
                     public static encodeDelimited(message: weshnet.protocol.v1.ReplicationServiceRegisterGroup.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
@@ -10331,26 +11270,6 @@ export namespace weshnet {
                 public toJSON(): { [k: string]: any };
             }
 
-            interface IMemberWithDevices {
-                memberPk?: (Uint8Array|null);
-                devicesPks?: (Uint8Array[]|null);
-            }
-
-            class MemberWithDevices implements IMemberWithDevices {
-
-                public memberPk: Uint8Array;
-                public devicesPks: Uint8Array[];
-                public static create(properties?: weshnet.protocol.v1.IMemberWithDevices): weshnet.protocol.v1.MemberWithDevices;
-                public static encode(message: weshnet.protocol.v1.IMemberWithDevices, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: weshnet.protocol.v1.IMemberWithDevices, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.protocol.v1.MemberWithDevices;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.protocol.v1.MemberWithDevices;
-                public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.MemberWithDevices;
-                public static toObject(message: weshnet.protocol.v1.MemberWithDevices, options?: $protobuf.IConversionOptions): { [k: string]: any };
-                public toJSON(): { [k: string]: any };
-            }
-
             interface IOutOfStoreMessage {
                 cid?: (Uint8Array|null);
                 devicePk?: (Uint8Array|null);
@@ -10381,88 +11300,144 @@ export namespace weshnet {
                 public toJSON(): { [k: string]: any };
             }
 
-            interface IPushServiceReceiver {
-                tokenType?: (weshnet.push.v1.PushServiceTokenType|null);
-                bundleId?: (string|null);
-                token?: (Uint8Array|null);
-                recipientPublicKey?: (Uint8Array|null);
+            interface IOutOfStoreMessageEnvelope {
+                nonce?: (Uint8Array|null);
+                box?: (Uint8Array|null);
+                groupReference?: (Uint8Array|null);
             }
 
-            class PushServiceReceiver implements IPushServiceReceiver {
+            class OutOfStoreMessageEnvelope implements IOutOfStoreMessageEnvelope {
 
-                public tokenType: weshnet.push.v1.PushServiceTokenType;
-                public bundleId: string;
-                public token: Uint8Array;
-                public recipientPublicKey: Uint8Array;
-                public static create(properties?: weshnet.protocol.v1.IPushServiceReceiver): weshnet.protocol.v1.PushServiceReceiver;
-                public static encode(message: weshnet.protocol.v1.IPushServiceReceiver, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: weshnet.protocol.v1.IPushServiceReceiver, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.protocol.v1.PushServiceReceiver;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.protocol.v1.PushServiceReceiver;
+                public nonce: Uint8Array;
+                public box: Uint8Array;
+                public groupReference: Uint8Array;
+                public static create(properties?: weshnet.protocol.v1.IOutOfStoreMessageEnvelope): weshnet.protocol.v1.OutOfStoreMessageEnvelope;
+                public static encode(message: weshnet.protocol.v1.IOutOfStoreMessageEnvelope, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: weshnet.protocol.v1.IOutOfStoreMessageEnvelope, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.protocol.v1.OutOfStoreMessageEnvelope;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.protocol.v1.OutOfStoreMessageEnvelope;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.PushServiceReceiver;
-                public static toObject(message: weshnet.protocol.v1.PushServiceReceiver, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.OutOfStoreMessageEnvelope;
+                public static toObject(message: weshnet.protocol.v1.OutOfStoreMessageEnvelope, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
-            interface IPushServer {
-                serverKey?: (Uint8Array|null);
-                serviceAddr?: (string|null);
+            interface IOutOfStoreReceive {
             }
 
-            class PushServer implements IPushServer {
+            class OutOfStoreReceive implements IOutOfStoreReceive {
 
-                public serverKey: Uint8Array;
-                public serviceAddr: string;
-                public static create(properties?: weshnet.protocol.v1.IPushServer): weshnet.protocol.v1.PushServer;
-                public static encode(message: weshnet.protocol.v1.IPushServer, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: weshnet.protocol.v1.IPushServer, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.protocol.v1.PushServer;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.protocol.v1.PushServer;
+                public static create(properties?: weshnet.protocol.v1.IOutOfStoreReceive): weshnet.protocol.v1.OutOfStoreReceive;
+                public static encode(message: weshnet.protocol.v1.IOutOfStoreReceive, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: weshnet.protocol.v1.IOutOfStoreReceive, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.protocol.v1.OutOfStoreReceive;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.protocol.v1.OutOfStoreReceive;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.PushServer;
-                public static toObject(message: weshnet.protocol.v1.PushServer, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.OutOfStoreReceive;
+                public static toObject(message: weshnet.protocol.v1.OutOfStoreReceive, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
-            interface IPushDeviceTokenRegistered {
-                token?: (weshnet.protocol.v1.IPushServiceReceiver|null);
-                devicePk?: (Uint8Array|null);
+            namespace OutOfStoreReceive {
+
+                interface IRequest {
+                    payload?: (Uint8Array|null);
+                }
+
+                class Request implements IRequest {
+
+                    public payload: Uint8Array;
+                    public static create(properties?: weshnet.protocol.v1.OutOfStoreReceive.IRequest): weshnet.protocol.v1.OutOfStoreReceive.Request;
+                    public static encode(message: weshnet.protocol.v1.OutOfStoreReceive.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: weshnet.protocol.v1.OutOfStoreReceive.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.protocol.v1.OutOfStoreReceive.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.protocol.v1.OutOfStoreReceive.Request;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.OutOfStoreReceive.Request;
+                    public static toObject(message: weshnet.protocol.v1.OutOfStoreReceive.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+
+                interface IReply {
+                    message?: (weshnet.protocol.v1.IOutOfStoreMessage|null);
+                    cleartext?: (Uint8Array|null);
+                    groupPublicKey?: (Uint8Array|null);
+                    alreadyReceived?: (boolean|null);
+                }
+
+                class Reply implements IReply {
+
+                    public message?: (weshnet.protocol.v1.IOutOfStoreMessage|null);
+                    public cleartext: Uint8Array;
+                    public groupPublicKey: Uint8Array;
+                    public alreadyReceived: boolean;
+                    public static create(properties?: weshnet.protocol.v1.OutOfStoreReceive.IReply): weshnet.protocol.v1.OutOfStoreReceive.Reply;
+                    public static encode(message: weshnet.protocol.v1.OutOfStoreReceive.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: weshnet.protocol.v1.OutOfStoreReceive.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.protocol.v1.OutOfStoreReceive.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.protocol.v1.OutOfStoreReceive.Reply;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.OutOfStoreReceive.Reply;
+                    public static toObject(message: weshnet.protocol.v1.OutOfStoreReceive.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
             }
 
-            class PushDeviceTokenRegistered implements IPushDeviceTokenRegistered {
+            interface IOutOfStoreSeal {
+            }
 
-                public token?: (weshnet.protocol.v1.IPushServiceReceiver|null);
-                public devicePk: Uint8Array;
-                public static create(properties?: weshnet.protocol.v1.IPushDeviceTokenRegistered): weshnet.protocol.v1.PushDeviceTokenRegistered;
-                public static encode(message: weshnet.protocol.v1.IPushDeviceTokenRegistered, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: weshnet.protocol.v1.IPushDeviceTokenRegistered, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.protocol.v1.PushDeviceTokenRegistered;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.protocol.v1.PushDeviceTokenRegistered;
+            class OutOfStoreSeal implements IOutOfStoreSeal {
+
+                public static create(properties?: weshnet.protocol.v1.IOutOfStoreSeal): weshnet.protocol.v1.OutOfStoreSeal;
+                public static encode(message: weshnet.protocol.v1.IOutOfStoreSeal, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: weshnet.protocol.v1.IOutOfStoreSeal, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.protocol.v1.OutOfStoreSeal;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.protocol.v1.OutOfStoreSeal;
                 public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.PushDeviceTokenRegistered;
-                public static toObject(message: weshnet.protocol.v1.PushDeviceTokenRegistered, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.OutOfStoreSeal;
+                public static toObject(message: weshnet.protocol.v1.OutOfStoreSeal, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
             }
 
-            interface IPushDeviceServerRegistered {
-                server?: (weshnet.protocol.v1.IPushServer|null);
-                devicePk?: (Uint8Array|null);
-            }
+            namespace OutOfStoreSeal {
 
-            class PushDeviceServerRegistered implements IPushDeviceServerRegistered {
+                interface IRequest {
+                    cid?: (Uint8Array|null);
+                    groupPublicKey?: (Uint8Array|null);
+                }
 
-                public server?: (weshnet.protocol.v1.IPushServer|null);
-                public devicePk: Uint8Array;
-                public static create(properties?: weshnet.protocol.v1.IPushDeviceServerRegistered): weshnet.protocol.v1.PushDeviceServerRegistered;
-                public static encode(message: weshnet.protocol.v1.IPushDeviceServerRegistered, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: weshnet.protocol.v1.IPushDeviceServerRegistered, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.protocol.v1.PushDeviceServerRegistered;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.protocol.v1.PushDeviceServerRegistered;
-                public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.PushDeviceServerRegistered;
-                public static toObject(message: weshnet.protocol.v1.PushDeviceServerRegistered, options?: $protobuf.IConversionOptions): { [k: string]: any };
-                public toJSON(): { [k: string]: any };
+                class Request implements IRequest {
+
+                    public cid: Uint8Array;
+                    public groupPublicKey: Uint8Array;
+                    public static create(properties?: weshnet.protocol.v1.OutOfStoreSeal.IRequest): weshnet.protocol.v1.OutOfStoreSeal.Request;
+                    public static encode(message: weshnet.protocol.v1.OutOfStoreSeal.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: weshnet.protocol.v1.OutOfStoreSeal.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.protocol.v1.OutOfStoreSeal.Request;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.protocol.v1.OutOfStoreSeal.Request;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.OutOfStoreSeal.Request;
+                    public static toObject(message: weshnet.protocol.v1.OutOfStoreSeal.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
+
+                interface IReply {
+                    encrypted?: (Uint8Array|null);
+                }
+
+                class Reply implements IReply {
+
+                    public encrypted: Uint8Array;
+                    public static create(properties?: weshnet.protocol.v1.OutOfStoreSeal.IReply): weshnet.protocol.v1.OutOfStoreSeal.Reply;
+                    public static encode(message: weshnet.protocol.v1.OutOfStoreSeal.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: weshnet.protocol.v1.OutOfStoreSeal.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.protocol.v1.OutOfStoreSeal.Reply;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.protocol.v1.OutOfStoreSeal.Reply;
+                    public static verify(message: { [k: string]: any }): (string|null);
+                    public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.OutOfStoreSeal.Reply;
+                    public static toObject(message: weshnet.protocol.v1.OutOfStoreSeal.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public toJSON(): { [k: string]: any };
+                }
             }
 
             interface IAccountVerifiedCredentialRegistered {
@@ -10493,311 +11468,6 @@ export namespace weshnet {
                 public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.AccountVerifiedCredentialRegistered;
                 public static toObject(message: weshnet.protocol.v1.AccountVerifiedCredentialRegistered, options?: $protobuf.IConversionOptions): { [k: string]: any };
                 public toJSON(): { [k: string]: any };
-            }
-
-            interface IPushMemberTokenUpdate {
-                server?: (weshnet.protocol.v1.IPushServer|null);
-                token?: (Uint8Array|null);
-                devicePk?: (Uint8Array|null);
-            }
-
-            class PushMemberTokenUpdate implements IPushMemberTokenUpdate {
-
-                public server?: (weshnet.protocol.v1.IPushServer|null);
-                public token: Uint8Array;
-                public devicePk: Uint8Array;
-                public static create(properties?: weshnet.protocol.v1.IPushMemberTokenUpdate): weshnet.protocol.v1.PushMemberTokenUpdate;
-                public static encode(message: weshnet.protocol.v1.IPushMemberTokenUpdate, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: weshnet.protocol.v1.IPushMemberTokenUpdate, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.protocol.v1.PushMemberTokenUpdate;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.protocol.v1.PushMemberTokenUpdate;
-                public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.PushMemberTokenUpdate;
-                public static toObject(message: weshnet.protocol.v1.PushMemberTokenUpdate, options?: $protobuf.IConversionOptions): { [k: string]: any };
-                public toJSON(): { [k: string]: any };
-            }
-
-            interface IPushReceive {
-            }
-
-            class PushReceive implements IPushReceive {
-
-                public static create(properties?: weshnet.protocol.v1.IPushReceive): weshnet.protocol.v1.PushReceive;
-                public static encode(message: weshnet.protocol.v1.IPushReceive, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: weshnet.protocol.v1.IPushReceive, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.protocol.v1.PushReceive;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.protocol.v1.PushReceive;
-                public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.PushReceive;
-                public static toObject(message: weshnet.protocol.v1.PushReceive, options?: $protobuf.IConversionOptions): { [k: string]: any };
-                public toJSON(): { [k: string]: any };
-            }
-
-            namespace PushReceive {
-
-                interface IRequest {
-                    payload?: (Uint8Array|null);
-                }
-
-                class Request implements IRequest {
-
-                    public payload: Uint8Array;
-                    public static create(properties?: weshnet.protocol.v1.PushReceive.IRequest): weshnet.protocol.v1.PushReceive.Request;
-                    public static encode(message: weshnet.protocol.v1.PushReceive.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: weshnet.protocol.v1.PushReceive.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.protocol.v1.PushReceive.Request;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.protocol.v1.PushReceive.Request;
-                    public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.PushReceive.Request;
-                    public static toObject(message: weshnet.protocol.v1.PushReceive.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
-                    public toJSON(): { [k: string]: any };
-                }
-
-                interface IReply {
-                    message?: (weshnet.protocol.v1.IOutOfStoreMessage|null);
-                    cleartext?: (Uint8Array|null);
-                    groupPublicKey?: (Uint8Array|null);
-                    alreadyReceived?: (boolean|null);
-                }
-
-                class Reply implements IReply {
-
-                    public message?: (weshnet.protocol.v1.IOutOfStoreMessage|null);
-                    public cleartext: Uint8Array;
-                    public groupPublicKey: Uint8Array;
-                    public alreadyReceived: boolean;
-                    public static create(properties?: weshnet.protocol.v1.PushReceive.IReply): weshnet.protocol.v1.PushReceive.Reply;
-                    public static encode(message: weshnet.protocol.v1.PushReceive.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: weshnet.protocol.v1.PushReceive.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.protocol.v1.PushReceive.Reply;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.protocol.v1.PushReceive.Reply;
-                    public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.PushReceive.Reply;
-                    public static toObject(message: weshnet.protocol.v1.PushReceive.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
-                    public toJSON(): { [k: string]: any };
-                }
-            }
-
-            interface IPushSend {
-            }
-
-            class PushSend implements IPushSend {
-
-                public static create(properties?: weshnet.protocol.v1.IPushSend): weshnet.protocol.v1.PushSend;
-                public static encode(message: weshnet.protocol.v1.IPushSend, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: weshnet.protocol.v1.IPushSend, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.protocol.v1.PushSend;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.protocol.v1.PushSend;
-                public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.PushSend;
-                public static toObject(message: weshnet.protocol.v1.PushSend, options?: $protobuf.IConversionOptions): { [k: string]: any };
-                public toJSON(): { [k: string]: any };
-            }
-
-            namespace PushSend {
-
-                interface IRequest {
-                    cid?: (Uint8Array|null);
-                    groupPublicKey?: (Uint8Array|null);
-                    groupMembers?: (weshnet.protocol.v1.IMemberWithDevices[]|null);
-                }
-
-                class Request implements IRequest {
-
-                    public cid: Uint8Array;
-                    public groupPublicKey: Uint8Array;
-                    public groupMembers: weshnet.protocol.v1.IMemberWithDevices[];
-                    public static create(properties?: weshnet.protocol.v1.PushSend.IRequest): weshnet.protocol.v1.PushSend.Request;
-                    public static encode(message: weshnet.protocol.v1.PushSend.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: weshnet.protocol.v1.PushSend.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.protocol.v1.PushSend.Request;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.protocol.v1.PushSend.Request;
-                    public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.PushSend.Request;
-                    public static toObject(message: weshnet.protocol.v1.PushSend.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
-                    public toJSON(): { [k: string]: any };
-                }
-
-                interface IReply {
-                    groupMembers?: (weshnet.protocol.v1.IMemberWithDevices[]|null);
-                }
-
-                class Reply implements IReply {
-
-                    public groupMembers: weshnet.protocol.v1.IMemberWithDevices[];
-                    public static create(properties?: weshnet.protocol.v1.PushSend.IReply): weshnet.protocol.v1.PushSend.Reply;
-                    public static encode(message: weshnet.protocol.v1.PushSend.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: weshnet.protocol.v1.PushSend.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.protocol.v1.PushSend.Reply;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.protocol.v1.PushSend.Reply;
-                    public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.PushSend.Reply;
-                    public static toObject(message: weshnet.protocol.v1.PushSend.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
-                    public toJSON(): { [k: string]: any };
-                }
-            }
-
-            interface IPushShareToken {
-            }
-
-            class PushShareToken implements IPushShareToken {
-
-                public static create(properties?: weshnet.protocol.v1.IPushShareToken): weshnet.protocol.v1.PushShareToken;
-                public static encode(message: weshnet.protocol.v1.IPushShareToken, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: weshnet.protocol.v1.IPushShareToken, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.protocol.v1.PushShareToken;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.protocol.v1.PushShareToken;
-                public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.PushShareToken;
-                public static toObject(message: weshnet.protocol.v1.PushShareToken, options?: $protobuf.IConversionOptions): { [k: string]: any };
-                public toJSON(): { [k: string]: any };
-            }
-
-            namespace PushShareToken {
-
-                interface IRequest {
-                    groupPk?: (Uint8Array|null);
-                    server?: (weshnet.protocol.v1.IPushServer|null);
-                    receiver?: (weshnet.protocol.v1.IPushServiceReceiver|null);
-                }
-
-                class Request implements IRequest {
-
-                    public groupPk: Uint8Array;
-                    public server?: (weshnet.protocol.v1.IPushServer|null);
-                    public receiver?: (weshnet.protocol.v1.IPushServiceReceiver|null);
-                    public static create(properties?: weshnet.protocol.v1.PushShareToken.IRequest): weshnet.protocol.v1.PushShareToken.Request;
-                    public static encode(message: weshnet.protocol.v1.PushShareToken.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: weshnet.protocol.v1.PushShareToken.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.protocol.v1.PushShareToken.Request;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.protocol.v1.PushShareToken.Request;
-                    public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.PushShareToken.Request;
-                    public static toObject(message: weshnet.protocol.v1.PushShareToken.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
-                    public toJSON(): { [k: string]: any };
-                }
-
-                interface IReply {
-                }
-
-                class Reply implements IReply {
-
-                    public static create(properties?: weshnet.protocol.v1.PushShareToken.IReply): weshnet.protocol.v1.PushShareToken.Reply;
-                    public static encode(message: weshnet.protocol.v1.PushShareToken.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: weshnet.protocol.v1.PushShareToken.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.protocol.v1.PushShareToken.Reply;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.protocol.v1.PushShareToken.Reply;
-                    public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.PushShareToken.Reply;
-                    public static toObject(message: weshnet.protocol.v1.PushShareToken.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
-                    public toJSON(): { [k: string]: any };
-                }
-            }
-
-            interface IPushSetDeviceToken {
-            }
-
-            class PushSetDeviceToken implements IPushSetDeviceToken {
-
-                public static create(properties?: weshnet.protocol.v1.IPushSetDeviceToken): weshnet.protocol.v1.PushSetDeviceToken;
-                public static encode(message: weshnet.protocol.v1.IPushSetDeviceToken, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: weshnet.protocol.v1.IPushSetDeviceToken, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.protocol.v1.PushSetDeviceToken;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.protocol.v1.PushSetDeviceToken;
-                public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.PushSetDeviceToken;
-                public static toObject(message: weshnet.protocol.v1.PushSetDeviceToken, options?: $protobuf.IConversionOptions): { [k: string]: any };
-                public toJSON(): { [k: string]: any };
-            }
-
-            namespace PushSetDeviceToken {
-
-                interface IRequest {
-                    receiver?: (weshnet.protocol.v1.IPushServiceReceiver|null);
-                }
-
-                class Request implements IRequest {
-
-                    public receiver?: (weshnet.protocol.v1.IPushServiceReceiver|null);
-                    public static create(properties?: weshnet.protocol.v1.PushSetDeviceToken.IRequest): weshnet.protocol.v1.PushSetDeviceToken.Request;
-                    public static encode(message: weshnet.protocol.v1.PushSetDeviceToken.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: weshnet.protocol.v1.PushSetDeviceToken.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.protocol.v1.PushSetDeviceToken.Request;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.protocol.v1.PushSetDeviceToken.Request;
-                    public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.PushSetDeviceToken.Request;
-                    public static toObject(message: weshnet.protocol.v1.PushSetDeviceToken.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
-                    public toJSON(): { [k: string]: any };
-                }
-
-                interface IReply {
-                }
-
-                class Reply implements IReply {
-
-                    public static create(properties?: weshnet.protocol.v1.PushSetDeviceToken.IReply): weshnet.protocol.v1.PushSetDeviceToken.Reply;
-                    public static encode(message: weshnet.protocol.v1.PushSetDeviceToken.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: weshnet.protocol.v1.PushSetDeviceToken.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.protocol.v1.PushSetDeviceToken.Reply;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.protocol.v1.PushSetDeviceToken.Reply;
-                    public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.PushSetDeviceToken.Reply;
-                    public static toObject(message: weshnet.protocol.v1.PushSetDeviceToken.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
-                    public toJSON(): { [k: string]: any };
-                }
-            }
-
-            interface IPushSetServer {
-            }
-
-            class PushSetServer implements IPushSetServer {
-
-                public static create(properties?: weshnet.protocol.v1.IPushSetServer): weshnet.protocol.v1.PushSetServer;
-                public static encode(message: weshnet.protocol.v1.IPushSetServer, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: weshnet.protocol.v1.IPushSetServer, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.protocol.v1.PushSetServer;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.protocol.v1.PushSetServer;
-                public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.PushSetServer;
-                public static toObject(message: weshnet.protocol.v1.PushSetServer, options?: $protobuf.IConversionOptions): { [k: string]: any };
-                public toJSON(): { [k: string]: any };
-            }
-
-            namespace PushSetServer {
-
-                interface IRequest {
-                    server?: (weshnet.protocol.v1.IPushServer|null);
-                }
-
-                class Request implements IRequest {
-
-                    public server?: (weshnet.protocol.v1.IPushServer|null);
-                    public static create(properties?: weshnet.protocol.v1.PushSetServer.IRequest): weshnet.protocol.v1.PushSetServer.Request;
-                    public static encode(message: weshnet.protocol.v1.PushSetServer.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: weshnet.protocol.v1.PushSetServer.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.protocol.v1.PushSetServer.Request;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.protocol.v1.PushSetServer.Request;
-                    public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.PushSetServer.Request;
-                    public static toObject(message: weshnet.protocol.v1.PushSetServer.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
-                    public toJSON(): { [k: string]: any };
-                }
-
-                interface IReply {
-                }
-
-                class Reply implements IReply {
-
-                    public static create(properties?: weshnet.protocol.v1.PushSetServer.IReply): weshnet.protocol.v1.PushSetServer.Reply;
-                    public static encode(message: weshnet.protocol.v1.PushSetServer.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: weshnet.protocol.v1.PushSetServer.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.protocol.v1.PushSetServer.Reply;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.protocol.v1.PushSetServer.Reply;
-                    public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): weshnet.protocol.v1.PushSetServer.Reply;
-                    public static toObject(message: weshnet.protocol.v1.PushSetServer.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
-                    public toJSON(): { [k: string]: any };
-                }
             }
 
             interface IFirstLastCounters {
@@ -10946,324 +11616,6 @@ export namespace weshnet {
         }
     }
 
-    namespace push {
-
-        namespace v1 {
-
-            class PushService extends $protobuf.rpc.Service {
-
-                public static create(rpcImpl: $protobuf.RPCImpl, requestDelimited?: boolean, responseDelimited?: boolean): PushService;
-                public serverInfo(request: weshnet.push.v1.PushServiceServerInfo.IRequest, callback: weshnet.push.v1.PushService.ServerInfoCallback): void;
-                public serverInfo(request: weshnet.push.v1.PushServiceServerInfo.IRequest): Promise<weshnet.push.v1.PushServiceServerInfo.Reply>;
-                public send(request: weshnet.push.v1.PushServiceSend.IRequest, callback: weshnet.push.v1.PushService.SendCallback): void;
-                public send(request: weshnet.push.v1.PushServiceSend.IRequest): Promise<weshnet.push.v1.PushServiceSend.Reply>;
-            }
-
-            namespace PushService {
-
-                type ServerInfoCallback = (error: (Error|null), response?: weshnet.push.v1.PushServiceServerInfo.Reply) => void;
-
-                type SendCallback = (error: (Error|null), response?: weshnet.push.v1.PushServiceSend.Reply) => void;
-            }
-
-            interface IPushServiceServerInfo {
-            }
-
-            class PushServiceServerInfo implements IPushServiceServerInfo {
-
-                public static create(properties?: weshnet.push.v1.IPushServiceServerInfo): weshnet.push.v1.PushServiceServerInfo;
-                public static encode(message: weshnet.push.v1.IPushServiceServerInfo, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: weshnet.push.v1.IPushServiceServerInfo, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.push.v1.PushServiceServerInfo;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.push.v1.PushServiceServerInfo;
-                public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): weshnet.push.v1.PushServiceServerInfo;
-                public static toObject(message: weshnet.push.v1.PushServiceServerInfo, options?: $protobuf.IConversionOptions): { [k: string]: any };
-                public toJSON(): { [k: string]: any };
-            }
-
-            namespace PushServiceServerInfo {
-
-                interface IRequest {
-                }
-
-                class Request implements IRequest {
-
-                    public static create(properties?: weshnet.push.v1.PushServiceServerInfo.IRequest): weshnet.push.v1.PushServiceServerInfo.Request;
-                    public static encode(message: weshnet.push.v1.PushServiceServerInfo.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: weshnet.push.v1.PushServiceServerInfo.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.push.v1.PushServiceServerInfo.Request;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.push.v1.PushServiceServerInfo.Request;
-                    public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): weshnet.push.v1.PushServiceServerInfo.Request;
-                    public static toObject(message: weshnet.push.v1.PushServiceServerInfo.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
-                    public toJSON(): { [k: string]: any };
-                }
-
-                interface IReply {
-                    publicKey?: (Uint8Array|null);
-                    supportedTokenTypes?: (weshnet.push.v1.IPushServiceSupportedTokenType[]|null);
-                }
-
-                class Reply implements IReply {
-
-                    public publicKey: Uint8Array;
-                    public supportedTokenTypes: weshnet.push.v1.IPushServiceSupportedTokenType[];
-                    public static create(properties?: weshnet.push.v1.PushServiceServerInfo.IReply): weshnet.push.v1.PushServiceServerInfo.Reply;
-                    public static encode(message: weshnet.push.v1.PushServiceServerInfo.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: weshnet.push.v1.PushServiceServerInfo.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.push.v1.PushServiceServerInfo.Reply;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.push.v1.PushServiceServerInfo.Reply;
-                    public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): weshnet.push.v1.PushServiceServerInfo.Reply;
-                    public static toObject(message: weshnet.push.v1.PushServiceServerInfo.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
-                    public toJSON(): { [k: string]: any };
-                }
-            }
-
-            interface IPushServiceSupportedTokenType {
-                appBundleId?: (string|null);
-                tokenType?: (weshnet.push.v1.PushServiceTokenType|null);
-            }
-
-            class PushServiceSupportedTokenType implements IPushServiceSupportedTokenType {
-
-                public appBundleId: string;
-                public tokenType: weshnet.push.v1.PushServiceTokenType;
-                public static create(properties?: weshnet.push.v1.IPushServiceSupportedTokenType): weshnet.push.v1.PushServiceSupportedTokenType;
-                public static encode(message: weshnet.push.v1.IPushServiceSupportedTokenType, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: weshnet.push.v1.IPushServiceSupportedTokenType, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.push.v1.PushServiceSupportedTokenType;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.push.v1.PushServiceSupportedTokenType;
-                public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): weshnet.push.v1.PushServiceSupportedTokenType;
-                public static toObject(message: weshnet.push.v1.PushServiceSupportedTokenType, options?: $protobuf.IConversionOptions): { [k: string]: any };
-                public toJSON(): { [k: string]: any };
-            }
-
-            enum PushServiceTokenType {
-                PushTokenUndefined = 0,
-                PushTokenMQTT = 1,
-                PushTokenApplePushNotificationService = 2,
-                PushTokenFirebaseCloudMessaging = 3,
-                PushTokenWindowsPushNotificationService = 4,
-                PushTokenHuaweiPushKit = 5,
-                PushTokenAmazonDeviceMessaging = 6
-            }
-
-            interface IPushServiceSend {
-            }
-
-            class PushServiceSend implements IPushServiceSend {
-
-                public static create(properties?: weshnet.push.v1.IPushServiceSend): weshnet.push.v1.PushServiceSend;
-                public static encode(message: weshnet.push.v1.IPushServiceSend, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: weshnet.push.v1.IPushServiceSend, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.push.v1.PushServiceSend;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.push.v1.PushServiceSend;
-                public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): weshnet.push.v1.PushServiceSend;
-                public static toObject(message: weshnet.push.v1.PushServiceSend, options?: $protobuf.IConversionOptions): { [k: string]: any };
-                public toJSON(): { [k: string]: any };
-            }
-
-            namespace PushServiceSend {
-
-                interface IRequest {
-                    envelope?: (weshnet.push.v1.IOutOfStoreMessageEnvelope|null);
-                    priority?: (weshnet.push.v1.PushServicePriority|null);
-                    receivers?: (weshnet.push.v1.IPushServiceOpaqueReceiver[]|null);
-                }
-
-                class Request implements IRequest {
-
-                    public envelope?: (weshnet.push.v1.IOutOfStoreMessageEnvelope|null);
-                    public priority: weshnet.push.v1.PushServicePriority;
-                    public receivers: weshnet.push.v1.IPushServiceOpaqueReceiver[];
-                    public static create(properties?: weshnet.push.v1.PushServiceSend.IRequest): weshnet.push.v1.PushServiceSend.Request;
-                    public static encode(message: weshnet.push.v1.PushServiceSend.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: weshnet.push.v1.PushServiceSend.IRequest, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.push.v1.PushServiceSend.Request;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.push.v1.PushServiceSend.Request;
-                    public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): weshnet.push.v1.PushServiceSend.Request;
-                    public static toObject(message: weshnet.push.v1.PushServiceSend.Request, options?: $protobuf.IConversionOptions): { [k: string]: any };
-                    public toJSON(): { [k: string]: any };
-                }
-
-                interface IReply {
-                }
-
-                class Reply implements IReply {
-
-                    public static create(properties?: weshnet.push.v1.PushServiceSend.IReply): weshnet.push.v1.PushServiceSend.Reply;
-                    public static encode(message: weshnet.push.v1.PushServiceSend.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static encodeDelimited(message: weshnet.push.v1.PushServiceSend.IReply, writer?: $protobuf.Writer): $protobuf.Writer;
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.push.v1.PushServiceSend.Reply;
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.push.v1.PushServiceSend.Reply;
-                    public static verify(message: { [k: string]: any }): (string|null);
-                    public static fromObject(object: { [k: string]: any }): weshnet.push.v1.PushServiceSend.Reply;
-                    public static toObject(message: weshnet.push.v1.PushServiceSend.Reply, options?: $protobuf.IConversionOptions): { [k: string]: any };
-                    public toJSON(): { [k: string]: any };
-                }
-            }
-
-            interface IOutOfStoreMessageEnvelope {
-                nonce?: (Uint8Array|null);
-                box?: (Uint8Array|null);
-                groupReference?: (Uint8Array|null);
-            }
-
-            class OutOfStoreMessageEnvelope implements IOutOfStoreMessageEnvelope {
-
-                public nonce: Uint8Array;
-                public box: Uint8Array;
-                public groupReference: Uint8Array;
-                public static create(properties?: weshnet.push.v1.IOutOfStoreMessageEnvelope): weshnet.push.v1.OutOfStoreMessageEnvelope;
-                public static encode(message: weshnet.push.v1.IOutOfStoreMessageEnvelope, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: weshnet.push.v1.IOutOfStoreMessageEnvelope, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.push.v1.OutOfStoreMessageEnvelope;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.push.v1.OutOfStoreMessageEnvelope;
-                public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): weshnet.push.v1.OutOfStoreMessageEnvelope;
-                public static toObject(message: weshnet.push.v1.OutOfStoreMessageEnvelope, options?: $protobuf.IConversionOptions): { [k: string]: any };
-                public toJSON(): { [k: string]: any };
-            }
-
-            interface IPushExposedData {
-                nonce?: (Uint8Array|null);
-                box?: (Uint8Array|null);
-            }
-
-            class PushExposedData implements IPushExposedData {
-
-                public nonce: Uint8Array;
-                public box: Uint8Array;
-                public static create(properties?: weshnet.push.v1.IPushExposedData): weshnet.push.v1.PushExposedData;
-                public static encode(message: weshnet.push.v1.IPushExposedData, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: weshnet.push.v1.IPushExposedData, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.push.v1.PushExposedData;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.push.v1.PushExposedData;
-                public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): weshnet.push.v1.PushExposedData;
-                public static toObject(message: weshnet.push.v1.PushExposedData, options?: $protobuf.IConversionOptions): { [k: string]: any };
-                public toJSON(): { [k: string]: any };
-            }
-
-            enum PushServicePriority {
-                PushPriorityUndefined = 0,
-                PushPriorityLow = 1,
-                PushPriorityNormal = 2
-            }
-
-            interface IPushServiceOpaqueReceiver {
-                opaqueToken?: (Uint8Array|null);
-                serviceAddr?: (string|null);
-            }
-
-            class PushServiceOpaqueReceiver implements IPushServiceOpaqueReceiver {
-
-                public opaqueToken: Uint8Array;
-                public serviceAddr: string;
-                public static create(properties?: weshnet.push.v1.IPushServiceOpaqueReceiver): weshnet.push.v1.PushServiceOpaqueReceiver;
-                public static encode(message: weshnet.push.v1.IPushServiceOpaqueReceiver, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: weshnet.push.v1.IPushServiceOpaqueReceiver, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.push.v1.PushServiceOpaqueReceiver;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.push.v1.PushServiceOpaqueReceiver;
-                public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): weshnet.push.v1.PushServiceOpaqueReceiver;
-                public static toObject(message: weshnet.push.v1.PushServiceOpaqueReceiver, options?: $protobuf.IConversionOptions): { [k: string]: any };
-                public toJSON(): { [k: string]: any };
-            }
-
-            interface IDecryptedPush {
-                accountId?: (string|null);
-                accountName?: (string|null);
-                conversationPublicKey?: (string|null);
-                conversationDisplayName?: (string|null);
-                memberPublicKey?: (string|null);
-                memberDisplayName?: (string|null);
-                pushType?: (weshnet.push.v1.DecryptedPush.PushType|null);
-                payloadAttrsJson?: (string|null);
-                deepLink?: (string|null);
-                alreadyReceived?: (boolean|null);
-                accountMuted?: (boolean|null);
-                conversationMuted?: (boolean|null);
-                hidePreview?: (boolean|null);
-            }
-
-            class DecryptedPush implements IDecryptedPush {
-
-                public accountId: string;
-                public accountName: string;
-                public conversationPublicKey: string;
-                public conversationDisplayName: string;
-                public memberPublicKey: string;
-                public memberDisplayName: string;
-                public pushType: weshnet.push.v1.DecryptedPush.PushType;
-                public payloadAttrsJson: string;
-                public deepLink: string;
-                public alreadyReceived: boolean;
-                public accountMuted: boolean;
-                public conversationMuted: boolean;
-                public hidePreview: boolean;
-                public static create(properties?: weshnet.push.v1.IDecryptedPush): weshnet.push.v1.DecryptedPush;
-                public static encode(message: weshnet.push.v1.IDecryptedPush, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: weshnet.push.v1.IDecryptedPush, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.push.v1.DecryptedPush;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.push.v1.DecryptedPush;
-                public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): weshnet.push.v1.DecryptedPush;
-                public static toObject(message: weshnet.push.v1.DecryptedPush, options?: $protobuf.IConversionOptions): { [k: string]: any };
-                public toJSON(): { [k: string]: any };
-            }
-
-            namespace DecryptedPush {
-
-                enum PushType {
-                    Unknown = 0,
-                    Message = 1,
-                    GroupInvitation = 7,
-                    ConversationNameChanged = 8,
-                    MemberNameChanged = 9,
-                    MemberDetailsChanged = 11
-                }
-            }
-
-            interface IFormatedPush {
-                pushType?: (weshnet.push.v1.DecryptedPush.PushType|null);
-                title?: (string|null);
-                subtitle?: (string|null);
-                body?: (string|null);
-                deepLink?: (string|null);
-                muted?: (boolean|null);
-                hidePreview?: (boolean|null);
-                conversationIdentifier?: (string|null);
-            }
-
-            class FormatedPush implements IFormatedPush {
-
-                public pushType: weshnet.push.v1.DecryptedPush.PushType;
-                public title: string;
-                public subtitle: string;
-                public body: string;
-                public deepLink: string;
-                public muted: boolean;
-                public hidePreview: boolean;
-                public conversationIdentifier: string;
-                public static create(properties?: weshnet.push.v1.IFormatedPush): weshnet.push.v1.FormatedPush;
-                public static encode(message: weshnet.push.v1.IFormatedPush, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static encodeDelimited(message: weshnet.push.v1.IFormatedPush, writer?: $protobuf.Writer): $protobuf.Writer;
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): weshnet.push.v1.FormatedPush;
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): weshnet.push.v1.FormatedPush;
-                public static verify(message: { [k: string]: any }): (string|null);
-                public static fromObject(object: { [k: string]: any }): weshnet.push.v1.FormatedPush;
-                public static toObject(message: weshnet.push.v1.FormatedPush, options?: $protobuf.IConversionOptions): { [k: string]: any };
-                public toJSON(): { [k: string]: any };
-            }
-        }
-    }
-
     namespace errcode {
 
         enum ErrCode {
@@ -11342,16 +11694,6 @@ export namespace weshnet {
             ErrGroupOpen = 1311,
             ErrMessageKeyPersistencePut = 1500,
             ErrMessageKeyPersistenceGet = 1501,
-            ErrServicesAuth = 4000,
-            ErrServicesAuthNotInitialized = 4001,
-            ErrServicesAuthWrongState = 4002,
-            ErrServicesAuthInvalidResponse = 4003,
-            ErrServicesAuthServer = 4004,
-            ErrServicesAuthCodeChallenge = 4005,
-            ErrServicesAuthServiceInvalidToken = 4006,
-            ErrServicesAuthServiceNotSupported = 4007,
-            ErrServicesAuthUnknownToken = 4008,
-            ErrServicesAuthInvalidURL = 4009,
             ErrServiceReplication = 4100,
             ErrServiceReplicationServer = 4101,
             ErrServiceReplicationMissingEndpoint = 4102,
@@ -11362,18 +11704,7 @@ export namespace weshnet {
             ErrServicesDirectoryExplicitReplaceFlagRequired = 4204,
             ErrServicesDirectoryInvalidVerifiedCredential = 4205,
             ErrServicesDirectoryExpiredVerifiedCredential = 4206,
-            ErrServicesDirectoryInvalidVerifiedCredentialID = 4207,
-            ErrPush = 6000,
-            ErrPushWrongAccount = 6001,
-            ErrPushUnableToDecrypt = 6002,
-            ErrPushInvalidPayload = 6003,
-            ErrPushInvalidServerConfig = 6004,
-            ErrPushMissingBundleID = 6005,
-            ErrPushUnknownDestination = 6006,
-            ErrPushProvider = 6007,
-            ErrPushUnknownProvider = 6008,
-            ErrNoProvidersConfigured = 6009,
-            ErrInvalidPrivateKey = 6010
+            ErrServicesDirectoryInvalidVerifiedCredentialID = 4207
         }
 
         interface IErrDetails {

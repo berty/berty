@@ -21,6 +21,7 @@ import (
 	"berty.tech/berty/v2/go/pkg/bertybridge"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
+	"berty.tech/berty/v2/go/pkg/pushtypes"
 	encrepo "berty.tech/go-ipfs-repo-encrypted"
 	"berty.tech/weshnet/pkg/androidnearby"
 	"berty.tech/weshnet/pkg/lifecycle"
@@ -90,7 +91,7 @@ type service struct {
 	bleDriver         proximity.ProximityDriver
 	nbDriver          proximity.ProximityDriver
 	devicePushKeyPath string
-	pushPlatformToken *protocoltypes.PushServiceReceiver
+	pushPlatformToken *pushtypes.PushServiceReceiver
 	accountData       *accounttypes.AccountMetadata
 	nativeKeystore    accountutils.NativeKeystore
 	appStorage        datastore.Datastore

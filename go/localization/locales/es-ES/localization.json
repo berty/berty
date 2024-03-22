@@ -1,0 +1,68 @@
+{
+  "auth": {
+    "services": {
+      "rpl": {
+        "name": "",
+        "description": "",
+        "benefitBadge": "Rendimiento"
+      },
+      "psh": {
+        "name": "Notificaciones Push",
+        "description": "",
+        "benefitBadge": "Rendimiento"
+      }
+    },
+    "pageTitle": "",
+    "connectButton_one": "",
+    "connectButton_other": "",
+    "privacyPolicyLabel": "Política de privacidad"
+  },
+  "push": {
+    "message": {
+      "title": "Nuevo mensaje"
+    },
+    "error": {
+      "title": ""
+    },
+    "voiceMessage": {
+      "bodyWithNumberOfMedia_one": "Un mensaje de voz enviado",
+      "bodyWithNumberOfMedia_other": "%[1]v mensajes de voz enviados"
+    },
+    "gif": {
+      "bodyWithNumberOfMedia_one": "Un imágen de gif enviado",
+      "bodyWithNumberOfMedia_other": "%[1]v imágenes de gif enviados"
+    },
+    "photo": {
+      "bodyWithNumberOfMedia_one": "Enviada una foto",
+      "bodyWithNumberOfMedia_other": "%[1]v fotos enviadas"
+    },
+    "media": {
+      "bodyWithNumberOfMedia_one": "",
+      "bodyWithNumberOfMedia_other": ""
+    },
+    "reaction": {
+      "bodyWithDisplayNameAndEmoji": "%[1]v reaccionó con %[2]v a su mensaje"
+    },
+    "groupInvitation": {
+      "bodyWithGroupName": ""
+    },
+    "unknown": {
+      "body": "Se ha recibido algo nuevo"
+    },
+    "conversationNameChanged": {
+      "body": ""
+    },
+    "memberNameChanged": {
+      "body": ""
+    },
+    "memberPictureChanged": {
+      "body": "Foto de perfil actualizada"
+    },
+    "memberDetailsChanged": {
+      "body": ""
+    },
+    "replyOptionsOffered": {
+      "body": ""
+    }
+  }
+}

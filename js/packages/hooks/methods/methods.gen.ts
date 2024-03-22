@@ -184,6 +184,30 @@ export type MessengerMethodsHooks = {
 		called: boolean
 		loading: boolean
 	}
+	useDebugAuthServiceSetToken: () => {
+		error: any
+		call: (req?: beapi.messenger.DebugAuthServiceSetToken.IRequest) => void
+		reply: beapi.messenger.DebugAuthServiceSetToken.IReply | null
+		done: boolean
+		called: boolean
+		loading: boolean
+	}
+	useAuthServiceInitFlow: () => {
+		error: any
+		call: (req?: beapi.messenger.AuthServiceInitFlow.IRequest) => void
+		reply: beapi.messenger.AuthServiceInitFlow.IReply | null
+		done: boolean
+		called: boolean
+		loading: boolean
+	}
+	useAuthServiceCompleteFlow: () => {
+		error: any
+		call: (req?: beapi.messenger.AuthServiceCompleteFlow.IRequest) => void
+		reply: beapi.messenger.AuthServiceCompleteFlow.IReply | null
+		done: boolean
+		called: boolean
+		loading: boolean
+	}
 	usePushSetAutoShare: () => {
 		error: any
 		call: (req?: beapi.messenger.PushSetAutoShare.IRequest) => void
@@ -204,6 +228,30 @@ export type MessengerMethodsHooks = {
 		error: any
 		call: (req?: beapi.messenger.PushReceive.IRequest) => void
 		reply: beapi.messenger.PushReceive.IReply | null
+		done: boolean
+		called: boolean
+		loading: boolean
+	}
+	usePushSend: () => {
+		error: any
+		call: (req?: beapi.messenger.PushSend.IRequest) => void
+		reply: beapi.messenger.PushSend.IReply | null
+		done: boolean
+		called: boolean
+		loading: boolean
+	}
+	usePushSetDeviceToken: () => {
+		error: any
+		call: (req?: beapi.messenger.PushSetDeviceToken.IRequest) => void
+		reply: beapi.messenger.PushSetDeviceToken.IReply | null
+		done: boolean
+		called: boolean
+		loading: boolean
+	}
+	usePushSetServer: () => {
+		error: any
+		call: (req?: beapi.messenger.PushSetServer.IRequest) => void
+		reply: beapi.messenger.PushSetServer.IReply | null
 		done: boolean
 		called: boolean
 		loading: boolean
@@ -286,6 +334,22 @@ export type ProtocolMethodsHooks = {
 		error: any
 		call: (req?: beapi.protocol.ContactRequestDiscard.IRequest) => void
 		reply: beapi.protocol.ContactRequestDiscard.IReply | null
+		done: boolean
+		called: boolean
+		loading: boolean
+	}
+	useShareContact: () => {
+		error: any
+		call: (req?: beapi.protocol.ShareContact.IRequest) => void
+		reply: beapi.protocol.ShareContact.IReply | null
+		done: boolean
+		called: boolean
+		loading: boolean
+	}
+	useDecodeContact: () => {
+		error: any
+		call: (req?: beapi.protocol.DecodeContact.IRequest) => void
+		reply: beapi.protocol.DecodeContact.IReply | null
 		done: boolean
 		called: boolean
 		loading: boolean
@@ -410,34 +474,10 @@ export type ProtocolMethodsHooks = {
 		called: boolean
 		loading: boolean
 	}
-	useDebugAuthServiceSetToken: () => {
-		error: any
-		call: (req?: beapi.protocol.DebugAuthServiceSetToken.IRequest) => void
-		reply: beapi.protocol.DebugAuthServiceSetToken.IReply | null
-		done: boolean
-		called: boolean
-		loading: boolean
-	}
 	useSystemInfo: () => {
 		error: any
 		call: (req?: beapi.protocol.SystemInfo.IRequest) => void
 		reply: beapi.protocol.SystemInfo.IReply | null
-		done: boolean
-		called: boolean
-		loading: boolean
-	}
-	useAuthServiceInitFlow: () => {
-		error: any
-		call: (req?: beapi.protocol.AuthServiceInitFlow.IRequest) => void
-		reply: beapi.protocol.AuthServiceInitFlow.IReply | null
-		done: boolean
-		called: boolean
-		loading: boolean
-	}
-	useAuthServiceCompleteFlow: () => {
-		error: any
-		call: (req?: beapi.protocol.AuthServiceCompleteFlow.IRequest) => void
-		reply: beapi.protocol.AuthServiceCompleteFlow.IReply | null
 		done: boolean
 		called: boolean
 		loading: boolean
@@ -474,42 +514,18 @@ export type ProtocolMethodsHooks = {
 		called: boolean
 		loading: boolean
 	}
-	usePushReceive: () => {
+	useOutOfStoreReceive: () => {
 		error: any
-		call: (req?: beapi.protocol.PushReceive.IRequest) => void
-		reply: beapi.protocol.PushReceive.IReply | null
+		call: (req?: beapi.protocol.OutOfStoreReceive.IRequest) => void
+		reply: beapi.protocol.OutOfStoreReceive.IReply | null
 		done: boolean
 		called: boolean
 		loading: boolean
 	}
-	usePushSend: () => {
+	useOutOfStoreSeal: () => {
 		error: any
-		call: (req?: beapi.protocol.PushSend.IRequest) => void
-		reply: beapi.protocol.PushSend.IReply | null
-		done: boolean
-		called: boolean
-		loading: boolean
-	}
-	usePushShareToken: () => {
-		error: any
-		call: (req?: beapi.protocol.PushShareToken.IRequest) => void
-		reply: beapi.protocol.PushShareToken.IReply | null
-		done: boolean
-		called: boolean
-		loading: boolean
-	}
-	usePushSetDeviceToken: () => {
-		error: any
-		call: (req?: beapi.protocol.PushSetDeviceToken.IRequest) => void
-		reply: beapi.protocol.PushSetDeviceToken.IReply | null
-		done: boolean
-		called: boolean
-		loading: boolean
-	}
-	usePushSetServer: () => {
-		error: any
-		call: (req?: beapi.protocol.PushSetServer.IRequest) => void
-		reply: beapi.protocol.PushSetServer.IReply | null
+		call: (req?: beapi.protocol.OutOfStoreSeal.IRequest) => void
+		reply: beapi.protocol.OutOfStoreSeal.IReply | null
 		done: boolean
 		called: boolean
 		loading: boolean

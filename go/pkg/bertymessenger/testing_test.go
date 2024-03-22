@@ -13,7 +13,7 @@ func testingNode(ctx context.Context, t *testing.T) (*TestingAccount, func()) {
 	logger, loggerCleanup := testutil.Logger(t)
 	ctx, ctxCancel := context.WithCancel(ctx)
 	clients, protocols, infraCleanup := TestingInfra(ctx, t, 1, logger)
-	node := NewTestingAccount(ctx, t, clients[0], protocols[0].Client, logger)
+	node := NewTestingAccount(ctx, t, clients[0].Client, protocols[0].Client, logger)
 	cleanup := func() {
 		node.Close()
 		infraCleanup()

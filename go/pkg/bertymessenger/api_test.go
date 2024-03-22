@@ -15,8 +15,6 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/zap"
-	grpc "google.golang.org/grpc"
-	"google.golang.org/grpc/test/bufconn"
 	"moul.io/u"
 	"moul.io/zapring"
 
@@ -42,21 +40,10 @@ func TestServiceDevStreamLogs(t *testing.T) {
 	logger.Named("devstreamlogs").Info("hello world1!", zap.String("foo", "bar"))
 	logger.Named("devstreamlogs").Info("hello world2!", zap.String("foo", "baz"))
 
-	svc, cleanup := TestingService(ctx, t, &TestingServiceOpts{Logger: logger, Ring: ring})
+	ts, cleanup := NewTestingService(ctx, t, &TestingServiceOpts{Logger: logger, Ring: ring})
 	defer cleanup()
-	listener := bufconn.Listen(1024 * 1024)
-	s := grpc.NewServer()
-	messengertypes.RegisterMessengerServiceServer(s, svc)
-	go func() {
-		err := s.Serve(listener)
-		require.NoError(t, err)
-	}()
-	conn, err := grpc.DialContext(ctx, "bufnet", grpc.WithContextDialer(mkBufDialer(listener)), grpc.WithInsecure())
-	require.NoError(t, err)
 
-	client := messengertypes.NewMessengerServiceClient(conn)
-
-	stream, err := client.DevStreamLogs(ctx, &messengertypes.DevStreamLogs_Request{})
+	stream, err := ts.Client.DevStreamLogs(ctx, &messengertypes.DevStreamLogs_Request{})
 	require.NoError(t, err)
 
 	ret, err := stream.Recv()
@@ -74,40 +61,40 @@ func TestServiceInstanceShareableBertyID(t *testing.T) {
 
 	logger, cleanup := testutil.Logger(t)
 	defer cleanup()
-	svc, cleanup := TestingService(ctx, t, &TestingServiceOpts{Logger: logger})
+	ts, cleanup := NewTestingService(ctx, t, &TestingServiceOpts{Logger: logger})
 	defer cleanup()
 
-	ret1, err := svc.InstanceShareableBertyID(ctx, nil)
+	ret1, err := ts.Service.InstanceShareableBertyID(ctx, nil)
 	require.NoError(t, err)
-	testParseInstanceShareable(ctx, t, svc, ret1)
+	testParseInstanceShareable(ctx, t, ts, ret1)
 	assert.Equal(t, ret1.Link.BertyID.DisplayName, "")
 
-	ret2, err := svc.InstanceShareableBertyID(ctx, &messengertypes.InstanceShareableBertyID_Request{})
+	ret2, err := ts.Service.InstanceShareableBertyID(ctx, &messengertypes.InstanceShareableBertyID_Request{})
 	require.NoError(t, err)
-	testParseInstanceShareable(ctx, t, svc, ret2)
+	testParseInstanceShareable(ctx, t, ts, ret2)
 	assert.Equal(t, ret2.Link.BertyID.DisplayName, "")
 	assert.Equal(t, ret1, ret2)
 
-	ret3, err := svc.InstanceShareableBertyID(ctx, &messengertypes.InstanceShareableBertyID_Request{DisplayName: "Hello World! 👋"})
+	ret3, err := ts.Service.InstanceShareableBertyID(ctx, &messengertypes.InstanceShareableBertyID_Request{DisplayName: "Hello World! 👋"})
 	require.NoError(t, err)
-	testParseInstanceShareable(ctx, t, svc, ret3)
+	testParseInstanceShareable(ctx, t, ts, ret3)
 	assert.Equal(t, ret3.Link.BertyID.DisplayName, "Hello World! 👋")
 	assert.NotEqual(t, ret2.Link.BertyID, ret3.Link.BertyID)
 
-	ret4, err := svc.InstanceShareableBertyID(ctx, &messengertypes.InstanceShareableBertyID_Request{Reset_: true})
+	ret4, err := ts.Service.InstanceShareableBertyID(ctx, &messengertypes.InstanceShareableBertyID_Request{Reset_: true})
 	require.NoError(t, err)
-	testParseInstanceShareable(ctx, t, svc, ret4)
+	testParseInstanceShareable(ctx, t, ts, ret4)
 	assert.Equal(t, ret4.Link.BertyID.DisplayName, "")
 	assert.NotEqual(t, ret1.Link.BertyID, ret4.Link.BertyID)
 	assert.NotEqual(t, ret3.Link.BertyID, ret4.Link.BertyID)
 
-	ret5, err := svc.InstanceShareableBertyID(ctx, nil)
+	ret5, err := ts.Service.InstanceShareableBertyID(ctx, nil)
 	require.NoError(t, err)
-	testParseInstanceShareable(ctx, t, svc, ret5)
+	testParseInstanceShareable(ctx, t, ts, ret5)
 	assert.Equal(t, ret4, ret5)
 }
 
-func testParseInstanceShareable(ctx context.Context, t *testing.T, svc messengertypes.MessengerServiceServer, ret *messengertypes.InstanceShareableBertyID_Reply) {
+func testParseInstanceShareable(ctx context.Context, t *testing.T, ts *TestingService, ret *messengertypes.InstanceShareableBertyID_Reply) {
 	t.Helper()
 	assert.NotEmpty(t, ret.Link.BertyID)
 	assert.NotEmpty(t, ret.Link.BertyID.PublicRendezvousSeed)
@@ -116,9 +103,9 @@ func testParseInstanceShareable(ctx context.Context, t *testing.T, svc messenger
 	assert.NotEmpty(t, ret.InternalURL)
 	assert.NotEqual(t, ret.WebURL, ret.InternalURL)
 
-	parsed1, err := svc.ParseDeepLink(ctx, &messengertypes.ParseDeepLink_Request{Link: ret.InternalURL})
+	parsed1, err := ts.Client.ParseDeepLink(ctx, &messengertypes.ParseDeepLink_Request{Link: ret.InternalURL})
 	require.NoError(t, err)
-	parsed2, err := svc.ParseDeepLink(ctx, &messengertypes.ParseDeepLink_Request{Link: ret.WebURL})
+	parsed2, err := ts.Client.ParseDeepLink(ctx, &messengertypes.ParseDeepLink_Request{Link: ret.WebURL})
 	require.NoError(t, err)
 
 	assert.Equal(t, parsed1, parsed2)
@@ -155,10 +142,10 @@ func TestServiceParseDeepLink(t *testing.T) {
 
 			logger, cleanup := testutil.Logger(t)
 			defer cleanup()
-			service, cleanup := TestingService(ctx, t, &TestingServiceOpts{Logger: logger})
+			ts, cleanup := NewTestingService(ctx, t, &TestingServiceOpts{Logger: logger})
 			defer cleanup()
 
-			ret, err := service.ParseDeepLink(ctx, tt.request)
+			ret, err := ts.Service.ParseDeepLink(ctx, tt.request)
 			if tt.expectedErrcode == nil {
 				tt.expectedErrcode = errcode.ErrCode(-1)
 			}
@@ -185,21 +172,21 @@ func TestServiceSendContactRequest(t *testing.T) {
 
 	logger, cleanup := testutil.Logger(t)
 	defer cleanup()
-	svc, cleanup := TestingService(ctx, t, &TestingServiceOpts{Logger: logger})
+	ts, cleanup := NewTestingService(ctx, t, &TestingServiceOpts{Logger: logger})
 	defer cleanup()
 
-	ret, err := svc.SendContactRequest(ctx, nil)
+	ret, err := ts.Service.SendContactRequest(ctx, nil)
 	assert.Equal(t, errcode.Code(err), errcode.ErrMissingInput)
 	assert.Nil(t, ret)
 
-	ret, err = svc.SendContactRequest(ctx, &messengertypes.SendContactRequest_Request{})
+	ret, err = ts.Service.SendContactRequest(ctx, &messengertypes.SendContactRequest_Request{})
 	assert.Equal(t, errcode.Code(err), errcode.ErrMissingInput)
 	assert.Nil(t, ret)
 
-	parseRet, err := svc.ParseDeepLink(ctx, &messengertypes.ParseDeepLink_Request{Link: "https://berty.tech/id#contact/" + validContactBlob + "/name=Alice"})
+	parseRet, err := ts.Service.ParseDeepLink(ctx, &messengertypes.ParseDeepLink_Request{Link: "https://berty.tech/id#contact/" + validContactBlob + "/name=Alice"})
 	require.NoError(t, err)
 
-	ret, err = svc.SendContactRequest(ctx, &messengertypes.SendContactRequest_Request{BertyID: parseRet.Link.BertyID})
+	ret, err = ts.Service.SendContactRequest(ctx, &messengertypes.SendContactRequest_Request{BertyID: parseRet.Link.BertyID})
 	require.NoError(t, err)
 	assert.NotNil(t, ret)
 }
@@ -210,10 +197,10 @@ func TestSystemInfo(t *testing.T) {
 
 	logger, cleanup := testutil.Logger(t)
 	defer cleanup()
-	svc, cleanup := TestingService(ctx, t, &TestingServiceOpts{Logger: logger})
+	ts, cleanup := NewTestingService(ctx, t, &TestingServiceOpts{Logger: logger})
 	defer cleanup()
 
-	ret, err := svc.SystemInfo(ctx, nil)
+	ret, err := ts.Service.SystemInfo(ctx, nil)
 	require.NoError(t, err)
 	diff := time.Now().Unix() - ret.Messenger.Process.StartedAt
 	assert.GreaterOrEqual(t, diff, int64(0))
@@ -259,7 +246,7 @@ func TestServiceShareableBertyGroup(t *testing.T) {
 
 	logger, cleanup := testutil.Logger(t)
 	defer cleanup()
-	svc, cleanup := TestingService(ctx, t, &TestingServiceOpts{
+	ts, cleanup := NewTestingService(ctx, t, &TestingServiceOpts{
 		Logger: logger,
 		Client: protocol.Client,
 	})
@@ -273,22 +260,22 @@ func TestServiceShareableBertyGroup(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	ret1, err := svc.ShareableBertyGroup(ctx, nil)
+	ret1, err := ts.Service.ShareableBertyGroup(ctx, nil)
 	require.Error(t, err)
 
-	ret1, err = svc.ShareableBertyGroup(ctx, &messengertypes.ShareableBertyGroup_Request{
+	ret1, err = ts.Service.ShareableBertyGroup(ctx, &messengertypes.ShareableBertyGroup_Request{
 		GroupPK:   nil,
 		GroupName: "",
 	})
 	require.Error(t, err)
 
-	ret1, err = svc.ShareableBertyGroup(ctx, &messengertypes.ShareableBertyGroup_Request{
+	ret1, err = ts.Service.ShareableBertyGroup(ctx, &messengertypes.ShareableBertyGroup_Request{
 		GroupPK:   []byte("garbage id"),
 		GroupName: "",
 	})
 	require.Error(t, err)
 
-	ret1, err = svc.ShareableBertyGroup(ctx, &messengertypes.ShareableBertyGroup_Request{
+	ret1, err = ts.Service.ShareableBertyGroup(ctx, &messengertypes.ShareableBertyGroup_Request{
 		GroupPK:   g.PublicKey,
 		GroupName: "",
 	})
@@ -296,7 +283,7 @@ func TestServiceShareableBertyGroup(t *testing.T) {
 
 	testParseSharedGroup(t, g, "", ret1)
 
-	ret1, err = svc.ShareableBertyGroup(ctx, &messengertypes.ShareableBertyGroup_Request{
+	ret1, err = ts.Service.ShareableBertyGroup(ctx, &messengertypes.ShareableBertyGroup_Request{
 		GroupPK:   g.PublicKey,
 		GroupName: "named group",
 	})
@@ -311,10 +298,10 @@ func TestServiceBannerQuote(t *testing.T) {
 
 	logger, cleanup := testutil.Logger(t)
 	defer cleanup()
-	svc, cleanup := TestingService(ctx, t, &TestingServiceOpts{Logger: logger})
+	ts, cleanup := NewTestingService(ctx, t, &TestingServiceOpts{Logger: logger})
 	defer cleanup()
 
-	ret, err := svc.BannerQuote(ctx, nil)
+	ret, err := ts.Service.BannerQuote(ctx, nil)
 	require.NoError(t, err)
 	assert.NotEmpty(t, ret.Quote)
 	assert.NotEmpty(t, ret.Author)
@@ -342,7 +329,7 @@ func TestServiceTyberHostAttach(t *testing.T) {
 	require.NoError(t, err)
 
 	// init service
-	svc, cleanup := TestingService(ctx, t, &TestingServiceOpts{
+	ts, cleanup := NewTestingService(ctx, t, &TestingServiceOpts{
 		Logger:      logger,
 		LogFilePath: tmpLogFilePath,
 	})
@@ -359,7 +346,7 @@ func TestServiceTyberHostAttach(t *testing.T) {
 		// call svc.TyberHostAttach before starting the tyber server.
 		firstPort, err := freeport.GetFreePort()
 		require.NoError(t, err)
-		ret, err := svc.TyberHostAttach(ctx, &messengertypes.TyberHostAttach_Request{
+		ret, err := ts.Service.TyberHostAttach(ctx, &messengertypes.TyberHostAttach_Request{
 			Addresses: []string{fmt.Sprintf("127.0.0.1:%d", firstPort)},
 		})
 		require.Empty(t, ret)
@@ -408,7 +395,7 @@ func TestServiceTyberHostAttach(t *testing.T) {
 		// call svc.TyberHostAttach before starting the tyber server
 		secondPort, err := freeport.GetFreePort()
 		require.NoError(t, err)
-		ret, err := svc.TyberHostAttach(ctx, &messengertypes.TyberHostAttach_Request{
+		ret, err := ts.Service.TyberHostAttach(ctx, &messengertypes.TyberHostAttach_Request{
 			Addresses: []string{fmt.Sprintf("127.0.0.1:%d", secondPort)},
 		})
 		require.Empty(t, ret)

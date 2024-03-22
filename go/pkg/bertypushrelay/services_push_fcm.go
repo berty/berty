@@ -1,19 +1,24 @@
 package bertypushrelay
 
 import (
+	"context"
 	"encoding/base64"
+	"fmt"
+	"os"
 	"strings"
 
-	"github.com/appleboy/go-fcm"
+	firebase "firebase.google.com/go/v4"
+	"firebase.google.com/go/v4/messaging"
 	"go.uber.org/zap"
+	"google.golang.org/api/option"
 
-	weshnet_errcode "berty.tech/weshnet/pkg/errcode"
-	"berty.tech/weshnet/pkg/protocoltypes"
-	"berty.tech/weshnet/pkg/pushtypes"
+	"berty.tech/berty/v2/go/pkg/errcode"
+	"berty.tech/berty/v2/go/pkg/pushtypes"
 )
 
 type pushDispatcherFCM struct {
-	client *fcm.Client
+	ctx    context.Context
+	client *messaging.Client
 	appID  string
 	logger *zap.Logger
 }
@@ -22,16 +27,45 @@ func (d *pushDispatcherFCM) TokenType() pushtypes.PushServiceTokenType {
 	return pushtypes.PushServiceTokenType_PushTokenFirebaseCloudMessaging
 }
 
-func PushDispatcherLoadFirebaseAPIKey(logger *zap.Logger, input *string) ([]PushDispatcher, error) {
-	if input == nil || *input == "" {
+// PushDispatcherLoadFirebaseAPIKey creates the FCM clients.
+// If the `GOOGLE_APPLICATION_CREDENTIALS` env var is set, it will be used to create only one client.
+// Otherwise, the `keys` parameter will be used, formatted like app_id:api_key.json and comma-separated to create the corresponding clients.
+func PushDispatcherLoadFirebaseAPIKey(ctx context.Context, logger *zap.Logger, bundleInput, keys *string) ([]PushDispatcher, error) {
+	var err error
+
+	if os.Getenv("GOOGLE_APPLICATION_CREDENTIALS") != "" {
+		if bundleInput == nil || *bundleInput == "" {
+			return nil, errcode.ErrPushMissingBundleID
+		}
+
+		bundleIDs := strings.Split(*bundleInput, ",")
+		dispatchers := make([]PushDispatcher, len(bundleIDs))
+		for i, id := range bundleIDs {
+			var err error
+			dispatchers[i], err = pushDispatcherLoadFCMAPIKey(ctx, logger, id)
+			if err != nil {
+				return nil, err
+			}
+		}
+		return dispatchers, err
+	}
+
+	if keys == nil || *keys == "" {
 		return nil, nil
 	}
 
-	apiKeys := strings.Split(*input, ",")
+	apiKeys := strings.Split(*keys, ",")
 	dispatchers := make([]PushDispatcher, len(apiKeys))
 	for i, apiKeyDetails := range apiKeys {
-		var err error
-		dispatchers[i], err = pushDispatcherLoadFCMAPIKey(logger, apiKeyDetails)
+		splitResult := strings.SplitN(apiKeyDetails, ":", 2)
+		if len(splitResult) != 2 {
+			return nil, errcode.ErrPushInvalidServerConfig
+		}
+
+		appID := splitResult[0]
+		apiKey := splitResult[1]
+		opt := option.WithCredentialsFile(apiKey)
+		dispatchers[i], err = pushDispatcherLoadFCMAPIKey(ctx, logger, appID, opt)
 		if err != nil {
 			return nil, err
 		}
@@ -40,44 +74,43 @@ func PushDispatcherLoadFirebaseAPIKey(logger *zap.Logger, input *string) ([]Push
 	return dispatchers, nil
 }
 
-func pushDispatcherLoadFCMAPIKey(logger *zap.Logger, apiKeyDetails string) (PushDispatcher, error) {
-	splitResult := strings.SplitN(apiKeyDetails, ":", 2)
-	if len(splitResult) != 2 {
-		return nil, weshnet_errcode.ErrPushInvalidServerConfig
+func pushDispatcherLoadFCMAPIKey(ctx context.Context, logger *zap.Logger, bundleID string, opts ...option.ClientOption) (PushDispatcher, error) {
+	app, err := firebase.NewApp(ctx, nil, opts...)
+	if err != nil {
+		return nil, errcode.ErrPushInvalidServerConfig.Wrap(err)
 	}
 
-	appID := splitResult[0]
-	apiKey := splitResult[1]
-
-	client, err := fcm.NewClient(apiKey)
+	// Access messaging service from the default app
+	client, err := app.Messaging(ctx)
 	if err != nil {
-		return nil, weshnet_errcode.ErrPushInvalidServerConfig.Wrap(err)
+		return nil, errcode.ErrPushInvalidServerConfig.Wrap(err)
 	}
 
 	dispatcher := &pushDispatcherFCM{
+		ctx:    ctx,
 		client: client,
-		appID:  appID,
+		appID:  bundleID,
 		logger: logger,
 	}
 
 	return dispatcher, nil
 }
 
-func (d *pushDispatcherFCM) Dispatch(payload []byte, receiver *protocoltypes.PushServiceReceiver) error {
-	msg := &fcm.Message{
-		To: string(receiver.Token),
-		Data: map[string]interface{}{
+func (d *pushDispatcherFCM) Dispatch(payload []byte, receiver *pushtypes.PushServiceReceiver) error {
+	msg := &messaging.Message{
+		Token: string(receiver.Token),
+		Data: map[string]string{
 			pushtypes.ServicePushPayloadKey: base64.RawURLEncoding.EncodeToString(payload),
 		},
 	}
 
-	res, err := d.client.Send(msg)
+	res, err := d.client.Send(d.ctx, msg)
 	if err != nil {
-		return weshnet_errcode.ErrPushProvider.Wrap(err)
+		return errcode.ErrPushProvider.Wrap(err)
 	}
 
-	if res.Error != nil {
-		return weshnet_errcode.ErrPushProvider.Wrap(res.Error)
+	if res == "" {
+		return errcode.ErrPushProvider.Wrap(fmt.Errorf("FMC messaging client failed to send push notification"))
 	}
 
 	return nil

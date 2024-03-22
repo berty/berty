@@ -7,6 +7,7 @@ import beapi from '@berty/api'
 import { GRPCError } from '@berty/grpc-bridge'
 import { ServiceClientType } from '@berty/grpc-bridge/welsh-clients.gen'
 import { PushTokenRequester } from '@berty/native-modules/PushTokenRequester'
+import { hasKnownPushServer } from '@berty/utils/accounts/accountUtils'
 import { checkPermission } from '@berty/utils/permissions/checkPermissions'
 import { getPermissions, PermissionType } from '@berty/utils/permissions/permissions'
 
@@ -52,9 +53,8 @@ export const accountPushToggleState = async ({
 	}
 
 	const permissions = await getPermissions()
-	const hasKnownPushServer = account.serviceTokens?.some(t => t.serviceType === serviceTypes.Push)
 	if (
-		!hasKnownPushServer ||
+		!hasKnownPushServer(account) ||
 		numberifyLong(account.mutedUntil) > Date.now() ||
 		!(permissions.notification === RESULTS.GRANTED || permissions.notification === RESULTS.LIMITED)
 	) {
@@ -63,7 +63,7 @@ export const accountPushToggleState = async ({
 			return
 		}
 
-		const pushStatus = await enablePushPermission(messengerClient, protocolClient, navigate)
+		const pushStatus = await enablePushPermission(messengerClient, navigate)
 
 		// if something went wrong during onboarding enable push notification process
 		// prevent the user that he can be enable it manually in settings
@@ -106,13 +106,9 @@ export const accountPushToggleState = async ({
 
 const enablePushPermission = async (
 	messengerClient: ServiceClientType<beapi.messenger.MessengerService>,
-	protocolClient: ServiceClientType<beapi.protocol.ProtocolService>,
 	navigate: any,
 ): Promise<PushNotificationStatus> => {
 	const account = await messengerClient.accountGet({})
-	const hasKnownPushServer = account.account?.serviceTokens?.some(
-		t => t.serviceType === serviceTypes.Push,
-	)
 
 	try {
 		// Get or ask for permission
@@ -140,8 +136,8 @@ const enablePushPermission = async (
 	// Persist push token if needed
 	try {
 		// When we don't have network connection the requestAndPersistPushToken function hang so we manually set a timeout
-		const timeout = new Promise(resolve => setTimeout(() => resolve('timeout'), 5000))
-		const result = await Promise.race([timeout, requestAndPersistPushToken(protocolClient)])
+		const timeout = new Promise(resolve => setTimeout(() => resolve('timeout'), 7000))
+		const result = await Promise.race([timeout, requestAndPersistPushToken(messengerClient)])
 		if (result === 'timeout') {
 			console.warn('Fail on request and persist push token: timeout')
 			return PushNotificationStatus.FetchFailed
@@ -152,12 +148,12 @@ const enablePushPermission = async (
 	}
 
 	// Register push server secrets if needed
-	if (!hasKnownPushServer) {
-		// When we don't have network connection the requestAndPersistPushToken function hang so we manually set a timeout
-		const timeout = new Promise(resolve => setTimeout(() => resolve('timeout'), 5000))
+	if (!hasKnownPushServer(account.account)) {
+		// When we don't have network connection the servicesAuthViaDefault function hang so we manually set a timeout
+		const timeout = new Promise(resolve => setTimeout(() => resolve('timeout'), 7000))
 		const pushStatus = await Promise.race([
 			timeout,
-			servicesAuthViaDefault(protocolClient, [serviceTypes.Push]),
+			servicesAuthViaDefault(messengerClient, [serviceTypes.Push]),
 		])
 		if (pushStatus === 'timeout') {
 			console.warn('Fail on register server push token: timeout')
@@ -265,13 +261,16 @@ export const conversationPushToggleState = async ({
 		}
 
 		const permissions = await getPermissions()
+		const pushTokenShared = () =>
+			Array.isArray(conversation?.pushLocalDeviceSharedTokens) &&
+			conversation?.pushLocalDeviceSharedTokens.length > 0
 
 		if (
-			!conversation?.sharedPushTokenIdentifier ||
+			!pushTokenShared ||
 			numberifyLong(conversation.mutedUntil) > Date.now() ||
 			(permissions.notification !== RESULTS.GRANTED && permissions.notification !== RESULTS.LIMITED)
 		) {
-			const pushStatus = await enablePushPermission(messengerClient, protocolClient!, navigate)
+			const pushStatus = await enablePushPermission(messengerClient, navigate)
 
 			// Share push token
 			await enableNotificationsForConversation(t, messengerClient!, conversation.publicKey)
@@ -290,10 +289,10 @@ export const conversationPushToggleState = async ({
 			})
 		}
 	} catch (e) {
-		if ((e as GRPCError).Code === beapi.weshnet_errcode.ErrCode.ErrPushUnknownDestination) {
+		if ((e as GRPCError).Code === beapi.errcode.ErrCode.ErrPushUnknownDestination) {
 			Alert.alert('', t('chat.push-notifications.errors.no-token'))
 			throw new Error()
-		} else if ((e as GRPCError).Code === beapi.weshnet_errcode.ErrCode.ErrPushUnknownDestination) {
+		} else if ((e as GRPCError).Code === beapi.errcode.ErrCode.ErrPushUnknownDestination) {
 			Alert.alert('', t('chat.push-notifications.errors.no-server'))
 			throw new Error()
 		} else {
@@ -307,13 +306,13 @@ export const getSharedPushTokensForConversation = (
 	conversationPk: string | undefined | null,
 ) => {
 	if (!conversationPk) {
-		return new Promise<beapi.messenger.ISharedPushToken[]>(resolve => {
+		return new Promise<beapi.messenger.IPushMemberToken[]>(resolve => {
 			resolve([])
 		})
 	}
 
-	return new Promise<beapi.messenger.ISharedPushToken[]>(resolve => {
-		let tokens = [] as beapi.messenger.ISharedPushToken[]
+	return new Promise<beapi.messenger.IPushMemberToken[]>(resolve => {
+		let tokens = [] as beapi.messenger.IPushMemberToken[]
 		let subStream: { stop: () => void } | null
 
 		client
@@ -324,11 +323,11 @@ export const getSharedPushTokensForConversation = (
 						return
 					}
 
-					if (!msg || !msg.pushToken) {
+					if (!msg || !msg.token) {
 						return
 					}
 
-					tokens.push(msg.pushToken)
+					tokens.push(msg.token)
 				})
 
 				await stream.start()
@@ -345,35 +344,27 @@ export const getSharedPushTokensForConversation = (
 	})
 }
 
-export const requestAndPersistPushToken = (
-	protocolClient: ServiceClientType<beapi.protocol.ProtocolService>,
-) =>
-	new Promise((resolve, reject) => {
-		PushTokenRequester.request()
-			.then((responseJSON: string) => {
-				let response = JSON.parse(responseJSON)
-				protocolClient
-					.pushSetDeviceToken({
-						receiver: beapi.protocol.PushServiceReceiver.create({
-							tokenType:
-								Platform.OS === 'ios'
-									? beapi.push.PushServiceTokenType.PushTokenApplePushNotificationService
-									: beapi.push.PushServiceTokenType.PushTokenFirebaseCloudMessaging,
-							bundleId: response.bundleId,
-							token: new Uint8Array(base64.toByteArray(response.token)),
-						}),
-					})
-					.then(() => {
-						console.info(`Push token registered: ${responseJSON}`)
-						resolve(responseJSON)
-					})
-					.catch(err => {
-						console.warn(`Push token registration failed: ${err}`)
-						reject(err)
-					})
-			})
-			.catch((err: Error) => {
-				console.warn(`Push token request failed: ${err}`)
-				reject(err)
-			})
-	})
+export const requestAndPersistPushToken = async (
+	messengerClient: ServiceClientType<beapi.messenger.MessengerService> | null,
+) => {
+	if (!messengerClient) {
+		throw new Error('missing messenger client')
+	}
+	try {
+		let responseJSON = await PushTokenRequester.request()
+		let response = JSON.parse(responseJSON)
+
+		await messengerClient?.pushSetDeviceToken({
+			receiver: beapi.push.PushServiceReceiver.create({
+				tokenType:
+					Platform.OS === 'ios'
+						? beapi.push.PushServiceTokenType.PushTokenApplePushNotificationService
+						: beapi.push.PushServiceTokenType.PushTokenFirebaseCloudMessaging,
+				bundleId: response.bundleId,
+				token: new Uint8Array(base64.toByteArray(response.token)),
+			}),
+		})
+	} catch (e) {
+		console.warn(`Push token registration failed: ${e}`)
+	}
+}

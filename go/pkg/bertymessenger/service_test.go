@@ -252,8 +252,8 @@ func TestBroken1To1AddContact(t *testing.T) {
 
 	// Init accounts
 	var (
-		alice = NewTestingAccount(ctx, t, clients[0], nil, logger)
-		bob   = NewTestingAccount(ctx, t, clients[1], nil, logger)
+		alice = NewTestingAccount(ctx, t, clients[0].Client, nil, logger)
+		bob   = NewTestingAccount(ctx, t, clients[1].Client, nil, logger)
 	)
 	{
 		defer alice.Close()
@@ -299,8 +299,8 @@ func TestBroken1To1Exchange(t *testing.T) {
 
 	// Init accounts
 	var (
-		alice = NewTestingAccount(ctx, t, clients[0], nil, logger)
-		bob   = NewTestingAccount(ctx, t, clients[1], nil, logger)
+		alice = NewTestingAccount(ctx, t, clients[0].Client, nil, logger)
+		bob   = NewTestingAccount(ctx, t, clients[1].Client, nil, logger)
 	)
 	{
 		defer alice.Close()
@@ -355,14 +355,14 @@ func TestBrokenPeersCreateJoinConversation(t *testing.T) {
 	// create nodes
 	var creator *TestingAccount
 	{
-		creator = NewTestingAccount(ctx, t, clients[0], nil, logger)
+		creator = NewTestingAccount(ctx, t, clients[0].Client, nil, logger)
 		defer creator.Close()
 		creator.SetName(t, "Creator")
 	}
 	joiners := make([]*TestingAccount, accountsAmount-1)
 	{
 		for i := 0; i < accountsAmount-1; i++ {
-			joiners[i] = NewTestingAccount(ctx, t, clients[i+1], nil, logger)
+			joiners[i] = NewTestingAccount(ctx, t, clients[i+1].Client, nil, logger)
 			defer joiners[i].Close()
 			joiners[i].SetName(t, "Joiner #"+strconv.Itoa(i))
 		}
@@ -427,7 +427,7 @@ func TestBrokenPeersCreateJoinConversation(t *testing.T) {
 	}
 
 	subCtx, subCancel := context.WithTimeout(ctx, time.Second*45)
-	cl, err := clients[1].EventStream(subCtx, &messengertypes.EventStream_Request{
+	cl, err := clients[1].Client.EventStream(subCtx, &messengertypes.EventStream_Request{
 		ShallowAmount: 1,
 	})
 	require.NoError(t, err)
@@ -457,7 +457,7 @@ func TestBrokenPeersCreateJoinConversation(t *testing.T) {
 		})
 		require.NoError(t, err)
 
-		_, err = clients[0].Interact(
+		_, err = clients[0].Client.Interact(
 			ctx,
 			&messengertypes.Interact_Request{
 				Type:                  messengertypes.AppMessage_TypeUserMessage,
@@ -531,7 +531,7 @@ func TestBroken3PeersExchange(t *testing.T) {
 	// create nodes
 	var creator *TestingAccount
 	{
-		creator = NewTestingAccount(ctx, t, clients[0], nil, logger)
+		creator = NewTestingAccount(ctx, t, clients[0].Client, nil, logger)
 		defer creator.Close()
 		creator.DrainInitEvents(t)
 		creator.SetNameAndDrainUpdate(t, "Creator")
@@ -539,7 +539,7 @@ func TestBroken3PeersExchange(t *testing.T) {
 	joiners := make([]*TestingAccount, 2)
 	{
 		for i := 0; i < 2; i++ {
-			joiners[i] = NewTestingAccount(ctx, t, clients[i+1], nil, logger)
+			joiners[i] = NewTestingAccount(ctx, t, clients[i+1].Client, nil, logger)
 			defer joiners[i].Close()
 			joiners[i].DrainInitEvents(t)
 			joiners[i].SetNameAndDrainUpdate(t, "Joiner #"+strconv.Itoa(i))
@@ -590,17 +590,17 @@ func TestBrokenConversationInvitation(t *testing.T) {
 	// create nodes
 	var alice, bob, john *TestingAccount
 	{
-		alice = NewTestingAccount(ctx, t, clients[0], nil, logger)
+		alice = NewTestingAccount(ctx, t, clients[0].Client, nil, logger)
 		defer alice.Close()
 		alice.SetName(t, "Alice")
 		alice.DrainInitEvents(t)
 
-		bob = NewTestingAccount(ctx, t, clients[1], nil, logger)
+		bob = NewTestingAccount(ctx, t, clients[1].Client, nil, logger)
 		defer bob.Close()
 		bob.SetName(t, "Bob")
 		bob.DrainInitEvents(t)
 
-		john = NewTestingAccount(ctx, t, clients[2], nil, logger)
+		john = NewTestingAccount(ctx, t, clients[2].Client, nil, logger)
 		defer john.Close()
 		john.SetName(t, "John")
 		john.DrainInitEvents(t)
@@ -656,17 +656,17 @@ func TestBrokenConversationInvitationAndExchange(t *testing.T) {
 	// create nodes
 	var alice, bob, john *TestingAccount
 	{
-		alice = NewTestingAccount(ctx, t, clients[0], nil, logger)
+		alice = NewTestingAccount(ctx, t, clients[0].Client, nil, logger)
 		defer alice.Close()
 		alice.SetName(t, "Alice")
 		alice.DrainInitEvents(t)
 
-		bob = NewTestingAccount(ctx, t, clients[1], nil, logger)
+		bob = NewTestingAccount(ctx, t, clients[1].Client, nil, logger)
 		defer bob.Close()
 		bob.SetName(t, "Bob")
 		bob.DrainInitEvents(t)
 
-		john = NewTestingAccount(ctx, t, clients[2], nil, logger)
+		john = NewTestingAccount(ctx, t, clients[2].Client, nil, logger)
 		defer john.Close()
 		john.SetName(t, "John")
 		john.DrainInitEvents(t)
@@ -729,8 +729,8 @@ func TestBrokenConversationOpenClose(t *testing.T) {
 
 	// Init accounts
 	var (
-		alice = NewTestingAccount(ctx, t, clients[0], nil, logger)
-		bob   = NewTestingAccount(ctx, t, clients[1], nil, logger)
+		alice = NewTestingAccount(ctx, t, clients[0].Client, nil, logger)
+		bob   = NewTestingAccount(ctx, t, clients[1].Client, nil, logger)
 	)
 	{
 		defer alice.Close()
@@ -1362,7 +1362,7 @@ func TestAccountUpdate(t *testing.T) {
 
 	nodes := make([]*TestingAccount, l)
 	for i := range nodes {
-		nodes[i] = NewTestingAccount(ctx, t, clients[i], protocols[i].Client, logger)
+		nodes[i] = NewTestingAccount(ctx, t, clients[i].Client, protocols[i].Client, logger)
 		nodes[i].SetName(t, fmt.Sprintf("node-%d", i))
 		close := nodes[i].ProcessWholeStream(t)
 		defer close()
@@ -1424,7 +1424,7 @@ func TestFlappyAccountUpdateGroup(t *testing.T) {
 
 	nodes := make([]*TestingAccount, l)
 	for i := range nodes {
-		nodes[i] = NewTestingAccount(ctx, t, clients[i], protocols[i].Client, logger)
+		nodes[i] = NewTestingAccount(ctx, t, clients[i].Client, protocols[i].Client, logger)
 		nodes[i].SetName(t, fmt.Sprintf("node-%d", i))
 		close := nodes[i].ProcessWholeStream(t)
 		defer close()
@@ -1704,7 +1704,7 @@ func TestDirectoryService(t *testing.T) {
 
 	nodes := make([]*TestingAccount, l)
 	for i := range nodes {
-		nodes[i] = NewTestingAccount(ctx, t, clients[i], protocols[i].Client, logger)
+		nodes[i] = NewTestingAccount(ctx, t, clients[i].Client, protocols[i].Client, logger)
 		nodes[i].SetName(t, fmt.Sprintf("node-%d", i))
 		closeFn := nodes[i].ProcessWholeStream(t)
 		defer closeFn()

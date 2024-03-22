@@ -74,3 +74,12 @@ func EnsureValidBase64CID(str string) error {
 
 	return nil
 }
+
+// MakeSharedPushIdentifier returns a unique identifier for a push server and a push token.
+func MakeSharedPushIdentifier(serverKey []byte, token []byte) string {
+	// @TODO(@gfanton): make something smarter here
+	b64serverKey := base64.StdEncoding.EncodeToString(serverKey)
+	b64token := base64.StdEncoding.EncodeToString(token)
+
+	return fmt.Sprintf("%s-%s", b64serverKey, b64token)
+}

@@ -130,7 +130,7 @@ go.install: pb.generate
 
 docker.build: pb.generate
 	$(call check-program, docker)
-	docker build -t bertytech/berty ..
+	docker build -t bertytech/berty --platform=linux/amd64 ..
 .PHONY: docker.build
 
 

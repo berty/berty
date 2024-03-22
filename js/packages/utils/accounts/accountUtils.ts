@@ -7,6 +7,7 @@ import beapi from '@berty/api'
 import { GRPCError } from '@berty/grpc-bridge'
 import { setAccounts } from '@berty/redux/reducers/ui.reducer'
 import store from '@berty/redux/store'
+import { serviceTypes } from '@berty/utils/remote-services/remote-services'
 
 import { createAndSaveFile } from '../react-native/file-system'
 import { accountClient } from './accountClient'
@@ -94,4 +95,15 @@ export const exportLogfile = async (accountId: string | null) => {
 			console.warn(err)
 		}
 	}
+}
+
+export const hasKnownPushServer = (
+	account: beapi.messenger.IAccount | null | undefined,
+): boolean => {
+	const hasKnownPushServer = account?.serviceTokens?.some(t => {
+		return t.supportedServices?.some(s => {
+			return s.type === serviceTypes.Push
+		})
+	})
+	return hasKnownPushServer || false
 }

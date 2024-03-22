@@ -22,10 +22,13 @@ import (
 	"berty.tech/berty/v2/go/internal/accountutils"
 	"berty.tech/berty/v2/go/internal/initutil"
 	"berty.tech/berty/v2/go/internal/migrationsaccount"
+	"berty.tech/berty/v2/go/localization"
 	"berty.tech/berty/v2/go/pkg/accounttypes"
+	"berty.tech/berty/v2/go/pkg/bertypush"
 	"berty.tech/berty/v2/go/pkg/config"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
+	"berty.tech/berty/v2/go/pkg/pushtypes"
 	nb "berty.tech/weshnet/pkg/androidnearby"
 	"berty.tech/weshnet/pkg/ble-driver"
 	"berty.tech/weshnet/pkg/logutil"
@@ -1257,109 +1260,104 @@ func ArgsHasWithPrefix(args []string, prefix string) bool {
 }
 
 func (s *service) PushReceive(ctx context.Context, req *accounttypes.PushReceive_Request) (*accounttypes.PushReceive_Reply, error) {
-	// FIXME(push): need re bertypush re implementation
-	return nil, fmt.Errorf("not implemented")
+	payload, err := base64.RawURLEncoding.DecodeString(req.Payload)
+	if err != nil {
+		return nil, errcode.ErrDeserialization.Wrap(err)
+	}
 
-	// payload, err := base64.RawURLEncoding.DecodeString(req.Payload)
-	// if err != nil {
-	// 	return nil, errcode.ErrDeserialization.Wrap(err)
-	// }
+	initManager, err := s.getInitManager()
+	if err != nil {
+		s.logger.Warn("unable to retrieve init manager", zap.Error(err))
+		initManager = nil
+	}
 
-	// initManager, err := s.getInitManager()
-	// if err != nil {
-	// 	s.logger.Warn("unable to retrieve init manager", zap.Error(err))
-	// 	initManager = nil
-	// }
+	cat := localization.Catalog()
+	printer := cat.NewPrinter(s.languages...)
 
-	// cat := localization.Catalog()
-	// printer := cat.NewPrinter(s.languages...)
+	s.muService.Lock()
+	defer s.muService.Unlock()
 
-	// s.muService.Lock()
-	// defer s.muService.Unlock()
+	excludedAccounts := []string(nil)
 
-	// excludedAccounts := []string(nil)
+	accData := s.accountData
+	if initManager != nil && accData != nil {
+		excludedAccounts = append(excludedAccounts, accData.AccountID)
 
-	// accData := s.accountData
-	// if initManager != nil && accData != nil {
-	// 	excludedAccounts = append(excludedAccounts, accData.AccountID)
+		client, err := initManager.GetMessengerClient()
+		if err == nil && client != nil {
+			rep, err := client.PushReceive(ctx, &messengertypes.PushReceive_Request{Payload: payload})
+			if err == nil {
+				pushData, err := bertypush.PushEnrich(rep.Data, accData, s.logger)
+				formated := bertypush.FormatDecryptedPush(pushData, printer)
+				if err == nil {
+					return &accounttypes.PushReceive_Reply{
+						PushData: pushData,
+						Push:     formated,
+					}, nil
+				}
 
-	// 	client, err := initManager.GetMessengerClient()
-	// 	if err == nil && client != nil {
-	// 		rep, err := client.PushReceive(ctx, &messengertypes.PushReceive_Request{Payload: payload})
-	// 		if err == nil {
-	// 			pushData, err := bertypush.PushEnrich(rep.Data, accData, s.logger)
-	// 			formated := bertypush.FormatDecryptedPush(pushData, printer)
-	// 			if err == nil {
-	// 				return &accounttypes.PushReceive_Reply{
-	// 					PushData: pushData,
-	// 					Push:     formated,
-	// 				}, nil
-	// 			}
+				s.logger.Warn("unable to enrich push data", zap.Error(err))
+				// TODO: should we return early?
+			}
 
-	// 			s.logger.Warn("unable to enrich push data", zap.Error(err))
-	// 			// TODO: should we return early?
-	// 		}
+			s.logger.Warn("unable to open push using currently opened account", zap.Error(err))
+		} else if err != nil {
+			s.logger.Warn("unable to get currently opened account", zap.Error(err))
+		}
+	}
 
-	// 		s.logger.Warn("unable to open push using currently opened account", zap.Error(err))
-	// 	} else if err != nil {
-	// 		s.logger.Warn("unable to get currently opened account", zap.Error(err))
-	// 	}
-	// }
+	rawPushData, accountData, err := bertypush.PushDecrypt(ctx, s.sharedRootDir, payload, &bertypush.PushDecryptOpts{
+		Logger: s.logger, ExcludedAccounts: excludedAccounts, Keystore: s.nativeKeystore,
+	})
+	if err != nil {
+		return nil, errcode.ErrPushUnableToDecrypt.Wrap(err)
+	}
 
-	// rawPushData, accountData, err := bertypush.PushDecrypt(ctx, s.sharedRootDir, payload, &bertypush.PushDecryptOpts{
-	// 	Logger: s.logger, ExcludedAccounts: excludedAccounts, Keystore: s.nativeKeystore,
-	// })
-	// if err != nil {
-	// 	return nil, weshnet_errcode.ErrPushUnableToDecrypt.Wrap(err)
-	// }
+	pushData, err := bertypush.PushEnrich(rawPushData, accountData, s.logger)
+	if err != nil {
+		s.logger.Warn("unable to enrich push data", zap.Error(err))
+		// TODO: should we return early?
+	}
 
-	// pushData, err := bertypush.PushEnrich(rawPushData, accountData, s.logger)
-	// if err != nil {
-	// 	s.logger.Warn("unable to enrich push data", zap.Error(err))
-	// 	// TODO: should we return early?
-	// }
-
-	// formated := bertypush.FormatDecryptedPush(pushData, printer)
-	// return &accounttypes.PushReceive_Reply{
-	// 	PushData: pushData,
-	// 	Push:     formated,
-	// }, nil
+	formated := bertypush.FormatDecryptedPush(pushData, printer)
+	return &accounttypes.PushReceive_Reply{
+		PushData: pushData,
+		Push:     formated,
+	}, nil
 }
 
 func (s *service) PushPlatformTokenRegister(ctx context.Context, request *accounttypes.PushPlatformTokenRegister_Request) (*accounttypes.PushPlatformTokenRegister_Reply, error) {
 	s.muService.Lock()
 	defer s.muService.Unlock()
 
-	// FIXME(push): method unavailable, missing `PushSetDeviceToken` method
+	pushPK, _, err := accountutils.GetDevicePushKeyForPath(s.devicePushKeyPath, true)
+	if err != nil {
+		return nil, err
+	}
 
-	// pushPK, _, err := accountutils.GetDevicePushKeyForPath(s.devicePushKeyPath, true)
-	// if err != nil {
-	// 	return nil, err
-	// }
+	request.Receiver.RecipientPublicKey = pushPK[:]
 
-	// request.Receiver.RecipientPublicKey = pushPK[:]
+	s.pushPlatformToken = &pushtypes.PushServiceReceiver{
+		TokenType:          request.Receiver.TokenType,
+		BundleID:           request.Receiver.BundleID,
+		Token:              request.Receiver.Token,
+		RecipientPublicKey: request.Receiver.RecipientPublicKey,
+	}
 
-	// s.pushPlatformToken = &protocoltypes.PushServiceReceiver{
-	// 	TokenType:          request.Receiver.TokenType,
-	// 	BundleID:           request.Receiver.BundleID,
-	// 	Token:              request.Receiver.Token,
-	// 	RecipientPublicKey: request.Receiver.RecipientPublicKey,
-	// }
+	if s.initManager == nil {
+		return &accounttypes.PushPlatformTokenRegister_Reply{}, nil
+	}
 
-	// if s.initManager == nil {
-	// 	return &accounttypes.PushPlatformTokenRegister_Reply{}, nil
-	// }
+	client, err := s.initManager.GetMessengerClient()
+	if err != nil {
+		return nil, errcode.ErrInternal.Wrap(err)
+	}
 
-	// client, err := s.initManager.GetProtocolClient()
-	// if err != nil {
-	// 	return nil, errcode.ErrInternal.Wrap(err)
-	// }
+	if _, err := client.PushSetDeviceToken(ctx, &messengertypes.PushSetDeviceToken_Request{Receiver: request.Receiver}); err != nil {
+		return nil, errcode.ErrInternal.Wrap(err)
+	}
 
-	// if _, err := client.PushSetDeviceToken(ctx, &protocoltypes.PushSetDeviceToken_Request{Receiver: request.Receiver}); err != nil {
-	// 	return nil, errcode.ErrInternal.Wrap(err)
-	// }
-
-	return nil, fmt.Errorf("not implemented")
+	return &accounttypes.PushPlatformTokenRegister_Reply{}, nil
 }
 
 func (s *service) GetOpenedAccount(ctx context.Context, request *accounttypes.GetOpenedAccount_Request) (*accounttypes.GetOpenedAccount_Reply, error) {

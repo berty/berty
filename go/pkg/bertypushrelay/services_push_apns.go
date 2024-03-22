@@ -11,15 +11,14 @@ import (
 	"github.com/sideshow/apns2/payload"
 	"go.uber.org/zap"
 
-	weshnet_errcode "berty.tech/weshnet/pkg/errcode"
+	"berty.tech/berty/v2/go/pkg/errcode"
+	"berty.tech/berty/v2/go/pkg/pushtypes"
 	"berty.tech/weshnet/pkg/logutil"
-	"berty.tech/weshnet/pkg/protocoltypes"
-	"berty.tech/weshnet/pkg/pushtypes"
 )
 
 const (
 	asn1UID              = "0.9.2342.19200300.100.1.1"
-	appleCertDevNamePart = "Apple Development IOS Push Services"
+	appleCertDevNamePart = "Apple Sandbox Push Services"
 )
 
 type pushDispatcherAPNS struct {
@@ -53,7 +52,7 @@ func PushDispatcherLoadAPNSCertificates(logger *zap.Logger, input *string) ([]Pu
 func pushDispatcherLoadAPNSCertificate(logger *zap.Logger, path string) (PushDispatcher, error) {
 	cert, err := certificate.FromP12File(path, "")
 	if err != nil {
-		return nil, weshnet_errcode.ErrPushInvalidServerConfig
+		return nil, errcode.ErrPushInvalidServerConfig
 	}
 
 	bundleID := ""
@@ -65,7 +64,7 @@ func pushDispatcherLoadAPNSCertificate(logger *zap.Logger, path string) (PushDis
 	}
 
 	if bundleID == "" {
-		return nil, weshnet_errcode.ErrPushMissingBundleID
+		return nil, errcode.ErrPushMissingBundleID
 	}
 
 	production := !strings.Contains(cert.Leaf.Subject.CommonName, appleCertDevNamePart)
@@ -85,7 +84,7 @@ func pushDispatcherLoadAPNSCertificate(logger *zap.Logger, path string) (PushDis
 	}, nil
 }
 
-func (d *pushDispatcherAPNS) Dispatch(data []byte, receiver *protocoltypes.PushServiceReceiver) error {
+func (d *pushDispatcherAPNS) Dispatch(data []byte, receiver *pushtypes.PushServiceReceiver) error {
 	token := hex.EncodeToString(receiver.Token)
 	secretToken := fmt.Sprintf("%.10s...", token)
 
@@ -108,9 +107,9 @@ func (d *pushDispatcherAPNS) Dispatch(data []byte, receiver *protocoltypes.PushS
 	response, err := d.client.Push(notification)
 
 	if err != nil {
-		return weshnet_errcode.ErrPushProvider.Wrap(err)
+		return errcode.ErrPushProvider.Wrap(err)
 	} else if response.StatusCode != 200 {
-		return weshnet_errcode.ErrPushProvider.Wrap(fmt.Errorf("apns: status %d, reason %s", response.StatusCode, response.Reason))
+		return errcode.ErrPushProvider.Wrap(fmt.Errorf("apns: status %d, reason %s", response.StatusCode, response.Reason))
 	}
 
 	return nil

@@ -28,7 +28,10 @@ const EnableNotificationsButton: React.FC<{
 	const { permissions } = useContext(PermissionsContext)
 
 	const pushTokenShared = useMemo(
-		() => conv?.sharedPushTokenIdentifier !== undefined && conv?.sharedPushTokenIdentifier !== '',
+		() =>
+			Array.isArray(conv?.pushLocalDeviceSharedTokens) &&
+			conv?.pushLocalDeviceSharedTokens.length !== undefined &&
+			conv?.pushLocalDeviceSharedTokens.length > 0,
 		[conv],
 	)
 	const conversationNotMuted = useMemo(
@@ -45,12 +48,7 @@ const EnableNotificationsButton: React.FC<{
 		[account.mutedUntil],
 	)
 
-	console.log(
-		'results:',
-		permissions.notification,
-		conv?.sharedPushTokenIdentifier,
-		conversationNotMuted,
-	)
+	console.log('results:', permissions.notification, pushTokenShared, conversationNotMuted)
 	if (!pushAvailable || permissions.notification === RESULTS.UNAVAILABLE) {
 		return (
 			<FloatingMenuItemWithPrimaryIcon iconName='bell-outline'>

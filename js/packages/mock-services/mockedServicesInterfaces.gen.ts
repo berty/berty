@@ -39,6 +39,11 @@ export interface IProtocolServiceMock {
 		beapi.protocol.ContactRequestDiscard.IRequest,
 		beapi.protocol.ContactRequestDiscard.IReply
 	>
+	ShareContact: UnaryMock<beapi.protocol.ShareContact.IRequest, beapi.protocol.ShareContact.IReply>
+	DecodeContact: UnaryMock<
+		beapi.protocol.DecodeContact.IRequest,
+		beapi.protocol.DecodeContact.IReply
+	>
 	ContactBlock: UnaryMock<beapi.protocol.ContactBlock.IRequest, beapi.protocol.ContactBlock.IReply>
 	ContactUnblock: UnaryMock<
 		beapi.protocol.ContactUnblock.IRequest,
@@ -110,19 +115,7 @@ export interface IProtocolServiceMock {
 		beapi.protocol.DebugInspectGroupStore.IReply
 	>
 	DebugGroup: UnaryMock<beapi.protocol.DebugGroup.IRequest, beapi.protocol.DebugGroup.IReply>
-	DebugAuthServiceSetToken: UnaryMock<
-		beapi.protocol.DebugAuthServiceSetToken.IRequest,
-		beapi.protocol.DebugAuthServiceSetToken.IReply
-	>
 	SystemInfo: UnaryMock<beapi.protocol.SystemInfo.IRequest, beapi.protocol.SystemInfo.IReply>
-	AuthServiceInitFlow: UnaryMock<
-		beapi.protocol.AuthServiceInitFlow.IRequest,
-		beapi.protocol.AuthServiceInitFlow.IReply
-	>
-	AuthServiceCompleteFlow: UnaryMock<
-		beapi.protocol.AuthServiceCompleteFlow.IRequest,
-		beapi.protocol.AuthServiceCompleteFlow.IReply
-	>
 	CredentialVerificationServiceInitFlow: UnaryMock<
 		beapi.protocol.CredentialVerificationServiceInitFlow.IRequest,
 		beapi.protocol.CredentialVerificationServiceInitFlow.IReply
@@ -135,28 +128,18 @@ export interface IProtocolServiceMock {
 		beapi.protocol.VerifiedCredentialsList.IRequest,
 		beapi.protocol.VerifiedCredentialsList.IReply
 	>
-	ServicesTokenList: ResponseStreamMock<
-		beapi.protocol.ServicesTokenList.IRequest,
-		beapi.protocol.ServicesTokenList.IReply
-	>
 	ReplicationServiceRegisterGroup: UnaryMock<
 		beapi.protocol.ReplicationServiceRegisterGroup.IRequest,
 		beapi.protocol.ReplicationServiceRegisterGroup.IReply
 	>
 	PeerList: UnaryMock<beapi.protocol.PeerList.IRequest, beapi.protocol.PeerList.IReply>
-	PushReceive: UnaryMock<beapi.protocol.PushReceive.IRequest, beapi.protocol.PushReceive.IReply>
-	PushSend: UnaryMock<beapi.protocol.PushSend.IRequest, beapi.protocol.PushSend.IReply>
-	PushShareToken: UnaryMock<
-		beapi.protocol.PushShareToken.IRequest,
-		beapi.protocol.PushShareToken.IReply
+	OutOfStoreReceive: UnaryMock<
+		beapi.protocol.OutOfStoreReceive.IRequest,
+		beapi.protocol.OutOfStoreReceive.IReply
 	>
-	PushSetDeviceToken: UnaryMock<
-		beapi.protocol.PushSetDeviceToken.IRequest,
-		beapi.protocol.PushSetDeviceToken.IReply
-	>
-	PushSetServer: UnaryMock<
-		beapi.protocol.PushSetServer.IRequest,
-		beapi.protocol.PushSetServer.IReply
+	OutOfStoreSeal: UnaryMock<
+		beapi.protocol.OutOfStoreSeal.IRequest,
+		beapi.protocol.OutOfStoreSeal.IReply
 	>
 	RefreshContactRequest: UnaryMock<
 		beapi.protocol.RefreshContactRequest.IRequest,
@@ -301,10 +284,6 @@ export interface IMessengerServiceMock {
 		beapi.messenger.ConversationMute.IRequest,
 		beapi.messenger.ConversationMute.IReply
 	>
-	ServicesTokenList: ResponseStreamMock<
-		beapi.protocol.ServicesTokenList.IRequest,
-		beapi.protocol.ServicesTokenList.IReply
-	>
 	ReplicationServiceRegisterGroup: UnaryMock<
 		beapi.messenger.ReplicationServiceRegisterGroup.IRequest,
 		beapi.messenger.ReplicationServiceRegisterGroup.IReply
@@ -334,6 +313,22 @@ export interface IMessengerServiceMock {
 		beapi.messenger.TyberHostAttach.IRequest,
 		beapi.messenger.TyberHostAttach.IReply
 	>
+	DebugAuthServiceSetToken: UnaryMock<
+		beapi.messenger.DebugAuthServiceSetToken.IRequest,
+		beapi.messenger.DebugAuthServiceSetToken.IReply
+	>
+	ServicesTokenList: ResponseStreamMock<
+		beapi.messenger.ServicesTokenList.IRequest,
+		beapi.messenger.ServicesTokenList.IReply
+	>
+	AuthServiceInitFlow: UnaryMock<
+		beapi.messenger.AuthServiceInitFlow.IRequest,
+		beapi.messenger.AuthServiceInitFlow.IReply
+	>
+	AuthServiceCompleteFlow: UnaryMock<
+		beapi.messenger.AuthServiceCompleteFlow.IRequest,
+		beapi.messenger.AuthServiceCompleteFlow.IReply
+	>
 	PushSetAutoShare: UnaryMock<
 		beapi.messenger.PushSetAutoShare.IRequest,
 		beapi.messenger.PushSetAutoShare.IReply
@@ -347,6 +342,15 @@ export interface IMessengerServiceMock {
 		beapi.messenger.PushTokenSharedForConversation.IReply
 	>
 	PushReceive: UnaryMock<beapi.messenger.PushReceive.IRequest, beapi.messenger.PushReceive.IReply>
+	PushSend: UnaryMock<beapi.messenger.PushSend.IRequest, beapi.messenger.PushSend.IReply>
+	PushSetDeviceToken: UnaryMock<
+		beapi.messenger.PushSetDeviceToken.IRequest,
+		beapi.messenger.PushSetDeviceToken.IReply
+	>
+	PushSetServer: UnaryMock<
+		beapi.messenger.PushSetServer.IRequest,
+		beapi.messenger.PushSetServer.IReply
+	>
 	DirectoryServiceRegister: UnaryMock<
 		beapi.messenger.DirectoryServiceRegister.IRequest,
 		beapi.messenger.DirectoryServiceRegister.IReply

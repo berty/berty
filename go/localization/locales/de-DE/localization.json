@@ -1,0 +1,68 @@
+{
+  "auth": {
+    "services": {
+      "rpl": {
+        "name": "Replikation",
+        "description": "Dieser Dienst wird Ihre Unterhaltungen automatisch replizieren, um Ihrem Gerät die effizienteste Netzwerkleistung zu bieten.",
+        "benefitBadge": "Leistung"
+      },
+      "psh": {
+        "name": "Push-Benachrichtigungen",
+        "description": "Dieser Dienst ermöglicht es Ihrem Gerät Push-Benachrichtigungen für eingehende Nachrichten zu erhalten.",
+        "benefitBadge": "Leistung"
+      }
+    },
+    "pageTitle": "",
+    "connectButton_one": "Dienst verwenden",
+    "connectButton_other": "Ausgewählte Dienste verwenden",
+    "privacyPolicyLabel": "Datenschutzerklärung"
+  },
+  "push": {
+    "message": {
+      "title": "Neue Nachricht"
+    },
+    "error": {
+      "title": "Push-Entschlüsselung fehlgeschlagen"
+    },
+    "voiceMessage": {
+      "bodyWithNumberOfMedia_one": "Eine Sprachnachricht gesendet",
+      "bodyWithNumberOfMedia_other": "%[1]v Sprachnachrichten gesendet"
+    },
+    "gif": {
+      "bodyWithNumberOfMedia_one": "Ein gif gesendet",
+      "bodyWithNumberOfMedia_other": "%[1]v GIFs gesendet"
+    },
+    "photo": {
+      "bodyWithNumberOfMedia_one": "Foto gesendet",
+      "bodyWithNumberOfMedia_other": "%[1]v Fotos gesendet"
+    },
+    "media": {
+      "bodyWithNumberOfMedia_one": "",
+      "bodyWithNumberOfMedia_other": ""
+    },
+    "reaction": {
+      "bodyWithDisplayNameAndEmoji": "%[1]v reagierte mit %[2]v auf deine Nachricht"
+    },
+    "groupInvitation": {
+      "bodyWithGroupName": ""
+    },
+    "unknown": {
+      "body": "Etwas Neues wurde empfangen"
+    },
+    "conversationNameChanged": {
+      "body": "Name der Unterhaltung wurde aktualisiert"
+    },
+    "memberNameChanged": {
+      "body": "Anzeigename aktualisiert"
+    },
+    "memberPictureChanged": {
+      "body": "Profilbild aktualisiert"
+    },
+    "memberDetailsChanged": {
+      "body": "Mitgliederdetail aktualisiert"
+    },
+    "replyOptionsOffered": {
+      "body": "Antwort-Optionen angeboten"
+    }
+  }
+}

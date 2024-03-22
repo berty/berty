@@ -69,6 +69,16 @@ func (am AppMessage) UnmarshalPayload() (proto.Message, error) {
 		message = &AppMessage_AccountDirectoryServiceRegistered{}
 	case AppMessage_TypeAccountDirectoryServiceUnregistered:
 		message = &AppMessage_AccountDirectoryServiceUnregistered{}
+	case AppMessage_TypeServiceAddToken:
+		message = &AppMessage_ServiceAddToken{}
+	case AppMessage_TypeServiceRemoveToken:
+		message = &AppMessage_ServiceRemoveToken{}
+	case AppMessage_TypePushSetDeviceToken:
+		message = &AppMessage_PushSetDeviceToken{}
+	case AppMessage_TypePushSetServer:
+		message = &AppMessage_PushSetServer{}
+	case AppMessage_TypePushSetMemberToken:
+		message = &AppMessage_PushSetMemberToken{}
 	default:
 		return nil, errcode.TODO.Wrap(fmt.Errorf("unsupported AppMessage type: %q", am.GetType()))
 	}
@@ -96,10 +106,8 @@ func (event *StreamEvent) UnmarshalPayload() (proto.Message, error) {
 	var message proto.Message
 
 	switch event.GetType() {
-	case StreamEvent_TypeAccountUpdated:
-		message = &StreamEvent_AccountUpdated{}
-	case StreamEvent_TypeContactUpdated:
-		message = &StreamEvent_ContactUpdated{}
+	case StreamEvent_TypeListEnded:
+		message = &StreamEvent_ListEnded{}
 	case StreamEvent_TypeConversationUpdated:
 		message = &StreamEvent_ConversationUpdated{}
 	case StreamEvent_TypeConversationDeleted:
@@ -108,20 +116,24 @@ func (event *StreamEvent) UnmarshalPayload() (proto.Message, error) {
 		message = &StreamEvent_InteractionUpdated{}
 	case StreamEvent_TypeInteractionDeleted:
 		message = &StreamEvent_InteractionDeleted{}
+	case StreamEvent_TypeContactUpdated:
+		message = &StreamEvent_ContactUpdated{}
+	case StreamEvent_TypeAccountUpdated:
+		message = &StreamEvent_AccountUpdated{}
 	case StreamEvent_TypeMemberUpdated:
 		message = &StreamEvent_MemberUpdated{}
 	case StreamEvent_TypeDeviceUpdated:
 		message = &StreamEvent_DeviceUpdated{}
 	case StreamEvent_TypeNotified:
 		message = &StreamEvent_Notified{}
-	case StreamEvent_TypeListEnded:
-		message = &StreamEvent_ListEnded{}
-	case StreamEvent_TypePeerStatusGroupAssociated:
-		message = &StreamEvent_PeerStatusGroupAssociated{}
 	case StreamEvent_TypePeerStatusConnected:
 		message = &StreamEvent_PeerStatusConnected{}
 	case StreamEvent_TypePeerStatusDisconnected:
 		message = &StreamEvent_PeerStatusDisconnected{}
+	case StreamEvent_TypePeerStatusGroupAssociated:
+		message = &StreamEvent_PeerStatusGroupAssociated{}
+	case StreamEvent_TypeServiceTokenAdded:
+		message = &StreamEvent_ServiceTokenAdded{}
 	default:
 		return nil, errcode.TODO.Wrap(fmt.Errorf("unsupported StreamEvent type: %q", event.GetType()))
 	}

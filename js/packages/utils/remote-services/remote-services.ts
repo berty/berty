@@ -16,25 +16,25 @@ export enum serviceTypes {
 const bertyOperatedServer = 'https://services-v1.berty.tech/'
 
 export const servicesAuthViaDefault = async (
-	protocolClient: ServiceClientType<beapi.protocol.ProtocolService> | null,
+	messengerClient: ServiceClientType<beapi.messenger.MessengerService> | null,
 	services?: string[],
 ): Promise<PushNotificationStatus> => {
-	return servicesAuthViaURL(protocolClient, bertyOperatedServer, services)
+	return servicesAuthViaURL(messengerClient, bertyOperatedServer, services)
 }
 
 const servicesAuthViaURL = async (
-	protocolClient: ServiceClientType<beapi.protocol.ProtocolService> | null,
+	messengerClient: ServiceClientType<beapi.messenger.MessengerService> | null,
 	url: string,
 	services?: string[],
 ): Promise<PushNotificationStatus> => {
-	if (!protocolClient) {
-		throw new Error('missing protocol client')
+	if (!messengerClient) {
+		throw new Error('missing messenger client')
 	}
 
 	let resp
 	try {
 		// PKCE OAuth flow
-		resp = await protocolClient?.authServiceInitFlow({
+		resp = await messengerClient?.authServiceInitFlow({
 			authUrl: url,
 			services: services || [],
 		})
@@ -63,7 +63,7 @@ const servicesAuthViaURL = async (
 		})
 
 		if (!allowNonSecure) {
-			throw new Error('missing protocol client')
+			throw new Error('missing messenger client')
 		}
 	}
 
@@ -81,7 +81,7 @@ const servicesAuthViaURL = async (
 	}
 
 	try {
-		await protocolClient?.authServiceCompleteFlow({
+		await messengerClient?.authServiceCompleteFlow({
 			callbackUrl: responseURL,
 		})
 	} catch (e) {

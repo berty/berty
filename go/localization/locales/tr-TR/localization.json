@@ -1,0 +1,68 @@
+{
+  "auth": {
+    "services": {
+      "rpl": {
+        "name": "",
+        "description": "",
+        "benefitBadge": "Performans"
+      },
+      "psh": {
+        "name": "",
+        "description": "",
+        "benefitBadge": "Performans"
+      }
+    },
+    "pageTitle": "Berty Servisleri",
+    "connectButton_one": "Servisi kullan",
+    "connectButton_other": "Seçili servisleri kullan",
+    "privacyPolicyLabel": "Gizlilik politikası"
+  },
+  "push": {
+    "message": {
+      "title": "Yeni mesaj"
+    },
+    "error": {
+      "title": ""
+    },
+    "voiceMessage": {
+      "bodyWithNumberOfMedia_one": "Bir sesli mesaj gönderildi",
+      "bodyWithNumberOfMedia_other": "%[1]v adet sesli mesaj gönderildi"
+    },
+    "gif": {
+      "bodyWithNumberOfMedia_one": "Bir gif gönderildi",
+      "bodyWithNumberOfMedia_other": "%[1]v adet gif gönderildi"
+    },
+    "photo": {
+      "bodyWithNumberOfMedia_one": "Bir fotoğraf gönderildi",
+      "bodyWithNumberOfMedia_other": "%[1]v tane fotoğraf gönderildi"
+    },
+    "media": {
+      "bodyWithNumberOfMedia_one": "Medya gönderildi",
+      "bodyWithNumberOfMedia_other": "%[1]v adet medya gönderildi"
+    },
+    "reaction": {
+      "bodyWithDisplayNameAndEmoji": "%[1]v mesajına %[2]v ile tepki verdi"
+    },
+    "groupInvitation": {
+      "bodyWithGroupName": "Seni %[1]v grubuna davet etti"
+    },
+    "unknown": {
+      "body": "Yeni bir şeyler geldi"
+    },
+    "conversationNameChanged": {
+      "body": "Sohbet ismi güncellendi"
+    },
+    "memberNameChanged": {
+      "body": "Görüntülenen isim güncellendi"
+    },
+    "memberPictureChanged": {
+      "body": "Profil fotoğrafı güncellendi"
+    },
+    "memberDetailsChanged": {
+      "body": "Üye detayı güncellendi"
+    },
+    "replyOptionsOffered": {
+      "body": ""
+    }
+  }
+}

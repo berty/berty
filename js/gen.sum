@@ -1,4 +1,5 @@
-2f0f83f6a341dfb22354fdadbc8158bb088df34c  Makefile
+069860c24acf646e98cfa4c7dc975352e037505b  Makefile
 37a8eae718cea9f59591bc32797f7e9974dd12da  ../api/bertybridge/bertybridge.proto
-4d78ca70352ff20e7bd1e2919e5a79ab97d93837  ../api/messengertypes/messengertypes.proto
-a9af891326f09ad6b03caab4b878b10af58ef05f  ../api/accounttypes/accounttypes.proto
+4da4ed0dac27f6f8f66f66944f591d0e77c7327f  ../api/accounttypes/accounttypes.proto
+73f733b36b77e35ee6ffc0a6d02bf381d6d9b52c  ../api/pushtypes/bertypushtypes.proto
+a3317dce422b63f7a69953311bfe05035f8e476c  ../api/messengertypes/messengertypes.proto

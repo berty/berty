@@ -24,6 +24,8 @@ export interface WelshProtocolServiceClient {
 	contactRequestSend: UnaryType<beapi.protocol.ProtocolService['contactRequestSend']>
 	contactRequestAccept: UnaryType<beapi.protocol.ProtocolService['contactRequestAccept']>
 	contactRequestDiscard: UnaryType<beapi.protocol.ProtocolService['contactRequestDiscard']>
+	shareContact: UnaryType<beapi.protocol.ProtocolService['shareContact']>
+	decodeContact: UnaryType<beapi.protocol.ProtocolService['decodeContact']>
 	contactBlock: UnaryType<beapi.protocol.ProtocolService['contactBlock']>
 	contactUnblock: UnaryType<beapi.protocol.ProtocolService['contactUnblock']>
 	contactAliasKeySend: UnaryType<beapi.protocol.ProtocolService['contactAliasKeySend']>
@@ -52,10 +54,7 @@ export interface WelshProtocolServiceClient {
 		beapi.protocol.ProtocolService['debugInspectGroupStore']
 	>
 	debugGroup: UnaryType<beapi.protocol.ProtocolService['debugGroup']>
-	debugAuthServiceSetToken: UnaryType<beapi.protocol.ProtocolService['debugAuthServiceSetToken']>
 	systemInfo: UnaryType<beapi.protocol.ProtocolService['systemInfo']>
-	authServiceInitFlow: UnaryType<beapi.protocol.ProtocolService['authServiceInitFlow']>
-	authServiceCompleteFlow: UnaryType<beapi.protocol.ProtocolService['authServiceCompleteFlow']>
 	credentialVerificationServiceInitFlow: UnaryType<
 		beapi.protocol.ProtocolService['credentialVerificationServiceInitFlow']
 	>
@@ -65,16 +64,12 @@ export interface WelshProtocolServiceClient {
 	verifiedCredentialsList: ResponseStreamType<
 		beapi.protocol.ProtocolService['verifiedCredentialsList']
 	>
-	servicesTokenList: ResponseStreamType<beapi.protocol.ProtocolService['servicesTokenList']>
 	replicationServiceRegisterGroup: UnaryType<
 		beapi.protocol.ProtocolService['replicationServiceRegisterGroup']
 	>
 	peerList: UnaryType<beapi.protocol.ProtocolService['peerList']>
-	pushReceive: UnaryType<beapi.protocol.ProtocolService['pushReceive']>
-	pushSend: UnaryType<beapi.protocol.ProtocolService['pushSend']>
-	pushShareToken: UnaryType<beapi.protocol.ProtocolService['pushShareToken']>
-	pushSetDeviceToken: UnaryType<beapi.protocol.ProtocolService['pushSetDeviceToken']>
-	pushSetServer: UnaryType<beapi.protocol.ProtocolService['pushSetServer']>
+	outOfStoreReceive: UnaryType<beapi.protocol.ProtocolService['outOfStoreReceive']>
+	outOfStoreSeal: UnaryType<beapi.protocol.ProtocolService['outOfStoreSeal']>
 	refreshContactRequest: UnaryType<beapi.protocol.ProtocolService['refreshContactRequest']>
 }
 
@@ -134,7 +129,6 @@ export interface WelshMessengerServiceClient {
 	conversationClose: UnaryType<beapi.messenger.MessengerService['conversationClose']>
 	conversationLoad: UnaryType<beapi.messenger.MessengerService['conversationLoad']>
 	conversationMute: UnaryType<beapi.messenger.MessengerService['conversationMute']>
-	servicesTokenList: ResponseStreamType<beapi.messenger.MessengerService['servicesTokenList']>
 	replicationServiceRegisterGroup: UnaryType<
 		beapi.messenger.MessengerService['replicationServiceRegisterGroup']
 	>
@@ -145,6 +139,10 @@ export interface WelshMessengerServiceClient {
 	listMemberDevices: ResponseStreamType<beapi.messenger.MessengerService['listMemberDevices']>
 	tyberHostSearch: ResponseStreamType<beapi.messenger.MessengerService['tyberHostSearch']>
 	tyberHostAttach: UnaryType<beapi.messenger.MessengerService['tyberHostAttach']>
+	debugAuthServiceSetToken: UnaryType<beapi.messenger.MessengerService['debugAuthServiceSetToken']>
+	servicesTokenList: ResponseStreamType<beapi.messenger.MessengerService['servicesTokenList']>
+	authServiceInitFlow: UnaryType<beapi.messenger.MessengerService['authServiceInitFlow']>
+	authServiceCompleteFlow: UnaryType<beapi.messenger.MessengerService['authServiceCompleteFlow']>
 	pushSetAutoShare: UnaryType<beapi.messenger.MessengerService['pushSetAutoShare']>
 	pushShareTokenForConversation: UnaryType<
 		beapi.messenger.MessengerService['pushShareTokenForConversation']
@@ -153,6 +151,9 @@ export interface WelshMessengerServiceClient {
 		beapi.messenger.MessengerService['pushTokenSharedForConversation']
 	>
 	pushReceive: UnaryType<beapi.messenger.MessengerService['pushReceive']>
+	pushSend: UnaryType<beapi.messenger.MessengerService['pushSend']>
+	pushSetDeviceToken: UnaryType<beapi.messenger.MessengerService['pushSetDeviceToken']>
+	pushSetServer: UnaryType<beapi.messenger.MessengerService['pushSetServer']>
 	directoryServiceRegister: UnaryType<beapi.messenger.MessengerService['directoryServiceRegister']>
 	directoryServiceUnregister: UnaryType<
 		beapi.messenger.MessengerService['directoryServiceUnregister']

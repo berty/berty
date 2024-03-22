@@ -9,7 +9,7 @@ import (
 	push "berty.tech/berty/v2/go/framework/bertypush"
 	"berty.tech/berty/v2/go/internal/accountutils"
 	"berty.tech/berty/v2/go/pkg/accounttypes"
-	"berty.tech/weshnet/pkg/pushtypes"
+	"berty.tech/berty/v2/go/pkg/pushtypes"
 )
 
 const (

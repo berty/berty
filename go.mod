@@ -6,10 +6,10 @@ require (
 	berty.tech/go-ipfs-repo-encrypted v1.3.0
 	berty.tech/go-orbit-db v1.22.0
 	berty.tech/ipfs-webui-packed v1.0.0-v2.11.4-1
-	berty.tech/weshnet v1.12.1
+	berty.tech/weshnet v1.13.0
+	firebase.google.com/go/v4 v4.12.0
 	fyne.io/fyne/v2 v2.1.1
 	github.com/Masterminds/semver v1.5.0
-	github.com/appleboy/go-fcm v0.1.5
 	github.com/atotto/clipboard v0.1.4
 	github.com/berty/go-libp2p-mock v1.0.1
 	github.com/berty/go-libp2p-rendezvous v0.5.0
@@ -64,7 +64,7 @@ require (
 	github.com/pseudomuto/protoc-gen-doc v1.5.1
 	github.com/rivo/tview v0.0.0-20200712113419-c65badfc3d92
 	github.com/shibukawa/configdir v0.0.0-20170330084843-e180dbdc8da0
-	github.com/sideshow/apns2 v0.20.0
+	github.com/sideshow/apns2 v0.23.0
 	github.com/skip2/go-qrcode v0.0.0-20200617195104-da1b6568686e
 	github.com/stretchr/testify v1.8.2
 	github.com/tailscale/depaware v0.0.0-20210622194025-720c4b409502
@@ -79,8 +79,10 @@ require (
 	golang.org/x/text v0.14.0
 	golang.org/x/tools v0.7.0
 	golang.org/x/xerrors v0.0.0-20220907171357-04be3eba64a2
+	google.golang.org/api v0.114.0
 	google.golang.org/grpc v1.56.3
 	google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.3.0
+	gopkg.in/square/go-jose.v2 v2.6.0
 	gorm.io/gorm v1.25.0
 	moul.io/godev v1.7.0
 	moul.io/openfiles v1.2.0
@@ -97,6 +99,13 @@ require (
 require (
 	bazil.org/fuse v0.0.0-20200117225306-7b5117fecadc // indirect
 	berty.tech/go-ipfs-log v1.10.0 // indirect
+	cloud.google.com/go v0.110.0 // indirect
+	cloud.google.com/go/compute v1.19.1 // indirect
+	cloud.google.com/go/compute/metadata v0.2.3 // indirect
+	cloud.google.com/go/firestore v1.9.0 // indirect
+	cloud.google.com/go/iam v0.13.0 // indirect
+	cloud.google.com/go/longrunning v0.4.1 // indirect
+	cloud.google.com/go/storage v1.30.1 // indirect
 	contrib.go.opencensus.io/exporter/prometheus v0.4.0 // indirect
 	filippo.io/edwards25519 v1.0.0 // indirect
 	github.com/AndreasBriese/bbloom v0.0.0-20190825152654-46b345b51c96 // indirect
@@ -104,6 +113,7 @@ require (
 	github.com/DataDog/zstd v1.4.1 // indirect
 	github.com/Masterminds/goutils v1.1.0 // indirect
 	github.com/Masterminds/sprig v2.22.0+incompatible // indirect
+	github.com/MicahParks/keyfunc v1.9.0 // indirect
 	github.com/Microsoft/go-winio v0.6.0 // indirect
 	github.com/VictoriaMetrics/fastcache v1.5.7 // indirect
 	github.com/aead/ecdh v0.2.0 // indirect
@@ -112,6 +122,7 @@ require (
 	github.com/benbjohnson/clock v1.3.0 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/berty/emitter-go v0.0.0-20221031144724-5dae963c3622 // indirect
+	github.com/berty/go-libp2p-pubsub v0.9.4-0.20230706070911-6e35c0f470b8 // indirect
 	github.com/blang/semver/v4 v4.0.0 // indirect
 	github.com/btcsuite/btcd v0.22.1 // indirect
 	github.com/btcsuite/btcutil v1.0.3-0.20201208143702-a53e38424cce // indirect
@@ -135,7 +146,6 @@ require (
 	github.com/dgraph-io/badger v1.6.2 // indirect
 	github.com/dgraph-io/badger/v2 v2.2007.3 // indirect
 	github.com/dgraph-io/ristretto v0.0.3 // indirect
-	github.com/dgrijalva/jwt-go v3.2.0+incompatible // indirect
 	github.com/dgryski/go-farm v0.0.0-20190423205320-6a90982ecee2 // indirect
 	github.com/docker/cli v20.10.23+incompatible // indirect
 	github.com/docker/distribution v2.8.1+incompatible // indirect
@@ -173,6 +183,7 @@ require (
 	github.com/godbus/dbus/v5 v5.1.0 // indirect
 	github.com/gofrs/flock v0.8.1 // indirect
 	github.com/goki/freetype v0.0.0-20181231101311-fa8a33aabaff // indirect
+	github.com/golang-jwt/jwt/v4 v4.5.0 // indirect
 	github.com/golang/glog v1.1.0 // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/golang/mock v1.6.0 // indirect
@@ -183,6 +194,8 @@ require (
 	github.com/google/pprof v0.0.0-20230405160723-4a4c7d95572b // indirect
 	github.com/google/tink/go v1.7.0 // indirect
 	github.com/google/uuid v1.3.0 // indirect
+	github.com/googleapis/enterprise-certificate-proxy v0.2.3 // indirect
+	github.com/googleapis/gax-go/v2 v2.8.0 // indirect
 	github.com/gopherjs/gopherjs v0.0.0-20190812055157-5d271430af9f // indirect
 	github.com/gopherjs/gopherwasm v1.1.0 // indirect
 	github.com/gorilla/mux v1.8.0 // indirect
@@ -390,10 +403,11 @@ require (
 	golang.org/x/sync v0.1.0 // indirect
 	golang.org/x/sys v0.15.0 // indirect
 	golang.org/x/term v0.15.0 // indirect
+	golang.org/x/time v0.3.0 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
+	google.golang.org/appengine/v2 v2.0.2 // indirect
 	google.golang.org/genproto v0.0.0-20230410155749-daa745c078e1 // indirect
 	google.golang.org/protobuf v1.30.0 // indirect
-	gopkg.in/square/go-jose.v2 v2.6.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	lukechampine.com/blake3 v1.1.7 // indirect

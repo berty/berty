@@ -895,7 +895,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                         id: 1
                       },
                       tokenType: {
-                        type: "weshnet.push.v1.PushServiceTokenType",
+                        type: "berty.push.v1.PushServiceTokenType",
                         id: 2
                       }
                     }
@@ -903,11 +903,11 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   Reply: {
                     fields: {
                       pushData: {
-                        type: "weshnet.push.v1.DecryptedPush",
+                        type: "berty.push.v1.DecryptedPush",
                         id: 1
                       },
                       push: {
-                        type: "weshnet.push.v1.FormatedPush",
+                        type: "berty.push.v1.FormatedPush",
                         id: 2
                       }
                     }
@@ -920,13 +920,301 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   Request: {
                     fields: {
                       receiver: {
-                        type: "weshnet.protocol.v1.PushServiceReceiver",
+                        type: "push.v1.PushServiceReceiver",
                         id: 1
                       }
                     }
                   },
                   Reply: {
                     fields: {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      push: {
+        nested: {
+          v1: {
+            options: {
+              go_package: "berty.tech/berty/go/pkg/pushtypes",
+              "(gogoproto.marshaler_all)": true,
+              "(gogoproto.unmarshaler_all)": true,
+              "(gogoproto.sizer_all)": true
+            },
+            nested: {
+              PushService: {
+                methods: {
+                  ServerInfo: {
+                    requestType: "PushServiceServerInfo.Request",
+                    responseType: "PushServiceServerInfo.Reply"
+                  },
+                  Send: {
+                    requestType: "PushServiceSend.Request",
+                    responseType: "PushServiceSend.Reply"
+                  }
+                }
+              },
+              PushServiceReceiver: {
+                fields: {
+                  tokenType: {
+                    type: "PushServiceTokenType",
+                    id: 1
+                  },
+                  bundleId: {
+                    type: "string",
+                    id: 2,
+                    options: {
+                      "(gogoproto.customname)": "BundleID"
+                    }
+                  },
+                  token: {
+                    type: "bytes",
+                    id: 3
+                  },
+                  recipientPublicKey: {
+                    type: "bytes",
+                    id: 4
+                  }
+                }
+              },
+              PushServiceServerInfo: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {}
+                  },
+                  Reply: {
+                    fields: {
+                      publicKey: {
+                        type: "bytes",
+                        id: 1
+                      },
+                      supportedTokenTypes: {
+                        rule: "repeated",
+                        type: "PushServiceSupportedTokenType",
+                        id: 2
+                      }
+                    }
+                  }
+                }
+              },
+              PushServiceSupportedTokenType: {
+                fields: {
+                  appBundleId: {
+                    type: "string",
+                    id: 1,
+                    options: {
+                      "(gogoproto.customname)": "AppBundleID"
+                    }
+                  },
+                  tokenType: {
+                    type: "PushServiceTokenType",
+                    id: 2
+                  }
+                }
+              },
+              PushServiceTokenType: {
+                values: {
+                  PushTokenUndefined: 0,
+                  PushTokenMQTT: 1,
+                  PushTokenApplePushNotificationService: 2,
+                  PushTokenFirebaseCloudMessaging: 3,
+                  PushTokenWindowsPushNotificationService: 4,
+                  PushTokenHuaweiPushKit: 5,
+                  PushTokenAmazonDeviceMessaging: 6
+                }
+              },
+              PushServiceSend: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      envelope: {
+                        type: "bytes",
+                        id: 1
+                      },
+                      priority: {
+                        type: "PushServicePriority",
+                        id: 2
+                      },
+                      receivers: {
+                        rule: "repeated",
+                        type: "PushServiceOpaqueReceiver",
+                        id: 3
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {}
+                  }
+                }
+              },
+              OutOfStoreExposedData: {
+                fields: {
+                  nonce: {
+                    type: "bytes",
+                    id: 1
+                  },
+                  box: {
+                    type: "bytes",
+                    id: 2
+                  }
+                }
+              },
+              PushServicePriority: {
+                values: {
+                  PushPriorityUndefined: 0,
+                  PushPriorityLow: 1,
+                  PushPriorityNormal: 2
+                }
+              },
+              PushServiceOpaqueReceiver: {
+                fields: {
+                  opaqueToken: {
+                    type: "bytes",
+                    id: 1
+                  },
+                  serviceAddr: {
+                    type: "string",
+                    id: 2
+                  }
+                }
+              },
+              DecryptedPush: {
+                fields: {
+                  accountId: {
+                    type: "string",
+                    id: 1,
+                    options: {
+                      "(gogoproto.customname)": "AccountID"
+                    }
+                  },
+                  accountName: {
+                    type: "string",
+                    id: 2
+                  },
+                  conversationPublicKey: {
+                    type: "string",
+                    id: 3
+                  },
+                  conversationDisplayName: {
+                    type: "string",
+                    id: 4
+                  },
+                  memberPublicKey: {
+                    type: "string",
+                    id: 5
+                  },
+                  memberDisplayName: {
+                    type: "string",
+                    id: 6
+                  },
+                  pushType: {
+                    type: "PushType",
+                    id: 7
+                  },
+                  payloadAttrsJson: {
+                    type: "string",
+                    id: 8,
+                    options: {
+                      "(gogoproto.customname)": "PayloadAttrsJSON"
+                    }
+                  },
+                  deepLink: {
+                    type: "string",
+                    id: 9
+                  },
+                  alreadyReceived: {
+                    type: "bool",
+                    id: 10
+                  },
+                  accountMuted: {
+                    type: "bool",
+                    id: 11
+                  },
+                  conversationMuted: {
+                    type: "bool",
+                    id: 12
+                  },
+                  hidePreview: {
+                    type: "bool",
+                    id: 13
+                  }
+                },
+                nested: {
+                  PushType: {
+                    values: {
+                      Unknown: 0,
+                      Message: 1,
+                      GroupInvitation: 7,
+                      ConversationNameChanged: 8,
+                      MemberNameChanged: 9,
+                      MemberDetailsChanged: 11
+                    },
+                    reserved: [
+                      [
+                        2,
+                        2
+                      ],
+                      [
+                        3,
+                        3
+                      ],
+                      [
+                        4,
+                        4
+                      ],
+                      [
+                        5,
+                        5
+                      ],
+                      [
+                        6,
+                        6
+                      ],
+                      [
+                        10,
+                        10
+                      ]
+                    ]
+                  }
+                }
+              },
+              FormatedPush: {
+                fields: {
+                  pushType: {
+                    type: "DecryptedPush.PushType",
+                    id: 1
+                  },
+                  title: {
+                    type: "string",
+                    id: 2
+                  },
+                  subtitle: {
+                    type: "string",
+                    id: 3
+                  },
+                  body: {
+                    type: "string",
+                    id: 4
+                  },
+                  deepLink: {
+                    type: "string",
+                    id: 5
+                  },
+                  muted: {
+                    type: "bool",
+                    id: 6
+                  },
+                  hidePreview: {
+                    type: "bool",
+                    id: 7
+                  },
+                  conversationIdentifier: {
+                    type: "string",
+                    id: 8
                   }
                 }
               }
@@ -1342,6 +1630,16 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
               ErrTestEcho: 2401,
               ErrTestEchoRecv: 2402,
               ErrTestEchoSend: 2403,
+              ErrServicesAuth: 4000,
+              ErrServicesAuthNotInitialized: 4001,
+              ErrServicesAuthWrongState: 4002,
+              ErrServicesAuthInvalidResponse: 4003,
+              ErrServicesAuthServer: 4004,
+              ErrServicesAuthCodeChallenge: 4005,
+              ErrServicesAuthServiceInvalidToken: 4006,
+              ErrServicesAuthServiceNotSupported: 4007,
+              ErrServicesAuthUnknownToken: 4008,
+              ErrServicesAuthInvalidURL: 4009,
               ErrCLINoTermcaps: 3001,
               ErrServicesDirectory: 4200,
               ErrServicesDirectoryInvalidVerifiedCredentialSubject: 4201,
@@ -1369,7 +1667,19 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
               ErrBertyAccountIDGenFailed: 5015,
               ErrBertyAccountCreationFailed: 5016,
               ErrBertyAccountUpdateFailed: 5017,
-              ErrAppStorageNotSupported: 5018
+              ErrAppStorageNotSupported: 5018,
+              ErrPush: 6000,
+              ErrPushWrongAccount: 6001,
+              ErrPushUnableToDecrypt: 6002,
+              ErrPushInvalidPayload: 6003,
+              ErrPushInvalidServerConfig: 6004,
+              ErrPushMissingBundleID: 6005,
+              ErrPushUnknownDestination: 6006,
+              ErrPushProvider: 6007,
+              ErrPushUnknownProvider: 6008,
+              ErrNoProvidersConfigured: 6009,
+              ErrInvalidPrivateKey: 6010,
+              ErrPushServerNotFound: 6011
             }
           },
           ErrDetails: {
@@ -1390,7 +1700,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
               go_package: "berty.tech/berty/go/pkg/messengertypes",
               "(gogoproto.goproto_unkeyed_all)": false,
               "(gogoproto.goproto_unrecognized_all)": false,
-              "(gogoproto.goproto_sizecache_all)": false
+              "(gogoproto.goproto_sizecache_all)": false,
+              "(gogoproto.marshaler_all)": true,
+              "(gogoproto.unmarshaler_all)": true,
+              "(gogoproto.sizer_all)": true
             },
             nested: {
               MessengerService: {
@@ -1493,11 +1806,6 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     requestType: "ConversationMute.Request",
                     responseType: "ConversationMute.Reply"
                   },
-                  ServicesTokenList: {
-                    requestType: "weshnet.protocol.v1.ServicesTokenList.Request",
-                    responseType: "weshnet.protocol.v1.ServicesTokenList.Reply",
-                    responseStream: true
-                  },
                   ReplicationServiceRegisterGroup: {
                     requestType: "ReplicationServiceRegisterGroup.Request",
                     responseType: "ReplicationServiceRegisterGroup.Reply"
@@ -1533,6 +1841,23 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     requestType: "TyberHostAttach.Request",
                     responseType: "TyberHostAttach.Reply"
                   },
+                  DebugAuthServiceSetToken: {
+                    requestType: "DebugAuthServiceSetToken.Request",
+                    responseType: "DebugAuthServiceSetToken.Reply"
+                  },
+                  ServicesTokenList: {
+                    requestType: "ServicesTokenList.Request",
+                    responseType: "ServicesTokenList.Reply",
+                    responseStream: true
+                  },
+                  AuthServiceInitFlow: {
+                    requestType: "AuthServiceInitFlow.Request",
+                    responseType: "AuthServiceInitFlow.Reply"
+                  },
+                  AuthServiceCompleteFlow: {
+                    requestType: "AuthServiceCompleteFlow.Request",
+                    responseType: "AuthServiceCompleteFlow.Reply"
+                  },
                   PushSetAutoShare: {
                     requestType: "PushSetAutoShare.Request",
                     responseType: "PushSetAutoShare.Reply"
@@ -1549,6 +1874,18 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   PushReceive: {
                     requestType: "PushReceive.Request",
                     responseType: "PushReceive.Reply"
+                  },
+                  PushSend: {
+                    requestType: "PushSend.Request",
+                    responseType: "PushSend.Reply"
+                  },
+                  PushSetDeviceToken: {
+                    requestType: "PushSetDeviceToken.Request",
+                    responseType: "PushSetDeviceToken.Reply"
+                  },
+                  PushSetServer: {
+                    requestType: "PushSetServer.Request",
+                    responseType: "PushSetServer.Reply"
                   },
                   DirectoryServiceRegister: {
                     requestType: "DirectoryServiceRegister.Request",
@@ -2103,7 +2440,12 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       TypeSetUserInfo: 5,
                       TypeAcknowledge: 6,
                       TypeAccountDirectoryServiceRegistered: 8,
-                      TypeAccountDirectoryServiceUnregistered: 9
+                      TypeAccountDirectoryServiceUnregistered: 9,
+                      TypeServiceAddToken: 10,
+                      TypeServiceRemoveToken: 11,
+                      TypePushSetDeviceToken: 12,
+                      TypePushSetServer: 13,
+                      TypePushSetMemberToken: 14
                     },
                     reserved: [
                       [
@@ -2218,6 +2560,65 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                         id: 5
                       }
                     }
+                  },
+                  ServiceAddToken: {
+                    fields: {
+                      token: {
+                        type: "string",
+                        id: 1
+                      },
+                      supportedServices: {
+                        rule: "repeated",
+                        type: "ServiceTokenSupportedService",
+                        id: 2
+                      },
+                      authenticationUrl: {
+                        type: "string",
+                        id: 3,
+                        options: {
+                          "(gogoproto.customname)": "AuthenticationURL"
+                        }
+                      },
+                      expiration: {
+                        type: "int64",
+                        id: 4
+                      }
+                    }
+                  },
+                  ServiceRemoveToken: {
+                    fields: {
+                      tokenid: {
+                        type: "string",
+                        id: 2,
+                        options: {
+                          "(gogoproto.customname)": "TokenID"
+                        }
+                      }
+                    }
+                  },
+                  PushSetDeviceToken: {
+                    fields: {
+                      deviceToken: {
+                        type: "push.v1.PushServiceReceiver",
+                        id: 1
+                      }
+                    }
+                  },
+                  PushSetServer: {
+                    fields: {
+                      server: {
+                        type: "PushServer",
+                        id: 1
+                      }
+                    }
+                  },
+                  PushSetMemberToken: {
+                    fields: {
+                      memberToken: {
+                        type: "PushMemberTokenUpdate",
+                        id: 1
+                      }
+                    }
                   }
                 }
               },
@@ -2289,19 +2690,23 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                         type: "int64",
                         id: 6
                       },
-                      serviceTokens: {
+                      serviceTokenSupportedServiceRecords: {
                         type: "int64",
                         id: 7
                       },
-                      conversationReplicationInfo: {
+                      serviceTokens: {
                         type: "int64",
                         id: 8
+                      },
+                      conversationReplicationInfo: {
+                        type: "int64",
+                        id: 9
                       },
                       metadataEvents: {
                         type: "int64",
                         id: 10
                       },
-                      sharedPushTokens: {
+                      pushMemberToken: {
                         type: "int64",
                         id: 12
                       },
@@ -2312,6 +2717,18 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       accountDirectoryServiceRecord: {
                         type: "int64",
                         id: 14
+                      },
+                      pushDeviceToken: {
+                        type: "int64",
+                        id: 15
+                      },
+                      pushServerRecord: {
+                        type: "int64",
+                        id: 16
+                      },
+                      pushLocalDeviceSharedToken: {
+                        type: "int64",
+                        id: 17
                       }
                     },
                     reserved: [
@@ -2340,6 +2757,111 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   },
                   Reply: {
                     fields: {}
+                  }
+                }
+              },
+              DebugAuthServiceSetToken: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      token: {
+                        type: "AuthExchangeResponse",
+                        id: 1
+                      },
+                      authenticationUrl: {
+                        type: "string",
+                        id: 2,
+                        options: {
+                          "(gogoproto.customname)": "AuthenticationURL"
+                        }
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {}
+                  }
+                }
+              },
+              ServicesTokenList: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {}
+                  },
+                  Reply: {
+                    fields: {
+                      service: {
+                        type: "ServiceToken",
+                        id: 2
+                      }
+                    }
+                  }
+                }
+              },
+              AuthServiceCompleteFlow: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      callbackUrl: {
+                        type: "string",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "CallbackURL"
+                        }
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {
+                      tokenId: {
+                        type: "string",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "TokenID"
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              AuthServiceInitFlow: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      authUrl: {
+                        type: "string",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "AuthURL"
+                        }
+                      },
+                      services: {
+                        rule: "repeated",
+                        type: "string",
+                        id: 3
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {
+                      url: {
+                        type: "string",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "URL"
+                        }
+                      },
+                      secureUrl: {
+                        type: "bool",
+                        id: 2,
+                        options: {
+                          "(gogoproto.customname)": "SecureURL"
+                        }
+                      }
+                    }
                   }
                 }
               },
@@ -2379,13 +2901,20 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     type: "bool",
                     id: 8
                   },
-                  devicePushToken: {
-                    type: "bytes",
-                    id: 9
+                  pushDeviceToken: {
+                    type: "PushDeviceToken",
+                    id: 9,
+                    options: {
+                      "(gogoproto.moretags)": "gorm:foreignKey:AccountPK"
+                    }
                   },
-                  devicePushServer: {
-                    type: "bytes",
-                    id: 10
+                  pushServerRecords: {
+                    rule: "repeated",
+                    type: "PushServerRecord",
+                    id: 10,
+                    options: {
+                      "(gogoproto.moretags)": "gorm:foreignKey:AccountPK"
+                    }
                   },
                   mutedUntil: {
                     type: "int64",
@@ -2423,6 +2952,44 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   ]
                 ]
               },
+              ServiceTokenSupportedService: {
+                fields: {
+                  type: {
+                    type: "string",
+                    id: 2,
+                    options: {
+                      "(gogoproto.moretags)": "gorm:primaryKey"
+                    }
+                  },
+                  address: {
+                    type: "string",
+                    id: 3
+                  }
+                }
+              },
+              ServiceTokenSupportedServiceRecord: {
+                fields: {
+                  tokenId: {
+                    type: "string",
+                    id: 1,
+                    options: {
+                      "(gogoproto.customname)": "TokenID",
+                      "(gogoproto.moretags)": "gorm:primaryKey"
+                    }
+                  },
+                  type: {
+                    type: "string",
+                    id: 2,
+                    options: {
+                      "(gogoproto.moretags)": "gorm:primaryKey"
+                    }
+                  },
+                  address: {
+                    type: "string",
+                    id: 3
+                  }
+                }
+              },
               ServiceToken: {
                 fields: {
                   accountPk: {
@@ -2440,24 +3007,28 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       "(gogoproto.customname)": "TokenID"
                     }
                   },
-                  serviceType: {
+                  token: {
                     type: "string",
-                    id: 3,
+                    id: 3
+                  },
+                  supportedServices: {
+                    rule: "repeated",
+                    type: "ServiceTokenSupportedServiceRecord",
+                    id: 4,
                     options: {
-                      "(gogoproto.moretags)": "gorm:primaryKey",
-                      "(gogoproto.customname)": "ServiceType"
+                      "(gogoproto.moretags)": "gorm:foreignKey:TokenID"
                     }
                   },
                   authenticationUrl: {
                     type: "string",
-                    id: 4,
+                    id: 5,
                     options: {
                       "(gogoproto.customname)": "AuthenticationURL"
                     }
                   },
                   expiration: {
                     type: "int64",
-                    id: 5
+                    id: 6
                   }
                 }
               },
@@ -2585,7 +3156,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   },
                   conversationPublicKey: {
                     type: "string",
-                    id: 2
+                    id: 2,
+                    options: {
+                      "(gogoproto.moretags)": "gorm:primaryKey"
+                    }
                   },
                   conversation: {
                     type: "Conversation",
@@ -2612,7 +3186,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     type: "Device",
                     id: 6,
                     options: {
-                      "(gogoproto.moretags)": "gorm:foreignKey:MemberPublicKey"
+                      "(gogoproto.moretags)": "gorm:foreignKey:MemberPublicKey;references:PublicKey"
                     }
                   },
                   infoDate: {
@@ -2708,17 +3282,29 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     type: "int64",
                     id: 18
                   },
-                  sharedPushTokenIdentifier: {
+                  localMemberPublicKey: {
                     type: "string",
                     id: 19
                   },
-                  localMemberPublicKey: {
-                    type: "string",
-                    id: 20
-                  },
                   mutedUntil: {
                     type: "int64",
-                    id: 21
+                    id: 20
+                  },
+                  pushLocalDeviceSharedTokens: {
+                    rule: "repeated",
+                    type: "PushLocalDeviceSharedToken",
+                    id: 21,
+                    options: {
+                      "(gogoproto.moretags)": "gorm:foreignKey:ConversationPublicKey"
+                    }
+                  },
+                  pushMemberTokens: {
+                    rule: "repeated",
+                    type: "PushMemberToken",
+                    id: 22,
+                    options: {
+                      "(gogoproto.moretags)": "gorm:foreignKey:ConversationPublicKey"
+                    }
                   }
                 },
                 reserved: [
@@ -2847,38 +3433,6 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   }
                 }
               },
-              SharedPushToken: {
-                fields: {
-                  devicePublicKey: {
-                    type: "string",
-                    id: 1,
-                    options: {
-                      "(gogoproto.moretags)": "gorm:index"
-                    }
-                  },
-                  memberPublicKey: {
-                    type: "string",
-                    id: 2,
-                    options: {
-                      "(gogoproto.moretags)": "gorm:index"
-                    }
-                  },
-                  conversationPublicKey: {
-                    type: "string",
-                    id: 3,
-                    options: {
-                      "(gogoproto.moretags)": "gorm:index"
-                    }
-                  },
-                  token: {
-                    type: "string",
-                    id: 4,
-                    options: {
-                      "(gogoproto.moretags)": "gorm:index"
-                    }
-                  }
-                }
-              },
               AccountVerifiedCredential: {
                 fields: {
                   accountPk: {
@@ -2955,6 +3509,60 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   }
                 }
               },
+              PushDeviceToken: {
+                fields: {
+                  accountPk: {
+                    type: "string",
+                    id: 1,
+                    options: {
+                      "(gogoproto.customname)": "AccountPK",
+                      "(gogoproto.moretags)": "gorm:primaryKey"
+                    }
+                  },
+                  tokenType: {
+                    type: "push.v1.PushServiceTokenType",
+                    id: 2
+                  },
+                  bundleId: {
+                    type: "string",
+                    id: 3,
+                    options: {
+                      "(gogoproto.customname)": "BundleID"
+                    }
+                  },
+                  token: {
+                    type: "bytes",
+                    id: 4
+                  },
+                  publicKey: {
+                    type: "bytes",
+                    id: 5
+                  }
+                }
+              },
+              PushServerRecord: {
+                fields: {
+                  accountPk: {
+                    type: "string",
+                    id: 1,
+                    options: {
+                      "(gogoproto.customname)": "AccountPK",
+                      "(gogoproto.moretags)": "gorm:primaryKey"
+                    }
+                  },
+                  serverAddr: {
+                    type: "string",
+                    id: 2,
+                    options: {
+                      "(gogoproto.moretags)": "gorm:primaryKey"
+                    }
+                  },
+                  serverKey: {
+                    type: "bytes",
+                    id: 3
+                  }
+                }
+              },
               ContactMetadata: {
                 fields: {
                   displayName: {
@@ -2996,7 +3604,8 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       TypePeerStatusConnected: 13,
                       TypePeerStatusReconnecting: 14,
                       TypePeerStatusDisconnected: 15,
-                      TypePeerStatusGroupAssociated: 16
+                      TypePeerStatusGroupAssociated: 16,
+                      TypeServiceTokenAdded: 17
                     },
                     reserved: [
                       [
@@ -3249,6 +3858,14 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                         options: {
                           "(gogoproto.customname)": "GroupPK"
                         }
+                      }
+                    }
+                  },
+                  ServiceTokenAdded: {
+                    fields: {
+                      token: {
+                        type: "ServiceToken",
+                        id: 1
                       }
                     }
                   }
@@ -3717,6 +4334,22 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   }
                 }
               },
+              PushSetDeviceToken: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      receiver: {
+                        type: "push.v1.PushServiceReceiver",
+                        id: 1
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {}
+                  }
+                }
+              },
               PushSetAutoShare: {
                 fields: {},
                 nested: {
@@ -3736,7 +4369,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
               PushReceivedData: {
                 fields: {
                   protocolData: {
-                    type: "bytes",
+                    type: "weshnet.protocol.v1.OutOfStoreReceive.Reply",
                     id: 1
                   },
                   interaction: {
@@ -3848,8 +4481,8 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   },
                   Reply: {
                     fields: {
-                      pushToken: {
-                        type: "SharedPushToken",
+                      token: {
+                        type: "PushMemberToken",
                         id: 1
                       }
                     }
@@ -3946,6 +4579,239 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                         type: "bytes",
                         id: 4
                       }
+                    }
+                  }
+                }
+              },
+              PushServer: {
+                fields: {
+                  addr: {
+                    type: "string",
+                    id: 1
+                  },
+                  key: {
+                    type: "bytes",
+                    id: 2
+                  }
+                }
+              },
+              PushLocalDeviceSharedToken: {
+                fields: {
+                  tokenId: {
+                    type: "string",
+                    id: 1,
+                    options: {
+                      "(gogoproto.moretags)": "gorm:primaryKey",
+                      "(gogoproto.customname)": "TokenID"
+                    }
+                  },
+                  conversationPublicKey: {
+                    type: "string",
+                    id: 2
+                  }
+                }
+              },
+              PushMemberToken: {
+                fields: {
+                  tokenId: {
+                    type: "string",
+                    id: 1,
+                    options: {
+                      "(gogoproto.moretags)": "gorm:primaryKey",
+                      "(gogoproto.customname)": "TokenID"
+                    }
+                  },
+                  conversationPublicKey: {
+                    type: "string",
+                    id: 2
+                  },
+                  devicePk: {
+                    type: "string",
+                    id: 3,
+                    options: {
+                      "(gogoproto.customname)": "DevicePK"
+                    }
+                  },
+                  serverAddr: {
+                    type: "string",
+                    id: 4
+                  },
+                  serverKey: {
+                    type: "bytes",
+                    id: 5
+                  },
+                  token: {
+                    type: "bytes",
+                    id: 6
+                  }
+                }
+              },
+              PushMemberTokenUpdate: {
+                fields: {
+                  devicePk: {
+                    type: "string",
+                    id: 1,
+                    options: {
+                      "(gogoproto.customname)": "DevicePK"
+                    }
+                  },
+                  server: {
+                    type: "PushServer",
+                    id: 2
+                  },
+                  token: {
+                    type: "bytes",
+                    id: 3
+                  }
+                }
+              },
+              MemberWithDevices: {
+                fields: {
+                  memberPk: {
+                    type: "string",
+                    id: 1,
+                    options: {
+                      "(gogoproto.customname)": "MemberPK"
+                    }
+                  },
+                  devicesPks: {
+                    rule: "repeated",
+                    type: "string",
+                    id: 2,
+                    options: {
+                      "(gogoproto.customname)": "DevicePKs"
+                    }
+                  }
+                }
+              },
+              PushSend: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      cid: {
+                        type: "bytes",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "CID"
+                        }
+                      },
+                      groupPk: {
+                        type: "string",
+                        id: 2,
+                        options: {
+                          "(gogoproto.customname)": "GroupPK"
+                        }
+                      },
+                      groupMembers: {
+                        rule: "repeated",
+                        type: "MemberWithDevices",
+                        id: 3
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {
+                      groupMembers: {
+                        rule: "repeated",
+                        type: "MemberWithDevices",
+                        id: 1
+                      }
+                    }
+                  }
+                }
+              },
+              PushShareToken: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      devicePk: {
+                        type: "string",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "DevicePK"
+                        }
+                      },
+                      groupPk: {
+                        type: "string",
+                        id: 2,
+                        options: {
+                          "(gogoproto.customname)": "GroupPK"
+                        }
+                      },
+                      server: {
+                        type: "PushServer",
+                        id: 3
+                      },
+                      receiver: {
+                        type: "push.v1.PushServiceReceiver",
+                        id: 4
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {}
+                  }
+                }
+              },
+              PushSetServer: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      server: {
+                        type: "PushServer",
+                        id: 1
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {}
+                  }
+                }
+              },
+              AuthExchangeResponse: {
+                fields: {
+                  accessToken: {
+                    type: "string",
+                    id: 1
+                  },
+                  scope: {
+                    type: "string",
+                    id: 2
+                  },
+                  error: {
+                    type: "string",
+                    id: 3
+                  },
+                  errorDescription: {
+                    type: "string",
+                    id: 4
+                  },
+                  services: {
+                    keyType: "string",
+                    type: "string",
+                    id: 5
+                  }
+                }
+              },
+              ServicesTokenCode: {
+                fields: {
+                  services: {
+                    rule: "repeated",
+                    type: "string",
+                    id: 1
+                  },
+                  codeChallenge: {
+                    type: "string",
+                    id: 2
+                  },
+                  tokenId: {
+                    type: "string",
+                    id: 3,
+                    options: {
+                      "(gogoproto.customname)": "TokenID"
                     }
                   }
                 }
@@ -5132,6 +5998,14 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     requestType: "ContactRequestDiscard.Request",
                     responseType: "ContactRequestDiscard.Reply"
                   },
+                  ShareContact: {
+                    requestType: "ShareContact.Request",
+                    responseType: "ShareContact.Reply"
+                  },
+                  DecodeContact: {
+                    requestType: "DecodeContact.Request",
+                    responseType: "DecodeContact.Reply"
+                  },
                   ContactBlock: {
                     requestType: "ContactBlock.Request",
                     responseType: "ContactBlock.Reply"
@@ -5217,21 +6091,9 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     requestType: "DebugGroup.Request",
                     responseType: "DebugGroup.Reply"
                   },
-                  DebugAuthServiceSetToken: {
-                    requestType: "DebugAuthServiceSetToken.Request",
-                    responseType: "DebugAuthServiceSetToken.Reply"
-                  },
                   SystemInfo: {
                     requestType: "SystemInfo.Request",
                     responseType: "SystemInfo.Reply"
-                  },
-                  AuthServiceInitFlow: {
-                    requestType: "AuthServiceInitFlow.Request",
-                    responseType: "AuthServiceInitFlow.Reply"
-                  },
-                  AuthServiceCompleteFlow: {
-                    requestType: "AuthServiceCompleteFlow.Request",
-                    responseType: "AuthServiceCompleteFlow.Reply"
                   },
                   CredentialVerificationServiceInitFlow: {
                     requestType: "CredentialVerificationServiceInitFlow.Request",
@@ -5246,11 +6108,6 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     responseType: "VerifiedCredentialsList.Reply",
                     responseStream: true
                   },
-                  ServicesTokenList: {
-                    requestType: "ServicesTokenList.Request",
-                    responseType: "ServicesTokenList.Reply",
-                    responseStream: true
-                  },
                   ReplicationServiceRegisterGroup: {
                     requestType: "ReplicationServiceRegisterGroup.Request",
                     responseType: "ReplicationServiceRegisterGroup.Reply"
@@ -5259,25 +6116,13 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     requestType: "PeerList.Request",
                     responseType: "PeerList.Reply"
                   },
-                  PushReceive: {
-                    requestType: "PushReceive.Request",
-                    responseType: "PushReceive.Reply"
+                  OutOfStoreReceive: {
+                    requestType: "OutOfStoreReceive.Request",
+                    responseType: "OutOfStoreReceive.Reply"
                   },
-                  PushSend: {
-                    requestType: "PushSend.Request",
-                    responseType: "PushSend.Reply"
-                  },
-                  PushShareToken: {
-                    requestType: "PushShareToken.Request",
-                    responseType: "PushShareToken.Reply"
-                  },
-                  PushSetDeviceToken: {
-                    requestType: "PushSetDeviceToken.Request",
-                    responseType: "PushSetDeviceToken.Reply"
-                  },
-                  PushSetServer: {
-                    requestType: "PushSetServer.Request",
-                    responseType: "PushSetServer.Reply"
+                  OutOfStoreSeal: {
+                    requestType: "OutOfStoreSeal.Request",
+                    responseType: "OutOfStoreSeal.Reply"
                   },
                   RefreshContactRequest: {
                     requestType: "RefreshContactRequest.Request",
@@ -5297,7 +6142,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                 values: {
                   EventTypeUndefined: 0,
                   EventTypeGroupMemberDeviceAdded: 1,
-                  EventTypeGroupDeviceSecretAdded: 2,
+                  EventTypeGroupDeviceChainKeyAdded: 2,
                   EventTypeAccountGroupJoined: 101,
                   EventTypeAccountGroupLeft: 102,
                   EventTypeAccountContactRequestDisabled: 103,
@@ -5314,12 +6159,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   EventTypeMultiMemberGroupAliasResolverAdded: 301,
                   EventTypeMultiMemberGroupInitialMemberAnnounced: 302,
                   EventTypeMultiMemberGroupAdminRoleGranted: 303,
-                  EventTypeAccountServiceTokenAdded: 401,
-                  EventTypeAccountServiceTokenRemoved: 402,
                   EventTypeGroupReplicating: 403,
-                  EventTypePushMemberTokenUpdate: 404,
-                  EventTypePushDeviceTokenRegistered: 405,
-                  EventTypePushDeviceServerRegistered: 406,
                   EventTypeAccountVerifiedCredentialRegistered: 500,
                   EventTypeGroupMetadataPayloadSent: 1001
                 }
@@ -5545,7 +6385,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   ]
                 ]
               },
-              AppMetadata: {
+              GroupMetadataPayloadSent: {
                 fields: {
                   devicePk: {
                     type: "bytes",
@@ -5560,7 +6400,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   }
                 }
               },
-              ContactAddAliasKey: {
+              ContactAliasKeyAdded: {
                 fields: {
                   devicePk: {
                     type: "bytes",
@@ -5578,7 +6418,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   }
                 }
               },
-              GroupAddMemberDevice: {
+              GroupMemberDeviceAdded: {
                 fields: {
                   memberPk: {
                     type: "bytes",
@@ -5600,7 +6440,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   }
                 }
               },
-              DeviceSecret: {
+              DeviceChainKey: {
                 fields: {
                   chainKey: {
                     type: "bytes",
@@ -5612,7 +6452,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   }
                 }
               },
-              GroupAddDeviceSecret: {
+              GroupDeviceChainKeyAdded: {
                 fields: {
                   devicePk: {
                     type: "bytes",
@@ -5634,7 +6474,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   }
                 }
               },
-              MultiMemberGroupAddAliasResolver: {
+              MultiMemberGroupAliasResolverAdded: {
                 fields: {
                   devicePk: {
                     type: "bytes",
@@ -5653,7 +6493,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   }
                 }
               },
-              MultiMemberGrantAdminRole: {
+              MultiMemberGroupAdminRoleGranted: {
                 fields: {
                   devicePk: {
                     type: "bytes",
@@ -5671,7 +6511,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   }
                 }
               },
-              MultiMemberInitialMember: {
+              MultiMemberGroupInitialMemberAnnounced: {
                 fields: {
                   memberPk: {
                     type: "bytes",
@@ -5782,7 +6622,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   }
                 }
               },
-              AccountContactRequestEnqueued: {
+              AccountContactRequestOutgoingEnqueued: {
                 fields: {
                   devicePk: {
                     type: "bytes",
@@ -5808,7 +6648,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   }
                 }
               },
-              AccountContactRequestSent: {
+              AccountContactRequestOutgoingSent: {
                 fields: {
                   devicePk: {
                     type: "bytes",
@@ -5826,7 +6666,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   }
                 }
               },
-              AccountContactRequestReceived: {
+              AccountContactRequestIncomingReceived: {
                 fields: {
                   devicePk: {
                     type: "bytes",
@@ -5852,7 +6692,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   }
                 }
               },
-              AccountContactRequestDiscarded: {
+              AccountContactRequestIncomingDiscarded: {
                 fields: {
                   devicePk: {
                     type: "bytes",
@@ -5870,7 +6710,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   }
                 }
               },
-              AccountContactRequestAccepted: {
+              AccountContactRequestIncomingAccepted: {
                 fields: {
                   devicePk: {
                     type: "bytes",
@@ -5927,39 +6767,6 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     id: 2,
                     options: {
                       "(gogoproto.customname)": "ContactPK"
-                    }
-                  }
-                }
-              },
-              AccountServiceTokenAdded: {
-                fields: {
-                  devicePk: {
-                    type: "bytes",
-                    id: 1,
-                    options: {
-                      "(gogoproto.customname)": "DevicePK"
-                    }
-                  },
-                  serviceToken: {
-                    type: "ServiceToken",
-                    id: 2
-                  }
-                }
-              },
-              AccountServiceTokenRemoved: {
-                fields: {
-                  devicePk: {
-                    type: "bytes",
-                    id: 1,
-                    options: {
-                      "(gogoproto.customname)": "DevicePK"
-                    }
-                  },
-                  tokenId: {
-                    type: "string",
-                    id: 2,
-                    options: {
-                      "(gogoproto.customname)": "TokenID"
                     }
                   }
                 }
@@ -6066,14 +6873,6 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       relayEnabled: {
                         type: "SettingState",
                         id: 9
-                      },
-                      devicePushToken: {
-                        type: "PushServiceReceiver",
-                        id: 10
-                      },
-                      devicePushServer: {
-                        type: "PushServer",
-                        id: 11
                       }
                     }
                   }
@@ -6197,6 +6996,43 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   },
                   Reply: {
                     fields: {}
+                  }
+                }
+              },
+              ShareContact: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {}
+                  },
+                  Reply: {
+                    fields: {
+                      encodedContact: {
+                        type: "bytes",
+                        id: 1
+                      }
+                    }
+                  }
+                }
+              },
+              DecodeContact: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      encodedContact: {
+                        type: "bytes",
+                        id: 1
+                      }
+                    }
+                  },
+                  Reply: {
+                    fields: {
+                      contact: {
+                        type: "ShareableContact",
+                        id: 1
+                      }
+                    }
                   }
                 }
               },
@@ -6871,54 +7707,6 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   }
                 }
               },
-              AuthExchangeResponse: {
-                fields: {
-                  accessToken: {
-                    type: "string",
-                    id: 1
-                  },
-                  scope: {
-                    type: "string",
-                    id: 2
-                  },
-                  error: {
-                    type: "string",
-                    id: 3
-                  },
-                  errorDescription: {
-                    type: "string",
-                    id: 4
-                  },
-                  services: {
-                    keyType: "string",
-                    type: "string",
-                    id: 5
-                  }
-                }
-              },
-              DebugAuthServiceSetToken: {
-                fields: {},
-                nested: {
-                  Request: {
-                    fields: {
-                      token: {
-                        type: "AuthExchangeResponse",
-                        id: 1
-                      },
-                      authenticationUrl: {
-                        type: "string",
-                        id: 2,
-                        options: {
-                          "(gogoproto.customname)": "AuthenticationURL"
-                        }
-                      }
-                    }
-                  },
-                  Reply: {
-                    fields: {}
-                  }
-                }
-              },
               DebugInspectGroupLogType: {
                 values: {
                   DebugInspectGroupLogTypeUndefined: 0,
@@ -6989,72 +7777,6 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   expiration: {
                     type: "int64",
                     id: 4
-                  }
-                }
-              },
-              AuthServiceCompleteFlow: {
-                fields: {},
-                nested: {
-                  Request: {
-                    fields: {
-                      callbackUrl: {
-                        type: "string",
-                        id: 1,
-                        options: {
-                          "(gogoproto.customname)": "CallbackURL"
-                        }
-                      }
-                    }
-                  },
-                  Reply: {
-                    fields: {
-                      tokenId: {
-                        type: "string",
-                        id: 1,
-                        options: {
-                          "(gogoproto.customname)": "TokenID"
-                        }
-                      }
-                    }
-                  }
-                }
-              },
-              AuthServiceInitFlow: {
-                fields: {},
-                nested: {
-                  Request: {
-                    fields: {
-                      authUrl: {
-                        type: "string",
-                        id: 1,
-                        options: {
-                          "(gogoproto.customname)": "AuthURL"
-                        }
-                      },
-                      services: {
-                        rule: "repeated",
-                        type: "string",
-                        id: 3
-                      }
-                    }
-                  },
-                  Reply: {
-                    fields: {
-                      url: {
-                        type: "string",
-                        id: 1,
-                        options: {
-                          "(gogoproto.customname)": "URL"
-                        }
-                      },
-                      secureUrl: {
-                        type: "bool",
-                        id: 2,
-                        options: {
-                          "(gogoproto.customname)": "SecureURL"
-                        }
-                      }
-                    }
                   }
                 }
               },
@@ -7153,67 +7875,32 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   }
                 }
               },
-              ServicesTokenList: {
-                fields: {},
-                nested: {
-                  Request: {
-                    fields: {}
-                  },
-                  Reply: {
-                    fields: {
-                      tokenId: {
-                        type: "string",
-                        id: 1,
-                        options: {
-                          "(gogoproto.customname)": "TokenID"
-                        }
-                      },
-                      service: {
-                        type: "ServiceToken",
-                        id: 2
-                      }
-                    }
-                  }
-                }
-              },
-              ServicesTokenCode: {
-                fields: {
-                  services: {
-                    rule: "repeated",
-                    type: "string",
-                    id: 1
-                  },
-                  codeChallenge: {
-                    type: "string",
-                    id: 2
-                  },
-                  tokenId: {
-                    type: "string",
-                    id: 3,
-                    options: {
-                      "(gogoproto.customname)": "TokenID"
-                    }
-                  }
-                }
-              },
               ReplicationServiceRegisterGroup: {
                 fields: {},
                 nested: {
                   Request: {
                     fields: {
-                      tokenId: {
-                        type: "string",
-                        id: 1,
-                        options: {
-                          "(gogoproto.customname)": "TokenID"
-                        }
-                      },
                       groupPk: {
                         type: "bytes",
-                        id: 2,
+                        id: 1,
                         options: {
                           "(gogoproto.customname)": "GroupPK"
                         }
+                      },
+                      token: {
+                        type: "string",
+                        id: 2
+                      },
+                      authenticationUrl: {
+                        type: "string",
+                        id: 3,
+                        options: {
+                          "(gogoproto.customname)": "AuthenticationURL"
+                        }
+                      },
+                      replicationServer: {
+                        type: "string",
+                        id: 4
                       }
                     }
                   },
@@ -7569,25 +8256,6 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   }
                 }
               },
-              MemberWithDevices: {
-                fields: {
-                  memberPk: {
-                    type: "bytes",
-                    id: 1,
-                    options: {
-                      "(gogoproto.customname)": "MemberPK"
-                    }
-                  },
-                  devicesPks: {
-                    rule: "repeated",
-                    type: "bytes",
-                    id: 2,
-                    options: {
-                      "(gogoproto.customname)": "DevicePKs"
-                    }
-                  }
-                }
-              },
               OutOfStoreMessage: {
                 fields: {
                   cid: {
@@ -7626,67 +8294,79 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   }
                 }
               },
-              PushServiceReceiver: {
+              OutOfStoreMessageEnvelope: {
                 fields: {
-                  tokenType: {
-                    type: "push.v1.PushServiceTokenType",
+                  nonce: {
+                    type: "bytes",
                     id: 1
                   },
-                  bundleId: {
-                    type: "string",
-                    id: 2,
-                    options: {
-                      "(gogoproto.customname)": "BundleID"
-                    }
+                  box: {
+                    type: "bytes",
+                    id: 2
                   },
-                  token: {
+                  groupReference: {
                     type: "bytes",
                     id: 3
-                  },
-                  recipientPublicKey: {
-                    type: "bytes",
-                    id: 4
                   }
                 }
               },
-              PushServer: {
-                fields: {
-                  serverKey: {
-                    type: "bytes",
-                    id: 1
+              OutOfStoreReceive: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      payload: {
+                        type: "bytes",
+                        id: 1
+                      }
+                    }
                   },
-                  serviceAddr: {
-                    type: "string",
-                    id: 2
-                  }
-                }
-              },
-              PushDeviceTokenRegistered: {
-                fields: {
-                  token: {
-                    type: "PushServiceReceiver",
-                    id: 1
-                  },
-                  devicePk: {
-                    type: "bytes",
-                    id: 2,
-                    options: {
-                      "(gogoproto.customname)": "DevicePK"
+                  Reply: {
+                    fields: {
+                      message: {
+                        type: "OutOfStoreMessage",
+                        id: 1
+                      },
+                      cleartext: {
+                        type: "bytes",
+                        id: 2
+                      },
+                      groupPublicKey: {
+                        type: "bytes",
+                        id: 3
+                      },
+                      alreadyReceived: {
+                        type: "bool",
+                        id: 4
+                      }
                     }
                   }
                 }
               },
-              PushDeviceServerRegistered: {
-                fields: {
-                  server: {
-                    type: "PushServer",
-                    id: 1
+              OutOfStoreSeal: {
+                fields: {},
+                nested: {
+                  Request: {
+                    fields: {
+                      cid: {
+                        type: "bytes",
+                        id: 1,
+                        options: {
+                          "(gogoproto.customname)": "CID"
+                        }
+                      },
+                      groupPublicKey: {
+                        type: "bytes",
+                        id: 2
+                      }
+                    }
                   },
-                  devicePk: {
-                    type: "bytes",
-                    id: 2,
-                    options: {
-                      "(gogoproto.customname)": "DevicePK"
+                  Reply: {
+                    fields: {
+                      encrypted: {
+                        type: "bytes",
+                        id: 1
+                      }
                     }
                   }
                 }
@@ -7723,151 +8403,6 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   issuer: {
                     type: "string",
                     id: 7
-                  }
-                }
-              },
-              PushMemberTokenUpdate: {
-                fields: {
-                  server: {
-                    type: "PushServer",
-                    id: 1
-                  },
-                  token: {
-                    type: "bytes",
-                    id: 2
-                  },
-                  devicePk: {
-                    type: "bytes",
-                    id: 3,
-                    options: {
-                      "(gogoproto.customname)": "DevicePK"
-                    }
-                  }
-                }
-              },
-              PushReceive: {
-                fields: {},
-                nested: {
-                  Request: {
-                    fields: {
-                      payload: {
-                        type: "bytes",
-                        id: 1
-                      }
-                    }
-                  },
-                  Reply: {
-                    fields: {
-                      message: {
-                        type: "OutOfStoreMessage",
-                        id: 1
-                      },
-                      cleartext: {
-                        type: "bytes",
-                        id: 2
-                      },
-                      groupPublicKey: {
-                        type: "bytes",
-                        id: 3
-                      },
-                      alreadyReceived: {
-                        type: "bool",
-                        id: 4
-                      }
-                    }
-                  }
-                }
-              },
-              PushSend: {
-                fields: {},
-                nested: {
-                  Request: {
-                    fields: {
-                      cid: {
-                        type: "bytes",
-                        id: 1,
-                        options: {
-                          "(gogoproto.customname)": "CID"
-                        }
-                      },
-                      groupPublicKey: {
-                        type: "bytes",
-                        id: 2
-                      },
-                      groupMembers: {
-                        rule: "repeated",
-                        type: "MemberWithDevices",
-                        id: 3
-                      }
-                    }
-                  },
-                  Reply: {
-                    fields: {
-                      groupMembers: {
-                        rule: "repeated",
-                        type: "MemberWithDevices",
-                        id: 1
-                      }
-                    }
-                  }
-                }
-              },
-              PushShareToken: {
-                fields: {},
-                nested: {
-                  Request: {
-                    fields: {
-                      groupPk: {
-                        type: "bytes",
-                        id: 1,
-                        options: {
-                          "(gogoproto.customname)": "GroupPK"
-                        }
-                      },
-                      server: {
-                        type: "PushServer",
-                        id: 2
-                      },
-                      receiver: {
-                        type: "PushServiceReceiver",
-                        id: 3
-                      }
-                    }
-                  },
-                  Reply: {
-                    fields: {}
-                  }
-                }
-              },
-              PushSetDeviceToken: {
-                fields: {},
-                nested: {
-                  Request: {
-                    fields: {
-                      receiver: {
-                        type: "PushServiceReceiver",
-                        id: 1
-                      }
-                    }
-                  },
-                  Reply: {
-                    fields: {}
-                  }
-                }
-              },
-              PushSetServer: {
-                fields: {},
-                nested: {
-                  Request: {
-                    fields: {
-                      server: {
-                        type: "PushServer",
-                        id: 1
-                      }
-                    }
-                  },
-                  Reply: {
-                    fields: {}
                   }
                 }
               },
@@ -7972,290 +8507,6 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
           }
         }
       },
-      push: {
-        nested: {
-          v1: {
-            options: {
-              go_package: "berty.tech/weshnet/pkg/pushtypes",
-              "(gogoproto.marshaler_all)": true,
-              "(gogoproto.unmarshaler_all)": true,
-              "(gogoproto.sizer_all)": true
-            },
-            nested: {
-              PushService: {
-                methods: {
-                  ServerInfo: {
-                    requestType: "PushServiceServerInfo.Request",
-                    responseType: "PushServiceServerInfo.Reply"
-                  },
-                  Send: {
-                    requestType: "PushServiceSend.Request",
-                    responseType: "PushServiceSend.Reply"
-                  }
-                }
-              },
-              PushServiceServerInfo: {
-                fields: {},
-                nested: {
-                  Request: {
-                    fields: {}
-                  },
-                  Reply: {
-                    fields: {
-                      publicKey: {
-                        type: "bytes",
-                        id: 1
-                      },
-                      supportedTokenTypes: {
-                        rule: "repeated",
-                        type: "PushServiceSupportedTokenType",
-                        id: 2
-                      }
-                    }
-                  }
-                }
-              },
-              PushServiceSupportedTokenType: {
-                fields: {
-                  appBundleId: {
-                    type: "string",
-                    id: 1,
-                    options: {
-                      "(gogoproto.customname)": "AppBundleID"
-                    }
-                  },
-                  tokenType: {
-                    type: "PushServiceTokenType",
-                    id: 2
-                  }
-                }
-              },
-              PushServiceTokenType: {
-                values: {
-                  PushTokenUndefined: 0,
-                  PushTokenMQTT: 1,
-                  PushTokenApplePushNotificationService: 2,
-                  PushTokenFirebaseCloudMessaging: 3,
-                  PushTokenWindowsPushNotificationService: 4,
-                  PushTokenHuaweiPushKit: 5,
-                  PushTokenAmazonDeviceMessaging: 6
-                }
-              },
-              PushServiceSend: {
-                fields: {},
-                nested: {
-                  Request: {
-                    fields: {
-                      envelope: {
-                        type: "OutOfStoreMessageEnvelope",
-                        id: 1
-                      },
-                      priority: {
-                        type: "PushServicePriority",
-                        id: 2
-                      },
-                      receivers: {
-                        rule: "repeated",
-                        type: "PushServiceOpaqueReceiver",
-                        id: 3
-                      }
-                    }
-                  },
-                  Reply: {
-                    fields: {}
-                  }
-                }
-              },
-              OutOfStoreMessageEnvelope: {
-                fields: {
-                  nonce: {
-                    type: "bytes",
-                    id: 1
-                  },
-                  box: {
-                    type: "bytes",
-                    id: 2
-                  },
-                  groupReference: {
-                    type: "bytes",
-                    id: 4,
-                    options: {
-                      "(gogoproto.customname)": "GroupReference"
-                    }
-                  }
-                }
-              },
-              PushExposedData: {
-                fields: {
-                  nonce: {
-                    type: "bytes",
-                    id: 1
-                  },
-                  box: {
-                    type: "bytes",
-                    id: 2
-                  }
-                }
-              },
-              PushServicePriority: {
-                values: {
-                  PushPriorityUndefined: 0,
-                  PushPriorityLow: 1,
-                  PushPriorityNormal: 2
-                }
-              },
-              PushServiceOpaqueReceiver: {
-                fields: {
-                  opaqueToken: {
-                    type: "bytes",
-                    id: 1
-                  },
-                  serviceAddr: {
-                    type: "string",
-                    id: 2
-                  }
-                }
-              },
-              DecryptedPush: {
-                fields: {
-                  accountId: {
-                    type: "string",
-                    id: 1,
-                    options: {
-                      "(gogoproto.customname)": "AccountID"
-                    }
-                  },
-                  accountName: {
-                    type: "string",
-                    id: 2
-                  },
-                  conversationPublicKey: {
-                    type: "string",
-                    id: 3
-                  },
-                  conversationDisplayName: {
-                    type: "string",
-                    id: 4
-                  },
-                  memberPublicKey: {
-                    type: "string",
-                    id: 5
-                  },
-                  memberDisplayName: {
-                    type: "string",
-                    id: 6
-                  },
-                  pushType: {
-                    type: "PushType",
-                    id: 7
-                  },
-                  payloadAttrsJson: {
-                    type: "string",
-                    id: 8,
-                    options: {
-                      "(gogoproto.customname)": "PayloadAttrsJSON"
-                    }
-                  },
-                  deepLink: {
-                    type: "string",
-                    id: 9
-                  },
-                  alreadyReceived: {
-                    type: "bool",
-                    id: 10
-                  },
-                  accountMuted: {
-                    type: "bool",
-                    id: 11
-                  },
-                  conversationMuted: {
-                    type: "bool",
-                    id: 12
-                  },
-                  hidePreview: {
-                    type: "bool",
-                    id: 13
-                  }
-                },
-                nested: {
-                  PushType: {
-                    values: {
-                      Unknown: 0,
-                      Message: 1,
-                      GroupInvitation: 7,
-                      ConversationNameChanged: 8,
-                      MemberNameChanged: 9,
-                      MemberDetailsChanged: 11
-                    },
-                    reserved: [
-                      [
-                        2,
-                        2
-                      ],
-                      [
-                        3,
-                        3
-                      ],
-                      [
-                        4,
-                        4
-                      ],
-                      [
-                        5,
-                        5
-                      ],
-                      [
-                        6,
-                        6
-                      ],
-                      [
-                        10,
-                        10
-                      ]
-                    ]
-                  }
-                }
-              },
-              FormatedPush: {
-                fields: {
-                  pushType: {
-                    type: "DecryptedPush.PushType",
-                    id: 1
-                  },
-                  title: {
-                    type: "string",
-                    id: 2
-                  },
-                  subtitle: {
-                    type: "string",
-                    id: 3
-                  },
-                  body: {
-                    type: "string",
-                    id: 4
-                  },
-                  deepLink: {
-                    type: "string",
-                    id: 5
-                  },
-                  muted: {
-                    type: "bool",
-                    id: 6
-                  },
-                  hidePreview: {
-                    type: "bool",
-                    id: 7
-                  },
-                  conversationIdentifier: {
-                    type: "string",
-                    id: 8
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
       errcode: {
         options: {
           go_package: "berty.tech/weshnet/pkg/errcode",
@@ -8342,16 +8593,6 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
               ErrGroupOpen: 1311,
               ErrMessageKeyPersistencePut: 1500,
               ErrMessageKeyPersistenceGet: 1501,
-              ErrServicesAuth: 4000,
-              ErrServicesAuthNotInitialized: 4001,
-              ErrServicesAuthWrongState: 4002,
-              ErrServicesAuthInvalidResponse: 4003,
-              ErrServicesAuthServer: 4004,
-              ErrServicesAuthCodeChallenge: 4005,
-              ErrServicesAuthServiceInvalidToken: 4006,
-              ErrServicesAuthServiceNotSupported: 4007,
-              ErrServicesAuthUnknownToken: 4008,
-              ErrServicesAuthInvalidURL: 4009,
               ErrServiceReplication: 4100,
               ErrServiceReplicationServer: 4101,
               ErrServiceReplicationMissingEndpoint: 4102,
@@ -8362,18 +8603,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
               ErrServicesDirectoryExplicitReplaceFlagRequired: 4204,
               ErrServicesDirectoryInvalidVerifiedCredential: 4205,
               ErrServicesDirectoryExpiredVerifiedCredential: 4206,
-              ErrServicesDirectoryInvalidVerifiedCredentialID: 4207,
-              ErrPush: 6000,
-              ErrPushWrongAccount: 6001,
-              ErrPushUnableToDecrypt: 6002,
-              ErrPushInvalidPayload: 6003,
-              ErrPushInvalidServerConfig: 6004,
-              ErrPushMissingBundleID: 6005,
-              ErrPushUnknownDestination: 6006,
-              ErrPushProvider: 6007,
-              ErrPushUnknownProvider: 6008,
-              ErrNoProvidersConfigured: 6009,
-              ErrInvalidPrivateKey: 6010
+              ErrServicesDirectoryInvalidVerifiedCredentialID: 4207
             }
           },
           ErrDetails: {

@@ -16,6 +16,7 @@ import (
 	"berty.tech/berty/v2/go/internal/messengerutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
+	"berty.tech/berty/v2/go/pkg/pushtypes"
 	"berty.tech/weshnet/pkg/protocoltypes"
 )
 
@@ -126,6 +127,58 @@ func Test_dbWrapper_getContactByPK(t *testing.T) {
 	})
 
 	contact, err = db.GetContactByPK(pk1)
+	require.NoError(t, err)
+	require.Equal(t, refContact.PublicKey, contact.PublicKey)
+	require.Equal(t, refContact.ConversationPublicKey, contact.ConversationPublicKey)
+	require.Equal(t, refContact.State, contact.State)
+	require.Equal(t, refContact.DisplayName, contact.DisplayName)
+	require.Equal(t, refContact.CreatedDate, contact.CreatedDate)
+	require.Equal(t, refContact.SentDate, contact.SentDate)
+}
+
+func Test_dbWrapper_getContactByConversation(t *testing.T) {
+	db, _, dispose := GetInMemoryTestDB(t)
+	defer dispose()
+
+	pk1 := "pk1"
+	convPK1 := "convPK1"
+
+	contactErr, err := db.GetContactByConversation("")
+	require.Error(t, err)
+	require.True(t, errcode.Is(err, errcode.ErrInvalidInput))
+	require.Nil(t, contactErr)
+
+	contact, err := db.GetContactByConversation(convPK1)
+	require.Error(t, err)
+	require.True(t, errors.Is(err, gorm.ErrRecordNotFound))
+	_ = contact
+
+	refContact := messengertypes.Contact{
+		PublicKey:             pk1,
+		ConversationPublicKey: convPK1,
+		State:                 messengertypes.Contact_IncomingRequest,
+		DisplayName:           "PK1-Name",
+		CreatedDate:           12345,
+		SentDate:              123,
+	}
+
+	db.db.Create(refContact)
+
+	contact, err = db.GetContactByConversation(convPK1)
+	require.NoError(t, err)
+	require.Equal(t, refContact.PublicKey, contact.PublicKey)
+	require.Equal(t, refContact.ConversationPublicKey, contact.ConversationPublicKey)
+	require.Equal(t, refContact.State, contact.State)
+	require.Equal(t, refContact.DisplayName, contact.DisplayName)
+	require.Equal(t, refContact.CreatedDate, contact.CreatedDate)
+	require.Equal(t, refContact.SentDate, contact.SentDate)
+
+	db.db.Create(&messengertypes.Device{
+		PublicKey:       "pk2",
+		MemberPublicKey: "ownerPK2",
+	})
+
+	contact, err = db.GetContactByConversation(convPK1)
 	require.NoError(t, err)
 	require.Equal(t, refContact.PublicKey, contact.PublicKey)
 	require.Equal(t, refContact.ConversationPublicKey, contact.ConversationPublicKey)
@@ -660,9 +713,16 @@ func Test_dbWrapper_GetAccount(t *testing.T) {
 	require.NoError(t, db.db.Delete(refOtherAccount).Error)
 
 	require.NoError(t, db.db.Create(&messengertypes.ServiceToken{
-		AccountPK:         refAccount.PublicKey,
-		TokenID:           "tok1",
-		ServiceType:       "srv1",
+		AccountPK: refAccount.PublicKey,
+		TokenID:   "tokID1",
+		Token:     "tok1",
+		SupportedServices: []*messengertypes.ServiceTokenSupportedServiceRecord{
+			{
+				TokenID: "tokID1",
+				Type:    "type1",
+				Address: "addr1",
+			},
+		},
 		AuthenticationURL: "https://url1/",
 	}).Error)
 	require.NoError(t, db.db.Create(&messengertypes.AccountVerifiedCredential{
@@ -729,10 +789,12 @@ func Test_dbWrapper_GetAccount(t *testing.T) {
 	require.Len(t, acc.VerifiedCredentials, 2)
 	require.Contains(t, []string{acc.VerifiedCredentials[0].Identifier, acc.VerifiedCredentials[1].Identifier}, "id1")
 	require.Contains(t, []string{acc.VerifiedCredentials[0].Identifier, acc.VerifiedCredentials[1].Identifier}, "id2")
-	require.Equal(t, "tok1", acc.ServiceTokens[0].TokenID)
+	require.Equal(t, "tokID1", acc.ServiceTokens[0].TokenID)
 	require.Equal(t, refAccount.PublicKey, acc.ServiceTokens[0].AccountPK)
 	require.Equal(t, "https://url1/", acc.ServiceTokens[0].AuthenticationURL)
-	require.Equal(t, "srv1", acc.ServiceTokens[0].ServiceType)
+	require.Len(t, acc.ServiceTokens[0].SupportedServices, 1)
+	require.Equal(t, "type1", acc.ServiceTokens[0].SupportedServices[0].Type)
+	require.Equal(t, "addr1", acc.ServiceTokens[0].SupportedServices[0].Address)
 
 	require.Len(t, acc.DirectoryServiceRecords, 2)
 	require.Contains(t, []string{acc.DirectoryServiceRecords[0].Identifier, acc.DirectoryServiceRecords[1].Identifier}, "id1")
@@ -1074,7 +1136,12 @@ func Test_dbWrapper_getDBInfo(t *testing.T) {
 	refCount++
 
 	for i := 0; i <= refCount; i++ {
-		db.db.Create(&messengertypes.ServiceToken{ServiceType: fmt.Sprintf("%d", i), TokenID: fmt.Sprintf("%d", i)})
+		db.db.Create(&messengertypes.ServiceTokenSupportedServiceRecord{Type: fmt.Sprintf("%d", i), Address: fmt.Sprintf("%d", i)})
+	}
+	refCount++
+
+	for i := 0; i <= refCount; i++ {
+		db.db.Create(&messengertypes.ServiceToken{Token: fmt.Sprintf("%d", i), TokenID: fmt.Sprintf("%d", i)})
 	}
 	refCount++
 
@@ -1089,22 +1156,52 @@ func Test_dbWrapper_getDBInfo(t *testing.T) {
 	refCount++
 
 	for i := 0; i <= refCount; i++ {
-		db.db.Create(&messengertypes.SharedPushToken{
-			ConversationPublicKey: fmt.Sprintf("%d", i),
-			MemberPublicKey:       fmt.Sprintf("%d", i),
-			DevicePublicKey:       fmt.Sprintf("%d", i),
-			Token:                 fmt.Sprintf("%d", i),
-		})
-	}
-	refCount++
-
-	for i := 0; i <= refCount; i++ {
 		db.db.Create(&messengertypes.AccountVerifiedCredential{Identifier: fmt.Sprintf("%d", i), Issuer: fmt.Sprintf("%d", i), ExpirationDate: int64(i), RegistrationDate: int64(i)})
 	}
 	refCount++
 
 	for i := 0; i <= refCount; i++ {
 		db.db.Create(&messengertypes.AccountDirectoryServiceRecord{Identifier: fmt.Sprintf("%d", i), ServerAddr: fmt.Sprintf("%d", i), ExpirationDate: int64(i), RegistrationDate: int64(i)})
+	}
+	refCount++
+
+	for i := 0; i <= refCount; i++ {
+		db.db.Create(&messengertypes.PushDeviceToken{
+			AccountPK: fmt.Sprintf("%d", i),
+			TokenType: pushtypes.PushServiceTokenType(i),
+			BundleID:  fmt.Sprintf("%d", i),
+			Token:     []byte(fmt.Sprintf("%d", i)),
+			PublicKey: []byte(fmt.Sprintf("%d", i)),
+		})
+	}
+	refCount++
+
+	for i := 0; i <= refCount; i++ {
+		db.db.Create(&messengertypes.PushServerRecord{
+			AccountPK:  fmt.Sprintf("%d", i),
+			ServerAddr: fmt.Sprintf("%d", i),
+			ServerKey:  []byte(fmt.Sprintf("%d", i)),
+		})
+	}
+	refCount++
+
+	for i := 0; i <= refCount; i++ {
+		db.db.Create(&messengertypes.PushLocalDeviceSharedToken{
+			TokenID:               fmt.Sprintf("%d", i),
+			ConversationPublicKey: fmt.Sprintf("%d", i),
+		})
+	}
+	refCount++
+
+	for i := 0; i <= refCount; i++ {
+		db.db.Create(&messengertypes.PushMemberToken{
+			TokenID:               fmt.Sprintf("%d", i),
+			ConversationPublicKey: fmt.Sprintf("%d", i),
+			DevicePK:              fmt.Sprintf("%d", i),
+			ServerAddr:            fmt.Sprintf("%d", i),
+			ServerKey:             []byte(fmt.Sprintf("%d", i)),
+			Token:                 []byte(fmt.Sprintf("%d", i)),
+		})
 	}
 	refCount++
 
@@ -1126,17 +1223,25 @@ func Test_dbWrapper_getDBInfo(t *testing.T) {
 	refCount++
 	require.Equal(t, int64(refCount), info.Devices)
 	refCount++
+	require.Equal(t, int64(refCount), info.ServiceTokenSupportedServiceRecords)
+	refCount++
 	require.Equal(t, int64(refCount), info.ServiceTokens)
 	refCount++
 	require.Equal(t, int64(refCount), info.ConversationReplicationInfo)
 	refCount++
 	require.Equal(t, int64(refCount), info.MetadataEvents)
 	refCount++
-	require.Equal(t, int64(refCount), info.SharedPushTokens)
-	refCount++
 	require.Equal(t, int64(refCount), info.AccountVerifiedCredentials)
 	refCount++
 	require.Equal(t, int64(refCount), info.AccountDirectoryServiceRecord)
+	refCount++
+	require.Equal(t, int64(refCount), info.PushDeviceToken)
+	refCount++
+	require.Equal(t, int64(refCount), info.PushServerRecord)
+	refCount++
+	require.Equal(t, int64(refCount), info.PushLocalDeviceSharedToken)
+	refCount++
+	require.Equal(t, int64(refCount), info.PushMemberToken)
 
 	require.Equal(t, len(getDBModels()), refCount)
 
@@ -1172,6 +1277,33 @@ func Test_dbWrapper_getMemberByPK(t *testing.T) {
 	member, err = db.GetMemberByPK("member_1", "conv_2")
 	require.Error(t, err)
 	require.Nil(t, member)
+}
+
+func Test_dbWrapper_getMembersByConversation(t *testing.T) {
+	db, _, dispose := GetInMemoryTestDB(t)
+	defer dispose()
+
+	members, err := db.GetMembersByConversation("")
+	require.Error(t, err)
+	require.True(t, errcode.Is(err, errcode.ErrInvalidInput))
+	require.Nil(t, members)
+
+	members, err = db.GetMembersByConversation("unknown")
+	require.Error(t, err)
+	require.Nil(t, members)
+
+	db.db.Create(&messengertypes.Member{PublicKey: "member_1", ConversationPublicKey: "conv_1"})
+
+	members, err = db.GetMembersByConversation("conv_1")
+	require.NoError(t, err)
+	require.NotNil(t, members)
+	require.Len(t, members, 1)
+	require.Equal(t, "member_1", members[0].PublicKey)
+	require.Equal(t, "conv_1", members[0].ConversationPublicKey)
+
+	members, err = db.GetMembersByConversation("conv_2")
+	require.Error(t, err)
+	require.Nil(t, members)
 }
 
 func Test_dbWrapper_initDB(t *testing.T) {
@@ -1247,7 +1379,7 @@ func Test_dbWrapper_setConversationIsOpenStatus(t *testing.T) {
 	require.NoError(t, err)
 	require.False(t, updated)
 
-	db.db.Model(&messengertypes.Conversation{}).Preload("ReplicationInfo").Where(&messengertypes.Conversation{PublicKey: "conv1"}).First(&c)
+	db.db.Model(&messengertypes.Conversation{}).Preload("ReplicationInfo").Preload("PushLocalDeviceSharedTokens").Preload("PushMemberTokens").Where(&messengertypes.Conversation{PublicKey: "conv1"}).First(&c)
 	require.Equal(t, "conv1", c.PublicKey)
 	require.True(t, c.IsOpen)
 	require.Equal(t, int32(0), c.UnreadCount)
@@ -1257,14 +1389,14 @@ func Test_dbWrapper_setConversationIsOpenStatus(t *testing.T) {
 	require.True(t, updated)
 
 	c = &messengertypes.Conversation{}
-	db.db.Model(&messengertypes.Conversation{}).Preload("ReplicationInfo").Where(&messengertypes.Conversation{PublicKey: "conv1"}).First(&c)
+	db.db.Model(&messengertypes.Conversation{}).Preload("ReplicationInfo").Preload("PushLocalDeviceSharedTokens").Preload("PushMemberTokens").Where(&messengertypes.Conversation{PublicKey: "conv1"}).First(&c)
 	require.Equal(t, "conv1", c.PublicKey)
 	require.False(t, c.IsOpen)
 	require.Equal(t, int32(0), c.UnreadCount)
 	require.Equal(t, c, conv)
 
 	c = &messengertypes.Conversation{}
-	db.db.Model(&messengertypes.Conversation{}).Preload("ReplicationInfo").Where(&messengertypes.Conversation{PublicKey: "conv2"}).First(&c)
+	db.db.Model(&messengertypes.Conversation{}).Preload("ReplicationInfo").Preload("PushLocalDeviceSharedTokens").Preload("PushMemberTokens").Where(&messengertypes.Conversation{PublicKey: "conv2"}).First(&c)
 	require.Equal(t, "conv2", c.PublicKey)
 	require.False(t, c.IsOpen)
 	require.Equal(t, int32(1000), c.UnreadCount)
@@ -1274,7 +1406,7 @@ func Test_dbWrapper_setConversationIsOpenStatus(t *testing.T) {
 	require.True(t, updated)
 
 	c = &messengertypes.Conversation{}
-	db.db.Model(&messengertypes.Conversation{}).Preload("ReplicationInfo").Where(&messengertypes.Conversation{PublicKey: "conv2"}).First(&c)
+	db.db.Model(&messengertypes.Conversation{}).Preload("ReplicationInfo").Preload("PushLocalDeviceSharedTokens").Preload("PushMemberTokens").Where(&messengertypes.Conversation{PublicKey: "conv2"}).First(&c)
 	require.Equal(t, "conv2", c.PublicKey)
 	require.True(t, c.IsOpen)
 	require.Equal(t, int32(0), c.UnreadCount)
@@ -1407,55 +1539,6 @@ func Test_dbWrapper_isConversationOpened(t *testing.T) {
 	opened, err = db.IsConversationOpened("convo_b")
 	require.NoError(t, err)
 	require.False(t, opened)
-}
-
-func Test_dbWrapper_addServiceToken(t *testing.T) {
-	db, _, dispose := GetInMemoryTestDB(t)
-	defer dispose()
-
-	tok1 := &protocoltypes.ServiceToken{
-		Token:             "tok1",
-		AuthenticationURL: "https://url1/",
-		SupportedServices: []*protocoltypes.ServiceTokenSupportedService{
-			{ServiceType: "srv1"},
-			{ServiceType: "srv2"},
-		},
-	}
-
-	tok2 := &protocoltypes.ServiceToken{
-		Token:             "tok2",
-		AuthenticationURL: "https://url2/",
-		SupportedServices: []*protocoltypes.ServiceTokenSupportedService{
-			{ServiceType: "srv3"},
-			{ServiceType: "srv4"},
-		},
-	}
-
-	db.db.Create(&messengertypes.Account{PublicKey: "accountpk"})
-
-	err := db.AddServiceToken(tok1)
-	require.NoError(t, err)
-
-	err = db.AddServiceToken(tok2)
-	require.NoError(t, err)
-
-	tok := &messengertypes.ServiceToken{}
-	require.NoError(t, db.db.Model(&messengertypes.ServiceToken{}).Where(&messengertypes.ServiceToken{TokenID: tok1.TokenID(), ServiceType: "srv1"}).First(&tok).Error)
-	require.Equal(t, tok1.TokenID(), tok.TokenID)
-	require.Equal(t, "srv1", tok.ServiceType)
-	require.Equal(t, tok1.AuthenticationURL, tok.AuthenticationURL)
-
-	tok = &messengertypes.ServiceToken{}
-	require.NoError(t, db.db.Model(&messengertypes.ServiceToken{}).Where(&messengertypes.ServiceToken{TokenID: tok2.TokenID(), ServiceType: "srv3"}).First(&tok).Error)
-	require.Equal(t, tok2.TokenID(), tok.TokenID)
-	require.Equal(t, "srv3", tok.ServiceType)
-	require.Equal(t, tok2.AuthenticationURL, tok.AuthenticationURL)
-
-	tok = &messengertypes.ServiceToken{}
-	require.Error(t, db.db.Model(&messengertypes.ServiceToken{}).Where(&messengertypes.ServiceToken{TokenID: tok1.TokenID(), ServiceType: "srv3"}).First(&tok).Error)
-
-	tok = &messengertypes.ServiceToken{}
-	require.Error(t, db.db.Model(&messengertypes.ServiceToken{}).Where(&messengertypes.ServiceToken{TokenID: tok2.TokenID(), ServiceType: "srv2"}).First(&tok).Error)
 }
 
 func Test_dbWrapper_getLatestInteractionPerConversation(t *testing.T) {
@@ -1824,67 +1907,34 @@ func Test_dbWrapper_GetDevicesForMember(t *testing.T) {
 	require.Len(t, dev, 2)
 }
 
-func Test_dbWrapper_UpdateDeviceSetPushToken(t *testing.T) {
+func Test_dbWrapper_GetDevicesForContact(t *testing.T) {
 	db, _, dispose := GetInMemoryTestDB(t)
 	defer dispose()
 
-	count := int64(0)
+	require.NoError(t, db.db.Create(&messengertypes.Conversation{PublicKey: "Convo1"}).Error)
+	require.NoError(t, db.db.Create(&messengertypes.Conversation{PublicKey: "Convo2"}).Error)
+	require.NoError(t, db.db.Create(&messengertypes.Contact{PublicKey: "Member1", ConversationPublicKey: "Convo1"}).Error)
+	require.NoError(t, db.db.Create(&messengertypes.Contact{PublicKey: "Member2", ConversationPublicKey: "Convo1"}).Error)
+	require.NoError(t, db.db.Create(&messengertypes.Contact{PublicKey: "Member1", ConversationPublicKey: "Convo2"}).Error)
+	require.NoError(t, db.db.Create(&messengertypes.Contact{PublicKey: "Member3", ConversationPublicKey: "Convo2"}).Error)
+	require.NoError(t, db.db.Create(&messengertypes.Device{PublicKey: "Device11", MemberPublicKey: "Member1"}).Error)
+	require.NoError(t, db.db.Create(&messengertypes.Device{PublicKey: "Device12", MemberPublicKey: "Member1"}).Error)
+	require.NoError(t, db.db.Create(&messengertypes.Device{PublicKey: "Device21", MemberPublicKey: "Member2"}).Error)
+	require.NoError(t, db.db.Create(&messengertypes.Device{PublicKey: "Device22", MemberPublicKey: "Member2"}).Error)
+	require.NoError(t, db.db.Create(&messengertypes.Device{PublicKey: "Device31", MemberPublicKey: "Member3"}).Error)
+	require.NoError(t, db.db.Create(&messengertypes.Device{PublicKey: "Device32", MemberPublicKey: "Member3"}).Error)
 
-	err := db.UpdateDeviceSetPushToken(context.Background(), "member1", "device1", "conv1", "token1")
+	dev, err := db.GetDevicesForContact("bogus", "Member1")
 	require.NoError(t, err)
+	require.Len(t, dev, 0)
 
-	err = db.db.Model(&messengertypes.SharedPushToken{}).Where(&messengertypes.SharedPushToken{
-		DevicePublicKey:       "device1",
-		MemberPublicKey:       "member1",
-		ConversationPublicKey: "conv1",
-		Token:                 "token1",
-	}).Count(&count).Error
-
+	dev, err = db.GetDevicesForContact("Convo1", "bogus")
 	require.NoError(t, err)
-	require.Equal(t, int64(1), count)
+	require.Len(t, dev, 0)
 
-	err = db.UpdateDeviceSetPushToken(context.Background(), "member1", "device1", "conv1", "token2")
+	dev, err = db.GetDevicesForContact("Convo1", "Member1")
 	require.NoError(t, err)
-
-	err = db.db.Model(&messengertypes.SharedPushToken{}).Where(&messengertypes.SharedPushToken{
-		DevicePublicKey:       "device1",
-		MemberPublicKey:       "member1",
-		ConversationPublicKey: "conv1",
-		Token:                 "token2",
-	}).Count(&count).Error
-
-	require.NoError(t, err)
-	require.Equal(t, int64(1), count)
-
-	err = db.UpdateDeviceSetPushToken(context.Background(), "member1", "device1", "conv1", "")
-	require.NoError(t, err)
-
-	err = db.db.Model(&messengertypes.SharedPushToken{}).Where(&messengertypes.SharedPushToken{
-		DevicePublicKey:       "device1",
-		MemberPublicKey:       "member1",
-		ConversationPublicKey: "conv1",
-	}).Count(&count).Error
-
-	require.NoError(t, err)
-	require.Equal(t, int64(0), count)
-}
-
-func Test_dbWrapper_GetPushTokenSharedForConversation(t *testing.T) {
-	db, _, dispose := GetInMemoryTestDB(t)
-	defer dispose()
-
-	err := db.UpdateDeviceSetPushToken(context.Background(), "member1", "device1", "conv1", "token1")
-	require.NoError(t, err)
-
-	err = db.UpdateDeviceSetPushToken(context.Background(), "member1", "device1", "conv2", "token2")
-	require.NoError(t, err)
-
-	err = db.UpdateDeviceSetPushToken(context.Background(), "member2", "device2", "conv1", "token3")
-	require.NoError(t, err)
-
-	tokens, err := db.GetPushTokenSharedForConversation("conv1")
-	require.NoError(t, err)
-	require.Len(t, tokens, 2)
+	require.Len(t, dev, 2)
 }
 
 func Test_dbWrapper_SaveAccountVerifiedCredential(t *testing.T) {
@@ -2091,4 +2141,1042 @@ func TestDBAutoMigrateTwice(t *testing.T) {
 	sqlDB, err := db.DB()
 	require.NoError(t, err)
 	sqlDB.Close()
+}
+
+func Test_dbWrapper_GetPushDeviceToken(t *testing.T) {
+	account1PK := "account1_pk"
+	account2PK := "account2_pk"
+	bundleID1 := "bundle_id1"
+	bundleID2 := "bundle_id2"
+	token1 := []byte("token1")
+	token2 := []byte("token2")
+	publicKey1 := []byte("public_key1")
+	publicKey2 := []byte("public_key2")
+
+	db, _, dispose := GetInMemoryTestDB(t)
+	defer dispose()
+
+	// test invalid input
+	deviceTokenErr, err := db.GetPushDeviceToken("")
+	require.Error(t, err)
+	require.True(t, errcode.Is(err, errcode.ErrInvalidInput))
+	require.Nil(t, deviceTokenErr)
+
+	// test missing record
+	deviceTokenMiss, err := db.GetPushDeviceToken(account1PK)
+	require.Error(t, err)
+	require.True(t, errcode.Is(err, errcode.ErrNotFound))
+	require.Nil(t, deviceTokenMiss)
+
+	// create the first push device token entry
+	rec := &messengertypes.PushDeviceToken{
+		AccountPK: account1PK,
+		TokenType: pushtypes.PushServiceTokenType_PushTokenApplePushNotificationService,
+		BundleID:  bundleID1,
+		Token:     token1,
+		PublicKey: publicKey1,
+	}
+
+	err = db.db.Create(rec).Error
+	require.NoError(t, err)
+
+	// create the second device token entry
+	rec = &messengertypes.PushDeviceToken{
+		AccountPK: account2PK,
+		TokenType: pushtypes.PushServiceTokenType_PushTokenFirebaseCloudMessaging,
+		BundleID:  bundleID2,
+		Token:     token2,
+		PublicKey: publicKey2,
+	}
+
+	err = db.db.Create(rec).Error
+	require.NoError(t, err)
+
+	// test getting records
+	deviceToken1, err := db.GetPushDeviceToken(account1PK)
+	require.NoError(t, err)
+	require.NotNil(t, deviceToken1)
+	require.Equal(t, account1PK, deviceToken1.AccountPK)
+	require.Equal(t, bundleID1, deviceToken1.BundleID)
+	require.Equal(t, token1, deviceToken1.Token)
+	require.Equal(t, publicKey1, deviceToken1.PublicKey)
+
+	deviceToken2, err := db.GetPushDeviceToken(account2PK)
+	require.NoError(t, err)
+	require.NotNil(t, deviceToken2)
+	require.Equal(t, account2PK, deviceToken2.AccountPK)
+	require.Equal(t, bundleID2, deviceToken2.BundleID)
+	require.Equal(t, token2, deviceToken2.Token)
+	require.Equal(t, publicKey2, deviceToken2.PublicKey)
+}
+
+func Test_dbWrapper_SavePushDeviceToken(t *testing.T) {
+	account1PK := "account1_pk"
+	bundleID1 := "bundle_id1"
+	bundleID2 := "bundle_id2"
+	token1 := []byte("token1")
+	token2 := []byte("token2")
+	publicKey1 := []byte("public_key1")
+	publicKey2 := []byte("public_key2")
+
+	db, _, dispose := GetInMemoryTestDB(t)
+	defer dispose()
+
+	// test invalid input
+	err := db.SavePushDeviceToken("", &messengertypes.AppMessage_PushSetDeviceToken{
+		DeviceToken: &pushtypes.PushServiceReceiver{
+			TokenType:          pushtypes.PushServiceTokenType_PushTokenApplePushNotificationService,
+			BundleID:           bundleID1,
+			Token:              token1,
+			RecipientPublicKey: publicKey1,
+		},
+	})
+	require.Error(t, err)
+	require.True(t, errcode.Is(err, errcode.ErrInvalidInput))
+
+	err = db.SavePushDeviceToken(account1PK, &messengertypes.AppMessage_PushSetDeviceToken{
+		DeviceToken: &pushtypes.PushServiceReceiver{
+			TokenType:          pushtypes.PushServiceTokenType_PushTokenUndefined,
+			BundleID:           bundleID1,
+			Token:              token1,
+			RecipientPublicKey: publicKey1,
+		},
+	})
+	require.Error(t, err)
+	require.True(t, errcode.Is(err, errcode.ErrInvalidInput))
+
+	err = db.SavePushDeviceToken(account1PK, &messengertypes.AppMessage_PushSetDeviceToken{
+		DeviceToken: &pushtypes.PushServiceReceiver{
+			TokenType:          pushtypes.PushServiceTokenType_PushTokenFirebaseCloudMessaging,
+			BundleID:           "",
+			Token:              token1,
+			RecipientPublicKey: publicKey1,
+		},
+	})
+	require.Error(t, err)
+	require.True(t, errcode.Is(err, errcode.ErrInvalidInput))
+
+	err = db.SavePushDeviceToken(account1PK, &messengertypes.AppMessage_PushSetDeviceToken{
+		DeviceToken: &pushtypes.PushServiceReceiver{
+			TokenType:          pushtypes.PushServiceTokenType_PushTokenFirebaseCloudMessaging,
+			BundleID:           bundleID1,
+			Token:              []byte{},
+			RecipientPublicKey: publicKey1,
+		},
+	})
+	require.Error(t, err)
+	require.True(t, errcode.Is(err, errcode.ErrInvalidInput))
+
+	err = db.SavePushDeviceToken(account1PK, &messengertypes.AppMessage_PushSetDeviceToken{
+		DeviceToken: &pushtypes.PushServiceReceiver{
+			TokenType:          pushtypes.PushServiceTokenType_PushTokenFirebaseCloudMessaging,
+			BundleID:           bundleID1,
+			Token:              token1,
+			RecipientPublicKey: []byte{},
+		},
+	})
+	require.Error(t, err)
+	require.True(t, errcode.Is(err, errcode.ErrInvalidInput))
+
+	// create a push device token entry
+	serviceReceiver := &pushtypes.PushServiceReceiver{
+		TokenType:          pushtypes.PushServiceTokenType_PushTokenFirebaseCloudMessaging,
+		BundleID:           bundleID1,
+		Token:              token1,
+		RecipientPublicKey: publicKey1,
+	}
+	deviceToken := &messengertypes.AppMessage_PushSetDeviceToken{
+		DeviceToken: serviceReceiver,
+	}
+
+	err = db.SavePushDeviceToken(account1PK, deviceToken)
+	require.NoError(t, err)
+
+	// check that the push server entry was created
+	rec, err := db.GetPushDeviceToken(account1PK)
+	require.NoError(t, err)
+	require.NotNil(t, rec)
+	require.Equal(t, account1PK, rec.AccountPK)
+	require.Equal(t, pushtypes.PushServiceTokenType_PushTokenFirebaseCloudMessaging, rec.TokenType)
+	require.Equal(t, bundleID1, rec.BundleID)
+	require.Equal(t, token1, rec.Token)
+	require.Equal(t, publicKey1, rec.PublicKey)
+
+	// update the push server entry
+	serviceReceiver2 := &pushtypes.PushServiceReceiver{
+		TokenType:          pushtypes.PushServiceTokenType_PushTokenApplePushNotificationService,
+		BundleID:           bundleID2,
+		Token:              token2,
+		RecipientPublicKey: publicKey2,
+	}
+	deviceToken2 := &messengertypes.AppMessage_PushSetDeviceToken{
+		DeviceToken: serviceReceiver2,
+	}
+
+	err = db.SavePushDeviceToken(account1PK, deviceToken2)
+	require.NoError(t, err)
+
+	// check that the push server entry was updated
+	rec, err = db.GetPushDeviceToken(account1PK)
+	require.NoError(t, err)
+	require.NotNil(t, rec)
+	require.Equal(t, account1PK, rec.AccountPK)
+	require.Equal(t, pushtypes.PushServiceTokenType_PushTokenApplePushNotificationService, rec.TokenType)
+	require.Equal(t, bundleID2, rec.BundleID)
+	require.Equal(t, token2, rec.Token)
+	require.Equal(t, publicKey2, rec.PublicKey)
+}
+
+func Test_dbWrapper_GetPushServerRecord(t *testing.T) {
+	groupPK := "group_pk"
+	server1Addr := "server1_addr"
+	server1Key := []byte("server2_key")
+	server2Addr := "server2_addr"
+	server2Key := []byte("server2_key")
+
+	db, _, dispose := GetInMemoryTestDB(t)
+	defer dispose()
+
+	// test invalid input
+	serverErr, err := db.GetPushServerRecord("", server1Addr)
+	require.Error(t, err)
+	require.True(t, errcode.Is(err, errcode.ErrInvalidInput))
+	require.Nil(t, serverErr)
+
+	serverErr, err = db.GetPushServerRecord(groupPK, "")
+	require.Error(t, err)
+	require.True(t, errcode.Is(err, errcode.ErrInvalidInput))
+	require.Nil(t, serverErr)
+
+	// test missing record
+	serverMiss, err := db.GetPushServerRecord(groupPK, server1Addr)
+	require.Error(t, err)
+	require.True(t, errcode.Is(err, errcode.ErrNotFound))
+	require.Nil(t, serverMiss)
+
+	// create the first push server entry
+	rec := &messengertypes.PushServerRecord{
+		AccountPK:  groupPK,
+		ServerAddr: server1Addr,
+		ServerKey:  server1Key,
+	}
+
+	err = db.db.Create(rec).Error
+	require.NoError(t, err)
+
+	// create the second push server entry
+	rec = &messengertypes.PushServerRecord{
+		AccountPK:  groupPK,
+		ServerAddr: server2Addr,
+		ServerKey:  server2Key,
+	}
+
+	err = db.db.Create(rec).Error
+	require.NoError(t, err)
+
+	// test getting records
+	serverRec, err := db.GetPushServerRecord(groupPK, server1Addr)
+	require.NoError(t, err)
+	require.NotNil(t, serverRec)
+	require.Equal(t, groupPK, serverRec.AccountPK)
+	require.Equal(t, server1Addr, serverRec.ServerAddr)
+	require.Equal(t, server1Key, serverRec.ServerKey)
+
+	server2Rec, err := db.GetPushServerRecord(groupPK, server2Addr)
+	require.NoError(t, err)
+	require.NotNil(t, server2Rec)
+	require.Equal(t, groupPK, server2Rec.AccountPK)
+	require.Equal(t, server2Addr, server2Rec.ServerAddr)
+	require.Equal(t, server2Key, server2Rec.ServerKey)
+}
+
+func Test_dbWrapper_SavePushServer(t *testing.T) {
+	groupPK1 := "group_pk"
+	server1Addr := "server1_addr"
+	server1Key := []byte("server1_key")
+	server2Key := []byte("server2_key")
+
+	db, _, dispose := GetInMemoryTestDB(t)
+	defer dispose()
+
+	// test invalid input
+	err := db.SavePushServer("", &messengertypes.AppMessage_PushSetServer{
+		Server: &messengertypes.PushServer{
+			Addr: server1Addr,
+			Key:  server1Key,
+		},
+	})
+	require.Error(t, err)
+	require.True(t, errcode.Is(err, errcode.ErrInvalidInput))
+
+	err = db.SavePushServer(groupPK1, &messengertypes.AppMessage_PushSetServer{
+		Server: &messengertypes.PushServer{
+			Addr: "",
+			Key:  server1Key,
+		},
+	})
+	require.Error(t, err)
+	require.True(t, errcode.Is(err, errcode.ErrInvalidInput))
+
+	err = db.SavePushServer(groupPK1, &messengertypes.AppMessage_PushSetServer{
+		Server: &messengertypes.PushServer{
+			Addr: server1Addr,
+			Key:  []byte(""),
+		},
+	})
+	require.Error(t, err)
+	require.True(t, errcode.Is(err, errcode.ErrInvalidInput))
+
+	// create a push server entry
+	server := &messengertypes.PushServer{
+		Addr: server1Addr,
+		Key:  server1Key,
+	}
+	appServer := &messengertypes.AppMessage_PushSetServer{
+		Server: server,
+	}
+
+	err = db.SavePushServer(groupPK1, appServer)
+	require.NoError(t, err)
+
+	// check that the push server entry was created
+	rec, err := db.GetPushServerRecord(groupPK1, server.Addr)
+	require.NoError(t, err)
+	require.NotNil(t, rec)
+	require.Equal(t, groupPK1, rec.AccountPK)
+	require.Equal(t, server1Addr, rec.ServerAddr)
+	require.Equal(t, server1Key, rec.ServerKey)
+
+	// update the push server entry
+	server2 := &messengertypes.PushServer{
+		Addr: server1Addr,
+		Key:  server2Key,
+	}
+	appServer2 := &messengertypes.AppMessage_PushSetServer{
+		Server: server2,
+	}
+	err = db.SavePushServer(groupPK1, appServer2)
+	require.NoError(t, err)
+
+	// check that the push server entry was updated
+	rec, err = db.GetPushServerRecord(groupPK1, server.Addr)
+	require.NoError(t, err)
+	require.NotNil(t, rec)
+	require.Equal(t, groupPK1, rec.AccountPK)
+	require.Equal(t, server1Addr, rec.ServerAddr)
+	require.Equal(t, server2Key, rec.ServerKey)
+}
+
+func Test_dbWrapper_GetPushMemberTokensForConversation(t *testing.T) {
+	conversationPK := "conversation_pk"
+	device1PK := "device1_pk"
+	server1Addr := "server1_addr"
+	server1Key := []byte("server2_key")
+	token1 := []byte("token1")
+	tokenID1 := messengerutil.MakeSharedPushIdentifier(server1Key, token1)
+	device2PK := "device2_pk"
+	server2Addr := "server2_addr"
+	server2Key := []byte("server2_key")
+	token2 := []byte("token2")
+	tokenID2 := messengerutil.MakeSharedPushIdentifier(server2Key, token2)
+
+	db, _, dispose := GetInMemoryTestDB(t)
+	defer dispose()
+
+	// test invalid input
+	memberTokensErr, err := db.GetPushMemberTokensForConversation("")
+	require.Error(t, err)
+	require.True(t, errcode.Is(err, errcode.ErrInvalidInput))
+	require.Nil(t, memberTokensErr)
+
+	// test missing record
+	memberTokensMiss, err := db.GetPushMemberTokensForConversation(conversationPK)
+	require.Error(t, err)
+	require.True(t, errcode.Is(err, errcode.ErrNotFound))
+	require.Nil(t, memberTokensMiss)
+
+	// create the first push device token entry
+	rec := &messengertypes.PushMemberToken{
+		TokenID:               tokenID1,
+		ConversationPublicKey: conversationPK,
+		DevicePK:              device1PK,
+		ServerAddr:            server1Addr,
+		ServerKey:             server1Key,
+		Token:                 token1,
+	}
+
+	err = db.db.Create(rec).Error
+	require.NoError(t, err)
+
+	// create the second push device token entry
+	rec = &messengertypes.PushMemberToken{
+		TokenID:               tokenID2,
+		ConversationPublicKey: conversationPK,
+		DevicePK:              device2PK,
+		ServerAddr:            server2Addr,
+		ServerKey:             server2Key,
+		Token:                 token2,
+	}
+
+	err = db.db.Create(rec).Error
+	require.NoError(t, err)
+
+	// test getting records
+	deviceTokens, err := db.GetPushMemberTokensForConversation(conversationPK)
+	require.NoError(t, err)
+	require.NotNil(t, deviceTokens)
+	require.Len(t, deviceTokens, 2)
+
+	require.Equal(t, tokenID1, deviceTokens[0].TokenID)
+	require.Equal(t, conversationPK, deviceTokens[0].ConversationPublicKey)
+	require.Equal(t, device1PK, deviceTokens[0].DevicePK)
+	require.Equal(t, server1Addr, deviceTokens[0].ServerAddr)
+	require.Equal(t, server1Key, deviceTokens[0].ServerKey)
+	require.Equal(t, token1, deviceTokens[0].Token)
+
+	require.Equal(t, tokenID2, deviceTokens[1].TokenID)
+	require.Equal(t, conversationPK, deviceTokens[1].ConversationPublicKey)
+	require.Equal(t, device2PK, deviceTokens[1].DevicePK)
+	require.Equal(t, server2Addr, deviceTokens[1].ServerAddr)
+	require.Equal(t, server2Key, deviceTokens[1].ServerKey)
+	require.Equal(t, token2, deviceTokens[1].Token)
+}
+
+func Test_dbWrapper_GetPushMemberTokens(t *testing.T) {
+	conversationPK := "conversation_pk"
+	devicePK := "device_pk"
+	server1Addr := "server1_addr"
+	server1Key := []byte("server2_key")
+	server2Addr := "server2_addr"
+	server2Key := []byte("server2_key")
+	token1 := []byte("token1")
+	token2 := []byte("token2")
+	tokenID1 := messengerutil.MakeSharedPushIdentifier(server1Key, token1)
+	tokenID2 := messengerutil.MakeSharedPushIdentifier(server2Key, token2)
+
+	db, _, dispose := GetInMemoryTestDB(t)
+	defer dispose()
+
+	// test invalid input
+	memberTokensErr, err := db.GetPushMemberTokens("", devicePK)
+	require.Error(t, err)
+	require.True(t, errcode.Is(err, errcode.ErrInvalidInput))
+	require.Nil(t, memberTokensErr)
+
+	memberTokensErr, err = db.GetPushMemberTokens(conversationPK, "")
+	require.Error(t, err)
+	require.True(t, errcode.Is(err, errcode.ErrInvalidInput))
+	require.Nil(t, memberTokensErr)
+
+	// test missing record
+	memberTokensMiss, err := db.GetPushMemberTokens(conversationPK, devicePK)
+	require.Error(t, err)
+	require.True(t, errcode.Is(err, errcode.ErrNotFound))
+	require.Nil(t, memberTokensMiss)
+
+	// create the first push device token entry
+	rec := &messengertypes.PushMemberToken{
+		TokenID:               tokenID1,
+		ConversationPublicKey: conversationPK,
+		DevicePK:              devicePK,
+		ServerAddr:            server1Addr,
+		ServerKey:             server1Key,
+		Token:                 token1,
+	}
+
+	err = db.db.Create(rec).Error
+	require.NoError(t, err)
+
+	// create the second push device token entry
+	rec = &messengertypes.PushMemberToken{
+		ConversationPublicKey: conversationPK,
+		TokenID:               tokenID2,
+		DevicePK:              devicePK,
+		ServerAddr:            server2Addr,
+		ServerKey:             server2Key,
+		Token:                 token2,
+	}
+
+	err = db.db.Create(rec).Error
+	require.NoError(t, err)
+
+	// test getting records
+	tokens, err := db.GetPushMemberTokens(conversationPK, devicePK)
+	require.NoError(t, err)
+	require.NotNil(t, tokens)
+	require.Len(t, tokens, 2)
+
+	require.Equal(t, tokenID1, tokens[0].TokenID)
+	require.Equal(t, conversationPK, tokens[0].ConversationPublicKey)
+	require.Equal(t, devicePK, tokens[0].DevicePK)
+	require.Equal(t, server1Addr, tokens[0].ServerAddr)
+	require.Equal(t, server1Key, tokens[0].ServerKey)
+	require.Equal(t, token1, tokens[0].Token)
+
+	require.Equal(t, tokenID2, tokens[1].TokenID)
+	require.Equal(t, conversationPK, tokens[1].ConversationPublicKey)
+	require.Equal(t, devicePK, tokens[1].DevicePK)
+	require.Equal(t, server2Addr, tokens[1].ServerAddr)
+	require.Equal(t, server2Key, tokens[1].ServerKey)
+	require.Equal(t, token2, tokens[1].Token)
+}
+
+func Test_dbWrapper_SavePushMemberToken(t *testing.T) {
+	conversationPK := "conversation_pk"
+	memberPK := "member_pk"
+	devicePK := "device_pk"
+	server1Addr := "server1_addr"
+	server1Key := []byte("server1_key")
+	server2Addr := "server2_addr"
+	server2Key := []byte("server2_key")
+	token1 := []byte("token1")
+	token2 := []byte("token2")
+	tokenID1 := messengerutil.MakeSharedPushIdentifier(server1Key, token1)
+	tokenID2 := messengerutil.MakeSharedPushIdentifier(server2Key, token2)
+
+	db, _, dispose := GetInMemoryTestDB(t)
+	defer dispose()
+
+	// test invalid input
+	err := db.SavePushMemberToken("", conversationPK, &messengertypes.AppMessage_PushSetMemberToken{
+		MemberToken: &messengertypes.PushMemberTokenUpdate{
+			DevicePK: devicePK,
+			Server:   &messengertypes.PushServer{Addr: server1Addr, Key: server1Key},
+			Token:    token1,
+		},
+	})
+	require.Error(t, err)
+	require.True(t, errcode.Is(err, errcode.ErrInvalidInput))
+
+	err = db.SavePushMemberToken(tokenID1, "", &messengertypes.AppMessage_PushSetMemberToken{
+		MemberToken: &messengertypes.PushMemberTokenUpdate{
+			DevicePK: devicePK,
+			Server:   &messengertypes.PushServer{Addr: server1Addr, Key: server1Key},
+			Token:    token1,
+		},
+	})
+	require.Error(t, err)
+	require.True(t, errcode.Is(err, errcode.ErrInvalidInput))
+
+	err = db.SavePushMemberToken(tokenID1, conversationPK, &messengertypes.AppMessage_PushSetMemberToken{
+		MemberToken: nil,
+	})
+	require.Error(t, err)
+	require.True(t, errcode.Is(err, errcode.ErrInvalidInput))
+
+	err = db.SavePushMemberToken(tokenID1, conversationPK, &messengertypes.AppMessage_PushSetMemberToken{
+		MemberToken: &messengertypes.PushMemberTokenUpdate{
+			DevicePK: "",
+			Server:   &messengertypes.PushServer{Addr: server1Addr, Key: server1Key},
+			Token:    token1,
+		},
+	})
+	require.Error(t, err)
+	require.True(t, errcode.Is(err, errcode.ErrInvalidInput))
+
+	err = db.SavePushMemberToken(tokenID1, conversationPK, &messengertypes.AppMessage_PushSetMemberToken{
+		MemberToken: &messengertypes.PushMemberTokenUpdate{
+			DevicePK: devicePK,
+			Server:   nil,
+			Token:    token1,
+		},
+	})
+	require.Error(t, err)
+	require.True(t, errcode.Is(err, errcode.ErrInvalidInput))
+
+	err = db.SavePushMemberToken(tokenID1, conversationPK, &messengertypes.AppMessage_PushSetMemberToken{
+		MemberToken: &messengertypes.PushMemberTokenUpdate{
+			DevicePK: devicePK,
+			Server:   &messengertypes.PushServer{Addr: "", Key: server1Key},
+			Token:    token1,
+		},
+	})
+	require.Error(t, err)
+	require.True(t, errcode.Is(err, errcode.ErrInvalidInput))
+
+	err = db.SavePushMemberToken(tokenID1, conversationPK, &messengertypes.AppMessage_PushSetMemberToken{
+		MemberToken: &messengertypes.PushMemberTokenUpdate{
+			DevicePK: devicePK,
+			Server:   &messengertypes.PushServer{Addr: server1Addr, Key: nil},
+			Token:    token1,
+		},
+	})
+	require.Error(t, err)
+	require.True(t, errcode.Is(err, errcode.ErrInvalidInput))
+
+	err = db.SavePushMemberToken(tokenID1, conversationPK, &messengertypes.AppMessage_PushSetMemberToken{
+		MemberToken: &messengertypes.PushMemberTokenUpdate{
+			DevicePK: devicePK,
+			Server:   &messengertypes.PushServer{Addr: server1Addr, Key: server1Key},
+			Token:    nil,
+		},
+	})
+	require.Error(t, err)
+	require.True(t, errcode.Is(err, errcode.ErrInvalidInput))
+
+	// test saving one record
+	err = db.SavePushMemberToken(tokenID1, conversationPK, &messengertypes.AppMessage_PushSetMemberToken{
+		MemberToken: &messengertypes.PushMemberTokenUpdate{
+			DevicePK: devicePK,
+			Server:   &messengertypes.PushServer{Addr: server1Addr, Key: server1Key},
+			Token:    token1,
+		},
+	})
+	require.NoError(t, err)
+
+	// check if this entry is saved
+	token, err := db.GetPushMemberToken(tokenID1)
+	require.NoError(t, err)
+	require.NotNil(t, token)
+
+	require.Equal(t, tokenID1, token.TokenID)
+	require.Equal(t, conversationPK, token.ConversationPublicKey)
+	require.Equal(t, devicePK, token.DevicePK)
+	require.Equal(t, server1Addr, token.ServerAddr)
+	require.Equal(t, server1Key, token.ServerKey)
+	require.Equal(t, token1, token.Token)
+
+	// check if this entry is saved
+	tokens, err := db.GetPushMemberTokens(conversationPK, devicePK)
+	require.NoError(t, err)
+	require.NotNil(t, tokens)
+	require.Len(t, tokens, 1)
+
+	require.Equal(t, conversationPK, tokens[0].ConversationPublicKey)
+	require.Equal(t, devicePK, tokens[0].DevicePK)
+	require.Equal(t, server1Addr, tokens[0].ServerAddr)
+	require.Equal(t, server1Key, tokens[0].ServerKey)
+	require.Equal(t, token1, tokens[0].Token)
+
+	// try to update the token
+
+	err = db.SavePushMemberToken(tokenID1, conversationPK, &messengertypes.AppMessage_PushSetMemberToken{
+		MemberToken: &messengertypes.PushMemberTokenUpdate{
+			DevicePK: devicePK,
+			Server:   &messengertypes.PushServer{Addr: server1Addr, Key: server2Key},
+			Token:    token2,
+		},
+	})
+	require.NoError(t, err)
+
+	// check if this entry is NOT updated
+	token, err = db.GetPushMemberToken(tokenID1)
+	require.NoError(t, err)
+	require.NotNil(t, token)
+
+	require.Equal(t, tokenID1, token.TokenID)
+	require.Equal(t, conversationPK, token.ConversationPublicKey)
+	require.Equal(t, devicePK, token.DevicePK)
+	require.Equal(t, server1Addr, token.ServerAddr)
+	require.Equal(t, server1Key, token.ServerKey)
+	require.Equal(t, token1, token.Token)
+
+	// test saving another record
+
+	err = db.SavePushMemberToken(tokenID2, conversationPK, &messengertypes.AppMessage_PushSetMemberToken{
+		MemberToken: &messengertypes.PushMemberTokenUpdate{
+			DevicePK: devicePK,
+			Server:   &messengertypes.PushServer{Addr: server2Addr, Key: server2Key},
+			Token:    token2,
+		},
+	})
+	require.NoError(t, err)
+
+	// check the two entries
+	tokens, err = db.GetPushMemberTokens(conversationPK, devicePK)
+	require.NoError(t, err)
+	require.NotNil(t, tokens)
+	require.Len(t, tokens, 2)
+
+	require.Equal(t, tokenID1, tokens[0].TokenID)
+	require.Equal(t, conversationPK, tokens[0].ConversationPublicKey)
+	require.Equal(t, devicePK, tokens[0].DevicePK)
+	require.Equal(t, server1Addr, tokens[0].ServerAddr)
+	require.Equal(t, server1Key, tokens[0].ServerKey)
+	require.Equal(t, token1, tokens[0].Token)
+
+	require.Equal(t, tokenID2, tokens[1].TokenID)
+	require.Equal(t, conversationPK, tokens[1].ConversationPublicKey)
+	require.Equal(t, devicePK, tokens[1].DevicePK)
+	require.Equal(t, server2Addr, tokens[1].ServerAddr)
+	require.Equal(t, server2Key, tokens[1].ServerKey)
+	require.Equal(t, token2, tokens[1].Token)
+
+	// test the relation between the conversation and the push member token
+	_, err = db.AddConversation(conversationPK, memberPK, devicePK)
+	conv, err := db.GetConversationByPK(conversationPK)
+	require.NoError(t, err)
+	require.NotNil(t, conv)
+	require.Len(t, conv.PushMemberTokens, 2)
+
+	require.Equal(t, tokenID1, conv.PushMemberTokens[0].TokenID)
+	require.Equal(t, conversationPK, conv.PushMemberTokens[0].ConversationPublicKey)
+	require.Equal(t, devicePK, conv.PushMemberTokens[0].DevicePK)
+	require.Equal(t, server1Addr, conv.PushMemberTokens[0].ServerAddr)
+	require.Equal(t, server1Key, conv.PushMemberTokens[0].ServerKey)
+	require.Equal(t, token1, conv.PushMemberTokens[0].Token)
+
+	require.Equal(t, conversationPK, conv.PushMemberTokens[1].ConversationPublicKey)
+	require.Equal(t, devicePK, conv.PushMemberTokens[1].DevicePK)
+	require.Equal(t, server2Addr, conv.PushMemberTokens[1].ServerAddr)
+	require.Equal(t, server2Key, conv.PushMemberTokens[1].ServerKey)
+	require.Equal(t, token2, conv.PushMemberTokens[1].Token)
+}
+
+func Test_dbWrapper_SaveServiceToken(t *testing.T) {
+	accountPK := "account_pk"
+	token1 := "token1"
+	serviceType1 := "service_type_1"
+	serviceAddr1 := "service_addr_1"
+	authenticationURL1 := "authentication_url_1"
+	token2 := "token2"
+	serviceType2 := "service_type_2"
+	serviceAddr2 := "service_addr_2"
+	authenticationURL2 := "authentication_url_2"
+
+	db, _, dispose := GetInMemoryTestDB(t)
+	defer dispose()
+
+	db.db.Create(&messengertypes.Account{PublicKey: accountPK})
+
+	// test invalid input
+	err := db.AddServiceToken(accountPK, &messengertypes.AppMessage_ServiceAddToken{})
+	require.Error(t, err)
+	require.True(t, errcode.Is(err, errcode.ErrInvalidInput))
+
+	err = db.AddServiceToken(accountPK, &messengertypes.AppMessage_ServiceAddToken{
+		Token: "",
+		SupportedServices: []*messengertypes.ServiceTokenSupportedService{
+			{
+				Type:    serviceType1,
+				Address: serviceAddr1,
+			},
+		},
+		AuthenticationURL: authenticationURL1,
+		Expiration:        0,
+	})
+	require.Error(t, err)
+	require.True(t, errcode.Is(err, errcode.ErrInvalidInput))
+
+	err = db.AddServiceToken(accountPK, &messengertypes.AppMessage_ServiceAddToken{
+		Token:             token1,
+		SupportedServices: nil,
+		AuthenticationURL: authenticationURL1,
+		Expiration:        0,
+	})
+	require.Error(t, err)
+	require.True(t, errcode.Is(err, errcode.ErrInvalidInput))
+
+	err = db.AddServiceToken(accountPK, &messengertypes.AppMessage_ServiceAddToken{
+		Token:             token1,
+		SupportedServices: []*messengertypes.ServiceTokenSupportedService{},
+		AuthenticationURL: authenticationURL1,
+		Expiration:        0,
+	})
+	require.Error(t, err)
+	require.True(t, errcode.Is(err, errcode.ErrInvalidInput))
+
+	err = db.AddServiceToken(accountPK, &messengertypes.AppMessage_ServiceAddToken{
+		Token: token1,
+		SupportedServices: []*messengertypes.ServiceTokenSupportedService{
+			{
+				Type:    serviceType1,
+				Address: serviceAddr1,
+			},
+		},
+		AuthenticationURL: "",
+		Expiration:        0,
+	})
+	require.Error(t, err)
+	require.True(t, errcode.Is(err, errcode.ErrInvalidInput))
+
+	// test saving one record
+	serviceToken1 := &messengertypes.AppMessage_ServiceAddToken{
+		Token: token1,
+		SupportedServices: []*messengertypes.ServiceTokenSupportedService{
+			{
+				Type:    serviceType1,
+				Address: serviceAddr1,
+			},
+		},
+		AuthenticationURL: authenticationURL1,
+		Expiration:        0,
+	}
+	err = db.AddServiceToken(accountPK, serviceToken1)
+	require.NoError(t, err)
+
+	// check if this entry is saved
+	token, err := db.GetServiceToken(accountPK, serviceToken1.TokenID())
+	require.NoError(t, err)
+	require.NotNil(t, token)
+
+	require.Equal(t, token.TokenID, serviceToken1.TokenID())
+	require.Equal(t, token.Token, token1)
+	require.Len(t, token.SupportedServices, 1)
+	require.Equal(t, token.SupportedServices[0].Type, serviceType1)
+	require.Equal(t, token.SupportedServices[0].Address, serviceAddr1)
+	require.Equal(t, token.AuthenticationURL, authenticationURL1)
+	require.Equal(t, token.Expiration, int64(0))
+
+	// update the token
+	serviceToken1 = &messengertypes.AppMessage_ServiceAddToken{
+		Token: token1,
+		SupportedServices: []*messengertypes.ServiceTokenSupportedService{
+			{
+				Type:    serviceType1,
+				Address: serviceAddr2,
+			},
+		},
+		AuthenticationURL: authenticationURL1,
+		Expiration:        1,
+	}
+	err = db.AddServiceToken(accountPK, serviceToken1)
+	require.NoError(t, err)
+
+	// check if this entry is updated
+	token, err = db.GetServiceToken(accountPK, serviceToken1.TokenID())
+	require.NoError(t, err)
+	require.NotNil(t, token)
+
+	require.Equal(t, token.TokenID, serviceToken1.TokenID())
+	require.Equal(t, token.Token, token1)
+	require.Len(t, token.SupportedServices, 1)
+	require.Equal(t, token.SupportedServices[0].Type, serviceType1)
+	require.Equal(t, token.SupportedServices[0].Address, serviceAddr2)
+	require.Equal(t, token.AuthenticationURL, authenticationURL1)
+	require.Equal(t, token.Expiration, int64(1))
+
+	// test saving another record
+
+	serviceToken2 := &messengertypes.AppMessage_ServiceAddToken{
+		Token: token2,
+		SupportedServices: []*messengertypes.ServiceTokenSupportedService{
+			{
+				Type:    serviceType2,
+				Address: serviceAddr2,
+			},
+		},
+		AuthenticationURL: authenticationURL2,
+		Expiration:        0,
+	}
+
+	err = db.AddServiceToken(accountPK, serviceToken2)
+	require.NoError(t, err)
+
+	// check the second entry
+	token, err = db.GetServiceToken(accountPK, serviceToken2.TokenID())
+	require.NoError(t, err)
+	require.NotNil(t, token)
+
+	require.Equal(t, token.TokenID, serviceToken2.TokenID())
+	require.Equal(t, token.Token, token2)
+	require.Len(t, token.SupportedServices, 1)
+	require.Equal(t, token.SupportedServices[0].Type, serviceType2)
+	require.Equal(t, token.SupportedServices[0].Address, serviceAddr2)
+	require.Equal(t, token.AuthenticationURL, authenticationURL2)
+	require.Equal(t, token.Expiration, int64(0))
+
+	// check all entries
+	tokens, err := db.GetServiceTokens(accountPK)
+	require.NoError(t, err)
+	require.NotNil(t, tokens)
+	require.Len(t, tokens, 2)
+
+	require.Equal(t, tokens[0].TokenID, serviceToken1.TokenID())
+	require.Equal(t, tokens[0].Token, token1)
+	require.Len(t, tokens[0].SupportedServices, 1)
+	require.Equal(t, tokens[0].SupportedServices[0].Type, serviceType1)
+	require.Equal(t, tokens[0].SupportedServices[0].Address, serviceAddr2)
+	require.Equal(t, tokens[0].AuthenticationURL, authenticationURL1)
+	require.Equal(t, tokens[0].Expiration, int64(1))
+
+	require.Equal(t, tokens[1].TokenID, serviceToken2.TokenID())
+	require.Equal(t, tokens[1].Token, token2)
+	require.Len(t, tokens[1].SupportedServices, 1)
+	require.Equal(t, tokens[1].SupportedServices[0].Type, serviceType2)
+	require.Equal(t, tokens[1].SupportedServices[0].Address, serviceAddr2)
+	require.Equal(t, tokens[1].AuthenticationURL, authenticationURL2)
+	require.Equal(t, tokens[1].Expiration, int64(0))
+
+	// test the relation between the account and the service token
+	acc, err := db.GetAccount()
+	require.NoError(t, err)
+	require.NotNil(t, acc)
+
+	tokens = acc.ServiceTokens
+	require.Len(t, tokens, 2)
+
+	require.Equal(t, tokens[0].TokenID, serviceToken1.TokenID())
+	require.Equal(t, tokens[0].Token, token1)
+	require.Len(t, tokens[0].SupportedServices, 1)
+	require.Equal(t, tokens[0].SupportedServices[0].Type, serviceType1)
+	require.Equal(t, tokens[0].SupportedServices[0].Address, serviceAddr2)
+	require.Equal(t, tokens[0].AuthenticationURL, authenticationURL1)
+	require.Equal(t, tokens[0].Expiration, int64(1))
+
+	require.Equal(t, tokens[1].TokenID, serviceToken2.TokenID())
+	require.Equal(t, tokens[1].Token, token2)
+	require.Len(t, tokens[1].SupportedServices, 1)
+	require.Equal(t, tokens[1].SupportedServices[0].Type, serviceType2)
+	require.Equal(t, tokens[1].SupportedServices[0].Address, serviceAddr2)
+	require.Equal(t, tokens[1].AuthenticationURL, authenticationURL2)
+	require.Equal(t, tokens[1].Expiration, int64(0))
+}
+
+func Test_dbWrapper_GetServiceToken(t *testing.T) {
+	accountPK := "account_pk"
+	tokenID1 := "token_id_1"
+	token1 := "token1"
+	serviceType1 := "service_type_1"
+	serviceAddr1 := "service_addr_1"
+	authenticationURL1 := "authentication_url_1"
+	tokenID2 := "token_id_2"
+	token2 := "token2"
+	serviceType2 := "service_type_2"
+	serviceAddr2 := "service_addr_2"
+	authenticationURL2 := "authentication_url_2"
+
+	db, _, dispose := GetInMemoryTestDB(t)
+	defer dispose()
+
+	db.db.Create(&messengertypes.Account{PublicKey: accountPK})
+
+	// test invalid input
+	serviceTokenErr, err := db.GetServiceToken("", tokenID1)
+	require.Error(t, err)
+	require.True(t, errcode.Is(err, errcode.ErrInvalidInput))
+	require.Nil(t, serviceTokenErr)
+
+	serviceTokenErr, err = db.GetServiceToken(accountPK, "")
+	require.Error(t, err)
+	require.True(t, errcode.Is(err, errcode.ErrInvalidInput))
+	require.Nil(t, serviceTokenErr)
+
+	// test missing record
+	serviceTokenMiss, err := db.GetServiceToken(accountPK, "invalid_token_id")
+	require.Error(t, err)
+	require.True(t, errcode.Is(err, errcode.ErrNotFound))
+	require.Nil(t, serviceTokenMiss)
+
+	// create the first service token entry
+	rec := &messengertypes.ServiceToken{
+		AccountPK: accountPK,
+		TokenID:   tokenID1,
+		Token:     token1,
+		SupportedServices: []*messengertypes.ServiceTokenSupportedServiceRecord{
+			{
+				Type:    serviceType1,
+				Address: serviceAddr1,
+			},
+		},
+		AuthenticationURL: authenticationURL1,
+		Expiration:        0,
+	}
+
+	err = db.db.Create(rec).Error
+	require.NoError(t, err)
+
+	// create the second device token entry
+	rec = &messengertypes.ServiceToken{
+		AccountPK: accountPK,
+		TokenID:   tokenID2,
+		Token:     token2,
+		SupportedServices: []*messengertypes.ServiceTokenSupportedServiceRecord{
+			{
+				Type:    serviceType2,
+				Address: serviceAddr2,
+			},
+		},
+		AuthenticationURL: authenticationURL2,
+		Expiration:        1,
+	}
+
+	err = db.db.Create(rec).Error
+	require.NoError(t, err)
+
+	// test getting records
+	serviceToken1, err := db.GetServiceToken(accountPK, tokenID1)
+	require.NoError(t, err)
+	require.NotNil(t, serviceToken1)
+	require.Equal(t, serviceToken1.AccountPK, accountPK)
+	require.Equal(t, serviceToken1.TokenID, tokenID1)
+	require.Equal(t, serviceToken1.Token, token1)
+	require.Len(t, serviceToken1.SupportedServices, 1)
+	require.Equal(t, serviceToken1.SupportedServices[0].Type, serviceType1)
+	require.Equal(t, serviceToken1.SupportedServices[0].Address, serviceAddr1)
+	require.Equal(t, serviceToken1.AuthenticationURL, authenticationURL1)
+	require.Equal(t, serviceToken1.Expiration, int64(0))
+
+	serviceToken2, err := db.GetServiceToken(accountPK, tokenID2)
+	require.NoError(t, err)
+	require.NotNil(t, serviceToken2)
+	require.Equal(t, serviceToken2.AccountPK, accountPK)
+	require.Equal(t, serviceToken2.TokenID, tokenID2)
+	require.Equal(t, serviceToken2.Token, token2)
+	require.Len(t, serviceToken2.SupportedServices, 1)
+	require.Equal(t, serviceToken2.SupportedServices[0].Type, serviceType2)
+	require.Equal(t, serviceToken2.SupportedServices[0].Address, serviceAddr2)
+	require.Equal(t, serviceToken2.AuthenticationURL, authenticationURL2)
+	require.Equal(t, serviceToken2.Expiration, int64(1))
+}
+
+func Test_dbWrapper_SavePushLocalDeviceSharedToken(t *testing.T) {
+	conversationPK := "conversation_pk"
+	memberPK := "member_pk"
+	devicePK := "device_pk"
+	tokenID1 := "token_id_1"
+	tokenID2 := "token_id_2"
+
+	db, _, dispose := GetInMemoryTestDB(t)
+	defer dispose()
+
+	// test invalid input
+	err := db.SavePushLocalDeviceSharedToken("", conversationPK)
+	require.Error(t, err)
+	require.True(t, errcode.Is(err, errcode.ErrInvalidInput))
+
+	err = db.SavePushLocalDeviceSharedToken(tokenID1, "")
+	require.Error(t, err)
+	require.True(t, errcode.Is(err, errcode.ErrInvalidInput))
+
+	// test saving one record
+	err = db.SavePushLocalDeviceSharedToken(tokenID1, conversationPK)
+	require.NoError(t, err)
+
+	// check if this entry is saved
+	tokens, err := db.GetPushSharedLocalDeviceTokens(conversationPK)
+	require.NoError(t, err)
+	require.NotNil(t, tokens)
+	require.Len(t, tokens, 1)
+
+	require.Equal(t, tokenID1, tokens[0].TokenID)
+	require.Equal(t, conversationPK, tokens[0].ConversationPublicKey)
+
+	// test adding another record
+	err = db.SavePushLocalDeviceSharedToken(tokenID2, conversationPK)
+	require.NoError(t, err)
+
+	// check to get the two entries
+	tokens, err = db.GetPushSharedLocalDeviceTokens(conversationPK)
+	require.NoError(t, err)
+	require.NotNil(t, tokens)
+	require.Len(t, tokens, 2)
+
+	require.Equal(t, tokenID1, tokens[0].TokenID)
+	require.Equal(t, conversationPK, tokens[0].ConversationPublicKey)
+	require.Equal(t, tokenID2, tokens[1].TokenID)
+	require.Equal(t, conversationPK, tokens[1].ConversationPublicKey)
+
+	// test the relation between the conversation and the local shared push device tokens
+	_, err = db.AddConversation(conversationPK, memberPK, devicePK)
+	conv, err := db.GetConversationByPK(conversationPK)
+	require.NoError(t, err)
+	require.NotNil(t, conv)
+	require.Len(t, conv.PushLocalDeviceSharedTokens, 2)
+
+	require.Equal(t, tokenID1, conv.PushLocalDeviceSharedTokens[0].TokenID)
+	require.Equal(t, conversationPK, conv.PushLocalDeviceSharedTokens[0].ConversationPublicKey)
+
+	require.Equal(t, tokenID2, conv.PushLocalDeviceSharedTokens[1].TokenID)
+	require.Equal(t, conversationPK, conv.PushLocalDeviceSharedTokens[1].ConversationPublicKey)
 }

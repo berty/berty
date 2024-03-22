@@ -16,7 +16,7 @@ const UserDevicesList: React.FC<{ memberPk: string; conversationPk: string }> = 
 	const cutoff = 16
 	const { padding } = useStyles()
 	const { t } = useTranslation()
-	const [tokens, setTokens] = useState<beapi.messenger.ISharedPushToken[]>([])
+	const [tokens, setTokens] = useState<beapi.messenger.IPushMemberToken[]>([])
 	const [devices, setDevices] = useState<beapi.messenger.IDevice[]>([])
 	const messengerClient = useMessengerClient()
 
@@ -38,7 +38,7 @@ const UserDevicesList: React.FC<{ memberPk: string; conversationPk: string }> = 
 		getDevicesForConversationAndMember(messengerClient, conversationPk, memberPk).then(setDevices)
 	}, [conversationPk, messengerClient, memberPk, setDevices])
 
-	const tokensMap = Object.fromEntries(tokens.map(t => [t.devicePublicKey, t.token]))
+	const tokensMap = Object.fromEntries(tokens.map(t => [t.devicePk, t.tokenId]))
 
 	return (
 		<>

@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"sync"
 	"time"
 
 	ipfscid "github.com/ipfs/go-cid"
@@ -17,17 +18,20 @@ import (
 	"berty.tech/berty/v2/go/internal/messengerutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
+	"berty.tech/berty/v2/go/pkg/pushtypes"
 	"berty.tech/weshnet/pkg/logutil"
 	"berty.tech/weshnet/pkg/protocoltypes"
 	"berty.tech/weshnet/pkg/tyber"
 )
 
 type DBWrapper struct {
-	db         *gorm.DB
-	log        *zap.Logger
-	ctx        context.Context
-	disableFTS bool
-	inTx       bool
+	db           *gorm.DB
+	log          *zap.Logger
+	ctx          context.Context
+	disableFTS   bool
+	inTx         bool
+	postaction   func(d *DBWrapper) error
+	muPostaction sync.Mutex
 }
 
 func noopReplayer(_ *DBWrapper) error { return nil }
@@ -108,6 +112,7 @@ func getDBModels() []interface{} {
 	return []interface{}{
 		&messengertypes.Conversation{},
 		&messengertypes.Account{},
+		&messengertypes.ServiceTokenSupportedServiceRecord{},
 		&messengertypes.ServiceToken{},
 		&messengertypes.Contact{},
 		&messengertypes.Interaction{},
@@ -115,9 +120,12 @@ func getDBModels() []interface{} {
 		&messengertypes.Device{},
 		&messengertypes.ConversationReplicationInfo{},
 		&messengertypes.MetadataEvent{},
-		&messengertypes.SharedPushToken{},
 		&messengertypes.AccountVerifiedCredential{},
 		&messengertypes.AccountDirectoryServiceRecord{},
+		&messengertypes.PushDeviceToken{},
+		&messengertypes.PushServerRecord{},
+		&messengertypes.PushLocalDeviceSharedToken{},
+		&messengertypes.PushMemberToken{},
 	}
 }
 
@@ -176,6 +184,31 @@ func isSQLiteError(err error, sqliteErr sqlite3.ErrNo) bool {
 	return e.Code == sqliteErr
 }
 
+func (d *DBWrapper) PostAction(action func(d *DBWrapper) error) (err error) {
+	d.muPostaction.Lock()
+	defer d.muPostaction.Unlock()
+
+	if !d.inTx {
+		return fmt.Errorf("not in transaction")
+	}
+
+	if d.postaction == nil {
+		d.postaction = action
+		return
+	}
+
+	previousAction := d.postaction
+	d.postaction = func(d *DBWrapper) error {
+		if err := previousAction(d); err != nil {
+			return fmt.Errorf("unable handle post action: %w", err)
+		}
+
+		return action(d)
+	}
+
+	return
+}
+
 func (d *DBWrapper) TX(ctx context.Context, txFunc func(*DBWrapper) error) (err error) {
 	if !d.inTx {
 		tctx, _, endSection := tyber.Section(ctx, d.log, "Starting database transaction")
@@ -189,10 +222,24 @@ func (d *DBWrapper) TX(ctx context.Context, txFunc func(*DBWrapper) error) (err 
 		}()
 	}
 
+	var txwrapper *DBWrapper
 	// Use this to propagate scope, ie. opened account
-	return d.db.Transaction(func(tx *gorm.DB) error {
-		return txFunc(&DBWrapper{ctx: ctx, db: tx, log: d.log, disableFTS: d.disableFTS, inTx: true})
-	})
+	if err := d.db.Transaction(func(tx *gorm.DB) error {
+		txwrapper = &DBWrapper{ctx: ctx, db: tx, log: d.log, disableFTS: d.disableFTS, inTx: true}
+		if err := txFunc(txwrapper); err != nil {
+			return err
+		}
+
+		return nil
+	}); err != nil {
+		return err
+	}
+
+	if txwrapper.postaction != nil {
+		return txwrapper.postaction(d)
+	}
+
+	return nil
 }
 
 func (d *DBWrapper) AddConversationForContact(groupPK, ownMemberPK, ownDevicePK, contactPK string) (*messengertypes.Conversation, error) {
@@ -313,9 +360,6 @@ func (d *DBWrapper) UpdateConversation(c messengertypes.Conversation) (bool, err
 	if c.AccountMemberPublicKey != "" {
 		columns = append(columns, "account_member_public_key")
 	}
-	if c.SharedPushTokenIdentifier != "" {
-		columns = append(columns, "shared_push_token_identifier")
-	}
 	if c.InfoDate != 0 {
 		columns = append(columns, "info_date")
 	}
@@ -419,8 +463,11 @@ func (d *DBWrapper) GetAccount() (*messengertypes.Account, error) {
 	var accounts []messengertypes.Account
 	if err := d.db.Model(&messengertypes.Account{}).
 		Preload("ServiceTokens").
+		Preload("ServiceTokens." + clause.Associations).
 		Preload("VerifiedCredentials").
 		Preload("DirectoryServiceRecords").
+		Preload("PushDeviceToken").
+		Preload("PushServerRecords").
 		Find(&accounts).Error; err != nil {
 		return nil, err
 	}
@@ -472,6 +519,8 @@ func (d *DBWrapper) GetConversationByPK(publicKey string) (*messengertypes.Conve
 
 	if err := d.db.
 		Preload("ReplicationInfo").
+		Preload("PushLocalDeviceSharedTokens").
+		Preload("PushMemberTokens").
 		First(
 			&conversation,
 			&messengertypes.Conversation{PublicKey: publicKey},
@@ -503,7 +552,11 @@ func (d *DBWrapper) GetMemberByPK(publicKey string, convPK string) (*messengerty
 func (d *DBWrapper) GetAllConversations() ([]*messengertypes.Conversation, error) {
 	convs := []*messengertypes.Conversation(nil)
 
-	return convs, d.db.Preload("ReplicationInfo").Find(&convs).Error
+	return convs, d.db.
+		Preload("ReplicationInfo").
+		Preload("PushLocalDeviceSharedTokens").
+		Preload("PushMemberTokens").
+		Find(&convs).Error
 }
 
 func (d *DBWrapper) GetAllMembers() ([]*messengertypes.Member, error) {
@@ -512,10 +565,42 @@ func (d *DBWrapper) GetAllMembers() ([]*messengertypes.Member, error) {
 	return members, d.db.Find(&members).Error
 }
 
+func (d *DBWrapper) GetMembersByConversation(conversationPK string) ([]*messengertypes.Member, error) {
+	if conversationPK == "" {
+		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("conversation public key cannot be empty"))
+	}
+
+	members := []*messengertypes.Member(nil)
+
+	if err := d.db.Where(&messengertypes.Member{ConversationPublicKey: conversationPK}).Find(&members).Error; err != nil {
+		return nil, errcode.ErrDBRead.Wrap(fmt.Errorf("unable to get members for conversation %s: %w", conversationPK, err))
+	}
+
+	if len(members) == 0 {
+		return nil, errcode.ErrNotFound
+	}
+
+	return members, nil
+}
+
 func (d *DBWrapper) GetAllContacts() ([]*messengertypes.Contact, error) {
 	contacts := []*messengertypes.Contact(nil)
 
 	return contacts, d.db.Find(&contacts).Error
+}
+
+func (d *DBWrapper) GetContactByConversation(conversationPK string) (*messengertypes.Contact, error) {
+	if conversationPK == "" {
+		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("conversation public key cannot be empty"))
+	}
+
+	contact := &messengertypes.Contact{}
+
+	if err := d.db.Model(&messengertypes.Contact{}).Preload("Conversation").First(&contact, &messengertypes.Contact{ConversationPublicKey: conversationPK}).Error; err != nil {
+		return nil, errcode.ErrDBRead.Wrap(fmt.Errorf("unable to get contact for conversation %s: %w", conversationPK, err))
+	}
+
+	return contact, nil
 }
 
 func (d *DBWrapper) GetContactsByState(state messengertypes.Contact_State) ([]*messengertypes.Contact, error) {
@@ -827,6 +912,9 @@ func (d *DBWrapper) GetDBInfo() (*messengertypes.SystemInfo_DB, error) {
 	infos.Devices, err = d.dbModelRowsCount(messengertypes.Device{})
 	errs = multierr.Append(errs, err)
 
+	infos.ServiceTokenSupportedServiceRecords, err = d.dbModelRowsCount(messengertypes.ServiceTokenSupportedServiceRecord{})
+	errs = multierr.Append(errs, err)
+
 	infos.ServiceTokens, err = d.dbModelRowsCount(messengertypes.ServiceToken{})
 	errs = multierr.Append(errs, err)
 
@@ -836,13 +924,22 @@ func (d *DBWrapper) GetDBInfo() (*messengertypes.SystemInfo_DB, error) {
 	infos.MetadataEvents, err = d.dbModelRowsCount(messengertypes.MetadataEvent{})
 	errs = multierr.Append(errs, err)
 
-	infos.SharedPushTokens, err = d.dbModelRowsCount(messengertypes.SharedPushToken{})
-	errs = multierr.Append(errs, err)
-
 	infos.AccountVerifiedCredentials, err = d.dbModelRowsCount(messengertypes.AccountVerifiedCredential{})
 	errs = multierr.Append(errs, err)
 
 	infos.AccountDirectoryServiceRecord, err = d.dbModelRowsCount(messengertypes.AccountDirectoryServiceRecord{})
+	errs = multierr.Append(errs, err)
+
+	infos.PushDeviceToken, err = d.dbModelRowsCount(messengertypes.PushDeviceToken{})
+	errs = multierr.Append(errs, err)
+
+	infos.PushServerRecord, err = d.dbModelRowsCount(messengertypes.PushServerRecord{})
+	errs = multierr.Append(errs, err)
+
+	infos.PushLocalDeviceSharedToken, err = d.dbModelRowsCount(messengertypes.PushLocalDeviceSharedToken{})
+	errs = multierr.Append(errs, err)
+
+	infos.PushMemberToken, err = d.dbModelRowsCount(messengertypes.PushMemberToken{})
 	errs = multierr.Append(errs, err)
 
 	return infos, errs
@@ -1168,26 +1265,61 @@ func (d *dbLogWrapper) Trace(ctx context.Context, begin time.Time, fc func() (st
 	d.Interface.Trace(ctx, begin, fc, err)
 }
 
-func (d *DBWrapper) AddServiceToken(serviceToken *protocoltypes.ServiceToken) error {
+func (d *DBWrapper) AddServiceToken(accountPK string, serviceToken *messengertypes.AppMessage_ServiceAddToken) error {
+	if accountPK == "" {
+		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("no account public key specified"))
+	}
+
+	if serviceToken == nil {
+		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("no service token specified"))
+	}
+
+	if serviceToken.Token == "" {
+		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("no token specified"))
+	}
+
 	if len(serviceToken.SupportedServices) == 0 {
 		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("no services specified"))
 	}
 
+	if serviceToken.AuthenticationURL == "" {
+		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("no authentication url specified"))
+	}
+
 	if err := d.TX(d.ctx, func(tx *DBWrapper) error {
-		acc, err := tx.GetAccount()
-		if err != nil {
-			return errcode.ErrInvalidInput.Wrap(fmt.Errorf("no account found in db"))
+		// create the service token
+		res := tx.db.Clauses(clause.OnConflict{
+			Columns: []clause.Column{{Name: "token_id"}},
+			DoUpdates: clause.Assignments(map[string]interface{}{
+				"account_pk":         accountPK,
+				"token":              serviceToken.Token,
+				"authentication_url": serviceToken.AuthenticationURL,
+				"expiration":         serviceToken.Expiration,
+			}),
+		}).Create(&messengertypes.ServiceToken{
+			AccountPK:         accountPK,
+			TokenID:           serviceToken.TokenID(),
+			Token:             serviceToken.Token,
+			AuthenticationURL: serviceToken.AuthenticationURL,
+			Expiration:        serviceToken.Expiration,
+		})
+
+		if err := res.Error; err != nil {
+			return errcode.ErrDBWrite.Wrap(err)
 		}
 
+		// create the supported services
 		for _, s := range serviceToken.SupportedServices {
-			res := tx.db.Clauses(clause.OnConflict{DoNothing: true}).Create(&messengertypes.ServiceToken{
-				AccountPK:         acc.PublicKey,
-				TokenID:           serviceToken.TokenID(),
-				ServiceType:       s.ServiceType,
-				AuthenticationURL: serviceToken.AuthenticationURL,
-				Expiration:        serviceToken.Expiration,
+			res := tx.db.Clauses(clause.OnConflict{
+				Columns: []clause.Column{{Name: "token_id"}, {Name: "type"}},
+				DoUpdates: clause.Assignments(map[string]interface{}{
+					"address": s.Address,
+				}),
+			}).Create(&messengertypes.ServiceTokenSupportedServiceRecord{
+				TokenID: serviceToken.TokenID(),
+				Type:    s.Type,
+				Address: s.Address,
 			})
-
 			if err := res.Error; err != nil {
 				return errcode.ErrDBWrite.Wrap(err)
 			}
@@ -1200,6 +1332,60 @@ func (d *DBWrapper) AddServiceToken(serviceToken *protocoltypes.ServiceToken) er
 
 	d.logStep("Maybe added service token to db", tyber.WithJSONDetail("ServiceToken", serviceToken))
 	return nil
+}
+
+// GetServiceToken returns the service token for the given accountPK and tokenID.
+func (d *DBWrapper) GetServiceTokens(accountPK string) ([]*messengertypes.ServiceToken, error) {
+	if accountPK == "" {
+		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing accountPK"))
+	}
+
+	count := int64(0)
+	serviceTokens := []*messengertypes.ServiceToken(nil)
+
+	if err := d.db.Model(&messengertypes.ServiceToken{}).
+		Preload("SupportedServices").
+		Find(&serviceTokens, "account_pk = ?", accountPK).
+		Count(&count).
+		Error; err != nil {
+		return nil, errcode.ErrDBRead.Wrap(err)
+	}
+
+	if count == 0 {
+		return nil, errcode.ErrNotFound.Wrap(fmt.Errorf("unable to find that account"))
+	}
+
+	return serviceTokens, nil
+}
+
+// GetServiceTokens returns the service tokens for the given accountPK.
+func (d *DBWrapper) GetServiceToken(accountPK, tokenID string) (*messengertypes.ServiceToken, error) {
+	if accountPK == "" {
+		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing accountPK"))
+	}
+
+	if tokenID == "" {
+		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing tokenID"))
+	}
+
+	count := int64(0)
+	serviceToken := &messengertypes.ServiceToken{}
+
+	if err := d.db.Model(&messengertypes.ServiceToken{}).
+		Preload("SupportedServices").
+		Find(&serviceToken, "account_pk = ? AND token_id = ?", accountPK, tokenID).
+		Count(&count).
+		Error; err != nil {
+		return nil, errcode.ErrDBRead.Wrap(err)
+	}
+
+	if count == 0 {
+		return nil, errcode.ErrNotFound.Wrap(fmt.Errorf("unable to find that account"))
+	} else if count > 1 {
+		d.log.Warn("found more results than expected", zap.Int("count", int(count)))
+	}
+
+	return serviceToken, nil
 }
 
 func (d *DBWrapper) AccountUpdateFlag(pk string, flagName string, enabled bool) error {
@@ -1413,44 +1599,6 @@ func (d *DBWrapper) MarkMetadataEventHandled(eventContext *protocoltypes.EventCo
 	return true, d.db.Create(&messengertypes.MetadataEvent{CID: id.String()}).Error
 }
 
-func (d *DBWrapper) UpdateDevicePushToken(token *protocoltypes.PushServiceReceiver) (*messengertypes.Account, error) {
-	data, err := token.Marshal()
-	if err != nil {
-		return nil, errcode.ErrSerialization.Wrap(err)
-	}
-
-	acc, err := d.GetAccount()
-	if err != nil {
-		return nil, errcode.ErrDBRead.Wrap(err)
-	}
-	acc.DevicePushToken = data
-
-	if err := d.db.Save(acc).Error; err != nil {
-		return nil, errcode.ErrDBWrite.Wrap(err)
-	}
-
-	return d.GetAccount()
-}
-
-func (d *DBWrapper) UpdateDevicePushServer(server *protocoltypes.PushServer) (*messengertypes.Account, error) {
-	data, err := server.Marshal()
-	if err != nil {
-		return nil, errcode.ErrSerialization.Wrap(err)
-	}
-
-	acc, err := d.GetAccount()
-	if err != nil {
-		return nil, errcode.ErrDBRead.Wrap(err)
-	}
-	acc.DevicePushServer = data
-
-	if err := d.db.Save(acc).Error; err != nil {
-		return nil, errcode.ErrDBWrite.Wrap(err)
-	}
-
-	return d.GetAccount()
-}
-
 func (d *DBWrapper) IsFromSelf(groupPK string, devicePK string) (bool, error) {
 	dev, err := d.GetDeviceByPK(devicePK)
 	if errors.Is(err, errcode.ErrNotFound) || err == gorm.ErrRecordNotFound {
@@ -1507,35 +1655,6 @@ func (d *DBWrapper) MarkMemberAsConversationCreator(memberPK, conversationPK str
 	return nil
 }
 
-func (d *DBWrapper) UpdateDeviceSetPushToken(ctx context.Context, memberPK string, devicePK string, conversationPK string, token string) error {
-	if err := d.TX(ctx, func(d *DBWrapper) error {
-		if err := d.db.Where(&messengertypes.SharedPushToken{
-			MemberPublicKey:       memberPK,
-			DevicePublicKey:       devicePK,
-			ConversationPublicKey: conversationPK,
-		}).Delete(&messengertypes.SharedPushToken{}).Error; err != nil {
-			return err
-		}
-
-		if token != "" {
-			if err := d.db.Create(&messengertypes.SharedPushToken{
-				MemberPublicKey:       memberPK,
-				DevicePublicKey:       devicePK,
-				ConversationPublicKey: conversationPK,
-				Token:                 token,
-			}).Error; err != nil {
-				return err
-			}
-		}
-
-		return nil
-	}); err != nil {
-		return errcode.ErrDBWrite.Wrap(err)
-	}
-
-	return nil
-}
-
 func (d *DBWrapper) GetDevicesForMember(conversationPK string, memberPK string) ([]*messengertypes.Device, error) {
 	var devices []*messengertypes.Device
 
@@ -1551,14 +1670,28 @@ func (d *DBWrapper) GetDevicesForMember(conversationPK string, memberPK string) 
 	return devices, nil
 }
 
-func (d *DBWrapper) GetPushTokenSharedForConversation(pk string) ([]*messengertypes.SharedPushToken, error) {
-	var tokens []*messengertypes.SharedPushToken
+// GetDevicesForContact returns the devices for a given contact of contact conversation.
+func (d *DBWrapper) GetDevicesForContact(conversationPK string, contactPK string) ([]*messengertypes.Device, error) {
+	var devices []*messengertypes.Device
 
-	if err := d.db.Model(&messengertypes.SharedPushToken{}).Find(&tokens, "conversation_public_key = ?", pk).Error; err != nil {
-		return nil, errcode.ErrDBRead.Wrap(err)
+	if conversationPK == "" {
+		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("conversationPK is empty"))
 	}
 
-	return tokens, nil
+	if contactPK == "" {
+		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("contactPK is empty"))
+	}
+
+	if err := d.db.
+		Model(&messengertypes.Device{}).
+		Joins("JOIN contacts ON contacts.public_key = devices.member_public_key").
+		Where("devices.member_public_key = ? AND contacts.conversation_public_key = ?", contactPK, conversationPK).
+		Find(&devices).
+		Error; err != nil {
+		return nil, err
+	}
+
+	return devices, nil
 }
 
 func (d *DBWrapper) MuteConversation(pk string, until int64) error {
@@ -1795,4 +1928,336 @@ func (d *DBWrapper) GetAccountDirectoryServiceRecord(serviceAddr string, recordT
 	}
 
 	return serviceRecord, nil
+}
+
+// GetPushDeviceToken returns the push device token for the given accountPK.
+func (d *DBWrapper) GetPushDeviceToken(accountPK string) (*messengertypes.PushDeviceToken, error) {
+	if accountPK == "" {
+		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing accountPK"))
+	}
+
+	count := int64(0)
+	deviceToken := &messengertypes.PushDeviceToken{}
+
+	if err := d.db.Model(&messengertypes.PushDeviceToken{}).
+		Find(&deviceToken, "account_pk = ?", accountPK).
+		Count(&count).
+		Error; err != nil {
+		return nil, errcode.ErrDBRead.Wrap(err)
+	}
+
+	if count == 0 {
+		return nil, errcode.ErrNotFound.Wrap(fmt.Errorf("unable to find push device token"))
+	} else if count > 1 {
+		d.log.Warn("found more results than expected", zap.Int("count", int(count)))
+	}
+
+	return deviceToken, nil
+}
+
+// SavePushDeviceToken saves the push device token in the database for the given accountPK.
+// If the push device token already exists, the key is updated.
+func (d *DBWrapper) SavePushDeviceToken(accountPK string, message *messengertypes.AppMessage_PushSetDeviceToken) error {
+	if accountPK == "" {
+		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing accountPK"))
+	}
+
+	if message.DeviceToken == nil {
+		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing DeviceToken"))
+	}
+
+	if message.DeviceToken.TokenType == pushtypes.PushServiceTokenType_PushTokenUndefined {
+		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("PushServiceTokenType is undefined"))
+	}
+
+	if message.DeviceToken.BundleID == "" {
+		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing BundleID"))
+	}
+
+	if len(message.DeviceToken.Token) == 0 {
+		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing Token"))
+	}
+
+	if len(message.DeviceToken.RecipientPublicKey) == 0 {
+		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing PublicKey"))
+	}
+
+	res := d.db.Clauses(clause.OnConflict{
+		Columns: []clause.Column{{Name: "account_pk"}},
+		DoUpdates: clause.Assignments(map[string]interface{}{
+			"token_type": message.DeviceToken.TokenType,
+			"bundle_id":  message.DeviceToken.BundleID,
+			"token":      message.DeviceToken.Token,
+			"public_key": message.DeviceToken.RecipientPublicKey,
+		}),
+	}).Create(&messengertypes.PushDeviceToken{
+		AccountPK: accountPK,
+		TokenType: message.DeviceToken.TokenType,
+		BundleID:  message.DeviceToken.BundleID,
+		Token:     message.DeviceToken.Token,
+		PublicKey: message.DeviceToken.RecipientPublicKey,
+	})
+
+	if err := res.Error; err != nil {
+		return errcode.ErrDBWrite.Wrap(err)
+	}
+
+	d.logStep("Added push device token to db", tyber.WithJSONDetail("pushDeviceToken", message.DeviceToken))
+	return nil
+}
+
+// SavePushServer saves the push server key in the database for the given accountPK and serverAddr.
+// If the server already exists, the key is updated.
+func (d *DBWrapper) SavePushServer(accountPK string, message *messengertypes.AppMessage_PushSetServer) error {
+	if accountPK == "" {
+		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing accountPK"))
+	}
+
+	if message.Server.Addr == "" {
+		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing ServerAddr"))
+	}
+
+	if len(message.Server.Key) == 0 {
+		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing ServerKey"))
+	}
+
+	res := d.db.Clauses(clause.OnConflict{
+		Columns:   []clause.Column{{Name: "account_pk"}, {Name: "server_addr"}},
+		DoUpdates: clause.Assignments(map[string]interface{}{"server_key": message.Server.Key}),
+	}).Create(&messengertypes.PushServerRecord{
+		AccountPK:  accountPK,
+		ServerAddr: message.Server.Addr,
+		ServerKey:  message.Server.Key,
+	})
+
+	if err := res.Error; err != nil {
+		return errcode.ErrDBWrite.Wrap(err)
+	}
+
+	d.logStep("Added push server to db", tyber.WithJSONDetail("pushServer", message.Server))
+	return nil
+}
+
+// SavePushMemberToken saves the push member token in the database for the given ConversationPK.
+func (d *DBWrapper) SavePushMemberToken(tokenID, conversationPK string, message *messengertypes.AppMessage_PushSetMemberToken) error {
+	if tokenID == "" {
+		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing tokenID"))
+	}
+
+	if conversationPK == "" {
+		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing conversationPK"))
+	}
+
+	if message.MemberToken == nil {
+		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing MemberToken"))
+	}
+
+	if message.MemberToken.DevicePK == "" {
+		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing DevicePK"))
+	}
+
+	if message.MemberToken.Server == nil {
+		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing Server"))
+	}
+
+	if message.MemberToken.Server.Addr == "" {
+		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing ServerAddr"))
+	}
+
+	if len(message.MemberToken.Server.Key) == 0 {
+		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing ServerKey"))
+	}
+
+	if len(message.MemberToken.Token) == 0 {
+		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing Token"))
+	}
+
+	res := d.db.Clauses(clause.OnConflict{DoNothing: true}).
+		Create(&messengertypes.PushMemberToken{
+			TokenID:               tokenID,
+			ConversationPublicKey: conversationPK,
+			DevicePK:              message.MemberToken.DevicePK,
+			ServerAddr:            message.MemberToken.Server.Addr,
+			ServerKey:             message.MemberToken.Server.Key,
+			Token:                 message.MemberToken.Token,
+		})
+
+	if err := res.Error; err != nil {
+		return errcode.ErrDBWrite.Wrap(err)
+	}
+
+	d.logStep("Added push member token to db", tyber.WithJSONDetail("conversationPublicKey", conversationPK), tyber.WithJSONDetail("pushMemberToken", message.MemberToken))
+	return nil
+}
+
+// GetPushMemberToken returns the push member token for the given tokenID.
+func (d *DBWrapper) GetPushMemberToken(tokenID string) (*messengertypes.PushMemberToken, error) {
+	if tokenID == "" {
+		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing tokenID"))
+	}
+
+	count := int64(0)
+	memberToken := &messengertypes.PushMemberToken{}
+
+	if err := d.db.Model(&messengertypes.PushMemberToken{}).
+		Find(&memberToken, "token_id = ?", tokenID).
+		Count(&count).
+		Error; err != nil {
+		return nil, errcode.ErrDBRead.Wrap(err)
+	}
+
+	if count == 0 {
+		return nil, errcode.ErrNotFound.Wrap(fmt.Errorf("unable to find the push member token"))
+	} else if count > 1 {
+		d.log.Warn("found more results than expected", zap.Int("count", int(count)))
+	}
+
+	return memberToken, nil
+}
+
+// GetPushMemberTokensForConversation returns the push token devices for the given conversationPK.
+func (d *DBWrapper) GetPushMemberTokensForConversation(conversationPK string) ([]*messengertypes.PushMemberToken, error) {
+	if conversationPK == "" {
+		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing conversationPK"))
+	}
+
+	count := int64(0)
+	memberTokens := ([]*messengertypes.PushMemberToken)(nil)
+
+	if err := d.db.Model(&messengertypes.PushMemberToken{}).
+		Find(&memberTokens, "conversation_public_key = ?", conversationPK).
+		Count(&count).
+		Error; err != nil {
+		return nil, errcode.ErrDBRead.Wrap(err)
+	}
+
+	if count == 0 {
+		return nil, errcode.ErrNotFound.Wrap(fmt.Errorf("unable to find push server record"))
+	}
+
+	return memberTokens, nil
+}
+
+// GetPushMemberTokens returns the push tokens of the member's device for the given conversationPK.
+func (d *DBWrapper) GetPushMemberTokens(conversationPK, devicePK string) ([]*messengertypes.PushMemberToken, error) {
+	if conversationPK == "" {
+		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing conversationPK"))
+	}
+
+	if devicePK == "" {
+		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing devicePK"))
+	}
+
+	count := int64(0)
+	memberTokens := ([]*messengertypes.PushMemberToken)(nil)
+
+	if err := d.db.Model(&messengertypes.PushMemberToken{}).
+		Find(&memberTokens, "conversation_public_key = ? AND device_pk = ?", conversationPK, devicePK).
+		Count(&count).
+		Error; err != nil {
+		return nil, errcode.ErrDBRead.Wrap(err)
+	}
+
+	if count == 0 {
+		return nil, errcode.ErrNotFound.Wrap(fmt.Errorf("unable to find push server record"))
+	}
+
+	return memberTokens, nil
+}
+
+// GetPushServerRecord returns the push server record for the given accountPK and serverAddr.
+func (d *DBWrapper) GetPushServerRecord(accountPK, serverAddr string) (*messengertypes.PushServerRecord, error) {
+	if accountPK == "" {
+		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing accountPK"))
+	}
+
+	if serverAddr == "" {
+		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing serverAddr"))
+	}
+
+	count := int64(0)
+	serverRecord := &messengertypes.PushServerRecord{}
+
+	if err := d.db.Model(&messengertypes.PushServerRecord{}).
+		Find(&serverRecord, "account_pk = ? AND server_addr = ?", accountPK, serverAddr).
+		Count(&count).
+		Error; err != nil {
+		return nil, errcode.ErrDBRead.Wrap(err)
+	}
+
+	if count == 0 {
+		return nil, errcode.ErrNotFound.Wrap(fmt.Errorf("unable to find push server record"))
+	} else if count > 1 {
+		d.log.Warn("found more results than expected", zap.Int("count", int(count)))
+	}
+
+	return serverRecord, nil
+}
+
+// GetPushServerRecords returns the list of push server records for the given accountPK.
+func (d *DBWrapper) GetPushServerRecords(accountPK string) ([]*messengertypes.PushServerRecord, error) {
+	if accountPK == "" {
+		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing accountPK"))
+	}
+
+	count := int64(0)
+	serverRecords := []*messengertypes.PushServerRecord(nil)
+
+	if err := d.db.Model(&messengertypes.PushServerRecord{}).
+		Find(&serverRecords, "account_pk = ?", accountPK).
+		Count(&count).
+		Error; err != nil {
+		return nil, errcode.ErrDBRead.Wrap(err)
+	}
+
+	if count == 0 {
+		return nil, errcode.ErrNotFound.Wrap(fmt.Errorf("unable to find push server record"))
+	}
+
+	return serverRecords, nil
+}
+
+// SavePushLocalDeviceSharedToken saves the push token ID of the local device for the given conversationPK.
+func (d *DBWrapper) SavePushLocalDeviceSharedToken(tokenID, conversationPK string) error {
+	if tokenID == "" {
+		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing tokenID"))
+	}
+
+	if conversationPK == "" {
+		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing conversationPK"))
+	}
+	res := d.db.Clauses(clause.OnConflict{DoNothing: true}).
+		Create(&messengertypes.PushLocalDeviceSharedToken{
+			TokenID:               tokenID,
+			ConversationPublicKey: conversationPK,
+		})
+
+	if err := res.Error; err != nil {
+		return errcode.ErrDBWrite.Wrap(err)
+	}
+
+	d.logStep("savec a local push device token in db", tyber.WithJSONDetail("conversationPublicKey", conversationPK), tyber.WithJSONDetail("tokenID", tokenID))
+	return nil
+}
+
+func (d *DBWrapper) GetPushSharedLocalDeviceTokens(conversationPK string) ([]*messengertypes.PushLocalDeviceSharedToken, error) {
+	if conversationPK == "" {
+		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing conversation public key"))
+	}
+
+	count := int64(0)
+	sharedTokens := []*messengertypes.PushLocalDeviceSharedToken(nil)
+
+	if err := d.db.Model(&messengertypes.PushLocalDeviceSharedToken{}).
+		Find(&sharedTokens, "conversation_public_key = ?", conversationPK).
+		Count(&count).
+		Error; err != nil {
+		return nil, errcode.ErrDBRead.Wrap(err)
+	}
+
+	if count == 0 {
+		return nil, errcode.ErrNotFound.Wrap(fmt.Errorf("no shared token found"))
+	}
+
+	return sharedTokens, nil
 }

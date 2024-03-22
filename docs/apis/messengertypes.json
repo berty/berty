@@ -54,6 +54,31 @@
               "name": "TypeAccountDirectoryServiceUnregistered",
               "number": "9",
               "description": ""
+            },
+            {
+              "name": "TypeServiceAddToken",
+              "number": "10",
+              "description": ""
+            },
+            {
+              "name": "TypeServiceRemoveToken",
+              "number": "11",
+              "description": ""
+            },
+            {
+              "name": "TypePushSetDeviceToken",
+              "number": "12",
+              "description": ""
+            },
+            {
+              "name": "TypePushSetServer",
+              "number": "13",
+              "description": ""
+            },
+            {
+              "name": "TypePushSetMemberToken",
+              "number": "14",
+              "description": ""
             }
           ]
         },
@@ -302,6 +327,11 @@
               "name": "TypePeerStatusGroupAssociated",
               "number": "16",
               "description": ""
+            },
+            {
+              "name": "TypeServiceTokenAdded",
+              "number": "17",
+              "description": ""
             }
           ]
         }
@@ -391,24 +421,24 @@
               "defaultValue": ""
             },
             {
-              "name": "device_push_token",
+              "name": "push_device_token",
               "description": "",
               "label": "",
-              "type": "bytes",
-              "longType": "bytes",
-              "fullType": "bytes",
+              "type": "PushDeviceToken",
+              "longType": "PushDeviceToken",
+              "fullType": "berty.messenger.v1.PushDeviceToken",
               "ismap": false,
               "isoneof": false,
               "oneofdecl": "",
               "defaultValue": ""
             },
             {
-              "name": "device_push_server",
+              "name": "push_server_records",
               "description": "",
-              "label": "",
-              "type": "bytes",
-              "longType": "bytes",
-              "fullType": "bytes",
+              "label": "repeated",
+              "type": "PushServerRecord",
+              "longType": "PushServerRecord",
+              "fullType": "berty.messenger.v1.PushServerRecord",
               "ismap": false,
               "isoneof": false,
               "oneofdecl": "",
@@ -1142,6 +1172,162 @@
           ]
         },
         {
+          "name": "PushSetDeviceToken",
+          "longName": "AppMessage.PushSetDeviceToken",
+          "fullName": "berty.messenger.v1.AppMessage.PushSetDeviceToken",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": false,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "device_token",
+              "description": "",
+              "label": "",
+              "type": "PushServiceReceiver",
+              "longType": "berty.push.v1.PushServiceReceiver",
+              "fullType": "berty.push.v1.PushServiceReceiver",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "PushSetMemberToken",
+          "longName": "AppMessage.PushSetMemberToken",
+          "fullName": "berty.messenger.v1.AppMessage.PushSetMemberToken",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": false,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "member_token",
+              "description": "",
+              "label": "",
+              "type": "PushMemberTokenUpdate",
+              "longType": "PushMemberTokenUpdate",
+              "fullType": "berty.messenger.v1.PushMemberTokenUpdate",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "PushSetServer",
+          "longName": "AppMessage.PushSetServer",
+          "fullName": "berty.messenger.v1.AppMessage.PushSetServer",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": false,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "server",
+              "description": "",
+              "label": "",
+              "type": "PushServer",
+              "longType": "PushServer",
+              "fullType": "berty.messenger.v1.PushServer",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "ServiceAddToken",
+          "longName": "AppMessage.ServiceAddToken",
+          "fullName": "berty.messenger.v1.AppMessage.ServiceAddToken",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": false,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "token",
+              "description": "",
+              "label": "",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "supported_services",
+              "description": "",
+              "label": "repeated",
+              "type": "ServiceTokenSupportedService",
+              "longType": "ServiceTokenSupportedService",
+              "fullType": "berty.messenger.v1.ServiceTokenSupportedService",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "authentication_url",
+              "description": "",
+              "label": "",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "expiration",
+              "description": "",
+              "label": "",
+              "type": "int64",
+              "longType": "int64",
+              "fullType": "int64",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "ServiceRemoveToken",
+          "longName": "AppMessage.ServiceRemoveToken",
+          "fullName": "berty.messenger.v1.AppMessage.ServiceRemoveToken",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": false,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "tokenid",
+              "description": "",
+              "label": "",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
           "name": "SetGroupInfo",
           "longName": "AppMessage.SetGroupInfo",
           "fullName": "berty.messenger.v1.AppMessage.SetGroupInfo",
@@ -1203,6 +1389,256 @@
               "name": "body",
               "description": "",
               "label": "",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "AuthExchangeResponse",
+          "longName": "AuthExchangeResponse",
+          "fullName": "berty.messenger.v1.AuthExchangeResponse",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": false,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "access_token",
+              "description": "",
+              "label": "",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "scope",
+              "description": "",
+              "label": "",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "error",
+              "description": "",
+              "label": "",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "error_description",
+              "description": "",
+              "label": "",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "services",
+              "description": "",
+              "label": "repeated",
+              "type": "ServicesEntry",
+              "longType": "AuthExchangeResponse.ServicesEntry",
+              "fullType": "berty.messenger.v1.AuthExchangeResponse.ServicesEntry",
+              "ismap": true,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "ServicesEntry",
+          "longName": "AuthExchangeResponse.ServicesEntry",
+          "fullName": "berty.messenger.v1.AuthExchangeResponse.ServicesEntry",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": false,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "key",
+              "description": "",
+              "label": "",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "value",
+              "description": "",
+              "label": "",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "AuthServiceCompleteFlow",
+          "longName": "AuthServiceCompleteFlow",
+          "fullName": "berty.messenger.v1.AuthServiceCompleteFlow",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": false,
+          "hasOneofs": false,
+          "extensions": [],
+          "fields": []
+        },
+        {
+          "name": "Reply",
+          "longName": "AuthServiceCompleteFlow.Reply",
+          "fullName": "berty.messenger.v1.AuthServiceCompleteFlow.Reply",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": false,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "token_id",
+              "description": "",
+              "label": "",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "Request",
+          "longName": "AuthServiceCompleteFlow.Request",
+          "fullName": "berty.messenger.v1.AuthServiceCompleteFlow.Request",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": false,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "callback_url",
+              "description": "",
+              "label": "",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "AuthServiceInitFlow",
+          "longName": "AuthServiceInitFlow",
+          "fullName": "berty.messenger.v1.AuthServiceInitFlow",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": false,
+          "hasOneofs": false,
+          "extensions": [],
+          "fields": []
+        },
+        {
+          "name": "Reply",
+          "longName": "AuthServiceInitFlow.Reply",
+          "fullName": "berty.messenger.v1.AuthServiceInitFlow.Reply",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": false,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "url",
+              "description": "",
+              "label": "",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "secure_url",
+              "description": "",
+              "label": "",
+              "type": "bool",
+              "longType": "bool",
+              "fullType": "bool",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "Request",
+          "longName": "AuthServiceInitFlow.Request",
+          "fullName": "berty.messenger.v1.AuthServiceInitFlow.Request",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": false,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "auth_url",
+              "description": "",
+              "label": "",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "services",
+              "description": "",
+              "label": "repeated",
               "type": "string",
               "longType": "string",
               "fullType": "string",
@@ -2083,18 +2519,6 @@
               "defaultValue": ""
             },
             {
-              "name": "shared_push_token_identifier",
-              "description": "",
-              "label": "",
-              "type": "string",
-              "longType": "string",
-              "fullType": "string",
-              "ismap": false,
-              "isoneof": false,
-              "oneofdecl": "",
-              "defaultValue": ""
-            },
-            {
               "name": "local_member_public_key",
               "description": "",
               "label": "",
@@ -2113,6 +2537,30 @@
               "type": "int64",
               "longType": "int64",
               "fullType": "int64",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "push_local_device_shared_tokens",
+              "description": "",
+              "label": "repeated",
+              "type": "PushLocalDeviceSharedToken",
+              "longType": "PushLocalDeviceSharedToken",
+              "fullType": "berty.messenger.v1.PushLocalDeviceSharedToken",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "push_member_tokens",
+              "description": "",
+              "label": "repeated",
+              "type": "PushMemberToken",
+              "longType": "PushMemberToken",
+              "fullType": "berty.messenger.v1.PushMemberToken",
               "ismap": false,
               "isoneof": false,
               "oneofdecl": "",
@@ -2605,6 +3053,64 @@
               "type": "uint64",
               "longType": "uint64",
               "fullType": "uint64",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "DebugAuthServiceSetToken",
+          "longName": "DebugAuthServiceSetToken",
+          "fullName": "berty.messenger.v1.DebugAuthServiceSetToken",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": false,
+          "hasOneofs": false,
+          "extensions": [],
+          "fields": []
+        },
+        {
+          "name": "Reply",
+          "longName": "DebugAuthServiceSetToken.Reply",
+          "fullName": "berty.messenger.v1.DebugAuthServiceSetToken.Reply",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": false,
+          "hasOneofs": false,
+          "extensions": [],
+          "fields": []
+        },
+        {
+          "name": "Request",
+          "longName": "DebugAuthServiceSetToken.Request",
+          "fullName": "berty.messenger.v1.DebugAuthServiceSetToken.Request",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": false,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "token",
+              "description": "",
+              "label": "",
+              "type": "AuthExchangeResponse",
+              "longType": "AuthExchangeResponse",
+              "fullType": "berty.messenger.v1.AuthExchangeResponse",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "authentication_url",
+              "description": "",
+              "label": "",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
               "ismap": false,
               "isoneof": false,
               "oneofdecl": "",
@@ -3977,6 +4483,42 @@
           ]
         },
         {
+          "name": "MemberWithDevices",
+          "longName": "MemberWithDevices",
+          "fullName": "berty.messenger.v1.MemberWithDevices",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": false,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "member_pk",
+              "description": "",
+              "label": "",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "devices_pks",
+              "description": "",
+              "label": "repeated",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
           "name": "MessageSearch",
           "longName": "MessageSearch",
           "fullName": "berty.messenger.v1.MessageSearch",
@@ -4299,6 +4841,246 @@
           ]
         },
         {
+          "name": "PushDeviceToken",
+          "longName": "PushDeviceToken",
+          "fullName": "berty.messenger.v1.PushDeviceToken",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": false,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "account_pk",
+              "description": "account_pk is the account public key that owns the device token",
+              "label": "",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "token_type",
+              "description": "token_type is the type of the token used, it allows us to act as a proxy to the appropriate push server",
+              "label": "",
+              "type": "PushServiceTokenType",
+              "longType": "berty.push.v1.PushServiceTokenType",
+              "fullType": "berty.push.v1.PushServiceTokenType",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "bundle_id",
+              "description": "bundle_id is the app identifier",
+              "label": "",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "token",
+              "description": "token is the device identifier used",
+              "label": "",
+              "type": "bytes",
+              "longType": "bytes",
+              "fullType": "bytes",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "public_key",
+              "description": "public_key is the public key which will be used to encrypt the payload",
+              "label": "",
+              "type": "bytes",
+              "longType": "bytes",
+              "fullType": "bytes",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "PushLocalDeviceSharedToken",
+          "longName": "PushLocalDeviceSharedToken",
+          "fullName": "berty.messenger.v1.PushLocalDeviceSharedToken",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": false,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "token_id",
+              "description": "",
+              "label": "",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "conversation_public_key",
+              "description": "group_pk is the public key of the group for whom the token is for",
+              "label": "",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "PushMemberToken",
+          "longName": "PushMemberToken",
+          "fullName": "berty.messenger.v1.PushMemberToken",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": false,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "token_id",
+              "description": "token_id is the id of the token",
+              "label": "",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "conversation_public_key",
+              "description": "group_pk is the public key of the group for whom the token is for",
+              "label": "",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "device_pk",
+              "description": "device_pk is the public key of the device sending the message",
+              "label": "",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "server_addr",
+              "description": "server_addr is the push server address",
+              "label": "",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "server_key",
+              "description": "server_key is the push server public key",
+              "label": "",
+              "type": "bytes",
+              "longType": "bytes",
+              "fullType": "bytes",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "token",
+              "description": "token is the sealed token of the device",
+              "label": "",
+              "type": "bytes",
+              "longType": "bytes",
+              "fullType": "bytes",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "PushMemberTokenUpdate",
+          "longName": "PushMemberTokenUpdate",
+          "fullName": "berty.messenger.v1.PushMemberTokenUpdate",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": false,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "device_pk",
+              "description": "device_pk is the public key of the device sending the message",
+              "label": "",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "server",
+              "description": "server is the push server to use",
+              "label": "",
+              "type": "PushServer",
+              "longType": "PushServer",
+              "fullType": "berty.messenger.v1.PushServer",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "token",
+              "description": "token is the sealed token of the device",
+              "label": "",
+              "type": "bytes",
+              "longType": "bytes",
+              "fullType": "bytes",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
           "name": "PushReceive",
           "longName": "PushReceive",
           "fullName": "berty.messenger.v1.PushReceive",
@@ -4369,11 +5151,11 @@
           "fields": [
             {
               "name": "protocol_data",
-              "description": "weshnet.protocol.v1.PushReceive.Reply protocol_data = 1;\n\n@FIXME(push): weshnet.protocol.v1.PushReceive.Reply has been removed",
+              "description": "",
               "label": "",
-              "type": "bytes",
-              "longType": "bytes",
-              "fullType": "bytes",
+              "type": "Reply",
+              "longType": "weshnet.protocol.v1.OutOfStoreReceive.Reply",
+              "fullType": "weshnet.protocol.v1.OutOfStoreReceive.Reply",
               "ismap": false,
               "isoneof": false,
               "oneofdecl": "",
@@ -4442,6 +5224,173 @@
           ]
         },
         {
+          "name": "PushSend",
+          "longName": "PushSend",
+          "fullName": "berty.messenger.v1.PushSend",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": false,
+          "hasOneofs": false,
+          "extensions": [],
+          "fields": []
+        },
+        {
+          "name": "Reply",
+          "longName": "PushSend.Reply",
+          "fullName": "berty.messenger.v1.PushSend.Reply",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": false,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "group_members",
+              "description": "",
+              "label": "repeated",
+              "type": "MemberWithDevices",
+              "longType": "MemberWithDevices",
+              "fullType": "berty.messenger.v1.MemberWithDevices",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "Request",
+          "longName": "PushSend.Request",
+          "fullName": "berty.messenger.v1.PushSend.Request",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": false,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "cid",
+              "description": "",
+              "label": "",
+              "type": "bytes",
+              "longType": "bytes",
+              "fullType": "bytes",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "group_pk",
+              "description": "",
+              "label": "",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "group_members",
+              "description": "",
+              "label": "repeated",
+              "type": "MemberWithDevices",
+              "longType": "MemberWithDevices",
+              "fullType": "berty.messenger.v1.MemberWithDevices",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "PushServer",
+          "longName": "PushServer",
+          "fullName": "berty.messenger.v1.PushServer",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": false,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "addr",
+              "description": "",
+              "label": "",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "key",
+              "description": "",
+              "label": "",
+              "type": "bytes",
+              "longType": "bytes",
+              "fullType": "bytes",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "PushServerRecord",
+          "longName": "PushServerRecord",
+          "fullName": "berty.messenger.v1.PushServerRecord",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": false,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "account_pk",
+              "description": "",
+              "label": "",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "server_addr",
+              "description": "",
+              "label": "",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "server_key",
+              "description": "",
+              "label": "",
+              "type": "bytes",
+              "longType": "bytes",
+              "fullType": "bytes",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
           "name": "PushSetAutoShare",
           "longName": "PushSetAutoShare",
           "fullName": "berty.messenger.v1.PushSetAutoShare",
@@ -4480,6 +5429,180 @@
               "type": "bool",
               "longType": "bool",
               "fullType": "bool",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "PushSetDeviceToken",
+          "longName": "PushSetDeviceToken",
+          "fullName": "berty.messenger.v1.PushSetDeviceToken",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": false,
+          "hasOneofs": false,
+          "extensions": [],
+          "fields": []
+        },
+        {
+          "name": "Reply",
+          "longName": "PushSetDeviceToken.Reply",
+          "fullName": "berty.messenger.v1.PushSetDeviceToken.Reply",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": false,
+          "hasOneofs": false,
+          "extensions": [],
+          "fields": []
+        },
+        {
+          "name": "Request",
+          "longName": "PushSetDeviceToken.Request",
+          "fullName": "berty.messenger.v1.PushSetDeviceToken.Request",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": false,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "receiver",
+              "description": "",
+              "label": "",
+              "type": "PushServiceReceiver",
+              "longType": "berty.push.v1.PushServiceReceiver",
+              "fullType": "berty.push.v1.PushServiceReceiver",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "PushSetServer",
+          "longName": "PushSetServer",
+          "fullName": "berty.messenger.v1.PushSetServer",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": false,
+          "hasOneofs": false,
+          "extensions": [],
+          "fields": []
+        },
+        {
+          "name": "Reply",
+          "longName": "PushSetServer.Reply",
+          "fullName": "berty.messenger.v1.PushSetServer.Reply",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": false,
+          "hasOneofs": false,
+          "extensions": [],
+          "fields": []
+        },
+        {
+          "name": "Request",
+          "longName": "PushSetServer.Request",
+          "fullName": "berty.messenger.v1.PushSetServer.Request",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": false,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "server",
+              "description": "",
+              "label": "",
+              "type": "PushServer",
+              "longType": "PushServer",
+              "fullType": "berty.messenger.v1.PushServer",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "PushShareToken",
+          "longName": "PushShareToken",
+          "fullName": "berty.messenger.v1.PushShareToken",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": false,
+          "hasOneofs": false,
+          "extensions": [],
+          "fields": []
+        },
+        {
+          "name": "Reply",
+          "longName": "PushShareToken.Reply",
+          "fullName": "berty.messenger.v1.PushShareToken.Reply",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": false,
+          "hasOneofs": false,
+          "extensions": [],
+          "fields": []
+        },
+        {
+          "name": "Request",
+          "longName": "PushShareToken.Request",
+          "fullName": "berty.messenger.v1.PushShareToken.Request",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": false,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "device_pk",
+              "description": "",
+              "label": "",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "group_pk",
+              "description": "",
+              "label": "",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "server",
+              "description": "",
+              "label": "",
+              "type": "PushServer",
+              "longType": "PushServer",
+              "fullType": "berty.messenger.v1.PushServer",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "receiver",
+              "description": "",
+              "label": "",
+              "type": "PushServiceReceiver",
+              "longType": "berty.push.v1.PushServiceReceiver",
+              "fullType": "berty.push.v1.PushServiceReceiver",
               "ismap": false,
               "isoneof": false,
               "oneofdecl": "",
@@ -4555,12 +5678,12 @@
           "extensions": [],
           "fields": [
             {
-              "name": "push_token",
+              "name": "token",
               "description": "",
               "label": "",
-              "type": "SharedPushToken",
-              "longType": "SharedPushToken",
-              "fullType": "berty.messenger.v1.SharedPushToken",
+              "type": "PushMemberToken",
+              "longType": "PushMemberToken",
+              "fullType": "berty.messenger.v1.PushMemberToken",
               "ismap": false,
               "isoneof": false,
               "oneofdecl": "",
@@ -4801,12 +5924,24 @@
               "defaultValue": ""
             },
             {
-              "name": "service_type",
+              "name": "token",
               "description": "",
               "label": "",
               "type": "string",
               "longType": "string",
               "fullType": "string",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "supported_services",
+              "description": "",
+              "label": "repeated",
+              "type": "ServiceTokenSupportedServiceRecord",
+              "longType": "ServiceTokenSupportedServiceRecord",
+              "fullType": "berty.messenger.v1.ServiceTokenSupportedServiceRecord",
               "ismap": false,
               "isoneof": false,
               "oneofdecl": "",
@@ -4837,6 +5972,184 @@
               "defaultValue": ""
             }
           ]
+        },
+        {
+          "name": "ServiceTokenSupportedService",
+          "longName": "ServiceTokenSupportedService",
+          "fullName": "berty.messenger.v1.ServiceTokenSupportedService",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": false,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "type",
+              "description": "",
+              "label": "",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "address",
+              "description": "",
+              "label": "",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "ServiceTokenSupportedServiceRecord",
+          "longName": "ServiceTokenSupportedServiceRecord",
+          "fullName": "berty.messenger.v1.ServiceTokenSupportedServiceRecord",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": false,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "token_id",
+              "description": "",
+              "label": "",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "type",
+              "description": "",
+              "label": "",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "address",
+              "description": "",
+              "label": "",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "ServicesTokenCode",
+          "longName": "ServicesTokenCode",
+          "fullName": "berty.messenger.v1.ServicesTokenCode",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": false,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "services",
+              "description": "",
+              "label": "repeated",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "code_challenge",
+              "description": "",
+              "label": "",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "token_id",
+              "description": "",
+              "label": "",
+              "type": "string",
+              "longType": "string",
+              "fullType": "string",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "ServicesTokenList",
+          "longName": "ServicesTokenList",
+          "fullName": "berty.messenger.v1.ServicesTokenList",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": false,
+          "hasOneofs": false,
+          "extensions": [],
+          "fields": []
+        },
+        {
+          "name": "Reply",
+          "longName": "ServicesTokenList.Reply",
+          "fullName": "berty.messenger.v1.ServicesTokenList.Reply",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": false,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "service",
+              "description": "",
+              "label": "",
+              "type": "ServiceToken",
+              "longType": "ServiceToken",
+              "fullType": "berty.messenger.v1.ServiceToken",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
+          "name": "Request",
+          "longName": "ServicesTokenList.Request",
+          "fullName": "berty.messenger.v1.ServicesTokenList.Request",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": false,
+          "hasOneofs": false,
+          "extensions": [],
+          "fields": []
         },
         {
           "name": "ShareableBertyGroup",
@@ -4921,66 +6234,6 @@
             },
             {
               "name": "group_name",
-              "description": "",
-              "label": "",
-              "type": "string",
-              "longType": "string",
-              "fullType": "string",
-              "ismap": false,
-              "isoneof": false,
-              "oneofdecl": "",
-              "defaultValue": ""
-            }
-          ]
-        },
-        {
-          "name": "SharedPushToken",
-          "longName": "SharedPushToken",
-          "fullName": "berty.messenger.v1.SharedPushToken",
-          "description": "",
-          "hasExtensions": false,
-          "hasFields": true,
-          "hasOneofs": false,
-          "extensions": [],
-          "fields": [
-            {
-              "name": "device_public_key",
-              "description": "",
-              "label": "",
-              "type": "string",
-              "longType": "string",
-              "fullType": "string",
-              "ismap": false,
-              "isoneof": false,
-              "oneofdecl": "",
-              "defaultValue": ""
-            },
-            {
-              "name": "member_public_key",
-              "description": "",
-              "label": "",
-              "type": "string",
-              "longType": "string",
-              "fullType": "string",
-              "ismap": false,
-              "isoneof": false,
-              "oneofdecl": "",
-              "defaultValue": ""
-            },
-            {
-              "name": "conversation_public_key",
-              "description": "",
-              "label": "",
-              "type": "string",
-              "longType": "string",
-              "fullType": "string",
-              "ismap": false,
-              "isoneof": false,
-              "oneofdecl": "",
-              "defaultValue": ""
-            },
-            {
-              "name": "token",
               "description": "",
               "label": "",
               "type": "string",
@@ -5628,6 +6881,30 @@
           ]
         },
         {
+          "name": "ServiceTokenAdded",
+          "longName": "StreamEvent.ServiceTokenAdded",
+          "fullName": "berty.messenger.v1.StreamEvent.ServiceTokenAdded",
+          "description": "",
+          "hasExtensions": false,
+          "hasFields": true,
+          "hasOneofs": false,
+          "extensions": [],
+          "fields": [
+            {
+              "name": "token",
+              "description": "",
+              "label": "",
+              "type": "ServiceToken",
+              "longType": "ServiceToken",
+              "fullType": "berty.messenger.v1.ServiceToken",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            }
+          ]
+        },
+        {
           "name": "SystemInfo",
           "longName": "SystemInfo",
           "fullName": "berty.messenger.v1.SystemInfo",
@@ -5721,6 +6998,18 @@
               "defaultValue": ""
             },
             {
+              "name": "service_token_supported_service_records",
+              "description": "",
+              "label": "",
+              "type": "int64",
+              "longType": "int64",
+              "fullType": "int64",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
               "name": "service_tokens",
               "description": "",
               "label": "",
@@ -5757,7 +7046,7 @@
               "defaultValue": ""
             },
             {
-              "name": "shared_push_tokens",
+              "name": "push_member_token",
               "description": "",
               "label": "",
               "type": "int64",
@@ -5782,6 +7071,42 @@
             },
             {
               "name": "account_directory_service_record",
+              "description": "",
+              "label": "",
+              "type": "int64",
+              "longType": "int64",
+              "fullType": "int64",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "push_device_token",
+              "description": "",
+              "label": "",
+              "type": "int64",
+              "longType": "int64",
+              "fullType": "int64",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "push_server_record",
+              "description": "",
+              "label": "",
+              "type": "int64",
+              "longType": "int64",
+              "fullType": "int64",
+              "ismap": false,
+              "isoneof": false,
+              "oneofdecl": "",
+              "defaultValue": ""
+            },
+            {
+              "name": "push_local_device_shared_token",
               "description": "older, more recent",
               "label": "",
               "type": "int64",
@@ -6315,18 +7640,6 @@
               "responseStreaming": false
             },
             {
-              "name": "ServicesTokenList",
-              "description": "ServicesTokenList Retrieves the list of service server tokens",
-              "requestType": "Request",
-              "requestLongType": ".weshnet.protocol.v1.ServicesTokenList.Request",
-              "requestFullType": "weshnet.protocol.v1.ServicesTokenList.Request",
-              "requestStreaming": false,
-              "responseType": "Reply",
-              "responseLongType": ".weshnet.protocol.v1.ServicesTokenList.Reply",
-              "responseFullType": "weshnet.protocol.v1.ServicesTokenList.Reply",
-              "responseStreaming": true
-            },
-            {
               "name": "ReplicationServiceRegisterGroup",
               "description": "ReplicationServiceRegisterGroup Asks a replication service to distribute a group contents",
               "requestType": "Request",
@@ -6423,6 +7736,54 @@
               "responseStreaming": false
             },
             {
+              "name": "DebugAuthServiceSetToken",
+              "description": "DebugAuthServiceSetToken sets the service token directly without using the PKCE OAuth 2 token issuer",
+              "requestType": "Request",
+              "requestLongType": "DebugAuthServiceSetToken.Request",
+              "requestFullType": "berty.messenger.v1.DebugAuthServiceSetToken.Request",
+              "requestStreaming": false,
+              "responseType": "Reply",
+              "responseLongType": "DebugAuthServiceSetToken.Reply",
+              "responseFullType": "berty.messenger.v1.DebugAuthServiceSetToken.Reply",
+              "responseStreaming": false
+            },
+            {
+              "name": "ServicesTokenList",
+              "description": "ServicesTokenList Retrieves the list of service server tokens",
+              "requestType": "Request",
+              "requestLongType": "ServicesTokenList.Request",
+              "requestFullType": "berty.messenger.v1.ServicesTokenList.Request",
+              "requestStreaming": false,
+              "responseType": "Reply",
+              "responseLongType": "ServicesTokenList.Reply",
+              "responseFullType": "berty.messenger.v1.ServicesTokenList.Reply",
+              "responseStreaming": true
+            },
+            {
+              "name": "AuthServiceInitFlow",
+              "description": "AuthServiceInitFlow Initialize an authentication flow",
+              "requestType": "Request",
+              "requestLongType": "AuthServiceInitFlow.Request",
+              "requestFullType": "berty.messenger.v1.AuthServiceInitFlow.Request",
+              "requestStreaming": false,
+              "responseType": "Reply",
+              "responseLongType": "AuthServiceInitFlow.Reply",
+              "responseFullType": "berty.messenger.v1.AuthServiceInitFlow.Reply",
+              "responseStreaming": false
+            },
+            {
+              "name": "AuthServiceCompleteFlow",
+              "description": "AuthServiceCompleteFlow Completes an authentication flow",
+              "requestType": "Request",
+              "requestLongType": "AuthServiceCompleteFlow.Request",
+              "requestFullType": "berty.messenger.v1.AuthServiceCompleteFlow.Request",
+              "requestStreaming": false,
+              "responseType": "Reply",
+              "responseLongType": "AuthServiceCompleteFlow.Reply",
+              "responseFullType": "berty.messenger.v1.AuthServiceCompleteFlow.Reply",
+              "responseStreaming": false
+            },
+            {
               "name": "PushSetAutoShare",
               "description": "PushSetAutoShare Sets whether new groups should receive our push token automatically or not",
               "requestType": "Request",
@@ -6468,6 +7829,42 @@
               "responseType": "Reply",
               "responseLongType": "PushReceive.Reply",
               "responseFullType": "berty.messenger.v1.PushReceive.Reply",
+              "responseStreaming": false
+            },
+            {
+              "name": "PushSend",
+              "description": "PushSend sends a push payload to a specified list of group members",
+              "requestType": "Request",
+              "requestLongType": "PushSend.Request",
+              "requestFullType": "berty.messenger.v1.PushSend.Request",
+              "requestStreaming": false,
+              "responseType": "Reply",
+              "responseLongType": "PushSend.Reply",
+              "responseFullType": "berty.messenger.v1.PushSend.Reply",
+              "responseStreaming": false
+            },
+            {
+              "name": "PushSetDeviceToken",
+              "description": "PushSetDeviceToken registers a push token for the current device",
+              "requestType": "Request",
+              "requestLongType": "PushSetDeviceToken.Request",
+              "requestFullType": "berty.messenger.v1.PushSetDeviceToken.Request",
+              "requestStreaming": false,
+              "responseType": "Reply",
+              "responseLongType": "PushSetDeviceToken.Reply",
+              "responseFullType": "berty.messenger.v1.PushSetDeviceToken.Reply",
+              "responseStreaming": false
+            },
+            {
+              "name": "PushSetServer",
+              "description": "PushSetServer registers a push server for the current device",
+              "requestType": "Request",
+              "requestLongType": "PushSetServer.Request",
+              "requestFullType": "berty.messenger.v1.PushSetServer.Request",
+              "requestStreaming": false,
+              "responseType": "Reply",
+              "responseLongType": "PushSetServer.Reply",
+              "responseFullType": "berty.messenger.v1.PushSetServer.Reply",
               "responseStreaming": false
             },
             {

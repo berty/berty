@@ -89,8 +89,8 @@ targets:
         CFBundleInfoDictionaryVersion: '6.0'
         CFBundleName: '$(PRODUCT_NAME)'
         CFBundlePackageType: '$(PRODUCT_BUNDLE_PACKAGE_TYPE)'
-        CFBundleShortVersionString: '1.0'
-        CFBundleVersion: '1'
+        CFBundleVersion: '${IOS_BUNDLE_VERSION}'
+        CFBundleShortVersionString: '${IOS_SHORT_BUNDLE_VERSION}'
         NSExtension:
           NSExtensionPointIdentifier: 'com.apple.usernotifications.service'
           NSExtensionPrincipalClass: '$(PRODUCT_MODULE_NAME).NotificationService'

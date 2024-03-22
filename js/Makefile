@@ -361,9 +361,9 @@ daemon.start.docker:
 pbjs_common_flags := --force-long -p ../api -p node_modules/@googleapis/googleapis -p `$(GO) list -m -modfile=../go.mod -mod=mod -f {{.Dir}} github.com/grpc-ecosystem/grpc-gateway`/third_party/googleapis -p `$(GO) list -m -modfile=../go.mod -mod=mod -f {{.Dir}} github.com/gogo/protobuf` -p node_modules/@protocolbuffers/protobuf/src
 
 pbjs_proto_berty_dir := ../api
-pbjs_berty_protos := $(pbjs_proto_berty_dir)/accounttypes/accounttypes.proto $(pbjs_proto_berty_dir)/bertybridge/bertybridge.proto $(pbjs_proto_berty_dir)/messengertypes/messengertypes.proto
+pbjs_berty_protos := $(pbjs_proto_berty_dir)/accounttypes/accounttypes.proto $(pbjs_proto_berty_dir)/bertybridge/bertybridge.proto $(pbjs_proto_berty_dir)/messengertypes/messengertypes.proto $(pbjs_proto_berty_dir)/pushtypes/bertypushtypes.proto
 pbjs_proto_weshnet_dir := packages/api/vendor
-pbjs_weshnet_protos := $(pbjs_proto_weshnet_dir)/protocoltypes.proto $(pbjs_proto_weshnet_dir)/errcode/errcode.proto $(pbjs_proto_weshnet_dir)/pushtypes/pushtypes.proto
+pbjs_weshnet_protos := $(pbjs_proto_weshnet_dir)/protocoltypes.proto $(pbjs_proto_weshnet_dir)/errcode/errcode.proto
 pbjs_protos := $(pbjs_berty_protos) $(pbjs_weshnet_protos)
 
 buf.lock := ../api/buf.lock
@@ -479,7 +479,7 @@ ios/Frameworks/Bertypush.xcframework: $(bridge_src)
 		$(GO) run golang.org/x/mobile/cmd/gomobile bind \
 			-o js/$@ \
 			-v $(ext_ldflags) \
-			$(GO_TAGS) -tags 'nowatchdog' \
+			$(GO_TAGS) -tags 'nowatchdog,noproximitytransport' \
 			-cache $(ios_gomobile_cache)/bertypush \
 			-target $(GOMOBILE_IOS_TARGET) \
 			-iosversion $(minimum_ios_ver) \

@@ -17,6 +17,7 @@ import (
 	"github.com/mdp/qrterminal/v3"
 	"moul.io/godev"
 
+	"berty.tech/berty/v2/go/internal/messengerutil"
 	"berty.tech/berty/v2/go/pkg/bertylinks"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
@@ -488,7 +489,7 @@ func exportAccount(ctx context.Context, v *groupView, path string) error {
 }
 
 func authInit(ctx context.Context, v *groupView, cmd string) error {
-	rep, err := v.v.protocol.AuthServiceInitFlow(ctx, &protocoltypes.AuthServiceInitFlow_Request{
+	rep, err := v.v.messenger.AuthServiceInitFlow(ctx, &messengertypes.AuthServiceInitFlow_Request{
 		AuthURL: strings.TrimSpace(cmd),
 	})
 	if err != nil {
@@ -518,7 +519,7 @@ func authInit(ctx context.Context, v *groupView, cmd string) error {
 }
 
 func authComplete(ctx context.Context, v *groupView, cmd string) error {
-	_, err := v.v.protocol.AuthServiceCompleteFlow(ctx, &protocoltypes.AuthServiceCompleteFlow_Request{
+	_, err := v.v.messenger.AuthServiceCompleteFlow(ctx, &messengertypes.AuthServiceCompleteFlow_Request{
 		CallbackURL: strings.TrimSpace(cmd),
 	})
 
@@ -526,7 +527,7 @@ func authComplete(ctx context.Context, v *groupView, cmd string) error {
 }
 
 func servicesList(ctx context.Context, v *groupView, _ string) error {
-	cl, err := v.v.protocol.ServicesTokenList(ctx, &protocoltypes.ServicesTokenList_Request{})
+	cl, err := v.v.messenger.ServicesTokenList(ctx, &messengertypes.ServicesTokenList_Request{})
 	if err != nil {
 		return err
 	}
@@ -543,7 +544,7 @@ func servicesList(ctx context.Context, v *groupView, _ string) error {
 		for _, service := range item.Service.SupportedServices {
 			v.messages.Append(&historyMessage{
 				messageType: messageTypeMeta,
-				payload:     []byte(fmt.Sprintf("token: %s - service: %s, %s", item.TokenID, service.ServiceType, service.ServiceEndpoint)),
+				payload:     []byte(fmt.Sprintf("token: %s - service: %s, %s", item.Service.TokenID, service.Type, service.Address)),
 			})
 		}
 	}
@@ -717,41 +718,40 @@ func debugInspectStoreCommand(ctx context.Context, v *groupView, cmd string) err
 }
 
 func debugPushCommand(ctx context.Context, v *groupView, _ string) error {
-	// if v.lastSentCID == "" {
-	// 	return fmt.Errorf("last message is unknown")
-	// }
+	if v.lastSentCID == "" {
+		return fmt.Errorf("last message is unknown")
+	}
 
-	// c, err := cid.Parse(v.lastSentCID)
-	// if err != nil {
-	// 	return err
-	// }
+	c, err := cid.Parse(v.lastSentCID)
+	if err != nil {
+		return err
+	}
 
-	// res, err := v.v.protocol.PushSend(ctx, &protocoltypes.PushSend_Request{
-	// 	CID:            c.Bytes(),
-	// 	GroupPublicKey: v.g.PublicKey,
-	// })
-	// if err != nil {
-	// 	return err
-	// }
+	res, err := v.v.messenger.PushSend(ctx, &messengertypes.PushSend_Request{
+		CID:     c.Bytes(),
+		GroupPK: messengerutil.B64EncodeBytes(v.g.PublicKey),
+	})
+	if err != nil {
+		return err
+	}
 
-	// if len(res.GroupMembers) == 0 {
-	// 	return fmt.Errorf("no push targets found")
-	// }
+	if len(res.GroupMembers) == 0 {
+		return fmt.Errorf("no push targets found")
+	}
 
-	// targets := []string(nil)
-	// for _, m := range res.GroupMembers {
-	// 	for _, d := range m.DevicePKs {
-	// 		targets = append(targets, pkAsShortID(d))
-	// 	}
-	// }
+	targets := []string(nil)
+	for _, m := range res.GroupMembers {
+		for _, d := range m.DevicePKs {
+			targets = append(targets, shortStringID(d))
+		}
+	}
 
-	// v.syncMessages <- &historyMessage{
-	// 	receivedAt: time.Now(),
-	// 	payload:    []byte(fmt.Sprintf("push sent to %s", strings.Join(targets, ", "))),
-	// }
+	v.syncMessages <- &historyMessage{
+		receivedAt: time.Now(),
+		payload:    []byte(fmt.Sprintf("push sent to %s", strings.Join(targets, ", "))),
+	}
 
-	// FIXME(push):
-	return fmt.Errorf("unimplemented")
+	return nil
 }
 
 func formatDebugInspectGroupStoreReply(rep *protocoltypes.DebugInspectGroupStore_Reply, storeType protocoltypes.DebugInspectGroupLogType) []byte {
