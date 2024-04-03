@@ -103,7 +103,7 @@ func main() {
 	////		panic(err)
 	////	}
 	////
-	////	log.Printf("successfull: %v", resp.Success)
+	////	log.Printf("successful: %v", resp.Success)
 	////}
 	//
 	//_, err = p.ConnectToPeer(ctx, &server.ConnectToPeer_Request{

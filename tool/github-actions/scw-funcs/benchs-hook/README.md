@@ -20,7 +20,7 @@ Serverless function that publish benchmark results on a remote repository result
                                  │                                │
                          ┌──────────────┐                       Fetch
     ┌ ─ ─ ─ ─ ─ ┐        │              │                      Artifact
-     priviliged  ────────┼◎ Serverless  │                         │
+     privileged  ────────┼◎ Serverless  │                         │
     └ ─ ─ ─ ─ ─ ┘        │              │                         │
                          └──────────────┘                         │
                                  ▲                                │
