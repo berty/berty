@@ -30,7 +30,7 @@ on:
 
 # FIXME:
 # * test on production periodically with env=production
-# * test against a fresh docker-compose infra on each commit
+# * test against a fresh docker compose infra on each commit
 # * store performance logs for comparison
 
 jobs:
@@ -111,7 +111,7 @@ jobs:
 
       - name: Build Docker images
         working-directory: tool/integration-compose
-        run: docker-compose build
+        run: docker compose build
 
       - name: Run integration test suite
         working-directory: tool/integration-compose
