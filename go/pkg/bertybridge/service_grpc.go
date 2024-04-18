@@ -46,7 +46,7 @@ func (s *service) ClientInvokeUnary(ctx context.Context, req *ClientInvokeUnary_
 	return res, nil
 }
 
-// CreateStream create a stream
+// CreateClientStream create a stream
 func (s *service) CreateClientStream(ctx context.Context, req *ClientCreateStream_Request) (*ClientCreateStream_Reply, error) {
 	client, ok := s.getServiceClient(req.MethodDesc)
 	if !ok {
