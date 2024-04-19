@@ -1358,7 +1358,7 @@ func (d *DBWrapper) GetServiceTokens(accountPK string) ([]*messengertypes.Servic
 	return serviceTokens, nil
 }
 
-// GetServiceTokens returns the service tokens for the given accountPK.
+// GetServiceToken returns the service tokens for the given accountPK.
 func (d *DBWrapper) GetServiceToken(accountPK, tokenID string) (*messengertypes.ServiceToken, error) {
 	if accountPK == "" {
 		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing accountPK"))

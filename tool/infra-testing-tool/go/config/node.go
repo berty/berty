@@ -527,7 +527,7 @@ func (c NodeGroup) getSwarmListenerMultiAddr(ip string, nodeIndex, protocolIndex
 	}
 }
 
-// getSwarmListenerMultiAddr generates swarm listener multi addr
+// getSwarmAnnounceMultiAddr generates swarm listener multi addr
 func (c NodeGroup) getSwarmAnnounceMultiAddr(nodeIndex, protocolIndex, portIndex int) string {
 	var ip string
 
@@ -570,7 +570,7 @@ func (c NodeGroup) getPublicIP(i int) string {
 	panic(errors.New("no possible connection possible"))
 }
 
-// generatePorts generates random port numbers between lowerLimitPort and upperLimitPort
+// generatePort generates random port numbers between lowerLimitPort and upperLimitPort
 func (c NodeGroup) generatePort(node int) int {
 	port := lowerLimitPort + mrand.Intn(upperLimitPort-lowerLimitPort+1)
 
