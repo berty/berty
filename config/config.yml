@@ -47,11 +47,8 @@ berty:
       suggestion: false
 p2p:
   rdvp:
-    # svc_fr_2
-    - maddr: '/ip4/52.47.79.109/udp/4040/quic/p2p/12D3KooWKhUMFeJdRD4WuXE3f6boYPvxfgZJhRR4naxswdKpKFwG'
+    # svc ams 1
+    - maddr: '/ip4/51.15.25.224/udp/4040/quic/p2p/12D3KooWHhDBv6DJJ4XDWjzEXq6sVNEs6VuxsV1WyBBEhPENHzcZ'
   static-relays:
-    # svc fr 1
-    - '/ip4/51.159.21.214/udp/6363/quic/p2p/12D3KooWBoShE6E6uXveQWVunK7AJk6UReDBmiui5qFYWbug1Nf9'
-    - '/ip6/2001:bc8:2610:4200::/udp/6363/quic/p2p/12D3KooWBoShE6E6uXveQWVunK7AJk6UReDBmiui5qFYWbug1Nf9'
     # svc ams 1
     - '/ip4/51.15.25.224/udp/6363/quic/p2p/12D3KooWAHcEz4K5XAgRDav9fLuhiRY2wuXip385EmT5RoRkCmjr'

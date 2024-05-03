@@ -68,12 +68,10 @@ func init() {
   "p2p": {
     "rdvp": [
       {
-        "maddr": "/ip4/52.47.79.109/udp/4040/quic/p2p/12D3KooWKhUMFeJdRD4WuXE3f6boYPvxfgZJhRR4naxswdKpKFwG"
+        "maddr": "/ip4/51.15.25.224/udp/4040/quic/p2p/12D3KooWHhDBv6DJJ4XDWjzEXq6sVNEs6VuxsV1WyBBEhPENHzcZ"
       }
     ],
     "static-relays": [
-      "/ip4/51.159.21.214/udp/6363/quic/p2p/12D3KooWBoShE6E6uXveQWVunK7AJk6UReDBmiui5qFYWbug1Nf9",
-      "/ip6/2001:bc8:2610:4200::/udp/6363/quic/p2p/12D3KooWBoShE6E6uXveQWVunK7AJk6UReDBmiui5qFYWbug1Nf9",
       "/ip4/51.15.25.224/udp/6363/quic/p2p/12D3KooWAHcEz4K5XAgRDav9fLuhiRY2wuXip385EmT5RoRkCmjr"
     ]
   }
