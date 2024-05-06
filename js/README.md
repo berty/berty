@@ -114,7 +114,8 @@ $ make ios.app_deps
 
 <details><summary>Android dev requirements</summary>
 
-- An Android app **development environment**, e.g. [Android Studio](https://developer.android.com/studio/install)
+- An Android app **development environment**, e.g. [Android Studio](https://developer.android.com/studio/install) (Tested with Chipmunk 2021.2.1 .)
+  - **IMPORTANT NOTE**: There is a known issue to [Support the latest Android Studio (Jellyfish)](https://github.com/berty/berty/issues/4753). To solve this we will need to update to the latest React Native version. This could be a lengthy operation and until then, although undesirable, you can mitigate this bug by using Android Studio Chipmunk.
 - **Android SDK**, with the following enabled (in Android Studio Code in `Tools --> SDK Manager`):
   - SDK Platform "Android 11.0 (R)"
   - Android SDK Build-Tools
