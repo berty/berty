@@ -124,7 +124,6 @@ require (
 	github.com/berty/emitter-go v0.0.0-20221031144724-5dae963c3622 // indirect
 	github.com/berty/go-libp2p-pubsub v0.9.4-0.20230706070911-6e35c0f470b8 // indirect
 	github.com/blang/semver/v4 v4.0.0 // indirect
-	github.com/btcsuite/btcd v0.22.1 // indirect
 	github.com/btcsuite/btcutil v1.0.3-0.20201208143702-a53e38424cce // indirect
 	github.com/bufbuild/connect-go v1.4.1 // indirect
 	github.com/bufbuild/protocompile v0.1.0 // indirect
