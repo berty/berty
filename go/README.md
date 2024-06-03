@@ -61,7 +61,7 @@ foo@bar:~$ go run . mini
 #### Contact
 `/contact share qr` To get a QR code you can scan with a phone. </br>
 `/contact share qr` To get a QR code you can scan with a phone. </br>
-`/contact accept all` To accept all incomming contact requests.
+`/contact accept all` To accept all incoming contact requests.
 
 #### Navigation
 For details, use `/keyboard`
@@ -780,8 +780,8 @@ FLAGS
   -key-autogenerate true                                                                                    auto-generate key if none is found
   -key-b64 ...                                                                                              full private key, base 64 encoded
   -key-file peer.key                                                                                        path of the peer key, if none exist, one will be automatically created
-  -key-size 2048                                                                                            for RSA key only, specfy the bit size of the key
-  -key-type Ed25519                                                                                         for RSA key only, specfy the bit size of the key
+  -key-size 2048                                                                                            for RSA key only, specify the bit size of the key
+  -key-type Ed25519                                                                                         for RSA key only, specify the bit size of the key
   -log.file ...                                                                                             log file path (pattern)
   -log.file-filters debug+:bty*,-*.grpc,error+:*                                                            file zapfilter configuration
   -log.filters info+:bty*,-*.grpc,error+:*                                                                  stderr zapfilter configuration
