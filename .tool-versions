@@ -64,3 +64,6 @@ yq 4.30.8
 # There is no contraindication for updating it.
 #-----
 buf 1.15.1
+
+cocoapods 1.15.2
+
