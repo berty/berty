@@ -289,7 +289,9 @@ exports[`Chat.Share renders correctly 1`] = `
               <View>
                 <View
                   accessible={true}
+                  collapsable={false}
                   focusable={true}
+                  nativeID="animatedComponent"
                   onClick={[Function]}
                   onResponderGrant={[Function]}
                   onResponderMove={[Function]}
@@ -319,6 +321,8 @@ exports[`Chat.Share renders correctly 1`] = `
                   }
                 >
                   <View
+                    collapsable={false}
+                    nativeID="animatedComponent"
                     style={
                       Object {
                         "transform": Array [
@@ -367,7 +371,9 @@ exports[`Chat.Share renders correctly 1`] = `
                 </View>
                 <View
                   accessible={true}
+                  collapsable={false}
                   focusable={true}
+                  nativeID="animatedComponent"
                   onClick={[Function]}
                   onResponderGrant={[Function]}
                   onResponderMove={[Function]}
@@ -396,6 +402,8 @@ exports[`Chat.Share renders correctly 1`] = `
                   }
                 >
                   <View
+                    collapsable={false}
+                    nativeID="animatedComponent"
                     style={
                       Object {
                         "transform": Array [
@@ -478,7 +486,9 @@ exports[`Chat.Share renders correctly 1`] = `
             >
               <View
                 accessible={true}
+                collapsable={false}
                 focusable={true}
+                nativeID="animatedComponent"
                 onClick={[Function]}
                 onResponderGrant={[Function]}
                 onResponderMove={[Function]}
@@ -528,6 +538,8 @@ exports[`Chat.Share renders correctly 1`] = `
                   </Text>
                 </View>
                 <View
+                  collapsable={false}
+                  nativeID="animatedComponent"
                   style={
                     Object {
                       "transform": Array [
@@ -555,20 +567,19 @@ exports[`Chat.Share renders correctly 1`] = `
               }
             >
               <TextInput
-                allowFontScaling={true}
                 onChangeText={[Function]}
                 placeholder="Paste link here"
-                rejectResponderTermination={true}
                 style={
                   Object {
                     "flex": 1,
                   }
                 }
-                underlineColorAndroid="transparent"
               />
               <View
                 accessible={true}
+                collapsable={false}
                 focusable={true}
+                nativeID="animatedComponent"
                 onClick={[Function]}
                 onResponderGrant={[Function]}
                 onResponderMove={[Function]}

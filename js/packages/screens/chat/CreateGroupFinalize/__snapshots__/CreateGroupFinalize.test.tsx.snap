@@ -381,6 +381,8 @@ exports[`Chat.CreateGroupFinalize renders correctly 1`] = `
                             }
                           >
                             <View
+                              collapsable={false}
+                              nativeID="animatedComponent"
                               style={
                                 Object {
                                   "transform": Array [
@@ -421,7 +423,9 @@ exports[`Chat.CreateGroupFinalize renders correctly 1`] = `
                           >
                             <View
                               accessible={true}
+                              collapsable={false}
                               focusable={true}
+                              nativeID="animatedComponent"
                               onClick={[Function]}
                               onResponderGrant={[Function]}
                               onResponderMove={[Function]}
@@ -440,12 +444,10 @@ exports[`Chat.CreateGroupFinalize renders correctly 1`] = `
                               }
                             >
                               <TextInput
-                                allowFontScaling={true}
                                 autoCorrect={false}
                                 onChangeText={[Function]}
                                 placeholder="main.home.create-group-finalize.placeholder"
                                 placeholderTextColor="#D0D0D6"
-                                rejectResponderTermination={true}
                                 style={
                                   Array [
                                     Object {
@@ -458,7 +460,6 @@ exports[`Chat.CreateGroupFinalize renders correctly 1`] = `
                                     },
                                   ]
                                 }
-                                underlineColorAndroid="transparent"
                                 value="New group"
                               />
                             </View>
@@ -499,6 +500,8 @@ exports[`Chat.CreateGroupFinalize renders correctly 1`] = `
                               }
                             >
                               <View
+                                collapsable={false}
+                                nativeID="animatedComponent"
                                 style={
                                   Object {
                                     "transform": Array [
@@ -580,6 +583,8 @@ exports[`Chat.CreateGroupFinalize renders correctly 1`] = `
                               }
                             >
                               <View
+                                collapsable={false}
+                                nativeID="animatedComponent"
                                 style={
                                   Object {
                                     "transform": Array [
@@ -649,6 +654,8 @@ exports[`Chat.CreateGroupFinalize renders correctly 1`] = `
                               }
                             >
                               <View
+                                collapsable={false}
+                                nativeID="animatedComponent"
                                 style={
                                   Object {
                                     "transform": Array [
@@ -718,6 +725,8 @@ exports[`Chat.CreateGroupFinalize renders correctly 1`] = `
                               }
                             >
                               <View
+                                collapsable={false}
+                                nativeID="animatedComponent"
                                 style={
                                   Object {
                                     "transform": Array [
@@ -787,6 +796,8 @@ exports[`Chat.CreateGroupFinalize renders correctly 1`] = `
                               }
                             >
                               <View
+                                collapsable={false}
+                                nativeID="animatedComponent"
                                 style={
                                   Object {
                                     "transform": Array [
@@ -856,6 +867,8 @@ exports[`Chat.CreateGroupFinalize renders correctly 1`] = `
                               }
                             >
                               <View
+                                collapsable={false}
+                                nativeID="animatedComponent"
                                 style={
                                   Object {
                                     "transform": Array [
@@ -929,7 +942,9 @@ exports[`Chat.CreateGroupFinalize renders correctly 1`] = `
                       >
                         <View
                           accessible={true}
+                          collapsable={false}
                           focusable={true}
+                          nativeID="animatedComponent"
                           onClick={[Function]}
                           onResponderGrant={[Function]}
                           onResponderMove={[Function]}

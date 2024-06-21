@@ -61,7 +61,9 @@ exports[`Chat.ReplicateGroupSettings renders correctly 1`] = `
           >
             <View
               accessible={true}
+              collapsable={false}
               focusable={false}
+              nativeID="animatedComponent"
               onClick={[Function]}
               onResponderGrant={[Function]}
               onResponderMove={[Function]}
@@ -169,9 +171,13 @@ exports[`Chat.ReplicateGroupSettings renders correctly 1`] = `
                   }
                 >
                   <View
+                    collapsable={false}
+                    nativeID="animatedComponent"
                     style={Object {}}
                   >
                     <View
+                      collapsable={false}
+                      nativeID="animatedComponent"
                       style={
                         Object {
                           "transform": Array [
@@ -195,7 +201,9 @@ exports[`Chat.ReplicateGroupSettings renders correctly 1`] = `
             </View>
             <View
               accessible={true}
+              collapsable={false}
               focusable={true}
+              nativeID="animatedComponent"
               onClick={[Function]}
               onResponderGrant={[Function]}
               onResponderMove={[Function]}
@@ -258,6 +266,8 @@ exports[`Chat.ReplicateGroupSettings renders correctly 1`] = `
                 >
                   <View>
                     <View
+                      collapsable={false}
+                      nativeID="animatedComponent"
                       style={
                         Object {
                           "transform": Array [
@@ -327,9 +337,13 @@ exports[`Chat.ReplicateGroupSettings renders correctly 1`] = `
                   }
                 >
                   <View
+                    collapsable={false}
+                    nativeID="animatedComponent"
                     style={Object {}}
                   >
                     <View
+                      collapsable={false}
+                      nativeID="animatedComponent"
                       style={
                         Object {
                           "transform": Array [
@@ -353,7 +367,9 @@ exports[`Chat.ReplicateGroupSettings renders correctly 1`] = `
             </View>
             <View
               accessible={true}
+              collapsable={false}
               focusable={false}
+              nativeID="animatedComponent"
               onClick={[Function]}
               onResponderGrant={[Function]}
               onResponderMove={[Function]}
@@ -416,6 +432,8 @@ exports[`Chat.ReplicateGroupSettings renders correctly 1`] = `
                 >
                   <View>
                     <View
+                      collapsable={false}
+                      nativeID="animatedComponent"
                       style={
                         Object {
                           "transform": Array [
@@ -486,9 +504,13 @@ exports[`Chat.ReplicateGroupSettings renders correctly 1`] = `
                   }
                 >
                   <View
+                    collapsable={false}
+                    nativeID="animatedComponent"
                     style={Object {}}
                   >
                     <View
+                      collapsable={false}
+                      nativeID="animatedComponent"
                       style={
                         Object {
                           "transform": Array [

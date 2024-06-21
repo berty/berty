@@ -74,7 +74,9 @@ exports[`Settings.ThemeEditor renders correctly 1`] = `
             >
               <View
                 accessible={true}
+                collapsable={false}
                 focusable={true}
+                nativeID="animatedComponent"
                 onClick={[Function]}
                 onResponderGrant={[Function]}
                 onResponderMove={[Function]}
@@ -101,6 +103,8 @@ exports[`Settings.ThemeEditor renders correctly 1`] = `
                   }
                 >
                   <View
+                    collapsable={false}
+                    nativeID="animatedComponent"
                     style={
                       Object {
                         "transform": Array [
@@ -150,6 +154,8 @@ exports[`Settings.ThemeEditor renders correctly 1`] = `
                   </View>
                 </View>
                 <View
+                  collapsable={false}
+                  nativeID="animatedComponent"
                   style={
                     Object {
                       "transform": Array [
@@ -193,7 +199,9 @@ exports[`Settings.ThemeEditor renders correctly 1`] = `
             >
               <View
                 accessible={true}
+                collapsable={false}
                 focusable={true}
+                nativeID="animatedComponent"
                 onClick={[Function]}
                 onResponderGrant={[Function]}
                 onResponderMove={[Function]}
@@ -220,6 +228,8 @@ exports[`Settings.ThemeEditor renders correctly 1`] = `
                   }
                 >
                   <View
+                    collapsable={false}
+                    nativeID="animatedComponent"
                     style={
                       Object {
                         "transform": Array [
@@ -269,6 +279,8 @@ exports[`Settings.ThemeEditor renders correctly 1`] = `
                   </View>
                 </View>
                 <View
+                  collapsable={false}
+                  nativeID="animatedComponent"
                   style={
                     Object {
                       "transform": Array [
@@ -308,7 +320,9 @@ exports[`Settings.ThemeEditor renders correctly 1`] = `
               >
                 <View
                   accessible={true}
+                  collapsable={false}
                   focusable={true}
+                  nativeID="animatedComponent"
                   onClick={[Function]}
                   onResponderGrant={[Function]}
                   onResponderMove={[Function]}
@@ -364,6 +378,8 @@ exports[`Settings.ThemeEditor renders correctly 1`] = `
                     }
                   >
                     <View
+                      collapsable={false}
+                      nativeID="animatedComponent"
                       style={
                         Object {
                           "transform": Array [
@@ -375,6 +391,8 @@ exports[`Settings.ThemeEditor renders correctly 1`] = `
                       }
                     >
                       <View
+                        collapsable={false}
+                        nativeID="animatedComponent"
                         style={
                           Object {
                             "transform": Array [
@@ -396,6 +414,8 @@ exports[`Settings.ThemeEditor renders correctly 1`] = `
                   </View>
                 </View>
                 <RCTScrollView
+                  collapsable={false}
+                  nativeID="animatedComponent"
                   nestedScrollEnabled={true}
                   scrollEventThrottle={0.0001}
                   showsVerticalScrollIndicator={false}
@@ -410,7 +430,9 @@ exports[`Settings.ThemeEditor renders correctly 1`] = `
                   <View>
                     <View
                       accessible={true}
+                      collapsable={false}
                       focusable={true}
+                      nativeID="animatedComponent"
                       onClick={[Function]}
                       onResponderGrant={[Function]}
                       onResponderMove={[Function]}
@@ -451,7 +473,9 @@ exports[`Settings.ThemeEditor renders correctly 1`] = `
                     </View>
                     <View
                       accessible={true}
+                      collapsable={false}
                       focusable={true}
+                      nativeID="animatedComponent"
                       onClick={[Function]}
                       onResponderGrant={[Function]}
                       onResponderMove={[Function]}
@@ -492,7 +516,9 @@ exports[`Settings.ThemeEditor renders correctly 1`] = `
                     </View>
                     <View
                       accessible={true}
+                      collapsable={false}
                       focusable={true}
+                      nativeID="animatedComponent"
                       onClick={[Function]}
                       onResponderGrant={[Function]}
                       onResponderMove={[Function]}
@@ -533,7 +559,9 @@ exports[`Settings.ThemeEditor renders correctly 1`] = `
                     </View>
                     <View
                       accessible={true}
+                      collapsable={false}
                       focusable={true}
+                      nativeID="animatedComponent"
                       onClick={[Function]}
                       onResponderGrant={[Function]}
                       onResponderMove={[Function]}
@@ -574,7 +602,9 @@ exports[`Settings.ThemeEditor renders correctly 1`] = `
                     </View>
                     <View
                       accessible={true}
+                      collapsable={false}
                       focusable={true}
+                      nativeID="animatedComponent"
                       onClick={[Function]}
                       onResponderGrant={[Function]}
                       onResponderMove={[Function]}
@@ -642,7 +672,9 @@ exports[`Settings.ThemeEditor renders correctly 1`] = `
               >
                 <View
                   accessible={true}
+                  collapsable={false}
                   focusable={true}
+                  nativeID="animatedComponent"
                   onClick={[Function]}
                   onResponderGrant={[Function]}
                   onResponderMove={[Function]}
@@ -669,6 +701,8 @@ exports[`Settings.ThemeEditor renders correctly 1`] = `
                     }
                   >
                     <View
+                      collapsable={false}
+                      nativeID="animatedComponent"
                       style={
                         Object {
                           "transform": Array [
@@ -718,6 +752,8 @@ exports[`Settings.ThemeEditor renders correctly 1`] = `
                     </View>
                   </View>
                   <View
+                    collapsable={false}
+                    nativeID="animatedComponent"
                     style={
                       Object {
                         "transform": Array [
@@ -761,7 +797,9 @@ exports[`Settings.ThemeEditor renders correctly 1`] = `
               >
                 <View
                   accessible={true}
+                  collapsable={false}
                   focusable={true}
+                  nativeID="animatedComponent"
                   onClick={[Function]}
                   onResponderGrant={[Function]}
                   onResponderMove={[Function]}
@@ -788,6 +826,8 @@ exports[`Settings.ThemeEditor renders correctly 1`] = `
                     }
                   >
                     <View
+                      collapsable={false}
+                      nativeID="animatedComponent"
                       style={
                         Object {
                           "transform": Array [
@@ -837,6 +877,8 @@ exports[`Settings.ThemeEditor renders correctly 1`] = `
                     </View>
                   </View>
                   <View
+                    collapsable={false}
+                    nativeID="animatedComponent"
                     style={
                       Object {
                         "transform": Array [
@@ -880,7 +922,9 @@ exports[`Settings.ThemeEditor renders correctly 1`] = `
               >
                 <View
                   accessible={true}
+                  collapsable={false}
                   focusable={true}
+                  nativeID="animatedComponent"
                   onClick={[Function]}
                   onResponderGrant={[Function]}
                   onResponderMove={[Function]}
@@ -907,6 +951,8 @@ exports[`Settings.ThemeEditor renders correctly 1`] = `
                     }
                   >
                     <View
+                      collapsable={false}
+                      nativeID="animatedComponent"
                       style={
                         Object {
                           "transform": Array [
@@ -956,6 +1002,8 @@ exports[`Settings.ThemeEditor renders correctly 1`] = `
                     </View>
                   </View>
                   <View
+                    collapsable={false}
+                    nativeID="animatedComponent"
                     style={
                       Object {
                         "transform": Array [
