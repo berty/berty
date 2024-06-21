@@ -175,9 +175,7 @@ exports[`Onboarding.SetupFinished renders correctly 1`] = `
                 onboarding.generate-key.desc
               </Text>
               <ActivityIndicator
-                animating={true}
                 color="#979797"
-                hidesWhenStopped={true}
                 size="large"
               />
               <View

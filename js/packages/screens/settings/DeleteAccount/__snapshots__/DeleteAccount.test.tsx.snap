@@ -73,6 +73,8 @@ exports[`Settings.DeleteAccount renders correctly 1`] = `
           }
         >
           <View
+            collapsable={false}
+            nativeID="animatedComponent"
             style={
               Object {
                 "transform": Array [
@@ -326,7 +328,9 @@ exports[`Settings.DeleteAccount renders correctly 1`] = `
               >
                 <View
                   accessible={true}
+                  collapsable={false}
                   focusable={true}
+                  nativeID="animatedComponent"
                   onClick={[Function]}
                   onResponderGrant={[Function]}
                   onResponderMove={[Function]}
@@ -345,12 +349,10 @@ exports[`Settings.DeleteAccount renders correctly 1`] = `
                   }
                 >
                   <TextInput
-                    allowFontScaling={true}
                     autoCapitalize="none"
                     autoCorrect={false}
                     onChangeText={[Function]}
                     placeholderTextColor="#D0D0D6"
-                    rejectResponderTermination={true}
                     style={
                       Array [
                         Object {
@@ -363,7 +365,6 @@ exports[`Settings.DeleteAccount renders correctly 1`] = `
                         },
                       ]
                     }
-                    underlineColorAndroid="transparent"
                     value=""
                   />
                 </View>
@@ -405,7 +406,9 @@ exports[`Settings.DeleteAccount renders correctly 1`] = `
               >
                 <View
                   accessible={true}
+                  collapsable={false}
                   focusable={true}
+                  nativeID="animatedComponent"
                   onClick={[Function]}
                   onResponderGrant={[Function]}
                   onResponderMove={[Function]}
@@ -434,6 +437,8 @@ exports[`Settings.DeleteAccount renders correctly 1`] = `
                     }
                   >
                     <View
+                      collapsable={false}
+                      nativeID="animatedComponent"
                       style={
                         Object {
                           "transform": Array [
@@ -494,7 +499,9 @@ exports[`Settings.DeleteAccount renders correctly 1`] = `
               >
                 <View
                   accessible={true}
+                  collapsable={false}
                   focusable={true}
+                  nativeID="animatedComponent"
                   onClick={[Function]}
                   onResponderGrant={[Function]}
                   onResponderMove={[Function]}
@@ -523,6 +530,8 @@ exports[`Settings.DeleteAccount renders correctly 1`] = `
                     }
                   >
                     <View
+                      collapsable={false}
+                      nativeID="animatedComponent"
                       style={
                         Object {
                           "transform": Array [

@@ -66,7 +66,9 @@ exports[`Chat.MultiMemberSettings renders correctly 1`] = `
             >
               <View
                 accessible={true}
+                collapsable={false}
                 focusable={true}
+                nativeID="animatedComponent"
                 onClick={[Function]}
                 onResponderGrant={[Function]}
                 onResponderMove={[Function]}
@@ -249,7 +251,9 @@ exports[`Chat.MultiMemberSettings renders correctly 1`] = `
             >
               <View
                 accessible={true}
+                collapsable={false}
                 focusable={true}
+                nativeID="animatedComponent"
                 onClick={[Function]}
                 onResponderGrant={[Function]}
                 onResponderMove={[Function]}
@@ -276,6 +280,8 @@ exports[`Chat.MultiMemberSettings renders correctly 1`] = `
                   }
                 >
                   <View
+                    collapsable={false}
+                    nativeID="animatedComponent"
                     style={
                       Object {
                         "transform": Array [
@@ -325,6 +331,8 @@ exports[`Chat.MultiMemberSettings renders correctly 1`] = `
                   </View>
                 </View>
                 <View
+                  collapsable={false}
+                  nativeID="animatedComponent"
                   style={
                     Object {
                       "transform": Array [
@@ -377,7 +385,9 @@ exports[`Chat.MultiMemberSettings renders correctly 1`] = `
               >
                 <View
                   accessible={true}
+                  collapsable={false}
                   focusable={true}
+                  nativeID="animatedComponent"
                   onClick={[Function]}
                   onResponderGrant={[Function]}
                   onResponderMove={[Function]}
@@ -396,6 +406,8 @@ exports[`Chat.MultiMemberSettings renders correctly 1`] = `
                   }
                 >
                   <View
+                    collapsable={false}
+                    nativeID="animatedComponent"
                     style={
                       Object {
                         "transform": Array [
@@ -451,6 +463,8 @@ exports[`Chat.MultiMemberSettings renders correctly 1`] = `
                     }
                   >
                     <View
+                      collapsable={false}
+                      nativeID="animatedComponent"
                       style={
                         Object {
                           "transform": Array [
@@ -462,6 +476,8 @@ exports[`Chat.MultiMemberSettings renders correctly 1`] = `
                       }
                     >
                       <View
+                        collapsable={false}
+                        nativeID="animatedComponent"
                         style={
                           Object {
                             "transform": Array [
@@ -483,6 +499,8 @@ exports[`Chat.MultiMemberSettings renders correctly 1`] = `
                   </View>
                 </View>
                 <RCTScrollView
+                  collapsable={false}
+                  nativeID="animatedComponent"
                   nestedScrollEnabled={true}
                   scrollEventThrottle={0.0001}
                   showsVerticalScrollIndicator={false}
@@ -506,7 +524,9 @@ exports[`Chat.MultiMemberSettings renders correctly 1`] = `
                     >
                       <View
                         accessible={true}
+                        collapsable={false}
                         focusable={true}
+                        nativeID="animatedComponent"
                         onClick={[Function]}
                         onResponderGrant={[Function]}
                         onResponderMove={[Function]}
@@ -539,6 +559,8 @@ exports[`Chat.MultiMemberSettings renders correctly 1`] = `
                           }
                         >
                           <View
+                            collapsable={false}
+                            nativeID="animatedComponent"
                             style={
                               Object {
                                 "transform": Array [
@@ -572,14 +594,12 @@ exports[`Chat.MultiMemberSettings renders correctly 1`] = `
                           }
                         >
                           <TextInput
-                            allowFontScaling={true}
                             autoCapitalize="none"
                             autoCorrect={false}
                             iconName="search-outline"
                             onChangeText={[Function]}
                             placeholder="chat.multi-member-settings.members-dropdown.search-placeholder"
                             placeholderTextColor="#D0D0D6"
-                            rejectResponderTermination={true}
                             style={
                               Array [
                                 Object {
@@ -592,7 +612,6 @@ exports[`Chat.MultiMemberSettings renders correctly 1`] = `
                                 },
                               ]
                             }
-                            underlineColorAndroid="transparent"
                             value=""
                           />
                         </View>
@@ -626,7 +645,9 @@ exports[`Chat.MultiMemberSettings renders correctly 1`] = `
             >
               <View
                 accessible={true}
+                collapsable={false}
                 focusable={true}
+                nativeID="animatedComponent"
                 onClick={[Function]}
                 onResponderGrant={[Function]}
                 onResponderMove={[Function]}
@@ -653,6 +674,8 @@ exports[`Chat.MultiMemberSettings renders correctly 1`] = `
                   }
                 >
                   <View
+                    collapsable={false}
+                    nativeID="animatedComponent"
                     style={
                       Object {
                         "transform": Array [
@@ -703,7 +726,9 @@ exports[`Chat.MultiMemberSettings renders correctly 1`] = `
                 </View>
                 <View
                   accessible={true}
+                  collapsable={false}
                   focusable={true}
+                  nativeID="animatedComponent"
                   onClick={[Function]}
                   onResponderGrant={[Function]}
                   onResponderMove={[Function]}
@@ -724,6 +749,8 @@ exports[`Chat.MultiMemberSettings renders correctly 1`] = `
                   }
                 >
                   <View
+                    collapsable={false}
+                    nativeID="animatedComponent"
                     style={
                       Object {
                         "alignItems": "center",
@@ -738,6 +765,8 @@ exports[`Chat.MultiMemberSettings renders correctly 1`] = `
                     }
                   >
                     <View
+                      collapsable={false}
+                      nativeID="animatedComponent"
                       style={
                         Object {
                           "opacity": 0,
@@ -745,6 +774,8 @@ exports[`Chat.MultiMemberSettings renders correctly 1`] = `
                       }
                     >
                       <View
+                        collapsable={false}
+                        nativeID="animatedComponent"
                         style={
                           Object {
                             "transform": Array [
@@ -791,7 +822,9 @@ exports[`Chat.MultiMemberSettings renders correctly 1`] = `
             >
               <View
                 accessible={true}
+                collapsable={false}
                 focusable={true}
+                nativeID="animatedComponent"
                 onClick={[Function]}
                 onResponderGrant={[Function]}
                 onResponderMove={[Function]}
@@ -818,6 +851,8 @@ exports[`Chat.MultiMemberSettings renders correctly 1`] = `
                   }
                 >
                   <View
+                    collapsable={false}
+                    nativeID="animatedComponent"
                     style={
                       Object {
                         "transform": Array [
@@ -867,6 +902,8 @@ exports[`Chat.MultiMemberSettings renders correctly 1`] = `
                   </View>
                 </View>
                 <View
+                  collapsable={false}
+                  nativeID="animatedComponent"
                   style={
                     Object {
                       "transform": Array [

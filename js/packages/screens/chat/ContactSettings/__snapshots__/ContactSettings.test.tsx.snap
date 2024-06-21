@@ -235,7 +235,9 @@ exports[`Chat.ContactSettings renders correctly 1`] = `
                     >
                       <View
                         accessible={true}
+                        collapsable={false}
                         focusable={true}
+                        nativeID="animatedComponent"
                         onClick={[Function]}
                         onResponderGrant={[Function]}
                         onResponderMove={[Function]}
@@ -271,6 +273,8 @@ exports[`Chat.ContactSettings renders correctly 1`] = `
                             }
                           >
                             <View
+                              collapsable={false}
+                              nativeID="animatedComponent"
                               style={
                                 Object {
                                   "transform": Array [
@@ -348,7 +352,9 @@ exports[`Chat.ContactSettings renders correctly 1`] = `
                       </View>
                       <View
                         accessible={true}
+                        collapsable={false}
                         focusable={true}
+                        nativeID="animatedComponent"
                         onClick={[Function]}
                         onResponderGrant={[Function]}
                         onResponderMove={[Function]}
@@ -386,6 +392,8 @@ exports[`Chat.ContactSettings renders correctly 1`] = `
                             }
                           >
                             <View
+                              collapsable={false}
+                              nativeID="animatedComponent"
                               style={
                                 Object {
                                   "transform": Array [

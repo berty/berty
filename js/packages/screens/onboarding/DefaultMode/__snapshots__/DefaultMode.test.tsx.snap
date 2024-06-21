@@ -109,6 +109,8 @@ exports[`Onboarding.DefaultMode renders correctly 1`] = `
               }
             >
               <View
+                collapsable={false}
+                nativeID="animatedComponent"
                 style={
                   Object {
                     "transform": Array [
@@ -327,7 +329,9 @@ exports[`Onboarding.DefaultMode renders correctly 1`] = `
               >
                 <View
                   accessible={true}
+                  collapsable={false}
                   focusable={true}
+                  nativeID="animatedComponent"
                   onClick={[Function]}
                   onResponderGrant={[Function]}
                   onResponderMove={[Function]}
@@ -389,7 +393,9 @@ exports[`Onboarding.DefaultMode renders correctly 1`] = `
               >
                 <View
                   accessible={true}
+                  collapsable={false}
                   focusable={true}
+                  nativeID="animatedComponent"
                   onClick={[Function]}
                   onResponderGrant={[Function]}
                   onResponderMove={[Function]}
@@ -859,10 +865,7 @@ exports[`Onboarding.DefaultMode renders correctly 2`] = `
                   testID="LetsGoButton"
                 >
                   <ActivityIndicator
-                    animating={true}
                     color="#F2F2F2"
-                    hidesWhenStopped={true}
-                    size="small"
                   />
                 </View>
               </View>

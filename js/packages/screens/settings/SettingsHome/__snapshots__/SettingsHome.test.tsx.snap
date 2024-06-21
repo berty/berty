@@ -973,11 +973,9 @@ exports[`Settings.Home renders correctly 1`] = `
                     }
                   >
                     <TextInput
-                      allowFontScaling={true}
                       onChangeText={[Function]}
                       placeholder="settings.edit-profile.name-input-placeholder"
                       placeholderTextColor="#D0D0D6"
-                      rejectResponderTermination={true}
                       style={
                         Array [
                           Object {
@@ -990,7 +988,6 @@ exports[`Settings.Home renders correctly 1`] = `
                           },
                         ]
                       }
-                      underlineColorAndroid="transparent"
                     />
                   </View>
                 </View>

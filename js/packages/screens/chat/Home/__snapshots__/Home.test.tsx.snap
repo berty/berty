@@ -91,7 +91,9 @@ exports[`Chat.Home renders correctly 1`] = `
                   >
                     <View
                       accessible={true}
+                      collapsable={false}
                       focusable={true}
+                      nativeID="animatedComponent"
                       onClick={[Function]}
                       onResponderGrant={[Function]}
                       onResponderMove={[Function]}
@@ -133,7 +135,9 @@ exports[`Chat.Home renders correctly 1`] = `
                   >
                     <View
                       accessible={true}
+                      collapsable={false}
                       focusable={true}
+                      nativeID="animatedComponent"
                       onClick={[Function]}
                       onResponderGrant={[Function]}
                       onResponderMove={[Function]}
@@ -166,6 +170,8 @@ exports[`Chat.Home renders correctly 1`] = `
                         }
                       >
                         <View
+                          collapsable={false}
+                          nativeID="animatedComponent"
                           style={
                             Object {
                               "transform": Array [
@@ -199,14 +205,12 @@ exports[`Chat.Home renders correctly 1`] = `
                         }
                       >
                         <TextInput
-                          allowFontScaling={true}
                           autoCapitalize="none"
                           autoCorrect={false}
                           iconName="search-outline"
                           onChangeText={[Function]}
                           placeholder="main.home.input-placeholder"
                           placeholderTextColor="#D0D0D6"
-                          rejectResponderTermination={true}
                           style={
                             Array [
                               Object {
@@ -220,7 +224,6 @@ exports[`Chat.Home renders correctly 1`] = `
                             ]
                           }
                           testID="Search keyword"
-                          underlineColorAndroid="transparent"
                           value=""
                         />
                       </View>
@@ -228,7 +231,9 @@ exports[`Chat.Home renders correctly 1`] = `
                   </View>
                   <View
                     accessible={true}
+                    collapsable={false}
                     focusable={true}
+                    nativeID="animatedComponent"
                     onClick={[Function]}
                     onResponderGrant={[Function]}
                     onResponderMove={[Function]}
@@ -406,7 +411,9 @@ exports[`Chat.Home renders correctly 1`] = `
       >
         <View
           accessible={true}
+          collapsable={false}
           focusable={true}
+          nativeID="animatedComponent"
           onClick={[Function]}
           onResponderGrant={[Function]}
           onResponderMove={[Function]}
@@ -436,6 +443,8 @@ exports[`Chat.Home renders correctly 1`] = `
           }
         >
           <View
+            collapsable={false}
+            nativeID="animatedComponent"
             style={
               Object {
                 "transform": Array [

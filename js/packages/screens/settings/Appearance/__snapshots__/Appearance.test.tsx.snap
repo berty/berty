@@ -55,7 +55,9 @@ exports[`Settings.Appearance renders correctly 1`] = `
           >
             <View
               accessible={true}
+              collapsable={false}
               focusable={true}
+              nativeID="animatedComponent"
               onClick={[Function]}
               onResponderGrant={[Function]}
               onResponderMove={[Function]}
@@ -105,6 +107,8 @@ exports[`Settings.Appearance renders correctly 1`] = `
                 </Text>
               </View>
               <View
+                collapsable={false}
+                nativeID="animatedComponent"
                 style={
                   Object {
                     "transform": Array [

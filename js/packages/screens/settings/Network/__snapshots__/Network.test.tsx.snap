@@ -70,7 +70,9 @@ exports[`Settings.Network + button onPress works 1`] = `
             >
               <View
                 accessible={true}
+                collapsable={false}
                 focusable={true}
+                nativeID="animatedComponent"
                 onClick={[Function]}
                 onResponderGrant={[Function]}
                 onResponderMove={[Function]}
@@ -122,7 +124,9 @@ exports[`Settings.Network + button onPress works 1`] = `
                 </View>
                 <View
                   accessible={true}
+                  collapsable={false}
                   focusable={true}
+                  nativeID="animatedComponent"
                   onClick={[Function]}
                   onResponderGrant={[Function]}
                   onResponderMove={[Function]}
@@ -143,6 +147,8 @@ exports[`Settings.Network + button onPress works 1`] = `
                   }
                 >
                   <View
+                    collapsable={false}
+                    nativeID="animatedComponent"
                     style={
                       Object {
                         "alignItems": "center",
@@ -157,6 +163,8 @@ exports[`Settings.Network + button onPress works 1`] = `
                     }
                   >
                     <View
+                      collapsable={false}
+                      nativeID="animatedComponent"
                       style={
                         Object {
                           "opacity": 0,
@@ -164,6 +172,8 @@ exports[`Settings.Network + button onPress works 1`] = `
                       }
                     >
                       <View
+                        collapsable={false}
+                        nativeID="animatedComponent"
                         style={
                           Object {
                             "transform": Array [
@@ -195,7 +205,9 @@ exports[`Settings.Network + button onPress works 1`] = `
               />
               <View
                 accessible={true}
+                collapsable={false}
                 focusable={true}
+                nativeID="animatedComponent"
                 onClick={[Function]}
                 onResponderGrant={[Function]}
                 onResponderMove={[Function]}
@@ -247,7 +259,9 @@ exports[`Settings.Network + button onPress works 1`] = `
                 </View>
                 <View
                   accessible={true}
+                  collapsable={false}
                   focusable={true}
+                  nativeID="animatedComponent"
                   onClick={[Function]}
                   onResponderGrant={[Function]}
                   onResponderMove={[Function]}
@@ -268,6 +282,8 @@ exports[`Settings.Network + button onPress works 1`] = `
                   }
                 >
                   <View
+                    collapsable={false}
+                    nativeID="animatedComponent"
                     style={
                       Object {
                         "alignItems": "center",
@@ -282,6 +298,8 @@ exports[`Settings.Network + button onPress works 1`] = `
                     }
                   >
                     <View
+                      collapsable={false}
+                      nativeID="animatedComponent"
                       style={
                         Object {
                           "opacity": 0,
@@ -289,6 +307,8 @@ exports[`Settings.Network + button onPress works 1`] = `
                       }
                     >
                       <View
+                        collapsable={false}
+                        nativeID="animatedComponent"
                         style={
                           Object {
                             "transform": Array [
@@ -320,7 +340,9 @@ exports[`Settings.Network + button onPress works 1`] = `
               />
               <View
                 accessible={true}
+                collapsable={false}
                 focusable={true}
+                nativeID="animatedComponent"
                 onClick={[Function]}
                 onResponderGrant={[Function]}
                 onResponderMove={[Function]}
@@ -372,7 +394,9 @@ exports[`Settings.Network + button onPress works 1`] = `
                 </View>
                 <View
                   accessible={true}
+                  collapsable={false}
                   focusable={true}
+                  nativeID="animatedComponent"
                   onClick={[Function]}
                   onResponderGrant={[Function]}
                   onResponderMove={[Function]}
@@ -393,6 +417,8 @@ exports[`Settings.Network + button onPress works 1`] = `
                   }
                 >
                   <View
+                    collapsable={false}
+                    nativeID="animatedComponent"
                     style={
                       Object {
                         "alignItems": "center",
@@ -407,6 +433,8 @@ exports[`Settings.Network + button onPress works 1`] = `
                     }
                   >
                     <View
+                      collapsable={false}
+                      nativeID="animatedComponent"
                       style={
                         Object {
                           "opacity": 0,
@@ -414,6 +442,8 @@ exports[`Settings.Network + button onPress works 1`] = `
                       }
                     >
                       <View
+                        collapsable={false}
+                        nativeID="animatedComponent"
                         style={
                           Object {
                             "transform": Array [
@@ -454,7 +484,9 @@ exports[`Settings.Network + button onPress works 1`] = `
             >
               <View
                 accessible={true}
+                collapsable={false}
                 focusable={true}
+                nativeID="animatedComponent"
                 onClick={[Function]}
                 onResponderGrant={[Function]}
                 onResponderMove={[Function]}
@@ -505,7 +537,9 @@ exports[`Settings.Network + button onPress works 1`] = `
                 </View>
                 <View
                   accessible={true}
+                  collapsable={false}
                   focusable={true}
+                  nativeID="animatedComponent"
                   onClick={[Function]}
                   onResponderGrant={[Function]}
                   onResponderMove={[Function]}
@@ -526,6 +560,8 @@ exports[`Settings.Network + button onPress works 1`] = `
                   }
                 >
                   <View
+                    collapsable={false}
+                    nativeID="animatedComponent"
                     style={
                       Object {
                         "alignItems": "center",
@@ -540,6 +576,8 @@ exports[`Settings.Network + button onPress works 1`] = `
                     }
                   >
                     <View
+                      collapsable={false}
+                      nativeID="animatedComponent"
                       style={
                         Object {
                           "opacity": 0,
@@ -547,6 +585,8 @@ exports[`Settings.Network + button onPress works 1`] = `
                       }
                     >
                       <View
+                        collapsable={false}
+                        nativeID="animatedComponent"
                         style={
                           Object {
                             "transform": Array [
@@ -587,7 +627,9 @@ exports[`Settings.Network + button onPress works 1`] = `
               >
                 <View
                   accessible={true}
+                  collapsable={false}
                   focusable={true}
+                  nativeID="animatedComponent"
                   onClick={[Function]}
                   onResponderGrant={[Function]}
                   onResponderMove={[Function]}
@@ -643,6 +685,8 @@ exports[`Settings.Network + button onPress works 1`] = `
                     }
                   >
                     <View
+                      collapsable={false}
+                      nativeID="animatedComponent"
                       style={
                         Object {
                           "transform": Array [
@@ -654,6 +698,8 @@ exports[`Settings.Network + button onPress works 1`] = `
                       }
                     >
                       <View
+                        collapsable={false}
+                        nativeID="animatedComponent"
                         style={
                           Object {
                             "transform": Array [
@@ -675,6 +721,8 @@ exports[`Settings.Network + button onPress works 1`] = `
                   </View>
                 </View>
                 <RCTScrollView
+                  collapsable={false}
+                  nativeID="animatedComponent"
                   nestedScrollEnabled={true}
                   scrollEventThrottle={0.0001}
                   showsVerticalScrollIndicator={false}
@@ -1012,13 +1060,11 @@ exports[`Settings.Network + button onPress works 1`] = `
                                   }
                                 >
                                   <TextInput
-                                    allowFontScaling={true}
                                     autoCapitalize="none"
                                     autoCorrect={false}
                                     onChangeText={[Function]}
                                     placeholder="onboarding.custom-mode.settings.modals.alias"
                                     placeholderTextColor="#D0D0D6"
-                                    rejectResponderTermination={true}
                                     style={
                                       Array [
                                         Object {
@@ -1031,7 +1077,6 @@ exports[`Settings.Network + button onPress works 1`] = `
                                         },
                                       ]
                                     }
-                                    underlineColorAndroid="transparent"
                                     value=""
                                   />
                                 </View>
@@ -1069,14 +1114,12 @@ exports[`Settings.Network + button onPress works 1`] = `
                                   }
                                 >
                                   <TextInput
-                                    allowFontScaling={true}
                                     autoCapitalize="none"
                                     autoCorrect={false}
                                     multiline={true}
                                     onChangeText={[Function]}
                                     placeholder="onboarding.custom-mode.settings.modals.multiaddress"
                                     placeholderTextColor="#D0D0D6"
-                                    rejectResponderTermination={true}
                                     style={
                                       Array [
                                         Object {
@@ -1089,7 +1132,6 @@ exports[`Settings.Network + button onPress works 1`] = `
                                         },
                                       ]
                                     }
-                                    underlineColorAndroid="transparent"
                                     value=""
                                   />
                                 </View>
@@ -1225,7 +1267,9 @@ exports[`Settings.Network + button onPress works 1`] = `
               >
                 <View
                   accessible={true}
+                  collapsable={false}
                   focusable={true}
+                  nativeID="animatedComponent"
                   onClick={[Function]}
                   onResponderGrant={[Function]}
                   onResponderMove={[Function]}
@@ -1281,6 +1325,8 @@ exports[`Settings.Network + button onPress works 1`] = `
                     }
                   >
                     <View
+                      collapsable={false}
+                      nativeID="animatedComponent"
                       style={
                         Object {
                           "transform": Array [
@@ -1292,6 +1338,8 @@ exports[`Settings.Network + button onPress works 1`] = `
                       }
                     >
                       <View
+                        collapsable={false}
+                        nativeID="animatedComponent"
                         style={
                           Object {
                             "transform": Array [
@@ -1313,6 +1361,8 @@ exports[`Settings.Network + button onPress works 1`] = `
                   </View>
                 </View>
                 <RCTScrollView
+                  collapsable={false}
+                  nativeID="animatedComponent"
                   nestedScrollEnabled={true}
                   scrollEventThrottle={0.0001}
                   showsVerticalScrollIndicator={false}
@@ -1650,13 +1700,11 @@ exports[`Settings.Network + button onPress works 1`] = `
                                   }
                                 >
                                   <TextInput
-                                    allowFontScaling={true}
                                     autoCapitalize="none"
                                     autoCorrect={false}
                                     onChangeText={[Function]}
                                     placeholder="onboarding.custom-mode.settings.modals.alias"
                                     placeholderTextColor="#D0D0D6"
-                                    rejectResponderTermination={true}
                                     style={
                                       Array [
                                         Object {
@@ -1669,7 +1717,6 @@ exports[`Settings.Network + button onPress works 1`] = `
                                         },
                                       ]
                                     }
-                                    underlineColorAndroid="transparent"
                                     value=""
                                   />
                                 </View>
@@ -1707,14 +1754,12 @@ exports[`Settings.Network + button onPress works 1`] = `
                                   }
                                 >
                                   <TextInput
-                                    allowFontScaling={true}
                                     autoCapitalize="none"
                                     autoCorrect={false}
                                     multiline={true}
                                     onChangeText={[Function]}
                                     placeholder="onboarding.custom-mode.settings.modals.multiaddress"
                                     placeholderTextColor="#D0D0D6"
-                                    rejectResponderTermination={true}
                                     style={
                                       Array [
                                         Object {
@@ -1727,7 +1772,6 @@ exports[`Settings.Network + button onPress works 1`] = `
                                         },
                                       ]
                                     }
-                                    underlineColorAndroid="transparent"
                                     value=""
                                   />
                                 </View>
@@ -1854,7 +1898,9 @@ exports[`Settings.Network + button onPress works 1`] = `
               >
                 <View
                   accessible={true}
+                  collapsable={false}
                   focusable={true}
+                  nativeID="animatedComponent"
                   onClick={[Function]}
                   onResponderGrant={[Function]}
                   onResponderMove={[Function]}
@@ -1910,6 +1956,8 @@ exports[`Settings.Network + button onPress works 1`] = `
                     }
                   >
                     <View
+                      collapsable={false}
+                      nativeID="animatedComponent"
                       style={
                         Object {
                           "transform": Array [
@@ -1921,6 +1969,8 @@ exports[`Settings.Network + button onPress works 1`] = `
                       }
                     >
                       <View
+                        collapsable={false}
+                        nativeID="animatedComponent"
                         style={
                           Object {
                             "transform": Array [
@@ -1942,6 +1992,8 @@ exports[`Settings.Network + button onPress works 1`] = `
                   </View>
                 </View>
                 <RCTScrollView
+                  collapsable={false}
+                  nativeID="animatedComponent"
                   nestedScrollEnabled={true}
                   scrollEventThrottle={0.0001}
                   showsVerticalScrollIndicator={false}
@@ -2279,13 +2331,11 @@ exports[`Settings.Network + button onPress works 1`] = `
                                   }
                                 >
                                   <TextInput
-                                    allowFontScaling={true}
                                     autoCapitalize="none"
                                     autoCorrect={false}
                                     onChangeText={[Function]}
                                     placeholder="onboarding.custom-mode.settings.modals.alias"
                                     placeholderTextColor="#D0D0D6"
-                                    rejectResponderTermination={true}
                                     style={
                                       Array [
                                         Object {
@@ -2298,7 +2348,6 @@ exports[`Settings.Network + button onPress works 1`] = `
                                         },
                                       ]
                                     }
-                                    underlineColorAndroid="transparent"
                                     value=""
                                   />
                                 </View>
@@ -2336,14 +2385,12 @@ exports[`Settings.Network + button onPress works 1`] = `
                                   }
                                 >
                                   <TextInput
-                                    allowFontScaling={true}
                                     autoCapitalize="none"
                                     autoCorrect={false}
                                     multiline={true}
                                     onChangeText={[Function]}
                                     placeholder="onboarding.custom-mode.settings.modals.multiaddress"
                                     placeholderTextColor="#D0D0D6"
-                                    rejectResponderTermination={true}
                                     style={
                                       Array [
                                         Object {
@@ -2356,7 +2403,6 @@ exports[`Settings.Network + button onPress works 1`] = `
                                         },
                                       ]
                                     }
-                                    underlineColorAndroid="transparent"
                                     value=""
                                   />
                                 </View>
@@ -2543,7 +2589,9 @@ exports[`Settings.Network renders correctly 1`] = `
             >
               <View
                 accessible={true}
+                collapsable={false}
                 focusable={true}
+                nativeID="animatedComponent"
                 onClick={[Function]}
                 onResponderGrant={[Function]}
                 onResponderMove={[Function]}
@@ -2595,7 +2643,9 @@ exports[`Settings.Network renders correctly 1`] = `
                 </View>
                 <View
                   accessible={true}
+                  collapsable={false}
                   focusable={true}
+                  nativeID="animatedComponent"
                   onClick={[Function]}
                   onResponderGrant={[Function]}
                   onResponderMove={[Function]}
@@ -2616,6 +2666,8 @@ exports[`Settings.Network renders correctly 1`] = `
                   }
                 >
                   <View
+                    collapsable={false}
+                    nativeID="animatedComponent"
                     style={
                       Object {
                         "alignItems": "center",
@@ -2630,6 +2682,8 @@ exports[`Settings.Network renders correctly 1`] = `
                     }
                   >
                     <View
+                      collapsable={false}
+                      nativeID="animatedComponent"
                       style={
                         Object {
                           "opacity": 0,
@@ -2637,6 +2691,8 @@ exports[`Settings.Network renders correctly 1`] = `
                       }
                     >
                       <View
+                        collapsable={false}
+                        nativeID="animatedComponent"
                         style={
                           Object {
                             "transform": Array [
@@ -2668,7 +2724,9 @@ exports[`Settings.Network renders correctly 1`] = `
               />
               <View
                 accessible={true}
+                collapsable={false}
                 focusable={true}
+                nativeID="animatedComponent"
                 onClick={[Function]}
                 onResponderGrant={[Function]}
                 onResponderMove={[Function]}
@@ -2720,7 +2778,9 @@ exports[`Settings.Network renders correctly 1`] = `
                 </View>
                 <View
                   accessible={true}
+                  collapsable={false}
                   focusable={true}
+                  nativeID="animatedComponent"
                   onClick={[Function]}
                   onResponderGrant={[Function]}
                   onResponderMove={[Function]}
@@ -2741,6 +2801,8 @@ exports[`Settings.Network renders correctly 1`] = `
                   }
                 >
                   <View
+                    collapsable={false}
+                    nativeID="animatedComponent"
                     style={
                       Object {
                         "alignItems": "center",
@@ -2755,6 +2817,8 @@ exports[`Settings.Network renders correctly 1`] = `
                     }
                   >
                     <View
+                      collapsable={false}
+                      nativeID="animatedComponent"
                       style={
                         Object {
                           "opacity": 0,
@@ -2762,6 +2826,8 @@ exports[`Settings.Network renders correctly 1`] = `
                       }
                     >
                       <View
+                        collapsable={false}
+                        nativeID="animatedComponent"
                         style={
                           Object {
                             "transform": Array [
@@ -2793,7 +2859,9 @@ exports[`Settings.Network renders correctly 1`] = `
               />
               <View
                 accessible={true}
+                collapsable={false}
                 focusable={true}
+                nativeID="animatedComponent"
                 onClick={[Function]}
                 onResponderGrant={[Function]}
                 onResponderMove={[Function]}
@@ -2845,7 +2913,9 @@ exports[`Settings.Network renders correctly 1`] = `
                 </View>
                 <View
                   accessible={true}
+                  collapsable={false}
                   focusable={true}
+                  nativeID="animatedComponent"
                   onClick={[Function]}
                   onResponderGrant={[Function]}
                   onResponderMove={[Function]}
@@ -2866,6 +2936,8 @@ exports[`Settings.Network renders correctly 1`] = `
                   }
                 >
                   <View
+                    collapsable={false}
+                    nativeID="animatedComponent"
                     style={
                       Object {
                         "alignItems": "center",
@@ -2880,6 +2952,8 @@ exports[`Settings.Network renders correctly 1`] = `
                     }
                   >
                     <View
+                      collapsable={false}
+                      nativeID="animatedComponent"
                       style={
                         Object {
                           "opacity": 0,
@@ -2887,6 +2961,8 @@ exports[`Settings.Network renders correctly 1`] = `
                       }
                     >
                       <View
+                        collapsable={false}
+                        nativeID="animatedComponent"
                         style={
                           Object {
                             "transform": Array [
@@ -2927,7 +3003,9 @@ exports[`Settings.Network renders correctly 1`] = `
             >
               <View
                 accessible={true}
+                collapsable={false}
                 focusable={true}
+                nativeID="animatedComponent"
                 onClick={[Function]}
                 onResponderGrant={[Function]}
                 onResponderMove={[Function]}
@@ -2978,7 +3056,9 @@ exports[`Settings.Network renders correctly 1`] = `
                 </View>
                 <View
                   accessible={true}
+                  collapsable={false}
                   focusable={true}
+                  nativeID="animatedComponent"
                   onClick={[Function]}
                   onResponderGrant={[Function]}
                   onResponderMove={[Function]}
@@ -2999,6 +3079,8 @@ exports[`Settings.Network renders correctly 1`] = `
                   }
                 >
                   <View
+                    collapsable={false}
+                    nativeID="animatedComponent"
                     style={
                       Object {
                         "alignItems": "center",
@@ -3013,6 +3095,8 @@ exports[`Settings.Network renders correctly 1`] = `
                     }
                   >
                     <View
+                      collapsable={false}
+                      nativeID="animatedComponent"
                       style={
                         Object {
                           "opacity": 0,
@@ -3020,6 +3104,8 @@ exports[`Settings.Network renders correctly 1`] = `
                       }
                     >
                       <View
+                        collapsable={false}
+                        nativeID="animatedComponent"
                         style={
                           Object {
                             "transform": Array [
@@ -3060,7 +3146,9 @@ exports[`Settings.Network renders correctly 1`] = `
               >
                 <View
                   accessible={true}
+                  collapsable={false}
                   focusable={true}
+                  nativeID="animatedComponent"
                   onClick={[Function]}
                   onResponderGrant={[Function]}
                   onResponderMove={[Function]}
@@ -3116,6 +3204,8 @@ exports[`Settings.Network renders correctly 1`] = `
                     }
                   >
                     <View
+                      collapsable={false}
+                      nativeID="animatedComponent"
                       style={
                         Object {
                           "transform": Array [
@@ -3127,6 +3217,8 @@ exports[`Settings.Network renders correctly 1`] = `
                       }
                     >
                       <View
+                        collapsable={false}
+                        nativeID="animatedComponent"
                         style={
                           Object {
                             "transform": Array [
@@ -3148,6 +3240,8 @@ exports[`Settings.Network renders correctly 1`] = `
                   </View>
                 </View>
                 <RCTScrollView
+                  collapsable={false}
+                  nativeID="animatedComponent"
                   nestedScrollEnabled={true}
                   scrollEventThrottle={0.0001}
                   showsVerticalScrollIndicator={false}
@@ -3178,7 +3272,9 @@ exports[`Settings.Network renders correctly 1`] = `
                       >
                         <View
                           accessible={true}
+                          collapsable={false}
                           focusable={true}
+                          nativeID="animatedComponent"
                           onClick={[Function]}
                           onResponderGrant={[Function]}
                           onResponderMove={[Function]}
@@ -3229,7 +3325,9 @@ exports[`Settings.Network renders correctly 1`] = `
                           </View>
                           <View
                             accessible={true}
+                            collapsable={false}
                             focusable={true}
+                            nativeID="animatedComponent"
                             onClick={[Function]}
                             onResponderGrant={[Function]}
                             onResponderMove={[Function]}
@@ -3250,6 +3348,8 @@ exports[`Settings.Network renders correctly 1`] = `
                             }
                           >
                             <View
+                              collapsable={false}
+                              nativeID="animatedComponent"
                               style={
                                 Object {
                                   "alignItems": "center",
@@ -3264,6 +3364,8 @@ exports[`Settings.Network renders correctly 1`] = `
                               }
                             >
                               <View
+                                collapsable={false}
+                                nativeID="animatedComponent"
                                 style={
                                   Object {
                                     "opacity": 1,
@@ -3271,6 +3373,8 @@ exports[`Settings.Network renders correctly 1`] = `
                                 }
                               >
                                 <View
+                                  collapsable={false}
+                                  nativeID="animatedComponent"
                                   style={
                                     Object {
                                       "transform": Array [
@@ -3304,7 +3408,9 @@ exports[`Settings.Network renders correctly 1`] = `
                     />
                     <View
                       accessible={true}
+                      collapsable={false}
                       focusable={true}
+                      nativeID="animatedComponent"
                       onClick={[Function]}
                       onResponderGrant={[Function]}
                       onResponderMove={[Function]}
@@ -3332,6 +3438,8 @@ exports[`Settings.Network renders correctly 1`] = `
                         }
                       >
                         <View
+                          collapsable={false}
+                          nativeID="animatedComponent"
                           style={
                             Object {
                               "transform": Array [
@@ -3386,7 +3494,9 @@ exports[`Settings.Network renders correctly 1`] = `
                       >
                         <View
                           accessible={true}
+                          collapsable={false}
                           focusable={true}
+                          nativeID="animatedComponent"
                           onClick={[Function]}
                           onResponderGrant={[Function]}
                           onResponderMove={[Function]}
@@ -3466,7 +3576,9 @@ exports[`Settings.Network renders correctly 1`] = `
                               >
                                 <View
                                   accessible={true}
+                                  collapsable={false}
                                   focusable={true}
+                                  nativeID="animatedComponent"
                                   onClick={[Function]}
                                   onResponderGrant={[Function]}
                                   onResponderMove={[Function]}
@@ -3485,13 +3597,11 @@ exports[`Settings.Network renders correctly 1`] = `
                                   }
                                 >
                                   <TextInput
-                                    allowFontScaling={true}
                                     autoCapitalize="none"
                                     autoCorrect={false}
                                     onChangeText={[Function]}
                                     placeholder="onboarding.custom-mode.settings.modals.alias"
                                     placeholderTextColor="#D0D0D6"
-                                    rejectResponderTermination={true}
                                     style={
                                       Array [
                                         Object {
@@ -3504,7 +3614,6 @@ exports[`Settings.Network renders correctly 1`] = `
                                         },
                                       ]
                                     }
-                                    underlineColorAndroid="transparent"
                                     value=""
                                   />
                                 </View>
@@ -3523,7 +3632,9 @@ exports[`Settings.Network renders correctly 1`] = `
                               >
                                 <View
                                   accessible={true}
+                                  collapsable={false}
                                   focusable={true}
+                                  nativeID="animatedComponent"
                                   onClick={[Function]}
                                   onResponderGrant={[Function]}
                                   onResponderMove={[Function]}
@@ -3542,14 +3653,12 @@ exports[`Settings.Network renders correctly 1`] = `
                                   }
                                 >
                                   <TextInput
-                                    allowFontScaling={true}
                                     autoCapitalize="none"
                                     autoCorrect={false}
                                     multiline={true}
                                     onChangeText={[Function]}
                                     placeholder="onboarding.custom-mode.settings.modals.multiaddress"
                                     placeholderTextColor="#D0D0D6"
-                                    rejectResponderTermination={true}
                                     style={
                                       Array [
                                         Object {
@@ -3562,7 +3671,6 @@ exports[`Settings.Network renders correctly 1`] = `
                                         },
                                       ]
                                     }
-                                    underlineColorAndroid="transparent"
                                     value=""
                                   />
                                 </View>
@@ -3614,7 +3722,9 @@ exports[`Settings.Network renders correctly 1`] = `
                               >
                                 <View
                                   accessible={true}
+                                  collapsable={false}
                                   focusable={true}
+                                  nativeID="animatedComponent"
                                   onClick={[Function]}
                                   onResponderGrant={[Function]}
                                   onResponderMove={[Function]}
@@ -3698,7 +3808,9 @@ exports[`Settings.Network renders correctly 1`] = `
               >
                 <View
                   accessible={true}
+                  collapsable={false}
                   focusable={true}
+                  nativeID="animatedComponent"
                   onClick={[Function]}
                   onResponderGrant={[Function]}
                   onResponderMove={[Function]}
@@ -3754,6 +3866,8 @@ exports[`Settings.Network renders correctly 1`] = `
                     }
                   >
                     <View
+                      collapsable={false}
+                      nativeID="animatedComponent"
                       style={
                         Object {
                           "transform": Array [
@@ -3765,6 +3879,8 @@ exports[`Settings.Network renders correctly 1`] = `
                       }
                     >
                       <View
+                        collapsable={false}
+                        nativeID="animatedComponent"
                         style={
                           Object {
                             "transform": Array [
@@ -3786,6 +3902,8 @@ exports[`Settings.Network renders correctly 1`] = `
                   </View>
                 </View>
                 <RCTScrollView
+                  collapsable={false}
+                  nativeID="animatedComponent"
                   nestedScrollEnabled={true}
                   scrollEventThrottle={0.0001}
                   showsVerticalScrollIndicator={false}
@@ -3816,7 +3934,9 @@ exports[`Settings.Network renders correctly 1`] = `
                       >
                         <View
                           accessible={true}
+                          collapsable={false}
                           focusable={true}
+                          nativeID="animatedComponent"
                           onClick={[Function]}
                           onResponderGrant={[Function]}
                           onResponderMove={[Function]}
@@ -3867,7 +3987,9 @@ exports[`Settings.Network renders correctly 1`] = `
                           </View>
                           <View
                             accessible={true}
+                            collapsable={false}
                             focusable={true}
+                            nativeID="animatedComponent"
                             onClick={[Function]}
                             onResponderGrant={[Function]}
                             onResponderMove={[Function]}
@@ -3888,6 +4010,8 @@ exports[`Settings.Network renders correctly 1`] = `
                             }
                           >
                             <View
+                              collapsable={false}
+                              nativeID="animatedComponent"
                               style={
                                 Object {
                                   "alignItems": "center",
@@ -3902,6 +4026,8 @@ exports[`Settings.Network renders correctly 1`] = `
                               }
                             >
                               <View
+                                collapsable={false}
+                                nativeID="animatedComponent"
                                 style={
                                   Object {
                                     "opacity": 1,
@@ -3909,6 +4035,8 @@ exports[`Settings.Network renders correctly 1`] = `
                                 }
                               >
                                 <View
+                                  collapsable={false}
+                                  nativeID="animatedComponent"
                                   style={
                                     Object {
                                       "transform": Array [
@@ -3942,7 +4070,9 @@ exports[`Settings.Network renders correctly 1`] = `
                     />
                     <View
                       accessible={true}
+                      collapsable={false}
                       focusable={true}
+                      nativeID="animatedComponent"
                       onClick={[Function]}
                       onResponderGrant={[Function]}
                       onResponderMove={[Function]}
@@ -3970,6 +4100,8 @@ exports[`Settings.Network renders correctly 1`] = `
                         }
                       >
                         <View
+                          collapsable={false}
+                          nativeID="animatedComponent"
                           style={
                             Object {
                               "transform": Array [
@@ -4024,7 +4156,9 @@ exports[`Settings.Network renders correctly 1`] = `
                       >
                         <View
                           accessible={true}
+                          collapsable={false}
                           focusable={true}
+                          nativeID="animatedComponent"
                           onClick={[Function]}
                           onResponderGrant={[Function]}
                           onResponderMove={[Function]}
@@ -4104,7 +4238,9 @@ exports[`Settings.Network renders correctly 1`] = `
                               >
                                 <View
                                   accessible={true}
+                                  collapsable={false}
                                   focusable={true}
+                                  nativeID="animatedComponent"
                                   onClick={[Function]}
                                   onResponderGrant={[Function]}
                                   onResponderMove={[Function]}
@@ -4123,13 +4259,11 @@ exports[`Settings.Network renders correctly 1`] = `
                                   }
                                 >
                                   <TextInput
-                                    allowFontScaling={true}
                                     autoCapitalize="none"
                                     autoCorrect={false}
                                     onChangeText={[Function]}
                                     placeholder="onboarding.custom-mode.settings.modals.alias"
                                     placeholderTextColor="#D0D0D6"
-                                    rejectResponderTermination={true}
                                     style={
                                       Array [
                                         Object {
@@ -4142,7 +4276,6 @@ exports[`Settings.Network renders correctly 1`] = `
                                         },
                                       ]
                                     }
-                                    underlineColorAndroid="transparent"
                                     value=""
                                   />
                                 </View>
@@ -4161,7 +4294,9 @@ exports[`Settings.Network renders correctly 1`] = `
                               >
                                 <View
                                   accessible={true}
+                                  collapsable={false}
                                   focusable={true}
+                                  nativeID="animatedComponent"
                                   onClick={[Function]}
                                   onResponderGrant={[Function]}
                                   onResponderMove={[Function]}
@@ -4180,14 +4315,12 @@ exports[`Settings.Network renders correctly 1`] = `
                                   }
                                 >
                                   <TextInput
-                                    allowFontScaling={true}
                                     autoCapitalize="none"
                                     autoCorrect={false}
                                     multiline={true}
                                     onChangeText={[Function]}
                                     placeholder="onboarding.custom-mode.settings.modals.multiaddress"
                                     placeholderTextColor="#D0D0D6"
-                                    rejectResponderTermination={true}
                                     style={
                                       Array [
                                         Object {
@@ -4200,7 +4333,6 @@ exports[`Settings.Network renders correctly 1`] = `
                                         },
                                       ]
                                     }
-                                    underlineColorAndroid="transparent"
                                     value=""
                                   />
                                 </View>
@@ -4252,7 +4384,9 @@ exports[`Settings.Network renders correctly 1`] = `
                               >
                                 <View
                                   accessible={true}
+                                  collapsable={false}
                                   focusable={true}
+                                  nativeID="animatedComponent"
                                   onClick={[Function]}
                                   onResponderGrant={[Function]}
                                   onResponderMove={[Function]}
@@ -4327,7 +4461,9 @@ exports[`Settings.Network renders correctly 1`] = `
               >
                 <View
                   accessible={true}
+                  collapsable={false}
                   focusable={true}
+                  nativeID="animatedComponent"
                   onClick={[Function]}
                   onResponderGrant={[Function]}
                   onResponderMove={[Function]}
@@ -4383,6 +4519,8 @@ exports[`Settings.Network renders correctly 1`] = `
                     }
                   >
                     <View
+                      collapsable={false}
+                      nativeID="animatedComponent"
                       style={
                         Object {
                           "transform": Array [
@@ -4394,6 +4532,8 @@ exports[`Settings.Network renders correctly 1`] = `
                       }
                     >
                       <View
+                        collapsable={false}
+                        nativeID="animatedComponent"
                         style={
                           Object {
                             "transform": Array [
@@ -4415,6 +4555,8 @@ exports[`Settings.Network renders correctly 1`] = `
                   </View>
                 </View>
                 <RCTScrollView
+                  collapsable={false}
+                  nativeID="animatedComponent"
                   nestedScrollEnabled={true}
                   scrollEventThrottle={0.0001}
                   showsVerticalScrollIndicator={false}
@@ -4445,7 +4587,9 @@ exports[`Settings.Network renders correctly 1`] = `
                       >
                         <View
                           accessible={true}
+                          collapsable={false}
                           focusable={true}
+                          nativeID="animatedComponent"
                           onClick={[Function]}
                           onResponderGrant={[Function]}
                           onResponderMove={[Function]}
@@ -4496,7 +4640,9 @@ exports[`Settings.Network renders correctly 1`] = `
                           </View>
                           <View
                             accessible={true}
+                            collapsable={false}
                             focusable={true}
+                            nativeID="animatedComponent"
                             onClick={[Function]}
                             onResponderGrant={[Function]}
                             onResponderMove={[Function]}
@@ -4517,6 +4663,8 @@ exports[`Settings.Network renders correctly 1`] = `
                             }
                           >
                             <View
+                              collapsable={false}
+                              nativeID="animatedComponent"
                               style={
                                 Object {
                                   "alignItems": "center",
@@ -4531,6 +4679,8 @@ exports[`Settings.Network renders correctly 1`] = `
                               }
                             >
                               <View
+                                collapsable={false}
+                                nativeID="animatedComponent"
                                 style={
                                   Object {
                                     "opacity": 1,
@@ -4538,6 +4688,8 @@ exports[`Settings.Network renders correctly 1`] = `
                                 }
                               >
                                 <View
+                                  collapsable={false}
+                                  nativeID="animatedComponent"
                                   style={
                                     Object {
                                       "transform": Array [
@@ -4571,7 +4723,9 @@ exports[`Settings.Network renders correctly 1`] = `
                     />
                     <View
                       accessible={true}
+                      collapsable={false}
                       focusable={true}
+                      nativeID="animatedComponent"
                       onClick={[Function]}
                       onResponderGrant={[Function]}
                       onResponderMove={[Function]}
@@ -4599,6 +4753,8 @@ exports[`Settings.Network renders correctly 1`] = `
                         }
                       >
                         <View
+                          collapsable={false}
+                          nativeID="animatedComponent"
                           style={
                             Object {
                               "transform": Array [
@@ -4653,7 +4809,9 @@ exports[`Settings.Network renders correctly 1`] = `
                       >
                         <View
                           accessible={true}
+                          collapsable={false}
                           focusable={true}
+                          nativeID="animatedComponent"
                           onClick={[Function]}
                           onResponderGrant={[Function]}
                           onResponderMove={[Function]}
@@ -4733,7 +4891,9 @@ exports[`Settings.Network renders correctly 1`] = `
                               >
                                 <View
                                   accessible={true}
+                                  collapsable={false}
                                   focusable={true}
+                                  nativeID="animatedComponent"
                                   onClick={[Function]}
                                   onResponderGrant={[Function]}
                                   onResponderMove={[Function]}
@@ -4752,13 +4912,11 @@ exports[`Settings.Network renders correctly 1`] = `
                                   }
                                 >
                                   <TextInput
-                                    allowFontScaling={true}
                                     autoCapitalize="none"
                                     autoCorrect={false}
                                     onChangeText={[Function]}
                                     placeholder="onboarding.custom-mode.settings.modals.alias"
                                     placeholderTextColor="#D0D0D6"
-                                    rejectResponderTermination={true}
                                     style={
                                       Array [
                                         Object {
@@ -4771,7 +4929,6 @@ exports[`Settings.Network renders correctly 1`] = `
                                         },
                                       ]
                                     }
-                                    underlineColorAndroid="transparent"
                                     value=""
                                   />
                                 </View>
@@ -4790,7 +4947,9 @@ exports[`Settings.Network renders correctly 1`] = `
                               >
                                 <View
                                   accessible={true}
+                                  collapsable={false}
                                   focusable={true}
+                                  nativeID="animatedComponent"
                                   onClick={[Function]}
                                   onResponderGrant={[Function]}
                                   onResponderMove={[Function]}
@@ -4809,14 +4968,12 @@ exports[`Settings.Network renders correctly 1`] = `
                                   }
                                 >
                                   <TextInput
-                                    allowFontScaling={true}
                                     autoCapitalize="none"
                                     autoCorrect={false}
                                     multiline={true}
                                     onChangeText={[Function]}
                                     placeholder="onboarding.custom-mode.settings.modals.multiaddress"
                                     placeholderTextColor="#D0D0D6"
-                                    rejectResponderTermination={true}
                                     style={
                                       Array [
                                         Object {
@@ -4829,7 +4986,6 @@ exports[`Settings.Network renders correctly 1`] = `
                                         },
                                       ]
                                     }
-                                    underlineColorAndroid="transparent"
                                     value=""
                                   />
                                 </View>
@@ -4881,7 +5037,9 @@ exports[`Settings.Network renders correctly 1`] = `
                               >
                                 <View
                                   accessible={true}
+                                  collapsable={false}
                                   focusable={true}
+                                  nativeID="animatedComponent"
                                   onClick={[Function]}
                                   onResponderGrant={[Function]}
                                   onResponderMove={[Function]}
@@ -5016,7 +5174,9 @@ exports[`Settings.Network toggle onPress works 1`] = `
             >
               <View
                 accessible={true}
+                collapsable={false}
                 focusable={true}
+                nativeID="animatedComponent"
                 onClick={[Function]}
                 onResponderGrant={[Function]}
                 onResponderMove={[Function]}
@@ -5068,7 +5228,9 @@ exports[`Settings.Network toggle onPress works 1`] = `
                 </View>
                 <View
                   accessible={true}
+                  collapsable={false}
                   focusable={true}
+                  nativeID="animatedComponent"
                   onClick={[Function]}
                   onResponderGrant={[Function]}
                   onResponderMove={[Function]}
@@ -5089,6 +5251,8 @@ exports[`Settings.Network toggle onPress works 1`] = `
                   }
                 >
                   <View
+                    collapsable={false}
+                    nativeID="animatedComponent"
                     style={
                       Object {
                         "alignItems": "center",
@@ -5103,6 +5267,8 @@ exports[`Settings.Network toggle onPress works 1`] = `
                     }
                   >
                     <View
+                      collapsable={false}
+                      nativeID="animatedComponent"
                       style={
                         Object {
                           "opacity": 0,
@@ -5110,6 +5276,8 @@ exports[`Settings.Network toggle onPress works 1`] = `
                       }
                     >
                       <View
+                        collapsable={false}
+                        nativeID="animatedComponent"
                         style={
                           Object {
                             "transform": Array [
@@ -5141,7 +5309,9 @@ exports[`Settings.Network toggle onPress works 1`] = `
               />
               <View
                 accessible={true}
+                collapsable={false}
                 focusable={true}
+                nativeID="animatedComponent"
                 onClick={[Function]}
                 onResponderGrant={[Function]}
                 onResponderMove={[Function]}
@@ -5193,7 +5363,9 @@ exports[`Settings.Network toggle onPress works 1`] = `
                 </View>
                 <View
                   accessible={true}
+                  collapsable={false}
                   focusable={true}
+                  nativeID="animatedComponent"
                   onClick={[Function]}
                   onResponderGrant={[Function]}
                   onResponderMove={[Function]}
@@ -5214,6 +5386,8 @@ exports[`Settings.Network toggle onPress works 1`] = `
                   }
                 >
                   <View
+                    collapsable={false}
+                    nativeID="animatedComponent"
                     style={
                       Object {
                         "alignItems": "center",
@@ -5228,6 +5402,8 @@ exports[`Settings.Network toggle onPress works 1`] = `
                     }
                   >
                     <View
+                      collapsable={false}
+                      nativeID="animatedComponent"
                       style={
                         Object {
                           "opacity": 0,
@@ -5235,6 +5411,8 @@ exports[`Settings.Network toggle onPress works 1`] = `
                       }
                     >
                       <View
+                        collapsable={false}
+                        nativeID="animatedComponent"
                         style={
                           Object {
                             "transform": Array [
@@ -5266,7 +5444,9 @@ exports[`Settings.Network toggle onPress works 1`] = `
               />
               <View
                 accessible={true}
+                collapsable={false}
                 focusable={true}
+                nativeID="animatedComponent"
                 onClick={[Function]}
                 onResponderGrant={[Function]}
                 onResponderMove={[Function]}
@@ -5318,7 +5498,9 @@ exports[`Settings.Network toggle onPress works 1`] = `
                 </View>
                 <View
                   accessible={true}
+                  collapsable={false}
                   focusable={true}
+                  nativeID="animatedComponent"
                   onClick={[Function]}
                   onResponderGrant={[Function]}
                   onResponderMove={[Function]}
@@ -5339,6 +5521,8 @@ exports[`Settings.Network toggle onPress works 1`] = `
                   }
                 >
                   <View
+                    collapsable={false}
+                    nativeID="animatedComponent"
                     style={
                       Object {
                         "alignItems": "center",
@@ -5353,6 +5537,8 @@ exports[`Settings.Network toggle onPress works 1`] = `
                     }
                   >
                     <View
+                      collapsable={false}
+                      nativeID="animatedComponent"
                       style={
                         Object {
                           "opacity": 0,
@@ -5360,6 +5546,8 @@ exports[`Settings.Network toggle onPress works 1`] = `
                       }
                     >
                       <View
+                        collapsable={false}
+                        nativeID="animatedComponent"
                         style={
                           Object {
                             "transform": Array [
@@ -5400,7 +5588,9 @@ exports[`Settings.Network toggle onPress works 1`] = `
             >
               <View
                 accessible={true}
+                collapsable={false}
                 focusable={true}
+                nativeID="animatedComponent"
                 onClick={[Function]}
                 onResponderGrant={[Function]}
                 onResponderMove={[Function]}
@@ -5451,7 +5641,9 @@ exports[`Settings.Network toggle onPress works 1`] = `
                 </View>
                 <View
                   accessible={true}
+                  collapsable={false}
                   focusable={true}
+                  nativeID="animatedComponent"
                   onClick={[Function]}
                   onResponderGrant={[Function]}
                   onResponderMove={[Function]}
@@ -5472,6 +5664,8 @@ exports[`Settings.Network toggle onPress works 1`] = `
                   }
                 >
                   <View
+                    collapsable={false}
+                    nativeID="animatedComponent"
                     style={
                       Object {
                         "alignItems": "center",
@@ -5486,6 +5680,8 @@ exports[`Settings.Network toggle onPress works 1`] = `
                     }
                   >
                     <View
+                      collapsable={false}
+                      nativeID="animatedComponent"
                       style={
                         Object {
                           "opacity": 0,
@@ -5493,6 +5689,8 @@ exports[`Settings.Network toggle onPress works 1`] = `
                       }
                     >
                       <View
+                        collapsable={false}
+                        nativeID="animatedComponent"
                         style={
                           Object {
                             "transform": Array [
@@ -5533,7 +5731,9 @@ exports[`Settings.Network toggle onPress works 1`] = `
               >
                 <View
                   accessible={true}
+                  collapsable={false}
                   focusable={true}
+                  nativeID="animatedComponent"
                   onClick={[Function]}
                   onResponderGrant={[Function]}
                   onResponderMove={[Function]}
@@ -5589,6 +5789,8 @@ exports[`Settings.Network toggle onPress works 1`] = `
                     }
                   >
                     <View
+                      collapsable={false}
+                      nativeID="animatedComponent"
                       style={
                         Object {
                           "transform": Array [
@@ -5600,6 +5802,8 @@ exports[`Settings.Network toggle onPress works 1`] = `
                       }
                     >
                       <View
+                        collapsable={false}
+                        nativeID="animatedComponent"
                         style={
                           Object {
                             "transform": Array [
@@ -5621,6 +5825,8 @@ exports[`Settings.Network toggle onPress works 1`] = `
                   </View>
                 </View>
                 <RCTScrollView
+                  collapsable={false}
+                  nativeID="animatedComponent"
                   nestedScrollEnabled={true}
                   scrollEventThrottle={0.0001}
                   showsVerticalScrollIndicator={false}
@@ -5651,7 +5857,9 @@ exports[`Settings.Network toggle onPress works 1`] = `
                       >
                         <View
                           accessible={true}
+                          collapsable={false}
                           focusable={true}
+                          nativeID="animatedComponent"
                           onClick={[Function]}
                           onResponderGrant={[Function]}
                           onResponderMove={[Function]}
@@ -5702,7 +5910,9 @@ exports[`Settings.Network toggle onPress works 1`] = `
                           </View>
                           <View
                             accessible={true}
+                            collapsable={false}
                             focusable={true}
+                            nativeID="animatedComponent"
                             onClick={[Function]}
                             onResponderGrant={[Function]}
                             onResponderMove={[Function]}
@@ -5723,6 +5933,8 @@ exports[`Settings.Network toggle onPress works 1`] = `
                             }
                           >
                             <View
+                              collapsable={false}
+                              nativeID="animatedComponent"
                               style={
                                 Object {
                                   "alignItems": "center",
@@ -5737,6 +5949,8 @@ exports[`Settings.Network toggle onPress works 1`] = `
                               }
                             >
                               <View
+                                collapsable={false}
+                                nativeID="animatedComponent"
                                 style={
                                   Object {
                                     "opacity": 1,
@@ -5744,6 +5958,8 @@ exports[`Settings.Network toggle onPress works 1`] = `
                                 }
                               >
                                 <View
+                                  collapsable={false}
+                                  nativeID="animatedComponent"
                                   style={
                                     Object {
                                       "transform": Array [
@@ -5777,7 +5993,9 @@ exports[`Settings.Network toggle onPress works 1`] = `
                     />
                     <View
                       accessible={true}
+                      collapsable={false}
                       focusable={true}
+                      nativeID="animatedComponent"
                       onClick={[Function]}
                       onResponderGrant={[Function]}
                       onResponderMove={[Function]}
@@ -5805,6 +6023,8 @@ exports[`Settings.Network toggle onPress works 1`] = `
                         }
                       >
                         <View
+                          collapsable={false}
+                          nativeID="animatedComponent"
                           style={
                             Object {
                               "transform": Array [
@@ -5859,7 +6079,9 @@ exports[`Settings.Network toggle onPress works 1`] = `
                       >
                         <View
                           accessible={true}
+                          collapsable={false}
                           focusable={true}
+                          nativeID="animatedComponent"
                           onClick={[Function]}
                           onResponderGrant={[Function]}
                           onResponderMove={[Function]}
@@ -5939,7 +6161,9 @@ exports[`Settings.Network toggle onPress works 1`] = `
                               >
                                 <View
                                   accessible={true}
+                                  collapsable={false}
                                   focusable={true}
+                                  nativeID="animatedComponent"
                                   onClick={[Function]}
                                   onResponderGrant={[Function]}
                                   onResponderMove={[Function]}
@@ -5958,13 +6182,11 @@ exports[`Settings.Network toggle onPress works 1`] = `
                                   }
                                 >
                                   <TextInput
-                                    allowFontScaling={true}
                                     autoCapitalize="none"
                                     autoCorrect={false}
                                     onChangeText={[Function]}
                                     placeholder="onboarding.custom-mode.settings.modals.alias"
                                     placeholderTextColor="#D0D0D6"
-                                    rejectResponderTermination={true}
                                     style={
                                       Array [
                                         Object {
@@ -5977,7 +6199,6 @@ exports[`Settings.Network toggle onPress works 1`] = `
                                         },
                                       ]
                                     }
-                                    underlineColorAndroid="transparent"
                                     value=""
                                   />
                                 </View>
@@ -5996,7 +6217,9 @@ exports[`Settings.Network toggle onPress works 1`] = `
                               >
                                 <View
                                   accessible={true}
+                                  collapsable={false}
                                   focusable={true}
+                                  nativeID="animatedComponent"
                                   onClick={[Function]}
                                   onResponderGrant={[Function]}
                                   onResponderMove={[Function]}
@@ -6015,14 +6238,12 @@ exports[`Settings.Network toggle onPress works 1`] = `
                                   }
                                 >
                                   <TextInput
-                                    allowFontScaling={true}
                                     autoCapitalize="none"
                                     autoCorrect={false}
                                     multiline={true}
                                     onChangeText={[Function]}
                                     placeholder="onboarding.custom-mode.settings.modals.multiaddress"
                                     placeholderTextColor="#D0D0D6"
-                                    rejectResponderTermination={true}
                                     style={
                                       Array [
                                         Object {
@@ -6035,7 +6256,6 @@ exports[`Settings.Network toggle onPress works 1`] = `
                                         },
                                       ]
                                     }
-                                    underlineColorAndroid="transparent"
                                     value=""
                                   />
                                 </View>
@@ -6087,7 +6307,9 @@ exports[`Settings.Network toggle onPress works 1`] = `
                               >
                                 <View
                                   accessible={true}
+                                  collapsable={false}
                                   focusable={true}
+                                  nativeID="animatedComponent"
                                   onClick={[Function]}
                                   onResponderGrant={[Function]}
                                   onResponderMove={[Function]}
@@ -6171,7 +6393,9 @@ exports[`Settings.Network toggle onPress works 1`] = `
               >
                 <View
                   accessible={true}
+                  collapsable={false}
                   focusable={true}
+                  nativeID="animatedComponent"
                   onClick={[Function]}
                   onResponderGrant={[Function]}
                   onResponderMove={[Function]}
@@ -6227,6 +6451,8 @@ exports[`Settings.Network toggle onPress works 1`] = `
                     }
                   >
                     <View
+                      collapsable={false}
+                      nativeID="animatedComponent"
                       style={
                         Object {
                           "transform": Array [
@@ -6238,6 +6464,8 @@ exports[`Settings.Network toggle onPress works 1`] = `
                       }
                     >
                       <View
+                        collapsable={false}
+                        nativeID="animatedComponent"
                         style={
                           Object {
                             "transform": Array [
@@ -6259,6 +6487,8 @@ exports[`Settings.Network toggle onPress works 1`] = `
                   </View>
                 </View>
                 <RCTScrollView
+                  collapsable={false}
+                  nativeID="animatedComponent"
                   nestedScrollEnabled={true}
                   scrollEventThrottle={0.0001}
                   showsVerticalScrollIndicator={false}
@@ -6289,7 +6519,9 @@ exports[`Settings.Network toggle onPress works 1`] = `
                       >
                         <View
                           accessible={true}
+                          collapsable={false}
                           focusable={true}
+                          nativeID="animatedComponent"
                           onClick={[Function]}
                           onResponderGrant={[Function]}
                           onResponderMove={[Function]}
@@ -6340,7 +6572,9 @@ exports[`Settings.Network toggle onPress works 1`] = `
                           </View>
                           <View
                             accessible={true}
+                            collapsable={false}
                             focusable={true}
+                            nativeID="animatedComponent"
                             onClick={[Function]}
                             onResponderGrant={[Function]}
                             onResponderMove={[Function]}
@@ -6361,6 +6595,8 @@ exports[`Settings.Network toggle onPress works 1`] = `
                             }
                           >
                             <View
+                              collapsable={false}
+                              nativeID="animatedComponent"
                               style={
                                 Object {
                                   "alignItems": "center",
@@ -6375,6 +6611,8 @@ exports[`Settings.Network toggle onPress works 1`] = `
                               }
                             >
                               <View
+                                collapsable={false}
+                                nativeID="animatedComponent"
                                 style={
                                   Object {
                                     "opacity": 1,
@@ -6382,6 +6620,8 @@ exports[`Settings.Network toggle onPress works 1`] = `
                                 }
                               >
                                 <View
+                                  collapsable={false}
+                                  nativeID="animatedComponent"
                                   style={
                                     Object {
                                       "transform": Array [
@@ -6415,7 +6655,9 @@ exports[`Settings.Network toggle onPress works 1`] = `
                     />
                     <View
                       accessible={true}
+                      collapsable={false}
                       focusable={true}
+                      nativeID="animatedComponent"
                       onClick={[Function]}
                       onResponderGrant={[Function]}
                       onResponderMove={[Function]}
@@ -6443,6 +6685,8 @@ exports[`Settings.Network toggle onPress works 1`] = `
                         }
                       >
                         <View
+                          collapsable={false}
+                          nativeID="animatedComponent"
                           style={
                             Object {
                               "transform": Array [
@@ -6497,7 +6741,9 @@ exports[`Settings.Network toggle onPress works 1`] = `
                       >
                         <View
                           accessible={true}
+                          collapsable={false}
                           focusable={true}
+                          nativeID="animatedComponent"
                           onClick={[Function]}
                           onResponderGrant={[Function]}
                           onResponderMove={[Function]}
@@ -6577,7 +6823,9 @@ exports[`Settings.Network toggle onPress works 1`] = `
                               >
                                 <View
                                   accessible={true}
+                                  collapsable={false}
                                   focusable={true}
+                                  nativeID="animatedComponent"
                                   onClick={[Function]}
                                   onResponderGrant={[Function]}
                                   onResponderMove={[Function]}
@@ -6596,13 +6844,11 @@ exports[`Settings.Network toggle onPress works 1`] = `
                                   }
                                 >
                                   <TextInput
-                                    allowFontScaling={true}
                                     autoCapitalize="none"
                                     autoCorrect={false}
                                     onChangeText={[Function]}
                                     placeholder="onboarding.custom-mode.settings.modals.alias"
                                     placeholderTextColor="#D0D0D6"
-                                    rejectResponderTermination={true}
                                     style={
                                       Array [
                                         Object {
@@ -6615,7 +6861,6 @@ exports[`Settings.Network toggle onPress works 1`] = `
                                         },
                                       ]
                                     }
-                                    underlineColorAndroid="transparent"
                                     value=""
                                   />
                                 </View>
@@ -6634,7 +6879,9 @@ exports[`Settings.Network toggle onPress works 1`] = `
                               >
                                 <View
                                   accessible={true}
+                                  collapsable={false}
                                   focusable={true}
+                                  nativeID="animatedComponent"
                                   onClick={[Function]}
                                   onResponderGrant={[Function]}
                                   onResponderMove={[Function]}
@@ -6653,14 +6900,12 @@ exports[`Settings.Network toggle onPress works 1`] = `
                                   }
                                 >
                                   <TextInput
-                                    allowFontScaling={true}
                                     autoCapitalize="none"
                                     autoCorrect={false}
                                     multiline={true}
                                     onChangeText={[Function]}
                                     placeholder="onboarding.custom-mode.settings.modals.multiaddress"
                                     placeholderTextColor="#D0D0D6"
-                                    rejectResponderTermination={true}
                                     style={
                                       Array [
                                         Object {
@@ -6673,7 +6918,6 @@ exports[`Settings.Network toggle onPress works 1`] = `
                                         },
                                       ]
                                     }
-                                    underlineColorAndroid="transparent"
                                     value=""
                                   />
                                 </View>
@@ -6725,7 +6969,9 @@ exports[`Settings.Network toggle onPress works 1`] = `
                               >
                                 <View
                                   accessible={true}
+                                  collapsable={false}
                                   focusable={true}
+                                  nativeID="animatedComponent"
                                   onClick={[Function]}
                                   onResponderGrant={[Function]}
                                   onResponderMove={[Function]}
@@ -6800,7 +7046,9 @@ exports[`Settings.Network toggle onPress works 1`] = `
               >
                 <View
                   accessible={true}
+                  collapsable={false}
                   focusable={true}
+                  nativeID="animatedComponent"
                   onClick={[Function]}
                   onResponderGrant={[Function]}
                   onResponderMove={[Function]}
@@ -6856,6 +7104,8 @@ exports[`Settings.Network toggle onPress works 1`] = `
                     }
                   >
                     <View
+                      collapsable={false}
+                      nativeID="animatedComponent"
                       style={
                         Object {
                           "transform": Array [
@@ -6867,6 +7117,8 @@ exports[`Settings.Network toggle onPress works 1`] = `
                       }
                     >
                       <View
+                        collapsable={false}
+                        nativeID="animatedComponent"
                         style={
                           Object {
                             "transform": Array [
@@ -6888,6 +7140,8 @@ exports[`Settings.Network toggle onPress works 1`] = `
                   </View>
                 </View>
                 <RCTScrollView
+                  collapsable={false}
+                  nativeID="animatedComponent"
                   nestedScrollEnabled={true}
                   scrollEventThrottle={0.0001}
                   showsVerticalScrollIndicator={false}
@@ -6918,7 +7172,9 @@ exports[`Settings.Network toggle onPress works 1`] = `
                       >
                         <View
                           accessible={true}
+                          collapsable={false}
                           focusable={true}
+                          nativeID="animatedComponent"
                           onClick={[Function]}
                           onResponderGrant={[Function]}
                           onResponderMove={[Function]}
@@ -6969,7 +7225,9 @@ exports[`Settings.Network toggle onPress works 1`] = `
                           </View>
                           <View
                             accessible={true}
+                            collapsable={false}
                             focusable={true}
+                            nativeID="animatedComponent"
                             onClick={[Function]}
                             onResponderGrant={[Function]}
                             onResponderMove={[Function]}
@@ -6990,6 +7248,8 @@ exports[`Settings.Network toggle onPress works 1`] = `
                             }
                           >
                             <View
+                              collapsable={false}
+                              nativeID="animatedComponent"
                               style={
                                 Object {
                                   "alignItems": "center",
@@ -7004,6 +7264,8 @@ exports[`Settings.Network toggle onPress works 1`] = `
                               }
                             >
                               <View
+                                collapsable={false}
+                                nativeID="animatedComponent"
                                 style={
                                   Object {
                                     "opacity": 1,
@@ -7011,6 +7273,8 @@ exports[`Settings.Network toggle onPress works 1`] = `
                                 }
                               >
                                 <View
+                                  collapsable={false}
+                                  nativeID="animatedComponent"
                                   style={
                                     Object {
                                       "transform": Array [
@@ -7044,7 +7308,9 @@ exports[`Settings.Network toggle onPress works 1`] = `
                     />
                     <View
                       accessible={true}
+                      collapsable={false}
                       focusable={true}
+                      nativeID="animatedComponent"
                       onClick={[Function]}
                       onResponderGrant={[Function]}
                       onResponderMove={[Function]}
@@ -7072,6 +7338,8 @@ exports[`Settings.Network toggle onPress works 1`] = `
                         }
                       >
                         <View
+                          collapsable={false}
+                          nativeID="animatedComponent"
                           style={
                             Object {
                               "transform": Array [
@@ -7126,7 +7394,9 @@ exports[`Settings.Network toggle onPress works 1`] = `
                       >
                         <View
                           accessible={true}
+                          collapsable={false}
                           focusable={true}
+                          nativeID="animatedComponent"
                           onClick={[Function]}
                           onResponderGrant={[Function]}
                           onResponderMove={[Function]}
@@ -7206,7 +7476,9 @@ exports[`Settings.Network toggle onPress works 1`] = `
                               >
                                 <View
                                   accessible={true}
+                                  collapsable={false}
                                   focusable={true}
+                                  nativeID="animatedComponent"
                                   onClick={[Function]}
                                   onResponderGrant={[Function]}
                                   onResponderMove={[Function]}
@@ -7225,13 +7497,11 @@ exports[`Settings.Network toggle onPress works 1`] = `
                                   }
                                 >
                                   <TextInput
-                                    allowFontScaling={true}
                                     autoCapitalize="none"
                                     autoCorrect={false}
                                     onChangeText={[Function]}
                                     placeholder="onboarding.custom-mode.settings.modals.alias"
                                     placeholderTextColor="#D0D0D6"
-                                    rejectResponderTermination={true}
                                     style={
                                       Array [
                                         Object {
@@ -7244,7 +7514,6 @@ exports[`Settings.Network toggle onPress works 1`] = `
                                         },
                                       ]
                                     }
-                                    underlineColorAndroid="transparent"
                                     value=""
                                   />
                                 </View>
@@ -7263,7 +7532,9 @@ exports[`Settings.Network toggle onPress works 1`] = `
                               >
                                 <View
                                   accessible={true}
+                                  collapsable={false}
                                   focusable={true}
+                                  nativeID="animatedComponent"
                                   onClick={[Function]}
                                   onResponderGrant={[Function]}
                                   onResponderMove={[Function]}
@@ -7282,14 +7553,12 @@ exports[`Settings.Network toggle onPress works 1`] = `
                                   }
                                 >
                                   <TextInput
-                                    allowFontScaling={true}
                                     autoCapitalize="none"
                                     autoCorrect={false}
                                     multiline={true}
                                     onChangeText={[Function]}
                                     placeholder="onboarding.custom-mode.settings.modals.multiaddress"
                                     placeholderTextColor="#D0D0D6"
-                                    rejectResponderTermination={true}
                                     style={
                                       Array [
                                         Object {
@@ -7302,7 +7571,6 @@ exports[`Settings.Network toggle onPress works 1`] = `
                                         },
                                       ]
                                     }
-                                    underlineColorAndroid="transparent"
                                     value=""
                                   />
                                 </View>
@@ -7354,7 +7622,9 @@ exports[`Settings.Network toggle onPress works 1`] = `
                               >
                                 <View
                                   accessible={true}
+                                  collapsable={false}
                                   focusable={true}
+                                  nativeID="animatedComponent"
                                   onClick={[Function]}
                                   onResponderGrant={[Function]}
                                   onResponderMove={[Function]}

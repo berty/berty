@@ -55,7 +55,9 @@ exports[`Settings.Notifications renders correctly 1`] = `
           >
             <View
               accessible={true}
+              collapsable={false}
               focusable={true}
+              nativeID="animatedComponent"
               onClick={[Function]}
               onResponderGrant={[Function]}
               onResponderMove={[Function]}
@@ -106,7 +108,9 @@ exports[`Settings.Notifications renders correctly 1`] = `
               </View>
               <View
                 accessible={true}
+                collapsable={false}
                 focusable={true}
+                nativeID="animatedComponent"
                 onClick={[Function]}
                 onResponderGrant={[Function]}
                 onResponderMove={[Function]}
@@ -127,6 +131,8 @@ exports[`Settings.Notifications renders correctly 1`] = `
                 }
               >
                 <View
+                  collapsable={false}
+                  nativeID="animatedComponent"
                   style={
                     Object {
                       "alignItems": "center",
@@ -141,6 +147,8 @@ exports[`Settings.Notifications renders correctly 1`] = `
                   }
                 >
                   <View
+                    collapsable={false}
+                    nativeID="animatedComponent"
                     style={
                       Object {
                         "opacity": 0,
@@ -148,6 +156,8 @@ exports[`Settings.Notifications renders correctly 1`] = `
                     }
                   >
                     <View
+                      collapsable={false}
+                      nativeID="animatedComponent"
                       style={
                         Object {
                           "transform": Array [
@@ -188,7 +198,9 @@ exports[`Settings.Notifications renders correctly 1`] = `
           >
             <View
               accessible={true}
+              collapsable={false}
               focusable={true}
+              nativeID="animatedComponent"
               onClick={[Function]}
               onResponderGrant={[Function]}
               onResponderMove={[Function]}
@@ -239,7 +251,9 @@ exports[`Settings.Notifications renders correctly 1`] = `
               </View>
               <View
                 accessible={true}
+                collapsable={false}
                 focusable={true}
+                nativeID="animatedComponent"
                 onClick={[Function]}
                 onResponderGrant={[Function]}
                 onResponderMove={[Function]}
@@ -260,6 +274,8 @@ exports[`Settings.Notifications renders correctly 1`] = `
                 }
               >
                 <View
+                  collapsable={false}
+                  nativeID="animatedComponent"
                   style={
                     Object {
                       "alignItems": "center",
@@ -274,6 +290,8 @@ exports[`Settings.Notifications renders correctly 1`] = `
                   }
                 >
                   <View
+                    collapsable={false}
+                    nativeID="animatedComponent"
                     style={
                       Object {
                         "opacity": 1,
@@ -281,6 +299,8 @@ exports[`Settings.Notifications renders correctly 1`] = `
                     }
                   >
                     <View
+                      collapsable={false}
+                      nativeID="animatedComponent"
                       style={
                         Object {
                           "transform": Array [

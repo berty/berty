@@ -85,7 +85,9 @@ exports[`Settings.DevTools renders correctly 1`] = `
                 <View>
                   <View
                     accessible={true}
+                    collapsable={false}
                     focusable={false}
+                    nativeID="animatedComponent"
                     onClick={[Function]}
                     onResponderGrant={[Function]}
                     onResponderMove={[Function]}
@@ -115,6 +117,8 @@ exports[`Settings.DevTools renders correctly 1`] = `
                     }
                   >
                     <View
+                      collapsable={false}
+                      nativeID="animatedComponent"
                       style={
                         Object {
                           "transform": Array [
@@ -167,7 +171,9 @@ exports[`Settings.DevTools renders correctly 1`] = `
                   </View>
                   <View
                     accessible={true}
+                    collapsable={false}
                     focusable={true}
+                    nativeID="animatedComponent"
                     onClick={[Function]}
                     onResponderGrant={[Function]}
                     onResponderMove={[Function]}
@@ -197,6 +203,8 @@ exports[`Settings.DevTools renders correctly 1`] = `
                     }
                   >
                     <View
+                      collapsable={false}
+                      nativeID="animatedComponent"
                       style={
                         Object {
                           "transform": Array [
@@ -249,7 +257,9 @@ exports[`Settings.DevTools renders correctly 1`] = `
                   </View>
                   <View
                     accessible={true}
+                    collapsable={false}
                     focusable={false}
+                    nativeID="animatedComponent"
                     onClick={[Function]}
                     onResponderGrant={[Function]}
                     onResponderMove={[Function]}
@@ -278,6 +288,8 @@ exports[`Settings.DevTools renders correctly 1`] = `
                     }
                   >
                     <View
+                      collapsable={false}
+                      nativeID="animatedComponent"
                       style={
                         Object {
                           "transform": Array [
@@ -365,7 +377,9 @@ exports[`Settings.DevTools renders correctly 1`] = `
             >
               <View
                 accessible={true}
+                collapsable={false}
                 focusable={true}
+                nativeID="animatedComponent"
                 onClick={[Function]}
                 onResponderGrant={[Function]}
                 onResponderMove={[Function]}
@@ -421,6 +435,8 @@ exports[`Settings.DevTools renders correctly 1`] = `
                   }
                 >
                   <View
+                    collapsable={false}
+                    nativeID="animatedComponent"
                     style={
                       Object {
                         "transform": Array [
@@ -432,6 +448,8 @@ exports[`Settings.DevTools renders correctly 1`] = `
                     }
                   >
                     <View
+                      collapsable={false}
+                      nativeID="animatedComponent"
                       style={
                         Object {
                           "transform": Array [
@@ -453,6 +471,8 @@ exports[`Settings.DevTools renders correctly 1`] = `
                 </View>
               </View>
               <RCTScrollView
+                collapsable={false}
+                nativeID="animatedComponent"
                 nestedScrollEnabled={true}
                 scrollEventThrottle={0.0001}
                 showsVerticalScrollIndicator={false}
@@ -485,7 +505,9 @@ exports[`Settings.DevTools renders correctly 1`] = `
             >
               <View
                 accessible={true}
+                collapsable={false}
                 focusable={true}
+                nativeID="animatedComponent"
                 onClick={[Function]}
                 onResponderGrant={[Function]}
                 onResponderMove={[Function]}
@@ -535,6 +557,8 @@ exports[`Settings.DevTools renders correctly 1`] = `
                   </Text>
                 </View>
                 <View
+                  collapsable={false}
+                  nativeID="animatedComponent"
                   style={
                     Object {
                       "transform": Array [
@@ -563,7 +587,9 @@ exports[`Settings.DevTools renders correctly 1`] = `
               />
               <View
                 accessible={true}
+                collapsable={false}
                 focusable={true}
+                nativeID="animatedComponent"
                 onClick={[Function]}
                 onResponderGrant={[Function]}
                 onResponderMove={[Function]}
@@ -613,6 +639,8 @@ exports[`Settings.DevTools renders correctly 1`] = `
                   </Text>
                 </View>
                 <View
+                  collapsable={false}
+                  nativeID="animatedComponent"
                   style={
                     Object {
                       "transform": Array [
@@ -658,7 +686,9 @@ exports[`Settings.DevTools renders correctly 1`] = `
               />
               <View
                 accessible={true}
+                collapsable={false}
                 focusable={true}
+                nativeID="animatedComponent"
                 onClick={[Function]}
                 onResponderGrant={[Function]}
                 onResponderMove={[Function]}
@@ -685,6 +715,8 @@ exports[`Settings.DevTools renders correctly 1`] = `
                   }
                 >
                   <View
+                    collapsable={false}
+                    nativeID="animatedComponent"
                     style={
                       Object {
                         "transform": Array [
@@ -734,6 +766,8 @@ exports[`Settings.DevTools renders correctly 1`] = `
                   </View>
                 </View>
                 <View
+                  collapsable={false}
+                  nativeID="animatedComponent"
                   style={
                     Object {
                       "transform": Array [
@@ -754,7 +788,9 @@ exports[`Settings.DevTools renders correctly 1`] = `
               </View>
               <View
                 accessible={true}
+                collapsable={false}
                 focusable={true}
+                nativeID="animatedComponent"
                 onClick={[Function]}
                 onResponderGrant={[Function]}
                 onResponderMove={[Function]}
@@ -781,6 +817,8 @@ exports[`Settings.DevTools renders correctly 1`] = `
                   }
                 >
                   <View
+                    collapsable={false}
+                    nativeID="animatedComponent"
                     style={
                       Object {
                         "transform": Array [
@@ -830,6 +868,8 @@ exports[`Settings.DevTools renders correctly 1`] = `
                   </View>
                 </View>
                 <View
+                  collapsable={false}
+                  nativeID="animatedComponent"
                   style={
                     Object {
                       "transform": Array [
@@ -867,7 +907,9 @@ exports[`Settings.DevTools renders correctly 1`] = `
             >
               <View
                 accessible={true}
+                collapsable={false}
                 focusable={true}
+                nativeID="animatedComponent"
                 onClick={[Function]}
                 onResponderGrant={[Function]}
                 onResponderMove={[Function]}
@@ -894,6 +936,8 @@ exports[`Settings.DevTools renders correctly 1`] = `
                   }
                 >
                   <View
+                    collapsable={false}
+                    nativeID="animatedComponent"
                     style={
                       Object {
                         "transform": Array [
@@ -944,7 +988,9 @@ exports[`Settings.DevTools renders correctly 1`] = `
                 </View>
                 <View
                   accessible={true}
+                  collapsable={false}
                   focusable={true}
+                  nativeID="animatedComponent"
                   onClick={[Function]}
                   onResponderGrant={[Function]}
                   onResponderMove={[Function]}
@@ -965,6 +1011,8 @@ exports[`Settings.DevTools renders correctly 1`] = `
                   }
                 >
                   <View
+                    collapsable={false}
+                    nativeID="animatedComponent"
                     style={
                       Object {
                         "alignItems": "center",
@@ -979,6 +1027,8 @@ exports[`Settings.DevTools renders correctly 1`] = `
                     }
                   >
                     <View
+                      collapsable={false}
+                      nativeID="animatedComponent"
                       style={
                         Object {
                           "opacity": 0,
@@ -986,6 +1036,8 @@ exports[`Settings.DevTools renders correctly 1`] = `
                       }
                     >
                       <View
+                        collapsable={false}
+                        nativeID="animatedComponent"
                         style={
                           Object {
                             "transform": Array [
@@ -1019,7 +1071,9 @@ exports[`Settings.DevTools renders correctly 1`] = `
             >
               <View
                 accessible={true}
+                collapsable={false}
                 focusable={false}
+                nativeID="animatedComponent"
                 onClick={[Function]}
                 onResponderGrant={[Function]}
                 onResponderMove={[Function]}
@@ -1082,6 +1136,8 @@ exports[`Settings.DevTools renders correctly 1`] = `
                   >
                     <View>
                       <View
+                        collapsable={false}
+                        nativeID="animatedComponent"
                         style={
                           Object {
                             "transform": Array [
@@ -1153,7 +1209,9 @@ exports[`Settings.DevTools renders correctly 1`] = `
                   >
                     <View
                       accessible={true}
+                      collapsable={false}
                       focusable={true}
+                      nativeID="animatedComponent"
                       onClick={[Function]}
                       onResponderGrant={[Function]}
                       onResponderMove={[Function]}
@@ -1174,6 +1232,8 @@ exports[`Settings.DevTools renders correctly 1`] = `
                       }
                     >
                       <View
+                        collapsable={false}
+                        nativeID="animatedComponent"
                         style={
                           Object {
                             "alignItems": "center",
@@ -1188,6 +1248,8 @@ exports[`Settings.DevTools renders correctly 1`] = `
                         }
                       >
                         <View
+                          collapsable={false}
+                          nativeID="animatedComponent"
                           style={
                             Object {
                               "opacity": 0,
@@ -1195,6 +1257,8 @@ exports[`Settings.DevTools renders correctly 1`] = `
                           }
                         >
                           <View
+                            collapsable={false}
+                            nativeID="animatedComponent"
                             style={
                               Object {
                                 "transform": Array [
@@ -1220,7 +1284,9 @@ exports[`Settings.DevTools renders correctly 1`] = `
               </View>
               <View
                 accessible={true}
+                collapsable={false}
                 focusable={true}
+                nativeID="animatedComponent"
                 onClick={[Function]}
                 onResponderGrant={[Function]}
                 onResponderMove={[Function]}
@@ -1283,6 +1349,8 @@ exports[`Settings.DevTools renders correctly 1`] = `
                   >
                     <View>
                       <View
+                        collapsable={false}
+                        nativeID="animatedComponent"
                         style={
                           Object {
                             "transform": Array [
@@ -1353,9 +1421,13 @@ exports[`Settings.DevTools renders correctly 1`] = `
                     }
                   >
                     <View
+                      collapsable={false}
+                      nativeID="animatedComponent"
                       style={Object {}}
                     >
                       <View
+                        collapsable={false}
+                        nativeID="animatedComponent"
                         style={
                           Object {
                             "transform": Array [
@@ -1379,7 +1451,9 @@ exports[`Settings.DevTools renders correctly 1`] = `
               </View>
               <View
                 accessible={true}
+                collapsable={false}
                 focusable={true}
+                nativeID="animatedComponent"
                 onClick={[Function]}
                 onResponderGrant={[Function]}
                 onResponderMove={[Function]}
@@ -1442,6 +1516,8 @@ exports[`Settings.DevTools renders correctly 1`] = `
                   >
                     <View>
                       <View
+                        collapsable={false}
+                        nativeID="animatedComponent"
                         style={
                           Object {
                             "transform": Array [
@@ -1512,9 +1588,13 @@ exports[`Settings.DevTools renders correctly 1`] = `
                     }
                   >
                     <View
+                      collapsable={false}
+                      nativeID="animatedComponent"
                       style={Object {}}
                     >
                       <View
+                        collapsable={false}
+                        nativeID="animatedComponent"
                         style={
                           Object {
                             "transform": Array [
@@ -1538,7 +1618,9 @@ exports[`Settings.DevTools renders correctly 1`] = `
               </View>
               <View
                 accessible={true}
+                collapsable={false}
                 focusable={true}
+                nativeID="animatedComponent"
                 onClick={[Function]}
                 onResponderGrant={[Function]}
                 onResponderMove={[Function]}
@@ -1601,6 +1683,8 @@ exports[`Settings.DevTools renders correctly 1`] = `
                   >
                     <View>
                       <View
+                        collapsable={false}
+                        nativeID="animatedComponent"
                         style={
                           Object {
                             "transform": Array [
@@ -1671,9 +1755,13 @@ exports[`Settings.DevTools renders correctly 1`] = `
                     }
                   >
                     <View
+                      collapsable={false}
+                      nativeID="animatedComponent"
                       style={Object {}}
                     >
                       <View
+                        collapsable={false}
+                        nativeID="animatedComponent"
                         style={
                           Object {
                             "transform": Array [
@@ -1697,7 +1785,9 @@ exports[`Settings.DevTools renders correctly 1`] = `
               </View>
               <View
                 accessible={true}
+                collapsable={false}
                 focusable={true}
+                nativeID="animatedComponent"
                 onClick={[Function]}
                 onResponderGrant={[Function]}
                 onResponderMove={[Function]}
@@ -1760,6 +1850,8 @@ exports[`Settings.DevTools renders correctly 1`] = `
                   >
                     <View>
                       <View
+                        collapsable={false}
+                        nativeID="animatedComponent"
                         style={
                           Object {
                             "transform": Array [
@@ -1830,9 +1922,13 @@ exports[`Settings.DevTools renders correctly 1`] = `
                     }
                   >
                     <View
+                      collapsable={false}
+                      nativeID="animatedComponent"
                       style={Object {}}
                     >
                       <View
+                        collapsable={false}
+                        nativeID="animatedComponent"
                         style={
                           Object {
                             "transform": Array [
@@ -1856,7 +1952,9 @@ exports[`Settings.DevTools renders correctly 1`] = `
               </View>
               <View
                 accessible={true}
+                collapsable={false}
                 focusable={true}
+                nativeID="animatedComponent"
                 onClick={[Function]}
                 onResponderGrant={[Function]}
                 onResponderMove={[Function]}
@@ -1919,6 +2017,8 @@ exports[`Settings.DevTools renders correctly 1`] = `
                   >
                     <View>
                       <View
+                        collapsable={false}
+                        nativeID="animatedComponent"
                         style={
                           Object {
                             "transform": Array [
@@ -2000,9 +2100,13 @@ exports[`Settings.DevTools renders correctly 1`] = `
                     }
                   >
                     <View
+                      collapsable={false}
+                      nativeID="animatedComponent"
                       style={Object {}}
                     >
                       <View
+                        collapsable={false}
+                        nativeID="animatedComponent"
                         style={
                           Object {
                             "transform": Array [
@@ -2026,7 +2130,9 @@ exports[`Settings.DevTools renders correctly 1`] = `
               </View>
               <View
                 accessible={true}
+                collapsable={false}
                 focusable={false}
+                nativeID="animatedComponent"
                 onClick={[Function]}
                 onResponderGrant={[Function]}
                 onResponderMove={[Function]}
@@ -2089,6 +2195,8 @@ exports[`Settings.DevTools renders correctly 1`] = `
                   >
                     <View>
                       <View
+                        collapsable={false}
+                        nativeID="animatedComponent"
                         style={
                           Object {
                             "transform": Array [
@@ -2160,7 +2268,9 @@ exports[`Settings.DevTools renders correctly 1`] = `
                   >
                     <View
                       accessible={true}
+                      collapsable={false}
                       focusable={true}
+                      nativeID="animatedComponent"
                       onClick={[Function]}
                       onResponderGrant={[Function]}
                       onResponderMove={[Function]}
@@ -2181,6 +2291,8 @@ exports[`Settings.DevTools renders correctly 1`] = `
                       }
                     >
                       <View
+                        collapsable={false}
+                        nativeID="animatedComponent"
                         style={
                           Object {
                             "alignItems": "center",
@@ -2195,6 +2307,8 @@ exports[`Settings.DevTools renders correctly 1`] = `
                         }
                       >
                         <View
+                          collapsable={false}
+                          nativeID="animatedComponent"
                           style={
                             Object {
                               "opacity": 0,
@@ -2202,6 +2316,8 @@ exports[`Settings.DevTools renders correctly 1`] = `
                           }
                         >
                           <View
+                            collapsable={false}
+                            nativeID="animatedComponent"
                             style={
                               Object {
                                 "transform": Array [
@@ -2227,7 +2343,9 @@ exports[`Settings.DevTools renders correctly 1`] = `
               </View>
               <View
                 accessible={true}
+                collapsable={false}
                 focusable={false}
+                nativeID="animatedComponent"
                 onClick={[Function]}
                 onResponderGrant={[Function]}
                 onResponderMove={[Function]}
@@ -2292,6 +2410,8 @@ exports[`Settings.DevTools renders correctly 1`] = `
                   >
                     <View>
                       <View
+                        collapsable={false}
+                        nativeID="animatedComponent"
                         style={
                           Object {
                             "transform": Array [
@@ -2412,12 +2532,10 @@ exports[`Settings.DevTools renders correctly 1`] = `
                       }
                     >
                       <TextInput
-                        allowFontScaling={true}
                         autoCapitalize="none"
                         autoCorrect={false}
                         multiline={true}
                         onChangeText={[Function]}
-                        rejectResponderTermination={true}
                         style={
                           Array [
                             Object {
@@ -2435,12 +2553,13 @@ exports[`Settings.DevTools renders correctly 1`] = `
                             },
                           ]
                         }
-                        underlineColorAndroid="transparent"
                         value=""
                       />
                       <View
                         accessible={true}
+                        collapsable={false}
                         focusable={true}
+                        nativeID="animatedComponent"
                         onClick={[Function]}
                         onResponderGrant={[Function]}
                         onResponderMove={[Function]}
@@ -2455,6 +2574,8 @@ exports[`Settings.DevTools renders correctly 1`] = `
                         }
                       >
                         <View
+                          collapsable={false}
+                          nativeID="animatedComponent"
                           style={
                             Object {
                               "transform": Array [
@@ -2497,6 +2618,8 @@ exports[`Settings.DevTools renders correctly 1`] = `
                       }
                     >
                       <View
+                        collapsable={false}
+                        nativeID="animatedComponent"
                         style={
                           Object {
                             "transform": Array [
@@ -2554,7 +2677,9 @@ exports[`Settings.DevTools renders correctly 1`] = `
               </View>
               <View
                 accessible={true}
+                collapsable={false}
                 focusable={false}
+                nativeID="animatedComponent"
                 onClick={[Function]}
                 onResponderGrant={[Function]}
                 onResponderMove={[Function]}
@@ -2619,6 +2744,8 @@ exports[`Settings.DevTools renders correctly 1`] = `
                   >
                     <View>
                       <View
+                        collapsable={false}
+                        nativeID="animatedComponent"
                         style={
                           Object {
                             "transform": Array [
@@ -2739,12 +2866,10 @@ exports[`Settings.DevTools renders correctly 1`] = `
                       }
                     >
                       <TextInput
-                        allowFontScaling={true}
                         autoCapitalize="none"
                         autoCorrect={false}
                         multiline={true}
                         onChangeText={[Function]}
-                        rejectResponderTermination={true}
                         style={
                           Array [
                             Object {
@@ -2762,12 +2887,13 @@ exports[`Settings.DevTools renders correctly 1`] = `
                             },
                           ]
                         }
-                        underlineColorAndroid="transparent"
                         value=""
                       />
                       <View
                         accessible={true}
+                        collapsable={false}
                         focusable={true}
+                        nativeID="animatedComponent"
                         onClick={[Function]}
                         onResponderGrant={[Function]}
                         onResponderMove={[Function]}
@@ -2782,6 +2908,8 @@ exports[`Settings.DevTools renders correctly 1`] = `
                         }
                       >
                         <View
+                          collapsable={false}
+                          nativeID="animatedComponent"
                           style={
                             Object {
                               "transform": Array [
@@ -2824,6 +2952,8 @@ exports[`Settings.DevTools renders correctly 1`] = `
                       }
                     >
                       <View
+                        collapsable={false}
+                        nativeID="animatedComponent"
                         style={
                           Object {
                             "transform": Array [
@@ -2881,7 +3011,9 @@ exports[`Settings.DevTools renders correctly 1`] = `
               </View>
               <View
                 accessible={true}
+                collapsable={false}
                 focusable={true}
+                nativeID="animatedComponent"
                 onClick={[Function]}
                 onResponderGrant={[Function]}
                 onResponderMove={[Function]}
@@ -2944,6 +3076,8 @@ exports[`Settings.DevTools renders correctly 1`] = `
                   >
                     <View>
                       <View
+                        collapsable={false}
+                        nativeID="animatedComponent"
                         style={
                           Object {
                             "transform": Array [
@@ -3014,9 +3148,13 @@ exports[`Settings.DevTools renders correctly 1`] = `
                     }
                   >
                     <View
+                      collapsable={false}
+                      nativeID="animatedComponent"
                       style={Object {}}
                     >
                       <View
+                        collapsable={false}
+                        nativeID="animatedComponent"
                         style={
                           Object {
                             "transform": Array [
@@ -3040,7 +3178,9 @@ exports[`Settings.DevTools renders correctly 1`] = `
               </View>
               <View
                 accessible={true}
+                collapsable={false}
                 focusable={false}
+                nativeID="animatedComponent"
                 onClick={[Function]}
                 onResponderGrant={[Function]}
                 onResponderMove={[Function]}
@@ -3105,6 +3245,8 @@ exports[`Settings.DevTools renders correctly 1`] = `
                   >
                     <View>
                       <View
+                        collapsable={false}
+                        nativeID="animatedComponent"
                         style={
                           Object {
                             "transform": Array [
@@ -3225,12 +3367,10 @@ exports[`Settings.DevTools renders correctly 1`] = `
                       }
                     >
                       <TextInput
-                        allowFontScaling={true}
                         autoCapitalize="none"
                         autoCorrect={false}
                         multiline={true}
                         onChangeText={[Function]}
-                        rejectResponderTermination={true}
                         style={
                           Array [
                             Object {
@@ -3248,12 +3388,13 @@ exports[`Settings.DevTools renders correctly 1`] = `
                             },
                           ]
                         }
-                        underlineColorAndroid="transparent"
                         value=""
                       />
                       <View
                         accessible={true}
+                        collapsable={false}
                         focusable={true}
+                        nativeID="animatedComponent"
                         onClick={[Function]}
                         onResponderGrant={[Function]}
                         onResponderMove={[Function]}
@@ -3268,6 +3409,8 @@ exports[`Settings.DevTools renders correctly 1`] = `
                         }
                       >
                         <View
+                          collapsable={false}
+                          nativeID="animatedComponent"
                           style={
                             Object {
                               "transform": Array [
@@ -3310,6 +3453,8 @@ exports[`Settings.DevTools renders correctly 1`] = `
                       }
                     >
                       <View
+                        collapsable={false}
+                        nativeID="animatedComponent"
                         style={
                           Object {
                             "transform": Array [
@@ -3367,7 +3512,9 @@ exports[`Settings.DevTools renders correctly 1`] = `
               </View>
               <View
                 accessible={true}
+                collapsable={false}
                 focusable={true}
+                nativeID="animatedComponent"
                 onClick={[Function]}
                 onResponderGrant={[Function]}
                 onResponderMove={[Function]}
@@ -3430,6 +3577,8 @@ exports[`Settings.DevTools renders correctly 1`] = `
                   >
                     <View>
                       <View
+                        collapsable={false}
+                        nativeID="animatedComponent"
                         style={
                           Object {
                             "transform": Array [
@@ -3500,9 +3649,13 @@ exports[`Settings.DevTools renders correctly 1`] = `
                     }
                   >
                     <View
+                      collapsable={false}
+                      nativeID="animatedComponent"
                       style={Object {}}
                     >
                       <View
+                        collapsable={false}
+                        nativeID="animatedComponent"
                         style={
                           Object {
                             "transform": Array [
@@ -3526,7 +3679,9 @@ exports[`Settings.DevTools renders correctly 1`] = `
               </View>
               <View
                 accessible={true}
+                collapsable={false}
                 focusable={true}
+                nativeID="animatedComponent"
                 onClick={[Function]}
                 onResponderGrant={[Function]}
                 onResponderMove={[Function]}
@@ -3589,6 +3744,8 @@ exports[`Settings.DevTools renders correctly 1`] = `
                   >
                     <View>
                       <View
+                        collapsable={false}
+                        nativeID="animatedComponent"
                         style={
                           Object {
                             "transform": Array [
@@ -3659,9 +3816,13 @@ exports[`Settings.DevTools renders correctly 1`] = `
                     }
                   >
                     <View
+                      collapsable={false}
+                      nativeID="animatedComponent"
                       style={Object {}}
                     >
                       <View
+                        collapsable={false}
+                        nativeID="animatedComponent"
                         style={
                           Object {
                             "transform": Array [
@@ -3685,7 +3846,9 @@ exports[`Settings.DevTools renders correctly 1`] = `
               </View>
               <View
                 accessible={true}
+                collapsable={false}
                 focusable={true}
+                nativeID="animatedComponent"
                 onClick={[Function]}
                 onResponderGrant={[Function]}
                 onResponderMove={[Function]}
@@ -3748,6 +3911,8 @@ exports[`Settings.DevTools renders correctly 1`] = `
                   >
                     <View>
                       <View
+                        collapsable={false}
+                        nativeID="animatedComponent"
                         style={
                           Object {
                             "transform": Array [
@@ -3818,9 +3983,13 @@ exports[`Settings.DevTools renders correctly 1`] = `
                     }
                   >
                     <View
+                      collapsable={false}
+                      nativeID="animatedComponent"
                       style={Object {}}
                     >
                       <View
+                        collapsable={false}
+                        nativeID="animatedComponent"
                         style={
                           Object {
                             "transform": Array [
@@ -3844,7 +4013,9 @@ exports[`Settings.DevTools renders correctly 1`] = `
               </View>
               <View
                 accessible={true}
+                collapsable={false}
                 focusable={true}
+                nativeID="animatedComponent"
                 onClick={[Function]}
                 onResponderGrant={[Function]}
                 onResponderMove={[Function]}
@@ -3907,6 +4078,8 @@ exports[`Settings.DevTools renders correctly 1`] = `
                   >
                     <View>
                       <View
+                        collapsable={false}
+                        nativeID="animatedComponent"
                         style={
                           Object {
                             "transform": Array [
@@ -3977,9 +4150,13 @@ exports[`Settings.DevTools renders correctly 1`] = `
                     }
                   >
                     <View
+                      collapsable={false}
+                      nativeID="animatedComponent"
                       style={Object {}}
                     >
                       <View
+                        collapsable={false}
+                        nativeID="animatedComponent"
                         style={
                           Object {
                             "transform": Array [
@@ -4003,7 +4180,9 @@ exports[`Settings.DevTools renders correctly 1`] = `
               </View>
               <View
                 accessible={true}
+                collapsable={false}
                 focusable={true}
+                nativeID="animatedComponent"
                 onClick={[Function]}
                 onResponderGrant={[Function]}
                 onResponderMove={[Function]}
@@ -4066,6 +4245,8 @@ exports[`Settings.DevTools renders correctly 1`] = `
                   >
                     <View>
                       <View
+                        collapsable={false}
+                        nativeID="animatedComponent"
                         style={
                           Object {
                             "transform": Array [
@@ -4136,9 +4317,13 @@ exports[`Settings.DevTools renders correctly 1`] = `
                     }
                   >
                     <View
+                      collapsable={false}
+                      nativeID="animatedComponent"
                       style={Object {}}
                     >
                       <View
+                        collapsable={false}
+                        nativeID="animatedComponent"
                         style={
                           Object {
                             "transform": Array [
@@ -4162,7 +4347,9 @@ exports[`Settings.DevTools renders correctly 1`] = `
               </View>
               <View
                 accessible={true}
+                collapsable={false}
                 focusable={true}
+                nativeID="animatedComponent"
                 onClick={[Function]}
                 onResponderGrant={[Function]}
                 onResponderMove={[Function]}
@@ -4225,6 +4412,8 @@ exports[`Settings.DevTools renders correctly 1`] = `
                   >
                     <View>
                       <View
+                        collapsable={false}
+                        nativeID="animatedComponent"
                         style={
                           Object {
                             "transform": Array [
@@ -4295,9 +4484,13 @@ exports[`Settings.DevTools renders correctly 1`] = `
                     }
                   >
                     <View
+                      collapsable={false}
+                      nativeID="animatedComponent"
                       style={Object {}}
                     >
                       <View
+                        collapsable={false}
+                        nativeID="animatedComponent"
                         style={
                           Object {
                             "transform": Array [
@@ -4321,7 +4514,9 @@ exports[`Settings.DevTools renders correctly 1`] = `
               </View>
               <View
                 accessible={true}
+                collapsable={false}
                 focusable={true}
+                nativeID="animatedComponent"
                 onClick={[Function]}
                 onResponderGrant={[Function]}
                 onResponderMove={[Function]}
@@ -4384,6 +4579,8 @@ exports[`Settings.DevTools renders correctly 1`] = `
                   >
                     <View>
                       <View
+                        collapsable={false}
+                        nativeID="animatedComponent"
                         style={
                           Object {
                             "transform": Array [
@@ -4454,9 +4651,13 @@ exports[`Settings.DevTools renders correctly 1`] = `
                     }
                   >
                     <View
+                      collapsable={false}
+                      nativeID="animatedComponent"
                       style={Object {}}
                     >
                       <View
+                        collapsable={false}
+                        nativeID="animatedComponent"
                         style={
                           Object {
                             "transform": Array [
@@ -4480,7 +4681,9 @@ exports[`Settings.DevTools renders correctly 1`] = `
               </View>
               <View
                 accessible={true}
+                collapsable={false}
                 focusable={true}
+                nativeID="animatedComponent"
                 onClick={[Function]}
                 onResponderGrant={[Function]}
                 onResponderMove={[Function]}
@@ -4543,6 +4746,8 @@ exports[`Settings.DevTools renders correctly 1`] = `
                   >
                     <View>
                       <View
+                        collapsable={false}
+                        nativeID="animatedComponent"
                         style={
                           Object {
                             "transform": Array [
@@ -4613,9 +4818,13 @@ exports[`Settings.DevTools renders correctly 1`] = `
                     }
                   >
                     <View
+                      collapsable={false}
+                      nativeID="animatedComponent"
                       style={Object {}}
                     >
                       <View
+                        collapsable={false}
+                        nativeID="animatedComponent"
                         style={
                           Object {
                             "transform": Array [
@@ -4639,7 +4848,9 @@ exports[`Settings.DevTools renders correctly 1`] = `
               </View>
               <View
                 accessible={true}
+                collapsable={false}
                 focusable={false}
+                nativeID="animatedComponent"
                 onClick={[Function]}
                 onResponderGrant={[Function]}
                 onResponderMove={[Function]}
@@ -4702,6 +4913,8 @@ exports[`Settings.DevTools renders correctly 1`] = `
                   >
                     <View>
                       <View
+                        collapsable={false}
+                        nativeID="animatedComponent"
                         style={
                           Object {
                             "transform": Array [
@@ -4772,9 +4985,13 @@ exports[`Settings.DevTools renders correctly 1`] = `
                     }
                   >
                     <View
+                      collapsable={false}
+                      nativeID="animatedComponent"
                       style={Object {}}
                     >
                       <View
+                        collapsable={false}
+                        nativeID="animatedComponent"
                         style={
                           Object {
                             "transform": Array [
@@ -4798,7 +5015,9 @@ exports[`Settings.DevTools renders correctly 1`] = `
               </View>
               <View
                 accessible={true}
+                collapsable={false}
                 focusable={false}
+                nativeID="animatedComponent"
                 onClick={[Function]}
                 onResponderGrant={[Function]}
                 onResponderMove={[Function]}
@@ -4861,6 +5080,8 @@ exports[`Settings.DevTools renders correctly 1`] = `
                   >
                     <View>
                       <View
+                        collapsable={false}
+                        nativeID="animatedComponent"
                         style={
                           Object {
                             "transform": Array [
@@ -4931,9 +5152,13 @@ exports[`Settings.DevTools renders correctly 1`] = `
                     }
                   >
                     <View
+                      collapsable={false}
+                      nativeID="animatedComponent"
                       style={Object {}}
                     >
                       <View
+                        collapsable={false}
+                        nativeID="animatedComponent"
                         style={
                           Object {
                             "transform": Array [
@@ -4957,7 +5182,9 @@ exports[`Settings.DevTools renders correctly 1`] = `
               </View>
               <View
                 accessible={true}
+                collapsable={false}
                 focusable={true}
+                nativeID="animatedComponent"
                 onClick={[Function]}
                 onResponderGrant={[Function]}
                 onResponderMove={[Function]}
@@ -5020,6 +5247,8 @@ exports[`Settings.DevTools renders correctly 1`] = `
                   >
                     <View>
                       <View
+                        collapsable={false}
+                        nativeID="animatedComponent"
                         style={
                           Object {
                             "transform": Array [
@@ -5090,9 +5319,13 @@ exports[`Settings.DevTools renders correctly 1`] = `
                     }
                   >
                     <View
+                      collapsable={false}
+                      nativeID="animatedComponent"
                       style={Object {}}
                     >
                       <View
+                        collapsable={false}
+                        nativeID="animatedComponent"
                         style={
                           Object {
                             "transform": Array [
@@ -5116,7 +5349,9 @@ exports[`Settings.DevTools renders correctly 1`] = `
               </View>
               <View
                 accessible={true}
+                collapsable={false}
                 focusable={true}
+                nativeID="animatedComponent"
                 onClick={[Function]}
                 onResponderGrant={[Function]}
                 onResponderMove={[Function]}
@@ -5179,6 +5414,8 @@ exports[`Settings.DevTools renders correctly 1`] = `
                   >
                     <View>
                       <View
+                        collapsable={false}
+                        nativeID="animatedComponent"
                         style={
                           Object {
                             "transform": Array [
@@ -5249,9 +5486,13 @@ exports[`Settings.DevTools renders correctly 1`] = `
                     }
                   >
                     <View
+                      collapsable={false}
+                      nativeID="animatedComponent"
                       style={Object {}}
                     >
                       <View
+                        collapsable={false}
+                        nativeID="animatedComponent"
                         style={
                           Object {
                             "transform": Array [
@@ -5275,7 +5516,9 @@ exports[`Settings.DevTools renders correctly 1`] = `
               </View>
               <View
                 accessible={true}
+                collapsable={false}
                 focusable={true}
+                nativeID="animatedComponent"
                 onClick={[Function]}
                 onResponderGrant={[Function]}
                 onResponderMove={[Function]}
@@ -5338,6 +5581,8 @@ exports[`Settings.DevTools renders correctly 1`] = `
                   >
                     <View>
                       <View
+                        collapsable={false}
+                        nativeID="animatedComponent"
                         style={
                           Object {
                             "transform": Array [
@@ -5408,9 +5653,13 @@ exports[`Settings.DevTools renders correctly 1`] = `
                     }
                   >
                     <View
+                      collapsable={false}
+                      nativeID="animatedComponent"
                       style={Object {}}
                     >
                       <View
+                        collapsable={false}
+                        nativeID="animatedComponent"
                         style={
                           Object {
                             "transform": Array [
@@ -5434,7 +5683,9 @@ exports[`Settings.DevTools renders correctly 1`] = `
               </View>
               <View
                 accessible={true}
+                collapsable={false}
                 focusable={true}
+                nativeID="animatedComponent"
                 onClick={[Function]}
                 onResponderGrant={[Function]}
                 onResponderMove={[Function]}
@@ -5497,6 +5748,8 @@ exports[`Settings.DevTools renders correctly 1`] = `
                   >
                     <View>
                       <View
+                        collapsable={false}
+                        nativeID="animatedComponent"
                         style={
                           Object {
                             "transform": Array [
@@ -5567,9 +5820,13 @@ exports[`Settings.DevTools renders correctly 1`] = `
                     }
                   >
                     <View
+                      collapsable={false}
+                      nativeID="animatedComponent"
                       style={Object {}}
                     >
                       <View
+                        collapsable={false}
+                        nativeID="animatedComponent"
                         style={
                           Object {
                             "transform": Array [
@@ -5608,7 +5865,9 @@ exports[`Settings.DevTools renders correctly 1`] = `
               >
                 <View
                   accessible={true}
+                  collapsable={false}
                   focusable={true}
+                  nativeID="animatedComponent"
                   onClick={[Function]}
                   onResponderGrant={[Function]}
                   onResponderMove={[Function]}
@@ -5653,6 +5912,8 @@ exports[`Settings.DevTools renders correctly 1`] = `
                     }
                   >
                     <View
+                      collapsable={false}
+                      nativeID="animatedComponent"
                       style={
                         Object {
                           "transform": Array [
@@ -5664,6 +5925,8 @@ exports[`Settings.DevTools renders correctly 1`] = `
                       }
                     >
                       <View
+                        collapsable={false}
+                        nativeID="animatedComponent"
                         style={
                           Object {
                             "transform": Array [
@@ -5685,6 +5948,8 @@ exports[`Settings.DevTools renders correctly 1`] = `
                   </View>
                 </View>
                 <RCTScrollView
+                  collapsable={false}
+                  nativeID="animatedComponent"
                   nestedScrollEnabled={true}
                   scrollEventThrottle={0.0001}
                   showsVerticalScrollIndicator={false}
@@ -5699,7 +5964,9 @@ exports[`Settings.DevTools renders correctly 1`] = `
                   <View>
                     <View
                       accessible={true}
+                      collapsable={false}
                       focusable={true}
+                      nativeID="animatedComponent"
                       onClick={[Function]}
                       onResponderGrant={[Function]}
                       onResponderMove={[Function]}
@@ -5754,7 +6021,9 @@ exports[`Settings.DevTools renders correctly 1`] = `
                     </View>
                     <View
                       accessible={true}
+                      collapsable={false}
                       focusable={true}
+                      nativeID="animatedComponent"
                       onClick={[Function]}
                       onResponderGrant={[Function]}
                       onResponderMove={[Function]}
@@ -5809,7 +6078,9 @@ exports[`Settings.DevTools renders correctly 1`] = `
                     </View>
                     <View
                       accessible={true}
+                      collapsable={false}
                       focusable={true}
+                      nativeID="animatedComponent"
                       onClick={[Function]}
                       onResponderGrant={[Function]}
                       onResponderMove={[Function]}
@@ -5864,7 +6135,9 @@ exports[`Settings.DevTools renders correctly 1`] = `
                     </View>
                     <View
                       accessible={true}
+                      collapsable={false}
                       focusable={true}
+                      nativeID="animatedComponent"
                       onClick={[Function]}
                       onResponderGrant={[Function]}
                       onResponderMove={[Function]}
@@ -5919,7 +6192,9 @@ exports[`Settings.DevTools renders correctly 1`] = `
                     </View>
                     <View
                       accessible={true}
+                      collapsable={false}
                       focusable={true}
+                      nativeID="animatedComponent"
                       onClick={[Function]}
                       onResponderGrant={[Function]}
                       onResponderMove={[Function]}
@@ -5974,7 +6249,9 @@ exports[`Settings.DevTools renders correctly 1`] = `
                     </View>
                     <View
                       accessible={true}
+                      collapsable={false}
                       focusable={true}
+                      nativeID="animatedComponent"
                       onClick={[Function]}
                       onResponderGrant={[Function]}
                       onResponderMove={[Function]}
@@ -6029,7 +6306,9 @@ exports[`Settings.DevTools renders correctly 1`] = `
                     </View>
                     <View
                       accessible={true}
+                      collapsable={false}
                       focusable={true}
+                      nativeID="animatedComponent"
                       onClick={[Function]}
                       onResponderGrant={[Function]}
                       onResponderMove={[Function]}
@@ -6084,7 +6363,9 @@ exports[`Settings.DevTools renders correctly 1`] = `
                     </View>
                     <View
                       accessible={true}
+                      collapsable={false}
                       focusable={true}
+                      nativeID="animatedComponent"
                       onClick={[Function]}
                       onResponderGrant={[Function]}
                       onResponderMove={[Function]}
@@ -6139,7 +6420,9 @@ exports[`Settings.DevTools renders correctly 1`] = `
                     </View>
                     <View
                       accessible={true}
+                      collapsable={false}
                       focusable={true}
+                      nativeID="animatedComponent"
                       onClick={[Function]}
                       onResponderGrant={[Function]}
                       onResponderMove={[Function]}
@@ -6194,7 +6477,9 @@ exports[`Settings.DevTools renders correctly 1`] = `
                     </View>
                     <View
                       accessible={true}
+                      collapsable={false}
                       focusable={true}
+                      nativeID="animatedComponent"
                       onClick={[Function]}
                       onResponderGrant={[Function]}
                       onResponderMove={[Function]}
@@ -6249,7 +6534,9 @@ exports[`Settings.DevTools renders correctly 1`] = `
                     </View>
                     <View
                       accessible={true}
+                      collapsable={false}
                       focusable={true}
+                      nativeID="animatedComponent"
                       onClick={[Function]}
                       onResponderGrant={[Function]}
                       onResponderMove={[Function]}
@@ -6304,7 +6591,9 @@ exports[`Settings.DevTools renders correctly 1`] = `
                     </View>
                     <View
                       accessible={true}
+                      collapsable={false}
                       focusable={true}
+                      nativeID="animatedComponent"
                       onClick={[Function]}
                       onResponderGrant={[Function]}
                       onResponderMove={[Function]}
@@ -6359,7 +6648,9 @@ exports[`Settings.DevTools renders correctly 1`] = `
                     </View>
                     <View
                       accessible={true}
+                      collapsable={false}
                       focusable={true}
+                      nativeID="animatedComponent"
                       onClick={[Function]}
                       onResponderGrant={[Function]}
                       onResponderMove={[Function]}
@@ -6414,7 +6705,9 @@ exports[`Settings.DevTools renders correctly 1`] = `
                     </View>
                     <View
                       accessible={true}
+                      collapsable={false}
                       focusable={true}
+                      nativeID="animatedComponent"
                       onClick={[Function]}
                       onResponderGrant={[Function]}
                       onResponderMove={[Function]}
@@ -6469,7 +6762,9 @@ exports[`Settings.DevTools renders correctly 1`] = `
                     </View>
                     <View
                       accessible={true}
+                      collapsable={false}
                       focusable={true}
+                      nativeID="animatedComponent"
                       onClick={[Function]}
                       onResponderGrant={[Function]}
                       onResponderMove={[Function]}
@@ -6524,7 +6819,9 @@ exports[`Settings.DevTools renders correctly 1`] = `
                     </View>
                     <View
                       accessible={true}
+                      collapsable={false}
                       focusable={true}
+                      nativeID="animatedComponent"
                       onClick={[Function]}
                       onResponderGrant={[Function]}
                       onResponderMove={[Function]}
@@ -6579,7 +6876,9 @@ exports[`Settings.DevTools renders correctly 1`] = `
                     </View>
                     <View
                       accessible={true}
+                      collapsable={false}
                       focusable={true}
+                      nativeID="animatedComponent"
                       onClick={[Function]}
                       onResponderGrant={[Function]}
                       onResponderMove={[Function]}
@@ -6634,7 +6933,9 @@ exports[`Settings.DevTools renders correctly 1`] = `
                     </View>
                     <View
                       accessible={true}
+                      collapsable={false}
                       focusable={true}
+                      nativeID="animatedComponent"
                       onClick={[Function]}
                       onResponderGrant={[Function]}
                       onResponderMove={[Function]}
@@ -6689,7 +6990,9 @@ exports[`Settings.DevTools renders correctly 1`] = `
                     </View>
                     <View
                       accessible={true}
+                      collapsable={false}
                       focusable={true}
+                      nativeID="animatedComponent"
                       onClick={[Function]}
                       onResponderGrant={[Function]}
                       onResponderMove={[Function]}
@@ -6744,7 +7047,9 @@ exports[`Settings.DevTools renders correctly 1`] = `
                     </View>
                     <View
                       accessible={true}
+                      collapsable={false}
                       focusable={true}
+                      nativeID="animatedComponent"
                       onClick={[Function]}
                       onResponderGrant={[Function]}
                       onResponderMove={[Function]}
@@ -6799,7 +7104,9 @@ exports[`Settings.DevTools renders correctly 1`] = `
                     </View>
                     <View
                       accessible={true}
+                      collapsable={false}
                       focusable={true}
+                      nativeID="animatedComponent"
                       onClick={[Function]}
                       onResponderGrant={[Function]}
                       onResponderMove={[Function]}
@@ -6854,7 +7161,9 @@ exports[`Settings.DevTools renders correctly 1`] = `
                     </View>
                     <View
                       accessible={true}
+                      collapsable={false}
                       focusable={true}
+                      nativeID="animatedComponent"
                       onClick={[Function]}
                       onResponderGrant={[Function]}
                       onResponderMove={[Function]}
@@ -6909,7 +7218,9 @@ exports[`Settings.DevTools renders correctly 1`] = `
                     </View>
                     <View
                       accessible={true}
+                      collapsable={false}
                       focusable={true}
+                      nativeID="animatedComponent"
                       onClick={[Function]}
                       onResponderGrant={[Function]}
                       onResponderMove={[Function]}
@@ -6964,7 +7275,9 @@ exports[`Settings.DevTools renders correctly 1`] = `
                     </View>
                     <View
                       accessible={true}
+                      collapsable={false}
                       focusable={true}
+                      nativeID="animatedComponent"
                       onClick={[Function]}
                       onResponderGrant={[Function]}
                       onResponderMove={[Function]}
@@ -7019,7 +7332,9 @@ exports[`Settings.DevTools renders correctly 1`] = `
                     </View>
                     <View
                       accessible={true}
+                      collapsable={false}
                       focusable={true}
+                      nativeID="animatedComponent"
                       onClick={[Function]}
                       onResponderGrant={[Function]}
                       onResponderMove={[Function]}
@@ -7074,7 +7389,9 @@ exports[`Settings.DevTools renders correctly 1`] = `
                     </View>
                     <View
                       accessible={true}
+                      collapsable={false}
                       focusable={true}
+                      nativeID="animatedComponent"
                       onClick={[Function]}
                       onResponderGrant={[Function]}
                       onResponderMove={[Function]}
@@ -7129,7 +7446,9 @@ exports[`Settings.DevTools renders correctly 1`] = `
                     </View>
                     <View
                       accessible={true}
+                      collapsable={false}
                       focusable={true}
+                      nativeID="animatedComponent"
                       onClick={[Function]}
                       onResponderGrant={[Function]}
                       onResponderMove={[Function]}
@@ -7184,7 +7503,9 @@ exports[`Settings.DevTools renders correctly 1`] = `
                     </View>
                     <View
                       accessible={true}
+                      collapsable={false}
                       focusable={true}
+                      nativeID="animatedComponent"
                       onClick={[Function]}
                       onResponderGrant={[Function]}
                       onResponderMove={[Function]}
@@ -7239,7 +7560,9 @@ exports[`Settings.DevTools renders correctly 1`] = `
                     </View>
                     <View
                       accessible={true}
+                      collapsable={false}
                       focusable={true}
+                      nativeID="animatedComponent"
                       onClick={[Function]}
                       onResponderGrant={[Function]}
                       onResponderMove={[Function]}
@@ -7294,7 +7617,9 @@ exports[`Settings.DevTools renders correctly 1`] = `
                     </View>
                     <View
                       accessible={true}
+                      collapsable={false}
                       focusable={true}
+                      nativeID="animatedComponent"
                       onClick={[Function]}
                       onResponderGrant={[Function]}
                       onResponderMove={[Function]}
@@ -7349,7 +7674,9 @@ exports[`Settings.DevTools renders correctly 1`] = `
                     </View>
                     <View
                       accessible={true}
+                      collapsable={false}
                       focusable={true}
+                      nativeID="animatedComponent"
                       onClick={[Function]}
                       onResponderGrant={[Function]}
                       onResponderMove={[Function]}
@@ -7404,7 +7731,9 @@ exports[`Settings.DevTools renders correctly 1`] = `
                     </View>
                     <View
                       accessible={true}
+                      collapsable={false}
                       focusable={true}
+                      nativeID="animatedComponent"
                       onClick={[Function]}
                       onResponderGrant={[Function]}
                       onResponderMove={[Function]}
@@ -7459,7 +7788,9 @@ exports[`Settings.DevTools renders correctly 1`] = `
                     </View>
                     <View
                       accessible={true}
+                      collapsable={false}
                       focusable={true}
+                      nativeID="animatedComponent"
                       onClick={[Function]}
                       onResponderGrant={[Function]}
                       onResponderMove={[Function]}
@@ -7517,7 +7848,9 @@ exports[`Settings.DevTools renders correctly 1`] = `
               </View>
               <View
                 accessible={true}
+                collapsable={false}
                 focusable={true}
+                nativeID="animatedComponent"
                 onClick={[Function]}
                 onResponderGrant={[Function]}
                 onResponderMove={[Function]}
@@ -7580,6 +7913,8 @@ exports[`Settings.DevTools renders correctly 1`] = `
                   >
                     <View>
                       <View
+                        collapsable={false}
+                        nativeID="animatedComponent"
                         style={
                           Object {
                             "transform": Array [
@@ -7650,9 +7985,13 @@ exports[`Settings.DevTools renders correctly 1`] = `
                     }
                   >
                     <View
+                      collapsable={false}
+                      nativeID="animatedComponent"
                       style={Object {}}
                     >
                       <View
+                        collapsable={false}
+                        nativeID="animatedComponent"
                         style={
                           Object {
                             "transform": Array [
@@ -7708,7 +8047,9 @@ exports[`Settings.DevTools renders correctly 1`] = `
                 <View>
                   <View
                     accessible={true}
+                    collapsable={false}
                     focusable={false}
+                    nativeID="animatedComponent"
                     onClick={[Function]}
                     onResponderGrant={[Function]}
                     onResponderMove={[Function]}
@@ -7738,6 +8079,8 @@ exports[`Settings.DevTools renders correctly 1`] = `
                     }
                   >
                     <View
+                      collapsable={false}
+                      nativeID="animatedComponent"
                       style={
                         Object {
                           "transform": Array [
@@ -7790,7 +8133,9 @@ exports[`Settings.DevTools renders correctly 1`] = `
                   </View>
                   <View
                     accessible={true}
+                    collapsable={false}
                     focusable={false}
+                    nativeID="animatedComponent"
                     onClick={[Function]}
                     onResponderGrant={[Function]}
                     onResponderMove={[Function]}
@@ -7820,6 +8165,8 @@ exports[`Settings.DevTools renders correctly 1`] = `
                     }
                   >
                     <View
+                      collapsable={false}
+                      nativeID="animatedComponent"
                       style={
                         Object {
                           "transform": Array [
@@ -7872,7 +8219,9 @@ exports[`Settings.DevTools renders correctly 1`] = `
                   </View>
                   <View
                     accessible={true}
+                    collapsable={false}
                     focusable={false}
+                    nativeID="animatedComponent"
                     onClick={[Function]}
                     onResponderGrant={[Function]}
                     onResponderMove={[Function]}
@@ -7901,6 +8250,8 @@ exports[`Settings.DevTools renders correctly 1`] = `
                     }
                   >
                     <View
+                      collapsable={false}
+                      nativeID="animatedComponent"
                       style={
                         Object {
                           "transform": Array [

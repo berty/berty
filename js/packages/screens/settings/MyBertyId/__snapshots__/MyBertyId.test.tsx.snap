@@ -180,7 +180,9 @@ exports[`Settings.MyBertyId renders correctly 1`] = `
               >
                 <View
                   accessible={true}
+                  collapsable={false}
                   focusable={true}
+                  nativeID="animatedComponent"
                   onClick={[Function]}
                   onResponderGrant={[Function]}
                   onResponderMove={[Function]}
@@ -216,6 +218,8 @@ exports[`Settings.MyBertyId renders correctly 1`] = `
                       }
                     >
                       <View
+                        collapsable={false}
+                        nativeID="animatedComponent"
                         style={
                           Object {
                             "transform": Array [
@@ -293,7 +297,9 @@ exports[`Settings.MyBertyId renders correctly 1`] = `
                 </View>
                 <View
                   accessible={true}
+                  collapsable={false}
                   focusable={true}
+                  nativeID="animatedComponent"
                   onClick={[Function]}
                   onResponderGrant={[Function]}
                   onResponderMove={[Function]}
@@ -331,6 +337,8 @@ exports[`Settings.MyBertyId renders correctly 1`] = `
                       }
                     >
                       <View
+                        collapsable={false}
+                        nativeID="animatedComponent"
                         style={
                           Object {
                             "transform": Array [
@@ -444,7 +452,9 @@ exports[`Settings.MyBertyId renders correctly 1`] = `
         </View>
         <View
           accessible={true}
+          collapsable={false}
           focusable={true}
+          nativeID="animatedComponent"
           onClick={[Function]}
           onResponderGrant={[Function]}
           onResponderMove={[Function]}
@@ -485,6 +495,8 @@ exports[`Settings.MyBertyId renders correctly 1`] = `
             }
           >
             <View
+              collapsable={false}
+              nativeID="animatedComponent"
               style={
                 Object {
                   "transform": Array [
@@ -1462,7 +1474,9 @@ exports[`Settings.MyBertyId renders correctly 2`] = `
         </View>
         <View
           accessible={true}
+          collapsable={false}
           focusable={true}
+          nativeID="animatedComponent"
           onClick={[Function]}
           onResponderGrant={[Function]}
           onResponderMove={[Function]}
@@ -1503,6 +1517,8 @@ exports[`Settings.MyBertyId renders correctly 2`] = `
             }
           >
             <View
+              collapsable={false}
+              nativeID="animatedComponent"
               style={
                 Object {
                   "transform": Array [
