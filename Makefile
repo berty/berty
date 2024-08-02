@@ -7,6 +7,8 @@ all: generate test
 test:
 	cd go; $(MAKE) test
 	cd js; $(MAKE) test
+# install dependencies for lint process
+	cd js/web; yarn
 	cd js; $(MAKE) lint
 .PHONY: test
 
