@@ -53,9 +53,6 @@ exports[`Settings.SystemInfo renders correctly 1`] = `
             }
           >
             <ActivityIndicator
-              animating={true}
-              color="#999999"
-              hidesWhenStopped={true}
               size="large"
             />
           </View>

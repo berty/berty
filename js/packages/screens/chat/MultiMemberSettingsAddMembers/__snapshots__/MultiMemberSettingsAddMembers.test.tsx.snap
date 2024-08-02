@@ -224,7 +224,9 @@ exports[`Chat.MultiMemberSettingsAddMembers renders correctly 1`] = `
           >
             <View
               accessible={true}
+              collapsable={false}
               focusable={true}
+              nativeID="animatedComponent"
               onClick={[Function]}
               onResponderGrant={[Function]}
               onResponderMove={[Function]}
@@ -257,6 +259,8 @@ exports[`Chat.MultiMemberSettingsAddMembers renders correctly 1`] = `
                 }
               >
                 <View
+                  collapsable={false}
+                  nativeID="animatedComponent"
                   style={
                     Object {
                       "transform": Array [
@@ -290,13 +294,11 @@ exports[`Chat.MultiMemberSettingsAddMembers renders correctly 1`] = `
                 }
               >
                 <TextInput
-                  allowFontScaling={true}
                   autoCorrect={false}
                   iconName="search-outline"
                   onChangeText={[Function]}
                   placeholder="main.home.create-group.search-placeholder"
                   placeholderTextColor="#D0D0D6"
-                  rejectResponderTermination={true}
                   style={
                     Array [
                       Object {
@@ -309,7 +311,6 @@ exports[`Chat.MultiMemberSettingsAddMembers renders correctly 1`] = `
                       },
                     ]
                   }
-                  underlineColorAndroid="transparent"
                   value=""
                 />
               </View>
@@ -362,7 +363,9 @@ exports[`Chat.MultiMemberSettingsAddMembers renders correctly 1`] = `
       >
         <View
           accessible={true}
+          collapsable={false}
           focusable={true}
+          nativeID="animatedComponent"
           onClick={[Function]}
           onResponderGrant={[Function]}
           onResponderMove={[Function]}
@@ -416,6 +419,8 @@ exports[`Chat.MultiMemberSettingsAddMembers renders correctly 1`] = `
             }
           >
             <View
+              collapsable={false}
+              nativeID="animatedComponent"
               style={
                 Object {
                   "transform": Array [
