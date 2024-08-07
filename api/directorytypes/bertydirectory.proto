@@ -2,13 +2,10 @@ syntax = "proto3";
 
 package berty.directory.v1;
 
-import "gogoproto/gogo.proto";
 import "protocoltypes.proto";
+import "tagger/tagger.proto";
 
 option go_package = "berty.tech/berty/go/pkg/directorytypes";
-option (gogoproto.goproto_unkeyed_all) = false;
-option (gogoproto.goproto_unrecognized_all) = false;
-option (gogoproto.goproto_sizecache_all) = false;
 
 // DirectoryService
 service DirectoryService {
@@ -24,7 +21,7 @@ message Register {
     bytes verified_credential = 1;
     int64 expiration_date = 2;
     int64 locked_until_date = 3;
-    string account_uri = 4 [(gogoproto.customname) = "AccountURI"];
+    string account_uri = 4;
     bool overwrite_existing_record = 5;
   }
   message Reply {
@@ -42,7 +39,7 @@ message Query {
   message Reply {
     string directory_identifier = 1;
     int64 expires_at = 2;
-    string account_uri = 3 [(gogoproto.customname) = "AccountURI"];
+    string account_uri = 3;
     bytes verified_credential = 4;
   }
 }
@@ -57,11 +54,11 @@ message Unregister {
 }
 
 message Record {
-  string directory_identifier = 1 [(gogoproto.moretags) = "gorm:\"index;primaryKey;autoIncrement:false\""];
+  string directory_identifier = 1 [(tagger.tags) = "gorm:\"index;primaryKey;autoIncrement:false\""];
   string directory_record_token = 2;
   int64 expires_at = 3;
   int64 locked_until = 4;
   string unregister_token = 5;
-  string account_uri = 6 [(gogoproto.customname) = "AccountURI"];
+  string account_uri = 6;
   bytes verified_credential = 7;
 }
