@@ -335,7 +335,7 @@ web.build: web/node_modules
 metro.start: node_modules
 	$(call check-program, npx)
 	$(call kill-program-using-port, $(METRO_RN_PORT))
-	npx react-native start --port=$(METRO_RN_PORT)
+	yarn start --port=$(METRO_RN_PORT)
 
 .PHONY: storybook
 storybook: node_modules
