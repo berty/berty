@@ -13,11 +13,12 @@
     "react-native-web-lottie": "^1.4.4"
   },
   "scripts": {
-    "start": "SKIP_PREFLIGHT_CHECK=true PORT=3002 craco start",
-    "build": "SKIP_PREFLIGHT_CHECK=true craco build",
+    "env-setup": "NODE_OPTIONS=--openssl-legacy-provider",
+    "start": "yarn env-setup && SKIP_PREFLIGHT_CHECK=true PORT=3002 craco start",
+    "build": "yarn env-setup && SKIP_PREFLIGHT_CHECK=true craco build",
     "test": "SKIP_PREFLIGHT_CHECK=true craco test",
     "eject": "react-scripts eject",
-    "start:renderer": "cross-env SKIP_PREFLIGHT_CHECK=true PORT=3002 BROWSER=none craco start",
+    "start:renderer": "yarn env-setup && cross-env SKIP_PREFLIGHT_CHECK=true PORT=3002 BROWSER=none craco start",
     "build:main": "npx tsc --project tsconfig.main.json --watch",
     "dist:win": "npx webpack-cli build -c webpack.main.config.js && electron-builder -w -c.extraMetadata.main=build/main.js",
     "dist:mac": "npx webpack-cli build -c webpack.main.config.js && electron-builder -m -c.extraMetadata.main=build/main.js  -c.artifactName=Berty.dmg",
