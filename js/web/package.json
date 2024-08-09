@@ -15,7 +15,7 @@
   "scripts": {
     "env-setup": "cross-env NODE_OPTIONS=--openssl-legacy-provider",
     "start": "yarn env-setup && SKIP_PREFLIGHT_CHECK=true PORT=3002 craco --openssl-legacy-provider start",
-    "build": "set NODE_OPTIONS=--openssl-legacy-provider && SKIP_PREFLIGHT_CHECK=true craco build",
+    "build": "set NODE_OPTIONS=--openssl-legacy-provider && SKIP_PREFLIGHT_CHECK=true craco --openssl-legacy-provider build",
     "test": "SKIP_PREFLIGHT_CHECK=true craco --openssl-legacy-provider test",
     "eject": "react-scripts eject",
     "start:renderer": "yarn env-setup && cross-env SKIP_PREFLIGHT_CHECK=true PORT=3002 BROWSER=none craco --openssl-legacy-provider start",
