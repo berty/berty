@@ -21,7 +21,7 @@ jobs:
     name: Build, lint and test JS
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Load variables from file
         uses: antifree/json-to-variables@v1.0.1
