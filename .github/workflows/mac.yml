@@ -91,7 +91,7 @@ jobs:
 
       - name: Setup asdf
         if: ${{ !matrix.selfhosted }}
-        uses: asdf-vm/actions/setup@v1
+        uses: asdf-vm/actions/setup@v3
 
       - name: Setup go
         run: |
