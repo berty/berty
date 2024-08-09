@@ -61,7 +61,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup asdf
-        uses: asdf-vm/actions/setup@v1
+        uses: asdf-vm/actions/setup@v3
 
       - name: Setup jq
         run: |
@@ -103,7 +103,7 @@ jobs:
         run: git fetch --prune --unshallow
 
       - name: Setup asdf
-        uses: asdf-vm/actions/setup@v1
+        uses: asdf-vm/actions/setup@v3
 
       - name: Setup go
         run: |
@@ -168,7 +168,7 @@ jobs:
 
       - name: Setup asdf (Posix)
         if: matrix.config.goos != 'windows'
-        uses: asdf-vm/actions/setup@v1
+        uses: asdf-vm/actions/setup@v3
 
       - name: Setup go (Posix)
         if: matrix.config.goos != 'windows'

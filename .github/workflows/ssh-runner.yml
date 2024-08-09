@@ -34,7 +34,7 @@ jobs:
           filename: .github/workflows/utils/variables.json
 
       - name: Setup asdf
-        uses: asdf-vm/actions/setup@v1
+        uses: asdf-vm/actions/setup@v3
 
       - name: Setup go
         if: runner.os != 'Windows'

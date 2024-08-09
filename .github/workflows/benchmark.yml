@@ -25,7 +25,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Setup asdf
-        uses: asdf-vm/actions/setup@v1
+        uses: asdf-vm/actions/setup@v3
 
       - name: Setup Graphviz
         uses: ts-graphviz/setup-graphviz@v1
