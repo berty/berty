@@ -5,7 +5,7 @@
   "scripts": {
     "android": "react-native run-android",
     "ios": "react-native run-ios",
-    "start": "react-native start",
+    "start": "NODE_OPTIONS=--openssl-legacy-provider react-native start",
     "test": "jest --silent",
     "test-snapshot-update": "jest -u",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
