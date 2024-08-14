@@ -99,6 +99,7 @@ jobs:
           CI: "true"
         run: |
           make android.app_deps
+          export NODE_OPTIONS=--openssl-legacy-provider
           (yarn jetify && cd android && ./gradlew -i app:bundleReleaseYolo)
           ### TODO: move this part on Yolo and use release keystore ###
           mkdir -p $HOME/.android
