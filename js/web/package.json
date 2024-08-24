@@ -15,14 +15,14 @@
   "scripts": {
     "env-setup": "cross-env NODE_OPTIONS=--openssl-legacy-provider",
     "start": "yarn env-setup && SKIP_PREFLIGHT_CHECK=true PORT=3002 craco --openssl-legacy-provider start",
-    "build": "set NODE_OPTIONS=--openssl-legacy-provider && SKIP_PREFLIGHT_CHECK=true craco --openssl-legacy-provider build",
+    "build": "NODE_OPTIONS=--openssl-legacy-provider && SKIP_PREFLIGHT_CHECK=true craco --openssl-legacy-provider build",
     "test": "SKIP_PREFLIGHT_CHECK=true craco --openssl-legacy-provider test",
     "eject": "react-scripts eject",
     "start:renderer": "yarn env-setup && cross-env SKIP_PREFLIGHT_CHECK=true PORT=3002 BROWSER=none craco --openssl-legacy-provider start",
     "build:main": "npx tsc --project tsconfig.main.json --watch",
-    "dist:win": "npx webpack-cli build -c webpack.main.config.js && electron-builder -w -c.extraMetadata.main=build/main.js",
-    "dist:mac": "npx webpack-cli build -c webpack.main.config.js && electron-builder -m -c.extraMetadata.main=build/main.js  -c.artifactName=Berty.dmg",
-    "dist:linux": "npx webpack-cli build -c webpack.main.config.js && electron-builder -l -c.extraMetadata.main=build/main.js",
+    "dist:win": "NODE_OPTIONS=--openssl-legacy-provider && npx webpack-cli build -c webpack.main.config.js && electron-builder -w -c.extraMetadata.main=build/main.js",
+    "dist:mac": "NODE_OPTIONS=--openssl-legacy-provider && npx webpack-cli build -c webpack.main.config.js && electron-builder -m -c.extraMetadata.main=build/main.js  -c.artifactName=Berty.dmg",
+    "dist:linux": "NODE_OPTIONS=--openssl-legacy-provider && npx webpack-cli build -c webpack.main.config.js && electron-builder -l -c.extraMetadata.main=build/main.js",
     "fix:electron": "npx electron-fix start",
     "start:electron": "concurrently \"npm:start:renderer\" \"npm:build:main\" \"wait-on http://127.0.0.1:3002 && cross-env NODE_ENV=development electronmon .\"",
     "start:electron:no-daemon": "concurrently \"npm:start:renderer\" \"npm:build:main\" \"wait-on http://127.0.0.1:3002 && cross-env NO_DAEMON=true NODE_ENV=development electronmon .\""
