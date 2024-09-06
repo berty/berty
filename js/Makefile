@@ -335,7 +335,7 @@ web.build: web/node_modules
 metro.start: node_modules
 	$(call check-program, npx)
 	$(call kill-program-using-port, $(METRO_RN_PORT))
-	npx react-native start --port=$(METRO_RN_PORT)
+	yarn start --port=$(METRO_RN_PORT)
 
 .PHONY: storybook
 storybook: node_modules
@@ -533,7 +533,7 @@ android/libs/gobridge.aar: $(bridge_src)
 
 node_modules: package.json
 	$(call check-program, yarn)
-	yarn $(if $(filter $(CI), true), --frozen-lockfile --network-timeout 1200000 --network-concurrency 1)
+	NODE_OPTIONS=--openssl-legacy-provider && yarn $(if $(filter $(CI), true), --frozen-lockfile --network-timeout 1200000 --network-concurrency 1)
 	touch $@
 
 web/node_modules: node_modules web/package.json
@@ -551,4 +551,5 @@ electron.mac: web/node_modules
 	ln `$(GO) env GOPATH`/bin/berty ./web/resources/mac/berty
 	cd ./web && yarn install
 	cd ./web && yarn build
+	NODE_OPTIONS=--openssl-legacy-provider
 	cd ./web && yarn run dist:mac -- -c.buildVersion=$(shell echo -n $(shell git rev-list HEAD | wc -l)) -c.extraMetadata.version=$(VERSION)
