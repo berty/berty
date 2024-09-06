@@ -551,4 +551,5 @@ electron.mac: web/node_modules
 	ln `$(GO) env GOPATH`/bin/berty ./web/resources/mac/berty
 	cd ./web && yarn install
 	cd ./web && yarn build
+	NODE_OPTIONS=--openssl-legacy-provider
 	cd ./web && yarn run dist:mac -- -c.buildVersion=$(shell echo -n $(shell git rev-list HEAD | wc -l)) -c.extraMetadata.version=$(VERSION)
