@@ -68,7 +68,7 @@ func TestFlow(t *testing.T) {
 	id := &messengertypes.BertyID{
 		DisplayName:          "displayName",
 		PublicRendezvousSeed: rdvSeed,
-		AccountPK:            accountPub,
+		AccountPk:            accountPub,
 	}
 	link := id.GetBertyLink()
 	_, web, err := bertylinks.MarshalLink(link)

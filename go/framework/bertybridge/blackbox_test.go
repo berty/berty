@@ -9,8 +9,9 @@ import (
 	"encoding/base64"
 	"fmt"
 	"os"
+	"testing"
 
-	"github.com/gogo/protobuf/proto"
+	"google.golang.org/protobuf/proto"
 
 	"berty.tech/berty/v2/go/framework/bertybridge"
 	"berty.tech/berty/v2/go/pkg/accounttypes"
@@ -18,7 +19,7 @@ import (
 	"berty.tech/weshnet/pkg/protocoltypes"
 )
 
-func Example() {
+func TestExample(t *testing.T) {
 	// disable ressources manager for the sake of this example
 	os.Setenv("LIBP2P_RCMGR", "false")
 
@@ -89,7 +90,7 @@ func Example() {
 		err = proto.Unmarshal(output.Payload, &res)
 		checkErr(err)
 
-		accountID = res.GetAccountMetadata().GetAccountID()
+		accountID = res.GetAccountMetadata().GetAccountId()
 
 		fmt.Println("[+] account created.")
 	}
@@ -98,7 +99,7 @@ func Example() {
 	{
 		// create `CreateAccount` Input
 		input := &accounttypes.OpenAccount_Request{
-			AccountID: accountID,
+			AccountId: accountID,
 			Args:      args,
 		}
 		payload, err := proto.Marshal(input)

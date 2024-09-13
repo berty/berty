@@ -281,7 +281,7 @@ func New(opts *ManagerOpts) (*Manager, error) {
 		}
 		if err := storageDirs[0].CreateParentDir(""); err != nil {
 			m.ctxCancel()
-			return nil, errcode.TODO.Wrap(err)
+			return nil, errcode.ErrCode_TODO.Wrap(err)
 		}
 		m.Datastore.defaultDir = storageDirs[0].Path
 	}

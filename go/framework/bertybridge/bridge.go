@@ -71,7 +71,7 @@ func NewBridge(config *BridgeConfig) (*Bridge, error) {
 		b.workers.Add(func() error {
 			// wait for closing signal
 			<-b.closec
-			return errcode.ErrBridgeInterrupted
+			return errcode.ErrCode_ErrBridgeInterrupted
 		}, func(error) {
 			b.onceCloser.Do(func() { close(b.closec) })
 		})
@@ -321,7 +321,7 @@ func (b *Bridge) Close() error {
 
 		b.grpcServer.Stop()
 
-		if !errcode.Is(err, errcode.ErrBridgeInterrupted) {
+		if !errcode.Is(err, errcode.ErrCode_ErrBridgeInterrupted) {
 			errs = multierr.Append(errs, err)
 		}
 

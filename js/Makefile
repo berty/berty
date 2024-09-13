@@ -367,10 +367,10 @@ pbjs_weshnet_protos := $(pbjs_proto_weshnet_dir)/protocoltypes.proto $(pbjs_prot
 pbjs_protos := $(pbjs_berty_protos) $(pbjs_weshnet_protos)
 
 buf.lock := ../api/buf.lock
-proto_commit_hash := $(shell yq '(.deps | with_entries(select(.value.repository == "weshnet"))).0.commit' $(buf.lock))
+proto_commit_hash := $(shell yq '(.deps | with_entries(select(.value.name == "buf.build/berty-technologies/weshnet"))).0.commit' $(buf.lock))
 $(pbjs_weshnet_protos): $(buf.lock)
 	mkdir -p $(pbjs_proto_weshnet_dir)
-	buf export buf.build/berty/weshnet:$(proto_commit_hash) --output $(pbjs_proto_weshnet_dir)
+	buf export buf.build/berty-technologies/weshnet:$(proto_commit_hash) --output $(pbjs_proto_weshnet_dir)
 
 packages/api/root.pb.js: $(pbjs_berty_protos) $(pbjs_weshnet_protos) node_modules
 	$(call check-program, npx)

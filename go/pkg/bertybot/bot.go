@@ -76,12 +76,12 @@ func New(opts ...NewOption) (*Bot, error) {
 
 // BertyIDURL returns the shareable Berty ID in the form of `https://berty.tech/id#xxx`.
 func (b *Bot) BertyIDURL() string {
-	return b.bertyID.WebURL
+	return b.bertyID.WebUrl
 }
 
 // PublicKey returns the public key of the messenger node.
 func (b *Bot) PublicKey() string {
-	return u.B64Encode(b.bertyID.Link.BertyID.AccountPK)
+	return u.B64Encode(b.bertyID.Link.BertyId.AccountPk)
 }
 
 // Start starts the main event loop and can be stopped by canceling the passed context.

@@ -48,7 +48,7 @@ func remoteLogsCommand() *ffcli.Command {
 					return nil
 				}
 				if err != nil {
-					return errcode.TODO.Wrap(err)
+					return errcode.ErrCode_TODO.Wrap(err)
 				}
 				fmt.Println(ret.Line)
 			}

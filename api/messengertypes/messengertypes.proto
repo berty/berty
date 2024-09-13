@@ -499,17 +499,17 @@ message Account {
   string public_key = 1 [(tagger.tags) = "gorm:\"primaryKey\""];
   string display_name = 2;
   string link = 3;
-  repeated ServiceToken service_tokens = 5 [(tagger.tags) = "gorm:\"foreignKey:AccountPK\""];
+  repeated ServiceToken service_tokens = 5 [(tagger.tags) = "gorm:\"foreignKey:AccountPk\""];
   bool replicate_new_groups_automatically = 6 [(tagger.tags) = "gorm:\"default:true\""];
-  reserved 7; // string avatar_cid = 7 [(tagger.tags) = "gorm:\"column:avatar_cid\"", (gogoproto.customname) = "AvatarCID"];
+  reserved 7; // string avatar_cid = 7 [(tagger.tags) = "gorm:\"column:avatar_cid\"", (tagger.tags) = "AvatarCID"];
   bool auto_share_push_token_flag = 8;
-  PushDeviceToken push_device_token = 9 [(tagger.tags) = "gorm:\"foreignKey:AccountPK\""];
-  repeated PushServerRecord push_server_records = 10 [(tagger.tags) = "gorm:\"foreignKey:AccountPK\""];
+  PushDeviceToken push_device_token = 9 [(tagger.tags) = "gorm:\"foreignKey:AccountPk\""];
+  repeated PushServerRecord push_server_records = 10 [(tagger.tags) = "gorm:\"foreignKey:AccountPk\""];
   int64 muted_until = 11;
   bool hide_in_app_notifications = 12;
   bool hide_push_previews = 13;
-  repeated AccountVerifiedCredential verified_credentials = 14 [(tagger.tags) = "gorm:\"foreignKey:AccountPK\""];
-  repeated AccountDirectoryServiceRecord directory_service_records = 15 [(tagger.tags) = "gorm:\"foreignKey:AccountPK\""];
+  repeated AccountVerifiedCredential verified_credentials = 14 [(tagger.tags) = "gorm:\"foreignKey:AccountPk\""];
+  repeated AccountDirectoryServiceRecord directory_service_records = 15 [(tagger.tags) = "gorm:\"foreignKey:AccountPk\""];
 }
 
 message ServiceTokenSupportedService {
@@ -518,7 +518,7 @@ message ServiceTokenSupportedService {
 }
 
 message ServiceTokenSupportedServiceRecord {
-  string token_id = 1;
+  string token_id = 1 [(tagger.tags) = "gorm:\"primaryKey\""];
   string type = 2 [(tagger.tags) = "gorm:\"primaryKey\""];
   string address = 3;
 }
@@ -527,7 +527,7 @@ message ServiceToken {
   string account_pk = 1;
   string token_id = 2 [(tagger.tags) = "gorm:\"primaryKey\""];
   string token = 3;
-  repeated ServiceTokenSupportedServiceRecord supported_services = 4 [(tagger.tags) = "gorm:\"foreignKey:TokenID\""];
+  repeated ServiceTokenSupportedServiceRecord supported_services = 4 [(tagger.tags) = "gorm:\"foreignKey:TokenId\""];
   string authentication_url = 5 ;
   int64 expiration = 6;
 }
@@ -563,7 +563,7 @@ message Contact {
   Conversation conversation = 3;
   State state = 4;
   string display_name = 5;
-  reserved 9; // string avatar_cid = 9  [(tagger.tags) = "gorm:\"column:avatar_cid\"", (gogoproto.customname) = "AvatarCID"];
+  reserved 9; // string avatar_cid = 9  [(tagger.tags) = "gorm:\"column:avatar_cid\"", (tagger.tags) = "AvatarCID"];
   int64 created_date = 7;
   // specific to outgoing requests
   int64 sent_date = 8;
@@ -604,10 +604,10 @@ message Conversation {
   string account_member_public_key = 11;
   string local_device_public_key = 12;
   int64 created_date = 13;
-  reserved 14; // string reply_options_cid = 14 [(tagger.tags) = "gorm:\"column:reply_options_cid\"", (gogoproto.customname) = "ReplyOptionsCID"];
+  reserved 14; // string reply_options_cid = 14 [(tagger.tags) = "gorm:\"column:reply_options_cid\"", (tagger.tags) = "ReplyOptionsCID"];
   reserved 15; // Interaction reply_options = 15;
   repeated ConversationReplicationInfo replication_info = 16 [(tagger.tags) = "gorm:\"foreignKey:ConversationPublicKey\""];
-  reserved 17; // string avatar_cid = 17 [(tagger.tags) = "gorm:\"column:avatar_cid\"", (gogoproto.customname) = "AvatarCID"];
+  reserved 17; // string avatar_cid = 17 [(tagger.tags) = "gorm:\"column:avatar_cid\"", (tagger.tags) = "AvatarCID"];
   // info_date is used when SetGroupInfo is called
   int64 info_date = 18;
   string local_member_public_key = 19;
@@ -627,7 +627,7 @@ message ConversationReplicationInfo {
 message Member { // Composite primary key
   string public_key = 1 [(tagger.tags) = "gorm:\"primaryKey\""];
   string display_name = 2;
-  reserved 6; // string avatar_cid = 6 [(tagger.tags) = "gorm:\"column:avatar_cid\"", (gogoproto.customname) = "AvatarCID"];
+  reserved 6; // string avatar_cid = 6 [(tagger.tags) = "gorm:\"column:avatar_cid\"", (tagger.tags) = "AvatarCID"];
   string conversation_public_key = 3 [(tagger.tags) = "gorm:\"primaryKey\""];
   bool is_me = 9;
   bool is_creator = 8;
@@ -663,7 +663,7 @@ message AccountDirectoryServiceRecord {
 
 message PushDeviceToken {
   // account_pk is the account public key that owns the device token
-  string account_pk = 1;
+  string account_pk = 1 [(tagger.tags) = "gorm:\"primaryKey\""];
   // token_type is the type of the token used, it allows us to act as a proxy to the appropriate push server
   push.v1.PushServiceTokenType token_type = 2;
 
@@ -678,7 +678,7 @@ message PushDeviceToken {
 }
 
 message PushServerRecord {
-  string account_pk = 1;
+  string account_pk = 1 [(tagger.tags) = "gorm:\"primaryKey\""];
 
   string server_addr = 2 [(tagger.tags) = "gorm:\"primaryKey\""];
 
@@ -844,7 +844,7 @@ message EventStream {
 message AccountUpdate {
   message Request {
     string display_name = 1;
-    reserved 2; // string avatar_cid = 2 [(tagger.tags) = "gorm:\"column:avatar_cid\"", (gogoproto.customname) = "AvatarCID"];
+    reserved 2; // string avatar_cid = 2 [(tagger.tags) = "gorm:\"column:avatar_cid\"", (tagger.tags) = "AvatarCID"];
   }
   message Reply {}
 }

@@ -67,7 +67,7 @@ func InitGRPCServer(workers *run.Group, opts *GRPCOpts) (*grpc.Server, *grpcgw.S
 	if opts.AuthSecret != "" || opts.AuthPublicKey != "" {
 		man, err := bertyauth.GetAuthTokenVerifier(opts.AuthSecret, opts.AuthPublicKey)
 		if err != nil {
-			return nil, nil, nil, errcode.TODO.Wrap(err)
+			return nil, nil, nil, errcode.ErrCode_TODO.Wrap(err)
 		}
 
 		serviceID := opts.ServiceID
@@ -116,7 +116,7 @@ func InitGRPCServer(workers *run.Group, opts *GRPCOpts) (*grpc.Server, *grpcgw.S
 			maddrStr := maddr.String()
 			l, err := grpcutil.Listen(maddr)
 			if err != nil {
-				return nil, nil, nil, errcode.TODO.Wrap(err)
+				return nil, nil, nil, errcode.ErrCode_TODO.Wrap(err)
 			}
 			listeners[idx] = l
 

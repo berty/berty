@@ -34,7 +34,7 @@ func NewRemoteBridgeConfig() *RemoteBridgeConfig {
 
 func NewRemoteBridge(address string, config *RemoteBridgeConfig) (*RemoteBridge, error) {
 	if address == "" {
-		return nil, errcode.ErrInvalidInput
+		return nil, errcode.ErrCode_ErrInvalidInput
 	}
 
 	ctx := context.Background()
@@ -111,7 +111,7 @@ func (b *RemoteBridge) ConnectService(serviceName string, address string) error 
 	}
 
 	if b.serviceBridge == nil {
-		return errcode.ErrBridgeNotRunning
+		return errcode.ErrCode_ErrBridgeNotRunning
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
@@ -144,14 +144,14 @@ func (b *RemoteBridge) Close() error {
 		b.grpcServer.Stop()
 		b.grpcServer = nil
 	} else {
-		err = errcode.ErrBridgeNotRunning
+		err = errcode.ErrCode_ErrBridgeNotRunning
 	}
 
 	if b.serviceBridge != nil {
 		b.serviceBridge.Close()
 		b.serviceBridge = nil
 	} else {
-		err = errcode.ErrBridgeNotRunning
+		err = errcode.ErrCode_ErrBridgeNotRunning
 	}
 
 	return err

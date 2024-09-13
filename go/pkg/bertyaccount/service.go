@@ -171,32 +171,32 @@ func NewService(opts *Options) (_ Service, err error) {
 		Logger:         s.logger,
 		NativeKeystore: s.nativeKeystore,
 	}); err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ErrCode_TODO.Wrap(err)
 	}
 
 	// init app storage
 	dbPath := filepath.Join(s.appRootDir, "app.sqlite")
 	if err := os.MkdirAll(s.appRootDir, 0o700); err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ErrCode_TODO.Wrap(err)
 	}
 	storageKey := ([]byte)(nil)
 	if s.nativeKeystore != nil {
 		storageKey, err = accountutils.GetOrCreateMasterStorageKey(s.nativeKeystore)
 		if err != nil {
-			return nil, errcode.TODO.Wrap(err)
+			return nil, errcode.ErrCode_TODO.Wrap(err)
 		}
 	}
 	storageSalt := ([]byte)(nil)
 	if s.nativeKeystore != nil {
 		storageSalt, err = accountutils.GetOrCreateGlobalAppStorageSalt(s.nativeKeystore)
 		if err != nil {
-			return nil, errcode.TODO.Wrap(err)
+			return nil, errcode.ErrCode_TODO.Wrap(err)
 		}
 	}
 	sqldsOpts := encrepo.SQLCipherDatastoreOptions{JournalMode: "WAL", PlaintextHeader: len(storageSalt) != 0, Salt: storageSalt}
 	appDatastore, err := encrepo.NewSQLCipherDatastore("sqlite3", dbPath, "data", storageKey, sqldsOpts)
 	if err != nil {
-		return nil, errcode.ErrDBOpen.Wrap(err)
+		return nil, errcode.ErrCode_ErrDBOpen.Wrap(err)
 	}
 	s.appStorage = encrepo.NewNamespacedDatastore(appDatastore, datastore.NewKey("app-storage"))
 
@@ -204,7 +204,7 @@ func NewService(opts *Options) (_ Service, err error) {
 }
 
 func (s *service) NetworkConfigGetPreset(ctx context.Context, req *accounttypes.NetworkConfigGetPreset_Request) (*accounttypes.NetworkConfigGetPreset_Reply, error) {
-	if req.Preset == accounttypes.NetworkConfigPreset_NetPresetPerformance || req.Preset == accounttypes.NetworkConfigPreset_NetPresetUndefined {
+	if req.Preset == accounttypes.NetworkConfigPreset_Performance || req.Preset == accounttypes.NetworkConfigPreset_Undefined {
 		bluetoothLE := accounttypes.NetworkConfig_Disabled
 		if req.HasBluetoothPermission {
 			bluetoothLE = accounttypes.NetworkConfig_Enabled
@@ -224,15 +224,15 @@ func (s *service) NetworkConfigGetPreset(ctx context.Context, req *accounttypes.
 			Config: &accounttypes.NetworkConfig{
 				Bootstrap:                    []string{initutil.KeywordDefault},
 				AndroidNearby:                androidNearby,
-				DHT:                          accounttypes.NetworkConfig_DHTClient,
+				Dht:                          accounttypes.NetworkConfig_DHTClient,
 				AppleMultipeerConnectivity:   appleMC,
-				BluetoothLE:                  bluetoothLE,
-				MDNS:                         accounttypes.NetworkConfig_Enabled,
+				BluetoothLe:                  bluetoothLE,
+				Mdns:                         accounttypes.NetworkConfig_Enabled,
 				Rendezvous:                   []string{initutil.KeywordDefault},
 				Tor:                          accounttypes.NetworkConfig_TorOptional,
 				StaticRelay:                  []string{initutil.KeywordDefault},
 				ShowDefaultServices:          accounttypes.NetworkConfig_Enabled,
-				AllowUnsecureGRPCConnections: accounttypes.NetworkConfig_Disabled,
+				AllowUnsecureGrpcConnections: accounttypes.NetworkConfig_Disabled,
 			},
 		}, nil
 	}
@@ -241,15 +241,15 @@ func (s *service) NetworkConfigGetPreset(ctx context.Context, req *accounttypes.
 		Config: &accounttypes.NetworkConfig{
 			Bootstrap:                    []string{initutil.KeywordNone},
 			AndroidNearby:                accounttypes.NetworkConfig_Disabled,
-			DHT:                          accounttypes.NetworkConfig_DHTDisabled,
+			Dht:                          accounttypes.NetworkConfig_DHTDisabled,
 			AppleMultipeerConnectivity:   accounttypes.NetworkConfig_Disabled,
-			BluetoothLE:                  accounttypes.NetworkConfig_Disabled,
-			MDNS:                         accounttypes.NetworkConfig_Disabled,
+			BluetoothLe:                  accounttypes.NetworkConfig_Disabled,
+			Mdns:                         accounttypes.NetworkConfig_Disabled,
 			Rendezvous:                   []string{initutil.KeywordNone},
 			Tor:                          accounttypes.NetworkConfig_TorDisabled,
 			StaticRelay:                  []string{initutil.KeywordNone},
 			ShowDefaultServices:          accounttypes.NetworkConfig_Disabled,
-			AllowUnsecureGRPCConnections: accounttypes.NetworkConfig_Disabled,
+			AllowUnsecureGrpcConnections: accounttypes.NetworkConfig_Disabled,
 		},
 	}, nil
 }

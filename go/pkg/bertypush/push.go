@@ -42,12 +42,12 @@ func NewPushReceiver(pushHandler PushHandler, evtHandler EventHandler, dbFetcher
 func (m *messengerPushReceiver) PushReceive(ctx context.Context, input []byte) (*messengertypes.PushReceive_Reply, error) {
 	oosMessage, err := m.pushHandler.PushReceive(ctx, input)
 	if err != nil {
-		return nil, errcode.ErrInternal.Wrap(err)
+		return nil, errcode.ErrCode_ErrInternal.Wrap(err)
 	}
 
 	i, isNew, err := m.eventHandler.HandleOutOfStoreAppMessage(oosMessage.GroupPublicKey, oosMessage.Message, oosMessage.Cleartext)
 	if err != nil {
-		return nil, errcode.ErrInternal.Wrap(err)
+		return nil, errcode.ErrCode_ErrInternal.Wrap(err)
 	}
 
 	if i.Conversation.Type == messengertypes.Conversation_ContactType {

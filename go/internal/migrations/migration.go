@@ -38,7 +38,7 @@ func MigrateToLatest(opts Options) error {
 	for {
 		version, err := migrationutils.GetDataVersion(opts.AppDir)
 		if err != nil {
-			return errcode.TODO.Wrap(err)
+			return errcode.ErrCode_TODO.Wrap(err)
 		}
 
 		{
@@ -53,7 +53,7 @@ func MigrateToLatest(opts Options) error {
 				opts.Logger.Info("migrating data", zap.String("from", version), zap.String("to", m.To))
 
 				if err := m.Apply(opts); err != nil {
-					return errcode.TODO.Wrap(err)
+					return errcode.ErrCode_TODO.Wrap(err)
 				}
 
 				found = true

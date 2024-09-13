@@ -42,22 +42,22 @@ func serviceKeyCommand() *ffcli.Command {
 			case "convert":
 				skSlice, err := base64.RawStdEncoding.DecodeString(sk)
 				if err != nil {
-					return errcode.ErrDeserialization.Wrap(err)
+					return errcode.ErrCode_ErrDeserialization.Wrap(err)
 				}
 
 				if l := len(skSlice); l != cryptoutil.KeySize {
-					return errcode.ErrInvalidInput.Wrap(fmt.Errorf("key length should be %d bytes, received %d bytes", cryptoutil.KeySize, l))
+					return errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("key length should be %d bytes, received %d bytes", cryptoutil.KeySize, l))
 				}
 
 				stdPrivKey := ed25519.NewKeyFromSeed(skSlice)
 				_, pubKey, err := crypto.KeyPairFromStdKey(&stdPrivKey)
 				if err != nil {
-					return errcode.ErrInternal.Wrap(err)
+					return errcode.ErrCode_ErrInternal.Wrap(err)
 				}
 
 				pubKeyRaw, err := pubKey.Raw()
 				if err != nil {
-					return errcode.ErrDeserialization.Wrap(err)
+					return errcode.ErrCode_ErrDeserialization.Wrap(err)
 				}
 
 				fmt.Printf("%s\n", base64.RawStdEncoding.EncodeToString(pubKeyRaw))
@@ -65,12 +65,12 @@ func serviceKeyCommand() *ffcli.Command {
 			case "generate":
 				privKey, _, err := crypto.GenerateEd25519Key(crand.Reader)
 				if err != nil {
-					return errcode.ErrCryptoKeyGeneration.Wrap(err)
+					return errcode.ErrCode_ErrCryptoKeyGeneration.Wrap(err)
 				}
 
 				seed, err := cryptoutil.SeedFromEd25519PrivateKey(privKey)
 				if err != nil {
-					return errcode.ErrSerialization.Wrap(err)
+					return errcode.ErrCode_ErrSerialization.Wrap(err)
 				}
 
 				fmt.Printf("%s\n", base64.RawStdEncoding.EncodeToString(seed))

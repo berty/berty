@@ -35,7 +35,7 @@ func PushDispatcherLoadFirebaseAPIKey(ctx context.Context, logger *zap.Logger, b
 
 	if os.Getenv("GOOGLE_APPLICATION_CREDENTIALS") != "" {
 		if bundleInput == nil || *bundleInput == "" {
-			return nil, errcode.ErrPushMissingBundleID
+			return nil, errcode.ErrCode_ErrPushMissingBundleID
 		}
 
 		bundleIDs := strings.Split(*bundleInput, ",")
@@ -59,7 +59,7 @@ func PushDispatcherLoadFirebaseAPIKey(ctx context.Context, logger *zap.Logger, b
 	for i, apiKeyDetails := range apiKeys {
 		splitResult := strings.SplitN(apiKeyDetails, ":", 2)
 		if len(splitResult) != 2 {
-			return nil, errcode.ErrPushInvalidServerConfig
+			return nil, errcode.ErrCode_ErrPushInvalidServerConfig
 		}
 
 		appID := splitResult[0]
@@ -77,13 +77,13 @@ func PushDispatcherLoadFirebaseAPIKey(ctx context.Context, logger *zap.Logger, b
 func pushDispatcherLoadFCMAPIKey(ctx context.Context, logger *zap.Logger, bundleID string, opts ...option.ClientOption) (PushDispatcher, error) {
 	app, err := firebase.NewApp(ctx, nil, opts...)
 	if err != nil {
-		return nil, errcode.ErrPushInvalidServerConfig.Wrap(err)
+		return nil, errcode.ErrCode_ErrPushInvalidServerConfig.Wrap(err)
 	}
 
 	// Access messaging service from the default app
 	client, err := app.Messaging(ctx)
 	if err != nil {
-		return nil, errcode.ErrPushInvalidServerConfig.Wrap(err)
+		return nil, errcode.ErrCode_ErrPushInvalidServerConfig.Wrap(err)
 	}
 
 	dispatcher := &pushDispatcherFCM{
@@ -106,11 +106,11 @@ func (d *pushDispatcherFCM) Dispatch(payload []byte, receiver *pushtypes.PushSer
 
 	res, err := d.client.Send(d.ctx, msg)
 	if err != nil {
-		return errcode.ErrPushProvider.Wrap(err)
+		return errcode.ErrCode_ErrPushProvider.Wrap(err)
 	}
 
 	if res == "" {
-		return errcode.ErrPushProvider.Wrap(fmt.Errorf("FMC messaging client failed to send push notification"))
+		return errcode.ErrCode_ErrPushProvider.Wrap(fmt.Errorf("FMC messaging client failed to send push notification"))
 	}
 
 	return nil

@@ -51,7 +51,7 @@ func systemInfoCommand() *ffcli.Command {
 			for {
 				ret, err := messenger.SystemInfo(ctx, &messengertypes.SystemInfo_Request{})
 				if err != nil {
-					return errcode.TODO.Wrap(err)
+					return errcode.ErrCode_TODO.Wrap(err)
 				}
 
 				if ret.Messenger.ProtocolInSameProcess {

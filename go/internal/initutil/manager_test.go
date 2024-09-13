@@ -155,7 +155,7 @@ func Example_noflags() {
 	}
 
 	// check that the reply is valid (cannot check hardcoded value, since it's random)
-	fmt.Println(ret.AccountPK != nil)
+	fmt.Println(ret.AccountPk != nil)
 
 	// Output:
 	// go-libp2p resource manager protection disabled
@@ -219,7 +219,7 @@ func TestTwoConcurrentManagers(t *testing.T) {
 		ctx := context.Background()
 		ret, err := client.ServiceGetConfiguration(ctx, &protocoltypes.ServiceGetConfiguration_Request{})
 		require.NoError(t, err)
-		require.NotNil(t, ret.AccountPK)
+		require.NotNil(t, ret.AccountPk)
 	}
 }
 
@@ -266,7 +266,7 @@ func TestLocalProtocolServerAndClient(t *testing.T) {
 
 	ret, err := client.ServiceGetConfiguration(ctx, &protocoltypes.ServiceGetConfiguration_Request{})
 	require.NoError(t, err)
-	require.NotNil(t, ret.AccountPK)
+	require.NotNil(t, ret.AccountPk)
 }
 
 func TestLocalProtocolServerLeak(t *testing.T) {

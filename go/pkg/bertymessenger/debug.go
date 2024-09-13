@@ -11,8 +11,8 @@ import (
 	"sync"
 	"sync/atomic"
 
-	"github.com/gogo/protobuf/proto"
 	"go.uber.org/zap"
+	"google.golang.org/protobuf/proto"
 
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
@@ -35,7 +35,7 @@ func (svc *service) debug(ctx context.Context, req *messengertypes.Interact_Requ
 
 	argsv := strings.Split(strings.TrimSpace(cmd), " ")
 	if len(argsv) == 0 {
-		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("empty command"))
+		return errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("empty command"))
 	}
 
 	switch cmd, args := argsv[0], argsv[1:]; cmd {
@@ -44,7 +44,7 @@ func (svc *service) debug(ctx context.Context, req *messengertypes.Interact_Requ
 	case "send":
 		return svc.sendCmd(ctx, req, args)
 	default:
-		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("invalid debug command: %s", cmd))
+		return errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("invalid debug command: %s", cmd))
 	}
 }
 
@@ -65,7 +65,7 @@ func (svc *service) monitorCmd(_ context.Context, _ *messengertypes.Interact_Req
 		if len(args) > 1 {
 			port, err := strconv.ParseUint(args[1], 10, 0)
 			if err != nil {
-				return errcode.ErrInvalidInput.Wrap(fmt.Errorf("wrong port number"))
+				return errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("wrong port number"))
 			}
 
 			listn = fmt.Sprintf("0.0.0.0:%d", port)
@@ -73,7 +73,7 @@ func (svc *service) monitorCmd(_ context.Context, _ *messengertypes.Interact_Req
 
 		l, err := net.Listen("tcp", listn) // nolint:gosec
 		if err != nil {
-			return errcode.ErrInternal.Wrap(fmt.Errorf("unable to listen: %w", err))
+			return errcode.ErrCode_ErrInternal.Wrap(fmt.Errorf("unable to listen: %w", err))
 		}
 		svc.dd.pprofListn = l
 
@@ -101,7 +101,7 @@ func (svc *service) monitorCmd(_ context.Context, _ *messengertypes.Interact_Req
 			svc.dd.pprofListn = nil
 		}
 	default:
-		return errcode.ErrInternal.Wrap(fmt.Errorf("invalid command: %s", args[0]))
+		return errcode.ErrCode_ErrInternal.Wrap(fmt.Errorf("invalid command: %s", args[0]))
 	}
 
 	svc.dd.pprofEnable = !isEnable
@@ -111,15 +111,15 @@ func (svc *service) monitorCmd(_ context.Context, _ *messengertypes.Interact_Req
 
 func (svc *service) sendCmd(_ context.Context, req *messengertypes.Interact_Request, args []string) error {
 	if len(args) == 0 {
-		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("send require a number as argument"))
+		return errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("send require a number as argument"))
 	}
 
 	nmsgs, err := strconv.ParseUint(args[0], 10, 0)
 	switch {
 	case err != nil:
-		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("unable to parse number of messages to send"))
+		return errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("unable to parse number of messages to send"))
 	case nmsgs > 10000:
-		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("cannot send more than 10000 messages"))
+		return errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("cannot send more than 10000 messages"))
 	default: // ok
 	}
 
@@ -150,7 +150,7 @@ func (svc *service) sendCmd(_ context.Context, req *messengertypes.Interact_Requ
 				Type:                  messengertypes.AppMessage_TypeUserMessage,
 				Payload:               p,
 				ConversationPublicKey: req.ConversationPublicKey,
-				TargetCID:             req.TargetCID,
+				TargetCid:             req.TargetCid,
 			})
 			if err != nil {
 				svc.logger.Error("unable to marshal message", zap.Error(err))

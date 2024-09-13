@@ -46,7 +46,7 @@ func peersCommand() *ffcli.Command {
 			for {
 				ret, err := protocol.PeerList(ctx, &protocoltypes.PeerList_Request{})
 				if err != nil {
-					return errcode.TODO.Wrap(err)
+					return errcode.ErrCode_TODO.Wrap(err)
 				}
 
 				if refreshEveryFlag == 0 {

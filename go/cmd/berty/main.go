@@ -39,7 +39,7 @@ func runMain(args []string) error {
 		var err error
 		manager, err = initutil.New(nil)
 		if err != nil {
-			return errcode.TODO.Wrap(err)
+			return errcode.ErrCode_TODO.Wrap(err)
 		}
 		defer manager.Close(nil)
 	}

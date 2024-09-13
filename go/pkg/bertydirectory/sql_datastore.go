@@ -29,22 +29,22 @@ func (ds *SQLDatastore) Get(identifier string) (*directorytypes.Record, error) {
 		First(&result, "`records`.`directory_identifier` = ? AND `records`.`expires_at` > ?", identifier, time.Now().UnixNano()).
 		Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
-			return nil, errcode.ErrNotFound
+			return nil, errcode.ErrCode_ErrNotFound
 		}
 
-		return nil, errcode.ErrDBRead.Wrap(err)
+		return nil, errcode.ErrCode_ErrDBRead.Wrap(err)
 	}
 
 	return result, nil
 }
 
 func (ds *SQLDatastore) Put(record *directorytypes.Record) error {
-	if err := ds.Del(record.DirectoryIdentifier); err != nil && err != errcode.ErrNotFound {
-		return errcode.ErrDBWrite.Wrap(err)
+	if err := ds.Del(record.DirectoryIdentifier); err != nil && err != errcode.ErrCode_ErrNotFound {
+		return errcode.ErrCode_ErrDBWrite.Wrap(err)
 	}
 
 	if err := ds.db.Model(&directorytypes.Record{}).Create(record).Error; err != nil {
-		return errcode.ErrDBWrite.Wrap(err)
+		return errcode.ErrCode_ErrDBWrite.Wrap(err)
 	}
 
 	return nil
@@ -54,11 +54,11 @@ func (ds *SQLDatastore) Del(identifier string) error {
 	query := ds.db.Delete(&directorytypes.Record{}, "directory_identifier = ?", identifier)
 
 	if err := query.Error; err != nil {
-		return errcode.ErrDBWrite.Wrap(err)
+		return errcode.ErrCode_ErrDBWrite.Wrap(err)
 	}
 
 	if query.RowsAffected == 0 {
-		return errcode.ErrNotFound
+		return errcode.ErrCode_ErrNotFound
 	}
 
 	return nil

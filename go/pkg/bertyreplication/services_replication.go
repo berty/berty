@@ -39,7 +39,7 @@ func (s *replicationService) ReplicateGlobalStats(ctx context.Context, request *
 	ret := &replicationtypes.ReplicateGlobalStats_Reply{}
 
 	if err := s.db.Raw("SELECT COUNT(public_key) AS replicated_groups, SUM(metadata_entries_count) AS total_metadata_entries, SUM(message_entries_count) AS total_message_entries FROM replicated_groups").Scan(&ret).Error; err != nil {
-		return nil, errcode.ErrDBRead.Wrap(err)
+		return nil, errcode.ErrCode_ErrDBRead.Wrap(err)
 	}
 
 	ret.StartedAt = s.startedAt.UnixNano()
@@ -49,12 +49,12 @@ func (s *replicationService) ReplicateGlobalStats(ctx context.Context, request *
 
 func (s *replicationService) ReplicateGroupStats(ctx context.Context, request *replicationtypes.ReplicateGroupStats_Request) (*replicationtypes.ReplicateGroupStats_Reply, error) {
 	if len(request.GroupPublicKey) == 0 {
-		return nil, errcode.ErrNotFound
+		return nil, errcode.ErrCode_ErrNotFound
 	}
 
 	g := &replicationtypes.ReplicatedGroup{}
 	if err := s.db.Model(&replicationtypes.ReplicatedGroup{}).Where("public_key = ?", request.GroupPublicKey).First(&g).Error; err != nil {
-		return nil, errcode.ErrNotFound
+		return nil, errcode.ErrCode_ErrNotFound
 	}
 
 	g.SignPub = ""
@@ -65,11 +65,11 @@ func (s *replicationService) ReplicateGroupStats(ctx context.Context, request *r
 
 func (s *replicationService) GroupRegister(token, tokenIssuer string, group *protocoltypes.Group) error {
 	if token == "" {
-		return weshnet_errcode.ErrServiceReplication.Wrap(fmt.Errorf("missing token"))
+		return weshnet_errcode.ErrCode_ErrServiceReplication.Wrap(fmt.Errorf("missing token"))
 	}
 
 	if tokenIssuer == "" {
-		return weshnet_errcode.ErrServiceReplication.Wrap(fmt.Errorf("missing token issuer"))
+		return weshnet_errcode.ErrCode_ErrServiceReplication.Wrap(fmt.Errorf("missing token issuer"))
 	}
 
 	pkStr := messengerutil.B64EncodeBytes(group.PublicKey)
@@ -80,13 +80,13 @@ func (s *replicationService) GroupRegister(token, tokenIssuer string, group *pro
 
 		if err := tx.Model(&replicationtypes.ReplicatedGroupToken{}).Where(&replicationtypes.ReplicatedGroupToken{
 			ReplicatedGroupPublicKey: pkStr,
-			TokenID:                  token,
+			TokenId:                  token,
 		}).Count(&count).Error; err != nil {
-			return errcode.ErrDBRead.Wrap(err)
+			return errcode.ErrCode_ErrDBRead.Wrap(err)
 		}
 
 		if count == 1 {
-			return errcode.ErrDBEntryAlreadyExists
+			return errcode.ErrCode_ErrDBEntryAlreadyExists
 		}
 
 		if err := tx.Model(&replicationtypes.ReplicatedGroup{}).Where(&replicationtypes.ReplicatedGroup{
@@ -108,7 +108,7 @@ func (s *replicationService) GroupRegister(token, tokenIssuer string, group *pro
 		tx.Model(&replicationtypes.ReplicatedGroupToken{}).Create(&replicationtypes.ReplicatedGroupToken{
 			ReplicatedGroupPublicKey: pkStr,
 			CreatedAt:                time.Now().UnixNano(),
-			TokenID:                  token,
+			TokenId:                  token,
 			TokenIssuer:              tokenIssuer,
 		})
 
@@ -178,11 +178,11 @@ func (s *replicationService) updateGroupDB(store iface.Store, groupPK string, fi
 
 		opsCount := int64(store.OpLog().Len())
 		if opsCount == 0 {
-			return errcode.ErrInvalidInput
+			return errcode.ErrCode_ErrInvalidInput
 		}
 
 		if store.OpLog().RawHeads().Len() == 0 {
-			return errcode.ErrInvalidInput
+			return errcode.ErrCode_ErrInvalidInput
 		}
 
 		head := store.OpLog().RawHeads().Slice()[0]
@@ -202,7 +202,7 @@ func (s *replicationService) updateGroupDB(store iface.Store, groupPK string, fi
 			}
 
 		default:
-			return errcode.ErrInvalidInput.Wrap(fmt.Errorf("unrecognized store type"))
+			return errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("unrecognized store type"))
 		}
 
 		updates["updated_at"] = time.Now().UnixNano()
@@ -216,40 +216,40 @@ func (s *replicationService) updateGroupDB(store iface.Store, groupPK string, fi
 func (s *replicationService) ReplicateGroup(ctx context.Context, req *replicationtypes.ReplicationServiceReplicateGroup_Request) (*replicationtypes.ReplicationServiceReplicateGroup_Reply, error) {
 	token := ctx.Value(authtypes.ContextTokenHashField)
 	if token == nil {
-		return &replicationtypes.ReplicationServiceReplicateGroup_Reply{}, errcode.ErrInternal.Wrap(fmt.Errorf("no token found"))
+		return &replicationtypes.ReplicationServiceReplicateGroup_Reply{}, errcode.ErrCode_ErrInternal.Wrap(fmt.Errorf("no token found"))
 	}
 
 	if len(req.Group.SignPub) != ed25519.PublicKeySize {
-		return &replicationtypes.ReplicationServiceReplicateGroup_Reply{}, errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing sign pub"))
+		return &replicationtypes.ReplicationServiceReplicateGroup_Reply{}, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("missing sign pub"))
 	}
 
 	if len(req.Group.PublicKey) != ed25519.PublicKeySize {
-		return &replicationtypes.ReplicationServiceReplicateGroup_Reply{}, errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing public key"))
+		return &replicationtypes.ReplicationServiceReplicateGroup_Reply{}, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("missing public key"))
 	}
 
 	if len(req.Group.LinkKey) == 0 {
-		return &replicationtypes.ReplicationServiceReplicateGroup_Reply{}, errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing link key"))
+		return &replicationtypes.ReplicationServiceReplicateGroup_Reply{}, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("missing link key"))
 	}
 
 	if len(req.Group.LinkKeySig) != ed25519.SignatureSize {
-		return &replicationtypes.ReplicationServiceReplicateGroup_Reply{}, errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing link key signature"))
+		return &replicationtypes.ReplicationServiceReplicateGroup_Reply{}, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("missing link key signature"))
 	}
 
 	if ok := ed25519.Verify(req.Group.PublicKey, req.Group.LinkKey, req.Group.LinkKeySig); !ok {
-		return &replicationtypes.ReplicationServiceReplicateGroup_Reply{}, errcode.ErrCryptoSignatureVerification.Wrap(fmt.Errorf("invalid link key"))
+		return &replicationtypes.ReplicationServiceReplicateGroup_Reply{}, errcode.ErrCode_ErrCryptoSignatureVerification.Wrap(fmt.Errorf("invalid link key"))
 	}
 
 	tokenIssuer := ctx.Value(authtypes.ContextTokenIssuerField)
 	if tokenIssuer == nil {
-		return &replicationtypes.ReplicationServiceReplicateGroup_Reply{}, errcode.ErrInternal.Wrap(fmt.Errorf("no token issuer found"))
+		return &replicationtypes.ReplicationServiceReplicateGroup_Reply{}, errcode.ErrCode_ErrInternal.Wrap(fmt.Errorf("no token issuer found"))
 	}
 
 	if _, ok := token.(string); !ok {
-		return &replicationtypes.ReplicationServiceReplicateGroup_Reply{}, errcode.ErrInternal.Wrap(fmt.Errorf("invalid type for token value"))
+		return &replicationtypes.ReplicationServiceReplicateGroup_Reply{}, errcode.ErrCode_ErrInternal.Wrap(fmt.Errorf("invalid type for token value"))
 	}
 
 	if _, ok := tokenIssuer.(string); !ok {
-		return &replicationtypes.ReplicationServiceReplicateGroup_Reply{}, errcode.ErrInternal.Wrap(fmt.Errorf("invalid type for token issuer value"))
+		return &replicationtypes.ReplicationServiceReplicateGroup_Reply{}, errcode.ErrCode_ErrInternal.Wrap(fmt.Errorf("invalid type for token issuer value"))
 	}
 
 	err := s.GroupRegister(token.(string), tokenIssuer.(string), req.Group)
@@ -275,11 +275,11 @@ type ReplicationService interface {
 
 func NewReplicationService(ctx context.Context, db *gorm.DB, odb BertyOrbitDB, logger *zap.Logger) (ReplicationService, error) {
 	if db == nil {
-		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("db should not be nil"))
+		return nil, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("db should not be nil"))
 	}
 
 	if odb == nil {
-		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("odb should not be nil"))
+		return nil, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("odb should not be nil"))
 	}
 
 	if logger == nil {
@@ -297,7 +297,7 @@ func NewReplicationService(ctx context.Context, db *gorm.DB, odb BertyOrbitDB, l
 	// Create/migrate models in DB
 	if err := db.AutoMigrate(&replicationtypes.ReplicatedGroup{}, &replicationtypes.ReplicatedGroupToken{}); err != nil {
 		// TODO: improve migration logic
-		return nil, errcode.ErrDBWrite.Wrap(err)
+		return nil, errcode.ErrCode_ErrDBWrite.Wrap(err)
 	}
 
 	// Resubscribe to known groups
@@ -316,7 +316,7 @@ func NewReplicationService(ctx context.Context, db *gorm.DB, odb BertyOrbitDB, l
 
 		return nil
 	}).Error; err != nil {
-		return nil, errcode.ErrDBRead.Wrap(err)
+		return nil, errcode.ErrCode_ErrDBRead.Wrap(err)
 	}
 
 	return r, nil

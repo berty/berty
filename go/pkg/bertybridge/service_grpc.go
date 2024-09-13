@@ -201,6 +201,10 @@ func convertMetadata(in metadata.MD) []*Metadata {
 	out := make([]*Metadata, in.Len())
 	i := 0
 	for k, v := range in {
+		if k == "grpc-status-details-bin" {
+			// ignore grpc-status-details-bin
+			continue
+		}
 		out[i] = &Metadata{
 			Key:    k,
 			Values: v,
@@ -221,7 +225,7 @@ func getServiceError(err error) *Error {
 		grpcErrCode = GRPCErrCode(s.Code())
 	}
 
-	errCode := errcode.Undefined
+	errCode := errcode.ErrCode_Undefined
 	errCodes := errcode.Codes(err)
 	if len(errCodes) > 0 {
 		errCode = errCodes[0]

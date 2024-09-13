@@ -63,4 +63,4 @@ yq 4.30.8
 # This is simply the most recent buf version available to date.
 # There is no contraindication for updating it.
 #-----
-buf 1.36.0
+buf 1.39.0

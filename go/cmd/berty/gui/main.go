@@ -31,13 +31,13 @@ func Main(ctx context.Context, opts *Opts) error {
 	assets.Noop() // embed assets
 
 	if opts.MessengerClient == nil {
-		return errcode.ErrMissingInput.Wrap(fmt.Errorf("missing messenger client"))
+		return errcode.ErrCode_ErrMissingInput.Wrap(fmt.Errorf("missing messenger client"))
 	}
 	if opts.ProtocolClient == nil {
-		return errcode.ErrMissingInput.Wrap(fmt.Errorf("missing protocol client"))
+		return errcode.ErrCode_ErrMissingInput.Wrap(fmt.Errorf("missing protocol client"))
 	}
 	if opts.AppChan == nil {
-		return errcode.ErrMissingInput.Wrap(fmt.Errorf("missing window chan"))
+		return errcode.ErrCode_ErrMissingInput.Wrap(fmt.Errorf("missing window chan"))
 	}
 
 	ctx, cancel := context.WithCancel(ctx)

@@ -6,9 +6,9 @@ import (
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/widget"
-	"github.com/gogo/protobuf/proto"
 	"go.uber.org/multierr"
 	"go.uber.org/zap"
+	"google.golang.org/protobuf/proto"
 
 	mt "berty.tech/berty/v2/go/pkg/messengertypes"
 )

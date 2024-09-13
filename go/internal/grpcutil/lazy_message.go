@@ -3,7 +3,8 @@ package grpcutil
 import (
 	"encoding/base64"
 
-	"github.com/gogo/protobuf/proto"
+	"google.golang.org/protobuf/proto"
+	"google.golang.org/protobuf/reflect/protoreflect"
 )
 
 // LazyMessage is basically a no-op `proto.Message` used to pass
@@ -40,6 +41,7 @@ func (m *LazyMessage) FromBytes(buf []byte) *LazyMessage {
 // Message
 var _ proto.Message = (*LazyMessage)(nil)
 
-func (m *LazyMessage) Reset()         { *m = LazyMessage{} }
-func (m *LazyMessage) String() string { return string(m.buf) }
-func (m *LazyMessage) ProtoMessage()  {}
+func (m *LazyMessage) Reset()                             { *m = LazyMessage{} }
+func (m *LazyMessage) String() string                     { return string(m.buf) }
+func (m *LazyMessage) ProtoMessage()                      {}
+func (m *LazyMessage) ProtoReflect() protoreflect.Message { return nil }

@@ -28,11 +28,11 @@ func (m *PhoneCodeSenderMockService) SendVerificationCode(ctx context.Context, i
 func (m *PhoneCodeSenderMockService) ValidateIdentifier(ctx context.Context, rawIdentifier string) (string, error) {
 	num, err := phonenumbers.Parse(rawIdentifier, "")
 	if err != nil {
-		return "", errcode.ErrInvalidInput.Wrap(err)
+		return "", errcode.ErrCode_ErrInvalidInput.Wrap(err)
 	}
 
 	if !phonenumbers.IsValidNumber(num) {
-		return "", errcode.ErrInvalidInput.Wrap(fmt.Errorf("phone number is invalid"))
+		return "", errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("phone number is invalid"))
 	}
 
 	return fmt.Sprintf("tel:%s", phonenumbers.Format(num, phonenumbers.E164)), nil

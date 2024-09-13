@@ -4,7 +4,7 @@ import (
 	"archive/tar"
 	"io"
 
-	"github.com/gogo/protobuf/proto"
+	"google.golang.org/protobuf/proto"
 
 	"berty.tech/berty/v2/go/internal/messengerdb"
 	"berty.tech/berty/v2/go/pkg/errcode"
@@ -18,7 +18,7 @@ func exportMessengerData(writer io.Writer, db *messengerdb.DBWrapper) error {
 	dbState := db.KeepDatabaseLocalState()
 	dbStateBytes, err := proto.Marshal(dbState)
 	if err != nil {
-		return errcode.ErrSerialization.Wrap(err)
+		return errcode.ErrCode_ErrSerialization.Wrap(err)
 	}
 
 	if err := tw.WriteHeader(&tar.Header{
@@ -27,15 +27,15 @@ func exportMessengerData(writer io.Writer, db *messengerdb.DBWrapper) error {
 		Size:     int64(len(dbStateBytes)),
 		Mode:     0o600,
 	}); err != nil {
-		return errcode.ErrStreamWrite.Wrap(err)
+		return errcode.ErrCode_ErrStreamWrite.Wrap(err)
 	}
 
 	if _, err := tw.Write(dbStateBytes); err != nil {
-		return errcode.ErrStreamWrite.Wrap(err)
+		return errcode.ErrCode_ErrStreamWrite.Wrap(err)
 	}
 
 	if err := tw.Close(); err != nil {
-		return errcode.ErrStreamWrite.Wrap(err)
+		return errcode.ErrCode_ErrStreamWrite.Wrap(err)
 	}
 
 	return nil

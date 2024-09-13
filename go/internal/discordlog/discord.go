@@ -25,19 +25,19 @@ const (
 func ShareQRLink(username, room, title, qrData, url string) error {
 	clearRoom, err := base64.StdEncoding.DecodeString(room)
 	if err != nil {
-		return errcode.TODO.Wrap(err)
+		return errcode.ErrCode_TODO.Wrap(err)
 	}
 	webhook, err := dishooks.WebhookFromURL(string(clearRoom))
 	if err != nil {
-		return errcode.TODO.Wrap(err)
+		return errcode.ErrCode_TODO.Wrap(err)
 	}
 	qr, err := qrcode.New(qrData, qrcode.Medium)
 	if err != nil {
-		return errcode.TODO.Wrap(err)
+		return errcode.ErrCode_TODO.Wrap(err)
 	}
 	png, err := qr.PNG(256)
 	if err != nil {
-		return errcode.TODO.Wrap(err)
+		return errcode.ErrCode_TODO.Wrap(err)
 	}
 
 	msg := &dishooks.WebhookMessage{
@@ -60,7 +60,7 @@ func ShareQRLink(username, room, title, qrData, url string) error {
 	}
 	_, err = webhook.SendFile(png, "qr.png", msg)
 	if err != nil {
-		return errcode.TODO.Wrap(err)
+		return errcode.ErrCode_TODO.Wrap(err)
 	}
 	return nil
 }

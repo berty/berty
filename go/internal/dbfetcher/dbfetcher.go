@@ -31,16 +31,16 @@ func (f *dbFetcher) GetCurrentPushServers() ([]*messengertypes.PushServer, error
 	pushServers := []*messengertypes.PushServer(nil)
 
 	if f.DBWrapper == nil {
-		return nil, errcode.ErrInternal.Wrap(fmt.Errorf("db not initialized"))
+		return nil, errcode.ErrCode_ErrInternal.Wrap(fmt.Errorf("db not initialized"))
 	}
 
 	if len(f.accountPK) == 0 {
-		return nil, errcode.ErrInternal.Wrap(fmt.Errorf("account group not initialized"))
+		return nil, errcode.ErrCode_ErrInternal.Wrap(fmt.Errorf("account group not initialized"))
 	}
 
 	pushServerRecords, err := f.GetPushServerRecords(f.accountPK)
 	if err != nil {
-		return nil, errcode.ErrPushServerNotFound.Wrap(err)
+		return nil, errcode.ErrCode_ErrPushServerNotFound.Wrap(err)
 	}
 
 	for _, pushServerRecord := range pushServerRecords {

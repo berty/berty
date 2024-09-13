@@ -9,9 +9,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/gogo/protobuf/proto"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"google.golang.org/protobuf/proto"
 
 	"berty.tech/berty/v2/go/pkg/bertymessenger"
 	bertymessengertesting "berty.tech/berty/v2/go/pkg/bertymessenger/testing"
@@ -58,12 +58,12 @@ func TestPeersCreateJoinConversationNonMocked(t *testing.T) {
 	gpk := createdConv.GetPublicKey()
 	gpkb, err := b64DecodeBytes(gpk)
 	require.NoError(t, err)
-	sbg, err := creator.GetClient().ShareableBertyGroup(ctx, &messengertypes.ShareableBertyGroup_Request{GroupPK: gpkb, GroupName: convName})
+	sbg, err := creator.GetClient().ShareableBertyGroup(ctx, &messengertypes.ShareableBertyGroup_Request{GroupPk: gpkb, GroupName: convName})
 	require.NoError(t, err)
 
 	// joiners join the conversation
 	for _, joiner := range joiners {
-		ret, err := joiner.GetClient().ConversationJoin(ctx, &messengertypes.ConversationJoin_Request{Link: sbg.GetWebURL()})
+		ret, err := joiner.GetClient().ConversationJoin(ctx, &messengertypes.ConversationJoin_Request{Link: sbg.GetWebUrl()})
 		require.NoError(t, err)
 		require.Empty(t, ret)
 	}

@@ -3,6 +3,6 @@
 e8196156efc4aece892fc42ebc2b91c20127e910  ../api/bertybridge/bertybridge.proto
 520790f5a3f524c82f02479904567c639691bced  ../api/directorytypes/bertydirectory.proto
 851d354abf878a3afd1e1759511b7b3ce297330f  ../api/go-internal/testutil.proto
-797a7a05a96333c1e6ad192087a9d5af37736e4d  ../api/messengertypes/messengertypes.proto
+b241fd5eec5c157a472df665cf21289a84612d5e  ../api/messengertypes/messengertypes.proto
 0ede6de49ef7dac9bdec9fda912f2ce6bc463c74  ../api/pushtypes/bertypushtypes.proto
-d733a43f925ac7ea7048602621a78c7d3bf678d0  Makefile
+59e8785812a218a9a9729e7f01ae16a8cb58cd0b  Makefile

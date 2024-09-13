@@ -19,10 +19,10 @@ func FuncReader(readFunc func() ([]byte, error), l *zap.Logger) *io.PipeReader {
 					return nil
 				}
 				if err != nil {
-					return errcode.ErrStreamRead.Wrap(err)
+					return errcode.ErrCode_ErrStreamRead.Wrap(err)
 				}
 				if _, err := out.Write(block); err != nil {
-					return errcode.ErrStreamWrite.Wrap(err)
+					return errcode.ErrCode_ErrStreamWrite.Wrap(err)
 				}
 			}
 		}()
@@ -39,10 +39,10 @@ func FuncSink(buffer []byte, reader io.Reader, writeFunc func(block []byte) erro
 			return nil
 		}
 		if err != nil {
-			return errcode.ErrStreamRead.Wrap(err)
+			return errcode.ErrCode_ErrStreamRead.Wrap(err)
 		}
 		if err := writeFunc(buffer[:n]); err != nil {
-			return errcode.ErrStreamWrite.Wrap(err)
+			return errcode.ErrCode_ErrStreamWrite.Wrap(err)
 		}
 	}
 }
@@ -58,16 +58,16 @@ func FuncBlockTransformer(buf []byte, reader io.Reader, l *zap.Logger, transform
 					return nil
 				}
 				if readErr != nil && readErr != io.ErrUnexpectedEOF {
-					return errcode.ErrStreamRead.Wrap(readErr)
+					return errcode.ErrCode_ErrStreamRead.Wrap(readErr)
 				}
 
 				transformed, err := transformFunc(buf[:n])
 				if err != nil {
-					return errcode.ErrStreamTransform.Wrap(err)
+					return errcode.ErrCode_ErrStreamTransform.Wrap(err)
 				}
 
 				if _, err := out.Write(transformed); err != nil {
-					return errcode.ErrStreamWrite.Wrap(err)
+					return errcode.ErrCode_ErrStreamWrite.Wrap(err)
 				}
 
 				if readErr == io.ErrUnexpectedEOF {

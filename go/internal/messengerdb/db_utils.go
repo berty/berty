@@ -42,12 +42,12 @@ func ensureSeamlessDBUpdate(db *gorm.DB, models []interface{}) error {
 func dropAllTables(db *gorm.DB) error {
 	tables := []string(nil)
 	if err := db.Raw("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'").Scan(&tables).Error; err != nil {
-		return errcode.ErrDBRead.Wrap(err)
+		return errcode.ErrCode_ErrDBRead.Wrap(err)
 	}
 
 	for _, table := range tables {
 		if err := db.Migrator().DropTable(table); err != nil {
-			return errcode.ErrDBWrite.Wrap(err)
+			return errcode.ErrCode_ErrDBWrite.Wrap(err)
 		}
 	}
 
@@ -118,9 +118,9 @@ func restoreDatabaseLocalState(db *DBWrapper, state *messengertypes.LocalDatabas
 			"replicate_new_groups_automatically": state.ReplicateFlag,
 			"auto_share_push_token_flag":         state.AutoSharePushTokenFlag,
 		}); res.Error != nil {
-		return errcode.ErrInternal.Wrap(fmt.Errorf("unable to update account: %w", res.Error))
+		return errcode.ErrCode_ErrInternal.Wrap(fmt.Errorf("unable to update account: %w", res.Error))
 	} else if res.RowsAffected == 0 {
-		return errcode.ErrInternal.Wrap(fmt.Errorf("unable to update account: account not found"))
+		return errcode.ErrCode_ErrInternal.Wrap(fmt.Errorf("unable to update account: account not found"))
 	}
 
 	for _, c := range state.LocalConversationsState {
@@ -131,9 +131,9 @@ func restoreDatabaseLocalState(db *DBWrapper, state *messengertypes.LocalDatabas
 				"is_open":      c.IsOpen,
 				"unread_count": c.UnreadCount,
 			}); res.Error != nil {
-			return errcode.ErrInternal.Wrap(fmt.Errorf("unable to update conversation: %w", res.Error))
+			return errcode.ErrCode_ErrInternal.Wrap(fmt.Errorf("unable to update conversation: %w", res.Error))
 		} else if res.RowsAffected == 0 {
-			return errcode.ErrInternal.Wrap(fmt.Errorf("unable to update conversation: conversation not found"))
+			return errcode.ErrCode_ErrInternal.Wrap(fmt.Errorf("unable to update conversation: conversation not found"))
 		}
 	}
 

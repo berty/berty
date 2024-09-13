@@ -68,17 +68,17 @@ func shareInviteCommand() *ffcli.Command {
 				Passphrase:  []byte(passphraseFlag),
 			})
 			if err != nil {
-				return errcode.TODO.Wrap(err)
+				return errcode.ErrCode_TODO.Wrap(err)
 			}
-			fmt.Println(ret.WebURL)
+			fmt.Println(ret.WebUrl)
 			if !noQRFlag {
-				fmt.Fprintln(os.Stderr, ret.InternalURL)
-				qrterminal.GenerateHalfBlock(ret.InternalURL, qrterminal.L, os.Stderr)
+				fmt.Fprintln(os.Stderr, ret.InternalUrl)
+				qrterminal.GenerateHalfBlock(ret.InternalUrl, qrterminal.L, os.Stderr)
 			}
 			if shareOnDevChannelFlag {
 				_, err = messenger.DevShareInstanceBertyID(ctx, &messengertypes.DevShareInstanceBertyID_Request{DisplayName: name})
 				if err != nil {
-					return errcode.TODO.Wrap(err)
+					return errcode.ErrCode_TODO.Wrap(err)
 				}
 			}
 			return nil

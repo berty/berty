@@ -41,7 +41,7 @@ func (m *Manager) getNotificationManager() (notification.Manager, error) {
 
 	logger, err := m.getLogger()
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ErrCode_TODO.Wrap(err)
 	}
 
 	notifLogger := logger.Named("notif")

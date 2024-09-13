@@ -7,10 +7,10 @@ import (
 	"testing"
 	"time"
 
-	mocknet "github.com/berty/go-libp2p-mock"
 	"github.com/ipfs/go-cid"
 	"github.com/ipfs/go-datastore"
 	dssync "github.com/ipfs/go-datastore/sync"
+	mocknet "github.com/libp2p/go-libp2p/p2p/net/mock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/zap"
@@ -118,14 +118,14 @@ func TestReplicationService_GroupRegister(t *testing.T) {
 
 	err = repl.GroupRegister("token", "issuer", replGroup)
 	require.Error(t, err)
-	require.True(t, errcode.Is(err, errcode.ErrDBEntryAlreadyExists))
+	require.True(t, errcode.Is(err, errcode.ErrCode_ErrDBEntryAlreadyExists))
 
 	err = repl.GroupRegister("token2", "issuer", replGroup)
 	require.NoError(t, err)
 
 	err = repl.GroupRegister("token2", "issuer", replGroup)
 	require.Error(t, err)
-	require.True(t, errcode.Is(err, errcode.ErrDBEntryAlreadyExists))
+	require.True(t, errcode.Is(err, errcode.ErrCode_ErrDBEntryAlreadyExists))
 
 	err = repl.Close()
 	require.NoError(t, err)
