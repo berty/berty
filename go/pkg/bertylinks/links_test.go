@@ -10,6 +10,7 @@ import (
 	"github.com/mdp/qrterminal"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"google.golang.org/protobuf/proto"
 	"moul.io/srand"
 	"moul.io/u"
 
@@ -123,11 +124,11 @@ func TestMarshalLink(t *testing.T) {
 			// unmarshal and compare with original input
 			webLink, err := bertylinks.UnmarshalLink(web, nil)
 			require.NoError(t, err)
-			assert.Equal(t, tc.input, webLink)
+			assert.True(t, proto.Equal(tc.input, webLink))
 
 			internalLink, err := bertylinks.UnmarshalLink(internal, nil)
 			require.NoError(t, err)
-			assert.Equal(t, tc.input, internalLink)
+			assert.True(t, proto.Equal(tc.input, internalLink))
 		})
 	}
 }
@@ -232,11 +233,11 @@ func TestMarshalLinkFuzzing(t *testing.T) {
 		// unmarshal and compare with original input
 		webLink, err := bertylinks.UnmarshalLink(web, nil)
 		require.NoError(t, err)
-		assert.Equal(t, link, webLink)
+		assert.True(t, proto.Equal(link, webLink))
 
 		internalLink, err := bertylinks.UnmarshalLink(internal, nil)
 		require.NoError(t, err)
-		assert.Equal(t, link, internalLink)
+		assert.True(t, proto.Equal(link, internalLink))
 	}
 }
 
@@ -329,7 +330,7 @@ func TestEncryptLink(t *testing.T) {
 			for _, u := range []string{internalURL, httpURL} {
 				link, err := bertylinks.UnmarshalLink(u, nil)
 				require.NoError(t, err)
-				require.NotEqual(t, tc.link, link)
+				assert.False(t, proto.Equal(tc.link, link))
 				require.Equal(t, link.Kind, messengertypes.BertyLink_EncryptedV1Kind)
 			}
 
@@ -346,7 +347,7 @@ func TestEncryptLink(t *testing.T) {
 					hasFailed = true
 					require.Error(t, err)
 					assert.Equal(t, errcode.ErrCode_ErrMessengerDeepLinkInvalidPassphrase.Error(), err.Error())
-					require.NotEqual(t, tc.link, link)
+					assert.False(t, proto.Equal(tc.link, link))
 					break
 				}
 			}
@@ -359,7 +360,7 @@ func TestEncryptLink(t *testing.T) {
 			for _, u := range []string{internalURL, httpURL} {
 				link, err := bertylinks.UnmarshalLink(u, tc.passphrase)
 				require.NoError(t, err)
-				require.Equal(t, tc.link, link)
+				assert.True(t, proto.Equal(tc.link, link))
 
 				switch link.Kind {
 				case messengertypes.BertyLink_ContactInviteV1Kind:

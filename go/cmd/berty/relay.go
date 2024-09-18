@@ -31,7 +31,7 @@ import (
 )
 
 const (
-	DefaultRelaySwarmListeners = "/ip4/0.0.0.0/tcp/4040,/ip4/0.0.0.0/udp/4141/quic,/ip6/::/tcp/4040,/ip6/::/udp/4040/quic"
+	DefaultRelaySwarmListeners = "/ip4/0.0.0.0/tcp/4040,/ip4/0.0.0.0/udp/4141/quic-v1,/ip6/::/tcp/4040,/ip6/::/udp/4040/quic-v1"
 	DefaultRelayKeySize        = 2048
 	DefaultRelayKeyType        = "Ed25519"
 )

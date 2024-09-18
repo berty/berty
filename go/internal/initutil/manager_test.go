@@ -46,23 +46,25 @@ func verifyRunningLeakDetection(t *testing.T) {
 	// sometimes if timeout is quite short - not enough for below functions to finished
 	time.Sleep(5 * time.Second)
 	goleak.VerifyNone(t,
-		goleak.IgnoreTopFunction("berty.tech/weshnet/pkg/tinder.(*Service).fadeIn"),                                          // ignore this since it is used by the DHT in the background
-		goleak.IgnoreTopFunction("github.com/desertbit/timer.timerRoutine"),                                                  // called by init() in github.com/desertbit/timer/timers.go, refer in grpc-web
-		goleak.IgnoreTopFunction("github.com/ipfs/go-log/writer.(*MirrorWriter).logRoutine"),                                 // global writer created at github.com/ipfs/go-log@v1.0.4/writer/option.go, refer by github.com/ipfs/, like go-bitswap
-		goleak.IgnoreTopFunction("github.com/jbenet/goprocess.(*process).doClose"),                                           // sometimes happening on CI, need more investigation
-		goleak.IgnoreTopFunction("github.com/jbenet/goprocess/context.CloseAfterContext.func1"),                              // sometimes happening on CI, need more investigation
-		goleak.IgnoreTopFunction("github.com/jbenet/goprocess/periodic.callOnTicker.func1"),                                  // FIXME - upstream code - is used in many code of libp2p + go-ipfs
-		goleak.IgnoreTopFunction("github.com/libp2p/go-flow-metrics.(*sweeper).run"),                                         // this goroutine has run always without stop
-		goleak.IgnoreTopFunction("github.com/libp2p/go-flow-metrics.(*sweeper).runActive"),                                   // this goroutine has run always without stop                                       // upstream issue
-		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p/p2p/host/peerstore/pstoremem.(*memoryAddrBook).background"),    // upstream issue, no store close in upstream code
-		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p/p2p/net/swarm.(*DialBackoff).background"),                      // the cleanup take too much time, should be managed by ipfs
-		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p/p2p/net/swarm.(*activeDial).dial"),                             // the cleanup take too much time, should be managed by ipfs
-		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p/p2p/net/upgrader.(*Upgrader).setupMuxer"),                      // the closing routine has big timeout
-		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p/p2p/net/upgrader.(*listener).Accept"),                          // sometimes happening on CI, need more investigation
-		goleak.IgnoreTopFunction("berty.tech/weshnet/pkg/ipfsutil.(*mdnsService).startResolver.func1"),                       // upstream issue of mdns, go wakeup periodiclly to do action before check exist, timeout about 10 seconds
-		goleak.IgnoreTopFunction("github.com/lucas-clemente/quic-go.(*packetHandlerMap).runCloseQueue"),                      // quic-go should be manager by libp2p
-		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p/p2p/transport/quicreuse.(*reuse).gc"),                          // managed by ipfs
-		goleak.IgnoreTopFunction("github.com/quic-go/quic-go.(*packetHandlerMap).runCloseQueue"),                             // managed by ipfs
+		goleak.IgnoreTopFunction("berty.tech/weshnet/pkg/tinder.(*Service).fadeIn"),                                       // ignore this since it is used by the DHT in the background
+		goleak.IgnoreTopFunction("github.com/desertbit/timer.timerRoutine"),                                               // called by init() in github.com/desertbit/timer/timers.go, refer in grpc-web
+		goleak.IgnoreTopFunction("github.com/ipfs/go-log/writer.(*MirrorWriter).logRoutine"),                              // global writer created at github.com/ipfs/go-log@v1.0.4/writer/option.go, refer by github.com/ipfs/, like go-bitswap
+		goleak.IgnoreTopFunction("github.com/jbenet/goprocess.(*process).doClose"),                                        // sometimes happening on CI, need more investigation
+		goleak.IgnoreTopFunction("github.com/jbenet/goprocess/context.CloseAfterContext.func1"),                           // sometimes happening on CI, need more investigation
+		goleak.IgnoreTopFunction("github.com/jbenet/goprocess/periodic.callOnTicker.func1"),                               // FIXME - upstream code - is used in many code of libp2p + go-ipfs
+		goleak.IgnoreTopFunction("github.com/libp2p/go-flow-metrics.(*sweeper).run"),                                      // this goroutine has run always without stop
+		goleak.IgnoreTopFunction("github.com/libp2p/go-flow-metrics.(*sweeper).runActive"),                                // this goroutine has run always without stop                                       // upstream issue
+		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p/p2p/host/peerstore/pstoremem.(*memoryAddrBook).background"), // upstream issue, no store close in upstream code
+		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p/p2p/net/swarm.(*DialBackoff).background"),                   // the cleanup take too much time, should be managed by ipfs
+		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p/p2p/net/swarm.(*activeDial).dial"),                          // the cleanup take too much time, should be managed by ipfs
+		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p/p2p/net/upgrader.(*Upgrader).setupMuxer"),                   // the closing routine has big timeout
+		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p/p2p/net/upgrader.(*listener).Accept"),                       // sometimes happening on CI, need more investigation
+		goleak.IgnoreTopFunction("berty.tech/weshnet/pkg/ipfsutil.(*mdnsService).startResolver.func1"),                    // upstream issue of mdns, go wakeup periodiclly to do action before check exist, timeout about 10 seconds
+		goleak.IgnoreTopFunction("github.com/lucas-clemente/quic-go.(*packetHandlerMap).runCloseQueue"),                   // quic-go should be manager by libp2p
+		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p/p2p/transport/quicreuse.(*reuse).gc"),                       // managed by ipfs
+		goleak.IgnoreTopFunction("github.com/quic-go/quic-go.(*packetHandlerMap).runCloseQueue"),                          // managed by ipfs
+		goleak.IgnoreTopFunction("github.com/quic-go/quic-go.(*Transport).runSendQueue"),
+		goleak.IgnoreTopFunction("github.com/ipfs/boxo/bootstrap.startSavePeersAsTemporaryBootstrapProc.func2"),
 		goleak.IgnoreTopFunction("net/http.(*persistConn).writeLoop"),                                                        // managed by ipfs
 		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p/p2p/transport/quic.(*reuse).gc"),                               // quic-go should be manager by libp2p
 		goleak.IgnoreTopFunction("github.com/libp2p/go-libp2p/p2p/host/basic.(*BasicHost).background"),                       // sometimes happening on CI, need more investigation
@@ -158,7 +160,6 @@ func Example_noflags() {
 	fmt.Println(ret.AccountPk != nil)
 
 	// Output:
-	// go-libp2p resource manager protection disabled
 	// true
 }
 

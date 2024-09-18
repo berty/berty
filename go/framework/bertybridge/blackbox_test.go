@@ -211,7 +211,6 @@ func TestExample(t *testing.T) {
 	// Output:
 	// [+] initialized.
 	// [+] account created.
-	// go-libp2p resource manager protection disabled
 	// [+] account opened.
 	// [+] has grpc-web listener:            false
 	// [+] has websocket listener:           true

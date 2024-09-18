@@ -48,7 +48,7 @@ func main() {
 		logToFile             = "stderr"  // can be stdout, stderr or a file path
 		logFilters            = "info+:*" // info and more for everything
 		serveURN              = ":memory:"
-		serveListeners        = "/ip4/0.0.0.0/tcp/4040,/ip4/0.0.0.0/udp/4141/quic"
+		serveListeners        = "/ip4/0.0.0.0/tcp/4040,/ip4/0.0.0.0/udp/4141/quic-v1"
 		servePK               = ""
 		sharekeyPK            = ""
 		serveAnnounce         = ""
