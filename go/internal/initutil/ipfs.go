@@ -7,6 +7,7 @@ import (
 	mrand "math/rand"
 	"net"
 	"net/http"
+	"os"
 	"path/filepath"
 	"strings"
 	"sync"
@@ -390,6 +391,12 @@ func (m *Manager) setupIPFSRepo(ctx context.Context) (*ipfs_mobile.RepoMobile, e
 		}
 
 		return ipfs_mobile.NewRepoMobile(":memory:", repo), nil
+	}
+
+	// Disable nopfs plugin that cause error on encrypted repo
+	err = os.Setenv("IPFS_CONTENT_BLOCKING_DISABLE", "true")
+	if err != nil {
+		return nil, errcode.ErrCode_ErrIPFSSetupConfig.Wrap(err)
 	}
 
 	storageKey, err := m.GetAccountStorageKey()
