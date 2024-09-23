@@ -51,7 +51,7 @@ func (x AppMessage_Type) MarshalPayload(sentDate int64, target string, payload p
 
 // UnmarshalPayload tries to parse an AppMessage payload in the corresponding type.
 // Since this function returns a proto.Message interface, you still need to cast the returned value, but this function allows you to make it safely.
-func (am AppMessage) UnmarshalPayload() (proto.Message, error) {
+func (am *AppMessage) UnmarshalPayload() (proto.Message, error) {
 	var message proto.Message
 
 	switch am.GetType() {
@@ -86,20 +86,20 @@ func (am AppMessage) UnmarshalPayload() (proto.Message, error) {
 	return message, proto.Unmarshal(am.GetPayload(), message)
 }
 
-func UnmarshalAppMessage(payload []byte) (proto.Message, AppMessage, error) {
+func UnmarshalAppMessage(payload []byte) (proto.Message, *AppMessage, error) {
 	// FIXME: generate this function to avoid human error
 	var am AppMessage
 	err := proto.Unmarshal(payload, &am)
 	if err != nil {
-		return nil, AppMessage{}, errcode.ErrCode_ErrDeserialization.Wrap(err)
+		return nil, &AppMessage{}, errcode.ErrCode_ErrDeserialization.Wrap(err)
 	}
 
 	msg, err := am.UnmarshalPayload()
 	if err != nil {
-		return nil, AppMessage{}, errcode.ErrCode_ErrDeserialization.Wrap(err)
+		return nil, &AppMessage{}, errcode.ErrCode_ErrDeserialization.Wrap(err)
 	}
 
-	return msg, am, nil
+	return msg, &am, nil
 }
 
 func (event *StreamEvent) UnmarshalPayload() (proto.Message, error) {

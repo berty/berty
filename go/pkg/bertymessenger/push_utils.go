@@ -199,7 +199,7 @@ func (svc *service) getPushClient(host string) (pushtypes.PushServiceClient, err
 		MinConnectTimeout: time.Second * 10,
 	})
 
-	cc, err := grpc.DialContext(svc.ctx, host, creds, connectParams)
+	cc, err := grpc.NewClient("passthrough://"+host, creds, connectParams)
 	if err != nil {
 		return nil, err
 	}

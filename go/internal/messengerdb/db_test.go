@@ -427,7 +427,7 @@ func Test_dbWrapper_addInteraction(t *testing.T) {
 	db, _, dispose := GetInMemoryTestDB(t)
 	defer dispose()
 
-	i, _, err := db.AddInteraction(messengertypes.Interaction{
+	i, _, err := db.AddInteraction(&messengertypes.Interaction{
 		Cid:     "",
 		Payload: []byte("payload1"),
 	})
@@ -435,7 +435,7 @@ func Test_dbWrapper_addInteraction(t *testing.T) {
 	require.True(t, errcode.Is(err, errcode.ErrCode_ErrInvalidInput))
 	require.Nil(t, i)
 
-	i, isNew, err := db.AddInteraction(messengertypes.Interaction{
+	i, isNew, err := db.AddInteraction(&messengertypes.Interaction{
 		Cid:     "Qm00001",
 		Payload: []byte("payload1"),
 	})
@@ -446,7 +446,7 @@ func Test_dbWrapper_addInteraction(t *testing.T) {
 	require.True(t, isNew)
 
 	// Data should not be updated
-	i, isNew, err = db.AddInteraction(messengertypes.Interaction{
+	i, isNew, err = db.AddInteraction(&messengertypes.Interaction{
 		Cid:     "Qm00001",
 		Payload: []byte("payload2"),
 	})
@@ -456,7 +456,7 @@ func Test_dbWrapper_addInteraction(t *testing.T) {
 	require.Equal(t, []byte("payload1"), i.Payload)
 	require.False(t, isNew)
 
-	i, isNew, err = db.AddInteraction(messengertypes.Interaction{
+	i, isNew, err = db.AddInteraction(&messengertypes.Interaction{
 		Cid:     "Qm00002",
 		Payload: []byte("payload2"),
 	})
@@ -470,7 +470,7 @@ func Test_dbWrapper_addInteraction(t *testing.T) {
 	require.NoError(t, db.db.Create(&messengertypes.Conversation{PublicKey: "conversation_3"}).Error)
 	require.NoError(t, db.db.Create(&messengertypes.Member{PublicKey: "member_3"}).Error)
 
-	i, isNew, err = db.AddInteraction(messengertypes.Interaction{
+	i, isNew, err = db.AddInteraction(&messengertypes.Interaction{
 		Cid:                   "Qm00003",
 		Payload:               []byte("payload3"),
 		MemberPublicKey:       "member_3",
@@ -982,19 +982,19 @@ func Test_dbWrapper_updateContact(t *testing.T) {
 	db, _, dispose := GetInMemoryTestDB(t)
 	defer dispose()
 
-	err := db.UpdateContact("", messengertypes.Contact{})
+	err := db.UpdateContact("", &messengertypes.Contact{})
 	require.Error(t, err)
 	require.True(t, errcode.Is(err, errcode.ErrCode_ErrInvalidInput))
 
-	err = db.UpdateContact("pk_1", messengertypes.Contact{})
+	err = db.UpdateContact("pk_1", &messengertypes.Contact{})
 	require.Error(t, err)
 
 	require.NoError(t, db.db.Create(&messengertypes.Contact{PublicKey: "pk_1"}).Error)
 
-	err = db.UpdateContact("pk_1", messengertypes.Contact{})
+	err = db.UpdateContact("pk_1", &messengertypes.Contact{})
 	require.NoError(t, err)
 
-	err = db.UpdateContact("pk_1", messengertypes.Contact{DisplayName: "DisplayName1"})
+	err = db.UpdateContact("pk_1", &messengertypes.Contact{DisplayName: "DisplayName1"})
 	require.NoError(t, err)
 
 	c := &messengertypes.Contact{}
@@ -1003,7 +1003,7 @@ func Test_dbWrapper_updateContact(t *testing.T) {
 	require.Equal(t, "DisplayName1", c.DisplayName)
 	require.Equal(t, messengertypes.Contact_Undefined, c.State)
 
-	err = db.UpdateContact("pk_1", messengertypes.Contact{State: messengertypes.Contact_Accepted})
+	err = db.UpdateContact("pk_1", &messengertypes.Contact{State: messengertypes.Contact_Accepted})
 	require.NoError(t, err)
 
 	c = &messengertypes.Contact{}
@@ -1017,18 +1017,18 @@ func Test_dbWrapper_updateConversation(t *testing.T) {
 	db, _, dispose := GetInMemoryTestDB(t)
 	defer dispose()
 
-	_, err := db.UpdateConversation(messengertypes.Conversation{})
+	_, err := db.UpdateConversation(&messengertypes.Conversation{})
 	require.True(t, errcode.Is(err, errcode.ErrCode_ErrInvalidInput))
 	require.Error(t, err)
 
-	isNew, err := db.UpdateConversation(messengertypes.Conversation{PublicKey: "conv_1"})
+	isNew, err := db.UpdateConversation(&messengertypes.Conversation{PublicKey: "conv_1"})
 	require.NoError(t, err)
 	require.True(t, isNew)
 
 	c := &messengertypes.Conversation{}
 	require.NoError(t, db.db.Where(&messengertypes.Conversation{PublicKey: "conv_1"}).First(&c).Error)
 
-	isNew, err = db.UpdateConversation(messengertypes.Conversation{PublicKey: "conv_1", DisplayName: "DisplayName1"})
+	isNew, err = db.UpdateConversation(&messengertypes.Conversation{PublicKey: "conv_1", DisplayName: "DisplayName1"})
 	require.NoError(t, err)
 	require.False(t, isNew)
 
@@ -1036,7 +1036,7 @@ func Test_dbWrapper_updateConversation(t *testing.T) {
 	require.NoError(t, db.db.Where(&messengertypes.Conversation{PublicKey: "conv_1"}).First(&c).Error)
 	require.Equal(t, "DisplayName1", c.DisplayName)
 
-	isNew, err = db.UpdateConversation(messengertypes.Conversation{PublicKey: "conv_1", Link: "https://link1/"})
+	isNew, err = db.UpdateConversation(&messengertypes.Conversation{PublicKey: "conv_1", Link: "https://link1/"})
 	require.NoError(t, err)
 	require.False(t, isNew)
 
@@ -1045,7 +1045,7 @@ func Test_dbWrapper_updateConversation(t *testing.T) {
 	require.Equal(t, "DisplayName1", c.DisplayName)
 	require.Equal(t, "https://link1/", c.Link)
 
-	isNew, err = db.UpdateConversation(messengertypes.Conversation{PublicKey: "conv_1", Link: "https://link2/", DisplayName: "DisplayName2"})
+	isNew, err = db.UpdateConversation(&messengertypes.Conversation{PublicKey: "conv_1", Link: "https://link2/", DisplayName: "DisplayName2"})
 	require.NoError(t, err)
 	require.False(t, isNew)
 
@@ -1811,7 +1811,7 @@ func Test_dbWrapper_addInteraction_fromPushFirst(t *testing.T) {
 
 	const testCid = "Qm00001"
 
-	i, isNew, err := db.AddInteraction(messengertypes.Interaction{
+	i, isNew, err := db.AddInteraction(&messengertypes.Interaction{
 		Cid:               testCid,
 		Payload:           []byte("payload1"),
 		OutOfStoreMessage: true,
@@ -1823,7 +1823,7 @@ func Test_dbWrapper_addInteraction_fromPushFirst(t *testing.T) {
 	require.Equal(t, []byte("payload1"), i.Payload)
 
 	// Data should not be updated when receiving another pushed event
-	i, isNew, err = db.AddInteraction(messengertypes.Interaction{
+	i, isNew, err = db.AddInteraction(&messengertypes.Interaction{
 		Cid:               testCid,
 		Payload:           []byte("payload2"),
 		OutOfStoreMessage: true,
@@ -1835,7 +1835,7 @@ func Test_dbWrapper_addInteraction_fromPushFirst(t *testing.T) {
 	require.False(t, isNew)
 
 	// Data should be updated when synchronizing messages with OrbitDB
-	i, isNew, err = db.AddInteraction(messengertypes.Interaction{
+	i, isNew, err = db.AddInteraction(&messengertypes.Interaction{
 		Cid:               testCid,
 		Payload:           []byte("payload3"),
 		OutOfStoreMessage: false,
@@ -1853,7 +1853,7 @@ func Test_dbWrapper_addInteraction_fromPushLast(t *testing.T) {
 
 	const testCid = "Qm00001"
 
-	i, isNew, err := db.AddInteraction(messengertypes.Interaction{
+	i, isNew, err := db.AddInteraction(&messengertypes.Interaction{
 		Cid:               testCid,
 		Payload:           []byte("payload1"),
 		OutOfStoreMessage: false,
@@ -1865,7 +1865,7 @@ func Test_dbWrapper_addInteraction_fromPushLast(t *testing.T) {
 	require.Equal(t, []byte("payload1"), i.Payload)
 
 	// Data should not be updated when receiving a pushed event
-	i, isNew, err = db.AddInteraction(messengertypes.Interaction{
+	i, isNew, err = db.AddInteraction(&messengertypes.Interaction{
 		Cid:               testCid,
 		Payload:           []byte("payload2"),
 		OutOfStoreMessage: true,

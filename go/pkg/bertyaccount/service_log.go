@@ -14,7 +14,7 @@ import (
 	"berty.tech/weshnet/pkg/logutil"
 )
 
-func (s *service) LogfileList(ctx context.Context, req *accounttypes.LogfileList_Request) (*accounttypes.LogfileList_Reply, error) {
+func (s *service) LogfileList(ctx context.Context, _ *accounttypes.LogfileList_Request) (*accounttypes.LogfileList_Reply, error) {
 	rootDir := s.appRootDir
 
 	accounts, err := s.ListAccounts(ctx, nil)

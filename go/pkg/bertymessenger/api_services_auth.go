@@ -211,7 +211,7 @@ func (svc *service) AuthServiceCompleteFlow(ctx context.Context, request *messen
 	}, nil
 }
 
-func (svc *service) AuthServiceInitFlow(ctx context.Context, request *messengertypes.AuthServiceInitFlow_Request) (*messengertypes.AuthServiceInitFlow_Reply, error) {
+func (svc *service) AuthServiceInitFlow(_ context.Context, request *messengertypes.AuthServiceInitFlow_Request) (*messengertypes.AuthServiceInitFlow_Reply, error) {
 	u, err := svc.authInitURL(request.AuthUrl, request.Services...)
 	if err != nil {
 		return nil, err
@@ -223,7 +223,7 @@ func (svc *service) AuthServiceInitFlow(ctx context.Context, request *messengert
 	}, nil
 }
 
-func (svc *service) ServicesTokenList(req *messengertypes.ServicesTokenList_Request, server messengertypes.MessengerService_ServicesTokenListServer) error {
+func (svc *service) ServicesTokenList(_ *messengertypes.ServicesTokenList_Request, server messengertypes.MessengerService_ServicesTokenListServer) error {
 	accountPK := messengerutil.B64EncodeBytes(svc.accountGroup)
 
 	serviceTokens, err := svc.db.GetServiceTokens(accountPK)

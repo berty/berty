@@ -36,10 +36,12 @@ func StreamInteraction(dispatcher Dispatcher, db AugmentedInteractionFetcher, ci
 
 type NoopDispatcher struct{}
 
+//nolint:revive
 func (*NoopDispatcher) StreamEvent(typ mt.StreamEvent_Type, msg proto.Message, isNew bool) error {
 	return nil
 }
 
+//nolint:revive
 func (*NoopDispatcher) Notify(typ mt.StreamEvent_Notified_Type, title, body string, msg proto.Message) error {
 	return nil
 }

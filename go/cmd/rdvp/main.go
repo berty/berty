@@ -268,7 +268,7 @@ func main() {
 		Name:       "sharekey",
 		ShortUsage: "rdvp [global flags] sharekey -pk PK",
 		FlagSet:    sharekeyFlags,
-		Exec: func(ctx context.Context, args []string) error {
+		Exec: func(_ context.Context, args []string) error {
 			if len(args) > 0 {
 				return flag.ErrHelp
 			}

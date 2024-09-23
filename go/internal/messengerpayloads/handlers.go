@@ -243,7 +243,7 @@ func (h *EventHandler) groupReplicating(gme *protocoltypes.GroupMetadataEvent) e
 
 	convPK := messengerutil.B64EncodeBytes(gme.EventContext.GroupPk)
 
-	if err := h.db.SaveConversationReplicationInfo(mt.ConversationReplicationInfo{
+	if err := h.db.SaveConversationReplicationInfo(&mt.ConversationReplicationInfo{
 		Cid:                   cid.String(),
 		ConversationPublicKey: convPK,
 		MemberPublicKey:       "", // TODO
@@ -402,8 +402,8 @@ func (h *EventHandler) accountContactRequestOutgoingEnqueued(gme *protocoltypes.
 }
 
 func (h *EventHandler) accountContactRequestOutgoingSent(gme *protocoltypes.GroupMetadataEvent) error {
-	var ev protocoltypes.AccountContactRequestOutgoingSent
-	if err := proto.Unmarshal(gme.GetEvent(), &ev); err != nil {
+	var ev *protocoltypes.AccountContactRequestOutgoingSent
+	if err := proto.Unmarshal(gme.GetEvent(), ev); err != nil {
 		return err
 	}
 
@@ -596,7 +596,7 @@ func (h *EventHandler) contactRequestAccepted(contact *mt.Contact, memberPK []by
 		var err error
 
 		// update existing contact
-		if err = tx.UpdateContact(contact.GetPublicKey(), *contact); err != nil {
+		if err = tx.UpdateContact(contact.GetPublicKey(), contact); err != nil {
 			return err
 		}
 
@@ -772,7 +772,7 @@ func (h *EventHandler) groupMemberDeviceAdded(gme *protocoltypes.GroupMetadataEv
 		member.DisplayName = userInfo.GetDisplayName()
 	}
 
-	member, isNew, err := h.db.UpsertMember(mpk, gpk, *member)
+	member, isNew, err := h.db.UpsertMember(mpk, gpk, member)
 	if err != nil {
 		return err
 	}
@@ -798,7 +798,7 @@ func (h *EventHandler) handleAppMessageAcknowledge(tx *messengerdb.DBWrapper, i 
 	switch {
 	case err == gorm.ErrRecordNotFound:
 		h.logger.Debug("added ack in backlog", logutil.PrivateString("target", i.TargetCid), logutil.PrivateString("cid", i.GetCid()))
-		i, _, err = tx.AddInteraction(*i)
+		i, _, err = tx.AddInteraction(i)
 		if err != nil {
 			return nil, false, err
 		}
@@ -826,7 +826,7 @@ func (h *EventHandler) handleAppMessageGroupInvitation(tx *messengerdb.DBWrapper
 		return nil, false, ErrNilPayload
 	}
 
-	i, isNew, err := tx.AddInteraction(*i)
+	i, isNew, err := tx.AddInteraction(i)
 	if err != nil {
 		return nil, isNew, err
 	}
@@ -856,7 +856,7 @@ func (h *EventHandler) handleAppMessageGroupInvitation(tx *messengerdb.DBWrapper
 
 func (h *EventHandler) handleAppMessageUserMessage(tx *messengerdb.DBWrapper, i *mt.Interaction, amPayload proto.Message) (*mt.Interaction, bool, error) {
 	// NOTE: it's ok to have an empty payload here since a user message can be only medias
-	i, isNew, err := tx.AddInteraction(*i)
+	i, isNew, err := tx.AddInteraction(i)
 	if err != nil {
 		return nil, isNew, err
 	}
@@ -869,7 +869,7 @@ func (h *EventHandler) handleAppMessageUserMessage(tx *messengerdb.DBWrapper, i 
 		return i, isNew, nil
 	}
 
-	if err := tx.PostAction(func(d *messengerdb.DBWrapper) error {
+	if err := tx.PostAction(func(_ *messengerdb.DBWrapper) error {
 		return h.postHandlerActions.InteractionReceived(i)
 	}); err != nil {
 		return nil, isNew, err
@@ -938,7 +938,7 @@ func (h *EventHandler) handleAppMessageSetUserInfo(tx *messengerdb.DBWrapper, i 
 		h.logger.Debug("interesting contact SetUserInfo")
 
 		c.DisplayName = payload.GetDisplayName()
-		err = tx.UpdateContact(cpk, mt.Contact{DisplayName: c.GetDisplayName(), InfoDate: i.GetSentDate()})
+		err = tx.UpdateContact(cpk, &mt.Contact{DisplayName: c.GetDisplayName(), InfoDate: i.GetSentDate()})
 		if err != nil {
 			return nil, false, err
 		}
@@ -959,7 +959,7 @@ func (h *EventHandler) handleAppMessageSetUserInfo(tx *messengerdb.DBWrapper, i 
 	if i.MemberPublicKey == "" {
 		// store in backlog
 		h.logger.Info("storing SetUserInfo in backlog", logutil.PrivateString("name", payload.GetDisplayName()), logutil.PrivateString("device-pk", i.GetDevicePublicKey()), logutil.PrivateString("conv", i.ConversationPublicKey))
-		ni, isNew, err := tx.AddInteraction(*i)
+		ni, isNew, err := tx.AddInteraction(i)
 		if err != nil {
 			return nil, false, err
 		}
@@ -982,7 +982,7 @@ func (h *EventHandler) handleAppMessageSetUserInfo(tx *messengerdb.DBWrapper, i 
 	member, isNew, err := tx.UpsertMember(
 		i.MemberPublicKey,
 		i.ConversationPublicKey,
-		mt.Member{DisplayName: payload.GetDisplayName(), InfoDate: i.GetSentDate()},
+		&mt.Member{DisplayName: payload.GetDisplayName(), InfoDate: i.GetSentDate()},
 	)
 	if err != nil {
 		return nil, false, err
@@ -1182,7 +1182,7 @@ func (h *EventHandler) handleAppMessageSetGroupInfo(tx *messengerdb.DBWrapper, i
 		}
 		c.InfoDate = i.GetSentDate()
 
-		_, err = tx.UpdateConversation(mt.Conversation{DisplayName: c.GetDisplayName(), InfoDate: c.GetInfoDate(), PublicKey: c.GetPublicKey()})
+		_, err = tx.UpdateConversation(&mt.Conversation{DisplayName: c.GetDisplayName(), InfoDate: c.GetInfoDate(), PublicKey: c.GetPublicKey()})
 		if err != nil {
 			return nil, false, err
 		}
@@ -1289,7 +1289,7 @@ func (h *EventHandler) handleAppMessagePushSetDeviceToken(tx *messengerdb.DBWrap
 		return nil, false, err
 	}
 
-	if err := tx.PostAction(func(d *messengerdb.DBWrapper) error {
+	if err := tx.PostAction(func(_ *messengerdb.DBWrapper) error {
 		if err := h.postHandlerActions.PushServerOrTokenRegistered(acc); err != nil {
 			return err
 		}
@@ -1364,7 +1364,7 @@ func (h *EventHandler) handleAppMessagePushSetMemberToken(tx *messengerdb.DBWrap
 	if conv, err := tx.GetConversationByPK(i.ConversationPublicKey); err != nil {
 		h.logger.Warn("unknown conversation", logutil.PrivateString("conversation-pk", i.ConversationPublicKey))
 		return nil, false, err
-	} else if err := tx.PostAction(func(d *messengerdb.DBWrapper) error {
+	} else if err := tx.PostAction(func(_ *messengerdb.DBWrapper) error {
 		return h.dispatcher.StreamEvent(mt.StreamEvent_TypeConversationUpdated, &mt.StreamEvent_ConversationUpdated{Conversation: conv}, false)
 	}); err != nil {
 		return nil, false, err
@@ -1476,12 +1476,12 @@ func (h *EventHandler) HandleOutOfStoreAppMessage(groupPK []byte, message *proto
 	}
 
 	// build interaction
-	i, err := interactionFromOutOfStoreAppMessage(h, groupPK, message, &am)
+	i, err := interactionFromOutOfStoreAppMessage(h, groupPK, message, am)
 	if err != nil {
 		return nil, false, err
 	}
 
-	i, isNew, err := h.db.AddInteraction(*i)
+	i, isNew, err := h.db.AddInteraction(i)
 	if err != nil {
 		return nil, false, errcode.ErrCode_ErrDBWrite.Wrap(err)
 	}
@@ -1519,7 +1519,7 @@ func (h *EventHandler) handleAppMessageServiceAddToken(tx *messengerdb.DBWrapper
 		return nil, false, err
 	}
 
-	if err := tx.PostAction(func(d *messengerdb.DBWrapper) error {
+	if err := tx.PostAction(func(_ *messengerdb.DBWrapper) error {
 		return h.dispatcher.StreamEvent(mt.StreamEvent_TypeServiceTokenAdded, &mt.StreamEvent_ServiceTokenAdded{Token: token}, false)
 	}); err != nil {
 		return nil, false, err

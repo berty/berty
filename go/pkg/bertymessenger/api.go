@@ -62,7 +62,7 @@ func (svc *service) DevShareInstanceBertyID(ctx context.Context, req *messengert
 	return &messengertypes.DevShareInstanceBertyID_Reply{}, nil
 }
 
-func (svc *service) DevStreamLogs(req *messengertypes.DevStreamLogs_Request, stream messengertypes.MessengerService_DevStreamLogsServer) error {
+func (svc *service) DevStreamLogs(_ *messengertypes.DevStreamLogs_Request, stream messengertypes.MessengerService_DevStreamLogsServer) error {
 	if svc.ring == nil {
 		return errcode.ErrCode_TODO.Wrap(fmt.Errorf("ring not configured"))
 	}
@@ -288,7 +288,7 @@ func (svc *service) autoReplicateGroupOnAllServers(groupPK []byte) {
 	}
 }
 
-func (svc *service) SystemInfo(ctx context.Context, req *messengertypes.SystemInfo_Request) (*messengertypes.SystemInfo_Reply, error) {
+func (svc *service) SystemInfo(ctx context.Context, _ *messengertypes.SystemInfo_Request) (*messengertypes.SystemInfo_Reply, error) {
 	reply := messengertypes.SystemInfo_Reply{}
 	var errs error
 
@@ -336,7 +336,7 @@ func (svc *service) SystemInfo(ctx context.Context, req *messengertypes.SystemIn
 	return &reply, nil
 }
 
-func (svc *service) ConversationStream(req *messengertypes.ConversationStream_Request, sub messengertypes.MessengerService_ConversationStreamServer) error {
+func (svc *service) ConversationStream(_ *messengertypes.ConversationStream_Request, sub messengertypes.MessengerService_ConversationStreamServer) error {
 	// TODO: cursors
 
 	// send existing convs
@@ -617,7 +617,7 @@ func (svc *service) ConversationCreate(ctx context.Context, req *messengertypes.
 	}
 
 	// Update database
-	isNew, err := svc.db.UpdateConversation(*conv)
+	isNew, err := svc.db.UpdateConversation(conv)
 	if err != nil {
 		return nil, err
 	}
@@ -729,7 +729,7 @@ func (svc *service) ConversationJoin(ctx context.Context, req *messengertypes.Co
 		return nil, errcode.ErrCode_TODO.Wrap(err)
 	}
 
-	conv := messengertypes.Conversation{
+	conv := &messengertypes.Conversation{
 		AccountMemberPublicKey: messengerutil.B64EncodeBytes(gir.GetMemberPk()),
 		PublicKey:              messengerutil.B64EncodeBytes(gpkb),
 		DisplayName:            bgroup.GetDisplayName(),
@@ -747,7 +747,7 @@ func (svc *service) ConversationJoin(ctx context.Context, req *messengertypes.Co
 
 	// dispatch event
 	{
-		err := svc.dispatcher.StreamEvent(messengertypes.StreamEvent_TypeConversationUpdated, &messengertypes.StreamEvent_ConversationUpdated{Conversation: &conv}, isNew)
+		err := svc.dispatcher.StreamEvent(messengertypes.StreamEvent_TypeConversationUpdated, &messengertypes.StreamEvent_ConversationUpdated{Conversation: conv}, isNew)
 		if err != nil {
 			return nil, errcode.ErrCode_ErrInternal.Wrap(err)
 		}
@@ -1014,7 +1014,7 @@ func (svc *service) Interact(ctx context.Context, req *messengertypes.Interact_R
 	return &messengertypes.Interact_Reply{Cid: cid.String()}, nil
 }
 
-func (svc *service) AccountGet(ctx context.Context, req *messengertypes.AccountGet_Request) (*messengertypes.AccountGet_Reply, error) {
+func (svc *service) AccountGet(_ context.Context, _ *messengertypes.AccountGet_Request) (*messengertypes.AccountGet_Reply, error) {
 	acc, err := svc.db.GetAccount()
 	if err != nil {
 		return nil, err
@@ -1057,7 +1057,7 @@ func (svc *service) EchoDuplexTest(srv messengertypes.MessengerService_EchoDuple
 	}
 }
 
-func (svc *service) ConversationOpen(ctx context.Context, req *messengertypes.ConversationOpen_Request) (*messengertypes.ConversationOpen_Reply, error) {
+func (svc *service) ConversationOpen(_ context.Context, req *messengertypes.ConversationOpen_Request) (*messengertypes.ConversationOpen_Reply, error) {
 	// check input
 	if req.GroupPk == "" {
 		return nil, errcode.ErrCode_ErrMissingInput
@@ -1197,7 +1197,7 @@ func (svc *service) monitorGroupPeersStatus(groupPK string) error {
 	return nil
 }
 
-func (svc *service) ConversationClose(ctx context.Context, req *messengertypes.ConversationClose_Request) (*messengertypes.ConversationClose_Reply, error) {
+func (svc *service) ConversationClose(_ context.Context, req *messengertypes.ConversationClose_Request) (*messengertypes.ConversationClose_Reply, error) {
 	// check input
 	if req.GroupPk == "" {
 		return nil, errcode.ErrCode_ErrMissingInput
@@ -1275,7 +1275,7 @@ func (svc *service) ReplicationServiceRegisterGroup(ctx context.Context, req *me
 	return &messengertypes.ReplicationServiceRegisterGroup_Reply{}, nil
 }
 
-func (svc *service) BannerQuote(ctx context.Context, req *messengertypes.BannerQuote_Request) (*messengertypes.BannerQuote_Reply, error) {
+func (svc *service) BannerQuote(_ context.Context, req *messengertypes.BannerQuote_Request) (*messengertypes.BannerQuote_Reply, error) {
 	var quote banner.Quote
 	if req != nil && req.Random {
 		quote = banner.RandomQuote()
@@ -1289,7 +1289,7 @@ func (svc *service) BannerQuote(ctx context.Context, req *messengertypes.BannerQ
 	return &ret, nil
 }
 
-func (svc *service) ReplicationSetAutoEnable(ctx context.Context, req *messengertypes.ReplicationSetAutoEnable_Request) (*messengertypes.ReplicationSetAutoEnable_Reply, error) {
+func (svc *service) ReplicationSetAutoEnable(_ context.Context, req *messengertypes.ReplicationSetAutoEnable_Request) (*messengertypes.ReplicationSetAutoEnable_Reply, error) {
 	config, err := svc.protocolClient.ServiceGetConfiguration(svc.ctx, &protocoltypes.ServiceGetConfiguration_Request{})
 	if err != nil {
 		return nil, err
@@ -1369,7 +1369,7 @@ func (svc *service) InstanceExportData(_ *messengertypes.InstanceExportData_Requ
 	}
 }
 
-func (svc *service) ConversationLoad(ctx context.Context, request *messengertypes.ConversationLoad_Request) (*messengertypes.ConversationLoad_Reply, error) {
+func (svc *service) ConversationLoad(_ context.Context, request *messengertypes.ConversationLoad_Request) (*messengertypes.ConversationLoad_Reply, error) {
 	if request.Options.ConversationPk == "" && request.Options.RefCid == "" {
 		return nil, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("no conversation pk or ref cid specified"))
 	}
@@ -1403,7 +1403,7 @@ func (svc *service) ConversationLoad(ctx context.Context, request *messengertype
 	return &messengertypes.ConversationLoad_Reply{}, nil
 }
 
-func (svc *service) ConversationMute(ctx context.Context, request *messengertypes.ConversationMute_Request) (*messengertypes.ConversationMute_Reply, error) {
+func (svc *service) ConversationMute(_ context.Context, request *messengertypes.ConversationMute_Request) (*messengertypes.ConversationMute_Reply, error) {
 	if request.MuteForever {
 		request.MutedUntil = math.MaxInt64
 	}
@@ -1432,7 +1432,7 @@ func (svc *service) ConversationMute(ctx context.Context, request *messengertype
 	return &messengertypes.ConversationMute_Reply{}, nil
 }
 
-func (svc *service) AccountPushConfigure(ctx context.Context, request *messengertypes.AccountPushConfigure_Request) (*messengertypes.AccountPushConfigure_Reply, error) {
+func (svc *service) AccountPushConfigure(_ context.Context, request *messengertypes.AccountPushConfigure_Request) (*messengertypes.AccountPushConfigure_Reply, error) {
 	updatedFields := map[string]interface{}{}
 
 	switch {
@@ -1482,7 +1482,7 @@ func (svc *service) AccountPushConfigure(ctx context.Context, request *messenger
 	return &messengertypes.AccountPushConfigure_Reply{}, nil
 }
 
-func (svc *service) MessageSearch(ctx context.Context, request *messengertypes.MessageSearch_Request) (*messengertypes.MessageSearch_Reply, error) {
+func (svc *service) MessageSearch(_ context.Context, request *messengertypes.MessageSearch_Request) (*messengertypes.MessageSearch_Reply, error) {
 	results, err := svc.db.InteractionsSearch(request.Query, &messengerdb.SearchOptions{
 		BeforeDate:     int(request.BeforeDate),
 		AfterDate:      int(request.AfterDate),
@@ -1497,7 +1497,7 @@ func (svc *service) MessageSearch(ctx context.Context, request *messengertypes.M
 	return &messengertypes.MessageSearch_Reply{Results: results}, nil
 }
 
-func (svc *service) TyberHostSearch(request *messengertypes.TyberHostSearch_Request, server messengertypes.MessengerService_TyberHostSearchServer) error {
+func (svc *service) TyberHostSearch(_ *messengertypes.TyberHostSearch_Request, server messengertypes.MessengerService_TyberHostSearchServer) error {
 	results := make(chan *zeroconf.ServiceEntry)
 
 	go func() {
@@ -1682,7 +1682,7 @@ func (svc *service) ListMemberDevices(request *messengertypes.ListMemberDevices_
 	return nil
 }
 
-func (svc *service) getDirectoryServiceClient(ctx context.Context, serverAddr string) (directorytypes.DirectoryServiceClient, error) {
+func (svc *service) getDirectoryServiceClient(serverAddr string) (directorytypes.DirectoryServiceClient, error) {
 	gopts := []grpc.DialOption(nil)
 
 	if svc.grpcInsecure {
@@ -1694,7 +1694,7 @@ func (svc *service) getDirectoryServiceClient(ctx context.Context, serverAddr st
 		gopts = append(gopts, grpc.WithTransportCredentials(tlsconfig))
 	}
 
-	cc, err := grpc.DialContext(ctx, serverAddr, gopts...)
+	cc, err := grpc.NewClient("passthrough://"+serverAddr, gopts...)
 	if err != nil {
 		return nil, errcode.ErrCode_ErrStreamWrite.Wrap(err)
 	}
@@ -1739,7 +1739,7 @@ func (svc *service) DirectoryServiceRegister(ctx context.Context, request *messe
 		return nil, errcode.ErrCode_ErrNotFound.Wrap(err)
 	}
 
-	client, err := svc.getDirectoryServiceClient(ctx, request.ServerAddr)
+	client, err := svc.getDirectoryServiceClient(request.ServerAddr)
 	if err != nil {
 		return nil, errcode.ErrCode_ErrInternal.Wrap(err)
 	}
@@ -1803,7 +1803,7 @@ func (svc *service) DirectoryServiceUnregister(ctx context.Context, request *mes
 		return nil, errcode.ErrCode_ErrNotFound.Wrap(err)
 	}
 
-	client, err := svc.getDirectoryServiceClient(ctx, request.ServerAddr)
+	client, err := svc.getDirectoryServiceClient(request.ServerAddr)
 	if err != nil {
 		return nil, errcode.ErrCode_ErrInternal.Wrap(err)
 	}
@@ -1839,7 +1839,7 @@ func (svc *service) DirectoryServiceQuery(request *messengertypes.DirectoryServi
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	client, err := svc.getDirectoryServiceClient(ctx, request.ServerAddr)
+	client, err := svc.getDirectoryServiceClient(request.ServerAddr)
 	if err != nil {
 		return errcode.ErrCode_ErrInternal.Wrap(err)
 	}

@@ -57,7 +57,7 @@ func NewService(opts *Options) TestServiceServer {
 	}
 }
 
-func (svc *service) EchoTest(ctx context.Context, req *EchoTest_Request) (*EchoTest_Reply, error) {
+func (svc *service) EchoTest(_ context.Context, req *EchoTest_Request) (*EchoTest_Reply, error) {
 	if req.TriggerError {
 		return nil, errcode.ErrCode_ErrTestEcho
 	}

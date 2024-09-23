@@ -15,7 +15,7 @@ import (
 )
 
 // Get GRPC listener addresses
-func (s *service) GetGRPCListenerAddrs(ctx context.Context, req *accounttypes.GetGRPCListenerAddrs_Request) (*accounttypes.GetGRPCListenerAddrs_Reply, error) {
+func (s *service) GetGRPCListenerAddrs(_ context.Context, _ *accounttypes.GetGRPCListenerAddrs_Request) (*accounttypes.GetGRPCListenerAddrs_Reply, error) {
 	m, err := s.getInitManager()
 	if err != nil {
 		return nil, err

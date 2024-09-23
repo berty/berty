@@ -44,7 +44,7 @@ func p2pIdentityGenerateCommand() *ffcli.Command {
 		FlagSetBuilder: fsBuilder,
 		Options:        ffSubcommandOptions(),
 		UsageFunc:      usageFunc,
-		Exec: func(ctx context.Context, args []string) error {
+		Exec: func(_ context.Context, args []string) error {
 			switch len(args) {
 			case 1:
 				path = args[0]
@@ -117,7 +117,7 @@ func p2pIdentityLoadCommand() *ffcli.Command {
 		FlagSetBuilder: fsBuilder,
 		Options:        ffSubcommandOptions(),
 		UsageFunc:      usageFunc,
-		Exec: func(ctx context.Context, args []string) error {
+		Exec: func(_ context.Context, args []string) error {
 			switch len(args) {
 			case 1:
 				path = args[0]
@@ -189,7 +189,7 @@ func p2pCommand() *ffcli.Command {
 		FlagSetBuilder: fsBuilder,
 		Options:        ffSubcommandOptions(),
 		UsageFunc:      usageFunc,
-		Exec: func(ctx context.Context, args []string) error {
+		Exec: func(ctx context.Context, args []string) error { //nolint:revive
 			return flag.ErrHelp
 		},
 		Subcommands: []*ffcli.Command{

@@ -172,10 +172,10 @@ func (b *Bot) callHandlers(context *Context, typ HandlerType) {
 		return
 	}
 
-	copy := *context
+	copied := *context
 	for _, handler := range handlers {
-		copy.HandlerType = typ
-		handler(copy)
+		copied.HandlerType = typ
+		handler(copied)
 	}
 }
 

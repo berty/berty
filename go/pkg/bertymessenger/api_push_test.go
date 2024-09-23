@@ -684,7 +684,7 @@ func Test_getPushTargetsByServer(t *testing.T) {
 	}
 
 	// Update database
-	_, err := s.db.UpdateConversation(*conv)
+	_, err := s.db.UpdateConversation(conv)
 	require.NoError(t, err)
 
 	// Share member1 device1 token on server1

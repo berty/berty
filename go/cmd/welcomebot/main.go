@@ -150,7 +150,7 @@ func welcomebot() error {
 
 	// init messenger gRPC client
 	{
-		cc, err := grpc.DialContext(ctx, *nodeAddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+		cc, err := grpc.NewClient("passthrough://"+*nodeAddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 		if err != nil {
 			return fmt.Errorf("unable to connect with remote berty messenger node: %w", err)
 		}

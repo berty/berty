@@ -203,7 +203,7 @@ func NewService(opts *Options) (_ Service, err error) {
 	return s, nil
 }
 
-func (s *service) NetworkConfigGetPreset(ctx context.Context, req *accounttypes.NetworkConfigGetPreset_Request) (*accounttypes.NetworkConfigGetPreset_Reply, error) {
+func (s *service) NetworkConfigGetPreset(_ context.Context, req *accounttypes.NetworkConfigGetPreset_Request) (*accounttypes.NetworkConfigGetPreset_Reply, error) {
 	if req.Preset == accounttypes.NetworkConfigPreset_Performance || req.Preset == accounttypes.NetworkConfigPreset_Undefined {
 		bluetoothLE := accounttypes.NetworkConfig_Disabled
 		if req.HasBluetoothPermission {

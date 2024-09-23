@@ -167,4 +167,4 @@ func (e *enterEntry) TypedKey(key *fyne.KeyEvent) {
 
 // SEPARATOR
 
-func newSeparator(mc *msgrContext) wfr { return wfr{widget.NewSeparator(), nil, nil} }
+func newSeparator(_ *msgrContext) wfr { return wfr{widget.NewSeparator(), nil, nil} }

@@ -3,7 +3,6 @@ package bertybridge
 import (
 	"context"
 	"sync"
-	"time"
 
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
@@ -32,7 +31,7 @@ func NewRemoteBridgeConfig() *RemoteBridgeConfig {
 	return &RemoteBridgeConfig{}
 }
 
-func NewRemoteBridge(address string, config *RemoteBridgeConfig) (*RemoteBridge, error) {
+func NewRemoteBridge(address string, _ *RemoteBridgeConfig) (*RemoteBridge, error) {
 	if address == "" {
 		return nil, errcode.ErrCode_ErrInvalidInput
 	}
@@ -81,14 +80,10 @@ func NewRemoteBridge(address string, config *RemoteBridgeConfig) (*RemoteBridge,
 
 	// setup account client
 	{
-		ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
-		defer cancel()
-
 		opts := []grpc.DialOption{
-			grpc.WithBlock(),
 			grpc.WithTransportCredentials(insecure.NewCredentials()),
 		}
-		client, err := grpc.DialContext(ctx, address, opts...)
+		client, err := grpc.NewClient(address, opts...)
 		if err != nil {
 			return nil, err
 		}
@@ -114,15 +109,11 @@ func (b *RemoteBridge) ConnectService(serviceName string, address string) error 
 		return errcode.ErrCode_ErrBridgeNotRunning
 	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-
 	opts := []grpc.DialOption{
-		grpc.WithBlock(),
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 	}
 
-	client, err := grpc.DialContext(ctx, address, opts...)
+	client, err := grpc.NewClient(address, opts...)
 	if err != nil {
 		return err
 	}

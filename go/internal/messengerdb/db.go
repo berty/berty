@@ -333,7 +333,7 @@ func (d *DBWrapper) AddConversation(groupPK, ownMemberPK, ownDevicePK string) (*
 	return finalConv, nil
 }
 
-func (d *DBWrapper) UpdateConversation(c messengertypes.Conversation) (bool, error) {
+func (d *DBWrapper) UpdateConversation(c *messengertypes.Conversation) (bool, error) {
 	if c.PublicKey == "" {
 		return false, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("a conversation public key is required"))
 	}
@@ -375,7 +375,7 @@ func (d *DBWrapper) UpdateConversation(c messengertypes.Conversation) (bool, err
 		return false, nil
 	}
 
-	if err := db.Create(&c).Error; err != nil {
+	if err := db.Create(c).Error; err != nil {
 		return isNew, errcode.ErrCode_ErrInternal.Wrap(err)
 	}
 
@@ -992,7 +992,7 @@ func (d *DBWrapper) AddDevice(devicePK string, memberPK string) (*messengertypes
 	return finalDevice, nil
 }
 
-func (d *DBWrapper) UpdateContact(pk string, contact messengertypes.Contact) error {
+func (d *DBWrapper) UpdateContact(pk string, contact *messengertypes.Contact) error {
 	if pk == "" {
 		return errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("no public key specified"))
 	}
@@ -1006,7 +1006,7 @@ func (d *DBWrapper) UpdateContact(pk string, contact messengertypes.Contact) err
 		return errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("contact not found"))
 	}
 
-	if err := d.db.Model(&messengertypes.Contact{PublicKey: pk}).Updates(&contact).Error; err != nil {
+	if err := d.db.Model(&messengertypes.Contact{PublicKey: pk}).Updates(contact).Error; err != nil {
 		return err
 	}
 
@@ -1014,7 +1014,7 @@ func (d *DBWrapper) UpdateContact(pk string, contact messengertypes.Contact) err
 	return nil
 }
 
-func (d *DBWrapper) AddInteraction(rawInte messengertypes.Interaction) (*messengertypes.Interaction, bool, error) {
+func (d *DBWrapper) AddInteraction(rawInte *messengertypes.Interaction) (*messengertypes.Interaction, bool, error) {
 	if rawInte.Cid == "" {
 		d.log.Error("an interaction cid is required")
 		return nil, false, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("an interaction cid is required"))
@@ -1023,7 +1023,7 @@ func (d *DBWrapper) AddInteraction(rawInte messengertypes.Interaction) (*messeng
 	existing, err := d.GetInteractionByCID(rawInte.Cid)
 	isNew := false
 	if err == gorm.ErrRecordNotFound {
-		if err := d.db.Create(&rawInte).Error; err != nil {
+		if err := d.db.Create(rawInte).Error; err != nil {
 			return nil, true, err
 		}
 		isNew = true
@@ -1047,7 +1047,7 @@ func (d *DBWrapper) AddInteraction(rawInte messengertypes.Interaction) (*messeng
 				return nil, false, errcode.ErrCode_ErrDBWrite.Wrap(err)
 			}
 
-			if err := d.db.Create(&rawInte).Error; err != nil {
+			if err := d.db.Create(rawInte).Error; err != nil {
 				return nil, true, errcode.ErrCode_ErrDBWrite.Wrap(err)
 			}
 			isNew = true
@@ -1119,6 +1119,9 @@ func (d *DBWrapper) AttributeBacklogInteractions(devicePK, groupPK, memberPK str
 }
 
 func (d *DBWrapper) AddMember(memberPK, groupPK, displayName, avatarCID string, isMe bool, isCreator bool) (*messengertypes.Member, error) {
+	// ignore avatarCID for now
+	_ = avatarCID
+
 	if memberPK == "" {
 		return nil, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("member public key cannot be empty"))
 	}
@@ -1155,7 +1158,7 @@ func (d *DBWrapper) AddMember(memberPK, groupPK, displayName, avatarCID string, 
 	return member, nil
 }
 
-func (d *DBWrapper) UpsertMember(memberPK, groupPK string, m messengertypes.Member) (*messengertypes.Member, bool, error) {
+func (d *DBWrapper) UpsertMember(memberPK, groupPK string, m *messengertypes.Member) (*messengertypes.Member, bool, error) {
 	if memberPK == "" {
 		return nil, false, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("member public key cannot be empty"))
 	}
@@ -1172,12 +1175,12 @@ func (d *DBWrapper) UpsertMember(memberPK, groupPK string, m messengertypes.Memb
 	}
 
 	if isNew {
-		err := d.db.Create(&m).Error
+		err := d.db.Create(m).Error
 		if err != nil {
 			return nil, isNew, errcode.ErrCode_ErrDBWrite.Wrap(err)
 		}
 	} else {
-		err := d.db.Model(em).Updates(&m).Error
+		err := d.db.Model(em).Updates(m).Error
 		if err != nil {
 			return nil, false, errcode.ErrCode_ErrDBWrite.Wrap(err)
 		}
@@ -1420,7 +1423,7 @@ func (d *DBWrapper) PushSetReplicationAutoShare(pk string, enabled bool) error {
 	return d.AccountUpdateFlag(pk, "auto_share_push_token_flag", enabled)
 }
 
-func (d *DBWrapper) SaveConversationReplicationInfo(c messengertypes.ConversationReplicationInfo) error {
+func (d *DBWrapper) SaveConversationReplicationInfo(c *messengertypes.ConversationReplicationInfo) error {
 	if c.Cid == "" {
 		return errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("an interaction cid is required"))
 	}

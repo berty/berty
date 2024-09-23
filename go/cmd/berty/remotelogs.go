@@ -27,7 +27,7 @@ func remoteLogsCommand() *ffcli.Command {
 		Options:        ffSubcommandOptions(),
 		FlagSetBuilder: fsBuilder,
 		UsageFunc:      usageFunc,
-		Exec: func(ctx context.Context, args []string) error {
+		Exec: func(ctx context.Context, args []string) error { //nolint:revive
 			manager.SetLogger(zap.NewNop())
 			manager.DisableIPFSNetwork()
 

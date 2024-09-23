@@ -33,7 +33,7 @@ func directoryServiceCommand() *ffcli.Command {
 		Options:        ffSubcommandOptions(),
 		FlagSetBuilder: fsBuilder,
 		UsageFunc:      usageFunc,
-		Exec: func(ctx context.Context, args []string) error {
+		Exec: func(ctx context.Context, args []string) error { //nolint:revive
 			if allowedIssuers == "" {
 				return fmt.Errorf("allowed-issuers cannot be empty")
 			}

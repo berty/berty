@@ -155,7 +155,7 @@ func tokenServerCommand() *ffcli.Command {
 
 			g.Add(func() error {
 				return server.Serve(l)
-			}, func(err error) {
+			}, func(_ error) {
 				l.Close()
 			})
 

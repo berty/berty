@@ -45,7 +45,7 @@ func MarshalLink(link *messengertypes.BertyLink) (internal string, web string, e
 		human   = url.Values{}
 
 		// internal
-		qrOptimized = &messengertypes.BertyLink{}
+		qrOptimized *messengertypes.BertyLink
 	)
 
 	switch link.Kind {
@@ -60,7 +60,7 @@ func MarshalLink(link *messengertypes.BertyLink) (internal string, web string, e
 		}
 
 		// for contact sharing, there are no fields to hide, so just copy the input link
-		*qrOptimized = *link
+		qrOptimized = proto.Clone(link).(*messengertypes.BertyLink)
 	case messengertypes.BertyLink_GroupV1Kind:
 		kind = "group"
 		machine.BertyGroup = &messengertypes.BertyGroup{
@@ -76,7 +76,7 @@ func MarshalLink(link *messengertypes.BertyLink) (internal string, web string, e
 		if link.BertyGroup.DisplayName != "" {
 			human.Add("name", link.BertyGroup.DisplayName)
 		}
-		*qrOptimized = *link
+		qrOptimized = proto.Clone(link).(*messengertypes.BertyLink)
 	case messengertypes.BertyLink_EncryptedV1Kind:
 		kind = "enc"
 		machine.Encrypted = &messengertypes.BertyLink_Encrypted{
@@ -99,7 +99,7 @@ func MarshalLink(link *messengertypes.BertyLink) (internal string, web string, e
 			machine.Encrypted.GroupType = link.Encrypted.GroupType
 			machine.Encrypted.GroupLinkKeySig = link.Encrypted.GroupLinkKeySig
 		}
-		*qrOptimized = *link
+		qrOptimized = proto.Clone(link).(*messengertypes.BertyLink)
 	case messengertypes.BertyLink_MessageV1Kind:
 		kind = "message"
 		machine.BertyMessageRef = &messengertypes.BertyLink_BertyMessageRef{
@@ -107,7 +107,7 @@ func MarshalLink(link *messengertypes.BertyLink) (internal string, web string, e
 			GroupPk:   link.BertyMessageRef.GroupPk,
 			MessageId: link.BertyMessageRef.MessageId,
 		}
-		*qrOptimized = *link
+		qrOptimized = proto.Clone(link).(*messengertypes.BertyLink)
 	default:
 		return "", "", errcode.ErrCode_ErrInvalidInput
 	}

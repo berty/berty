@@ -14,7 +14,7 @@ type PhoneCodeSenderMockService struct {
 	Logger *zap.Logger
 }
 
-func (m *PhoneCodeSenderMockService) SendVerificationCode(ctx context.Context, in SendVerificationCodeData) error {
+func (m *PhoneCodeSenderMockService) SendVerificationCode(_ context.Context, in SendVerificationCodeData) error {
 	logger := m.Logger
 	if logger == nil {
 		logger = zap.NewNop()
@@ -25,7 +25,7 @@ func (m *PhoneCodeSenderMockService) SendVerificationCode(ctx context.Context, i
 	return nil
 }
 
-func (m *PhoneCodeSenderMockService) ValidateIdentifier(ctx context.Context, rawIdentifier string) (string, error) {
+func (m *PhoneCodeSenderMockService) ValidateIdentifier(_ context.Context, rawIdentifier string) (string, error) {
 	num, err := phonenumbers.Parse(rawIdentifier, "")
 	if err != nil {
 		return "", errcode.ErrCode_ErrInvalidInput.Wrap(err)

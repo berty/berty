@@ -332,7 +332,7 @@ func (s *service) OpenAccountWithProgress(req *accounttypes.OpenAccountWithProgr
 	return nil
 }
 
-func (s *service) CloseAccount(ctx context.Context, req *accounttypes.CloseAccount_Request) (_ *accounttypes.CloseAccount_Reply, err error) {
+func (s *service) CloseAccount(ctx context.Context, _ *accounttypes.CloseAccount_Request) (_ *accounttypes.CloseAccount_Reply, err error) {
 	s.muService.Lock()
 	defer s.muService.Unlock()
 
@@ -358,7 +358,7 @@ func (s *service) CloseAccount(ctx context.Context, req *accounttypes.CloseAccou
 	return &accounttypes.CloseAccount_Reply{}, nil
 }
 
-func (s *service) CloseAccountWithProgress(req *accounttypes.CloseAccountWithProgress_Request, server accounttypes.AccountService_CloseAccountWithProgressServer) (err error) {
+func (s *service) CloseAccountWithProgress(_ *accounttypes.CloseAccountWithProgress_Request, server accounttypes.AccountService_CloseAccountWithProgressServer) (err error) {
 	s.muService.Lock()
 	defer s.muService.Unlock()
 
@@ -446,9 +446,7 @@ func (s *service) openManager(kind string, defaultLoggerStreams []logutil.Stream
 	}
 
 	// minimal requirements
-	{
-		// here we can add various checks that return an error early if some settings are invalid or missing
-	}
+	// here we can add various checks that return an error early if some settings are invalid or missing
 
 	// set custom drivers
 	manager.SetNotificationManager(s.notifManager)
@@ -1360,6 +1358,7 @@ func (s *service) PushPlatformTokenRegister(ctx context.Context, request *accoun
 	return &accounttypes.PushPlatformTokenRegister_Reply{}, nil
 }
 
+//nolint:revive
 func (s *service) GetOpenedAccount(ctx context.Context, request *accounttypes.GetOpenedAccount_Request) (*accounttypes.GetOpenedAccount_Reply, error) {
 	return &accounttypes.GetOpenedAccount_Reply{
 		AccountId: s.openedAccountID,

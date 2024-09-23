@@ -296,7 +296,7 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 			}
 
 			return mnode.ServeCoreHTTP(manet.NetListener(l))
-		}, func(err error) {
+		}, func(_ error) {
 			if l != nil {
 				l.Close()
 			}
@@ -321,7 +321,7 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 			}
 
 			return server.Serve(l)
-		}, func(err error) {
+		}, func(_ error) {
 			server.Close()
 		})
 	}

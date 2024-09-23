@@ -309,6 +309,7 @@ func directoryServiceUnregister(ctx context.Context, v *groupView, cmd string) e
 	return nil
 }
 
+//nolint:revive
 func directoryServiceList(ctx context.Context, v *groupView, cmd string) error {
 	acc, err := v.v.messenger.AccountGet(ctx, &messengertypes.AccountGet_Request{})
 	if err != nil {
@@ -414,9 +415,9 @@ func credentialVerificationInit(ctx context.Context, v *groupView, service strin
 	return nil
 }
 
-func credentialVerificationComplete(ctx context.Context, v *groupView, callbackUri string) error {
+func credentialVerificationComplete(ctx context.Context, v *groupView, callbackURI string) error {
 	res, err := v.v.protocol.CredentialVerificationServiceCompleteFlow(ctx, &protocoltypes.CredentialVerificationServiceCompleteFlow_Request{
-		CallbackUri: callbackUri,
+		CallbackUri: callbackURI,
 	})
 	if err != nil {
 		return err
@@ -620,6 +621,7 @@ func debugSystemCommand(ctx context.Context, v *groupView, _ string) error {
 	return nil
 }
 
+//nolint:revive
 func contactDiscardAllCommand(ctx context.Context, v *groupView, cmd string) error {
 	v.v.lock.Lock()
 	toAdd := [][]byte(nil)
@@ -642,6 +644,7 @@ func contactDiscardAllCommand(ctx context.Context, v *groupView, cmd string) err
 	return nil
 }
 
+//nolint:revive
 func contactAcceptAllCommand(ctx context.Context, v *groupView, cmd string) error {
 	v.v.lock.Lock()
 	toAdd := [][]byte(nil)
@@ -799,6 +802,7 @@ func formatDebugListGroupsReply(rep *protocoltypes.DebugListGroups_Reply) []byte
 	return []byte(fmt.Sprintf("%s: %s", rep.GroupType.String(), base64.StdEncoding.EncodeToString(rep.GroupPk)))
 }
 
+//nolint:revive
 func debugListGroupsCommand(ctx context.Context, v *groupView, cmd string) error {
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
@@ -827,6 +831,7 @@ func debugListGroupsCommand(ctx context.Context, v *groupView, cmd string) error
 	}
 }
 
+//nolint:revive
 func debugListGroupCommand(ctx context.Context, v *groupView, cmd string) error {
 	v.messages.Append(&historyMessage{
 		messageType: messageTypeMeta,
@@ -920,6 +925,7 @@ func debugListGroupCommand(ctx context.Context, v *groupView, cmd string) error 
 // 	return nil
 // }
 
+//nolint:revive
 func aliasSendCommand(ctx context.Context, v *groupView, cmd string) error {
 	if _, err := v.v.protocol.ContactAliasKeySend(ctx, &protocoltypes.ContactAliasKeySend_Request{
 		GroupPk: v.g.PublicKey,
@@ -931,7 +937,7 @@ func aliasSendCommand(ctx context.Context, v *groupView, cmd string) error {
 }
 
 func groupInviteCommand(renderFunc func(*groupView, string)) func(ctx context.Context, v *groupView, cmd string) error {
-	return func(ctx context.Context, v *groupView, cmd string) error {
+	return func(ctx context.Context, v *groupView, cmd string) error { //nolint:revive
 		res, err := v.v.messenger.ShareableBertyGroup(ctx, &messengertypes.ShareableBertyGroup_Request{
 			GroupPk:   v.g.PublicKey,
 			GroupName: "some group",
@@ -946,6 +952,7 @@ func groupInviteCommand(renderFunc func(*groupView, string)) func(ctx context.Co
 	}
 }
 
+//nolint:revive
 func refreshCommand(ctx context.Context, v *groupView, cmd string) error {
 	contactspk := [][]byte{}
 	v.v.lock.Lock()
@@ -1001,6 +1008,7 @@ func refreshCommand(ctx context.Context, v *groupView, cmd string) error {
 	return nil
 }
 
+//nolint:revive
 func cmdHelp(ctx context.Context, v *groupView, cmd string) error {
 	longestCmd := 0
 
@@ -1029,6 +1037,7 @@ func cmdHelp(ctx context.Context, v *groupView, cmd string) error {
 	return nil
 }
 
+//nolint:revive
 func cmdKeyboard(ctx context.Context, v *groupView, cmd string) error {
 	longestHint := 0
 	help := [][]string(nil)
@@ -1186,6 +1195,7 @@ func newMessageCommand(ctx context.Context, v *groupView, cmd string) error {
 	return nil
 }
 
+//nolint:revive
 func newDebugNetManagerGetCommand(ctx context.Context, v *groupView, cmd string) error {
 	if cmd != "" {
 		return errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("expected no argument"))
@@ -1199,7 +1209,7 @@ func newDebugNetManagerGetCommand(ctx context.Context, v *groupView, cmd string)
 	return nil
 }
 
-func newDebugNetManagerSetCommand(ctx context.Context, v *groupView, cmd string) error {
+func newDebugNetManagerSetCommand(_ context.Context, v *groupView, cmd string) error {
 	if cmd == "" {
 		return errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("expected arguments ex: `/netmanager set bluetooth=on nettype=mobile`"))
 	}
@@ -1264,7 +1274,7 @@ func newDebugNetManagerSetCommand(ctx context.Context, v *groupView, cmd string)
 }
 
 func contactShareCommand(displayFunc func(*groupView, string)) func(ctx context.Context, v *groupView, cmd string) error {
-	return func(ctx context.Context, v *groupView, cmd string) error {
+	return func(ctx context.Context, v *groupView, cmd string) error { //nolint:revive
 		v.v.lock.Lock()
 		displayName := v.v.displayName
 		v.v.lock.Unlock()
@@ -1321,18 +1331,21 @@ func copyToClipboard(v *groupView, txt string) {
 	}
 }
 
+//nolint:revive
 func contactRequestsOnCommand(ctx context.Context, v *groupView, cmd string) error {
 	_, err := v.v.protocol.ContactRequestEnable(ctx, &protocoltypes.ContactRequestEnable_Request{})
 
 	return err
 }
 
+//nolint:revive
 func contactRequestsOffCommand(ctx context.Context, v *groupView, cmd string) error {
 	_, err := v.v.protocol.ContactRequestDisable(ctx, &protocoltypes.ContactRequestDisable_Request{})
 
 	return err
 }
 
+//nolint:revive
 func contactRequestsReferenceResetCommand(ctx context.Context, v *groupView, cmd string) error {
 	_, err := v.v.protocol.ContactRequestResetReference(ctx, &protocoltypes.ContactRequestResetReference_Request{})
 

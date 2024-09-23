@@ -48,7 +48,7 @@ func (d *pushService) ServerInfo(_ context.Context, _ *pushtypes.PushServiceServ
 	}, nil
 }
 
-func (d *pushService) Send(ctx context.Context, request *pushtypes.PushServiceSend_Request) (*pushtypes.PushServiceSend_Reply, error) {
+func (d *pushService) Send(_ context.Context, request *pushtypes.PushServiceSend_Request) (*pushtypes.PushServiceSend_Reply, error) {
 	if len(request.Receivers) == 0 {
 		return nil, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("no receivers supplied"))
 	}

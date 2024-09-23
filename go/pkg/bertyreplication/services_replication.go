@@ -35,7 +35,7 @@ type replicationService struct {
 	replicationtypes.UnimplementedReplicationServiceServer
 }
 
-func (s *replicationService) ReplicateGlobalStats(ctx context.Context, request *replicationtypes.ReplicateGlobalStats_Request) (*replicationtypes.ReplicateGlobalStats_Reply, error) {
+func (s *replicationService) ReplicateGlobalStats(_ context.Context, _ *replicationtypes.ReplicateGlobalStats_Request) (*replicationtypes.ReplicateGlobalStats_Reply, error) {
 	ret := &replicationtypes.ReplicateGlobalStats_Reply{}
 
 	if err := s.db.Raw("SELECT COUNT(public_key) AS replicated_groups, SUM(metadata_entries_count) AS total_metadata_entries, SUM(message_entries_count) AS total_message_entries FROM replicated_groups").Scan(&ret).Error; err != nil {
@@ -47,7 +47,7 @@ func (s *replicationService) ReplicateGlobalStats(ctx context.Context, request *
 	return ret, nil
 }
 
-func (s *replicationService) ReplicateGroupStats(ctx context.Context, request *replicationtypes.ReplicateGroupStats_Request) (*replicationtypes.ReplicateGroupStats_Reply, error) {
+func (s *replicationService) ReplicateGroupStats(_ context.Context, request *replicationtypes.ReplicateGroupStats_Request) (*replicationtypes.ReplicateGroupStats_Reply, error) {
 	if len(request.GroupPublicKey) == 0 {
 		return nil, errcode.ErrCode_ErrNotFound
 	}
@@ -302,8 +302,9 @@ func NewReplicationService(ctx context.Context, db *gorm.DB, odb BertyOrbitDB, l
 
 	// Resubscribe to known groups
 	groups := []replicationtypes.ReplicatedGroup(nil)
-	if err := db.Model(&replicationtypes.ReplicatedGroup{}).FindInBatches(&groups, 10, func(tx *gorm.DB, batch int) error {
-		for _, group := range groups {
+	if err := db.Model(&replicationtypes.ReplicatedGroup{}).FindInBatches(&groups, 10, func(tx *gorm.DB, batch int) error { //nolint:revive
+		for i := range groups {
+			group := &groups[i]
 			g, err := group.ToGroup()
 			if err != nil {
 				return err
