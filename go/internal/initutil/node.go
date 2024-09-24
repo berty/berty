@@ -247,7 +247,7 @@ func (m *Manager) getGRPCClientConn() (*grpc.ClientConn, error) {
 
 	if m.Node.GRPC.RemoteAddr != "" {
 		clientOpts = append(clientOpts, grpc.WithTransportCredentials(insecure.NewCredentials())) // make a flag for this?
-		cc, err := grpc.NewClient("passthrough://"+m.Node.GRPC.RemoteAddr, clientOpts...)
+		cc, err := grpc.NewClient(m.Node.GRPC.RemoteAddr, clientOpts...)
 		if err != nil {
 			return nil, errcode.ErrCode_TODO.Wrap(err)
 		}

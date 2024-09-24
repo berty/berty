@@ -402,7 +402,7 @@ func (h *EventHandler) accountContactRequestOutgoingEnqueued(gme *protocoltypes.
 }
 
 func (h *EventHandler) accountContactRequestOutgoingSent(gme *protocoltypes.GroupMetadataEvent) error {
-	var ev *protocoltypes.AccountContactRequestOutgoingSent
+	ev := &protocoltypes.AccountContactRequestOutgoingSent{}
 	if err := proto.Unmarshal(gme.GetEvent(), ev); err != nil {
 		return err
 	}

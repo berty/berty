@@ -1694,7 +1694,7 @@ func (svc *service) getDirectoryServiceClient(serverAddr string) (directorytypes
 		gopts = append(gopts, grpc.WithTransportCredentials(tlsconfig))
 	}
 
-	cc, err := grpc.NewClient("passthrough://"+serverAddr, gopts...)
+	cc, err := grpc.NewClient(serverAddr, gopts...)
 	if err != nil {
 		return nil, errcode.ErrCode_ErrStreamWrite.Wrap(err)
 	}

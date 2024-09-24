@@ -1807,6 +1807,7 @@ func testHelperRegisterNewNumberOnDirectoryService(ctx context.Context, t *testi
 		ServerAddr:  directoryHost,
 		Identifier:  identifier,
 	})
+	require.NoError(t, err)
 
 	// FIXME: Remove sleep, make sure DirectoryServiceRegister DB event has been dispatched locally
 	time.Sleep(time.Millisecond * 100)
