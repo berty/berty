@@ -1,4 +1,4 @@
-version: '3.7'
+version: "3.7"
 
 services:
   daemon1:
@@ -8,8 +8,8 @@ services:
     entrypoint: sh
     network_mode: bridge
     labels:
-      - 'traefik.enable=false'
-      - 'com.centurylinklabs.watchtower.enable=true'
+      - "traefik.enable=false"
+      - "com.centurylinklabs.watchtower.enable=true"
       - 'com.datadoghq.ad.logs=[{"source": "go", "service": "testbot-daemon1"}]'
     # copy "clean" db into run, then start the daemon.
     # be careful if you edit this command, it looks like multiline but will be joined inline.
@@ -18,14 +18,14 @@ services:
       cp -rf /store/clean /store/run;
       env;
       berty daemon
-        -config=/app/config1.txt
-        -store.dir=/store/run
-        -node.no-notif
-        -node.listeners=/ip4/0.0.0.0/tcp/9091/grpc
-        -p2p.swarm-listeners=/ip4/0.0.0.0/tcp/6002
-        -log.filters=*,-ipfs.*
-        -log.format=json
-        -node.disable-group-monitor
+      -config=/app/config1.txt
+      -store.dir=/store/run
+      -node.no-notif
+      -node.listeners=/ip4/0.0.0.0/tcp/9091/grpc
+      -p2p.swarm-listeners=/ip4/0.0.0.0/tcp/6002
+      -log.filters=*,-ipfs.*
+      -log.format=json
+      -node.disable-group-monitor
       ;"
     deploy:
       resources:
@@ -45,8 +45,8 @@ services:
     entrypoint: sh
     network_mode: bridge
     labels:
-      - 'traefik.enable=false'
-      - 'com.centurylinklabs.watchtower.enable=true'
+      - "traefik.enable=false"
+      - "com.centurylinklabs.watchtower.enable=true"
       - 'com.datadoghq.ad.logs=[{"source": "go", "service": "testbot-daemon2"}]'
     # copy "clean" db into run, then start the daemon.
     # be careful if you edit this command, it looks like multiline but will be joined inline.
@@ -55,14 +55,14 @@ services:
       cp -rf /store/clean /store/run;
       env;
       berty daemon
-        -config=/app/config2.txt
-        -store.dir=/store/run
-        -node.no-notif
-        -node.listeners=/ip4/0.0.0.0/tcp/9091/grpc
-        -p2p.swarm-listeners=/ip4/0.0.0.0/tcp/6003,/ip4/0.0.0.0/udp/6003/quic
-        -log.filters=*,-ipfs.*
-        -log.format=json
-        -node.disable-group-monitor
+      -config=/app/config2.txt
+      -store.dir=/store/run
+      -node.no-notif
+      -node.listeners=/ip4/0.0.0.0/tcp/9091/grpc
+      -p2p.swarm-listeners=/ip4/0.0.0.0/tcp/6003,/ip4/0.0.0.0/udp/6003/quic-v1
+      -log.filters=*,-ipfs.*
+      -log.format=json
+      -node.disable-group-monitor
       ;"
     volumes:
       - ./data/daemon2:/store
@@ -85,8 +85,8 @@ services:
       - daemon2
     network_mode: bridge
     labels:
-      - 'traefik.enable=false'
-      - 'com.centurylinklabs.watchtower.enable=true'
+      - "traefik.enable=false"
+      - "com.centurylinklabs.watchtower.enable=true"
       - 'com.datadoghq.ad.logs=[{"source": "go", "service": "testbot-bot"}]'
     command:
       - -name1=TestBot

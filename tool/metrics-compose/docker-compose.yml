@@ -52,7 +52,7 @@ services:
       - "-p2p.metrics"
       - "-node.no-notif"
       - "-node.listeners=/ip4/0.0.0.0/tcp/9091"
-      - "-p2p.ipfs-listeners=/ip4/0.0.0.0/tcp/6001,/ip4/0.0.0.0/udp/6001/quic"
+      - "-p2p.ipfs-listeners=/ip4/0.0.0.0/tcp/6001,/ip4/0.0.0.0/udp/6001/quic-v1"
     volumes:
       - ./data/daemon/store:/store
     ports:

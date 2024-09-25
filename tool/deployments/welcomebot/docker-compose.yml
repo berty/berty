@@ -10,7 +10,7 @@ services:
     command:
       - daemon
       - -config=/app/config.txt
-      - -p2p.swarm-listeners=/ip4/0.0.0.0/tcp/6001,/ip4/0.0.0.0/udp/6001/quic
+      - -p2p.swarm-listeners=/ip4/0.0.0.0/tcp/6001,/ip4/0.0.0.0/udp/6001/quic-v1
       - -node.listeners=/ip4/0.0.0.0/tcp/9091/grpc
       - -metrics.listener=:8888
       - -store.dir=/store/run
