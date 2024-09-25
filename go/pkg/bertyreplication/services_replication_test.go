@@ -105,7 +105,10 @@ func TestReplicationService_GroupRegister(t *testing.T) {
 
 	db := bertyreplication.DBForTests(t, zap.NewNop())
 
-	repl, _ := bertyreplication.TestHelperNewReplicationService(ctx, t, nil, mn, msrv, ds, db)
+	logger, cleanup := testutil.Logger(t)
+	defer cleanup()
+
+	repl, _ := bertyreplication.TestHelperNewReplicationService(ctx, t, logger, mn, msrv, ds, db)
 
 	g, _, err := weshnet.NewGroupMultiMember()
 	require.NoError(t, err)
