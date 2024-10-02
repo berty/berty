@@ -1,8 +1,9 @@
+version: 2
 changelog:
-  skip: true
+  disable: true
 
 checksum:
-  name_template: '{{.ProjectName}}_linux_checksums.txt'
+  name_template: "{{.ProjectName}}_linux_checksums.txt"
 
 env:
   - GO111MODULE=on
@@ -13,17 +14,16 @@ before:
     - go mod download
 
 archives:
-  - name_template: 'berty_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}'
+  - name_template: "berty_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}"
     wrap_in_directory: true
     id: berty
     builds:
       - berty
-  - name_template: 'bertygui_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}'
+  - name_template: "bertygui_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}"
     wrap_in_directory: true
     id: bertygui
     builds:
       - bertygui
-
 
 builds:
   - id: berty
@@ -39,7 +39,7 @@ builds:
     flags:
       - "-a"
     ldflags:
-      - '-X berty.tech/berty/v2/go/pkg/bertyversion.VcsRef=$(VCS_REF) -X berty.tech/berty/v2/go/pkg/bertyversion.Version=$(VERSION)'
+      - "-X berty.tech/berty/v2/go/pkg/bertyversion.VcsRef=$(VCS_REF) -X berty.tech/berty/v2/go/pkg/bertyversion.Version=$(VERSION)"
 
   - id: bertygui
     binary: bertygui
@@ -54,4 +54,4 @@ builds:
       - "-a"
       - "-tags=bertygui"
     ldflags:
-      - '-X berty.tech/berty/v2/go/pkg/bertyversion.VcsRef=$(VCS_REF) -X berty.tech/berty/v2/go/pkg/bertyversion.Version=$(VERSION)'
+      - "-X berty.tech/berty/v2/go/pkg/bertyversion.VcsRef=$(VCS_REF) -X berty.tech/berty/v2/go/pkg/bertyversion.Version=$(VERSION)"
