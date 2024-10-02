@@ -53,6 +53,17 @@ use_react_native!(
 
     installer.pods_project.targets.each do |target|
       target.build_configurations.each do |config|
+        # fix Flipper for Xcode 15.3 or above
+        if target.name == 'Flipper'
+          file_path = 'Pods/Flipper/xplat/Flipper/FlipperTransportTypes.h'
+          contents = File.read(file_path)
+          unless contents.include?('#include <functional>')
+            File.open(file_path, 'w') do |file|
+              file.puts('#include <functional>')
+              file.puts(contents)
+            end
+          end
+        end
         # set ios deployment target for all pods
         config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '12.0'
 
