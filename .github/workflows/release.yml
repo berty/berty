@@ -212,7 +212,7 @@ jobs:
         if: needs.semantic-release.outputs.new-release-published != 'true'
         with:
           version: latest
-          args: release --clean -f .github/workflows/utils/.goreleaser.${{ matrix.config.goos }}.yml --skip-publish
+          args: release --clean -f .github/workflows/utils/.goreleaser.${{ matrix.config.goos }}.yml --skip=publish
 
       - name: Run GoReleaser (Publish)
         uses: goreleaser/goreleaser-action@v3
