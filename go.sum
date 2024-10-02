@@ -76,8 +76,6 @@ github.com/Azure/go-ansiterm v0.0.0-20210617225240-d185dfc1b5a1/go.mod h1:xomTg6
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/BurntSushi/toml v0.4.1/go.mod h1:CxXYINrC8qIiEnFrOxCa7Jy5BFHlXnUU2pbicEuybxQ=
 github.com/BurntSushi/xgb v0.0.0-20160522181843-27f122750802/go.mod h1:IVnqGOEym/WlBOVXweHU+Q+/VP0lqqI8lqeDx9IjBqo=
-github.com/D4ryl00/weshnet v0.0.0-20240913145748-2a02c21e28c1 h1:s1A6+hxjbKJjb+XdeM1HOla4iMC2G5G08bPNTu6vwGo=
-github.com/D4ryl00/weshnet v0.0.0-20240913145748-2a02c21e28c1/go.mod h1:Izx8/JyK3KknrfL9KOtNyQ5HxSG/+anQ17bMd23COFo=
 github.com/DATA-DOG/go-sqlmock v1.3.3/go.mod h1:f/Ixk793poVmq4qj/V1dPUg2JEAKC73Q5eFN3EC/SaM=
 github.com/DataDog/zstd v1.4.1 h1:3oxKN3wbHibqx897utPC2LTQU4J+IHWWJO+glkAkpFM=
 github.com/DataDog/zstd v1.4.1/go.mod h1:1jcaCB/ufaK+sKp1NBhlGmpz41jOoPQ35bpF36t7BBo=
@@ -241,6 +239,8 @@ github.com/cskr/pubsub v1.0.2 h1:vlOzMhl6PFn60gRlTQQsIfVwaPB/B/8MziK8FhEPt/0=
 github.com/cskr/pubsub v1.0.2/go.mod h1:/8MzYXk/NJAz782G8RPkFzXTZVu63VotefPnR9TIRis=
 github.com/d4ryl00/go-multiaddr v0.0.0-20240808141024-75af21abbfc1 h1:Svz6jeVTzRiDh8WsvvpVpcBB3cYYZhWWay21gbpw43E=
 github.com/d4ryl00/go-multiaddr v0.0.0-20240808141024-75af21abbfc1/go.mod h1:sBXrNzucqkFJhvKOiwwLyqamGa/P5EIXNPLovyhQCII=
+github.com/d4ryl00/weshnet v0.0.0-20241002080403-7c7409150926 h1:5VZV2eTurgyykRXxSnanKwJAC8Fm+E+tkZargQpPm4g=
+github.com/d4ryl00/weshnet v0.0.0-20241002080403-7c7409150926/go.mod h1:Izx8/JyK3KknrfL9KOtNyQ5HxSG/+anQ17bMd23COFo=
 github.com/daixiang0/gci v0.8.2 h1:4VLVDNdJ+wkXxz/nr5QRrbeK+JCvkMVqYjUWB5EnPF4=
 github.com/daixiang0/gci v0.8.2/go.mod h1:EpVfrztufwVgQRXjnX4zuNinEpLj5OmMjtu/+MB0V0c=
 github.com/davecgh/go-spew v0.0.0-20171005155431-ecdeabc65495/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
