@@ -427,4 +427,4 @@ replace (
 	golang.org/x/mobile => github.com/berty/mobile v0.0.8 // temporary, see https://github.com/golang/mobile/pull/58 and https://github.com/golang/mobile/pull/82
 )
 
-replace berty.tech/weshnet => github.com/d4ryl00/weshnet v0.0.0-20241003150253-0334304f12d2
+replace berty.tech/weshnet => github.com/d4ryl00/weshnet v0.0.0-20241004160318-c32d6f06b3f9
