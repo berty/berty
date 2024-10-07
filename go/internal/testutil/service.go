@@ -10,7 +10,7 @@ import (
 	"google.golang.org/grpc"
 
 	"berty.tech/berty/v2/go/pkg/errcode"
-	"berty.tech/weshnet/pkg/grpcutil"
+	"berty.tech/weshnet/v2/pkg/grpcutil"
 )
 
 type service struct {

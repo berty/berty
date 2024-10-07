@@ -13,7 +13,7 @@ import (
 	"google.golang.org/grpc"
 
 	"berty.tech/berty/v2/go/pkg/pushtypes"
-	"berty.tech/weshnet/pkg/cryptoutil"
+	"berty.tech/weshnet/v2/pkg/cryptoutil"
 )
 
 func PushServerForTests(ctx context.Context, t testing.TB, dispatchers []PushDispatcher, logger *zap.Logger) (PushService, *[32]byte, string, context.CancelFunc) {

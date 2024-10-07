@@ -16,7 +16,7 @@ import (
 	"berty.tech/berty/v2/go/internal/i18n"
 	"berty.tech/berty/v2/go/localization"
 	"berty.tech/berty/v2/go/pkg/authtypes"
-	"berty.tech/weshnet/pkg/errcode"
+	"berty.tech/weshnet/v2/pkg/errcode"
 )
 
 type AuthTokenServer struct {

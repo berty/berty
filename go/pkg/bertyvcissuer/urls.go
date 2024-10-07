@@ -4,7 +4,7 @@ import (
 	"encoding/base64"
 	"fmt"
 
-	weshnet_vc "berty.tech/weshnet/pkg/bertyvcissuer"
+	weshnet_vc "berty.tech/weshnet/v2/pkg/bertyvcissuer"
 )
 
 func makeAuthenticateURL(serverBaseRoot, flowCtxStr string) string {

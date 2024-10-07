@@ -13,9 +13,9 @@ import (
 	"berty.tech/berty/v2/go/internal/dbfetcher"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/pushtypes"
-	"berty.tech/weshnet/pkg/cryptoutil"
-	oosmtypes "berty.tech/weshnet/pkg/outofstoremessagetypes"
-	"berty.tech/weshnet/pkg/protocoltypes"
+	"berty.tech/weshnet/v2/pkg/cryptoutil"
+	oosmtypes "berty.tech/weshnet/v2/pkg/outofstoremessagetypes"
+	"berty.tech/weshnet/v2/pkg/protocoltypes"
 )
 
 const InMemoryDir = ":memory:"

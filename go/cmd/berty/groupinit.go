@@ -12,7 +12,7 @@ import (
 
 	"berty.tech/berty/v2/go/pkg/bertylinks"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
-	"berty.tech/weshnet"
+	"berty.tech/weshnet/v2"
 )
 
 func groupinitCommand() *ffcli.Command {

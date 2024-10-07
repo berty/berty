@@ -8,7 +8,7 @@ import (
 	"berty.tech/berty/v2/go/internal/dbfetcher"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
-	"berty.tech/weshnet/pkg/protocoltypes"
+	"berty.tech/weshnet/v2/pkg/protocoltypes"
 )
 
 type EventHandler interface {

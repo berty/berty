@@ -12,7 +12,7 @@ import (
 	"github.com/peterbourgon/ff/v3/ffcli"
 
 	"berty.tech/berty/v2/go/pkg/errcode"
-	"berty.tech/weshnet/pkg/cryptoutil"
+	"berty.tech/weshnet/v2/pkg/cryptoutil"
 )
 
 func serviceKeyCommand() *ffcli.Command {

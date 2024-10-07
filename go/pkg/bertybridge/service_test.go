@@ -12,8 +12,8 @@ import (
 
 	berty_testutil "berty.tech/berty/v2/go/internal/testutil"
 	errcode "berty.tech/berty/v2/go/pkg/errcode"
-	"berty.tech/weshnet/pkg/grpcutil"
-	"berty.tech/weshnet/pkg/testutil"
+	"berty.tech/weshnet/v2/pkg/grpcutil"
+	"berty.tech/weshnet/v2/pkg/testutil"
 )
 
 const echoStringTest = "Im sorry Dave, Im afraid I cant do that"

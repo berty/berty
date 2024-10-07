@@ -8,7 +8,7 @@ package accounttypes
 
 import (
 	pushtypes "berty.tech/berty/v2/go/pkg/pushtypes"
-	protocoltypes "berty.tech/weshnet/pkg/protocoltypes"
+	protocoltypes "berty.tech/weshnet/v2/pkg/protocoltypes"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"

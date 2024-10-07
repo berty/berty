@@ -10,8 +10,8 @@ import (
 
 	"berty.tech/berty/v2/go/internal/initutil"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
-	"berty.tech/weshnet"
-	"berty.tech/weshnet/pkg/protocoltypes"
+	"berty.tech/weshnet/v2"
+	"berty.tech/weshnet/v2/pkg/protocoltypes"
 )
 
 func NonMockedTestingInfra(t testing.TB, accountAmount int) ([]messengertypes.MessengerServiceClient, []*weshnet.TestingProtocol) {

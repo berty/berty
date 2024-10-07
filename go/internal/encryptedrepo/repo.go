@@ -11,7 +11,7 @@ import (
 
 	"berty.tech/berty/v2/go/pkg/errcode"
 	encrepo "berty.tech/go-ipfs-repo-encrypted"
-	"berty.tech/weshnet/pkg/ipfsutil"
+	"berty.tech/weshnet/v2/pkg/ipfsutil"
 )
 
 // LoadEncryptedRepoFromPath

@@ -9,8 +9,8 @@ import (
 	"google.golang.org/grpc"
 
 	"berty.tech/berty/v2/go/pkg/messengertypes"
-	"berty.tech/weshnet/pkg/grpcutil"
-	"berty.tech/weshnet/pkg/protocoltypes"
+	"berty.tech/weshnet/v2/pkg/grpcutil"
+	"berty.tech/weshnet/v2/pkg/protocoltypes"
 )
 
 const ClientBufferSize = 4 * 1024 * 1024

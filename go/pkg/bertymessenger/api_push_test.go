@@ -24,8 +24,8 @@ import (
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
 	"berty.tech/berty/v2/go/pkg/pushtypes"
-	weshnet "berty.tech/weshnet"
-	"berty.tech/weshnet/pkg/testutil"
+	weshnet "berty.tech/weshnet/v2"
+	"berty.tech/weshnet/v2/pkg/testutil"
 )
 
 func TestService_PushReceive(t *testing.T) {

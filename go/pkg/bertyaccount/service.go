@@ -23,14 +23,14 @@ import (
 	"berty.tech/berty/v2/go/pkg/messengertypes"
 	"berty.tech/berty/v2/go/pkg/pushtypes"
 	encrepo "berty.tech/go-ipfs-repo-encrypted"
-	"berty.tech/weshnet/pkg/androidnearby"
-	"berty.tech/weshnet/pkg/lifecycle"
-	"berty.tech/weshnet/pkg/logutil"
-	mc "berty.tech/weshnet/pkg/multipeer-connectivity-driver"
-	"berty.tech/weshnet/pkg/netmanager"
-	"berty.tech/weshnet/pkg/protocoltypes"
-	proximity "berty.tech/weshnet/pkg/proximitytransport"
-	"berty.tech/weshnet/pkg/tyber"
+	"berty.tech/weshnet/v2/pkg/androidnearby"
+	"berty.tech/weshnet/v2/pkg/lifecycle"
+	"berty.tech/weshnet/v2/pkg/logutil"
+	mc "berty.tech/weshnet/v2/pkg/multipeer-connectivity-driver"
+	"berty.tech/weshnet/v2/pkg/netmanager"
+	"berty.tech/weshnet/v2/pkg/protocoltypes"
+	proximity "berty.tech/weshnet/v2/pkg/proximitytransport"
+	"berty.tech/weshnet/v2/pkg/tyber"
 )
 
 // Servicex is AccountServiceServer

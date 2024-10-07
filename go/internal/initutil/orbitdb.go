@@ -7,9 +7,9 @@ import (
 	"berty.tech/go-orbit-db/baseorbitdb"
 	"berty.tech/go-orbit-db/pubsub/directchannel"
 	"berty.tech/go-orbit-db/pubsub/pubsubraw"
-	"berty.tech/weshnet"
-	"berty.tech/weshnet/pkg/rendezvous"
-	"berty.tech/weshnet/pkg/secretstore"
+	"berty.tech/weshnet/v2"
+	"berty.tech/weshnet/v2/pkg/rendezvous"
+	"berty.tech/weshnet/v2/pkg/secretstore"
 )
 
 const (

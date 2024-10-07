@@ -23,12 +23,12 @@ import (
 	"berty.tech/berty/v2/go/pkg/bertyauth"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	orbitdb "berty.tech/go-orbit-db"
-	"berty.tech/weshnet"
-	"berty.tech/weshnet/pkg/ipfsutil"
-	"berty.tech/weshnet/pkg/protocoltypes"
-	"berty.tech/weshnet/pkg/replicationtypes"
-	"berty.tech/weshnet/pkg/testutil"
-	"berty.tech/weshnet/pkg/tinder"
+	"berty.tech/weshnet/v2"
+	"berty.tech/weshnet/v2/pkg/ipfsutil"
+	"berty.tech/weshnet/v2/pkg/protocoltypes"
+	"berty.tech/weshnet/v2/pkg/replicationtypes"
+	"berty.tech/weshnet/v2/pkg/testutil"
+	"berty.tech/weshnet/v2/pkg/tinder"
 )
 
 type TestingReplicationPeer struct {

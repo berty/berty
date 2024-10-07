@@ -16,7 +16,7 @@ import (
 	"berty.tech/berty/v2/go/pkg/bertymessenger"
 	bertymessengertesting "berty.tech/berty/v2/go/pkg/bertymessenger/testing"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
-	"berty.tech/weshnet/pkg/testutil"
+	"berty.tech/weshnet/v2/pkg/testutil"
 )
 
 func b64DecodeBytes(s string) ([]byte, error) {

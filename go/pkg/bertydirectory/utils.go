@@ -15,8 +15,8 @@ import (
 	"berty.tech/berty/v2/go/pkg/directorytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
-	weshnet_vc "berty.tech/weshnet/pkg/bertyvcissuer"
-	"berty.tech/weshnet/pkg/cryptoutil"
+	weshnet_vc "berty.tech/weshnet/v2/pkg/bertyvcissuer"
+	"berty.tech/weshnet/v2/pkg/cryptoutil"
 )
 
 func inMinMaxDefault(value, min, max, def int64) int64 {

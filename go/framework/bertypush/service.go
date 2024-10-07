@@ -11,7 +11,7 @@ import (
 	"berty.tech/berty/v2/go/localization"
 	"berty.tech/berty/v2/go/pkg/bertypush"
 	"berty.tech/berty/v2/go/pkg/pushtypes"
-	"berty.tech/weshnet/pkg/logutil"
+	"berty.tech/weshnet/v2/pkg/logutil"
 )
 
 type FormatedPush pushtypes.FormatedPush

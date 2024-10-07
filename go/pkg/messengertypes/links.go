@@ -4,7 +4,7 @@ import (
 	fmt "fmt"
 
 	"berty.tech/berty/v2/go/pkg/errcode"
-	protocoltypes "berty.tech/weshnet/pkg/protocoltypes"
+	protocoltypes "berty.tech/weshnet/v2/pkg/protocoltypes"
 )
 
 func (link *BertyLink) IsValid() error {

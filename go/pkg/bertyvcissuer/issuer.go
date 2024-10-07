@@ -25,9 +25,9 @@ import (
 	"berty.tech/berty/v2/go/pkg/bertyvcissuer/templates"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
-	weshnet_vc "berty.tech/weshnet/pkg/bertyvcissuer"
-	"berty.tech/weshnet/pkg/cryptoutil"
-	"berty.tech/weshnet/pkg/verifiablecredstypes"
+	weshnet_vc "berty.tech/weshnet/v2/pkg/bertyvcissuer"
+	"berty.tech/weshnet/v2/pkg/cryptoutil"
+	"berty.tech/weshnet/v2/pkg/verifiablecredstypes"
 )
 
 const cryptoChallengeTimeout = 10 * time.Minute

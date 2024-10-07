@@ -6,7 +6,7 @@ import (
 	"fmt"
 
 	"berty.tech/berty/v2/go/pkg/errcode"
-	"berty.tech/weshnet/pkg/verifiablecredstypes"
+	"berty.tech/weshnet/v2/pkg/verifiablecredstypes"
 )
 
 func CodeGeneratorZero(_ *verifiablecredstypes.StateCode) (string, error) {

@@ -7,7 +7,7 @@
 package directorytypes
 
 import (
-	_ "berty.tech/weshnet/pkg/protocoltypes"
+	_ "berty.tech/weshnet/v2/pkg/protocoltypes"
 	_ "github.com/srikrsna/protoc-gen-gotag/tagger"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"

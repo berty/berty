@@ -29,13 +29,13 @@ import (
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
 	"berty.tech/berty/v2/go/pkg/pushtypes"
-	nb "berty.tech/weshnet/pkg/androidnearby"
-	"berty.tech/weshnet/pkg/ble-driver"
-	"berty.tech/weshnet/pkg/logutil"
-	mc "berty.tech/weshnet/pkg/multipeer-connectivity-driver"
-	"berty.tech/weshnet/pkg/protocoltypes"
-	"berty.tech/weshnet/pkg/tyber"
-	"berty.tech/weshnet/pkg/username"
+	nb "berty.tech/weshnet/v2/pkg/androidnearby"
+	"berty.tech/weshnet/v2/pkg/ble-driver"
+	"berty.tech/weshnet/v2/pkg/logutil"
+	mc "berty.tech/weshnet/v2/pkg/multipeer-connectivity-driver"
+	"berty.tech/weshnet/v2/pkg/protocoltypes"
+	"berty.tech/weshnet/v2/pkg/tyber"
+	"berty.tech/weshnet/v2/pkg/username"
 )
 
 func (s *service) openAccount(ctx context.Context, req *accounttypes.OpenAccount_Request, prog *progress.Progress) (*accounttypes.AccountMetadata, error) {

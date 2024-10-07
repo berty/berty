@@ -10,7 +10,7 @@ import (
 	ipfscid "github.com/ipfs/go-cid"
 
 	"berty.tech/berty/v2/go/pkg/errcode"
-	"berty.tech/weshnet/pkg/protocoltypes"
+	"berty.tech/weshnet/v2/pkg/protocoltypes"
 )
 
 const (

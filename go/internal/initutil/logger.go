@@ -10,7 +10,7 @@ import (
 	"moul.io/zapring"
 
 	"berty.tech/berty/v2/go/pkg/errcode"
-	"berty.tech/weshnet/pkg/logutil"
+	"berty.tech/weshnet/v2/pkg/logutil"
 )
 
 const DefaultLoggingFilters = "info+:bty*,-*.grpc,error+:*"

@@ -27,7 +27,7 @@ import (
 	"go.uber.org/zap/zapcore"
 
 	"berty.tech/berty/v2/go/pkg/errcode"
-	"berty.tech/weshnet/pkg/ipfsutil"
+	"berty.tech/weshnet/v2/pkg/ipfsutil"
 )
 
 const (

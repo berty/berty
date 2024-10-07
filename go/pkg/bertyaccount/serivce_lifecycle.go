@@ -4,7 +4,7 @@ import (
 	context "context"
 	"time"
 
-	"berty.tech/weshnet/pkg/lifecycle"
+	"berty.tech/weshnet/v2/pkg/lifecycle"
 )
 
 func (s *service) handleLifecycle(ctx context.Context) {

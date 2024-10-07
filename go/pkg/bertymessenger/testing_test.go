@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"berty.tech/weshnet/pkg/testutil"
+	"berty.tech/weshnet/v2/pkg/testutil"
 )
 
 func testingNode(ctx context.Context, t *testing.T) (*TestingAccount, func()) {

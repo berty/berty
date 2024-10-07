@@ -9,7 +9,7 @@ import (
 
 	"berty.tech/berty/v2/go/pkg/authtypes"
 	"berty.tech/berty/v2/go/pkg/bertyreplication"
-	"berty.tech/weshnet/pkg/replicationtypes"
+	"berty.tech/weshnet/v2/pkg/replicationtypes"
 )
 
 func replicationServerCommand() *ffcli.Command {

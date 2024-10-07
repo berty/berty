@@ -11,8 +11,8 @@ import (
 	"go.uber.org/zap"
 	"moul.io/u"
 
-	"berty.tech/weshnet/pkg/logutil"
-	"berty.tech/weshnet/pkg/testutil"
+	"berty.tech/weshnet/v2/pkg/logutil"
+	"berty.tech/weshnet/v2/pkg/testutil"
 )
 
 func TestPersistentIdentity(t *testing.T) {

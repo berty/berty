@@ -12,8 +12,8 @@ import (
 	berty_grpcutil "berty.tech/berty/v2/go/internal/grpcutil"
 	bridge_svc "berty.tech/berty/v2/go/pkg/bertybridge"
 	"berty.tech/berty/v2/go/pkg/errcode"
-	"berty.tech/weshnet/pkg/grpcutil"
-	"berty.tech/weshnet/pkg/logutil"
+	"berty.tech/weshnet/v2/pkg/grpcutil"
+	"berty.tech/weshnet/v2/pkg/logutil"
 )
 
 type RemoteBridge struct {
