@@ -2,17 +2,11 @@ syntax = "proto3";
 
 package berty.messenger.v1;
 
-import "gogoproto/gogo.proto";
 import "protocoltypes.proto";
 import "pushtypes/bertypushtypes.proto";
+import "tagger/tagger.proto";
 
 option go_package = "berty.tech/berty/go/pkg/messengertypes";
-option (gogoproto.goproto_unkeyed_all) = false;
-option (gogoproto.goproto_unrecognized_all) = false;
-option (gogoproto.goproto_sizecache_all) = false;
-option (gogoproto.marshaler_all) = true;
-option (gogoproto.unmarshaler_all) = true;
-option (gogoproto.sizer_all) = true;
 
 // MessengerService is the top-level API that uses the weshnet.protocol to implement the Berty Messenger specific logic.
 // Today, most of the Berty Messenger logic is implemented directly in the application (see the /js folder of this repo).
@@ -134,10 +128,10 @@ message PaginatedInteractionsOptions {
   int32 amount = 1;
 
   // ref_cid Reference CID for used for pagination defaulting to oldest/newest depending on sorting. When specified this CID won't be included in the results.
-  string ref_cid = 2 [(gogoproto.customname) = "RefCID"];
+  string ref_cid = 2;
 
   // conversation_pk Filter by conversation, otherwise X latest message of each conversation are returned
-  string conversation_pk = 3 [(gogoproto.customname) = "ConversationPK"];
+  string conversation_pk = 3;
 
   // oldest_to_newest Default sort of results is latest to oldest message
   bool oldest_to_newest = 4;
@@ -151,14 +145,14 @@ message PaginatedInteractionsOptions {
 
 message ConversationOpen {
   message Request {
-    string group_pk = 1 [(gogoproto.customname) = "GroupPK"];
+    string group_pk = 1;
   }
   message Reply {}
 }
 
 message ConversationClose {
   message Request {
-    string group_pk = 1 [(gogoproto.customname) = "GroupPK"];
+    string group_pk = 1;
   }
   message Reply {}
 }
@@ -172,7 +166,7 @@ message ConversationLoad {
 
 message ConversationMute {
   message Request {
-    string group_pk = 1 [(gogoproto.customname) = "GroupPK"];
+    string group_pk = 1;
     int64 muted_until = 2;
     bool unmute = 3;
     bool mute_forever = 4;
@@ -211,20 +205,20 @@ message InstanceShareableBertyID {
   }
   message Reply {
     BertyLink link = 1;
-    string internal_url = 2 [(gogoproto.customname) = "InternalURL"];
-    string web_url = 3 [(gogoproto.customname) = "WebURL"];
+    string internal_url = 2;
+    string web_url = 3;
   }
 }
 
 message ShareableBertyGroup {
   message Request {
-    bytes group_pk = 1 [(gogoproto.customname) = "GroupPK"];
+    bytes group_pk = 1;
     string group_name = 2;
   }
   message Reply {
     BertyLink link = 1;
-    string internal_url = 2 [(gogoproto.customname) = "InternalURL"];
-    string web_url = 3 [(gogoproto.customname) = "WebURL"];
+    string internal_url = 2;
+    string web_url = 3;
   }
 }
 
@@ -257,7 +251,7 @@ message ParseDeepLink {
 
 message BertyLink {
   Kind kind = 1;
-  BertyID berty_id = 2 [(gogoproto.customname) = "BertyID"];
+  BertyID berty_id = 2;
   BertyGroup berty_group = 3;
   BertyMessageRef berty_message_ref = 5;
   Encrypted encrypted = 4;
@@ -285,7 +279,7 @@ message BertyLink {
     // contact_v1: all bytes fields are encrypted
 
     bytes contact_public_rendezvous_seed = 10;
-    bytes contact_account_pk = 11 [(gogoproto.customname) = "ContactAccountPK"];
+    bytes contact_account_pk = 11;
 
     // group_v1: all bytes fields are encrypted
 
@@ -306,15 +300,15 @@ message BertyLink {
   }
 
   message BertyMessageRef {
-    string account_id = 1 [(gogoproto.customname) = "AccountID"];
-    string group_pk = 2 [(gogoproto.customname) = "GroupPK"];
-    string message_id = 3 [(gogoproto.customname) = "MessageID"];
+    string account_id = 1;
+    string group_pk = 2;
+    string message_id = 3;
   }
 }
 
 message SendContactRequest {
   message Request {
-    BertyID berty_id = 1 [(gogoproto.customname) = "BertyID"];
+    BertyID berty_id = 1;
     bytes metadata = 2;
     bytes own_metadata = 3;
   }
@@ -323,7 +317,7 @@ message SendContactRequest {
 
 message BertyID {
   bytes public_rendezvous_seed = 1;
-  bytes account_pk = 2 [(gogoproto.customname) = "AccountPK"];
+  bytes account_pk = 2;
   string display_name = 3;
 }
 
@@ -336,9 +330,9 @@ message BertyGroup {
 message AppMessage {
   Type type = 1;
   bytes payload = 2;
-  int64 sent_date = 3 [(gogoproto.jsontag) = "sentDate"];
+  int64 sent_date = 3 [json_name = "sentDate"];
   reserved 4; // repeated Media medias = 4;
-  string target_cid = 5 [(gogoproto.customname) = "TargetCID"];
+  string target_cid = 5;
 
   enum Type {
     Undefined = 0;
@@ -369,7 +363,7 @@ message AppMessage {
   }
   message SetUserInfo {
     string display_name = 1;
-    reserved 2; // string avatar_cid = 2 [(gogoproto.customname) = "AvatarCID"]; // TODO: optimize message size
+    reserved 2; // string avatar_cid = 2; // TODO: optimize message size
   }
   message Acknowledge {
   }
@@ -395,12 +389,12 @@ message AppMessage {
   message ServiceAddToken {
     string token = 1;
     repeated ServiceTokenSupportedService supported_services = 2;
-    string authentication_url = 3  [(gogoproto.customname) = "AuthenticationURL"];
+    string authentication_url = 3 ;
     int64 expiration = 4;
   }
 
   message ServiceRemoveToken {
-    string tokenid = 2 [(gogoproto.customname) = "TokenID"];
+    string tokenid = 2;
   }
 
   message PushSetDeviceToken {
@@ -427,7 +421,7 @@ message SystemInfo {
     weshnet.protocol.v1.SystemInfo.Process process = 1;
     repeated string warns = 2;
     bool protocol_in_same_process = 3;
-    DB db = 4 [(gogoproto.customname) = "DB"];
+    DB db = 4;
   }
 
   message DB {
@@ -464,7 +458,7 @@ message ConversationJoin {
 message DebugAuthServiceSetToken {
   message Request {
     AuthExchangeResponse token = 1;
-    string authentication_url = 2 [(gogoproto.customname) = "AuthenticationURL"];
+    string authentication_url = 2;
   }
   message Reply {}
 }
@@ -478,21 +472,21 @@ message ServicesTokenList {
 
 message AuthServiceCompleteFlow {
   message Request{
-    string callback_url = 1 [(gogoproto.customname) = "CallbackURL"];
+    string callback_url = 1;
   }
   message Reply{
-    string token_id = 1 [(gogoproto.customname) = "TokenID"];
+    string token_id = 1;
   }
 }
 
 message AuthServiceInitFlow {
   message Request {
-    string auth_url = 1 [(gogoproto.customname) = "AuthURL"];
+    string auth_url = 1;
     repeated string services = 3;
   }
   message Reply {
-    string url = 1 [(gogoproto.customname) = "URL"];
-    bool secure_url = 2 [(gogoproto.customname) = "SecureURL"];
+    string url = 1;
+    bool secure_url = 2;
   }
 }
 
@@ -502,78 +496,78 @@ message AuthServiceInitFlow {
 // NOTE: public keys should be base64 encoded using golang's URLEncoding.WithPadding(NoPadding) format
 
 message Account {
-  string public_key = 1 [(gogoproto.moretags) = "gorm:\"primaryKey\""];
+  string public_key = 1 [(tagger.tags) = "gorm:\"primaryKey\""];
   string display_name = 2;
   string link = 3;
-  repeated ServiceToken service_tokens = 5 [(gogoproto.moretags) = "gorm:\"foreignKey:AccountPK\""];
-  bool replicate_new_groups_automatically = 6 [(gogoproto.moretags) = "gorm:\"default:true\""];
-  reserved 7; // string avatar_cid = 7 [(gogoproto.moretags) = "gorm:\"column:avatar_cid\"", (gogoproto.customname) = "AvatarCID"];
+  repeated ServiceToken service_tokens = 5 [(tagger.tags) = "gorm:\"foreignKey:AccountPk\""];
+  bool replicate_new_groups_automatically = 6 [(tagger.tags) = "gorm:\"default:true\""];
+  reserved 7; // string avatar_cid = 7 [(tagger.tags) = "gorm:\"column:avatar_cid\"", (tagger.tags) = "AvatarCID"];
   bool auto_share_push_token_flag = 8;
-  PushDeviceToken push_device_token = 9 [(gogoproto.moretags) = "gorm:\"foreignKey:AccountPK\""];
-  repeated PushServerRecord push_server_records = 10 [(gogoproto.moretags) = "gorm:\"foreignKey:AccountPK\""];
+  PushDeviceToken push_device_token = 9 [(tagger.tags) = "gorm:\"foreignKey:AccountPk\""];
+  repeated PushServerRecord push_server_records = 10 [(tagger.tags) = "gorm:\"foreignKey:AccountPk\""];
   int64 muted_until = 11;
   bool hide_in_app_notifications = 12;
   bool hide_push_previews = 13;
-  repeated AccountVerifiedCredential verified_credentials = 14 [(gogoproto.moretags) = "gorm:\"foreignKey:AccountPK\""];
-  repeated AccountDirectoryServiceRecord directory_service_records = 15 [(gogoproto.moretags) = "gorm:\"foreignKey:AccountPK\""];
+  repeated AccountVerifiedCredential verified_credentials = 14 [(tagger.tags) = "gorm:\"foreignKey:AccountPk\""];
+  repeated AccountDirectoryServiceRecord directory_service_records = 15 [(tagger.tags) = "gorm:\"foreignKey:AccountPk\""];
 }
 
 message ServiceTokenSupportedService {
-  string type = 2 [(gogoproto.moretags) = "gorm:\"primaryKey\""];
+  string type = 2 [(tagger.tags) = "gorm:\"primaryKey\""];
   string address = 3;
 }
 
 message ServiceTokenSupportedServiceRecord {
-  string token_id = 1 [(gogoproto.customname) = "TokenID", (gogoproto.moretags) = "gorm:\"primaryKey\""];
-  string type = 2 [(gogoproto.moretags) = "gorm:\"primaryKey\""];
+  string token_id = 1 [(tagger.tags) = "gorm:\"primaryKey\""];
+  string type = 2 [(tagger.tags) = "gorm:\"primaryKey\""];
   string address = 3;
 }
 
 message ServiceToken {
-  string account_pk = 1 [(gogoproto.customname) = "AccountPK"];
-  string token_id = 2 [(gogoproto.moretags) = "gorm:\"primaryKey\"", (gogoproto.customname) = "TokenID"];
+  string account_pk = 1;
+  string token_id = 2 [(tagger.tags) = "gorm:\"primaryKey\""];
   string token = 3;
-  repeated ServiceTokenSupportedServiceRecord supported_services = 4 [(gogoproto.moretags) = "gorm:\"foreignKey:TokenID\""];
-  string authentication_url = 5  [(gogoproto.customname) = "AuthenticationURL"];
+  repeated ServiceTokenSupportedServiceRecord supported_services = 4 [(tagger.tags) = "gorm:\"foreignKey:TokenId\""];
+  string authentication_url = 5 ;
   int64 expiration = 6;
 }
 
 message MetadataEvent {
-  string cid = 1 [(gogoproto.moretags) = "gorm:\"primaryKey;column:cid\"", (gogoproto.customname) = "CID"];
-  string conversation_public_key = 2 [(gogoproto.moretags) = "gorm:\"index\""];
+  string cid = 1 [(tagger.tags) = "gorm:\"primaryKey;column:cid\""];
+  string conversation_public_key = 2 [(tagger.tags) = "gorm:\"index\""];
   weshnet.protocol.v1.EventType metadata_event_type = 3;
   bytes payload = 4;
 }
 
 message Interaction {
-  string cid = 1 [(gogoproto.moretags) = "gorm:\"primaryKey;column:cid\"", (gogoproto.customname) = "CID"];
-  AppMessage.Type type = 2 [(gogoproto.moretags) = "gorm:\"index\""];
+  string cid = 1 [(tagger.tags) = "gorm:\"primaryKey;column:cid\""];
+  AppMessage.Type type = 2 [(tagger.tags) = "gorm:\"index\""];
   string member_public_key = 7;
   string device_public_key = 12;
-  Member member = 8 [(gogoproto.moretags) = "gorm:\"foreignKey:PublicKey;references:MemberPublicKey\""];
-  string conversation_public_key = 3 [(gogoproto.moretags) = "gorm:\"index\""];
+  Member member = 8 [(tagger.tags) = "gorm:\"foreignKey:PublicKey;references:MemberPublicKey\""];
+  string conversation_public_key = 3 [(tagger.tags) = "gorm:\"index\""];
   Conversation conversation = 4;
   bytes payload = 5;
   bool is_mine = 6;
-  int64 sent_date = 9 [(gogoproto.moretags) = "gorm:\"index\""];
+  int64 sent_date = 9 [(tagger.tags) = "gorm:\"index\""];
   bool acknowledged = 10;
-  string target_cid = 13 [(gogoproto.moretags) = "gorm:\"index;column:target_cid\"", (gogoproto.customname) = "TargetCID"];
+  string target_cid = 13 [(tagger.tags) = "gorm:\"index;column:target_cid\""];
   reserved 15; // repeated Media medias = 15;
-  reserved 16; // repeated ReactionView reactions = 16 [(gogoproto.moretags) = "gorm:\"-\""]; // specific to client model
+  reserved 16; // repeated ReactionView reactions = 16 [(tagger.tags) = "gorm:\"-\""]; // specific to client model
   bool out_of_store_message = 17;
 }
 
 message Contact {
-  string public_key = 1 [(gogoproto.moretags) = "gorm:\"primaryKey\""];
-  string conversation_public_key = 2 [(gogoproto.moretags) = "gorm:\"primaryKey\""];
+  string public_key = 1 [(tagger.tags) = "gorm:\"primaryKey\""];
+  string conversation_public_key = 2 [(tagger.tags) = "gorm:\"primaryKey\""];
   Conversation conversation = 3;
   State state = 4;
   string display_name = 5;
-  reserved 9; // string avatar_cid = 9  [(gogoproto.moretags) = "gorm:\"column:avatar_cid\"", (gogoproto.customname) = "AvatarCID"];
+  reserved 9; // string avatar_cid = 9  [(tagger.tags) = "gorm:\"column:avatar_cid\"", (tagger.tags) = "AvatarCID"];
   int64 created_date = 7;
   // specific to outgoing requests
   int64 sent_date = 8;
-  repeated Device devices = 6 [(gogoproto.moretags) = "gorm:\"foreignKey:MemberPublicKey;references:PublicKey\""];
+  repeated Device devices = 6 [(tagger.tags) = "gorm:\"foreignKey:MemberPublicKey;references:PublicKey\""];
   int64 info_date = 10;
 
   enum State {
@@ -593,7 +587,7 @@ message Conversation {
     MultiMemberType = 3;
   }
 
-  string public_key = 1 [(gogoproto.moretags) = "gorm:\"primaryKey\""];
+  string public_key = 1 [(tagger.tags) = "gorm:\"primaryKey\""];
   Type type = 2;
   bool is_open = 3;
   string display_name = 4;
@@ -610,45 +604,45 @@ message Conversation {
   string account_member_public_key = 11;
   string local_device_public_key = 12;
   int64 created_date = 13;
-  reserved 14; // string reply_options_cid = 14 [(gogoproto.moretags) = "gorm:\"column:reply_options_cid\"", (gogoproto.customname) = "ReplyOptionsCID"];
-  reserved 15; // Interaction reply_options = 15 [(gogoproto.customname) = "ReplyOptions"];
-  repeated ConversationReplicationInfo replication_info = 16 [(gogoproto.moretags) = "gorm:\"foreignKey:ConversationPublicKey\""];
-  reserved 17; // string avatar_cid = 17 [(gogoproto.moretags) = "gorm:\"column:avatar_cid\"", (gogoproto.customname) = "AvatarCID"];
+  reserved 14; // string reply_options_cid = 14 [(tagger.tags) = "gorm:\"column:reply_options_cid\"", (tagger.tags) = "ReplyOptionsCID"];
+  reserved 15; // Interaction reply_options = 15;
+  repeated ConversationReplicationInfo replication_info = 16 [(tagger.tags) = "gorm:\"foreignKey:ConversationPublicKey\""];
+  reserved 17; // string avatar_cid = 17 [(tagger.tags) = "gorm:\"column:avatar_cid\"", (tagger.tags) = "AvatarCID"];
   // info_date is used when SetGroupInfo is called
   int64 info_date = 18;
   string local_member_public_key = 19;
   int64 muted_until = 20;
-  repeated PushLocalDeviceSharedToken push_local_device_shared_tokens = 21 [(gogoproto.moretags) = "gorm:\"foreignKey:ConversationPublicKey\""];
-  repeated PushMemberToken push_member_tokens = 22 [(gogoproto.moretags) = "gorm:\"foreignKey:ConversationPublicKey\""];
+  repeated PushLocalDeviceSharedToken push_local_device_shared_tokens = 21 [(tagger.tags) = "gorm:\"foreignKey:ConversationPublicKey\""];
+  repeated PushMemberToken push_member_tokens = 22 [(tagger.tags) = "gorm:\"foreignKey:ConversationPublicKey\""];
 }
 
 message ConversationReplicationInfo {
-  string cid = 1 [(gogoproto.moretags) = "gorm:\"primaryKey;column:cid\"", (gogoproto.customname) = "CID"];
+  string cid = 1 [(tagger.tags) = "gorm:\"primaryKey;column:cid\""];
   string conversation_public_key = 2;
   string member_public_key = 3;
-  string authentication_url = 4 [(gogoproto.customname) = "AuthenticationURL"];
+  string authentication_url = 4;
   string replication_server = 5;
 }
 
 message Member { // Composite primary key
-  string public_key = 1 [(gogoproto.moretags) = "gorm:\"primaryKey\""];
+  string public_key = 1 [(tagger.tags) = "gorm:\"primaryKey\""];
   string display_name = 2;
-  reserved 6; // string avatar_cid = 6 [(gogoproto.moretags) = "gorm:\"column:avatar_cid\"", (gogoproto.customname) = "AvatarCID"];
-  string conversation_public_key = 3 [(gogoproto.moretags) = "gorm:\"primaryKey\""];
+  reserved 6; // string avatar_cid = 6 [(tagger.tags) = "gorm:\"column:avatar_cid\"", (tagger.tags) = "AvatarCID"];
+  string conversation_public_key = 3 [(tagger.tags) = "gorm:\"primaryKey\""];
   bool is_me = 9;
   bool is_creator = 8;
   int64 info_date = 7;
   Conversation conversation = 4;
-  repeated Device devices = 5 [(gogoproto.moretags) = "gorm:\"foreignKey:MemberPublicKey;references:PublicKey\""];
+  repeated Device devices = 5 [(tagger.tags) = "gorm:\"foreignKey:MemberPublicKey;references:PublicKey\""];
 }
 
 message Device {
-  string public_key = 1 [(gogoproto.moretags) = "gorm:\"primaryKey\""];
-  string member_public_key = 2 [(gogoproto.moretags) = "gorm:\"index\""];
+  string public_key = 1 [(tagger.tags) = "gorm:\"primaryKey\""];
+  string member_public_key = 2 [(tagger.tags) = "gorm:\"index\""];
 }
 
 message AccountVerifiedCredential {
-  string account_pk = 1 [(gogoproto.customname) = "AccountPK"];
+  string account_pk = 1;
   string identifier = 2;
   int64 registration_date = 3;
   int64 expiration_date = 4;
@@ -656,10 +650,10 @@ message AccountVerifiedCredential {
 }
 
 message AccountDirectoryServiceRecord {
-  string account_pk = 1 [(gogoproto.customname) = "AccountPK"];
-  string identifier = 2 [(gogoproto.moretags) = "gorm:\"primaryKey\""];
+  string account_pk = 1;
+  string identifier = 2 [(tagger.tags) = "gorm:\"primaryKey\""];
   string identifier_proof_issuer = 3;
-  string server_addr = 4 [(gogoproto.moretags) = "gorm:\"primaryKey\""];
+  string server_addr = 4 [(tagger.tags) = "gorm:\"primaryKey\""];
   int64 registration_date = 5;
   int64 expiration_date = 6;
   bool revoked = 7;
@@ -669,12 +663,12 @@ message AccountDirectoryServiceRecord {
 
 message PushDeviceToken {
   // account_pk is the account public key that owns the device token
-  string account_pk = 1 [(gogoproto.customname) = "AccountPK", (gogoproto.moretags) = "gorm:\"primaryKey\""];
+  string account_pk = 1 [(tagger.tags) = "gorm:\"primaryKey\""];
   // token_type is the type of the token used, it allows us to act as a proxy to the appropriate push server
   push.v1.PushServiceTokenType token_type = 2;
 
   // bundle_id is the app identifier
-  string bundle_id = 3 [(gogoproto.customname) = "BundleID"];
+  string bundle_id = 3;
 
   // token is the device identifier used
   bytes token = 4;
@@ -684,9 +678,9 @@ message PushDeviceToken {
 }
 
 message PushServerRecord {
-  string account_pk = 1 [(gogoproto.customname) = "AccountPK", (gogoproto.moretags) = "gorm:\"primaryKey\""];
+  string account_pk = 1 [(tagger.tags) = "gorm:\"primaryKey\""];
 
-  string server_addr = 2 [(gogoproto.moretags) = "gorm:\"primaryKey\""];
+  string server_addr = 2 [(tagger.tags) = "gorm:\"primaryKey\""];
 
   bytes server_key = 3;
 }
@@ -731,7 +725,7 @@ message StreamEvent {
     Interaction interaction = 1;
   }
   message InteractionDeleted {
-    string cid = 1  [(gogoproto.customname) = "CID"];
+    string cid = 1 ;
     string conversation_public_key = 2;
   }
   message ContactUpdated {
@@ -748,7 +742,7 @@ message StreamEvent {
   }
   message ListEnded {}
   message ConversationPartialLoad {
-    string conversation_pk = 1 [(gogoproto.customname) = "ConversationPK"];
+    string conversation_pk = 1;
     repeated Interaction interactions = 2;
     reserved 3; // repeated Media medias = 3;
   }
@@ -792,19 +786,19 @@ message StreamEvent {
       Proximity = 3;
     }
 
-    string peer_id = 1 [(gogoproto.customname) = "PeerID"];
+    string peer_id = 1;
     Transport transport = 2;
   }
   message PeerStatusReconnecting {
-    string peer_id = 1 [(gogoproto.customname) = "PeerID"];
+    string peer_id = 1;
   }
   message PeerStatusDisconnected {
-    string peer_id = 1 [(gogoproto.customname) = "PeerID"];
+    string peer_id = 1;
   }
   message PeerStatusGroupAssociated {
-    string peer_id = 1 [(gogoproto.customname) = "PeerID"];
-    string device_pk = 2 [(gogoproto.customname) = "DevicePK"];
-    string group_pk = 3 [(gogoproto.customname) = "GroupPK"];
+    string peer_id = 1;
+    string device_pk = 2;
+    string group_pk = 3;
   }
   message ServiceTokenAdded {
     ServiceToken token = 1;
@@ -850,7 +844,7 @@ message EventStream {
 message AccountUpdate {
   message Request {
     string display_name = 1;
-    reserved 2; // string avatar_cid = 2 [(gogoproto.moretags) = "gorm:\"column:avatar_cid\"", (gogoproto.customname) = "AvatarCID"];
+    reserved 2; // string avatar_cid = 2 [(tagger.tags) = "gorm:\"column:avatar_cid\"", (tagger.tags) = "AvatarCID"];
   }
   message Reply {}
 }
@@ -890,17 +884,17 @@ message Interact {
     bytes payload = 2;
     string conversation_public_key = 3;
     reserved 4; // repeated string media_cids = 4;
-    string target_cid = 5 [(gogoproto.customname) = "TargetCID"];
+    string target_cid = 5;
     bool metadata = 6;
   }
   message Reply {
-    string cid = 1 [(gogoproto.customname) = "CID"];
+    string cid = 1;
   }
 }
 
 message ReplicationServiceRegisterGroup {
   message Request {
-    string token_id = 1 [(gogoproto.customname) = "TokenID"];
+    string token_id = 1;
     string conversation_public_key = 2;
   }
   message Reply {}
@@ -953,7 +947,7 @@ message MessageSearch {
     int64 before_date = 2;
     int64 after_date = 3;
     int32 limit = 4;
-    string ref_cid = 5 [(gogoproto.customname) = "RefCID"];
+    string ref_cid = 5;
     bool oldest_to_newest = 6;
   }
   message Reply {
@@ -966,8 +960,8 @@ message TyberHostSearch {
   }
   message Reply {
     string hostname = 1;
-    repeated string ipv4 = 2 [(gogoproto.customname) = "IPv4"];
-    repeated string ipv6 = 3 [(gogoproto.customname) = "IPv6"];
+    repeated string ipv4 = 2;
+    repeated string ipv6 = 3;
   }
 }
 
@@ -1015,8 +1009,8 @@ message PushReceive {
 
 message ListMemberDevices {
   message Request {
-    string conversation_pk = 1 [(gogoproto.customname) = "ConversationPK"];
-    string member_pk = 2 [(gogoproto.customname) = "MemberPK"];
+    string conversation_pk = 1;
+    string member_pk = 2;
   }
   message Reply {
     Device device = 1;
@@ -1025,14 +1019,14 @@ message ListMemberDevices {
 
 message PushShareTokenForConversation {
   message Request {
-    string conversation_pk = 1 [(gogoproto.customname) = "ConversationPK"];
+    string conversation_pk = 1;
   }
   message Reply {}
 }
 
 message PushTokenSharedForConversation {
   message Request {
-    string conversation_pk = 1 [(gogoproto.customname) = "ConversationPK"];
+    string conversation_pk = 1;
   }
   message Reply {
     PushMemberToken token = 1;
@@ -1067,7 +1061,7 @@ message DirectoryServiceQuery {
   message Reply {
     string directory_identifier = 1;
     int64 expires_at = 2;
-    string account_uri = 3 [(gogoproto.customname) = "AccountURI"];
+    string account_uri = 3;
     bytes verified_credential = 4;
   }
 }
@@ -1078,20 +1072,20 @@ message PushServer {
 }
 
 message PushLocalDeviceSharedToken {
-  string token_id = 1 [(gogoproto.moretags) = "gorm:\"primaryKey\"", (gogoproto.customname) = "TokenID"];
+  string token_id = 1 [(tagger.tags) = "gorm:\"primaryKey\""];
   // group_pk is the public key of the group for whom the token is for
   string conversation_public_key = 2;
 }
 
 message PushMemberToken {
   // token_id is the id of the token
-  string token_id = 1 [(gogoproto.moretags) = "gorm:\"primaryKey\"", (gogoproto.customname) = "TokenID"];
+  string token_id = 1 [(tagger.tags) = "gorm:\"primaryKey\""];
 
   // group_pk is the public key of the group for whom the token is for
   string conversation_public_key = 2;
 
   // device_pk is the public key of the device sending the message
-  string device_pk = 3 [(gogoproto.customname) = "DevicePK"];
+  string device_pk = 3;
 
   // server_addr is the push server address
   string server_addr = 4;
@@ -1105,7 +1099,7 @@ message PushMemberToken {
 
 message PushMemberTokenUpdate {
   // device_pk is the public key of the device sending the message
-  string device_pk = 1 [(gogoproto.customname) = "DevicePK"];
+  string device_pk = 1;
 
   // server is the push server to use
   PushServer server = 2;
@@ -1115,14 +1109,14 @@ message PushMemberTokenUpdate {
 }
 
 message MemberWithDevices {
-  string member_pk = 1 [(gogoproto.customname) = "MemberPK"];
-  repeated string devices_pks = 2 [(gogoproto.customname) = "DevicePKs"];
+  string member_pk = 1;
+  repeated string devices_pks = 2;
 }
 
 message PushSend {
   message Request {
-    bytes cid = 1 [(gogoproto.customname) = "CID"];
-    string group_pk = 2 [(gogoproto.customname) = "GroupPK"];
+    bytes cid = 1;
+    string group_pk = 2;
     repeated MemberWithDevices group_members = 3;
   }
   message Reply {
@@ -1132,8 +1126,8 @@ message PushSend {
 
 message PushShareToken {
   message Request {
-    string device_pk = 1 [(gogoproto.customname) = "DevicePK"];
-    string group_pk = 2 [(gogoproto.customname) = "GroupPK"];
+    string device_pk = 1;
+    string group_pk = 2;
     PushServer server = 3;
     push.v1.PushServiceReceiver receiver = 4;
   }
@@ -1158,5 +1152,5 @@ message AuthExchangeResponse {
 message ServicesTokenCode {
   repeated string services = 1;
   string code_challenge = 2;
-  string token_id = 3 [(gogoproto.customname) = "TokenID"];
+  string token_id = 3;
 }

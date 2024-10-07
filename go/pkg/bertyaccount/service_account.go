@@ -10,12 +10,12 @@ import (
 	"strings"
 	"time"
 
-	"github.com/gogo/protobuf/proto"
 	"github.com/ipfs/go-datastore"
 	ipfs_cfg "github.com/ipfs/kubo/config"
 	ma "github.com/multiformats/go-multiaddr"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
+	"google.golang.org/protobuf/proto"
 	"moul.io/progress"
 	"moul.io/u"
 
@@ -29,35 +29,35 @@ import (
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
 	"berty.tech/berty/v2/go/pkg/pushtypes"
-	nb "berty.tech/weshnet/pkg/androidnearby"
-	"berty.tech/weshnet/pkg/ble-driver"
-	"berty.tech/weshnet/pkg/logutil"
-	mc "berty.tech/weshnet/pkg/multipeer-connectivity-driver"
-	"berty.tech/weshnet/pkg/protocoltypes"
-	"berty.tech/weshnet/pkg/tyber"
-	"berty.tech/weshnet/pkg/username"
+	nb "berty.tech/weshnet/v2/pkg/androidnearby"
+	"berty.tech/weshnet/v2/pkg/ble-driver"
+	"berty.tech/weshnet/v2/pkg/logutil"
+	mc "berty.tech/weshnet/v2/pkg/multipeer-connectivity-driver"
+	"berty.tech/weshnet/v2/pkg/protocoltypes"
+	"berty.tech/weshnet/v2/pkg/tyber"
+	"berty.tech/weshnet/v2/pkg/username"
 )
 
 func (s *service) openAccount(ctx context.Context, req *accounttypes.OpenAccount_Request, prog *progress.Progress) (*accounttypes.AccountMetadata, error) {
-	if req.AccountID == "" {
-		return nil, errcode.ErrBertyAccountNoIDSpecified
+	if req.AccountId == "" {
+		return nil, errcode.ErrCode_ErrBertyAccountNoIDSpecified
 	}
 
 	// close previous initManager
 	if s.initManager != nil {
-		return nil, errcode.ErrBertyAccountAlreadyOpened
+		return nil, errcode.ErrCode_ErrBertyAccountAlreadyOpened
 	}
 
-	if strings.ContainsAny(filepath.Clean(req.AccountID), "/\\") {
-		return nil, errcode.ErrBertyAccountInvalidIDFormat
+	if strings.ContainsAny(filepath.Clean(req.AccountId), "/\\") {
+		return nil, errcode.ErrCode_ErrBertyAccountInvalidIDFormat
 	}
 
-	accountExists, err := s.accountExists(req.GetAccountID())
+	accountExists, err := s.accountExists(req.GetAccountId())
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ErrCode_TODO.Wrap(err)
 	}
 	if !accountExists {
-		return nil, errcode.ErrBertyAccountDataNotFound
+		return nil, errcode.ErrCode_ErrBertyAccountDataNotFound
 	}
 
 	if prog == nil {
@@ -84,11 +84,11 @@ func (s *service) openAccount(ctx context.Context, req *accounttypes.OpenAccount
 	if err := migrationsaccount.MigrateToLatest(migrationsaccount.Options{
 		AppDir:         s.appRootDir,
 		SharedDir:      s.sharedRootDir,
-		AccountID:      req.AccountID,
+		AccountID:      req.AccountId,
 		Logger:         s.logger,
 		NativeKeystore: s.nativeKeystore,
 	}); err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ErrCode_TODO.Wrap(err)
 	}
 
 	// setup manager args
@@ -101,23 +101,23 @@ func (s *service) openAccount(ctx context.Context, req *accounttypes.OpenAccount
 		args = req.GetArgs()
 
 		if req.NetworkConfig == nil {
-			req.NetworkConfig, _ = s.NetworkConfigForAccount(ctx, req.AccountID)
+			req.NetworkConfig, _ = s.NetworkConfigForAccount(ctx, req.AccountId)
 		}
 
 		args = AddArgsUsingNetworkConfig(req.NetworkConfig, args)
 
 		s.logger.Info("opening account with args", logutil.PrivateStrings("args", args))
 
-		s.openedAccountID = filepath.Clean(req.AccountID)
+		s.openedAccountID = filepath.Clean(req.AccountId)
 
-		accountStorePath := accountutils.GetAccountDir(s.appRootDir, req.GetAccountID())
+		accountStorePath := accountutils.GetAccountDir(s.appRootDir, req.GetAccountId())
 		if _, err := os.Stat(accountStorePath); err != nil {
-			return nil, errcode.ErrBertyAccountDataNotFound.Wrap(err)
+			return nil, errcode.ErrCode_ErrBertyAccountDataNotFound.Wrap(err)
 		}
 
-		sharedAccountStorePath := accountutils.GetAccountDir(s.sharedRootDir, req.GetAccountID())
+		sharedAccountStorePath := accountutils.GetAccountDir(s.sharedRootDir, req.GetAccountId())
 		if _, err := os.Stat(sharedAccountStorePath); err != nil {
-			return nil, errcode.ErrBertyAccountDataNotFound.Wrap(err)
+			return nil, errcode.ErrCode_ErrBertyAccountDataNotFound.Wrap(err)
 		}
 
 		errCleanup = func() {
@@ -127,9 +127,9 @@ func (s *service) openAccount(ctx context.Context, req *accounttypes.OpenAccount
 		args = append(args, "--store.dir", accountStorePath, "--store.shared-dir", sharedAccountStorePath)
 
 		if s.pushPlatformToken != nil {
-			data, err := s.pushPlatformToken.Marshal()
+			data, err := proto.Marshal(s.pushPlatformToken)
 			if err != nil {
-				return nil, errcode.ErrSerialization.Wrap(err)
+				return nil, errcode.ErrCode_ErrSerialization.Wrap(err)
 			}
 
 			args = append(args, "--node.default-push-token", base64.RawURLEncoding.EncodeToString(data))
@@ -137,10 +137,10 @@ func (s *service) openAccount(ctx context.Context, req *accounttypes.OpenAccount
 	}
 
 	prog.Get("update-last-opened").SetAsCurrent()
-	meta, err := s.updateAccountMetadataLastOpened(ctx, req.AccountID)
+	meta, err := s.updateAccountMetadataLastOpened(ctx, req.AccountId)
 	if err != nil {
 		errCleanup()
-		return nil, errcode.ErrBertyAccountMetadataUpdate.Wrap(err)
+		return nil, errcode.ErrCode_ErrBertyAccountMetadataUpdate.Wrap(err)
 	}
 
 	// setup manager logger
@@ -162,7 +162,7 @@ func (s *service) openAccount(ctx context.Context, req *accounttypes.OpenAccount
 		args = addListValueArgs(args, initutil.FlagNameNodeListeners, []string{initutil.FlagValueNodeListeners}, []string{s.serviceListeners})
 	}
 
-	s.logger.Info("opening account", logutil.PrivateStrings("args", args), logutil.PrivateString("account-id", req.AccountID))
+	s.logger.Info("opening account", logutil.PrivateStrings("args", args), logutil.PrivateString("account-id", req.AccountId))
 
 	// setup manager
 	prog.Get("setup-manager").SetAsCurrent()
@@ -171,7 +171,7 @@ func (s *service) openAccount(ctx context.Context, req *accounttypes.OpenAccount
 		var err error
 		if initManager, err = s.openManager(req.SessionKind, streams, args...); err != nil {
 			errCleanup()
-			return nil, errcode.ErrBertyAccountManagerOpen.Wrap(err)
+			return nil, errcode.ErrCode_ErrBertyAccountManagerOpen.Wrap(err)
 		}
 	}
 
@@ -182,7 +182,7 @@ func (s *service) openAccount(ctx context.Context, req *accounttypes.OpenAccount
 	{
 		if _, err = initManager.GetLogger(); err != nil {
 			errCleanup()
-			return nil, errcode.TODO.Wrap(err)
+			return nil, errcode.ErrCode_TODO.Wrap(err)
 		}
 	}
 
@@ -191,7 +191,7 @@ func (s *service) openAccount(ctx context.Context, req *accounttypes.OpenAccount
 	{
 		if _, _, err = initManager.GetLocalIPFS(); err != nil {
 			errCleanup()
-			return nil, errcode.TODO.Wrap(err)
+			return nil, errcode.ErrCode_TODO.Wrap(err)
 		}
 	}
 
@@ -202,7 +202,7 @@ func (s *service) openAccount(ctx context.Context, req *accounttypes.OpenAccount
 		var err error
 		if srvServices, _, err = initManager.GetGRPCServer(); err != nil {
 			errCleanup()
-			return nil, errcode.ErrBertyAccountGRPCClient.Wrap(err)
+			return nil, errcode.ErrCode_ErrBertyAccountGRPCClient.Wrap(err)
 		}
 	}
 
@@ -211,7 +211,7 @@ func (s *service) openAccount(ctx context.Context, req *accounttypes.OpenAccount
 	{
 		if _, err = initManager.GetLocalMessengerServer(); err != nil {
 			errCleanup()
-			return nil, errcode.TODO.Wrap(err)
+			return nil, errcode.ErrCode_TODO.Wrap(err)
 		}
 	}
 
@@ -220,7 +220,7 @@ func (s *service) openAccount(ctx context.Context, req *accounttypes.OpenAccount
 	{
 		if _, err = initManager.GetNotificationManager(); err != nil {
 			errCleanup()
-			return nil, errcode.TODO.Wrap(err)
+			return nil, errcode.ErrCode_TODO.Wrap(err)
 		}
 	}
 
@@ -230,7 +230,7 @@ func (s *service) openAccount(ctx context.Context, req *accounttypes.OpenAccount
 	{
 		if ccServices, err = initManager.GetGRPCClientConn(); err != nil {
 			errCleanup()
-			return nil, errcode.ErrBertyAccountGRPCClient.Wrap(err)
+			return nil, errcode.ErrCode_ErrBertyAccountGRPCClient.Wrap(err)
 		}
 	}
 
@@ -263,12 +263,12 @@ func (s *service) OpenAccount(ctx context.Context, req *accounttypes.OpenAccount
 	s.muService.Lock()
 	defer s.muService.Unlock()
 
-	endSection := tyber.SimpleSection(ctx, s.logger, fmt.Sprintf("Opening account %s (AccountService)", req.AccountID))
+	endSection := tyber.SimpleSection(ctx, s.logger, fmt.Sprintf("Opening account %s (AccountService)", req.AccountId))
 	defer func() { endSection(err) }()
 
 	meta, err := s.openAccount(ctx, req, nil)
 	if err != nil {
-		return nil, errcode.ErrBertyAccountOpenAccount.Wrap(err)
+		return nil, errcode.ErrCode_ErrBertyAccountOpenAccount.Wrap(err)
 	}
 
 	return &accounttypes.OpenAccount_Reply{
@@ -284,7 +284,7 @@ func (s *service) OpenAccountWithProgress(req *accounttypes.OpenAccountWithProgr
 	endSection := tyber.SimpleSection(
 		server.Context(),
 		s.logger,
-		fmt.Sprintf("Opening account %s with progress (AccountService)", req.AccountID),
+		fmt.Sprintf("Opening account %s with progress (AccountService)", req.AccountId),
 	)
 	defer func() { endSection(err) }()
 
@@ -318,12 +318,12 @@ func (s *service) OpenAccountWithProgress(req *accounttypes.OpenAccountWithProgr
 	// FIXME: replace with a helper that json unmarshal + directly remashal, to avoid being unsynced?
 	typed := accounttypes.OpenAccount_Request{
 		Args:          req.Args,
-		AccountID:     req.AccountID,
+		AccountId:     req.AccountId,
 		LoggerFilters: req.LoggerFilters,
 		SessionKind:   req.SessionKind,
 	}
 	if _, err := s.openAccount(server.Context(), &typed, prog); err != nil {
-		return errcode.ErrBertyAccountOpenAccount.Wrap(err)
+		return errcode.ErrCode_ErrBertyAccountOpenAccount.Wrap(err)
 	}
 
 	// wait
@@ -332,7 +332,7 @@ func (s *service) OpenAccountWithProgress(req *accounttypes.OpenAccountWithProgr
 	return nil
 }
 
-func (s *service) CloseAccount(ctx context.Context, req *accounttypes.CloseAccount_Request) (_ *accounttypes.CloseAccount_Reply, err error) {
+func (s *service) CloseAccount(ctx context.Context, _ *accounttypes.CloseAccount_Request) (_ *accounttypes.CloseAccount_Reply, err error) {
 	s.muService.Lock()
 	defer s.muService.Unlock()
 
@@ -349,7 +349,7 @@ func (s *service) CloseAccount(ctx context.Context, req *accounttypes.CloseAccou
 
 	if err := s.initManager.Close(nil); err != nil {
 		s.logger.Warn("unable to close account", zap.Error(err))
-		return nil, errcode.ErrBertyAccountManagerClose.Wrap(err)
+		return nil, errcode.ErrCode_ErrBertyAccountManagerClose.Wrap(err)
 	}
 	s.initManager = nil
 	s.accountData = nil
@@ -358,7 +358,7 @@ func (s *service) CloseAccount(ctx context.Context, req *accounttypes.CloseAccou
 	return &accounttypes.CloseAccount_Reply{}, nil
 }
 
-func (s *service) CloseAccountWithProgress(req *accounttypes.CloseAccountWithProgress_Request, server accounttypes.AccountService_CloseAccountWithProgressServer) (err error) {
+func (s *service) CloseAccountWithProgress(_ *accounttypes.CloseAccountWithProgress_Request, server accounttypes.AccountService_CloseAccountWithProgressServer) (err error) {
 	s.muService.Lock()
 	defer s.muService.Unlock()
 
@@ -402,7 +402,7 @@ func (s *service) CloseAccountWithProgress(req *accounttypes.CloseAccountWithPro
 
 	if err := s.initManager.Close(prog); err != nil {
 		s.logger.Warn("unable to close account", zap.Error(err))
-		return errcode.ErrBertyAccountManagerClose.Wrap(err)
+		return errcode.ErrCode_ErrBertyAccountManagerClose.Wrap(err)
 	}
 	s.initManager = nil
 	s.accountData = nil
@@ -423,7 +423,7 @@ func (s *service) openManager(kind string, defaultLoggerStreams []logutil.Stream
 		DoNotSetDefaultDir:   true,
 		DefaultLoggerStreams: defaultLoggerStreams,
 		NativeKeystore:       s.nativeKeystore,
-		AccountID:            s.accountData.AccountID,
+		AccountID:            s.accountData.AccountId,
 	})
 	if err != nil {
 		panic(err)
@@ -439,16 +439,14 @@ func (s *service) openManager(kind string, defaultLoggerStreams []logutil.Stream
 	// manager.SetupMetricsFlags(fs)
 	err = fs.Parse(args)
 	if err != nil {
-		return nil, errcode.ErrBertyAccountInvalidCLIArgs.Wrap(err)
+		return nil, errcode.ErrCode_ErrBertyAccountInvalidCLIArgs.Wrap(err)
 	}
 	if len(fs.Args()) > 0 {
-		return nil, errcode.ErrBertyAccountInvalidCLIArgs.Wrap(fmt.Errorf("invalid CLI args, should only have flags"))
+		return nil, errcode.ErrCode_ErrBertyAccountInvalidCLIArgs.Wrap(fmt.Errorf("invalid CLI args, should only have flags"))
 	}
 
 	// minimal requirements
-	{
-		// here we can add various checks that return an error early if some settings are invalid or missing
-	}
+	// here we can add various checks that return an error early if some settings are invalid or missing
 
 	// set custom drivers
 	manager.SetNotificationManager(s.notifManager)
@@ -503,28 +501,28 @@ func (s *service) DeleteAccount(ctx context.Context, request *accounttypes.Delet
 	endSection := tyber.SimpleSection(
 		ctx,
 		s.logger,
-		fmt.Sprintf("Deleting account %s (AccountService)", request.AccountID),
+		fmt.Sprintf("Deleting account %s (AccountService)", request.AccountId),
 	)
 	defer func() { endSection(err) }()
 
 	if s.initManager != nil {
-		return nil, errcode.ErrBertyAccountAlreadyOpened
+		return nil, errcode.ErrCode_ErrBertyAccountAlreadyOpened
 	}
 
-	if request.AccountID == "" {
-		return nil, errcode.ErrBertyAccountNoIDSpecified
+	if request.AccountId == "" {
+		return nil, errcode.ErrCode_ErrBertyAccountNoIDSpecified
 	}
 
-	if _, err := s.getAccountMetaForName(ctx, request.AccountID); err != nil {
-		return nil, errcode.ErrDBRead.Wrap(err)
+	if _, err := s.getAccountMetaForName(ctx, request.AccountId); err != nil {
+		return nil, errcode.ErrCode_ErrDBRead.Wrap(err)
 	}
 
-	if err := os.RemoveAll(accountutils.GetAccountDir(s.appRootDir, request.AccountID)); err != nil {
-		return nil, errcode.ErrBertyAccountFSError.Wrap(err)
+	if err := os.RemoveAll(accountutils.GetAccountDir(s.appRootDir, request.AccountId)); err != nil {
+		return nil, errcode.ErrCode_ErrBertyAccountFSError.Wrap(err)
 	}
 
-	if err := os.RemoveAll(accountutils.GetAccountDir(s.sharedRootDir, request.AccountID)); err != nil {
-		return nil, errcode.ErrBertyAccountFSError.Wrap(err)
+	if err := os.RemoveAll(accountutils.GetAccountDir(s.sharedRootDir, request.AccountId)); err != nil {
+		return nil, errcode.ErrCode_ErrBertyAccountFSError.Wrap(err)
 	}
 
 	return &accounttypes.DeleteAccount_Reply{}, nil
@@ -553,11 +551,11 @@ func (s *service) putInAccountDatastore(ctx context.Context, accountID string, k
 	}
 
 	if err := ds.Put(ctx, datastore.NewKey(key), value); err != nil {
-		return errcode.ErrBertyAccountFSError.Wrap(err)
+		return errcode.ErrCode_ErrBertyAccountFSError.Wrap(err)
 	}
 
 	if err := ds.Close(); err != nil {
-		return errcode.ErrDBClose.Wrap(err)
+		return errcode.ErrCode_ErrDBClose.Wrap(err)
 	}
 
 	return nil
@@ -573,14 +571,14 @@ func (s *service) updateAccountMetadataLastOpened(ctx context.Context, accountID
 
 	metaBytes, err := proto.Marshal(meta)
 	if err != nil {
-		return nil, errcode.ErrSerialization.Wrap(err)
+		return nil, errcode.ErrCode_ErrSerialization.Wrap(err)
 	}
 
 	if err := s.putInAccountDatastore(ctx, accountID, accountutils.AccountMetafileName, metaBytes); err != nil {
 		return nil, err
 	}
 
-	meta.AccountID = accountID
+	meta.AccountId = accountID
 	s.accountData = meta
 
 	return meta, nil
@@ -588,9 +586,9 @@ func (s *service) updateAccountMetadataLastOpened(ctx context.Context, accountID
 
 func (s *service) createAccountMetadata(ctx context.Context, accountID string, name string) (*accounttypes.AccountMetadata, error) {
 	if _, err := s.getAccountMetaForName(ctx, accountID); err == nil {
-		return nil, errcode.ErrBertyAccountAlreadyExists
-	} else if !errcode.Is(err, errcode.ErrBertyAccountDataNotFound) {
-		return nil, errcode.ErrBertyAccountFSError.Wrap(err)
+		return nil, errcode.ErrCode_ErrBertyAccountAlreadyExists
+	} else if !errcode.Is(err, errcode.ErrCode_ErrBertyAccountDataNotFound) {
+		return nil, errcode.ErrCode_ErrBertyAccountFSError.Wrap(err)
 	}
 
 	accountStorePath := accountutils.GetAccountDir(s.sharedRootDir, accountID)
@@ -611,14 +609,14 @@ func (s *service) createAccountMetadata(ctx context.Context, accountID string, n
 
 	metaBytes, err := proto.Marshal(meta)
 	if err != nil {
-		return nil, errcode.ErrSerialization.Wrap(err)
+		return nil, errcode.ErrCode_ErrSerialization.Wrap(err)
 	}
 
 	if err := s.putInAccountDatastore(ctx, accountID, accountutils.AccountMetafileName, metaBytes); err != nil {
 		return nil, err
 	}
 
-	meta.AccountID = accountID
+	meta.AccountId = accountID
 
 	return meta, nil
 }
@@ -631,7 +629,7 @@ func (s *service) ImportAccountWithProgress(req *accounttypes.ImportAccountWithP
 		server.Context(),
 		s.logger,
 		fmt.Sprintf("Importing account %q from path %q with progress (AccountService)",
-			req.GetAccountID(),
+			req.GetAccountId(),
 			req.GetBackupPath(),
 		),
 	)
@@ -668,14 +666,14 @@ func (s *service) ImportAccountWithProgress(req *accounttypes.ImportAccountWithP
 		AccountName:   req.GetAccountName(),
 		BackupPath:    req.GetBackupPath(),
 		Args:          req.GetArgs(),
-		AccountID:     req.GetAccountID(),
+		AccountId:     req.GetAccountId(),
 		LoggerFilters: req.GetLoggerFilters(),
 		NetworkConfig: req.GetNetworkConfig(),
 		SessionKind:   req.GetSessionKind(),
 	}
 	ret, err := s.importAccount(server.Context(), &typed, prog)
 	if err != nil {
-		return errcode.TODO.Wrap(err)
+		return errcode.ErrCode_TODO.Wrap(err)
 	}
 
 	// wait
@@ -687,7 +685,7 @@ func (s *service) ImportAccountWithProgress(req *accounttypes.ImportAccountWithP
 			AccountMetadata: ret.AccountMetadata,
 		})
 		if err != nil {
-			return errcode.TODO.Wrap(err)
+			return errcode.ErrCode_TODO.Wrap(err)
 		}
 	}
 
@@ -702,14 +700,14 @@ func (s *service) ImportAccount(ctx context.Context, req *accounttypes.ImportAcc
 		ctx,
 		s.logger,
 		fmt.Sprintf("Importing account %q with id %q (AccountService)",
-			req.AccountName, req.AccountID,
+			req.AccountName, req.AccountId,
 		),
 	)
 	defer func() { endSection(err) }()
 
 	ret, err := s.importAccount(ctx, req, nil)
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ErrCode_TODO.Wrap(err)
 	}
 
 	return ret, nil
@@ -724,18 +722,18 @@ func (s *service) importAccount(ctx context.Context, req *accounttypes.ImportAcc
 
 	// check input
 	if req.BackupPath == "" {
-		return nil, errcode.ErrBertyAccountNoBackupSpecified
+		return nil, errcode.ErrCode_ErrBertyAccountNoBackupSpecified
 	}
 	if stat, err := os.Stat(req.BackupPath); err != nil {
-		return nil, errcode.ErrBertyAccountDataNotFound.Wrap(err)
+		return nil, errcode.ErrCode_ErrBertyAccountDataNotFound.Wrap(err)
 	} else if stat.IsDir() {
-		return nil, errcode.ErrBertyAccountDataNotFound.Wrap(fmt.Errorf("specified path is a directory"))
+		return nil, errcode.ErrCode_ErrBertyAccountDataNotFound.Wrap(fmt.Errorf("specified path is a directory"))
 	}
 
 	s.logger.Info("importing berty messenger account", zap.String("path", req.BackupPath))
 
 	createMeta, err := s.createAccount(ctx, &accounttypes.CreateAccount_Request{
-		AccountID:     req.AccountID,
+		AccountId:     req.AccountId,
 		AccountName:   req.AccountName,
 		NetworkConfig: req.NetworkConfig,
 	}, false, prog)
@@ -744,7 +742,7 @@ func (s *service) importAccount(ctx context.Context, req *accounttypes.ImportAcc
 	}
 
 	meta, err := s.openAccount(ctx, &accounttypes.OpenAccount_Request{
-		AccountID:     createMeta.AccountID,
+		AccountId:     createMeta.AccountId,
 		Args:          append(req.Args, "-node.restore-export-path", req.BackupPath),
 		LoggerFilters: req.LoggerFilters,
 		NetworkConfig: req.NetworkConfig,
@@ -765,12 +763,12 @@ func (s *service) importAccount(ctx context.Context, req *accounttypes.ImportAcc
 	}
 
 	meta, err = s.updateAccount(ctx, &accounttypes.UpdateAccount_Request{
-		AccountID:   meta.AccountID,
+		AccountId:   meta.AccountId,
 		AccountName: a.Account.DisplayName,
 		PublicKey:   a.Account.PublicKey,
 	})
 	if err != nil {
-		return nil, errcode.ErrBertyAccountUpdateFailed.Wrap(err)
+		return nil, errcode.ErrCode_ErrBertyAccountUpdateFailed.Wrap(err)
 	}
 
 	return &accounttypes.ImportAccount_Reply{
@@ -784,20 +782,20 @@ func (s *service) createAccount(ctx context.Context, req *accounttypes.CreateAcc
 		defer prog.Close()
 	}
 
-	if req.AccountID != "" {
-		_, err := os.Stat(accountutils.GetAccountDir(s.appRootDir, req.AccountID))
+	if req.AccountId != "" {
+		_, err := os.Stat(accountutils.GetAccountDir(s.appRootDir, req.AccountId))
 		if err == nil {
-			return nil, errcode.ErrBertyAccountAlreadyExists
+			return nil, errcode.ErrCode_ErrBertyAccountAlreadyExists
 		}
 		if err != nil && !os.IsNotExist(err) {
-			return nil, errcode.TODO.Wrap(err)
+			return nil, errcode.ErrCode_TODO.Wrap(err)
 		}
 	} else {
 		var err error
 
-		req.AccountID, err = s.generateNewAccountID()
+		req.AccountId, err = s.generateNewAccountID()
 		if err != nil {
-			return nil, errcode.TODO.Wrap(err)
+			return nil, errcode.ErrCode_TODO.Wrap(err)
 		}
 	}
 
@@ -805,25 +803,25 @@ func (s *service) createAccount(ctx context.Context, req *accounttypes.CreateAcc
 		if err := migrationsaccount.MigrateToLatest(migrationsaccount.Options{
 			AppDir:         s.appRootDir,
 			SharedDir:      s.sharedRootDir,
-			AccountID:      req.AccountID,
+			AccountID:      req.AccountId,
 			Logger:         s.logger,
 			NativeKeystore: s.nativeKeystore,
 		}); err != nil {
-			return nil, errcode.TODO.Wrap(err)
+			return nil, errcode.ErrCode_TODO.Wrap(err)
 		}
 	}
 
-	meta, err := s.createAccountMetadata(ctx, req.AccountID, req.AccountName)
+	meta, err := s.createAccountMetadata(ctx, req.AccountId, req.AccountName)
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ErrCode_TODO.Wrap(err)
 	}
 
 	if req.NetworkConfig == nil {
 		req.NetworkConfig = NetworkConfigGetBlank()
 	}
 
-	if err := s.saveNetworkConfigForAccount(ctx, req.AccountID, req.NetworkConfig); err != nil {
-		return nil, errcode.TODO.Wrap(err)
+	if err := s.saveNetworkConfigForAccount(ctx, req.AccountId, req.NetworkConfig); err != nil {
+		return nil, errcode.ErrCode_TODO.Wrap(err)
 	}
 
 	return meta, nil
@@ -836,14 +834,14 @@ func (s *service) CreateAccount(ctx context.Context, req *accounttypes.CreateAcc
 	endSection := tyber.SimpleSection(ctx,
 		s.logger,
 		fmt.Sprintf("Creating account '%s' with id '%s' (AccountService)",
-			req.GetAccountName(), req.GetAccountID(),
+			req.GetAccountName(), req.GetAccountId(),
 		),
 	)
 	defer func() { endSection(err) }()
 
 	meta, err := s.createAccount(ctx, req, true, nil)
 	if err != nil {
-		return nil, errcode.ErrBertyAccountCreationFailed.Wrap(err)
+		return nil, errcode.ErrCode_ErrBertyAccountCreationFailed.Wrap(err)
 	}
 
 	return &accounttypes.CreateAccount_Reply{
@@ -852,7 +850,7 @@ func (s *service) CreateAccount(ctx context.Context, req *accounttypes.CreateAcc
 }
 
 func (s *service) updateAccount(ctx context.Context, req *accounttypes.UpdateAccount_Request) (*accounttypes.AccountMetadata, error) {
-	meta, err := s.getAccountMetaForName(ctx, req.AccountID)
+	meta, err := s.getAccountMetaForName(ctx, req.AccountId)
 	if err != nil {
 		return nil, err
 	}
@@ -861,8 +859,8 @@ func (s *service) updateAccount(ctx context.Context, req *accounttypes.UpdateAcc
 	if req.AccountName != "" {
 		meta.Name = req.AccountName
 	}
-	if req.AvatarCID != "" {
-		meta.AvatarCID = req.AvatarCID
+	if req.AvatarCid != "" {
+		meta.AvatarCid = req.AvatarCid
 	}
 	if req.PublicKey != "" {
 		meta.PublicKey = req.PublicKey
@@ -870,14 +868,14 @@ func (s *service) updateAccount(ctx context.Context, req *accounttypes.UpdateAcc
 
 	metaBytes, err := proto.Marshal(meta)
 	if err != nil {
-		return nil, errcode.ErrSerialization.Wrap(err)
+		return nil, errcode.ErrCode_ErrSerialization.Wrap(err)
 	}
 
-	if err := s.putInAccountDatastore(ctx, req.AccountID, accountutils.AccountMetafileName, metaBytes); err != nil {
+	if err := s.putInAccountDatastore(ctx, req.AccountId, accountutils.AccountMetafileName, metaBytes); err != nil {
 		return nil, err
 	}
 
-	meta.AccountID = req.AccountID
+	meta.AccountId = req.AccountId
 	s.accountData = meta
 
 	return meta, nil
@@ -890,13 +888,13 @@ func (s *service) UpdateAccount(ctx context.Context, req *accounttypes.UpdateAcc
 	endSection := tyber.SimpleSection(
 		ctx,
 		s.logger,
-		fmt.Sprintf("Updating account %s (AccountService)", req.AccountID),
+		fmt.Sprintf("Updating account %s (AccountService)", req.AccountId),
 	)
 	defer func() { endSection(err) }()
 
 	// check if account exists
-	if _, err := os.Stat(accountutils.GetAccountDir(s.appRootDir, req.AccountID)); err != nil {
-		return nil, errcode.TODO.Wrap(err)
+	if _, err := os.Stat(accountutils.GetAccountDir(s.appRootDir, req.AccountId)); err != nil {
+		return nil, errcode.ErrCode_TODO.Wrap(err)
 	}
 
 	// migrate account
@@ -905,14 +903,14 @@ func (s *service) UpdateAccount(ctx context.Context, req *accounttypes.UpdateAcc
 		SharedDir:      s.sharedRootDir,
 		NativeKeystore: s.nativeKeystore,
 		Logger:         s.logger,
-		AccountID:      req.AccountID,
+		AccountID:      req.AccountId,
 	}); err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ErrCode_TODO.Wrap(err)
 	}
 
 	meta, err := s.updateAccount(ctx, req)
 	if err != nil {
-		return nil, errcode.ErrBertyAccountUpdateFailed.Wrap(err)
+		return nil, errcode.ErrCode_ErrBertyAccountUpdateFailed.Wrap(err)
 	}
 
 	return &accounttypes.UpdateAccount_Reply{
@@ -934,7 +932,7 @@ func (s *service) generateNewAccountID() (string, error) {
 		_, err := os.Stat(accountDir)
 		if !os.IsNotExist(err) {
 			if err != nil {
-				return "", errcode.ErrBertyAccountIDGenFailed.Wrap(err)
+				return "", errcode.ErrCode_ErrBertyAccountIDGenFailed.Wrap(err)
 			}
 			continue
 		}
@@ -943,7 +941,7 @@ func (s *service) generateNewAccountID() (string, error) {
 		_, err = os.Stat(sharedAccountDir)
 		if !os.IsNotExist(err) {
 			if err != nil {
-				return "", errcode.ErrBertyAccountIDGenFailed.Wrap(err)
+				return "", errcode.ErrCode_ErrBertyAccountIDGenFailed.Wrap(err)
 			}
 			continue
 		}
@@ -962,13 +960,13 @@ func NetworkConfigGetDefault() *accounttypes.NetworkConfig {
 		Bootstrap:                    []string{initutil.KeywordDefault},
 		Rendezvous:                   []string{initutil.KeywordDefault},
 		StaticRelay:                  []string{initutil.KeywordDefault},
-		DHT:                          accounttypes.NetworkConfig_DHTClient,
-		BluetoothLE:                  accounttypes.NetworkConfig_Disabled,
+		Dht:                          accounttypes.NetworkConfig_DHTClient,
+		BluetoothLe:                  accounttypes.NetworkConfig_Disabled,
 		AndroidNearby:                accounttypes.NetworkConfig_Disabled,
 		AppleMultipeerConnectivity:   accounttypes.NetworkConfig_Disabled,
-		MDNS:                         accounttypes.NetworkConfig_Enabled,
+		Mdns:                         accounttypes.NetworkConfig_Enabled,
 		Tor:                          accounttypes.NetworkConfig_TorDisabled,
-		AllowUnsecureGRPCConnections: accounttypes.NetworkConfig_Disabled,
+		AllowUnsecureGrpcConnections: accounttypes.NetworkConfig_Disabled,
 	}
 }
 
@@ -977,13 +975,13 @@ func NetworkConfigGetBlank() *accounttypes.NetworkConfig {
 		Bootstrap:                    []string{initutil.KeywordDefault},
 		Rendezvous:                   []string{initutil.KeywordDefault},
 		StaticRelay:                  []string{initutil.KeywordDefault},
-		DHT:                          accounttypes.NetworkConfig_DHTUndefined,
-		BluetoothLE:                  accounttypes.NetworkConfig_Undefined,
+		Dht:                          accounttypes.NetworkConfig_DHTUndefined,
+		BluetoothLe:                  accounttypes.NetworkConfig_Undefined,
 		AndroidNearby:                accounttypes.NetworkConfig_Undefined,
 		AppleMultipeerConnectivity:   accounttypes.NetworkConfig_Undefined,
-		MDNS:                         accounttypes.NetworkConfig_Undefined,
+		Mdns:                         accounttypes.NetworkConfig_Undefined,
 		Tor:                          accounttypes.NetworkConfig_TorUndefined,
-		AllowUnsecureGRPCConnections: accounttypes.NetworkConfig_Undefined,
+		AllowUnsecureGrpcConnections: accounttypes.NetworkConfig_Undefined,
 	}
 }
 
@@ -1028,7 +1026,7 @@ func (s *service) NetworkConfigForAccount(ctx context.Context, accountID string)
 	}
 
 	ret := &accounttypes.NetworkConfig{}
-	if err := ret.Unmarshal(netConfBytes); err != nil {
+	if err := proto.Unmarshal(netConfBytes, ret); err != nil {
 		s.logger.Warn("unable to parse network configuration for account", zap.Error(err), logutil.PrivateString("account-id", accountID))
 		return NetworkConfigGetDefault(), false
 	}
@@ -1038,7 +1036,7 @@ func (s *service) NetworkConfigForAccount(ctx context.Context, accountID string)
 
 func (s *service) NetworkConfigGet(ctx context.Context, request *accounttypes.NetworkConfigGet_Request) (*accounttypes.NetworkConfigGet_Reply, error) {
 	defaultConfig := NetworkConfigGetDefault()
-	currentConfig, isCustomConfig := s.NetworkConfigForAccount(ctx, request.AccountID)
+	currentConfig, isCustomConfig := s.NetworkConfigForAccount(ctx, request.AccountId)
 
 	return &accounttypes.NetworkConfigGet_Reply{
 		DefaultConfig:      defaultConfig,
@@ -1055,13 +1053,13 @@ func SanitizeCheckMultiAddr(addrs []string) error {
 		switch addr {
 		case initutil.KeywordNone:
 			if len(addrs) != 1 {
-				return errcode.ErrInvalidInput.Wrap(fmt.Errorf("only a single value is expected while using %s", initutil.KeywordNone))
+				return errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("only a single value is expected while using %s", initutil.KeywordNone))
 			}
 		case initutil.KeywordDefault:
 			// ignoring
 		default:
 			if _, err := ma.NewMultiaddr(addr); err != nil {
-				return errcode.ErrInvalidInput.Wrap(err)
+				return errcode.ErrCode_ErrInvalidInput.Wrap(err)
 			}
 		}
 	}
@@ -1071,7 +1069,7 @@ func SanitizeCheckMultiAddr(addrs []string) error {
 
 func (s *service) saveNetworkConfigForAccount(ctx context.Context, accountID string, networkConfig *accounttypes.NetworkConfig) error {
 	if networkConfig == nil {
-		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("no network config provided"))
+		return errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("no network config provided"))
 	}
 
 	// TODO: allow Tor when available
@@ -1088,12 +1086,12 @@ func (s *service) saveNetworkConfigForAccount(ctx context.Context, accountID str
 			"StaticRelay": networkConfig.StaticRelay,
 		} {
 			if err := SanitizeCheckMultiAddr(addrs); err != nil {
-				return errcode.ErrInvalidInput.Wrap(fmt.Errorf("invalid format for %s maddrs: %w", key, err))
+				return errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("invalid format for %s maddrs: %w", key, err))
 			}
 		}
 	}
 
-	data, err := networkConfig.Marshal()
+	data, err := proto.Marshal(networkConfig)
 	if err != nil {
 		return err
 	}
@@ -1106,7 +1104,7 @@ func (s *service) saveNetworkConfigForAccount(ctx context.Context, accountID str
 }
 
 func (s *service) NetworkConfigSet(ctx context.Context, request *accounttypes.NetworkConfigSet_Request) (*accounttypes.NetworkConfigSet_Reply, error) {
-	if err := s.saveNetworkConfigForAccount(ctx, request.AccountID, request.Config); err != nil {
+	if err := s.saveNetworkConfigForAccount(ctx, request.AccountId, request.Config); err != nil {
 		return nil, err
 	}
 
@@ -1137,11 +1135,11 @@ func AddArgsUsingNetworkConfig(m *accounttypes.NetworkConfig, args []string) []s
 	args = addListValueArgs(args, initutil.FlagNameP2PStaticRelays, []string{initutil.KeywordNone}, m.StaticRelay)
 	args = addListValueArgs(args, initutil.FlagNameP2PRDVP, []string{initutil.KeywordNone}, m.Rendezvous)
 
-	args = addFlagValueArgs(args, initutil.FlagNameP2PBLE, ble.Supported, defaultConfig.BluetoothLE, m.BluetoothLE)
+	args = addFlagValueArgs(args, initutil.FlagNameP2PBLE, ble.Supported, defaultConfig.BluetoothLe, m.BluetoothLe)
 	args = addFlagValueArgs(args, initutil.FlagNameP2PMultipeerConnectivity, mc.Supported, defaultConfig.AppleMultipeerConnectivity, m.AppleMultipeerConnectivity)
 	args = addFlagValueArgs(args, initutil.FlagNameP2PNearby, nb.Supported, defaultConfig.AndroidNearby, m.AndroidNearby)
-	args = addFlagValueArgs(args, initutil.FlagNameP2PMDNS, true, defaultConfig.MDNS, m.MDNS)
-	args = addFlagValueArgs(args, initutil.FlagNameAllowInsecureService, true, defaultConfig.AllowUnsecureGRPCConnections, m.AllowUnsecureGRPCConnections)
+	args = addFlagValueArgs(args, initutil.FlagNameP2PMDNS, true, defaultConfig.Mdns, m.Mdns)
+	args = addFlagValueArgs(args, initutil.FlagNameAllowInsecureService, true, defaultConfig.AllowUnsecureGrpcConnections, m.AllowUnsecureGrpcConnections)
 
 	args = AddDHTArgsUsingNetworkConfig(m, args, defaultConfig)
 	args = AddRDVPArgsUsingNetworkConfig(m, args, defaultConfig)
@@ -1213,9 +1211,9 @@ func AddDHTArgsUsingNetworkConfig(m *accounttypes.NetworkConfig, args []string, 
 
 	dhtDisabled := false
 	if !hasDHTFlag {
-		dhtFlag := m.DHT
+		dhtFlag := m.Dht
 		if dhtFlag == accounttypes.NetworkConfig_DHTUndefined {
-			dhtFlag = defaultConfig.DHT
+			dhtFlag = defaultConfig.Dht
 		}
 
 		if dhtValue, ok := map[accounttypes.NetworkConfig_DHTFlag]string{
@@ -1262,7 +1260,7 @@ func ArgsHasWithPrefix(args []string, prefix string) bool {
 func (s *service) PushReceive(ctx context.Context, req *accounttypes.PushReceive_Request) (*accounttypes.PushReceive_Reply, error) {
 	payload, err := base64.RawURLEncoding.DecodeString(req.Payload)
 	if err != nil {
-		return nil, errcode.ErrDeserialization.Wrap(err)
+		return nil, errcode.ErrCode_ErrDeserialization.Wrap(err)
 	}
 
 	initManager, err := s.getInitManager()
@@ -1281,7 +1279,7 @@ func (s *service) PushReceive(ctx context.Context, req *accounttypes.PushReceive
 
 	accData := s.accountData
 	if initManager != nil && accData != nil {
-		excludedAccounts = append(excludedAccounts, accData.AccountID)
+		excludedAccounts = append(excludedAccounts, accData.AccountId)
 
 		client, err := initManager.GetMessengerClient()
 		if err == nil && client != nil {
@@ -1310,7 +1308,7 @@ func (s *service) PushReceive(ctx context.Context, req *accounttypes.PushReceive
 		Logger: s.logger, ExcludedAccounts: excludedAccounts, Keystore: s.nativeKeystore,
 	})
 	if err != nil {
-		return nil, errcode.ErrPushUnableToDecrypt.Wrap(err)
+		return nil, errcode.ErrCode_ErrPushUnableToDecrypt.Wrap(err)
 	}
 
 	pushData, err := bertypush.PushEnrich(rawPushData, accountData, s.logger)
@@ -1339,7 +1337,7 @@ func (s *service) PushPlatformTokenRegister(ctx context.Context, request *accoun
 
 	s.pushPlatformToken = &pushtypes.PushServiceReceiver{
 		TokenType:          request.Receiver.TokenType,
-		BundleID:           request.Receiver.BundleID,
+		BundleId:           request.Receiver.BundleId,
 		Token:              request.Receiver.Token,
 		RecipientPublicKey: request.Receiver.RecipientPublicKey,
 	}
@@ -1350,19 +1348,20 @@ func (s *service) PushPlatformTokenRegister(ctx context.Context, request *accoun
 
 	client, err := s.initManager.GetMessengerClient()
 	if err != nil {
-		return nil, errcode.ErrInternal.Wrap(err)
+		return nil, errcode.ErrCode_ErrInternal.Wrap(err)
 	}
 
 	if _, err := client.PushSetDeviceToken(ctx, &messengertypes.PushSetDeviceToken_Request{Receiver: request.Receiver}); err != nil {
-		return nil, errcode.ErrInternal.Wrap(err)
+		return nil, errcode.ErrCode_ErrInternal.Wrap(err)
 	}
 
 	return &accounttypes.PushPlatformTokenRegister_Reply{}, nil
 }
 
+//nolint:revive
 func (s *service) GetOpenedAccount(ctx context.Context, request *accounttypes.GetOpenedAccount_Request) (*accounttypes.GetOpenedAccount_Reply, error) {
 	return &accounttypes.GetOpenedAccount_Reply{
-		AccountID: s.openedAccountID,
+		AccountId: s.openedAccountID,
 		Listeners: strings.Split(s.serviceListeners, ","),
 	}, nil
 }

@@ -340,7 +340,7 @@ func (store *msgrStore) handleEvent(ev *messengertypes.StreamEvent) {
 		if _, ok := store.interactions[interaction.GetConversationPublicKey()]; !ok {
 			store.interactions[interaction.GetConversationPublicKey()] = make(map[string]*messengertypes.Interaction)
 		}
-		store.interactions[interaction.GetConversationPublicKey()][interaction.GetCID()] = interaction
+		store.interactions[interaction.GetConversationPublicKey()][interaction.GetCid()] = interaction
 		for callback := range store.interactionHandlers[interaction.GetConversationPublicKey()] {
 			if callback != nil {
 				store.logIfError("inte handler", (*callback)(interaction))

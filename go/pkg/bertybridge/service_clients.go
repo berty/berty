@@ -68,4 +68,5 @@ func NewNoopServiceClientRegister() ServiceClientRegister {
 	return &noopClient{}
 }
 
+//nolint:revive
 func (*noopClient) RegisterService(name string, cc *grpc.ClientConn) {}

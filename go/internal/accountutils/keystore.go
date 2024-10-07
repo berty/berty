@@ -24,7 +24,7 @@ var _ NativeKeystore = (*MemNativeKeystore)(nil)
 func (ks *MemNativeKeystore) Get(key string) ([]byte, error) {
 	value, ok := ks.dict[key]
 	if !ok {
-		return nil, errcode.ErrNotFound
+		return nil, errcode.ErrCode_ErrNotFound
 	}
 	return value, nil
 }
@@ -48,16 +48,16 @@ func getOrCreateKeystoreKey(ks NativeKeystore, keyName string, keySize int) ([]b
 	if getErr != nil {
 		keyData := make([]byte, keySize)
 		if _, err := crand.Read(keyData); err != nil {
-			return nil, errcode.ErrCryptoKeyGeneration.Wrap(err)
+			return nil, errcode.ErrCode_ErrCryptoKeyGeneration.Wrap(err)
 		}
 
 		if err := ks.Put(keyName, keyData); err != nil {
-			return nil, errcode.ErrKeystorePut.Wrap(multierr.Append(getErr, err))
+			return nil, errcode.ErrCode_ErrKeystorePut.Wrap(multierr.Append(getErr, err))
 		}
 
 		var err error
 		if key, err = ks.Get(keyName); err != nil {
-			return nil, errcode.ErrKeystoreGet.Wrap(multierr.Append(getErr, err))
+			return nil, errcode.ErrCode_ErrKeystoreGet.Wrap(multierr.Append(getErr, err))
 		}
 	}
 	return key, nil

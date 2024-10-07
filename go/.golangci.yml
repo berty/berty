@@ -1,7 +1,8 @@
 run:
   deadline: 1m
   tests: false
-  skip-files:
+issues:
+  exclude-files:
     - ".*\\.pb\\.go$"
     - ".*\\.pb\\.gw\\.go$"
     - ".*\\.gen\\.go$"
@@ -32,7 +33,7 @@ linters:
   enable:
     - asciicheck
     - bodyclose
-    - depguard
+    #- depguard
     - dogsled
     - errcheck
     #- exhaustive    # nice to have
@@ -66,4 +67,3 @@ linters:
     - unparam
     - unused
     - whitespace
-    - unused

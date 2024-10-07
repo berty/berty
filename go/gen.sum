@@ -1,8 +1,8 @@
-4da4ed0dac27f6f8f66f66944f591d0e77c7327f  ../api/accounttypes/accounttypes.proto
-033630a883f817b9fc6fa7414319fbb056d793b8  ../api/berty/errcode.proto
-37a8eae718cea9f59591bc32797f7e9974dd12da  ../api/bertybridge/bertybridge.proto
-f61e300fb23e02f14c27147496286e3e8daa7a6a  ../api/directorytypes/bertydirectory.proto
+875ae95e993f38ce9e11a2cd53f696e6d2bf20e8  ../api/accounttypes/accounttypes.proto
+5ab1cc72fb68ae71551791df7324cde6f276e1f0  ../api/berty/errcode.proto
+e8196156efc4aece892fc42ebc2b91c20127e910  ../api/bertybridge/bertybridge.proto
+520790f5a3f524c82f02479904567c639691bced  ../api/directorytypes/bertydirectory.proto
 851d354abf878a3afd1e1759511b7b3ce297330f  ../api/go-internal/testutil.proto
-a3317dce422b63f7a69953311bfe05035f8e476c  ../api/messengertypes/messengertypes.proto
-73f733b36b77e35ee6ffc0a6d02bf381d6d9b52c  ../api/pushtypes/bertypushtypes.proto
-137b02f0cee77d8c0473e1b86f79f954f2620527  Makefile
+b241fd5eec5c157a472df665cf21289a84612d5e  ../api/messengertypes/messengertypes.proto
+0ede6de49ef7dac9bdec9fda912f2ce6bc463c74  ../api/pushtypes/bertypushtypes.proto
+59e8785812a218a9a9729e7f01ae16a8cb58cd0b  Makefile

@@ -12,17 +12,17 @@ import (
 
 	"github.com/atotto/clipboard"
 	"github.com/gdamore/tcell"
-	"github.com/golang/protobuf/proto" // nolint:staticcheck // cannot use the new protobuf API while keeping gogoproto
 	"github.com/ipfs/go-cid"
 	"github.com/mdp/qrterminal/v3"
+	"google.golang.org/protobuf/proto"
 	"moul.io/godev"
 
 	"berty.tech/berty/v2/go/internal/messengerutil"
 	"berty.tech/berty/v2/go/pkg/bertylinks"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
-	"berty.tech/weshnet/pkg/netmanager"
-	"berty.tech/weshnet/pkg/protocoltypes"
+	"berty.tech/weshnet/v2/pkg/netmanager"
+	"berty.tech/weshnet/v2/pkg/protocoltypes"
 )
 
 type command struct {
@@ -107,7 +107,7 @@ func commandList() []*command {
 		},
 		{
 			title: "contact share",
-			help:  "Output a shareable contact URL",
+			help:  "Output a shareable contact Url",
 			cmd:   contactShareCommand(renderText),
 		},
 		{
@@ -117,7 +117,7 @@ func commandList() []*command {
 		},
 		{
 			title: "name",
-			help:  "Changes your display name used in contact request URLs and outgoing contact requests",
+			help:  "Changes your display name used in contact request Urls and outgoing contact requests",
 			cmd:   setDisplayName,
 		},
 		{
@@ -267,7 +267,7 @@ func commandList() []*command {
 func directoryServiceRegister(ctx context.Context, v *groupView, cmd string) error {
 	cmdTokens := strings.Split(cmd, " ")
 	if len(cmdTokens) != 2 && len(cmdTokens) != 3 {
-		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("expected 2 or 3 parameters (server addr, identifier, proof issuer)"))
+		return errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("expected 2 or 3 parameters (server addr, identifier, proof issuer)"))
 	}
 
 	serverAddr := cmdTokens[0]
@@ -292,7 +292,7 @@ func directoryServiceRegister(ctx context.Context, v *groupView, cmd string) err
 func directoryServiceUnregister(ctx context.Context, v *groupView, cmd string) error {
 	cmdTokens := strings.Split(cmd, " ")
 	if len(cmdTokens) < 2 {
-		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("expected 2 or 3 parameters"))
+		return errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("expected 2 or 3 parameters"))
 	}
 
 	serverAddr := cmdTokens[0]
@@ -309,6 +309,7 @@ func directoryServiceUnregister(ctx context.Context, v *groupView, cmd string) e
 	return nil
 }
 
+//nolint:revive
 func directoryServiceList(ctx context.Context, v *groupView, cmd string) error {
 	acc, err := v.v.messenger.AccountGet(ctx, &messengertypes.AccountGet_Request{})
 	if err != nil {
@@ -333,7 +334,7 @@ func directoryServiceList(ctx context.Context, v *groupView, cmd string) error {
 func directoryServiceQuery(ctx context.Context, v *groupView, cmd string) error {
 	cmdTokens := strings.Split(cmd, " ")
 	if len(cmdTokens) != 2 {
-		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("expected 2 parameters (server_addr, comma-separated list of identifiers)"))
+		return errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("expected 2 parameters (server_addr, comma-separated list of identifiers)"))
 	}
 
 	serverAddr := cmdTokens[0]
@@ -365,7 +366,7 @@ func directoryServiceQuery(ctx context.Context, v *groupView, cmd string) error 
 
 		v.messages.Append(&historyMessage{
 			messageType: messageTypeMeta,
-			payload:     []byte(fmt.Sprintf("%d %s: %s", resultCount, result.DirectoryIdentifier, result.AccountURI)),
+			payload:     []byte(fmt.Sprintf("%d %s: %s", resultCount, result.DirectoryIdentifier, result.AccountUri)),
 		})
 	}
 
@@ -397,9 +398,9 @@ func credentialVerificationInit(ctx context.Context, v *groupView, service strin
 	}
 
 	flowDetails, err := v.v.protocol.CredentialVerificationServiceInitFlow(ctx, &protocoltypes.CredentialVerificationServiceInitFlow_Request{
-		ServiceURL: service,
-		PublicKey:  res.Link.BertyID.AccountPK,
-		Link:       res.WebURL,
+		ServiceUrl: service,
+		PublicKey:  res.Link.BertyId.AccountPk,
+		Link:       res.WebUrl,
 	})
 	if err != nil {
 		return err
@@ -407,16 +408,16 @@ func credentialVerificationInit(ctx context.Context, v *groupView, service strin
 
 	v.messages.Append(&historyMessage{
 		messageType: messageTypeMeta,
-		payload:     []byte(fmt.Sprintf("Auth URL: %s", flowDetails.URL)),
+		payload:     []byte(fmt.Sprintf("Auth Url: %s", flowDetails.Url)),
 	})
-	copyToClipboard(v, flowDetails.URL)
+	copyToClipboard(v, flowDetails.Url)
 
 	return nil
 }
 
 func credentialVerificationComplete(ctx context.Context, v *groupView, callbackURI string) error {
 	res, err := v.v.protocol.CredentialVerificationServiceCompleteFlow(ctx, &protocoltypes.CredentialVerificationServiceCompleteFlow_Request{
-		CallbackURI: callbackURI,
+		CallbackUri: callbackURI,
 	})
 	if err != nil {
 		return err
@@ -490,7 +491,7 @@ func exportAccount(ctx context.Context, v *groupView, path string) error {
 
 func authInit(ctx context.Context, v *groupView, cmd string) error {
 	rep, err := v.v.messenger.AuthServiceInitFlow(ctx, &messengertypes.AuthServiceInitFlow_Request{
-		AuthURL: strings.TrimSpace(cmd),
+		AuthUrl: strings.TrimSpace(cmd),
 	})
 	if err != nil {
 		return err
@@ -498,15 +499,15 @@ func authInit(ctx context.Context, v *groupView, cmd string) error {
 
 	v.messages.Append(&historyMessage{
 		messageType: messageTypeMeta,
-		payload:     []byte(fmt.Sprintf("Auth URL: %s", rep.URL)),
+		payload:     []byte(fmt.Sprintf("Auth Url: %s", rep.Url)),
 	})
 
-	copyToClipboard(v, rep.URL)
+	copyToClipboard(v, rep.Url)
 
-	if !rep.SecureURL {
+	if !rep.SecureUrl {
 		v.messages.Append(&historyMessage{
 			messageType: messageTypeMeta,
-			payload:     []byte("The supplied URL will not use a secure transport"),
+			payload:     []byte("The supplied Url will not use a secure transport"),
 		})
 	}
 
@@ -520,7 +521,7 @@ func authInit(ctx context.Context, v *groupView, cmd string) error {
 
 func authComplete(ctx context.Context, v *groupView, cmd string) error {
 	_, err := v.v.messenger.AuthServiceCompleteFlow(ctx, &messengertypes.AuthServiceCompleteFlow_Request{
-		CallbackURL: strings.TrimSpace(cmd),
+		CallbackUrl: strings.TrimSpace(cmd),
 	})
 
 	return err
@@ -544,7 +545,7 @@ func servicesList(ctx context.Context, v *groupView, _ string) error {
 		for _, service := range item.Service.SupportedServices {
 			v.messages.Append(&historyMessage{
 				messageType: messageTypeMeta,
-				payload:     []byte(fmt.Sprintf("token: %s - service: %s, %s", item.Service.TokenID, service.Type, service.Address)),
+				payload:     []byte(fmt.Sprintf("token: %s - service: %s, %s", item.Service.TokenId, service.Type, service.Address)),
 			})
 		}
 	}
@@ -554,7 +555,7 @@ func servicesList(ctx context.Context, v *groupView, _ string) error {
 
 func replGroup(ctx context.Context, v *groupView, cmd string) error {
 	if _, err := v.v.messenger.ReplicationServiceRegisterGroup(ctx, &messengertypes.ReplicationServiceRegisterGroup_Request{
-		TokenID:               strings.TrimSpace(cmd),
+		TokenId:               strings.TrimSpace(cmd),
 		ConversationPublicKey: base64.RawURLEncoding.EncodeToString(v.g.PublicKey),
 	}); err != nil {
 		return err
@@ -584,7 +585,7 @@ func debugIPFSCommand(ctx context.Context, v *groupView, _ string) error {
 
 	v.messages.Append(&historyMessage{
 		messageType: messageTypeMeta,
-		payload:     []byte(fmt.Sprintf("peerid: %s", config.PeerID)),
+		payload:     []byte(fmt.Sprintf("peerid: %s", config.PeerId)),
 	})
 
 	for i, listener := range config.Listeners {
@@ -607,9 +608,9 @@ func debugSystemCommand(ctx context.Context, v *groupView, _ string) error {
 	for k, val := range map[string]interface{}{
 		"Protocol  Process  ": godev.JSONPB(info.Protocol.Process),
 		"Protocol  P2P      ": godev.JSONPB(info.Protocol.P2P),
-		"Protocol  ODB      ": godev.JSONPB(info.Protocol.OrbitDB),
+		"Protocol  ODB      ": godev.JSONPB(info.Protocol.Orbitdb),
 		"Messenger Process  ": godev.JSONPB(info.Messenger.Process),
-		"Messenger DB       ": godev.JSONPB(info.Messenger.DB),
+		"Messenger DB       ": godev.JSONPB(info.Messenger.Db),
 	} {
 		v.messages.Append(&historyMessage{
 			messageType: messageTypeMeta,
@@ -620,12 +621,13 @@ func debugSystemCommand(ctx context.Context, v *groupView, _ string) error {
 	return nil
 }
 
+//nolint:revive
 func contactDiscardAllCommand(ctx context.Context, v *groupView, cmd string) error {
 	v.v.lock.Lock()
 	toAdd := [][]byte(nil)
 
 	for id, contactState := range v.v.contactStates {
-		if contactState != protocoltypes.ContactStateReceived {
+		if contactState != protocoltypes.ContactState_ContactStateReceived {
 			continue
 		}
 
@@ -642,12 +644,13 @@ func contactDiscardAllCommand(ctx context.Context, v *groupView, cmd string) err
 	return nil
 }
 
+//nolint:revive
 func contactAcceptAllCommand(ctx context.Context, v *groupView, cmd string) error {
 	v.v.lock.Lock()
 	toAdd := [][]byte(nil)
 
 	for id, contactState := range v.v.contactStates {
-		if contactState != protocoltypes.ContactStateReceived {
+		if contactState != protocoltypes.ContactState_ContactStateReceived {
 			continue
 		}
 
@@ -673,7 +676,7 @@ func debugInspectStoreCommand(ctx context.Context, v *groupView, cmd string) err
 		return fmt.Errorf("invalid args, expected: group_pk {message,metadata}")
 	}
 
-	groupPK, err := base64.StdEncoding.DecodeString(args[0])
+	groupPk, err := base64.StdEncoding.DecodeString(args[0])
 	if err != nil {
 		return fmt.Errorf("invalid args, expected: group_pk {message,metadata} (%w)", err)
 	}
@@ -682,15 +685,15 @@ func debugInspectStoreCommand(ctx context.Context, v *groupView, cmd string) err
 
 	switch args[1] {
 	case "message":
-		logType = protocoltypes.DebugInspectGroupLogTypeMessage
+		logType = protocoltypes.DebugInspectGroupLogType_DebugInspectGroupLogTypeMessage
 	case "metadata":
-		logType = protocoltypes.DebugInspectGroupLogTypeMetadata
+		logType = protocoltypes.DebugInspectGroupLogType_DebugInspectGroupLogTypeMetadata
 	default:
 		return fmt.Errorf("invalid args, expected: group_pk {message,metadata}")
 	}
 
 	sub, err := v.v.protocol.DebugInspectGroupStore(ctx, &protocoltypes.DebugInspectGroupStore_Request{
-		GroupPK: groupPK,
+		GroupPk: groupPk,
 		LogType: logType,
 	})
 	if err != nil {
@@ -728,8 +731,8 @@ func debugPushCommand(ctx context.Context, v *groupView, _ string) error {
 	}
 
 	res, err := v.v.messenger.PushSend(ctx, &messengertypes.PushSend_Request{
-		CID:     c.Bytes(),
-		GroupPK: messengerutil.B64EncodeBytes(v.g.PublicKey),
+		Cid:     c.Bytes(),
+		GroupPk: messengerutil.B64EncodeBytes(v.g.PublicKey),
 	})
 	if err != nil {
 		return err
@@ -741,7 +744,7 @@ func debugPushCommand(ctx context.Context, v *groupView, _ string) error {
 
 	targets := []string(nil)
 	for _, m := range res.GroupMembers {
-		for _, d := range m.DevicePKs {
+		for _, d := range m.DevicesPks {
 			targets = append(targets, shortStringID(d))
 		}
 	}
@@ -757,16 +760,16 @@ func debugPushCommand(ctx context.Context, v *groupView, _ string) error {
 func formatDebugInspectGroupStoreReply(rep *protocoltypes.DebugInspectGroupStore_Reply, storeType protocoltypes.DebugInspectGroupLogType) []byte {
 	data := []string(nil)
 
-	if rep.CID != nil {
-		c, err := cid.Parse(rep.CID)
+	if rep.Cid != nil {
+		c, err := cid.Parse(rep.Cid)
 		if err == nil {
 			data = append(data, fmt.Sprintf("cid: %s", c.String()))
 		}
 	}
 
-	if len(rep.ParentCIDs) != 0 {
-		parents := make([]string, len(rep.ParentCIDs))
-		for i, p := range rep.ParentCIDs {
+	if len(rep.ParentCids) != 0 {
+		parents := make([]string, len(rep.ParentCids))
+		for i, p := range rep.ParentCids {
 			c, err := cid.Parse(p)
 			if err == nil {
 				parents[i] = c.String()
@@ -780,11 +783,11 @@ func formatDebugInspectGroupStoreReply(rep *protocoltypes.DebugInspectGroupStore
 		data = append(data, fmt.Sprintf("evt type: %s", rep.MetadataEventType.String()))
 	}
 
-	if len(rep.DevicePK) != 0 {
-		data = append(data, fmt.Sprintf("device: %s", base64.StdEncoding.EncodeToString(rep.DevicePK)))
+	if len(rep.DevicePk) != 0 {
+		data = append(data, fmt.Sprintf("device: %s", base64.StdEncoding.EncodeToString(rep.DevicePk)))
 	}
 
-	if storeType == protocoltypes.DebugInspectGroupLogTypeMessage && len(rep.Payload) > 0 {
+	if storeType == protocoltypes.DebugInspectGroupLogType_DebugInspectGroupLogTypeMessage && len(rep.Payload) > 0 {
 		data = append(data, fmt.Sprintf("payload: %s", string(rep.Payload)))
 	}
 
@@ -792,13 +795,14 @@ func formatDebugInspectGroupStoreReply(rep *protocoltypes.DebugInspectGroupStore
 }
 
 func formatDebugListGroupsReply(rep *protocoltypes.DebugListGroups_Reply) []byte {
-	if rep.GroupType == protocoltypes.GroupTypeContact {
-		return []byte(fmt.Sprintf("%s: %s (contact: %s)", rep.GroupType.String(), base64.StdEncoding.EncodeToString(rep.GroupPK), base64.StdEncoding.EncodeToString(rep.ContactPK)))
+	if rep.GroupType == protocoltypes.GroupType_GroupTypeContact {
+		return []byte(fmt.Sprintf("%s: %s (contact: %s)", rep.GroupType.String(), base64.StdEncoding.EncodeToString(rep.GroupPk), base64.StdEncoding.EncodeToString(rep.ContactPk)))
 	}
 
-	return []byte(fmt.Sprintf("%s: %s", rep.GroupType.String(), base64.StdEncoding.EncodeToString(rep.GroupPK)))
+	return []byte(fmt.Sprintf("%s: %s", rep.GroupType.String(), base64.StdEncoding.EncodeToString(rep.GroupPk)))
 }
 
+//nolint:revive
 func debugListGroupsCommand(ctx context.Context, v *groupView, cmd string) error {
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
@@ -827,6 +831,7 @@ func debugListGroupsCommand(ctx context.Context, v *groupView, cmd string) error
 	}
 }
 
+//nolint:revive
 func debugListGroupCommand(ctx context.Context, v *groupView, cmd string) error {
 	v.messages.Append(&historyMessage{
 		messageType: messageTypeMeta,
@@ -853,7 +858,7 @@ func debugListGroupCommand(ctx context.Context, v *groupView, cmd string) error 
 		payload:     []byte(fmt.Sprintf("device pk:    %s", base64.StdEncoding.EncodeToString(v.devicePK))),
 	})
 
-	if v.g.GroupType == protocoltypes.GroupTypeMultiMember {
+	if v.g.GroupType == protocoltypes.GroupType_GroupTypeMultiMember {
 		v.muAggregates.Lock()
 
 		v.messages.Append(&historyMessage{
@@ -864,7 +869,7 @@ func debugListGroupCommand(ctx context.Context, v *groupView, cmd string) error 
 		for _, device := range v.devices {
 			v.messages.Append(&historyMessage{
 				messageType: messageTypeMeta,
-				payload:     []byte(fmt.Sprintf(" - member: %s - device: %s", base64.StdEncoding.EncodeToString(device.MemberPK), base64.StdEncoding.EncodeToString(device.DevicePK))),
+				payload:     []byte(fmt.Sprintf(" - member: %s - device: %s", base64.StdEncoding.EncodeToString(device.MemberPk), base64.StdEncoding.EncodeToString(device.DevicePk))),
 			})
 		}
 
@@ -876,7 +881,7 @@ func debugListGroupCommand(ctx context.Context, v *groupView, cmd string) error 
 		for _, secret := range v.secrets {
 			v.messages.Append(&historyMessage{
 				messageType: messageTypeMeta,
-				payload:     []byte(fmt.Sprintf(" - secret: %s for %s", base64.StdEncoding.EncodeToString(secret.DevicePK), base64.StdEncoding.EncodeToString(secret.DestMemberPK))),
+				payload:     []byte(fmt.Sprintf(" - secret: %s for %s", base64.StdEncoding.EncodeToString(secret.DevicePk), base64.StdEncoding.EncodeToString(secret.DestMemberPk))),
 			})
 		}
 
@@ -884,19 +889,19 @@ func debugListGroupCommand(ctx context.Context, v *groupView, cmd string) error 
 	}
 
 	groupDebug, err := v.v.protocol.DebugGroup(ctx, &protocoltypes.DebugGroup_Request{
-		GroupPK: v.g.PublicKey,
+		GroupPk: v.g.PublicKey,
 	})
 	if err != nil {
 		return err
 	}
 
-	if len(groupDebug.PeerIDs) > 0 {
+	if len(groupDebug.PeerIds) > 0 {
 		v.messages.Append(&historyMessage{
 			messageType: messageTypeMeta,
 			payload:     []byte("Peers connected on topic:"),
 		})
 
-		for _, p := range groupDebug.PeerIDs {
+		for _, p := range groupDebug.PeerIds {
 			v.messages.Append(&historyMessage{
 				messageType: messageTypeMeta,
 				payload:     []byte(fmt.Sprintf(" - %s", p)),
@@ -920,9 +925,10 @@ func debugListGroupCommand(ctx context.Context, v *groupView, cmd string) error 
 // 	return nil
 // }
 
+//nolint:revive
 func aliasSendCommand(ctx context.Context, v *groupView, cmd string) error {
 	if _, err := v.v.protocol.ContactAliasKeySend(ctx, &protocoltypes.ContactAliasKeySend_Request{
-		GroupPK: v.g.PublicKey,
+		GroupPk: v.g.PublicKey,
 	}); err != nil {
 		return err
 	}
@@ -931,27 +937,28 @@ func aliasSendCommand(ctx context.Context, v *groupView, cmd string) error {
 }
 
 func groupInviteCommand(renderFunc func(*groupView, string)) func(ctx context.Context, v *groupView, cmd string) error {
-	return func(ctx context.Context, v *groupView, cmd string) error {
+	return func(ctx context.Context, v *groupView, cmd string) error { //nolint:revive
 		res, err := v.v.messenger.ShareableBertyGroup(ctx, &messengertypes.ShareableBertyGroup_Request{
-			GroupPK:   v.g.PublicKey,
+			GroupPk:   v.g.PublicKey,
 			GroupName: "some group",
 		})
 		if err != nil {
 			return err
 		}
 
-		renderFunc(v, res.WebURL)
+		renderFunc(v, res.WebUrl)
 
 		return nil
 	}
 }
 
+//nolint:revive
 func refreshCommand(ctx context.Context, v *groupView, cmd string) error {
 	contactspk := [][]byte{}
 	v.v.lock.Lock()
 	for k, state := range v.v.contactStates {
 		switch state {
-		case protocoltypes.ContactStateToRequest, protocoltypes.ContactStateAdded:
+		case protocoltypes.ContactState_ContactStateToRequest, protocoltypes.ContactState_ContactStateAdded:
 			contactspk = append(contactspk, []byte(k))
 		default:
 		}
@@ -969,7 +976,7 @@ func refreshCommand(ctx context.Context, v *groupView, cmd string) error {
 			}
 
 			res, err := v.v.protocol.RefreshContactRequest(ctx, &protocoltypes.RefreshContactRequest_Request{
-				ContactPK: pk,
+				ContactPk: pk,
 			})
 
 			switch {
@@ -988,7 +995,7 @@ func refreshCommand(ctx context.Context, v *groupView, cmd string) error {
 
 			default:
 				for _, p := range res.PeersFound {
-					msg := fmt.Sprintf("refresh: succefully connected to peer: %s", p.ID)
+					msg := fmt.Sprintf("refresh: succefully connected to peer: %s", p.Id)
 					v.syncMessages <- &historyMessage{
 						messageType: messageTypeMeta,
 						payload:     []byte(msg),
@@ -1001,6 +1008,7 @@ func refreshCommand(ctx context.Context, v *groupView, cmd string) error {
 	return nil
 }
 
+//nolint:revive
 func cmdHelp(ctx context.Context, v *groupView, cmd string) error {
 	longestCmd := 0
 
@@ -1029,6 +1037,7 @@ func cmdHelp(ctx context.Context, v *groupView, cmd string) error {
 	return nil
 }
 
+//nolint:revive
 func cmdKeyboard(ctx context.Context, v *groupView, cmd string) error {
 	longestHint := 0
 	help := [][]string(nil)
@@ -1088,7 +1097,7 @@ func contactAcceptCommand(ctx context.Context, v *groupView, cmd string) error {
 	}
 
 	if _, err = v.v.protocol.ContactRequestAccept(ctx, &protocoltypes.ContactRequestAccept_Request{
-		ContactPK: pkBytes,
+		ContactPk: pkBytes,
 	}); err != nil {
 		return err
 	}
@@ -1103,7 +1112,7 @@ func contactDiscardCommand(ctx context.Context, v *groupView, cmd string) error 
 	}
 
 	if _, err = v.v.protocol.ContactRequestDiscard(ctx, &protocoltypes.ContactRequestDiscard_Request{
-		ContactPK: pkBytes,
+		ContactPk: pkBytes,
 	}); err != nil {
 		return err
 	}
@@ -1137,16 +1146,16 @@ func contactRequestCommand(ctx context.Context, v *groupView, cmd string) error 
 
 	link, err := bertylinks.UnmarshalLink(cmd, nil) // FIXME: support passing an optional passphrase to decrypt the link
 	if err != nil {
-		return errcode.ErrInvalidInput.Wrap(err)
+		return errcode.ErrCode_ErrInvalidInput.Wrap(err)
 	}
 	if !link.IsContact() {
-		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("expected a contact URL, got %q instead", link.GetKind()))
+		return errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("expected a contact Url, got %q instead", link.GetKind()))
 	}
 
 	contact := &protocoltypes.ShareableContact{
-		PK:                   link.BertyID.AccountPK,
-		PublicRendezvousSeed: link.BertyID.PublicRendezvousSeed,
-		Metadata:             []byte(link.BertyID.DisplayName),
+		Pk:                   link.BertyId.AccountPk,
+		PublicRendezvousSeed: link.BertyId.PublicRendezvousSeed,
+		Metadata:             []byte(link.BertyId.DisplayName),
 	}
 
 	_, err = v.v.protocol.ContactRequestSend(ctx, &protocoltypes.ContactRequestSend_Request{
@@ -1181,14 +1190,15 @@ func newMessageCommand(ctx context.Context, v *groupView, cmd string) error {
 		return err
 	}
 
-	v.lastSentCID = ret.CID
+	v.lastSentCID = ret.Cid
 
 	return nil
 }
 
+//nolint:revive
 func newDebugNetManagerGetCommand(ctx context.Context, v *groupView, cmd string) error {
 	if cmd != "" {
-		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("expected no argument"))
+		return errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("expected no argument"))
 	}
 
 	v.syncMessages <- &historyMessage{
@@ -1199,9 +1209,9 @@ func newDebugNetManagerGetCommand(ctx context.Context, v *groupView, cmd string)
 	return nil
 }
 
-func newDebugNetManagerSetCommand(ctx context.Context, v *groupView, cmd string) error {
+func newDebugNetManagerSetCommand(_ context.Context, v *groupView, cmd string) error {
 	if cmd == "" {
-		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("expected arguments ex: `/netmanager set bluetooth=on nettype=mobile`"))
+		return errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("expected arguments ex: `/netmanager set bluetooth=on nettype=mobile`"))
 	}
 
 	newConnectivityState := v.v.netmanager.GetCurrentState()
@@ -1214,42 +1224,42 @@ func newDebugNetManagerSetCommand(ctx context.Context, v *groupView, cmd string)
 
 		parts := strings.Split(opt, "=")
 		if len(parts) != 2 {
-			return errcode.ErrInvalidInput.Wrap(fmt.Errorf("expected a key=value arguments"))
+			return errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("expected a key=value arguments"))
 		}
 
 		switch strings.ToLower(parts[0]) {
 		case "state":
 			state, err := netmanager.ParseConnectivityState(parts[1])
 			if err != nil {
-				return errcode.ErrInvalidInput.Wrap(err)
+				return errcode.ErrCode_ErrInvalidInput.Wrap(err)
 			}
 			newConnectivityState.State = state
 		case "metering":
 			metering, err := netmanager.ParseConnectivityState(parts[1])
 			if err != nil {
-				return errcode.ErrInvalidInput.Wrap(err)
+				return errcode.ErrCode_ErrInvalidInput.Wrap(err)
 			}
 			newConnectivityState.Metering = metering
 		case "bluetooth":
 			bluetooth, err := netmanager.ParseConnectivityState(parts[1])
 			if err != nil {
-				return errcode.ErrInvalidInput.Wrap(err)
+				return errcode.ErrCode_ErrInvalidInput.Wrap(err)
 			}
 			newConnectivityState.Bluetooth = bluetooth
 		case "nettype":
 			nettype, err := netmanager.ParseConnectivityNetType(parts[1])
 			if err != nil {
-				return errcode.ErrInvalidInput.Wrap(err)
+				return errcode.ErrCode_ErrInvalidInput.Wrap(err)
 			}
 			newConnectivityState.NetType = nettype
 		case "cellulartype":
 			cellulartype, err := netmanager.ParseConnectivityCellularType(parts[1])
 			if err != nil {
-				return errcode.ErrInvalidInput.Wrap(err)
+				return errcode.ErrCode_ErrInvalidInput.Wrap(err)
 			}
 			newConnectivityState.CellularType = cellulartype
 		default:
-			return errcode.ErrInvalidInput.Wrap(fmt.Errorf("unknown option %q", parts[0]))
+			return errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("unknown option %q", parts[0]))
 		}
 	}
 
@@ -1264,7 +1274,7 @@ func newDebugNetManagerSetCommand(ctx context.Context, v *groupView, cmd string)
 }
 
 func contactShareCommand(displayFunc func(*groupView, string)) func(ctx context.Context, v *groupView, cmd string) error {
-	return func(ctx context.Context, v *groupView, cmd string) error {
+	return func(ctx context.Context, v *groupView, cmd string) error { //nolint:revive
 		v.v.lock.Lock()
 		displayName := v.v.displayName
 		v.v.lock.Unlock()
@@ -1276,7 +1286,7 @@ func contactShareCommand(displayFunc func(*groupView, string)) func(ctx context.
 			return err
 		}
 
-		displayFunc(v, res.WebURL)
+		displayFunc(v, res.WebUrl)
 
 		return nil
 	}
@@ -1321,18 +1331,21 @@ func copyToClipboard(v *groupView, txt string) {
 	}
 }
 
+//nolint:revive
 func contactRequestsOnCommand(ctx context.Context, v *groupView, cmd string) error {
 	_, err := v.v.protocol.ContactRequestEnable(ctx, &protocoltypes.ContactRequestEnable_Request{})
 
 	return err
 }
 
+//nolint:revive
 func contactRequestsOffCommand(ctx context.Context, v *groupView, cmd string) error {
 	_, err := v.v.protocol.ContactRequestDisable(ctx, &protocoltypes.ContactRequestDisable_Request{})
 
 	return err
 }
 
+//nolint:revive
 func contactRequestsReferenceResetCommand(ctx context.Context, v *groupView, cmd string) error {
 	_, err := v.v.protocol.ContactRequestResetReference(ctx, &protocoltypes.ContactRequestResetReference_Request{})
 

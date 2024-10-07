@@ -21,10 +21,10 @@ import (
 	"berty.tech/berty/v2/go/pkg/bertylinks"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
-	"berty.tech/weshnet"
-	"berty.tech/weshnet/pkg/logutil"
-	"berty.tech/weshnet/pkg/protocoltypes"
-	"berty.tech/weshnet/pkg/testutil"
+	"berty.tech/weshnet/v2"
+	"berty.tech/weshnet/v2/pkg/logutil"
+	"berty.tech/weshnet/v2/pkg/protocoltypes"
+	"berty.tech/weshnet/v2/pkg/testutil"
 )
 
 func TestServiceDevStreamLogs(t *testing.T) {
@@ -67,26 +67,26 @@ func TestServiceInstanceShareableBertyID(t *testing.T) {
 	ret1, err := ts.Service.InstanceShareableBertyID(ctx, nil)
 	require.NoError(t, err)
 	testParseInstanceShareable(ctx, t, ts, ret1)
-	assert.Equal(t, ret1.Link.BertyID.DisplayName, "")
+	assert.Equal(t, ret1.Link.BertyId.DisplayName, "")
 
 	ret2, err := ts.Service.InstanceShareableBertyID(ctx, &messengertypes.InstanceShareableBertyID_Request{})
 	require.NoError(t, err)
 	testParseInstanceShareable(ctx, t, ts, ret2)
-	assert.Equal(t, ret2.Link.BertyID.DisplayName, "")
+	assert.Equal(t, ret2.Link.BertyId.DisplayName, "")
 	assert.Equal(t, ret1, ret2)
 
 	ret3, err := ts.Service.InstanceShareableBertyID(ctx, &messengertypes.InstanceShareableBertyID_Request{DisplayName: "Hello World! 👋"})
 	require.NoError(t, err)
 	testParseInstanceShareable(ctx, t, ts, ret3)
-	assert.Equal(t, ret3.Link.BertyID.DisplayName, "Hello World! 👋")
-	assert.NotEqual(t, ret2.Link.BertyID, ret3.Link.BertyID)
+	assert.Equal(t, ret3.Link.BertyId.DisplayName, "Hello World! 👋")
+	assert.NotEqual(t, ret2.Link.BertyId, ret3.Link.BertyId)
 
 	ret4, err := ts.Service.InstanceShareableBertyID(ctx, &messengertypes.InstanceShareableBertyID_Request{Reset_: true})
 	require.NoError(t, err)
 	testParseInstanceShareable(ctx, t, ts, ret4)
-	assert.Equal(t, ret4.Link.BertyID.DisplayName, "")
-	assert.NotEqual(t, ret1.Link.BertyID, ret4.Link.BertyID)
-	assert.NotEqual(t, ret3.Link.BertyID, ret4.Link.BertyID)
+	assert.Equal(t, ret4.Link.BertyId.DisplayName, "")
+	assert.NotEqual(t, ret1.Link.BertyId, ret4.Link.BertyId)
+	assert.NotEqual(t, ret3.Link.BertyId, ret4.Link.BertyId)
 
 	ret5, err := ts.Service.InstanceShareableBertyID(ctx, nil)
 	require.NoError(t, err)
@@ -96,22 +96,22 @@ func TestServiceInstanceShareableBertyID(t *testing.T) {
 
 func testParseInstanceShareable(ctx context.Context, t *testing.T, ts *TestingService, ret *messengertypes.InstanceShareableBertyID_Reply) {
 	t.Helper()
-	assert.NotEmpty(t, ret.Link.BertyID)
-	assert.NotEmpty(t, ret.Link.BertyID.PublicRendezvousSeed)
-	assert.NotEmpty(t, ret.Link.BertyID.AccountPK)
-	assert.NotEmpty(t, ret.WebURL)
-	assert.NotEmpty(t, ret.InternalURL)
-	assert.NotEqual(t, ret.WebURL, ret.InternalURL)
+	assert.NotEmpty(t, ret.Link.BertyId)
+	assert.NotEmpty(t, ret.Link.BertyId.PublicRendezvousSeed)
+	assert.NotEmpty(t, ret.Link.BertyId.AccountPk)
+	assert.NotEmpty(t, ret.WebUrl)
+	assert.NotEmpty(t, ret.InternalUrl)
+	assert.NotEqual(t, ret.WebUrl, ret.InternalUrl)
 
-	parsed1, err := ts.Client.ParseDeepLink(ctx, &messengertypes.ParseDeepLink_Request{Link: ret.InternalURL})
+	parsed1, err := ts.Client.ParseDeepLink(ctx, &messengertypes.ParseDeepLink_Request{Link: ret.InternalUrl})
 	require.NoError(t, err)
-	parsed2, err := ts.Client.ParseDeepLink(ctx, &messengertypes.ParseDeepLink_Request{Link: ret.WebURL})
+	parsed2, err := ts.Client.ParseDeepLink(ctx, &messengertypes.ParseDeepLink_Request{Link: ret.WebUrl})
 	require.NoError(t, err)
 
 	assert.Equal(t, parsed1, parsed2)
-	assert.Equal(t, parsed1.Link.BertyID.PublicRendezvousSeed, ret.Link.BertyID.PublicRendezvousSeed)
-	assert.Equal(t, parsed1.Link.BertyID.AccountPK, ret.Link.BertyID.AccountPK)
-	assert.Equal(t, parsed1.Link.BertyID.DisplayName, ret.Link.BertyID.DisplayName)
+	assert.Equal(t, parsed1.Link.BertyId.PublicRendezvousSeed, ret.Link.BertyId.PublicRendezvousSeed)
+	assert.Equal(t, parsed1.Link.BertyId.AccountPk, ret.Link.BertyId.AccountPk)
+	assert.Equal(t, parsed1.Link.BertyId.DisplayName, ret.Link.BertyId.DisplayName)
 }
 
 func TestServiceParseDeepLink(t *testing.T) {
@@ -122,12 +122,12 @@ func TestServiceParseDeepLink(t *testing.T) {
 		expectedValidID bool
 		expectedName    bool
 	}{
-		{"nil", nil, errcode.ErrMissingInput, false, false},
-		{"empty", &messengertypes.ParseDeepLink_Request{}, errcode.ErrMessengerInvalidDeepLink, false, false},
-		{"invalid", &messengertypes.ParseDeepLink_Request{Link: "foobar"}, errcode.ErrMessengerInvalidDeepLink, false, false},
-		{"invalid2", &messengertypes.ParseDeepLink_Request{Link: "BERTY://FOOBAR"}, errcode.ErrMessengerInvalidDeepLink, false, false},
-		{"invalid2", &messengertypes.ParseDeepLink_Request{Link: "berty://foobar"}, errcode.ErrMessengerInvalidDeepLink, false, false},
-		{"invalid3", &messengertypes.ParseDeepLink_Request{Link: "https://berty.tech/id#foobar"}, errcode.ErrMessengerInvalidDeepLink, false, false},
+		{"nil", nil, errcode.ErrCode_ErrMissingInput, false, false},
+		{"empty", &messengertypes.ParseDeepLink_Request{}, errcode.ErrCode_ErrMessengerInvalidDeepLink, false, false},
+		{"invalid", &messengertypes.ParseDeepLink_Request{Link: "foobar"}, errcode.ErrCode_ErrMessengerInvalidDeepLink, false, false},
+		{"invalid2", &messengertypes.ParseDeepLink_Request{Link: "BERTY://FOOBAR"}, errcode.ErrCode_ErrMessengerInvalidDeepLink, false, false},
+		{"invalid2", &messengertypes.ParseDeepLink_Request{Link: "berty://foobar"}, errcode.ErrCode_ErrMessengerInvalidDeepLink, false, false},
+		{"invalid3", &messengertypes.ParseDeepLink_Request{Link: "https://berty.tech/id#foobar"}, errcode.ErrCode_ErrMessengerInvalidDeepLink, false, false},
 		{"internal", &messengertypes.ParseDeepLink_Request{Link: "BERTY://PB/" + validContactInternalBlob}, nil, true, true},
 		{"internal-2", &messengertypes.ParseDeepLink_Request{Link: "berty://pb/" + validContactInternalBlob}, nil, true, true},
 		{"weburl", &messengertypes.ParseDeepLink_Request{Link: "https://berty.tech/id#contact/" + validContactBlob + "/name=Alice"}, nil, true, true},
@@ -151,16 +151,16 @@ func TestServiceParseDeepLink(t *testing.T) {
 			}
 			assert.Equal(t, errcode.Code(err), tt.expectedErrcode)
 			if tt.expectedValidID {
-				assert.NotEmpty(t, ret.GetLink().GetBertyID().GetPublicRendezvousSeed())
-				assert.NotEmpty(t, ret.GetLink().GetBertyID().GetAccountPK())
+				assert.NotEmpty(t, ret.GetLink().GetBertyId().GetPublicRendezvousSeed())
+				assert.NotEmpty(t, ret.GetLink().GetBertyId().GetAccountPk())
 			} else {
-				assert.True(t, ret == nil || ret.GetLink().GetBertyID().GetPublicRendezvousSeed() == nil)
-				assert.True(t, ret == nil || ret.GetLink().GetBertyID().GetAccountPK() == nil)
+				assert.True(t, ret == nil || ret.GetLink().GetBertyId().GetPublicRendezvousSeed() == nil)
+				assert.True(t, ret == nil || ret.GetLink().GetBertyId().GetAccountPk() == nil)
 			}
 			if tt.expectedName {
-				assert.NotEmpty(t, ret.GetLink().GetBertyID().GetDisplayName())
+				assert.NotEmpty(t, ret.GetLink().GetBertyId().GetDisplayName())
 			} else {
-				assert.True(t, ret == nil || ret.GetLink().GetBertyID().GetDisplayName() == "")
+				assert.True(t, ret == nil || ret.GetLink().GetBertyId().GetDisplayName() == "")
 			}
 		})
 	}
@@ -176,17 +176,17 @@ func TestServiceSendContactRequest(t *testing.T) {
 	defer cleanup()
 
 	ret, err := ts.Service.SendContactRequest(ctx, nil)
-	assert.Equal(t, errcode.Code(err), errcode.ErrMissingInput)
+	assert.Equal(t, errcode.Code(err), errcode.ErrCode_ErrMissingInput)
 	assert.Nil(t, ret)
 
 	ret, err = ts.Service.SendContactRequest(ctx, &messengertypes.SendContactRequest_Request{})
-	assert.Equal(t, errcode.Code(err), errcode.ErrMissingInput)
+	assert.Equal(t, errcode.Code(err), errcode.ErrCode_ErrMissingInput)
 	assert.Nil(t, ret)
 
 	parseRet, err := ts.Service.ParseDeepLink(ctx, &messengertypes.ParseDeepLink_Request{Link: "https://berty.tech/id#contact/" + validContactBlob + "/name=Alice"})
 	require.NoError(t, err)
 
-	ret, err = ts.Service.SendContactRequest(ctx, &messengertypes.SendContactRequest_Request{BertyID: parseRet.Link.BertyID})
+	ret, err = ts.Service.SendContactRequest(ctx, &messengertypes.SendContactRequest_Request{BertyId: parseRet.Link.BertyId})
 	require.NoError(t, err)
 	assert.NotNil(t, ret)
 }
@@ -205,7 +205,7 @@ func TestSystemInfo(t *testing.T) {
 	diff := time.Now().Unix() - ret.Messenger.Process.StartedAt
 	assert.GreaterOrEqual(t, diff, int64(0))
 	assert.GreaterOrEqual(t, int64(1), diff)
-	assert.Greater(t, ret.Messenger.Process.NumCPU, int64(0))
+	assert.Greater(t, ret.Messenger.Process.NumCpu, int64(0))
 	assert.NotEmpty(t, ret.Messenger.Process.GoVersion)
 	assert.Equal(t, ret.Messenger.Process.Arch, runtime.GOARCH)
 	assert.Equal(t, ret.Messenger.Process.OperatingSystem, runtime.GOOS)
@@ -224,8 +224,8 @@ func testParseSharedGroup(t *testing.T, g *protocoltypes.Group, name string, ret
 	internal, web, err := bertylinks.MarshalLink(link)
 
 	assert.NoError(t, err)
-	assert.Equal(t, internal, ret.InternalURL)
-	assert.Equal(t, web, ret.WebURL)
+	assert.Equal(t, internal, ret.InternalUrl)
+	assert.Equal(t, web, ret.WebUrl)
 	assert.Equal(t, name, ret.Link.BertyGroup.DisplayName)
 	assert.Equal(t, g.PublicKey, ret.Link.BertyGroup.Group.PublicKey)
 	assert.Equal(t, g.GroupType, ret.Link.BertyGroup.Group.GroupType)
@@ -264,19 +264,19 @@ func TestServiceShareableBertyGroup(t *testing.T) {
 	require.Error(t, err)
 
 	ret1, err = ts.Service.ShareableBertyGroup(ctx, &messengertypes.ShareableBertyGroup_Request{
-		GroupPK:   nil,
+		GroupPk:   nil,
 		GroupName: "",
 	})
 	require.Error(t, err)
 
 	ret1, err = ts.Service.ShareableBertyGroup(ctx, &messengertypes.ShareableBertyGroup_Request{
-		GroupPK:   []byte("garbage id"),
+		GroupPk:   []byte("garbage id"),
 		GroupName: "",
 	})
 	require.Error(t, err)
 
 	ret1, err = ts.Service.ShareableBertyGroup(ctx, &messengertypes.ShareableBertyGroup_Request{
-		GroupPK:   g.PublicKey,
+		GroupPk:   g.PublicKey,
 		GroupName: "",
 	})
 	require.NoError(t, err)
@@ -284,7 +284,7 @@ func TestServiceShareableBertyGroup(t *testing.T) {
 	testParseSharedGroup(t, g, "", ret1)
 
 	ret1, err = ts.Service.ShareableBertyGroup(ctx, &messengertypes.ShareableBertyGroup_Request{
-		GroupPK:   g.PublicKey,
+		GroupPk:   g.PublicKey,
 		GroupName: "named group",
 	})
 	require.NoError(t, err)

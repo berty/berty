@@ -9,11 +9,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/gogo/protobuf/proto"
 	"github.com/ipfs/go-cid"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"golang.org/x/crypto/nacl/box"
+	"google.golang.org/protobuf/proto"
 	"gorm.io/gorm"
 	"moul.io/u"
 
@@ -24,8 +24,8 @@ import (
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
 	"berty.tech/berty/v2/go/pkg/pushtypes"
-	weshnet "berty.tech/weshnet"
-	"berty.tech/weshnet/pkg/testutil"
+	weshnet "berty.tech/weshnet/v2"
+	"berty.tech/weshnet/v2/pkg/testutil"
 )
 
 func TestService_PushReceive(t *testing.T) {
@@ -121,7 +121,7 @@ func TestService_PushReceive(t *testing.T) {
 	_, err = ts.Client.PushSetDeviceToken(ctx, &messengertypes.PushSetDeviceToken_Request{
 		Receiver: &pushtypes.PushServiceReceiver{
 			TokenType:          pushtypes.PushServiceTokenType_PushTokenMQTT,
-			BundleID:           pushtypes.PushMockBundleID,
+			BundleId:           pushtypes.PushMockBundleID,
 			Token:              devicePushToken,
 			RecipientPublicKey: pushDevicePK[:],
 		},
@@ -144,7 +144,7 @@ func TestService_PushReceive(t *testing.T) {
 	time.Sleep(1 * time.Second)
 	t.Log("share the local member push token in the conversation")
 	_, err = ts.Client.PushShareTokenForConversation(ctx, &messengertypes.PushShareTokenForConversation_Request{
-		ConversationPK: conversation.PublicKey,
+		ConversationPk: conversation.PublicKey,
 	})
 	require.NoError(t, err)
 
@@ -178,7 +178,7 @@ func TestService_PushReceive(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	messageCID, err := cid.Parse(interactReply.GetCID())
+	messageCID, err := cid.Parse(interactReply.GetCid())
 	require.NoError(t, err)
 
 	{
@@ -201,12 +201,12 @@ func TestService_PushReceive(t *testing.T) {
 	require.NoError(t, err)
 	require.NotNil(t, res)
 	am := &messengertypes.AppMessage{}
-	err = am.Unmarshal(res.Data.ProtocolData.Cleartext)
+	err = proto.Unmarshal(res.Data.ProtocolData.Cleartext, am)
 	require.NoError(t, err)
 	um := &messengertypes.AppMessage_UserMessage{}
-	err = um.Unmarshal(am.Payload)
+	err = proto.Unmarshal(am.Payload, um)
 	require.NoError(t, err)
-	require.Equal(t, messageCID.Bytes(), res.Data.ProtocolData.Message.CID)
+	require.Equal(t, messageCID.Bytes(), res.Data.ProtocolData.Message.Cid)
 }
 
 func TestService_PushShareTokenForConversation(t *testing.T) {
@@ -276,7 +276,7 @@ func TestService_PushShareTokenForConversation(t *testing.T) {
 	_, err = ts.Client.PushSetDeviceToken(ctx, &messengertypes.PushSetDeviceToken_Request{
 		Receiver: &pushtypes.PushServiceReceiver{
 			TokenType:          pushtypes.PushServiceTokenType_PushTokenApplePushNotificationService,
-			BundleID:           nameTestPackage,
+			BundleId:           nameTestPackage,
 			Token:              tokenTestData,
 			RecipientPublicKey: pushDevicePK[:],
 		},
@@ -322,7 +322,7 @@ func TestService_PushShareTokenForConversation(t *testing.T) {
 
 	t.Log("share the local member push token in the conversation")
 	_, err = ts.Client.PushShareTokenForConversation(ctx, &messengertypes.PushShareTokenForConversation_Request{
-		ConversationPK: conversation.PublicKey,
+		ConversationPk: conversation.PublicKey,
 	})
 	require.NoError(t, err)
 
@@ -346,10 +346,10 @@ func TestService_PushShareTokenForConversation(t *testing.T) {
 		receiverBytes, ok := box.OpenAnonymous(nil, pushToken.Token, pushServerPK, pushServerSK)
 		require.True(t, ok)
 		pushReceiver := &pushtypes.PushServiceReceiver{}
-		err = pushReceiver.Unmarshal(receiverBytes)
+		err = proto.Unmarshal(receiverBytes, pushReceiver)
 		require.NoError(t, err)
 		require.Equal(t, pushtypes.PushServiceTokenType_PushTokenApplePushNotificationService, pushReceiver.TokenType)
-		require.Equal(t, nameTestPackage, pushReceiver.BundleID)
+		require.Equal(t, nameTestPackage, pushReceiver.BundleId)
 		require.Equal(t, tokenTestData, pushReceiver.Token)
 		require.Equal(t, pushDevicePK[:], pushReceiver.RecipientPublicKey)
 		t.Log("conversation update event received")
@@ -367,10 +367,10 @@ func TestService_PushShareTokenForConversation(t *testing.T) {
 	receiverBytes, ok := box.OpenAnonymous(nil, pushTokens[0].Token, pushServerPK, pushServerSK)
 	require.True(t, ok)
 	pushReceiver := &pushtypes.PushServiceReceiver{}
-	err = pushReceiver.Unmarshal(receiverBytes)
+	err = proto.Unmarshal(receiverBytes, pushReceiver)
 	require.NoError(t, err)
 	require.Equal(t, pushtypes.PushServiceTokenType_PushTokenApplePushNotificationService, pushReceiver.TokenType)
-	require.Equal(t, nameTestPackage, pushReceiver.BundleID)
+	require.Equal(t, nameTestPackage, pushReceiver.BundleId)
 	require.Equal(t, tokenTestData, pushReceiver.Token)
 	require.Equal(t, pushDevicePK[:], pushReceiver.RecipientPublicKey)
 }
@@ -429,7 +429,7 @@ func TestService_PushSetDeviceToken(t *testing.T) {
 	_, err = ts.Client.PushSetDeviceToken(ctx, &messengertypes.PushSetDeviceToken_Request{
 		Receiver: &pushtypes.PushServiceReceiver{
 			TokenType: pushtypes.PushServiceTokenType_PushTokenMQTT,
-			BundleID:  nameTestPackage,
+			BundleId:  nameTestPackage,
 			Token:     tokenTestData1,
 		},
 	})
@@ -454,7 +454,7 @@ func TestService_PushSetDeviceToken(t *testing.T) {
 	require.NoError(t, err)
 	require.NotNil(t, currentPush)
 	require.Equal(t, tokenTestData1, currentPush.Token)
-	require.Equal(t, nameTestPackage, currentPush.BundleID)
+	require.Equal(t, nameTestPackage, currentPush.BundleId)
 	require.Equal(t, pushtypes.PushServiceTokenType_PushTokenMQTT, currentPush.TokenType)
 	require.Equal(t, devicePushPK[:], currentPush.PublicKey)
 	t.Log("device token is set")
@@ -463,7 +463,7 @@ func TestService_PushSetDeviceToken(t *testing.T) {
 	_, err = ts.Client.PushSetDeviceToken(ctx, &messengertypes.PushSetDeviceToken_Request{
 		Receiver: &pushtypes.PushServiceReceiver{
 			TokenType: pushtypes.PushServiceTokenType_PushTokenApplePushNotificationService,
-			BundleID:  nameTestPackage,
+			BundleId:  nameTestPackage,
 			Token:     tokenTestData2,
 		},
 	})
@@ -475,7 +475,7 @@ func TestService_PushSetDeviceToken(t *testing.T) {
 	require.NoError(t, err)
 	require.NotNil(t, currentPush)
 	require.Equal(t, tokenTestData1, currentPush.Token)
-	require.Equal(t, nameTestPackage, currentPush.BundleID)
+	require.Equal(t, nameTestPackage, currentPush.BundleId)
 	require.Equal(t, pushtypes.PushServiceTokenType_PushTokenMQTT, currentPush.TokenType)
 	require.Equal(t, devicePushPK[:], currentPush.PublicKey)
 }
@@ -531,7 +531,7 @@ func TestService_PushSetServer(t *testing.T) {
 	t.Log("check if no push server is set")
 	currentServers, err := dbWrapper.GetPushServerRecords(accountPK)
 	require.Error(t, err)
-	require.True(t, errcode.Is(err, errcode.ErrNotFound))
+	require.True(t, errcode.Is(err, errcode.ErrCode_ErrNotFound))
 	require.Nil(t, currentServers)
 
 	t.Log("set push server")
@@ -684,13 +684,13 @@ func Test_getPushTargetsByServer(t *testing.T) {
 	}
 
 	// Update database
-	_, err := s.db.UpdateConversation(*conv)
+	_, err := s.db.UpdateConversation(conv)
 	require.NoError(t, err)
 
 	// Share member1 device1 token on server1
 	err = s.db.SavePushMemberToken(tokenID11, convPK, &messengertypes.AppMessage_PushSetMemberToken{
 		MemberToken: &messengertypes.PushMemberTokenUpdate{
-			DevicePK: device1PK,
+			DevicePk: device1PK,
 			Server: &messengertypes.PushServer{
 				Addr: pushServer1Addr,
 				Key:  pushServer1PK,
@@ -703,7 +703,7 @@ func Test_getPushTargetsByServer(t *testing.T) {
 	// Share member2 device1 token on server1
 	err = s.db.SavePushMemberToken(tokenID21, convPK, &messengertypes.AppMessage_PushSetMemberToken{
 		MemberToken: &messengertypes.PushMemberTokenUpdate{
-			DevicePK: device2PK,
+			DevicePk: device2PK,
 			Server: &messengertypes.PushServer{
 				Addr: pushServer1Addr,
 				Key:  pushServer1PK,
@@ -716,7 +716,7 @@ func Test_getPushTargetsByServer(t *testing.T) {
 	// Share member2 device1 token on server2
 	err = s.db.SavePushMemberToken(tokenID22, convPK, &messengertypes.AppMessage_PushSetMemberToken{
 		MemberToken: &messengertypes.PushMemberTokenUpdate{
-			DevicePK: device2PK,
+			DevicePk: device2PK,
 			Server: &messengertypes.PushServer{
 				Addr: pushServer2Addr,
 				Key:  pushServer2PK,
@@ -729,8 +729,8 @@ func Test_getPushTargetsByServer(t *testing.T) {
 	// get push member token by asking for member1 device1
 	targets, memberDevices, err := s.getPushTargetsByServer(convPK, []*messengertypes.MemberWithDevices{
 		{
-			MemberPK: member1PK,
-			DevicePKs: []string{
+			MemberPk: member1PK,
+			DevicesPks: []string{
 				device1PK,
 			},
 		},
@@ -740,14 +740,14 @@ func Test_getPushTargetsByServer(t *testing.T) {
 	require.Len(t, targets[pushServer1Addr], 1)
 	require.Equal(t, pushDevice1Token, targets[pushServer1Addr][0].OpaqueToken)
 	require.Len(t, memberDevices, 1)
-	require.Equal(t, member1PK, memberDevices[0].MemberPK)
-	require.Len(t, memberDevices[0].DevicePKs, 1)
-	require.Equal(t, device1PK, memberDevices[0].DevicePKs[0])
+	require.Equal(t, member1PK, memberDevices[0].MemberPk)
+	require.Len(t, memberDevices[0].DevicesPks, 1)
+	require.Equal(t, device1PK, memberDevices[0].DevicesPks[0])
 
 	// get push member token by asking for member1 devices
 	targets, memberDevices, err = s.getPushTargetsByServer(convPK, []*messengertypes.MemberWithDevices{
 		{
-			MemberPK: member1PK,
+			MemberPk: member1PK,
 		},
 	})
 	require.NoError(t, err)
@@ -755,10 +755,10 @@ func Test_getPushTargetsByServer(t *testing.T) {
 	require.Len(t, targets[pushServer1Addr], 1)
 	require.Equal(t, pushDevice1Token, targets[pushServer1Addr][0].OpaqueToken)
 	require.Len(t, memberDevices, 1)
-	require.Equal(t, member1PK, memberDevices[0].MemberPK)
-	require.Len(t, memberDevices[0].DevicePKs, 2)
-	require.Equal(t, device1PK, memberDevices[0].DevicePKs[0])
-	require.Equal(t, device11PK, memberDevices[0].DevicePKs[1])
+	require.Equal(t, member1PK, memberDevices[0].MemberPk)
+	require.Len(t, memberDevices[0].DevicesPks, 2)
+	require.Equal(t, device1PK, memberDevices[0].DevicesPks[0])
+	require.Equal(t, device11PK, memberDevices[0].DevicesPks[1])
 
 	// get push member token by asking for all devices of the conversation
 	targets, memberDevices, err = s.getPushTargetsByServer(convPK, []*messengertypes.MemberWithDevices{})
@@ -770,14 +770,14 @@ func Test_getPushTargetsByServer(t *testing.T) {
 	require.Len(t, targets[pushServer2Addr], 1)
 	require.Equal(t, pushDevice2Token, targets[pushServer2Addr][0].OpaqueToken)
 	require.Len(t, memberDevices, 2)
-	require.Equal(t, member1PK, memberDevices[0].MemberPK)
-	require.Equal(t, member2PK, memberDevices[1].MemberPK)
-	require.Len(t, memberDevices[0].DevicePKs, 2)
-	require.Equal(t, device1PK, memberDevices[0].DevicePKs[0])
-	require.Equal(t, device11PK, memberDevices[0].DevicePKs[1])
-	require.Len(t, memberDevices[1].DevicePKs, 2)
-	require.Equal(t, device2PK, memberDevices[1].DevicePKs[0])
-	require.Equal(t, device21PK, memberDevices[1].DevicePKs[1])
+	require.Equal(t, member1PK, memberDevices[0].MemberPk)
+	require.Equal(t, member2PK, memberDevices[1].MemberPk)
+	require.Len(t, memberDevices[0].DevicesPks, 2)
+	require.Equal(t, device1PK, memberDevices[0].DevicesPks[0])
+	require.Equal(t, device11PK, memberDevices[0].DevicesPks[1])
+	require.Len(t, memberDevices[1].DevicesPks, 2)
+	require.Equal(t, device2PK, memberDevices[1].DevicesPks[0])
+	require.Equal(t, device21PK, memberDevices[1].DevicesPks[1])
 }
 
 func initTestingService(ctx context.Context, t *testing.T, devicePushSK *[32]byte) (*TestingService, func(), *messengerdb.DBWrapper) {

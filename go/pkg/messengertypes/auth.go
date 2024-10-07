@@ -7,5 +7,5 @@ import (
 )
 
 func (m *AppMessage_ServiceAddToken) TokenID() string {
-	return uuid.NewV5(uuid.NamespaceURL, fmt.Sprintf("%s/%s", m.AuthenticationURL, m.Token)).String()
+	return uuid.NewV5(uuid.NamespaceURL, fmt.Sprintf("%s/%s", m.AuthenticationUrl, m.Token)).String()
 }

@@ -22,12 +22,12 @@ func GetDataVersion(dir string) (string, error) {
 		return "0", nil
 	}
 	if err != nil {
-		return "", errcode.TODO.Wrap(err)
+		return "", errcode.ErrCode_TODO.Wrap(err)
 	}
 
 	versionBytes, err := os.ReadFile(dataVersionPath)
 	if err != nil {
-		return "", errcode.TODO.Wrap(err)
+		return "", errcode.ErrCode_TODO.Wrap(err)
 	}
 
 	return (string)(versionBytes), nil

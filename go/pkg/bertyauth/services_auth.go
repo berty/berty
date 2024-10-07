@@ -12,12 +12,13 @@ import (
 	"golang.org/x/crypto/nacl/secretbox"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/proto"
 	"gopkg.in/square/go-jose.v2"
 
 	"berty.tech/berty/v2/go/pkg/authtypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
-	"berty.tech/weshnet/pkg/cryptoutil"
+	"berty.tech/weshnet/v2/pkg/cryptoutil"
 )
 
 type AuthTokenVerifier struct {
@@ -33,12 +34,12 @@ type AuthTokenIssuer struct {
 
 func NewAuthTokenVerifier(secret []byte, pk ed25519.PublicKey) (*AuthTokenVerifier, error) {
 	if pk == nil {
-		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("pk is nil"))
+		return nil, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("pk is nil"))
 	}
 
 	secretArr, err := cryptoutil.KeySliceToArray(secret)
 	if err != nil {
-		return nil, errcode.ErrInvalidInput.Wrap(err)
+		return nil, errcode.ErrCode_ErrInvalidInput.Wrap(err)
 	}
 
 	return &AuthTokenVerifier{
@@ -50,7 +51,7 @@ func NewAuthTokenVerifier(secret []byte, pk ed25519.PublicKey) (*AuthTokenVerifi
 
 func NewAuthTokenIssuer(secret []byte, sk ed25519.PrivateKey) (*AuthTokenIssuer, error) {
 	if sk == nil {
-		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("sk is nil"))
+		return nil, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("sk is nil"))
 	}
 
 	tokVerifier, err := NewAuthTokenVerifier(secret, sk.Public().(ed25519.PublicKey))
@@ -95,11 +96,11 @@ func (r *AuthTokenIssuer) encryptSign(payload []byte) (string, error) {
 
 func (r *AuthTokenIssuer) IssueCode(codeChallenge string, services []string) (string, error) {
 	if len(services) == 0 {
-		return "", errcode.ErrInvalidInput.Wrap(fmt.Errorf("no services specified"))
+		return "", errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("no services specified"))
 	}
 
 	if len(codeChallenge) == 0 {
-		return "", errcode.ErrInvalidInput.Wrap(fmt.Errorf("no codeChallenge specified"))
+		return "", errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("no codeChallenge specified"))
 	}
 
 	codePayload := &messengertypes.ServicesTokenCode{
@@ -107,7 +108,7 @@ func (r *AuthTokenIssuer) IssueCode(codeChallenge string, services []string) (st
 		CodeChallenge: codeChallenge,
 	}
 
-	payload, err := codePayload.Marshal()
+	payload, err := proto.Marshal(codePayload)
 	if err != nil {
 		return "", err
 	}
@@ -127,7 +128,7 @@ func (r *AuthTokenVerifier) decryptVerify(token string) ([]byte, error) {
 	}
 
 	if len(data) < secretbox.Overhead+cryptoutil.NonceSize {
-		return nil, errcode.ErrCryptoDecrypt
+		return nil, errcode.ErrCode_ErrCryptoDecrypt
 	}
 
 	nonce := [cryptoutil.NonceSize]byte{}
@@ -137,7 +138,7 @@ func (r *AuthTokenVerifier) decryptVerify(token string) ([]byte, error) {
 
 	decrypted, ok := secretbox.Open(nil, data[cryptoutil.NonceSize:], &nonce, r.secret)
 	if !ok {
-		return nil, errcode.ErrCryptoDecrypt
+		return nil, errcode.ErrCode_ErrCryptoDecrypt
 	}
 
 	return decrypted, nil
@@ -150,12 +151,12 @@ func (r *AuthTokenVerifier) VerifyCode(code, codeVerifier string) (*messengertyp
 	}
 
 	codeObj := &messengertypes.ServicesTokenCode{}
-	if err := codeObj.Unmarshal(decrypted); err != nil {
+	if err := proto.Unmarshal(decrypted, codeObj); err != nil {
 		return nil, err
 	}
 
 	if AuthSessionCodeChallenge(codeVerifier) != codeObj.CodeChallenge {
-		return nil, errcode.ErrServicesAuthCodeChallenge
+		return nil, errcode.ErrCode_ErrServicesAuthCodeChallenge
 	}
 
 	return codeObj, nil
@@ -164,19 +165,19 @@ func (r *AuthTokenVerifier) VerifyCode(code, codeVerifier string) (*messengertyp
 func (r *AuthTokenIssuer) IssueToken(services []string) (string, error) {
 	tokenID, err := uuid.NewV4()
 	if err != nil {
-		return "", errcode.ErrInternal.Wrap(err)
+		return "", errcode.ErrCode_ErrInternal.Wrap(err)
 	}
 
 	if len(services) == 0 {
-		return "", errcode.ErrInvalidInput.Wrap(fmt.Errorf("no services specified"))
+		return "", errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("no services specified"))
 	}
 
 	tokenPayload := &messengertypes.ServicesTokenCode{
 		Services: services,
-		TokenID:  tokenID.String(),
+		TokenId:  tokenID.String(),
 	}
 
-	payload, err := tokenPayload.Marshal()
+	payload, err := proto.Marshal(tokenPayload)
 	if err != nil {
 		return "", err
 	}
@@ -191,12 +192,12 @@ func (r *AuthTokenVerifier) VerifyToken(token, serviceID string) (*messengertype
 	}
 
 	tokenObj := &messengertypes.ServicesTokenCode{}
-	if err := tokenObj.Unmarshal(decrypted); err != nil {
+	if err := proto.Unmarshal(decrypted, tokenObj); err != nil {
 		return nil, err
 	}
 
-	if tokenObj.TokenID == "" || tokenObj.CodeChallenge != "" {
-		return nil, errcode.ErrServicesAuthServiceInvalidToken
+	if tokenObj.TokenId == "" || tokenObj.CodeChallenge != "" {
+		return nil, errcode.ErrCode_ErrServicesAuthServiceInvalidToken
 	}
 
 	for _, s := range tokenObj.Services {
@@ -205,7 +206,7 @@ func (r *AuthTokenVerifier) VerifyToken(token, serviceID string) (*messengertype
 		}
 	}
 
-	return nil, errcode.ErrServicesAuthServiceNotSupported
+	return nil, errcode.ErrCode_ErrServicesAuthServiceNotSupported
 }
 
 func (r *AuthTokenVerifier) GRPCAuthInterceptor(serviceID string) func(ctx context.Context) (context.Context, error) {
@@ -220,7 +221,7 @@ func (r *AuthTokenVerifier) GRPCAuthInterceptor(serviceID string) func(ctx conte
 			return nil, status.Errorf(codes.PermissionDenied, err.Error())
 		}
 
-		ctx = context.WithValue(ctx, authtypes.ContextTokenHashField, tokenData.TokenID)
+		ctx = context.WithValue(ctx, authtypes.ContextTokenHashField, tokenData.TokenId)
 		ctx = context.WithValue(ctx, authtypes.ContextTokenIssuerField, r.issuerID)
 
 		return ctx, nil

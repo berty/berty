@@ -15,7 +15,7 @@ import (
 )
 
 // ClientInvokeUnary invoke a unary method
-func (s *service) ClientInvokeUnary(ctx context.Context, req *ClientInvokeUnary_Request) (*ClientInvokeUnary_Reply, error) {
+func (s *service) ClientInvokeUnary(_ context.Context, req *ClientInvokeUnary_Request) (*ClientInvokeUnary_Reply, error) {
 	client, ok := s.getServiceClient(req.MethodDesc)
 	if !ok {
 		return nil, fmt.Errorf("unknow or unregister service: `%s", req.GetMethodDesc().GetName())
@@ -47,7 +47,7 @@ func (s *service) ClientInvokeUnary(ctx context.Context, req *ClientInvokeUnary_
 }
 
 // CreateClientStream create a stream
-func (s *service) CreateClientStream(ctx context.Context, req *ClientCreateStream_Request) (*ClientCreateStream_Reply, error) {
+func (s *service) CreateClientStream(_ context.Context, req *ClientCreateStream_Request) (*ClientCreateStream_Reply, error) {
 	client, ok := s.getServiceClient(req.MethodDesc)
 	if !ok {
 		return nil, fmt.Errorf("unknow or unregister service: `%s", req.GetMethodDesc().GetName())
@@ -81,7 +81,7 @@ func (s *service) CreateClientStream(ctx context.Context, req *ClientCreateStrea
 }
 
 // Send Message over the given stream
-func (s *service) ClientStreamSend(ctx context.Context, req *ClientStreamSend_Request) (*ClientStreamSend_Reply, error) {
+func (s *service) ClientStreamSend(_ context.Context, req *ClientStreamSend_Request) (*ClientStreamSend_Reply, error) {
 	id := req.StreamId
 	cstream, err := s.getSream(id)
 	if err != nil {
@@ -105,7 +105,7 @@ func (s *service) ClientStreamSend(ctx context.Context, req *ClientStreamSend_Re
 }
 
 // Recv message over the given stream
-func (s *service) ClientStreamRecv(ctx context.Context, req *ClientStreamRecv_Request) (*ClientStreamRecv_Reply, error) {
+func (s *service) ClientStreamRecv(_ context.Context, req *ClientStreamRecv_Request) (*ClientStreamRecv_Reply, error) {
 	id := req.StreamId
 	cstream, err := s.getSream(id)
 	if err != nil {
@@ -116,7 +116,7 @@ func (s *service) ClientStreamRecv(ctx context.Context, req *ClientStreamRecv_Re
 }
 
 // Close the given stream
-func (s *service) ClientStreamClose(ctx context.Context, req *ClientStreamClose_Request) (*ClientStreamClose_Reply, error) {
+func (s *service) ClientStreamClose(_ context.Context, req *ClientStreamClose_Request) (*ClientStreamClose_Reply, error) {
 	id := req.StreamId
 
 	cstream, err := s.getSream(id)
@@ -135,7 +135,7 @@ func (s *service) ClientStreamClose(ctx context.Context, req *ClientStreamClose_
 }
 
 // Close send on the given stream and return reply
-func (s *service) ClientStreamCloseAndRecv(ctx context.Context, req *ClientStreamCloseAndRecv_Request) (*ClientStreamCloseAndRecv_Reply, error) {
+func (s *service) ClientStreamCloseAndRecv(_ context.Context, req *ClientStreamCloseAndRecv_Request) (*ClientStreamCloseAndRecv_Reply, error) {
 	id := req.StreamId
 	cstream, err := s.getSream(id)
 	if err != nil {
@@ -201,6 +201,10 @@ func convertMetadata(in metadata.MD) []*Metadata {
 	out := make([]*Metadata, in.Len())
 	i := 0
 	for k, v := range in {
+		if k == "grpc-status-details-bin" {
+			// ignore grpc-status-details-bin
+			continue
+		}
 		out[i] = &Metadata{
 			Key:    k,
 			Values: v,
@@ -221,7 +225,7 @@ func getServiceError(err error) *Error {
 		grpcErrCode = GRPCErrCode(s.Code())
 	}
 
-	errCode := errcode.Undefined
+	errCode := errcode.ErrCode_Undefined
 	errCodes := errcode.Codes(err)
 	if len(errCodes) > 0 {
 		errCode = errCodes[0]

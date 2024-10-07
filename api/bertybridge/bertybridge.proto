@@ -2,15 +2,9 @@ syntax = "proto3";
 
 package berty.bridge.v1;
 
-import "gogoproto/gogo.proto";
 import "berty/errcode.proto";
 
 option go_package = "berty.tech/berty/go/pkg/bertybridge";
-
-option (gogoproto.marshaler_all) = true;
-option (gogoproto.unmarshaler_all) = true;
-option (gogoproto.sizer_all) = true;
-
 
 // BridgeService used to create advanced grpc transport
 // /!\ UNARY SUPPORT ONLY /!\

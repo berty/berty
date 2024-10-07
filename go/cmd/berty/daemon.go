@@ -14,8 +14,8 @@ import (
 	"berty.tech/berty/v2/go/pkg/banner"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
-	"berty.tech/weshnet/pkg/logutil"
-	"berty.tech/weshnet/pkg/protocoltypes"
+	"berty.tech/weshnet/v2/pkg/logutil"
+	"berty.tech/weshnet/v2/pkg/protocoltypes"
 )
 
 func daemonCommand() *ffcli.Command {
@@ -78,9 +78,9 @@ func daemonCommand() *ffcli.Command {
 				}
 				info, err := protocolClient.ServiceGetConfiguration(ctx, &protocoltypes.ServiceGetConfiguration_Request{})
 				if err != nil {
-					return errcode.TODO.Wrap(err)
+					return errcode.ErrCode_TODO.Wrap(err)
 				}
-				logger.Named("main").Info("daemon initialized", logutil.PrivateString("peer-id", info.PeerID), logutil.PrivateStrings("listeners", info.Listeners))
+				logger.Named("main").Info("daemon initialized", logutil.PrivateString("peer-id", info.PeerId), logutil.PrivateStrings("listeners", info.Listeners))
 			}
 
 			// display startup info
@@ -95,38 +95,38 @@ func daemonCommand() *ffcli.Command {
 			if !noQRFlag {
 				messenger, err := manager.GetMessengerClient()
 				if err != nil {
-					return errcode.TODO.Wrap(err)
+					return errcode.ErrCode_TODO.Wrap(err)
 				}
 				ret, err := messenger.InstanceShareableBertyID(ctx, &messengertypes.InstanceShareableBertyID_Request{
 					DisplayName: manager.Node.Messenger.DisplayName,
 					Passphrase:  []byte(passphraseFlag),
 				})
 				if err != nil {
-					return errcode.TODO.Wrap(err)
+					return errcode.ErrCode_TODO.Wrap(err)
 				}
 				time.AfterFunc(time.Second, func() {
 					printLock.Lock()
-					qrterminal.GenerateHalfBlock(ret.InternalURL, qrterminal.L, os.Stderr)
+					qrterminal.GenerateHalfBlock(ret.InternalUrl, qrterminal.L, os.Stderr)
 					// fmt.Fprintln(os.Stderr, ret.InternalURL)
-					fmt.Fprintln(os.Stderr, ret.WebURL)
+					fmt.Fprintln(os.Stderr, ret.WebUrl)
 					printLock.Unlock()
 				})
 			}
 			if !noSystemInfoFlag {
 				messenger, err := manager.GetMessengerClient()
 				if err != nil {
-					return errcode.TODO.Wrap(err)
+					return errcode.ErrCode_TODO.Wrap(err)
 				}
 				ret, err := messenger.SystemInfo(ctx, &messengertypes.SystemInfo_Request{})
 				if err != nil {
-					return errcode.TODO.Wrap(err)
+					return errcode.ErrCode_TODO.Wrap(err)
 				}
 				time.AfterFunc(time.Second, func() {
 					printLock.Lock()
 					fmt.Fprintf(os.Stderr, "  Berty: %-30s  Go: %-10s\n", ret.Protocol.Process.Version, ret.Protocol.Process.GoVersion)
-					fmt.Fprintf(os.Stderr, "  PID: %-12d  Arch: %-12s  OS: %-10s\n", ret.Protocol.Process.PID, ret.Protocol.Process.Arch, ret.Protocol.Process.OperatingSystem)
+					fmt.Fprintf(os.Stderr, "  PID: %-12d  Arch: %-12s  OS: %-10s\n", ret.Protocol.Process.Pid, ret.Protocol.Process.Arch, ret.Protocol.Process.OperatingSystem)
 					fmt.Fprintf(os.Stderr, "  P2P peers: %-26d  Hostname: %-30s\n", ret.Protocol.P2P.ConnectedPeers, ret.Protocol.Process.HostName)
-					fmt.Fprintf(os.Stderr, "  Accounts=%-2d Contacts=%-2d Convs=%-2d Members=%-2d Devices=%-2d\n", ret.Messenger.DB.Accounts, ret.Messenger.DB.Contacts, ret.Messenger.DB.Conversations, ret.Messenger.DB.Members, ret.Messenger.DB.Devices)
+					fmt.Fprintf(os.Stderr, "  Accounts=%-2d Contacts=%-2d Convs=%-2d Members=%-2d Devices=%-2d\n", ret.Messenger.Db.Accounts, ret.Messenger.Db.Contacts, ret.Messenger.Db.Conversations, ret.Messenger.Db.Members, ret.Messenger.Db.Devices)
 					fmt.Fprintf(os.Stderr, "  Work dir: %-50s\n", ret.Protocol.Process.WorkingDir)
 					printLock.Unlock()
 				})

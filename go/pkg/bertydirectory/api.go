@@ -84,20 +84,20 @@ func (s *DirectoryService) Register(_ context.Context, request *directorytypes.R
 		lockedUntilDate = expirationDate
 	}
 
-	requestAccountPublicKey, requestAccountRDVSeed, err := getBertyURIParts(request.AccountURI)
+	requestAccountPublicKey, requestAccountRDVSeed, err := getBertyURIParts(request.AccountUri)
 	if err != nil {
-		return nil, errcode.ErrDeserialization.Wrap(err)
+		return nil, errcode.ErrCode_ErrDeserialization.Wrap(err)
 	}
 
 	directoryIdentifier, err := checkVerifiedCredential(s.allowedIssuers, request.VerifiedCredential, requestAccountPublicKey)
 	if err != nil {
-		return nil, errcode.ErrServicesDirectoryInvalidVerifiedCredentialSubject.Wrap(err)
+		return nil, errcode.ErrCode_ErrServicesDirectoryInvalidVerifiedCredentialSubject.Wrap(err)
 	}
 
 	// check if an existing token already exists
 	recordToken, unregisterToken, err := s.checkExistingRecord(directoryIdentifier, requestAccountPublicKey, requestAccountRDVSeed, request.OverwriteExistingRecord)
 	if err != nil {
-		return nil, errcode.ErrInternal.Wrap(err)
+		return nil, errcode.ErrCode_ErrInternal.Wrap(err)
 	}
 
 	if err := s.ds.Put(&directorytypes.Record{
@@ -106,7 +106,7 @@ func (s *DirectoryService) Register(_ context.Context, request *directorytypes.R
 		ExpiresAt:            expirationDate,
 		LockedUntil:          lockedUntilDate,
 		UnregisterToken:      unregisterToken,
-		AccountURI:           request.AccountURI,
+		AccountUri:           request.AccountUri,
 		VerifiedCredential:   request.VerifiedCredential,
 	}); err != nil {
 		return nil, err
@@ -125,22 +125,22 @@ func (s *DirectoryService) checkExistingRecord(directoryIdentifier string, reque
 	recordToken := ""
 
 	existingRecord, err := s.ds.Get(directoryIdentifier)
-	if err != nil && err != errcode.ErrNotFound {
+	if err != nil && err != errcode.ErrCode_ErrNotFound {
 		return "", "", err
 	}
 
 	if existingRecord != nil {
 		existingIsSameAccount, existingIsSameRDVSeed, err := isExistingRecordBeingRenewed(existingRecord, requestAccountPublicKey, requestAccountRDVSeed)
 		if err != nil {
-			return "", "", errcode.ErrInternal.Wrap(err)
+			return "", "", errcode.ErrCode_ErrInternal.Wrap(err)
 		}
 
 		if (!existingIsSameAccount || !existingIsSameRDVSeed) && existingRecord.ExpiresAt > time.Now().UnixNano() {
 			if !overwriteExistingFlag {
-				return "", "", errcode.ErrServicesDirectoryExplicitReplaceFlagRequired
+				return "", "", errcode.ErrCode_ErrServicesDirectoryExplicitReplaceFlagRequired
 			}
 			if existingRecord.LockedUntil > time.Now().UnixNano() && !existingIsSameAccount {
-				return "", "", errcode.ErrServicesDirectoryRecordLockedAndCantBeReplaced
+				return "", "", errcode.ErrCode_ErrServicesDirectoryRecordLockedAndCantBeReplaced
 			}
 		}
 
@@ -162,7 +162,7 @@ func (s *DirectoryService) Query(request *directorytypes.Query_Request, server d
 	for _, identifier := range request.DirectoryIdentifiers {
 		result, err := s.ds.Get(identifier)
 		if err != nil {
-			if err == errcode.ErrNotFound {
+			if err == errcode.ErrCode_ErrNotFound {
 				continue
 			}
 
@@ -172,11 +172,11 @@ func (s *DirectoryService) Query(request *directorytypes.Query_Request, server d
 		err = server.Send(&directorytypes.Query_Reply{
 			DirectoryIdentifier: result.DirectoryIdentifier,
 			ExpiresAt:           result.ExpiresAt,
-			AccountURI:          result.AccountURI,
+			AccountUri:          result.AccountUri,
 			VerifiedCredential:  result.VerifiedCredential,
 		})
 		if err != nil {
-			return errcode.ErrStreamWrite.Wrap(err)
+			return errcode.ErrCode_ErrStreamWrite.Wrap(err)
 		}
 	}
 
@@ -185,24 +185,24 @@ func (s *DirectoryService) Query(request *directorytypes.Query_Request, server d
 
 func (s *DirectoryService) Unregister(_ context.Context, request *directorytypes.Unregister_Request) (*directorytypes.Unregister_Reply, error) {
 	if request.UnregisterToken == "" {
-		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("no unregister token provided"))
+		return nil, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("no unregister token provided"))
 	}
 
 	existingRecord, err := s.ds.Get(request.DirectoryIdentifier)
 	if err != nil {
-		return nil, errcode.ErrDBRead.Wrap(err)
+		return nil, errcode.ErrCode_ErrDBRead.Wrap(err)
 	}
 
 	if existingRecord == nil {
-		return nil, errcode.ErrNotFound.Wrap(fmt.Errorf("directory service record not found"))
+		return nil, errcode.ErrCode_ErrNotFound.Wrap(fmt.Errorf("directory service record not found"))
 	}
 
 	if existingRecord.UnregisterToken != request.UnregisterToken || request.UnregisterToken == "" {
-		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("invalid unregister token"))
+		return nil, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("invalid unregister token"))
 	}
 
 	if err := s.ds.Del(request.DirectoryIdentifier); err != nil {
-		return nil, errcode.ErrDBWrite.Wrap(err)
+		return nil, errcode.ErrCode_ErrDBWrite.Wrap(err)
 	}
 
 	return &directorytypes.Unregister_Reply{}, nil

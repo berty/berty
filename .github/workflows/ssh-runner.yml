@@ -3,16 +3,16 @@ on:
   workflow_dispatch:
     inputs:
       os:
-        description: 'Operating System'
+        description: "Operating System"
         required: true
         default: ubuntu-latest
         type: choice
         options:
-        - ubuntu-latest
-        - macos-latest
-        - windows-latest
+          - ubuntu-latest
+          - macos-latest
+          - windows-latest
       mod:
-        description: 'Install Go/Node modules'
+        description: "Install Go/Node modules"
         required: true
         default: true
         type: boolean
@@ -61,7 +61,7 @@ jobs:
         uses: actions/cache@v2.1.6
         with:
           path: ~/go/pkg/mod
-          key:          ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-${{ hashFiles('go/**/go.sum') }}
+          key: ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-${{ hashFiles('go/**/go.sum') }}
           restore-keys: ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-
 
       - name: Cache node modules
@@ -69,7 +69,7 @@ jobs:
         uses: actions/cache@v2.1.6
         with:
           path: js/node_modules
-          key:          ${{ runner.OS }}-node-${{ env.node_version }}-${{ env.json_cache-versions_node }}-${{ hashFiles('js/yarn.lock') }}
+          key: ${{ runner.OS }}-node-${{ env.node_version }}-${{ env.json_cache-versions_node }}-${{ hashFiles('js/yarn.lock') }}
           restore-keys: ${{ runner.OS }}-node-${{ env.node_version }}-${{ env.json_cache-versions_node }}-
 
       - name: Fetch go modules
@@ -85,13 +85,22 @@ jobs:
       - name: Install emacs
         shell: bash
         run: |
-            if [ "$RUNNER_OS" == "Linux" ]; then
-                sudo apt-get install -y emacs
-            elif [ "$RUNNER_OS" == "Windows" ]; then
-                choco install emacs
-            else
-                echo "Already installed!"
-            fi
+          if [ "$RUNNER_OS" == "Linux" ]; then
+              sudo apt-get install -y emacs
+          elif [ "$RUNNER_OS" == "Windows" ]; then
+              choco install emacs
+          else
+              echo "Already installed!"
+          fi
+
+      - name: Install LazyVim
+        shell: bash
+        run: |
+          if [ "$RUNNER_OS" == "Windows" ]; then
+              git clone https://github.com/LazyVim/starter $env:LOCALAPPDATA\nvim
+          else
+              git clone https://github.com/LazyVim/starter ~/.config/nvim
+          fi
 
       - name: Setup tmate session
         uses: mxschmitt/action-tmate@v3

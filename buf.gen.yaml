@@ -1,7 +1,8 @@
 version: v1
 plugins:
-  - plugin: gogo
-    out: ./../..
+  - name: go
+    out: ./
+    opt: module=berty.tech/berty
   - plugin: go-grpc
     out: ./
     opt: module=berty.tech/berty

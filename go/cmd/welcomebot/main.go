@@ -15,12 +15,12 @@ import (
 	"sync"
 	"time"
 
-	"github.com/gogo/protobuf/proto"
 	qrterminal "github.com/mdp/qrterminal/v3"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/connectivity"
 	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/protobuf/proto"
 	"moul.io/u"
 	"moul.io/zapconfig"
 
@@ -150,7 +150,7 @@ func welcomebot() error {
 
 	// init messenger gRPC client
 	{
-		cc, err := grpc.DialContext(ctx, *nodeAddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+		cc, err := grpc.NewClient(*nodeAddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 		if err != nil {
 			return fmt.Errorf("unable to connect with remote berty messenger node: %w", err)
 		}
@@ -181,8 +181,8 @@ func welcomebot() error {
 		if err != nil {
 			return fmt.Errorf("get instance shareable berty ID failed: %w", err)
 		}
-		bot.logger.Info("retrieve instance Berty ID", zap.String("link", res.WebURL))
-		qrterminal.GenerateHalfBlock(res.InternalURL, qrterminal.L, os.Stdout)
+		bot.logger.Info("retrieve instance Berty ID", zap.String("link", res.WebUrl))
+		qrterminal.GenerateHalfBlock(res.InternalUrl, qrterminal.L, os.Stdout)
 	}
 
 	// join staff conversation

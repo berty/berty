@@ -1,7 +1,7 @@
 package bertybridge
 
 import (
-	"berty.tech/weshnet/pkg/netmanager"
+	"berty.tech/weshnet/v2/pkg/netmanager"
 )
 
 const (

@@ -2,13 +2,7 @@ syntax = "proto3";
 
 package berty.push.v1;
 
-import "gogoproto/gogo.proto";
-
 option go_package = "berty.tech/berty/go/pkg/pushtypes";
-
-option (gogoproto.marshaler_all) = true;
-option (gogoproto.unmarshaler_all) = true;
-option (gogoproto.sizer_all) = true;
 
 // PushService
 service PushService {
@@ -24,7 +18,7 @@ message PushServiceReceiver {
   PushServiceTokenType token_type = 1;
 
   // bundle_id is the app identifier
-  string bundle_id = 2 [(gogoproto.customname) = "BundleID"];
+  string bundle_id = 2;
 
   // token is the device identifier used
   bytes token = 3;
@@ -47,7 +41,7 @@ message PushServiceServerInfo {
 }
 
 message PushServiceSupportedTokenType {
-  string app_bundle_id = 1 [(gogoproto.customname) = "AppBundleID"];
+  string app_bundle_id = 1;
   PushServiceTokenType token_type = 2;
 }
 
@@ -116,14 +110,14 @@ message DecryptedPush {
     MemberDetailsChanged = 11;
   }
 
-  string account_id = 1 [(gogoproto.customname) = "AccountID"];
+  string account_id = 1;
   string account_name = 2;
   string conversation_public_key = 3;
   string conversation_display_name = 4;
   string member_public_key = 5;
   string member_display_name = 6;
   PushType push_type = 7;
-  string payload_attrs_json = 8 [(gogoproto.customname) = "PayloadAttrsJSON"];
+  string payload_attrs_json = 8;
   string deep_link = 9;
   bool already_received = 10;
   bool account_muted = 11;

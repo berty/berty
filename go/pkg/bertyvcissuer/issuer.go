@@ -19,14 +19,15 @@ import (
 	"go.uber.org/zap"
 	"golang.org/x/crypto/curve25519"
 	"golang.org/x/crypto/nacl/box"
+	"google.golang.org/protobuf/proto"
 
 	"berty.tech/berty/v2/go/pkg/bertylinks"
 	"berty.tech/berty/v2/go/pkg/bertyvcissuer/templates"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
-	weshnet_vc "berty.tech/weshnet/pkg/bertyvcissuer"
-	"berty.tech/weshnet/pkg/cryptoutil"
-	"berty.tech/weshnet/pkg/verifiablecredstypes"
+	weshnet_vc "berty.tech/weshnet/v2/pkg/bertyvcissuer"
+	"berty.tech/weshnet/v2/pkg/cryptoutil"
+	"berty.tech/weshnet/v2/pkg/verifiablecredstypes"
 )
 
 const cryptoChallengeTimeout = 10 * time.Minute
@@ -208,12 +209,12 @@ func (i *VCIssuer) challenge(w http.ResponseWriter, r *http.Request) {
 func (i *VCIssuer) computeChallenge(timestamp time.Time, bertyIDLink string, nonce []byte, state string, redirectURI string) (digest []byte, parsedLink *messengertypes.BertyLink, err error) {
 	parsedLink, err = bertylinks.UnmarshalLink(bertyIDLink, nil)
 	if err != nil {
-		return nil, nil, errcode.ErrInvalidInput.Wrap(err)
+		return nil, nil, errcode.ErrCode_ErrInvalidInput.Wrap(err)
 	}
 
 	timestampBytes, err := timestamp.MarshalBinary()
 	if err != nil {
-		return nil, nil, errcode.ErrSerialization.Wrap(err)
+		return nil, nil, errcode.ErrCode_ErrSerialization.Wrap(err)
 	}
 
 	out := &verifiablecredstypes.StateChallenge{
@@ -221,17 +222,17 @@ func (i *VCIssuer) computeChallenge(timestamp time.Time, bertyIDLink string, non
 		Nonce:       nonce,
 		BertyLink:   bertyIDLink,
 		State:       state,
-		RedirectURI: redirectURI,
+		RedirectUri: redirectURI,
 	}
 
-	digest, err = out.Marshal()
+	digest, err = proto.Marshal(out)
 	if err != nil {
-		return nil, nil, errcode.ErrSerialization.Wrap(err)
+		return nil, nil, errcode.ErrCode_ErrSerialization.Wrap(err)
 	}
 
 	boxed, err := box.SealAnonymous(nil, digest, i.issuerPub, crand.Reader)
 	if err != nil {
-		return nil, nil, errcode.ErrCryptoEncrypt.Wrap(err)
+		return nil, nil, errcode.ErrCode_ErrCryptoEncrypt.Wrap(err)
 	}
 
 	return boxed, parsedLink, nil
@@ -249,7 +250,7 @@ func (i *VCIssuer) checkAndGetChallenge(challengeStr string) (*verifiablecredsty
 	}
 
 	challenge := &verifiablecredstypes.StateChallenge{}
-	if err := challenge.Unmarshal(decryptedChallengeBytes); err != nil {
+	if err := proto.Unmarshal(decryptedChallengeBytes, challenge); err != nil {
 		return nil, nil, ErrChallengeVerify
 	}
 
@@ -276,7 +277,7 @@ func (i *VCIssuer) checkChallengeIssuerSig(challenge *verifiablecredstypes.State
 		return err
 	}
 
-	if ok := ed25519.Verify(link.BertyID.AccountPK, challengeBytes, challengeClientSig); !ok {
+	if ok := ed25519.Verify(link.BertyId.AccountPk, challengeBytes, challengeClientSig); !ok {
 		return ErrChallengeFailed
 	}
 
@@ -306,7 +307,7 @@ func (i *VCIssuer) checkAuthenticateChallenge(w http.ResponseWriter, r *http.Req
 	stateStr, err := i.sealVerifiableContext(&verifiablecredstypes.StateCode{
 		Timestamp:   timestamp,
 		BertyLink:   challenge.BertyLink,
-		RedirectURI: challenge.RedirectURI,
+		RedirectUri: challenge.RedirectUri,
 		State:       challenge.State,
 	})
 	if err != nil {
@@ -318,14 +319,14 @@ func (i *VCIssuer) checkAuthenticateChallenge(w http.ResponseWriter, r *http.Req
 }
 
 func (i *VCIssuer) sealVerifiableContext(state *verifiablecredstypes.StateCode) (string, error) {
-	stateToSerialize, err := state.Marshal()
+	stateToSerialize, err := proto.Marshal(state)
 	if err != nil {
-		return "", errcode.ErrSerialization.Wrap(err)
+		return "", errcode.ErrCode_ErrSerialization.Wrap(err)
 	}
 
 	stateData, err := box.SealAnonymous(nil, stateToSerialize, i.issuerPub, crand.Reader)
 	if err != nil {
-		return "", errcode.ErrCryptoEncrypt.Wrap(err)
+		return "", errcode.ErrCode_ErrCryptoEncrypt.Wrap(err)
 	}
 
 	return base64.URLEncoding.EncodeToString(stateData), nil
@@ -343,13 +344,13 @@ func (i *VCIssuer) openVerifiableContext(stateBase64 string) (*verifiablecredsty
 	}
 
 	state := &verifiablecredstypes.StateCode{}
-	if err := state.Unmarshal(stateBytes); err != nil {
+	if err := proto.Unmarshal(stateBytes, state); err != nil {
 		return nil, err
 	}
 
 	issuedAt := time.Time{}
 	if err := issuedAt.UnmarshalBinary(state.Timestamp); err != nil {
-		return nil, errcode.ErrDeserialization.Wrap(err)
+		return nil, errcode.ErrCode_ErrDeserialization.Wrap(err)
 	}
 
 	if issuedAt.Before(time.Now().Add(-cryptoChallengeTimeout)) {
@@ -469,7 +470,7 @@ func (i *VCIssuer) proof(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 
-			uri := makeRedirectSuccessURI(state.RedirectURI, state.State, signedProof)
+			uri := makeRedirectSuccessURI(state.RedirectUri, state.State, signedProof)
 			w.Header().Add("x-auth-redirect", uri)
 
 			if err := templates.TemplateRedirect.Execute(w, &templates.TemplateParamsRedirect{
@@ -528,7 +529,7 @@ func (i *VCIssuer) TestHelperIssueTokenCallbackURI(t *testing.T, initURL string,
 	stateCode := &verifiablecredstypes.StateCode{
 		Timestamp:   timestamp,
 		BertyLink:   challenge.BertyLink,
-		RedirectURI: challenge.RedirectURI,
+		RedirectUri: challenge.RedirectUri,
 		State:       challenge.State,
 	}
 
@@ -538,7 +539,7 @@ func (i *VCIssuer) TestHelperIssueTokenCallbackURI(t *testing.T, initURL string,
 		return ""
 	}
 
-	return makeRedirectSuccessURI(stateCode.RedirectURI, stateCode.State, signedProof)
+	return makeRedirectSuccessURI(stateCode.RedirectUri, stateCode.State, signedProof)
 }
 
 func (i *VCIssuer) GetIssuerID() string {

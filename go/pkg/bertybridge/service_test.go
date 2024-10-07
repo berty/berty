@@ -4,16 +4,16 @@ import (
 	context "context"
 	"testing"
 
-	proto "github.com/gogo/protobuf/proto"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/zap"
 	grpc "google.golang.org/grpc"
+	"google.golang.org/protobuf/proto"
 
 	berty_testutil "berty.tech/berty/v2/go/internal/testutil"
 	errcode "berty.tech/berty/v2/go/pkg/errcode"
-	"berty.tech/weshnet/pkg/grpcutil"
-	"berty.tech/weshnet/pkg/testutil"
+	"berty.tech/weshnet/v2/pkg/grpcutil"
+	"berty.tech/weshnet/v2/pkg/testutil"
 )
 
 const echoStringTest = "Im sorry Dave, Im afraid I cant do that"
@@ -53,7 +53,7 @@ func TestUnaryService(t *testing.T) {
 		require.NoError(t, err)
 		require.NotNil(t, res.Error)
 		assert.Equal(t, GRPCErrCode_OK, res.Error.GrpcErrorCode)
-		assert.Equal(t, errcode.Undefined, res.Error.ErrorCode)
+		assert.Equal(t, errcode.ErrCode_Undefined, res.Error.ErrorCode)
 		assert.Nil(t, res.Error.ErrorDetails)
 	}
 }
@@ -86,7 +86,7 @@ func TestUnaryServiceError(t *testing.T) {
 		require.NoError(t, err)
 		require.NotNil(t, res.Error)
 		assert.Equal(t, GRPCErrCode_UNAVAILABLE, res.Error.GrpcErrorCode)
-		assert.Equal(t, errcode.ErrTestEcho, res.Error.ErrorCode)
+		assert.Equal(t, errcode.ErrCode_ErrTestEcho, res.Error.ErrorCode)
 		require.NotNil(t, res.Error.ErrorDetails)
 		assert.Greater(t, len(res.Error.ErrorDetails.Codes), 0)
 	}
@@ -135,7 +135,7 @@ func TestStreamService(t *testing.T) {
 			require.NoError(t, err)
 			require.NotNil(t, res.Error)
 			assert.Equal(t, GRPCErrCode_OK, res.Error.GrpcErrorCode)
-			assert.Equal(t, errcode.Undefined, res.Error.ErrorCode)
+			assert.Equal(t, errcode.ErrCode_Undefined, res.Error.ErrorCode)
 
 			var output berty_testutil.EchoTest_Reply
 			err = proto.Unmarshal(res.Payload, &output)
@@ -154,7 +154,7 @@ func TestStreamService(t *testing.T) {
 		require.NoError(t, err)
 		require.NotNil(t, res.Error)
 		assert.Equal(t, res.Error.GrpcErrorCode, GRPCErrCode_OK)
-		assert.Equal(t, res.Error.ErrorCode, errcode.Undefined)
+		assert.Equal(t, res.Error.ErrorCode, errcode.ErrCode_Undefined)
 	}
 }
 
@@ -191,7 +191,7 @@ func TestStreamServiceError(t *testing.T) {
 		require.NotNil(t, res.Error)
 
 		assert.Equal(t, GRPCErrCode_OK, res.Error.GrpcErrorCode)
-		assert.Equal(t, errcode.Undefined, res.Error.ErrorCode)
+		assert.Equal(t, errcode.ErrCode_Undefined, res.Error.ErrorCode)
 		streamid = res.StreamId
 	}
 
@@ -204,7 +204,7 @@ func TestStreamServiceError(t *testing.T) {
 		require.NotNil(t, res.Error)
 
 		assert.Equal(t, GRPCErrCode_UNAVAILABLE, res.Error.GrpcErrorCode)
-		assert.Equal(t, errcode.ErrTestEcho, res.Error.ErrorCode)
+		assert.Equal(t, errcode.ErrCode_ErrTestEcho, res.Error.ErrorCode)
 	}
 }
 
@@ -233,7 +233,7 @@ func TestDuplexStreamService(t *testing.T) {
 		require.NotNil(t, res.Error)
 
 		assert.Equal(t, GRPCErrCode_OK, res.Error.GrpcErrorCode)
-		assert.Equal(t, errcode.Undefined, res.Error.ErrorCode)
+		assert.Equal(t, errcode.ErrCode_Undefined, res.Error.ErrorCode)
 		streamid = res.StreamId
 	}
 
@@ -256,7 +256,7 @@ func TestDuplexStreamService(t *testing.T) {
 				require.NoError(t, err)
 				require.NotNil(t, res.Error)
 				assert.Equal(t, GRPCErrCode_OK, res.Error.GrpcErrorCode)
-				assert.Equal(t, errcode.Undefined, res.Error.ErrorCode)
+				assert.Equal(t, errcode.ErrCode_Undefined, res.Error.ErrorCode)
 			}
 
 			// test recv
@@ -268,7 +268,7 @@ func TestDuplexStreamService(t *testing.T) {
 				require.NoError(t, err)
 				require.NotNil(t, res.Error)
 				assert.Equal(t, GRPCErrCode_OK, res.Error.GrpcErrorCode)
-				assert.Equal(t, errcode.Undefined, res.Error.ErrorCode)
+				assert.Equal(t, errcode.ErrCode_Undefined, res.Error.ErrorCode)
 
 				var output berty_testutil.EchoDuplexTest_Reply
 				err = proto.Unmarshal(res.Payload, &output)
@@ -305,7 +305,7 @@ func TestDuplexStreamServiceError(t *testing.T) {
 		require.NotNil(t, res.Error)
 
 		assert.Equal(t, GRPCErrCode_OK, res.Error.GrpcErrorCode)
-		assert.Equal(t, errcode.Undefined, res.Error.ErrorCode)
+		assert.Equal(t, errcode.ErrCode_Undefined, res.Error.ErrorCode)
 		streamid = res.StreamId
 	}
 
@@ -328,7 +328,7 @@ func TestDuplexStreamServiceError(t *testing.T) {
 				require.NoError(t, err)
 				require.NotNil(t, res.Error)
 				assert.Equal(t, GRPCErrCode_OK, res.Error.GrpcErrorCode)
-				assert.Equal(t, errcode.Undefined, res.Error.ErrorCode)
+				assert.Equal(t, errcode.ErrCode_Undefined, res.Error.ErrorCode)
 			}
 
 			// test recv
@@ -340,7 +340,7 @@ func TestDuplexStreamServiceError(t *testing.T) {
 				require.NoError(t, err)
 				require.NotNil(t, res.Error)
 				assert.Equal(t, GRPCErrCode_OK, res.Error.GrpcErrorCode)
-				assert.Equal(t, errcode.Undefined, res.Error.ErrorCode)
+				assert.Equal(t, errcode.ErrCode_Undefined, res.Error.ErrorCode)
 
 				var output berty_testutil.EchoDuplexTest_Reply
 				err = proto.Unmarshal(res.Payload, &output)
@@ -369,7 +369,7 @@ func TestDuplexStreamServiceError(t *testing.T) {
 			require.NoError(t, err)
 			require.NotNil(t, res.Error)
 			assert.Equal(t, GRPCErrCode_OK, res.Error.GrpcErrorCode)
-			assert.Equal(t, errcode.Undefined, res.Error.ErrorCode)
+			assert.Equal(t, errcode.ErrCode_Undefined, res.Error.ErrorCode)
 		}
 
 		// test recv
@@ -381,7 +381,7 @@ func TestDuplexStreamServiceError(t *testing.T) {
 			require.NoError(t, err)
 			require.NotNil(t, res.Error)
 			assert.Equal(t, GRPCErrCode_UNAVAILABLE, res.Error.GrpcErrorCode)
-			assert.Equal(t, errcode.ErrTestEcho, res.Error.ErrorCode)
+			assert.Equal(t, errcode.ErrCode_ErrTestEcho, res.Error.ErrorCode)
 		}
 
 		// should not be able to send again

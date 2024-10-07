@@ -14,7 +14,7 @@ import (
 	"github.com/peterbourgon/ff/v3/ffcli"
 
 	"berty.tech/berty/v2/go/pkg/bertyvcissuer"
-	"berty.tech/weshnet/pkg/verifiablecredstypes"
+	"berty.tech/weshnet/v2/pkg/verifiablecredstypes"
 )
 
 func vcIssuerCommand() *ffcli.Command {
@@ -37,7 +37,7 @@ func vcIssuerCommand() *ffcli.Command {
 		Options:        ffSubcommandOptions(),
 		FlagSetBuilder: fsBuilder,
 		UsageFunc:      usageFunc,
-		Exec: func(ctx context.Context, args []string) error {
+		Exec: func(ctx context.Context, args []string) error { //nolint:revive
 			ctx, cancel := context.WithCancel(ctx)
 			defer cancel()
 
@@ -108,7 +108,7 @@ func vcIssuerCommand() *ffcli.Command {
 
 			g.Add(func() error {
 				return server.Serve(l)
-			}, func(err error) {
+			}, func(_ error) {
 				l.Close()
 			})
 

@@ -3,8 +3,8 @@ package bertymessenger
 import (
 	"sync"
 
-	"github.com/gogo/protobuf/proto"
 	"go.uber.org/multierr"
+	"google.golang.org/protobuf/proto"
 
 	"berty.tech/berty/v2/go/pkg/messengertypes"
 )

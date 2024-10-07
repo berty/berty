@@ -5,12 +5,12 @@ import (
 	"testing"
 	"time"
 
-	"github.com/gogo/protobuf/proto"
 	"github.com/stretchr/testify/require"
+	"google.golang.org/protobuf/proto"
 
 	"berty.tech/berty/v2/go/pkg/bertymessenger"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
-	"berty.tech/weshnet/pkg/testutil"
+	"berty.tech/weshnet/v2/pkg/testutil"
 )
 
 func TestFlappyBotCommunication(t *testing.T) {
@@ -64,7 +64,7 @@ func TestFlappyBotCommunication(t *testing.T) {
 		parsed, err := botClient.ParseDeepLink(ctx, &messengertypes.ParseDeepLink_Request{Link: bot.BertyIDURL()})
 		require.NoError(t, err)
 		_, err = userClient.SendContactRequest(ctx, &messengertypes.SendContactRequest_Request{
-			BertyID: parsed.GetLink().GetBertyID(),
+			BertyId: parsed.GetLink().GetBertyId(),
 		})
 		require.NoError(t, err)
 		time.Sleep(200 * time.Millisecond) // FIXME: replace with dynamic waiting

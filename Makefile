@@ -50,7 +50,7 @@ docker.build:
 
 goreleaser.dry-run:
 	$(call check-program, goreleaser)
-	goreleaser release --rm-dist --snapshot --skip-publish
+	goreleaser release --clean --snapshot --skip=publish
 .PHONY: goreleaser.dry-run
 
 doctor:

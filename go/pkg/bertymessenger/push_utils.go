@@ -16,9 +16,9 @@ import (
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
 	"berty.tech/berty/v2/go/pkg/pushtypes"
-	"berty.tech/weshnet/pkg/cryptoutil"
-	"berty.tech/weshnet/pkg/logutil"
-	"berty.tech/weshnet/pkg/protocoltypes"
+	"berty.tech/weshnet/v2/pkg/cryptoutil"
+	"berty.tech/weshnet/v2/pkg/logutil"
+	"berty.tech/weshnet/v2/pkg/protocoltypes"
 )
 
 // getPushTargetsByServer returns a map of push tokens grouped by server address for the given conversation.
@@ -33,12 +33,12 @@ func (svc *service) getPushTargetsByServer(conversationPK string, targetGroupMem
 	targetDevices := []string(nil)
 
 	if conversationPK == "" {
-		return nil, nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("conversationPK is required"))
+		return nil, nil, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("conversationPK is required"))
 	}
 
 	conversation, err := svc.db.GetConversationByPK(conversationPK)
 	if err != nil {
-		return nil, nil, errcode.ErrInternal.Wrap(err)
+		return nil, nil, errcode.ErrCode_ErrInternal.Wrap(err)
 	}
 
 	if len(targetGroupMembers) == 0 {
@@ -46,7 +46,7 @@ func (svc *service) getPushTargetsByServer(conversationPK string, targetGroupMem
 		case messengertypes.Conversation_MultiMemberType:
 			members, err := svc.db.GetMembersByConversation(conversationPK)
 			if err != nil {
-				return nil, nil, errcode.ErrInternal.Wrap(err)
+				return nil, nil, errcode.ErrCode_ErrInternal.Wrap(err)
 			}
 
 			for _, m := range members {
@@ -67,26 +67,26 @@ func (svc *service) getPushTargetsByServer(conversationPK string, targetGroupMem
 				}
 
 				pushMemberDevicesTargets = append(pushMemberDevicesTargets, &messengertypes.MemberWithDevices{
-					MemberPK:  m.PublicKey,
-					DevicePKs: localTargetDevices,
+					MemberPk:   m.PublicKey,
+					DevicesPks: localTargetDevices,
 				})
 
 				targetDevices = append(targetDevices, localTargetDevices...)
 			}
 
 			if len(targetDevices) == 0 {
-				return nil, nil, errcode.ErrInternal.Wrap(fmt.Errorf("no devices found for this conversation"))
+				return nil, nil, errcode.ErrCode_ErrInternal.Wrap(fmt.Errorf("no devices found for this conversation"))
 			}
 		case messengertypes.Conversation_ContactType:
 			localTargetDevices := []string(nil)
 			contact, err := svc.db.GetContactByConversation(conversation.PublicKey)
 			if err != nil {
-				return nil, nil, errcode.ErrInternal.Wrap(err)
+				return nil, nil, errcode.ErrCode_ErrInternal.Wrap(err)
 			}
 
 			devices, err := svc.db.GetDevicesForContact(conversationPK, contact.PublicKey)
 			if err != nil {
-				return nil, nil, errcode.ErrInternal.Wrap(err)
+				return nil, nil, errcode.ErrCode_ErrInternal.Wrap(err)
 			}
 
 			for _, device := range devices {
@@ -94,36 +94,36 @@ func (svc *service) getPushTargetsByServer(conversationPK string, targetGroupMem
 			}
 
 			pushMemberDevicesTargets = append(pushMemberDevicesTargets, &messengertypes.MemberWithDevices{
-				MemberPK:  contact.PublicKey,
-				DevicePKs: localTargetDevices,
+				MemberPk:   contact.PublicKey,
+				DevicesPks: localTargetDevices,
 			})
 
 			targetDevices = append(targetDevices, localTargetDevices...)
 		default:
-			return nil, nil, errcode.ErrInternal.Wrap(fmt.Errorf("invalid conversation type: %s", conversation.Type))
+			return nil, nil, errcode.ErrCode_ErrInternal.Wrap(fmt.Errorf("invalid conversation type: %s", conversation.Type))
 		}
 	} else {
 		for _, memberAndDevices := range targetGroupMembers {
 			localTargetDevices := []string(nil)
-			if memberAndDevices.MemberPK == "" {
+			if memberAndDevices.MemberPk == "" {
 				svc.logger.Warn("memberPK is required")
 				continue
 			}
 
-			devices, err := svc.db.GetDevicesForMember(conversationPK, memberAndDevices.MemberPK)
+			devices, err := svc.db.GetDevicesForMember(conversationPK, memberAndDevices.MemberPk)
 			if err != nil {
-				return nil, nil, errcode.ErrInternal.Wrap(err)
+				return nil, nil, errcode.ErrCode_ErrInternal.Wrap(err)
 			}
 
-			if len(memberAndDevices.DevicePKs) == 0 {
+			if len(memberAndDevices.DevicesPks) == 0 {
 				// If no devices provided push all devices
 				for _, device := range devices {
 					localTargetDevices = append(localTargetDevices, device.PublicKey)
 				}
 
 				pushMemberDevicesTargets = append(pushMemberDevicesTargets, &messengertypes.MemberWithDevices{
-					MemberPK:  memberAndDevices.MemberPK,
-					DevicePKs: localTargetDevices,
+					MemberPk:   memberAndDevices.MemberPk,
+					DevicesPks: localTargetDevices,
 				})
 
 				targetDevices = append(targetDevices, localTargetDevices...)
@@ -131,21 +131,21 @@ func (svc *service) getPushTargetsByServer(conversationPK string, targetGroupMem
 			}
 
 			// check that the devices belong to the member before adding them to the list
-			for _, pkB := range memberAndDevices.DevicePKs {
+			for _, pkB := range memberAndDevices.DevicesPks {
 				for i, device := range devices {
 					if device.PublicKey == pkB {
 						localTargetDevices = append(localTargetDevices, device.PublicKey)
 						break
 					}
 					if i == len(devices)-1 {
-						svc.logger.Warn("device not found for member", logutil.PrivateString("device", pkB), logutil.PrivateString("member", memberAndDevices.MemberPK))
+						svc.logger.Warn("device not found for member", logutil.PrivateString("device", pkB), logutil.PrivateString("member", memberAndDevices.MemberPk))
 					}
 				}
 			}
 
 			pushMemberDevicesTargets = append(pushMemberDevicesTargets, &messengertypes.MemberWithDevices{
-				MemberPK:  memberAndDevices.MemberPK,
-				DevicePKs: localTargetDevices,
+				MemberPk:   memberAndDevices.MemberPk,
+				DevicesPks: localTargetDevices,
 			})
 
 			targetDevices = append(targetDevices, localTargetDevices...)
@@ -199,7 +199,7 @@ func (svc *service) getPushClient(host string) (pushtypes.PushServiceClient, err
 		MinConnectTimeout: time.Second * 10,
 	})
 
-	cc, err := grpc.DialContext(svc.ctx, host, creds, connectParams)
+	cc, err := grpc.NewClient(host, creds, connectParams)
 	if err != nil {
 		return nil, err
 	}
@@ -212,44 +212,44 @@ func (svc *service) getPushClient(host string) (pushtypes.PushServiceClient, err
 func (svc *service) pushDeviceTokenBroadcast(ctx context.Context) error {
 	conversations, err := svc.db.GetAllConversations()
 	if err != nil {
-		return errcode.ErrDBRead.Wrap(err)
+		return errcode.ErrCode_ErrDBRead.Wrap(err)
 	}
 
 	svc.logger.Info("sharing push token", zap.Int("conversation-count", len(conversations)))
 
 	deviceToken, err := svc.db.GetPushDeviceToken(messengerutil.B64EncodeBytes(svc.accountGroup))
 	if err != nil {
-		return errcode.ErrDBRead.Wrap(err)
+		return errcode.ErrCode_ErrDBRead.Wrap(err)
 	}
 
 	if deviceToken.TokenType == pushtypes.PushServiceTokenType_PushTokenUndefined {
-		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("wrong push token type"))
+		return errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("wrong push token type"))
 	}
 
 	if len(deviceToken.Token) == 0 {
-		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("empty push token"))
+		return errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("empty push token"))
 	}
 
 	if len(deviceToken.PublicKey) == 0 {
-		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("empty push token public key"))
+		return errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("empty push token public key"))
 	}
 
-	if deviceToken.BundleID == "" {
-		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("empty push token bundle id"))
+	if deviceToken.BundleId == "" {
+		return errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("empty push token bundle id"))
 	}
 
 	pushServerRecords, err := svc.db.GetPushServerRecords(messengerutil.B64EncodeBytes(svc.accountGroup))
 	if err != nil {
-		return errcode.ErrDBRead.Wrap(err)
+		return errcode.ErrCode_ErrDBRead.Wrap(err)
 	}
 
 	for _, pushServerRecord := range pushServerRecords {
 		if len(pushServerRecord.ServerKey) != cryptoutil.KeySize {
-			return errcode.ErrInvalidInput.Wrap(fmt.Errorf("invalid push server key"))
+			return errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("invalid push server key"))
 		}
 
 		if pushServerRecord.ServerAddr == "" {
-			return errcode.ErrInvalidInput.Wrap(fmt.Errorf("invalid push server address"))
+			return errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("invalid push server address"))
 		}
 
 		for _, conversation := range conversations {
@@ -267,7 +267,7 @@ func (svc *service) pushShareToken(ctx context.Context, conversation *messengert
 		Token:              deviceToken.Token,
 		TokenType:          deviceToken.TokenType,
 		RecipientPublicKey: deviceToken.PublicKey,
-		BundleID:           deviceToken.BundleID,
+		BundleId:           deviceToken.BundleId,
 	}
 
 	pushServer := &messengertypes.PushServer{
@@ -277,10 +277,10 @@ func (svc *service) pushShareToken(ctx context.Context, conversation *messengert
 
 	memberToken, err := PushSealTokenForServer(pushReceiver, pushServer)
 	if err != nil {
-		return errcode.ErrInternal.Wrap(err)
+		return errcode.ErrCode_ErrInternal.Wrap(err)
 	}
 
-	memberToken.DevicePK = conversation.LocalDevicePublicKey
+	memberToken.DevicePk = conversation.LocalDevicePublicKey
 
 	// ignore if already shared
 	tokenIdentifier := messengerutil.MakeSharedPushIdentifier(pushServerRecord.ServerKey, memberToken.Token)
@@ -291,17 +291,17 @@ func (svc *service) pushShareToken(ctx context.Context, conversation *messengert
 
 	conversationPKb, err := messengerutil.B64DecodeBytes(conversation.PublicKey)
 	if err != nil {
-		return errcode.ErrSerialization.Wrap(err)
+		return errcode.ErrCode_ErrSerialization.Wrap(err)
 	}
 
 	am, err := messengertypes.AppMessage_TypePushSetMemberToken.MarshalPayload(messengerutil.TimestampMs(time.Now()), "", &messengertypes.AppMessage_PushSetMemberToken{MemberToken: memberToken})
 	if err != nil {
-		return errcode.ErrSerialization.Wrap(err)
+		return errcode.ErrCode_ErrSerialization.Wrap(err)
 	}
 
-	_, err = svc.protocolClient.AppMetadataSend(ctx, &protocoltypes.AppMetadataSend_Request{GroupPK: conversationPKb, Payload: am})
+	_, err = svc.protocolClient.AppMetadataSend(ctx, &protocoltypes.AppMetadataSend_Request{GroupPk: conversationPKb, Payload: am})
 	if err != nil {
-		return errcode.ErrProtocolSend.Wrap(err)
+		return errcode.ErrCode_ErrProtocolSend.Wrap(err)
 	}
 
 	return nil

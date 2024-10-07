@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/gogo/protobuf/proto"
+	"google.golang.org/protobuf/proto"
 
 	"berty.tech/berty/v2/go/pkg/errcode"
 )
@@ -46,12 +46,12 @@ func (x AppMessage_Type) MarshalPayload(sentDate int64, target string, payload p
 		return nil, err
 	}
 
-	return proto.Marshal(&AppMessage{Type: x, TargetCID: target, Payload: p, SentDate: sentDate})
+	return proto.Marshal(&AppMessage{Type: x, TargetCid: target, Payload: p, SentDate: sentDate})
 }
 
 // UnmarshalPayload tries to parse an AppMessage payload in the corresponding type.
 // Since this function returns a proto.Message interface, you still need to cast the returned value, but this function allows you to make it safely.
-func (am AppMessage) UnmarshalPayload() (proto.Message, error) {
+func (am *AppMessage) UnmarshalPayload() (proto.Message, error) {
 	var message proto.Message
 
 	switch am.GetType() {
@@ -80,26 +80,26 @@ func (am AppMessage) UnmarshalPayload() (proto.Message, error) {
 	case AppMessage_TypePushSetMemberToken:
 		message = &AppMessage_PushSetMemberToken{}
 	default:
-		return nil, errcode.TODO.Wrap(fmt.Errorf("unsupported AppMessage type: %q", am.GetType()))
+		return nil, errcode.ErrCode_TODO.Wrap(fmt.Errorf("unsupported AppMessage type: %q", am.GetType()))
 	}
 
 	return message, proto.Unmarshal(am.GetPayload(), message)
 }
 
-func UnmarshalAppMessage(payload []byte) (proto.Message, AppMessage, error) {
+func UnmarshalAppMessage(payload []byte) (proto.Message, *AppMessage, error) {
 	// FIXME: generate this function to avoid human error
 	var am AppMessage
 	err := proto.Unmarshal(payload, &am)
 	if err != nil {
-		return nil, AppMessage{}, errcode.ErrDeserialization.Wrap(err)
+		return nil, &AppMessage{}, errcode.ErrCode_ErrDeserialization.Wrap(err)
 	}
 
 	msg, err := am.UnmarshalPayload()
 	if err != nil {
-		return nil, AppMessage{}, errcode.ErrDeserialization.Wrap(err)
+		return nil, &AppMessage{}, errcode.ErrCode_ErrDeserialization.Wrap(err)
 	}
 
-	return msg, am, nil
+	return msg, &am, nil
 }
 
 func (event *StreamEvent) UnmarshalPayload() (proto.Message, error) {
@@ -135,7 +135,7 @@ func (event *StreamEvent) UnmarshalPayload() (proto.Message, error) {
 	case StreamEvent_TypeServiceTokenAdded:
 		message = &StreamEvent_ServiceTokenAdded{}
 	default:
-		return nil, errcode.TODO.Wrap(fmt.Errorf("unsupported StreamEvent type: %q", event.GetType()))
+		return nil, errcode.ErrCode_TODO.Wrap(fmt.Errorf("unsupported StreamEvent type: %q", event.GetType()))
 	}
 
 	return message, proto.Unmarshal(event.GetPayload(), message)
@@ -150,7 +150,7 @@ func (event *StreamEvent_Notified) UnmarshalPayload() (proto.Message, error) {
 	case StreamEvent_Notified_TypeMessageReceived:
 		message = &StreamEvent_Notified_MessageReceived{}
 	default:
-		return nil, errcode.TODO.Wrap(fmt.Errorf("unsupported Notified type: %q", event.GetType()))
+		return nil, errcode.ErrCode_TODO.Wrap(fmt.Errorf("unsupported Notified type: %q", event.GetType()))
 	}
 
 	return message, proto.Unmarshal(event.GetPayload(), message)
@@ -218,7 +218,7 @@ type IndexableAppMessage interface {
 func (am *AppMessage) TextRepresentation() (string, error) {
 	rawPayload, err := am.UnmarshalPayload()
 	if err != nil {
-		return "", errcode.ErrDeserialization.Wrap(err)
+		return "", errcode.ErrCode_ErrDeserialization.Wrap(err)
 	}
 
 	indexedMessage, ok := rawPayload.(IndexableAppMessage)

@@ -10,12 +10,12 @@ import (
 	"berty.tech/berty/v2/go/pkg/accounttypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
-	"berty.tech/weshnet/pkg/ipfsutil"
-	"berty.tech/weshnet/pkg/protocoltypes"
+	"berty.tech/weshnet/v2/pkg/ipfsutil"
+	"berty.tech/weshnet/v2/pkg/protocoltypes"
 )
 
 // Get GRPC listener addresses
-func (s *service) GetGRPCListenerAddrs(ctx context.Context, req *accounttypes.GetGRPCListenerAddrs_Request) (*accounttypes.GetGRPCListenerAddrs_Reply, error) {
+func (s *service) GetGRPCListenerAddrs(_ context.Context, _ *accounttypes.GetGRPCListenerAddrs_Request) (*accounttypes.GetGRPCListenerAddrs_Reply, error) {
 	m, err := s.getInitManager()
 	if err != nil {
 		return nil, err
@@ -46,12 +46,12 @@ func (s *service) GetGRPCListenerAddrs(ctx context.Context, req *accounttypes.Ge
 func (s *service) GetMessengerClient() (messengertypes.MessengerServiceClient, error) {
 	m, err := s.getInitManager()
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ErrCode_TODO.Wrap(err)
 	}
 
 	messenger, err := m.GetMessengerClient()
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ErrCode_TODO.Wrap(err)
 	}
 
 	return messenger, err
@@ -61,7 +61,7 @@ func (s *service) GetMessengerClient() (messengertypes.MessengerServiceClient, e
 func (s *service) GetIPFSNode() (ipfsutil.ExtendedCoreAPI, *core.IpfsNode, error) {
 	m, err := s.getInitManager()
 	if err != nil {
-		return nil, nil, errcode.TODO.Wrap(err)
+		return nil, nil, errcode.ErrCode_TODO.Wrap(err)
 	}
 
 	return m.GetLocalIPFS()
@@ -71,12 +71,12 @@ func (s *service) GetIPFSNode() (ipfsutil.ExtendedCoreAPI, *core.IpfsNode, error
 func (s *service) GetProtocolClient() (protocoltypes.ProtocolServiceClient, error) {
 	m, err := s.getInitManager()
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ErrCode_TODO.Wrap(err)
 	}
 
 	protocol, err := m.GetProtocolClient()
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ErrCode_TODO.Wrap(err)
 	}
 
 	return protocol, err

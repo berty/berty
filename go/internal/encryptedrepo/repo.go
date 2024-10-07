@@ -11,7 +11,7 @@ import (
 
 	"berty.tech/berty/v2/go/pkg/errcode"
 	encrepo "berty.tech/go-ipfs-repo-encrypted"
-	"berty.tech/weshnet/pkg/ipfsutil"
+	"berty.tech/weshnet/v2/pkg/ipfsutil"
 )
 
 // LoadEncryptedRepoFromPath
@@ -59,7 +59,7 @@ func ResetExistingEncryptedRepoIdentity(repo ipfs_repo.Repo, path string, key []
 	sqldsOpts := encrepo.SQLCipherDatastoreOptions{JournalMode: "WAL", PlaintextHeader: len(salt) != 0, Salt: salt}
 	repo, err = encrepo.Open(path, key, sqldsOpts)
 	if err != nil {
-		return nil, errcode.ErrInternal.Wrap(err)
+		return nil, errcode.ErrCode_ErrInternal.Wrap(err)
 	}
 
 	return repo, nil

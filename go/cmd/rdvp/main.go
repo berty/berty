@@ -34,9 +34,9 @@ import (
 	"go.uber.org/zap/zapcore"
 
 	"berty.tech/berty/v2/go/pkg/errcode"
-	"berty.tech/weshnet/pkg/ipfsutil"
-	"berty.tech/weshnet/pkg/logutil"
-	"berty.tech/weshnet/pkg/rendezvous"
+	"berty.tech/weshnet/v2/pkg/ipfsutil"
+	"berty.tech/weshnet/v2/pkg/logutil"
+	"berty.tech/weshnet/v2/pkg/rendezvous"
 )
 
 func main() {
@@ -48,7 +48,7 @@ func main() {
 		logToFile             = "stderr"  // can be stdout, stderr or a file path
 		logFilters            = "info+:*" // info and more for everything
 		serveURN              = ":memory:"
-		serveListeners        = "/ip4/0.0.0.0/tcp/4040,/ip4/0.0.0.0/udp/4141/quic"
+		serveListeners        = "/ip4/0.0.0.0/tcp/4040,/ip4/0.0.0.0/udp/4141/quic-v1"
 		servePK               = ""
 		sharekeyPK            = ""
 		serveAnnounce         = ""
@@ -104,7 +104,7 @@ func main() {
 
 			logger, cleanup, err := logutil.NewLogger(logutil.NewStdStream(logFilters, logFormat, logToFile))
 			if err != nil {
-				return errcode.TODO.Wrap(err)
+				return errcode.ErrCode_TODO.Wrap(err)
 			}
 			defer cleanup()
 
@@ -122,7 +122,7 @@ func main() {
 			laddrs := strings.Split(serveListeners, ",")
 			listeners, err := ipfsutil.ParseAddrs(laddrs...)
 			if err != nil {
-				return errcode.TODO.Wrap(err)
+				return errcode.ErrCode_TODO.Wrap(err)
 			}
 
 			// load existing or generate new identity
@@ -130,17 +130,17 @@ func main() {
 			if servePK != "" {
 				kbytes, err := base64.StdEncoding.DecodeString(servePK)
 				if err != nil {
-					return errcode.TODO.Wrap(err)
+					return errcode.ErrCode_TODO.Wrap(err)
 				}
 				priv, err = libp2p_ci.UnmarshalPrivateKey(kbytes)
 				if err != nil {
-					return errcode.TODO.Wrap(err)
+					return errcode.ErrCode_TODO.Wrap(err)
 				}
 			} else {
 				// Don't use key params here, this is a dev tool, a real installation should use a static key.
 				priv, _, err = libp2p_ci.GenerateKeyPairWithReader(libp2p_ci.Ed25519, -1, crand.Reader) // nolint:staticcheck
 				if err != nil {
-					return errcode.TODO.Wrap(err)
+					return errcode.ErrCode_TODO.Wrap(err)
 				}
 			}
 
@@ -149,7 +149,7 @@ func main() {
 				aaddrs := strings.Split(serveAnnounce, ",")
 				announces, err := ipfsutil.ParseAddrs(aaddrs...)
 				if err != nil {
-					return errcode.TODO.Wrap(err)
+					return errcode.ErrCode_TODO.Wrap(err)
 				}
 
 				addrsFactory = func([]ma.Multiaddr) []ma.Multiaddr { return announces }
@@ -180,7 +180,7 @@ func main() {
 				libp2p.BandwidthReporter(reporter),
 			)
 			if err != nil {
-				return errcode.TODO.Wrap(err)
+				return errcode.ErrCode_TODO.Wrap(err)
 			}
 
 			defer host.Close()
@@ -197,7 +197,7 @@ func main() {
 
 			db, err := libp2p_rpdb.OpenDB(ctx, serveURN)
 			if err != nil {
-				return errcode.TODO.Wrap(err)
+				return errcode.ErrCode_TODO.Wrap(err)
 			}
 
 			defer db.Close()
@@ -210,7 +210,7 @@ func main() {
 					ServerPublicAddr: emitterPublicAddr,
 				})
 				if err != nil {
-					return errcode.TODO.Wrap(err)
+					return errcode.ErrCode_TODO.Wrap(err)
 				}
 				defer emitter.Close()
 
@@ -224,7 +224,7 @@ func main() {
 			if serveMetricsListeners != "" {
 				ml, err := net.Listen("tcp", serveMetricsListeners)
 				if err != nil {
-					return errcode.TODO.Wrap(err)
+					return errcode.ErrCode_TODO.Wrap(err)
 				}
 
 				registry := prometheus.NewRegistry()
@@ -258,7 +258,7 @@ func main() {
 			}
 
 			if err = gServe.Run(); err != nil {
-				return errcode.TODO.Wrap(err)
+				return errcode.ErrCode_TODO.Wrap(err)
 			}
 			return nil
 		},
@@ -268,7 +268,7 @@ func main() {
 		Name:       "sharekey",
 		ShortUsage: "rdvp [global flags] sharekey -pk PK",
 		FlagSet:    sharekeyFlags,
-		Exec: func(ctx context.Context, args []string) error {
+		Exec: func(_ context.Context, args []string) error {
 			if len(args) > 0 {
 				return flag.ErrHelp
 			}
@@ -279,17 +279,17 @@ func main() {
 
 			kbytes, err := base64.StdEncoding.DecodeString(sharekeyPK)
 			if err != nil {
-				return errcode.TODO.Wrap(err)
+				return errcode.ErrCode_TODO.Wrap(err)
 			}
 			priv, err := libp2p_ci.UnmarshalPrivateKey(kbytes)
 			if err != nil {
-				return errcode.TODO.Wrap(err)
+				return errcode.ErrCode_TODO.Wrap(err)
 			}
 
 			// init p2p host
 			host, err := libp2p.New(libp2p.Identity(priv))
 			if err != nil {
-				return errcode.TODO.Wrap(err)
+				return errcode.ErrCode_TODO.Wrap(err)
 			}
 			defer host.Close()
 			fmt.Println(host.ID().String())
@@ -307,12 +307,12 @@ func main() {
 			}
 			priv, _, err := libp2p_ci.GenerateKeyPairWithReader(keyType, genkeyLength, crand.Reader) // nolint:staticcheck
 			if err != nil {
-				return errcode.TODO.Wrap(err)
+				return errcode.ErrCode_TODO.Wrap(err)
 			}
 
 			kbytes, err := libp2p_ci.MarshalPrivateKey(priv)
 			if err != nil {
-				return errcode.TODO.Wrap(err)
+				return errcode.ErrCode_TODO.Wrap(err)
 			}
 
 			fmt.Println(base64.StdEncoding.EncodeToString(kbytes))

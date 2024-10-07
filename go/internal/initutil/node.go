@@ -12,6 +12,7 @@ import (
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/protobuf/proto"
 	"gorm.io/gorm"
 
 	"berty.tech/berty/v2/go/internal/accountutils"
@@ -21,13 +22,13 @@ import (
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
 	"berty.tech/berty/v2/go/pkg/pushtypes"
-	"berty.tech/weshnet"
-	"berty.tech/weshnet/pkg/cryptoutil"
-	"berty.tech/weshnet/pkg/grpcutil"
-	"berty.tech/weshnet/pkg/lifecycle"
-	"berty.tech/weshnet/pkg/logutil"
-	"berty.tech/weshnet/pkg/protocoltypes"
-	"berty.tech/weshnet/pkg/secretstore"
+	"berty.tech/weshnet/v2"
+	"berty.tech/weshnet/v2/pkg/cryptoutil"
+	"berty.tech/weshnet/v2/pkg/grpcutil"
+	"berty.tech/weshnet/v2/pkg/lifecycle"
+	"berty.tech/weshnet/v2/pkg/logutil"
+	"berty.tech/weshnet/v2/pkg/protocoltypes"
+	"berty.tech/weshnet/v2/pkg/secretstore"
 )
 
 const (
@@ -147,7 +148,7 @@ func (m *Manager) getPushSecretKey() (*[cryptoutil.KeySize]byte, error) {
 
 		_, pushKey, err = accountutils.GetDevicePushKeyForPath(m.Node.Protocol.DevicePushKeyPath, true)
 		if err != nil {
-			return nil, errcode.ErrInternal.Wrap(err)
+			return nil, errcode.ErrCode_ErrInternal.Wrap(err)
 		}
 	}
 
@@ -161,27 +162,27 @@ func (m *Manager) getLocalProtocolServer() (weshnet.Service, error) {
 
 	logger, err := m.getLogger()
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ErrCode_TODO.Wrap(err)
 	}
 
 	rootDS, err := m.getRootDatastore()
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ErrCode_TODO.Wrap(err)
 	}
 
 	grpcServer, gatewayMux, err := m.getGRPCServer()
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ErrCode_TODO.Wrap(err)
 	}
 
 	_, _, err = m.getLocalIPFS()
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ErrCode_TODO.Wrap(err)
 	}
 
 	odb, err := m.getOrbitDB()
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ErrCode_TODO.Wrap(err)
 	}
 
 	// protocol service
@@ -215,13 +216,13 @@ func (m *Manager) getLocalProtocolServer() (weshnet.Service, error) {
 
 		m.Node.Protocol.server, err = weshnet.NewService(opts)
 		if err != nil {
-			return nil, errcode.TODO.Wrap(err)
+			return nil, errcode.ErrCode_TODO.Wrap(err)
 		}
 
 		// register grpc service
 		protocoltypes.RegisterProtocolServiceServer(grpcServer, m.Node.Protocol.server)
 		if err := protocoltypes.RegisterProtocolServiceHandlerServer(m.getContext(), gatewayMux, m.Node.Protocol.server); err != nil {
-			return nil, errcode.TODO.Wrap(err)
+			return nil, errcode.ErrCode_TODO.Wrap(err)
 		}
 	}
 
@@ -246,9 +247,9 @@ func (m *Manager) getGRPCClientConn() (*grpc.ClientConn, error) {
 
 	if m.Node.GRPC.RemoteAddr != "" {
 		clientOpts = append(clientOpts, grpc.WithTransportCredentials(insecure.NewCredentials())) // make a flag for this?
-		cc, err := grpc.Dial(m.Node.GRPC.RemoteAddr, clientOpts...)
+		cc, err := grpc.NewClient(m.Node.GRPC.RemoteAddr, clientOpts...)
 		if err != nil {
-			return nil, errcode.TODO.Wrap(err)
+			return nil, errcode.ErrCode_TODO.Wrap(err)
 		}
 		m.Node.GRPC.clientConn = cc
 	} else {
@@ -256,20 +257,20 @@ func (m *Manager) getGRPCClientConn() (*grpc.ClientConn, error) {
 		{
 			// restore store if provided
 			if err := m.restoreMessengerDataFromExport(); err != nil {
-				return nil, errcode.TODO.Wrap(err)
+				return nil, errcode.ErrCode_TODO.Wrap(err)
 			}
 
 			if m.Node.Protocol.requiredByClient {
 				_, err := m.getLocalProtocolServer()
 				if err != nil {
-					return nil, errcode.TODO.Wrap(err)
+					return nil, errcode.ErrCode_TODO.Wrap(err)
 				}
 			}
 
 			if m.Node.Messenger.requiredByClient {
 				_, err := m.getLocalMessengerServer()
 				if err != nil {
-					return nil, errcode.TODO.Wrap(err)
+					return nil, errcode.ErrCode_TODO.Wrap(err)
 				}
 			}
 		}
@@ -282,7 +283,7 @@ func (m *Manager) getGRPCClientConn() (*grpc.ClientConn, error) {
 		bl := grpcutil.NewBufListener(256 * 1024)
 		cc, err := bl.NewClientConn(m.getContext(), clientOpts...)
 		if err != nil {
-			return nil, errcode.TODO.Wrap(err)
+			return nil, errcode.ErrCode_TODO.Wrap(err)
 		}
 
 		if m.Node.Protocol.server != nil {
@@ -376,7 +377,7 @@ func (m *Manager) getMessengerClient() (messengertypes.MessengerServiceClient, e
 
 	grpcClient, err := m.getGRPCClientConn()
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ErrCode_TODO.Wrap(err)
 	}
 
 	m.Node.Messenger.client = messengertypes.NewMessengerServiceClient(grpcClient)
@@ -399,7 +400,7 @@ func (m *Manager) getProtocolClient() (protocoltypes.ProtocolServiceClient, erro
 
 	grpcClient, err := m.getGRPCClientConn()
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ErrCode_TODO.Wrap(err)
 	}
 	m.Node.Protocol.client = protocoltypes.NewProtocolServiceClient(grpcClient)
 
@@ -463,27 +464,27 @@ func (m *Manager) getMessengerDB() (*gorm.DB, error) {
 
 	logger, err := m.getLogger()
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ErrCode_TODO.Wrap(err)
 	}
 
 	dir, err := m.getSharedDataDir()
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ErrCode_TODO.Wrap(err)
 	}
 
 	key, err := m.GetAccountStorageKey()
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ErrCode_TODO.Wrap(err)
 	}
 
 	salt, err := m.GetAccountMessengerDBSalt()
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ErrCode_TODO.Wrap(err)
 	}
 
 	m.Node.Messenger.db, m.Node.Messenger.dbCleanup, err = accountutils.GetMessengerDBForPath(dir, key, salt, logger)
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ErrCode_TODO.Wrap(err)
 	}
 
 	return m.Node.Messenger.db, nil
@@ -516,17 +517,17 @@ func (m *Manager) getServiceDB(dbPtr **gorm.DB, cleanupPtr *func(), dbOpenerFunc
 
 	logger, err := m.getLogger()
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ErrCode_TODO.Wrap(err)
 	}
 
 	dir, err := m.getAppDataDir()
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ErrCode_TODO.Wrap(err)
 	}
 
 	db, dbCleanup, err := dbOpenerFunc(dir, logger)
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ErrCode_TODO.Wrap(err)
 	}
 
 	*cleanupPtr = dbCleanup
@@ -550,24 +551,24 @@ func (m *Manager) restoreMessengerDataFromExport() error {
 
 	logger, err := m.getLogger()
 	if err != nil {
-		return errcode.ErrInternal.Wrap(err)
+		return errcode.ErrCode_ErrInternal.Wrap(err)
 	}
 
 	coreAPI, _, err := m.getLocalIPFS()
 	if err != nil {
-		return errcode.ErrInternal.Wrap(err)
+		return errcode.ErrCode_ErrInternal.Wrap(err)
 	}
 
 	odb, err := m.getOrbitDB()
 	if err != nil {
-		return errcode.ErrInternal.Wrap(err)
+		return errcode.ErrCode_ErrInternal.Wrap(err)
 	}
 
 	m.Node.Messenger.localDBState = &messengertypes.LocalDatabaseState{}
 
 	ctx := m.getContext()
 	if err := bertymessenger.RestoreFromAccountExport(ctx, f, coreAPI, odb, m.Node.Messenger.localDBState, logger); err != nil {
-		return errcode.ErrInternal.Wrap(err)
+		return errcode.ErrCode_ErrInternal.Wrap(err)
 	}
 
 	return nil
@@ -586,13 +587,13 @@ func (m *Manager) getLocalMessengerServer() (messengertypes.MessengerServiceServ
 
 	// restore store if provided
 	if err := m.restoreMessengerDataFromExport(); err != nil {
-		return nil, errcode.TODO.Wrap(fmt.Errorf("unable to restore messenger data from export: %w", err))
+		return nil, errcode.ErrCode_TODO.Wrap(fmt.Errorf("unable to restore messenger data from export: %w", err))
 	}
 
 	// logger
 	logger, err := m.getLogger()
 	if err != nil {
-		return nil, errcode.TODO.Wrap(fmt.Errorf("unable to init logger: %w", err))
+		return nil, errcode.ErrCode_TODO.Wrap(fmt.Errorf("unable to init logger: %w", err))
 	}
 
 	// log file path
@@ -604,30 +605,30 @@ func (m *Manager) getLocalMessengerServer() (messengertypes.MessengerServiceServ
 	// messenger db
 	db, err := m.getMessengerDB()
 	if err != nil {
-		return nil, errcode.TODO.Wrap(fmt.Errorf("unable to init messenger db: %w", err))
+		return nil, errcode.ErrCode_TODO.Wrap(fmt.Errorf("unable to init messenger db: %w", err))
 	}
 
 	// grpc server
 	grpcServer, gatewayMux, err := m.getGRPCServer()
 	if err != nil {
-		return nil, errcode.TODO.Wrap(fmt.Errorf("unable to grpc server: %w", err))
+		return nil, errcode.ErrCode_TODO.Wrap(fmt.Errorf("unable to grpc server: %w", err))
 	}
 
 	// configure notifications
 	notifmanager, err := m.getNotificationManager()
 	if err != nil {
-		return nil, errcode.TODO.Wrap(fmt.Errorf("unable to init notification manager: %w", err))
+		return nil, errcode.ErrCode_TODO.Wrap(fmt.Errorf("unable to init notification manager: %w", err))
 	}
 
 	// local protocol server
 	protocolServer, err := m.getLocalProtocolServer()
 	if err != nil {
-		return nil, errcode.TODO.Wrap(fmt.Errorf("unable to init local protocol server: %w", err))
+		return nil, errcode.ErrCode_TODO.Wrap(fmt.Errorf("unable to init local protocol server: %w", err))
 	}
 
 	protocolClient, err := weshnet.NewClientFromService(m.getContext(), grpc.NewServer(), protocolServer) // FIXME: setup tracing
 	if err != nil {
-		return nil, errcode.TODO.Wrap(fmt.Errorf("unable to init protocol client: %w", err))
+		return nil, errcode.ErrCode_TODO.Wrap(fmt.Errorf("unable to init protocol client: %w", err))
 	}
 	m.Node.Messenger.protocolClient = protocolClient
 
@@ -635,7 +636,7 @@ func (m *Manager) getLocalMessengerServer() (messengertypes.MessengerServiceServ
 
 	pushKey, err := m.getPushSecretKey()
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ErrCode_TODO.Wrap(err)
 	}
 
 	pushPlatformToken := (*pushtypes.PushServiceReceiver)(nil)
@@ -644,11 +645,11 @@ func (m *Manager) getLocalMessengerServer() (messengertypes.MessengerServiceServ
 
 		data, err := base64.RawURLEncoding.DecodeString(m.Node.Protocol.PushPlatformToken)
 		if err != nil {
-			return nil, errcode.ErrDeserialization.Wrap(err)
+			return nil, errcode.ErrCode_ErrDeserialization.Wrap(err)
 		}
 
-		if err := pushPlatformToken.Unmarshal(data); err != nil {
-			return nil, errcode.ErrDeserialization.Wrap(err)
+		if err := proto.Unmarshal(data, pushPlatformToken); err != nil {
+			return nil, errcode.ErrCode_ErrDeserialization.Wrap(err)
 		}
 	}
 
@@ -668,13 +669,13 @@ func (m *Manager) getLocalMessengerServer() (messengertypes.MessengerServiceServ
 	}
 	messengerServer, err := bertymessenger.New(protocolClient, &opts)
 	if err != nil {
-		return nil, errcode.TODO.Wrap(fmt.Errorf("unable to init messenger server: %w", err))
+		return nil, errcode.ErrCode_TODO.Wrap(fmt.Errorf("unable to init messenger server: %w", err))
 	}
 
 	// register grpc service
 	messengertypes.RegisterMessengerServiceServer(grpcServer, messengerServer)
 	if err := messengertypes.RegisterMessengerServiceHandlerServer(m.getContext(), gatewayMux, messengerServer); err != nil {
-		return nil, errcode.TODO.Wrap(fmt.Errorf("unable to register messenger service handler: %w", err))
+		return nil, errcode.ErrCode_TODO.Wrap(fmt.Errorf("unable to register messenger service handler: %w", err))
 	}
 
 	// Auto attach to Tyber hosts

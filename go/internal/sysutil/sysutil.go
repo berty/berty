@@ -9,8 +9,8 @@ import (
 	"moul.io/openfiles"
 
 	"berty.tech/berty/v2/go/pkg/bertyversion"
-	"berty.tech/weshnet/pkg/protocoltypes"
-	"berty.tech/weshnet/pkg/username"
+	"berty.tech/weshnet/v2/pkg/protocoltypes"
+	"berty.tech/weshnet/v2/pkg/username"
 )
 
 func SystemInfoProcess() (*protocoltypes.SystemInfo_Process, error) {
@@ -31,7 +31,7 @@ func SystemInfoProcess() (*protocoltypes.SystemInfo_Process, error) {
 	reply := protocoltypes.SystemInfo_Process{
 		Nofile:           nofile,
 		TooManyOpenFiles: openfiles.IsTooManyError(nofileErr),
-		NumCPU:           int64(runtime.NumCPU()),
+		NumCpu:           int64(runtime.NumCPU()),
 		GoVersion:        runtime.Version(),
 		HostName:         hn,
 		NumGoroutine:     int64(runtime.NumGoroutine()),
@@ -39,9 +39,9 @@ func SystemInfoProcess() (*protocoltypes.SystemInfo_Process, error) {
 		Arch:             runtime.GOARCH,
 		Version:          bertyversion.Version,
 		VcsRef:           bertyversion.VcsRef,
-		PID:              int64(syscall.Getpid()),
-		UID:              int64(syscall.Getuid()),
-		PPID:             int64(syscall.Getppid()),
+		Pid:              int64(syscall.Getpid()),
+		Uid:              int64(syscall.Getuid()),
+		Ppid:             int64(syscall.Getppid()),
 		WorkingDir:       wd,
 		SystemUsername:   username.GetUsername(),
 	}

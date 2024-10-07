@@ -1,4 +1,4 @@
-version: '3.7'
+version: "3.7"
 
 services:
   rdvp:
@@ -22,24 +22,24 @@ services:
       - "--db=:memory:"
       - "--pk=$RDVP_PK"
       - "-metrics=:8888"
-      - "-l=/ip4/0.0.0.0/tcp/4040,/ip4/0.0.0.0/udp/4040/quic"
-      - "-announce=/ip4/${ANNOUNCE_SERVER}/tcp/4040,/ip4/${ANNOUNCE_SERVER}/udp/4040/quic"
+      - "-l=/ip4/0.0.0.0/tcp/4040,/ip4/0.0.0.0/udp/4040/quic-v1"
+      - "-announce=/ip4/${ANNOUNCE_SERVER}/tcp/4040,/ip4/${ANNOUNCE_SERVER}/udp/4040/quic-v1"
     deploy:
       resources:
         limits:
           memory: 2000M
     labels:
-      - 'com.centurylinklabs.watchtower.enable=true'
-      - 'traefik.enable=true'
+      - "com.centurylinklabs.watchtower.enable=true"
+      - "traefik.enable=true"
       - "traefik.http.routers.rdvp.rule=Host(`${DOMAIN_SANS}`)"
-      - 'traefik.http.routers.rdvp.service=rdvp'
+      - "traefik.http.routers.rdvp.service=rdvp"
       - "traefik.http.routers.rdvp.middlewares=bauth@docker"
-      - 'traefik.http.routers.rdvp.entryPoints=https'
-      - 'traefik.http.routers.rdvp.tls=true'
-      - 'traefik.http.routers.rdvp.tls.certresolver=cf'
+      - "traefik.http.routers.rdvp.entryPoints=https"
+      - "traefik.http.routers.rdvp.tls=true"
+      - "traefik.http.routers.rdvp.tls.certresolver=cf"
       - "traefik.http.routers.rdvp.tls.domains[0].main=${DOMAIN_MAIN}"
       - "traefik.http.routers.rdvp.tls.domains[0].sans=${DOMAIN_SANS}"
-      - 'traefik.http.services.rdvp.loadbalancer.server.port=8888'
+      - "traefik.http.services.rdvp.loadbalancer.server.port=8888"
       - 'com.datadoghq.ad.check_names=["rdvp"]'
-      - 'com.datadoghq.ad.init_configs=[{}]'
+      - "com.datadoghq.ad.init_configs=[{}]"
       - 'com.datadoghq.ad.logs=[{"source": "go", "service": "rdvp"}]'

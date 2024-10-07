@@ -7,7 +7,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"berty.tech/weshnet/pkg/cryptoutil"
+	"berty.tech/weshnet/v2/pkg/cryptoutil"
 )
 
 func HelperGenerateTokenIssuerSecrets(t *testing.T) ([]byte, ed25519.PublicKey, ed25519.PrivateKey) {

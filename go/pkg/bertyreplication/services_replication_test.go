@@ -7,10 +7,10 @@ import (
 	"testing"
 	"time"
 
-	mocknet "github.com/berty/go-libp2p-mock"
 	"github.com/ipfs/go-cid"
 	"github.com/ipfs/go-datastore"
 	dssync "github.com/ipfs/go-datastore/sync"
+	mocknet "github.com/libp2p/go-libp2p/p2p/net/mock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/zap"
@@ -24,12 +24,12 @@ import (
 	orbitdb "berty.tech/go-orbit-db"
 	"berty.tech/go-orbit-db/iface"
 	"berty.tech/go-orbit-db/stores"
-	"berty.tech/weshnet"
-	"berty.tech/weshnet/pkg/ipfsutil"
-	"berty.tech/weshnet/pkg/protocoltypes"
-	"berty.tech/weshnet/pkg/replicationtypes"
-	"berty.tech/weshnet/pkg/testutil"
-	"berty.tech/weshnet/pkg/tinder"
+	"berty.tech/weshnet/v2"
+	"berty.tech/weshnet/v2/pkg/ipfsutil"
+	"berty.tech/weshnet/v2/pkg/protocoltypes"
+	"berty.tech/weshnet/v2/pkg/replicationtypes"
+	"berty.tech/weshnet/v2/pkg/testutil"
+	"berty.tech/weshnet/v2/pkg/tinder"
 )
 
 func TestNewReplicationService(t *testing.T) {
@@ -105,7 +105,10 @@ func TestReplicationService_GroupRegister(t *testing.T) {
 
 	db := bertyreplication.DBForTests(t, zap.NewNop())
 
-	repl, _ := bertyreplication.TestHelperNewReplicationService(ctx, t, nil, mn, msrv, ds, db)
+	logger, cleanup := testutil.Logger(t)
+	defer cleanup()
+
+	repl, _ := bertyreplication.TestHelperNewReplicationService(ctx, t, logger, mn, msrv, ds, db)
 
 	g, _, err := weshnet.NewGroupMultiMember()
 	require.NoError(t, err)
@@ -118,14 +121,14 @@ func TestReplicationService_GroupRegister(t *testing.T) {
 
 	err = repl.GroupRegister("token", "issuer", replGroup)
 	require.Error(t, err)
-	require.True(t, errcode.Is(err, errcode.ErrDBEntryAlreadyExists))
+	require.True(t, errcode.Is(err, errcode.ErrCode_ErrDBEntryAlreadyExists))
 
 	err = repl.GroupRegister("token2", "issuer", replGroup)
 	require.NoError(t, err)
 
 	err = repl.GroupRegister("token2", "issuer", replGroup)
 	require.Error(t, err)
-	require.True(t, errcode.Is(err, errcode.ErrDBEntryAlreadyExists))
+	require.True(t, errcode.Is(err, errcode.ErrCode_ErrDBEntryAlreadyExists))
 
 	err = repl.Close()
 	require.NoError(t, err)

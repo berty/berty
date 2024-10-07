@@ -10,7 +10,7 @@ import (
 	ipfscid "github.com/ipfs/go-cid"
 
 	"berty.tech/berty/v2/go/pkg/errcode"
-	"berty.tech/weshnet/pkg/protocoltypes"
+	"berty.tech/weshnet/v2/pkg/protocoltypes"
 )
 
 const (
@@ -20,22 +20,22 @@ const (
 )
 
 func CheckDeviceIsMe(ctx context.Context, client protocoltypes.ProtocolServiceClient, gme *protocoltypes.GroupMessageEvent) (bool, error) {
-	gpkb := gme.GetEventContext().GetGroupPK()
+	gpkb := gme.GetEventContext().GetGroupPk()
 
 	// TODO: support multiple devices per account
-	gi, err := client.GroupInfo(ctx, &protocoltypes.GroupInfo_Request{GroupPK: gpkb})
+	gi, err := client.GroupInfo(ctx, &protocoltypes.GroupInfo_Request{GroupPk: gpkb})
 	if err != nil {
 		return false, err
 	}
 
-	dpk := gi.GetDevicePK()
-	mdpk := gme.GetHeaders().GetDevicePK()
+	dpk := gi.GetDevicePk()
+	mdpk := gme.GetHeaders().GetDevicePk()
 
 	return bytes.Equal(dpk, mdpk), nil
 }
 
 func GroupPKFromContactPK(ctx context.Context, client protocoltypes.ProtocolServiceClient, contactPK []byte) ([]byte, error) {
-	req := &protocoltypes.GroupInfo_Request{ContactPK: contactPK}
+	req := &protocoltypes.GroupInfo_Request{ContactPk: contactPK}
 	groupInfo, err := client.GroupInfo(ctx, req)
 	if err != nil {
 		return nil, err
@@ -43,7 +43,7 @@ func GroupPKFromContactPK(ctx context.Context, client protocoltypes.ProtocolServ
 
 	groupPK := groupInfo.GetGroup().GetPublicKey()
 	if groupPK == nil {
-		return nil, errcode.ErrInternal.Wrap(fmt.Errorf("group pk is empty"))
+		return nil, errcode.ErrCode_ErrInternal.Wrap(fmt.Errorf("group pk is empty"))
 	}
 
 	return groupPK, nil

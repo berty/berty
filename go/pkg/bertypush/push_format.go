@@ -29,7 +29,7 @@ func FormatDecryptedPush(decrypted *pushtypes.DecryptedPush, printer *message.Pr
 	}
 
 	var payload formatedPayload = make(map[string]string)
-	_ = json.Unmarshal([]byte(decrypted.PayloadAttrsJSON), &payload)
+	_ = json.Unmarshal([]byte(decrypted.PayloadAttrsJson), &payload)
 
 	fmtpush.Title = decrypted.ConversationDisplayName
 	if decrypted.ConversationDisplayName != decrypted.MemberDisplayName {

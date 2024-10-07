@@ -8,14 +8,14 @@ import (
 	"strings"
 
 	"github.com/eknkc/basex"
-	"github.com/gogo/protobuf/proto"
 	"github.com/mr-tron/base58"
 	"golang.org/x/crypto/sha3"
+	"google.golang.org/protobuf/proto"
 
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
-	"berty.tech/weshnet/pkg/cryptoutil"
-	"berty.tech/weshnet/pkg/protocoltypes"
+	"berty.tech/weshnet/v2/pkg/cryptoutil"
+	"berty.tech/weshnet/v2/pkg/protocoltypes"
 )
 
 // MarshalLink returns shareable web and internal URLs.
@@ -31,7 +31,7 @@ import (
 // it may also filter-out some sensitive data.
 func MarshalLink(link *messengertypes.BertyLink) (internal string, web string, err error) {
 	if link == nil || link.Kind == messengertypes.BertyLink_UnknownKind {
-		return "", "", errcode.ErrMissingInput
+		return "", "", errcode.ErrCode_ErrMissingInput
 	}
 
 	if err := link.IsValid(); err != nil {
@@ -45,22 +45,22 @@ func MarshalLink(link *messengertypes.BertyLink) (internal string, web string, e
 		human   = url.Values{}
 
 		// internal
-		qrOptimized = &messengertypes.BertyLink{}
+		qrOptimized *messengertypes.BertyLink
 	)
 
 	switch link.Kind {
 	case messengertypes.BertyLink_ContactInviteV1Kind:
 		kind = "contact"
-		machine.BertyID = &messengertypes.BertyID{
-			PublicRendezvousSeed: link.BertyID.PublicRendezvousSeed,
-			AccountPK:            link.BertyID.AccountPK,
+		machine.BertyId = &messengertypes.BertyID{
+			PublicRendezvousSeed: link.BertyId.PublicRendezvousSeed,
+			AccountPk:            link.BertyId.AccountPk,
 		}
-		if link.BertyID.DisplayName != "" {
-			human.Add("name", link.BertyID.DisplayName)
+		if link.BertyId.DisplayName != "" {
+			human.Add("name", link.BertyId.DisplayName)
 		}
 
 		// for contact sharing, there are no fields to hide, so just copy the input link
-		*qrOptimized = *link
+		qrOptimized = proto.Clone(link).(*messengertypes.BertyLink)
 	case messengertypes.BertyLink_GroupV1Kind:
 		kind = "group"
 		machine.BertyGroup = &messengertypes.BertyGroup{
@@ -76,7 +76,7 @@ func MarshalLink(link *messengertypes.BertyLink) (internal string, web string, e
 		if link.BertyGroup.DisplayName != "" {
 			human.Add("name", link.BertyGroup.DisplayName)
 		}
-		*qrOptimized = *link
+		qrOptimized = proto.Clone(link).(*messengertypes.BertyLink)
 	case messengertypes.BertyLink_EncryptedV1Kind:
 		kind = "enc"
 		machine.Encrypted = &messengertypes.BertyLink_Encrypted{
@@ -89,7 +89,7 @@ func MarshalLink(link *messengertypes.BertyLink) (internal string, web string, e
 		}
 		switch link.Encrypted.Kind {
 		case messengertypes.BertyLink_ContactInviteV1Kind:
-			machine.Encrypted.ContactAccountPK = link.Encrypted.ContactAccountPK
+			machine.Encrypted.ContactAccountPk = link.Encrypted.ContactAccountPk
 			machine.Encrypted.ContactPublicRendezvousSeed = link.Encrypted.ContactPublicRendezvousSeed
 		case messengertypes.BertyLink_GroupV1Kind:
 			machine.Encrypted.GroupPublicKey = link.Encrypted.GroupPublicKey
@@ -99,17 +99,17 @@ func MarshalLink(link *messengertypes.BertyLink) (internal string, web string, e
 			machine.Encrypted.GroupType = link.Encrypted.GroupType
 			machine.Encrypted.GroupLinkKeySig = link.Encrypted.GroupLinkKeySig
 		}
-		*qrOptimized = *link
+		qrOptimized = proto.Clone(link).(*messengertypes.BertyLink)
 	case messengertypes.BertyLink_MessageV1Kind:
 		kind = "message"
 		machine.BertyMessageRef = &messengertypes.BertyLink_BertyMessageRef{
-			AccountID: link.BertyMessageRef.AccountID,
-			GroupPK:   link.BertyMessageRef.GroupPK,
-			MessageID: link.BertyMessageRef.MessageID,
+			AccountId: link.BertyMessageRef.AccountId,
+			GroupPk:   link.BertyMessageRef.GroupPk,
+			MessageId: link.BertyMessageRef.MessageId,
 		}
-		*qrOptimized = *link
+		qrOptimized = proto.Clone(link).(*messengertypes.BertyLink)
 	default:
-		return "", "", errcode.ErrInvalidInput
+		return "", "", errcode.ErrCode_ErrInvalidInput
 	}
 
 	// compute the web shareable link.
@@ -120,7 +120,7 @@ func MarshalLink(link *messengertypes.BertyLink) (internal string, web string, e
 	{
 		machineBin, err := proto.Marshal(machine)
 		if err != nil {
-			return "", "", errcode.ErrInvalidInput.Wrap(err)
+			return "", "", errcode.ErrCode_ErrInvalidInput.Wrap(err)
 		}
 		// here we use base58 which is compressed enough whilst being easy to read by a human.
 		// another candidate could be base58.RawURLEncoding which is a little bit more compressed and also only containing unescaped URL chars.
@@ -138,7 +138,7 @@ func MarshalLink(link *messengertypes.BertyLink) (internal string, web string, e
 	{
 		qrBin, err := proto.Marshal(qrOptimized)
 		if err != nil {
-			return "", "", errcode.ErrInvalidInput.Wrap(err)
+			return "", "", errcode.ErrCode_ErrInvalidInput.Wrap(err)
 		}
 		// using uppercase to stay in the QR AlphaNum's 45chars alphabet
 		internal = LinkInternalPrefix + "PB/" + qrBaseEncoder.Encode(qrBin)
@@ -150,7 +150,7 @@ func MarshalLink(link *messengertypes.BertyLink) (internal string, web string, e
 // UnmarshalLink takes an URL generated by BertyLink.Marshal (or manually crafted), and returns a BertyLink object.
 func UnmarshalLink(uri string, key []byte) (*messengertypes.BertyLink, error) {
 	if uri == "" {
-		return nil, errcode.ErrMissingInput
+		return nil, errcode.ErrCode_ErrMissingInput
 	}
 
 	// internal format
@@ -158,19 +158,19 @@ func UnmarshalLink(uri string, key []byte) (*messengertypes.BertyLink, error) {
 		right := uri[len(LinkInternalPrefix):]
 		parts := strings.Split(right, "/")
 		if len(parts) < 2 {
-			return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("URI should have at least 2 parts"))
+			return nil, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("URI should have at least 2 parts"))
 		}
 		switch strings.ToLower(parts[0]) {
 		case "pb":
 			blob := strings.Join(parts[1:], "/")
 			qrBin, err := qrBaseEncoder.Decode(blob)
 			if err != nil {
-				return nil, errcode.ErrInvalidInput.Wrap(err)
+				return nil, errcode.ErrCode_ErrInvalidInput.Wrap(err)
 			}
 			var link messengertypes.BertyLink
 			err = proto.Unmarshal(qrBin, &link)
 			if err != nil {
-				return nil, errcode.ErrInvalidInput.Wrap(err)
+				return nil, errcode.ErrCode_ErrInvalidInput.Wrap(err)
 			}
 
 			if link.Kind == messengertypes.BertyLink_EncryptedV1Kind {
@@ -179,7 +179,7 @@ func UnmarshalLink(uri string, key []byte) (*messengertypes.BertyLink, error) {
 
 			return &link, nil
 		default:
-			return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("unsupported link type"))
+			return nil, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("unsupported link type"))
 		}
 	}
 
@@ -187,10 +187,10 @@ func UnmarshalLink(uri string, key []byte) (*messengertypes.BertyLink, error) {
 	if strings.HasPrefix(strings.ToLower(uri), strings.ToLower(LinkWebPrefix)) {
 		parsed, err := url.Parse(uri)
 		if err != nil {
-			return nil, errcode.ErrInvalidInput.Wrap(err)
+			return nil, errcode.ErrCode_ErrInvalidInput.Wrap(err)
 		}
 		if parsed.Fragment == "" {
-			return nil, errcode.ErrInvalidInput.Wrap(err)
+			return nil, errcode.ErrCode_ErrInvalidInput.Wrap(err)
 		}
 
 		rawFragment := strings.Join(strings.Split(uri, "#")[1:], "#") // required by go1.14
@@ -199,16 +199,16 @@ func UnmarshalLink(uri string, key []byte) (*messengertypes.BertyLink, error) {
 		link := messengertypes.BertyLink{}
 		parts := strings.Split(rawFragment, "/")
 		if len(parts) < 2 {
-			return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("URI should have at least 2 parts"))
+			return nil, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("URI should have at least 2 parts"))
 		}
 
 		// decode blob
 		machineBin, err := base58.Decode(parts[1])
 		if err != nil {
-			return nil, errcode.ErrInvalidInput.Wrap(err)
+			return nil, errcode.ErrCode_ErrInvalidInput.Wrap(err)
 		}
 		if err := proto.Unmarshal(machineBin, &link); err != nil {
-			return nil, errcode.ErrInvalidInput.Wrap(err)
+			return nil, errcode.ErrCode_ErrInvalidInput.Wrap(err)
 		}
 
 		// decode url.Values
@@ -217,7 +217,7 @@ func UnmarshalLink(uri string, key []byte) (*messengertypes.BertyLink, error) {
 			encodedValues := strings.Join(parts[2:], "/")
 			human, err = url.ParseQuery(encodedValues)
 			if err != nil {
-				return nil, errcode.ErrInvalidInput.Wrap(err)
+				return nil, errcode.ErrCode_ErrInvalidInput.Wrap(err)
 			}
 		}
 
@@ -225,11 +225,11 @@ func UnmarshalLink(uri string, key []byte) (*messengertypes.BertyLink, error) {
 		switch kind := parts[0]; kind {
 		case "contact":
 			link.Kind = messengertypes.BertyLink_ContactInviteV1Kind
-			if link.BertyID == nil {
-				link.BertyID = &messengertypes.BertyID{}
+			if link.BertyId == nil {
+				link.BertyId = &messengertypes.BertyID{}
 			}
-			if name := human.Get("name"); name != "" && link.BertyID.DisplayName == "" {
-				link.BertyID.DisplayName = name
+			if name := human.Get("name"); name != "" && link.BertyId.DisplayName == "" {
+				link.BertyId.DisplayName = name
 			}
 		case "group":
 			link.Kind = messengertypes.BertyLink_GroupV1Kind
@@ -242,7 +242,7 @@ func UnmarshalLink(uri string, key []byte) (*messengertypes.BertyLink, error) {
 		case "enc":
 			link.Kind = messengertypes.BertyLink_EncryptedV1Kind
 			if link.Encrypted == nil {
-				return nil, errcode.ErrInvalidInput
+				return nil, errcode.ErrCode_ErrInvalidInput
 			}
 			if name := human.Get("name"); name != "" && link.Encrypted.DisplayName == "" {
 				link.Encrypted.DisplayName = name
@@ -253,7 +253,7 @@ func UnmarshalLink(uri string, key []byte) (*messengertypes.BertyLink, error) {
 				link.BertyMessageRef = &messengertypes.BertyLink_BertyMessageRef{}
 			}
 		default:
-			return nil, errcode.ErrInvalidInput
+			return nil, errcode.ErrCode_ErrInvalidInput
 		}
 
 		if link.Kind == messengertypes.BertyLink_EncryptedV1Kind {
@@ -263,12 +263,12 @@ func UnmarshalLink(uri string, key []byte) (*messengertypes.BertyLink, error) {
 		return &link, nil
 	}
 
-	return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("unsupported link format"))
+	return nil, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("unsupported link format"))
 }
 
 func decryptLink(link *messengertypes.BertyLink, passphrase []byte) (*messengertypes.BertyLink, error) {
 	if link == nil || link.Kind != messengertypes.BertyLink_EncryptedV1Kind {
-		return nil, errcode.ErrInvalidInput
+		return nil, errcode.ErrCode_ErrInvalidInput
 	}
 	if err := link.IsValid(); err != nil {
 		return nil, err
@@ -284,24 +284,24 @@ func decryptLink(link *messengertypes.BertyLink, passphrase []byte) (*messengert
 	// derive key for AES
 	key, _, err := cryptoutil.DeriveKey(passphrase, link.Encrypted.Nonce)
 	if err != nil {
-		return nil, errcode.ErrInternal.Wrap(err)
+		return nil, errcode.ErrCode_ErrInternal.Wrap(err)
 	}
 
 	// create stream cipher
 	stream, err := cryptoutil.AESCTRStream(key, link.Encrypted.Nonce)
 	if err != nil {
-		return nil, errcode.ErrInternal.Wrap(err)
+		return nil, errcode.ErrCode_ErrInternal.Wrap(err)
 	}
 
 	switch decrypted.Kind {
 	case messengertypes.BertyLink_ContactInviteV1Kind:
-		decrypted.BertyID = &messengertypes.BertyID{
-			AccountPK:            make([]byte, len(link.Encrypted.ContactAccountPK)),
+		decrypted.BertyId = &messengertypes.BertyID{
+			AccountPk:            make([]byte, len(link.Encrypted.ContactAccountPk)),
 			PublicRendezvousSeed: make([]byte, len(link.Encrypted.ContactPublicRendezvousSeed)),
 		}
-		stream.XORKeyStream(decrypted.BertyID.PublicRendezvousSeed, link.Encrypted.ContactPublicRendezvousSeed)
-		stream.XORKeyStream(decrypted.BertyID.AccountPK, link.Encrypted.ContactAccountPK)
-		decrypted.BertyID.DisplayName = link.Encrypted.DisplayName
+		stream.XORKeyStream(decrypted.BertyId.PublicRendezvousSeed, link.Encrypted.ContactPublicRendezvousSeed)
+		stream.XORKeyStream(decrypted.BertyId.AccountPk, link.Encrypted.ContactAccountPk)
+		decrypted.BertyId.DisplayName = link.Encrypted.DisplayName
 
 	case messengertypes.BertyLink_GroupV1Kind:
 		decrypted.BertyGroup = &messengertypes.BertyGroup{
@@ -326,10 +326,10 @@ func decryptLink(link *messengertypes.BertyLink, passphrase []byte) (*messengert
 		checksum := make([]byte, len(link.Encrypted.Checksum))
 		err := clearLinkChecksum(&decrypted, checksum)
 		if err != nil {
-			return nil, errcode.ErrInternal.Wrap(err)
+			return nil, errcode.ErrCode_ErrInternal.Wrap(err)
 		}
 		if !bytes.Equal(link.Encrypted.Checksum, checksum) {
-			return nil, errcode.ErrMessengerDeepLinkInvalidPassphrase
+			return nil, errcode.ErrCode_ErrMessengerDeepLinkInvalidPassphrase
 		}
 	}
 
@@ -341,7 +341,7 @@ func decryptLink(link *messengertypes.BertyLink, passphrase []byte) (*messengert
 // The encrypted link can be marshaled by UnmarshalLink if a passphrase is provided in the URL.
 func EncryptLink(link *messengertypes.BertyLink, passphrase []byte) (*messengertypes.BertyLink, error) {
 	if link == nil {
-		return nil, errcode.ErrInvalidInput
+		return nil, errcode.ErrCode_ErrInvalidInput
 	}
 	encrypted := messengertypes.BertyLink{
 		Kind: messengertypes.BertyLink_EncryptedV1Kind,
@@ -363,38 +363,38 @@ func EncryptLink(link *messengertypes.BertyLink, passphrase []byte) (*messengert
 	// generate nonce with AES' blocksize
 	nonce, err := cryptoutil.GenerateNonceSize(aes.BlockSize)
 	if err != nil {
-		return nil, errcode.ErrInternal.Wrap(err)
+		return nil, errcode.ErrCode_ErrInternal.Wrap(err)
 	}
 	encrypted.Encrypted.Nonce = nonce
 
 	// derive key for AES
 	key, _, err := cryptoutil.DeriveKey(passphrase, nonce)
 	if err != nil {
-		return nil, errcode.ErrInternal.Wrap(err)
+		return nil, errcode.ErrCode_ErrInternal.Wrap(err)
 	}
 
 	// encrypt
 	stream, err := cryptoutil.AESCTRStream(key, nonce)
 	if err != nil {
-		return nil, errcode.ErrInternal.Wrap(err)
+		return nil, errcode.ErrCode_ErrInternal.Wrap(err)
 	}
 
 	switch link.Kind {
 	case messengertypes.BertyLink_ContactInviteV1Kind:
-		if link.BertyID == nil {
-			return nil, errcode.ErrInvalidInput
+		if link.BertyId == nil {
+			return nil, errcode.ErrCode_ErrInvalidInput
 		}
 
 		// encrypt fields (order is important)
-		encrypted.Encrypted.ContactPublicRendezvousSeed = make([]byte, len(link.BertyID.PublicRendezvousSeed))
-		encrypted.Encrypted.ContactAccountPK = make([]byte, len(link.BertyID.AccountPK))
-		stream.XORKeyStream(encrypted.Encrypted.ContactPublicRendezvousSeed, link.BertyID.PublicRendezvousSeed)
-		stream.XORKeyStream(encrypted.Encrypted.ContactAccountPK, link.BertyID.AccountPK)
-		encrypted.Encrypted.DisplayName = link.BertyID.DisplayName
+		encrypted.Encrypted.ContactPublicRendezvousSeed = make([]byte, len(link.BertyId.PublicRendezvousSeed))
+		encrypted.Encrypted.ContactAccountPk = make([]byte, len(link.BertyId.AccountPk))
+		stream.XORKeyStream(encrypted.Encrypted.ContactPublicRendezvousSeed, link.BertyId.PublicRendezvousSeed)
+		stream.XORKeyStream(encrypted.Encrypted.ContactAccountPk, link.BertyId.AccountPk)
+		encrypted.Encrypted.DisplayName = link.BertyId.DisplayName
 
 	case messengertypes.BertyLink_GroupV1Kind:
 		if link.BertyGroup == nil || link.BertyGroup.Group == nil {
-			return nil, errcode.ErrInvalidInput
+			return nil, errcode.ErrCode_ErrInvalidInput
 		}
 		// only field that stays clear
 		encrypted.Encrypted.GroupType = link.BertyGroup.Group.GroupType
@@ -413,13 +413,13 @@ func EncryptLink(link *messengertypes.BertyLink, passphrase []byte) (*messengert
 		encrypted.Encrypted.DisplayName = link.BertyGroup.DisplayName
 
 	default:
-		return nil, errcode.ErrInvalidInput
+		return nil, errcode.ErrCode_ErrInvalidInput
 	}
 
 	if encrypted.Encrypted.Checksum != nil && len(encrypted.Encrypted.Checksum) > 0 {
 		err := clearLinkChecksum(link, encrypted.Encrypted.Checksum)
 		if err != nil {
-			return nil, errcode.ErrInternal.Wrap(err)
+			return nil, errcode.ErrCode_ErrInternal.Wrap(err)
 		}
 	}
 
@@ -432,14 +432,14 @@ func clearLinkChecksum(link *messengertypes.BertyLink, dest []byte) error {
 	hasher := sha3.NewShake256()
 
 	// contact v1
-	if link.BertyID != nil {
+	if link.BertyId != nil {
 		for _, b := range [][]byte{
-			link.BertyID.PublicRendezvousSeed,
-			link.BertyID.AccountPK,
+			link.BertyId.PublicRendezvousSeed,
+			link.BertyId.AccountPk,
 		} {
 			_, err := hasher.Write(b)
 			if err != nil {
-				return errcode.ErrInternal.Wrap(err)
+				return errcode.ErrCode_ErrInternal.Wrap(err)
 			}
 		}
 	}
@@ -454,14 +454,14 @@ func clearLinkChecksum(link *messengertypes.BertyLink, dest []byte) error {
 		} {
 			_, err := hasher.Write(b)
 			if err != nil {
-				return errcode.ErrInternal.Wrap(err)
+				return errcode.ErrCode_ErrInternal.Wrap(err)
 			}
 		}
 	}
 
 	_, err := hasher.Read(dest)
 	if err != nil {
-		return errcode.ErrInternal.Wrap(err)
+		return errcode.ErrCode_ErrInternal.Wrap(err)
 	}
 
 	return nil
@@ -469,27 +469,27 @@ func clearLinkChecksum(link *messengertypes.BertyLink, dest []byte) error {
 
 func InternalLinkToMessage(accountID, groupPK, cid string) (string, error) {
 	if accountID == "" {
-		return "", errcode.ErrInvalidInput.Wrap(fmt.Errorf("account id should not be empty"))
+		return "", errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("account id should not be empty"))
 	}
 
 	if groupPK == "" {
-		return "", errcode.ErrInvalidInput.Wrap(fmt.Errorf("group pk should not be empty"))
+		return "", errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("group pk should not be empty"))
 	}
 
 	if cid == "" {
-		return "", errcode.ErrInvalidInput.Wrap(fmt.Errorf("message cid should not be empty"))
+		return "", errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("message cid should not be empty"))
 	}
 
 	internal, _, err := MarshalLink(&messengertypes.BertyLink{
 		BertyMessageRef: &messengertypes.BertyLink_BertyMessageRef{
-			AccountID: accountID,
-			GroupPK:   groupPK,
-			MessageID: cid,
+			AccountId: accountID,
+			GroupPk:   groupPK,
+			MessageId: cid,
 		},
 		Kind: messengertypes.BertyLink_MessageV1Kind,
 	})
 	if err != nil {
-		return "", errcode.ErrSerialization.Wrap(err)
+		return "", errcode.ErrCode_ErrSerialization.Wrap(err)
 	}
 
 	return internal, nil

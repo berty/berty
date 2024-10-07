@@ -14,7 +14,7 @@ import (
 	"berty.tech/berty/v2/go/pkg/bertypushrelay"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
 	"berty.tech/berty/v2/go/pkg/pushtypes"
-	"berty.tech/weshnet/pkg/cryptoutil"
+	"berty.tech/weshnet/v2/pkg/cryptoutil"
 )
 
 var (
@@ -57,7 +57,7 @@ func Test_pushService_ServerInfo(t *testing.T) {
 	require.Equal(t, pushDefaultServerPK[:], res.PublicKey)
 	require.Len(t, res.SupportedTokenTypes, 1)
 	require.Equal(t, pushtypes.PushServiceTokenType_PushTokenMQTT, res.SupportedTokenTypes[0].TokenType)
-	require.Equal(t, pushtypes.PushMockBundleID, res.SupportedTokenTypes[0].AppBundleID)
+	require.Equal(t, pushtypes.PushMockBundleID, res.SupportedTokenTypes[0].AppBundleId)
 }
 
 func Test_decodeOpaqueReceiver(t *testing.T) {
@@ -71,7 +71,7 @@ func Test_decodeOpaqueReceiver(t *testing.T) {
 
 	receiver := &pushtypes.PushServiceReceiver{
 		TokenType:          pushtypes.PushServiceTokenType_PushTokenMQTT,
-		BundleID:           pushtypes.PushMockBundleID,
+		BundleId:           pushtypes.PushMockBundleID,
 		Token:              []byte("testtoken"),
 		RecipientPublicKey: pushTestRecipient1PK[:],
 	}
@@ -88,13 +88,13 @@ func Test_decodeOpaqueReceiver(t *testing.T) {
 	require.NotNil(t, decryptedReceiver)
 
 	require.Equal(t, receiver.TokenType, decryptedReceiver.TokenType)
-	require.Equal(t, receiver.BundleID, decryptedReceiver.BundleID)
+	require.Equal(t, receiver.BundleId, decryptedReceiver.BundleId)
 	require.Equal(t, receiver.Token, decryptedReceiver.Token)
 	require.Equal(t, receiver.RecipientPublicKey, decryptedReceiver.RecipientPublicKey)
 
 	receiver = &pushtypes.PushServiceReceiver{
 		TokenType:          pushtypes.PushServiceTokenType_PushTokenUndefined, // Unsupported by server
-		BundleID:           pushtypes.PushMockBundleID,
+		BundleId:           pushtypes.PushMockBundleID,
 		Token:              []byte("testtoken"),
 		RecipientPublicKey: pushTestRecipient1PK[:],
 	}
@@ -112,7 +112,7 @@ func Test_decodeOpaqueReceiver(t *testing.T) {
 
 	receiver = &pushtypes.PushServiceReceiver{
 		TokenType:          pushtypes.PushServiceTokenType_PushTokenMQTT,
-		BundleID:           "mismatch", // Unsupported by server
+		BundleId:           "mismatch", // Unsupported by server
 		Token:              []byte("testtoken"),
 		RecipientPublicKey: pushTestRecipient1PK[:],
 	}
@@ -130,7 +130,7 @@ func Test_decodeOpaqueReceiver(t *testing.T) {
 
 	receiver = &pushtypes.PushServiceReceiver{
 		TokenType:          pushtypes.PushServiceTokenType_PushTokenMQTT,
-		BundleID:           pushtypes.PushMockBundleID,
+		BundleId:           pushtypes.PushMockBundleID,
 		Token:              []byte("testtoken"),
 		RecipientPublicKey: pushTestRecipient1PK[:],
 	}

@@ -10,11 +10,10 @@ import (
 	"testing"
 	"time"
 
-	libp2p_mocknet "github.com/berty/go-libp2p-mock"
-	"github.com/golang/protobuf/proto"
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
 	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
+	mocknet "github.com/libp2p/go-libp2p/p2p/net/mock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/zap"
@@ -22,6 +21,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/grpc/test/bufconn"
+	"google.golang.org/protobuf/proto"
 	"gorm.io/gorm"
 	"moul.io/u"
 	"moul.io/zapgorm2"
@@ -29,9 +29,9 @@ import (
 
 	sqlite "berty.tech/berty/v2/go/internal/gorm-sqlcipher"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
-	"berty.tech/weshnet"
-	"berty.tech/weshnet/pkg/protocoltypes"
-	"berty.tech/weshnet/pkg/testutil"
+	"berty.tech/weshnet/v2"
+	"berty.tech/weshnet/v2/pkg/protocoltypes"
+	"berty.tech/weshnet/v2/pkg/testutil"
 )
 
 type TestingServiceOpts struct {
@@ -155,7 +155,7 @@ func TestingClientFromServer(ctx context.Context, t testing.TB, s *grpc.Server, 
 
 func TestingInfra(ctx context.Context, t testing.TB, amount int, logger *zap.Logger) ([]*TestingService, []*weshnet.TestingProtocol, func()) {
 	t.Helper()
-	mocknet := libp2p_mocknet.New()
+	mocknet := mocknet.New()
 	t.Cleanup(func() { mocknet.Close() })
 
 	protocols, cleanup := weshnet.NewTestingProtocolWithMockedPeers(ctx, t, &weshnet.TestingOpts{Logger: logger, Mocknet: mocknet}, nil, amount)
@@ -386,7 +386,7 @@ func (a *TestingAccount) processEvent(t testing.TB, event *messengertypes.Stream
 		payload, err := event.UnmarshalPayload()
 		require.NoError(t, err)
 		inte := payload.(*messengertypes.StreamEvent_InteractionUpdated).Interaction
-		a.interactions[inte.GetCID()] = inte
+		a.interactions[inte.GetCid()] = inte
 	}
 }
 

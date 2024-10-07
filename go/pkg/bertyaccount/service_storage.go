@@ -15,7 +15,7 @@ func (s *service) AppStorageGet(ctx context.Context, req *accounttypes.AppStorag
 	var storage datastore.Datastore
 	if req.GetGlobal() {
 		if s.appStorage == nil {
-			return nil, errcode.ErrAppStorageNotSupported
+			return nil, errcode.ErrCode_ErrAppStorageNotSupported
 		}
 
 		storage = s.appStorage
@@ -23,9 +23,9 @@ func (s *service) AppStorageGet(ctx context.Context, req *accounttypes.AppStorag
 		s.muService.Lock()
 		defer s.muService.Unlock()
 
-		accountID := s.accountData.GetAccountID()
+		accountID := s.accountData.GetAccountId()
 		if accountID == "" {
-			return nil, errcode.ErrBertyAccountDataNotFound
+			return nil, errcode.ErrCode_ErrBertyAccountDataNotFound
 		}
 
 		var storageKey []byte
@@ -46,14 +46,14 @@ func (s *service) AppStorageGet(ctx context.Context, req *accounttypes.AppStorag
 
 		var err error
 		if storage, err = accountutils.GetAccountAppStorage(s.appRootDir, accountID, storageKey, storageSalt); err != nil {
-			return nil, errcode.TODO.Wrap(err)
+			return nil, errcode.ErrCode_TODO.Wrap(err)
 		}
 		defer func() { outErr = multierr.Append(outErr, storage.Close()) }()
 	}
 
 	value, err := storage.Get(ctx, datastore.NewKey(req.GetKey()))
 	if err != nil {
-		return nil, errcode.ErrDBRead.Wrap(err)
+		return nil, errcode.ErrCode_ErrDBRead.Wrap(err)
 	}
 
 	return &accounttypes.AppStorageGet_Reply{Value: value}, nil
@@ -63,7 +63,7 @@ func (s *service) AppStoragePut(ctx context.Context, req *accounttypes.AppStorag
 	var storage datastore.Datastore
 	if req.GetGlobal() {
 		if s.appStorage == nil {
-			return nil, errcode.ErrAppStorageNotSupported
+			return nil, errcode.ErrCode_ErrAppStorageNotSupported
 		}
 
 		storage = s.appStorage
@@ -71,9 +71,9 @@ func (s *service) AppStoragePut(ctx context.Context, req *accounttypes.AppStorag
 		s.muService.Lock()
 		defer s.muService.Unlock()
 
-		accountID := s.accountData.GetAccountID()
+		accountID := s.accountData.GetAccountId()
 		if accountID == "" {
-			return nil, errcode.ErrBertyAccountDataNotFound
+			return nil, errcode.ErrCode_ErrBertyAccountDataNotFound
 		}
 
 		var storageKey []byte
@@ -94,14 +94,14 @@ func (s *service) AppStoragePut(ctx context.Context, req *accounttypes.AppStorag
 
 		var err error
 		if storage, err = accountutils.GetAccountAppStorage(s.appRootDir, accountID, storageKey, storageSalt); err != nil {
-			return nil, errcode.TODO.Wrap(err)
+			return nil, errcode.ErrCode_TODO.Wrap(err)
 		}
 		defer func() { outErr = multierr.Append(outErr, storage.Close()) }()
 	}
 
 	err := storage.Put(ctx, datastore.NewKey(req.GetKey()), req.GetValue())
 	if err != nil {
-		return nil, errcode.ErrDBWrite.Wrap(err)
+		return nil, errcode.ErrCode_ErrDBWrite.Wrap(err)
 	}
 
 	return &accounttypes.AppStoragePut_Reply{}, nil
@@ -111,7 +111,7 @@ func (s *service) AppStorageRemove(ctx context.Context, req *accounttypes.AppSto
 	var storage datastore.Datastore
 	if req.GetGlobal() {
 		if s.appStorage == nil {
-			return nil, errcode.ErrAppStorageNotSupported
+			return nil, errcode.ErrCode_ErrAppStorageNotSupported
 		}
 
 		storage = s.appStorage
@@ -119,9 +119,9 @@ func (s *service) AppStorageRemove(ctx context.Context, req *accounttypes.AppSto
 		s.muService.Lock()
 		defer s.muService.Unlock()
 
-		accountID := s.accountData.GetAccountID()
+		accountID := s.accountData.GetAccountId()
 		if accountID == "" {
-			return nil, errcode.ErrBertyAccountDataNotFound
+			return nil, errcode.ErrCode_ErrBertyAccountDataNotFound
 		}
 
 		var storageKey []byte
@@ -142,14 +142,14 @@ func (s *service) AppStorageRemove(ctx context.Context, req *accounttypes.AppSto
 
 		var err error
 		if storage, err = accountutils.GetAccountAppStorage(s.appRootDir, accountID, storageKey, storageSalt); err != nil {
-			return nil, errcode.TODO.Wrap(err)
+			return nil, errcode.ErrCode_TODO.Wrap(err)
 		}
 		defer func() { outErr = multierr.Append(outErr, storage.Close()) }()
 	}
 
 	err := storage.Delete(ctx, datastore.NewKey(req.GetKey()))
 	if err != nil {
-		return nil, errcode.ErrDBWrite.Wrap(err)
+		return nil, errcode.ErrCode_ErrDBWrite.Wrap(err)
 	}
 
 	return &accounttypes.AppStorageRemove_Reply{}, nil

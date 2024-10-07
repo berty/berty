@@ -18,8 +18,6 @@ import (
 	// required for dev
 	_ "github.com/githubnemo/CompileDaemon"
 	// required by protoc
-	_ "github.com/gogo/protobuf/gogoproto"
-	// required by protoc
 	_ "github.com/gogo/protobuf/proto"
 	// required by protoc
 	_ "github.com/gogo/protobuf/protoc-gen-gogo"

@@ -31,17 +31,17 @@ import (
 	"berty.tech/berty/v2/go/pkg/bertymessenger"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
-	"berty.tech/weshnet"
-	"berty.tech/weshnet/pkg/grpcutil"
-	"berty.tech/weshnet/pkg/ipfsutil"
-	"berty.tech/weshnet/pkg/lifecycle"
-	"berty.tech/weshnet/pkg/logutil"
-	"berty.tech/weshnet/pkg/netmanager"
-	"berty.tech/weshnet/pkg/protocoltypes"
-	proximity "berty.tech/weshnet/pkg/proximitytransport"
-	"berty.tech/weshnet/pkg/rendezvous"
-	tinder "berty.tech/weshnet/pkg/tinder"
-	"berty.tech/weshnet/pkg/tyber"
+	"berty.tech/weshnet/v2"
+	"berty.tech/weshnet/v2/pkg/grpcutil"
+	"berty.tech/weshnet/v2/pkg/ipfsutil"
+	"berty.tech/weshnet/v2/pkg/lifecycle"
+	"berty.tech/weshnet/v2/pkg/logutil"
+	"berty.tech/weshnet/v2/pkg/netmanager"
+	"berty.tech/weshnet/v2/pkg/protocoltypes"
+	proximity "berty.tech/weshnet/v2/pkg/proximitytransport"
+	"berty.tech/weshnet/v2/pkg/rendezvous"
+	tinder "berty.tech/weshnet/v2/pkg/tinder"
+	"berty.tech/weshnet/v2/pkg/tyber"
 )
 
 const (
@@ -281,7 +281,7 @@ func New(opts *ManagerOpts) (*Manager, error) {
 		}
 		if err := storageDirs[0].CreateParentDir(""); err != nil {
 			m.ctxCancel()
-			return nil, errcode.TODO.Wrap(err)
+			return nil, errcode.ErrCode_TODO.Wrap(err)
 		}
 		m.Datastore.defaultDir = storageDirs[0].Path
 	}
@@ -324,7 +324,7 @@ func (m *Manager) RunWorkers(ctx context.Context) error {
 		case <-ctx.Done():
 			return ctx.Err()
 		}
-	}, func(err error) {
+	}, func(_ error) {
 		m.ctxCancel()
 	})
 	return m.workers.Run()

@@ -24,11 +24,11 @@ import (
 	bridge_svc "berty.tech/berty/v2/go/pkg/bertybridge"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/osversion"
-	"berty.tech/weshnet/pkg/grpcutil"
-	"berty.tech/weshnet/pkg/lifecycle"
-	"berty.tech/weshnet/pkg/logutil"
-	"berty.tech/weshnet/pkg/netmanager"
-	proximity "berty.tech/weshnet/pkg/proximitytransport"
+	"berty.tech/weshnet/v2/pkg/grpcutil"
+	"berty.tech/weshnet/v2/pkg/lifecycle"
+	"berty.tech/weshnet/v2/pkg/logutil"
+	"berty.tech/weshnet/v2/pkg/netmanager"
+	proximity "berty.tech/weshnet/v2/pkg/proximitytransport"
 )
 
 var _ LifeCycleHandler = (*Bridge)(nil)
@@ -71,7 +71,7 @@ func NewBridge(config *BridgeConfig) (*Bridge, error) {
 		b.workers.Add(func() error {
 			// wait for closing signal
 			<-b.closec
-			return errcode.ErrBridgeInterrupted
+			return errcode.ErrCode_ErrBridgeInterrupted
 		}, func(error) {
 			b.onceCloser.Do(func() { close(b.closec) })
 		})
@@ -321,7 +321,7 @@ func (b *Bridge) Close() error {
 
 		b.grpcServer.Stop()
 
-		if !errcode.Is(err, errcode.ErrBridgeInterrupted) {
+		if !errcode.Is(err, errcode.ErrCode_ErrBridgeInterrupted) {
 			errs = multierr.Append(errs, err)
 		}
 

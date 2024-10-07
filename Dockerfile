@@ -4,7 +4,7 @@ ARG             VCS_REF
 ARG             VERSION
 
 # build
-FROM            golang:1.20-alpine as builder
+FROM            golang:1.22-alpine as builder
 RUN             apk add --no-cache git gcc musl-dev make binutils-gold
 # CGO_CFLAGS="-D_LARGEFILE64_SOURCE" to fix a bug: https://github.com/mattn/go-sqlite3/issues/1164#issuecomment-1635253695
 ENV             GO111MODULE=on CGO_CFLAGS="-D_LARGEFILE64_SOURCE"

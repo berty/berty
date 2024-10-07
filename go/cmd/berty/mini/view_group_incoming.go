@@ -8,22 +8,23 @@ import (
 	"time"
 
 	"go.uber.org/zap"
+	"google.golang.org/protobuf/proto"
 
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
-	"berty.tech/weshnet/pkg/protocoltypes"
+	"berty.tech/weshnet/v2/pkg/protocoltypes"
 )
 
 func handlerAccountGroupJoined(ctx context.Context, v *groupView, e *protocoltypes.GroupMetadataEvent, isHistory bool) error {
 	casted := &protocoltypes.AccountGroupJoined{}
-	if err := casted.Unmarshal(e.Event); err != nil {
+	if err := proto.Unmarshal(e.Event, casted); err != nil {
 		return err
 	}
 
 	addToBuffer(&historyMessage{
 		messageType: messageTypeMeta,
 		payload:     []byte("joined a group"),
-		sender:      casted.DevicePK,
+		sender:      casted.DevicePk,
 	}, v, isHistory)
 
 	v.v.AddContextGroup(ctx, casted.Group)
@@ -34,18 +35,18 @@ func handlerAccountGroupJoined(ctx context.Context, v *groupView, e *protocoltyp
 
 func handlerGroupDeviceChainKeyAdded(_ context.Context, v *groupView, e *protocoltypes.GroupMetadataEvent, isHistory bool) error {
 	casted := &protocoltypes.GroupDeviceChainKeyAdded{}
-	if err := casted.Unmarshal(e.Event); err != nil {
+	if err := proto.Unmarshal(e.Event, casted); err != nil {
 		return err
 	}
 
 	v.muAggregates.Lock()
-	v.secrets[string(casted.DevicePK)] = casted
+	v.secrets[string(casted.DevicePk)] = casted
 	v.muAggregates.Unlock()
 
 	addToBuffer(&historyMessage{
 		messageType: messageTypeMeta,
 		payload:     []byte("has exchanged a secret"),
-		sender:      casted.DevicePK,
+		sender:      casted.DevicePk,
 	}, v, isHistory)
 
 	return nil
@@ -53,18 +54,18 @@ func handlerGroupDeviceChainKeyAdded(_ context.Context, v *groupView, e *protoco
 
 func handlerGroupMemberDeviceAdded(_ context.Context, v *groupView, e *protocoltypes.GroupMetadataEvent, isHistory bool) error {
 	casted := &protocoltypes.GroupMemberDeviceAdded{}
-	if err := casted.Unmarshal(e.Event); err != nil {
+	if err := proto.Unmarshal(e.Event, casted); err != nil {
 		return err
 	}
 
 	v.muAggregates.Lock()
-	v.devices[string(casted.DevicePK)] = casted
+	v.devices[string(casted.DevicePk)] = casted
 	v.muAggregates.Unlock()
 
 	addToBuffer(&historyMessage{
 		messageType: messageTypeMeta,
 		payload:     []byte("new device joined the group"),
-		sender:      casted.DevicePK,
+		sender:      casted.DevicePk,
 	}, v, isHistory)
 
 	return nil
@@ -72,26 +73,26 @@ func handlerGroupMemberDeviceAdded(_ context.Context, v *groupView, e *protocolt
 
 func handlerAccountContactRequestOutgoingSent(ctx context.Context, v *groupView, e *protocoltypes.GroupMetadataEvent, isHistory bool) error {
 	casted := &protocoltypes.AccountContactRequestOutgoingSent{}
-	if err := casted.Unmarshal(e.Event); err != nil {
+	if err := proto.Unmarshal(e.Event, casted); err != nil {
 		return err
 	}
 
 	addToBuffer(&historyMessage{
 		messageType: messageTypeMeta,
 		payload:     []byte("outgoing contact request sent"),
-		sender:      casted.DevicePK,
+		sender:      casted.DevicePk,
 	}, v, isHistory)
 
 	gInfo, err := v.v.protocol.GroupInfo(ctx, &protocoltypes.GroupInfo_Request{
-		ContactPK: casted.ContactPK,
+		ContactPk: casted.ContactPk,
 	})
 	if err != nil {
 		return err
 	}
 
 	v.v.lock.Lock()
-	if _, hasValue := v.v.contactStates[string(casted.ContactPK)]; !hasValue || !isHistory {
-		v.v.contactStates[string(casted.ContactPK)] = protocoltypes.ContactStateAdded
+	if _, hasValue := v.v.contactStates[string(casted.ContactPk)]; !hasValue || !isHistory {
+		v.v.contactStates[string(casted.ContactPk)] = protocoltypes.ContactState_ContactStateAdded
 	}
 
 	v.v.lock.Unlock()
@@ -104,14 +105,14 @@ func handlerAccountContactRequestOutgoingSent(ctx context.Context, v *groupView,
 
 func handlerAccountGroupLeft(_ context.Context, v *groupView, e *protocoltypes.GroupMetadataEvent, isHistory bool) error {
 	casted := &protocoltypes.AccountGroupLeft{}
-	if err := casted.Unmarshal(e.Event); err != nil {
+	if err := proto.Unmarshal(e.Event, casted); err != nil {
 		return err
 	}
 
 	addToBuffer(&historyMessage{
 		messageType: messageTypeMeta,
-		payload:     []byte(fmt.Sprintf("left group %s", base64.StdEncoding.EncodeToString(casted.GroupPK))),
-		sender:      casted.DevicePK,
+		payload:     []byte(fmt.Sprintf("left group %s", base64.StdEncoding.EncodeToString(casted.GroupPk))),
+		sender:      casted.DevicePk,
 	}, v, isHistory)
 
 	return nil
@@ -119,7 +120,7 @@ func handlerAccountGroupLeft(_ context.Context, v *groupView, e *protocoltypes.G
 
 func handlerAccountContactRequestIncomingReceived(ctx context.Context, v *groupView, e *protocoltypes.GroupMetadataEvent, isHistory bool) error {
 	casted := &protocoltypes.AccountContactRequestIncomingReceived{}
-	if err := casted.Unmarshal(e.Event); err != nil {
+	if err := proto.Unmarshal(e.Event, casted); err != nil {
 		return err
 	}
 
@@ -127,18 +128,18 @@ func handlerAccountContactRequestIncomingReceived(ctx context.Context, v *groupV
 
 	addToBuffer(&historyMessage{
 		messageType: messageTypeMeta,
-		payload:     []byte(fmt.Sprintf("incoming request received %s, type /contact accept %s (alt. /contact discard <id>)", name, base64.StdEncoding.EncodeToString(casted.ContactPK))),
-		sender:      casted.DevicePK,
+		payload:     []byte(fmt.Sprintf("incoming request received %s, type /contact accept %s (alt. /contact discard <id>)", name, base64.StdEncoding.EncodeToString(casted.ContactPk))),
+		sender:      casted.DevicePk,
 	}, v, isHistory)
 
 	v.v.lock.Lock()
-	if _, hasValue := v.v.contactStates[string(casted.ContactPK)]; !hasValue || !isHistory {
-		v.v.contactStates[string(casted.ContactPK)] = protocoltypes.ContactStateReceived
+	if _, hasValue := v.v.contactStates[string(casted.ContactPk)]; !hasValue || !isHistory {
+		v.v.contactStates[string(casted.ContactPk)] = protocoltypes.ContactState_ContactStateReceived
 	}
 	v.v.lock.Unlock()
 
 	gInfo, err := v.v.protocol.GroupInfo(ctx, &protocoltypes.GroupInfo_Request{
-		ContactPK: casted.ContactPK,
+		ContactPk: casted.ContactPk,
 	})
 
 	if err == nil {
@@ -154,19 +155,19 @@ func handlerAccountContactRequestIncomingReceived(ctx context.Context, v *groupV
 
 func handlerAccountContactRequestIncomingDiscarded(_ context.Context, v *groupView, e *protocoltypes.GroupMetadataEvent, isHistory bool) error {
 	casted := &protocoltypes.AccountContactRequestIncomingDiscarded{}
-	if err := casted.Unmarshal(e.Event); err != nil {
+	if err := proto.Unmarshal(e.Event, casted); err != nil {
 		return err
 	}
 
 	addToBuffer(&historyMessage{
 		messageType: messageTypeMeta,
-		payload:     []byte(fmt.Sprintf("incoming request discarded, contact: %s", base64.StdEncoding.EncodeToString(casted.ContactPK))),
-		sender:      casted.DevicePK,
+		payload:     []byte(fmt.Sprintf("incoming request discarded, contact: %s", base64.StdEncoding.EncodeToString(casted.ContactPk))),
+		sender:      casted.DevicePk,
 	}, v, isHistory)
 
 	v.v.lock.Lock()
-	if _, hasValue := v.v.contactStates[string(casted.ContactPK)]; !hasValue || !isHistory {
-		v.v.contactStates[string(casted.ContactPK)] = protocoltypes.ContactStateRemoved
+	if _, hasValue := v.v.contactStates[string(casted.ContactPk)]; !hasValue || !isHistory {
+		v.v.contactStates[string(casted.ContactPk)] = protocoltypes.ContactState_ContactStateRemoved
 	}
 	v.v.lock.Unlock()
 
@@ -175,14 +176,14 @@ func handlerAccountContactRequestIncomingDiscarded(_ context.Context, v *groupVi
 
 func handlerMultiMemberGroupInitialMemberAnnounced(_ context.Context, v *groupView, e *protocoltypes.GroupMetadataEvent, isHistory bool) error {
 	casted := &protocoltypes.MultiMemberGroupInitialMemberAnnounced{}
-	if err := casted.Unmarshal(e.Event); err != nil {
+	if err := proto.Unmarshal(e.Event, casted); err != nil {
 		return err
 	}
 
 	addToBuffer(&historyMessage{
 		messageType: messageTypeMeta,
 		payload:     []byte("member claimed group ownership"),
-		sender:      casted.MemberPK,
+		sender:      casted.MemberPk,
 	}, v, isHistory)
 
 	return nil
@@ -190,33 +191,33 @@ func handlerMultiMemberGroupInitialMemberAnnounced(_ context.Context, v *groupVi
 
 func handlerAccountContactRequestOutgoingEnqueued(ctx context.Context, v *groupView, e *protocoltypes.GroupMetadataEvent, isHistory bool) error {
 	casted := &protocoltypes.AccountContactRequestOutgoingEnqueued{}
-	if err := casted.Unmarshal(e.Event); err != nil {
+	if err := proto.Unmarshal(e.Event, casted); err != nil {
 		return err
 	}
 	if casted.Contact == nil {
-		return errcode.ErrInvalidInput
+		return errcode.ErrCode_ErrInvalidInput
 	}
 
 	addToBuffer(&historyMessage{
 		messageType: messageTypeMeta,
-		payload:     []byte(fmt.Sprintf("outgoing contact request enqueued (%s)", base64.StdEncoding.EncodeToString(casted.Contact.PK))),
-		sender:      casted.DevicePK,
+		payload:     []byte(fmt.Sprintf("outgoing contact request enqueued (%s)", base64.StdEncoding.EncodeToString(casted.Contact.Pk))),
+		sender:      casted.DevicePk,
 	}, v, isHistory)
 
 	addToBuffer(&historyMessage{
 		messageType: messageTypeMeta,
 		payload:     []byte("fake request on the other end by typing `/contact received` with the value of `/contact share`"),
-		sender:      casted.DevicePK,
+		sender:      casted.DevicePk,
 	}, v, false)
 
 	v.v.lock.Lock()
-	if _, hasValue := v.v.contactStates[string(casted.Contact.PK)]; !hasValue || !isHistory {
-		v.v.contactStates[string(casted.Contact.PK)] = protocoltypes.ContactStateToRequest
+	if _, hasValue := v.v.contactStates[string(casted.Contact.Pk)]; !hasValue || !isHistory {
+		v.v.contactStates[string(casted.Contact.Pk)] = protocoltypes.ContactState_ContactStateToRequest
 	}
 	v.v.lock.Unlock()
 
 	gInfo, err := v.v.protocol.GroupInfo(ctx, &protocoltypes.GroupInfo_Request{
-		ContactPK: casted.Contact.PK,
+		ContactPk: casted.Contact.Pk,
 	})
 
 	if err == nil {
@@ -236,14 +237,14 @@ func handlerAccountContactRequestOutgoingEnqueued(ctx context.Context, v *groupV
 
 func handlerContactAliasKeyAdded(_ context.Context, v *groupView, e *protocoltypes.GroupMetadataEvent, isHistory bool) error {
 	casted := &protocoltypes.ContactAliasKeyAdded{}
-	if err := casted.Unmarshal(e.Event); err != nil {
+	if err := proto.Unmarshal(e.Event, casted); err != nil {
 		return err
 	}
 
 	addToBuffer(&historyMessage{
 		messageType: messageTypeMeta,
 		payload:     []byte("contact alias public key received"),
-		sender:      casted.DevicePK,
+		sender:      casted.DevicePk,
 	}, v, isHistory)
 
 	return nil
@@ -251,14 +252,14 @@ func handlerContactAliasKeyAdded(_ context.Context, v *groupView, e *protocoltyp
 
 func handlerMultiMemberGroupAliasResolverAdded(_ context.Context, v *groupView, e *protocoltypes.GroupMetadataEvent, isHistory bool) error {
 	casted := &protocoltypes.MultiMemberGroupAliasResolverAdded{}
-	if err := casted.Unmarshal(e.Event); err != nil {
+	if err := proto.Unmarshal(e.Event, casted); err != nil {
 		return err
 	}
 
 	addToBuffer(&historyMessage{
 		messageType: messageTypeMeta,
 		payload:     []byte("contact alias proof received"),
-		sender:      casted.DevicePK,
+		sender:      casted.DevicePk,
 	}, v, isHistory)
 
 	return nil
@@ -266,26 +267,26 @@ func handlerMultiMemberGroupAliasResolverAdded(_ context.Context, v *groupView, 
 
 func handlerAccountContactRequestIncomingAccepted(ctx context.Context, v *groupView, e *protocoltypes.GroupMetadataEvent, isHistory bool) error {
 	casted := &protocoltypes.AccountContactRequestOutgoingSent{}
-	if err := casted.Unmarshal(e.Event); err != nil {
+	if err := proto.Unmarshal(e.Event, casted); err != nil {
 		return err
 	}
 
 	addToBuffer(&historyMessage{
 		messageType: messageTypeMeta,
 		payload:     []byte("incoming contact request accepted"),
-		sender:      casted.DevicePK,
+		sender:      casted.DevicePk,
 	}, v, isHistory)
 
 	gInfo, err := v.v.protocol.GroupInfo(ctx, &protocoltypes.GroupInfo_Request{
-		ContactPK: casted.ContactPK,
+		ContactPk: casted.ContactPk,
 	})
 	if err != nil {
 		return err
 	}
 
 	v.v.lock.Lock()
-	if _, hasValue := v.v.contactStates[string(casted.ContactPK)]; !hasValue || !isHistory {
-		v.v.contactStates[string(casted.ContactPK)] = protocoltypes.ContactStateAdded
+	if _, hasValue := v.v.contactStates[string(casted.ContactPk)]; !hasValue || !isHistory {
+		v.v.contactStates[string(casted.ContactPk)] = protocoltypes.ContactState_ContactStateAdded
 	}
 	v.v.lock.Unlock()
 
@@ -303,9 +304,9 @@ func groupDeviceStatusHandler(logger *zap.Logger, v *groupView, e *protocoltypes
 	var payload string
 
 	switch t := e.GetType(); t {
-	case protocoltypes.TypePeerConnected:
+	case protocoltypes.GroupDeviceStatus_TypePeerConnected:
 		event := &protocoltypes.GroupDeviceStatus_Reply_PeerConnected{}
-		if err := event.Unmarshal(e.GetEvent()); err != nil {
+		if err := proto.Unmarshal(e.GetEvent(), event); err != nil {
 			logger.Error("unmarshal error", zap.Error(err))
 			return
 		}
@@ -320,23 +321,23 @@ func groupDeviceStatusHandler(logger *zap.Logger, v *groupView, e *protocoltypes
 			activeTransport = tpts[0].String()
 		}
 
-		payload = fmt.Sprintf("device status updated: connected <%.15s> on: %s(%s)", event.GetPeerID(), activeAddr, activeTransport)
+		payload = fmt.Sprintf("device status updated: connected <%.15s> on: %s(%s)", event.GetPeerId(), activeAddr, activeTransport)
 
-	case protocoltypes.TypePeerDisconnected:
+	case protocoltypes.GroupDeviceStatus_TypePeerDisconnected:
 		event := &protocoltypes.GroupDeviceStatus_Reply_PeerDisconnected{}
-		if err := event.Unmarshal(e.GetEvent()); err != nil {
+		if err := proto.Unmarshal(e.GetEvent(), event); err != nil {
 			logger.Error("unmarshal error", zap.Error(err))
 			return
 		}
-		payload = fmt.Sprintf("device status updated: left <%.15s>", event.GetPeerID())
+		payload = fmt.Sprintf("device status updated: left <%.15s>", event.GetPeerId())
 
-	case protocoltypes.TypePeerReconnecting:
+	case protocoltypes.GroupDeviceStatus_TypePeerReconnecting:
 		event := &protocoltypes.GroupDeviceStatus_Reply_PeerReconnecting{}
-		if err := event.Unmarshal(e.GetEvent()); err != nil {
+		if err := proto.Unmarshal(e.GetEvent(), event); err != nil {
 			logger.Error("unmarshal error", zap.Error(err))
 			return
 		}
-		payload = fmt.Sprintf("device status updated: reconnecting <%.15s>", event.GetPeerID())
+		payload = fmt.Sprintf("device status updated: reconnecting <%.15s>", event.GetPeerId())
 	default:
 		logger.Warn("unknow group device status event received")
 		return
@@ -355,25 +356,25 @@ func metadataEventHandler(ctx context.Context, v *groupView, e *protocoltypes.Gr
 	}, v, isHistory)
 
 	actions := map[protocoltypes.EventType]func(context.Context, *groupView, *protocoltypes.GroupMetadataEvent, bool) error{
-		protocoltypes.EventTypeAccountContactBlocked:                  nil, // do it later
-		protocoltypes.EventTypeAccountContactRequestDisabled:          handlerNoop,
-		protocoltypes.EventTypeAccountContactRequestEnabled:           handlerNoop,
-		protocoltypes.EventTypeAccountContactRequestIncomingAccepted:  handlerAccountContactRequestIncomingAccepted,
-		protocoltypes.EventTypeAccountContactRequestIncomingDiscarded: handlerAccountContactRequestIncomingDiscarded,
-		protocoltypes.EventTypeAccountContactRequestIncomingReceived:  handlerAccountContactRequestIncomingReceived,
-		protocoltypes.EventTypeAccountContactRequestOutgoingEnqueued:  handlerAccountContactRequestOutgoingEnqueued,
-		protocoltypes.EventTypeAccountContactRequestOutgoingSent:      handlerAccountContactRequestOutgoingSent,
-		protocoltypes.EventTypeAccountContactRequestReferenceReset:    handlerNoop,
-		protocoltypes.EventTypeAccountContactUnblocked:                nil, // do it later
-		protocoltypes.EventTypeAccountGroupJoined:                     handlerAccountGroupJoined,
-		protocoltypes.EventTypeAccountGroupLeft:                       handlerAccountGroupLeft,
-		protocoltypes.EventTypeContactAliasKeyAdded:                   handlerContactAliasKeyAdded,
-		protocoltypes.EventTypeGroupDeviceChainKeyAdded:               handlerGroupDeviceChainKeyAdded,
-		protocoltypes.EventTypeGroupMemberDeviceAdded:                 handlerGroupMemberDeviceAdded,
-		protocoltypes.EventTypeGroupMetadataPayloadSent:               nil, // do it later
-		protocoltypes.EventTypeMultiMemberGroupAdminRoleGranted:       nil, // do it later
-		protocoltypes.EventTypeMultiMemberGroupAliasResolverAdded:     handlerMultiMemberGroupAliasResolverAdded,
-		protocoltypes.EventTypeMultiMemberGroupInitialMemberAnnounced: handlerMultiMemberGroupInitialMemberAnnounced,
+		protocoltypes.EventType_EventTypeAccountContactBlocked:                  nil, // do it later
+		protocoltypes.EventType_EventTypeAccountContactRequestDisabled:          handlerNoop,
+		protocoltypes.EventType_EventTypeAccountContactRequestEnabled:           handlerNoop,
+		protocoltypes.EventType_EventTypeAccountContactRequestIncomingAccepted:  handlerAccountContactRequestIncomingAccepted,
+		protocoltypes.EventType_EventTypeAccountContactRequestIncomingDiscarded: handlerAccountContactRequestIncomingDiscarded,
+		protocoltypes.EventType_EventTypeAccountContactRequestIncomingReceived:  handlerAccountContactRequestIncomingReceived,
+		protocoltypes.EventType_EventTypeAccountContactRequestOutgoingEnqueued:  handlerAccountContactRequestOutgoingEnqueued,
+		protocoltypes.EventType_EventTypeAccountContactRequestOutgoingSent:      handlerAccountContactRequestOutgoingSent,
+		protocoltypes.EventType_EventTypeAccountContactRequestReferenceReset:    handlerNoop,
+		protocoltypes.EventType_EventTypeAccountContactUnblocked:                nil, // do it later
+		protocoltypes.EventType_EventTypeAccountGroupJoined:                     handlerAccountGroupJoined,
+		protocoltypes.EventType_EventTypeAccountGroupLeft:                       handlerAccountGroupLeft,
+		protocoltypes.EventType_EventTypeContactAliasKeyAdded:                   handlerContactAliasKeyAdded,
+		protocoltypes.EventType_EventTypeGroupDeviceChainKeyAdded:               handlerGroupDeviceChainKeyAdded,
+		protocoltypes.EventType_EventTypeGroupMemberDeviceAdded:                 handlerGroupMemberDeviceAdded,
+		protocoltypes.EventType_EventTypeGroupMetadataPayloadSent:               nil, // do it later
+		protocoltypes.EventType_EventTypeMultiMemberGroupAdminRoleGranted:       nil, // do it later
+		protocoltypes.EventType_EventTypeMultiMemberGroupAliasResolverAdded:     handlerMultiMemberGroupAliasResolverAdded,
+		protocoltypes.EventType_EventTypeMultiMemberGroupInitialMemberAnnounced: handlerMultiMemberGroupInitialMemberAnnounced,
 	}
 	logger.Debug("metadataEventHandler", zap.Stringer("event-type", e.Metadata.EventType))
 
@@ -442,13 +443,13 @@ func streamEventHandler(ctx context.Context, v *groupView, e *messengertypes.Eve
 
 func handlerServiceTokenAdded(_ context.Context, v *groupView, e *messengertypes.StreamEvent, isHistory bool) error {
 	casted := &messengertypes.StreamEvent_ServiceTokenAdded{}
-	if err := casted.Unmarshal(e.Payload); err != nil {
+	if err := proto.Unmarshal(e.Payload, casted); err != nil {
 		return err
 	}
 
 	addToBuffer(&historyMessage{
 		messageType: messageTypeMeta,
-		payload:     []byte(fmt.Sprintf("service token registered for account (%s: auth via %s)", casted.Token.TokenID, casted.Token.AuthenticationURL)),
+		payload:     []byte(fmt.Sprintf("service token registered for account (%s: auth via %s)", casted.Token.TokenId, casted.Token.AuthenticationUrl)),
 	}, v, isHistory)
 
 	for _, s := range casted.Token.SupportedServices {

@@ -8,13 +8,14 @@ import (
 	"go.uber.org/zap"
 	"golang.org/x/crypto/curve25519"
 	"golang.org/x/crypto/nacl/box"
+	"google.golang.org/protobuf/proto"
 
 	"berty.tech/berty/v2/go/internal/dbfetcher"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/pushtypes"
-	"berty.tech/weshnet/pkg/cryptoutil"
-	oosmtypes "berty.tech/weshnet/pkg/outofstoremessagetypes"
-	"berty.tech/weshnet/pkg/protocoltypes"
+	"berty.tech/weshnet/v2/pkg/cryptoutil"
+	oosmtypes "berty.tech/weshnet/v2/pkg/outofstoremessagetypes"
+	"berty.tech/weshnet/v2/pkg/protocoltypes"
 )
 
 const InMemoryDir = ":memory:"
@@ -55,15 +56,15 @@ func (opts *PushHandlerOpts) applyPushDefaults() {
 
 func NewPushHandler(serviceClient oosmtypes.OutOfStoreMessageServiceClient, dbFetcher dbfetcher.DBFetcher, pushSK *[cryptoutil.KeySize]byte, opts *PushHandlerOpts) (PushHandler, error) {
 	if serviceClient == nil {
-		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("no service client specified"))
+		return nil, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("no service client specified"))
 	}
 
 	if dbFetcher == nil {
-		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("no db fetcher specified"))
+		return nil, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("no db fetcher specified"))
 	}
 
 	if pushSK == nil {
-		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("no cross account push key specified"))
+		return nil, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("no cross account push key specified"))
 	}
 
 	opts.applyPushDefaults()
@@ -87,27 +88,27 @@ func (s *pushHandler) PushReceive(ctx context.Context, payload []byte) (*protoco
 
 	pushServerPK, err := s.getPushServerPubKey(ctx)
 	if err != nil {
-		return nil, errcode.ErrPushUnableToDecrypt.Wrap(err)
+		return nil, errcode.ErrCode_ErrPushUnableToDecrypt.Wrap(err)
 	}
 
 	oosBytes, err := DecryptPushDataFromServer(payload, pushServerPK, s.pushSK)
 	if err != nil {
-		return nil, errcode.ErrPushUnableToDecrypt.Wrap(err)
+		return nil, errcode.ErrCode_ErrPushUnableToDecrypt.Wrap(err)
 	}
 
 	oosMessageEnv := &protocoltypes.OutOfStoreMessageEnvelope{}
-	if err := oosMessageEnv.Unmarshal(oosBytes); err != nil {
-		return nil, errcode.ErrDeserialization.Wrap(err)
+	if err := proto.Unmarshal(oosBytes, oosMessageEnv); err != nil {
+		return nil, errcode.ErrCode_ErrDeserialization.Wrap(err)
 	}
 
-	oosMessageEnvBytes, err := oosMessageEnv.Marshal()
+	oosMessageEnvBytes, err := proto.Marshal(oosMessageEnv)
 	if err != nil {
-		return nil, errcode.ErrSerialization.Wrap(err)
+		return nil, errcode.ErrCode_ErrSerialization.Wrap(err)
 	}
 
 	oosMessage, err := s.serviceClient.OutOfStoreReceive(ctx, &protocoltypes.OutOfStoreReceive_Request{Payload: oosMessageEnvBytes})
 	if err != nil {
-		return nil, errcode.ErrCryptoDecrypt.Wrap(err)
+		return nil, errcode.ErrCode_ErrCryptoDecrypt.Wrap(err)
 	}
 
 	return oosMessage, nil
@@ -116,14 +117,14 @@ func (s *pushHandler) PushReceive(ctx context.Context, payload []byte) (*protoco
 func (s *pushHandler) getPushServerPubKey(_ context.Context) (*[cryptoutil.KeySize]byte, error) {
 	pushServers, err := s.dbFetcher.GetCurrentPushServers()
 	if err != nil {
-		return nil, errcode.ErrInternal.Wrap(fmt.Errorf("unable to get push servers: %w", err))
+		return nil, errcode.ErrCode_ErrInternal.Wrap(fmt.Errorf("unable to get push servers: %w", err))
 	}
 
 	// currently, take only the first server public key
 	server := pushServers[0]
 
 	if l := len(server.Key); l != cryptoutil.KeySize {
-		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("invalid push pk size, expected %d bytes, got %d", cryptoutil.KeySize, l))
+		return nil, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("invalid push pk size, expected %d bytes, got %d", cryptoutil.KeySize, l))
 	}
 
 	out := [cryptoutil.KeySize]byte{}
@@ -134,26 +135,26 @@ func (s *pushHandler) getPushServerPubKey(_ context.Context) (*[cryptoutil.KeySi
 
 func DecryptPushDataFromServer(data []byte, serverPK, ownSK *[32]byte) ([]byte, error) {
 	if serverPK == nil {
-		return nil, errcode.ErrPushUnableToDecrypt.Wrap(fmt.Errorf("no push server public key provided"))
+		return nil, errcode.ErrCode_ErrPushUnableToDecrypt.Wrap(fmt.Errorf("no push server public key provided"))
 	}
 
 	if ownSK == nil {
-		return nil, errcode.ErrPushUnableToDecrypt.Wrap(fmt.Errorf("no push receiver secret key provided"))
+		return nil, errcode.ErrCode_ErrPushUnableToDecrypt.Wrap(fmt.Errorf("no push receiver secret key provided"))
 	}
 
 	pushEnv := &pushtypes.OutOfStoreExposedData{}
-	if err := pushEnv.Unmarshal(data); err != nil {
-		return nil, errcode.ErrPushInvalidPayload.Wrap(err)
+	if err := proto.Unmarshal(data, pushEnv); err != nil {
+		return nil, errcode.ErrCode_ErrPushInvalidPayload.Wrap(err)
 	}
 
 	nonce, err := cryptoutil.NonceSliceToArray(pushEnv.Nonce)
 	if err != nil {
-		return nil, errcode.ErrPushInvalidPayload.Wrap(err)
+		return nil, errcode.ErrCode_ErrPushInvalidPayload.Wrap(err)
 	}
 
 	msgBytes, ok := box.Open(nil, pushEnv.Box, nonce, serverPK, ownSK)
 	if !ok {
-		return nil, errcode.ErrPushUnableToDecrypt.Wrap(fmt.Errorf("box.Open failed"))
+		return nil, errcode.ErrCode_ErrPushUnableToDecrypt.Wrap(fmt.Errorf("box.Open failed"))
 	}
 
 	return msgBytes, nil

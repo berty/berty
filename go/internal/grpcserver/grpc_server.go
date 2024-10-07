@@ -4,7 +4,6 @@ import (
 	"context"
 	"strings"
 
-	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_auth "github.com/grpc-ecosystem/go-grpc-middleware/auth"
 	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
 	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
@@ -20,8 +19,8 @@ import (
 	"berty.tech/berty/v2/go/pkg/authtypes"
 	"berty.tech/berty/v2/go/pkg/bertyauth"
 	"berty.tech/berty/v2/go/pkg/errcode"
-	"berty.tech/weshnet/pkg/ipfsutil"
-	"berty.tech/weshnet/pkg/logutil"
+	"berty.tech/weshnet/v2/pkg/ipfsutil"
+	"berty.tech/weshnet/v2/pkg/logutil"
 )
 
 type GRPCOpts struct {
@@ -67,7 +66,7 @@ func InitGRPCServer(workers *run.Group, opts *GRPCOpts) (*grpc.Server, *grpcgw.S
 	if opts.AuthSecret != "" || opts.AuthPublicKey != "" {
 		man, err := bertyauth.GetAuthTokenVerifier(opts.AuthSecret, opts.AuthPublicKey)
 		if err != nil {
-			return nil, nil, nil, errcode.TODO.Wrap(err)
+			return nil, nil, nil, errcode.ErrCode_TODO.Wrap(err)
 		}
 
 		serviceID := opts.ServiceID
@@ -81,13 +80,13 @@ func InitGRPCServer(workers *run.Group, opts *GRPCOpts) (*grpc.Server, *grpcgw.S
 	}
 
 	grpcOpts := []grpc.ServerOption{
-		grpc_middleware.WithUnaryServerChain(
+		grpc.ChainUnaryInterceptor(
 			grpc_recovery.UnaryServerInterceptor(recoverOpts...),
 			grpc_ctxtags.UnaryServerInterceptor(grpc_ctxtags.WithFieldExtractor(grpc_ctxtags.CodeGenRequestFieldExtractor)),
 			grpc_zap.UnaryServerInterceptor(grpcLogger, zapOpts...),
 			grpc_auth.UnaryServerInterceptor(authFunc),
 		),
-		grpc_middleware.WithStreamServerChain(
+		grpc.ChainStreamInterceptor(
 			grpc_recovery.StreamServerInterceptor(recoverOpts...),
 			grpc_ctxtags.StreamServerInterceptor(grpc_ctxtags.WithFieldExtractor(grpc_ctxtags.CodeGenRequestFieldExtractor)),
 			grpc_zap.StreamServerInterceptor(grpcLogger, zapOpts...),
@@ -116,7 +115,7 @@ func InitGRPCServer(workers *run.Group, opts *GRPCOpts) (*grpc.Server, *grpcgw.S
 			maddrStr := maddr.String()
 			l, err := grpcutil.Listen(maddr)
 			if err != nil {
-				return nil, nil, nil, errcode.TODO.Wrap(err)
+				return nil, nil, nil, errcode.ErrCode_TODO.Wrap(err)
 			}
 			listeners[idx] = l
 

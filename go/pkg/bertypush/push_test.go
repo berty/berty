@@ -6,15 +6,14 @@ import (
 	crand "crypto/rand"
 	"encoding/base64"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"testing"
 	"time"
 
-	proto "github.com/gogo/protobuf/proto"
 	"github.com/stretchr/testify/require"
 	"golang.org/x/crypto/nacl/box"
+	"google.golang.org/protobuf/proto"
 
 	"berty.tech/berty/v2/go/internal/accountutils"
 	"berty.tech/berty/v2/go/internal/messengerutil"
@@ -26,9 +25,9 @@ import (
 	"berty.tech/berty/v2/go/pkg/bertypushrelay"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
 	"berty.tech/berty/v2/go/pkg/pushtypes"
-	"berty.tech/weshnet/pkg/logutil"
-	"berty.tech/weshnet/pkg/protocoltypes"
-	"berty.tech/weshnet/pkg/testutil"
+	"berty.tech/weshnet/v2/pkg/logutil"
+	"berty.tech/weshnet/v2/pkg/protocoltypes"
+	"berty.tech/weshnet/v2/pkg/testutil"
 )
 
 func TestPushDecryptStandalone(t *testing.T) {
@@ -48,7 +47,7 @@ func TestPushDecryptStandalone(t *testing.T) {
 	defer cancel()
 
 	// prepare deps
-	tempdir, err := ioutil.TempDir("", "berty-account")
+	tempdir, err := os.MkdirTemp("", "berty-account")
 	require.NoError(t, err)
 	defer os.RemoveAll(tempdir)
 
@@ -79,14 +78,14 @@ func TestPushDecryptStandalone(t *testing.T) {
 	_, err = svc1.PushPlatformTokenRegister(ctx, &accounttypes.PushPlatformTokenRegister_Request{
 		Receiver: &pushtypes.PushServiceReceiver{
 			TokenType: pushtypes.PushServiceTokenType_PushTokenMQTT,
-			BundleID:  pushtypes.PushMockBundleID,
+			BundleId:  pushtypes.PushMockBundleID,
 			Token:     []byte(svc1Token),
 		},
 	})
 	require.NoError(t, err)
 
 	_, err = svc1.CreateAccount(ctx, &accounttypes.CreateAccount_Request{
-		AccountID:   svc1Account1,
+		AccountId:   svc1Account1,
 		AccountName: svc1Account1,
 	})
 	require.NoError(t, err)
@@ -101,7 +100,7 @@ func TestPushDecryptStandalone(t *testing.T) {
 	defer svc2.Close()
 
 	_, err = svc2.CreateAccount(ctx, &accounttypes.CreateAccount_Request{
-		AccountID:   svc2Account1,
+		AccountId:   svc2Account1,
 		AccountName: svc2Account1,
 	})
 	require.NoError(t, err)
@@ -167,7 +166,7 @@ func TestPushDecryptStandalone(t *testing.T) {
 			break
 		}
 
-		subMetaList, err := protocol2.GroupMetadataList(ctx, &protocoltypes.GroupMetadataList_Request{GroupPK: acc2PKBytes, UntilNow: true})
+		subMetaList, err := protocol2.GroupMetadataList(ctx, &protocoltypes.GroupMetadataList_Request{GroupPk: acc2PKBytes, UntilNow: true})
 		require.NoError(t, err)
 
 		requestFound := false
@@ -179,7 +178,7 @@ func TestPushDecryptStandalone(t *testing.T) {
 
 			require.NoError(t, err)
 
-			if meta.Metadata.EventType == protocoltypes.EventTypeAccountContactRequestIncomingReceived {
+			if meta.Metadata.EventType == protocoltypes.EventType_EventTypeAccountContactRequestIncomingReceived {
 				requestFound = true
 				break
 			}
@@ -214,20 +213,20 @@ func TestPushDecryptStandalone(t *testing.T) {
 	mess2PK, err := base64.RawURLEncoding.DecodeString(mess2Acc.Account.PublicKey)
 	require.NoError(t, err)
 
-	grpInf1, err := protocol1.GroupInfo(ctx, &protocoltypes.GroupInfo_Request{ContactPK: mess2PK})
+	grpInf1, err := protocol1.GroupInfo(ctx, &protocoltypes.GroupInfo_Request{ContactPk: mess2PK})
 	require.NoError(t, err)
 
-	grpInf2, err := protocol2.GroupInfo(ctx, &protocoltypes.GroupInfo_Request{ContactPK: mess1PK})
+	grpInf2, err := protocol2.GroupInfo(ctx, &protocoltypes.GroupInfo_Request{ContactPk: mess1PK})
 	require.NoError(t, err)
 
 	require.Equal(t, grpInf1.Group.PublicKey, grpInf2.Group.PublicKey)
 
 	logger.Error("conversation for contacts", logutil.PrivateString("conversation-pk", messengerutil.B64EncodeBytes(grpInf1.Group.PublicKey)))
 
-	_, err = protocol1.ActivateGroup(ctx, &protocoltypes.ActivateGroup_Request{GroupPK: grpInf1.Group.PublicKey})
+	_, err = protocol1.ActivateGroup(ctx, &protocoltypes.ActivateGroup_Request{GroupPk: grpInf1.Group.PublicKey})
 	require.NoError(t, err)
 
-	_, err = protocol2.ActivateGroup(ctx, &protocoltypes.ActivateGroup_Request{GroupPK: grpInf2.Group.PublicKey})
+	_, err = protocol2.ActivateGroup(ctx, &protocoltypes.ActivateGroup_Request{GroupPk: grpInf2.Group.PublicKey})
 	require.NoError(t, err)
 
 	deadline = time.Now().Add(time.Second * 10)
@@ -237,7 +236,7 @@ func TestPushDecryptStandalone(t *testing.T) {
 			break
 		}
 
-		subMetaList, err := protocol2.GroupMetadataList(ctx, &protocoltypes.GroupMetadataList_Request{GroupPK: grpInf1.Group.PublicKey, UntilNow: true})
+		subMetaList, err := protocol2.GroupMetadataList(ctx, &protocoltypes.GroupMetadataList_Request{GroupPk: grpInf1.Group.PublicKey, UntilNow: true})
 		require.NoError(t, err)
 
 		tokenUpdateFound := false
@@ -249,7 +248,7 @@ func TestPushDecryptStandalone(t *testing.T) {
 
 			require.NoError(t, err)
 
-			if meta.Metadata.EventType == protocoltypes.EventTypeGroupMetadataPayloadSent {
+			if meta.Metadata.EventType == protocoltypes.EventType_EventTypeGroupMetadataPayloadSent {
 				var appMetadata protocoltypes.GroupMetadataPayloadSent
 				err := proto.Unmarshal(meta.Event, &appMetadata)
 				require.NoError(t, err)
@@ -306,9 +305,9 @@ func TestPushDecryptStandalone(t *testing.T) {
 	require.NoError(t, err)
 
 	require.Equal(t, pushtypes.DecryptedPush_Message.String(), decrypted.PushType.String())
-	require.Equal(t, svc1Account1, decrypted.AccountID)
+	require.Equal(t, svc1Account1, decrypted.AccountId)
 	require.Equal(t, base64.RawURLEncoding.EncodeToString(grpInf1.Group.PublicKey), decrypted.ConversationPublicKey)
-	require.Equal(t, fmt.Sprintf("{\"message\":\"hey1\"}"), decrypted.PayloadAttrsJSON)
+	require.Equal(t, fmt.Sprintf("{\"message\":\"hey1\"}"), decrypted.PayloadAttrsJson)
 	require.False(t, decrypted.AlreadyReceived)
 	// TODO:
 	// require.Equal(t, svc1Account1, decrypted.MemberDisplayName)
@@ -318,9 +317,9 @@ func TestPushDecryptStandalone(t *testing.T) {
 	require.NoError(t, err)
 
 	require.Equal(t, pushtypes.DecryptedPush_Message.String(), decrypted.PushType.String())
-	require.Equal(t, svc1Account1, decrypted.AccountID)
+	require.Equal(t, svc1Account1, decrypted.AccountId)
 	require.Equal(t, base64.RawURLEncoding.EncodeToString(grpInf1.Group.PublicKey), decrypted.ConversationPublicKey)
-	require.Equal(t, fmt.Sprintf("{\"message\":\"hey1\"}"), decrypted.PayloadAttrsJSON)
+	require.Equal(t, fmt.Sprintf("{\"message\":\"hey1\"}"), decrypted.PayloadAttrsJson)
 	require.True(t, decrypted.AlreadyReceived)
 
 	// Account service with no account opened
@@ -328,14 +327,14 @@ func TestPushDecryptStandalone(t *testing.T) {
 	require.NoError(t, err)
 
 	require.Equal(t, pushtypes.DecryptedPush_Message.String(), decryptedUsingAccountSvc.PushData.PushType.String())
-	require.Equal(t, svc1Account1, decryptedUsingAccountSvc.PushData.AccountID)
+	require.Equal(t, svc1Account1, decryptedUsingAccountSvc.PushData.AccountId)
 	require.Equal(t, base64.RawURLEncoding.EncodeToString(grpInf1.Group.PublicKey), decryptedUsingAccountSvc.PushData.ConversationPublicKey)
-	require.Equal(t, fmt.Sprintf("{\"message\":\"hey1\"}"), decryptedUsingAccountSvc.PushData.PayloadAttrsJSON)
+	require.Equal(t, fmt.Sprintf("{\"message\":\"hey1\"}"), decryptedUsingAccountSvc.PushData.PayloadAttrsJson)
 	require.True(t, decryptedUsingAccountSvc.PushData.AlreadyReceived)
 	// TODO:
 	// require.Equal(t, svc1Account1, decrypted.MemberDisplayName)
 
-	_, err = svc1.OpenAccount(ctx, &accounttypes.OpenAccount_Request{AccountID: svc1Account1})
+	_, err = svc1.OpenAccount(ctx, &accounttypes.OpenAccount_Request{AccountId: svc1Account1})
 	require.NoError(t, err)
 
 	// Account service with current account
@@ -343,9 +342,9 @@ func TestPushDecryptStandalone(t *testing.T) {
 	require.NoError(t, err)
 
 	require.Equal(t, pushtypes.DecryptedPush_Message.String(), decryptedUsingAccountSvc.PushData.PushType.String())
-	require.Equal(t, svc1Account1, decryptedUsingAccountSvc.PushData.AccountID)
+	require.Equal(t, svc1Account1, decryptedUsingAccountSvc.PushData.AccountId)
 	require.Equal(t, base64.RawURLEncoding.EncodeToString(grpInf1.Group.PublicKey), decryptedUsingAccountSvc.PushData.ConversationPublicKey)
-	require.Equal(t, fmt.Sprintf("{\"message\":\"hey1\"}"), decryptedUsingAccountSvc.PushData.PayloadAttrsJSON)
+	require.Equal(t, fmt.Sprintf("{\"message\":\"hey1\"}"), decryptedUsingAccountSvc.PushData.PayloadAttrsJson)
 	require.True(t, decryptedUsingAccountSvc.PushData.AlreadyReceived)
 	// TODO:
 	// require.Equal(t, svc1Account1, decrypted.MemberDisplayName)

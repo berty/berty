@@ -19,24 +19,24 @@ import (
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
 	"berty.tech/berty/v2/go/pkg/pushtypes"
-	"berty.tech/weshnet/pkg/logutil"
-	"berty.tech/weshnet/pkg/protocoltypes"
+	"berty.tech/weshnet/v2/pkg/logutil"
+	"berty.tech/weshnet/v2/pkg/protocoltypes"
 )
 
 func (svc *service) authInitURL(baseURL string, services ...string) (string, error) {
 	parsedAuthURL, err := url.Parse(baseURL)
 	if err != nil {
-		return "", errcode.ErrServicesAuthInvalidURL
+		return "", errcode.ErrCode_ErrServicesAuthInvalidURL
 	}
 
 	switch parsedAuthURL.Scheme {
 	case "http", "https":
 	default:
-		return "", errcode.ErrServicesAuthInvalidURL
+		return "", errcode.ErrCode_ErrServicesAuthInvalidURL
 	}
 
 	if parsedAuthURL.Host == "" {
-		return "", errcode.ErrServicesAuthInvalidURL
+		return "", errcode.ErrCode_ErrServicesAuthInvalidURL
 	}
 
 	baseURL = strings.TrimSuffix(baseURL, "/")
@@ -72,29 +72,29 @@ func (svc *service) authInitURL(baseURL string, services ...string) (string, err
 }
 
 func (svc *service) AuthServiceCompleteFlow(ctx context.Context, request *messengertypes.AuthServiceCompleteFlow_Request) (*messengertypes.AuthServiceCompleteFlow_Reply, error) {
-	u, err := url.Parse(request.CallbackURL)
+	u, err := url.Parse(request.CallbackUrl)
 	if err != nil {
 		return nil, err
 	}
 
 	if e := u.Query().Get("error"); e != "" {
-		return nil, errcode.ErrServicesAuthServer.Wrap(fmt.Errorf("got error: %s (%s)", e, u.Query().Get("error_description")))
+		return nil, errcode.ErrCode_ErrServicesAuthServer.Wrap(fmt.Errorf("got error: %s (%s)", e, u.Query().Get("error_description")))
 	}
 
 	code, state := u.Query().Get("code"), u.Query().Get("state")
 
 	authUntyped := svc.authSession.Load()
 	if authUntyped == nil {
-		return nil, errcode.ErrServicesAuthNotInitialized
+		return nil, errcode.ErrCode_ErrServicesAuthNotInitialized
 	}
 
 	auth, ok := authUntyped.(*bertyauth.AuthSession)
 	if !ok {
-		return nil, errcode.ErrServicesAuthNotInitialized
+		return nil, errcode.ErrCode_ErrServicesAuthNotInitialized
 	}
 
 	if auth.State != state {
-		return nil, errcode.ErrServicesAuthWrongState
+		return nil, errcode.ErrCode_ErrServicesAuthWrongState
 	}
 
 	endpoint := fmt.Sprintf("%s%s", auth.BaseURL, authtypes.AuthHTTPPathTokenExchange)
@@ -106,34 +106,34 @@ func (svc *service) AuthServiceCompleteFlow(ctx context.Context, request *messen
 		"code_verifier": {auth.CodeVerifier},
 	})
 	if err != nil {
-		return nil, errcode.ErrStreamWrite.Wrap(err)
+		return nil, errcode.ErrCode_ErrStreamWrite.Wrap(err)
 	}
 
 	defer res.Body.Close()
 
 	if res.StatusCode >= 300 {
-		return nil, errcode.ErrServicesAuthInvalidResponse.Wrap(fmt.Errorf("invalid status code %d", res.StatusCode))
+		return nil, errcode.ErrCode_ErrServicesAuthInvalidResponse.Wrap(fmt.Errorf("invalid status code %d", res.StatusCode))
 	}
 
 	body, err := io.ReadAll(res.Body)
 	if err != nil {
-		return nil, errcode.ErrStreamRead.Wrap(err)
+		return nil, errcode.ErrCode_ErrStreamRead.Wrap(err)
 	}
 	resMsg := &messengertypes.AuthExchangeResponse{}
 	if err := json.Unmarshal(body, &resMsg); err != nil {
-		return nil, errcode.ErrDeserialization.Wrap(err)
+		return nil, errcode.ErrCode_ErrDeserialization.Wrap(err)
 	}
 
 	if resMsg.Error != "" {
-		return nil, errcode.ErrServicesAuthServer.Wrap(err)
+		return nil, errcode.ErrCode_ErrServicesAuthServer.Wrap(err)
 	}
 
 	if resMsg.AccessToken == "" {
-		return nil, errcode.ErrServicesAuthInvalidResponse.Wrap(fmt.Errorf("missing access token in response"))
+		return nil, errcode.ErrCode_ErrServicesAuthInvalidResponse.Wrap(fmt.Errorf("missing access token in response"))
 	}
 
 	if len(resMsg.Services) == 0 {
-		return nil, errcode.ErrServicesAuthInvalidResponse.Wrap(fmt.Errorf("no services returned along token"))
+		return nil, errcode.ErrCode_ErrServicesAuthInvalidResponse.Wrap(fmt.Errorf("no services returned along token"))
 	}
 
 	services := make([]*messengertypes.ServiceTokenSupportedService, len(resMsg.Services))
@@ -150,19 +150,19 @@ func (svc *service) AuthServiceCompleteFlow(ctx context.Context, request *messen
 
 	serviceToken := &messengertypes.AppMessage_ServiceAddToken{
 		Token:             resMsg.AccessToken,
-		AuthenticationURL: auth.BaseURL,
+		AuthenticationUrl: auth.BaseURL,
 		SupportedServices: services,
 		Expiration:        -1,
 	}
 
 	am, err := messengertypes.AppMessage_TypeServiceAddToken.MarshalPayload(messengerutil.TimestampMs(time.Now()), "", serviceToken)
 	if err != nil {
-		return nil, errcode.ErrSerialization.Wrap(err)
+		return nil, errcode.ErrCode_ErrSerialization.Wrap(err)
 	}
 
-	_, err = svc.protocolClient.AppMetadataSend(ctx, &protocoltypes.AppMetadataSend_Request{GroupPK: svc.accountGroup, Payload: am})
+	_, err = svc.protocolClient.AppMetadataSend(ctx, &protocoltypes.AppMetadataSend_Request{GroupPk: svc.accountGroup, Payload: am})
 	if err != nil {
-		return nil, errcode.ErrProtocolSend.Wrap(err)
+		return nil, errcode.ErrCode_ErrProtocolSend.Wrap(err)
 	}
 
 	// @FIXME(gfanton):  should be handle on the client (js) side
@@ -193,7 +193,6 @@ func (svc *service) AuthServiceCompleteFlow(ctx context.Context, request *messen
 				Addr: service.Address,
 			},
 		})
-
 		if err != nil {
 			svc.logger.Warn("unable to set push server", zap.Error(err))
 			continue
@@ -208,23 +207,23 @@ func (svc *service) AuthServiceCompleteFlow(ctx context.Context, request *messen
 	}
 
 	return &messengertypes.AuthServiceCompleteFlow_Reply{
-		TokenID: serviceToken.TokenID(),
+		TokenId: serviceToken.TokenID(),
 	}, nil
 }
 
-func (svc *service) AuthServiceInitFlow(ctx context.Context, request *messengertypes.AuthServiceInitFlow_Request) (*messengertypes.AuthServiceInitFlow_Reply, error) {
-	u, err := svc.authInitURL(request.AuthURL, request.Services...)
+func (svc *service) AuthServiceInitFlow(_ context.Context, request *messengertypes.AuthServiceInitFlow_Request) (*messengertypes.AuthServiceInitFlow_Reply, error) {
+	u, err := svc.authInitURL(request.AuthUrl, request.Services...)
 	if err != nil {
 		return nil, err
 	}
 
 	return &messengertypes.AuthServiceInitFlow_Reply{
-		URL:       u,
-		SecureURL: strings.HasPrefix(u, "https://"),
+		Url:       u,
+		SecureUrl: strings.HasPrefix(u, "https://"),
 	}, nil
 }
 
-func (svc *service) ServicesTokenList(req *messengertypes.ServicesTokenList_Request, server messengertypes.MessengerService_ServicesTokenListServer) error {
+func (svc *service) ServicesTokenList(_ *messengertypes.ServicesTokenList_Request, server messengertypes.MessengerService_ServicesTokenListServer) error {
 	accountPK := messengerutil.B64EncodeBytes(svc.accountGroup)
 
 	serviceTokens, err := svc.db.GetServiceTokens(accountPK)
@@ -257,19 +256,19 @@ func (svc *service) DebugAuthServiceSetToken(ctx context.Context, request *messe
 
 	serviceToken := &messengertypes.AppMessage_ServiceAddToken{
 		Token:             request.Token.AccessToken,
-		AuthenticationURL: request.AuthenticationURL,
+		AuthenticationUrl: request.AuthenticationUrl,
 		SupportedServices: services,
 		Expiration:        -1,
 	}
 
 	am, err := messengertypes.AppMessage_TypeServiceAddToken.MarshalPayload(messengerutil.TimestampMs(time.Now()), "", serviceToken)
 	if err != nil {
-		return nil, errcode.ErrSerialization.Wrap(err)
+		return nil, errcode.ErrCode_ErrSerialization.Wrap(err)
 	}
 
-	_, err = svc.protocolClient.AppMetadataSend(ctx, &protocoltypes.AppMetadataSend_Request{GroupPK: svc.accountGroup, Payload: am})
+	_, err = svc.protocolClient.AppMetadataSend(ctx, &protocoltypes.AppMetadataSend_Request{GroupPk: svc.accountGroup, Payload: am})
 	if err != nil {
-		return nil, errcode.ErrProtocolSend.Wrap(err)
+		return nil, errcode.ErrCode_ErrProtocolSend.Wrap(err)
 	}
 
 	return &messengertypes.DebugAuthServiceSetToken_Reply{}, nil

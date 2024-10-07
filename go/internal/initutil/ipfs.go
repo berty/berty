@@ -7,6 +7,7 @@ import (
 	mrand "math/rand"
 	"net"
 	"net/http"
+	"os"
 	"path/filepath"
 	"strings"
 	"sync"
@@ -41,16 +42,16 @@ import (
 	"berty.tech/berty/v2/go/pkg/config"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	ipfswebui "berty.tech/ipfs-webui-packed"
-	"berty.tech/weshnet"
-	ble "berty.tech/weshnet/pkg/ble-driver"
-	"berty.tech/weshnet/pkg/ipfsutil"
-	ipfs_mobile "berty.tech/weshnet/pkg/ipfsutil/mobile"
-	"berty.tech/weshnet/pkg/logutil"
-	mc "berty.tech/weshnet/pkg/multipeer-connectivity-driver"
-	"berty.tech/weshnet/pkg/netmanager"
-	proximity "berty.tech/weshnet/pkg/proximitytransport"
-	"berty.tech/weshnet/pkg/rendezvous"
-	tinder "berty.tech/weshnet/pkg/tinder"
+	"berty.tech/weshnet/v2"
+	ble "berty.tech/weshnet/v2/pkg/ble-driver"
+	"berty.tech/weshnet/v2/pkg/ipfsutil"
+	ipfs_mobile "berty.tech/weshnet/v2/pkg/ipfsutil/mobile"
+	"berty.tech/weshnet/v2/pkg/logutil"
+	mc "berty.tech/weshnet/v2/pkg/multipeer-connectivity-driver"
+	"berty.tech/weshnet/v2/pkg/netmanager"
+	proximity "berty.tech/weshnet/v2/pkg/proximitytransport"
+	"berty.tech/weshnet/v2/pkg/rendezvous"
+	tinder "berty.tech/weshnet/v2/pkg/tinder"
 )
 
 // Set the Java Android BLE driver
@@ -155,12 +156,12 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 	ctx := m.getContext()
 
 	if err := m.applyPreset(); err != nil {
-		return nil, nil, errcode.ErrIPFSInit.Wrap(err)
+		return nil, nil, errcode.ErrCode_ErrIPFSInit.Wrap(err)
 	}
 
 	if m.Node.Protocol.ipfsAPI != nil {
 		if m.Node.Protocol.ipfsNode == nil {
-			return nil, nil, errcode.ErrIPFSInit.Wrap(fmt.Errorf("already connected to a remote IPFS node"))
+			return nil, nil, errcode.ErrCode_ErrIPFSInit.Wrap(fmt.Errorf("already connected to a remote IPFS node"))
 		}
 
 		return m.Node.Protocol.ipfsAPI, m.Node.Protocol.ipfsNode, nil
@@ -168,12 +169,12 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 
 	logger, err := m.getLogger()
 	if err != nil {
-		return nil, nil, errcode.ErrIPFSInit.Wrap(err)
+		return nil, nil, errcode.ErrCode_ErrIPFSInit.Wrap(err)
 	}
 
 	mrepo, err := m.setupIPFSRepo(ctx)
 	if err != nil {
-		return nil, nil, errcode.ErrIPFSInit.Wrap(err)
+		return nil, nil, errcode.ErrCode_ErrIPFSInit.Wrap(err)
 	}
 
 	var dhtmode p2p_dht.ModeOpt
@@ -189,7 +190,7 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 	case FlagValueP2PDHTDisabled: // 0
 	default:
 		err := fmt.Errorf("invalid dht mode")
-		return nil, nil, errcode.ErrIPFSInit.Wrap(err)
+		return nil, nil, errcode.ErrCode_ErrIPFSInit.Wrap(err)
 	}
 
 	var dhtnet ipfsutil.DHTNetworkMode
@@ -202,7 +203,7 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 		dhtnet = ipfsutil.DHTNetworkWan
 	default:
 		err := fmt.Errorf("invalid dht network")
-		return nil, nil, errcode.ErrIPFSInit.Wrap(err)
+		return nil, nil, errcode.ErrCode_ErrIPFSInit.Wrap(err)
 	}
 
 	var routing ipfs_p2p.RoutingOption
@@ -230,7 +231,7 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 	// @FIXME(gfanton): this should be done on gomobile-ipfs
 	changed, newlimit, err := ipfs_util.ManageFdLimit()
 	if err != nil {
-		return nil, nil, errcode.ErrIPFSInit.Wrap(err)
+		return nil, nil, errcode.ErrCode_ErrIPFSInit.Wrap(err)
 	}
 
 	if changed {
@@ -242,7 +243,7 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 	// init ipfs
 	mnode, err := ipfsutil.NewIPFSMobile(m.getContext(), mrepo, &mopts)
 	if err != nil {
-		return nil, nil, errcode.ErrIPFSInit.Wrap(err)
+		return nil, nil, errcode.ErrCode_ErrIPFSInit.Wrap(err)
 	}
 	m.Node.Protocol.ipfsNode = mnode.IpfsNode
 
@@ -267,14 +268,14 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 	// init extended api
 	m.Node.Protocol.ipfsAPI, err = ipfsutil.NewExtendedCoreAPIFromNode(mnode.IpfsNode)
 	if err != nil {
-		return nil, nil, errcode.ErrIPFSInit.Wrap(err)
+		return nil, nil, errcode.ErrCode_ErrIPFSInit.Wrap(err)
 	}
 
 	// serve webui api listener
 	// we get listeners from repo config
 	cfg, err := mrepo.Config()
 	if err != nil {
-		return nil, nil, errcode.ErrIPFSInit.Wrap(err)
+		return nil, nil, errcode.ErrCode_ErrIPFSInit.Wrap(err)
 	}
 
 	// serve ipfs api
@@ -282,7 +283,7 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 		maddr, err := ma.NewMultiaddr(addr)
 		if err != nil {
 			logger.Error("unable to parse api addr", zap.Error(err), logutil.PrivateString("addr", addr))
-			return nil, nil, errcode.ErrIPFSInit.Wrap(fmt.Errorf("unable to parse api addr: %w", err))
+			return nil, nil, errcode.ErrCode_ErrIPFSInit.Wrap(fmt.Errorf("unable to parse api addr: %w", err))
 		}
 
 		var l manet.Listener
@@ -291,11 +292,11 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 
 			l, err = manet.Listen(maddr)
 			if err != nil {
-				return errcode.ErrIPFSInit.Wrap(err)
+				return errcode.ErrCode_ErrIPFSInit.Wrap(err)
 			}
 
 			return mnode.ServeCoreHTTP(manet.NetListener(l))
-		}, func(err error) {
+		}, func(_ error) {
 			if l != nil {
 				l.Close()
 			}
@@ -316,11 +317,11 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 
 			l, err := net.Listen("tcp", addr)
 			if err != nil {
-				return errcode.ErrIPFSInit.Wrap(err)
+				return errcode.ErrCode_ErrIPFSInit.Wrap(err)
 			}
 
 			return server.Serve(l)
-		}, func(err error) {
+		}, func(_ error) {
 			server.Close()
 		})
 	}
@@ -344,26 +345,26 @@ func (m *Manager) getLocalIPFS() (ipfsutil.ExtendedCoreAPI, *ipfs_core.IpfsNode,
 		logger.Named("peering"), m.Node.Protocol.ipfsNode.PeerHost, backoffstrat,
 	)
 	if err := peering.Start(); err != nil {
-		return nil, nil, errcode.ErrIPFSInit.Wrap(err)
+		return nil, nil, errcode.ErrCode_ErrIPFSInit.Wrap(err)
 	}
 	// enable lifecycle conn
 	m.Node.Protocol.connlifecycle, err = ipfsutil.NewConnLifecycle(
 		ctx, logger.Named("ipfs-lc"), m.Node.Protocol.ipfsNode.PeerHost, peering, lm, m.Node.Protocol.NetManager,
 	)
 	if err != nil {
-		return nil, nil, errcode.ErrIPFSInit.Wrap(err)
+		return nil, nil, errcode.ErrCode_ErrIPFSInit.Wrap(err)
 	}
 
 	// register metrics
 	if m.Metrics.Listener != "" {
 		registry, err := m.getMetricsRegistry()
 		if err != nil {
-			return nil, nil, errcode.ErrIPFSInit.Wrap(err)
+			return nil, nil, errcode.ErrCode_ErrIPFSInit.Wrap(err)
 		}
 
 		err = registry.Register(ipfsutil.NewBandwidthCollector(m.Node.Protocol.ipfsNode.Reporter))
 		if err != nil {
-			return nil, nil, errcode.ErrIPFSInit.Wrap(err)
+			return nil, nil, errcode.ErrCode_ErrIPFSInit.Wrap(err)
 		}
 	}
 
@@ -379,43 +380,49 @@ func (m *Manager) setupIPFSRepo(ctx context.Context) (*ipfs_mobile.RepoMobile, e
 	if m.Datastore.InMemory {
 		rootDS, err := m.getRootDatastore()
 		if err != nil {
-			return nil, errcode.ErrIPFSSetupRepo.Wrap(err)
+			return nil, errcode.ErrCode_ErrIPFSSetupRepo.Wrap(err)
 		}
 
 		ipfsDS := datastoreutil.NewNamespacedDatastore(rootDS, datastore.NewKey(weshnet.NamespaceIPFSDatastore))
 
 		repo, err = ipfsutil.CreateMockedRepo(ipfsDS)
 		if err != nil {
-			return nil, errcode.ErrIPFSSetupRepo.Wrap(err)
+			return nil, errcode.ErrCode_ErrIPFSSetupRepo.Wrap(err)
 		}
 
 		return ipfs_mobile.NewRepoMobile(":memory:", repo), nil
 	}
 
+	// Disable nopfs plugin that cause error on encrypted repo
+	err = os.Setenv("IPFS_CONTENT_BLOCKING_DISABLE", "true")
+	if err != nil {
+		return nil, errcode.ErrCode_ErrIPFSSetupConfig.Wrap(err)
+	}
+
 	storageKey, err := m.GetAccountStorageKey()
 	if err != nil {
-		return nil, errcode.ErrKeystoreGet.Wrap(err)
+		return nil, errcode.ErrCode_ErrKeystoreGet.Wrap(err)
 	}
 
 	ipfsDatastoreSalt, err := m.GetAccountIPFSDatastoreSalt()
 	if err != nil {
-		return nil, errcode.ErrKeystoreGet.Wrap(err)
+		return nil, errcode.ErrCode_ErrKeystoreGet.Wrap(err)
 	}
 
 	appDir, err := m.getAppDataDir()
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ErrCode_TODO.Wrap(err)
 	}
 	dbPath := filepath.Join(appDir, "ipfs.sqlite")
 
 	repo, err = encryptedrepo.LoadEncryptedRepoFromPath(dbPath, storageKey, ipfsDatastoreSalt)
 	if err != nil {
-		return nil, errcode.ErrIPFSSetupRepo.Wrap(err)
+		return nil, errcode.ErrCode_ErrIPFSSetupRepo.Wrap(err)
 	}
 
 	repo, err = m.resetRepoIdentityIfExpired(ctx, repo, dbPath, storageKey, ipfsDatastoreSalt)
 	if err != nil {
-		return nil, errcode.ErrIPFSSetupRepo.Wrap(err)
+		return nil, errcode.ErrCode_ErrIPFSSetupRepo.Wrap(err)
 	}
 
 	return ipfs_mobile.NewRepoMobile(dbPath, repo), nil
@@ -424,7 +431,7 @@ func (m *Manager) setupIPFSRepo(ctx context.Context) (*ipfs_mobile.RepoMobile, e
 func (m *Manager) resetRepoIdentityIfExpired(ctx context.Context, repo ipfs_repo.Repo, dbPath string, storageKey []byte, ipfsDatastoreSalt []byte) (ipfs_repo.Repo, error) {
 	rootDS, err := m.getRootDatastore()
 	if err != nil {
-		return nil, errcode.ErrIPFSSetupRepo.Wrap(err)
+		return nil, errcode.ErrCode_ErrIPFSSetupRepo.Wrap(err)
 	}
 
 	var lastUpdate time.Time
@@ -434,30 +441,30 @@ func (m *Manager) resetRepoIdentityIfExpired(ctx context.Context, repo ipfs_repo
 	case nil:
 		lastUpdate, err = time.Parse(time.RFC3339Nano, string(lastUpdateRaw))
 		if err != nil {
-			return nil, errcode.ErrIPFSSetupRepo.Wrap(err)
+			return nil, errcode.ErrCode_ErrIPFSSetupRepo.Wrap(err)
 		}
 	case datastore.ErrNotFound:
 		// key does not exist, do nothing
 		break
 	default:
-		return nil, errcode.ErrIPFSSetupRepo.Wrap(err)
+		return nil, errcode.ErrCode_ErrIPFSSetupRepo.Wrap(err)
 	}
 
 	rendezvousRotationBase, err := m.GetRendezvousRotationBase()
 	if err != nil {
-		return nil, errcode.ErrDeserialization.Wrap(err)
+		return nil, errcode.ErrCode_ErrDeserialization.Wrap(err)
 	}
 
 	if lastUpdate.Before(time.Now().Add(-rendezvousRotationBase)) {
 		repo, err = encryptedrepo.ResetExistingEncryptedRepoIdentity(repo, dbPath, storageKey, ipfsDatastoreSalt)
 		if err != nil {
-			return nil, errcode.ErrInternal.Wrap(err)
+			return nil, errcode.ErrCode_ErrInternal.Wrap(err)
 		}
 		lastUpdate = time.Now()
 		lastUpdateRaw = []byte(lastUpdate.Format(time.RFC3339Nano))
 
 		if err := rootDS.Put(ctx, lastUpdateKey, lastUpdateRaw); err != nil {
-			return nil, errcode.ErrInternal.Wrap(err)
+			return nil, errcode.ErrCode_ErrInternal.Wrap(err)
 		}
 	}
 
@@ -471,12 +478,12 @@ func (m *Manager) setupIPFSConfig(cfg *ipfs_cfg.Config) ([]libp2p.Option, error)
 
 	logger, err := m.getLogger()
 	if err != nil {
-		return nil, errcode.ErrIPFSSetupConfig.Wrap(err)
+		return nil, errcode.ErrCode_ErrIPFSSetupConfig.Wrap(err)
 	}
 
 	rdvpeers, err := m.getRdvpMaddrs()
 	if err != nil {
-		return nil, errcode.ErrIPFSSetupConfig.Wrap(err)
+		return nil, errcode.ErrCode_ErrIPFSSetupConfig.Wrap(err)
 	}
 
 	cfg.Addresses.Swarm = m.getSwarmAddrs()
@@ -504,7 +511,7 @@ func (m *Manager) setupIPFSConfig(cfg *ipfs_cfg.Config) ([]libp2p.Option, error)
 		connmgr.WithGracePeriod(ipfs_cfg.DefaultConnMgrGracePeriod),
 	)
 	if err != nil {
-		return nil, errcode.ErrIPFSSetupConfig.Wrap(err)
+		return nil, errcode.ErrCode_ErrIPFSSetupConfig.Wrap(err)
 	}
 
 	// wrap conn manager
@@ -597,7 +604,7 @@ func (m *Manager) setupIPFSConfig(cfg *ipfs_cfg.Config) ([]libp2p.Option, error)
 
 	pis, err := m.getStaticRelays()
 	if err != nil {
-		return nil, errcode.ErrIPFSSetupConfig.Wrap(err)
+		return nil, errcode.ErrCode_ErrIPFSSetupConfig.Wrap(err)
 	}
 
 	// add static relay
@@ -635,28 +642,28 @@ func (m *Manager) setupIPFSConfig(cfg *ipfs_cfg.Config) ([]libp2p.Option, error)
 func (m *Manager) configIPFSRouting(h host.Host, r p2p_routing.Routing) error {
 	logger, err := m.getLogger()
 	if err != nil {
-		return errcode.ErrIPFSSetupHost.Wrap(err)
+		return errcode.ErrCode_ErrIPFSSetupHost.Wrap(err)
 	}
 
 	rdvpeers, err := m.getRdvpMaddrs()
 	if err != nil {
-		return errcode.ErrIPFSSetupHost.Wrap(err)
+		return errcode.ErrCode_ErrIPFSSetupHost.Wrap(err)
 	}
 
 	if m.Metrics.Listener != "" {
 		registry, err := m.getMetricsRegistry()
 		if err != nil {
-			return errcode.ErrIPFSSetupHost.Wrap(err)
+			return errcode.ErrCode_ErrIPFSSetupHost.Wrap(err)
 		}
 
 		if err = registry.Register(ipfsutil.NewHostCollector(h)); err != nil {
-			return errcode.ErrIPFSSetupHost.Wrap(err)
+			return errcode.ErrCode_ErrIPFSSetupHost.Wrap(err)
 		}
 	}
 
 	// register berty connmngr bus event
 	if err := m.Node.Protocol.connmngr.RegisterEventBus(h.EventBus()); err != nil {
-		return errcode.ErrIPFSSetupHost.Wrap(err)
+		return errcode.ErrCode_ErrIPFSSetupHost.Wrap(err)
 	}
 
 	rng := mrand.New(mrand.NewSource(srand.MustSecure())) // nolint:gosec // we need to use math/rand here, but it is seeded from crypto/rand
@@ -668,7 +675,7 @@ func (m *Manager) configIPFSRouting(h host.Host, r p2p_routing.Routing) error {
 	if m.Node.Protocol.TinderLocalDiscoveryDriver {
 		m.Node.Protocol.localdisc, err = tinder.NewLocalDiscovery(logger, h, rng)
 		if err != nil {
-			return errcode.ErrIPFSSetupHost.Wrap(err)
+			return errcode.ErrCode_ErrIPFSSetupHost.Wrap(err)
 		}
 
 		drivers = append(drivers, m.Node.Protocol.localdisc)
@@ -710,7 +717,7 @@ func (m *Manager) configIPFSRouting(h host.Host, r p2p_routing.Routing) error {
 
 	m.Node.Protocol.tinder, err = tinder.NewService(h, logger, drivers...)
 	if err != nil {
-		return errcode.ErrIPFSSetupHost.Wrap(err)
+		return errcode.ErrCode_ErrIPFSSetupHost.Wrap(err)
 	}
 
 	// @FIXME(gfanton): hacky way to handle close on context done
@@ -741,7 +748,7 @@ func (m *Manager) configIPFSRouting(h host.Host, r p2p_routing.Routing) error {
 
 	// rp, err := m.getRotationInterval()
 	// if err != nil {
-	// 	return errcode.ErrIPFSSetupHost.Wrap(err)
+	// 	return errcode.ErrCode_ErrIPFSSetupHost.Wrap(err)
 	// }
 
 	m.Node.Protocol.discAdaptater = tinder.NewDiscoveryAdaptater(
@@ -752,7 +759,7 @@ func (m *Manager) configIPFSRouting(h host.Host, r p2p_routing.Routing) error {
 	// pubsub.DiscoveryPollInterval = m.Node.Protocol.PollInterval
 	m.Node.Protocol.pubsub, err = pubsub.NewGossipSub(m.getContext(), h, popts...)
 	if err != nil {
-		return errcode.ErrIPFSSetupHost.Wrap(err)
+		return errcode.ErrCode_ErrIPFSSetupHost.Wrap(err)
 	}
 
 	return nil
@@ -843,7 +850,7 @@ func (m *Manager) getSwarmAddrs() []string {
 
 func (m *Manager) GetRendezvousRotationBase() (time.Duration, error) {
 	if m.Node.Protocol.RendezvousRotationBase < 0 {
-		return 0, errcode.ErrInvalidInput.Wrap(fmt.Errorf("rendezvousRotationBase must be positive"))
+		return 0, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("rendezvousRotationBase must be positive"))
 	}
 
 	return m.Node.Protocol.RendezvousRotationBase, nil

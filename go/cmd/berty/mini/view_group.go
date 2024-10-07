@@ -11,15 +11,15 @@ import (
 	"time"
 
 	"github.com/gdamore/tcell"
-	"github.com/gogo/protobuf/proto"
 	"github.com/pkg/errors"
 	"github.com/rivo/tview"
 	"go.uber.org/zap"
+	"google.golang.org/protobuf/proto"
 
 	"berty.tech/berty/v2/go/pkg/banner"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
-	"berty.tech/weshnet/pkg/logutil"
-	"berty.tech/weshnet/pkg/protocoltypes"
+	"berty.tech/weshnet/v2/pkg/logutil"
+	"berty.tech/weshnet/v2/pkg/protocoltypes"
 )
 
 type groupView struct {
@@ -121,7 +121,7 @@ func (v *groupView) loop(ctx context.Context) {
 
 	// Open group with local only first
 	if _, err := v.v.protocol.ActivateGroup(ctx, &protocoltypes.ActivateGroup_Request{
-		GroupPK: v.g.PublicKey,
+		GroupPk: v.g.PublicKey,
 	}); err != nil {
 		v.messages.Append(&historyMessage{
 			messageType: messageTypeError,
@@ -134,7 +134,7 @@ func (v *groupView) loop(ctx context.Context) {
 	// Open conversation with local only first
 	gpk := base64.RawURLEncoding.EncodeToString(v.g.PublicKey)
 	if _, err := v.v.messenger.ConversationOpen(ctx, &messengertypes.ConversationOpen_Request{
-		GroupPK: gpk,
+		GroupPk: gpk,
 	}); err == nil {
 		v.messages.Append(&historyMessage{
 			messageType: messageTypeError,
@@ -144,7 +144,7 @@ func (v *groupView) loop(ctx context.Context) {
 
 	// get GroupDeviceStatus
 	{
-		req := &protocoltypes.GroupDeviceStatus_Request{GroupPK: v.g.PublicKey}
+		req := &protocoltypes.GroupDeviceStatus_Request{GroupPk: v.g.PublicKey}
 		cl, err := v.v.protocol.GroupDeviceStatus(ctx, req)
 		if err != nil {
 			panic(err)
@@ -173,7 +173,7 @@ func (v *groupView) loop(ctx context.Context) {
 
 	// list group message events
 	{
-		req := &protocoltypes.GroupMessageList_Request{GroupPK: v.g.PublicKey, UntilNow: true}
+		req := &protocoltypes.GroupMessageList_Request{GroupPk: v.g.PublicKey, UntilNow: true}
 		cl, err := v.v.protocol.GroupMessageList(ctx, req)
 		if err != nil {
 			panic(err)
@@ -187,31 +187,31 @@ func (v *groupView) loop(ctx context.Context) {
 				}
 				break
 			}
-			lastMessageID = evt.EventContext.ID
+			lastMessageID = evt.EventContext.Id
 
 			amp, am, err := messengertypes.UnmarshalAppMessage(evt.GetMessage())
 			if err != nil {
 				v.messages.Prepend(&historyMessage{
 					messageType: messageTypeMessage,
 					payload:     []byte(err.Error()),
-					sender:      evt.Headers.DevicePK,
+					sender:      evt.Headers.DevicePk,
 				}, time.Time{})
 				continue
 			}
 
 			switch am.GetType() {
 			case messengertypes.AppMessage_TypeAcknowledge:
-				if !bytes.Equal(evt.Headers.DevicePK, v.devicePK) {
+				if !bytes.Equal(evt.Headers.DevicePk, v.devicePK) {
 					continue
 				}
-				v.acks.Store(am.TargetCID, true)
+				v.acks.Store(am.TargetCid, true)
 
 			case messengertypes.AppMessage_TypeUserMessage:
 				payload := amp.(*messengertypes.AppMessage_UserMessage)
 				v.messages.Prepend(&historyMessage{
 					messageType: messageTypeMessage,
 					payload:     []byte(payload.Body),
-					sender:      evt.Headers.DevicePK,
+					sender:      evt.Headers.DevicePk,
 					receivedAt:  time.Unix(0, am.GetSentDate()*1000000),
 				}, time.Time{})
 			}
@@ -220,7 +220,7 @@ func (v *groupView) loop(ctx context.Context) {
 
 	// list group metadata events
 	{
-		req := &protocoltypes.GroupMetadataList_Request{GroupPK: v.g.PublicKey, UntilNow: true}
+		req := &protocoltypes.GroupMetadataList_Request{GroupPk: v.g.PublicKey, UntilNow: true}
 		cl, err := v.v.protocol.GroupMetadataList(ctx, req)
 		if err != nil {
 			panic(err)
@@ -236,7 +236,7 @@ func (v *groupView) loop(ctx context.Context) {
 			}
 
 			metadataEventHandler(ctx, v, evt, true, v.logger)
-			lastMetadataID = evt.EventContext.ID
+			lastMetadataID = evt.EventContext.Id
 		}
 	}
 
@@ -244,7 +244,7 @@ func (v *groupView) loop(ctx context.Context) {
 	{
 		var evt *protocoltypes.GroupMessageEvent
 
-		req := &protocoltypes.GroupMessageList_Request{GroupPK: v.g.PublicKey, SinceID: lastMessageID}
+		req := &protocoltypes.GroupMessageList_Request{GroupPk: v.g.PublicKey, SinceId: lastMessageID}
 		cl, err := v.v.protocol.GroupMessageList(ctx, req)
 		if err != nil {
 			panic(err)
@@ -277,7 +277,7 @@ func (v *groupView) loop(ctx context.Context) {
 					v.messages.Append(&historyMessage{
 						messageType: messageTypeMessage,
 						payload:     []byte(err.Error()),
-						sender:      evt.Headers.DevicePK,
+						sender:      evt.Headers.DevicePk,
 					})
 					v.addBadge()
 
@@ -286,7 +286,7 @@ func (v *groupView) loop(ctx context.Context) {
 
 				switch am.GetType() {
 				case messengertypes.AppMessage_TypeAcknowledge:
-					if !bytes.Equal(evt.Headers.DevicePK, v.devicePK) {
+					if !bytes.Equal(evt.Headers.DevicePk, v.devicePK) {
 						continue
 					}
 					var payload messengertypes.AppMessage_Acknowledge
@@ -294,7 +294,7 @@ func (v *groupView) loop(ctx context.Context) {
 					if err != nil {
 						v.logger.Error("failed to unmarshal Acknowledge", zap.Error(err))
 					}
-					v.acks.Store(am.TargetCID, true)
+					v.acks.Store(am.TargetCid, true)
 					continue
 
 				case messengertypes.AppMessage_TypeUserMessage:
@@ -310,7 +310,7 @@ func (v *groupView) loop(ctx context.Context) {
 					v.messages.Append(&historyMessage{
 						messageType: messageTypeMessage,
 						payload:     []byte(payload.Body),
-						sender:      evt.Headers.DevicePK,
+						sender:      evt.Headers.DevicePk,
 						receivedAt:  receivedAt,
 					})
 					v.addBadge()
@@ -323,7 +323,7 @@ func (v *groupView) loop(ctx context.Context) {
 	{
 		var evt *protocoltypes.GroupMetadataEvent
 
-		req := &protocoltypes.GroupMetadataList_Request{GroupPK: v.g.PublicKey, SinceID: lastMetadataID}
+		req := &protocoltypes.GroupMetadataList_Request{GroupPk: v.g.PublicKey, SinceId: lastMetadataID}
 		cl, err := v.v.protocol.GroupMetadataList(ctx, req)
 		if err != nil {
 			panic(err)

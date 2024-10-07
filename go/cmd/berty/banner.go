@@ -32,7 +32,7 @@ func bannerCommand() *ffcli.Command {
 		FlagSetBuilder: fsBuilder,
 		Options:        ffSubcommandOptions(),
 		UsageFunc:      usageFunc,
-		Exec: func(ctx context.Context, args []string) error {
+		Exec: func(_ context.Context, args []string) error {
 			if len(args) > 0 {
 				return flag.ErrHelp
 			}

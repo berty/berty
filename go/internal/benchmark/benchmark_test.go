@@ -9,14 +9,14 @@ import (
 	"testing"
 	"time"
 
-	"github.com/gogo/protobuf/proto"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"google.golang.org/protobuf/proto"
 
 	"berty.tech/berty/v2/go/pkg/bertymessenger"
 	bertymessengertesting "berty.tech/berty/v2/go/pkg/bertymessenger/testing"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
-	"berty.tech/weshnet/pkg/testutil"
+	"berty.tech/weshnet/v2/pkg/testutil"
 )
 
 func b64DecodeBytes(s string) ([]byte, error) {
@@ -62,12 +62,12 @@ func BenchmarkScenario(b *testing.B) {
 	gpk := createdConv.GetPublicKey()
 	gpkb, err := b64DecodeBytes(gpk)
 	require.NoError(b, err)
-	sbg, err := creator.GetClient().ShareableBertyGroup(ctx, &messengertypes.ShareableBertyGroup_Request{GroupPK: gpkb, GroupName: convName})
+	sbg, err := creator.GetClient().ShareableBertyGroup(ctx, &messengertypes.ShareableBertyGroup_Request{GroupPk: gpkb, GroupName: convName})
 	require.NoError(b, err)
 
 	// joiners join the conversation
 	for _, joiner := range joiners {
-		ret, err := joiner.GetClient().ConversationJoin(ctx, &messengertypes.ConversationJoin_Request{Link: sbg.GetWebURL()})
+		ret, err := joiner.GetClient().ConversationJoin(ctx, &messengertypes.ConversationJoin_Request{Link: sbg.GetWebUrl()})
 		require.NoError(b, err)
 		require.Empty(b, ret)
 	}

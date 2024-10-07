@@ -21,8 +21,8 @@ import (
 
 	"berty.tech/berty/v2/go/pkg/bertylinks"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
-	weshnet_vc "berty.tech/weshnet/pkg/bertyvcissuer"
-	"berty.tech/weshnet/pkg/verifiablecredstypes"
+	weshnet_vc "berty.tech/weshnet/v2/pkg/bertyvcissuer"
+	"berty.tech/weshnet/v2/pkg/verifiablecredstypes"
 )
 
 func TestFlow(t *testing.T) {
@@ -68,7 +68,7 @@ func TestFlow(t *testing.T) {
 	id := &messengertypes.BertyID{
 		DisplayName:          "displayName",
 		PublicRendezvousSeed: rdvSeed,
-		AccountPK:            accountPub,
+		AccountPk:            accountPub,
 	}
 	link := id.GetBertyLink()
 	_, web, err := bertylinks.MarshalLink(link)

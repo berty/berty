@@ -10,7 +10,7 @@ import (
 	"moul.io/zapring"
 
 	"berty.tech/berty/v2/go/pkg/errcode"
-	"berty.tech/weshnet/pkg/logutil"
+	"berty.tech/weshnet/v2/pkg/logutil"
 )
 
 const DefaultLoggingFilters = "info+:bty*,-*.grpc,error+:*"
@@ -85,7 +85,7 @@ func (m *Manager) getLogger() (*zap.Logger, error) {
 
 	logger, loggerCleanup, err := logutil.NewLogger(streams...)
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ErrCode_TODO.Wrap(err)
 	}
 	m.Logging.zapLogger = logger
 	m.Logging.cleanup = func() {

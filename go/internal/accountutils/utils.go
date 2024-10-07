@@ -11,11 +11,11 @@ import (
 	"strings"
 	"time"
 
-	"github.com/gogo/protobuf/proto"
 	"github.com/ipfs/go-datastore"
 	sync_ds "github.com/ipfs/go-datastore/sync"
 	"go.uber.org/zap"
 	"golang.org/x/crypto/nacl/box"
+	"google.golang.org/protobuf/proto"
 	"gorm.io/gorm"
 	"moul.io/zapgorm2"
 
@@ -23,8 +23,8 @@ import (
 	"berty.tech/berty/v2/go/pkg/accounttypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	encrepo "berty.tech/go-ipfs-repo-encrypted"
-	"berty.tech/weshnet/pkg/cryptoutil"
-	"berty.tech/weshnet/pkg/logutil"
+	"berty.tech/weshnet/v2/pkg/cryptoutil"
+	"berty.tech/weshnet/v2/pkg/logutil"
 )
 
 const (
@@ -44,12 +44,12 @@ func GetDevicePushKeyForPath(filePath string, createIfMissing bool) (pk *[crypto
 	contents, err := os.ReadFile(filePath)
 	if os.IsNotExist(err) && createIfMissing {
 		if err := os.MkdirAll(path.Dir(filePath), 0o700); err != nil {
-			return nil, nil, errcode.ErrInternal.Wrap(err)
+			return nil, nil, errcode.ErrCode_ErrInternal.Wrap(err)
 		}
 
 		pk, sk, err = box.GenerateKey(crand.Reader)
 		if err != nil {
-			return nil, nil, errcode.ErrCryptoKeyGeneration.Wrap(err)
+			return nil, nil, errcode.ErrCode_ErrCryptoKeyGeneration.Wrap(err)
 		}
 
 		contents = make([]byte, cryptoutil.KeySize*2)
@@ -59,16 +59,16 @@ func GetDevicePushKeyForPath(filePath string, createIfMissing bool) (pk *[crypto
 		}
 
 		if _, err := os.Create(filePath); err != nil {
-			return nil, nil, errcode.ErrInternal.Wrap(err)
+			return nil, nil, errcode.ErrCode_ErrInternal.Wrap(err)
 		}
 
 		if err := os.WriteFile(filePath, contents, 0o600); err != nil {
-			return nil, nil, errcode.ErrInternal.Wrap(err)
+			return nil, nil, errcode.ErrCode_ErrInternal.Wrap(err)
 		}
 
 		return pk, sk, nil
 	} else if err != nil {
-		return nil, nil, errcode.ErrPushUnableToDecrypt.Wrap(fmt.Errorf("unable to get device push key"))
+		return nil, nil, errcode.ErrCode_ErrPushUnableToDecrypt.Wrap(fmt.Errorf("unable to get device push key"))
 	}
 
 	pkVal := [cryptoutil.KeySize]byte{}
@@ -92,12 +92,12 @@ func ListAccounts(ctx context.Context, rootDir string, ks NativeKeystore, logger
 	if _, err := os.Stat(accountsDir); os.IsNotExist(err) {
 		return []*accounttypes.AccountMetadata{}, nil
 	} else if err != nil {
-		return nil, errcode.ErrBertyAccountFSError.Wrap(err)
+		return nil, errcode.ErrCode_ErrBertyAccountFSError.Wrap(err)
 	}
 
 	subitems, err := os.ReadDir(accountsDir)
 	if err != nil {
-		return nil, errcode.ErrBertyAccountFSError.Wrap(err)
+		return nil, errcode.ErrCode_ErrBertyAccountFSError.Wrap(err)
 	}
 
 	var accounts []*accounttypes.AccountMetadata
@@ -111,7 +111,7 @@ func ListAccounts(ctx context.Context, rootDir string, ks NativeKeystore, logger
 		if ks != nil {
 			var err error
 			if storageKey, err = GetOrCreateStorageKeyForAccount(ks, subitem.Name()); err != nil {
-				accounts = append(accounts, &accounttypes.AccountMetadata{Error: err.Error(), AccountID: subitem.Name()})
+				accounts = append(accounts, &accounttypes.AccountMetadata{Error: err.Error(), AccountId: subitem.Name()})
 				continue
 			}
 		}
@@ -120,14 +120,14 @@ func ListAccounts(ctx context.Context, rootDir string, ks NativeKeystore, logger
 		if ks != nil {
 			var err error
 			if storageSalt, err = GetOrCreateRootDatastoreSaltForAccount(ks, subitem.Name()); err != nil {
-				accounts = append(accounts, &accounttypes.AccountMetadata{Error: err.Error(), AccountID: subitem.Name()})
+				accounts = append(accounts, &accounttypes.AccountMetadata{Error: err.Error(), AccountId: subitem.Name()})
 				continue
 			}
 		}
 
 		account, err := GetAccountMetaForName(ctx, rootDir, subitem.Name(), storageKey, storageSalt, logger)
 		if err != nil {
-			accounts = append(accounts, &accounttypes.AccountMetadata{Error: err.Error(), AccountID: subitem.Name()})
+			accounts = append(accounts, &accounttypes.AccountMetadata{Error: err.Error(), AccountId: subitem.Name()})
 		} else {
 			accounts = append(accounts, account)
 		}
@@ -143,27 +143,27 @@ func GetAccountMetaForName(ctx context.Context, rootDir string, accountID string
 
 	ds, err := GetRootDatastoreForPath(GetAccountDir(rootDir, accountID), storageKey, storageSalt, logger)
 	if err != nil {
-		return nil, errcode.ErrBertyAccountFSError.Wrap(err)
+		return nil, errcode.ErrCode_ErrBertyAccountFSError.Wrap(err)
 	}
 
 	metaBytes, err := ds.Get(ctx, datastore.NewKey(AccountMetafileName))
 	if err == datastore.ErrNotFound {
-		return nil, errcode.ErrBertyAccountDataNotFound
+		return nil, errcode.ErrCode_ErrBertyAccountDataNotFound
 	} else if err != nil {
 		logger.Warn("unable to read account metadata", zap.Error(err), logutil.PrivateString("account-id", accountID))
-		return nil, errcode.ErrBertyAccountFSError.Wrap(fmt.Errorf("unable to read account metadata: %w", err))
+		return nil, errcode.ErrCode_ErrBertyAccountFSError.Wrap(fmt.Errorf("unable to read account metadata: %w", err))
 	}
 
 	if err := ds.Close(); err != nil {
-		return nil, errcode.ErrDBClose.Wrap(err)
+		return nil, errcode.ErrCode_ErrDBClose.Wrap(err)
 	}
 
 	meta := &accounttypes.AccountMetadata{}
 	if err := proto.Unmarshal(metaBytes, meta); err != nil {
-		return nil, errcode.ErrDeserialization.Wrap(fmt.Errorf("unable to unmarshal account metadata: %w", err))
+		return nil, errcode.ErrCode_ErrDeserialization.Wrap(fmt.Errorf("unable to unmarshal account metadata: %w", err))
 	}
 
-	meta.AccountID = accountID
+	meta.AccountId = accountID
 
 	return meta, nil
 }
@@ -185,7 +185,7 @@ func GetAccountDir(rootDir, accountID string) string {
 func CreateDataDir(dir string) error {
 	switch {
 	case dir == "":
-		return errcode.TODO.Wrap(fmt.Errorf("missing data dir argument"))
+		return errcode.ErrCode_TODO.Wrap(fmt.Errorf("missing data dir argument"))
 	case dir == InMemoryDir:
 		return nil
 	}
@@ -194,10 +194,10 @@ func CreateDataDir(dir string) error {
 	switch {
 	case os.IsNotExist(err):
 		if err := os.MkdirAll(dir, 0o700); err != nil {
-			return errcode.TODO.Wrap(err)
+			return errcode.ErrCode_TODO.Wrap(err)
 		}
 	case err != nil:
-		return errcode.TODO.Wrap(err)
+		return errcode.ErrCode_TODO.Wrap(err)
 	}
 
 	return nil
@@ -206,7 +206,7 @@ func CreateDataDir(dir string) error {
 func GetGlobalAppStorage(rootDir string, ks NativeKeystore) (datastore.Batching, func() error, error) {
 	dbPath := filepath.Join(rootDir, "app.sqlite")
 	if err := os.MkdirAll(rootDir, 0o700); err != nil {
-		return nil, nil, errcode.TODO.Wrap(err)
+		return nil, nil, errcode.ErrCode_TODO.Wrap(err)
 	}
 
 	var err error
@@ -215,7 +215,7 @@ func GetGlobalAppStorage(rootDir string, ks NativeKeystore) (datastore.Batching,
 	if ks != nil {
 		storageKey, err = GetOrCreateMasterStorageKey(ks)
 		if err != nil {
-			return nil, nil, errcode.TODO.Wrap(err)
+			return nil, nil, errcode.ErrCode_TODO.Wrap(err)
 		}
 	}
 
@@ -223,14 +223,14 @@ func GetGlobalAppStorage(rootDir string, ks NativeKeystore) (datastore.Batching,
 	if ks != nil {
 		storageSalt, err = GetOrCreateGlobalAppStorageSalt(ks)
 		if err != nil {
-			return nil, nil, errcode.TODO.Wrap(err)
+			return nil, nil, errcode.ErrCode_TODO.Wrap(err)
 		}
 	}
 
 	sqldsOpts := encrepo.SQLCipherDatastoreOptions{JournalMode: "WAL", PlaintextHeader: len(storageSalt) != 0, Salt: storageSalt}
 	appDatastore, err := encrepo.NewSQLCipherDatastore("sqlite3", dbPath, "data", storageKey, sqldsOpts)
 	if err != nil {
-		return nil, nil, errcode.ErrDBOpen.Wrap(err)
+		return nil, nil, errcode.ErrCode_ErrDBOpen.Wrap(err)
 	}
 
 	return encrepo.NewNamespacedDatastore(appDatastore, datastore.NewKey("app-storage")), appDatastore.Close, nil
@@ -242,7 +242,7 @@ func GetAccountAppStorage(rootDir string, accountID string, key []byte, salt []b
 	return encrepo.NewSQLCipherDatastore("sqlite3", dbPath, "data", key, sqldsOpts)
 }
 
-func GetRootDatastoreForPath(dir string, key []byte, salt []byte, logger *zap.Logger) (datastore.Batching, error) {
+func GetRootDatastoreForPath(dir string, key []byte, salt []byte, _ *zap.Logger) (datastore.Batching, error) {
 	inMemory := dir == InMemoryDir
 
 	var ds datastore.Batching
@@ -251,14 +251,14 @@ func GetRootDatastoreForPath(dir string, key []byte, salt []byte, logger *zap.Lo
 	} else {
 		err := os.MkdirAll(dir, os.ModePerm)
 		if err != nil {
-			return nil, errcode.TODO.Wrap(err)
+			return nil, errcode.ErrCode_TODO.Wrap(err)
 		}
 
 		dbPath := filepath.Join(dir, "datastore.sqlite")
 		sqldsOpts := encrepo.SQLCipherDatastoreOptions{JournalMode: "WAL", PlaintextHeader: len(salt) != 0, Salt: salt}
 		ds, err = encrepo.NewSQLCipherDatastore("sqlite3", dbPath, "blocks", key, sqldsOpts)
 		if err != nil {
-			return nil, errcode.TODO.Wrap(err)
+			return nil, errcode.ErrCode_TODO.Wrap(err)
 		}
 	}
 
@@ -307,10 +307,10 @@ func GetGormDBForPath(dbPath string, key []byte, salt []byte, logger *zap.Logger
 		}
 		if len(key) != 0 {
 			if len(key) != keyLength {
-				return nil, nil, errcode.TODO.Wrap(fmt.Errorf("bad key, expected %d bytes, got %d", keyLength, len(key)))
+				return nil, nil, errcode.ErrCode_TODO.Wrap(fmt.Errorf("bad key, expected %d bytes, got %d", keyLength, len(key)))
 			}
 			if len(salt) != saltLength {
-				return nil, nil, errcode.TODO.Wrap(fmt.Errorf("bad salt, expected %d bytes, got %d", saltLength, len(salt)))
+				return nil, nil, errcode.ErrCode_TODO.Wrap(fmt.Errorf("bad salt, expected %d bytes, got %d", saltLength, len(salt)))
 			}
 			args = append(args,
 				fmt.Sprintf("_pragma_key=x'%s'", hex.EncodeToString(key)),
@@ -328,7 +328,7 @@ func GetGormDBForPath(dbPath string, key []byte, salt []byte, logger *zap.Logger
 	}
 	db, err := gorm.Open(sqlite.Open(sqliteConn), cfg)
 	if err != nil {
-		return nil, nil, errcode.TODO.Wrap(err)
+		return nil, nil, errcode.ErrCode_TODO.Wrap(err)
 	}
 
 	sqlDB, err := db.DB()

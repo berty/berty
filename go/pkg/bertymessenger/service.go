@@ -11,11 +11,10 @@ import (
 	"sync/atomic"
 	"time"
 
-	// nolint:staticcheck // cannot use the new protobuf API while keeping gogoproto
-	"github.com/golang/protobuf/proto"
-	ipfs_interface "github.com/ipfs/interface-go-ipfs-core"
+	ipfs_interface "github.com/ipfs/kubo/core/coreiface"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
+	"google.golang.org/protobuf/proto"
 	"gorm.io/gorm"
 	"moul.io/u"
 	"moul.io/zapgorm2"
@@ -33,12 +32,12 @@ import (
 	"berty.tech/berty/v2/go/pkg/messengertypes"
 	mt "berty.tech/berty/v2/go/pkg/messengertypes"
 	"berty.tech/berty/v2/go/pkg/pushtypes"
-	"berty.tech/weshnet"
-	"berty.tech/weshnet/pkg/cryptoutil"
-	"berty.tech/weshnet/pkg/lifecycle"
-	"berty.tech/weshnet/pkg/logutil"
-	"berty.tech/weshnet/pkg/protocoltypes"
-	"berty.tech/weshnet/pkg/tyber"
+	"berty.tech/weshnet/v2"
+	"berty.tech/weshnet/v2/pkg/cryptoutil"
+	"berty.tech/weshnet/v2/pkg/lifecycle"
+	"berty.tech/weshnet/v2/pkg/logutil"
+	"berty.tech/weshnet/v2/pkg/protocoltypes"
+	"berty.tech/weshnet/v2/pkg/tyber"
 )
 
 type Service interface {
@@ -151,15 +150,15 @@ func databaseStateRestoreAccountHandler(statePointer *mt.LocalDatabaseState) wes
 			backupContents := new(bytes.Buffer)
 			size, err := io.Copy(backupContents, reader)
 			if err != nil {
-				return true, errcode.ErrInternal.Wrap(fmt.Errorf("unable to read %d bytes: %w", header.Size, err))
+				return true, errcode.ErrCode_ErrInternal.Wrap(fmt.Errorf("unable to read %d bytes: %w", header.Size, err))
 			}
 
 			if size != header.Size {
-				return true, errcode.ErrInternal.Wrap(fmt.Errorf("unexpected file size"))
+				return true, errcode.ErrCode_ErrInternal.Wrap(fmt.Errorf("unexpected file size"))
 			}
 
 			if err := proto.Unmarshal(backupContents.Bytes(), statePointer); err != nil {
-				return true, errcode.ErrDeserialization.Wrap(err)
+				return true, errcode.ErrCode_ErrDeserialization.Wrap(err)
 			}
 
 			return true, nil
@@ -177,7 +176,7 @@ func RestoreFromAccountExport(ctx context.Context, reader io.Reader, coreAPI ipf
 func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (_ Service, err error) {
 	optsCleanup, err := opts.applyDefaults()
 	if err != nil {
-		return nil, errcode.TODO.Wrap(fmt.Errorf("error while applying default of messenger opts: %w", err))
+		return nil, errcode.ErrCode_TODO.Wrap(fmt.Errorf("error while applying default of messenger opts: %w", err))
 	}
 
 	tyberCtx, _, tyberEndSection := tyber.Section(context.Background(), opts.Logger, "Initializing MessengerService version "+bertyversion.Version)
@@ -193,11 +192,11 @@ func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (_ Service, err
 			return replayLogsToDB(ctx, client, db, opts.Logger)
 		}); err != nil {
 			cancel()
-			return nil, errcode.ErrDBWrite.Wrap(fmt.Errorf("unable to restore exported state: %w", err))
+			return nil, errcode.ErrCode_ErrDBWrite.Wrap(fmt.Errorf("unable to restore exported state: %w", err))
 		}
 	} else if err := db.InitDB(getEventsReplayerForDB(ctx, client, opts.Logger)); err != nil {
 		cancel()
-		return nil, errcode.TODO.Wrap(fmt.Errorf("error during db init: %w", err))
+		return nil, errcode.ErrCode_TODO.Wrap(fmt.Errorf("error during db init: %w", err))
 	}
 
 	tyber.LogStep(tyberCtx, opts.Logger, "Database initialization succeeded")
@@ -209,11 +208,11 @@ func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (_ Service, err
 	icr, err := client.ServiceGetConfiguration(ctx, &protocoltypes.ServiceGetConfiguration_Request{})
 	cancel()
 	if err != nil {
-		return nil, errcode.TODO.Wrap(fmt.Errorf("error while getting instance configuration: %w", err))
+		return nil, errcode.ErrCode_TODO.Wrap(fmt.Errorf("error while getting instance configuration: %w", err))
 	}
 
 	tyber.LogStep(tyberCtx, opts.Logger, "Got instance configuration", tyber.WithJSONDetail("InstanceConfiguration", icr))
-	pkStr := messengerutil.B64EncodeBytes(icr.GetAccountGroupPK())
+	pkStr := messengerutil.B64EncodeBytes(icr.GetAccountGroupPk())
 
 	shortPkStr := pkStr
 	const shortLen = 6
@@ -243,7 +242,7 @@ func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (_ Service, err
 		knownPeers:            make(map[string] /* peer.ID */ protocoltypes.GroupDeviceStatus_Type),
 		subsMutex:             &sync.Mutex{},
 		groupsToSubTo:         make(map[string]struct{}),
-		accountGroup:          icr.GetAccountGroupPK(),
+		accountGroup:          icr.GetAccountGroupPk(),
 		grpcInsecure:          opts.GRPCInsecureMode,
 		pushClients:           make(map[string]*grpc.ClientConn),
 	}
@@ -257,7 +256,7 @@ func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (_ Service, err
 		})
 		if err != nil {
 			cancel()
-			return nil, errcode.ErrInternal.Wrap(fmt.Errorf("unable to init push handler: %w", err))
+			return nil, errcode.ErrCode_ErrInternal.Wrap(fmt.Errorf("unable to init push handler: %w", err))
 		}
 	}
 	svc.pushReceiver = bertypush.NewPushReceiver(svc.pushHandler, svc.eventHandler, dbFetcher, opts.Logger)
@@ -266,21 +265,21 @@ func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (_ Service, err
 	{
 		acc, err := svc.db.GetAccount()
 		switch {
-		case errcode.Is(err, errcode.ErrNotFound): // account not found, create a new one
+		case errcode.Is(err, errcode.ErrCode_ErrNotFound): // account not found, create a new one
 			tyber.LogStep(tyberCtx, opts.Logger, "Account not found, creating a new one", tyber.WithDetail("PublicKey", pkStr))
 			ret, err := svc.internalInstanceShareableBertyID(ctx, &mt.InstanceShareableBertyID_Request{})
 			if err != nil {
-				return nil, errcode.TODO.Wrap(fmt.Errorf("error while creating shareable account link: %w", err))
+				return nil, errcode.ErrCode_TODO.Wrap(fmt.Errorf("error while creating shareable account link: %w", err))
 			}
 
-			if err = svc.db.FirstOrCreateAccount(pkStr, ret.GetWebURL()); err != nil {
+			if err = svc.db.FirstOrCreateAccount(pkStr, ret.GetWebUrl()); err != nil {
 				return nil, err
 			}
 		case err != nil: // internal error
-			return nil, errcode.ErrInternal.Wrap(err)
+			return nil, errcode.ErrCode_ErrInternal.Wrap(err)
 		case pkStr != acc.GetPublicKey(): // Check that we are connected to the correct node
 			// FIXME: use errcode
-			return nil, errcode.TODO.Wrap(errors.New("messenger's account key does not match protocol's account key"))
+			return nil, errcode.ErrCode_TODO.Wrap(errors.New("messenger's account key does not match protocol's account key"))
 		default: // account exists, and public keys match
 			// noop
 			tyber.LogStep(tyberCtx, opts.Logger, "Found account", tyber.WithDetail("PublicKey", pkStr))
@@ -320,19 +319,19 @@ func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (_ Service, err
 
 	if opts.PlatformPushToken != nil {
 		token, err := db.GetPushDeviceToken(pkStr)
-		if err != nil && !errcode.Is(err, errcode.ErrNotFound) {
-			return nil, errcode.ErrInternal.Wrap(err)
-		} else if errcode.Is(err, errcode.ErrNotFound) || (token.TokenType == opts.PlatformPushToken.TokenType && !bytes.Equal(token.Token, opts.PlatformPushToken.Token)) {
+		if err != nil && !errcode.Is(err, errcode.ErrCode_ErrNotFound) {
+			return nil, errcode.ErrCode_ErrInternal.Wrap(err)
+		} else if errcode.Is(err, errcode.ErrCode_ErrNotFound) || (token.TokenType == opts.PlatformPushToken.TokenType && !bytes.Equal(token.Token, opts.PlatformPushToken.Token)) {
 			if _, err := svc.PushSetDeviceToken(ctx, &messengertypes.PushSetDeviceToken_Request{
 				Receiver: opts.PlatformPushToken,
 			}); err != nil {
-				return nil, errcode.ErrInternal.Wrap(err)
+				return nil, errcode.ErrCode_ErrInternal.Wrap(err)
 			}
 		}
 	}
 
 	// Subscribe to account group metadata
-	svc.accountGroup = icr.GetAccountGroupPK()
+	svc.accountGroup = icr.GetAccountGroupPk()
 
 	// subscribe to groups
 	{
@@ -344,12 +343,12 @@ func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (_ Service, err
 		for _, cv := range convs {
 			gpkb, err := messengerutil.B64DecodeBytes(cv.GetPublicKey())
 			if err != nil {
-				return nil, errcode.ErrDeserialization.Wrap(err)
+				return nil, errcode.ErrCode_ErrDeserialization.Wrap(err)
 			}
 
-			_, err = svc.protocolClient.ActivateGroup(ctx, &protocoltypes.ActivateGroup_Request{GroupPK: gpkb})
+			_, err = svc.protocolClient.ActivateGroup(ctx, &protocoltypes.ActivateGroup_Request{GroupPk: gpkb})
 			if err != nil {
-				return nil, errcode.TODO.Wrap(err)
+				return nil, errcode.ErrCode_TODO.Wrap(err)
 			}
 
 			svc.groupsToSubTo[cv.GetPublicKey()] = struct{}{}
@@ -360,17 +359,17 @@ func New(client protocoltypes.ProtocolServiceClient, opts *Opts) (_ Service, err
 	{
 		contacts, err := svc.db.GetContactsByState(mt.Contact_OutgoingRequestSent)
 		if err != nil {
-			return nil, errcode.ErrDBRead.Wrap(fmt.Errorf("error while fetching contacts from db: %w", err))
+			return nil, errcode.ErrCode_ErrDBRead.Wrap(fmt.Errorf("error while fetching contacts from db: %w", err))
 		}
 		for _, c := range contacts {
 			gpkb, err := messengerutil.B64DecodeBytes(c.GetConversationPublicKey())
 			if err != nil {
-				return nil, errcode.ErrDeserialization.Wrap(err)
+				return nil, errcode.ErrCode_ErrDeserialization.Wrap(err)
 			}
 
-			_, err = svc.protocolClient.ActivateGroup(ctx, &protocoltypes.ActivateGroup_Request{GroupPK: gpkb})
+			_, err = svc.protocolClient.ActivateGroup(ctx, &protocoltypes.ActivateGroup_Request{GroupPk: gpkb})
 			if err != nil {
-				return nil, errcode.TODO.Wrap(err)
+				return nil, errcode.ErrCode_TODO.Wrap(err)
 			}
 
 			svc.groupsToSubTo[c.GetConversationPublicKey()] = struct{}{}
@@ -392,12 +391,12 @@ func (svc *service) sendAccountUserInfo(ctx context.Context, groupPK string) (er
 
 	pk, err := messengerutil.B64DecodeBytes(groupPK)
 	if err != nil {
-		return errcode.ErrDeserialization.Wrap(err)
+		return errcode.ErrCode_ErrDeserialization.Wrap(err)
 	}
 
 	acc, err := svc.db.GetAccount()
 	if err != nil {
-		return errcode.ErrDBRead.Wrap(err)
+		return errcode.ErrCode_ErrDBRead.Wrap(err)
 	}
 
 	am, err := mt.AppMessage_TypeSetUserInfo.MarshalPayload(
@@ -406,15 +405,15 @@ func (svc *service) sendAccountUserInfo(ctx context.Context, groupPK string) (er
 		&mt.AppMessage_SetUserInfo{DisplayName: acc.GetDisplayName()},
 	)
 	if err != nil {
-		return errcode.ErrSerialization.Wrap(err)
+		return errcode.ErrCode_ErrSerialization.Wrap(err)
 	}
 
-	sendReply, err := svc.protocolClient.AppMetadataSend(ctx, &protocoltypes.AppMetadataSend_Request{GroupPK: pk, Payload: am})
+	sendReply, err := svc.protocolClient.AppMetadataSend(ctx, &protocoltypes.AppMetadataSend_Request{GroupPk: pk, Payload: am})
 	if err != nil {
-		return errcode.ErrProtocolSend.Wrap(err)
+		return errcode.ErrCode_ErrProtocolSend.Wrap(err)
 	}
 
-	endSection(nil, "Sent account info", tyber.WithCIDDetail("CID", sendReply.CID))
+	endSection(nil, "Sent account info", tyber.WithCIDDetail("CID", sendReply.Cid))
 	return nil
 }
 
@@ -479,13 +478,13 @@ func (svc *service) SendAck(cid, conversationPK string) error {
 	}
 
 	reply, err := svc.protocolClient.AppMessageSend(svc.ctx, &protocoltypes.AppMessageSend_Request{
-		GroupPK: cpk,
+		GroupPk: cpk,
 		Payload: amp,
 	})
 	if err != nil {
 		return logError("Protocol error", err)
 	}
-	tyber.LogStep(svc.ctx, svc.logger, "Acknowledge sent", tyber.WithCIDDetail("CID", reply.GetCID()))
+	tyber.LogStep(svc.ctx, svc.logger, "Acknowledge sent", tyber.WithCIDDetail("CID", reply.GetCid()))
 
 	return nil
 }
@@ -495,18 +494,18 @@ type MetaFetcherFromProtocolClient struct {
 }
 
 func (svc *MetaFetcherFromProtocolClient) OwnMemberAndDevicePKForConversation(ctx context.Context, conversationPK []byte) (member []byte, device []byte, err error) {
-	gi, err := svc.client.GroupInfo(ctx, &protocoltypes.GroupInfo_Request{GroupPK: conversationPK})
+	gi, err := svc.client.GroupInfo(ctx, &protocoltypes.GroupInfo_Request{GroupPk: conversationPK})
 	if err != nil {
 		return nil, nil, err
 	}
 
-	return gi.MemberPK, gi.DevicePK, nil
+	return gi.MemberPk, gi.DevicePk, nil
 }
 
 func (svc *MetaFetcherFromProtocolClient) GroupPKForContact(ctx context.Context, contactPK []byte) ([]byte, error) {
-	groupInfoReply, err := svc.client.GroupInfo(ctx, &protocoltypes.GroupInfo_Request{ContactPK: contactPK})
+	groupInfoReply, err := svc.client.GroupInfo(ctx, &protocoltypes.GroupInfo_Request{ContactPk: contactPK})
 	if err != nil {
-		return nil, errcode.ErrProtocolGetGroupInfo.Wrap(err)
+		return nil, errcode.ErrCode_ErrProtocolGetGroupInfo.Wrap(err)
 	}
 
 	return groupInfoReply.GetGroup().GetPublicKey(), nil

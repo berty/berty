@@ -10,7 +10,7 @@ import (
 	"moul.io/godev"
 
 	"berty.tech/berty/v2/go/pkg/errcode"
-	"berty.tech/weshnet/pkg/protocoltypes"
+	"berty.tech/weshnet/v2/pkg/protocoltypes"
 )
 
 func peersCommand() *ffcli.Command {
@@ -46,7 +46,7 @@ func peersCommand() *ffcli.Command {
 			for {
 				ret, err := protocol.PeerList(ctx, &protocoltypes.PeerList_Request{})
 				if err != nil {
-					return errcode.TODO.Wrap(err)
+					return errcode.ErrCode_TODO.Wrap(err)
 				}
 
 				if refreshEveryFlag == 0 {

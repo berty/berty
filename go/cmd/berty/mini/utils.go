@@ -6,16 +6,16 @@ import (
 
 	"berty.tech/berty/v2/go/pkg/bertylinks"
 	"berty.tech/berty/v2/go/pkg/errcode"
-	"berty.tech/weshnet/pkg/protocoltypes"
+	"berty.tech/weshnet/v2/pkg/protocoltypes"
 )
 
 func openGroupFromString(url string) (*protocoltypes.Group, error) {
 	link, err := bertylinks.UnmarshalLink(url, nil) // FIXME: support passing an optional passphrase to decrypt the link
 	if err != nil {
-		return nil, errcode.ErrInvalidInput.Wrap(err)
+		return nil, errcode.ErrCode_ErrInvalidInput.Wrap(err)
 	}
 	if !link.IsGroup() {
-		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("expected a group URL, got %q instead", link.GetKind()))
+		return nil, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("expected a group URL, got %q instead", link.GetKind()))
 	}
 	return link.GetBertyGroup().GetGroup(), nil
 }

@@ -7,19 +7,19 @@ import (
 	"sync"
 	"time"
 
-	"github.com/gogo/protobuf/proto"
 	"github.com/ipfs/go-cid"
 	"go.uber.org/zap"
 	"golang.org/x/crypto/nacl/box"
 	"google.golang.org/grpc"
+	"google.golang.org/protobuf/proto"
 
 	"berty.tech/berty/v2/go/internal/messengerutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
 	"berty.tech/berty/v2/go/pkg/pushtypes"
-	"berty.tech/weshnet/pkg/cryptoutil"
-	"berty.tech/weshnet/pkg/logutil"
-	"berty.tech/weshnet/pkg/protocoltypes"
+	"berty.tech/weshnet/v2/pkg/cryptoutil"
+	"berty.tech/weshnet/v2/pkg/logutil"
+	"berty.tech/weshnet/v2/pkg/protocoltypes"
 )
 
 func (svc *service) PushSetDeviceToken(ctx context.Context, request *messengertypes.PushSetDeviceToken_Request) (*messengertypes.PushSetDeviceToken_Reply, error) {
@@ -29,7 +29,7 @@ func (svc *service) PushSetDeviceToken(ctx context.Context, request *messengerty
 	}
 
 	if request.Receiver == nil || request.Receiver.TokenType == pushtypes.PushServiceTokenType_PushTokenUndefined {
-		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("invalid push token provided"))
+		return nil, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("invalid push token provided"))
 	}
 
 	request.Receiver.RecipientPublicKey = svc.pushHandler.PushPK()[:]
@@ -38,12 +38,12 @@ func (svc *service) PushSetDeviceToken(ctx context.Context, request *messengerty
 		DeviceToken: request.Receiver,
 	})
 	if err != nil {
-		return nil, errcode.ErrSerialization.Wrap(err)
+		return nil, errcode.ErrCode_ErrSerialization.Wrap(err)
 	}
 
-	_, err = svc.protocolClient.AppMetadataSend(ctx, &protocoltypes.AppMetadataSend_Request{GroupPK: svc.accountGroup, Payload: am})
+	_, err = svc.protocolClient.AppMetadataSend(ctx, &protocoltypes.AppMetadataSend_Request{GroupPk: svc.accountGroup, Payload: am})
 	if err != nil {
-		return nil, errcode.ErrProtocolSend.Wrap(err)
+		return nil, errcode.ErrCode_ErrProtocolSend.Wrap(err)
 	}
 
 	return &messengertypes.PushSetDeviceToken_Reply{}, nil
@@ -51,13 +51,13 @@ func (svc *service) PushSetDeviceToken(ctx context.Context, request *messengerty
 
 func (svc *service) PushSetServer(ctx context.Context, request *messengertypes.PushSetServer_Request) (*messengertypes.PushSetServer_Reply, error) {
 	if request.Server == nil {
-		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("invalid push server provided"))
+		return nil, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("invalid push server provided"))
 	}
 
 	// check if the server entry already exists
 	if _, err := svc.db.GetPushServerRecord(messengerutil.B64EncodeBytes(svc.accountGroup), request.Server.Addr); err == nil {
 		return &messengertypes.PushSetServer_Reply{}, nil
-	} else if !errcode.Is(err, errcode.ErrNotFound) {
+	} else if !errcode.Is(err, errcode.ErrCode_ErrNotFound) {
 		return nil, err
 	}
 
@@ -65,12 +65,12 @@ func (svc *service) PushSetServer(ctx context.Context, request *messengertypes.P
 		Server: request.Server,
 	})
 	if err != nil {
-		return nil, errcode.ErrSerialization.Wrap(err)
+		return nil, errcode.ErrCode_ErrSerialization.Wrap(err)
 	}
 
-	_, err = svc.protocolClient.AppMetadataSend(ctx, &protocoltypes.AppMetadataSend_Request{GroupPK: svc.accountGroup, Payload: am})
+	_, err = svc.protocolClient.AppMetadataSend(ctx, &protocoltypes.AppMetadataSend_Request{GroupPk: svc.accountGroup, Payload: am})
 	if err != nil {
-		return nil, errcode.ErrProtocolSend.Wrap(err)
+		return nil, errcode.ErrCode_ErrProtocolSend.Wrap(err)
 	}
 
 	return &messengertypes.PushSetServer_Reply{}, nil
@@ -79,11 +79,11 @@ func (svc *service) PushSetServer(ctx context.Context, request *messengertypes.P
 // PushSealTokenForServer seals a device push token with the push server public key
 func PushSealTokenForServer(receiver *pushtypes.PushServiceReceiver, server *messengertypes.PushServer) (*messengertypes.PushMemberTokenUpdate, error) {
 	if server == nil || len(server.Key) != cryptoutil.KeySize {
-		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("expected a server key of %d bytes", cryptoutil.KeySize))
+		return nil, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("expected a server key of %d bytes", cryptoutil.KeySize))
 	}
 
 	if receiver == nil {
-		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("expected the receiver value to be defined"))
+		return nil, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("expected the receiver value to be defined"))
 	}
 
 	serverKey := [cryptoutil.KeySize]byte{}
@@ -91,7 +91,7 @@ func PushSealTokenForServer(receiver *pushtypes.PushServiceReceiver, server *mes
 
 	opaqueToken, err := proto.Marshal(receiver)
 	if err != nil {
-		return nil, errcode.ErrSerialization.Wrap(err)
+		return nil, errcode.ErrCode_ErrSerialization.Wrap(err)
 	}
 
 	opaqueToken, err = box.SealAnonymous(nil, opaqueToken, &serverKey, crand.Reader)
@@ -107,51 +107,51 @@ func PushSealTokenForServer(receiver *pushtypes.PushServiceReceiver, server *mes
 
 // PushShareTokenForConversation shares a device push token to all other members of the given conversationPK
 func (svc *service) PushShareTokenForConversation(ctx context.Context, request *messengertypes.PushShareTokenForConversation_Request) (*messengertypes.PushShareTokenForConversation_Reply, error) {
-	if request.ConversationPK == "" {
-		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("invalid conversation public key provided"))
+	if request.ConversationPk == "" {
+		return nil, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("invalid conversation public key provided"))
 	}
 
-	svc.logger.Info("PushShareTokenForConversation", logutil.PrivateString("conversationPK", request.ConversationPK))
+	svc.logger.Info("PushShareTokenForConversation", logutil.PrivateString("conversationPK", request.ConversationPk))
 
-	conversation, err := svc.db.GetConversationByPK(request.ConversationPK)
+	conversation, err := svc.db.GetConversationByPK(request.ConversationPk)
 	if err != nil {
-		return nil, errcode.ErrDBRead.Wrap(err)
+		return nil, errcode.ErrCode_ErrDBRead.Wrap(err)
 	}
 
 	deviceToken, err := svc.db.GetPushDeviceToken(messengerutil.B64EncodeBytes(svc.accountGroup))
 	if err != nil {
-		return nil, errcode.ErrDBRead.Wrap(err)
+		return nil, errcode.ErrCode_ErrDBRead.Wrap(err)
 	}
 
 	if deviceToken.TokenType == pushtypes.PushServiceTokenType_PushTokenUndefined {
-		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("wrong push token type"))
+		return nil, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("wrong push token type"))
 	}
 
 	if len(deviceToken.Token) == 0 {
-		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("empty push token"))
+		return nil, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("empty push token"))
 	}
 
 	if len(deviceToken.PublicKey) == 0 {
-		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("empty push token public key"))
+		return nil, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("empty push token public key"))
 	}
 
-	if deviceToken.BundleID == "" {
-		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("empty push token bundle id"))
+	if deviceToken.BundleId == "" {
+		return nil, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("empty push token bundle id"))
 	}
 
 	pushServerRecords, err := svc.db.GetPushServerRecords(messengerutil.B64EncodeBytes(svc.accountGroup))
 	if err != nil {
-		return nil, errcode.ErrDBRead.Wrap(err)
+		return nil, errcode.ErrCode_ErrDBRead.Wrap(err)
 	}
 
 	// Currently, we only support one push server
 	pushServerRecord := pushServerRecords[0]
 	if len(pushServerRecord.ServerKey) != cryptoutil.KeySize {
-		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("invalid push server key"))
+		return nil, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("invalid push server key"))
 	}
 
 	if pushServerRecord.ServerAddr == "" {
-		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("invalid push server address"))
+		return nil, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("invalid push server address"))
 	}
 
 	if err := svc.pushShareToken(ctx, conversation, deviceToken, pushServerRecord); err != nil {
@@ -162,14 +162,14 @@ func (svc *service) PushShareTokenForConversation(ctx context.Context, request *
 }
 
 func (svc *service) PushTokenSharedForConversation(request *messengertypes.PushTokenSharedForConversation_Request, server messengertypes.MessengerService_PushTokenSharedForConversationServer) error {
-	tokens, err := svc.db.GetPushMemberTokensForConversation(request.ConversationPK)
+	tokens, err := svc.db.GetPushMemberTokensForConversation(request.ConversationPk)
 	if err != nil {
-		return errcode.ErrDBRead.Wrap(err)
+		return errcode.ErrCode_ErrDBRead.Wrap(err)
 	}
 
 	for _, token := range tokens {
 		if err := server.Send(&messengertypes.PushTokenSharedForConversation_Reply{Token: token}); err != nil {
-			return errcode.ErrStreamWrite.Wrap(err)
+			return errcode.ErrCode_ErrStreamWrite.Wrap(err)
 		}
 	}
 
@@ -177,27 +177,27 @@ func (svc *service) PushTokenSharedForConversation(request *messengertypes.PushT
 }
 
 func (svc *service) PushSend(ctx context.Context, request *messengertypes.PushSend_Request) (*messengertypes.PushSend_Reply, error) {
-	groupPKb, err := messengerutil.B64DecodeBytes(request.GroupPK)
+	groupPKb, err := messengerutil.B64DecodeBytes(request.GroupPk)
 	if err != nil {
-		return nil, errcode.ErrInvalidInput.Wrap(err)
+		return nil, errcode.ErrCode_ErrInvalidInput.Wrap(err)
 	}
 
 	sealedMessageEnvelope, err := svc.protocolClient.OutOfStoreSeal(ctx, &protocoltypes.OutOfStoreSeal_Request{
-		CID:            request.CID,
+		Cid:            request.Cid,
 		GroupPublicKey: groupPKb,
 	})
 	if err != nil {
-		return nil, errcode.ErrInternal.Wrap(err)
+		return nil, errcode.ErrCode_ErrInternal.Wrap(err)
 	}
 
-	pushTargets, memberDevices, err := svc.getPushTargetsByServer(request.GroupPK, request.GroupMembers)
+	pushTargets, memberDevices, err := svc.getPushTargetsByServer(request.GroupPk, request.GroupMembers)
 	if err != nil {
-		return nil, errcode.ErrInternal.Wrap(err)
+		return nil, errcode.ErrCode_ErrInternal.Wrap(err)
 	}
 
-	_, cid, err := cid.CidFromBytes(request.CID)
+	_, cid, err := cid.CidFromBytes(request.Cid)
 	if err != nil {
-		return nil, errcode.ErrInvalidInput.Wrap(err)
+		return nil, errcode.ErrCode_ErrInvalidInput.Wrap(err)
 	}
 
 	if len(pushTargets) == 0 {
@@ -251,7 +251,7 @@ func (svc *service) PushSetAutoShare(ctx context.Context, request *messengertype
 
 	if request.Enabled {
 		if err := svc.pushDeviceTokenBroadcast(ctx); err != nil {
-			return nil, errcode.ErrInternal.Wrap(err)
+			return nil, errcode.ErrCode_ErrInternal.Wrap(err)
 		}
 	}
 
@@ -262,7 +262,7 @@ func (svc *service) PushSetAutoShare(ctx context.Context, request *messengertype
 
 	// dispatch event
 	if err := svc.dispatcher.StreamEvent(messengertypes.StreamEvent_TypeAccountUpdated, &messengertypes.StreamEvent_AccountUpdated{Account: acc}, false); err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ErrCode_TODO.Wrap(err)
 	}
 
 	return &messengertypes.PushSetAutoShare_Reply{}, nil

@@ -35,7 +35,7 @@ func WithMessengerGRPCConn(cc *grpc.ClientConn) NewOption {
 // It uses grpc.WithInsecure as dialer option and won't check any certificate.
 func WithInsecureMessengerGRPCAddr(addr string) NewOption {
 	return func(b *Bot) error {
-		cc, err := grpc.Dial(addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+		cc, err := grpc.NewClient(addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 		if err != nil {
 			return fmt.Errorf("dial error: %w", err)
 		}

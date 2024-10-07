@@ -8,12 +8,12 @@ import (
 	"sync/atomic"
 
 	"github.com/gdamore/tcell"
-	"github.com/gogo/protobuf/proto"
 	"github.com/rivo/tview"
+	"google.golang.org/protobuf/proto"
 
 	"berty.tech/berty/v2/go/pkg/messengertypes"
-	"berty.tech/weshnet/pkg/netmanager"
-	"berty.tech/weshnet/pkg/protocoltypes"
+	"berty.tech/weshnet/v2/pkg/netmanager"
+	"berty.tech/weshnet/v2/pkg/protocoltypes"
 )
 
 type tabbedGroupsView struct {
@@ -121,14 +121,14 @@ func (v *tabbedGroupsView) AddContextGroup(ctx context.Context, g *protocoltypes
 
 	// Check if group already opened
 	switch g.GroupType {
-	case protocoltypes.GroupTypeContact:
+	case protocoltypes.GroupType_GroupTypeContact:
 		for _, vg := range v.contactGroupViews {
 			if bytes.Equal(vg.g.PublicKey, g.PublicKey) {
 				v.lock.Unlock()
 				return
 			}
 		}
-	case protocoltypes.GroupTypeMultiMember:
+	case protocoltypes.GroupType_GroupTypeMultiMember:
 		for _, vg := range v.multiMembersGroupViews {
 			if bytes.Equal(vg.g.PublicKey, g.PublicKey) {
 				v.lock.Unlock()
@@ -141,7 +141,7 @@ func (v *tabbedGroupsView) AddContextGroup(ctx context.Context, g *protocoltypes
 	}
 
 	info, err := v.protocol.GroupInfo(ctx, &protocoltypes.GroupInfo_Request{
-		GroupPK: g.PublicKey,
+		GroupPk: g.PublicKey,
 	})
 	if err != nil {
 		v.lock.Unlock()
@@ -149,13 +149,13 @@ func (v *tabbedGroupsView) AddContextGroup(ctx context.Context, g *protocoltypes
 	}
 	v.lock.Unlock()
 
-	vg := newViewGroup(v, g, info.MemberPK, info.DevicePK, globalLogger)
+	vg := newViewGroup(v, g, info.MemberPk, info.DevicePk, globalLogger)
 	vg.welcomeGroupEventDisplay()
 	vg.loop(v.ctx)
 
-	if g.GroupType == protocoltypes.GroupTypeContact {
+	if g.GroupType == protocoltypes.GroupType_GroupTypeContact {
 		v.contactGroupViews = append(v.contactGroupViews, vg)
-	} else if g.GroupType == protocoltypes.GroupTypeMultiMember {
+	} else if g.GroupType == protocoltypes.GroupType_GroupTypeMultiMember {
 		v.multiMembersGroupViews = append(v.multiMembersGroupViews, vg)
 	}
 }
@@ -250,8 +250,8 @@ func (v *tabbedGroupsView) handleEventStream(ctx context.Context) error {
 				var evt messengertypes.StreamEvent_PeerStatusGroupAssociated
 				if merr = proto.Unmarshal(msg.GetEvent().GetPayload(), &evt); err == nil {
 					m := fmt.Sprintf("<%.15s> associated to group: %.8s (DevicePK %.8s)",
-						evt.PeerID, evt.GroupPK, evt.DevicePK)
-					gm[evt.PeerID] = append(gm[evt.PeerID], evt.GroupPK)
+						evt.PeerId, evt.GroupPk, evt.DevicePk)
+					gm[evt.PeerId] = append(gm[evt.PeerId], evt.GroupPk)
 					accountv.messages.Append(&historyMessage{
 						messageType: messageTypeMeta,
 						payload:     []byte(m),
@@ -261,7 +261,7 @@ func (v *tabbedGroupsView) handleEventStream(ctx context.Context) error {
 			case messengertypes.StreamEvent_TypePeerStatusConnected:
 				var evt messengertypes.StreamEvent_PeerStatusConnected
 				if merr = proto.Unmarshal(msg.GetEvent().GetPayload(), &evt); err == nil {
-					m := fmt.Sprintf("<%.15s> just connected", evt.PeerID)
+					m := fmt.Sprintf("<%.15s> just connected", evt.PeerId)
 					accountv.messages.Append(&historyMessage{
 						messageType: messageTypeMeta,
 						payload:     []byte(m),
@@ -271,7 +271,7 @@ func (v *tabbedGroupsView) handleEventStream(ctx context.Context) error {
 			case messengertypes.StreamEvent_TypePeerStatusDisconnected:
 				var evt messengertypes.StreamEvent_PeerStatusDisconnected
 				if merr = proto.Unmarshal(msg.GetEvent().GetPayload(), &evt); err == nil {
-					m := fmt.Sprintf("<%.15s> just disconnected", evt.PeerID)
+					m := fmt.Sprintf("<%.15s> just disconnected", evt.PeerId)
 					accountv.messages.Append(&historyMessage{
 						messageType: messageTypeMeta,
 						payload:     []byte(m),
@@ -306,7 +306,7 @@ func newTabbedGroups(ctx context.Context, g *protocoltypes.GroupInfo_Reply, prot
 		netmanager:    netmanger,
 	}
 
-	v.accountGroupView = newViewGroup(v, g.Group, g.MemberPK, g.DevicePK, globalLogger)
+	v.accountGroupView = newViewGroup(v, g.Group, g.MemberPk, g.DevicePk, globalLogger)
 	v.selectedGroupView = v.accountGroupView
 	v.activeViewContainer = tview.NewFlex().
 		SetDirection(tview.FlexRow).

@@ -19,9 +19,9 @@ import (
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
 	"berty.tech/berty/v2/go/pkg/pushtypes"
-	"berty.tech/weshnet/pkg/logutil"
-	"berty.tech/weshnet/pkg/protocoltypes"
-	"berty.tech/weshnet/pkg/tyber"
+	"berty.tech/weshnet/v2/pkg/logutil"
+	"berty.tech/weshnet/v2/pkg/protocoltypes"
+	"berty.tech/weshnet/v2/pkg/tyber"
 )
 
 type DBWrapper struct {
@@ -62,12 +62,12 @@ func isFTS5Enabled(db *gorm.DB) (bool, error) {
 	defer func() { _ = rows.Close() }()
 
 	if err != nil {
-		return false, errcode.ErrDBRead.Wrap(err)
+		return false, errcode.ErrCode_ErrDBRead.Wrap(err)
 	}
 
 	for rows.Next() {
 		if err := rows.Scan(&total); err != nil {
-			return false, errcode.ErrDBRead.Wrap(err)
+			return false, errcode.ErrCode_ErrDBRead.Wrap(err)
 		}
 	}
 
@@ -144,27 +144,27 @@ func (d *DBWrapper) getUpdatedDB(models []interface{}, replayer func(db *DBWrapp
 		currentState := keepDatabaseLocalState(d.db, logger)
 
 		if err := dropAllTables(d.db); err != nil {
-			return errcode.ErrDBDestroy.Wrap(err)
+			return errcode.ErrCode_ErrDBDestroy.Wrap(err)
 		}
 
 		if err := d.db.AutoMigrate(models...); err != nil {
-			return errcode.ErrDBMigrate.Wrap(err)
+			return errcode.ErrCode_ErrDBMigrate.Wrap(err)
 		}
 
 		// Add virtual tables and triggers before replaying events
 		if err := d.setupVirtualTablesAndTriggers(); err != nil {
-			return errcode.ErrDBWrite.Wrap(err)
+			return errcode.ErrCode_ErrDBWrite.Wrap(err)
 		}
 
 		if err := replayer(d); err != nil {
-			return errcode.ErrDBReplay.Wrap(err)
+			return errcode.ErrCode_ErrDBReplay.Wrap(err)
 		}
 
 		if err := restoreDatabaseLocalState(d, currentState); err != nil {
-			return errcode.ErrDBRestore.Wrap(err)
+			return errcode.ErrCode_ErrDBRestore.Wrap(err)
 		}
 	} else if err := d.setupVirtualTablesAndTriggers(); err != nil {
-		return errcode.ErrDBWrite.Wrap(err)
+		return errcode.ErrCode_ErrDBWrite.Wrap(err)
 	}
 
 	return nil
@@ -244,11 +244,11 @@ func (d *DBWrapper) TX(ctx context.Context, txFunc func(*DBWrapper) error) (err 
 
 func (d *DBWrapper) AddConversationForContact(groupPK, ownMemberPK, ownDevicePK, contactPK string) (*messengertypes.Conversation, error) {
 	if groupPK == "" {
-		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("no conversation public key specified"))
+		return nil, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("no conversation public key specified"))
 	}
 
 	if contactPK == "" {
-		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("no contact public key specified"))
+		return nil, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("no contact public key specified"))
 	}
 
 	conversation := &messengertypes.Conversation{
@@ -275,7 +275,7 @@ func (d *DBWrapper) AddConversationForContact(groupPK, ownMemberPK, ownDevicePK,
 			}
 
 			if count > 0 {
-				return errcode.ErrDBAddConversation.Wrap(fmt.Errorf("a conversation already exists for this contact"))
+				return errcode.ErrCode_ErrDBAddConversation.Wrap(fmt.Errorf("a conversation already exists for this contact"))
 			}
 		}
 
@@ -297,15 +297,15 @@ func (d *DBWrapper) AddConversationForContact(groupPK, ownMemberPK, ownDevicePK,
 
 func (d *DBWrapper) AddConversation(groupPK, ownMemberPK, ownDevicePK string) (*messengertypes.Conversation, error) {
 	if groupPK == "" {
-		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("a conversation public key is required"))
+		return nil, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("a conversation public key is required"))
 	}
 
 	if ownDevicePK == "" {
-		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("a device public key is required"))
+		return nil, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("a device public key is required"))
 	}
 
 	if ownMemberPK == "" {
-		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("a member public key is required"))
+		return nil, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("a member public key is required"))
 	}
 
 	conversation := &messengertypes.Conversation{
@@ -318,10 +318,10 @@ func (d *DBWrapper) AddConversation(groupPK, ownMemberPK, ownDevicePK string) (*
 
 	if err := d.db.Create(&conversation).Error; err != nil {
 		if isSQLiteError(err, sqlite3.ErrConstraint) {
-			return nil, errcode.ErrDBEntryAlreadyExists.Wrap(err)
+			return nil, errcode.ErrCode_ErrDBEntryAlreadyExists.Wrap(err)
 		}
 
-		return nil, errcode.ErrDBWrite.Wrap(err)
+		return nil, errcode.ErrCode_ErrDBWrite.Wrap(err)
 	}
 
 	finalConv, err := d.GetConversationByPK(groupPK)
@@ -333,9 +333,9 @@ func (d *DBWrapper) AddConversation(groupPK, ownMemberPK, ownDevicePK string) (*
 	return finalConv, nil
 }
 
-func (d *DBWrapper) UpdateConversation(c messengertypes.Conversation) (bool, error) {
+func (d *DBWrapper) UpdateConversation(c *messengertypes.Conversation) (bool, error) {
 	if c.PublicKey == "" {
-		return false, errcode.ErrInvalidInput.Wrap(fmt.Errorf("a conversation public key is required"))
+		return false, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("a conversation public key is required"))
 	}
 
 	isNew := false
@@ -375,8 +375,8 @@ func (d *DBWrapper) UpdateConversation(c messengertypes.Conversation) (bool, err
 		return false, nil
 	}
 
-	if err := db.Create(&c).Error; err != nil {
-		return isNew, errcode.ErrInternal.Wrap(err)
+	if err := db.Create(c).Error; err != nil {
+		return isNew, errcode.ErrCode_ErrInternal.Wrap(err)
 	}
 
 	text := "Added conversation to db"
@@ -389,7 +389,7 @@ func (d *DBWrapper) UpdateConversation(c messengertypes.Conversation) (bool, err
 
 func (d *DBWrapper) UpdateConversationReadState(pk string, newUnread bool, eventDate time.Time) error {
 	if pk == "" {
-		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("a conversation public key is required"))
+		return errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("a conversation public key is required"))
 	}
 
 	updates := map[string]interface{}{
@@ -409,7 +409,7 @@ func (d *DBWrapper) UpdateConversationReadState(pk string, newUnread bool, event
 	}
 
 	if tx.RowsAffected == 0 {
-		return errcode.ErrDBWrite.Wrap(fmt.Errorf("record not found"))
+		return errcode.ErrCode_ErrDBWrite.Wrap(fmt.Errorf("record not found"))
 	}
 
 	d.logStep("Updated conversation in db", tyber.WithJSONDetail("Updates", updates))
@@ -418,7 +418,7 @@ func (d *DBWrapper) UpdateConversationReadState(pk string, newUnread bool, event
 
 func (d *DBWrapper) FirstOrCreateAccount(pk, link string) error {
 	if pk == "" {
-		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("an account public key is required"))
+		return errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("an account public key is required"))
 	}
 
 	if err := d.db.
@@ -436,7 +436,7 @@ func (d *DBWrapper) FirstOrCreateAccount(pk, link string) error {
 
 func (d *DBWrapper) UpdateAccount(pk, url, displayName string) (*messengertypes.Account, error) {
 	if pk == "" {
-		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("an account public key is required"))
+		return nil, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("an account public key is required"))
 	}
 
 	acc := &messengertypes.Account{}
@@ -472,10 +472,10 @@ func (d *DBWrapper) GetAccount() (*messengertypes.Account, error) {
 		return nil, err
 	}
 	if len(accounts) == 0 {
-		return nil, errcode.ErrNotFound
+		return nil, errcode.ErrCode_ErrNotFound
 	}
 	if len(accounts) > 1 {
-		return nil, errcode.ErrDBMultipleRecords
+		return nil, errcode.ErrCode_ErrDBMultipleRecords
 	}
 
 	return &accounts[0], nil
@@ -483,7 +483,7 @@ func (d *DBWrapper) GetAccount() (*messengertypes.Account, error) {
 
 func (d *DBWrapper) GetDeviceByPK(publicKey string) (*messengertypes.Device, error) {
 	if publicKey == "" {
-		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("a device public key is required"))
+		return nil, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("a device public key is required"))
 	}
 
 	device := &messengertypes.Device{}
@@ -498,7 +498,7 @@ func (d *DBWrapper) GetDeviceByPK(publicKey string) (*messengertypes.Device, err
 // atomic
 func (d *DBWrapper) GetContactByPK(publicKey string) (*messengertypes.Contact, error) {
 	if publicKey == "" {
-		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("a contact public key is required"))
+		return nil, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("a contact public key is required"))
 	}
 
 	contact := &messengertypes.Contact{}
@@ -512,7 +512,7 @@ func (d *DBWrapper) GetContactByPK(publicKey string) (*messengertypes.Contact, e
 
 func (d *DBWrapper) GetConversationByPK(publicKey string) (*messengertypes.Conversation, error) {
 	if publicKey == "" {
-		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("a conversation public key is required"))
+		return nil, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("a conversation public key is required"))
 	}
 
 	conversation := &messengertypes.Conversation{}
@@ -534,10 +534,10 @@ func (d *DBWrapper) GetConversationByPK(publicKey string) (*messengertypes.Conve
 
 func (d *DBWrapper) GetMemberByPK(publicKey string, convPK string) (*messengertypes.Member, error) {
 	if publicKey == "" {
-		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("member public key cannot be empty"))
+		return nil, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("member public key cannot be empty"))
 	}
 	if convPK == "" {
-		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("conversation public key cannot be empty"))
+		return nil, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("conversation public key cannot be empty"))
 	}
 
 	member := &messengertypes.Member{}
@@ -567,17 +567,17 @@ func (d *DBWrapper) GetAllMembers() ([]*messengertypes.Member, error) {
 
 func (d *DBWrapper) GetMembersByConversation(conversationPK string) ([]*messengertypes.Member, error) {
 	if conversationPK == "" {
-		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("conversation public key cannot be empty"))
+		return nil, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("conversation public key cannot be empty"))
 	}
 
 	members := []*messengertypes.Member(nil)
 
 	if err := d.db.Where(&messengertypes.Member{ConversationPublicKey: conversationPK}).Find(&members).Error; err != nil {
-		return nil, errcode.ErrDBRead.Wrap(fmt.Errorf("unable to get members for conversation %s: %w", conversationPK, err))
+		return nil, errcode.ErrCode_ErrDBRead.Wrap(fmt.Errorf("unable to get members for conversation %s: %w", conversationPK, err))
 	}
 
 	if len(members) == 0 {
-		return nil, errcode.ErrNotFound
+		return nil, errcode.ErrCode_ErrNotFound
 	}
 
 	return members, nil
@@ -591,13 +591,13 @@ func (d *DBWrapper) GetAllContacts() ([]*messengertypes.Contact, error) {
 
 func (d *DBWrapper) GetContactByConversation(conversationPK string) (*messengertypes.Contact, error) {
 	if conversationPK == "" {
-		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("conversation public key cannot be empty"))
+		return nil, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("conversation public key cannot be empty"))
 	}
 
 	contact := &messengertypes.Contact{}
 
 	if err := d.db.Model(&messengertypes.Contact{}).Preload("Conversation").First(&contact, &messengertypes.Contact{ConversationPublicKey: conversationPK}).Error; err != nil {
-		return nil, errcode.ErrDBRead.Wrap(fmt.Errorf("unable to get contact for conversation %s: %w", conversationPK, err))
+		return nil, errcode.ErrCode_ErrDBRead.Wrap(fmt.Errorf("unable to get contact for conversation %s: %w", conversationPK, err))
 	}
 
 	return contact, nil
@@ -628,21 +628,21 @@ func (d *DBWrapper) GetPaginatedInteractions(opts *messengertypes.PaginatedInter
 	interactions := []*messengertypes.Interaction(nil)
 	previousInteraction := (*messengertypes.Interaction)(nil)
 
-	if opts.ConversationPK != "" {
-		conversationPks = []string{opts.ConversationPK}
+	if opts.ConversationPk != "" {
+		conversationPks = []string{opts.ConversationPk}
 	} else if err := d.db.Model(&messengertypes.Conversation{}).Pluck("public_key", &conversationPks).Error; err != nil {
-		return nil, errcode.ErrDBRead.Wrap(fmt.Errorf("unable to list conversation ids: %w", err))
+		return nil, errcode.ErrCode_ErrDBRead.Wrap(fmt.Errorf("unable to list conversation ids: %w", err))
 	}
 
-	if opts.RefCID != "" {
+	if opts.RefCid != "" {
 		var err error
-		previousInteraction, err = d.GetInteractionByCID(opts.RefCID)
+		previousInteraction, err = d.GetInteractionByCID(opts.RefCid)
 		if err != nil {
-			return nil, errcode.ErrDBRead.Wrap(fmt.Errorf("unable to retrieve specified interaction: %w", err))
+			return nil, errcode.ErrCode_ErrDBRead.Wrap(fmt.Errorf("unable to retrieve specified interaction: %w", err))
 		}
 
-		if opts.ConversationPK != "" && previousInteraction.ConversationPublicKey != opts.ConversationPK {
-			return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("specified interaction cid and conversation pk doesn't match"))
+		if opts.ConversationPk != "" && previousInteraction.ConversationPublicKey != opts.ConversationPk {
+			return nil, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("specified interaction cid and conversation pk doesn't match"))
 		}
 
 		conversationPks = []string{previousInteraction.ConversationPublicKey}
@@ -661,9 +661,9 @@ func (d *DBWrapper) GetPaginatedInteractions(opts *messengertypes.PaginatedInter
 
 		if previousInteraction != nil {
 			if opts.OldestToNewest {
-				query = query.Where("sent_date > ? OR (sent_date == ? AND cid > ?)", previousInteraction.SentDate, previousInteraction.SentDate, previousInteraction.CID)
+				query = query.Where("sent_date > ? OR (sent_date == ? AND cid > ?)", previousInteraction.SentDate, previousInteraction.SentDate, previousInteraction.Cid)
 			} else {
-				query = query.Where("sent_date < ? OR (sent_date == ? AND cid < ?)", previousInteraction.SentDate, previousInteraction.SentDate, previousInteraction.CID)
+				query = query.Where("sent_date < ? OR (sent_date == ? AND cid < ?)", previousInteraction.SentDate, previousInteraction.SentDate, previousInteraction.Cid)
 			}
 		}
 
@@ -673,7 +673,7 @@ func (d *DBWrapper) GetPaginatedInteractions(opts *messengertypes.PaginatedInter
 			Order(order).
 			Pluck("cid", &cidsForConv).
 			Error; err != nil {
-			return nil, errcode.ErrDBRead.Wrap(fmt.Errorf("unable to list latest cids for conversation: %w", err))
+			return nil, errcode.ErrCode_ErrDBRead.Wrap(fmt.Errorf("unable to list latest cids for conversation: %w", err))
 		}
 
 		cids = append(cids, cidsForConv...)
@@ -688,7 +688,7 @@ func (d *DBWrapper) GetPaginatedInteractions(opts *messengertypes.PaginatedInter
 		Order(order).
 		Find(&interactions, cids).
 		Error; err != nil {
-		return nil, errcode.ErrDBRead.Wrap(fmt.Errorf("unable to fetch interactions: %w", err))
+		return nil, errcode.ErrCode_ErrDBRead.Wrap(fmt.Errorf("unable to fetch interactions: %w", err))
 	}
 
 	return interactions, nil
@@ -696,21 +696,21 @@ func (d *DBWrapper) GetPaginatedInteractions(opts *messengertypes.PaginatedInter
 
 func (d *DBWrapper) GetInteractionByCID(cid string) (*messengertypes.Interaction, error) {
 	if cid == "" {
-		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("an interaction cid is required"))
+		return nil, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("an interaction cid is required"))
 	}
 
 	interaction := &messengertypes.Interaction{}
-	return interaction, d.db.Preload(clause.Associations).First(&interaction, &messengertypes.Interaction{CID: cid}).Error
+	return interaction, d.db.Preload(clause.Associations).First(&interaction, &messengertypes.Interaction{Cid: cid}).Error
 }
 
 func (d *DBWrapper) AddContactRequestOutgoingEnqueued(contactPK, displayName, convPK string) (*messengertypes.Contact, error) {
 	if contactPK == "" {
-		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("a contact public key is required"))
+		return nil, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("a contact public key is required"))
 	}
 
 	ec, err := d.GetContactByPK(contactPK)
 	if err == nil {
-		return ec, errcode.ErrDBEntryAlreadyExists
+		return ec, errcode.ErrCode_ErrDBEntryAlreadyExists
 	} else if err != nil && err != gorm.ErrRecordNotFound {
 		return nil, err
 	}
@@ -736,7 +736,7 @@ func (d *DBWrapper) AddContactRequestOutgoingEnqueued(contactPK, displayName, co
 
 func (d *DBWrapper) AddContactRequestOutgoingSent(contactPK string) (*messengertypes.Contact, error) {
 	if contactPK == "" {
-		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("a contact public key is required"))
+		return nil, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("a contact public key is required"))
 	}
 
 	if res := d.db.
@@ -750,12 +750,12 @@ func (d *DBWrapper) AddContactRequestOutgoingSent(contactPK string) (*messengert
 		}); res.Error != nil {
 		return nil, res.Error
 	} else if res.RowsAffected == 0 {
-		return nil, errcode.ErrDBAddContactRequestOutgoingSent.Wrap(fmt.Errorf("nothing found"))
+		return nil, errcode.ErrCode_ErrDBAddContactRequestOutgoingSent.Wrap(fmt.Errorf("nothing found"))
 	}
 
 	contact, err := d.GetContactByPK(contactPK)
 	if err != nil {
-		return nil, errcode.ErrDBRead.Wrap(err)
+		return nil, errcode.ErrCode_ErrDBRead.Wrap(err)
 	}
 
 	d.logStep("Contact request state set to sent in db", tyber.WithDetail("ContactPublicKey", contactPK), tyber.WithJSONDetail("FinalContact", contact))
@@ -764,12 +764,12 @@ func (d *DBWrapper) AddContactRequestOutgoingSent(contactPK string) (*messengert
 
 func (d *DBWrapper) AddContactRequestIncomingReceived(contactPK, displayName, groupPk string) (*messengertypes.Contact, error) {
 	if contactPK == "" {
-		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("a contact public key is required"))
+		return nil, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("a contact public key is required"))
 	}
 
 	ec, err := d.GetContactByPK(contactPK)
 	if err == nil {
-		return ec, errcode.ErrDBEntryAlreadyExists
+		return ec, errcode.ErrCode_ErrDBEntryAlreadyExists
 	} else if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
 		return nil, err
 	}
@@ -784,7 +784,7 @@ func (d *DBWrapper) AddContactRequestIncomingReceived(contactPK, displayName, gr
 	if err := d.db.
 		Create(toCreate).
 		Error; err != nil {
-		return nil, errcode.ErrDBWrite.Wrap(err)
+		return nil, errcode.ErrCode_ErrDBWrite.Wrap(err)
 	}
 
 	finalContact, err := d.GetContactByPK(contactPK)
@@ -798,11 +798,11 @@ func (d *DBWrapper) AddContactRequestIncomingReceived(contactPK, displayName, gr
 
 func (d *DBWrapper) AddContactRequestIncomingAccepted(contactPK, groupPK string) (*messengertypes.Contact, error) {
 	if contactPK == "" {
-		return nil, errcode.ErrInvalidInput.Wrap(errors.New("a contact public key is required"))
+		return nil, errcode.ErrCode_ErrInvalidInput.Wrap(errors.New("a contact public key is required"))
 	}
 
 	if groupPK == "" {
-		return nil, errcode.ErrInvalidInput.Wrap(errors.New("a conversation public key is required"))
+		return nil, errcode.ErrCode_ErrInvalidInput.Wrap(errors.New("a conversation public key is required"))
 	}
 
 	contact, err := d.GetContactByPK(contactPK)
@@ -811,14 +811,14 @@ func (d *DBWrapper) AddContactRequestIncomingAccepted(contactPK, groupPK string)
 	}
 
 	if contact.State != messengertypes.Contact_IncomingRequest {
-		return nil, errcode.ErrInvalidInput.Wrap(errors.New("no incoming request"))
+		return nil, errcode.ErrCode_ErrInvalidInput.Wrap(errors.New("no incoming request"))
 	}
 
 	contact.State = messengertypes.Contact_Accepted
 	contact.ConversationPublicKey = groupPK
 
 	if err := d.db.Save(&contact).Error; err != nil {
-		return nil, errcode.ErrDBWrite.Wrap(err)
+		return nil, errcode.ErrCode_ErrDBWrite.Wrap(err)
 	}
 
 	d.logStep("Saved contact in db", tyber.WithJSONDetail("Contact", contact))
@@ -827,7 +827,7 @@ func (d *DBWrapper) AddContactRequestIncomingAccepted(contactPK, groupPK string)
 
 func (d *DBWrapper) MarkInteractionAsAcknowledged(cid string) (*messengertypes.Interaction, error) {
 	if cid == "" {
-		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("an interaction cid is required"))
+		return nil, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("an interaction cid is required"))
 	}
 
 	count := int64(0)
@@ -861,14 +861,14 @@ func (d *DBWrapper) MarkInteractionAsAcknowledged(cid string) (*messengertypes.I
 
 func (d *DBWrapper) GetAcknowledgementsCIDsForInteraction(cid string) ([]string, error) {
 	if cid == "" {
-		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("an interaction cid is required"))
+		return nil, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("an interaction cid is required"))
 	}
 
 	var cids []string
 
 	if err := d.db.Model(&messengertypes.Interaction{}).Where(&messengertypes.Interaction{
 		Type:      messengertypes.AppMessage_TypeAcknowledge,
-		TargetCID: cid,
+		TargetCid: cid,
 	}).Pluck("cid", &cids).Error; err != nil {
 		return nil, err
 	}
@@ -878,7 +878,7 @@ func (d *DBWrapper) GetAcknowledgementsCIDsForInteraction(cid string) ([]string,
 
 func (d *DBWrapper) DeleteInteractions(cids []string) error {
 	if len(cids) == 0 {
-		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("a list of cids is required"))
+		return errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("a list of cids is required"))
 	}
 
 	db := d.db.Model(&messengertypes.Interaction{}).Delete(&messengertypes.Interaction{}, &cids)
@@ -947,11 +947,11 @@ func (d *DBWrapper) GetDBInfo() (*messengertypes.SystemInfo_DB, error) {
 
 func (d *DBWrapper) AddDevice(devicePK string, memberPK string) (*messengertypes.Device, error) {
 	if devicePK == "" {
-		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("a device public key is required"))
+		return nil, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("a device public key is required"))
 	}
 
 	if memberPK == "" {
-		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("a member public key is required"))
+		return nil, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("a member public key is required"))
 	}
 
 	if err := d.TX(d.ctx, func(tx *DBWrapper) error {
@@ -968,7 +968,7 @@ func (d *DBWrapper) AddDevice(devicePK string, memberPK string) (*messengertypes
 			}
 
 			if count > 0 {
-				return errcode.ErrDBWrite.Wrap(fmt.Errorf("the device already exists for another member"))
+				return errcode.ErrCode_ErrDBWrite.Wrap(fmt.Errorf("the device already exists for another member"))
 			}
 		}
 
@@ -992,9 +992,9 @@ func (d *DBWrapper) AddDevice(devicePK string, memberPK string) (*messengertypes
 	return finalDevice, nil
 }
 
-func (d *DBWrapper) UpdateContact(pk string, contact messengertypes.Contact) error {
+func (d *DBWrapper) UpdateContact(pk string, contact *messengertypes.Contact) error {
 	if pk == "" {
-		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("no public key specified"))
+		return errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("no public key specified"))
 	}
 
 	count := int64(0)
@@ -1003,10 +1003,10 @@ func (d *DBWrapper) UpdateContact(pk string, contact messengertypes.Contact) err
 	}
 
 	if count == 0 {
-		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("contact not found"))
+		return errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("contact not found"))
 	}
 
-	if err := d.db.Model(&messengertypes.Contact{PublicKey: pk}).Updates(&contact).Error; err != nil {
+	if err := d.db.Model(&messengertypes.Contact{PublicKey: pk}).Updates(contact).Error; err != nil {
 		return err
 	}
 
@@ -1014,25 +1014,25 @@ func (d *DBWrapper) UpdateContact(pk string, contact messengertypes.Contact) err
 	return nil
 }
 
-func (d *DBWrapper) AddInteraction(rawInte messengertypes.Interaction) (*messengertypes.Interaction, bool, error) {
-	if rawInte.CID == "" {
+func (d *DBWrapper) AddInteraction(rawInte *messengertypes.Interaction) (*messengertypes.Interaction, bool, error) {
+	if rawInte.Cid == "" {
 		d.log.Error("an interaction cid is required")
-		return nil, false, errcode.ErrInvalidInput.Wrap(fmt.Errorf("an interaction cid is required"))
+		return nil, false, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("an interaction cid is required"))
 	}
 
-	existing, err := d.GetInteractionByCID(rawInte.CID)
+	existing, err := d.GetInteractionByCID(rawInte.Cid)
 	isNew := false
 	if err == gorm.ErrRecordNotFound {
-		if err := d.db.Create(&rawInte).Error; err != nil {
+		if err := d.db.Create(rawInte).Error; err != nil {
 			return nil, true, err
 		}
 		isNew = true
 	} else if err != nil {
-		d.log.Error("error while creating interaction: ", zap.Error(err), logutil.PrivateString("cid", rawInte.CID))
+		d.log.Error("error while creating interaction: ", zap.Error(err), logutil.PrivateString("cid", rawInte.Cid))
 		return nil, false, err
 	}
 
-	d.log.Debug("adding cid: ", logutil.PrivateString("cid", rawInte.CID))
+	d.log.Debug("adding cid: ", logutil.PrivateString("cid", rawInte.Cid))
 
 	// FIXME: CID should not trusted when out of store,
 	//  we persist the first entry seen with a given CID
@@ -1043,18 +1043,18 @@ func (d *DBWrapper) AddInteraction(rawInte messengertypes.Interaction) (*messeng
 			return existing, false, nil
 		} else if existing.OutOfStoreMessage && !rawInte.OutOfStoreMessage {
 			// replace out-of-store interaction with synced one
-			if err := d.db.Model(&messengertypes.Interaction{}).Delete(&messengertypes.Interaction{CID: rawInte.CID}).Error; err != nil {
-				return nil, false, errcode.ErrDBWrite.Wrap(err)
+			if err := d.db.Model(&messengertypes.Interaction{}).Delete(&messengertypes.Interaction{Cid: rawInte.Cid}).Error; err != nil {
+				return nil, false, errcode.ErrCode_ErrDBWrite.Wrap(err)
 			}
 
-			if err := d.db.Create(&rawInte).Error; err != nil {
-				return nil, true, errcode.ErrDBWrite.Wrap(err)
+			if err := d.db.Create(rawInte).Error; err != nil {
+				return nil, true, errcode.ErrCode_ErrDBWrite.Wrap(err)
 			}
 			isNew = true
 		}
 	}
 
-	i, err := d.GetInteractionByCID(rawInte.CID)
+	i, err := d.GetInteractionByCID(rawInte.Cid)
 	if err != nil {
 		return i, isNew, err
 	}
@@ -1065,15 +1065,15 @@ func (d *DBWrapper) AddInteraction(rawInte messengertypes.Interaction) (*messeng
 
 func (d *DBWrapper) AttributeBacklogInteractions(devicePK, groupPK, memberPK string) ([]*messengertypes.Interaction, error) {
 	if devicePK == "" {
-		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing device public key"))
+		return nil, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("missing device public key"))
 	}
 
 	if groupPK == "" {
-		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing conversation public key"))
+		return nil, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("missing conversation public key"))
 	}
 
 	if memberPK == "" {
-		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing member public key"))
+		return nil, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("missing member public key"))
 	}
 
 	var (
@@ -1119,12 +1119,15 @@ func (d *DBWrapper) AttributeBacklogInteractions(devicePK, groupPK, memberPK str
 }
 
 func (d *DBWrapper) AddMember(memberPK, groupPK, displayName, avatarCID string, isMe bool, isCreator bool) (*messengertypes.Member, error) {
+	// ignore avatarCID for now
+	_ = avatarCID
+
 	if memberPK == "" {
-		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("member public key cannot be empty"))
+		return nil, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("member public key cannot be empty"))
 	}
 
 	if groupPK == "" {
-		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("conversation public key cannot be empty"))
+		return nil, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("conversation public key cannot be empty"))
 	}
 
 	member := &messengertypes.Member{
@@ -1139,13 +1142,13 @@ func (d *DBWrapper) AddMember(memberPK, groupPK, displayName, avatarCID string, 
 		// Check if member already exists
 		if m, err := tx.GetMemberByPK(memberPK, groupPK); err == nil {
 			member = m
-			return errcode.ErrDBEntryAlreadyExists
+			return errcode.ErrCode_ErrDBEntryAlreadyExists
 		} else if err != nil && err != gorm.ErrRecordNotFound {
 			return err
 		}
 
 		return tx.db.Create(&member).Error
-	}); errors.Is(err, errcode.ErrDBEntryAlreadyExists) {
+	}); errors.Is(err, errcode.ErrCode_ErrDBEntryAlreadyExists) {
 		return member, err
 	} else if err != nil {
 		return nil, err
@@ -1155,12 +1158,12 @@ func (d *DBWrapper) AddMember(memberPK, groupPK, displayName, avatarCID string, 
 	return member, nil
 }
 
-func (d *DBWrapper) UpsertMember(memberPK, groupPK string, m messengertypes.Member) (*messengertypes.Member, bool, error) {
+func (d *DBWrapper) UpsertMember(memberPK, groupPK string, m *messengertypes.Member) (*messengertypes.Member, bool, error) {
 	if memberPK == "" {
-		return nil, false, errcode.ErrInvalidInput.Wrap(fmt.Errorf("member public key cannot be empty"))
+		return nil, false, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("member public key cannot be empty"))
 	}
 	if groupPK == "" {
-		return nil, false, errcode.ErrInvalidInput.Wrap(fmt.Errorf("conversation public key cannot be empty"))
+		return nil, false, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("conversation public key cannot be empty"))
 	}
 
 	isNew := false
@@ -1168,24 +1171,24 @@ func (d *DBWrapper) UpsertMember(memberPK, groupPK string, m messengertypes.Memb
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		isNew = true
 	} else if err != nil {
-		return nil, isNew, errcode.ErrDBRead.Wrap(err)
+		return nil, isNew, errcode.ErrCode_ErrDBRead.Wrap(err)
 	}
 
 	if isNew {
-		err := d.db.Create(&m).Error
+		err := d.db.Create(m).Error
 		if err != nil {
-			return nil, isNew, errcode.ErrDBWrite.Wrap(err)
+			return nil, isNew, errcode.ErrCode_ErrDBWrite.Wrap(err)
 		}
 	} else {
-		err := d.db.Model(em).Updates(&m).Error
+		err := d.db.Model(em).Updates(m).Error
 		if err != nil {
-			return nil, false, errcode.ErrDBWrite.Wrap(err)
+			return nil, false, errcode.ErrCode_ErrDBWrite.Wrap(err)
 		}
 	}
 
 	um, err := d.GetMemberByPK(memberPK, groupPK)
 	if err != nil {
-		return nil, false, errcode.ErrDBRead.Wrap(err)
+		return nil, false, errcode.ErrCode_ErrDBRead.Wrap(err)
 	}
 
 	commonDetails := []tyber.StepMutator{tyber.WithJSONDetail("FinalMember", um)}
@@ -1199,7 +1202,7 @@ func (d *DBWrapper) UpsertMember(memberPK, groupPK string, m messengertypes.Memb
 
 func (d *DBWrapper) SetConversationIsOpenStatus(conversationPK string, status bool) (*messengertypes.Conversation, bool, error) {
 	if conversationPK == "" {
-		return nil, false, errcode.ErrInvalidInput.Wrap(fmt.Errorf("a conversation public key is required"))
+		return nil, false, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("a conversation public key is required"))
 	}
 
 	conversation, err := d.GetConversationByPK(conversationPK)
@@ -1239,7 +1242,7 @@ func (d *DBWrapper) SetConversationIsOpenStatus(conversationPK string, status bo
 
 func (d *DBWrapper) IsConversationOpened(conversationPK string) (bool, error) {
 	if conversationPK == "" {
-		return false, errcode.ErrInvalidInput.Wrap(fmt.Errorf("a conversation public key is required"))
+		return false, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("a conversation public key is required"))
 	}
 
 	var ret int64
@@ -1267,23 +1270,23 @@ func (d *dbLogWrapper) Trace(ctx context.Context, begin time.Time, fc func() (st
 
 func (d *DBWrapper) AddServiceToken(accountPK string, serviceToken *messengertypes.AppMessage_ServiceAddToken) error {
 	if accountPK == "" {
-		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("no account public key specified"))
+		return errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("no account public key specified"))
 	}
 
 	if serviceToken == nil {
-		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("no service token specified"))
+		return errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("no service token specified"))
 	}
 
 	if serviceToken.Token == "" {
-		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("no token specified"))
+		return errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("no token specified"))
 	}
 
 	if len(serviceToken.SupportedServices) == 0 {
-		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("no services specified"))
+		return errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("no services specified"))
 	}
 
-	if serviceToken.AuthenticationURL == "" {
-		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("no authentication url specified"))
+	if serviceToken.AuthenticationUrl == "" {
+		return errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("no authentication url specified"))
 	}
 
 	if err := d.TX(d.ctx, func(tx *DBWrapper) error {
@@ -1293,19 +1296,19 @@ func (d *DBWrapper) AddServiceToken(accountPK string, serviceToken *messengertyp
 			DoUpdates: clause.Assignments(map[string]interface{}{
 				"account_pk":         accountPK,
 				"token":              serviceToken.Token,
-				"authentication_url": serviceToken.AuthenticationURL,
+				"authentication_url": serviceToken.AuthenticationUrl,
 				"expiration":         serviceToken.Expiration,
 			}),
 		}).Create(&messengertypes.ServiceToken{
-			AccountPK:         accountPK,
-			TokenID:           serviceToken.TokenID(),
+			AccountPk:         accountPK,
+			TokenId:           serviceToken.TokenID(),
 			Token:             serviceToken.Token,
-			AuthenticationURL: serviceToken.AuthenticationURL,
+			AuthenticationUrl: serviceToken.AuthenticationUrl,
 			Expiration:        serviceToken.Expiration,
 		})
 
 		if err := res.Error; err != nil {
-			return errcode.ErrDBWrite.Wrap(err)
+			return errcode.ErrCode_ErrDBWrite.Wrap(err)
 		}
 
 		// create the supported services
@@ -1316,12 +1319,12 @@ func (d *DBWrapper) AddServiceToken(accountPK string, serviceToken *messengertyp
 					"address": s.Address,
 				}),
 			}).Create(&messengertypes.ServiceTokenSupportedServiceRecord{
-				TokenID: serviceToken.TokenID(),
+				TokenId: serviceToken.TokenID(),
 				Type:    s.Type,
 				Address: s.Address,
 			})
 			if err := res.Error; err != nil {
-				return errcode.ErrDBWrite.Wrap(err)
+				return errcode.ErrCode_ErrDBWrite.Wrap(err)
 			}
 		}
 
@@ -1337,7 +1340,7 @@ func (d *DBWrapper) AddServiceToken(accountPK string, serviceToken *messengertyp
 // GetServiceToken returns the service token for the given accountPK and tokenID.
 func (d *DBWrapper) GetServiceTokens(accountPK string) ([]*messengertypes.ServiceToken, error) {
 	if accountPK == "" {
-		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing accountPK"))
+		return nil, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("missing accountPK"))
 	}
 
 	count := int64(0)
@@ -1348,11 +1351,11 @@ func (d *DBWrapper) GetServiceTokens(accountPK string) ([]*messengertypes.Servic
 		Find(&serviceTokens, "account_pk = ?", accountPK).
 		Count(&count).
 		Error; err != nil {
-		return nil, errcode.ErrDBRead.Wrap(err)
+		return nil, errcode.ErrCode_ErrDBRead.Wrap(err)
 	}
 
 	if count == 0 {
-		return nil, errcode.ErrNotFound.Wrap(fmt.Errorf("unable to find that account"))
+		return nil, errcode.ErrCode_ErrNotFound.Wrap(fmt.Errorf("unable to find that account"))
 	}
 
 	return serviceTokens, nil
@@ -1361,11 +1364,11 @@ func (d *DBWrapper) GetServiceTokens(accountPK string) ([]*messengertypes.Servic
 // GetServiceToken returns the service tokens for the given accountPK.
 func (d *DBWrapper) GetServiceToken(accountPK, tokenID string) (*messengertypes.ServiceToken, error) {
 	if accountPK == "" {
-		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing accountPK"))
+		return nil, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("missing accountPK"))
 	}
 
 	if tokenID == "" {
-		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing tokenID"))
+		return nil, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("missing tokenID"))
 	}
 
 	count := int64(0)
@@ -1376,11 +1379,11 @@ func (d *DBWrapper) GetServiceToken(accountPK, tokenID string) (*messengertypes.
 		Find(&serviceToken, "account_pk = ? AND token_id = ?", accountPK, tokenID).
 		Count(&count).
 		Error; err != nil {
-		return nil, errcode.ErrDBRead.Wrap(err)
+		return nil, errcode.ErrCode_ErrDBRead.Wrap(err)
 	}
 
 	if count == 0 {
-		return nil, errcode.ErrNotFound.Wrap(fmt.Errorf("unable to find that account"))
+		return nil, errcode.ErrCode_ErrNotFound.Wrap(fmt.Errorf("unable to find that account"))
 	} else if count > 1 {
 		d.log.Warn("found more results than expected", zap.Int("count", int(count)))
 	}
@@ -1401,7 +1404,7 @@ func (d *DBWrapper) AccountUpdateFlag(pk string, flagName string, enabled bool) 
 	}
 
 	if tx.RowsAffected == 0 {
-		return errcode.ErrDBWrite.Wrap(fmt.Errorf("record not found"))
+		return errcode.ErrCode_ErrDBWrite.Wrap(fmt.Errorf("record not found"))
 	}
 
 	prefix := "Enabled"
@@ -1420,14 +1423,14 @@ func (d *DBWrapper) PushSetReplicationAutoShare(pk string, enabled bool) error {
 	return d.AccountUpdateFlag(pk, "auto_share_push_token_flag", enabled)
 }
 
-func (d *DBWrapper) SaveConversationReplicationInfo(c messengertypes.ConversationReplicationInfo) error {
-	if c.CID == "" {
-		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("an interaction cid is required"))
+func (d *DBWrapper) SaveConversationReplicationInfo(c *messengertypes.ConversationReplicationInfo) error {
+	if c.Cid == "" {
+		return errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("an interaction cid is required"))
 	}
 
 	tx := d.db.Clauses(clause.OnConflict{DoNothing: true}).Create(c)
 	if tx.Error != nil {
-		return errcode.ErrDBWrite.Wrap(tx.Error)
+		return errcode.ErrCode_ErrDBWrite.Wrap(tx.Error)
 	}
 
 	d.logStep("Maybe added replication info to db", tyber.WithJSONDetail("Info", c))
@@ -1444,15 +1447,15 @@ func (d *DBWrapper) InteractionIndexText(interactionCID string, text string) err
 		var rowID int
 
 		if err := tx.db.Model(&messengertypes.Interaction{}).Where("CID = ?", interactionCID).Pluck("ROWID", &rowID).Error; err != nil {
-			return errcode.ErrDBRead.Wrap(err)
+			return errcode.ErrCode_ErrDBRead.Wrap(err)
 		}
 
 		if rowID == 0 {
-			return errcode.ErrInvalidInput.Wrap(fmt.Errorf("interaction not found"))
+			return errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("interaction not found"))
 		}
 
 		if err := tx.db.Exec("INSERT OR REPLACE INTO interactions_fts (rowid,payload) VALUES(?, ?);", rowID, text).Error; err != nil {
-			return errcode.ErrDBWrite.Wrap(err)
+			return errcode.ErrCode_ErrDBWrite.Wrap(err)
 		}
 
 		return nil
@@ -1474,11 +1477,11 @@ type SearchOptions struct {
 
 func (d *DBWrapper) InteractionsSearch(query string, options *SearchOptions) ([]*messengertypes.Interaction, error) {
 	if d.disableFTS {
-		return nil, errcode.ErrDBRead.Wrap(fmt.Errorf("full text search is not enabled"))
+		return nil, errcode.ErrCode_ErrDBRead.Wrap(fmt.Errorf("full text search is not enabled"))
 	}
 
 	if query == "" {
-		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("expected a search query"))
+		return nil, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("expected a search query"))
 	}
 
 	if options == nil {
@@ -1498,8 +1501,8 @@ func (d *DBWrapper) InteractionsSearch(query string, options *SearchOptions) ([]
 
 	if options.AfterDate == 0 && options.BeforeDate == 0 && options.RefCID != "" {
 		cutoffDate := int64(0)
-		if err := d.db.Model(&messengertypes.Interaction{}).Where(&messengertypes.Interaction{CID: options.RefCID}).Pluck("sent_date", &cutoffDate).Error; err != nil {
-			return nil, errcode.ErrDBRead.Wrap(err)
+		if err := d.db.Model(&messengertypes.Interaction{}).Where(&messengertypes.Interaction{Cid: options.RefCID}).Pluck("sent_date", &cutoffDate).Error; err != nil {
+			return nil, errcode.ErrCode_ErrDBRead.Wrap(err)
 		}
 
 		if options.OldestToNewest {
@@ -1535,7 +1538,7 @@ func (d *DBWrapper) InteractionsSearch(query string, options *SearchOptions) ([]
 		Limit(options.Limit).
 		Find(&interactions).
 		Error; err != nil {
-		return nil, errcode.ErrDBRead.Wrap(err)
+		return nil, errcode.ErrCode_ErrDBRead.Wrap(err)
 	}
 
 	return interactions, nil
@@ -1550,7 +1553,7 @@ func (d *DBWrapper) setupVirtualTablesAndTriggers() error {
 	if err := d.db.Exec(`CREATE VIRTUAL TABLE IF NOT EXISTS interactions_fts
 			USING fts5(payload, detail=none, tokenize='porter unicode61 remove_diacritics 2');`).
 		Error; err != nil {
-		return errcode.ErrDBWrite.Wrap(err)
+		return errcode.ErrCode_ErrDBWrite.Wrap(err)
 	}
 
 	if err := d.db.Exec(`CREATE TRIGGER IF NOT EXISTS interactions_fts_delete
@@ -1558,7 +1561,7 @@ func (d *DBWrapper) setupVirtualTablesAndTriggers() error {
     	DELETE FROM interactions_fts WHERE rowid = old.rowid;
 	END;`).
 		Error; err != nil {
-		return errcode.ErrDBWrite.Wrap(err)
+		return errcode.ErrCode_ErrDBWrite.Wrap(err)
 	}
 
 	d.logStep("FTS db setup succeeded")
@@ -1568,7 +1571,7 @@ func (d *DBWrapper) setupVirtualTablesAndTriggers() error {
 func (d *DBWrapper) GetAugmentedInteraction(cid string) (*messengertypes.Interaction, error) {
 	inte, err := d.GetInteractionByCID(cid)
 	if err != nil {
-		return nil, errcode.ErrDBRead.Wrap(err)
+		return nil, errcode.ErrCode_ErrDBRead.Wrap(err)
 	}
 
 	return inte, nil
@@ -1579,39 +1582,39 @@ func (d *DBWrapper) wasMetadataEventHandled(id ipfscid.Cid) (bool, error) {
 
 	return c == 1, d.db.
 		Model(&messengertypes.MetadataEvent{}).
-		Where(&messengertypes.MetadataEvent{CID: id.String()}).
+		Where(&messengertypes.MetadataEvent{Cid: id.String()}).
 		Count(&c).
 		Error
 }
 
 func (d *DBWrapper) MarkMetadataEventHandled(eventContext *protocoltypes.EventContext) (bool, error) {
-	_, id, err := ipfscid.CidFromBytes(eventContext.ID)
+	_, id, err := ipfscid.CidFromBytes(eventContext.Id)
 	if err != nil {
-		return false, errcode.ErrDeserialization.Wrap(err)
+		return false, errcode.ErrCode_ErrDeserialization.Wrap(err)
 	}
 
 	if newlyHandled, err := d.wasMetadataEventHandled(id); err != nil {
-		return false, errcode.ErrDBRead.Wrap(err)
+		return false, errcode.ErrCode_ErrDBRead.Wrap(err)
 	} else if newlyHandled {
 		return false, nil
 	}
 
-	return true, d.db.Create(&messengertypes.MetadataEvent{CID: id.String()}).Error
+	return true, d.db.Create(&messengertypes.MetadataEvent{Cid: id.String()}).Error
 }
 
 func (d *DBWrapper) IsFromSelf(groupPK string, devicePK string) (bool, error) {
 	dev, err := d.GetDeviceByPK(devicePK)
-	if errors.Is(err, errcode.ErrNotFound) || err == gorm.ErrRecordNotFound {
+	if errors.Is(err, errcode.ErrCode_ErrNotFound) || err == gorm.ErrRecordNotFound {
 		return false, nil
 	} else if err != nil {
-		return false, errcode.ErrDBRead.Wrap(err)
+		return false, errcode.ErrCode_ErrDBRead.Wrap(err)
 	}
 
 	member, err := d.GetMemberByPK(dev.MemberPublicKey, groupPK)
-	if errors.Is(err, errcode.ErrNotFound) || err == gorm.ErrRecordNotFound {
+	if errors.Is(err, errcode.ErrCode_ErrNotFound) || err == gorm.ErrRecordNotFound {
 		return false, nil
 	} else if err != nil {
-		return false, errcode.ErrDBRead.Wrap(err)
+		return false, errcode.ErrCode_ErrDBRead.Wrap(err)
 	}
 
 	return member.IsMe, nil
@@ -1619,7 +1622,7 @@ func (d *DBWrapper) IsFromSelf(groupPK string, devicePK string) (bool, error) {
 
 func (d *DBWrapper) RestoreFromBackup(backup *messengertypes.LocalDatabaseState, replayLogsToDB func() error) error {
 	if err := dropAllTables(d.db); err != nil {
-		return errcode.ErrDBWrite.Wrap(fmt.Errorf("unable to drop database schema: %w", err))
+		return errcode.ErrCode_ErrDBWrite.Wrap(fmt.Errorf("unable to drop database schema: %w", err))
 	}
 
 	if err := d.getUpdatedDB(getDBModels(), noopReplayer, d.log); err != nil {
@@ -1627,11 +1630,11 @@ func (d *DBWrapper) RestoreFromBackup(backup *messengertypes.LocalDatabaseState,
 	}
 
 	if err := replayLogsToDB(); err != nil {
-		return errcode.ErrDBWrite.Wrap(fmt.Errorf("unable to replay logs to database: %w", err))
+		return errcode.ErrCode_ErrDBWrite.Wrap(fmt.Errorf("unable to replay logs to database: %w", err))
 	}
 
 	if err := restoreDatabaseLocalState(d, backup); err != nil {
-		return errcode.ErrDBWrite.Wrap(fmt.Errorf("unable to restore database local state: %w", err))
+		return errcode.ErrCode_ErrDBWrite.Wrap(fmt.Errorf("unable to restore database local state: %w", err))
 	}
 
 	return nil
@@ -1644,12 +1647,12 @@ func (d *DBWrapper) KeepDatabaseLocalState() *messengertypes.LocalDatabaseState 
 func (d *DBWrapper) MarkMemberAsConversationCreator(memberPK, conversationPK string) error {
 	member, err := d.GetMemberByPK(memberPK, conversationPK)
 	if err != nil {
-		return errcode.ErrDBRead.Wrap(err)
+		return errcode.ErrCode_ErrDBRead.Wrap(err)
 	}
 
 	member.IsCreator = true
 	if err := d.db.Save(member).Error; err != nil {
-		return errcode.ErrDBWrite.Wrap(err)
+		return errcode.ErrCode_ErrDBWrite.Wrap(err)
 	}
 
 	return nil
@@ -1675,11 +1678,11 @@ func (d *DBWrapper) GetDevicesForContact(conversationPK string, contactPK string
 	var devices []*messengertypes.Device
 
 	if conversationPK == "" {
-		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("conversationPK is empty"))
+		return nil, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("conversationPK is empty"))
 	}
 
 	if contactPK == "" {
-		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("contactPK is empty"))
+		return nil, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("contactPK is empty"))
 	}
 
 	if err := d.db.
@@ -1707,14 +1710,14 @@ func (d *DBWrapper) GetMuteStatusForConversation(key string) (accountMuted bool,
 
 	err = d.db.Model(&messengertypes.Account{}).Where("1 = 1").Pluck("muted_until", &mutedUntil).Error
 	if err != nil {
-		return false, false, errcode.ErrDBRead.Wrap(err)
+		return false, false, errcode.ErrCode_ErrDBRead.Wrap(err)
 	}
 
 	accountMuted = mutedUntil > time.Now().UnixNano()/1000
 
 	err = d.db.Model(&messengertypes.Conversation{}).Where("public_key = ?", key).Pluck("muted_until", &mutedUntil).Error
 	if err != nil {
-		return false, false, errcode.ErrDBRead.Wrap(err)
+		return false, false, errcode.ErrCode_ErrDBRead.Wrap(err)
 	}
 
 	conversationMuted = mutedUntil > time.Now().UnixNano()/1000
@@ -1724,29 +1727,29 @@ func (d *DBWrapper) GetMuteStatusForConversation(key string) (accountMuted bool,
 
 func (d *DBWrapper) SaveAccountVerifiedCredential(ev *protocoltypes.AccountVerifiedCredentialRegistered) error {
 	if ev.ExpirationDate <= messengerutil.MilliToNanoFactor {
-		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("invalid value for expiration date field"))
+		return errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("invalid value for expiration date field"))
 	}
 
 	if ev.RegistrationDate <= messengerutil.MilliToNanoFactor || ev.RegistrationDate > ev.ExpirationDate {
-		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("invalid value for registration date field"))
+		return errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("invalid value for registration date field"))
 	}
 
 	if ev.Identifier == "" {
-		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("invalid value for identifier field"))
+		return errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("invalid value for identifier field"))
 	}
 
 	if ev.Issuer == "" {
-		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("invalid value for issuer field"))
+		return errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("invalid value for issuer field"))
 	}
 
 	acc, err := d.GetAccount()
 	if err != nil {
-		return errcode.ErrBertyAccountDataNotFound.Wrap(err)
+		return errcode.ErrCode_ErrBertyAccountDataNotFound.Wrap(err)
 	}
 
 	if err := d.db.Transaction(func(tx *gorm.DB) error {
 		elt := &messengertypes.AccountVerifiedCredential{
-			AccountPK:        acc.PublicKey,
+			AccountPk:        acc.PublicKey,
 			Identifier:       ev.Identifier,
 			ExpirationDate:   ev.ExpirationDate / messengerutil.MilliToNanoFactor,
 			RegistrationDate: ev.RegistrationDate / messengerutil.MilliToNanoFactor,
@@ -1784,12 +1787,12 @@ func (d *DBWrapper) SaveAccountVerifiedCredential(ev *protocoltypes.AccountVerif
 			}
 		}
 		if err := tx.Model(&messengertypes.AccountVerifiedCredential{}).Create(elt).Error; err != nil {
-			return errcode.ErrDBWrite.Wrap(err)
+			return errcode.ErrCode_ErrDBWrite.Wrap(err)
 		}
 
 		return nil
 	}); err != nil {
-		return errcode.ErrDBWrite.Wrap(err)
+		return errcode.ErrCode_ErrDBWrite.Wrap(err)
 	}
 
 	return nil
@@ -1806,11 +1809,11 @@ func (d *DBWrapper) GetVerifiedCredentials(identifier string, issuer string) ([]
 
 	err := qs.Where("identifier = ? AND expiration_date > ?", identifier, now.Unix()/messengerutil.MilliToNanoFactor).Find(&result).Error
 	if err != nil {
-		return nil, errcode.ErrDBRead.Wrap(err)
+		return nil, errcode.ErrCode_ErrDBRead.Wrap(err)
 	}
 
 	if len(result) == 0 {
-		return nil, errcode.ErrNotFound.Wrap(fmt.Errorf("no verified credentials found"))
+		return nil, errcode.ErrCode_ErrNotFound.Wrap(fmt.Errorf("no verified credentials found"))
 	}
 
 	return result, nil
@@ -1823,51 +1826,51 @@ func (d *DBWrapper) SaveAccountDirectoryServiceRecord(accountPK string, message 
 		if err := tx.Model(&messengertypes.AccountDirectoryServiceRecord{}).Where(
 			"identifier = ? AND server_addr = ? AND expiration_date >= ?", message.Identifier, message.ServerAddr, message.ExpirationDate/messengerutil.MilliToNanoFactor,
 		).Count(&count).Error; err != nil {
-			return errcode.ErrDBRead.Wrap(err)
+			return errcode.ErrCode_ErrDBRead.Wrap(err)
 		}
 
 		if count > 0 {
-			return errcode.ErrDBEntryAlreadyExists
+			return errcode.ErrCode_ErrDBEntryAlreadyExists
 		}
 
 		if err := tx.Delete(&messengertypes.AccountDirectoryServiceRecord{}, "identifier = ? AND server_addr = ? AND expiration_date < ?", message.Identifier, message.ServerAddr, message.ExpirationDate/messengerutil.MilliToNanoFactor).Error; err != nil {
-			return errcode.ErrDBWrite.Wrap(err)
+			return errcode.ErrCode_ErrDBWrite.Wrap(err)
 		}
 
 		if message.DirectoryRecordUnregisterToken == "" {
-			return errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing DirectoryRecordUnregisterToken"))
+			return errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("missing DirectoryRecordUnregisterToken"))
 		}
 
 		if accountPK == "" {
-			return errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing accountPK"))
+			return errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("missing accountPK"))
 		}
 
 		if message.Identifier == "" {
-			return errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing Identifier"))
+			return errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("missing Identifier"))
 		}
 
 		if message.IdentifierProofIssuer == "" {
-			return errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing IdentifierProofIssuer"))
+			return errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("missing IdentifierProofIssuer"))
 		}
 
 		if message.ServerAddr == "" {
-			return errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing ServerAddr"))
+			return errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("missing ServerAddr"))
 		}
 
 		if message.RegistrationDate == 0 {
-			return errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing RegistrationDate"))
+			return errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("missing RegistrationDate"))
 		}
 
 		if message.ExpirationDate == 0 {
-			return errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing ExpirationDate"))
+			return errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("missing ExpirationDate"))
 		}
 
 		if message.DirectoryRecordToken == "" {
-			return errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing DirectoryRecordToken"))
+			return errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("missing DirectoryRecordToken"))
 		}
 
 		serviceRecord := &messengertypes.AccountDirectoryServiceRecord{
-			AccountPK:                      accountPK,
+			AccountPk:                      accountPK,
 			Identifier:                     message.Identifier,
 			IdentifierProofIssuer:          message.IdentifierProofIssuer,
 			ServerAddr:                     message.ServerAddr,
@@ -1880,7 +1883,7 @@ func (d *DBWrapper) SaveAccountDirectoryServiceRecord(accountPK string, message 
 		q := tx.Create(serviceRecord)
 
 		if err := q.Error; err != nil {
-			return errcode.ErrDBWrite.Wrap(err)
+			return errcode.ErrCode_ErrDBWrite.Wrap(err)
 		}
 
 		return nil
@@ -1897,11 +1900,11 @@ func (d *DBWrapper) MarkAccountDirectoryServiceRecordAsRevoked(serverAddr string
 		}, "expiration_date <= ?", removalDate).Update("revoked", true)
 
 		if err := query.Error; err != nil {
-			return errcode.ErrDBRead.Wrap(err)
+			return errcode.ErrCode_ErrDBRead.Wrap(err)
 		}
 
 		if query.RowsAffected == 0 {
-			return errcode.ErrNotFound
+			return errcode.ErrCode_ErrNotFound
 		} else if query.RowsAffected > 1 {
 			d.log.Warn("expected a single result", zap.Int64("count", query.RowsAffected))
 		}
@@ -1918,11 +1921,11 @@ func (d *DBWrapper) GetAccountDirectoryServiceRecord(serviceAddr string, recordT
 		Find(&serviceRecord, "directory_record_token = ? AND server_addr = ?", recordToken, serviceAddr).
 		Count(&count).
 		Error; err != nil {
-		return nil, errcode.ErrDBRead.Wrap(err)
+		return nil, errcode.ErrCode_ErrDBRead.Wrap(err)
 	}
 
 	if count == 0 {
-		return nil, errcode.ErrNotFound.Wrap(fmt.Errorf("unable to find directory service record"))
+		return nil, errcode.ErrCode_ErrNotFound.Wrap(fmt.Errorf("unable to find directory service record"))
 	} else if count > 1 {
 		d.log.Warn("found more results than expected", zap.Int("count", int(count)))
 	}
@@ -1933,7 +1936,7 @@ func (d *DBWrapper) GetAccountDirectoryServiceRecord(serviceAddr string, recordT
 // GetPushDeviceToken returns the push device token for the given accountPK.
 func (d *DBWrapper) GetPushDeviceToken(accountPK string) (*messengertypes.PushDeviceToken, error) {
 	if accountPK == "" {
-		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing accountPK"))
+		return nil, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("missing accountPK"))
 	}
 
 	count := int64(0)
@@ -1943,11 +1946,11 @@ func (d *DBWrapper) GetPushDeviceToken(accountPK string) (*messengertypes.PushDe
 		Find(&deviceToken, "account_pk = ?", accountPK).
 		Count(&count).
 		Error; err != nil {
-		return nil, errcode.ErrDBRead.Wrap(err)
+		return nil, errcode.ErrCode_ErrDBRead.Wrap(err)
 	}
 
 	if count == 0 {
-		return nil, errcode.ErrNotFound.Wrap(fmt.Errorf("unable to find push device token"))
+		return nil, errcode.ErrCode_ErrNotFound.Wrap(fmt.Errorf("unable to find push device token"))
 	} else if count > 1 {
 		d.log.Warn("found more results than expected", zap.Int("count", int(count)))
 	}
@@ -1959,47 +1962,47 @@ func (d *DBWrapper) GetPushDeviceToken(accountPK string) (*messengertypes.PushDe
 // If the push device token already exists, the key is updated.
 func (d *DBWrapper) SavePushDeviceToken(accountPK string, message *messengertypes.AppMessage_PushSetDeviceToken) error {
 	if accountPK == "" {
-		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing accountPK"))
+		return errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("missing accountPK"))
 	}
 
 	if message.DeviceToken == nil {
-		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing DeviceToken"))
+		return errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("missing DeviceToken"))
 	}
 
 	if message.DeviceToken.TokenType == pushtypes.PushServiceTokenType_PushTokenUndefined {
-		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("PushServiceTokenType is undefined"))
+		return errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("PushServiceTokenType is undefined"))
 	}
 
-	if message.DeviceToken.BundleID == "" {
-		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing BundleID"))
+	if message.DeviceToken.BundleId == "" {
+		return errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("missing BundleID"))
 	}
 
 	if len(message.DeviceToken.Token) == 0 {
-		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing Token"))
+		return errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("missing Token"))
 	}
 
 	if len(message.DeviceToken.RecipientPublicKey) == 0 {
-		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing PublicKey"))
+		return errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("missing PublicKey"))
 	}
 
 	res := d.db.Clauses(clause.OnConflict{
 		Columns: []clause.Column{{Name: "account_pk"}},
 		DoUpdates: clause.Assignments(map[string]interface{}{
 			"token_type": message.DeviceToken.TokenType,
-			"bundle_id":  message.DeviceToken.BundleID,
+			"bundle_id":  message.DeviceToken.BundleId,
 			"token":      message.DeviceToken.Token,
 			"public_key": message.DeviceToken.RecipientPublicKey,
 		}),
 	}).Create(&messengertypes.PushDeviceToken{
-		AccountPK: accountPK,
+		AccountPk: accountPK,
 		TokenType: message.DeviceToken.TokenType,
-		BundleID:  message.DeviceToken.BundleID,
+		BundleId:  message.DeviceToken.BundleId,
 		Token:     message.DeviceToken.Token,
 		PublicKey: message.DeviceToken.RecipientPublicKey,
 	})
 
 	if err := res.Error; err != nil {
-		return errcode.ErrDBWrite.Wrap(err)
+		return errcode.ErrCode_ErrDBWrite.Wrap(err)
 	}
 
 	d.logStep("Added push device token to db", tyber.WithJSONDetail("pushDeviceToken", message.DeviceToken))
@@ -2010,28 +2013,28 @@ func (d *DBWrapper) SavePushDeviceToken(accountPK string, message *messengertype
 // If the server already exists, the key is updated.
 func (d *DBWrapper) SavePushServer(accountPK string, message *messengertypes.AppMessage_PushSetServer) error {
 	if accountPK == "" {
-		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing accountPK"))
+		return errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("missing accountPK"))
 	}
 
 	if message.Server.Addr == "" {
-		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing ServerAddr"))
+		return errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("missing ServerAddr"))
 	}
 
 	if len(message.Server.Key) == 0 {
-		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing ServerKey"))
+		return errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("missing ServerKey"))
 	}
 
 	res := d.db.Clauses(clause.OnConflict{
 		Columns:   []clause.Column{{Name: "account_pk"}, {Name: "server_addr"}},
 		DoUpdates: clause.Assignments(map[string]interface{}{"server_key": message.Server.Key}),
 	}).Create(&messengertypes.PushServerRecord{
-		AccountPK:  accountPK,
+		AccountPk:  accountPK,
 		ServerAddr: message.Server.Addr,
 		ServerKey:  message.Server.Key,
 	})
 
 	if err := res.Error; err != nil {
-		return errcode.ErrDBWrite.Wrap(err)
+		return errcode.ErrCode_ErrDBWrite.Wrap(err)
 	}
 
 	d.logStep("Added push server to db", tyber.WithJSONDetail("pushServer", message.Server))
@@ -2041,49 +2044,49 @@ func (d *DBWrapper) SavePushServer(accountPK string, message *messengertypes.App
 // SavePushMemberToken saves the push member token in the database for the given ConversationPK.
 func (d *DBWrapper) SavePushMemberToken(tokenID, conversationPK string, message *messengertypes.AppMessage_PushSetMemberToken) error {
 	if tokenID == "" {
-		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing tokenID"))
+		return errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("missing tokenID"))
 	}
 
 	if conversationPK == "" {
-		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing conversationPK"))
+		return errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("missing conversationPK"))
 	}
 
 	if message.MemberToken == nil {
-		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing MemberToken"))
+		return errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("missing MemberToken"))
 	}
 
-	if message.MemberToken.DevicePK == "" {
-		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing DevicePK"))
+	if message.MemberToken.DevicePk == "" {
+		return errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("missing DevicePK"))
 	}
 
 	if message.MemberToken.Server == nil {
-		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing Server"))
+		return errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("missing Server"))
 	}
 
 	if message.MemberToken.Server.Addr == "" {
-		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing ServerAddr"))
+		return errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("missing ServerAddr"))
 	}
 
 	if len(message.MemberToken.Server.Key) == 0 {
-		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing ServerKey"))
+		return errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("missing ServerKey"))
 	}
 
 	if len(message.MemberToken.Token) == 0 {
-		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing Token"))
+		return errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("missing Token"))
 	}
 
 	res := d.db.Clauses(clause.OnConflict{DoNothing: true}).
 		Create(&messengertypes.PushMemberToken{
-			TokenID:               tokenID,
+			TokenId:               tokenID,
 			ConversationPublicKey: conversationPK,
-			DevicePK:              message.MemberToken.DevicePK,
+			DevicePk:              message.MemberToken.DevicePk,
 			ServerAddr:            message.MemberToken.Server.Addr,
 			ServerKey:             message.MemberToken.Server.Key,
 			Token:                 message.MemberToken.Token,
 		})
 
 	if err := res.Error; err != nil {
-		return errcode.ErrDBWrite.Wrap(err)
+		return errcode.ErrCode_ErrDBWrite.Wrap(err)
 	}
 
 	d.logStep("Added push member token to db", tyber.WithJSONDetail("conversationPublicKey", conversationPK), tyber.WithJSONDetail("pushMemberToken", message.MemberToken))
@@ -2093,7 +2096,7 @@ func (d *DBWrapper) SavePushMemberToken(tokenID, conversationPK string, message 
 // GetPushMemberToken returns the push member token for the given tokenID.
 func (d *DBWrapper) GetPushMemberToken(tokenID string) (*messengertypes.PushMemberToken, error) {
 	if tokenID == "" {
-		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing tokenID"))
+		return nil, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("missing tokenID"))
 	}
 
 	count := int64(0)
@@ -2103,11 +2106,11 @@ func (d *DBWrapper) GetPushMemberToken(tokenID string) (*messengertypes.PushMemb
 		Find(&memberToken, "token_id = ?", tokenID).
 		Count(&count).
 		Error; err != nil {
-		return nil, errcode.ErrDBRead.Wrap(err)
+		return nil, errcode.ErrCode_ErrDBRead.Wrap(err)
 	}
 
 	if count == 0 {
-		return nil, errcode.ErrNotFound.Wrap(fmt.Errorf("unable to find the push member token"))
+		return nil, errcode.ErrCode_ErrNotFound.Wrap(fmt.Errorf("unable to find the push member token"))
 	} else if count > 1 {
 		d.log.Warn("found more results than expected", zap.Int("count", int(count)))
 	}
@@ -2118,7 +2121,7 @@ func (d *DBWrapper) GetPushMemberToken(tokenID string) (*messengertypes.PushMemb
 // GetPushMemberTokensForConversation returns the push token devices for the given conversationPK.
 func (d *DBWrapper) GetPushMemberTokensForConversation(conversationPK string) ([]*messengertypes.PushMemberToken, error) {
 	if conversationPK == "" {
-		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing conversationPK"))
+		return nil, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("missing conversationPK"))
 	}
 
 	count := int64(0)
@@ -2128,11 +2131,11 @@ func (d *DBWrapper) GetPushMemberTokensForConversation(conversationPK string) ([
 		Find(&memberTokens, "conversation_public_key = ?", conversationPK).
 		Count(&count).
 		Error; err != nil {
-		return nil, errcode.ErrDBRead.Wrap(err)
+		return nil, errcode.ErrCode_ErrDBRead.Wrap(err)
 	}
 
 	if count == 0 {
-		return nil, errcode.ErrNotFound.Wrap(fmt.Errorf("unable to find push server record"))
+		return nil, errcode.ErrCode_ErrNotFound.Wrap(fmt.Errorf("unable to find push server record"))
 	}
 
 	return memberTokens, nil
@@ -2141,11 +2144,11 @@ func (d *DBWrapper) GetPushMemberTokensForConversation(conversationPK string) ([
 // GetPushMemberTokens returns the push tokens of the member's device for the given conversationPK.
 func (d *DBWrapper) GetPushMemberTokens(conversationPK, devicePK string) ([]*messengertypes.PushMemberToken, error) {
 	if conversationPK == "" {
-		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing conversationPK"))
+		return nil, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("missing conversationPK"))
 	}
 
 	if devicePK == "" {
-		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing devicePK"))
+		return nil, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("missing devicePK"))
 	}
 
 	count := int64(0)
@@ -2155,11 +2158,11 @@ func (d *DBWrapper) GetPushMemberTokens(conversationPK, devicePK string) ([]*mes
 		Find(&memberTokens, "conversation_public_key = ? AND device_pk = ?", conversationPK, devicePK).
 		Count(&count).
 		Error; err != nil {
-		return nil, errcode.ErrDBRead.Wrap(err)
+		return nil, errcode.ErrCode_ErrDBRead.Wrap(err)
 	}
 
 	if count == 0 {
-		return nil, errcode.ErrNotFound.Wrap(fmt.Errorf("unable to find push server record"))
+		return nil, errcode.ErrCode_ErrNotFound.Wrap(fmt.Errorf("unable to find push server record"))
 	}
 
 	return memberTokens, nil
@@ -2168,11 +2171,11 @@ func (d *DBWrapper) GetPushMemberTokens(conversationPK, devicePK string) ([]*mes
 // GetPushServerRecord returns the push server record for the given accountPK and serverAddr.
 func (d *DBWrapper) GetPushServerRecord(accountPK, serverAddr string) (*messengertypes.PushServerRecord, error) {
 	if accountPK == "" {
-		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing accountPK"))
+		return nil, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("missing accountPK"))
 	}
 
 	if serverAddr == "" {
-		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing serverAddr"))
+		return nil, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("missing serverAddr"))
 	}
 
 	count := int64(0)
@@ -2182,11 +2185,11 @@ func (d *DBWrapper) GetPushServerRecord(accountPK, serverAddr string) (*messenge
 		Find(&serverRecord, "account_pk = ? AND server_addr = ?", accountPK, serverAddr).
 		Count(&count).
 		Error; err != nil {
-		return nil, errcode.ErrDBRead.Wrap(err)
+		return nil, errcode.ErrCode_ErrDBRead.Wrap(err)
 	}
 
 	if count == 0 {
-		return nil, errcode.ErrNotFound.Wrap(fmt.Errorf("unable to find push server record"))
+		return nil, errcode.ErrCode_ErrNotFound.Wrap(fmt.Errorf("unable to find push server record"))
 	} else if count > 1 {
 		d.log.Warn("found more results than expected", zap.Int("count", int(count)))
 	}
@@ -2197,7 +2200,7 @@ func (d *DBWrapper) GetPushServerRecord(accountPK, serverAddr string) (*messenge
 // GetPushServerRecords returns the list of push server records for the given accountPK.
 func (d *DBWrapper) GetPushServerRecords(accountPK string) ([]*messengertypes.PushServerRecord, error) {
 	if accountPK == "" {
-		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing accountPK"))
+		return nil, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("missing accountPK"))
 	}
 
 	count := int64(0)
@@ -2207,11 +2210,11 @@ func (d *DBWrapper) GetPushServerRecords(accountPK string) ([]*messengertypes.Pu
 		Find(&serverRecords, "account_pk = ?", accountPK).
 		Count(&count).
 		Error; err != nil {
-		return nil, errcode.ErrDBRead.Wrap(err)
+		return nil, errcode.ErrCode_ErrDBRead.Wrap(err)
 	}
 
 	if count == 0 {
-		return nil, errcode.ErrNotFound.Wrap(fmt.Errorf("unable to find push server record"))
+		return nil, errcode.ErrCode_ErrNotFound.Wrap(fmt.Errorf("unable to find push server record"))
 	}
 
 	return serverRecords, nil
@@ -2220,20 +2223,20 @@ func (d *DBWrapper) GetPushServerRecords(accountPK string) ([]*messengertypes.Pu
 // SavePushLocalDeviceSharedToken saves the push token ID of the local device for the given conversationPK.
 func (d *DBWrapper) SavePushLocalDeviceSharedToken(tokenID, conversationPK string) error {
 	if tokenID == "" {
-		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing tokenID"))
+		return errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("missing tokenID"))
 	}
 
 	if conversationPK == "" {
-		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing conversationPK"))
+		return errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("missing conversationPK"))
 	}
 	res := d.db.Clauses(clause.OnConflict{DoNothing: true}).
 		Create(&messengertypes.PushLocalDeviceSharedToken{
-			TokenID:               tokenID,
+			TokenId:               tokenID,
 			ConversationPublicKey: conversationPK,
 		})
 
 	if err := res.Error; err != nil {
-		return errcode.ErrDBWrite.Wrap(err)
+		return errcode.ErrCode_ErrDBWrite.Wrap(err)
 	}
 
 	d.logStep("savec a local push device token in db", tyber.WithJSONDetail("conversationPublicKey", conversationPK), tyber.WithJSONDetail("tokenID", tokenID))
@@ -2242,7 +2245,7 @@ func (d *DBWrapper) SavePushLocalDeviceSharedToken(tokenID, conversationPK strin
 
 func (d *DBWrapper) GetPushSharedLocalDeviceTokens(conversationPK string) ([]*messengertypes.PushLocalDeviceSharedToken, error) {
 	if conversationPK == "" {
-		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing conversation public key"))
+		return nil, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("missing conversation public key"))
 	}
 
 	count := int64(0)
@@ -2252,11 +2255,11 @@ func (d *DBWrapper) GetPushSharedLocalDeviceTokens(conversationPK string) ([]*me
 		Find(&sharedTokens, "conversation_public_key = ?", conversationPK).
 		Count(&count).
 		Error; err != nil {
-		return nil, errcode.ErrDBRead.Wrap(err)
+		return nil, errcode.ErrCode_ErrDBRead.Wrap(err)
 	}
 
 	if count == 0 {
-		return nil, errcode.ErrNotFound.Wrap(fmt.Errorf("no shared token found"))
+		return nil, errcode.ErrCode_ErrNotFound.Wrap(fmt.Errorf("no shared token found"))
 	}
 
 	return sharedTokens, nil

@@ -16,12 +16,12 @@ import (
 	"testing"
 	"time"
 
-	"github.com/gogo/protobuf/proto"
 	"github.com/oklog/run"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/zap"
 	"golang.org/x/crypto/nacl/box"
+	"google.golang.org/protobuf/proto"
 	"gorm.io/gorm"
 
 	sqlite "berty.tech/berty/v2/go/internal/gorm-sqlcipher"
@@ -32,9 +32,9 @@ import (
 	"berty.tech/berty/v2/go/pkg/bertyvcissuer"
 	"berty.tech/berty/v2/go/pkg/directorytypes"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
-	"berty.tech/weshnet/pkg/protocoltypes"
-	"berty.tech/weshnet/pkg/testutil"
-	"berty.tech/weshnet/pkg/verifiablecredstypes"
+	"berty.tech/weshnet/v2/pkg/protocoltypes"
+	"berty.tech/weshnet/v2/pkg/testutil"
+	"berty.tech/weshnet/v2/pkg/verifiablecredstypes"
 )
 
 func TestServiceStream(t *testing.T) {
@@ -151,7 +151,7 @@ func TestServiceContactRequest(t *testing.T) {
 		require.NoError(t, err)
 		require.NoError(t, deeplinkReply.Link.IsValid())
 		req := &messengertypes.SendContactRequest_Request{
-			BertyID:     deeplinkReply.Link.BertyID,
+			BertyId:     deeplinkReply.Link.BertyId,
 			Metadata:    metadata,
 			OwnMetadata: ownMetadata,
 		}
@@ -162,7 +162,7 @@ func TestServiceContactRequest(t *testing.T) {
 		assert.Len(t, node.GetAllConversations(), 1)
 	}
 
-	contactPK := base64.RawURLEncoding.EncodeToString(deeplinkReply.GetLink().GetBertyID().GetAccountPK())
+	contactPK := base64.RawURLEncoding.EncodeToString(deeplinkReply.GetLink().GetBertyId().GetAccountPk())
 	require.NotEmpty(t, contactPK)
 
 	// check for contact
@@ -377,12 +377,12 @@ func TestBrokenPeersCreateJoinConversation(t *testing.T) {
 	gpk := createdConv.GetPublicKey()
 	gpkb, err := messengerutil.B64DecodeBytes(gpk)
 	require.NoError(t, err)
-	sbg, err := creator.GetClient().ShareableBertyGroup(ctx, &messengertypes.ShareableBertyGroup_Request{GroupPK: gpkb, GroupName: convName})
+	sbg, err := creator.GetClient().ShareableBertyGroup(ctx, &messengertypes.ShareableBertyGroup_Request{GroupPk: gpkb, GroupName: convName})
 	require.NoError(t, err)
 
 	// joiners join the conversation
 	for _, joiner := range joiners {
-		ret, err := joiner.GetClient().ConversationJoin(ctx, &messengertypes.ConversationJoin_Request{Link: sbg.GetWebURL()})
+		ret, err := joiner.GetClient().ConversationJoin(ctx, &messengertypes.ConversationJoin_Request{Link: sbg.GetWebUrl()})
 		require.NoError(t, err)
 		require.Empty(t, ret)
 	}
@@ -753,7 +753,7 @@ func TestBrokenConversationOpenClose(t *testing.T) {
 
 	// Bob opens the conversation
 	{
-		_, err := bob.GetClient().ConversationOpen(ctx, &messengertypes.ConversationOpen_Request{GroupPK: groupPK})
+		_, err := bob.GetClient().ConversationOpen(ctx, &messengertypes.ConversationOpen_Request{GroupPk: groupPK})
 		require.NoError(t, err)
 	}
 
@@ -796,7 +796,7 @@ func TestBrokenConversationOpenClose(t *testing.T) {
 
 	// Bob closes the conversation
 	{
-		_, err := bob.GetClient().ConversationClose(ctx, &messengertypes.ConversationClose_Request{GroupPK: groupPK})
+		_, err := bob.GetClient().ConversationClose(ctx, &messengertypes.ConversationClose_Request{GroupPk: groupPK})
 		require.NoError(t, err)
 	}
 
@@ -839,7 +839,7 @@ func TestBrokenConversationOpenClose(t *testing.T) {
 
 	// Alice opens the conversation
 	{
-		_, err := alice.GetClient().ConversationOpen(ctx, &messengertypes.ConversationOpen_Request{GroupPK: groupPK})
+		_, err := alice.GetClient().ConversationOpen(ctx, &messengertypes.ConversationOpen_Request{GroupPk: groupPK})
 		require.NoError(t, err)
 	}
 
@@ -1113,12 +1113,12 @@ func testSendGroupMessage(ctx context.Context, t *testing.T, groupPK string, sen
 		eventPayload, err := event.UnmarshalPayload()
 		require.NoError(t, err)
 		interaction := eventPayload.(*messengertypes.StreamEvent_InteractionUpdated).Interaction
-		require.NotEmpty(t, interaction.GetCID())
-		messageCid = interaction.GetCID()
+		require.NotEmpty(t, interaction.GetCid())
+		messageCid = interaction.GetCid()
 		require.Equal(t, interaction.GetType(), messengertypes.AppMessage_TypeUserMessage)
 		require.Equal(t, interaction.GetConversationPublicKey(), groupPK)
 		require.True(t, interaction.GetIsMine())
-		require.Equal(t, interaction.GetCID(), messageCid)
+		require.Equal(t, interaction.GetCid(), messageCid)
 		interactionPayload, err := interaction.UnmarshalPayload()
 		require.NoError(t, err)
 		userMessage := interactionPayload.(*messengertypes.AppMessage_UserMessage)
@@ -1178,7 +1178,7 @@ func testSendGroupMessage(ctx context.Context, t *testing.T, groupPK string, sen
 				eventPayload, err := event.UnmarshalPayload()
 				require.NoError(t, err)
 				interaction := eventPayload.(*messengertypes.StreamEvent_InteractionUpdated).Interaction
-				require.NotEmpty(t, interaction.GetCID())
+				require.NotEmpty(t, interaction.GetCid())
 				require.Equal(t, interaction.GetConversationPublicKey(), groupPK)
 				interactionPayload, err := interaction.UnmarshalPayload()
 				require.NoError(t, err)
@@ -1186,14 +1186,14 @@ func testSendGroupMessage(ctx context.Context, t *testing.T, groupPK string, sen
 				case interaction.GetType() == messengertypes.AppMessage_TypeAcknowledge && interaction.GetIsMine():
 					require.False(t, gotOwnAck)
 					gotOwnAck = true
-					require.Equal(t, interaction.GetTargetCID(), messageCid)
+					require.Equal(t, interaction.GetTargetCid(), messageCid)
 				case interaction.GetType() == messengertypes.AppMessage_TypeAcknowledge && !interaction.GetIsMine():
-					require.Equal(t, interaction.GetTargetCID(), messageCid)
+					require.Equal(t, interaction.GetTargetCid(), messageCid)
 					gotOthersAcks++
 				case interaction.GetType() == messengertypes.AppMessage_TypeUserMessage:
 					require.False(t, gotMsg)
 					gotMsg = true
-					require.Equal(t, interaction.GetCID(), messageCid)
+					require.Equal(t, interaction.GetCid(), messageCid)
 					userMessage := interactionPayload.(*messengertypes.AppMessage_UserMessage)
 					require.Equal(t, userMessage.GetBody(), msg)
 					require.LessOrEqual(t, beforeSend, interaction.GetSentDate())
@@ -1216,11 +1216,11 @@ func testSendGroupMessage(ctx context.Context, t *testing.T, groupPK string, sen
 		eventPayload, err := event.UnmarshalPayload()
 		require.NoError(t, err)
 		interaction := eventPayload.(*messengertypes.StreamEvent_InteractionUpdated).Interaction
-		require.NotEmpty(t, interaction.GetCID())
+		require.NotEmpty(t, interaction.GetCid())
 		require.Equal(t, interaction.GetType(), messengertypes.AppMessage_TypeAcknowledge)
 		require.Equal(t, interaction.GetConversationPublicKey(), groupPK)
 		require.False(t, interaction.GetIsMine())
-		require.Equal(t, interaction.GetTargetCID(), messageCid)
+		require.Equal(t, interaction.GetTargetCid(), messageCid)
 		logger.Debug("testSendGroupMessage: message ack received by creator")
 		// FIXME: check if the ack is from the good receiver, or useless?
 	}
@@ -1268,7 +1268,7 @@ func testCreateConversation(ctx context.Context, t *testing.T, creator *TestingA
 			require.NoError(t, err)
 			interaction := eventPayload.(*messengertypes.StreamEvent_InteractionUpdated).GetInteraction()
 			require.Equal(t, interaction.GetType(), messengertypes.AppMessage_TypeGroupInvitation)
-			require.NotEmpty(t, interaction.GetCID())
+			require.NotEmpty(t, interaction.GetCid())
 			require.NotEqual(t, convPK, interaction.GetConversationPublicKey())
 			require.True(t, interaction.GetIsMine())
 			// FIXME: require.Equal, 1to1conv.pk
@@ -1302,7 +1302,7 @@ func testCreateConversation(ctx context.Context, t *testing.T, creator *TestingA
 			require.NoError(t, err)
 			interaction := eventPayload.(*messengertypes.StreamEvent_InteractionUpdated).GetInteraction()
 			require.Equal(t, interaction.GetType(), messengertypes.AppMessage_TypeGroupInvitation)
-			require.NotEmpty(t, interaction.GetCID())
+			require.NotEmpty(t, interaction.GetCid())
 			require.NotEqual(t, convPK, interaction.GetConversationPublicKey())
 			require.False(t, interaction.GetIsMine())
 			// FIXME: require.Equal, 1to1conv.pk
@@ -1618,7 +1618,7 @@ func TestReply(t *testing.T) {
 		ConversationPublicKey: convPK,
 	})
 	require.NoError(t, err)
-	require.NotEmpty(t, interactReply.GetCID())
+	require.NotEmpty(t, interactReply.GetCid())
 	time.Sleep(1 * time.Second)
 
 	// reply
@@ -1628,17 +1628,17 @@ func TestReply(t *testing.T) {
 		Type:                  messengertypes.AppMessage_TypeUserMessage,
 		Payload:               payload,
 		ConversationPublicKey: convPK,
-		TargetCID:             interactReply.GetCID(),
+		TargetCid:             interactReply.GetCid(),
 	})
 	require.NoError(t, err)
-	require.NotEmpty(t, replyReply.GetCID())
+	require.NotEmpty(t, replyReply.GetCid())
 	time.Sleep(1 * time.Second)
 
 	// check reply interaction in nodes
 	for _, user := range nodes {
-		replyInteraction := user.GetInteraction(t, replyReply.GetCID())
+		replyInteraction := user.GetInteraction(t, replyReply.GetCid())
 		require.NotNil(t, replyInteraction)
-		require.Equal(t, interactReply.CID, replyInteraction.TargetCID)
+		require.Equal(t, interactReply.Cid, replyInteraction.TargetCid)
 
 		replyPayload, err := replyInteraction.UnmarshalPayload()
 		require.NoError(t, err)
@@ -1675,14 +1675,14 @@ func TestAck(t *testing.T) {
 		ConversationPublicKey: convPK,
 	})
 	require.NoError(t, err)
-	require.NotEmpty(t, interactRes.GetCID())
+	require.NotEmpty(t, interactRes.GetCid())
 	time.Sleep(2 * time.Second)
 
 	// check reply interaction in nodes
 	for _, user := range nodes {
-		retrievedInteraction := user.GetInteraction(t, interactRes.GetCID())
+		retrievedInteraction := user.GetInteraction(t, interactRes.GetCid())
 		require.NotNil(t, retrievedInteraction)
-		require.Equal(t, retrievedInteraction.CID, interactRes.CID)
+		require.Equal(t, retrievedInteraction.Cid, interactRes.Cid)
 		require.Equal(t, retrievedInteraction.Acknowledged, true)
 	}
 }
@@ -1787,15 +1787,15 @@ func testHelperRegisterNewNumberOnDirectoryService(ctx context.Context, t *testi
 	require.NotEmpty(t, pk0)
 
 	initResponse, err := node.protocolClient.CredentialVerificationServiceInitFlow(ctx, &protocoltypes.CredentialVerificationServiceInitFlow_Request{
-		ServiceURL: vcIssuer.GetServerRootURL(),
+		ServiceUrl: vcIssuer.GetServerRootURL(),
 		PublicKey:  pk0,
 		Link:       account0.Account.Link,
 	})
 	require.NoError(t, err)
-	callbackURI := vcIssuer.TestHelperIssueTokenCallbackURI(t, initResponse.URL, identifier)
+	callbackURI := vcIssuer.TestHelperIssueTokenCallbackURI(t, initResponse.Url, identifier)
 
 	_, err = node.protocolClient.CredentialVerificationServiceCompleteFlow(ctx, &protocoltypes.CredentialVerificationServiceCompleteFlow_Request{
-		CallbackURI: callbackURI,
+		CallbackUri: callbackURI,
 	})
 	require.NoError(t, err)
 
@@ -1807,6 +1807,7 @@ func testHelperRegisterNewNumberOnDirectoryService(ctx context.Context, t *testi
 		ServerAddr:  directoryHost,
 		Identifier:  identifier,
 	})
+	require.NoError(t, err)
 
 	// FIXME: Remove sleep, make sure DirectoryServiceRegister DB event has been dispatched locally
 	time.Sleep(time.Millisecond * 100)
@@ -1831,7 +1832,7 @@ func testHelperGetQueryResult(ctx context.Context, t *testing.T, client messenge
 
 		countResults++
 
-		require.Equal(t, expectedResults[result.DirectoryIdentifier], result.AccountURI)
+		require.Equal(t, expectedResults[result.DirectoryIdentifier], result.AccountUri)
 	}
 
 	require.Equal(t, len(expectedResults), countResults)

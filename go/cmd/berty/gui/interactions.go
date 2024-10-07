@@ -35,7 +35,7 @@ func newInteractionList(mc *msgrContext, convPK string) wfr {
 	unsub := mc.store.interactionListSubscribe(convPK, func(interaction *messengertypes.Interaction) error {
 		defer refreshScroll()
 
-		cid := interaction.GetCID()
+		cid := interaction.GetCid()
 		inteType := interaction.GetType()
 		if inteType != messengertypes.AppMessage_TypeUserMessage {
 			return list.remove(cid)
@@ -57,7 +57,7 @@ func newInteractionList(mc *msgrContext, convPK string) wfr {
 
 func newInteractionView(mc *msgrContext, inte *messengertypes.Interaction) wfr {
 	if inte.GetType() != messengertypes.AppMessage_TypeUserMessage {
-		return wfr{nil, nil, errcode.ErrInvalidInput}
+		return wfr{nil, nil, errcode.ErrCode_ErrInvalidInput}
 	}
 
 	convPK := inte.GetConversationPublicKey()

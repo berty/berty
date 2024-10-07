@@ -7,7 +7,7 @@ import (
 	"go.uber.org/zap"
 
 	pack "berty.tech/berty/v2/go/internal/packingutil"
-	"berty.tech/weshnet/pkg/logutil"
+	"berty.tech/weshnet/v2/pkg/logutil"
 )
 
 // DesktopManager is a Manager

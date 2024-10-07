@@ -15,9 +15,9 @@ import (
 	assets "berty.tech/berty/v2/go/pkg/assets"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
-	"berty.tech/weshnet/pkg/lifecycle"
-	"berty.tech/weshnet/pkg/netmanager"
-	"berty.tech/weshnet/pkg/protocoltypes"
+	"berty.tech/weshnet/v2/pkg/lifecycle"
+	"berty.tech/weshnet/v2/pkg/netmanager"
+	"berty.tech/weshnet/v2/pkg/protocoltypes"
 )
 
 type Opts struct {
@@ -36,30 +36,30 @@ func Main(ctx context.Context, opts *Opts) error {
 	assets.Noop() // embed assets
 
 	if opts.MessengerClient == nil {
-		return errcode.ErrMissingInput.Wrap(fmt.Errorf("missing messenger client"))
+		return errcode.ErrCode_ErrMissingInput.Wrap(fmt.Errorf("missing messenger client"))
 	}
 	if opts.ProtocolClient == nil {
-		return errcode.ErrMissingInput.Wrap(fmt.Errorf("missing protocol client"))
+		return errcode.ErrCode_ErrMissingInput.Wrap(fmt.Errorf("missing protocol client"))
 	}
 	_, err := terminfo.LookupTerminfo(os.Getenv("TERM"))
 	if err != nil {
-		return errcode.ErrCLINoTermcaps.Wrap(err)
+		return errcode.ErrCode_ErrCLINoTermcaps.Wrap(err)
 	}
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
 	config, err := opts.ProtocolClient.ServiceGetConfiguration(ctx, &protocoltypes.ServiceGetConfiguration_Request{})
 	if err != nil {
-		return errcode.TODO.Wrap(err)
+		return errcode.ErrCode_TODO.Wrap(err)
 	}
 
 	app := tview.NewApplication()
 
 	accountGroup, err := opts.ProtocolClient.GroupInfo(ctx, &protocoltypes.GroupInfo_Request{
-		GroupPK: config.AccountGroupPK,
+		GroupPk: config.AccountGroupPk,
 	})
 	if err != nil {
-		return errcode.TODO.Wrap(err)
+		return errcode.ErrCode_TODO.Wrap(err)
 	}
 
 	if opts.Logger != nil {
@@ -70,10 +70,10 @@ func Main(ctx context.Context, opts *Opts) error {
 
 	tabbedView := newTabbedGroups(ctx, accountGroup, opts.ProtocolClient, opts.MessengerClient, app, opts.DisplayName, opts.NetManager)
 	if len(opts.GroupInvitation) > 0 {
-		req := &protocoltypes.GroupMetadataList_Request{GroupPK: accountGroup.Group.PublicKey}
+		req := &protocoltypes.GroupMetadataList_Request{GroupPk: accountGroup.Group.PublicKey}
 		cl, err := tabbedView.protocol.GroupMetadataList(ctx, req)
 		if err != nil {
-			return errcode.ErrEventListMetadata.Wrap(err)
+			return errcode.ErrCode_ErrEventListMetadata.Wrap(err)
 		}
 
 		go func() {
@@ -87,7 +87,7 @@ func Main(ctx context.Context, opts *Opts) error {
 					panic(err)
 				}
 
-				if evt.Metadata.EventType != protocoltypes.EventTypeAccountGroupJoined {
+				if evt.Metadata.EventType != protocoltypes.EventType_EventTypeAccountGroupJoined {
 					continue
 				}
 
@@ -97,7 +97,7 @@ func Main(ctx context.Context, opts *Opts) error {
 
 		for _, invit := range strings.Split(opts.GroupInvitation, ",") {
 			if err := groupJoinCommand(ctx, tabbedView.accountGroupView, invit); err != nil {
-				return errcode.TODO.Wrap(err)
+				return errcode.ErrCode_TODO.Wrap(err)
 			}
 		}
 	}
@@ -161,7 +161,7 @@ func Main(ctx context.Context, opts *Opts) error {
 	})
 
 	if err := app.SetRoot(mainUI, true).SetFocus(mainUI).Run(); err != nil {
-		return errcode.TODO.Wrap(err)
+		return errcode.ErrCode_TODO.Wrap(err)
 	}
 
 	return nil

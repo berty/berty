@@ -3,7 +3,6 @@ package bertybridge
 import (
 	"context"
 	"sync"
-	"time"
 
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
@@ -13,8 +12,8 @@ import (
 	berty_grpcutil "berty.tech/berty/v2/go/internal/grpcutil"
 	bridge_svc "berty.tech/berty/v2/go/pkg/bertybridge"
 	"berty.tech/berty/v2/go/pkg/errcode"
-	"berty.tech/weshnet/pkg/grpcutil"
-	"berty.tech/weshnet/pkg/logutil"
+	"berty.tech/weshnet/v2/pkg/grpcutil"
+	"berty.tech/weshnet/v2/pkg/logutil"
 )
 
 type RemoteBridge struct {
@@ -32,9 +31,9 @@ func NewRemoteBridgeConfig() *RemoteBridgeConfig {
 	return &RemoteBridgeConfig{}
 }
 
-func NewRemoteBridge(address string, config *RemoteBridgeConfig) (*RemoteBridge, error) {
+func NewRemoteBridge(address string, _ *RemoteBridgeConfig) (*RemoteBridge, error) {
 	if address == "" {
-		return nil, errcode.ErrInvalidInput
+		return nil, errcode.ErrCode_ErrInvalidInput
 	}
 
 	ctx := context.Background()
@@ -81,14 +80,10 @@ func NewRemoteBridge(address string, config *RemoteBridgeConfig) (*RemoteBridge,
 
 	// setup account client
 	{
-		ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
-		defer cancel()
-
 		opts := []grpc.DialOption{
-			grpc.WithBlock(),
 			grpc.WithTransportCredentials(insecure.NewCredentials()),
 		}
-		client, err := grpc.DialContext(ctx, address, opts...)
+		client, err := grpc.NewClient(address, opts...)
 		if err != nil {
 			return nil, err
 		}
@@ -111,18 +106,14 @@ func (b *RemoteBridge) ConnectService(serviceName string, address string) error 
 	}
 
 	if b.serviceBridge == nil {
-		return errcode.ErrBridgeNotRunning
+		return errcode.ErrCode_ErrBridgeNotRunning
 	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-
 	opts := []grpc.DialOption{
-		grpc.WithBlock(),
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 	}
 
-	client, err := grpc.DialContext(ctx, address, opts...)
+	client, err := grpc.NewClient(address, opts...)
 	if err != nil {
 		return err
 	}
@@ -144,14 +135,14 @@ func (b *RemoteBridge) Close() error {
 		b.grpcServer.Stop()
 		b.grpcServer = nil
 	} else {
-		err = errcode.ErrBridgeNotRunning
+		err = errcode.ErrCode_ErrBridgeNotRunning
 	}
 
 	if b.serviceBridge != nil {
 		b.serviceBridge.Close()
 		b.serviceBridge = nil
 	} else {
-		err = errcode.ErrBridgeNotRunning
+		err = errcode.ErrCode_ErrBridgeNotRunning
 	}
 
 	return err

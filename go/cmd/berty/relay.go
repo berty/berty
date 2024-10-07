@@ -27,11 +27,11 @@ import (
 	"go.uber.org/zap/zapcore"
 
 	"berty.tech/berty/v2/go/pkg/errcode"
-	"berty.tech/weshnet/pkg/ipfsutil"
+	"berty.tech/weshnet/v2/pkg/ipfsutil"
 )
 
 const (
-	DefaultRelaySwarmListeners = "/ip4/0.0.0.0/tcp/4040,/ip4/0.0.0.0/udp/4141/quic,/ip6/::/tcp/4040,/ip6/::/udp/4040/quic"
+	DefaultRelaySwarmListeners = "/ip4/0.0.0.0/tcp/4040,/ip4/0.0.0.0/udp/4141/quic-v1,/ip6/::/tcp/4040,/ip6/::/udp/4040/quic-v1"
 	DefaultRelayKeySize        = 2048
 	DefaultRelayKeyType        = "Ed25519"
 )
@@ -185,7 +185,7 @@ func relayServerCommand() *ffcli.Command {
 				maddrs := strings.Split(swarmListeners, ",")
 				laddrs, err := ipfsutil.ParseAddrs(maddrs...)
 				if err != nil {
-					return errcode.TODO.Wrap(err)
+					return errcode.ErrCode_TODO.Wrap(err)
 				}
 
 				// add listeners
@@ -199,7 +199,7 @@ func relayServerCommand() *ffcli.Command {
 					aaddrs := strings.Split(swarmAnnounce, ",")
 					announces, err := ipfsutil.ParseAddrs(aaddrs...)
 					if err != nil {
-						return errcode.TODO.Wrap(err)
+						return errcode.ErrCode_TODO.Wrap(err)
 					}
 
 					addrsFactory = func([]ma.Multiaddr) []ma.Multiaddr { return announces }
@@ -230,7 +230,7 @@ func relayServerCommand() *ffcli.Command {
 			// init p2p host
 			host, err := libp2p.New(options...)
 			if err != nil {
-				return errcode.TODO.Wrap(err)
+				return errcode.ErrCode_TODO.Wrap(err)
 			}
 
 			maddrs, err := peer.AddrInfoToP2pAddrs(&peer.AddrInfo{
@@ -241,7 +241,7 @@ func relayServerCommand() *ffcli.Command {
 				return fmt.Errorf("unable to get peer addrs info: %w", err)
 			}
 
-			logfields := []zapcore.Field{zap.String("id", host.ID().Pretty())}
+			logfields := []zapcore.Field{zap.String("id", host.ID().String())}
 			for i, maddr := range maddrs {
 				key := fmt.Sprintf("maddr#%d", i)
 				logfields = append(logfields, zap.Stringer(key, maddr))
@@ -252,7 +252,7 @@ func relayServerCommand() *ffcli.Command {
 			if prometheusListener != "" {
 				ml, err := net.Listen("tcp", prometheusListener)
 				if err != nil {
-					return errcode.TODO.Wrap(err)
+					return errcode.ErrCode_TODO.Wrap(err)
 				}
 
 				registry := prometheus.NewRegistry()

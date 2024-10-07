@@ -1,8 +1,8 @@
-version: v1
-name: buf.build/berty/berty
+version: v2
+name: buf.build/berty-technologies/berty
 deps:
-  - buf.build/gogo/protobuf
-  - buf.build/berty/weshnet
+  - buf.build/berty-technologies/weshnet
+  - buf.build/srikrsna/protoc-gen-gotag
 breaking:
   use:
     - FILE

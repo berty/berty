@@ -17,8 +17,8 @@ import (
 	manet "github.com/multiformats/go-multiaddr/net"
 	"go.uber.org/zap"
 
-	"berty.tech/weshnet/pkg/logutil"
-	"berty.tech/weshnet/pkg/netmanager"
+	"berty.tech/weshnet/v2/pkg/logutil"
+	"berty.tech/weshnet/v2/pkg/netmanager"
 )
 
 const (

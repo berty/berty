@@ -15,8 +15,8 @@ import (
 	"berty.tech/berty/v2/go/pkg/directorytypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
-	weshnet_vc "berty.tech/weshnet/pkg/bertyvcissuer"
-	"berty.tech/weshnet/pkg/cryptoutil"
+	weshnet_vc "berty.tech/weshnet/v2/pkg/bertyvcissuer"
+	"berty.tech/weshnet/v2/pkg/cryptoutil"
 )
 
 func inMinMaxDefault(value, min, max, def int64) int64 {
@@ -32,14 +32,14 @@ func inMinMaxDefault(value, min, max, def int64) int64 {
 func getBertyURIParts(uri string) ([]byte, []byte, error) {
 	parsedURI, err := bertylinks.UnmarshalLink(uri, nil)
 	if err != nil {
-		return nil, nil, errcode.ErrDeserialization.Wrap(err)
+		return nil, nil, errcode.ErrCode_ErrDeserialization.Wrap(err)
 	}
 
-	if parsedURI.Kind != messengertypes.BertyLink_ContactInviteV1Kind || parsedURI.BertyID == nil || len(parsedURI.BertyID.AccountPK) == 0 {
-		return nil, nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("invalid berty account link"))
+	if parsedURI.Kind != messengertypes.BertyLink_ContactInviteV1Kind || parsedURI.BertyId == nil || len(parsedURI.BertyId.AccountPk) == 0 {
+		return nil, nil, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("invalid berty account link"))
 	}
 
-	return parsedURI.BertyID.AccountPK, parsedURI.BertyID.PublicRendezvousSeed, nil
+	return parsedURI.BertyId.AccountPk, parsedURI.BertyId.PublicRendezvousSeed, nil
 }
 
 func generateRecordIdentifiersIfNeeded(recordToken string, unregisterToken string) (string, string, error) {
@@ -62,12 +62,12 @@ func generateUnregisterTokenIfNeeded(unregisterToken string) (string, error) {
 	}
 	randomNonce, err := cryptoutil.GenerateNonceSize(32)
 	if err != nil {
-		return "", errcode.ErrCryptoKeyGeneration.Wrap(err)
+		return "", errcode.ErrCode_ErrCryptoKeyGeneration.Wrap(err)
 	}
 
 	unregisterToken = base64.RawURLEncoding.EncodeToString(randomNonce)
 	if err != nil {
-		return "", errcode.ErrDeserialization.Wrap(err)
+		return "", errcode.ErrCode_ErrDeserialization.Wrap(err)
 	}
 
 	return unregisterToken, nil
@@ -80,7 +80,7 @@ func generateUUIDIfNeeded(recordToken string) (string, error) {
 
 	uuidv4, err := uuid.NewV4()
 	if err != nil {
-		return "", errcode.ErrCryptoRandomGeneration.Wrap(err)
+		return "", errcode.ErrCode_ErrCryptoRandomGeneration.Wrap(err)
 	}
 
 	return uuidv4.String(), nil
@@ -91,9 +91,9 @@ func isExistingRecordBeingRenewed(record *directorytypes.Record, accountPK, acco
 		return false, false, nil
 	}
 
-	existingRecordAccountPublicKey, existingRecordAccountRDVSeed, err := getBertyURIParts(record.AccountURI)
+	existingRecordAccountPublicKey, existingRecordAccountRDVSeed, err := getBertyURIParts(record.AccountUri)
 	if err != nil {
-		return false, false, errcode.ErrDeserialization.Wrap(err)
+		return false, false, errcode.ErrCode_ErrDeserialization.Wrap(err)
 	}
 
 	accountIsIdentical := bytes.Equal(existingRecordAccountPublicKey, accountPK)
@@ -112,37 +112,37 @@ func checkVerifiedCredential(allowedIssuers []string, verifiedCredential []byte,
 
 	credential, err := verifiable.ParseCredential(verifiedCredential, credentialsOpts...)
 	if err != nil {
-		return "", errcode.ErrInvalidInput.Wrap(err)
+		return "", errcode.ErrCode_ErrInvalidInput.Wrap(err)
 	}
 
 	if credential.Issued == nil || credential.Issued.After(time.Now()) {
-		return "", errcode.ErrServicesDirectoryInvalidVerifiedCredential
+		return "", errcode.ErrCode_ErrServicesDirectoryInvalidVerifiedCredential
 	}
 
 	if credential.Expired == nil || credential.Expired.Before(time.Now()) {
-		return "", errcode.ErrServicesDirectoryExpiredVerifiedCredential
+		return "", errcode.ErrCode_ErrServicesDirectoryExpiredVerifiedCredential
 	}
 
 	if credential.Subject == nil {
-		return "", errcode.ErrNotFound
+		return "", errcode.ErrCode_ErrNotFound
 	}
 
 	if len(credential.ID) == 0 {
-		return "", errcode.ErrDeserialization.Wrap(err)
+		return "", errcode.ErrCode_ErrDeserialization.Wrap(err)
 	}
 
 	parsedAccountPK, _, err := getBertyURIParts(credential.ID)
 	if err != nil {
-		return "", errcode.ErrDeserialization.Wrap(err)
+		return "", errcode.ErrCode_ErrDeserialization.Wrap(err)
 	}
 
 	if !bytes.Equal(parsedAccountPK, accountPK) {
-		return "", errcode.ErrServicesDirectoryInvalidVerifiedCredentialID
+		return "", errcode.ErrCode_ErrServicesDirectoryInvalidVerifiedCredentialID
 	}
 
 	subject, err := weshnet_vc.ExtractSubjectFromVC(credential)
 	if err != nil {
-		return "", errcode.ErrServicesDirectoryInvalidVerifiedCredentialSubject.Wrap(err)
+		return "", errcode.ErrCode_ErrServicesDirectoryInvalidVerifiedCredentialSubject.Wrap(err)
 	}
 
 	return subject, nil

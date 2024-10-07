@@ -1,8 +1,9 @@
+version: 2
 changelog:
-  skip: true
+  disable: true
 
 checksum:
-  name_template: '{{.ProjectName}}_windows_checksums.txt'
+  name_template: "{{.ProjectName}}_windows_checksums.txt"
 
 env:
   - GO111MODULE=on
@@ -13,19 +14,19 @@ before:
     - go mod download
 
 archives:
-  - name_template: '{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}'
+  - name_template: "{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}"
     format_overrides:
-    - goos: windows
-      format: zip
+      - goos: windows
+        format: zip
 
 builds:
   - id: windows
     binary: berty
-    env: ['CGO_ENABLED=1']
-    goos: ['windows']
-    goarch: ['amd64']
+    env: ["CGO_ENABLED=1"]
+    goos: ["windows"]
+    goarch: ["amd64"]
     dir: go/cmd/berty
     flags:
       - "-a"
     ldflags:
-      - '-X berty.tech/berty/v2/go/pkg/bertyversion.VcsRef=$(VCS_REF) -X berty.tech/berty/v2/go/pkg/bertyversion.Version=$(VERSION)'
+      - "-X berty.tech/berty/v2/go/pkg/bertyversion.VcsRef=$(VCS_REF) -X berty.tech/berty/v2/go/pkg/bertyversion.Version=$(VERSION)"

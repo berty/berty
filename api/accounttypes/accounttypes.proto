@@ -2,15 +2,10 @@ syntax = "proto3";
 
 package berty.account.v1;
 
-import "gogoproto/gogo.proto";
 import "pushtypes/bertypushtypes.proto";
 import "protocoltypes.proto";
 
 option go_package = "berty.tech/berty/go/pkg/accounttypes";
-
-option (gogoproto.marshaler_all) = true;
-option (gogoproto.unmarshaler_all) = true;
-option (gogoproto.sizer_all) = true;
 
 service AccountService {
   /// Account
@@ -115,7 +110,7 @@ message AppStorageRemove {
 message GetOpenedAccount {
   message Request {}
   message Reply {
-    string account_id = 1 [(gogoproto.customname) = "AccountID"];
+    string account_id = 1;
     repeated string listeners = 2;
   }
 }
@@ -123,7 +118,7 @@ message GetOpenedAccount {
 message OpenAccount {
   message Request {
     repeated string args = 1;
-    string account_id = 2 [(gogoproto.customname) = "AccountID"];
+    string account_id = 2;
     string logger_filters = 3;
     NetworkConfig network_config = 4;
     string session_kind = 5;
@@ -136,7 +131,7 @@ message OpenAccount {
 message OpenAccountWithProgress {
   message Request {
     repeated string args = 1;
-    string account_id = 2 [(gogoproto.customname) = "AccountID"];
+    string account_id = 2;
     string logger_filters = 3;
     string session_kind = 4;
   }
@@ -159,9 +154,9 @@ message CloseAccountWithProgress {
 }
 
 message AccountMetadata {
-  string account_id = 1 [(gogoproto.customname) = "AccountID"];
+  string account_id = 1;
   string name = 2;
-  string avatar_cid = 3 [(gogoproto.customname) = "AvatarCID"];
+  string avatar_cid = 3;
   string public_key = 4;
   int64 last_opened = 5;
   int64 creation_date = 6;
@@ -177,7 +172,7 @@ message ListAccounts {
 
 message DeleteAccount {
   message Request {
-    string account_id = 1 [(gogoproto.customname) = "AccountID"];
+    string account_id = 1;
   }
   message Reply {
   }
@@ -185,7 +180,7 @@ message DeleteAccount {
 
 message ImportAccount {
   message Request {
-    string account_id = 1 [(gogoproto.customname) = "AccountID"];
+    string account_id = 1;
     string account_name = 2;
     string backup_path = 3;
     repeated string args = 4;
@@ -200,7 +195,7 @@ message ImportAccount {
 
 message ImportAccountWithProgress {
   message Request {
-    string account_id = 1 [(gogoproto.customname) = "AccountID"];
+    string account_id = 1;
     string account_name = 2;
     string backup_path = 3;
     repeated string args = 4;
@@ -216,7 +211,7 @@ message ImportAccountWithProgress {
 
 message CreateAccount {
   message Request {
-    string account_id = 1 [(gogoproto.customname) = "AccountID"];
+    string account_id = 1;
     string account_name = 2;
     NetworkConfig network_config = 3;
   }
@@ -227,9 +222,9 @@ message CreateAccount {
 
 message UpdateAccount {
   message Request {
-    string account_id = 1 [(gogoproto.customname) = "AccountID"];
+    string account_id = 1;
     string account_name = 2;
-    string avatar_cid = 3 [(gogoproto.customname) = "AvatarCID"];
+    string avatar_cid = 3;
     string public_key = 4;
   }
   message Reply {
@@ -254,7 +249,7 @@ message LogfileList {
     repeated Logfile entries = 1;
 
     message Logfile {
-      string account_id = 1 [(gogoproto.customname) = "AccountID"];
+      string account_id = 1;
       string name = 2;
       string path = 3;
       int64 size = 4;
@@ -268,7 +263,7 @@ message LogfileList {
 
 message StreamLogfile {
   message Request {
-    string account_id = 1 [(gogoproto.customname) = "AccountID"];
+    string account_id = 1;
   }
   message Reply {
     string line = 1;
@@ -309,25 +304,25 @@ message NetworkConfig {
   repeated string bootstrap = 1;
   repeated string rendezvous = 2;
   repeated string static_relay = 3;
-  DHTFlag dht = 4 [(gogoproto.customname) = "DHT"];
-  Flag bluetooth_le = 5 [(gogoproto.customname) = "BluetoothLE"];
+  DHTFlag dht = 4;
+  Flag bluetooth_le = 5;
   Flag apple_multipeer_connectivity = 6;
   Flag android_nearby = 7;
   TorFlag tor = 8;
-  Flag mdns = 9 [(gogoproto.customname) = "MDNS"];
+  Flag mdns = 9;
   Flag show_default_services = 10;
-  Flag allow_unsecure_grpc_connections = 11 [(gogoproto.customname) = "AllowUnsecureGRPCConnections"];
+  Flag allow_unsecure_grpc_connections = 11;
 }
 
 enum NetworkConfigPreset {
-  Undefined = 0 [(gogoproto.enumvalue_customname) = "NetPresetUndefined"];
-  Performance = 1 [(gogoproto.enumvalue_customname) = "NetPresetPerformance"];
-  FullAnonymity = 2 [(gogoproto.enumvalue_customname) = "NetPresetFullAnonymity"];
+  Undefined = 0;
+  Performance = 1;
+  FullAnonymity = 2;
 }
 
 message NetworkConfigSet {
   message Request {
-    string account_id = 1 [(gogoproto.customname) = "AccountID"];
+    string account_id = 1;
     NetworkConfig config = 2;
   }
   message Reply {}
@@ -335,7 +330,7 @@ message NetworkConfigSet {
 
 message NetworkConfigGet {
   message Request {
-    string account_id = 1 [(gogoproto.customname) = "AccountID"];
+    string account_id = 1;
   }
   message Reply {
     NetworkConfig default_config = 1;

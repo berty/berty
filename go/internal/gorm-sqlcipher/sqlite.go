@@ -122,6 +122,7 @@ func (dialector Dialector) Migrator(db *gorm.DB) gorm.Migrator {
 	}}}
 }
 
+//nolint:revive
 func (dialector Dialector) BindVarTo(writer clause.Writer, stmt *gorm.Statement, v interface{}) {
 	_ = writer.WriteByte('?')
 }

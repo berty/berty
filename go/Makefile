@@ -183,7 +183,7 @@ $(gen_sum): $(gen_src)
 		--workdir="/go/src/berty.tech/berty/go" \
 		--entrypoint="sh" \
 		--rm \
-		bertytech/buf:2 \
+		bertytech/buf:5 \
 		-xec 'make generate_local'; \
 	  $(MAKE) tidy \
 	)
@@ -192,8 +192,9 @@ $(gen_sum): $(gen_src)
 
 generate_local:
 	go version
-	$(call check-program, shasum buf protoc protoc-gen-gogo protoc-gen-go-grpc protoc-gen-grpc-gateway)
+	$(call check-program, shasum buf protoc protoc-gen-go protoc-gen-go-grpc protoc-gen-grpc-gateway protoc-gen-gotag)
 	cd ..; buf generate api; cd go
+	cd ..; buf generate --template buf.gen.tag.yaml api; cd go
 	sed -i s@berty.tech/berty/go@berty.tech/berty/v2/go@ ./pkg/*/*.pb.go
 	sed -i s@berty.tech/berty/go@berty.tech/berty/v2/go@ ./pkg/*/*.pb.gw.go
 	$(MAKE) go.fmt

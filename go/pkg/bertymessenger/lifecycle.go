@@ -5,7 +5,7 @@ import (
 
 	"go.uber.org/zap"
 
-	"berty.tech/weshnet/pkg/lifecycle"
+	"berty.tech/weshnet/v2/pkg/lifecycle"
 )
 
 func (s *service) monitorState(ctx context.Context) {

@@ -101,17 +101,17 @@ func (m *Manager) getRootDatastore() (datastore.Batching, error) {
 
 	dir, err := m.getSharedDataDir()
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ErrCode_TODO.Wrap(err)
 	}
 
 	storageKey, err := m.GetAccountStorageKey()
 	if err != nil {
-		return nil, errcode.ErrKeystoreGet.Wrap(err)
+		return nil, errcode.ErrCode_ErrKeystoreGet.Wrap(err)
 	}
 
 	storageSalt, err := m.GetAccountRootDatastoreSalt()
 	if err != nil {
-		return nil, errcode.ErrKeystoreGet.Wrap(err)
+		return nil, errcode.ErrCode_ErrKeystoreGet.Wrap(err)
 	}
 
 	if m.Datastore.rootDS, err = accountutils.GetRootDatastoreForPath(dir, storageKey, storageSalt, m.initLogger); err != nil {

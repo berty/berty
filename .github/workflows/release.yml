@@ -91,7 +91,6 @@ jobs:
               client_payload: {"commit_message":${{ env.commit_message }}},
             })
 
-
   post-semantic-release:
     needs: semantic-release
     #if: needs.semantic-release.outputs.new-release-published == 'true'
@@ -140,7 +139,6 @@ jobs:
           set -x +e
           curl -i $url
 
-
   build-asset:
     needs: semantic-release
     name: build asset
@@ -148,12 +146,12 @@ jobs:
     strategy:
       matrix:
         config: [
-          # @FIXME(gfanton): latest ubuntu version broke `Install Linux Dependencies` step
-          {runs-on: 'ubuntu-20.04',  goos: 'linux'},
-          {runs-on: 'macos-latest',  goos: 'darwin'},
-          {runs-on: 'windows-latest', goos: 'windows'},
-          # TODO: bertyguy
-        ]
+            # @FIXME(gfanton): latest ubuntu version broke `Install Linux Dependencies` step
+            { runs-on: "ubuntu-20.04", goos: "linux" },
+            { runs-on: "macos-latest", goos: "darwin" },
+            { runs-on: "windows-latest", goos: "windows" },
+            # TODO: bertyguy
+          ]
     env:
       OSXCROSS_DIR: /home/runner/work/osxcross
     steps:
@@ -194,7 +192,7 @@ jobs:
         uses: actions/cache@v2.1.6
         with:
           path: ~/go/pkg/mod
-          key:          ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-${{ hashFiles('go/**/go.sum') }}
+          key: ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-${{ hashFiles('go/**/go.sum') }}
           restore-keys: ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-
 
       - name: Install Linux Dependencies
@@ -214,14 +212,14 @@ jobs:
         if: needs.semantic-release.outputs.new-release-published != 'true'
         with:
           version: latest
-          args: release --rm-dist -f .github/workflows/utils/.goreleaser.${{ matrix.config.goos }}.yml --skip-publish
+          args: release --clean -f .github/workflows/utils/.goreleaser.${{ matrix.config.goos }}.yml --skip=publish
 
       - name: Run GoReleaser (Publish)
         uses: goreleaser/goreleaser-action@v3
         if: needs.semantic-release.outputs.new-release-published == 'true'
         with:
           version: latest
-          args: release --rm-dist -f .github/workflows/utils/.goreleaser.${{ matrix.config.goos }}.yml
+          args: release --clean -f .github/workflows/utils/.goreleaser.${{ matrix.config.goos }}.yml
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

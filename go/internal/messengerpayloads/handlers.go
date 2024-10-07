@@ -8,23 +8,22 @@ import (
 	"strconv"
 	"time"
 
-	// nolint:staticcheck // cannot use the new protobuf API while keeping gogoproto
-	"github.com/gogo/protobuf/proto"
 	ipfscid "github.com/ipfs/go-cid"
 	"go.uber.org/zap"
+	"google.golang.org/protobuf/proto"
 	"gorm.io/gorm"
 
 	"berty.tech/berty/v2/go/internal/messengerdb"
 	"berty.tech/berty/v2/go/internal/messengerutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	mt "berty.tech/berty/v2/go/pkg/messengertypes"
-	weshnet_errcode "berty.tech/weshnet/pkg/errcode"
-	"berty.tech/weshnet/pkg/logutil"
-	"berty.tech/weshnet/pkg/protocoltypes"
-	"berty.tech/weshnet/pkg/tyber"
+	weshnet_errcode "berty.tech/weshnet/v2/pkg/errcode"
+	"berty.tech/weshnet/v2/pkg/logutil"
+	"berty.tech/weshnet/v2/pkg/protocoltypes"
+	"berty.tech/weshnet/v2/pkg/tyber"
 )
 
-var ErrNilPayload = errcode.ErrInvalidInput.Wrap(errors.New("nil payload"))
+var ErrNilPayload = errcode.ErrCode_ErrInvalidInput.Wrap(errors.New("nil payload"))
 
 type MetaFetcher interface {
 	GroupPKForContact(ctx context.Context, pk []byte) ([]byte, error)
@@ -81,16 +80,16 @@ func NewEventHandler(ctx context.Context, db *messengerdb.DBWrapper, metaFetcher
 
 func (h *EventHandler) bindHandlers() {
 	h.metadataHandlers = map[protocoltypes.EventType]func(gme *protocoltypes.GroupMetadataEvent) error{
-		protocoltypes.EventTypeAccountGroupJoined:                     h.accountGroupJoined,
-		protocoltypes.EventTypeAccountContactRequestOutgoingEnqueued:  h.accountContactRequestOutgoingEnqueued,
-		protocoltypes.EventTypeAccountContactRequestOutgoingSent:      h.accountContactRequestOutgoingSent,
-		protocoltypes.EventTypeAccountContactRequestIncomingReceived:  h.accountContactRequestIncomingReceived,
-		protocoltypes.EventTypeAccountContactRequestIncomingAccepted:  h.accountContactRequestIncomingAccepted,
-		protocoltypes.EventTypeGroupMemberDeviceAdded:                 h.groupMemberDeviceAdded,
-		protocoltypes.EventTypeGroupMetadataPayloadSent:               h.groupMetadataPayloadSent,
-		protocoltypes.EventTypeGroupReplicating:                       h.groupReplicating,
-		protocoltypes.EventTypeMultiMemberGroupInitialMemberAnnounced: h.multiMemberGroupInitialMemberAnnounced,
-		protocoltypes.EventTypeAccountVerifiedCredentialRegistered:    h.accountVerifiedCredentialRegistered,
+		protocoltypes.EventType_EventTypeAccountGroupJoined:                     h.accountGroupJoined,
+		protocoltypes.EventType_EventTypeAccountContactRequestOutgoingEnqueued:  h.accountContactRequestOutgoingEnqueued,
+		protocoltypes.EventType_EventTypeAccountContactRequestOutgoingSent:      h.accountContactRequestOutgoingSent,
+		protocoltypes.EventType_EventTypeAccountContactRequestIncomingReceived:  h.accountContactRequestIncomingReceived,
+		protocoltypes.EventType_EventTypeAccountContactRequestIncomingAccepted:  h.accountContactRequestIncomingAccepted,
+		protocoltypes.EventType_EventTypeGroupMemberDeviceAdded:                 h.groupMemberDeviceAdded,
+		protocoltypes.EventType_EventTypeGroupMetadataPayloadSent:               h.groupMetadataPayloadSent,
+		protocoltypes.EventType_EventTypeGroupReplicating:                       h.groupReplicating,
+		protocoltypes.EventType_EventTypeMultiMemberGroupInitialMemberAnnounced: h.multiMemberGroupInitialMemberAnnounced,
+		protocoltypes.EventType_EventTypeAccountVerifiedCredentialRegistered:    h.accountVerifiedCredentialRegistered,
 	}
 	h.appMessageHandlers = map[mt.AppMessage_Type]struct {
 		handler        func(tx *messengerdb.DBWrapper, i *mt.Interaction, amPayload proto.Message) (*mt.Interaction, bool, error)
@@ -172,8 +171,8 @@ func (h *EventHandler) HandleAppMessage(gpk string, gme *protocoltypes.GroupMess
 	// unmarshal payload
 	muts := []tyber.StepMutator{
 		tyber.WithDetail("Type", am.GetType().String()),
-		tyber.WithCIDDetail("CID", gme.GetEventContext().GetID()),
-		tyber.WithDetail("TargetCID", am.GetTargetCID()),
+		tyber.WithCIDDetail("CID", gme.GetEventContext().GetId()),
+		tyber.WithDetail("TargetCID", am.GetTargetCid()),
 		tyber.WithDetail("LocalMemberPK", messengerutil.B64EncodeBytes(memPK)),
 		tyber.WithDetail("LocalDevicePK", messengerutil.B64EncodeBytes(devPK)),
 	}
@@ -213,7 +212,7 @@ func (h *EventHandler) HandleAppMessage(gpk string, gme *protocoltypes.GroupMess
 			return nil
 		}
 
-		if err := indexMessage(tx, i.CID, am); err != nil {
+		if err := indexMessage(tx, i.Cid, am); err != nil {
 			return logError("Failed to index AppMessage", err)
 		}
 
@@ -224,7 +223,7 @@ func (h *EventHandler) HandleAppMessage(gpk string, gme *protocoltypes.GroupMess
 
 	if handler.isVisibleEvent && isNew {
 		if err := h.dispatchVisibleInteraction(i); err != nil {
-			h.logger.Error("Unable to dispatch notification for interaction", tyber.FormatStepLogFields(h.ctx, tyber.ZapFieldsToDetails(logutil.PrivateString("cid", i.CID), zap.Error(err)))...)
+			h.logger.Error("Unable to dispatch notification for interaction", tyber.FormatStepLogFields(h.ctx, tyber.ZapFieldsToDetails(logutil.PrivateString("cid", i.Cid), zap.Error(err)))...)
 		}
 	}
 
@@ -234,21 +233,21 @@ func (h *EventHandler) HandleAppMessage(gpk string, gme *protocoltypes.GroupMess
 func (h *EventHandler) groupReplicating(gme *protocoltypes.GroupMetadataEvent) error {
 	var ev protocoltypes.GroupReplicating
 	if err := proto.Unmarshal(gme.GetEvent(), &ev); err != nil {
-		return errcode.ErrDeserialization.Wrap(err)
+		return errcode.ErrCode_ErrDeserialization.Wrap(err)
 	}
 
-	cid, err := ipfscid.Cast(gme.GetEventContext().GetID())
+	cid, err := ipfscid.Cast(gme.GetEventContext().GetId())
 	if err != nil {
 		return err
 	}
 
-	convPK := messengerutil.B64EncodeBytes(gme.EventContext.GroupPK)
+	convPK := messengerutil.B64EncodeBytes(gme.EventContext.GroupPk)
 
-	if err := h.db.SaveConversationReplicationInfo(mt.ConversationReplicationInfo{
-		CID:                   cid.String(),
+	if err := h.db.SaveConversationReplicationInfo(&mt.ConversationReplicationInfo{
+		Cid:                   cid.String(),
 		ConversationPublicKey: convPK,
 		MemberPublicKey:       "", // TODO
-		AuthenticationURL:     ev.AuthenticationURL,
+		AuthenticationUrl:     ev.AuthenticationUrl,
 		ReplicationServer:     ev.ReplicationServer,
 	}); err != nil {
 		return err
@@ -277,10 +276,10 @@ func (h *EventHandler) groupMetadataPayloadSent(gme *protocoltypes.GroupMetadata
 	groupMessageEvent := protocoltypes.GroupMessageEvent{
 		EventContext: gme.GetEventContext(),
 		Message:      appMetadata.GetMessage(),
-		Headers:      &protocoltypes.MessageHeaders{DevicePK: appMetadata.GetDevicePK()},
+		Headers:      &protocoltypes.MessageHeaders{DevicePk: appMetadata.GetDevicePk()},
 	}
 
-	groupPK := messengerutil.B64EncodeBytes(gme.GetEventContext().GetGroupPK())
+	groupPK := messengerutil.B64EncodeBytes(gme.GetEventContext().GetGroupPk())
 
 	return h.HandleAppMessage(groupPK, &groupMessageEvent, &appMessage)
 }
@@ -301,10 +300,10 @@ func (h *EventHandler) accountGroupJoined(gme *protocoltypes.GroupMetadataEvent)
 
 	conversation, err := h.db.AddConversation(groupPK, messengerutil.B64EncodeBytes(memPK), messengerutil.B64EncodeBytes(devPK))
 	switch {
-	case errcode.Is(err, errcode.ErrDBEntryAlreadyExists):
+	case errcode.Is(err, errcode.ErrCode_ErrDBEntryAlreadyExists):
 		h.logger.Info("conversation already in db")
 	case err != nil:
-		return errcode.ErrDBAddConversation.Wrap(err)
+		return errcode.ErrCode_ErrDBAddConversation.Wrap(err)
 	default:
 		h.logger.Info("saved conversation in db")
 
@@ -315,7 +314,7 @@ func (h *EventHandler) accountGroupJoined(gme *protocoltypes.GroupMetadataEvent)
 
 	conversation, err = h.db.GetConversationByPK(groupPK)
 	if err != nil {
-		return errcode.ErrInternal.Wrap(err)
+		return errcode.ErrCode_ErrInternal.Wrap(err)
 	}
 
 	if err := h.postHandlerActions.ConversationJoined(conversation); err != nil {
@@ -334,10 +333,10 @@ func (h *EventHandler) accountGroupJoined(gme *protocoltypes.GroupMetadataEvent)
 func (h *EventHandler) accountContactRequestOutgoingEnqueued(gme *protocoltypes.GroupMetadataEvent) error {
 	var ev protocoltypes.AccountContactRequestOutgoingEnqueued
 	if err := proto.Unmarshal(gme.GetEvent(), &ev); err != nil {
-		return errcode.ErrProtocolEventUnmarshal.Wrap(err)
+		return errcode.ErrCode_ErrProtocolEventUnmarshal.Wrap(err)
 	}
 
-	contactPKBytes := ev.GetContact().GetPK()
+	contactPKBytes := ev.GetContact().GetPk()
 	contactPK := messengerutil.B64EncodeBytes(contactPKBytes)
 
 	var cm mt.ContactMetadata
@@ -351,14 +350,14 @@ func (h *EventHandler) accountContactRequestOutgoingEnqueued(gme *protocoltypes.
 
 	gpkB, err := h.metaFetcher.GroupPKForContact(h.ctx, contactPKBytes)
 	if err != nil {
-		return errcode.ErrInternal.Wrap(fmt.Errorf("unable to get group pk for contact: %w", err))
+		return errcode.ErrCode_ErrInternal.Wrap(fmt.Errorf("unable to get group pk for contact: %w", err))
 	}
 
 	gpk := messengerutil.B64EncodeBytes(gpkB)
 
 	memPK, devPK, err := h.metaFetcher.OwnMemberAndDevicePKForConversation(h.ctx, gpkB)
 	if err != nil {
-		return errcode.ErrInternal.Wrap(err)
+		return errcode.ErrCode_ErrInternal.Wrap(err)
 	}
 
 	// create new contact conversation
@@ -372,15 +371,15 @@ func (h *EventHandler) accountContactRequestOutgoingEnqueued(gme *protocoltypes.
 		var err error
 
 		contact, err = tx.AddContactRequestOutgoingEnqueued(contactPK, cm.DisplayName, gpk)
-		if errors.Is(err, errcode.ErrDBEntryAlreadyExists) {
+		if errors.Is(err, errcode.ErrCode_ErrDBEntryAlreadyExists) {
 			return nil
 		} else if err != nil {
-			return errcode.ErrDBAddContactRequestOutgoingEnqueud.Wrap(err)
+			return errcode.ErrCode_ErrDBAddContactRequestOutgoingEnqueud.Wrap(err)
 		}
 
 		// create new conversation
 		if conversation, err = tx.AddConversationForContact(gpk, messengerutil.B64EncodeBytes(memPK), messengerutil.B64EncodeBytes(devPK), contact.PublicKey); err != nil {
-			return errcode.ErrDBAddConversation.Wrap(err)
+			return errcode.ErrCode_ErrDBAddConversation.Wrap(err)
 		}
 
 		contact.Conversation = conversation
@@ -392,19 +391,19 @@ func (h *EventHandler) accountContactRequestOutgoingEnqueued(gme *protocoltypes.
 	}
 
 	if err := h.dispatcher.StreamEvent(mt.StreamEvent_TypeContactUpdated, &mt.StreamEvent_ContactUpdated{Contact: contact}, true); err != nil {
-		return errcode.ErrMessengerStreamEvent.Wrap(err)
+		return errcode.ErrCode_ErrMessengerStreamEvent.Wrap(err)
 	}
 
 	if err = h.dispatcher.StreamEvent(mt.StreamEvent_TypeConversationUpdated, &mt.StreamEvent_ConversationUpdated{Conversation: conversation}, true); err != nil {
-		return errcode.ErrMessengerStreamEvent.Wrap(err)
+		return errcode.ErrCode_ErrMessengerStreamEvent.Wrap(err)
 	}
 
 	return nil
 }
 
 func (h *EventHandler) accountContactRequestOutgoingSent(gme *protocoltypes.GroupMetadataEvent) error {
-	var ev protocoltypes.AccountContactRequestOutgoingSent
-	if err := proto.Unmarshal(gme.GetEvent(), &ev); err != nil {
+	ev := &protocoltypes.AccountContactRequestOutgoingSent{}
+	if err := proto.Unmarshal(gme.GetEvent(), ev); err != nil {
 		return err
 	}
 
@@ -412,12 +411,12 @@ func (h *EventHandler) accountContactRequestOutgoingSent(gme *protocoltypes.Grou
 		{Name: "Value", Description: fmt.Sprint(ev)},
 	})...)
 
-	contactPK := messengerutil.B64EncodeBytes(ev.GetContactPK())
+	contactPK := messengerutil.B64EncodeBytes(ev.GetContactPk())
 
 	// Check if the event is emitted by the current user
-	ownMemberPK, ownDevicePK, err := h.metaFetcher.OwnMemberAndDevicePKForConversation(h.ctx, gme.EventContext.GroupPK)
+	ownMemberPK, ownDevicePK, err := h.metaFetcher.OwnMemberAndDevicePKForConversation(h.ctx, gme.EventContext.GroupPk)
 	if err != nil {
-		return weshnet_errcode.ErrGroupInfo.Wrap(err)
+		return weshnet_errcode.ErrCode_ErrGroupInfo.Wrap(err)
 	}
 
 	var contact *mt.Contact
@@ -425,17 +424,17 @@ func (h *EventHandler) accountContactRequestOutgoingSent(gme *protocoltypes.Grou
 		var err error
 
 		if _, err = tx.AddDevice(messengerutil.B64EncodeBytes(ownDevicePK), messengerutil.B64EncodeBytes(ownMemberPK)); err != nil {
-			return errcode.ErrDBWrite.Wrap(fmt.Errorf("unable to add device to db: %w", err))
+			return errcode.ErrCode_ErrDBWrite.Wrap(fmt.Errorf("unable to add device to db: %w", err))
 		}
 
 		contact, err = tx.AddContactRequestOutgoingSent(contactPK)
 		if err != nil {
-			return errcode.ErrDBAddContactRequestOutgoingSent.Wrap(err)
+			return errcode.ErrCode_ErrDBAddContactRequestOutgoingSent.Wrap(err)
 		}
 
 		return nil
 	}); err != nil {
-		return errcode.ErrDBWrite.Wrap(err)
+		return errcode.ErrCode_ErrDBWrite.Wrap(err)
 	}
 
 	h.logger.Debug("Got contact from db", tyber.FormatStepLogFields(h.ctx, []tyber.Detail{
@@ -471,7 +470,7 @@ func (h *EventHandler) accountContactRequestIncomingReceived(gme *protocoltypes.
 	if err := proto.Unmarshal(gme.GetEvent(), &ev); err != nil {
 		return err
 	}
-	contactPK := messengerutil.B64EncodeBytes(ev.GetContactPK())
+	contactPK := messengerutil.B64EncodeBytes(ev.GetContactPk())
 
 	var m mt.ContactMetadata
 	err := proto.Unmarshal(ev.GetContactMetadata(), &m)
@@ -482,16 +481,16 @@ func (h *EventHandler) accountContactRequestIncomingReceived(gme *protocoltypes.
 		}, tyber.Status(tyber.Failed))...)
 	}
 
-	groupPK, err := h.metaFetcher.GroupPKForContact(h.ctx, ev.GetContactPK())
+	groupPK, err := h.metaFetcher.GroupPKForContact(h.ctx, ev.GetContactPk())
 	if err != nil {
 		return err
 	}
 	groupPKBytes := messengerutil.B64EncodeBytes(groupPK)
 
 	// Check if the event is emitted by the current user
-	ownMemberPK, ownDevicePK, err := h.metaFetcher.OwnMemberAndDevicePKForConversation(h.ctx, gme.EventContext.GroupPK)
+	ownMemberPK, ownDevicePK, err := h.metaFetcher.OwnMemberAndDevicePKForConversation(h.ctx, gme.EventContext.GroupPk)
 	if err != nil {
-		return weshnet_errcode.ErrGroupInfo.Wrap(err)
+		return weshnet_errcode.ErrCode_ErrGroupInfo.Wrap(err)
 	}
 
 	// create new contact conversation
@@ -505,10 +504,10 @@ func (h *EventHandler) accountContactRequestIncomingReceived(gme *protocoltypes.
 		var err error
 
 		contact, err = tx.AddContactRequestIncomingReceived(contactPK, m.GetDisplayName(), groupPKBytes)
-		if errors.Is(err, errcode.ErrDBEntryAlreadyExists) {
+		if errors.Is(err, errcode.ErrCode_ErrDBEntryAlreadyExists) {
 			return nil
 		} else if err != nil {
-			return errcode.ErrDBAddContactRequestIncomingReceived.Wrap(err)
+			return errcode.ErrCode_ErrDBAddContactRequestIncomingReceived.Wrap(err)
 		}
 
 		// create new conversation
@@ -517,7 +516,7 @@ func (h *EventHandler) accountContactRequestIncomingReceived(gme *protocoltypes.
 		}
 
 		if _, err := tx.AddDevice(messengerutil.B64EncodeBytes(ownDevicePK), messengerutil.B64EncodeBytes(ownMemberPK)); err != nil {
-			return errcode.ErrDBWrite.Wrap(err)
+			return errcode.ErrCode_ErrDBWrite.Wrap(err)
 		}
 
 		return nil
@@ -551,19 +550,19 @@ func (h *EventHandler) accountContactRequestIncomingAccepted(gme *protocoltypes.
 	if err := proto.Unmarshal(gme.GetEvent(), &ev); err != nil {
 		return err
 	}
-	if len(ev.GetContactPK()) == 0 {
-		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("contact pk is empty"))
+	if len(ev.GetContactPk()) == 0 {
+		return errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("contact pk is empty"))
 	}
-	contactPK := messengerutil.B64EncodeBytes(ev.GetContactPK())
+	contactPK := messengerutil.B64EncodeBytes(ev.GetContactPk())
 
-	groupPK, err := h.metaFetcher.GroupPKForContact(h.ctx, ev.GetContactPK())
+	groupPK, err := h.metaFetcher.GroupPKForContact(h.ctx, ev.GetContactPk())
 	if err != nil {
 		return err
 	}
 
 	contact, err := h.db.AddContactRequestIncomingAccepted(contactPK, messengerutil.B64EncodeBytes(groupPK))
 	if err != nil {
-		return errcode.ErrDBAddContactRequestIncomingAccepted.Wrap(err)
+		return errcode.ErrCode_ErrDBAddContactRequestIncomingAccepted.Wrap(err)
 	}
 
 	// dispatch event to subscribers
@@ -585,7 +584,7 @@ func (h *EventHandler) contactRequestAccepted(contact *mt.Contact, memberPK []by
 	{
 		groupPK, err := h.metaFetcher.GroupPKForContact(h.ctx, memberPK)
 		if err != nil {
-			return errcode.ErrInternal.Wrap(fmt.Errorf("can't get group public key for contact %w", err))
+			return errcode.ErrCode_ErrInternal.Wrap(fmt.Errorf("can't get group public key for contact %w", err))
 		}
 
 		contact.State = mt.Contact_Accepted
@@ -597,7 +596,7 @@ func (h *EventHandler) contactRequestAccepted(contact *mt.Contact, memberPK []by
 		var err error
 
 		// update existing contact
-		if err = tx.UpdateContact(contact.GetPublicKey(), *contact); err != nil {
+		if err = tx.UpdateContact(contact.GetPublicKey(), contact); err != nil {
 			return err
 		}
 
@@ -624,9 +623,9 @@ func (h *EventHandler) multiMemberGroupInitialMemberAnnounced(gme *protocoltypes
 		return err
 	}
 
-	mpkb := ev.GetMemberPK()
+	mpkb := ev.GetMemberPk()
 	mpk := messengerutil.B64EncodeBytes(mpkb)
-	gpkb := gme.GetEventContext().GetGroupPK()
+	gpkb := gme.GetEventContext().GetGroupPk()
 	gpk := messengerutil.B64EncodeBytes(gpkb)
 
 	if err := h.db.TX(h.ctx, func(tx *messengerdb.DBWrapper) error {
@@ -634,34 +633,34 @@ func (h *EventHandler) multiMemberGroupInitialMemberAnnounced(gme *protocoltypes
 
 		member, err := tx.GetMemberByPK(mpk, gpk)
 		if err != gorm.ErrRecordNotFound && err != nil {
-			return errcode.ErrDBRead.Wrap(err)
+			return errcode.ErrCode_ErrDBRead.Wrap(err)
 		}
 
 		if err == gorm.ErrRecordNotFound {
 			ownMemberPK, _, err := h.metaFetcher.OwnMemberAndDevicePKForConversation(h.ctx, gpkb)
 			if err != nil {
-				return weshnet_errcode.ErrGroupInfo.Wrap(err)
+				return weshnet_errcode.ErrCode_ErrGroupInfo.Wrap(err)
 			}
 
 			isMe := bytes.Equal(ownMemberPK, mpkb)
 
 			if _, err := tx.AddMember(mpk, gpk, "", "", isMe, true); err != nil {
-				return errcode.ErrDBWrite.Wrap(err)
+				return errcode.ErrCode_ErrDBWrite.Wrap(err)
 			}
 		} else if err := tx.MarkMemberAsConversationCreator(member.PublicKey, gpk); err != nil {
-			return errcode.ErrDBWrite.Wrap(err)
+			return errcode.ErrCode_ErrDBWrite.Wrap(err)
 		}
 
 		return nil
 	}); err != nil {
-		return errcode.ErrDBWrite.Wrap(err)
+		return errcode.ErrCode_ErrDBWrite.Wrap(err)
 	}
 
 	// dispatch update
 	{
 		member, err := h.db.GetMemberByPK(mpk, gpk)
 		if err != nil {
-			return errcode.ErrDBRead.Wrap(err)
+			return errcode.ErrCode_ErrDBRead.Wrap(err)
 		}
 
 		err = h.dispatcher.StreamEvent(mt.StreamEvent_TypeMemberUpdated, &mt.StreamEvent_MemberUpdated{Member: member}, true)
@@ -685,12 +684,12 @@ func (h *EventHandler) groupMemberDeviceAdded(gme *protocoltypes.GroupMetadataEv
 		return err
 	}
 
-	mpkb := ev.GetMemberPK()
-	dpkb := ev.GetDevicePK()
-	gpkb := gme.GetEventContext().GetGroupPK()
+	mpkb := ev.GetMemberPk()
+	dpkb := ev.GetDevicePk()
+	gpkb := gme.GetEventContext().GetGroupPk()
 
 	if mpkb == nil || dpkb == nil || gpkb == nil {
-		return errcode.ErrInvalidInput.Wrap(fmt.Errorf("some metadata event references are missing"))
+		return errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("some metadata event references are missing"))
 	}
 
 	mpk := messengerutil.B64EncodeBytes(mpkb)
@@ -698,15 +697,15 @@ func (h *EventHandler) groupMemberDeviceAdded(gme *protocoltypes.GroupMetadataEv
 	gpk := messengerutil.B64EncodeBytes(gpkb)
 
 	// Check if the event is emitted by the current user
-	ownMemberPK, _, err := h.metaFetcher.OwnMemberAndDevicePKForConversation(h.ctx, gme.EventContext.GroupPK)
+	ownMemberPK, _, err := h.metaFetcher.OwnMemberAndDevicePKForConversation(h.ctx, gme.EventContext.GroupPk)
 	if err != nil {
-		return weshnet_errcode.ErrGroupInfo.Wrap(err)
+		return weshnet_errcode.ErrCode_ErrGroupInfo.Wrap(err)
 	}
 
 	isMe := bytes.Equal(ownMemberPK, mpkb)
 
 	// Register device if not already known
-	if _, err := h.db.GetDeviceByPK(dpk); errors.Is(err, errcode.ErrNotFound) || errors.Is(err, gorm.ErrRecordNotFound) {
+	if _, err := h.db.GetDeviceByPK(dpk); errors.Is(err, errcode.ErrCode_ErrNotFound) || errors.Is(err, gorm.ErrRecordNotFound) {
 		device, err := h.db.AddDevice(dpk, mpk)
 		if err != nil {
 			return err
@@ -748,16 +747,16 @@ func (h *EventHandler) groupMemberDeviceAdded(gme *protocoltypes.GroupMetadataEv
 
 				userInfo = &payload
 
-				if err := h.db.DeleteInteractions([]string{elem.CID}); err != nil {
+				if err := h.db.DeleteInteractions([]string{elem.Cid}); err != nil {
 					return err
 				}
 
-				if err := h.dispatcher.StreamEvent(mt.StreamEvent_TypeInteractionDeleted, &mt.StreamEvent_InteractionDeleted{CID: elem.GetCID(), ConversationPublicKey: gpk}, false); err != nil {
+				if err := h.dispatcher.StreamEvent(mt.StreamEvent_TypeInteractionDeleted, &mt.StreamEvent_InteractionDeleted{Cid: elem.GetCid(), ConversationPublicKey: gpk}, false); err != nil {
 					return err
 				}
 
 			default:
-				if err := messengerutil.StreamInteraction(h.dispatcher, h.db, elem.CID, false); err != nil {
+				if err := messengerutil.StreamInteraction(h.dispatcher, h.db, elem.Cid, false); err != nil {
 					return err
 				}
 			}
@@ -773,7 +772,7 @@ func (h *EventHandler) groupMemberDeviceAdded(gme *protocoltypes.GroupMetadataEv
 		member.DisplayName = userInfo.GetDisplayName()
 	}
 
-	member, isNew, err := h.db.UpsertMember(mpk, gpk, *member)
+	member, isNew, err := h.db.UpsertMember(mpk, gpk, member)
 	if err != nil {
 		return err
 	}
@@ -795,11 +794,11 @@ func (h *EventHandler) groupMemberDeviceAdded(gme *protocoltypes.GroupMetadataEv
 }
 
 func (h *EventHandler) handleAppMessageAcknowledge(tx *messengerdb.DBWrapper, i *mt.Interaction, _ proto.Message) (*mt.Interaction, bool, error) {
-	target, err := tx.MarkInteractionAsAcknowledged(i.TargetCID)
+	target, err := tx.MarkInteractionAsAcknowledged(i.TargetCid)
 	switch {
 	case err == gorm.ErrRecordNotFound:
-		h.logger.Debug("added ack in backlog", logutil.PrivateString("target", i.TargetCID), logutil.PrivateString("cid", i.GetCID()))
-		i, _, err = tx.AddInteraction(*i)
+		h.logger.Debug("added ack in backlog", logutil.PrivateString("target", i.TargetCid), logutil.PrivateString("cid", i.GetCid()))
+		i, _, err = tx.AddInteraction(i)
 		if err != nil {
 			return nil, false, err
 		}
@@ -810,11 +809,11 @@ func (h *EventHandler) handleAppMessageAcknowledge(tx *messengerdb.DBWrapper, i 
 		return nil, false, err
 
 	default:
-		h.logger.Debug(messengerutil.TyberEventAcknowledgeReceived, tyber.FormatEventLogFields(h.ctx, []tyber.Detail{{Name: "TargetCID", Description: i.TargetCID}})...)
+		h.logger.Debug(messengerutil.TyberEventAcknowledgeReceived, tyber.FormatEventLogFields(h.ctx, []tyber.Detail{{Name: "TargetCID", Description: i.TargetCid}})...)
 
 		if target != nil {
-			if err := messengerutil.StreamInteraction(h.dispatcher, tx, target.CID, false); err != nil {
-				h.logger.Error("error while sending stream event", logutil.PrivateString("public-key", i.ConversationPublicKey), logutil.PrivateString("cid", i.CID), zap.Error(err))
+			if err := messengerutil.StreamInteraction(h.dispatcher, tx, target.Cid, false); err != nil {
+				h.logger.Error("error while sending stream event", logutil.PrivateString("public-key", i.ConversationPublicKey), logutil.PrivateString("cid", i.Cid), zap.Error(err))
 			}
 		}
 
@@ -827,12 +826,12 @@ func (h *EventHandler) handleAppMessageGroupInvitation(tx *messengerdb.DBWrapper
 		return nil, false, ErrNilPayload
 	}
 
-	i, isNew, err := tx.AddInteraction(*i)
+	i, isNew, err := tx.AddInteraction(i)
 	if err != nil {
 		return nil, isNew, err
 	}
 
-	if err := messengerutil.StreamInteraction(h.dispatcher, tx, i.CID, isNew); err != nil {
+	if err := messengerutil.StreamInteraction(h.dispatcher, tx, i.Cid, isNew); err != nil {
 		return nil, isNew, err
 	}
 
@@ -857,12 +856,12 @@ func (h *EventHandler) handleAppMessageGroupInvitation(tx *messengerdb.DBWrapper
 
 func (h *EventHandler) handleAppMessageUserMessage(tx *messengerdb.DBWrapper, i *mt.Interaction, amPayload proto.Message) (*mt.Interaction, bool, error) {
 	// NOTE: it's ok to have an empty payload here since a user message can be only medias
-	i, isNew, err := tx.AddInteraction(*i)
+	i, isNew, err := tx.AddInteraction(i)
 	if err != nil {
 		return nil, isNew, err
 	}
 
-	if err := messengerutil.StreamInteraction(h.dispatcher, tx, i.CID, isNew); err != nil {
+	if err := messengerutil.StreamInteraction(h.dispatcher, tx, i.Cid, isNew); err != nil {
 		return nil, isNew, err
 	}
 
@@ -870,7 +869,7 @@ func (h *EventHandler) handleAppMessageUserMessage(tx *messengerdb.DBWrapper, i 
 		return i, isNew, nil
 	}
 
-	if err := tx.PostAction(func(d *messengerdb.DBWrapper) error {
+	if err := tx.PostAction(func(_ *messengerdb.DBWrapper) error {
 		return h.postHandlerActions.InteractionReceived(i)
 	}); err != nil {
 		return nil, isNew, err
@@ -939,7 +938,7 @@ func (h *EventHandler) handleAppMessageSetUserInfo(tx *messengerdb.DBWrapper, i 
 		h.logger.Debug("interesting contact SetUserInfo")
 
 		c.DisplayName = payload.GetDisplayName()
-		err = tx.UpdateContact(cpk, mt.Contact{DisplayName: c.GetDisplayName(), InfoDate: i.GetSentDate()})
+		err = tx.UpdateContact(cpk, &mt.Contact{DisplayName: c.GetDisplayName(), InfoDate: i.GetSentDate()})
 		if err != nil {
 			return nil, false, err
 		}
@@ -960,7 +959,7 @@ func (h *EventHandler) handleAppMessageSetUserInfo(tx *messengerdb.DBWrapper, i 
 	if i.MemberPublicKey == "" {
 		// store in backlog
 		h.logger.Info("storing SetUserInfo in backlog", logutil.PrivateString("name", payload.GetDisplayName()), logutil.PrivateString("device-pk", i.GetDevicePublicKey()), logutil.PrivateString("conv", i.ConversationPublicKey))
-		ni, isNew, err := tx.AddInteraction(*i)
+		ni, isNew, err := tx.AddInteraction(i)
 		if err != nil {
 			return nil, false, err
 		}
@@ -983,7 +982,7 @@ func (h *EventHandler) handleAppMessageSetUserInfo(tx *messengerdb.DBWrapper, i 
 	member, isNew, err := tx.UpsertMember(
 		i.MemberPublicKey,
 		i.ConversationPublicKey,
-		mt.Member{DisplayName: payload.GetDisplayName(), InfoDate: i.GetSentDate()},
+		&mt.Member{DisplayName: payload.GetDisplayName(), InfoDate: i.GetSentDate()},
 	)
 	if err != nil {
 		return nil, false, err
@@ -1001,7 +1000,7 @@ func (h *EventHandler) handleAppMessageSetUserInfo(tx *messengerdb.DBWrapper, i 
 
 func interactionFromAppMessage(h *EventHandler, gpk string, gme *protocoltypes.GroupMessageEvent, am *mt.AppMessage) (*mt.Interaction, error) {
 	amt := am.GetType()
-	cid, err := ipfscid.Cast(gme.GetEventContext().GetID())
+	cid, err := ipfscid.Cast(gme.GetEventContext().GetId())
 	if err != nil {
 		return nil, err
 	}
@@ -1016,7 +1015,7 @@ func interactionFromAppMessage(h *EventHandler, gpk string, gme *protocoltypes.G
 		return nil, err
 	}
 
-	dpkb := gme.GetHeaders().GetDevicePK()
+	dpkb := gme.GetHeaders().GetDevicePk()
 	dpk := messengerutil.B64EncodeBytes(dpkb)
 
 	isMe := bytes.Equal(devPK, dpkb)
@@ -1031,7 +1030,7 @@ func interactionFromAppMessage(h *EventHandler, gpk string, gme *protocoltypes.G
 	}
 
 	i := mt.Interaction{
-		CID:                   cid.String(),
+		Cid:                   cid.String(),
 		Type:                  amt,
 		Payload:               am.Payload,
 		IsMine:                isMe,
@@ -1039,7 +1038,7 @@ func interactionFromAppMessage(h *EventHandler, gpk string, gme *protocoltypes.G
 		SentDate:              am.GetSentDate(),
 		DevicePublicKey:       dpk,
 		MemberPublicKey:       mpk,
-		TargetCID:             am.GetTargetCID(),
+		TargetCid:             am.GetTargetCid(),
 	}
 
 	return &i, nil
@@ -1113,7 +1112,7 @@ func (h *EventHandler) dispatchVisibleInteraction(i *mt.Interaction) error {
 }
 
 func interactionConsumeAck(tx *messengerdb.DBWrapper, i *mt.Interaction, dispatcher messengerutil.Dispatcher, logger *zap.Logger) error {
-	cids, err := tx.GetAcknowledgementsCIDsForInteraction(i.CID)
+	cids, err := tx.GetAcknowledgementsCIDsForInteraction(i.Cid)
 	if err != nil {
 		return err
 	}
@@ -1129,8 +1128,8 @@ func interactionConsumeAck(tx *messengerdb.DBWrapper, i *mt.Interaction, dispatc
 	}
 
 	for _, c := range cids {
-		logger.Debug("found ack in backlog", logutil.PrivateString("target", c), logutil.PrivateString("cid", i.GetCID()))
-		if err := dispatcher.StreamEvent(mt.StreamEvent_TypeInteractionDeleted, &mt.StreamEvent_InteractionDeleted{CID: c, ConversationPublicKey: i.GetConversationPublicKey()}, false); err != nil {
+		logger.Debug("found ack in backlog", logutil.PrivateString("target", c), logutil.PrivateString("cid", i.GetCid()))
+		if err := dispatcher.StreamEvent(mt.StreamEvent_TypeInteractionDeleted, &mt.StreamEvent_InteractionDeleted{Cid: c, ConversationPublicKey: i.GetConversationPublicKey()}, false); err != nil {
 			return err
 		}
 	}
@@ -1145,7 +1144,7 @@ func indexMessage(tx *messengerdb.DBWrapper, id string, am *mt.AppMessage) error
 
 	amText, err := am.TextRepresentation()
 	if err != nil {
-		return errcode.ErrInternal.Wrap(err)
+		return errcode.ErrCode_ErrInternal.Wrap(err)
 	}
 
 	if amText == "" {
@@ -1153,7 +1152,7 @@ func indexMessage(tx *messengerdb.DBWrapper, id string, am *mt.AppMessage) error
 	}
 
 	if err := tx.InteractionIndexText(id, amText); err != nil {
-		return errcode.ErrDBWrite.Wrap(err)
+		return errcode.ErrCode_ErrDBWrite.Wrap(err)
 	}
 
 	return nil
@@ -1183,7 +1182,7 @@ func (h *EventHandler) handleAppMessageSetGroupInfo(tx *messengerdb.DBWrapper, i
 		}
 		c.InfoDate = i.GetSentDate()
 
-		_, err = tx.UpdateConversation(mt.Conversation{DisplayName: c.GetDisplayName(), InfoDate: c.GetInfoDate(), PublicKey: c.GetPublicKey()})
+		_, err = tx.UpdateConversation(&mt.Conversation{DisplayName: c.GetDisplayName(), InfoDate: c.GetInfoDate(), PublicKey: c.GetPublicKey()})
 		if err != nil {
 			return nil, false, err
 		}
@@ -1201,7 +1200,7 @@ func (h *EventHandler) handleAppMessageSetGroupInfo(tx *messengerdb.DBWrapper, i
 		return i, false, nil
 	}
 
-	return nil, false, errcode.ErrInternal
+	return nil, false, errcode.ErrCode_ErrInternal
 }
 
 func (h *EventHandler) handleAppMessageAccountDirectoryServiceRegistered(tx *messengerdb.DBWrapper, i *mt.Interaction, amPayload proto.Message) (*mt.Interaction, bool, error) {
@@ -1216,7 +1215,7 @@ func (h *EventHandler) handleAppMessageAccountDirectoryServiceRegistered(tx *mes
 
 	payload := amPayload.(*mt.AppMessage_AccountDirectoryServiceRegistered)
 	if acc.PublicKey != i.ConversationPublicKey {
-		return nil, false, errcode.ErrInvalidInput.Wrap(fmt.Errorf("message is not on account group"))
+		return nil, false, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("message is not on account group"))
 	}
 
 	if err := tx.SaveAccountDirectoryServiceRecord(acc.PublicKey, payload); err != nil {
@@ -1247,7 +1246,7 @@ func (h *EventHandler) handleAppMessageDirectoryServiceUnregistered(tx *messenge
 
 	payload := amPayload.(*mt.AppMessage_AccountDirectoryServiceUnregistered)
 	if acc.PublicKey != i.ConversationPublicKey {
-		return nil, false, errcode.ErrInvalidInput.Wrap(fmt.Errorf("message is not on account group"))
+		return nil, false, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("message is not on account group"))
 	}
 
 	if err := tx.MarkAccountDirectoryServiceRecordAsRevoked(payload.ServerAddr, payload.DirectoryRecordToken, payload.RemovalDate); err != nil {
@@ -1278,7 +1277,7 @@ func (h *EventHandler) handleAppMessagePushSetDeviceToken(tx *messengerdb.DBWrap
 
 	payload := amPayload.(*mt.AppMessage_PushSetDeviceToken)
 	if acc.PublicKey != i.ConversationPublicKey {
-		return nil, false, errcode.ErrInvalidInput.Wrap(fmt.Errorf("message is not on account group"))
+		return nil, false, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("message is not on account group"))
 	}
 
 	if err := tx.SavePushDeviceToken(acc.PublicKey, payload); err != nil {
@@ -1290,7 +1289,7 @@ func (h *EventHandler) handleAppMessagePushSetDeviceToken(tx *messengerdb.DBWrap
 		return nil, false, err
 	}
 
-	if err := tx.PostAction(func(d *messengerdb.DBWrapper) error {
+	if err := tx.PostAction(func(_ *messengerdb.DBWrapper) error {
 		if err := h.postHandlerActions.PushServerOrTokenRegistered(acc); err != nil {
 			return err
 		}
@@ -1315,7 +1314,7 @@ func (h *EventHandler) handleAppMessagePushSetServer(tx *messengerdb.DBWrapper, 
 
 	payload := amPayload.(*mt.AppMessage_PushSetServer)
 	if acc.PublicKey != i.ConversationPublicKey {
-		return nil, false, errcode.ErrInvalidInput.Wrap(fmt.Errorf("message is not on account group"))
+		return nil, false, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("message is not on account group"))
 	}
 
 	if err := tx.SavePushServer(acc.PublicKey, payload); err != nil {
@@ -1347,7 +1346,7 @@ func (h *EventHandler) handleAppMessagePushSetMemberToken(tx *messengerdb.DBWrap
 
 	payload := amPayload.(*mt.AppMessage_PushSetMemberToken)
 	if i.Conversation == nil {
-		return nil, false, errcode.ErrInvalidInput.Wrap(fmt.Errorf("unable to find the conversation"))
+		return nil, false, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("unable to find the conversation"))
 	}
 
 	tokenIdentifier := messengerutil.MakeSharedPushIdentifier(payload.MemberToken.Server.Key, payload.MemberToken.Token)
@@ -1365,7 +1364,7 @@ func (h *EventHandler) handleAppMessagePushSetMemberToken(tx *messengerdb.DBWrap
 	if conv, err := tx.GetConversationByPK(i.ConversationPublicKey); err != nil {
 		h.logger.Warn("unknown conversation", logutil.PrivateString("conversation-pk", i.ConversationPublicKey))
 		return nil, false, err
-	} else if err := tx.PostAction(func(d *messengerdb.DBWrapper) error {
+	} else if err := tx.PostAction(func(_ *messengerdb.DBWrapper) error {
 		return h.dispatcher.StreamEvent(mt.StreamEvent_TypeConversationUpdated, &mt.StreamEvent_ConversationUpdated{Conversation: conv}, false)
 	}); err != nil {
 		return nil, false, err
@@ -1376,19 +1375,19 @@ func (h *EventHandler) handleAppMessagePushSetMemberToken(tx *messengerdb.DBWrap
 
 func interactionFromOutOfStoreAppMessage(h *EventHandler, gPKBytes []byte, outOfStoreMessage *protocoltypes.OutOfStoreMessage, am *mt.AppMessage) (*mt.Interaction, error) {
 	amt := am.GetType()
-	_, c, err := ipfscid.CidFromBytes(outOfStoreMessage.CID)
+	_, c, err := ipfscid.CidFromBytes(outOfStoreMessage.Cid)
 	if err != nil {
-		return nil, errcode.ErrSerialization.Wrap(err)
+		return nil, errcode.ErrCode_ErrSerialization.Wrap(err)
 	}
 
 	gPK := messengerutil.B64EncodeBytes(gPKBytes)
 
-	isMe, err := h.db.IsFromSelf(messengerutil.B64EncodeBytes(gPKBytes), messengerutil.B64EncodeBytes(outOfStoreMessage.DevicePK))
+	isMe, err := h.db.IsFromSelf(messengerutil.B64EncodeBytes(gPKBytes), messengerutil.B64EncodeBytes(outOfStoreMessage.DevicePk))
 	if err != nil {
-		return nil, errcode.ErrDBRead.Wrap(err)
+		return nil, errcode.ErrCode_ErrDBRead.Wrap(err)
 	}
 
-	dpk := messengerutil.B64EncodeBytes(outOfStoreMessage.DevicePK)
+	dpk := messengerutil.B64EncodeBytes(outOfStoreMessage.DevicePk)
 
 	h.logger.Debug("received app message", logutil.PrivateString("type", amt.String()))
 
@@ -1401,7 +1400,7 @@ func interactionFromOutOfStoreAppMessage(h *EventHandler, gPKBytes []byte, outOf
 	}
 
 	i := mt.Interaction{
-		CID:                   c.String(),
+		Cid:                   c.String(),
 		Type:                  amt,
 		Payload:               am.GetPayload(),
 		IsMine:                isMe,
@@ -1423,16 +1422,16 @@ func (h *EventHandler) accountVerifiedCredentialRegistered(gme *protocoltypes.Gr
 
 	err := h.db.SaveAccountVerifiedCredential(&ev)
 	if err != nil {
-		return errcode.ErrDBWrite.Wrap(err)
+		return errcode.ErrCode_ErrDBWrite.Wrap(err)
 	}
 
 	acc, err := h.db.GetAccount()
 	if err != nil {
-		return errcode.ErrBertyAccountDataNotFound.Wrap(err)
+		return errcode.ErrCode_ErrBertyAccountDataNotFound.Wrap(err)
 	}
 
 	if err := h.dispatcher.StreamEvent(mt.StreamEvent_TypeAccountUpdated, &mt.StreamEvent_AccountUpdated{Account: acc}, false); err != nil {
-		return errcode.ErrStreamWrite.Wrap(err)
+		return errcode.ErrCode_ErrStreamWrite.Wrap(err)
 	}
 
 	return nil
@@ -1443,7 +1442,7 @@ func (h *EventHandler) GetAlreadyHandledMessage(cid ipfscid.Cid) (bool, *mt.Inte
 	if err == gorm.ErrRecordNotFound {
 		return false, nil, nil
 	} else if err != nil {
-		return false, nil, errcode.ErrInternal.Wrap(err)
+		return false, nil, errcode.ErrCode_ErrInternal.Wrap(err)
 	}
 
 	return true, i, nil
@@ -1451,40 +1450,40 @@ func (h *EventHandler) GetAlreadyHandledMessage(cid ipfscid.Cid) (bool, *mt.Inte
 
 func (h *EventHandler) HandleOutOfStoreAppMessage(groupPK []byte, message *protocoltypes.OutOfStoreMessage, payload []byte) (*mt.Interaction, bool, error) {
 	if message == nil {
-		return nil, false, errcode.ErrInvalidInput.Wrap(fmt.Errorf("no message specified"))
+		return nil, false, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("no message specified"))
 	}
 
-	_, c, err := ipfscid.CidFromBytes(message.CID)
+	_, c, err := ipfscid.CidFromBytes(message.Cid)
 	if err != nil {
-		return nil, false, errcode.ErrInvalidInput.Wrap(err)
+		return nil, false, errcode.ErrCode_ErrInvalidInput.Wrap(err)
 	}
 
 	if i, err := h.db.GetInteractionByCID(c.String()); err != nil && err != gorm.ErrRecordNotFound {
-		return nil, false, errcode.ErrDBRead.Wrap(err)
+		return nil, false, errcode.ErrCode_ErrDBRead.Wrap(err)
 	} else if err == nil {
 		h.logger.Info("push payload received but was previously handled")
 		return i, false, nil
 	}
 
 	env := protocoltypes.EncryptedMessage{}
-	if err := env.Unmarshal(payload); err != nil {
-		return nil, false, errcode.ErrDeserialization.Wrap(err)
+	if err := proto.Unmarshal(payload, &env); err != nil {
+		return nil, false, errcode.ErrCode_ErrDeserialization.Wrap(err)
 	}
 
 	_, am, err := mt.UnmarshalAppMessage(env.Plaintext)
 	if err != nil {
-		return nil, false, errcode.ErrDeserialization.Wrap(err)
+		return nil, false, errcode.ErrCode_ErrDeserialization.Wrap(err)
 	}
 
 	// build interaction
-	i, err := interactionFromOutOfStoreAppMessage(h, groupPK, message, &am)
+	i, err := interactionFromOutOfStoreAppMessage(h, groupPK, message, am)
 	if err != nil {
 		return nil, false, err
 	}
 
-	i, isNew, err := h.db.AddInteraction(*i)
+	i, isNew, err := h.db.AddInteraction(i)
 	if err != nil {
-		return nil, false, errcode.ErrDBWrite.Wrap(err)
+		return nil, false, errcode.ErrCode_ErrDBWrite.Wrap(err)
 	}
 
 	if isNew {
@@ -1508,7 +1507,7 @@ func (h *EventHandler) handleAppMessageServiceAddToken(tx *messengerdb.DBWrapper
 
 	payload := amPayload.(*mt.AppMessage_ServiceAddToken)
 	if acc.PublicKey != i.ConversationPublicKey {
-		return nil, false, errcode.ErrInvalidInput.Wrap(fmt.Errorf("message is not on account group"))
+		return nil, false, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("message is not on account group"))
 	}
 
 	if err := tx.AddServiceToken(acc.PublicKey, payload); err != nil {
@@ -1520,7 +1519,7 @@ func (h *EventHandler) handleAppMessageServiceAddToken(tx *messengerdb.DBWrapper
 		return nil, false, err
 	}
 
-	if err := tx.PostAction(func(d *messengerdb.DBWrapper) error {
+	if err := tx.PostAction(func(_ *messengerdb.DBWrapper) error {
 		return h.dispatcher.StreamEvent(mt.StreamEvent_TypeServiceTokenAdded, &mt.StreamEvent_ServiceTokenAdded{Token: token}, false)
 	}); err != nil {
 		return nil, false, err

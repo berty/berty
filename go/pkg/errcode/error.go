@@ -271,7 +271,7 @@ func codesFromGRPCStatus(st *status.Status) []ErrCode {
 	return nil
 }
 
-func grpcCodeFromWithCode(err WithCode) codes.Code {
+func grpcCodeFromWithCode(WithCode) codes.Code {
 	// here, we can do a big switch case if we plan to make accurate gRPC codes
 	// but we probably don't care
 	return codes.Unavailable

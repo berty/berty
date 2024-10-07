@@ -16,7 +16,7 @@ import (
 	"berty.tech/berty/v2/go/internal/i18n"
 	"berty.tech/berty/v2/go/localization"
 	"berty.tech/berty/v2/go/pkg/authtypes"
-	"berty.tech/weshnet/pkg/errcode"
+	"berty.tech/weshnet/v2/pkg/errcode"
 )
 
 type AuthTokenServer struct {
@@ -47,7 +47,7 @@ func NewAuthTokenServer(secret []byte, sk ed25519.PrivateKey, services map[strin
 	}
 
 	if len(services) == 0 {
-		return nil, errcode.ErrInvalidInput.Wrap(fmt.Errorf("missing services list"))
+		return nil, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("missing services list"))
 	}
 
 	issuer, err := NewAuthTokenIssuer(secret, sk)
@@ -255,7 +255,6 @@ func (a *AuthTokenServer) authTokenServerHTTPAuthorize(w http.ResponseWriter, r 
 		"PrivacyPolicyURL":      a.privacyPolicyURL,
 		"PrivacyPolicyURLLabel": i18nPrinter.Sprintf("auth.privacyPolicyLabel"),
 	})
-
 	if err != nil {
 		a.logger.Error("unable to execute template", zap.Error(err))
 	}

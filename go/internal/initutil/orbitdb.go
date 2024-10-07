@@ -7,9 +7,9 @@ import (
 	"berty.tech/go-orbit-db/baseorbitdb"
 	"berty.tech/go-orbit-db/pubsub/directchannel"
 	"berty.tech/go-orbit-db/pubsub/pubsubraw"
-	"berty.tech/weshnet"
-	"berty.tech/weshnet/pkg/rendezvous"
-	"berty.tech/weshnet/pkg/secretstore"
+	"berty.tech/weshnet/v2"
+	"berty.tech/weshnet/v2/pkg/rendezvous"
+	"berty.tech/weshnet/v2/pkg/secretstore"
 )
 
 const (
@@ -28,7 +28,7 @@ func (m *Manager) getRotationInterval() (*rendezvous.RotationInterval, error) {
 	if m.Node.Protocol.rotationInterval == nil {
 		rendezvousRotationBase, err := m.GetRendezvousRotationBase()
 		if err != nil {
-			return nil, errcode.ErrDeserialization.Wrap(err)
+			return nil, errcode.ErrCode_ErrDeserialization.Wrap(err)
 		}
 		m.Node.Protocol.rotationInterval = rendezvous.NewRotationInterval(rendezvousRotationBase)
 	}
@@ -45,17 +45,17 @@ func (m *Manager) getOrbitDB() (*weshnet.WeshOrbitDB, error) {
 
 	ipfs, node, err := m.getLocalIPFS()
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ErrCode_TODO.Wrap(err)
 	}
 
 	logger, err := m.getLogger()
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ErrCode_TODO.Wrap(err)
 	}
 
 	rootDS, err := m.getRootDatastore()
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ErrCode_TODO.Wrap(err)
 	}
 
 	st, err := secretstore.NewSecretStore(rootDS, &secretstore.NewSecretStoreOptions{
@@ -88,7 +88,7 @@ func (m *Manager) getOrbitDB() (*weshnet.WeshOrbitDB, error) {
 	if node.PubSub != nil {
 		self, err := ipfs.Key().Self(m.getContext())
 		if err != nil {
-			return nil, errcode.TODO.Wrap(err)
+			return nil, errcode.ErrCode_TODO.Wrap(err)
 		}
 
 		opts.PubSub = pubsubraw.NewPubSub(node.PubSub, self.ID(), opts.Logger, nil)
@@ -96,7 +96,7 @@ func (m *Manager) getOrbitDB() (*weshnet.WeshOrbitDB, error) {
 
 	odb, err := weshnet.NewWeshOrbitDB(m.getContext(), ipfs, opts)
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ErrCode_TODO.Wrap(err)
 	}
 
 	m.Node.Protocol.orbitDB = odb

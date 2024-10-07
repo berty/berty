@@ -9,16 +9,17 @@ import (
 	"encoding/base64"
 	"fmt"
 	"os"
+	"testing"
 
-	"github.com/gogo/protobuf/proto"
+	"google.golang.org/protobuf/proto"
 
 	"berty.tech/berty/v2/go/framework/bertybridge"
 	"berty.tech/berty/v2/go/pkg/accounttypes"
 	bridge_svc "berty.tech/berty/v2/go/pkg/bertybridge"
-	"berty.tech/weshnet/pkg/protocoltypes"
+	"berty.tech/weshnet/v2/pkg/protocoltypes"
 )
 
-func Example() {
+func TestExample(t *testing.T) {
 	// disable ressources manager for the sake of this example
 	os.Setenv("LIBP2P_RCMGR", "false")
 
@@ -89,7 +90,7 @@ func Example() {
 		err = proto.Unmarshal(output.Payload, &res)
 		checkErr(err)
 
-		accountID = res.GetAccountMetadata().GetAccountID()
+		accountID = res.GetAccountMetadata().GetAccountId()
 
 		fmt.Println("[+] account created.")
 	}
@@ -98,7 +99,7 @@ func Example() {
 	{
 		// create `CreateAccount` Input
 		input := &accounttypes.OpenAccount_Request{
-			AccountID: accountID,
+			AccountId: accountID,
 			Args:      args,
 		}
 		payload, err := proto.Marshal(input)
@@ -210,7 +211,6 @@ func Example() {
 	// Output:
 	// [+] initialized.
 	// [+] account created.
-	// go-libp2p resource manager protection disabled
 	// [+] account opened.
 	// [+] has grpc-web listener:            false
 	// [+] has websocket listener:           true

@@ -22,9 +22,9 @@ import (
 	"berty.tech/berty/v2/go/pkg/bertyaccount"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
-	"berty.tech/weshnet/pkg/grpcutil"
-	"berty.tech/weshnet/pkg/protocoltypes"
-	"berty.tech/weshnet/pkg/testutil"
+	"berty.tech/weshnet/v2/pkg/grpcutil"
+	"berty.tech/weshnet/v2/pkg/protocoltypes"
+	"berty.tech/weshnet/v2/pkg/testutil"
 )
 
 func TestFlow(t *testing.T) {
@@ -74,7 +74,7 @@ func TestFlow(t *testing.T) {
 	// try to open a non-existing account
 	{
 		stream, err := cl.OpenAccountWithProgress(ctx, &accounttypes.OpenAccountWithProgress_Request{
-			AccountID: "account 1",
+			AccountId: "account 1",
 		})
 		require.NoError(t, err)
 
@@ -83,7 +83,7 @@ func TestFlow(t *testing.T) {
 			msg, err := stream.Recv()
 			if err != nil {
 				require.Nil(t, msg)
-				require.True(t, errcode.Has(err, errcode.ErrBertyAccountDataNotFound))
+				require.True(t, errcode.Has(err, errcode.ErrCode_ErrBertyAccountDataNotFound))
 				break
 			}
 
@@ -95,11 +95,11 @@ func TestFlow(t *testing.T) {
 	// create a new account
 	{
 		rep, err := cl.CreateAccount(ctx, &accounttypes.CreateAccount_Request{
-			AccountID:   "account 1",
+			AccountId:   "account 1",
 			AccountName: "my first account",
 		})
 		require.NoError(t, err)
-		require.Equal(t, "account 1", rep.AccountMetadata.AccountID)
+		require.Equal(t, "account 1", rep.AccountMetadata.AccountId)
 		require.Equal(t, "my first account", rep.AccountMetadata.Name)
 		require.Zero(t, rep.AccountMetadata.LastOpened)
 	}
@@ -107,10 +107,10 @@ func TestFlow(t *testing.T) {
 	// load this new account
 	{
 		rep, err := cl.OpenAccount(ctx, &accounttypes.OpenAccount_Request{
-			AccountID: "account 1",
+			AccountId: "account 1",
 		})
 		require.NoError(t, err)
-		require.Equal(t, "account 1", rep.AccountMetadata.AccountID)
+		require.Equal(t, "account 1", rep.AccountMetadata.AccountId)
 		require.Equal(t, "my first account", rep.AccountMetadata.Name)
 		require.NotZero(t, rep.AccountMetadata.LastOpened)
 	}
@@ -120,7 +120,7 @@ func TestFlow(t *testing.T) {
 		rep, err := cl.ListAccounts(ctx, &accounttypes.ListAccounts_Request{})
 		require.NoError(t, err)
 		require.Len(t, rep.Accounts, 1)
-		require.Equal(t, rep.Accounts[0].AccountID, "account 1")
+		require.Equal(t, rep.Accounts[0].AccountId, "account 1")
 		require.Equal(t, rep.Accounts[0].Name, "my first account")
 		require.NotZero(t, rep.Accounts[0].LastOpened)
 		require.NotZero(t, rep.Accounts[0].CreationDate)
@@ -129,11 +129,11 @@ func TestFlow(t *testing.T) {
 	// try to open an account while we already have an account loaded
 	{
 		stream, err := cl.OpenAccountWithProgress(ctx, &accounttypes.OpenAccountWithProgress_Request{
-			AccountID: "account 1",
+			AccountId: "account 1",
 		})
 		require.NoError(t, err)
 		_, err = stream.Recv()
-		require.True(t, errcode.Has(err, errcode.ErrBertyAccountAlreadyOpened))
+		require.True(t, errcode.Has(err, errcode.ErrCode_ErrBertyAccountAlreadyOpened))
 	}
 
 	// one log file
@@ -141,7 +141,7 @@ func TestFlow(t *testing.T) {
 		rep, err := cl.LogfileList(ctx, &accounttypes.LogfileList_Request{})
 		require.NoError(t, err)
 		require.Len(t, rep.Entries, 1)
-		require.Equal(t, rep.Entries[0].AccountID, "account 1")
+		require.Equal(t, rep.Entries[0].AccountId, "account 1")
 		require.Equal(t, rep.Entries[0].Kind, "mobile")
 		require.True(t, strings.HasPrefix(rep.Entries[0].Name, "mobile-"))
 		require.NotEmpty(t, rep.Entries[0].Path)
@@ -233,7 +233,7 @@ func TestFlow(t *testing.T) {
 	// load the account
 	{
 		stream, err := cl.OpenAccountWithProgress(ctx, &accounttypes.OpenAccountWithProgress_Request{
-			AccountID: "account 1",
+			AccountId: "account 1",
 		})
 		require.NoError(t, err)
 		steps := 0
@@ -380,11 +380,11 @@ func TestImportExportFlow(t *testing.T) {
 	// create a new account
 	{
 		rep, err := cl.CreateAccount(ctx, &accounttypes.CreateAccount_Request{
-			AccountID:   "account 1",
+			AccountId:   "account 1",
 			AccountName: "my first account",
 		})
 		require.NoError(t, err)
-		require.Equal(t, "account 1", rep.AccountMetadata.AccountID)
+		require.Equal(t, "account 1", rep.AccountMetadata.AccountId)
 		require.Equal(t, "my first account", rep.AccountMetadata.Name)
 		require.Zero(t, rep.AccountMetadata.LastOpened)
 	}
@@ -392,10 +392,10 @@ func TestImportExportFlow(t *testing.T) {
 	// load this new account
 	{
 		rep, err := cl.OpenAccount(ctx, &accounttypes.OpenAccount_Request{
-			AccountID: "account 1",
+			AccountId: "account 1",
 		})
 		require.NoError(t, err)
-		require.Equal(t, "account 1", rep.AccountMetadata.AccountID)
+		require.Equal(t, "account 1", rep.AccountMetadata.AccountId)
 		require.Equal(t, "my first account", rep.AccountMetadata.Name)
 		require.NotZero(t, rep.AccountMetadata.LastOpened)
 	}
@@ -502,7 +502,7 @@ func TestImportExportFlow(t *testing.T) {
 		rep, err := cl.ListAccounts(ctx, &accounttypes.ListAccounts_Request{})
 		require.NoError(t, err)
 		require.Len(t, rep.Accounts, 1)
-		require.Equal(t, rep.Accounts[0].AccountID, "account 1")
+		require.Equal(t, rep.Accounts[0].AccountId, "account 1")
 		require.Equal(t, rep.Accounts[0].Name, "my first account")
 		require.NotZero(t, rep.Accounts[0].LastOpened)
 		require.NotZero(t, rep.Accounts[0].CreationDate)
@@ -513,7 +513,7 @@ func TestImportExportFlow(t *testing.T) {
 	// init a new account based on previous export
 	{
 		stream, err := cl.ImportAccountWithProgress(ctx, &accounttypes.ImportAccountWithProgress_Request{
-			AccountID:   "account 2",
+			AccountId:   "account 2",
 			AccountName: "restored",
 			BackupPath:  exportPath,
 			// Args: []string{},
@@ -554,7 +554,7 @@ func TestImportExportFlow(t *testing.T) {
 		require.Less(t, time.Microsecond*time.Duration(lastProgress.Delay), 5*time.Minute)
 
 		require.NotEmpty(t, lastMsg)
-		require.Equal(t, lastMsg.AccountMetadata.AccountID, "account 2")
+		require.Equal(t, lastMsg.AccountMetadata.AccountId, "account 2")
 		require.Equal(t, lastMsg.AccountMetadata.Name, "restored")
 		require.NotEmpty(t, lastMsg.AccountMetadata.PublicKey)
 		require.NotZero(t, lastMsg.AccountMetadata.LastOpened)
@@ -568,12 +568,12 @@ func TestImportExportFlow(t *testing.T) {
 		require.NoError(t, err)
 		require.Len(t, rep.Accounts, 2)
 
-		require.Equal(t, rep.Accounts[0].AccountID, "account 1")
+		require.Equal(t, rep.Accounts[0].AccountId, "account 1")
 		require.Equal(t, rep.Accounts[0].Name, "my first account")
 		require.NotZero(t, rep.Accounts[0].LastOpened)
 		require.NotZero(t, rep.Accounts[0].CreationDate)
 
-		require.Equal(t, rep.Accounts[1].AccountID, "account 2")
+		require.Equal(t, rep.Accounts[1].AccountId, "account 2")
 		require.Equal(t, rep.Accounts[1].Name, "restored")
 		require.NotZero(t, rep.Accounts[1].LastOpened)
 		require.NotZero(t, rep.Accounts[1].CreationDate)
@@ -582,11 +582,11 @@ func TestImportExportFlow(t *testing.T) {
 	// try to open an account while we already have an account loaded
 	{
 		stream, err := cl.OpenAccountWithProgress(ctx, &accounttypes.OpenAccountWithProgress_Request{
-			AccountID: "account 2",
+			AccountId: "account 2",
 		})
 		require.NoError(t, err)
 		_, err = stream.Recv()
-		require.True(t, errcode.Has(err, errcode.ErrBertyAccountAlreadyOpened))
+		require.True(t, errcode.Has(err, errcode.ErrCode_ErrBertyAccountAlreadyOpened))
 	}
 
 	// close the account
@@ -625,7 +625,7 @@ func TestImportExportFlow(t *testing.T) {
 	// load the restored account
 	{
 		stream, err := cl.OpenAccountWithProgress(ctx, &accounttypes.OpenAccountWithProgress_Request{
-			AccountID: "account 2",
+			AccountId: "account 2",
 		})
 		require.NoError(t, err)
 		steps := 0

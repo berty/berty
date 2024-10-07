@@ -6,7 +6,7 @@ package messengerpayloads
 //
 //	"github.com/stretchr/testify/require"
 //
-//	"berty.tech/weshnet"
+//	"berty.tech/weshnet/v2"
 //	"berty.tech/berty/v2/go/pkg/messengertypes"
 //)
 //

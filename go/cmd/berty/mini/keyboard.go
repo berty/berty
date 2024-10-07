@@ -26,7 +26,7 @@ func keyboardCommands() []*keyboardCommand {
 				{key: tcell.KeyEsc},
 			},
 			help: "Quit the app",
-			action: func(app *tview.Application, tabbedView *tabbedGroupsView, input *tview.InputField) {
+			action: func(app *tview.Application, tabbedView *tabbedGroupsView, input *tview.InputField) { //nolint:revive
 				app.Stop()
 			},
 		},
@@ -35,7 +35,7 @@ func keyboardCommands() []*keyboardCommand {
 				{key: tcell.KeyHome},
 			},
 			help: "View the beginning of the message list",
-			action: func(app *tview.Application, tabbedView *tabbedGroupsView, input *tview.InputField) {
+			action: func(app *tview.Application, tabbedView *tabbedGroupsView, input *tview.InputField) { //nolint:revive
 				tabbedView.GetActiveViewGroup().messages.historyScroll.ScrollToBeginning()
 			},
 		},
@@ -44,7 +44,7 @@ func keyboardCommands() []*keyboardCommand {
 				{key: tcell.KeyEnd},
 			},
 			help: "View the end of the message list",
-			action: func(app *tview.Application, tabbedView *tabbedGroupsView, input *tview.InputField) {
+			action: func(app *tview.Application, tabbedView *tabbedGroupsView, input *tview.InputField) { //nolint:revive
 				tabbedView.GetActiveViewGroup().messages.historyScroll.ScrollToEnd()
 			},
 		},
@@ -53,7 +53,7 @@ func keyboardCommands() []*keyboardCommand {
 				{key: tcell.KeyPgUp},
 			},
 			help: "View 10 previous messages in the list",
-			action: func(app *tview.Application, tabbedView *tabbedGroupsView, input *tview.InputField) {
+			action: func(app *tview.Application, tabbedView *tabbedGroupsView, input *tview.InputField) { //nolint:revive
 				tabbedView.GetActiveViewGroup().ScrollToOffset(-10)
 			},
 		},
@@ -62,7 +62,7 @@ func keyboardCommands() []*keyboardCommand {
 				{key: tcell.KeyPgDn},
 			},
 			help: "View 10 next messages in the list",
-			action: func(app *tview.Application, tabbedView *tabbedGroupsView, input *tview.InputField) {
+			action: func(app *tview.Application, tabbedView *tabbedGroupsView, input *tview.InputField) { //nolint:revive
 				tabbedView.GetActiveViewGroup().ScrollToOffset(+10)
 			},
 		},
@@ -79,7 +79,7 @@ func keyboardCommands() []*keyboardCommand {
 				},
 			},
 			help: "Go to the previous group displayed in the sidebar",
-			action: func(app *tview.Application, tabbedView *tabbedGroupsView, input *tview.InputField) {
+			action: func(app *tview.Application, tabbedView *tabbedGroupsView, input *tview.InputField) { //nolint:revive
 				tabbedView.PrevGroup()
 			},
 		},
@@ -96,7 +96,7 @@ func keyboardCommands() []*keyboardCommand {
 				},
 			},
 			help: "Go to the next group displayed in the sidebar",
-			action: func(app *tview.Application, tabbedView *tabbedGroupsView, input *tview.InputField) {
+			action: func(app *tview.Application, tabbedView *tabbedGroupsView, input *tview.InputField) { //nolint:revive
 				tabbedView.NextGroup()
 			},
 		},
@@ -105,7 +105,7 @@ func keyboardCommands() []*keyboardCommand {
 				{key: tcell.KeyUp},
 			},
 			help: "Restore the previous message sent in the input field",
-			action: func(app *tview.Application, tabbedView *tabbedGroupsView, input *tview.InputField) {
+			action: func(app *tview.Application, tabbedView *tabbedGroupsView, input *tview.InputField) { //nolint:revive
 				input.SetText(tabbedView.GetActiveViewGroup().inputHistory.Prev())
 			},
 		},
@@ -114,7 +114,7 @@ func keyboardCommands() []*keyboardCommand {
 				{key: tcell.KeyDown},
 			},
 			help: "Restore the next message sent in the input field",
-			action: func(app *tview.Application, tabbedView *tabbedGroupsView, input *tview.InputField) {
+			action: func(app *tview.Application, tabbedView *tabbedGroupsView, input *tview.InputField) { //nolint:revive
 				input.SetText(tabbedView.GetActiveViewGroup().inputHistory.Next())
 			},
 		},

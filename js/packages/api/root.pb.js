@@ -9,10 +9,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
         nested: {
           v1: {
             options: {
-              go_package: "berty.tech/berty/go/pkg/accounttypes",
-              "(gogoproto.marshaler_all)": true,
-              "(gogoproto.unmarshaler_all)": true,
-              "(gogoproto.sizer_all)": true
+              go_package: "berty.tech/berty/go/pkg/accounttypes"
             },
             nested: {
               AccountService: {
@@ -194,10 +191,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     fields: {
                       accountId: {
                         type: "string",
-                        id: 1,
-                        options: {
-                          "(gogoproto.customname)": "AccountID"
-                        }
+                        id: 1
                       },
                       listeners: {
                         rule: "repeated",
@@ -220,10 +214,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       },
                       accountId: {
                         type: "string",
-                        id: 2,
-                        options: {
-                          "(gogoproto.customname)": "AccountID"
-                        }
+                        id: 2
                       },
                       loggerFilters: {
                         type: "string",
@@ -261,10 +252,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       },
                       accountId: {
                         type: "string",
-                        id: 2,
-                        options: {
-                          "(gogoproto.customname)": "AccountID"
-                        }
+                        id: 2
                       },
                       loggerFilters: {
                         type: "string",
@@ -317,10 +305,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                 fields: {
                   accountId: {
                     type: "string",
-                    id: 1,
-                    options: {
-                      "(gogoproto.customname)": "AccountID"
-                    }
+                    id: 1
                   },
                   name: {
                     type: "string",
@@ -328,10 +313,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   },
                   avatarCid: {
                     type: "string",
-                    id: 3,
-                    options: {
-                      "(gogoproto.customname)": "AvatarCID"
-                    }
+                    id: 3
                   },
                   publicKey: {
                     type: "string",
@@ -375,10 +357,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     fields: {
                       accountId: {
                         type: "string",
-                        id: 1,
-                        options: {
-                          "(gogoproto.customname)": "AccountID"
-                        }
+                        id: 1
                       }
                     }
                   },
@@ -394,10 +373,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     fields: {
                       accountId: {
                         type: "string",
-                        id: 1,
-                        options: {
-                          "(gogoproto.customname)": "AccountID"
-                        }
+                        id: 1
                       },
                       accountName: {
                         type: "string",
@@ -443,10 +419,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     fields: {
                       accountId: {
                         type: "string",
-                        id: 1,
-                        options: {
-                          "(gogoproto.customname)": "AccountID"
-                        }
+                        id: 1
                       },
                       accountName: {
                         type: "string",
@@ -496,10 +469,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     fields: {
                       accountId: {
                         type: "string",
-                        id: 1,
-                        options: {
-                          "(gogoproto.customname)": "AccountID"
-                        }
+                        id: 1
                       },
                       accountName: {
                         type: "string",
@@ -528,10 +498,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     fields: {
                       accountId: {
                         type: "string",
-                        id: 1,
-                        options: {
-                          "(gogoproto.customname)": "AccountID"
-                        }
+                        id: 1
                       },
                       accountName: {
                         type: "string",
@@ -539,10 +506,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       },
                       avatarCid: {
                         type: "string",
-                        id: 3,
-                        options: {
-                          "(gogoproto.customname)": "AvatarCID"
-                        }
+                        id: 3
                       },
                       publicKey: {
                         type: "string",
@@ -610,10 +574,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                         fields: {
                           accountId: {
                             type: "string",
-                            id: 1,
-                            options: {
-                              "(gogoproto.customname)": "AccountID"
-                            }
+                            id: 1
                           },
                           name: {
                             type: "string",
@@ -656,10 +617,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     fields: {
                       accountId: {
                         type: "string",
-                        id: 1,
-                        options: {
-                          "(gogoproto.customname)": "AccountID"
-                        }
+                        id: 1
                       }
                     }
                   },
@@ -712,17 +670,11 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   },
                   dht: {
                     type: "DHTFlag",
-                    id: 4,
-                    options: {
-                      "(gogoproto.customname)": "DHT"
-                    }
+                    id: 4
                   },
                   bluetoothLe: {
                     type: "Flag",
-                    id: 5,
-                    options: {
-                      "(gogoproto.customname)": "BluetoothLE"
-                    }
+                    id: 5
                   },
                   appleMultipeerConnectivity: {
                     type: "Flag",
@@ -738,10 +690,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   },
                   mdns: {
                     type: "Flag",
-                    id: 9,
-                    options: {
-                      "(gogoproto.customname)": "MDNS"
-                    }
+                    id: 9
                   },
                   showDefaultServices: {
                     type: "Flag",
@@ -749,10 +698,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   },
                   allowUnsecureGrpcConnections: {
                     type: "Flag",
-                    id: 11,
-                    options: {
-                      "(gogoproto.customname)": "AllowUnsecureGRPCConnections"
-                    }
+                    id: 11
                   }
                 },
                 nested: {
@@ -797,10 +743,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     fields: {
                       accountId: {
                         type: "string",
-                        id: 1,
-                        options: {
-                          "(gogoproto.customname)": "AccountID"
-                        }
+                        id: 1
                       },
                       config: {
                         type: "NetworkConfig",
@@ -820,10 +763,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     fields: {
                       accountId: {
                         type: "string",
-                        id: 1,
-                        options: {
-                          "(gogoproto.customname)": "AccountID"
-                        }
+                        id: 1
                       }
                     }
                   },
@@ -938,10 +878,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
         nested: {
           v1: {
             options: {
-              go_package: "berty.tech/berty/go/pkg/pushtypes",
-              "(gogoproto.marshaler_all)": true,
-              "(gogoproto.unmarshaler_all)": true,
-              "(gogoproto.sizer_all)": true
+              go_package: "berty.tech/berty/go/pkg/pushtypes"
             },
             nested: {
               PushService: {
@@ -964,10 +901,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   },
                   bundleId: {
                     type: "string",
-                    id: 2,
-                    options: {
-                      "(gogoproto.customname)": "BundleID"
-                    }
+                    id: 2
                   },
                   token: {
                     type: "bytes",
@@ -1004,10 +938,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                 fields: {
                   appBundleId: {
                     type: "string",
-                    id: 1,
-                    options: {
-                      "(gogoproto.customname)": "AppBundleID"
-                    }
+                    id: 1
                   },
                   tokenType: {
                     type: "PushServiceTokenType",
@@ -1086,10 +1017,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                 fields: {
                   accountId: {
                     type: "string",
-                    id: 1,
-                    options: {
-                      "(gogoproto.customname)": "AccountID"
-                    }
+                    id: 1
                   },
                   accountName: {
                     type: "string",
@@ -1117,10 +1045,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   },
                   payloadAttrsJson: {
                     type: "string",
-                    id: 8,
-                    options: {
-                      "(gogoproto.customname)": "PayloadAttrsJSON"
-                    }
+                    id: 8
                   },
                   deepLink: {
                     type: "string",
@@ -1226,10 +1151,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
         nested: {
           v1: {
             options: {
-              go_package: "berty.tech/berty/go/pkg/bertybridge",
-              "(gogoproto.marshaler_all)": true,
-              "(gogoproto.unmarshaler_all)": true,
-              "(gogoproto.sizer_all)": true
+              go_package: "berty.tech/berty/go/pkg/bertybridge"
             },
             nested: {
               BridgeService: {
@@ -1546,11 +1468,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
       },
       errcode: {
         options: {
-          go_package: "berty.tech/berty/go/pkg/errcode",
-          "(gogoproto.goproto_enum_prefix_all)": false,
-          "(gogoproto.marshaler_all)": true,
-          "(gogoproto.unmarshaler_all)": true,
-          "(gogoproto.sizer_all)": true
+          go_package: "berty.tech/berty/go/pkg/errcode"
         },
         nested: {
           ErrCode: {
@@ -1697,13 +1615,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
         nested: {
           v1: {
             options: {
-              go_package: "berty.tech/berty/go/pkg/messengertypes",
-              "(gogoproto.goproto_unkeyed_all)": false,
-              "(gogoproto.goproto_unrecognized_all)": false,
-              "(gogoproto.goproto_sizecache_all)": false,
-              "(gogoproto.marshaler_all)": true,
-              "(gogoproto.unmarshaler_all)": true,
-              "(gogoproto.sizer_all)": true
+              go_package: "berty.tech/berty/go/pkg/messengertypes"
             },
             nested: {
               MessengerService: {
@@ -1910,17 +1822,11 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   },
                   refCid: {
                     type: "string",
-                    id: 2,
-                    options: {
-                      "(gogoproto.customname)": "RefCID"
-                    }
+                    id: 2
                   },
                   conversationPk: {
                     type: "string",
-                    id: 3,
-                    options: {
-                      "(gogoproto.customname)": "ConversationPK"
-                    }
+                    id: 3
                   },
                   oldestToNewest: {
                     type: "bool",
@@ -1945,10 +1851,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     fields: {
                       groupPk: {
                         type: "string",
-                        id: 1,
-                        options: {
-                          "(gogoproto.customname)": "GroupPK"
-                        }
+                        id: 1
                       }
                     }
                   },
@@ -1964,10 +1867,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     fields: {
                       groupPk: {
                         type: "string",
-                        id: 1,
-                        options: {
-                          "(gogoproto.customname)": "GroupPK"
-                        }
+                        id: 1
                       }
                     }
                   },
@@ -1999,10 +1899,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     fields: {
                       groupPk: {
                         type: "string",
-                        id: 1,
-                        options: {
-                          "(gogoproto.customname)": "GroupPK"
-                        }
+                        id: 1
                       },
                       mutedUntil: {
                         type: "int64",
@@ -2104,17 +2001,11 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       },
                       internalUrl: {
                         type: "string",
-                        id: 2,
-                        options: {
-                          "(gogoproto.customname)": "InternalURL"
-                        }
+                        id: 2
                       },
                       webUrl: {
                         type: "string",
-                        id: 3,
-                        options: {
-                          "(gogoproto.customname)": "WebURL"
-                        }
+                        id: 3
                       }
                     }
                   }
@@ -2127,10 +2018,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     fields: {
                       groupPk: {
                         type: "bytes",
-                        id: 1,
-                        options: {
-                          "(gogoproto.customname)": "GroupPK"
-                        }
+                        id: 1
                       },
                       groupName: {
                         type: "string",
@@ -2146,17 +2034,11 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       },
                       internalUrl: {
                         type: "string",
-                        id: 2,
-                        options: {
-                          "(gogoproto.customname)": "InternalURL"
-                        }
+                        id: 2
                       },
                       webUrl: {
                         type: "string",
-                        id: 3,
-                        options: {
-                          "(gogoproto.customname)": "WebURL"
-                        }
+                        id: 3
                       }
                     }
                   }
@@ -2231,10 +2113,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   },
                   bertyId: {
                     type: "BertyID",
-                    id: 2,
-                    options: {
-                      "(gogoproto.customname)": "BertyID"
-                    }
+                    id: 2
                   },
                   bertyGroup: {
                     type: "BertyGroup",
@@ -2274,10 +2153,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       },
                       contactAccountPk: {
                         type: "bytes",
-                        id: 11,
-                        options: {
-                          "(gogoproto.customname)": "ContactAccountPK"
-                        }
+                        id: 11
                       },
                       groupPublicKey: {
                         type: "bytes",
@@ -2318,24 +2194,15 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     fields: {
                       accountId: {
                         type: "string",
-                        id: 1,
-                        options: {
-                          "(gogoproto.customname)": "AccountID"
-                        }
+                        id: 1
                       },
                       groupPk: {
                         type: "string",
-                        id: 2,
-                        options: {
-                          "(gogoproto.customname)": "GroupPK"
-                        }
+                        id: 2
                       },
                       messageId: {
                         type: "string",
-                        id: 3,
-                        options: {
-                          "(gogoproto.customname)": "MessageID"
-                        }
+                        id: 3
                       }
                     }
                   }
@@ -2348,10 +2215,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     fields: {
                       bertyId: {
                         type: "BertyID",
-                        id: 1,
-                        options: {
-                          "(gogoproto.customname)": "BertyID"
-                        }
+                        id: 1
                       },
                       metadata: {
                         type: "bytes",
@@ -2376,10 +2240,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   },
                   accountPk: {
                     type: "bytes",
-                    id: 2,
-                    options: {
-                      "(gogoproto.customname)": "AccountPK"
-                    }
+                    id: 2
                   },
                   displayName: {
                     type: "string",
@@ -2413,15 +2274,12 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     type: "int64",
                     id: 3,
                     options: {
-                      "(gogoproto.jsontag)": "sentDate"
+                      json_name: "sentDate"
                     }
                   },
                   targetCid: {
                     type: "string",
-                    id: 5,
-                    options: {
-                      "(gogoproto.customname)": "TargetCID"
-                    }
+                    id: 5
                   }
                 },
                 reserved: [
@@ -2574,10 +2432,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       },
                       authenticationUrl: {
                         type: "string",
-                        id: 3,
-                        options: {
-                          "(gogoproto.customname)": "AuthenticationURL"
-                        }
+                        id: 3
                       },
                       expiration: {
                         type: "int64",
@@ -2589,10 +2444,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     fields: {
                       tokenid: {
                         type: "string",
-                        id: 2,
-                        options: {
-                          "(gogoproto.customname)": "TokenID"
-                        }
+                        id: 2
                       }
                     }
                   },
@@ -2657,10 +2509,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       },
                       db: {
                         type: "DB",
-                        id: 4,
-                        options: {
-                          "(gogoproto.customname)": "DB"
-                        }
+                        id: 4
                       }
                     }
                   },
@@ -2771,10 +2620,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       },
                       authenticationUrl: {
                         type: "string",
-                        id: 2,
-                        options: {
-                          "(gogoproto.customname)": "AuthenticationURL"
-                        }
+                        id: 2
                       }
                     }
                   },
@@ -2806,10 +2652,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     fields: {
                       callbackUrl: {
                         type: "string",
-                        id: 1,
-                        options: {
-                          "(gogoproto.customname)": "CallbackURL"
-                        }
+                        id: 1
                       }
                     }
                   },
@@ -2817,10 +2660,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     fields: {
                       tokenId: {
                         type: "string",
-                        id: 1,
-                        options: {
-                          "(gogoproto.customname)": "TokenID"
-                        }
+                        id: 1
                       }
                     }
                   }
@@ -2833,10 +2673,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     fields: {
                       authUrl: {
                         type: "string",
-                        id: 1,
-                        options: {
-                          "(gogoproto.customname)": "AuthURL"
-                        }
+                        id: 1
                       },
                       services: {
                         rule: "repeated",
@@ -2849,17 +2686,11 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     fields: {
                       url: {
                         type: "string",
-                        id: 1,
-                        options: {
-                          "(gogoproto.customname)": "URL"
-                        }
+                        id: 1
                       },
                       secureUrl: {
                         type: "bool",
-                        id: 2,
-                        options: {
-                          "(gogoproto.customname)": "SecureURL"
-                        }
+                        id: 2
                       }
                     }
                   }
@@ -2871,7 +2702,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     type: "string",
                     id: 1,
                     options: {
-                      "(gogoproto.moretags)": "gorm:primaryKey"
+                      "(tagger.tags)": "gorm:primaryKey"
                     }
                   },
                   displayName: {
@@ -2887,14 +2718,14 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     type: "ServiceToken",
                     id: 5,
                     options: {
-                      "(gogoproto.moretags)": "gorm:foreignKey:AccountPK"
+                      "(tagger.tags)": "gorm:foreignKey:AccountPk"
                     }
                   },
                   replicateNewGroupsAutomatically: {
                     type: "bool",
                     id: 6,
                     options: {
-                      "(gogoproto.moretags)": "gorm:default:true"
+                      "(tagger.tags)": "gorm:default:true"
                     }
                   },
                   autoSharePushTokenFlag: {
@@ -2905,7 +2736,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     type: "PushDeviceToken",
                     id: 9,
                     options: {
-                      "(gogoproto.moretags)": "gorm:foreignKey:AccountPK"
+                      "(tagger.tags)": "gorm:foreignKey:AccountPk"
                     }
                   },
                   pushServerRecords: {
@@ -2913,7 +2744,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     type: "PushServerRecord",
                     id: 10,
                     options: {
-                      "(gogoproto.moretags)": "gorm:foreignKey:AccountPK"
+                      "(tagger.tags)": "gorm:foreignKey:AccountPk"
                     }
                   },
                   mutedUntil: {
@@ -2933,7 +2764,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     type: "AccountVerifiedCredential",
                     id: 14,
                     options: {
-                      "(gogoproto.moretags)": "gorm:foreignKey:AccountPK"
+                      "(tagger.tags)": "gorm:foreignKey:AccountPk"
                     }
                   },
                   directoryServiceRecords: {
@@ -2941,7 +2772,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     type: "AccountDirectoryServiceRecord",
                     id: 15,
                     options: {
-                      "(gogoproto.moretags)": "gorm:foreignKey:AccountPK"
+                      "(tagger.tags)": "gorm:foreignKey:AccountPk"
                     }
                   }
                 },
@@ -2958,7 +2789,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     type: "string",
                     id: 2,
                     options: {
-                      "(gogoproto.moretags)": "gorm:primaryKey"
+                      "(tagger.tags)": "gorm:primaryKey"
                     }
                   },
                   address: {
@@ -2973,15 +2804,14 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     type: "string",
                     id: 1,
                     options: {
-                      "(gogoproto.customname)": "TokenID",
-                      "(gogoproto.moretags)": "gorm:primaryKey"
+                      "(tagger.tags)": "gorm:primaryKey"
                     }
                   },
                   type: {
                     type: "string",
                     id: 2,
                     options: {
-                      "(gogoproto.moretags)": "gorm:primaryKey"
+                      "(tagger.tags)": "gorm:primaryKey"
                     }
                   },
                   address: {
@@ -2994,17 +2824,13 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                 fields: {
                   accountPk: {
                     type: "string",
-                    id: 1,
-                    options: {
-                      "(gogoproto.customname)": "AccountPK"
-                    }
+                    id: 1
                   },
                   tokenId: {
                     type: "string",
                     id: 2,
                     options: {
-                      "(gogoproto.moretags)": "gorm:primaryKey",
-                      "(gogoproto.customname)": "TokenID"
+                      "(tagger.tags)": "gorm:primaryKey"
                     }
                   },
                   token: {
@@ -3016,15 +2842,12 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     type: "ServiceTokenSupportedServiceRecord",
                     id: 4,
                     options: {
-                      "(gogoproto.moretags)": "gorm:foreignKey:TokenID"
+                      "(tagger.tags)": "gorm:foreignKey:TokenId"
                     }
                   },
                   authenticationUrl: {
                     type: "string",
-                    id: 5,
-                    options: {
-                      "(gogoproto.customname)": "AuthenticationURL"
-                    }
+                    id: 5
                   },
                   expiration: {
                     type: "int64",
@@ -3038,15 +2861,14 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     type: "string",
                     id: 1,
                     options: {
-                      "(gogoproto.moretags)": "gorm:primaryKey;column:cid",
-                      "(gogoproto.customname)": "CID"
+                      "(tagger.tags)": "gorm:primaryKey;column:cid"
                     }
                   },
                   conversationPublicKey: {
                     type: "string",
                     id: 2,
                     options: {
-                      "(gogoproto.moretags)": "gorm:index"
+                      "(tagger.tags)": "gorm:index"
                     }
                   },
                   metadataEventType: {
@@ -3065,15 +2887,14 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     type: "string",
                     id: 1,
                     options: {
-                      "(gogoproto.moretags)": "gorm:primaryKey;column:cid",
-                      "(gogoproto.customname)": "CID"
+                      "(tagger.tags)": "gorm:primaryKey;column:cid"
                     }
                   },
                   type: {
                     type: "AppMessage.Type",
                     id: 2,
                     options: {
-                      "(gogoproto.moretags)": "gorm:index"
+                      "(tagger.tags)": "gorm:index"
                     }
                   },
                   memberPublicKey: {
@@ -3088,14 +2909,14 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     type: "Member",
                     id: 8,
                     options: {
-                      "(gogoproto.moretags)": "gorm:foreignKey:PublicKey;references:MemberPublicKey"
+                      "(tagger.tags)": "gorm:foreignKey:PublicKey;references:MemberPublicKey"
                     }
                   },
                   conversationPublicKey: {
                     type: "string",
                     id: 3,
                     options: {
-                      "(gogoproto.moretags)": "gorm:index"
+                      "(tagger.tags)": "gorm:index"
                     }
                   },
                   conversation: {
@@ -3114,7 +2935,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     type: "int64",
                     id: 9,
                     options: {
-                      "(gogoproto.moretags)": "gorm:index"
+                      "(tagger.tags)": "gorm:index"
                     }
                   },
                   acknowledged: {
@@ -3125,8 +2946,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     type: "string",
                     id: 13,
                     options: {
-                      "(gogoproto.moretags)": "gorm:index;column:target_cid",
-                      "(gogoproto.customname)": "TargetCID"
+                      "(tagger.tags)": "gorm:index;column:target_cid"
                     }
                   },
                   outOfStoreMessage: {
@@ -3151,14 +2971,14 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     type: "string",
                     id: 1,
                     options: {
-                      "(gogoproto.moretags)": "gorm:primaryKey"
+                      "(tagger.tags)": "gorm:primaryKey"
                     }
                   },
                   conversationPublicKey: {
                     type: "string",
                     id: 2,
                     options: {
-                      "(gogoproto.moretags)": "gorm:primaryKey"
+                      "(tagger.tags)": "gorm:primaryKey"
                     }
                   },
                   conversation: {
@@ -3186,7 +3006,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     type: "Device",
                     id: 6,
                     options: {
-                      "(gogoproto.moretags)": "gorm:foreignKey:MemberPublicKey;references:PublicKey"
+                      "(tagger.tags)": "gorm:foreignKey:MemberPublicKey;references:PublicKey"
                     }
                   },
                   infoDate: {
@@ -3218,7 +3038,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     type: "string",
                     id: 1,
                     options: {
-                      "(gogoproto.moretags)": "gorm:primaryKey"
+                      "(tagger.tags)": "gorm:primaryKey"
                     }
                   },
                   type: {
@@ -3275,7 +3095,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     type: "ConversationReplicationInfo",
                     id: 16,
                     options: {
-                      "(gogoproto.moretags)": "gorm:foreignKey:ConversationPublicKey"
+                      "(tagger.tags)": "gorm:foreignKey:ConversationPublicKey"
                     }
                   },
                   infoDate: {
@@ -3295,7 +3115,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     type: "PushLocalDeviceSharedToken",
                     id: 21,
                     options: {
-                      "(gogoproto.moretags)": "gorm:foreignKey:ConversationPublicKey"
+                      "(tagger.tags)": "gorm:foreignKey:ConversationPublicKey"
                     }
                   },
                   pushMemberTokens: {
@@ -3303,7 +3123,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     type: "PushMemberToken",
                     id: 22,
                     options: {
-                      "(gogoproto.moretags)": "gorm:foreignKey:ConversationPublicKey"
+                      "(tagger.tags)": "gorm:foreignKey:ConversationPublicKey"
                     }
                   }
                 },
@@ -3338,8 +3158,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     type: "string",
                     id: 1,
                     options: {
-                      "(gogoproto.moretags)": "gorm:primaryKey;column:cid",
-                      "(gogoproto.customname)": "CID"
+                      "(tagger.tags)": "gorm:primaryKey;column:cid"
                     }
                   },
                   conversationPublicKey: {
@@ -3352,10 +3171,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   },
                   authenticationUrl: {
                     type: "string",
-                    id: 4,
-                    options: {
-                      "(gogoproto.customname)": "AuthenticationURL"
-                    }
+                    id: 4
                   },
                   replicationServer: {
                     type: "string",
@@ -3369,7 +3185,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     type: "string",
                     id: 1,
                     options: {
-                      "(gogoproto.moretags)": "gorm:primaryKey"
+                      "(tagger.tags)": "gorm:primaryKey"
                     }
                   },
                   displayName: {
@@ -3380,7 +3196,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     type: "string",
                     id: 3,
                     options: {
-                      "(gogoproto.moretags)": "gorm:primaryKey"
+                      "(tagger.tags)": "gorm:primaryKey"
                     }
                   },
                   isMe: {
@@ -3404,7 +3220,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     type: "Device",
                     id: 5,
                     options: {
-                      "(gogoproto.moretags)": "gorm:foreignKey:MemberPublicKey;references:PublicKey"
+                      "(tagger.tags)": "gorm:foreignKey:MemberPublicKey;references:PublicKey"
                     }
                   }
                 },
@@ -3421,14 +3237,14 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     type: "string",
                     id: 1,
                     options: {
-                      "(gogoproto.moretags)": "gorm:primaryKey"
+                      "(tagger.tags)": "gorm:primaryKey"
                     }
                   },
                   memberPublicKey: {
                     type: "string",
                     id: 2,
                     options: {
-                      "(gogoproto.moretags)": "gorm:index"
+                      "(tagger.tags)": "gorm:index"
                     }
                   }
                 }
@@ -3437,10 +3253,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                 fields: {
                   accountPk: {
                     type: "string",
-                    id: 1,
-                    options: {
-                      "(gogoproto.customname)": "AccountPK"
-                    }
+                    id: 1
                   },
                   identifier: {
                     type: "string",
@@ -3464,16 +3277,13 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                 fields: {
                   accountPk: {
                     type: "string",
-                    id: 1,
-                    options: {
-                      "(gogoproto.customname)": "AccountPK"
-                    }
+                    id: 1
                   },
                   identifier: {
                     type: "string",
                     id: 2,
                     options: {
-                      "(gogoproto.moretags)": "gorm:primaryKey"
+                      "(tagger.tags)": "gorm:primaryKey"
                     }
                   },
                   identifierProofIssuer: {
@@ -3484,7 +3294,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     type: "string",
                     id: 4,
                     options: {
-                      "(gogoproto.moretags)": "gorm:primaryKey"
+                      "(tagger.tags)": "gorm:primaryKey"
                     }
                   },
                   registrationDate: {
@@ -3515,8 +3325,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     type: "string",
                     id: 1,
                     options: {
-                      "(gogoproto.customname)": "AccountPK",
-                      "(gogoproto.moretags)": "gorm:primaryKey"
+                      "(tagger.tags)": "gorm:primaryKey"
                     }
                   },
                   tokenType: {
@@ -3525,10 +3334,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   },
                   bundleId: {
                     type: "string",
-                    id: 3,
-                    options: {
-                      "(gogoproto.customname)": "BundleID"
-                    }
+                    id: 3
                   },
                   token: {
                     type: "bytes",
@@ -3546,15 +3352,14 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     type: "string",
                     id: 1,
                     options: {
-                      "(gogoproto.customname)": "AccountPK",
-                      "(gogoproto.moretags)": "gorm:primaryKey"
+                      "(tagger.tags)": "gorm:primaryKey"
                     }
                   },
                   serverAddr: {
                     type: "string",
                     id: 2,
                     options: {
-                      "(gogoproto.moretags)": "gorm:primaryKey"
+                      "(tagger.tags)": "gorm:primaryKey"
                     }
                   },
                   serverKey: {
@@ -3642,10 +3447,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     fields: {
                       cid: {
                         type: "string",
-                        id: 1,
-                        options: {
-                          "(gogoproto.customname)": "CID"
-                        }
+                        id: 1
                       },
                       conversationPublicKey: {
                         type: "string",
@@ -3692,10 +3494,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     fields: {
                       conversationPk: {
                         type: "string",
-                        id: 1,
-                        options: {
-                          "(gogoproto.customname)": "ConversationPK"
-                        }
+                        id: 1
                       },
                       interactions: {
                         rule: "repeated",
@@ -3793,10 +3592,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     fields: {
                       peerId: {
                         type: "string",
-                        id: 1,
-                        options: {
-                          "(gogoproto.customname)": "PeerID"
-                        }
+                        id: 1
                       },
                       transport: {
                         type: "Transport",
@@ -3818,10 +3614,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     fields: {
                       peerId: {
                         type: "string",
-                        id: 1,
-                        options: {
-                          "(gogoproto.customname)": "PeerID"
-                        }
+                        id: 1
                       }
                     }
                   },
@@ -3829,10 +3622,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     fields: {
                       peerId: {
                         type: "string",
-                        id: 1,
-                        options: {
-                          "(gogoproto.customname)": "PeerID"
-                        }
+                        id: 1
                       }
                     }
                   },
@@ -3840,24 +3630,15 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     fields: {
                       peerId: {
                         type: "string",
-                        id: 1,
-                        options: {
-                          "(gogoproto.customname)": "PeerID"
-                        }
+                        id: 1
                       },
                       devicePk: {
                         type: "string",
-                        id: 2,
-                        options: {
-                          "(gogoproto.customname)": "DevicePK"
-                        }
+                        id: 2
                       },
                       groupPk: {
                         type: "string",
-                        id: 3,
-                        options: {
-                          "(gogoproto.customname)": "GroupPK"
-                        }
+                        id: 3
                       }
                     }
                   },
@@ -4076,10 +3857,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       },
                       targetCid: {
                         type: "string",
-                        id: 5,
-                        options: {
-                          "(gogoproto.customname)": "TargetCID"
-                        }
+                        id: 5
                       },
                       metadata: {
                         type: "bool",
@@ -4097,10 +3875,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     fields: {
                       cid: {
                         type: "string",
-                        id: 1,
-                        options: {
-                          "(gogoproto.customname)": "CID"
-                        }
+                        id: 1
                       }
                     }
                   }
@@ -4113,10 +3888,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     fields: {
                       tokenId: {
                         type: "string",
-                        id: 1,
-                        options: {
-                          "(gogoproto.customname)": "TokenID"
-                        }
+                        id: 1
                       },
                       conversationPublicKey: {
                         type: "string",
@@ -4258,10 +4030,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       },
                       refCid: {
                         type: "string",
-                        id: 5,
-                        options: {
-                          "(gogoproto.customname)": "RefCID"
-                        }
+                        id: 5
                       },
                       oldestToNewest: {
                         type: "bool",
@@ -4295,18 +4064,12 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       ipv4: {
                         rule: "repeated",
                         type: "string",
-                        id: 2,
-                        options: {
-                          "(gogoproto.customname)": "IPv4"
-                        }
+                        id: 2
                       },
                       ipv6: {
                         rule: "repeated",
                         type: "string",
-                        id: 3,
-                        options: {
-                          "(gogoproto.customname)": "IPv6"
-                        }
+                        id: 3
                       }
                     }
                   }
@@ -4422,17 +4185,11 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     fields: {
                       conversationPk: {
                         type: "string",
-                        id: 1,
-                        options: {
-                          "(gogoproto.customname)": "ConversationPK"
-                        }
+                        id: 1
                       },
                       memberPk: {
                         type: "string",
-                        id: 2,
-                        options: {
-                          "(gogoproto.customname)": "MemberPK"
-                        }
+                        id: 2
                       }
                     }
                   },
@@ -4453,10 +4210,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     fields: {
                       conversationPk: {
                         type: "string",
-                        id: 1,
-                        options: {
-                          "(gogoproto.customname)": "ConversationPK"
-                        }
+                        id: 1
                       }
                     }
                   },
@@ -4472,10 +4226,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     fields: {
                       conversationPk: {
                         type: "string",
-                        id: 1,
-                        options: {
-                          "(gogoproto.customname)": "ConversationPK"
-                        }
+                        id: 1
                       }
                     }
                   },
@@ -4570,10 +4321,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       },
                       accountUri: {
                         type: "string",
-                        id: 3,
-                        options: {
-                          "(gogoproto.customname)": "AccountURI"
-                        }
+                        id: 3
                       },
                       verifiedCredential: {
                         type: "bytes",
@@ -4601,8 +4349,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     type: "string",
                     id: 1,
                     options: {
-                      "(gogoproto.moretags)": "gorm:primaryKey",
-                      "(gogoproto.customname)": "TokenID"
+                      "(tagger.tags)": "gorm:primaryKey"
                     }
                   },
                   conversationPublicKey: {
@@ -4617,8 +4364,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     type: "string",
                     id: 1,
                     options: {
-                      "(gogoproto.moretags)": "gorm:primaryKey",
-                      "(gogoproto.customname)": "TokenID"
+                      "(tagger.tags)": "gorm:primaryKey"
                     }
                   },
                   conversationPublicKey: {
@@ -4627,10 +4373,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   },
                   devicePk: {
                     type: "string",
-                    id: 3,
-                    options: {
-                      "(gogoproto.customname)": "DevicePK"
-                    }
+                    id: 3
                   },
                   serverAddr: {
                     type: "string",
@@ -4650,10 +4393,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                 fields: {
                   devicePk: {
                     type: "string",
-                    id: 1,
-                    options: {
-                      "(gogoproto.customname)": "DevicePK"
-                    }
+                    id: 1
                   },
                   server: {
                     type: "PushServer",
@@ -4669,18 +4409,12 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                 fields: {
                   memberPk: {
                     type: "string",
-                    id: 1,
-                    options: {
-                      "(gogoproto.customname)": "MemberPK"
-                    }
+                    id: 1
                   },
                   devicesPks: {
                     rule: "repeated",
                     type: "string",
-                    id: 2,
-                    options: {
-                      "(gogoproto.customname)": "DevicePKs"
-                    }
+                    id: 2
                   }
                 }
               },
@@ -4691,17 +4425,11 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     fields: {
                       cid: {
                         type: "bytes",
-                        id: 1,
-                        options: {
-                          "(gogoproto.customname)": "CID"
-                        }
+                        id: 1
                       },
                       groupPk: {
                         type: "string",
-                        id: 2,
-                        options: {
-                          "(gogoproto.customname)": "GroupPK"
-                        }
+                        id: 2
                       },
                       groupMembers: {
                         rule: "repeated",
@@ -4728,17 +4456,11 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     fields: {
                       devicePk: {
                         type: "string",
-                        id: 1,
-                        options: {
-                          "(gogoproto.customname)": "DevicePK"
-                        }
+                        id: 1
                       },
                       groupPk: {
                         type: "string",
-                        id: 2,
-                        options: {
-                          "(gogoproto.customname)": "GroupPK"
-                        }
+                        id: 2
                       },
                       server: {
                         type: "PushServer",
@@ -4809,1134 +4531,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   },
                   tokenId: {
                     type: "string",
-                    id: 3,
-                    options: {
-                      "(gogoproto.customname)": "TokenID"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  },
-  gogoproto: {
-    options: {
-      java_package: "com.google.protobuf",
-      java_outer_classname: "GoGoProtos",
-      go_package: "github.com/gogo/protobuf/gogoproto"
-    },
-    nested: {
-      goprotoEnumPrefix: {
-        type: "bool",
-        id: 62001,
-        extend: "google.protobuf.EnumOptions"
-      },
-      goprotoEnumStringer: {
-        type: "bool",
-        id: 62021,
-        extend: "google.protobuf.EnumOptions"
-      },
-      enumStringer: {
-        type: "bool",
-        id: 62022,
-        extend: "google.protobuf.EnumOptions"
-      },
-      enumCustomname: {
-        type: "string",
-        id: 62023,
-        extend: "google.protobuf.EnumOptions"
-      },
-      enumdecl: {
-        type: "bool",
-        id: 62024,
-        extend: "google.protobuf.EnumOptions"
-      },
-      enumvalueCustomname: {
-        type: "string",
-        id: 66001,
-        extend: "google.protobuf.EnumValueOptions"
-      },
-      goprotoGettersAll: {
-        type: "bool",
-        id: 63001,
-        extend: "google.protobuf.FileOptions"
-      },
-      goprotoEnumPrefixAll: {
-        type: "bool",
-        id: 63002,
-        extend: "google.protobuf.FileOptions"
-      },
-      goprotoStringerAll: {
-        type: "bool",
-        id: 63003,
-        extend: "google.protobuf.FileOptions"
-      },
-      verboseEqualAll: {
-        type: "bool",
-        id: 63004,
-        extend: "google.protobuf.FileOptions"
-      },
-      faceAll: {
-        type: "bool",
-        id: 63005,
-        extend: "google.protobuf.FileOptions"
-      },
-      gostringAll: {
-        type: "bool",
-        id: 63006,
-        extend: "google.protobuf.FileOptions"
-      },
-      populateAll: {
-        type: "bool",
-        id: 63007,
-        extend: "google.protobuf.FileOptions"
-      },
-      stringerAll: {
-        type: "bool",
-        id: 63008,
-        extend: "google.protobuf.FileOptions"
-      },
-      onlyoneAll: {
-        type: "bool",
-        id: 63009,
-        extend: "google.protobuf.FileOptions"
-      },
-      equalAll: {
-        type: "bool",
-        id: 63013,
-        extend: "google.protobuf.FileOptions"
-      },
-      descriptionAll: {
-        type: "bool",
-        id: 63014,
-        extend: "google.protobuf.FileOptions"
-      },
-      testgenAll: {
-        type: "bool",
-        id: 63015,
-        extend: "google.protobuf.FileOptions"
-      },
-      benchgenAll: {
-        type: "bool",
-        id: 63016,
-        extend: "google.protobuf.FileOptions"
-      },
-      marshalerAll: {
-        type: "bool",
-        id: 63017,
-        extend: "google.protobuf.FileOptions"
-      },
-      unmarshalerAll: {
-        type: "bool",
-        id: 63018,
-        extend: "google.protobuf.FileOptions"
-      },
-      stableMarshalerAll: {
-        type: "bool",
-        id: 63019,
-        extend: "google.protobuf.FileOptions"
-      },
-      sizerAll: {
-        type: "bool",
-        id: 63020,
-        extend: "google.protobuf.FileOptions"
-      },
-      goprotoEnumStringerAll: {
-        type: "bool",
-        id: 63021,
-        extend: "google.protobuf.FileOptions"
-      },
-      enumStringerAll: {
-        type: "bool",
-        id: 63022,
-        extend: "google.protobuf.FileOptions"
-      },
-      unsafeMarshalerAll: {
-        type: "bool",
-        id: 63023,
-        extend: "google.protobuf.FileOptions"
-      },
-      unsafeUnmarshalerAll: {
-        type: "bool",
-        id: 63024,
-        extend: "google.protobuf.FileOptions"
-      },
-      goprotoExtensionsMapAll: {
-        type: "bool",
-        id: 63025,
-        extend: "google.protobuf.FileOptions"
-      },
-      goprotoUnrecognizedAll: {
-        type: "bool",
-        id: 63026,
-        extend: "google.protobuf.FileOptions"
-      },
-      gogoprotoImport: {
-        type: "bool",
-        id: 63027,
-        extend: "google.protobuf.FileOptions"
-      },
-      protosizerAll: {
-        type: "bool",
-        id: 63028,
-        extend: "google.protobuf.FileOptions"
-      },
-      compareAll: {
-        type: "bool",
-        id: 63029,
-        extend: "google.protobuf.FileOptions"
-      },
-      typedeclAll: {
-        type: "bool",
-        id: 63030,
-        extend: "google.protobuf.FileOptions"
-      },
-      enumdeclAll: {
-        type: "bool",
-        id: 63031,
-        extend: "google.protobuf.FileOptions"
-      },
-      goprotoRegistration: {
-        type: "bool",
-        id: 63032,
-        extend: "google.protobuf.FileOptions"
-      },
-      messagenameAll: {
-        type: "bool",
-        id: 63033,
-        extend: "google.protobuf.FileOptions"
-      },
-      goprotoSizecacheAll: {
-        type: "bool",
-        id: 63034,
-        extend: "google.protobuf.FileOptions"
-      },
-      goprotoUnkeyedAll: {
-        type: "bool",
-        id: 63035,
-        extend: "google.protobuf.FileOptions"
-      },
-      goprotoGetters: {
-        type: "bool",
-        id: 64001,
-        extend: "google.protobuf.MessageOptions"
-      },
-      goprotoStringer: {
-        type: "bool",
-        id: 64003,
-        extend: "google.protobuf.MessageOptions"
-      },
-      verboseEqual: {
-        type: "bool",
-        id: 64004,
-        extend: "google.protobuf.MessageOptions"
-      },
-      face: {
-        type: "bool",
-        id: 64005,
-        extend: "google.protobuf.MessageOptions"
-      },
-      gostring: {
-        type: "bool",
-        id: 64006,
-        extend: "google.protobuf.MessageOptions"
-      },
-      populate: {
-        type: "bool",
-        id: 64007,
-        extend: "google.protobuf.MessageOptions"
-      },
-      stringer: {
-        type: "bool",
-        id: 67008,
-        extend: "google.protobuf.MessageOptions"
-      },
-      onlyone: {
-        type: "bool",
-        id: 64009,
-        extend: "google.protobuf.MessageOptions"
-      },
-      equal: {
-        type: "bool",
-        id: 64013,
-        extend: "google.protobuf.MessageOptions"
-      },
-      description: {
-        type: "bool",
-        id: 64014,
-        extend: "google.protobuf.MessageOptions"
-      },
-      testgen: {
-        type: "bool",
-        id: 64015,
-        extend: "google.protobuf.MessageOptions"
-      },
-      benchgen: {
-        type: "bool",
-        id: 64016,
-        extend: "google.protobuf.MessageOptions"
-      },
-      marshaler: {
-        type: "bool",
-        id: 64017,
-        extend: "google.protobuf.MessageOptions"
-      },
-      unmarshaler: {
-        type: "bool",
-        id: 64018,
-        extend: "google.protobuf.MessageOptions"
-      },
-      stableMarshaler: {
-        type: "bool",
-        id: 64019,
-        extend: "google.protobuf.MessageOptions"
-      },
-      sizer: {
-        type: "bool",
-        id: 64020,
-        extend: "google.protobuf.MessageOptions"
-      },
-      unsafeMarshaler: {
-        type: "bool",
-        id: 64023,
-        extend: "google.protobuf.MessageOptions"
-      },
-      unsafeUnmarshaler: {
-        type: "bool",
-        id: 64024,
-        extend: "google.protobuf.MessageOptions"
-      },
-      goprotoExtensionsMap: {
-        type: "bool",
-        id: 64025,
-        extend: "google.protobuf.MessageOptions"
-      },
-      goprotoUnrecognized: {
-        type: "bool",
-        id: 64026,
-        extend: "google.protobuf.MessageOptions"
-      },
-      protosizer: {
-        type: "bool",
-        id: 64028,
-        extend: "google.protobuf.MessageOptions"
-      },
-      compare: {
-        type: "bool",
-        id: 64029,
-        extend: "google.protobuf.MessageOptions"
-      },
-      typedecl: {
-        type: "bool",
-        id: 64030,
-        extend: "google.protobuf.MessageOptions"
-      },
-      messagename: {
-        type: "bool",
-        id: 64033,
-        extend: "google.protobuf.MessageOptions"
-      },
-      goprotoSizecache: {
-        type: "bool",
-        id: 64034,
-        extend: "google.protobuf.MessageOptions"
-      },
-      goprotoUnkeyed: {
-        type: "bool",
-        id: 64035,
-        extend: "google.protobuf.MessageOptions"
-      },
-      nullable: {
-        type: "bool",
-        id: 65001,
-        extend: "google.protobuf.FieldOptions"
-      },
-      embed: {
-        type: "bool",
-        id: 65002,
-        extend: "google.protobuf.FieldOptions"
-      },
-      customtype: {
-        type: "string",
-        id: 65003,
-        extend: "google.protobuf.FieldOptions"
-      },
-      customname: {
-        type: "string",
-        id: 65004,
-        extend: "google.protobuf.FieldOptions"
-      },
-      jsontag: {
-        type: "string",
-        id: 65005,
-        extend: "google.protobuf.FieldOptions"
-      },
-      moretags: {
-        type: "string",
-        id: 65006,
-        extend: "google.protobuf.FieldOptions"
-      },
-      casttype: {
-        type: "string",
-        id: 65007,
-        extend: "google.protobuf.FieldOptions"
-      },
-      castkey: {
-        type: "string",
-        id: 65008,
-        extend: "google.protobuf.FieldOptions"
-      },
-      castvalue: {
-        type: "string",
-        id: 65009,
-        extend: "google.protobuf.FieldOptions"
-      },
-      stdtime: {
-        type: "bool",
-        id: 65010,
-        extend: "google.protobuf.FieldOptions"
-      },
-      stdduration: {
-        type: "bool",
-        id: 65011,
-        extend: "google.protobuf.FieldOptions"
-      },
-      wktpointer: {
-        type: "bool",
-        id: 65012,
-        extend: "google.protobuf.FieldOptions"
-      }
-    }
-  },
-  google: {
-    nested: {
-      protobuf: {
-        nested: {
-          FileDescriptorSet: {
-            fields: {
-              file: {
-                rule: "repeated",
-                type: "FileDescriptorProto",
-                id: 1
-              }
-            }
-          },
-          FileDescriptorProto: {
-            fields: {
-              name: {
-                type: "string",
-                id: 1
-              },
-              "package": {
-                type: "string",
-                id: 2
-              },
-              dependency: {
-                rule: "repeated",
-                type: "string",
-                id: 3
-              },
-              publicDependency: {
-                rule: "repeated",
-                type: "int32",
-                id: 10,
-                options: {
-                  packed: false
-                }
-              },
-              weakDependency: {
-                rule: "repeated",
-                type: "int32",
-                id: 11,
-                options: {
-                  packed: false
-                }
-              },
-              messageType: {
-                rule: "repeated",
-                type: "DescriptorProto",
-                id: 4
-              },
-              enumType: {
-                rule: "repeated",
-                type: "EnumDescriptorProto",
-                id: 5
-              },
-              service: {
-                rule: "repeated",
-                type: "ServiceDescriptorProto",
-                id: 6
-              },
-              extension: {
-                rule: "repeated",
-                type: "FieldDescriptorProto",
-                id: 7
-              },
-              options: {
-                type: "FileOptions",
-                id: 8
-              },
-              sourceCodeInfo: {
-                type: "SourceCodeInfo",
-                id: 9
-              },
-              syntax: {
-                type: "string",
-                id: 12
-              }
-            }
-          },
-          DescriptorProto: {
-            fields: {
-              name: {
-                type: "string",
-                id: 1
-              },
-              field: {
-                rule: "repeated",
-                type: "FieldDescriptorProto",
-                id: 2
-              },
-              extension: {
-                rule: "repeated",
-                type: "FieldDescriptorProto",
-                id: 6
-              },
-              nestedType: {
-                rule: "repeated",
-                type: "DescriptorProto",
-                id: 3
-              },
-              enumType: {
-                rule: "repeated",
-                type: "EnumDescriptorProto",
-                id: 4
-              },
-              extensionRange: {
-                rule: "repeated",
-                type: "ExtensionRange",
-                id: 5
-              },
-              oneofDecl: {
-                rule: "repeated",
-                type: "OneofDescriptorProto",
-                id: 8
-              },
-              options: {
-                type: "MessageOptions",
-                id: 7
-              },
-              reservedRange: {
-                rule: "repeated",
-                type: "ReservedRange",
-                id: 9
-              },
-              reservedName: {
-                rule: "repeated",
-                type: "string",
-                id: 10
-              }
-            },
-            nested: {
-              ExtensionRange: {
-                fields: {
-                  start: {
-                    type: "int32",
-                    id: 1
-                  },
-                  end: {
-                    type: "int32",
-                    id: 2
-                  }
-                }
-              },
-              ReservedRange: {
-                fields: {
-                  start: {
-                    type: "int32",
-                    id: 1
-                  },
-                  end: {
-                    type: "int32",
-                    id: 2
-                  }
-                }
-              }
-            }
-          },
-          FieldDescriptorProto: {
-            fields: {
-              name: {
-                type: "string",
-                id: 1
-              },
-              number: {
-                type: "int32",
-                id: 3
-              },
-              label: {
-                type: "Label",
-                id: 4
-              },
-              type: {
-                type: "Type",
-                id: 5
-              },
-              typeName: {
-                type: "string",
-                id: 6
-              },
-              extendee: {
-                type: "string",
-                id: 2
-              },
-              defaultValue: {
-                type: "string",
-                id: 7
-              },
-              oneofIndex: {
-                type: "int32",
-                id: 9
-              },
-              jsonName: {
-                type: "string",
-                id: 10
-              },
-              options: {
-                type: "FieldOptions",
-                id: 8
-              }
-            },
-            nested: {
-              Type: {
-                values: {
-                  TYPE_DOUBLE: 1,
-                  TYPE_FLOAT: 2,
-                  TYPE_INT64: 3,
-                  TYPE_UINT64: 4,
-                  TYPE_INT32: 5,
-                  TYPE_FIXED64: 6,
-                  TYPE_FIXED32: 7,
-                  TYPE_BOOL: 8,
-                  TYPE_STRING: 9,
-                  TYPE_GROUP: 10,
-                  TYPE_MESSAGE: 11,
-                  TYPE_BYTES: 12,
-                  TYPE_UINT32: 13,
-                  TYPE_ENUM: 14,
-                  TYPE_SFIXED32: 15,
-                  TYPE_SFIXED64: 16,
-                  TYPE_SINT32: 17,
-                  TYPE_SINT64: 18
-                }
-              },
-              Label: {
-                values: {
-                  LABEL_OPTIONAL: 1,
-                  LABEL_REQUIRED: 2,
-                  LABEL_REPEATED: 3
-                }
-              }
-            }
-          },
-          OneofDescriptorProto: {
-            fields: {
-              name: {
-                type: "string",
-                id: 1
-              },
-              options: {
-                type: "OneofOptions",
-                id: 2
-              }
-            }
-          },
-          EnumDescriptorProto: {
-            fields: {
-              name: {
-                type: "string",
-                id: 1
-              },
-              value: {
-                rule: "repeated",
-                type: "EnumValueDescriptorProto",
-                id: 2
-              },
-              options: {
-                type: "EnumOptions",
-                id: 3
-              }
-            }
-          },
-          EnumValueDescriptorProto: {
-            fields: {
-              name: {
-                type: "string",
-                id: 1
-              },
-              number: {
-                type: "int32",
-                id: 2
-              },
-              options: {
-                type: "EnumValueOptions",
-                id: 3
-              }
-            }
-          },
-          ServiceDescriptorProto: {
-            fields: {
-              name: {
-                type: "string",
-                id: 1
-              },
-              method: {
-                rule: "repeated",
-                type: "MethodDescriptorProto",
-                id: 2
-              },
-              options: {
-                type: "ServiceOptions",
-                id: 3
-              }
-            }
-          },
-          MethodDescriptorProto: {
-            fields: {
-              name: {
-                type: "string",
-                id: 1
-              },
-              inputType: {
-                type: "string",
-                id: 2
-              },
-              outputType: {
-                type: "string",
-                id: 3
-              },
-              options: {
-                type: "MethodOptions",
-                id: 4
-              },
-              clientStreaming: {
-                type: "bool",
-                id: 5
-              },
-              serverStreaming: {
-                type: "bool",
-                id: 6
-              }
-            }
-          },
-          FileOptions: {
-            fields: {
-              javaPackage: {
-                type: "string",
-                id: 1
-              },
-              javaOuterClassname: {
-                type: "string",
-                id: 8
-              },
-              javaMultipleFiles: {
-                type: "bool",
-                id: 10
-              },
-              javaGenerateEqualsAndHash: {
-                type: "bool",
-                id: 20,
-                options: {
-                  deprecated: true
-                }
-              },
-              javaStringCheckUtf8: {
-                type: "bool",
-                id: 27
-              },
-              optimizeFor: {
-                type: "OptimizeMode",
-                id: 9,
-                options: {
-                  "default": "SPEED"
-                }
-              },
-              goPackage: {
-                type: "string",
-                id: 11
-              },
-              ccGenericServices: {
-                type: "bool",
-                id: 16
-              },
-              javaGenericServices: {
-                type: "bool",
-                id: 17
-              },
-              pyGenericServices: {
-                type: "bool",
-                id: 18
-              },
-              deprecated: {
-                type: "bool",
-                id: 23
-              },
-              ccEnableArenas: {
-                type: "bool",
-                id: 31
-              },
-              objcClassPrefix: {
-                type: "string",
-                id: 36
-              },
-              csharpNamespace: {
-                type: "string",
-                id: 37
-              },
-              uninterpretedOption: {
-                rule: "repeated",
-                type: "UninterpretedOption",
-                id: 999
-              }
-            },
-            extensions: [
-              [
-                1000,
-                536870911
-              ]
-            ],
-            reserved: [
-              [
-                38,
-                38
-              ]
-            ],
-            nested: {
-              OptimizeMode: {
-                values: {
-                  SPEED: 1,
-                  CODE_SIZE: 2,
-                  LITE_RUNTIME: 3
-                }
-              }
-            }
-          },
-          MessageOptions: {
-            fields: {
-              messageSetWireFormat: {
-                type: "bool",
-                id: 1
-              },
-              noStandardDescriptorAccessor: {
-                type: "bool",
-                id: 2
-              },
-              deprecated: {
-                type: "bool",
-                id: 3
-              },
-              mapEntry: {
-                type: "bool",
-                id: 7
-              },
-              uninterpretedOption: {
-                rule: "repeated",
-                type: "UninterpretedOption",
-                id: 999
-              }
-            },
-            extensions: [
-              [
-                1000,
-                536870911
-              ]
-            ],
-            reserved: [
-              [
-                8,
-                8
-              ]
-            ]
-          },
-          FieldOptions: {
-            fields: {
-              ctype: {
-                type: "CType",
-                id: 1,
-                options: {
-                  "default": "STRING"
-                }
-              },
-              packed: {
-                type: "bool",
-                id: 2
-              },
-              jstype: {
-                type: "JSType",
-                id: 6,
-                options: {
-                  "default": "JS_NORMAL"
-                }
-              },
-              lazy: {
-                type: "bool",
-                id: 5
-              },
-              deprecated: {
-                type: "bool",
-                id: 3
-              },
-              weak: {
-                type: "bool",
-                id: 10
-              },
-              uninterpretedOption: {
-                rule: "repeated",
-                type: "UninterpretedOption",
-                id: 999
-              }
-            },
-            extensions: [
-              [
-                1000,
-                536870911
-              ]
-            ],
-            reserved: [
-              [
-                4,
-                4
-              ]
-            ],
-            nested: {
-              CType: {
-                values: {
-                  STRING: 0,
-                  CORD: 1,
-                  STRING_PIECE: 2
-                }
-              },
-              JSType: {
-                values: {
-                  JS_NORMAL: 0,
-                  JS_STRING: 1,
-                  JS_NUMBER: 2
-                }
-              }
-            }
-          },
-          OneofOptions: {
-            fields: {
-              uninterpretedOption: {
-                rule: "repeated",
-                type: "UninterpretedOption",
-                id: 999
-              }
-            },
-            extensions: [
-              [
-                1000,
-                536870911
-              ]
-            ]
-          },
-          EnumOptions: {
-            fields: {
-              allowAlias: {
-                type: "bool",
-                id: 2
-              },
-              deprecated: {
-                type: "bool",
-                id: 3
-              },
-              uninterpretedOption: {
-                rule: "repeated",
-                type: "UninterpretedOption",
-                id: 999
-              }
-            },
-            extensions: [
-              [
-                1000,
-                536870911
-              ]
-            ]
-          },
-          EnumValueOptions: {
-            fields: {
-              deprecated: {
-                type: "bool",
-                id: 1
-              },
-              uninterpretedOption: {
-                rule: "repeated",
-                type: "UninterpretedOption",
-                id: 999
-              }
-            },
-            extensions: [
-              [
-                1000,
-                536870911
-              ]
-            ]
-          },
-          ServiceOptions: {
-            fields: {
-              deprecated: {
-                type: "bool",
-                id: 33
-              },
-              uninterpretedOption: {
-                rule: "repeated",
-                type: "UninterpretedOption",
-                id: 999
-              }
-            },
-            extensions: [
-              [
-                1000,
-                536870911
-              ]
-            ]
-          },
-          MethodOptions: {
-            fields: {
-              deprecated: {
-                type: "bool",
-                id: 33
-              },
-              uninterpretedOption: {
-                rule: "repeated",
-                type: "UninterpretedOption",
-                id: 999
-              }
-            },
-            extensions: [
-              [
-                1000,
-                536870911
-              ]
-            ]
-          },
-          UninterpretedOption: {
-            fields: {
-              name: {
-                rule: "repeated",
-                type: "NamePart",
-                id: 2
-              },
-              identifierValue: {
-                type: "string",
-                id: 3
-              },
-              positiveIntValue: {
-                type: "uint64",
-                id: 4
-              },
-              negativeIntValue: {
-                type: "int64",
-                id: 5
-              },
-              doubleValue: {
-                type: "double",
-                id: 6
-              },
-              stringValue: {
-                type: "bytes",
-                id: 7
-              },
-              aggregateValue: {
-                type: "string",
-                id: 8
-              }
-            },
-            nested: {
-              NamePart: {
-                fields: {
-                  namePart: {
-                    rule: "required",
-                    type: "string",
-                    id: 1
-                  },
-                  isExtension: {
-                    rule: "required",
-                    type: "bool",
-                    id: 2
-                  }
-                }
-              }
-            }
-          },
-          SourceCodeInfo: {
-            fields: {
-              location: {
-                rule: "repeated",
-                type: "Location",
-                id: 1
-              }
-            },
-            nested: {
-              Location: {
-                fields: {
-                  path: {
-                    rule: "repeated",
-                    type: "int32",
-                    id: 1
-                  },
-                  span: {
-                    rule: "repeated",
-                    type: "int32",
-                    id: 2
-                  },
-                  leadingComments: {
-                    type: "string",
                     id: 3
-                  },
-                  trailingComments: {
-                    type: "string",
-                    id: 4
-                  },
-                  leadingDetachedComments: {
-                    rule: "repeated",
-                    type: "string",
-                    id: 6
-                  }
-                }
-              }
-            }
-          },
-          GeneratedCodeInfo: {
-            fields: {
-              annotation: {
-                rule: "repeated",
-                type: "Annotation",
-                id: 1
-              }
-            },
-            nested: {
-              Annotation: {
-                fields: {
-                  path: {
-                    rule: "repeated",
-                    type: "int32",
-                    id: 1
-                  },
-                  sourceFile: {
-                    type: "string",
-                    id: 2
-                  },
-                  begin: {
-                    type: "int32",
-                    id: 3
-                  },
-                  end: {
-                    type: "int32",
-                    id: 4
                   }
                 }
               }
@@ -5952,11 +4547,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
         nested: {
           v1: {
             options: {
-              go_package: "berty.tech/weshnet/pkg/protocoltypes",
-              "(gogoproto.goproto_enum_prefix_all)": false,
-              "(gogoproto.marshaler_all)": true,
-              "(gogoproto.unmarshaler_all)": true,
-              "(gogoproto.sizer_all)": true
+              go_package: "berty.tech/weshnet/pkg/protocoltypes"
             },
             nested: {
               ProtocolService: {
@@ -6229,18 +4820,12 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   metadataHeadsCids: {
                     rule: "repeated",
                     type: "bytes",
-                    id: 3,
-                    options: {
-                      "(gogoproto.customname)": "MetadataHeadsCIDs"
-                    }
+                    id: 3
                   },
                   messagesHeadsCids: {
                     rule: "repeated",
                     type: "bytes",
-                    id: 4,
-                    options: {
-                      "(gogoproto.customname)": "MessagesHeadsCIDs"
-                    }
+                    id: 4
                   },
                   linkKey: {
                     type: "bytes",
@@ -6294,10 +4879,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   },
                   devicePk: {
                     type: "bytes",
-                    id: 2,
-                    options: {
-                      "(gogoproto.customname)": "DevicePK"
-                    }
+                    id: 2
                   },
                   sig: {
                     type: "bytes",
@@ -6357,25 +4939,16 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                 fields: {
                   id: {
                     type: "bytes",
-                    id: 1,
-                    options: {
-                      "(gogoproto.customname)": "ID"
-                    }
+                    id: 1
                   },
                   parentIds: {
                     rule: "repeated",
                     type: "bytes",
-                    id: 2,
-                    options: {
-                      "(gogoproto.customname)": "ParentIDs"
-                    }
+                    id: 2
                   },
                   groupPk: {
                     type: "bytes",
-                    id: 3,
-                    options: {
-                      "(gogoproto.customname)": "GroupPK"
-                    }
+                    id: 3
                   }
                 },
                 reserved: [
@@ -6389,10 +4962,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                 fields: {
                   devicePk: {
                     type: "bytes",
-                    id: 1,
-                    options: {
-                      "(gogoproto.customname)": "DevicePK"
-                    }
+                    id: 1
                   },
                   message: {
                     type: "bytes",
@@ -6404,17 +4974,11 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                 fields: {
                   devicePk: {
                     type: "bytes",
-                    id: 1,
-                    options: {
-                      "(gogoproto.customname)": "DevicePK"
-                    }
+                    id: 1
                   },
                   aliasPk: {
                     type: "bytes",
-                    id: 2,
-                    options: {
-                      "(gogoproto.customname)": "AliasPK"
-                    }
+                    id: 2
                   }
                 }
               },
@@ -6422,17 +4986,11 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                 fields: {
                   memberPk: {
                     type: "bytes",
-                    id: 1,
-                    options: {
-                      "(gogoproto.customname)": "MemberPK"
-                    }
+                    id: 1
                   },
                   devicePk: {
                     type: "bytes",
-                    id: 2,
-                    options: {
-                      "(gogoproto.customname)": "DevicePK"
-                    }
+                    id: 2
                   },
                   memberSig: {
                     type: "bytes",
@@ -6456,17 +5014,11 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                 fields: {
                   devicePk: {
                     type: "bytes",
-                    id: 1,
-                    options: {
-                      "(gogoproto.customname)": "DevicePK"
-                    }
+                    id: 1
                   },
                   destMemberPk: {
                     type: "bytes",
-                    id: 2,
-                    options: {
-                      "(gogoproto.customname)": "DestMemberPK"
-                    }
+                    id: 2
                   },
                   payload: {
                     type: "bytes",
@@ -6478,10 +5030,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                 fields: {
                   devicePk: {
                     type: "bytes",
-                    id: 1,
-                    options: {
-                      "(gogoproto.customname)": "DevicePK"
-                    }
+                    id: 1
                   },
                   aliasResolver: {
                     type: "bytes",
@@ -6497,17 +5046,11 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                 fields: {
                   devicePk: {
                     type: "bytes",
-                    id: 1,
-                    options: {
-                      "(gogoproto.customname)": "DevicePK"
-                    }
+                    id: 1
                   },
                   granteeMemberPk: {
                     type: "bytes",
-                    id: 2,
-                    options: {
-                      "(gogoproto.customname)": "GranteeMemberPK"
-                    }
+                    id: 2
                   }
                 }
               },
@@ -6515,10 +5058,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                 fields: {
                   memberPk: {
                     type: "bytes",
-                    id: 1,
-                    options: {
-                      "(gogoproto.customname)": "MemberPK"
-                    }
+                    id: 1
                   }
                 }
               },
@@ -6526,10 +5066,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                 fields: {
                   devicePk: {
                     type: "bytes",
-                    id: 1,
-                    options: {
-                      "(gogoproto.customname)": "DevicePK"
-                    }
+                    id: 1
                   },
                   seed: {
                     type: "bytes",
@@ -6541,10 +5078,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                 fields: {
                   devicePk: {
                     type: "bytes",
-                    id: 1,
-                    options: {
-                      "(gogoproto.customname)": "DevicePK"
-                    }
+                    id: 1
                   },
                   seed: {
                     type: "bytes",
@@ -6556,10 +5090,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                 fields: {
                   devicePk: {
                     type: "bytes",
-                    id: 1,
-                    options: {
-                      "(gogoproto.customname)": "DevicePK"
-                    }
+                    id: 1
                   },
                   group: {
                     type: "Group",
@@ -6571,17 +5102,11 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                 fields: {
                   devicePk: {
                     type: "bytes",
-                    id: 1,
-                    options: {
-                      "(gogoproto.customname)": "DevicePK"
-                    }
+                    id: 1
                   },
                   groupPk: {
                     type: "bytes",
-                    id: 2,
-                    options: {
-                      "(gogoproto.customname)": "GroupPK"
-                    }
+                    id: 2
                   }
                 }
               },
@@ -6589,10 +5114,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                 fields: {
                   devicePk: {
                     type: "bytes",
-                    id: 1,
-                    options: {
-                      "(gogoproto.customname)": "DevicePK"
-                    }
+                    id: 1
                   }
                 }
               },
@@ -6600,10 +5122,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                 fields: {
                   devicePk: {
                     type: "bytes",
-                    id: 1,
-                    options: {
-                      "(gogoproto.customname)": "DevicePK"
-                    }
+                    id: 1
                   }
                 }
               },
@@ -6611,10 +5130,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                 fields: {
                   devicePk: {
                     type: "bytes",
-                    id: 1,
-                    options: {
-                      "(gogoproto.customname)": "DevicePK"
-                    }
+                    id: 1
                   },
                   publicRendezvousSeed: {
                     type: "bytes",
@@ -6626,17 +5142,11 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                 fields: {
                   devicePk: {
                     type: "bytes",
-                    id: 1,
-                    options: {
-                      "(gogoproto.customname)": "DevicePK"
-                    }
+                    id: 1
                   },
                   groupPk: {
                     type: "bytes",
-                    id: 2,
-                    options: {
-                      "(gogoproto.customname)": "GroupPK"
-                    }
+                    id: 2
                   },
                   contact: {
                     type: "ShareableContact",
@@ -6652,17 +5162,11 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                 fields: {
                   devicePk: {
                     type: "bytes",
-                    id: 1,
-                    options: {
-                      "(gogoproto.customname)": "DevicePK"
-                    }
+                    id: 1
                   },
                   contactPk: {
                     type: "bytes",
-                    id: 2,
-                    options: {
-                      "(gogoproto.customname)": "ContactPK"
-                    }
+                    id: 2
                   }
                 }
               },
@@ -6670,17 +5174,11 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                 fields: {
                   devicePk: {
                     type: "bytes",
-                    id: 1,
-                    options: {
-                      "(gogoproto.customname)": "DevicePK"
-                    }
+                    id: 1
                   },
                   contactPk: {
                     type: "bytes",
-                    id: 2,
-                    options: {
-                      "(gogoproto.customname)": "ContactPK"
-                    }
+                    id: 2
                   },
                   contactRendezvousSeed: {
                     type: "bytes",
@@ -6696,17 +5194,11 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                 fields: {
                   devicePk: {
                     type: "bytes",
-                    id: 1,
-                    options: {
-                      "(gogoproto.customname)": "DevicePK"
-                    }
+                    id: 1
                   },
                   contactPk: {
                     type: "bytes",
-                    id: 2,
-                    options: {
-                      "(gogoproto.customname)": "ContactPK"
-                    }
+                    id: 2
                   }
                 }
               },
@@ -6714,24 +5206,15 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                 fields: {
                   devicePk: {
                     type: "bytes",
-                    id: 1,
-                    options: {
-                      "(gogoproto.customname)": "DevicePK"
-                    }
+                    id: 1
                   },
                   contactPk: {
                     type: "bytes",
-                    id: 2,
-                    options: {
-                      "(gogoproto.customname)": "ContactPK"
-                    }
+                    id: 2
                   },
                   groupPk: {
                     type: "bytes",
-                    id: 3,
-                    options: {
-                      "(gogoproto.customname)": "GroupPK"
-                    }
+                    id: 3
                   }
                 }
               },
@@ -6739,17 +5222,11 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                 fields: {
                   devicePk: {
                     type: "bytes",
-                    id: 1,
-                    options: {
-                      "(gogoproto.customname)": "DevicePK"
-                    }
+                    id: 1
                   },
                   contactPk: {
                     type: "bytes",
-                    id: 2,
-                    options: {
-                      "(gogoproto.customname)": "ContactPK"
-                    }
+                    id: 2
                   }
                 }
               },
@@ -6757,17 +5234,11 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                 fields: {
                   devicePk: {
                     type: "bytes",
-                    id: 1,
-                    options: {
-                      "(gogoproto.customname)": "DevicePK"
-                    }
+                    id: 1
                   },
                   contactPk: {
                     type: "bytes",
-                    id: 2,
-                    options: {
-                      "(gogoproto.customname)": "ContactPK"
-                    }
+                    id: 2
                   }
                 }
               },
@@ -6775,17 +5246,11 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                 fields: {
                   devicePk: {
                     type: "bytes",
-                    id: 1,
-                    options: {
-                      "(gogoproto.customname)": "DevicePK"
-                    }
+                    id: 1
                   },
                   authenticationUrl: {
                     type: "string",
-                    id: 2,
-                    options: {
-                      "(gogoproto.customname)": "AuthenticationURL"
-                    }
+                    id: 2
                   },
                   replicationServer: {
                     type: "string",
@@ -6827,31 +5292,19 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     fields: {
                       accountPk: {
                         type: "bytes",
-                        id: 1,
-                        options: {
-                          "(gogoproto.customname)": "AccountPK"
-                        }
+                        id: 1
                       },
                       devicePk: {
                         type: "bytes",
-                        id: 2,
-                        options: {
-                          "(gogoproto.customname)": "DevicePK"
-                        }
+                        id: 2
                       },
                       accountGroupPk: {
                         type: "bytes",
-                        id: 3,
-                        options: {
-                          "(gogoproto.customname)": "AccountGroupPK"
-                        }
+                        id: 3
                       },
                       peerId: {
                         type: "string",
-                        id: 4,
-                        options: {
-                          "(gogoproto.customname)": "PeerID"
-                        }
+                        id: 4
                       },
                       listeners: {
                         rule: "repeated",
@@ -6968,10 +5421,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     fields: {
                       contactPk: {
                         type: "bytes",
-                        id: 1,
-                        options: {
-                          "(gogoproto.customname)": "ContactPK"
-                        }
+                        id: 1
                       }
                     }
                   },
@@ -6987,10 +5437,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     fields: {
                       contactPk: {
                         type: "bytes",
-                        id: 1,
-                        options: {
-                          "(gogoproto.customname)": "ContactPK"
-                        }
+                        id: 1
                       }
                     }
                   },
@@ -7043,10 +5490,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     fields: {
                       contactPk: {
                         type: "bytes",
-                        id: 1,
-                        options: {
-                          "(gogoproto.customname)": "ContactPK"
-                        }
+                        id: 1
                       }
                     }
                   },
@@ -7062,10 +5506,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     fields: {
                       contactPk: {
                         type: "bytes",
-                        id: 1,
-                        options: {
-                          "(gogoproto.customname)": "ContactPK"
-                        }
+                        id: 1
                       }
                     }
                   },
@@ -7081,10 +5522,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     fields: {
                       groupPk: {
                         type: "bytes",
-                        id: 1,
-                        options: {
-                          "(gogoproto.customname)": "GroupPK"
-                        }
+                        id: 1
                       }
                     }
                   },
@@ -7103,10 +5541,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     fields: {
                       groupPk: {
                         type: "bytes",
-                        id: 1,
-                        options: {
-                          "(gogoproto.customname)": "GroupPK"
-                        }
+                        id: 1
                       }
                     }
                   }
@@ -7135,10 +5570,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     fields: {
                       groupPk: {
                         type: "bytes",
-                        id: 1,
-                        options: {
-                          "(gogoproto.customname)": "GroupPK"
-                        }
+                        id: 1
                       }
                     }
                   },
@@ -7154,10 +5586,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     fields: {
                       groupPk: {
                         type: "bytes",
-                        id: 1,
-                        options: {
-                          "(gogoproto.customname)": "GroupPK"
-                        }
+                        id: 1
                       }
                     }
                   },
@@ -7173,17 +5602,11 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     fields: {
                       groupPk: {
                         type: "bytes",
-                        id: 1,
-                        options: {
-                          "(gogoproto.customname)": "GroupPK"
-                        }
+                        id: 1
                       },
                       memberPk: {
                         type: "bytes",
-                        id: 2,
-                        options: {
-                          "(gogoproto.customname)": "MemberPK"
-                        }
+                        id: 2
                       }
                     }
                   },
@@ -7199,10 +5622,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     fields: {
                       groupPk: {
                         type: "bytes",
-                        id: 1,
-                        options: {
-                          "(gogoproto.customname)": "GroupPK"
-                        }
+                        id: 1
                       }
                     }
                   },
@@ -7223,10 +5643,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     fields: {
                       groupPk: {
                         type: "bytes",
-                        id: 1,
-                        options: {
-                          "(gogoproto.customname)": "GroupPK"
-                        }
+                        id: 1
                       },
                       payload: {
                         type: "bytes",
@@ -7244,10 +5661,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     fields: {
                       cid: {
                         type: "bytes",
-                        id: 1,
-                        options: {
-                          "(gogoproto.customname)": "CID"
-                        }
+                        id: 1
                       }
                     }
                   }
@@ -7260,10 +5674,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     fields: {
                       groupPk: {
                         type: "bytes",
-                        id: 1,
-                        options: {
-                          "(gogoproto.customname)": "GroupPK"
-                        }
+                        id: 1
                       },
                       payload: {
                         type: "bytes",
@@ -7281,10 +5692,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     fields: {
                       cid: {
                         type: "bytes",
-                        id: 1,
-                        options: {
-                          "(gogoproto.customname)": "CID"
-                        }
+                        id: 1
                       }
                     }
                   }
@@ -7329,17 +5737,11 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     fields: {
                       groupPk: {
                         type: "bytes",
-                        id: 1,
-                        options: {
-                          "(gogoproto.customname)": "GroupPK"
-                        }
+                        id: 1
                       },
                       sinceId: {
                         type: "bytes",
-                        id: 2,
-                        options: {
-                          "(gogoproto.customname)": "SinceID"
-                        }
+                        id: 2
                       },
                       sinceNow: {
                         type: "bool",
@@ -7347,10 +5749,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       },
                       untilId: {
                         type: "bytes",
-                        id: 4,
-                        options: {
-                          "(gogoproto.customname)": "UntilID"
-                        }
+                        id: 4
                       },
                       untilNow: {
                         type: "bool",
@@ -7371,17 +5770,11 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     fields: {
                       groupPk: {
                         type: "bytes",
-                        id: 1,
-                        options: {
-                          "(gogoproto.customname)": "GroupPK"
-                        }
+                        id: 1
                       },
                       sinceId: {
                         type: "bytes",
-                        id: 2,
-                        options: {
-                          "(gogoproto.customname)": "SinceID"
-                        }
+                        id: 2
                       },
                       sinceNow: {
                         type: "bool",
@@ -7389,10 +5782,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       },
                       untilId: {
                         type: "bytes",
-                        id: 4,
-                        options: {
-                          "(gogoproto.customname)": "UntilID"
-                        }
+                        id: 4
                       },
                       untilNow: {
                         type: "bool",
@@ -7413,17 +5803,11 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     fields: {
                       groupPk: {
                         type: "bytes",
-                        id: 1,
-                        options: {
-                          "(gogoproto.customname)": "GroupPK"
-                        }
+                        id: 1
                       },
                       contactPk: {
                         type: "bytes",
-                        id: 2,
-                        options: {
-                          "(gogoproto.customname)": "ContactPK"
-                        }
+                        id: 2
                       }
                     }
                   },
@@ -7435,17 +5819,11 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       },
                       memberPk: {
                         type: "bytes",
-                        id: 2,
-                        options: {
-                          "(gogoproto.customname)": "MemberPK"
-                        }
+                        id: 2
                       },
                       devicePk: {
                         type: "bytes",
-                        id: 3,
-                        options: {
-                          "(gogoproto.customname)": "DevicePK"
-                        }
+                        id: 3
                       }
                     }
                   }
@@ -7458,10 +5836,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     fields: {
                       groupPk: {
                         type: "bytes",
-                        id: 1,
-                        options: {
-                          "(gogoproto.customname)": "GroupPK"
-                        }
+                        id: 1
                       },
                       localOnly: {
                         type: "bool",
@@ -7481,10 +5856,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     fields: {
                       groupPk: {
                         type: "bytes",
-                        id: 1,
-                        options: {
-                          "(gogoproto.customname)": "GroupPK"
-                        }
+                        id: 1
                       }
                     }
                   },
@@ -7516,10 +5888,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     fields: {
                       groupPk: {
                         type: "bytes",
-                        id: 1,
-                        options: {
-                          "(gogoproto.customname)": "GroupPK"
-                        }
+                        id: 1
                       }
                     }
                   },
@@ -7539,17 +5908,11 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                         fields: {
                           peerId: {
                             type: "string",
-                            id: 1,
-                            options: {
-                              "(gogoproto.customname)": "PeerID"
-                            }
+                            id: 1
                           },
                           devicePk: {
                             type: "bytes",
-                            id: 2,
-                            options: {
-                              "(gogoproto.customname)": "DevicePK"
-                            }
+                            id: 2
                           },
                           transports: {
                             rule: "repeated",
@@ -7567,10 +5930,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                         fields: {
                           peerId: {
                             type: "string",
-                            id: 1,
-                            options: {
-                              "(gogoproto.customname)": "PeerID"
-                            }
+                            id: 1
                           }
                         }
                       },
@@ -7578,10 +5938,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                         fields: {
                           peerId: {
                             type: "string",
-                            id: 1,
-                            options: {
-                              "(gogoproto.customname)": "PeerID"
-                            }
+                            id: 1
                           }
                         }
                       }
@@ -7599,24 +5956,15 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     fields: {
                       groupPk: {
                         type: "bytes",
-                        id: 1,
-                        options: {
-                          "(gogoproto.customname)": "GroupPK"
-                        }
+                        id: 1
                       },
                       groupType: {
                         type: "GroupType",
-                        id: 2,
-                        options: {
-                          "(gogoproto.customname)": "GroupType"
-                        }
+                        id: 2
                       },
                       contactPk: {
                         type: "bytes",
-                        id: 3,
-                        options: {
-                          "(gogoproto.customname)": "ContactPK"
-                        }
+                        id: 3
                       }
                     }
                   }
@@ -7629,17 +5977,11 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     fields: {
                       groupPk: {
                         type: "bytes",
-                        id: 1,
-                        options: {
-                          "(gogoproto.customname)": "GroupPK"
-                        }
+                        id: 1
                       },
                       logType: {
                         type: "DebugInspectGroupLogType",
-                        id: 2,
-                        options: {
-                          "(gogoproto.customname)": "LogType"
-                        }
+                        id: 2
                       }
                     }
                   },
@@ -7647,18 +5989,12 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     fields: {
                       cid: {
                         type: "bytes",
-                        id: 1,
-                        options: {
-                          "(gogoproto.customname)": "CID"
-                        }
+                        id: 1
                       },
                       parentCids: {
                         rule: "repeated",
                         type: "bytes",
-                        id: 2,
-                        options: {
-                          "(gogoproto.customname)": "ParentCIDs"
-                        }
+                        id: 2
                       },
                       metadataEventType: {
                         type: "EventType",
@@ -7666,10 +6002,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       },
                       devicePk: {
                         type: "bytes",
-                        id: 4,
-                        options: {
-                          "(gogoproto.customname)": "DevicePK"
-                        }
+                        id: 4
                       },
                       payload: {
                         type: "bytes",
@@ -7686,10 +6019,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     fields: {
                       groupPk: {
                         type: "bytes",
-                        id: 1,
-                        options: {
-                          "(gogoproto.customname)": "GroupPK"
-                        }
+                        id: 1
                       }
                     }
                   },
@@ -7698,10 +6028,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       peerIds: {
                         rule: "repeated",
                         type: "string",
-                        id: 1,
-                        options: {
-                          "(gogoproto.customname)": "PeerIDs"
-                        }
+                        id: 1
                       }
                     }
                   }
@@ -7729,10 +6056,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                 fields: {
                   pk: {
                     type: "bytes",
-                    id: 1,
-                    options: {
-                      "(gogoproto.customname)": "PK"
-                    }
+                    id: 1
                   },
                   publicRendezvousSeed: {
                     type: "bytes",
@@ -7764,10 +6088,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                   },
                   authenticationUrl: {
                     type: "string",
-                    id: 2,
-                    options: {
-                      "(gogoproto.customname)": "AuthenticationURL"
-                    }
+                    id: 2
                   },
                   supportedServices: {
                     rule: "repeated",
@@ -7787,10 +6108,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     fields: {
                       serviceUrl: {
                         type: "string",
-                        id: 1,
-                        options: {
-                          "(gogoproto.customname)": "ServiceURL"
-                        }
+                        id: 1
                       },
                       publicKey: {
                         type: "bytes",
@@ -7806,17 +6124,11 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     fields: {
                       url: {
                         type: "string",
-                        id: 1,
-                        options: {
-                          "(gogoproto.customname)": "URL"
-                        }
+                        id: 1
                       },
                       secureUrl: {
                         type: "bool",
-                        id: 2,
-                        options: {
-                          "(gogoproto.customname)": "SecureURL"
-                        }
+                        id: 2
                       }
                     }
                   }
@@ -7829,10 +6141,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     fields: {
                       callbackUri: {
                         type: "string",
-                        id: 1,
-                        options: {
-                          "(gogoproto.customname)": "CallbackURI"
-                        }
+                        id: 1
                       }
                     }
                   },
@@ -7882,10 +6191,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     fields: {
                       groupPk: {
                         type: "bytes",
-                        id: 1,
-                        options: {
-                          "(gogoproto.customname)": "GroupPK"
-                        }
+                        id: 1
                       },
                       token: {
                         type: "string",
@@ -7893,10 +6199,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       },
                       authenticationUrl: {
                         type: "string",
-                        id: 3,
-                        options: {
-                          "(gogoproto.customname)": "AuthenticationURL"
-                        }
+                        id: 3
                       },
                       replicationServer: {
                         type: "string",
@@ -7924,10 +6227,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     fields: {
                       ok: {
                         type: "bool",
-                        id: 1,
-                        options: {
-                          "(gogoproto.customname)": "OK"
-                        }
+                        id: 1
                       }
                     }
                   }
@@ -7947,17 +6247,11 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       },
                       p2p: {
                         type: "P2P",
-                        id: 2,
-                        options: {
-                          "(gogoproto.customname)": "P2P"
-                        }
+                        id: 2
                       },
                       orbitdb: {
                         type: "OrbitDB",
-                        id: 3,
-                        options: {
-                          "(gogoproto.customname)": "OrbitDB"
-                        }
+                        id: 3
                       },
                       warns: {
                         rule: "repeated",
@@ -8016,24 +6310,15 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       },
                       uptimeMs: {
                         type: "int64",
-                        id: 3,
-                        options: {
-                          "(gogoproto.customname)": "UptimeMS"
-                        }
+                        id: 3
                       },
                       userCpuTimeMs: {
                         type: "int64",
-                        id: 10,
-                        options: {
-                          "(gogoproto.customname)": "UserCPUTimeMS"
-                        }
+                        id: 10
                       },
                       systemCpuTimeMs: {
                         type: "int64",
-                        id: 11,
-                        options: {
-                          "(gogoproto.customname)": "SystemCPUTimeMS"
-                        }
+                        id: 11
                       },
                       startedAt: {
                         type: "int64",
@@ -8057,10 +6342,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       },
                       numCpu: {
                         type: "int64",
-                        id: 17,
-                        options: {
-                          "(gogoproto.customname)": "NumCPU"
-                        }
+                        id: 17
                       },
                       goVersion: {
                         type: "string",
@@ -8084,17 +6366,11 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       },
                       pid: {
                         type: "int64",
-                        id: 23,
-                        options: {
-                          "(gogoproto.customname)": "PID"
-                        }
+                        id: 23
                       },
                       ppid: {
                         type: "int64",
-                        id: 24,
-                        options: {
-                          "(gogoproto.customname)": "PPID"
-                        }
+                        id: 24
                       },
                       priority: {
                         type: "int64",
@@ -8102,10 +6378,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       },
                       uid: {
                         type: "int64",
-                        id: 26,
-                        options: {
-                          "(gogoproto.customname)": "UID"
-                        }
+                        id: 26
                       },
                       workingDir: {
                         type: "string",
@@ -8138,10 +6411,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     fields: {
                       id: {
                         type: "string",
-                        id: 1,
-                        options: {
-                          "(gogoproto.customname)": "ID"
-                        }
+                        id: 1
                       },
                       routes: {
                         rule: "repeated",
@@ -8201,10 +6471,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     fields: {
                       id: {
                         type: "string",
-                        id: 1,
-                        options: {
-                          "(gogoproto.customname)": "ID"
-                        }
+                        id: 1
                       }
                     }
                   },
@@ -8260,17 +6527,11 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                 fields: {
                   cid: {
                     type: "bytes",
-                    id: 1,
-                    options: {
-                      "(gogoproto.customname)": "CID"
-                    }
+                    id: 1
                   },
                   devicePk: {
                     type: "bytes",
-                    id: 2,
-                    options: {
-                      "(gogoproto.customname)": "DevicePK"
-                    }
+                    id: 2
                   },
                   counter: {
                     type: "fixed64",
@@ -8350,10 +6611,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     fields: {
                       cid: {
                         type: "bytes",
-                        id: 1,
-                        options: {
-                          "(gogoproto.customname)": "CID"
-                        }
+                        id: 1
                       },
                       groupPublicKey: {
                         type: "bytes",
@@ -8375,10 +6633,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                 fields: {
                   devicePk: {
                     type: "bytes",
-                    id: 1,
-                    options: {
-                      "(gogoproto.customname)": "DevicePK"
-                    }
+                    id: 1
                   },
                   signedIdentityPublicKey: {
                     type: "bytes",
@@ -8442,17 +6697,11 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                       },
                       devicePk: {
                         type: "bytes",
-                        id: 3,
-                        options: {
-                          "(gogoproto.customname)": "DevicePK"
-                        }
+                        id: 3
                       },
                       peerId: {
                         type: "bytes",
-                        id: 4,
-                        options: {
-                          "(gogoproto.customname)": "PeerID"
-                        }
+                        id: 4
                       }
                     }
                   }
@@ -8465,10 +6714,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     fields: {
                       id: {
                         type: "string",
-                        id: 1,
-                        options: {
-                          "(gogoproto.customname)": "ID"
-                        }
+                        id: 1
                       },
                       addrs: {
                         rule: "repeated",
@@ -8481,10 +6727,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
                     fields: {
                       contactPk: {
                         type: "bytes",
-                        id: 1,
-                        options: {
-                          "(gogoproto.customname)": "ContactPK"
-                        }
+                        id: 1
                       },
                       timeout: {
                         type: "int64",
@@ -8509,11 +6752,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
       },
       errcode: {
         options: {
-          go_package: "berty.tech/weshnet/pkg/errcode",
-          "(gogoproto.goproto_enum_prefix_all)": false,
-          "(gogoproto.marshaler_all)": true,
-          "(gogoproto.unmarshaler_all)": true,
-          "(gogoproto.sizer_all)": true
+          go_package: "berty.tech/weshnet/pkg/errcode"
         },
         nested: {
           ErrCode: {

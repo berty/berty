@@ -11,24 +11,24 @@ import (
 	"berty.tech/berty/v2/go/internal/accountutils"
 	"berty.tech/berty/v2/go/pkg/accounttypes"
 	"berty.tech/berty/v2/go/pkg/errcode"
-	"berty.tech/weshnet/pkg/logutil"
+	"berty.tech/weshnet/v2/pkg/logutil"
 )
 
-func (s *service) LogfileList(ctx context.Context, req *accounttypes.LogfileList_Request) (*accounttypes.LogfileList_Reply, error) {
+func (s *service) LogfileList(ctx context.Context, _ *accounttypes.LogfileList_Request) (*accounttypes.LogfileList_Reply, error) {
 	rootDir := s.appRootDir
 
 	accounts, err := s.ListAccounts(ctx, nil)
 	if err != nil {
-		return nil, errcode.TODO.Wrap(err)
+		return nil, errcode.ErrCode_TODO.Wrap(err)
 	}
 
 	ret := accounttypes.LogfileList_Reply{}
 
 	for _, account := range accounts.Accounts {
-		logsDir := filepath.Join(accountutils.GetAccountDir(rootDir, account.AccountID), "logs")
+		logsDir := filepath.Join(accountutils.GetAccountDir(rootDir, account.AccountId), "logs")
 		files, err := logutil.LogfileList(logsDir)
 		if err != nil {
-			return nil, errcode.TODO.Wrap(err)
+			return nil, errcode.ErrCode_TODO.Wrap(err)
 		}
 		for _, file := range files {
 			errs := ""
@@ -36,10 +36,10 @@ func (s *service) LogfileList(ctx context.Context, req *accounttypes.LogfileList
 				errs = file.Errs.Error()
 			}
 			ret.Entries = append(ret.Entries, &accounttypes.LogfileList_Reply_Logfile{
-				AccountID: account.AccountID,
+				AccountId: account.AccountId,
 				Path:      file.Path(),
 				Name:      file.Name,
-				Size_:     file.Size,
+				Size:      file.Size,
 				Kind:      file.Kind,
 				Time:      file.Time.Unix(),
 				Latest:    file.Latest,
@@ -52,41 +52,41 @@ func (s *service) LogfileList(ctx context.Context, req *accounttypes.LogfileList
 }
 
 func (s *service) StreamLogfile(req *accounttypes.StreamLogfile_Request, server accounttypes.AccountService_StreamLogfileServer) error {
-	if req.AccountID == "" {
-		return errcode.TODO.Wrap(fmt.Errorf("AccountID is required"))
+	if req.AccountId == "" {
+		return errcode.ErrCode_TODO.Wrap(fmt.Errorf("AccountId is required"))
 	}
 
 	rootDir := s.appRootDir
 
 	accounts, err := s.ListAccounts(s.rootCtx, nil)
 	if err != nil {
-		return errcode.TODO.Wrap(err)
+		return errcode.ErrCode_TODO.Wrap(err)
 	}
 
 	var account *accounttypes.AccountMetadata
 	{
 		for _, a := range accounts.Accounts {
-			if req.AccountID == a.GetAccountID() {
+			if req.AccountId == a.GetAccountId() {
 				account = a
 				break
 			}
 		}
 
 		if account == nil {
-			return errcode.TODO.Wrap(fmt.Errorf("AccoundID is not found"))
+			return errcode.ErrCode_TODO.Wrap(fmt.Errorf("AccoundID is not found"))
 		}
 	}
 
-	logsDir := filepath.Join(accountutils.GetAccountDir(rootDir, account.AccountID), "logs")
+	logsDir := filepath.Join(accountutils.GetAccountDir(rootDir, account.AccountId), "logs")
 
 	logfilePath, err := logutil.CurrentLogfilePath(logsDir)
 	if err != nil {
-		return errcode.TODO.Wrap(err)
+		return errcode.ErrCode_TODO.Wrap(err)
 	}
 
 	file, err := os.Open(logfilePath)
 	if err != nil {
-		return errcode.TODO.Wrap(err)
+		return errcode.ErrCode_TODO.Wrap(err)
 	}
 	defer file.Close()
 
@@ -94,7 +94,7 @@ func (s *service) StreamLogfile(req *accounttypes.StreamLogfile_Request, server 
 	if err := server.Send(&accounttypes.StreamLogfile_Reply{
 		FileName: logfilePath,
 	}); err != nil {
-		return errcode.TODO.Wrap(err)
+		return errcode.ErrCode_TODO.Wrap(err)
 	}
 
 	// stream log file
@@ -109,7 +109,7 @@ func (s *service) StreamLogfile(req *accounttypes.StreamLogfile_Request, server 
 		case io.EOF:
 			return nil
 		default:
-			return errcode.TODO.Wrap(err)
+			return errcode.ErrCode_TODO.Wrap(err)
 		}
 	}
 	return nil

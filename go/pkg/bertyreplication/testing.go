@@ -8,10 +8,10 @@ import (
 	"testing"
 	"time"
 
-	libp2p_mocknet "github.com/berty/go-libp2p-mock"
 	"github.com/ipfs/go-datastore"
 	ds "github.com/ipfs/go-datastore"
 	ds_sync "github.com/ipfs/go-datastore/sync"
+	mocknet "github.com/libp2p/go-libp2p/p2p/net/mock"
 	"github.com/stretchr/testify/require"
 	"github.com/tj/assert"
 	"go.uber.org/zap"
@@ -23,12 +23,12 @@ import (
 	"berty.tech/berty/v2/go/pkg/bertyauth"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	orbitdb "berty.tech/go-orbit-db"
-	"berty.tech/weshnet"
-	"berty.tech/weshnet/pkg/ipfsutil"
-	"berty.tech/weshnet/pkg/protocoltypes"
-	"berty.tech/weshnet/pkg/replicationtypes"
-	"berty.tech/weshnet/pkg/testutil"
-	"berty.tech/weshnet/pkg/tinder"
+	"berty.tech/weshnet/v2"
+	"berty.tech/weshnet/v2/pkg/ipfsutil"
+	"berty.tech/weshnet/v2/pkg/protocoltypes"
+	"berty.tech/weshnet/v2/pkg/replicationtypes"
+	"berty.tech/weshnet/v2/pkg/testutil"
+	"berty.tech/weshnet/v2/pkg/tinder"
 )
 
 type TestingReplicationPeer struct {
@@ -57,7 +57,7 @@ func DBForTests(t testing.TB, logger *zap.Logger) *gorm.DB {
 	return db
 }
 
-func TestHelperNewReplicationService(ctx context.Context, t *testing.T, logger *zap.Logger, mn libp2p_mocknet.Mocknet, msrv *tinder.MockDriverServer, ds datastore.Batching, db *gorm.DB) (*replicationService, ipfsutil.CoreAPIMock) {
+func TestHelperNewReplicationService(ctx context.Context, t *testing.T, logger *zap.Logger, mn mocknet.Mocknet, msrv *tinder.MockDriverServer, ds datastore.Batching, db *gorm.DB) (*replicationService, ipfsutil.CoreAPIMock) {
 	t.Helper()
 
 	if ds == nil {
@@ -116,7 +116,7 @@ func TestReplicateMessage(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	mn := libp2p_mocknet.New()
+	mn := mocknet.New()
 	defer mn.Close()
 
 	msrv := tinder.NewMockDriverServer()
@@ -192,7 +192,7 @@ func TestReplicateMessage(t *testing.T) {
 		Group: groupReplicable,
 	})
 	require.Error(t, err)
-	require.True(t, errcode.Is(err, errcode.ErrDBEntryAlreadyExists))
+	require.True(t, errcode.Is(err, errcode.ErrCode_ErrDBEntryAlreadyExists))
 
 	subCtx = context.WithValue(ctx, authtypes.ContextTokenHashField, "token2")
 	subCtx = context.WithValue(subCtx, authtypes.ContextTokenIssuerField, "issuer1")
@@ -204,13 +204,13 @@ func TestReplicateMessage(t *testing.T) {
 	require.NoError(t, err)
 
 	_, err = nodeA.Service.AppMessageSend(ctx, &protocoltypes.AppMessageSend_Request{
-		GroupPK: group.PublicKey,
+		GroupPk: group.PublicKey,
 		Payload: []byte("test1"),
 	})
 	require.NoError(t, err)
 
 	_, err = nodeB.Service.AppMessageSend(ctx, &protocoltypes.AppMessageSend_Request{
-		GroupPK: group.PublicKey,
+		GroupPk: group.PublicKey,
 		Payload: []byte("test2"),
 	})
 	require.NoError(t, err)
@@ -220,7 +220,7 @@ func TestReplicateMessage(t *testing.T) {
 	closeNodeB()
 
 	_, err = nodeA.Service.AppMessageSend(ctx, &protocoltypes.AppMessageSend_Request{
-		GroupPK: group.PublicKey,
+		GroupPk: group.PublicKey,
 		Payload: []byte("test3"),
 	})
 	require.NoError(t, err)
@@ -243,13 +243,13 @@ func TestReplicateMessage(t *testing.T) {
 	require.NoError(t, err)
 
 	_, err = nodeB.Service.ActivateGroup(ctx, &protocoltypes.ActivateGroup_Request{
-		GroupPK: group.PublicKey,
+		GroupPk: group.PublicKey,
 	})
 	assert.NoError(t, err)
 
 	time.Sleep(time.Second * 5)
 
-	msgList, err := nodeB.Client.GroupMessageList(ctx, &protocoltypes.GroupMessageList_Request{GroupPK: group.PublicKey, UntilNow: true})
+	msgList, err := nodeB.Client.GroupMessageList(ctx, &protocoltypes.GroupMessageList_Request{GroupPk: group.PublicKey, UntilNow: true})
 	require.NoError(t, err)
 
 	expectedMsgs := map[string]struct{}{

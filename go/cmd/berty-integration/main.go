@@ -122,7 +122,7 @@ func (i *integration) testbotAdd() error {
 
 	// send contact request
 	_, err = i.client.SendContactRequest(ctx, &messengertypes.SendContactRequest_Request{
-		BertyID: parsed.GetLink().GetBertyID(),
+		BertyId: parsed.GetLink().GetBertyId(),
 	})
 	if err != nil {
 		return err
@@ -163,7 +163,7 @@ func (i *integration) testbotAdd() error {
 			}
 		case messengertypes.StreamEvent_TypeConversationUpdated:
 			conversation := payload.(*messengertypes.StreamEvent_ConversationUpdated).Conversation
-			if base64.RawURLEncoding.EncodeToString(parsed.GetLink().GetBertyID().GetAccountPK()) != conversation.ContactPublicKey {
+			if base64.RawURLEncoding.EncodeToString(parsed.GetLink().GetBertyId().GetAccountPk()) != conversation.ContactPublicKey {
 				continue
 			}
 			conversationReady = true
@@ -178,7 +178,7 @@ func (i *integration) testbotAdd() error {
 				}
 				body := payload.(*messengertypes.AppMessage_UserMessage).Body
 
-				if base64.RawURLEncoding.EncodeToString(parsed.GetLink().GetBertyID().GetAccountPK()) != interaction.Conversation.ContactPublicKey {
+				if base64.RawURLEncoding.EncodeToString(parsed.GetLink().GetBertyId().GetAccountPk()) != interaction.Conversation.ContactPublicKey {
 					continue
 				}
 				if body != "welcome to testbot1" {
@@ -206,12 +206,12 @@ func (i *integration) checkErr(err error, step string) {
 		fmt.Fprintf(os.Stderr, "[-] %s: %v - %s\n", step, err, u.ShortDuration(time.Since(i.startedAt)))
 		i.cleanup()
 		os.Exit(1)
-	} else {
-		i.addBenchmark(step, time.Since(i.previousStep))
-		i.previousStep = time.Now()
-
-		fmt.Fprintf(os.Stderr, "[+] %s - %s\n", step, u.ShortDuration(time.Since(i.startedAt)))
 	}
+
+	i.addBenchmark(step, time.Since(i.previousStep))
+	i.previousStep = time.Now()
+
+	fmt.Fprintf(os.Stderr, "[+] %s - %s\n", step, u.ShortDuration(time.Since(i.startedAt)))
 }
 
 func (i *integration) addBenchmark(name string, duration time.Duration) {

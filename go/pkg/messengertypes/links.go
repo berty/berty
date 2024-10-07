@@ -4,57 +4,57 @@ import (
 	fmt "fmt"
 
 	"berty.tech/berty/v2/go/pkg/errcode"
-	protocoltypes "berty.tech/weshnet/pkg/protocoltypes"
+	protocoltypes "berty.tech/weshnet/v2/pkg/protocoltypes"
 )
 
 func (link *BertyLink) IsValid() error {
 	if link == nil {
-		return errcode.ErrMissingInput
+		return errcode.ErrCode_ErrMissingInput
 	}
 	switch link.Kind {
 	case BertyLink_ContactInviteV1Kind:
-		if link.BertyID == nil ||
-			link.BertyID.AccountPK == nil ||
-			link.BertyID.PublicRendezvousSeed == nil {
-			return errcode.ErrMissingInput
+		if link.BertyId == nil ||
+			link.BertyId.AccountPk == nil ||
+			link.BertyId.PublicRendezvousSeed == nil {
+			return errcode.ErrCode_ErrMissingInput
 		}
 		return nil
 
 	case BertyLink_GroupV1Kind:
 		if link.BertyGroup == nil {
-			return errcode.ErrMissingInput
+			return errcode.ErrCode_ErrMissingInput
 		}
-		if groupType := link.BertyGroup.Group.GroupType; groupType != protocoltypes.GroupTypeMultiMember {
-			return errcode.ErrInvalidInput.Wrap(fmt.Errorf("can't share a %q group type", groupType))
+		if groupType := link.BertyGroup.Group.GroupType; groupType != protocoltypes.GroupType_GroupTypeMultiMember {
+			return errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("can't share a %q group type", groupType))
 		}
 		return nil
 
 	case BertyLink_EncryptedV1Kind:
 		if link.Encrypted == nil {
-			return errcode.ErrMissingInput
+			return errcode.ErrCode_ErrMissingInput
 		}
 		switch link.Encrypted.Kind {
 		case BertyLink_ContactInviteV1Kind:
-			if link.Encrypted.ContactAccountPK == nil ||
+			if link.Encrypted.ContactAccountPk == nil ||
 				link.Encrypted.ContactPublicRendezvousSeed == nil {
-				return errcode.ErrMissingInput
+				return errcode.ErrCode_ErrMissingInput
 			}
 		case BertyLink_GroupV1Kind:
-			if groupType := link.Encrypted.GroupType; groupType != protocoltypes.GroupTypeMultiMember {
-				return errcode.ErrInvalidInput.Wrap(fmt.Errorf("can't share a %q group type", groupType))
+			if groupType := link.Encrypted.GroupType; groupType != protocoltypes.GroupType_GroupTypeMultiMember {
+				return errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("can't share a %q group type", groupType))
 			}
 		default:
-			return errcode.ErrInvalidInput
+			return errcode.ErrCode_ErrInvalidInput
 		}
 		return nil
 	case BertyLink_MessageV1Kind:
 		if link.BertyMessageRef == nil {
-			return errcode.ErrMissingInput
+			return errcode.ErrCode_ErrMissingInput
 		}
 		return nil
 	}
 
-	return errcode.ErrInvalidInput
+	return errcode.ErrCode_ErrInvalidInput
 }
 
 func (link *BertyLink) IsContact() bool {
@@ -70,7 +70,7 @@ func (link *BertyLink) IsGroup() bool {
 func (id *BertyID) GetBertyLink() *BertyLink {
 	return &BertyLink{
 		Kind:    BertyLink_ContactInviteV1Kind,
-		BertyID: id,
+		BertyId: id,
 	}
 }
 

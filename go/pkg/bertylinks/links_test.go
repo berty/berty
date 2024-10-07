@@ -10,13 +10,14 @@ import (
 	"github.com/mdp/qrterminal"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"google.golang.org/protobuf/proto"
 	"moul.io/srand"
 	"moul.io/u"
 
 	"berty.tech/berty/v2/go/pkg/bertylinks"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
-	"berty.tech/weshnet/pkg/protocoltypes"
+	"berty.tech/weshnet/v2/pkg/protocoltypes"
 )
 
 func TestMarshalLink(t *testing.T) {
@@ -31,10 +32,10 @@ func TestMarshalLink(t *testing.T) {
 			"simple-contact",
 			&messengertypes.BertyLink{
 				Kind: messengertypes.BertyLink_ContactInviteV1Kind,
-				BertyID: &messengertypes.BertyID{
+				BertyId: &messengertypes.BertyID{
 					DisplayName:          "Hello World!",
 					PublicRendezvousSeed: []byte{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-					AccountPK:            []byte{2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2},
+					AccountPk:            []byte{2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2},
 				},
 			},
 			false,
@@ -50,7 +51,7 @@ func TestMarshalLink(t *testing.T) {
 						PublicKey: []byte{3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3},
 						Secret:    []byte{4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4},
 						SecretSig: []byte{5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5},
-						GroupType: protocoltypes.GroupTypeMultiMember,
+						GroupType: protocoltypes.GroupType_GroupTypeMultiMember,
 						SignPub:   []byte{6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6},
 					},
 				},
@@ -62,10 +63,10 @@ func TestMarshalLink(t *testing.T) {
 			"contact-with-unicode",
 			&messengertypes.BertyLink{
 				Kind: messengertypes.BertyLink_ContactInviteV1Kind,
-				BertyID: &messengertypes.BertyID{
+				BertyId: &messengertypes.BertyID{
 					DisplayName:          `!@#$%^&*()_+ ://` + string(rune(0x1F600)),
 					PublicRendezvousSeed: []byte{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-					AccountPK:            []byte{2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2},
+					AccountPk:            []byte{2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2},
 				},
 			},
 			false,
@@ -81,7 +82,7 @@ func TestMarshalLink(t *testing.T) {
 						PublicKey: []byte{3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3},
 						Secret:    []byte{4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4},
 						SecretSig: []byte{5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5},
-						GroupType: protocoltypes.GroupTypeMultiMember,
+						GroupType: protocoltypes.GroupType_GroupTypeMultiMember,
 						SignPub:   []byte{6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6},
 					},
 				},
@@ -123,11 +124,11 @@ func TestMarshalLink(t *testing.T) {
 			// unmarshal and compare with original input
 			webLink, err := bertylinks.UnmarshalLink(web, nil)
 			require.NoError(t, err)
-			assert.Equal(t, tc.input, webLink)
+			assert.True(t, proto.Equal(tc.input, webLink))
 
 			internalLink, err := bertylinks.UnmarshalLink(internal, nil)
 			require.NoError(t, err)
-			assert.Equal(t, tc.input, internalLink)
+			assert.True(t, proto.Equal(tc.input, internalLink))
 		})
 	}
 }
@@ -141,22 +142,22 @@ func TestUnmarshalLink(t *testing.T) {
 		expectValidGroup   bool
 		expectedName       string
 	}{
-		{"empty", "", errcode.ErrMissingInput, false, false, ""},
-		{"invalid", "invalid", errcode.ErrInvalidInput, false, false, ""},
-		{"invalid2", "berty://id/#key=blah&name=blih", errcode.ErrInvalidInput, false, false, ""},
-		{"invalid3", "https://berty.tech/id#key=blah&name=blih", errcode.ErrInvalidInput, false, false, ""},
-		{"invalid4", "berty://id/#key=CiDXcXUOl1rpm2FcbOf3TFtn-FYkl_sOwA5run1LGXHOPRIg4xCLGP-BWzgIWRH0Vz9D8aGAq1kyno5Oqv6ysAljZmA&name=Alice", errcode.ErrInvalidInput, false, false, ""},           // previous format
-		{"invalid5", "https://berty.tech/id#key=CiDXcXUOl1rpm2FcbOf3TFtn-FYkl_sOwA5run1LGXHOPRIg4xCLGP-BWzgIWRH0Vz9D8aGAq1kyno5Oqv6ysAljZmA&name=Alice", errcode.ErrInvalidInput, false, false, ""}, // previous format
-		{"invalid6", "berty://id/#key=CiDXcXUOl1rpm2FcbOf3TFtn-FYkl_sOwA5run1LGXHOPRIg4xCLGP-BWzgIWRH0Vz9D8aGAq1kyno5Oqv6ysAljZmA", errcode.ErrInvalidInput, false, false, ""},                      // previous format
-		{"invalid7", "https://berty.tech/id#key=CiDXcXUOl1rpm2FcbOf3TFtn-FYkl_sOwA5run1LGXHOPRIg4xCLGP-BWzgIWRH0Vz9D8aGAq1kyno5Oqv6ysAljZmA", errcode.ErrInvalidInput, false, false, ""},            // previous format
-		{"invalid8", "https://berty.tech/id#contact/foobar/name=Alice", errcode.ErrInvalidInput, false, false, ""},
-		{"invalid9", "https://berty.tech/id#group/foobar/name=Alice", errcode.ErrInvalidInput, false, false, ""},
-		{"invalid10", "https://berty.tech/id#foobar/foobar/name=Alice", errcode.ErrInvalidInput, false, false, ""},
-		{"invalid11", "https://berty.tech/id#foobar", errcode.ErrInvalidInput, false, false, ""},
-		{"invalid12", "https://berty.tech/id#", errcode.ErrInvalidInput, false, false, ""},
-		{"invalid13", "https://berty.tech/id", errcode.ErrInvalidInput, false, false, ""},
-		{"invalid14", "https://berty.tech/", errcode.ErrInvalidInput, false, false, ""},
-		{"invalid15", "https://invalid.domain/id#contact/" + validContactBlob + "/name=Alice", errcode.ErrInvalidInput, false, false, ""},
+		{"empty", "", errcode.ErrCode_ErrMissingInput, false, false, ""},
+		{"invalid", "invalid", errcode.ErrCode_ErrInvalidInput, false, false, ""},
+		{"invalid2", "berty://id/#key=blah&name=blih", errcode.ErrCode_ErrInvalidInput, false, false, ""},
+		{"invalid3", "https://berty.tech/id#key=blah&name=blih", errcode.ErrCode_ErrInvalidInput, false, false, ""},
+		{"invalid4", "berty://id/#key=CiDXcXUOl1rpm2FcbOf3TFtn-FYkl_sOwA5run1LGXHOPRIg4xCLGP-BWzgIWRH0Vz9D8aGAq1kyno5Oqv6ysAljZmA&name=Alice", errcode.ErrCode_ErrInvalidInput, false, false, ""},           // previous format
+		{"invalid5", "https://berty.tech/id#key=CiDXcXUOl1rpm2FcbOf3TFtn-FYkl_sOwA5run1LGXHOPRIg4xCLGP-BWzgIWRH0Vz9D8aGAq1kyno5Oqv6ysAljZmA&name=Alice", errcode.ErrCode_ErrInvalidInput, false, false, ""}, // previous format
+		{"invalid6", "berty://id/#key=CiDXcXUOl1rpm2FcbOf3TFtn-FYkl_sOwA5run1LGXHOPRIg4xCLGP-BWzgIWRH0Vz9D8aGAq1kyno5Oqv6ysAljZmA", errcode.ErrCode_ErrInvalidInput, false, false, ""},                      // previous format
+		{"invalid7", "https://berty.tech/id#key=CiDXcXUOl1rpm2FcbOf3TFtn-FYkl_sOwA5run1LGXHOPRIg4xCLGP-BWzgIWRH0Vz9D8aGAq1kyno5Oqv6ysAljZmA", errcode.ErrCode_ErrInvalidInput, false, false, ""},            // previous format
+		{"invalid8", "https://berty.tech/id#contact/foobar/name=Alice", errcode.ErrCode_ErrInvalidInput, false, false, ""},
+		{"invalid9", "https://berty.tech/id#group/foobar/name=Alice", errcode.ErrCode_ErrInvalidInput, false, false, ""},
+		{"invalid10", "https://berty.tech/id#foobar/foobar/name=Alice", errcode.ErrCode_ErrInvalidInput, false, false, ""},
+		{"invalid11", "https://berty.tech/id#foobar", errcode.ErrCode_ErrInvalidInput, false, false, ""},
+		{"invalid12", "https://berty.tech/id#", errcode.ErrCode_ErrInvalidInput, false, false, ""},
+		{"invalid13", "https://berty.tech/id", errcode.ErrCode_ErrInvalidInput, false, false, ""},
+		{"invalid14", "https://berty.tech/", errcode.ErrCode_ErrInvalidInput, false, false, ""},
+		{"invalid15", "https://invalid.domain/id#contact/" + validContactBlob + "/name=Alice", errcode.ErrCode_ErrInvalidInput, false, false, ""},
 		{"valid-web-contact-v1-with-name", "https://berty.tech/id#contact/" + validContactBlob + "/name=Alice", nil, true, false, "Alice"},
 		{"valid-internal-contact-v1", "BERTY://PB/" + validContactInternalBlob, nil, true, false, "moul (cli)"},
 		{"valid-internal-contact-v1-alternative-scheme", "berty://pb/" + validContactInternalBlob, nil, true, false, "moul (cli)"},
@@ -186,7 +187,7 @@ func TestUnmarshalLink(t *testing.T) {
 			assert.Equal(t, tc.expectedErrcode.Error(), errcode.Code(err).Error())
 			if tc.expectValidContact {
 				assert.True(t, link.IsContact())
-				assert.Equal(t, tc.expectedName, link.BertyID.DisplayName)
+				assert.Equal(t, tc.expectedName, link.BertyId.DisplayName)
 			}
 			if tc.expectValidGroup {
 				assert.True(t, link.IsGroup())
@@ -201,16 +202,16 @@ func TestMarshalLinkFuzzing(t *testing.T) {
 	for i := 0; i < 100; i++ {
 		link := &messengertypes.BertyLink{
 			Kind:    messengertypes.BertyLink_ContactInviteV1Kind,
-			BertyID: &messengertypes.BertyID{},
+			BertyId: &messengertypes.BertyID{},
 		}
 		name := []rune{}
 		for i := rand.Intn(64); i > 0; i-- {
 			name = append(name, rune(rand.Intn(65535)))
 		}
-		link.BertyID.DisplayName = string(name)
+		link.BertyId.DisplayName = string(name)
 		for i := 0; i < 32; i++ {
-			link.BertyID.PublicRendezvousSeed = append(link.BertyID.PublicRendezvousSeed, byte(rand.Intn(255)))
-			link.BertyID.AccountPK = append(link.BertyID.AccountPK, byte(rand.Intn(255)))
+			link.BertyId.PublicRendezvousSeed = append(link.BertyId.PublicRendezvousSeed, byte(rand.Intn(255)))
+			link.BertyId.AccountPk = append(link.BertyId.AccountPk, byte(rand.Intn(255)))
 		}
 		internal, web, err := bertylinks.MarshalLink(link)
 		require.NoError(t, err)
@@ -232,11 +233,11 @@ func TestMarshalLinkFuzzing(t *testing.T) {
 		// unmarshal and compare with original input
 		webLink, err := bertylinks.UnmarshalLink(web, nil)
 		require.NoError(t, err)
-		assert.Equal(t, link, webLink)
+		assert.True(t, proto.Equal(link, webLink))
 
 		internalLink, err := bertylinks.UnmarshalLink(internal, nil)
 		require.NoError(t, err)
-		assert.Equal(t, link, internalLink)
+		assert.True(t, proto.Equal(link, internalLink))
 	}
 }
 
@@ -252,9 +253,9 @@ func TestEncryptLink(t *testing.T) {
 			"simple-contact",
 			&messengertypes.BertyLink{
 				Kind: messengertypes.BertyLink_ContactInviteV1Kind,
-				BertyID: &messengertypes.BertyID{
+				BertyId: &messengertypes.BertyID{
 					PublicRendezvousSeed: []byte{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-					AccountPK:            []byte{2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2},
+					AccountPk:            []byte{2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2},
 				},
 			},
 			[]byte("s3cur3"),
@@ -269,7 +270,7 @@ func TestEncryptLink(t *testing.T) {
 						PublicKey:  []byte{3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3},
 						Secret:     []byte{4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4},
 						SecretSig:  []byte{5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5},
-						GroupType:  protocoltypes.GroupTypeMultiMember,
+						GroupType:  protocoltypes.GroupType_GroupTypeMultiMember,
 						SignPub:    []byte{6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6},
 						LinkKeySig: []byte{7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7},
 					},
@@ -282,10 +283,10 @@ func TestEncryptLink(t *testing.T) {
 			"simple-contact-clear-name",
 			&messengertypes.BertyLink{
 				Kind: messengertypes.BertyLink_ContactInviteV1Kind,
-				BertyID: &messengertypes.BertyID{
+				BertyId: &messengertypes.BertyID{
 					DisplayName:          "Hello World!",
 					PublicRendezvousSeed: []byte{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-					AccountPK:            []byte{2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2},
+					AccountPk:            []byte{2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2},
 				},
 			},
 			[]byte("s3cur3"),
@@ -301,7 +302,7 @@ func TestEncryptLink(t *testing.T) {
 						PublicKey:  []byte{3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3},
 						Secret:     []byte{4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4},
 						SecretSig:  []byte{5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5},
-						GroupType:  protocoltypes.GroupTypeMultiMember,
+						GroupType:  protocoltypes.GroupType_GroupTypeMultiMember,
 						SignPub:    []byte{6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6},
 						LinkKeySig: []byte{7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7},
 					},
@@ -329,7 +330,7 @@ func TestEncryptLink(t *testing.T) {
 			for _, u := range []string{internalURL, httpURL} {
 				link, err := bertylinks.UnmarshalLink(u, nil)
 				require.NoError(t, err)
-				require.NotEqual(t, tc.link, link)
+				assert.False(t, proto.Equal(tc.link, link))
 				require.Equal(t, link.Kind, messengertypes.BertyLink_EncryptedV1Kind)
 			}
 
@@ -345,8 +346,8 @@ func TestEncryptLink(t *testing.T) {
 					}
 					hasFailed = true
 					require.Error(t, err)
-					assert.Equal(t, errcode.ErrMessengerDeepLinkInvalidPassphrase.Error(), err.Error())
-					require.NotEqual(t, tc.link, link)
+					assert.Equal(t, errcode.ErrCode_ErrMessengerDeepLinkInvalidPassphrase.Error(), err.Error())
+					assert.False(t, proto.Equal(tc.link, link))
 					break
 				}
 			}
@@ -359,11 +360,11 @@ func TestEncryptLink(t *testing.T) {
 			for _, u := range []string{internalURL, httpURL} {
 				link, err := bertylinks.UnmarshalLink(u, tc.passphrase)
 				require.NoError(t, err)
-				require.Equal(t, tc.link, link)
+				assert.True(t, proto.Equal(tc.link, link))
 
 				switch link.Kind {
 				case messengertypes.BertyLink_ContactInviteV1Kind:
-					require.Equal(t, tc.expectedDisplayName, link.BertyID.DisplayName)
+					require.Equal(t, tc.expectedDisplayName, link.BertyId.DisplayName)
 				case messengertypes.BertyLink_GroupV1Kind:
 					require.Equal(t, tc.expectedDisplayName, link.BertyGroup.DisplayName)
 				}
@@ -397,7 +398,7 @@ func TestDecryptLink(t *testing.T) {
 				Nonce:                       b64decode(t, "rERlYwJHU96gpJKH6ky8WA=="),
 				DisplayName:                 "Hello World!",
 				ContactPublicRendezvousSeed: b64decode(t, "LAxeSZ19aHwzuK4ngqke4w=="),
-				ContactAccountPK:            b64decode(t, "Bg26HLi8I6Gutd7aXEhlUQ=="),
+				ContactAccountPk:            b64decode(t, "Bg26HLi8I6Gutd7aXEhlUQ=="),
 				Checksum:                    checksum,
 			},
 		}
@@ -417,8 +418,8 @@ func TestDecryptLink(t *testing.T) {
 		{"valid-1c-cs-valid-pass", buildLink([]byte{44}), []byte("s3cur3"), true, nil},
 		{"valid-2c-cs-valid-pass", buildLink([]byte{44, 11}), []byte("s3cur3"), true, nil},
 		{"valid-10c-cs-valid-pass", buildLink([]byte{44, 11, 87, 233, 219, 36, 109, 59, 109, 244}), []byte("s3cur3"), true, nil},
-		{"invalid-1c-cs-valid-pass", buildLink([]byte{42}), []byte("s3cur3"), false, errcode.ErrMessengerDeepLinkInvalidPassphrase},
-		{"valid-1c-cs-invalid-pass", buildLink([]byte{44}), []byte("invalid"), false, errcode.ErrMessengerDeepLinkInvalidPassphrase},
+		{"invalid-1c-cs-valid-pass", buildLink([]byte{42}), []byte("s3cur3"), false, errcode.ErrCode_ErrMessengerDeepLinkInvalidPassphrase},
+		{"valid-1c-cs-invalid-pass", buildLink([]byte{44}), []byte("invalid"), false, errcode.ErrCode_ErrMessengerDeepLinkInvalidPassphrase},
 		{"valid-1c-cs-invalid-pass-conflict", buildLink([]byte{44}), []byte("s3cur3-conflict-127"), false, nil},
 		{"no-cs-invalid-pass", buildLink(nil), []byte("invalid"), false, nil},
 		{"empty-cs-invalid-pass", buildLink([]byte{}), []byte("invalid"), false, nil},
@@ -426,7 +427,7 @@ func TestDecryptLink(t *testing.T) {
 
 	// quick tool used to bruteforce and generate a valid conflict (uncomment to use it, run `go test -v`, and wait for a raise)
 	// for i := 0; i < 5000; i++ {
-	// 	cases = append(cases, testcase{fmt.Sprintf("tmp-%d", i), buildLink([]byte{44}), []byte(fmt.Sprintf("s3cur3-conflict-%d", i)), false, errcode.ErrMessengerDeepLinkInvalidPassphrase})
+	// 	cases = append(cases, testcase{fmt.Sprintf("tmp-%d", i), buildLink([]byte{44}), []byte(fmt.Sprintf("s3cur3-conflict-%d", i)), false, errcode.ErrCode_ErrMessengerDeepLinkInvalidPassphrase})
 	// }
 
 	for _, tc := range cases {
@@ -439,10 +440,10 @@ func TestDecryptLink(t *testing.T) {
 			}
 			assert.Equal(t, tc.expectedErrcode.Error(), errcode.Code(err).Error())
 			if tc.expectDecryptSucceed {
-				require.NotNil(t, ret.BertyID)
-				assert.Equal(t, ret.BertyID.PublicRendezvousSeed, []byte{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1})
+				require.NotNil(t, ret.BertyId)
+				assert.Equal(t, ret.BertyId.PublicRendezvousSeed, []byte{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1})
 			} else {
-				assert.True(t, ret == nil || ret.BertyID == nil || !bytes.Equal(ret.BertyID.PublicRendezvousSeed, []byte{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}))
+				assert.True(t, ret == nil || ret.BertyId == nil || !bytes.Equal(ret.BertyId.PublicRendezvousSeed, []byte{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}))
 			}
 		})
 	}

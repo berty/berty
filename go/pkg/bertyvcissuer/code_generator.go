@@ -6,7 +6,7 @@ import (
 	"fmt"
 
 	"berty.tech/berty/v2/go/pkg/errcode"
-	"berty.tech/weshnet/pkg/verifiablecredstypes"
+	"berty.tech/weshnet/v2/pkg/verifiablecredstypes"
 )
 
 func CodeGeneratorZero(_ *verifiablecredstypes.StateCode) (string, error) {
@@ -21,7 +21,7 @@ func bytesToInt(input []byte) (uint64, error) {
 	bytesRequired := 4
 
 	if len(input) < bytesRequired {
-		return 0, errcode.ErrInvalidInput.Wrap(fmt.Errorf("expected at least %d bytes", bytesRequired))
+		return 0, errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("expected at least %d bytes", bytesRequired))
 	}
 
 	out := uint64(0)
@@ -34,42 +34,42 @@ func bytesToInt(input []byte) (uint64, error) {
 
 func (c *codeGeneratorEightDigits) CodeGeneratorEightDigits(state *verifiablecredstypes.StateCode) (string, error) {
 	if len(c.secret) == 0 {
-		return "", errcode.ErrInvalidInput.Wrap(fmt.Errorf("secret needs to be defined"))
+		return "", errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("secret needs to be defined"))
 	}
 
 	if len(state.BertyLink) == 0 {
-		return "", errcode.ErrInvalidInput.Wrap(fmt.Errorf("invalid state: berty_link field needs to be defined"))
+		return "", errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("invalid state: berty_link field needs to be defined"))
 	}
 
 	if len(state.Identifier) == 0 {
-		return "", errcode.ErrInvalidInput.Wrap(fmt.Errorf("invalid state: identifier field needs to be defined"))
+		return "", errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("invalid state: identifier field needs to be defined"))
 	}
 
 	if len(state.Timestamp) == 0 {
-		return "", errcode.ErrInvalidInput.Wrap(fmt.Errorf("invalid state: timestamp needs to be defined"))
+		return "", errcode.ErrCode_ErrInvalidInput.Wrap(fmt.Errorf("invalid state: timestamp needs to be defined"))
 	}
 
 	h := hmac.New(sha256.New, c.secret)
 
 	_, err := h.Write([]byte(state.BertyLink))
 	if err != nil {
-		return "", errcode.ErrStreamWrite.Wrap(err)
+		return "", errcode.ErrCode_ErrStreamWrite.Wrap(err)
 	}
 
 	_, err = h.Write([]byte(state.Identifier))
 	if err != nil {
-		return "", errcode.ErrStreamWrite.Wrap(err)
+		return "", errcode.ErrCode_ErrStreamWrite.Wrap(err)
 	}
 
 	_, err = h.Write(state.Timestamp)
 	if err != nil {
-		return "", errcode.ErrStreamWrite.Wrap(err)
+		return "", errcode.ErrCode_ErrStreamWrite.Wrap(err)
 	}
 
 	sum := h.Sum(nil)
 	codeAsInt, err := bytesToInt(sum[0:4])
 	if err != nil {
-		return "", errcode.ErrInternal.Wrap(err)
+		return "", errcode.ErrCode_ErrInternal.Wrap(err)
 	}
 
 	return fmt.Sprintf("%08d", codeAsInt), nil

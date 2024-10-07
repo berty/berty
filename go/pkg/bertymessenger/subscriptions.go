@@ -3,20 +3,19 @@ package bertymessenger
 import (
 	"context"
 
-	// nolint:staticcheck // cannot use the new protobuf API while keeping gogoproto
-	"github.com/golang/protobuf/proto"
 	ipfscid "github.com/ipfs/go-cid"
 	"go.uber.org/multierr"
 	"go.uber.org/zap"
+	"google.golang.org/protobuf/proto"
 
 	"berty.tech/berty/v2/go/internal/messengerutil"
 	"berty.tech/berty/v2/go/pkg/errcode"
 	mt "berty.tech/berty/v2/go/pkg/messengertypes"
-	weshnet_errcode "berty.tech/weshnet/pkg/errcode"
-	"berty.tech/weshnet/pkg/lifecycle"
-	"berty.tech/weshnet/pkg/logutil"
-	"berty.tech/weshnet/pkg/protocoltypes"
-	"berty.tech/weshnet/pkg/tyber"
+	weshnet_errcode "berty.tech/weshnet/v2/pkg/errcode"
+	"berty.tech/weshnet/v2/pkg/lifecycle"
+	"berty.tech/weshnet/v2/pkg/logutil"
+	"berty.tech/weshnet/v2/pkg/protocoltypes"
+	"berty.tech/weshnet/v2/pkg/tyber"
 )
 
 func (svc *service) manageSubscriptions() {
@@ -43,7 +42,7 @@ func (svc *service) manageSubscriptions() {
 
 		// Subscribe to account group
 		if err := svc.subscribeToGroup(ctx, tyberCtx, svc.accountGroup); err != nil {
-			if !errcode.Has(err, errcode.ErrBertyAccountAlreadyOpened) {
+			if !errcode.Has(err, errcode.ErrCode_ErrBertyAccountAlreadyOpened) {
 				logger.Error("unable subscribe to group", zap.String("gpk", messengerutil.B64EncodeBytes(svc.accountGroup)), zap.Error(err))
 			}
 			tyberErr = multierr.Append(tyberErr, err)
@@ -59,7 +58,7 @@ func (svc *service) manageSubscriptions() {
 			}
 
 			if err := svc.subscribeToGroup(ctx, tyberCtx, gpkb); err != nil {
-				if !errcode.Has(err, errcode.ErrBertyAccountAlreadyOpened) {
+				if !errcode.Has(err, errcode.ErrCode_ErrBertyAccountAlreadyOpened) {
 					logger.Error("unable subscribe to group", zap.String("gpk", groupPK), zap.Error(err))
 				}
 				tyberErr = multierr.Append(tyberErr, err)
@@ -82,9 +81,9 @@ func (svc *service) manageSubscriptions() {
 
 		// unsubscribe accountGroup
 		if _, err := svc.protocolClient.DeactivateGroup(svc.subsCtx, &protocoltypes.DeactivateGroup_Request{
-			GroupPK: svc.accountGroup,
+			GroupPk: svc.accountGroup,
 		}); err != nil {
-			if !errcode.Has(err, errcode.ErrBertyAccount) {
+			if !errcode.Has(err, errcode.ErrCode_ErrBertyAccount) {
 				logger.Error("unable to deactivate group", zap.String("gpk", messengerutil.B64EncodeBytes(svc.accountGroup)), zap.Error(err))
 			}
 		}
@@ -97,9 +96,9 @@ func (svc *service) manageSubscriptions() {
 				continue
 			}
 			if _, err := svc.protocolClient.DeactivateGroup(svc.subsCtx, &protocoltypes.DeactivateGroup_Request{
-				GroupPK: groupPKBytes,
+				GroupPk: groupPKBytes,
 			}); err != nil {
-				if !errcode.Has(err, errcode.ErrBertyAccount) {
+				if !errcode.Has(err, errcode.ErrCode_ErrBertyAccount) {
 					logger.Error("unable to deactivate group", zap.String("gpk", groupPK), zap.Error(err))
 				}
 
@@ -156,10 +155,10 @@ func (svc *service) subscribeToMetadata(ctx, tyberCtx context.Context, gpkb []by
 	// subscribe
 	s, err := svc.protocolClient.GroupMetadataList(
 		ctx,
-		&protocoltypes.GroupMetadataList_Request{GroupPK: gpkb},
+		&protocoltypes.GroupMetadataList_Request{GroupPk: gpkb},
 	)
 	if err != nil {
-		return errcode.ErrEventListMetadata.Wrap(err)
+		return errcode.ErrCode_ErrEventListMetadata.Wrap(err)
 	}
 	go func() {
 		for {
@@ -169,10 +168,10 @@ func (svc *service) subscribeToMetadata(ctx, tyberCtx context.Context, gpkb []by
 				return
 			}
 
-			cid, err := ipfscid.Cast(gme.EventContext.ID)
+			cid, err := ipfscid.Cast(gme.EventContext.Id)
 			eventHandler := svc.eventHandler
 			if err != nil {
-				svc.logger.Error("failed to cast cid for logging", logutil.PrivateBinary("cid-bytes", gme.EventContext.ID))
+				svc.logger.Error("failed to cast cid for logging", logutil.PrivateBinary("cid-bytes", gme.EventContext.Id))
 				ctx, _ := tyber.ContextWithTraceID(svc.eventHandler.Ctx())
 				eventHandler = eventHandler.WithContext(ctx)
 			} else {
@@ -204,12 +203,12 @@ func (svc *service) subscribeToMessages(ctx, tyberCtx context.Context, gpkb []by
 	ms, err := svc.protocolClient.GroupMessageList(
 		ctx,
 		&protocoltypes.GroupMessageList_Request{
-			GroupPK:  gpkb,
+			GroupPk:  gpkb,
 			SinceNow: true,
 		},
 	)
 	if err != nil {
-		return errcode.ErrEventListMessage.Wrap(err)
+		return errcode.ErrCode_ErrEventListMessage.Wrap(err)
 	}
 	go func() {
 		for {
@@ -225,10 +224,10 @@ func (svc *service) subscribeToMessages(ctx, tyberCtx context.Context, gpkb []by
 				return
 			}
 
-			cid, err := ipfscid.Cast(gme.EventContext.ID)
+			cid, err := ipfscid.Cast(gme.EventContext.Id)
 			eventHandler := svc.eventHandler
 			if err != nil {
-				svc.logger.Error("failed to cast cid for logging", zap.String("type", am.GetType().String()), logutil.PrivateBinary("cid-bytes", gme.EventContext.ID))
+				svc.logger.Error("failed to cast cid for logging", zap.String("type", am.GetType().String()), logutil.PrivateBinary("cid-bytes", gme.EventContext.Id))
 				ctx, _ := tyber.ContextWithTraceID(svc.eventHandler.Ctx())
 				eventHandler = eventHandler.WithContext(ctx)
 			} else {
@@ -253,9 +252,9 @@ func (svc *service) subscribeToGroup(ctx, tyberCtx context.Context, gpkb []byte)
 	}
 
 	if _, err := svc.protocolClient.ActivateGroup(ctx, &protocoltypes.ActivateGroup_Request{
-		GroupPK: gpkb,
+		GroupPk: gpkb,
 	}); err != nil {
-		return weshnet_errcode.ErrGroupActivate.Wrap(err)
+		return weshnet_errcode.ErrCode_ErrGroupActivate.Wrap(err)
 	}
 
 	if err := svc.subscribeToMetadata(ctx, tyberCtx, gpkb); err != nil {

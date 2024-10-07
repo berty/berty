@@ -10,7 +10,7 @@ import (
 	"google.golang.org/grpc"
 
 	"berty.tech/berty/v2/go/pkg/errcode"
-	"berty.tech/weshnet/pkg/grpcutil"
+	"berty.tech/weshnet/v2/pkg/grpcutil"
 )
 
 type service struct {
@@ -57,9 +57,9 @@ func NewService(opts *Options) TestServiceServer {
 	}
 }
 
-func (svc *service) EchoTest(ctx context.Context, req *EchoTest_Request) (*EchoTest_Reply, error) {
+func (svc *service) EchoTest(_ context.Context, req *EchoTest_Request) (*EchoTest_Reply, error) {
 	if req.TriggerError {
-		return nil, errcode.ErrTestEcho
+		return nil, errcode.ErrCode_ErrTestEcho
 	}
 
 	if req.Delay > 0 {
@@ -71,13 +71,13 @@ func (svc *service) EchoTest(ctx context.Context, req *EchoTest_Request) (*EchoT
 
 func (svc *service) EchoStreamTest(req *EchoStreamTest_Request, srv TestService_EchoStreamTestServer) error {
 	if req.TriggerError {
-		return errcode.ErrTestEcho
+		return errcode.ErrCode_ErrTestEcho
 	}
 
 	for {
 		err := srv.Send(&EchoStreamTest_Reply{Echo: req.Echo})
 		if err != nil {
-			return errcode.ErrTestEchoSend.Wrap(err)
+			return errcode.ErrCode_ErrTestEchoSend.Wrap(err)
 		}
 
 		time.Sleep(time.Duration(req.Delay) * time.Millisecond)
@@ -88,18 +88,18 @@ func (svc *service) EchoDuplexTest(srv TestService_EchoDuplexTestServer) error {
 	for {
 		req, err := srv.Recv()
 		if err != nil {
-			return errcode.ErrTestEchoRecv.Wrap(err)
+			return errcode.ErrCode_ErrTestEchoRecv.Wrap(err)
 		}
 
 		if req.TriggerError {
-			return errcode.ErrTestEcho
+			return errcode.ErrCode_ErrTestEcho
 		}
 
 		err = srv.Send(&EchoDuplexTest_Reply{
 			Echo: req.Echo,
 		})
 		if err != nil {
-			return errcode.ErrTestEchoSend.Wrap(err)
+			return errcode.ErrCode_ErrTestEchoSend.Wrap(err)
 		}
 	}
 }
