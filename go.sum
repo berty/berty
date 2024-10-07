@@ -8,6 +8,8 @@ berty.tech/go-orbit-db v1.22.2-0.20240719144258-ec7d1faaca68 h1:Y0TmVC11z+CQpQFo
 berty.tech/go-orbit-db v1.22.2-0.20240719144258-ec7d1faaca68/go.mod h1:UoKTs3bAL3Q1eCwj2VKA/LFspSFbacNeZsUkxDh3S3Q=
 berty.tech/ipfs-webui-packed v1.0.0-v2.11.4-1 h1:xXAS7M/RcgIWia1XkXLueirm2zDXnMMNGb3UJhfRzbo=
 berty.tech/ipfs-webui-packed v1.0.0-v2.11.4-1/go.mod h1:n+M4wWEjVxnA0itc1m9oOLAXrNyZr2tiOxLnA1tVnrQ=
+berty.tech/weshnet/v2 v2.0.1 h1:9xCfC269zNMLX4R5+MslfltG/lWJ1SRnkVuSdnOG+BE=
+berty.tech/weshnet/v2 v2.0.1/go.mod h1:zOkLHCHhGSa+kaBhYLEBvZ0DTLt8o1nGejP2rQVktCQ=
 cloud.google.com/go v0.26.0/go.mod h1:aQUYkXzVsufM+DwF1aE+0xfcU+56JwCaLick0ClmMTw=
 cloud.google.com/go v0.31.0/go.mod h1:aQUYkXzVsufM+DwF1aE+0xfcU+56JwCaLick0ClmMTw=
 cloud.google.com/go v0.34.0/go.mod h1:aQUYkXzVsufM+DwF1aE+0xfcU+56JwCaLick0ClmMTw=
@@ -239,8 +241,6 @@ github.com/cskr/pubsub v1.0.2 h1:vlOzMhl6PFn60gRlTQQsIfVwaPB/B/8MziK8FhEPt/0=
 github.com/cskr/pubsub v1.0.2/go.mod h1:/8MzYXk/NJAz782G8RPkFzXTZVu63VotefPnR9TIRis=
 github.com/d4ryl00/go-multiaddr v0.0.0-20240808141024-75af21abbfc1 h1:Svz6jeVTzRiDh8WsvvpVpcBB3cYYZhWWay21gbpw43E=
 github.com/d4ryl00/go-multiaddr v0.0.0-20240808141024-75af21abbfc1/go.mod h1:sBXrNzucqkFJhvKOiwwLyqamGa/P5EIXNPLovyhQCII=
-github.com/d4ryl00/weshnet/v2 v2.0.0-20241007114754-f6e49782c584 h1:/C7aq+uiyEspp3ekCgPVWqEiocK6QWYglSEad9+m1no=
-github.com/d4ryl00/weshnet/v2 v2.0.0-20241007114754-f6e49782c584/go.mod h1:zOkLHCHhGSa+kaBhYLEBvZ0DTLt8o1nGejP2rQVktCQ=
 github.com/daixiang0/gci v0.8.2 h1:4VLVDNdJ+wkXxz/nr5QRrbeK+JCvkMVqYjUWB5EnPF4=
 github.com/daixiang0/gci v0.8.2/go.mod h1:EpVfrztufwVgQRXjnX4zuNinEpLj5OmMjtu/+MB0V0c=
 github.com/davecgh/go-spew v0.0.0-20171005155431-ecdeabc65495/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=

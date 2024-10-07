@@ -8,7 +8,7 @@ require (
 	berty.tech/go-ipfs-repo-encrypted v1.3.1-0.20240722095251-c6b363b38785
 	berty.tech/go-orbit-db v1.22.2-0.20240719144258-ec7d1faaca68
 	berty.tech/ipfs-webui-packed v1.0.0-v2.11.4-1
-	berty.tech/weshnet/v2 v2.0.0
+	berty.tech/weshnet/v2 v2.0.1
 	firebase.google.com/go/v4 v4.12.0
 	fyne.io/fyne/v2 v2.1.1
 	github.com/Masterminds/semver v1.5.0
@@ -426,5 +426,3 @@ replace (
 	github.com/peterbourgon/ff/v3 => github.com/moul/ff/v3 v3.0.1 // temporary, see https://github.com/peterbourgon/ff/pull/67, https://github.com/peterbourgon/ff/issues/68
 	golang.org/x/mobile => github.com/berty/mobile v0.0.8 // temporary, see https://github.com/golang/mobile/pull/58 and https://github.com/golang/mobile/pull/82
 )
-
-replace berty.tech/weshnet/v2 => github.com/d4ryl00/weshnet/v2 v2.0.0-20241007114754-f6e49782c584
