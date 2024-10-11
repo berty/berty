@@ -15,7 +15,7 @@ golang 1.23.2
 # prevent our project from building.
 # More info here: https://github.com/webpack/webpack/issues/14532
 #-----
-nodejs 16.16.0
+nodejs 22.8.0
 
 #-----
 # This is simply the most recent xcodegen version available to date.
