@@ -28,7 +28,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
           persist-credentials: false
@@ -39,7 +39,7 @@ jobs:
           filename: .github/workflows/utils/variables.json
 
       - name: Setup asdf
-        uses: asdf-vm/actions/setup@v1
+        uses: asdf-vm/actions/setup@v3
 
       - name: Setup go
         run: |
@@ -99,6 +99,7 @@ jobs:
           CI: "true"
         run: |
           make android.app_deps
+          export NODE_OPTIONS=--openssl-legacy-provider
           (yarn jetify && cd android && ./gradlew -i app:bundleReleaseYolo)
           ### TODO: move this part on Yolo and use release keystore ###
           mkdir -p $HOME/.android

@@ -26,7 +26,7 @@ jobs:
       release-version: ${{ steps.semantic-echo.outputs.release-version }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Unshallow
         run: git fetch --prune --unshallow
@@ -58,10 +58,10 @@ jobs:
     if: github.event_name == 'push' && github.ref == 'refs/heads/master'
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup asdf
-        uses: asdf-vm/actions/setup@v1
+        uses: asdf-vm/actions/setup@v3
 
       - name: Setup jq
         run: |
@@ -97,13 +97,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Unshallow
         run: git fetch --prune --unshallow
 
       - name: Setup asdf
-        uses: asdf-vm/actions/setup@v1
+        uses: asdf-vm/actions/setup@v3
 
       - name: Setup go
         run: |
@@ -156,7 +156,7 @@ jobs:
       OSXCROSS_DIR: /home/runner/work/osxcross
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Unshallow
         run: git fetch --prune --unshallow
@@ -168,7 +168,7 @@ jobs:
 
       - name: Setup asdf (Posix)
         if: matrix.config.goos != 'windows'
-        uses: asdf-vm/actions/setup@v1
+        uses: asdf-vm/actions/setup@v3
 
       - name: Setup go (Posix)
         if: matrix.config.goos != 'windows'
