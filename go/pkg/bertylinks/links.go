@@ -322,7 +322,7 @@ func decryptLink(link *messengertypes.BertyLink, passphrase []byte) (*messengert
 		decrypted.BertyGroup.DisplayName = link.Encrypted.DisplayName
 	}
 
-	if link.Encrypted.Checksum != nil && len(link.Encrypted.Checksum) > 0 {
+	if len(link.Encrypted.Checksum) > 0 {
 		checksum := make([]byte, len(link.Encrypted.Checksum))
 		err := clearLinkChecksum(&decrypted, checksum)
 		if err != nil {
@@ -416,7 +416,7 @@ func EncryptLink(link *messengertypes.BertyLink, passphrase []byte) (*messengert
 		return nil, errcode.ErrCode_ErrInvalidInput
 	}
 
-	if encrypted.Encrypted.Checksum != nil && len(encrypted.Encrypted.Checksum) > 0 {
+	if len(encrypted.Encrypted.Checksum) > 0 {
 		err := clearLinkChecksum(link, encrypted.Encrypted.Checksum)
 		if err != nil {
 			return nil, errcode.ErrCode_ErrInternal.Wrap(err)

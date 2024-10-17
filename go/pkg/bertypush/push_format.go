@@ -2,6 +2,7 @@ package bertypush
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 
 	"golang.org/x/text/message"
@@ -75,7 +76,7 @@ func FormatDecryptedPush(decrypted *pushtypes.DecryptedPush, printer *message.Pr
 		fmtpush.Body = printer.Sprintf(placeHolderMessages[decrypted.PushType])
 
 	default:
-		err = fmt.Errorf(printer.Sprintf("push.unknown.body"))
+		err = errors.New(printer.Sprintf("push.unknown.body"))
 	}
 
 	if err != nil {

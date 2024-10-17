@@ -222,7 +222,7 @@ func getServiceError(err error) *Error {
 
 	grpcErrCode := GRPCErrCode_OK
 	if s := status.Convert(err); s.Code() != codes.OK {
-		grpcErrCode = GRPCErrCode(s.Code())
+		grpcErrCode = GRPCErrCode(s.Code()) //nolint:gosec
 	}
 
 	errCode := errcode.ErrCode_Undefined

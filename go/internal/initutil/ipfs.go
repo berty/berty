@@ -38,9 +38,9 @@ import (
 
 	"berty.tech/berty/v2/go/internal/datastoreutil"
 	"berty.tech/berty/v2/go/internal/encryptedrepo"
-	"berty.tech/berty/v2/go/internal/mdns"
 	"berty.tech/berty/v2/go/pkg/config"
 	"berty.tech/berty/v2/go/pkg/errcode"
+	"berty.tech/berty/v2/go/pkg/mdns"
 	ipfswebui "berty.tech/ipfs-webui-packed"
 	"berty.tech/weshnet/v2"
 	ble "berty.tech/weshnet/v2/pkg/ble-driver"

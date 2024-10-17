@@ -2,7 +2,7 @@
 5ab1cc72fb68ae71551791df7324cde6f276e1f0  ../api/berty/errcode.proto
 e8196156efc4aece892fc42ebc2b91c20127e910  ../api/bertybridge/bertybridge.proto
 520790f5a3f524c82f02479904567c639691bced  ../api/directorytypes/bertydirectory.proto
-851d354abf878a3afd1e1759511b7b3ce297330f  ../api/go-internal/testutil.proto
+f8159ef0fdaf66e2ec5c6afc4b03e3353aa95229  ../api/go-internal/testutil.proto
 b241fd5eec5c157a472df665cf21289a84612d5e  ../api/messengertypes/messengertypes.proto
 0ede6de49ef7dac9bdec9fda912f2ce6bc463c74  ../api/pushtypes/bertypushtypes.proto
 59e8785812a218a9a9729e7f01ae16a8cb58cd0b  Makefile

@@ -4547,7 +4547,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
         nested: {
           v1: {
             options: {
-              go_package: "berty.tech/weshnet/pkg/protocoltypes"
+              go_package: "berty.tech/weshnet/v2/pkg/protocoltypes"
             },
             nested: {
               ProtocolService: {
@@ -6752,7 +6752,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
       },
       errcode: {
         options: {
-          go_package: "berty.tech/weshnet/pkg/errcode"
+          go_package: "berty.tech/weshnet/v2/pkg/errcode"
         },
         nested: {
           ErrCode: {
