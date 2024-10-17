@@ -174,7 +174,7 @@ func testRDVPs(ctx context.Context, gwg *sync.WaitGroup, addrs []string) {
 							// Using sha256 as this is not critical, probably still fast on most arch.
 							h := sha256.New()
 							buf := make([]byte, 8)
-							binary.LittleEndian.PutUint64(buf, uint64(srand.SafeFast()))
+							binary.LittleEndian.PutUint64(buf, uint64(srand.SafeFast())) //nolint:gosec
 							doWriteOnHash(h, buf)
 							id, err := machineid.ID()
 							if err == nil {
@@ -182,7 +182,7 @@ func testRDVPs(ctx context.Context, gwg *sync.WaitGroup, addrs []string) {
 							}
 							doWriteOnHash(h, []byte("Berty Doctor"))
 							buf = make([]byte, 8)
-							binary.LittleEndian.PutUint64(buf, uint64(runtime.NumCPU()))
+							binary.LittleEndian.PutUint64(buf, uint64(runtime.NumCPU())) //nolint:gosec
 							doWriteOnHash(h, buf)
 							doWriteOnHash(h, []byte(runtime.Version()))
 							key = strconv.FormatUint(binary.LittleEndian.Uint64(h.Sum(nil)), 36)

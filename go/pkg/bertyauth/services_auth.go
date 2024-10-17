@@ -218,7 +218,7 @@ func (r *AuthTokenVerifier) GRPCAuthInterceptor(serviceID string) func(ctx conte
 
 		tokenData, err := r.VerifyToken(token, serviceID)
 		if err != nil {
-			return nil, status.Errorf(codes.PermissionDenied, err.Error())
+			return nil, status.Error(codes.PermissionDenied, err.Error())
 		}
 
 		ctx = context.WithValue(ctx, authtypes.ContextTokenHashField, tokenData.TokenId)

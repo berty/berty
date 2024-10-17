@@ -348,7 +348,7 @@ const (
 )
 
 func (b *Bridge) Log(level int, subsystem string, message string) {
-	b.logger.Named(subsystem).Log(zapcore.Level(level), message)
+	b.logger.Named(subsystem).Log(zapcore.Level(level), message) //nolint:gosec
 }
 
 func (b *Bridge) HandleConnectivityUpdate(info *ConnectivityInfo) {
