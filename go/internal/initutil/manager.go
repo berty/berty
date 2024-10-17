@@ -26,10 +26,10 @@ import (
 
 	"berty.tech/berty/v2/go/internal/accountutils"
 	berty_grpcutil "berty.tech/berty/v2/go/internal/grpcutil"
-	"berty.tech/berty/v2/go/internal/mdns"
 	"berty.tech/berty/v2/go/internal/notification"
 	"berty.tech/berty/v2/go/pkg/bertymessenger"
 	"berty.tech/berty/v2/go/pkg/errcode"
+	"berty.tech/berty/v2/go/pkg/mdns"
 	"berty.tech/berty/v2/go/pkg/messengertypes"
 	"berty.tech/weshnet/v2"
 	"berty.tech/weshnet/v2/pkg/grpcutil"
