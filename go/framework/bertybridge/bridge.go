@@ -17,12 +17,12 @@ import (
 	"google.golang.org/grpc"
 
 	berty_grpcutil "berty.tech/berty/v2/go/internal/grpcutil"
-	"berty.tech/berty/v2/go/internal/mdns"
 	"berty.tech/berty/v2/go/internal/notification"
 	"berty.tech/berty/v2/go/pkg/accounttypes"
 	account_svc "berty.tech/berty/v2/go/pkg/bertyaccount"
 	bridge_svc "berty.tech/berty/v2/go/pkg/bertybridge"
 	"berty.tech/berty/v2/go/pkg/errcode"
+	"berty.tech/berty/v2/go/pkg/mdns"
 	"berty.tech/berty/v2/go/pkg/osversion"
 	"berty.tech/weshnet/v2/pkg/grpcutil"
 	"berty.tech/weshnet/v2/pkg/lifecycle"
@@ -348,7 +348,7 @@ const (
 )
 
 func (b *Bridge) Log(level int, subsystem string, message string) {
-	b.logger.Named(subsystem).Log(zapcore.Level(level), message)
+	b.logger.Named(subsystem).Log(zapcore.Level(level), message) //nolint:gosec
 }
 
 func (b *Bridge) HandleConnectivityUpdate(info *ConnectivityInfo) {

@@ -302,9 +302,9 @@ func (s *service) OpenAccountWithProgress(req *accounttypes.OpenAccountWithProgr
 					State:     string(snapshot.State),
 					Doing:     snapshot.Doing,
 					Progress:  float32(snapshot.Progress),
-					Completed: uint64(snapshot.Completed),
-					Total:     uint64(snapshot.Total),
-					Delay:     uint64(snapshot.TotalDuration.Microseconds()),
+					Completed: uint64(snapshot.Completed),                    //nolint:gosec
+					Total:     uint64(snapshot.Total),                        //nolint:gosec
+					Delay:     uint64(snapshot.TotalDuration.Microseconds()), //nolint:gosec
 				},
 			})
 			if err != nil {
@@ -383,9 +383,9 @@ func (s *service) CloseAccountWithProgress(_ *accounttypes.CloseAccountWithProgr
 					State:     string(snapshot.State),
 					Doing:     snapshot.Doing,
 					Progress:  float32(snapshot.Progress),
-					Completed: uint64(snapshot.Completed),
-					Total:     uint64(snapshot.Total),
-					Delay:     uint64(snapshot.TotalDuration.Microseconds()),
+					Completed: uint64(snapshot.Completed),                    //nolint:gosec
+					Total:     uint64(snapshot.Total),                        //nolint:gosec
+					Delay:     uint64(snapshot.TotalDuration.Microseconds()), //nolint:gosec
 				},
 			})
 			if err != nil {
@@ -649,9 +649,9 @@ func (s *service) ImportAccountWithProgress(req *accounttypes.ImportAccountWithP
 					State:     string(snapshot.State),
 					Doing:     snapshot.Doing,
 					Progress:  float32(snapshot.Progress),
-					Completed: uint64(snapshot.Completed),
-					Total:     uint64(snapshot.Total),
-					Delay:     uint64(snapshot.TotalDuration.Microseconds()),
+					Completed: uint64(snapshot.Completed),                    //nolint:gosec
+					Total:     uint64(snapshot.Total),                        //nolint:gosec
+					Delay:     uint64(snapshot.TotalDuration.Microseconds()), //nolint:gosec
 				},
 			})
 			if err != nil {

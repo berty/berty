@@ -1033,7 +1033,7 @@ func (svc *service) EchoTest(req *messengertypes.EchoTest_Request, srv messenger
 			return errcode.ErrCode_ErrTestEchoSend.Wrap(err)
 		}
 
-		time.Sleep(time.Duration(req.Delay) * time.Millisecond)
+		time.Sleep(time.Duration(req.Delay) * time.Millisecond) //nolint:gosec
 	}
 }
 

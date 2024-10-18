@@ -25,7 +25,7 @@ func bytesToInt(input []byte) (uint64, error) {
 	}
 
 	out := uint64(0)
-	for i := uint64(0); i < uint64(bytesRequired); i++ {
+	for i := uint64(0); i < uint64(bytesRequired); i++ { //nolint:gosec
 		out |= uint64(input[i]) << (8 * i)
 	}
 

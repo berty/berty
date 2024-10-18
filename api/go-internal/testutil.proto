@@ -17,7 +17,7 @@ service TestService {
 
 message EchoTest {
   message Request {
-    uint64 delay = 1;
+    int64 delay = 1;
     string echo = 2;
     bool trigger_error = 3;
   }
@@ -28,7 +28,7 @@ message EchoTest {
 
 message EchoStreamTest {
   message Request {
-    uint64 delay = 1;
+    int64 delay = 1;
     string echo = 2;
     bool trigger_error = 3;
   }
