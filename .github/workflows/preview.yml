@@ -1,26 +1,5 @@
-name: iOS
-on:
-  push:
-    tags:
-      - v*
-    branches:
-      - master
-    paths:
-      - "go/**"
-      - "!go/**.md"
-      - "go.*"
-      - "**.go"
-      - "js/**"
-      - ".github/workflows/ios.yml"
-  pull_request:
-    paths:
-      - "go/**"
-      - "!go/**.md"
-      - "go.*"
-      - "**.go"
-      - "js/**"
-      - "!js/packages/i18n/locale/*/*.json"
-      - ".github/workflows/ios.yml"
+name: preview
+on: pull_request
 
 jobs:
   preview:
