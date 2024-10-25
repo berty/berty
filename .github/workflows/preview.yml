@@ -1,35 +1,35 @@
-name: preview
-on: pull_request
+name: Preview - Berty Mobile App
+
+on:
+  pull_request:
+    branches:
+      - master
 
 jobs:
-  preview:
+  run-npm-command:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: js
     steps:
-      - name: 🏗 Setup repo
-        uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - name: 🏗 Setup Node
-        uses: actions/setup-node@v3
-        working-directory: js
-        with:
-          node-version: 18.x
-          cache: yarn
+      - name: Setup asdf
+        uses: asdf-vm/actions/setup@v3
 
-      - name: 🏗 Setup EAS
-        uses: expo/expo-github-action@v8
-        with:
-          eas-version: latest
-          token: ${{ secrets.EXPO_TOKEN }}
+      - name: Setup Node version
+        working-directory: mobile
+        run: |
+          asdf plugin add nodejs
+          asdf install nodejs
+          echo "node_version=$(asdf current nodejs | xargs | cut -d ' ' -f 2)" >> $GITHUB_ENV
 
-      - name: 📦 Install dependencies
+      - name: Set nodejs as global exec
+        run: |
+          asdf global nodejs ${{ env.node_version }}
+
+      - name: Install dependencies
+        working-directory: mobile
         run: yarn install
 
-      - name: 🚀 Create preview
-        uses: expo/expo-github-action/preview@v8
-        with:
-          # `github.event.pull_request.head.ref` is only available on `pull_request` triggers.
-          # Use your own, or keep the automatically inferred branch name from `--auto`, when using different triggers.
-          command: eas update --auto --branch ${{ github.event.pull_request.head.ref }}
+      - name: Check for lint errors
+        working-directory: mobile
+        run: yarn lint
