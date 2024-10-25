@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "js",
-    "slug": "js",
+    "name": "berty",
+    "slug": "berty",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -31,6 +31,12 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "01cd0667-80ee-4f67-8a43-0d1de5958bce"
+      }
+    },
+    "owner": "bertytechnologies"
   }
 }

@@ -23,214 +23,33 @@ on:
       - ".github/workflows/ios.yml"
 
 jobs:
-  mac_runner_matrix_builder:
-    name: macOS matrix builder
+  preview:
     runs-on: ubuntu-latest
-    outputs:
-      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    defaults:
+      run:
+        working-directory: ./js
     steps:
-      - name: Checkout
+      - name: 🏗 Setup repo
         uses: actions/checkout@v3
+
+      - name: 🏗 Setup Node
+        uses: actions/setup-node@v3
         with:
-          fetch-depth: 1
+          node-version: 22.x
+          cache: yarn
 
-      - name: Generate runner matrix (optimized)
-        id: set-matrix
-        run: |
-          # usage: node .github/workflows/mac-runner-matrix-builder.js STRATEGY
-          #
-          #  STRATEGY
-          #    self-hosted  pick the self-hosted runner configuration
-          #    github       pick the github runner configuration
-          #    optimized    pick a dc4 runner if available or fallback on github one
-          #
-          node .github/workflows/utils/mac-runner-matrix-builder.js optimized
-
-  build:
-    needs: mac_runner_matrix_builder
-    name: Build for iOS
-    runs-on: ${{ matrix.runner }}
-    env:
-      E2E_TESTING_IOS_DEVICE: iPhone 14
-      # TODO: fix hetzner
-      # E2E_TESTING_IOS_VERSION: 15.5
-      CACHE_DIRS: js/android/.gomobile-cache; js/ios/.gomobile-cache; js/ios/.xcodegen-cache
-    strategy:
-      fail-fast: false
-      matrix: ${{fromJson(needs.mac_runner_matrix_builder.outputs.matrix)}}
-    steps:
-      - name: Pre-checkout cleanup
-        if: ${{ matrix.selfhosted }}
-        run: |
-          cache_dirs=(${CACHE_DIRS//;/ })
-          for cache_dir in ${cache_dirs[@]}; do
-            if [ -d "$cache_dir" ]; then
-              mkdir -p "$RUNNER_TEMP/$cache_dir"
-              rm -rf "$RUNNER_TEMP/$cache_dir"
-              mv "$cache_dir" "$RUNNER_TEMP/$cache_dir"
-            fi
-          done
-
-      - name: Checkout
-        uses: actions/checkout@v3
+      - name: 🏗 Setup EAS
+        uses: expo/expo-github-action@v8
         with:
-          fetch-depth: 1
-          persist-credentials: false
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
 
-      - name: Post-checkout cleanup
-        if: ${{ matrix.selfhosted }}
-        run: |
-          cache_dirs=(${CACHE_DIRS//;/ })
-          for cache_dir in ${cache_dirs[@]}; do
-            if [ -d "$RUNNER_TEMP/$cache_dir" ]; then
-              mv "$RUNNER_TEMP/$cache_dir" "$cache_dir"
-            fi
-          done
+      - name: 📦 Install dependencies
+        run: yarn install
 
-      - name: Load variables from file
-        uses: antifree/json-to-variables@v1.0.1
+      - name: 🚀 Create preview
+        uses: expo/expo-github-action/preview@v8
         with:
-          filename: .github/workflows/utils/variables.json
-
-      - name: Setup asdf
-        if: ${{ !matrix.selfhosted }}
-        uses: asdf-vm/actions/setup@v1
-
-      - name: Setup go
-        run: |
-          asdf plugin add golang || ${{ matrix.selfhosted }}
-          asdf install golang
-          echo "go_version=$(asdf current golang | xargs | cut -d ' ' -f 2)" >> $GITHUB_ENV
-
-      - name: Setup ruby
-        env:
-          # TMP fix for OpenSSL 1.1.1q install, see: https://github.com/openssl/openssl/issues/18733
-          CFLAGS: -Wno-error=implicit-function-declaration
-        run: |
-          asdf plugin add ruby || ${{ matrix.selfhosted }}
-          asdf install ruby
-          echo "ruby_version=$(asdf current ruby | xargs | cut -d ' ' -f 2)" >> $GITHUB_ENV
-
-      - name: Setup xcodegen
-        run: |
-          asdf plugin add xcodegen || ${{ matrix.selfhosted }}
-          asdf install xcodegen
-          echo "xcodegen_version=$(asdf current xcodegen | xargs | cut -d ' ' -f 2)" >> $GITHUB_ENV
-
-      - name: Setup node
-        run: |
-          asdf plugin add nodejs || ${{ matrix.selfhosted }}
-          asdf install nodejs
-          echo "node_version=$(asdf current nodejs | xargs | cut -d ' ' -f 2)" >> $GITHUB_ENV
-
-      - name: Setup yarn
-        run: |
-          asdf plugin add yarn || ${{ matrix.selfhosted }}
-          asdf install yarn
-
-      - name: Get XCode version from version file
-        run:
-          echo "xcode_version=$(cat js/ios/.xcode-version)" >> $GITHUB_ENV
-
-      - name: Setup XCode version (Github runners)
-        # Disabled on self-hosted because it requires authentication
-        if: ${{ !matrix.selfhosted }}
-        uses: maxim-lobanov/setup-xcode@v1.4.1
-        with:
-          xcode-version: ${{ env.xcode_version }}
-
-      - name: Check XCode version (Self-hosted runners)
-        if: ${{ matrix.selfhosted }}
-        run: |
-          installed_version="$(xcodebuild -version | head -n 1 | sed 's/Xcode //')"
-          if [ "$xcode_version" != "$installed_version" ]; then
-              echo "::warning file=js/ios/.xcode-version,line=1,col=1::XCode version mismatch on self-hosted runner (required '$xcode_version' / installed '$installed_version')"
-          fi
-
-      - name: Cache go modules
-        uses: actions/cache@v2.1.6
-        with:
-          path: ~/go/pkg/mod
-          key:          ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-${{ hashFiles('go/**/go.sum') }}
-          restore-keys: ${{ runner.os }}-go-${{ env.go_version }}-${{ env.json_cache-versions_go }}-
-
-      - name: Cache ruby modules
-        uses: actions/cache@v2.1.6
-        with:
-          path: js/ios/vendor/bundle
-          key:          ${{ runner.os }}-ruby-${{ env.ruby_version }}-${{ env.json_cache-versions_ruby }}-${{ hashFiles('js/ios/Gemfile*') }}
-          restore-keys: ${{ runner.os }}-ruby-${{ env.ruby_version }}-${{ env.json_cache-versions_ruby }}-
-
-      - name: Cache node modules
-        uses: actions/cache@v2.1.6
-        with:
-          path: js/node_modules
-          key:          ${{ runner.OS }}-node-${{ env.node_version }}-${{ env.json_cache-versions_node }}-${{ hashFiles('js/yarn.lock') }}
-          restore-keys: ${{ runner.OS }}-node-${{ env.node_version }}-${{ env.json_cache-versions_node }}-
-
-      - name: Cache Bertybridge framework
-        uses: n0izn0iz/mkache@5cedaeaf0b39a9220ae5a815cac8d2a924cee3ef
-        if: github.ref != 'refs/heads/master' # this makes sure the VCS_REF is correct on master
-        env:
-          GOMOBILE_IOS_TARGET: iossimulator
-        with:
-          rule: ios/Frameworks/Bertybridge.xcframework
-          makefile: js/Makefile
-          key: ios-gomobile-bridge-${{ env.go_version }}-${{ env.json_cache-versions_bridgeframework }}
-
-      - name: Cache Bertypush framework
-        uses: n0izn0iz/mkache@5cedaeaf0b39a9220ae5a815cac8d2a924cee3ef
-        if: github.ref != 'refs/heads/master' # this makes sure the VCS_REF is correct on master
-        env:
-          GOMOBILE_IOS_TARGET: iossimulator
-        with:
-          rule: ios/Frameworks/Bertypush.xcframework
-          makefile: js/Makefile
-          key: ios-gomobile-push-${{ env.go_version }}-${{ env.json_cache-versions_pushframework }}
-
-      - name: Cache XCodeGen and XCode project
-        uses: actions/cache@v2.1.6
-        with:
-          path: |
-            js/ios/Berty.xcodeproj
-            js/ios/.xcodegen-cache
-          key:          ios-xcodeproject-${{ env.xcodegen_version }}-${{ env.json_cache-versions_xcodeproject }}-${{ hashFiles('js/ios/*.yaml') }}
-          restore-keys: ios-xcodeproject-${{ env.xcodegen_version }}-${{ env.json_cache-versions_xcodeproject }}-
-
-      - name: Cache Pods and XCode workspace
-        uses: actions/cache@v2.1.6
-        with:
-          path: |
-            js/ios/Berty.xcworkspace
-            js/ios/Pods
-          key:          ios-xcodeworkspace-${{ env.ruby_version }}-${{ env.json_cache-versions_xcodeworkspace }}-${{ hashFiles('js/ios/Podfile.lock', 'js/ios/Gemfile*', 'js/yarn.lock') }}
-          restore-keys: ios-xcodeworkspace-${{ env.ruby_version }}-${{ env.json_cache-versions_xcodeworkspace }}-
-
-      - name: Fetch node modules
-        working-directory: js
-        run: make node_modules
-
-      - name: Build XCode project and workspace
-        working-directory: js
-        env:
-          LANG: en_US.UTF-8
-        run: make ios.project
-
-      - name: Build iOS frameworks
-        working-directory: js
-        run: GOMOBILE_IOS_TARGET=iossimulator make ios.gomobile
-
-      - name: Build the app for e2e testing
-        working-directory: js/ios
-        run: |
-          xcodebuild \
-            -workspace Berty.xcworkspace \
-            -configuration "AppStore Release" \
-            -scheme "Berty AppStore" \
-            -destination "name=$E2E_TESTING_IOS_DEVICE"
-
-      # TODO: fix hetzner
-      # - name: Run e2e-tests
-        # working-directory: js
-        # run: |
-          # make e2e-tests.ci-flow
+          # `github.event.pull_request.head.ref` is only available on `pull_request` triggers.
+          # Use your own, or keep the automatically inferred branch name from `--auto`, when using different triggers.
+          command: eas update --auto --branch ${{ github.event.pull_request.head.ref }}
