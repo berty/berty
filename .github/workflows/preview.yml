@@ -27,15 +27,16 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./js
+        working-directory: js
     steps:
       - name: 🏗 Setup repo
         uses: actions/checkout@v3
 
       - name: 🏗 Setup Node
         uses: actions/setup-node@v3
+        working-directory: js
         with:
-          node-version: 22.x
+          node-version: 18.x
           cache: yarn
 
       - name: 🏗 Setup EAS
