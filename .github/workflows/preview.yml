@@ -8,6 +8,9 @@ on:
 jobs:
   expo-update:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
     defaults:
       run:
         working-directory: mobile
