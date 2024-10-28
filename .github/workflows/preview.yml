@@ -1,19 +1,11 @@
-name: Preview - Berty Mobile App
-
+name: Semantic Release
 on:
-  pull_request:
+  push:
     branches:
-      - master
-
+      - main
 jobs:
-  expo-update:
+  semantic-release:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      pull-requests: write
-    defaults:
-      run:
-        working-directory: mobile
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -32,32 +24,19 @@ jobs:
         run: |
           asdf global nodejs ${{ env.node_version }}
 
-      - name: Check for EXPO_TOKEN
-        run: |
-          if [ -z "${{ secrets.EXPO_TOKEN }}" ]; then
-            echo "You must provide an EXPO_TOKEN secret linked to this project's Expo account in this repo's secrets. Learn more: https://docs.expo.dev/eas-update/github-actions"
-            exit 1
-          fi
-
-      - name: Setup EAS
+      - name: Setup Expo and EAS
         uses: expo/expo-github-action@v8
         with:
-          expo-version: latest
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
 
       - name: Install dependencies
         working-directory: mobile
-        run: yarn install
-  
-      - name: Check for lint errors
-        working-directory: mobile
-        run: yarn lint          
+        run: yarn ci
 
       - name: Build Android app
         run: eas build --platform android --profile preview --local --output ${{ github.workspace }}/app-release.apk
-
+  
       - name: Build Android app
         run: eas build --platform ios --profile preview --local --output ${{ github.workspace }}/app-release.ipa
-  
-  
+    
