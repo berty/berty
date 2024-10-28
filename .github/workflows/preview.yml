@@ -50,10 +50,14 @@ jobs:
       - name: Setup EAS
         uses: expo/expo-github-action@v8
         with:
+          expo-version: latest
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
 
-      - name: Create preview
-        uses: expo/expo-github-action/preview@v8
-        with:
-          command: eas update --auto
+      - name: Build Android app
+        run: eas build --platform android --profile preview --local --output ${{ github.workspace }}/app-release.apk
+
+      - name: Build Android app
+        run: eas build --platform ios --profile preview --local --output ${{ github.workspace }}/app-release.ipa
+  
+  
