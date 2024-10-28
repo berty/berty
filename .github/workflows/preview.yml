@@ -32,14 +32,6 @@ jobs:
         run: |
           asdf global nodejs ${{ env.node_version }}
 
-      - name: Install dependencies
-        working-directory: mobile
-        run: yarn install
-
-      - name: Check for lint errors
-        working-directory: mobile
-        run: yarn lint
-
       - name: Check for EXPO_TOKEN
         run: |
           if [ -z "${{ secrets.EXPO_TOKEN }}" ]; then
@@ -53,6 +45,14 @@ jobs:
           expo-version: latest
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Install dependencies
+        working-directory: mobile
+        run: yarn install
+  
+      - name: Check for lint errors
+        working-directory: mobile
+        run: yarn lint          
 
       - name: Build Android app
         run: eas build --platform android --profile preview --local --output ${{ github.workspace }}/app-release.apk
