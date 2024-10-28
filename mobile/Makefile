@@ -183,11 +183,11 @@ endif
 gen.clean:
 	rm -f gen.sum
 	rm -f $(wildcard \
-	  packages/*/*.gen.tsx \
-	  packages/*/*.gen.ts \
-	  packages/*/*.gen.js \
-	  packages/*/*.pb.js \
-	  packages/*/*.pb.d.ts \
+	  example/src/api*/*.gen.tsx \
+	  example/src/api*/*.gen.ts \
+	  example/src/api*/*.gen.js \
+	  example/src/api*/*.pb.js \
+	  example/src/api*/*.pb.d.ts \
 	)
 	rm -fr $(pbjs_proto_weshnet_dir)
 	@#TODO add more generated files here
@@ -219,7 +219,7 @@ lint.fix: node_modules
 .PHONY: js.unused_exports
 js.unused_exports: node_modules
 	$(call check-program, npx)
-	npx ts-unused-exports ./tsconfig.json --excludePathsFromReport="grpc-bridge;api;polyfill;packages/components/MiniGame.tsx;packages/components/chat/member-bar/MemberBar.tsx;GoBridge.native.ts;PushTokenRequester.native.ts" --ignoreTestFiles --ignoreFiles='.*\.gen'
+	npx ts-unused-exports ./tsconfig.json --excludePathsFromReport="grpc-bridge;api;polyfill;example/src/apicomponents/MiniGame.tsx;example/src/apicomponents/chat/member-bar/MemberBar.tsx;GoBridge.native.ts;PushTokenRequester.native.ts" --ignoreTestFiles --ignoreFiles='.*\.gen'
 
 ###################
 # Build/Run rules #
@@ -362,7 +362,7 @@ pbjs_common_flags := --force-long -p ../api -p node_modules/@googleapis/googleap
 
 pbjs_proto_berty_dir := ../api
 pbjs_berty_protos := $(pbjs_proto_berty_dir)/accounttypes/accounttypes.proto $(pbjs_proto_berty_dir)/bertybridge/bertybridge.proto $(pbjs_proto_berty_dir)/messengertypes/messengertypes.proto $(pbjs_proto_berty_dir)/pushtypes/bertypushtypes.proto
-pbjs_proto_weshnet_dir := packages/api/vendor
+pbjs_proto_weshnet_dir := example/src/api/vendor
 pbjs_weshnet_protos := $(pbjs_proto_weshnet_dir)/protocoltypes.proto $(pbjs_proto_weshnet_dir)/errcode/errcode.proto
 pbjs_protos := $(pbjs_berty_protos) $(pbjs_weshnet_protos)
 
@@ -372,7 +372,7 @@ $(pbjs_weshnet_protos): $(buf.lock)
 	mkdir -p $(pbjs_proto_weshnet_dir)
 	buf export buf.build/berty-technologies/weshnet:$(proto_commit_hash) --output $(pbjs_proto_weshnet_dir)
 
-packages/api/root.pb.js: $(pbjs_berty_protos) $(pbjs_weshnet_protos) node_modules
+example/src/api/root.pb.js: $(pbjs_berty_protos) $(pbjs_weshnet_protos) node_modules
 	$(call check-program, npx)
 	npx pbjs $(pbjs_common_flags) \
 		--no-comments \
@@ -381,7 +381,7 @@ packages/api/root.pb.js: $(pbjs_berty_protos) $(pbjs_weshnet_protos) node_module
 		-o $@ \
 		$(pbjs_protos)
 
-packages/api/root.pb.d.ts: $(wildcard ../api/*) node_modules
+example/src/api/root.pb.d.ts: $(wildcard ../api/*) node_modules
 	$(call check-program, npx)
 	npx pbjs $(pbjs_common_flags) \
 		-t static-module \
@@ -390,33 +390,33 @@ packages/api/root.pb.d.ts: $(wildcard ../api/*) node_modules
 	sed -E -i.bak 's/^.*constructor.*$$//g' $@ # json-module codegen doesn't support new
 	rm -f $@.bak
 
-packages/grpc-bridge/welsh-clients.gen.ts: packages/grpc-bridge/gen-clients.js packages/api/root.pb.js node_modules
+example/src/grpc-bridge/welsh-clients.gen.ts: example/src/grpc-bridge/gen-clients.js example/src/api/root.pb.js node_modules
 	$(call check-program, npx)
-	npx babel-node packages/grpc-bridge/gen-clients.js > $@
+	npx babel-node example/src/apigrpc-bridge/gen-clients.js > $@
 	npx eslint --no-ignore --fix $@
 
-packages/utils/api/types.gen.ts: packages/utils/api/gen-type-utils.js packages/api/root.pb.js node_modules
+example/src/utils/api/types.gen.ts: example/src/utils/api/gen-type-utils.js example/src/api/root.pb.js node_modules
 	$(call check-program, npx)
-	npx babel-node packages/utils/api/gen-type-utils.js > $@
+	npx babel-node example/src/apiutils/api/gen-type-utils.js > $@
 	npx eslint --no-ignore --fix $@
 
-packages/hooks/methods/methods.gen.ts: packages/hooks/methods/gen-methods-hooks.js packages/api/root.pb.js node_modules
+example/src/hooks/methods/methods.gen.ts: example/src/hooks/methods/gen-methods-hooks.js example/src/api/root.pb.js node_modules
 	$(call check-program, npx)
-	npx babel-node packages/hooks/methods/gen-methods-hooks.js > $@
+	npx babel-node example/src/apihooks/methods/gen-methods-hooks.js > $@
 	npx eslint --no-ignore --fix $@
 
-packages/redux/messengerActions.gen.ts: packages/redux/gen-messenger-actions.js packages/api/root.pb.js node_modules
+example/src/redux/messengerActions.gen.ts: example/src/redux/gen-messenger-actions.js example/src/api/root.pb.js node_modules
 	$(call check-program, npx)
-	npx babel-node packages/redux/gen-messenger-actions.js > $@
+	npx babel-node example/src/apiredux/gen-messenger-actions.js > $@
 	npx eslint --no-ignore --fix $@
 
-packages/mock-services/mockedServicesInterfaces.gen.ts: packages/mock-services/gen-mocked-interfaces.js packages/api/root.pb.js node_modules
+example/src/mock-services/mockedServicesInterfaces.gen.ts: example/src/mock-services/gen-mocked-interfaces.js example/src/api/root.pb.js node_modules
 	$(call check-program, npx)
-	npx babel-node packages/mock-services/gen-mocked-interfaces.js > $@
+	npx babel-node example/src/apimock-services/gen-mocked-interfaces.js > $@
 	npx eslint --no-ignore --fix $@
 
 
-_gen.pbjs: packages/api/root.pb.js packages/api/root.pb.d.ts packages/grpc-bridge/welsh-clients.gen.ts packages/utils/api/types.gen.ts packages/redux/messengerActions.gen.ts packages/mock-services/mockedServicesInterfaces.gen.ts packages/hooks/methods/methods.gen.ts
+_gen.pbjs: example/src/api/root.pb.js example/src/api/root.pb.d.ts example/src/grpc-bridge/welsh-clients.gen.ts example/src/utils/api/types.gen.ts example/src/redux/messengerActions.gen.ts example/src/mock-services/mockedServicesInterfaces.gen.ts example/src/hooks/methods/methods.gen.ts
 .PHONY: _gen.pbjs
 
 ##### other generation
