@@ -1,0 +1,42 @@
+name: Semantic Release
+on:
+  push:
+    branches:
+      - main
+jobs:
+  semantic-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup asdf
+        uses: asdf-vm/actions/setup@v3
+
+      - name: Setup Node version
+        working-directory: mobile
+        run: |
+          asdf plugin add nodejs
+          asdf install nodejs
+          echo "node_version=$(asdf current nodejs | xargs | cut -d ' ' -f 2)" >> $GITHUB_ENV
+
+      - name: Set nodejs as global exec
+        run: |
+          asdf global nodejs ${{ env.node_version }}
+
+      - name: Setup Expo and EAS
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Install dependencies
+        working-directory: mobile
+        run: yarn ci
+
+      - name: Build Android app
+        run: eas build --platform android --profile preview --local --output ${{ github.workspace }}/app-release.apk
+  
+      - name: Build Android app
+        run: eas build --platform ios --profile preview --local --output ${{ github.workspace }}/app-release.ipa
+    
